@@ -9,14 +9,14 @@ import TableCellVolume from '@/dex/components/PagePoolList/components/TableCellV
 import type { ColumnKeys, SearchParams } from '@/dex/components/PagePoolList/types'
 import { COLUMN_KEYS } from '@/dex/components/PagePoolList/utils'
 import PoolLabel from '@/dex/components/PoolLabel'
-import { PoolData, PoolDataCache, RewardsApy, Tvl, Volume } from '@/dex/types/main.types'
+import { PoolData, PoolDataCache, RewardsApy, Tvl } from '@/dex/types/main.types'
 import type { Chain } from '@curvefi/prices-api'
 import Box from '@ui/Box'
 import { CellInPool, Td, Tr } from '@ui/Table'
 import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import useIntersectionObserver from '@ui-kit/hooks/useIntersectionObserver'
 import { t } from '@ui-kit/lib/i18n'
-import type { Address } from '@ui-kit/utils'
+import type { Address, Decimal } from '@ui-kit/utils'
 
 export type TableRowProps = {
   index: number
@@ -32,7 +32,7 @@ export type TableRowProps = {
   showInPoolColumn: boolean
   tvlCached: { value: string } | undefined
   tvl: Tvl | undefined
-  volume: Volume | undefined
+  volume: Decimal | undefined
   handleCellClick(target: EventTarget, formType?: 'swap' | 'withdraw'): void
 }
 

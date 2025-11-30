@@ -13,7 +13,6 @@ export const useAutoRefresh = (networkDef: NetworkDef) => {
 
   const fetchPools = useStore((state) => state.pools.fetchPools)
   const poolDataMapper = useStore((state) => state.pools.poolsMapper[networkDef.chainId])
-  const fetchPoolsVolume = useStore((state) => state.pools.fetchPoolsVolume)
   const fetchPoolsTvl = useStore((state) => state.pools.fetchPoolsTvl)
   const setTokensMapper = useStore((state) => state.tokens.setTokensMapper)
   const fetchAllStoredBalances = useStore((state) => state.userBalances.fetchAllStoredBalances)
@@ -25,12 +24,11 @@ export const useAutoRefresh = (networkDef: NetworkDef) => {
 
   const fetchPoolsVolumeTvl = useCallback(
     async (curve: CurveApi) => {
-      const { chainId } = curve
       const poolsData = Object.values(poolDataMapper)
-      await Promise.all([fetchPoolsVolume(chainId, poolsData), fetchPoolsTvl(curve, poolsData)])
+      await Promise.all([fetchPoolsTvl(curve, poolsData)])
       void setTokensMapper(curve, poolsData)
     },
-    [fetchPoolsTvl, fetchPoolsVolume, poolDataMapper, setTokensMapper],
+    [fetchPoolsTvl, poolDataMapper, setTokensMapper],
   )
 
   usePageVisibleInterval(() => {

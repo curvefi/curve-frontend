@@ -2,6 +2,7 @@ import { isEmpty, sum } from 'lodash'
 import { useEffect, useMemo } from 'react'
 import { CROSS_CHAIN_ADDRESSES } from '@/dex/constants'
 import { POOL_TEXT_FIELDS } from '@/dex/features/pool-list/columns'
+import { getPoolVolume } from '@/dex/queries/pool-volume'
 import { getUserActiveKey } from '@/dex/store/createUserSlice'
 import useStore from '@/dex/store/useStore'
 import { NetworkConfig, PoolData, PoolDataMapper } from '@/dex/types/main.types'
@@ -27,14 +28,13 @@ const getPoolTags = (hasPosition: boolean, { pool, pool: { address, id, name, re
     ['link', 'eur', 'xdai', 'other'].includes(referenceAsset.toLowerCase()) && 'others',
   )
 
-export function usePoolListData({ id: network, chainId, isLite }: NetworkConfig) {
+export function usePoolListData({ id: network, chainId }: NetworkConfig) {
   const { curveApi } = useConnection()
   const userActiveKey = getUserActiveKey(curveApi)
   const poolDataMapper = useStore((state): PoolDataMapper | undefined => state.pools.poolsMapper[chainId])
   const rewardsApyMapper = useStore((state) => state.pools.rewardsApyMapper[chainId])
   const tvlMapper = useStore((state) => state.pools.tvlMapper[chainId])
   const userPoolList = useStore((state) => state.user.poolList[userActiveKey])
-  const volumeMapper = useStore((state) => state.pools.volumeMapper[chainId])
   const fetchPoolsRewardsApy = useStore((state) => state.pools.fetchPoolsRewardsApy)
   const fetchMissingPoolsRewardsApy = useStore((state) => state.pools.fetchMissingPoolsRewardsApy)
   const poolsData = useMemo(() => poolDataMapper && recordValues(poolDataMapper), [poolDataMapper])
@@ -52,10 +52,7 @@ export function usePoolListData({ id: network, chainId, isLite }: NetworkConfig)
 
   return {
     isLoading: !poolsData,
-    isReady: useMemo(
-      () => !isEmpty(tvlMapper) && (isLite || !isEmpty(volumeMapper)),
-      [isLite, tvlMapper, volumeMapper],
-    ),
+    isReady: useMemo(() => !isEmpty(tvlMapper), [tvlMapper]),
     userHasPositions: useMemo(() => userPoolList && recordValues(userPoolList).some(Boolean), [userPoolList]),
     data: useMemo(
       () =>
@@ -74,7 +71,7 @@ export function usePoolListData({ id: network, chainId, isLite }: NetworkConfig)
                 .filter((v) => !isNaN(v)),
             ),
             rewards,
-            volume: volumeMapper?.[item.pool.id],
+            volume: getPoolVolume({ chainId, poolId: item.pool.id }),
             tvl: tvlMapper?.[item.pool.id],
             hasPosition: userPoolList?.[item.pool.id],
             network,
@@ -82,7 +79,7 @@ export function usePoolListData({ id: network, chainId, isLite }: NetworkConfig)
             tags: getPoolTags(userPoolList?.[item.pool.id], item),
           }
         }),
-      [poolsData, rewardsApyMapper, tvlMapper, userPoolList, volumeMapper, network],
+      [poolsData, rewardsApyMapper, chainId, tvlMapper, userPoolList, network],
     ),
   }
 }

@@ -39,7 +39,6 @@ const PoolList = ({
   const tvlMapper = useStore((state) => state.pools.tvlMapper[rChainId])
   const userActiveKey = getUserActiveKey(curve)
   const userPoolList = useStore((state) => state.user.poolList[userActiveKey])
-  const volumeMapper = useStore((state) => state.pools.volumeMapper[rChainId])
   const fetchPoolsRewardsApy = useStore((state) => state.pools.fetchPoolsRewardsApy)
   const setFormValues = useStore((state) => state.poolList.setFormValues)
   const hideSmallPools = useUserProfileStore((state) => state.hideSmallPools)
@@ -64,24 +63,19 @@ const PoolList = ({
   const poolDatasCached = useMemo(() => Object.values(poolDataMapperCached ?? {}), [poolDataMapperCached])
 
   const isReady = useMemo(() => {
-    // volume
-    const haveVolumeMapper = typeof volumeMapper !== 'undefined' && Object.keys(volumeMapper).length >= 0
-    const haveVolume = haveVolumeMapper || Object.keys(volumeMapper || {}).length > 0
-
     // tvl
     const haveTvlMapper = typeof tvlMapper !== 'undefined' && Object.keys(tvlMapper).length >= 0
     const tvlCacheOrApi = tvlMapper || tvlMapperCached || {}
     const haveTvl = haveTvlMapper || Object.keys(tvlCacheOrApi).length > 0
 
-    return isLite ? haveTvl : haveVolume && haveTvl
-  }, [isLite, tvlMapper, tvlMapperCached, volumeMapper])
+    return haveTvl
+  }, [tvlMapper, tvlMapperCached])
 
   const isReadyWithApiData = useMemo(() => {
-    const haveVolume = typeof volumeMapper !== 'undefined' && Object.keys(volumeMapper).length >= 0
     const haveTvl = typeof tvlMapper !== 'undefined' && Object.keys(tvlMapper).length >= 0
 
-    return isLite ? haveTvl : haveVolume && haveTvl
-  }, [isLite, tvlMapper, volumeMapper])
+    return haveTvl
+  }, [tvlMapper])
 
   const columnKeys = useMemo(() => {
     const keys: ColumnKeys[] = []
@@ -106,7 +100,6 @@ const PoolList = ({
         typeof poolDataMapper !== 'undefined' ? poolDatas : undefined,
         poolDatasCached,
         rewardsApyMapper ?? {},
-        volumeMapper ?? {},
         tvlMapper ?? {},
         tvlMapperCached ?? {},
         userPoolList ?? {},
@@ -121,7 +114,6 @@ const PoolList = ({
       poolDatas,
       poolDatasCached,
       rewardsApyMapper,
-      volumeMapper,
       tvlMapper,
       tvlMapperCached,
       userPoolList,
@@ -171,7 +163,6 @@ const PoolList = ({
             isLite={isLite}
             isReadyRewardsApy={!!rewardsApyMapper}
             isReadyTvl={!!tvlMapper}
-            isReadyVolume={!!volumeMapper}
             searchParams={searchParams}
             tableLabels={tableLabels}
             updatePath={updatePath}

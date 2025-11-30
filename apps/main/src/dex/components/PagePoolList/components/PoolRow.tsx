@@ -11,6 +11,7 @@ import type {
 import { ROUTE } from '@/dex/constants'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { parseSearchTermMapper } from '@/dex/hooks/useSearchTermMapper'
+import { usePoolVolume } from '@/dex/queries/pool-volume'
 import { getUserActiveKey } from '@/dex/store/createUserSlice'
 import useStore from '@/dex/store/useStore'
 import { CurveApi, ChainId } from '@/dex/types/main.types'
@@ -65,7 +66,7 @@ export const PoolRow = ({
   const tvlCached = useStore((state) => state.storeCache.tvlMapper[rChainId]?.[poolId])
   const tvl = useStore((state) => state.pools.tvlMapper[rChainId]?.[poolId])
   const isInPool = useStore((state) => state.user.poolList[userActiveKey]?.[poolId])
-  const volume = useStore((state) => state.pools.volumeMapper[rChainId]?.[poolId])
+  const { data: volume } = usePoolVolume({ chainId: rChainId, poolId })
   const { data: network } = useNetworkByChain({ chainId: rChainId })
 
   const theme = useUserProfileStore((state) => state.theme)

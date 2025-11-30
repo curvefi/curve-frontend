@@ -14,7 +14,6 @@ type Props = {
   isLite: boolean
   isReadyRewardsApy: boolean
   isReadyTvl: boolean
-  isReadyVolume: boolean
   columnKeys: ColumnKeys[]
   searchParams: SearchParams
   tableLabels: PoolListTableLabel
@@ -25,7 +24,6 @@ const TableHead = ({
   isLite,
   isReadyRewardsApy,
   isReadyTvl,
-  isReadyVolume,
   columnKeys,
   searchParams,
   tableLabels,
@@ -139,7 +137,7 @@ const TableHead = ({
               )}
               {columnKey === COLUMN_KEYS.volume && (
                 <Th>
-                  <StyledTheadSortButton className="right" sortIdKey="volume" {...props} loading={!isReadyVolume}>
+                  <StyledTheadSortButton className="right" sortIdKey="volume" {...props}>
                     {tableLabels.volume.name}
                   </StyledTheadSortButton>
                 </Th>

@@ -20,7 +20,6 @@ import {
   SnapshotsMapper,
   TokensMapper,
   TvlMapper,
-  VolumeMapper,
 } from '@/dex/types/main.types'
 import { getChainPoolIdActiveKey } from '@/dex/utils'
 import { PromisePool } from '@supercharge/promise-pool'
@@ -45,6 +44,7 @@ import { log } from '@ui-kit/lib/logging'
 import { fetchTokenUsdRate, getTokenUsdRateQueryData } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { fetchNetworks } from '../entities/networks'
 import { getPools } from '../lib/pools'
+import { fetchPoolVolume } from '../queries/pool-volume'
 
 type StateKey = keyof typeof DEFAULT_STATE
 const { chunk, countBy, groupBy, isNaN } = lodash
@@ -61,7 +61,6 @@ type SliceState = {
     [poolAddress: string]: { totalStakedPercent: number | string; gaugeTotalSupply: number | string; timestamp: number }
   }
   tvlMapper: { [chainId: string]: TvlMapper }
-  volumeMapper: { [chainId: string]: VolumeMapper }
   pricesApiPoolsMapper: { [poolAddress: string]: PricesApiPool }
   pricesApiPoolDataMapper: { [poolAddress: string]: PricesApiPoolData }
   snapshotsMapper: SnapshotsMapper
@@ -86,7 +85,6 @@ const sliceKey = 'pools'
 export type PoolsSlice = {
   [sliceKey]: SliceState & {
     fetchPoolsTvl: (curve: CurveApi, poolDatas: PoolData[]) => Promise<void>
-    fetchPoolsVolume: (chainId: ChainId, poolDatas: PoolData[]) => Promise<void>
     fetchPools(
       curve: CurveApi,
       poolIds: string[],
@@ -147,7 +145,6 @@ const DEFAULT_STATE: SliceState = {
   rewardsApyMapper: {},
   stakedMapper: {},
   tvlMapper: {},
-  volumeMapper: {},
   pricesApiPoolsMapper: {},
   pricesApiPoolDataMapper: {},
   snapshotsMapper: {},
@@ -191,31 +188,6 @@ const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>
 
       //  update cache
       storeCache.setTvlVolumeMapper('tvlMapper', chainId, tvlMapper)
-    },
-    fetchPoolsVolume: async (chainId, poolDatas) => {
-      const {
-        [sliceKey]: { volumeMapper: sVolumeMapper, ...sliceState },
-      } = get()
-      const { getVolume } = curvejsApi.pool
-
-      const networks = await fetchNetworks()
-      if (networks[chainId].isLite) {
-        sliceState.setStateByActiveKey('volumeMapper', chainId.toString(), {})
-        return
-      }
-
-      log('fetchPoolsVolume', chainId, poolDatas.length)
-
-      const { results } = await PromisePool.for(poolDatas)
-        .withConcurrency(10)
-        .process(async ({ pool }) => {
-          const item = await getVolume(pool, networks[chainId])
-          return [item.poolId, item]
-        })
-
-      // update volumeMapper
-      const volumeMapper: VolumeMapper = { ...sVolumeMapper[chainId], ...Object.fromEntries(results) }
-      sliceState.setStateByActiveKey('volumeMapper', chainId.toString(), volumeMapper)
     },
     fetchPools: async (curve, poolIds, failedFetching24hOldVprice) => {
       const {
@@ -272,11 +244,13 @@ const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>
         if (!partialPoolDatas.length) return { poolsMapper, poolDatas: partialPoolDatas }
 
         // fetch tvls and volumes
+        // Even though we might be using tanstack queries, I believe we still need to await these,
+        // because the pool list might lag or jump around if not all data is present on mount?
         await (isLite
           ? pools.fetchPoolsTvl(curve, partialPoolDatas)
           : Promise.all([
               pools.fetchPoolsTvl(curve, partialPoolDatas),
-              pools.fetchPoolsVolume(chainId, partialPoolDatas),
+              partialPoolDatas.flatMap(({ pool }) => fetchPoolVolume({ chainId, poolId: pool.id })),
             ]))
 
         const partialTokens = await tokens.setTokensMapper(curve, partialPoolDatas)
@@ -443,17 +417,14 @@ const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>
       const { pools } = get()
       const { chainId } = curve
       const { pool } = poolData
-      const networks = await fetchNetworks()
-      const network = networks[chainId]
-      const { isLite } = network
-      const { getVolume, poolParameters } = curvejsApi.pool
+      const { poolParameters } = curvejsApi.pool
       log('fetchPoolStats', chainId, pool.id)
 
       try {
-        const [, , volume, { parameters }] = await Promise.all([
+        const [, , , { parameters }] = await Promise.all([
           pools.fetchPoolCurrenciesReserves(curve, poolData),
           pools.fetchPoolsRewardsApy(chainId, [poolData]),
-          isLite ? null : getVolume(pool, network),
+          fetchPoolVolume({ chainId, poolId: pool.id }),
           poolParameters(pool),
         ])
 
@@ -461,10 +432,6 @@ const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>
           produce((state: State) => {
             if (parameters) {
               state.pools.poolsMapper[chainId][pool.id].parameters = parameters
-            }
-            if (volume && state.pools.volumeMapper[chainId]) {
-              // volume mapper might not be initialized yet when loading the pool details page
-              state.pools.volumeMapper[chainId][pool.id] = volume
             }
           }),
         )
@@ -852,7 +819,6 @@ const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>
       const strChainId = chainId.toString()
 
       sliceState.setStateByActiveKey('tvlMapper', strChainId, {})
-      sliceState.setStateByActiveKey('volumeMapper', strChainId, {})
       sliceState.setStateByActiveKey('poolsMapper', strChainId, {})
     },
 
@@ -873,7 +839,6 @@ const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>
         currencyReserves: get()[sliceKey].currencyReserves,
         rewardsApyMapper: get()[sliceKey].rewardsApyMapper,
         tvlMapper: get()[sliceKey].tvlMapper,
-        volumeMapper: get()[sliceKey].volumeMapper,
       })
     },
   },

@@ -8,6 +8,7 @@ import { StyledInformationSquare16 } from '@/dex/components/PagePool/PoolDetails
 import type { TransferProps } from '@/dex/components/PagePool/types'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import usePoolTotalStaked from '@/dex/hooks/usePoolTotalStaked'
+import { usePoolVolume } from '@/dex/queries/pool-volume'
 import useStore from '@/dex/store/useStore'
 import type { PoolParameters } from '@/dex/types/main.types'
 import { formatDisplayDate } from '@/dex/utils/utilsDates'
@@ -39,7 +40,7 @@ const PoolParameters = ({
     data: { pricesApi, isLite },
   } = useNetworkByChain({ chainId: rChainId })
   const tvl = useStore((state) => state.pools.tvlMapper[rChainId]?.[rPoolId])
-  const volume = useStore((state) => state.pools.volumeMapper[rChainId]?.[rPoolId])
+  const { data: volume } = usePoolVolume({ chainId: rChainId, poolId: rPoolId })
 
   const haveWrappedCoins = useMemo(() => {
     if (poolData?.pool?.wrappedCoins) {
@@ -50,9 +51,9 @@ const PoolParameters = ({
 
   const liquidityUtilization = useMemo(
     () =>
-      tvl?.value && volume?.value
-        ? +tvl.value && +volume.value
-          ? formatNumber((+volume.value / +tvl.value) * 100, FORMAT_OPTIONS.PERCENT)
+      tvl?.value && volume
+        ? +tvl.value && +volume
+          ? formatNumber((+volume / +tvl.value) * 100, FORMAT_OPTIONS.PERCENT)
           : formatNumber(0, { style: 'percent', maximumFractionDigits: 0 })
         : '-',
     [tvl, volume],
@@ -71,7 +72,7 @@ const PoolParameters = ({
             <>
               <ActionInfo
                 label={t`Daily USD volume`}
-                value={formatNumber(volume?.value, { notation: 'compact', defaultValue: '-' })}
+                value={formatNumber(volume, { notation: 'compact', defaultValue: '-' })}
               />
               <ActionInfo
                 label={t`Liquidity utilization`}
@@ -198,9 +199,7 @@ const PoolParameters = ({
           <Items listItemMargin="var(--spacing-1)">
             <Item>
               {t`Daily USD volume:`}{' '}
-              <strong title={volume?.value ?? '-'}>
-                {formatNumber(volume?.value, { notation: 'compact', defaultValue: '-' })}
-              </strong>
+              <strong title={volume ?? '-'}>{formatNumber(volume, { notation: 'compact', defaultValue: '-' })}</strong>
             </Item>
             <Item>
               {t`Liquidity utilization:`}{' '}

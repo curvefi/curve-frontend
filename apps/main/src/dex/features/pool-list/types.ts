@@ -1,5 +1,6 @@
-import { type PoolData, type RewardsApy, type Tvl, type Volume } from '@/dex/types/main.types'
+import { type PoolData, type RewardsApy, type Tvl } from '@/dex/types/main.types'
 import type { INetworkName } from '@curvefi/api/lib/interfaces'
+import type { Decimal } from '@ui-kit/utils'
 
 const PoolTags = [
   'btc',
@@ -20,7 +21,7 @@ export type PoolTag = (typeof PoolTags)[number]
 // It sucks to use {} as default but tanstack table does not like undefined for deeply nested objects
 export type PoolListItem = PoolData & {
   rewards: RewardsApy | undefined
-  volume: Volume | undefined
+  volume: Decimal | undefined
   tvl: Tvl | undefined
   hasPosition: boolean | undefined
   network: INetworkName

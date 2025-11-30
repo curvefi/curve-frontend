@@ -4,6 +4,7 @@ import { updateHaveSameTokenNames } from '@/dex/store/createPoolsSlice'
 import type { State } from '@/dex/store/useStore'
 import { Token, TokensMapper, TokensNameMapper, PoolData, type CurveApi } from '@/dex/types/main.types'
 import { log } from '@ui-kit/lib/logging'
+import { getPoolVolume } from '../queries/pool-volume'
 
 type StateKey = keyof typeof DEFAULT_STATE
 const { countBy } = lodash
@@ -54,13 +55,12 @@ const createTokensSlice = (set: StoreApi<State>['setState'], get: StoreApi<State
       sliceState.setStateByKey('loading', true)
 
       const chainId = curve.chainId
-      const volumeMapper = pools.volumeMapper[chainId] ?? {}
       const DEFAULT_TOKEN_MAPPER = _getDefaultTokenMapper(curve)
       let cTokensMapper: TokensMapper = { ...(tokensMapper[chainId] ?? DEFAULT_TOKEN_MAPPER) }
       const partialTokensMapper: TokensMapper = {}
 
       for (const { pool, tokenAddressesAll, tokensAll, tokenDecimalsAll } of poolDatas) {
-        const volume = +(volumeMapper[pool.id]?.value ?? '0')
+        const volume = getPoolVolume({ chainId, poolId: pool.id })
         const counted = countBy(tokensAll)
 
         for (const idx in tokenAddressesAll) {
@@ -70,7 +70,6 @@ const createTokensSlice = (set: StoreApi<State>['setState'], get: StoreApi<State
 
           if (token) {
             counted[token] = counted[token] - 1
-            const tokenVolume = counted[token] === 0 ? tokenMappedVolume + volume : tokenMappedVolume
 
             const obj: Token = {
               ...(cTokensMapper[address] ?? DEFAULT_TOKEN),
@@ -78,7 +77,7 @@ const createTokensSlice = (set: StoreApi<State>['setState'], get: StoreApi<State
               symbol: token,
               decimals: tokenDecimalsAll[idx],
               haveSameTokenName: false,
-              volume: tokenVolume,
+              volume: volume && counted[token] === 0 ? tokenMappedVolume + +volume : tokenMappedVolume,
             }
 
             cTokensMapper[address] = obj

@@ -1,20 +1,20 @@
-import { Volume } from '@/dex/types/main.types'
 import { Chip } from '@ui/Typography'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import type { Decimal } from '@ui-kit/utils'
 
 type Props = {
   isHighLight: boolean
-  volume: Volume | undefined
+  volume: Decimal | undefined
 }
 
 const TableCellVolume = ({ isHighLight, volume }: Props) => (
   <Chip
     isBold={isHighLight}
     size="md"
-    tooltip={formatNumber(volume?.value, FORMAT_OPTIONS.USD)}
+    tooltip={formatNumber(volume, FORMAT_OPTIONS.USD)}
     tooltipProps={{ placement: 'bottom-end' }}
   >
-    {formatNumber(volume?.value, {
+    {formatNumber(volume, {
       currency: 'USD',
       notation: 'compact',
     })}

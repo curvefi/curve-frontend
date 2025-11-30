@@ -68,12 +68,12 @@ const TableRowMobile = ({
       } else if (sortBy === 'rewardsOther') {
         return <TableCellRewardsOthers isHighlight={sortBy === 'rewardsOther'} rewardsApy={rewardsApy} />
       } else if (sortBy === 'volume') {
-        return formatNumber(volume?.value, { notation: 'compact', currency: 'USD' })
+        return formatNumber(volume, { notation: 'compact', currency: 'USD' })
       } else if (sortBy === 'tvl') {
         return formatNumber(tvl?.value, { notation: 'compact', currency: 'USD' })
       }
     }
-  }, [showDetail, sortBy, volume?.value, tvl?.value, rewardsApy, poolData])
+  }, [showDetail, sortBy, volume, tvl?.value, rewardsApy, poolData])
 
   return (
     <LazyItem id={`${index}`} className="row--info">
