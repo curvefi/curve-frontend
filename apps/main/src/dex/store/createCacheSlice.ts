@@ -13,7 +13,6 @@ export type SwapFormValuesCache = {
 type StateKey = keyof typeof DEFAULT_STATE
 
 type SliceState = {
-  hasDepositAndStake: { [chainId: string]: boolean }
   poolsMapper: { [chainId: string]: PoolDataCacheMapper }
   routerFormValues: { [chainId: string]: SwapFormValuesCache }
   tvlMapper: { [chainId: string]: ValueMapperCached }
@@ -33,7 +32,6 @@ export type CacheSlice = {
 }
 
 const DEFAULT_STATE: SliceState = {
-  hasDepositAndStake: {},
   poolsMapper: {},
   routerFormValues: {},
   tvlMapper: {},
