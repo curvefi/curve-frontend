@@ -6677,7 +6677,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vitejs/plugin-react@npm:^5.1.0":
+"@vitejs/plugin-react@npm:^5.1.1":
   version: 5.1.1
   resolution: "@vitejs/plugin-react@npm:5.1.1"
   dependencies:
@@ -17024,7 +17024,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vitest@npm:^4.0.6":
+"vitest@npm:^4.0.14":
   version: 4.0.14
   resolution: "vitest@npm:4.0.14"
   dependencies:
