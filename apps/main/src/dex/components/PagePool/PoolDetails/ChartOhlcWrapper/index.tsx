@@ -6,40 +6,31 @@ import useStore from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
 import Box from '@ui/Box'
 import Button from '@ui/Button'
-import Icon from '@ui/Icon'
 import ChartWrapper from '@ui-kit/features/candle-chart/ChartWrapper'
 import type { PricesApiPool, PricesApiCoin, LabelList } from '@ui-kit/features/candle-chart/types'
 import { getThreeHundredResultsAgo, subtractTimeUnit } from '@ui-kit/features/candle-chart/utils'
-import { useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
+
+const CHART_HEIGHT = 300
 
 const PoolInfoData = ({ rChainId, pricesApiPoolData }: { rChainId: ChainId; pricesApiPoolData: PricesApiPool }) => {
   const theme = useUserProfileStore((state) => state.theme)
   const chartOhlcData = useStore((state) => state.pools.pricesApiState.chartOhlcData)
   const chartStatus = useStore((state) => state.pools.pricesApiState.chartStatus)
   const timeOption = useStore((state) => state.pools.pricesApiState.timeOption)
-  const chartExpanded = useStore((state) => state.pools.pricesApiState.chartExpanded)
-  const activityHidden = useStore((state) => state.pools.pricesApiState.activityHidden)
   const tradesTokens = useStore((state) => state.pools.pricesApiState.tradesTokens)
   const refetchingCapped = useStore((state) => state.pools.pricesApiState.refetchingCapped)
   const lastFetchEndTime = useStore((state) => state.pools.pricesApiState.lastFetchEndTime)
   const setChartTimeOption = useStore((state) => state.pools.setChartTimeOption)
-  const setChartExpanded = useStore((state) => state.pools.setChartExpanded)
   const fetchPricesApiCharts = useStore((state) => state.pools.fetchPricesApiCharts)
   const fetchPricesApiActivity = useStore((state) => state.pools.fetchPricesApiActivity)
   const fetchMorePricesApiCharts = useStore((state) => state.pools.fetchMorePricesApiCharts)
-  const isMdUp = useLayoutStore((state) => state.isMdUp)
 
   const [poolInfo, setPoolInfo] = useState<'chart' | 'poolActivity'>('chart')
   const [selectChartList, setSelectChartList] = useState<LabelList[]>([])
   const [selectedChartIndex, setChartSelectedIndex] = useState<number>(0)
   const [isFlipped, setIsFlipped] = useState<boolean[]>([])
-
-  const chartHeight = {
-    expanded: 500,
-    standard: 300,
-  }
 
   const chartCombinations: PricesApiCoin[][] = useMemo(() => {
     const coins = pricesApiPoolData.coins.slice(0, pricesApiPoolData.n_coins)
@@ -195,42 +186,8 @@ const PoolInfoData = ({ rChainId, pricesApiPoolData }: { rChainId: ChainId; pric
     setIsFlipped(updatedList)
   }
 
-  return chartExpanded ? (
-    <ExpandedWrapper activityHidden={activityHidden}>
-      <Wrapper variant={'secondary'} chartExpanded={chartExpanded}>
-        <ChartWrapper
-          hideCandleSeriesLabel={false}
-          chartType="poolPage"
-          chartStatus={chartStatus}
-          chartHeight={chartHeight}
-          chartExpanded={chartExpanded}
-          themeType={theme}
-          ohlcData={chartOhlcData}
-          selectChartList={selectChartList}
-          selectedChartIndex={selectedChartIndex}
-          setChartSelectedIndex={setChartSelectedIndex}
-          timeOption={timeOption}
-          setChartTimeOption={setChartTimeOption}
-          refetchPricesData={refetchPricesData}
-          flipChart={flipChart}
-          refetchingCapped={refetchingCapped}
-          fetchMoreChartData={fetchMoreChartData}
-          lastFetchEndTime={lastFetchEndTime}
-        />
-      </Wrapper>
-      <LpEventsWrapperExpanded>
-        <PoolActivity
-          chartExpanded={chartExpanded}
-          coins={pricesApiPoolData.coins}
-          tradesTokens={tradesTokens}
-          poolAddress={pricesApiPoolData.address}
-          chainId={rChainId}
-          chartCombinations={chartCombinations}
-        />
-      </LpEventsWrapperExpanded>
-    </ExpandedWrapper>
-  ) : (
-    <Wrapper chartExpanded={chartExpanded}>
+  return (
+    <Wrapper>
       <SelectorRow>
         <SelectorButton
           variant={'text'}
@@ -246,16 +203,9 @@ const PoolInfoData = ({ rChainId, pricesApiPoolData }: { rChainId: ChainId; pric
         >
           {t`Pool Activity`}
         </SelectorButton>
-        {isMdUp && (
-          <ExpandButton variant={'text'} onClick={() => setChartExpanded(!chartExpanded)}>
-            {chartExpanded ? 'Minimize' : 'Expand'}
-            <ExpandIcon name={chartExpanded ? 'Minimize' : 'Maximize'} size={16} aria-label={t`Expand chart`} />
-          </ExpandButton>
-        )}
       </SelectorRow>
       {pricesApiPoolData && poolInfo === 'poolActivity' && (
         <PoolActivity
-          chartExpanded={chartExpanded}
           coins={pricesApiPoolData.coins}
           tradesTokens={tradesTokens}
           poolAddress={pricesApiPoolData.address}
@@ -268,8 +218,7 @@ const PoolInfoData = ({ rChainId, pricesApiPoolData }: { rChainId: ChainId; pric
           hideCandleSeriesLabel={false}
           chartType="poolPage"
           chartStatus={chartStatus}
-          chartHeight={chartHeight}
-          chartExpanded={chartExpanded}
+          chartHeight={CHART_HEIGHT}
           themeType={theme}
           ohlcData={chartOhlcData}
           selectChartList={selectChartList}
@@ -288,23 +237,9 @@ const PoolInfoData = ({ rChainId, pricesApiPoolData }: { rChainId: ChainId; pric
   )
 }
 
-const ExpandedWrapper = styled.div<{ activityHidden: boolean }>`
-  display: grid;
-  ${(props) =>
-    !props.activityHidden
-      ? 'grid-template-columns: 2fr 26.4375rem'
-      : 'grid-template-columns: auto calc(var(--spacing-3) + var(--spacing-3))'}
-`
-
-const LpEventsWrapperExpanded = styled(Box)`
-  padding: var(--spacing-3);
-  background: var(--box--secondary--content--background-color);
-`
-
-const Wrapper = styled(Box)<{ chartExpanded: boolean }>`
+const Wrapper = styled(Box)`
   display: flex;
   flex-direction: column;
-  padding: ${(props) => (props.chartExpanded ? 'var(--spacing-3)' : '0')};
 `
 
 const SelectorRow = styled.div`
@@ -324,16 +259,6 @@ const SelectorButton = styled(Button)`
     opacity: 1;
     border-bottom: 2px solid var(--page--text-color);
   }
-`
-
-const ExpandButton = styled(SelectorButton)`
-  margin-left: auto;
-  display: flex;
-  align-content: center;
-`
-
-const ExpandIcon = styled(Icon)`
-  margin-left: var(--spacing-1);
 `
 
 export default PoolInfoData

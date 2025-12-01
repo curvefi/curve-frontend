@@ -6,15 +6,15 @@ import useStore from '@/loan/store/useStore'
 import AlertBox from '@ui/AlertBox'
 import Box from '@ui/Box'
 import Button from '@ui/Button'
-import Icon from '@ui/Icon'
 import TextCaption from '@ui/TextCaption'
 import ChartWrapper, { type ChartWrapperProps } from '@ui-kit/features/candle-chart/ChartWrapper'
 import type { LiquidationRanges, LlammaLiquididationRange } from '@ui-kit/features/candle-chart/types'
 import { getThreeHundredResultsAgo, subtractTimeUnit } from '@ui-kit/features/candle-chart/utils'
-import { useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
 import { ChartOhlcWrapperProps, LlammaLiquidityCoins } from './types'
+
+const CHART_HEIGHT = 300
 
 const ChartOhlcWrapper = ({ rChainId, llamma, llammaId, betaBackgroundColor }: ChartOhlcWrapperProps) => {
   const address = llamma?.address ?? ''
@@ -38,7 +38,6 @@ const ChartOhlcWrapper = ({ rChainId, llamma, llammaId, betaBackgroundColor }: C
     (state) => state.loanCollateralDecrease.detailInfo[collateralDecreaseActiveKey]?.prices ?? null,
   )
   const theme = useUserProfileStore((state) => state.theme)
-  const isMdUp = useLayoutStore((state) => state.isMdUp)
   const chartLlammaOhlc = useStore((state) => state.ohlcCharts.chartLlammaOhlc)
   const chartOraclePoolOhlc = useStore((state) => state.ohlcCharts.chartOraclePoolOhlc)
   const timeOption = useStore((state) => state.ohlcCharts.timeOption)
@@ -46,9 +45,6 @@ const ChartOhlcWrapper = ({ rChainId, llamma, llammaId, betaBackgroundColor }: C
   const fetchLlammaOhlcData = useStore((state) => state.ohlcCharts.fetchLlammaOhlcData)
   const fetchOracleOhlcData = useStore((state) => state.ohlcCharts.fetchOracleOhlcData)
   const fetchMoreData = useStore((state) => state.ohlcCharts.fetchMoreData)
-  const activityHidden = useStore((state) => state.ohlcCharts.activityHidden)
-  const chartExpanded = useStore((state) => state.ohlcCharts.chartExpanded)
-  const setChartExpanded = useStore((state) => state.ohlcCharts.setChartExpanded)
   const toggleLiqRangeCurrentVisible = useStore((state) => state.ohlcCharts.toggleLiqRangeCurrentVisible)
   const toggleLiqRangeNewVisible = useStore((state) => state.ohlcCharts.toggleLiqRangeNewVisible)
   const toggleOraclePriceVisible = useStore((state) => state.ohlcCharts.toggleOraclePriceVisible)
@@ -189,11 +185,6 @@ const ChartOhlcWrapper = ({ rChainId, llamma, llammaId, betaBackgroundColor }: C
     }
   }, [chartOraclePoolOhlc.dataDisabled, setChartSelectedIndex])
 
-  const chartHeight = {
-    expanded: 500,
-    standard: 300,
-  }
-
   const chartTimeSettings = useMemo(() => {
     const threeHundredResultsAgo = getThreeHundredResultsAgo(timeOption, Date.now() / 1000)
 
@@ -279,24 +270,18 @@ const ChartOhlcWrapper = ({ rChainId, llamma, llammaId, betaBackgroundColor }: C
     [timeOption, fetchMoreData, rChainId, controller, address, chartInterval, timeUnit],
   )
 
-  if (ohlcDataUnavailable) {
-    setChartExpanded(false)
-
-    return (
-      <StyledAlertBox alertType="">
-        <TextCaption isCaps isBold>
-          {t`Ohlc chart data and pool activity is not yet available for this market.`}
-        </TextCaption>
-      </StyledAlertBox>
-    )
-  }
+  if (ohlcDataUnavailable)
+    <StyledAlertBox alertType="">
+      <TextCaption isCaps isBold>
+        {t`Ohlc chart data and pool activity is not yet available for this market.`}
+      </TextCaption>
+    </StyledAlertBox>
 
   const ChartWrapperProps: ChartWrapperProps = {
     hideCandleSeriesLabel: true,
     chartType: 'crvusd',
     chartStatus: llamma ? chartOhlcObject.fetchStatus : 'LOADING',
-    chartHeight,
-    chartExpanded,
+    chartHeight: CHART_HEIGHT,
     betaBackgroundColor,
     themeType: theme,
     ohlcData: chartOhlcObject.data,
@@ -320,17 +305,8 @@ const ChartOhlcWrapper = ({ rChainId, llamma, llammaId, betaBackgroundColor }: C
     setChartSelectedIndex,
   }
 
-  return chartExpanded ? (
-    <ExpandedWrapper activityHidden={activityHidden}>
-      <Wrapper variant={'secondary'} chartExpanded={chartExpanded}>
-        <ChartWrapper {...ChartWrapperProps} />
-      </Wrapper>
-      <LpEventsWrapperExpanded>
-        <PoolActivity poolAddress={address} chainId={rChainId} coins={coins} />
-      </LpEventsWrapperExpanded>
-    </ExpandedWrapper>
-  ) : (
-    <Wrapper chartExpanded={chartExpanded}>
+  return (
+    <Wrapper>
       <SelectorRow>
         <SelectorButton
           variant={'text'}
@@ -346,12 +322,6 @@ const ChartOhlcWrapper = ({ rChainId, llamma, llammaId, betaBackgroundColor }: C
         >
           {t`LLAMMA Activity`}
         </SelectorButton>
-        {isMdUp && (
-          <ExpandButton variant={'text'} onClick={() => setChartExpanded()}>
-            {chartExpanded ? 'Minimize' : 'Expand'}
-            <ExpandIcon name={chartExpanded ? 'Minimize' : 'Maximize'} size={16} aria-label={t`Expand chart`} />
-          </ExpandButton>
-        )}
       </SelectorRow>
       {poolInfo === 'poolActivity' && <PoolActivity poolAddress={address} chainId={rChainId} coins={coins} />}
       {poolInfo === 'chart' && <ChartWrapper {...ChartWrapperProps} />}
@@ -359,23 +329,9 @@ const ChartOhlcWrapper = ({ rChainId, llamma, llammaId, betaBackgroundColor }: C
   )
 }
 
-const ExpandedWrapper = styled.div<{ activityHidden: boolean }>`
-  display: grid;
-  ${(props) =>
-    !props.activityHidden
-      ? 'grid-template-columns: 2fr 26.4375rem'
-      : 'grid-template-columns: auto calc(var(--spacing-3) + var(--spacing-3))'}
-`
-
-const LpEventsWrapperExpanded = styled(Box)`
-  padding: var(--spacing-3);
-  background: var(--box--secondary--content--background-color);
-`
-
-const Wrapper = styled(Box)<{ chartExpanded: boolean }>`
+const Wrapper = styled(Box)`
   display: flex;
   flex-direction: column;
-  padding: ${(props) => (props.chartExpanded ? 'var(--spacing-3)' : '0')};
 `
 
 const SelectorRow = styled.div`
@@ -395,16 +351,6 @@ const SelectorButton = styled(Button)`
     opacity: 1;
     border-bottom: 2px solid var(--page--text-color);
   }
-`
-
-const ExpandButton = styled(SelectorButton)`
-  margin-left: auto;
-  display: flex;
-  align-content: center;
-`
-
-const ExpandIcon = styled(Icon)`
-  margin-left: var(--spacing-1);
 `
 
 const StyledAlertBox = styled(AlertBox)`

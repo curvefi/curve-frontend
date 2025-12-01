@@ -49,8 +49,6 @@ type SliceState = {
   llammaControllerData: LlammaEvent[]
   activityFetchStatus: FetchingStatus
   timeOption: TimeOptions
-  activityHidden: boolean
-  chartExpanded: boolean
   oraclePriceVisible: boolean
   liqRangeCurrentVisible: boolean
   liqRangeNewVisible: boolean
@@ -124,8 +122,6 @@ export type OhlcChartSlice = {
       end: number,
     ): Promise<void>
     fetchPoolActivity(chainId: ChainId, poolAddress: string): void
-    setActivityHidden(bool?: boolean): void
-    setChartExpanded(bool?: boolean): void
     toggleOraclePriceVisible: () => void
     toggleLiqRangeCurrentVisible: () => void
     toggleLiqRangeNewVisible: () => void
@@ -164,8 +160,6 @@ const DEFAULT_STATE: SliceState = {
   llammaControllerData: [],
   activityFetchStatus: 'LOADING',
   timeOption: '1d',
-  activityHidden: false,
-  chartExpanded: false,
   oraclePriceVisible: true,
   liqRangeCurrentVisible: true,
   liqRangeNewVisible: true,
@@ -700,21 +694,6 @@ const createOhlcChart = (set: StoreApi<State>['setState'], get: StoreApi<State>[
           }),
         )
       }
-    },
-    setActivityHidden: (bool?: boolean) => {
-      set(
-        produce((state: State) => {
-          state[sliceKey].activityHidden = bool !== undefined ? bool : !get()[sliceKey].activityHidden
-        }),
-      )
-    },
-    setChartExpanded: (bool?: boolean) => {
-      set(
-        produce((state: State) => {
-          state[sliceKey].chartExpanded = bool !== undefined ? bool : !get()[sliceKey].chartExpanded
-          state[sliceKey].activityHidden = false
-        }),
-      )
     },
     toggleOraclePriceVisible: () => {
       set(
