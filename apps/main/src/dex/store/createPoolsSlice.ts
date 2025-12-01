@@ -250,7 +250,7 @@ const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>
           ? pools.fetchPoolsTvl(curve, partialPoolDatas)
           : Promise.all([
               pools.fetchPoolsTvl(curve, partialPoolDatas),
-              partialPoolDatas.flatMap(({ pool }) => fetchPoolVolume({ chainId, poolId: pool.id })),
+              ...partialPoolDatas.flatMap(({ pool }) => fetchPoolVolume({ chainId, poolId: pool.id })),
             ]))
 
         const partialTokens = await tokens.setTokensMapper(curve, partialPoolDatas)
