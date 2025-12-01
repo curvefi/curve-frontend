@@ -1,5 +1,5 @@
 /// <reference path="./basic-theme.d.ts" />
-import { recordEntries } from '@curvefi/prices-api/objects.util'
+import { mapRecord, recordEntries } from '@curvefi/prices-api/objects.util'
 import { Breakpoint } from '@mui/material'
 import { createTheme as createMuiTheme } from '@mui/material/styles'
 import { CSSObject } from '@mui/styled-engine'
@@ -49,9 +49,7 @@ export const handleBreakpoints = (values: Record<string, BreakpointValue>): CSSO
   Object.fromEntries(
     basicMuiTheme.breakpoints.keys.map((breakpoint) => [
       basicMuiTheme.breakpoints.up(breakpoint),
-      Object.fromEntries(
-        Object.entries(values).map(([key, value]) => [key, isResponsive(value) ? value[breakpoint] : value]),
-      ),
+      mapRecord(values, (key, value) => [key, isResponsive(value) ? value[breakpoint] : value]),
     ]),
   )
 
