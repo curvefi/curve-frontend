@@ -11,7 +11,7 @@ export const {
 } = queryFactory({
   queryKey: ({ chainId, poolId }: PoolParams) => [...rootKeys.pool({ chainId, poolId }), 'volume'] as const,
   queryFn: async ({ chainId, poolId }: PoolQuery) => {
-    // Lite networks are apparantly not supported?
+    // Lite networks do not support volume
     const networks = await fetchNetworks()
     if (networks[chainId].isLite) {
       return null
