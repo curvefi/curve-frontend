@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { AddCollateralForm } from '@/llamalend/features/manage-loan/components/AddCollateralForm'
 import { RemoveCollateralForm } from '@/llamalend/features/manage-loan/components/RemoveCollateralForm'
-import { RepayForm } from '@/llamalend/features/manage-loan/components/RepayForm'
+import { RepayFromCollateral, RepayFromWallet } from '@/llamalend/features/manage-loan/components/RepayForm'
 import CollateralDecrease from '@/loan/components/PageLoanManage/CollateralDecrease'
 import CollateralIncrease from '@/loan/components/PageLoanManage/CollateralIncrease'
 import LoanDecrease from '@/loan/components/PageLoanManage/LoanDecrease'
@@ -44,6 +44,21 @@ const LoanManage = ({ curve, isReady, llamma, llammaId, params, rChainId, rColla
   const push = useNavigate()
   const shouldUseManageLoanMuiForm = useManageLoanMuiForm()
   const useMuiForm = shouldUseManageLoanMuiForm && !!llamma
+  const leverageEnabled = !!llamma?.leverageV2?.hasLeverage?.()
+
+  const tabsLoanMui: TabOption<LoanFormType>[] = useMemo(
+    () => [
+      { value: 'loan-increase', label: t`Borrow more` },
+      ...(leverageEnabled
+        ? [
+            { value: 'loan-repay-collateral', label: t`Repay from collateral` },
+            { value: 'loan-repay-wallet', label: t`Repay from wallet` },
+          ]
+        : [{ value: 'loan-decrease', label: t`Repay` }]),
+      { value: 'loan-liquidate', label: t`Self-liquidate` },
+    ],
+    [leverageEnabled],
+  )
 
   type Tab = 'loan' | 'collateral' | 'deleverage'
   const tabs: TabOption<Tab>[] = [
@@ -56,8 +71,9 @@ const LoanManage = ({ curve, isReady, llamma, llammaId, params, rChainId, rColla
   const [subTab, setSubTab] = useState<SubTab>('loan-increase')
 
   const subTabs = useMemo(
-    () => (rFormType === 'loan' ? tabsLoan : rFormType === 'collateral' ? tabsCollateral : []),
-    [rFormType],
+    () =>
+      rFormType === 'loan' ? (useMuiForm ? tabsLoanMui : tabsLoan) : rFormType === 'collateral' ? tabsCollateral : [],
+    [rFormType, tabsLoanMui, useMuiForm],
   )
   useEffect(() => setSubTab(subTabs[0]?.value), [subTabs])
 
@@ -96,13 +112,24 @@ const LoanManage = ({ curve, isReady, llamma, llammaId, params, rChainId, rColla
               </AppFormContentWrapper>
             </Stack>
           )}
-          {subTab === 'loan-decrease' && llamma && (
-            <RepayForm
+          {subTab === 'loan-repay-wallet' && leverageEnabled && llamma && (
+            <RepayFromWallet
               networks={networks}
               chainId={rChainId}
               market={llamma}
               enabled={isReady}
               onRepaid={async () => {}}
+              leverageEnabled={leverageEnabled}
+            />
+          )}
+          {(subTab === 'loan-repay-collateral' || subTab === 'loan-decrease') && llamma && (
+            <RepayFromCollateral
+              networks={networks}
+              chainId={rChainId}
+              market={llamma}
+              enabled={isReady}
+              onRepaid={async () => {}}
+              leverageEnabled={leverageEnabled}
             />
           )}
           {subTab === 'loan-liquidate' && <LoanLiquidate {...formProps} params={params} />}

@@ -32,12 +32,14 @@ export const useRepayForm = <ChainId extends LlamaChainId, NetworkName extends L
   networks,
   enabled,
   onRepaid,
+  leverageEnabled,
 }: {
   market: LlamaMarketTemplate | undefined
   network: { id: LlamaNetworkId; chainId: ChainId }
   networks: NetworkDict<ChainId>
   enabled?: boolean
   onRepaid: NonNullable<RepayOptions['onRepaid']>
+  leverageEnabled: boolean
 }) => {
   const { address: userAddress } = useAccount()
   const { chainId } = network
@@ -74,7 +76,14 @@ export const useRepayForm = <ChainId extends LlamaChainId, NetworkName extends L
     ),
   )
 
-  const { onSubmit, ...action } = useRepayMutation({ network, marketId, onRepaid, onReset: form.reset, userAddress })
+  const { onSubmit, ...action } = useRepayMutation({
+    network,
+    marketId,
+    onRepaid,
+    onReset: form.reset,
+    userAddress,
+    leverageEnabled,
+  })
 
   useCallbackAfterFormUpdate(form, action.reset)
 

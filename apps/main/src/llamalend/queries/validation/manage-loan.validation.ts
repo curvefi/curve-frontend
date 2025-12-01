@@ -1,4 +1,5 @@
-import { group } from 'vest'
+import BigNumber from 'bignumber.js'
+import { enforce, group, test } from 'vest'
 import {
   validateIsFull,
   validateUserBorrowed,
@@ -24,6 +25,29 @@ export type RepayForm = FieldsOf<{
   userCollateral: Decimal
   userBorrowed: Decimal
 }>
+
+const validateRepayCollateralField = (field: 'stateCollateral' | 'userCollateral', value: Decimal | null | undefined) =>
+  test(field, `Collateral amount must be a non-negative number`, () => {
+    if (value == null) return
+    enforce(value).isNumeric().gte(0)
+  })
+
+const validateRepayBorrowedField = (userBorrowed: Decimal | null | undefined) =>
+  test('userBorrowed', 'Borrow amount must be a non-negative number', () => {
+    if (userBorrowed == null) return
+    enforce(userBorrowed).isNumeric().gte(0)
+  })
+
+const validateRepayHasValue = (
+  stateCollateral: Decimal | null | undefined,
+  userCollateral: Decimal | null | undefined,
+  userBorrowed: Decimal | null | undefined,
+) =>
+  test('root', 'Enter an amount to repay', () => {
+    const total = new BigNumber(stateCollateral ?? 0).plus(userCollateral ?? 0).plus(userBorrowed ?? 0)
+
+    enforce(total.gt(0)).isTruthy()
+  })
 
 export const collateralValidationGroup = ({ chainId, userCollateral, marketId, userAddress }: CollateralParams) =>
   group('chainValidation', () => {
@@ -55,9 +79,10 @@ export const repayFromCollateralValidationGroup = <IChainId extends number>({
   chainValidationGroup({ chainId })
   llamaApiValidationGroup({ chainId })
   userAddressValidationGroup({ userAddress })
-  validateUserCollateral(userCollateral)
-  validateUserCollateral(stateCollateral)
-  validateUserBorrowed(userBorrowed)
+  validateRepayCollateralField('userCollateral', userCollateral)
+  validateRepayCollateralField('stateCollateral', stateCollateral)
+  validateRepayBorrowedField(userBorrowed)
+  validateRepayHasValue(stateCollateral, userCollateral, userBorrowed)
 }
 
 export const repayFromCollateralValidationSuite = createValidationSuite((params: RepayFromCollateralParams) =>
@@ -65,9 +90,10 @@ export const repayFromCollateralValidationSuite = createValidationSuite((params:
 )
 
 export const repayFormValidationSuite = createValidationSuite((params: RepayForm) => {
-  validateUserCollateral(params.userCollateral)
-  validateUserCollateral(params.stateCollateral)
-  validateUserBorrowed(params.userBorrowed)
+  validateRepayCollateralField('userCollateral', params.userCollateral)
+  validateRepayCollateralField('stateCollateral', params.stateCollateral)
+  validateRepayBorrowedField(params.userBorrowed)
+  validateRepayHasValue(params.stateCollateral, params.userCollateral, params.userBorrowed)
 })
 
 export const repayFromCollateralIsFullValidationSuite = createValidationSuite(

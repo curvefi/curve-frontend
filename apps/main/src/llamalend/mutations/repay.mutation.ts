@@ -20,6 +20,7 @@ export type RepayOptions = {
   onRepaid: LlammaMutationOptions<RepayMutation>['onSuccess']
   onReset?: () => void
   userAddress: Address | undefined
+  leverageEnabled: boolean
 }
 
 export const useRepayMutation = ({
@@ -29,18 +30,20 @@ export const useRepayMutation = ({
   onRepaid,
   onReset,
   userAddress,
+  leverageEnabled,
 }: RepayOptions) => {
   const { mutate, mutateAsync, error, data, isPending, isSuccess, reset } = useLlammaMutation<RepayMutation>({
     network,
     marketId,
-    mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'repay'] as const,
+    mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'repay', { leverageEnabled }] as const,
     mutationFn: async ({ userCollateral, userBorrowed, stateCollateral }, { market }) => ({
-      hash:
-        market instanceof LendMarketTemplate
+      hash: leverageEnabled
+        ? market instanceof LendMarketTemplate
           ? ((await market.leverage.repay(stateCollateral, userCollateral, userBorrowed)) as Hex)
           : market.leverageV2.hasLeverage()
             ? ((await market.leverageV2.repay(stateCollateral, userCollateral, userBorrowed)) as Hex)
-            : ((await market.deleverage.repay(userCollateral)) as Hex),
+            : ((await market.deleverage.repay(userCollateral)) as Hex)
+        : ((await market.repay(userCollateral)) as Hex),
     }),
     validationSuite: repayFromCollateralValidationSuite,
     pendingMessage: (mutation, { market }) => t`Repaying loan... ${formatTokenAmounts(market, mutation)}`,

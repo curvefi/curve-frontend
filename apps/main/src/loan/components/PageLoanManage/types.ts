@@ -1,7 +1,12 @@
 import { ChainId, type CollateralUrlParams, LlamaApi, Llamma } from '@/loan/types/loan.types'
 
 export type FormType = 'loan' | 'collateral' | 'swap' | 'deleverage'
-export type LoanFormType = 'loan-increase' | 'loan-decrease' | 'loan-liquidate'
+export type LoanFormType =
+  | 'loan-increase'
+  | 'loan-decrease'
+  | 'loan-liquidate'
+  | 'loan-repay-wallet'
+  | 'loan-repay-collateral'
 export type CollateralFormType = 'collateral-increase' | 'collateral-decrease'
 
 export type FormStatus = {

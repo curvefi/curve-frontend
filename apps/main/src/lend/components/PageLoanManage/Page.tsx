@@ -187,7 +187,7 @@ const Page = () => {
             (isManageSoftLiq ? (
               <ManageSoftLiquidation marketId={rOwmId} chainId={rChainId} network={network} />
             ) : (
-              <LoanMange {...pageProps} />
+              <LoanMange {...pageProps} borrowPositionDetails={borrowPositionDetails} />
             ))}
         </AppPageFormsWrapper>
         <Stack flexDirection="column" flexGrow={1} sx={{ gap: Spacing.md }}>

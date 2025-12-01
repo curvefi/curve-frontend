@@ -11,6 +11,7 @@ import { getLoanManagePathname } from '@/lend/utils/utilsRouter'
 import { AddCollateralForm } from '@/llamalend/features/manage-loan/components/AddCollateralForm'
 import { RemoveCollateralForm } from '@/llamalend/features/manage-loan/components/RemoveCollateralForm'
 import { RepayForm } from '@/llamalend/features/manage-loan/components/RepayForm'
+import type { BorrowPositionDetailsProps } from '@/llamalend/features/market-position-details'
 import Stack from '@mui/material/Stack'
 import { AppFormContentWrapper } from '@ui/AppForm'
 import { useNavigate } from '@ui-kit/hooks/router'
@@ -21,30 +22,61 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { MaxWidth } = SizesAndSpaces
 
-const tabsLoan: TabOption<LoanFormType>[] = [
-  { value: 'loan-increase', label: t`Borrow more` },
-  { value: 'loan-decrease', label: t`Repay` },
-  { value: 'loan-liquidate', label: t`Self-liquidate` },
-]
+type OldTab = 'loan' | 'collateral' | 'leverage'
+type NewTab = 'loan' | 'repay' | 'collateral'
 
-const tabsCollateral: TabOption<CollateralFormType>[] = [
-  { value: 'collateral-increase', label: t`Add collateral` },
-  { value: 'collateral-decrease', label: t`Remove collateral` },
-]
+const oldMenu = {
+  loan: {value: 'loan' as const, label: t`Loan`,
+    subtabs: [
+      { value: 'loan-increase', label: t`Borrow more` },
+      { value: 'loan-decrease', label: t`Repay` },
+      { value: 'loan-liquidate', label: t`Self-liquidate` },
+    ] satisfies TabOption<LoanFormType>[],
+  },
+  collateral: {
+    subtabs: [value: 'collateral' as const, label: t`Collateral`,
+      { value: 'collateral-increase', label: t`Add collateral` },
+      { value: 'collateral-decrease', label: t`Remove collateral` },
+    ] satisfies TabOption<CollateralFormType>[],
+            ...(market?.leverage?.hasLeverage() ? [{ value: 'leverage' as const, label: t`Leverage` }] : []),
+  },
+} satisfies Record<OldTab, any>
 
-const ManageLoan = (pageProps: PageContentProps & { params: MarketUrlParams }) => {
-  const { rChainId, rOwmId, rFormType, market, params, isLoaded } = pageProps
+type ManageLoanProps = PageContentProps & { params: MarketUrlParams } & {
+  borrowPositionDetails: BorrowPositionDetailsProps
+}
+
+const ManageLoan = (pageProps: ManageLoanProps) => {
+  const { rChainId, rOwmId, rFormType, market, params, isLoaded, borrowPositionDetails } = pageProps
   const push = useNavigate()
   const shouldUseManageLoanMuiForm = useManageLoanMuiForm()
   const useMuiForm = shouldUseManageLoanMuiForm && !!market
+  const isLeveragedPosition = borrowPositionDetails.leverage?.value && borrowPositionDetails.leverage.value > 1
 
-  type Tab = 'loan' | 'collateral' | 'leverage'
-  const tabs: TabOption<Tab>[] = useMemo(
+  const tabsLoanMui: TabOption<LoanFormType>[] = useMemo(
     () => [
-      { value: 'loan' as const, label: t`Loan` },
-      { value: 'collateral' as const, label: t`Collateral` },
-      ...(market?.leverage?.hasLeverage() ? [{ value: 'leverage' as const, label: t`Leverage` }] : []),
+      { value: 'loan-increase', label: t`Borrow` },
+      { value: 'loan-repay-wallet', label: t`Repay from wallet` },
+      { value: 'loan-repay-collateral', label: t`Repay from collateral` },
+      { value: 'loan-decrease', label: t`Repay` },
+      { value: 'loan-liquidate', label: t`Self-liquidate` },
     ],
+    [leverageEnabled],
+  )
+
+  const tabs: TabOption<Tab>[] = useMemo(
+    () =>
+      useMuiForm
+        ? [
+            { value: 'loan' as const, label: t`Loan` },
+            { value: 'repay' as const, label: isLeveragedPosition ? t`Delever` : t`Repay` },
+            { value: 'collateral' as const, label: t`Collateral` },
+          ]
+        : [
+            { value: 'loan' as const, label: t`Loan` },
+            { value: 'collateral' as const, label: t`Collateral` },
+            ...(market?.leverage?.hasLeverage() ? [{ value: 'leverage' as const, label: t`Leverage` }] : []),
+          ],
     [market?.leverage],
   )
 
@@ -52,8 +84,15 @@ const ManageLoan = (pageProps: PageContentProps & { params: MarketUrlParams }) =
   const [subTab, setSubTab] = useState<SubTab | undefined>('loan-increase')
 
   const subTabs = useMemo(
-    () => (!rFormType || rFormType === 'loan' ? tabsLoan : rFormType === 'collateral' ? tabsCollateral : []),
-    [rFormType],
+    () =>
+      !rFormType || rFormType === 'loan'
+        ? useMuiForm
+          ? tabsLoanMui
+          : tabsLoan
+        : rFormType === 'collateral'
+          ? tabsCollateral
+          : [],
+    [rFormType, tabsLoanMui, useMuiForm],
   )
 
   useEffect(() => setSubTab(subTabs[0]?.value), [subTabs])

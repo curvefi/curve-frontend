@@ -2,7 +2,6 @@ import type { FormEventHandler, ReactNode } from 'react'
 import { FormProvider } from 'react-hook-form'
 import type { FieldValues, FormProviderProps } from 'react-hook-form'
 import Stack from '@mui/material/Stack'
-import { AppFormContentWrapper } from '@ui/AppForm'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
@@ -24,10 +23,25 @@ export const LoanFormWrapper = <TFieldValues extends FieldValues, TContext = any
   <FormProvider {...form}>
     <form onSubmit={onSubmit} style={{ overflowWrap: 'break-word' }}>
       <Stack gap={Spacing.md}>
-        <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
-          <AppFormContentWrapper>
-            <Stack gap={Spacing.md}>{children}</Stack>
-          </AppFormContentWrapper>
+        <Stack
+          sx={{
+            backgroundColor: (t) => t.design.Layer[1].Fill,
+            //
+            //   align-items: flex-start;
+            //   display: grid;
+            //   grid-row-gap: var(--spacing-3);
+            //   padding: var(--spacing-3);
+            //   min-height: 17.125rem;
+            //   width: ${MaxWidth.actionCard};
+            //   max-width: ${MaxWidth.actionCard};
+            //   // let the action card take the full width below the tablet breakpoint
+            //   @media (max-width: ${basicMuiTheme.breakpoints.values.tablet}px) {
+            //   width: 100%;
+            //   max-width: 100%;
+            // }
+          }}
+        >
+          <Stack gap={Spacing.md}>{children}</Stack>
         </Stack>
 
         {infoAccordion}
