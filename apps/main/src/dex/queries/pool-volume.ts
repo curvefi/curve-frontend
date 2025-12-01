@@ -14,7 +14,7 @@ export const {
     // Lite networks are apparantly not supported?
     const networks = await fetchNetworks()
     if (networks[chainId].isLite) {
-      return
+      return null
     }
 
     const curve = requireLib('curveApi')
