@@ -52,10 +52,10 @@ export const LoanFormTokenInput = <
     error: balanceError,
   } = useTokenBalance({ chainId: network?.chainId, userAddress }, token)
 
-  const { data: usdRate } = useTokenUsdRate(
-    { chainId: network?.chainId, tokenAddress: token?.address },
-    !!token?.address,
-  )
+  const { data: usdRate } = useTokenUsdRate({
+    chainId: network?.chainId,
+    tokenAddress: token?.address,
+  })
 
   const walletBalance = useMemo(
     // todo: support separate isLoading for balance and for maxBalance in LargeTokenInput
