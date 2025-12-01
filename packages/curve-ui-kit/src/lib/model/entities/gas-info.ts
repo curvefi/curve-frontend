@@ -1,5 +1,7 @@
+import { enforce, group, test } from 'vest'
 import { formatNumber } from '@ui/utils'
-import { getLib, requireLib, useWallet } from '@ui-kit/features/connect-wallet'
+import { getLib, useWallet } from '@ui-kit/features/connect-wallet'
+import { AnyCurveApi } from '@ui-kit/features/connect-wallet/lib/types'
 import { type ChainQuery, queryFactory, rootKeys } from '@ui-kit/lib/model/query'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib/validation'
 import { Chain, gweiToEther, gweiToWai, weiToGwei } from '@ui-kit/utils'
@@ -25,22 +27,24 @@ type GasInfo = {
   l2GasPriceWei?: number
 }
 
-const QUERY_KEY_IDENTIFIER = 'gasInfo' as const
-
 /* List of L2 networks with different gas pricing */
 const L2_NETWORKS_WITH_GAS_PRICE = [Chain.Arbitrum, Chain.XLayer, Chain.Mantle] as const
 
 /** Small utility function to immediately convert fetch results into a JSON response. */
 const httpFetcher = (uri: string) => fetch(uri).then((res) => res.json())
 
-const getCurve = () => getLib('curveApi') ?? requireLib('llamaApi')
-type CurveApi = ReturnType<typeof getCurve>
+const getAnyCurve = (chainId: number): AnyCurveApi | undefined => {
+  const curveApi = getLib('curveApi')
+  if (curveApi?.chainId === chainId) return curveApi
+  const llamaApi = getLib('llamaApi')
+  if (llamaApi?.chainId === chainId) return llamaApi
+}
 
 const getProvider = () => useWallet.getState().provider!
 type Provider = ReturnType<typeof getProvider>
 
 const createQueryKey = ({ gasPricesUrl, gasPricesUrlL2, ...params }: GasInfoParams) =>
-  [...rootKeys.chain(params), { gasPricesUrl }, { gasPricesUrlL2 }, QUERY_KEY_IDENTIFIER] as const
+  [...rootKeys.chain(params), { gasPricesUrl }, { gasPricesUrlL2 }, 'gasInfo'] as const
 
 /**
  * We're dealing with a query here that's not read-only and has side effects.
@@ -58,7 +62,7 @@ const createQueryKey = ({ gasPricesUrl, gasPricesUrlL2, ...params }: GasInfoPara
 const { useQuery: useGasInfoAndUpdateLibBase, fetchQuery: fetchGasInfoAndUpdateLibBase } = queryFactory({
   queryKey: createQueryKey,
   queryFn: async ({ chainId, gasPricesUrl, gasPricesUrlL2 }: GasInfoQuery): Promise<GasInfo> => {
-    const curve = getCurve()
+    const curve = getAnyCurve(chainId)!
     const provider = getProvider()
 
     let parsedGasInfo
@@ -141,8 +145,13 @@ const { useQuery: useGasInfoAndUpdateLibBase, fetchQuery: fetchGasInfoAndUpdateL
   },
   staleTime: '5m',
   refetchInterval: '1m',
-  validationSuite: createValidationSuite(<TChainId extends number>(params: GasInfoParams<TChainId>) => {
-    chainValidationGroup(params)
+  validationSuite: createValidationSuite(<TChainId extends number>({ chainId }: GasInfoParams<TChainId>) => {
+    chainValidationGroup({ chainId })
+    group('libValidation', () => {
+      test('lib', 'library loaded', () => {
+        if (chainId) enforce(getAnyCurve(chainId)?.chainId).message('Library should be loaded').equals(chainId)
+      })
+    })
     providerValidationGroup()
   }),
 })
@@ -158,7 +167,7 @@ function getEthereumCustomFeeDataValues(gasInfo: { max: number[]; prio: number[]
   return null
 }
 
-async function fetchCustomGasFees(curve: CurveApi) {
+async function fetchCustomGasFees(curve: AnyCurveApi) {
   const resp: { customFeeData: Record<string, number | null> | null; error: string } = {
     customFeeData: null,
     error: '',
@@ -173,7 +182,7 @@ async function fetchCustomGasFees(curve: CurveApi) {
   }
 }
 
-async function fetchL2GasPrice(curve: CurveApi) {
+async function fetchL2GasPrice(curve: AnyCurveApi) {
   const resp = { l2GasPrice: 0, error: '' }
   try {
     resp.l2GasPrice = await curve.getGasPriceFromL2()
@@ -185,7 +194,7 @@ async function fetchL2GasPrice(curve: CurveApi) {
   }
 }
 
-async function fetchL1AndL2GasPrice(curve: CurveApi) {
+async function fetchL1AndL2GasPrice(curve: AnyCurveApi) {
   const resp = { l1GasPriceWei: 0, l2GasPriceWei: 0, error: '' }
   try {
     const [l2GasPriceWei, l1GasPriceWei] = await Promise.all([curve.getGasPriceFromL2(), curve.getGasPriceFromL1()])
@@ -244,7 +253,7 @@ function parsePolygonGasInfo(gasInfo: {
   }
 }
 
-async function parseGasInfo(curve: CurveApi, provider: Provider, l2GasUrl?: string) {
+async function parseGasInfo(curve: AnyCurveApi, provider: Provider, l2GasUrl?: string) {
   // Returns the current recommended FeeData to use in a transaction.
   // For an EIP-1559 transaction, the maxFeePerGas and maxPriorityFeePerGas should be used.
   // For legacy transactions and networks which do not support EIP-1559, the gasPrice should be used.

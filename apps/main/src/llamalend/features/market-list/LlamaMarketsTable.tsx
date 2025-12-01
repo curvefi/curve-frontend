@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { MARKET_CUTOFF_DATE } from '@/llamalend/constants'
 import { ChainFilterChip } from '@/llamalend/features/market-list/chips/ChainFilterChip'
 import { type LlamaMarketsResult } from '@/llamalend/queries/market-list/llama-markets'
 import Button from '@mui/material/Button'
@@ -26,17 +27,16 @@ import { LlamaMarketExpandedPanel } from './LlamaMarketExpandedPanel'
 
 const LOCAL_STORAGE_KEY = 'Llamalend Markets'
 
-const useDefaultLlamaFilter = (minLiquidity: number) =>
+const useDefaultLlamaFilter = (minTvl: number) =>
   useMemo(
     () => [
       { id: LlamaMarketColumnId.DeprecatedMessage, value: 'no' },
-      { id: LlamaMarketColumnId.Tvl, value: serializeRangeFilter([minLiquidity, null])! },
+      { id: LlamaMarketColumnId.Tvl, value: serializeRangeFilter([minTvl, null])! },
     ],
-    [minLiquidity],
+    [minTvl],
   )
 
 const pagination = { pageIndex: 0, pageSize: 200 }
-const newMarketsCutoffDate = new Date('2025-11-12T00:00:00Z').getTime() // November 12, 2025
 
 export const LlamaMarketsTable = ({
   onReload,
@@ -49,7 +49,7 @@ export const LlamaMarketsTable = ({
   isError: boolean
   loading: boolean
 }) => {
-  const { markets = [], userHasPositions, hasFavorites } = result ?? {}
+  const { markets, userHasPositions, hasFavorites } = result ?? {}
 
   const minLiquidity = useUserProfileStore((s) => s.hideSmallPools) ? SMALL_POOL_TVL : 0
   const defaultFilters = useDefaultLlamaFilter(minLiquidity)
@@ -68,10 +68,12 @@ export const LlamaMarketsTable = ({
   const [searchText, onSearch] = useSearch(columnFiltersById, setColumnFilter)
   const filterProps = { columnFiltersById, setColumnFilter }
 
-  // Filter out markets after a certain creation date, because they're unsafe to use until Llamalend V2 is live.
-  // We're directly filtering the market list and not the hooks and queries, to avoid the chance of breaking
-  // other components with potential missing data or incomplete metrics. It's purely presentational filtering.
-  const data = useMemo(() => markets.filter((market) => market.createdAt <= newMarketsCutoffDate), [markets])
+  const data = useMemo(
+    // We're directly filtering the market list and not the hooks and queries, to avoid the chance of breaking
+    // other components with potential missing data or incomplete metrics. It's purely presentational filtering.
+    () => (markets ?? []).filter((market) => market.createdAt <= MARKET_CUTOFF_DATE.getTime()),
+    [markets],
+  )
 
   const table = useReactTable({
     columns: LLAMA_MARKET_COLUMNS,

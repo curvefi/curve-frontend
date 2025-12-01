@@ -14,5 +14,11 @@
       "@curvefi/prices-api/*": ["../../packages/prices-api/src/*"]
     }
   },
-  "include": ["cypress", "cypress.config.ts", "../packages/ui/src/globals.d.ts", "../packages/curve-ui-kit/src/types/*.d.ts"]
+  "include": [
+    "cypress",
+    "scripts",
+    "cypress.config.ts",
+    "../packages/ui/src/globals.d.ts",
+    "../packages/curve-ui-kit/src/**/*.d.ts"
+  ]
 }
