@@ -41,7 +41,7 @@ export function queryFactory<
           if (!disableLog) logQuery(queryKey)
           return await runQuery(getParamsFromQueryKey(queryKey))
         } catch (error) {
-          console.error(`Error in query `, queryKey, error) // log here, `queryClient.onError` has no stack trace
+          console.error(`Error in query `, JSON.stringify(queryKey), error) // log here, `queryClient.onError` has no stack trace
           throw error
         }
       },

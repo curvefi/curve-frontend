@@ -28,7 +28,7 @@ const { useQuery: useCrvUsdTotalSupply } = queryFactory({
   queryKey: () => ['getCrvusdTotalSupplyNumber'] as const,
   queryFn: async () => {
     const resp = await fetch('https://api.curve.finance/api/getCrvusdTotalSupplyNumber')
-    return decimal(await resp.text())
+    return decimal(await resp.text()) ?? null
   },
   validationSuite: EmptyValidationSuite,
 })
