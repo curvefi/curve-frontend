@@ -150,8 +150,9 @@ export const LoanInfoAccordion = ({
             testId="borrow-ltv"
           />
         )}
+        {/* TODO: add gas estimate steps (1. approve, 2. add collateral) */}
         <ActionInfo
-          label={t`Estimated tx cost (step 1 of 2)`}
+          label={t`Estimated tx cost`}
           value={gas.data?.estGasCostUsd == null ? '-' : formatUsd(gas.data.estGasCostUsd)}
           valueTooltip={gas.data?.tooltip}
           loading={gas.isLoading}
