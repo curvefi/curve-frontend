@@ -31,7 +31,7 @@ export type ActionInfoProps = {
   /** Custom color for the label text */
   labelColor?: TypographyProps['color']
   /** Primary value to display and copy */
-  value: ReactNode
+  value?: ReactNode
   /** Custom color for the value text */
   valueColor?: TypographyProps['color']
   /** Optional content to display to the left of the value */
@@ -41,9 +41,11 @@ export type ActionInfoProps = {
   /** Tooltip text to display when hovering over the value */
   valueTooltip?: ReactNode
   /** Previous value (if needed for comparison) */
-  prevValue?: string
+  prevValue?: ReactNode
   /** Custom color for the previous value text */
   prevValueColor?: TypographyProps['color']
+  /** Placeholder when no value or previous value is provided */
+  emptyValue?: ReactNode
   /** URL to navigate to when clicking the external link button */
   link?: string
   /** Value to be copied (will display a copy button). */
@@ -92,6 +94,7 @@ const ActionInfo = ({
   prevValue,
   prevValueColor,
   value,
+  emptyValue = '-',
   valueColor,
   valueLeft,
   valueRight,
@@ -114,6 +117,11 @@ const ActionInfo = ({
   }, [copyValue, openSnackbar])
 
   const errorMessage = (typeof error === 'object' && error?.message) || (typeof error === 'string' && error)
+  const hasValue = value != null
+  const hasPrevValue = prevValue != null
+  const showPrevValue = hasValue && hasPrevValue
+  const displayValue = hasValue ? value : hasPrevValue ? prevValue : emptyValue
+
   return (
     <Stack direction="row" alignItems="center" columnGap={Spacing.sm} data-testid={testId} sx={sx}>
       <Typography
@@ -127,7 +135,7 @@ const ActionInfo = ({
       </Typography>
 
       <Stack direction="row" alignItems={alignItems} gap={Spacing.xs} className="ActionInfo-valueGroup">
-        {prevValue && (
+        {showPrevValue && (
           <Typography
             variant={prevValueSize[size]}
             color={prevValueColor ?? 'textTertiary'}
@@ -137,7 +145,7 @@ const ActionInfo = ({
           </Typography>
         )}
 
-        {prevValue && (
+        {showPrevValue && (
           <ArrowForwardIcon
             sx={{
               width: IconSize.sm,
@@ -168,7 +176,7 @@ const ActionInfo = ({
                 color={error ? 'error' : (valueColor ?? 'textPrimary')}
                 component="div"
               >
-                {loading ? (typeof loading === 'string' ? loading : MOCK_SKELETON) : value}
+                {loading ? (typeof loading === 'string' ? loading : MOCK_SKELETON) : displayValue}
               </Typography>
             </WithSkeleton>
 

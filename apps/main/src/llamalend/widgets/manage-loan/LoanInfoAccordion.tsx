@@ -44,33 +44,13 @@ type LoanInfoAccordionProps = {
   leverage?: LoanLeverageActionInfoProps & { enabled: boolean }
 }
 
-/**
- * Builds props for ActionInfo component that handles prev/current value transitions.
- * - Displays "previous -> current" when both values are available
- * - Displays "current" when only current value is available
- * - Displays "previous" when only previous value is available
- * - Displays empty value when neither are available
- */
-const buildPrevCurrentValues = <T,>(
-  current: Query<T | null> | undefined,
-  previous: Query<T | null> | undefined,
-  format: (value: NonNullable<T>) => string,
-  emptyValue = '-',
-) => {
-  const hasCurrent = current?.data != null
-  const hasPrevious = previous?.data != null
+const formatQueryValue = <T,>(query: Query<T | null> | undefined, format: (value: NonNullable<T>) => string) =>
+  query?.data != null ? format(query.data as NonNullable<T>) : undefined
 
-  return {
-    ...(hasCurrent && hasPrevious && { prevValue: format(previous!.data as NonNullable<T>) }),
-    value: hasCurrent
-      ? format(current!.data as NonNullable<T>)
-      : hasPrevious
-        ? format(previous!.data as NonNullable<T>)
-        : emptyValue,
-    error: current?.error ?? previous?.error,
-    loading: current?.isLoading || previous?.isLoading,
-  }
-}
+const getQueryState = (current: Query<unknown> | undefined, previous: Query<unknown> | undefined) => ({
+  error: current?.error ?? previous?.error,
+  loading: current?.isLoading || previous?.isLoading,
+})
 
 export const LoanInfoAccordion = ({
   isOpen,
@@ -99,7 +79,10 @@ export const LoanInfoAccordion = ({
       info={
         <ActionInfo
           label=""
-          {...buildPrevCurrentValues(health, prevHealth, (v) => formatNumber(v, { abbreviate: false }), '∞')}
+          value={formatQueryValue(health, (v) => formatNumber(v, { abbreviate: false }))}
+          prevValue={formatQueryValue(prevHealth, (v) => formatNumber(v, { abbreviate: false }))}
+          emptyValue="∞"
+          {...getQueryState(health, prevHealth)}
           valueColor={getHealthValueColor(Number(health.data ?? prevHealth?.data ?? 100), useTheme())}
           testId="borrow-health"
         />
@@ -112,7 +95,9 @@ export const LoanInfoAccordion = ({
         {(debt || prevDebt) && (
           <ActionInfo
             label={t`Debt`}
-            {...buildPrevCurrentValues(debt, prevDebt, (v) => formatNumber(v, { abbreviate: false }))}
+            value={formatQueryValue(debt, (v) => formatNumber(v, { abbreviate: false }))}
+            prevValue={formatQueryValue(prevDebt, (v) => formatNumber(v, { abbreviate: false }))}
+            {...getQueryState(debt, prevDebt)}
             valueRight={debt?.tokenSymbol ?? prevDebt?.tokenSymbol}
             testId="borrow-debt"
           />
@@ -120,7 +105,9 @@ export const LoanInfoAccordion = ({
         {(collateral || prevCollateral) && (
           <ActionInfo
             label={t`Collateral`}
-            {...buildPrevCurrentValues(collateral, prevCollateral, (v) => formatNumber(v, { abbreviate: false }))}
+            value={formatQueryValue(collateral, (v) => formatNumber(v, { abbreviate: false }))}
+            prevValue={formatQueryValue(prevCollateral, (v) => formatNumber(v, { abbreviate: false }))}
+            {...getQueryState(collateral, prevCollateral)}
             valueRight={collateral?.tokenSymbol ?? prevCollateral?.tokenSymbol}
             testId="borrow-collateral"
           />
@@ -149,16 +136,17 @@ export const LoanInfoAccordion = ({
         )}
         <ActionInfo
           label={t`Borrow APR`}
-          {...(prevRates?.data && { prevValue: formatPercent(prevRates.data.borrowApr) })}
-          value={rates.data?.borrowApr ? formatPercent(rates.data.borrowApr) : '-'}
-          error={rates.error ?? prevRates?.error}
-          loading={rates.isLoading || prevRates?.isLoading}
+          value={rates.data?.borrowApr != null ? formatPercent(rates.data.borrowApr) : undefined}
+          prevValue={prevRates?.data?.borrowApr != null ? formatPercent(prevRates.data.borrowApr) : undefined}
+          {...getQueryState(rates, prevRates)}
           testId="borrow-apr"
         />
         {(loanToValue || prevLoanToValue) && (
           <ActionInfo
             label={t`Loan to value ratio`}
-            {...buildPrevCurrentValues(loanToValue, prevLoanToValue, formatPercent)}
+            value={formatQueryValue(loanToValue, formatPercent)}
+            prevValue={formatQueryValue(prevLoanToValue, formatPercent)}
+            {...getQueryState(loanToValue, prevLoanToValue)}
             testId="borrow-ltv"
           />
         )}
