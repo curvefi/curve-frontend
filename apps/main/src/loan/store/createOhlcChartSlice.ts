@@ -205,6 +205,8 @@ const createOhlcChart = (set: StoreApi<State>['setState'], get: StoreApi<State>[
         }),
       )
 
+      if (!controller) return // controller is '' by default on initial load
+
       const network = networks[chainId].id.toLowerCase()
       const checkSummedController = getAddress(controller)
 
