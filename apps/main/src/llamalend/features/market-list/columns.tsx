@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import { ColumnDef, createColumnHelper, FilterFnOption, type ColumnMeta } from '@tanstack/react-table'
+import { ColumnDef, type ColumnMeta, createColumnHelper, FilterFnOption } from '@tanstack/react-table'
 import { type DeepKeys } from '@tanstack/table-core'
 import { t } from '@ui-kit/lib/i18n'
 import {
@@ -25,12 +25,12 @@ import {
 } from './cells'
 import { LlamaMarketColumnId } from './columns.enum'
 import {
-  CollateralBorrowHeaderTooltipContent,
   BorrowRateHeaderTooltipContent,
+  CollateralBorrowHeaderTooltipContent,
   LendRateHeaderTooltipContent,
-  UtilizationHeaderTooltipContent,
   LiquidityUsdHeaderTooltipContent,
   TvlHeaderTooltipContent,
+  UtilizationHeaderTooltipContent,
 } from './header-tooltips'
 
 const columnHelper = createColumnHelper<LlamaMarket>()
