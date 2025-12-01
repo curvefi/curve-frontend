@@ -20,6 +20,7 @@ import {
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { vestResolver } from '@hookform/resolvers/vest'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
+import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { formDefaultOptions } from '@ui-kit/lib/model'
 import { useFormErrors } from '../../borrow/react-form.utils'
 
@@ -46,12 +47,14 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
   const tokens = market && getTokens(market)
   const collateralToken = tokens?.collateralToken
   const borrowToken = tokens?.borrowToken
+  const { data: maxCollateral } = useTokenBalance({ chainId, userAddress }, collateralToken)
 
   const form = useForm<CollateralForm>({
     ...formDefaultOptions,
     resolver: vestResolver(collateralFormValidationSuite),
     defaultValues: {
       userCollateral: undefined,
+      maxCollateral: undefined,
     },
   })
 
@@ -81,6 +84,10 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
   })
 
   useCallbackAfterFormUpdate(form, action.reset)
+
+  useEffect(() => {
+    form.setValue('maxCollateral', maxCollateral, { shouldValidate: true })
+  }, [form, maxCollateral])
 
   const userState = useUserState(params, enabled)
   const bands = useAddCollateralBands(params, enabled)

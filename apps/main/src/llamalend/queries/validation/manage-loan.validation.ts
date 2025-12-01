@@ -1,6 +1,7 @@
 import { group } from 'vest'
 import {
   validateIsFull,
+  validateMaxCollateral,
   validateUserBorrowed,
   validateUserCollateral,
 } from '@/llamalend/queries/validation/borrow-fields.validation'
@@ -17,7 +18,7 @@ import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-valid
 import { userAddressValidationGroup } from '@ui-kit/lib/model/query/user-address-validation'
 import type { Decimal } from '@ui-kit/utils'
 
-export type CollateralForm = FieldsOf<{ userCollateral: Decimal }>
+export type CollateralForm = FieldsOf<{ userCollateral: Decimal; maxCollateral: Decimal }>
 
 export type RepayForm = FieldsOf<{
   stateCollateral: Decimal
@@ -38,6 +39,7 @@ export const collateralValidationSuite = createValidationSuite((params: Collater
 
 export const collateralFormValidationSuite = createValidationSuite((params: CollateralForm) => {
   validateUserCollateral(params.userCollateral)
+  validateMaxCollateral(params.userCollateral, params.maxCollateral)
 })
 
 export const collateralHealthValidationSuite = createValidationSuite(({ isFull, ...rest }: CollateralHealthParams) => {

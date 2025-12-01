@@ -58,6 +58,7 @@ export const useRemoveCollateralForm = <
     resolver: vestResolver(collateralFormValidationSuite),
     defaultValues: {
       userCollateral: undefined,
+      maxCollateral: undefined,
     },
   })
 
