@@ -25,7 +25,7 @@
     "@tanstack/react-table": "8.21.3",
     "dayjs": "^1.11.19",
     "viem": "^2.38.6",
-    "wagmi": "^2.19.2"
+    "wagmi": "^3.0.2"
   },
   "peerDependencies": {
     "ethers": "*",
