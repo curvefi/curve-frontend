@@ -20,11 +20,7 @@ export const { useQuery: useRepayRouteImage } = queryFactory({
       { userCollateral },
       { userBorrowed },
     ] as const,
-  queryFn: async ({
-    marketId,
-    stateCollateral,
-    userCollateral,
-  }: RepayFromCollateralQuery): Promise<string | undefined> => {
+  queryFn: async ({ marketId, stateCollateral, userCollateral }: RepayFromCollateralQuery) => {
     const market = getLlamaMarket(marketId)
     if (market instanceof LendMarketTemplate) {
       return await market.leverage.repayRouteImage(stateCollateral, userCollateral)
@@ -32,7 +28,7 @@ export const { useQuery: useRepayRouteImage } = queryFactory({
     if (market.leverageV2.hasLeverage()) {
       return await market.leverageV2.repayRouteImage(stateCollateral, userCollateral)
     }
-    return undefined
+    return null
   },
   staleTime: '1m',
   validationSuite: repayFromCollateralValidationSuite,
