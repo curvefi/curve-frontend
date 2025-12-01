@@ -153,7 +153,11 @@ export const AddCollateralForm = <ChainId extends IChainId>({
         disabled={formErrors.length > 0}
         data-testid="add-collateral-submit-button"
       >
-        {isPending ? t`Processing...` : isApproved.data ? t`Add collateral` : t`Approve & Add collateral`}
+        {isPending
+          ? t`Processing...`
+          : !isApproved.data && !isApproved.isPending && values.userCollateral
+            ? t`Approve & Add collateral`
+            : t`Add collateral`}
       </Button>
 
       <LoanFormAlerts
