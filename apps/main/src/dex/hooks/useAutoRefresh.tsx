@@ -17,6 +17,7 @@ export const useAutoRefresh = (chainId: number | undefined) => {
   const setTokensMapper = useStore((state) => state.tokens.setTokensMapper)
   const fetchAllStoredBalances = useStore((state) => state.userBalances.fetchAllStoredBalances)
 
+  // this is similar to useNetworkByChain, but it doesn't throw if network is not set (during redirects)
   const network = useMemo(() => chainId && networks[chainId], [chainId, networks])
 
   useGasInfoAndUpdateLib({ chainId, networks })
