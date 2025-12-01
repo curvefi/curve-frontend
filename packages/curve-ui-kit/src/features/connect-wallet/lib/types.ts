@@ -20,6 +20,7 @@ export enum ConnectState {
 
 export type CurveApi = typeof curveApi & { chainId: CurveChainId; signerAddress?: Address }
 export type LlamaApi = typeof llamaApi & { chainId: LlamaChainId; signerAddress: Address }
+export type AnyCurveApi = CurveApi | LlamaApi
 
 export type LibChainId = {
   curveApi: CurveChainId
