@@ -1,11 +1,17 @@
 import { styled } from 'styled-components'
 import networks from '@/loan/networks'
+import { ChainId } from '@/loan/types/loan.types'
+import { LlammaTrade } from '@curvefi/prices-api/llamma'
 import Box from '@ui/Box'
 import Tooltip from '@ui/Tooltip/TooltipButton'
 import { Chip } from '@ui/Typography'
 import { formatNumber, getFractionDigitsOptions, convertDate, convertTimeAgo, formatDate, scanTxPath } from '@ui/utils'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
-import { TradesDataProps } from './types'
+
+type TradesDataProps = {
+  llammaTradesData: LlammaTrade[]
+  chainId: ChainId
+}
 
 const TradesData = ({ llammaTradesData, chainId }: TradesDataProps) => (
   <>

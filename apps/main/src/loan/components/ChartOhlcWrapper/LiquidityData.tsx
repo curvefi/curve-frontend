@@ -1,12 +1,20 @@
 import { styled } from 'styled-components'
 import networks from '@/loan/networks'
+import { ChainId } from '@/loan/types/loan.types'
+import { LlammaEvent } from '@curvefi/prices-api/llamma'
 import Box from '@ui/Box'
 import Tooltip from '@ui/Tooltip/TooltipButton'
 import { Chip } from '@ui/Typography'
 import { formatNumber, getFractionDigitsOptions, convertDate, convertTimeAgo, formatDate, scanTxPath } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
-import { LiqudityDataProps } from './types'
+import { LlammaLiquidityCoins } from '../../hooks/useOhlcChartState'
+
+type LiqudityDataProps = {
+  llammaControllerData: LlammaEvent[]
+  chainId: ChainId
+  coins: LlammaLiquidityCoins
+}
 
 const LiquidityData = ({ llammaControllerData, chainId, coins }: LiqudityDataProps) => (
   <>
