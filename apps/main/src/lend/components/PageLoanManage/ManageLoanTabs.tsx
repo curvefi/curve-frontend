@@ -6,12 +6,25 @@ import LoanRepay, {
   LoanRepayFromWalletTab,
 } from '@/lend/components/PageLoanManage/LoanRepay'
 import LoanSelfLiquidation from '@/lend/components/PageLoanManage/LoanSelfLiquidation'
+import networks from '@/lend/networks'
 import { type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
+import { useClosePositionTab } from '@/llamalend/features/manage-soft-liquidation/hooks/useClosePositionTab'
+import { useImproveHealthTab } from '@/llamalend/features/manage-soft-liquidation/hooks/useImproveHealthTab'
+import { ClosePosition } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ClosePosition'
+import { ImproveHealth } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ImproveHealth'
 import { useManageLoanMuiForm } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { type FormTab, FormTabs } from '@ui-kit/shared/ui/FormTabs/FormTabs'
 
 type ManageLoanProps = PageContentProps<MarketUrlParams>
+
+export const ImproveHealthTab = ({ rChainId, rOwmId }: ManageLoanProps) => (
+  <ImproveHealth {...useImproveHealthTab({ chainId: rChainId, network: networks[rChainId], marketId: rOwmId })} />
+)
+
+export const ClosePositionTab = ({ rChainId, rOwmId }: ManageLoanProps) => (
+  <ClosePosition {...useClosePositionTab({ chainId: rChainId, network: networks[rChainId], marketId: rOwmId })} />
+)
 
 export const LendManageLegacyMenu = [
   {
@@ -34,7 +47,7 @@ export const LendManageLegacyMenu = [
   {
     value: 'leverage',
     label: t`Leverage`,
-    enabled: ({ market }) => market?.leverage?.hasLeverage(),
+    visible: ({ market }) => market?.leverage?.hasLeverage(),
     component: LoanBorrowMore,
   },
 ] satisfies FormTab<ManageLoanProps>[]
@@ -64,12 +77,10 @@ export const LendManageNewMenu = [
   {
     value: 'soft-liquidation',
     label: t`Manage soft liquidation`,
-    component: LoanSelfLiquidation, // todo: migrate `ManageSoftLiquidation` component
-    // subTabs: [
-    //   { value: 'improve-health', label: t`Improve health` },
-    //   { value: 'recover', label: t`Recover` },
-    //   { value: 'close-position', label: t`Close position` },
-    // ],
+    subTabs: [
+      { value: 'improve-health', label: t`Improve health`, component: ImproveHealthTab },
+      { value: 'close-position', label: t`Close position`, component: ClosePositionTab },
+    ],
   },
 ] satisfies FormTab<ManageLoanProps>[]
 

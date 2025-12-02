@@ -1,4 +1,4 @@
-import { useState, type ComponentType, type ReactNode } from 'react'
+import { type ComponentType, type ReactNode, useState } from 'react'
 import Stack from '@mui/material/Stack'
 import { AppFormContentWrapper } from '@ui/AppForm'
 import { type TabOption, TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
@@ -7,42 +7,65 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { MaxWidth } = SizesAndSpaces
 
-export type FormTab<Props> = {
+type FnOrValue<Props extends object, Result> = ((props: Props) => Result | undefined) | Result
+
+const applyFnOrValue = <Props extends object, R extends string | boolean>(
+  fnOrValue: FnOrValue<Props, R> | undefined,
+  props: Props,
+): R | undefined => (typeof fnOrValue === 'function' ? fnOrValue(props) : fnOrValue)
+
+type FormSubTab<Props extends object> = Pick<FormTab<Props>, 'value' | 'label' | 'component' | 'visible' | 'disabled'>
+
+export type FormTab<Props extends object> = {
   value: string
-  label: string | ((props: Props) => string)
-  subTabs?: Pick<FormTab<Props>, 'value' | 'label' | 'component'>[]
-  enabled?: (props: Props) => boolean | undefined
+  label: FnOrValue<Props, string>
+  subTabs?: FormSubTab<Props>[]
+  visible?: FnOrValue<Props, boolean>
+  disabled?: FnOrValue<Props, boolean>
   component?: ComponentType<Props>
 }
 
-type UseFormTabsOptions<T> = { menu: FormTab<T>[]; defaultTab: string; params: T }
-
-function useFormTabs<T extends object>({ menu, defaultTab, params }: UseFormTabsOptions<T>) {
-  const [tabKey, setTabKey] = useState<string | undefined>(defaultTab)
-  const [subTabKey, setSubTabKey] = useState<string | undefined>()
-
-  const enabledTabs = menu.filter(({ enabled }) => enabled == null || enabled(params))
-  const tab = enabledTabs.find(({ value }) => value === tabKey) ?? enabledTabs[0]
-
-  const tabs: TabOption<string>[] = enabledTabs.map(({ value, label }) => ({
-    value,
-    label: typeof label == 'function' ? label(params) : label,
-    onClick: () => setTabKey(value),
-  }))
-
-  const subTabs: TabOption<string>[] =
-    tab.subTabs?.map(({ value, label }) => ({
+const createOptions = <Props extends object>(
+  tabs: FormSubTab<Props>[] | undefined,
+  params: Props,
+): TabOption<string>[] =>
+  tabs
+    ?.filter(({ visible }) => applyFnOrValue(visible, params))
+    .map(({ value, label, disabled }) => ({
       value,
-      label: typeof label == 'function' ? label(params) : label,
-      onClick: () => setSubTabKey(value),
+      label: applyFnOrValue(label, params),
+      disabled: applyFnOrValue(disabled, params),
     })) ?? []
 
-  const subTab = tab.subTabs?.find(({ value }) => value === subTabKey) ?? tab.subTabs?.[0]
+const selectVisible = <Props extends object, Tab extends FormSubTab<Props>>(
+  tabs: Tab[],
+  key: string | undefined,
+  params: Props,
+) => {
+  const visible = tabs.filter(({ visible }) => applyFnOrValue(visible, params))
+  return visible.find(({ value }) => value === key) ?? visible[0]
+}
+
+function useFormTabs<T extends object>({
+  menu,
+  defaultTab,
+  params,
+}: {
+  menu: FormTab<T>[]
+  params: T
+  defaultTab: string
+}) {
+  const [tabKey, onChangeTab] = useState(defaultTab)
+  const [subTabKey, onChangeSubTab] = useState<string>()
+  const tab = selectVisible(menu, tabKey, params)
+  const tabs = createOptions(menu, params)
+  const subTab = tab.subTabs && selectVisible(tab.subTabs, subTabKey, params)
+  const subTabs = createOptions(tab.subTabs, params)
 
   const Component = subTab?.component ?? tab.component
   if (!Component) throw new Error(`No component found for tab ${tab.value} and subTab ${subTab?.value}`)
 
-  return { tab, tabs, subTabs, subTab, Component }
+  return { tab, tabs, subTabs, subTab, Component, onChangeTab, onChangeSubTab }
 }
 
 const LegacyFormWrapper = ({ children }: { children: ReactNode }) => (
@@ -54,16 +77,19 @@ const LegacyFormWrapper = ({ children }: { children: ReactNode }) => (
 export function FormTabs<T extends object>({
   shouldWrap,
   ...options
-}: UseFormTabsOptions<T> & {
+}: {
+  menu: FormTab<T>[]
+  params: T
   shouldWrap: boolean
+  defaultTab: string
 }) {
-  const { tab, tabs, subTabs, subTab, Component } = useFormTabs(options)
+  const { tab, tabs, subTabs, subTab, Component, onChangeTab, onChangeSubTab } = useFormTabs(options)
   const params = options.params
   return (
     <Stack
       sx={{ width: { mobile: '100%', tablet: MaxWidth.actionCard }, marginInline: { mobile: 'auto', desktop: 0 } }}
     >
-      <TabsSwitcher variant="contained" size="medium" value={tab.value} options={tabs} />
+      <TabsSwitcher variant="contained" size="medium" value={tab.value} options={tabs} onChange={onChangeTab} />
 
       {subTab && (
         <TabsSwitcher
@@ -73,6 +99,7 @@ export function FormTabs<T extends object>({
           options={subTabs}
           fullWidth
           sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}
+          onChange={onChangeSubTab}
         />
       )}
 

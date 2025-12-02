@@ -43,7 +43,7 @@ const { Spacing } = SizesAndSpaces
 
 const LoanBorrowMore = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)
-  const isLeverage = market?.leverage?.hasLeverage()
+  const isLeverage = market?.leverage?.hasLeverage() ?? false
   const activeKey = useStore((state) => state.loanBorrowMore.activeKey)
   const activeKeyMax = useStore((state) => state.loanBorrowMore.activeKeyMax)
   const detailInfoLeverage = useStore((state) => state.loanBorrowMore.detailInfoLeverage[activeKey])
