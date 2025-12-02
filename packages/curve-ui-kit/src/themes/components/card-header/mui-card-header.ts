@@ -20,8 +20,19 @@ export const defineMuiCardHeader = (
       borderBottom: `1px solid ${design.Layer[3].Outline}`,
       minHeight: `calc(${ButtonSize.lg} + 1px)`, // 1px to account for border
       '& .MuiCardHeader-avatar': handleBreakpoints({ marginRight: Spacing.md }),
+      variants: [
+        {
+          props: { size: 'small' },
+          style: {
+            minHeight: 'auto',
+            maxHeight: Sizing.md.desktop,
+            padding: `${Spacing.md.desktop} ${Spacing.md.desktop} ${Spacing.sm.desktop}`,
+            '& .MuiCardHeader-title': typography.headingXsBold,
+          },
+        },
+      ],
     },
     action: { alignContent: 'center', alignSelf: 'center', margin: 0 },
-    title: { ...typography.headingSBold },
+    title: typography.headingSBold,
   },
 })
