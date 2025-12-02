@@ -4,11 +4,6 @@ export type ChartType = 'swap' | 'crvusd' | 'poolPage'
 export type TimeOptions = '15m' | '30m' | '1h' | '4h' | '6h' | '12h' | '1d' | '7d' | '14d'
 export type FetchingStatus = 'LOADING' | 'ERROR' | 'READY'
 
-export type ChartHeight = {
-  expanded: number
-  standard: number
-}
-
 export interface PricesApiCoin {
   pool_index: number
   symbol: string

@@ -18,7 +18,6 @@ const { Spacing } = SizesAndSpaces
 
 type MarketInformationCompProps = {
   pageProps: PageContentProps
-  chartExpanded: boolean
   loanExists?: boolean
   userActiveKey: string
   type: 'borrow' | 'supply'
@@ -32,7 +31,6 @@ const EMPTY_ARRAY: never[] = []
  */
 export const MarketInformationComp = ({
   pageProps,
-  chartExpanded,
   loanExists = false,
   userActiveKey,
   type,
@@ -63,7 +61,7 @@ export const MarketInformationComp = ({
 
   return (
     <>
-      {networks[rChainId]?.pricesData && !chartExpanded && (
+      {networks[rChainId]?.pricesData && (
         <Stack
           display={{ mobile: 'block', tablet: newBandsChartEnabled ? 'grid' : undefined }}
           gridTemplateColumns={{ tablet: newBandsChartEnabled ? '1fr 0.3fr' : undefined }}
