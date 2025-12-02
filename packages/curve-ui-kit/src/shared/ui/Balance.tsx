@@ -13,6 +13,15 @@ import { WithWrapper } from './WithWrapper'
 
 const { Spacing, IconSize } = SizesAndSpaces
 
+/**
+ * The old familiar issue where Typography default line height is too big when being used in a small component.
+ * The bottom margin of the text ends up being larger than the top half, messing with the vertical alignment.
+ * We ought to find a better solution for it one day, but for now this'll do the trick.
+ */
+const VERTICAL_CENTER_TEXT = {
+  '&': { lineHeight: 'normal' },
+}
+
 /** Button wrapper for clickable balance text */
 const BalanceButton = ({
   children,
@@ -109,17 +118,22 @@ export const Balance = <T extends Amount>({
             variant="highlightXs"
             color={disabled ? 'textDisabled' : balance == null ? 'textTertiary' : 'textPrimary'}
             data-testid="balance-value"
+            sx={{ ...VERTICAL_CENTER_TEXT }}
           >
             {loading ? '???' : balance == null ? '-' : formatNumber(balance, { abbreviate: true })}
           </Typography>
         </WithSkeleton>
 
-        <Typography variant="highlightXs" color={disabled ? 'textDisabled' : 'textPrimary'}>
+        <Typography
+          variant="highlightXs"
+          color={disabled ? 'textDisabled' : 'textPrimary'}
+          sx={{ ...VERTICAL_CENTER_TEXT }}
+        >
           {symbol}
         </Typography>
 
         {notionalValueUsd != null && !loading && (
-          <Typography variant="bodyXsRegular" color="textTertiary">
+          <Typography variant="bodyXsRegular" color="textTertiary" sx={{ ...VERTICAL_CENTER_TEXT }}>
             {formatNumber(notionalValueUsd, { unit: 'dollar', abbreviate: true })}
           </Typography>
         )}
