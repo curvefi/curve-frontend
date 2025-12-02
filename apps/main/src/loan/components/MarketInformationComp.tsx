@@ -6,7 +6,6 @@ import { BandsComp } from '@/loan/components/BandsComp'
 import ChartOhlcWrapper from '@/loan/components/ChartOhlcWrapper'
 import DetailInfoAddressLookup from '@/loan/components/LoanInfoLlamma/components/DetailInfoAddressLookup'
 import type { ChainId, Llamma } from '@/loan/types/loan.types'
-import { useTheme } from '@mui/material'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { useConnection } from '@ui-kit/features/connect-wallet'
@@ -31,7 +30,6 @@ const EMPTY_BANDS_BALANCES: never[] = []
  */
 export const MarketInformationComp = ({ llamma, marketId, chainId, page = 'manage' }: MarketInformationCompProps) => {
   const { llamaApi: api } = useConnection()
-  const theme = useTheme()
   const newBandsChartEnabled = useNewBandsChart()
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
   const collateralTokenAddress = llamma?.coinAddresses[1]
@@ -59,12 +57,7 @@ export const MarketInformationComp = ({ llamma, marketId, chainId, page = 'manag
         gridTemplateColumns={{ tablet: newBandsChartEnabled ? '1fr 0.5fr' : undefined }}
         sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, gap: Spacing.md, padding: Spacing.md }}
       >
-        <ChartOhlcWrapper
-          rChainId={chainId}
-          llammaId={marketId}
-          llamma={llamma}
-          betaBackgroundColor={theme.design.Layer[1].Fill}
-        />
+        <ChartOhlcWrapper rChainId={chainId} llammaId={marketId} llamma={llamma} />
         {newBandsChartEnabled && (
           <BandsChart
             isLoading={isBandsLoading}
