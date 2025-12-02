@@ -14,7 +14,7 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "fastify": "^5.6.1"
+    "fastify": "^5.6.2"
   },
   "peerDependencies": {
     "@curvefi/api": "*"
@@ -24,7 +24,7 @@
     "@types/node": "*",
     "eslint": "*",
     "eslint-config-custom": "*",
-    "tsx": "4.20.6",
+    "tsx": "4.21.0",
     "typescript": "*",
     "vitest": "*"
   }
