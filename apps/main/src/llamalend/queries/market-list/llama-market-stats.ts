@@ -29,7 +29,7 @@ const earningsColumns = [
  * @returns The stats data and an error if any
  */
 export function useUserMarketStats(market: LlamaMarket, column?: LlamaMarketColumnId) {
-  const { type, userHasPositions, address: marketAddress, controllerAddress, chain } = market
+  const { type, userHasPositions, controllerAddress, chain } = market
   const { address: userAddress } = useAccount()
   const { data: collateralUsdRate, isLoading: collateralUsdRateLoading } = useTokenUsdPrice({
     blockchainId: market.chain,
@@ -47,8 +47,7 @@ export function useUserMarketStats(market: LlamaMarket, column?: LlamaMarketColu
   const enableMintStats = enableStats && type === LlamaMarketType.Mint
 
   const params = { userAddress, contractAddress: controllerAddress, blockchainId: chain }
-  // todo: api will be updated to use controller address for earnings too
-  const earningsParams = { ...params, contractAddress: marketAddress }
+  const earningsParams = { ...params, contractAddress: controllerAddress }
 
   const {
     data: lendData,

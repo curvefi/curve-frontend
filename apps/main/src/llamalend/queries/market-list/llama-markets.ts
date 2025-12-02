@@ -39,8 +39,9 @@ export type AssetDetails = {
 
 export type LlamaMarket = {
   chain: Chain
-  address: Address
+  ammAddress: Address
   controllerAddress: Address
+  vaultAddress: Address | null
   assets: Assets
   maxLtv: number
   utilizationPercent: number
@@ -151,6 +152,7 @@ const convertLendingVault = (
     totalDebt,
     totalDebtUsd,
     vault,
+    llamma,
     collateralToken,
     borrowedToken,
     borrowedBalanceUsd,
@@ -174,8 +176,9 @@ const convertLendingVault = (
   const totalExtraRewardApr = (extraRewardApr ?? []).reduce((acc, x) => acc + x.rate, 0)
   return {
     chain,
-    address: vault,
     controllerAddress: controller,
+    ammAddress: llamma,
+    vaultAddress: vault,
     assets: {
       borrowed: {
         ...borrowedToken,
@@ -274,8 +277,9 @@ const convertMintMarket = (
   const name = collateralIndex > 1 ? `${collateralSymbol}${collateralIndex}` : collateralSymbol
   return {
     chain,
-    address: llamma,
     controllerAddress: address,
+    ammAddress: llamma,
+    vaultAddress: null, // mint markets dont have these
     assets: {
       borrowed: {
         symbol: stablecoinToken.symbol,
