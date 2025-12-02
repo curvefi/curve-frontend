@@ -4,7 +4,7 @@ import CampaignRewardsBanner from '@/lend/components/CampaignRewardsBanner'
 import ChartOhlcWrapper from '@/lend/components/ChartOhlcWrapper'
 import { MarketInformationComp } from '@/lend/components/MarketInformationComp'
 import { MarketInformationTabs } from '@/lend/components/MarketInformationTabs'
-import LoanMange from '@/lend/components/PageLoanManage/index'
+import { ManageLoanTabs } from '@/lend/components/PageLoanManage/ManageLoanTabs'
 import type { DetailInfoTypes } from '@/lend/components/PageLoanManage/types'
 import { useOneWayMarket } from '@/lend/entities/chain'
 import { useBorrowPositionDetails } from '@/lend/hooks/useBorrowPositionDetails'
@@ -187,7 +187,7 @@ const Page = () => {
             (isManageSoftLiq ? (
               <ManageSoftLiquidation marketId={rOwmId} chainId={rChainId} network={network} />
             ) : (
-              <LoanMange {...pageProps} />
+              <ManageLoanTabs {...pageProps} />
             ))}
         </AppPageFormsWrapper>
         <Stack flexDirection="column" flexGrow={1} sx={{ gap: Spacing.md }}>

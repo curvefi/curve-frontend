@@ -84,8 +84,8 @@ export type VaultWithdrawFormType = 'withdraw' | 'unstake' | 'claim'
 export type VaultManageFormType = 'loan' | 'collateral'
 export type RFormType = VaultCreateFormType | VaultDepositFormType | VaultWithdrawFormType | VaultManageFormType | ''
 
-export type PageContentProps = {
-  params: UrlParams
+export type PageContentProps<T = UrlParams> = {
+  params: T
   rChainId: ChainId
   rOwmId: string
   rFormType: RFormType
