@@ -31,7 +31,7 @@ export type ActionInfoProps = {
   /** Custom color for the label text */
   labelColor?: TypographyProps['color']
   /** Primary value to display and copy */
-  value?: ReactNode
+  value: ReactNode
   /** Custom color for the value text */
   valueColor?: TypographyProps['color']
   /** Optional content to display to the left of the value */
@@ -117,10 +117,8 @@ const ActionInfo = ({
   }, [copyValue, openSnackbar])
 
   const errorMessage = (typeof error === 'object' && error?.message) || (typeof error === 'string' && error)
-  const hasValue = value != null
-  const hasPrevValue = prevValue != null
-  const showPrevValue = hasValue && hasPrevValue
-  const displayValue = hasValue ? value : hasPrevValue ? prevValue : emptyValue
+  const showPrevValue = value != null && prevValue != null
+  value ??= prevValue ?? emptyValue
 
   return (
     <Stack direction="row" alignItems="center" columnGap={Spacing.sm} data-testid={testId} sx={sx}>
@@ -176,7 +174,7 @@ const ActionInfo = ({
                 color={error ? 'error' : (valueColor ?? 'textPrimary')}
                 component="div"
               >
-                {loading ? (typeof loading === 'string' ? loading : MOCK_SKELETON) : displayValue}
+                {loading ? (typeof loading === 'string' ? loading : MOCK_SKELETON) : value}
               </Typography>
             </WithSkeleton>
 
