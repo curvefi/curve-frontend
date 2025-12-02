@@ -50,7 +50,7 @@ export const handleBreakpoints = (values: {
         selector,
         {
           // in case the selector is already present, merge the values
-          ...(values[selector] as CSSObject),
+          ...((values[selector] as CSSObject) ?? {}),
           ...mapRecord(values, (_, value) =>
             value && typeof value === 'object' ? (value as Responsive)[breakpoint] : value,
           ),
@@ -58,3 +58,8 @@ export const handleBreakpoints = (values: {
       ]
     }),
   )
+
+export const mapBreakpoints = (
+  values: Responsive,
+  callback: (value: string, breakpoint: Breakpoint) => string,
+): CSSObject => mapRecord(values, (breakpoint, value) => callback(value, breakpoint))

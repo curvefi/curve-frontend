@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
-import { mapRecord } from '@curvefi/prices-api/objects.util'
 import Box from '@mui/material/Box'
 import { LinkIcon } from '@ui-kit/shared/icons/LinkIcon'
+import { mapBreakpoints } from '@ui-kit/themes/basic-theme'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing, IconSize } = SizesAndSpaces
@@ -15,12 +15,8 @@ export const InputDivider = ({ children = <LinkIcon /> }: { children?: ReactNode
       sx={{
         lineHeight: 0, // make sure the container doesn't add any extra height
         // Calculate top and left to center the icon in the divider line
-        top: mapRecord(IconSize.md, (breakpoint, value) =>
-          ((iconSize) => `calc(-${iconSize}/2 - ${borderWidth}/2)`)(value, breakpoint),
-        ),
-        left: mapRecord(IconSize.md, (breakpoint, value) =>
-          ((iconSize) => `calc(50% - ${iconSize}/2 - ${borderWidth}/2)`)(value, breakpoint),
-        ),
+        top: mapBreakpoints(IconSize.md, (iconSize) => `calc(-${iconSize}/2 - ${borderWidth}/2)`),
+        left: mapBreakpoints(IconSize.md, (iconSize) => `calc(50% - ${iconSize}/2 - ${borderWidth}/2)`),
         border: (t) => `${borderWidth} solid ${t.design.Color.Neutral[50]}`,
         backgroundColor: (t) => t.design.Layer[2].Fill,
         stroke: (t) => t.design.Text.TextColors.Primary,
