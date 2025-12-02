@@ -78,7 +78,7 @@ export function usePoolListData({ id: network, chainId, isLite }: NetworkConfig)
             tvl: tvlMapper?.[item.pool.id],
             hasPosition: userPoolList?.[item.pool.id],
             network,
-            url: getPath({ network }, `${DEX_ROUTES.PAGE_POOLS}/${item.pool.id}/deposit`),
+            url: getPath({ network }, `${DEX_ROUTES.PAGE_POOLS}/${item.pool.address}/deposit`),
             tags: getPoolTags(userPoolList?.[item.pool.id], item),
           }
         }),
