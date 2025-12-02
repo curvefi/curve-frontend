@@ -8,6 +8,8 @@ import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
 import { Decimal, formatNumber, formatPercent, formatUsd } from '@ui-kit/utils'
 import { getHealthValueColor } from '../../features/market-position-details/utils'
 import { LoanLeverageActionInfo, type LoanLeverageActionInfoProps } from './LoanLeverageActionInfo'
+import { FireIcon } from '@ui-kit/shared/icons/FireIcon'
+
 
 export type LoanInfoGasData = {
   estGasCostUsd?: number | Decimal | `${number}`
@@ -156,6 +158,7 @@ export const LoanInfoAccordion = ({
           value={gas.data?.estGasCostUsd == null ? '-' : formatUsd(gas.data.estGasCostUsd)}
           valueTooltip={gas.data?.tooltip}
           loading={gas.isLoading}
+            valueLeft={<FireIcon fontSize="small" />}
         />
       </Stack>
     </Accordion>
