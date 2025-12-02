@@ -1,5 +1,5 @@
 /// <reference path="./basic-theme.d.ts" />
-import { mapRecord, recordEntries } from '@curvefi/prices-api/objects.util'
+import { fromEntries, mapRecord } from '@curvefi/prices-api/objects.util'
 import { Breakpoint } from '@mui/material'
 import { createTheme as createMuiTheme } from '@mui/material/styles'
 import { CSSObject } from '@mui/styled-engine'
@@ -28,12 +28,7 @@ export const basicMuiTheme = createMuiTheme({
   },
 })
 
-export type Responsive = Record<Breakpoint, string>
-
-type BreakpointValue = string | number | Responsive | CSSObject[keyof CSSObject]
-
-const isResponsive = (value: BreakpointValue): value is Responsive =>
-  typeof value === 'object' && value != null && 'mobile' in value && 'tablet' in value && 'desktop' in value
+export type Responsive<T = string> = Record<Breakpoint, T>
 
 /**
  * Create a responsive object based on the breakpoints defined in the basicMuiTheme.
@@ -45,16 +40,21 @@ const isResponsive = (value: BreakpointValue): value is Responsive =>
  *   '@media (min-width: 1200px)': { width: 100, height: '300px' }
  *  }
  */
-export const handleBreakpoints = (values: Record<string, BreakpointValue>): CSSObject =>
-  Object.fromEntries(
-    basicMuiTheme.breakpoints.keys.map((breakpoint) => [
-      basicMuiTheme.breakpoints.up(breakpoint),
-      mapRecord(values, (key, value) => [key, isResponsive(value) ? value[breakpoint] : value]),
-    ]),
+export const handleBreakpoints = (values: {
+  [P in keyof CSSObject]: CSSObject[P] | Responsive<CSSObject[P]>
+}): CSSObject =>
+  fromEntries(
+    basicMuiTheme.breakpoints.keys.map((breakpoint) => {
+      const selector = basicMuiTheme.breakpoints.up(breakpoint)
+      return [
+        selector,
+        {
+          // in case the selector is already present, merge the values
+          ...(values[selector] as CSSObject),
+          ...mapRecord(values, (_, value) =>
+            value && typeof value === 'object' ? (value as Responsive)[breakpoint] : value,
+          ),
+        },
+      ]
+    }),
   )
-
-export const mapBreakpoints = (
-  values: Responsive,
-  callback: (value: string, breakpoint: Breakpoint) => string,
-): CSSObject =>
-  Object.fromEntries(recordEntries(values).map(([breakpoint, value]) => [breakpoint, callback(value, breakpoint)]))

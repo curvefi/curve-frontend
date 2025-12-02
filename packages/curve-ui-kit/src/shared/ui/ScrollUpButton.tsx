@@ -1,6 +1,6 @@
+import { mapRecord } from '@curvefi/prices-api/objects.util'
 import Button from '@mui/material/Button'
 import { PinTopIcon } from '@ui-kit/shared/icons/PinTopIcon'
-import { mapBreakpoints } from '@ui-kit/themes/basic-theme'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { ButtonSize, Inset } = SizesAndSpaces
@@ -19,7 +19,9 @@ export const ScrollUpButton = ({ visible }: { visible: boolean }) => (
     sx={{
       // Put on the bottom right corner
       position: 'fixed',
-      inset: mapBreakpoints(Inset.scrollUpButton, (inset) => `auto ${inset} ${inset} auto`),
+      inset: mapRecord(Inset.scrollUpButton, (breakpoint, value) =>
+        ((inset) => `auto ${inset} ${inset} auto`)(value, breakpoint),
+      ),
 
       // Make sure it's always on top
       zIndex: 'var(--z-index-page-settings)',

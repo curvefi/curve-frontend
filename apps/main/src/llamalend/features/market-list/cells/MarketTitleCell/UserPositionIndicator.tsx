@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
 import { useUserMarketStats } from '@/llamalend/queries/market-list/llama-market-stats'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
+import { mapRecord } from '@curvefi/prices-api/objects.util'
 import Stack from '@mui/material/Stack'
 import type { Theme } from '@mui/material/styles'
 import { t } from '@ui-kit/lib/i18n'
 import { LlamaIcon } from '@ui-kit/shared/icons/LlamaIcon'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
-import { mapBreakpoints } from '@ui-kit/themes/basic-theme'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketColumnId } from '../../columns.enum'
@@ -54,7 +54,7 @@ export const UserPositionIndicator = ({ market }: { market: LlamaMarket }) => {
           backgroundColor,
           alignSelf: 'stretch',
           justifyContent: 'center',
-          marginInlineStart: mapBreakpoints(Spacing.md, (v) => `-${v}`), // negative padding to offset the padding of the cell
+          marginInlineStart: mapRecord(Spacing.md, (breakpoint, value) => ((v) => `-${v}`)(value, breakpoint)), // negative padding to offset the padding of the cell
           marginInlineEnd: Spacing.sm,
         }}
       >
