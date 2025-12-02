@@ -81,6 +81,7 @@ const ManageLoan = (pageProps: PageContentProps & { params: MarketUrlParams }) =
             onChange={setSubTab}
             options={subTabs}
             fullWidth
+            sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}
           />
 
           {subTab === 'loan-increase' && (
