@@ -11,19 +11,15 @@ import { t } from '@ui-kit/lib/i18n'
 
 const MIN_HEIGHT = 330
 
-const PoolActivity = ({
-  chainId,
-  poolAddress,
-  coins,
-  tradesTokens,
-  chartCombinations,
-}: {
+type PoolActivityProps = {
   poolAddress: string
   chainId: ChainId
   coins: PricesApiCoin[]
   tradesTokens: LpTradeToken[]
   chartCombinations: PricesApiCoin[][]
-}) => {
+}
+
+const PoolActivity = ({ chainId, poolAddress, coins, tradesTokens, chartCombinations }: PoolActivityProps) => {
   const activityStatus = useStore((state) => state.pools.pricesApiState.activityStatus)
   const tradeEventsData = useStore((state) => state.pools.pricesApiState.tradeEventsData)
   const liquidityEventsData = useStore((state) => state.pools.pricesApiState.liquidityEventsData)
