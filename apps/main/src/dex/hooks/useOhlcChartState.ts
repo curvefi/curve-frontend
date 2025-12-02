@@ -1,0 +1,205 @@
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import useStore from '@/dex/store/useStore'
+import type { ChainId } from '@/dex/types/main.types'
+import type { OhlcChartProps } from '@ui-kit/features/candle-chart/ChartWrapper'
+import type { LabelList, PricesApiCoin, PricesApiPool } from '@ui-kit/features/candle-chart/types'
+import { getThreeHundredResultsAgo, subtractTimeUnit } from '@ui-kit/features/candle-chart/utils'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { t } from '@ui-kit/lib/i18n'
+import { combinations } from '../components/PagePool/PoolDetails/ChartOhlcWrapper/utils'
+
+const CHART_HEIGHT = 300
+
+type UseOhlcChartStateArgs = {
+  rChainId: ChainId
+  pricesApiPoolData: PricesApiPool
+}
+
+export const useOhlcChartState = ({ rChainId, pricesApiPoolData }: UseOhlcChartStateArgs) => {
+  const theme = useUserProfileStore((state) => state.theme)
+  const chartOhlcData = useStore((state) => state.pools.pricesApiState.chartOhlcData)
+  const chartStatus = useStore((state) => state.pools.pricesApiState.chartStatus)
+  const timeOption = useStore((state) => state.pools.pricesApiState.timeOption)
+  const tradesTokens = useStore((state) => state.pools.pricesApiState.tradesTokens)
+  const refetchingCapped = useStore((state) => state.pools.pricesApiState.refetchingCapped)
+  const lastFetchEndTime = useStore((state) => state.pools.pricesApiState.lastFetchEndTime)
+  const setChartTimeOption = useStore((state) => state.pools.setChartTimeOption)
+  const fetchPricesApiCharts = useStore((state) => state.pools.fetchPricesApiCharts)
+  const fetchPricesApiActivity = useStore((state) => state.pools.fetchPricesApiActivity)
+  const fetchMorePricesApiCharts = useStore((state) => state.pools.fetchMorePricesApiCharts)
+
+  const [selectChartList, setSelectChartList] = useState<LabelList[]>([])
+  const [selectedChartIndex, setChartSelectedIndex] = useState(0)
+  const [isFlipped, setIsFlipped] = useState<boolean[]>([])
+
+  const chartCombinations: PricesApiCoin[][] = useMemo(() => {
+    const coins = pricesApiPoolData.coins.slice(0, pricesApiPoolData.n_coins)
+    const combinationsArray = combinations(coins, 2)
+    const extraCombinations = pricesApiPoolData.coins.slice(pricesApiPoolData.n_coins).map((item) => [item, coins[0]])
+
+    const combinedArray = [...combinationsArray]
+    combinedArray.splice(0, 0, ...extraCombinations)
+
+    return combinedArray
+  }, [pricesApiPoolData.coins, pricesApiPoolData.n_coins])
+
+  const chartTimeSettings = useMemo(() => {
+    const threeHundredResultsAgo = getThreeHundredResultsAgo(timeOption, Date.now() / 1000)
+
+    return {
+      start: +threeHundredResultsAgo,
+      end: Math.floor(Date.now() / 1000),
+    }
+  }, [timeOption])
+
+  const chartInterval = useMemo(() => {
+    if (timeOption === '15m') return 15
+    if (timeOption === '30m') return 30
+    if (timeOption === '1h') return 1
+    if (timeOption === '4h') return 4
+    if (timeOption === '6h') return 6
+    if (timeOption === '12h') return 12
+    if (timeOption === '1d') return 1
+    if (timeOption === '7d') return 7
+    return 14
+  }, [timeOption])
+
+  const timeUnit = useMemo(() => {
+    if (timeOption === '15m') return 'minute'
+    if (timeOption === '30m') return 'minute'
+    if (timeOption === '1h') return 'hour'
+    if (timeOption === '4h') return 'hour'
+    if (timeOption === '6h') return 'hour'
+    if (timeOption === '12h') return 'hour'
+    if (timeOption === '1d') return 'day'
+    if (timeOption === '7d') return 'day'
+    return 'day'
+  }, [timeOption])
+
+  const fetchCharts = useCallback(() => {
+    fetchPricesApiCharts(
+      rChainId,
+      selectedChartIndex,
+      pricesApiPoolData.address,
+      chartInterval,
+      timeUnit,
+      chartTimeSettings.end,
+      chartTimeSettings.start,
+      chartCombinations,
+      isFlipped,
+    )
+  }, [
+    chartCombinations,
+    chartInterval,
+    chartTimeSettings.end,
+    chartTimeSettings.start,
+    fetchPricesApiCharts,
+    isFlipped,
+    pricesApiPoolData.address,
+    rChainId,
+    selectedChartIndex,
+    timeUnit,
+  ])
+
+  const refetchPricesData = useCallback(() => {
+    fetchCharts()
+    fetchPricesApiActivity(rChainId, pricesApiPoolData.address, chartCombinations)
+  }, [chartCombinations, fetchCharts, fetchPricesApiActivity, pricesApiPoolData.address, rChainId])
+
+  useEffect(() => {
+    fetchCharts()
+  }, [fetchCharts])
+
+  const fetchMoreChartData = useCallback(
+    (lastFetchEndTimeParam: number) => {
+      const endTime = subtractTimeUnit(timeOption, lastFetchEndTimeParam)
+      const startTime = getThreeHundredResultsAgo(timeOption, endTime)
+
+      fetchMorePricesApiCharts(
+        rChainId,
+        selectedChartIndex,
+        pricesApiPoolData.address,
+        chartInterval,
+        timeUnit,
+        +startTime,
+        endTime,
+        chartCombinations,
+        isFlipped,
+      )
+    },
+    [
+      chartCombinations,
+      chartInterval,
+      fetchMorePricesApiCharts,
+      isFlipped,
+      pricesApiPoolData.address,
+      rChainId,
+      selectedChartIndex,
+      timeOption,
+      timeUnit,
+    ],
+  )
+
+  useEffect(() => {
+    if (chartCombinations.length === 0) return
+    const flippedList = new Array(chartCombinations.length).fill(false)
+    setIsFlipped(flippedList)
+  }, [chartCombinations.length])
+
+  useEffect(() => {
+    if (chartOhlcData.length === 0) {
+      setSelectChartList([])
+      return
+    }
+
+    const chartsList: LabelList[] = [
+      {
+        label: t`LP Token (USD)`,
+      },
+      {
+        label: t`LP Token (${pricesApiPoolData.coins[0].symbol})`,
+      },
+      ...chartCombinations.map((chart, index) => {
+        const mainTokenSymbol = isFlipped[index] ? chart[1].symbol : chart[0].symbol
+        const referenceTokenSymbol = isFlipped[index] ? chart[0].symbol : chart[1].symbol
+
+        return {
+          label: `${referenceTokenSymbol} / ${mainTokenSymbol}`,
+        }
+      }),
+    ]
+    setSelectChartList(chartsList)
+  }, [pricesApiPoolData.coins, chartCombinations, isFlipped, chartOhlcData.length])
+
+  const flipChart = useCallback(() => {
+    const updatedList = isFlipped.map((item, index) =>
+      index === selectedChartIndex - 2 ? !isFlipped[selectedChartIndex - 2] : isFlipped[selectedChartIndex - 2],
+    )
+    setIsFlipped(updatedList)
+  }, [isFlipped, selectedChartIndex])
+
+  const chartWrapperProps: OhlcChartProps = {
+    hideCandleSeriesLabel: false,
+    chartType: 'poolPage',
+    chartStatus,
+    chartHeight: CHART_HEIGHT,
+    themeType: theme,
+    ohlcData: chartOhlcData,
+    selectChartList,
+    selectedChartIndex,
+    setChartSelectedIndex,
+    timeOption,
+    setChartTimeOption,
+    flipChart,
+    refetchPricesData,
+    refetchingCapped,
+    fetchMoreChartData,
+    lastFetchEndTime,
+  }
+
+  return {
+    chartCombinations,
+    tradesTokens,
+    chartWrapperProps,
+  }
+}

@@ -2,13 +2,20 @@ import { useEffect, useState } from 'react'
 import { styled } from 'styled-components'
 import LiquidityData from '@/lend/components/ChartOhlcWrapper/LiquidityData'
 import TradesData from '@/lend/components/ChartOhlcWrapper/TradesData'
+import { LendingMarketTokens } from '@/lend/hooks/useOhlcChartState'
 import useStore from '@/lend/store/useStore'
+import { ChainId } from '@/lend/types/lend.types'
 import Button from '@ui/Button/Button'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import { t } from '@ui-kit/lib/i18n'
-import { PoolActivityProps } from './types'
 
 const MIN_HEIGHT = 330
+
+type PoolActivityProps = {
+  poolAddress: string
+  chainId: ChainId
+  coins: LendingMarketTokens
+}
 
 const PoolActivity = ({ chainId, poolAddress, coins }: PoolActivityProps) => {
   const activityFetchStatus = useStore((state) => state.ohlcCharts.activityFetchStatus)

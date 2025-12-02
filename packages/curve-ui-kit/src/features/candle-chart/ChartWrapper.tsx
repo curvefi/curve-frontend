@@ -19,7 +19,7 @@ import type {
   TimeOptions,
 } from './types'
 
-export type ChartWrapperProps = {
+export type OhlcChartProps = {
   /**
    * If the chart is used on a Llamalend market page we hide the candle series label and label line.
    */
@@ -77,7 +77,7 @@ const ChartWrapper = ({
   toggleLiqRangeCurrentVisible,
   toggleLiqRangeNewVisible,
   latestOraclePrice,
-}: ChartWrapperProps) => {
+}: OhlcChartProps) => {
   const [magnet, setMagnet] = useState(false)
   const clonedOhlcData = useMemo(() => [...ohlcData], [ohlcData])
   const theme = useTheme()

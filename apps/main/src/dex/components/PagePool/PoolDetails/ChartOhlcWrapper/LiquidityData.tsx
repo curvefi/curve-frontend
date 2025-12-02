@@ -10,15 +10,13 @@ import type { LpLiquidityEventsData, PricesApiCoin } from '@ui-kit/features/cand
 import { t } from '@ui-kit/lib/i18n'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 
-const LiquidityData = ({
-  lpEventsData,
-  chainId,
-  coins,
-}: {
+type LiquidityDataProps = {
   lpEventsData: LpLiquidityEventsData[]
   chainId: ChainId
   coins: PricesApiCoin[]
-}) => {
+}
+
+const LiquidityData = ({ lpEventsData, chainId, coins }: LiquidityDataProps) => {
   const tokensMapper = useStore((state) => state.tokens.tokensMapper)
   const { data: network } = useNetworkByChain({ chainId })
 

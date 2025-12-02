@@ -7,7 +7,6 @@ import { BandsChart } from '@/llamalend/features/bands-chart/BandsChart'
 import { useBandsData } from '@/llamalend/features/bands-chart/hooks/useBandsData'
 import { getBandsChartToken } from '@/llamalend/features/bands-chart/utils'
 import { MarketParameters } from '@/llamalend/features/market-parameters/MarketParameters'
-import { useTheme } from '@mui/material'
 import Stack from '@mui/material/Stack'
 import { getLib } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
@@ -33,7 +32,6 @@ export const MarketInformationComp = ({ pageProps, loanExists, userActiveKey, ty
   const collateralTokenAddress = market?.collateral_token.address
   const borrowedTokenAddress = market?.borrowed_token.address
   const api = getLib('llamaApi')
-  const theme = useTheme()
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
   const newBandsChartEnabled = useNewBandsChart()
   const {
@@ -60,12 +58,7 @@ export const MarketInformationComp = ({ pageProps, loanExists, userActiveKey, ty
           gridTemplateColumns={{ tablet: newBandsChartEnabled ? '1fr 0.3fr' : undefined }}
           sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, gap: Spacing.md, padding: Spacing.md }}
         >
-          <ChartOhlcWrapper
-            rChainId={rChainId}
-            rOwmId={rOwmId}
-            userActiveKey={userActiveKey}
-            betaBackgroundColor={theme.design.Layer[1].Fill}
-          />
+          <ChartOhlcWrapper rChainId={rChainId} rOwmId={rOwmId} userActiveKey={userActiveKey} />
           {newBandsChartEnabled && (
             <BandsChart
               isLoading={isBandsLoading}
