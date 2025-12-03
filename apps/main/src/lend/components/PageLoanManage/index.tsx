@@ -28,8 +28,8 @@ const tabsLoan: TabOption<LoanFormType>[] = [
 ]
 
 const tabsCollateral: TabOption<CollateralFormType>[] = [
-  { value: 'collateral-increase', label: t`Add collateral` },
-  { value: 'collateral-decrease', label: t`Remove collateral` },
+  { value: 'collateral-increase', label: t`Add` },
+  { value: 'collateral-decrease', label: t`Remove` },
 ]
 
 const ManageLoan = (pageProps: PageContentProps & { params: MarketUrlParams }) => {
