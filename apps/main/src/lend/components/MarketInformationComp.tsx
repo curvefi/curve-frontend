@@ -1,25 +1,23 @@
 import { BandsComp } from '@/lend/components/BandsComp'
 import ChartOhlcWrapper from '@/lend/components/ChartOhlcWrapper'
 import DetailsContracts from '@/lend/components/DetailsMarket/components/DetailsContracts'
-import MarketParameters from '@/lend/components/DetailsMarket/components/MarketParameters'
-import { SubTitle } from '@/lend/components/DetailsMarket/styles'
 import networks from '@/lend/networks'
 import { PageContentProps } from '@/lend/types/lend.types'
 import { BandsChart } from '@/llamalend/features/bands-chart/BandsChart'
 import { useBandsData } from '@/llamalend/features/bands-chart/hooks/useBandsData'
 import { getBandsChartToken } from '@/llamalend/features/bands-chart/utils'
-import { Stack, useTheme } from '@mui/material'
+import { MarketParameters } from '@/llamalend/features/market-parameters/MarketParameters'
+import { useTheme } from '@mui/material'
+import Stack from '@mui/material/Stack'
 import { getLib } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNewBandsChart } from '@ui-kit/hooks/useFeatureFlags'
-import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 
 type MarketInformationCompProps = {
   pageProps: PageContentProps
-  chartExpanded: boolean
   loanExists?: boolean
   userActiveKey: string
   type: 'borrow' | 'supply'
@@ -33,7 +31,6 @@ const EMPTY_ARRAY: never[] = []
  */
 export const MarketInformationComp = ({
   pageProps,
-  chartExpanded,
   loanExists = false,
   userActiveKey,
   type,
@@ -64,7 +61,7 @@ export const MarketInformationComp = ({
 
   return (
     <>
-      {networks[rChainId]?.pricesData && !chartExpanded && (
+      {networks[rChainId]?.pricesData && (
         <Stack
           display={{ mobile: 'block', tablet: newBandsChartEnabled ? 'grid' : undefined }}
           gridTemplateColumns={{ tablet: newBandsChartEnabled ? '1fr 0.3fr' : undefined }}
@@ -108,10 +105,8 @@ export const MarketInformationComp = ({
           <Stack sx={{ flexGrow: 1, padding: Spacing.md }}>
             <DetailsContracts rChainId={rChainId} market={market} />
           </Stack>
-          <Stack sx={{ backgroundColor: (t) => t.design.Layer[2].Fill, padding: Spacing.md, minWidth: '18.75rem' }}>
-            <SubTitle>{t`Parameters`}</SubTitle>
-            <MarketParameters rChainId={rChainId} rOwmId={rOwmId} type={type} />
-          </Stack>
+
+          <MarketParameters chainId={rChainId} marketId={rOwmId} marketType="lend" action={type} />
         </Stack>
       )}
     </>

@@ -29,7 +29,7 @@ describe('Header', () => {
       cy.viewport(...viewport)
       dismissPhishingWarningBanner()
       route = oneAppRoute()
-      cy.visit(`/${route}`)
+      cy.visitWithoutTestConnector(route)
       waitIsLoaded(route)
     })
 
@@ -92,7 +92,7 @@ describe('Header', () => {
       cy.viewport(...viewport)
       dismissPhishingWarningBanner()
       route = oneAppRoute()
-      cy.visit(`/${route}`)
+      cy.visitWithoutTestConnector(route)
       waitIsLoaded(route)
     })
 

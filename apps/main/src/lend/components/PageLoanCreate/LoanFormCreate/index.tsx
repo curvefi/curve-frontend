@@ -1,7 +1,6 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import AlertFormError from '@/lend/components/AlertFormError'
 import AlertLoanSummary from '@/lend/components/AlertLoanSummary'
-import MarketParameters from '@/lend/components/DetailsMarket/components/MarketParameters'
 import DialogFormWarning from '@/lend/components/DialogFormWarning'
 import InpToken from '@/lend/components/InpToken'
 import InpTokenBorrow from '@/lend/components/InpTokenBorrow'
@@ -9,7 +8,7 @@ import LoanFormConnect from '@/lend/components/LoanFormConnect'
 import DetailInfo from '@/lend/components/PageLoanCreate/LoanFormCreate/components/DetailInfo'
 import type { FormEstGas, FormStatus, FormValues, StepKey } from '@/lend/components/PageLoanCreate/types'
 import { _parseValue, DEFAULT_FORM_VALUES } from '@/lend/components/PageLoanCreate/utils'
-import { DEFAULT_CONFIRM_WARNING, DEFAULT_HEALTH_MODE } from '@/lend/components/PageLoanManage/utils'
+import { DEFAULT_CONFIRM_WARNING } from '@/lend/components/PageLoanManage/utils'
 import { FieldsTitle, FieldsWrapper } from '@/lend/components/SharedFormStyles/FieldsWrapper'
 import { NOFITY_MESSAGE } from '@/lend/constants'
 import useMarketAlert from '@/lend/hooks/useMarketAlert'
@@ -17,8 +16,11 @@ import { useUserLoanDetails } from '@/lend/hooks/useUserLoanDetails'
 import { helpers } from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
-import { Api, HealthMode, type MarketUrlParams, OneWayMarketTemplate, PageContentProps } from '@/lend/types/lend.types'
+import { Api, type MarketUrlParams, OneWayMarketTemplate, PageContentProps } from '@/lend/types/lend.types'
 import { getLoanManagePathname } from '@/lend/utils/utilsRouter'
+import { DEFAULT_HEALTH_MODE } from '@/llamalend/constants'
+import { MarketParameters } from '@/llamalend/features/market-parameters/MarketParameters'
+import type { HealthMode } from '@/llamalend/llamalend.types'
 import { useLoanExists } from '@/llamalend/queries/loan-exists'
 import Accordion from '@ui/Accordion'
 import AlertBox from '@ui/AlertBox'
@@ -438,7 +440,7 @@ const LoanCreate = ({
 
       {!isAdvancedMode && (
         <Accordion btnLabel={<TextCaption isCaps isBold>{t`Market details`}</TextCaption>}>
-          <MarketParameters rChainId={rChainId} rOwmId={rOwmId} type="borrow" />
+          <MarketParameters chainId={rChainId} marketId={rOwmId} marketType="lend" action="borrow" />
         </Accordion>
       )}
     </>

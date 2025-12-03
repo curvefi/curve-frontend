@@ -1,12 +1,8 @@
 import { invalidateUserMarketBalances } from '@/lend/entities/user-market-balances'
-import {
-  _fetchChartBandBalancesData,
-  _getLiquidationStatus,
-  _reverseBands,
-  _sortBands,
-  helpers,
-} from '@/lend/lib/apiLending'
-import { UserLoss, ParsedBandsBalances, HealthColorKey, ChainId } from '@/lend/types/lend.types'
+import { fetchChartBandBalancesData } from '@/lend/lib/apiLending'
+import { UserLoss, ParsedBandsBalances, ChainId } from '@/lend/types/lend.types'
+import { getIsUserCloseToLiquidation, getLiquidationStatus, reverseBands, sortBandsLend } from '@/llamalend/llama.utils'
+import type { HealthColorKey } from '@/llamalend/llamalend.types'
 import { requireLib } from '@ui-kit/features/connect-wallet'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { rootKeys } from '@ui-kit/lib/model/query/root-keys'
@@ -30,7 +26,6 @@ type UserLoanDetails = {
   state: { collateral: string; borrowed: string; debt: string; N: string }
   status: { label: string; colorKey: HealthColorKey; tooltip: string }
   leverage: string
-  pnl: Record<string, string>
 }
 
 const _getUserLoanDetails = async ({ marketId, userAddress }: UserLoanDetailsQuery): Promise<UserLoanDetails> => {
@@ -61,14 +56,10 @@ const _getUserLoanDetails = async ({ marketId, userAddress }: UserLoanDetailsQue
   const resp = await market.stats.bandsInfo()
   const { liquidationBand } = resp ?? {}
 
-  const reversedUserBands = _reverseBands(bands)
-  const isCloseToLiquidation = helpers.getIsUserCloseToLiquidation(
-    reversedUserBands[0],
-    liquidationBand,
-    oraclePriceBand,
-  )
-  const parsedBandsBalances = await _fetchChartBandBalancesData(
-    _sortBands(bandsBalances),
+  const reversedUserBands = reverseBands(bands)
+  const isCloseToLiquidation = getIsUserCloseToLiquidation(reversedUserBands[0], liquidationBand, oraclePriceBand)
+  const parsedBandsBalances = await fetchChartBandBalancesData(
+    sortBandsLend(bandsBalances),
     liquidationBand,
     market,
     false,
@@ -87,8 +78,7 @@ const _getUserLoanDetails = async ({ marketId, userAddress }: UserLoanDetailsQue
     prices,
     loss,
     leverage,
-    pnl,
-    status: _getLiquidationStatus(healthNotFull, isCloseToLiquidation, state.borrowed),
+    status: getLiquidationStatus(healthNotFull, isCloseToLiquidation, state.borrowed),
   }
 }
 

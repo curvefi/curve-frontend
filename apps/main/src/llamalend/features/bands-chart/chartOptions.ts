@@ -173,7 +173,7 @@ export const getChartOptions = (
         show: true,
         lineStyle: {
           color: palette.gridColor,
-          type: 'dashed',
+          type: 'solid',
         },
       },
     },
@@ -215,7 +215,7 @@ export const getChartOptions = (
         show: true,
         lineStyle: {
           color: palette.gridColor,
-          type: 'dashed',
+          type: 'solid',
         },
       },
       min: priceMin,

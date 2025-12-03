@@ -1,13 +1,15 @@
-import { helpers } from '@/lend/lib/apiLending'
-import { HealthMode, OneWayMarketTemplate } from '@/lend/types/lend.types'
+import type { HealthMode } from '@/llamalend/llamalend.types'
 import Icon from '@ui/Icon'
-import { formatNumber } from '@ui/utils/utilsFormat'
+import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { getIsUserCloseToLiquidation } from './llama.utils'
+
+export const DEFAULT_BORROW_TOKEN_SYMBOL = 'crvUSD' as const
 
 // 1. If health(full=true) < loan_discount, user is at risk to go from healthy mode to soft liquidation mode (green —> orange).
 // 2. If health(full=false) < liquidation_discount , user is at risk to go from soft liquidation mode to hard liquidation mode (orange —> red).
 export function getHealthMode(
-  market: OneWayMarketTemplate | undefined,
+  borrowedTokenSymbol: string | undefined = '',
   oraclePriceBand: number | null,
   amount: string,
   bands: [number, number] | number[],
@@ -28,7 +30,7 @@ export function getHealthMode(
     warning: '',
   }
 
-  if (helpers.getIsUserCloseToLiquidation(bands?.[0], null, oraclePriceBand)) {
+  if (getIsUserCloseToLiquidation(bands?.[0], null, oraclePriceBand)) {
     let message = ''
 
     if (newColorKey === 'close_to_liquidation') {
@@ -36,13 +38,12 @@ export function getHealthMode(
         message = t`You are still close to soft liquidation.`
       } else if (newColorKey === 'close_to_liquidation') {
         const formattedAmount = formatNumber(amount)
-        const borrowedToken = market?.borrowed_token?.symbol
         if (formType === 'collateral-decrease') {
           message = t`Removing ${formattedAmount} collateral, will put you close to soft liquidation.`
         } else if (formType === 'create-loan') {
-          message = t`Borrowing ${formattedAmount} ${borrowedToken} will put you close to soft liquidation.`
+          message = t`Borrowing ${formattedAmount} ${borrowedTokenSymbol} will put you close to soft liquidation.`
         } else {
-          message = t`Increasing your borrowed amount by ${formattedAmount} ${borrowedToken} will put you close to soft liquidation.`
+          message = t`Increasing your borrowed amount by ${formattedAmount} ${borrowedTokenSymbol} will put you close to soft liquidation.`
         }
       }
     }

@@ -1,5 +1,6 @@
 import { BrowserProvider } from 'ethers'
 import type { ReactNode } from 'react'
+import type { HealthColorKey } from '@/llamalend/llamalend.types'
 import { TITLE } from '@/loan/constants'
 import curvejsApi from '@/loan/lib/apiCrvusd'
 import type { INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
@@ -31,15 +32,6 @@ export interface NetworkConfig extends BaseConfig<NetworkEnum, ChainId> {
 
 export type Llamma = MintMarketTemplate
 
-export type HealthColorKey = 'healthy' | 'close_to_liquidation' | 'soft_liquidation' | 'hard_liquidation' | ''
-export type HealthMode = {
-  percent: string
-  colorKey: HealthColorKey
-  icon: ReactNode
-  message: string | null
-  warningTitle: string
-  warning: string
-}
 export type LiqRange = {
   prices: string[]
   bands: [number, number]

@@ -10,8 +10,7 @@ import SelectModalFull from 'ui/src/Select/SelectModalFull'
 import { getIsFullScreen } from 'ui/src/utils'
 
 export interface SelectProps<T extends object>
-  extends Omit<ReactStatelySelectProps<T>, 'children'>,
-    AriaSelectOptions<T> {
+  extends Omit<ReactStatelySelectProps<T>, 'children'>, AriaSelectOptions<T> {
   buttonStyles?: CSSProperties
   className?: string
   loading?: boolean

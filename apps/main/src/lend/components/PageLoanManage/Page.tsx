@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import type { Address } from 'viem'
 import CampaignRewardsBanner from '@/lend/components/CampaignRewardsBanner'
-import ChartOhlcWrapper from '@/lend/components/ChartOhlcWrapper'
 import { MarketInformationComp } from '@/lend/components/MarketInformationComp'
 import { MarketInformationTabs } from '@/lend/components/MarketInformationTabs'
 import LoanMange from '@/lend/components/PageLoanManage/index'
@@ -15,7 +14,7 @@ import { helpers } from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
 import { type MarketUrlParams } from '@/lend/types/lend.types'
-import { getVaultPathname, parseMarketParams, scrollToTop } from '@/lend/utils/helpers'
+import { getVaultPathname, parseMarketParams } from '@/lend/utils/helpers'
 import { getCollateralListPathname } from '@/lend/utils/utilsRouter'
 import { ManageSoftLiquidation } from '@/llamalend/features/manage-soft-liquidation'
 import { MarketDetails } from '@/llamalend/features/market-details'
@@ -28,12 +27,6 @@ import { isChain } from '@curvefi/prices-api'
 import Stack from '@mui/material/Stack'
 import { AppPageFormsWrapper } from '@ui/AppPage'
 import Box from '@ui/Box'
-import {
-  ExpandButton,
-  ExpandIcon,
-  PriceAndTradesExpandedContainer,
-  PriceAndTradesExpandedWrapper,
-} from '@ui-kit/features/candle-chart/styles'
 import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useParams } from '@ui-kit/hooks/router'
@@ -58,8 +51,6 @@ const Page = () => {
   const fetchAllMarketDetails = useStore((state) => state.markets.fetchAll)
   const fetchAllUserMarketDetails = useStore((state) => state.user.fetchAll)
   const setMarketsStateKey = useStore((state) => state.markets.setStateByKey)
-  const chartExpanded = useStore((state) => state.ohlcCharts.chartExpanded)
-  const setChartExpanded = useStore((state) => state.ohlcCharts.setChartExpanded)
   const { provider, connect } = useWallet()
 
   const { signerAddress } = api ?? {}
@@ -126,18 +117,6 @@ const Page = () => {
     return () => clearTimeout(timer)
   }, [api, fetchAllMarketDetails, fetchAllUserMarketDetails, isLoaded, isPageVisible, loanExists, market])
 
-  useEffect(() => {
-    if (!isMdUp && chartExpanded) {
-      setChartExpanded(false)
-    }
-  }, [chartExpanded, isMdUp, setChartExpanded])
-
-  useEffect(() => {
-    if (chartExpanded) {
-      scrollToTop()
-    }
-  }, [chartExpanded])
-
   useLendPageTitle(market?.collateral_token?.symbol, 'Manage')
 
   const pageProps = {
@@ -161,25 +140,6 @@ const Page = () => {
     <ErrorPage title="404" subtitle={t`Market Not Found`} continueUrl={getCollateralListPathname(params)} />
   ) : provider ? (
     <>
-      {chartExpanded && network.pricesData && (
-        <PriceAndTradesExpandedContainer>
-          <Box flex padding="0 0 var(--spacing-2)">
-            <ExpandButton
-              variant={'select'}
-              onClick={() => {
-                setChartExpanded()
-              }}
-            >
-              {chartExpanded ? 'Minimize' : 'Expand'}
-              <ExpandIcon name={chartExpanded ? 'Minimize' : 'Maximize'} size={16} aria-label={t`Expand chart`} />
-            </ExpandButton>
-          </Box>
-          <PriceAndTradesExpandedWrapper variant="secondary">
-            <ChartOhlcWrapper rChainId={rChainId} userActiveKey={userActiveKey} rOwmId={rOwmId} />
-          </PriceAndTradesExpandedWrapper>
-        </PriceAndTradesExpandedContainer>
-      )}
-
       <DetailPageStack>
         <AppPageFormsWrapper>
           {rChainId &&
@@ -223,7 +183,6 @@ const Page = () => {
             <MarketDetails {...marketDetails} />
             <MarketInformationComp
               pageProps={pageProps}
-              chartExpanded={chartExpanded}
               userActiveKey={userActiveKey}
               type="borrow"
               loanExists={loanExists}

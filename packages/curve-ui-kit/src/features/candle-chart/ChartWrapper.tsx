@@ -10,7 +10,6 @@ import DialogSelectChart from '@ui-kit/features/candle-chart/DialogSelectChart'
 import DialogSelectTimeOption from '@ui-kit/features/candle-chart/DialogSelectTimeOption'
 import { useChartPalette } from '@ui-kit/features/candle-chart/hooks/useChartPalette'
 import type {
-  ChartHeight,
   ChartType,
   FetchingStatus,
   LabelList,
@@ -26,9 +25,8 @@ export type ChartWrapperProps = {
    */
   hideCandleSeriesLabel: boolean
   chartType: ChartType
-  chartHeight: ChartHeight
+  chartHeight: number
   chartStatus: FetchingStatus
-  chartExpanded: boolean
   betaBackgroundColor?: string // Used during the beta phase of the new theme migration to pass theme bg color
   themeType: string
   ohlcData: LpPriceOhlcDataFormatted[]
@@ -58,7 +56,6 @@ const ChartWrapper = ({
   chartType,
   chartStatus,
   chartHeight,
-  chartExpanded,
   betaBackgroundColor,
   ohlcData,
   oraclePriceData,
@@ -178,7 +175,7 @@ const ChartWrapper = ({
             </TipWrapper>
           )}
         {chartStatus === 'READY' && (
-          <ResponsiveContainer ref={wrapperRef} chartExpanded={chartExpanded} chartHeight={chartHeight}>
+          <ResponsiveContainer ref={wrapperRef} chartHeight={chartHeight}>
             <CandleChart
               hideCandleSeriesLabel={hideCandleSeriesLabel}
               chartHeight={chartHeight}
@@ -187,7 +184,6 @@ const ChartWrapper = ({
               liquidationRange={liquidationRange}
               timeOption={timeOption}
               wrapperRef={wrapperRef}
-              chartExpanded={chartExpanded}
               magnet={magnet}
               colors={colors}
               refetchingCapped={refetchingCapped}
@@ -201,16 +197,12 @@ const ChartWrapper = ({
           </ResponsiveContainer>
         )}
         {chartStatus === 'LOADING' && (
-          <StyledSpinnerWrapper
-            minHeight={chartExpanded ? chartHeight.expanded.toString() + 'px' : chartHeight.standard.toString() + 'px'}
-          >
+          <StyledSpinnerWrapper minHeight={`${chartHeight}px`}>
             <Spinner size={18} />
           </StyledSpinnerWrapper>
         )}
         {chartStatus === 'ERROR' && (
-          <StyledSpinnerWrapper
-            minHeight={chartExpanded ? chartHeight.expanded.toString() + 'px' : chartHeight.standard.toString() + 'px'}
-          >
+          <StyledSpinnerWrapper minHeight={`${chartHeight}px`}>
             <ErrorMessage>{`Unable to fetch ${selectChartList?.[selectedChartIndex ?? 0]?.label ?? ''} data.`}</ErrorMessage>
             <RefreshButton
               size="small"
@@ -279,13 +271,12 @@ const RefreshButton = styled(Button)`
   }
 `
 
-const ResponsiveContainer = styled.div<{ chartExpanded: boolean; chartHeight: ChartHeight }>`
+const ResponsiveContainer = styled.div<{ chartHeight: number }>`
   display: flex;
   flex-direction: column;
   position: relative;
   width: 100%;
-  min-height: ${(props) =>
-    props.chartExpanded ? props.chartHeight.expanded.toString() + 'px' : props.chartHeight.standard.toString() + 'px'};
+  min-height: ${(props) => `${props.chartHeight}px`};
   padding-bottom: var(--spacing-3);
 `
 

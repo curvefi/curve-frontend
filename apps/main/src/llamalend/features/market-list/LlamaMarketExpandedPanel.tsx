@@ -65,6 +65,7 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
   const { data: deposited, error: depositedError } = useUserMarketStats(market, LlamaMarketColumnId.UserDeposited)
   const {
     address,
+    controllerAddress,
     assets,
     leverage,
     liquidityUsd,
@@ -94,9 +95,9 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
                 <Stack direction="row">
                   <CopyIconButton
                     label={t`Copy market address`}
-                    copyText={address}
+                    copyText={controllerAddress}
                     confirmationText={t`Market address copied`}
-                    data-testid={`copy-market-address-${address}`}
+                    data-testid={`copy-market-address-${controllerAddress}`}
                   />
                   <FavoriteMarketButton address={address} />
                 </Stack>
@@ -107,7 +108,7 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
         </Grid>
         <RateItem market={market} type={MarketRateType.Borrow} title={t`Borrow rate`} />
         <RateItem market={market} type={MarketRateType.Supply} title={t`Supply yield`} />
-        {leverage > 0 && (
+        {leverage && (
           <Grid size={6}>
             <Metric label={t`Leverage 🔥`} value={leverage} valueOptions={{ unit: 'multiplier' }} />
           </Grid>
