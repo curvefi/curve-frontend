@@ -91,7 +91,6 @@ export const ManageLoanTabs = ({
   isInSoftLiquidation,
   ...pageProps
 }: ManageLoanProps & { isInSoftLiquidation: boolean | undefined }) => {
-  const { rFormType } = pageProps
   const shouldUseSoftLiquidation = useManageSoftLiquidation() && isInSoftLiquidation
   const shouldUseManageLoanMuiForm = useManageLoanMuiForm()
   const menu = shouldUseSoftLiquidation
@@ -100,5 +99,5 @@ export const ManageLoanTabs = ({
       ? LendManageNewMenu
       : LendManageLegacyMenu
   const shouldWrap = menu === LendManageLegacyMenu
-  return <FormTabs params={pageProps} menu={menu} shouldWrap={shouldWrap} defaultTab={rFormType} />
+  return <FormTabs params={pageProps} menu={menu} shouldWrap={shouldWrap} />
 }

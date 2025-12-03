@@ -36,7 +36,7 @@ const { Spacing } = SizesAndSpaces
 
 const Page = () => {
   const params = useParams<MarketUrlParams>()
-  const { rMarket, rChainId, rFormType } = parseMarketParams(params)
+  const { rMarket, rChainId } = parseMarketParams(params)
   const { connect, provider } = useWallet()
   const { llamaApi: api = null, connectState } = useConnection()
   const titleMapper = useTitleMapper()
@@ -99,7 +99,6 @@ const Page = () => {
     params,
     rChainId,
     rOwmId,
-    rFormType,
     isLoaded,
     api,
     market,
@@ -108,10 +107,7 @@ const Page = () => {
   }
 
   const borrowPathnameFn = loanExists ? getLoanManagePathname : getLoanCreatePathname
-  const positionDetailsHrefs = {
-    borrow: borrowPathnameFn(params, rOwmId, ''),
-    supply: '',
-  }
+  const positionDetailsHrefs = { borrow: borrowPathnameFn(params, rOwmId), supply: '' }
   const hasSupplyPosition = (supplyPositionDetails.shares.value ?? 0) > 0
 
   return isSuccess && !market ? (

@@ -62,5 +62,5 @@ export const LendCreateTabsOldMenu = [
 export const LoanCreateTabs = (pageProps: CreateLoanProps) => {
   const menu = useCreateLoanMuiForm() ? LendCreateTabsNewMenu : LendCreateTabsOldMenu
   const shouldWrap = menu === LendCreateTabsOldMenu
-  return <FormTabs params={pageProps} menu={menu} shouldWrap={shouldWrap} defaultTab={pageProps.rFormType} />
+  return <FormTabs params={pageProps} menu={menu} shouldWrap={shouldWrap} />
 }

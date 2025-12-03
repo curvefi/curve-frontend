@@ -19,7 +19,7 @@ export type EstimatedGas = number | number[] | null
 export type OneWayMarketTemplate = LendMarketTemplate // todo: use LendMarketTemplate consistently
 
 export type NetworkUrlParams = { network: NetworkEnum }
-export type MarketUrlParams = NetworkUrlParams & { market: string; formType?: RFormType }
+export type MarketUrlParams = NetworkUrlParams & { market: string }
 export type UrlParams = NetworkUrlParams & Partial<MarketUrlParams>
 
 export interface NetworkConfig<TId extends string = string, TChainId extends number = number> extends BaseConfig<
@@ -90,7 +90,6 @@ export type PageContentProps<T = UrlParams> = {
   params: T
   rChainId: ChainId
   rOwmId: string
-  rFormType: RFormType
   userActiveKey: string
   isLoaded: boolean
   api: LlamaApi | null

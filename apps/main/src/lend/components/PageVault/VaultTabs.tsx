@@ -14,21 +14,19 @@ const menu = [
     value: 'deposit',
     label: t`Deposit`,
     subTabs: [
-      { value: 'deposit', label: t`Deposit`, component: (p) => <VaultDepositMint {...p} rFormType="deposit" /> },
-      { value: 'stake', label: t`Stake`, component: (p) => <VaultStake {...p} rFormType="stake" /> },
+      { value: 'deposit', label: t`Deposit`, component: VaultDepositMint },
+      { value: 'stake', label: t`Stake`, component: VaultStake },
     ],
   },
   {
     value: 'withdraw',
     label: t`Withdraw`,
     subTabs: [
-      { value: 'withdraw', label: t`Withdraw`, component: (p) => <VaultWithdrawRedeem {...p} rFormType="withdraw" /> },
-      { value: 'unstake', label: t`Unstake`, component: (p) => <VaultUnstake {...p} rFormType="unstake" /> },
-      { value: 'claim', label: t`Claim Rewards`, component: (p) => <VaultClaim {...p} rFormType="claim" /> },
+      { value: 'withdraw', label: t`Withdraw`, component: VaultWithdrawRedeem },
+      { value: 'unstake', label: t`Unstake`, component: VaultUnstake },
+      { value: 'claim', label: t`Claim Rewards`, component: VaultClaim },
     ],
   },
 ] satisfies FormTab<VaultProps>[]
 
-export const VaultTabs = (pageProps: VaultProps) => (
-  <FormTabs params={pageProps} menu={menu} shouldWrap defaultTab={pageProps.rFormType} />
-)
+export const VaultTabs = (pageProps: VaultProps) => <FormTabs params={pageProps} menu={menu} shouldWrap />

@@ -58,12 +58,11 @@ const selectVisible = <Props extends object, Tab extends FormSubTab<Props>>(
 type UseFormTabOptions<T extends object> = {
   menu: FormTab<T>[]
   params: T
-  defaultTab: string
 }
 
 /** Hook to manage form tabs and sub-tabs. */
-function useFormTabs<T extends object>({ menu, defaultTab, params }: UseFormTabOptions<T>) {
-  const [tabKey, onChangeTab] = useState(defaultTab)
+function useFormTabs<T extends object>({ menu, params }: UseFormTabOptions<T>) {
+  const [tabKey, onChangeTab] = useState<string>()
   const [subTabKey, onChangeSubTab] = useState<string>()
   const tab = selectVisible(menu, tabKey, params)
   const tabs = createOptions(menu, params)

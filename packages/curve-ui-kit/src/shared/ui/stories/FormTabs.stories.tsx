@@ -43,44 +43,43 @@ const WithdrawTab = ({ canWithdraw }: DemoParams) => (
 
 const AdvancedTab = () => <Panel title="Advanced" body="Conditional tab that appears when enabled." />
 
-type StoryArgs = DemoParams & { defaultTab: string; shouldWrap: boolean }
+type StoryArgs = DemoParams & { shouldWrap: boolean }
 
-const FormTabsStory = ({ shouldWrap, defaultTab, ...params }: StoryArgs) => (
-    <FormTabs<DemoParams>
-      params={params}
-      shouldWrap={shouldWrap}
-      defaultTab={defaultTab}
-      menu={[
-        {
-          value: 'overview',
-          label: 'Overview',
-          visible: () => true,
-          component: OverviewTab,
-        },
-        {
-          value: 'manage',
-          label: ({ availableBalance }) => `Manage (${availableBalance.toLocaleString()} crvUSD)`,
-          visible: () => true,
-          subTabs: [
-            { value: 'deposit', label: 'Deposit', visible: () => true, component: DepositTab },
-            {
-              value: 'withdraw',
-              label: ({ canWithdraw }) => (canWithdraw ? 'Withdraw' : 'Withdraw (locked)'),
-              visible: () => true,
-              disabled: ({ canWithdraw }) => !canWithdraw,
-              component: WithdrawTab,
-            },
-          ],
-        },
-        {
-          value: 'advanced',
-          label: 'Advanced',
-          visible: ({ showAdvanced }) => showAdvanced,
-          component: AdvancedTab,
-        },
-      ]}
-    />
-  )
+const FormTabsStory = ({ shouldWrap, ...params }: StoryArgs) => (
+  <FormTabs<DemoParams>
+    params={params}
+    shouldWrap={shouldWrap}
+    menu={[
+      {
+        value: 'overview',
+        label: 'Overview',
+        visible: () => true,
+        component: OverviewTab,
+      },
+      {
+        value: 'manage',
+        label: ({ availableBalance }) => `Manage (${availableBalance.toLocaleString()} crvUSD)`,
+        visible: () => true,
+        subTabs: [
+          { value: 'deposit', label: 'Deposit', visible: () => true, component: DepositTab },
+          {
+            value: 'withdraw',
+            label: ({ canWithdraw }) => (canWithdraw ? 'Withdraw' : 'Withdraw (locked)'),
+            visible: () => true,
+            disabled: ({ canWithdraw }) => !canWithdraw,
+            component: WithdrawTab,
+          },
+        ],
+      },
+      {
+        value: 'advanced',
+        label: 'Advanced',
+        visible: ({ showAdvanced }) => showAdvanced,
+        component: AdvancedTab,
+      },
+    ]}
+  />
+)
 
 const meta: Meta<typeof FormTabsStory> = {
   title: 'UI Kit/Widgets/FormTabs',
@@ -90,7 +89,6 @@ const meta: Meta<typeof FormTabsStory> = {
     canWithdraw: true,
     showAdvanced: false,
     userAddress: '0x1234...cafe',
-    defaultTab: 'overview',
     shouldWrap: false,
   },
   argTypes: {
@@ -109,11 +107,6 @@ const meta: Meta<typeof FormTabsStory> = {
     userAddress: {
       control: 'text',
       description: 'Sample address injected into tab content.',
-    },
-    defaultTab: {
-      control: 'select',
-      options: ['overview', 'manage', 'advanced'],
-      description: 'Initial tab selection.',
     },
     shouldWrap: {
       control: 'boolean',
@@ -142,19 +135,8 @@ export const BasicTabs: Story = {
   },
 }
 
-export const StartOnManage: Story = {
-  args: { defaultTab: 'manage' },
-  parameters: {
-    docs: {
-      description: {
-        story: 'Shows nested sub-tabs immediately by starting on the Manage tab.',
-      },
-    },
-  },
-}
-
 export const WithConditionalTab: Story = {
-  args: { showAdvanced: true, defaultTab: 'advanced' },
+  args: { showAdvanced: true },
   parameters: {
     docs: {
       description: {
@@ -165,7 +147,7 @@ export const WithConditionalTab: Story = {
 }
 
 export const WithDisabledSubTab: Story = {
-  args: { canWithdraw: false, defaultTab: 'manage' },
+  args: { canWithdraw: false },
   parameters: {
     docs: {
       description: {

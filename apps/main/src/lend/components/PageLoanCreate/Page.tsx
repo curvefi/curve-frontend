@@ -35,7 +35,7 @@ const { Spacing } = SizesAndSpaces
 
 const Page = () => {
   const params = useParams<MarketUrlParams>()
-  const { rMarket, rChainId, rFormType } = parseMarketParams(params)
+  const { rMarket, rChainId } = parseMarketParams(params)
 
   const { data: market, isSuccess } = useOneWayMarket(rChainId, rMarket)
   const { llamaApi: api = null, connectState } = useConnection()
@@ -88,7 +88,6 @@ const Page = () => {
     params,
     rChainId,
     rOwmId,
-    rFormType,
     api,
     market,
     titleMapper,
@@ -97,7 +96,7 @@ const Page = () => {
   }
   const positionDetailsHrefs = {
     borrow: '',
-    supply: getVaultPathname(params, rOwmId, 'deposit'),
+    supply: getVaultPathname(params, rOwmId),
   }
 
   return isSuccess && !market ? (
