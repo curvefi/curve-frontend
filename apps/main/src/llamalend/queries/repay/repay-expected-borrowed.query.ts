@@ -7,10 +7,10 @@ import { repayFromCollateralValidationSuite } from '../validation/manage-loan.va
 
 type RepayExpectedBorrowedResult = {
   totalBorrowed: Decimal
-  borrowedFromStateCollateral: Decimal
-  borrowedFromUserCollateral: Decimal
-  userBorrowed: Decimal
-  avgPrice: Decimal
+  borrowedFromStateCollateral?: Decimal
+  borrowedFromUserCollateral?: Decimal
+  userBorrowed?: Decimal
+  avgPrice?: Decimal
 }
 
 export const { useQuery: useRepayExpectedBorrowed } = queryFactory({
@@ -30,20 +30,21 @@ export const { useQuery: useRepayExpectedBorrowed } = queryFactory({
       { userBorrowed },
     ] as const,
   queryFn: async ({ marketId, stateCollateral, userCollateral, userBorrowed }: RepayFromCollateralQuery) => {
+    // todo: investigate if this is OK when the user's position is not leveraged
     const market = getLlamaMarket(marketId)
-    return market instanceof LendMarketTemplate
-      ? ((await market.leverage.repayExpectedBorrowed(
-          stateCollateral,
-          userCollateral,
-          userBorrowed,
-        )) as RepayExpectedBorrowedResult)
-      : market.leverageV2.hasLeverage()
-        ? ((await market.leverageV2.repayExpectedBorrowed(
-            stateCollateral,
-            userCollateral,
-            userBorrowed,
-          )) as RepayExpectedBorrowedResult)
-        : null
+    if (market instanceof LendMarketTemplate) {
+      const result = await market.leverage.repayExpectedBorrowed(stateCollateral, userCollateral, userBorrowed)
+      return result as RepayExpectedBorrowedResult
+    }
+    if (market.leverageV2.hasLeverage()) {
+      const result = await market.leverageV2.repayExpectedBorrowed(stateCollateral, userCollateral, userBorrowed)
+      return result as RepayExpectedBorrowedResult
+    }
+
+    console.assert(!+stateCollateral, `Expected 0 stateCollateral for non-leverage market, got ${stateCollateral}`)
+    console.assert(!+userBorrowed, `Expected 0 userBorrowed for non-leverage market, got ${userBorrowed}`)
+    const { stablecoins, routeIdx } = await market.deleverage.repayStablecoins(userCollateral)
+    return { totalBorrowed: stablecoins[routeIdx] }
   },
   staleTime: '1m',
   validationSuite: repayFromCollateralValidationSuite,

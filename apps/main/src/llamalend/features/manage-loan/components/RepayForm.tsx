@@ -40,7 +40,7 @@ export const RepayForm = <ChainId extends IChainId>({
     health,
     prices,
     gas,
-    isAvailable,
+    isDisabled,
     isFull,
     formErrors,
     collateralToken,
@@ -48,6 +48,9 @@ export const RepayForm = <ChainId extends IChainId>({
     params,
     values,
     txHash,
+    expectedBorrowed,
+    routeImage,
+    priceImpact,
   } = useRepayForm({
     market,
     network,
@@ -57,8 +60,6 @@ export const RepayForm = <ChainId extends IChainId>({
   })
 
   const marketRates = useMarketRates(params, isOpen)
-
-  const isDisabled = formErrors.length > 0 || isAvailable.data === false
 
   return (
     <LoanFormWrapper // todo: prevHealth, prevRates, debt, prevDebt

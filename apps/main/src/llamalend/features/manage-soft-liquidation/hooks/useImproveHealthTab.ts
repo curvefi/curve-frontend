@@ -20,6 +20,7 @@ export function useImproveHealthTab(params: MarketParams): ImproveHealthProps {
         stateCollateral: '0' as Decimal,
         userCollateral: '0' as Decimal,
         userBorrowed: debt,
+        isFull: false,
       })
     },
     [mutate],
