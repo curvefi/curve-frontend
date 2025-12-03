@@ -94,7 +94,7 @@ export const LoanFormTokenInput = <
       message={error?.message ?? message}
       walletBalance={walletBalance}
       maxBalance={useMemo(() => max && { balance: max.data, chips: 'max' }, [max])}
-      inputBalanceUsd={decimal(value && usdRate && usdRate * +value)}
+      inputBalanceUsd={decimal(usdRate && usdRate * +(value ?? 0))}
     />
   )
 }
