@@ -44,7 +44,7 @@ export const { useQuery: useRepayExpectedBorrowed } = queryFactory({
     console.assert(!+stateCollateral, `Expected 0 stateCollateral for non-leverage market, got ${stateCollateral}`)
     console.assert(!+userBorrowed, `Expected 0 userBorrowed for non-leverage market, got ${userBorrowed}`)
     const { stablecoins, routeIdx } = await market.deleverage.repayStablecoins(userCollateral)
-    return { totalBorrowed: stablecoins[routeIdx] }
+    return { totalBorrowed: stablecoins[routeIdx] as Decimal }
   },
   staleTime: '1m',
   validationSuite: repayFromCollateralValidationSuite,
