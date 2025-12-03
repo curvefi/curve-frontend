@@ -4,7 +4,6 @@ import CampaignRewardsBanner from '@/lend/components/CampaignRewardsBanner'
 import { MarketInformationComp } from '@/lend/components/MarketInformationComp'
 import { MarketInformationTabs } from '@/lend/components/MarketInformationTabs'
 import { ManageLoanTabs } from '@/lend/components/PageLoanManage/ManageLoanTabs'
-import type { DetailInfoTypes } from '@/lend/components/PageLoanManage/types'
 import { useOneWayMarket } from '@/lend/entities/chain'
 import { useBorrowPositionDetails } from '@/lend/hooks/useBorrowPositionDetails'
 import { useLendPageTitle } from '@/lend/hooks/useLendPageTitle'
@@ -87,12 +86,6 @@ const Page = () => {
 
   const isInSoftLiquidation =
     borrowPositionDetails.liquidationAlert.softLiquidation || borrowPositionDetails.liquidationAlert.hardLiquidation
-
-  // set tabs
-  const DETAIL_INFO_TYPES: { key: DetailInfoTypes; label: string }[] = [{ label: t`Market Details`, key: 'market' }]
-  if (signerAddress) {
-    DETAIL_INFO_TYPES.push({ label: t`Your Details`, key: 'user' })
-  }
 
   useEffect(() => {
     if (api && market && isPageVisible) {

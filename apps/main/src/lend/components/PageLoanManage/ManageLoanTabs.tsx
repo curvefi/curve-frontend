@@ -18,15 +18,15 @@ import { type FormTab, FormTabs } from '@ui-kit/shared/ui/FormTabs/FormTabs'
 
 type ManageLoanProps = PageContentProps<MarketUrlParams>
 
-export const ImproveHealthTab = ({ rChainId, rOwmId }: ManageLoanProps) => (
+const ImproveHealthTab = ({ rChainId, rOwmId }: ManageLoanProps) => (
   <ImproveHealth {...useImproveHealthTab({ chainId: rChainId, network: networks[rChainId], marketId: rOwmId })} />
 )
 
-export const ClosePositionTab = ({ rChainId, rOwmId }: ManageLoanProps) => (
+const ClosePositionTab = ({ rChainId, rOwmId }: ManageLoanProps) => (
   <ClosePosition {...useClosePositionTab({ chainId: rChainId, network: networks[rChainId], marketId: rOwmId })} />
 )
 
-export const LendManageLegacyMenu = [
+const LendManageLegacyMenu = [
   {
     value: 'loan',
     label: t`Borrow`,
@@ -52,7 +52,7 @@ export const LendManageLegacyMenu = [
   },
 ] satisfies FormTab<ManageLoanProps>[]
 
-export const LendManageNewMenu = [
+const LendManageNewMenu = [
   {
     value: 'borrow',
     label: ({ market }) => (market?.leverage?.hasLeverage() ? t`Leverage` : t`Borrow`),
@@ -76,7 +76,7 @@ export const LendManageNewMenu = [
   },
 ] satisfies FormTab<ManageLoanProps>[]
 
-export const LendManageSoftLiquidationMenu = [
+const LendManageSoftLiquidationMenu = [
   {
     value: 'soft-liquidation',
     label: t`Manage soft liquidation`,

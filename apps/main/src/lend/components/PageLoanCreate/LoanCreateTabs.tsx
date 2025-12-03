@@ -45,11 +45,11 @@ function CreateLoanTab({ market, api, rChainId }: CreateLoanProps) {
   )
 }
 
-export const LendCreateTabsNewMenu = [
+const LendCreateTabsNewMenu = [
   { value: 'create', label: t`Borrow`, component: CreateLoanTab },
 ] satisfies FormTab<CreateLoanProps>[]
 
-export const LendCreateTabsOldMenu = [
+const LendCreateTabsOldMenu = [
   { value: 'create', label: t`Create Loan`, component: LoanFormCreate },
   {
     value: 'leverage',
