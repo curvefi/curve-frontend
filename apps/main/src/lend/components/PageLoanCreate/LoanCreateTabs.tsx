@@ -35,17 +35,13 @@ const useOnFormUpdate = ({ api, market }: Pick<CreateLoanProps, 'api' | 'market'
 
 function CreateLoanTab({ market, api, rChainId }: CreateLoanProps) {
   const onLoanCreated = useStore((state) => state.loanCreate.onLoanCreated)
+  const onCreated = useCallback(
+    async () => api && market && (await onLoanCreated(api, market)),
+    [api, market, onLoanCreated],
+  )
+  const onUpdate = useOnFormUpdate({ market, api })
   return (
-    <CreateLoanForm
-      networks={networks}
-      chainId={rChainId}
-      market={market}
-      onUpdate={useOnFormUpdate({ market, api })}
-      onCreated={useCallback(
-        async () => api && market && (await onLoanCreated(api, market)),
-        [api, market, onLoanCreated],
-      )}
-    />
+    <CreateLoanForm networks={networks} chainId={rChainId} market={market} onUpdate={onUpdate} onCreated={onCreated} />
   )
 }
 
@@ -63,16 +59,8 @@ export const LendCreateTabsOldMenu = [
   },
 ] satisfies FormTab<CreateLoanProps>[]
 
-const LoanCreate = (pageProps: CreateLoanProps) => {
+export const LoanCreateTabs = (pageProps: CreateLoanProps) => {
   const menu = useCreateLoanMuiForm() ? LendCreateTabsNewMenu : LendCreateTabsOldMenu
-  return (
-    <FormTabs<CreateLoanProps>
-      params={pageProps}
-      menu={menu}
-      shouldWrap={menu === LendCreateTabsOldMenu}
-      defaultTab={pageProps.rFormType}
-    />
-  )
+  const shouldWrap = menu === LendCreateTabsOldMenu
+  return <FormTabs params={pageProps} menu={menu} shouldWrap={shouldWrap} defaultTab={pageProps.rFormType} />
 }
-
-export default LoanCreate

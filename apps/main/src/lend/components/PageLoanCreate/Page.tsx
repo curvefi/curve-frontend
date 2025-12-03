@@ -3,7 +3,7 @@ import type { Address } from 'viem'
 import CampaignRewardsBanner from '@/lend/components/CampaignRewardsBanner'
 import { MarketInformationComp } from '@/lend/components/MarketInformationComp'
 import { MarketInformationTabs } from '@/lend/components/MarketInformationTabs'
-import LoanCreate from '@/lend/components/PageLoanCreate/LoanCreateTabs'
+import { LoanCreateTabs } from '@/lend/components/PageLoanCreate/LoanCreateTabs'
 import { useOneWayMarket } from '@/lend/entities/chain'
 import { useLendPageTitle } from '@/lend/hooks/useLendPageTitle'
 import { useMarketDetails } from '@/lend/hooks/useMarketDetails'
@@ -106,7 +106,7 @@ const Page = () => {
     <>
       <DetailPageStack>
         <AppPageFormsWrapper data-testid="form-wrapper">
-          {rChainId && rOwmId && <LoanCreate {...pageProps} params={params} />}
+          {rChainId && rOwmId && <LoanCreateTabs {...pageProps} params={params} />}
         </AppPageFormsWrapper>
         <Stack flexDirection="column" flexGrow={1} sx={{ gap: Spacing.md }}>
           <CampaignRewardsBanner
