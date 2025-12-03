@@ -147,6 +147,16 @@ export const AddCollateralForm = <ChainId extends IChainId>({
         />
       </Stack>
 
+      <LoanFormAlerts
+        isSuccess={action.isSuccess}
+        error={action.error}
+        txHash={txHash}
+        formErrors={formErrors}
+        network={network}
+        handledErrors={['userCollateral']}
+        successTitle={t`Collateral added`}
+      />
+
       <Button
         type="submit"
         loading={isPending || !market}
@@ -159,16 +169,6 @@ export const AddCollateralForm = <ChainId extends IChainId>({
             ? t`Add collateral`
             : t`Approve & Add collateral`}
       </Button>
-
-      <LoanFormAlerts
-        isSuccess={action.isSuccess}
-        error={action.error}
-        txHash={txHash}
-        formErrors={formErrors}
-        network={network}
-        handledErrors={['userCollateral']}
-        successTitle={t`Collateral added`}
-      />
     </LoanFormWrapper>
   )
 }
