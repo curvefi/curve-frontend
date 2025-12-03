@@ -3,13 +3,15 @@ import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
 import { t } from '@ui-kit/lib/i18n'
+import { FireIcon } from '@ui-kit/shared/icons/FireIcon'
 import { Accordion } from '@ui-kit/shared/ui/Accordion'
 import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Decimal, formatNumber, formatPercent, formatUsd } from '@ui-kit/utils'
 import { getHealthValueColor } from '../../features/market-position-details/utils'
 import { LoanLeverageActionInfo, type LoanLeverageActionInfoProps } from './LoanLeverageActionInfo'
-import { FireIcon } from '@ui-kit/shared/icons/FireIcon'
 
+const { Spacing } = SizesAndSpaces
 
 export type LoanInfoGasData = {
   estGasCostUsd?: number | Decimal | `${number}`
@@ -54,6 +56,8 @@ const getQueryState = (current: Query<unknown> | undefined, previous: Query<unkn
   loading: current?.isLoading || previous?.isLoading,
 })
 
+const AccordionSpacing = () => <Box sx={{ height: Spacing.md }} />
+
 export const LoanInfoAccordion = ({
   isOpen,
   toggle,
@@ -93,7 +97,6 @@ export const LoanInfoAccordion = ({
       toggle={toggle}
     >
       <Stack>
-        {leverage?.enabled && <LoanLeverageActionInfo {...leverage} />}
         {(debt || prevDebt) && (
           <ActionInfo
             label={t`Debt`}
@@ -152,13 +155,22 @@ export const LoanInfoAccordion = ({
             testId="borrow-ltv"
           />
         )}
+        {leverage?.enabled && (
+          <>
+            <AccordionSpacing />
+            <LoanLeverageActionInfo {...leverage} />
+          </>
+        )}
+        {/* TODO: add router provider and slippage */}
+
+        <AccordionSpacing />
         {/* TODO: add gas estimate steps (1. approve, 2. add collateral) */}
         <ActionInfo
           label={t`Estimated tx cost`}
           value={gas.data?.estGasCostUsd == null ? '-' : formatUsd(gas.data.estGasCostUsd)}
           valueTooltip={gas.data?.tooltip}
           loading={gas.isLoading}
-            valueLeft={<FireIcon fontSize="small" />}
+          valueLeft={<FireIcon fontSize="small" />}
         />
       </Stack>
     </Accordion>
