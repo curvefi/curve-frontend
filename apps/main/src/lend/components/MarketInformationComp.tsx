@@ -18,10 +18,9 @@ const { Spacing } = SizesAndSpaces
 
 type MarketInformationCompProps = {
   pageProps: PageContentProps
-  loanExists?: boolean
+  loanExists: boolean | undefined
   userActiveKey: string
   type: 'borrow' | 'supply'
-  page?: 'create' | 'manage'
 }
 
 const EMPTY_ARRAY: never[] = []
@@ -29,13 +28,7 @@ const EMPTY_ARRAY: never[] = []
 /**
  * Reusable component for OHLC charts, Bands (if applicable), and market parameters. For /create, /manage, /vault pages.
  */
-export const MarketInformationComp = ({
-  pageProps,
-  loanExists = false,
-  userActiveKey,
-  type,
-  page = 'manage',
-}: MarketInformationCompProps) => {
+export const MarketInformationComp = ({ pageProps, loanExists, userActiveKey, type }: MarketInformationCompProps) => {
   const { rChainId, rOwmId, market } = pageProps
   const collateralTokenAddress = market?.collateral_token.address
   const borrowedTokenAddress = market?.borrowed_token.address
@@ -88,7 +81,7 @@ export const MarketInformationComp = ({
       )}
       {type === 'borrow' && !newBandsChartEnabled && isAdvancedMode && (
         <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, gap: Spacing.md, padding: Spacing.md }}>
-          <BandsComp pageProps={pageProps} page={page} loanExists={loanExists} />
+          <BandsComp pageProps={pageProps} loanExists={loanExists} />
         </Stack>
       )}
       {market && isAdvancedMode && (

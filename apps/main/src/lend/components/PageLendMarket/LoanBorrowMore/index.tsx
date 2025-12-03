@@ -1,7 +1,6 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import AlertFormError from '@/lend/components/AlertFormError'
 import AlertLoanSummary from '@/lend/components/AlertLoanSummary'
-import AlertNoLoanFound from '@/lend/components/AlertNoLoanFound'
 import DialogFormWarning from '@/lend/components/DialogFormWarning'
 import InpToken from '@/lend/components/InpToken'
 import InpTokenBorrow from '@/lend/components/InpTokenBorrow'
@@ -19,10 +18,8 @@ import { helpers } from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
 import { Api, OneWayMarketTemplate, PageContentProps } from '@/lend/types/lend.types'
-import { _showNoLoanFound } from '@/lend/utils/helpers'
 import { DEFAULT_HEALTH_MODE } from '@/llamalend/constants'
 import type { HealthMode } from '@/llamalend/llamalend.types'
-import { useLoanExists } from '@/llamalend/queries/loan-exists'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import AlertBox from '@ui/AlertBox'
@@ -68,12 +65,6 @@ const LoanBorrowMore = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey
 
   const { signerAddress } = api ?? {}
   const { expectedCollateral } = detailInfoLeverage ?? {}
-
-  const { data: loanExists } = useLoanExists({
-    chainId: rChainId,
-    marketId: market?.id,
-    userAddress: signerAddress,
-  })
 
   const updateFormValues = useCallback(
     (
@@ -408,22 +399,18 @@ const LoanBorrowMore = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey
       </StyledDetailInfoWrapper>
 
       {/* actions */}
-      {_showNoLoanFound(signerAddress, formStatus.isComplete, loanExists) ? (
-        <AlertNoLoanFound owmId={rOwmId} />
-      ) : (
-        <LoanFormConnect haveSigner={!!signerAddress} loading={!isLoaded}>
-          {txInfoBar}
-          {healthMode.message && <AlertBox alertType="warning">{healthMode.message}</AlertBox>}
-          {(formStatus.error || formStatus.stepError) && (
-            <AlertFormError
-              limitHeight
-              errorKey={formStatus.error || formStatus.stepError}
-              handleBtnClose={() => updateFormValues({})}
-            />
-          )}
-          {steps && <Stepper steps={steps} />}
-        </LoanFormConnect>
-      )}
+      <LoanFormConnect haveSigner={!!signerAddress} loading={!isLoaded}>
+        {txInfoBar}
+        {healthMode.message && <AlertBox alertType="warning">{healthMode.message}</AlertBox>}
+        {(formStatus.error || formStatus.stepError) && (
+          <AlertFormError
+            limitHeight
+            errorKey={formStatus.error || formStatus.stepError}
+            handleBtnClose={() => updateFormValues({})}
+          />
+        )}
+        {steps && <Stepper steps={steps} />}
+      </LoanFormConnect>
     </Stack>
   )
 }

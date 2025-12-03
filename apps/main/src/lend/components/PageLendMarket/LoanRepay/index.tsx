@@ -1,7 +1,6 @@
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import AlertFormError from '@/lend/components/AlertFormError'
 import AlertSummary from '@/lend/components/AlertLoanSummary'
-import AlertNoLoanFound from '@/lend/components/AlertNoLoanFound'
 import DialogFormWarning from '@/lend/components/DialogFormWarning'
 import InpToken from '@/lend/components/InpToken'
 import LoanFormConnect from '@/lend/components/LoanFormConnect'
@@ -17,12 +16,10 @@ import { helpers } from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
 import { Api, FormError, type MarketUrlParams, OneWayMarketTemplate, PageContentProps } from '@/lend/types/lend.types'
-import { _showNoLoanFound } from '@/lend/utils/helpers'
 import { getCollateralListPathname } from '@/lend/utils/utilsRouter'
 import { DEFAULT_HEALTH_MODE } from '@/llamalend/constants'
 import { RepayForm } from '@/llamalend/features/manage-loan/components/RepayForm'
 import type { HealthMode } from '@/llamalend/llamalend.types'
-import { useLoanExists } from '@/llamalend/queries/loan-exists'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import AlertBox from '@ui/AlertBox'
@@ -79,12 +76,6 @@ const LoanRepay = ({
   const { decimals: borrowedTokenDecimals } = borrowed_token ?? {}
   const { expectedBorrowed } = detailInfoLeverage ?? {}
   const hasExpectedBorrowed = !!expectedBorrowed
-
-  const { data: loanExists, isFetching: loanExistsLoading } = useLoanExists({
-    chainId: rChainId,
-    marketId: market?.id,
-    userAddress: signerAddress,
-  })
 
   const updateFormValues = useCallback(
     (
@@ -376,7 +367,7 @@ const LoanRepay = ({
             id="stateCollateral"
             inpError={formValues.stateCollateralError}
             inpDisabled={disable}
-            inpLabelLoading={loanExistsLoading && !!signerAddress && typeof userState?.collateral === 'undefined'}
+            inpLabelLoading={!!signerAddress && typeof userState?.collateral === 'undefined'}
             inpLabelDescription={formatNumber(userState?.collateral, { defaultValue: '-' })}
             inpValue={formValues.stateCollateral}
             tokenAddress={collateral_token?.address}
@@ -512,27 +503,23 @@ const LoanRepay = ({
       </StyledDetailInfoWrapper>
 
       {/* actions */}
-      {_showNoLoanFound(signerAddress, formStatus.isComplete, loanExists) ? (
-        <AlertNoLoanFound owmId={rOwmId} />
-      ) : (
-        <LoanFormConnect haveSigner={!!signerAddress} loading={!api}>
-          {txInfoBar}
-          {!!healthMode.message && <AlertBox alertType="warning">{healthMode.message}</AlertBox>}
-          {formStatus.error === FormError.FullRepaymentRequired ? (
-            <AlertBox alertType="error">
-              {t`Only partial repayment from wallet's ${borrowed_token?.symbol} or full repayment from collateral or wallet's ${collateral_token?.symbol} is
+      <LoanFormConnect haveSigner={!!signerAddress} loading={!api}>
+        {txInfoBar}
+        {!!healthMode.message && <AlertBox alertType="warning">{healthMode.message}</AlertBox>}
+        {formStatus.error === FormError.FullRepaymentRequired ? (
+          <AlertBox alertType="error">
+            {t`Only partial repayment from wallet's ${borrowed_token?.symbol} or full repayment from collateral or wallet's ${collateral_token?.symbol} is
               allowed during liquidation mode.`}
-            </AlertBox>
-          ) : formStatus.error || formStatus.stepError ? (
-            <AlertFormError
-              limitHeight
-              errorKey={formStatus.error || formStatus.stepError}
-              handleBtnClose={() => updateFormValues({})}
-            />
-          ) : null}
-          {steps && <Stepper steps={steps} />}
-        </LoanFormConnect>
-      )}
+          </AlertBox>
+        ) : formStatus.error || formStatus.stepError ? (
+          <AlertFormError
+            limitHeight
+            errorKey={formStatus.error || formStatus.stepError}
+            handleBtnClose={() => updateFormValues({})}
+          />
+        ) : null}
+        {steps && <Stepper steps={steps} />}
+      </LoanFormConnect>
     </Stack>
   )
 }

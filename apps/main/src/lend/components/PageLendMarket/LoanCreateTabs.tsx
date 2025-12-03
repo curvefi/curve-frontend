@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import LoanFormCreate from '@/lend/components/PageLendMarket/LoanFormCreate/LoanCreate'
+import { LoanCreateForm } from '@/lend/components/PageLendMarket/LoanFormCreate/LoanCreateForm'
 import type { FormValues } from '@/lend/components/PageLendMarket/types'
 import { DEFAULT_FORM_VALUES } from '@/lend/components/PageLendMarket/utils'
 import networks from '@/lend/networks'
@@ -50,11 +50,11 @@ export const LendCreateTabsNewMenu = [
 ] satisfies FormTab<CreateLoanProps>[]
 
 export const LendCreateTabsOldMenu = [
-  { value: 'create', label: t`Create Loan`, component: LoanFormCreate },
+  { value: 'create', label: t`Create Loan`, component: LoanCreateForm },
   {
     value: 'leverage',
     label: t`Leverage`,
-    component: (p) => <LoanFormCreate {...p} isLeverage />,
+    component: (p) => <LoanCreateForm {...p} isLeverage />,
     visible: ({ market }) => market && hasLeverage(market),
   },
 ] satisfies FormTab<CreateLoanProps>[]

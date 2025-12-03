@@ -16,16 +16,12 @@ import { helpers } from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
 import { Api, type MarketUrlParams, OneWayMarketTemplate, PageContentProps } from '@/lend/types/lend.types'
-import { getLoanManagePathname } from '@/lend/utils/utilsRouter'
 import { DEFAULT_HEALTH_MODE } from '@/llamalend/constants'
 import { MarketParameters } from '@/llamalend/features/market-parameters/MarketParameters'
 import type { HealthMode } from '@/llamalend/llamalend.types'
-import { useLoanExists } from '@/llamalend/queries/loan-exists'
 import Accordion from '@ui/Accordion'
 import AlertBox from '@ui/AlertBox'
 import Box from '@ui/Box'
-import Button from '@ui/Button'
-import LinkButton from '@ui/LinkButton'
 import Stepper from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
 import TextCaption from '@ui/TextCaption'
@@ -33,7 +29,6 @@ import TxInfoBar from '@ui/TxInfoBar'
 import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { useNavigate } from '@ui-kit/hooks/router'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
@@ -41,10 +36,9 @@ import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 export const LoanCreateForm = ({
   isLeverage = false,
   ...pageProps
-}: PageContentProps & { isLeverage?: boolean; params: MarketUrlParams }) => {
-  const { rChainId, rOwmId, isLoaded, api, market, userActiveKey, params } = pageProps
+}: PageContentProps<MarketUrlParams> & { isLeverage?: boolean }) => {
+  const { rChainId, rOwmId, isLoaded, api, market, userActiveKey } = pageProps
   const isSubscribed = useRef(false)
-  const push = useNavigate()
   const marketAlert = useMarketAlert(rChainId, rOwmId)
 
   const activeKey = useStore((state) => state.loanCreate.activeKey)
@@ -60,7 +54,6 @@ export const LoanCreateForm = ({
   const refetchMaxRecv = useStore((state) => state.loanCreate.refetchMaxRecv)
   const fetchStepApprove = useStore((state) => state.loanCreate.fetchStepApprove)
   const fetchStepCreate = useStore((state) => state.loanCreate.fetchStepCreate)
-  const setStateByKeyMarkets = useStore((state) => state.markets.setStateByKey)
   const setFormValues = useStore((state) => state.loanCreate.setFormValues)
   const resetState = useStore((state) => state.loanCreate.resetState)
 
@@ -75,12 +68,6 @@ export const LoanCreateForm = ({
   const { signerAddress } = api ?? {}
   const { expectedCollateral } = detailInfoLeverage ?? {}
   const { borrowed_token, collateral_token } = market ?? {}
-
-  const { data: loanExists } = useLoanExists({
-    chainId: rChainId,
-    marketId: market?.id,
-    userAddress: signerAddress,
-  })
 
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<FormValues>, isFullReset?: boolean, shouldRefetch?: boolean) => {
@@ -403,39 +390,18 @@ export const LoanCreateForm = ({
       {marketAlert && <AlertBox alertType={marketAlert.alertType}>{marketAlert.message}</AlertBox>}
 
       {/* actions */}
-      {signerAddress && loanExists && !formStatus.isComplete ? (
-        <>
-          <AlertBox alertType="info">{t`A loan has been found for this market.`}</AlertBox>
-          <Button
-            variant="filled"
-            size="large"
-            onClick={() => {
-              setStateByKeyMarkets('marketDetailsView', 'user')
-              push(getLoanManagePathname(params, rOwmId))
-            }}
-          >
-            Manage loan
-          </Button>
-        </>
-      ) : (
-        <LoanFormConnect haveSigner={!!signerAddress} loading={!api}>
-          {txInfoBar}
-          {!!healthMode.message && <AlertBox alertType="warning">{healthMode.message}</AlertBox>}
-          {(formStatus.error || formStatus.stepError) && (
-            <AlertFormError
-              limitHeight
-              errorKey={formStatus.error || formStatus.stepError}
-              handleBtnClose={() => updateFormValues({}, true)}
-            />
-          )}
-          {steps && <Stepper steps={steps} />}
-          {formStatus.isComplete && market && (
-            <LinkButton variant="filled" size="large" href={getLoanManagePathname(params, market.id)}>
-              Manage loan
-            </LinkButton>
-          )}
-        </LoanFormConnect>
-      )}
+      <LoanFormConnect haveSigner={!!signerAddress} loading={!api}>
+        {txInfoBar}
+        {!!healthMode.message && <AlertBox alertType="warning">{healthMode.message}</AlertBox>}
+        {(formStatus.error || formStatus.stepError) && (
+          <AlertFormError
+            limitHeight
+            errorKey={formStatus.error || formStatus.stepError}
+            handleBtnClose={() => updateFormValues({}, true)}
+          />
+        )}
+        {steps && <Stepper steps={steps} />}
+      </LoanFormConnect>
 
       {!isAdvancedMode && (
         <Accordion btnLabel={<TextCaption isCaps isBold>{t`Market details`}</TextCaption>}>

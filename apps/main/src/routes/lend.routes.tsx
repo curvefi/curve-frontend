@@ -21,9 +21,6 @@ const lendLayoutRoute = createRoute({
 
 const layoutProps = { getParentRoute: () => lendLayoutRoute }
 
-const RedirectToMarketPage = ({ params: { network, market } }: { params: MarketUrlParams }) =>
-  redirectTo(`/lend/${network}/markets/${market}/manage`)
-
 export const lendRoutes = lendLayoutRoute.addChildren([
   createRoute({
     path: '/',
@@ -72,8 +69,18 @@ export const lendRoutes = lendLayoutRoute.addChildren([
     }),
     ...layoutProps,
   }),
-  createRoute({ path: '$network/markets/$market/create/{$-formType}', loader: RedirectToMarketPage, ...layoutProps }),
-  createRoute({ path: '$network/markets/$market/manage/{$-formType}', loader: RedirectToMarketPage, ...layoutProps }),
+  createRoute({
+    path: '$network/markets/$market/create/{-$formType}',
+    loader: ({ params: { network, market } }: { params: MarketUrlParams }) =>
+      redirectTo(`/lend/${network}/markets/${market}`),
+    ...layoutProps,
+  }),
+  createRoute({
+    path: '$network/markets/$market/manage/{-$formType}',
+    loader: ({ params: { network, market } }: { params: MarketUrlParams }) =>
+      redirectTo(`/lend/${network}/markets/${market}`),
+    ...layoutProps,
+  }),
   createRoute({
     path: '$network/markets/$market/vault/$formType',
     loader: ({ params: { network, market } }) => redirectTo(`/lend/${network}/markets/${market}/vault`),

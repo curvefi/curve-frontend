@@ -9,33 +9,31 @@ import { t } from '@ui-kit/lib/i18n'
 
 type BandsCompProps = {
   pageProps: PageContentProps
-  page: 'create' | 'manage'
-  loanExists: boolean
+  loanExists: boolean | undefined
 }
 
-export const BandsComp = ({ pageProps, page, loanExists }: BandsCompProps) => {
+export const BandsComp = ({ pageProps, loanExists }: BandsCompProps) => {
   const { rChainId, rOwmId, market } = pageProps
-  const [selectedBand, setSelectedBand] = useState<'user' | 'market'>(page === 'create' ? 'market' : 'user')
+  const [selectedBand, setSelectedBand] = useState<'user' | 'market'>(loanExists ? 'user' : 'market')
 
-  const SelectorMenu =
-    page === 'create' ? null : (
-      <SelectorRow>
-        <SelectorButton
-          variant="text"
-          className={selectedBand === 'user' ? 'active' : ''}
-          onClick={() => setSelectedBand('user')}
-        >
-          {t`Position Bands`}
-        </SelectorButton>
-        <SelectorButton
-          variant="text"
-          className={selectedBand === 'market' ? 'active' : ''}
-          onClick={() => setSelectedBand('market')}
-        >
-          {t`Market Bands`}
-        </SelectorButton>
-      </SelectorRow>
-    )
+  const SelectorMenu = loanExists && (
+    <SelectorRow>
+      <SelectorButton
+        variant="text"
+        className={selectedBand === 'user' ? 'active' : ''}
+        onClick={() => setSelectedBand('user')}
+      >
+        {t`Position Bands`}
+      </SelectorButton>
+      <SelectorButton
+        variant="text"
+        className={selectedBand === 'market' ? 'active' : ''}
+        onClick={() => setSelectedBand('market')}
+      >
+        {t`Market Bands`}
+      </SelectorButton>
+    </SelectorRow>
+  )
 
   return (
     <Stack>
@@ -43,12 +41,7 @@ export const BandsComp = ({ pageProps, page, loanExists }: BandsCompProps) => {
         <DetailsUserLoanChartBandBalances {...pageProps} selectorMenu={SelectorMenu} />
       )}
       {(selectedBand === 'market' || !loanExists) && (
-        <DetailsLoanChartBalances
-          rChainId={rChainId}
-          rOwmId={rOwmId}
-          market={market}
-          selectorMenu={loanExists ? SelectorMenu : undefined}
-        />
+        <DetailsLoanChartBalances rChainId={rChainId} rOwmId={rOwmId} market={market} selectorMenu={SelectorMenu} />
       )}
     </Stack>
   )

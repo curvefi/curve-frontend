@@ -1,7 +1,6 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import AlertFormError from '@/lend/components/AlertFormError'
 import AlertSummary from '@/lend/components/AlertLoanSummary'
-import AlertNoLoanFound from '@/lend/components/AlertNoLoanFound'
 import DetailInfoEstimateGas from '@/lend/components/DetailInfoEstimateGas'
 import DetailInfoHealth from '@/lend/components/DetailInfoHealth'
 import DetailInfoLiqRange from '@/lend/components/DetailInfoLiqRange'
@@ -17,10 +16,8 @@ import networks from '@/lend/networks'
 import { DEFAULT_FORM_VALUES } from '@/lend/store/createLoanCollateralAddSlice'
 import useStore from '@/lend/store/useStore'
 import { Api, OneWayMarketTemplate, PageContentProps } from '@/lend/types/lend.types'
-import { _showNoLoanFound } from '@/lend/utils/helpers'
 import { DEFAULT_HEALTH_MODE } from '@/llamalend/constants'
 import { AddCollateralForm } from '@/llamalend/features/manage-loan/components/AddCollateralForm'
-import { useLoanExists } from '@/llamalend/queries/loan-exists'
 import AlertBox from '@ui/AlertBox'
 import { getActiveStep } from '@ui/Stepper/helpers'
 import Stepper from '@ui/Stepper/Stepper'
@@ -53,12 +50,6 @@ const LoanCollateralAdd = ({ rChainId, rOwmId, api, isLoaded, market, userActive
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
 
   const { signerAddress } = api ?? {}
-
-  const { data: loanExists } = useLoanExists({
-    chainId: rChainId,
-    marketId: market?.id,
-    userAddress: signerAddress,
-  })
 
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<FormValues>, isFullReset?: boolean) => {
@@ -239,21 +230,17 @@ const LoanCollateralAdd = ({ rChainId, rOwmId, api, isLoaded, market, userActive
       </StyledDetailInfoWrapper>
 
       {/* actions */}
-      {_showNoLoanFound(signerAddress, formStatus.isComplete, loanExists) ? (
-        <AlertNoLoanFound owmId={rOwmId} />
-      ) : (
-        <LoanFormConnect haveSigner={!!signerAddress} loading={!api}>
-          {txInfoBar}
-          {(formStatus.error || formStatus.stepError) && (
-            <AlertFormError
-              limitHeight
-              errorKey={formStatus.error || formStatus.stepError}
-              handleBtnClose={() => updateFormValues({}, true)}
-            />
-          )}
-          {steps && <Stepper steps={steps} />}
-        </LoanFormConnect>
-      )}
+      <LoanFormConnect haveSigner={!!signerAddress} loading={!api}>
+        {txInfoBar}
+        {(formStatus.error || formStatus.stepError) && (
+          <AlertFormError
+            limitHeight
+            errorKey={formStatus.error || formStatus.stepError}
+            handleBtnClose={() => updateFormValues({}, true)}
+          />
+        )}
+        {steps && <Stepper steps={steps} />}
+      </LoanFormConnect>
     </>
   )
 }
