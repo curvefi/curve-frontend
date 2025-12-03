@@ -7,13 +7,7 @@ import { formatNumber } from '@ui-kit/utils/'
 import { createLiquidationRangeSeries } from './custom-series/liquidationRangeSeries'
 import type { LiquidationRangePoint, LiquidationRangeSeriesOptions } from './custom-series/liquidationRangeSeries'
 import type { ChartColors } from './hooks/useChartPalette'
-import type {
-  LpPriceOhlcDataFormatted,
-  ChartHeight,
-  OraclePriceData,
-  LiquidationRanges,
-  LlammaLiquididationRange,
-} from './types'
+import type { LpPriceOhlcDataFormatted, OraclePriceData, LiquidationRanges, LlammaLiquididationRange } from './types'
 import { calculateRobustPriceRange } from './utils'
 
 const createPriceFormatter = () => ({
@@ -82,13 +76,12 @@ type Props = {
    * If the chart is used on a Llamalend market page we hide the candle series label and label line.
    */
   hideCandleSeriesLabel: boolean
-  chartHeight: ChartHeight
+  chartHeight: number
   ohlcData: LpPriceOhlcDataFormatted[]
   oraclePriceData?: OraclePriceData[]
   liquidationRange?: LiquidationRanges
   timeOption: string
   wrapperRef: any
-  chartExpanded?: boolean
   magnet: boolean
   colors: ChartColors
   refetchingCapped: boolean
@@ -108,7 +101,6 @@ const CandleChart = ({
   liquidationRange,
   timeOption,
   wrapperRef,
-  chartExpanded,
   magnet,
   colors,
   refetchingCapped,
@@ -338,13 +330,12 @@ const CandleChart = ({
     if (!chartRef.current || wrapperDimensions.width <= 0) return
 
     const width = Math.max(1, wrapperDimensions.width)
-    const height = chartExpanded ? chartHeight.expanded : chartHeight.standard
 
     chartRef.current.applyOptions({
       width,
-      height,
+      height: chartHeight,
     })
-  }, [chartExpanded, chartHeight.expanded, chartHeight.standard, wrapperDimensions.width])
+  }, [chartHeight, wrapperDimensions.width])
 
   // Update timeScale visibility when timeOption changes
   useEffect(() => {

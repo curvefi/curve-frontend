@@ -8,7 +8,6 @@ import { UserPositionHistory } from '@/llamalend/features/user-position-history'
 import { useUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { useLoanExists } from '@/llamalend/queries/loan-exists'
 import { DetailPageStack } from '@/llamalend/widgets/DetailPageStack'
-import ChartOhlcWrapper from '@/loan/components/ChartOhlcWrapper'
 import { MarketInformationComp } from '@/loan/components/MarketInformationComp'
 import LoanCreate from '@/loan/components/PageLoanCreate/index'
 import { useMintMarket } from '@/loan/entities/mint-markets'
@@ -29,10 +28,7 @@ import { isChain } from '@curvefi/prices-api'
 import Stack from '@mui/material/Stack'
 import { AppPageFormsWrapper, AppPageFormTitleWrapper } from '@ui/AppPage'
 import Box from '@ui/Box'
-import Button from '@ui/Button'
-import Icon from '@ui/Icon'
 import TextEllipsis from '@ui/TextEllipsis'
-import { breakpoints } from '@ui/utils/responsive'
 import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
@@ -67,8 +63,6 @@ const Page = () => {
   const resetUserDetailsState = useStore((state) => state.loans.resetUserDetailsState)
   const setFormValues = useStore((state) => state.loanCreate.setFormValues)
   const setStateByKeys = useStore((state) => state.loanCreate.setStateByKeys)
-  const chartExpanded = useStore((state) => state.ohlcCharts.chartExpanded)
-  const setChartExpanded = useStore((state) => state.ohlcCharts.setChartExpanded)
 
   const maxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
 
@@ -155,12 +149,6 @@ const Page = () => {
     }
   }, REFRESH_INTERVAL['1m'])
 
-  useEffect(() => {
-    if (!isMdUp && chartExpanded) {
-      setChartExpanded(false)
-    }
-  }, [chartExpanded, isMdUp, setChartExpanded])
-
   const TitleComp = () => (
     <AppPageFormTitleWrapper>
       {/** TODO: generalize or re-use existing market counting technique, see `createCountMarket` in llama-markets.ts */}
@@ -172,25 +160,6 @@ const Page = () => {
     <ErrorPage title="404" subtitle={t`Market Not Found`} continueUrl={getCollateralListPathname(params)} />
   ) : provider ? (
     <>
-      {chartExpanded && (
-        <PriceAndTradesExpandedContainer>
-          <Box flex padding="0 0 0 var(--spacing-2)">
-            {isMdUp && <TitleComp />}
-            <ExpandButton
-              variant={'select'}
-              onClick={() => {
-                setChartExpanded()
-              }}
-            >
-              {chartExpanded ? 'Minimize' : 'Expand'}
-              <ExpandIcon name={chartExpanded ? 'Minimize' : 'Maximize'} size={16} aria-label={t`Expand chart`} />
-            </ExpandButton>
-          </Box>
-          <PriceAndTradesExpandedWrapper variant="secondary">
-            <ChartOhlcWrapper rChainId={rChainId} llamma={market ?? null} llammaId={marketId} />
-          </PriceAndTradesExpandedWrapper>
-        </PriceAndTradesExpandedContainer>
-      )}
       <DetailPageStack>
         <AppPageFormsWrapper>
           {rChainId && rCollateralId && (
@@ -224,15 +193,7 @@ const Page = () => {
           )}
           <Stack>
             <MarketDetails {...marketDetails} />
-            {
-              <MarketInformationComp
-                llamma={market ?? null}
-                marketId={marketId}
-                chainId={rChainId}
-                chartExpanded={chartExpanded}
-                page="create"
-              />
-            }
+            {<MarketInformationComp llamma={market ?? null} marketId={marketId} chainId={rChainId} page="create" />}
           </Stack>
         </Stack>
       </DetailPageStack>
@@ -256,30 +217,6 @@ const Title = styled(TextEllipsis)`
   font-weight: bold;
   line-height: 1;
   padding: 0 2px;
-`
-
-const PriceAndTradesExpandedContainer = styled(Box)`
-  margin: 1.5rem 0 0;
-  display: flex;
-  @media (min-width: ${breakpoints.md}rem) {
-    flex-direction: column;
-  }
-`
-
-const PriceAndTradesExpandedWrapper = styled(Box)`
-  background-color: var(--tab-secondary--content--background-color);
-`
-
-const ExpandButton = styled(Button)`
-  margin: auto var(--spacing-3) auto auto;
-  display: flex;
-  align-content: center;
-  color: inherit;
-  font-size: var(--font-size-2);
-`
-
-const ExpandIcon = styled(Icon)`
-  margin-left: var(--spacing-1);
 `
 
 export default Page

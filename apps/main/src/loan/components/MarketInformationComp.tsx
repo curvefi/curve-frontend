@@ -21,7 +21,6 @@ type MarketInformationCompProps = {
   llamma: Llamma | null
   marketId: string
   chainId: ChainId
-  chartExpanded: boolean
   page?: 'create' | 'manage'
 }
 
@@ -30,13 +29,7 @@ const EMPTY_BANDS_BALANCES: never[] = []
 /**
  * Reusable component for OHLC charts, Bands, and market parameters. For /create and /manage pages.
  */
-export const MarketInformationComp = ({
-  llamma,
-  marketId,
-  chainId,
-  chartExpanded,
-  page = 'manage',
-}: MarketInformationCompProps) => {
+export const MarketInformationComp = ({ llamma, marketId, chainId, page = 'manage' }: MarketInformationCompProps) => {
   const { llamaApi: api } = useConnection()
   const theme = useTheme()
   const newBandsChartEnabled = useNewBandsChart()
@@ -61,31 +54,29 @@ export const MarketInformationComp = ({
 
   return (
     <>
-      {!chartExpanded && (
-        <Stack
-          display={{ mobile: 'block', tablet: newBandsChartEnabled ? 'grid' : undefined }}
-          gridTemplateColumns={{ tablet: newBandsChartEnabled ? '1fr 0.5fr' : undefined }}
-          sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, gap: Spacing.md, padding: Spacing.md }}
-        >
-          <ChartOhlcWrapper
-            rChainId={chainId}
-            llammaId={marketId}
-            llamma={llamma}
-            betaBackgroundColor={theme.design.Layer[1].Fill}
+      <Stack
+        display={{ mobile: 'block', tablet: newBandsChartEnabled ? 'grid' : undefined }}
+        gridTemplateColumns={{ tablet: newBandsChartEnabled ? '1fr 0.5fr' : undefined }}
+        sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, gap: Spacing.md, padding: Spacing.md }}
+      >
+        <ChartOhlcWrapper
+          rChainId={chainId}
+          llammaId={marketId}
+          llamma={llamma}
+          betaBackgroundColor={theme.design.Layer[1].Fill}
+        />
+        {newBandsChartEnabled && (
+          <BandsChart
+            isLoading={isBandsLoading}
+            isError={isBandsError}
+            collateralToken={collateralToken}
+            borrowToken={borrowToken}
+            chartData={chartData}
+            userBandsBalances={userBandsBalances ?? EMPTY_BANDS_BALANCES}
+            oraclePrice={oraclePrice}
           />
-          {newBandsChartEnabled && (
-            <BandsChart
-              isLoading={isBandsLoading}
-              isError={isBandsError}
-              collateralToken={collateralToken}
-              borrowToken={borrowToken}
-              chartData={chartData}
-              userBandsBalances={userBandsBalances ?? EMPTY_BANDS_BALANCES}
-              oraclePrice={oraclePrice}
-            />
-          )}
-        </Stack>
-      )}
+        )}
+      </Stack>
       {isAdvancedMode && !newBandsChartEnabled && (
         <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, gap: Spacing.md, padding: Spacing.md }}>
           <BandsComp llamma={llamma} llammaId={marketId} page={page} />
