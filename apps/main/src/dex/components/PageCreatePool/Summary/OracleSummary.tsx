@@ -1,5 +1,6 @@
 import { styled } from 'styled-components'
 import { isAddress } from 'viem'
+import { NG_ASSET_TYPE } from '@/dex/components/PageCreatePool/constants'
 import {
   CategoryDataRow,
   SummaryDataTitle,
@@ -39,28 +40,28 @@ const OracleSummary = ({ chainId }: Props) => {
 
   return (
     <OraclesWrapper>
-      {tokenA.ngAssetType === 1 && tokenA.address !== '' && (
+      {tokenA.ngAssetType === NG_ASSET_TYPE.ORACLE && tokenA.address !== '' && (
         <OracleTokenSummary chainId={chainId} token={tokenA} title={t`Token A`} />
       )}
-      {tokenB.ngAssetType === 1 && tokenB.address !== '' && (
+      {tokenB.ngAssetType === NG_ASSET_TYPE.ORACLE && tokenB.address !== '' && (
         <OracleTokenSummary chainId={chainId} token={tokenB} title={t`Token B`} />
       )}
-      {tokenC.ngAssetType === 1 && tokenC.address !== '' && (
+      {tokenC.ngAssetType === NG_ASSET_TYPE.ORACLE && tokenC.address !== '' && (
         <OracleTokenSummary chainId={chainId} token={tokenC} title={t`Token C`} />
       )}
-      {tokenD.ngAssetType === 1 && tokenD.address !== '' && (
+      {tokenD.ngAssetType === NG_ASSET_TYPE.ORACLE && tokenD.address !== '' && (
         <OracleTokenSummary chainId={chainId} token={tokenD} title={t`Token D`} />
       )}
-      {tokenD.ngAssetType === 1 && tokenE.address !== '' && (
+      {tokenD.ngAssetType === NG_ASSET_TYPE.ORACLE && tokenE.address !== '' && (
         <OracleTokenSummary chainId={chainId} token={tokenE} title={t`Token E`} />
       )}
-      {tokenD.ngAssetType === 1 && tokenF.address !== '' && (
+      {tokenD.ngAssetType === NG_ASSET_TYPE.ORACLE && tokenF.address !== '' && (
         <OracleTokenSummary chainId={chainId} token={tokenF} title={t`Token F`} />
       )}
-      {tokenD.ngAssetType === 1 && tokenG.address !== '' && (
+      {tokenD.ngAssetType === NG_ASSET_TYPE.ORACLE && tokenG.address !== '' && (
         <OracleTokenSummary chainId={chainId} token={tokenG} title={t`Token G`} />
       )}
-      {tokenD.ngAssetType === 1 && tokenH.address !== '' && (
+      {tokenD.ngAssetType === NG_ASSET_TYPE.ORACLE && tokenH.address !== '' && (
         <OracleTokenSummary chainId={chainId} token={tokenH} title={t`Token H`} />
       )}
     </OraclesWrapper>
