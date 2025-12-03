@@ -9,8 +9,8 @@ export const getPath = ({ network }: UrlParams, route: string) => getInternalUrl
 export const getCollateralListPathname = ({ network }: NetworkUrlParams) =>
   getInternalUrl('llamalend', network, LLAMALEND_ROUTES.PAGE_MARKETS)
 
-const getMarketPathname = (params: UrlParams, marketId: string, page: LendMarketRoute) =>
-  `${getCollateralListPathname(params)}/${marketId}${page}`
+const getMarketPathname = ({ network }: UrlParams, marketId: string, page: LendMarketRoute) =>
+  `${getInternalUrl('lend', network, ROUTE.PAGE_MARKETS)}/${marketId}${page}`
 
 export const getLoanCreatePathname = (params: UrlParams, marketId: string) =>
   getMarketPathname(params, marketId, ROUTE.PAGE_CREATE)
