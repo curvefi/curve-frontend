@@ -29,7 +29,7 @@ export const RepayForm = <ChainId extends IChainId>({
   networks: NetworkDict<ChainId>
   chainId: ChainId
   enabled?: boolean
-  onRepaid?: NonNullable<RepayOptions['onRepaid']>
+  onRepaid?: RepayOptions['onRepaid']
   fromCollateral?: boolean
   fromWallet?: boolean
   fromBorrowed?: boolean
