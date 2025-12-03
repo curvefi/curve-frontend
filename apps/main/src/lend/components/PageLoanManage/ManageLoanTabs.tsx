@@ -12,7 +12,7 @@ import { useClosePositionTab } from '@/llamalend/features/manage-soft-liquidatio
 import { useImproveHealthTab } from '@/llamalend/features/manage-soft-liquidation/hooks/useImproveHealthTab'
 import { ClosePosition } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ClosePosition'
 import { ImproveHealth } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ImproveHealth'
-import { useManageLoanMuiForm } from '@ui-kit/hooks/useFeatureFlags'
+import { useManageLoanMuiForm, useManageSoftLiquidation } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { type FormTab, FormTabs } from '@ui-kit/shared/ui/FormTabs/FormTabs'
 
@@ -74,6 +74,9 @@ export const LendManageNewMenu = [
       { value: 'remove', label: t`Remove`, component: LoanRemoveCollateralTab },
     ],
   },
+] satisfies FormTab<ManageLoanProps>[]
+
+export const LendManageSoftLiquidationMenu = [
   {
     value: 'soft-liquidation',
     label: t`Manage soft liquidation`,
@@ -84,13 +87,22 @@ export const LendManageNewMenu = [
   },
 ] satisfies FormTab<ManageLoanProps>[]
 
-export const ManageLoanTabs = (pageProps: ManageLoanProps) => {
+export const ManageLoanTabs = ({
+  isInSoftLiquidation,
+  ...pageProps
+}: ManageLoanProps & { isInSoftLiquidation: boolean | undefined }) => {
+  const shouldUseSoftLiquidation = useManageSoftLiquidation() && isInSoftLiquidation
   const shouldUseManageLoanMuiForm = useManageLoanMuiForm()
+  const menu = shouldUseSoftLiquidation
+    ? LendManageSoftLiquidationMenu
+    : shouldUseManageLoanMuiForm
+      ? LendManageNewMenu
+      : LendManageLegacyMenu
   return (
     <FormTabs<ManageLoanProps>
       params={pageProps}
-      menu={shouldUseManageLoanMuiForm ? LendManageNewMenu : LendManageLegacyMenu}
-      shouldWrap={!shouldUseManageLoanMuiForm}
+      menu={menu}
+      shouldWrap={menu === LendManageLegacyMenu}
       defaultTab={pageProps.rFormType}
     />
   )

@@ -16,7 +16,6 @@ import useStore from '@/lend/store/useStore'
 import { type MarketUrlParams } from '@/lend/types/lend.types'
 import { getVaultPathname, parseMarketParams } from '@/lend/utils/helpers'
 import { getCollateralListPathname } from '@/lend/utils/utilsRouter'
-import { ManageSoftLiquidation } from '@/llamalend/features/manage-soft-liquidation'
 import { MarketDetails } from '@/llamalend/features/market-details'
 import { BorrowPositionDetails, NoPosition } from '@/llamalend/features/market-position-details'
 import { UserPositionHistory } from '@/llamalend/features/user-position-history'
@@ -30,7 +29,6 @@ import Box from '@ui/Box'
 import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useParams } from '@ui-kit/hooks/router'
-import { useManageSoftLiquidation } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
@@ -46,7 +44,6 @@ const Page = () => {
   const { data: market, isSuccess } = useOneWayMarket(rChainId, rMarket)
   const rOwmId = market?.id ?? ''
   const userActiveKey = helpers.getUserActiveKey(api, market!)
-  const isMdUp = useLayoutStore((state) => state.isMdUp)
   const isPageVisible = useLayoutStore((state) => state.isPageVisible)
   const fetchAllMarketDetails = useStore((state) => state.markets.fetchAll)
   const fetchAllUserMarketDetails = useStore((state) => state.user.fetchAll)
@@ -88,9 +85,8 @@ const Page = () => {
     network,
   })
 
-  const isManageSoftLiq =
-    useManageSoftLiquidation() &&
-    (borrowPositionDetails.liquidationAlert.softLiquidation || borrowPositionDetails.liquidationAlert.hardLiquidation)
+  const isInSoftLiquidation =
+    borrowPositionDetails.liquidationAlert.softLiquidation || borrowPositionDetails.liquidationAlert.hardLiquidation
 
   // set tabs
   const DETAIL_INFO_TYPES: { key: DetailInfoTypes; label: string }[] = [{ label: t`Market Details`, key: 'market' }]
@@ -142,13 +138,7 @@ const Page = () => {
     <>
       <DetailPageStack>
         <AppPageFormsWrapper>
-          {rChainId &&
-            rOwmId &&
-            (isManageSoftLiq ? (
-              <ManageSoftLiquidation marketId={rOwmId} chainId={rChainId} network={network} />
-            ) : (
-              <ManageLoanTabs {...pageProps} />
-            ))}
+          {rChainId && rOwmId && <ManageLoanTabs isInSoftLiquidation={isInSoftLiquidation} {...pageProps} />}
         </AppPageFormsWrapper>
         <Stack flexDirection="column" flexGrow={1} sx={{ gap: Spacing.md }}>
           <CampaignRewardsBanner
