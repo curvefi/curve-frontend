@@ -38,9 +38,9 @@ const { Spacing } = SizesAndSpaces
 
 export const LendMarketPage = () => {
   const params = useParams<MarketUrlParams>()
-  const { rMarket: marketId, rChainId: chainId } = parseMarketParams(params)
+  const { rMarket, rChainId: chainId } = parseMarketParams(params)
 
-  const { data: market, isSuccess } = useOneWayMarket(chainId, marketId)
+  const { data: market, isSuccess } = useOneWayMarket(chainId, rMarket)
   const { llamaApi: api = null, connectState } = useConnection()
   const titleMapper = useTitleMapper()
   const { provider, connect } = useWallet()
@@ -51,9 +51,10 @@ export const LendMarketPage = () => {
   const fetchAllUserMarketDetails = useStore((state) => state.user.fetchAll)
   const setMarketsStateKey = useStore((state) => state.markets.setStateByKey)
 
+  const marketId = market?.id ?? '' // todo: use market?.id directly everywhere since we pass the market too!
   const userActiveKey = helpers.getUserActiveKey(api, market!)
   const { signerAddress } = api ?? {}
-  useLendPageTitle(market?.collateral_token?.symbol ?? marketId)
+  useLendPageTitle(market?.collateral_token?.symbol ?? rMarket)
 
   const marketDetails = useMarketDetails({ chainId, market, marketId })
   const network = networks[chainId]
@@ -78,7 +79,7 @@ export const LendMarketPage = () => {
 
   const [isLoaded, setLoaded] = useState(false)
 
-  const borrowPositionDetails = useBorrowPositionDetails({ chainId, market: market, marketId: marketId })
+  const borrowPositionDetails = useBorrowPositionDetails({ chainId, market: market, marketId })
 
   useEffect(() => {
     // delay fetch rest after form details are fetched first
