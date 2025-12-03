@@ -8,9 +8,11 @@ export const validateUserBorrowed = (userBorrowed: Decimal | null | undefined) =
   })
 }
 
-export const validateUserCollateral = (userCollateral: Decimal | undefined | null) => {
+export const validateUserCollateral = (userCollateral: Decimal | undefined | null, required: boolean = true) => {
   test('userCollateral', `Collateral amount must be a positive number`, () => {
-    enforce(userCollateral).isNumeric().gt(0)
+    if (required || userCollateral != null) {
+      enforce(userCollateral).isNumeric().gt(0)
+    }
   })
 }
 

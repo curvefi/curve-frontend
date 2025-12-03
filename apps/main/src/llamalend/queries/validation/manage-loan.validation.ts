@@ -38,7 +38,7 @@ export const collateralValidationSuite = createValidationSuite((params: Collater
 )
 
 export const collateralFormValidationSuite = createValidationSuite((params: CollateralForm) => {
-  validateUserCollateral(params.userCollateral)
+  validateUserCollateral(params.userCollateral, false)
   validateMaxCollateral(params.userCollateral, params.maxCollateral)
 })
 
