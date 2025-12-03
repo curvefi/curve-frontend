@@ -16,6 +16,7 @@ import {
   TOKEN_F,
   TOKEN_G,
   TOKEN_H,
+  NG_ASSET_TYPE,
 } from '@/dex/components/PageCreatePool/constants'
 import { CreateToken, NgAssetType, SwapType, TokenId, TokenState } from '@/dex/components/PageCreatePool/types'
 import { isTricrypto } from '@/dex/components/PageCreatePool/utils'
@@ -114,6 +115,7 @@ export type CreatePoolSlice = {
     ) => void
     clearToken: (tokenId: TokenId) => void
     updateNgAssetType: (tokenId: TokenId, value: NgAssetType) => void
+    updateTokenErc4626Status: (tokenId: TokenId, status: TokenState['erc4626']) => void
     updateOracleAddress: (tokenId: TokenId, oracleAddress: string) => void
     updateOracleFunction: (tokenId: TokenId, oracleFunction: string) => void
     updateUserAddedTokens: (address: string, symbol: string, haveSameTokenName: boolean, basePool: boolean) => void
@@ -143,6 +145,23 @@ export type CreatePoolSlice = {
   }
 }
 
+export const DEFAULT_ERC4626_STATUS: TokenState['erc4626'] = {
+  isErc4626: false,
+  isLoading: false,
+  isError: false,
+  isSuccess: false,
+}
+
+const DEFAULT_TOKEN_STATE: TokenState = {
+  address: '',
+  symbol: '',
+  ngAssetType: NG_ASSET_TYPE.STANDARD,
+  basePool: false,
+  oracleAddress: '',
+  oracleFunction: '',
+  erc4626: { ...DEFAULT_ERC4626_STATUS },
+}
+
 export const DEFAULT_CREATE_POOL_STATE = {
   navigationIndex: 0,
   advanced: false,
@@ -152,68 +171,28 @@ export const DEFAULT_CREATE_POOL_STATE = {
     tokenAmount: 2,
     metaPoolToken: false,
     [TOKEN_A]: {
-      address: '',
-      symbol: '',
-      ngAssetType: 0,
-      basePool: false,
-      oracleAddress: '',
-      oracleFunction: '',
+      ...DEFAULT_TOKEN_STATE,
     },
     [TOKEN_B]: {
-      address: '',
-      symbol: '',
-      ngAssetType: 0,
-      basePool: false,
-      oracleAddress: '',
-      oracleFunction: '',
+      ...DEFAULT_TOKEN_STATE,
     },
     [TOKEN_C]: {
-      address: '',
-      symbol: '',
-      ngAssetType: 0,
-      basePool: false,
-      oracleAddress: '',
-      oracleFunction: '',
+      ...DEFAULT_TOKEN_STATE,
     },
     [TOKEN_D]: {
-      address: '',
-      symbol: '',
-      ngAssetType: 0,
-      basePool: false,
-      oracleAddress: '',
-      oracleFunction: '',
+      ...DEFAULT_TOKEN_STATE,
     },
     [TOKEN_E]: {
-      address: '',
-      symbol: '',
-      ngAssetType: 0,
-      basePool: false,
-      oracleAddress: '',
-      oracleFunction: '',
+      ...DEFAULT_TOKEN_STATE,
     },
     [TOKEN_F]: {
-      address: '',
-      symbol: '',
-      ngAssetType: 0,
-      basePool: false,
-      oracleAddress: '',
-      oracleFunction: '',
+      ...DEFAULT_TOKEN_STATE,
     },
     [TOKEN_G]: {
-      address: '',
-      symbol: '',
-      ngAssetType: 0,
-      basePool: false,
-      oracleAddress: '',
-      oracleFunction: '',
+      ...DEFAULT_TOKEN_STATE,
     },
     [TOKEN_H]: {
-      address: '',
-      symbol: '',
-      ngAssetType: 0,
-      basePool: false,
-      oracleAddress: '',
-      oracleFunction: '',
+      ...DEFAULT_TOKEN_STATE,
     },
   },
   initialPrice: {
@@ -427,12 +406,30 @@ const createCreatePoolSlice = (
       tokensInPoolUpdates.tokenA = {
         ...tokenA,
         basePool: tokenA.basePool,
-        ngAssetType: tokenA.basePool ? 0 : get().createPool.tokensInPool[TOKEN_A].ngAssetType,
+        ngAssetType: tokenA.basePool ? NG_ASSET_TYPE.STANDARD : get().createPool.tokensInPool[TOKEN_A].ngAssetType,
       }
       tokensInPoolUpdates.tokenB = {
         ...tokenB,
         basePool: tokenB.basePool,
-        ngAssetType: tokenB.basePool ? 0 : get().createPool.tokensInPool[TOKEN_B].ngAssetType,
+        ngAssetType: tokenB.basePool ? NG_ASSET_TYPE.STANDARD : get().createPool.tokensInPool[TOKEN_B].ngAssetType,
+      }
+
+      const syncErc4626Statuses = () => {
+        const latestTokens = get().createPool.tokensInPool
+
+        const cloneWithStatus = (tokenId: TokenId, tokenValue: TokenState) => ({
+          ...tokenValue,
+          erc4626: { ...latestTokens[tokenId].erc4626 },
+        })
+
+        tokensInPoolUpdates.tokenA = cloneWithStatus(TOKEN_A, tokensInPoolUpdates.tokenA)
+        tokensInPoolUpdates.tokenB = cloneWithStatus(TOKEN_B, tokensInPoolUpdates.tokenB)
+        tokensInPoolUpdates.tokenC = cloneWithStatus(TOKEN_C, tokensInPoolUpdates.tokenC)
+        tokensInPoolUpdates.tokenD = cloneWithStatus(TOKEN_D, tokensInPoolUpdates.tokenD)
+        tokensInPoolUpdates.tokenE = cloneWithStatus(TOKEN_E, tokensInPoolUpdates.tokenE)
+        tokensInPoolUpdates.tokenF = cloneWithStatus(TOKEN_F, tokensInPoolUpdates.tokenF)
+        tokensInPoolUpdates.tokenG = cloneWithStatus(TOKEN_G, tokensInPoolUpdates.tokenG)
+        tokensInPoolUpdates.tokenH = cloneWithStatus(TOKEN_H, tokensInPoolUpdates.tokenH)
       }
 
       const initialPriceUpdates = {
@@ -480,6 +477,8 @@ const createCreatePoolSlice = (
         calculateInitialPrice(initialPriceUpdates.tokenA, initialPriceUpdates.tokenC),
       ]
 
+      syncErc4626Statuses()
+
       set(
         produce((state) => {
           state.createPool.tokensInPool = tokensInPoolUpdates
@@ -501,6 +500,13 @@ const createCreatePoolSlice = (
       set(
         produce((state) => {
           state.createPool.tokensInPool[tokenId].ngAssetType = value
+        }),
+      )
+    },
+    updateTokenErc4626Status: (tokenId: TokenId, status: TokenState['erc4626']) => {
+      set(
+        produce((state) => {
+          state.createPool.tokensInPool[tokenId].erc4626 = { ...status }
         }),
       )
     },
@@ -1047,8 +1053,8 @@ const createCreatePoolSlice = (
         if (networks[chainId].stableswapFactory) {
           // STABLE NG META
           try {
-            const oracleAddress = coin.ngAssetType === 1 ? coin.oracleAddress : zeroAddress
-            const oracleFunction = coin.ngAssetType === 1 ? coin.oracleFunction : '0x00000000'
+            const oracleAddress = coin.ngAssetType === NG_ASSET_TYPE.ORACLE ? coin.oracleAddress : zeroAddress
+            const oracleFunction = coin.ngAssetType === NG_ASSET_TYPE.ORACLE ? coin.oracleFunction : '0x00000000'
             const maExpTimeFormatted = Math.round(+maExpTime / 0.693)
 
             const deployPoolTx = await curve.stableNgFactory.deployMetaPool(
@@ -1136,8 +1142,12 @@ const createCreatePoolSlice = (
           try {
             const coinAddresses = coins.map((coin) => coin.address)
             const assetTypes = coins.map((coin) => coin.ngAssetType)
-            const oracleAddresses = coins.map((coin) => (coin.ngAssetType === 1 ? coin.oracleAddress : zeroAddress))
-            const oracleFunctions = coins.map((coin) => (coin.ngAssetType === 1 ? coin.oracleFunction : '0x00000000'))
+            const oracleAddresses = coins.map((coin) =>
+              coin.ngAssetType === NG_ASSET_TYPE.ORACLE ? coin.oracleAddress : zeroAddress,
+            )
+            const oracleFunctions = coins.map((coin) =>
+              coin.ngAssetType === NG_ASSET_TYPE.ORACLE ? coin.oracleFunction : '0x00000000',
+            )
             const maExpTimeFormatted = Math.round(+maExpTime / 0.693)
 
             const deployPoolTx = await curve.stableNgFactory.deployPlainPool(

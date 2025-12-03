@@ -31,6 +31,12 @@ export type TokenState = {
   oracleAddress: string
   oracleFunction: string
   basePool: boolean
+  erc4626: {
+    isErc4626: boolean | undefined
+    isLoading: boolean
+    isError: boolean
+    isSuccess: boolean
+  }
 }
 
 export type TokensInPoolState = CreatePoolSlice['createPool']['tokensInPool']
