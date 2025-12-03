@@ -1,5 +1,5 @@
 import lodash from 'lodash'
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import type { Address } from '@curvefi/prices-api'
 import type { VisibilityVariants } from '@ui-kit/shared/ui/DataTable/visibility.types'
 import { defaultReleaseChannel, ReleaseChannel } from '@ui-kit/utils'
@@ -70,15 +70,17 @@ export const useFavoriteMarkets = () => {
   return useLocalStorage<Address[]>('favoriteMarkets', initialValue)
 }
 
-const ONE_MONTH_MS = 30 * 24 * 60 * 60 * 1000 // 30 days in milliseconds
+export const useDismissBanner = (bannerKey: string, expirationTime: number) => {
+  const [dismissedAt, setDismissedAt] = useLocalStorage<number | null>(bannerKey, null)
 
-export const usePhishingWarningDismissed = () => {
-  const [dismissedAt, setDismissedAt] = useLocalStorage<number | null>('phishing-warning-dismissed', null)
-
-  const shouldShowPhishingWarning = useMemo(
-    () => dismissedAt == null || Date.now() - dismissedAt >= ONE_MONTH_MS, // Show if dismissed more than a month ago
+  const shouldShowBanner = useMemo(
+    () => dismissedAt == null || Date.now() - dismissedAt >= expirationTime, // Show if dismissed more than the expiration time
     [dismissedAt],
   )
 
-  return { dismissedAt, setDismissedAt, shouldShowPhishingWarning }
+  const dismissBanner = useCallback(() => {
+    setDismissedAt(Date.now())
+  }, [setDismissedAt])
+
+  return { shouldShowBanner, dismissBanner }
 }

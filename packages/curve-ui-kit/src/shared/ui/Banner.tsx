@@ -12,10 +12,10 @@ import { ArrowTopRightIcon } from '@ui-kit/shared/icons/ArrowTopRightIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { ChangeTheme, InvertTheme } from './ThemeProvider'
 
-type BannerSeverity = 'default' | 'highlight' | 'warning' | 'alert'
+type BannerSeverity = 'info' | 'highlight' | 'warning' | 'alert'
 
 const WrapperSx: Record<BannerSeverity, SxProps<Theme>> = {
-  default: {
+  info: {
     border: (t) => `1px solid ${t.design.Layer.Highlight.Outline}`,
     backgroundColor: (t) => t.design.Layer[1].Fill,
   },
@@ -27,15 +27,27 @@ const WrapperSx: Record<BannerSeverity, SxProps<Theme>> = {
   warning: { backgroundColor: (t) => t.design.Layer.Feedback.Warning },
 }
 
-const TitleColor: Record<BannerSeverity, TypographyProps['color']> = {
-  default: 'textHighlight',
-  alert: 'textPrimary',
-  warning: 'textPrimary',
-  highlight: 'textPrimary',
+const TitlesSx: Record<BannerSeverity, { title: SxProps<Theme>; subtitle: SxProps<Theme> }> = {
+  info: {
+    title: { color: (t) => t.design.Text.TextColors.FilledFeedback.Info.Primary },
+    subtitle: { color: (t) => t.design.Text.TextColors.FilledFeedback.Info.Secondary },
+  },
+  alert: {
+    title: { color: (t) => t.design.Text.TextColors.FilledFeedback.Alert.Primary },
+    subtitle: { color: (t) => t.design.Text.TextColors.FilledFeedback.Alert.Secondary },
+  },
+  warning: {
+    title: { color: (t) => t.design.Text.TextColors.FilledFeedback.Warning.Primary },
+    subtitle: { color: (t) => t.design.Text.TextColors.FilledFeedback.Warning.Secondary },
+  },
+  highlight: {
+    title: { color: (t) => t.design.Text.TextColors.FilledFeedback.Highlight.Primary },
+    subtitle: { color: (t) => t.design.Text.TextColors.FilledFeedback.Highlight.Secondary },
+  },
 }
 
 const TitleInverted: Record<BannerSeverity, boolean> = {
-  default: false,
+  info: false,
   alert: true,
   warning: false,
   highlight: true,
@@ -43,20 +55,7 @@ const TitleInverted: Record<BannerSeverity, boolean> = {
 
 const { MaxWidth, Spacing } = SizesAndSpaces
 
-/**
- * Banner message component used to display important information with different severity levels.
- * This is not complete yet: it doesn't support a subtitle or a close button from the design system.
- */
-export const Banner = ({
-  onClick,
-  buttonText,
-  children,
-  severity = 'default',
-  learnMoreUrl,
-  color,
-  subtitle,
-  testId,
-}: {
+export type BannerProps = {
   onClick?: () => void
   buttonText?: string
   children: ReactNode
@@ -65,7 +64,21 @@ export const Banner = ({
   color?: TypographyProps['color']
   subtitle?: ReactNode
   testId?: string
-}) => (
+}
+
+/**
+ * Banner message component used to display important information with different severity levels.
+ */
+export const Banner = ({
+  onClick,
+  buttonText,
+  children,
+  severity = 'info',
+  learnMoreUrl,
+  color,
+  subtitle,
+  testId,
+}: BannerProps) => (
   <Card
     sx={{
       display: 'flex',
@@ -80,12 +93,12 @@ export const Banner = ({
     <Stack direction="column" width="100%" maxWidth={MaxWidth.banner}>
       <Stack direction="row" alignItems="center" justifyContent="space-between">
         <InvertTheme inverted={TitleInverted[severity]}>
-          <Typography color={color ?? TitleColor[severity]} variant="headingXsBold">
+          <Typography color={color} sx={!color ? TitlesSx[severity].title : undefined} variant="headingXsBold">
             {children}
           </Typography>
         </InvertTheme>
         <Stack direction="row" alignItems="center" justifyContent="start" height="100%">
-          {/* fixme: currently using light theme on dark theme */}
+          {/* todo: currently using light theme on dark theme */}
           <ChangeTheme to={color === '#000' && 'light'}>
             {learnMoreUrl && (
               <Button
@@ -114,7 +127,7 @@ export const Banner = ({
         </Stack>
       </Stack>
       <Stack direction="row" alignItems="center" justifyContent="start" height="100%">
-        <Typography color="textSecondary" variant="bodySRegular">
+        <Typography sx={TitlesSx[severity].subtitle} variant="bodySRegular">
           {subtitle}
         </Typography>
       </Stack>
