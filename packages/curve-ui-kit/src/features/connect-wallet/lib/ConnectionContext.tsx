@@ -29,7 +29,6 @@ export const ConnectionContext = createContext<ConnectionContextValue>({
 
 /**
  * Detects if the wallet is in the process of reconnecting.
- * - `useConnection` and `useClient` are not always in sync, so check both
  * - `isReconnecting` is set when switching pages
  * - `isConnecting` is set when the wallet gets flipped from connecting to connected when loading,
  *   especially without any wallet plugin
