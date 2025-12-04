@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { styled } from 'styled-components'
 import type { Address } from 'viem'
-import { useAccount } from 'wagmi'
+import { useConnection as useWagmiConnection } from 'wagmi'
 import { MarketDetails } from '@/llamalend/features/market-details'
 import { NoPosition } from '@/llamalend/features/market-position-details'
 import { UserPositionHistory } from '@/llamalend/features/user-position-history'
@@ -49,7 +49,7 @@ const Page = () => {
   const { isHydrated, llamaApi: curve = null, connectState } = useConnection()
   const rChainId = useChainId(params)
   const { connect: connectWallet, provider } = useWallet()
-  const { address } = useAccount()
+  const { address } = useWagmiConnection()
   const [loaded, setLoaded] = useState(false)
 
   const market = useMintMarket({ chainId: rChainId, marketId: rCollateralId })

@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { styled } from 'styled-components'
-import { useAccount } from 'wagmi'
+import { useConnection as useWagmiConnection } from 'wagmi'
 import FormCrvLocker from '@/dao/components/PageVeCrv/index'
 import type { FormType } from '@/dao/components/PageVeCrv/types'
 import { useLockerVecrvInfo } from '@/dao/entities/locker-vecrv-info'
@@ -25,7 +25,7 @@ export const PageVeCrv = () => {
   const rChainId = networksIdMapper[network]
   const isLoadingCurve = isLoading(connectState)
 
-  const { address: userAddress } = useAccount()
+  const { address: userAddress } = useWagmiConnection()
 
   const { data: vecrvInfo } = useLockerVecrvInfo({ chainId: curveApi?.chainId, userAddress })
   const resetState = useStore((state) => state.lockedCrv.resetState)

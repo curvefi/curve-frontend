@@ -1,5 +1,5 @@
 import { styled } from 'styled-components'
-import { useAccount } from 'wagmi'
+import { useConnection as useWagmiConnection } from 'wagmi'
 import PoolCreation from '@/dex/components/PageCreatePool/index'
 import Box from '@ui/Box'
 import { breakpoints } from '@ui/utils/responsive'
@@ -8,7 +8,7 @@ import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-ki
 export const PageCreatePool = () => {
   const { curveApi = null, connectState } = useConnection()
   const { connect: connectWallet } = useWallet()
-  const { address } = useAccount()
+  const { address } = useWagmiConnection()
 
   if (address && curveApi) {
     return (

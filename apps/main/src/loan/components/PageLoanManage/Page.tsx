@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Address } from 'viem'
-import { useAccount } from 'wagmi'
+import { useConnection as useWagmiConnection } from 'wagmi'
 import { ManageSoftLiquidation } from '@/llamalend/features/manage-soft-liquidation'
 import { MarketDetails } from '@/llamalend/features/market-details'
 import { BorrowPositionDetails, NoPosition } from '@/llamalend/features/market-position-details'
@@ -42,7 +42,7 @@ const Page = () => {
   const push = useNavigate()
   const { connectState, llamaApi: curve = null, isHydrated } = useConnection()
   const rChainId = useChainId(params)
-  const { address } = useAccount()
+  const { address } = useWagmiConnection()
 
   const market = useMintMarket({ chainId: rChainId, marketId: rCollateralId })
   const marketId = market?.id ?? ''

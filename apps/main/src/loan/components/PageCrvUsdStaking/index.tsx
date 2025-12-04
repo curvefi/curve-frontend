@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { useEffect } from 'react'
-import { useAccount } from 'wagmi'
+import { useConnection as useWagmiConnection } from 'wagmi'
 import DepositWithdraw from '@/loan/components/PageCrvUsdStaking/DepositWithdraw'
 import Statistics from '@/loan/components/PageCrvUsdStaking/Statistics'
 import StatsBanner from '@/loan/components/PageCrvUsdStaking/StatsBanner'
@@ -27,7 +27,7 @@ const CrvUsdStaking = ({ params }: { params: NetworkUrlParams }) => {
   const stakingModule = useStore((state) => state.scrvusd.stakingModule)
   const { llamaApi: lendApi = null } = useConnection()
   const chainId = lendApi?.chainId
-  const { address, isConnecting } = useAccount()
+  const { address, isConnecting } = useWagmiConnection()
 
   const {
     data: userScrvUsdBalance,

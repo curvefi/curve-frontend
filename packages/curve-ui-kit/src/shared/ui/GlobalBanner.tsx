@@ -1,4 +1,4 @@
-import { useAccount, useChainId, useSwitchChain } from 'wagmi'
+import { useChainId, useConnection as useWagmiConnection, useSwitchChain } from 'wagmi'
 import Box from '@mui/material/Box'
 import { useTheme } from '@mui/material/styles'
 import { isFailure, useConnection, type WagmiChainId } from '@ui-kit/features/connect-wallet'
@@ -21,7 +21,7 @@ const maintenanceMessage = process.env.NEXT_PUBLIC_MAINTENANCE_MESSAGE
 
 export const GlobalBanner = ({ networkId, chainId }: GlobalBannerProps) => {
   const [releaseChannel, setReleaseChannel] = useReleaseChannel()
-  const { isConnected } = useAccount()
+  const { isConnected } = useWagmiConnection()
   const { switchChain } = useSwitchChain()
   const { connectState } = useConnection()
   const walletChainId = useChainId()

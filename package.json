@@ -76,7 +76,6 @@
     "vite": "7.2.6",
     "vitest": "^4.0.15",
     "esbuild": "0.27.1",
-    "path-to-regexp": "8.3.0",
     "zustand": "5.0.9"
   }
 }

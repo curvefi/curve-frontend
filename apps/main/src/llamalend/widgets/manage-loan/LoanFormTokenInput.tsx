@@ -1,7 +1,7 @@
 import { type ReactNode, useCallback, useMemo } from 'react'
 import type { FieldPath, FieldPathValue, FieldValues, UseFormReturn } from 'react-hook-form'
 import type { Address } from 'viem'
-import { useAccount } from 'wagmi'
+import { useConnection } from 'wagmi'
 import { setValueOptions } from '@/llamalend/features/borrow/react-form.utils'
 import type { LlamaNetwork } from '@/llamalend/llamalend.types'
 import type { Query } from '@/llamalend/widgets/manage-loan/loan.types'
@@ -44,7 +44,7 @@ export const LoanFormTokenInput = <
   message?: ReactNode
   network: LlamaNetwork
 }) => {
-  const { address: userAddress } = useAccount()
+  const { address: userAddress } = useConnection()
   const {
     data: balance,
     isLoading: isBalanceLoading,
