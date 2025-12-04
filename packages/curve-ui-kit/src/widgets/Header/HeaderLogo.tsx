@@ -37,17 +37,17 @@ export const HeaderLogo = ({ currentMenu, isLite, sx }: HeaderLogoProps) => (
       >
         {APP_NAMES[currentMenu]}
       </Typography>
-      {currentMenu === 'dex'
-        ? isLite && (
-            <Typography variant="bodyXsBold" color="textTertiary">
-              Lite
-            </Typography>
-          )
-        : currentMenu !== 'analytics' && (
-            <Typography variant="bodyXsRegular" color="textTertiary">
-              powered by Curve
-            </Typography>
-          )}
+      {currentMenu === 'dex' && isLite ? (
+        <Typography variant="bodyXsRegular" color="textTertiary">
+          Lite
+        </Typography>
+      ) : (
+        APP_NAMES[currentMenu] !== 'Curve' && (
+          <Typography variant="bodyXsRegular" color="textTertiary">
+            powered by Curve
+          </Typography>
+        )
+      )}
     </Box>
   </RouterLink>
 )
