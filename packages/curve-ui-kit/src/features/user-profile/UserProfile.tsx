@@ -2,7 +2,7 @@ import PersonIcon from '@mui/icons-material/Person'
 import Drawer from '@mui/material/Drawer'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
-import { useWagmiConnection } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
+import { useAccount } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
 import { Settings } from '@ui-kit/features/user-profile/settings/Settings'
 import { UserProfileHeader } from '@ui-kit/features/user-profile/UserProfileHeader'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
@@ -12,7 +12,7 @@ const { Spacing, Width } = SizesAndSpaces
 
 export const UserProfile = () => {
   const [isOpen, open, close] = useSwitch(false)
-  const { address: walletAddress } = useWagmiConnection()
+  const { address: walletAddress } = useAccount()
   return (
     <>
       <IconButton size="small" onClick={open} data-testid="user-profile-button">

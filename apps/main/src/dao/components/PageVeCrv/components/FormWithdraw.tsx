@@ -13,7 +13,7 @@ import Box from '@ui/Box'
 import Button from '@ui/Button'
 import TxInfoBar from '@ui/TxInfoBar'
 import { formatNumber } from '@ui/utils/utilsFormat'
-import { useWagmiConnection } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
+import { useAccount } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
 import { t } from '@ui-kit/lib/i18n'
 import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -25,7 +25,7 @@ const FormWithdraw = ({ rChainId, vecrvInfo }: PageVecrv) => {
   const withdrawLockedCrvStatus = useStore((state) => state.lockedCrv.withdrawLockedCrvStatus)
   const [txInfoBar, setTxInfoBar] = useState<ReactNode | null>(null)
 
-  const { address } = useWagmiConnection()
+  const { address } = useAccount()
 
   const haveSigner = !!address
   const canUnlock =

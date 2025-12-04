@@ -11,7 +11,7 @@ import type { NetworkUrlParams } from '@/loan/types/loan.types'
 import { Stack, useMediaQuery } from '@mui/material'
 import Fade from '@mui/material/Fade'
 import { useConnection } from '@ui-kit/features/connect-wallet'
-import { useWagmiConnection as useWagmiConnection } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
+import { useAccount } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { Sizing } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -27,7 +27,7 @@ const CrvUsdStaking = ({ params }: { params: NetworkUrlParams }) => {
   const stakingModule = useStore((state) => state.scrvusd.stakingModule)
   const { llamaApi: lendApi = null } = useConnection()
   const chainId = lendApi?.chainId
-  const { address, isConnecting } = useWagmiConnection()
+  const { address, isConnecting } = useAccount()
 
   const {
     data: userScrvUsdBalance,

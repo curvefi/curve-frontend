@@ -11,7 +11,7 @@ import Box, { BoxHeader } from '@ui/Box'
 import IconButton from '@ui/IconButton'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import { isLoading, useConnection } from '@ui-kit/features/connect-wallet'
-import { useWagmiConnection as useWagmiConnection } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
+import { useAccount } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
 import { useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -25,7 +25,7 @@ export const PageVeCrv = () => {
   const rChainId = networksIdMapper[network]
   const isLoadingCurve = isLoading(connectState)
 
-  const { address: userAddress } = useWagmiConnection()
+  const { address: userAddress } = useAccount()
 
   const { data: vecrvInfo } = useLockerVecrvInfo({ chainId: curveApi?.chainId, userAddress })
   const resetState = useStore((state) => state.lockedCrv.resetState)

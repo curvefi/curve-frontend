@@ -3,7 +3,7 @@ import { calculateLtv } from '@/llamalend/llama.utils'
 import { useUserLendingVaultEarnings, useUserLendingVaultStats } from '@/llamalend/queries/market-list/lending-vaults'
 import { type LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { useUserMintMarketStats } from '@/llamalend/queries/market-list/mint-markets'
-import { useWagmiConnection } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
+import { useAccount } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
 import { useTokenUsdPrice } from '@ui-kit/lib/model/entities/token-usd-prices'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { decimal } from '@ui-kit/utils/decimal'
@@ -30,7 +30,7 @@ const earningsColumns = [
  */
 export function useUserMarketStats(market: LlamaMarket, column?: LlamaMarketColumnId) {
   const { type, userHasPositions, address: marketAddress, controllerAddress, chain } = market
-  const { address: userAddress } = useWagmiConnection()
+  const { address: userAddress } = useAccount()
   const { data: collateralUsdRate, isLoading: collateralUsdRateLoading } = useTokenUsdPrice({
     blockchainId: market.chain,
     contractAddress: market.assets.collateral.address,

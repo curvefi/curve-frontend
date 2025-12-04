@@ -1,10 +1,7 @@
 import { BrowserProvider } from 'ethers'
 import { createContext, useContext, useMemo } from 'react'
 import type { NetworkDef } from '@ui/utils'
-import {
-  useWagmiConnection as useWagmiConnection,
-  useConnectorClient,
-} from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
+import { useAccount, useConnectorClient } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { type Address } from '@ui-kit/utils'
 import { ConnectState, type CurveApi, type LlamaApi, type Wallet } from './types'
@@ -39,7 +36,7 @@ export const ConnectionContext = createContext<ConnectionContextValue>({
  * Therefore, we use a very cumbersome condition to detect if we are reconnecting, and also need some debouncing 😭
  */
 function useWagmiIsReconnecting(address?: Address) {
-  const { isReconnecting, isConnected, isConnecting } = useWagmiConnection()
+  const { isReconnecting, isConnected, isConnecting } = useAccount()
   const isConnectingDebounced = useDebouncedValue(isConnecting, { defaultValue: true })
   return !address && (isConnectingDebounced || isReconnecting || isConnected)
 }

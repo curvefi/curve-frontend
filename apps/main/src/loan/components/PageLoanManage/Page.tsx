@@ -24,7 +24,7 @@ import Stack from '@mui/material/Stack'
 import { AppPageFormsWrapper } from '@ui/AppPage'
 import Box from '@ui/Box'
 import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
-import { useWagmiConnection as useWagmiConnection } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
+import { useAccount } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useNavigate, useParams } from '@ui-kit/hooks/router'
 import { useManageSoftLiquidation } from '@ui-kit/hooks/useFeatureFlags'
@@ -42,7 +42,7 @@ const Page = () => {
   const push = useNavigate()
   const { connectState, llamaApi: curve = null, isHydrated } = useConnection()
   const rChainId = useChainId(params)
-  const { address } = useWagmiConnection()
+  const { address } = useAccount()
 
   const market = useMintMarket({ chainId: rChainId, marketId: rCollateralId })
   const marketId = market?.id ?? ''

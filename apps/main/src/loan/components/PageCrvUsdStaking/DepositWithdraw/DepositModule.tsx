@@ -4,7 +4,7 @@ import { isLoading } from '@/loan/components/PageCrvUsdStaking/utils'
 import { useScrvUsdUserBalances } from '@/loan/entities/scrvusd-userBalances'
 import useStore from '@/loan/store/useStore'
 import Box from '@ui/Box'
-import { useWagmiConnection } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
+import { useAccount } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
 import { t } from '@ui-kit/lib/i18n'
 import {
   ErrorText,
@@ -17,7 +17,7 @@ import {
 } from './styles'
 
 const DepositModule = () => {
-  const { address } = useWagmiConnection()
+  const { address } = useAccount()
   const { data: userScrvUsdBalance, isLoading: userScrvUsdBalanceLoading } = useScrvUsdUserBalances({
     userAddress: address,
   })

@@ -4,13 +4,13 @@ import { styled } from 'styled-components'
 import { useScrvUsdUserBalances } from '@/loan/entities/scrvusd-userBalances'
 import useStore from '@/loan/store/useStore'
 import Button from '@ui/Button'
-import { useWagmiConnection } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
+import { useAccount } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
 import { t } from '@ui-kit/lib/i18n'
 
 type DeployButtonProps = { className?: string }
 
 const DeployButton = ({ className }: DeployButtonProps) => {
-  const { address } = useWagmiConnection()
+  const { address } = useAccount()
   const { data: userScrvUsdBalance } = useScrvUsdUserBalances({ userAddress: address })
   const depositApproved = useStore((state) => state.scrvusd.depositApproval.approval)
   const depositFetchStatus = useStore((state) => state.scrvusd.depositApproval.fetchStatus)

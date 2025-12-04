@@ -5,7 +5,7 @@ import { ActiveProposal, SnapshotVotingPower } from '@/dao/types/dao.types'
 import Box from '@ui/Box'
 import Button from '@ui/Button'
 import { isLoading, useWallet } from '@ui-kit/features/connect-wallet'
-import { useChainId, useWagmiConnection } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
+import { useChainId, useAccount } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
 import { t } from '@ui-kit/lib/i18n'
 import UserInformation from './UserInformation'
 
@@ -18,7 +18,7 @@ type Props = {
 }
 
 const UserBox = ({ className, children, votingPower, snapshotVotingPower, activeProposal }: Props) => {
-  const { address } = useWagmiConnection()
+  const { address } = useAccount()
   const chainId = useChainId()
   const { connectState, connect } = useWallet()
 

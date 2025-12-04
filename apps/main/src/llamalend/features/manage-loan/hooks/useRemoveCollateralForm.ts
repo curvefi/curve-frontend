@@ -21,7 +21,7 @@ import {
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { vestResolver } from '@hookform/resolvers/vest'
 import type { BaseConfig } from '@ui/utils'
-import { useWagmiConnection } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
+import { useAccount } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions } from '@ui-kit/lib/model'
 import { useFormErrors } from '../../borrow/react-form.utils'
@@ -45,7 +45,7 @@ export const useRemoveCollateralForm = <
   enabled?: boolean
   onRemoved: NonNullable<RemoveCollateralOptions['onRemoved']>
 }) => {
-  const { address: userAddress } = useWagmiConnection()
+  const { address: userAddress } = useAccount()
   const { chainId } = network
   const marketId = market?.id
 

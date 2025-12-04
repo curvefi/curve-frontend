@@ -29,7 +29,7 @@ import { AppPageFormsWrapper, AppPageFormTitleWrapper } from '@ui/AppPage'
 import Box from '@ui/Box'
 import TextEllipsis from '@ui/TextEllipsis'
 import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
-import { useWagmiConnection as useWagmiConnection } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
+import { useAccount } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNavigate, useParams } from '@ui-kit/hooks/router'
@@ -49,7 +49,7 @@ const Page = () => {
   const { isHydrated, llamaApi: curve = null, connectState } = useConnection()
   const rChainId = useChainId(params)
   const { connect: connectWallet, provider } = useWallet()
-  const { address } = useWagmiConnection()
+  const { address } = useAccount()
   const [loaded, setLoaded] = useState(false)
 
   const market = useMintMarket({ chainId: rChainId, marketId: rCollateralId })

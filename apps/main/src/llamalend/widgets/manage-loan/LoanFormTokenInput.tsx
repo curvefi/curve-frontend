@@ -6,7 +6,7 @@ import type { LlamaNetwork } from '@/llamalend/llamalend.types'
 import type { Query } from '@/llamalend/widgets/manage-loan/loan.types'
 import type { INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
 import type { PartialRecord } from '@curvefi/prices-api/objects.util'
-import { useWagmiConnection } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
+import { useAccount } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
@@ -44,7 +44,7 @@ export const LoanFormTokenInput = <
   message?: ReactNode
   network: LlamaNetwork
 }) => {
-  const { address: userAddress } = useWagmiConnection()
+  const { address: userAddress } = useAccount()
   const {
     data: balance,
     isLoading: isBalanceLoading,

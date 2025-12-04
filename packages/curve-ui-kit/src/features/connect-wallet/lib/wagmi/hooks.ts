@@ -3,7 +3,7 @@ export {
   useChainId,
   useConfig,
   useConnect,
-  useConnection as useWagmiConnection,
+  useConnection as useAccount,
   useConnectorClient,
   useConnectors,
   useDisconnect,

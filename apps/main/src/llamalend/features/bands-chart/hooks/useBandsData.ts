@@ -9,7 +9,7 @@ import { useMarketOraclePriceBand } from '@/llamalend/queries/market-oracle-pric
 import { useMarketOraclePrice } from '@/llamalend/queries/market-oracle-price.query'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { LlamaApi } from '@ui-kit/features/connect-wallet'
-import { useWagmiConnection } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
+import { useAccount } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 
 export const useBandsData = ({
@@ -25,7 +25,7 @@ export const useBandsData = ({
   collateralTokenAddress: string | undefined
   borrowedTokenAddress: string | undefined
 }) => {
-  const { address: userAddress } = useWagmiConnection()
+  const { address: userAddress } = useAccount()
   const { data: collateralUsdRate } = useTokenUsdRate({ chainId, tokenAddress: collateralTokenAddress })
   const { data: borrowedUsdRate } = useTokenUsdRate({ chainId, tokenAddress: borrowedTokenAddress })
   const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists({

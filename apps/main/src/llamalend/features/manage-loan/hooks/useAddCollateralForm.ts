@@ -17,7 +17,7 @@ import {
 } from '@/llamalend/queries/validation/manage-loan.validation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { vestResolver } from '@hookform/resolvers/vest'
-import { useWagmiConnection } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
+import { useAccount } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions } from '@ui-kit/lib/model'
 import { useFormErrors } from '../../borrow/react-form.utils'
@@ -38,7 +38,7 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
   enabled?: boolean
   onAdded: NonNullable<AddCollateralOptions['onAdded']>
 }) => {
-  const { address: userAddress } = useWagmiConnection()
+  const { address: userAddress } = useAccount()
   const { chainId } = network
   const marketId = market?.id
 
