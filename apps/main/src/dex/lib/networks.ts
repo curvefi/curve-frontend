@@ -144,6 +144,7 @@ export const defaultNetworks = Object.entries({
     twocryptoFactoryOld: true,
     twocryptoFactory: true,
     tricryptoFactory: true,
+    fxswapFactory: true,
     hasFactory: true,
     pricesApi: true,
   },
