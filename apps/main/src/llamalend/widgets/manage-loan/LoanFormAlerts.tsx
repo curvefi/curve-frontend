@@ -29,36 +29,36 @@ export const LoanFormAlerts = <Field extends string>({
   handledErrors,
   successTitle,
 }: LoanFormAlertProps<Field>) => (
-    <>
-      {isSuccess && (
-        <Alert severity="success" data-testid={'loan-form-success-alert'}>
-          <AlertTitle>{successTitle}</AlertTitle>
-          {txHash && (
-            <Link rel="noreferrer" target="_blank" href={scanTxPath(network, txHash)}>
-              {t`View on Explorer`}
-            </Link>
-          )}
-        </Alert>
-      )}
-      {formErrors.some(([field]) => !handledErrors.includes(field)) && (
-        <Alert severity="warning" data-testid={'loan-form-errors'}>
-          <AlertTitle>{t`Please correct the errors`}</AlertTitle>
-          {formErrors
-            .filter(([field]) => !handledErrors.includes(field))
-            .map(([field, message]) => (
-              <Box key={[field, message].join(': ')}>{message}</Box>
-            ))}
-        </Alert>
-      )}
-      {!!error && (
-        <Alert
-          severity="error"
-          sx={{ overflowWrap: 'anywhere' /* break anywhere as there is often JSON in the error breaking the design */ }}
-          data-testid={'loan-form-error'}
-        >
-          <AlertTitle>{t`An error occurred`}</AlertTitle>
-          {getErrorMessage(error)}
-        </Alert>
-      )}
-    </>
-  )
+  <>
+    {isSuccess && (
+      <Alert severity="success" data-testid={'loan-form-success-alert'}>
+        <AlertTitle>{successTitle}</AlertTitle>
+        {txHash && (
+          <Link rel="noreferrer" target="_blank" href={scanTxPath(network, txHash)}>
+            {t`View on Explorer`}
+          </Link>
+        )}
+      </Alert>
+    )}
+    {formErrors.some(([field]) => !handledErrors.includes(field)) && (
+      <Alert severity="warning" data-testid={'loan-form-errors'}>
+        <AlertTitle>{t`Please correct the errors`}</AlertTitle>
+        {formErrors
+          .filter(([field]) => !handledErrors.includes(field))
+          .map(([field, message]) => (
+            <Box key={[field, message].join(': ')}>{message}</Box>
+          ))}
+      </Alert>
+    )}
+    {!!error && (
+      <Alert
+        severity="error"
+        sx={{ overflowWrap: 'anywhere' /* break anywhere as there is often JSON in the error breaking the design */ }}
+        data-testid={'loan-form-error'}
+      >
+        <AlertTitle>{t`An error occurred`}</AlertTitle>
+        {getErrorMessage(error)}
+      </Alert>
+    )}
+  </>
+)
