@@ -154,7 +154,7 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
       ),
     })
 
-    const usdpAlert = (): PoolAlert => ({
+    const usdpioAlert = (): PoolAlert => ({
       alertType: 'danger',
       isDisableDeposit: true,
       isInformationOnly: true,
@@ -256,7 +256,7 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
       '0x83f24023d15d835a213df24fd309c47dab5beb32': yieldbasisAlert(),
       '0xf1f435b05d255a5dbde37333c0f61da6f69c6127': yieldbasisAlert(),
       '0xd9ff8396554a0d18b2cfbec53e1979b7ecce8373': yieldbasisAlert(),
-      '0xD001aE433f254283FeCE51d4ACcE8c53263aa186': usdpAlert(),
+      '0xD001aE433f254283FeCE51d4ACcE8c53263aa186': usdpioAlert(),
 
 
       // arbitrum
