@@ -25,8 +25,8 @@ export const useWallet = () => {
   state.provider = provider ?? null
 
   // use the async functions so we can properly handle the promise failures. We could instead use query state in the future.
-  const { connectAsync } = useConnect()
-  const { disconnect } = useDisconnect()
+  const { mutateAsync: connectAsync } = useConnect()
+  const { mutate: disconnect } = useDisconnect()
 
   const connect = useCallback(
     async (selectedConnector?: Connector) => {
