@@ -1,3 +1,4 @@
+import { getErrorMessage } from '@/llamalend/helpers'
 import type { INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Hex } from '@curvefi/prices-api'
 import Alert from '@mui/material/Alert'
@@ -9,11 +10,6 @@ import { t } from '@ui-kit/lib/i18n'
 
 export type FormErrors<Field extends string> = readonly (readonly [Field, string])[]
 
-type ErrorDisplay = {
-  title: string
-  message?: string
-}
-
 export type LoanFormAlertProps<Field extends string> = {
   network: BaseConfig<INetworkName>
   isSuccess: boolean
@@ -24,12 +20,6 @@ export type LoanFormAlertProps<Field extends string> = {
   successTitle: string
 }
 
-const resolveErrorDisplay = (err: any): ErrorDisplay => {
-  const code = err?.code as string | undefined
-  if (code === 'ACTION_REJECTED') return { title: t`User rejected action` }
-  return { title: t`An error occurred`, message: err.message }
-}
-
 export const LoanFormAlerts = <Field extends string>({
   network,
   isSuccess,
@@ -38,10 +28,7 @@ export const LoanFormAlerts = <Field extends string>({
   formErrors,
   handledErrors,
   successTitle,
-}: LoanFormAlertProps<Field>) => {
-  const resolvedError = error ? resolveErrorDisplay(error) : null
-
-  return (
+}: LoanFormAlertProps<Field>) => (
     <>
       {isSuccess && (
         <Alert severity="success" data-testid={'loan-form-success-alert'}>
@@ -63,16 +50,15 @@ export const LoanFormAlerts = <Field extends string>({
             ))}
         </Alert>
       )}
-      {resolvedError && (
+      {!!error && (
         <Alert
           severity="error"
           sx={{ overflowWrap: 'anywhere' /* break anywhere as there is often JSON in the error breaking the design */ }}
           data-testid={'loan-form-error'}
         >
-          <AlertTitle>{resolvedError.title}</AlertTitle>
-          {resolvedError.message}
+          <AlertTitle>{t`An error occurred`}</AlertTitle>
+          {getErrorMessage(error)}
         </Alert>
       )}
     </>
   )
-}
