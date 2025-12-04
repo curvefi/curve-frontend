@@ -4,7 +4,7 @@ import { Banner } from '@ui-kit/shared/ui/Banner'
 import { PoolUrlParams } from '../types/main.types'
 
 const MonadBannerAlert = ({ params }: { params: PoolUrlParams }) => {
-  const showFactoryStableNg11Banner = params.pool === 'factory-stable-ng-11' && params.network === 'monad'
+  const showFactoryStableNg11Banner = params.poolIdOrAddress === 'factory-stable-ng-11' && params.network === 'monad'
 
   if (showFactoryStableNg11Banner)
     return (
