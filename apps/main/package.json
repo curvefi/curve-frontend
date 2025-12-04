@@ -22,8 +22,8 @@
     "@hookform/error-message": "^2.0.1",
     "@hookform/resolvers": "^5.2.2",
     "@supercharge/promise-pool": "^3.2.0",
-    "@tanstack/react-router": "^1.139.12",
-    "@tanstack/react-router-devtools": "^1.139.12",
+    "@tanstack/react-router": "^1.139.14",
+    "@tanstack/react-router-devtools": "^1.139.14",
     "@types/memoizee": "^0.4.12",
     "curve-ui-kit": "*",
     "echarts": "^6.0.0",
@@ -32,7 +32,7 @@
     "fuse.js": "^7.1.0",
     "lightweight-charts": "^5.0.9",
     "memoizee": "^0.4.17",
-    "react-hook-form": "7.67.0",
+    "react-hook-form": "7.68.0",
     "recharts": "2.15.4",
     "solid-js": "^1.9.10",
     "ui": "*",
@@ -66,7 +66,7 @@
     "globals": "^16.5.0",
     "pinst": "^3.0.0",
     "typescript": "*",
-    "typescript-eslint": "^8.48.0",
+    "typescript-eslint": "^8.48.1",
     "vite": "*"
   }
 }
