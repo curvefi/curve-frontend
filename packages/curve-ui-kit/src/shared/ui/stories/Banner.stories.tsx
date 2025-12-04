@@ -61,7 +61,7 @@ export const Warning: Story = {
 
 export const Info: Story = {
   args: {
-    severity: 'default',
+    severity: 'info',
     children: 'This is a default message',
   },
 }
@@ -119,7 +119,7 @@ export const ApiErrorExample: Story = {
 
 export const WithSubtitle: Story = {
   args: {
-    severity: 'default',
+    severity: 'info',
     children: 'This is an default message with a subtitle',
     subtitle: 'This is a subtitle',
   },

@@ -75,7 +75,7 @@ export const useDismissBanner = (bannerKey: string, expirationTime: number) => {
 
   const shouldShowBanner = useMemo(
     () => dismissedAt == null || Date.now() - dismissedAt >= expirationTime, // Show if dismissed more than the expiration time
-    [dismissedAt],
+    [dismissedAt, expirationTime],
   )
 
   const dismissBanner = useCallback(() => {
