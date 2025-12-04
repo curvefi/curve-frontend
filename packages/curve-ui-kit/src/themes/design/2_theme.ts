@@ -257,6 +257,7 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
 
   const Tabs = {
     UnderLined: {
+      Inset: InsetUnderline,
       Container_Border: Light.Layer['1'].Outline,
       Default: {
         Label: Text.TextColors.Secondary,
@@ -287,6 +288,7 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
       },
     },
     OverLined: {
+      Inset: InsetOverline,
       Default: {
         Label: Text.TextColors.Secondary,
         Outline: Layer['2'].Outline,
@@ -708,6 +710,7 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
 
   const Tabs = {
     UnderLined: {
+      Inset: InsetUnderline,
       Container_Border: Dark.Layer['1'].Outline,
       Default: {
         Label: Text.TextColors.Secondary,
@@ -738,6 +741,7 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
       },
     },
     OverLined: {
+      Inset: InsetOverline,
       Default: {
         Label: Text.TextColors.Secondary,
         Outline: Layer['2'].Outline,
@@ -1159,6 +1163,7 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
 
   const Tabs = {
     UnderLined: {
+      Inset: InsetUnderline,
       Container_Border: Layer['1'].Outline,
       Default: {
         Label: Text.TextColors.Secondary,
@@ -1189,6 +1194,7 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
       },
     },
     OverLined: {
+      Inset: InsetOverline,
       Default: {
         Label: Text.TextColors.Secondary,
         Outline: Layer['2'].Outline,
