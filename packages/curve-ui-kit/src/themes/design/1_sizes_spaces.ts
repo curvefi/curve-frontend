@@ -50,6 +50,7 @@ const MappedFontSize = {
 } as const
 
 const MappedButtonSize = {
+  xxs: Sizing['150'], // XXS
   xs: Sizing['300'], // XS
   sm: Sizing['500'], // S
   md: Sizing['600'], // M

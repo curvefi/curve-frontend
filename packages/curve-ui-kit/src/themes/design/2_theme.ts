@@ -699,7 +699,7 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
         Fill: Layer['1'].Fill,
       },
       Current: {
-        Label: Grays['50'],
+        Label: Grays['975'],
         Fill: Layer.Highlight.Fill,
       },
     },
@@ -765,8 +765,8 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
       Fill: Color.Neutral['900'],
     },
     Current: {
-      Label: plain.Light.Text.Highlight,
-      Fill: Layer['2'].Fill,
+      Label: Text.TextColors.Primary,
+      Fill: Layer['1'].Fill,
       Outline: Layer.Highlight.Outline,
     },
     BorderRadius: {
@@ -804,7 +804,7 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
 
   const Chart = {
     LiquidationZone: {
-      Current: Oranges['950'],
+      Current: Oranges['900'],
       Future: Blues['800'],
     },
     Candles: {

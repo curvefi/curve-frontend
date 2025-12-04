@@ -125,8 +125,8 @@ function createDarkSurfaces() {
         secondary: Grays['700'],
       },
       warning: {
-        primary: Grays['50'],
-        secondary: Grays['150'],
+        primary: Grays['975'],
+        secondary: Grays['700'],
       },
       alert: {
         primary: Grays['50'],
@@ -449,8 +449,8 @@ function createDarkInvertedSurfaces() {
         secondary: Grays['300'],
       },
       warning: {
-        primary: Grays['950'],
-        secondary: Grays['700'],
+        primary: Grays['10'],
+        secondary: Grays['200'],
       },
       alert: {
         primary: Grays['950'],
