@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js'
 import { useMemo } from 'react'
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
 import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
@@ -97,7 +98,9 @@ export const AddCollateralForm = <ChainId extends IChainId>({
           ...mapQuery(userState, (state) => state?.collateral),
           data: decimal(
             values.userCollateral
-              ? +values.userCollateral + (userState.data?.collateral ? +userState.data?.collateral : 0)
+              ? new BigNumber(values.userCollateral)
+                  .plus(userState.data?.collateral ? new BigNumber(userState.data?.collateral) : '0')
+                  .toString()
               : null,
           ),
         },
