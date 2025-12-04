@@ -18,7 +18,6 @@ import { usePoolIdByAddressOrId } from '@/dex/hooks/usePoolIdByAddressOrId'
 import useTokensMapper from '@/dex/hooks/useTokensMapper'
 import { getUserPoolActiveKey } from '@/dex/store/createUserSlice'
 import useStore from '@/dex/store/useStore'
-import type { PoolUrlParams } from '@/dex/types/main.types'
 import { getChainPoolIdActiveKey } from '@/dex/utils'
 import { getPath } from '@/dex/utils/utilsRouter'
 import { ManageGauge } from '@/dex/widgets/manage-gauge'
@@ -208,7 +207,7 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
 
   return (
     <>
-      <MonadBannerAlert params={params as PoolUrlParams} />
+      <MonadBannerAlert chainId={rChainId} poolIdOrAddress={rPoolIdOrAddress} />
       <AppPageFormContainer isAdvanceMode={true}>
         <AppPageFormsWrapper className="grid-transfer">
           <Stack
