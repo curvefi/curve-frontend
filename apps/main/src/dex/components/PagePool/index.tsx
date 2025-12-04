@@ -20,7 +20,7 @@ import useStore from '@/dex/store/useStore'
 import { getChainPoolIdActiveKey } from '@/dex/utils'
 import { getPath } from '@/dex/utils/utilsRouter'
 import { ManageGauge } from '@/dex/widgets/manage-gauge'
-import type { PoolUrlParams } from '@/dex/types/main.types'
+import { notFalsy } from '@curvefi/prices-api/objects.util'
 import Stack from '@mui/material/Stack'
 import AlertBox from '@ui/AlertBox'
 import { AppFormContentWrapper } from '@ui/AppForm'
@@ -45,7 +45,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { type TabOption, TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import MonadBannerAlert from '../MonadBannerAlert'
+import PoolAlertBanner from '../PoolAlertBanner'
 
 const DEFAULT_SEED: Seed = { isSeed: null, loaded: false }
 const { MaxWidth } = SizesAndSpaces
@@ -204,10 +204,14 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
       </StyledExternalLink>
     </AppPageFormTitleWrapper>
   )
-
   return (
     <>
-      <MonadBannerAlert params={params as PoolUrlParams} />
+      {poolAlert?.banner && (
+        <PoolAlertBanner
+          banner={poolAlert.banner}
+          poolAlertBannerKey={notFalsy('pool-alert-banner-dismissed', params.network, params.pool).join('-')}
+        />
+      )}
       <AppPageFormContainer isAdvanceMode={true}>
         <AppPageFormsWrapper className="grid-transfer">
           <Stack
