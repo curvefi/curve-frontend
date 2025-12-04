@@ -21,68 +21,29 @@ const SliderBackground = {
 
 export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Light) => {
   const Color = {
-    Neutral: {
-      '25': Grays['25'],
-      '50': Grays['50'],
-      '75': Grays['75'],
-      '100': Grays['100'],
-      '150': Grays['150'],
-      '200': Grays['200'],
-      '300': Grays['300'],
-      '400': Grays['400'],
-      '500': Grays['500'],
-      '600': Grays['600'],
-      '700': Grays['700'],
-      '750': Grays['750'],
-      '800': Grays['800'],
-      '850': Grays['850'],
-      '900': Grays['900'],
-      '950': Grays['950'],
-      '975': Grays['975'],
-    },
-    Primary: {
-      '50': Blues['50'],
-      '100': Blues['100'],
-      '200': Blues['200'],
-      '300': Blues['300'],
-      '400': Blues['400'],
-      '500': Blues['500'],
-      '600': Blues['600'],
-      '700': Blues['700'],
-      '800': Blues['800'],
-      '900': Blues['900'],
-      '950': Blues['950'],
-    },
-    Secondary: {
-      '100': Greens['100'],
-      '200': Greens['200'],
-      '300': Greens['300'],
-      '400': Greens['400'],
-      '500': Greens['500'],
-      '600': Greens['600'],
-      '700': Greens['700'],
-      '800': Greens['800'],
-    },
+    Neutral: Grays,
+    Primary: Blues,
+    Secondary: Greens,
     Tertiary: {
-      '200': Reds['200'],
-      '300': Yellows['500'],
-      '400': Oranges['500'],
-      '600': Reds['500'],
+      '200': Reds[200],
+      '300': Yellows[500],
+      '400': Oranges[500],
+      '600': Reds[500],
     },
   } as const
 
   const Layer = {
     '1': {
-      Fill: Light.Layer['1'].Fill,
-      Outline: Light.Layer['1'].Outline,
+      Fill: Light.Layer[1].Fill,
+      Outline: Light.Layer[1].Outline,
     },
     '2': {
-      Fill: Light.Layer['2'].Fill,
-      Outline: Light.Layer['2'].Outline,
+      Fill: Light.Layer[2].Fill,
+      Outline: Light.Layer[2].Outline,
     },
     '3': {
-      Fill: Light.Layer['3'].Fill,
-      Outline: Light.Layer['3'].Outline,
+      Fill: Light.Layer[3].Fill,
+      Outline: Light.Layer[3].Outline,
     },
     App: {
       Background: '#f0edeb',
@@ -99,7 +60,7 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
     },
     Highlight: {
       Fill: Light.Layer.Highlight,
-      Outline: Color.Primary['500'],
+      Outline: Color.Primary[500],
     },
   } as const
 
@@ -112,31 +73,31 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
       Disabled: Light.Text.Disabled,
       FilledFeedback: {
         Info: {
-          Primary: Light.Text.FilledFeedback.info.primary,
-          Secondary: Light.Text.FilledFeedback.info.secondary,
+          Primary: Light.Text.FilledFeedback.Info.Primary,
+          Secondary: Light.Text.FilledFeedback.Info.Secondary,
         },
         Highlight: {
-          Primary: Light.Text.FilledFeedback.highlight.primary,
-          Secondary: Light.Text.FilledFeedback.highlight.secondary,
+          Primary: Light.Text.FilledFeedback.Highlight.Primary,
+          Secondary: Light.Text.FilledFeedback.Highlight.Secondary,
         },
         Warning: {
-          Primary: Light.Text.FilledFeedback.warning.primary,
-          Secondary: Light.Text.FilledFeedback.warning.secondary,
+          Primary: Light.Text.FilledFeedback.Warning.Primary,
+          Secondary: Light.Text.FilledFeedback.Warning.Secondary,
         },
         Alert: {
-          Primary: Light.Text.FilledFeedback.alert.primary,
-          Secondary: Light.Text.FilledFeedback.alert.secondary,
+          Primary: Light.Text.FilledFeedback.Alert.Primary,
+          Secondary: Light.Text.FilledFeedback.Alert.Secondary,
         },
         Success: {
-          Primary: Light.Text.FilledFeedback.success.primary,
-          Secondary: Light.Text.FilledFeedback.success.secondary,
+          Primary: Light.Text.FilledFeedback.Success.Primary,
+          Secondary: Light.Text.FilledFeedback.Success.Secondary,
         },
       },
       Feedback: {
         Success: Light.Text.Feedback.Success,
         Warning: Light.Text.Feedback.Warning,
         Error: Light.Text.Feedback.Error,
-        Inverted: Grays['50'],
+        Inverted: Grays[50],
       },
     },
     FontFamily: {
@@ -149,7 +110,7 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
 
   const Button = {
     Focus_Outline_Width: '0.125rem', // 2px
-    Focus_Outline: Color.Primary['500'],
+    Focus_Outline: Color.Primary[500],
     Radius: {
       xs: '0',
       sm: '0',
@@ -158,30 +119,30 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
     },
     Primary: {
       Default: {
-        Label: Grays['50'],
-        Fill: Blues['500'],
+        Label: Grays[50],
+        Fill: Blues[500],
       },
       Hover: {
-        Label: Grays['50'],
-        Fill: Grays['950'],
+        Label: Grays[50],
+        Fill: Grays[950],
       },
       Disabled: {
         Label: Text.TextColors.Disabled,
-        Fill: Color.Primary['100'],
+        Fill: Color.Primary[100],
       },
     },
     Secondary: {
       Default: {
-        Label: Grays['50'],
-        Fill: Grays['950'],
+        Label: Grays[50],
+        Fill: Grays[950],
       },
       Hover: {
-        Label: Grays['50'],
-        Fill: Blues['500'],
+        Label: Grays[50],
+        Fill: Blues[500],
       },
       Disabled: {
         Label: Text.TextColors.Disabled,
-        Fill: Color.Neutral['400'],
+        Fill: Color.Neutral[400],
       },
     },
     Outlined: {
@@ -190,8 +151,8 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
         Outline: Text.TextColors.Primary,
       },
       Hover: {
-        Label: Blues['500'],
-        Outline: Blues['500'],
+        Label: Blues[500],
+        Outline: Blues[500],
       },
       Disabled: {
         Label: Text.TextColors.Disabled,
@@ -203,7 +164,7 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
         Label: Text.TextColors.Highlight,
       },
       Hover: {
-        Label: Grays['975'],
+        Label: Grays[975],
         Fill: Transparent,
       },
       Disabled: {
@@ -213,30 +174,30 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
     },
     Success: {
       Default: {
-        Label: Grays['900'],
-        Fill: Greens['400'],
+        Label: Grays[900],
+        Fill: Greens[400],
       },
       Hover: {
-        Label: Greens['400'],
-        Fill: Grays['900'],
+        Label: Greens[400],
+        Fill: Grays[900],
       },
       Disabled: {
         Label: Light.Text.Disabled,
-        Fill: Greens['600'],
+        Fill: Greens[600],
       },
     },
     Error: {
       Default: {
-        Label: Grays['10'],
-        Fill: Reds['500'],
+        Label: Grays[10],
+        Fill: Reds[500],
       },
       Hover: {
-        Label: Reds['500'],
-        Fill: Grays['10'],
+        Label: Reds[500],
+        Fill: Grays[10],
       },
       Disabled: {
-        Label: Grays['500'],
-        Fill: Reds['800'],
+        Label: Grays[500],
+        Fill: Reds[800],
       },
     },
     Navigation: {
@@ -245,10 +206,10 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
       },
       Hover: {
         Label: Text.TextColors.Primary,
-        Fill: Layer['1'].Fill,
+        Fill: Layer[1].Fill,
       },
       Current: {
-        Label: Grays['10'],
+        Label: Grays[10],
         Fill: Layer.Highlight.Fill,
       },
     },
@@ -258,10 +219,10 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
   const Tabs = {
     UnderLined: {
       Inset: InsetUnderline,
-      Container_Border: Light.Layer['1'].Outline,
+      Container_Border: Light.Layer[1].Outline,
       Default: {
         Label: Text.TextColors.Secondary,
-        Outline: Layer['2'].Outline,
+        Outline: Layer[2].Outline,
       },
       Hover: {
         Label: Text.TextColors.Highlight,
@@ -269,37 +230,37 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
       },
       Current: {
         Label: Text.TextColors.Primary,
-        Outline: Color.Primary['500'],
+        Outline: Color.Primary[500],
       },
     },
     Contained: {
       Default: {
         Label: Text.TextColors.Secondary,
-        Fill: Color.Neutral['300'],
+        Fill: Color.Neutral[300],
       },
       Hover: {
-        Label: Color.Neutral['50'],
-        Fill: Color.Neutral['900'],
+        Label: Color.Neutral[50],
+        Fill: Color.Neutral[900],
       },
       Current: {
         Label: Text.TextColors.Primary,
-        Fill: Layer['1'].Fill,
-        Outline: Color.Primary['500'],
+        Fill: Layer[1].Fill,
+        Outline: Color.Primary[500],
       },
     },
     OverLined: {
       Inset: InsetOverline,
       Default: {
         Label: Text.TextColors.Secondary,
-        Outline: Layer['2'].Outline,
+        Outline: Layer[2].Outline,
       },
       Hover: {
         Label: Text.TextColors.Primary,
-        Outline: Color.Neutral['500'],
+        Outline: Color.Neutral[500],
       },
       Current: {
         Label: Text.TextColors.Primary,
-        Outline: Color.Primary['500'],
+        Outline: Color.Primary[500],
       },
     },
     Transition: 'Transition',
@@ -308,16 +269,16 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
   const Chips = {
     Default: {
       Label: Text.TextColors.Secondary,
-      Fill: Layer['2'].Fill,
+      Fill: Layer[2].Fill,
       Stroke: Light.Badges.Border.Default,
     },
     Hover: {
-      Label: Color.Neutral['50'],
-      Fill: Color.Neutral['900'],
+      Label: Color.Neutral[50],
+      Fill: Color.Neutral[900],
     },
     Current: {
       Label: Text.TextColors.Highlight,
-      Fill: Layer['2'].Fill,
+      Fill: Layer[2].Fill,
       Outline: Layer.Highlight.Outline,
     },
     BorderRadius: {
@@ -355,34 +316,34 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
 
   const Chart = {
     LiquidationZone: {
-      Current: Yellows['400'],
-      Future: Blues['200'],
+      Current: Yellows[400],
+      Future: Blues[200],
     },
     Candles: {
-      Positive: Greens['400'],
-      Negative: Reds['600'],
+      Positive: Greens[400],
+      Negative: Reds[600],
     },
     Lines: {
-      Positive: Greens['400'],
-      Negative: Reds['600'],
-      Line1: Color.Primary['500'],
-      Line2: Yellows['500'],
-      Line3: Color.Secondary['500'],
+      Positive: Greens[400],
+      Negative: Reds[600],
+      Line1: Color.Primary[500],
+      Line2: Yellows[500],
+      Line3: Color.Secondary[500],
     },
   } as const
 
   const Toggles = {
     Default: {
       Label: Text.TextColors.Primary,
-      Fill: Color.Neutral['100'],
+      Fill: Color.Neutral[100],
     },
     Hover: {
       Label: Text.TextColors.Highlight,
-      Fill: Layer['3'].Fill,
+      Fill: Layer[3].Fill,
     },
     Current: {
-      Label: Grays['50'],
-      Fill: Color.Neutral['900'],
+      Label: Grays[50],
+      Fill: Color.Neutral[900],
     },
   } as const
 
@@ -402,37 +363,37 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
     },
   } as const
 
-  const InputBaseDefaultFill = Grays['100']
+  const InputBaseDefaultFill = Grays[100]
 
   const Inputs = {
     Base: {
       Default: {
         Fill: {
-          Default: Grays['100'],
-          Active: Grays['50'],
+          Default: Grays[100],
+          Active: Grays[50],
         },
         Border: {
-          Default: Grays['200'],
+          Default: Grays[200],
           Active: Light.Text.Highlight,
-          Filled: Grays['850'],
-          Error: Reds['500'],
+          Filled: Grays[850],
+          Error: Reds[500],
         },
       },
       Nested: {
-        Nested: Grays['10'],
-        Fill: Grays['100'],
+        Nested: Grays[10],
+        Fill: Grays[100],
         Border: {
-          Default: Grays['400'],
+          Default: Grays[400],
           Active: Light.Text.Highlight,
-          Filled: Grays['850'],
-          Error: Reds['500'],
+          Filled: Grays[850],
+          Error: Reds[500],
         },
       },
     },
     Large: {
       Default: {
-        Fill: Grays['100'],
-        Outline: Grays['200'],
+        Fill: Grays[100],
+        Outline: Grays[200],
       },
     },
   } as const
@@ -475,67 +436,67 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
 export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark) => {
   const Color = {
     Neutral: {
-      '25': Grays['975'],
-      '50': Grays['950'],
-      '75': Grays['900'],
-      '100': Grays['850'],
-      '150': Grays['800'],
-      '200': Grays['750'],
-      '300': Grays['700'],
-      '400': Grays['600'],
-      '500': Grays['500'],
-      '600': Grays['400'],
-      '700': Grays['300'],
-      '750': Grays['200'],
-      '800': Grays['150'],
-      '850': Grays['100'],
-      '900': Grays['75'],
-      '950': Grays['50'],
-      '975': Grays['25'],
+      '25': Grays[975],
+      '50': Grays[950],
+      '75': Grays[900],
+      '100': Grays[850],
+      '150': Grays[800],
+      '200': Grays[750],
+      '300': Grays[700],
+      '400': Grays[600],
+      '500': Grays[500],
+      '600': Grays[400],
+      '700': Grays[300],
+      '750': Grays[200],
+      '800': Grays[150],
+      '850': Grays[100],
+      '900': Grays[75],
+      '950': Grays[50],
+      '975': Grays[25],
     },
     Primary: {
-      '50': Blues['950'],
-      '100': Blues['900'],
-      '200': Blues['800'],
-      '300': Blues['700'],
-      '400': Blues['600'],
-      '500': Blues['500'],
-      '600': Blues['400'],
-      '700': Blues['300'],
-      '800': Blues['200'],
-      '900': Blues['100'],
-      '950': Blues['50'],
+      '50': Blues[950],
+      '100': Blues[900],
+      '200': Blues[800],
+      '300': Blues[700],
+      '400': Blues[600],
+      '500': Blues[500],
+      '600': Blues[400],
+      '700': Blues[300],
+      '800': Blues[200],
+      '900': Blues[100],
+      '950': Blues[50],
     },
     Secondary: {
-      '100': Greens['800'],
-      '200': Greens['700'],
-      '300': Greens['600'],
-      '400': Greens['500'],
-      '500': Greens['400'],
-      '600': Greens['300'],
-      '700': Greens['200'],
-      '800': Greens['100'],
+      '100': Greens[800],
+      '200': Greens[700],
+      '300': Greens[600],
+      '400': Greens[500],
+      '500': Greens[400],
+      '600': Greens[300],
+      '700': Greens[200],
+      '800': Greens[100],
     },
     Tertiary: {
-      '200': Reds['800'],
-      '300': Oranges['500'],
-      '400': Yellows['500'],
-      '600': Yellows['400'],
+      '200': Reds[800],
+      '300': Oranges[500],
+      '400': Yellows[500],
+      '600': Yellows[400],
     },
   } as const
 
   const Layer = {
     '1': {
-      Fill: Dark.Layer['1'].Fill,
-      Outline: Dark.Layer['1'].Outline,
+      Fill: Dark.Layer[1].Fill,
+      Outline: Dark.Layer[1].Outline,
     },
     '2': {
-      Fill: Dark.Layer['2'].Fill,
-      Outline: Dark.Layer['2'].Outline,
+      Fill: Dark.Layer[2].Fill,
+      Outline: Dark.Layer[2].Outline,
     },
     '3': {
-      Fill: Dark.Layer['3'].Fill,
-      Outline: Dark.Layer['3'].Outline,
+      Fill: Dark.Layer[3].Fill,
+      Outline: Dark.Layer[3].Outline,
     },
     App: {
       Background: '#12110f',
@@ -552,44 +513,44 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
     },
     Highlight: {
       Fill: Dark.Layer.Highlight,
-      Outline: Color.Primary['500'],
+      Outline: Color.Primary[500],
     },
   } as const
 
   const Text = {
     TextColors: {
-      Primary: Dark.Text.primary,
-      Secondary: Dark.Text.secondary,
-      Tertiary: Dark.Text.tertiary,
-      Highlight: Dark.Text.highlight,
+      Primary: Dark.Text.Primary,
+      Secondary: Dark.Text.Secondary,
+      Tertiary: Dark.Text.Tertiary,
+      Highlight: Dark.Text.Highlight,
       Disabled: Dark.Text.Disabled,
       FilledFeedback: {
         Info: {
-          Primary: Dark.Text.FilledFeedback.info.primary,
-          Secondary: Dark.Text.FilledFeedback.info.secondary,
+          Primary: Dark.Text.FilledFeedback.Info.Primary,
+          Secondary: Dark.Text.FilledFeedback.Info.Secondary,
         },
         Highlight: {
-          Primary: Dark.Text.FilledFeedback.highlight.primary,
-          Secondary: Dark.Text.FilledFeedback.highlight.secondary,
+          Primary: Dark.Text.FilledFeedback.Highlight.Primary,
+          Secondary: Dark.Text.FilledFeedback.Highlight.Secondary,
         },
         Warning: {
-          Primary: Dark.Text.FilledFeedback.warning.primary,
-          Secondary: Dark.Text.FilledFeedback.warning.secondary,
+          Primary: Dark.Text.FilledFeedback.Warning.Primary,
+          Secondary: Dark.Text.FilledFeedback.Warning.Secondary,
         },
         Alert: {
-          Primary: Dark.Text.FilledFeedback.alert.primary,
-          Secondary: Dark.Text.FilledFeedback.alert.secondary,
+          Primary: Dark.Text.FilledFeedback.Alert.Primary,
+          Secondary: Dark.Text.FilledFeedback.Alert.Secondary,
         },
         Success: {
-          Primary: Dark.Text.FilledFeedback.success.primary,
-          Secondary: Dark.Text.FilledFeedback.success.secondary,
+          Primary: Dark.Text.FilledFeedback.Success.Primary,
+          Secondary: Dark.Text.FilledFeedback.Success.Secondary,
         },
       },
       Feedback: {
         Success: Dark.Text.Feedback.Success,
         Warning: Dark.Text.Feedback.Warning,
         Error: Dark.Text.Feedback.Error,
-        Inverted: Grays['950'],
+        Inverted: Grays[950],
       },
     },
     FontFamily: {
@@ -602,7 +563,7 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
 
   const Button = {
     Focus_Outline_Width: '0.125rem', // 2px
-    Focus_Outline: Color.Primary['500'],
+    Focus_Outline: Color.Primary[500],
     Radius: {
       xs: '0',
       sm: '0',
@@ -611,30 +572,30 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
     },
     Primary: {
       Default: {
-        Label: Grays['50'],
-        Fill: Blues['500'],
+        Label: Grays[50],
+        Fill: Blues[500],
       },
       Hover: {
-        Label: Grays['900'],
-        Fill: Grays['50'],
+        Label: Grays[900],
+        Fill: Grays[50],
       },
       Disabled: {
         Label: Text.TextColors.Disabled,
-        Fill: Color.Primary['800'],
+        Fill: Color.Primary[800],
       },
     },
     Secondary: {
       Default: {
-        Label: Grays['900'],
-        Fill: Grays['50'],
+        Label: Grays[900],
+        Fill: Grays[50],
       },
       Hover: {
-        Label: Grays['50'],
-        Fill: Blues['500'],
+        Label: Grays[50],
+        Fill: Blues[500],
       },
       Disabled: {
         Label: Text.TextColors.Disabled,
-        Fill: Grays['750'],
+        Fill: Grays[750],
       },
     },
     Outlined: {
@@ -656,40 +617,40 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
         Label: Text.TextColors.Highlight,
       },
       Hover: {
-        Label: Grays['50'],
+        Label: Grays[50],
         Fill: Transparent,
       },
       Disabled: {
-        Label: Blues['700'],
+        Label: Blues[700],
         Fill: Transparent,
       },
     },
     Success: {
       Default: {
-        Label: Grays['900'],
-        Fill: Greens['400'],
+        Label: Grays[900],
+        Fill: Greens[400],
       },
       Hover: {
-        Label: Greens['400'],
-        Fill: Grays['900'],
+        Label: Greens[400],
+        Fill: Grays[900],
       },
       Disabled: {
         Label: Dark.Text.Disabled,
-        Fill: Greens['600'],
+        Fill: Greens[600],
       },
     },
     Error: {
       Default: {
-        Label: Grays['10'],
-        Fill: Reds['500'],
+        Label: Grays[10],
+        Fill: Reds[500],
       },
       Hover: {
-        Label: Reds['500'],
-        Fill: Grays['10'],
+        Label: Reds[500],
+        Fill: Grays[10],
       },
       Disabled: {
-        Label: Grays['500'],
-        Fill: Reds['800'],
+        Label: Grays[500],
+        Fill: Reds[800],
       },
     },
     Navigation: {
@@ -698,10 +659,10 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
       },
       Hover: {
         Label: Text.TextColors.Primary,
-        Fill: Layer['1'].Fill,
+        Fill: Layer[1].Fill,
       },
       Current: {
-        Label: Grays['975'],
+        Label: Grays[975],
         Fill: Layer.Highlight.Fill,
       },
     },
@@ -711,10 +672,10 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
   const Tabs = {
     UnderLined: {
       Inset: InsetUnderline,
-      Container_Border: Dark.Layer['1'].Outline,
+      Container_Border: Dark.Layer[1].Outline,
       Default: {
         Label: Text.TextColors.Secondary,
-        Outline: Layer['2'].Outline,
+        Outline: Layer[2].Outline,
       },
       Hover: {
         Label: Text.TextColors.Highlight,
@@ -722,37 +683,37 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
       },
       Current: {
         Label: Text.TextColors.Primary,
-        Outline: Color.Primary['500'],
+        Outline: Color.Primary[500],
       },
     },
     Contained: {
       Default: {
         Label: Text.TextColors.Secondary,
-        Fill: Color.Neutral['200'],
+        Fill: Color.Neutral[200],
       },
       Hover: {
-        Label: Color.Neutral['50'],
-        Fill: Color.Neutral['900'],
+        Label: Color.Neutral[50],
+        Fill: Color.Neutral[900],
       },
       Current: {
         Label: Text.TextColors.Primary,
-        Fill: Layer['1'].Fill,
-        Outline: Color.Primary['500'],
+        Fill: Layer[1].Fill,
+        Outline: Color.Primary[500],
       },
     },
     OverLined: {
       Inset: InsetOverline,
       Default: {
         Label: Text.TextColors.Secondary,
-        Outline: Layer['2'].Outline,
+        Outline: Layer[2].Outline,
       },
       Hover: {
         Label: Text.TextColors.Primary,
-        Outline: Color.Neutral['500'],
+        Outline: Color.Neutral[500],
       },
       Current: {
         Label: Text.TextColors.Primary,
-        Outline: Color.Primary['500'],
+        Outline: Color.Primary[500],
       },
     },
     Transition: 'Transition',
@@ -761,16 +722,16 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
   const Chips = {
     Default: {
       Label: Text.TextColors.Primary,
-      Fill: Layer['2'].Fill,
+      Fill: Layer[2].Fill,
       Stroke: Dark.Badges.Border.Default,
     },
     Hover: {
-      Label: Color.Neutral['50'],
-      Fill: Color.Neutral['900'],
+      Label: Color.Neutral[50],
+      Fill: Color.Neutral[900],
     },
     Current: {
       Label: Text.TextColors.Primary,
-      Fill: Layer['1'].Fill,
+      Fill: Layer[1].Fill,
       Outline: Layer.Highlight.Outline,
     },
     BorderRadius: {
@@ -808,34 +769,34 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
 
   const Chart = {
     LiquidationZone: {
-      Current: Oranges['900'],
-      Future: Blues['800'],
+      Current: Oranges[900],
+      Future: Blues[800],
     },
     Candles: {
-      Positive: Greens['300'],
-      Negative: Reds['500'],
+      Positive: Greens[300],
+      Negative: Reds[500],
     },
     Lines: {
-      Positive: Greens['300'],
-      Negative: Reds['500'],
-      Line1: Color.Primary['500'],
-      Line2: Yellows['500'],
-      Line3: Color.Secondary['500'],
+      Positive: Greens[300],
+      Negative: Reds[500],
+      Line1: Color.Primary[500],
+      Line2: Yellows[500],
+      Line3: Color.Secondary[500],
     },
   } as const
 
   const Toggles = {
     Default: {
       Label: Text.TextColors.Primary,
-      Fill: Color.Neutral['100'],
+      Fill: Color.Neutral[100],
     },
     Hover: {
       Label: Text.TextColors.Highlight,
-      Fill: Layer['3'].Fill,
+      Fill: Layer[3].Fill,
     },
     Current: {
-      Label: Color.Neutral['50'],
-      Fill: Color.Neutral['950'],
+      Label: Color.Neutral[50],
+      Fill: Color.Neutral[950],
     },
   } as const
 
@@ -855,37 +816,37 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
     },
   } as const
 
-  const InputBaseDefaultFill = Grays['900']
+  const InputBaseDefaultFill = Grays[900]
 
   const Inputs = {
     Base: {
       Default: {
         Fill: {
-          Default: Grays['900'],
-          Active: Grays['900'],
+          Default: Grays[900],
+          Active: Grays[900],
         },
         Border: {
-          Default: Grays['800'],
-          Active: Dark.Text.highlight,
-          Filled: Grays['75'],
-          Error: Reds['500'],
+          Default: Grays[800],
+          Active: Dark.Text.Highlight,
+          Filled: Grays[75],
+          Error: Reds[500],
         },
       },
       Nested: {
-        Nested: Grays['850'],
-        Fill: Grays['850'],
+        Nested: Grays[850],
+        Fill: Grays[850],
         Border: {
-          Default: Grays['600'],
-          Active: Dark.Text.highlight,
-          Filled: Grays['75'],
-          Error: Reds['500'],
+          Default: Grays[600],
+          Active: Dark.Text.Highlight,
+          Filled: Grays[75],
+          Error: Reds[500],
         },
       },
     },
     Large: {
       Default: {
-        Fill: Grays['900'],
-        Outline: Grays['800'],
+        Fill: Grays[900],
+        Outline: Grays[800],
       },
     },
   } as const
@@ -927,68 +888,29 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
 
 export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad) => {
   const Color = {
-    Neutral: {
-      '25': Grays['25'],
-      '50': Grays['50'],
-      '75': Grays['75'],
-      '100': Grays['100'],
-      '150': Grays['150'],
-      '200': Grays['200'],
-      '300': Grays['300'],
-      '400': Grays['400'],
-      '500': Grays['500'],
-      '600': Grays['600'],
-      '700': Grays['700'],
-      '750': Grays['750'],
-      '800': Grays['800'],
-      '850': Grays['850'],
-      '900': Grays['900'],
-      '950': Grays['950'],
-      '975': Grays['975'],
-    },
-    Primary: {
-      '50': Violets['50'],
-      '100': Violets['100'],
-      '200': Violets['200'],
-      '300': Violets['300'],
-      '400': Violets['400'],
-      '500': Violets['500'],
-      '600': Violets['600'],
-      '700': Violets['700'],
-      '800': Violets['800'],
-      '900': Violets['900'],
-      '950': Violets['950'],
-    },
-    Secondary: {
-      '100': Greens['100'],
-      '200': Greens['200'],
-      '300': Greens['300'],
-      '400': Greens['400'],
-      '500': Greens['500'],
-      '600': Greens['600'],
-      '700': Greens['700'],
-      '800': Greens['800'],
-    },
+    Neutral: Grays,
+    Primary: Violets,
+    Secondary: Greens,
     Tertiary: {
-      '200': Reds['200'],
-      '300': Yellows['500'],
-      '400': Oranges['500'],
-      '600': Reds['500'],
+      '200': Reds[200],
+      '300': Yellows[500],
+      '400': Oranges[500],
+      '600': Reds[500],
     },
   } as const
 
   const Layer = {
     '1': {
-      Fill: Chad.Layer['1'].Fill,
-      Outline: Chad.Layer['1'].Outline,
+      Fill: Chad.Layer[1].Fill,
+      Outline: Chad.Layer[1].Outline,
     },
     '2': {
-      Fill: Chad.Layer['2'].Fill,
-      Outline: Chad.Layer['2'].Outline,
+      Fill: Chad.Layer[2].Fill,
+      Outline: Chad.Layer[2].Outline,
     },
     '3': {
-      Fill: Chad.Layer['3'].Fill,
-      Outline: Chad.Layer['3'].Outline,
+      Fill: Chad.Layer[3].Fill,
+      Outline: Chad.Layer[3].Outline,
     },
     App: {
       Background: '#bdbbec',
@@ -1005,7 +927,7 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
     },
     Highlight: {
       Fill: Chad.Layer.Highlight,
-      Outline: Color.Primary['500'],
+      Outline: Color.Primary[500],
     },
   } as const
 
@@ -1018,31 +940,31 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
       Disabled: Chad.Text.Disabled,
       FilledFeedback: {
         Info: {
-          Primary: Chad.Text.FilledFeedback.info.primary,
-          Secondary: Chad.Text.FilledFeedback.info.secondary,
+          Primary: Chad.Text.FilledFeedback.Info.Primary,
+          Secondary: Chad.Text.FilledFeedback.Info.Secondary,
         },
         Highlight: {
-          Primary: Chad.Text.FilledFeedback.highlight.primary,
-          Secondary: Chad.Text.FilledFeedback.highlight.secondary,
+          Primary: Chad.Text.FilledFeedback.Highlight.Primary,
+          Secondary: Chad.Text.FilledFeedback.Highlight.Secondary,
         },
         Warning: {
-          Primary: Chad.Text.FilledFeedback.warning.primary,
-          Secondary: Chad.Text.FilledFeedback.warning.secondary,
+          Primary: Chad.Text.FilledFeedback.Warning.Primary,
+          Secondary: Chad.Text.FilledFeedback.Warning.Secondary,
         },
         Alert: {
-          Primary: Chad.Text.FilledFeedback.alert.primary,
-          Secondary: Chad.Text.FilledFeedback.alert.secondary,
+          Primary: Chad.Text.FilledFeedback.Alert.Primary,
+          Secondary: Chad.Text.FilledFeedback.Alert.Secondary,
         },
         Success: {
-          Primary: Chad.Text.FilledFeedback.success.primary,
-          Secondary: Chad.Text.FilledFeedback.success.secondary,
+          Primary: Chad.Text.FilledFeedback.Success.Primary,
+          Secondary: Chad.Text.FilledFeedback.Success.Secondary,
         },
       },
       Feedback: {
         Success: Chad.Text.Feedback.Success,
         Warning: Chad.Text.Feedback.Warning,
         Error: Chad.Text.Feedback.Error,
-        Inverted: Grays['50'],
+        Inverted: Grays[50],
       },
     },
     FontFamily: {
@@ -1055,7 +977,7 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
 
   const Button = {
     Focus_Outline_Width: '0.125rem', // 2px
-    Focus_Outline: Color.Primary['500'],
+    Focus_Outline: Color.Primary[500],
     Radius: {
       xs: '0',
       sm: '0',
@@ -1064,30 +986,30 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
     },
     Primary: {
       Default: {
-        Label: Grays['50'],
-        Fill: Violets['950'],
+        Label: Grays[50],
+        Fill: Violets[950],
       },
       Hover: {
-        Label: Grays['50'],
-        Fill: Grays['900'],
+        Label: Grays[50],
+        Fill: Grays[900],
       },
       Disabled: {
         Label: Text.TextColors.Disabled,
-        Fill: Violets['200'],
+        Fill: Violets[200],
       },
     },
     Secondary: {
       Default: {
-        Label: Grays['50'],
-        Fill: Grays['900'],
+        Label: Grays[50],
+        Fill: Grays[900],
       },
       Hover: {
-        Label: Grays['50'],
-        Fill: Violets['500'],
+        Label: Grays[50],
+        Fill: Violets[500],
       },
       Disabled: {
         Label: Text.TextColors.Disabled,
-        Fill: Grays['600'],
+        Fill: Grays[600],
       },
     },
     Outlined: {
@@ -1096,8 +1018,8 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
         Outline: Text.TextColors.Primary,
       },
       Hover: {
-        Label: Violets['500'],
-        Outline: Violets['500'],
+        Label: Violets[500],
+        Outline: Violets[500],
       },
       Disabled: {
         Label: Text.TextColors.Disabled,
@@ -1109,7 +1031,7 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
         Label: Text.TextColors.Highlight,
       },
       Hover: {
-        Label: Violets['800'],
+        Label: Violets[800],
         Fill: Transparent,
       },
       Disabled: {
@@ -1119,30 +1041,30 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
     },
     Success: {
       Default: {
-        Label: Grays['900'],
-        Fill: Greens['400'],
+        Label: Grays[900],
+        Fill: Greens[400],
       },
       Hover: {
-        Label: Greens['400'],
-        Fill: Grays['900'],
+        Label: Greens[400],
+        Fill: Grays[900],
       },
       Disabled: {
         Label: Text.TextColors.Disabled,
-        Fill: Greens['600'],
+        Fill: Greens[600],
       },
     },
     Error: {
       Default: {
-        Label: Grays['10'],
-        Fill: Reds['500'],
+        Label: Grays[10],
+        Fill: Reds[500],
       },
       Hover: {
-        Label: Reds['500'],
-        Fill: Grays['10'],
+        Label: Reds[500],
+        Fill: Grays[10],
       },
       Disabled: {
-        Label: Grays['500'],
-        Fill: Reds['800'],
+        Label: Grays[500],
+        Fill: Reds[800],
       },
     },
     Navigation: {
@@ -1151,10 +1073,10 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
       },
       Hover: {
         Label: Text.TextColors.Primary,
-        Fill: Layer['1'].Fill,
+        Fill: Layer[1].Fill,
       },
       Current: {
-        Label: Grays['10'],
+        Label: Grays[10],
         Fill: Layer.Highlight.Fill,
       },
     },
@@ -1164,10 +1086,10 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
   const Tabs = {
     UnderLined: {
       Inset: InsetUnderline,
-      Container_Border: Layer['1'].Outline,
+      Container_Border: Layer[1].Outline,
       Default: {
         Label: Text.TextColors.Secondary,
-        Outline: Layer['2'].Outline,
+        Outline: Layer[2].Outline,
       },
       Hover: {
         Label: Text.TextColors.Highlight,
@@ -1175,37 +1097,37 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
       },
       Current: {
         Label: Text.TextColors.Primary,
-        Outline: Color.Primary['500'],
+        Outline: Color.Primary[500],
       },
     },
     Contained: {
       Default: {
-        Label: Chad.Text.FilledFeedback.highlight.secondary,
-        Fill: Color.Primary['950'],
+        Label: Chad.Text.FilledFeedback.Highlight.Secondary,
+        Fill: Color.Primary[950],
       },
       Hover: {
-        Label: Color.Neutral['50'],
-        Fill: Color.Primary['800'],
+        Label: Color.Neutral[50],
+        Fill: Color.Primary[800],
       },
       Current: {
         Label: Text.TextColors.Primary,
-        Fill: Layer['1'].Fill,
-        Outline: Color.Primary['500'],
+        Fill: Layer[1].Fill,
+        Outline: Color.Primary[500],
       },
     },
     OverLined: {
       Inset: InsetOverline,
       Default: {
         Label: Text.TextColors.Secondary,
-        Outline: Layer['2'].Outline,
+        Outline: Layer[2].Outline,
       },
       Hover: {
         Label: Text.TextColors.Primary,
-        Outline: Color.Neutral['500'],
+        Outline: Color.Neutral[500],
       },
       Current: {
         Label: Text.TextColors.Primary,
-        Outline: Color.Primary['500'],
+        Outline: Color.Primary[500],
       },
     },
     Transition: 'Transition',
@@ -1214,16 +1136,16 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
   const Chips = {
     Default: {
       Label: Text.TextColors.Secondary,
-      Fill: Layer['1'].Fill,
+      Fill: Layer[1].Fill,
       Stroke: Chad.Badges.Border.Default,
     },
     Hover: {
-      Label: Color.Neutral['50'],
-      Fill: Color.Primary['950'],
+      Label: Color.Neutral[50],
+      Fill: Color.Primary[950],
     },
     Current: {
       Label: Text.TextColors.Highlight,
-      Fill: Layer['2'].Fill,
+      Fill: Layer[2].Fill,
       Outline: Layer.Highlight.Outline,
     },
     BorderRadius: {
@@ -1261,34 +1183,34 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
 
   const Chart = {
     LiquidationZone: {
-      Current: Yellows['400'],
-      Future: Blues['200'],
+      Current: Yellows[400],
+      Future: Blues[200],
     },
     Candles: {
-      Positive: Greens['400'],
-      Negative: Reds['600'],
+      Positive: Greens[400],
+      Negative: Reds[600],
     },
     Lines: {
-      Positive: Greens['400'],
-      Negative: Reds['600'],
-      Line1: Color.Primary['500'],
-      Line2: Yellows['500'],
-      Line3: Color.Secondary['500'],
+      Positive: Greens[400],
+      Negative: Reds[600],
+      Line1: Color.Primary[500],
+      Line2: Yellows[500],
+      Line3: Color.Secondary[500],
     },
   } as const
 
   const Toggles = {
     Default: {
       Label: Text.TextColors.Primary,
-      Fill: Color.Primary['300'],
+      Fill: Color.Primary[300],
     },
     Hover: {
       Label: Text.TextColors.Highlight,
-      Fill: Layer['3'].Fill,
+      Fill: Layer[3].Fill,
     },
     Current: {
-      Label: Grays['50'],
-      Fill: Color.Primary['800'],
+      Label: Grays[50],
+      Fill: Color.Primary[800],
     },
   } as const
 
@@ -1308,37 +1230,37 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
     },
   } as const
 
-  const InputBaseDefaultFill = Grays['100']
+  const InputBaseDefaultFill = Grays[100]
 
   const Inputs = {
     Base: {
       Default: {
         Fill: {
-          Default: Grays['100'],
-          Active: Grays['100'],
+          Default: Grays[100],
+          Active: Grays[100],
         },
         Border: {
-          Default: Grays['200'],
-          Active: Violets['400'],
-          Filled: Violets['600'],
-          Error: Reds['500'],
+          Default: Grays[200],
+          Active: Violets[400],
+          Filled: Violets[600],
+          Error: Reds[500],
         },
       },
       Nested: {
-        Nested: Grays['50'],
-        Fill: Violets['50'],
+        Nested: Grays[50],
+        Fill: Violets[50],
         Border: {
-          Default: Grays['200'],
-          Active: Violets['400'],
-          Filled: Violets['400'],
-          Error: Reds['500'],
+          Default: Grays[200],
+          Active: Violets[400],
+          Filled: Violets[400],
+          Error: Reds[500],
         },
       },
     },
     Large: {
       Default: {
-        Fill: Grays['100'],
-        Outline: Grays['200'],
+        Fill: Grays[100],
+        Outline: Grays[200],
       },
     },
   } as const
