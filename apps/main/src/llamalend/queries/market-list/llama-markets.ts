@@ -69,6 +69,7 @@ export type LlamaMarket = {
   deprecatedMessage: string | null
   userHasPositions: Record<MarketRateType, boolean> | null // null means no positions in either market and makes easy to filter
   createdAt: number
+  favoriteKey: Address // this differs per market type; for lend markets the vault address, for mint markets the amm address
 }
 
 export type LlamaMarketsResult = {
@@ -242,6 +243,7 @@ const convertLendingVault = (
           }
         : null,
     createdAt: new Date(createdAt).getTime(),
+    favoriteKey: vault,
   }
 }
 
@@ -327,6 +329,7 @@ const convertMintMarket = (
     leverage,
     userHasPositions: hasBorrow ? { [MarketRateType.Borrow]: hasBorrow, [MarketRateType.Supply]: false } : null,
     createdAt: new Date(createdAt).getTime(),
+    favoriteKey: llamma,
   }
 }
 

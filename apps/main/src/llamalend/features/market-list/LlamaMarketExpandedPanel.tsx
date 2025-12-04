@@ -65,6 +65,7 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
   const { data: deposited, error: depositedError } = useUserMarketStats(market, LlamaMarketColumnId.UserDeposited)
   const {
     controllerAddress,
+    favoriteKey,
     assets,
     leverage,
     liquidityUsd,
@@ -98,7 +99,7 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
                     confirmationText={t`Market address copied`}
                     data-testid={`copy-market-address-${controllerAddress}`}
                   />
-                  <FavoriteMarketButton address={controllerAddress} />
+                  <FavoriteMarketButton address={favoriteKey} />
                 </Stack>
               </Stack>
             }
