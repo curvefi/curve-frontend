@@ -1,7 +1,11 @@
-import { useChainId, useConnection as useWagmiConnection, useSwitchChain } from 'wagmi'
 import Box from '@mui/material/Box'
 import { useTheme } from '@mui/material/styles'
 import { isFailure, useConnection, type WagmiChainId } from '@ui-kit/features/connect-wallet'
+import {
+  useChainId,
+  useWagmiConnection as useWagmiConnection,
+  useSwitchChain,
+} from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
 import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { LlamaIcon } from '@ui-kit/shared/icons/LlamaIcon'

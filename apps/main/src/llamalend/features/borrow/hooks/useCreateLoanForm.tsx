@@ -1,11 +1,11 @@
 import { useEffect, useMemo } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
 import { useForm } from 'react-hook-form'
-import { useConnection } from 'wagmi'
 import { getTokens } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { vestResolver } from '@hookform/resolvers/vest'
+import { useWagmiConnection } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions } from '@ui-kit/lib/model'
 import { Decimal } from '@ui-kit/utils'
@@ -33,7 +33,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
   preset: BorrowPreset
   onCreated: CreateLoanOptions['onCreated']
 }) {
-  const { address: userAddress } = useConnection()
+  const { address: userAddress } = useWagmiConnection()
   const form = useForm<BorrowForm>({
     ...formDefaultOptions,
     // todo: also validate maxLeverage and maxCollateral

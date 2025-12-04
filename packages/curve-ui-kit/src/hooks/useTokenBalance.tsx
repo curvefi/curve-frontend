@@ -1,5 +1,5 @@
 import { type Address, ethAddress, formatUnits } from 'viem'
-import { useBalance } from 'wagmi'
+import { useBalance } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
 import type { FieldsOf } from '@ui-kit/lib'
 import { Decimal } from '@ui-kit/utils'
 import type { GetBalanceReturnType } from '@wagmi/core'

@@ -1,6 +1,6 @@
-import { useConnection } from 'wagmi'
 import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
 import { getUserHealthOptions } from '@/llamalend/queries/user-health.query'
+import { useWagmiConnection } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
 import type { ActionInfosProps } from '..'
 import type { MarketParams } from '../types'
 import { useCollateralInfo } from './useCollateralInfo'
@@ -11,7 +11,7 @@ import { useLoanInfo } from './useLoanInfo'
  * TODO: Contains some placeholder a data and does not respond to user input yet.
  */
 export function useActionInfos(params: MarketParams): ActionInfosProps {
-  const { address: userAddress } = useConnection()
+  const { address: userAddress } = useWagmiConnection()
   const { data: userHealth } = useHealthQueries((isFull) =>
     getUserHealthOptions(
       {

@@ -1,9 +1,9 @@
 import { styled } from 'styled-components'
-import { useConnection as useWagmiConnection } from 'wagmi'
 import PoolCreation from '@/dex/components/PageCreatePool/index'
 import Box from '@ui/Box'
 import { breakpoints } from '@ui/utils/responsive'
 import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
+import { useWagmiConnection as useWagmiConnection } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
 
 export const PageCreatePool = () => {
   const { curveApi = null, connectState } = useConnection()

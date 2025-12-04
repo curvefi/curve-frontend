@@ -1,7 +1,10 @@
 import { BrowserProvider } from 'ethers'
 import { createContext, useContext, useMemo } from 'react'
-import { useConnection as useWagmiConnection, useConnectorClient } from 'wagmi'
 import type { NetworkDef } from '@ui/utils'
+import {
+  useWagmiConnection as useWagmiConnection,
+  useConnectorClient,
+} from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { type Address } from '@ui-kit/utils'
 import { ConnectState, type CurveApi, type LlamaApi, type Wallet } from './types'

@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
-import { useConnection } from 'wagmi'
 import { useLlamaMarkets } from '@/llamalend/queries/market-list/llama-markets'
 import { fetchJson } from '@curvefi/prices-api/fetch'
+import { useWagmiConnection } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
 import { EmptyValidationSuite } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { queryFactory } from '@ui-kit/lib/model'
@@ -34,7 +34,7 @@ const { useQuery: useCrvUsdTotalSupply } = queryFactory({
 })
 
 export function useLlamalendAppStats({ chainId }: { chainId: number | undefined }, enabled: boolean = true) {
-  const { address } = useConnection()
+  const { address } = useWagmiConnection()
 
   const { data: marketData } = useLlamaMarkets(address, enabled)
   const tvl = useMemo(() => (marketData?.markets ?? []).reduce((acc, market) => acc + market.tvl, 0), [marketData])

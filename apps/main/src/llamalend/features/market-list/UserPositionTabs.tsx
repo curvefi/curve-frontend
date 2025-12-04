@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useConnection } from 'wagmi'
 import { fromEntries } from '@curvefi/prices-api/objects.util'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { useWallet } from '@ui-kit/features/connect-wallet'
+import { useWagmiConnection } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
 import { t } from '@ui-kit/lib/i18n'
 import { EmptyStateCard } from '@ui-kit/shared/ui/EmptyStateCard'
 import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
@@ -17,7 +17,7 @@ const { Spacing, Height } = SizesAndSpaces
 
 export const UserPositionsTabs = (props: Omit<UserPositionsTableProps, 'tab' | 'openPositionsByMarketType'>) => {
   const { connect } = useWallet()
-  const { address } = useConnection()
+  const { address } = useWagmiConnection()
   const { markets } = props.result ?? {}
 
   // Calculate total positions number across all markets (independent of filters)

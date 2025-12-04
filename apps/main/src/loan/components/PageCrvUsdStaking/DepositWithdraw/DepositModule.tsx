@@ -1,10 +1,10 @@
 import BigNumber from 'bignumber.js'
 import { RCCrvUSDLogoXS, RCScrvUSDLogoXS } from 'ui/src/images'
-import { useConnection } from 'wagmi'
 import { isLoading } from '@/loan/components/PageCrvUsdStaking/utils'
 import { useScrvUsdUserBalances } from '@/loan/entities/scrvusd-userBalances'
 import useStore from '@/loan/store/useStore'
 import Box from '@ui/Box'
+import { useWagmiConnection } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
 import { t } from '@ui-kit/lib/i18n'
 import {
   ErrorText,
@@ -17,7 +17,7 @@ import {
 } from './styles'
 
 const DepositModule = () => {
-  const { address } = useConnection()
+  const { address } = useWagmiConnection()
   const { data: userScrvUsdBalance, isLoading: userScrvUsdBalanceLoading } = useScrvUsdUserBalances({
     userAddress: address,
   })

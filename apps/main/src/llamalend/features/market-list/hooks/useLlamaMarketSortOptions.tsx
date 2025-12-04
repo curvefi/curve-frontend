@@ -1,4 +1,4 @@
-import { useConnection } from 'wagmi'
+import { useWagmiConnection } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
 import { t } from '@ui-kit/lib/i18n'
 import type { Option } from '@ui-kit/shared/ui/DataTable/SelectFilter'
 import { LlamaMarketColumnId } from '../columns.enum'
@@ -7,7 +7,7 @@ import { LlamaMarketColumnId } from '../columns.enum'
  * Creates a list of select options for sorting the Llama Market table (used for mobile only)
  */
 export const useLlamaMarketSortOptions = () => {
-  const { isConnected } = useConnection()
+  const { isConnected } = useWagmiConnection()
   return [
     { id: LlamaMarketColumnId.Assets, label: t`Collateral` },
     ...(isConnected
