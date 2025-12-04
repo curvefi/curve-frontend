@@ -1,5 +1,5 @@
 import { alpha } from '@mui/material'
-import { Blues, Grays, Greens, Reds, Yellows, Oranges, Violets, TransitionFunction } from './0_primitives'
+import { Blues, Grays, Greens, Reds, Yellows, Oranges, Violets, Transparent, TransitionFunction } from './0_primitives'
 import { SurfacesAndText } from './1_surfaces_text'
 
 const { plain, inverted } = SurfacesAndText
@@ -163,7 +163,7 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
       },
       Hover: {
         Label: Grays['50'],
-        Fill: Grays['900'],
+        Fill: Grays['950'],
       },
       Disabled: {
         Label: Text.TextColors.Disabled,
@@ -173,7 +173,7 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
     Secondary: {
       Default: {
         Label: Grays['50'],
-        Fill: Grays['900'],
+        Fill: Grays['950'],
       },
       Hover: {
         Label: Grays['50'],
@@ -181,13 +181,13 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
       },
       Disabled: {
         Label: Text.TextColors.Disabled,
-        Fill: Color.Neutral['600'],
+        Fill: Color.Neutral['400'],
       },
     },
     Outlined: {
       Default: {
-        Label: Grays['950'],
-        Outline: Grays['300'],
+        Label: Text.TextColors.Primary,
+        Outline: Text.TextColors.Primary,
       },
       Hover: {
         Label: Blues['500'],
@@ -204,11 +204,11 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
       },
       Hover: {
         Label: Grays['975'],
-        Fill: Grays['900'],
+        Fill: Transparent,
       },
       Disabled: {
         Label: Text.TextColors.Disabled,
-        Fill: Grays['500'],
+        Fill: Transparent,
       },
     },
     Success: {
@@ -217,7 +217,7 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
         Fill: Greens['400'],
       },
       Hover: {
-        Label: Greens['300'],
+        Label: Greens['400'],
         Fill: Grays['900'],
       },
       Disabled: {
@@ -227,16 +227,16 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
     },
     Error: {
       Default: {
-        Label: Grays['50'],
+        Label: Grays['10'],
         Fill: Reds['500'],
       },
       Hover: {
-        Label: Oranges['500'],
-        Fill: Grays['900'],
+        Label: Reds['500'],
+        Fill: Grays['10'],
       },
       Disabled: {
-        Label: Grays['300'],
-        Fill: Reds['700'],
+        Label: Grays['500'],
+        Fill: Reds['800'],
       },
     },
     Navigation: {
@@ -248,7 +248,7 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
         Fill: Layer['1'].Fill,
       },
       Current: {
-        Label: Grays['50'],
+        Label: Grays['10'],
         Fill: Layer.Highlight.Fill,
       },
     },
@@ -627,22 +627,22 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
         Fill: Grays['50'],
       },
       Hover: {
-        Label: Grays['900'],
+        Label: Grays['50'],
         Fill: Blues['500'],
       },
       Disabled: {
         Label: Text.TextColors.Disabled,
-        Fill: Color.Neutral['600'],
+        Fill: Grays['750'],
       },
     },
     Outlined: {
       Default: {
-        Label: Grays['50'],
-        Outline: Grays['700'],
+        Label: Text.TextColors.Primary,
+        Outline: Text.TextColors.Primary,
       },
       Hover: {
-        Label: Blues['500'],
-        Outline: Blues['500'],
+        Label: Text.TextColors.Highlight,
+        Outline: Text.TextColors.Highlight,
       },
       Disabled: {
         Label: Text.TextColors.Disabled,
@@ -651,25 +651,25 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
     },
     Ghost: {
       Default: {
-        Label: Color.Primary['700'],
+        Label: Text.TextColors.Highlight,
       },
       Hover: {
         Label: Grays['50'],
-        Fill: Grays['50'],
+        Fill: Transparent,
       },
       Disabled: {
-        Label: Text.TextColors.Disabled,
-        Fill: Grays['850'],
+        Label: Blues['700'],
+        Fill: Transparent,
       },
     },
     Success: {
       Default: {
         Label: Grays['900'],
-        Fill: Greens['300'],
+        Fill: Greens['400'],
       },
       Hover: {
-        Label: Greens['500'],
-        Fill: Grays['50'],
+        Label: Greens['400'],
+        Fill: Grays['900'],
       },
       Disabled: {
         Label: Dark.Text.Disabled,
@@ -678,16 +678,16 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
     },
     Error: {
       Default: {
-        Label: Grays['50'],
+        Label: Grays['10'],
         Fill: Reds['500'],
       },
       Hover: {
-        Label: Oranges['500'],
-        Fill: Grays['900'],
+        Label: Reds['500'],
+        Fill: Grays['10'],
       },
       Disabled: {
-        Label: Grays['300'],
-        Fill: Reds['700'],
+        Label: Grays['500'],
+        Fill: Reds['800'],
       },
     },
     Navigation: {
@@ -1051,7 +1051,7 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
 
   const Button = {
     Focus_Outline_Width: '0.125rem', // 2px
-    Focus_Outline: Color.Primary['600'],
+    Focus_Outline: Color.Primary['500'],
     Radius: {
       xs: '0',
       sm: '0',
@@ -1088,8 +1088,8 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
     },
     Outlined: {
       Default: {
-        Label: Grays['950'],
-        Outline: Grays['950'],
+        Label: Text.TextColors.Primary,
+        Outline: Text.TextColors.Primary,
       },
       Hover: {
         Label: Violets['500'],
@@ -1097,7 +1097,7 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
       },
       Disabled: {
         Label: Text.TextColors.Disabled,
-        Outline: Violets['200'],
+        Outline: Text.TextColors.Disabled,
       },
     },
     Ghost: {
@@ -1106,11 +1106,11 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
       },
       Hover: {
         Label: Violets['800'],
-        Fill: Violets['500'],
+        Fill: Transparent,
       },
       Disabled: {
         Label: Text.TextColors.Disabled,
-        Fill: Violets['200'],
+        Fill: Transparent,
       },
     },
     Success: {
@@ -1119,26 +1119,26 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
         Fill: Greens['400'],
       },
       Hover: {
-        Label: Greens['500'],
+        Label: Greens['400'],
         Fill: Grays['900'],
       },
       Disabled: {
-        Label: Chad.Text.Disabled,
+        Label: Text.TextColors.Disabled,
         Fill: Greens['600'],
       },
     },
     Error: {
       Default: {
-        Label: Grays['50'],
+        Label: Grays['10'],
         Fill: Reds['500'],
       },
       Hover: {
-        Label: Oranges['500'],
-        Fill: Grays['900'],
+        Label: Reds['500'],
+        Fill: Grays['10'],
       },
       Disabled: {
-        Label: Grays['300'],
-        Fill: Reds['700'],
+        Label: Grays['500'],
+        Fill: Reds['800'],
       },
     },
     Navigation: {
@@ -1150,7 +1150,7 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
         Fill: Layer['1'].Fill,
       },
       Current: {
-        Label: Grays['50'],
+        Label: Grays['10'],
         Fill: Layer.Highlight.Fill,
       },
     },

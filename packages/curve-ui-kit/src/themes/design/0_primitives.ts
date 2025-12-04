@@ -96,6 +96,8 @@ export const Violets = {
   '950': '#2f2862',
 } as const
 
+export const Transparent = '#ffffff00' as const
+
 export const Spacing = {
   '50': '0rem',
   '75': '0.062rem', // ~1px
