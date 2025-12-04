@@ -5,6 +5,7 @@ import type { IChainId, IDict, INetworkName } from '@curvefi/api/lib/interfaces'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import type { TooltipProps } from '@ui/Tooltip/types'
 import type { BaseConfig } from '@ui/utils'
+import { BannerProps } from '@ui-kit/shared/ui/Banner'
 
 export type { CurveApi, Wallet } from '@ui-kit/features/connect-wallet'
 
@@ -273,6 +274,7 @@ export interface PoolAlert extends TooltipProps {
   isInformationOnly?: boolean
   isInformationOnlyAndShowInForm?: boolean
   isCloseOnTooltipOnly?: boolean
+  banner?: Omit<BannerProps, 'children'> & { title: string }
   isPoolPageOnly?: boolean // Don't show the pools overview table
   address?: string
   message: ReactNode
