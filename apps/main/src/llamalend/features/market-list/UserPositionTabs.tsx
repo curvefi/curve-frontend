@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
+import { useAccount } from 'wagmi'
 import { fromEntries } from '@curvefi/prices-api/objects.util'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { useWallet } from '@ui-kit/features/connect-wallet'
-import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
 import { EmptyStateCard } from '@ui-kit/shared/ui/EmptyStateCard'
 import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
@@ -17,10 +17,11 @@ import { UserPositionSummary } from './UserPositionSummary'
 const { Spacing, Height } = SizesAndSpaces
 
 export const UserPositionsTabs = (props: Omit<UserPositionsTableProps, 'tab' | 'openPositionsByMarketType'>) => {
-  const { provider, connect } = useWallet()
-  const isMobile = useIsMobile()
-  // Calculate total positions across all markets (independent of filters)
+  const { connect } = useWallet()
+  const { address } = useAccount()
   const { markets } = props.result ?? {}
+
+  // Calculate total positions number across all markets (independent of filters)
   const openPositionsCount = useMemo(
     (): Record<MarketRateType, string | undefined> =>
       fromEntries(
@@ -78,24 +79,7 @@ export const UserPositionsTabs = (props: Omit<UserPositionsTableProps, 'tab' | '
       >
         <Typography variant="headingXsBold">Your Positions</Typography>
       </Stack>
-      {!provider ? (
-        <Stack
-          paddingBlock={Spacing.md}
-          alignItems="center"
-          width="100%"
-          sx={{
-            backgroundColor: (t) => t.design.Layer[1].Fill,
-          }}
-        >
-          <EmptyStateCard
-            action={
-              <Button size="medium" onClick={() => connect()}>
-                {t`Connect to view positions`}
-              </Button>
-            }
-          />
-        </Stack>
-      ) : (
+      {address ? (
         <>
           {!isMobile && <UserPositionSummary markets={markets} loading={props.loading} />}
           <Stack
@@ -120,6 +104,23 @@ export const UserPositionsTabs = (props: Omit<UserPositionsTableProps, 'tab' | '
           {/* the key is needed to force a re-render when the tab changes, otherwise filters have stale state for few milliseconds */}
           <UserPositionsTable key={tab} {...props} tab={tab} />
         </>
+      ) : (
+        <Stack
+          paddingBlock={Spacing.md}
+          alignItems="center"
+          width="100%"
+          sx={{
+            backgroundColor: (t) => t.design.Layer[1].Fill,
+          }}
+        >
+          <EmptyStateCard
+            action={
+              <Button size="medium" onClick={() => connect()}>
+                {t`Connect to view positions`}
+              </Button>
+            }
+          />
+        </Stack>
       )}
     </Stack>
   )

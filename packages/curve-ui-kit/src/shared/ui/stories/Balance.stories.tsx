@@ -1,5 +1,6 @@
 import { fn } from 'storybook/test'
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { FireIcon } from '@ui-kit/shared/icons/FireIcon'
 import { Balance } from '../Balance'
 
 const meta: Meta<typeof Balance> = {
@@ -18,13 +19,17 @@ const meta: Meta<typeof Balance> = {
       control: 'number',
       description: 'The USD price of the token',
     },
-    clickable: {
+    disabled: {
       control: 'boolean',
-      description: 'The max button mode',
+      description: 'Whether the clickable balance is disabled',
     },
-    hideIcon: {
-      control: 'boolean',
-      description: 'Whether to hide the wallet icon',
+    prefix: {
+      control: 'object',
+      description: 'Label, custum icon or nothing to show before the actual balance',
+    },
+    tooltip: {
+      control: 'text',
+      description: 'Custom tooltip title for hover',
     },
     onClick: {
       action: 'onClick',
@@ -38,9 +43,10 @@ const meta: Meta<typeof Balance> = {
   args: {
     symbol: 'ETH',
     balance: 1.234,
-    clickable: false,
-    hideIcon: false,
-    onClick: fn(),
+    disabled: false,
+    prefix: undefined,
+    tooltip: undefined,
+    onClick: undefined,
   },
 }
 
@@ -65,13 +71,32 @@ export const WithNotionalValue: Story = {
 
 export const Clickable: Story = {
   args: {
-    clickable: true,
+    onClick: fn(),
+  },
+}
+
+export const ClickableButDisabled: Story = {
+  args: {
+    onClick: fn(),
+    disabled: true,
   },
 }
 
 export const NoIcon: Story = {
   args: {
-    hideIcon: true,
+    prefix: null,
+  },
+}
+
+export const DifferentIcon: Story = {
+  args: {
+    prefix: FireIcon,
+  },
+}
+
+export const WithLabel: Story = {
+  args: {
+    prefix: 'Max borrow:',
   },
 }
 
@@ -83,6 +108,7 @@ export const ZeroBalance: Story = {
 
 export const NoBalance: Story = {
   args: {
+    loading: false,
     balance: undefined,
   },
 }
@@ -97,6 +123,12 @@ export const Loading: Story = {
         story: 'Shows the component in a loading state with skeleton placeholders',
       },
     },
+  },
+}
+
+export const CustomTooltip: Story = {
+  args: {
+    tooltip: 'Yolo',
   },
 }
 

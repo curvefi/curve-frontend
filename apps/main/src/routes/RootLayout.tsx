@@ -57,19 +57,19 @@ const NetworkAwareLayout = () => {
     config &&
     networks && (
       <WagmiProvider config={config}>
-        {network && (
-          <ConnectionProvider
-            app={currentApp}
-            network={network}
-            onChainUnavailable={onChainUnavailable}
-            hydrate={hydrate}
-          >
+        <ConnectionProvider
+          app={currentApp}
+          network={network}
+          onChainUnavailable={onChainUnavailable}
+          hydrate={hydrate}
+        >
+          {network && (
             <GlobalLayout currentApp={currentApp} network={network} networks={networks}>
               <HeadContent />
               <Outlet />
             </GlobalLayout>
-          </ConnectionProvider>
-        )}
+          )}
+        </ConnectionProvider>
       </WagmiProvider>
     )
   )

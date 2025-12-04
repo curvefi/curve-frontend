@@ -1,4 +1,4 @@
-import { Blues, Grays, Greens, Reds, Violet } from './0_primitives'
+import { Blues, Grays, Greens, Reds, Violets } from './0_primitives'
 
 function createLightSurfaces() {
   const Text = {
@@ -206,7 +206,7 @@ function createChadSurfaces() {
     Secondary: Grays[750],
     Tertiary: Grays[700],
     Disabled: Grays[500],
-    Highlight: Violet[600],
+    Highlight: Violets[600],
     Feedback: {
       Success: Greens[600],
       Warning: Reds[400],
@@ -216,7 +216,7 @@ function createChadSurfaces() {
     },
     FilledFeedback: {
       Info: {
-        Primary: Violet[500],
+        Primary: Violets[500],
         Secondary: Grays[700],
       },
       Highlight: {
@@ -250,13 +250,13 @@ function createChadSurfaces() {
       Fill: Grays[400],
       Outline: Grays[600],
     },
-    Highlight: Violet[700],
+    Highlight: Violets[700],
     TypeAction: {
-      Selected: Violet[50],
-      Hover: Violet[200],
+      Selected: Violets[50],
+      Hover: Violets[200],
     },
     Feedback: {
-      Info: Violet[700],
+      Info: Violets[700],
       Success: Greens[600],
       Warning: Reds[300],
       Danger: Reds[400],
@@ -275,7 +275,7 @@ function createChadSurfaces() {
         Default: Text.Primary,
         Active: Grays[10],
         Alert: Grays[10],
-        Highlight: Violet[800],
+        Highlight: Violets[800],
         Warning: Grays[975],
         Accent: Grays[10],
       },
@@ -283,9 +283,9 @@ function createChadSurfaces() {
         Default: Grays[975],
         Active: Greens[500],
         Alert: Reds[500],
-        Highlight: Violet[800],
+        Highlight: Violets[800],
         Warning: Reds[300],
-        Accent: Violet[800],
+        Accent: Violets[800],
       },
       Fill: {
         Default: Layer[1].Fill,
@@ -293,7 +293,7 @@ function createChadSurfaces() {
         Alert: Reds[500],
         Highlight: Layer[1].Fill,
         Warning: Reds[300],
-        Accent: Violet[800],
+        Accent: Violets[800],
       },
     },
   } as const
@@ -497,7 +497,7 @@ function createChadInvertedSurfaces() {
     Secondary: Grays[300],
     Tertiary: Grays[400],
     Disabled: Grays[500],
-    Highlight: Violet[400],
+    Highlight: Violets[400],
     Feedback: {
       Success: Greens[500],
       Warning: Reds[300],
@@ -529,21 +529,21 @@ function createChadInvertedSurfaces() {
   } as const
   const Layer = {
     '1': {
-      Fill: Violet[950],
-      Outline: Violet[800],
+      Fill: Violets[950],
+      Outline: Violets[800],
     },
     '2': {
-      Fill: Violet[800],
-      Outline: Violet[600],
+      Fill: Violets[800],
+      Outline: Violets[600],
     },
     '3': {
-      Fill: Violet[700],
-      Outline: Violet[500],
+      Fill: Violets[700],
+      Outline: Violets[500],
     },
-    Highlight: Violet[400],
+    Highlight: Violets[400],
     TypeAction: {
-      Selected: Violet[800],
-      Hover: Violet[900],
+      Selected: Violets[800],
+      Hover: Violets[900],
     },
     Feedback: {
       Info: Grays[850],
@@ -556,14 +556,14 @@ function createChadInvertedSurfaces() {
     Text: Text,
     Layer: Layer,
     Tables: {
-      Header: { Fill: Violet[800] },
+      Header: { Fill: Violets[800] },
     },
     Badges: {
       Label: {
         Default: Text.Primary,
         Active: Grays[10],
         Alert: Grays[10],
-        Highlight: Violet[200],
+        Highlight: Violets[200],
         Warning: Grays[975],
         Accent: Grays[10],
       },
@@ -571,9 +571,9 @@ function createChadInvertedSurfaces() {
         Default: Grays[600],
         Active: Greens[500],
         Alert: Reds[500],
-        Highlight: Violet[200],
+        Highlight: Violets[200],
         Warning: Reds[300],
-        Accent: Violet[400],
+        Accent: Violets[400],
       },
       Fill: {
         Default: Layer[1].Fill,
@@ -581,7 +581,7 @@ function createChadInvertedSurfaces() {
         Alert: Reds[500],
         Highlight: Layer[1].Fill,
         Warning: Reds[300],
-        Accent: Violet[400],
+        Accent: Violets[400],
       },
     },
   } as const

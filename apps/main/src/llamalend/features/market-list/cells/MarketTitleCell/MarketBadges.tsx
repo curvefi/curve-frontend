@@ -1,5 +1,5 @@
-import { useUserMarketStats } from '@/llamalend/entities/llama-market-stats'
-import { LlamaMarket } from '@/llamalend/entities/llama-markets'
+import { useUserMarketStats } from '@/llamalend/queries/market-list/llama-market-stats'
+import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import Chip from '@mui/material/Chip'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
@@ -39,7 +39,7 @@ export const MarketBadges = ({ market, isMobile }: { market: LlamaMarket; isMobi
         />
       </Tooltip>
 
-      {leverage > 0 && (
+      {leverage && (
         <Tooltip title={t`How much you can leverage your position`}>
           {isMobile ? (
             <Typography variant="bodyXsRegular">🔥</Typography>

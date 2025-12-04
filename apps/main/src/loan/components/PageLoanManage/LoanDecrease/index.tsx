@@ -1,4 +1,5 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
+import { DEFAULT_HEALTH_MODE } from '@/llamalend/constants'
 import AlertFormError from '@/loan/components/AlertFormError'
 import AlertFormWarning from '@/loan/components/AlertFormWarning'
 import DetailInfoBorrowRate from '@/loan/components/DetailInfoBorrowRate'
@@ -9,7 +10,7 @@ import LoanFormConnect from '@/loan/components/LoanFormConnect'
 import type { FormStatus, FormValues, StepKey } from '@/loan/components/PageLoanManage/LoanDecrease/types'
 import { StyledDetailInfoWrapper, StyledInpChip } from '@/loan/components/PageLoanManage/styles'
 import type { FormEstGas, PageLoanManageProps } from '@/loan/components/PageLoanManage/types'
-import { DEFAULT_DETAIL_INFO, DEFAULT_FORM_EST_GAS, DEFAULT_HEALTH_MODE } from '@/loan/components/PageLoanManage/utils'
+import { DEFAULT_DETAIL_INFO, DEFAULT_FORM_EST_GAS } from '@/loan/components/PageLoanManage/utils'
 import { DEFAULT_WALLET_BALANCES } from '@/loan/constants'
 import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
 import networks from '@/loan/networks'
@@ -115,10 +116,10 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
         ...useStore.getState().loanDecrease.formValues,
         debt,
         debtError: '',
-        isFullRepay: decimal(userWalletBalances.stablecoin) == value,
+        isFullRepay: decimal(userState?.debt) == value,
       })
     },
-    [formStatus.error, formStatus.isComplete, reset, updateFormValues, userWalletBalances.stablecoin],
+    [formStatus.error, formStatus.isComplete, reset, updateFormValues, userState?.debt],
   )
 
   const handleInpChangeFullRepay = (isFullRepay: boolean) => {
@@ -289,6 +290,7 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
       ) : (
         <LargeTokenInput
           name="debt"
+          label={t`Debt to repay`}
           isError={!!formValues.debtError}
           message={
             formValues.debtError === 'too-much'
@@ -307,7 +309,18 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
           }}
           maxBalance={{
             balance: decimal(userState?.debt),
-            chips: 'max',
+            chips:
+              userState?.debt == null
+                ? []
+                : [
+                    {
+                      label: 'Max',
+                      newBalance: () =>
+                        (+userWalletBalances?.stablecoin < +userState.debt
+                          ? userWalletBalances.stablecoin
+                          : userState.debt) as Decimal,
+                    },
+                  ],
           }}
           balance={decimal(formValues.debt)}
           tokenSelector={

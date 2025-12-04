@@ -28,7 +28,7 @@ export type Market = {
     pending: number
     collected: number
   }
-  created_at: Date
+  createdAt: Date
   maxLtv: number
 }
 

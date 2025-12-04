@@ -1,19 +1,64 @@
-import lodash from 'lodash'
 import { useMemo } from 'react'
-import { useLlamaMarkets } from '@/llamalend/entities/llama-markets'
-import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
-import { useConnection } from '@ui-kit/features/connect-wallet'
+import { useAccount } from 'wagmi'
+import { useLlamaMarkets } from '@/llamalend/queries/market-list/llama-markets'
+import { fetchJson } from '@curvefi/prices-api/fetch'
+import { EmptyValidationSuite } from '@ui-kit/lib'
+import { t } from '@ui-kit/lib/i18n'
+import { queryFactory } from '@ui-kit/lib/model'
+import { useTokenUsdPrice } from '@ui-kit/lib/model/entities/token-usd-prices'
+import { CRVUSD_ADDRESS, decimal, formatNumber, formatUsd } from '@ui-kit/utils'
 
-const { sum } = lodash
+/** Query for getting the daily volume of all crvUSD AMMs */
+const { useQuery: useAppStatsDailyVolume } = queryFactory({
+  queryKey: () => ['appStatsDailyVolume'] as const,
+  queryFn: async () => {
+    const resp = await fetchJson<{ data: { totalVolume: number } }>(
+      'https://api.curve.finance/api/getVolumes/ethereum/crvusd-amms',
+    )
+    return resp.data.totalVolume
+  },
+  validationSuite: EmptyValidationSuite,
+})
 
-export function useLlamalendAppStats(enabled: boolean) {
-  const address = useConnection().wallet?.account.address
-  const { data } = useLlamaMarkets(address, enabled)
-  const tvl = useMemo(() => sum(data?.markets?.map((market) => market.tvl)), [data])
+/**
+ * Gets the total supply of crvUSD from the Curve Finance API.
+ * It includes the full supply, including YB mints, and is more reliable than on-chain data.
+ */
+const { useQuery: useCrvUsdTotalSupply } = queryFactory({
+  queryKey: () => ['getCrvusdTotalSupplyNumber'] as const,
+  queryFn: async () => {
+    const resp = await fetch('https://api.curve.finance/api/getCrvusdTotalSupplyNumber')
+    return decimal(await resp.text()) ?? null
+  },
+  validationSuite: EmptyValidationSuite,
+})
+
+export function useLlamalendAppStats({ chainId }: { chainId: number | undefined }, enabled: boolean = true) {
+  const { address } = useAccount()
+
+  const { data: marketData } = useLlamaMarkets(address, enabled)
+  const tvl = useMemo(() => (marketData?.markets ?? []).reduce((acc, market) => acc + market.tvl, 0), [marketData])
+
+  const { data: dailyVolume } = useAppStatsDailyVolume({}, enabled && !!chainId)
+  const { data: crvusdPrice } = useTokenUsdPrice({ blockchainId: 'ethereum', contractAddress: CRVUSD_ADDRESS }, enabled)
+  const { data: crvusdTotalSupply } = useCrvUsdTotalSupply({ chainId }, enabled)
+
   return [
     {
       label: 'TVL',
-      value: (tvl && formatNumber(tvl, { ...FORMAT_OPTIONS.USD, notation: 'compact' })) || '',
+      value: (tvl && formatUsd(tvl)) || '-',
+    },
+    {
+      label: t`Daily volume`,
+      value: (dailyVolume && formatUsd(dailyVolume)) || '-',
+    },
+    {
+      label: t`Total crvUSD Supply`,
+      value: (crvusdTotalSupply && formatUsd(crvusdTotalSupply)) || '-',
+    },
+    {
+      label: 'crvUSD',
+      value: (crvusdPrice && formatNumber(crvusdPrice, { unit: 'dollar', decimals: 5, abbreviate: false })) || '-',
     },
   ]
 }

@@ -1,7 +1,7 @@
 import type { Address } from '@curvefi/prices-api'
 import { range, recordValues } from '@curvefi/prices-api/objects.util'
 
-export const MAX_USD_VALUE = 40_000_000 // $ 40m 🤑 not higher so we can test the highest TVL
+export const MAX_USD_VALUE = 400_000_000
 
 export const oneFloat = (minOrMax = 1, maxExclusive?: number): number =>
   maxExclusive === undefined ? Math.random() * minOrMax : minOrMax + Math.random() * (maxExclusive - minOrMax)
@@ -34,3 +34,11 @@ export const shuffle = <T>(...options: T[]): T[] => {
 
 export const oneTokenType = () => oneOf('collateral', 'borrowed')
 export type TokenType = ReturnType<typeof oneTokenType>
+
+export const oneDate = ({
+  minDate = new Date(Date.now() - 365 * 24 * 60 * 60 * 1000), // 1 year ago
+  maxDate = new Date(Date.now()),
+}: {
+  minDate?: Date
+  maxDate?: Date
+}): Date => new Date(oneFloat(minDate.getTime(), maxDate.getTime()))

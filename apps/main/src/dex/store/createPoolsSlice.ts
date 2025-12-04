@@ -38,8 +38,8 @@ import type {
   PricesApiPool,
   PricesApiPoolResponse,
   TimeOptions,
-} from '@ui/Chart/types'
-import { convertToLocaleTimestamp } from '@ui/Chart/utils'
+} from '@ui-kit/features/candle-chart/types'
+import { convertToLocaleTimestamp } from '@ui-kit/features/candle-chart/utils'
 import { requireLib } from '@ui-kit/features/connect-wallet'
 import { log } from '@ui-kit/lib/logging'
 import { fetchTokenUsdRate, getTokenUsdRateQueryData } from '@ui-kit/lib/model/entities/token-usd-rate'
@@ -71,8 +71,6 @@ type SliceState = {
     tradeEventsData: LpTradesData[]
     liquidityEventsData: LpLiquidityEventsData[]
     timeOption: TimeOptions
-    chartExpanded: boolean
-    activityHidden: boolean
     chartStatus: FetchingStatus
     refetchingCapped: boolean
     lastFetchEndTime: number
@@ -126,8 +124,6 @@ export type PoolsSlice = {
     ) => void
     fetchPricesApiActivity: (chainId: ChainId, poolAddress: string, chartCombinations: PricesApiCoin[][]) => void
     setChartTimeOption: (timeOption: TimeOptions) => void
-    setChartExpanded: (expanded: boolean) => void
-    setActivityHidden: (hidden: boolean) => void
     setEmptyPoolListDefault(chainId: ChainId): void
 
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
@@ -157,8 +153,6 @@ const DEFAULT_STATE: SliceState = {
     tradeEventsData: [],
     liquidityEventsData: [],
     timeOption: '1d',
-    chartExpanded: false,
-    activityHidden: false,
     chartStatus: 'LOADING',
     refetchingCapped: false,
     lastFetchEndTime: 0,
@@ -834,20 +828,6 @@ const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>
       set(
         produce((state: State) => {
           state.pools.pricesApiState.timeOption = timeOption
-        }),
-      )
-    },
-    setChartExpanded: (expanded: boolean) => {
-      set(
-        produce((state: State) => {
-          state.pools.pricesApiState.chartExpanded = expanded
-        }),
-      )
-    },
-    setActivityHidden: (hidden: boolean) => {
-      set(
-        produce((state: State) => {
-          state.pools.pricesApiState.activityHidden = hidden
         }),
       )
     },

@@ -6,8 +6,7 @@ import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { BORROW_PRESET_RANGES } from '../constants'
-import { BorrowPreset } from '../types'
+import { BORROW_PRESET_RANGES, BorrowPreset } from '../../../constants'
 
 const PRESETS = {
   [BorrowPreset.Safe]: {
@@ -57,11 +56,7 @@ export const LoanPresetSelector = ({
       sx={{ width: '100%', paddingBottom: Spacing.sm }}
     >
       {Object.values(BorrowPreset).map((p) => (
-        <ToggleButton
-          key={p}
-          value={p}
-          sx={{ flexGrow: 1, '&': { lineHeight: '1rem' } }} // force lineHeight, otherwise when the text wraps it looks bad
-        >
+        <ToggleButton key={p} value={p} size="extraSmall" sx={{ flexGrow: 1 }}>
           {PRESETS[p].title}
         </ToggleButton>
       ))}

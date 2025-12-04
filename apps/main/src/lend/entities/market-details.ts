@@ -8,78 +8,42 @@ import type { MarketQuery, MarketParams } from '@ui-kit/lib/model/query/root-key
 
 const getLendMarket = (marketId: string) => requireLib('llamaApi').getLendMarket(marketId)
 
-type MarketCapAndAvailable = {
-  cap: number
-  available: number
-}
-type MarketMaxLeverage = {
-  maxLeverage: string | null
-}
-type MarketCollateralAmounts = {
-  collateralAmount: number
-  borrowedAmount: number
-}
-
-/**
- * The purpose of this query is to allow fetching market collateral amounts on chain
- * in order to display the most current data when a wallet is connected.
- * */
-const _getMarketCapAndAvailable = async ({ marketId }: MarketQuery): Promise<MarketCapAndAvailable> => {
-  const market = getLendMarket(marketId)
-  const capAndAvailable = await market.stats.capAndAvailable(false, USE_API)
-  return {
-    cap: +capAndAvailable.cap,
-    available: +capAndAvailable.available,
-  }
-}
-
 export const { useQuery: useMarketCapAndAvailable, invalidate: invalidateMarketCapAndAvailable } = queryFactory({
   queryKey: (params: MarketParams) => [...rootKeys.market(params), 'marketCapAndAvailable', 'v1'] as const,
-  queryFn: _getMarketCapAndAvailable,
+  queryFn: async ({ marketId }: MarketQuery) => {
+    const market = getLendMarket(marketId)
+    const capAndAvailable = await market.stats.capAndAvailable(false, USE_API)
+    return {
+      cap: +capAndAvailable.cap,
+      available: +capAndAvailable.available,
+    }
+  },
   refetchInterval: '1m',
   validationSuite: marketIdValidationSuite,
 })
-
-/**
- * The purpose of this query is to allow fetching market max leverage on chain
- * in order to display the most current data when a wallet is connected.
- * */
-const _getMarketMaxLeverage = async ({ marketId }: MarketQuery): Promise<MarketMaxLeverage> => {
-  const market = getLendMarket(marketId)
-  const maxLeverage = market.leverage.hasLeverage() ? await market.leverage.maxLeverage(market?.minBands) : null
-  return { maxLeverage }
-}
 
 export const { useQuery: useMarketMaxLeverage } = queryFactory({
   queryKey: (params: MarketParams) => [...rootKeys.market(params), 'marketMaxLeverage', 'v1'] as const,
-  queryFn: _getMarketMaxLeverage,
+  queryFn: async ({ marketId }: MarketQuery) => {
+    const market = getLendMarket(marketId)
+    const maxLeverage = market.leverage.hasLeverage() ? await market.leverage.maxLeverage(market?.minBands) : null
+    return { maxLeverage }
+  },
   validationSuite: marketIdValidationSuite,
 })
-
-/**
- * The purpose of this query is to allow fetching market collateral amounts on chain
- * in order to display the most current data when a wallet is connected.
- * */
-const _getMarketCollateralAmounts = async ({ marketId }: MarketQuery): Promise<MarketCollateralAmounts> => {
-  const market = getLendMarket(marketId)
-  const ammBalance = await market.stats.ammBalances(false, USE_API)
-  return {
-    collateralAmount: +ammBalance.collateral,
-    borrowedAmount: +ammBalance.borrowed,
-  }
-}
 
 export const { useQuery: useMarketCollateralAmounts, invalidate: invalidateMarketCollateralAmounts } = queryFactory({
   queryKey: (params: MarketParams) => [...rootKeys.market(params), 'marketCollateralAmounts', 'v1'] as const,
-  queryFn: _getMarketCollateralAmounts,
+  queryFn: async ({ marketId }: MarketQuery) => {
+    const market = getLendMarket(marketId)
+    const ammBalance = await market.stats.ammBalances(false, USE_API)
+    return {
+      collateralAmount: +ammBalance.collateral,
+      borrowedAmount: +ammBalance.borrowed,
+    }
+  },
   refetchInterval: '1m',
   validationSuite: marketIdValidationSuite,
-})
-
-const _fetchOnChainMarketRate = async ({ marketId }: MarketQuery) => ({
-  rates: await getLendMarket(marketId).stats.rates(false, false),
-  rewardsApr: await getLendMarket(marketId).vault.rewardsApr(false),
-  crvRates: await getLendMarket(marketId).vault.crvApr(false),
 })
 
 /**
@@ -89,22 +53,21 @@ const _fetchOnChainMarketRate = async ({ marketId }: MarketQuery) => ({
  * */
 export const { useQuery: useMarketOnChainRates, invalidate: invalidateMarketOnChainRates } = queryFactory({
   queryKey: (params: MarketParams) => [...rootKeys.market(params), 'marketOnchainData', 'v1'] as const,
-  queryFn: _fetchOnChainMarketRate,
+  queryFn: async ({ marketId }: MarketQuery) => ({
+    rates: await getLendMarket(marketId).stats.rates(false, false),
+    rewardsApr: await getLendMarket(marketId).vault.rewardsApr(false),
+    crvRates: await getLendMarket(marketId).vault.crvApr(false),
+  }),
   refetchInterval: '1m',
   validationSuite: marketIdValidationSuite,
 })
 
-const _fetchMarketPricePerShare = async ({ marketId }: MarketQuery) => {
-  const market = getLendMarket(marketId)
-  return await market.vault.previewRedeem(1)
-}
-
-/**
- * Fetches the price per share of a market on chain
- */
 export const { useQuery: useMarketPricePerShare, invalidate: invalidateMarketPricePerShare } = queryFactory({
   queryKey: (params: MarketParams) => [...rootKeys.market(params), 'marketPricePerShare', 'v1'] as const,
-  queryFn: _fetchMarketPricePerShare,
+  queryFn: async ({ marketId }: MarketQuery) => {
+    const market = getLendMarket(marketId)
+    return await market.vault.previewRedeem(1)
+  },
   refetchInterval: '1m',
   validationSuite: marketIdValidationSuite,
 })

@@ -65,5 +65,5 @@ export type QueryFactoryOutput<
   prefetchQuery: (params: TParams, staleTime?: number) => Promise<void>
   fetchQuery: (params: TParams, options?: Partial<FetchQueryOptions<TData, TError, TData, TKey>>) => Promise<TData>
   refetchQuery: (params: TParams) => Promise<TData>
-  invalidate: (params: TParams) => void
+  invalidate: (params: TParams) => void // todo: should be Promise<void>
 }

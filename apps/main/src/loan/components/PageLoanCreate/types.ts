@@ -1,7 +1,8 @@
 import { Dispatch, ReactNode, SetStateAction } from 'react'
+import type { HealthMode } from '@/llamalend/llamalend.types'
 import type { FormEstGas, FormStatus as Fs } from '@/loan/components/PageLoanManage/types'
 import type { LiqRangeSliderIdx } from '@/loan/store/types'
-import { ChainId, type CollateralUrlParams, LlamaApi, HealthMode, Llamma } from '@/loan/types/loan.types'
+import { ChainId, type CollateralUrlParams, LlamaApi, Llamma } from '@/loan/types/loan.types'
 import type { Step } from '@ui/Stepper/types'
 
 export type FormType = 'create' | 'leverage'

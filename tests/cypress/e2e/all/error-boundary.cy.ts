@@ -9,9 +9,16 @@ describe('Error Boundary', () => {
         chains: {
           ethereum: {
             data: [
-              // make an error occur on purpose by returning nonsense data
+              // make an error occur on purpose by returning nonsense data (`symbol` should be string)
               // note that the error only triggers the boundary if the query succeeds, but it fails during rendering
-              { collateral_token: {}, borrowed_token: {}, extra_reward_apr: [], vault: '', controller: '' },
+              {
+                collateral_token: { symbol: 1 },
+                borrowed_token: { symbol: 1 },
+                extra_reward_apr: [],
+                vault: '',
+                controller: '',
+                created_at: '2023-01-01T00:00:00Z',
+              },
             ],
           },
         },
@@ -20,8 +27,7 @@ describe('Error Boundary', () => {
     cy.visit('/llamalend/ethereum/markets')
     cy.wait('@error', LOAD_TIMEOUT)
     cy.get('[data-testid="error-title"]', LOAD_TIMEOUT).should('contain.text', 'Unexpected Error')
-    // Firefox: `can't access property "toLowerCase", a is undefined`, Chromium: `Cannot read properties of undefined`
-    cy.get('[data-testid="error-subtitle"]').should('contain.text', 'undefined')
+    cy.get('[data-testid="error-subtitle"]').should('contain.text', 'toLowerCase is not a function')
     cy.window().then((win) => {
       win.console.log(win.localStorage)
       win.localStorage.clear() // empty react-query cache

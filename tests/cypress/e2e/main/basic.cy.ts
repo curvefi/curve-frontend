@@ -13,7 +13,7 @@ describe('Basic Access Test', () => {
     cy.url().should('include', '/dex/ethereum/pools')
   })
 
-  it(`should open the Main DApp successfully at ${path}`, () => {
+  it(`should open the DEX app successfully at ${path}`, () => {
     cy.visit(path)
     cy.title(LOAD_TIMEOUT).should('equal', 'Swap - Curve')
     cy.url().should('include', '/dex')
@@ -37,9 +37,18 @@ describe('Basic Access Test', () => {
   })
 
   it('should load for lite networks', () => {
-    cy.visit('/dex/corn/pools')
+    cy.visitWithoutTestConnector('dex/corn/pools')
     cy.title(LOAD_TIMEOUT).should('equal', 'Pools - Curve')
     cy.url().should('include', '/dex/corn/pools')
-    cy.contains('LBTC/wBTCN', LOAD_TIMEOUT).should('be.visible')
+    cy.contains(/LBTC\/wBTCN/i, LOAD_TIMEOUT).should('be.visible')
+  })
+
+  it('shows 404 on /dex/:network/pools/404', () => {
+    cy.visit('/dex/ethereum/pools/404', { failOnStatusCode: false })
+    cy.get('[data-testid="error-subtitle"]', LOAD_TIMEOUT).should('contain.text', 'Not Found')
+    cy.url().should('include', '/dex/ethereum/pools/404/deposit')
+    cy.get('[data-testid="continue-button"]').click()
+    cy.get('[data-testid="data-table-head"]', LOAD_TIMEOUT).should('be.visible') // on the pools list page
+    cy.get('[data-testid="error-subtitle"]').should('not.exist')
   })
 })

@@ -1,20 +1,25 @@
 import { useCallback, useMemo } from 'react'
-import { BorrowTabContents } from '@/llamalend/features/borrow/components/BorrowTabContents'
+import { CreateLoanForm } from '@/llamalend/features/borrow/components/CreateLoanForm'
 import type { OnBorrowFormUpdate } from '@/llamalend/features/borrow/types'
+import type { BorrowMutation, CreateLoanOptions } from '@/llamalend/mutations/create-loan.mutation'
 import LoanFormCreate from '@/loan/components/PageLoanCreate/LoanFormCreate'
 import type { FormType, FormValues, PageLoanCreateProps } from '@/loan/components/PageLoanCreate/types'
-import { DEFAULT_FORM_VALUES, hasLeverage } from '@/loan/components/PageLoanCreate/utils'
+import { DEFAULT_FORM_VALUES } from '@/loan/components/PageLoanCreate/utils'
 import useCollateralAlert from '@/loan/hooks/useCollateralAlert'
 import networks from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
 import { LlamaApi, Llamma } from '@/loan/types/loan.types'
+import { hasV1Leverage } from '@/loan/utils/leverage'
 import { getLoanCreatePathname, getLoanManagePathname } from '@/loan/utils/utilsRouter'
 import Stack from '@mui/material/Stack'
 import { AppFormContentWrapper } from '@ui/AppForm'
 import { useNavigate } from '@ui-kit/hooks/router'
-import { useBorrowUnifiedForm } from '@ui-kit/hooks/useFeatureFlags'
+import { useCreateLoanMuiForm } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { type TabOption, TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+
+const { MaxWidth } = SizesAndSpaces
 
 /**
  * Callback that synchronizes the `ChartOhlc` component with the `RangeSlider` component in the new `BorrowTabContents`.
@@ -46,8 +51,15 @@ const LoanCreate = ({
   const { curve, llamma, loanExists, params, rCollateralId, rFormType, rChainId } = props
   const push = useNavigate()
   const collateralAlert = useCollateralAlert(llamma?.address)
-  const isBorrowUnifiedForm = useBorrowUnifiedForm()
+  const isBorrowUnifiedForm = useCreateLoanMuiForm()
   const onUpdate = useOnFormUpdate(props)
+  const onLoanCreated = useStore((state) => state.loanCreate.onLoanCreated)
+
+  const onCreated: CreateLoanOptions['onCreated'] = useCallback(
+    async (_data, _receipt, { slippage, leverageEnabled }: BorrowMutation) =>
+      curve && llamma && (await onLoanCreated(curve, leverageEnabled, llamma, slippage)),
+    [curve, llamma, onLoanCreated],
+  )
 
   type Tab = 'create' | 'leverage'
   const tabs: TabOption<Tab>[] = useMemo(
@@ -57,7 +69,7 @@ const LoanCreate = ({
           [{ value: 'create' as const, label: t`Borrow` }]
         : [
             { value: 'create' as const, label: t`Create Loan` },
-            ...(hasLeverage(llamma) ? [{ value: 'leverage' as const, label: t`Leverage` }] : []),
+            ...(hasV1Leverage(llamma) ? [{ value: 'leverage' as const, label: t`Leverage` }] : []),
           ],
     [llamma, isBorrowUnifiedForm],
   )
@@ -77,17 +89,27 @@ const LoanCreate = ({
   )
 
   return (
-    <>
+    <Stack
+      sx={{
+        width: { mobile: '100%', tablet: MaxWidth.actionCard },
+        marginInline: { mobile: 'auto', desktop: 0 },
+      }}
+    >
       <TabsSwitcher
         variant="contained"
         size="medium"
         value={rFormType || 'create'}
         onChange={(key) => handleTabClick(key as FormType)}
         options={tabs}
-        fullWidth={!isBorrowUnifiedForm}
       />
       {isBorrowUnifiedForm ? (
-        <BorrowTabContents networks={networks} chainId={rChainId} market={llamma ?? undefined} onUpdate={onUpdate} />
+        <CreateLoanForm
+          networks={networks}
+          chainId={rChainId}
+          market={llamma ?? undefined}
+          onUpdate={onUpdate}
+          onCreated={onCreated}
+        />
       ) : (
         <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
           <AppFormContentWrapper>
@@ -95,7 +117,7 @@ const LoanCreate = ({
           </AppFormContentWrapper>
         </Stack>
       )}
-    </>
+    </Stack>
   )
 }
 

@@ -1,12 +1,13 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 import { prefetchMarkets } from '@/lend/entities/chain/chain-query'
-import { BorrowTabContents } from '@/llamalend/features/borrow/components/BorrowTabContents'
+import { CreateLoanForm } from '@/llamalend/features/borrow/components/CreateLoanForm'
 import type { OnBorrowFormUpdate } from '@/llamalend/features/borrow/types'
+import type { CreateLoanOptions } from '@/llamalend/mutations/create-loan.mutation'
 import networks from '@/loan/networks'
 import { oneBool, oneValueOf } from '@cy/support/generators'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
-import { createTestWagmiConfigFromVNet, createVirtualTestnet } from '@cy/support/helpers/tenderly'
+import { createTenderlyWagmiConfigFromVNet, createVirtualTestnet } from '@cy/support/helpers/tenderly'
 import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
 import { fundErc20, fundEth } from '@cy/support/helpers/tenderly/vnet-fund'
 import { LOAD_TIMEOUT } from '@cy/support/ui'
@@ -36,11 +37,11 @@ const oneEthInWei = '0xde0b6b3a7640000' // 1 ETH=1e18 wei
 
 const onUpdate: OnBorrowFormUpdate = async (form) => console.info('form updated', form)
 
-type BorrowTabTestProps = { type: LlamaMarketType }
+type BorrowTabTestProps = { type: LlamaMarketType } & Pick<CreateLoanOptions, 'onCreated'>
 
 const prefetch = () => prefetchMarkets({})
 
-function BorrowTabTest({ type }: BorrowTabTestProps) {
+function BorrowTabTest({ type, onCreated }: BorrowTabTestProps) {
   const { isHydrated, llamaApi } = useConnection()
   const { id } = MARKETS[type]
   const market = useMemo(
@@ -50,7 +51,7 @@ function BorrowTabTest({ type }: BorrowTabTestProps) {
     [isHydrated, id, llamaApi?.getLendMarket, llamaApi?.getMintMarket, type],
   )
   return market ? (
-    <BorrowTabContents market={market} networks={networks} chainId={chainId} onUpdate={onUpdate} />
+    <CreateLoanForm market={market} networks={networks} chainId={chainId} onUpdate={onUpdate} onCreated={onCreated} />
   ) : (
     <Skeleton />
   )
@@ -62,9 +63,8 @@ describe('BorrowTabContents Component Tests', () => {
   const getVirtualNetwork = createVirtualTestnet((uuid) => ({
     slug: `borrow-tab-${uuid}`,
     display_name: `BorrowTab (${uuid})`,
-    fork_config: {
-      block_number: '23039344',
-    },
+    // calldata is created by Odos, which uses the real mainnet state. Fork isn't fully synced, but the chance of reverts is smaller this way
+    fork_config: { block_number: 'latest' },
   }))
 
   const marketType = oneValueOf(LlamaMarketType)
@@ -80,7 +80,10 @@ describe('BorrowTabContents Component Tests', () => {
   })
 
   const BorrowTabTestWrapper = (props: BorrowTabTestProps) => (
-    <ComponentTestWrapper config={createTestWagmiConfigFromVNet({ vnet: getVirtualNetwork(), privateKey })} autoConnect>
+    <ComponentTestWrapper
+      config={createTenderlyWagmiConfigFromVNet({ vnet: getVirtualNetwork(), privateKey })}
+      autoConnect
+    >
       <ConnectionProvider
         app="llamalend"
         network={networks[chainId]}
@@ -97,7 +100,8 @@ describe('BorrowTabContents Component Tests', () => {
   const getActionValue = (name: string) => cy.get(`[data-testid="${name}-value"]`, LOAD_TIMEOUT)
 
   it(`calculates max debt and health for ${marketType} market ${leverageEnabled ? 'with' : 'without'} leverage`, () => {
-    cy.mount(<BorrowTabTestWrapper type={marketType} />)
+    const onCreated = cy.stub()
+    cy.mount(<BorrowTabTestWrapper type={marketType} onCreated={onCreated} />)
     cy.get('[data-testid="borrow-debt-input"] [data-testid="balance-value"]', LOAD_TIMEOUT).should('exist')
     cy.get('[data-testid="borrow-collateral-input"] input[type="text"]').first().type(collateral)
     cy.get('[data-testid="borrow-debt-input"] [data-testid="balance-value"]').should('not.contain.text', '?')
@@ -131,8 +135,10 @@ describe('BorrowTabContents Component Tests', () => {
       getActionValue('borrow-slippage').should('not.exist')
     }
 
-    cy.get('[data-testid="borrow-form-errors"]').should('not.exist')
-    // todo: actually sign a transaction with the wagmi test connector and start a loan
-    cy.get('[data-testid="borrow-submit-button"]').should('be.enabled')
+    cy.get('[data-testid="loan-form-errors"]').should('not.exist')
+    cy.get('[data-testid="create-loan-submit-button"]').click()
+    cy.get('[data-testid="create-loan-submit-button"]').should('be.disabled')
+    cy.get('[data-testid="create-loan-submit-button"]', LOAD_TIMEOUT).should('be.enabled')
+    cy.get('[data-testid="create-loan-submit-button"]').then(() => expect(onCreated).to.be.called)
   })
 })

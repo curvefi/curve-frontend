@@ -1,5 +1,6 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import { styled } from 'styled-components'
+import { DEFAULT_HEALTH_MODE } from '@/llamalend/constants'
 import AlertFormError from '@/loan/components/AlertFormError'
 import AlertFormWarning from '@/loan/components/AlertFormWarning'
 import DetailInfoBorrowRate from '@/loan/components/DetailInfoBorrowRate'
@@ -16,17 +17,13 @@ import type { FormDetailInfo, FormStatus, FormValues } from '@/loan/components/P
 import { DEFAULT_FORM_VALUES } from '@/loan/components/PageLoanManage/LoanDeleverage/utils'
 import { StyledDetailInfoWrapper, StyledInpChip } from '@/loan/components/PageLoanManage/styles'
 import type { PageLoanManageProps } from '@/loan/components/PageLoanManage/types'
-import {
-  DEFAULT_DETAIL_INFO,
-  DEFAULT_FORM_EST_GAS,
-  DEFAULT_HEALTH_MODE,
-  hasDeleverage,
-} from '@/loan/components/PageLoanManage/utils'
+import { DEFAULT_DETAIL_INFO, DEFAULT_FORM_EST_GAS } from '@/loan/components/PageLoanManage/utils'
 import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
 import networks from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
 import { LlamaApi, Llamma } from '@/loan/types/loan.types'
 import { curveProps } from '@/loan/utils/helpers'
+import { hasDeleverage } from '@/loan/utils/leverage'
 import { getStepStatus, getTokenName } from '@/loan/utils/utilsLoan'
 import { getCollateralListPathname } from '@/loan/utils/utilsRouter'
 import AlertBox from '@ui/AlertBox'
@@ -329,6 +326,7 @@ const LoanDeleverage = ({
         <LargeTokenInput
           name="collateral"
           testId="inpCollateral"
+          label={t`Amount to deleverage`}
           isError={!!formValues.collateralError}
           message={
             formValues.collateralError === 'too-much'

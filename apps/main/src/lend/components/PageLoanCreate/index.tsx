@@ -6,14 +6,17 @@ import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
 import { type MarketUrlParams, type PageContentProps } from '@/lend/types/lend.types'
 import { getLoanCreatePathname } from '@/lend/utils/utilsRouter'
-import { BorrowTabContents } from '@/llamalend/features/borrow/components/BorrowTabContents'
+import { CreateLoanForm } from '@/llamalend/features/borrow/components/CreateLoanForm'
 import type { OnBorrowFormUpdate } from '@/llamalend/features/borrow/types'
 import Stack from '@mui/material/Stack'
 import { AppFormContentWrapper } from '@ui/AppForm'
 import { useNavigate } from '@ui-kit/hooks/router'
-import { useBorrowUnifiedForm } from '@ui-kit/hooks/useFeatureFlags'
+import { useCreateLoanMuiForm } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+
+const { MaxWidth } = SizesAndSpaces
 
 /**
  * Callback that synchronizes the `ChartOhlc` component with the `RangeSlider` component in the new `BorrowTabContents`.
@@ -35,11 +38,12 @@ const useOnFormUpdate = ({ api, market }: PageContentProps): OnBorrowFormUpdate 
   )
 
 const LoanCreate = (pageProps: PageContentProps & { params: MarketUrlParams }) => {
-  const { rChainId, rOwmId, rFormType, market, params } = pageProps
+  const { rChainId, rOwmId, rFormType, market, params, api } = pageProps
   const push = useNavigate()
-  const shouldUseBorrowUnifiedForm = useBorrowUnifiedForm()
+  const shouldUseBorrowUnifiedForm = useCreateLoanMuiForm()
   const onUpdate = useOnFormUpdate(pageProps)
 
+  const onLoanCreated = useStore((state) => state.loanCreate.onLoanCreated)
   const resetState = useStore((state) => state.loanCreate.resetState)
 
   type Tab = 'create' | 'leverage'
@@ -55,8 +59,18 @@ const LoanCreate = (pageProps: PageContentProps & { params: MarketUrlParams }) =
     [market?.leverage, shouldUseBorrowUnifiedForm],
   )
 
+  const onCreated = useCallback(
+    async () => api && market && (await onLoanCreated(api, market)),
+    [api, market, onLoanCreated],
+  )
+
   return (
-    <>
+    <Stack
+      sx={{
+        width: { mobile: '100%', tablet: MaxWidth.actionCard },
+        marginInline: { mobile: 'auto', desktop: 0 },
+      }}
+    >
       <TabsSwitcher
         variant="contained"
         size="medium"
@@ -66,10 +80,15 @@ const LoanCreate = (pageProps: PageContentProps & { params: MarketUrlParams }) =
           push(getLoanCreatePathname(params, rOwmId, key))
         }}
         options={tabs}
-        fullWidth={!shouldUseBorrowUnifiedForm}
       />
       {shouldUseBorrowUnifiedForm ? (
-        <BorrowTabContents networks={networks} chainId={rChainId} market={market ?? undefined} onUpdate={onUpdate} />
+        <CreateLoanForm
+          networks={networks}
+          chainId={rChainId}
+          market={market ?? undefined}
+          onUpdate={onUpdate}
+          onCreated={onCreated}
+        />
       ) : (
         <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
           <AppFormContentWrapper>
@@ -77,7 +96,7 @@ const LoanCreate = (pageProps: PageContentProps & { params: MarketUrlParams }) =
           </AppFormContentWrapper>
         </Stack>
       )}
-    </>
+    </Stack>
   )
 }
 

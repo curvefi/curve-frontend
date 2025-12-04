@@ -1,59 +1,95 @@
-import { useCallback, useMemo } from 'react'
-import { ColumnFiltersState } from '@tanstack/react-table'
-import { useTableFilters } from '@ui-kit/hooks/useLocalStorage'
-import type { MigrationOptions } from '@ui-kit/hooks/useStoredState'
+import { isEqual, kebabCase } from 'lodash'
+import { useCallback, useEffect, useMemo } from 'react'
+import { notFalsy, type PartialRecord, recordValues } from '@curvefi/prices-api/objects.util'
+import { useSearchParams } from '@ui-kit/hooks/router'
 
-const DEFAULT: ColumnFiltersState = []
+// Similar to `ColumnFiltersState` from react-table, but more specific to have only string values (they are saved in url)
+export type ColumnFilters<TColumnId extends string> = { id: TColumnId; value: string }[]
+
+type ColumnEnum<TColumnId extends string> = Record<string, TColumnId>
+
+/** Get scoped prefix for URL keys, so we can have multiple tables on the same page without conflicts. */
+const scopedPrefix = (scope: string | undefined) => (scope ? `${scope}-` : '')
+/** Get scoped key for URLSearchParams */
+const scopedKey = (scope: string | undefined, columnId: string) => `${scopedPrefix(scope)}${columnId}`
 
 /**
- * A hook to manage filters for a table. Currently saved in the state, but the URL could be a better place.
- * @param defaultFilters - The default filters to apply to the table.
- * @param title - The title of the table, used as a key fdor local storage.
- * @param migration - Migration options for the stored state.
- * @return An object containing the current filters, a mapping of filters by column ID, a function to set a filter, and a function to reset filters.
+ * Parse URLSearchParams into ColumnFilters, keeping only allowed keys.
  */
-export function useColumnFilters({
-  title,
-  migration,
-  defaultFilters = DEFAULT,
+function parseFilters<TColumnId extends string>(
+  search: URLSearchParams,
+  columns: ColumnEnum<TColumnId>,
+  defaultFilters: ColumnFilters<TColumnId> | undefined,
+  scope?: string,
+): ColumnFilters<TColumnId> {
+  const allowed = new Set(recordValues(columns).map((id) => scopedKey(scope, id)))
+  const filterPrefix = scopedPrefix(scope)
+  return [
+    ...(defaultFilters?.filter(({ id }) => !search.has(scopedKey(scope, id))) ?? []),
+    ...Array.from(search.entries())
+      .filter(([key, value]) => value && allowed.has(key))
+      .map(([key, value]) => ({ id: key.slice(filterPrefix.length) as TColumnId, value })),
+  ]
+}
+
+const setColumnFilter = <TColumnId extends string>(scope: string | undefined, id: TColumnId, value: string | null) => {
+  const { history, location } = window // avoid depending on the router so we can keep the function identity stable
+  const scoped = scopedKey(scope, id)
+  const params = new URLSearchParams([
+    ...[...new URLSearchParams(location.search).entries()].filter(([key]) => key !== scoped),
+    ...notFalsy(value && [scoped, value]),
+  ])
+  const search = params.toString().replaceAll('%2C', ',') // keep commas unencoded for better readability
+  history.pushState(null, '', params.size ? `?${search}` : location.pathname)
+}
+
+/**
+ * Manage column filters synced with the URL query string. Removes legacy localStorage on first run.
+ */
+export function useColumnFilters<TColumnId extends string>({
+  columns,
+  defaultFilters,
+  title: tableTitle,
+  scope,
 }: {
   title: string
-  migration: MigrationOptions<ColumnFiltersState>
-  defaultFilters?: ColumnFiltersState
+  columns: ColumnEnum<TColumnId>
+  defaultFilters?: ColumnFilters<TColumnId>
+  scope?: string
 }) {
-  const [storedFilters, setStoredFilters] = useTableFilters(title, DEFAULT, migration)
-  const setColumnFilter = useCallback(
-    (id: string, value: unknown) =>
-      setStoredFilters((filters) => [
-        ...filters.filter((f) => f.id !== id),
-        ...(value == null
-          ? []
-          : [
-              {
-                id,
-                value,
-              },
-            ]),
-      ]),
-    [setStoredFilters],
-  )
-  const columnFilters = useMemo(() => {
-    const storedIds = new Set(storedFilters.map((f) => f.id))
-    return [...storedFilters, ...defaultFilters.filter((f) => !storedIds.has(f.id))]
-  }, [storedFilters, defaultFilters])
+  useEffect(() => {
+    // remove legacy filters from local storage. This may be deleted after dec/2025
+    localStorage.removeItem(`table-filters-${kebabCase(tableTitle)}`)
+  }, [tableTitle])
 
-  const columnFiltersById: Record<string, unknown> = useMemo(
-    () =>
-      columnFilters.reduce(
-        (acc, filter) => ({
-          ...acc,
-          [filter.id]: filter.value,
-        }),
-        {},
-      ),
-    [columnFilters],
+  const searchParams = useSearchParams()
+  const columnFilters = useMemo(
+    () => parseFilters(searchParams, columns, defaultFilters, scope),
+    [searchParams, columns, defaultFilters, scope],
   )
 
-  const resetFilters = useCallback(() => setStoredFilters(DEFAULT), [setStoredFilters])
-  return { columnFilters, columnFiltersById, setColumnFilter, resetFilters }
+  return {
+    columnFilters,
+    hasFilters: useMemo(
+      () => columnFilters.length > 0 && !isEqual(columnFilters, defaultFilters),
+      [columnFilters, defaultFilters],
+    ),
+    columnFiltersById: useMemo(
+      () =>
+        columnFilters.reduce(
+          (acc, filter) => ({
+            ...acc,
+            [filter.id]: filter.value,
+          }),
+          {} as PartialRecord<TColumnId, string>,
+        ),
+      [columnFilters],
+    ),
+    setColumnFilter: useCallback((id: TColumnId, value: string | null) => setColumnFilter(scope, id, value), [scope]),
+    resetFilters: useCallback(() => {
+      const params = new URLSearchParams(searchParams)
+      recordValues(columns).forEach((key) => params.delete(scopedKey(scope, key)))
+      history.pushState(null, '', params.size ? `?${params.toString()}` : location.pathname)
+    }, [columns, scope, searchParams]),
+  }
 }

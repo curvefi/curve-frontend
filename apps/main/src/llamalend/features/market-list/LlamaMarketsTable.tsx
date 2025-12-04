@@ -1,18 +1,18 @@
-import lodash from 'lodash'
 import { useMemo, useState } from 'react'
-import { type LlamaMarketsResult } from '@/llamalend/entities/llama-markets'
+import { MARKET_CUTOFF_DATE } from '@/llamalend/constants'
 import { ChainFilterChip } from '@/llamalend/features/market-list/chips/ChainFilterChip'
+import { type LlamaMarketsResult } from '@/llamalend/queries/market-list/llama-markets'
 import Button from '@mui/material/Button'
-import { ColumnFiltersState, ExpandedState, useReactTable } from '@tanstack/react-table'
+import { ExpandedState, useReactTable } from '@tanstack/react-table'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
 import { useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
-import type { MigrationOptions } from '@ui-kit/hooks/useStoredState'
 import { t } from '@ui-kit/lib/i18n'
 import { getTableOptions } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
+import { serializeRangeFilter } from '@ui-kit/shared/ui/DataTable/filters'
 import { useColumnFilters } from '@ui-kit/shared/ui/DataTable/hooks/useColumnFilters'
 import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
 import { TableFiltersTitles } from '@ui-kit/shared/ui/DataTable/TableFiltersTitles'
@@ -25,19 +25,16 @@ import { useSearch } from './hooks/useSearch'
 import { LendingMarketsFilters } from './LendingMarketsFilters'
 import { LlamaMarketExpandedPanel } from './LlamaMarketExpandedPanel'
 
-const { isEqual } = lodash
 const LOCAL_STORAGE_KEY = 'Llamalend Markets'
 
-const useDefaultLlamaFilter = (minLiquidity: number) =>
+const useDefaultLlamaFilter = (minTvl: number) =>
   useMemo(
     () => [
-      { id: LlamaMarketColumnId.DeprecatedMessage, value: false },
-      { id: LlamaMarketColumnId.Tvl, value: [minLiquidity, null] },
+      { id: LlamaMarketColumnId.DeprecatedMessage, value: 'no' },
+      { id: LlamaMarketColumnId.Tvl, value: serializeRangeFilter([minTvl, null])! },
     ],
-    [minLiquidity],
+    [minTvl],
   )
-
-const migration: MigrationOptions<ColumnFiltersState> = { version: 2 }
 
 const pagination = { pageIndex: 0, pageSize: 200 }
 
@@ -52,13 +49,13 @@ export const LlamaMarketsTable = ({
   isError: boolean
   loading: boolean
 }) => {
-  const { markets: data = [], userHasPositions, hasFavorites } = result ?? {}
+  const { markets, userHasPositions, hasFavorites } = result ?? {}
 
   const minLiquidity = useUserProfileStore((s) => s.hideSmallPools) ? SMALL_POOL_TVL : 0
   const defaultFilters = useDefaultLlamaFilter(minLiquidity)
-  const { columnFilters, columnFiltersById, setColumnFilter, resetFilters } = useColumnFilters({
+  const { columnFilters, columnFiltersById, setColumnFilter, resetFilters, hasFilters } = useColumnFilters({
     title: LOCAL_STORAGE_KEY,
-    migration,
+    columns: LlamaMarketColumnId,
     defaultFilters,
   })
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT)
@@ -70,6 +67,13 @@ export const LlamaMarketsTable = ({
   const [expanded, onExpandedChange] = useState<ExpandedState>({})
   const [searchText, onSearch] = useSearch(columnFiltersById, setColumnFilter)
   const filterProps = { columnFiltersById, setColumnFilter }
+
+  const data = useMemo(
+    // We're directly filtering the market list and not the hooks and queries, to avoid the chance of breaking
+    // other components with potential missing data or incomplete metrics. It's purely presentational filtering.
+    () => (markets ?? []).filter((market) => market.createdAt <= MARKET_CUTOFF_DATE.getTime()),
+    [markets],
+  )
 
   const table = useReactTable({
     columns: LLAMA_MARKET_COLUMNS,
@@ -111,20 +115,13 @@ export const LlamaMarketsTable = ({
         hasSearchBar
         onSearch={onSearch}
         leftChildren={<TableFiltersTitles title={t`Markets`} subtitle={t`Find your next opportunity`} />}
-        collapsible={
-          <LendingMarketsFilters
-            data={data}
-            minLiquidity={minLiquidity}
-            columnFilters={columnFiltersById}
-            setColumnFilter={setColumnFilter}
-          />
-        }
+        collapsible={<LendingMarketsFilters data={data} minLiquidity={minLiquidity} {...filterProps} />}
         chips={
           <>
             <ChainFilterChip data={data} {...filterProps} />
             <LlamaListChips
               hiddenMarketCount={result ? data.length - table.getFilteredRowModel().rows.length : 0}
-              hasFilters={columnFilters.length > 0 && !isEqual(columnFilters, defaultFilters)}
+              hasFilters={hasFilters}
               resetFilters={resetFilters}
               userHasPositions={userHasPositions}
               hasFavorites={hasFavorites}

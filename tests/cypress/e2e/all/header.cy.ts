@@ -1,4 +1,4 @@
-import { AppRoute, getRouteApp, getRouteTestId, oneAppRoute } from '@cy/support/routes'
+import { AppRoute, DEFAULT_PAGES, getRouteApp, getRouteTestId, oneAppRoute } from '@cy/support/routes'
 import {
   API_LOAD_TIMEOUT,
   LOAD_TIMEOUT,
@@ -27,7 +27,7 @@ describe('Header', () => {
       viewport = oneDesktopViewport()
       cy.viewport(...viewport)
       route = oneAppRoute()
-      cy.visit(`/${route}`)
+      cy.visitWithoutTestConnector(route)
       waitIsLoaded(route)
     })
 
@@ -76,6 +76,8 @@ describe('Header', () => {
         return
       }
       switchEthToArbitrum()
+      const [app, page] = DEFAULT_PAGES[routeApp]
+      cy.url().should('match', new RegExp(`.*/${app}/arbitrum${page}/?$`.replaceAll('/', '\\/')))
       cy.get("[data-testid='app-link-dex']").invoke('attr', 'href').should('include', `/dex/arbitrum`)
     })
   })
@@ -87,7 +89,7 @@ describe('Header', () => {
       viewport = oneMobileOrTabletViewport()
       cy.viewport(...viewport)
       route = oneAppRoute()
-      cy.visit(`/${route}`)
+      cy.visitWithoutTestConnector(route)
       waitIsLoaded(route)
     })
 

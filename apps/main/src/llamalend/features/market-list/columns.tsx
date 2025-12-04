@@ -1,10 +1,16 @@
 import { ReactNode } from 'react'
-import { ColumnDef, createColumnHelper, FilterFnOption, type ColumnMeta } from '@tanstack/react-table'
+import { ColumnDef, type ColumnMeta, createColumnHelper, FilterFnOption } from '@tanstack/react-table'
 import { type DeepKeys } from '@tanstack/table-core'
 import { t } from '@ui-kit/lib/i18n'
-import { boolFilterFn, filterByText, listFilterFn, multiFilterFn } from '@ui-kit/shared/ui/DataTable/filters'
+import {
+  boolFilterFn,
+  filterByText,
+  listNotEmptyFilterFn,
+  multiFilterFn,
+  rangeFilterFn,
+} from '@ui-kit/shared/ui/DataTable/filters'
 import { MarketRateType } from '@ui-kit/types/market'
-import { LlamaMarket } from '../../entities/llama-markets'
+import { LlamaMarket } from '../../queries/market-list/llama-markets'
 import {
   BoostCell,
   CompactUsdCell,
@@ -19,12 +25,12 @@ import {
 } from './cells'
 import { LlamaMarketColumnId } from './columns.enum'
 import {
-  CollateralBorrowHeaderTooltipContent,
   BorrowRateHeaderTooltipContent,
+  CollateralBorrowHeaderTooltipContent,
   LendRateHeaderTooltipContent,
-  UtilizationHeaderTooltipContent,
   LiquidityUsdHeaderTooltipContent,
   TvlHeaderTooltipContent,
+  UtilizationHeaderTooltipContent,
 } from './header-tooltips'
 
 const columnHelper = createColumnHelper<LlamaMarket>()
@@ -164,6 +170,7 @@ export const LLAMA_MARKET_COLUMNS = [
       type: 'numeric',
       tooltip: createTooltip(LlamaMarketColumnId.UtilizationPercent, <UtilizationHeaderTooltipContent />),
     },
+    filterFn: rangeFilterFn,
   }),
   columnHelper.accessor(LlamaMarketColumnId.LiquidityUsd, {
     header: headers[LlamaMarketColumnId.LiquidityUsd],
@@ -172,6 +179,7 @@ export const LLAMA_MARKET_COLUMNS = [
       type: 'numeric',
       tooltip: createTooltip(LlamaMarketColumnId.LiquidityUsd, <LiquidityUsdHeaderTooltipContent />),
     },
+    filterFn: rangeFilterFn,
   }),
   columnHelper.accessor(LlamaMarketColumnId.TotalDebt, {
     header: headers[LlamaMarketColumnId.TotalDebt],
@@ -193,6 +201,7 @@ export const LLAMA_MARKET_COLUMNS = [
       tooltip: createTooltip(LlamaMarketColumnId.Tvl, <TvlHeaderTooltipContent />),
     },
     sortUndefined: 'last',
+    filterFn: rangeFilterFn,
   }),
   // Following columns are used in tanstack filter, but they are displayed together in MarketTitleCell
   hidden(LlamaMarketColumnId.Chain, LlamaMarketColumnId.Chain, multiFilterFn),
@@ -211,7 +220,7 @@ export const LLAMA_MARKET_COLUMNS = [
       )
     },
   ),
-  hidden(LlamaMarketColumnId.Rewards, LlamaMarketColumnId.Rewards, listFilterFn),
+  hidden(LlamaMarketColumnId.Rewards, LlamaMarketColumnId.Rewards, listNotEmptyFilterFn),
   hidden(LlamaMarketColumnId.DeprecatedMessage, LlamaMarketColumnId.DeprecatedMessage, boolFilterFn),
   hidden(LlamaMarketColumnId.Type, LlamaMarketColumnId.Type, multiFilterFn),
 ] satisfies LlamaColumn[]

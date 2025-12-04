@@ -1,4 +1,7 @@
-import type { CollateralValue } from '@/llamalend/features/market-position-details/BorrowPositionDetails'
+import type {
+  CollateralValue,
+  CollateralLoss,
+} from '@/llamalend/features/market-position-details/BorrowPositionDetails'
 import {
   TooltipItem,
   TooltipItems,
@@ -6,18 +9,20 @@ import {
   TooltipDescription,
 } from '@/llamalend/widgets/tooltips/TooltipComponents'
 import { Stack } from '@mui/material'
-import { FORMAT_OPTIONS, formatNumber } from '@ui/utils/utilsFormat'
 import { t } from '@ui-kit/lib/i18n'
+import { formatPercent, formatNumber, formatUsd } from '@ui-kit/utils'
+import { Decimal } from '@ui-kit/utils/decimal'
 
 type CollateralMetricTooltipContentProps = {
   collateralValue: CollateralValue | undefined | null
+  collateralLoss: CollateralLoss | undefined | null
 }
 
 const UnavailableNotation = '-'
 
-const formatMetricValue = (value?: number | null) => {
+const formatMetricValue = (value?: number | Decimal | null) => {
   if (value === 0) return '0'
-  if (value) return formatNumber(value, { notation: 'compact' })
+  if (value) return formatNumber(value, { abbreviate: true })
   return UnavailableNotation
 }
 
@@ -28,15 +33,18 @@ const formatPercentage = (
 ) => {
   if (value === 0) return '0%'
   if (value && totalValue && usdRate) {
-    return formatNumber(((value * usdRate) / totalValue) * 100, {
-      ...FORMAT_OPTIONS.PERCENT,
-    })
+    return formatPercent(((value * usdRate) / totalValue) * 100)
   }
   return null
 }
 
-export const CollateralMetricTooltipContent = ({ collateralValue }: CollateralMetricTooltipContentProps) => {
+export const CollateralMetricTooltipContent = ({
+  collateralValue,
+  collateralLoss,
+}: CollateralMetricTooltipContentProps) => {
   const collateralValueFormatted = formatMetricValue(collateralValue?.collateral?.value)
+  const depositedCollateralFormatted = formatMetricValue(collateralLoss?.depositedCollateral)
+  const collateralLossFormatted = formatMetricValue(collateralLoss?.amount)
   const collateralPercentage = formatPercentage(
     collateralValue?.collateral?.value,
     collateralValue?.totalValue,
@@ -51,7 +59,7 @@ export const CollateralMetricTooltipContent = ({ collateralValue }: CollateralMe
   )
 
   const totalValueFormatted = collateralValue?.totalValue
-    ? formatNumber(collateralValue.totalValue, { ...FORMAT_OPTIONS.USD })
+    ? formatUsd(collateralValue.totalValue, { abbreviate: false })
     : UnavailableNotation
 
   return (
@@ -62,6 +70,11 @@ export const CollateralMetricTooltipContent = ({ collateralValue }: CollateralMe
 
       <Stack>
         <TooltipItems secondary>
+          <TooltipItem title={t`Initial collateral`} variant="independent">
+            {`${depositedCollateralFormatted} ${collateralValue?.collateral?.symbol}`}
+          </TooltipItem>
+        </TooltipItems>
+        <TooltipItems secondary>
           <TooltipItem title={t`Deposit token`} variant="independent">
             {`${collateralValueFormatted} ${collateralValue?.collateral?.symbol ?? UnavailableNotation}`}
             {collateralPercentage && ` (${collateralPercentage})`}
@@ -69,6 +82,14 @@ export const CollateralMetricTooltipContent = ({ collateralValue }: CollateralMe
           <TooltipItem title={t`Borrow token`} variant="independent">
             {`${crvUSDValueFormatted} ${collateralValue?.borrow?.symbol ?? UnavailableNotation}`}
             {crvUSDPercentage && ` (${crvUSDPercentage})`}
+          </TooltipItem>
+        </TooltipItems>
+        <TooltipItems secondary>
+          <TooltipItem title={t`Eroded collateral`} variant="independent">
+            {`${collateralLossFormatted} ${collateralValue?.collateral?.symbol}`}
+            {collateralLoss?.percentage &&
+              Number(collateralLoss.percentage) != 0 &&
+              ` (${formatPercent(collateralLoss.percentage)})`}
           </TooltipItem>
         </TooltipItems>
       </Stack>

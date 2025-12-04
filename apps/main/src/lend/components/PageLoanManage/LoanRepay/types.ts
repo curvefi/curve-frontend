@@ -1,7 +1,8 @@
 import { Dispatch, SetStateAction } from 'react'
 import type { InpError } from '@/lend/components/PageLoanCreate/types'
 import type { FormDetailInfo, FormStatus as Fs } from '@/lend/components/PageLoanManage/types'
-import { ExpectedBorrowed, PageContentProps, HealthMode } from '@/lend/types/lend.types'
+import { ExpectedBorrowed, PageContentProps } from '@/lend/types/lend.types'
+import type { HealthMode } from '@/llamalend/llamalend.types'
 import type { Step } from '@ui/Stepper/types'
 
 export type FormValues = {

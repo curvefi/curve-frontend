@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { useUserMarketStats } from '@/llamalend/entities/llama-market-stats'
+import { useUserMarketStats } from '@/llamalend/queries/market-list/llama-market-stats'
 import { ArrowRight } from '@carbon/icons-react'
 import Button from '@mui/material/Button'
 import CardHeader from '@mui/material/CardHeader'
@@ -15,7 +15,7 @@ import { Metric } from '@ui-kit/shared/ui/Metric'
 import { RouterLink as Link } from '@ui-kit/shared/ui/RouterLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
-import type { LlamaMarket } from '../../entities/llama-markets'
+import type { LlamaMarket } from '../../queries/market-list/llama-markets'
 import { LineGraphCell } from './cells'
 import { BorrowRateTooltip } from './cells/RateCell/BorrowRateTooltip'
 import { RewardsIcons } from './cells/RateCell/RewardsIcons'
@@ -65,6 +65,7 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
   const { data: deposited, error: depositedError } = useUserMarketStats(market, LlamaMarketColumnId.UserDeposited)
   const {
     address,
+    controllerAddress,
     assets,
     leverage,
     liquidityUsd,
@@ -94,9 +95,9 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
                 <Stack direction="row">
                   <CopyIconButton
                     label={t`Copy market address`}
-                    copyText={address}
+                    copyText={controllerAddress}
                     confirmationText={t`Market address copied`}
-                    data-testid={`copy-market-address-${address}`}
+                    data-testid={`copy-market-address-${controllerAddress}`}
                   />
                   <FavoriteMarketButton address={address} />
                 </Stack>
@@ -107,7 +108,7 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
         </Grid>
         <RateItem market={market} type={MarketRateType.Borrow} title={t`Borrow rate`} />
         <RateItem market={market} type={MarketRateType.Supply} title={t`Supply yield`} />
-        {leverage > 0 && (
+        {leverage && (
           <Grid size={6}>
             <Metric label={t`Leverage 🔥`} value={leverage} valueOptions={{ unit: 'multiplier' }} />
           </Grid>

@@ -1,4 +1,4 @@
-import { LlamaMarket } from '@/llamalend/entities/llama-markets'
+import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import Stack from '@mui/material/Stack'
 import { CellContext } from '@tanstack/react-table'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
@@ -20,7 +20,7 @@ export const MarketTitleCell = ({ row: { original: market } }: CellContext<Llama
       <Stack direction="column" justifyContent="center" gap={Spacing.xxs}>
         <MarketTitle
           title={[collateral.symbol, borrowed.symbol].join(' • ')}
-          address={market.address}
+          address={market.controllerAddress}
           url={market.url}
         />
         <MarketBadges market={market} isMobile={isMobile} />

@@ -143,8 +143,8 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
       message: (
         <MessageWrapper>
           <div>
-            This pool is managed by <b>Yieldbasis</b>. Only deposits done from from the Yieldbasis UI earn from fees and
-            rewards. <br /> Go to{' '}
+            This pool is managed by <b>YieldBasis</b>. Only deposits made on the YieldBasis UI earn fees and rewards.{' '}
+            <br /> Go to{' '}
             <ExternalLink $noStyles href="https://yieldbasis.com">
               yieldbasis.com
             </ExternalLink>{' '}
@@ -207,6 +207,18 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
       ),
     })
 
+    // Pool creator configured a price feed instead of redemption rates for stored_rates, leading to users losing funds when swapping.
+    const monadEthConverterAlert = (): PoolAlert => ({
+      alertType: 'danger',
+      isDisableDeposit: true,
+      isDisableSwap: true,
+      message: (
+        <MessageWrapper>
+          <div>This pool is in withdraw only mode, as it has been configured incorrectly.</div>
+        </MessageWrapper>
+      ),
+    })
+
     // prettier-ignore
     const alerts: { [poolAddress: string]: PoolAlert } = {
       // ethereum
@@ -235,6 +247,9 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
       
       // avalanche
       '0xb755b949c126c04e0348dd881a5cf55d424742b2': atricryptoAlert(),
+
+      // monad
+      '0x2fd13b49f970e8c6d89283056c1c6281214b7eb6': monadEthConverterAlert()
     }
 
     if (poolAddress) {

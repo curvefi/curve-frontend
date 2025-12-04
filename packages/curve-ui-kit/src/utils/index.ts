@@ -18,6 +18,7 @@ export enum ReleaseChannel {
 }
 
 export const isCypress = Boolean((window as { Cypress?: unknown }).Cypress)
+export const noCypressTestConnector = Boolean((window as { CypressNoTestConnector?: unknown }).CypressNoTestConnector)
 
 const isDefaultBeta =
   process.env.NODE_ENV === 'development' ||

@@ -1,18 +1,16 @@
 import lodash from 'lodash'
 import { useMemo, useState } from 'react'
 import { PositionsEmptyState } from '@/llamalend/constants'
-import { useShowAllPositionsRows } from '@/llamalend/hooks/useShowAllPositionsRows'
-import { ColumnFiltersState, ExpandedState, useReactTable } from '@tanstack/react-table'
+import { ExpandedState, useReactTable } from '@tanstack/react-table'
 import { useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
-import type { MigrationOptions } from '@ui-kit/hooks/useStoredState'
 import { getTableOptions } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { useColumnFilters } from '@ui-kit/shared/ui/DataTable/hooks/useColumnFilters'
 import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
 import { TableSearchField } from '@ui-kit/shared/ui/DataTable/TableSearchField'
 import { MarketRateType } from '@ui-kit/types/market'
-import { type LlamaMarketsResult } from '../../entities/llama-markets'
+import { type LlamaMarketsResult } from '../../queries/market-list/llama-markets'
 import { ChainFilterChip } from './chips/ChainFilterChip'
 import { LlamaListChips } from './chips/LlamaListChips'
 import { DEFAULT_SORT_BORROW, DEFAULT_SORT_SUPPLY, LLAMA_MARKET_COLUMNS } from './columns'
@@ -22,7 +20,6 @@ import { useSearch } from './hooks/useSearch'
 import { LendingMarketsFilters } from './LendingMarketsFilters'
 import { LlamaMarketExpandedPanel } from './LlamaMarketExpandedPanel'
 import { UserPositionsEmptyState } from './UserPositionsEmptyState'
-import { UserPositionsViewAllButton } from './UserPositionsViewAllButton'
 const { isEqual } = lodash
 
 const LOCAL_STORAGE_KEYS = {
@@ -41,11 +38,8 @@ const SORT_QUERY_FIELD = {
   [MarketRateType.Supply]: 'userSortSupply',
 }
 
-const getEmptyState = (isError: boolean, hasPositions: boolean): PositionsEmptyState => {
-  if (isError) return PositionsEmptyState.Error
-  if (!hasPositions) return PositionsEmptyState.Positions
-  return PositionsEmptyState.Filtered
-}
+const getEmptyState = (isError: boolean, hasPositions: boolean): PositionsEmptyState =>
+  isError ? PositionsEmptyState.Error : hasPositions ? PositionsEmptyState.Filtered : PositionsEmptyState.NoPositions
 
 const useDefaultUserFilter = (type: MarketRateType) =>
   useMemo(() => [{ id: LlamaMarketColumnId.UserHasPositions, value: type }], [type])
@@ -58,21 +52,20 @@ export type UserPositionsTableProps = {
   tab: MarketRateType
 }
 
-const migration: MigrationOptions<ColumnFiltersState> = { version: 1 }
 const pagination = { pageIndex: 0, pageSize: 50 }
 const DEFAULT_VISIBLE_ROWS = 3
 
 export const UserPositionsTable = ({ onReload, result, loading, isError, tab }: UserPositionsTableProps) => {
   const { markets: data = [], userHasPositions } = result ?? {}
   const userData = useMemo(() => data.filter((market) => market.userHasPositions?.[tab]), [data, tab])
-  const [isShowingAll, showAllRows] = useShowAllPositionsRows(tab)
 
   const defaultFilters = useDefaultUserFilter(tab)
   const title = LOCAL_STORAGE_KEYS[tab]
   const { columnFilters, columnFiltersById, setColumnFilter, resetFilters } = useColumnFilters({
     title,
-    migration,
+    columns: LlamaMarketColumnId,
     defaultFilters,
+    scope: tab.toLowerCase(),
   })
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT[tab], SORT_QUERY_FIELD[tab])
   const { columnSettings, columnVisibility, sortField, toggleVisibility } = useLlamaTableVisibility(title, sorting, tab)
@@ -90,62 +83,57 @@ export const UserPositionsTable = ({ onReload, result, loading, isError, tab }: 
     ...getTableOptions(result),
   })
 
-  const showViewAllButton = userData.length > DEFAULT_VISIBLE_ROWS && !isShowingAll
   return (
-    <>
-      <DataTable
-        table={table}
-        rowLimit={isShowingAll ? undefined : DEFAULT_VISIBLE_ROWS}
-        emptyState={
-          <UserPositionsEmptyState
-            state={getEmptyState(isError, userData.length > 0)}
-            table={table}
-            tab={tab}
-            onReload={onReload}
-            resetFilters={resetFilters}
+    <DataTable
+      table={table}
+      rowLimit={DEFAULT_VISIBLE_ROWS}
+      viewAllLabel="View all positions"
+      emptyState={
+        <UserPositionsEmptyState
+          state={getEmptyState(isError, userData.length > 0)}
+          table={table}
+          tab={tab}
+          onReload={onReload}
+          resetFilters={resetFilters}
+        />
+      }
+      expandedPanel={LlamaMarketExpandedPanel}
+      shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
+      loading={loading}
+    >
+      <TableFilters<LlamaMarketColumnId>
+        filterExpandedKey={title}
+        leftChildren={<TableSearchField value={searchText} onChange={onSearch} testId={`${title}-search`} isExpanded />}
+        loading={loading}
+        onReload={onReload}
+        visibilityGroups={columnSettings}
+        toggleVisibility={toggleVisibility}
+        searchText={searchText}
+        onSearch={onSearch}
+        collapsible={
+          <LendingMarketsFilters
+            data={userData}
+            columnFiltersById={columnFiltersById}
+            setColumnFilter={setColumnFilter}
           />
         }
-        expandedPanel={LlamaMarketExpandedPanel}
-        shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
-        loading={loading}
-      >
-        <TableFilters<LlamaMarketColumnId>
-          filterExpandedKey={title}
-          leftChildren={
-            <TableSearchField value={searchText} onChange={onSearch} testId={`${title}-search`} isExpanded />
-          }
-          loading={loading}
-          onReload={onReload}
-          visibilityGroups={columnSettings}
-          toggleVisibility={toggleVisibility}
-          searchText={searchText}
-          onSearch={onSearch}
-          collapsible={
-            <LendingMarketsFilters
+        chips={
+          <>
+            <ChainFilterChip data={userData} {...filterProps} />
+            <LlamaListChips
+              hiddenMarketCount={result ? userData.length - table.getFilteredRowModel().rows.length : undefined}
+              hasFilters={columnFilters.length > 0 && !isEqual(columnFilters, defaultFilters)}
+              resetFilters={resetFilters}
+              userHasPositions={userHasPositions}
+              onSortingChange={onSortingChange}
+              sortField={sortField}
               data={userData}
-              columnFilters={columnFiltersById}
-              setColumnFilter={setColumnFilter}
+              userPositionsTab={tab}
+              {...filterProps}
             />
-          }
-          chips={
-            <>
-              <ChainFilterChip data={userData} {...filterProps} />
-              <LlamaListChips
-                hiddenMarketCount={result ? userData.length - table.getFilteredRowModel().rows.length : undefined}
-                hasFilters={columnFilters.length > 0 && !isEqual(columnFilters, defaultFilters)}
-                resetFilters={resetFilters}
-                userHasPositions={userHasPositions}
-                onSortingChange={onSortingChange}
-                sortField={sortField}
-                data={userData}
-                userPositionsTab={tab}
-                {...filterProps}
-              />
-            </>
-          }
-        />
-      </DataTable>
-      {showViewAllButton && <UserPositionsViewAllButton onClick={showAllRows} />}
-    </>
+          </>
+        }
+      />
+    </DataTable>
   )
 }
