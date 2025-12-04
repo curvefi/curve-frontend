@@ -47,7 +47,6 @@ export function useUserMarketStats(market: LlamaMarket, column?: LlamaMarketColu
   const enableMintStats = enableStats && type === LlamaMarketType.Mint
 
   const params = { userAddress, contractAddress: controllerAddress, blockchainId: chain }
-  const earningsParams = { ...params, contractAddress: controllerAddress }
 
   const {
     data: lendData,
@@ -59,7 +58,7 @@ export function useUserMarketStats(market: LlamaMarket, column?: LlamaMarketColu
     data: earnData,
     error: earnError,
     isLoading: loadingEarn,
-  } = useUserLendingVaultEarnings(earningsParams, enableEarnings)
+  } = useUserLendingVaultEarnings(params, enableEarnings)
 
   const { data: mintData, error: mintError, isLoading: loadingMint } = useUserMintMarketStats(params, enableMintStats)
 
