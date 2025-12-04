@@ -8,6 +8,8 @@ import { ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import type { BorrowPositionDetailsProps } from '@/llamalend/features/market-position-details'
 import { calculateRangeToLiquidation } from '@/llamalend/features/market-position-details/utils'
 import { calculateLtv } from '@/llamalend/llama.utils'
+import { useLoanExists } from '@/llamalend/queries/loan-exists'
+import { useUserPnl } from '@/llamalend/queries/user-pnl.query'
 import type { Address, Chain } from '@curvefi/prices-api'
 import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import { useLendingSnapshots } from '@ui-kit/entities/lending-snapshots'
@@ -41,14 +43,24 @@ export const useBorrowPositionDetails = ({
     bands,
     health,
     leverage,
-    pnl,
     loss,
     prices: liquidationPrices,
     status,
     state: { collateral, borrowed, debt } = {},
   } = userLoanDetails ?? {}
   const prices = useStore((state) => state.markets.pricesMapper[chainId]?.[marketId])
-
+  const { data: loanExists } = useLoanExists({
+    chainId,
+    marketId,
+    userAddress,
+  })
+  const { data: userPnl, isLoading: isUserPnlLoading } = useUserPnl({
+    chainId,
+    marketId,
+    userAddress,
+    loanExists,
+    hasV2Leverage: true,
+  })
   const blockchainId = networks[chainId].id as Chain
   const { data: campaigns } = useCampaignsByAddress({ blockchainId, address: controller as Address })
   const { data: onChainRatesData, isLoading: isOnchainRatesLoading } = useMarketOnChainRates({
@@ -141,11 +153,11 @@ export const useBorrowPositionDetails = ({
       loading: !market || isUserLoanDetailsLoading,
     },
     pnl: {
-      currentProfit: pnl?.currentProfit ? Number(pnl.currentProfit) : null,
-      currentPositionValue: pnl?.currentPosition ? Number(pnl.currentPosition) : null,
-      depositedValue: pnl?.deposited ? Number(pnl.deposited) : null,
-      percentageChange: pnl?.percentage ? Number(pnl.percentage) : null,
-      loading: !market || isUserLoanDetailsLoading,
+      currentProfit: userPnl?.currentProfit,
+      currentPositionValue: userPnl?.currentPosition,
+      depositedValue: userPnl?.deposited,
+      percentageChange: userPnl?.percentage,
+      loading: !market || isUserPnlLoading,
     },
     leverage: {
       value: leverage ? Number(leverage) : null,

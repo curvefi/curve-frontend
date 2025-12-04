@@ -1,8 +1,9 @@
 import { oneFloat, oneOf } from '@cy/support/generators'
+import type { AppRoute } from '@cy/support/routes'
 import { LOAD_TIMEOUT } from '@cy/support/ui'
 
 describe('Pool page', () => {
-  const path = `/dex/${oneOf(
+  const path: AppRoute = `dex/${oneOf(
     'ethereum/pools/factory-tricrypto-0',
     'ethereum/pools/factory-stable-ng-561',
     'arbitrum/pools/2pool',
@@ -10,7 +11,7 @@ describe('Pool page', () => {
   )}/deposit`
 
   it('should update slippage settings', () => {
-    cy.visit(path)
+    cy.visitWithoutTestConnector(path)
     cy.get('[data-testid="tab-deposit"]', LOAD_TIMEOUT).should('have.class', 'Mui-selected')
     cy.get('[data-testid="borrow-slippage-value"]').contains(path.includes('crypto') ? '0.10%' : '0.03%')
     cy.get('[data-testid="slippage-settings-button"]').click()

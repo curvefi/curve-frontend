@@ -1,7 +1,6 @@
-import React from 'react'
 import { useNetworksQuery } from '@/dex/entities/networks'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
-import { createTestWagmiConfigFromVNet, createVirtualTestnet } from '@cy/support/helpers/tenderly'
+import { createTenderlyWagmiConfigFromVNet, createVirtualTestnet } from '@cy/support/helpers/tenderly'
 import Box from '@mui/material/Box'
 import { ConnectionProvider } from '@ui-kit/features/connect-wallet/lib/ConnectionProvider'
 import { usePathname } from '@ui-kit/hooks/router'
@@ -34,7 +33,7 @@ describe('RootLayout RPC Tests', () => {
 
   it(`redirects to arbitrum when the wallet is connected to it`, () => {
     cy.mount(
-      <ComponentTestWrapper config={createTestWagmiConfigFromVNet({ vnet: getVirtualNetwork() })} autoConnect>
+      <ComponentTestWrapper config={createTenderlyWagmiConfigFromVNet({ vnet: getVirtualNetwork() })} autoConnect>
         <Test />
       </ComponentTestWrapper>,
     )

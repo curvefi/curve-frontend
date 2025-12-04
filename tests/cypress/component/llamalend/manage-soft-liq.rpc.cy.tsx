@@ -3,7 +3,7 @@ import { prefetchMarkets } from '@/lend/entities/chain/chain-query'
 import { ManageSoftLiquidation } from '@/llamalend/features/manage-soft-liquidation'
 import networks from '@/loan/networks'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
-import { createTestWagmiConfigFromVNet, forkVirtualTestnet } from '@cy/support/helpers/tenderly'
+import { createTenderlyWagmiConfigFromVNet, forkVirtualTestnet } from '@cy/support/helpers/tenderly'
 import Skeleton from '@mui/material/Skeleton'
 import { ConnectionProvider, useConnection } from '@ui-kit/features/connect-wallet'
 import { Chain } from '@ui-kit/utils'
@@ -29,7 +29,10 @@ describe('Manage soft liquidation', () => {
   }
 
   const TestComponentWrapper = () => (
-    <ComponentTestWrapper config={createTestWagmiConfigFromVNet({ vnet: getVirtualNetwork(), privateKey })} autoConnect>
+    <ComponentTestWrapper
+      config={createTenderlyWagmiConfigFromVNet({ vnet: getVirtualNetwork(), privateKey })}
+      autoConnect
+    >
       <ConnectionProvider
         app="llamalend"
         network={network}

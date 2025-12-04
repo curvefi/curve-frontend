@@ -1,6 +1,6 @@
-import lodash from 'lodash'
+import lodash, { max } from 'lodash'
 import type { GetMarketsResponse } from '@curvefi/prices-api/llamalend'
-import { range } from '@curvefi/prices-api/objects.util'
+import { range, recordValues } from '@curvefi/prices-api/objects.util'
 import { oneOf, shuffle, type TokenType } from '@cy/support/generators'
 import {
   Chain,
@@ -25,8 +25,8 @@ import {
 import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
 import { MarketRateType } from '@ui-kit/types/market'
 
-const wstEthMarket = '0x37417B2238AA52D0DD2D6252d989E728e8f706e4' as const
-const sfrxEthMarket = '0x136e783846ef68C8Bd00a3369F787dF8d683a696' as const
+const wstEthMarket = '0x100dAa78fC509Db39Ef7D04DE0c1ABD299f4C6CE' as const
+const sfrxEthMarket = '0x8472A9A7632b173c8Cf3a86D3afec50c35548e76' as const
 
 describe(`LlamaLend Markets`, () => {
   let breakpoint: Breakpoint
@@ -146,64 +146,51 @@ describe(`LlamaLend Markets`, () => {
       ['utilizationPercent', '0% -'],
     )
     // Keep the viewport stable for slider width.
-    const [width, height, breakpoint] = oneOf([1200, 800, 'desktop'], [500, 800, 'mobile'])
-    cy.viewport(width, height)
+    cy.viewport(...((breakpoint === 'mobile' ? [500, 800] : [1200, 800]) as [number, number]))
     cy.get(`[data-testid^="data-table-row"]`).then(({ length }) => {
       cy.get(`[data-testid="minimum-slider-filter-${columnId}"]`).should('not.be.visible')
-      // Expand the filters
-      if (breakpoint == 'mobile') {
-        openDrawer('filter')
-      } else {
-        cy.get(`[data-testid="btn-expand-filters"]`).click({ waitForAnimations: true })
-      }
+      expandFilters()
       cy.get(`[data-testid="minimum-slider-filter-${columnId}"]`).should('contain', initialFilterText)
       cy.get(`[data-testid="slider-${columnId}"]`).should('not.exist')
+
       cy.get(`[data-testid="minimum-slider-filter-${columnId}"]`).click({ waitForAnimations: true })
-      cy.get(`[data-testid="slider-${columnId}"]`).should('be.visible')
-      cy.get(`[data-testid="slider-${columnId}"]`).then(($el) => {
-        const width = $el.width() ?? 80
-        const height = $el.height() ?? 24
-        // With log slider a click from the left is not enough to filter
-        // Click 20px from the right edge and vertically centered
-        cy.wrap($el).click(width - 20, height / 2, { waitForAnimations: true })
-      })
-      // close the select menu
-      cy.get('body').click(0, 0, { waitForAnimations: true })
-      cy.get(`[data-testid="slider-${columnId}"]`).should('not.exist')
-      cy.get(`[data-testid^="data-table-row"]`).should('have.length.below', length)
+      cy.get(`[data-testid="slider-${columnId}"]`).as('slider').should('be.visible')
+      cy.get(`@slider`)
+        .then(($el) =>
+          // With log slider a click from the left is not enough to filter
+          // Click 20px from the right edge and vertically centered
+          [($el.width() ?? 80) - 20, ($el.height() ?? 24) / 2],
+        )
+        .then(([x, y]) => cy.get(`@slider`).click(x, y, { waitForAnimations: true }))
+      closeSlider()
+      cy.get(`[data-testid^="data-table-row"]`, LOAD_TIMEOUT).should('have.length.below', length)
     })
   })
 
   it(`should allow filtering by using a slider input`, () => {
-    const [columnId, newValue] = oneOf(['liquidityUsd', '30000000'], ['tvl', '80000000'], ['utilizationPercent', '80'])
-    // Keep the viewport stable for slider width.
-    const [width, height, breakpoint] = oneOf([1200, 800, 'desktop'], [500, 800, 'mobile'])
-    cy.viewport(width, height)
+    const [columnId, getFilterValue] = oneOf(
+      ['liquidityUsd', () => getMaxLiquidity(vaultData) / 10],
+      ['tvl', () => getMaxTvl(vaultData) / 10],
+      ['utilizationPercent', () => 90],
+    )
+
     cy.get(`[data-testid^="data-table-row"]`).then(({ length }) => {
       cy.get(`[data-testid="minimum-slider-filter-${columnId}"]`).should('not.be.visible')
-      // Expand the filters
-      if (breakpoint == 'mobile') {
-        openDrawer('filter')
-      } else {
-        cy.get(`[data-testid="btn-expand-filters"]`).click({ waitForAnimations: true })
-      }
+      expandFilters()
+
       //  open the chosen filter
       cy.get(`[data-testid="minimum-slider-filter-${columnId}"]`).click({ waitForAnimations: true })
-      cy.get(`[data-testid="slider-${columnId}"]`).should('be.visible')
+      cy.get(`[data-testid="slider-${columnId}"]`).as('slider').should('be.visible')
 
       // Always type into the right input when the slider has a range.
-      cy.get(`[data-testid="slider-${columnId}"]`)
-        .closest('[role="presentation"]')
-        .find('input[type="text"]')
-        .then(($inputs) => {
-          const target = $inputs.length > 1 ? $inputs.eq($inputs.length - 1) : $inputs.eq(0)
-          cy.wrap(target).click().type('{selectAll}').type(newValue).blur()
-        })
+      cy.get(`@slider`).closest('[role="presentation"]').find('input[type="text"]').last().as('inputs')
 
-      // Close the menu
-      cy.get('body').click(0, 0, { waitForAnimations: true })
-      closeDrawer()
-      cy.get(`[data-testid="slider-${columnId}"]`).should('not.exist')
+      cy.get('@inputs').click()
+      cy.get('@inputs').type('{selectAll}')
+      cy.get('@inputs').type(`${getFilterValue()}`)
+      cy.get('@inputs').blur()
+
+      closeSlider()
       cy.get(`[data-testid^="data-table-row"]`).should('have.length.below', length)
       cy.url().should('include', `${columnId}=`)
     })
@@ -347,6 +334,20 @@ describe(`LlamaLend Markets`, () => {
     }
   }
 
+  function expandFilters() {
+    if (breakpoint == 'mobile') {
+      openDrawer('filter')
+    } else {
+      cy.get(`[data-testid="btn-expand-filters"]`).click({ waitForAnimations: true })
+    }
+  }
+
+  function closeSlider() {
+    cy.get('body').click(0, 0, { waitForAnimations: true })
+    cy.get(`@slider`).should('not.exist')
+    closeDrawer()
+  }
+
   /**
    * Makes sure that the filter chips are visible during the given callback.
    * On mobile, the filters are hidden behind a button and need to be expanded for some actions.
@@ -432,11 +433,29 @@ function enableGraphColumn() {
 }
 
 function setupMocks() {
-  const vaultData = createLendingVaultChainsResponse()
+  const generatedData = createLendingVaultChainsResponse()
   mockTokenPrices()
-  mockLendingVaults(vaultData)
+  mockLendingVaults(generatedData)
   mockLendingSnapshots().as('lend-snapshots')
   mockMintMarkets()
   mockMintSnapshots()
-  return vaultData
+  console.info(JSON.stringify({ generatedData })) // for debugging ci failures
+  return generatedData
 }
+
+const getMaxLiquidity = (vaultData: Record<Chain, GetMarketsResponse>) =>
+  max(
+    recordValues(vaultData).flatMap(({ data }) =>
+      data.map(({ total_assets_usd, total_debt_usd }) => total_assets_usd - total_debt_usd),
+    ),
+  ) ?? 0
+
+const getMaxTvl = (vaultData: Record<Chain, GetMarketsResponse>) =>
+  max(
+    recordValues(vaultData).flatMap(({ data }) =>
+      data.map(
+        ({ borrowed_balance_usd, collateral_balance_usd, total_assets_usd, total_debt_usd }) =>
+          borrowed_balance_usd + collateral_balance_usd + total_assets_usd - total_debt_usd,
+      ),
+    ),
+  ) ?? 0

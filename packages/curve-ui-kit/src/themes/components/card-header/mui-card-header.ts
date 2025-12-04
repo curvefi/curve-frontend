@@ -27,21 +27,12 @@ export const defineMuiCardHeader = (
             minHeight: 'auto',
             maxHeight: Sizing.md.desktop,
             padding: `${Spacing.md.desktop} ${Spacing.md.desktop} ${Spacing.sm.desktop}`,
+            '& .MuiCardHeader-title': typography.headingXsBold,
           },
         },
       ],
     },
     action: { alignContent: 'center', alignSelf: 'center', margin: 0 },
-    title: {
-      ...typography.headingSBold,
-      variants: [
-        {
-          props: { size: 'small' },
-          style: {
-            ...typography.headingXsBold,
-          },
-        },
-      ],
-    },
+    title: typography.headingSBold,
   },
 })

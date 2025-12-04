@@ -22,8 +22,10 @@ export type NetworkUrlParams = { network: NetworkEnum }
 export type MarketUrlParams = NetworkUrlParams & { market: string; formType?: RFormType }
 export type UrlParams = NetworkUrlParams & Partial<MarketUrlParams>
 
-export interface NetworkConfig<TId extends string = string, TChainId extends number = number>
-  extends BaseConfig<TId, TChainId> {
+export interface NetworkConfig<TId extends string = string, TChainId extends number = number> extends BaseConfig<
+  TId,
+  TChainId
+> {
   smallMarketAmount: number
   isActiveNetwork: boolean
   showInSelectNetwork: boolean
@@ -99,18 +101,6 @@ export type LiqRange = {
   prices: string[]
   bands: [number, number]
 }
-export type MarketStatParameters = {
-  parameters: {
-    fee: string
-    admin_fee: string
-    liquidation_discount: string
-    loan_discount: string
-    base_price: string
-    A: string
-  } | null
-  error: string
-}
-export type MarketsStatsParametersMapper = { [owmId: string]: MarketStatParameters }
 export type BandsBalances = { [band: number]: { borrowed: string; collateral: string } }
 export type BandsBalancesArr = { borrowed: string; collateral: string; band: number }[]
 export type ParsedBandsBalances = {
@@ -210,7 +200,6 @@ export type UserLoanDetails = {
     state: { collateral: string; borrowed: string; debt: string; N: string }
     status: { label: string; colorKey: HealthColorKey; tooltip: string }
     leverage: string
-    pnl: Record<string, string>
   } | null
   error: string
 }

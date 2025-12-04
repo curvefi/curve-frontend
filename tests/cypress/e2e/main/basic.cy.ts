@@ -37,7 +37,7 @@ describe('Basic Access Test', () => {
   })
 
   it('should load for lite networks', () => {
-    cy.visit('/dex/corn/pools')
+    cy.visitWithoutTestConnector('dex/corn/pools')
     cy.title(LOAD_TIMEOUT).should('equal', 'Pools - Curve')
     cy.url().should('include', '/dex/corn/pools')
     cy.contains(/LBTC\/wBTCN/i, LOAD_TIMEOUT).should('be.visible')

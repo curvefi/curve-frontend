@@ -34,13 +34,13 @@ const createUserRangeMarkLines = (userBandsPriceRange: UserBandsPriceRange, pale
       userBandsPriceRange.lowerBandPriceDown,
       formatUsd(userBandsPriceRange.lowerBandPriceDown),
       'end',
-      palette.userRangeLabelBackgroundColor,
+      palette.userRangeTopLabelBackgroundColor,
     ),
     createMarkLine(
       userBandsPriceRange.upperBandPriceUp,
       formatUsd(userBandsPriceRange.upperBandPriceUp),
       'end',
-      palette.userRangeLabelBackgroundColor,
+      palette.userRangeBottomLabelBackgroundColor,
     ),
   ]
 }
@@ -69,8 +69,13 @@ export const createLabelStyle = (lineStyle: { color: string }, palette: BandsCha
   backgroundColor:
     lineStyle.color === palette.oraclePriceLineColor
       ? palette.oraclePriceLineColor
-      : palette.userRangeLabelBackgroundColor,
-  color: lineStyle.color === palette.oraclePriceLineColor ? palette.textColorInverted : palette.textColor,
+      : lineStyle.color === palette.userRangeTopLabelBackgroundColor
+        ? palette.userRangeTopLabelBackgroundColor
+        : palette.userRangeBottomLabelBackgroundColor,
+  color:
+    lineStyle.color === palette.oraclePriceLineColor || lineStyle.color === palette.userRangeTopLabelBackgroundColor
+      ? palette.textColorInverted
+      : palette.textColor,
 })
 
 /**

@@ -1,19 +1,13 @@
-import type { IChartApi, Time, ISeriesApi, LineWidth } from 'lightweight-charts'
-import {
-  createChart,
-  ColorType,
-  CrosshairMode,
-  LineStyle,
-  AreaSeries,
-  CandlestickSeries,
-  LineSeries,
-} from 'lightweight-charts'
+import type { IChartApi, Time, ISeriesApi, LineWidth, IPriceLine, CustomSeriesWhitespaceData } from 'lightweight-charts'
+import { createChart, ColorType, CrosshairMode, LineStyle, CandlestickSeries, LineSeries } from 'lightweight-charts'
 import lodash from 'lodash'
-import { useEffect, useRef, useState, useCallback, useMemo } from 'react'
+import { useEffect, useRef, useState, useCallback, useMemo, type RefObject } from 'react'
 import { styled } from 'styled-components'
 import { formatNumber } from '@ui-kit/utils/'
+import { createLiquidationRangeSeries } from './custom-series/liquidationRangeSeries'
+import type { LiquidationRangePoint, LiquidationRangeSeriesOptions } from './custom-series/liquidationRangeSeries'
 import type { ChartColors } from './hooks/useChartPalette'
-import type { LpPriceOhlcDataFormatted, ChartHeight, OraclePriceData, LiquidationRanges } from './types'
+import type { LpPriceOhlcDataFormatted, OraclePriceData, LiquidationRanges, LlammaLiquididationRange } from './types'
 import { calculateRobustPriceRange } from './utils'
 
 const createPriceFormatter = () => ({
@@ -25,29 +19,69 @@ const createPriceFormatter = () => ({
     }),
 })
 
-/**
- * Shared configuration for liquidation range area series
- */
-const SL_RANGE_AREA_SERIES_DEFAULTS = {
-  lineStyle: 3,
-  crosshairMarkerVisible: false,
-  pointMarkersVisible: false,
-  lineVisible: false,
-  priceLineStyle: 3,
-} as const
+type RangeValueAccumulator = {
+  upper?: number
+  lower?: number
+}
+
+const normalizeLiquidationRangePoints = (range?: LlammaLiquididationRange | null): LiquidationRangePoint[] => {
+  if (!range) return []
+
+  const pointMap = new Map<number, RangeValueAccumulator>()
+
+  const assignPoint = (time: number, key: keyof RangeValueAccumulator, value: number) => {
+    const entry = pointMap.get(time) ?? {}
+    entry[key] = value
+    pointMap.set(time, entry)
+  }
+
+  range.price1?.forEach(({ time, value }) => assignPoint(time, 'upper', value))
+  range.price2?.forEach(({ time, value }) => assignPoint(time, 'lower', value))
+
+  const orderedEntries = Array.from(pointMap.entries())
+    .filter(([, values]) => typeof values.upper === 'number' && typeof values.lower === 'number')
+    .sort((a, b) => a[0] - b[0])
+
+  if (!orderedEntries.length) {
+    return []
+  }
+
+  const fallbackStart = orderedEntries[0][0] as Time
+  const fallbackEnd = orderedEntries[orderedEntries.length - 1][0] as Time
+  const rangeStartTime = (range.startTime ?? fallbackStart) as Time
+  const rangeEndTime = (range.endTime ?? fallbackEnd) as Time
+
+  return orderedEntries.map(([time, values]) => {
+    const upper = values.upper as number
+    const lower = values.lower as number
+    return {
+      time: time as Time,
+      upper: Math.max(upper, lower),
+      lower: Math.min(upper, lower),
+      rangeStartTime,
+      rangeEndTime,
+    }
+  })
+}
+
+type LiquidationRangeSeriesApi = ISeriesApi<
+  'Custom',
+  Time,
+  LiquidationRangePoint | CustomSeriesWhitespaceData<Time>,
+  LiquidationRangeSeriesOptions
+>
 
 type Props = {
   /**
    * If the chart is used on a Llamalend market page we hide the candle series label and label line.
    */
   hideCandleSeriesLabel: boolean
-  chartHeight: ChartHeight
+  chartHeight: number
   ohlcData: LpPriceOhlcDataFormatted[]
   oraclePriceData?: OraclePriceData[]
   liquidationRange?: LiquidationRanges
   timeOption: string
   wrapperRef: any
-  chartExpanded?: boolean
   magnet: boolean
   colors: ChartColors
   refetchingCapped: boolean
@@ -67,7 +101,6 @@ const CandleChart = ({
   liquidationRange,
   timeOption,
   wrapperRef,
-  chartExpanded,
   magnet,
   colors,
   refetchingCapped,
@@ -81,10 +114,17 @@ const CandleChart = ({
   const chartContainerRef = useRef(null)
   const chartRef = useRef<IChartApi>(null)
 
-  const newAreaSeriesRef = useRef<ISeriesApi<'Area'> | null>(null)
-  const newAreaBgSeriesRef = useRef<ISeriesApi<'Area'> | null>(null)
-  const currentAreaSeriesRef = useRef<ISeriesApi<'Area'> | null>(null)
-  const currentAreaBgSeriesRef = useRef<ISeriesApi<'Area'> | null>(null)
+  const newRangeSeriesRef = useRef<LiquidationRangeSeriesApi | null>(null)
+  const currentRangeSeriesRef = useRef<LiquidationRangeSeriesApi | null>(null)
+  const currentRangePriceLinesRef = useRef<{ top: IPriceLine | null; bottom: IPriceLine | null }>({
+    top: null,
+    bottom: null,
+  })
+  const newRangePriceLinesRef = useRef<{ top: IPriceLine | null; bottom: IPriceLine | null }>({
+    top: null,
+    bottom: null,
+  })
+  const historicalRangeSeriesRefs = useRef<LiquidationRangeSeriesApi[]>([])
   const candlestickSeriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null)
   const oraclePriceSeriesRef = useRef<ISeriesApi<'Line'> | null>(null)
   const lastFetchEndTimeRef = useRef(lastFetchEndTime)
@@ -99,6 +139,66 @@ const CandleChart = ({
 
   // Memoize colors to prevent unnecessary re-renders
   const memoizedColors = useMemo(() => colors, [colors])
+
+  // Central palette helper so every series gets the right colors immediately
+  const getSeriesAppearance = useCallback(
+    (variant: 'current' | 'new' | 'historical') => {
+      if (variant === 'current') {
+        return {
+          seriesOptions: {
+            fillColor: memoizedColors.rangeBackground,
+            fillOpacity: 1,
+            topLineColor: memoizedColors.rangeLineTop,
+            bottomLineColor: memoizedColors.rangeLineBottom,
+            lineWidth: 2,
+            lineStyle: LineStyle.Dashed,
+            showTopLine: false,
+            showBottomLine: false,
+          },
+          priceLineColorTop: memoizedColors.rangeLineTop,
+          priceLineColorBottom: memoizedColors.rangeLineBottom,
+        }
+      }
+
+      if (variant === 'new') {
+        return {
+          seriesOptions: {
+            fillColor: memoizedColors.rangeBackgroundFuture,
+            fillOpacity: 1,
+            topLineColor: memoizedColors.rangeLineFutureTop,
+            bottomLineColor: memoizedColors.rangeLineFutureBottom,
+            lineWidth: 2,
+            lineStyle: LineStyle.Dashed,
+            showTopLine: false,
+            showBottomLine: false,
+          },
+          priceLineColorTop: memoizedColors.rangeLineFutureTop,
+          priceLineColorBottom: memoizedColors.rangeLineFutureBottom,
+        }
+      }
+
+      return {
+        seriesOptions: {
+          fillColor: memoizedColors.rangeBackground,
+          fillOpacity: 1,
+          topLineColor: memoizedColors.rangeLineBottom,
+          bottomLineColor: memoizedColors.rangeLineBottom,
+          lineWidth: 2,
+          lineStyle: LineStyle.Dashed,
+          showTopLine: true,
+          showBottomLine: true,
+        },
+      }
+    },
+    [
+      memoizedColors.rangeBackground,
+      memoizedColors.rangeBackgroundFuture,
+      memoizedColors.rangeLineBottom,
+      memoizedColors.rangeLineFutureBottom,
+      memoizedColors.rangeLineFutureTop,
+      memoizedColors.rangeLineTop,
+    ],
+  )
 
   const priceFormat = useMemo(() => createPriceFormatter(), [])
 
@@ -170,12 +270,7 @@ const CandleChart = ({
     if (!chartContainerRef.current) return
 
     chartRef.current = createChart(chartContainerRef.current, {
-      layout: {
-        background: { type: ColorType.Solid, color: '#ffffff' },
-        textColor: '#000000',
-      },
       timeScale: {
-        timeVisible: true, // Default, will be updated by separate effect
         borderVisible: false,
       },
       rightPriceScale: {
@@ -185,25 +280,6 @@ const CandleChart = ({
         scaleMargins: {
           top: 0.1,
           bottom: 0.1,
-        },
-      },
-      grid: {
-        vertLines: {
-          visible: true,
-          color: '#C3BCDB44',
-        },
-        horzLines: {
-          visible: true,
-          color: '#C3BCDB44',
-        },
-      },
-      crosshair: {
-        mode: CrosshairMode.Normal,
-        vertLine: {
-          width: 4 as LineWidth,
-          color: '#C3BCDB44',
-          style: LineStyle.Solid,
-          labelBackgroundColor: '#9B7DFF', // Default, will be updated by separate effect
         },
       },
     })
@@ -254,13 +330,12 @@ const CandleChart = ({
     if (!chartRef.current || wrapperDimensions.width <= 0) return
 
     const width = Math.max(1, wrapperDimensions.width)
-    const height = chartExpanded ? chartHeight.expanded : chartHeight.standard
 
     chartRef.current.applyOptions({
       width,
-      height,
+      height: chartHeight,
     })
-  }, [chartExpanded, chartHeight.expanded, chartHeight.standard, wrapperDimensions.width])
+  }, [chartHeight, wrapperDimensions.width])
 
   // Update timeScale visibility when timeOption changes
   useEffect(() => {
@@ -299,39 +374,80 @@ const CandleChart = ({
   useEffect(() => {
     if (!chartRef.current) return
 
-    const seriesConfigs = [
-      { ref: currentAreaSeriesRef, visible: liqRangeCurrentVisible },
-      { ref: currentAreaBgSeriesRef, visible: liqRangeCurrentVisible },
-      { ref: newAreaSeriesRef, visible: liqRangeNewVisible },
-      { ref: newAreaBgSeriesRef, visible: liqRangeNewVisible },
+    const configs = [
+      { ref: currentRangeSeriesRef, priceLinesRef: currentRangePriceLinesRef, visible: liqRangeCurrentVisible },
+      { ref: newRangeSeriesRef, priceLinesRef: newRangePriceLinesRef, visible: liqRangeNewVisible },
     ]
 
-    // Clean up existing series
-    seriesConfigs.forEach(({ ref }) => {
-      if (ref.current && chartRef.current) {
-        chartRef.current.removeSeries(ref.current)
-        ref.current = null
-      }
-    })
-
-    // Create series only if visible
-    seriesConfigs.forEach(({ ref, visible }) => {
-      if (visible && chartRef.current) {
-        ref.current = chartRef.current.addSeries(AreaSeries, {
-          ...SL_RANGE_AREA_SERIES_DEFAULTS,
-        })
-      }
-    })
-
-    return () => {
-      seriesConfigs.forEach(({ ref }) => {
+    const removePrimarySeries = () => {
+      configs.forEach(({ ref, priceLinesRef }) => {
         if (ref.current) {
           chartRef.current?.removeSeries(ref.current)
           ref.current = null
         }
+        priceLinesRef.current = { top: null, bottom: null }
       })
     }
-  }, [liqRangeCurrentVisible, liqRangeNewVisible])
+
+    const removeHistoricalSeries = () => {
+      historicalRangeSeriesRefs.current.forEach((series) => {
+        if (series) {
+          chartRef.current?.removeSeries(series)
+        }
+      })
+      historicalRangeSeriesRefs.current = []
+    }
+
+    removePrimarySeries()
+    removeHistoricalSeries()
+
+    configs.forEach(({ ref, priceLinesRef, visible }, index) => {
+      if (!visible || !chartRef.current) return
+
+      const series = chartRef.current.addCustomSeries(createLiquidationRangeSeries(), {
+        lineWidth: 2,
+        lineStyle: LineStyle.Solid,
+      })
+
+      ref.current = series
+      const variant = index === 0 ? 'current' : 'new'
+      const appearance = getSeriesAppearance(variant)
+      series.applyOptions(appearance.seriesOptions)
+      priceLinesRef.current = {
+        top: series.createPriceLine({
+          price: 0,
+          color: appearance.priceLineColorTop,
+          lineWidth: 2,
+          lineStyle: LineStyle.LargeDashed,
+          axisLabelVisible: true,
+        }),
+        bottom: series.createPriceLine({
+          price: 0,
+          color: appearance.priceLineColorBottom,
+          lineWidth: 2,
+          lineStyle: LineStyle.LargeDashed,
+          axisLabelVisible: true,
+        }),
+      }
+    })
+
+    // create passive bands for historical ranges if provided
+    const historicalRanges = liquidationRange?.historical ?? []
+    historicalRanges.forEach(() => {
+      if (!chartRef.current) return
+      const series = chartRef.current.addCustomSeries(createLiquidationRangeSeries(), {
+        lineWidth: 2,
+        lineStyle: LineStyle.LargeDashed,
+      })
+      series.applyOptions(getSeriesAppearance('historical').seriesOptions)
+      historicalRangeSeriesRefs.current.push(series)
+    })
+
+    return () => {
+      removePrimarySeries()
+      removeHistoricalSeries()
+    }
+  }, [liqRangeCurrentVisible, liqRangeNewVisible, liquidationRange, getSeriesAppearance])
 
   // OHLC series effect - only create once when chart is ready
   useEffect(() => {
@@ -477,112 +593,99 @@ const CandleChart = ({
 
   // Update liquidation range data when it changes
   useEffect(() => {
-    const setSeriesData = (series: ISeriesApi<'Area'> | null, data: any) => {
-      if (series) series.setData(data)
+    const applyRangeData = (
+      seriesRef: RefObject<LiquidationRangeSeriesApi | null>,
+      priceLinesRef: RefObject<{ top: IPriceLine | null; bottom: IPriceLine | null }> | null,
+      data: LiquidationRangePoint[],
+    ) => {
+      if (!seriesRef.current) return
+
+      seriesRef.current.setData(data)
+      if (!priceLinesRef) return
+
+      const latestPoint = data[data.length - 1]
+      if (!latestPoint) return
+
+      priceLinesRef.current.top?.applyOptions({ price: latestPoint.upper })
+      priceLinesRef.current.bottom?.applyOptions({ price: latestPoint.lower })
     }
 
-    // Clear all series if liquidationRange is undefined or has no data
-    if (!liquidationRange || (!liquidationRange.current && !liquidationRange.new)) {
-      setSeriesData(currentAreaSeriesRef.current, [])
-      setSeriesData(currentAreaBgSeriesRef.current, [])
-      setSeriesData(newAreaSeriesRef.current, [])
-      setSeriesData(newAreaBgSeriesRef.current, [])
+    if (!liquidationRange || (!liquidationRange.current && !liquidationRange.new && !liquidationRange.historical)) {
+      currentRangeSeriesRef.current?.setData([])
+      newRangeSeriesRef.current?.setData([])
+      historicalRangeSeriesRefs.current.forEach((series) => series?.setData([]))
       return
     }
 
-    const ranges = []
-    if (liquidationRange.current && liquidationRange.new) {
-      ranges.push(
-        { series: newAreaSeriesRef.current, bgSeries: newAreaBgSeriesRef.current, data: liquidationRange.new },
-        {
-          series: currentAreaSeriesRef.current,
-          bgSeries: currentAreaBgSeriesRef.current,
-          data: liquidationRange.current,
-        },
+    if (liquidationRange.current) {
+      applyRangeData(
+        currentRangeSeriesRef,
+        currentRangePriceLinesRef,
+        normalizeLiquidationRangePoints(liquidationRange.current),
       )
-    } else if (liquidationRange.new) {
-      // Clear current series since it's not being used
-      setSeriesData(currentAreaSeriesRef.current, [])
-      setSeriesData(currentAreaBgSeriesRef.current, [])
-      ranges.push({
-        series: newAreaSeriesRef.current,
-        bgSeries: newAreaBgSeriesRef.current,
-        data: liquidationRange.new,
-      })
-    } else if (liquidationRange.current) {
-      // Clear new series since it's not being used
-      setSeriesData(newAreaSeriesRef.current, [])
-      setSeriesData(newAreaBgSeriesRef.current, [])
-      ranges.push({
-        series: currentAreaSeriesRef.current,
-        bgSeries: currentAreaBgSeriesRef.current,
-        data: liquidationRange.current,
-      })
+    } else {
+      currentRangeSeriesRef.current?.setData([])
     }
 
-    // Set data for all ranges
-    ranges.forEach(({ series, bgSeries, data }) => {
-      setSeriesData(series, data.price1)
-      setSeriesData(bgSeries, data.price2)
-    })
-  }, [liquidationRange])
+    if (liquidationRange.new) {
+      applyRangeData(newRangeSeriesRef, newRangePriceLinesRef, normalizeLiquidationRangePoints(liquidationRange.new))
+    } else {
+      newRangeSeriesRef.current?.setData([])
+    }
 
-  // Update liquidation range series colors when they change
+    // keep historical series in sync with normalized data snapshots
+    const historicalRanges = liquidationRange.historical ?? []
+    historicalRangeSeriesRefs.current.forEach((series, index) => {
+      if (!series) return
+      const normalized = historicalRanges[index] ? normalizeLiquidationRangePoints(historicalRanges[index]) : []
+      series.setData(normalized)
+    })
+  }, [liquidationRange, liquidationRange?.historical, liqRangeCurrentVisible, liqRangeNewVisible])
+
+  // Update liquidation range series colors and price line styling
   useEffect(() => {
     const applySeriesOptions = (
-      series: ISeriesApi<'Area'> | null,
-      colors: { top: string; bottom: string; line: string },
+      series: LiquidationRangeSeriesApi | null,
+      options: Partial<LiquidationRangeSeriesOptions>,
     ) => {
       if (series) {
-        series.applyOptions({
-          topColor: colors.top,
-          bottomColor: colors.bottom,
-          lineColor: colors.line,
-        })
+        series.applyOptions(options)
       }
     }
 
-    const currentColors = {
-      top: memoizedColors.rangeBackground,
-      bottom: memoizedColors.rangeBackground,
-      line: memoizedColors.rangeLineTop,
-    }
-
-    // Update current range series
     if (liqRangeCurrentVisible) {
-      applySeriesOptions(currentAreaSeriesRef.current, currentColors)
-      applySeriesOptions(currentAreaBgSeriesRef.current, {
-        top: memoizedColors.backgroundColor,
-        bottom: memoizedColors.backgroundColor,
-        line: memoizedColors.rangeLineBottom,
+      const appearance = getSeriesAppearance('current')
+      applySeriesOptions(currentRangeSeriesRef.current, appearance.seriesOptions)
+
+      currentRangePriceLinesRef.current.top?.applyOptions({
+        color: appearance.priceLineColorTop,
+        lineStyle: LineStyle.Dashed,
+      })
+      currentRangePriceLinesRef.current.bottom?.applyOptions({
+        color: appearance.priceLineColorBottom,
+        lineStyle: LineStyle.Dashed,
       })
     }
 
-    // Update new range series
     if (liqRangeNewVisible) {
-      applySeriesOptions(newAreaSeriesRef.current, {
-        top: memoizedColors.rangeBackgroundFuture,
-        bottom: memoizedColors.rangeBackgroundFuture,
-        line: memoizedColors.rangeLineFutureTop,
+      const appearance = getSeriesAppearance('new')
+      applySeriesOptions(newRangeSeriesRef.current, appearance.seriesOptions)
+
+      newRangePriceLinesRef.current.top?.applyOptions({
+        color: appearance.priceLineColorTop,
+        lineStyle: LineStyle.Dashed,
       })
-      applySeriesOptions(newAreaBgSeriesRef.current, {
-        top: memoizedColors.backgroundColor,
-        bottom: memoizedColors.backgroundColor,
-        line: memoizedColors.rangeLineFutureBottom,
+      newRangePriceLinesRef.current.bottom?.applyOptions({
+        color: appearance.priceLineColorBottom,
+        lineStyle: LineStyle.Dashed,
       })
     }
-  }, [
-    liqRangeCurrentVisible,
-    liqRangeNewVisible,
-    memoizedColors.rangeLineTop,
-    memoizedColors.rangeBackground,
-    memoizedColors.backgroundColor,
-    liquidationRange,
-    memoizedColors.rangeLineBottom,
-    memoizedColors.rangeBackgroundFuture,
-    memoizedColors.rangeLineFutureTop,
-    memoizedColors.rangeLineFutureBottom,
-  ])
+
+    const historicalAppearance = getSeriesAppearance('historical')
+    historicalRangeSeriesRefs.current.forEach((series) => {
+      applySeriesOptions(series, historicalAppearance.seriesOptions)
+    })
+  }, [liqRangeCurrentVisible, liqRangeNewVisible, getSeriesAppearance, liquidationRange?.historical])
 
   // Update timescale when lastTimescale changes
   useEffect(() => {
@@ -617,38 +720,23 @@ const CandleChart = ({
     // Define series refs and their order based on liquidation range logic
     const getLiquidationRangeSeries = () => {
       if (!liquidationRange || !liquidationRange.current || !liquidationRange.new) {
-        // Only one range or no ranges - use default order
-        return [
-          currentAreaSeriesRef.current,
-          currentAreaBgSeriesRef.current,
-          newAreaSeriesRef.current,
-          newAreaBgSeriesRef.current,
-        ]
+        return [currentRangeSeriesRef.current, newRangeSeriesRef.current]
       }
 
-      const addNewFirst = liquidationRange.new.price2[0].value > liquidationRange.current.price2[0].value
+      const currentBottom =
+        liquidationRange.current.price2?.[0]?.value ?? liquidationRange.current.price1?.[0]?.value ?? 0
+      const newBottom = liquidationRange.new.price2?.[0]?.value ?? liquidationRange.new.price1?.[0]?.value ?? 0
 
-      if (addNewFirst) {
-        // New range first
-        return [
-          newAreaSeriesRef.current,
-          newAreaBgSeriesRef.current,
-          currentAreaSeriesRef.current,
-          currentAreaBgSeriesRef.current,
-        ]
-      } else {
-        // Current range first
-        return [
-          currentAreaSeriesRef.current,
-          currentAreaBgSeriesRef.current,
-          newAreaSeriesRef.current,
-          newAreaBgSeriesRef.current,
-        ]
-      }
+      const addNewFirst = newBottom < currentBottom
+
+      return addNewFirst
+        ? [newRangeSeriesRef.current, currentRangeSeriesRef.current]
+        : [currentRangeSeriesRef.current, newRangeSeriesRef.current]
     }
 
     // Define all series in order: liquidation ranges, volume, OHLC, oracle price
     const allSeries = [
+      ...historicalRangeSeriesRefs.current,
       ...getLiquidationRangeSeries(),
       // volumeSeriesRef.current,
       candlestickSeriesRef.current,
@@ -661,7 +749,7 @@ const CandleChart = ({
         series.setSeriesOrder(order++)
       }
     })
-  }, [liquidationRange])
+  }, [liquidationRange, liquidationRange?.historical, liqRangeCurrentVisible, liqRangeNewVisible])
 
   useEffect(() => {
     wrapperRef.current = new ResizeObserver((entries: ResizeObserverEntry[]) => {
