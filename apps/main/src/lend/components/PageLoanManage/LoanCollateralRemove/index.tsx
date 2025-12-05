@@ -21,7 +21,6 @@ import useStore from '@/lend/store/useStore'
 import { Api, OneWayMarketTemplate, PageContentProps } from '@/lend/types/lend.types'
 import { _showNoLoanFound } from '@/lend/utils/helpers'
 import { DEFAULT_HEALTH_MODE } from '@/llamalend/constants'
-import { RemoveCollateralForm } from '@/llamalend/features/manage-loan/components/RemoveCollateralForm'
 import type { HealthMode } from '@/llamalend/llamalend.types'
 import { useLoanExists } from '@/llamalend/queries/loan-exists'
 import AlertBox from '@ui/AlertBox'
@@ -297,7 +296,3 @@ const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, userAct
 }
 
 export default LoanCollateralRemove
-
-export const LoanRemoveCollateralTab = ({ rChainId, market, isLoaded }: PageContentProps) => (
-  <RemoveCollateralForm networks={networks} chainId={rChainId} market={market} enabled={isLoaded} />
-)
