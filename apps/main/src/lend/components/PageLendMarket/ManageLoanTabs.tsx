@@ -39,7 +39,7 @@ const LendManageLegacyMenu = [
   },
   {
     value: 'collateral',
-    label: t`Borrow`,
+    label: t`Collateral`,
     subTabs: [
       { value: 'collateral-increase', label: t`Add collateral`, component: LoanCollateralAdd },
       { value: 'collateral-decrease', label: t`Remove collateral`, component: LoanCollateralRemove },
