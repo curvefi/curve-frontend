@@ -1,4 +1,4 @@
-import { StyledInpChip } from '@/lend/components/PageLoanManage/styles'
+import { StyledInpChip } from '@/lend/components/styles'
 import useVaultShares from '@/lend/hooks/useVaultShares'
 import { ChainId } from '@/lend/types/lend.types'
 import Box from '@ui/Box'

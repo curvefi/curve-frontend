@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import InpChipUsdRate from '@/lend/components/InpChipUsdRate'
-import { StyledInpChip } from '@/lend/components/PageLoanManage/styles'
+import { StyledInpChip } from '@/lend/components/styles'
 import type { NetworkConfig } from '@/lend/types/lend.types'
 import Box from '@ui/Box'
 import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
