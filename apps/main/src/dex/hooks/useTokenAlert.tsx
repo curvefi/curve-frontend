@@ -152,6 +152,15 @@ const useTokenAlert = (tokenAddressAll: string[] | undefined): PoolAlert | null 
           </div>
         ),
       },
+      '0x476ef9ac6d8673e220d0e8bc0a810c2dc6a2aa84': {
+        alertType: 'danger',
+        address: '0x476ef9ac6d8673e220d0e8bc0a810c2dc6a2aa84',
+        message: (
+          <div>
+            <Trans>USPD has been exploited.</Trans>
+          </div>
+        ),
+      },
       '0x85e30b8b263bc64d94b827ed450f2edfee8579da': {
         alertType: 'warning',
         address: '0x85e30b8b263bc64d94b827ed450f2edfee8579da',

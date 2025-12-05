@@ -47,10 +47,14 @@ export const DAO_ROUTES = {
   PAGE_INTEGRATIONS,
 } as const
 
-export const AppNames = ['dex', 'lend', 'crvusd', 'dao', 'llamalend'] as const
+export const ANALYTICS_ROUTES = {
+  PAGE_HOME: '/home',
+}
+
+export const AppNames = ['dex', 'lend', 'crvusd', 'dao', 'llamalend', 'analytics'] as const
 export type AppName = (typeof AppNames)[number]
 
-export const AppMenuOptions = ['dex', 'llamalend', 'dao'] as const
+export const AppMenuOptions = ['dex', 'llamalend', 'dao', 'analytics'] as const
 export type AppMenuOption = (typeof AppMenuOptions)[number]
 
 export const APP_LINK: Record<AppMenuOption, AppRoutes> = {
@@ -80,6 +84,10 @@ export const APP_LINK: Record<AppMenuOption, AppRoutes> = {
       { app: 'dao', route: DAO_ROUTES.PAGE_ANALYTICS, label: () => t`Analytics` },
       { app: 'dao', route: DAO_ROUTES.DISCUSSION, label: () => t`Discussion`, target: '_blank' },
     ],
+  },
+  analytics: {
+    label: 'Analytics',
+    routes: [{ app: 'analytics', route: ANALYTICS_ROUTES.PAGE_HOME, label: () => t`Home` }],
   },
 }
 

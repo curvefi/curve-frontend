@@ -47,7 +47,7 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
   network: LlamaNetwork<ChainId>
   networks: NetworkDict<ChainId>
   enabled?: boolean
-  onAdded: NonNullable<AddCollateralOptions['onAdded']>
+  onAdded?: NonNullable<AddCollateralOptions['onAdded']>
 }) => {
   const { address: userAddress } = useAccount()
   const { chainId } = network

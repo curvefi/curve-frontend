@@ -74,8 +74,8 @@ export const createLabelStyle = (lineStyle: { color: string }, palette: BandsCha
         : palette.userRangeBottomLabelBackgroundColor,
   color:
     lineStyle.color === palette.oraclePriceLineColor || lineStyle.color === palette.userRangeTopLabelBackgroundColor
-      ? palette.textColorInverted
-      : palette.textColor,
+      ? palette.userRangeTopLabelTextColor
+      : palette.userRangeBottomLabelTextColor,
 })
 
 /**
