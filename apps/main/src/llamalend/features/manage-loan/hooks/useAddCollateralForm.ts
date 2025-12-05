@@ -104,10 +104,8 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
         {
           ...mapQuery(userState, (state) => state?.collateral),
           data: decimal(
-            values.userCollateral
-              ? new BigNumber(values.userCollateral)
-                  .plus(userState.data?.collateral ? new BigNumber(userState.data?.collateral) : '0')
-                  .toString()
+            values.userCollateral != null && userState.data?.collateral != null
+              ? new BigNumber(values.userCollateral).plus(new BigNumber(userState.data?.collateral)).toString()
               : null,
           ),
         },
