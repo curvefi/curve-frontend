@@ -1,14 +1,6 @@
 import { defineConfig } from 'cypress'
 import { vitePreprocessor } from './vite-cypress-preprocessor'
 
-/**
- * Custom Vite-based preprocessor for Cypress e2e. We use Vite instead of webpack to:
- * - avoid the webpack-specific resolution of optional wagmi connector peers
- * - keep bundling light-weight for specs
- * - consistent use of Vite across the monorepo
- */
-const cache = new Map<string, string>()
-
 export default defineConfig({
   defaultCommandTimeout: 5000,
   pageLoadTimeout: 20000,

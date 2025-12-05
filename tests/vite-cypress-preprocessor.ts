@@ -3,6 +3,12 @@ import { build } from 'vite'
 
 const cache = new Map<string, string>()
 
+/**
+ * Custom Vite-based preprocessor for Cypress e2e. We use Vite instead of webpack to:
+ * - avoid the webpack-specific resolution of optional wagmi connector peers
+ * - keep bundling light-weight for specs
+ * - consistent use of Vite across the monorepo
+ */
 export const vitePreprocessor = () => async (file: Cypress.FileObject) => {
   const { filePath, outputPath, shouldWatch } = file
   if (cache.has(filePath)) return cache.get(filePath)!
