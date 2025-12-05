@@ -45,7 +45,9 @@ export const AppLibs = {
   dex: 'curveApi',
   lend: 'llamaApi',
   llamalend: 'llamaApi',
-} satisfies Record<AppName, LibKey>
+  // Technically this app doesn't need a lib, but making this optional opens a can of worms. Refactor later.
+  analytics: 'curveApi',
+} satisfies Record<AppName, LibKey | undefined>
 type AppLibMap = typeof AppLibs
 
 export type AppLib<A extends AppName> = Libs[AppLibMap[A]]

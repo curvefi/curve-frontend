@@ -78,7 +78,8 @@ export const LLAMA_MARKET_COLUMNS = [
     cell: MarketTitleCell,
     filterFn: filterByText(
       'controllerAddress',
-      'address',
+      'ammAddress',
+      'vaultAddress',
       'assets.borrowed.address',
       'assets.borrowed.symbol',
       'assets.collateral.address',
