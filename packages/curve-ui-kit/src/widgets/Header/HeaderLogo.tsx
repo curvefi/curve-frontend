@@ -21,6 +21,7 @@ const APP_NAMES = {
   dex: 'Curve',
   llamalend: 'LLAMALEND',
   dao: 'DAO',
+  analytics: 'Curve',
 } as const satisfies Record<AppMenuOption, string>
 
 export const HeaderLogo = ({ currentMenu, isLite, sx }: HeaderLogoProps) => (
@@ -36,16 +37,16 @@ export const HeaderLogo = ({ currentMenu, isLite, sx }: HeaderLogoProps) => (
       >
         {APP_NAMES[currentMenu]}
       </Typography>
-      {currentMenu === 'dex' ? (
-        isLite && (
-          <Typography variant="bodyXsBold" color="textTertiary">
-            Lite
+      {currentMenu === 'dex' && isLite ? (
+        <Typography variant="bodyXsRegular" color="textTertiary">
+          Lite
+        </Typography>
+      ) : (
+        APP_NAMES[currentMenu] !== 'Curve' && (
+          <Typography variant="bodyXsRegular" color="textTertiary">
+            powered by Curve
           </Typography>
         )
-      ) : (
-        <Typography variant="bodyXsRegular" color="textTertiary">
-          powered by Curve
-        </Typography>
       )}
     </Box>
   </RouterLink>
