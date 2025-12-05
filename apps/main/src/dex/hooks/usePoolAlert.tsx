@@ -7,6 +7,7 @@ import Box from '@ui/Box'
 import { ExternalLink, InternalLink } from '@ui/Link'
 import { breakpoints } from '@ui/utils'
 import { useParams } from '@ui-kit/hooks/router'
+import { t } from '@ui-kit/lib/i18n'
 import { shortenAddress } from '@ui-kit/utils'
 
 const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
@@ -212,6 +213,10 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
       alertType: 'danger',
       isDisableDeposit: true,
       isDisableSwap: true,
+      banner: {
+        title: t`Misconfigured pool`,
+        subtitle: t`This pool has been misconfigured. It has been set to withdraw only. To minimize impact withdraw in balanced proportion instead of single sided.`,
+      },
       message: (
         <MessageWrapper>
           <div>This pool is in withdraw only mode, as it has been configured incorrectly.</div>
