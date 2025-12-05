@@ -4,6 +4,7 @@ import CurrencyReserves from '@/dex/components/PagePool/PoolDetails/CurrencyRese
 import PoolParameters from '@/dex/components/PagePool/PoolDetails/PoolStats/PoolParameters'
 import RewardsComp from '@/dex/components/PagePool/PoolDetails/PoolStats/Rewards'
 import type { PageTransferProps } from '@/dex/components/PagePool/types'
+import { usePoolIdByAddressOrId } from '@/dex/hooks/usePoolIdByAddressOrId'
 import useTokenAlert from '@/dex/hooks/useTokenAlert'
 import useStore from '@/dex/store/useStore'
 import { PoolAlert, TokensMapper, type UrlParams } from '@/dex/types/main.types'
@@ -23,9 +24,10 @@ type PoolStatsProps = {
 
 const PoolStats = ({ curve, routerParams, poolAlert, poolData, poolDataCacheOrApi, tokensMapper }: PoolStatsProps) => {
   const tokenAlert = useTokenAlert(poolData?.tokenAddressesAll ?? [])
-  const { rChainId, rPoolId } = routerParams
-  const rewardsApy = useStore((state) => state.pools.rewardsApyMapper[rChainId]?.[rPoolId])
-  const tvl = useStore((state) => state.pools.tvlMapper[rChainId]?.[rPoolId])
+  const { rChainId, rPoolIdOrAddress } = routerParams
+  const poolId = usePoolIdByAddressOrId({ chainId: rChainId, poolIdOrAddress: rPoolIdOrAddress })
+  const rewardsApy = useStore((state) => state.pools.rewardsApyMapper[rChainId]?.[poolId ?? ''])
+  const tvl = useStore((state) => state.pools.tvlMapper[rChainId]?.[poolId ?? ''])
   const fetchPoolStats = useStore((state) => state.pools.fetchPoolStats)
 
   const risksPathname = getPath(useParams<UrlParams>(), `/disclaimer`)
@@ -41,7 +43,7 @@ const PoolStats = ({ curve, routerParams, poolAlert, poolData, poolDataCacheOrAp
       <MainStatsContainer flex flexColumn>
         <MainStatsWrapper grid>
           <Box grid gridRowGap={3}>
-            <CurrencyReserves rChainId={rChainId} rPoolId={rPoolId} tvl={tvl} tokensMapper={tokensMapper} />
+            <CurrencyReserves rChainId={rChainId} rPoolId={poolId ?? ''} tvl={tvl} tokensMapper={tokensMapper} />
             {poolData && <RewardsComp chainId={rChainId} poolData={poolData} rewardsApy={rewardsApy} />}
             <Box grid gridRowGap={2}>
               {poolAlert && !poolAlert.isDisableDeposit && !poolAlert.isInformationOnlyAndShowInForm && (
