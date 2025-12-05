@@ -11,7 +11,6 @@ import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
-import type { Decimal } from '@ui-kit/utils'
 import { InputDivider } from '../../../widgets/InputDivider'
 import { useRepayForm } from '../hooks/useRepayForm'
 
@@ -46,7 +45,7 @@ export const RepayForm = <ChainId extends IChainId>({
     health,
     prices,
     gas,
-    isAvailable,
+    isDisabled,
     isFull,
     formErrors,
     collateralToken,
@@ -54,6 +53,9 @@ export const RepayForm = <ChainId extends IChainId>({
     params,
     values,
     txHash,
+    expectedBorrowed,
+    routeImage,
+    priceImpact,
   } = useRepayForm({
     market,
     network,
@@ -63,8 +65,6 @@ export const RepayForm = <ChainId extends IChainId>({
   })
 
   const marketRates = useMarketRates(params, isOpen)
-
-  const isDisabled = formErrors.length > 0 || isAvailable.data === false
 
   return (
     <LoanFormWrapper // todo: prevHealth, prevRates, debt, prevDebt
@@ -85,7 +85,7 @@ export const RepayForm = <ChainId extends IChainId>({
             collateralToken,
             borrowToken,
             enabled: isOpen,
-            debtDelta: values.userBorrowed == null ? undefined : (`-${values.userBorrowed}` as Decimal),
+            expectedBorrowed: expectedBorrowed.data?.totalBorrowed,
           })}
           gas={gas}
         />
