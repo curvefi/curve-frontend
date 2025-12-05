@@ -16,6 +16,7 @@ import { SidebarSection } from './SidebarSection'
 import { SocialSidebarSection } from './SocialSidebarSection'
 import { HeaderImplementationProps } from './types'
 import { useMainNavRef } from './useMainNavRef'
+import { useVisibleAppLinks } from './useVisibleAppLinks'
 
 const HIDE_SCROLLBAR = {
   // hide the scrollbar, on mobile it's not needed, and it messes up with the SideBarFooter
@@ -41,19 +42,20 @@ export const MobileHeader = ({
   const toggleSidebar = useCallback(() => setSidebarOpen((isOpen) => !isOpen), [])
   const pathname = usePathname()
   const top = useLayoutStore((state) => state.navHeight)
+  const appLinks = useVisibleAppLinks()
 
   useEffect(() => () => closeSidebar(), [pathname, closeSidebar]) // close when URL changes due to clicking a link
 
   const otherAppSections = useMemo(
     () =>
-      Object.entries(APP_LINK)
+      appLinks
         .filter(([appName]) => appName != currentMenu)
         .map(([appName, { label, routes }]) => ({
           appName,
           title: label,
           pages: routes.map((p) => routeToPage(p, { networkId, pathname })),
         })),
-    [currentMenu, networkId, pathname],
+    [appLinks, currentMenu, networkId, pathname],
   )
   return (
     <AppBar
