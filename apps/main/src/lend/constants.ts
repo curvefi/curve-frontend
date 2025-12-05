@@ -1,19 +1,13 @@
 import { LEND_ROUTES } from '@ui-kit/shared/routes'
 
-export const MARKET_ROUTES = {
-  PAGE_CREATE: '/create',
-  PAGE_MANAGE: '/manage',
-  PAGE_VAULT: '/vault',
-} as const
-
-export type LendMarketRoute = (typeof MARKET_ROUTES)[keyof typeof MARKET_ROUTES]
-
 export const ROUTE = {
   ...LEND_ROUTES,
   PAGE_INTEGRATIONS: '/integrations',
-  ...MARKET_ROUTES,
+  PAGE_CREATE: '/create',
+  PAGE_MANAGE: '/manage',
+  PAGE_VAULT: '/vault',
   PAGE_404: '/404',
-} as const
+}
 
 // TODO: translation
 export const NOFITY_MESSAGE = {
