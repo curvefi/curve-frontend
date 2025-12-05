@@ -32,7 +32,9 @@ export type BandsChartPalette = {
   borderColor: string
   userRangeHighlightColor: string
   userRangeTopLabelBackgroundColor: string
+  userRangeTopLabelTextColor: string
   userRangeBottomLabelBackgroundColor: string
+  userRangeBottomLabelTextColor: string
   oraclePriceLineColor: string
   liquidationBandOutlineColor: string
   zoomTrackBackgroundColor: string
