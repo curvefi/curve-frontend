@@ -1,3 +1,4 @@
+import '@/analytics/llamadash'
 import { PageHome } from '@/analytics/components/PageHome'
 import { createRoute } from '@tanstack/react-router'
 import { rootRoute } from './root.routes'
