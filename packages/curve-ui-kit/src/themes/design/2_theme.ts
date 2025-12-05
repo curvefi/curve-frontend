@@ -5,8 +5,8 @@ import { SurfacesAndText } from './1_surfaces_text'
 const { plain, inverted } = SurfacesAndText
 
 const Transition = `all ${TransitionFunction}`
-const InsetOverline = '0 0 auto' as const
-const InsetUnderline = 'auto 0 0' as const
+const InsetOverline = '0 0 auto' as const // Top border only
+const InsetUnderline = 'auto 0 0' as const // Bottom border only
 
 const SliderBackground = {
   Safe: { 25: Reds[400], 50: Reds[300], 75: Reds[200], 100: Greens[500] },
@@ -1240,7 +1240,7 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
           Active: Grays[100],
         },
         Border: {
-          Default: Grays[200],
+          Default: Grays[400],
           Active: Violets[400],
           Filled: Violets[600],
           Error: Reds[500],
