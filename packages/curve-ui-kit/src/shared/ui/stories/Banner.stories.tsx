@@ -24,7 +24,7 @@ const meta: Meta<typeof Banner> = {
   argTypes: {
     severity: {
       control: 'select',
-      options: ['error', 'warning', 'info'],
+      options: ['error', 'warning', 'info', 'highlight'],
       description: 'The severity level of the banner message',
     },
     buttonText: {
@@ -34,6 +34,10 @@ const meta: Meta<typeof Banner> = {
     onClick: {
       action: 'clicked',
       description: 'Function called when the button is clicked',
+    },
+    subtitle: {
+      control: 'text',
+      description: 'Subtitle for the banner message (optional)',
     },
   },
 }
@@ -57,7 +61,7 @@ export const Warning: Story = {
 
 export const Info: Story = {
   args: {
-    severity: 'default',
+    severity: 'info',
     children: 'This is a default message',
   },
 }
@@ -110,5 +114,13 @@ export const ApiErrorExample: Story = {
   args: {
     severity: 'alert',
     children: 'There is an issue connecting to the API. Please try to switch your RPC in your wallet settings.',
+  },
+}
+
+export const WithSubtitle: Story = {
+  args: {
+    severity: 'info',
+    children: 'This is an default message with a subtitle',
+    subtitle: 'This is a subtitle',
   },
 }

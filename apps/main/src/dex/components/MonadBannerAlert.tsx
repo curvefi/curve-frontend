@@ -1,6 +1,6 @@
-import { Banner } from '@ui-kit/shared/ui/Banner'
 import { Stack } from '@mui/material'
 import { t } from '@ui-kit/lib/i18n'
+import { Banner } from '@ui-kit/shared/ui/Banner'
 import { PoolUrlParams } from '../types/main.types'
 
 const MonadBannerAlert = ({ params }: { params: PoolUrlParams }) => {
