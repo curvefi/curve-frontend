@@ -22,3 +22,8 @@ export const getQueryState = (current: Query<unknown> | undefined, previous: Que
   error: current?.error ?? previous?.error,
   loading: current?.isLoading || previous?.isLoading,
 })
+
+export const withTokenSymbol = <T>(query: Query<T | null>, tokenSymbol?: string) => ({
+  ...query,
+  tokenSymbol,
+})
