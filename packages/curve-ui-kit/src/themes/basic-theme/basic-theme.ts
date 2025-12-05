@@ -24,7 +24,6 @@ export const basicMuiTheme = createMuiTheme({
     Spacing[300],
     Spacing[350],
     Spacing[400],
-    Spacing[450],
     Spacing[500],
     Spacing[600],
     Spacing[700],
