@@ -7,7 +7,7 @@ import {
 import type {
   CollateralHealthParams,
   CollateralParams,
-  RepayFromCollateralHealthParams,
+  RepayFromCollateralIsFullParams,
   RepayFromCollateralParams,
 } from '@/llamalend/queries/validation/manage-loan.types'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
@@ -23,6 +23,7 @@ export type RepayForm = FieldsOf<{
   stateCollateral: Decimal
   userCollateral: Decimal
   userBorrowed: Decimal
+  isFull: boolean
 }>
 
 export const collateralValidationGroup = ({ chainId, userCollateral, marketId, userAddress }: CollateralParams) =>
@@ -68,10 +69,11 @@ export const repayFormValidationSuite = createValidationSuite((params: RepayForm
   validateUserCollateral(params.userCollateral)
   validateUserCollateral(params.stateCollateral)
   validateUserBorrowed(params.userBorrowed)
+  validateIsFull(params.isFull)
 })
 
 export const repayFromCollateralIsFullValidationSuite = createValidationSuite(
-  ({ isFull, ...params }: RepayFromCollateralHealthParams) => {
+  ({ isFull, ...params }: RepayFromCollateralIsFullParams) => {
     repayFromCollateralValidationGroup(params)
     group('isFull', () => validateIsFull(isFull))
   },
