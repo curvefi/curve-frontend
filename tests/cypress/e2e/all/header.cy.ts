@@ -171,7 +171,7 @@ describe('Header', () => {
       viewport = [width, height]
       cy.viewport(...viewport)
       route = oneAppRoute()
-      cy.visit(`/${route}`)
+      cy.visitWithoutTestConnector(route)
       waitIsLoaded(route)
     })
 
