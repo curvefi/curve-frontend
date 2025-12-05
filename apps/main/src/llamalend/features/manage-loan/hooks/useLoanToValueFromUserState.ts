@@ -13,10 +13,13 @@ type Params<ChainId extends IChainId> = {
   collateralToken: Token | undefined
   borrowToken: Token | undefined
   enabled: boolean
-  /** Net change applied to on-chain collateral (positive = adding, negative = removing). */
+  /**
+   * Net change applied to on-chain collateral (positive = adding, negative = removing).
+   * TODO: use expectedCollateral from llamalend-js, currently being implemented by @0xPearce
+   * */
   collateralDelta?: Decimal | null
-  /** Net change applied to on-chain debt (positive = increasing, negative = repaying). */
-  debtDelta?: Decimal | null
+  /** Expected new borrowed amount after the loan is updated. */
+  expectedBorrowed?: Decimal | null
 }
 
 /**
@@ -34,7 +37,7 @@ export const useLoanToValueFromUserState = <ChainId extends IChainId>({
   borrowToken,
   enabled,
   collateralDelta,
-  debtDelta,
+  expectedBorrowed,
 }: Params<ChainId>) => {
   const {
     data: userState,
@@ -54,11 +57,9 @@ export const useLoanToValueFromUserState = <ChainId extends IChainId>({
     error: borrowUsdRateError,
   } = useTokenUsdRate({ chainId, tokenAddress: borrowToken?.address }, enabled && !!borrowToken?.address)
 
-  const baseDebt = userState?.debt
   const baseCollateral = userState?.collateral
 
-  const debt = baseDebt == null ? null : new BigNumber(baseDebt).plus(debtDelta ?? '0')
-
+  const debt = expectedBorrowed == null ? null : new BigNumber(expectedBorrowed)
   const collateral = baseCollateral == null ? null : new BigNumber(baseCollateral).plus(collateralDelta ?? '0')
 
   return {
