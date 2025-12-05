@@ -14,3 +14,11 @@ export function mapQuery<TSource, TResult>(
     error: query.error,
   }
 }
+
+export const formatQueryValue = <T>(query: Query<T | null> | undefined, format: (value: NonNullable<T>) => string) =>
+  query?.data != null ? format(query.data as NonNullable<T>) : undefined
+
+export const getQueryState = (current: Query<unknown> | undefined, previous: Query<unknown> | undefined) => ({
+  error: current?.error ?? previous?.error,
+  loading: current?.isLoading || previous?.isLoading,
+})

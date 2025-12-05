@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js'
 import { useEffect, useMemo } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
 import { useForm } from 'react-hook-form'
@@ -12,17 +13,25 @@ import { useAddCollateralEstimateGas } from '@/llamalend/queries/add-collateral/
 import { getAddCollateralHealthOptions } from '@/llamalend/queries/add-collateral/add-collateral-health.query'
 import { useAddCollateralPrices } from '@/llamalend/queries/add-collateral/add-collateral-prices.query'
 import { useUserState } from '@/llamalend/queries/user-state.query'
+import { mapQuery } from '@/llamalend/queries/utils'
 import type { CollateralParams } from '@/llamalend/queries/validation/manage-loan.types'
 import {
   collateralFormValidationSuite,
   type CollateralForm,
 } from '@/llamalend/queries/validation/manage-loan.validation'
+import { Query } from '@/llamalend/widgets/manage-loan/loan.types'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { vestResolver } from '@hookform/resolvers/vest'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { formDefaultOptions } from '@ui-kit/lib/model'
+import { decimal } from '@ui-kit/utils/decimal'
 import { useFormErrors } from '../../borrow/react-form.utils'
+
+const withTokenSymbol = <T>(query: Query<T | null>, tokenSymbol?: string) => ({
+  ...query,
+  tokenSymbol,
+})
 
 const useCallbackAfterFormUpdate = (form: UseFormReturn<CollateralForm>, callback: () => void) =>
   useEffect(() => form.subscribe({ formState: { values: true }, callback }), [form, callback])
@@ -95,6 +104,24 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
   const prices = useAddCollateralPrices(params, enabled)
   const gas = useAddCollateralEstimateGas(networks, params, enabled)
 
+  const expectedCollateral = useMemo(
+    () =>
+      withTokenSymbol(
+        {
+          ...mapQuery(userState, (state) => state?.collateral),
+          data: decimal(
+            values.userCollateral
+              ? new BigNumber(values.userCollateral)
+                  .plus(userState.data?.collateral ? new BigNumber(userState.data?.collateral) : '0')
+                  .toString()
+              : null,
+          ),
+        },
+        collateralToken?.symbol,
+      ),
+    [collateralToken?.symbol, userState, values.userCollateral],
+  )
+
   const formErrors = useFormErrors(form.formState)
 
   return {
@@ -114,5 +141,6 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
     borrowToken,
     txHash: action.data?.hash,
     userState,
+    expectedCollateral,
   }
 }

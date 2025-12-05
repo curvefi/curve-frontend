@@ -1,13 +1,9 @@
-import BigNumber from 'bignumber.js'
-import { useMemo } from 'react'
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
 import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import type { AddCollateralOptions } from '@/llamalend/mutations/add-collateral.mutation'
 import { useMarketRates } from '@/llamalend/queries/market-rates'
 import { getUserHealthOptions } from '@/llamalend/queries/user-health.query'
-import { mapQuery } from '@/llamalend/queries/utils'
-import type { Query } from '@/llamalend/widgets/manage-loan/loan.types'
 import { LoanFormAlerts } from '@/llamalend/widgets/manage-loan/LoanFormAlerts'
 import { LoanFormTokenInput } from '@/llamalend/widgets/manage-loan/LoanFormTokenInput'
 import { LoanFormWrapper } from '@/llamalend/widgets/manage-loan/LoanFormWrapper'
@@ -17,14 +13,8 @@ import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
-import { decimal } from '@ui-kit/utils'
 import { InputDivider } from '../../../widgets/InputDivider'
 import { useAddCollateralForm } from '../hooks/useAddCollateralForm'
-
-const withTokenSymbol = <T,>(query: Query<T | null>, tokenSymbol?: string) => ({
-  ...query,
-  tokenSymbol,
-})
 
 export const AddCollateralForm = <ChainId extends IChainId>({
   market,
@@ -57,6 +47,7 @@ export const AddCollateralForm = <ChainId extends IChainId>({
     borrowToken,
     txHash,
     userState,
+    expectedCollateral,
   } = useAddCollateralForm({
     market,
     network,
@@ -65,22 +56,6 @@ export const AddCollateralForm = <ChainId extends IChainId>({
     onAdded,
   })
 
-  const prevCollateral = useMemo(
-    () =>
-      withTokenSymbol(
-        mapQuery(userState, (state) => state?.collateral),
-        collateralToken?.symbol,
-      ),
-    [collateralToken?.symbol, userState],
-  )
-  const prevDebt = useMemo(
-    () =>
-      withTokenSymbol(
-        mapQuery(userState, (state) => state?.debt),
-        borrowToken?.symbol,
-      ),
-    [borrowToken?.symbol, userState],
-  )
   const prevLoanToValue = useLoanToValueFromUserState({
     chainId,
     marketId: params.marketId,
@@ -91,23 +66,6 @@ export const AddCollateralForm = <ChainId extends IChainId>({
   })
   const prevHealth = useHealthQueries((isFull) => getUserHealthOptions({ ...params, isFull }, undefined))
 
-  const collateral = useMemo(
-    () =>
-      withTokenSymbol(
-        {
-          ...mapQuery(userState, (state) => state?.collateral),
-          data: decimal(
-            values.userCollateral
-              ? new BigNumber(values.userCollateral)
-                  .plus(userState.data?.collateral ? new BigNumber(userState.data?.collateral) : '0')
-                  .toString()
-              : null,
-          ),
-        },
-        collateralToken?.symbol,
-      ),
-    [collateralToken?.symbol, userState, values.userCollateral],
-  )
   const marketRates = useMarketRates(params, isOpen)
   const loanToValue = useLoanToValueFromUserState({
     chainId: params.chainId!,
@@ -131,10 +89,13 @@ export const AddCollateralForm = <ChainId extends IChainId>({
           rates={marketRates}
           prevLoanToValue={prevLoanToValue}
           loanToValue={loanToValue}
-          prevDebt={prevDebt}
+          userState={{
+            ...userState,
+            borrowTokenSymbol: borrowToken?.symbol,
+            collateralTokenSymbol: collateralToken?.symbol,
+          }}
           gas={gas}
-          prevCollateral={prevCollateral}
-          collateral={collateral}
+          collateral={expectedCollateral}
         />
       }
     >
