@@ -50,7 +50,7 @@ export const LoanFormAlerts = <Field extends string>({
           ))}
       </Alert>
     )}
-    {!!error && (
+    {error && (
       <Alert
         severity="error"
         sx={{ overflowWrap: 'anywhere' /* break anywhere as there is often JSON in the error breaking the design */ }}

@@ -135,7 +135,7 @@ export function useLlammaMutation<TVariables extends object, TData extends Resul
     },
     onError: (error, variables, context) => {
       logError(mutationKey, { error, variables, marketId: context?.market.id })
-      notify(t`Transaction failed`, 'error')
+      notify(t`Transaction failed`, 'error') // hide the actual error message, it can be too long - display it in the form
     },
     onSettled: (_data, _error, _variables, context) => context?.pendingNotification?.dismiss(),
   })
