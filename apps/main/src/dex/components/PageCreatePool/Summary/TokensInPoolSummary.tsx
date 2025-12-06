@@ -1,6 +1,6 @@
 import { styled } from 'styled-components'
-import { STABLESWAP } from '@/dex/components/PageCreatePool/constants'
 import {
+  STABLESWAP,
   TOKEN_A,
   TOKEN_B,
   TOKEN_C,
@@ -9,6 +9,7 @@ import {
   TOKEN_F,
   TOKEN_G,
   TOKEN_H,
+  NG_ASSET_TYPE,
 } from '@/dex/components/PageCreatePool/constants'
 import OracleSummary from '@/dex/components/PageCreatePool/Summary/OracleSummary'
 import {
@@ -208,10 +209,10 @@ const TokenSummary = ({ blockchainId, token, chainId, swapType }: TokenSummary) 
         </TokenSymbol>
         {swapType === STABLESWAP && network.stableswapFactory && (
           <TokenType>
-            {token.ngAssetType === 0 && t`Standard`}
-            {token.ngAssetType === 1 && t`Oracle`}
-            {token.ngAssetType === 2 && t`Rebasing`}
-            {token.ngAssetType === 3 && t`ERC4626`}
+            {token.ngAssetType === NG_ASSET_TYPE.STANDARD && t`Standard`}
+            {token.ngAssetType === NG_ASSET_TYPE.ORACLE && t`Oracle`}
+            {token.ngAssetType === NG_ASSET_TYPE.REBASING && t`Rebasing`}
+            {token.ngAssetType === NG_ASSET_TYPE.ERC4626 && t`ERC4626`}
           </TokenType>
         )}
       </Box>
