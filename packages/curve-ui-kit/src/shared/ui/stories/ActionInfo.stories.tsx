@@ -41,6 +41,10 @@ const meta: Meta<typeof ActionInfo> = {
       control: 'color',
       description: 'Custom color for the previous value text',
     },
+    emptyValue: {
+      control: 'text',
+      description: 'Placeholder rendered when neither current nor previous value is provided',
+    },
     link: {
       control: 'text',
       description: 'The URL to navigate to when clicking the external link button',

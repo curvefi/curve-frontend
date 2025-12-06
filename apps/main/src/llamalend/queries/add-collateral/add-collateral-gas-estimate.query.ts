@@ -19,7 +19,11 @@ const { useQuery: useAddCollateralGasEstimate } = queryFactory({
     ] as const,
   queryFn: async ({ marketId, userCollateral }: AddCollateralGasQuery) => {
     const market = getLlamaMarket(marketId)
-    return await market.estimateGas.addCollateralApprove(userCollateral)
+    const isApproved = await market.addCollateralIsApproved(userCollateral)
+    const result = isApproved
+      ? await market.estimateGas.addCollateral(userCollateral)
+      : await market.estimateGas.addCollateralApprove(userCollateral)
+    return result
   },
   validationSuite: collateralValidationSuite,
 })

@@ -3,9 +3,15 @@ import { queryFactory, rootKeys, type UserMarketParams, type UserMarketQuery } f
 import { userMarketValidationSuite } from '@ui-kit/lib/model/query/user-market-validation'
 import type { Decimal } from '@ui-kit/utils'
 
+export type UserState = {
+  collateral: Decimal
+  stablecoin: Decimal
+  debt: Decimal
+}
+
 export const { useQuery: useUserState, invalidate: invalidateUserState } = queryFactory({
   queryKey: (params: UserMarketParams) => [...rootKeys.userMarket(params), 'market-user-state'] as const,
-  queryFn: async ({ marketId, userAddress }: UserMarketQuery) => {
+  queryFn: async ({ marketId, userAddress }: UserMarketQuery): Promise<UserState> => {
     const market = getLlamaMarket(marketId)
     const userState = await market.userState(userAddress)
 

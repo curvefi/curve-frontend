@@ -41,9 +41,11 @@ export type ActionInfoProps = {
   /** Tooltip text to display when hovering over the value */
   valueTooltip?: ReactNode
   /** Previous value (if needed for comparison) */
-  prevValue?: string
+  prevValue?: ReactNode
   /** Custom color for the previous value text */
   prevValueColor?: TypographyProps['color']
+  /** Placeholder when no value or previous value is provided */
+  emptyValue?: ReactNode
   /** URL to navigate to when clicking the external link button */
   link?: string
   /** Value to be copied (will display a copy button). */
@@ -92,6 +94,7 @@ const ActionInfo = ({
   prevValue,
   prevValueColor,
   value,
+  emptyValue = '-',
   valueColor,
   valueLeft,
   valueRight,
@@ -114,6 +117,9 @@ const ActionInfo = ({
   }, [copyValue, openSnackbar])
 
   const errorMessage = (typeof error === 'object' && error?.message) || (typeof error === 'string' && error)
+  const showPrevValue = value != null && prevValue != null
+  value ??= prevValue ?? emptyValue
+
   return (
     <Stack direction="row" alignItems="center" columnGap={Spacing.sm} data-testid={testId} sx={sx}>
       <Typography
@@ -127,7 +133,7 @@ const ActionInfo = ({
       </Typography>
 
       <Stack direction="row" alignItems={alignItems} gap={Spacing.xs} className="ActionInfo-valueGroup">
-        {prevValue && (
+        {showPrevValue && (
           <Typography
             variant={prevValueSize[size]}
             color={prevValueColor ?? 'textTertiary'}
@@ -137,7 +143,7 @@ const ActionInfo = ({
           </Typography>
         )}
 
-        {prevValue && (
+        {showPrevValue && (
           <ArrowForwardIcon
             sx={{
               width: IconSize.sm,
