@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
-import { useAccount } from 'wagmi'
 import { useRepayMutation } from '@/llamalend/mutations/repay.mutation'
 import { useUserBalances } from '@/llamalend/queries/user-balances.query'
+import { useAccount } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
 import type { Decimal } from '@ui-kit/utils'
 import type { ImproveHealthProps } from '..'
 import type { MarketParams } from '../types'

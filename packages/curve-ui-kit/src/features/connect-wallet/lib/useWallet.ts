@@ -1,7 +1,7 @@
 import { type BrowserProvider } from 'ethers'
 import { useCallback, useEffect } from 'react'
-import { useConnect, useConnectors, useDisconnect, useEnsName } from 'wagmi'
 import { useConnection } from '@ui-kit/features/connect-wallet'
+import { useConnect, useConnectors, useDisconnect, useEnsName } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
 import { useGlobalState } from '@ui-kit/hooks/useGlobalState'
 import { isCypress } from '@ui-kit/utils'
 import type { Wallet } from './types'
@@ -25,8 +25,8 @@ export const useWallet = () => {
   state.provider = provider ?? null
 
   // use the async functions so we can properly handle the promise failures. We could instead use query state in the future.
-  const { connectAsync } = useConnect()
-  const { disconnect } = useDisconnect()
+  const { mutateAsync: connectAsync } = useConnect()
+  const { mutate: disconnect } = useDisconnect()
 
   const connect = useCallback(
     async (selectedConnector?: Connector) => {

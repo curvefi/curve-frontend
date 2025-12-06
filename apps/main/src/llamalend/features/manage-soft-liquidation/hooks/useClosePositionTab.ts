@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
-import { useAccount } from 'wagmi'
 import { ClosePositionProps } from '@/llamalend/features/manage-soft-liquidation'
 import { useClosePositionMutation } from '@/llamalend/mutations/close-position.mutation'
+import { useAccount } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
 import type { MarketParams } from '../types'
 import { useCanClose } from './useCanClose'
 import { useCollateralToRecover } from './useCollateralToRecover'

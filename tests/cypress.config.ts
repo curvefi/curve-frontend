@@ -1,4 +1,5 @@
 import { defineConfig } from 'cypress'
+import { vitePreprocessor } from './vite-cypress-preprocessor'
 
 export default defineConfig({
   defaultCommandTimeout: 5000,
@@ -9,6 +10,10 @@ export default defineConfig({
   e2e: {
     baseUrl: 'http://localhost:3000',
     specPattern: 'cypress/e2e/**/*',
+    setupNodeEvents(on, config) {
+      on('file:preprocessor', vitePreprocessor())
+      return config
+    },
   },
   component: {
     devServer: {

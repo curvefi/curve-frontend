@@ -1,10 +1,10 @@
 import BigNumber from 'bignumber.js'
 import { useCallback, useMemo } from 'react'
 import { styled } from 'styled-components'
-import { useAccount } from 'wagmi'
 import { useScrvUsdUserBalances } from '@/loan/entities/scrvusd-userBalances'
 import useStore from '@/loan/store/useStore'
 import Button from '@ui/Button'
+import { useAccount } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
 import { t } from '@ui-kit/lib/i18n'
 
 type DeployButtonProps = { className?: string }

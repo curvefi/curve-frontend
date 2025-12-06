@@ -1,5 +1,4 @@
 import { type ReactNode, useEffect, useState } from 'react'
-import { useChainId, useSwitchChain } from 'wagmi'
 import type { NetworkDef } from '@ui/utils'
 import { ConnectionContext, useWagmiWallet } from '@ui-kit/features/connect-wallet/lib/ConnectionContext'
 import {
@@ -10,6 +9,7 @@ import {
   ConnectState,
   HydratorMap,
 } from '@ui-kit/features/connect-wallet/lib/types'
+import { useChainId, useSwitchChain } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
 import { useIsDocumentFocused } from '@ui-kit/features/layout/utils'
 import type { AppName } from '@ui-kit/shared/routes'
 import { globalLibs, isWalletMatching } from './utils'

@@ -1,6 +1,6 @@
-import { useAccount } from 'wagmi'
 import { useUserBalances } from '@/llamalend/queries/user-balances.query'
 import { useUserState } from '@/llamalend/queries/user-state.query'
+import { useAccount } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
 import { decimal } from '@ui-kit/utils'
 import type { ClosePositionProps } from '..'
 import type { MarketParams } from '../types'

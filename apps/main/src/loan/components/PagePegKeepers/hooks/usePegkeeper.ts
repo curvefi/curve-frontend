@@ -1,5 +1,5 @@
 import { formatEther } from 'viem'
-import { useReadContract, useWriteContract, useSimulateContract } from 'wagmi'
+import { useReadContract, useWriteContract, useSimulateContract } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
 import type { Decimal } from '@ui-kit/utils'
 import { abi as pegkeeperAbi } from '../abi/pegkeeper'
 import { abi as pegkeeperDebtCeilingAbi } from '../abi/pegkeeperDebtCeiling'
@@ -85,10 +85,10 @@ export function usePegkeeper({ address, pool: { address: poolAddress } }: PegKee
     }
   }
 
-  const { writeContract, isPending: isRebalancing } = useWriteContract()
+  const { mutate, isPending: isRebalancing } = useWriteContract()
 
   const rebalance = () =>
-    writeContract(
+    mutate(
       {
         abi: pegkeeperAbi,
         address,

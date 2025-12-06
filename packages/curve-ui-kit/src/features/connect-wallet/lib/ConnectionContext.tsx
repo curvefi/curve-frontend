@@ -1,7 +1,7 @@
 import { BrowserProvider } from 'ethers'
 import { createContext, useContext, useMemo } from 'react'
-import { useAccount, useConnectorClient } from 'wagmi'
 import type { NetworkDef } from '@ui/utils'
+import { useAccount, useConnectorClient } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { type Address } from '@ui-kit/utils'
 import { ConnectState, type CurveApi, type LlamaApi, type Wallet } from './types'
@@ -29,7 +29,6 @@ export const ConnectionContext = createContext<ConnectionContextValue>({
 
 /**
  * Detects if the wallet is in the process of reconnecting.
- * - `useAccount` and `useClient` are not always in sync, so check both
  * - `isReconnecting` is set when switching pages
  * - `isConnecting` is set when the wallet gets flipped from connecting to connected when loading,
  *   especially without any wallet plugin

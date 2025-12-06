@@ -1,6 +1,6 @@
-import { useAccount } from 'wagmi'
 import { getLlamaMarket, getTokens } from '@/llamalend/llama.utils'
 import { useUserState } from '@/llamalend/queries/user-state.query'
+import { useAccount } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
 import type { ClosePositionProps } from '..'
 import type { MarketParams } from '../types'
 

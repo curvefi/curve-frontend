@@ -1,6 +1,6 @@
-import { useAccount } from 'wagmi'
 import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
 import { getUserHealthOptions } from '@/llamalend/queries/user-health.query'
+import { useAccount } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
 import type { ActionInfosProps } from '..'
 import type { MarketParams } from '../types'
 import { useCollateralInfo } from './useCollateralInfo'

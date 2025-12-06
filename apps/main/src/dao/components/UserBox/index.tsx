@@ -1,11 +1,11 @@
 import { ReactNode } from 'react'
 import { styled } from 'styled-components'
-import { useAccount, useChainId } from 'wagmi'
 import { ConnectEthereum } from '@/dao/components/ConnectEthereum'
 import { ActiveProposal, SnapshotVotingPower } from '@/dao/types/dao.types'
 import Box from '@ui/Box'
 import Button from '@ui/Button'
 import { isLoading, useWallet } from '@ui-kit/features/connect-wallet'
+import { useChainId, useAccount } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
 import { t } from '@ui-kit/lib/i18n'
 import UserInformation from './UserInformation'
 

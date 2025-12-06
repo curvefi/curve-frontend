@@ -1,4 +1,4 @@
-import { useAccount } from 'wagmi'
+import { useAccount } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
 import { t } from '@ui-kit/lib/i18n'
 import type { Option } from '@ui-kit/shared/ui/DataTable/SelectFilter'
 import { LlamaMarketColumnId } from '../columns.enum'

@@ -1,5 +1,5 @@
-import { useAccount } from 'wagmi'
 import { useWallet } from '@ui-kit/features/connect-wallet'
+import { useAccount } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
 import type { SxProps } from '@ui-kit/utils'
 import { ConnectedWalletLabel } from './ConnectedWalletLabel'
 import { ConnectWalletButton } from './ConnectWalletButton'

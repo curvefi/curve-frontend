@@ -1,6 +1,6 @@
-import { useAccount } from 'wagmi'
 import type { LlamaMarketsResult } from '@/llamalend/queries/market-list/llama-markets'
 import PersonIcon from '@mui/icons-material/Person'
+import { useAccount } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
 import { HeartIcon } from '@ui-kit/shared/icons/HeartIcon'

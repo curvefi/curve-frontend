@@ -1,7 +1,7 @@
-import { useAccount } from 'wagmi'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import { useWallet } from '@ui-kit/features/connect-wallet'
+import { useAccount } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
 import { ConnectWalletButton } from '@ui-kit/features/connect-wallet/ui/ConnectWalletButton'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'

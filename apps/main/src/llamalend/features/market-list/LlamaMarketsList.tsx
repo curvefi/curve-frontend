@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useState } from 'react'
-import { useAccount } from 'wagmi'
 import {
   invalidateAllUserLendingSupplies,
   invalidateAllUserLendingVaults,
@@ -7,6 +6,7 @@ import {
 } from '@/llamalend/queries/market-list/lending-vaults'
 import { useLlamaMarkets } from '@/llamalend/queries/market-list/llama-markets'
 import { invalidateAllUserMintMarkets, invalidateMintMarkets } from '@/llamalend/queries/market-list/mint-markets'
+import { useAccount } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
 import { Address } from '@ui-kit/utils'
 import { ListPageWrapper } from '@ui-kit/widgets/ListPageWrapper'
 import { LendTableFooter } from './LendTableFooter'
