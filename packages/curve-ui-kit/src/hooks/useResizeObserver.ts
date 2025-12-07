@@ -39,7 +39,7 @@ export function useResizeObserver(
   useEffect(() => {
     const node = elementRef.current
     if (!node) {
-      return console.warn(`Could not find the element to observe for resize: ${elementRef}`)
+      return
     }
 
     const { width, height } = node.getBoundingClientRect()
