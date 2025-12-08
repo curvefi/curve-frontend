@@ -1,7 +1,9 @@
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
+import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import type { RemoveCollateralOptions } from '@/llamalend/mutations/remove-collateral.mutation'
 import { useMarketRates } from '@/llamalend/queries/market-rates'
+import { getUserHealthOptions } from '@/llamalend/queries/user-health.query'
 import { LoanFormAlerts } from '@/llamalend/widgets/manage-loan/LoanFormAlerts'
 import { LoanFormTokenInput } from '@/llamalend/widgets/manage-loan/LoanFormTokenInput'
 import { LoanFormWrapper } from '@/llamalend/widgets/manage-loan/LoanFormWrapper'
@@ -40,14 +42,14 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
     maxRemovable,
     params,
     values,
-    bands,
     health,
-    prices,
     gas,
     formErrors,
     collateralToken,
     borrowToken,
     txHash,
+    userState,
+    expectedCollateral,
   } = useRemoveCollateralForm({
     market,
     network,
@@ -56,39 +58,57 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
     onRemoved,
   })
 
+  const prevLoanToValue = useLoanToValueFromUserState({
+    chainId,
+    marketId: params.marketId,
+    userAddress: params.userAddress,
+    collateralToken,
+    borrowToken,
+    enabled: isOpen,
+    expectedBorrowed: userState.data?.debt,
+  })
+  const prevHealth = useHealthQueries((isFull) => getUserHealthOptions({ ...params, isFull }, undefined))
   const marketRates = useMarketRates(params, isOpen)
+  const loanToValue = useLoanToValueFromUserState({
+    chainId: params.chainId!,
+    marketId: params.marketId,
+    userAddress: params.userAddress,
+    collateralToken,
+    borrowToken,
+    enabled: !!enabled && !!values.userCollateral,
+    collateralDelta:
+      values.userCollateral != null
+        ? (`-${values.userCollateral}` as unknown as import('@ui-kit/utils').Decimal)
+        : undefined,
+    expectedBorrowed: userState.data?.debt,
+  })
 
   return (
     <LoanFormWrapper
       {...form}
       onSubmit={onSubmit}
       infoAccordion={
-        <LoanInfoAccordion // todo: prevHealth, prevRates, debt, prevDebt
+        <LoanInfoAccordion // todo: prevRates
           isOpen={isOpen}
           toggle={toggle}
+          prevHealth={prevHealth}
           health={health}
-          bands={bands}
-          prices={prices}
           rates={marketRates}
-          loanToValue={useLoanToValueFromUserState({
-            chainId: params.chainId!,
-            marketId: params.marketId,
-            userAddress: params.userAddress,
-            collateralToken,
-            borrowToken,
-            enabled: isOpen,
-            collateralDelta:
-              values.userCollateral != null
-                ? (`-${values.userCollateral}` as unknown as import('@ui-kit/utils').Decimal)
-                : undefined,
-          })}
+          prevLoanToValue={prevLoanToValue}
+          loanToValue={loanToValue}
+          userState={{
+            ...userState,
+            borrowTokenSymbol: borrowToken?.symbol,
+            collateralTokenSymbol: collateralToken?.symbol,
+          }}
           gas={gas}
+          collateral={expectedCollateral}
         />
       }
     >
       <Stack divider={<InputDivider />}>
         <LoanFormTokenInput
-          label={t`Collateral`}
+          label={t`Amount to Remove`}
           token={collateralToken}
           blockchainId={network.id}
           name="userCollateral"
@@ -109,15 +129,6 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
         />
       </Stack>
 
-      <Button
-        type="submit"
-        loading={isPending || !market}
-        disabled={formErrors.length > 0}
-        data-testid="remove-collateral-submit-button"
-      >
-        {isPending ? t`Processing...` : t`Remove collateral`}
-      </Button>
-
       <LoanFormAlerts
         isSuccess={action.isSuccess}
         error={action.error}
@@ -127,6 +138,15 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
         handledErrors={['userCollateral']}
         successTitle={t`Collateral removed`}
       />
+
+      <Button
+        type="submit"
+        loading={isPending || !market}
+        disabled={formErrors.length > 0}
+        data-testid="remove-collateral-submit-button"
+      >
+        {isPending ? t`Processing...` : t`Remove collateral`}
+      </Button>
     </LoanFormWrapper>
   )
 }

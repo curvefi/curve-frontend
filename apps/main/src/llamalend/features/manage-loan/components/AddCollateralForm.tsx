@@ -66,7 +66,6 @@ export const AddCollateralForm = <ChainId extends IChainId>({
     expectedBorrowed: userState.data?.debt,
   })
   const prevHealth = useHealthQueries((isFull) => getUserHealthOptions({ ...params, isFull }, undefined))
-
   const marketRates = useMarketRates(params, isOpen)
   const loanToValue = useLoanToValueFromUserState({
     chainId: params.chainId!,
@@ -78,6 +77,7 @@ export const AddCollateralForm = <ChainId extends IChainId>({
     collateralDelta: values.userCollateral,
     expectedBorrowed: userState.data?.debt,
   })
+
   return (
     <LoanFormWrapper
       {...form}

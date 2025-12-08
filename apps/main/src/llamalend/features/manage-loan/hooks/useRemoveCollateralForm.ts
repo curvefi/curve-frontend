@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js'
 import { useEffect, useMemo } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
 import { useForm } from 'react-hook-form'
@@ -14,6 +15,8 @@ import { useRemoveCollateralEstimateGas } from '@/llamalend/queries/remove-colla
 import { getRemoveCollateralHealthOptions } from '@/llamalend/queries/remove-collateral/remove-collateral-health.query'
 import { useMaxRemovableCollateral } from '@/llamalend/queries/remove-collateral/remove-collateral-max-removable.query'
 import { useRemoveCollateralPrices } from '@/llamalend/queries/remove-collateral/remove-collateral-prices.query'
+import { useUserState } from '@/llamalend/queries/user-state.query'
+import { mapQuery, withTokenSymbol } from '@/llamalend/queries/utils'
 import type { CollateralParams } from '@/llamalend/queries/validation/manage-loan.types'
 import {
   collateralFormValidationSuite,
@@ -24,6 +27,7 @@ import { vestResolver } from '@hookform/resolvers/vest'
 import type { BaseConfig } from '@ui/utils'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions } from '@ui-kit/lib/model'
+import { decimal } from '@ui-kit/utils/decimal'
 import { useFormErrors } from '../../borrow/react-form.utils'
 
 const useCallbackAfterFormUpdate = (form: UseFormReturn<CollateralForm>, callback: () => void) =>
@@ -87,11 +91,32 @@ export const useRemoveCollateralForm = <
 
   useCallbackAfterFormUpdate(form, action.reset)
 
+  const userState = useUserState(params, enabled)
   const maxRemovable = useMaxRemovableCollateral(params, enabled)
   const bands = useRemoveCollateralBands(params, enabled)
   const health = useHealthQueries((isFull) => getRemoveCollateralHealthOptions({ ...params, isFull }, enabled))
   const prices = useRemoveCollateralPrices(params, enabled)
   const gas = useRemoveCollateralEstimateGas(networks, params, enabled)
+
+  const expectedCollateral = useMemo(
+    () =>
+      withTokenSymbol(
+        {
+          ...mapQuery(userState, (state) => state?.collateral),
+          data: decimal(
+            userState.data?.collateral != null && values.userCollateral != null
+              ? // An error will be thrown by the validation suite if the user tries to remove more collateral than they have
+                BigNumber.max(
+                  new BigNumber(userState.data?.collateral).minus(new BigNumber(values.userCollateral)),
+                  '0',
+                ).toString()
+              : null,
+          ),
+        },
+        collateralToken?.symbol,
+      ),
+    [collateralToken?.symbol, userState, values.userCollateral],
+  )
 
   const formErrors = useFormErrors(form.formState)
 
@@ -111,5 +136,7 @@ export const useRemoveCollateralForm = <
     collateralToken,
     borrowToken,
     formErrors,
+    userState,
+    expectedCollateral,
   }
 }
