@@ -10,8 +10,11 @@ import type { PartialRecord } from '@curvefi/prices-api/objects.util'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
+import type { LargeTokenInputProps } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { decimal, Decimal } from '@ui-kit/utils'
+
+type WalletBalanceProps = NonNullable<LargeTokenInputProps['walletBalance']>
 
 /**
  * A large token input field for loan forms, with balance and max handling.
@@ -30,6 +33,7 @@ export const LoanFormTokenInput = <
   testId,
   message,
   network,
+  fromPosition,
 }: {
   label: string
   token: { address: Address; symbol?: string } | undefined
@@ -43,15 +47,26 @@ export const LoanFormTokenInput = <
   form: UseFormReturn<TFieldValues> // the form, used to set the value and get errors
   testId: string
   message?: ReactNode
+  /**
+   * Optional object, that display the position balance instead of the wallet balance.
+   * The data is taken from `max` prop, works only if `max` is not undefined.
+   */
+  fromPosition?: {
+    tooltip: WalletBalanceProps['tooltip']
+    prefix: WalletBalanceProps['prefix']
+  }
+  /**
+   * The network of the token.
+   */
   network: LlamaNetwork
 }) => {
+  fromPosition = max ? fromPosition : undefined
   const { address: userAddress } = useAccount()
   const {
     data: balance,
     isLoading: isBalanceLoading,
     error: balanceError,
   } = useTokenBalance({ chainId: network?.chainId, userAddress }, token)
-
   const { data: usdRate } = useTokenUsdRate({
     chainId: network?.chainId,
     tokenAddress: token?.address,
@@ -60,12 +75,14 @@ export const LoanFormTokenInput = <
   const walletBalance = useMemo(
     // todo: support separate isLoading for balance and for maxBalance in LargeTokenInput
     () => ({
-      balance,
+      balance: fromPosition ? max?.data : balance,
       symbol: token?.symbol,
-      loading: isBalanceLoading,
+      loading: fromPosition ? max?.isLoading : isBalanceLoading,
       usdRate,
+      tooltip: fromPosition?.tooltip,
+      prefix: fromPosition?.prefix,
     }),
-    [balance, isBalanceLoading, token?.symbol, usdRate],
+    [balance, isBalanceLoading, max, token?.symbol, usdRate, fromPosition],
   )
 
   const errors = form.formState.errors as PartialRecord<FieldPath<TFieldValues>, Error>
