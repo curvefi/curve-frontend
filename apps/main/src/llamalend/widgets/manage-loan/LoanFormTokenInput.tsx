@@ -33,7 +33,7 @@ export const LoanFormTokenInput = <
   testId,
   message,
   network,
-  fromPosition,
+  positionBalance,
 }: {
   label: string
   token: { address: Address; symbol?: string } | undefined
@@ -48,19 +48,18 @@ export const LoanFormTokenInput = <
   testId: string
   message?: ReactNode
   /**
-   * Optional object, that display the position balance instead of the wallet balance.
-   * The data is taken from `max` prop, works only if `max` is not undefined.
+   * Optional, displays the position balance instead of the wallet balance.
    */
-  fromPosition?: {
-    tooltip: WalletBalanceProps['tooltip']
-    prefix: WalletBalanceProps['prefix']
+  positionBalance?: {
+    position: Query<Decimal>
+    tooltip?: WalletBalanceProps['tooltip']
+    prefix?: WalletBalanceProps['prefix']
   }
   /**
    * The network of the token.
    */
   network: LlamaNetwork
 }) => {
-  fromPosition = max ? fromPosition : undefined
   const { address: userAddress } = useAccount()
   const {
     data: balance,
@@ -75,14 +74,14 @@ export const LoanFormTokenInput = <
   const walletBalance = useMemo(
     // todo: support separate isLoading for balance and for maxBalance in LargeTokenInput
     () => ({
-      balance: fromPosition ? max?.data : balance,
+      balance: positionBalance ? positionBalance.position.data : balance,
       symbol: token?.symbol,
-      loading: fromPosition ? max?.isLoading : isBalanceLoading,
+      loading: positionBalance ? positionBalance.position.isLoading : isBalanceLoading,
       usdRate,
-      tooltip: fromPosition?.tooltip,
-      prefix: fromPosition?.prefix,
+      tooltip: positionBalance?.tooltip,
+      prefix: positionBalance?.prefix,
     }),
-    [balance, isBalanceLoading, max, token?.symbol, usdRate, fromPosition],
+    [balance, isBalanceLoading, token?.symbol, usdRate, positionBalance],
   )
 
   const errors = form.formState.errors as PartialRecord<FieldPath<TFieldValues>, Error>

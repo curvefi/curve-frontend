@@ -117,8 +117,9 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
           max={maxRemovable}
           testId="remove-collateral-input"
           network={network}
-          fromPosition={{
-            tooltip: t`Collateral Balance`,
+          positionBalance={{
+            position: maxRemovable,
+            tooltip: t`Max Removable Collateral`,
             prefix: LlamaIcon,
           }}
           message={
