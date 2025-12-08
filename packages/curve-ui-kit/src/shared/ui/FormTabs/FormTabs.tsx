@@ -8,12 +8,12 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { MaxWidth } = SizesAndSpaces
 
-type FnOrValue<Props extends object, Result> = ((props: Props) => Result | undefined) | Result
+type FnOrValue<Props extends object, Result> = ((props: Props) => Result | null | undefined) | Result
 
 const applyFnOrValue = <Props extends object, R extends string | boolean>(
   fnOrValue: FnOrValue<Props, R> | undefined,
   props: Props,
-): R | undefined => (typeof fnOrValue === 'function' ? fnOrValue(props) : fnOrValue)
+): R | undefined => (typeof fnOrValue === 'function' ? fnOrValue(props) : fnOrValue) ?? undefined
 
 type FormSubTab<Props extends object> = Pick<FormTab<Props>, 'value' | 'label' | 'component' | 'visible' | 'disabled'>
 

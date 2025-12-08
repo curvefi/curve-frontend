@@ -1,6 +1,6 @@
-import type { FormType as ManageFormType } from '@/loan/components/PageLoanManage/types'
+import type { ManageFormType as ManageFormType } from '@/loan/components/PageMintMarket/types'
 import { ROUTE } from '@/loan/constants'
-import { ChainId, type CollateralUrlParams, type NetworkUrlParams, type UrlParams } from '@/loan/types/loan.types'
+import { ChainId, type NetworkUrlParams, type UrlParams } from '@/loan/types/loan.types'
 import { getInternalUrl, LLAMALEND_ROUTES } from '@ui-kit/shared/routes'
 import { Chain } from '@ui-kit/utils'
 
@@ -27,8 +27,3 @@ export const getLoanCreatePathname = (
 
 export const getLoanManagePathname = (params: NetworkUrlParams, collateralId: string, formType: ManageFormType) =>
   getPath(params, `${ROUTE.PAGE_MARKETS}/${collateralId}${ROUTE.PAGE_MANAGE}/${formType}`)
-
-export const parseCollateralParams = ({ collateralId, formType: rFormType }: CollateralUrlParams) => ({
-  rFormType: rFormType ?? '',
-  rCollateralId: collateralId.toLowerCase(),
-})
