@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { fn } from 'storybook/test'
 import { Select, MenuItem, Typography, Stack } from '@mui/material'
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { LlamaIcon } from '@ui-kit/shared/icons/LlamaIcon'
 import type { Decimal } from '@ui-kit/utils'
 import { LargeTokenInput, type LargeTokenInputRef, type LargeTokenInputProps } from '../LargeTokenInput'
 
@@ -168,6 +169,26 @@ export const WithChipsCustom: Story = {
     maxBalance: {
       ...DEFAULT_MAX_BALANCE,
       chips: [{ label: 'Yolo', newBalance: () => '1337.42' }],
+    },
+  },
+  render: (args) => <LargeTokenInputWithTokenSelector {...args} />,
+  parameters: {
+    docs: {
+      description: {
+        story: 'Large token input with a custom input chip',
+      },
+    },
+  },
+}
+
+export const WithMarketPosition: Story = {
+  args: {
+    walletBalance: {
+      symbol: TOKEN_OPTIONS[1].walletBalance.symbol,
+      balance: TOKEN_OPTIONS[1].walletBalance.balance,
+      notionalValueUsd: TOKEN_OPTIONS[1].walletBalance.notionalValueUsd,
+      prefix: LlamaIcon,
+      tooltip: 'Collateral Balance',
     },
   },
   render: (args) => <LargeTokenInputWithTokenSelector {...args} />,
