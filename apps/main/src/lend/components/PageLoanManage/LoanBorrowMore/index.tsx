@@ -21,7 +21,6 @@ import useStore from '@/lend/store/useStore'
 import { Api, OneWayMarketTemplate, PageContentProps } from '@/lend/types/lend.types'
 import { _showNoLoanFound } from '@/lend/utils/helpers'
 import { DEFAULT_HEALTH_MODE } from '@/llamalend/constants'
-import { hasLeverage } from '@/llamalend/llama.utils'
 import type { HealthMode } from '@/llamalend/llamalend.types'
 import { useLoanExists } from '@/llamalend/queries/loan-exists'
 import Stack from '@mui/material/Stack'
@@ -42,9 +41,18 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 
-const LoanBorrowMore = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey }: PageContentProps) => {
+const LoanBorrowMore = ({
+  rChainId,
+  rOwmId,
+  isLoaded,
+  api,
+  market,
+  userActiveKey,
+  isLeverage = false,
+}: PageContentProps & {
+  isLeverage?: boolean
+}) => {
   const isSubscribed = useRef(false)
-  const isLeverage = !!market && hasLeverage(market)
   const activeKey = useStore((state) => state.loanBorrowMore.activeKey)
   const activeKeyMax = useStore((state) => state.loanBorrowMore.activeKeyMax)
   const detailInfoLeverage = useStore((state) => state.loanBorrowMore.detailInfoLeverage[activeKey])
