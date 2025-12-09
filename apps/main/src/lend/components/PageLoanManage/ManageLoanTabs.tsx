@@ -38,7 +38,7 @@ const LendManageLegacyMenu = [
   },
   {
     value: 'collateral',
-    label: t`Borrow`,
+    label: t`Collateral`,
     subTabs: [
       { value: 'collateral-increase', label: t`Add collateral`, component: LoanCollateralAdd },
       { value: 'collateral-decrease', label: t`Remove collateral`, component: LoanCollateralRemove },
@@ -48,7 +48,7 @@ const LendManageLegacyMenu = [
     value: 'leverage',
     label: t`Leverage`,
     visible: ({ market }) => market?.leverage?.hasLeverage(),
-    component: LoanBorrowMore,
+    component: (props) => <LoanBorrowMore {...props} isLeverage />,
   },
 ] satisfies FormTab<ManageLoanProps>[]
 

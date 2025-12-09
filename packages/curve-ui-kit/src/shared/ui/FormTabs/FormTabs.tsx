@@ -15,7 +15,7 @@ const applyFnOrValue = <Props extends object, R extends string | boolean>(
   props: Props,
 ): R | undefined => (typeof fnOrValue === 'function' ? fnOrValue(props) : fnOrValue) ?? undefined
 
-type FormSubTab<Props extends object> = Pick<FormTab<Props>, 'value' | 'label' | 'component' | 'visible' | 'disabled'>
+type FormSubTab<Props extends object> = Omit<FormTab<Props>, 'subTabs'>
 
 export type FormTab<Props extends object> = {
   /** Unique value of the tab, it might be used in the URL later */
@@ -51,7 +51,7 @@ const selectVisible = <Props extends object, Tab extends FormSubTab<Props>>(
 ) => {
   const visible = tabs.filter(({ visible }) => applyFnOrValue(visible, params) !== false)
   const result = visible.find(({ value }) => value === key) ?? visible[0]
-  if (!result) throw new Error(`No visible tab found for key ${key} in menu ${JSON.stringify(tabs)}`)
+  if (!result) throw new Error(`No visible tab found for key ${key} in menu ${tabs.map((t) => t.value).join(', ')}`)
   return result
 }
 

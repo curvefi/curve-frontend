@@ -32,6 +32,7 @@ const useAppRoutes = (network: NetworkDef) => ({
   dao: APP_LINK.dao.routes,
   llamalend: APP_LINK.llamalend.routes,
   dex: useDexRoutes(network),
+  analytics: APP_LINK.analytics.routes,
 })
 
 const useAppMenu = (app: AppName): AppMenuOption =>
@@ -41,6 +42,7 @@ const useAppMenu = (app: AppName): AppMenuOption =>
     lend: 'llamalend' as const,
     llamalend: 'llamalend' as const,
     dex: 'dex' as const,
+    analytics: 'analytics' as const,
   })[app]
 
 const useAppSupportedNetworks = (allNetworks: NetworkMapping, app: AppName) =>
@@ -50,6 +52,7 @@ const useAppSupportedNetworks = (allNetworks: NetworkMapping, app: AppName) =>
     lend: lendNetworks,
     llamalend: lendNetworks,
     dex: allNetworks,
+    analytics: allNetworks,
   })[app]
 
 // when the mobile drawer is open, we want to ignore the scrollbar and expand the content to full page width

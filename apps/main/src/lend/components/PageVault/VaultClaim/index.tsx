@@ -21,7 +21,6 @@ import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 
 const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContentProps) => {
-  const rFormType = 'claim'
   const isSubscribed = useRef(false)
 
   const formStatus = useStore((state) => state.vaultClaim.formStatus)

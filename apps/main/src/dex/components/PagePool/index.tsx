@@ -14,6 +14,7 @@ import { ROUTE } from '@/dex/constants'
 import { useGaugeManager, useGaugeRewardsDistributors } from '@/dex/entities/gauge'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import usePoolAlert from '@/dex/hooks/usePoolAlert'
+import { usePoolIdByAddressOrId } from '@/dex/hooks/usePoolIdByAddressOrId'
 import useTokensMapper from '@/dex/hooks/useTokensMapper'
 import { getUserPoolActiveKey } from '@/dex/store/createUserSlice'
 import useStore from '@/dex/store/useStore'
@@ -44,20 +45,21 @@ import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { type TabOption, TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import MonadBannerAlert from '../MonadBannerAlert'
 
 const DEFAULT_SEED: Seed = { isSeed: null, loaded: false }
 const { MaxWidth } = SizesAndSpaces
 
 const Transfer = (pageTransferProps: PageTransferProps) => {
   const { params, curve, hasDepositAndStake, poolData, poolDataCacheOrApi, routerParams } = pageTransferProps
-  const { rChainId, rFormType, rPoolId } = routerParams
+  const { rChainId, rFormType, rPoolIdOrAddress } = routerParams
+  const poolId = usePoolIdByAddressOrId({ chainId: rChainId, poolIdOrAddress: rPoolIdOrAddress })
   const { signerAddress } = curve ?? {}
   const push = useNavigate()
   const poolAlert = usePoolAlert(poolData)
-
   const { tokensMapper } = useTokensMapper(rChainId)
-  const userPoolActiveKey = curve && rPoolId ? getUserPoolActiveKey(curve, rPoolId) : ''
-  const chainIdPoolId = getChainPoolIdActiveKey(rChainId, rPoolId)
+  const userPoolActiveKey = curve && poolId ? getUserPoolActiveKey(curve, poolId) : ''
+  const chainIdPoolId = getChainPoolIdActiveKey(rChainId, poolId)
   const userPoolBalances = useStore((state) => state.user.walletBalances[userPoolActiveKey])
   const userPoolBalancesLoading = useStore((state) => state.user.walletBalancesLoading)
   const currencyReserves = useStore((state) => state.pools.currencyReserves[chainIdPoolId])
@@ -90,7 +92,6 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
   const [seed, setSeed] = useState(DEFAULT_SEED)
 
   const { pool } = poolDataCacheOrApi
-  const poolId = poolData?.pool?.id
   const { data: network } = useNetworkByChain({ chainId: rChainId })
   const { networkId, isLite, pricesApi } = network
   const poolAddress = poolData?.pool.address
@@ -185,7 +186,7 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
 
   const toggleForm = useCallback(
     (updatedFormType: TransferFormType) => {
-      push(getPath(params, `${ROUTE.PAGE_POOLS}/${params.pool}/${updatedFormType}`))
+      push(getPath(params, `${ROUTE.PAGE_POOLS}/${params.poolIdOrAddress}/${updatedFormType}`))
     },
     [push, params],
   )
@@ -206,6 +207,7 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
 
   return (
     <>
+      <MonadBannerAlert chainId={rChainId} poolIdOrAddress={rPoolIdOrAddress} />
       <AppPageFormContainer isAdvanceMode={true}>
         <AppPageFormsWrapper className="grid-transfer">
           <Stack
