@@ -146,6 +146,8 @@ export type CreatePoolSlice = {
   }
 }
 
+const ORACLE_FUNCTION_NULL_VALUE = '0x00000000'
+
 export const DEFAULT_ERC4626_STATUS: TokenState['erc4626'] = {
   isErc4626: false,
   isLoading: false,
@@ -1065,7 +1067,8 @@ const createCreatePoolSlice = (
           // STABLE NG META
           try {
             const oracleAddress = coin.ngAssetType === NG_ASSET_TYPE.ORACLE ? coin.oracleAddress : zeroAddress
-            const oracleFunction = coin.ngAssetType === NG_ASSET_TYPE.ORACLE ? coin.oracleFunction : '0x00000000'
+            const oracleFunction =
+              coin.ngAssetType === NG_ASSET_TYPE.ORACLE ? coin.oracleFunction : ORACLE_FUNCTION_NULL_VALUE
             const maExpTimeFormatted = Math.round(+maExpTime / 0.693)
 
             const deployPoolTx = await curve.stableNgFactory.deployMetaPool(
