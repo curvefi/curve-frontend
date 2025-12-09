@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { useChainId } from 'wagmi'
 import DetailInfoLeverage from '@/loan/components/PageLoanCreate/LoanFormCreate/components/DetailInfoLeverage'
 import DetailInfoNonLeverage from '@/loan/components/PageLoanCreate/LoanFormCreate/components/DetailInfoNonLeverage'
 import type { FormDetailInfo, FormDetailInfoSharedProps } from '@/loan/components/PageLoanCreate/types'
@@ -6,7 +7,6 @@ import useStore from '@/loan/store/useStore'
 import DetailInfo from '@ui/DetailInfo'
 import { getActiveStep } from '@ui/Stepper/helpers'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
-import { useChainId } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 

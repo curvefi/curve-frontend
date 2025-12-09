@@ -1,10 +1,10 @@
 import lodash from 'lodash'
 import { useMemo } from 'react'
+import { useChainId } from 'wagmi'
 import AlertFormError from '@/dex/components/AlertFormError'
 import AlertSlippage from '@/dex/components/AlertSlippage'
 import type { FormStatus, FormValues, SearchedParams } from '@/dex/components/PageRouterSwap/types'
 import AlertBox from '@ui/AlertBox'
-import { useChainId } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 

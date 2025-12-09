@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { useConnection } from 'wagmi'
 import { isReady } from '@/loan/components/PageCrvUsdStaking/utils'
 import { oneMonthProjectionYield, oneYearProjectionYield } from '@/loan/components/PageCrvUsdStaking/utils'
 import { useScrvUsdStatistics } from '@/loan/entities/scrvusd-statistics'
@@ -7,7 +8,6 @@ import useStore from '@/loan/store/useStore'
 import { Card, CardHeader, Stack } from '@mui/material'
 import Grid from '@mui/material/Grid'
 import { useTheme } from '@mui/material/styles'
-import { useAccount } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -17,7 +17,7 @@ const { MaxWidth, Spacing } = SizesAndSpaces
 const CRVUSD_OPTIONS = { symbol: 'crvUSD', position: 'suffix' as const, abbreviate: true }
 
 const UserPosition = ({ chartExpanded = false }: { chartExpanded?: boolean }) => {
-  const { address } = useAccount()
+  const { address } = useConnection()
   const {
     design: { Layer },
   } = useTheme()

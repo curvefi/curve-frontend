@@ -1,3 +1,4 @@
+import { useConnection } from 'wagmi'
 import Switch from '@/loan/components/PageCrvUsdStaking/components/Switch'
 import { isLoading, isReady } from '@/loan/components/PageCrvUsdStaking/utils'
 import useEstimateGasConversion from '@/loan/hooks/useEstimateGasConversion'
@@ -5,7 +6,6 @@ import useStore from '@/loan/store/useStore'
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment'
 import { Stack, Typography } from '@mui/material'
 import { formatNumber } from '@ui/utils'
-import { useAccount } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
 import { t } from '@ui-kit/lib/i18n'
 import { Accordion } from '@ui-kit/shared/ui/Accordion'
 import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
@@ -15,7 +15,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 const { IconSize } = SizesAndSpaces
 
 export const TransactionDetails = () => {
-  const { address } = useAccount()
+  const { address } = useConnection()
   const preview = useStore((state) => state.scrvusd.preview)
   const scrvUsdExchangeRate = useStore((state) => state.scrvusd.scrvUsdExchangeRate)
   const approveInfinite = useStore((state) => state.scrvusd.approveInfinite)

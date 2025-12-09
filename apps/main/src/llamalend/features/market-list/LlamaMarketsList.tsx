@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
+import { useConnection } from 'wagmi'
 import {
   invalidateAllUserLendingSupplies,
   invalidateAllUserLendingVaults,
@@ -6,7 +7,6 @@ import {
 } from '@/llamalend/queries/market-list/lending-vaults'
 import { useLlamaMarkets } from '@/llamalend/queries/market-list/llama-markets'
 import { invalidateAllUserMintMarkets, invalidateMintMarkets } from '@/llamalend/queries/market-list/mint-markets'
-import { useAccount } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
 import { Address } from '@ui-kit/utils'
 import { ListPageWrapper } from '@ui-kit/widgets/ListPageWrapper'
 import { LendTableFooter } from './LendTableFooter'
@@ -46,7 +46,7 @@ const useOnReload = ({ address: userAddress, isFetching }: { address?: Address; 
  * Page for displaying the lending markets table.
  */
 export const LlamaMarketsList = () => {
-  const { address } = useAccount()
+  const { address } = useConnection()
   const { data, isError, isLoading, isFetching } = useLlamaMarkets(address)
   const [isReloading, onReload] = useOnReload({ address, isFetching })
   const loading = isReloading || (!data && (!isError || isLoading)) // on initial render isLoading is still false

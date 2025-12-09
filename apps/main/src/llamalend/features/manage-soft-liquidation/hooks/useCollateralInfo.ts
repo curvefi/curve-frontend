@@ -1,6 +1,6 @@
+import { useConnection } from 'wagmi'
 import { getLlamaMarket, getTokens } from '@/llamalend/llama.utils'
 import { useUserState } from '@/llamalend/queries/user-state.query'
-import { useAccount } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
 import type { ActionInfosProps } from '..'
 import type { MarketParams } from '../types'
 
@@ -16,7 +16,7 @@ import type { MarketParams } from '../types'
  * - `assetsToWithdraw`: Currently undefined as its purpose/implementation is unclear
  */
 export function useCollateralInfo(params: MarketParams): ActionInfosProps['collateral'] {
-  const { address: userAddress } = useAccount()
+  const { address: userAddress } = useConnection()
   const { data: userState } = useUserState({ ...params, userAddress })
 
   const { collateral } = userState ?? {}

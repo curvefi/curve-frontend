@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { useConnection } from 'wagmi'
 import { useMarketOnChainRates } from '@/lend/entities/market-details'
 import { useUserLoanDetails } from '@/lend/entities/user-loan-details'
 import networks from '@/lend/networks'
@@ -12,7 +13,6 @@ import { useUserPnl } from '@/llamalend/queries/user-pnl.query'
 import type { Address, Chain } from '@curvefi/prices-api'
 import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import { useLendingSnapshots } from '@ui-kit/entities/lending-snapshots'
-import { useAccount } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { calculateAverageRates } from '@ui-kit/utils/averageRates'
@@ -33,7 +33,7 @@ export const useBorrowPositionDetails = ({
   marketId,
 }: UseBorrowPositionDetailsProps): BorrowPositionDetailsProps => {
   const { controller } = market?.addresses ?? {}
-  const { address: userAddress } = useAccount()
+  const { address: userAddress } = useConnection()
   const { data: userLoanDetails, isLoading: isUserLoanDetailsLoading } = useUserLoanDetails({
     chainId,
     marketId,

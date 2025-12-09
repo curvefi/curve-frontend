@@ -1,5 +1,7 @@
+import { useMemo } from 'react'
 import { type Address, erc20Abi, ethAddress, formatUnits, zeroAddress } from 'viem'
-import { useBalance, useChainConfig, useReadContracts } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
+import { useConfig } from 'wagmi'
+import { useBalance, useReadContracts } from 'wagmi'
 import type { FieldsOf } from '@ui-kit/lib'
 import type { Query } from '@ui-kit/types/util'
 import { Decimal } from '@ui-kit/utils'
@@ -8,6 +10,11 @@ import type { GetBalanceReturnType } from '@wagmi/core'
 /** Convert user collateral from GetBalanceReturnType to number */
 const convertBalance = ({ value, decimals }: Partial<GetBalanceReturnType>) =>
   formatUnits(value || 0n, decimals || 18) as Decimal
+
+export function useChainConfig(chainId: number | null | undefined) {
+  const config = useConfig()
+  return useMemo(() => config.chains.find((chain) => chain.id === chainId), [config.chains, chainId])
+}
 
 /**
  * Hook to fetch the token balance and convert it to a number, wrapping wagmi's useBalance and useReadContracts.

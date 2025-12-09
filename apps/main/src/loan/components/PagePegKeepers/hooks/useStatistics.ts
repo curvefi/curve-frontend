@@ -1,5 +1,5 @@
 import { formatEther } from 'viem'
-import { useReadContracts } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
+import { useReadContracts } from 'wagmi'
 import type { Decimal } from '@ui-kit/utils'
 import { abi as pegkeeperAbi } from '../abi/pegkeeper'
 import { abi as pegkeeperDebtCeilingAbi } from '../abi/pegkeeperDebtCeiling'

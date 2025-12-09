@@ -1,6 +1,6 @@
+import { useConnection } from 'wagmi'
 import { getLlamaMarket, getTokens } from '@/llamalend/llama.utils'
 import { useUserState } from '@/llamalend/queries/user-state.query'
-import { useAccount } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { decimal } from '@ui-kit/utils'
 import type { ClosePositionProps } from '..'
@@ -16,7 +16,7 @@ import type { MarketParams } from '../types'
  * @returns Array of recoverable token objects with symbol, address, amount, and USD value
  */
 export function useCollateralToRecover({ chainId, marketId }: MarketParams): ClosePositionProps['collateralToRecover'] {
-  const { address: userAddress } = useAccount()
+  const { address: userAddress } = useConnection()
   const { data: userState } = useUserState({ chainId, marketId, userAddress })
   const { collateral, debt, stablecoin } = userState ?? {}
 
