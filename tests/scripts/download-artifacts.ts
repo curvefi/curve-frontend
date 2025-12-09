@@ -1,5 +1,6 @@
-import { execFileSync, spawnSync, type ExecFileSyncOptionsWithStringEncoding } from 'child_process'
-import { mkdir } from 'fs/promises'
+import { execFileSync, type ExecFileSyncOptionsWithStringEncoding, spawnSync } from 'child_process'
+import { mkdir, readdir, unlink, rmdir } from 'fs/promises'
+import { dirname, join } from 'path'
 
 const { BRANCH, WORKFLOW, DEST_DIR, REPOSITORY = 'curvefi/curve-frontend' } = process.env
 
@@ -54,9 +55,60 @@ const downloadArtifacts = (runId: string, dest: string) => {
 }
 
 /**
+ * Check if a directory contains any .png files (indicating test failures).
+ */
+async function hasScreenshots(dir: string): Promise<boolean> {
+  const entries = await readdir(dir, { withFileTypes: true }).catch((error: unknown) => {
+    if ((error as NodeJS.ErrnoException).code === 'ENOENT') return undefined // missing directory, so no screenshots
+    throw error
+  })
+  if (!entries) return false // does not exist
+  if (entries.length === 0) {
+    console.info(`Removing empty screenshot directory: ${dir}`)
+    await rmdir(dir)
+    return false
+  }
+  for (const entry of entries) {
+    const fullPath = join(dir, entry.name)
+    if (entry.isDirectory()) {
+      if (await hasScreenshots(fullPath)) {
+        return true
+      }
+    } else if (entry.name.endsWith('.png')) {
+      console.info(`Found screenshot file ${entry.name}`)
+      return true
+    }
+  }
+  return false
+}
+
+/**
+ * Recursively find and delete videos from successful tests (those without matching screenshots).
+ */
+async function cleanupSuccessfulTestVideos(dir: string): Promise<void> {
+  const entries = await readdir(dir, { withFileTypes: true })
+
+  for (const entry of entries ?? []) {
+    const fullPath = join(dir, entry.name)
+
+    if (entry.isDirectory()) {
+      await cleanupSuccessfulTestVideos(fullPath)
+    } else if (entry.name.endsWith('.mp4')) {
+      // For a video file like "test.cy.ts.mp4", check if "test.cy.ts/" directory has screenshots
+      const videoBaseName = entry.name.slice(0, -4) // Remove .mp4 extension
+      const screenshotDir = join(dirname(fullPath), videoBaseName)
+      if (!(await hasScreenshots(screenshotDir))) {
+        console.info(`Deleting successful test video: ${fullPath}`)
+        await unlink(fullPath)
+      }
+    }
+  }
+}
+
+/**
  * Orchestrate download + extraction of the latest workflow artifacts for the current branch.
  */
-async function downloadLatestArtifacts(): Promise<void> {
+async function downloadLatestArtifacts({ cleanup }: { cleanup: boolean }): Promise<void> {
   if (!hasCommand('gh')) {
     throw new Error('GitHub CLI (gh) is required but not installed.')
   }
@@ -78,9 +130,21 @@ async function downloadLatestArtifacts(): Promise<void> {
 
   console.info(`Downloading artifacts for branch '${branch}' (workflow: ${workflow}, run: ${runId}) into '${dest}'...`)
   downloadArtifacts(runId, dest)
+
+  console.info('Cleaning up videos from successful tests...')
+  await cleanupSuccessfulTestVideos(dest)
+  console.info('Cleanup complete.')
 }
 
-downloadLatestArtifacts().catch((error) => {
+/**
+ * Simple usage:
+ *  node --experimental-strip-types scripts/download-artifacts.ts
+ *
+ * Custom usage:
+ *  BRANCH=feature/xyz WORKFLOW=ci.yaml DEST_DIR=tests/artifacts \
+ *    node --experimental-strip-types scripts/download-artifacts.ts --skip-cleanup
+ */
+downloadLatestArtifacts({ cleanup: !process.argv.includes('--skip-cleanup') }).catch((error) => {
   console.error(error instanceof Error ? error.message : error)
   process.exitCode = 1
 })
