@@ -37,7 +37,7 @@ export const useRepayForm = <ChainId extends LlamaChainId, NetworkName extends L
   network: { id: LlamaNetworkId; chainId: ChainId }
   networks: NetworkDict<ChainId>
   enabled?: boolean
-  onRepaid?: RepayOptions['onRepaid']
+  onRepaid: NonNullable<RepayOptions['onRepaid']>
 }) => {
   const { address: userAddress } = useAccount()
   const { chainId } = network
