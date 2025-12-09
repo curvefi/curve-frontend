@@ -3,7 +3,7 @@ import type { FormattedTransactionReceipt, Hex } from 'viem'
 import { invalidateAllUserMarketDetails } from '@/llamalend/queries/validation/invalidation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useMutation } from '@tanstack/react-query'
-import { notify, useConnection } from '@ui-kit/features/connect-wallet'
+import { notify, useCurve } from '@ui-kit/features/connect-wallet'
 import { useConfig } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
 import { assertValidity, logError, logMutation, logSuccess } from '@ui-kit/lib'
 import { waitForTransactionReceipt } from '@wagmi/core'
@@ -40,7 +40,7 @@ function throwIfError(data: unknown) {
 }
 
 /** Context created in onMutate to all callbacks other than mutationFn that also validates */
-type Context = Pick<NonNullable<ReturnType<typeof useConnection>>, 'wallet' | 'llamaApi'> & {
+type Context = Pick<NonNullable<ReturnType<typeof useCurve>>, 'wallet' | 'llamaApi'> & {
   market: LlamaMarketTemplate
   pendingNotification: ReturnType<typeof notify>
 }
@@ -97,7 +97,7 @@ export function useLlammaMutation<TVariables extends object, TData extends Resul
   onSuccess,
   onReset,
 }: LlammaMutationOptions<TVariables, TData>) {
-  const { llamaApi, wallet } = useConnection()
+  const { llamaApi, wallet } = useCurve()
   const userAddress = wallet?.account.address
   const config = useConfig()
 

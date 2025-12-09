@@ -1,6 +1,6 @@
 import { type ReactNode, useEffect, useState } from 'react'
 import type { NetworkDef } from '@ui/utils'
-import { ConnectionContext, useWagmiWallet } from '@ui-kit/features/connect-wallet/lib/ConnectionContext'
+import { CurveContext, useWagmiWallet } from '@ui-kit/features/connect-wallet/lib/CurveContext'
 import {
   AppChainId,
   AppLib,
@@ -21,7 +21,7 @@ const { FAILURE, LOADING, HYDRATING, SUCCESS } = ConnectState
  * We use a context instead of a store to be able to get the initialization functions injected depending on the app.
  * todo: Merged with useWallet after wagmi migration. Get rid of apiStore after this is used everywhere.
  */
-export const ConnectionProvider = <App extends AppName>({
+export const CurveProvider = <App extends AppName>({
   network,
   onChainUnavailable,
   app,
@@ -122,7 +122,7 @@ export const ConnectionProvider = <App extends AppName>({
   const isHydrated = !!globalLibs.hydrated[app] && { curveApi, llamaApi }[libKey] === globalLibs.hydrated[app]
 
   return (
-    <ConnectionContext.Provider
+    <CurveContext.Provider
       value={{
         connectState,
         network,
@@ -134,6 +134,6 @@ export const ConnectionProvider = <App extends AppName>({
       }}
     >
       {children}
-    </ConnectionContext.Provider>
+    </CurveContext.Provider>
   )
 }

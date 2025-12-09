@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { isAddress } from 'viem'
 import { ChainId } from '@/loan/types/loan.types'
 import { fromEntries } from '@curvefi/prices-api/objects.util'
-import { useConnection } from '@ui-kit/features/connect-wallet'
+import { useCurve } from '@ui-kit/features/connect-wallet'
 import type { Address } from '@ui-kit/utils'
 
 /**
@@ -10,7 +10,7 @@ import type { Address } from '@ui-kit/utils'
  * Primarily useful fetching mint markets via URL.
  */
 export const useMintMarketMapping = ({ chainId }: { chainId: ChainId | undefined }) => {
-  const { llamaApi: api } = useConnection()
+  const { llamaApi: api } = useCurve()
 
   return useMemo(
     () =>
@@ -29,7 +29,7 @@ export const useMintMarketMapping = ({ chainId }: { chainId: ChainId | undefined
  */
 export const useMintMarket = ({ chainId, marketId }: { chainId: ChainId; marketId: string | Address }) => {
   const mintMarketMapping = useMintMarketMapping({ chainId })
-  const { llamaApi: api } = useConnection()
+  const { llamaApi: api } = useCurve()
 
   return useMemo(() => {
     try {

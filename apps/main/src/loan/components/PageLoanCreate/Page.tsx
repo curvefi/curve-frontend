@@ -28,7 +28,7 @@ import Stack from '@mui/material/Stack'
 import { AppPageFormsWrapper, AppPageFormTitleWrapper } from '@ui/AppPage'
 import Box from '@ui/Box'
 import TextEllipsis from '@ui/TextEllipsis'
-import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
+import { ConnectWalletPrompt, isLoading, useCurve, useWallet } from '@ui-kit/features/connect-wallet'
 import { useAccount } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
@@ -46,7 +46,7 @@ const Page = () => {
   const params = useParams<CollateralUrlParams>()
   const { rFormType = null, rCollateralId } = parseCollateralParams(params)
   const push = useNavigate()
-  const { isHydrated, llamaApi: curve = null, connectState } = useConnection()
+  const { isHydrated, llamaApi: curve = null, connectState } = useCurve()
   const rChainId = useChainId(params)
   const { connect: connectWallet, provider } = useWallet()
   const { address } = useAccount()

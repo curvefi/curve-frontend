@@ -1,6 +1,6 @@
 import Box from '@mui/material/Box'
 import { useTheme } from '@mui/material/styles'
-import { isFailure, useConnection, type WagmiChainId } from '@ui-kit/features/connect-wallet'
+import { isFailure, useCurve, type WagmiChainId } from '@ui-kit/features/connect-wallet'
 import { useChainId, useAccount, useSwitchChain } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
 import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
@@ -23,7 +23,7 @@ export const GlobalBanner = ({ networkId, chainId }: GlobalBannerProps) => {
   const [releaseChannel, setReleaseChannel] = useReleaseChannel()
   const { isConnected } = useAccount()
   const { switchChain } = useSwitchChain()
-  const { connectState } = useConnection()
+  const { connectState } = useCurve()
   const walletChainId = useChainId()
   const showSwitchNetworkMessage = isConnected && chainId && walletChainId != chainId
   const showConnectApiErrorMessage = !showSwitchNetworkMessage && isFailure(connectState)

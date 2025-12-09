@@ -10,7 +10,7 @@ import Stack from '@mui/material/Stack'
 import Box, { BoxHeader } from '@ui/Box'
 import IconButton from '@ui/IconButton'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
-import { isLoading, useConnection } from '@ui-kit/features/connect-wallet'
+import { isLoading, useCurve } from '@ui-kit/features/connect-wallet'
 import { useAccount } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
 import { useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
@@ -21,7 +21,7 @@ const { Spacing } = SizesAndSpaces
 
 export const PageVeCrv = () => {
   const { formType: rFormType, network } = useParams<VeCrvUrlParams>()
-  const { curveApi = null, connectState } = useConnection()
+  const { curveApi = null, connectState } = useCurve()
   const rChainId = networksIdMapper[network]
   const isLoadingCurve = isLoading(connectState)
 

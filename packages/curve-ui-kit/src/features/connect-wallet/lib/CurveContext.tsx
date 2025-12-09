@@ -11,7 +11,7 @@ const { FAILURE, LOADING } = ConnectState
 export const isFailure = (status: ConnectState) => status === FAILURE
 export const isLoading = (status: ConnectState) => status === LOADING
 
-type ConnectionContextValue = {
+type CurveContextValue = {
   connectState: ConnectState
   curveApi?: CurveApi
   llamaApi?: LlamaApi
@@ -22,7 +22,7 @@ type ConnectionContextValue = {
   isHydrated: boolean
 }
 
-export const ConnectionContext = createContext<ConnectionContextValue>({
+export const CurveContext = createContext<CurveContextValue>({
   connectState: LOADING,
   isHydrated: false,
 })
@@ -64,4 +64,4 @@ export function useWagmiWallet() {
   }
 }
 
-export const useConnection = () => useContext(ConnectionContext)
+export const useCurve = () => useContext(CurveContext)
