@@ -385,8 +385,9 @@ const createCreatePoolSlice = (
       tokenG: TokenState,
       tokenH: TokenState,
     ) => {
+      const currentTokens = get().createPool.tokensInPool
       const tokensInPoolUpdates = {
-        ...get().createPool.tokensInPool,
+        ...currentTokens,
         tokenA,
         tokenB,
         tokenC,
@@ -414,22 +415,27 @@ const createCreatePoolSlice = (
         ngAssetType: tokenB.basePool ? NG_ASSET_TYPE.STANDARD : get().createPool.tokensInPool[TOKEN_B].ngAssetType,
       }
 
+      // Preserve erc4626 statuses when tokens are rearranged. Status follows the address,
       const syncErc4626Statuses = () => {
-        const latestTokens = get().createPool.tokensInPool
+        const tokenIds = [TOKEN_A, TOKEN_B, TOKEN_C, TOKEN_D, TOKEN_E, TOKEN_F, TOKEN_G, TOKEN_H] as const
 
-        const cloneWithStatus = (tokenId: TokenId, tokenValue: TokenState) => ({
-          ...tokenValue,
-          erc4626: { ...latestTokens[tokenId].erc4626 },
-        })
+        const statusByAddress = new Map<string, TokenState['erc4626']>()
+        for (const id of tokenIds) {
+          const address = currentTokens[id].address?.toLowerCase()
+          if (address) statusByAddress.set(address, currentTokens[id].erc4626)
+        }
 
-        tokensInPoolUpdates.tokenA = cloneWithStatus(TOKEN_A, tokensInPoolUpdates.tokenA)
-        tokensInPoolUpdates.tokenB = cloneWithStatus(TOKEN_B, tokensInPoolUpdates.tokenB)
-        tokensInPoolUpdates.tokenC = cloneWithStatus(TOKEN_C, tokensInPoolUpdates.tokenC)
-        tokensInPoolUpdates.tokenD = cloneWithStatus(TOKEN_D, tokensInPoolUpdates.tokenD)
-        tokensInPoolUpdates.tokenE = cloneWithStatus(TOKEN_E, tokensInPoolUpdates.tokenE)
-        tokensInPoolUpdates.tokenF = cloneWithStatus(TOKEN_F, tokensInPoolUpdates.tokenF)
-        tokensInPoolUpdates.tokenG = cloneWithStatus(TOKEN_G, tokensInPoolUpdates.tokenG)
-        tokensInPoolUpdates.tokenH = cloneWithStatus(TOKEN_H, tokensInPoolUpdates.tokenH)
+        for (const id of tokenIds) {
+          const token = tokensInPoolUpdates[id]
+          const address = token.address?.toLowerCase()
+          tokensInPoolUpdates[id] = {
+            ...token,
+            erc4626:
+              address && statusByAddress.has(address)
+                ? { ...statusByAddress.get(address)! }
+                : { ...DEFAULT_ERC4626_STATUS },
+          }
+        }
       }
 
       const initialPriceUpdates = {
