@@ -1,3 +1,4 @@
+import type { ReadContractErrorType } from 'viem'
 import {
   CRYPTOSWAP,
   STABLESWAP,
@@ -34,7 +35,7 @@ export type TokenState = {
   erc4626: {
     isErc4626: boolean | undefined
     isLoading: boolean
-    isError: boolean
+    error: ReadContractErrorType | null
     isSuccess: boolean
   }
 }

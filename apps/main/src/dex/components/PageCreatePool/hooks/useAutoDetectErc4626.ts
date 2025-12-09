@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { NG_ASSET_TYPE } from '@/dex/components/PageCreatePool/constants'
 import { useIsErc4626 } from '@/dex/components/PageCreatePool/hooks/useIsErc4626'
 import { TokenId, TokenState, TokensInPoolState } from '@/dex/components/PageCreatePool/types'
@@ -23,7 +23,7 @@ export const useAutoDetectErc4626 = ({ tokensInPool }: UseAutoDetectErc4626Param
   const updateNgAssetType = useStore((state) => state.createPool.updateNgAssetType)
   const updateTokenErc4626Status = useStore((state) => state.createPool.updateTokenErc4626Status)
   const [candidate, setCandidate] = useState<Candidate | null>(null)
-  const { isErc4626, isLoading, isError, isSuccess } = useIsErc4626({ address: candidate?.address })
+  const { isErc4626, isLoading, error, isSuccess } = useIsErc4626({ address: candidate?.address })
 
   const setStatus = useCallback(
     (tokenId: TokenId, status: TokenState['erc4626']) => {
@@ -31,53 +31,6 @@ export const useAutoDetectErc4626 = ({ tokensInPool }: UseAutoDetectErc4626Param
     },
     [updateTokenErc4626Status],
   )
-
-  useEffect(() => {
-    if (!candidate) return
-
-    const currentToken = tokensInPool[candidate.tokenId]
-    if (!currentToken) {
-      setCandidate(null)
-      return
-    }
-
-    const nextStatus: TokenState['erc4626'] = {
-      isErc4626: Boolean(isErc4626 && isSuccess),
-      isLoading,
-      isError,
-      isSuccess,
-    }
-
-    const currentStatus = currentToken.erc4626
-    const statusChanged =
-      currentStatus.isErc4626 !== nextStatus.isErc4626 ||
-      currentStatus.isLoading !== nextStatus.isLoading ||
-      currentStatus.isError !== nextStatus.isError ||
-      currentStatus.isSuccess !== nextStatus.isSuccess
-
-    if (statusChanged) {
-      setStatus(candidate.tokenId, nextStatus)
-    }
-
-    if (isLoading || (!isSuccess && !isError)) return
-
-    const currentAddress = tokensInPool[candidate.tokenId].address
-    const addressesMatch = currentAddress !== '' && currentAddress.toLowerCase() === candidate.address.toLowerCase()
-
-    if (!addressesMatch) {
-      if (currentStatus.isErc4626 || currentStatus.isLoading || currentStatus.isError || currentStatus.isSuccess) {
-        setStatus(candidate.tokenId, { ...DEFAULT_ERC4626_STATUS })
-      }
-      setCandidate(null)
-      return
-    }
-
-    if (isErc4626) {
-      updateNgAssetType(candidate.tokenId, NG_ASSET_TYPE.ERC4626)
-    }
-
-    setCandidate(null)
-  }, [candidate, isErc4626, isError, isLoading, isSuccess, setStatus, tokensInPool, updateNgAssetType])
 
   const scheduleCheck = useCallback(
     (tokenId: TokenId, address: string) => {
@@ -89,6 +42,48 @@ export const useAutoDetectErc4626 = ({ tokensInPool }: UseAutoDetectErc4626Param
     },
     [setStatus],
   )
+
+  if (candidate) {
+    const currentToken = tokensInPool[candidate.tokenId]
+    if (!currentToken) {
+      setCandidate(null)
+    } else {
+      const nextStatus: TokenState['erc4626'] = {
+        isErc4626: Boolean(isErc4626 && isSuccess),
+        isLoading,
+        error,
+        isSuccess,
+      }
+
+      const currentStatus = currentToken.erc4626
+      const statusChanged =
+        currentStatus.isErc4626 !== nextStatus.isErc4626 ||
+        currentStatus.isLoading !== nextStatus.isLoading ||
+        currentStatus.error !== nextStatus.error ||
+        currentStatus.isSuccess !== nextStatus.isSuccess
+
+      if (statusChanged) {
+        setStatus(candidate.tokenId, nextStatus)
+      }
+
+      if (!isLoading) {
+        const currentAddress = tokensInPool[candidate.tokenId].address
+        const addressesMatch = currentAddress !== '' && currentAddress.toLowerCase() === candidate.address.toLowerCase()
+
+        if (!addressesMatch) {
+          if (currentStatus.isErc4626 || currentStatus.isLoading || currentStatus.error || currentStatus.isSuccess) {
+            setStatus(candidate.tokenId, { ...DEFAULT_ERC4626_STATUS })
+          }
+          setCandidate(null)
+        } else {
+          if (isErc4626) {
+            updateNgAssetType(candidate.tokenId, NG_ASSET_TYPE.ERC4626)
+          }
+          setCandidate(null)
+        }
+      }
+    }
+  }
 
   return {
     scheduleCheck,

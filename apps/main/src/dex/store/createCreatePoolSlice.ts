@@ -23,6 +23,7 @@ import { isTricrypto } from '@/dex/components/PageCreatePool/utils'
 import type { State } from '@/dex/store/useStore'
 import { ChainId, CurveApi } from '@/dex/types/main.types'
 import { TwoCryptoImplementation } from '@curvefi/api/lib/constants/twoCryptoImplementations'
+import { notFalsy } from '@curvefi/prices-api/objects.util'
 import { scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
@@ -148,7 +149,7 @@ export type CreatePoolSlice = {
 export const DEFAULT_ERC4626_STATUS: TokenState['erc4626'] = {
   isErc4626: false,
   isLoading: false,
-  isError: false,
+  error: null,
   isSuccess: false,
 }
 
@@ -407,33 +408,37 @@ const createCreatePoolSlice = (
       tokensInPoolUpdates.tokenA = {
         ...tokenA,
         basePool: tokenA.basePool,
-        ngAssetType: tokenA.basePool ? NG_ASSET_TYPE.STANDARD : get().createPool.tokensInPool[TOKEN_A].ngAssetType,
       }
       tokensInPoolUpdates.tokenB = {
         ...tokenB,
         basePool: tokenB.basePool,
-        ngAssetType: tokenB.basePool ? NG_ASSET_TYPE.STANDARD : get().createPool.tokensInPool[TOKEN_B].ngAssetType,
       }
 
-      // Preserve erc4626 statuses when tokens are rearranged. Status follows the address,
-      const syncErc4626Statuses = () => {
+      // Preserve erc4626 statuses and ngAssetType when tokens are rearranged. Status follows the address.
+      const syncTokenStatuses = () => {
         const tokenIds = [TOKEN_A, TOKEN_B, TOKEN_C, TOKEN_D, TOKEN_E, TOKEN_F, TOKEN_G, TOKEN_H] as const
 
-        const statusByAddress = new Map<string, TokenState['erc4626']>()
-        for (const id of tokenIds) {
-          const address = currentTokens[id].address?.toLowerCase()
-          if (address) statusByAddress.set(address, currentTokens[id].erc4626)
-        }
+        const statusByAddress = new Map(
+          notFalsy(
+            ...tokenIds.map(
+              (id) =>
+                currentTokens[id].address &&
+                ([
+                  currentTokens[id].address.toLowerCase(),
+                  { erc4626: currentTokens[id].erc4626, ngAssetType: currentTokens[id].ngAssetType },
+                ] as const),
+            ),
+          ),
+        )
 
         for (const id of tokenIds) {
           const token = tokensInPoolUpdates[id]
           const address = token.address?.toLowerCase()
+          const status = address ? statusByAddress.get(address) : undefined
           tokensInPoolUpdates[id] = {
             ...token,
-            erc4626:
-              address && statusByAddress.has(address)
-                ? { ...statusByAddress.get(address)! }
-                : { ...DEFAULT_ERC4626_STATUS },
+            erc4626: status ? { ...status.erc4626 } : { ...DEFAULT_ERC4626_STATUS },
+            ngAssetType: token.basePool ? NG_ASSET_TYPE.STANDARD : (status?.ngAssetType ?? token.ngAssetType),
           }
         }
       }
@@ -483,7 +488,7 @@ const createCreatePoolSlice = (
         calculateInitialPrice(initialPriceUpdates.tokenA, initialPriceUpdates.tokenC),
       ]
 
-      syncErc4626Statuses()
+      syncTokenStatuses()
 
       set(
         produce((state) => {

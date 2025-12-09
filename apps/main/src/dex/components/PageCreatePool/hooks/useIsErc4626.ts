@@ -26,16 +26,15 @@ export function useIsErc4626({ address }: UseIsErc4626Params) {
   const hasError = Boolean(error)
 
   const isSuccess = isValidAddress && hasData
-  const isError = isValidAddress && !hasData && hasError
   const isLoading = isValidAddress && !hasData && !hasError
 
-  const isErc4626 = isSuccess ? true : isError ? false : undefined
+  const isErc4626 = assetAddress && true
 
   return {
     isErc4626,
     assetAddress,
     isLoading,
-    isError,
+    error,
     isSuccess,
     refetch,
   }
