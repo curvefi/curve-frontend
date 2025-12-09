@@ -3,13 +3,13 @@ import type { FieldPath, FieldPathValue, FieldValues, UseFormReturn } from 'reac
 import type { Address } from 'viem'
 import { setValueOptions } from '@/llamalend/features/borrow/react-form.utils'
 import type { LlamaNetwork } from '@/llamalend/llamalend.types'
-import type { Query } from '@/llamalend/widgets/manage-loan/loan.types'
 import type { INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
 import type { PartialRecord } from '@curvefi/prices-api/objects.util'
 import { useAccount } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
+import type { Query } from '@ui-kit/types/util'
 import { Decimal } from '@ui-kit/utils'
 
 /**

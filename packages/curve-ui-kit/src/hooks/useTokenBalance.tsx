@@ -1,6 +1,7 @@
-import { type Address, ethAddress, formatUnits } from 'viem'
-import { useBalance } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
+import { type Address, erc20Abi, ethAddress, formatUnits, zeroAddress } from 'viem'
+import { useBalance, useReadContracts } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
 import type { FieldsOf } from '@ui-kit/lib'
+import type { Query } from '@ui-kit/types/util'
 import { Decimal } from '@ui-kit/utils'
 import type { GetBalanceReturnType } from '@wagmi/core'
 
@@ -18,11 +19,38 @@ const convertBalance = ({ value, decimals }: Partial<GetBalanceReturnType>) =>
 export function useTokenBalance(
   { chainId, userAddress }: FieldsOf<{ chainId: number; userAddress: Address }>,
   token: { address: Address } | undefined,
-) {
-  const { data, error, isLoading } = useBalance({
-    ...(userAddress && { address: userAddress }),
-    ...(chainId && { chainId: chainId }),
-    ...(token && token.address != ethAddress && { token: token.address }),
+): Query<Decimal> {
+  const isNative = token?.address == ethAddress
+  const {
+    data: nativeBalanceData,
+    error: nativeBalanceError,
+    isLoading: nativeBalanceLoading,
+  } = useBalance({
+    ...(isNative && userAddress && chainId && { address: userAddress, chainId }),
   })
-  return { ...(data && { data: convertBalance(data) }), error, isLoading }
+
+  const tokenAddress = isNative ? undefined : token?.address
+  const {
+    data: tokenBalanceData,
+    error: tokenBalanceError,
+    isLoading: tokenBalanceLoading,
+  } = useReadContracts({
+    allowFailure: false,
+    contracts: [
+      { address: tokenAddress, abi: erc20Abi, functionName: 'balanceOf', args: [userAddress ?? zeroAddress] },
+      { address: tokenAddress, abi: erc20Abi, functionName: 'decimals' },
+    ],
+  })
+
+  return isNative
+    ? {
+        data: nativeBalanceData && convertBalance(nativeBalanceData),
+        error: nativeBalanceError,
+        isLoading: nativeBalanceLoading,
+      }
+    : {
+        data: tokenBalanceData && convertBalance({ value: tokenBalanceData[0], decimals: tokenBalanceData[1] }),
+        error: tokenBalanceError,
+        isLoading: tokenBalanceLoading,
+      }
 }
