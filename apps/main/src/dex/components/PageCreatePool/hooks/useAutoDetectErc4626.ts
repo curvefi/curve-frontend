@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react'
+import { isAddress, isAddressEqual, type Address } from 'viem'
 import { NG_ASSET_TYPE } from '@/dex/components/PageCreatePool/constants'
 import { useIsErc4626 } from '@/dex/components/PageCreatePool/hooks/useIsErc4626'
 import { TokenId, TokenState, TokensInPoolState } from '@/dex/components/PageCreatePool/types'
@@ -7,7 +8,7 @@ import useStore from '@/dex/store/useStore'
 
 type Candidate = {
   tokenId: TokenId
-  address: string
+  address: Address
 }
 
 type UseAutoDetectErc4626Params = {
@@ -33,7 +34,7 @@ export const useAutoDetectErc4626 = ({ tokensInPool }: UseAutoDetectErc4626Param
   )
 
   const scheduleCheck = useCallback(
-    (tokenId: TokenId, address: string) => {
+    (tokenId: TokenId, address: Address) => {
       setCandidate({ tokenId, address })
       setStatus(tokenId, {
         ...DEFAULT_ERC4626_STATUS,
@@ -68,7 +69,7 @@ export const useAutoDetectErc4626 = ({ tokensInPool }: UseAutoDetectErc4626Param
 
       if (!isLoading) {
         const currentAddress = tokensInPool[candidate.tokenId].address
-        const addressesMatch = currentAddress !== '' && currentAddress.toLowerCase() === candidate.address.toLowerCase()
+        const addressesMatch = isAddress(currentAddress) && isAddressEqual(currentAddress, candidate.address)
 
         if (!addressesMatch) {
           if (currentStatus.isErc4626 || currentStatus.isLoading || currentStatus.error || currentStatus.isSuccess) {

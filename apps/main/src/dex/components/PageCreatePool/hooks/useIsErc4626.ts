@@ -1,41 +1,29 @@
-import { erc4626Abi, isAddress } from 'viem'
+import { erc4626Abi, type Address } from 'viem'
 import { useReadContract } from 'wagmi'
 
-type UseIsErc4626Params = {
-  address?: string
-}
-
-export function useIsErc4626({ address }: UseIsErc4626Params) {
-  const isValidAddress = address !== undefined && isAddress(address)
-
+export function useIsErc4626({ address }: { address?: Address }) {
   const {
     data: assetAddress,
+    isFetching: isLoading,
+    isSuccess,
     error,
     refetch,
   } = useReadContract({
     abi: erc4626Abi,
-    address: isValidAddress ? address : undefined,
+    address,
     functionName: 'asset',
     query: {
-      enabled: isValidAddress,
+      enabled: !!address,
       retry: false,
     },
   })
 
-  const hasData = assetAddress !== undefined
-  const hasError = Boolean(error)
-
-  const isSuccess = isValidAddress && hasData
-  const isLoading = isValidAddress && !hasData && !hasError
-
-  const isErc4626 = assetAddress && true
-
   return {
-    isErc4626,
+    isErc4626: assetAddress && true,
     assetAddress,
     isLoading,
-    error,
     isSuccess,
+    error,
     refetch,
   }
 }

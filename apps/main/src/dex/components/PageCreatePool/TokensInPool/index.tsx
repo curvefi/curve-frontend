@@ -1,6 +1,7 @@
 import lodash from 'lodash'
 import { useMemo, useCallback } from 'react'
 import { styled } from 'styled-components'
+import type { Address } from 'viem'
 import SwitchTokensButton from '@/dex/components/PageCreatePool/components/SwitchTokensButton'
 import WarningBox from '@/dex/components/PageCreatePool/components/WarningBox'
 import {
@@ -524,7 +525,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
       )
 
       if (updatedFormValues[name].address.toLowerCase() === normalizedValue) {
-        scheduleErc4626Check(name, value)
+        scheduleErc4626Check(name, value as Address)
       }
     },
     [tokensInPool, updateTokensInPool, curve, findSymbol, swapType, basePools, updateNgAssetType, scheduleErc4626Check],
