@@ -19,7 +19,7 @@ import { useUserState } from '@/llamalend/queries/user-state.query'
 import { mapQuery, withTokenSymbol } from '@/llamalend/queries/utils'
 import type { CollateralParams } from '@/llamalend/queries/validation/manage-loan.types'
 import {
-  collateralFormValidationSuite,
+  removeCollateralFormValidationSuite,
   type CollateralForm,
 } from '@/llamalend/queries/validation/manage-loan.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -59,7 +59,7 @@ export const useRemoveCollateralForm = <
 
   const form = useForm<CollateralForm>({
     ...formDefaultOptions,
-    resolver: vestResolver(collateralFormValidationSuite),
+    resolver: vestResolver(removeCollateralFormValidationSuite),
     defaultValues: {
       userCollateral: undefined,
       maxCollateral: undefined,

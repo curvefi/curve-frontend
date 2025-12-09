@@ -16,7 +16,7 @@ import { useUserState } from '@/llamalend/queries/user-state.query'
 import { mapQuery, withTokenSymbol } from '@/llamalend/queries/utils'
 import type { CollateralParams } from '@/llamalend/queries/validation/manage-loan.types'
 import {
-  collateralFormValidationSuite,
+  addCollateralFormValidationSuite,
   type CollateralForm,
 } from '@/llamalend/queries/validation/manage-loan.validation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -54,7 +54,7 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
 
   const form = useForm<CollateralForm>({
     ...formDefaultOptions,
-    resolver: vestResolver(collateralFormValidationSuite),
+    resolver: vestResolver(addCollateralFormValidationSuite),
     defaultValues: {
       userCollateral: undefined,
       maxCollateral: undefined,
@@ -88,10 +88,6 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
 
   useCallbackAfterFormUpdate(form, action.reset)
 
-  useEffect(() => {
-    form.setValue('maxCollateral', maxCollateral, { shouldValidate: true })
-  }, [form, maxCollateral])
-
   const userState = useUserState(params, enabled)
   const bands = useAddCollateralBands(params, enabled)
   const health = useHealthQueries((isFull) => getAddCollateralHealthOptions({ ...params, isFull }, enabled))
@@ -115,6 +111,10 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
   )
 
   const formErrors = useFormErrors(form.formState)
+
+  useEffect(() => {
+    form.setValue('maxCollateral', maxCollateral, { shouldValidate: true })
+  }, [form, maxCollateral])
 
   return {
     form,
