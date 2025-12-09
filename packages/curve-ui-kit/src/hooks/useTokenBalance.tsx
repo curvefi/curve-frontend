@@ -1,5 +1,5 @@
 import { type Address, erc20Abi, ethAddress, formatUnits, zeroAddress } from 'viem'
-import { useBalance, useReadContracts } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
+import { useBalance, useChainConfig, useReadContracts } from '@ui-kit/features/connect-wallet/lib/wagmi/hooks'
 import type { FieldsOf } from '@ui-kit/lib'
 import type { Query } from '@ui-kit/types/util'
 import { Decimal } from '@ui-kit/utils'
@@ -10,17 +10,19 @@ const convertBalance = ({ value, decimals }: Partial<GetBalanceReturnType>) =>
   formatUnits(value || 0n, decimals || 18) as Decimal
 
 /**
- * Hook to fetch the token balance and convert it to a number, wrapping wagmi's useBalance hook.
+ * Hook to fetch the token balance and convert it to a number, wrapping wagmi's useBalance and useReadContracts.
+ * The useBalance hook is used for native tokens, while useReadContracts is used for ERC-20 tokens.
  * @param chainId The ID of the blockchain network.
  * @param userAddress The address of the user whose balance is to be fetched.
  * @param token The token object containing its address. If the address is the Ethereum address, it fetches the native balance.
- * @returns An object containing the balance data (as a number), loading state, and error state.
+ * @returns An object containing the balance data (Decimal type), loading state, and error.
  */
 export function useTokenBalance(
   { chainId, userAddress }: FieldsOf<{ chainId: number; userAddress: Address }>,
-  token: { address: Address } | undefined,
+  token: { address: Address; symbol?: string } | undefined,
 ): Query<Decimal> {
-  const isNative = token?.address == ethAddress
+  const nativeCurrencySymbol = useChainConfig(chainId)?.nativeCurrency.symbol
+  const isNative = token?.address == ethAddress || token?.symbol === nativeCurrencySymbol
   const {
     data: nativeBalanceData,
     error: nativeBalanceError,
