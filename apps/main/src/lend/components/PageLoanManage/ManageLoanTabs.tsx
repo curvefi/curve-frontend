@@ -74,6 +74,12 @@ const LendManageNewMenu = [
       { value: 'remove', label: t`Remove`, component: LoanRemoveCollateralTab },
     ],
   },
+  {
+    value: 'leverage',
+    label: t`Leverage`,
+    visible: ({ market }) => market?.leverage?.hasLeverage(),
+    component: (props) => <LoanBorrowMoreWrapped {...props} isLeverage />,
+  },
 ] satisfies FormTab<ManageLoanProps>[]
 
 const LendManageSoftLiquidationMenu = [

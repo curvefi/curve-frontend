@@ -97,7 +97,7 @@ export function FormTabs<T extends object>({ shouldWrap, ...options }: UseFormTa
     >
       <TabsSwitcher variant="contained" size="medium" value={tab.value} options={tabs} onChange={onChangeTab} />
 
-      {subTab && (
+      {subTab && subTabs.length > 1 && (
         <TabsSwitcher
           variant="underlined"
           size="small"
