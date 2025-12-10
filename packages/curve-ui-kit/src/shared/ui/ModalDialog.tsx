@@ -95,14 +95,14 @@ export const ModalDialog = ({
     disableRestoreFocus
     sx={(t) => ({
       '& .MuiPaper-root': {
-        maxWidth: '100vw',
+        maxWidth: '100dvw',
         ...createHeightStyles({ compact, maxHeight: maxHeight ?? modalHeight.md }),
         [t.breakpoints.down('tablet')]: { ...createHeightStyles({ compact, maxHeight: maxHeight ?? modalHeight.sm }) },
       },
       ...sx,
     })}
   >
-    <Card sx={{ width: { tablet: modalWidth.md, mobile: '100vw' }, display: 'flex', flexDirection: 'column' }}>
+    <Card sx={{ width: { tablet: modalWidth.md, mobile: '100dvw' }, display: 'flex', flexDirection: 'column' }}>
       <CardHeader
         action={
           onClose && (
