@@ -97,10 +97,7 @@ async function cleanupSuccessfulTestVideos(dir: string): Promise<void> {
       // For a video file like "test.cy.ts.mp4", check if "test.cy.ts/" directory has screenshots
       const videoBaseName = entry.name.slice(0, -4) // Remove .mp4 extension
       const screenshotDir = join(dirname(fullPath), videoBaseName)
-      if (!(await hasScreenshots(screenshotDir))) {
-        console.info(`Deleting successful test video: ${fullPath}`)
-        await unlink(fullPath)
-      }
+      if (!(await hasScreenshots(screenshotDir))) await unlink(fullPath)
     }
   }
 }
