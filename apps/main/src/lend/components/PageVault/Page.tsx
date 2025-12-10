@@ -88,7 +88,7 @@ const Page = () => {
     market,
   ])
 
-  useLendPageTitle(market?.collateral_token?.symbol, 'Supply')
+  useLendPageTitle(market?.collateral_token?.symbol, t`Supply`)
 
   const pageProps: PageContentProps = {
     params,

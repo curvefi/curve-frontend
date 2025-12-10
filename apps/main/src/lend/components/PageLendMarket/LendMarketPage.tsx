@@ -54,7 +54,7 @@ export const LendMarketPage = () => {
   const marketId = market?.id ?? '' // todo: use market?.id directly everywhere since we pass the market too!
   const userActiveKey = helpers.getUserActiveKey(api, market!)
   const { signerAddress } = api ?? {}
-  useLendPageTitle(market?.collateral_token?.symbol ?? rMarket)
+  useLendPageTitle(market?.collateral_token?.symbol ?? rMarket, t`Lend`)
 
   const marketDetails = useMarketDetails({ chainId, market, marketId })
   const network = networks[chainId]

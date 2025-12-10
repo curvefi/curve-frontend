@@ -30,7 +30,7 @@ const ClosePositionTab = ({ rChainId, rOwmId }: ManageLoanProps) => (
 const LendManageLegacyMenu = [
   {
     value: 'loan',
-    label: t`Borrow`,
+    label: t`Loan`,
     subTabs: [
       { value: 'loan-increase', label: t`Borrow more`, component: LoanBorrowMore },
       { value: 'loan-decrease', label: t`Repay`, component: LoanRepay },
