@@ -272,7 +272,7 @@ describe(`LlamaLend Markets`, () => {
 
   it(`should navigate to market details`, () => {
     const [type, urlRegex] = oneOf(
-      ['mint', /\/crvusd\/\w+\/markets\/.+\/create/],
+      ['mint', /\/crvusd\/\w+\/markets\/[\w-]+\/?$/],
       ['lend', /\/lend\/\w+\/markets\/.+\/create/],
     )
     withFilterChips(() => {
