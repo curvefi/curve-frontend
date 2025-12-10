@@ -13,8 +13,8 @@ import { fundErc20, fundEth } from '@cy/support/helpers/tenderly/vnet-fund'
 import { LOAD_TIMEOUT } from '@cy/support/ui'
 import Box from '@mui/material/Box'
 import Skeleton from '@mui/material/Skeleton'
-import { useConnection } from '@ui-kit/features/connect-wallet/lib/ConnectionContext'
-import { ConnectionProvider } from '@ui-kit/features/connect-wallet/lib/ConnectionProvider'
+import { useCurve } from '@ui-kit/features/connect-wallet/lib/CurveContext'
+import { CurveProvider } from '@ui-kit/features/connect-wallet/lib/CurveProvider'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { Chain } from '@ui-kit/utils'
 
@@ -42,7 +42,7 @@ type BorrowTabTestProps = { type: LlamaMarketType } & Pick<CreateLoanOptions, 'o
 const prefetch = () => prefetchMarkets({})
 
 function BorrowTabTest({ type, onCreated }: BorrowTabTestProps) {
-  const { isHydrated, llamaApi } = useConnection()
+  const { isHydrated, llamaApi } = useCurve()
   const { id } = MARKETS[type]
   const market = useMemo(
     () =>
@@ -84,7 +84,7 @@ describe('BorrowTabContents Component Tests', () => {
       config={createTenderlyWagmiConfigFromVNet({ vnet: getVirtualNetwork(), privateKey })}
       autoConnect
     >
-      <ConnectionProvider
+      <CurveProvider
         app="llamalend"
         network={networks[chainId]}
         onChainUnavailable={console.error}
@@ -93,7 +93,7 @@ describe('BorrowTabContents Component Tests', () => {
         <Box sx={{ maxWidth: 500 }}>
           <BorrowTabTest {...props} />
         </Box>
-      </ConnectionProvider>
+      </CurveProvider>
     </ComponentTestWrapper>
   )
 

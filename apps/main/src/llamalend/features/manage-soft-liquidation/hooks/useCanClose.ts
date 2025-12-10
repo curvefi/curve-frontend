@@ -1,4 +1,4 @@
-import { useAccount } from 'wagmi'
+import { useConnection } from 'wagmi'
 import { useUserBalances } from '@/llamalend/queries/user-balances.query'
 import { useUserState } from '@/llamalend/queries/user-state.query'
 import { decimal } from '@ui-kit/utils'
@@ -29,7 +29,7 @@ const CLOSE_POSITION_SAFETY_BUFFER = 1.0001 // 0.01% safety margin
  * ```
  */
 export function useCanClose(params: MarketParams): ClosePositionProps['canClose'] {
-  const { address: userAddress } = useAccount()
+  const { address: userAddress } = useConnection()
   const { data: userBalances } = useUserBalances({ ...params, userAddress })
   const { data: userState } = useUserState({ ...params, userAddress })
 
