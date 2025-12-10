@@ -25,7 +25,7 @@ import { LlamaApi, Llamma } from '@/loan/types/loan.types'
 import { curveProps } from '@/loan/utils/helpers'
 import { hasV1Deleverage } from '@/loan/utils/leverage'
 import { getStepStatus, getTokenName } from '@/loan/utils/utilsLoan'
-import { getLoanManagePathname } from '@/loan/utils/utilsRouter'
+import { getMintMarketPathname } from '@/loan/utils/utilsRouter'
 import type { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import Accordion from '@ui/Accordion'
 import AlertBox from '@ui/AlertBox'
@@ -514,7 +514,7 @@ const LoanCreate = ({
         {txInfoBar}
         {steps && <Stepper steps={steps} />}
         {formStatus.isComplete && market && (
-          <LinkButton variant="filled" size="large" href={getLoanManagePathname(params, market.id, 'loan')}>
+          <LinkButton variant="filled" size="large" href={getMintMarketPathname(params, market.id)}>
             Manage loan
           </LinkButton>
         )}
