@@ -15,6 +15,7 @@ import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { LlamaIcon } from '@ui-kit/shared/icons/LlamaIcon'
 import { Balance } from '@ui-kit/shared/ui/Balance'
+import { Decimal } from '@ui-kit/utils/decimal'
 import { InputDivider } from '../../../widgets/InputDivider'
 import { setValueOptions } from '../../borrow/react-form.utils'
 import { useRemoveCollateralForm } from '../hooks/useRemoveCollateralForm'
@@ -76,11 +77,8 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
     userAddress: params.userAddress,
     collateralToken,
     borrowToken,
-    enabled: !!enabled && !!values.userCollateral,
-    collateralDelta:
-      values.userCollateral != null
-        ? (`-${values.userCollateral}` as unknown as import('@ui-kit/utils').Decimal)
-        : undefined,
+    enabled: !!enabled && form.formState.isValid,
+    collateralDelta: values.userCollateral != null ? (`-${values.userCollateral}` as Decimal) : undefined,
     expectedBorrowed: userState.data?.debt,
   })
 

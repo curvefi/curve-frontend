@@ -82,16 +82,7 @@ export const LoanFormTokenInput = <
       tooltip: positionBalance?.tooltip,
       prefix: positionBalance?.prefix,
     }),
-    [
-      balance,
-      isBalanceLoading,
-      token?.symbol,
-      usdRate,
-      positionBalance?.tooltip,
-      positionBalance?.prefix,
-      position?.data,
-      position?.isLoading,
-    ],
+    [balance, isBalanceLoading, token?.symbol, usdRate, positionBalance?.tooltip, positionBalance?.prefix, position],
   )
 
   const errors = form.formState.errors as PartialRecord<FieldPath<TFieldValues>, Error>

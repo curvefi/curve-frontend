@@ -67,17 +67,20 @@ export const useRemoveCollateralForm = <
   })
 
   const values = form.watch()
+  const { isValid } = form.formState
 
-  const params = useDebouncedValue(
+  const { params, isValid: debouncedIsValid } = useDebouncedValue(
     useMemo(
-      () =>
-        ({
+      () => ({
+        params: {
           chainId,
           marketId,
           userAddress,
           userCollateral: values.userCollateral,
-        }) as CollateralParams<ChainId>,
-      [chainId, marketId, userAddress, values.userCollateral],
+        } as CollateralParams<ChainId>,
+        isValid,
+      }),
+      [chainId, marketId, userAddress, values.userCollateral, isValid],
     ),
   )
 
@@ -93,10 +96,13 @@ export const useRemoveCollateralForm = <
 
   const userState = useUserState(params, enabled)
   const maxRemovable = useMaxRemovableCollateral(params, enabled)
-  const bands = useRemoveCollateralBands(params, enabled)
-  const health = useHealthQueries((isFull) => getRemoveCollateralHealthOptions({ ...params, isFull }, enabled))
-  const prices = useRemoveCollateralPrices(params, enabled)
-  const gas = useRemoveCollateralEstimateGas(networks, params, enabled)
+
+  const bands = useRemoveCollateralBands(params, enabled && debouncedIsValid)
+  const health = useHealthQueries((isFull) =>
+    getRemoveCollateralHealthOptions({ ...params, isFull }, enabled && debouncedIsValid),
+  )
+  const prices = useRemoveCollateralPrices(params, enabled && debouncedIsValid)
+  const gas = useRemoveCollateralEstimateGas(networks, params, enabled && debouncedIsValid)
 
   const expectedCollateral = useMemo(
     () =>
@@ -105,7 +111,7 @@ export const useRemoveCollateralForm = <
           ...mapQuery(userState, (state) => state?.collateral),
           data: decimal(
             userState.data?.collateral != null && values.userCollateral != null
-              ? // An error will be thrown by the validation suite if the user tries to remove more collateral than they have
+              ? // An error will be thrown by the validation suite, this is just for preventing negative collateral in the UI
                 BigNumber.max(
                   new BigNumber(userState.data?.collateral).minus(new BigNumber(values.userCollateral)),
                   '0',
@@ -119,6 +125,10 @@ export const useRemoveCollateralForm = <
   )
 
   const formErrors = useFormErrors(form.formState)
+
+  useEffect(() => {
+    form.setValue('maxCollateral', maxRemovable.data, { shouldValidate: true })
+  }, [form, maxRemovable.data])
 
   return {
     form,
