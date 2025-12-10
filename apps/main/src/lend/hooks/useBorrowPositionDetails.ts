@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { useAccount } from 'wagmi'
+import { useConnection } from 'wagmi'
 import { useMarketOnChainRates } from '@/lend/entities/market-details'
 import { useUserLoanDetails } from '@/lend/entities/user-loan-details'
 import networks from '@/lend/networks'
@@ -33,7 +33,7 @@ export const useBorrowPositionDetails = ({
   marketId,
 }: UseBorrowPositionDetailsProps): BorrowPositionDetailsProps => {
   const { controller } = market?.addresses ?? {}
-  const { address: userAddress } = useAccount()
+  const { address: userAddress } = useConnection()
   const { data: loanExists } = useLoanExists({
     chainId,
     marketId,

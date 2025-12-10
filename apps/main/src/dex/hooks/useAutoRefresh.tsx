@@ -1,14 +1,14 @@
 import { useCallback, useMemo } from 'react'
 import curvejsApi from '@/dex/lib/curvejs'
 import useStore from '@/dex/store/useStore'
-import { type CurveApi, useConnection } from '@ui-kit/features/connect-wallet'
+import { type CurveApi, useCurve } from '@ui-kit/features/connect-wallet'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { useGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
 import { useNetworks } from '../entities/networks'
 
 export const useAutoRefresh = (chainId: number | undefined) => {
-  const { curveApi } = useConnection()
+  const { curveApi } = useCurve()
   const { data: networks } = useNetworks()
   const fetchPools = useStore((state) => state.pools.fetchPools)
   const poolDataMapper = useStore((state) => chainId && state.pools.poolsMapper[chainId])

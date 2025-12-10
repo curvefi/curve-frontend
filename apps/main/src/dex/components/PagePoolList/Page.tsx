@@ -8,7 +8,7 @@ import { useNetworkFromUrl } from '@/dex/hooks/useChainId'
 import useSearchTermMapper from '@/dex/hooks/useSearchTermMapper'
 import useStore from '@/dex/store/useStore'
 import { breakpoints } from '@ui/utils/responsive'
-import { useConnection } from '@ui-kit/features/connect-wallet'
+import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useNavigate, useSearchParams } from '@ui-kit/hooks/router'
 import { useDexMarketList } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
@@ -23,7 +23,7 @@ enum SEARCH {
 const OldPoolListPage = () => {
   const push = useNavigate()
   const searchParams = useSearchParams()
-  const { curveApi = null } = useConnection()
+  const { curveApi = null } = useCurve()
   const searchTermMapper = useSearchTermMapper()
   const [parsedSearchParams, setParsedSearchParams] = useState<SearchParams | null>(null)
   const { chainId: rChainId } = useNetworkFromUrl()!

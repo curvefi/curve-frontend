@@ -41,6 +41,8 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 
+export type LoanBorrowMoreProps = PageContentProps & { isLeverage?: boolean }
+
 const LoanBorrowMore = ({
   rChainId,
   rOwmId,
@@ -49,9 +51,7 @@ const LoanBorrowMore = ({
   market,
   userActiveKey,
   isLeverage = false,
-}: PageContentProps & {
-  isLeverage?: boolean
-}) => {
+}: LoanBorrowMoreProps) => {
   const isSubscribed = useRef(false)
   const activeKey = useStore((state) => state.loanBorrowMore.activeKey)
   const activeKeyMax = useStore((state) => state.loanBorrowMore.activeKeyMax)
@@ -442,7 +442,7 @@ export default LoanBorrowMore
 /**
  * The new implementation of LoanBorrowMore with mui isn't ready yet. For now, we wrap the old one for styling.
  */
-export const LoanBorrowMoreWrapped = (props: PageContentProps) => (
+export const LoanBorrowMoreWrapped = (props: LoanBorrowMoreProps) => (
   <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
     <AppFormContentWrapper>
       <LoanBorrowMore {...props} />

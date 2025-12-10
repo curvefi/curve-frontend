@@ -1,4 +1,4 @@
-import { useAccount } from 'wagmi'
+import { useConnection } from 'wagmi'
 import { getLlamaMarket, getTokens } from '@/llamalend/llama.utils'
 import { useMarketRates } from '@/llamalend/queries/market-rates.query'
 import { useUserState } from '@/llamalend/queries/user-state.query'
@@ -13,7 +13,7 @@ import { useCollateralToRecover } from './useCollateralToRecover'
  * their positions.
  */
 export function useLoanInfo(params: MarketParams): ActionInfosProps['loanInfo'] {
-  const { address: userAddress } = useAccount()
+  const { address: userAddress } = useConnection()
   const { data: userState } = useUserState({ ...params, userAddress })
 
   const collateralToRecover = useCollateralToRecover(params)

@@ -36,7 +36,7 @@ import Stepper from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
 import TxInfoBar from '@ui/TxInfoBar'
 import { formatNumber, scanTxPath } from '@ui/utils'
-import { notify, useConnection } from '@ui-kit/features/connect-wallet'
+import { notify, useCurve } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useLegacyTokenInput } from '@ui-kit/hooks/useFeatureFlags'
 import { t, Trans } from '@ui-kit/lib/i18n'
@@ -46,7 +46,7 @@ import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { decimal, type Decimal } from '@ui-kit/utils'
 
 const useFetchInitial = ({ market, isLeverage }: { market: MintMarketTemplate | null; isLeverage: boolean }) => {
-  const { isHydrated, llamaApi: curve = null } = useConnection()
+  const { isHydrated, llamaApi: curve = null } = useCurve()
   const maxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
   const formValues = useStore((state) => state.loanCreate.formValues)
   const setFormValues = useStore((state) => state.loanCreate.setFormValues)

@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { useAccount } from 'wagmi'
+import { useConnection } from 'wagmi'
 import { ClosePositionProps } from '@/llamalend/features/manage-soft-liquidation'
 import { useClosePositionMutation } from '@/llamalend/mutations/close-position.mutation'
 import type { MarketParams } from '../types'
@@ -9,7 +9,7 @@ import { useDebtToken } from './useDebtToken'
 
 /** Hook to cobble up the close position tab */
 export function useClosePositionTab(params: MarketParams): ClosePositionProps {
-  const { address: userAddress } = useAccount()
+  const { address: userAddress } = useConnection()
   const debtToken = useDebtToken(params)
   const collateralToRecover = useCollateralToRecover(params)
   const canClose = useCanClose(params)
