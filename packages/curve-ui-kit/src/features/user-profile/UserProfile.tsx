@@ -1,4 +1,4 @@
-import { useAccount } from 'wagmi'
+import { useConnection } from 'wagmi'
 import PersonIcon from '@mui/icons-material/Person'
 import Drawer from '@mui/material/Drawer'
 import IconButton from '@mui/material/IconButton'
@@ -12,7 +12,7 @@ const { Spacing, Width } = SizesAndSpaces
 
 export const UserProfile = () => {
   const [isOpen, open, close] = useSwitch(false)
-  const { address: walletAddress } = useAccount()
+  const { address: walletAddress } = useConnection()
   return (
     <>
       <IconButton size="small" onClick={open} data-testid="user-profile-button">

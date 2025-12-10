@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { useAccount } from 'wagmi'
+import { useConnection } from 'wagmi'
 import { isReady } from '@/loan/components/PageCrvUsdStaking/utils'
 import { oneMonthProjectionYield, oneYearProjectionYield } from '@/loan/components/PageCrvUsdStaking/utils'
 import { useScrvUsdStatistics } from '@/loan/entities/scrvusd-statistics'
@@ -17,7 +17,7 @@ const { MaxWidth, Spacing } = SizesAndSpaces
 const CRVUSD_OPTIONS = { symbol: 'crvUSD', position: 'suffix' as const, abbreviate: true }
 
 const UserPosition = ({ chartExpanded = false }: { chartExpanded?: boolean }) => {
-  const { address } = useAccount()
+  const { address } = useConnection()
   const {
     design: { Layer },
   } = useTheme()
