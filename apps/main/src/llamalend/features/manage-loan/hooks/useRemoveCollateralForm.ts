@@ -10,11 +10,13 @@ import {
   type RemoveCollateralOptions,
   useRemoveCollateralMutation,
 } from '@/llamalend/mutations/remove-collateral.mutation'
+import { useMarketRates } from '@/llamalend/queries/market-rates'
 import { useRemoveCollateralBands } from '@/llamalend/queries/remove-collateral/remove-collateral-bands.query'
 import { useRemoveCollateralEstimateGas } from '@/llamalend/queries/remove-collateral/remove-collateral-gas-estimate.query'
 import { getRemoveCollateralHealthOptions } from '@/llamalend/queries/remove-collateral/remove-collateral-health.query'
 import { useMaxRemovableCollateral } from '@/llamalend/queries/remove-collateral/remove-collateral-max-removable.query'
 import { useRemoveCollateralPrices } from '@/llamalend/queries/remove-collateral/remove-collateral-prices.query'
+import { getUserHealthOptions } from '@/llamalend/queries/user-health.query'
 import { useUserState } from '@/llamalend/queries/user-state.query'
 import { mapQuery, withTokenSymbol } from '@/llamalend/queries/utils'
 import type { CollateralParams } from '@/llamalend/queries/validation/manage-loan.types'
@@ -27,8 +29,10 @@ import { vestResolver } from '@hookform/resolvers/vest'
 import type { BaseConfig } from '@ui/utils'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions } from '@ui-kit/lib/model'
-import { decimal } from '@ui-kit/utils/decimal'
+import { Decimal, decimal } from '@ui-kit/utils/decimal'
 import { useFormErrors } from '../../borrow/react-form.utils'
+import { useLoanToValueFromUserState } from './useLoanToValueFromUserState'
+
 
 const useCallbackAfterFormUpdate = (form: UseFormReturn<CollateralForm>, callback: () => void) =>
   useEffect(() => form.subscribe({ formState: { values: true }, callback }), [form, callback])
@@ -42,12 +46,14 @@ export const useRemoveCollateralForm = <
   networks,
   enabled,
   onRemoved,
+  isAccordionOpen,
 }: {
   market: LlamaMarketTemplate | undefined
   network: BaseConfig<NetworkName, ChainId>
   networks: NetworkDict<ChainId>
   enabled?: boolean
   onRemoved: NonNullable<RemoveCollateralOptions['onRemoved']>
+  isAccordionOpen: boolean
 }) => {
   const { address: userAddress } = useConnection()
   const { chainId } = network
@@ -95,14 +101,36 @@ export const useRemoveCollateralForm = <
   useCallbackAfterFormUpdate(form, action.reset)
 
   const userState = useUserState(params, enabled)
+  const prices = useRemoveCollateralPrices(params, enabled && debouncedIsValid)
   const maxRemovable = useMaxRemovableCollateral(params, enabled)
-
-  const bands = useRemoveCollateralBands(params, enabled && debouncedIsValid)
   const health = useHealthQueries((isFull) =>
     getRemoveCollateralHealthOptions({ ...params, isFull }, enabled && debouncedIsValid),
   )
-  const prices = useRemoveCollateralPrices(params, enabled && debouncedIsValid)
   const gas = useRemoveCollateralEstimateGas(networks, params, enabled && debouncedIsValid)
+  const prevHealth = useHealthQueries((isFull) =>
+    getUserHealthOptions({ ...params, isFull }, enabled && debouncedIsValid),
+  )
+  const bands = useRemoveCollateralBands(params, enabled && isAccordionOpen && debouncedIsValid)
+  const prevLoanToValue = useLoanToValueFromUserState({
+    chainId,
+    marketId: params.marketId,
+    userAddress: params.userAddress,
+    collateralToken,
+    borrowToken,
+    enabled: isAccordionOpen && debouncedIsValid,
+    expectedBorrowed: userState.data?.debt,
+  })
+  const loanToValue = useLoanToValueFromUserState({
+    chainId: params.chainId!,
+    marketId: params.marketId,
+    userAddress: params.userAddress,
+    collateralToken,
+    borrowToken,
+    enabled: isAccordionOpen && !!values.userCollateral && debouncedIsValid,
+    collateralDelta: values.userCollateral != null ? (`-${values.userCollateral}` as Decimal) : undefined,
+    expectedBorrowed: userState.data?.debt,
+  })
+  const marketRates = useMarketRates(params, isAccordionOpen)
 
   const expectedCollateral = useMemo(
     () =>
@@ -148,5 +176,9 @@ export const useRemoveCollateralForm = <
     formErrors,
     userState,
     expectedCollateral,
+    prevHealth,
+    marketRates,
+    prevLoanToValue,
+    loanToValue,
   }
 }

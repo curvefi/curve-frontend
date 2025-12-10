@@ -97,6 +97,7 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
   const prices = useAddCollateralPrices(params, enabled)
   const health = useHealthQueries((isFull) => getAddCollateralHealthOptions({ ...params, isFull }, enabled))
   const gas = useAddCollateralEstimateGas(networks, params, enabled)
+  const prevHealth = useHealthQueries((isFull) => getUserHealthOptions({ ...params, isFull }, enabled))
   const bands = useAddCollateralBands(params, enabled && isAccordionOpen)
   const prevLoanToValue = useLoanToValueFromUserState({
     chainId,
@@ -117,7 +118,6 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
     collateralDelta: values.userCollateral,
     expectedBorrowed: userState.data?.debt,
   })
-  const prevHealth = useHealthQueries((isFull) => getUserHealthOptions({ ...params, isFull }, enabled))
   const marketRates = useMarketRates(params, isAccordionOpen)
 
   const expectedCollateral = useMemo(

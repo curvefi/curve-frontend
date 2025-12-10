@@ -1,9 +1,5 @@
-import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
-import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import type { RemoveCollateralOptions } from '@/llamalend/mutations/remove-collateral.mutation'
-import { useMarketRates } from '@/llamalend/queries/market-rates'
-import { getUserHealthOptions } from '@/llamalend/queries/user-health.query'
 import { LoanFormAlerts } from '@/llamalend/widgets/manage-loan/LoanFormAlerts'
 import { LoanFormTokenInput } from '@/llamalend/widgets/manage-loan/LoanFormTokenInput'
 import { LoanFormWrapper } from '@/llamalend/widgets/manage-loan/LoanFormWrapper'
@@ -15,7 +11,6 @@ import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { LlamaIcon } from '@ui-kit/shared/icons/LlamaIcon'
 import { Balance } from '@ui-kit/shared/ui/Balance'
-import { Decimal } from '@ui-kit/utils/decimal'
 import { InputDivider } from '../../../widgets/InputDivider'
 import { setValueOptions } from '../../borrow/react-form.utils'
 import { useRemoveCollateralForm } from '../hooks/useRemoveCollateralForm'
@@ -42,8 +37,6 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
     onSubmit,
     action,
     maxRemovable,
-    params,
-    values,
     health,
     gas,
     formErrors,
@@ -52,34 +45,17 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
     txHash,
     userState,
     expectedCollateral,
+    prevHealth,
+    marketRates,
+    prevLoanToValue,
+    loanToValue,
   } = useRemoveCollateralForm({
     market,
     network,
     networks,
     enabled,
     onRemoved,
-  })
-
-  const prevLoanToValue = useLoanToValueFromUserState({
-    chainId,
-    marketId: params.marketId,
-    userAddress: params.userAddress,
-    collateralToken,
-    borrowToken,
-    enabled: isOpen,
-    expectedBorrowed: userState.data?.debt,
-  })
-  const prevHealth = useHealthQueries((isFull) => getUserHealthOptions({ ...params, isFull }, undefined))
-  const marketRates = useMarketRates(params, isOpen)
-  const loanToValue = useLoanToValueFromUserState({
-    chainId: params.chainId!,
-    marketId: params.marketId,
-    userAddress: params.userAddress,
-    collateralToken,
-    borrowToken,
-    enabled: !!enabled && !!values.userCollateral && form.formState.isValid,
-    collateralDelta: values.userCollateral != null ? (`-${values.userCollateral}` as Decimal) : undefined,
-    expectedBorrowed: userState.data?.debt,
+    isAccordionOpen: isOpen,
   })
 
   return (
