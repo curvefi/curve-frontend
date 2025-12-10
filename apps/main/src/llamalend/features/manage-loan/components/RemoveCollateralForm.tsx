@@ -77,7 +77,7 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
     userAddress: params.userAddress,
     collateralToken,
     borrowToken,
-    enabled: !!enabled && form.formState.isValid,
+    enabled: !!enabled && !!values.userCollateral && form.formState.isValid,
     collateralDelta: values.userCollateral != null ? (`-${values.userCollateral}` as Decimal) : undefined,
     expectedBorrowed: userState.data?.debt,
   })
