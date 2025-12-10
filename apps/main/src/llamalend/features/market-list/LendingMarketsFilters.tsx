@@ -55,13 +55,15 @@ export const LendingMarketsFilters = ({
     [data, selectedChains],
   )
 
+  // Relies on data and not markets, because you might have a filter active for a token from a chain
+  // before you filtered out that said chain. This would lead to token symbols not loading.
   const tokens = useMemo(
     () =>
       keyBy(
-        markets.flatMap((market) => [market.assets.collateral, market.assets.borrowed]),
+        data.flatMap((market) => [market.assets.collateral, market.assets.borrowed]),
         (i) => i.symbol,
       ),
-    [markets],
+    [data],
   )
   return (
     <Grid
