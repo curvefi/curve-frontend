@@ -53,11 +53,7 @@ const LendManageLegacyMenu = [
 ] satisfies FormTab<ManageLoanProps>[]
 
 const LendManageNewMenu = [
-  {
-    value: 'borrow',
-    label: ({ market }) => (market?.leverage?.hasLeverage() ? t`Leverage` : t`Borrow`),
-    component: LoanBorrowMoreWrapped,
-  },
+  { value: 'borrow', label: t`Borrow`, component: LoanBorrowMoreWrapped },
   {
     value: 'repay',
     label: t`Repay`,
