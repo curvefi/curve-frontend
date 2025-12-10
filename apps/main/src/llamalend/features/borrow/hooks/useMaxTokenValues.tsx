@@ -18,7 +18,7 @@ import type { BorrowForm, BorrowFormQueryParams } from '../types'
  * @param form - The react-hook-form instance managing the borrow form state.
  */
 export function useMaxTokenValues(
-  collateralToken: { address: Address } | undefined,
+  collateralToken: { address: Address; symbol?: string } | undefined,
   params: BorrowFormQueryParams & { userAddress?: Address },
   form: UseFormReturn<BorrowForm>,
 ) {

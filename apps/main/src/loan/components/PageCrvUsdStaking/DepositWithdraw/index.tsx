@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { styled } from 'styled-components'
 import useStore from '@/loan/store/useStore'
-import { useConnection } from '@ui-kit/features/connect-wallet'
+import { useCurve } from '@ui-kit/features/connect-wallet'
 import { DEX_ROUTES, getInternalUrl } from '@ui-kit/shared/routes'
 import { type TabOption, TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -39,7 +39,7 @@ const DepositWithdraw = ({ className }: DepositWithdrawProps) => {
   const estimateGasDepositApprove = useStore((state) => state.scrvusd.estimateGas.depositApprove)
   const estimateGasDeposit = useStore((state) => state.scrvusd.estimateGas.deposit)
   const estimateGasWithdraw = useStore((state) => state.scrvusd.estimateGas.withdraw)
-  const { llamaApi: curve = null } = useConnection()
+  const { llamaApi: curve = null } = useCurve()
 
   const transactionInProgress =
     (stakingModule === 'deposit' &&

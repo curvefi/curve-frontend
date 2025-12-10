@@ -7,14 +7,14 @@ import { usePoolIdByAddressOrId } from '@/dex/hooks/usePoolIdByAddressOrId'
 import useStore from '@/dex/store/useStore'
 import type { PoolUrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
-import { useConnection } from '@ui-kit/features/connect-wallet'
+import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useNavigate, useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 
 export const PagePool = () => {
   const push = useNavigate()
-  const { curveApi = null } = useConnection()
+  const { curveApi = null } = useCurve()
   const props = useParams<PoolUrlParams>()
   const { poolIdOrAddress: rPoolIdOrAddress, formType: rFormType, network: networkId } = props
   const rChainId = useChainId(networkId)

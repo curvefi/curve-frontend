@@ -85,10 +85,10 @@ export function usePegkeeper({ address, pool: { address: poolAddress } }: PegKee
     }
   }
 
-  const { writeContract, isPending: isRebalancing } = useWriteContract()
+  const { mutate, isPending: isRebalancing } = useWriteContract()
 
   const rebalance = () =>
-    writeContract(
+    mutate(
       {
         abi: pegkeeperAbi,
         address,

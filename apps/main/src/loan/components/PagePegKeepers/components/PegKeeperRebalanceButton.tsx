@@ -1,4 +1,4 @@
-import { useAccount } from 'wagmi'
+import { useConnection } from 'wagmi'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import { useWallet } from '@ui-kit/features/connect-wallet'
@@ -16,7 +16,7 @@ type Props = {
 }
 
 export const PegKeeperRebalanceButton = ({ canRebalance, isRebalancing, onRebalance, testId = 'pegkeeper' }: Props) => {
-  const { isConnected, isConnecting } = useAccount()
+  const { isConnected, isConnecting } = useConnection()
   const { connect } = useWallet()
 
   return (
