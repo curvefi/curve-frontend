@@ -2,7 +2,7 @@ import { useNetworksQuery } from '@/dex/entities/networks'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import { createTenderlyWagmiConfigFromVNet, createVirtualTestnet } from '@cy/support/helpers/tenderly'
 import Box from '@mui/material/Box'
-import { ConnectionProvider } from '@ui-kit/features/connect-wallet/lib/ConnectionProvider'
+import { CurveProvider } from '@ui-kit/features/connect-wallet/lib/CurveProvider'
 import { usePathname } from '@ui-kit/hooks/router'
 import { useNetworkFromUrl } from '@ui-kit/hooks/useNetworkFromUrl'
 import { useOnChainUnavailable } from '@ui-kit/hooks/useOnChainUnavailable'
@@ -15,10 +15,10 @@ function Test() {
   const pathname = usePathname()
   return (
     networks && (
-      <ConnectionProvider app="dex" network={network} onChainUnavailable={onChainUnavailable} hydrate={{}}>
+      <CurveProvider app="dex" network={network} onChainUnavailable={onChainUnavailable} hydrate={{}}>
         <Box id="pathname">{pathname}</Box>
         <Box id="network">{network?.id}</Box>
-      </ConnectionProvider>
+      </CurveProvider>
     )
   )
 }

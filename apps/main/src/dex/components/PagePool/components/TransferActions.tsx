@@ -8,7 +8,7 @@ import useTokenAlert from '@/dex/hooks/useTokenAlert'
 import useStore from '@/dex/store/useStore'
 import { getChainPoolIdActiveKey } from '@/dex/utils'
 import AlertBox from '@ui/AlertBox'
-import { useConnection } from '@ui-kit/features/connect-wallet'
+import { useCurve } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 
 const TransferActions = ({
@@ -26,7 +26,7 @@ const TransferActions = ({
   const { rChainId, rPoolIdOrAddress } = routerParams
   const poolId = usePoolIdByAddressOrId({ chainId: rChainId, poolIdOrAddress: rPoolIdOrAddress })
   const alert = useTokenAlert(poolData?.tokenAddressesAll ?? [])
-  const { isHydrated } = useConnection()
+  const { isHydrated } = useCurve()
   const currencyReserves = useStore((state) => state.pools.currencyReserves[getChainPoolIdActiveKey(rChainId, poolId)])
   const walletBalancesLoading = useStore((state) => state.user.walletBalancesLoading)
 

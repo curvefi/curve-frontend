@@ -1,4 +1,4 @@
-import { useAccount } from 'wagmi'
+import { useConnection } from 'wagmi'
 import Switch from '@/loan/components/PageCrvUsdStaking/components/Switch'
 import { isLoading, isReady } from '@/loan/components/PageCrvUsdStaking/utils'
 import useEstimateGasConversion from '@/loan/hooks/useEstimateGasConversion'
@@ -15,7 +15,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 const { IconSize } = SizesAndSpaces
 
 export const TransactionDetails = () => {
-  const { address } = useAccount()
+  const { address } = useConnection()
   const preview = useStore((state) => state.scrvusd.preview)
   const scrvUsdExchangeRate = useStore((state) => state.scrvusd.scrvUsdExchangeRate)
   const approveInfinite = useStore((state) => state.scrvusd.approveInfinite)

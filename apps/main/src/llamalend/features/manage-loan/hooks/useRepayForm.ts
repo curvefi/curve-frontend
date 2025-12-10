@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
 import { useForm } from 'react-hook-form'
-import { useAccount } from 'wagmi'
+import { useConnection } from 'wagmi'
 import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
 import { getTokens } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
@@ -39,7 +39,7 @@ export const useRepayForm = <ChainId extends LlamaChainId, NetworkName extends L
   enabled?: boolean
   onRepaid?: RepayOptions['onRepaid']
 }) => {
-  const { address: userAddress } = useAccount()
+  const { address: userAddress } = useConnection()
   const { chainId } = network
   const marketId = market?.id
 

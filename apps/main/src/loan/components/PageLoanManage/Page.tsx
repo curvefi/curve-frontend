@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Address } from 'viem'
-import { useAccount } from 'wagmi'
+import { useConnection } from 'wagmi'
 import { ManageSoftLiquidation } from '@/llamalend/features/manage-soft-liquidation'
 import { MarketDetails } from '@/llamalend/features/market-details'
 import { BorrowPositionDetails, NoPosition } from '@/llamalend/features/market-position-details'
@@ -24,7 +24,7 @@ import { isChain } from '@curvefi/prices-api'
 import Stack from '@mui/material/Stack'
 import { AppPageFormsWrapper } from '@ui/AppPage'
 import Box from '@ui/Box'
-import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
+import { ConnectWalletPrompt, isLoading, useCurve, useWallet } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useNavigate, useParams } from '@ui-kit/hooks/router'
 import { useManageSoftLiquidation } from '@ui-kit/hooks/useFeatureFlags'
@@ -40,9 +40,9 @@ const Page = () => {
   const params = useParams<CollateralUrlParams>()
   const { rFormType, rCollateralId } = parseCollateralParams(params)
   const push = useNavigate()
-  const { connectState, llamaApi: curve = null, isHydrated } = useConnection()
+  const { connectState, llamaApi: curve = null, isHydrated } = useCurve()
   const rChainId = useChainId(params)
-  const { address } = useAccount()
+  const { address } = useConnection()
 
   const market = useMintMarket({ chainId: rChainId, marketId: rCollateralId })
   const marketId = market?.id ?? ''
