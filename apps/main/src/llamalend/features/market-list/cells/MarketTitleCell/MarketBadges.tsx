@@ -1,4 +1,3 @@
-import { useUserMarketStats } from '@/llamalend/queries/market-list/llama-market-stats'
 import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import Chip from '@mui/material/Chip'
 import Stack from '@mui/material/Stack'
@@ -27,7 +26,6 @@ const poolTypeTooltips: Record<LlamaMarketType, () => string> = {
 export const MarketBadges = ({ market, isMobile }: { market: LlamaMarket; isMobile: boolean }) => {
   const { favoriteKey, type, leverage, deprecatedMessage } = market
   const isSmall = useMediaQuery('(max-width:1250px)')
-  const { isCollateralEroded } = useUserMarketStats(market)?.data ?? {}
   return (
     <Stack direction="row" gap={Spacing.sm} alignItems="center" {...(isMobile && { height: Sizing.md.mobile })}>
       <Tooltip title={poolTypeTooltips[type]()}>
@@ -59,12 +57,6 @@ export const MarketBadges = ({ market, isMobile }: { market: LlamaMarket; isMobi
             {!isSmall && t`Deprecated`}
             <ExclamationTriangleIcon />
           </Typography>
-        </Tooltip>
-      )}
-
-      {isCollateralEroded && (
-        <Tooltip title={t`Your position is eroded`}>
-          <Chip label={t`Collateral erosion`} color="alert" size="extraSmall" />
         </Tooltip>
       )}
 
