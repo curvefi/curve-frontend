@@ -7,7 +7,7 @@ import useStore from '@/dex/store/useStore'
 import { NetworkConfig, PoolData, PoolDataMapper } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
 import { notFalsy, recordValues } from '@curvefi/prices-api/objects.util'
-import { useConnection } from '@ui-kit/features/connect-wallet'
+import { useCurve } from '@ui-kit/features/connect-wallet'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { DEX_ROUTES } from '@ui-kit/shared/routes'
@@ -28,7 +28,7 @@ const getPoolTags = (hasPosition: boolean, { pool, pool: { address, id, name, re
   )
 
 export function usePoolListData({ id: network, chainId, isLite }: NetworkConfig) {
-  const { curveApi } = useConnection()
+  const { curveApi } = useCurve()
   const userActiveKey = getUserActiveKey(curveApi)
   const poolDataMapper = useStore((state): PoolDataMapper | undefined => state.pools.poolsMapper[chainId])
   const rewardsApyMapper = useStore((state) => state.pools.rewardsApyMapper[chainId])
@@ -78,7 +78,7 @@ export function usePoolListData({ id: network, chainId, isLite }: NetworkConfig)
             tvl: tvlMapper?.[item.pool.id],
             hasPosition: userPoolList?.[item.pool.id],
             network,
-            url: getPath({ network }, `${DEX_ROUTES.PAGE_POOLS}/${item.pool.id}/deposit`),
+            url: getPath({ network }, `${DEX_ROUTES.PAGE_POOLS}/${item.pool.address}/deposit`),
             tags: getPoolTags(userPoolList?.[item.pool.id], item),
           }
         }),

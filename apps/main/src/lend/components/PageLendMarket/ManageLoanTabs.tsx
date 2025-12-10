@@ -49,16 +49,12 @@ const LendManageLegacyMenu = [
     value: 'leverage',
     label: t`Leverage`,
     visible: ({ market }) => market?.leverage?.hasLeverage(),
-    component: LoanBorrowMore,
+    component: (props) => <LoanBorrowMore {...props} isLeverage />,
   },
 ] satisfies FormTab<ManageLoanProps>[]
 
 const LendManageNewMenu = [
-  {
-    value: 'borrow',
-    label: ({ market }) => (market?.leverage?.hasLeverage() ? t`Leverage` : t`Borrow`),
-    component: LoanBorrowMoreWrapped,
-  },
+  { value: 'borrow', label: t`Borrow`, component: LoanBorrowMoreWrapped },
   {
     value: 'repay',
     label: t`Repay`,
@@ -74,6 +70,12 @@ const LendManageNewMenu = [
       { value: 'add', label: t`Add`, component: LoanAddCollateralTab },
       { value: 'remove', label: t`Remove`, component: LoanRemoveCollateralTab },
     ],
+  },
+  {
+    value: 'leverage',
+    label: t`Leverage`,
+    visible: ({ market }) => market?.leverage?.hasLeverage(),
+    component: (props) => <LoanBorrowMoreWrapped {...props} isLeverage />,
   },
 ] satisfies FormTab<ManageLoanProps>[]
 

@@ -1,10 +1,12 @@
-import { Banner } from '@ui-kit/shared/ui/Banner'
 import { Stack } from '@mui/material'
 import { t } from '@ui-kit/lib/i18n'
-import { PoolUrlParams } from '../types/main.types'
+import { Banner } from '@ui-kit/shared/ui/Banner'
+import { Chain } from '@ui-kit/utils'
+import { usePoolIdByAddressOrId } from '../hooks/usePoolIdByAddressOrId'
 
-const MonadBannerAlert = ({ params }: { params: PoolUrlParams }) => {
-  const showFactoryStableNg11Banner = params.pool === 'factory-stable-ng-11' && params.network === 'monad'
+const MonadBannerAlert = ({ chainId, poolIdOrAddress }: { chainId: number; poolIdOrAddress: string }) => {
+  const poolId = usePoolIdByAddressOrId({ chainId, poolIdOrAddress })
+  const showFactoryStableNg11Banner = poolId === 'factory-stable-ng-11' && chainId === Chain.Monad
 
   if (showFactoryStableNg11Banner)
     return (

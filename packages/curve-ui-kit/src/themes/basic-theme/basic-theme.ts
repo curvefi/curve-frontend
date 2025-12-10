@@ -17,7 +17,18 @@ export const basicMuiTheme = createMuiTheme({
     },
     unit: 'px',
   },
-  spacing: Object.values(Spacing),
+  spacing: [
+    Spacing[0],
+    Spacing[100],
+    Spacing[200],
+    Spacing[300],
+    Spacing[350],
+    Spacing[400],
+    Spacing[500],
+    Spacing[600],
+    Spacing[700],
+    Spacing[800],
+  ],
   direction: 'ltr',
   zIndex: {
     tableStickyColumn: 100, // the sticky column in the table

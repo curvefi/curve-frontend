@@ -118,7 +118,7 @@ export const dexLayoutRoute = createRoute({
 // Feature route
 export const poolRoute = createRoute({
   getParentRoute: () => dexLayoutRoute,
-  path: '$network/pool/$poolId',
+  path: '$network/pool/$poolIdOrAddress',
   component: PagePool,
   head: () => ({ meta: [{ title: 'Pool - Curve' }] }),
 })
