@@ -73,6 +73,7 @@ export function useUserMarketStats(market: LlamaMarket, column?: LlamaMarketColu
     ...(stats && {
       data: {
         softLiquidation: stats.softLiquidation,
+        liquidated: stats.healthFull < 0 && borrowedAmount === 0,
         health: stats.healthFull,
         borrowed: stats.debt,
         collateral: {

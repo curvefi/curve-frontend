@@ -35,18 +35,27 @@ const flickerEffect = (
 }
 
 export const UserPositionIndicator = ({ market }: { market: LlamaMarket }) => {
-  const isSoftLiquidation = useUserMarketStats(market, LlamaMarketColumnId.UserHealth)?.data?.softLiquidation
+  const { softLiquidation, liquidated } = useUserMarketStats(market, LlamaMarketColumnId.UserHealth)?.data ?? {}
   const [backgroundColor, setBackgroundColor] = useState<BackgroundColor>(() => info)
+
   useEffect(
-    () => (isSoftLiquidation ? flickerEffect(setBackgroundColor) : setBackgroundColor(() => info)),
-    [isSoftLiquidation],
+    () =>
+      softLiquidation
+        ? flickerEffect(setBackgroundColor)
+        : liquidated
+          ? setBackgroundColor(() => red)
+          : setBackgroundColor(() => info),
+    [softLiquidation, liquidated],
   )
+
   return (
     <Tooltip
       title={
-        isSoftLiquidation
+        softLiquidation
           ? t`Your position in this market is in soft liquidation`
-          : t`You have a position in this market`
+          : liquidated
+            ? t`Your position in this market has been liquidated`
+            : t`You have a position in this market`
       }
     >
       <Stack
