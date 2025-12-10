@@ -118,5 +118,6 @@ export const ManageLoanTabs = ({
     : shouldUseManageLoanMuiForm
       ? MintManageNewMenu
       : MintManageLegacyMenu
-  return <FormTabs params={pageProps} menu={menu} shouldWrap={menu === MintManageLegacyMenu} />
+  const shouldWrap = menu == MintManageLegacyMenu || menu == MintManageSoftLiquidationMenu // todo: `LoanFormWrapper` in soft liquidation
+  return <FormTabs params={pageProps} menu={menu} shouldWrap={shouldWrap} />
 }
