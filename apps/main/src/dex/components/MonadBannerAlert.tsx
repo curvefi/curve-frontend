@@ -1,11 +1,12 @@
 import { Stack } from '@mui/material'
 import { t } from '@ui-kit/lib/i18n'
 import { Banner } from '@ui-kit/shared/ui/Banner'
+import { Chain } from '@ui-kit/utils'
 import { usePoolIdByAddressOrId } from '../hooks/usePoolIdByAddressOrId'
 
 const MonadBannerAlert = ({ chainId, poolIdOrAddress }: { chainId: number; poolIdOrAddress: string }) => {
   const poolId = usePoolIdByAddressOrId({ chainId, poolIdOrAddress })
-  const showFactoryStableNg11Banner = poolId === 'factory-stable-ng-11'
+  const showFactoryStableNg11Banner = poolId === 'factory-stable-ng-11' && chainId === Chain.Monad
 
   if (showFactoryStableNg11Banner)
     return (

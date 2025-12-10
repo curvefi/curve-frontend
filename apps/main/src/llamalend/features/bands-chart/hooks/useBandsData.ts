@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { useAccount } from 'wagmi'
+import { useConnection } from 'wagmi'
 import { useProcessedBandsData } from '@/llamalend/features/bands-chart/hooks/useProcessedBandsData'
 import { useMarketBandsBalances } from '@/llamalend/features/bands-chart/queries/market-bands-balances.query'
 import { useMarketUserBandsBalances } from '@/llamalend/features/bands-chart/queries/market-user-bands-balances.query'
@@ -25,7 +25,7 @@ export const useBandsData = ({
   collateralTokenAddress: string | undefined
   borrowedTokenAddress: string | undefined
 }) => {
-  const { address: userAddress } = useAccount()
+  const { address: userAddress } = useConnection()
   const { data: collateralUsdRate } = useTokenUsdRate({ chainId, tokenAddress: collateralTokenAddress })
   const { data: borrowedUsdRate } = useTokenUsdRate({ chainId, tokenAddress: borrowedTokenAddress })
   const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists({

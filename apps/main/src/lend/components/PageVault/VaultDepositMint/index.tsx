@@ -29,8 +29,7 @@ import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { decimal, type Decimal } from '@ui-kit/utils'
 
-const VaultDepositMint = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey }: PageContentProps) => {
-  const rFormType = 'deposit'
+const VaultDepositMint = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)
   const marketAlert = useMarketAlert(rChainId, rOwmId)
 
@@ -177,7 +176,7 @@ const VaultDepositMint = ({ rChainId, rOwmId, isLoaded, api, market, userActiveK
 
   // steps
   useEffect(() => {
-    if (isLoaded && api && market) {
+    if (isLoaded && api && market && rFormType) {
       const updatedSteps = getSteps(activeKey, rFormType, api, market, formStatus, formValues, steps)
       setSteps(updatedSteps)
     }

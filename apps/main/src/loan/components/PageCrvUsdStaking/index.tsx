@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { useEffect } from 'react'
-import { useAccount } from 'wagmi'
+import { useConnection } from 'wagmi'
 import DepositWithdraw from '@/loan/components/PageCrvUsdStaking/DepositWithdraw'
 import Statistics from '@/loan/components/PageCrvUsdStaking/Statistics'
 import StatsBanner from '@/loan/components/PageCrvUsdStaking/StatsBanner'
@@ -11,7 +11,7 @@ import useStore from '@/loan/store/useStore'
 import type { NetworkUrlParams } from '@/loan/types/loan.types'
 import { Stack, useMediaQuery } from '@mui/material'
 import Fade from '@mui/material/Fade'
-import { useConnection } from '@ui-kit/features/connect-wallet'
+import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { Sizing } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -25,9 +25,9 @@ const CrvUsdStaking = ({ params }: { params: NetworkUrlParams }) => {
   const fetchExchangeRate = useStore((state) => state.scrvusd.fetchExchangeRate)
   const fetchCrvUsdSupplies = useStore((state) => state.scrvusd.fetchCrvUsdSupplies)
   const stakingModule = useStore((state) => state.scrvusd.stakingModule)
-  const { llamaApi: lendApi = null } = useConnection()
+  const { llamaApi: lendApi = null } = useCurve()
   const chainId = lendApi?.chainId
-  const { address, isConnecting } = useAccount()
+  const { address, isConnecting } = useConnection()
 
   const {
     data: userScrvUsdBalance,

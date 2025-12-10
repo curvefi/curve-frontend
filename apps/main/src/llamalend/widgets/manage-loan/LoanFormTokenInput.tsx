@@ -1,16 +1,16 @@
 import { type ReactNode, useCallback, useMemo } from 'react'
 import type { FieldPath, FieldPathValue, FieldValues, UseFormReturn } from 'react-hook-form'
 import type { Address } from 'viem'
-import { useAccount } from 'wagmi'
+import { useConnection } from 'wagmi'
 import { setValueOptions } from '@/llamalend/features/borrow/react-form.utils'
 import type { LlamaNetwork } from '@/llamalend/llamalend.types'
-import type { Query } from '@/llamalend/widgets/manage-loan/loan.types'
 import type { INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
 import type { PartialRecord } from '@curvefi/prices-api/objects.util'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
+import type { Query } from '@ui-kit/types/util'
 import { decimal, Decimal } from '@ui-kit/utils'
 
 /**
@@ -45,7 +45,7 @@ export const LoanFormTokenInput = <
   message?: ReactNode
   network: LlamaNetwork
 }) => {
-  const { address: userAddress } = useAccount()
+  const { address: userAddress } = useConnection()
   const {
     data: balance,
     isLoading: isBalanceLoading,

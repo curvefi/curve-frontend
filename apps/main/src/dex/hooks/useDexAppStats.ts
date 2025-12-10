@@ -5,13 +5,13 @@ import { useAppStatsVolume } from '@/dex/entities/appstats-volume'
 import type { SwapFormValuesCache } from '@/dex/store/createCacheSlice'
 import useStore from '@/dex/store/useStore'
 import { FORMAT_OPTIONS, formatNumber, type NetworkDef } from '@ui/utils'
-import { useConnection } from '@ui-kit/features/connect-wallet'
+import { useCurve } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { APP_LINK } from '@ui-kit/shared/routes'
 import { useNetworkByChain } from '../entities/networks'
 
 export const useDexAppStats = (network: NetworkDef | undefined) => {
-  const { curveApi = {} } = useConnection()
+  const { curveApi = {} } = useCurve()
   const { data: tvlTotal } = useAppStatsTvl(curveApi)
   const { data: volumeTotal } = useAppStatsVolume(curveApi)
   return [

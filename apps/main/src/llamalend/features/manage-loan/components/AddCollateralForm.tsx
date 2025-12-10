@@ -27,7 +27,7 @@ export const AddCollateralForm = <ChainId extends IChainId>({
   networks: NetworkDict<ChainId>
   chainId: ChainId
   enabled?: boolean
-  onAdded?: NonNullable<AddCollateralOptions['onAdded']>
+  onAdded: NonNullable<AddCollateralOptions['onAdded']>
 }) => {
   const network = networks[chainId]
   const [isOpen, , , toggle] = useSwitch(false)

@@ -4,7 +4,7 @@ import { useConfig } from 'wagmi'
 import { invalidateAllUserMarketDetails } from '@/llamalend/queries/validation/invalidation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useMutation } from '@tanstack/react-query'
-import { notify, useConnection } from '@ui-kit/features/connect-wallet'
+import { notify, useCurve } from '@ui-kit/features/connect-wallet'
 import { assertValidity, logError, logMutation, logSuccess } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { waitForTransactionReceipt } from '@wagmi/core'
@@ -41,7 +41,7 @@ function throwIfError(data: unknown) {
 }
 
 /** Context created in onMutate to all callbacks other than mutationFn that also validates */
-type Context = Pick<NonNullable<ReturnType<typeof useConnection>>, 'wallet' | 'llamaApi'> & {
+type Context = Pick<NonNullable<ReturnType<typeof useCurve>>, 'wallet' | 'llamaApi'> & {
   market: LlamaMarketTemplate
   pendingNotification: ReturnType<typeof notify>
 }
@@ -71,7 +71,7 @@ export type LlammaMutationOptions<TVariables extends object, TData extends Resul
   /** Message to display on success */
   successMessage: (variables: TVariables, context: Context) => string
   /** Callback executed on successful mutation */
-  onSuccess?: (
+  onSuccess: (
     data: TData,
     receipt: FormattedTransactionReceipt,
     variables: TVariables,
@@ -98,7 +98,7 @@ export function useLlammaMutation<TVariables extends object, TData extends Resul
   onSuccess,
   onReset,
 }: LlammaMutationOptions<TVariables, TData>) {
-  const { llamaApi, wallet } = useConnection()
+  const { llamaApi, wallet } = useCurve()
   const userAddress = wallet?.account.address
   const config = useConfig()
 
@@ -131,7 +131,7 @@ export function useLlammaMutation<TVariables extends object, TData extends Resul
       updateUserEventsApi(wallet!, { id: networkId }, context.market, receipt.transactionHash)
       await invalidateAllUserMarketDetails({ chainId, marketId, userAddress })
       onReset?.()
-      await onSuccess?.(data, receipt, variables, context)
+      await onSuccess(data, receipt, variables, context)
     },
     onError: (error, variables, context) => {
       logError(mutationKey, { error, variables, marketId: context?.market.id })

@@ -1,6 +1,6 @@
 import { BrowserProvider } from 'ethers'
 import { createContext, useContext, useMemo } from 'react'
-import { useAccount, useConnectorClient } from 'wagmi'
+import { useConnection, useConnectorClient } from 'wagmi'
 import type { NetworkDef } from '@ui/utils'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { type Address } from '@ui-kit/utils'
@@ -11,7 +11,7 @@ const { FAILURE, LOADING } = ConnectState
 export const isFailure = (status: ConnectState) => status === FAILURE
 export const isLoading = (status: ConnectState) => status === LOADING
 
-type ConnectionContextValue = {
+type CurveContextValue = {
   connectState: ConnectState
   curveApi?: CurveApi
   llamaApi?: LlamaApi
@@ -22,21 +22,20 @@ type ConnectionContextValue = {
   isHydrated: boolean
 }
 
-export const ConnectionContext = createContext<ConnectionContextValue>({
+export const CurveContext = createContext<CurveContextValue>({
   connectState: LOADING,
   isHydrated: false,
 })
 
 /**
  * Detects if the wallet is in the process of reconnecting.
- * - `useAccount` and `useClient` are not always in sync, so check both
  * - `isReconnecting` is set when switching pages
  * - `isConnecting` is set when the wallet gets flipped from connecting to connected when loading,
  *   especially without any wallet plugin
  * Therefore, we use a very cumbersome condition to detect if we are reconnecting, and also need some debouncing 😭
  */
 function useWagmiIsReconnecting(address?: Address) {
-  const { isReconnecting, isConnected, isConnecting } = useAccount()
+  const { isReconnecting, isConnected, isConnecting } = useConnection()
   const isConnectingDebounced = useDebouncedValue(isConnecting, { defaultValue: true })
   return !address && (isConnectingDebounced || isReconnecting || isConnected)
 }
@@ -65,4 +64,4 @@ export function useWagmiWallet() {
   }
 }
 
-export const useConnection = () => useContext(ConnectionContext)
+export const useCurve = () => useContext(CurveContext)

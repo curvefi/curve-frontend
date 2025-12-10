@@ -11,7 +11,7 @@ import { getPath } from '@/dex/utils/utilsRouter'
 import Box, { BoxHeader } from '@ui/Box'
 import IconButton from '@ui/IconButton'
 import { breakpoints } from '@ui/utils'
-import { isLoading, useConnection } from '@ui-kit/features/connect-wallet'
+import { isLoading, useCurve } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNavigate, useSearchParams, useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
@@ -21,7 +21,7 @@ export const PageRouterSwap = () => {
   const push = useNavigate()
   const searchParams = useSearchParams()
   const searchParamsString = searchParams?.toString() || ''
-  const { curveApi = null, connectState } = useConnection()
+  const { curveApi = null, connectState } = useCurve()
   const rChainId = useChainId(props.network)
   const isConnecting = isLoading(connectState)
 

@@ -1,4 +1,4 @@
-import { type LendMarketRoute, ROUTE } from '@/lend/constants'
+import { ROUTE } from '@/lend/constants'
 import { networksIdMapper } from '@/lend/networks'
 import { type MarketUrlParams, NetworkUrlParams, type UrlParams } from '@/lend/types/lend.types'
 import { getInternalUrl, LLAMALEND_ROUTES } from '@ui-kit/shared/routes'
@@ -9,19 +9,17 @@ export const getPath = ({ network }: UrlParams, route: string) => getInternalUrl
 export const getCollateralListPathname = ({ network }: NetworkUrlParams) =>
   getInternalUrl('llamalend', network, LLAMALEND_ROUTES.PAGE_MARKETS)
 
-const getMarketPathname = ({ network }: UrlParams, marketId: string, page: LendMarketRoute) =>
-  `${getInternalUrl('lend', network, ROUTE.PAGE_MARKETS)}/${marketId}${page}`
+export const getLoanCreatePathname = (params: UrlParams, owmId: string, formType: string) =>
+  getPath(params, `${ROUTE.PAGE_MARKETS}/${owmId}${ROUTE.PAGE_CREATE}${formType === 'create' ? '' : `/${formType}`}`)
 
-export const getLoanCreatePathname = (params: UrlParams, marketId: string) =>
-  getMarketPathname(params, marketId, ROUTE.PAGE_CREATE)
+export const getLoanManagePathname = (params: UrlParams, owmId: string, formType: string) =>
+  getPath(params, `${ROUTE.PAGE_MARKETS}/${owmId}${ROUTE.PAGE_MANAGE}/${formType}`)
 
-export const getLoanManagePathname = (params: UrlParams, marketId: string) =>
-  getMarketPathname(params, marketId, ROUTE.PAGE_MANAGE)
+export const getVaultPathname = (params: UrlParams, owmId: string, formType: string) =>
+  getPath(params, `${ROUTE.PAGE_MARKETS}/${owmId}${ROUTE.PAGE_VAULT}${formType === 'vault' ? '' : `/${formType}`}`)
 
-export const getVaultPathname = (params: UrlParams, marketId: string) =>
-  getMarketPathname(params, marketId, ROUTE.PAGE_VAULT)
-
-export const parseMarketParams = ({ market, network }: MarketUrlParams) => ({
+export const parseMarketParams = ({ formType, market, network }: MarketUrlParams) => ({
   rMarket: market.toLowerCase(),
   rChainId: networksIdMapper[network],
+  rFormType: formType ?? '',
 })
