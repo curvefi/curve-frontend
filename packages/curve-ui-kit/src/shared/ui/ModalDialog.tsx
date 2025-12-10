@@ -17,15 +17,15 @@ const {
 
 /**
  * Creates responsive height styles for modal dialogs
+ * In compact mode height grows dynamically, otherwise it's fixed to maxHeight
+ * Compact mode still needs maxHeight constraint to prevent overflow
  *
  * @param compact - When true, modal grows to fit content with auto height up to maxHeight
  * @param maxHeight - Custom maximum height (e.g., '80dvh').
  * @returns CSS styles object with height configuration for mobile and tablet breakpoints
  */
-const createHeightStyles = ({ compact, maxHeight }: { compact?: boolean; maxHeight: string }) => ({
-  height: compact ? 'auto' : maxHeight, // In compact mode height grows dynamically, otherwise it's fixed to maxHeight
-  ...(compact && { maxHeight: maxHeight }), // Compact mode still needs maxHeight constraint to prevent overflow
-})
+const createHeightStyles = ({ compact, maxHeight }: { compact?: boolean; maxHeight: string }) =>
+  compact ? { height: 'auto', maxHeight } : { height: maxHeight }
 
 export type ModalDialogProps = {
   /** Content of the modal dialog */
