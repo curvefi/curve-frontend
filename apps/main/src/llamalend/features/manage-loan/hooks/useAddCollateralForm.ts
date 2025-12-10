@@ -12,6 +12,8 @@ import { useAddCollateralBands } from '@/llamalend/queries/add-collateral/add-co
 import { useAddCollateralEstimateGas } from '@/llamalend/queries/add-collateral/add-collateral-gas-estimate.query'
 import { getAddCollateralHealthOptions } from '@/llamalend/queries/add-collateral/add-collateral-health.query'
 import { useAddCollateralPrices } from '@/llamalend/queries/add-collateral/add-collateral-prices.query'
+import { useMarketRates } from '@/llamalend/queries/market-rates'
+import { getUserHealthOptions } from '@/llamalend/queries/user-health.query'
 import { useUserState } from '@/llamalend/queries/user-state.query'
 import { mapQuery, withTokenSymbol } from '@/llamalend/queries/utils'
 import type { CollateralParams } from '@/llamalend/queries/validation/manage-loan.types'
@@ -26,6 +28,7 @@ import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { formDefaultOptions } from '@ui-kit/lib/model'
 import { decimal } from '@ui-kit/utils/decimal'
 import { useFormErrors } from '../../borrow/react-form.utils'
+import { useLoanToValueFromUserState } from './useLoanToValueFromUserState'
 
 const useCallbackAfterFormUpdate = (form: UseFormReturn<CollateralForm>, callback: () => void) =>
   useEffect(() => form.subscribe({ formState: { values: true }, callback }), [form, callback])
@@ -36,12 +39,14 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
   networks,
   enabled,
   onAdded,
+  isAccordionOpen,
 }: {
   market: LlamaMarketTemplate | undefined
   network: LlamaNetwork<ChainId>
   networks: NetworkDict<ChainId>
   enabled?: boolean
   onAdded: NonNullable<AddCollateralOptions['onAdded']>
+  isAccordionOpen: boolean
 }) => {
   const { address: userAddress } = useConnection()
   const { chainId } = network
@@ -89,10 +94,31 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
   useCallbackAfterFormUpdate(form, action.reset)
 
   const userState = useUserState(params, enabled)
-  const bands = useAddCollateralBands(params, enabled)
-  const health = useHealthQueries((isFull) => getAddCollateralHealthOptions({ ...params, isFull }, enabled))
   const prices = useAddCollateralPrices(params, enabled)
+  const health = useHealthQueries((isFull) => getAddCollateralHealthOptions({ ...params, isFull }, enabled))
   const gas = useAddCollateralEstimateGas(networks, params, enabled)
+  const bands = useAddCollateralBands(params, enabled && isAccordionOpen)
+  const prevLoanToValue = useLoanToValueFromUserState({
+    chainId,
+    marketId: params.marketId,
+    userAddress: params.userAddress,
+    collateralToken,
+    borrowToken,
+    enabled: isAccordionOpen,
+    expectedBorrowed: userState.data?.debt,
+  })
+  const loanToValue = useLoanToValueFromUserState({
+    chainId: params.chainId!,
+    marketId: params.marketId,
+    userAddress: params.userAddress,
+    collateralToken,
+    borrowToken,
+    enabled: isAccordionOpen && !!values.userCollateral,
+    collateralDelta: values.userCollateral,
+    expectedBorrowed: userState.data?.debt,
+  })
+  const prevHealth = useHealthQueries((isFull) => getUserHealthOptions({ ...params, isFull }, enabled))
+  const marketRates = useMarketRates(params, isAccordionOpen)
 
   const expectedCollateral = useMemo(
     () =>
@@ -119,20 +145,23 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
   return {
     form,
     values,
-    params,
     isPending: form.formState.isSubmitting || action.isPending,
     onSubmit: form.handleSubmit(onSubmit),
     action,
     bands,
+    prevHealth,
     health,
+    prevLoanToValue,
+    loanToValue,
+    marketRates,
     prices,
     gas,
     isApproved,
     formErrors,
     collateralToken,
+    expectedCollateral,
     borrowToken,
     txHash: action.data?.hash,
     userState,
-    expectedCollateral,
   }
 }

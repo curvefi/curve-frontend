@@ -1,9 +1,5 @@
-import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
-import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import type { AddCollateralOptions } from '@/llamalend/mutations/add-collateral.mutation'
-import { useMarketRates } from '@/llamalend/queries/market-rates'
-import { getUserHealthOptions } from '@/llamalend/queries/user-health.query'
 import { LoanFormAlerts } from '@/llamalend/widgets/manage-loan/LoanFormAlerts'
 import { LoanFormTokenInput } from '@/llamalend/widgets/manage-loan/LoanFormTokenInput'
 import { LoanFormWrapper } from '@/llamalend/widgets/manage-loan/LoanFormWrapper'
@@ -37,7 +33,6 @@ export const AddCollateralForm = <ChainId extends IChainId>({
     isPending,
     onSubmit,
     action,
-    params,
     values,
     health,
     gas,
@@ -48,34 +43,17 @@ export const AddCollateralForm = <ChainId extends IChainId>({
     txHash,
     userState,
     expectedCollateral,
+    prevHealth,
+    marketRates,
+    prevLoanToValue,
+    loanToValue,
   } = useAddCollateralForm({
     market,
     network,
     networks,
     enabled,
     onAdded,
-  })
-
-  const prevLoanToValue = useLoanToValueFromUserState({
-    chainId,
-    marketId: params.marketId,
-    userAddress: params.userAddress,
-    collateralToken,
-    borrowToken,
-    enabled: isOpen,
-    expectedBorrowed: userState.data?.debt,
-  })
-  const prevHealth = useHealthQueries((isFull) => getUserHealthOptions({ ...params, isFull }, undefined))
-  const marketRates = useMarketRates(params, isOpen)
-  const loanToValue = useLoanToValueFromUserState({
-    chainId: params.chainId!,
-    marketId: params.marketId,
-    userAddress: params.userAddress,
-    collateralToken,
-    borrowToken,
-    enabled: !!enabled && !!values.userCollateral,
-    collateralDelta: values.userCollateral,
-    expectedBorrowed: userState.data?.debt,
+    isAccordionOpen: isOpen,
   })
 
   return (
