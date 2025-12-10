@@ -31,4 +31,5 @@ export enum Chain {
   MegaEth = 6342,
   Strata = 8091,
   ExpChain = 18880,
+  Monad = 143,
 }

@@ -45,7 +45,7 @@ const LoanSelfLiquidation = ({
   market,
   userActiveKey,
   params,
-}: PageContentProps<MarketUrlParams>) => {
+}: PageContentProps & { params: MarketUrlParams }) => {
   const isSubscribed = useRef(false)
   const formEstGas = useStore((state) => state.loanSelfLiquidation.formEstGas)
   const formStatus = useStore((state) => state.loanSelfLiquidation.formStatus)

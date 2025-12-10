@@ -6,7 +6,7 @@ import FormWithdraw from '@/dao/components/PageVeCrv/components/FormWithdraw'
 import type { FormType, PageVecrv } from '@/dao/components/PageVeCrv/types'
 import useStore from '@/dao/store/useStore'
 import Stack from '@mui/material/Stack'
-import { isLoading, useConnection } from '@ui-kit/features/connect-wallet'
+import { isLoading, useCurve } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { t } from '@ui-kit/lib/i18n'
 import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
@@ -17,7 +17,7 @@ const { Spacing } = SizesAndSpaces
 const FormCrvLocker = (pageProps: PageVecrv) => {
   const { curve, rFormType, vecrvInfo } = pageProps
 
-  const { connectState } = useConnection()
+  const { connectState } = useCurve()
   const isLoadingCurve = isLoading(connectState)
   const isPageVisible = useLayoutStore((state) => state.isPageVisible)
   const setFormValues = useStore((state) => state.lockedCrv.setFormValues)

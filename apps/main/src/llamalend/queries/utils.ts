@@ -1,4 +1,4 @@
-import type { Query } from '../widgets/manage-loan/loan.types'
+import type { Query } from '@ui-kit/types/util'
 
 /**
  * Maps a Query type to extract partial data from it.

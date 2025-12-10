@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { styled } from 'styled-components'
-import { useAccount } from 'wagmi'
+import { useConnection } from 'wagmi'
 import Box from '@ui/Box'
 import { t } from '@ui-kit/lib/i18n'
 import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
@@ -15,7 +15,7 @@ const tabs: TabOption<Tab>[] = [
 ]
 
 const Gauges = () => {
-  const { address: userAddress } = useAccount()
+  const { address: userAddress } = useConnection()
   const [tab, setTab] = useState<Tab>('gaugeList')
 
   return (

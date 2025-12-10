@@ -1,11 +1,11 @@
-import { useAccount } from 'wagmi'
+import { useConnection } from 'wagmi'
 import { getLlamaMarket, getTokens } from '@/llamalend/llama.utils'
 import { useUserState } from '@/llamalend/queries/user-state.query'
 import type { ClosePositionProps } from '..'
 import type { MarketParams } from '../types'
 
 export function useDebtToken(params: MarketParams): ClosePositionProps['debtToken'] {
-  const { address: userAddress } = useAccount()
+  const { address: userAddress } = useConnection()
   const { data: userState } = useUserState({ ...params, userAddress })
 
   const { debt } = userState ?? {}

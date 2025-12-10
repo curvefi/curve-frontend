@@ -3,7 +3,8 @@ import type { Address } from 'viem'
 import CampaignRewardsBanner from '@/lend/components/CampaignRewardsBanner'
 import { MarketInformationComp } from '@/lend/components/MarketInformationComp'
 import { MarketInformationTabs } from '@/lend/components/MarketInformationTabs'
-import { ManageLoanTabs } from '@/lend/components/PageLoanManage/ManageLoanTabs'
+import LoanMange from '@/lend/components/PageLoanManage/index'
+import type { DetailInfoTypes } from '@/lend/components/PageLoanManage/types'
 import { useOneWayMarket } from '@/lend/entities/chain'
 import { useBorrowPositionDetails } from '@/lend/hooks/useBorrowPositionDetails'
 import { useLendPageTitle } from '@/lend/hooks/useLendPageTitle'
@@ -15,6 +16,7 @@ import useStore from '@/lend/store/useStore'
 import { type MarketUrlParams } from '@/lend/types/lend.types'
 import { getVaultPathname, parseMarketParams } from '@/lend/utils/helpers'
 import { getCollateralListPathname } from '@/lend/utils/utilsRouter'
+import { ManageSoftLiquidation } from '@/llamalend/features/manage-soft-liquidation'
 import { MarketDetails } from '@/llamalend/features/market-details'
 import { BorrowPositionDetails, NoPosition } from '@/llamalend/features/market-position-details'
 import { UserPositionHistory } from '@/llamalend/features/user-position-history'
@@ -25,9 +27,10 @@ import { isChain } from '@curvefi/prices-api'
 import Stack from '@mui/material/Stack'
 import { AppPageFormsWrapper } from '@ui/AppPage'
 import Box from '@ui/Box'
-import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
+import { ConnectWalletPrompt, isLoading, useCurve, useWallet } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useParams } from '@ui-kit/hooks/router'
+import { useManageSoftLiquidation } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
@@ -37,12 +40,13 @@ const { Spacing } = SizesAndSpaces
 
 const Page = () => {
   const params = useParams<MarketUrlParams>()
-  const { rMarket, rChainId } = parseMarketParams(params)
-  const { llamaApi: api = null, connectState } = useConnection()
+  const { rMarket, rChainId, rFormType } = parseMarketParams(params)
+  const { llamaApi: api = null, connectState } = useCurve()
   const titleMapper = useTitleMapper()
   const { data: market, isSuccess } = useOneWayMarket(rChainId, rMarket)
   const rOwmId = market?.id ?? ''
   const userActiveKey = helpers.getUserActiveKey(api, market!)
+  const isMdUp = useLayoutStore((state) => state.isMdUp)
   const isPageVisible = useLayoutStore((state) => state.isPageVisible)
   const fetchAllMarketDetails = useStore((state) => state.markets.fetchAll)
   const fetchAllUserMarketDetails = useStore((state) => state.user.fetchAll)
@@ -84,8 +88,15 @@ const Page = () => {
     network,
   })
 
-  const isInSoftLiquidation =
-    borrowPositionDetails.liquidationAlert.softLiquidation || borrowPositionDetails.liquidationAlert.hardLiquidation
+  const isManageSoftLiq =
+    useManageSoftLiquidation() &&
+    (borrowPositionDetails.liquidationAlert.softLiquidation || borrowPositionDetails.liquidationAlert.hardLiquidation)
+
+  // set tabs
+  const DETAIL_INFO_TYPES: { key: DetailInfoTypes; label: string }[] = [{ label: t`Market Details`, key: 'market' }]
+  if (signerAddress) {
+    DETAIL_INFO_TYPES.push({ label: t`Your Details`, key: 'user' })
+  }
 
   useEffect(() => {
     if (api && market && isPageVisible) {
@@ -112,6 +123,7 @@ const Page = () => {
     params,
     rChainId,
     rOwmId,
+    rFormType,
     isLoaded,
     api,
     market,
@@ -121,7 +133,7 @@ const Page = () => {
 
   const positionDetailsHrefs = {
     borrow: '',
-    supply: getVaultPathname(params, rOwmId),
+    supply: getVaultPathname(params, rOwmId, 'deposit'),
   }
 
   return isSuccess && !market ? (
@@ -130,7 +142,13 @@ const Page = () => {
     <>
       <DetailPageStack>
         <AppPageFormsWrapper>
-          {rChainId && rOwmId && <ManageLoanTabs isInSoftLiquidation={isInSoftLiquidation} {...pageProps} />}
+          {rChainId &&
+            rOwmId &&
+            (isManageSoftLiq ? (
+              <ManageSoftLiquidation marketId={rOwmId} chainId={rChainId} network={network} />
+            ) : (
+              <LoanMange {...pageProps} />
+            ))}
         </AppPageFormsWrapper>
         <Stack flexDirection="column" flexGrow={1} sx={{ gap: Spacing.md }}>
           <CampaignRewardsBanner
