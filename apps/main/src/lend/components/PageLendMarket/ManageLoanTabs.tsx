@@ -103,6 +103,6 @@ export const ManageLoanTabs = ({
     : shouldUseManageLoanMuiForm
       ? LendManageNewMenu
       : LendManageLegacyMenu
-  const shouldWrap = menu === LendManageLegacyMenu
+  const shouldWrap = menu === LendManageLegacyMenu || menu === LendManageSoftLiquidationMenu // todo: LoanFormWrapper in soft liquidation
   return <FormTabs params={pageProps} menu={menu} shouldWrap={shouldWrap} />
 }
