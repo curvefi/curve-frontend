@@ -75,7 +75,7 @@ export const Banner = ({
     data-testid={testId}
   >
     <Stack direction="column" width="100%" maxWidth={MaxWidth.banner}>
-      <Stack direction="row" alignItems="center" justifyContent="space-between">
+      <Stack direction="row" alignItems="center" justifyContent="space-between" gap={Spacing.sm}>
         <Typography sx={{ ...BannerSx[severity].title }} variant="headingXsBold">
           {children}
         </Typography>
@@ -87,16 +87,16 @@ export const Banner = ({
               target="_blank"
               color="ghost"
               variant="link"
-              endIcon={<ArrowTopRightIcon />}
+              endIcon={<ArrowTopRightIcon fontSize="small" />}
               size="extraSmall"
+              sx={{ ...BannerSx[severity].title }}
             >
               {t`Learn more`}
             </Button>
           )}
-          {/* TODO: fix button colors */}
           {onClick &&
             (buttonText ? (
-              <Button color="ghost" onClick={onClick} size="extraSmall">
+              <Button color="ghost" onClick={onClick} size="extraSmall" sx={{ ...BannerSx[severity].title }}>
                 {buttonText}
               </Button>
             ) : (
