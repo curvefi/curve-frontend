@@ -33,7 +33,6 @@ import { Decimal, decimal } from '@ui-kit/utils/decimal'
 import { useFormErrors } from '../../borrow/react-form.utils'
 import { useLoanToValueFromUserState } from './useLoanToValueFromUserState'
 
-
 const useCallbackAfterFormUpdate = (form: UseFormReturn<CollateralForm>, callback: () => void) =>
   useEffect(() => form.subscribe({ formState: { values: true }, callback }), [form, callback])
 
