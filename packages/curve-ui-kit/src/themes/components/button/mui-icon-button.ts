@@ -30,6 +30,7 @@ export const defineMuiIconButton = ({ Button, Text }: DesignSystem): Components[
         border: `${OutlineWidth} solid transparent`,
         borderRadius: '0',
         padding: 0,
+        // default color to Ghost
         ...buttonColor(Ghost),
         transition: Transition,
         ':focus-visible': { borderColor: Focus_Outline },
