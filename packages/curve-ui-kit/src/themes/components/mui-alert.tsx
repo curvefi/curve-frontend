@@ -65,7 +65,7 @@ export const defineMuiAlert = (
       '&.MuiAlert-colorInfo': { backgroundColor: Feedback.Info },
       '&.MuiAlert-colorSuccess': { backgroundColor: Feedback.Success },
       '&.MuiAlert-colorWarning': { backgroundColor: Feedback.Warning, color: TextColors.Primary },
-      '&.MuiAlert-colorError': { backgroundColor: Feedback.Error },
+      '&.MuiAlert-colorError': { backgroundColor: Feedback.Error, color: TextColors.FilledFeedback.Alert.Primary },
     },
     icon: {
       ...handleBreakpoints({
