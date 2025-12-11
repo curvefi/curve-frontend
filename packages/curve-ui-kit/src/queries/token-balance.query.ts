@@ -53,7 +53,7 @@ export function useTokenBalance({ chainId, userAddress, tokenAddress }: FieldsOf
   const config = useConfig()
 
   const isEnabled = chainId != null && userAddress != null && tokenAddress != null
-  const isNativeToken = isEnabled && isNative({ tokenAddress })
+  const isNativeToken = tokenAddress != null && isNative({ tokenAddress })
 
   const nativeBalance = useBalance({
     ...(isEnabled ? getNativeBalanceQueryOptions(config, { chainId, userAddress }) : {}),
