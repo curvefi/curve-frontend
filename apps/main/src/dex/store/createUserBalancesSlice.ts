@@ -61,17 +61,26 @@ const createUserBalancesSlice = (
       sliceState.setStateByKey('loading', true)
 
       // This gets multicall batched by Wagmi and Viem internally
-      const balances = await Promise.all(
+      const balances = await Promise.allSettled(
         filteredBadTokens.map((token) =>
           fetchTokenBalance(config, {
             chainId,
             userAddress: signerAddress,
             tokenAddress: token as Address,
-          }).then((balance) => [token, balance]),
+          }).then((balance) => [token, balance] as const),
         ),
       )
 
-      const userBalancesMapper = Object.fromEntries(balances)
+      balances.forEach((result, index) => {
+        if (result.status === 'rejected') {
+          console.warn(`Failed to fetch balance for token ${filteredBadTokens[index]}:`, result.reason)
+        }
+      })
+
+      const userBalancesMapper = Object.fromEntries(
+        balances.filter((x) => x.status === 'fulfilled').map((x) => x.value),
+      )
+
       sliceState.setStateByKeys({
         userBalancesMapper: { ...storedUserBalancesMapper, ...userBalancesMapper },
         loading: false,
