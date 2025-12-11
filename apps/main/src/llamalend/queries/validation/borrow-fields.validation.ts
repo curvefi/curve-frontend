@@ -42,6 +42,12 @@ export const validateMaxDebt = (debt: Decimal | undefined | null, maxDebt: Decim
   })
 }
 
+export const validateMaxDebtIsSet = (maxDebt: Decimal | undefined | null) => {
+  test('debt', 'Maximum debt must be calculated before debt can be validated', () => {
+    enforce(maxDebt).isNotNullish()
+  })
+}
+
 export const validateMaxCollateral = (
   userCollateral: Decimal | undefined | null,
   maxCollateral: Decimal | undefined | null,

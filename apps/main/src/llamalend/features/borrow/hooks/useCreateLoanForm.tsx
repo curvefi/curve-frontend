@@ -83,7 +83,6 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     creationError,
     txHash: data?.hash,
     isApproved: useBorrowCreateLoanIsApproved(params),
-    tooMuchDebt: !!form.formState.errors['maxDebt'],
     formErrors: useFormErrors(form.formState),
   }
 }

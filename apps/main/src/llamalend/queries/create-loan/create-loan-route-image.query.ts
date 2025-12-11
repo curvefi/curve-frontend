@@ -16,5 +16,5 @@ export const { useQuery: useCreateLoanRouteImage } = queryFactory({
         : null
   },
   staleTime: '1m',
-  validationSuite: borrowQueryValidationSuite,
+  validationSuite: borrowQueryValidationSuite(), // requires debt and maxDebt
 })
