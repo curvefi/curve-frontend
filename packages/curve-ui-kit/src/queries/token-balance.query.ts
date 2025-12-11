@@ -61,6 +61,7 @@ export function useTokenBalance({ chainId, userAddress, tokenAddress }: FieldsOf
   })
 
   const erc20Balance = useReadContracts({
+    allowFailure: false,
     contracts: isEnabled ? getERC20QueryContracts({ chainId, userAddress, tokenAddress }) : undefined,
     query: { enabled: isEnabled && !isNativeToken },
   })
@@ -73,12 +74,11 @@ export function useTokenBalance({ chainId, userAddress, tokenAddress }: FieldsOf
       }
     : {
         data:
-          erc20Balance.data && erc20Balance.data[0].status === 'success' && erc20Balance.data[1].status === 'success'
-            ? convertBalance({
-                value: erc20Balance.data[0].result,
-                decimals: erc20Balance.data[1].result,
-              })
-            : undefined,
+          erc20Balance.data &&
+          convertBalance({
+            value: erc20Balance.data[0],
+            decimals: erc20Balance.data[1],
+          }),
         error: erc20Balance.error,
         isLoading: erc20Balance.isLoading,
       }
