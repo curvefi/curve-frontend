@@ -1,4 +1,4 @@
-import { erc20Abi, ethAddress, formatUnits, type Address } from 'viem'
+import { erc20Abi, ethAddress, formatUnits, isAddressEqual, type Address } from 'viem'
 import { useConfig } from 'wagmi'
 import { useBalance, useReadContracts } from 'wagmi'
 import type { FieldsOf } from '@ui-kit/lib'
@@ -10,7 +10,6 @@ import type { GetBalanceReturnType } from '@wagmi/core'
 import { getBalanceQueryOptions, readContractsQueryOptions } from '@wagmi/core/query'
 
 type TokenQuery = { tokenAddress: Address }
-type TokenSymbolQuery = { tokenSymbol: string }
 
 /** Convert user collateral from GetBalanceReturnType to number */
 const convertBalance = ({ value, decimals }: Partial<GetBalanceReturnType>) =>
@@ -30,20 +29,12 @@ const getERC20QueryContracts = ({ chainId, userAddress, tokenAddress }: ChainQue
     { chainId, address: tokenAddress, abi: erc20Abi, functionName: 'decimals' },
   ] as const
 
-/** Function that gets the native currency symbol for a given chain */
-const getNativeCurrencySymbol = (config: Config, chainId: number) =>
-  config.chains.find((chain) => chain.id === chainId)?.nativeCurrency?.symbol
-
-/** Function that checks if a given token address and symbol are the chain's native currency symbol */
-const isNative = (config: Config, { chainId, tokenAddress, tokenSymbol }: ChainQuery & TokenQuery & TokenSymbolQuery) =>
-  tokenAddress === ethAddress || tokenSymbol === getNativeCurrencySymbol(config, chainId)
+/** In the Curve ecosystem all native chain gas tokens are the 0xeee...eee address */
+const isNative = ({ tokenAddress }: TokenQuery) => isAddressEqual(tokenAddress, ethAddress)
 
 /** Imperatively fetch token balance */
-export const fetchTokenBalance = async (
-  config: Config,
-  query: ChainQuery & UserQuery & TokenQuery & TokenSymbolQuery,
-) =>
-  isNative(config, query)
+export const fetchTokenBalance = async (config: Config, query: ChainQuery & UserQuery & TokenQuery) =>
+  isNative(query)
     ? await queryClient
         .fetchQuery(getNativeBalanceQueryOptions(config, query))
         .then((balance) => convertBalance({ value: balance.value, decimals: balance.decimals }))
@@ -57,16 +48,11 @@ export const fetchTokenBalance = async (
         .then((balance) => convertBalance({ value: balance[0], decimals: balance[1] }))
 
 /** Hook to fetch the token balance */
-export function useTokenBalance({
-  chainId,
-  userAddress,
-  tokenAddress,
-  tokenSymbol,
-}: FieldsOf<ChainQuery & UserQuery & TokenQuery & TokenSymbolQuery>) {
+export function useTokenBalance({ chainId, userAddress, tokenAddress }: FieldsOf<ChainQuery & UserQuery & TokenQuery>) {
   const config = useConfig()
 
-  const isEnabled = chainId != null && userAddress != null && tokenAddress != null && tokenSymbol != null
-  const isNativeToken = isEnabled && isNative(config, { chainId, tokenAddress, tokenSymbol })
+  const isEnabled = chainId != null && userAddress != null && tokenAddress != null
+  const isNativeToken = isEnabled && isNative({ tokenAddress })
 
   const nativeBalance = useBalance({
     ...(isEnabled ? getNativeBalanceQueryOptions(config, { chainId, userAddress }) : {}),

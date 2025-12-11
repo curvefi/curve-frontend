@@ -53,7 +53,6 @@ export const LoanFormTokenInput = <
     chainId: network?.chainId,
     userAddress,
     tokenAddress: token?.address,
-    tokenSymbol: token?.symbol,
   })
 
   const errors = form.formState.errors as PartialRecord<FieldPath<TFieldValues>, Error>

@@ -67,7 +67,6 @@ const createUserBalancesSlice = (
             chainId,
             userAddress: signerAddress,
             tokenAddress: token as Address,
-            tokenSymbol: '',
           }).then((balance) => [token, balance]),
         ),
       )
