@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
 import { type Address } from 'viem'
-import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
+import { useTokenBalance } from '@ui-kit/queries/token-balance.query'
 import { Decimal } from '@ui-kit/utils'
 import { useCreateLoanMaxReceive } from '../../../queries/create-loan/create-loan-max-receive.query'
 import { useMarketMaxLeverage } from '../../../queries/market-max-leverage.query'
@@ -26,7 +26,7 @@ export function useMaxTokenValues(
     data: userBalance,
     error: balanceError,
     isLoading: isBalanceLoading,
-  } = useTokenBalance(params, collateralToken)
+  } = useTokenBalance({ ...params, tokenAddress: collateralToken?.address, tokenSymbol: collateralToken?.symbol })
   const { data: maxBorrow, error: maxBorrowError, isLoading: isLoadingMaxBorrow } = useCreateLoanMaxReceive(params)
   const {
     data: maxTotalLeverage,
