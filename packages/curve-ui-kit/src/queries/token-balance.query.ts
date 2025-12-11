@@ -60,6 +60,8 @@ export function useTokenBalance({ chainId, userAddress, tokenAddress }: FieldsOf
     query: { enabled: isEnabled && isNativeToken },
   })
 
+  // Spreading with ...readContractsQueryOptions() breaks Typescript's type inference, so we have to settle with the
+  // least common denominator that does *not* cause type  inference issues, which is getERC20QueryContracts.
   const erc20Balance = useReadContracts({
     allowFailure: false,
     contracts: isEnabled ? getERC20QueryContracts({ chainId, userAddress, tokenAddress }) : undefined,
