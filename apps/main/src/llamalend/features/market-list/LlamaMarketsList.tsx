@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { useAccount } from 'wagmi'
+import { useConnection } from 'wagmi'
 import {
   invalidateAllUserLendingSupplies,
   invalidateAllUserLendingVaults,
@@ -46,7 +46,7 @@ const useOnReload = ({ address: userAddress, isFetching }: { address?: Address; 
  * Page for displaying the lending markets table.
  */
 export const LlamaMarketsList = () => {
-  const { address } = useAccount()
+  const { address } = useConnection()
   const { data, isError, isLoading, isFetching } = useLlamaMarkets(address)
   const [isReloading, onReload] = useOnReload({ address, isFetching })
   const loading = isReloading || (!data && (!isError || isLoading)) // on initial render isLoading is still false

@@ -48,14 +48,9 @@ export const TokenSelectorModal = ({ isOpen, showManageList, compact, onClose, .
         // eslint-disable-next-line no-constant-binary-expression
         false && showManageList && !isManageListOpen && <ModalSettingsButton onClick={openManageList} />
       }
-      sx={{
-        '& .MuiPaper-root:not(.MuiAlert-root)': {
-          overflowY: 'hidden',
-          maxHeight: MaxHeight.tokenSelector,
-          height: 'auto',
-          minHeight: compact ? 'auto' : MaxHeight.tokenSelector,
-        },
-      }}
+      compact={compact}
+      maxHeight={MaxHeight.tokenSelector}
+      sx={{ '& .MuiPaper-root:not(.MuiAlert-root)': { overflowY: 'hidden' } }}
     >
       {isManageListOpen ? <ManageTokenList /> : <TokenList {...tokenListProps} />}
     </ModalDialog>

@@ -10,6 +10,23 @@ import Typography from '@mui/material/Typography'
 import type { SxProps } from '@ui-kit/utils'
 import { SizesAndSpaces } from '../../themes/design/1_sizes_spaces'
 
+const {
+  Width: { modal: modalWidth },
+  Height: { modal: modalHeight },
+} = SizesAndSpaces
+
+/**
+ * Creates responsive height styles for modal dialogs
+ * In compact mode height grows dynamically, otherwise it's fixed to maxHeight
+ * Compact mode still needs maxHeight constraint to prevent overflow
+ *
+ * @param compact - When true, modal grows to fit content with auto height up to maxHeight
+ * @param maxHeight - Custom maximum height (e.g., '80dvh').
+ * @returns CSS styles object with height configuration for mobile and tablet breakpoints
+ */
+const createHeightStyles = ({ compact, maxHeight }: { compact?: boolean; maxHeight: string }) =>
+  compact ? { height: 'auto', maxHeight } : { height: maxHeight }
+
 export type ModalDialogProps = {
   /** Content of the modal dialog */
   children: ReactNode
@@ -51,6 +68,9 @@ export type ModalDialogProps = {
   /** If true, the modal will have a compact height instead of filling most of the screen */
   compact?: boolean
 
+  /** When you want to set the max height of the modal to be smaller than 100dvh */
+  maxHeight?: string
+
   /** Custom styles for the modal dialog */
   sx?: SxProps
 }
@@ -65,6 +85,7 @@ export const ModalDialog = ({
   titleColor = 'textSecondary',
   footer,
   compact,
+  maxHeight,
   sx,
 }: ModalDialogProps) => (
   <Dialog
@@ -72,31 +93,16 @@ export const ModalDialog = ({
     onClose={onClose}
     onTransitionExited={onTransitionExited}
     disableRestoreFocus
-    sx={{
+    sx={(t) => ({
+      '& .MuiPaper-root': {
+        maxWidth: '100dvw',
+        ...createHeightStyles({ compact, maxHeight: maxHeight ?? modalHeight.md }),
+        [t.breakpoints.down('tablet')]: { ...createHeightStyles({ compact, maxHeight: maxHeight ?? modalHeight.sm }) },
+      },
       ...sx,
-      ...(compact && {
-        '& .MuiPaper-root': {
-          height: 'auto',
-          minHeight: 'auto',
-          ...(sx as Record<string, Record<string, string>>)?.['& .MuiPaper-root'],
-        },
-      }),
-    }}
+    })}
   >
-    <Card
-      sx={{
-        ...SizesAndSpaces.Height.modal.sm,
-        width: SizesAndSpaces.Width.modal.sm,
-        maxWidth: '100vw',
-        display: 'flex',
-        flexDirection: 'column',
-
-        [`@media (min-width: ${SizesAndSpaces.Width.modal.md})`]: {
-          ...SizesAndSpaces.Height.modal.md,
-          width: SizesAndSpaces.Width.modal.md,
-        },
-      }}
-    >
+    <Card sx={{ width: { tablet: modalWidth.md, mobile: '100dvw' }, display: 'flex', flexDirection: 'column' }}>
       <CardHeader
         action={
           onClose && (

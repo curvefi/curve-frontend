@@ -1,4 +1,4 @@
-import { useAccount } from 'wagmi'
+import { useConnection } from 'wagmi'
 import { LlamaMarketColumnId } from '@/llamalend/features/market-list/columns.enum'
 import { calculateLtv } from '@/llamalend/llama.utils'
 import { useUserLendingVaultEarnings, useUserLendingVaultStats } from '@/llamalend/queries/market-list/lending-vaults'
@@ -29,8 +29,8 @@ const earningsColumns = [
  * @returns The stats data and an error if any
  */
 export function useUserMarketStats(market: LlamaMarket, column?: LlamaMarketColumnId) {
-  const { type, userHasPositions, address: marketAddress, controllerAddress, chain } = market
-  const { address: userAddress } = useAccount()
+  const { type, userHasPositions, controllerAddress, vaultAddress, chain } = market
+  const { address: userAddress } = useConnection()
   const { data: collateralUsdRate, isLoading: collateralUsdRateLoading } = useTokenUsdPrice({
     blockchainId: market.chain,
     contractAddress: market.assets.collateral.address,
@@ -47,8 +47,6 @@ export function useUserMarketStats(market: LlamaMarket, column?: LlamaMarketColu
   const enableMintStats = enableStats && type === LlamaMarketType.Mint
 
   const params = { userAddress, contractAddress: controllerAddress, blockchainId: chain }
-  // todo: api will be updated to use controller address for earnings too
-  const earningsParams = { ...params, contractAddress: marketAddress }
 
   const {
     data: lendData,
@@ -56,11 +54,12 @@ export function useUserMarketStats(market: LlamaMarket, column?: LlamaMarketColu
     isLoading: loadingLend,
   } = useUserLendingVaultStats(params, enableLendingStats)
 
+  // The API endpoint for user earnings is an exception in that it relies on the vault address instead of controller address.
   const {
     data: earnData,
     error: earnError,
     isLoading: loadingEarn,
-  } = useUserLendingVaultEarnings(earningsParams, enableEarnings)
+  } = useUserLendingVaultEarnings({ ...params, contractAddress: vaultAddress }, enableEarnings)
 
   const { data: mintData, error: mintError, isLoading: loadingMint } = useUserMintMarketStats(params, enableMintStats)
 

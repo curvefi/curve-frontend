@@ -9,7 +9,7 @@ import type { ChainId, Llamma } from '@/loan/types/loan.types'
 import { useTheme } from '@mui/material'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { useConnection } from '@ui-kit/features/connect-wallet'
+import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNewBandsChart } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
@@ -30,7 +30,7 @@ const EMPTY_BANDS_BALANCES: never[] = []
  * Reusable component for OHLC charts, Bands, and market parameters. For /create and /manage pages.
  */
 export const MarketInformationComp = ({ llamma, marketId, chainId, page = 'manage' }: MarketInformationCompProps) => {
-  const { llamaApi: api } = useConnection()
+  const { llamaApi: api } = useCurve()
   const theme = useTheme()
   const newBandsChartEnabled = useNewBandsChart()
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
