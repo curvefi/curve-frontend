@@ -100,7 +100,7 @@ export const Banner = ({
                 {buttonText}
               </Button>
             ) : (
-              <IconButton onClick={onClick} size="extraSmall">
+              <IconButton onClick={onClick} size="extraSmall" sx={{ ...BannerSx[severity].title }}>
                 <CloseIcon />
               </IconButton>
             ))}

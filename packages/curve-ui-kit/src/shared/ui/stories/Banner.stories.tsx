@@ -49,6 +49,7 @@ export const Error: Story = {
   args: {
     severity: 'alert',
     children: 'This is an alert message',
+    subtitle: 'This is a subtitle for the alert message',
   },
 }
 
@@ -56,6 +57,7 @@ export const Warning: Story = {
   args: {
     severity: 'warning',
     children: 'This is a warning message',
+    subtitle: 'This is a subtitle for the warning message',
   },
 }
 
@@ -63,6 +65,7 @@ export const Info: Story = {
   args: {
     severity: 'info',
     children: 'This is a default message',
+    subtitle: 'This is a subtitle for the default message',
   },
 }
 
@@ -70,6 +73,7 @@ export const Highlight: Story = {
   args: {
     severity: 'highlight',
     children: 'This is a highlight message',
+    subtitle: 'This is a subtitle for the highlight message',
   },
 }
 
@@ -114,13 +118,5 @@ export const ApiErrorExample: Story = {
   args: {
     severity: 'alert',
     children: 'There is an issue connecting to the API. Please try to switch your RPC in your wallet settings.',
-  },
-}
-
-export const WithSubtitle: Story = {
-  args: {
-    severity: 'info',
-    children: 'This is an default message with a subtitle',
-    subtitle: 'This is a subtitle',
   },
 }
