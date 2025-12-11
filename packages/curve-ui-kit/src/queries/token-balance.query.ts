@@ -32,19 +32,20 @@ const getERC20QueryContracts = ({ chainId, userAddress, tokenAddress }: ChainQue
 /** In the Curve ecosystem all native chain gas tokens are the 0xeee...eee address */
 const isNative = ({ tokenAddress }: TokenQuery) => isAddressEqual(tokenAddress, ethAddress)
 
-/** Imperatively fetch token balance */
+/** Imperatively fetch token balance. Uses a staletime of 0 to always be guaranteed of a fresh result. */
 export const fetchTokenBalance = async (config: Config, query: ChainQuery & UserQuery & TokenQuery) =>
   isNative(query)
     ? await queryClient
-        .fetchQuery(getNativeBalanceQueryOptions(config, query))
+        .fetchQuery({ ...getNativeBalanceQueryOptions(config, query), staleTime: 0 })
         .then((balance) => convertBalance({ value: balance.value, decimals: balance.decimals }))
     : await queryClient
-        .fetchQuery(
-          readContractsQueryOptions(config, {
+        .fetchQuery({
+          ...readContractsQueryOptions(config, {
             allowFailure: false,
             contracts: getERC20QueryContracts(query),
           }),
-        )
+          staleTime: 0,
+        })
         .then((balance) => convertBalance({ value: balance[0], decimals: balance[1] }))
 
 /** Hook to fetch the token balance */
