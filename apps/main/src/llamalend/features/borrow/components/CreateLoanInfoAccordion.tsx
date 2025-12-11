@@ -25,7 +25,6 @@ export const CreateLoanInfoAccordion = <ChainId extends IChainId>({
   values: { range, slippage, leverageEnabled },
   collateralToken,
   borrowToken,
-  tooMuchDebt,
   networks,
   onSlippageChange,
 }: {
@@ -33,20 +32,18 @@ export const CreateLoanInfoAccordion = <ChainId extends IChainId>({
   values: BorrowForm
   collateralToken: Token | undefined
   borrowToken: Token | undefined
-  tooMuchDebt: boolean
   networks: NetworkDict<ChainId>
   onSlippageChange: (newSlippage: Decimal) => void
 }) => {
   const [isOpen, , , toggle] = useSwitch(false)
-
   return (
     <LoanInfoAccordion
       isOpen={isOpen}
       toggle={toggle}
       range={range}
-      health={useCreateLoanHealth(params, !tooMuchDebt)}
-      bands={useCreateLoanBands(params, isOpen && !tooMuchDebt)}
-      prices={useCreateLoanPrices(params, isOpen && !tooMuchDebt)}
+      health={useCreateLoanHealth(params)}
+      bands={useCreateLoanBands(params, isOpen)}
+      prices={useCreateLoanPrices(params, isOpen)}
       prevRates={useMarketRates(params, isOpen)}
       rates={useMarketFutureRates(params, isOpen)}
       loanToValue={useLoanToValue(
@@ -57,11 +54,11 @@ export const CreateLoanInfoAccordion = <ChainId extends IChainId>({
         },
         isOpen,
       )}
-      gas={useCreateLoanEstimateGas(networks, params, isOpen && !tooMuchDebt)}
+      gas={useCreateLoanEstimateGas(networks, params, isOpen)}
       leverage={{
         enabled: leverageEnabled,
         expectedCollateral: useCreateLoanExpectedCollateral(params, isOpen && leverageEnabled),
-        maxReceive: useCreateLoanMaxReceive(params, isOpen && leverageEnabled && !tooMuchDebt),
+        maxReceive: useCreateLoanMaxReceive(params, isOpen && leverageEnabled),
         priceImpact: useCreateLoanPriceImpact(params, isOpen && leverageEnabled),
         slippage,
         onSlippageChange,

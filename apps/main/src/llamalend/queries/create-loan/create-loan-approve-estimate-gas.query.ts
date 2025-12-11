@@ -36,7 +36,7 @@ const { useQuery: useCreateLoanApproveEstimateGas } = queryFactory({
           ? await market.leverageV2.estimateGas.createLoanApprove(userCollateral, userBorrowed)
           : await market.leverage.estimateGas.createLoanApprove(userCollateral)
   },
-  validationSuite: borrowQueryValidationSuite,
+  validationSuite: borrowQueryValidationSuite({ debtRequired: false }), // doesn't use debt or maxDebt
   dependencies: (params) => [createLoanMaxReceiveKey(params)],
 })
 
