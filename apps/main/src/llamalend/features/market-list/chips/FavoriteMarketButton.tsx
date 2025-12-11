@@ -1,6 +1,5 @@
 import { useFavoriteMarket } from '@/llamalend/queries/market-list/favorite-markets'
 import IconButton from '@mui/material/IconButton'
-import { useTheme } from '@mui/material/styles'
 import { t } from '@ui-kit/lib/i18n'
 import { FavoriteHeartIcon } from '@ui-kit/shared/icons/HeartIcon'
 import { ClickableInRowClass, DesktopOnlyHoverClass } from '@ui-kit/shared/ui/DataTable/data-table.utils'
@@ -10,7 +9,6 @@ import { classNames } from '@ui-kit/utils/dom'
 
 export function FavoriteMarketButton({ address, desktopOnly }: { address: Address; desktopOnly?: boolean }) {
   const [isFavorite, toggleFavorite] = useFavoriteMarket(address)
-  const { design } = useTheme()
   return (
     <Tooltip title={isFavorite ? t`Remove from favorites` : t`Add to favorites`} placement="top">
       <IconButton
@@ -23,7 +21,7 @@ export function FavoriteMarketButton({ address, desktopOnly }: { address: Addres
           }),
         }}
       >
-        <FavoriteHeartIcon color={design.Text.TextColors.Highlight} isFavorite={isFavorite} />
+        <FavoriteHeartIcon isFavorite={isFavorite} />
       </IconButton>
     </Tooltip>
   )
