@@ -1,13 +1,13 @@
 import lodash from 'lodash'
 import type { StoreApi } from 'zustand'
-import type { FormDetailInfoLeverage, FormStatus, FormValues } from '@/lend/components/PageLoanManage/LoanRepay/types'
+import type { FormDetailInfoLeverage, FormStatus, FormValues } from '@/lend/components/PageLendMarket/LoanRepay/types'
 import {
   _parseValues,
   DEFAULT_FORM_STATUS,
   DEFAULT_FORM_VALUES,
-} from '@/lend/components/PageLoanManage/LoanRepay/utils'
-import type { FormDetailInfo, FormEstGas } from '@/lend/components/PageLoanManage/types'
-import { DEFAULT_FORM_EST_GAS } from '@/lend/components/PageLoanManage/utils'
+} from '@/lend/components/PageLendMarket/LoanRepay/utils'
+import type { FormDetailInfo, FormEstGas } from '@/lend/components/PageLendMarket/types'
+import { DEFAULT_FORM_EST_GAS } from '@/lend/components/PageLendMarket/utils'
 import { invalidateMarketDetails } from '@/lend/entities/market-details'
 import { invalidateAllUserBorrowDetails } from '@/lend/entities/user-loan-details'
 import apiLending, { helpers } from '@/lend/lib/apiLending'

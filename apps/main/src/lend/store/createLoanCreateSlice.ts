@@ -6,9 +6,13 @@ import type {
   FormEstGas,
   FormStatus,
   FormValues,
-} from '@/lend/components/PageLoanCreate/types'
-import { _parseValue, DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/lend/components/PageLoanCreate/utils'
-import { DEFAULT_FORM_EST_GAS } from '@/lend/components/PageLoanManage/utils'
+} from '@/lend/components/PageLendMarket/types'
+import {
+  _parseValue,
+  DEFAULT_FORM_EST_GAS,
+  DEFAULT_CREATE_FORM_STATUS,
+  DEFAULT_FORM_VALUES,
+} from '@/lend/components/PageLendMarket/utils'
 import { invalidateMarketDetails } from '@/lend/entities/market-details'
 import { invalidateAllUserBorrowDetails } from '@/lend/entities/user-loan-details'
 import apiLending, { helpers } from '@/lend/lib/apiLending'
@@ -73,7 +77,7 @@ const DEFAULT_STATE: SliceState = {
   detailInfo: {},
   detailInfoLeverage: {},
   formEstGas: {},
-  formStatus: DEFAULT_FORM_STATUS,
+  formStatus: DEFAULT_CREATE_FORM_STATUS,
   formValues: DEFAULT_FORM_VALUES,
   liqRanges: {},
   liqRangesMapper: {},
@@ -224,7 +228,7 @@ const createLoanCreate = (set: StoreApi<State>['setState'], get: StoreApi<State>
         debtError: '',
       }
       const cFormStatus: FormStatus = {
-        ...DEFAULT_FORM_STATUS,
+        ...DEFAULT_CREATE_FORM_STATUS,
         isApproved: formStatus.isApproved,
         isApprovedCompleted: formStatus.isApprovedCompleted,
       }
@@ -267,7 +271,7 @@ const createLoanCreate = (set: StoreApi<State>['setState'], get: StoreApi<State>
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       // update formStatus
-      sliceState.setStateByKey('formStatus', { ...DEFAULT_FORM_STATUS, isInProgress: true, step: 'APPROVAL' })
+      sliceState.setStateByKey('formStatus', { ...DEFAULT_CREATE_FORM_STATUS, isInProgress: true, step: 'APPROVAL' })
 
       // api calls
       const { userCollateral, userBorrowed } = formValues
@@ -283,7 +287,7 @@ const createLoanCreate = (set: StoreApi<State>['setState'], get: StoreApi<State>
       if (resp.activeKey === get()[sliceKey].activeKey) {
         // update formStatus
         sliceState.setStateByKey('formStatus', {
-          ...DEFAULT_FORM_STATUS,
+          ...DEFAULT_CREATE_FORM_STATUS,
           isApproved: !error,
           isApprovedCompleted: !error,
           stepError: error,
@@ -304,7 +308,7 @@ const createLoanCreate = (set: StoreApi<State>['setState'], get: StoreApi<State>
 
       // update formStatus
       sliceState.setStateByKey('formStatus', {
-        ...DEFAULT_FORM_STATUS,
+        ...DEFAULT_CREATE_FORM_STATUS,
         isApproved: true,
         isApprovedCompleted: formStatus.isApprovedCompleted,
         isInProgress: true,
@@ -354,7 +358,7 @@ const createLoanCreate = (set: StoreApi<State>['setState'], get: StoreApi<State>
         // update formStatus
         sliceState.setStateByKeys({
           ...DEFAULT_STATE,
-          formStatus: { ...DEFAULT_FORM_STATUS, isApproved: true, isComplete: true },
+          formStatus: { ...DEFAULT_CREATE_FORM_STATUS, isApproved: true, isComplete: true },
         })
       }
       invalidateMarketDetails({ chainId: api.chainId, marketId: market.id })

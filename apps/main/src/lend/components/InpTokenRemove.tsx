@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import InpChipUsdRate from '@/lend/components/InpChipUsdRate'
-import { StyledInpChip } from '@/lend/components/PageLoanManage/styles'
 import { FieldsTitle } from '@/lend/components/SharedFormStyles/FieldsWrapper'
+import { StyledInpChip } from '@/lend/components/styles'
 import type { NetworkConfig } from '@/lend/types/lend.types'
 import Box from '@ui/Box'
 import type { BoxProps } from '@ui/Box/types'

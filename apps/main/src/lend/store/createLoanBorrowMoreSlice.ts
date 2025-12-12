@@ -4,14 +4,14 @@ import type {
   FormDetailInfoLeverage,
   FormStatus,
   FormValues,
-} from '@/lend/components/PageLoanManage/LoanBorrowMore/types'
+} from '@/lend/components/PageLendMarket/LoanBorrowMore/types'
 import {
   _parseValues,
   DEFAULT_FORM_STATUS,
   DEFAULT_FORM_VALUES,
-} from '@/lend/components/PageLoanManage/LoanBorrowMore/utils'
-import type { FormDetailInfo, FormEstGas } from '@/lend/components/PageLoanManage/types'
-import { DEFAULT_FORM_EST_GAS } from '@/lend/components/PageLoanManage/utils'
+} from '@/lend/components/PageLendMarket/LoanBorrowMore/utils'
+import type { FormDetailInfo, FormEstGas } from '@/lend/components/PageLendMarket/types'
+import { DEFAULT_FORM_EST_GAS } from '@/lend/components/PageLendMarket/utils'
 import { invalidateMarketDetails } from '@/lend/entities/market-details'
 import { invalidateAllUserBorrowDetails } from '@/lend/entities/user-loan-details'
 import apiLending, { helpers } from '@/lend/lib/apiLending'

@@ -12,11 +12,8 @@ export const getCollateralListPathname = ({ network }: NetworkUrlParams) =>
 const getMarketPathname = ({ network }: UrlParams, marketId: string, page: LendMarketRoute) =>
   `${getInternalUrl('lend', network, ROUTE.PAGE_MARKETS)}/${marketId}${page}`
 
-export const getLoanCreatePathname = (params: UrlParams, marketId: string) =>
-  getMarketPathname(params, marketId, ROUTE.PAGE_CREATE)
-
-export const getLoanManagePathname = (params: UrlParams, marketId: string) =>
-  getMarketPathname(params, marketId, ROUTE.PAGE_MANAGE)
+export const getLoanPathname = (params: UrlParams, marketId: string) =>
+  getMarketPathname(params, marketId, ROUTE.PAGE_LOAN)
 
 export const getVaultPathname = (params: UrlParams, marketId: string) =>
   getMarketPathname(params, marketId, ROUTE.PAGE_VAULT)
