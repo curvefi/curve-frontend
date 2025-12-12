@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { styled } from 'styled-components'
 import { type Address, isAddressEqual } from 'viem'
+import { useConfig } from 'wagmi'
 import CampaignRewardsBanner from '@/dex/components/PagePool/components/CampaignRewardsBanner'
 import Deposit from '@/dex/components/PagePool/Deposit'
 import PoolInfoData from '@/dex/components/PagePool/PoolDetails/ChartOhlcWrapper'
@@ -146,11 +147,12 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
   }, [poolData?.pool?.id, currencyReserves?.total])
 
   // fetch user pool info
+  const config = useConfig()
   useEffect(() => {
     if (curve && poolId && signerAddress) {
-      void fetchUserPoolInfo(curve, poolId)
+      void fetchUserPoolInfo(config, curve, poolId)
     }
-  }, [rChainId, poolId, signerAddress, curve, fetchUserPoolInfo])
+  }, [rChainId, poolId, signerAddress, config, curve, fetchUserPoolInfo])
 
   const isRewardsDistributor = useMemo(
     () =>

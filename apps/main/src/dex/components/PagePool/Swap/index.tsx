@@ -286,9 +286,9 @@ const Swap = ({
   // get user balances
   useEffect(() => {
     if (curve && poolId && haveSigner && (isUndefined(userFromBalance) || isUndefined(userToBalance))) {
-      void fetchUserPoolInfo(curve, poolId)
+      void fetchUserPoolInfo(config, curve, poolId, true)
     }
-  }, [chainId, poolId, haveSigner, userFromBalance, userToBalance, curve, fetchUserPoolInfo])
+  }, [chainId, poolId, haveSigner, userFromBalance, userToBalance, config, curve, fetchUserPoolInfo])
 
   // curve state change
   useEffect(() => {

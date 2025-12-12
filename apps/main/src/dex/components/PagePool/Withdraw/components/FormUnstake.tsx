@@ -1,5 +1,5 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
-import { useConnection } from 'wagmi'
+import { useConnection, type Config } from 'wagmi'
 import { useConfig } from 'wagmi'
 import AlertFormError from '@/dex/components/AlertFormError'
 import DetailInfoEstGas from '@/dex/components/DetailInfoEstGas'
@@ -62,10 +62,10 @@ const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed }
   )
 
   const handleUnstakeClick = useCallback(
-    async (activeKey: string, curve: CurveApi, poolData: PoolData, formValues: FormValues) => {
+    async (activeKey: string, config: Config, curve: CurveApi, poolData: PoolData, formValues: FormValues) => {
       const notifyMessage = t`Please confirm unstaking of ${formValues.stakedLpToken} LP Tokens`
       const { dismiss } = notify(notifyMessage, 'pending')
-      const resp = await fetchStepUnstake(activeKey, curve, poolData, formValues)
+      const resp = await fetchStepUnstake(activeKey, config, curve, poolData, formValues)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && network) {
         const TxDescription = t`Unstaked ${formValues.stakedLpToken} LP Tokens`
@@ -79,6 +79,7 @@ const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed }
   const getSteps = useCallback(
     (
       activeKey: string,
+      config: Config,
       curve: CurveApi,
       poolData: PoolData,
       formValues: FormValues,
@@ -95,7 +96,7 @@ const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed }
           status: getStepStatus(isComplete, step === 'UNSTAKE', isValid),
           type: 'action',
           content: isComplete ? t`Unstake Complete` : t`Unstake`,
-          onClick: () => handleUnstakeClick(activeKey, curve, poolData, formValues),
+          onClick: () => handleUnstakeClick(activeKey, config, curve, poolData, formValues),
         },
       }
 
@@ -131,11 +132,11 @@ const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed }
   // steps
   useEffect(() => {
     if (curve && poolData && seed.isSeed !== null) {
-      const updatedSteps = getSteps(activeKey, curve, poolData, formValues, formStatus, seed.isSeed)
+      const updatedSteps = getSteps(activeKey, config, curve, poolData, formValues, formStatus, seed.isSeed)
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId, poolId, signerAddress, formValues, formStatus])
+  }, [config, chainId, poolId, signerAddress, formValues, formStatus])
 
   const isDisabled = seed.isSeed === null || seed.isSeed || formStatus.formProcessing
 

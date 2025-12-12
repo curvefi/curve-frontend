@@ -1,4 +1,5 @@
 import lodash from 'lodash'
+import type { Config } from 'wagmi'
 import type { StoreApi } from 'zustand'
 import curvejsApi from '@/dex/lib/curvejs'
 import type { State } from '@/dex/store/useStore'
@@ -6,6 +7,8 @@ import { Balances, CurveApi, UserPoolListMapper } from '@/dex/types/main.types'
 import { fulfilledValue, isValidAddress } from '@/dex/utils'
 import { shortenAccount } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { fetchPoolTokenBalances } from '../hooks/usePoolTokenBalances'
+import { fetchPoolGaugeTokenBalance, fetchPoolLpTokenBalance } from '../hooks/usePoolTokenDepositBalances'
 
 type StateKey = keyof typeof DEFAULT_STATE
 const { cloneDeep } = lodash
@@ -29,7 +32,7 @@ const sliceKey = 'user'
 export type UserSlice = {
   [sliceKey]: SliceState & {
     fetchUserPoolList(curve: CurveApi): Promise<UserPoolListMapper>
-    fetchUserPoolInfo(curve: CurveApi, poolId: string): void
+    fetchUserPoolInfo(config: Config, curve: CurveApi, poolId: string, isFetchWalletBalancesOnly?: boolean): void
 
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
     setStateByKey<T>(key: StateKey, value: T): void
@@ -90,12 +93,22 @@ const createUserSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>[
         return parsedUserPoolList
       }
     },
-    fetchUserPoolInfo: async (curve, poolId) => {
+    fetchUserPoolInfo: async (config, curve, poolId, isFetchWalletBalancesOnly) => {
+      let fetchedWalletBalances: Balances = {}
+
       try {
         // stored values
         const chainId = curve.chainId
         const userPoolActiveKey = getUserPoolActiveKey(curve, poolId)
         const storedPoolData = get().pools.poolsMapper[chainId][poolId]
+        fetchedWalletBalances = await fetchPoolTokenBalances(config, curve, poolId)
+
+        // set wallet balances into tokens state
+        get().userBalances.updateUserBalancesFromPool(fetchedWalletBalances)
+
+        if (isFetchWalletBalancesOnly) {
+          return fetchedWalletBalances
+        }
 
         // get user pool info
         let liquidityUsd = ''
@@ -104,23 +117,28 @@ const createUserSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>[
         let userShare = null
         let userWithdrawAmounts = [] as string[]
 
-        const pool = storedPoolData.pool
-        const [userPoolWithdrawResult, liquidityUsdResult, userShareResult, userCrvApyResult, userPoolBoostResult] =
-          await Promise.allSettled([
-            curvejsApi.wallet.userPoolBalances(pool),
-            curvejsApi.wallet.userPoolLiquidityUsd(pool, curve.signerAddress),
-            curvejsApi.wallet.userPoolShare(pool),
-            curvejsApi.wallet.userPoolRewardCrvApy(pool, curve.signerAddress),
-            chainId === 1 && isValidAddress(pool.gauge.address)
-              ? curvejsApi.wallet.userPoolBoost(pool, curve.signerAddress)
-              : Promise.resolve(''),
-          ])
+        const lpTokenBalance = await fetchPoolLpTokenBalance(config, curve, poolId)
+        const gaugeTokenBalance = await fetchPoolGaugeTokenBalance(config, curve, poolId)
 
-        liquidityUsd = fulfilledValue(liquidityUsdResult) ?? ''
-        crvApy = fulfilledValue(userCrvApyResult) ?? 0
-        boostApy = fulfilledValue(userPoolBoostResult) ?? ''
-        userShare = fulfilledValue(userShareResult) ?? null
-        userWithdrawAmounts = fulfilledValue(userPoolWithdrawResult) ?? []
+        if (+gaugeTokenBalance > 0 || +lpTokenBalance > 0) {
+          const pool = storedPoolData.pool
+          const [userPoolWithdrawResult, liquidityUsdResult, userShareResult, userCrvApyResult, userPoolBoostResult] =
+            await Promise.allSettled([
+              curvejsApi.wallet.userPoolBalances(pool),
+              curvejsApi.wallet.userPoolLiquidityUsd(pool, curve.signerAddress),
+              curvejsApi.wallet.userPoolShare(pool),
+              curvejsApi.wallet.userPoolRewardCrvApy(pool, curve.signerAddress),
+              chainId === 1 && isValidAddress(pool.gauge.address)
+                ? curvejsApi.wallet.userPoolBoost(pool, curve.signerAddress)
+                : Promise.resolve(''),
+            ])
+
+          liquidityUsd = fulfilledValue(liquidityUsdResult) ?? ''
+          crvApy = fulfilledValue(userCrvApyResult) ?? 0
+          boostApy = fulfilledValue(userPoolBoostResult) ?? ''
+          userShare = fulfilledValue(userShareResult) ?? null
+          userWithdrawAmounts = fulfilledValue(userPoolWithdrawResult) ?? []
+        }
 
         get()[sliceKey].setStateByActiveKey('userCrvApy', userPoolActiveKey, { crvApy, boostApy })
         get()[sliceKey].setStateByActiveKey('userWithdrawAmounts', userPoolActiveKey, userWithdrawAmounts)

@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
-import { useConnection } from 'wagmi'
+import { useConnection, type Config } from 'wagmi'
 import { useConfig } from 'wagmi'
 import AlertFormError from '@/dex/components/AlertFormError'
 import DetailInfoEstGas from '@/dex/components/DetailInfoEstGas'
@@ -79,10 +79,10 @@ const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed }: 
   )
 
   const handleStakeClick = useCallback(
-    async (activeKey: string, curve: CurveApi, poolData: PoolData, formValues: FormValues) => {
+    async (activeKey: string, config: Config, curve: CurveApi, poolData: PoolData, formValues: FormValues) => {
       const notifyMessage = t`Please confirm staking of ${formValues.lpToken} LP Tokens`
       const { dismiss } = notify(notifyMessage, 'pending')
-      const resp = await fetchStepStake(activeKey, curve, poolData, formValues)
+      const resp = await fetchStepStake(activeKey, config, curve, poolData, formValues)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && network) {
         const TxDescription = `Staked ${formValues.lpToken} LP Tokens`
@@ -96,6 +96,7 @@ const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed }: 
   const getSteps = useCallback(
     (
       activeKey: string,
+      config: Config,
       curve: CurveApi,
       poolData: PoolData,
       formValues: FormValues,
@@ -119,7 +120,7 @@ const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed }: 
           status: getStepStatus(isComplete, formStatus.step === 'STAKE', isValid && formStatus.isApproved),
           type: 'action',
           content: isComplete ? t`Stake Complete` : t`Stake`,
-          onClick: () => handleStakeClick(activeKey, curve, poolData, formValues),
+          onClick: () => handleStakeClick(activeKey, config, curve, poolData, formValues),
         },
       }
 
@@ -163,11 +164,11 @@ const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed }: 
   // steps
   useEffect(() => {
     if (curve && poolId) {
-      const updatedSteps = getSteps(activeKey, curve, poolData, formValues, formStatus, steps)
+      const updatedSteps = getSteps(activeKey, config, curve, poolData, formValues, formStatus, steps)
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId, poolId, signerAddress, formValues, formStatus])
+  }, [config, chainId, poolId, signerAddress, formValues, formStatus])
 
   const activeStep = signerAddress ? getActiveStep(steps) : null
   const disableForm = seed.isSeed === null || formStatus.formProcessing

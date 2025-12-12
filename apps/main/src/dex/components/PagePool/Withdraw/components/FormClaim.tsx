@@ -1,7 +1,7 @@
 import lodash from 'lodash'
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import { styled } from 'styled-components'
-import { useConfig } from 'wagmi'
+import { useConfig, type Config } from 'wagmi'
 import AlertFormError from '@/dex/components/AlertFormError'
 import TransferActions from '@/dex/components/PagePool/components/TransferActions'
 import type { TransferProps } from '@/dex/components/PagePool/types'
@@ -58,6 +58,7 @@ const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed }: 
   const handleClaimClick = useCallback(
     async (
       activeKey: string,
+      config: Config,
       curve: CurveApi,
       poolData: PoolData,
       formValues: FormValues,
@@ -66,7 +67,7 @@ const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed }: 
     ) => {
       const notifyMessage = getClaimText(formValues, formStatus, 'notify', rewardsNeedNudging)
       const { dismiss } = notify(notifyMessage, 'pending')
-      const resp = await fetchStepClaim(activeKey, curve, poolData)
+      const resp = await fetchStepClaim(activeKey, config, curve, poolData)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && network) {
         const claimedLabel = formStatus.isClaimCrv
@@ -83,6 +84,7 @@ const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed }: 
   const getSteps = useCallback(
     (
       activeKey: string,
+      config: Config,
       curve: CurveApi,
       poolData: PoolData,
       formValues: FormValues,
@@ -112,7 +114,7 @@ const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed }: 
               ? getClaimText(formValues, formStatus, 'claimCrvButton', rewardsNeedNudging)
               : t`Claim Rewards`,
           onClick: () => {
-            void handleClaimClick(activeKey, curve, poolData, formValues, formStatus, rewardsNeedNudging)
+            void handleClaimClick(activeKey, config, curve, poolData, formValues, formStatus, rewardsNeedNudging)
           },
         },
       }
@@ -157,11 +159,30 @@ const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed }: 
   // steps
   useEffect(() => {
     if (curve && poolData && seed.isSeed !== null) {
-      const updatedSteps = getSteps(activeKey, curve, poolData, formValues, formStatus, rewardsNeedNudging, seed.isSeed)
+      const updatedSteps = getSteps(
+        activeKey,
+        config,
+        curve,
+        poolData,
+        formValues,
+        formStatus,
+        rewardsNeedNudging,
+        seed.isSeed,
+      )
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId, poolData, slippageConfirmed, signerAddress, formValues, formStatus, rewardsNeedNudging, seed.isSeed])
+  }, [
+    config,
+    chainId,
+    poolData,
+    slippageConfirmed,
+    signerAddress,
+    formValues,
+    formStatus,
+    rewardsNeedNudging,
+    seed.isSeed,
+  ])
 
   const handleBtnClick = (isClaimCrv: boolean, isClaimRewards: boolean) => {
     setTxInfoBar(null)
@@ -174,7 +195,7 @@ const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed }: 
       cFormStatus.isClaimRewards = isClaimRewards
 
       setStateByKey('formStatus', cFormStatus)
-      void handleClaimClick(activeKey, curve, poolData, formValues, cFormStatus, rewardsNeedNudging)
+      void handleClaimClick(activeKey, config, curve, poolData, formValues, cFormStatus, rewardsNeedNudging)
     }
   }
 

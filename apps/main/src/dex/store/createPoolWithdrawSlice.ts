@@ -62,9 +62,9 @@ export type PoolWithdrawSlice = {
     // steps
     fetchEstGasApproval(activeKey: string, config: Config, curve: CurveApi, formType: FormType, pool: Pool, formValues: FormValues): Promise<FnStepEstGasApprovalResponse | undefined>
     fetchStepApprove(activeKey: string, config: Config, curve: CurveApi, formType: FormType, pool: Pool, formValues: FormValues): Promise<FnStepApproveResponse | undefined>
-    fetchStepWithdraw(activeKey: string, curve: CurveApi, poolData: PoolData, formValues: FormValues, maxSlippage: string): Promise<FnStepResponse | undefined>
-    fetchStepUnstake(activeKey: string, curve: CurveApi, poolData: PoolData, formValues: FormValues): Promise<FnStepResponse | undefined>
-    fetchStepClaim(activeKey: string, curve: CurveApi, poolData: PoolData): Promise<FnStepResponse | undefined>
+    fetchStepWithdraw(activeKey: string, config: Config, curve: CurveApi, poolData: PoolData, formValues: FormValues, maxSlippage: string): Promise<FnStepResponse | undefined>
+    fetchStepUnstake(activeKey: string, config: Config, curve: CurveApi, poolData: PoolData, formValues: FormValues): Promise<FnStepResponse | undefined>
+    fetchStepClaim(activeKey: string, config: Config, curve: CurveApi, poolData: PoolData): Promise<FnStepResponse | undefined>
 
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
     setStateByKey<T>(key: StateKey, value: T): void
@@ -475,7 +475,7 @@ const createPoolWithdrawSlice = (
         return resp
       }
     },
-    fetchStepWithdraw: async (activeKey, curve, poolData, formValues, maxSlippage) => {
+    fetchStepWithdraw: async (activeKey, config, curve, poolData, formValues, maxSlippage) => {
       const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
@@ -522,13 +522,16 @@ const createPoolWithdrawSlice = (
           })
 
           // re-fetch data
-          await Promise.all([get().user.fetchUserPoolInfo(curve, pool.id), get().pools.fetchPoolStats(curve, poolData)])
+          await Promise.all([
+            get().user.fetchUserPoolInfo(config, curve, pool.id),
+            get().pools.fetchPoolStats(curve, poolData),
+          ])
         }
 
         return resp
       }
     },
-    fetchStepUnstake: async (activeKey, curve, poolData, formValues) => {
+    fetchStepUnstake: async (activeKey, config, curve, poolData, formValues) => {
       const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
@@ -556,13 +559,16 @@ const createPoolWithdrawSlice = (
           })
 
           // re-fetch data
-          await Promise.all([get().user.fetchUserPoolInfo(curve, pool.id), get().pools.fetchPoolStats(curve, poolData)])
+          await Promise.all([
+            get().user.fetchUserPoolInfo(config, curve, pool.id),
+            get().pools.fetchPoolStats(curve, poolData),
+          ])
         }
 
         return resp
       }
     },
-    fetchStepClaim: async (activeKey, curve, poolData) => {
+    fetchStepClaim: async (activeKey, config, curve, poolData) => {
       const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
@@ -596,7 +602,10 @@ const createPoolWithdrawSlice = (
           })
 
           // re-fetch data
-          await Promise.all([get().user.fetchUserPoolInfo(curve, pool.id), get().pools.fetchPoolStats(curve, poolData)])
+          await Promise.all([
+            get().user.fetchUserPoolInfo(config, curve, pool.id),
+            get().pools.fetchPoolStats(curve, poolData),
+          ])
         }
 
         return resp

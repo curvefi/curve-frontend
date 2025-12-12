@@ -2,6 +2,7 @@ import { type Address, isAddressEqual, zeroAddress } from 'viem'
 import type { Config } from 'wagmi'
 import { requireLib, useCurve, type CurveApi } from '@ui-kit/features/connect-wallet'
 import { fetchTokenBalance, useTokenBalance } from '@ui-kit/queries/token-balance.query'
+import { isValidAddress } from '../utils'
 
 /** Hook to get lp token and possible gauge token balances */
 export function usePoolTokenDepositBalances(
@@ -51,6 +52,18 @@ export function usePoolTokenDepositBalances(
 /** Temporary imperative function for some zustand slices */
 export function fetchPoolLpTokenBalance(config: Config, curve: CurveApi, poolId: string) {
   const pool = requireLib('curveApi').getPool(poolId)
+
+  return fetchTokenBalance(config, {
+    chainId: curve?.chainId,
+    userAddress: curve.signerAddress as Address,
+    tokenAddress: pool.lpToken as Address,
+  })
+}
+
+/** Temporary imperative function for some zustand slices */
+export function fetchPoolGaugeTokenBalance(config: Config, curve: CurveApi, poolId: string) {
+  const pool = requireLib('curveApi').getPool(poolId)
+  if (!isValidAddress(pool.gauge.address)) return Promise.resolve('0')
 
   return fetchTokenBalance(config, {
     chainId: curve?.chainId,

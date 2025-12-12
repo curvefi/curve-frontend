@@ -31,7 +31,6 @@ import { fetchGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 import { fetchNetworks } from '../entities/networks'
 import { fetchPoolTokenBalances } from '../hooks/usePoolTokenBalances'
-import { fetchPoolLpTokenBalance } from '../hooks/usePoolTokenDepositBalances'
 
 type StateKey = keyof typeof DEFAULT_STATE
 const { cloneDeep } = lodash
@@ -459,9 +458,7 @@ const createPoolSwapSlice = (set: StoreApi<State>['setState'], get: StoreApi<Sta
 
           // re-fetch data
           await Promise.all([
-            fetchPoolTokenBalances(config, curve, poolData.pool.id),
-            fetchPoolLpTokenBalance(config, curve, poolData.pool.id),
-            get().user.fetchUserPoolInfo(curve, poolData.pool.id),
+            get().user.fetchUserPoolInfo(config, curve, poolData.pool.id),
             get().pools.fetchPoolStats(curve, poolData),
           ])
         }
