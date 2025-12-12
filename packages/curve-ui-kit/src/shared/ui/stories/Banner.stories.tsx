@@ -1,11 +1,7 @@
 import { fn } from 'storybook/test'
 import Box from '@mui/material/Box'
 import { Meta, StoryObj } from '@storybook/react-vite'
-import { LlamaIcon } from '@ui-kit/shared/icons/LlamaIcon'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Banner } from '../Banner'
-
-const { IconSize } = SizesAndSpaces
 
 const meta: Meta<typeof Banner> = {
   title: 'UI Kit/Primitives/Banner',
@@ -36,6 +32,11 @@ const meta: Meta<typeof Banner> = {
     buttonText: {
       control: 'text',
       description: 'Text for the action button (optional)',
+    },
+    icon: {
+      control: 'select',
+      options: ['llama', 'info', 'highlight', 'warning', 'alert'],
+      description: 'The icon to display before the title',
     },
     onClick: {
       action: 'clicked',
@@ -96,14 +97,11 @@ export const WithLearnMoreUrl: Story = {
   },
 }
 
-export const WithIcon: Story = {
+export const WithCustomIcon: Story = {
   args: {
     buttonText: 'Disable Beta Mode',
-    children: (
-      <>
-        <LlamaIcon sx={{ width: IconSize.sm, height: IconSize.sm }} /> BETA MODE ENABLED
-      </>
-    ),
+    children: 'BETA MODE ENABLED',
+    icon: 'llama',
   },
 }
 

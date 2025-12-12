@@ -10,8 +10,14 @@ import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
 import { ArrowTopRightIcon } from '@ui-kit/shared/icons/ArrowTopRightIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { ExclamationTriangleIcon } from '../icons/ExclamationTriangleIcon'
+import { InfoCircledIcon } from '../icons/InfoCircledIcon'
+import { LlamaIcon } from '../icons/LlamaIcon'
+
+const { MaxWidth, Spacing, IconSize } = SizesAndSpaces
 
 type BannerSeverity = 'info' | 'highlight' | 'warning' | 'alert'
+type BannerIcons = BannerSeverity | 'llama'
 
 const BannerSx: Record<BannerSeverity, { title: SxProps<Theme>; subtitle: SxProps<Theme>; wrapper: SxProps<Theme> }> = {
   info: {
@@ -22,30 +28,40 @@ const BannerSx: Record<BannerSeverity, { title: SxProps<Theme>; subtitle: SxProp
       backgroundColor: (t) => t.design.Layer[1].Fill,
     },
   },
-  alert: {
-    title: { color: (t) => t.design.Text.TextColors.FilledFeedback.Alert.Primary },
-    subtitle: { color: (t) => t.design.Text.TextColors.FilledFeedback.Alert.Secondary },
-    wrapper: { backgroundColor: (t) => t.design.Layer.Feedback.Error },
+  highlight: {
+    title: { color: (t) => t.design.Text.TextColors.FilledFeedback.Highlight.Primary },
+    subtitle: { color: (t) => t.design.Text.TextColors.FilledFeedback.Highlight.Secondary },
+    wrapper: { backgroundColor: (t) => t.design.Layer.Feedback.Info },
   },
   warning: {
     title: { color: (t) => t.design.Text.TextColors.FilledFeedback.Warning.Primary },
     subtitle: { color: (t) => t.design.Text.TextColors.FilledFeedback.Warning.Secondary },
     wrapper: { backgroundColor: (t) => t.design.Layer.Feedback.Warning },
   },
-  highlight: {
-    title: { color: (t) => t.design.Text.TextColors.FilledFeedback.Highlight.Primary },
-    subtitle: { color: (t) => t.design.Text.TextColors.FilledFeedback.Highlight.Secondary },
-    wrapper: { backgroundColor: (t) => t.design.Layer.Feedback.Info },
+  alert: {
+    title: { color: (t) => t.design.Text.TextColors.FilledFeedback.Alert.Primary },
+    subtitle: { color: (t) => t.design.Text.TextColors.FilledFeedback.Alert.Secondary },
+    wrapper: { backgroundColor: (t) => t.design.Layer.Feedback.Error },
   },
 }
 
-const { MaxWidth, Spacing } = SizesAndSpaces
+const IconSx = { width: IconSize.sm, height: IconSize.sm, verticalAlign: 'text-bottom' }
+
+const BannerIcons: Record<BannerIcons, ReactNode> = {
+  info: <InfoCircledIcon sx={IconSx} />,
+  highlight: <InfoCircledIcon sx={IconSx} />,
+  warning: <ExclamationTriangleIcon sx={IconSx} />,
+  alert: <ExclamationTriangleIcon sx={IconSx} />,
+  llama: <LlamaIcon sx={IconSx} />,
+}
 
 export type BannerProps = {
   onClick?: () => void
   buttonText?: string
   children: ReactNode
   severity?: BannerSeverity
+  // icon shown before the title, default to severity icon
+  icon?: BannerIcons
   learnMoreUrl?: string
   subtitle?: ReactNode
   testId?: string
@@ -59,6 +75,7 @@ export const Banner = ({
   buttonText,
   children,
   severity = 'info',
+  icon = severity,
   learnMoreUrl,
   subtitle,
   testId,
@@ -77,7 +94,7 @@ export const Banner = ({
     <Stack direction="column" width="100%" maxWidth={MaxWidth.banner}>
       <Stack direction="row" alignItems="center" justifyContent="space-between" gap={Spacing.sm}>
         <Typography sx={{ ...BannerSx[severity].title }} variant="headingXsBold">
-          {children}
+          {BannerIcons[icon]} {children}
         </Typography>
         <Stack direction="row" alignItems="center" justifyContent="start" height="100%">
           {learnMoreUrl && (
