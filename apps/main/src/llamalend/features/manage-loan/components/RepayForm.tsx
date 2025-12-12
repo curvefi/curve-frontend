@@ -20,12 +20,18 @@ export const RepayForm = <ChainId extends IChainId>({
   chainId,
   enabled,
   onRepaid,
+  fromCollateral,
+  fromWallet,
+  fromBorrowed,
 }: {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
   chainId: ChainId
   enabled?: boolean
-  onRepaid: NonNullable<RepayOptions['onRepaid']>
+  onRepaid?: RepayOptions['onRepaid']
+  fromCollateral?: boolean
+  fromWallet?: boolean
+  fromBorrowed?: boolean
 }) => {
   const network = networks[chainId]
   const [isOpen, , , toggle] = useSwitch(false)
@@ -86,33 +92,39 @@ export const RepayForm = <ChainId extends IChainId>({
       }
     >
       <Stack divider={<InputDivider />}>
-        <LoanFormTokenInput
-          label={t`From collateral (position)`}
-          token={collateralToken}
-          blockchainId={network.id}
-          name="stateCollateral"
-          form={form}
-          testId="repay-state-collateral-input"
-          network={network}
-        />
-        <LoanFormTokenInput
-          label={t`From collateral (wallet)`}
-          token={collateralToken}
-          blockchainId={network.id}
-          name="userCollateral"
-          form={form}
-          testId="repay-user-collateral-input"
-          network={network}
-        />
-        <LoanFormTokenInput
-          label={t`From borrowed token`}
-          token={borrowToken}
-          blockchainId={network.id}
-          name="userBorrowed"
-          form={form}
-          testId="repay-user-borrowed-input"
-          network={network}
-        />
+        {fromCollateral && (
+          <LoanFormTokenInput
+            label={t`From collateral (position)`}
+            token={collateralToken}
+            blockchainId={network.id}
+            name="stateCollateral"
+            form={form}
+            testId="repay-state-collateral-input"
+            network={network}
+          />
+        )}
+        {fromWallet && (
+          <LoanFormTokenInput
+            label={t`From collateral (wallet)`}
+            token={collateralToken}
+            blockchainId={network.id}
+            name="userCollateral"
+            form={form}
+            testId="repay-user-collateral-input"
+            network={network}
+          />
+        )}
+        {fromBorrowed && (
+          <LoanFormTokenInput
+            label={t`From borrowed token`}
+            token={borrowToken}
+            blockchainId={network.id}
+            name="userBorrowed"
+            form={form}
+            testId="repay-user-borrowed-input"
+            network={network}
+          />
+        )}
       </Stack>
 
       <Button type="submit" loading={isPending || !market} disabled={isDisabled} data-testid="repay-submit-button">

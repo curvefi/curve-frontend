@@ -34,11 +34,19 @@ export const useBorrowPositionDetails = ({
 }: UseBorrowPositionDetailsProps): BorrowPositionDetailsProps => {
   const { controller } = market?.addresses ?? {}
   const { address: userAddress } = useConnection()
-  const { data: userLoanDetails, isLoading: isUserLoanDetailsLoading } = useUserLoanDetails({
+  const { data: loanExists } = useLoanExists({
     chainId,
     marketId,
     userAddress,
   })
+  const { data: userLoanDetails, isLoading: isUserLoanDetailsLoading } = useUserLoanDetails(
+    {
+      chainId,
+      marketId,
+      userAddress,
+    },
+    !!loanExists,
+  )
   const {
     bands,
     health,
@@ -49,11 +57,6 @@ export const useBorrowPositionDetails = ({
     state: { collateral, borrowed, debt } = {},
   } = userLoanDetails ?? {}
   const prices = useStore((state) => state.markets.pricesMapper[chainId]?.[marketId])
-  const { data: loanExists } = useLoanExists({
-    chainId,
-    marketId,
-    userAddress,
-  })
   const { data: userPnl, isLoading: isUserPnlLoading } = useUserPnl({
     chainId,
     marketId,

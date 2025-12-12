@@ -103,6 +103,9 @@ const LoanManage = ({ curve, isReady, llamma, llammaId, params, rChainId, rColla
               market={llamma}
               enabled={isReady}
               onRepaid={async () => {}}
+              fromBorrowed
+              fromCollateral
+              fromWallet
             />
           )}
           {subTab === 'loan-liquidate' && <LoanLiquidate {...formProps} params={params} />}

@@ -55,7 +55,7 @@ const LoanCreate = ({
   const onUpdate = useOnFormUpdate(props)
   const onLoanCreated = useStore((state) => state.loanCreate.onLoanCreated)
 
-  const onCreated: CreateLoanOptions['onCreated'] = useCallback(
+  const onCreated: NonNullable<CreateLoanOptions['onCreated']> = useCallback(
     async (_data, _receipt, { slippage, leverageEnabled }: BorrowMutation) =>
       curve && llamma && (await onLoanCreated(curve, leverageEnabled, llamma, slippage)),
     [curve, llamma, onLoanCreated],

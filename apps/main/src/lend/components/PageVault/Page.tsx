@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import CampaignRewardsBanner from '@/lend/components/CampaignRewardsBanner'
 import { MarketInformationComp } from '@/lend/components/MarketInformationComp'
 import { MarketInformationTabs } from '@/lend/components/MarketInformationTabs'
-import Vault from '@/lend/components/PageVault/index'
+import { VaultTabs } from '@/lend/components/PageVault/VaultTabs'
 import { useOneWayMarket } from '@/lend/entities/chain'
 import { useLendPageTitle } from '@/lend/hooks/useLendPageTitle'
 import { useMarketDetails } from '@/lend/hooks/useMarketDetails'
@@ -36,7 +36,7 @@ const { Spacing } = SizesAndSpaces
 
 const Page = () => {
   const params = useParams<MarketUrlParams>()
-  const { rMarket, rChainId, rFormType } = parseMarketParams(params)
+  const { rMarket, rChainId } = parseMarketParams(params)
   const { connect, provider } = useWallet()
   const { llamaApi: api = null, connectState } = useCurve()
   const titleMapper = useTitleMapper()
@@ -99,7 +99,6 @@ const Page = () => {
     params,
     rChainId,
     rOwmId,
-    rFormType,
     isLoaded,
     api,
     market,
@@ -108,10 +107,7 @@ const Page = () => {
   }
 
   const borrowPathnameFn = loanExists ? getLoanManagePathname : getLoanCreatePathname
-  const positionDetailsHrefs = {
-    borrow: borrowPathnameFn(params, rOwmId, ''),
-    supply: '',
-  }
+  const positionDetailsHrefs = { borrow: borrowPathnameFn(params, rOwmId), supply: '' }
   const hasSupplyPosition = (supplyPositionDetails.shares.value ?? 0) > 0
 
   return isSuccess && !market ? (
@@ -119,7 +115,7 @@ const Page = () => {
   ) : provider ? (
     <>
       <DetailPageStack>
-        <AppPageFormsWrapper>{rChainId && rOwmId && <Vault {...pageProps} params={params} />}</AppPageFormsWrapper>
+        <AppPageFormsWrapper>{rChainId && rOwmId && <VaultTabs {...pageProps} params={params} />}</AppPageFormsWrapper>
         <Stack flexDirection="column" flexGrow={1} sx={{ gap: Spacing.md }}>
           <CampaignRewardsBanner
             chainId={rChainId}
