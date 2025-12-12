@@ -1,5 +1,6 @@
 import { Key } from 'react'
 import { styled } from 'styled-components'
+import { type Address } from 'viem'
 import {
   STABLESWAP,
   CRYPTOSWAP,
@@ -13,6 +14,7 @@ import {
   TOKEN_H,
   NG_ASSET_TYPE,
 } from '@/dex/components/PageCreatePool/constants'
+import { useAutoDetectErc4626 } from '@/dex/components/PageCreatePool/hooks/useAutoDetectErc4626'
 import {
   CreateToken,
   TokenState,
@@ -61,6 +63,10 @@ const SelectToken = ({
   const clearToken = useStore((state) => state.createPool.clearToken)
   const tokensInPool = useStore((state) => state.createPool.tokensInPool)
   const { data: network } = useNetworkByChain({ chainId })
+  void useAutoDetectErc4626({
+    tokenId,
+    address: token.address as Address,
+  })
 
   const getTokenName = (tokenId: TokenId) => {
     if (tokenId === TOKEN_D) return t`Token D`

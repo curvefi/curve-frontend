@@ -1,7 +1,6 @@
 import lodash from 'lodash'
 import { useMemo, useCallback } from 'react'
 import { styled } from 'styled-components'
-import type { Address } from 'viem'
 import SwitchTokensButton from '@/dex/components/PageCreatePool/components/SwitchTokensButton'
 import WarningBox from '@/dex/components/PageCreatePool/components/WarningBox'
 import {
@@ -18,7 +17,6 @@ import {
   FXSWAP,
   NG_ASSET_TYPE,
 } from '@/dex/components/PageCreatePool/constants'
-import { useAutoDetectErc4626 } from '@/dex/components/PageCreatePool/hooks/useAutoDetectErc4626'
 import SelectToken from '@/dex/components/PageCreatePool/TokensInPool/SelectToken'
 import SetOracle from '@/dex/components/PageCreatePool/TokensInPool/SetOracle'
 import { CreateToken, TokenId, TokensInPoolState } from '@/dex/components/PageCreatePool/types'
@@ -55,7 +53,6 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
   const userBalances = useStore((state) => state.userBalances.userBalancesMapper)
   const { tokensMapper } = useTokensMapper(chainId)
   const nativeToken = curve.getNetworkConstants().NATIVE_TOKEN
-  const { scheduleCheck: scheduleErc4626Check } = useAutoDetectErc4626({ tokensInPool })
   const {
     data: { createDisabledTokens, stableswapFactory, tricryptoFactory, twocryptoFactory },
   } = useNetworkByChain({ chainId })
@@ -523,12 +520,8 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
         updatedFormValues[TOKEN_G],
         updatedFormValues[TOKEN_H],
       )
-
-      if (updatedFormValues[name].address.toLowerCase() === normalizedValue) {
-        scheduleErc4626Check(name, value as Address)
-      }
     },
-    [tokensInPool, updateTokensInPool, curve, findSymbol, swapType, basePools, updateNgAssetType, scheduleErc4626Check],
+    [tokensInPool, updateTokensInPool, curve, findSymbol, swapType, basePools, updateNgAssetType],
   )
 
   const addToken = useCallback(() => {
