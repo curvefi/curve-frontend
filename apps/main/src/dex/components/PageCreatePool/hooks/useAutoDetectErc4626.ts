@@ -21,17 +21,13 @@ export const useAutoDetectErc4626 = ({ tokenId, address }: UseAutoDetectErc4626P
   const { isErc4626, isLoading, error, isSuccess } = useIsErc4626({ address })
 
   useMemo(() => {
-    if (isLoading) {
+    if (isLoading || error || isSuccess) {
       updateTokenErc4626Status(tokenId, { isErc4626, isLoading, error, isSuccess })
     }
 
-    if (error) {
-      updateTokenErc4626Status(tokenId, { isErc4626, isLoading, error, isSuccess })
-    }
-
+    // Only auto-set ngAssetType on first successful detection (don't override user's choice)
     if (isErc4626 && isSuccess && !statusAlreadySet) {
       updateNgAssetType(tokenId, NG_ASSET_TYPE.ERC4626)
-      updateTokenErc4626Status(tokenId, { isErc4626, isLoading, error, isSuccess })
     }
   }, [tokenId, isErc4626, isSuccess, isLoading, error, updateNgAssetType, updateTokenErc4626Status, statusAlreadySet])
 }
