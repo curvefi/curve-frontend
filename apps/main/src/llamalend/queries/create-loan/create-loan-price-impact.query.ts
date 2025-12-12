@@ -8,13 +8,21 @@ import { createLoanExpectedCollateralQueryKey } from './create-loan-expected-col
 type BorrowPriceImpactResult = number // percentage
 
 export const { useQuery: useCreateLoanPriceImpact } = queryFactory({
-  queryKey: ({ chainId, marketId, userBorrowed = '0', userCollateral = '0', debt = '0' }: BorrowFormQueryParams) =>
+  queryKey: ({
+    chainId,
+    marketId,
+    userBorrowed = '0',
+    userCollateral = '0',
+    debt = '0',
+    leverageEnabled,
+  }: BorrowFormQueryParams) =>
     [
       ...rootKeys.market({ chainId, marketId }),
       'createLoanPriceImpact',
       { userCollateral },
       { userBorrowed },
       { debt },
+      { leverageEnabled },
     ] as const,
   queryFn: async ({
     marketId,
@@ -30,6 +38,6 @@ export const { useQuery: useCreateLoanPriceImpact } = queryFactory({
         : +(await market.leverage.priceImpact(userCollateral, debt))
   },
   staleTime: '1m',
-  validationSuite: borrowQueryValidationSuite(), // requires debt and maxDebt
+  validationSuite: borrowQueryValidationSuite({ isLeverageRequired: true }), // requires debt, maxDebt, and leverageEnabled
   dependencies: (params) => [createLoanExpectedCollateralQueryKey(params)],
 })

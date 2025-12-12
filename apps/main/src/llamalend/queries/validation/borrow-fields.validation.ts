@@ -1,4 +1,4 @@
-import { enforce, test } from 'vest'
+import { enforce, test, skipWhen } from 'vest'
 import { BORROW_PRESET_RANGES } from '@/llamalend/constants'
 import { Decimal } from '@ui-kit/utils'
 
@@ -15,10 +15,10 @@ export const validateUserCollateral = (userCollateral: Decimal | undefined | nul
 }
 
 export const validateDebt = (debt: Decimal | undefined | null, required: boolean = true) => {
-  test('debt', `Debt must be a positive number${required ? '' : ' or null'}`, () => {
-    if (required || debt != null) {
+  skipWhen(!required && debt == null, () => {
+    test('debt', `Debt must be a positive number${required ? '' : ' or null'}`, () => {
       enforce(debt).isNumeric().gt(0)
-    }
+    })
   })
 }
 
@@ -34,17 +34,27 @@ export const validateRange = (range: number | null | undefined, { MaxLtv, Safe }
   })
 }
 
-export const validateMaxDebt = (debt: Decimal | undefined | null, maxDebt: Decimal | undefined | null) => {
-  test('debt', 'Debt must be less than or equal to maximum borrowable amount', () => {
-    if (debt != null && maxDebt != null) {
+export const validateMaxDebt = (
+  debt: Decimal | undefined | null,
+  maxDebt: Decimal | undefined | null,
+  isMaxDebtRequired: boolean,
+) => {
+  skipWhen(!isMaxDebtRequired, () => {
+    test('maxDebt', 'Maximum debt must be calculated before debt can be validated', () => {
+      enforce(maxDebt).isNotNullish()
+    })
+  })
+  skipWhen(maxDebt == null || debt == null, () => {
+    test('debt', 'Debt must be less than or equal to maximum borrowable amount', () => {
+      enforce(maxDebt).isNotNullish()
       enforce(debt).lte(maxDebt)
-    }
+    })
   })
 }
 
-export const validateMaxDebtIsSet = (maxDebt: Decimal | undefined | null) => {
-  test('debt', 'Maximum debt must be calculated before debt can be validated', () => {
-    enforce(maxDebt).isNotNullish()
+export const validateLeverageEnabled = (leverageEnabled: boolean | undefined | null, isLeverageRequired: boolean) => {
+  test('leverageEnabled', 'Leverage must be enabled', () => {
+    enforce(leverageEnabled).equals(true)
   })
 }
 
@@ -52,10 +62,10 @@ export const validateMaxCollateral = (
   userCollateral: Decimal | undefined | null,
   maxCollateral: Decimal | undefined | null,
 ) => {
-  test('userCollateral', 'Collateral must be less than or equal to your wallet balance', () => {
-    if (userCollateral != null && maxCollateral != null) {
+  skipWhen(userCollateral == null || maxCollateral == null, () => {
+    test('userCollateral', 'Collateral must be less than or equal to your wallet balance', () => {
       enforce(userCollateral).lte(maxCollateral)
-    }
+    })
   })
 }
 
