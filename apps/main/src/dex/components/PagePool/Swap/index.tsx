@@ -100,13 +100,13 @@ const Swap = ({
   const { data: userFromBalance, isLoading: userFromBalanceLoading } = useTokenBalance({
     chainId,
     userAddress,
-    tokenAddress: formValues.fromAddress as Address,
+    tokenAddress: (formValues.fromAddress as Address) || undefined,
   })
 
   const { data: userToBalance, isLoading: userToBalanceLoading } = useTokenBalance({
     chainId,
     userAddress,
-    tokenAddress: formValues.fromAddress as Address,
+    tokenAddress: (formValues.toAddress as Address) || undefined,
   })
 
   const { data: fromUsdRate } = useTokenUsdRate(
