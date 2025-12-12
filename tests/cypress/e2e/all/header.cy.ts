@@ -173,7 +173,7 @@ describe('Header', () => {
       const route = oneAppRoute()
       cy.visitWithoutTestConnector(route, {
         onBeforeLoad: (win) => {
-          if (dismissedDate !== undefined) {
+          if (dismissedDate) {
             win.localStorage.setItem('phishing-warning-dismissed', JSON.stringify(dismissedDate))
           }
         },
