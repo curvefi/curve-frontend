@@ -18,6 +18,8 @@ const expectedFooterXMargin = { mobile: 32, tablet: 48, desktop: 48 }
 const expectedFooterMinWidth = 273
 const expectedFooterMaxWidth = 1536
 
+const DAY_IN_MS = 24 * 60 * 60 * 1000
+
 describe('Header', () => {
   let viewport: readonly [number, number]
 
@@ -184,7 +186,7 @@ describe('Header', () => {
 
     it('should reappear after one month', () => {
       // Set dismissal date to 31 days ago (more than one month)
-      const oneMonthAgo = Date.now() - 31 * 24 * 60 * 60 * 1000
+      const oneMonthAgo = Date.now() - 31 * DAY_IN_MS
       dismissPhishingWarningBanner(oneMonthAgo)
       cy.reload()
       waitIsLoaded(route)

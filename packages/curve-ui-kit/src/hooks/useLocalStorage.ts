@@ -74,7 +74,7 @@ export const useDismissBanner = (bannerKey: string, expirationTime: number) => {
   const [dismissedAt, setDismissedAt] = useLocalStorage<number | null>(bannerKey, null)
 
   const shouldShowBanner = useMemo(
-    () => dismissedAt == null || Date.now() - dismissedAt >= expirationTime, // Show if dismissed more than the expiration time
+    () => dismissedAt == null || Date.now() - dismissedAt >= expirationTime, // Show if dismissed longer than expiration
     [dismissedAt, expirationTime],
   )
 
