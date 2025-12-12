@@ -134,13 +134,13 @@ export const Sizing = {
 } as const
 
 export const Duration = {
+  Delay: 100,
+  Flicker: 1000,
+  Focus: 50,
+  FormDebounce: 250,
   Snackbar: 6000,
   Tooltip: { Enter: 500, Exit: 500 },
-  Flicker: 1000,
-  FormDebounce: 500,
   Transition: 256,
-  Focus: 50,
-  Delay: 100,
 }
 
 export const TransitionFunction = `ease-out ${Duration.Transition}ms`

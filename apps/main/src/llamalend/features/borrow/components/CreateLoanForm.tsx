@@ -68,7 +68,6 @@ export const CreateLoanForm = <ChainId extends IChainId>({
     creationError,
     txHash,
     formErrors,
-    tooMuchDebt,
     isApproved,
   } = useCreateLoanForm({ market, network, preset, onCreated })
   const setRange = useCallback((range: number) => form.setValue('range', range, setValueOptions), [form])
@@ -84,7 +83,6 @@ export const CreateLoanForm = <ChainId extends IChainId>({
           values={values}
           collateralToken={collateralToken}
           borrowToken={borrowToken}
-          tooMuchDebt={tooMuchDebt}
           networks={networks}
           onSlippageChange={(value) => form.setValue('slippage', value, setValueOptions)}
         />

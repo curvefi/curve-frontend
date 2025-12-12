@@ -1,6 +1,8 @@
 import { group } from 'vest'
+import type { Suite } from 'vest'
 import {
   validateDebt,
+  validateLeverageEnabled,
   validateMaxCollateral,
   validateMaxDebt,
   validateRange,
@@ -13,8 +15,21 @@ import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-valid
 import { type BorrowForm, type BorrowFormQueryParams } from '../../features/borrow/types'
 
 export const borrowFormValidationGroup = (
-  { userBorrowed, userCollateral, debt, range, slippage, maxDebt, maxCollateral }: FieldsOf<BorrowForm>,
-  { debtRequired = true }: { debtRequired?: boolean } = {},
+  {
+    userBorrowed,
+    userCollateral,
+    debt,
+    range,
+    slippage,
+    maxDebt,
+    maxCollateral,
+    leverageEnabled,
+  }: FieldsOf<BorrowForm>,
+  {
+    debtRequired = true,
+    isMaxDebtRequired = false,
+    isLeverageRequired = false,
+  }: { debtRequired?: boolean; isMaxDebtRequired?: boolean; isLeverageRequired?: boolean } = {},
 ) =>
   group('borrowFormValidationGroup', () => {
     validateUserBorrowed(userBorrowed)
@@ -22,27 +37,27 @@ export const borrowFormValidationGroup = (
     validateDebt(debt, debtRequired)
     validateSlippage(slippage)
     validateRange(range)
-    validateMaxDebt(debt, maxDebt)
+    validateMaxDebt(debt, maxDebt, isMaxDebtRequired)
     validateMaxCollateral(userCollateral, maxCollateral)
+    validateLeverageEnabled(leverageEnabled, isLeverageRequired)
   })
 
 export const borrowFormValidationSuite = createValidationSuite(borrowFormValidationGroup)
 
-export const borrowQueryValidationSuite = createValidationSuite(
-  ({
-    chainId,
-    leverageEnabled,
-    marketId,
-    userBorrowed,
-    userCollateral,
-    debt,
-    range,
-    slippage,
-  }: BorrowFormQueryParams) => {
+export const borrowQueryValidationSuite = ({
+  debtRequired,
+  isMaxDebtRequired = debtRequired,
+  isLeverageRequired = false,
+}: {
+  debtRequired: boolean
+  isMaxDebtRequired?: boolean
+  isLeverageRequired?: boolean
+}): Suite<keyof BorrowFormQueryParams, string> =>
+  createValidationSuite((params: BorrowFormQueryParams & { maxDebt?: FieldsOf<BorrowForm>['maxDebt'] }) => {
+    const { chainId, leverageEnabled, marketId, userBorrowed, userCollateral, debt, range, slippage, maxDebt } = params
     marketIdValidationSuite({ chainId, marketId })
     borrowFormValidationGroup(
-      { userBorrowed, userCollateral, debt, range, slippage, leverageEnabled },
-      { debtRequired: true },
+      { userBorrowed, userCollateral, debt, range, slippage, leverageEnabled, maxDebt },
+      { debtRequired, isMaxDebtRequired, isLeverageRequired },
     )
-  },
-)
+  }) as Suite<keyof BorrowFormQueryParams, string>

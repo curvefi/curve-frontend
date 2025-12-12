@@ -47,7 +47,7 @@ export const { useQuery: useCreateLoanHealth } = queryFactory({
     )!
   },
   staleTime: '1m',
-  validationSuite: borrowQueryValidationSuite,
+  validationSuite: borrowQueryValidationSuite({ debtRequired: true }),
   dependencies: (params) => [
     createLoanMaxReceiveKey(params),
     ...(params.leverageEnabled ? [createLoanExpectedCollateralQueryKey(params)] : []),
