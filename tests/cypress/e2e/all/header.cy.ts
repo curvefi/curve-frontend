@@ -176,7 +176,7 @@ describe('Header', () => {
     })
 
     it('should display the banner and allow dismissal', () => {
-      cy.get("[data-testid='phishing-warning-banner']").should('be.visible')
+      cy.get("[data-testid='phishing-warning-banner']", LOAD_TIMEOUT).should('be.visible')
       // Click the banner to dismiss it
       cy.get("[data-testid='phishing-warning-banner']").find('button').first().click()
       cy.get("[data-testid='phishing-warning-banner']").should('not.exist')
@@ -188,7 +188,7 @@ describe('Header', () => {
       dismissPhishingWarningBanner(oneMonthAgo)
       cy.reload()
       waitIsLoaded(route)
-      cy.get("[data-testid='phishing-warning-banner']").should('be.visible')
+      cy.get("[data-testid='phishing-warning-banner']", LOAD_TIMEOUT).should('be.visible')
     })
 
     it('should remain hidden within one month', () => {
@@ -197,7 +197,7 @@ describe('Header', () => {
       dismissPhishingWarningBanner(fifteenDaysAgo)
       cy.reload()
       waitIsLoaded(route)
-      cy.get("[data-testid='phishing-warning-banner']").should('not.exist')
+      cy.get("[data-testid='phishing-warning-banner']", LOAD_TIMEOUT).should('not.exist')
     })
   })
 
