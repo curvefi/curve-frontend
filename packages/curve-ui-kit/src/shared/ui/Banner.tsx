@@ -19,10 +19,11 @@ const { MaxWidth, Spacing, IconSize } = SizesAndSpaces
 type BannerSeverity = 'info' | 'highlight' | 'warning' | 'alert'
 type BannerIcons = BannerSeverity | 'llama'
 
+// TODO: use Secondary color for subtitle instead of Primary
 const BannerSx: Record<BannerSeverity, { title: SxProps<Theme>; subtitle: SxProps<Theme>; wrapper: SxProps<Theme> }> = {
   info: {
     title: { color: (t) => t.design.Text.TextColors.FilledFeedback.Info.Primary },
-    subtitle: { color: (t) => t.design.Text.TextColors.FilledFeedback.Info.Secondary },
+    subtitle: { color: (t) => t.design.Text.TextColors.FilledFeedback.Info.Primary },
     wrapper: {
       border: (t) => `1px solid ${t.design.Layer.Highlight.Outline}`,
       backgroundColor: (t) => t.design.Layer[1].Fill,
@@ -30,17 +31,17 @@ const BannerSx: Record<BannerSeverity, { title: SxProps<Theme>; subtitle: SxProp
   },
   highlight: {
     title: { color: (t) => t.design.Text.TextColors.FilledFeedback.Highlight.Primary },
-    subtitle: { color: (t) => t.design.Text.TextColors.FilledFeedback.Highlight.Secondary },
+    subtitle: { color: (t) => t.design.Text.TextColors.FilledFeedback.Highlight.Primary },
     wrapper: { backgroundColor: (t) => t.design.Layer.Feedback.Info },
   },
   warning: {
     title: { color: (t) => t.design.Text.TextColors.FilledFeedback.Warning.Primary },
-    subtitle: { color: (t) => t.design.Text.TextColors.FilledFeedback.Warning.Secondary },
+    subtitle: { color: (t) => t.design.Text.TextColors.FilledFeedback.Warning.Primary },
     wrapper: { backgroundColor: (t) => t.design.Layer.Feedback.Warning },
   },
   alert: {
     title: { color: (t) => t.design.Text.TextColors.FilledFeedback.Alert.Primary },
-    subtitle: { color: (t) => t.design.Text.TextColors.FilledFeedback.Alert.Secondary },
+    subtitle: { color: (t) => t.design.Text.TextColors.FilledFeedback.Alert.Primary },
     wrapper: { backgroundColor: (t) => t.design.Layer.Feedback.Error },
   },
 }
