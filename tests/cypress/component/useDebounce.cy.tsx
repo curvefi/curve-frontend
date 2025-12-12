@@ -38,10 +38,7 @@ function UseDebounceTest({
   debounceMs: number
   callback: (value: string) => void
 }) {
-  const result = useDebounce(initialValue, debounceMs, callback)
-  const value = result[0]
-  const setValue = result[1]
-  const cancel = result[2]
+  const [value, setValue, cancel] = useDebounce(initialValue, debounceMs, callback)
 
   return (
     <div>
@@ -86,15 +83,12 @@ function UseUniqueDebounceTest({
   debounceMs?: number
   equals?: (a: string, b: string) => boolean
 }) {
-  const result = useUniqueDebounce({
+  const [value, setValue, cancel] = useUniqueDebounce({
     defaultValue,
     callback,
     debounceMs,
     equals,
   })
-  const value = result[0]
-  const setValue = result[1]
-  const cancel = result[2]
 
   return (
     <div>
@@ -117,14 +111,12 @@ function UseUniqueDebounceObjectTest({
   callback: (value: { id: number; name: string }) => void
   equals?: (a: { id: number; name: string }, b: { id: number; name: string }) => boolean
 }) {
-  const result = useUniqueDebounce({
+  const [value, setValue] = useUniqueDebounce({
     defaultValue,
     callback,
     debounceMs: 200,
     equals,
   })
-  const value = result[0]
-  const setValue = result[1]
 
   return (
     <div>
@@ -397,13 +389,11 @@ describe('useUniqueDebounce', () => {
     // 4. Callback should fire because we compare against the updated defaultValue, not the original
     function AsyncInitWrapper() {
       const [defaultValue, setDefaultValue] = useState('')
-      const result = useUniqueDebounce({
+      const [value, setValue] = useUniqueDebounce({
         defaultValue,
         callback,
         debounceMs: 200,
       })
-      const value = result[0]
-      const setValue = result[1]
 
       return (
         <div>
@@ -481,13 +471,11 @@ describe('useUniqueDebounce', () => {
     const callback = cy.stub().as('callback')
 
     function NumberTest() {
-      const result = useUniqueDebounce({
+      const [value, setValue] = useUniqueDebounce({
         defaultValue: 0,
         callback,
         debounceMs: 200,
       })
-      const value = result[0]
-      const setValue = result[1]
 
       return (
         <div>
