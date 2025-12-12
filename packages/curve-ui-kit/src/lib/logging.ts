@@ -45,14 +45,14 @@ const getStatusStyle = (status: LogStatus) => {
   }
 }
 
-// Wagmi uses bigints in query keys and args, so need to add support for serialization of bigints
-const bigIntStringify = (obj: unknown) =>
+// Wagmi uses bigints in query keys and args, so need to add in serialization support
+const stringify = (obj: unknown) =>
   JSON.stringify(obj, (_, value) => (typeof value === 'bigint' ? value.toString() : value))
 
 function argToString(i: unknown, max = 200, trailing = 3) {
   let str
   try {
-    str = bigIntStringify(i)
+    str = stringify(i)
   } catch {
     return String(i)
   }
@@ -82,7 +82,7 @@ export function log(key: LogKey, status?: LogStatus | unknown, ...args: unknown[
         formattedString += '%c → '
         styles.push('color: #666; font-size: 0.75em;')
       }
-      formattedString += `%c${typeof part === 'string' ? part : bigIntStringify(part)}`
+      formattedString += `%c${typeof part === 'string' ? part : stringify(part)}`
       styles.push('color: #4CAF50; font-weight: bold;')
     })
 
@@ -102,7 +102,7 @@ export function log(key: LogKey, status?: LogStatus | unknown, ...args: unknown[
   }
   if (isCypress || typeof window === 'undefined') {
     // disable formatting when on cypress or server side. Electron prints logs to the output, but formatting breaks.
-    return logMethod(status)(bigIntStringify({ status, keyArray, args }).slice(0, 300))
+    return logMethod(status)(stringify({ status, keyArray, args }).slice(0, 300))
   }
 
   const hasDefinedStatus = status && Object.values(LogStatus).includes(status as LogStatus)
