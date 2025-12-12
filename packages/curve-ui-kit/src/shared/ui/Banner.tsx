@@ -124,8 +124,7 @@ export const Banner = ({
         </Stack>
       </Stack>
       <Stack direction="row" alignItems="center" justifyContent="start" height="100%">
-        {/* TODO: use bodySRegular for subtitle */}
-        <Typography sx={{ ...BannerSx[severity].subtitle }} variant="bodySBold">
+        <Typography sx={{ ...BannerSx[severity].subtitle }} variant="bodySRegular">
           {subtitle}
         </Typography>
       </Stack>
