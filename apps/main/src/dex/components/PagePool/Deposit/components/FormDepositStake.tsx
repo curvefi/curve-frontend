@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useConfig } from 'wagmi'
 import AlertFormError from '@/dex/components/AlertFormError'
 import AlertSlippage from '@/dex/components/AlertSlippage'
 import DetailInfoEstGas from '@/dex/components/DetailInfoEstGas'
@@ -42,7 +43,6 @@ const FormDepositStake = ({
   routerParams,
   seed,
   tokensMapper,
-  userPoolBalances,
 }: TransferProps) => {
   const isSubscribed = useRef(false)
 
@@ -70,6 +70,8 @@ const FormDepositStake = ({
   const poolId = poolData?.pool?.id
   const haveSigner = !!signerAddress
 
+  const config = useConfig()
+
   const updateFormValues = useCallback(
     (
       updatedFormValues: Partial<FormValues>,
@@ -80,6 +82,7 @@ const FormDepositStake = ({
       setSlippageConfirmed(false)
       void setFormValues(
         'DEPOSIT_STAKE',
+        config,
         curve,
         poolDataCacheOrApi.pool.id,
         poolData,
@@ -89,7 +92,7 @@ const FormDepositStake = ({
         updatedMaxSlippage || maxSlippage,
       )
     },
-    [curve, maxSlippage, poolData, poolDataCacheOrApi.pool.id, seed.isSeed, setFormValues],
+    [config, curve, maxSlippage, poolData, poolDataCacheOrApi.pool.id, seed.isSeed, setFormValues],
   )
 
   const handleApproveClick = useCallback(
@@ -255,6 +258,7 @@ const FormDepositStake = ({
   return (
     <>
       <FieldsDeposit
+        chainId={chainId}
         formProcessing={disableForm}
         formValues={formValues}
         haveSigner={haveSigner}
@@ -264,7 +268,6 @@ const FormDepositStake = ({
         poolDataCacheOrApi={poolDataCacheOrApi}
         routerParams={routerParams}
         tokensMapper={tokensMapper}
-        userPoolBalances={userPoolBalances}
         updateFormValues={updateFormValues}
       />
 
@@ -308,7 +311,6 @@ const FormDepositStake = ({
         loading={!chainId || !steps.length || !seed.loaded}
         routerParams={routerParams}
         seed={seed}
-        userPoolBalances={userPoolBalances}
       >
         <AlertSlippage maxSlippage={maxSlippage} usdAmount={estLpTokenReceivedUsdAmount} />
         {formStatus.error && (

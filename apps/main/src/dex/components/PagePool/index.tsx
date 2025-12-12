@@ -60,8 +60,6 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
   const { tokensMapper } = useTokensMapper(rChainId)
   const userPoolActiveKey = curve && poolId ? getUserPoolActiveKey(curve, poolId) : ''
   const chainIdPoolId = getChainPoolIdActiveKey(rChainId, poolId)
-  const userPoolBalances = useStore((state) => state.user.walletBalances[userPoolActiveKey])
-  const userPoolBalancesLoading = useStore((state) => state.user.walletBalancesLoading)
   const currencyReserves = useStore((state) => state.pools.currencyReserves[chainIdPoolId])
   const isMdUp = useLayoutStore((state) => state.isMdUp)
   const fetchUserPoolInfo = useStore((state) => state.user.fetchUserPoolInfo)
@@ -237,8 +235,6 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
                       maxSlippage={maxSlippage}
                       seed={seed}
                       tokensMapper={tokensMapper}
-                      userPoolBalances={userPoolBalances}
-                      userPoolBalancesLoading={userPoolBalancesLoading}
                     />
                   )}
                 </AppFormContentWrapper>
@@ -252,8 +248,6 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
                   maxSlippage={maxSlippage}
                   seed={seed}
                   tokensMapper={tokensMapper}
-                  userPoolBalances={userPoolBalances}
-                  userPoolBalancesLoading={userPoolBalancesLoading}
                 />
               ) : rFormType === 'withdraw' ? (
                 <Withdraw
@@ -264,8 +258,6 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
                   maxSlippage={maxSlippage}
                   seed={seed}
                   tokensMapper={tokensMapper}
-                  userPoolBalances={userPoolBalances}
-                  userPoolBalancesLoading={userPoolBalancesLoading}
                 />
               ) : rFormType === 'manage-gauge' ? (
                 poolData ? (
@@ -308,7 +300,6 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
                 poolDataCacheOrApi={poolDataCacheOrApi}
                 routerParams={routerParams}
                 tokensMapper={tokensMapper}
-                userPoolBalances={userPoolBalances}
               />
             )}
             {poolInfoTab === 'pool' && (

@@ -1,6 +1,7 @@
 import lodash from 'lodash'
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import { styled } from 'styled-components'
+import { useConfig } from 'wagmi'
 import AlertFormError from '@/dex/components/AlertFormError'
 import TransferActions from '@/dex/components/PagePool/components/TransferActions'
 import type { TransferProps } from '@/dex/components/PagePool/types'
@@ -21,7 +22,7 @@ import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t, Trans } from '@ui-kit/lib/i18n'
 
-const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, userPoolBalances }: TransferProps) => {
+const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed }: TransferProps) => {
   const isSubscribed = useRef(false)
 
   const { chainId, signerAddress } = curve || {}
@@ -46,11 +47,13 @@ const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
   const haveClaimableCrv = +formValues.claimableCrv > 0
   const haveClaimableRewards = +formValues.claimableRewards.length > 0
 
+  const config = useConfig()
+
   const updateFormValues = useCallback(() => {
     setTxInfoBar(null)
     setSlippageConfirmed(false)
-    void setFormValues('CLAIM', curve, poolDataCacheOrApi.pool.id, poolData, {}, null, seed.isSeed, '')
-  }, [curve, poolData, poolDataCacheOrApi.pool.id, seed.isSeed, setFormValues])
+    void setFormValues('CLAIM', config, curve, poolDataCacheOrApi.pool.id, poolData, {}, null, seed.isSeed, '')
+  }, [config, curve, poolData, poolDataCacheOrApi.pool.id, seed.isSeed, setFormValues])
 
   const handleClaimClick = useCallback(
     async (
@@ -184,7 +187,6 @@ const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
       loading={!chainId || !steps.length || seed.isSeed === null}
       routerParams={routerParams}
       seed={seed}
-      userPoolBalances={userPoolBalances}
     >
       <ClaimableTokensWrapper>
         {haveClaimableCrv || haveClaimableRewards ? (

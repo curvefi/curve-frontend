@@ -1,4 +1,6 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
+import { useConnection } from 'wagmi'
+import { useConfig } from 'wagmi'
 import AlertFormError from '@/dex/components/AlertFormError'
 import DetailInfoEstGas from '@/dex/components/DetailInfoEstGas'
 import FieldLpToken from '@/dex/components/PagePool/components/FieldLpToken'
@@ -7,6 +9,7 @@ import type { TransferProps } from '@/dex/components/PagePool/types'
 import { DEFAULT_ESTIMATED_GAS } from '@/dex/components/PagePool/utils'
 import type { FormStatus, FormValues } from '@/dex/components/PagePool/Withdraw/types'
 import { useNetworks } from '@/dex/entities/networks'
+import { usePoolTokenDepositBalances } from '@/dex/hooks/usePoolTokenDepositBalances'
 import useStore from '@/dex/store/useStore'
 import { CurveApi, PoolData } from '@/dex/types/main.types'
 import { getStepStatus } from '@ui/Stepper/helpers'
@@ -17,7 +20,7 @@ import { scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 
-const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, userPoolBalances }: TransferProps) => {
+const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed }: TransferProps) => {
   const isSubscribed = useRef(false)
 
   const { chainId, signerAddress } = curve || {}
@@ -38,11 +41,14 @@ const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, 
   const poolId = poolData?.pool?.id
   const haveSigner = !!signerAddress
 
+  const config = useConfig()
+
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<FormValues>) => {
       setTxInfoBar(null)
       void setFormValues(
         'UNSTAKE',
+        config,
         curve,
         poolDataCacheOrApi.pool.id,
         poolData,
@@ -52,7 +58,7 @@ const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, 
         '',
       )
     },
-    [curve, poolData, poolDataCacheOrApi.pool.id, seed.isSeed, setFormValues],
+    [config, curve, poolData, poolDataCacheOrApi.pool.id, seed.isSeed, setFormValues],
   )
 
   const handleUnstakeClick = useCallback(
@@ -132,16 +138,22 @@ const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, 
   }, [chainId, poolId, signerAddress, formValues, formStatus])
 
   const isDisabled = seed.isSeed === null || seed.isSeed || formStatus.formProcessing
-  const balGauge = userPoolBalances?.gauge as string
+
+  const { address: userAddress } = useConnection()
+  const { gaugeTokenBalance, isLoading: gaugeTokenLoading } = usePoolTokenDepositBalances({
+    chainId,
+    userAddress,
+    poolId,
+  })
 
   return (
     <>
       {/* input fields */}
       <FieldLpToken
         amount={formValues.stakedLpToken}
-        balanceLoading={haveSigner && typeof userPoolBalances === 'undefined'}
-        balance={haveSigner ? balGauge : ''}
-        hasError={+formValues.stakedLpToken > +balGauge}
+        balanceLoading={gaugeTokenLoading}
+        balance={gaugeTokenBalance ?? '0'}
+        hasError={+formValues.stakedLpToken > +(gaugeTokenBalance ?? '0')}
         haveSigner={haveSigner}
         handleAmountChange={useCallback((stakedLpToken) => updateFormValues({ stakedLpToken }), [updateFormValues])}
         disabled={isDisabled}
@@ -159,7 +171,6 @@ const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, 
         loading={!chainId || !steps.length || !seed.loaded}
         routerParams={routerParams}
         seed={seed}
-        userPoolBalances={userPoolBalances}
       >
         {formStatus.error && <AlertFormError errorKey={formStatus.error} handleBtnClose={() => updateFormValues({})} />}
         {txInfoBar}

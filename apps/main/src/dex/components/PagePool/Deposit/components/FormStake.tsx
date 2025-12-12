@@ -1,6 +1,8 @@
 import BigNumber from 'bignumber.js'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
+import { useConnection } from 'wagmi'
+import { useConfig } from 'wagmi'
 import AlertFormError from '@/dex/components/AlertFormError'
 import DetailInfoEstGas from '@/dex/components/DetailInfoEstGas'
 import DetailInfoExpectedApy from '@/dex/components/PagePool/components/DetailInfoExpectedApy'
@@ -11,6 +13,7 @@ import { FieldsWrapper } from '@/dex/components/PagePool/styles'
 import type { TransferProps } from '@/dex/components/PagePool/types'
 import { DEFAULT_ESTIMATED_GAS } from '@/dex/components/PagePool/utils'
 import { useNetworks } from '@/dex/entities/networks'
+import { usePoolTokenDepositBalances } from '@/dex/hooks/usePoolTokenDepositBalances'
 import useStore from '@/dex/store/useStore'
 import { CurveApi, Pool, PoolData } from '@/dex/types/main.types'
 import AlertBox from '@ui/AlertBox'
@@ -22,13 +25,12 @@ import { scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 
-const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, userPoolBalances }: TransferProps) => {
+const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed }: TransferProps) => {
   const isSubscribed = useRef(false)
 
   const { chainId, signerAddress } = curve || {}
   const { rChainId } = routerParams
   const activeKey = useStore((state) => state.poolDeposit.activeKey)
-  const balancesLoading = useStore((state) => state.user.walletBalancesLoading)
   const formEstGas = useStore((state) => state.poolDeposit.formEstGas[activeKey] ?? DEFAULT_ESTIMATED_GAS)
   const formStatus = useStore((state) => state.poolDeposit.formStatus)
   const formValues = useStore((state) => state.poolDeposit.formValues)
@@ -46,12 +48,24 @@ const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
   const poolId = poolData?.pool?.id
   const haveSigner = !!signerAddress
 
+  const config = useConfig()
+
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<FormValues>) => {
       setTxInfoBar(null)
-      void setFormValues('STAKE', curve, poolDataCacheOrApi.pool.id, poolData, updatedFormValues, null, seed.isSeed, '')
+      void setFormValues(
+        'STAKE',
+        config,
+        curve,
+        poolDataCacheOrApi.pool.id,
+        poolData,
+        updatedFormValues,
+        null,
+        seed.isSeed,
+        '',
+      )
     },
-    [curve, poolData, poolDataCacheOrApi.pool.id, seed.isSeed, setFormValues],
+    [config, curve, poolData, poolDataCacheOrApi.pool.id, seed.isSeed, setFormValues],
   )
 
   const handleApproveClick = useCallback(
@@ -157,7 +171,13 @@ const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
 
   const activeStep = signerAddress ? getActiveStep(steps) : null
   const disableForm = seed.isSeed === null || formStatus.formProcessing
-  const balLpToken = (userPoolBalances?.lpToken as string) ?? '0'
+
+  const { address: userAddress } = useConnection()
+  const { lpTokenBalance, isLoading: lpTokenBalanceLoading } = usePoolTokenDepositBalances({
+    chainId,
+    userAddress,
+    poolId,
+  })
 
   return (
     <>
@@ -165,9 +185,9 @@ const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
       <FieldsWrapper>
         <FieldLpToken
           amount={formValues.lpToken}
-          balance={balLpToken}
-          balanceLoading={balancesLoading}
-          hasError={haveSigner ? new BigNumber(formValues.lpToken).isGreaterThan(balLpToken as string) : false}
+          balance={lpTokenBalance ?? '0'}
+          balanceLoading={lpTokenBalanceLoading}
+          hasError={haveSigner ? new BigNumber(formValues.lpToken).isGreaterThan(lpTokenBalance ?? '0') : false}
           haveSigner={haveSigner}
           handleAmountChange={useCallback((lpToken) => updateFormValues({ lpToken }), [updateFormValues])}
           disabled={disableForm}
@@ -196,7 +216,6 @@ const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
         loading={!chainId || !steps.length || !seed.loaded}
         routerParams={routerParams}
         seed={seed}
-        userPoolBalances={userPoolBalances}
       >
         {formStatus.error === 'lpToken-too-much' ? (
           <AlertBox alertType="error">{t`Not enough LP Tokens balances.`}</AlertBox>
