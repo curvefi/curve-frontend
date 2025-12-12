@@ -1,13 +1,13 @@
 import lodash from 'lodash'
 import type { StoreApi } from 'zustand'
 import { updateUserEventsApi } from '@/llamalend/llama.utils'
-import type { FormStatus, FormValues } from '@/loan/components/PageLoanManage/CollateralDecrease/types'
-import type { FormDetailInfo, FormEstGas } from '@/loan/components/PageLoanManage/types'
+import type { FormStatus, FormValues } from '@/loan/components/PageMintMarket/CollateralDecrease/types'
+import type { FormDetailInfo, FormEstGas } from '@/loan/components/PageMintMarket/types'
 import {
   DEFAULT_DETAIL_INFO,
   DEFAULT_FORM_EST_GAS,
   DEFAULT_FORM_STATUS as FORM_STATUS,
-} from '@/loan/components/PageLoanManage/utils'
+} from '@/loan/components/PageMintMarket/utils'
 import networks from '@/loan/networks'
 import type { State } from '@/loan/store/useStore'
 import { ChainId, LlamaApi, Llamma } from '@/loan/types/loan.types'

@@ -1,14 +1,14 @@
 import lodash from 'lodash'
 import type { StoreApi } from 'zustand'
 import { updateUserEventsApi } from '@/llamalend/llama.utils'
-import type { FormDetailInfo, FormStatus, FormValues } from '@/loan/components/PageLoanManage/LoanDeleverage/types'
+import type { FormDetailInfo, FormStatus, FormValues } from '@/loan/components/PageMintMarket/LoanDeleverage/types'
 import {
   DEFAULT_DETAIL_INFO,
   DEFAULT_FORM_STATUS,
   DEFAULT_FORM_VALUES,
-} from '@/loan/components/PageLoanManage/LoanDeleverage/utils'
-import type { FormEstGas } from '@/loan/components/PageLoanManage/types'
-import { DEFAULT_FORM_EST_GAS } from '@/loan/components/PageLoanManage/utils'
+} from '@/loan/components/PageMintMarket/LoanDeleverage/utils'
+import type { FormEstGas } from '@/loan/components/PageMintMarket/types'
+import { DEFAULT_FORM_EST_GAS } from '@/loan/components/PageMintMarket/utils'
 import networks from '@/loan/networks'
 import type { State } from '@/loan/store/useStore'
 import { ChainId, LlamaApi, Llamma, UserLoanDetails } from '@/loan/types/loan.types'

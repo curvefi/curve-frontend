@@ -1,8 +1,7 @@
 import '@/global-extensions'
 import CrvStaking from '@/loan/components/PageCrvUsdStaking/Page'
 import Integrations from '@/loan/components/PageIntegrations/Page'
-import CreateLoan from '@/loan/components/PageLoanCreate/Page'
-import ManageLoan from '@/loan/components/PageLoanManage/Page'
+import { MintMarketPage } from '@/loan/components/PageMintMarket/MintMarketPage'
 import { Page as PegKeepersPage } from '@/loan/components/PagePegKeepers'
 import { CrvUsdClientLayout } from '@/loan/CrvUsdClientLayout'
 import Skeleton from '@mui/material/Skeleton'
@@ -70,39 +69,18 @@ export const crvusdRoutes = crvusdLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/markets/$collateralId',
-    loader: ({ params: { network, collateralId } }) => redirectTo(`/crvusd/${network}/markets/${collateralId}/create/`),
+    component: MintMarketPage,
+    head: ({ params }) => ({ meta: [{ title: `${params.collateralId} - Curve Llamalend` }] }),
     ...layoutProps,
   }),
   createRoute({
-    path: '$network/markets/$collateralId/create/$formType',
-    component: CreateLoan,
-    head: ({ params }) => ({
-      meta: [{ title: `Create - ${params.collateralId} - Curve Llamalend` }],
-    }),
+    path: '$network/markets/$collateralId/create/{-$formType}',
+    loader: ({ params: { network, collateralId } }) => redirectTo(`/crvusd/${network}/markets/${collateralId}`),
     ...layoutProps,
   }),
   createRoute({
-    path: '$network/markets/$collateralId/create',
-    component: CreateLoan,
-    head: ({ params }) => ({
-      meta: [{ title: `Create - ${params.collateralId} - Curve Llamalend` }],
-    }),
-    ...layoutProps,
-  }),
-  createRoute({
-    path: '$network/markets/$collateralId/manage/$formType',
-    component: ManageLoan,
-    head: ({ params }) => ({
-      meta: [{ title: `Manage - ${params.collateralId} - Curve Llamalend` }],
-    }),
-    ...layoutProps,
-  }),
-  createRoute({
-    path: '$network/markets/$collateralId/manage',
-    component: ManageLoan,
-    head: ({ params }) => ({
-      meta: [{ title: `Manage - ${params.collateralId} - Curve Llamalend` }],
-    }),
+    path: '$network/markets/$collateralId/manage/{-$formType}',
+    loader: ({ params: { network, collateralId } }) => redirectTo(`/crvusd/${network}/markets/${collateralId}`),
     ...layoutProps,
   }),
   createRoute({

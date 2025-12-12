@@ -79,7 +79,7 @@ const ChartUserBands = ({
     <ChartBandBalances
       brushIndex={brushIndex}
       data={chartBandBalancesData}
-      llamma={llamma}
+      market={llamma}
       oraclePrice={oraclePrice}
       oraclePriceBand={oraclePriceBand}
       showLiquidationIndicator={!!userLiquidationBand}
