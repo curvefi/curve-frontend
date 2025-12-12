@@ -21,6 +21,14 @@ export const useAutoDetectErc4626 = ({ tokenId, address }: UseAutoDetectErc4626P
   const { isErc4626, isLoading, error, isSuccess } = useIsErc4626({ address })
 
   useMemo(() => {
+    if (isLoading) {
+      updateTokenErc4626Status(tokenId, { isErc4626, isLoading, error, isSuccess })
+    }
+
+    if (error) {
+      updateTokenErc4626Status(tokenId, { isErc4626, isLoading, error, isSuccess })
+    }
+
     if (isErc4626 && isSuccess && !statusAlreadySet) {
       updateNgAssetType(tokenId, NG_ASSET_TYPE.ERC4626)
       updateTokenErc4626Status(tokenId, { isErc4626, isLoading, error, isSuccess })
