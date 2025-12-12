@@ -81,5 +81,5 @@ export const { useQuery: useCreateLoanExpectedCollateral, queryKey: createLoanEx
       return convertNumbers({ userCollateral, leverage, totalCollateral: collateral })
     },
     staleTime: '1m',
-    validationSuite: borrowQueryValidationSuite({ isLeverageRequired: true }), // requires debt, maxDebt, and leverageEnabled
+    validationSuite: borrowQueryValidationSuite({ debtRequired: true, isLeverageRequired: true }),
   })

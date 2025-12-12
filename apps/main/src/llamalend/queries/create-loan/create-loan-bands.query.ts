@@ -45,7 +45,7 @@ export const { useQuery: useCreateLoanBands } = queryFactory({
       : market.createLoanBands(userCollateral, debt, range)
   },
   staleTime: '1m',
-  validationSuite: borrowQueryValidationSuite(), // requires debt and maxDebt
+  validationSuite: borrowQueryValidationSuite({ debtRequired: true }),
   dependencies: (params) => [
     createLoanMaxReceiveKey(params),
     ...(params.leverageEnabled ? [createLoanExpectedCollateralQueryKey(params)] : []),

@@ -11,11 +11,12 @@ import type { OnBorrowFormUpdate } from '@/llamalend/features/borrow/types'
 import Stack from '@mui/material/Stack'
 import { AppFormContentWrapper } from '@ui/AppForm'
 import { useNavigate } from '@ui-kit/hooks/router'
+import { useDebounced } from '@ui-kit/hooks/useDebounce'
 import { useCreateLoanMuiForm } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
-import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
+import { type TabOption, TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
+import { Duration } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { useThrottle } from '@ui-kit/utils/timers'
 
 const { MaxWidth } = SizesAndSpaces
 
@@ -23,8 +24,14 @@ const { MaxWidth } = SizesAndSpaces
  * Callback that synchronizes the `ChartOhlc` component with the `RangeSlider` component in the new `BorrowTabContents`.
  */
 const useOnFormUpdate = ({ api, market }: PageContentProps): OnBorrowFormUpdate => {
-  const setFormValues = useThrottle(useStore((store) => store.loanCreate.setFormValues))
-  const setStateByKeys = useThrottle(useStore((store) => store.loanCreate.setStateByKeys))
+  const [setFormValues] = useDebounced(
+    useStore((store) => store.loanCreate.setFormValues),
+    Duration.FormDebounce,
+  )
+  const [setStateByKeys] = useDebounced(
+    useStore((store) => store.loanCreate.setStateByKeys),
+    Duration.FormDebounce,
+  )
   return useCallback(
     async ({ debt, userCollateral, range, slippage, leverageEnabled }) => {
       const formValues: FormValues = {
@@ -33,7 +40,7 @@ const useOnFormUpdate = ({ api, market }: PageContentProps): OnBorrowFormUpdate 
         debt: `${debt ?? ''}`,
         userCollateral: `${userCollateral ?? ''}`,
       }
-      await setFormValues(api, market, formValues, `${slippage}`, leverageEnabled)
+      setFormValues(api, market, formValues, `${slippage}`, leverageEnabled)
       setStateByKeys({ isEditLiqRange: true })
     },
     [api, market, setFormValues, setStateByKeys],

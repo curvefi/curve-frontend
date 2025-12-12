@@ -45,14 +45,14 @@ export const borrowFormValidationGroup = (
 export const borrowFormValidationSuite = createValidationSuite(borrowFormValidationGroup)
 
 export const borrowQueryValidationSuite = ({
-  debtRequired = true,
+  debtRequired,
   isMaxDebtRequired = debtRequired,
   isLeverageRequired = false,
 }: {
-  debtRequired?: boolean
+  debtRequired: boolean
   isMaxDebtRequired?: boolean
   isLeverageRequired?: boolean
-} = {}): Suite<keyof BorrowFormQueryParams, string> =>
+}): Suite<keyof BorrowFormQueryParams, string> =>
   createValidationSuite((params: BorrowFormQueryParams & { maxDebt?: FieldsOf<BorrowForm>['maxDebt'] }) => {
     const { chainId, leverageEnabled, marketId, userBorrowed, userCollateral, debt, range, slippage, maxDebt } = params
     marketIdValidationSuite({ chainId, marketId })

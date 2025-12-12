@@ -53,7 +53,7 @@ export const { useQuery: useCreateLoanPrices } = queryFactory({
           : convertNumbers(await market.leverage.createLoanPrices(userCollateral, debt, range))
   },
   staleTime: '1m',
-  validationSuite: borrowQueryValidationSuite(), // requires debt and maxDebt
+  validationSuite: borrowQueryValidationSuite({ debtRequired: true }),
   dependencies: (params) => [
     createLoanMaxReceiveKey(params),
     ...(params.leverageEnabled ? [createLoanExpectedCollateralQueryKey(params)] : []),

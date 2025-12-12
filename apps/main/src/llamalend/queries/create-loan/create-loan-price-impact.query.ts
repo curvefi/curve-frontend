@@ -38,6 +38,6 @@ export const { useQuery: useCreateLoanPriceImpact } = queryFactory({
         : +(await market.leverage.priceImpact(userCollateral, debt))
   },
   staleTime: '1m',
-  validationSuite: borrowQueryValidationSuite({ isLeverageRequired: true }), // requires debt, maxDebt, and leverageEnabled
+  validationSuite: borrowQueryValidationSuite({ debtRequired: true, isLeverageRequired: true }),
   dependencies: (params) => [createLoanExpectedCollateralQueryKey(params)],
 })

@@ -27,5 +27,5 @@ export const { useQuery: useBorrowCreateLoanIsApproved, fetchQuery: fetchBorrowC
       : await market.createLoanIsApproved(userCollateral)
   },
   staleTime: '1m',
-  validationSuite: borrowQueryValidationSuite({ debtRequired: false }), // doesn't use debt or maxDebt
+  validationSuite: borrowQueryValidationSuite({ debtRequired: false }),
 })

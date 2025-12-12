@@ -53,8 +53,10 @@ export const validateMaxDebt = (
 }
 
 export const validateLeverageEnabled = (leverageEnabled: boolean | undefined | null, isLeverageRequired: boolean) => {
-  test('leverageEnabled', 'Leverage must be enabled', () => {
-    enforce(leverageEnabled).equals(true)
+  skipWhen(!isLeverageRequired, () => {
+    test('leverageEnabled', 'Leverage must be enabled', () => {
+      enforce(leverageEnabled).equals(true)
+    })
   })
 }
 
