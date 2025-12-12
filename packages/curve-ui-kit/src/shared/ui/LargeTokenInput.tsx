@@ -257,7 +257,7 @@ export const LargeTokenInput = ({
   const [balance, setBalance, cancelSetBalance] = useUniqueDebounce({
     defaultValue: externalBalance,
     callback: onBalance,
-    debounceMs: Duration.FormDebounce,
+    debounceMs: Duration.FormThrottle,
     // We don't want to trigger onBalance if the value is effectively the same, e.g. "0.0" and "0.00"
     equals: bigNumEquals,
   })

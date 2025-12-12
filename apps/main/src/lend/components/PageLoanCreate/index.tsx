@@ -15,16 +15,18 @@ import { useCreateLoanMuiForm } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { useThrottle } from '@ui-kit/utils/timers'
 
 const { MaxWidth } = SizesAndSpaces
 
 /**
  * Callback that synchronizes the `ChartOhlc` component with the `RangeSlider` component in the new `BorrowTabContents`.
  */
-const useOnFormUpdate = ({ api, market }: PageContentProps): OnBorrowFormUpdate =>
-  useCallback(
+const useOnFormUpdate = ({ api, market }: PageContentProps): OnBorrowFormUpdate => {
+  const setFormValues = useThrottle(useStore((store) => store.loanCreate.setFormValues))
+  const setStateByKeys = useThrottle(useStore((store) => store.loanCreate.setStateByKeys))
+  return useCallback(
     async ({ debt, userCollateral, range, slippage, leverageEnabled }) => {
-      const { setFormValues, setStateByKeys } = useStore.getState().loanCreate
       const formValues: FormValues = {
         ...DEFAULT_FORM_VALUES,
         n: range,
@@ -34,8 +36,9 @@ const useOnFormUpdate = ({ api, market }: PageContentProps): OnBorrowFormUpdate 
       await setFormValues(api, market, formValues, `${slippage}`, leverageEnabled)
       setStateByKeys({ isEditLiqRange: true })
     },
-    [api, market],
+    [api, market, setFormValues, setStateByKeys],
   )
+}
 
 const LoanCreate = (pageProps: PageContentProps & { params: MarketUrlParams }) => {
   const { rChainId, rOwmId, rFormType, market, params, api } = pageProps
