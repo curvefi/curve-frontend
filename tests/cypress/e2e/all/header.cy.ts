@@ -166,18 +166,23 @@ describe('Header', () => {
   })
 
   describe('Phishing Warning Banner', () => {
-    let route: AppRoute
-
-    beforeEach(() => {
+    function visitWithDismissedBanner(dismissedDate?: number) {
       const [width, height] = oneViewport()
       viewport = [width, height]
       cy.viewport(...viewport)
-      route = oneAppRoute()
-      cy.visitWithoutTestConnector(route)
+      const route = oneAppRoute()
+      cy.visitWithoutTestConnector(route, {
+        onBeforeLoad: (win) => {
+          if (dismissedDate !== undefined) {
+            win.localStorage.setItem('phishing-warning-dismissed', JSON.stringify(dismissedDate))
+          }
+        },
+      })
       waitIsLoaded(route)
-    })
+    }
 
     it('should display the banner and allow dismissal', () => {
+      visitWithDismissedBanner()
       cy.get("[data-testid='phishing-warning-banner']", LOAD_TIMEOUT).should('be.visible')
       // Click the banner to dismiss it
       cy.get("[data-testid='phishing-warning-banner']").find('button').first().click()
@@ -187,18 +192,14 @@ describe('Header', () => {
     it('should reappear after one month', () => {
       // Set dismissal date to 31 days ago (more than one month)
       const oneMonthAgo = Date.now() - 31 * DAY_IN_MS
-      dismissPhishingWarningBanner(oneMonthAgo)
-      cy.reload()
-      waitIsLoaded(route)
+      visitWithDismissedBanner(oneMonthAgo)
       cy.get("[data-testid='phishing-warning-banner']", LOAD_TIMEOUT).should('be.visible')
     })
 
     it('should remain hidden within one month', () => {
       // Set dismissal date to 15 days ago (less than one month)
-      const fifteenDaysAgo = Date.now() - 15 * 24 * 60 * 60 * 1000
-      dismissPhishingWarningBanner(fifteenDaysAgo)
-      cy.reload()
-      waitIsLoaded(route)
+      const fifteenDaysAgo = Date.now() - 15 * DAY_IN_MS
+      visitWithDismissedBanner(fifteenDaysAgo)
       cy.get("[data-testid='phishing-warning-banner']", LOAD_TIMEOUT).should('not.exist')
     })
   })
