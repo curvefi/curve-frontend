@@ -1,5 +1,6 @@
 import { produce } from 'immer'
 import lodash from 'lodash'
+import type { Config } from 'wagmi'
 import type { StoreApi } from 'zustand'
 import type { State } from '@/dao/store/useStore'
 import type { CurveApi, Wallet } from '@/dao/types/dao.types'
@@ -15,7 +16,7 @@ export interface AppSlice extends SliceState {
   updateGlobalStoreByKey: <T>(key: DefaultStateKeys, value: T) => void
 
   /** Hydrate resets states and refreshes store data from the API */
-  hydrate(api: CurveApi | undefined, prevApi: CurveApi | undefined, wallet: Wallet | undefined): Promise<void>
+  hydrate(config: Config, api: CurveApi | undefined, prevApi: CurveApi | undefined, wallet: Wallet | undefined): Promise<void>
 
   setAppStateByActiveKey<T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T): void
   setAppStateByKey<T>(sliceKey: SliceKey, key: StateKey, value: T): void
@@ -35,7 +36,7 @@ const createAppSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['
     )
   },
 
-  hydrate: async (api, prevApi, wallet) => {
+  hydrate: async (config, api, prevApi, wallet) => {
     if (!api) return
 
     const isNetworkSwitched = prevApi?.chainId != api.chainId

@@ -1,5 +1,6 @@
 import type { Eip1193Provider } from 'ethers'
 import { Address } from 'viem'
+import type { Config } from 'wagmi'
 import { type default as curveApi } from '@curvefi/api'
 import type { IChainId as CurveChainId, INetworkName as CurveNetworkId } from '@curvefi/api/lib/interfaces'
 import { type default as llamaApi } from '@curvefi/llamalend-api'
@@ -55,6 +56,7 @@ export type AppChainId<A extends AppName> = LibChainId[(typeof AppLibs)[A]]
 export type AppNetworkId<A extends AppName> = LibNetworkId[(typeof AppLibs)[A]]
 
 export type Hydrator<App extends AppName> = (
+  config: Config,
   lib: AppLib<App>,
   prevLib: AppLib<App> | undefined,
   wallet?: Wallet,

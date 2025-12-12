@@ -1,5 +1,6 @@
 import lodash from 'lodash'
 import { ethAddress } from 'viem'
+import type { Config } from 'wagmi'
 import type { StoreApi } from 'zustand'
 import type {
   FormEstGas,
@@ -39,15 +40,22 @@ const sliceKey = 'quickSwap'
 export type QuickSwapSlice = {
   [sliceKey]: SliceState & {
     fetchUserBalances(
+      config: Config,
       curve: CurveApi,
       fromAddress: string,
       toAddress: string,
     ): Promise<{ fromAmount: string; toAmount: string }>
     fetchMaxAmount(curve: CurveApi, searchedParams: SearchedParams, maxSlippage: string | undefined): Promise<void>
-    fetchRoutesAndOutput(curve: CurveApi, searchedParams: SearchedParams, maxSlippage: string): Promise<void>
+    fetchRoutesAndOutput(
+      config: Config,
+      curve: CurveApi,
+      searchedParams: SearchedParams,
+      maxSlippage: string,
+    ): Promise<void>
     fetchEstGasApproval(curve: CurveApi, searchedParams: SearchedParams): Promise<void>
     resetFormErrors(): void
     setFormValues(
+      config: Config,
       curve: CurveApi | null,
       updatedFormValues: Partial<FormValues>,
       searchedParams: SearchedParams,
@@ -59,11 +67,12 @@ export type QuickSwapSlice = {
 
     // select token list
     setPoolListFormValues(hideSmallPools: boolean): void
-    updateTokenList(curve: CurveApi | null, tokensMapper: TokensMapper): Promise<void>
+    updateTokenList(config: Config, curve: CurveApi | null, tokensMapper: TokensMapper): Promise<void>
 
     // steps
     fetchStepApprove(
       activeKey: string,
+      config: Config,
       curve: CurveApi,
       formValues: FormValues,
       searchedParams: SearchedParams,
@@ -71,6 +80,7 @@ export type QuickSwapSlice = {
     ): Promise<FnStepApproveResponse | undefined>
     fetchStepSwap(
       activeKey: string,
+      config: Config,
       curve: CurveApi,
       formValues: FormValues,
       searchedParams: SearchedParams,
@@ -98,14 +108,14 @@ const createQuickSwapSlice = (set: StoreApi<State>['setState'], get: StoreApi<St
   [sliceKey]: {
     ...DEFAULT_STATE,
 
-    fetchUserBalances: async (curve, fromAddress, toAddress) => {
+    fetchUserBalances: async (config, curve, fromAddress, toAddress) => {
       const { userBalancesMapper, fetchUserBalancesByTokens } = get().userBalances
 
       const fetchTokensList = []
       if (fromAddress && typeof userBalancesMapper[fromAddress] === 'undefined') fetchTokensList.push(fromAddress)
       if (toAddress && typeof userBalancesMapper[toAddress] === 'undefined') fetchTokensList.push(toAddress)
 
-      if (fetchTokensList.length > 0) await fetchUserBalancesByTokens(curve, fetchTokensList)
+      if (fetchTokensList.length > 0) await fetchUserBalancesByTokens(config, curve, fetchTokensList)
 
       return {
         fromAmount: get().userBalances.userBalancesMapper[fromAddress] ?? '0',
@@ -160,7 +170,7 @@ const createQuickSwapSlice = (set: StoreApi<State>['setState'], get: StoreApi<St
         isMaxLoading: false,
       })
     },
-    fetchRoutesAndOutput: async (curve, searchedParams, maxSlippage) => {
+    fetchRoutesAndOutput: async (config, curve, searchedParams, maxSlippage) => {
       const state = get()
       const sliceState = state[sliceKey]
 
@@ -236,7 +246,7 @@ const createQuickSwapSlice = (set: StoreApi<State>['setState'], get: StoreApi<St
           })
 
           // validation
-          const { fromAmount } = await sliceState.fetchUserBalances(curve, searchedParams.fromAddress, '')
+          const { fromAmount } = await sliceState.fetchUserBalances(config, curve, searchedParams.fromAddress, '')
           cFormValues.fromError = +cFormValues.fromAmount > +fromAmount ? 'too-much' : ''
           get()[sliceKey].setStateByKey('formValues', cFormValues)
         }
@@ -280,6 +290,7 @@ const createQuickSwapSlice = (set: StoreApi<State>['setState'], get: StoreApi<St
       })
     },
     setFormValues: async (
+      config,
       curve,
       updatedFormValues,
       searchedParams,
@@ -328,13 +339,13 @@ const createQuickSwapSlice = (set: StoreApi<State>['setState'], get: StoreApi<St
 
       // get wallet balances
       if (curve.signerAddress)
-        await sliceState.fetchUserBalances(curve, searchedParams.fromAddress, searchedParams.toAddress)
+        await sliceState.fetchUserBalances(config, curve, searchedParams.fromAddress, searchedParams.toAddress)
 
       // get max if MAX button is clicked
       if (isGetMaxFrom) await sliceState.fetchMaxAmount(curve, searchedParams, maxSlippage)
 
       // api calls
-      await sliceState.fetchRoutesAndOutput(curve, searchedParams, maxSlippage)
+      await sliceState.fetchRoutesAndOutput(config, curve, searchedParams, maxSlippage)
       void sliceState.fetchEstGasApproval(curve, searchedParams)
     },
 
@@ -344,7 +355,7 @@ const createQuickSwapSlice = (set: StoreApi<State>['setState'], get: StoreApi<St
       storedPoolListFormValues.hideSmallPools = hideSmallPools
       get().poolList.setStateByKey('formValues', storedPoolListFormValues)
     },
-    updateTokenList: async (curve, tokensMapper) => {
+    updateTokenList: async (config, curve, tokensMapper) => {
       const state = get()
       const sliceState = state[sliceKey]
 
@@ -359,11 +370,11 @@ const createQuickSwapSlice = (set: StoreApi<State>['setState'], get: StoreApi<St
       sliceState.setStateByActiveKey('tokenList', chainId.toString(), tokens)
 
       // Get user balances
-      await state.userBalances.fetchUserBalancesByTokens(curve, tokens)
+      await state.userBalances.fetchUserBalancesByTokens(config, curve, tokens)
     },
 
     // steps
-    fetchStepApprove: async (activeKey, curve, formValues, searchedParams, globalMaxSlippage) => {
+    fetchStepApprove: async (activeKey, config, curve, formValues, searchedParams, globalMaxSlippage) => {
       const state = get()
       const sliceState = state[sliceKey]
 
@@ -397,14 +408,14 @@ const createQuickSwapSlice = (set: StoreApi<State>['setState'], get: StoreApi<St
           sliceState.setStateByKey('formStatus', cFormStatus)
 
           // re-fetch est gas, approval, routes and output
-          await sliceState.fetchRoutesAndOutput(curve, searchedParams, globalMaxSlippage)
+          await sliceState.fetchRoutesAndOutput(config, curve, searchedParams, globalMaxSlippage)
           void sliceState.fetchEstGasApproval(curve, searchedParams)
         }
 
         return resp
       }
     },
-    fetchStepSwap: async (activeKey, curve, formValues, searchedParams, maxSlippage) => {
+    fetchStepSwap: async (activeKey, config, curve, formValues, searchedParams, maxSlippage) => {
       const state = get()
       const sliceState = state[sliceKey]
 
@@ -460,7 +471,7 @@ const createQuickSwapSlice = (set: StoreApi<State>['setState'], get: StoreApi<St
           void state.storeCache.setStateByActiveKey('routerFormValues', chainId.toString(), { fromAddress, toAddress })
 
           // fetch data
-          void state.userBalances.fetchUserBalancesByTokens(curve, [fromAddress, toAddress])
+          void state.userBalances.fetchUserBalancesByTokens(config, curve, [fromAddress, toAddress])
         }
 
         return resp

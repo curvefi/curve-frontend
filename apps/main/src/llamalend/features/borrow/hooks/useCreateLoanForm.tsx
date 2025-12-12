@@ -76,7 +76,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     params,
     isPending: form.formState.isSubmitting || isCreating,
     onSubmit: form.handleSubmit(onSubmit), // todo: handle form errors
-    maxTokenValues: useMaxTokenValues(collateralToken, params, form),
+    maxTokenValues: useMaxTokenValues(collateralToken?.address, params, form),
     borrowToken,
     collateralToken,
     isCreated,
