@@ -1,5 +1,6 @@
 import lodash from 'lodash'
 import { ethAddress } from 'viem'
+import type { Config } from 'wagmi'
 import type { StoreApi } from 'zustand'
 import type {
   FormLpTokenExpected,
@@ -22,10 +23,8 @@ import {
 } from '@/dex/components/PagePool/utils'
 import type { Amount } from '@/dex/components/PagePool/utils'
 import curvejsApi from '@/dex/lib/curvejs'
-import { getUserPoolActiveKey } from '@/dex/store/createUserSlice'
 import type { State } from '@/dex/store/useStore'
 import {
-  Balances,
   ChainId,
   CurveApi,
   FnStepApproveResponse,
@@ -41,6 +40,8 @@ import { t } from '@ui-kit/lib/i18n'
 import { fetchGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 import { fetchNetworks } from '../entities/networks'
+import { fetchPoolTokenBalances } from '../hooks/usePoolTokenBalances'
+import { fetchPoolLpTokenBalance } from '../hooks/usePoolTokenDepositBalances'
 
 type StateKey = keyof typeof DEFAULT_STATE
 const { cloneDeep } = lodash
@@ -62,20 +63,19 @@ const sliceKey = 'poolDeposit'
 // prettier-ignore
 export type PoolDepositSlice = {
   [sliceKey]: SliceState & {
-    fetchUserPoolWalletBalances(curve: CurveApi, poolId: string): Promise<Balances>
     fetchExpected(activeKey: string, chainId: ChainId, formType: FormType, pool: Pool, formValues: FormValues): Promise<void>
     fetchMaxAmount(activeKey: string, chainId: ChainId, pool: Pool, loadMaxAmount: LoadMaxAmount): Promise<Amount[]>
     fetchSeedAmount(poolData: PoolData, formValues: FormValues): Promise<Pick<FormValues, 'amounts' | 'isWrapped'>>
     fetchSlippage(activeKey: string, chainId: ChainId, formType: FormType, pool: Pool, formValues: FormValues, maxSlippage: string): Promise<void>
-    setFormValues(formType: FormType, curve: CurveApi | null, poolId: string, poolData: PoolData | undefined, formValues: Partial<FormValues>, loadMaxAmount: LoadMaxAmount | null, isSeed: boolean | null, maxSlippage: string): Promise<void>
+    setFormValues(formType: FormType, config: Config, curve: CurveApi | null, poolId: string, poolData: PoolData | undefined, formValues: Partial<FormValues>, loadMaxAmount: LoadMaxAmount | null, isSeed: boolean | null, maxSlippage: string): Promise<void>
 
     // steps
     fetchEstGasApproval(activeKey: string, chainId: ChainId, formType: FormType, pool: Pool): Promise<FnStepEstGasApprovalResponse>
     fetchStepApprove(activeKey: string, curve: CurveApi, formType: FormType, pool: Pool, formValues: FormValues): Promise<FnStepApproveResponse | undefined>
-    fetchStepDeposit(activeKey: string, curve: CurveApi, poolData: PoolData, formValues: FormValues, maxSlippage: string): Promise<FnStepResponse | undefined>
-    fetchStepDepositStake(activeKey: string, curve: CurveApi, poolData: PoolData, formValues: FormValues, maxSlippage: string): Promise<FnStepResponse | undefined>
+    fetchStepDeposit(activeKey: string, config: Config, curve: CurveApi, poolData: PoolData, formValues: FormValues, maxSlippage: string): Promise<FnStepResponse | undefined>
+    fetchStepDepositStake(activeKey: string, config: Config, curve: CurveApi, poolData: PoolData, formValues: FormValues, maxSlippage: string): Promise<FnStepResponse | undefined>
     fetchStepStakeApprove(activeKey: string, curve: CurveApi, formType: FormType, pool: Pool, formValues: FormValues): Promise<FnStepApproveResponse | undefined>
-    fetchStepStake(activeKey: string, curve: CurveApi, poolData: PoolData, formValues: FormValues): Promise<FnStepResponse | undefined>
+    fetchStepStake(activeKey: string, config: Config, curve: CurveApi, poolData: PoolData, formValues: FormValues): Promise<FnStepResponse | undefined>
 
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
     setStateByKey<T>(key: StateKey, value: T): void
@@ -103,10 +103,6 @@ const createPoolDepositSlice = (
   [sliceKey]: {
     ...DEFAULT_STATE,
 
-    fetchUserPoolWalletBalances: async (curve, poolId) => {
-      const userPoolActiveKey = getUserPoolActiveKey(curve, poolId)
-      return get().user.walletBalances[userPoolActiveKey] ?? (await get().user.fetchUserPoolInfo(curve, poolId, true))
-    },
     fetchExpected: async (activeKey, chainId, formType, pool, formValues) => {
       const { amounts, isWrapped } = formValues
       const depositExpectedFn =
@@ -219,7 +215,17 @@ const createPoolDepositSlice = (
         })
       }
     },
-    setFormValues: async (formType, curve, poolId, poolData, updatedFormValues, loadMaxAmount, isSeed, maxSlippage) => {
+    setFormValues: async (
+      formType,
+      config,
+      curve,
+      poolId,
+      poolData,
+      updatedFormValues,
+      loadMaxAmount,
+      isSeed,
+      maxSlippage,
+    ) => {
       // stored values
       const storedActiveKey = get()[sliceKey].activeKey
       const storedFormValues = get()[sliceKey].formValues
@@ -298,7 +304,7 @@ const createPoolDepositSlice = (
 
           if (signerAddress) {
             // validate input amounts with wallet
-            const balances = await get()[sliceKey].fetchUserPoolWalletBalances(curve, pool.id)
+            const balances = await fetchPoolTokenBalances(config, curve, pool.id)
             const amountsError = getAmountsError(cFormValues.amounts, balances)
 
             if (amountsError) {
@@ -319,8 +325,8 @@ const createPoolDepositSlice = (
       } else if (formType === 'STAKE') {
         if (!!signerAddress && +cFormValues.lpToken > 0) {
           // validate lpToken balances
-          const balances = await get()[sliceKey].fetchUserPoolWalletBalances(curve, pool.id)
-          const lpTokenError = +cFormValues.lpToken > +(balances.lpToken ?? '0') ? 'lpToken-too-much' : ''
+          const lpTokenBalance = await fetchPoolLpTokenBalance(config, curve, pool.id)
+          const lpTokenError = +cFormValues.lpToken > +lpTokenBalance ? 'lpToken-too-much' : ''
 
           if (lpTokenError) {
             get()[sliceKey].setStateByKey('formStatus', {
@@ -414,7 +420,7 @@ const createPoolDepositSlice = (
         return resp
       }
     },
-    fetchStepDeposit: async (activeKey, curve, poolData, formValues, maxSlippage) => {
+    fetchStepDeposit: async (activeKey, config, curve, poolData, formValues, maxSlippage) => {
       const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
@@ -452,13 +458,16 @@ const createPoolDepositSlice = (
           })
 
           // re-fetch data
-          await Promise.all([get().user.fetchUserPoolInfo(curve, pool.id), get().pools.fetchPoolStats(curve, poolData)])
+          await Promise.all([
+            get().user.fetchUserPoolInfo(config, curve, pool.id),
+            get().pools.fetchPoolStats(curve, poolData),
+          ])
         }
 
         return resp
       }
     },
-    fetchStepDepositStake: async (activeKey, curve, poolData, formValues, maxSlippage) => {
+    fetchStepDepositStake: async (activeKey, config, curve, poolData, formValues, maxSlippage) => {
       const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
@@ -494,7 +503,10 @@ const createPoolDepositSlice = (
           })
 
           // re-fetch data
-          await Promise.all([get().user.fetchUserPoolInfo(curve, pool.id), get().pools.fetchPoolStats(curve, poolData)])
+          await Promise.all([
+            get().user.fetchUserPoolInfo(config, curve, pool.id),
+            get().pools.fetchPoolStats(curve, poolData),
+          ])
         }
 
         return resp
@@ -533,7 +545,7 @@ const createPoolDepositSlice = (
         return resp
       }
     },
-    fetchStepStake: async (activeKey, curve, poolData, formValues) => {
+    fetchStepStake: async (activeKey, config, curve, poolData, formValues) => {
       const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
@@ -562,7 +574,10 @@ const createPoolDepositSlice = (
           })
 
           // re-fetch data
-          await Promise.all([get().user.fetchUserPoolInfo(curve, pool.id), get().pools.fetchPoolStats(curve, poolData)])
+          await Promise.all([
+            get().user.fetchUserPoolInfo(config, curve, pool.id),
+            get().pools.fetchPoolStats(curve, poolData),
+          ])
         }
 
         return resp
