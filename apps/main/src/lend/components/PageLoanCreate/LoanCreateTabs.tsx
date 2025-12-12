@@ -11,16 +11,18 @@ import { hasLeverage } from '@/llamalend/llama.utils'
 import { useCreateLoanMuiForm } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { type FormTab, FormTabs } from '@ui-kit/shared/ui/FormTabs/FormTabs'
+import { useThrottle } from '@ui-kit/utils/timers'
 
 type CreateLoanProps = PageContentProps<MarketUrlParams>
 
 /**
  * Callback that synchronizes the `ChartOhlc` component with the `RangeSlider` component in the new `BorrowTabContents`.
  */
-const useOnFormUpdate = ({ api, market }: Pick<CreateLoanProps, 'api' | 'market'>): OnBorrowFormUpdate =>
-  useCallback(
+const useOnFormUpdate = ({ api, market }: Pick<CreateLoanProps, 'api' | 'market'>): OnBorrowFormUpdate => {
+  const setFormValues = useThrottle(useStore((store) => store.loanCreate.setFormValues))
+  const setStateByKeys = useThrottle(useStore((store) => store.loanCreate.setStateByKeys))
+  return useCallback(
     async ({ debt, userCollateral, range, slippage, leverageEnabled }) => {
-      const { setFormValues, setStateByKeys } = useStore.getState().loanCreate
       const formValues: FormValues = {
         ...DEFAULT_FORM_VALUES,
         n: range,
@@ -30,8 +32,9 @@ const useOnFormUpdate = ({ api, market }: Pick<CreateLoanProps, 'api' | 'market'
       await setFormValues(api, market, formValues, `${slippage}`, leverageEnabled)
       setStateByKeys({ isEditLiqRange: true })
     },
-    [api, market],
+    [api, market, setFormValues, setStateByKeys],
   )
+}
 
 function CreateLoanTab({ market, api, rChainId }: CreateLoanProps) {
   const onLoanCreated = useStore((state) => state.loanCreate.onLoanCreated)

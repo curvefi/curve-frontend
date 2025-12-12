@@ -12,6 +12,7 @@ import {
 } from '@ui-kit/features/connect-wallet/lib/types'
 import { useIsDocumentFocused } from '@ui-kit/features/layout/utils'
 import type { AppName } from '@ui-kit/shared/routes'
+import { useTraceProps } from '@ui-kit/utils/useTraceProps'
 import { globalLibs, isWalletMatching } from './utils'
 
 const { FAILURE, LOADING, HYDRATING, SUCCESS } = ConnectState
@@ -38,7 +39,7 @@ export const CurveProvider = <App extends AppName>({
 }) => {
   const [connectState, setConnectState] = useState<ConnectState>(LOADING)
   const walletChainId = useChainId()
-  const { switchChainAsync } = useSwitchChain()
+  const { mutateAsync: switchChainAsync } = useSwitchChain()
   const { wallet, provider, isReconnecting } = useWagmiWallet()
   const isFocused = useIsDocumentFocused()
   const libKey = AppLibs[app]
@@ -121,19 +122,23 @@ export const CurveProvider = <App extends AppName>({
   const llamaApi = globalLibs.getMatching('llamaApi', wallet, network?.chainId)
   const isHydrated = !!globalLibs.hydrated[app] && { curveApi, llamaApi }[libKey] === globalLibs.hydrated[app]
 
-  return (
-    <CurveContext.Provider
-      value={{
-        connectState,
-        network,
-        isHydrated,
-        ...(wallet && { wallet }),
-        ...(provider && { provider }),
-        ...(curveApi && { curveApi }),
-        ...(llamaApi && { llamaApi }),
-      }}
-    >
-      {children}
-    </CurveContext.Provider>
-  )
+  const value = {
+    connectState,
+    network,
+    isHydrated,
+    ...(wallet && { wallet }),
+    ...(provider && { provider }),
+    ...(curveApi && { curveApi }),
+    ...(llamaApi && { llamaApi }),
+  }
+  useTraceProps('CurveProvider', {
+    connectState,
+    network,
+    isHydrated,
+    wallet,
+    provider,
+    curveApi,
+    llamaApi,
+  })
+  return <CurveContext.Provider value={value}>{children}</CurveContext.Provider>
 }

@@ -100,7 +100,7 @@ export const SliderInput = <T extends Decimal | DecimalRangeValue>({
   inputProps,
   sliderValueTransform,
   testId,
-  debounceMs = Duration.FormDebounce,
+  debounceMs = Duration.FormThrottle,
 }: SliderInputProps<T>) => {
   const isRange = isRangeValue(value)
   type SliderValue = T extends Decimal ? number : RangeValue
