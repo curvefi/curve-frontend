@@ -50,10 +50,13 @@ export const fetchTokenBalance = async (config: Config, query: TokenBalanceQuery
         .then((balance) => convertBalance({ value: balance[0], decimals: balance[1] }))
 
 /** Hook to fetch the token balance */
-export function useTokenBalance({ chainId, userAddress, tokenAddress }: FieldsOf<TokenBalanceQuery>) {
+export function useTokenBalance(
+  { chainId, userAddress, tokenAddress }: FieldsOf<TokenBalanceQuery>,
+  enabled: boolean = true,
+) {
   const config = useConfig()
 
-  const isEnabled = chainId != null && userAddress != null && tokenAddress != null
+  const isEnabled = enabled && chainId != null && userAddress != null && tokenAddress != null
   const isNativeToken = tokenAddress != null && isNative({ tokenAddress })
 
   const nativeBalance = useBalance({
