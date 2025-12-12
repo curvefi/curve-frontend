@@ -1,3 +1,4 @@
+import type { ReadContractErrorType } from 'viem'
 import {
   CRYPTOSWAP,
   STABLESWAP,
@@ -31,6 +32,12 @@ export type TokenState = {
   oracleAddress: string
   oracleFunction: string
   basePool: boolean
+  erc4626: {
+    isErc4626: boolean | undefined
+    isLoading: boolean
+    error: ReadContractErrorType | null
+    isSuccess: boolean
+  }
 }
 
 export type TokensInPoolState = CreatePoolSlice['createPool']['tokensInPool']
