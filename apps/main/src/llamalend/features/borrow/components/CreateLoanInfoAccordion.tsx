@@ -57,9 +57,9 @@ export const CreateLoanInfoAccordion = <ChainId extends IChainId>({
       gas={useCreateLoanEstimateGas(networks, params, isOpen)}
       leverage={{
         enabled: leverageEnabled,
-        expectedCollateral: useCreateLoanExpectedCollateral(params, isOpen && leverageEnabled),
-        maxReceive: useCreateLoanMaxReceive(params, isOpen && leverageEnabled),
-        priceImpact: useCreateLoanPriceImpact(params, isOpen && leverageEnabled),
+        expectedCollateral: useCreateLoanExpectedCollateral(params, isOpen),
+        maxReceive: useCreateLoanMaxReceive(params, isOpen),
+        priceImpact: useCreateLoanPriceImpact(params, isOpen),
         slippage,
         onSlippageChange,
         collateralSymbol: collateralToken?.symbol,

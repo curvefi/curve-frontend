@@ -46,6 +46,7 @@ export const { useQuery: useCreateLoanExpectedCollateral, queryKey: createLoanEx
       userCollateral = '0',
       debt,
       slippage,
+      leverageEnabled,
     }: BorrowFormQueryParams) =>
       [
         ...rootKeys.market({ chainId, marketId }),
@@ -54,6 +55,7 @@ export const { useQuery: useCreateLoanExpectedCollateral, queryKey: createLoanEx
         { userBorrowed },
         { debt },
         { slippage },
+        { leverageEnabled },
       ] as const,
     queryFn: async ({
       marketId,
@@ -79,5 +81,5 @@ export const { useQuery: useCreateLoanExpectedCollateral, queryKey: createLoanEx
       return convertNumbers({ userCollateral, leverage, totalCollateral: collateral })
     },
     staleTime: '1m',
-    validationSuite: borrowQueryValidationSuite(), // requires debt and maxDebt
+    validationSuite: borrowQueryValidationSuite({ isLeverageRequired: true }), // requires debt, maxDebt, and leverageEnabled
   })
