@@ -78,12 +78,13 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
   }, [isPendingRewardDistributors, rewardDistributors, userAddress, tokensMapper, getValues, networkId, setValue])
 
   const token = filteredTokens.find((x) => x.address === rewardTokenId)
+  const tokenAddresses = filteredTokens.map((t) => t.address)
 
-  const { data: tokenPrices } = useTokenUsdRates({ chainId, tokenAddresses: filteredTokens.map((t) => t.address) })
+  const { data: tokenPrices } = useTokenUsdRates({ chainId, tokenAddresses })
   const { data: tokenBalances, isLoading: isTokenBalancesLoading } = useTokenBalances({
     chainId,
     userAddress,
-    tokenAddresses: filteredTokens.map((t) => t.address),
+    tokenAddresses,
   })
 
   const rewardTokenBalance = useMemo(() => {
