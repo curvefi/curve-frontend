@@ -2,13 +2,13 @@ import { MouseEvent, useCallback, useMemo } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { Address, isAddressEqual } from 'viem'
 import { ethAddress } from 'viem'
+import { useConnection } from 'wagmi'
 import {
   useDepositRewardApproveIsMutating,
   useDepositRewardIsMutating,
   useGaugeRewardsDistributors,
 } from '@/dex/entities/gauge'
 import { useNetworkByChain } from '@/dex/entities/networks'
-import { useSignerAddress } from '@/dex/entities/signer'
 import { type DepositRewardFormValues, DepositRewardStep } from '@/dex/features/deposit-gauge-reward/types'
 import {
   FlexItemAmount,
@@ -34,7 +34,7 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
   const amount = watch('amount')
   const epoch = watch('epoch')
 
-  const { data: signerAddress } = useSignerAddress()
+  const { address: signerAddress } = useConnection()
   const isMaxLoading = useStore((state) => state.quickSwap.isMaxLoading)
   const {
     data: { networkId },
