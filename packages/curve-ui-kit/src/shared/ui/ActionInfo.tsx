@@ -88,6 +88,8 @@ const valueSize = {
   large: 'headingSBold',
 } as const satisfies Record<ActionInfoSize, TypographyVariantKey>
 
+const isSet = (v: ReactNode) => v != null && v !== ''
+
 const ActionInfo = ({
   label,
   labelColor,
@@ -117,7 +119,7 @@ const ActionInfo = ({
   }, [copyValue, openSnackbar])
 
   const errorMessage = (typeof error === 'object' && error?.message) || (typeof error === 'string' && error)
-  const showPrevValue = value != null && prevValue != null
+  const showPrevValue = isSet(value) && isSet(prevValue)
   value ??= prevValue ?? emptyValue
 
   return (
