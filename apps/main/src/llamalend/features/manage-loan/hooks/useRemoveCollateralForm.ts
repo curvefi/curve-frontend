@@ -126,7 +126,7 @@ export const useRemoveCollateralForm = <
     collateralToken,
     borrowToken,
     enabled: isAccordionOpen && !!values.userCollateral && debouncedIsValid,
-    collateralDelta: values.userCollateral != null ? (`-${values.userCollateral}` as Decimal) : undefined,
+    collateralDelta: values.userCollateral == null ? undefined : (`-${values.userCollateral}` as Decimal),
     expectedBorrowed: userState.data?.debt,
   })
   const marketRates = useMarketRates(params, isAccordionOpen)

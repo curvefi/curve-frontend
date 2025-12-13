@@ -8,6 +8,7 @@ import type { INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
 import type { PartialRecord } from '@curvefi/prices-api/objects.util'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
+import { LlamaIcon } from '@ui-kit/shared/icons/LlamaIcon'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import type { LargeTokenInputProps } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
@@ -53,7 +54,6 @@ export const LoanFormTokenInput = <
   positionBalance?: {
     position: Query<Decimal>
     tooltip?: WalletBalanceProps['tooltip']
-    prefix?: WalletBalanceProps['prefix']
   }
   /**
    * The network of the token.
@@ -80,9 +80,9 @@ export const LoanFormTokenInput = <
       loading: position ? position.isLoading : isBalanceLoading,
       usdRate,
       tooltip: positionBalance?.tooltip,
-      prefix: positionBalance?.prefix,
+      prefix: position && LlamaIcon,
     }),
-    [balance, isBalanceLoading, token?.symbol, usdRate, positionBalance?.tooltip, positionBalance?.prefix, position],
+    [balance, isBalanceLoading, token?.symbol, usdRate, positionBalance?.tooltip, position],
   )
 
   const errors = form.formState.errors as PartialRecord<FieldPath<TFieldValues>, Error>

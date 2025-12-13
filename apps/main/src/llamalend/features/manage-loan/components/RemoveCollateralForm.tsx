@@ -9,7 +9,6 @@ import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
-import { LlamaIcon } from '@ui-kit/shared/icons/LlamaIcon'
 import { Balance } from '@ui-kit/shared/ui/Balance'
 import { InputDivider } from '../../../widgets/InputDivider'
 import { setValueOptions } from '../../borrow/react-form.utils'
@@ -94,7 +93,6 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
           positionBalance={{
             position: maxRemovable,
             tooltip: t`Max Removable Collateral`,
-            prefix: LlamaIcon,
           }}
           message={
             <Balance
