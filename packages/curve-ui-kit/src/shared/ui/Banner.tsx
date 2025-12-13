@@ -92,12 +92,12 @@ export const Banner = ({
     }}
     data-testid={testId}
   >
-    <Stack direction="column" width="100%" maxWidth={MaxWidth.banner}>
+    <Stack width="100%" maxWidth={MaxWidth.banner}>
       <Stack direction="row" alignItems="center" justifyContent="space-between" gap={Spacing.sm}>
         <Typography sx={{ ...BannerSx[severity].title }} variant="headingXsBold">
           {BannerIcons[icon]} {children}
         </Typography>
-        <Stack direction="row" alignItems="center" justifyContent="start" height="100%">
+        <Stack direction="row" alignItems="center" justifyContent="start">
           {learnMoreUrl && (
             <Button
               component={LinkMui}
@@ -124,7 +124,7 @@ export const Banner = ({
             ))}
         </Stack>
       </Stack>
-      <Stack direction="row" alignItems="center" justifyContent="start" height="100%">
+      <Stack direction="row" alignItems="center" justifyContent="start">
         <Typography sx={{ ...BannerSx[severity].subtitle }} variant="bodySRegular">
           {subtitle}
         </Typography>
