@@ -83,79 +83,40 @@ export function calculateRobustPriceRange(
 const FORMATTER_DECIMALS_ABOVE_ONE = 2
 
 /**
- * Formats a price value for display on the chart's price axis with adaptive decimal precision.
- *
- * The function dynamically calculates the number of decimal places to show based on the
- * visible price range (delta between max and min). This ensures that price labels remain
- * meaningful and readable regardless of whether:
- * - Viewing a stablecoin hovering around $1.00 (needs many decimals)
- * - Viewing a token worth fractions of a cent (needs many decimals)
- * - Viewing a high-value asset like BTC (needs fewer decimals)
+ * Formats a price value for the chart's price axis with adaptive decimal precision
+ * based on the visible price range. Ensures labels are meaningful whether viewing
+ * stablecoins (~$1.00), micro-cap tokens (fractions of a cent), or high-value assets.
  *
  * @param x - The price value to format
- * @param min - The minimum price in the visible range (lowest candle low)
- * @param max - The maximum price in the visible range (highest candle high)
- * @returns A formatted string representation of the price
+ * @param min - Minimum price in the visible range
+ * @param max - Maximum price in the visible range
+ * @returns Formatted price string
  *
  * @example
- * // Large price range (e.g., $1000 to $2000)
- * priceFormatter(1500.123456, 1000, 2000) // Returns "1500.12" (2 decimals)
- *
- * @example
- * // Small price range (e.g., $0.0001 to $0.0002)
- * priceFormatter(0.00015, 0.0001, 0.0002) // Returns "0.00015" (5 decimals)
- *
- * @example
- * // Stablecoin range (e.g., $0.987 to $1.000)
- * priceFormatter(0.999, 0.987, 1.000) // Returns "0.9990" (4 decimals)
- *
- * @example
- * // Large value with abbreviation (value > 10,000)
- * priceFormatter(15000.5, 14000, 16000) // Returns "15K" (abbreviated)
+ * priceFormatter(1500.123, 1000, 2000)    // "1500.12" (delta >= 1 → 2 decimals)
+ * priceFormatter(0.999, 0.987, 1.000)     // "0.9990"  (delta = 0.013 → 4 decimals)
+ * priceFormatter(0.00015, 0.0001, 0.0002) // "0.000150" (delta = 0.0001 → 6 decimals)
+ * priceFormatter(15000.5, 14000, 16000)   // "15K"     (abbreviated when > 10,000)
  */
 export function priceFormatter(x: number, min: number, max: number) {
   const delta = max - min
 
   /*
-   * Calculate the number of decimal places needed.
+   * For delta < 1 we're basically looking at the order of magnitude of the delta
+   * to determine how many decimals are needed to show meaningful differences.
    *
-   * If delta >= 1, the price range is large enough that 2 decimal places suffices.
-   *
-   * If delta < 1, we use logarithm base 10 to determine precision.
-   * The formula: decimals = -Math.floor(Math.log10(delta)) + 2
-   *
-   * The "+2" ensures we have enough precision to distinguish between tick marks.
-   * Charts typically divide the visible range into ~5 tick marks, so tick spacing
-   * is roughly delta/5. We need enough decimals to show differences at that scale.
-   *
-   * For example, with delta = 0.013 (range from 0.987 to 1.000):
-   * - Ticks might be: 0.987, 0.990, 0.993, 0.996, 0.999
-   * - Tick spacing is ~0.003, requiring 4 decimals to display correctly
-   * - Formula: -floor(log10(0.013)) + 2 = -floor(-1.89) + 2 = 2 + 2 = 4 ✓
-   *
-   * Without "+2", we'd get 2 decimals, showing: 0.99, 0.99, 0.99, 1.00, 1.00
-   * making adjacent ticks appear identical.
+   * The "+2" accounts for tick spacing (~delta/5), ensuring adjacent ticks
+   * display distinct values. Without it, ticks like 0.987, 0.990, 0.993
+   * would all show as "0.99".
    *
    * Examples:
-   * - delta = 0.5   → decimals = -floor(-0.301) + 2 = 1 + 2 = 3
-   * - delta = 0.1   → decimals = -floor(-1) + 2 = 1 + 2 = 3
-   * - delta = 0.05  → decimals = -floor(-1.301) + 2 = 2 + 2 = 4
-   * - delta = 0.013 → decimals = -floor(-1.89) + 2 = 2 + 2 = 4
-   * - delta = 0.01  → decimals = -floor(-2) + 2 = 2 + 2 = 4
-   * - delta = 0.005 → decimals = -floor(-2.301) + 2 = 3 + 2 = 5
-   * - delta = 0.001 → decimals = -floor(-3) + 2 = 3 + 2 = 5
+   * - delta = 0.1   → -floor(-1) + 2 = 3 decimals
+   * - delta = 0.013 → -floor(-1.89) + 2 = 4 decimals
+   * - delta = 0.001 → -floor(-3) + 2 = 5 decimals
    */
   const calculatedDecimals = -Math.floor(Math.log10(delta)) + 2
   const decimals =
     delta >= 1 ? FORMATTER_DECIMALS_ABOVE_ONE : Math.max(calculatedDecimals, FORMATTER_DECIMALS_ABOVE_ONE)
 
-  /*
-   * Format the number using the calculated decimal precision.
-   * For large numbers (>10,000), use abbreviations like "K", "M"
-   * to keep labels compact (e.g., 15000 → "15K")
-   */
-  return formatNumber(x, {
-    decimals,
-    abbreviate: x > 10000,
-  })
+  return formatNumber(x, { decimals, abbreviate: x > 10000 })
 }
