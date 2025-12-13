@@ -43,8 +43,8 @@ type LoanInfoAccordionProps = {
   loanToValue: Query<Decimal | null>
   prevLoanToValue?: Query<Decimal | null>
   gas: Query<LoanInfoGasData | null>
-  debt?: Query<Decimal | null> & { tokenSymbol?: string }
-  collateral?: Query<Decimal | null> & { tokenSymbol?: string }
+  debt?: Query<{ value: Decimal; tokenSymbol?: string } | null>
+  collateral?: Query<{ value: Decimal; tokenSymbol?: string } | null>
   // userState values are used as prev values if collateral or debt are available
   userState?: Query<UserState> & { borrowTokenSymbol?: string; collateralTokenSymbol?: string }
   leverage?: LoanLeverageActionInfoProps & { enabled: boolean }
@@ -95,20 +95,20 @@ export const LoanInfoAccordion = ({
             {(debt || prevDebt) && (
               <ActionInfo
                 label={t`Debt`}
-                value={formatQueryValue(debt, (v) => formatNumber(v, { abbreviate: false }))}
+                value={formatQueryValue(debt, (v) => formatNumber(v.value, { abbreviate: false }))}
                 prevValue={prevDebt && formatNumber(prevDebt, { abbreviate: false })}
                 {...getQueryState(debt, userState)}
-                valueRight={debt?.tokenSymbol ?? userState?.borrowTokenSymbol}
+                valueRight={debt?.data?.tokenSymbol ?? userState?.borrowTokenSymbol}
                 testId="borrow-debt"
               />
             )}
             {(collateral || prevCollateral) && (
               <ActionInfo
                 label={t`Collateral`}
-                value={formatQueryValue(collateral, (v) => formatNumber(v, { abbreviate: false }))}
+                value={formatQueryValue(collateral, (v) => formatNumber(v.value, { abbreviate: false }))}
                 prevValue={prevCollateral && formatNumber(prevCollateral, { abbreviate: false })}
                 {...getQueryState(collateral, userState)}
-                valueRight={collateral?.tokenSymbol ?? userState?.collateralTokenSymbol}
+                valueRight={collateral?.data?.tokenSymbol ?? userState?.collateralTokenSymbol}
                 testId="borrow-collateral"
               />
             )}
