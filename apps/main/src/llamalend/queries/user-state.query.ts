@@ -1,17 +1,12 @@
 import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { queryFactory, rootKeys, type UserMarketParams, type UserMarketQuery } from '@ui-kit/lib/model'
 import { userMarketValidationSuite } from '@ui-kit/lib/model/query/user-market-validation'
+import type { QueryData } from '@ui-kit/lib/queries'
 import type { Decimal } from '@ui-kit/utils'
-
-export type UserState = {
-  collateral: Decimal
-  stablecoin: Decimal
-  debt: Decimal
-}
 
 export const { useQuery: useUserState, invalidate: invalidateUserState } = queryFactory({
   queryKey: (params: UserMarketParams) => [...rootKeys.userMarket(params), 'market-user-state'] as const,
-  queryFn: async ({ marketId, userAddress }: UserMarketQuery): Promise<UserState> => {
+  queryFn: async ({ marketId, userAddress }: UserMarketQuery) => {
     const market = getLlamaMarket(marketId)
     const userState = await market.userState(userAddress)
 
@@ -35,3 +30,5 @@ export const { useQuery: useUserState, invalidate: invalidateUserState } = query
   },
   validationSuite: userMarketValidationSuite,
 })
+
+export type UserState = QueryData<typeof useUserState>

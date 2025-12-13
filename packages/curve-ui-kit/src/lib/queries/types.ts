@@ -10,3 +10,6 @@ export type PartialQueryResult<T> = Pick<
   UseQueryResult<T>,
   'data' | 'isLoading' | 'isPending' | 'isError' | 'isFetching'
 >
+
+/** Extracts the data type from a useQuery hook */
+export type QueryData<TUseQuery extends (...args: any[]) => any> = NonNullable<ReturnType<TUseQuery>['data']>
