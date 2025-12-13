@@ -101,20 +101,21 @@ const FORMATTER_DECIMALS_ABOVE_ONE = 2
 export function priceFormatter(x: number, min: number, max: number) {
   const delta = max - min
 
-  /*
-   * For delta < 1 we're basically looking at the order of magnitude of the delta
-   * to determine how many decimals are needed to show meaningful differences.
-   *
-   * The "+2" accounts for tick spacing (~delta/5), ensuring adjacent ticks
-   * display distinct values. Without it, ticks like 0.987, 0.990, 0.993
-   * would all show as "0.99".
-   *
-   * Examples:
-   * - delta = 0.1   → -floor(-1) + 2 = 3 decimals
-   * - delta = 0.013 → -floor(-1.89) + 2 = 4 decimals
-   * - delta = 0.001 → -floor(-3) + 2 = 5 decimals
-   */
-  const decimals = delta >= 1 ? FORMATTER_DECIMALS_ABOVE_ONE : -Math.floor(Math.log10(delta)) + 2
-
-  return formatNumber(x, { decimals, abbreviate: x > 10000 })
+  return formatNumber(x, {
+    /*
+     * For delta < 1 we're basically looking at the order of magnitude of the delta
+     * to determine how many decimals are needed to show meaningful differences.
+     *
+     * The "+2" accounts for tick spacing (~delta/5), ensuring adjacent ticks
+     * display distinct values. Without it, ticks like 0.987, 0.990, 0.993
+     * would all show as "0.99".
+     *
+     * Examples:
+     * - delta = 0.1   → -floor(-1) + 2 = 3 decimals
+     * - delta = 0.013 → -floor(-1.89) + 2 = 4 decimals
+     * - delta = 0.001 → -floor(-3) + 2 = 5 decimals
+     */
+    decimals: delta >= 1 ? FORMATTER_DECIMALS_ABOVE_ONE : -Math.floor(Math.log10(delta)) + 2,
+    abbreviate: x > 10000,
+  })
 }
