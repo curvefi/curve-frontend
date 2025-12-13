@@ -26,7 +26,7 @@ import { formatNumber } from '@ui/utils'
 import { type TokenOption, TokenSelector } from '@ui-kit/features/select-token'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRates } from '@ui-kit/lib/model/entities/token-usd-rate'
-import { useTokenBalance } from '@ui-kit/queries/token-balance.query'
+import { useTokenBalances } from '@ui-kit/queries/token-balance.query'
 
 export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {
   const { setValue, getValues, formState, watch } = useFormContext<DepositRewardFormValues>()
@@ -40,12 +40,6 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
     data: { networkId },
   } = useNetworkByChain({ chainId })
 
-  const userBalancesMapper = useStore((state) => state.userBalances.userBalancesMapper)
-  const userTokens = Object.entries(userBalancesMapper)
-    .filter(([, balance]) => parseFloat(balance ?? '0') > 0)
-    .map(([address]) => address)
-  const { data: tokenPrices } = useTokenUsdRates({ chainId, tokenAddresses: userTokens })
-
   const { tokensMapper } = useTokensMapper(chainId)
 
   const { data: rewardDistributors, isPending: isPendingRewardDistributors } = useGaugeRewardsDistributors({
@@ -55,12 +49,6 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
 
   const isMutatingDepositRewardApprove = useDepositRewardApproveIsMutating({ chainId, poolId, rewardTokenId, amount })
   const isMutatingDepositReward = useDepositRewardIsMutating({ chainId, poolId, rewardTokenId, amount, epoch })
-
-  const { data: tokenBalance, isLoading: isTokenBalancesLoading } = useTokenBalance({
-    chainId,
-    userAddress: signerAddress,
-    tokenAddress: rewardTokenId,
-  })
 
   const filteredTokens = useMemo<TokenOption[]>(() => {
     if (isPendingRewardDistributors || !rewardDistributors || !signerAddress) return []
@@ -91,6 +79,18 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
 
   const token = filteredTokens.find((x) => x.address === rewardTokenId)
 
+  const { data: tokenPrices } = useTokenUsdRates({ chainId, tokenAddresses: filteredTokens.map((t) => t.address) })
+  const { data: tokenBalances, isLoading: isTokenBalancesLoading } = useTokenBalances({
+    chainId,
+    userAddress: signerAddress,
+    tokenAddresses: filteredTokens.map((t) => t.address),
+  })
+
+  const rewardTokenBalance = useMemo(() => {
+    if (!rewardTokenId || !tokenBalances) return undefined
+    return tokenBalances[rewardTokenId] ?? undefined
+  }, [rewardTokenId, tokenBalances])
+
   const onChangeAmount = useCallback(
     (amount: string) => {
       setValue('amount', amount, { shouldValidate: true })
@@ -110,10 +110,10 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
   const onMaxButtonClick = useCallback(
     (e?: MouseEvent<HTMLButtonElement>) => {
       e?.preventDefault()
-      if (!tokenBalance) return
-      setValue('amount', tokenBalance, { shouldValidate: true })
+      if (!rewardTokenBalance) return
+      setValue('amount', rewardTokenBalance, { shouldValidate: true })
     },
-    [tokenBalance, setValue],
+    [rewardTokenBalance, setValue],
   )
 
   const isDisabled = isMutatingDepositReward || isMutatingDepositRewardApprove
@@ -133,7 +133,7 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
               signerAddress && {
                 label: t`Avail.`,
                 descriptionLoading: isTokenBalancesLoading,
-                description: formatNumber(tokenBalance, { decimals: 5 }),
+                description: formatNumber(rewardTokenBalance, { decimals: 5 }),
               }
             }
             testId="deposit-amount"
@@ -155,7 +155,7 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
             selectedToken={token}
             tokens={filteredTokens}
             disabled={isDisabled}
-            balances={userBalancesMapper}
+            balances={tokenBalances}
             tokenPrices={tokenPrices}
             onToken={onChangeToken}
           />
