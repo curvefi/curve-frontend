@@ -3,21 +3,11 @@ import { createChart, ColorType, CrosshairMode, LineStyle, CandlestickSeries, Li
 import lodash from 'lodash'
 import { useEffect, useRef, useState, useCallback, useMemo, type RefObject } from 'react'
 import { styled } from 'styled-components'
-import { formatNumber } from '@ui-kit/utils/'
 import { createLiquidationRangeSeries } from './custom-series/liquidationRangeSeries'
 import type { LiquidationRangePoint, LiquidationRangeSeriesOptions } from './custom-series/liquidationRangeSeries'
 import type { ChartColors } from './hooks/useChartPalette'
 import type { LpPriceOhlcDataFormatted, OraclePriceData, LiquidationRanges, LlammaLiquididationRange } from './types'
-import { calculateRobustPriceRange } from './utils'
-
-const createPriceFormatter = () => ({
-  type: 'custom' as const,
-  formatter: (price: number) =>
-    formatNumber(price, {
-      abbreviate: false,
-      maximumSignificantDigits: 4,
-    }),
-})
+import { calculateRobustPriceRange, priceFormatter } from './utils'
 
 type RangeValueAccumulator = {
   upper?: number
@@ -200,8 +190,6 @@ const CandleChart = ({
     ],
   )
 
-  const priceFormat = useMemo(() => createPriceFormatter(), [])
-
   // Debounced update of wrapper dimensions
   const debouncedUpdateDimensions = useRef(
     lodash.debounce(() => {
@@ -293,17 +281,6 @@ const CandleChart = ({
       }
     }
   }, [])
-
-  // Ensure price axis labels use the same formatter
-  useEffect(() => {
-    if (!chartRef.current) return
-
-    chartRef.current.applyOptions({
-      localization: {
-        priceFormatter: priceFormat.formatter,
-      },
-    })
-  }, [priceFormat])
 
   // Update chart colors when they change
   useEffect(() => {
@@ -560,6 +537,21 @@ const CandleChart = ({
     if (!candlestickSeriesRef.current || !ohlcData) return
 
     candlestickSeriesRef.current.setData(ohlcData)
+  }, [ohlcData])
+
+  // Update price formatting when OHLC data changes
+  useEffect(() => {
+    if (!candlestickSeriesRef.current || !ohlcData) return
+
+    const min = Math.min(...ohlcData.map((x) => x.low))
+    const max = Math.max(...ohlcData.map((x) => x.high))
+
+    candlestickSeriesRef.current.applyOptions({
+      priceFormat: {
+        type: 'custom',
+        formatter: (price: number) => priceFormatter(price, min, max),
+      },
+    })
   }, [ohlcData])
 
   // Update oracle price data when it changes
