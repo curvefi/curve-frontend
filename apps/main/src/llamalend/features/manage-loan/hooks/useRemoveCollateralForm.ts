@@ -18,7 +18,7 @@ import { useMaxRemovableCollateral } from '@/llamalend/queries/remove-collateral
 import { useRemoveCollateralPrices } from '@/llamalend/queries/remove-collateral/remove-collateral-prices.query'
 import { getUserHealthOptions } from '@/llamalend/queries/user-health.query'
 import { useUserState } from '@/llamalend/queries/user-state.query'
-import { mapQuery, withTokenSymbol } from '@/llamalend/queries/utils'
+import { mapQuery } from '@/llamalend/queries/utils'
 import type { CollateralParams } from '@/llamalend/queries/validation/manage-loan.types'
 import {
   removeCollateralFormValidationSuite,
@@ -133,21 +133,16 @@ export const useRemoveCollateralForm = <
 
   const expectedCollateral = useMemo(
     () =>
-      withTokenSymbol(
-        {
-          ...mapQuery(userState, (state) => state?.collateral),
-          data: decimal(
-            userState.data?.collateral != null && values.userCollateral != null
-              ? // An error will be thrown by the validation suite, this is just for preventing negative collateral in the UI
-                BigNumber.max(
-                  new BigNumber(userState.data?.collateral).minus(new BigNumber(values.userCollateral)),
-                  '0',
-                ).toString()
-              : null,
-          ),
-        },
-        collateralToken?.symbol,
-      ),
+      mapQuery(userState, (state) => {
+        // An error will be thrown by the validation suite, this is just for preventing negative collateral in the UI
+        const value =
+          state?.collateral != null &&
+          values.userCollateral != null &&
+          decimal(
+            BigNumber.max(new BigNumber(state.collateral).minus(new BigNumber(values.userCollateral)), '0').toString(),
+          )
+        return value ? { value, tokenSymbol: collateralToken?.symbol } : null
+      }),
     [collateralToken?.symbol, userState, values.userCollateral],
   )
 
