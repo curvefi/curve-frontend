@@ -87,10 +87,10 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
     tokenAddresses,
   })
 
-  const rewardTokenBalance = useMemo(() => {
-    if (!rewardTokenId || !tokenBalances) return undefined
-    return tokenBalances[rewardTokenId] ?? undefined
-  }, [rewardTokenId, tokenBalances])
+  const rewardTokenBalance = useMemo(
+    () => rewardTokenId && tokenBalances && tokenBalances[rewardTokenId],
+    [rewardTokenId, tokenBalances],
+  )
 
   const onChangeAmount = useCallback(
     (amount: string) => {
