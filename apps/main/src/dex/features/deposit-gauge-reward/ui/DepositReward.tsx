@@ -1,4 +1,6 @@
+import { useEffect } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
+import { useConnection } from 'wagmi'
 import AlertFormError from '@/dex/components/AlertFormError'
 import { useGaugeRewardsDistributors } from '@/dex/entities/gauge'
 import { DepositRewardDefaultValues, depositRewardValidationSuite } from '@/dex/features/deposit-gauge-reward/model'
@@ -16,6 +18,7 @@ import { FormErrorsDisplay } from '@ui/FormErrorsDisplay'
 import { BlockSkeleton } from '@ui/skeleton'
 import { FormContainer, FormFieldsContainer, GroupedFieldsContainer } from '@ui/styled-containers'
 import { formDefaultOptions } from '@ui-kit/lib/model/form'
+import { useTokenBalance } from '@ui-kit/queries/token-balance.query'
 
 export const DepositReward = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {
   const { isPending: isPendingRewardDistributors } = useGaugeRewardsDistributors({
@@ -28,6 +31,15 @@ export const DepositReward = ({ chainId, poolId }: { chainId: ChainId; poolId: s
     resolver: vestResolver(depositRewardValidationSuite),
     defaultValues: DepositRewardDefaultValues,
   })
+
+  const rewardTokenId = methods.watch('rewardTokenId')
+  const { address: userAddress } = useConnection()
+  const { data: userBalance } = useTokenBalance({ chainId, userAddress, tokenAddress: rewardTokenId })
+
+  // Sync userBalance from query into form for validation
+  useEffect(() => {
+    methods.setValue('userBalance', userBalance, { shouldValidate: true })
+  }, [userBalance, methods])
 
   if (isPendingRewardDistributors) {
     return <BlockSkeleton height={440} />

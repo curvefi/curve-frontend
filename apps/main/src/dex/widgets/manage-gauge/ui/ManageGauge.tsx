@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { isAddressEqual, type Address } from 'viem'
+import { useConnection } from 'wagmi'
 import { useGaugeManager, useGaugeRewardsDistributors } from '@/dex/entities/gauge'
-import { useSignerAddress } from '@/dex/entities/signer'
 import AddRewardToken from '@/dex/features/add-gauge-reward-token'
 import DepositReward from '@/dex/features/deposit-gauge-reward'
 import { ChainId } from '@/dex/types/main.types'
@@ -11,7 +11,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
 
 const ManageGauge = ({ poolId, chainId }: { poolId: string; chainId: ChainId }) => {
-  const { data: signerAddress } = useSignerAddress()
+  const { address: signerAddress } = useConnection()
   const { data: gaugeManager } = useGaugeManager({ chainId, poolId })
   const { data: rewardDistributors } = useGaugeRewardsDistributors({ chainId, poolId })
 

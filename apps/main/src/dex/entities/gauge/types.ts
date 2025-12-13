@@ -1,6 +1,7 @@
 import type { Address } from 'viem'
 import { GaugeQuery } from '@ui-kit/lib/model/query'
 import { FieldsOf } from '@ui-kit/lib/validation'
+import type { Decimal } from '@ui-kit/utils'
 
 export type AddReward = {
   rewardTokenId: Address
@@ -13,6 +14,7 @@ export type AddRewardMutation = FieldsOf<AddReward>
 export type DepositRewardApprove = {
   rewardTokenId: Address
   amount: number | string
+  userBalance?: Decimal
 }
 export type DepositRewardApproveQuery = GaugeQuery & DepositRewardApprove
 export type DepositRewardApproveParams = FieldsOf<DepositRewardApproveQuery>

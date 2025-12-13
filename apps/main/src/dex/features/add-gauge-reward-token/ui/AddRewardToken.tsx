@@ -1,10 +1,10 @@
 import { useCallback } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { zeroAddress } from 'viem'
+import { useConnection } from 'wagmi'
 import AlertFormError from '@/dex/components/AlertFormError'
 import { useAddRewardToken, useGaugeRewardsDistributors, useIsDepositRewardAvailable } from '@/dex/entities/gauge'
 import { useNetworkByChain } from '@/dex/entities/networks'
-import { useSignerAddress } from '@/dex/entities/signer'
 import { addGaugeRewardTokenValidationSuite } from '@/dex/features/add-gauge-reward-token/model'
 import type { AddRewardFormValues, AddRewardTokenProps } from '@/dex/features/add-gauge-reward-token/types'
 import {
@@ -22,7 +22,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { formDefaultOptions } from '@ui-kit/lib/model/form'
 
 export const AddRewardToken = ({ chainId, poolId }: AddRewardTokenProps) => {
-  const { data: signerAddress } = useSignerAddress()
+  const { address: signerAddress } = useConnection()
 
   const { isFetching: isFetchingGaugeRewardsDistributors } = useGaugeRewardsDistributors({ chainId, poolId })
 
