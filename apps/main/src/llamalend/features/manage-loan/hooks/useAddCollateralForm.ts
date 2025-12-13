@@ -15,7 +15,7 @@ import { useAddCollateralPrices } from '@/llamalend/queries/add-collateral/add-c
 import { useMarketRates } from '@/llamalend/queries/market-rates'
 import { getUserHealthOptions } from '@/llamalend/queries/user-health.query'
 import { useUserState } from '@/llamalend/queries/user-state.query'
-import { mapQuery, withTokenSymbol } from '@/llamalend/queries/utils'
+import { mapQuery } from '@/llamalend/queries/utils'
 import type { CollateralParams } from '@/llamalend/queries/validation/manage-loan.types'
 import {
   addCollateralFormValidationSuite,
@@ -122,17 +122,13 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
 
   const expectedCollateral = useMemo(
     () =>
-      withTokenSymbol(
-        {
-          ...mapQuery(userState, (state) => state?.collateral),
-          data: decimal(
-            values.userCollateral != null && userState.data?.collateral != null
-              ? new BigNumber(values.userCollateral).plus(new BigNumber(userState.data?.collateral)).toString()
-              : null,
-          ),
-        },
-        collateralToken?.symbol,
-      ),
+      mapQuery(userState, (state) => {
+        const value =
+          values.userCollateral != null &&
+          state?.collateral != null &&
+          decimal(new BigNumber(values.userCollateral).plus(state.collateral).toString())
+        return value ? { value, tokenSymbol: collateralToken?.symbol } : null
+      }),
     [collateralToken?.symbol, userState, values.userCollateral],
   )
 

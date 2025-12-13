@@ -1,5 +1,5 @@
 import { UserState } from '@/llamalend/queries/user-state.query'
-import { formatQueryValue, getQueryState } from '@/llamalend/queries/utils'
+import { combineQueryState, formatQueryValue } from '@/llamalend/queries/utils'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
@@ -43,14 +43,12 @@ type LoanInfoAccordionProps = {
   loanToValue: Query<Decimal | null>
   prevLoanToValue?: Query<Decimal | null>
   gas: Query<LoanInfoGasData | null>
-  debt?: Query<Decimal | null> & { tokenSymbol?: string }
-  collateral?: Query<Decimal | null> & { tokenSymbol?: string }
+  debt?: Query<{ value: Decimal; tokenSymbol?: string } | null>
+  collateral?: Query<{ value: Decimal; tokenSymbol?: string } | null>
   // userState values are used as prev values if collateral or debt are available
   userState?: Query<UserState> & { borrowTokenSymbol?: string; collateralTokenSymbol?: string }
   leverage?: LoanLeverageActionInfoProps & { enabled: boolean }
 }
-
-const AccordionSpacing = () => <Box sx={{ height: Spacing.md }} />
 
 export const LoanInfoAccordion = ({
   isOpen,
@@ -84,7 +82,7 @@ export const LoanInfoAccordion = ({
             value={formatQueryValue(health, (v) => formatNumber(v, { abbreviate: false }))}
             prevValue={formatQueryValue(prevHealth, (v) => formatNumber(v, { abbreviate: false }))}
             emptyValue="∞"
-            {...getQueryState(health, prevHealth)}
+            {...combineQueryState([health, prevHealth])}
             valueColor={getHealthValueColor(Number(health.data ?? prevHealth?.data ?? 100), useTheme())}
             testId="borrow-health"
           />
@@ -92,84 +90,82 @@ export const LoanInfoAccordion = ({
         expanded={isOpen}
         toggle={toggle}
       >
-        <Stack>
-          {(debt || prevDebt) && (
+        <Stack gap={Spacing.md}>
+          <Stack>
+            {(debt || prevDebt) && (
+              <ActionInfo
+                label={t`Debt`}
+                value={formatQueryValue(debt, (v) => formatNumber(v.value, { abbreviate: false }))}
+                prevValue={prevDebt && formatNumber(prevDebt, { abbreviate: false })}
+                {...combineQueryState([debt, userState])}
+                valueRight={debt?.data?.tokenSymbol ?? userState?.borrowTokenSymbol}
+                testId="borrow-debt"
+              />
+            )}
+            {(collateral || prevCollateral) && (
+              <ActionInfo
+                label={t`Collateral`}
+                value={formatQueryValue(collateral, (v) => formatNumber(v.value, { abbreviate: false }))}
+                prevValue={prevCollateral && formatNumber(prevCollateral, { abbreviate: false })}
+                {...combineQueryState([collateral, userState])}
+                valueRight={collateral?.data?.tokenSymbol ?? userState?.collateralTokenSymbol}
+                testId="borrow-collateral"
+              />
+            )}
+            {bands && (
+              <ActionInfo
+                label={t`Band range`}
+                value={bands.data && `${bands.data[0]} to ${bands.data[1]}`}
+                error={bands.error}
+                loading={bands.isLoading}
+                testId="borrow-band-range"
+              />
+            )}
+            {prices && (
+              <ActionInfo
+                label={t`Price range`}
+                value={prices.data?.map((p) => formatNumber(p, { abbreviate: false })).join(' - ')}
+                error={prices.error}
+                loading={prices.isLoading}
+                testId="borrow-price-range"
+              />
+            )}
+            {range != null && (
+              <ActionInfo
+                label={t`N`}
+                value={formatNumber(range, { decimals: 0, abbreviate: false })}
+                testId="borrow-n"
+              />
+            )}
             <ActionInfo
-              label={t`Debt`}
-              value={formatQueryValue(debt, (v) => formatNumber(v, { abbreviate: false }))}
-              prevValue={prevDebt ? formatNumber(prevDebt, { abbreviate: false }) : undefined}
-              {...getQueryState(debt, userState)}
-              valueRight={debt?.tokenSymbol ?? userState?.borrowTokenSymbol}
-              testId="borrow-debt"
+              label={t`Borrow APR`}
+              value={rates.data?.borrowApr && formatPercent(rates.data.borrowApr)}
+              prevValue={prevRates?.data?.borrowApr && formatPercent(prevRates.data.borrowApr)}
+              {...combineQueryState([rates, prevRates])}
+              testId="borrow-apr"
             />
-          )}
-          {(collateral || prevCollateral) && (
-            <ActionInfo
-              label={t`Collateral`}
-              value={formatQueryValue(collateral, (v) => formatNumber(v, { abbreviate: false }))}
-              prevValue={prevCollateral ? formatNumber(prevCollateral, { abbreviate: false }) : undefined}
-              {...getQueryState(collateral, userState)}
-              valueRight={collateral?.tokenSymbol ?? userState?.collateralTokenSymbol}
-              testId="borrow-collateral"
-            />
-          )}
-          {bands && (
-            <ActionInfo
-              label={t`Band range`}
-              value={bands.data ? `${bands.data[0]} to ${bands.data[1]}` : '-'}
-              error={bands.error}
-              loading={bands.isLoading}
-              testId="borrow-band-range"
-            />
-          )}
-          {prices && (
-            <ActionInfo
-              label={t`Price range`}
-              value={prices.data?.map((p) => formatNumber(p, { abbreviate: false })).join(' - ') ?? '-'}
-              error={prices.error}
-              loading={prices.isLoading}
-              testId="borrow-price-range"
-            />
-          )}
-          {range != null && (
-            <ActionInfo
-              label={t`N`}
-              value={formatNumber(range, { decimals: 0, abbreviate: false })}
-              testId="borrow-n"
-            />
-          )}
-          <ActionInfo
-            label={t`Borrow APR`}
-            value={rates.data?.borrowApr != null ? formatPercent(rates.data.borrowApr) : undefined}
-            prevValue={prevRates?.data?.borrowApr != null ? formatPercent(prevRates.data.borrowApr) : undefined}
-            {...getQueryState(rates, prevRates)}
-            testId="borrow-apr"
-          />
-          {(loanToValue || prevLoanToValue) && (
-            <ActionInfo
-              label={t`Loan to value ratio`}
-              value={formatQueryValue(loanToValue, formatPercent)}
-              prevValue={formatQueryValue(prevLoanToValue, formatPercent)}
-              {...getQueryState(loanToValue, prevLoanToValue)}
-              testId="borrow-ltv"
-            />
-          )}
-          {leverage?.enabled && (
-            <>
-              <AccordionSpacing />
-              <LoanLeverageActionInfo {...leverage} />
-            </>
-          )}
+            {(loanToValue || prevLoanToValue) && (
+              <ActionInfo
+                label={t`Loan to value ratio`}
+                value={formatQueryValue(loanToValue, formatPercent)}
+                prevValue={formatQueryValue(prevLoanToValue, formatPercent)}
+                {...combineQueryState([loanToValue, prevLoanToValue])}
+                testId="borrow-ltv"
+              />
+            )}
+          </Stack>
+          {leverage?.enabled && <LoanLeverageActionInfo {...leverage} />}
           {/* TODO: add router provider and slippage */}
-          <AccordionSpacing />
-          {/* TODO: add gas estimate steps (1. approve, 2. add collateral) */}
-          <ActionInfo
-            label={t`Estimated tx cost`}
-            value={gas.data?.estGasCostUsd == null ? '-' : formatUsd(gas.data.estGasCostUsd)}
-            valueTooltip={gas.data?.tooltip}
-            loading={gas.isLoading}
-            valueLeft={<FireIcon fontSize="small" />}
-          />
+          <Stack>
+            {/* TODO: add gas estimate steps (1. approve, 2. add collateral) */}
+            <ActionInfo
+              label={t`Estimated tx cost`}
+              value={gas.data?.estGasCostUsd == null ? undefined : formatUsd(gas.data.estGasCostUsd)}
+              valueTooltip={gas.data?.tooltip}
+              loading={gas.isLoading}
+              valueLeft={<FireIcon fontSize="small" />}
+            />
+          </Stack>
         </Stack>
       </Accordion>
     </Box>
