@@ -8,7 +8,7 @@ import {
   useGaugeRewardsDistributors,
 } from '@/dex/entities/gauge'
 import { useNetworkByChain } from '@/dex/entities/networks'
-import { useIsSignerConnected, useSignerAddress } from '@/dex/entities/signer'
+import { useSignerAddress } from '@/dex/entities/signer'
 import { type DepositRewardFormValues, DepositRewardStep } from '@/dex/features/deposit-gauge-reward/types'
 import {
   FlexItemAmount,
@@ -35,7 +35,6 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
   const epoch = watch('epoch')
 
   const { data: signerAddress } = useSignerAddress()
-  const { data: haveSigner } = useIsSignerConnected()
   const isMaxLoading = useStore((state) => state.quickSwap.isMaxLoading)
   const {
     data: { networkId },
@@ -131,7 +130,7 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
             id="deposit-amount"
             type="number"
             labelProps={
-              haveSigner && {
+              signerAddress && {
                 label: t`Avail.`,
                 descriptionLoading: isTokenBalancesLoading,
                 description: formatNumber(tokenBalance, { decimals: 5 }),

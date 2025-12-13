@@ -6,8 +6,3 @@ export const useSignerAddress = (): { data: Address | undefined } => {
   const signerAddress = wallet?.account?.address
   return { data: signerAddress }
 }
-
-export const useIsSignerConnected = () => {
-  const { data: signerAddress } = useSignerAddress()
-  return { data: !!signerAddress }
-}
