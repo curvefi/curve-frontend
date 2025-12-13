@@ -12,7 +12,7 @@ export const mapQuery = <TSource, TResult>(query: Query<TSource>, selector: (dat
 export const formatQueryValue = <T>(query: Query<T | null> | undefined, format: (value: NonNullable<T>) => string) =>
   query?.data != null ? format(query.data as NonNullable<T>) : undefined
 
-export const getQueryState = (current: Query<unknown> | undefined, previous: Query<unknown> | undefined) => ({
-  error: current?.error ?? previous?.error,
-  loading: current?.isLoading || previous?.isLoading,
+export const combineQueryState = (queries: (Query<unknown> | undefined)[]) => ({
+  error: queries && queries.reduce<Query<unknown>['error']>((acc, x) => acc ?? x?.error, undefined),
+  loading: queries && queries.reduce<Query<unknown>['isLoading']>((acc, x) => acc || !!x?.isLoading, false),
 })

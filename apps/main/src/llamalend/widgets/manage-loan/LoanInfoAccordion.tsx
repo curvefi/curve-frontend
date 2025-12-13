@@ -1,5 +1,5 @@
 import { UserState } from '@/llamalend/queries/user-state.query'
-import { formatQueryValue, getQueryState } from '@/llamalend/queries/utils'
+import { combineQueryState, formatQueryValue } from '@/llamalend/queries/utils'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
@@ -82,7 +82,7 @@ export const LoanInfoAccordion = ({
             value={formatQueryValue(health, (v) => formatNumber(v, { abbreviate: false }))}
             prevValue={formatQueryValue(prevHealth, (v) => formatNumber(v, { abbreviate: false }))}
             emptyValue="∞"
-            {...getQueryState(health, prevHealth)}
+            {...combineQueryState([health, prevHealth])}
             valueColor={getHealthValueColor(Number(health.data ?? prevHealth?.data ?? 100), useTheme())}
             testId="borrow-health"
           />
@@ -97,7 +97,7 @@ export const LoanInfoAccordion = ({
                 label={t`Debt`}
                 value={formatQueryValue(debt, (v) => formatNumber(v.value, { abbreviate: false }))}
                 prevValue={prevDebt && formatNumber(prevDebt, { abbreviate: false })}
-                {...getQueryState(debt, userState)}
+                {...combineQueryState([debt, userState])}
                 valueRight={debt?.data?.tokenSymbol ?? userState?.borrowTokenSymbol}
                 testId="borrow-debt"
               />
@@ -107,7 +107,7 @@ export const LoanInfoAccordion = ({
                 label={t`Collateral`}
                 value={formatQueryValue(collateral, (v) => formatNumber(v.value, { abbreviate: false }))}
                 prevValue={prevCollateral && formatNumber(prevCollateral, { abbreviate: false })}
-                {...getQueryState(collateral, userState)}
+                {...combineQueryState([collateral, userState])}
                 valueRight={collateral?.data?.tokenSymbol ?? userState?.collateralTokenSymbol}
                 testId="borrow-collateral"
               />
@@ -141,7 +141,7 @@ export const LoanInfoAccordion = ({
               label={t`Borrow APR`}
               value={rates.data?.borrowApr && formatPercent(rates.data.borrowApr)}
               prevValue={prevRates?.data?.borrowApr && formatPercent(prevRates.data.borrowApr)}
-              {...getQueryState(rates, prevRates)}
+              {...combineQueryState([rates, prevRates])}
               testId="borrow-apr"
             />
             {(loanToValue || prevLoanToValue) && (
@@ -149,7 +149,7 @@ export const LoanInfoAccordion = ({
                 label={t`Loan to value ratio`}
                 value={formatQueryValue(loanToValue, formatPercent)}
                 prevValue={formatQueryValue(prevLoanToValue, formatPercent)}
-                {...getQueryState(loanToValue, prevLoanToValue)}
+                {...combineQueryState([loanToValue, prevLoanToValue])}
                 testId="borrow-ltv"
               />
             )}
