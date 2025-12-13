@@ -114,10 +114,7 @@ export function priceFormatter(x: number, min: number, max: number) {
    * - delta = 0.013 → -floor(-1.89) + 2 = 4 decimals
    * - delta = 0.001 → -floor(-3) + 2 = 5 decimals
    */
-  const decimals =
-    delta >= 1
-      ? FORMATTER_DECIMALS_ABOVE_ONE
-      : Math.max(-Math.floor(Math.log10(delta)) + 2, FORMATTER_DECIMALS_ABOVE_ONE)
+  const decimals = delta >= 1 ? FORMATTER_DECIMALS_ABOVE_ONE : -Math.floor(Math.log10(delta)) + 2
 
   return formatNumber(x, { decimals, abbreviate: x > 10000 })
 }
