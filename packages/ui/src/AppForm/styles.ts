@@ -10,7 +10,6 @@ export const AppFormContentWrapper = styled(Box)`
   display: grid;
   grid-row-gap: var(--spacing-3);
   padding: var(--spacing-3);
-  min-height: 17.125rem;
   width: ${MaxWidth.actionCard};
   max-width: ${MaxWidth.actionCard};
   // let the action card take the full width below the tablet breakpoint

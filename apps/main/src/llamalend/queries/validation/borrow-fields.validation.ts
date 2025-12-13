@@ -8,9 +8,11 @@ export const validateUserBorrowed = (userBorrowed: Decimal | null | undefined) =
   })
 }
 
-export const validateUserCollateral = (userCollateral: Decimal | undefined | null) => {
+export const validateUserCollateral = (userCollateral: Decimal | undefined | null, required: boolean = true) => {
   test('userCollateral', `Collateral amount must be a positive number`, () => {
-    enforce(userCollateral).isNumeric().gt(0)
+    if (required || userCollateral != null) {
+      enforce(userCollateral).isNumeric().gt(0)
+    }
   })
 }
 
@@ -45,8 +47,9 @@ export const validateMaxDebt = (debt: Decimal | undefined | null, maxDebt: Decim
 export const validateMaxCollateral = (
   userCollateral: Decimal | undefined | null,
   maxCollateral: Decimal | undefined | null,
+  errorMessage?: string,
 ) => {
-  test('userCollateral', 'Collateral must be less than or equal to your wallet balance', () => {
+  test('userCollateral', errorMessage ?? 'Collateral must be less than or equal to your wallet balance', () => {
     if (userCollateral != null && maxCollateral != null) {
       enforce(userCollateral).lte(maxCollateral)
     }
