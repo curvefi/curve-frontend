@@ -38,11 +38,19 @@ export const collateralValidationSuite = createValidationSuite((params: Collater
   collateralValidationGroup(params),
 )
 
-export const collateralFormValidationSuite = createValidationSuite((params: CollateralForm) => {
+export const addCollateralFormValidationSuite = createValidationSuite((params: CollateralForm) => {
   validateUserCollateral(params.userCollateral, false)
   validateMaxCollateral(params.userCollateral, params.maxCollateral)
 })
 
+export const removeCollateralFormValidationSuite = createValidationSuite((params: CollateralForm) => {
+  validateUserCollateral(params.userCollateral, false)
+  validateMaxCollateral(
+    params.userCollateral,
+    params.maxCollateral,
+    'Collateral must be less than or equal to your position balance',
+  )
+})
 export const collateralHealthValidationSuite = createValidationSuite(({ isFull, ...rest }: CollateralHealthParams) => {
   collateralValidationGroup(rest)
   validateIsFull(isFull)

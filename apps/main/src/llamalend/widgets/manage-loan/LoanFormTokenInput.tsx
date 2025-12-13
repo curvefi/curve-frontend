@@ -8,10 +8,14 @@ import type { INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
 import type { PartialRecord } from '@curvefi/prices-api/objects.util'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
+import { LlamaIcon } from '@ui-kit/shared/icons/LlamaIcon'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
+import type { LargeTokenInputProps } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import type { Query } from '@ui-kit/types/util'
 import { decimal, Decimal } from '@ui-kit/utils'
+
+type WalletBalanceProps = NonNullable<LargeTokenInputProps['walletBalance']>
 
 /**
  * A large token input field for loan forms, with balance and max handling.
@@ -30,6 +34,7 @@ export const LoanFormTokenInput = <
   testId,
   message,
   network,
+  positionBalance,
 }: {
   label: string
   token: { address: Address; symbol?: string } | undefined
@@ -43,6 +48,16 @@ export const LoanFormTokenInput = <
   form: UseFormReturn<TFieldValues> // the form, used to set the value and get errors
   testId: string
   message?: ReactNode
+  /**
+   * Optional, displays the position balance instead of the wallet balance.
+   */
+  positionBalance?: {
+    position: Query<Decimal>
+    tooltip?: WalletBalanceProps['tooltip']
+  }
+  /**
+   * The network of the token.
+   */
   network: LlamaNetwork
 }) => {
   const { address: userAddress } = useConnection()
@@ -51,21 +66,23 @@ export const LoanFormTokenInput = <
     isLoading: isBalanceLoading,
     error: balanceError,
   } = useTokenBalance({ chainId: network?.chainId, userAddress }, token)
-
   const { data: usdRate } = useTokenUsdRate({
     chainId: network?.chainId,
     tokenAddress: token?.address,
   })
 
+  const position = positionBalance?.position
   const walletBalance = useMemo(
     // todo: support separate isLoading for balance and for maxBalance in LargeTokenInput
     () => ({
-      balance,
+      balance: position ? position.data : balance,
       symbol: token?.symbol,
-      loading: isBalanceLoading,
+      loading: position ? position.isLoading : isBalanceLoading,
       usdRate,
+      tooltip: positionBalance?.tooltip,
+      prefix: position && LlamaIcon,
     }),
-    [balance, isBalanceLoading, token?.symbol, usdRate],
+    [balance, isBalanceLoading, token?.symbol, usdRate, positionBalance?.tooltip, position],
   )
 
   const errors = form.formState.errors as PartialRecord<FieldPath<TFieldValues>, Error>

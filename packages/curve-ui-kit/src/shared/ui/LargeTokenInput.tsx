@@ -149,6 +149,7 @@ export type LargeTokenInputProps = {
    */
   tokenSelector?: ReactNode
 
+  // TODO: rename to just "balance" because multipurpose now (walletBalance, positionBalance ...)
   /** Optional wallet balance configuration. */
   walletBalance?: BalanceProps<Decimal>
 

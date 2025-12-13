@@ -47,8 +47,9 @@ export const validateMaxDebt = (debt: Decimal | undefined | null, maxDebt: Decim
 export const validateMaxCollateral = (
   userCollateral: Decimal | undefined | null,
   maxCollateral: Decimal | undefined | null,
+  errorMessage?: string,
 ) => {
-  test('userCollateral', 'Collateral must be less than or equal to your wallet balance', () => {
+  test('userCollateral', errorMessage ?? 'Collateral must be less than or equal to your wallet balance', () => {
     if (userCollateral != null && maxCollateral != null) {
       enforce(userCollateral).lte(maxCollateral)
     }
