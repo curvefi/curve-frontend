@@ -1,14 +1,11 @@
 import lodash from 'lodash'
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import type { Address } from '@curvefi/prices-api'
 import type { VisibilityVariants } from '@ui-kit/shared/ui/DataTable/visibility.types'
 import { defaultReleaseChannel, ReleaseChannel } from '@ui-kit/utils'
 import { type MigrationOptions, useStoredState } from './useStoredState'
 
 const { kebabCase } = lodash
-
-// old keys that are not used anymore - clean them up
-window.localStorage.removeItem('phishing-warning-dismissed')
 
 function getFromLocalStorage<T>(storageKey: string): T | null {
   if (typeof window === 'undefined') {
@@ -71,4 +68,19 @@ export const getFavoriteMarkets = () => getFromLocalStorage<Address[]>('favorite
 export const useFavoriteMarkets = () => {
   const initialValue = useMemo(() => [], [])
   return useLocalStorage<Address[]>('favoriteMarkets', initialValue)
+}
+
+export const useDismissBanner = (bannerKey: string, expirationTime: number) => {
+  const [dismissedAt, setDismissedAt] = useLocalStorage<number | null>(bannerKey, null)
+
+  const shouldShowBanner = useMemo(
+    () => dismissedAt == null || Date.now() - dismissedAt >= expirationTime, // Show if dismissed longer than expiration
+    [dismissedAt, expirationTime],
+  )
+
+  const dismissBanner = useCallback(() => {
+    setDismissedAt(Date.now())
+  }, [setDismissedAt])
+
+  return { shouldShowBanner, dismissBanner }
 }

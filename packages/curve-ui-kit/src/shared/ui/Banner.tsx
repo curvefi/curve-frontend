@@ -6,88 +6,98 @@ import Card from '@mui/material/Card'
 import IconButton from '@mui/material/IconButton'
 import LinkMui from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
-import Typography, { type TypographyProps } from '@mui/material/Typography'
+import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
 import { ArrowTopRightIcon } from '@ui-kit/shared/icons/ArrowTopRightIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { ChangeTheme, InvertTheme } from './ThemeProvider'
+import { ExclamationTriangleIcon } from '../icons/ExclamationTriangleIcon'
+import { InfoCircledIcon } from '../icons/InfoCircledIcon'
+import { LlamaIcon } from '../icons/LlamaIcon'
 
-type BannerSeverity = 'default' | 'highlight' | 'warning' | 'alert'
+const { MaxWidth, Spacing, IconSize } = SizesAndSpaces
 
-const WrapperSx: Record<BannerSeverity, SxProps<Theme>> = {
-  default: {
-    border: (t) => `1px solid ${t.design.Layer.Highlight.Outline}`,
-    backgroundColor: (t) => t.design.Layer[1].Fill,
+type BannerSeverity = 'info' | 'highlight' | 'warning' | 'alert'
+type BannerIcons = BannerSeverity | 'llama'
+
+// TODO: use Secondary color for subtitle instead of Primary
+const BannerSx: Record<BannerSeverity, { title: SxProps<Theme>; subtitle: SxProps<Theme>; wrapper: SxProps<Theme> }> = {
+  info: {
+    title: { color: (t) => t.design.Text.TextColors.FilledFeedback.Info.Primary },
+    subtitle: { color: (t) => t.design.Text.TextColors.FilledFeedback.Info.Primary },
+    wrapper: {
+      border: (t) => `1px solid ${t.design.Layer.Highlight.Outline}`,
+      backgroundColor: (t) => t.design.Layer[1].Fill,
+    },
   },
   highlight: {
-    border: (t) => `1px solid ${t.design.Layer.Highlight.Outline}`,
-    backgroundColor: (t) => t.design.Color.Primary[800],
+    title: { color: (t) => t.design.Text.TextColors.FilledFeedback.Highlight.Primary },
+    subtitle: { color: (t) => t.design.Text.TextColors.FilledFeedback.Highlight.Primary },
+    wrapper: { backgroundColor: (t) => t.design.Layer.Feedback.Info },
   },
-  alert: { backgroundColor: (t) => t.design.Layer.Feedback.Error },
-  warning: { backgroundColor: (t) => t.design.Layer.Feedback.Warning },
+  warning: {
+    title: { color: (t) => t.design.Text.TextColors.FilledFeedback.Warning.Primary },
+    subtitle: { color: (t) => t.design.Text.TextColors.FilledFeedback.Warning.Primary },
+    wrapper: { backgroundColor: (t) => t.design.Layer.Feedback.Warning },
+  },
+  alert: {
+    title: { color: (t) => t.design.Text.TextColors.FilledFeedback.Alert.Primary },
+    subtitle: { color: (t) => t.design.Text.TextColors.FilledFeedback.Alert.Primary },
+    wrapper: { backgroundColor: (t) => t.design.Layer.Feedback.Error },
+  },
 }
 
-const TitleColor: Record<BannerSeverity, TypographyProps['color']> = {
-  default: 'textHighlight',
-  alert: 'textPrimary',
-  warning: 'textPrimary',
-  highlight: 'textPrimary',
+const IconSx = { width: IconSize.sm, height: IconSize.sm, verticalAlign: 'text-bottom' }
+
+const BannerIcons: Record<BannerIcons, ReactNode> = {
+  info: <InfoCircledIcon sx={IconSx} />,
+  highlight: <InfoCircledIcon sx={IconSx} />,
+  warning: <ExclamationTriangleIcon sx={IconSx} />,
+  alert: <ExclamationTriangleIcon sx={IconSx} />,
+  llama: <LlamaIcon sx={IconSx} />,
 }
 
-const TitleInverted: Record<BannerSeverity, boolean> = {
-  default: false,
-  alert: true,
-  warning: false,
-  highlight: true,
+export type BannerProps = {
+  onClick?: () => void
+  buttonText?: string
+  children: ReactNode
+  severity?: BannerSeverity
+  // icon shown before the title, default to severity icon
+  icon?: BannerIcons
+  learnMoreUrl?: string
+  subtitle?: ReactNode
+  testId?: string
 }
-
-const { MaxWidth, Spacing } = SizesAndSpaces
 
 /**
  * Banner message component used to display important information with different severity levels.
- * This is not complete yet: it doesn't support a subtitle or a close button from the design system.
  */
 export const Banner = ({
   onClick,
   buttonText,
   children,
-  severity = 'default',
+  severity = 'info',
+  icon = severity,
   learnMoreUrl,
-  color,
-}: {
-  onClick?: () => void
-  buttonText?: string
-  children: ReactNode
-  severity?: BannerSeverity
-  learnMoreUrl?: string
-  color?: TypographyProps['color']
-}) => (
+  subtitle,
+  testId,
+}: BannerProps) => (
   <Card
     sx={{
       display: 'flex',
-      gap: Spacing.md,
       alignSelf: 'stretch',
       paddingInline: Spacing.md,
       paddingBlock: Spacing.xs,
-      alignItems: 'center',
       justifyContent: 'center',
-      ...WrapperSx[severity],
+      ...BannerSx[severity].wrapper,
     }}
+    data-testid={testId}
   >
-    <Stack
-      direction="row"
-      sx={{ width: '100%', maxWidth: MaxWidth.banner }}
-      alignItems="center"
-      justifyContent="space-between"
-    >
-      <InvertTheme inverted={TitleInverted[severity]}>
-        <Typography color={color ?? TitleColor[severity]} variant="headingXsBold">
-          {children}
+    <Stack width="100%" maxWidth={MaxWidth.banner}>
+      <Stack direction="row" alignItems="center" justifyContent="space-between" gap={Spacing.sm}>
+        <Typography sx={{ ...BannerSx[severity].title }} variant="headingXsBold">
+          {BannerIcons[icon]} {children}
         </Typography>
-      </InvertTheme>
-      <Stack direction="row" alignItems="center" justifyContent="start" height="100%">
-        {/* fixme: currently using light theme on dark theme */}
-        <ChangeTheme to={color === '#000' && 'light'}>
+        <Stack direction="row" alignItems="center" justifyContent="start">
           {learnMoreUrl && (
             <Button
               component={LinkMui}
@@ -95,23 +105,29 @@ export const Banner = ({
               target="_blank"
               color="ghost"
               variant="link"
-              endIcon={<ArrowTopRightIcon />}
+              endIcon={<ArrowTopRightIcon fontSize="small" />}
               size="extraSmall"
+              sx={{ ...BannerSx[severity].title }}
             >
               {t`Learn more`}
             </Button>
           )}
           {onClick &&
             (buttonText ? (
-              <Button color="ghost" onClick={onClick} size="extraSmall">
+              <Button color="ghost" onClick={onClick} size="extraSmall" sx={{ ...BannerSx[severity].title }}>
                 {buttonText}
               </Button>
             ) : (
-              <IconButton onClick={onClick} size="extraSmall">
+              <IconButton onClick={onClick} size="extraSmall" sx={{ ...BannerSx[severity].title }}>
                 <CloseIcon />
               </IconButton>
             ))}
-        </ChangeTheme>
+        </Stack>
+      </Stack>
+      <Stack direction="row" alignItems="center" justifyContent="start">
+        <Typography sx={{ ...BannerSx[severity].subtitle }} variant="bodySRegular">
+          {subtitle}
+        </Typography>
       </Stack>
     </Stack>
   </Card>
