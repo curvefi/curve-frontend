@@ -59,7 +59,7 @@ export const MarketLoanParameters = ({ chainId, marketId }: { chainId: IChainId;
       />
 
       <ActionInfo
-        label={t`Max TVL`}
+        label={t`Max LTV`}
         value={formatPercent(getMaxLTV(parameters?.A ?? 0, parameters?.loan_discount))}
         valueTooltip={t`Max possible loan at N=4`}
         loading={isLoadingParameters}

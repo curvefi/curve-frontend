@@ -23,7 +23,6 @@ export const TableButton = forwardRef<
       sx={(t) => ({
         border: `1px solid ${active ? t.design.Chips.Current.Outline : t.design.Button.Outlined.Default.Outline}`,
         backgroundColor: active ? t.design.Chips.Current.Fill : 'transparent',
-        transition: t.design.Button.Transition,
       })}
       {...rest}
     >

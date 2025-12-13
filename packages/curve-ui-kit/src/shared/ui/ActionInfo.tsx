@@ -191,7 +191,7 @@ const ActionInfo = ({
         )}
 
         {copyValue && (
-          <IconButton size="extraSmall" title={copyValue} onClick={copyAndShowSnackbar} color="primary">
+          <IconButton size="extraSmall" title={copyValue} onClick={copyAndShowSnackbar}>
             <ContentCopy />
           </IconButton>
         )}
@@ -203,7 +203,6 @@ const ActionInfo = ({
             target="_blank"
             rel="noopener"
             size="extraSmall"
-            color="primary"
           >
             <CallMade />
           </IconButton>
