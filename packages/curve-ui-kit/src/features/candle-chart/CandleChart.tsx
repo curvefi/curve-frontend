@@ -549,7 +549,7 @@ const CandleChart = ({
     candlestickSeriesRef.current.applyOptions({
       priceFormat: {
         type: 'custom',
-        formatter: (price: number) => priceFormatter(price, min, max),
+        formatter: (price: number) => priceFormatter(price, max - min),
       },
     })
   }, [ohlcData])

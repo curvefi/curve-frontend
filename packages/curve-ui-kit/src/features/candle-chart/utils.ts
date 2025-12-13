@@ -88,8 +88,7 @@ const FORMATTER_DECIMALS_ABOVE_ONE = 2
  * stablecoins (~$1.00), micro-cap tokens (fractions of a cent), or high-value assets.
  *
  * @param x - The price value to format
- * @param min - Minimum price in the visible range
- * @param max - Maximum price in the visible range
+ * @param delta - The difference in price between minimum and maximum price in the visible range
  * @returns Formatted price string
  *
  * @example
@@ -98,10 +97,8 @@ const FORMATTER_DECIMALS_ABOVE_ONE = 2
  * priceFormatter(0.00015, 0.0001, 0.0002) // "0.000150" (delta = 0.0001 → 6 decimals)
  * priceFormatter(15000.5, 14000, 16000)   // "15K"     (abbreviated when > 10,000)
  */
-export function priceFormatter(x: number, min: number, max: number) {
-  const delta = max - min
-
-  return formatNumber(x, {
+export const priceFormatter = (x: number, delta: number) =>
+  formatNumber(x, {
     /*
      * For delta < 1 we're basically looking at the order of magnitude of the delta
      * to determine how many decimals are needed to show meaningful differences.
@@ -118,4 +115,3 @@ export function priceFormatter(x: number, min: number, max: number) {
     decimals: delta >= 1 ? FORMATTER_DECIMALS_ABOVE_ONE : -Math.floor(Math.log10(delta)) + 2,
     abbreviate: x > 10000,
   })
-}
