@@ -8,7 +8,7 @@ import {
   useGaugeRewardsDistributors,
 } from '@/dex/entities/gauge'
 import { useNetworkByChain } from '@/dex/entities/networks'
-import { useIsSignerConnected, useSignerAddress, useTokensBalances } from '@/dex/entities/signer'
+import { useIsSignerConnected, useSignerAddress } from '@/dex/entities/signer'
 import { type DepositRewardFormValues, DepositRewardStep } from '@/dex/features/deposit-gauge-reward/types'
 import {
   FlexItemAmount,
@@ -26,6 +26,7 @@ import { formatNumber } from '@ui/utils'
 import { type TokenOption, TokenSelector } from '@ui-kit/features/select-token'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRates } from '@ui-kit/lib/model/entities/token-usd-rate'
+import { useTokenBalance } from '@ui-kit/queries/token-balance.query'
 
 export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {
   const { setValue, getValues, formState, watch } = useFormContext<DepositRewardFormValues>()
@@ -56,10 +57,11 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
   const isMutatingDepositRewardApprove = useDepositRewardApproveIsMutating({ chainId, poolId, rewardTokenId, amount })
   const isMutatingDepositReward = useDepositRewardIsMutating({ chainId, poolId, rewardTokenId, amount, epoch })
 
-  const {
-    data: [tokenBalance],
-    isLoading: isTokenBalancesLoading,
-  } = useTokensBalances([rewardTokenId])
+  const { data: tokenBalance, isLoading: isTokenBalancesLoading } = useTokenBalance({
+    chainId,
+    userAddress: signerAddress,
+    tokenAddress: rewardTokenId,
+  })
 
   const filteredTokens = useMemo<TokenOption[]>(() => {
     if (isPendingRewardDistributors || !rewardDistributors || !signerAddress) return []
