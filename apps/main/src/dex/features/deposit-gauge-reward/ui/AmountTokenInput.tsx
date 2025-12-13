@@ -34,7 +34,7 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
   const amount = watch('amount')
   const epoch = watch('epoch')
 
-  const { address: userAddress } = useConnection()
+  const { address: signerAddress } = useConnection()
   const isMaxLoading = useStore((state) => state.quickSwap.isMaxLoading)
   const {
     data: { networkId },
@@ -51,10 +51,10 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
   const isMutatingDepositReward = useDepositRewardIsMutating({ chainId, poolId, rewardTokenId, amount, epoch })
 
   const filteredTokens = useMemo<TokenOption[]>(() => {
-    if (isPendingRewardDistributors || !rewardDistributors || !userAddress) return []
+    if (isPendingRewardDistributors || !rewardDistributors || !signerAddress) return []
 
     const activeRewardTokens = Object.entries(rewardDistributors)
-      .filter(([_, distributor]) => isAddressEqual(distributor as Address, userAddress))
+      .filter(([_, distributor]) => isAddressEqual(distributor as Address, signerAddress))
       .map(([tokenId]) => tokenId)
 
     const filteredTokens = Object.values(tokensMapper)
@@ -75,7 +75,7 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
     }
 
     return filteredTokens
-  }, [isPendingRewardDistributors, rewardDistributors, userAddress, tokensMapper, getValues, networkId, setValue])
+  }, [isPendingRewardDistributors, rewardDistributors, signerAddress, tokensMapper, getValues, networkId, setValue])
 
   const token = filteredTokens.find((x) => x.address === rewardTokenId)
   const tokenAddresses = filteredTokens.map((t) => t.address)
@@ -83,7 +83,7 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
   const { data: tokenPrices } = useTokenUsdRates({ chainId, tokenAddresses })
   const { data: tokenBalances, isLoading: isTokenBalancesLoading } = useTokenBalances({
     chainId,
-    userAddress,
+    userAddress: signerAddress,
     tokenAddresses,
   })
 
@@ -131,7 +131,7 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
             id="deposit-amount"
             type="number"
             labelProps={
-              userAddress && {
+              signerAddress && {
                 label: t`Avail.`,
                 descriptionLoading: isTokenBalancesLoading,
                 description: formatNumber(rewardTokenBalance, { decimals: 5 }),
