@@ -34,7 +34,7 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
   const amount = watch('amount')
   const epoch = watch('epoch')
 
-  const { address: signerAddress } = useConnection()
+  const { address: userAddress } = useConnection()
   const isMaxLoading = useStore((state) => state.quickSwap.isMaxLoading)
   const {
     data: { networkId },
@@ -51,10 +51,10 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
   const isMutatingDepositReward = useDepositRewardIsMutating({ chainId, poolId, rewardTokenId, amount, epoch })
 
   const filteredTokens = useMemo<TokenOption[]>(() => {
-    if (isPendingRewardDistributors || !rewardDistributors || !signerAddress) return []
+    if (isPendingRewardDistributors || !rewardDistributors || !userAddress) return []
 
     const activeRewardTokens = Object.entries(rewardDistributors)
-      .filter(([_, distributor]) => isAddressEqual(distributor as Address, signerAddress))
+      .filter(([_, distributor]) => isAddressEqual(distributor as Address, userAddress))
       .map(([tokenId]) => tokenId)
 
     const filteredTokens = Object.values(tokensMapper)
@@ -75,14 +75,14 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
     }
 
     return filteredTokens
-  }, [isPendingRewardDistributors, rewardDistributors, signerAddress, tokensMapper, getValues, networkId, setValue])
+  }, [isPendingRewardDistributors, rewardDistributors, userAddress, tokensMapper, getValues, networkId, setValue])
 
   const token = filteredTokens.find((x) => x.address === rewardTokenId)
 
   const { data: tokenPrices } = useTokenUsdRates({ chainId, tokenAddresses: filteredTokens.map((t) => t.address) })
   const { data: tokenBalances, isLoading: isTokenBalancesLoading } = useTokenBalances({
     chainId,
-    userAddress: signerAddress,
+    userAddress,
     tokenAddresses: filteredTokens.map((t) => t.address),
   })
 
@@ -130,7 +130,7 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
             id="deposit-amount"
             type="number"
             labelProps={
-              signerAddress && {
+              userAddress && {
                 label: t`Avail.`,
                 descriptionLoading: isTokenBalancesLoading,
                 description: formatNumber(rewardTokenBalance, { decimals: 5 }),
