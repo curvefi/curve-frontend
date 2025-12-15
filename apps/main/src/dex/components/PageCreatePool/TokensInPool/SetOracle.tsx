@@ -20,8 +20,15 @@ import { useOracleValidation } from '@/dex/components/PageCreatePool/hooks/useOr
 import type { TokenState, TokenId } from '@/dex/components/PageCreatePool/types'
 import { validateOracleFunction } from '@/dex/components/PageCreatePool/utils'
 import useStore from '@/dex/store/useStore'
+import Alert from '@mui/material/Alert'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
 import Box from '@ui/Box'
 import { t } from '@ui-kit/lib/i18n'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { formatNumber } from '@ui-kit/utils'
+
+const { Spacing } = SizesAndSpaces
 
 type OracleInputProps = {
   token: TokenState
@@ -56,13 +63,13 @@ const OracleInputs = ({ token, tokenId, title }: OracleInputProps) => {
   const updateOracleAddress = useStore((state) => state.createPool.updateOracleAddress)
   const updateOracleFunction = useStore((state) => state.createPool.updateOracleFunction)
 
-  const { isLoading, isSuccess, error, rate, decimals } = useOracleValidation({ token, tokenId })
+  const { isLoading, isSuccess, error, rate, decimals } = useOracleValidation({ token })
 
   const formattedRate = useMemo(() => {
-    if (!isSuccess || !rate) return null
-    const dec = decimals ?? 18
-    if (dec === 18) return rate
-    return new BigNumber(rate).dividedBy(new BigNumber(10).pow(dec)).toString()
+    if (!isSuccess || !rate || decimals === undefined) return null
+    return formatNumber(new BigNumber(rate).dividedBy(new BigNumber(10).pow(decimals)).toNumber(), {
+      abbreviate: false,
+    })
   }, [decimals, rate, isSuccess])
 
   return (
@@ -94,18 +101,25 @@ const OracleInputs = ({ token, tokenId, title }: OracleInputProps) => {
       {token.oracle.functionName !== '' && !validateOracleFunction(token.oracle.functionName) && (
         <WarningBox message={t`Oracle function name needs to end with '()'.`} />
       )}
-      <WarningBox message={t`Oracle must have a precision of 18 decimals.`} informational />
+      {decimals !== 18 && !isLoading && !error && (
+        <WarningBox message={t`Oracle must have a precision of 18 decimals.`} informational />
+      )}
       {isLoading && <WarningBox message={t`Validating oracle...`} informational />}
       {error && <WarningBox message={t`Unable to validate oracle.`} />}
       {isSuccess && formattedRate !== null && (
-        <OracleRate>
-          <span>
-            {t`Oracle rate:`} {formattedRate}
-          </span>
-          <span>
-            {t`Decimals:`} {decimals ?? 18}
-          </span>
-        </OracleRate>
+        <Alert severity="info" variant="standard" sx={{ marginTop: Spacing.sm }}>
+          <Stack gap={Spacing.xs}>
+            <Typography variant="bodySRegular">
+              {t`Oracle rate:`} {formattedRate}
+            </Typography>
+            <Typography variant="bodySRegular">
+              {t`Decimals:`} {decimals}
+            </Typography>
+            <Typography variant="bodySRegular">
+              {t`Raw rate:`} {rate}
+            </Typography>
+          </Stack>
+        </Alert>
       )}
     </InputContainer>
   )
@@ -113,15 +127,6 @@ const OracleInputs = ({ token, tokenId, title }: OracleInputProps) => {
 
 const InputContainer = styled(Box)`
   margin-bottom: var(--spacing-4);
-`
-
-const OracleRate = styled(Box)`
-  margin-top: var(--spacing-2);
-  color: var(--text-secondary);
-  font-size: var(--font-size-1);
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-1);
 `
 
 const TokenTitle = styled.h4`
