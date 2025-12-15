@@ -8,19 +8,28 @@ import { type MarketUrlParams, type PageContentProps } from '@/lend/types/lend.t
 import { CreateLoanForm } from '@/llamalend/features/borrow/components/CreateLoanForm'
 import type { OnBorrowFormUpdate } from '@/llamalend/features/borrow/types'
 import { hasLeverage } from '@/llamalend/llama.utils'
+import { useDebounced } from '@ui-kit/hooks/useDebounce'
 import { useCreateLoanMuiForm } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { type FormTab, FormTabs } from '@ui-kit/shared/ui/FormTabs/FormTabs'
+import { Duration } from '@ui-kit/themes/design/0_primitives'
 
 type CreateLoanProps = PageContentProps<MarketUrlParams>
 
 /**
  * Callback that synchronizes the `ChartOhlc` component with the `RangeSlider` component in the new `BorrowTabContents`.
  */
-const useOnFormUpdate = ({ api, market }: Pick<CreateLoanProps, 'api' | 'market'>): OnBorrowFormUpdate =>
-  useCallback(
+const useOnFormUpdate = ({ api, market }: Pick<CreateLoanProps, 'api' | 'market'>): OnBorrowFormUpdate => {
+  const [setFormValues] = useDebounced(
+    useStore((store) => store.loanCreate.setFormValues),
+    Duration.FormDebounce,
+  )
+  const [setStateByKeys] = useDebounced(
+    useStore((store) => store.loanCreate.setStateByKeys),
+    Duration.FormDebounce,
+  )
+  return useCallback(
     async ({ debt, userCollateral, range, slippage, leverageEnabled }) => {
-      const { setFormValues, setStateByKeys } = useStore.getState().loanCreate
       const formValues: FormValues = {
         ...DEFAULT_FORM_VALUES,
         n: range,
@@ -30,8 +39,9 @@ const useOnFormUpdate = ({ api, market }: Pick<CreateLoanProps, 'api' | 'market'
       await setFormValues(api, market, formValues, `${slippage}`, leverageEnabled)
       setStateByKeys({ isEditLiqRange: true })
     },
-    [api, market],
+    [api, market, setFormValues, setStateByKeys],
   )
+}
 
 function CreateLoanTab({ market, api, rChainId }: CreateLoanProps) {
   const onLoanCreated = useStore((state) => state.loanCreate.onLoanCreated)
