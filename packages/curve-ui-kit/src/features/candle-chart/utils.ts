@@ -115,4 +115,5 @@ export const priceFormatter = (x: number, delta: number) =>
      */
     decimals: delta >= 1 ? (x > ABBREVIATION_CUTOFF ? ABBREVIATION_DECIMALS : 0) : -Math.floor(Math.log10(delta)) + 2,
     abbreviate: x > ABBREVIATION_CUTOFF,
+    useGrouping: false,
   })
