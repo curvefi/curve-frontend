@@ -2,6 +2,40 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
 
 /**
+ * A hook that debounces a function call and calls a callback when the debouncing period has elapsed.
+ *
+ * @param debounceMs - The debouncing period in milliseconds
+ * @param callback - Callback function that is called after the debounce period
+ * @param onChange - Optional callback function that is called immediately when the value changes
+ * @returns A tuple containing the debounced function and a cancel function
+ */
+export function useDebounced<T extends any[]>(
+  callback: (...value: T) => void,
+  debounceMs: number,
+  onChange?: (...value: T) => void,
+) {
+  const timerRef = useRef<number | null>(null)
+  const cancel = useCallback(() => void (timerRef.current && clearTimeout(timerRef.current)), [])
+  useEffect(() => cancel, [cancel])
+  return [
+    useCallback(
+      (...newValue: T) => {
+        cancel()
+        onChange?.(...newValue)
+
+        // Initiate a new timer
+        timerRef.current = window.setTimeout(() => {
+          callback(...newValue)
+          timerRef.current = null
+        }, debounceMs)
+      },
+      [callback, cancel, debounceMs, onChange],
+    ),
+    cancel,
+  ] as const
+}
+
+/**
  * A hook that debounces a value and calls a callback when the debounce period has elapsed.
  *
  * @param initialValue - The initial value to use
@@ -32,42 +66,8 @@ import { Duration } from '@ui-kit/themes/design/0_primitives'
  */
 export function useDebounce<T>(initialValue: T, debounceMs: number, callback: (value: T) => void) {
   const [value, setValue] = useState<T>(initialValue)
-  const timerRef = useRef<number | null>(null)
-
-  // Update value when initialValue changes for controlled components
-  useEffect(() => {
-    setValue(initialValue)
-  }, [initialValue])
-
-  // Clear timer on unmount
-  useEffect(
-    () => () => {
-      if (timerRef.current !== null) {
-        clearTimeout(timerRef.current)
-      }
-    },
-    [],
-  )
-
-  // Clear any existing timer
-  const cancel = useCallback(() => timerRef.current && clearTimeout(timerRef.current), [])
-
-  // Sets the internal value, but calls the callback after a delay unless retriggered again.
-  const setDebouncedValue = useCallback(
-    (newValue: T) => {
-      setValue(newValue)
-      cancel()
-
-      // Initiate a new timer
-      timerRef.current = window.setTimeout(() => {
-        callback(newValue)
-        timerRef.current = null
-      }, debounceMs)
-    },
-    [callback, cancel, debounceMs],
-  )
-
-  return [value, setDebouncedValue, cancel] as const
+  useEffect(() => setValue(initialValue), [initialValue])
+  return [value, ...useDebounced(callback, debounceMs, setValue)] as const
 }
 
 /**
@@ -79,7 +79,7 @@ export function useDebounce<T>(initialValue: T, debounceMs: number, callback: (v
  */
 export function useDebouncedValue<T>(
   givenValue: T,
-  { defaultValue = givenValue, debounceMs = Duration.FormThrottle }: { defaultValue?: T; debounceMs?: number } = {},
+  { defaultValue = givenValue, debounceMs = Duration.FormDebounce }: { defaultValue?: T; debounceMs?: number } = {},
 ) {
   const [value, setValue] = useState<T>(defaultValue)
   useEffect(() => {

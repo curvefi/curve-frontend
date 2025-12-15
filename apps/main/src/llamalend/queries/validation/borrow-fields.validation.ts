@@ -15,7 +15,7 @@ export const validateUserCollateral = (userCollateral: Decimal | undefined | nul
 }
 
 export const validateDebt = (debt: Decimal | undefined | null, required: boolean = true) => {
-  skipWhen(!required && debt == null, () => {
+  skipWhen(!required && !debt, () => {
     test('debt', `Debt must be a positive number${required ? '' : ' or null'}`, () => {
       enforce(debt).isNumeric().gt(0)
     })
@@ -45,7 +45,7 @@ export const validateMaxDebt = (
     })
   })
   skipWhen(maxDebt == null || debt == null, () => {
-    test('debt', 'Debt must be less than or equal to maximum borrowable amount', () => {
+    test('maxDebt', 'Debt is too high', () => {
       enforce(maxDebt).isNotNullish()
       enforce(debt).lte(maxDebt)
     })
@@ -53,8 +53,10 @@ export const validateMaxDebt = (
 }
 
 export const validateLeverageEnabled = (leverageEnabled: boolean | undefined | null, isLeverageRequired: boolean) => {
-  test('leverageEnabled', 'Leverage must be enabled', () => {
-    enforce(leverageEnabled).equals(true)
+  skipWhen(!isLeverageRequired, () => {
+    test('leverageEnabled', 'Leverage must be enabled', () => {
+      enforce(leverageEnabled).equals(true)
+    })
   })
 }
 

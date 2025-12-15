@@ -1,5 +1,4 @@
-import { group } from 'vest'
-import type { Suite } from 'vest'
+import { group, skipWhen } from 'vest'
 import {
   validateDebt,
   validateLeverageEnabled,
@@ -12,7 +11,7 @@ import {
 } from '@/llamalend/queries/validation/borrow-fields.validation'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
-import { type BorrowForm, type BorrowFormQueryParams } from '../../features/borrow/types'
+import { type BorrowDebtParams, type BorrowForm } from '../../features/borrow/types'
 
 export const borrowFormValidationGroup = (
   {
@@ -26,10 +25,10 @@ export const borrowFormValidationGroup = (
     leverageEnabled,
   }: FieldsOf<BorrowForm>,
   {
-    debtRequired = true,
-    isMaxDebtRequired = false,
-    isLeverageRequired = false,
-  }: { debtRequired?: boolean; isMaxDebtRequired?: boolean; isLeverageRequired?: boolean } = {},
+    debtRequired,
+    isMaxDebtRequired,
+    isLeverageRequired,
+  }: { debtRequired: boolean; isMaxDebtRequired: boolean; isLeverageRequired: boolean },
 ) =>
   group('borrowFormValidationGroup', () => {
     validateUserBorrowed(userBorrowed)
@@ -42,22 +41,24 @@ export const borrowFormValidationGroup = (
     validateLeverageEnabled(leverageEnabled, isLeverageRequired)
   })
 
-export const borrowFormValidationSuite = createValidationSuite(borrowFormValidationGroup)
-
 export const borrowQueryValidationSuite = ({
-  debtRequired = true,
+  debtRequired,
   isMaxDebtRequired = debtRequired,
   isLeverageRequired = false,
+  skipMarketValidation = false,
 }: {
-  debtRequired?: boolean
+  debtRequired: boolean
   isMaxDebtRequired?: boolean
   isLeverageRequired?: boolean
-} = {}): Suite<keyof BorrowFormQueryParams, string> =>
-  createValidationSuite((params: BorrowFormQueryParams & { maxDebt?: FieldsOf<BorrowForm>['maxDebt'] }) => {
+  skipMarketValidation?: boolean
+}) =>
+  createValidationSuite((params: BorrowDebtParams) => {
     const { chainId, leverageEnabled, marketId, userBorrowed, userCollateral, debt, range, slippage, maxDebt } = params
-    marketIdValidationSuite({ chainId, marketId })
+    skipWhen(skipMarketValidation, () => {
+      marketIdValidationSuite({ chainId, marketId })
+    })
     borrowFormValidationGroup(
       { userBorrowed, userCollateral, debt, range, slippage, leverageEnabled, maxDebt },
       { debtRequired, isMaxDebtRequired, isLeverageRequired },
     )
-  }) as Suite<keyof BorrowFormQueryParams, string>
+  })

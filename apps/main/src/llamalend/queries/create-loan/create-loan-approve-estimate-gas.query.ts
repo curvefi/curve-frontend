@@ -1,3 +1,4 @@
+import type { Suite } from 'vest'
 import { useEstimateGas } from '@/llamalend/hooks/useEstimateGas'
 import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { type NetworkDict } from '@/llamalend/llamalend.types'
@@ -36,7 +37,10 @@ const { useQuery: useCreateLoanApproveEstimateGas } = queryFactory({
           ? await market.leverageV2.estimateGas.createLoanApprove(userCollateral, userBorrowed)
           : await market.leverage.estimateGas.createLoanApprove(userCollateral)
   },
-  validationSuite: borrowQueryValidationSuite({ debtRequired: false }), // doesn't use debt or maxDebt
+  validationSuite: borrowQueryValidationSuite({ debtRequired: false }) as Suite<
+    keyof CreateLoanApproveEstimateGasQuery,
+    string
+  >,
   dependencies: (params) => [createLoanMaxReceiveKey(params)],
 })
 

@@ -70,7 +70,14 @@ export const CreateLoanForm = <ChainId extends IChainId>({
     formErrors,
     isApproved,
   } = useCreateLoanForm({ market, network, preset, onCreated })
-  const setRange = useCallback((range: number) => form.setValue('range', range, setValueOptions), [form])
+  const setRange = useCallback(
+    (range: number) => {
+      // maxDebt is reset when query restarts, clear now to disable queries until recalculated
+      form.setValue('maxDebt', undefined, setValueOptions)
+      form.setValue('range', range, setValueOptions)
+    },
+    [form],
+  )
   useFormSync(values, onUpdate)
 
   return (
@@ -115,7 +122,11 @@ export const CreateLoanForm = <ChainId extends IChainId>({
               symbol={borrowToken?.symbol}
               balance={values.maxDebt}
               loading={maxTokenValues.debt.isLoading}
-              onClick={() => form.setValue('debt', values.maxDebt, setValueOptions)}
+              onClick={() => {
+                form.setValue('debt', values.maxDebt, setValueOptions)
+                void form.trigger('maxDebt') // re-validate maxDebt when debt changes
+              }}
+              buttonTestId="borrow-set-debt-to-max"
             />
           }
         />

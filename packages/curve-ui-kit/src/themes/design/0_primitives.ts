@@ -137,7 +137,7 @@ export const Duration = {
   Delay: 100,
   Flicker: 1000,
   Focus: 50,
-  FormThrottle: 250,
+  FormDebounce: 250,
   Snackbar: 6000,
   Tooltip: { Enter: 500, Exit: 500 },
   Transition: 256,

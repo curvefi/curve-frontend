@@ -1,7 +1,7 @@
 import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
-import type { BorrowFormQuery, BorrowFormQueryParams } from '../../features/borrow/types'
+import type { BorrowDebtParams, BorrowDebtQuery } from '../../features/borrow/types'
 import { borrowQueryValidationSuite } from '../validation/borrow.validation'
 import { createLoanExpectedCollateralQueryKey } from './create-loan-expected-collateral.query'
 
@@ -15,7 +15,8 @@ export const { useQuery: useCreateLoanPriceImpact } = queryFactory({
     userCollateral = '0',
     debt = '0',
     leverageEnabled,
-  }: BorrowFormQueryParams) =>
+    maxDebt,
+  }: BorrowDebtParams) =>
     [
       ...rootKeys.market({ chainId, marketId }),
       'createLoanPriceImpact',
@@ -23,13 +24,14 @@ export const { useQuery: useCreateLoanPriceImpact } = queryFactory({
       { userBorrowed },
       { debt },
       { leverageEnabled },
+      { maxDebt },
     ] as const,
   queryFn: async ({
     marketId,
     userBorrowed = '0',
     userCollateral = '0',
     debt = '0',
-  }: BorrowFormQuery): Promise<BorrowPriceImpactResult> => {
+  }: BorrowDebtQuery): Promise<BorrowPriceImpactResult> => {
     const market = getLlamaMarket(marketId)
     return market instanceof LendMarketTemplate
       ? +(await market.leverage.createLoanPriceImpact(userBorrowed, debt))
@@ -38,6 +40,6 @@ export const { useQuery: useCreateLoanPriceImpact } = queryFactory({
         : +(await market.leverage.priceImpact(userCollateral, debt))
   },
   staleTime: '1m',
-  validationSuite: borrowQueryValidationSuite({ isLeverageRequired: true }), // requires debt, maxDebt, and leverageEnabled
+  validationSuite: borrowQueryValidationSuite({ debtRequired: true, isLeverageRequired: true }),
   dependencies: (params) => [createLoanExpectedCollateralQueryKey(params)],
 })
