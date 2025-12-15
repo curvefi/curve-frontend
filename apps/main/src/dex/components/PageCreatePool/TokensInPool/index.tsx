@@ -572,7 +572,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
   )
 
   // check if the tokens are withing 0.95 and 1.05 threshold
-  const checkThreshold = useMemo(() => {
+  const checkStableswapThreshold = useMemo(() => {
     // Array of token IDs you want to check
     const tokenIds: TokenId[] = [TOKEN_A, TOKEN_B, TOKEN_C, TOKEN_D, TOKEN_E, TOKEN_F, TOKEN_G, TOKEN_H]
 
@@ -580,6 +580,17 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
     const validTokens = tokenIds.filter(
       (tokenId) => tokensInPool[tokenId].address !== '' && initialPrice[tokenId] !== 0,
     )
+
+    // Skip threshold check for tokens with special asset types (they have their own rate mechanisms)
+    const hasSpecialAssetType = tokenIds.some((tokenId) => {
+      const assetType = tokensInPool[tokenId].ngAssetType
+      return (
+        assetType === NG_ASSET_TYPE.ERC4626 ||
+        assetType === NG_ASSET_TYPE.ORACLE ||
+        assetType === NG_ASSET_TYPE.REBASING
+      )
+    })
+    if (hasSpecialAssetType) return false
 
     if (validTokens.length <= 1) {
       // Not enough tokens for comparison
@@ -763,7 +774,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
       {!chainId && <WarningBox message={t`Please connect a wallet to select tokens`} />}
       {swapType === STABLESWAP ? (
         <>
-          {checkThreshold && twocryptoFactory && (
+          {checkStableswapThreshold && twocryptoFactory && (
             <>
               <WarningBox
                 message={t`Tokens appear to be unpegged (above 5% deviation from 1:1).
