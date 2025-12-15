@@ -7,24 +7,8 @@ import { DesignSystem } from '../../design'
 import { Sizing } from '../../design/0_primitives'
 import { SizesAndSpaces } from '../../design/1_sizes_spaces'
 import { Fonts } from '../../fonts'
-
+import { buttonColor } from './utils'
 const { LineHeight, OutlineWidth, FontWeight, ButtonSize, FontSize } = SizesAndSpaces
-
-type ButtonStyle = { Label?: string; Fill?: string; Outline?: string }
-type ButtonColor = { Default: ButtonStyle; Disabled?: ButtonStyle; Hover: ButtonStyle; Current?: ButtonStyle }
-
-const buttonStyle = ({ Fill, Label, Outline }: ButtonStyle) => ({
-  color: Label,
-  backgroundColor: Fill,
-  borderColor: Outline,
-})
-
-const buttonColor = ({ Default, Disabled, Hover, Current }: ButtonColor) => ({
-  ...buttonStyle(Default),
-  '&:hover': buttonStyle(Hover),
-  '&:disabled': Disabled && buttonStyle(Disabled),
-  '&.current': Current && buttonStyle(Current),
-})
 
 const sizeBreakpoint = (
   height: string,

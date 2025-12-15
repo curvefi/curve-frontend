@@ -31,5 +31,10 @@ export type BorrowFormQuery<T = IChainId> = MarketQuery<T> & CompleteBorrowForm
 /** Fields of the borrow form query before validation */
 export type BorrowFormQueryParams<T = IChainId> = FieldsOf<BorrowFormQuery<T>>
 
+/** Borrow form query including max debt field */
+export type BorrowDebtQuery<T = IChainId> = BorrowFormQuery<T> & Pick<BorrowForm, 'maxDebt'>
+/** Fields of the borrow debt query before validation */
+export type BorrowDebtParams<T = IChainId> = FieldsOf<BorrowDebtQuery<T>>
+
 /** A simple token representation */
 export type Token = { symbol: string; address: Address }
