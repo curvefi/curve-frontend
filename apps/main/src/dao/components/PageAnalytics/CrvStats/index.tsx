@@ -5,7 +5,7 @@ import { CONTRACT_CRV } from '@/dao/constants'
 import { useStatsVecrvQuery } from '@/dao/entities/stats-vecrv'
 import useStore from '@/dao/store/useStore'
 import Box from '@ui/Box'
-import { useConnection, useWallet } from '@ui-kit/features/connect-wallet'
+import { useCurve, useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { Metric } from '@ui-kit/shared/ui/Metric'
@@ -15,7 +15,7 @@ import { Chain } from '@ui-kit/utils/network'
 const CrvStats = () => {
   const { data: veCrvData, isLoading: statsLoading, isSuccess: statsSuccess } = useStatsVecrvQuery({})
   const { provider } = useWallet()
-  const { curveApi: { chainId } = {} } = useConnection()
+  const { curveApi: { chainId } = {} } = useCurve()
   const veCrvFees = useStore((state) => state.analytics.veCrvFees)
   const veCrvHolders = useStore((state) => state.analytics.veCrvHolders)
   const { data: crv, isFetching: isLoadingCrv } = useTokenUsdRate({ chainId, tokenAddress: CONTRACT_CRV })

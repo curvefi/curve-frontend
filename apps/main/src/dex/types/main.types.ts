@@ -19,7 +19,7 @@ export type NetworkConfigFromApi = {
 }
 
 export type NetworkUrlParams = { network: INetworkName }
-export type PoolUrlParams = NetworkUrlParams & { pool: string; formType?: RFormType }
+export type PoolUrlParams = NetworkUrlParams & { poolIdOrAddress: string; formType?: RFormType }
 export type CrvLockerUrlParams = NetworkUrlParams & { formType?: RFormType }
 export type UrlParams = NetworkUrlParams & Partial<PoolUrlParams & CrvLockerUrlParams>
 

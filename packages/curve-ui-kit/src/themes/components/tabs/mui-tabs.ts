@@ -82,7 +82,7 @@ const tabStyle = ({ Label, Fill, Outline }: TabStyle, inset?: string) => ({
   color: Label,
   backgroundColor: Fill,
   '::after': {
-    backgroundColor: Outline ?? 'transparant',
+    backgroundColor: Outline ?? 'transparent',
     inset,
   },
 })

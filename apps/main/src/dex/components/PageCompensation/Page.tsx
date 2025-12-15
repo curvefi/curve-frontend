@@ -10,13 +10,13 @@ import Button from '@ui/Button'
 import IconButton from '@ui/IconButton'
 import ExternalLink from '@ui/Link/ExternalLink'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
-import { isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
+import { isLoading, useCurve, useWallet } from '@ui-kit/features/connect-wallet'
 import { useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 
 export const PageCompensation = () => {
   const { network } = useParams<NetworkUrlParams>()
-  const { curveApi = null, connectState } = useConnection()
+  const { curveApi = null, connectState } = useCurve()
   const isConnecting = isLoading(connectState)
   const { connect: connectWallet, provider } = useWallet()
   const [contracts, setContracts] = useState<EtherContract[]>([])
