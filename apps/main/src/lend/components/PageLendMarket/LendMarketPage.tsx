@@ -143,13 +143,6 @@ export const LendMarketPage = () => {
             ) : (
               <Stack padding={Spacing.md} sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
                 <NoPosition type="borrow" />
-                {userCollateralEvents?.events && userCollateralEvents.events.length > 0 && (
-                  <UserPositionHistory
-                    events={userCollateralEvents.events}
-                    isLoading={collateralEventsIsLoading}
-                    isError={collateralEventsIsError}
-                  />
-                )}
               </Stack>
             )}
             {userCollateralEvents?.events && userCollateralEvents.events.length > 0 && (

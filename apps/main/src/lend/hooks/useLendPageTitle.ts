@@ -4,7 +4,7 @@ import { notFalsy } from '@curvefi/prices-api/objects.util'
 /**
  * Custom hook to set the document title for markets pages
  * @param collateralSymbol - The symbol of the collateral token
- * @param prefix - The prefix part of the title (e.g., "Create - ...")
+ * @param prefix - The prefix part of the title (e.g., "Supply - ...")
  */
 export function useLendPageTitle(collateralSymbol: string | undefined, prefix?: string) {
   useEffect(() => {

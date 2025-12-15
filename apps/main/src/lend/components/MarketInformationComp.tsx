@@ -26,7 +26,7 @@ type MarketInformationCompProps = {
 const EMPTY_ARRAY: never[] = []
 
 /**
- * Reusable component for OHLC charts, Bands (if applicable), and market parameters. For /create, /manage, /vault pages.
+ * Reusable component for OHLC charts, Bands (if applicable), and market parameters, used in market and vault pages.
  */
 export const MarketInformationComp = ({ pageProps, loanExists, userActiveKey, type }: MarketInformationCompProps) => {
   const { rChainId, rOwmId, market } = pageProps
