@@ -331,8 +331,19 @@ const loanCreate = {
   ) => {
     log('loanEstGas', llamma.collateralSymbol, collateral, debt, n, maxSlippage)
     const resp = { activeKey, isApproved: false, estimatedGas: initialGas, error: '' }
+    const isV2Leverage = hasV2Leverage(llamma)
+    const userBorrowed = '0'
 
     try {
+      if (isLeverage && isV2Leverage) {
+        await llamma.leverageV2.createLoanExpectedCollateral(collateral, userBorrowed, debt, +maxSlippage)
+        resp.isApproved = await llamma.leverageV2.createLoanIsApproved(collateral, userBorrowed)
+        resp.estimatedGas = resp.isApproved
+          ? await llamma.leverageV2.estimateGas.createLoan(collateral, userBorrowed, debt, n, +maxSlippage)
+          : await llamma.leverageV2.estimateGas.createLoanApprove(collateral, userBorrowed)
+        return resp
+      }
+
       resp.isApproved = isLeverage
         ? await llamma.leverage.createLoanIsApproved(collateral)
         : await llamma.createLoanIsApproved(collateral)
@@ -390,8 +401,55 @@ const loanCreate = {
     maxSlippage: string,
   ) => {
     log('detailInfoLeverage', llamma.collateralSymbol, userCollateral, debt, n, maxSlippage)
+    const isV2Leverage = hasV2Leverage(llamma)
+    const userBorrowed = '0'
 
     try {
+      if (isV2Leverage) {
+        // Expected collateral must run first to populate swap data cache used by other calls
+        const expectedCollateralResult = await llamma.leverageV2.createLoanExpectedCollateral(
+          userCollateral,
+          userBorrowed,
+          debt,
+          +maxSlippage,
+        )
+        const [
+          maxRangeResult,
+          loanBandsResult,
+          loanPricesResult,
+          loanHealthFullResult,
+          loanHealthNotFullResult,
+          priceImpactResult,
+        ] = await Promise.allSettled([
+          llamma.leverageV2.createLoanMaxRange(userCollateral, userBorrowed, debt),
+          llamma.leverageV2.createLoanBands(userCollateral, userBorrowed, debt, n),
+          llamma.leverageV2.createLoanPrices(userCollateral, userBorrowed, debt, n),
+          llamma.leverageV2.createLoanHealth(userCollateral, userBorrowed, debt, n, true),
+          llamma.leverageV2.createLoanHealth(userCollateral, userBorrowed, debt, n, false),
+          llamma.leverageV2.createLoanPriceImpact(userBorrowed, debt),
+        ])
+
+        const expectedCollateral = expectedCollateralResult
+        const priceImpact = fulfilledValue(priceImpactResult) ?? ''
+
+        return {
+          activeKey,
+          resp: {
+            collateral: expectedCollateral?.totalCollateral ?? '',
+            leverage: expectedCollateral?.leverage ?? '',
+            routeName: '',
+            maxRange: fulfilledValue(maxRangeResult) ?? null,
+            bands: reverseBands(fulfilledValue(loanBandsResult) ?? [0, 0]),
+            prices: fulfilledValue(loanPricesResult) ?? [],
+            healthFull: fulfilledValue(loanHealthFullResult) ?? '',
+            healthNotFull: fulfilledValue(loanHealthNotFullResult) ?? '',
+            priceImpact,
+            isHighImpact: +priceImpact > 0 && +maxSlippage > 0 ? +priceImpact > +maxSlippage : false,
+            error: '',
+          },
+        }
+      }
+
       const { collateral, leverage, routeIdx } = await llamma.leverage.createLoanCollateral(userCollateral, debt)
       const [
         routeNameResult,
@@ -459,21 +517,29 @@ const loanCreate = {
     const liqRangesList: LiqRange[] = []
     const liqRangesListMapper: { [n: string]: LiqRange & { sliderIdx: number } } = {}
     let sliderIdx = 0
+    const isV2Leverage = hasV2Leverage(llamma)
+    const userBorrowed = '0'
 
     const [maxRecvsResults, loanBandsResults, loanPricesResults] = await Promise.allSettled([
       haveCollateral
         ? isLeverage
-          ? llamma.leverage.createLoanMaxRecvAllRanges(collateral)
+          ? isV2Leverage
+            ? llamma.leverageV2.createLoanMaxRecvAllRanges(collateral, userBorrowed)
+            : llamma.leverage.createLoanMaxRecvAllRanges(collateral)
           : llamma.createLoanMaxRecvAllRanges(collateral)
         : null,
       haveCollateral && haveDebt
         ? isLeverage
-          ? llamma.leverage.createLoanBandsAllRanges(collateral, debt)
+          ? isV2Leverage
+            ? llamma.leverageV2.createLoanBandsAllRanges(collateral, userBorrowed, debt)
+            : llamma.leverage.createLoanBandsAllRanges(collateral, debt)
           : llamma.createLoanBandsAllRanges(collateral, debt)
         : null,
       haveCollateral && haveDebt
         ? isLeverage
-          ? llamma.leverage.createLoanPricesAllRanges(collateral, debt)
+          ? isV2Leverage
+            ? llamma.leverageV2.createLoanPricesAllRanges(collateral, userBorrowed, debt)
+            : llamma.leverage.createLoanPricesAllRanges(collateral, debt)
           : llamma.createLoanPricesAllRanges(collateral, debt)
         : null,
     ])
@@ -522,8 +588,20 @@ const loanCreate = {
   },
   maxRecvLeverage: async (activeKey: string, llamma: Llamma, collateral: string, n: number) => {
     log('maxRecvLeverage', llamma.collateralSymbol, collateral, n)
+    const isV2Leverage = hasV2Leverage(llamma)
     let resp: MaxRecvLeverageForm = { maxBorrowable: '', maxCollateral: '', leverage: '', routeIdx: null }
     try {
+      if (isV2Leverage) {
+        const result = await llamma.leverageV2.createLoanMaxRecv(collateral, '0', n)
+        resp = {
+          maxBorrowable: result.maxDebt,
+          maxCollateral: result.maxTotalCollateral,
+          leverage: result.maxLeverage,
+          routeIdx: null,
+        }
+        return { activeKey, resp, error: '' }
+      }
+
       resp = await llamma.leverage.createLoanMaxRecv(collateral, n)
       return { activeKey, resp, error: '' }
     } catch (error) {
@@ -536,7 +614,9 @@ const loanCreate = {
     const resp = { activeKey, hashes: [] as string[], error: '' }
     try {
       resp.hashes = isLeverage
-        ? await llamma.leverage.createLoanApprove(collateral)
+        ? hasV2Leverage(llamma)
+          ? await llamma.leverageV2.createLoanApprove(collateral, '0')
+          : await llamma.leverage.createLoanApprove(collateral)
         : await llamma.createLoanApprove(collateral)
       await waitForTransactions(resp.hashes, provider)
       return resp
@@ -560,7 +640,13 @@ const loanCreate = {
     const resp = { activeKey, hash: '', error: '' }
     try {
       resp.hash = isLeverage
-        ? await llamma.leverage.createLoan(collateral, debt, n, +maxSlippage)
+        ? hasV2Leverage(llamma)
+          ? await (async () => {
+              // Ensure swap data cache is populated before submitting tx
+              await llamma.leverageV2.createLoanExpectedCollateral(collateral, '0', debt, +maxSlippage)
+              return llamma.leverageV2.createLoan(collateral, '0', debt, n, +maxSlippage)
+            })()
+          : await llamma.leverage.createLoan(collateral, debt, n, +maxSlippage)
         : await llamma.createLoan(collateral, debt, n)
       await waitForTransaction(resp.hash, provider)
       return resp
