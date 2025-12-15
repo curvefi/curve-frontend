@@ -542,10 +542,10 @@ const CandleChart = ({
   // Update OHLC data and price formatting when it changes
   // Update price formatting when OHLC data changes
   useEffect(() => {
-    if (!candlestickSeriesRef.current || !ohlcData) return
+    if (!chartRef.current || !candlestickSeriesRef.current || !ohlcData) return
 
     candlestickSeriesRef.current.setData(ohlcData)
-    candlestickSeriesRef.current.applyOptions({ priceFormat: getPriceFormatter(ohlcData) })
+    chartRef.current?.applyOptions({ localization: { priceFormatter: getPriceFormatter(ohlcData).formatter } })
   }, [ohlcData])
 
   // Update oracle price data when it changes
