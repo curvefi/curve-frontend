@@ -73,7 +73,7 @@ src/[domain]/
 - React 19 with TypeScript
 - TanStack Router for routing
 - TanStack Query for data fetching
-- Node.js LTS version (required)
+- Node.js 22 (required)
 - Yarn 4 workspaces
 
 **State & Data:**
