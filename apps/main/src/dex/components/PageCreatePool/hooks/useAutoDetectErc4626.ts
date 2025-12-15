@@ -26,7 +26,7 @@ export const useAutoDetectErc4626 = ({ tokenId, address }: UseAutoDetectErc4626P
     }
 
     // Only auto-set ngAssetType on first successful detection (don't override user's choice)
-    if (isErc4626 && isSuccess && !statusAlreadySet) {
+    if (isErc4626 && !statusAlreadySet) {
       updateNgAssetType(tokenId, NG_ASSET_TYPE.ERC4626)
     }
   }, [tokenId, isErc4626, isSuccess, isLoading, error, updateNgAssetType, updateTokenErc4626Status, statusAlreadySet])
