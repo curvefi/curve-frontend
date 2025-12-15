@@ -49,6 +49,7 @@ export const HelperMessage = ({ message, isError }: HelperMessageProps) => (
           color: (t) =>
             isError ? t.design.Text.TextColors.FilledFeedback.Warning.Primary : t.design.Text.TextColors.Tertiary,
         }}
+        data-testid={`helper-message-${isError ? 'error' : 'info'}`}
       >
         {message}
       </Typography>

@@ -104,6 +104,7 @@ export function useLlammaMutation<TVariables extends object, TData extends Resul
   const { mutate, mutateAsync, error, data, isPending, isSuccess, reset } = useMutation({
     mutationKey,
     onMutate: (variables: TVariables) => {
+      console.log({ mutationKey, variables })
       // Early validation - throwing here prevents mutationFn from running
       if (!wallet) throw new Error('Missing provider')
       if (!llamaApi) throw new Error('Missing llamalend api')
@@ -120,11 +121,22 @@ export function useLlammaMutation<TVariables extends object, TData extends Resul
     },
     mutationFn: async (variables: TVariables) => {
       const market = getLlamaMarket(marketId!)
+      console.log('mutationFn called with variables:', variables, 'and market:', market)
       const data = await mutationFn(variables, { market })
       throwIfError(data)
       return { data, receipt: await waitForTransactionReceipt(config, data) }
     },
     onSuccess: async ({ data, receipt }, variables, context) => {
+      console.log(
+        `OnSuccess called with data:`,
+        data,
+        'receipt:',
+        receipt,
+        'variables:',
+        variables,
+        'context:',
+        context,
+      )
       logSuccess(mutationKey, { data, variables, marketId: context.market.id })
       notify(successMessage(variables, context), 'success')
       updateUserEventsApi(wallet!, { id: networkId }, context.market, receipt.transactionHash)
@@ -133,6 +145,7 @@ export function useLlammaMutation<TVariables extends object, TData extends Resul
       await onSuccess(data, receipt, variables, context)
     },
     onError: (error, variables, context) => {
+      console.error(`Error in mutation ${mutationKey}:`, error)
       logError(mutationKey, { error, variables, marketId: context?.market.id })
       notify(error.message, 'error')
     },

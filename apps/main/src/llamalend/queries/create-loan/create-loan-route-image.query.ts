@@ -1,4 +1,5 @@
 import { getLlamaMarket } from '@/llamalend/llama.utils'
+import { createLoanExpectedCollateralQueryKey } from '@/llamalend/queries/create-loan/create-loan-expected-collateral.query'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import type { BorrowDebtParams, BorrowDebtQuery } from '../../features/borrow/types'
@@ -23,4 +24,5 @@ export const { useQuery: useCreateLoanRouteImage } = queryFactory({
   },
   staleTime: '1m',
   validationSuite: borrowQueryValidationSuite({ debtRequired: true }),
+  dependencies: (params) => [createLoanExpectedCollateralQueryKey(params)],
 })
