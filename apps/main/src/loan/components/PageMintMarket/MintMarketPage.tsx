@@ -114,7 +114,13 @@ export const MintMarketPage = () => {
         </AppPageFormsWrapper>
         <Stack flexDirection="column" flexGrow={1} sx={{ gap: Spacing.md }}>
           <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
-            {loanExists ? <BorrowPositionDetails {...positionDetails} /> : <NoPosition type="borrow" />}
+            {loanExists ? (
+              <BorrowPositionDetails {...positionDetails} />
+            ) : (
+              <Stack padding={Spacing.md} sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
+                <NoPosition type="borrow" />
+              </Stack>
+            )}
             {userCollateralEvents?.events && userCollateralEvents.events.length > 0 && (
               <Stack
                 paddingLeft={Spacing.md}
