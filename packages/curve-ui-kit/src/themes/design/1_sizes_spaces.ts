@@ -118,8 +118,8 @@ const MappedModalWidth = {
 }
 
 const MappedModalHeight = {
-  sm: { maxHeight: '100vh', height: '100vh', minHeight: '100vh' },
-  md: { maxHeight: '100vh', height: '80vh', minHeight: '80vh' },
+  sm: '100dvh',
+  md: '80dvh',
 }
 const MappedColumnWidth = { sm: 125, md: 200, lg: 350 }
 export const SizesAndSpaces = {
