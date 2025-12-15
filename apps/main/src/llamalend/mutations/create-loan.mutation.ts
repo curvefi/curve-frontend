@@ -72,7 +72,7 @@ export const useCreateLoanMutation = ({
     mutationFn: async (mutation, { market }) => {
       const params = { ...mutation, chainId, marketId }
       await waitForApproval({
-        isApproved: () => fetchBorrowCreateLoanIsApproved(params),
+        isApproved: async () => await fetchBorrowCreateLoanIsApproved(params, { staleTime: 0 }),
         onApprove: () => approve(market, mutation),
         message: t`Approved loan creation`,
         config,

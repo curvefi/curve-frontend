@@ -1,4 +1,4 @@
-import { group } from 'vest'
+import { group, skipWhen } from 'vest'
 import {
   validateDebt,
   validateLeverageEnabled,
@@ -45,14 +45,18 @@ export const borrowQueryValidationSuite = ({
   debtRequired,
   isMaxDebtRequired = debtRequired,
   isLeverageRequired = false,
+  skipMarketValidation = false,
 }: {
   debtRequired: boolean
   isMaxDebtRequired?: boolean
   isLeverageRequired?: boolean
+  skipMarketValidation?: boolean
 }) =>
   createValidationSuite((params: BorrowDebtParams) => {
     const { chainId, leverageEnabled, marketId, userBorrowed, userCollateral, debt, range, slippage, maxDebt } = params
-    marketIdValidationSuite({ chainId, marketId })
+    skipWhen(skipMarketValidation, () => {
+      marketIdValidationSuite({ chainId, marketId })
+    })
     borrowFormValidationGroup(
       { userBorrowed, userCollateral, debt, range, slippage, leverageEnabled, maxDebt },
       { debtRequired, isMaxDebtRequired, isLeverageRequired },

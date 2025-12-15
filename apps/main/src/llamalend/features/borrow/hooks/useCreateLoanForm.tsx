@@ -21,7 +21,8 @@ import { useMaxTokenValues } from './useMaxTokenValues'
 const useCallbackAfterFormUpdate = (form: UseFormReturn<BorrowForm>, callback: () => void) =>
   useEffect(() => form.subscribe({ formState: { values: true }, callback }), [form, callback])
 
-const resolver = vestResolver(borrowQueryValidationSuite({ debtRequired: false }))
+// to crete a loan we need the debt/maxDebt, but we skip the market validation as that's given separately to the mutation
+const resolver = vestResolver(borrowQueryValidationSuite({ debtRequired: false, skipMarketValidation: true }))
 
 export function useCreateLoanForm<ChainId extends LlamaChainId>({
   market,
@@ -76,7 +77,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     values,
     params,
     isPending: form.formState.isSubmitting || isCreating,
-    onSubmit: form.handleSubmit(onSubmit), // todo: handle form errors
+    onSubmit: form.handleSubmit(onSubmit),
     maxTokenValues: useMaxTokenValues(collateralToken, params, form),
     borrowToken,
     collateralToken,

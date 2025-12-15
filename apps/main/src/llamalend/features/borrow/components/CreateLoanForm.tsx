@@ -122,7 +122,11 @@ export const CreateLoanForm = <ChainId extends IChainId>({
               symbol={borrowToken?.symbol}
               balance={values.maxDebt}
               loading={maxTokenValues.debt.isLoading}
-              onClick={() => form.setValue('debt', values.maxDebt, setValueOptions)}
+              onClick={() => {
+                form.setValue('debt', values.maxDebt, setValueOptions)
+                void form.trigger('maxDebt') // re-validate maxDebt when debt changes
+              }}
+              buttonTestId="borrow-set-debt-to-max"
             />
           }
         />
