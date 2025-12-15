@@ -23,7 +23,11 @@ import { CreateToken, TokenId, TokensInPoolState } from '@/dex/components/PageCr
 import { checkMetaPool, containsOracle, getBasepoolCoins } from '@/dex/components/PageCreatePool/utils'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import useTokensMapper from '@/dex/hooks/useTokensMapper'
-import { DEFAULT_CREATE_POOL_STATE, DEFAULT_ERC4626_STATUS } from '@/dex/store/createCreatePoolSlice'
+import {
+  DEFAULT_CREATE_POOL_STATE,
+  DEFAULT_ERC4626_STATUS,
+  DEFAULT_ORACLE_STATUS,
+} from '@/dex/store/createCreatePoolSlice'
 import useStore from '@/dex/store/useStore'
 import { CurveApi, ChainId, BasePool } from '@/dex/types/main.types'
 import Box from '@ui/Box'
@@ -548,8 +552,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
         address: tokenId === token ? '' : tokensInPoolState[token].address,
         symbol: tokenId === token ? '' : tokensInPoolState[token].symbol,
         ngAssetType: tokenId === token ? NG_ASSET_TYPE.STANDARD : tokensInPoolState[token].ngAssetType,
-        oracleAddress: tokenId === token ? '' : tokensInPoolState[token].oracleAddress,
-        oracleFunction: tokenId === token ? '' : tokensInPoolState[token].oracleFunction,
+        oracle: tokenId === token ? { ...DEFAULT_ORACLE_STATUS } : tokensInPoolState[token].oracle,
         erc4626: tokenId === token ? { ...DEFAULT_ERC4626_STATUS } : tokensInPoolState[token].erc4626,
       })
 

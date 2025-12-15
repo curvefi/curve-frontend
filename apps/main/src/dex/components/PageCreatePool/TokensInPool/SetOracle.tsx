@@ -1,4 +1,6 @@
+import BigNumber from 'bignumber.js'
 import lodash from 'lodash'
+import { useMemo } from 'react'
 import { styled } from 'styled-components'
 import { isAddress } from 'viem'
 import TextInput from '@/dex/components/PageCreatePool/components/TextInput'
@@ -14,6 +16,7 @@ import {
   TOKEN_H,
   NG_ASSET_TYPE,
 } from '@/dex/components/PageCreatePool/constants'
+import { useOracleValidation } from '@/dex/components/PageCreatePool/hooks/useOracleValidation'
 import type { TokenState, TokenId } from '@/dex/components/PageCreatePool/types'
 import { validateOracleFunction } from '@/dex/components/PageCreatePool/utils'
 import useStore from '@/dex/store/useStore'
@@ -53,42 +56,72 @@ const OracleInputs = ({ token, tokenId, title }: OracleInputProps) => {
   const updateOracleAddress = useStore((state) => state.createPool.updateOracleAddress)
   const updateOracleFunction = useStore((state) => state.createPool.updateOracleFunction)
 
+  const { isLoading, isSuccess, error, rate, decimals } = useOracleValidation({ token, tokenId })
+
+  const formattedRate = useMemo(() => {
+    if (!isSuccess || !rate) return null
+    const dec = decimals ?? 18
+    if (dec === 18) return rate
+    return new BigNumber(rate).dividedBy(new BigNumber(10).pow(dec)).toString()
+  }, [decimals, rate, isSuccess])
+
   return (
     <InputContainer>
       <TokenTitle>{t`${title} ${token.symbol !== '' ? `(${token.symbol})` : ''} Oracle`}</TokenTitle>
       <TextInput
         row
-        defaultValue={token.oracleAddress}
+        defaultValue={token.oracle.address}
         onChange={lodash.debounce((value) => updateOracleAddress(tokenId, value), 300)}
         maxLength={42}
         label={t`Address (e.g 0x123...)`}
       />
-      {token.oracleAddress.length !== 0 && !token.oracleAddress.startsWith('0x') && (
+      {token.oracle.address.length !== 0 && !token.oracle.address.startsWith('0x') && (
         <WarningBox message={t`Oracle address needs to start with '0x'.`} />
       )}
-      {token.oracleAddress.length !== 0 && token.oracleAddress.length < 42 && (
+      {token.oracle.address.length !== 0 && token.oracle.address.length < 42 && (
         <WarningBox message={t`Oracle address needs to be 42 characters long.`} />
       )}
-      {token.oracleAddress.length === 42 && !isAddress(token.oracleAddress) && (
+      {token.oracle.address.length === 42 && !isAddress(token.oracle.address) && (
         <WarningBox message={t`Invalid EVM address.`} />
       )}
       <TextInput
         row
-        defaultValue={token.oracleFunction}
+        defaultValue={token.oracle.functionName}
         onChange={lodash.debounce((value) => updateOracleFunction(tokenId, value), 300)}
         maxLength={42}
         label={t`Function (e.g exchangeRate())`}
       />
-      {token.oracleFunction !== '' && !validateOracleFunction(token.oracleFunction) && (
+      {token.oracle.functionName !== '' && !validateOracleFunction(token.oracle.functionName) && (
         <WarningBox message={t`Oracle function name needs to end with '()'.`} />
       )}
       <WarningBox message={t`Oracle must have a precision of 18 decimals.`} informational />
+      {isLoading && <WarningBox message={t`Validating oracle...`} informational />}
+      {error && <WarningBox message={t`Unable to validate oracle.`} />}
+      {isSuccess && formattedRate !== null && (
+        <OracleRate>
+          <span>
+            {t`Oracle rate:`} {formattedRate}
+          </span>
+          <span>
+            {t`Decimals:`} {decimals ?? 18}
+          </span>
+        </OracleRate>
+      )}
     </InputContainer>
   )
 }
 
 const InputContainer = styled(Box)`
   margin-bottom: var(--spacing-4);
+`
+
+const OracleRate = styled(Box)`
+  margin-top: var(--spacing-2);
+  color: var(--text-secondary);
+  font-size: var(--font-size-1);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
 `
 
 const TokenTitle = styled.h4`
