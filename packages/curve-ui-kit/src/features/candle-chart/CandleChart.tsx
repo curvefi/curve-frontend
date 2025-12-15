@@ -54,6 +54,16 @@ const normalizeLiquidationRangePoints = (range?: LlammaLiquididationRange | null
   })
 }
 
+function getPriceFormatter(ohlcData: LpPriceOhlcDataFormatted[]) {
+  const min = Math.min(...ohlcData.map((x) => x.low))
+  const max = Math.max(...ohlcData.map((x) => x.high))
+
+  return {
+    type: 'custom' as const,
+    formatter: (price: number) => priceFormatter(price, max - min),
+  }
+}
+
 type LiquidationRangeSeriesApi = ISeriesApi<
   'Custom',
   Time,
@@ -439,10 +449,7 @@ const CandleChart = ({
       wickUpColor: memoizedColors.green,
       wickDownColor: memoizedColors.red,
       lastValueVisible: !hideCandleSeriesLabel,
-      priceFormat: {
-        type: 'price',
-        minMove: 0.0001,
-      },
+      priceFormat: getPriceFormatter(ohlcData),
       autoscaleInfoProvider: (original: () => { priceRange: { minValue: number; maxValue: number } | null } | null) => {
         const originalRange = original()
 
@@ -503,7 +510,7 @@ const CandleChart = ({
     return () => {
       candlestickSeriesRef.current = null
     }
-  }, [hideCandleSeriesLabel, memoizedColors.green, memoizedColors.red])
+  }, [hideCandleSeriesLabel, memoizedColors.green, memoizedColors.red, ohlcData])
 
   // Update candlestick colors when theme colors change
   useEffect(() => {
@@ -532,26 +539,13 @@ const CandleChart = ({
     }
   }, [])
 
-  // Update OHLC data when it changes
-  useEffect(() => {
-    if (!candlestickSeriesRef.current || !ohlcData) return
-
-    candlestickSeriesRef.current.setData(ohlcData)
-  }, [ohlcData])
-
+  // Update OHLC data and price formatting when it changes
   // Update price formatting when OHLC data changes
   useEffect(() => {
     if (!candlestickSeriesRef.current || !ohlcData) return
 
-    const min = Math.min(...ohlcData.map((x) => x.low))
-    const max = Math.max(...ohlcData.map((x) => x.high))
-
-    candlestickSeriesRef.current.applyOptions({
-      priceFormat: {
-        type: 'custom',
-        formatter: (price: number) => priceFormatter(price, max - min),
-      },
-    })
+    candlestickSeriesRef.current.setData(ohlcData)
+    candlestickSeriesRef.current.applyOptions({ priceFormat: getPriceFormatter(ohlcData) })
   }, [ohlcData])
 
   // Update oracle price data when it changes
