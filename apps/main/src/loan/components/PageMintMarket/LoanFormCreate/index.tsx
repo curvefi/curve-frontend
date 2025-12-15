@@ -45,7 +45,13 @@ import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { decimal, type Decimal } from '@ui-kit/utils'
 
-const useFetchInitial = ({ market, isLeverage }: { market: MintMarketTemplate | null; isLeverage: boolean }) => {
+const useFetchInitial = ({
+  market: llamma,
+  isLeverage,
+}: {
+  market: MintMarketTemplate | null
+  isLeverage: boolean
+}) => {
   const { isHydrated, llamaApi: curve = null } = useCurve()
   const maxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
   const formValues = useStore((state) => state.loanCreate.formValues)
@@ -75,17 +81,17 @@ const useFetchInitial = ({ market, isLeverage }: { market: MintMarketTemplate | 
   )
 
   useEffect(() => {
-    if (!isHydrated || !curve || !market) return
-    resetUserDetailsState(market)
-    fetchInitial(curve, isLeverage, market)
-    void fetchLoanDetails(curve, market)
+    if (!isHydrated || !curve || !llamma) return
+    resetUserDetailsState(llamma)
+    fetchInitial(curve, isLeverage, llamma)
+    void fetchLoanDetails(curve, llamma)
     setLoaded(true)
-  }, [isHydrated, curve, market, resetUserDetailsState, fetchInitial, isLeverage, fetchLoanDetails])
+  }, [isHydrated, curve, llamma, resetUserDetailsState, fetchInitial, isLeverage, fetchLoanDetails])
 
   // max slippage updated
   useEffect(() => {
-    if (loaded && curve && market) {
-      void setFormValues(curve, isLeverage, market, formValues, maxSlippage)
+    if (loaded && curve && llamma) {
+      void setFormValues(curve, isLeverage, llamma, formValues, maxSlippage)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [maxSlippage])
