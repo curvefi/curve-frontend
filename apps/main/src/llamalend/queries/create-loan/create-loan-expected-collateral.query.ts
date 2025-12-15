@@ -2,7 +2,7 @@ import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { assert, decimal, Decimal } from '@ui-kit/utils'
-import type { BorrowFormQuery, BorrowFormQueryParams } from '../../features/borrow/types'
+import type { BorrowDebtParams, BorrowDebtQuery } from '../../features/borrow/types'
 import { borrowQueryValidationSuite } from '../validation/borrow.validation'
 
 type BorrowExpectedCollateralResult = {
@@ -47,7 +47,8 @@ export const { useQuery: useCreateLoanExpectedCollateral, queryKey: createLoanEx
       debt,
       slippage,
       leverageEnabled,
-    }: BorrowFormQueryParams) =>
+      maxDebt,
+    }: BorrowDebtParams) =>
       [
         ...rootKeys.market({ chainId, marketId }),
         'createLoanExpectedCollateral',
@@ -56,6 +57,7 @@ export const { useQuery: useCreateLoanExpectedCollateral, queryKey: createLoanEx
         { debt },
         { slippage },
         { leverageEnabled },
+        { maxDebt },
       ] as const,
     queryFn: async ({
       marketId,
@@ -63,7 +65,7 @@ export const { useQuery: useCreateLoanExpectedCollateral, queryKey: createLoanEx
       userCollateral = '0',
       debt,
       slippage,
-    }: BorrowFormQuery): Promise<BorrowExpectedCollateralResult> => {
+    }: BorrowDebtQuery): Promise<BorrowExpectedCollateralResult> => {
       const market = getLlamaMarket(marketId)
       if (market instanceof LendMarketTemplate) {
         return convertNumbers(

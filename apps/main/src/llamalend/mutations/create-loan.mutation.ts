@@ -4,7 +4,7 @@ import { formatTokenAmounts } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { type LlammaMutationOptions, useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
 import { fetchBorrowCreateLoanIsApproved } from '@/llamalend/queries/create-loan/borrow-create-loan-approved.query'
-import { borrowFormValidationSuite } from '@/llamalend/queries/validation/borrow.validation'
+import { borrowQueryValidationSuite } from '@/llamalend/queries/validation/borrow.validation'
 import type {
   IChainId as LlamaChainId,
   IChainId,
@@ -79,7 +79,7 @@ export const useCreateLoanMutation = ({
       })
       return { hash: await create(market, mutation) }
     },
-    validationSuite: borrowFormValidationSuite,
+    validationSuite: borrowQueryValidationSuite({ debtRequired: true }),
     pendingMessage: (mutation, { market }) => t`Creating loan... ${formatTokenAmounts(market, mutation)}`,
     successMessage: (mutation, { market }) => t`Loan created! ${formatTokenAmounts(market, mutation)}`,
     onSuccess: onCreated,

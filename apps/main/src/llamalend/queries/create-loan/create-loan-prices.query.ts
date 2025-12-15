@@ -3,7 +3,7 @@ import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { type FieldsOf } from '@ui-kit/lib'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { Decimal } from '@ui-kit/utils'
-import type { BorrowForm, BorrowFormQuery } from '../../features/borrow/types'
+import type { BorrowDebtQuery, BorrowForm, BorrowFormQuery } from '../../features/borrow/types'
 import { borrowQueryValidationSuite } from '../validation/borrow.validation'
 import { createLoanExpectedCollateralQueryKey } from './create-loan-expected-collateral.query'
 import { createLoanMaxReceiveKey } from './create-loan-max-receive.query'
@@ -42,7 +42,7 @@ export const { useQuery: useCreateLoanPrices } = queryFactory({
     debt = '0',
     leverageEnabled,
     range,
-  }: BorrowPricesReceiveQuery): Promise<BorrowPricesResult> => {
+  }: BorrowDebtQuery): Promise<BorrowPricesResult> => {
     const market = getLlamaMarket(marketId)
     return !leverageEnabled
       ? convertNumbers(await market.createLoanPrices(userCollateral, debt, range))

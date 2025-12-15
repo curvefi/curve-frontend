@@ -56,7 +56,7 @@ export const LoanPresetSelector = ({
       sx={{ width: '100%', paddingBottom: Spacing.sm }}
     >
       {Object.values(BorrowPreset).map((p) => (
-        <ToggleButton key={p} value={p} size="extraSmall" sx={{ flexGrow: 1 }}>
+        <ToggleButton key={p} value={p} size="extraSmall" sx={{ flexGrow: 1 }} data-testid={`loan-preset-${p}`}>
           {PRESETS[p].title}
         </ToggleButton>
       ))}

@@ -1,7 +1,7 @@
 import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
-import type { BorrowFormQuery, BorrowFormQueryParams } from '../../features/borrow/types'
+import type { BorrowDebtQuery, BorrowFormQueryParams } from '../../features/borrow/types'
 import { borrowQueryValidationSuite } from '../validation/borrow.validation'
 
 export const { useQuery: useBorrowCreateLoanIsApproved, fetchQuery: fetchBorrowCreateLoanIsApproved } = queryFactory({
@@ -18,7 +18,7 @@ export const { useQuery: useBorrowCreateLoanIsApproved, fetchQuery: fetchBorrowC
     userBorrowed = '0',
     userCollateral = '0',
     leverageEnabled,
-  }: BorrowFormQuery): Promise<boolean> => {
+  }: BorrowDebtQuery): Promise<boolean> => {
     const market = getLlamaMarket(marketId)
     return leverageEnabled
       ? market instanceof MintMarketTemplate && market.leverageV2.hasLeverage()

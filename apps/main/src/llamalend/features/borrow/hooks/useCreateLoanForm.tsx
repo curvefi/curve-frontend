@@ -13,13 +13,15 @@ import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.util
 import { BORROW_PRESET_RANGES, BorrowPreset } from '../../../constants'
 import { type CreateLoanOptions, useCreateLoanMutation } from '../../../mutations/create-loan.mutation'
 import { useBorrowCreateLoanIsApproved } from '../../../queries/create-loan/borrow-create-loan-approved.query'
-import { borrowFormValidationSuite } from '../../../queries/validation/borrow.validation'
+import { borrowQueryValidationSuite } from '../../../queries/validation/borrow.validation'
 import { useFormErrors } from '../react-form.utils'
 import { type BorrowForm } from '../types'
 import { useMaxTokenValues } from './useMaxTokenValues'
 
 const useCallbackAfterFormUpdate = (form: UseFormReturn<BorrowForm>, callback: () => void) =>
   useEffect(() => form.subscribe({ formState: { values: true }, callback }), [form, callback])
+
+const resolver = vestResolver(borrowQueryValidationSuite({ debtRequired: false }))
 
 export function useCreateLoanForm<ChainId extends LlamaChainId>({
   market,
@@ -36,8 +38,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
   const { address: userAddress } = useConnection()
   const form = useForm<BorrowForm>({
     ...formDefaultOptions,
-    // todo: also validate maxLeverage and maxCollateral
-    resolver: vestResolver(borrowFormValidationSuite),
+    resolver,
     defaultValues: {
       userCollateral: undefined,
       userBorrowed: `0` satisfies Decimal,

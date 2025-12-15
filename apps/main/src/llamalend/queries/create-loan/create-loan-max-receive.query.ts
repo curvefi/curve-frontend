@@ -51,7 +51,7 @@ export const maxReceiveValidation = createValidationSuite(
     marketIdValidationSuite({ chainId, marketId })
     borrowFormValidationGroup(
       { userBorrowed, userCollateral, debt: undefined, range, slippage, leverageEnabled },
-      { debtRequired: false },
+      { debtRequired: false, isMaxDebtRequired: false, isLeverageRequired: false },
     )
   },
 )

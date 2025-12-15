@@ -7,7 +7,7 @@ import type { LlamaNetwork } from '@/llamalend/llamalend.types'
 import type { INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
 import type { PartialRecord } from '@curvefi/prices-api/objects.util'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
-import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
+import { HelperMessage, LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import type { Query } from '@ui-kit/types/util'
 import { Decimal } from '@ui-kit/utils'
@@ -52,8 +52,9 @@ export const LoanFormTokenInput = <
   } = useTokenBalance({ chainId: network?.chainId, userAddress }, token)
 
   const errors = form.formState.errors as PartialRecord<FieldPath<TFieldValues>, Error>
-  const relatedMaxFieldError = max?.fieldName && errors[max.fieldName]
+  const relatedMaxFieldError = max?.data && max?.fieldName && errors[max.fieldName]
   const error = errors[name] || max?.error || balanceError || relatedMaxFieldError
+
   return (
     <LargeTokenInput
       name={name}
@@ -69,17 +70,22 @@ export const LoanFormTokenInput = <
       }
       balance={form.getValues(name)}
       onBalance={useCallback(
-        (v?: Decimal) => form.setValue(name, v as FieldPathValue<TFieldValues, TFieldName>, setValueOptions),
-        [form, name],
+        (v?: Decimal) => {
+          form.setValue(name, v as FieldPathValue<TFieldValues, TFieldName>, setValueOptions)
+          if (max?.fieldName) void form.trigger(max.fieldName) // validate max field when balance changes
+        },
+        [form, max?.fieldName, name],
       )}
       isError={!!error}
-      message={error?.message ?? message}
+      message={error?.message}
       walletBalance={useMemo(
         // todo: support separate isLoading for balance and for maxBalance in LargeTokenInput
         () => ({ balance, symbol: token?.symbol, loading: isBalanceLoading }),
         [balance, isBalanceLoading, token?.symbol],
       )}
       maxBalance={useMemo(() => max && { balance: max.data, chips: 'max' }, [max])}
-    />
+    >
+      {message && <HelperMessage message={message} />}
+    </LargeTokenInput>
   )
 }
