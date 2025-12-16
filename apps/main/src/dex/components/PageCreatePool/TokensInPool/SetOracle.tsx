@@ -88,9 +88,7 @@ const OracleInputs = ({ token, tokenId, title }: OracleInputProps) => {
       {token.oracle.address.length !== 0 && token.oracle.address.length < 42 && (
         <WarningBox message={t`Oracle address needs to be 42 characters long.`} />
       )}
-      {token.oracle.address.length === 42 && !isAddress(token.oracle.address) && (
-        <WarningBox message={t`Invalid EVM address.`} />
-      )}
+      {!isAddress(token.oracle.address) && <WarningBox message={t`Invalid EVM address.`} />}
       <TextInput
         row
         defaultValue={token.oracle.functionName}

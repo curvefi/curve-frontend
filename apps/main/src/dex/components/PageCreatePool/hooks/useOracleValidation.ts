@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useEffect } from 'react'
 import { isAddress, type Address } from 'viem'
 import { useOracleRate } from '@/dex/components/PageCreatePool/hooks/useOracleRate'
 import { TokenId, TokenState } from '@/dex/components/PageCreatePool/types'
@@ -30,7 +30,7 @@ export const useOracleValidation = ({ token, tokenId }: UseOracleValidationParam
   })
 
   // Sync to store when query results change
-  useMemo(() => {
+  useEffect(() => {
     updateOracleState(tokenId, {
       address: oracleAddress,
       functionName: oracleFunction,
