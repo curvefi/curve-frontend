@@ -39,11 +39,19 @@ const convertNumbers = ({
 })
 
 export const maxReceiveValidation = createValidationSuite(
-  ({ chainId, marketId, userBorrowed, userCollateral, range, slippage }: CreateLoanMaxReceiveParams) => {
+  ({
+    chainId,
+    marketId,
+    userBorrowed,
+    userCollateral,
+    range,
+    slippage,
+    leverageEnabled,
+  }: CreateLoanMaxReceiveParams) => {
     marketIdValidationSuite({ chainId, marketId })
     borrowFormValidationGroup(
-      { userBorrowed, userCollateral, debt: undefined, range, slippage },
-      { debtRequired: false },
+      { userBorrowed, userCollateral, debt: undefined, range, slippage, leverageEnabled },
+      { debtRequired: false, isMaxDebtRequired: false, isLeverageRequired: false },
     )
   },
 )

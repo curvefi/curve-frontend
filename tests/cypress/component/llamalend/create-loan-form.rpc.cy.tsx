@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 import { prefetchMarkets } from '@/lend/entities/chain/chain-query'
+import { BorrowPreset } from '@/llamalend/constants'
 import { CreateLoanForm } from '@/llamalend/features/borrow/components/CreateLoanForm'
 import type { OnBorrowFormUpdate } from '@/llamalend/features/borrow/types'
 import type { CreateLoanOptions } from '@/llamalend/mutations/create-loan.mutation'
@@ -57,7 +58,7 @@ function BorrowTabTest({ type, onCreated }: BorrowTabTestProps) {
   )
 }
 
-describe('BorrowTabContents Component Tests', () => {
+describe('CreateLoanForm Component Tests', () => {
   const privateKey = generatePrivateKey()
   const { address } = privateKeyToAccount(privateKey)
   const getVirtualNetwork = createVirtualTestnet((uuid) => ({
@@ -99,26 +100,10 @@ describe('BorrowTabContents Component Tests', () => {
 
   const getActionValue = (name: string) => cy.get(`[data-testid="${name}-value"]`, LOAD_TIMEOUT)
 
-  it(`calculates max debt and health for ${marketType} market ${leverageEnabled ? 'with' : 'without'} leverage`, () => {
-    const onCreated = cy.stub()
-    cy.mount(<BorrowTabTestWrapper type={marketType} onCreated={onCreated} />)
-    cy.get('[data-testid="borrow-debt-input"] [data-testid="balance-value"]', LOAD_TIMEOUT).should('exist')
-    cy.get('[data-testid="borrow-collateral-input"] input[type="text"]').first().type(collateral)
-    cy.get('[data-testid="borrow-debt-input"] [data-testid="balance-value"]').should('not.contain.text', '?')
-    getActionValue('borrow-health').should('have.text', '∞')
-    cy.get('[data-testid="borrow-debt-input"] input[type="text"]').first().type(borrow)
-    getActionValue('borrow-health').should('not.contain.text', '∞')
-
-    if (leverageEnabled) {
-      cy.get('[data-testid="leverage-checkbox"]').click()
-    }
-
-    // open borrow advanced settings and check all fields
-    cy.contains('button', 'Health').click()
-
+  function assertLoanDetailsLoaded() {
     getActionValue('borrow-band-range')
       .invoke(LOAD_TIMEOUT, 'text')
-      .should('match', /(\d(\.\d+)?) to (\d(\.\d+)?)/)
+      .should('match', /(\d(\.\d+)?) to (-?\d(\.\d+)?)/)
     getActionValue('borrow-price-range')
       .invoke(LOAD_TIMEOUT, 'text')
       .should('match', /(\d(\.\d+)?) - (\d(\.\d+)?)/)
@@ -136,6 +121,37 @@ describe('BorrowTabContents Component Tests', () => {
     }
 
     cy.get('[data-testid="loan-form-errors"]').should('not.exist')
+  }
+
+  it(`calculates max debt and health for ${marketType} market ${leverageEnabled ? 'with' : 'without'} leverage`, () => {
+    const onCreated = cy.stub()
+    cy.mount(<BorrowTabTestWrapper type={marketType} onCreated={onCreated} />)
+    cy.get('[data-testid="borrow-debt-input"] [data-testid="balance-value"]', LOAD_TIMEOUT).should('exist')
+    cy.get('[data-testid="borrow-collateral-input"] input[type="text"]').first().type(collateral)
+    cy.get('[data-testid="borrow-debt-input"] [data-testid="balance-value"]').should('not.contain.text', '?')
+    getActionValue('borrow-health').should('have.text', '∞')
+    cy.get('[data-testid="borrow-debt-input"] input[type="text"]').first().type(borrow)
+    getActionValue('borrow-health').should('not.contain.text', '∞')
+
+    if (leverageEnabled) {
+      cy.get('[data-testid="leverage-checkbox"]').click()
+    }
+
+    // open borrow advanced settings and check all fields
+    cy.contains('button', 'Health').click()
+    assertLoanDetailsLoaded()
+
+    // click max ltv and max borrow, then back to safe, expect error. Clear it by setting max again
+    cy.get(`[data-testid="loan-preset-${BorrowPreset.MaxLtv}"]`).click()
+    cy.get('[data-testid="borrow-set-debt-to-max"]').should('not.exist') // should only render after loaded
+    cy.get('[data-testid="borrow-set-debt-to-max"]', LOAD_TIMEOUT).click()
+    cy.get(`[data-testid="loan-preset-${BorrowPreset.Safe}"]`).click()
+    cy.get('[data-testid="helper-message-error"]', LOAD_TIMEOUT).should('contain.text', 'Debt is too high')
+    cy.get('[data-testid="borrow-set-debt-to-max"]').click() // set max again to fix error
+    cy.get('[data-testid="helper-message-error"]').should('not.exist')
+    assertLoanDetailsLoaded()
+
+    // create the loan, expect the onCreated to be called
     cy.get('[data-testid="create-loan-submit-button"]').click()
     cy.get('[data-testid="create-loan-submit-button"]').should('be.disabled')
     cy.get('[data-testid="create-loan-submit-button"]', LOAD_TIMEOUT).should('be.enabled')
