@@ -654,9 +654,9 @@ const createCreatePoolSlice = (
         produce((state) => {
           state.createPool.initialPrice = {
             ...get().createPool.initialPrice,
-            tokenAPrice: tokenAPrice,
-            tokenBPrice: tokenBPrice,
-            tokenCPrice: tokenCPrice,
+            [TOKEN_A]: tokenAPrice,
+            [TOKEN_B]: tokenBPrice,
+            [TOKEN_C]: tokenCPrice,
           }
         }),
       )
@@ -1184,7 +1184,7 @@ const createCreatePoolSlice = (
               coin.ngAssetType === NG_ASSET_TYPE.ORACLE ? coin.oracle.address : zeroAddress,
             )
             const oracleFunctions = coins.map((coin) =>
-              coin.ngAssetType === NG_ASSET_TYPE.ORACLE ? coin.oracle.functionName : '0x00000000',
+              coin.ngAssetType === NG_ASSET_TYPE.ORACLE ? coin.oracle.functionName : ORACLE_FUNCTION_NULL_VALUE,
             )
             const maExpTimeFormatted = Math.round(+maExpTime / 0.693)
 
