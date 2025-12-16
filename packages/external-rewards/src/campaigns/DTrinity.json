@@ -76,6 +76,30 @@
       "multiplier": "50x",
       "tags": ["points"],
       "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "null",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x249839821B7B673bC68a6d9bC74811fa33A8a49f",
+      "network": "ethereum",
+      "multiplier": "",
+      "tags": ["points"],
+      "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "null",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x4DE61e58f5f1E495e3BC58516268Bba25b5a57Fd",
+      "network": "ethereum",
+      "multiplier": "",
+      "tags": ["points"],
+      "lock": "false"
     }
   ]
 }
