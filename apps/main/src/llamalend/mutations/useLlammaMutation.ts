@@ -134,6 +134,7 @@ export function useLlammaMutation<TVariables extends object, TData extends Resul
       await onSuccess(data, receipt, variables, context)
     },
     onError: (error, variables, context) => {
+      console.error(`Error in mutation ${mutationKey}:`, error)
       logError(mutationKey, { error, variables, marketId: context?.market.id })
       notify(t`Transaction failed`, 'error') // hide the actual error message, it can be too long - display it in the form
     },

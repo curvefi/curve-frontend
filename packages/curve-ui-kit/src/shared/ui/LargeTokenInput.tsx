@@ -27,10 +27,10 @@ const { Spacing, FontSize, FontWeight, Sizing } = SizesAndSpaces
 
 type HelperMessageProps = {
   message: string | ReactNode
-  isError: boolean
+  isError?: boolean
 }
 
-const HelperMessage = ({ message, isError }: HelperMessageProps) => (
+export const HelperMessage = ({ message, isError }: HelperMessageProps) => (
   <Box
     sx={{
       display: 'flex',
@@ -49,6 +49,7 @@ const HelperMessage = ({ message, isError }: HelperMessageProps) => (
           color: (t) =>
             isError ? t.design.Text.TextColors.FilledFeedback.Warning.Primary : t.design.Text.TextColors.Tertiary,
         }}
+        data-testid={`helper-message-${isError ? 'error' : 'info'}`}
       >
         {message}
       </Typography>
@@ -77,7 +78,6 @@ const CHIPS_PRESETS: Record<ChipsPreset, InputChip[]> = {
 
 type BalanceTextFieldProps = {
   balance: Decimal | undefined
-  maxBalance?: Decimal
   isError: boolean
   disabled?: boolean
   /** Callback fired when the numeric value changes, can be a temporary non decimal value like "5." or "-" */
@@ -196,6 +196,9 @@ export type LargeTokenInputProps = {
 
   /** Optional props forwarded to the slider */
   sliderProps?: SliderInputProps<Decimal>['sliderProps']
+
+  /** Optional children to be rendered below the input */
+  children?: ReactNode
 }
 
 /**
@@ -253,6 +256,7 @@ export const LargeTokenInput = ({
   inputBalanceUsd,
   testId,
   sliderProps,
+  children,
 }: LargeTokenInputProps) => {
   const [percentage, setPercentage] = useState<Decimal | undefined>(undefined)
   const [balance, setBalance, cancelSetBalance] = useUniqueDebounce({
@@ -302,13 +306,6 @@ export const LargeTokenInput = ({
       )
     },
     [maxBalance?.balance, setBalance, cancelSetBalance, onBalance],
-  )
-
-  const handleChip = useCallback(
-    (chip: InputChip) => {
-      handleBalanceChange(chip.newBalance(maxBalance?.balance))
-    },
-    [handleBalanceChange, maxBalance?.balance],
   )
 
   const updatePercentageOnNewMaxBalance = useEffectEvent((newMaxBalance?: Decimal) => {
@@ -385,7 +382,7 @@ export const LargeTokenInput = ({
                     color="default"
                     clickable
                     disabled={disabled}
-                    onClick={() => handleChip(chip)}
+                    onClick={() => handleBalanceChange(chip.newBalance(maxBalance?.balance))}
                   ></Chip>
                 ))}
               </Stack>
@@ -399,7 +396,6 @@ export const LargeTokenInput = ({
             disabled={disabled}
             balance={balance}
             name={name}
-            maxBalance={maxBalance?.balance}
             isError={isError}
             onChange={handleBalanceChange}
           />
@@ -421,25 +417,15 @@ export const LargeTokenInput = ({
 
         {/** Fourth row showing optional slider for max balance. */}
         {showSlider && (
-          <Stack
-            sx={{
-              zIndex: 1, // required, otherwise the slider background and border don't show up
-            }}
-          >
+          <Stack sx={{ zIndex: 1 /* let slider background and border show up */ }}>
             <SliderInput
               disabled={disabled}
               value={percentage ?? `${MIN_PERCENTAGE}`}
               onChange={(value) => handlePercentageChange(value as Decimal)}
-              sliderProps={{
-                'data-rail-background': 'danger',
-                ...sliderProps,
-              }}
+              sliderProps={{ 'data-rail-background': 'danger', ...sliderProps }}
               min={MIN_PERCENTAGE}
               max={MAX_PERCENTAGE}
-              inputProps={{
-                variant: 'standard',
-                adornment: 'percentage',
-              }}
+              inputProps={{ variant: 'standard', adornment: 'percentage' }}
             />
           </Stack>
         )}
@@ -447,6 +433,7 @@ export const LargeTokenInput = ({
 
       {/** Fourth row containing optional helper (or error) message */}
       {message && <HelperMessage message={message} isError={isError} />}
+      {children}
     </Stack>
   )
 }

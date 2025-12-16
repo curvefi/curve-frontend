@@ -78,15 +78,18 @@ export const useRepayMutation = ({
 
       await waitForApproval({
         isApproved: () =>
-          fetchRepayIsApproved({
-            chainId,
-            marketId,
-            userAddress,
-            stateCollateral,
-            userCollateral,
-            userBorrowed,
-            isFull,
-          }),
+          fetchRepayIsApproved(
+            {
+              chainId,
+              marketId,
+              userAddress,
+              stateCollateral,
+              userCollateral,
+              userBorrowed,
+              isFull,
+            },
+            { staleTime: 0 },
+          ),
         onApprove: () => approveRepay(market, mutation),
         message: t`Approved repayment`,
         config,

@@ -9,7 +9,7 @@ import type { PartialRecord } from '@curvefi/prices-api/objects.util'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LlamaIcon } from '@ui-kit/shared/icons/LlamaIcon'
-import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
+import { HelperMessage, LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import type { LargeTokenInputProps } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import type { Query } from '@ui-kit/types/util'
@@ -86,7 +86,7 @@ export const LoanFormTokenInput = <
   )
 
   const errors = form.formState.errors as PartialRecord<FieldPath<TFieldValues>, Error>
-  const relatedMaxFieldError = max?.fieldName && errors[max.fieldName]
+  const relatedMaxFieldError = max?.data && max?.fieldName && errors[max.fieldName]
   const error = errors[name] || max?.error || balanceError || relatedMaxFieldError
   const value = form.getValues(name)
   return (
@@ -104,14 +104,19 @@ export const LoanFormTokenInput = <
       }
       balance={value}
       onBalance={useCallback(
-        (v?: Decimal) => form.setValue(name, v as FieldPathValue<TFieldValues, TFieldName>, setValueOptions),
-        [form, name],
+        (v?: Decimal) => {
+          form.setValue(name, v as FieldPathValue<TFieldValues, TFieldName>, setValueOptions)
+          if (max?.fieldName) void form.trigger(max.fieldName) // validate max field when balance changes
+        },
+        [form, max?.fieldName, name],
       )}
       isError={!!error}
-      message={error?.message ?? message}
+      message={error?.message}
       walletBalance={walletBalance}
       maxBalance={useMemo(() => max && { balance: max.data, chips: 'max' }, [max])}
       inputBalanceUsd={decimal(usdRate && usdRate * +(value ?? 0))}
-    />
+    >
+      {message && <HelperMessage message={message} />}
+    </LargeTokenInput>
   )
 }
