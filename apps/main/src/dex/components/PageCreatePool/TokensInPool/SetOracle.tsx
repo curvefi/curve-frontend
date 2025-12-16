@@ -63,7 +63,7 @@ const OracleInputs = ({ token, tokenId, title }: OracleInputProps) => {
   const updateOracleAddress = useStore((state) => state.createPool.updateOracleAddress)
   const updateOracleFunction = useStore((state) => state.createPool.updateOracleFunction)
 
-  const { isLoading, isSuccess, error, rate, decimals } = useOracleValidation({ token })
+  const { isLoading, isSuccess, error, rate, decimals } = useOracleValidation({ token, tokenId })
 
   const formattedRate = useMemo(() => {
     if (!isSuccess || !rate || decimals === undefined) return null
