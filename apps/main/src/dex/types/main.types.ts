@@ -274,10 +274,12 @@ export interface PoolAlert extends TooltipProps {
   isInformationOnly?: boolean
   isInformationOnlyAndShowInForm?: boolean
   isCloseOnTooltipOnly?: boolean
+  // banner message, related to the market situation
   banner?: Omit<BannerProps, 'children'> & { title: string }
   isPoolPageOnly?: boolean // Don't show the pools overview table
   address?: string
-  message: ReactNode
+  // action card message, related to action of user
+  message?: ReactNode
 }
 
 export type EstimatedGas = number | number[] | null

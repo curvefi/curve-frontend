@@ -209,6 +209,7 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
     <>
       {poolAlert?.banner && (
         <PoolAlertBanner
+          alertType={poolAlert.alertType}
           banner={poolAlert.banner}
           poolAlertBannerKey={notFalsy('pool-alert-banner-dismissed', params.network, params.poolIdOrAddress).join('-')}
         />
