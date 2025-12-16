@@ -41,3 +41,6 @@ export const useManageSoftLiquidation = useAlphaChannel
 
 /** Entire new app containing in-depth analyses for knowledgeable users */
 export const useAnalyticsApp = useAlphaChannel
+
+/** Phishing warning banner only shown in production */
+export const usePhishingBanner = () => defaultReleaseChannel === ReleaseChannel.Stable
