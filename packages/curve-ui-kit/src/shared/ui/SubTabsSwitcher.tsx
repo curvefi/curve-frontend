@@ -12,10 +12,10 @@ export type SubTabsSwitcherProps<T extends string | number> = {
  */
 export const SubTabsSwitcher = <T extends string | number>({ tabs, value, onChange }: SubTabsSwitcherProps<T>) => (
   <Box
-    // Pseudo-element keeps the divider visually aligned without padding shifts
     sx={(theme) => ({
       position: 'relative',
       width: '100%',
+      // Pseudo-element keeps the divider visually aligned without padding shifts
       '&::after': {
         content: '""',
         position: 'absolute',

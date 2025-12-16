@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react'
 import { styled } from 'styled-components'
-import LiquidityData from '@/lend/components/ChartOhlcWrapper/LiquidityData'
-import TradesData from '@/lend/components/ChartOhlcWrapper/TradesData'
 import { LendingMarketTokens } from '@/lend/hooks/useOhlcChartState'
 import useStore from '@/lend/store/useStore'
 import { ChainId } from '@/lend/types/lend.types'
 import Button from '@ui/Button/Button'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import { t } from '@ui-kit/lib/i18n'
+import LiquidityData from './LiquidityData'
+import TradesData from './TradesData'
 
 const MIN_HEIGHT = 330
 
