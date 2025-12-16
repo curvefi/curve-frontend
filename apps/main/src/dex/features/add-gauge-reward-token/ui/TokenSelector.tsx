@@ -9,7 +9,7 @@ import { FlexItemToken, SubTitle } from '@/dex/features/add-gauge-reward-token/u
 import useTokensMapper from '@/dex/hooks/useTokensMapper'
 import { ChainId, Token } from '@/dex/types/main.types'
 import { toTokenOption } from '@/dex/utils'
-import { useConnection } from '@ui-kit/features/connect-wallet'
+import { useCurve } from '@ui-kit/features/connect-wallet'
 import { TokenSelector as TokenSelectorUIKit } from '@ui-kit/features/select-token'
 import { t } from '@ui-kit/lib/i18n'
 
@@ -22,7 +22,7 @@ export const TokenSelector = ({
   poolId: string
   disabled: boolean
 }) => {
-  const { curveApi } = useConnection()
+  const { curveApi } = useCurve()
   const aliasesCrv = curveApi?.getNetworkConstants()?.ALIASES?.crv
   const { getValues, setValue, watch } = useFormContext<AddRewardFormValues>()
   const { data: network } = useNetworkByChain({ chainId })

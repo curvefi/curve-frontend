@@ -412,7 +412,7 @@ const LoanCreate = ({
             size="large"
             onClick={() => {
               setStateByKeyMarkets('marketDetailsView', 'user')
-              push(getLoanManagePathname(params, rOwmId, 'loan'))
+              push(getLoanManagePathname(params, rOwmId))
             }}
           >
             Manage loan
@@ -431,7 +431,7 @@ const LoanCreate = ({
           )}
           {steps && <Stepper steps={steps} />}
           {formStatus.isComplete && market && (
-            <LinkButton variant="filled" size="large" href={getLoanManagePathname(params, market.id, 'loan')}>
+            <LinkButton variant="filled" size="large" href={getLoanManagePathname(params, market.id)}>
               Manage loan
             </LinkButton>
           )}

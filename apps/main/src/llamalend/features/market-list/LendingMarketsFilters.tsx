@@ -5,6 +5,7 @@ import Chip from '@mui/material/Chip'
 import Grid from '@mui/material/Grid'
 import { t } from '@ui-kit/lib/i18n'
 import type { FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import { parseListFilter } from '@ui-kit/shared/ui/DataTable/filters'
 import { TableFilterColumn } from '@ui-kit/shared/ui/DataTable/TableFilterColumn'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
@@ -46,10 +47,20 @@ export const LendingMarketsFilters = ({
   data: LlamaMarket[]
   minLiquidity?: number
 }) => {
+  // Filter options are scoped to selected chains to prevent cross-chain filter data pollution.
+  // Example: When viewing Ethereum markets, Arbitrum market data should not influence filter options.
+  const selectedChains = parseListFilter(filterProps.columnFiltersById[LlamaMarketColumnId.Chain])
+  const markets = useMemo(
+    () => (selectedChains?.length ? data.filter((market) => selectedChains.includes(market.chain)) : data),
+    [data, selectedChains],
+  )
+
+  // Relies on data and not markets, because you might have a filter active for a token from a chain
+  // before you filtered out that said chain. This would lead to token symbols not loading.
   const tokens = useMemo(
     () =>
       keyBy(
-        data.flatMap((i) => [i.assets.collateral, i.assets.borrowed]),
+        data.flatMap((market) => [market.assets.collateral, market.assets.borrowed]),
         (i) => i.symbol,
       ),
     [data],
@@ -69,7 +80,7 @@ export const LendingMarketsFilters = ({
           selectedItemRender={(symbol) => <SelectedToken symbol={symbol} tokens={tokens} />}
           defaultText={t`All`}
           defaultTextMobile={t`All Collateral Tokens`}
-          data={data}
+          data={markets}
           {...filterProps}
         />
       </TableFilterColumn>
@@ -82,7 +93,7 @@ export const LendingMarketsFilters = ({
           selectedItemRender={(symbol) => <SelectedToken symbol={symbol} tokens={tokens} />}
           defaultText={t`All`}
           defaultTextMobile={t`All Debt Tokens`}
-          data={data}
+          data={markets}
           {...filterProps}
         />
       </TableFilterColumn>
@@ -93,7 +104,7 @@ export const LendingMarketsFilters = ({
           field={LlamaMarketColumnId.Tvl}
           title={t`TVL`}
           format={formatUsd}
-          data={data}
+          data={markets}
           adornment="dollar"
           scale="power"
           {...filterProps}
@@ -106,7 +117,7 @@ export const LendingMarketsFilters = ({
           field={LlamaMarketColumnId.LiquidityUsd}
           title={t`Liquidity`}
           format={formatUsd}
-          data={data}
+          data={markets}
           adornment="dollar"
           scale="power"
           {...filterProps}
@@ -119,7 +130,7 @@ export const LendingMarketsFilters = ({
           field={LlamaMarketColumnId.UtilizationPercent}
           title={t`Utilization`}
           format={formatPercent}
-          data={data}
+          data={markets}
           adornment="percentage"
           max={100}
           {...filterProps}

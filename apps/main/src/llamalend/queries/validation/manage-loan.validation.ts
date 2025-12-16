@@ -1,14 +1,10 @@
 import BigNumber from 'bignumber.js'
 import { enforce, group, test } from 'vest'
-import {
-  validateIsFull,
-  validateUserBorrowed,
-  validateUserCollateral,
-} from '@/llamalend/queries/validation/borrow-fields.validation'
+import { validateIsFull, validateUserCollateral } from '@/llamalend/queries/validation/borrow-fields.validation'
 import type {
   CollateralHealthParams,
   CollateralParams,
-  RepayFromCollateralHealthParams,
+  RepayFromCollateralIsFullParams,
   RepayFromCollateralParams,
 } from '@/llamalend/queries/validation/manage-loan.types'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
@@ -24,6 +20,7 @@ export type RepayForm = FieldsOf<{
   stateCollateral: Decimal
   userCollateral: Decimal
   userBorrowed: Decimal
+  isFull: boolean
 }>
 
 const validateRepayCollateralField = (field: 'stateCollateral' | 'userCollateral', value: Decimal | null | undefined) =>
@@ -94,10 +91,11 @@ export const repayFormValidationSuite = createValidationSuite((params: RepayForm
   validateRepayCollateralField('stateCollateral', params.stateCollateral)
   validateRepayBorrowedField(params.userBorrowed)
   validateRepayHasValue(params.stateCollateral, params.userCollateral, params.userBorrowed)
+  validateIsFull(params.isFull)
 })
 
 export const repayFromCollateralIsFullValidationSuite = createValidationSuite(
-  ({ isFull, ...params }: RepayFromCollateralHealthParams) => {
+  ({ isFull, ...params }: RepayFromCollateralIsFullParams) => {
     repayFromCollateralValidationGroup(params)
     group('isFull', () => validateIsFull(isFull))
   },

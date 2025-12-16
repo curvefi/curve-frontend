@@ -154,6 +154,18 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
       ),
     })
 
+    const uspdioAlert = (): PoolAlert => ({
+      alertType: 'danger',
+      isDisableDeposit: true,
+      isInformationOnly: true,
+      isCloseOnTooltipOnly: true,
+      message: (
+        <MessageWrapper>
+          <div>USPD has been exploited. This pool has been disabled to prevent new users from loss of funds.</div>
+        </MessageWrapper>
+      ),
+    })
+
     // Avalanche
     const atricryptoAlert = (): PoolAlert => ({
       alertType: 'info',
@@ -207,6 +219,21 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
       ),
     })
 
+    // Pool creator configured a price feed instead of redemption rates for stored_rates, leading to users losing funds when swapping.
+    const monadEthConverterAlert = (): PoolAlert => ({
+      alertType: 'danger',
+      isDisableDeposit: true,
+      isDisableSwap: true,
+      isInformationOnly: true,
+      isInformationOnlyAndShowInForm: true,
+      isCloseOnTooltipOnly: true,
+      message: (
+        <MessageWrapper>
+          <div>This pool has been badly configured and is in withdraw only mode.</div>
+        </MessageWrapper>
+      ),
+    })
+
     // prettier-ignore
     const alerts: { [poolAddress: string]: PoolAlert } = {
       // ethereum
@@ -229,12 +256,17 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
       '0x83f24023d15d835a213df24fd309c47dab5beb32': yieldbasisAlert(),
       '0xf1f435b05d255a5dbde37333c0f61da6f69c6127': yieldbasisAlert(),
       '0xd9ff8396554a0d18b2cfbec53e1979b7ecce8373': yieldbasisAlert(),
+      '0x06cf5f9b93e9fcfdb33d6b3791eb152567cd8d36': uspdioAlert(),
+
 
       // arbitrum
       '0x960ea3e3c7fb317332d990873d354e18d7645590': possibleVyperExploitedAlert(), // tricrypto
       
       // avalanche
       '0xb755b949c126c04e0348dd881a5cf55d424742b2': atricryptoAlert(),
+
+      // monad
+      '0x2fd13b49f970e8c6d89283056c1c6281214b7eb6': monadEthConverterAlert()
     }
 
     if (poolAddress) {

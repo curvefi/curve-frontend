@@ -1,15 +1,6 @@
 import { FutureRates } from '@/lend/types/lend.types'
 
 export type DetailInfoTypes = 'user' | 'market'
-export type FormType = 'loan' | 'collateral' | 'leverage'
-export type LoanFormType =
-  | 'loan-increase'
-  | 'loan-decrease'
-  | 'loan-liquidate'
-  | 'loan-repay-wallet'
-  | 'loan-repay-collateral'
-export type CollateralFormType = 'collateral-increase' | 'collateral-decrease'
-export type LeverageFormType = 'leverage-borrow-more'
 
 export type FormStatus = {
   isApproved: boolean

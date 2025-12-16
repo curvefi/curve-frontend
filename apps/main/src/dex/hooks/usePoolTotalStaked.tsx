@@ -3,13 +3,13 @@ import { useCallback, useEffect } from 'react'
 import useStore from '@/dex/store/useStore'
 import { PoolDataCacheOrApi, Provider } from '@/dex/types/main.types'
 import { isValidAddress } from '@/dex/utils'
-import { useConnection, useWallet } from '@ui-kit/features/connect-wallet'
+import { useCurve, useWallet } from '@ui-kit/features/connect-wallet'
 import dayjs from '@ui-kit/lib/dayjs'
 import { useNetworks } from '../entities/networks'
 
 const usePoolTotalStaked = (poolDataCacheOrApi: PoolDataCacheOrApi) => {
   const { address, lpToken, gauge } = poolDataCacheOrApi?.pool ?? {}
-  const { curveApi = null } = useConnection()
+  const { curveApi = null } = useCurve()
   const { provider: walletProvider } = useWallet()
   const staked = useStore((state) => state.pools.stakedMapper[address])
   const setStateByActiveKey = useStore((state) => state.pools.setStateByActiveKey)

@@ -16,11 +16,11 @@ import Icon from '@ui/Icon/Icon'
 import IconButton from '@ui/IconButton'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import Switch from '@ui/Switch/Switch'
-import { isLoading, useConnection } from '@ui-kit/features/connect-wallet'
+import { isLoading, useCurve } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 
 export const DeployGauge = (props: NetworkUrlParams) => {
-  const { curveApi = null, connectState } = useConnection()
+  const { curveApi = null, connectState } = useCurve()
   const chainId = useChainId(props.network)
   const {
     data: { isLite = false },

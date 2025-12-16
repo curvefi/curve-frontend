@@ -120,6 +120,8 @@ const LoanManage = ({ curve, isReady, llamma, llammaId, params, rChainId, rColla
               enabled={isReady}
               onRepaid={async () => {}}
               leverageEnabled={leverageEnabled}
+              fromBorrowed
+              fromWallet
             />
           )}
           {(subTab === 'loan-repay-collateral' || subTab === 'loan-decrease') && llamma && (
@@ -130,6 +132,7 @@ const LoanManage = ({ curve, isReady, llamma, llammaId, params, rChainId, rColla
               enabled={isReady}
               onRepaid={async () => {}}
               leverageEnabled={leverageEnabled}
+              fromCollateral
             />
           )}
           {subTab === 'loan-liquidate' && <LoanLiquidate {...formProps} params={params} />}

@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
 import { useForm } from 'react-hook-form'
-import { useAccount } from 'wagmi'
+import { useConnection } from 'wagmi'
 import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
 import { getTokens } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
@@ -15,8 +15,8 @@ import { useRepayIsFull } from '@/llamalend/queries/repay/repay-is-full.query'
 import { useRepayPriceImpact } from '@/llamalend/queries/repay/repay-price-impact.query'
 import { useRepayPrices } from '@/llamalend/queries/repay/repay-prices.query'
 import { useRepayRouteImage } from '@/llamalend/queries/repay/repay-route-image.query'
-import type { RepayFromCollateralParams } from '@/llamalend/queries/validation/manage-loan.types'
-import { repayFormValidationSuite, type RepayForm } from '@/llamalend/queries/validation/manage-loan.validation'
+import type { RepayFromCollateralIsFullParams } from '@/llamalend/queries/validation/manage-loan.types'
+import { type RepayForm, repayFormValidationSuite } from '@/llamalend/queries/validation/manage-loan.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { vestResolver } from '@hookform/resolvers/vest'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
@@ -38,10 +38,10 @@ export const useRepayForm = <ChainId extends LlamaChainId, NetworkName extends L
   network: { id: LlamaNetworkId; chainId: ChainId }
   networks: NetworkDict<ChainId>
   enabled?: boolean
-  onRepaid: NonNullable<RepayOptions['onRepaid']>
+  onRepaid?: NonNullable<RepayOptions['onRepaid']>
   leverageEnabled: boolean
 }) => {
-  const { address: userAddress } = useAccount()
+  const { address: userAddress } = useConnection()
   const { chainId } = network
   const marketId = market?.id
 
@@ -56,6 +56,7 @@ export const useRepayForm = <ChainId extends LlamaChainId, NetworkName extends L
       stateCollateral: undefined,
       userCollateral: undefined,
       userBorrowed: undefined,
+      isFull: false,
     },
   })
 
@@ -63,16 +64,24 @@ export const useRepayForm = <ChainId extends LlamaChainId, NetworkName extends L
 
   const params = useDebouncedValue(
     useMemo(
-      () =>
-        ({
-          chainId,
-          marketId,
-          userAddress,
-          stateCollateral: values.stateCollateral,
-          userCollateral: values.userCollateral,
-          userBorrowed: values.userBorrowed,
-        }) as RepayFromCollateralParams<ChainId>,
-      [chainId, marketId, userAddress, values.stateCollateral, values.userCollateral, values.userBorrowed],
+      (): RepayFromCollateralIsFullParams<ChainId> => ({
+        chainId,
+        marketId,
+        userAddress,
+        stateCollateral: values.stateCollateral,
+        userCollateral: values.userCollateral,
+        userBorrowed: values.userBorrowed,
+        isFull: values.isFull,
+      }),
+      [
+        chainId,
+        marketId,
+        userAddress,
+        values.stateCollateral,
+        values.userCollateral,
+        values.userBorrowed,
+        values.isFull,
+      ],
     ),
   )
 
@@ -99,9 +108,9 @@ export const useRepayForm = <ChainId extends LlamaChainId, NetworkName extends L
 
   const formErrors = useFormErrors(form.formState)
 
+  useEffect(() => form.setValue('isFull', isFull.data, { shouldValidate: true }), [form, isFull.data])
+
   return {
-    chainId,
-    marketId,
     form,
     values,
     params,
@@ -111,7 +120,7 @@ export const useRepayForm = <ChainId extends LlamaChainId, NetworkName extends L
     bands,
     expectedBorrowed,
     health,
-    isAvailable,
+    isDisabled: !isAvailable.data || formErrors.length > 0,
     isFull,
     priceImpact,
     prices,

@@ -1,5 +1,3 @@
-// Various Typescript utility types, useful everywhere!
-
 /**
  * Creates a deep partial type that makes all properties optional recursively,
  * while preserving function types as-is
@@ -34,3 +32,9 @@ export type DeepPartial<T> = {
  * ```
  */
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>
+
+/**
+ * A generic type representing the result of a query operation.
+ * @template T - The type of the data returned by the query.
+ */
+export type Query<T> = { data: T | undefined; isLoading: boolean; error: Error | null | undefined }

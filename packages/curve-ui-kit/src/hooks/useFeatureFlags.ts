@@ -38,3 +38,6 @@ export const useNewBandsChart = useBetaChannel
 
 /** New card for managing soft liquidations */
 export const useManageSoftLiquidation = useAlphaChannel
+
+/** Entire new app containing in-depth analyses for knowledgeable users */
+export const useAnalyticsApp = useAlphaChannel
