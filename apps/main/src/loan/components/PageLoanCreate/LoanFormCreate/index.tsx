@@ -17,7 +17,7 @@ import { DEFAULT_FORM_STATUS } from '@/loan/store/createLoanCollateralIncreaseSl
 import useStore from '@/loan/store/useStore'
 import { CollateralAlert, LlamaApi, Llamma } from '@/loan/types/loan.types'
 import { curveProps } from '@/loan/utils/helpers'
-import { hasV1Deleverage } from '@/loan/utils/leverage'
+import { hasDeleverage } from '@/loan/utils/leverage'
 import { getStepStatus, getTokenName } from '@/loan/utils/utilsLoan'
 import { getLoanManagePathname } from '@/loan/utils/utilsRouter'
 import Accordion from '@ui/Accordion'
@@ -439,7 +439,7 @@ const LoanCreate = ({
           <Box grid gridRowGap={2}>
             <p>{t`You can leverage your collateral up to 9x. This has the effect of repeat trading crvUSD to collateral and depositing to maximize your collateral position. Essentially, all borrowed crvUSD is utilized to purchase more collateral.`}</p>
             <p>{t`Be careful, if the collateral price dips, you would need to repay the entire amount to reclaim your initial position.`}</p>
-            {!hasV1Deleverage(llamma) && (
+            {!hasDeleverage(llamma) && (
               <p>{t`WARNING: The corresponding deleverage button is also not yet available.`}</p>
             )}
           </Box>
