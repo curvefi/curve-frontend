@@ -106,6 +106,10 @@ const meta: Meta<typeof LargeTokenInput> = {
       control: 'number',
       description: 'Optional dollar value of the given input balance',
     },
+    children: {
+      control: 'object',
+      description: 'Optional children to be rendered below the input',
+    },
   },
   args: {
     walletBalance: TOKEN_OPTIONS[0].walletBalance,
@@ -228,6 +232,34 @@ export const WithReactNodeMessage: Story = {
     docs: {
       description: {
         story: 'Large token input with a complex message composed of multiple typography elements',
+      },
+    },
+  },
+}
+
+export const WithChildren: Story = {
+  args: {
+    children: (
+      <Stack
+        spacing={1}
+        sx={{
+          padding: 2,
+          backgroundColor: (t) => t.design.Layer[2].Fill,
+        }}
+      >
+        <Typography variant="bodyMBold">Additional Content</Typography>
+        <Typography variant="bodySRegular" color="textSecondary">
+          The children prop allows you to render custom content below the input. This can be useful for displaying
+          additional information, actions, or any other custom UI elements.
+        </Typography>
+      </Stack>
+    ),
+  },
+  render: (args) => <LargeTokenInputWithTokenSelector {...args} />,
+  parameters: {
+    docs: {
+      description: {
+        story: 'Large token input with custom children content rendered below the input',
       },
     },
   },
