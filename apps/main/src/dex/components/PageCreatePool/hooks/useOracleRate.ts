@@ -52,7 +52,7 @@ export function useOracleRate({ address, functionName, enabled = true }: UseOrac
 
   return {
     rate: rate?.toString(),
-    decimals: decimals !== undefined ? Number(decimals) : undefined,
+    decimals,
     isLoading,
     isSuccess,
     error,
