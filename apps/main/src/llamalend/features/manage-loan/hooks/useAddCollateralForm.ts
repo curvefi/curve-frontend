@@ -1,14 +1,15 @@
 import { useEffect, useMemo } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
 import { useForm } from 'react-hook-form'
-import { useAccount } from 'wagmi'
+import { useConnection } from 'wagmi'
+import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
 import { getTokens } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, LlamaNetwork, NetworkDict } from '@/llamalend/llamalend.types'
 import { type AddCollateralOptions, useAddCollateralMutation } from '@/llamalend/mutations/add-collateral.mutation'
 import { useAddCollateralIsApproved } from '@/llamalend/queries/add-collateral/add-collateral-approved.query'
 import { useAddCollateralBands } from '@/llamalend/queries/add-collateral/add-collateral-bands.query'
 import { useAddCollateralEstimateGas } from '@/llamalend/queries/add-collateral/add-collateral-gas-estimate.query'
-import { useAddCollateralHealth } from '@/llamalend/queries/add-collateral/add-collateral-health.query'
+import { getAddCollateralHealthOptions } from '@/llamalend/queries/add-collateral/add-collateral-health.query'
 import { useAddCollateralPrices } from '@/llamalend/queries/add-collateral/add-collateral-prices.query'
 import type { CollateralParams } from '@/llamalend/queries/validation/manage-loan.types'
 import {
@@ -37,7 +38,7 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
   enabled?: boolean
   onAdded: NonNullable<AddCollateralOptions['onAdded']>
 }) => {
-  const { address: userAddress } = useAccount()
+  const { address: userAddress } = useConnection()
   const { chainId } = network
   const marketId = market?.id
 
@@ -81,8 +82,7 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
   useCallbackAfterFormUpdate(form, action.reset)
 
   const bands = useAddCollateralBands(params, enabled)
-  const healthFull = useAddCollateralHealth({ ...params, isFull: true }, enabled)
-  const healthNotFull = useAddCollateralHealth({ ...params, isFull: false }, enabled)
+  const health = useHealthQueries((isFull) => getAddCollateralHealthOptions({ ...params, isFull }, enabled))
   const prices = useAddCollateralPrices(params, enabled)
   const gas = useAddCollateralEstimateGas(networks, params, enabled)
 
@@ -96,8 +96,7 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
     onSubmit: form.handleSubmit(onSubmit),
     action,
     bands,
-    healthFull,
-    healthNotFull,
+    health,
     prices,
     gas,
     isApproved,

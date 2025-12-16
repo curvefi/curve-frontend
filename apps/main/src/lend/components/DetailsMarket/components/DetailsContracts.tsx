@@ -2,12 +2,16 @@ import { ReactNode } from 'react'
 import { zeroAddress } from 'viem'
 import ChipInactive from '@/lend/components/ChipInactive'
 import DetailInfoAddressLookup from '@/lend/components/DetailsMarket/components/DetailInfoAddressLookup'
-import { SubTitle } from '@/lend/components/DetailsMarket/styles'
 import TokenLabel from '@/lend/components/TokenLabel'
 import { PageContentProps } from '@/lend/types/lend.types'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
 import Box from '@ui/Box'
 import Chip from '@ui/Typography/Chip'
 import { t } from '@ui-kit/lib/i18n'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+
+const { Spacing } = SizesAndSpaces
 
 type ContractItems = { label: ReactNode; address: string | undefined; invalidText?: string }[]
 
@@ -31,8 +35,8 @@ const DetailsContracts = ({ rChainId, market }: Pick<PageContentProps, 'rChainId
     ]
 
   return (
-    <>
-      <SubTitle>{t`Contracts`}</SubTitle>
+    <Stack gap={Spacing.xs}>
+      <Typography variant="headingXsBold">{t`Contracts`}</Typography>
       <Box grid gridRowGap={3}>
         {contracts.map((contracts, idx) => (
           <div key={`contracts-${idx}`}>
@@ -61,7 +65,7 @@ const DetailsContracts = ({ rChainId, market }: Pick<PageContentProps, 'rChainId
           </div>
         ))}
       </Box>
-    </>
+    </Stack>
   )
 }
 

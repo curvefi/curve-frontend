@@ -168,7 +168,7 @@ const ActionInfo = ({
                 color={error ? 'error' : (valueColor ?? 'textPrimary')}
                 component="div"
               >
-                {loading ? (typeof loading === 'string' ? loading : MOCK_SKELETON) : value}
+                {loading ? (typeof loading === 'string' ? loading : MOCK_SKELETON) : error ? '' : value}
               </Typography>
             </WithSkeleton>
 
@@ -176,14 +176,14 @@ const ActionInfo = ({
           </Stack>
         </Tooltip>
 
-        {error && (
+        {error && !loading && (
           <Tooltip title={errorMessage} placement="top">
             <ExclamationTriangleIcon fontSize="small" color="error" />
           </Tooltip>
         )}
 
         {copyValue && (
-          <IconButton size="extraSmall" title={copyValue} onClick={copyAndShowSnackbar} color="primary">
+          <IconButton size="extraSmall" title={copyValue} onClick={copyAndShowSnackbar}>
             <ContentCopy />
           </IconButton>
         )}
@@ -195,7 +195,6 @@ const ActionInfo = ({
             target="_blank"
             rel="noopener"
             size="extraSmall"
-            color="primary"
           >
             <CallMade />
           </IconButton>

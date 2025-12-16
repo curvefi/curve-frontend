@@ -6,6 +6,7 @@ import type { FormValues, LoadMaxAmount } from '@/dex/components/PagePool/Deposi
 import { FieldsWrapper } from '@/dex/components/PagePool/styles'
 import type { TransferProps } from '@/dex/components/PagePool/types'
 import { useNetworkByChain } from '@/dex/entities/networks'
+import { usePoolIdByAddressOrId } from '@/dex/hooks/usePoolIdByAddressOrId'
 import useStore from '@/dex/store/useStore'
 import type { CurrencyReserves } from '@/dex/types/main.types'
 import { getChainPoolIdActiveKey } from '@/dex/utils'
@@ -60,7 +61,7 @@ const FieldsDeposit = ({
   blockchainId,
   poolData,
   poolDataCacheOrApi,
-  routerParams: { rChainId, rPoolId },
+  routerParams: { rChainId, rPoolIdOrAddress },
   tokensMapper,
   userPoolBalances,
   updateFormValues,
@@ -80,7 +81,8 @@ const FieldsDeposit = ({
   const balancesLoading = useStore((state) => state.user.walletBalancesLoading)
   const maxLoading = useStore((state) => state.poolDeposit.maxLoading)
   const setPoolIsWrapped = useStore((state) => state.pools.setPoolIsWrapped)
-  const reserves = useStore((state) => state.pools.currencyReserves[getChainPoolIdActiveKey(rChainId, rPoolId)])
+  const poolId = usePoolIdByAddressOrId({ chainId: rChainId, poolIdOrAddress: rPoolIdOrAddress })
+  const reserves = useStore((state) => state.pools.currencyReserves[getChainPoolIdActiveKey(rChainId, poolId)])
   const isBalancedAmounts = formValues.isBalancedAmounts
 
   const handleFormAmountChange = useCallback(

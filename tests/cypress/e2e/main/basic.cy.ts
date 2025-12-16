@@ -1,5 +1,5 @@
 import { oneOf } from '@cy/support/generators'
-import { LOAD_TIMEOUT } from '@cy/support/ui'
+import { API_LOAD_TIMEOUT, LOAD_TIMEOUT } from '@cy/support/ui'
 
 describe('Basic Access Test', () => {
   const path = oneOf('/', '/dex')
@@ -37,10 +37,10 @@ describe('Basic Access Test', () => {
   })
 
   it('should load for lite networks', () => {
-    cy.visit('/dex/corn/pools')
+    cy.visitWithoutTestConnector('dex/corn/pools')
     cy.title(LOAD_TIMEOUT).should('equal', 'Pools - Curve')
     cy.url().should('include', '/dex/corn/pools')
-    cy.contains(/LBTC\/wBTCN/i, LOAD_TIMEOUT).should('be.visible')
+    cy.contains(/LBTC\/wBTCN/i, API_LOAD_TIMEOUT).should('be.visible')
   })
 
   it('shows 404 on /dex/:network/pools/404', () => {

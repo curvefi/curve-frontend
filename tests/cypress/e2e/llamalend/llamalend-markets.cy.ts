@@ -25,8 +25,8 @@ import {
 import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
 import { MarketRateType } from '@ui-kit/types/market'
 
-const wstEthMarket = '0x37417B2238AA52D0DD2D6252d989E728e8f706e4' as const
-const sfrxEthMarket = '0x136e783846ef68C8Bd00a3369F787dF8d683a696' as const
+const wstEthMarket = '0x100dAa78fC509Db39Ef7D04DE0c1ABD299f4C6CE' as const
+const sfrxEthMarket = '0x8472A9A7632b173c8Cf3a86D3afec50c35548e76' as const
 
 describe(`LlamaLend Markets`, () => {
   let breakpoint: Breakpoint

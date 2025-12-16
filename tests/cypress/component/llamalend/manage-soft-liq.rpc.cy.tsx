@@ -3,9 +3,9 @@ import { prefetchMarkets } from '@/lend/entities/chain/chain-query'
 import { ManageSoftLiquidation } from '@/llamalend/features/manage-soft-liquidation'
 import networks from '@/loan/networks'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
-import { createTestWagmiConfigFromVNet, forkVirtualTestnet } from '@cy/support/helpers/tenderly'
+import { createTenderlyWagmiConfigFromVNet, forkVirtualTestnet } from '@cy/support/helpers/tenderly'
 import Skeleton from '@mui/material/Skeleton'
-import { ConnectionProvider, useConnection } from '@ui-kit/features/connect-wallet'
+import { CurveProvider, useCurve } from '@ui-kit/features/connect-wallet'
 import { Chain } from '@ui-kit/utils'
 
 describe('Manage soft liquidation', () => {
@@ -19,7 +19,7 @@ describe('Manage soft liquidation', () => {
   }))
 
   const TestComponent = () => {
-    const { isHydrated, llamaApi } = useConnection()
+    const { isHydrated, llamaApi } = useCurve()
     const market = useMemo(() => isHydrated && llamaApi?.getMintMarket(MARKET_ID), [isHydrated, llamaApi])
     return market ? (
       <ManageSoftLiquidation marketId={MARKET_ID} chainId={Chain.Ethereum} network={network} />
@@ -29,15 +29,18 @@ describe('Manage soft liquidation', () => {
   }
 
   const TestComponentWrapper = () => (
-    <ComponentTestWrapper config={createTestWagmiConfigFromVNet({ vnet: getVirtualNetwork(), privateKey })} autoConnect>
-      <ConnectionProvider
+    <ComponentTestWrapper
+      config={createTenderlyWagmiConfigFromVNet({ vnet: getVirtualNetwork(), privateKey })}
+      autoConnect
+    >
+      <CurveProvider
         app="llamalend"
         network={network}
         onChainUnavailable={console.error}
         hydrate={{ llamalend: () => prefetchMarkets({}) }}
       >
         <TestComponent />
-      </ConnectionProvider>
+      </CurveProvider>
     </ComponentTestWrapper>
   )
 

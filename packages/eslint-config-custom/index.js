@@ -1,6 +1,7 @@
 module.exports = {
   extends: [
     'eslint:recommended',
+    'plugin:@tanstack/query/recommended',
     'plugin:@typescript-eslint/recommended',
     'plugin:react/recommended',
     'plugin:react-hooks/recommended',
@@ -31,6 +32,11 @@ module.exports = {
               .map((targetApp) => `apps/main/src/${targetApp}`),
             from: `apps/main/src/${importedApp}`, // from ==> the app imported
           })),
+          // forbid `wagmi` external dependency package imports, except from packages/curve-ui-kit/src/features/connect-wallet/lib/wagmi
+          {
+            target: ['apps/**', 'packages/**', '!packages/curve-ui-kit/src/features/connect-wallet/lib/wagmi/**'],
+            from: 'wagmi',
+          },
         ],
       },
     ],

@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { RCCrvUSDLogoXS, RCScrvUSDLogoXS } from 'ui/src/images'
-import { useAccount } from 'wagmi'
+import { useConnection } from 'wagmi'
 import { isLoading } from '@/loan/components/PageCrvUsdStaking/utils'
 import { useScrvUsdUserBalances } from '@/loan/entities/scrvusd-userBalances'
 import useStore from '@/loan/store/useStore'
@@ -17,7 +17,7 @@ import {
 } from './styles'
 
 const WithdrawModule = () => {
-  const { address } = useAccount()
+  const { address } = useConnection()
   const { data: userScrvUsdBalance, isLoading: userScrvUsdBalanceLoading } = useScrvUsdUserBalances({
     userAddress: address,
   })

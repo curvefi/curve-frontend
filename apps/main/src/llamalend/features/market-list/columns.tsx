@@ -78,7 +78,8 @@ export const LLAMA_MARKET_COLUMNS = [
     cell: MarketTitleCell,
     filterFn: filterByText(
       'controllerAddress',
-      'address',
+      'ammAddress',
+      'vaultAddress',
       'assets.borrowed.address',
       'assets.borrowed.symbol',
       'assets.collateral.address',
@@ -228,5 +229,3 @@ export const LLAMA_MARKET_COLUMNS = [
 export const DEFAULT_SORT = [{ id: LlamaMarketColumnId.Tvl, desc: true }]
 export const DEFAULT_SORT_BORROW = [{ id: LlamaMarketColumnId.UserHealth, desc: false }]
 export const DEFAULT_SORT_SUPPLY = [{ id: LlamaMarketColumnId.UserDeposited, desc: true }]
-
-export const MARKET_CUTOFF_DATE = new Date('2025-11-12T00:00:00Z') // November 12, 2025

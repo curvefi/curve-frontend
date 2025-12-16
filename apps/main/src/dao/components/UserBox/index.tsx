@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 import { styled } from 'styled-components'
-import { useAccount, useChainId } from 'wagmi'
+import { useChainId, useConnection } from 'wagmi'
 import { ConnectEthereum } from '@/dao/components/ConnectEthereum'
 import { ActiveProposal, SnapshotVotingPower } from '@/dao/types/dao.types'
 import Box from '@ui/Box'
@@ -18,7 +18,7 @@ type Props = {
 }
 
 const UserBox = ({ className, children, votingPower, snapshotVotingPower, activeProposal }: Props) => {
-  const { address } = useAccount()
+  const { address } = useConnection()
   const chainId = useChainId()
   const { connectState, connect } = useWallet()
 

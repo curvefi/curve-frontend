@@ -1,20 +1,28 @@
 import { getLlamaMarket } from '@/llamalend/llama.utils'
+import { createLoanExpectedCollateralQueryKey } from '@/llamalend/queries/create-loan/create-loan-expected-collateral.query'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
-import type { BorrowFormQuery, BorrowFormQueryParams } from '../../features/borrow/types'
+import type { BorrowDebtParams, BorrowDebtQuery } from '../../features/borrow/types'
 import { borrowQueryValidationSuite } from '../validation/borrow.validation'
 
 export const { useQuery: useCreateLoanRouteImage } = queryFactory({
-  queryKey: ({ chainId, marketId, userBorrowed = '0', debt = '0' }: BorrowFormQueryParams) =>
-    [...rootKeys.market({ chainId, marketId }), 'createLoanRouteImage', { userBorrowed }, { debt }] as const,
-  queryFn: async ({ marketId, userBorrowed = '0', debt = '0' }: BorrowFormQuery): Promise<string | undefined> => {
+  queryKey: ({ chainId, marketId, userBorrowed = '0', debt = '0', maxDebt }: BorrowDebtParams) =>
+    [
+      ...rootKeys.market({ chainId, marketId }),
+      'createLoanRouteImage',
+      { userBorrowed },
+      { debt },
+      { maxDebt },
+    ] as const,
+  queryFn: async ({ marketId, userBorrowed = '0', debt = '0' }: BorrowDebtQuery) => {
     const market = getLlamaMarket(marketId)
     return market instanceof LendMarketTemplate
       ? await market.leverage.createLoanRouteImage(userBorrowed, debt)
       : market.leverageV2.hasLeverage()
         ? await market.leverageV2.createLoanRouteImage(userBorrowed, debt)
-        : undefined
+        : null
   },
   staleTime: '1m',
-  validationSuite: borrowQueryValidationSuite,
+  validationSuite: borrowQueryValidationSuite({ debtRequired: true }),
+  dependencies: (params) => [createLoanExpectedCollateralQueryKey(params)],
 })

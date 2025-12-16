@@ -8,7 +8,7 @@ import {
 } from '../validation/manage-loan.types'
 import { repayFromCollateralIsFullValidationSuite } from '../validation/manage-loan.validation'
 
-export const { useQuery: useRepayHealth } = queryFactory({
+export const { getQueryOptions: getRepayHealthOptions } = queryFactory({
   queryKey: ({
     chainId,
     marketId,

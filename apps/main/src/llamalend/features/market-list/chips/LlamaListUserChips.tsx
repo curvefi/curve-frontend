@@ -1,4 +1,4 @@
-import { useAccount } from 'wagmi'
+import { useConnection } from 'wagmi'
 import type { LlamaMarketsResult } from '@/llamalend/queries/market-list/llama-markets'
 import PersonIcon from '@mui/icons-material/Person'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
@@ -18,7 +18,7 @@ export const LlamaListUserChips = ({
   userHasPositions: LlamaMarketsResult['userHasPositions'] | undefined
   hasFavorites: boolean | undefined
 } & FilterProps<LlamaMarketColumnId>) => {
-  const { address } = useAccount()
+  const { address } = useConnection()
   const isConnected = Boolean(userHasPositions && address)
   const [myMarkets, toggleMyMarkets] = useToggleFilter(LlamaMarketColumnId.UserHasPositions, props)
   const [favorites, toggleFavorites] = useToggleFilter(LlamaMarketColumnId.IsFavorite, props)

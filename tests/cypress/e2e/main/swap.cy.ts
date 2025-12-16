@@ -5,7 +5,7 @@ describe('DEX Swap', () => {
   const TO_ETH = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
 
   it('shows quotes via router API when disconnected', () => {
-    cy.visit(`/dex/ethereum/swap?from=${FROM_USDT}&to=${TO_ETH}`)
+    cy.visitWithoutTestConnector(`dex/ethereum/swap?from=${FROM_USDT}&to=${TO_ETH}`)
     cy.get('[data-testid="btn-connect-wallet"]', LOAD_TIMEOUT).should('be.enabled')
     cy.get(`[data-testid="token-icon-${FROM_USDT}"]`, LOAD_TIMEOUT).should('be.visible')
 

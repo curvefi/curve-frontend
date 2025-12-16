@@ -4,7 +4,7 @@ import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { type RepayFromCollateralParams, type RepayFromCollateralQuery } from '../validation/manage-loan.types'
 import { repayFromCollateralValidationSuite } from '../validation/manage-loan.validation'
 
-export const { useQuery: useRepayIsFull } = queryFactory({
+export const { useQuery: useRepayIsFull, queryKey: repayIsFullQueryKey } = queryFactory({
   queryKey: ({
     chainId,
     marketId,

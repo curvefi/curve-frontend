@@ -1,7 +1,7 @@
 import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
-import type { BorrowFormQuery, BorrowFormQueryParams } from '../../features/borrow/types'
+import type { BorrowDebtParams, BorrowDebtQuery } from '../../features/borrow/types'
 import { borrowQueryValidationSuite } from '../validation/borrow.validation'
 import { createLoanExpectedCollateralQueryKey } from './create-loan-expected-collateral.query'
 import { createLoanMaxReceiveKey } from './create-loan-max-receive.query'
@@ -17,7 +17,8 @@ export const { useQuery: useCreateLoanBands } = queryFactory({
     debt = '0',
     leverageEnabled,
     range,
-  }: BorrowFormQueryParams) =>
+    maxDebt,
+  }: BorrowDebtParams) =>
     [
       ...rootKeys.market({ chainId, marketId }),
       'createLoanBands',
@@ -26,6 +27,7 @@ export const { useQuery: useCreateLoanBands } = queryFactory({
       { debt },
       { leverageEnabled },
       { range },
+      { maxDebt },
     ] as const,
   queryFn: ({
     marketId,
@@ -34,7 +36,7 @@ export const { useQuery: useCreateLoanBands } = queryFactory({
     debt = '0',
     leverageEnabled,
     range,
-  }: BorrowFormQuery): Promise<BorrowBandsResult> => {
+  }: BorrowDebtQuery): Promise<BorrowBandsResult> => {
     const market = getLlamaMarket(marketId)
     return leverageEnabled
       ? market instanceof LendMarketTemplate
@@ -45,7 +47,7 @@ export const { useQuery: useCreateLoanBands } = queryFactory({
       : market.createLoanBands(userCollateral, debt, range)
   },
   staleTime: '1m',
-  validationSuite: borrowQueryValidationSuite,
+  validationSuite: borrowQueryValidationSuite({ debtRequired: true }),
   dependencies: (params) => [
     createLoanMaxReceiveKey(params),
     ...(params.leverageEnabled ? [createLoanExpectedCollateralQueryKey(params)] : []),

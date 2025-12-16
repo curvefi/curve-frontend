@@ -147,9 +147,9 @@ const { useQuery: useGasInfoAndUpdateLibBase, fetchQuery: fetchGasInfoAndUpdateL
   refetchInterval: '1m',
   validationSuite: createValidationSuite(<TChainId extends number>({ chainId }: GasInfoParams<TChainId>) => {
     chainValidationGroup({ chainId })
-    group('apiValidation', () => {
-      test('api', 'API chain ID mismatch', () => {
-        enforce(getAnyCurve(chainId!)).message('Chain ID should be loaded').equals(chainId)
+    group('libValidation', () => {
+      test('lib', 'library loaded', () => {
+        if (chainId) enforce(getAnyCurve(chainId)?.chainId).message('Library should be loaded').equals(chainId)
       })
     })
     providerValidationGroup()

@@ -4,6 +4,7 @@ import {
   LOAD_TIMEOUT,
   oneDesktopViewport,
   oneMobileOrTabletViewport,
+  oneViewport,
   SCROLL_WIDTH,
   TABLET_BREAKPOINT,
 } from '@cy/support/ui'
@@ -17,6 +18,8 @@ const expectedFooterXMargin = { mobile: 32, tablet: 48, desktop: 48 }
 const expectedFooterMinWidth = 273
 const expectedFooterMaxWidth = 1536
 
+const DAY_IN_MS = 24 * 60 * 60 * 1000
+
 describe('Header', () => {
   let viewport: readonly [number, number]
 
@@ -26,8 +29,9 @@ describe('Header', () => {
     beforeEach(() => {
       viewport = oneDesktopViewport()
       cy.viewport(...viewport)
+      dismissPhishingWarningBanner()
       route = oneAppRoute()
-      cy.visit(`/${route}`)
+      cy.visitWithoutTestConnector(route)
       waitIsLoaded(route)
     })
 
@@ -88,8 +92,9 @@ describe('Header', () => {
     beforeEach(() => {
       viewport = oneMobileOrTabletViewport()
       cy.viewport(...viewport)
+      dismissPhishingWarningBanner()
       route = oneAppRoute()
-      cy.visit(`/${route}`)
+      cy.visitWithoutTestConnector(route)
       waitIsLoaded(route)
     })
 
@@ -159,6 +164,51 @@ describe('Header', () => {
       cy.get(`[data-testid='sidebar-item-pools']`).invoke('attr', 'href').should('include', `/dex/arbitrum/pools`)
     })
   })
+
+  describe('Phishing Warning Banner', () => {
+    function visitWithDismissedBanner(dismissedDate?: number) {
+      const [width, height] = oneViewport()
+      viewport = [width, height]
+      cy.viewport(...viewport)
+      const route = oneAppRoute()
+      cy.visitWithoutTestConnector(route, {
+        onBeforeLoad: (win) => {
+          if (dismissedDate) {
+            win.localStorage.setItem('phishing-warning-dismissed', JSON.stringify(dismissedDate))
+          }
+        },
+      })
+      waitIsLoaded(route)
+    }
+
+    it('should display the banner and allow dismissal', () => {
+      visitWithDismissedBanner()
+      cy.get("[data-testid='phishing-warning-banner']", LOAD_TIMEOUT).should('be.visible')
+      // Click the banner to dismiss it
+      cy.get("[data-testid='phishing-warning-banner']").find('button').first().click()
+      cy.get("[data-testid='phishing-warning-banner']").should('not.exist')
+    })
+
+    it('should reappear after one month', () => {
+      // Set dismissal date to 31 days ago (more than one month)
+      const oneMonthAgo = Date.now() - 31 * DAY_IN_MS
+      visitWithDismissedBanner(oneMonthAgo)
+      cy.get("[data-testid='phishing-warning-banner']", LOAD_TIMEOUT).should('be.visible')
+    })
+
+    it('should remain hidden within one month', () => {
+      // Set dismissal date to 15 days ago (less than one month)
+      const fifteenDaysAgo = Date.now() - 15 * DAY_IN_MS
+      visitWithDismissedBanner(fifteenDaysAgo)
+      cy.get("[data-testid='phishing-warning-banner']", LOAD_TIMEOUT).should('not.exist')
+    })
+  })
+
+  function dismissPhishingWarningBanner(date?: number) {
+    cy.window().then((win) => {
+      win.localStorage.setItem('phishing-warning-dismissed', JSON.stringify(date ?? Date.now()))
+    })
+  }
 
   function waitIsLoaded(route: AppRoute) {
     cy.get(`[data-testid='${getRouteTestId(route)}']`, API_LOAD_TIMEOUT).should('be.visible')

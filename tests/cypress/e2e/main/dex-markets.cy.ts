@@ -4,7 +4,7 @@ import { setShowSmallPools } from '@cy/support/helpers/user-profile'
 import { API_LOAD_TIMEOUT, type Breakpoint, LOAD_TIMEOUT, oneViewport } from '@cy/support/ui'
 import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
 
-const PATH = '/dex/arbitrum/pools/'
+const PATH = 'dex/arbitrum/pools/'
 
 // Parse compact USD strings like "$1.2M", "$950K", "$0", "-"
 function parseCompactUsd(value: string): number {
@@ -30,7 +30,7 @@ function visitAndWait(
 ) {
   cy.viewport(width, height)
   const { query } = options ?? {}
-  cy.visit(`${PATH}${query ? `?${new URLSearchParams(query)}` : ''}`, options)
+  cy.visitWithoutTestConnector(`${PATH}${query ? `?${new URLSearchParams(query)}` : ''}`, options)
   cy.get('[data-testid^="data-table-row-"]', API_LOAD_TIMEOUT).should('have.length.greaterThan', 0)
   if (query?.['page']) {
     cy.get('[data-testid="table-pagination"]').should('be.visible')

@@ -1,4 +1,4 @@
-import { MARKET_CUTOFF_DATE } from '@/llamalend/features/market-list/columns'
+import { MARKET_CUTOFF_DATE } from '@/llamalend/constants'
 import type { GetMarketsResponse } from '@curvefi/prices-api/llamalend'
 import { fromEntries, range } from '@curvefi/prices-api/objects.util'
 import { MAX_USD_VALUE, oneAddress, oneDate, oneFloat, oneInt, oneOf, onePrice } from '@cy/support/generators'

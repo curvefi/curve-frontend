@@ -1,5 +1,5 @@
 /// <reference path="./basic-theme.d.ts" />
-import { recordEntries } from '@curvefi/prices-api/objects.util'
+import { fromEntries, mapRecord } from '@curvefi/prices-api/objects.util'
 import { Breakpoint } from '@mui/material'
 import { createTheme as createMuiTheme } from '@mui/material/styles'
 import { CSSObject } from '@mui/styled-engine'
@@ -17,7 +17,18 @@ export const basicMuiTheme = createMuiTheme({
     },
     unit: 'px',
   },
-  spacing: Object.values(Spacing),
+  spacing: [
+    Spacing[0],
+    Spacing[100],
+    Spacing[200],
+    Spacing[300],
+    Spacing[350],
+    Spacing[400],
+    Spacing[500],
+    Spacing[600],
+    Spacing[700],
+    Spacing[800],
+  ],
   direction: 'ltr',
   zIndex: {
     tableStickyColumn: 100, // the sticky column in the table
@@ -28,7 +39,7 @@ export const basicMuiTheme = createMuiTheme({
   },
 })
 
-export type Responsive = Record<Breakpoint, string>
+export type Responsive<T = string> = Record<Breakpoint, T>
 
 /**
  * Create a responsive object based on the breakpoints defined in the basicMuiTheme.
@@ -40,8 +51,10 @@ export type Responsive = Record<Breakpoint, string>
  *   '@media (min-width: 1200px)': { width: 100, height: '300px' }
  *  }
  */
-export const handleBreakpoints = (values: Record<keyof CSSObject, number | string | Responsive>): CSSObject =>
-  Object.fromEntries(
+export const handleBreakpoints = (values: {
+  [P in keyof CSSObject]: CSSObject[P] | Responsive<CSSObject[P]>
+}): CSSObject =>
+  fromEntries(
     basicMuiTheme.breakpoints.keys.map((breakpoint) => {
       const selector = basicMuiTheme.breakpoints.up(breakpoint)
       return [
@@ -49,11 +62,8 @@ export const handleBreakpoints = (values: Record<keyof CSSObject, number | strin
         {
           // in case the selector is already present, merge the values
           ...((values[selector] as CSSObject) ?? {}),
-          ...Object.fromEntries(
-            Object.entries(values).map(([key, value]) => [
-              key,
-              typeof value === 'string' || typeof value === 'number' || value == null ? value : value[breakpoint],
-            ]),
+          ...mapRecord(values, (_, value) =>
+            value && typeof value === 'object' ? (value as Responsive)[breakpoint] : value,
           ),
         },
       ]
@@ -63,5 +73,4 @@ export const handleBreakpoints = (values: Record<keyof CSSObject, number | strin
 export const mapBreakpoints = (
   values: Responsive,
   callback: (value: string, breakpoint: Breakpoint) => string,
-): CSSObject =>
-  Object.fromEntries(recordEntries(values).map(([breakpoint, value]) => [breakpoint, callback(value, breakpoint)]))
+): CSSObject => mapRecord(values, (breakpoint, value) => callback(value, breakpoint))

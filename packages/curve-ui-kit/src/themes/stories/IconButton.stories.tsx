@@ -1,9 +1,21 @@
 import { fn } from 'storybook/test'
-import IconButton from '@mui/material/IconButton'
+import IconButton, { type IconButtonProps } from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { ChevronLeftIcon } from '@ui-kit/shared/icons/ChevronLeftIcon'
 import { FavoriteHeartIcon } from '@ui-kit/shared/icons/HeartIcon'
+import { LlamaIcon } from '@ui-kit/shared/icons/LlamaIcon'
+
+const sizes: NonNullable<IconButtonProps['size']>[] = ['extraExtraSmall', 'extraSmall', 'small', 'medium', 'large']
+const colors: NonNullable<IconButtonProps['color']>[] = [
+  'primary',
+  'secondary',
+  'ghost',
+  'outlined',
+  'navigation',
+  'success',
+  'error',
+]
 
 const meta: Meta<typeof IconButton> = {
   title: 'UI Kit/Primitives/IconButton',
@@ -11,7 +23,7 @@ const meta: Meta<typeof IconButton> = {
   argTypes: {
     size: {
       control: 'select',
-      options: ['extraExtraSmall', 'extraSmall', 'small', 'medium', 'large'],
+      options: sizes,
       description: 'The size of the component',
     },
     disabled: {
@@ -38,34 +50,43 @@ export const Default: Story = {
     },
   },
   args: {
-    children: <ChevronLeftIcon />,
+    children: <LlamaIcon />,
   },
 }
 
 export const AllSizes: Story = {
   render: () => (
     <Stack direction="row" gap={2} alignItems="center">
-      <IconButton size="extraExtraSmall">
-        <ChevronLeftIcon />
-      </IconButton>
-      <IconButton size="extraSmall">
-        <ChevronLeftIcon color="error" />
-      </IconButton>
-      <IconButton size="small">
-        <ChevronLeftIcon color="warning" />
-      </IconButton>
-      <IconButton size="medium">
-        <ChevronLeftIcon color="success" />
-      </IconButton>
-      <IconButton size="large">
-        <ChevronLeftIcon />
-      </IconButton>
+      {sizes.map((size) => (
+        <IconButton key={size} size={size}>
+          <LlamaIcon />
+        </IconButton>
+      ))}
     </Stack>
   ),
   parameters: {
     docs: {
       description: {
-        story: 'Comparison of all available sizes and colors',
+        story: 'Comparison of all available sizes',
+      },
+    },
+  },
+}
+
+export const AllColors: Story = {
+  render: () => (
+    <Stack direction="row" gap={2} alignItems="center">
+      {colors.map((color) => (
+        <IconButton key={color} color={color} size="small">
+          <LlamaIcon />
+        </IconButton>
+      ))}
+    </Stack>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story: 'Comparison of all available colors',
       },
     },
   },
@@ -74,14 +95,21 @@ export const AllSizes: Story = {
 export const Disabled: Story = {
   args: {
     disabled: true,
-    children: <ChevronLeftIcon />,
+    children: <LlamaIcon />,
   },
 }
 
 export const RotatedIcon: Story = {
-  args: {
-    children: <ChevronLeftIcon sx={{ transform: 'rotate(180deg)' }} />,
-  },
+  render: () => (
+    <Stack direction="row" gap={2} alignItems="center">
+      <IconButton>
+        <ChevronLeftIcon />
+      </IconButton>
+      <IconButton>
+        <ChevronLeftIcon sx={{ transform: 'rotate(180deg)' }} />
+      </IconButton>
+    </Stack>
+  ),
 }
 
 export const WithHeartIcon: Story = {

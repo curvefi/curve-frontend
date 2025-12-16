@@ -1,7 +1,7 @@
 import { type BrowserProvider } from 'ethers'
 import { useCallback, useEffect } from 'react'
 import { useConnect, useConnectors, useDisconnect, useEnsName } from 'wagmi'
-import { useConnection } from '@ui-kit/features/connect-wallet'
+import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useGlobalState } from '@ui-kit/hooks/useGlobalState'
 import { isCypress } from '@ui-kit/utils'
 import type { Wallet } from './types'
@@ -19,14 +19,14 @@ export const useWallet = () => {
   // modal state needs to be global because every call creates new state
   const [showModal, setShowModal] = useGlobalState<boolean>('showConnectModal', false)
   const closeModal = useCallback(() => setShowModal(false), [setShowModal])
-  const { wallet, provider, connectState } = useConnection()
+  const { wallet, provider, connectState } = useCurve()
   const connectors = useConnectors()
   state.wallet = wallet ?? null
   state.provider = provider ?? null
 
   // use the async functions so we can properly handle the promise failures. We could instead use query state in the future.
-  const { connectAsync } = useConnect()
-  const { disconnect } = useDisconnect()
+  const { mutateAsync: connectAsync } = useConnect()
+  const { mutate: disconnect } = useDisconnect()
 
   const connect = useCallback(
     async (selectedConnector?: Connector) => {

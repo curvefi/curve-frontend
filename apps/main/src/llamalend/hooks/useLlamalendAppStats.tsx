@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { useAccount } from 'wagmi'
+import { useConnection } from 'wagmi'
 import { useLlamaMarkets } from '@/llamalend/queries/market-list/llama-markets'
 import { fetchJson } from '@curvefi/prices-api/fetch'
 import { EmptyValidationSuite } from '@ui-kit/lib'
@@ -28,13 +28,13 @@ const { useQuery: useCrvUsdTotalSupply } = queryFactory({
   queryKey: () => ['getCrvusdTotalSupplyNumber'] as const,
   queryFn: async () => {
     const resp = await fetch('https://api.curve.finance/api/getCrvusdTotalSupplyNumber')
-    return decimal(await resp.text())
+    return decimal(await resp.text()) ?? null
   },
   validationSuite: EmptyValidationSuite,
 })
 
 export function useLlamalendAppStats({ chainId }: { chainId: number | undefined }, enabled: boolean = true) {
-  const { address } = useAccount()
+  const { address } = useConnection()
 
   const { data: marketData } = useLlamaMarkets(address, enabled)
   const tvl = useMemo(() => (marketData?.markets ?? []).reduce((acc, market) => acc + market.tvl, 0), [marketData])
