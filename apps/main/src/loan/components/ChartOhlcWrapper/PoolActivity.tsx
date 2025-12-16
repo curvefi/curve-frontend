@@ -2,12 +2,12 @@ import { useEffect, useState } from 'react'
 import { styled } from 'styled-components'
 import LiquidityData from '@/loan/components/ChartOhlcWrapper/LiquidityData'
 import TradesData from '@/loan/components/ChartOhlcWrapper/TradesData'
+import type { LlammaLiquidityCoins } from '@/loan/hooks/useOhlcChartState'
 import useStore from '@/loan/store/useStore'
 import { ChainId } from '@/loan/types/loan.types'
 import Button from '@ui/Button/Button'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import { t } from '@ui-kit/lib/i18n'
-import { LlammaLiquidityCoins } from './types'
 
 interface Props {
   poolAddress: string

@@ -1,5 +1,5 @@
 import { BandsComp } from '@/lend/components/BandsComp'
-import ChartOhlcWrapper from '@/lend/components/ChartOhlcWrapper'
+import { ChartAndActivityComp } from '@/lend/components/ChartAndActivityComp'
 import DetailsContracts from '@/lend/components/DetailsMarket/components/DetailsContracts'
 import networks from '@/lend/networks'
 import { PageContentProps } from '@/lend/types/lend.types'
@@ -58,7 +58,7 @@ export const MarketInformationComp = ({ pageProps, loanExists, userActiveKey, ty
           gridTemplateColumns={{ tablet: newBandsChartEnabled ? '1fr 0.3fr' : undefined }}
           sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, gap: Spacing.md, padding: Spacing.md }}
         >
-          <ChartOhlcWrapper rChainId={rChainId} rOwmId={rOwmId} userActiveKey={userActiveKey} />
+          <ChartAndActivityComp rChainId={rChainId} rOwmId={rOwmId} userActiveKey={userActiveKey} api={api} />
           {newBandsChartEnabled && (
             <BandsChart
               isLoading={isBandsLoading}

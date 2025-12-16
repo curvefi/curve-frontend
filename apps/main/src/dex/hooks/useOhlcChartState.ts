@@ -3,10 +3,13 @@ import useStore from '@/dex/store/useStore'
 import type { ChainId } from '@/dex/types/main.types'
 import type { OhlcChartProps } from '@ui-kit/features/candle-chart/ChartWrapper'
 import type { LabelList, PricesApiCoin, PricesApiPool } from '@ui-kit/features/candle-chart/types'
-import { getThreeHundredResultsAgo, subtractTimeUnit } from '@ui-kit/features/candle-chart/utils'
+import {
+  calculateChartCombinations,
+  getThreeHundredResultsAgo,
+  subtractTimeUnit,
+} from '@ui-kit/features/candle-chart/utils'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
-import { combinations } from '../components/PagePool/PoolDetails/ChartOhlcWrapper/utils'
 
 const CHART_HEIGHT = 300
 
@@ -34,7 +37,7 @@ export const useOhlcChartState = ({ rChainId, pricesApiPoolData }: UseOhlcChartS
 
   const chartCombinations: PricesApiCoin[][] = useMemo(() => {
     const coins = pricesApiPoolData.coins.slice(0, pricesApiPoolData.n_coins)
-    const combinationsArray = combinations(coins, 2)
+    const combinationsArray = calculateChartCombinations(coins, 2)
     const extraCombinations = pricesApiPoolData.coins.slice(pricesApiPoolData.n_coins).map((item) => [item, coins[0]])
 
     const combinedArray = [...combinationsArray]

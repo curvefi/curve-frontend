@@ -15,6 +15,7 @@
     "src",
     "_api",
     "../../packages/ui/src/globals.d.ts",
-    "../../packages/curve-ui-kit/src/**/*.d.ts"
+    "../../packages/curve-ui-kit/src/**/*.d.ts",
+    "../../packages/curve-ui-kit/src/shared/ui/SubTabsSwicther.tsx"
   ]
 }
