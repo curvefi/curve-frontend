@@ -1,5 +1,6 @@
 import { Key } from 'react'
 import { styled } from 'styled-components'
+import { type Address } from 'viem'
 import {
   STABLESWAP,
   CRYPTOSWAP,
@@ -11,7 +12,9 @@ import {
   TOKEN_F,
   TOKEN_G,
   TOKEN_H,
+  NG_ASSET_TYPE,
 } from '@/dex/components/PageCreatePool/constants'
+import { useAutoDetectErc4626 } from '@/dex/components/PageCreatePool/hooks/useAutoDetectErc4626'
 import {
   CreateToken,
   TokenState,
@@ -27,6 +30,7 @@ import Button from '@ui/Button'
 import Checkbox from '@ui/Checkbox'
 import Icon from '@ui/Icon'
 import { t } from '@ui-kit/lib/i18n'
+import WarningBox from '../components/WarningBox'
 import SelectTokenButton from './SelectTokenButton'
 
 type Props = {
@@ -59,6 +63,10 @@ const SelectToken = ({
   const clearToken = useStore((state) => state.createPool.clearToken)
   const tokensInPool = useStore((state) => state.createPool.tokensInPool)
   const { data: network } = useNetworkByChain({ chainId })
+  void useAutoDetectErc4626({
+    tokenId,
+    address: token.address as Address,
+  })
 
   const getTokenName = (tokenId: TokenId) => {
     if (tokenId === TOKEN_D) return t`Token D`
@@ -116,28 +124,31 @@ const SelectToken = ({
         onSelectionChange={(value: Key) => handleInpChange(tokenId, value as string, tokensInPool)}
       />
       {swapType === STABLESWAP && (network.stableswapFactory || network.stableswapFactoryOld) && !token.basePool && (
-        <StableSwapTogglesRow>
-          <StyledCheckbox
-            isSelected={token.ngAssetType === 0}
-            onChange={() => updateNgAssetType(tokenId, 0)}
-            isDisabled={false}
-          >{t`Standard`}</StyledCheckbox>
-          <StyledCheckbox
-            isSelected={token.ngAssetType === 1}
-            isDisabled={false}
-            onChange={() => updateNgAssetType(tokenId, 1)}
-          >{t`Oracle`}</StyledCheckbox>
-          <StyledCheckbox
-            isSelected={token.ngAssetType === 2}
-            onChange={() => updateNgAssetType(tokenId, 2)}
-            isDisabled={false}
-          >{t`Rebasing`}</StyledCheckbox>
-          <StyledCheckbox
-            isSelected={token.ngAssetType === 3}
-            isDisabled={false}
-            onChange={() => updateNgAssetType(tokenId, 3)}
-          >{t`ERC4626`}</StyledCheckbox>
-        </StableSwapTogglesRow>
+        <>
+          <StableSwapTogglesRow>
+            <StyledCheckbox
+              isSelected={token.ngAssetType === NG_ASSET_TYPE.STANDARD}
+              onChange={() => updateNgAssetType(tokenId, NG_ASSET_TYPE.STANDARD)}
+            >{t`Standard`}</StyledCheckbox>
+            <StyledCheckbox
+              isSelected={token.ngAssetType === NG_ASSET_TYPE.ORACLE}
+              onChange={() => updateNgAssetType(tokenId, NG_ASSET_TYPE.ORACLE)}
+            >{t`Oracle`}</StyledCheckbox>
+            <StyledCheckbox
+              isSelected={token.ngAssetType === NG_ASSET_TYPE.REBASING}
+              onChange={() => updateNgAssetType(tokenId, NG_ASSET_TYPE.REBASING)}
+            >{t`Rebasing`}</StyledCheckbox>
+            <StyledCheckbox
+              isSelected={token.ngAssetType === NG_ASSET_TYPE.ERC4626}
+              onChange={() => updateNgAssetType(tokenId, NG_ASSET_TYPE.ERC4626)}
+            >{t`ERC4626`}</StyledCheckbox>
+          </StableSwapTogglesRow>
+          {token.erc4626.isErc4626 && token.ngAssetType !== NG_ASSET_TYPE.ERC4626 && (
+            <WarningBox
+              message={t`${token.symbol} is identified as an ERC4626 token, please select ERC4626 as the asset type.`}
+            />
+          )}
+        </>
       )}
     </TokenPickerContainer>
   )

@@ -12,6 +12,7 @@ import {
   TOKEN_F,
   TOKEN_G,
   TOKEN_H,
+  NG_ASSET_TYPE,
 } from '@/dex/components/PageCreatePool/constants'
 import type { TokenState, TokenId } from '@/dex/components/PageCreatePool/types'
 import { validateOracleFunction } from '@/dex/components/PageCreatePool/utils'
@@ -26,41 +27,24 @@ type OracleInputProps = {
 }
 
 const SetOracle = () => {
-  const tokenA = useStore((state) => state.createPool.tokensInPool.tokenA)
-  const tokenB = useStore((state) => state.createPool.tokensInPool.tokenB)
-  const tokenC = useStore((state) => state.createPool.tokensInPool.tokenC)
-  const tokenD = useStore((state) => state.createPool.tokensInPool.tokenD)
-  const tokenE = useStore((state) => state.createPool.tokensInPool.tokenE)
-  const tokenF = useStore((state) => state.createPool.tokensInPool.tokenF)
-  const tokenG = useStore((state) => state.createPool.tokensInPool.tokenG)
-  const tokenH = useStore((state) => state.createPool.tokensInPool.tokenH)
+  const tokens = useStore((state) => state.createPool.tokensInPool)
+
+  const oracleTokens: { token: TokenState; tokenId: TokenId; title: string }[] = [
+    { token: tokens.tokenA, tokenId: TOKEN_A as TokenId, title: t`Token A` },
+    { token: tokens.tokenB, tokenId: TOKEN_B as TokenId, title: t`Token B` },
+    { token: tokens.tokenC, tokenId: TOKEN_C as TokenId, title: t`Token C` },
+    { token: tokens.tokenD, tokenId: TOKEN_D as TokenId, title: t`Token D` },
+    { token: tokens.tokenE, tokenId: TOKEN_E as TokenId, title: t`Token E` },
+    { token: tokens.tokenF, tokenId: TOKEN_F as TokenId, title: t`Token F` },
+    { token: tokens.tokenG, tokenId: TOKEN_G as TokenId, title: t`Token G` },
+    { token: tokens.tokenH, tokenId: TOKEN_H as TokenId, title: t`Token H` },
+  ].filter(({ token }) => token.ngAssetType === NG_ASSET_TYPE.ORACLE && token.address !== '')
 
   return (
     <OracleWrapper>
-      {tokenA.ngAssetType === 1 && tokenA.address !== '' && (
-        <OracleInputs token={tokenA} tokenId={TOKEN_A} title={t`Token A`} />
-      )}
-      {tokenB.ngAssetType === 1 && tokenB.address !== '' && (
-        <OracleInputs token={tokenB} tokenId={TOKEN_B} title={t`Token B`} />
-      )}
-      {tokenC.ngAssetType === 1 && tokenC.address !== '' && (
-        <OracleInputs token={tokenC} tokenId={TOKEN_C} title={t`Token C`} />
-      )}
-      {tokenD.ngAssetType === 1 && tokenD.address !== '' && (
-        <OracleInputs token={tokenD} tokenId={TOKEN_D} title={t`Token D`} />
-      )}
-      {tokenD.ngAssetType === 1 && tokenD.address !== '' && (
-        <OracleInputs token={tokenE} tokenId={TOKEN_E} title={t`Token E`} />
-      )}
-      {tokenD.ngAssetType === 1 && tokenD.address !== '' && (
-        <OracleInputs token={tokenF} tokenId={TOKEN_F} title={t`Token F`} />
-      )}
-      {tokenD.ngAssetType === 1 && tokenD.address !== '' && (
-        <OracleInputs token={tokenG} tokenId={TOKEN_G} title={t`Token G`} />
-      )}
-      {tokenD.ngAssetType === 1 && tokenD.address !== '' && (
-        <OracleInputs token={tokenH} tokenId={TOKEN_H} title={t`Token H`} />
-      )}
+      {oracleTokens.map(({ token, tokenId, title }) => (
+        <OracleInputs key={tokenId} token={token} tokenId={tokenId} title={title} />
+      ))}
     </OracleWrapper>
   )
 }

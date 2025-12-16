@@ -1,3 +1,4 @@
+import { formatNumber } from '@ui-kit/utils'
 import type { TimeOptions } from './types'
 
 const seconds = {
@@ -78,3 +79,41 @@ export function calculateRobustPriceRange(
     maxValue: maxValue + paddingAmount,
   }
 }
+
+const ABBREVIATION_CUTOFF = 10000 // Values above this are abbreviated (e.g., 15K)
+const ABBREVIATION_DECIMALS = 2 // Decimals to show when abbreviating (e.g., 15.23K)
+
+/**
+ * Formats a price value for the chart's price axis with adaptive decimal precision
+ * based on the visible price range. Ensures labels are meaningful whether viewing
+ * stablecoins (~$1.00), micro-cap tokens (fractions of a cent), or high-value assets.
+ *
+ * @param x - The price value to format
+ * @param delta - The difference in price between minimum and maximum price in the visible range
+ * @returns Formatted price string
+ *
+ * @example
+ * priceFormatter(1500.123, 1000, 2000)    // "1500" (delta >= 1 but 1500 < ABBREVIATION_CUTOFF → 0 decimals)
+ * priceFormatter(0.999, 0.987, 1.000)     // "0.9990"  (delta = 0.013 → 4 decimals)
+ * priceFormatter(0.00015, 0.0001, 0.0002) // "0.000150" (delta = 0.0001 → 6 decimals)
+ * priceFormatter(15000.5, 14000, 16000)   // "15K"     (abbreviated when > 10,000)
+ */
+export const priceFormatter = (x: number, delta: number) =>
+  formatNumber(x, {
+    /*
+     * For delta < 1 we're basically looking at the order of magnitude of the delta
+     * to determine how many decimals are needed to show meaningful differences.
+     *
+     * The "+2" accounts for tick spacing (~delta/5), ensuring adjacent ticks
+     * display distinct values. Without it, ticks like 0.987, 0.990, 0.993
+     * would all show as "0.99".
+     *
+     * Examples:
+     * - delta = 0.1   → -floor(-1) + 2 = 3 decimals
+     * - delta = 0.013 → -floor(-1.89) + 2 = 4 decimals
+     * - delta = 0.001 → -floor(-3) + 2 = 5 decimals
+     */
+    decimals: delta >= 1 ? (x > ABBREVIATION_CUTOFF ? ABBREVIATION_DECIMALS : 0) : -Math.floor(Math.log10(delta)) + 2,
+    abbreviate: x > ABBREVIATION_CUTOFF,
+    useGrouping: false,
+  })
