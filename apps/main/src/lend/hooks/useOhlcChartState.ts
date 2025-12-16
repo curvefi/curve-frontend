@@ -22,13 +22,13 @@ export type LendingMarketTokens = {
   }
 } | null
 
-export type OhlcChartStateProps = {
+export type UseOhlcChartStateProps = {
   rChainId: ChainId
   rOwmId: string
   userActiveKey: string
 }
 
-export const useOhlcChartState = ({ rChainId, userActiveKey, rOwmId }: OhlcChartStateProps) => {
+export const useOhlcChartState = ({ rChainId, userActiveKey, rOwmId }: UseOhlcChartStateProps) => {
   const market = useOneWayMarket(rChainId, rOwmId).data
   const borrowMoreActiveKey = useStore((state) => state.loanBorrowMore.activeKey)
   const loanRepayActiveKey = useStore((state) => state.loanRepay.activeKey)
@@ -346,7 +346,6 @@ export const useOhlcChartState = ({ rChainId, userActiveKey, rOwmId }: OhlcChart
   }
 
   return {
-    market,
     coins,
     ohlcDataUnavailable,
     ohlcChartProps,
