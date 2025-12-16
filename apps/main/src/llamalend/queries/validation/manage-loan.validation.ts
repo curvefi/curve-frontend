@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 import { enforce, group, test } from 'vest'
 import {
   validateBoolean,
-  validateLeverageEnabled,
+  validateLeverageSupported,
   validateSlippage,
   validateUserCollateral,
 } from '@/llamalend/queries/validation/borrow-fields.validation'
@@ -75,15 +75,7 @@ export const collateralHealthValidationSuite = createValidationSuite(({ isFull, 
 })
 
 export const repayValidationGroup = <IChainId extends number>(
-  {
-    chainId,
-    stateCollateral,
-    userCollateral,
-    userBorrowed,
-    userAddress,
-    leverageEnabled,
-    slippage,
-  }: RepayParams<IChainId>,
+  { chainId, marketId, stateCollateral, userCollateral, userBorrowed, userAddress, slippage }: RepayParams<IChainId>,
   { leverageRequired = false }: { leverageRequired?: boolean } = {},
 ) => {
   chainValidationGroup({ chainId })
@@ -94,7 +86,7 @@ export const repayValidationGroup = <IChainId extends number>(
   validateRepayBorrowedField(userBorrowed)
   validateRepayHasValue(stateCollateral, userCollateral, userBorrowed)
   validateSlippage(slippage)
-  validateLeverageEnabled(leverageEnabled, leverageRequired)
+  validateLeverageSupported(marketId, leverageRequired)
 }
 
 export const repayValidationSuite = ({ leverageRequired }: { leverageRequired: boolean }) =>

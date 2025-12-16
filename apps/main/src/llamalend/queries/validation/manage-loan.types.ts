@@ -13,7 +13,6 @@ export type RepayQuery<T = IChainId> = CollateralQuery<T> & {
   stateCollateral: Decimal
   userBorrowed: Decimal
   slippage: Decimal
-  leverageEnabled: boolean
 }
 
 export type RepayHealthQuery<T = IChainId> = RepayQuery<T> & HealthQuery

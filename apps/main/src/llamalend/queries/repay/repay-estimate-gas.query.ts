@@ -1,5 +1,5 @@
 import { useEstimateGas } from '@/llamalend/hooks/useEstimateGas'
-import { getLlamaMarket } from '@/llamalend/llama.utils'
+import { getLlamaMarket, hasLeverage } from '@/llamalend/llama.utils'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { type RepayIsApprovedParams, useRepayIsApproved } from '@/llamalend/queries/repay/repay-is-approved.query'
 import type { IChainId, TGas } from '@curvefi/llamalend-api/lib/interfaces'
@@ -18,7 +18,6 @@ const { useQuery: useRepayLoanEstimateGas } = queryFactory({
     userAddress,
     isFull,
     slippage,
-    leverageEnabled,
   }: RepayIsApprovedParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
@@ -28,7 +27,6 @@ const { useQuery: useRepayLoanEstimateGas } = queryFactory({
       { userBorrowed },
       { isFull },
       { slippage },
-      { leverageEnabled },
     ] as const,
   queryFn: async ({
     marketId,
@@ -38,13 +36,12 @@ const { useQuery: useRepayLoanEstimateGas } = queryFactory({
     isFull,
     userAddress,
     slippage,
-    leverageEnabled,
-  }: RepayIsFullQuery & { leverageEnabled?: boolean }): Promise<TGas> => {
+  }: RepayIsFullQuery): Promise<TGas> => {
     const market = getLlamaMarket(marketId)
     if (isFull) {
       return await market.estimateGas.fullRepay(userAddress)
     }
-    if (leverageEnabled) {
+    if (hasLeverage(market)) {
       if (market instanceof LendMarketTemplate) {
         return await market.leverage.estimateGas.repay(stateCollateral, userCollateral, userBorrowed, +slippage)
       }
@@ -69,7 +66,6 @@ const { useQuery: useRepayLoanApproveEstimateGas } = queryFactory({
     userBorrowed = '0',
     userAddress,
     isFull,
-    leverageEnabled,
   }: RepayIsApprovedParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
@@ -78,7 +74,6 @@ const { useQuery: useRepayLoanApproveEstimateGas } = queryFactory({
       { userCollateral },
       { userBorrowed },
       { isFull },
-      { leverageEnabled },
     ] as const,
   queryFn: async ({
     marketId,
@@ -87,13 +82,12 @@ const { useQuery: useRepayLoanApproveEstimateGas } = queryFactory({
     userBorrowed,
     isFull,
     userAddress,
-    leverageEnabled,
-  }: RepayIsFullQuery & { leverageEnabled?: boolean }): Promise<TGas> => {
+  }: RepayIsFullQuery): Promise<TGas> => {
     const market = getLlamaMarket(marketId)
     if (isFull) {
       return await market.estimateGas.fullRepayApprove(userAddress)
     }
-    if (leverageEnabled) {
+    if (hasLeverage(market)) {
       if (market instanceof LendMarketTemplate) {
         return await market.leverage.estimateGas.repayApprove(userCollateral, userBorrowed)
       }

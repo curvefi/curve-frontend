@@ -7,20 +7,12 @@ import { repayValidationSuite } from '../validation/manage-loan.validation'
 type RepayPriceImpactResult = number
 
 export const { useQuery: useRepayPriceImpact } = queryFactory({
-  queryKey: ({
-    chainId,
-    marketId,
-    stateCollateral = '0',
-    userCollateral = '0',
-    userAddress,
-    leverageEnabled,
-  }: RepayParams) =>
+  queryKey: ({ chainId, marketId, stateCollateral = '0', userCollateral = '0', userAddress }: RepayParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
       'repayPriceImpact',
       { stateCollateral },
       { userCollateral },
-      { leverageEnabled },
     ] as const,
   queryFn: async ({ marketId, stateCollateral, userCollateral }: RepayQuery): Promise<RepayPriceImpactResult> => {
     const market = getLlamaMarket(marketId)

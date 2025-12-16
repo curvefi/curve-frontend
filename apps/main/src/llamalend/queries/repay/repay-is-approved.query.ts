@@ -1,13 +1,11 @@
-import { getLlamaMarket } from '@/llamalend/llama.utils'
+import { getLlamaMarket, hasLeverage } from '@/llamalend/llama.utils'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { type RepayIsFullParams, type RepayIsFullQuery } from '../validation/manage-loan.types'
 import { repayFromCollateralIsFullValidationSuite } from '../validation/manage-loan.validation'
 
-export type RepayIsApprovedParams<ChainId = IChainId> = RepayIsFullParams<ChainId> & {
-  leverageEnabled?: boolean
-}
+export type RepayIsApprovedParams<ChainId = IChainId> = RepayIsFullParams<ChainId>
 
 export const { useQuery: useRepayIsApproved, fetchQuery: fetchRepayIsApproved } = queryFactory({
   queryKey: ({
@@ -18,7 +16,6 @@ export const { useQuery: useRepayIsApproved, fetchQuery: fetchRepayIsApproved } 
     userBorrowed = '0',
     userAddress,
     isFull,
-    leverageEnabled,
   }: RepayIsApprovedParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
@@ -27,7 +24,6 @@ export const { useQuery: useRepayIsApproved, fetchQuery: fetchRepayIsApproved } 
       { userCollateral },
       { userBorrowed },
       { isFull },
-      { leverageEnabled },
     ] as const,
   queryFn: async ({
     marketId,
@@ -36,11 +32,10 @@ export const { useQuery: useRepayIsApproved, fetchQuery: fetchRepayIsApproved } 
     userBorrowed,
     isFull,
     userAddress,
-    leverageEnabled,
-  }: RepayIsFullQuery & { leverageEnabled?: boolean }): Promise<boolean> => {
+  }: RepayIsFullQuery): Promise<boolean> => {
     const market = getLlamaMarket(marketId)
     if (isFull) return await market.fullRepayIsApproved(userAddress)
-    if (leverageEnabled) {
+    if (hasLeverage(market)) {
       if (market instanceof LendMarketTemplate) {
         return await market.leverage.repayIsApproved(userCollateral, userBorrowed)
       }

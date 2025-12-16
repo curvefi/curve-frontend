@@ -1,5 +1,6 @@
 import { RepayLoanInfoAccordion } from '@/llamalend/features/borrow/components/RepayLoanInfoAccordion'
 import { setValueOptions } from '@/llamalend/features/borrow/react-form.utils'
+import { hasLeverage } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import type { RepayOptions } from '@/llamalend/mutations/repay.mutation'
 import { LoanFormAlerts } from '@/llamalend/widgets/manage-loan/LoanFormAlerts'
@@ -70,6 +71,7 @@ export const RepayForm = <ChainId extends IChainId>({
           borrowToken={borrowToken}
           networks={networks}
           onSlippageChange={(value) => form.setValue('slippage', value, setValueOptions)}
+          hasLeverage={market && hasLeverage(market)}
         />
       }
     >

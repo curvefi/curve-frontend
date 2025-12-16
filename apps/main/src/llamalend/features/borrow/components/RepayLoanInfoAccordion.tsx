@@ -22,11 +22,12 @@ import { decimal, Decimal } from '@ui-kit/utils'
 
 export function RepayLoanInfoAccordion<ChainId extends IChainId>({
   params,
-  values: { slippage, leverageEnabled, userCollateral, userBorrowed },
+  values: { slippage, userCollateral, userBorrowed },
   collateralToken,
   borrowToken,
   networks,
   onSlippageChange,
+  hasLeverage,
 }: {
   params: RepayParams<ChainId>
   values: RepayForm
@@ -34,6 +35,7 @@ export function RepayLoanInfoAccordion<ChainId extends IChainId>({
   borrowToken: Token | undefined
   networks: NetworkDict<ChainId>
   onSlippageChange: (newSlippage: Decimal) => void
+  hasLeverage: boolean | undefined
 }) {
   const [isOpen, , , toggle] = useSwitch(false)
   const userState = q(useUserState(params, isOpen))
@@ -67,7 +69,7 @@ export function RepayLoanInfoAccordion<ChainId extends IChainId>({
         isOpen,
       )}
       leverage={{
-        enabled: leverageEnabled,
+        enabled: !!hasLeverage,
         expectedBorrowed: useRepayExpectedBorrowed(params, isOpen),
         priceImpact: useRepayPriceImpact(params, isOpen),
         slippage,

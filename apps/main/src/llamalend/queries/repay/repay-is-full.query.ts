@@ -1,4 +1,4 @@
-import { getLlamaMarket } from '@/llamalend/llama.utils'
+import { getLlamaMarket, hasLeverage } from '@/llamalend/llama.utils'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { type RepayParams, type RepayQuery } from '../validation/manage-loan.types'
@@ -12,7 +12,6 @@ export const { useQuery: useRepayIsFull, queryKey: repayIsFullQueryKey } = query
     userCollateral = '0',
     userBorrowed = '0',
     userAddress,
-    leverageEnabled,
   }: RepayParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
@@ -20,7 +19,6 @@ export const { useQuery: useRepayIsFull, queryKey: repayIsFullQueryKey } = query
       { stateCollateral },
       { userCollateral },
       { userBorrowed },
-      { leverageEnabled },
     ] as const,
   queryFn: async ({
     marketId,
@@ -28,14 +26,13 @@ export const { useQuery: useRepayIsFull, queryKey: repayIsFullQueryKey } = query
     userCollateral,
     userBorrowed,
     userAddress,
-    leverageEnabled,
   }: RepayQuery): Promise<boolean> => {
     const market = getLlamaMarket(marketId)
-    if (!leverageEnabled) {
+    if (!hasLeverage(market)) {
       console.assert(!+stateCollateral, 'State collateral should be zero when leverage is disabled')
       console.assert(!+userCollateral, 'User collateral should be zero when leverage is disabled')
       const { debt } = await market.userState(userAddress)
-      return debt === userBorrowed
+      return userBorrowed >= debt
     }
     return market instanceof LendMarketTemplate
       ? await market.leverage.repayIsFull(stateCollateral, userCollateral, userBorrowed, userAddress)

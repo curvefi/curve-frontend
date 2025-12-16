@@ -1,4 +1,4 @@
-import { getLlamaMarket } from '@/llamalend/llama.utils'
+import { getLlamaMarket, hasLeverage } from '@/llamalend/llama.utils'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { type Decimal } from '@ui-kit/utils'
@@ -21,7 +21,6 @@ export const { useQuery: useRepayExpectedBorrowed } = queryFactory({
     userCollateral = '0',
     userBorrowed = '0',
     userAddress,
-    leverageEnabled,
   }: RepayParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
@@ -29,11 +28,12 @@ export const { useQuery: useRepayExpectedBorrowed } = queryFactory({
       { stateCollateral },
       { userCollateral },
       { userBorrowed },
-      { leverageEnabled },
     ] as const,
   queryFn: async ({ marketId, stateCollateral, userCollateral, userBorrowed }: RepayQuery) => {
     // todo: investigate if this is OK when the user's position is not leveraged
     const market = getLlamaMarket(marketId)
+    console.assert(hasLeverage(market), `Expected leverage to be enabled for market ${marketId}`)
+
     if (market instanceof LendMarketTemplate) {
       const result = await market.leverage.repayExpectedBorrowed(stateCollateral, userCollateral, userBorrowed)
       return result as RepayExpectedBorrowedResult
