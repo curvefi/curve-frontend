@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { AddCollateralForm } from '@/llamalend/features/manage-loan/components/AddCollateralForm'
 import { RemoveCollateralForm } from '@/llamalend/features/manage-loan/components/RemoveCollateralForm'
-import { RepayFromCollateral, RepayFromWallet } from '@/llamalend/features/manage-loan/components/RepayForm'
+import { RepayForm } from '@/llamalend/features/manage-loan/components/RepayForm'
 import CollateralDecrease from '@/loan/components/PageLoanManage/CollateralDecrease'
 import CollateralIncrease from '@/loan/components/PageLoanManage/CollateralIncrease'
 import LoanDecrease from '@/loan/components/PageLoanManage/LoanDecrease'
@@ -50,11 +50,11 @@ const LoanManage = ({ curve, isReady, llamma, llammaId, params, rChainId, rColla
     () => [
       { value: 'loan-increase', label: t`Borrow more` },
       ...(leverageEnabled
-        ? [
+        ? ([
             { value: 'loan-repay-collateral', label: t`Repay from collateral` },
             { value: 'loan-repay-wallet', label: t`Repay from wallet` },
-          ]
-        : [{ value: 'loan-decrease', label: t`Repay` }]),
+          ] as const)
+        : ([{ value: 'loan-decrease', label: t`Repay` }] as const)),
       { value: 'loan-liquidate', label: t`Self-liquidate` },
     ],
     [leverageEnabled],
@@ -113,27 +113,17 @@ const LoanManage = ({ curve, isReady, llamma, llammaId, params, rChainId, rColla
             </Stack>
           )}
           {subTab === 'loan-repay-wallet' && leverageEnabled && llamma && (
-            <RepayFromWallet
+            <RepayForm
               networks={networks}
               chainId={rChainId}
               market={llamma}
               enabled={isReady}
-              onRepaid={async () => {}}
-              leverageEnabled={leverageEnabled}
               fromBorrowed
               fromWallet
             />
           )}
           {(subTab === 'loan-repay-collateral' || subTab === 'loan-decrease') && llamma && (
-            <RepayFromCollateral
-              networks={networks}
-              chainId={rChainId}
-              market={llamma}
-              enabled={isReady}
-              onRepaid={async () => {}}
-              leverageEnabled={leverageEnabled}
-              fromCollateral
-            />
+            <RepayForm networks={networks} chainId={rChainId} market={llamma} enabled={isReady} fromCollateral />
           )}
           {subTab === 'loan-liquidate' && <LoanLiquidate {...formProps} params={params} />}
           {subTab === 'collateral-increase' && llamma && (

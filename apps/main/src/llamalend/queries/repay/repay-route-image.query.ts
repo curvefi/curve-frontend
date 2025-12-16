@@ -1,8 +1,8 @@
 import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
-import { type RepayFromCollateralParams, type RepayFromCollateralQuery } from '../validation/manage-loan.types'
-import { repayFromCollateralValidationSuite } from '../validation/manage-loan.validation'
+import { type RepayParams, type RepayQuery } from '../validation/manage-loan.types'
+import { repayValidationSuite } from '../validation/manage-loan.validation'
 
 export const { useQuery: useRepayRouteImage } = queryFactory({
   queryKey: ({
@@ -12,7 +12,7 @@ export const { useQuery: useRepayRouteImage } = queryFactory({
     userCollateral = '0',
     userBorrowed = '0',
     userAddress,
-  }: RepayFromCollateralParams) =>
+  }: RepayParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
       'repayRouteImage',
@@ -20,7 +20,7 @@ export const { useQuery: useRepayRouteImage } = queryFactory({
       { userCollateral },
       { userBorrowed },
     ] as const,
-  queryFn: async ({ marketId, stateCollateral, userCollateral }: RepayFromCollateralQuery) => {
+  queryFn: async ({ marketId, stateCollateral, userCollateral }: RepayQuery) => {
     const market = getLlamaMarket(marketId)
     if (market instanceof LendMarketTemplate) {
       return await market.leverage.repayRouteImage(stateCollateral, userCollateral)
@@ -31,5 +31,5 @@ export const { useQuery: useRepayRouteImage } = queryFactory({
     return null
   },
   staleTime: '1m',
-  validationSuite: repayFromCollateralValidationSuite,
+  validationSuite: repayValidationSuite({ leverageRequired: true }),
 })

@@ -2,26 +2,20 @@ import { useEffect, useMemo } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
 import { useForm } from 'react-hook-form'
 import { useConnection } from 'wagmi'
-import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
-import { getTokens } from '@/llamalend/llama.utils'
+import { getTokens, hasLeverage } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { type RepayOptions, useRepayMutation } from '@/llamalend/mutations/repay.mutation'
-import { useRepayBands } from '@/llamalend/queries/repay/repay-bands.query'
-import { useRepayExpectedBorrowed } from '@/llamalend/queries/repay/repay-expected-borrowed.query'
-import { useRepayEstimateGas } from '@/llamalend/queries/repay/repay-gas-estimate.query'
-import { getRepayHealthOptions } from '@/llamalend/queries/repay/repay-health.query'
+import { useBorrowCreateLoanIsApproved } from '@/llamalend/queries/create-loan/borrow-create-loan-approved.query'
 import { useRepayIsAvailable } from '@/llamalend/queries/repay/repay-is-available.query'
 import { useRepayIsFull } from '@/llamalend/queries/repay/repay-is-full.query'
-import { useRepayPriceImpact } from '@/llamalend/queries/repay/repay-price-impact.query'
-import { useRepayPrices } from '@/llamalend/queries/repay/repay-prices.query'
-import { useRepayRouteImage } from '@/llamalend/queries/repay/repay-route-image.query'
-import type { RepayFromCollateralIsFullParams } from '@/llamalend/queries/validation/manage-loan.types'
+import type { RepayIsFullParams } from '@/llamalend/queries/validation/manage-loan.types'
 import { type RepayForm, repayFormValidationSuite } from '@/llamalend/queries/validation/manage-loan.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { vestResolver } from '@hookform/resolvers/vest'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions } from '@ui-kit/lib/model'
-import { useFormErrors } from '../../borrow/react-form.utils'
+import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
+import { setValueOptions, useFormErrors } from '../../borrow/react-form.utils'
 
 const useCallbackAfterFormUpdate = (form: UseFormReturn<RepayForm>, callback: () => void) =>
   useEffect(() => form.subscribe({ formState: { values: true }, callback }), [form, callback])
@@ -32,14 +26,12 @@ export const useRepayForm = <ChainId extends LlamaChainId, NetworkName extends L
   networks,
   enabled,
   onRepaid,
-  leverageEnabled,
 }: {
   market: LlamaMarketTemplate | undefined
   network: { id: LlamaNetworkId; chainId: ChainId }
   networks: NetworkDict<ChainId>
   enabled?: boolean
   onRepaid?: NonNullable<RepayOptions['onRepaid']>
-  leverageEnabled: boolean
 }) => {
   const { address: userAddress } = useConnection()
   const { chainId } = network
@@ -56,7 +48,10 @@ export const useRepayForm = <ChainId extends LlamaChainId, NetworkName extends L
       stateCollateral: undefined,
       userCollateral: undefined,
       userBorrowed: undefined,
-      isFull: false,
+      isFull: undefined,
+      slippage: SLIPPAGE_PRESETS.STABLE,
+      withdrawEnabled: false,
+      leverageEnabled: false,
     },
   })
 
@@ -64,71 +59,52 @@ export const useRepayForm = <ChainId extends LlamaChainId, NetworkName extends L
 
   const params = useDebouncedValue(
     useMemo(
-      (): RepayFromCollateralIsFullParams<ChainId> => ({
-        chainId,
-        marketId,
-        userAddress,
-        stateCollateral: values.stateCollateral,
-        userCollateral: values.userCollateral,
-        userBorrowed: values.userBorrowed,
-        isFull: values.isFull,
-      }),
-      [
-        chainId,
-        marketId,
-        userAddress,
-        values.stateCollateral,
-        values.userCollateral,
-        values.userBorrowed,
-        values.isFull,
-      ],
+      (): RepayIsFullParams<ChainId> => ({ chainId, marketId, userAddress, ...values }),
+      [chainId, marketId, userAddress, values],
     ),
   )
 
-  const { onSubmit, ...action } = useRepayMutation({
+  const {
+    onSubmit,
+    isPending: isRepaying,
+    isSuccess: isRepaid,
+    error: repayError,
+    data,
+    reset: resetRepay,
+  } = useRepayMutation({
     network,
     marketId,
     onRepaid,
     onReset: form.reset,
     userAddress,
-    leverageEnabled,
   })
 
-  useCallbackAfterFormUpdate(form, action.reset)
+  useCallbackAfterFormUpdate(form, resetRepay) // reset mutation state on form change
 
-  const bands = useRepayBands(params, enabled)
-  const expectedBorrowed = useRepayExpectedBorrowed(params, enabled)
-  const health = useHealthQueries((isFull) => getRepayHealthOptions({ ...params, isFull }, enabled))
   const isAvailable = useRepayIsAvailable(params, enabled)
   const isFull = useRepayIsFull(params, enabled)
-  const priceImpact = useRepayPriceImpact(params, enabled)
-  const prices = useRepayPrices(params, enabled)
-  const routeImage = useRepayRouteImage(params, enabled)
-  const gas = useRepayEstimateGas(networks, params, enabled)
 
   const formErrors = useFormErrors(form.formState)
 
-  useEffect(() => form.setValue('isFull', isFull.data, { shouldValidate: true }), [form, isFull.data])
+  useEffect(() => form.setValue('isFull', isFull.data, setValueOptions), [form, isFull.data])
+
+  // todo: remove from form, move this to queries directly as they depend on market only
+  useEffect(() => market && form.setValue('leverageEnabled', hasLeverage(market), setValueOptions), [market, form])
 
   return {
     form,
     values,
     params,
-    isPending: form.formState.isSubmitting || action.isPending,
+    isPending: form.formState.isSubmitting || isRepaying,
     onSubmit: form.handleSubmit(onSubmit),
-    action,
-    bands,
-    expectedBorrowed,
-    health,
     isDisabled: !isAvailable.data || formErrors.length > 0,
-    isFull,
-    priceImpact,
-    prices,
-    routeImage,
-    gas,
-    txHash: action.data?.hash,
-    collateralToken,
     borrowToken,
-    formErrors,
+    collateralToken,
+    isRepaid,
+    repayError,
+    txHash: data?.hash,
+    isApproved: useBorrowCreateLoanIsApproved(params),
+    formErrors: useFormErrors(form.formState),
+    isFull,
   }
 }

@@ -44,6 +44,7 @@ const { useQuery: useCreateLoanApproveEstimateGas } = queryFactory({
   dependencies: (params) => [createLoanMaxReceiveKey(params)],
 })
 
+// todo: expand this to consider estimation after approval, see `useRepayEstimateGas`
 export const useCreateLoanEstimateGas = <ChainId extends IChainId>(
   networks: NetworkDict<ChainId>,
   query: GasEstimateParams<ChainId>,

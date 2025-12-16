@@ -5,11 +5,11 @@ import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { type FieldsOf } from '@ui-kit/lib'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
-import type { RepayFromCollateralHealthQuery } from '../validation/manage-loan.types'
+import type { RepayHealthQuery } from '../validation/manage-loan.types'
 import { repayFromCollateralIsFullValidationSuite } from '../validation/manage-loan.validation'
 import { repayIsFullQueryKey } from './repay-is-full.query'
 
-type RepayFromCollateralGasQuery<T = IChainId> = RepayFromCollateralHealthQuery<T>
+type RepayFromCollateralGasQuery<T = IChainId> = RepayHealthQuery<T>
 type RepayFromCollateralGasParams<T = IChainId> = FieldsOf<RepayFromCollateralGasQuery<T>>
 
 const { useQuery: useRepayGasEstimate } = queryFactory({
@@ -71,7 +71,7 @@ export const useRepayEstimateGas = <ChainId extends IChainId>(
   const { chainId } = query
   const { data: estimate, isLoading: estimateLoading, error: estimateError } = useRepayGasEstimate(query, enabled)
   const {
-    data,
+    data = null,
     isLoading: conversionLoading,
     error: conversionError,
   } = useEstimateGas<ChainId>(networks, chainId, estimate, enabled)

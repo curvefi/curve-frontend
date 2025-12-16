@@ -2,13 +2,10 @@ import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import type { Decimal } from '@ui-kit/utils'
-import {
-  type RepayFromCollateralHealthQuery,
-  type RepayFromCollateralHealthParams,
-} from '../validation/manage-loan.types'
+import { type RepayHealthQuery, type RepayHealthParams } from '../validation/manage-loan.types'
 import { repayFromCollateralIsFullValidationSuite } from '../validation/manage-loan.validation'
 
-export const { getQueryOptions: getRepayHealthOptions } = queryFactory({
+export const { getQueryOptions: getRepayHealthOptions, useQuery: useRepayHealth } = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -17,7 +14,7 @@ export const { getQueryOptions: getRepayHealthOptions } = queryFactory({
     userBorrowed = '0',
     userAddress,
     isFull,
-  }: RepayFromCollateralHealthParams) =>
+  }: RepayHealthParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
       'repayHealth',
@@ -26,13 +23,7 @@ export const { getQueryOptions: getRepayHealthOptions } = queryFactory({
       { userBorrowed },
       { isFull },
     ] as const,
-  queryFn: async ({
-    marketId,
-    stateCollateral,
-    userCollateral,
-    userBorrowed,
-    isFull,
-  }: RepayFromCollateralHealthQuery) => {
+  queryFn: async ({ marketId, stateCollateral, userCollateral, userBorrowed, isFull }: RepayHealthQuery) => {
     const market = getLlamaMarket(marketId)
     return (
       market instanceof LendMarketTemplate

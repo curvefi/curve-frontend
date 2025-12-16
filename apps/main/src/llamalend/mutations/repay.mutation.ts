@@ -29,7 +29,6 @@ export type RepayOptions = {
   onRepaid?: LlammaMutationOptions<RepayMutation>['onSuccess']
   onReset?: () => void
   userAddress: Address | undefined
-  leverageEnabled: boolean
 }
 
 const approveRepay = async (
@@ -53,8 +52,10 @@ const approveRepay = async (
   return (await market.repayApprove(userBorrowed)) as Hex[]
 }
 
-const repay = async (market: LlamaMarketTemplate, mutation: RepayMutation): Promise<Hex> => {
-  const { stateCollateral, userCollateral, userBorrowed, isFull, leverageEnabled } = mutation
+const repay = async (
+  market: LlamaMarketTemplate,
+  { stateCollateral, userCollateral, userBorrowed, isFull, leverageEnabled }: RepayMutation,
+): Promise<Hex> => {
   if (isFull) {
     return (await market.fullRepay()) as Hex
   }
@@ -63,7 +64,6 @@ const repay = async (market: LlamaMarketTemplate, mutation: RepayMutation): Prom
     return (await market.repay(userBorrowed)) as Hex
   }
   if (market instanceof LendMarketTemplate) {
-    // note: MintMarketTemplate.leverage(v1) does not have repay methods
     await market.leverage.repayExpectedBorrowed(stateCollateral, userCollateral, userBorrowed)
     return (await market.leverage.repay(stateCollateral, userCollateral, userBorrowed)) as Hex
   }
@@ -83,36 +83,19 @@ export const useRepayMutation = ({
   onRepaid,
   onReset,
   userAddress,
-  leverageEnabled,
 }: RepayOptions) => {
   const config = useConfig()
   const { mutate, mutateAsync, error, data, isPending, isSuccess, reset } = useLlammaMutation<RepayMutation>({
     network,
     marketId,
-    mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'repay', { leverageEnabled }] as const,
+    mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'repay'] as const,
     mutationFn: async (mutation, { market }) => {
-      const { stateCollateral, userBorrowed, userCollateral, isFull } = mutation
-
       await waitForApproval({
-        isApproved: () =>
-          fetchRepayIsApproved(
-            {
-              chainId,
-              marketId,
-              userAddress,
-              stateCollateral,
-              userCollateral,
-              userBorrowed,
-              isFull,
-              leverageEnabled,
-            },
-            { staleTime: 0 },
-          ),
-        onApprove: () => approveRepay(market, { ...mutation, leverageEnabled }),
+        isApproved: async () => await fetchRepayIsApproved(mutation, { staleTime: 0 }),
+        onApprove: async () => await approveRepay(market, mutation),
         message: t`Approved repayment`,
         config,
       })
-
       return { hash: await repay(market, mutation) }
     },
     validationSuite: repayFromCollateralIsFullValidationSuite,

@@ -24,7 +24,7 @@ export type LoanLeverageMaxReceive = {
   maxLeverage?: Decimal
 }
 
-type LoanInfoAccordionProps = {
+export type LoanInfoAccordionProps = {
   isOpen: boolean
   toggle: () => void
   range?: number
@@ -37,7 +37,7 @@ type LoanInfoAccordionProps = {
   loanToValue: Query<Decimal | null>
   prevLoanToValue?: Query<Decimal | null>
   gas: Query<LoanInfoGasData | null>
-  debt?: Query<Decimal | null> & { tokenSymbol: string }
+  debt?: Query<Decimal | null> & { tokenSymbol: string | undefined }
   prevDebt?: Query<Decimal | null>
   leverage?: LoanLeverageActionInfoProps & { enabled: boolean }
 }

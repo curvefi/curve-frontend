@@ -2,10 +2,10 @@ import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { type Decimal } from '@ui-kit/utils'
-import { type RepayFromCollateralParams, type RepayFromCollateralQuery } from '../validation/manage-loan.types'
-import { repayFromCollateralValidationSuite } from '../validation/manage-loan.validation'
+import { type RepayParams, type RepayQuery } from '../validation/manage-loan.types'
+import { repayValidationSuite } from '../validation/manage-loan.validation'
 
-type RepayExpectedBorrowedResult = {
+export type RepayExpectedBorrowedResult = {
   totalBorrowed: Decimal
   borrowedFromStateCollateral?: Decimal
   borrowedFromUserCollateral?: Decimal
@@ -21,15 +21,17 @@ export const { useQuery: useRepayExpectedBorrowed } = queryFactory({
     userCollateral = '0',
     userBorrowed = '0',
     userAddress,
-  }: RepayFromCollateralParams) =>
+    leverageEnabled,
+  }: RepayParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
       'repayExpectedBorrowed',
       { stateCollateral },
       { userCollateral },
       { userBorrowed },
+      { leverageEnabled },
     ] as const,
-  queryFn: async ({ marketId, stateCollateral, userCollateral, userBorrowed }: RepayFromCollateralQuery) => {
+  queryFn: async ({ marketId, stateCollateral, userCollateral, userBorrowed }: RepayQuery) => {
     // todo: investigate if this is OK when the user's position is not leveraged
     const market = getLlamaMarket(marketId)
     if (market instanceof LendMarketTemplate) {
@@ -47,5 +49,5 @@ export const { useQuery: useRepayExpectedBorrowed } = queryFactory({
     return { totalBorrowed: stablecoins[routeIdx] as Decimal }
   },
   staleTime: '1m',
-  validationSuite: repayFromCollateralValidationSuite,
+  validationSuite: repayValidationSuite({ leverageRequired: true }),
 })

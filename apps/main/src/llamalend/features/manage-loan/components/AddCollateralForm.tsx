@@ -68,15 +68,17 @@ export const AddCollateralForm = <ChainId extends IChainId>({
           bands={bands}
           prices={prices}
           rates={marketRates}
-          loanToValue={useLoanToValueFromUserState({
-            chainId: params.chainId!,
-            marketId: params.marketId,
-            userAddress: params.userAddress,
-            collateralToken,
-            borrowToken,
-            enabled: isOpen,
-            collateralDelta: values.userCollateral,
-          })}
+          loanToValue={useLoanToValueFromUserState(
+            {
+              chainId: params.chainId,
+              marketId: params.marketId,
+              userAddress: params.userAddress,
+              collateralToken,
+              borrowToken,
+              collateralDelta: values.userCollateral,
+            },
+            isOpen,
+          )}
           gas={gas}
         />
       }

@@ -1,11 +1,16 @@
 import BigNumber from 'bignumber.js'
 import { enforce, group, test } from 'vest'
-import { validateIsFull, validateUserCollateral } from '@/llamalend/queries/validation/borrow-fields.validation'
+import {
+  validateBoolean,
+  validateLeverageEnabled,
+  validateSlippage,
+  validateUserCollateral,
+} from '@/llamalend/queries/validation/borrow-fields.validation'
 import type {
   CollateralHealthParams,
   CollateralParams,
-  RepayFromCollateralIsFullParams,
-  RepayFromCollateralParams,
+  RepayIsFullParams,
+  RepayParams,
 } from '@/llamalend/queries/validation/manage-loan.types'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { chainValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
@@ -16,14 +21,17 @@ import type { Decimal } from '@ui-kit/utils'
 
 export type CollateralForm = FieldsOf<{ userCollateral: Decimal }>
 
-export type RepayForm = FieldsOf<{
-  stateCollateral: Decimal
-  userCollateral: Decimal
-  userBorrowed: Decimal
-  isFull: boolean
-}>
+export type RepayForm = {
+  stateCollateral: Decimal | undefined
+  userCollateral: Decimal | undefined
+  userBorrowed: Decimal | undefined
+  isFull: boolean | undefined
+  slippage: Decimal
+  withdrawEnabled: boolean
+  leverageEnabled: boolean
+}
 
-const validateRepayCollateralField = (field: 'stateCollateral' | 'userCollateral', value: Decimal | null | undefined) =>
+const validateRepayField = (field: 'stateCollateral' | 'userCollateral', value: Decimal | null | undefined) =>
   test(field, `Collateral amount must be a non-negative number`, () => {
     if (value == null) return
     enforce(value).isNumeric().gte(0)
@@ -63,40 +71,59 @@ export const collateralFormValidationSuite = createValidationSuite((params: Coll
 
 export const collateralHealthValidationSuite = createValidationSuite(({ isFull, ...rest }: CollateralHealthParams) => {
   collateralValidationGroup(rest)
-  validateIsFull(isFull)
+  validateBoolean(isFull)
 })
 
-export const repayFromCollateralValidationGroup = <IChainId extends number>({
-  chainId,
-  stateCollateral,
-  userCollateral,
-  userBorrowed,
-  userAddress,
-}: RepayFromCollateralParams<IChainId>) => {
+export const repayValidationGroup = <IChainId extends number>(
+  {
+    chainId,
+    stateCollateral,
+    userCollateral,
+    userBorrowed,
+    userAddress,
+    leverageEnabled,
+    slippage,
+  }: RepayParams<IChainId>,
+  { leverageRequired = false }: { leverageRequired?: boolean } = {},
+) => {
   chainValidationGroup({ chainId })
   llamaApiValidationGroup({ chainId })
   userAddressValidationGroup({ userAddress })
-  validateRepayCollateralField('userCollateral', userCollateral)
-  validateRepayCollateralField('stateCollateral', stateCollateral)
+  validateRepayField('userCollateral', userCollateral)
+  validateRepayField('stateCollateral', stateCollateral)
   validateRepayBorrowedField(userBorrowed)
   validateRepayHasValue(stateCollateral, userCollateral, userBorrowed)
+  validateSlippage(slippage)
+  validateLeverageEnabled(leverageEnabled, leverageRequired)
 }
 
-export const repayFromCollateralValidationSuite = createValidationSuite((params: RepayFromCollateralParams) =>
-  repayFromCollateralValidationGroup(params),
+export const repayValidationSuite = ({ leverageRequired }: { leverageRequired: boolean }) =>
+  createValidationSuite((params: RepayParams) => repayValidationGroup(params, { leverageRequired }))
+
+export const repayFormValidationSuite = createValidationSuite(
+  ({
+    isFull,
+    stateCollateral,
+    userCollateral,
+    userBorrowed,
+    withdrawEnabled,
+    leverageEnabled,
+    slippage,
+  }: RepayForm) => {
+    validateRepayField('userCollateral', userCollateral)
+    validateRepayField('stateCollateral', stateCollateral)
+    validateRepayBorrowedField(userBorrowed)
+    validateRepayHasValue(stateCollateral, userCollateral, userBorrowed)
+    validateBoolean(isFull)
+    validateBoolean(leverageEnabled)
+    validateBoolean(withdrawEnabled)
+    validateSlippage(slippage)
+  },
 )
 
-export const repayFormValidationSuite = createValidationSuite((params: RepayForm) => {
-  validateRepayCollateralField('userCollateral', params.userCollateral)
-  validateRepayCollateralField('stateCollateral', params.stateCollateral)
-  validateRepayBorrowedField(params.userBorrowed)
-  validateRepayHasValue(params.stateCollateral, params.userCollateral, params.userBorrowed)
-  validateIsFull(params.isFull)
-})
-
 export const repayFromCollateralIsFullValidationSuite = createValidationSuite(
-  ({ isFull, ...params }: RepayFromCollateralIsFullParams) => {
-    repayFromCollateralValidationGroup(params)
-    group('isFull', () => validateIsFull(isFull))
+  ({ isFull, ...params }: RepayIsFullParams) => {
+    repayValidationGroup(params)
+    group('isFull', () => validateBoolean(isFull))
   },
 )

@@ -1,8 +1,8 @@
 import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
-import { type RepayFromCollateralParams, type RepayFromCollateralQuery } from '../validation/manage-loan.types'
-import { repayFromCollateralValidationSuite } from '../validation/manage-loan.validation'
+import { type RepayParams, type RepayQuery } from '../validation/manage-loan.types'
+import { repayValidationSuite } from '../validation/manage-loan.validation'
 
 export const { useQuery: useRepayBands } = queryFactory({
   queryKey: ({
@@ -12,26 +12,34 @@ export const { useQuery: useRepayBands } = queryFactory({
     userCollateral = '0',
     userBorrowed = '0',
     userAddress,
-  }: RepayFromCollateralParams) =>
+    leverageEnabled,
+  }: RepayParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
       'repayBands',
       { stateCollateral },
       { userCollateral },
       { userBorrowed },
+      { leverageEnabled },
     ] as const,
   queryFn: async ({
     marketId,
     stateCollateral,
     userCollateral,
     userBorrowed,
-  }: RepayFromCollateralQuery): Promise<[number, number]> => {
+    leverageEnabled,
+  }: RepayQuery): Promise<[number, number]> => {
     const market = getLlamaMarket(marketId)
+    if (!leverageEnabled) {
+      console.assert(!+userCollateral, 'userCollateral should be 0 when leverage is disabled')
+      console.assert(!+stateCollateral, 'stateCollateral should be 0 when leverage is disabled')
+      return market.repayBands(userBorrowed)
+    }
     return market instanceof LendMarketTemplate
       ? await market.leverage.repayBands(stateCollateral, userCollateral, userBorrowed)
       : market.leverageV2.hasLeverage()
         ? await market.leverageV2.repayBands(stateCollateral, userCollateral, userBorrowed)
         : await market.deleverage.repayBands(userCollateral)
   },
-  validationSuite: repayFromCollateralValidationSuite,
+  validationSuite: repayValidationSuite({ leverageRequired: false }),
 })

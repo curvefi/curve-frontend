@@ -2,8 +2,8 @@ import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import type { Decimal } from '@ui-kit/utils'
-import { type RepayFromCollateralParams, type RepayFromCollateralQuery } from '../validation/manage-loan.types'
-import { repayFromCollateralValidationSuite } from '../validation/manage-loan.validation'
+import { type RepayParams, type RepayQuery } from '../validation/manage-loan.types'
+import { repayValidationSuite } from '../validation/manage-loan.validation'
 
 export const { useQuery: useRepayPrices } = queryFactory({
   queryKey: ({
@@ -13,16 +13,21 @@ export const { useQuery: useRepayPrices } = queryFactory({
     userCollateral = '0',
     userBorrowed = '0',
     userAddress,
-  }: RepayFromCollateralParams) =>
+    leverageEnabled,
+  }: RepayParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
       'repayPrices',
       { stateCollateral },
       { userCollateral },
       { userBorrowed },
+      { leverageEnabled },
     ] as const,
-  queryFn: async ({ marketId, stateCollateral, userCollateral, userBorrowed }: RepayFromCollateralQuery) => {
+  queryFn: async ({ marketId, stateCollateral, userCollateral, userBorrowed, leverageEnabled }: RepayQuery) => {
     const market = getLlamaMarket(marketId)
+    if (!leverageEnabled) {
+      return (await market.repayPrices(userBorrowed)) as Decimal[]
+    }
     return (
       market instanceof LendMarketTemplate
         ? await market.leverage.repayPrices(stateCollateral, userCollateral, userBorrowed)
@@ -31,5 +36,5 @@ export const { useQuery: useRepayPrices } = queryFactory({
           : await market.deleverage.repayPrices(userCollateral)
     ) as Decimal[]
   },
-  validationSuite: repayFromCollateralValidationSuite,
+  validationSuite: repayValidationSuite({ leverageRequired: false }),
 })

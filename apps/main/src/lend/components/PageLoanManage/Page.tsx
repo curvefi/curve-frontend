@@ -130,13 +130,7 @@ const Page = () => {
     <>
       <DetailPageStack>
         <AppPageFormsWrapper>
-          {rChainId && rOwmId && (
-            <ManageLoanTabs
-              isInSoftLiquidation={isInSoftLiquidation}
-              {...pageProps}
-              borrowPositionDetails={borrowPositionDetails}
-            />
-          )}
+          {rChainId && rOwmId && <ManageLoanTabs isInSoftLiquidation={isInSoftLiquidation} {...pageProps} />}
         </AppPageFormsWrapper>
         <Stack flexDirection="column" flexGrow={1} sx={{ gap: Spacing.md }}>
           <CampaignRewardsBanner

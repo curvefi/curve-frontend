@@ -71,7 +71,7 @@ export const validateMaxCollateral = (
   })
 }
 
-export const validateIsFull = (value: boolean | undefined | null) => {
+export const validateBoolean = (value: boolean | undefined | null) => {
   test('root', 'Form is not completely filled out', () => {
     enforce(value).isBoolean()
   })
