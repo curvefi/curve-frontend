@@ -1,6 +1,5 @@
 import { type ReactNode } from 'react'
 import daoNetworks from '@/dao/networks'
-import { DEX_POOL_ALERT_BANNER_PORTAL_ID } from '@/dex/components/PoolAlertBanner'
 import { useDexAppStats, useDexRoutes } from '@/dex/hooks/useDexAppStats'
 import lendNetworks from '@/lend/networks'
 import { useLlamalendAppStats } from '@/llamalend/hooks/useLlamalendAppStats'
@@ -81,7 +80,6 @@ export const GlobalLayout = <TId extends string, TChainId extends number>({
       appStats={useAppStats(currentApp, network)}
       routes={useAppRoutes(network)}
     />
-    {currentApp === 'dex' && <Box id={DEX_POOL_ALERT_BANNER_PORTAL_ID} />}
     <Box
       component="main"
       sx={{ margin: `0 auto`, maxWidth: `var(--width)`, minHeight: MinHeight.pageContent, width: '100%' }}

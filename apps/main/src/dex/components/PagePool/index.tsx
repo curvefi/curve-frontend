@@ -46,7 +46,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { type TabOption, TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import PoolAlertBanner from '../PoolAlertBanner'
+import { PoolAlertBanner } from '../PoolAlertBanner'
 
 const DEFAULT_SEED: Seed = { isSeed: null, loaded: false }
 const { MaxWidth } = SizesAndSpaces
