@@ -64,7 +64,7 @@ export const Dex = () => (
       <Title>{t`Immutability and Irreversibility of Transactions`}</Title>
       <Paragraph>{t`When you engage in transactions on Ethereum or EVM-compatible blockchains, it is important to understand that these transactions are immutable and irreversible. Once a transaction is confirmed and recorded on the blockchain, it cannot be modified, reversed, or deleted. This means that if a user sends funds to an incorrect address or engage in a fraudulent transaction, it may not be possible to recover the funds. It is crucial to exercise caution, verify transaction details, and use secure wallets to minimize the risk of irreversible transactions.`}</Paragraph>
     </Section>
-    
+
     <Section>
       <Title>{t`Malicious Behaviour Risks`}</Title>
       <Paragraph>{t`Activity on decentralized exchanges may be exposed to malicious or unexpected behaviour by third parties or automated actors. Such behaviour can include front-running, sandwich attacks, or rug pulls on tokens listed by external parties. These risks are inherent to permissionless systems and cannot be fully mitigated by Curve or any related entities.`}</Paragraph>
