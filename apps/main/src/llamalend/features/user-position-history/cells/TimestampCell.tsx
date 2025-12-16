@@ -1,4 +1,3 @@
-import { useCallback } from 'react'
 import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
@@ -18,21 +17,16 @@ export const TimestampCell = ({
   },
 }: CellContext<ParsedUserCollateralEvent, any>) => {
   const isMobile = useIsMobile()
-  const handleClick = useCallback(() => {
-    // On mobile, don't handle click to allow row expansion
-    if (!isMobile && txUrl) {
-      window.open(txUrl, '_blank')
-    }
-  }, [txUrl, isMobile])
+  const clickable = !isMobile && txUrl // on mobile we use row expansion
 
   return (
-    <HistoryTableCell onClick={isMobile ? undefined : handleClick} sx={{ gap: Spacing.xxs }}>
+    <HistoryTableCell onClick={clickable ? () => window.open(txUrl, '_blank') : undefined} sx={{ gap: Spacing.xxs }}>
       <Typography variant="tableCellMBold">{formatDate(timestamp, 'short')}</Typography>
       <Stack direction="row" alignItems="center" justifyContent="end" gap={Spacing.xs}>
         <Typography variant="bodySBold" sx={(t) => ({ color: t.design.Text.TextColors.Secondary })}>
           {formatTime(timestamp)}
         </Typography>
-        {!isMobile && (
+        {clickable && (
           <ArrowOutwardIcon
             className={ClickableInRowClass}
             sx={{ fontSize: 20, color: (t) => t.design.Text.TextColors.Secondary }}
