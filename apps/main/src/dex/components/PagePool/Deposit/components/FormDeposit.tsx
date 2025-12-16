@@ -298,7 +298,7 @@ const FormDeposit = ({
         />
       </div>
 
-      {poolAlert?.message && poolAlert?.isInformationOnlyAndShowInForm && (
+      {poolAlert && poolAlert?.isInformationOnlyAndShowInForm && (
         <AlertBox {...poolAlert}>{poolAlert.message}</AlertBox>
       )}
 

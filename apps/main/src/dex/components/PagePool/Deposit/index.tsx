@@ -51,7 +51,7 @@ const Deposit = ({ hasDepositAndStake, ...transferProps }: TransferProps & { has
 
       <AppFormContentWrapper>
         {poolAlert && poolAlert.isDisableDeposit ? (
-          poolAlert.message && <AlertBox {...poolAlert}>{poolAlert.message}</AlertBox>
+          <AlertBox {...poolAlert}>{poolAlert.message}</AlertBox>
         ) : (
           <>
             {formType === 'DEPOSIT' && <FormDeposit hasDepositAndStake={hasDepositAndStake} {...transferProps} />}
