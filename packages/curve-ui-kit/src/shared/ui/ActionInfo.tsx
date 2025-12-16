@@ -88,7 +88,7 @@ const valueSize = {
   large: 'headingSBold',
 } as const satisfies Record<ActionInfoSize, TypographyVariantKey>
 
-const isSet = (v: ReactNode) => v != null && v !== ''
+const isSet = (v: ReactNode) => v || v === 0
 
 const ActionInfo = ({
   label,

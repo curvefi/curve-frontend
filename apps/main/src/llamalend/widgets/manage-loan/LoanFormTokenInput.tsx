@@ -71,18 +71,18 @@ export const LoanFormTokenInput = <
     tokenAddress: token?.address,
   })
 
-  const position = positionBalance?.position
+  const { position, tooltip } = positionBalance ?? {}
   const walletBalance = useMemo(
     // todo: support separate isLoading for balance and for maxBalance in LargeTokenInput
     () => ({
-      balance: position ? position.data : balance,
+      balance: position?.data ?? balance,
       symbol: token?.symbol,
-      loading: position ? position.isLoading : isBalanceLoading,
+      loading: position?.isLoading ?? isBalanceLoading,
       usdRate,
-      tooltip: positionBalance?.tooltip,
+      tooltip: tooltip,
       prefix: position && LlamaIcon,
     }),
-    [balance, isBalanceLoading, token?.symbol, usdRate, positionBalance?.tooltip, position],
+    [balance, isBalanceLoading, token?.symbol, usdRate, tooltip, position],
   )
 
   const errors = form.formState.errors as PartialRecord<FieldPath<TFieldValues>, Error>

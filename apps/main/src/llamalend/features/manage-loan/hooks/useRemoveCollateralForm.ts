@@ -133,16 +133,18 @@ export const useRemoveCollateralForm = <
 
   const expectedCollateral = useMemo(
     () =>
-      mapQuery(userState, (state) => {
-        // An error will be thrown by the validation suite, this is just for preventing negative collateral in the UI
-        const value =
-          state?.collateral != null &&
-          values.userCollateral != null &&
-          decimal(
-            BigNumber.max(new BigNumber(state.collateral).minus(new BigNumber(values.userCollateral)), '0').toString(),
-          )
-        return value ? { value, tokenSymbol: collateralToken?.symbol } : null
-      }),
+      // An error will be thrown by the validation suite, the "max" is just for preventing negative collateral in the UI
+      mapQuery(
+        userState,
+        (state) =>
+          state.collateral &&
+          values.userCollateral && {
+            value: decimal(
+              BigNumber.max('0', new BigNumber(state.collateral).minus(new BigNumber(values.userCollateral))),
+            ) as Decimal,
+            tokenSymbol: collateralToken?.symbol,
+          },
+      ),
     [collateralToken?.symbol, userState, values.userCollateral],
   )
 
