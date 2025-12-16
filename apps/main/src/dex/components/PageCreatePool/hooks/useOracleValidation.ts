@@ -19,7 +19,7 @@ export const useOracleValidation = ({ token, tokenId }: UseOracleValidationParam
   const oracleAddress = token.oracle.address
   const oracleFunction = token.oracle.functionName
 
-  const hasValidAddress = oracleAddress.length === 42 && isAddress(oracleAddress)
+  const hasValidAddress = isAddress(oracleAddress)
   const hasValidFunction = oracleFunction !== '' && validateOracleFunction(oracleFunction)
   const enabled = hasValidAddress && hasValidFunction
 
