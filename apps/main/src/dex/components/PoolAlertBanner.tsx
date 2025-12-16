@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import { createPortal } from 'react-dom'
+import { useIsDesktop } from '@ui-kit/hooks/useBreakpoints'
 import { useDismissBanner } from '@ui-kit/hooks/useLocalStorage'
 import { Banner, BannerProps } from '@ui-kit/shared/ui/Banner'
 import { AlertType, PoolAlert } from '../types/main.types'
@@ -25,7 +26,9 @@ export const PoolAlertBanner = ({
   alertType: AlertType
 }) => {
   const { shouldShowBanner, dismissBanner } = useDismissBanner(poolAlertBannerKey, ONE_DAY_MS)
-  const portalTarget = useMemo(() => document.getElementsByTagName('header')[0], [])
+  const isDesktop = useIsDesktop()
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- isDesktop triggers re-query when header changes (desktop ↔ mobile)
+  const portalTarget = useMemo(() => document.getElementsByTagName('header')[0], [isDesktop])
   const severity = alertTypeToBannerSeverity[alertType]
 
   return (
