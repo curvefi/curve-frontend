@@ -7,7 +7,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 
-export const MessageWrapper = ({ children }: { children: React.ReactNode }) => (
+export const PoolAlertMessage = ({ children }: { children: React.ReactNode }) => (
   <Stack
     alignItems="flex-start"
     spacing={Spacing.sm}

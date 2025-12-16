@@ -4,7 +4,7 @@ import { PoolAlert, PoolData, PoolDataCache, type UrlParams } from '@/dex/types/
 import { useParams } from '@ui-kit/hooks/router'
 import { t, Trans } from '@ui-kit/lib/i18n'
 import { getInternalUrl } from '@ui-kit/shared/routes'
-import { ExternalLink, InternalLink, MessageWrapper } from '../components/pool-alert-messages'
+import { ExternalLink, InternalLink, PoolAlertMessage } from '../components/pool-alert-messages'
 
 const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
   const params = useParams<UrlParams>()
@@ -26,9 +26,9 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
       },
       /* TODO: use Typography component instead of p tag */
       message: (
-        <MessageWrapper>
+        <PoolAlertMessage>
           <p>{t`Deposit disabled.`}</p>
-        </MessageWrapper>
+        </PoolAlertMessage>
       ),
     })
     const geistFinanceAlert = (): PoolAlert => ({
@@ -43,9 +43,9 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
         learnMoreUrl: 'https://twitter.com/geistfinance',
       },
       message: (
-        <MessageWrapper>
+        <PoolAlertMessage>
           <p>{t`This pool is in withdraw only mode.`}</p>
-        </MessageWrapper>
+        </PoolAlertMessage>
       ),
     })
     const yPrismaAlert = (): PoolAlert => {
@@ -60,9 +60,9 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
         isCloseOnTooltipOnly: true,
         alertType: 'warning',
         message: (
-          <MessageWrapper>
+          <PoolAlertMessage>
             <p>{t`Deposit disabled.`}</p>
-          </MessageWrapper>
+          </PoolAlertMessage>
         ),
         banner: {
           title: t`Deprecated Pool`,
@@ -86,7 +86,7 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
         learnMoreUrl: 'https://gov.curve.finance/t/kill-gauges-on-all-non-susd-curve-pools-on-ethereum/10033/2',
       },
       message: (
-        <MessageWrapper>
+        <PoolAlertMessage>
           <p>
             <Trans>
               Please note that exchanges on synthetix synths are expected to be disabled and users can either withdraw
@@ -108,7 +108,7 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
               Please note that sUSD is not involved, so these would be on the other pools sETH, sBTC, sForex ...
             </Trans>
           </p>
-        </MessageWrapper>
+        </PoolAlertMessage>
       ),
     })
     const ironbankAlert = (): PoolAlert => ({
@@ -120,9 +120,9 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
         subtitle: t`The Ironbank protocol is deprecated. Please do not supply liquidity to this pool.`,
       },
       message: (
-        <MessageWrapper>
+        <PoolAlertMessage>
           <p>{t`Deposit disabled.`}</p>
-        </MessageWrapper>
+        </PoolAlertMessage>
       ),
     })
     const synthetixUsdAlert = (): PoolAlert => ({
@@ -137,9 +137,9 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
         learnMoreUrl: 'https://x.com/synthetix_io/status/1953054538610688198',
       },
       message: (
-        <MessageWrapper>
+        <PoolAlertMessage>
           <p>{t`This pool is in withdraw only mode.`}</p>
-        </MessageWrapper>
+        </PoolAlertMessage>
       ),
     })
     const yieldbasisAlert = (): PoolAlert => ({
@@ -157,13 +157,13 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
         learnMoreUrl: 'https://yieldbasis.com',
       },
       message: (
-        <MessageWrapper>
+        <PoolAlertMessage>
           <p>
             <Trans>
               Deposit on <ExternalLink href="https://yieldbasis.com">yieldbasis.com</ExternalLink>
             </Trans>
           </p>
-        </MessageWrapper>
+        </PoolAlertMessage>
       ),
     })
 
@@ -177,9 +177,9 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
         subtitle: t`USPD has been exploited. This pool has been disabled to prevent new users from loss of funds.`,
       },
       message: (
-        <MessageWrapper>
+        <PoolAlertMessage>
           <p>{t`Deposit disabled. We recommend exiting this pool.`}</p>
-        </MessageWrapper>
+        </PoolAlertMessage>
       ),
     })
 
@@ -189,14 +189,14 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
       isCloseOnTooltipOnly: true,
       isInformationOnlyAndShowInForm: true,
       message: (
-        <MessageWrapper>
+        <PoolAlertMessage>
           <p>
             <Trans>
               Deposit and Swap with wBTC.e will return an error due to an Aave community decision to freeze this asset.{' '}
               <ExternalLink href="https://app.aave.com/governance/v3/proposal/?proposalId=2">More details</ExternalLink>
             </Trans>
           </p>
-        </MessageWrapper>
+        </PoolAlertMessage>
       ),
     })
 
@@ -212,9 +212,9 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
         learnMoreUrl: 'https://hackmd.io/@LlamaRisk/BJzSKHNjn',
       },
       message: (
-        <MessageWrapper>
+        <PoolAlertMessage>
           <p>{t`Deposit disabled. We recommend exiting this pool.`}</p>
-        </MessageWrapper>
+        </PoolAlertMessage>
       ),
     })
 
@@ -229,9 +229,9 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
         learnMoreUrl: 'https://twitter.com/CurveFinance/status/1685925429041917952',
       },
       message: (
-        <MessageWrapper>
+        <PoolAlertMessage>
           <p>{t`Deposit disabled. We recommend exiting this pool.`}</p>
-        </MessageWrapper>
+        </PoolAlertMessage>
       ),
     })
 
@@ -248,9 +248,9 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
         subtitle: t`This pool has been misconfigured. It has been set to withdraw only. To minimize impact withdraw in balanced proportion instead of single sided.`,
       },
       message: (
-        <MessageWrapper>
+        <PoolAlertMessage>
           <p>{t`This pool is in withdraw only mode.`}</p>
-        </MessageWrapper>
+        </PoolAlertMessage>
       ),
     })
 
