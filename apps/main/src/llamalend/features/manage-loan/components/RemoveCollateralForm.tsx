@@ -9,9 +9,7 @@ import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
-import { Balance } from '@ui-kit/shared/ui/Balance'
 import { InputDivider } from '../../../widgets/InputDivider'
-import { setValueOptions } from '../../borrow/react-form.utils'
 import { useRemoveCollateralForm } from '../hooks/useRemoveCollateralForm'
 
 export const RemoveCollateralForm = <ChainId extends IChainId>({
@@ -94,16 +92,6 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
             position: maxRemovable,
             tooltip: t`Max Removable Collateral`,
           }}
-          message={
-            <Balance
-              prefix={t`Max removable:`}
-              tooltip={t`Max removable`}
-              symbol={collateralToken?.symbol}
-              balance={maxRemovable.data}
-              loading={maxRemovable.isLoading}
-              onClick={() => form.setValue('userCollateral', maxRemovable.data, setValueOptions)}
-            />
-          }
         />
       </Stack>
 
