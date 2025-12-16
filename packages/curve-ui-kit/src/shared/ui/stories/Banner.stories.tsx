@@ -1,8 +1,6 @@
 import { fn } from 'storybook/test'
 import Box from '@mui/material/Box'
 import { Meta, StoryObj } from '@storybook/react-vite'
-import { LlamaIcon } from '@ui-kit/shared/icons/LlamaIcon'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Banner } from '../Banner'
 
 const meta: Meta<typeof Banner> = {
@@ -24,16 +22,29 @@ const meta: Meta<typeof Banner> = {
   argTypes: {
     severity: {
       control: 'select',
-      options: ['error', 'warning', 'info'],
+      options: ['error', 'warning', 'info', 'highlight'],
       description: 'The severity level of the banner message',
+    },
+    learnMoreUrl: {
+      control: 'text',
+      description: 'The URL to navigate to when clicking the learn more button',
     },
     buttonText: {
       control: 'text',
       description: 'Text for the action button (optional)',
     },
+    icon: {
+      control: 'select',
+      options: ['llama', 'info', 'highlight', 'warning', 'alert'],
+      description: 'The icon to display before the title',
+    },
     onClick: {
       action: 'clicked',
       description: 'Function called when the button is clicked',
+    },
+    subtitle: {
+      control: 'text',
+      description: 'Subtitle for the banner message (optional)',
     },
   },
 }
@@ -41,31 +52,32 @@ const meta: Meta<typeof Banner> = {
 export default meta
 type Story = StoryObj<typeof Banner>
 
-export const Error: Story = {
-  args: {
-    severity: 'alert',
-    children: 'This is an alert message',
-  },
-}
-
-export const Warning: Story = {
-  args: {
-    severity: 'warning',
-    children: 'This is a warning message',
-  },
-}
-
 export const Info: Story = {
   args: {
-    severity: 'default',
+    severity: 'info',
     children: 'This is a default message',
+    subtitle: 'This is a subtitle for the default message',
   },
 }
-
 export const Highlight: Story = {
   args: {
     severity: 'highlight',
     children: 'This is a highlight message',
+    subtitle: 'This is a subtitle for the highlight message',
+  },
+}
+export const Warning: Story = {
+  args: {
+    severity: 'warning',
+    children: 'This is a warning message',
+    subtitle: 'This is a subtitle for the warning message',
+  },
+}
+export const Error: Story = {
+  args: {
+    severity: 'alert',
+    children: 'This is an alert message',
+    subtitle: 'This is a subtitle for the alert message',
   },
 }
 
@@ -77,25 +89,19 @@ export const WithButton: Story = {
     onClick: fn(),
   },
 }
-
-const { IconSize } = SizesAndSpaces
-
-export const WithIcon: Story = {
+export const WithLearnMoreUrl: Story = {
   args: {
-    buttonText: 'Disable Beta Mode',
-    children: (
-      <>
-        <LlamaIcon sx={{ width: IconSize.sm, height: IconSize.sm }} /> BETA MODE ENABLED
-      </>
-    ),
+    severity: 'alert',
+    children: 'This is an error message with a learn more URL',
+    learnMoreUrl: 'https://www.curve.finance',
   },
 }
 
-export const NetworkSwitchExample: Story = {
+export const WithCustomIcon: Story = {
   args: {
-    severity: 'alert',
-    buttonText: 'Change network',
-    children: "Please switch your wallet's network to Ethereum to use Curve on Ethereum.",
+    buttonText: 'Disable Beta Mode',
+    children: 'BETA MODE ENABLED',
+    icon: 'llama',
   },
 }
 
@@ -105,11 +111,10 @@ export const MaintenanceExample: Story = {
     children: 'Scheduled maintenance in progress. Some features may be temporarily unavailable.',
   },
 }
-
-export const ApiErrorExample: Story = {
+export const LongErrorExample: Story = {
   args: {
     severity: 'alert',
     children:
-      'There is an issue connecting to the API. You can try switching your RPC or, if you are connected to a wallet, please switch to a different one.',
+      'There is an issue connecting to the API. Please try to switch your RPC in your wallet settings. There is an issue connecting to the API. Please try to switch your RPC in your wallet settings.',
   },
 }

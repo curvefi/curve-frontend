@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { useUserMarketStats } from '@/llamalend/entities/llama-market-stats'
-import type { LlamaMarket } from '@/llamalend/entities/llama-markets'
+import { useUserMarketStats } from '@/llamalend/queries/market-list/llama-market-stats'
+import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import Stack from '@mui/material/Stack'
 import type { Theme } from '@mui/material/styles'
 import { t } from '@ui-kit/lib/i18n'
@@ -13,21 +13,33 @@ import { LlamaMarketColumnId } from '../../columns.enum'
 
 const { IconSize, Spacing } = SizesAndSpaces
 
-type BackgroundColor = (theme: Theme) => string
-const info: BackgroundColor = (t) => t.design.Layer.Feedback.Info
-const red: BackgroundColor = (t) => t.design.Layer.Feedback.Error
-const orange: BackgroundColor = (t) => t.design.Color.Tertiary[400]
+const ColorStates = {
+  info: {
+    bg: (t: Theme) => t.design.Layer.Feedback.Info,
+    fg: (t: Theme) => t.design.Layer[1].Outline,
+  },
+  orange: {
+    bg: (t: Theme) => t.design.Color.Tertiary[400],
+    fg: (t: Theme) => t.design.Layer[1].Outline,
+  },
+  red: {
+    bg: (t: Theme) => t.design.Layer.Feedback.Error,
+    fg: (t: Theme) => t.design.Text.TextColors.FilledFeedback.Alert.Primary,
+  },
+}
+type ColorState = keyof typeof ColorStates
 
 /**
- * Function to be called in useEffect that calls the given method in interval to create a flicker effect.
+ * Creates a flicker effect by toggling between orange and red colors
+ * @returns Cleanup function to stop the flicker interval
  */
 const flickerEffect = (
-  setBackgroundColor: (value: (prevState: BackgroundColor) => BackgroundColor) => void,
+  setState: (value: (prevState: ColorState) => ColorState) => void,
   duration = Duration.Flicker,
 ) => {
   let timeoutId: ReturnType<typeof setTimeout>
   const flicker = () => {
-    setBackgroundColor((prev: BackgroundColor) => (prev === orange ? red : orange))
+    setState((prev: ColorState) => (prev === 'orange' ? 'red' : 'orange'))
     timeoutId = setTimeout(flicker, duration)
   }
   flicker()
@@ -35,30 +47,34 @@ const flickerEffect = (
 }
 
 export const UserPositionIndicator = ({ market }: { market: LlamaMarket }) => {
-  const isSoftLiquidation = useUserMarketStats(market, LlamaMarketColumnId.UserHealth)?.data?.softLiquidation
-  const [backgroundColor, setBackgroundColor] = useState<BackgroundColor>(() => info)
+  const { softLiquidation, liquidated } = useUserMarketStats(market, LlamaMarketColumnId.UserHealth)?.data ?? {}
+  const [colorState, setColorState] = useState<ColorState>('info')
+
   useEffect(
-    () => (isSoftLiquidation ? flickerEffect(setBackgroundColor) : setBackgroundColor(() => info)),
-    [isSoftLiquidation],
+    () => (softLiquidation ? flickerEffect(setColorState) : liquidated ? setColorState('red') : setColorState('info')),
+    [softLiquidation, liquidated],
   )
+
   return (
     <Tooltip
       title={
-        isSoftLiquidation
+        softLiquidation
           ? t`Your position in this market is in soft liquidation`
-          : t`You have a position in this market`
+          : liquidated
+            ? t`Your position in this market has been liquidated`
+            : t`You have a position in this market`
       }
     >
       <Stack
         sx={{
-          backgroundColor,
+          backgroundColor: ColorStates[colorState].bg,
           alignSelf: 'stretch',
           justifyContent: 'center',
           marginInlineStart: mapBreakpoints(Spacing.md, (v) => `-${v}`), // negative padding to offset the padding of the cell
           marginInlineEnd: Spacing.sm,
         }}
       >
-        <LlamaIcon sx={{ color: (t) => t.design.Layer[1].Outline, width: IconSize.md, height: IconSize.md }} />
+        <LlamaIcon sx={{ color: ColorStates[colorState].fg, width: IconSize.md, height: IconSize.md }} />
       </Stack>
     </Tooltip>
   )

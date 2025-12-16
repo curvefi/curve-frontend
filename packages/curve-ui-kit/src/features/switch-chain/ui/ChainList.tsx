@@ -7,7 +7,7 @@ import MenuList from '@mui/material/MenuList'
 import type { NetworkDef } from '@ui/utils'
 import { usePathname } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
-import { AppNames } from '@ui-kit/shared/routes'
+import { getCurrentApp, getInternalUrl } from '@ui-kit/shared/routes'
 import { MenuItem } from '@ui-kit/shared/ui/MenuItem'
 import { MenuSectionHeader } from '@ui-kit/shared/ui/MenuSectionHeader'
 import { RouterLink as Link } from '@ui-kit/shared/ui/RouterLink'
@@ -19,27 +19,16 @@ enum ChainType {
   main = 'main',
 }
 
-/**
- * Returns a new pathname with a different network
- * @param pathname The current pathname
- * @param networkId The new network ID
- * @returns The new pathname
- */
-function getNetworkPathname(pathname: string, networkId: string) {
-  const [, appName = AppNames[0], , ...rest] = pathname.split('/')
-  return ['', appName, networkId, ...rest].join('/')
-}
-
 export function ChainList({
   options,
   showTestnets,
-  selectedNetwork,
+  selectedNetworkId,
 }: {
   options: NetworkDef[]
   showTestnets: boolean
-  selectedNetwork: NetworkDef | undefined
+  selectedNetworkId: string | undefined
 }) {
-  const pathname = usePathname() || ''
+  const pathname = usePathname()
   const [searchValue, setSearchValue] = useState('')
   const groupedOptions = useMemo(
     () =>
@@ -73,14 +62,15 @@ export function ChainList({
                 {showTestnets && <MenuSectionHeader>{chainTypeNames[key as ChainType]}</MenuSectionHeader>}
                 <MenuList>
                   {networks.map((network) => (
-                    <MenuItem<number, typeof Link>
-                      data-testid={`menu-item-chain-${network.chainId}`}
-                      key={network.chainId}
-                      value={network.chainId}
+                    <MenuItem<string, typeof Link>
+                      data-testid={`menu-item-chain-${network.id}`}
+                      key={network.id}
+                      value={network.id}
                       component={Link}
-                      href={getNetworkPathname(pathname, network.id)}
-                      isSelected={network.chainId == selectedNetwork?.chainId}
-                      icon={<ChainSwitcherIcon network={network} size={36} />}
+                      // navigate to app root to avoid deep-linking to non-existing resources across chains
+                      href={getInternalUrl(getCurrentApp(pathname), network.id)}
+                      isSelected={network.id == selectedNetworkId}
+                      icon={<ChainSwitcherIcon networkId={network.id} size={36} />}
                       label={network.name}
                     />
                   ))}

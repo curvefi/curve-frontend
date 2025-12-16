@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useEffectEvent, useState } from 'react'
 import FormLockCreate from '@/dao/components/PageVeCrv/components/FormLockCreate'
 import FormLockCrv from '@/dao/components/PageVeCrv/components/FormLockCrv'
 import FormLockDate from '@/dao/components/PageVeCrv/components/FormLockDate'
@@ -6,7 +6,7 @@ import FormWithdraw from '@/dao/components/PageVeCrv/components/FormWithdraw'
 import type { FormType, PageVecrv } from '@/dao/components/PageVeCrv/types'
 import useStore from '@/dao/store/useStore'
 import Stack from '@mui/material/Stack'
-import { isLoading, useConnection } from '@ui-kit/features/connect-wallet'
+import { isLoading, useCurve } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { t } from '@ui-kit/lib/i18n'
 import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
@@ -17,7 +17,7 @@ const { Spacing } = SizesAndSpaces
 const FormCrvLocker = (pageProps: PageVecrv) => {
   const { curve, rFormType, vecrvInfo } = pageProps
 
-  const { connectState } = useConnection()
+  const { connectState } = useCurve()
   const isLoadingCurve = isLoading(connectState)
   const isPageVisible = useLayoutStore((state) => state.isPageVisible)
   const setFormValues = useStore((state) => state.lockedCrv.setFormValues)
@@ -33,9 +33,7 @@ const FormCrvLocker = (pageProps: PageVecrv) => {
   ]
   const [tab, setTab] = useState<FormType>(rFormType ?? 'adjust_crv')
 
-  const setData = useCallback(async () => {
-    setFormValues(curve, isLoadingCurve, tab, {}, vecrvInfo, true)
-  }, [curve, isLoadingCurve, vecrvInfo, tab, setFormValues])
+  const setData = useEffectEvent(() => setFormValues(curve, isLoadingCurve, tab, {}, vecrvInfo, true))
 
   useEffect(() => {
     if (canUnlock) {
@@ -53,8 +51,7 @@ const FormCrvLocker = (pageProps: PageVecrv) => {
 
   // fetch locked crv data
   useEffect(() => {
-    void setData()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    setData()
   }, [chainId, signerAddress, isPageVisible])
 
   return tab === 'adjust_crv' || tab === 'adjust_date' || tab === 'withdraw' ? (

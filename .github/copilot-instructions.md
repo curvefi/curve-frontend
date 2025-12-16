@@ -73,7 +73,7 @@ src/[domain]/
 - React 19 with TypeScript
 - TanStack Router for routing
 - TanStack Query for data fetching
-- Node.js 22 (required)
+- Node.js LTS version (required)
 - Yarn 4 workspaces
 
 **State & Data:**
@@ -106,7 +106,6 @@ Routes are defined in `/apps/main/src/routes/` with a hierarchical structure:
 // Root route with global layout
 export const rootRoute = createRootRoute({
   component: RootLayout,
-  loader: getNetworkDefs,
 })
 
 // Domain layout route
@@ -119,7 +118,7 @@ export const dexLayoutRoute = createRoute({
 // Feature route
 export const poolRoute = createRoute({
   getParentRoute: () => dexLayoutRoute,
-  path: '$network/pool/$poolId',
+  path: '$network/pool/$poolIdOrAddress',
   component: PagePool,
   head: () => ({ meta: [{ title: 'Pool - Curve' }] }),
 })

@@ -1,5 +1,5 @@
 import { ReactElement } from 'react'
-import { type LlamaMarket } from '@/llamalend/entities/llama-markets'
+import { type LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { TooltipItem, TooltipItems } from '@/llamalend/widgets/tooltips/TooltipComponents'
 import type { Chain } from '@curvefi/prices-api'
 import Stack from '@mui/material/Stack'

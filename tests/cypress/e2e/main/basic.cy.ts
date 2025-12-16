@@ -1,23 +1,21 @@
 import { oneOf } from '@cy/support/generators'
-import { LOAD_TIMEOUT } from '@cy/support/ui'
+import { API_LOAD_TIMEOUT, LOAD_TIMEOUT } from '@cy/support/ui'
 
 describe('Basic Access Test', () => {
   const path = oneOf('/', '/dex')
 
-  // note: this is moved to be the first in the file, as firefox might cache the 200 response from other tests
-  it('should show an error page on 500', () => {
-    // note: app should work without lite networks, but that's not the case, so test error boundary with it
-    cy.intercept(`https://api-core.curve.finance/v1/getPlatforms`, { statusCode: 500 }).as('error')
-    cy.visit('/dex/ethereum/pools', { failOnStatusCode: false })
-    cy.wait('@error')
-    cy.get('[data-testid="error-title"]').should('contain.text', 'Unexpected Error')
-    cy.get('[data-testid="retry-error-button"]').click()
-    cy.wait('@error') // error called again
+  it('should support default networks if the lite API is offline', () => {
+    cy.intercept(`https://api-core.curve.finance/v1/getPlatforms`, { status: 500 }).as('error')
+    cy.visit('/dex/corn/pools')
+    cy.wait('@error', LOAD_TIMEOUT)
+    cy.title(LOAD_TIMEOUT).should('equal', 'Pools - Curve')
+    cy.get('[data-testid="error-title"]').should('not.exist')
+    cy.url().should('include', '/dex/ethereum/pools')
   })
 
-  it(`should open the Main DApp successfully at ${path}`, () => {
+  it(`should open the DEX app successfully at ${path}`, () => {
     cy.visit(path)
-    cy.title(LOAD_TIMEOUT).should('equal', 'Pools - Curve')
+    cy.title(LOAD_TIMEOUT).should('equal', 'Swap - Curve')
     cy.url().should('include', '/dex')
   })
 
@@ -36,5 +34,21 @@ describe('Basic Access Test', () => {
   it('should show an error page on 404', () => {
     cy.visit('/non-existing-page', { failOnStatusCode: false })
     cy.get('[data-testid="error-subtitle"]').should('contain.text', 'Page Not Found')
+  })
+
+  it('should load for lite networks', () => {
+    cy.visitWithoutTestConnector('dex/corn/pools')
+    cy.title(LOAD_TIMEOUT).should('equal', 'Pools - Curve')
+    cy.url().should('include', '/dex/corn/pools')
+    cy.contains(/LBTC\/wBTCN/i, API_LOAD_TIMEOUT).should('be.visible')
+  })
+
+  it('shows 404 on /dex/:network/pools/404', () => {
+    cy.visit('/dex/ethereum/pools/404', { failOnStatusCode: false })
+    cy.get('[data-testid="error-subtitle"]', LOAD_TIMEOUT).should('contain.text', 'Not Found')
+    cy.url().should('include', '/dex/ethereum/pools/404/deposit')
+    cy.get('[data-testid="continue-button"]').click()
+    cy.get('[data-testid="data-table-head"]', LOAD_TIMEOUT).should('be.visible') // on the pools list page
+    cy.get('[data-testid="error-subtitle"]').should('not.exist')
   })
 })

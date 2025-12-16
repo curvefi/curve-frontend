@@ -3,7 +3,7 @@ import networks from '@/loan/networks'
 import Box from '@ui/Box'
 import Tooltip from '@ui/Tooltip/TooltipButton'
 import { Chip } from '@ui/Typography'
-import { formatNumber, getFractionDigitsOptions, convertDate, convertTimeAgo, formatDate } from '@ui/utils'
+import { formatNumber, getFractionDigitsOptions, convertDate, convertTimeAgo, formatDate, scanTxPath } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { LiqudityDataProps } from './types'
@@ -13,7 +13,7 @@ const LiquidityData = ({ llammaControllerData, chainId, coins }: LiqudityDataPro
     {coins &&
       llammaControllerData.map((transaction, index) => (
         <TransactionRow key={`${transaction.txHash}-lp-${index}`}>
-          <LiquidityEvent href={networks[chainId].scanTxPath(transaction.txHash)} rel="noopener" target="_blank">
+          <LiquidityEvent href={scanTxPath(networks[chainId], transaction.txHash)} rel="noopener" target="_blank">
             {!!transaction.deposit && (
               <>
                 <Box flex flexColumn>

@@ -59,6 +59,14 @@ jobs:
           ELECTRON_ENABLE_LOGGING: true # send console logs to stdout in electron browser
           NODE_ENV: test
 
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: cypress-component-${{ matrix.browser }}-${{ matrix.count }}
+          path: tests/cypress/screenshots
+          retention-days: 3
+          if-no-files-found: error
+
   cypress-component-rpc:
     name: Cypress component tests with RPC
     if: github.ref_name == 'main'
@@ -88,6 +96,8 @@ jobs:
         with:
           name: cypress-rpc
           path: tests/cypress/screenshots
+          retention-days: 3
+          if-no-files-found: error
 
   cypress-e2e:
     strategy:
@@ -98,7 +108,7 @@ jobs:
         include:
           - browser: chrome
             count: 2
-    name: Cypress in ${{ matrix.browser }} ${{ matrix.count }}
+    name: Cypress e2e tests in ${{ matrix.browser }} ${{ matrix.count }}
     timeout-minutes: 15
     runs-on: ubuntu-latest
     steps:
@@ -114,21 +124,34 @@ jobs:
       - run: yarn build
 
       - name: Start dev server
-        run: yarn start 2>&1 | tee dev-server.log &
+        run: yarn start 2>&1 | tee ../../e2e-dev-${{ matrix.browser }}-${{ matrix.count }}.log &
         working-directory: apps/main
 
-      - run: yarn run cy:run:e2e --browser ${{ matrix.browser }}
+      - name: Start api server
+        run: yarn dev 2>&1 | tee ../../e2e-api-${{ matrix.browser }}-${{ matrix.count }}.log &
+        working-directory: apps/router-api
+
+      - name: e2e tests
         working-directory: tests
+        run: |
+          set -o pipefail # fail tee if the main command fails
+          yarn run cy:run:e2e --browser ${{ matrix.browser }} 2>&1 | tee ../e2e-cypress-${{ matrix.browser }}-${{ matrix.count }}.log
         env:
           ELECTRON_ENABLE_LOGGING: true # send console logs to stdout in electron browser
           NODE_ENV: test
+          CYPRESS_VIDEO: ${{ matrix.browser == 'firefox' && 'false' || 'true' }}  # Firefox doesn't support recording
+
+      - name: Check runtime errors
+        if: always()
+        # todo: add `Cannot destructure .. as it is undefined`
+        run: if grep --ignore-case --extended-regexp "update depth exceeded|many re-renders|unmounted component|non-unique keys|uncontrolled to controlled|properties of undefined" e2e-*.log; then exit 1; fi
 
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: cypress-main-${{ matrix.browser }}-${{ matrix.count }}
+          name: cypress-e2e-${{ matrix.browser }}-${{ matrix.count }}
           path: tests/cypress/screenshots
-          retention-days: 1
+          retention-days: 3
           if-no-files-found: error
 
       - uses: actions/upload-artifact@v4
@@ -136,4 +159,4 @@ jobs:
         with:
           name: dev-server-log-${{ matrix.browser }}-${{ matrix.count }}
           if-no-files-found: error
-          path: apps/main/dev-server.log
+          path: e2e-*.log

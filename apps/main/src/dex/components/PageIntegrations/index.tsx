@@ -2,11 +2,10 @@ import { Key, useCallback, useEffect, useMemo } from 'react'
 import { styled } from 'styled-components'
 import SelectIntegrationTags from '@/dex/components/PageIntegrations/components/SelectIntegrationTags'
 import { parseSearchParams } from '@/dex/components/PageIntegrations/utils'
-import { ROUTE } from '@/dex/constants'
+import { useNetworks } from '@/dex/entities/networks'
 import useStore from '@/dex/store/useStore'
 import type { FormValues } from '@/dex/types/integrations.types'
-import { ChainId, NetworkEnum, type NetworkUrlParams } from '@/dex/types/main.types'
-import { getPath } from '@/dex/utils/utilsRouter'
+import { ChainId } from '@/dex/types/main.types'
 import { useFocusRing } from '@react-aria/focus'
 import Box from '@ui/Box'
 import IntegrationAppComp from '@ui/Integration/IntegrationApp'
@@ -20,11 +19,9 @@ import { Trans } from '@ui-kit/lib/i18n'
 // Update integrations list repo: https://github.com/curvefi/curve-external-integrations
 const IntegrationsComp = ({
   integrationsTags,
-  params,
   rChainId,
 }: {
   integrationsTags: IntegrationsTags
-  params: NetworkUrlParams
   rChainId: ChainId | ''
 }) => {
   const push = useNavigate()
@@ -35,9 +32,9 @@ const IntegrationsComp = ({
   const integrationsList = useStore((state) => state.integrations.integrationsList)
   const results = useStore((state) => state.integrations.results)
   const setFormValues = useStore((state) => state.integrations.setFormValues)
-  const networks = useStore((state) => state.networks.networks)
+
+  const { data: networks } = useNetworks()
   const visibleNetworksList = useMemo(() => Object.values(networks).filter((n) => n.showInSelectNetwork), [networks])
-  const networksIdMapper = useStore((state) => state.networks.networksIdMapper)
 
   const { filterKey, filterNetworkId } = parseSearchParams(
     searchParams,
@@ -56,21 +53,16 @@ const IntegrationsComp = ({
   const updatePath = useCallback(
     ({ filterKey, filterNetworkId }: { filterKey?: Key; filterNetworkId?: Key }) => {
       const pSearchParams = parseSearchParams(searchParams, rChainId, visibleNetworksList, integrationsTags)
-      let pathname = getPath(params, ROUTE.PAGE_INTEGRATIONS)
-
-      // get filter Key
-      let pFilterKey = filterKey ?? pSearchParams.filterKey ?? ''
-      pFilterKey = pFilterKey && pFilterKey === 'all' ? '' : pFilterKey
-      if (pFilterKey) pathname += `?filter=${pFilterKey}`
-
-      // get filter NetworkId
-      let pFilterNetworkId = filterNetworkId ?? pSearchParams.filterNetworkId ?? ''
-      pFilterNetworkId = pFilterNetworkId && pFilterNetworkId == rChainId ? '' : pFilterNetworkId
-      if (pFilterNetworkId) pathname += `${pFilterKey ? '&' : '?'}networkId=${pFilterNetworkId}`
-
-      push(pathname)
+      const pFilterKey = filterKey ?? pSearchParams.filterKey ?? ''
+      const pFilterNetworkId = filterNetworkId ?? pSearchParams.filterNetworkId ?? ''
+      push(
+        `?${new URLSearchParams({
+          ...(pFilterKey && pFilterKey !== 'all' && { filter: pFilterKey.toString() }),
+          ...(pFilterNetworkId && pFilterNetworkId != rChainId && { networkId: pFilterNetworkId.toString() }),
+        })}`,
+      )
     },
-    [integrationsTags, push, params, rChainId, searchParams, visibleNetworksList],
+    [integrationsTags, push, rChainId, searchParams, visibleNetworksList],
   )
 
   const filterKeyLabel = useMemo(() => {
@@ -144,14 +136,16 @@ const IntegrationsComp = ({
               integrationsAppNetworks={
                 !rChainId && (
                   <Box margin="0.25rem 0 0 0">
-                    {Object.keys(app.networks).map((networkId) => {
-                      if (networkId in networksIdMapper) {
-                        const chainId = networksIdMapper[networkId as NetworkEnum]
-                        const { name, logoSrc } = networks[chainId]
-                        return <img key={chainId} alt={name} src={logoSrc} loading="lazy" width="18" height="18" />
-                      }
-                      return null
-                    })}
+                    {Object.keys(app.networks).map((networkId) => (
+                      <img
+                        key={networkId}
+                        alt={`${networkId} logo`}
+                        src={networkId}
+                        loading="lazy"
+                        width="18"
+                        height="18"
+                      />
+                    ))}
                   </Box>
                 )
               }

@@ -1,143 +1,242 @@
+import { ComponentProps } from 'react'
 import { useState } from 'react'
-import { fn } from 'storybook/test'
 import Box from '@mui/material/Box'
-import Slider from '@mui/material/Slider'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { CLASS_BORDERLESS } from '../components/slider'
+import { Slider } from '@ui-kit/shared/ui/Slider'
+import { geometricMap, powerMap } from '@ui-kit/utils/interpolations'
+import { formatNumber } from '@ui-kit/utils/number'
 
-const SliderComponent = (props: React.ComponentProps<typeof Slider>) => {
-  const [value, setValue] = useState<number | number[]>(props.defaultValue as number | number[])
+const POW_MIN_VALUE = 0
+// geometric function cannot divide by 0, so we use 1 as the minimum value
+const GEO_MIN_VALUE = 1
+const MAX_VALUE = 160000000
+
+const SliderStory = (
+  props: ComponentProps<typeof Slider> & {
+    containerWidth?: number | string
+    scaleType?: 'linear' | 'power' | 'geometric'
+    powerExponent?: number
+  },
+) => {
+  const {
+    containerWidth = 320,
+    orientation = 'horizontal',
+    scaleType = 'linear',
+    defaultValue = 40,
+    powerExponent = Math.trunc(Math.log10(MAX_VALUE) - 2),
+    ...sliderProps
+  } = props
+  const [value, setValue] = useState<number | number[]>(defaultValue)
 
   const handleChange = (_event: Event, newValue: number | number[]) => {
     setValue(newValue)
   }
 
+  function valueLabelFormat(value: number) {
+    return formatNumber(value, { abbreviate: true })
+  }
+
+  function calculateValue(value: number) {
+    if (scaleType === 'power') {
+      return powerMap(value, POW_MIN_VALUE, MAX_VALUE, powerExponent)
+    } else if (scaleType === 'geometric') {
+      return geometricMap(value, GEO_MIN_VALUE, MAX_VALUE)
+    }
+    // linear
+    return value
+  }
+
   return (
-    <Box sx={{ width: '200px' }}>
-      <Slider {...props} value={value} onChange={handleChange} />
+    <Box
+      sx={{
+        width: orientation === 'horizontal' ? containerWidth : 'auto',
+        height: orientation === 'horizontal' ? 'auto' : containerWidth,
+      }}
+    >
+      <Slider
+        value={value}
+        scale={calculateValue}
+        onChange={handleChange}
+        valueLabelFormat={valueLabelFormat}
+        orientation={orientation}
+        {...sliderProps}
+      />
     </Box>
   )
 }
 
-const meta: Meta<typeof Slider> = {
+const meta: Meta<typeof SliderStory> = {
   title: 'UI Kit/Primitives/Slider',
-  component: SliderComponent,
+  component: SliderStory,
+  args: {
+    'data-rail-background': 'default',
+    size: 'medium',
+    min: 0,
+    max: 100,
+    step: 1,
+    defaultValue: 50,
+    orientation: 'horizontal',
+    scaleType: 'linear',
+    valueLabelDisplay: 'off',
+  },
   argTypes: {
-    defaultValue: {
-      control: 'number',
-      description: 'The default value of the slider',
-    },
-    min: {
-      control: 'number',
-      description: 'The minimum allowed value of the slider',
-    },
-    max: {
-      control: 'number',
-      description: 'The maximum allowed value of the slider',
-    },
-    step: {
-      control: 'number',
-      description: 'The step increment value',
-    },
-    disabled: {
-      control: 'boolean',
-      description: 'The disabled state of the component',
-    },
-    valueLabelDisplay: {
+    'data-rail-background': {
       control: 'select',
-      options: ['auto', 'on', 'off'],
-      description: 'Controls when the value label is displayed',
+      options: ['default', 'filled', 'bordered', 'safe', 'danger'],
+      description: 'Background pattern applied to the rail background.',
     },
     size: {
       control: 'select',
       options: ['small', 'medium'],
-      description: 'The size of the slider',
+      description: 'Slider height and thumb sizing.',
+    },
+    disabled: {
+      control: 'boolean',
+      description: 'Disable user interaction.',
+    },
+    min: {
+      control: 'number',
+    },
+    max: {
+      control: 'number',
+    },
+    step: {
+      control: 'number',
+    },
+    scaleType: {
+      control: 'select',
+      options: ['linear', 'power', 'geometric'],
+      description: 'The scale type of the slider.',
+    },
+    orientation: {
+      control: 'select',
+      options: ['horizontal', 'vertical'],
+      description: 'The orientation of the slider.',
+    },
+    valueLabelDisplay: {
+      control: 'select',
+      options: ['auto', 'on', 'off'],
+      description: 'The display of the value label.',
+    },
+    powerExponent: {
+      control: 'number',
+      description: 'The power exponent of the slider.',
     },
   },
-  args: {
-    defaultValue: 50,
-    min: 0,
-    max: 100,
-    step: 1,
-    disabled: false,
-    valueLabelDisplay: 'off',
-    onChange: fn(),
-    size: 'small',
-  },
-}
-
-type Story = StoryObj<typeof Slider>
-
-export const Default: Story = {
   parameters: {
-    docs: {
-      description: {
-        component: 'Slider component with custom styling',
-        story: 'Default slider with custom track and thumb',
-      },
-    },
+    layout: 'centered',
   },
 }
 
-export const WithValueLabel: Story = {
+type Story = StoryObj<typeof SliderStory>
+
+export const Default: Story = {}
+
+export const RailBackgroundFilled: Story = {
   args: {
-    valueLabelDisplay: 'on',
+    'data-rail-background': 'filled',
+    defaultValue: 40,
   },
 }
-
-export const Disabled: Story = {
+export const RailBackgroundBordered: Story = {
+  args: {
+    'data-rail-background': 'bordered',
+    defaultValue: 40,
+  },
+}
+export const RailBackgroundSafe: Story = {
+  args: {
+    'data-rail-background': 'safe',
+    defaultValue: 15,
+  },
+}
+export const RailBackgroundDanger: Story = {
+  args: {
+    'data-rail-background': 'danger',
+    defaultValue: 15,
+  },
+}
+export const SmallSize: Story = {
+  args: {
+    size: 'small',
+    defaultValue: 40,
+  },
+}
+export const DisabledDefault: Story = {
   args: {
     disabled: true,
+    defaultValue: 60,
   },
 }
-
-export const CustomRange: Story = {
+export const DisabledSafeRail: Story = {
+  args: {
+    disabled: true,
+    'data-rail-background': 'safe',
+    defaultValue: 60,
+  },
+}
+export const DisabledBorderedRail: Story = {
+  args: {
+    disabled: true,
+    'data-rail-background': 'bordered',
+    defaultValue: 60,
+  },
+}
+export const Range: Story = {
+  args: {
+    defaultValue: [25, 75],
+    'data-rail-background': 'default',
+  },
+}
+export const RangeFilled: Story = {
+  args: {
+    defaultValue: [25, 75],
+    'data-rail-background': 'filled',
+  },
+}
+export const ValueLabelDisplay: Story = {
+  args: {
+    valueLabelDisplay: 'auto',
+    'data-rail-background': 'default',
+  },
+}
+export const LinearScale: Story = {
+  args: {
+    min: POW_MIN_VALUE,
+    max: MAX_VALUE,
+    step: 0.001,
+    defaultValue: MAX_VALUE / 2,
+    valueLabelDisplay: 'on',
+    scaleType: 'linear',
+    'data-rail-background': 'bordered',
+  },
+}
+export const PowerScale: Story = {
   args: {
     min: 0,
-    max: 1000,
-    step: 100,
-    defaultValue: 500,
+    max: 1,
+    step: 0.001,
+    defaultValue: 0.5,
+    valueLabelDisplay: 'on',
+    scaleType: 'power',
+    'data-rail-background': 'bordered',
   },
 }
-
-export const MediumSize: Story = {
+export const GeometricScale: Story = {
   args: {
-    size: 'medium',
-  },
-  parameters: {
-    docs: {
-      description: {
-        story: 'Large-sized slider variant',
-      },
-    },
+    min: 0,
+    max: 1,
+    step: 0.001,
+    defaultValue: 0.5,
+    valueLabelDisplay: 'on',
+    scaleType: 'geometric',
+    'data-rail-background': 'bordered',
   },
 }
-
-export const RangeSlider: Story = {
+export const DefaultVertical: Story = {
   args: {
-    defaultValue: [20, 80],
-    valueLabelDisplay: 'auto',
-    size: 'medium',
-  },
-  parameters: {
-    docs: {
-      description: {
-        story: 'Range slider with two thumbs for selecting a range of values',
-      },
-    },
-  },
-}
-
-export const Borderless: Story = {
-  args: {
-    className: CLASS_BORDERLESS,
-  },
-  parameters: {
-    docs: {
-      description: {
-        story: 'Slider with borderless styling',
-      },
-    },
+    'data-rail-background': 'default',
+    orientation: 'vertical',
   },
 }
 

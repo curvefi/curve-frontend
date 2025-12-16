@@ -7,6 +7,7 @@ import {
   useDepositRewardIsMutating,
   useGaugeRewardsDistributors,
 } from '@/dex/entities/gauge'
+import { useNetworkByChain } from '@/dex/entities/networks'
 import { useIsSignerConnected, useSignerAddress, useTokensBalances } from '@/dex/entities/signer'
 import { type DepositRewardFormValues, DepositRewardStep } from '@/dex/features/deposit-gauge-reward/types'
 import {
@@ -35,7 +36,9 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
   const { data: signerAddress } = useSignerAddress()
   const { data: haveSigner } = useIsSignerConnected()
   const isMaxLoading = useStore((state) => state.quickSwap.isMaxLoading)
-  const { networkId } = useStore((state) => state.networks.networks[chainId])
+  const {
+    data: { networkId },
+  } = useNetworkByChain({ chainId })
 
   const userBalancesMapper = useStore((state) => state.userBalances.userBalancesMapper)
   const userTokens = Object.entries(userBalancesMapper)

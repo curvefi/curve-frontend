@@ -1,6 +1,7 @@
 module.exports = {
   extends: [
     'eslint:recommended',
+    'plugin:@tanstack/query/recommended',
     'plugin:@typescript-eslint/recommended',
     'plugin:react/recommended',
     'plugin:react-hooks/recommended',
@@ -31,11 +32,18 @@ module.exports = {
               .map((targetApp) => `apps/main/src/${targetApp}`),
             from: `apps/main/src/${importedApp}`, // from ==> the app imported
           })),
+          // forbid `wagmi` external dependency package imports, except from packages/curve-ui-kit/src/features/connect-wallet/lib/wagmi
+          {
+            target: ['apps/**', 'packages/**', '!packages/curve-ui-kit/src/features/connect-wallet/lib/wagmi/**'],
+            from: 'wagmi',
+          },
         ],
       },
     ],
     '@typescript-eslint/no-floating-promises': 'warn',
     '@typescript-eslint/no-unused-vars': 'off',
+    'react-hooks/rules-of-hooks': 'error',
+    'react-hooks/exhaustive-deps': 'warn',
 
     // todo: remove the following rules
     'no-empty-pattern': 'off',
@@ -47,6 +55,13 @@ module.exports = {
     '@typescript-eslint/no-unused-expressions': 'off',
     '@typescript-eslint/triple-slash-reference': 'off',
     'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
+    'react-hooks/purity': 'off',
+    'react-hooks/preserve-manual-memoization': 'off',
+    'react-hooks/refs': 'off',
+    'react-hooks/immutability': 'off',
+    'react-hooks/static-components': 'off',
+    'react-hooks/set-state-in-effect': 'off',
+    'react-hooks/incompatible-library': 'off',
 
     'no-console': [
       'error', // use console.log only for debugging

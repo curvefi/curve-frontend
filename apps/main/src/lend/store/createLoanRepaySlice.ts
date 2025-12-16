@@ -1,5 +1,5 @@
 import lodash from 'lodash'
-import type { GetState, SetState } from 'zustand'
+import type { StoreApi } from 'zustand'
 import type { FormDetailInfoLeverage, FormStatus, FormValues } from '@/lend/components/PageLoanManage/LoanRepay/types'
 import {
   _parseValues,
@@ -15,9 +15,8 @@ import networks from '@/lend/networks'
 import type { State } from '@/lend/store/useStore'
 import { Api, FormError, OneWayMarketTemplate, UserLoanState } from '@/lend/types/lend.types'
 import { _parseActiveKey } from '@/lend/utils/helpers'
+import { updateUserEventsApi } from '@/llamalend/llama.utils'
 import { refetchLoanExists } from '@/llamalend/queries/loan-exists'
-import { Chain } from '@curvefi/prices-api'
-import { getUserMarketCollateralEvents } from '@curvefi/prices-api/lending'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 
@@ -67,7 +66,7 @@ const DEFAULT_STATE: SliceState = {
 const { getUserActiveKey, isTooMuch } = helpers
 const { loanRepay } = apiLending
 
-const createLoanRepaySlice = (set: SetState<State>, get: GetState<State>): LoanRepaySlice => ({
+const createLoanRepaySlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): LoanRepaySlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 
@@ -179,10 +178,12 @@ const createLoanRepaySlice = (set: SetState<State>, get: GetState<State>): LoanR
 
       const { stateCollateral, userBorrowed, userCollateral } = cFormValues
 
-      // userState
-      const userState = await user.fetchUserLoanState(api, market, shouldRefetch)
-
-      if (typeof userState === 'undefined') return
+      let userState: UserLoanState
+      try {
+        userState = { ...(await market.userState()), error: '' }
+      } catch (error) {
+        userState = { collateral: '', borrowed: '', debt: '', N: '', error }
+      }
 
       // validation
       const userBalancesResp = await user.fetchUserMarketBalances(api, market, true)
@@ -236,7 +237,7 @@ const createLoanRepaySlice = (set: SetState<State>, get: GetState<State>): LoanR
       const { formStatus, ...sliceState } = get()[sliceKey]
       const { provider, wallet } = useWallet.getState()
       const { chainId } = api
-      if (!provider) return setMissingProvider(get()[sliceKey])
+      if (!provider || !wallet) return setMissingProvider(get()[sliceKey])
 
       // update formStatus
       sliceState.setStateByKey('formStatus', {
@@ -261,13 +262,7 @@ const createLoanRepaySlice = (set: SetState<State>, get: GetState<State>): LoanR
         maxSlippage,
         swapRequired,
       )
-      // update user events api
-      void getUserMarketCollateralEvents(
-        wallet?.account?.address,
-        networks[chainId].name as Chain,
-        market.addresses.controller,
-        resp.hash,
-      )
+      updateUserEventsApi(wallet, networks[chainId], market, resp.hash)
 
       if (resp.activeKey === get()[sliceKey].activeKey) {
         const loanExists = await refetchLoanExists({

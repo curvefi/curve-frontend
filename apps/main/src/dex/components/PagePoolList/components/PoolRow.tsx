@@ -9,6 +9,7 @@ import type {
   SearchTermMapper,
 } from '@/dex/components/PagePoolList/types'
 import { ROUTE } from '@/dex/constants'
+import { useNetworkByChain } from '@/dex/entities/networks'
 import { parseSearchTermMapper } from '@/dex/hooks/useSearchTermMapper'
 import { getUserActiveKey } from '@/dex/store/createUserSlice'
 import useStore from '@/dex/store/useStore'
@@ -56,7 +57,6 @@ export const PoolRow = ({
   const push = useNavigate()
   const userActiveKey = getUserActiveKey(curve)
 
-  const formValues = useStore((state) => state.poolList.formValues)
   const isMobile = useIsMobile()
   const poolDataCached = useStore((state) => state.storeCache.poolsMapper[rChainId]?.[poolId])
   const poolData = useStore((state) => state.pools.poolsMapper[rChainId]?.[poolId])
@@ -67,7 +67,7 @@ export const PoolRow = ({
   const isInPool = useStore((state) => state.user.poolList[userActiveKey]?.[poolId])
   const volumeCached = useStore((state) => state.storeCache.volumeMapper[rChainId]?.[poolId])
   const volume = useStore((state) => state.pools.volumeMapper[rChainId]?.[poolId])
-  const network = useStore((state) => state.networks.networks[rChainId])
+  const { data: network } = useNetworkByChain({ chainId: rChainId })
 
   const theme = useUserProfileStore((state) => state.theme)
 
@@ -92,7 +92,6 @@ export const PoolRow = ({
   const tableRowProps: Omit<TableRowProps, 'isMdUp'> = {
     index,
     isCrvRewardsEnabled,
-    formValues,
     searchParams,
     isInPool,
     blockchainId: network.networkId,
@@ -130,7 +129,7 @@ export const PoolRow = ({
           isMobile={isMobile}
           result={searchedByAddresses}
           searchTermMapper={parsedSearchTermMapper}
-          scanAddressPath={network.scanAddressPath}
+          network={network}
         />
       )}
     </>

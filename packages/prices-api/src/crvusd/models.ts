@@ -1,4 +1,4 @@
-import type { Address } from '..'
+import type { Address, Chain } from '..'
 
 export type Market = {
   name: string
@@ -28,7 +28,7 @@ export type Market = {
     pending: number
     collected: number
   }
-  created_at: Date
+  createdAt: Date
   maxLtv: number
 }
 
@@ -65,16 +65,6 @@ export type Snapshot = {
     rebasingYield: number
   }
   maxLtv: number
-}
-
-export type PoolPrice = {
-  timestamp: number
-  [token: string]: number
-}
-
-export type PriceHistogram = {
-  x: number[]
-  y: number[]
 }
 
 export type CrvUsdSupply = {
@@ -160,4 +150,9 @@ export type UserCollateralEvents = {
   totalBorrowed: number
   totalBorrowedPrecise: string
   events: UserCollateralEvent[]
+}
+
+export type CrvUsdTvl = {
+  chain: Chain
+  tvl: number
 }

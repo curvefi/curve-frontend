@@ -54,7 +54,35 @@ export const Blues = {
   '950': '#171e55',
 } as const
 
-export const Violet = {
+export const Oranges = {
+  '50': '#f0ddd1',
+  '100': '#f3cfb9',
+  '200': '#f5bd98',
+  '300': '#f4ab7a',
+  '400': '#f49753',
+  '500': '#f77f00',
+  '600': '#d36c00',
+  '700': '#b15900',
+  '800': '#8f4700',
+  '900': '#6f3601',
+  '950': '#4e2708',
+} as const
+
+export const Yellows = {
+  '50': '#fffbf5',
+  '100': '#fff9f0',
+  '200': '#fff1db',
+  '300': '#ffe6bd',
+  '400': '#ffd88b',
+  '500': '#ffc300',
+  '600': '#e0ab00',
+  '700': '#c19300',
+  '800': '#a37c0c',
+  '900': '#84671d',
+  '950': '#665223',
+} as const
+
+export const Violets = {
   '50': '#efedfc',
   '100': '#dbd9f7',
   '200': '#c6c4f2',
@@ -68,13 +96,17 @@ export const Violet = {
   '950': '#2f2862',
 } as const
 
+export const Transparent = '#ffffff00' as const
+
 export const Spacing = {
-  '50': '0',
+  '0': '0rem',
+  '75': '0.062rem', // ~1px
   '100': '0.125rem', // 2px
   '200': '0.25rem', // 4px
   '300': '0.5rem', // 8px
   '350': '0.875rem', // 14px
   '400': '1rem', // 16px
+  '450': '1.25rem', // 20px
   '500': '1.5rem', // 24px
   '600': '2rem', // 32px
   '700': '3rem', // 48px
@@ -82,6 +114,8 @@ export const Spacing = {
 } as const
 
 export const Sizing = {
+  '10': '0.062rem', // ~1px
+  '25': '0.125rem', // 2px
   '50': '0.25rem', // 4px
   '100': '0.5rem', // 8px
   '125': '0.75rem', // 12px
@@ -100,10 +134,13 @@ export const Sizing = {
 } as const
 
 export const Duration = {
+  Delay: 100,
+  Flicker: 1000,
+  Focus: 50,
+  FormDebounce: 250,
   Snackbar: 6000,
   Tooltip: { Enter: 500, Exit: 500 },
-  Flicker: 1000,
-  FormDebounce: 500,
+  Transition: 256,
 }
 
-export const TransitionFunction = `ease-out 256ms`
+export const TransitionFunction = `ease-out ${Duration.Transition}ms`

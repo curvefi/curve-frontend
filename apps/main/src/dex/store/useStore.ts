@@ -1,5 +1,5 @@
 import lodash from 'lodash'
-import { create, type GetState, type SetState } from 'zustand'
+import { create, StoreApi } from 'zustand'
 import { devtools, persist, type PersistOptions } from 'zustand/middleware'
 import createCacheSlice, { CacheSlice } from '@/dex/store/createCacheSlice'
 import createCreatePoolSlice, { CreatePoolSlice } from '@/dex/store/createCreatePoolSlice'
@@ -8,7 +8,6 @@ import createDeployGaugeSlice, { DeployGaugeSlice } from '@/dex/store/createDepl
 import createGlobalSlice, { GlobalSlice } from '@/dex/store/createGlobalSlice'
 import createIntegrationsSlice, { IntegrationsSlice } from '@/dex/store/createIntegrationsSlice'
 import createLockedCrvSlice, { LockedCrvSlice } from '@/dex/store/createLockedCrvSlice'
-import createNetworksSlice, { NetworksSlice } from '@/dex/store/createNetworksSlice'
 import createPoolDepositSlice, { PoolDepositSlice } from '@/dex/store/createPoolDepositSlice'
 import createPoolListSlice, { PoolListSlice } from '@/dex/store/createPoolListSlice'
 import createPoolsSlice, { PoolsSlice } from '@/dex/store/createPoolsSlice'
@@ -22,7 +21,6 @@ import createUserSlice, { UserSlice } from '@/dex/store/createUserSlice'
 const { debounce, merge } = lodash
 
 export type State = GlobalSlice &
-  NetworksSlice &
   CacheSlice &
   PoolsSlice &
   PoolDepositSlice &
@@ -39,9 +37,8 @@ export type State = GlobalSlice &
   IntegrationsSlice &
   DeployGaugeSlice
 
-const store = (set: SetState<State>, get: GetState<State>): State => ({
+const store = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): State => ({
   ...createGlobalSlice(set, get),
-  ...createNetworksSlice(set, get),
   ...createCacheSlice(set, get),
   ...createPoolListSlice(set, get),
   ...createPoolsSlice(set, get),

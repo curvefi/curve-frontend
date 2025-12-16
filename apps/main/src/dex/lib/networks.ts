@@ -1,10 +1,7 @@
-import memoize from 'memoizee'
 import { ethAddress } from 'viem'
 import { DEFAULT_NETWORK_CONFIG } from '@/dex/constants'
-import { ChainId, NetworkConfig, type NetworkEnum } from '@/dex/types/main.types'
+import { ChainId, NetworkConfig, type NetworkEnum, type Networks } from '@/dex/types/main.types'
 import curve from '@curvefi/api'
-import { fromEntries, recordValues } from '@curvefi/prices-api/objects.util'
-import type { NetworkDef } from '@ui/utils'
 import { getBaseNetworksConfig, NETWORK_BASE_CONFIG } from '@ui/utils/utilsNetworks'
 import { CRVUSD_ROUTES, getInternalUrl } from '@ui-kit/shared/routes'
 import { CRVUSD_ADDRESS } from '@ui-kit/utils'
@@ -70,6 +67,7 @@ export const defaultNetworks = Object.entries({
     twocryptoFactoryOld: true,
     twocryptoFactory: true,
     tricryptoFactory: true,
+    fxswapFactory: true,
     hasFactory: true,
     pricesApi: true,
   },
@@ -146,6 +144,7 @@ export const defaultNetworks = Object.entries({
     twocryptoFactoryOld: true,
     twocryptoFactory: true,
     tricryptoFactory: true,
+    fxswapFactory: true,
     hasFactory: true,
     pricesApi: true,
   },
@@ -265,6 +264,7 @@ export const defaultNetworks = Object.entries({
     twocryptoFactoryOld: true,
     twocryptoFactory: true,
     tricryptoFactory: true,
+    fxswapFactory: true,
     hasFactory: true,
     pricesApi: true,
   },
@@ -286,6 +286,7 @@ export const defaultNetworks = Object.entries({
     twocryptoFactoryOld: true,
     twocryptoFactory: true,
     tricryptoFactory: true,
+    fxswapFactory: true,
     hasFactory: true,
     pricesApi: true,
   },
@@ -328,6 +329,8 @@ export const defaultNetworks = Object.entries({
     twocryptoFactory: true,
     tricryptoFactory: true,
     hasFactory: true,
+    showInSelectNetwork: false,
+    showRouterSwap: false,
   },
 }).reduce(
   (prev, [key, config]) => {
@@ -349,85 +352,42 @@ export const defaultNetworks = Object.entries({
 
 export async function getNetworks() {
   const resp = await curve.getCurveLiteNetworks() // returns [] in case of error
-  const liteNetworks = Object.values(resp).reduce(
-    (prev, { chainId, ...config }) => {
-      const baseConfig = NETWORK_BASE_CONFIG[chainId as keyof typeof NETWORK_BASE_CONFIG]
-      const isUpgraded = !!baseConfig // networks upgraded from lite to full
-      const isOnlyPoolRewardsUpgraded = chainId === Chain.Taiko // networks that has only been upgraded to show pool rewards APY
-      prev[chainId] = {
-        ...DEFAULT_NETWORK_CONFIG,
-        ...getBaseNetworksConfig<NetworkEnum, ChainId>(Number(chainId), { ...config, ...baseConfig }),
-        ...(isUpgraded && {
-          poolFilters: [
-            'all',
-            'usd',
-            'btc',
-            'eth',
-            'crypto',
-            'crvusd',
-            'tricrypto',
-            'stableng',
-            'cross-chain',
-            'others',
-            'user',
-          ],
-        }),
-        chainId,
-        hasFactory: true,
-        stableswapFactory: true,
-        twocryptoFactory: true,
-        tricryptoFactory: true,
-        pricesApi: isUpgraded,
-        isLite: !isUpgraded,
-        isCrvRewardsEnabled: isUpgraded,
-        ...(isOnlyPoolRewardsUpgraded && {
-          isCrvRewardsEnabled: true,
-        }),
-      }
-      return prev
-    },
-    {} as Record<number, NetworkConfig>,
-  )
+  const liteNetworks = Object.values(resp).reduce((prev, { chainId, ...config }) => {
+    const baseConfig = NETWORK_BASE_CONFIG[chainId as keyof typeof NETWORK_BASE_CONFIG]
+    const isUpgraded = !!baseConfig // networks upgraded from lite to full
+    const isOnlyPoolRewardsUpgraded = chainId === Chain.Taiko || chainId === 42793 // networks that has only been upgraded to show pool rewards APY, 42793 = Etherlink
+    prev[chainId] = {
+      ...DEFAULT_NETWORK_CONFIG,
+      ...getBaseNetworksConfig<NetworkEnum, ChainId>(Number(chainId), { ...config, ...baseConfig }),
+      ...(isUpgraded && {
+        poolFilters: [
+          'all',
+          'usd',
+          'btc',
+          'eth',
+          'crypto',
+          'crvusd',
+          'tricrypto',
+          'stableng',
+          'cross-chain',
+          'others',
+          'user',
+        ],
+      }),
+      chainId,
+      hasFactory: true,
+      stableswapFactory: true,
+      twocryptoFactory: true,
+      tricryptoFactory: true,
+      fxswapFactory: false,
+      pricesApi: isUpgraded,
+      isLite: !isUpgraded,
+      isCrvRewardsEnabled: isUpgraded,
+      ...(isOnlyPoolRewardsUpgraded && {
+        isCrvRewardsEnabled: true,
+      }),
+    }
+    return prev
+  }, {} as Networks)
   return { ...defaultNetworks, ...liteNetworks }
 }
-
-/**
- * Strip out functions from the network config so they can be passed from server to client
- */
-const createNetworkDef = ({
-  id,
-  name,
-  chainId,
-  explorerUrl,
-  isTestnet,
-  symbol,
-  rpcUrl,
-  showInSelectNetwork,
-  isLite,
-  logoSrc,
-  logoSrcDark,
-  showRouterSwap,
-}: NetworkConfig): NetworkDef<NetworkEnum, ChainId> => ({
-  id,
-  name,
-  chainId,
-  explorerUrl,
-  isTestnet,
-  symbol,
-  rpcUrl,
-  showInSelectNetwork,
-  isLite,
-  logoSrc,
-  logoSrcDark,
-  showRouterSwap,
-})
-
-export const getNetworkDefs = memoize(
-  async () =>
-    fromEntries(
-      recordValues(await getNetworks())
-        .map(createNetworkDef)
-        .map((def) => [def.chainId, def] as const),
-    ),
-  { maxAge: 5 * 60 * 1000, promise: true, preFetch: true },
-)

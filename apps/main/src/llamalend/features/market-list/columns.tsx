@@ -1,8 +1,16 @@
-import { ColumnDef, createColumnHelper, FilterFnOption, type ColumnMeta } from '@tanstack/react-table'
+import { ReactNode } from 'react'
+import { ColumnDef, type ColumnMeta, createColumnHelper, FilterFnOption } from '@tanstack/react-table'
 import { type DeepKeys } from '@tanstack/table-core'
 import { t } from '@ui-kit/lib/i18n'
+import {
+  boolFilterFn,
+  filterByText,
+  listNotEmptyFilterFn,
+  multiFilterFn,
+  rangeFilterFn,
+} from '@ui-kit/shared/ui/DataTable/filters'
 import { MarketRateType } from '@ui-kit/types/market'
-import { LlamaMarket } from '../../entities/llama-markets'
+import { LlamaMarket } from '../../queries/market-list/llama-markets'
 import {
   BoostCell,
   CompactUsdCell,
@@ -16,14 +24,13 @@ import {
   UtilizationCell,
 } from './cells'
 import { LlamaMarketColumnId } from './columns.enum'
-import { boolFilterFn, filterByText, listFilterFn, multiFilterFn } from './filters'
 import {
-  CollateralBorrowHeaderTooltipContent,
   BorrowRateHeaderTooltipContent,
+  CollateralBorrowHeaderTooltipContent,
   LendRateHeaderTooltipContent,
-  UtilizationHeaderTooltipContent,
   LiquidityUsdHeaderTooltipContent,
   TvlHeaderTooltipContent,
+  UtilizationHeaderTooltipContent,
 } from './header-tooltips'
 
 const columnHelper = createColumnHelper<LlamaMarket>()
@@ -49,7 +56,7 @@ const headers = {
 } as const
 
 type Tooltip = ColumnMeta<never, never>['tooltip']
-const createTooltip = (id: keyof typeof headers, body: React.ReactNode): Tooltip => ({
+const createTooltip = (id: keyof typeof headers, body: ReactNode): Tooltip => ({
   title: headers[id],
   body,
 })
@@ -69,7 +76,15 @@ export const LLAMA_MARKET_COLUMNS = [
   columnHelper.accessor(LlamaMarketColumnId.Assets, {
     header: headers[LlamaMarketColumnId.Assets],
     cell: MarketTitleCell,
-    filterFn: filterByText,
+    filterFn: filterByText(
+      'controllerAddress',
+      'ammAddress',
+      'vaultAddress',
+      'assets.borrowed.address',
+      'assets.borrowed.symbol',
+      'assets.collateral.address',
+      'assets.collateral.symbol',
+    ),
     meta: { tooltip: createTooltip(LlamaMarketColumnId.Assets, <CollateralBorrowHeaderTooltipContent />) },
   }),
   columnHelper.display({
@@ -156,6 +171,7 @@ export const LLAMA_MARKET_COLUMNS = [
       type: 'numeric',
       tooltip: createTooltip(LlamaMarketColumnId.UtilizationPercent, <UtilizationHeaderTooltipContent />),
     },
+    filterFn: rangeFilterFn,
   }),
   columnHelper.accessor(LlamaMarketColumnId.LiquidityUsd, {
     header: headers[LlamaMarketColumnId.LiquidityUsd],
@@ -164,6 +180,7 @@ export const LLAMA_MARKET_COLUMNS = [
       type: 'numeric',
       tooltip: createTooltip(LlamaMarketColumnId.LiquidityUsd, <LiquidityUsdHeaderTooltipContent />),
     },
+    filterFn: rangeFilterFn,
   }),
   columnHelper.accessor(LlamaMarketColumnId.TotalDebt, {
     header: headers[LlamaMarketColumnId.TotalDebt],
@@ -185,6 +202,7 @@ export const LLAMA_MARKET_COLUMNS = [
       tooltip: createTooltip(LlamaMarketColumnId.Tvl, <TvlHeaderTooltipContent />),
     },
     sortUndefined: 'last',
+    filterFn: rangeFilterFn,
   }),
   // Following columns are used in tanstack filter, but they are displayed together in MarketTitleCell
   hidden(LlamaMarketColumnId.Chain, LlamaMarketColumnId.Chain, multiFilterFn),
@@ -203,7 +221,8 @@ export const LLAMA_MARKET_COLUMNS = [
       )
     },
   ),
-  hidden(LlamaMarketColumnId.Rewards, LlamaMarketColumnId.Rewards, listFilterFn),
+  hidden(LlamaMarketColumnId.Rewards, LlamaMarketColumnId.Rewards, listNotEmptyFilterFn),
+  hidden(LlamaMarketColumnId.DeprecatedMessage, LlamaMarketColumnId.DeprecatedMessage, boolFilterFn),
   hidden(LlamaMarketColumnId.Type, LlamaMarketColumnId.Type, multiFilterFn),
 ] satisfies LlamaColumn[]
 

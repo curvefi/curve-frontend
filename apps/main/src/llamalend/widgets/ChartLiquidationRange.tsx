@@ -23,10 +23,9 @@ import { formatNumber } from '@ui/utils'
 import { breakpoints } from '@ui/utils/responsive'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import type { HealthColorKey } from '../llamalend.types'
 
 const { Spacing, Sizing } = SizesAndSpaces
-
-export type HealthColorKey = 'healthy' | 'close_to_liquidation' | 'soft_liquidation' | 'hard_liquidation' | ''
 
 export interface LiquidationRangeData {
   name: string

@@ -29,6 +29,10 @@ const meta: Meta<typeof Button> = {
       control: 'boolean',
       description: 'The disabled state of the component',
     },
+    loading: {
+      control: 'boolean',
+      description: 'The loading state of the component',
+    },
   },
   args: {
     size: 'medium',
@@ -62,7 +66,7 @@ export const Secondary: Story = {
 
 export const Outlined: Story = {
   args: {
-    color: undefined,
+    variant: 'outlined',
     children: 'Outlined',
   },
 }

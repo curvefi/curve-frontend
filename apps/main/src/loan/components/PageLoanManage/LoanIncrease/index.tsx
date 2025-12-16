@@ -1,4 +1,5 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
+import { DEFAULT_HEALTH_MODE } from '@/llamalend/constants'
 import AlertFormError from '@/loan/components/AlertFormError'
 import DetailInfoBorrowRate from '@/loan/components/DetailInfoBorrowRate'
 import DetailInfoEstimateGas from '@/loan/components/DetailInfoEstimateGas'
@@ -12,7 +13,6 @@ import type { FormEstGas, PageLoanManageProps } from '@/loan/components/PageLoan
 import {
   DEFAULT_DETAIL_INFO,
   DEFAULT_FORM_EST_GAS,
-  DEFAULT_HEALTH_MODE,
   DEFAULT_USER_WALLET_BALANCES,
 } from '@/loan/components/PageLoanManage/utils'
 import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
@@ -29,15 +29,15 @@ import { getActiveStep } from '@ui/Stepper/helpers'
 import Stepper from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
 import TxInfoBar from '@ui/TxInfoBar'
-import { formatNumber } from '@ui/utils'
+import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
+import { useLegacyTokenInput } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import { ReleaseChannel, decimal, type Decimal } from '@ui-kit/utils'
+import { decimal, type Decimal } from '@ui-kit/utils'
 
 interface Props extends Pick<PageLoanManageProps, 'curve' | 'isReady' | 'llamma' | 'llammaId'> {}
 
@@ -76,7 +76,7 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
   const { chainId, haveSigner } = curveProps(curve)
   const resolvedChainId = (chainId ?? 1) as ChainId
   const network = networks[resolvedChainId]
-  const [releaseChannel] = useReleaseChannel()
+  const shouldUseLegacyTokenInput = useLegacyTokenInput()
   const [stablecoinAddress, collateralAddress] = llamma?.coinAddresses ?? []
   const { data: collateralUsdRate } = useTokenUsdRate({ chainId: network.chainId, tokenAddress: collateralAddress })
   const { data: stablecoinUsdRate } = useTokenUsdRate({ chainId: network.chainId, tokenAddress: stablecoinAddress })
@@ -146,7 +146,7 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
         setTxInfoBar(
           <TxInfoBar
             description={t`Transaction complete`}
-            txHash={networks[chainId].scanTxPath(resp.hash)}
+            txHash={scanTxPath(networks[chainId], resp.hash)}
             onClose={() => reset(false, true)}
           />,
         )
@@ -274,7 +274,7 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
   return (
     <>
       {/* field debt */}
-      {releaseChannel !== ReleaseChannel.Beta ? (
+      {shouldUseLegacyTokenInput ? (
         <Box grid gridRowGap={1}>
           <InputProvider
             grid
@@ -307,7 +307,6 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
         </Box>
       ) : (
         <LargeTokenInput
-          dataType="decimal"
           label={t`Borrow amount:`}
           name="debt"
           isError={!!formValues.debtError}
@@ -317,12 +316,16 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
               : isReady && t`Max borrow amount ${formatNumber(maxRecv, { defaultValue: '-' })}`
           }
           disabled={disabled}
-          maxBalance={{
-            loading: maxRecv == null || maxRecv == '',
-            balance: decimal(maxRecv),
+          inputBalanceUsd={decimal(formValues.debt && stablecoinUsdRate && stablecoinUsdRate * +formValues.debt)}
+          walletBalance={{
+            loading: userWalletBalancesLoading,
+            balance: decimal(userWalletBalances.stablecoin),
             symbol: getTokenName(llamma).stablecoin,
-            notionalValueUsd: stablecoinUsdRate != null && maxRecv != null ? stablecoinUsdRate * +maxRecv : undefined,
-            showSlider: false,
+            usdRate: stablecoinUsdRate,
+          }}
+          maxBalance={{
+            balance: decimal(maxRecv),
+            chips: 'max',
           }}
           balance={decimal(formValues.debt)}
           tokenSelector={
@@ -339,7 +342,7 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
 
       {/* input collateral */}
       <Box grid gridRowGap={1}>
-        {releaseChannel !== ReleaseChannel.Beta ? (
+        {shouldUseLegacyTokenInput ? (
           <>
             <InputProvider
               grid
@@ -373,19 +376,17 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
           </>
         ) : (
           <LargeTokenInput
-            dataType="decimal"
             name="collateral"
             isError={!!formValues.collateralError}
             disabled={disabled}
-            maxBalance={{
+            inputBalanceUsd={decimal(
+              formValues.collateral && collateralUsdRate && collateralUsdRate * +formValues.collateral,
+            )}
+            walletBalance={{
               loading: userWalletBalancesLoading,
               balance: decimal(userWalletBalances.collateral),
               symbol: getTokenName(llamma).collateral,
-              showSlider: false,
-              ...(collateralUsdRate != null &&
-                userWalletBalances.collateral != null && {
-                  notionalValueUsd: collateralUsdRate * +userWalletBalances.collateral,
-                }),
+              usdRate: collateralUsdRate,
             }}
             label={t`Collateral amount:`}
             balance={decimal(formValues.collateral)}

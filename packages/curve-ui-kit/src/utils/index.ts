@@ -17,7 +17,9 @@ export enum ReleaseChannel {
   Legacy = 'Legacy',
 }
 
-export const isCypress = typeof window !== 'undefined' && Boolean((window as { Cypress?: unknown }).Cypress)
+export const isCypress = Boolean((window as { Cypress?: unknown }).Cypress)
+export const noCypressTestConnector = Boolean((window as { CypressNoTestConnector?: unknown }).CypressNoTestConnector)
+
 const isDefaultBeta =
   process.env.NODE_ENV === 'development' ||
   (typeof window !== 'undefined' &&

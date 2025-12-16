@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { useCallback, useMemo } from 'react'
 import { styled } from 'styled-components'
-import { useAccount } from 'wagmi'
+import { useConnection } from 'wagmi'
 import { useScrvUsdUserBalances } from '@/loan/entities/scrvusd-userBalances'
 import useStore from '@/loan/store/useStore'
 import Button from '@ui/Button'
@@ -10,11 +10,13 @@ import { t } from '@ui-kit/lib/i18n'
 type DeployButtonProps = { className?: string }
 
 const DeployButton = ({ className }: DeployButtonProps) => {
-  const { address } = useAccount()
+  const { address } = useConnection()
   const { data: userScrvUsdBalance } = useScrvUsdUserBalances({ userAddress: address })
   const depositApproved = useStore((state) => state.scrvusd.depositApproval.approval)
   const depositFetchStatus = useStore((state) => state.scrvusd.depositApproval.fetchStatus)
-  const { depositApprove, deposit, redeem } = useStore((state) => state.scrvusd.deploy)
+  const depositApprove = useStore((state) => state.scrvusd.deploy.depositApprove)
+  const deposit = useStore((state) => state.scrvusd.deploy.deposit)
+  const redeem = useStore((state) => state.scrvusd.deploy.redeem)
   const inputAmount = useStore((state) => state.scrvusd.inputAmount)
   const stakingModule = useStore((state) => state.scrvusd.stakingModule)
   const getInputAmountApproved = useStore((state) => state.scrvusd.getInputAmountApproved)

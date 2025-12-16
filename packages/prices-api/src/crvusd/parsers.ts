@@ -31,7 +31,7 @@ export const parseMarket = (x: Responses.GetMarketsResponse['data'][number]): Mo
     pending: x.pending_fees,
     collected: x.collected_fees,
   },
-  created_at: new Date(x.created_at),
+  createdAt: toDate(x.created_at),
   maxLtv: x.max_ltv,
 })
 
@@ -163,4 +163,9 @@ export const parseUserCollateralEvents = (
     oraclePrice: y.oracle_price,
     isPositionClosed: y.is_position_closed,
   })),
+})
+
+export const parseCrvUsdTvl = (x: Responses.GetCrvUsdTvlResponse): Models.CrvUsdTvl => ({
+  chain: x.chain,
+  tvl: x.tvl,
 })

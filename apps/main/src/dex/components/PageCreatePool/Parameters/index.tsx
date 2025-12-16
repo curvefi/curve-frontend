@@ -13,6 +13,7 @@ import {
 } from '@/dex/components/PageCreatePool/constants'
 import InitialPrice from '@/dex/components/PageCreatePool/Parameters/InitialPrice'
 import SelectPreset from '@/dex/components/PageCreatePool/Parameters/SelectPreset'
+import { useNetworkByChain } from '@/dex/entities/networks'
 import useStore from '@/dex/store/useStore'
 import { CurveApi, ChainId } from '@/dex/types/main.types'
 import Box from '@ui/Box'
@@ -57,7 +58,7 @@ const Parameters = ({ curve, chainId, haveSigner }: Props) => {
   const refreshInitialPrice = useStore((state) => state.createPool.refreshInitialPrice)
   const initialPrice = useStore((state) => state.createPool.initialPrice)
   const poolPresetIndex = useStore((state) => state.createPool.poolPresetIndex!)
-  const networks = useStore((state) => state.networks.networks)
+  const { data: network } = useNetworkByChain({ chainId })
 
   const [stableFeeValue, setStableFeeValue] = useState<string>(stableSwapFee)
   const [midValue, setMidValue] = useState<string>(midFee)
@@ -296,7 +297,7 @@ const Parameters = ({ curve, chainId, haveSigner }: Props) => {
                     maxValue={STABLESWAP_MIN_MAX.a.max}
                     onChange={updateStableA}
                   />
-                  {networks[chainId].stableswapFactory && (
+                  {network.stableswapFactory && (
                     <>
                       <NumberField
                         label={t`Offpeg Fee Multiplier (${STABLESWAP_MIN_MAX.offpegFeeMultiplier.min} - ${STABLESWAP_MIN_MAX.offpegFeeMultiplier.max})`}

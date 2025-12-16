@@ -1,12 +1,12 @@
-import type React from 'react'
 import { styled } from 'styled-components'
+import { useNetworkByChain } from '@/dex/entities/networks'
 import useStore from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
 import Box from '@ui/Box'
-import type { LpLiquidityEventsData, PricesApiCoin } from '@ui/Chart/types'
 import Tooltip from '@ui/Tooltip/TooltipButton'
 import { Chip } from '@ui/Typography'
-import { formatNumber, getFractionDigitsOptions, convertDate, convertTimeAgo, formatDate } from '@ui/utils'
+import { formatNumber, getFractionDigitsOptions, convertDate, convertTimeAgo, formatDate, scanTxPath } from '@ui/utils'
+import type { LpLiquidityEventsData, PricesApiCoin } from '@ui-kit/features/candle-chart/types'
 import { t } from '@ui-kit/lib/i18n'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 
@@ -20,7 +20,7 @@ const LiquidityData = ({
   coins: PricesApiCoin[]
 }) => {
   const tokensMapper = useStore((state) => state.tokens.tokensMapper)
-  const network = useStore((state) => state.networks.networks[chainId])
+  const { data: network } = useNetworkByChain({ chainId })
 
   return (
     <>
@@ -30,7 +30,7 @@ const LiquidityData = ({
         })
         .map((transaction, index) => (
           <TransactionRow key={`${transaction.transaction_hash}-lp-${index}`}>
-            <LpEvent href={network.scanTxPath(transaction.transaction_hash)} rel="noopener" target="_blank">
+            <LpEvent href={scanTxPath(network, transaction.transaction_hash)} rel="noopener" target="_blank">
               {transaction.liquidity_event_type === 'AddLiquidity' ? (
                 <>
                   <LpEventType>{t`Add`}</LpEventType>

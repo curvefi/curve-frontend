@@ -25,6 +25,7 @@ export function queryFactory<
   refetchInterval,
   validationSuite,
   dependencies,
+  disableLog,
   ...options
 }: QueryFactoryInput<TQuery, TKey, TData, TParams, TField, TGroup, TCallback>): QueryFactoryOutput<
   TQuery,
@@ -35,9 +36,14 @@ export function queryFactory<
   const getQueryOptions = (params: TParams, enabled = true) =>
     queryOptions({
       queryKey: queryKey(params),
-      queryFn: ({ queryKey }: QueryFunctionContext<TKey>) => {
-        logQuery(queryKey)
-        return runQuery(getParamsFromQueryKey(queryKey))
+      queryFn: async ({ queryKey }: QueryFunctionContext<TKey>) => {
+        try {
+          if (!disableLog) logQuery(queryKey)
+          return await runQuery(getParamsFromQueryKey(queryKey))
+        } catch (error) {
+          console.error(`Error in query `, JSON.stringify(queryKey), error) // log here, `queryClient.onError` has no stack trace
+          throw error
+        }
       },
       gcTime: REFRESH_INTERVAL[gcTime],
       staleTime: REFRESH_INTERVAL[staleTime],

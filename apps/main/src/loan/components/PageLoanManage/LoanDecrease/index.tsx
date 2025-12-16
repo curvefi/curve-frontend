@@ -1,4 +1,5 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
+import { DEFAULT_HEALTH_MODE } from '@/llamalend/constants'
 import AlertFormError from '@/loan/components/AlertFormError'
 import AlertFormWarning from '@/loan/components/AlertFormWarning'
 import DetailInfoBorrowRate from '@/loan/components/DetailInfoBorrowRate'
@@ -6,11 +7,11 @@ import DetailInfoEstimateGas from '@/loan/components/DetailInfoEstimateGas'
 import DetailInfoHealth from '@/loan/components/DetailInfoHealth'
 import DetailInfoLiqRange from '@/loan/components/DetailInfoLiqRange'
 import LoanFormConnect from '@/loan/components/LoanFormConnect'
-import { DEFAULT_WALLET_BALANCES } from '@/loan/components/LoanInfoUser/utils'
 import type { FormStatus, FormValues, StepKey } from '@/loan/components/PageLoanManage/LoanDecrease/types'
 import { StyledDetailInfoWrapper, StyledInpChip } from '@/loan/components/PageLoanManage/styles'
 import type { FormEstGas, PageLoanManageProps } from '@/loan/components/PageLoanManage/types'
-import { DEFAULT_DETAIL_INFO, DEFAULT_FORM_EST_GAS, DEFAULT_HEALTH_MODE } from '@/loan/components/PageLoanManage/utils'
+import { DEFAULT_DETAIL_INFO, DEFAULT_FORM_EST_GAS } from '@/loan/components/PageLoanManage/utils'
+import { DEFAULT_WALLET_BALANCES } from '@/loan/constants'
 import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
 import networks from '@/loan/networks'
 import { DEFAULT_FORM_STATUS } from '@/loan/store/createLoanDecreaseSlice'
@@ -26,16 +27,16 @@ import { getActiveStep } from '@ui/Stepper/helpers'
 import Stepper from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
 import TxInfoBar from '@ui/TxInfoBar'
-import { formatNumber } from '@ui/utils'
+import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNavigate } from '@ui-kit/hooks/router'
-import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
+import { useLegacyTokenInput } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import { ReleaseChannel, decimal, type Decimal } from '@ui-kit/utils'
+import { decimal, type Decimal } from '@ui-kit/utils'
 
 interface Props extends Pick<PageLoanManageProps, 'curve' | 'llamma' | 'llammaId' | 'params' | 'rChainId'> {}
 
@@ -70,7 +71,7 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
 
   const { chainId, haveSigner } = curveProps(curve)
   const network = networks[rChainId]
-  const [releaseChannel] = useReleaseChannel()
+
   const [stablecoinAddress] = llamma?.coinAddresses ?? []
   const { data: stablecoinUsdRate } = useTokenUsdRate({ chainId: network.chainId, tokenAddress: stablecoinAddress })
   const { userState } = userLoanDetails ?? {}
@@ -115,10 +116,10 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
         ...useStore.getState().loanDecrease.formValues,
         debt,
         debtError: '',
-        isFullRepay: decimal(userWalletBalances.stablecoin) == value,
+        isFullRepay: decimal(userState?.debt) == value,
       })
     },
-    [formStatus.error, formStatus.isComplete, reset, updateFormValues, userWalletBalances.stablecoin],
+    [formStatus.error, formStatus.isComplete, reset, updateFormValues, userState?.debt],
   )
 
   const handleInpChangeFullRepay = (isFullRepay: boolean) => {
@@ -147,7 +148,7 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
         setTxInfoBar(
           <TxInfoBar
             description={txInfoBarMessage}
-            txHash={networks[rChainId].scanTxPath(resp.hash)}
+            txHash={scanTxPath(networks[rChainId], resp.hash)}
             onClose={() => {
               if (resp.loanExists) {
                 reset(false, true)
@@ -239,7 +240,7 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
   return (
     <>
       {/* input debt */}
-      {releaseChannel !== ReleaseChannel.Beta ? (
+      {useLegacyTokenInput() ? (
         <Box grid gridRowGap={1}>
           <InputProvider
             grid
@@ -288,8 +289,8 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
         </Box>
       ) : (
         <LargeTokenInput
-          dataType="decimal"
           name="debt"
+          label={t`Debt to repay`}
           isError={!!formValues.debtError}
           message={
             formValues.debtError === 'too-much'
@@ -299,15 +300,27 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
                 : t`Debt ${formatNumber(userState?.debt, { defaultValue: '-' })}`
           }
           disabled={disable || formValues.isFullRepay}
-          maxBalance={{
+          inputBalanceUsd={decimal(formValues.debt && stablecoinUsdRate && stablecoinUsdRate * +formValues.debt)}
+          walletBalance={{
             loading: userWalletBalancesLoading,
             balance: decimal(userWalletBalances.stablecoin),
             symbol: getTokenName(llamma).stablecoin,
-            showSlider: false,
-            ...(stablecoinUsdRate != null &&
-              userWalletBalances.stablecoin != null && {
-                notionalValueUsd: stablecoinUsdRate * +userWalletBalances.stablecoin,
-              }),
+            usdRate: stablecoinUsdRate,
+          }}
+          maxBalance={{
+            balance: decimal(userState?.debt),
+            chips:
+              userState?.debt == null
+                ? []
+                : [
+                    {
+                      label: 'Max',
+                      newBalance: () =>
+                        (+userWalletBalances?.stablecoin < +userState.debt
+                          ? userWalletBalances.stablecoin
+                          : userState.debt) as Decimal,
+                    },
+                  ],
           }}
           balance={decimal(formValues.debt)}
           tokenSelector={

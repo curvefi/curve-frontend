@@ -1,6 +1,6 @@
 import lodash from 'lodash'
 import { ethAddress } from 'viem'
-import type { GetState, SetState } from 'zustand'
+import type { StoreApi } from 'zustand'
 import type {
   FormEstGas,
   FormStatus,
@@ -19,6 +19,7 @@ import { getSlippageImpact, getSwapActionModalType } from '@/dex/utils/utilsSwap
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { fetchGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
+import { fetchNetworks } from '../entities/networks'
 
 type StateKey = keyof typeof DEFAULT_STATE
 const { cloneDeep } = lodash
@@ -93,7 +94,7 @@ const DEFAULT_STATE: SliceState = {
   tokenList: {},
 }
 
-const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): QuickSwapSlice => ({
+const createQuickSwapSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): QuickSwapSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 
@@ -129,9 +130,10 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
 
         // get max amount for native token
         if (fromAddress.toLowerCase() === ethAddress) {
+          const networks = await fetchNetworks()
           const { basePlusPriority } = await fetchGasInfoAndUpdateLib({
             chainId,
-            networks: state.networks.networks,
+            networks,
           })
           const firstBasePlusPriority = basePlusPriority?.[0]
 
@@ -171,6 +173,8 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
 
       if ((cFormValues.isFrom && +cFormValues.fromAmount <= 0) || (!cFormValues.isFrom && +cFormValues.toAmount <= 0))
         return
+
+      if (!signerAddress) return // If no signer, routing handled via `useRouterApi`
 
       // loading state
       if (cFormValues.isFrom) {
@@ -230,8 +234,6 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
               },
             },
           })
-
-          if (!signerAddress) return
 
           // validation
           const { fromAmount } = await sliceState.fetchUserBalances(curve, searchedParams.fromAddress, '')
@@ -533,7 +535,7 @@ export function getRouterSwapsExchangeRates(
   ]
 }
 
-function getRouterWarningModal(
+export function getRouterWarningModal(
   {
     isExchangeRateLow,
     priceImpact,

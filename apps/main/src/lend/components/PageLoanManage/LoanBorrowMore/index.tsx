@@ -12,14 +12,16 @@ import type { FormStatus, FormValues, StepKey } from '@/lend/components/PageLoan
 import { _parseValues, DEFAULT_FORM_VALUES } from '@/lend/components/PageLoanManage/LoanBorrowMore/utils'
 import { StyledDetailInfoWrapper } from '@/lend/components/PageLoanManage/styles'
 import type { FormEstGas } from '@/lend/components/PageLoanManage/types'
-import { DEFAULT_CONFIRM_WARNING, DEFAULT_HEALTH_MODE } from '@/lend/components/PageLoanManage/utils'
+import { DEFAULT_CONFIRM_WARNING } from '@/lend/components/PageLoanManage/utils'
 import { NOFITY_MESSAGE } from '@/lend/constants'
 import { useUserLoanDetails } from '@/lend/hooks/useUserLoanDetails'
 import { helpers } from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
-import { Api, HealthMode, OneWayMarketTemplate, PageContentProps } from '@/lend/types/lend.types'
+import { Api, OneWayMarketTemplate, PageContentProps } from '@/lend/types/lend.types'
 import { _showNoLoanFound } from '@/lend/utils/helpers'
+import { DEFAULT_HEALTH_MODE } from '@/llamalend/constants'
+import type { HealthMode } from '@/llamalend/llamalend.types'
 import { useLoanExists } from '@/llamalend/queries/loan-exists'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
@@ -28,9 +30,8 @@ import { getActiveStep } from '@ui/Stepper/helpers'
 import Stepper from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
 import TxInfoBar from '@ui/TxInfoBar'
-import { formatNumber } from '@ui/utils'
+import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
-import { useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
@@ -56,7 +57,6 @@ const LoanBorrowMore = ({
   const formEstGas = useStore((state) => state.loanBorrowMore.formEstGas[activeKey])
   const formStatus = useStore((state) => state.loanBorrowMore.formStatus)
   const formValues = useStore((state) => state.loanBorrowMore.formValues)
-  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
   const maxRecv = useStore((state) => state.loanBorrowMore.maxRecv[activeKeyMax])
   const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
   const { state: userState } = useUserLoanDetails(userActiveKey)
@@ -123,7 +123,7 @@ const LoanBorrowMore = ({
         setTxInfoBar(
           <TxInfoBar
             description={txMessage}
-            txHash={networks[chainId].scanTxPath(resp.hash)}
+            txHash={scanTxPath(networks[chainId], resp.hash)}
             onClose={() => updateFormValues({}, '', true, true)}
           />,
         )
@@ -269,23 +269,11 @@ const LoanBorrowMore = ({
     }
   }, [])
 
-  usePageVisibleInterval(
-    () => {
-      if (
-        isLoaded &&
-        isPageVisible &&
-        isLeverage &&
-        !formStatus.isComplete &&
-        !formStatus.step &&
-        !formStatus.error &&
-        !isConfirming
-      ) {
-        updateFormValues({})
-      }
-    },
-    REFRESH_INTERVAL['10s'],
-    isPageVisible,
-  )
+  usePageVisibleInterval(() => {
+    if (isLoaded && isLeverage && !formStatus.isComplete && !formStatus.step && !formStatus.error && !isConfirming) {
+      updateFormValues({})
+    }
+  }, REFRESH_INTERVAL['10s'])
 
   useEffect(() => {
     if (isLoaded) {
@@ -411,6 +399,7 @@ const LoanBorrowMore = ({
           inpValue={formValues.debt}
           tokenAddress={market?.borrowed_token?.address}
           tokenSymbol={market?.borrowed_token?.symbol}
+          tokenBalance={userBalances?.borrowed}
           maxRecv={maxRecv}
           handleInpChange={useCallback((debt) => updateFormValues({ debt }), [updateFormValues])}
           handleMaxClick={async () => {

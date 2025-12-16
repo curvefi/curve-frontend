@@ -9,9 +9,6 @@
     "campaign": "Kelpdao.json"
   },
   {
-    "campaign": "DLCLink.json"
-  },
-  {
     "campaign": "Mellow.json"
   },
   {
@@ -19,9 +16,6 @@
   },
   {
     "campaign": "Usual.json"
-  },
-  {
-    "campaign": "Elixir.json"
   },
   {
     "campaign": "Fraxtal.json"
@@ -72,9 +66,6 @@
     "campaign": "StableLabs.json"
   },
   {
-    "campaign": "Sonic.json"
-  },
-  {
     "campaign": "Infinifi.json"
   },
   {
@@ -121,8 +112,5 @@
   },
   {
     "campaign": "Plasma.json"
-  },
-  {
-    "campaign": "Makina.json"
   }
 ]

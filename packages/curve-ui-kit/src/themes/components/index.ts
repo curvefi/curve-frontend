@@ -144,7 +144,7 @@ export const createComponents = (
     },
     styleOverrides: {
       paper: {
-        backgroundColor: design.Layer[3].Fill,
+        backgroundColor: design.Layer[2].Fill,
         '& .MuiMenu-list': {
           maxHeight: SizesAndSpaces.MaxHeight.popover,
         },
@@ -153,5 +153,14 @@ export const createComponents = (
   },
   MuiRadio: defineMuiRadio(),
   MuiSwitch: defineMuiSwitch(design),
+  MuiDrawer: {
+    styleOverrides: {
+      paper: {
+        backgroundColor: design.Layer[1].Fill,
+        display: 'flex',
+        flexDirection: 'column',
+      },
+    },
+  },
   MuiTypography: defineMuiTypography(design),
 })

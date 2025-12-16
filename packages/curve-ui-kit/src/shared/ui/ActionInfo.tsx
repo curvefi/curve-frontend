@@ -13,11 +13,11 @@ import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { ExclamationTriangleIcon } from '@ui-kit/shared/icons/ExclamationTriangleIcon'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
-import { WithTooltip } from '@ui-kit/shared/ui/WithTooltip'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
 import { copyToClipboard } from '@ui-kit/utils'
+import { Tooltip } from './Tooltip'
 import { WithSkeleton } from './WithSkeleton'
 
 const { Spacing, IconSize } = SizesAndSpaces
@@ -91,7 +91,7 @@ const ActionInfo = ({
   labelColor,
   prevValue,
   prevValueColor,
-  value: value,
+  value,
   valueColor,
   valueLeft,
   valueRight,
@@ -115,8 +115,14 @@ const ActionInfo = ({
 
   const errorMessage = (typeof error === 'object' && error?.message) || (typeof error === 'string' && error)
   return (
-    <Stack direction="row" columnGap={Spacing.sm} data-testid={testId} sx={sx}>
-      <Typography flexGrow={1} variant={labelSize[size]} color={labelColor ?? 'textSecondary'} textAlign="start">
+    <Stack direction="row" alignItems="center" columnGap={Spacing.sm} data-testid={testId} sx={sx}>
+      <Typography
+        flexGrow={1}
+        variant={labelSize[size]}
+        color={labelColor ?? 'textSecondary'}
+        textAlign="start"
+        component="div"
+      >
         {label}
       </Typography>
 
@@ -141,7 +147,7 @@ const ActionInfo = ({
           />
         )}
 
-        <WithTooltip title={valueTooltip} placement="top">
+        <Tooltip title={valueTooltip} placement="top">
           {/** Additional stack to add some space between left (icon), value and right (icon) */}
           <Stack
             direction="row"
@@ -162,22 +168,22 @@ const ActionInfo = ({
                 color={error ? 'error' : (valueColor ?? 'textPrimary')}
                 component="div"
               >
-                {loading ? (typeof loading === 'string' ? loading : MOCK_SKELETON) : value}
+                {loading ? (typeof loading === 'string' ? loading : MOCK_SKELETON) : error ? '' : value}
               </Typography>
             </WithSkeleton>
 
             {valueRight}
           </Stack>
-        </WithTooltip>
+        </Tooltip>
 
-        {error && (
-          <WithTooltip title={errorMessage} placement="top">
+        {error && !loading && (
+          <Tooltip title={errorMessage} placement="top">
             <ExclamationTriangleIcon fontSize="small" color="error" />
-          </WithTooltip>
+          </Tooltip>
         )}
 
         {copyValue && (
-          <IconButton size="extraSmall" title={copyValue} onClick={copyAndShowSnackbar} color="primary">
+          <IconButton size="extraSmall" title={copyValue} onClick={copyAndShowSnackbar}>
             <ContentCopy />
           </IconButton>
         )}
@@ -189,7 +195,6 @@ const ActionInfo = ({
             target="_blank"
             rel="noopener"
             size="extraSmall"
-            color="primary"
           >
             <CallMade />
           </IconButton>

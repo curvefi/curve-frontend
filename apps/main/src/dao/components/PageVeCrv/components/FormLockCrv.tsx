@@ -12,8 +12,8 @@ import { getActiveStep, getStepStatus } from '@ui/Stepper/helpers'
 import Stepper from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
 import TxInfoBar from '@ui/TxInfoBar'
-import { type CurveApi, isLoading, notify, useConnection } from '@ui-kit/features/connect-wallet'
-import { useLayoutStore } from '@ui-kit/features/layout'
+import { scanTxPath } from '@ui/utils'
+import { type CurveApi, isLoading, notify, useCurve } from '@ui-kit/features/connect-wallet'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
@@ -22,9 +22,8 @@ const FormLockCrv = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
   const isSubscribed = useRef(false)
 
   const activeKey = useStore((state) => state.lockedCrv.activeKey)
-  const { connectState } = useConnection()
+  const { connectState } = useCurve()
   const isLoadingCurve = isLoading(connectState)
-  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
   const formEstGas = useStore((state) => state.lockedCrv.formEstGas[activeKey] ?? DEFAULT_FORM_EST_GAS)
   const formStatus = useStore((state) => state.lockedCrv.formStatus)
   const formValues = useStore((state) => state.lockedCrv.formValues)
@@ -64,7 +63,7 @@ const FormLockCrv = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey) {
         const txDescription = t`Lock amount updated`
-        setTxInfoBar(<TxInfoBar description={txDescription} txHash={networks[curve.chainId].scanTxPath(resp.hash)} />)
+        setTxInfoBar(<TxInfoBar description={txDescription} txHash={scanTxPath(networks[curve.chainId], resp.hash)} />)
       }
       if (typeof dismiss === 'function') dismiss()
     },
@@ -138,7 +137,7 @@ const FormLockCrv = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
   }, [curve?.chainId, curve?.signerAddress, isLoadingCurve, formEstGas, formValues, formStatus])
 
   // interval
-  usePageVisibleInterval(() => updateFormValues({}, false), REFRESH_INTERVAL['5m'], isPageVisible)
+  usePageVisibleInterval(() => updateFormValues({}, false), REFRESH_INTERVAL['5m'])
 
   const activeStep = haveSigner ? getActiveStep(steps) : null
   const loading = typeof vecrvInfo === 'undefined'

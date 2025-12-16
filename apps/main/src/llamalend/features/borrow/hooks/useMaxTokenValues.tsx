@@ -2,8 +2,9 @@ import { useEffect } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
 import { type Address } from 'viem'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
-import { useMaxLeverage } from '../queries/borrow-max-leverage.query'
-import { useMaxBorrowReceive } from '../queries/borrow-max-receive.query'
+import { Decimal } from '@ui-kit/utils'
+import { useCreateLoanMaxReceive } from '../../../queries/create-loan/create-loan-max-receive.query'
+import { useMarketMaxLeverage } from '../../../queries/market-max-leverage.query'
 import { setValueOptions } from '../react-form.utils'
 import type { BorrowForm, BorrowFormQueryParams } from '../types'
 
@@ -13,31 +14,31 @@ import type { BorrowForm, BorrowFormQueryParams } from '../types'
  * then updates the form with these values.
  *
  * @param collateralToken - The collateral token object containing its address.
- * @param params - The parameters required to fetch max borrowable amounts, including chainId, poolId, and userAddress.
+ * @param params - The parameters required to fetch max borrowable amounts, including chainId, marketId, and userAddress.
  * @param form - The react-hook-form instance managing the borrow form state.
  */
 export function useMaxTokenValues(
-  collateralToken: { address: Address } | undefined,
+  collateralToken: { address: Address; symbol?: string } | undefined,
   params: BorrowFormQueryParams & { userAddress?: Address },
   form: UseFormReturn<BorrowForm>,
 ) {
   const {
     data: userBalance,
-    isError: isBalanceError,
+    error: balanceError,
     isLoading: isBalanceLoading,
   } = useTokenBalance(params, collateralToken)
-  const { data: maxBorrow, isError: isErrorMaxBorrow, isLoading: isLoadingMaxBorrow } = useMaxBorrowReceive(params)
+  const { data: maxBorrow, error: maxBorrowError, isLoading: isLoadingMaxBorrow } = useCreateLoanMaxReceive(params)
   const {
     data: maxTotalLeverage,
-    isError: isErrorMaxLeverage,
+    error: maxLeverageError,
     isLoading: isLoadingMaxLeverage,
-  } = useMaxLeverage(params)
+  } = useMarketMaxLeverage(params)
 
   const { maxDebt, maxLeverage: maxBorrowLeverage, maxTotalCollateral } = maxBorrow ?? {}
   const maxCollateral =
-    userBalance && maxBorrow?.maxTotalCollateral
-      ? Math.min(userBalance, maxBorrow?.maxTotalCollateral)
-      : (userBalance ?? maxBorrow?.maxTotalCollateral)
+    userBalance && maxTotalCollateral
+      ? (`${Math.min(+userBalance, +maxTotalCollateral)}` satisfies Decimal)
+      : (userBalance ?? maxTotalCollateral)
 
   const maxLeverage = maxBorrowLeverage ?? maxTotalLeverage
 
@@ -45,12 +46,20 @@ export function useMaxTokenValues(
   useEffect(() => form.setValue('maxCollateral', maxCollateral, setValueOptions), [form, maxCollateral])
 
   return {
-    isCollateralLoading: !collateralToken || isLoadingMaxBorrow || isBalanceLoading,
-    isDebtLoading: !collateralToken || isLoadingMaxBorrow,
-    isCollateralError: isErrorMaxBorrow || isBalanceError,
-    isDebtError: isErrorMaxBorrow,
-    isLeverageError: isErrorMaxLeverage || isErrorMaxBorrow,
-    isLeverageLoading: isLoadingMaxLeverage || isLoadingMaxBorrow,
-    maxLeverage,
+    collateral: {
+      data: maxCollateral,
+      isLoading: !collateralToken || isLoadingMaxBorrow || isBalanceLoading,
+      error: maxBorrowError || balanceError,
+    },
+    debt: {
+      data: maxDebt,
+      isLoading: !collateralToken || isLoadingMaxBorrow,
+      error: maxBorrowError,
+    },
+    maxLeverage: {
+      data: maxLeverage,
+      isLoading: isLoadingMaxLeverage || isLoadingMaxBorrow,
+      error: maxLeverageError || maxBorrowError,
+    },
   }
 }

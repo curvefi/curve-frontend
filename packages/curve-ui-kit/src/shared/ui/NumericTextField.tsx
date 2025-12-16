@@ -1,8 +1,38 @@
 import BigNumber from 'bignumber.js'
-import { useEffect, useState } from 'react'
+import type { Property } from 'csstype'
+import { ReactNode, useEffect, useState } from 'react'
+import { Typography } from '@mui/material'
 import TextField from '@mui/material/TextField'
 import type { TextFieldProps } from '@mui/material/TextField'
-import { type Amount } from '@ui-kit/utils'
+import { t } from '@ui-kit/lib/i18n'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { type Decimal } from '@ui-kit/utils'
+
+const { Spacing, MaxWidth } = SizesAndSpaces
+
+type NumericTextFieldAdornments = 'dollar' | 'percentage' | 'bands'
+
+/**
+ * Props for the NumericTextField component.
+ * Extends Material-UI's TextFieldProps while replacing value and onChange
+ * to handle numeric input specifically.
+ */
+export type NumericTextFieldProps = Omit<TextFieldProps, 'type' | 'value' | 'onChange' | 'onBlur'> & {
+  /** The numeric value of the input field */
+  value: Decimal | undefined
+  /** Minimum allowed value (default: 0) */
+  min?: Decimal
+  /** Maximum allowed value (default: Infinity) */
+  max?: Decimal
+  /** Callback fired when the numeric value changes, can be a temporary non decimal value like "5." or "-" */
+  onChange?: (value: string | undefined) => void
+  /** Callback fired when the numeric is being submitted */
+  onBlur?: (value: Decimal | undefined) => void
+  /** Optional formatter applied when the input loses focus */
+  format?: (value: Decimal | undefined) => string
+  /** Optional adornment variant for dollar or percentage display */
+  adornment?: NumericTextFieldAdornments
+}
 
 /**
  * Validates and normalizes numeric input by replacing commas with dots
@@ -11,10 +41,9 @@ import { type Amount } from '@ui-kit/utils'
  *
  * @param value - The new input value to validate
  * @param current - The current input value to fall back to if validation fails
- * @param allowNegative - Whether to allow negative numbers
  * @returns The validated and normalized input value, or the current value if invalid
  */
-const sanitize = (value: string, current: string, allowNegative: boolean): string => {
+const sanitize = (value: string, current: string): string => {
   const normalizedValue = value.replace(/,/g, '.')
 
   // If more than one decimal point, return the current value (ignore the change)
@@ -28,13 +57,8 @@ const sanitize = (value: string, current: string, allowNegative: boolean): strin
     return current
   }
 
-  // If negative numbers are not allowed and value starts with minus, ignore the change
-  if (!allowNegative && minusIndex === 0) {
-    return current
-  }
-
   // Check if it contains only valid characters (numbers, optional minus at start if allowed, and one optional decimal)
-  const pattern = allowNegative ? /^-?[0-9]*\.?[0-9]*([eE][-+]?[0-9]+)?$/ : /^[0-9]*\.?[0-9]*([eE][-+]?[0-9]+)?$/
+  const pattern = /^-?[0-9]*\.?[0-9]*([eE][-+]?[0-9]+)?$/
   return pattern.test(normalizedValue) ? normalizedValue : current
 }
 
@@ -46,9 +70,11 @@ const sanitize = (value: string, current: string, allowNegative: boolean): strin
  * @param max - The maximum allowed value (default: Infinity)
  * @returns A number within the specified range, or min if the input is invalid/NaN
  */
-const clamp = (value?: string, min: Amount = -Infinity, max: Amount = Infinity): BigNumber => {
-  const num = new BigNumber(value ?? min)
-  return num.isNaN() ? new BigNumber(min) : BigNumber.max(min, BigNumber.min(max, num))
+const clamp = (value?: string, min?: Decimal, max?: Decimal): BigNumber => {
+  const bigMin = new BigNumber(min ?? -Infinity)
+  const bigMax = new BigNumber(max ?? Infinity)
+  const num = value ? new BigNumber(value) : bigMin
+  return num.isNaN() ? bigMin : BigNumber.max(bigMin, BigNumber.min(bigMax, num))
 }
 
 /**
@@ -56,65 +82,69 @@ const clamp = (value?: string, min: Amount = -Infinity, max: Amount = Infinity):
  * Returns an empty string for undefined/null values to improve UX by showing
  * a blank field when no value is set.
  */
-const getDisplayValue = (val?: Amount) => (val == null ? '' : String(val))
+const getDisplayValue = (val?: Decimal) => (val == null ? '' : String(val))
 
 /**
- * We require a decimal flag to distinguish between number and string types for T.
- * We cannot otherwise know whether the consuming code expects decimal input or numbers.
+ * Computes a formatted value for display purposes.
+ * Applies an optional formatter when provided and the value is defined.
  */
-export type DataType<T> = { dataType: T extends number ? 'number' : 'decimal' }
+const getFormattedDisplayValue = (val: Decimal | undefined, format?: (value: Decimal | undefined) => string) =>
+  val == null ? '' : (format?.(val) ?? getDisplayValue(val))
 
-/**
- * Props for the NumericTextField component.
- * Extends Material-UI's TextFieldProps while replacing value and onChange
- * to handle numeric input specifically.
- */
-type NumericTextFieldProps<T extends Amount> = Omit<TextFieldProps, 'type' | 'value' | 'onChange' | 'onBlur'> & {
-  /** The numeric value of the input field */
-  value: T | undefined
-  /** Minimum allowed value (default: 0) */
-  min?: T
-  /** Maximum allowed value (default: Infinity) */
-  max?: T
-  /** Callback fired when the numeric value changes */
-  onChange?: (value: T | undefined) => void
-  /** Callback fired when the numeric is being submitted */
-  onBlur?: (value: T | undefined) => void
-} & DataType<T>
+const AdornmentTypography = ({ children }: { children: ReactNode }) => (
+  <Typography variant="bodySBold" color="textTertiary">
+    {children}
+  </Typography>
+)
 
-export const NumericTextField = <T extends Amount>({
+const adornments: Record<
+  NumericTextFieldAdornments,
+  { textAlign: Property.TextAlign; inputStartAdornment?: ReactNode; inputEndAdornment?: ReactNode }
+> = {
+  dollar: {
+    textAlign: 'left',
+    inputStartAdornment: <AdornmentTypography>$</AdornmentTypography>,
+  },
+  percentage: {
+    textAlign: 'right',
+    inputEndAdornment: <AdornmentTypography>%</AdornmentTypography>,
+  },
+  bands: {
+    textAlign: 'left',
+    inputEndAdornment: (
+      <Typography
+        sx={{ marginInlineEnd: Spacing.sm }}
+        variant="highlightM"
+        color="text.secondary"
+      >{t`Bands`}</Typography>
+    ),
+  },
+}
+
+export const NumericTextField = ({
   value,
   min,
   max,
   onChange,
   onBlur,
   onFocus,
-  dataType,
+  format,
+  adornment,
+  sx,
+  slotProps,
   ...props
-}: NumericTextFieldProps<T>) => {
+}: NumericTextFieldProps) => {
   // Internal value that might be incomplete, like "4.".
-  const [inputValue, setInputValue] = useState(getDisplayValue(value))
+  const [inputValue, setInputValue] = useState(getFormattedDisplayValue(value, format))
 
-  const [lastChangeValue, setLastChangeValue] = useState(value)
+  const [lastChangeValue, setLastChangeValue] = useState<string | undefined>(value)
   const [lastBlurValue, setLastBlurValue] = useState(value)
+  const [isFocused, setIsFocused] = useState(false)
 
   // Update input value when value changes externally
   useEffect(() => {
-    setInputValue(getDisplayValue(value))
-  }, [value])
-
-  /**
-   * Converts a string input to a numeric value with optional clamping.
-   *
-   * @param validatedValue - The sanitized string input
-   * @param shouldClamp - Whether to apply min/max bounds
-   * @returns Numeric value, undefined for empty/invalid input
-   */
-  const parseAndClamp = (validatedValue: string, { shouldClamp = false }: { shouldClamp?: boolean }) => {
-    if (validatedValue === '') return undefined
-    const result = shouldClamp ? clamp(validatedValue, min ?? 0, max) : new BigNumber(validatedValue)
-    return (dataType === 'decimal' ? result.toString() : result.toNumber()) as T
-  }
+    setInputValue(isFocused ? getDisplayValue(value) : getFormattedDisplayValue(value, format))
+  }, [value, isFocused, format])
 
   return (
     <TextField
@@ -123,6 +153,7 @@ export const NumericTextField = <T extends Amount>({
       value={inputValue}
       inputMode="decimal"
       onFocus={(e) => {
+        setIsFocused(true)
         /**
          * Select all content when clicked.
          * This prevents unintended behavior when users click on the input field.
@@ -133,20 +164,19 @@ export const NumericTextField = <T extends Amount>({
         onFocus?.(e)
       }}
       onChange={(e) => {
-        const sanitizedValue = sanitize(e.target.value, inputValue, +(min ?? 0) < 0)
+        const sanitizedValue = sanitize(e.target.value, inputValue)
         setInputValue(sanitizedValue)
-
-        const changedValue = parseAndClamp(sanitizedValue, { shouldClamp: false })
-
-        if (changedValue !== lastChangeValue) {
-          onChange?.(changedValue)
-          setLastChangeValue(changedValue)
-        }
+        onChange?.(sanitizedValue)
+        setLastChangeValue(sanitizedValue)
       }}
       onBlur={() => {
-        // Replace a sole minus with just empty input as it's not really valid.
-        const finalValue = parseAndClamp(inputValue === '-' ? '' : inputValue, { shouldClamp: true })
-        setInputValue(getDisplayValue(finalValue))
+        setIsFocused(false)
+        // Replace a sole invalid values with just empty input as they're not really valid.
+        const invalidValues = ['-', '.', ',', '']
+        const finalValue = invalidValues.includes(inputValue)
+          ? undefined
+          : (clamp(inputValue, min, max).toString() as Decimal)
+        setInputValue(getFormattedDisplayValue(finalValue, format))
 
         // Also emit the changed event, because due to clamping and such the final value
         // might differ from what the user entered last.
@@ -159,6 +189,32 @@ export const NumericTextField = <T extends Amount>({
           onBlur?.(finalValue)
           setLastBlurValue(finalValue)
         }
+      }}
+      // the input is not wide enough for the "Bands" adornment
+      // the width value chosen for the slider to match the width of the labels
+      sx={{
+        ...sx,
+        ...(adornment === 'bands' && {
+          flexShrink: 0,
+          minWidth: MaxWidth.sliderInput.bands,
+        }),
+      }}
+      slotProps={{
+        ...(adornment && {
+          input: {
+            sx: {
+              paddingInlineStart: Spacing.xs,
+              '& input': {
+                // the normal input font size is too small for the "Bands" adornment
+                ...(adornment === 'bands' && { color: 'text.primary', fontSize: 'bodyMBold' }),
+                textAlign: adornments[adornment].textAlign,
+              },
+            },
+            endAdornment: adornments[adornment].inputEndAdornment,
+            startAdornment: adornments[adornment].inputStartAdornment,
+          },
+        }),
+        ...slotProps,
       }}
     />
   )

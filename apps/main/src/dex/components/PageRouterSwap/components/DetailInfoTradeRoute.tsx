@@ -9,11 +9,10 @@ import Stack from '@mui/material/Stack'
 import Box from '@ui/Box'
 import { RCCircle } from '@ui/images'
 import Loader from '@ui/Loader'
-import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
+import { useActionInfo } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { ReleaseChannel } from '@ui-kit/utils'
 import { RouteTrack } from '@ui-kit/widgets/RouteTrack'
 
 const { Spacing } = SizesAndSpaces
@@ -26,7 +25,7 @@ const OldDetailInfoTradeRoute = ({
 }: {
   params: NetworkUrlParams
   loading: boolean
-  routes: Route[]
+  routes: Route[] | undefined
   tokensNameMapper: TokensNameMapper
 }) => {
   const routesLength = Array.isArray(routes) ? routes.length : 0
@@ -55,7 +54,7 @@ const OldDetailInfoTradeRoute = ({
               </RouteTravelDecor>
             )}
             <ul>
-              {routes.map((route) => (
+              {routes?.map((route) => (
                 <Item key={`${route.poolId}-${route.outputCoinAddress}`}>
                   <Box flex flexAlignItems="baseline">
                     <DetailInfoTradeRouteRoute
@@ -151,9 +150,7 @@ const Wrapper = styled(Box)`
   font-size: var(--font-size-2);
 `
 
-export default function DetailInfoTradeRoute(props: ComponentProps<typeof NewDetailInfoTradeRoute>) {
-  const [releaseChannel] = useReleaseChannel()
-  const DetailInfoTradeRoute =
-    releaseChannel === ReleaseChannel.Beta ? NewDetailInfoTradeRoute : OldDetailInfoTradeRoute
-  return <DetailInfoTradeRoute {...props} />
-}
+const DetailInfoTradeRoute = (props: ComponentProps<typeof NewDetailInfoTradeRoute>) =>
+  useActionInfo() ? <NewDetailInfoTradeRoute {...props} /> : <OldDetailInfoTradeRoute {...props} />
+
+export default DetailInfoTradeRoute

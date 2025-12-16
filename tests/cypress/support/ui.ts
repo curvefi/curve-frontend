@@ -30,10 +30,9 @@ export const assertInViewport = ($el: JQuery) =>
 export const assertNotInViewport = ($el: JQuery) =>
   expect(isInViewport($el), `${$el} should not be in the viewport`).to.be.false
 
-export const checkIsDarkMode = (win: Cypress.AUTWindow) => win.matchMedia('(prefers-color-scheme: dark)').matches
-
 const oneDexPath = () => oneOf('', 'dex')
 export const oneAppPath = () => oneOf(...([oneDexPath(), 'lend', 'dao', 'crvusd', 'llamalend'] as const))
+
 export type AppPath = ReturnType<typeof oneAppPath>
 
 export const LOAD_TIMEOUT = { timeout: 30000 }

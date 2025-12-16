@@ -1,5 +1,5 @@
 import lodash from 'lodash'
-import type { GetState, SetState } from 'zustand'
+import { StoreApi } from 'zustand'
 import type { FormStatus, FormValues } from '@/lend/components/PageLoanManage/LoanCollateralAdd/types'
 import type { FormDetailInfo, FormEstGas } from '@/lend/components/PageLoanManage/types'
 import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@/lend/components/PageLoanManage/utils'
@@ -10,9 +10,8 @@ import networks from '@/lend/networks'
 import type { State } from '@/lend/store/useStore'
 import { Api, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { _parseActiveKey } from '@/lend/utils/helpers'
+import { updateUserEventsApi } from '@/llamalend/llama.utils'
 import { refetchLoanExists } from '@/llamalend/queries/loan-exists'
-import { Chain } from '@curvefi/prices-api'
-import { getUserMarketCollateralEvents } from '@curvefi/prices-api/lending'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 
@@ -69,7 +68,10 @@ const DEFAULT_STATE: SliceState = {
 const { loanCollateralAdd } = apiLending
 const { isTooMuch } = helpers
 
-const createLoanCollateralAdd = (_: SetState<State>, get: GetState<State>): LoanCollateralAddSlice => ({
+const createLoanCollateralAdd = (
+  _: StoreApi<State>['setState'],
+  get: StoreApi<State>['getState'],
+): LoanCollateralAddSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 
@@ -158,7 +160,7 @@ const createLoanCollateralAdd = (_: SetState<State>, get: GetState<State>): Loan
       const { provider, wallet } = useWallet.getState()
       const { chainId } = api
 
-      if (!provider) return setMissingProvider(sliceState)
+      if (!provider || !wallet) return setMissingProvider(sliceState)
 
       // loading
       sliceState.setStateByKey('formStatus', {
@@ -175,13 +177,7 @@ const createLoanCollateralAdd = (_: SetState<State>, get: GetState<State>): Loan
         formValues.collateral,
       )
 
-      // update user events api
-      void getUserMarketCollateralEvents(
-        wallet?.account?.address,
-        networks[chainId].name as Chain,
-        market.addresses.controller,
-        resp.hash,
-      )
+      updateUserEventsApi(wallet, networks[chainId], market, resp.hash)
 
       if (resp.activeKey === get()[sliceKey].activeKey) {
         if (error) {

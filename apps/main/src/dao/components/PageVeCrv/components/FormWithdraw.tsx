@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 import { styled } from 'styled-components'
-import { useAccount } from 'wagmi'
+import { useConnection } from 'wagmi'
 import AlertFormError from '@/dao/components/AlertFormError'
 import Countdown from '@/dao/components/Countdown'
 import FormActions from '@/dao/components/PageVeCrv/components/FormActions'
@@ -23,9 +23,9 @@ const { IconSize } = SizesAndSpaces
 const FormWithdraw = ({ rChainId, vecrvInfo }: PageVecrv) => {
   const withdrawLockedCrv = useStore((state) => state.lockedCrv.withdrawLockedCrv)
   const withdrawLockedCrvStatus = useStore((state) => state.lockedCrv.withdrawLockedCrvStatus)
-  const [txInfoBar, setTxInfoBar] = useState<React.ReactNode | null>(null)
+  const [txInfoBar, setTxInfoBar] = useState<ReactNode | null>(null)
 
-  const { address } = useAccount()
+  const { address } = useConnection()
 
   const haveSigner = !!address
   const canUnlock =

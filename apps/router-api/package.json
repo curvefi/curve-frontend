@@ -7,24 +7,25 @@
     "node": "22"
   },
   "scripts": {
-    "dev": "tsx watch src/local.ts",
-    "start": "node dist/local.js",
-    "build": "tsc --project tsconfig.build.json",
+    "dev": "tsx watch src/dev.ts",
     "lint": "eslint \"src/**/*.ts\"",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@curvefi/api": "2.68.6",
-    "fastify": "^5.6.1"
+    "fastify": "^5.6.2"
+  },
+  "peerDependencies": {
+    "@curvefi/api": "*"
   },
   "devDependencies": {
-    "@types/node": "24.5.2",
+    "@curvefi/api": "*",
+    "@types/node": "*",
     "eslint": "*",
     "eslint-config-custom": "*",
-    "tsx": "^4.20.6",
+    "tsx": "4.21.0",
     "typescript": "*",
-    "vitest": "^3.2.4"
+    "vitest": "*"
   }
 }

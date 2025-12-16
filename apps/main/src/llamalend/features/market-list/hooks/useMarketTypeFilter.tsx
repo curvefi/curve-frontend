@@ -1,6 +1,6 @@
-import { useCallback } from 'react'
-import { type LlamaMarketKey } from '@/llamalend/entities/llama-markets'
-import type { FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import { useCallback, useMemo } from 'react'
+import { type FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import { parseListFilter, serializeListFilter } from '@ui-kit/shared/ui/DataTable/filters'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { LlamaMarketColumnId } from '../columns.enum'
 
@@ -9,15 +9,16 @@ import { LlamaMarketColumnId } from '../columns.enum'
  * @returns marketTypes - object with keys for each market type and boolean values indicating if the type is selected
  * @returns toggles - object with keys for each market type and functions to toggle the type
  */
-export function useMarketTypeFilter({ columnFiltersById, setColumnFilter }: FilterProps<LlamaMarketKey>) {
-  const filter = columnFiltersById[LlamaMarketColumnId.Type] as LlamaMarketType[] | undefined
+export function useMarketTypeFilter({ columnFiltersById, setColumnFilter }: FilterProps<LlamaMarketColumnId>) {
+  const rawFilter = columnFiltersById[LlamaMarketColumnId.Type]
+  const filter = useMemo(() => parseListFilter(rawFilter), [rawFilter])
 
   /** Helper function to toggle the market type filter by updating the column filter state */
   const toggleMarketType = useCallback(
     (type: LlamaMarketType) => {
       setColumnFilter(
         LlamaMarketColumnId.Type,
-        filter?.includes(type) ? filter.filter((f) => f !== type) : [...(filter || []), type],
+        serializeListFilter(filter?.includes(type) ? filter.filter((f) => f !== type) : [...(filter ?? []), type]),
       )
     },
     [filter, setColumnFilter],

@@ -1,5 +1,5 @@
 import lodash from 'lodash'
-import type { GetState, SetState } from 'zustand'
+import { StoreApi } from 'zustand'
 import type {
   FormDetailInfoLeverage,
   FormStatus,
@@ -19,9 +19,8 @@ import networks from '@/lend/networks'
 import type { State } from '@/lend/store/useStore'
 import { Api, ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { _parseActiveKey } from '@/lend/utils/helpers'
+import { updateUserEventsApi } from '@/llamalend/llama.utils'
 import { refetchLoanExists } from '@/llamalend/queries/loan-exists'
-import { Chain } from '@curvefi/prices-api'
-import { getUserMarketCollateralEvents } from '@curvefi/prices-api/lending'
 import { getLib, useWallet } from '@ui-kit/features/connect-wallet'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 
@@ -76,7 +75,10 @@ const DEFAULT_STATE: SliceState = {
 const { loanBorrowMore } = apiLending
 const { isTooMuch } = helpers
 
-const createLoanBorrowMore = (_: SetState<State>, get: GetState<State>): LoanBorrowMoreSlice => ({
+const createLoanBorrowMore = (
+  _: StoreApi<State>['setState'],
+  get: StoreApi<State>['getState'],
+): LoanBorrowMoreSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 
@@ -278,7 +280,7 @@ const createLoanBorrowMore = (_: SetState<State>, get: GetState<State>): LoanBor
       const { provider, wallet } = useWallet.getState()
       const { chainId } = api
 
-      if (!provider) return setMissingProvider(get()[sliceKey])
+      if (!provider || !wallet) return setMissingProvider(get()[sliceKey])
 
       // loading
       sliceState.setStateByKey('formStatus', {
@@ -302,13 +304,7 @@ const createLoanBorrowMore = (_: SetState<State>, get: GetState<State>): LoanBor
         isLeverage,
       )
 
-      // update user events api
-      void getUserMarketCollateralEvents(
-        wallet?.account?.address,
-        networks[chainId].name as Chain,
-        market.addresses.controller,
-        resp.hash,
-      )
+      updateUserEventsApi(wallet, networks[chainId], market, resp.hash)
 
       if (resp.activeKey === get()[sliceKey].activeKey) {
         if (error) {

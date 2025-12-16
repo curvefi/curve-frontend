@@ -1,12 +1,13 @@
 import type { ContractTransactionResponse } from 'ethers'
 import { produce } from 'immer'
-import type { GetState, SetState } from 'zustand'
+import type { StoreApi } from 'zustand'
 import type { DeploymentType, GaugeType, PoolType, PoolTypes } from '@/dex/components/PageDeployGauge/types'
 import type { State } from '@/dex/store/useStore'
 import { ChainId, CurveApi } from '@/dex/types/main.types'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { shortenString } from '@ui-kit/utils'
+import { getNetworks } from '../entities/networks'
 
 type NetworkWithFactory = {
   chainId: ChainId
@@ -89,16 +90,13 @@ const DEFAULT_STATE: SliceState = {
   },
 }
 
-const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => ({
+const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
   deployGauge: {
     ...DEFAULT_STATE,
 
     setCurveNetworks: () => {
       const networksWithFactory: NetworksWithFactory = {}
-
-      const {
-        networks: { networks },
-      } = get()
+      const networks = getNetworks()
 
       Object.entries(networks).forEach(([key, chain]) => {
         if (chain.hasFactory) {

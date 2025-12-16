@@ -37,7 +37,7 @@ export const dexRoutes = dexLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network',
-    loader: ({ params: { network } }) => redirectTo(`/dex/${network}/pools/`),
+    loader: ({ params: { network } }) => redirectTo(`/dex/${network}/swap/`),
     ...layoutProps,
   }),
   createRoute({
@@ -107,18 +107,16 @@ export const dexRoutes = dexLayoutRoute.addChildren([
     ...layoutProps,
   }),
   createRoute({
-    path: '$network/pools/$pool/$formType',
-    component: PagePool,
-    head: ({ params }) => ({
-      meta: [{ title: `Curve - Pool - ${params.pool} - Curve` }],
-    }),
+    path: '$network/pools/$poolIdOrAddress',
+    loader: ({ params: { network, poolIdOrAddress } }) =>
+      redirectTo(`/dex/${network}/pools/${poolIdOrAddress}/deposit/`),
     ...layoutProps,
   }),
   createRoute({
-    path: '$network/pools/$pool',
+    path: '$network/pools/$poolIdOrAddress/$formType',
     component: PagePool,
     head: ({ params }) => ({
-      meta: [{ title: `Curve - Pool - ${params.pool} - Curve` }],
+      meta: [{ title: `Curve - Pool - ${params.poolIdOrAddress} - Curve` }],
     }),
     ...layoutProps,
   }),

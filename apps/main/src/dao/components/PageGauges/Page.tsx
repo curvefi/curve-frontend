@@ -1,15 +1,11 @@
 import { styled } from 'styled-components'
 import Gauges from '@/dao/components/PageGauges/index'
-import Settings from '@/dao/layout/Settings'
 import { breakpoints } from '@ui/utils'
 
 export const PageGauges = () => (
-  <>
-    <Container>
-      <Gauges />
-    </Container>
-    <Settings showScrollButton />
-  </>
+  <Container data-testid="gauges-page">
+    <Gauges />
+  </Container>
 )
 
 const Container = styled.div`

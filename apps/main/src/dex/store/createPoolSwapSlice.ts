@@ -1,7 +1,7 @@
 import { Contract, Interface, JsonRpcProvider } from 'ethers'
 import lodash from 'lodash'
 import { ethAddress } from 'viem'
-import type { GetState, SetState } from 'zustand'
+import type { StoreApi } from 'zustand'
 import type { ExchangeOutput, FormStatus, FormValues, RouterSwapOutput } from '@/dex/components/PagePool/Swap/types'
 import {
   DEFAULT_EST_GAS,
@@ -29,6 +29,7 @@ import { getSlippageImpact, getSwapActionModalType } from '@/dex/utils/utilsSwap
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { fetchGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
+import { fetchNetworks } from '../entities/networks'
 
 type StateKey = keyof typeof DEFAULT_STATE
 const { cloneDeep } = lodash
@@ -78,16 +79,13 @@ const DEFAULT_STATE: SliceState = {
   formValues: DEFAULT_FORM_VALUES,
 }
 
-const createPoolSwapSlice = (set: SetState<State>, get: GetState<State>): PoolSwapSlice => ({
+const createPoolSwapSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): PoolSwapSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 
     fetchIgnoreExchangeRateCheck: async (curve: CurveApi, pool: Pool) => {
       const state = get()
       const sliceState = state[sliceKey]
-      const {
-        networks: { networks },
-      } = state
 
       const { chainId } = curve
 
@@ -96,6 +94,7 @@ const createPoolSwapSlice = (set: SetState<State>, get: GetState<State>): PoolSw
       if (typeof storedIgnoreExchangeRateCheck !== 'undefined') {
         return storedIgnoreExchangeRateCheck
       } else {
+        const networks = await fetchNetworks()
         const provider = useWallet.getState().provider || new JsonRpcProvider(networks[chainId].rpcUrl)
 
         try {
@@ -226,9 +225,10 @@ const createPoolSwapSlice = (set: SetState<State>, get: GetState<State>): PoolSw
       // stored values
       const userPoolBalances = await get()[sliceKey].fetchTokenWalletBalance(curve, pool.id, formValues.fromAddress)
       const walletFromBalance = userPoolBalances[formValues.fromAddress]
+      const networks = await fetchNetworks()
       const { basePlusPriority } = await fetchGasInfoAndUpdateLib({
         chainId: curve.chainId,
-        networks: get().networks.networks,
+        networks,
       })
 
       let fromAmount = walletFromBalance ?? '0'

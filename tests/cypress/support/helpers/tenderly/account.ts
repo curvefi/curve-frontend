@@ -4,6 +4,8 @@ export type TenderlyAccount = {
   accessKey: string
 }
 
+export type TenderlyConfig = TenderlyAccount & { vnetId: string }
+
 const accountSlug = Cypress.env('TENDERLY_ACCOUNT_SLUG')
 const projectSlug = Cypress.env('TENDERLY_PROJECT_SLUG')
 const accessKey = Cypress.env('TENDERLY_ACCESS_KEY')

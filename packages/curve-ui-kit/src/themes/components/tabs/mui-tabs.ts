@@ -44,7 +44,7 @@ const BORDER_SIZE_LARGE = '4px' as const
  *    keeping color changes instantenously.
  */
 
-export const defineMuiTab = ({ Tabs: { Transition } }: DesignSystem): Components['MuiTab'] => ({
+export const defineMuiTab = ({ Tabs: { Transition }, Text }: DesignSystem): Components['MuiTab'] => ({
   styleOverrides: {
     root: {
       transition: Transition,
@@ -61,6 +61,16 @@ export const defineMuiTab = ({ Tabs: { Transition } }: DesignSystem): Components
         position: 'absolute',
         height: BORDER_SIZE,
       },
+      // Count typography color states
+      '& .tab-end-adornment': {
+        color: Text.TextColors.Tertiary,
+      },
+      '&:hover .tab-end-adornment': {
+        color: 'inherit',
+      },
+      '&.Mui-selected .tab-end-adornment': {
+        color: Text.TextColors.Secondary,
+      },
     },
   },
 })
@@ -72,7 +82,7 @@ const tabStyle = ({ Label, Fill, Outline }: TabStyle, inset?: string) => ({
   color: Label,
   backgroundColor: Fill,
   '::after': {
-    backgroundColor: Outline ?? 'transparant',
+    backgroundColor: Outline ?? 'transparent',
     inset,
   },
 })
@@ -125,6 +135,26 @@ export const defineMuiTabs = ({
   styleOverrides: {
     root: {
       minHeight: 0, // It's 48px by default in Mui, but we want it smaller
+      position: 'relative', // For absolute positioning of scroll buttons
+      // Style scroll buttons (arrows) when tabs overflow
+      '& .MuiTabScrollButton-root': {
+        position: 'absolute',
+        top: 0,
+        bottom: 0,
+        zIndex: 1,
+        color: Contained.Current.Outline,
+        opacity: 1,
+        backgroundColor: Layer[1].Fill,
+        '&:first-of-type': {
+          left: 0,
+        },
+        '&:last-of-type': {
+          right: 0,
+        },
+        '&.Mui-disabled': {
+          opacity: 0,
+        },
+      },
       [`&.${contained}`]: {
         '& .MuiTab-root': tabVariant(Contained),
         '& .MuiTab-root:not(.Mui-selected):not(:last-child)': {

@@ -4,7 +4,7 @@ import { PoolAlert } from '@/dex/types/main.types'
 import ExternalLink from '@ui/Link/ExternalLink'
 import { t, Trans } from '@ui-kit/lib/i18n'
 
-const useTokenAlert = (tokenAddressAll: string[]): PoolAlert | null =>
+const useTokenAlert = (tokenAddressAll: string[] | undefined): PoolAlert | null =>
   useMemo(() => {
     const maAlert: PoolAlert = {
       alertType: 'info',
@@ -149,6 +149,15 @@ const useTokenAlert = (tokenAddressAll: string[]): PoolAlert | null =>
                 Learn more here
               </StyledExternalLink>
             </Trans>
+          </div>
+        ),
+      },
+      '0x476ef9ac6d8673e220d0e8bc0a810c2dc6a2aa84': {
+        alertType: 'danger',
+        address: '0x476ef9ac6d8673e220d0e8bc0a810c2dc6a2aa84',
+        message: (
+          <div>
+            <Trans>USPD has been exploited.</Trans>
           </div>
         ),
       },

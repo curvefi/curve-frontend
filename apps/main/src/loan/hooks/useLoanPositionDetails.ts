@@ -1,21 +1,26 @@
 import lodash from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
+import { useConnection } from 'wagmi'
+import { DEFAULT_HEALTH_MODE } from '@/llamalend/constants'
 import type { BorrowPositionDetailsProps } from '@/llamalend/features/market-position-details'
 import { calculateRangeToLiquidation } from '@/llamalend/features/market-position-details/utils'
+import { DEFAULT_BORROW_TOKEN_SYMBOL, getHealthMode } from '@/llamalend/health.util'
 import { calculateLtv } from '@/llamalend/llama.utils'
-import { DEFAULT_HEALTH_MODE } from '@/loan/components/PageLoanManage/utils'
+import { useLoanExists } from '@/llamalend/queries/loan-exists'
+import { useUserPnl } from '@/llamalend/queries/user-pnl.query'
 import { CRVUSD_ADDRESS } from '@/loan/constants'
 import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
 import networks from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
 import { ChainId, Llamma } from '@/loan/types/loan.types'
-import { getHealthMode } from '@/loan/utils/health.util'
+import { hasV2Leverage } from '@/loan/utils/leverage'
 import { Address } from '@curvefi/prices-api'
 import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import { useCrvUsdSnapshots } from '@ui-kit/entities/crvusd-snapshots'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { calculateAverageRates } from '@ui-kit/utils/averageRates'
+import { decimal } from '@ui-kit/utils/decimal'
 
 type UseLoanPositionDetailsProps = {
   chainId: ChainId
@@ -32,19 +37,33 @@ export const useLoanPositionDetails = ({
   llammaId,
 }: UseLoanPositionDetailsProps): BorrowPositionDetailsProps => {
   const blockchainId = networks[chainId]?.id
+  const { address: userAddress } = useConnection()
   const { data: campaigns } = useCampaignsByAddress({
     blockchainId,
     address: llamma?.controller?.toLocaleLowerCase() as Address,
   })
-  const {
-    userState: { collateral, stablecoin, debt } = {},
-    userPrices,
-    userBands,
-    userStatus,
-    loading: userLoanDetailsLoading,
-  } = useStore((state) => state.loans.userDetailsMapper[llammaId]) ?? {}
+  const { collateral, stablecoin, debt } = useStore((state) => state.loans.userDetailsMapper[llammaId]?.userState) ?? {}
+  const userPrices = useStore((state) => state.loans.userDetailsMapper[llammaId]?.userPrices)
+  const userBands = useStore((state) => state.loans.userDetailsMapper[llammaId]?.userBands)
+  const userStatus = useStore((state) => state.loans.userDetailsMapper[llammaId]?.userStatus)
+  const userLoss = useStore((state) => state.loans.userDetailsMapper[llammaId]?.userLoss)
+  const userLoanDetailsLoading = useStore((state) => state.loans.userDetailsMapper[llammaId]?.loading)
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId ?? ''])
   const { healthFull, healthNotFull } = useUserLoanDetails(llammaId) ?? {}
+  const v2LeverageEnabled = useMemo(() => hasV2Leverage(llamma ?? null), [llamma])
+
+  const { data: loanExists } = useLoanExists({
+    chainId,
+    marketId: llammaId,
+    userAddress,
+  })
+  const { data: userPnl, isLoading: isUserPnlLoading } = useUserPnl({
+    chainId,
+    marketId: llammaId,
+    userAddress,
+    loanExists,
+    hasV2Leverage: v2LeverageEnabled,
+  })
   const { oraclePriceBand } = loanDetails ?? {}
 
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)
@@ -52,13 +71,13 @@ export const useLoanPositionDetails = ({
   useEffect(() => {
     if (!lodash.isUndefined(oraclePriceBand) && healthFull && healthNotFull && userBands) {
       const fetchedHealthMode = getHealthMode(
+        DEFAULT_BORROW_TOKEN_SYMBOL,
         oraclePriceBand,
         '',
         userBands,
         '',
         healthFull,
         healthNotFull,
-        false,
         '',
         '',
       )
@@ -155,8 +174,24 @@ export const useLoanPositionDetails = ({
           : null,
       loading: userLoanDetailsLoading ?? true,
     },
+    pnl: v2LeverageEnabled
+      ? {
+          currentProfit: userPnl?.currentProfit,
+          currentPositionValue: userPnl?.currentPosition,
+          depositedValue: userPnl?.deposited,
+          percentageChange: userPnl?.percentage,
+          loading: isUserPnlLoading ?? true,
+        }
+      : undefined,
     totalDebt: {
       value: debt ? Number(debt) : null,
+      loading: userLoanDetailsLoading ?? true,
+    },
+    collateralLoss: {
+      depositedCollateral: decimal(userLoss?.deposited_collateral),
+      currentCollateralEstimation: decimal(userLoss?.current_collateral_estimation),
+      percentage: decimal(userLoss?.loss_pct),
+      amount: decimal(userLoss?.loss),
       loading: userLoanDetailsLoading ?? true,
     },
   }

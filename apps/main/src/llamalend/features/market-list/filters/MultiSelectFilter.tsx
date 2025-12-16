@@ -1,61 +1,57 @@
-import lodash from 'lodash'
 import { type MouseEvent, ReactNode, useCallback, useMemo, useRef } from 'react'
-import Box from '@mui/material/Box'
+import { Stack } from '@mui/material'
 import Button from '@mui/material/Button'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import Select from '@mui/material/Select'
 import Typography from '@mui/material/Typography'
 import { type DeepKeys } from '@tanstack/table-core'
+import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import useResizeObserver from '@ui-kit/hooks/useResizeObserver'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
+import { CheckIcon } from '@ui-kit/shared/icons/CheckIcon'
+import { type FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import { parseListFilter, serializeListFilter } from '@ui-kit/shared/ui/DataTable/filters'
 import { InvertOnHover } from '@ui-kit/shared/ui/InvertOnHover'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import type { LlamaMarketColumnId } from '../columns.enum'
+import { getUniqueSortedStrings } from '@ui-kit/utils/sorting'
 
 const { Spacing } = SizesAndSpaces
-const { get, sortBy, sortedUniq } = lodash
-
-/**
- * Get all unique string values from a field in an array of objects and sort them alphabetically.
- * TODO: validate T[K] is string with typescript. DeepKeys makes it hard to do this.
- */
-const getSortedStrings = <T, K extends DeepKeys<T>>(data: T[], field: K) => {
-  const values = data.map((d) => get(d, field) as string)
-  return sortedUniq(sortBy(values, (val) => val.toLowerCase()))
-}
 
 /**
  * A filter for tanstack tables that allows multi-select of string values.
  */
-export const MultiSelectFilter = <T,>({
-  columnFilters,
+export const MultiSelectFilter = <TKeys, TColumnId extends string>({
+  columnFiltersById,
   setColumnFilter,
   data,
   defaultText,
+  defaultTextMobile,
   renderItem,
+  selectedItemRender,
   field,
   id,
-}: {
-  columnFilters: Record<string, unknown>
-  setColumnFilter: (id: string, value: unknown) => void
-  data: T[]
+}: FilterProps<TColumnId> & {
+  data: TKeys[]
   defaultText: string
-  field: DeepKeys<T>
-  id: LlamaMarketColumnId
+  defaultTextMobile: string
+  field: DeepKeys<TKeys>
+  id: TColumnId
   renderItem?: (value: string) => ReactNode
+  selectedItemRender?: (value: string) => ReactNode
 }) => {
+  const isMobile = useIsMobile()
   const selectRef = useRef<HTMLDivElement | null>(null)
   const menuRef = useRef<HTMLLIElement | null>(null)
   const [selectWidth] = useResizeObserver(selectRef) ?? []
   const [isOpen, open, close] = useSwitch(false)
-  const options = useMemo(() => getSortedStrings(data, field), [data, field])
-  const selectedOptions = columnFilters[id] as string[] | undefined
+  const options = useMemo(() => getUniqueSortedStrings(data, field), [data, field])
+  const selectedOptions = parseListFilter(columnFiltersById[id])
   const onClear = useCallback(
     (e: MouseEvent<HTMLButtonElement>) => {
       e.stopPropagation()
-      setColumnFilter(id, undefined)
+      setColumnFilter(id, null)
       close()
     },
     [id, setColumnFilter, close],
@@ -68,7 +64,7 @@ export const MultiSelectFilter = <T,>({
       const options = selectedOptions?.includes(value)
         ? selectedOptions.filter((v) => v !== value)
         : [...(selectedOptions ?? []), value]
-      setColumnFilter(id, options.length ? options : undefined)
+      setColumnFilter(id, serializeListFilter(options))
     },
     [setColumnFilter, id, selectedOptions],
   )
@@ -87,7 +83,7 @@ export const MultiSelectFilter = <T,>({
         fullWidth
         value=""
         data-testid={`multi-select-filter-${id}`}
-        size="small"
+        size={isMobile ? 'medium' : 'small'}
         renderValue={() =>
           selectedOptions?.length && selectedOptions.length < options.length ? (
             selectedOptions.map((optionId, index) => (
@@ -100,11 +96,11 @@ export const MultiSelectFilter = <T,>({
                   ...(index > 0 && { ':before': { content: '", "' } }),
                 }}
               >
-                {renderItem?.(optionId) ?? optionId}
+                {selectedItemRender?.(optionId) ?? renderItem?.(optionId) ?? optionId}
               </MenuItem>
             ))
           ) : (
-            <Typography variant="bodyMBold">{defaultText}</Typography>
+            <Typography variant="bodySBold">{isMobile ? defaultTextMobile : defaultText}</Typography>
           )
         }
       ></Select>
@@ -115,9 +111,18 @@ export const MultiSelectFilter = <T,>({
           onClose={close}
           anchorEl={selectRef.current}
           anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
-          slotProps={{ list: { sx: { minWidth: Math.round(selectWidth || 100) + 'px', paddingBlock: 0 } } }}
+          slotProps={{
+            list: { sx: { minWidth: Math.round(selectWidth || 100) + 'px', paddingBlock: 0 } },
+            paper: { sx: { maxWidth: '100%' } },
+          }}
         >
-          <Box borderBottom={(t) => `1px solid ${t.design.Layer[3].Outline}`} padding={Spacing.sm} component="li">
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            borderBottom={(t) => `1px solid ${t.design.Layer[3].Outline}`}
+            padding={Spacing.sm}
+            component="li"
+          >
             <Button
               color="ghost"
               size="extraSmall"
@@ -125,19 +130,24 @@ export const MultiSelectFilter = <T,>({
               data-testid="multi-select-clear"
               sx={{ paddingInline: 0 }}
             >{t`Clear Selection`}</Button>
-          </Box>
-          {options.map((optionId) => (
-            <InvertOnHover hoverEl={menuRef.current} key={optionId}>
-              <MenuItem
-                ref={menuRef}
-                value={optionId}
-                className={selectedOptions?.includes(optionId) ? 'Mui-selected' : ''}
-                onClick={onItemClicked}
-              >
-                {renderItem?.(optionId) ?? optionId}
-              </MenuItem>
-            </InvertOnHover>
-          ))}
+          </Stack>
+          {options.map((optionId) => {
+            const isSelected = selectedOptions?.includes(optionId)
+            return (
+              <InvertOnHover hoverEl={menuRef.current} key={optionId}>
+                <MenuItem
+                  ref={menuRef}
+                  value={optionId}
+                  className={isSelected ? 'Mui-selected' : ''}
+                  onClick={onItemClicked}
+                  sx={{ justifyContent: 'space-between' }}
+                >
+                  {renderItem?.(optionId) ?? optionId}
+                  {isSelected && <CheckIcon sx={{ marginLeft: Spacing.sm }} />}
+                </MenuItem>
+              </InvertOnHover>
+            )
+          })}
         </Menu>
       )}
     </>

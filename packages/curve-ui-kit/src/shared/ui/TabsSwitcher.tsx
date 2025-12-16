@@ -1,8 +1,10 @@
 import type { UrlObject } from 'url'
+import Stack from '@mui/material/Stack'
 import Tab, { type TabProps } from '@mui/material/Tab'
 import Tabs, { type TabsProps } from '@mui/material/Tabs'
 import Typography, { type TypographyProps } from '@mui/material/Typography'
 import { RouterLink as Link } from '@ui-kit/shared/ui/RouterLink'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
 import {
   TABS_HEIGHT_CLASSES,
@@ -10,6 +12,8 @@ import {
   TABS_VARIANT_CLASSES,
   TabSwitcherVariants,
 } from '../../themes/components/tabs'
+
+const { Spacing } = SizesAndSpaces
 
 const defaultTextVariants = {
   small: 'buttonS',
@@ -20,6 +24,7 @@ const defaultTextVariants = {
 export type TabOption<T> = Pick<TabProps, 'label' | 'disabled' | 'icon' | 'sx'> & {
   value: T
   href?: string | UrlObject
+  endAdornment?: string
 }
 
 export type TabsSwitcherProps<T> = Pick<TabsProps, 'sx'> & {
@@ -57,12 +62,21 @@ export const TabsSwitcher = <T extends string | number>({
     sx={{ ...sx, ...(fullWidth && { '& .MuiTab-root': { flexGrow: 1 } }) }}
     {...props}
   >
-    {options.map(({ value, label, sx, href, ...props }) => (
+    {options.map(({ value, label, href, endAdornment, ...props }) => (
       <Tab
+        data-testid={`tab-${value}`}
         key={value}
         value={value}
-        label={<Typography variant={textVariant ?? defaultTextVariants[size]}>{label}</Typography>}
-        sx={sx}
+        label={
+          <Stack direction="row" alignItems="baseline" gap={Spacing.xxs}>
+            <Typography variant={textVariant ?? defaultTextVariants[size]}>{label}</Typography>
+            {endAdornment != null && (
+              <Typography variant="highlightXs" className="tab-end-adornment">
+                {endAdornment}
+              </Typography>
+            )}
+          </Stack>
+        }
         {...(href && { href, component: Link })}
         {...props}
       />

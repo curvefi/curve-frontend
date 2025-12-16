@@ -1,8 +1,9 @@
 import lodash from 'lodash'
-import type { GetState, SetState } from 'zustand'
+import { StoreApi } from 'zustand'
 import curvejsApi from '@/dex/lib/curvejs'
 import type { State } from '@/dex/store/useStore'
 import { CurveApi, UserBalancesMapper } from '@/dex/types/main.types'
+import { fetchNetworks } from '../entities/networks'
 
 type StateKey = keyof typeof DEFAULT_STATE
 const { cloneDeep } = lodash
@@ -33,22 +34,25 @@ const DEFAULT_STATE: SliceState = {
   loading: false,
 }
 
-const createUserBalancesSlice = (set: SetState<State>, get: GetState<State>): UserBalancesSlice => ({
+const createUserBalancesSlice = (
+  _: StoreApi<State>['setState'],
+  get: StoreApi<State>['getState'],
+): UserBalancesSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 
     fetchUserBalancesByTokens: async (curve, tokensAddresses) => {
       const state = get()
       const sliceState = state[sliceKey]
-      const {
-        networks: { networks },
-      } = state
 
       const storedUserBalancesMapper = sliceState.userBalancesMapper
 
-      const { chainId } = curve
+      const { chainId, signerAddress } = curve
+
+      if (!signerAddress) return {}
 
       // remove bad tokens
+      const networks = await fetchNetworks()
       const { excludeTokensBalancesMapper } = networks[chainId]
       const filteredBadTokens = tokensAddresses.filter((address) => !excludeTokensBalancesMapper[address])
 

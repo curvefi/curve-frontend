@@ -1,0 +1,93 @@
+import { FastifyBaseLogger } from 'fastify'
+import { Address } from 'viem'
+import { type Decimal, OptimalRouteQuery, RouteResponse, type TransactionData } from '../routes/optimal-route.schemas'
+
+const { ENSO_API_URL = 'https://api.enso.finance', ENSO_API_KEY } = process.env
+
+type EnsoRouteResponse = {
+  gas: string
+  amountOut: Decimal
+  priceImpact: number | null
+  feeAmount: string[]
+  minAmountOut: Decimal
+  createdAt: number
+  tx: TransactionData
+  route: {
+    tokenIn: [Address]
+    tokenOut: [Address]
+    protocol: string
+    action: string
+    primary?: string
+    internalRoutes?: string[]
+    args: Record<string, unknown>
+    chainId: number
+    sourceChainId?: number
+    destinationChainId?: number
+  }[]
+  ensoFeeAmount: Decimal[]
+}
+
+/**
+ * Calls Enso's router to get the optimal route and builds the response.
+ * - Uses GET /api/v1/shortcuts/route
+ * - Base URL configurable via ENSO_API_URL (defaults to https://api.enso.finance)
+ */
+export const buildEnsoRouteResponse = async (
+  query: OptimalRouteQuery,
+  log: FastifyBaseLogger,
+): Promise<RouteResponse[]> => {
+  const {
+    chainId,
+    tokenIn: [tokenIn],
+    tokenOut: [tokenOut],
+    amountIn: [amountIn] = [],
+    amountOut: [minAmountOut] = [],
+    fromAddress,
+  } = query
+
+  if (amountIn == null || !fromAddress) {
+    // Enso requires amountIn and fromAddress to be specified, no routes found otherwise
+    log.info({ message: 'enso route request skipped, amountIn and fromAddress are required', query })
+    return []
+  }
+
+  const url = `${ENSO_API_URL}/api/v1/shortcuts/route?${new URLSearchParams({
+    chainId: `${chainId}`,
+    fromAddress,
+    ...(tokenIn && { tokenIn }),
+    ...(tokenOut && { tokenOut }),
+    ...(amountIn && { amountIn }),
+    ...(minAmountOut && { minAmountOut }),
+  })}`
+
+  const response = await fetch(url, {
+    method: 'GET',
+    ...(ENSO_API_KEY && { headers: { Authorization: `Bearer ${ENSO_API_KEY}` } }),
+  })
+  const { ok, status, statusText } = response
+  if (!ok) {
+    log.error({ message: 'enso route request failed', status, statusText, url })
+    return []
+  }
+
+  // Enso API is documented to return an array of routes, but in practice it returns a single object
+  const json = (await response.json()) as EnsoRouteResponse | EnsoRouteResponse[]
+  const data = Array.isArray(json) ? json : [json]
+  return data.map(
+    ({ route, amountOut, ...routeProps }): RouteResponse => ({
+      router: 'enso',
+      amountIn: [amountIn],
+      amountOut: [amountOut],
+      warnings: [], // legacy code seems to only use warnings for stableswap routes
+      route: route.map(({ action, chainId: routeChainId, primary, protocol, ...stepProps }) => ({
+        name: primary || `${protocol}:${action}`,
+        chainId: routeChainId ?? chainId,
+        protocol,
+        action,
+        primary,
+        ...stepProps,
+      })),
+      ...routeProps,
+    }),
+  )
+}

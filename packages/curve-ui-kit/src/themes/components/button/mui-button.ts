@@ -7,24 +7,8 @@ import { DesignSystem } from '../../design'
 import { Sizing } from '../../design/0_primitives'
 import { SizesAndSpaces } from '../../design/1_sizes_spaces'
 import { Fonts } from '../../fonts'
-
+import { buttonColor } from './utils'
 const { LineHeight, OutlineWidth, FontWeight, ButtonSize, FontSize } = SizesAndSpaces
-
-type ButtonStyle = { Label?: string; Fill?: string; Outline?: string }
-type ButtonColor = { Default: ButtonStyle; Disabled?: ButtonStyle; Hover: ButtonStyle; Current?: ButtonStyle }
-
-const buttonStyle = ({ Fill, Label, Outline }: ButtonStyle) => ({
-  color: Label,
-  backgroundColor: Fill,
-  borderColor: Outline,
-})
-
-const buttonColor = ({ Default, Disabled, Hover, Current }: ButtonColor) => ({
-  ...buttonStyle(Default),
-  '&:hover': buttonStyle(Hover),
-  '&:disabled': Disabled && buttonStyle(Disabled),
-  '&.current': Current && buttonStyle(Current),
-})
 
 const sizeBreakpoint = (
   height: string,
@@ -100,6 +84,26 @@ export const defineMuiButton = ({ Button, Text }: DesignSystem): Components['Mui
           '&.MuiButton-loading': {
             backgroundColor: 'transparent', // The disabled background looks very weird in such a small button
             svg: { transform: 'scale(0.75)' }, // Scale down the loading indicator to fit better with the extraSmall text
+          },
+        },
+      },
+      {
+        props: { variant: 'outlined' },
+        style: {
+          backgroundColor: 'transparent',
+          borderWidth: '1px',
+          borderStyle: 'solid',
+          borderColor: Outlined.Default.Outline,
+          color: Outlined.Default.Label,
+          '&:hover': {
+            backgroundColor: 'transparent',
+            borderColor: Outlined.Hover.Outline,
+            color: Outlined.Hover.Label,
+          },
+          '&:disabled': Outlined.Disabled && {
+            backgroundColor: 'transparent',
+            borderColor: Outlined.Disabled.Outline,
+            color: Outlined.Disabled.Label,
           },
         },
       },

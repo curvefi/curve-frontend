@@ -2,11 +2,12 @@ import { BigNumber } from 'bignumber.js'
 import type { ContractTransactionResponse } from 'ethers'
 import { produce } from 'immer'
 import { zeroAddress } from 'viem'
-import type { GetState, SetState } from 'zustand'
+import type { StoreApi } from 'zustand'
 import {
   CRYPTOSWAP,
   POOL_PRESETS,
   STABLESWAP,
+  FXSWAP,
   TOKEN_A,
   TOKEN_B,
   TOKEN_C,
@@ -15,15 +16,20 @@ import {
   TOKEN_F,
   TOKEN_G,
   TOKEN_H,
+  NG_ASSET_TYPE,
 } from '@/dex/components/PageCreatePool/constants'
 import { CreateToken, NgAssetType, SwapType, TokenId, TokenState } from '@/dex/components/PageCreatePool/types'
 import { isTricrypto } from '@/dex/components/PageCreatePool/utils'
 import type { State } from '@/dex/store/useStore'
 import { ChainId, CurveApi } from '@/dex/types/main.types'
+import { TwoCryptoImplementation } from '@curvefi/api/lib/constants/twoCryptoImplementations'
+import { notFalsy } from '@curvefi/prices-api/objects.util'
+import { scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { fetchTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { INVALID_POOLS_NAME_CHARACTERS } from '../constants'
+import { fetchNetworks, getNetworks } from '../entities/networks'
 
 type SliceState = {
   navigationIndex: number
@@ -110,6 +116,7 @@ export type CreatePoolSlice = {
     ) => void
     clearToken: (tokenId: TokenId) => void
     updateNgAssetType: (tokenId: TokenId, value: NgAssetType) => void
+    updateTokenErc4626Status: (tokenId: TokenId, status: TokenState['erc4626']) => void
     updateOracleAddress: (tokenId: TokenId, oracleAddress: string) => void
     updateOracleFunction: (tokenId: TokenId, oracleFunction: string) => void
     updateUserAddedTokens: (address: string, symbol: string, haveSameTokenName: boolean, basePool: boolean) => void
@@ -139,6 +146,25 @@ export type CreatePoolSlice = {
   }
 }
 
+const ORACLE_FUNCTION_NULL_VALUE = '0x00000000'
+
+export const DEFAULT_ERC4626_STATUS: TokenState['erc4626'] = {
+  isErc4626: false,
+  isLoading: false,
+  error: null,
+  isSuccess: false,
+}
+
+const DEFAULT_TOKEN_STATE: TokenState = {
+  address: '',
+  symbol: '',
+  ngAssetType: NG_ASSET_TYPE.STANDARD,
+  basePool: false,
+  oracleAddress: '',
+  oracleFunction: '',
+  erc4626: { ...DEFAULT_ERC4626_STATUS },
+}
+
 export const DEFAULT_CREATE_POOL_STATE = {
   navigationIndex: 0,
   advanced: false,
@@ -148,68 +174,28 @@ export const DEFAULT_CREATE_POOL_STATE = {
     tokenAmount: 2,
     metaPoolToken: false,
     [TOKEN_A]: {
-      address: '',
-      symbol: '',
-      ngAssetType: 0,
-      basePool: false,
-      oracleAddress: '',
-      oracleFunction: '',
+      ...DEFAULT_TOKEN_STATE,
     },
     [TOKEN_B]: {
-      address: '',
-      symbol: '',
-      ngAssetType: 0,
-      basePool: false,
-      oracleAddress: '',
-      oracleFunction: '',
+      ...DEFAULT_TOKEN_STATE,
     },
     [TOKEN_C]: {
-      address: '',
-      symbol: '',
-      ngAssetType: 0,
-      basePool: false,
-      oracleAddress: '',
-      oracleFunction: '',
+      ...DEFAULT_TOKEN_STATE,
     },
     [TOKEN_D]: {
-      address: '',
-      symbol: '',
-      ngAssetType: 0,
-      basePool: false,
-      oracleAddress: '',
-      oracleFunction: '',
+      ...DEFAULT_TOKEN_STATE,
     },
     [TOKEN_E]: {
-      address: '',
-      symbol: '',
-      ngAssetType: 0,
-      basePool: false,
-      oracleAddress: '',
-      oracleFunction: '',
+      ...DEFAULT_TOKEN_STATE,
     },
     [TOKEN_F]: {
-      address: '',
-      symbol: '',
-      ngAssetType: 0,
-      basePool: false,
-      oracleAddress: '',
-      oracleFunction: '',
+      ...DEFAULT_TOKEN_STATE,
     },
     [TOKEN_G]: {
-      address: '',
-      symbol: '',
-      ngAssetType: 0,
-      basePool: false,
-      oracleAddress: '',
-      oracleFunction: '',
+      ...DEFAULT_TOKEN_STATE,
     },
     [TOKEN_H]: {
-      address: '',
-      symbol: '',
-      ngAssetType: 0,
-      basePool: false,
-      oracleAddress: '',
-      oracleFunction: '',
+      ...DEFAULT_TOKEN_STATE,
     },
   },
   initialPrice: {
@@ -270,7 +256,10 @@ const calculateInitialPrice = (tokenA: number, tokenB: number) => {
   return initialPrice.toPrecision(4).toString()
 }
 
-const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): CreatePoolSlice => ({
+const createCreatePoolSlice = (
+  set: StoreApi<State>['setState'],
+  get: StoreApi<State>['getState'],
+): CreatePoolSlice => ({
   createPool: {
     ...DEFAULT_CREATE_POOL_STATE,
     setNavigationIndex: (index: number) => {
@@ -289,9 +278,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
     },
     updateSwapType: (swapType: SwapType, chainId: ChainId) => {
       // set allowed token amount
-      const {
-        networks: { networks },
-      } = get()
+      const networks = getNetworks()
       if (swapType === CRYPTOSWAP) {
         const amount = networks[chainId].twocryptoFactory || networks[chainId].twocryptoFactory ? 2 : 3
 
@@ -401,8 +388,9 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
       tokenG: TokenState,
       tokenH: TokenState,
     ) => {
+      const currentTokens = get().createPool.tokensInPool
       const tokensInPoolUpdates = {
-        ...get().createPool.tokensInPool,
+        ...currentTokens,
         tokenA,
         tokenB,
         tokenC,
@@ -422,12 +410,39 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
       tokensInPoolUpdates.tokenA = {
         ...tokenA,
         basePool: tokenA.basePool,
-        ngAssetType: tokenA.basePool ? 0 : get().createPool.tokensInPool[TOKEN_A].ngAssetType,
       }
       tokensInPoolUpdates.tokenB = {
         ...tokenB,
         basePool: tokenB.basePool,
-        ngAssetType: tokenB.basePool ? 0 : get().createPool.tokensInPool[TOKEN_B].ngAssetType,
+      }
+
+      // Preserve erc4626 statuses and ngAssetType when tokens are rearranged. Status follows the address.
+      const syncTokenStatuses = () => {
+        const tokenIds = [TOKEN_A, TOKEN_B, TOKEN_C, TOKEN_D, TOKEN_E, TOKEN_F, TOKEN_G, TOKEN_H] as const
+
+        const statusByAddress = new Map(
+          notFalsy(
+            ...tokenIds.map(
+              (id) =>
+                currentTokens[id].address &&
+                ([
+                  currentTokens[id].address.toLowerCase(),
+                  { erc4626: currentTokens[id].erc4626, ngAssetType: currentTokens[id].ngAssetType },
+                ] as const),
+            ),
+          ),
+        )
+
+        for (const id of tokenIds) {
+          const token = tokensInPoolUpdates[id]
+          const address = token.address?.toLowerCase()
+          const status = address ? statusByAddress.get(address) : undefined
+          tokensInPoolUpdates[id] = {
+            ...token,
+            erc4626: status ? { ...status.erc4626 } : { ...DEFAULT_ERC4626_STATUS },
+            ngAssetType: token.basePool ? NG_ASSET_TYPE.STANDARD : (status?.ngAssetType ?? token.ngAssetType),
+          }
+        }
       }
 
       const initialPriceUpdates = {
@@ -475,6 +490,8 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
         calculateInitialPrice(initialPriceUpdates.tokenA, initialPriceUpdates.tokenC),
       ]
 
+      syncTokenStatuses()
+
       set(
         produce((state) => {
           state.createPool.tokensInPool = tokensInPoolUpdates
@@ -496,6 +513,13 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
       set(
         produce((state) => {
           state.createPool.tokensInPool[tokenId].ngAssetType = value
+        }),
+      )
+    },
+    updateTokenErc4626Status: (tokenId: TokenId, status: TokenState['erc4626']) => {
+      set(
+        produce((state) => {
+          state.createPool.tokensInPool[tokenId].erc4626 = { ...status }
         }),
       )
     },
@@ -767,7 +791,6 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
           poolName,
           initialPrice,
         },
-        networks: { networks },
       } = get()
 
       let dismissNotificationHandler
@@ -783,7 +806,88 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
         }),
       )
 
-      if (swapType === CRYPTOSWAP) {
+      const networks = await fetchNetworks()
+      if (swapType === FXSWAP) {
+        // ----- FXSWAP -----
+        const coins = [tokenA.address, tokenB.address]
+
+        try {
+          const maExpTime = Math.round(+maHalfTime / 0.693)
+
+          const deployPoolTx = await curve.twocryptoFactory.deployPool(
+            poolName,
+            poolSymbol,
+            coins,
+            cryptoA,
+            gamma,
+            midFee,
+            outFee,
+            allowedExtraProfit,
+            feeGamma,
+            adjustmentStep,
+            maExpTime,
+            initialPrice.initialPrice[0],
+            TwoCryptoImplementation.FX_REGULAR_50_PERCENT,
+          )
+
+          set(
+            produce((state) => {
+              state.createPool.transactionState.txStatus = 'LOADING'
+              state.createPool.transactionState.transaction = deployPoolTx
+              state.createPool.transactionState.txLink = scanTxPath(networks[chainId], deployPoolTx.hash)
+            }),
+          )
+
+          // set up deploying message
+          dismissConfirm()
+          const deployingNotificationMessage = t`Deploying pool ${poolName}...`
+          const { dismiss: dismissDeploying } = notify(deployingNotificationMessage, 'pending')
+          dismissNotificationHandler = dismissDeploying
+
+          const poolAddress = await curve.twocryptoFactory.getDeployedPoolAddress(deployPoolTx)
+          // deploy pool tx success
+          set(
+            produce((state) => {
+              state.createPool.transactionState.txStatus = 'SUCCESS'
+              state.createPool.transactionState.txSuccess = true
+              state.createPool.transactionState.fetchPoolStatus = 'LOADING'
+              state.createPool.transactionState.poolAddress = poolAddress
+            }),
+          )
+
+          // set up success message
+          dismissDeploying()
+          const successNotificationMessage = t`Pool ${poolName} deployment successful.`
+          notify(successNotificationMessage, 'success', 15000)
+
+          const poolId = await curve.twocryptoFactory.fetchRecentlyDeployedPool(poolAddress)
+          set(
+            produce((state) => {
+              state.createPool.transactionState.poolId = poolId
+            }),
+          )
+
+          const poolData = await fetchNewPool(curve, poolId)
+          if (poolData) {
+            set(
+              produce((state) => {
+                state.createPool.transactionState.fetchPoolStatus = 'SUCCESS'
+                state.createPool.transactionState.lpTokenAddress = poolData.pool.lpToken
+              }),
+            )
+          }
+        } catch (error) {
+          if (typeof dismissNotificationHandler === 'function') {
+            dismissNotificationHandler()
+          }
+          set(
+            produce((state) => {
+              state.createPool.transactionState.txStatus = 'ERROR'
+              state.createPool.transactionState.errorMessage = error.message
+            }),
+          )
+        }
+      } else if (swapType === CRYPTOSWAP) {
         // ----- TRICRYPTO -----
         if (isTricrypto(networks[chainId].tricryptoFactory, tokenAmount, tokenA, tokenB, tokenC)) {
           const coins = [tokenA.address, tokenB.address, tokenC.address]
@@ -807,7 +911,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
               produce((state) => {
                 state.createPool.transactionState.txStatus = 'LOADING'
                 state.createPool.transactionState.transaction = deployPoolTx
-                state.createPool.transactionState.txLink = networks[chainId].scanTxPath(deployPoolTx.hash)
+                state.createPool.transactionState.txLink = scanTxPath(networks[chainId], deployPoolTx.hash)
               }),
             )
 
@@ -888,7 +992,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
               produce((state) => {
                 state.createPool.transactionState.txStatus = 'LOADING'
                 state.createPool.transactionState.transaction = deployPoolTx
-                state.createPool.transactionState.txLink = networks[chainId].scanTxPath(deployPoolTx.hash)
+                state.createPool.transactionState.txLink = scanTxPath(networks[chainId], deployPoolTx.hash)
               }),
             )
 
@@ -962,8 +1066,9 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
         if (networks[chainId].stableswapFactory) {
           // STABLE NG META
           try {
-            const oracleAddress = coin.ngAssetType === 1 ? coin.oracleAddress : zeroAddress
-            const oracleFunction = coin.ngAssetType === 1 ? coin.oracleFunction : '0x00000000'
+            const oracleAddress = coin.ngAssetType === NG_ASSET_TYPE.ORACLE ? coin.oracleAddress : zeroAddress
+            const oracleFunction =
+              coin.ngAssetType === NG_ASSET_TYPE.ORACLE ? coin.oracleFunction : ORACLE_FUNCTION_NULL_VALUE
             const maExpTimeFormatted = Math.round(+maExpTime / 0.693)
 
             const deployPoolTx = await curve.stableNgFactory.deployMetaPool(
@@ -984,7 +1089,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
               produce((state) => {
                 state.createPool.transactionState.txStatus = 'LOADING'
                 state.createPool.transactionState.transaction = deployPoolTx
-                state.createPool.transactionState.txLink = networks[chainId].scanTxPath(deployPoolTx.hash)
+                state.createPool.transactionState.txLink = scanTxPath(networks[chainId], deployPoolTx.hash)
               }),
             )
 
@@ -1051,8 +1156,12 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
           try {
             const coinAddresses = coins.map((coin) => coin.address)
             const assetTypes = coins.map((coin) => coin.ngAssetType)
-            const oracleAddresses = coins.map((coin) => (coin.ngAssetType === 1 ? coin.oracleAddress : zeroAddress))
-            const oracleFunctions = coins.map((coin) => (coin.ngAssetType === 1 ? coin.oracleFunction : '0x00000000'))
+            const oracleAddresses = coins.map((coin) =>
+              coin.ngAssetType === NG_ASSET_TYPE.ORACLE ? coin.oracleAddress : zeroAddress,
+            )
+            const oracleFunctions = coins.map((coin) =>
+              coin.ngAssetType === NG_ASSET_TYPE.ORACLE ? coin.oracleFunction : '0x00000000',
+            )
             const maExpTimeFormatted = Math.round(+maExpTime / 0.693)
 
             const deployPoolTx = await curve.stableNgFactory.deployPlainPool(
@@ -1072,7 +1181,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
               produce((state) => {
                 state.createPool.transactionState.txStatus = 'LOADING'
                 state.createPool.transactionState.transaction = deployPoolTx
-                state.createPool.transactionState.txLink = networks[chainId].scanTxPath(deployPoolTx.hash)
+                state.createPool.transactionState.txLink = scanTxPath(networks[chainId], deployPoolTx.hash)
               }),
             )
 

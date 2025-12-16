@@ -75,7 +75,7 @@ const TopBox = styled(Box)`
 
 const SummaryBox = styled(Box)`
   padding: var(--spacing-normal);
-  background: var(--box_header--secondary--background-color);
+  background: var(--box--primary--content--background-color);
 `
 
 const BottomBox = styled(Box)`

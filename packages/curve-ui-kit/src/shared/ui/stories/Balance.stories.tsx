@@ -1,5 +1,6 @@
 import { fn } from 'storybook/test'
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { FireIcon } from '@ui-kit/shared/icons/FireIcon'
 import { Balance } from '../Balance'
 
 const meta: Meta<typeof Balance> = {
@@ -14,22 +15,25 @@ const meta: Meta<typeof Balance> = {
       control: 'number',
       description: 'The token balance',
     },
-    notionalValueUsd: {
+    usdRate: {
       control: 'number',
-      description: 'The USD value of the balance',
+      description: 'The USD price of the token',
     },
-    max: {
-      control: 'select',
-      options: ['balance', 'button', 'off'],
-      description: 'The max button mode',
-    },
-    hideIcon: {
+    disabled: {
       control: 'boolean',
-      description: 'Whether to hide the wallet icon',
+      description: 'Whether the clickable balance is disabled',
     },
-    onMax: {
-      action: 'onMax',
-      description: 'Callback when max button is clicked',
+    prefix: {
+      control: 'object',
+      description: 'Label, custum icon or nothing to show before the actual balance',
+    },
+    tooltip: {
+      control: 'text',
+      description: 'Custom tooltip title for hover',
+    },
+    onClick: {
+      action: 'onClick',
+      description: 'Callback when balance is clicked',
     },
     loading: {
       control: 'boolean',
@@ -39,9 +43,10 @@ const meta: Meta<typeof Balance> = {
   args: {
     symbol: 'ETH',
     balance: 1.234,
-    max: 'off',
-    hideIcon: false,
-    onMax: fn(),
+    disabled: false,
+    prefix: undefined,
+    tooltip: undefined,
+    onClick: undefined,
   },
 }
 
@@ -60,41 +65,38 @@ export const Default: Story = {
 
 export const WithNotionalValue: Story = {
   args: {
-    notionalValueUsd: 2345.67,
+    usdRate: 2345.67,
   },
 }
 
-export const WithMaxButton: Story = {
+export const Clickable: Story = {
   args: {
-    max: 'button',
+    onClick: fn(),
   },
 }
 
-export const WithMaxBalance: Story = {
+export const ClickableButDisabled: Story = {
   args: {
-    max: 'balance',
+    onClick: fn(),
+    disabled: true,
   },
 }
 
 export const NoIcon: Story = {
   args: {
-    hideIcon: true,
+    prefix: null,
   },
 }
 
-export const FullFeatured: Story = {
+export const DifferentIcon: Story = {
   args: {
-    balance: 42.69,
-    notionalValueUsd: 69420.42,
-    max: 'button',
+    prefix: FireIcon,
   },
 }
 
-export const FullFeaturedWithMaxBalance: Story = {
+export const WithLabel: Story = {
   args: {
-    balance: 42.69,
-    notionalValueUsd: 69420.42,
-    max: 'balance',
+    prefix: 'Max borrow:',
   },
 }
 
@@ -106,6 +108,7 @@ export const ZeroBalance: Story = {
 
 export const NoBalance: Story = {
   args: {
+    loading: false,
     balance: undefined,
   },
 }
@@ -123,18 +126,9 @@ export const Loading: Story = {
   },
 }
 
-export const LoadingWithNotionalValueAndMax: Story = {
+export const CustomTooltip: Story = {
   args: {
-    loading: true,
-    notionalValueUsd: 1234.56,
-    max: 'button',
-  },
-  parameters: {
-    docs: {
-      description: {
-        story: 'Shows the component in a loading state with notional value skeleton and max button',
-      },
-    },
+    tooltip: 'Yolo',
   },
 }
 

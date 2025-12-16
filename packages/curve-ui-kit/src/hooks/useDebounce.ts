@@ -2,12 +2,46 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
 
 /**
+ * A hook that debounces a function call and calls a callback when the debouncing period has elapsed.
+ *
+ * @param debounceMs - The debouncing period in milliseconds
+ * @param callback - Callback function that is called after the debounce period
+ * @param onChange - Optional callback function that is called immediately when the value changes
+ * @returns A tuple containing the debounced function and a cancel function
+ */
+export function useDebounced<T extends any[]>(
+  callback: (...value: T) => void,
+  debounceMs: number,
+  onChange?: (...value: T) => void,
+) {
+  const timerRef = useRef<number | null>(null)
+  const cancel = useCallback(() => void (timerRef.current && clearTimeout(timerRef.current)), [])
+  useEffect(() => cancel, [cancel])
+  return [
+    useCallback(
+      (...newValue: T) => {
+        cancel()
+        onChange?.(...newValue)
+
+        // Initiate a new timer
+        timerRef.current = window.setTimeout(() => {
+          callback(...newValue)
+          timerRef.current = null
+        }, debounceMs)
+      },
+      [callback, cancel, debounceMs, onChange],
+    ),
+    cancel,
+  ] as const
+}
+
+/**
  * A hook that debounces a value and calls a callback when the debounce period has elapsed.
  *
  * @param initialValue - The initial value to use
  * @param debounceMs - The debounce period in milliseconds
  * @param callback - Callback function that is called after the debounce period
- * @returns A tuple containing the current value and a setter function
+ * @returns A triple containing the current value, a setter function and a cancel function
  *
  * @example
  * ```tsx
@@ -28,47 +62,12 @@ import { Duration } from '@ui-kit/themes/design/0_primitives'
  *
  * // With a controlled component
  * // The hook will update its internal value when initialValue changes
- * const [debouncedValue, setDebouncedValue] = useDebounce(externalValue, 200, handleChange);
+ * const [debouncedValue, setDebouncedValue, cancel] = useDebounce(externalValue, 200, handleChange);
  */
 export function useDebounce<T>(initialValue: T, debounceMs: number, callback: (value: T) => void) {
   const [value, setValue] = useState<T>(initialValue)
-  const timerRef = useRef<number | null>(null)
-
-  // Update value when initialValue changes for controlled components
-  useEffect(() => {
-    setValue(initialValue)
-  }, [initialValue])
-
-  // Clear timer on unmount
-  useEffect(
-    () => () => {
-      if (timerRef.current !== null) {
-        clearTimeout(timerRef.current)
-      }
-    },
-    [],
-  )
-
-  // Sets the internal value, but calls the callback after a delay unless retriggered again.
-  const setDebouncedValue = useCallback(
-    (newValue: T) => {
-      setValue(newValue)
-
-      // Clear any existing timer
-      if (timerRef.current !== null) {
-        clearTimeout(timerRef.current)
-      }
-
-      // Initiate a new timer
-      timerRef.current = window.setTimeout(() => {
-        callback(newValue)
-        timerRef.current = null
-      }, debounceMs)
-    },
-    [callback, debounceMs],
-  )
-
-  return [value, setDebouncedValue] as const
+  useEffect(() => setValue(initialValue), [initialValue])
+  return [value, ...useDebounced(callback, debounceMs, setValue)] as const
 }
 
 /**
@@ -78,8 +77,11 @@ export function useDebounce<T>(initialValue: T, debounceMs: number, callback: (v
  * This is useful for delaying updates to a value that changes frequently,
  * such as user input, to avoid excessive computations or side effects.
  */
-export function useDebouncedValue<T>(givenValue: T, debounceMs: number = Duration.FormDebounce) {
-  const [value, setValue] = useState<T>(givenValue)
+export function useDebouncedValue<T>(
+  givenValue: T,
+  { defaultValue = givenValue, debounceMs = Duration.FormDebounce }: { defaultValue?: T; debounceMs?: number } = {},
+) {
+  const [value, setValue] = useState<T>(defaultValue)
   useEffect(() => {
     const timer = setTimeout(() => setValue(givenValue), debounceMs)
     return () => clearTimeout(timer)
@@ -90,9 +92,26 @@ export function useDebouncedValue<T>(givenValue: T, debounceMs: number = Duratio
 const SearchDebounceMs = 166 // 10 frames at 60fps
 
 /**
- * A hook that debounces a search value and calls a callback when the debounce period has elapsed.
+ * A hook that debounces a value and only calls the callback when the value has actually changed.
+ * This prevents unnecessary callback executions when the debounced value hasn't changed.
+ *
+ * @param defaultValue - The initial value to use
+ * @param callback - Function called when the debounced value changes
+ * @param debounceMs - The debounce period in milliseconds (default: 166ms)
+ * @param equals - Optional custom equality function to compare values
+ * @returns A tuple containing the current value and a setter function
  */
-export function useUniqueDebounce<T>(defaultValue: T, callback: (value: T) => void, debounceMs = SearchDebounceMs) {
+export function useUniqueDebounce<T>({
+  defaultValue,
+  callback,
+  debounceMs = SearchDebounceMs,
+  equals,
+}: {
+  defaultValue: T
+  callback: (value: T) => void
+  debounceMs?: number
+  equals?: (a: T, b: T) => boolean
+}) {
   const lastValue = useRef(defaultValue)
 
   /**
@@ -110,16 +129,14 @@ export function useUniqueDebounce<T>(defaultValue: T, callback: (value: T) => vo
 
   const debounceCallback = useCallback(
     (value: T) => {
-      if (typeof value === 'string') {
-        value = value.trim() as unknown as T
-      }
-      if (value !== lastValue.current) {
+      const isEqual = equals ? equals(value, lastValue.current) : value === lastValue.current
+      if (!isEqual) {
         lastValue.current = value
         callback(value)
       }
     },
-    [callback],
+    [callback, equals],
   )
-  const [search, setSearch] = useDebounce(defaultValue, debounceMs, debounceCallback)
-  return [search, setSearch] as const
+
+  return useDebounce(defaultValue, debounceMs, debounceCallback)
 }

@@ -16,6 +16,7 @@ import { DEFAULT_EST_GAS, DEFAULT_EXCHANGE_OUTPUT, getSwapTokens } from '@/dex/c
 import type { PageTransferProps, Seed } from '@/dex/components/PagePool/types'
 import DetailInfoExchangeRate from '@/dex/components/PageRouterSwap/components/DetailInfoExchangeRate'
 import DetailInfoPriceImpact from '@/dex/components/PageRouterSwap/components/DetailInfoPriceImpact'
+import { useNetworks } from '@/dex/entities/networks'
 import useStore from '@/dex/store/useStore'
 import { Balances, CurveApi, PoolAlert, PoolData, TokensMapper } from '@/dex/types/main.types'
 import { toTokenOption } from '@/dex/utils'
@@ -30,17 +31,17 @@ import { getActiveStep, getStepStatus } from '@ui/Stepper/helpers'
 import Stepper from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
 import TxInfoBar from '@ui/TxInfoBar'
-import { formatNumber } from '@ui/utils'
+import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { LargeSxProps, TokenSelector } from '@ui-kit/features/select-token'
-import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
+import { useLegacyTokenInput } from '@ui-kit/hooks/useFeatureFlags'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
-import { ReleaseChannel, decimal, type Decimal } from '@ui-kit/utils'
+import { decimal, type Decimal } from '@ui-kit/utils'
 
 const { cloneDeep, isNaN, isUndefined } = lodash
 
@@ -83,8 +84,9 @@ const Swap = ({
   const resetState = useStore((state) => state.poolSwap.resetState)
   const setFormValues = useStore((state) => state.poolSwap.setFormValues)
   const setPoolIsWrapped = useStore((state) => state.pools.setPoolIsWrapped)
-  const network = useStore((state) => (chainId ? state.networks.networks[chainId] : null))
-  const [releaseChannel] = useReleaseChannel()
+  const { data: networks } = useNetworks()
+  const network = (chainId && networks[chainId]) || null
+  const shouldUseLegacyTokenInput = useLegacyTokenInput()
 
   const slippageImpact = exchangeOutput ? getSlippageImpact({ maxSlippage, ...exchangeOutput }) : null
 
@@ -152,7 +154,7 @@ const Swap = ({
         setTxInfoBar(
           <TxInfoBar
             description={`Swapped ${fromAmount} ${fromToken}.`}
-            txHash={network.scanTxPath(resp.hash)}
+            txHash={scanTxPath(network, resp.hash)}
             onClose={() => {
               updateFormValues({}, null, null)
             }}
@@ -274,8 +276,7 @@ const Swap = ({
     if (curve && poolId && haveSigner && (isUndefined(userFromBalance) || isUndefined(userToBalance))) {
       void fetchUserPoolInfo(curve, poolId, true)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId, poolId, haveSigner, userFromBalance, userToBalance])
+  }, [chainId, poolId, haveSigner, userFromBalance, userToBalance, curve, fetchUserPoolInfo])
 
   // curve state change
   useEffect(() => {
@@ -328,7 +329,7 @@ const Swap = ({
   useEffect(() => fetchData(), [isPageVisible])
 
   // re-fetch data
-  usePageVisibleInterval(() => fetchData(), REFRESH_INTERVAL['1m'], isPageVisible)
+  usePageVisibleInterval(() => fetchData(), REFRESH_INTERVAL['1m'])
 
   const activeStep = haveSigner ? getActiveStep(steps) : null
   const isDisabled = seed.isSeed === null || seed.isSeed || formStatus.formProcessing
@@ -347,7 +348,7 @@ const Swap = ({
       {/* input fields */}
       <Box grid gridRowGap="1">
         <div>
-          {releaseChannel !== ReleaseChannel.Beta ? (
+          {shouldUseLegacyTokenInput ? (
             <Box grid gridGap={1}>
               <StyledInputProvider
                 id="fromAmount"
@@ -419,18 +420,17 @@ const Swap = ({
           ) : (
             <LargeTokenInput
               label={t`Sell`}
-              dataType="decimal"
               name="fromAmount"
               onBalance={setFromAmount}
               balance={decimal(formValues.fromAmount)}
-              inputBalanceUsd={
-                fromUsdRate != null && decimal(formValues.fromAmount) ? `${fromUsdRate * +formValues.fromAmount}` : '0'
-              }
+              inputBalanceUsd={decimal(formValues.fromAmount && fromUsdRate && fromUsdRate * +formValues.fromAmount)}
               tokenSelector={
                 <TokenSelector
                   selectedToken={fromToken}
                   tokens={selectList}
                   disabled={isDisabled || selectList.length === 0}
+                  showSearch={false}
+                  showManageList={false}
                   compact
                   onToken={({ address, symbol }) =>
                     updateFormValues(
@@ -456,17 +456,15 @@ const Swap = ({
                 message: t`Amount > wallet balance ${formatNumber(userFromBalance)}`,
               })}
               disabled={isDisabled}
-              maxBalance={{
+              walletBalance={{
                 balance: decimal(userFromBalance),
                 loading: userPoolBalancesLoading || isMaxLoading,
                 symbol: fromToken?.symbol,
-                showSlider: false,
-                showChips: true,
-                ...(toUsdRate != null &&
-                  userFromBalance != null && { notionalValueUsd: Number(userFromBalance) * Number(fromUsdRate) }),
-                ...(formValues.fromAddress.toLowerCase() === ethAddress && {
-                  tooltip: t`'Balance minus estimated gas'`,
-                }),
+                usdRate: fromUsdRate,
+              }}
+              maxBalance={{
+                balance: decimal(userFromBalance),
+                chips: 'range',
               }}
             />
           )}
@@ -494,7 +492,7 @@ const Swap = ({
         </Box>
 
         {/* if hasRouter value is false, it means entering toAmount is not ready */}
-        {releaseChannel !== ReleaseChannel.Beta ? (
+        {shouldUseLegacyTokenInput ? (
           <div>
             <StyledInputProvider
               id="toAmount"
@@ -550,12 +548,9 @@ const Swap = ({
         ) : (
           <LargeTokenInput
             label={t`Buy`}
-            dataType="decimal"
             name="toAmount"
             onBalance={setToAmount}
-            inputBalanceUsd={
-              toUsdRate != null && decimal(formValues.toAmount) ? `${toUsdRate * +formValues.toAmount}` : '0'
-            }
+            inputBalanceUsd={decimal(formValues.toAmount && toUsdRate && toUsdRate * +formValues.toAmount)}
             balance={decimal(formValues.toAmount)}
             disabled={isUndefined(hasRouter) || (!isUndefined(hasRouter) && !hasRouter) || isDisabled}
             tokenSelector={
@@ -585,13 +580,11 @@ const Swap = ({
                 sx={LargeSxProps}
               />
             }
-            maxBalance={{
+            walletBalance={{
               balance: decimal(userToBalance),
               loading: userPoolBalancesLoading,
               symbol: toToken?.symbol,
-              showSlider: false,
-              ...(toUsdRate != null &&
-                userToBalance != null && { notionalValueUsd: Number(userToBalance) * Number(toUsdRate) }),
+              usdRate: toUsdRate,
             }}
           />
         )}
@@ -635,7 +628,7 @@ const Swap = ({
         <DetailInfoPriceImpact
           loading={exchangeOutput.loading}
           priceImpact={exchangeOutput.priceImpact}
-          isHighImpact={slippageImpact?.isHighImpact ?? null}
+          isHighImpact={slippageImpact?.isHighImpact}
         />
 
         {haveSigner && (

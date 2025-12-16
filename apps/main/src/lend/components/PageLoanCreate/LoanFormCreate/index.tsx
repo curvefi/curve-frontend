@@ -1,7 +1,6 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import AlertFormError from '@/lend/components/AlertFormError'
 import AlertLoanSummary from '@/lend/components/AlertLoanSummary'
-import MarketParameters from '@/lend/components/DetailsMarket/components/MarketParameters'
 import DialogFormWarning from '@/lend/components/DialogFormWarning'
 import InpToken from '@/lend/components/InpToken'
 import InpTokenBorrow from '@/lend/components/InpTokenBorrow'
@@ -9,16 +8,19 @@ import LoanFormConnect from '@/lend/components/LoanFormConnect'
 import DetailInfo from '@/lend/components/PageLoanCreate/LoanFormCreate/components/DetailInfo'
 import type { FormEstGas, FormStatus, FormValues, StepKey } from '@/lend/components/PageLoanCreate/types'
 import { _parseValue, DEFAULT_FORM_VALUES } from '@/lend/components/PageLoanCreate/utils'
-import { DEFAULT_CONFIRM_WARNING, DEFAULT_HEALTH_MODE } from '@/lend/components/PageLoanManage/utils'
-import { FieldsWrapper } from '@/lend/components/SharedFormStyles/FieldsWrapper'
+import { DEFAULT_CONFIRM_WARNING } from '@/lend/components/PageLoanManage/utils'
+import { FieldsTitle, FieldsWrapper } from '@/lend/components/SharedFormStyles/FieldsWrapper'
 import { NOFITY_MESSAGE } from '@/lend/constants'
 import useMarketAlert from '@/lend/hooks/useMarketAlert'
 import { useUserLoanDetails } from '@/lend/hooks/useUserLoanDetails'
 import { helpers } from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
-import { Api, HealthMode, type MarketUrlParams, OneWayMarketTemplate, PageContentProps } from '@/lend/types/lend.types'
+import { Api, type MarketUrlParams, OneWayMarketTemplate, PageContentProps } from '@/lend/types/lend.types'
 import { getLoanManagePathname } from '@/lend/utils/utilsRouter'
+import { DEFAULT_HEALTH_MODE } from '@/llamalend/constants'
+import { MarketParameters } from '@/llamalend/features/market-parameters/MarketParameters'
+import type { HealthMode } from '@/llamalend/llamalend.types'
 import { useLoanExists } from '@/llamalend/queries/loan-exists'
 import Accordion from '@ui/Accordion'
 import AlertBox from '@ui/AlertBox'
@@ -29,9 +31,8 @@ import Stepper from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
 import TextCaption from '@ui/TextCaption'
 import TxInfoBar from '@ui/TxInfoBar'
-import { formatNumber } from '@ui/utils'
+import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
-import { useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNavigate } from '@ui-kit/hooks/router'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
@@ -54,7 +55,6 @@ const LoanCreate = ({
   const formEstGas = useStore((state) => state.loanCreate.formEstGas[activeKey])
   const formStatus = useStore((state) => state.loanCreate.formStatus)
   const formValues = useStore((state) => state.loanCreate.formValues)
-  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
   const maxRecv = useStore((state) => state.loanCreate.maxRecv[activeKeyMax])
   const { state: userState } = useUserLoanDetails(userActiveKey)
   const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
@@ -116,7 +116,7 @@ const LoanCreate = ({
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && !resp.error) {
         const txMessage = t`Transaction complete.`
-        setTxInfoBar(<TxInfoBar description={txMessage} txHash={network.scanTxPath(resp.hash)} />)
+        setTxInfoBar(<TxInfoBar description={txMessage} txHash={scanTxPath(network, resp.hash)} />)
       }
       if (resp?.error) setTxInfoBar(null)
       notification?.dismiss()
@@ -255,23 +255,11 @@ const LoanCreate = ({
     }
   }, [])
 
-  usePageVisibleInterval(
-    () => {
-      if (
-        isLoaded &&
-        isPageVisible &&
-        isLeverage &&
-        !formStatus.isComplete &&
-        !formStatus.step &&
-        !formStatus.error &&
-        !isConfirming
-      ) {
-        updateFormValues({})
-      }
-    },
-    REFRESH_INTERVAL['10s'],
-    isPageVisible,
-  )
+  usePageVisibleInterval(() => {
+    if (isLoaded && isLeverage && !formStatus.isComplete && !formStatus.step && !formStatus.error && !isConfirming) {
+      updateFormValues({})
+    }
+  }, REFRESH_INTERVAL['10s'])
 
   // steps
   useEffect(() => {
@@ -331,10 +319,10 @@ const LoanCreate = ({
   return (
     <>
       <FieldsWrapper $showBorder={isLeverage}>
+        {isLeverage && <FieldsTitle>{t`Add from wallet:`}</FieldsTitle>}
         <InpToken
           network={network}
           id="userCollateral"
-          {...(isLeverage ? { inpTopLabel: t`Add from wallet:` } : {})}
           inpError={formValues.userCollateralError}
           inpDisabled={disabled}
           inpLabelLoading={!!signerAddress && typeof userBalances === 'undefined'}
@@ -377,6 +365,7 @@ const LoanCreate = ({
         inpValue={formValues.debt}
         tokenAddress={borrowed_token?.address}
         tokenSymbol={borrowed_token?.symbol}
+        tokenBalance={userBalances?.borrowed}
         maxRecv={maxRecv}
         handleInpChange={useCallback((debt) => updateFormValues({ debt }), [updateFormValues])}
         handleMaxClick={async () => {
@@ -451,7 +440,7 @@ const LoanCreate = ({
 
       {!isAdvancedMode && (
         <Accordion btnLabel={<TextCaption isCaps isBold>{t`Market details`}</TextCaption>}>
-          <MarketParameters rChainId={rChainId} rOwmId={rOwmId} type="borrow" />
+          <MarketParameters chainId={rChainId} marketId={rOwmId} marketType="lend" action="borrow" />
         </Accordion>
       )}
     </>

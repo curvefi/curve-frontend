@@ -1,5 +1,5 @@
 import lodash from 'lodash'
-import type { GetState, SetState } from 'zustand'
+import type { StoreApi } from 'zustand'
 import type { FormStatus } from '@/lend/components/PageLoanManage/LoanSelfLiquidation/types'
 import type { FormEstGas } from '@/lend/components/PageLoanManage/types'
 import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@/lend/components/PageLoanManage/utils'
@@ -9,9 +9,8 @@ import apiLending from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
 import type { State } from '@/lend/store/useStore'
 import { Api, FormWarning, FutureRates, OneWayMarketTemplate } from '@/lend/types/lend.types'
+import { updateUserEventsApi } from '@/llamalend/llama.utils'
 import { refetchLoanExists } from '@/llamalend/queries/loan-exists'
-import { Chain } from '@curvefi/prices-api'
-import { getUserMarketCollateralEvents } from '@curvefi/prices-api/lending'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { isGreaterThanOrEqualTo } from '@ui-kit/utils'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
@@ -61,7 +60,10 @@ const DEFAULT_STATE: SliceState = {
 
 const { loanSelfLiquidation } = apiLending
 
-const createLoanSelfLiquidationSlice = (set: SetState<State>, get: GetState<State>): LoanSelfLiquidationSlice => ({
+const createLoanSelfLiquidationSlice = (
+  set: StoreApi<State>['setState'],
+  get: StoreApi<State>['getState'],
+): LoanSelfLiquidationSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 
@@ -159,7 +161,7 @@ const createLoanSelfLiquidationSlice = (set: SetState<State>, get: GetState<Stat
       const { formStatus, ...sliceState } = get()[sliceKey]
       const { chainId } = api
       const { provider, wallet } = useWallet.getState()
-      if (!provider) return setMissingProvider(get()[sliceKey])
+      if (!provider || !wallet) return setMissingProvider(get()[sliceKey])
 
       // update formStatus
       sliceState.setStateByKey('formStatus', {
@@ -171,13 +173,7 @@ const createLoanSelfLiquidationSlice = (set: SetState<State>, get: GetState<Stat
 
       // api calls
       const { error, ...resp } = await loanSelfLiquidation.selfLiquidate(provider, market, maxSlippage)
-      // update user events api
-      void getUserMarketCollateralEvents(
-        wallet?.account?.address,
-        networks[chainId].name as Chain,
-        market.addresses.controller,
-        resp.hash,
-      )
+      updateUserEventsApi(wallet, networks[chainId], market, resp.hash)
 
       if (resp) {
         const loanExists = await refetchLoanExists({

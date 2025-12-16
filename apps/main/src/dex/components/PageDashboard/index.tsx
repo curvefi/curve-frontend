@@ -13,6 +13,7 @@ import TableSortDialog from '@/dex/components/PageDashboard/components/TableSort
 import { DashboardContextProvider } from '@/dex/components/PageDashboard/dashboardContext'
 import type { DashboardTableRowProps, FormValues, TableLabel } from '@/dex/components/PageDashboard/types'
 import { ROUTE } from '@/dex/constants'
+import { useNetworkByChain } from '@/dex/entities/networks'
 import curvejsApi from '@/dex/lib/curvejs'
 import { getDashboardDataActiveKey } from '@/dex/store/createDashboardSlice'
 import useStore from '@/dex/store/useStore'
@@ -55,7 +56,9 @@ const Dashboard = ({
 
   const { chainId, signerAddress } = curve ?? {}
   const { walletAddress } = formValues
-  const { isLite, networkId } = useStore((state) => state.networks.networks[rChainId])
+  const {
+    data: { isLite, networkId },
+  } = useNetworkByChain({ chainId: rChainId })
   const { userPoolBoost } = curvejsApi.wallet
 
   const isValidAddress = useMemo(() => isAddress(walletAddress as Address), [walletAddress])

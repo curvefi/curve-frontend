@@ -10,7 +10,6 @@ import LoanFormConnect from '@/lend/components/LoanFormConnect'
 import type { FormStatus, FormValues, StepKey } from '@/lend/components/PageLoanManage/LoanCollateralAdd/types'
 import { StyledDetailInfoWrapper } from '@/lend/components/PageLoanManage/styles'
 import type { FormEstGas } from '@/lend/components/PageLoanManage/types'
-import { DEFAULT_HEALTH_MODE } from '@/lend/components/PageLoanManage/utils'
 import { NOFITY_MESSAGE } from '@/lend/constants'
 import { useUserLoanDetails } from '@/lend/hooks/useUserLoanDetails'
 import { helpers } from '@/lend/lib/apiLending'
@@ -19,13 +18,14 @@ import { DEFAULT_FORM_VALUES } from '@/lend/store/createLoanCollateralAddSlice'
 import useStore from '@/lend/store/useStore'
 import { Api, OneWayMarketTemplate, PageContentProps } from '@/lend/types/lend.types'
 import { _showNoLoanFound } from '@/lend/utils/helpers'
+import { DEFAULT_HEALTH_MODE } from '@/llamalend/constants'
 import { useLoanExists } from '@/llamalend/queries/loan-exists'
 import AlertBox from '@ui/AlertBox'
 import { getActiveStep } from '@ui/Stepper/helpers'
 import Stepper from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
 import TxInfoBar from '@ui/TxInfoBar'
-import { formatNumber } from '@ui/utils'
+import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
@@ -75,7 +75,7 @@ const LoanCollateralAdd = ({ rChainId, rOwmId, api, isLoaded, market, userActive
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && !resp.error) {
         const txMessage = t`Transaction completed.`
-        const txHash = networks[chainId].scanTxPath(resp.hash)
+        const txHash = scanTxPath(networks[chainId], resp.hash)
         setTxInfoBar(<TxInfoBar description={txMessage} txHash={txHash} onClose={() => updateFormValues({}, true)} />)
       }
       if (resp?.error) setTxInfoBar(null)
@@ -194,6 +194,7 @@ const LoanCollateralAdd = ({ rChainId, rOwmId, api, isLoaded, market, userActive
           inpLabelLoading={!!signerAddress && typeof userBalances === 'undefined'}
           inpLabelDescription={formatNumber(userBalances?.collateral, { defaultValue: '-' })}
           inpValue={formValues.collateral}
+          inpLabel={t`Collateral to add`}
           tokenAddress={market?.collateral_token?.address}
           tokenSymbol={market?.collateral_token?.symbol}
           tokenBalance={userBalances?.collateral}

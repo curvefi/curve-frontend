@@ -16,7 +16,7 @@ import Stats from '@ui/Stats'
 import Stepper from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
 import TxInfoBar from '@ui/TxInfoBar'
-import { formatNumber } from '@ui/utils'
+import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 
@@ -70,7 +70,7 @@ const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContentProps) 
         setTxInfoBar(
           <TxInfoBar
             description={txMessage}
-            txHash={networks[chainId].scanTxPath(resp.hash)}
+            txHash={scanTxPath(networks[chainId], resp.hash)}
             onClose={() => reset()}
           />,
         )

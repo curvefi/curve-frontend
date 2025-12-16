@@ -1,22 +1,35 @@
 import { useMemo } from 'react'
 import type { Chain } from 'viem'
-import type { NetworkDef } from '@ui/utils'
+import { generatePrivateKey } from 'viem/accounts'
+import { mapRecord, recordValues } from '@curvefi/prices-api/objects.util'
+import type { NetworkMapping } from '@ui/utils'
+import { Chain as ChainEnum, isCypress, noCypressTestConnector } from '@ui-kit/utils'
 import { createChainFromNetwork } from './chains'
 import { defaultGetRpcUrls } from './rpc'
 import { createTransportFromNetwork } from './transports'
 import { createWagmiConfig } from './wagmi-config'
+import { createTestConnector } from './wagmi-test'
 
-export function useWagmiConfig(networks: NetworkDef[]) {
-  const chains = useMemo(
-    () => networks.map((network) => createChainFromNetwork(network, defaultGetRpcUrls)) as [Chain, ...Chain[]],
-    [networks],
-  )
-  const transports = useMemo(
-    () =>
-      Object.fromEntries(
-        networks.map((network) => [network.chainId, createTransportFromNetwork(network, defaultGetRpcUrls)]),
-      ),
-    [networks],
-  )
-  return useMemo(() => createWagmiConfig({ chains, transports }), [chains, transports])
-}
+export const useWagmiConfig = <T extends NetworkMapping>(networks: T | undefined) =>
+  useMemo(() => {
+    if (networks == null) return
+
+    const chains = recordValues(networks).map((network) => createChainFromNetwork(network, defaultGetRpcUrls)) as [
+      Chain,
+      ...Chain[],
+    ]
+
+    return createWagmiConfig({
+      chains,
+      transports: mapRecord(networks, (_, network) => createTransportFromNetwork(network, defaultGetRpcUrls)),
+      ...(isCypress &&
+        !noCypressTestConnector && {
+          connectors: [
+            createTestConnector({
+              privateKey: generatePrivateKey(),
+              chain: chains.find((chain) => chain.id === ChainEnum.Ethereum)!,
+            })!,
+          ],
+        }),
+    })
+  }, [networks])

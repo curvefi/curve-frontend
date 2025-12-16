@@ -106,7 +106,6 @@ Routes are defined in `/apps/main/src/routes/` with a hierarchical structure:
 // Root route with global layout
 export const rootRoute = createRootRoute({
   component: RootLayout,
-  loader: getNetworkDefs,
 })
 
 // Domain layout route
@@ -119,7 +118,7 @@ export const dexLayoutRoute = createRoute({
 // Feature route
 export const poolRoute = createRoute({
   getParentRoute: () => dexLayoutRoute,
-  path: '$network/pool/$poolId',
+  path: '$network/pool/$poolIdOrAddress',
   component: PagePool,
   head: () => ({ meta: [{ title: 'Pool - Curve' }] }),
 })

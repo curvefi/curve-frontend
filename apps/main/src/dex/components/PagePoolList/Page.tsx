@@ -1,17 +1,16 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { styled } from 'styled-components'
 import PoolList from '@/dex/components/PagePoolList/index'
+import { PoolListPage } from '@/dex/components/PagePoolList/PoolListPage'
 import type { FilterKey, Order, PoolListTableLabel, SearchParams, SortKey } from '@/dex/components/PagePoolList/types'
-import { ROUTE } from '@/dex/constants'
-import { useChainId } from '@/dex/hooks/useChainId'
+import { useNetworkByChain } from '@/dex/entities/networks'
+import { useNetworkFromUrl } from '@/dex/hooks/useChainId'
 import useSearchTermMapper from '@/dex/hooks/useSearchTermMapper'
-import Settings from '@/dex/layout/default/Settings'
 import useStore from '@/dex/store/useStore'
-import type { NetworkUrlParams } from '@/dex/types/main.types'
-import { getPath } from '@/dex/utils/utilsRouter'
 import { breakpoints } from '@ui/utils/responsive'
-import { useConnection } from '@ui-kit/features/connect-wallet'
-import { useNavigate, useSearchParams, useParams } from '@ui-kit/hooks/router'
+import { useCurve } from '@ui-kit/features/connect-wallet'
+import { useNavigate, useSearchParams } from '@ui-kit/hooks/router'
+import { useDexMarketList } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 
 enum SEARCH {
@@ -21,20 +20,17 @@ enum SEARCH {
   search = 'search',
 }
 
-type PageProps = NetworkUrlParams
-
-export const PagePoolList = () => {
-  const params = useParams<PageProps>()
+const OldPoolListPage = () => {
   const push = useNavigate()
   const searchParams = useSearchParams()
-  const { curveApi = null } = useConnection()
+  const { curveApi = null } = useCurve()
   const searchTermMapper = useSearchTermMapper()
   const [parsedSearchParams, setParsedSearchParams] = useState<SearchParams | null>(null)
-  const rChainId = useChainId(params.network)
+  const { chainId: rChainId } = useNetworkFromUrl()!
 
   const poolDataMapper = useStore((state) => state.pools.poolsMapper[rChainId])
   const poolDataMapperCached = useStore((state) => state.storeCache.poolsMapper[rChainId])
-  const network = useStore((state) => state.networks.networks[rChainId])
+  const { data: network } = useNetworkByChain({ chainId: rChainId })
   const { isLite, poolFilters } = network
   const poolDatasLength = Object.keys(poolDataMapper ?? poolDataMapperCached ?? {}).length
   const defaultSortBy = isLite ? 'tvl' : 'volume'
@@ -62,19 +58,18 @@ export const PagePoolList = () => {
         ...parsedSearchParams,
         ...updatedSearchParams,
       }
-      const searchPath = new URLSearchParams(
-        [
-          [SEARCH.filter, filterKey && filterKey !== 'all' ? filterKey : ''],
-          [SEARCH.sortBy, sortBy && sortBy !== defaultSortBy ? sortBy : ''],
-          [SEARCH.order, sortByOrder && sortByOrder !== 'desc' ? sortByOrder : ''],
-          [SEARCH.search, searchText ? encodeURIComponent(searchText) : ''],
-        ].filter(([, v]) => v),
-      ).toString()
-
-      const pathname = getPath(params, `${ROUTE.PAGE_POOLS}?${searchPath}`)
-      push(pathname)
+      push(
+        `?${new URLSearchParams(
+          [
+            [SEARCH.filter, filterKey && filterKey !== 'all' ? filterKey : ''],
+            [SEARCH.sortBy, sortBy && sortBy !== defaultSortBy ? sortBy : ''],
+            [SEARCH.order, sortByOrder && sortByOrder !== 'desc' ? sortByOrder : ''],
+            [SEARCH.search, searchText ? encodeURIComponent(searchText) : ''],
+          ].filter(([, v]) => v),
+        )}`,
+      )
     },
-    [defaultSortBy, push, params, parsedSearchParams],
+    [defaultSortBy, push, parsedSearchParams],
   )
 
   useEffect(() => {
@@ -106,23 +101,19 @@ export const PagePoolList = () => {
   }, [curveApi?.signerAddress, poolDatasLength, rChainId, searchParams, defaultSortBy, poolFilters])
 
   return (
-    <>
-      <Container $isLite={isLite}>
-        {rChainId && parsedSearchParams && (
-          <PoolList
-            rChainId={rChainId}
-            curve={curveApi}
-            params={params}
-            isLite={isLite}
-            tableLabels={TABLE_LABEL}
-            searchParams={parsedSearchParams}
-            searchTermMapper={searchTermMapper}
-            updatePath={updatePath}
-          />
-        )}
-      </Container>
-      <Settings showScrollButton />
-    </>
+    <Container $isLite={isLite}>
+      {rChainId && parsedSearchParams && (
+        <PoolList
+          rChainId={rChainId}
+          curve={curveApi}
+          isLite={isLite}
+          tableLabels={TABLE_LABEL}
+          searchParams={parsedSearchParams}
+          searchTermMapper={searchTermMapper}
+          updatePath={updatePath}
+        />
+      )}
+    </Container>
   )
 }
 
@@ -141,3 +132,5 @@ const Container = styled.div<{ $isLite: boolean }>`
     margin: 1.5rem auto;
   }
 `
+
+export const PagePoolList = () => (useDexMarketList() ? <PoolListPage /> : <OldPoolListPage />)

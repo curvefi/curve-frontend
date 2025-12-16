@@ -1,6 +1,6 @@
 import { produce } from 'immer'
 import lodash from 'lodash'
-import type { GetState, SetState } from 'zustand'
+import type { StoreApi } from 'zustand'
 import type { State } from '@/dao/store/useStore'
 import type { CurveApi, Wallet } from '@/dao/types/dao.types'
 import { log } from '@ui-kit/lib'
@@ -25,7 +25,7 @@ export interface AppSlice extends SliceState {
 
 const DEFAULT_STATE = {} satisfies SliceState
 
-const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice => ({
+const createAppSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): AppSlice => ({
   ...DEFAULT_STATE,
   updateGlobalStoreByKey: <T>(key: DefaultStateKeys, value: T) => {
     set(
@@ -41,7 +41,6 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
     const isNetworkSwitched = prevApi?.chainId != api.chainId
 
     log('Hydrating DAO', api?.chainId, {
-      wallet: wallet?.chainId ?? '',
       isNetworkSwitched,
     })
 

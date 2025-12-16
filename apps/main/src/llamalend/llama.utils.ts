@@ -1,10 +1,15 @@
-import { type Address, zeroAddress } from 'viem'
-import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
-import type { INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
+import { sortBy } from 'lodash'
+import { type Address, Hex, zeroAddress } from 'viem'
+import type { HealthColorKey, LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import type { INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
-import { requireLib } from '@ui-kit/features/connect-wallet'
-import { CRVUSD } from '@ui-kit/utils'
+import { Chain } from '@curvefi/prices-api'
+import { getUserMarketCollateralEvents as getMintUserMarketCollateralEvents } from '@curvefi/prices-api/crvusd'
+import { getUserMarketCollateralEvents as getLendUserMarketCollateralEvents } from '@curvefi/prices-api/lending'
+import { notFalsy } from '@curvefi/prices-api/objects.util'
+import { requireLib, type Wallet } from '@ui-kit/features/connect-wallet'
+import { CRVUSD, type Decimal, formatNumber } from '@ui-kit/utils'
 
 /**
  * Gets a Llama market (either a mint or lend market) by its ID.
@@ -23,14 +28,30 @@ export const hasLeverage = (market: LlamaMarketTemplate) =>
     ? market.leverage.hasLeverage()
     : market.leverageZap !== zeroAddress || market.leverageV2.hasLeverage()
 
-export const getTokens = (market: LlamaMarketTemplate, chain: INetworkName) =>
+const getBorrowSymbol = (market: LlamaMarketTemplate) =>
+  market instanceof MintMarketTemplate ? CRVUSD.symbol : market.borrowed_token.symbol
+
+const getCollateralSymbol = (market: LlamaMarketTemplate) =>
+  market instanceof MintMarketTemplate ? market.collateralSymbol : market.collateral_token.symbol
+
+export const formatTokenAmounts = (
+  market: LlamaMarketTemplate,
+  { userBorrowed, userCollateral }: { userBorrowed?: Decimal; userCollateral?: Decimal },
+) =>
+  notFalsy(
+    userBorrowed && +userBorrowed && `${formatNumber(userBorrowed, { abbreviate: false })} ${getBorrowSymbol(market)}`,
+    userCollateral &&
+      +userCollateral &&
+      `${formatNumber(userCollateral, { abbreviate: false })} ${getCollateralSymbol(market)}`,
+  ).join(', ')
+
+export const getTokens = (market: LlamaMarketTemplate) =>
   market instanceof MintMarketTemplate
     ? {
         collateralToken: {
           symbol: market.collateralSymbol,
           address: market.collateral as Address,
           decimals: market.collateralDecimals,
-          chain,
         },
         borrowToken: CRVUSD,
       }
@@ -39,13 +60,11 @@ export const getTokens = (market: LlamaMarketTemplate, chain: INetworkName) =>
           symbol: market.collateral_token.symbol,
           address: market.collateral_token.address as Address,
           decimals: market.collateral_token.decimals,
-          chain,
         },
         borrowToken: {
           symbol: market.borrowed_token.symbol,
           address: market.borrowed_token.address as Address,
           decimals: market.borrowed_token.decimals,
-          chain,
         },
       }
 
@@ -62,12 +81,122 @@ export const calculateLtv = (
   debtAmount: number,
   collateralAmount: number,
   collateralBorrowTokenAmount: number,
-  borrowTokenUsdRate: number | undefined,
-  collateralTokenUsdRate: number | undefined,
+  borrowTokenUsdRate: number | null | undefined,
+  collateralTokenUsdRate: number | null | undefined,
 ) => {
   const collateralValue =
     collateralAmount * (collateralTokenUsdRate ?? 0) + collateralBorrowTokenAmount * (borrowTokenUsdRate ?? 0)
   const debtValue = debtAmount * (borrowTokenUsdRate ?? 0)
   if (collateralValue === 0 || debtValue === 0) return 0
   return (debtValue / collateralValue) * 100
+}
+
+/**
+ * Sends a new transaction hash to the backend to update user events.
+ * Note that the backend data will not be directly updated, but this will trigger a background refresh.
+ * Therefore, we don't invalidate the `userLendCollateralEvents` query immediately after calling this function.
+ */
+export const updateUserEventsApi = (
+  wallet: Wallet,
+  { id: networkId }: { id: LlamaNetworkId },
+  market: LlamaMarketTemplate,
+  txHash: string,
+) => {
+  const [address, updateEvents] =
+    market instanceof LendMarketTemplate
+      ? [market.addresses.controller, getLendUserMarketCollateralEvents]
+      : [market.controller, getMintUserMarketCollateralEvents]
+  void updateEvents(wallet.account.address, networkId as Chain, address as Address, txHash as Hex)
+}
+
+/**
+ * It’s possible that when a user briefly enters and then exits soft liquidation,
+ * one or more bands may be left with a tiny amount of crvUSD (dust). There is a
+ * dust-sweeping bot that cleans this up, but there can be a delay before those
+ * remnants are collected.
+ *
+ * The current front-end check is rudimentary and can sometimes conclude that a
+ * user is still in soft liquidation even though their overall health is healthy,
+ * which is confusing.
+ *
+ * As a pragmatic, short-term mitigation to reduce false positives, we only mark
+ * loans as being in soft liquidation when the crvUSD balance of a band exceeds
+ * a small threshold. This prevents trivial dust amounts from triggering the UI.
+ *
+ * If somebody wants to tackle this properly, they can find the bot code here:
+ * https://github.com/curvefi/dust-cleaner-bot/blob/0795b2fa/app/services/controller.py#L90
+ */
+const SOFT_LIQUIDATION_DUST_THRESHOLD = 0.1
+
+/**
+ * healthNotFull is needed here because:
+ * User full health can be > 0
+ * But user is at risk of liquidation if not full < 0
+ */
+export function getLiquidationStatus(
+  healthNotFull: string,
+  userIsCloseToLiquidation: boolean,
+  userStateStablecoin: string,
+) {
+  const userStatus: { label: string; colorKey: HealthColorKey; tooltip: string } = {
+    label: 'Healthy',
+    colorKey: 'healthy',
+    tooltip: '',
+  }
+
+  if (+healthNotFull < 0) {
+    userStatus.label = 'Hard liquidatable'
+    userStatus.colorKey = 'hard_liquidation'
+    userStatus.tooltip =
+      'Hard liquidation is like a usual liquidation, which can happen only if you experience significant losses in soft liquidation so that you get below 0 health.'
+  } else if (+userStateStablecoin > SOFT_LIQUIDATION_DUST_THRESHOLD) {
+    userStatus.label = 'Soft liquidation'
+    userStatus.colorKey = 'soft_liquidation'
+    userStatus.tooltip =
+      'Soft liquidation is the initial process of collateral being converted into stablecoin, you may experience some degree of loss.'
+  } else if (userIsCloseToLiquidation) {
+    userStatus.label = 'Close to liquidation'
+    userStatus.colorKey = 'close_to_liquidation'
+  }
+
+  return userStatus
+}
+
+export function getIsUserCloseToLiquidation(
+  userFirstBand: number,
+  userLiquidationBand: number | null,
+  oraclePriceBand: number | null | undefined,
+) {
+  if (userLiquidationBand !== null && typeof oraclePriceBand !== 'number') {
+    return false
+  } else if (typeof oraclePriceBand === 'number') {
+    return userFirstBand <= oraclePriceBand + 2
+  }
+  return false
+}
+
+export function reverseBands(bands: [number, number] | number[]) {
+  return [bands[1], bands[0]] as [number, number]
+}
+
+// There's a slight difference in types (borrowed vs stablecoin) that I didn't want to touch at the risk of breaking things;
+// I only want to move code, not change. At least they're neatly in the same place now.
+
+export function sortBandsLend(bandsBalances: { [index: number]: { borrowed: string; collateral: string } }) {
+  const sortedKeys = sortBy(Object.keys(bandsBalances), (k) => +k)
+  const bandsBalancesArr: { borrowed: string; collateral: string; band: number }[] = []
+  for (const k of sortedKeys) {
+    // @ts-ignore
+    bandsBalancesArr.push({ ...bandsBalances[k], band: k })
+  }
+  return { bandsBalancesArr, bandsBalances }
+}
+
+export function sortBandsMint(bandBalances: { [key: string]: { stablecoin: string; collateral: string } }) {
+  const sortedKeys = sortBy(Object.keys(bandBalances), (k) => +k)
+  const bandBalancesArr = []
+  for (const k of sortedKeys) {
+    bandBalancesArr.push({ ...bandBalances[k], band: k })
+  }
+  return { bandBalancesArr, bandBalances }
 }

@@ -5,8 +5,9 @@ import { devtools, persist, type PersistOptions } from 'zustand/middleware'
 import type { ThemeKey } from '@ui-kit/themes/basic-theme'
 
 export const SMALL_POOL_TVL = 10000
+export const MIN_POOLS_DISPLAYED = 10
 
-type State = {
+export type UserProfileState = {
   theme: ThemeKey
   /** Key is either 'crypto', 'stable' or a chainIdPoolId from getChainPoolIdActiveKey. */
   maxSlippage: { crypto: string; stable: string } & Partial<Record<string, string>>
@@ -37,7 +38,7 @@ type Action = {
   setHideSmallPools: (hideSmallPools: boolean) => void
 }
 
-type Store = State & Action
+type Store = UserProfileState & Action
 
 const INITIAL_THEME =
   typeof window !== 'undefined'
@@ -46,7 +47,7 @@ const INITIAL_THEME =
       : 'light'
     : 'light'
 
-const INITIAL_STATE: State = {
+const INITIAL_STATE: UserProfileState = {
   theme: INITIAL_THEME,
   maxSlippage: { crypto: '0.1', stable: '0.03' },
   isAdvancedMode: false,

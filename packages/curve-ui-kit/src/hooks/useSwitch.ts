@@ -5,5 +5,5 @@ export function useSwitch<T extends boolean | undefined>(defaultValue?: T) {
   const open = useCallback(() => setIsOpen(true), [setIsOpen])
   const close = useCallback(() => setIsOpen(false), [setIsOpen])
   const toggle = useCallback(() => setIsOpen((v) => !v), [setIsOpen])
-  return [isOpen, open, close, toggle] as const
+  return [isOpen, open, close, toggle, setIsOpen] as const
 }

@@ -18,6 +18,8 @@ type UserEventsTableProps = {
   loading: boolean
 }
 
+const pagination = { pageIndex: 0, pageSize: 50 }
+
 export const UserEventsTable = ({ events, loading, isError }: UserEventsTableProps) => {
   const { columnVisibility } = useUserPositionHistoryVisibility()
   const [sorting, setSorting] = useState<SortingState>(DEFAULT_SORT)
@@ -26,6 +28,7 @@ export const UserEventsTable = ({ events, loading, isError }: UserEventsTablePro
     data: events,
     columns: USER_POSITION_HISTORY_COLUMNS,
     state: { columnVisibility, sorting },
+    initialState: { pagination },
     onSortingChange: setSorting,
     ...getTableOptions(events),
   })
@@ -37,9 +40,7 @@ export const UserEventsTable = ({ events, loading, isError }: UserEventsTablePro
         <EmptyStateRow table={table}>{isError ? t`Could not load events` : t`No events found`}</EmptyStateRow>
       }
       loading={loading}
-      options={{
-        maxHeight: MaxHeight.userEventsTable,
-      }}
+      maxHeight={MaxHeight.userEventsTable}
       expandedPanel={RowExpandedPanel}
       shouldStickFirstColumn={false}
     />

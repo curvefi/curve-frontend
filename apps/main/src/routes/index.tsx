@@ -5,6 +5,7 @@ import { createRoute, createRouter } from '@tanstack/react-router'
 import { t } from '@ui-kit/lib/i18n'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { analyticsRoutes } from './analytics.routes'
 import { crvusdRoutes } from './crvusd.routes'
 import { daoRoutes } from './dao.routes'
 import { dexRoutes } from './dex.routes'
@@ -30,8 +31,10 @@ const integrationsRedirectRoute = createRoute({
 })
 
 export const router = createRouter({
+  scrollRestoration: true,
   routeTree: rootRoute.addChildren([
     indexRoute,
+    analyticsRoutes,
     crvusdRoutes,
     daoRoutes,
     dexRoutes,
@@ -54,7 +57,7 @@ export const router = createRouter({
       <head>
         <title>{t`Error 404` + ' - Curve'}</title>
       </head>
-      <ErrorPage title="404" subtitle={t`Page Not Found`} hideRetry />
+      <ErrorPage title="404" subtitle={t`Page Not Found`} continueUrl="/" />
     </>
   ),
 })

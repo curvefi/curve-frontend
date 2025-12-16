@@ -4,6 +4,7 @@ import DeployGaugeButton from '@/dex/components/PageDeployGauge/components/Deplo
 import DeployMainnet from '@/dex/components/PageDeployGauge/DeployMainnet'
 import DeploySidechain from '@/dex/components/PageDeployGauge/DeploySidechain'
 import ProcessSummary from '@/dex/components/PageDeployGauge/ProcessSummary'
+import { useNetworkByChain } from '@/dex/entities/networks'
 import { useChainId } from '@/dex/hooks/useChainId'
 import useStore from '@/dex/store/useStore'
 import { type NetworkUrlParams } from '@/dex/types/main.types'
@@ -15,13 +16,15 @@ import Icon from '@ui/Icon/Icon'
 import IconButton from '@ui/IconButton'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import Switch from '@ui/Switch/Switch'
-import { isLoading, useConnection } from '@ui-kit/features/connect-wallet'
+import { isLoading, useCurve } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 
 export const DeployGauge = (props: NetworkUrlParams) => {
-  const { curveApi = null, connectState } = useConnection()
+  const { curveApi = null, connectState } = useCurve()
   const chainId = useChainId(props.network)
-  const isLite = useStore((state) => state.networks.networks[chainId]?.isLite ?? false)
+  const {
+    data: { isLite = false },
+  } = useNetworkByChain({ chainId })
 
   const curveNetworks = useStore((state) => state.deployGauge.curveNetworks)
   const setCurveNetworks = useStore((state) => state.deployGauge.setCurveNetworks)

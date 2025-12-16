@@ -1,11 +1,8 @@
 import { useCallback, useEffect, useMemo } from 'react'
 import { styled } from 'styled-components'
 import type { FilterKey, FormValues } from '@/loan/components/PageIntegrations/types'
-import { ROUTE } from '@/loan/constants'
-import networks, { networksIdMapper } from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
-import { ChainId, NetworkEnum, type NetworkUrlParams } from '@/loan/types/loan.types'
-import { getPath } from '@/loan/utils/utilsRouter'
+import { ChainId, type NetworkUrlParams } from '@/loan/types/loan.types'
 import { useFocusRing } from '@react-aria/focus'
 import Box from '@ui/Box'
 import IntegrationAppComp from '@ui/Integration/IntegrationApp'
@@ -70,8 +67,7 @@ const IntegrationsComp = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [parsedSearchParams.filterKey, rChainId])
 
-  const updateRouteFilterKey = (filterKey: FilterKey) =>
-    push(getPath(params, `${ROUTE.PAGE_INTEGRATIONS}?filter=${filterKey}`))
+  const updateRouteFilterKey = (filterKey: FilterKey) => push(`?filter=${filterKey}`)
 
   const parsedResults = results === null ? integrationsList : results
 
@@ -124,14 +120,16 @@ const IntegrationsComp = ({
               integrationsAppNetworks={
                 !rChainId && (
                   <Box margin="0.25rem 0 0 0">
-                    {Object.keys(app.networks).map((networkId) => {
-                      if (networkId in networksIdMapper) {
-                        const chainId = networksIdMapper[networkId as NetworkEnum]
-                        const { name, logoSrc } = networks[chainId]
-                        return <img key={chainId} alt={name} src={logoSrc} loading="lazy" width="18" height="18" />
-                      }
-                      return null
-                    })}
+                    {Object.keys(app.networks).map((networkId) => (
+                      <img
+                        key={networkId}
+                        alt={`${networkId} logo`}
+                        src={networkId}
+                        loading="lazy"
+                        width="18"
+                        height="18"
+                      />
+                    ))}
                   </Box>
                 )
               }

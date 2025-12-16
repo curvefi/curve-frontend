@@ -1,5 +1,5 @@
 import lodash from 'lodash'
-import type { GetState, SetState } from 'zustand'
+import type { StoreApi } from 'zustand'
 import type { FormEstGas } from '@/lend/components/PageLoanManage/types'
 import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@/lend/components/PageLoanManage/utils'
 import type { FormStatus, FormValues } from '@/lend/components/PageVault/VaultDepositMint/types'
@@ -10,8 +10,7 @@ import apiLending, { helpers } from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
 import type { State } from '@/lend/store/useStore'
 import { Api, ChainId, FutureRates, OneWayMarketTemplate } from '@/lend/types/lend.types'
-import { Chain } from '@curvefi/prices-api'
-import { getUserMarketCollateralEvents } from '@curvefi/prices-api/lending'
+import { updateUserEventsApi } from '@/llamalend/llama.utils'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 
@@ -59,7 +58,10 @@ const DEFAULT_STATE: SliceState = {
   formValues: DEFAULT_FORM_VALUES,
 }
 
-const createVaultMint = (set: SetState<State>, get: GetState<State>): VaultDepositMintSlice => ({
+const createVaultMint = (
+  set: StoreApi<State>['setState'],
+  get: StoreApi<State>['getState'],
+): VaultDepositMintSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 
@@ -165,7 +167,7 @@ const createVaultMint = (set: SetState<State>, get: GetState<State>): VaultDepos
     fetchStepDepositMint: async (activeKey, formType, api, market, formValues) => {
       const { provider, wallet } = useWallet.getState()
       const { chainId } = api
-      if (!provider) return setMissingProvider(get()[sliceKey])
+      if (!provider || !wallet) return setMissingProvider(get()[sliceKey])
 
       // update formStatus
       const partialFormStatus: Partial<FormStatus> = { isInProgress: true, step: 'DEPOSIT_MINT' }
@@ -175,13 +177,7 @@ const createVaultMint = (set: SetState<State>, get: GetState<State>): VaultDepos
       const fn = _isDeposit(formType) ? apiLending.vaultDeposit.deposit : apiLending.vaultMint.mint
       const { amount } = formValues
       const resp = await fn(activeKey, provider, market, amount)
-      // update user events api
-      void getUserMarketCollateralEvents(
-        wallet?.account?.address,
-        networks[chainId].name as Chain,
-        market.addresses.controller,
-        resp.hash,
-      )
+      updateUserEventsApi(wallet, networks[chainId], market, resp.hash)
 
       if (resp.activeKey === get()[sliceKey].activeKey) {
         // re-fetch api

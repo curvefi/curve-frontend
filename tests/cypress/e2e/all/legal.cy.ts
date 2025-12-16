@@ -13,9 +13,7 @@ describe('Legal', () => {
     const viewport = oneOf(oneDesktopViewport, oneTabletViewport)()
     it(`it should contain footer legal link for ${viewport.join('x')}`, () => {
       cy.viewport(...viewport)
-      cy.visit(`/${oneAppPath() || 'dex'}/`, {
-        onBeforeLoad: (win) => win.localStorage.setItem('phishing-warning-dismissed', `"${new Date().toISOString()}"`),
-      })
+      cy.visit(`/${oneAppPath() || 'dex'}/`)
 
       //Navigate to legal route from footer link
       cy.get(`[data-testid='footer']`, LOAD_TIMEOUT).should('be.visible')
@@ -29,9 +27,7 @@ describe('Legal', () => {
     const [width, height] = oneViewport()
     it(`should contain multiple tabs for ${width}x${height}`, () => {
       cy.viewport(width, height)
-      cy.visit(`/${oneAppPath() || 'dex'}/ethereum/legal`, {
-        onBeforeLoad: (win) => win.localStorage.setItem('phishing-warning-dismissed', `"${new Date().toISOString()}"`),
-      })
+      cy.visit(`/${oneAppPath() || 'dex'}/ethereum/legal`)
 
       // Make sure there's tabs available and click one.
       cy.get(`[data-testid='legal-page']`, LOAD_TIMEOUT).should('be.visible')
@@ -52,7 +48,7 @@ describe('Legal', () => {
     it('should use the first tab as default when the wrong tab is provided', () => {
       cy.visit('/lend/#/ethereum/legal?tab=dontexist')
       // Verify the first tab (Terms & Conditions) is selected
-      cy.get("[data-testid='legal-page'] [role='tablist'] [role='tab']")
+      cy.get("[data-testid='legal-page'] [role='tablist'] [role='tab']", LOAD_TIMEOUT)
         .first()
         .should('have.attr', 'aria-selected', 'true')
         .and('have.class', 'Mui-selected')
@@ -62,7 +58,7 @@ describe('Legal', () => {
       cy.visit('/lend/#/ethereum/legal?tab=disclaimers&subtab=dontexist')
 
       // Verify the Disclaimers tab is selected and the lend subtab is selected
-      cy.get("[data-testid='legal-page'] [role='tablist']")
+      cy.get("[data-testid='legal-page'] [role='tablist']", LOAD_TIMEOUT)
         .contains("[role='tab']", 'LlamaLend')
         .should('have.attr', 'aria-selected', 'true')
         .and('have.class', 'Mui-selected')

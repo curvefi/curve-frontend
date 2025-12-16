@@ -20,12 +20,12 @@ import { getActiveStep } from '@ui/Stepper/helpers'
 import Stepper from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
 import TxInfoBar from '@ui/TxInfoBar'
-import { formatNumber } from '@ui/utils'
+import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
-import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
+import { useLegacyTokenInput } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
-import { ReleaseChannel, decimal, type Decimal } from '@ui-kit/utils'
+import { decimal, type Decimal } from '@ui-kit/utils'
 
 const VaultWithdrawRedeem = ({
   rChainId,
@@ -50,7 +50,6 @@ const VaultWithdrawRedeem = ({
   const fetchUserMarketBalances = useStore((state) => state.user.fetchUserMarketBalances)
   const setFormValues = useStore((state) => state.vaultWithdrawRedeem.setFormValues)
   const resetState = useStore((state) => state.vaultWithdrawRedeem.resetState)
-  const [releaseChannel] = useReleaseChannel()
 
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
@@ -111,7 +110,7 @@ const VaultWithdrawRedeem = ({
         setTxInfoBar(
           <TxInfoBar
             description={txMessage}
-            txHash={networks[chainId].scanTxPath(resp.hash)}
+            txHash={scanTxPath(networks[chainId], resp.hash)}
             onClose={() => reset({})}
           />,
         )
@@ -193,7 +192,7 @@ const VaultWithdrawRedeem = ({
 
   return (
     <>
-      {releaseChannel !== ReleaseChannel.Beta ? (
+      {useLegacyTokenInput() ? (
         <div>
           {/* input amount */}
           <Box grid gridRowGap={1}>
@@ -249,7 +248,6 @@ const VaultWithdrawRedeem = ({
         </div>
       ) : (
         <LargeTokenInput
-          dataType="decimal"
           name="amount"
           disabled={disabled}
           balance={decimal(formValues.amount)}
@@ -261,12 +259,14 @@ const VaultWithdrawRedeem = ({
                 ? t`Amount exceeds max ${_isWithdraw(rFormType) ? t`withdraw` : t`redeem`} amount ${formatNumber(max ?? '')}`
                 : undefined
           }
+          walletBalance={{
+            balance: decimal(userBalances?.vaultSharesConverted),
+            loading: !!signerAddress && userBalances == null,
+            symbol: t`Vault shares`,
+          }}
           maxBalance={{
             balance: decimal(max),
-            loading: !!signerAddress && userBalances == null,
-            showSlider: false,
-            notionalValueUsd: decimal(userBalances?.vaultSharesConverted),
-            symbol: t`Vault shares`,
+            chips: 'max',
           }}
           onBalance={onBalance}
           testId="inpCollateral"

@@ -1,6 +1,6 @@
 import { produce } from 'immer'
 import lodash from 'lodash'
-import type { GetState, SetState } from 'zustand'
+import type { StoreApi } from 'zustand'
 import { type State } from '@/loan/store/useStore'
 import { type LlamaApi, Wallet } from '@/loan/types/loan.types'
 import { log } from '@/loan/utils/helpers'
@@ -30,7 +30,7 @@ const DEFAULT_STATE: SliceState = {
   isPageVisible: true,
 }
 
-const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice => ({
+const createAppSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): AppSlice => ({
   ...DEFAULT_STATE,
 
   updateGlobalStoreByKey: <T>(key: DefaultStateKeys, value: T) => {
@@ -41,15 +41,14 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
     )
   },
 
-  hydrate: async (curveApi, prevCurveApi, wallet) => {
+  hydrate: async (curveApi, prevCurveApi) => {
     if (!curveApi) return
 
-    const { loans, collaterals } = get()
+    const { loans } = get()
 
     const isNetworkSwitched = !!prevCurveApi?.chainId && prevCurveApi.chainId !== curveApi.chainId
     const isUserSwitched = !!prevCurveApi?.signerAddress && prevCurveApi.signerAddress !== curveApi.signerAddress
     log('Hydrate crvUSD', curveApi?.chainId, {
-      wallet: wallet?.chainId ?? '',
       isNetworkSwitched,
       isUserSwitched,
     })
@@ -60,9 +59,8 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
       loans.setStateByKey('userDetailsMapper', {})
     }
 
-    // Check if curveApi is actually a Curve instance and not a LendingApi
-    const { collateralDatas } = await collaterals.fetchCollaterals(curveApi)
-    await loans.fetchLoansDetails(curveApi, collateralDatas)
+    const markets = curveApi.mintMarkets.getMarketList().map((name) => curveApi.getMintMarket(name))
+    await loans.fetchLoansDetails(curveApi, markets)
 
     log('Hydrate crvUSD - Complete')
   },

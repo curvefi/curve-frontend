@@ -1,10 +1,9 @@
 import { ReactNode } from 'react'
 import { styled } from 'styled-components'
 import Divider from '@mui/material/Divider'
-import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
+import { useActionInfo } from '@ui-kit/hooks/useFeatureFlags'
 import ActionInfo, { ActionInfoProps } from '@ui-kit/shared/ui/ActionInfo'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { ReleaseChannel } from '@ui-kit/utils'
 import Box from 'ui/src/Box/Box'
 import Loader from 'ui/src/Loader/Loader'
 
@@ -33,6 +32,7 @@ type Props = {
   loadingSkeleton?: [number, number]
   tooltip?: ReactNode
   variant?: Variant
+  testId?: string
 }
 
 const OldDetailInfo = ({ isBold, isDivider, label, loading, loadingSkeleton, tooltip, variant, children }: Props) => (
@@ -66,6 +66,7 @@ const NewDetailInfo = ({
   variant,
   isMultiLine,
   children,
+  testId,
 }: Props) => (
   <>
     {isDivider && <Divider sx={{ marginBlock: Spacing.sm }} />}
@@ -76,6 +77,7 @@ const NewDetailInfo = ({
       valueTooltip={tooltip}
       error={variant === 'error'}
       loading={loading && (loadingSkeleton || true)}
+      testId={testId}
       {...(isBold && { sx: { '& .MuiTypography-root': { '&': { fontWeight: 'bold' } } } })}
       {...(isMultiLine && { alignItems: 'flex-start' })}
     />
@@ -155,8 +157,6 @@ const Wrapper = styled(Box)<WrapperProps>`
   }
 `
 
-export default function DetailInfo(props: Props) {
-  const [releaseChannel] = useReleaseChannel()
-  const DetailInfo = releaseChannel === ReleaseChannel.Beta ? NewDetailInfo : OldDetailInfo
-  return <DetailInfo {...props} />
-}
+const DetailInfo = (props: Props) => (useActionInfo() ? <NewDetailInfo {...props} /> : <OldDetailInfo {...props} />)
+
+export default DetailInfo

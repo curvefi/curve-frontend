@@ -10,22 +10,17 @@ import type { FormStatus, FormValues, StepKey } from '@/lend/components/PageLoan
 import { _parseValues, DEFAULT_FORM_VALUES } from '@/lend/components/PageLoanManage/LoanRepay/utils'
 import { StyledDetailInfoWrapper } from '@/lend/components/PageLoanManage/styles'
 import type { FormEstGas } from '@/lend/components/PageLoanManage/types'
-import { DEFAULT_CONFIRM_WARNING, DEFAULT_HEALTH_MODE } from '@/lend/components/PageLoanManage/utils'
+import { DEFAULT_CONFIRM_WARNING } from '@/lend/components/PageLoanManage/utils'
 import { NOFITY_MESSAGE } from '@/lend/constants'
 import { useUserLoanDetails } from '@/lend/hooks/useUserLoanDetails'
 import { helpers } from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
-import {
-  Api,
-  FormError,
-  HealthMode,
-  type MarketUrlParams,
-  OneWayMarketTemplate,
-  PageContentProps,
-} from '@/lend/types/lend.types'
+import { Api, FormError, type MarketUrlParams, OneWayMarketTemplate, PageContentProps } from '@/lend/types/lend.types'
 import { _showNoLoanFound } from '@/lend/utils/helpers'
 import { getCollateralListPathname } from '@/lend/utils/utilsRouter'
+import { DEFAULT_HEALTH_MODE } from '@/llamalend/constants'
+import type { HealthMode } from '@/llamalend/llamalend.types'
 import { useLoanExists } from '@/llamalend/queries/loan-exists'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
@@ -35,9 +30,8 @@ import { getActiveStep } from '@ui/Stepper/helpers'
 import Stepper from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
 import TxInfoBar from '@ui/TxInfoBar'
-import { formatNumber } from '@ui/utils'
+import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
-import { useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNavigate } from '@ui-kit/hooks/router'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
@@ -64,7 +58,6 @@ const LoanRepay = ({
   const formEstGas = useStore((state) => state.loanRepay.formEstGas[activeKey])
   const formStatus = useStore((state) => state.loanRepay.formStatus)
   const formValues = useStore((state) => state.loanRepay.formValues)
-  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
   const { state: userState } = useUserLoanDetails(userActiveKey)
   const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
   const fetchStepApprove = useStore((state) => state.loanRepay.fetchStepApprove)
@@ -130,7 +123,7 @@ const LoanRepay = ({
         setTxInfoBar(
           <TxInfoBar
             description={txMessage}
-            txHash={networks[rChainId].scanTxPath(resp.hash)}
+            txHash={scanTxPath(networks[rChainId], resp.hash)}
             onClose={() => {
               if (resp.loanExists) {
                 updateFormValues(DEFAULT_FORM_VALUES, '', true)
@@ -286,24 +279,12 @@ const LoanRepay = ({
     }
   }, [])
 
-  usePageVisibleInterval(
-    () => {
-      const { swapRequired } = _parseValues(formValues)
-      if (
-        isLoaded &&
-        isPageVisible &&
-        swapRequired &&
-        !formStatus.isComplete &&
-        !formStatus.step &&
-        !formStatus.error &&
-        !isConfirming
-      ) {
-        updateFormValues({})
-      }
-    },
-    REFRESH_INTERVAL['10s'],
-    isPageVisible,
-  )
+  usePageVisibleInterval(() => {
+    const { swapRequired } = _parseValues(formValues)
+    if (isLoaded && swapRequired && !formStatus.isComplete && !formStatus.step && !formStatus.error && !isConfirming) {
+      updateFormValues({})
+    }
+  }, REFRESH_INTERVAL['10s'])
 
   useEffect(() => {
     if (isLoaded) {

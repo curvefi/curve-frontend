@@ -6,11 +6,14 @@ import { useUniqueDebounce } from '@ui-kit/hooks/useDebounce'
 import { t } from '@ui-kit/lib/i18n'
 import { SearchIcon } from '@ui-kit/shared/icons/SearchIcon'
 
-type SearchFieldProps = TextFieldProps & {
+export type SearchFieldProps = TextFieldProps & {
   value?: string
   onSearch: (search: string) => void
   inputRef?: RefObject<HTMLInputElement | null>
 }
+
+/** Compares two strings, ignoring leading and trailing whitespace. */
+const searchFieldEquals = (a: string, b: string) => a.trim() === b.trim()
 
 /**
  * Search field with debounced search. It is cleared and focused when clicking the close button.
@@ -23,7 +26,11 @@ export const SearchField = ({
   inputRef,
   ...props
 }: SearchFieldProps) => {
-  const [search, setSearch] = useUniqueDebounce<string>(value, onSearch)
+  const [search, setSearch] = useUniqueDebounce<string>({
+    defaultValue: value,
+    callback: onSearch,
+    equals: searchFieldEquals,
+  })
   const localInputRef = useRef<HTMLInputElement | null>(null)
   const ref = inputRef || localInputRef
   const resetSearch = useCallback(() => {

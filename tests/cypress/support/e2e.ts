@@ -1,13 +1,28 @@
-import './commands'
+import type { AppRoute } from './routes'
 
-// Cypress injects a script into the page that makes the hydration fail
-// This is a known issue and can be safely ignored. See https://github.com/cypress-io/cypress/issues/27204
-const IGNORE_ERROR_PATTERNS = [/Hydration failed/i, /Minified React error #418/, /Minified React error #423/]
-
-Cypress.on('uncaught:exception', (err) => {
-  const ignore = IGNORE_ERROR_PATTERNS.find((p) => p.test(err.message))
-  console.info('Uncaught exception', ignore ? `ignored: ${ignore.source}` : err.message)
-  if (ignore) {
-    return false // this will prevent the test from failing
+declare global {
+  interface Window {
+    CypressNoTestConnector?: string
   }
-})
+
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace Cypress {
+    interface Chainable<Subject = any> {
+      visitWithoutTestConnector(route: AppRoute, options?: Partial<Cypress.VisitOptions>): Chainable<AUTWindow>
+    }
+  }
+}
+
+/**
+ * For most of our e2e tests we have a wagmi test connect that auto-connects, so there's a wallet available.
+ * However, in some cases we want to test functionality without a wallet connected.
+ */
+Cypress.Commands.add('visitWithoutTestConnector', (route: AppRoute, options?: Partial<Cypress.VisitOptions>) =>
+  cy.visit(`/${route}`, {
+    ...options,
+    onBeforeLoad(win) {
+      win.CypressNoTestConnector = 'true'
+      options?.onBeforeLoad?.(win)
+    },
+  }),
+)

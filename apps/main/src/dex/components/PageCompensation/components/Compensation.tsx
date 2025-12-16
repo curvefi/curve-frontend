@@ -3,8 +3,8 @@ import { styled } from 'styled-components'
 import AlertFormError from '@/dex/components/AlertFormError'
 import type { EtherContract } from '@/dex/components/PageCompensation/types'
 import { StyledIconButton } from '@/dex/components/PagePool/PoolDetails/PoolStats/styles'
+import { useNetworkByChain } from '@/dex/entities/networks'
 import curvejsApi from '@/dex/lib/curvejs'
-import useStore from '@/dex/store/useStore'
 import { ChainId, CurveApi, Provider } from '@/dex/types/main.types'
 import { getErrorMessage } from '@/dex/utils'
 import Box from '@ui/Box'
@@ -12,7 +12,7 @@ import Button from '@ui/Button'
 import Icon from '@ui/Icon'
 import ExternalLink from '@ui/Link/ExternalLink'
 import TxInfoBar from '@ui/TxInfoBar'
-import { formatNumber } from '@ui/utils'
+import { formatNumber, scanAddressPath, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { copyToClipboard, shortenAddress } from '@ui-kit/utils'
@@ -40,7 +40,7 @@ const Compensation = ({
   token: string
   vestedTotal: number
 }) => {
-  const networks = useStore((state) => state.networks.networks)
+  const { data: network } = useNetworkByChain({ chainId: rChainId })
 
   const [error, setError] = useState('')
   const [step, setStep] = useState('')
@@ -63,8 +63,7 @@ const Compensation = ({
         await curvejsApi.helpers.waitForTransaction(hash, provider)
         setStep('claimed')
         const txDescription = t`Claimed ${balance}`
-        const network = networks[curve.chainId]
-        const txHash = network.scanTxPath(hash)
+        const txHash = scanTxPath(network, hash)
         setTxInfoBar(<TxInfoBar description={txDescription} txHash={txHash} />)
         if (typeof dismiss === 'function') dismiss()
       } catch (error) {
@@ -74,7 +73,7 @@ const Compensation = ({
         if (typeof dismiss === 'function') dismiss()
       }
     },
-    [curve, networks, provider],
+    [curve, network, provider],
   )
 
   // reset
@@ -96,10 +95,12 @@ const Compensation = ({
         <Box grid margin="0 1rem 0 0" gridRowGap={1}>
           <div>
             <strong>{token}</strong>{' '}
-            <StyledExternalLink href={networks[rChainId].scanAddressPath(contractAddress)}>
-              {shortenAddress(contractAddress)}
-              <Icon name="Launch" size={16} />
-            </StyledExternalLink>
+            {network && (
+              <StyledExternalLink href={scanAddressPath(network, contractAddress)}>
+                {shortenAddress(contractAddress)}
+                <Icon name="Launch" size={16} />
+              </StyledExternalLink>
+            )}
             <StyledIconButton size="medium" onClick={() => copyToClipboard(contractAddress)}>
               <Icon name="Copy" size={16} />
             </StyledIconButton>

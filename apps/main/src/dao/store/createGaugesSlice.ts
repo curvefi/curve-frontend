@@ -1,6 +1,6 @@
 import Fuse from 'fuse.js'
 import { produce } from 'immer'
-import type { GetState, SetState } from 'zustand'
+import type { StoreApi } from 'zustand'
 import { invalidateUserGaugeVoteNextTimeQuery } from '@/dao/entities/user-gauge-vote-next-time'
 import { invalidateUserGaugeWeightVotesQuery } from '@/dao/entities/user-gauge-weight-votes'
 import type { State } from '@/dao/store/useStore'
@@ -112,7 +112,7 @@ const DEFAULT_STATE: SliceState = {
   selectedGauge: null,
 }
 
-const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSlice => ({
+const createGaugesSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): GaugesSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
     getGauges: async (forceReload: boolean = false) => {

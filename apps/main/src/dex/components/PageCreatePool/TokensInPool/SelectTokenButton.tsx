@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { type Key, useEffect, useMemo, useRef, useState } from 'react'
 import { styled } from 'styled-components'
 import { STABLESWAP } from '@/dex/components/PageCreatePool/constants'
 import { CreateToken } from '@/dex/components/PageCreatePool/types'
+import { useNetworkByChain } from '@/dex/entities/networks'
 import useStore from '@/dex/store/useStore'
 import { ChainId, CurveApi } from '@/dex/types/main.types'
 import { delayAction } from '@/dex/utils'
@@ -27,7 +28,7 @@ type Props = {
   blockchainId: string
   selectedAddress: string
   tokens: CreateToken[]
-  onSelectionChange: (selectedAddress: React.Key) => void
+  onSelectionChange: (selectedAddress: Key) => void
 }
 
 const SelectTokenButton = ({
@@ -39,7 +40,7 @@ const SelectTokenButton = ({
   tokens = [],
   onSelectionChange,
 }: Props) => {
-  const networks = useStore((state) => state.networks.networks)
+  const { data: network } = useNetworkByChain({ chainId })
   const visibleTokens = useRef<{ [k: string]: boolean }>({})
   const overlayTriggerState = useOverlayTriggerState({})
   const openButtonRef = useRef<HTMLButtonElement>(null)
@@ -47,13 +48,14 @@ const SelectTokenButton = ({
   const { endsWith } = useFilter({ sensitivity: 'base' })
 
   const isMobile = useIsMobile()
-  const nativeToken = useStore((state) => state.networks.nativeToken[chainId])
+  const nativeToken = curve.getNetworkConstants().NATIVE_TOKEN
 
   const userAddedTokens = useStore((state) => state.createPool.userAddedTokens)
   const updateUserAddedTokens = useStore((state) => state.createPool.updateUserAddedTokens)
 
-  const { basePools, basePoolsLoading } = useStore((state) => state.pools)
-  const { swapType } = useStore((state) => state.createPool)
+  const basePools = useStore((state) => state.pools.basePools)
+  const basePoolsLoading = useStore((state) => state.pools.basePoolsLoading)
+  const swapType = useStore((state) => state.createPool.swapType)
 
   const [error, setError] = useState<string>()
   const [filterValue, setFilterValue] = useState('')
@@ -64,7 +66,7 @@ const SelectTokenButton = ({
       address: nativeToken?.wrappedAddress ?? '',
       symbol: nativeToken?.wrappedSymbol ?? '',
     },
-    ...networks[chainId].createQuickList,
+    ...network.createQuickList,
   ].map(({ address, symbol }) => ({
     chain: blockchainId,
     address: address as Address,
