@@ -4,7 +4,7 @@ import ExternalLink from '@ui/Link/ExternalLink'
 
 type Props = {
   description: string
-  link: string
+  link?: string
   theme?: 'plain'
   className?: string
 }
@@ -13,12 +13,13 @@ type StylesProps = {
   theme?: 'plain'
 }
 
-const InfoLinkBar = ({ description, link, theme, className }: Props) => (
-  <StyledExternalLink className={className} theme={theme} href={link}>
-    <InfoDescription>{description}</InfoDescription>
-    <StyledExternalIcon />
-  </StyledExternalLink>
-)
+const InfoLinkBar = ({ description, link, theme, className }: Props) =>
+  link && (
+    <StyledExternalLink className={className} theme={theme} href={link}>
+      <InfoDescription>{description}</InfoDescription>
+      <StyledExternalIcon />
+    </StyledExternalLink>
+  )
 
 const StyledExternalIcon = styled(RCExternal)`
   margin: auto 0;

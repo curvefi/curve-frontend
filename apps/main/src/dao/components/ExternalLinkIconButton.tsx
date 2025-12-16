@@ -5,24 +5,25 @@ import { ExternalLink } from '@ui/Link'
 import TooltipButton from '@ui/Tooltip/TooltipButton'
 
 type ExternalLinkIconButtonProps = {
-  href: string
+  href?: string
   tooltip: string
   children?: ReactNode
 }
 
-const ExternalLinkIconButton = ({ href, tooltip, children }: ExternalLinkIconButtonProps) => (
-  <TooltipButton
-    clickable
-    noWrap
-    tooltip={tooltip}
-    customIcon={
-      <StyledExternalLink href={href}>
-        {children}
-        <Icon name="Launch" size={16} />
-      </StyledExternalLink>
-    }
-  />
-)
+const ExternalLinkIconButton = ({ href, tooltip, children }: ExternalLinkIconButtonProps) =>
+  href && (
+    <TooltipButton
+      clickable
+      noWrap
+      tooltip={tooltip}
+      customIcon={
+        <StyledExternalLink href={href}>
+          {children}
+          <Icon name="Launch" size={16} />
+        </StyledExternalLink>
+      }
+    />
+  )
 
 const StyledExternalLink = styled(ExternalLink)`
   display: flex;

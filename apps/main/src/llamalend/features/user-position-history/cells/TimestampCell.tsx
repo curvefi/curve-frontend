@@ -20,7 +20,7 @@ export const TimestampCell = ({
   const isMobile = useIsMobile()
   const handleClick = useCallback(() => {
     // On mobile, don't handle click to allow row expansion
-    if (!isMobile) {
+    if (!isMobile && txUrl) {
       window.open(txUrl, '_blank')
     }
   }, [txUrl, isMobile])
