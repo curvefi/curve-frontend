@@ -43,7 +43,8 @@ export const useAddCollateralMutation = ({
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'add-collateral'] as const,
     mutationFn: async (mutation, { market }) => {
       await waitForApproval({
-        isApproved: () => fetchAddCollateralIsApproved({ chainId, marketId, userAddress, ...mutation }),
+        isApproved: () =>
+          fetchAddCollateralIsApproved({ chainId, marketId, userAddress, ...mutation }, { staleTime: 0 }),
         onApprove: () => approve(market, mutation),
         message: t`Approved collateral addition`,
         config,
