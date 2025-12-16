@@ -1,11 +1,10 @@
-import Stack from '@mui/material/Stack'
+import { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { useDismissBanner } from '@ui-kit/hooks/useLocalStorage'
-import { ExclamationTriangleIcon } from '@ui-kit/shared/icons/ExclamationTriangleIcon'
 import { Banner } from '@ui-kit/shared/ui/Banner'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { PoolAlert } from '../types/main.types'
 
-const { IconSize } = SizesAndSpaces
+export const DEX_POOL_ALERT_BANNER_PORTAL_ID = 'dex-pool-alert-banner-portal'
 
 const ONE_DAY_MS = 24 * 60 * 60 * 1000 // 24 hours in milliseconds
 
@@ -17,17 +16,20 @@ const PoolAlertBanner = ({
   poolAlertBannerKey: string
 }) => {
   const { shouldShowBanner, dismissBanner } = useDismissBanner(poolAlertBannerKey, ONE_DAY_MS)
+  const [portalEl, setPortalEl] = useState<HTMLElement | null>(null)
 
-  return (
-    shouldShowBanner && (
-      <Stack>
-        <Banner subtitle={banner.subtitle} severity="alert" onClick={dismissBanner} learnMoreUrl={banner.learnMoreUrl}>
-          <ExclamationTriangleIcon sx={{ width: IconSize.sm, height: IconSize.sm, verticalAlign: 'text-bottom' }} />{' '}
-          {banner.title}
-        </Banner>
-      </Stack>
-    )
+  useEffect(() => {
+    setPortalEl(document.getElementById(DEX_POOL_ALERT_BANNER_PORTAL_ID))
+  }, [])
+
+  const content = (
+    <Banner subtitle={banner.subtitle} severity="alert" onClick={dismissBanner} learnMoreUrl={banner.learnMoreUrl}>
+      {banner.title}
+    </Banner>
   )
+
+  if (!shouldShowBanner) return null
+  return portalEl ? createPortal(content, portalEl) : content
 }
 
 export default PoolAlertBanner
