@@ -46,10 +46,12 @@ const PoolStats = ({ curve, routerParams, poolAlert, poolData, poolDataCacheOrAp
             <CurrencyReserves rChainId={rChainId} rPoolId={poolId ?? ''} tvl={tvl} tokensMapper={tokensMapper} />
             {poolData && <RewardsComp chainId={rChainId} poolData={poolData} rewardsApy={rewardsApy} />}
             <Box grid gridRowGap={2}>
-              {poolAlert && !poolAlert.isDisableDeposit && !poolAlert.isInformationOnlyAndShowInForm && (
+              {poolAlert?.message && !poolAlert.isDisableDeposit && !poolAlert.isInformationOnlyAndShowInForm && (
                 <AlertBox {...poolAlert}>{poolAlert.message}</AlertBox>
               )}
-              {tokenAlert && tokenAlert.isInformationOnly && <AlertBox {...tokenAlert}>{tokenAlert.message}</AlertBox>}
+              {tokenAlert?.message && tokenAlert.isInformationOnly && (
+                <AlertBox {...tokenAlert}>{tokenAlert.message}</AlertBox>
+              )}
 
               {poolDataCacheOrApi.pool.referenceAsset === 'CRYPTO' && (
                 <AlertBox alertType="info" title={t`${poolDataCacheOrApi.pool.name} is a Cryptoswap pool`}>

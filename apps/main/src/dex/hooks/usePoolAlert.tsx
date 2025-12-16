@@ -24,6 +24,7 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
         subtitle: t`zStables (zETH, UZD) have encountered an attack. `,
         learnMoreUrl: 'https://twitter.com/ZunamiProtocol/status/1690863406079696896?s=20',
       },
+      /* TODO: use Typography component instead of p tag */
       message: (
         <MessageWrapper>
           <p>{t`Deposit disabled.`}</p>

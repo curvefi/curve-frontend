@@ -82,12 +82,12 @@ const PoolLabel = ({ className = '', blockchainId, isVisible = true, poolData, q
           <Box flex flexAlignItems="center">
             {!isMobile && (
               <>
-                {(poolAlert?.isInformationOnly || poolAlert?.isInformationOnlyAndShowInForm) && (
+                {(poolAlert?.isInformationOnly || poolAlert?.isInformationOnlyAndShowInForm) && poolAlert?.message && (
                   <AlertTooltipIcon minWidth="300px" placement="right-start" {...poolAlert}>
                     {poolAlert.message}
                   </AlertTooltipIcon>
                 )}
-                {tokenAlert && (
+                {tokenAlert?.message && (
                   <AlertTooltipIcon minWidth="300px" placement="right-start" {...tokenAlert}>
                     {tokenAlert.message}
                   </AlertTooltipIcon>
@@ -119,8 +119,10 @@ const PoolLabel = ({ className = '', blockchainId, isVisible = true, poolData, q
         </Box>
       </Wrapper>
 
-      {tokenAlert && isMobile && <StyledAlertBox alertType={tokenAlert.alertType}>{tokenAlert.message}</StyledAlertBox>}
-      {poolAlert && !poolAlert.isPoolPageOnly && (
+      {tokenAlert?.message && isMobile && (
+        <StyledAlertBox alertType={tokenAlert.alertType}>{tokenAlert.message}</StyledAlertBox>
+      )}
+      {poolAlert && poolAlert.message && !poolAlert.isPoolPageOnly && (
         <>
           {!poolAlert.isInformationOnly && !poolAlert.isInformationOnlyAndShowInForm ? (
             <Box padding="0.5rem 0 0 0">{poolAlert.message}</Box>

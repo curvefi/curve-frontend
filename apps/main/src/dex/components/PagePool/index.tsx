@@ -234,7 +234,7 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
               {rFormType === 'swap' ? (
                 <AppFormContentWrapper>
                   {poolAlert?.isDisableSwap ? (
-                    <AlertBox {...poolAlert}>{poolAlert.message}</AlertBox>
+                    poolAlert.message && <AlertBox {...poolAlert}>{poolAlert.message}</AlertBox>
                   ) : (
                     <Swap
                       {...pageTransferProps}
