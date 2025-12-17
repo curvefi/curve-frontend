@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useState } from 'react'
-import { useAccount } from 'wagmi'
+import { useConnection } from 'wagmi'
 import {
   invalidateAllUserLendingSupplies,
   invalidateAllUserLendingVaults,
   invalidateLendingVaults,
-} from '@/llamalend/entities/lending-vaults'
-import { useLlamaMarkets } from '@/llamalend/entities/llama-markets'
-import { invalidateAllUserMintMarkets, invalidateMintMarkets } from '@/llamalend/entities/mint-markets'
+} from '@/llamalend/queries/market-list/lending-vaults'
+import { useLlamaMarkets } from '@/llamalend/queries/market-list/llama-markets'
+import { invalidateAllUserMintMarkets, invalidateMintMarkets } from '@/llamalend/queries/market-list/mint-markets'
 import { Address } from '@ui-kit/utils'
 import { ListPageWrapper } from '@ui-kit/widgets/ListPageWrapper'
 import { LendTableFooter } from './LendTableFooter'
@@ -46,13 +46,15 @@ const useOnReload = ({ address: userAddress, isFetching }: { address?: Address; 
  * Page for displaying the lending markets table.
  */
 export const LlamaMarketsList = () => {
-  const { address } = useAccount()
+  const { address } = useConnection()
   const { data, isError, isLoading, isFetching } = useLlamaMarkets(address)
   const [isReloading, onReload] = useOnReload({ address, isFetching })
   const loading = isReloading || (!data && (!isError || isLoading)) // on initial render isLoading is still false
   return (
     <ListPageWrapper footer={<LendTableFooter />}>
-      {data?.userHasPositions && <UserPositionsTabs result={data} loading={loading} />}
+      {(data?.userHasPositions || !address) && (
+        <UserPositionsTabs onReload={onReload} result={data} isError={isError} loading={loading} />
+      )}
       <LlamaMarketsTable onReload={onReload} result={data} isError={isError} loading={loading} />
     </ListPageWrapper>
   )

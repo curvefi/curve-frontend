@@ -1,4 +1,4 @@
-import { getHost, type Options, type Chain, type Address } from '..'
+import { getHost, type Options, type Chain, type Address, type Hex } from '..'
 import { fetchJson as fetch } from '../fetch'
 import { getTimeRange } from '../timestamp'
 import * as Parsers from './parsers'
@@ -48,10 +48,10 @@ export async function getOracle(
 }
 
 export async function getUserMarketCollateralEvents(
-  userAddr: Address | '' = '',
+  userAddr: Address,
   chain: Chain,
-  marketController: string,
-  txHash?: string,
+  marketController: Address,
+  txHash?: Hex, // used to let the backend know that a new transaction was created, so it can batch an update
   options?: Options,
 ) {
   const host = getHost(options)

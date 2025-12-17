@@ -2,11 +2,6 @@ import { styled } from 'styled-components'
 import Box from '@ui/Box'
 import { breakpoints } from '@ui/utils'
 
-export const SubTitle = styled.h3`
-  font-size: var(--font-size-3);
-  margin-bottom: 0.75rem; // 12px
-`
-
 export type StatsProps = {
   isBorderBottom?: boolean
   isMultiLine?: boolean

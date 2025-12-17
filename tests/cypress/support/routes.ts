@@ -49,11 +49,19 @@ export type AppRoute = `${AppName}/${string}`
 /** Gets the app name from a given route */
 export const getRouteApp = (route: AppRoute) => route.split('/')[0] as AppName
 
+export const DEFAULT_PAGES = {
+  dex: ['dex', DEX_ROUTES.PAGE_SWAP],
+  dao: ['dao', DAO_ROUTES.PAGE_PROPOSALS],
+  crvusd: ['llamalend', CRVUSD_ROUTES.PAGE_MARKETS],
+  lend: ['llamalend', LEND_ROUTES.PAGE_MARKETS],
+  llamalend: ['llamalend', LLAMALEND_ROUTES.PAGE_MARKETS],
+} as const
+
 const COMMON_ROUTE_TEST_IDS = { [PAGE_LEGAL]: 'legal-page', [PAGE_INTEGRATIONS]: 'integrations-page' }
 
 const ROUTE_TEST_IDS = {
   dex: {
-    [DEX_ROUTES.PAGE_POOLS]: 'inp-search-pools',
+    [DEX_ROUTES.PAGE_POOLS]: 'data-table-head',
     [DEX_ROUTES.PAGE_SWAP]: 'swap-page',
     [DEX_ROUTES.PAGE_DASHBOARD]: 'dashboard-page',
     [DEX_ROUTES.PAGE_CREATE_POOL]: 'create-pool-page',

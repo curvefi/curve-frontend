@@ -1,44 +1,42 @@
 import { useCallback, useEffect, useState } from 'react'
 import { styled } from 'styled-components'
 import type { Address } from 'viem'
-import { useAccount } from 'wagmi'
-import { DetailPageStack } from '@/llamalend/components/DetailPageStack'
+import { useConnection } from 'wagmi'
 import { MarketDetails } from '@/llamalend/features/market-details'
 import { NoPosition } from '@/llamalend/features/market-position-details'
 import { UserPositionHistory } from '@/llamalend/features/user-position-history'
 import { useUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { useLoanExists } from '@/llamalend/queries/loan-exists'
-import ChartOhlcWrapper from '@/loan/components/ChartOhlcWrapper'
+import { DetailPageStack } from '@/llamalend/widgets/DetailPageStack'
 import { MarketInformationComp } from '@/loan/components/MarketInformationComp'
 import LoanCreate from '@/loan/components/PageLoanCreate/index'
-import { hasLeverage } from '@/loan/components/PageLoanCreate/utils'
+import { useMintMarket } from '@/loan/entities/mint-markets'
 import { useMarketDetails } from '@/loan/hooks/useMarketDetails'
 import networks from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
 import { type CollateralUrlParams, type LlamaApi, Llamma } from '@/loan/types/loan.types'
+import { hasV1Leverage } from '@/loan/utils/leverage'
 import { getTokenName } from '@/loan/utils/utilsLoan'
 import {
-  getCollateralListPathname,
   getLoanCreatePathname,
   getLoanManagePathname,
   parseCollateralParams,
   useChainId,
 } from '@/loan/utils/utilsRouter'
+import { getCollateralListPathname } from '@/loan/utils/utilsRouter'
 import { isChain } from '@curvefi/prices-api'
 import Stack from '@mui/material/Stack'
 import { AppPageFormsWrapper, AppPageFormTitleWrapper } from '@ui/AppPage'
 import Box from '@ui/Box'
-import Button from '@ui/Button'
-import Icon from '@ui/Icon'
 import TextEllipsis from '@ui/TextEllipsis'
-import { breakpoints } from '@ui/utils/responsive'
-import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
+import { ConnectWalletPrompt, isLoading, useCurve, useWallet } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNavigate, useParams } from '@ui-kit/hooks/router'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
+import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { CRVUSD } from '@ui-kit/utils/address'
 
@@ -48,32 +46,30 @@ const Page = () => {
   const params = useParams<CollateralUrlParams>()
   const { rFormType = null, rCollateralId } = parseCollateralParams(params)
   const push = useNavigate()
-  const { isHydrated, llamaApi: curve = null, connectState } = useConnection()
+  const { isHydrated, llamaApi: curve = null, connectState } = useCurve()
   const rChainId = useChainId(params)
   const { connect: connectWallet, provider } = useWallet()
-  const { address } = useAccount()
+  const { address } = useConnection()
   const [loaded, setLoaded] = useState(false)
 
-  const collateralDatasMapper = useStore((state) => state.collaterals.collateralDatasMapper[rChainId])
-  const { llamma, llamma: { id: llammaId = '' } = {}, displayName } = collateralDatasMapper?.[rCollateralId] ?? {}
+  const market = useMintMarket({ chainId: rChainId, marketId: rCollateralId })
+  const marketId = market?.id ?? ''
 
   const formValues = useStore((state) => state.loanCreate.formValues)
-  const { data: loanExists } = useLoanExists({ chainId: rChainId, marketId: llammaId, userAddress: address })
+  const { data: loanExists } = useLoanExists({ chainId: rChainId, marketId, userAddress: address })
   const isMdUp = useLayoutStore((state) => state.isMdUp)
   const fetchLoanDetails = useStore((state) => state.loans.fetchLoanDetails)
   const fetchUserLoanWalletBalances = useStore((state) => state.loans.fetchUserLoanWalletBalances)
   const resetUserDetailsState = useStore((state) => state.loans.resetUserDetailsState)
   const setFormValues = useStore((state) => state.loanCreate.setFormValues)
   const setStateByKeys = useStore((state) => state.loanCreate.setStateByKeys)
-  const chartExpanded = useStore((state) => state.ohlcCharts.chartExpanded)
-  const setChartExpanded = useStore((state) => state.ohlcCharts.setChartExpanded)
 
   const maxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
 
-  const isReady = !!collateralDatasMapper
+  const isReady = !!market
   const isLeverage = rFormType === 'leverage'
 
-  const marketDetails = useMarketDetails({ chainId: rChainId, llamma, llammaId })
+  const marketDetails = useMarketDetails({ chainId: rChainId, llamma: market, llammaId: marketId })
   const network = networks[rChainId]
   const {
     data: userCollateralEvents,
@@ -82,13 +78,13 @@ const Page = () => {
   } = useUserCollateralEvents({
     app: 'crvusd',
     chain: isChain(network.id) ? network.id : undefined,
-    controllerAddress: llamma?.controller as Address,
+    controllerAddress: market?.controller as Address,
     userAddress: curve?.signerAddress,
-    collateralToken: {
-      symbol: llamma?.collateralSymbol,
-      address: llamma?.collateral,
-      decimals: llamma?.collateralDecimals,
-      name: llamma?.collateralSymbol,
+    collateralToken: market && {
+      symbol: market.collateralSymbol,
+      address: market.collateral,
+      decimals: market.collateralDecimals,
+      name: market.collateralSymbol,
     },
     borrowToken: CRVUSD,
     network,
@@ -118,84 +114,52 @@ const Page = () => {
   )
 
   useEffect(() => {
-    if (isHydrated && curve) {
-      if (llamma) {
-        resetUserDetailsState(llamma)
-        fetchInitial(curve, isLeverage, llamma)
-        void fetchLoanDetails(curve, llamma)
-        setLoaded(true)
-      } else if (collateralDatasMapper) {
-        console.warn(
-          `Collateral ${rCollateralId} not found for chain ${rChainId}. Redirecting to market list.`,
-          collateralDatasMapper,
-        )
-        push(getCollateralListPathname(params))
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isHydrated, curve, llamma])
+    if (!isHydrated || !curve || !market) return
+    resetUserDetailsState(market)
+    fetchInitial(curve, isLeverage, market)
+    void fetchLoanDetails(curve, market)
+    setLoaded(true)
+  }, [isHydrated, curve, market, resetUserDetailsState, fetchInitial, isLeverage, fetchLoanDetails])
 
   // redirect if loan exists
   useEffect(() => {
-    if (!loaded && llamma && loanExists) {
-      push(getLoanManagePathname(params, llamma.id, 'loan'))
+    if (!loaded && market && loanExists) {
+      push(getLoanManagePathname(params, market.id, 'loan'))
     }
-  }, [llamma, loaded, loanExists, params, push])
+  }, [loaded, loanExists, market, params, push])
 
   //  redirect if form is leverage but no leverage option
   useEffect(() => {
-    if (llamma && rFormType === 'leverage' && !hasLeverage(llamma)) {
-      push(getLoanCreatePathname(params, llamma.id))
+    if (market && rFormType === 'leverage' && !hasV1Leverage(market)) {
+      push(getLoanCreatePathname(params, market.id))
     }
-  }, [loaded, rFormType, llamma, push, params])
+  }, [loaded, rFormType, market, push, params])
 
   // max slippage updated
   useEffect(() => {
-    if (loaded && !!curve) {
-      void setFormValues(curve, isLeverage, llamma, formValues, maxSlippage)
+    if (loaded && !!curve && market) {
+      void setFormValues(curve, isLeverage, market, formValues, maxSlippage)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [maxSlippage])
 
   usePageVisibleInterval(() => {
-    if (curve && llamma) {
-      void fetchLoanDetails(curve, llamma)
+    if (curve && market) {
+      void fetchLoanDetails(curve, market)
     }
   }, REFRESH_INTERVAL['1m'])
 
-  useEffect(() => {
-    if (!isMdUp && chartExpanded) {
-      setChartExpanded(false)
-    }
-  }, [chartExpanded, isMdUp, setChartExpanded])
-
   const TitleComp = () => (
     <AppPageFormTitleWrapper>
-      <Title>{displayName || getTokenName(llamma).collateral}</Title>
+      {/** TODO: generalize or re-use existing market counting technique, see `createCountMarket` in llama-markets.ts */}
+      <Title>{market?.id === 'sfrxeth2' ? 'sfrxETH v2' : getTokenName(market).collateral}</Title>
     </AppPageFormTitleWrapper>
   )
 
-  return provider ? (
+  return isHydrated && !market ? (
+    <ErrorPage title="404" subtitle={t`Market Not Found`} continueUrl={getCollateralListPathname(params)} />
+  ) : provider ? (
     <>
-      {chartExpanded && (
-        <PriceAndTradesExpandedContainer>
-          <Box flex padding="0 0 0 var(--spacing-2)">
-            {isMdUp && <TitleComp />}
-            <ExpandButton
-              variant={'select'}
-              onClick={() => {
-                setChartExpanded()
-              }}
-            >
-              {chartExpanded ? 'Minimize' : 'Expand'}
-              <ExpandIcon name={chartExpanded ? 'Minimize' : 'Maximize'} size={16} aria-label={t`Expand chart`} />
-            </ExpandButton>
-          </Box>
-          <PriceAndTradesExpandedWrapper variant="secondary">
-            <ChartOhlcWrapper rChainId={rChainId} llamma={llamma} llammaId={llammaId} />
-          </PriceAndTradesExpandedWrapper>
-        </PriceAndTradesExpandedContainer>
-      )}
       <DetailPageStack>
         <AppPageFormsWrapper>
           {rChainId && rCollateralId && (
@@ -204,8 +168,8 @@ const Page = () => {
               isReady={isReady}
               isLeverage={isLeverage}
               loanExists={loanExists}
-              llamma={llamma}
-              llammaId={llammaId}
+              llamma={market ?? null}
+              llammaId={marketId}
               params={params}
               rChainId={rChainId}
               rCollateralId={rCollateralId}
@@ -229,13 +193,7 @@ const Page = () => {
           )}
           <Stack>
             <MarketDetails {...marketDetails} />
-            <MarketInformationComp
-              llamma={llamma}
-              llammaId={llammaId}
-              chainId={rChainId}
-              chartExpanded={chartExpanded}
-              page="create"
-            />
+            {<MarketInformationComp llamma={market ?? null} marketId={marketId} chainId={rChainId} page="create" />}
           </Stack>
         </Stack>
       </DetailPageStack>
@@ -259,30 +217,6 @@ const Title = styled(TextEllipsis)`
   font-weight: bold;
   line-height: 1;
   padding: 0 2px;
-`
-
-const PriceAndTradesExpandedContainer = styled(Box)`
-  margin: 1.5rem 0 0;
-  display: flex;
-  @media (min-width: ${breakpoints.md}rem) {
-    flex-direction: column;
-  }
-`
-
-const PriceAndTradesExpandedWrapper = styled(Box)`
-  background-color: var(--tab-secondary--content--background-color);
-`
-
-const ExpandButton = styled(Button)`
-  margin: auto var(--spacing-3) auto auto;
-  display: flex;
-  align-content: center;
-  color: inherit;
-  font-size: var(--font-size-2);
-`
-
-const ExpandIcon = styled(Icon)`
-  margin-left: var(--spacing-1);
 `
 
 export default Page

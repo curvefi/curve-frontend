@@ -5,7 +5,6 @@ import TradesData from '@/loan/components/ChartOhlcWrapper/TradesData'
 import useStore from '@/loan/store/useStore'
 import { ChainId } from '@/loan/types/loan.types'
 import Button from '@ui/Button/Button'
-import Icon from '@ui/Icon'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import { t } from '@ui-kit/lib/i18n'
 import { LlammaLiquidityCoins } from './types'
@@ -16,60 +15,48 @@ interface Props {
   coins: LlammaLiquidityCoins
 }
 
+const MIN_HEIGHT = 330
+
 const PoolActivity = ({ chainId, poolAddress, coins }: Props) => {
   const activityFetchStatus = useStore((state) => state.ohlcCharts.activityFetchStatus)
   const llammaTradesData = useStore((state) => state.ohlcCharts.llammaTradesData)
   const llammaControllerData = useStore((state) => state.ohlcCharts.llammaControllerData)
-  const setActivityHidden = useStore((state) => state.ohlcCharts.setActivityHidden)
   const fetchPoolActivity = useStore((state) => state.ohlcCharts.fetchPoolActivity)
-  const chartExpanded = useStore((state) => state.ohlcCharts.chartExpanded)
-  const activityHidden = useStore((state) => state.ohlcCharts.activityHidden)
 
   const [eventOption, setEventOption] = useState<'TRADE' | 'LP'>('TRADE')
-
-  const minHeight = chartExpanded ? 548 : 330
 
   useEffect(() => {
     fetchPoolActivity(chainId, poolAddress)
   }, [chainId, fetchPoolActivity, poolAddress])
 
   return (
-    <Wrapper maxHeight={`${minHeight}px`}>
+    <Wrapper maxHeight={`${MIN_HEIGHT}px`}>
       <SectionHeader>
-        {chartExpanded && (
-          <HidePoolActivityButton variant={'select'} onClick={() => setActivityHidden()}>
-            <Icon name={activityHidden ? 'SidePanelClose' : 'SidePanelOpen'} size={16} />
-          </HidePoolActivityButton>
-        )}
-        {!activityHidden && (
-          <>
-            <SectionTitle>{eventOption === 'TRADE' ? t`AMM` : t`Controller`}</SectionTitle>
-            <ButtonGroup>
-              <Button
-                className={eventOption === 'TRADE' ? 'active' : ''}
-                variant={'select'}
-                onClick={() => setEventOption('TRADE')}
-              >
-                {t`AMM`}
-              </Button>
-              <Button
-                className={eventOption === 'LP' ? 'active' : ''}
-                variant={'select'}
-                onClick={() => setEventOption('LP')}
-              >
-                {t`Controller`}
-              </Button>
-            </ButtonGroup>
-          </>
-        )}
+        <SectionTitle>{eventOption === 'TRADE' ? t`AMM` : t`Controller`}</SectionTitle>
+        <ButtonGroup>
+          <Button
+            className={eventOption === 'TRADE' ? 'active' : ''}
+            variant={'select'}
+            onClick={() => setEventOption('TRADE')}
+          >
+            {t`AMM`}
+          </Button>
+          <Button
+            className={eventOption === 'LP' ? 'active' : ''}
+            variant={'select'}
+            onClick={() => setEventOption('LP')}
+          >
+            {t`Controller`}
+          </Button>
+        </ButtonGroup>
       </SectionHeader>
-      {!activityHidden && activityFetchStatus === 'READY' && (
+      {activityFetchStatus === 'READY' && (
         <GridContainer>
           <TitlesRow key={'titles'}>
             <EventTitle>{eventOption === 'TRADE' ? t`Swap` : t`Action`}</EventTitle>
             <TimestampColumnTitle>{t`Time`}</TimestampColumnTitle>
           </TitlesRow>
-          <ElementsContainer minHeight={minHeight}>
+          <ElementsContainer minHeight={MIN_HEIGHT}>
             {eventOption === 'TRADE' ? (
               llammaTradesData.length === 0 ? (
                 <SpinnerWrapper>
@@ -88,13 +75,13 @@ const PoolActivity = ({ chainId, poolAddress, coins }: Props) => {
           </ElementsContainer>
         </GridContainer>
       )}
-      {!activityHidden && activityFetchStatus === 'LOADING' && (
-        <SpinnerWrapper minHeight={`${minHeight}px`}>
+      {activityFetchStatus === 'LOADING' && (
+        <SpinnerWrapper minHeight={`${MIN_HEIGHT}px`}>
           <Spinner size={18} />
         </SpinnerWrapper>
       )}
-      {!activityHidden && activityFetchStatus === 'ERROR' && (
-        <SpinnerWrapper minHeight={`${minHeight}px`}>
+      {activityFetchStatus === 'ERROR' && (
+        <SpinnerWrapper minHeight={`${MIN_HEIGHT}px`}>
           <ErrorMessage>{t`There was an error fetching the pool activity data.`}</ErrorMessage>
         </SpinnerWrapper>
       )}
@@ -106,19 +93,6 @@ const Wrapper = styled.div<{ maxHeight: string }>`
   display: flex;
   flex-direction: column;
   max-height: ${(props) => props.maxHeight};
-  margin: 1px; // align hide activity button
-`
-
-const HidePoolActivityButton = styled(Button)`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-left: calc(-1 * var(--spacing-3) * 2.5);
-  margin-right: var(--spacing-2);
-  box-shadow: none;
-  &:hover:not(:disabled) {
-    box-shadow: none;
-  }
 `
 
 const SectionHeader = styled.div`

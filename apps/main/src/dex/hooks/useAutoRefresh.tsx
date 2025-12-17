@@ -1,44 +1,45 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
+import { useConfig } from 'wagmi'
 import curvejsApi from '@/dex/lib/curvejs'
 import useStore from '@/dex/store/useStore'
-import type { NetworkDef } from '@ui/utils'
-import { type CurveApi, useConnection } from '@ui-kit/features/connect-wallet'
+import { type CurveApi, useCurve } from '@ui-kit/features/connect-wallet'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { useGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
-import { useNetworkByChain, useNetworks } from '../entities/networks'
+import { useNetworks } from '../entities/networks'
 
-export const useAutoRefresh = (networkDef: NetworkDef) => {
-  const { curveApi } = useConnection()
-
+export const useAutoRefresh = (chainId: number | undefined) => {
+  const { curveApi } = useCurve()
+  const { data: networks } = useNetworks()
   const fetchPools = useStore((state) => state.pools.fetchPools)
-  const poolDataMapper = useStore((state) => state.pools.poolsMapper[networkDef.chainId])
+  const poolDataMapper = useStore((state) => chainId && state.pools.poolsMapper[chainId])
   const fetchPoolsVolume = useStore((state) => state.pools.fetchPoolsVolume)
   const fetchPoolsTvl = useStore((state) => state.pools.fetchPoolsTvl)
   const setTokensMapper = useStore((state) => state.tokens.setTokensMapper)
   const fetchAllStoredBalances = useStore((state) => state.userBalances.fetchAllStoredBalances)
 
-  const { data: networks } = useNetworks()
-  const { data: network } = useNetworkByChain({ chainId: networkDef.chainId })
+  // this is similar to useNetworkByChain, but it doesn't throw if network is not set (during redirects)
+  const network = useMemo(() => chainId && networks[chainId], [chainId, networks])
 
-  useGasInfoAndUpdateLib({ chainId: networkDef.chainId, networks })
+  useGasInfoAndUpdateLib({ chainId, networks })
 
   const fetchPoolsVolumeTvl = useCallback(
     async (curve: CurveApi) => {
-      const { chainId } = curve
+      if (!chainId || !poolDataMapper) return
       const poolsData = Object.values(poolDataMapper)
       await Promise.all([fetchPoolsVolume(chainId, poolsData), fetchPoolsTvl(curve, poolsData)])
       void setTokensMapper(curve, poolsData)
     },
-    [fetchPoolsTvl, fetchPoolsVolume, poolDataMapper, setTokensMapper],
+    [chainId, fetchPoolsTvl, fetchPoolsVolume, poolDataMapper, setTokensMapper],
   )
 
+  const config = useConfig()
   usePageVisibleInterval(() => {
     if (curveApi) {
       void fetchPoolsVolumeTvl(curveApi)
 
       if (curveApi.signerAddress) {
-        void fetchAllStoredBalances(curveApi)
+        void fetchAllStoredBalances(config, curveApi)
       }
     }
   }, REFRESH_INTERVAL['5m'])
@@ -46,6 +47,6 @@ export const useAutoRefresh = (networkDef: NetworkDef) => {
   usePageVisibleInterval(async () => {
     if (!curveApi || !network) return console.warn('Curve API or network is not defined, cannot refetch pools')
     const poolIds = await curvejsApi.network.fetchAllPoolsList(curveApi, network)
-    void fetchPools(curveApi, poolIds, null)
+    void fetchPools(config, curveApi, poolIds, null)
   }, REFRESH_INTERVAL['11m'])
 }

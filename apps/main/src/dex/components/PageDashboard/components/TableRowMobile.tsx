@@ -44,7 +44,7 @@ const TableRowMobile = ({
                 isVisible={isVisible}
                 blockchainId={blockchainId}
                 poolData={poolData}
-                poolListProps={{ onClick: () => updatePath(poolId) }}
+                onClick={() => updatePath(poolId)}
               />
             )}
             <IconButton onClick={() => setShowDetail((prev) => !prev)}>

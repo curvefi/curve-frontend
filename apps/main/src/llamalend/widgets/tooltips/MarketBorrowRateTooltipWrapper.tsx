@@ -1,6 +1,6 @@
-import { LlamaMarket } from '@/llamalend/entities/llama-markets'
 import { useSnapshots } from '@/llamalend/features/market-list/hooks/useSnapshots'
 import { useFilteredRewards } from '@/llamalend/hooks/useFilteredRewards'
+import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { MarketRateType } from '@ui-kit/types/market'
 import { MarketBorrowRateTooltipContent } from './MarketBorrowRateTooltipContent'
 

@@ -1,5 +1,6 @@
 import { produce } from 'immer'
 import lodash from 'lodash'
+import type { Config } from 'wagmi'
 import type { StoreApi } from 'zustand'
 import { type State } from '@/loan/store/useStore'
 import { type LlamaApi, Wallet } from '@/loan/types/loan.types'
@@ -18,7 +19,7 @@ export interface AppSlice extends SliceState {
   updateGlobalStoreByKey<T>(key: DefaultStateKeys, value: T): void
 
   /** Hydrate resets states and refreshes store data from the API */
-  hydrate(curve: LlamaApi | undefined, prevCurveApi: LlamaApi | undefined, wallet: Wallet | undefined): Promise<void>
+  hydrate(config: Config, curve: LlamaApi | undefined, prevCurveApi: LlamaApi | undefined, wallet: Wallet | undefined): Promise<void>
 
   setAppStateByActiveKey<T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean): void
   setAppStateByKey<T>(sliceKey: SliceKey, key: StateKey, value: T, showLog?: boolean): void
@@ -41,10 +42,10 @@ const createAppSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['
     )
   },
 
-  hydrate: async (curveApi, prevCurveApi) => {
+  hydrate: async (config, curveApi, prevCurveApi) => {
     if (!curveApi) return
 
-    const { loans, collaterals } = get()
+    const { loans } = get()
 
     const isNetworkSwitched = !!prevCurveApi?.chainId && prevCurveApi.chainId !== curveApi.chainId
     const isUserSwitched = !!prevCurveApi?.signerAddress && prevCurveApi.signerAddress !== curveApi.signerAddress
@@ -59,9 +60,8 @@ const createAppSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['
       loans.setStateByKey('userDetailsMapper', {})
     }
 
-    // Check if curveApi is actually a Curve instance and not a LendingApi
-    const { collateralDatas } = await collaterals.fetchCollaterals(curveApi)
-    await loans.fetchLoansDetails(curveApi, collateralDatas)
+    const markets = curveApi.mintMarkets.getMarketList().map((name) => curveApi.getMintMarket(name))
+    await loans.fetchLoansDetails(curveApi, markets)
 
     log('Hydrate crvUSD - Complete')
   },

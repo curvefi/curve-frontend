@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { useAccount } from 'wagmi'
+import { useConnection } from 'wagmi'
 import { useMarketOnChainRates } from '@/lend/entities/market-details'
 import { useUserLoanDetails } from '@/lend/entities/user-loan-details'
 import networks from '@/lend/networks'
@@ -8,12 +8,15 @@ import { ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import type { BorrowPositionDetailsProps } from '@/llamalend/features/market-position-details'
 import { calculateRangeToLiquidation } from '@/llamalend/features/market-position-details/utils'
 import { calculateLtv } from '@/llamalend/llama.utils'
+import { useLoanExists } from '@/llamalend/queries/loan-exists'
+import { useUserPnl } from '@/llamalend/queries/user-pnl.query'
 import type { Address, Chain } from '@curvefi/prices-api'
 import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import { useLendingSnapshots } from '@ui-kit/entities/lending-snapshots'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { calculateAverageRates } from '@ui-kit/utils/averageRates'
+import { decimal } from '@ui-kit/utils/decimal'
 
 type UseBorrowPositionDetailsProps = {
   chainId: ChainId
@@ -30,23 +33,37 @@ export const useBorrowPositionDetails = ({
   marketId,
 }: UseBorrowPositionDetailsProps): BorrowPositionDetailsProps => {
   const { controller } = market?.addresses ?? {}
-  const { address: userAddress } = useAccount()
-  const { data: userLoanDetails, isLoading: isUserLoanDetailsLoading } = useUserLoanDetails({
+  const { address: userAddress } = useConnection()
+  const { data: loanExists } = useLoanExists({
     chainId,
     marketId,
     userAddress,
   })
+  const { data: userLoanDetails, isLoading: isUserLoanDetailsLoading } = useUserLoanDetails(
+    {
+      chainId,
+      marketId,
+      userAddress,
+    },
+    !!loanExists,
+  )
   const {
     bands,
     health,
     leverage,
-    pnl,
+    loss,
     prices: liquidationPrices,
     status,
     state: { collateral, borrowed, debt } = {},
   } = userLoanDetails ?? {}
   const prices = useStore((state) => state.markets.pricesMapper[chainId]?.[marketId])
-
+  const { data: userPnl, isLoading: isUserPnlLoading } = useUserPnl({
+    chainId,
+    marketId,
+    userAddress,
+    loanExists,
+    hasV2Leverage: true,
+  })
   const blockchainId = networks[chainId].id as Chain
   const { data: campaigns } = useCampaignsByAddress({ blockchainId, address: controller as Address })
   const { data: onChainRatesData, isLoading: isOnchainRatesLoading } = useMarketOnChainRates({
@@ -139,11 +156,11 @@ export const useBorrowPositionDetails = ({
       loading: !market || isUserLoanDetailsLoading,
     },
     pnl: {
-      currentProfit: pnl?.currentProfit ? Number(pnl.currentProfit) : null,
-      currentPositionValue: pnl?.currentPosition ? Number(pnl.currentPosition) : null,
-      depositedValue: pnl?.deposited ? Number(pnl.deposited) : null,
-      percentageChange: pnl?.percentage ? Number(pnl.percentage) : null,
-      loading: !market || isUserLoanDetailsLoading,
+      currentProfit: userPnl?.currentProfit,
+      currentPositionValue: userPnl?.currentPosition,
+      depositedValue: userPnl?.deposited,
+      percentageChange: userPnl?.percentage,
+      loading: !market || isUserPnlLoading,
     },
     leverage: {
       value: leverage ? Number(leverage) : null,
@@ -151,6 +168,13 @@ export const useBorrowPositionDetails = ({
     },
     totalDebt: {
       value: debt ? Number(debt) : null,
+      loading: !market || isUserLoanDetailsLoading,
+    },
+    collateralLoss: {
+      depositedCollateral: decimal(loss?.deposited_collateral),
+      currentCollateralEstimation: decimal(loss?.current_collateral_estimation),
+      percentage: decimal(loss?.loss_pct),
+      amount: decimal(loss?.loss),
       loading: !market || isUserLoanDetailsLoading,
     },
   }

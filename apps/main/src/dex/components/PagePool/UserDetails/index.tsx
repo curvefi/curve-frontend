@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import { styled } from 'styled-components'
 import type { TransferProps } from '@/dex/components/PagePool/types'
 import PoolRewardsCrv from '@/dex/components/PoolRewardsCrv'
+import { usePoolIdByAddressOrId } from '@/dex/hooks/usePoolIdByAddressOrId'
 import { getUserPoolActiveKey } from '@/dex/store/createUserSlice'
 import useStore from '@/dex/store/useStore'
 import Box from '@ui/Box'
@@ -28,9 +29,10 @@ const MySharesStats = ({
   TransferProps,
   'curve' | 'poolData' | 'poolDataCacheOrApi' | 'routerParams' | 'tokensMapper' | 'userPoolBalances'
 >) => {
-  const { rChainId, rPoolId } = routerParams
-  const userPoolActiveKey = curve && rPoolId ? getUserPoolActiveKey(curve, rPoolId) : ''
-  const rewardsApy = useStore((state) => state.pools.rewardsApyMapper[rChainId]?.[rPoolId])
+  const { rChainId, rPoolIdOrAddress } = routerParams
+  const poolId = usePoolIdByAddressOrId({ chainId: rChainId, poolIdOrAddress: rPoolIdOrAddress })
+  const userPoolActiveKey = curve && poolId ? getUserPoolActiveKey(curve, poolId) : ''
+  const rewardsApy = useStore((state) => state.pools.rewardsApyMapper[rChainId]?.[poolId ?? ''])
   const userCrvApy = useStore((state) => state.user.userCrvApy[userPoolActiveKey])
   const userLiquidityUsd = useStore((state) => state.user.userLiquidityUsd[userPoolActiveKey])
   const userShare = useStore((state) => state.user.userShare[userPoolActiveKey])

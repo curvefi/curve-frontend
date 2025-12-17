@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import type { ReactNode, MouseEvent } from 'react'
 import Stack from '@mui/material/Stack'
 import type { Column } from '@tanstack/react-table'
 import { ArrowDownIcon } from '@ui-kit/shared/icons/ArrowDownIcon'
@@ -19,7 +19,10 @@ export const Sortable = <T extends TableItem>({
     alignItems="end"
     {...(column && {
       justifyContent: getFlexAlignment(column),
-      onClick: column.getToggleSortingHandler(),
+      onClick: (e: MouseEvent) => {
+        column.getToggleSortingHandler()?.(e)
+        e.stopPropagation()
+      },
     })}
     {...(isEnabled && { sx: { cursor: 'pointer', '&:hover': { color: `text.highlight` } } })}
   >
@@ -29,6 +32,7 @@ export const Sortable = <T extends TableItem>({
       rotated={column?.getIsSorted() === 'asc'}
       fontSize={column?.getIsSorted() ? 20 : 0}
       isEnabled={isEnabled}
+      {...(isEnabled && { testId: `icon-sort-${column?.id}-${column?.getIsSorted()}` })}
     />
   </Stack>
 )

@@ -1,10 +1,10 @@
-import { AppRoute, getRouteApp, getRouteTestId, oneAppRoute } from '@cy/support/routes'
+import { AppRoute, DEFAULT_PAGES, getRouteApp, getRouteTestId, oneAppRoute } from '@cy/support/routes'
 import {
   API_LOAD_TIMEOUT,
-  checkIsDarkMode,
   LOAD_TIMEOUT,
   oneDesktopViewport,
   oneMobileOrTabletViewport,
+  oneViewport,
   SCROLL_WIDTH,
   TABLET_BREAKPOINT,
 } from '@cy/support/ui'
@@ -18,20 +18,20 @@ const expectedFooterXMargin = { mobile: 32, tablet: 48, desktop: 48 }
 const expectedFooterMinWidth = 273
 const expectedFooterMaxWidth = 1536
 
+const DAY_IN_MS = 24 * 60 * 60 * 1000
+
 describe('Header', () => {
   let viewport: readonly [number, number]
 
   describe('Desktop', () => {
-    let isDarkMode: boolean // when running locally, the dark mode might be the default
     let route: AppRoute
 
     beforeEach(() => {
       viewport = oneDesktopViewport()
       cy.viewport(...viewport)
+      dismissPhishingWarningBanner()
       route = oneAppRoute()
-      cy.visit(`/${route}`, {
-        onBeforeLoad: (win) => (isDarkMode = checkIsDarkMode(win)),
-      })
+      cy.visitWithoutTestConnector(route)
       waitIsLoaded(route)
     })
 
@@ -56,20 +56,16 @@ describe('Header', () => {
     it('should switch themes', () => {
       cy.get(`[data-testid='navigation-connect-wallet']`).then(($nav) => {
         const font1 = $nav.css('font-family')
-        if (!isDarkMode) {
-          cy.get(`[data-testid='theme-switcher-light']`).click() // switch to dark mode
-        }
-        cy.get(`[data-testid='theme-switcher-dark']`).click()
-        cy.get(`[data-testid='theme-switcher-chad']`).should('be.visible')
+        cy.get(`[data-testid='user-profile-button']`).click()
+        cy.get(`[data-testid='theme-switch-button-chad']`).click()
 
         // check font change
         cy.get(`[data-testid='navigation-connect-wallet']`).then(($el) => {
           const font2 = $el.css('font-family')
           expect(font1).not.to.equal(font2)
-
-          // reset theme
-          cy.get(`[data-testid='theme-switcher-chad']`).click()
-          cy.get(`[data-testid='theme-switcher-light']`).should('be.visible')
+          cy.get(`[data-testid='theme-switch-button-dark']`).click()
+          cy.get(`[data-testid='theme-switch-button-dark']`).should('have.class', 'Mui-selected')
+          cy.document().its('body').should('have.class', 'theme-dark')
         })
       })
     })
@@ -84,6 +80,8 @@ describe('Header', () => {
         return
       }
       switchEthToArbitrum()
+      const [app, page] = DEFAULT_PAGES[routeApp]
+      cy.url().should('match', new RegExp(`.*/${app}/arbitrum${page}/?$`.replaceAll('/', '\\/')))
       cy.get("[data-testid='app-link-dex']").invoke('attr', 'href').should('include', `/dex/arbitrum`)
     })
   })
@@ -94,8 +92,9 @@ describe('Header', () => {
     beforeEach(() => {
       viewport = oneMobileOrTabletViewport()
       cy.viewport(...viewport)
+      dismissPhishingWarningBanner()
       route = oneAppRoute()
-      cy.visit(`/${route}`)
+      cy.visitWithoutTestConnector(route)
       waitIsLoaded(route)
     })
 
@@ -165,6 +164,51 @@ describe('Header', () => {
       cy.get(`[data-testid='sidebar-item-pools']`).invoke('attr', 'href').should('include', `/dex/arbitrum/pools`)
     })
   })
+
+  describe('Phishing Warning Banner', () => {
+    function visitWithDismissedBanner(dismissedDate?: number) {
+      const [width, height] = oneViewport()
+      viewport = [width, height]
+      cy.viewport(...viewport)
+      const route = oneAppRoute()
+      cy.visitWithoutTestConnector(route, {
+        onBeforeLoad: (win) => {
+          if (dismissedDate) {
+            win.localStorage.setItem('phishing-warning-dismissed', JSON.stringify(dismissedDate))
+          }
+        },
+      })
+      waitIsLoaded(route)
+    }
+
+    it('should display the banner and allow dismissal', () => {
+      visitWithDismissedBanner()
+      cy.get("[data-testid='phishing-warning-banner']", LOAD_TIMEOUT).should('be.visible')
+      // Click the banner to dismiss it
+      cy.get("[data-testid='phishing-warning-banner']").find('button').first().click()
+      cy.get("[data-testid='phishing-warning-banner']").should('not.exist')
+    })
+
+    it('should reappear after one month', () => {
+      // Set dismissal date to 31 days ago (more than one month)
+      const oneMonthAgo = Date.now() - 31 * DAY_IN_MS
+      visitWithDismissedBanner(oneMonthAgo)
+      cy.get("[data-testid='phishing-warning-banner']", LOAD_TIMEOUT).should('be.visible')
+    })
+
+    it('should remain hidden within one month', () => {
+      // Set dismissal date to 15 days ago (less than one month)
+      const fifteenDaysAgo = Date.now() - 15 * DAY_IN_MS
+      visitWithDismissedBanner(fifteenDaysAgo)
+      cy.get("[data-testid='phishing-warning-banner']", LOAD_TIMEOUT).should('not.exist')
+    })
+  })
+
+  function dismissPhishingWarningBanner(date?: number) {
+    cy.window().then((win) => {
+      win.localStorage.setItem('phishing-warning-dismissed', JSON.stringify(date ?? Date.now()))
+    })
+  }
 
   function waitIsLoaded(route: AppRoute) {
     cy.get(`[data-testid='${getRouteTestId(route)}']`, API_LOAD_TIMEOUT).should('be.visible')

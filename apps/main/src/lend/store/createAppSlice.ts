@@ -1,5 +1,6 @@
 import { produce } from 'immer'
 import lodash from 'lodash'
+import type { Config } from 'wagmi'
 import { StoreApi } from 'zustand'
 import { prefetchMarkets } from '@/lend/entities/chain/chain-query'
 import type { State } from '@/lend/store/useStore'
@@ -12,7 +13,7 @@ export type StateKey = string
 // prettier-ignore
 export interface AppSlice {
   /** Hydrate resets states and refreshes store data from the API */
-  hydrate(api: Api | undefined, prevApi: Api | undefined, wallet: Wallet | undefined): Promise<void>
+  hydrate(config: Config, api: Api | undefined, prevApi: Api | undefined, wallet: Wallet | undefined): Promise<void>
 
   setAppStateByActiveKey<T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean): void
   setAppStateByKey<T>(sliceKey: SliceKey, key: StateKey, value: T, showLog?: boolean): void
@@ -21,7 +22,7 @@ export interface AppSlice {
 }
 
 const createAppSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): AppSlice => ({
-  hydrate: async (api, prevApi) => {
+  hydrate: async (config, api, prevApi) => {
     if (!api) return
 
     const isNetworkSwitched = !!prevApi?.chainId && prevApi.chainId !== api.chainId

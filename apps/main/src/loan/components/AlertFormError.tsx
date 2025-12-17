@@ -16,7 +16,6 @@ const ALERT_FORM_ERROR_KEYS = {
   'error-swap-exchange-and-output': 'error-swap-exchange-and-output',
   'error-swap-not-available': 'error-swap-not-available',
   'error-liquidation-mode': 'error-liquidation-mode',
-  'error-total-supply': 'error-total-supply',
 } as const
 
 export type AlertFormErrorKey = keyof typeof ALERT_FORM_ERROR_KEYS
@@ -41,7 +40,6 @@ const AlertFormError = ({ errorKey, ...props }: Props) => {
       [ALERT_FORM_ERROR_KEYS['error-step-approve']]: t`Unable to approve spending`,
       [ALERT_FORM_ERROR_KEYS['error-liquidation-mode']]:
         t`You cannot adjust your collateral while in liquidation mode. Your options are repayment or self-liquidation.`,
-      [ALERT_FORM_ERROR_KEYS['error-total-supply']]: t`Unable to get total supply`,
     }
 
     if (errorKey) {

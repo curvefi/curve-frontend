@@ -1,26 +1,36 @@
 import { BigNumber } from 'bignumber.js'
-import { type ReactNode, type Ref, useCallback, useEffect, useImperativeHandle, useState, useId } from 'react'
+import {
+  type ReactNode,
+  type Ref,
+  useCallback,
+  useEffect,
+  useEffectEvent,
+  useId,
+  useImperativeHandle,
+  useState,
+} from 'react'
 import Box from '@mui/material/Box'
 import Chip from '@mui/material/Chip'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { useUniqueDebounce } from '@ui-kit/hooks/useDebounce'
 import { t } from '@ui-kit/lib/i18n'
+import { chipSizeClickable } from '@ui-kit/themes/components/chip'
 import { Duration, TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { decimal, formatNumber, type Decimal } from '@ui-kit/utils'
+import { decimal, type Decimal, formatNumber } from '@ui-kit/utils'
 import { Balance, type Props as BalanceProps } from './Balance'
 import { NumericTextField } from './NumericTextField'
-import { TradingSlider } from './TradingSlider'
+import { SliderInput, SliderInputProps } from './SliderInput'
 
 const { Spacing, FontSize, FontWeight, Sizing } = SizesAndSpaces
 
 type HelperMessageProps = {
   message: string | ReactNode
-  isError: boolean
+  isError?: boolean
 }
 
-const HelperMessage = ({ message, isError }: HelperMessageProps) => (
+export const HelperMessage = ({ message, isError }: HelperMessageProps) => (
   <Box
     sx={{
       display: 'flex',
@@ -39,6 +49,7 @@ const HelperMessage = ({ message, isError }: HelperMessageProps) => (
           color: (t) =>
             isError ? t.design.Text.TextColors.FilledFeedback.Warning.Primary : t.design.Text.TextColors.Tertiary,
         }}
+        data-testid={`helper-message-${isError ? 'error' : 'info'}`}
       >
         {message}
       </Typography>
@@ -61,13 +72,12 @@ const CHIPS_PRESETS: Record<ChipsPreset, InputChip[]> = {
   max: [{ label: t`Max`, newBalance: (maxBalance) => maxBalance }],
   range: [25, 50, 75, 100].map((p) => ({
     label: `${p}%`,
-    newBalance: (maxBalance) => maxBalance && calculateNewBalance(maxBalance, `${p}` as Decimal, 4),
+    newBalance: (maxBalance) => maxBalance && calculateNewBalance(maxBalance, `${p}` as Decimal),
   })),
 }
 
 type BalanceTextFieldProps = {
   balance: Decimal | undefined
-  maxBalance?: Decimal
   isError: boolean
   disabled?: boolean
   /** Callback fired when the numeric value changes, can be a temporary non decimal value like "5." or "-" */
@@ -103,30 +113,16 @@ export interface LargeTokenInputRef {
   resetBalance: () => void
 }
 
-/**
- * Configuration for maximum balance display and input.
- * When provided, enables percentage-based input via the slider.
- *
- * @property {number} [balance] - The maximum numerical balance available for this input.
- * @property {number} [notionalValueUsd] - The notional value (in USD) of the maximum balance.
- * @property {string} [symbol] - The token symbol (e.g., 'ETH').
- * @property {boolean} [showBalance=true] - Whether to display the balance component.
- *                                        When true, shows the token balance and notional value.
- *                                        When false, hides the balance display.
- * @property {boolean} [showSlider=false] - Whether to display the percentage slider.
- *                                       When true, shows the slider for percentage-based input.
- *                                       When false, hides the slider but still allows direct input.
- * @property {('max' | 'range' | InputChip[])} [chips] - Custom or preset chips to show.
- */
-type MaxBalanceProps = Partial<
-  Pick<BalanceProps<Decimal>, 'balance' | 'notionalValueUsd' | 'symbol' | 'loading' | 'maxTestId' | 'max' | 'onMax'>
-> & {
-  showBalance?: boolean
+/** Configuration for max balance behavior, which for now are the slider and chips. */
+type MaxBalanceProps = {
+  balance?: Decimal
+  /** Whether to display the percentage slider. */
   showSlider?: boolean
+  /** Custom or preset chips to show. */
   chips?: ChipsPreset | InputChip[]
 }
 
-type Props = {
+export type LargeTokenInputProps = {
   ref?: Ref<LargeTokenInputRef>
 
   /**
@@ -153,10 +149,10 @@ type Props = {
    */
   tokenSelector?: ReactNode
 
-  /**
-   * Maximum balance configuration for the input.
-   * {@link MaxBalanceProps}
-   */
+  /** Optional wallet balance configuration. */
+  walletBalance?: BalanceProps<Decimal>
+
+  /** Optional max balance configuration */
   maxBalance?: MaxBalanceProps
 
   /** Optional usd value of the balance given as input. */
@@ -192,41 +188,34 @@ type Props = {
   disabled?: boolean
 
   /**
-   * Number of decimal places to round balance values to when calculating from percentage.
-   * @default 4
-   */
-  balanceDecimals?: number
-
-  /**
    * Callback function triggered when the balance changes.
    * @param balance The new balance value
    */
   onBalance: (balance: Decimal | undefined) => void
+
+  /** Optional props forwarded to the slider */
+  sliderProps?: SliderInputProps<Decimal>['sliderProps']
+
+  /** Optional children to be rendered below the input */
+  children?: ReactNode
 }
 
 /**
  * Calculates a new balance based on a percentage of the maximum balance.
  *
  * This function is used when users interact with percentage-based inputs (like sliders or percentage chips)
- * to determine the corresponding token amount. It handles precision concerns and ensures the result
- * never exceeds the maximum balance due to rounding.
+ * to determine the corresponding token amount.
  *
  * @param max - The maximum balance available (e.g., wallet balance)
  * @param newPercentage - The percentage to calculate (0-100, can have decimals like "25.5")
- * @param balanceDecimals - Optional number of decimal places to round to. If undefined, no rounding is applied
  *
  * @returns The calculated balance amount, maintaining the same type as the input `max`
  */
-function calculateNewBalance(max: Decimal, newPercentage: Decimal, balanceDecimals: number | undefined): Decimal {
-  // Avoid loss of precision when clicking 'Max'
+function calculateNewBalance(max: Decimal, newPercentage: Decimal): Decimal {
+  // Avoid loss of precision when clicking 'Max' or '100%'.
   if (Number(newPercentage) === 100) return max
 
-  let newBalance = new BigNumber(max).times(newPercentage).div(100)
-  if (balanceDecimals != null) {
-    // toFixed can make the newBalance>max due to rounding, so ensure it doesn't exceed maxBalance
-    newBalance = BigNumber.min(newBalance.toFixed(balanceDecimals), max)
-  }
-  return newBalance.toString() as Decimal
+  return new BigNumber(max).times(newPercentage).div(100).toString() as Decimal
 }
 
 /**
@@ -249,21 +238,25 @@ const calculateNewPercentage = (newBalance: Decimal, max: Decimal) =>
 /** Converts two decimals to BigNumber for comparison. Undefined is considered zero. */
 const bigNumEquals = (a?: Decimal, b?: Decimal) => new BigNumber(a ?? 0).isEqualTo(b ?? 0)
 
+const [MIN_PERCENTAGE, MAX_PERCENTAGE] = [0, 100]
+
 export const LargeTokenInput = ({
   ref,
   tokenSelector,
+  walletBalance,
   maxBalance,
   message,
   label,
   name,
   isError = false,
   disabled,
-  balanceDecimals = 4,
   onBalance,
   balance: externalBalance,
   inputBalanceUsd,
   testId,
-}: Props) => {
+  sliderProps,
+  children,
+}: LargeTokenInputProps) => {
   const [percentage, setPercentage] = useState<Decimal | undefined>(undefined)
   const [balance, setBalance, cancelSetBalance] = useUniqueDebounce({
     defaultValue: externalBalance,
@@ -273,9 +266,7 @@ export const LargeTokenInput = ({
     equals: bigNumEquals,
   })
 
-  const showSlider = !!maxBalance?.showSlider
-  const showWalletBalance = maxBalance && maxBalance.showBalance !== false
-
+  const showSlider = !!maxBalance?.showSlider && !!maxBalance?.balance
   const chips = typeof maxBalance?.chips === 'string' ? CHIPS_PRESETS[maxBalance.chips] : maxBalance?.chips
   const showChips = !!chips?.length
 
@@ -283,20 +274,28 @@ export const LargeTokenInput = ({
     (newPercentage: Decimal | undefined) => {
       setPercentage(newPercentage)
       if (maxBalance?.balance == null) return
-      setBalance(
-        newPercentage == null ? undefined : calculateNewBalance(maxBalance.balance, newPercentage, balanceDecimals),
-      )
+      setBalance(newPercentage == null ? undefined : calculateNewBalance(maxBalance.balance, newPercentage))
     },
-    [maxBalance?.balance, balanceDecimals, setBalance],
+    [maxBalance?.balance, setBalance],
   )
 
   const handleBalanceChange = useCallback(
     (newBalance: string | undefined) => {
-      // In case the input is somehow invalid, although we do our best to sanitize it in NumericTextField,
-      // we cancel the debounce such that the input won't reset while still typing.
+      // We sanitize values in NumericTextField, but temporary invalid states can still occur (e.g., "-" while typing)
       const decimalBalance = decimal(newBalance)
       if (decimalBalance == null) {
+        // Cancel the debounce to prevent the input from resetting while the user is still typing
+        // if the previous value was valid but the current one is temporarily invalid
         cancelSetBalance()
+
+        /**
+         * When the balance has been made empty, we don't set the internal balance state to 0, but we do emit the onBalance event
+         * with undefined. This allows the UI to transition from a previously valid state to indicating "no value",
+         * rather than being stuck displaying outdated valid data. For example, action cards can show "no change" instead of
+         * remaining in a previous valid state that no longer matches the actual input, like going from "5" to empty input.
+         */
+        if (!newBalance) onBalance(undefined)
+
         return
       }
 
@@ -305,28 +304,15 @@ export const LargeTokenInput = ({
         maxBalance?.balance && newBalance ? calculateNewPercentage(decimalBalance, maxBalance.balance) : undefined,
       )
     },
-    [maxBalance?.balance, setBalance, cancelSetBalance],
+    [maxBalance?.balance, setBalance, cancelSetBalance, onBalance],
   )
 
-  const handleChip = useCallback(
-    (chip: InputChip) => {
-      handleBalanceChange(chip.newBalance(maxBalance?.balance))
-    },
-    [handleBalanceChange, maxBalance?.balance],
-  )
+  const updatePercentageOnNewMaxBalance = useEffectEvent((newMaxBalance?: Decimal) => {
+    setPercentage(newMaxBalance && balance ? calculateNewPercentage(balance, newMaxBalance) : undefined)
+  })
 
-  /**
-   * When maxBalance changes, adjust the slider and balance values accordingly
-   * This ensures the slider percentage accurately reflects the balance/maxBalance ratio
-   *
-   * Changing the percentage changes the balance, which in turn triggers this useEffect,
-   * which in turn changes the percentage again. While I am using the current balance,
-   * I really only care about triggering it when maxBalance changes
-   */
-  useEffect(() => {
-    handleBalanceChange(balance)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [maxBalance?.balance])
+  /** When maxBalance changes, adjust the percentage accordingly. This ensures the slider percentage accurately reflects the balance/maxBalance ratio */
+  useEffect(() => updatePercentageOnNewMaxBalance(maxBalance?.balance), [maxBalance?.balance])
 
   const resetBalance = useCallback(() => {
     setPercentage(undefined)
@@ -336,10 +322,10 @@ export const LargeTokenInput = ({
   // Expose reset balance function for parent user to reset both balance and percentage, without lifting up state.
   useImperativeHandle(ref, () => ({ resetBalance }), [resetBalance])
 
-  const onMax = useCallback(() => {
-    handlePercentageChange('100')
-    maxBalance?.onMax?.call(null)
-  }, [handlePercentageChange, maxBalance?.onMax])
+  const onWalletBalance = useCallback(() => {
+    handleBalanceChange(walletBalance?.balance)
+    walletBalance?.onClick?.call(null)
+  }, [handleBalanceChange, walletBalance?.balance, walletBalance?.onClick])
 
   const componentId = useId()
 
@@ -357,7 +343,14 @@ export const LargeTokenInput = ({
       <Stack gap={Spacing.xs} sx={{ padding: Spacing.sm }}>
         {/** First row is an optional label describing the input and/or chips */}
         {(label || showChips) && (
-          <Stack direction="row" alignItems="center">
+          <Stack
+            direction="row"
+            alignItems="center"
+            sx={{
+              // Prevent small size difference in inputs when there's only a label and no chips
+              minHeight: chipSizeClickable['extraSmall'].height,
+            }}
+          >
             {label && (
               <Typography variant="bodyXsRegular" color="textSecondary">
                 {label}
@@ -387,7 +380,8 @@ export const LargeTokenInput = ({
                     size="extraSmall"
                     color="default"
                     clickable
-                    onClick={() => handleChip(chip)}
+                    disabled={disabled}
+                    onClick={() => handleBalanceChange(chip.newBalance(maxBalance?.balance))}
                   ></Chip>
                 ))}
               </Stack>
@@ -401,49 +395,36 @@ export const LargeTokenInput = ({
             disabled={disabled}
             balance={balance}
             name={name}
-            maxBalance={maxBalance?.balance}
             isError={isError}
             onChange={handleBalanceChange}
           />
-
           {tokenSelector}
         </Stack>
 
         {/** Third row containing input and max balances */}
-        {(showWalletBalance || inputBalanceUsd) && (
-          <Stack direction="row">
+        {(walletBalance || inputBalanceUsd) && (
+          <Stack direction="row" justifyContent="end">
             {inputBalanceUsd != null && (
-              <Typography variant="bodyXsRegular" color="textTertiary">
+              <Typography variant="bodyXsRegular" color="textTertiary" sx={{ flexGrow: 1 }}>
                 ≈ {formatNumber(inputBalanceUsd, { unit: 'dollar', abbreviate: false })}
               </Typography>
             )}
 
-            {showWalletBalance && (
-              <Balance
-                disabled={disabled}
-                symbol={maxBalance?.symbol ?? ''}
-                balance={maxBalance?.balance}
-                notionalValueUsd={maxBalance?.notionalValueUsd}
-                max="balance"
-                onMax={onMax}
-                sx={{ flexGrow: 1, justifyContent: 'end' }}
-              />
-            )}
+            {walletBalance && <Balance disabled={disabled} {...walletBalance} onClick={onWalletBalance} />}
           </Stack>
         )}
 
         {/** Fourth row showing optional slider for max balance. */}
         {showSlider && (
-          <Stack
-            sx={{
-              zIndex: 1, // required, otherwise the slider background and border don't show up
-            }}
-          >
-            <TradingSlider
+          <Stack sx={{ zIndex: 1 /* let slider background and border show up */ }}>
+            <SliderInput
               disabled={disabled}
-              percentage={percentage}
-              onChange={handlePercentageChange}
-              onCommit={handlePercentageChange}
+              value={percentage ?? `${MIN_PERCENTAGE}`}
+              onChange={(value) => handlePercentageChange(value as Decimal)}
+              sliderProps={{ 'data-rail-background': 'danger', ...sliderProps }}
+              min={MIN_PERCENTAGE}
+              max={MAX_PERCENTAGE}
+              inputProps={{ variant: 'standard', adornment: 'percentage' }}
             />
           </Stack>
         )}
@@ -451,6 +432,7 @@ export const LargeTokenInput = ({
 
       {/** Fourth row containing optional helper (or error) message */}
       {message && <HelperMessage message={message} isError={isError} />}
+      {children}
     </Stack>
   )
 }

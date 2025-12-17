@@ -2,6 +2,7 @@ import { produce } from 'immer'
 import type { UTCTimestamp } from 'lightweight-charts'
 import lodash from 'lodash'
 import { zeroAddress } from 'viem'
+import type { Config } from 'wagmi'
 import type { StoreApi } from 'zustand'
 import curvejsApi from '@/dex/lib/curvejs'
 import type { State } from '@/dex/store/useStore'
@@ -38,8 +39,8 @@ import type {
   PricesApiPool,
   PricesApiPoolResponse,
   TimeOptions,
-} from '@ui/Chart/types'
-import { convertToLocaleTimestamp } from '@ui/Chart/utils'
+} from '@ui-kit/features/candle-chart/types'
+import { convertToLocaleTimestamp } from '@ui-kit/features/candle-chart/utils'
 import { requireLib } from '@ui-kit/features/connect-wallet'
 import { log } from '@ui-kit/lib/logging'
 import { fetchTokenUsdRate, getTokenUsdRateQueryData } from '@ui-kit/lib/model/entities/token-usd-rate'
@@ -71,8 +72,6 @@ type SliceState = {
     tradeEventsData: LpTradesData[]
     liquidityEventsData: LpLiquidityEventsData[]
     timeOption: TimeOptions
-    chartExpanded: boolean
-    activityHidden: boolean
     chartStatus: FetchingStatus
     refetchingCapped: boolean
     lastFetchEndTime: number
@@ -88,11 +87,12 @@ export type PoolsSlice = {
     fetchPoolsTvl: (curve: CurveApi, poolDatas: PoolData[]) => Promise<void>
     fetchPoolsVolume: (chainId: ChainId, poolDatas: PoolData[]) => Promise<void>
     fetchPools(
+      config: Config,
       curve: CurveApi,
       poolIds: string[],
       failedFetching24hOldVprice: { [poolAddress: string]: boolean } | null,
     ): Promise<{ poolsMapper: PoolDataMapper; poolDatas: PoolData[] } | undefined>
-    fetchNewPool(curve: CurveApi, poolId: string): Promise<PoolData | undefined>
+    fetchNewPool(config: Config, curve: CurveApi, poolId: string): Promise<PoolData | undefined>
     fetchBasePools(curve: CurveApi): Promise<void>
     fetchPoolsRewardsApy(chainId: ChainId, poolDatas: PoolData[]): Promise<void>
     fetchMissingPoolsRewardsApy(chainId: ChainId, poolDatas: PoolData[]): Promise<void>
@@ -126,8 +126,6 @@ export type PoolsSlice = {
     ) => void
     fetchPricesApiActivity: (chainId: ChainId, poolAddress: string, chartCombinations: PricesApiCoin[][]) => void
     setChartTimeOption: (timeOption: TimeOptions) => void
-    setChartExpanded: (expanded: boolean) => void
-    setActivityHidden: (hidden: boolean) => void
     setEmptyPoolListDefault(chainId: ChainId): void
 
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
@@ -157,8 +155,6 @@ const DEFAULT_STATE: SliceState = {
     tradeEventsData: [],
     liquidityEventsData: [],
     timeOption: '1d',
-    chartExpanded: false,
-    activityHidden: false,
     chartStatus: 'LOADING',
     refetchingCapped: false,
     lastFetchEndTime: 0,
@@ -221,7 +217,7 @@ const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>
       //  update cache
       storeCache.setTvlVolumeMapper('volumeMapper', chainId, volumeMapper)
     },
-    fetchPools: async (curve, poolIds, failedFetching24hOldVprice) => {
+    fetchPools: async (config, curve, poolIds, failedFetching24hOldVprice) => {
       const {
         pools,
         storeCache,
@@ -286,7 +282,7 @@ const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>
         const partialTokens = await tokens.setTokensMapper(curve, partialPoolDatas)
 
         if (curve.signerAddress) {
-          void userBalances.fetchUserBalancesByTokens(curve, partialTokens)
+          void userBalances.fetchUserBalancesByTokens(config, curve, partialTokens)
         }
 
         return { poolsMapper, poolDatas: partialPoolDatas }
@@ -301,7 +297,7 @@ const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>
         )
       }
     },
-    fetchNewPool: async (curve, poolId) => {
+    fetchNewPool: async (config, curve, poolId) => {
       await Promise.allSettled([
         curve.factory.fetchNewPools(),
         curve.cryptoFactory.fetchNewPools(),
@@ -309,7 +305,7 @@ const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>
         curve.tricryptoFactory.fetchNewPools(),
         curve.stableNgFactory.fetchNewPools(),
       ])
-      const resp = await get()[sliceKey].fetchPools(curve, [poolId], null)
+      const resp = await get()[sliceKey].fetchPools(config, curve, [poolId], null)
       return resp?.poolsMapper?.[poolId]
     },
     fetchBasePools: async (curve: CurveApi) => {
@@ -834,20 +830,6 @@ const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>
       set(
         produce((state: State) => {
           state.pools.pricesApiState.timeOption = timeOption
-        }),
-      )
-    },
-    setChartExpanded: (expanded: boolean) => {
-      set(
-        produce((state: State) => {
-          state.pools.pricesApiState.chartExpanded = expanded
-        }),
-      )
-    },
-    setActivityHidden: (hidden: boolean) => {
-      set(
-        produce((state: State) => {
-          state.pools.pricesApiState.activityHidden = hidden
         }),
       )
     },

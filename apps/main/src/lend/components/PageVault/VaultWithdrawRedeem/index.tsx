@@ -22,20 +22,13 @@ import type { Step } from '@ui/Stepper/types'
 import TxInfoBar from '@ui/TxInfoBar'
 import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
-import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
+import { useLegacyTokenInput } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
-import { ReleaseChannel, decimal, type Decimal } from '@ui-kit/utils'
+import { decimal, type Decimal } from '@ui-kit/utils'
 
-const VaultWithdrawRedeem = ({
-  rChainId,
-  rOwmId,
-  rFormType,
-  isLoaded,
-  api,
-  market,
-  userActiveKey,
-}: PageContentProps) => {
+const VaultWithdrawRedeem = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey }: PageContentProps) => {
+  const rFormType = 'withdraw'
   const isSubscribed = useRef(false)
 
   const activeKey = useStore((state) => state.vaultWithdrawRedeem.activeKey)
@@ -50,7 +43,6 @@ const VaultWithdrawRedeem = ({
   const fetchUserMarketBalances = useStore((state) => state.user.fetchUserMarketBalances)
   const setFormValues = useStore((state) => state.vaultWithdrawRedeem.setFormValues)
   const resetState = useStore((state) => state.vaultWithdrawRedeem.resetState)
-  const [releaseChannel] = useReleaseChannel()
 
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
@@ -193,7 +185,7 @@ const VaultWithdrawRedeem = ({
 
   return (
     <>
-      {releaseChannel !== ReleaseChannel.Beta ? (
+      {useLegacyTokenInput() ? (
         <div>
           {/* input amount */}
           <Box grid gridRowGap={1}>
@@ -260,11 +252,14 @@ const VaultWithdrawRedeem = ({
                 ? t`Amount exceeds max ${_isWithdraw(rFormType) ? t`withdraw` : t`redeem`} amount ${formatNumber(max ?? '')}`
                 : undefined
           }
+          walletBalance={{
+            balance: decimal(userBalances?.vaultSharesConverted),
+            loading: !!signerAddress && userBalances == null,
+            symbol: t`Vault shares`,
+          }}
           maxBalance={{
             balance: decimal(max),
-            loading: !!signerAddress && userBalances == null,
-            notionalValueUsd: decimal(userBalances?.vaultSharesConverted),
-            symbol: t`Vault shares`,
+            chips: 'max',
           }}
           onBalance={onBalance}
           testId="inpCollateral"

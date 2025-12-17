@@ -4,7 +4,7 @@ import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 
 type Props = {
   isHighLight: boolean
-  tvlCached: { value: string } | undefined
+  tvlCached?: { value: string }
   tvl: Tvl | undefined
 }
 

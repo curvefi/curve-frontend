@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalanceWalletOutlined'
+import type { SvgIcon } from '@mui/material'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
@@ -7,22 +7,35 @@ import { t } from '@ui-kit/lib/i18n'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { type Amount, formatNumber, type SxProps } from '@ui-kit/utils'
+import { type Amount, formatNumber } from '@ui-kit/utils'
+import { WalletIcon } from '../icons/WalletIcon'
+import { WithWrapper } from './WithWrapper'
 
 const { Spacing, IconSize } = SizesAndSpaces
 
-type MaxButtonProps = {
+/**
+ * The old familiar issue where Typography default line height is too big when being used in a small component.
+ * The bottom margin of the text ends up being larger than the top half, messing with the vertical alignment.
+ * We ought to find a better solution for it one day, but for now this'll do the trick.
+ */
+const VERTICAL_CENTER_TEXT = {
+  '&': { lineHeight: 'normal' },
+}
+
+/** Button wrapper for clickable balance text */
+const BalanceButton = ({
+  children,
+  onClick,
+  loading,
+  disabled,
+  testId,
+}: {
   children: ReactNode
-  underline?: boolean
-  sx?: SxProps
   onClick?: () => void
   loading?: boolean
   disabled?: boolean
   testId?: string
-}
-
-/** Reusable Max button component with consistent styling */
-const MaxButton = ({ children, underline, sx, onClick, loading, disabled, testId }: MaxButtonProps) => (
+}) => (
   <Button
     variant="inline"
     color="ghost"
@@ -31,117 +44,100 @@ const MaxButton = ({ children, underline, sx, onClick, loading, disabled, testId
     loading={loading}
     disabled={disabled}
     data-testid={testId}
-    sx={{
-      /**
-       * Remove any properties that cause the total height component to change
-       * depending on the value of the 'max' property of BalanceText.
-       * Under normal circumstances, we want the ghost link to have a bit of
-       * white space and thus breathing room. However, in this case we want the
-       * link to be embedded into the typography and be as compact as possible.
-       */
-      ...(underline && {
-        '&:hover .balance': {
-          textDecoration: 'underline',
-        },
-      }),
-      ...sx,
-    }}
+    sx={{ '&:hover .balance': { textDecoration: 'underline' } }}
   >
     {children}
   </Button>
 )
 
-type BalanceTextProps<T> = {
-  symbol: string
-  balance?: T
-  loading?: boolean
-}
-
-const BalanceText = <T extends Amount>({ symbol, balance, loading = false }: BalanceTextProps<T>) => (
-  <WithSkeleton loading={loading}>
-    <Tooltip title={t`Wallet balance`} body={[balance?.toString() ?? '-', symbol].join(' ')} clickable>
-      <Stack direction="row" gap={Spacing.xs} alignItems="center">
-        <Typography
-          className="balance"
-          variant="highlightXs"
-          color={balance != null ? 'textPrimary' : 'textTertiary'}
-          data-testid="balance-value"
-        >
-          {balance == null ? '-' : formatNumber(balance, { abbreviate: true })}
-        </Typography>
-
-        <Typography variant="highlightXs" color="textPrimary">
-          {symbol}
-        </Typography>
-      </Stack>
-    </Tooltip>
-  </WithSkeleton>
-)
-
 /** Props for the Balance component */
 export type Props<T> = {
   /** The token symbol to display */
-  symbol: string
-  /** Controls how the max value is displayed:
-   * - 'balance': Shows the balance as a clickable link
-   * - 'button': Shows a separate 'Max' button
-   * - 'off': No max functionality is shown
-   */
-  max: 'balance' | 'button' | 'off'
+  symbol: string | undefined
   /** The token balance amount (optional, in case of loading) */
   balance?: T
-  /** The USD value of the balance (optional) */
+  /** The USD price of the token (optional, only used when notionalValueUsd is omitted) */
+  usdRate?: number
+  /** The USD value of the balance (optional, replaces the calculated value with usdRate) */
   notionalValueUsd?: T | number
-  /** Whether to hide the wallet icon */
-  hideIcon?: boolean
-  sx?: SxProps
-  /**
-   * Callback function when max button/balance is clicked.
-   * When using LargeTokenInput, onChange will be called with the max value before this.
-   **/
-  onMax?: () => void
+  /** Prefix before balance. SvgIcon (defaults to wallet icon), string for label, or null for nothing */
+  prefix?: string | typeof SvgIcon | null
+  /** Custom tooltip title, defaults to 'Wallet balance' which is most this component's use cases */
+  tooltip?: string
   /** Whether the balance is loading */
   loading?: boolean
-  /** Whether the max button is disabled */
+  /** Whether the clickable balance is disabled (something might be loading?) */
   disabled?: boolean
-  /** Optional test ID for the button */
-  maxTestId?: string
+  /** Optional test ID for the clickable balance button */
+  buttonTestId?: string
+  /** Callback function when balance is clicked (if enabled). */
+  onClick?: () => void
 }
 
 export const Balance = <T extends Amount>({
-  symbol,
-  max,
-  loading = false,
+  symbol = '?',
   balance,
-  notionalValueUsd,
-  hideIcon,
-  sx,
-  onMax,
-  disabled,
-  maxTestId,
+  loading = balance == null,
+  usdRate,
+  notionalValueUsd = balance && usdRate && usdRate * +balance,
+  prefix: Prefix = WalletIcon,
+  tooltip,
+  onClick,
+  disabled = false,
+  buttonTestId,
 }: Props<T>) => (
-  <Stack direction="row" gap={Spacing.xs} alignItems="center" sx={sx}>
-    {!hideIcon && <AccountBalanceWalletOutlinedIcon sx={{ width: IconSize.xs, height: IconSize.xs }} />}
+  <WithWrapper
+    Wrapper={BalanceButton}
+    shouldWrap={onClick && balance != null && !loading}
+    onClick={onClick}
+    disabled={disabled}
+    testId={buttonTestId}
+  >
+    <Tooltip title={tooltip ?? t`Wallet balance`} body={[balance?.toString() ?? '-', symbol].join(' ')} clickable>
+      <Stack direction="row" gap={Spacing.xs} alignItems="center">
+        {typeof Prefix === 'string' ? (
+          <Typography variant="bodyXsRegular" color="textTertiary">
+            {Prefix}
+          </Typography>
+        ) : (
+          Prefix !== null && (
+            <Prefix
+              sx={{
+                width: IconSize.sm,
+                height: IconSize.sm,
+                color: (t) => t.palette.text.primary,
+                ...(disabled && { color: (t) => t.palette.text.disabled }),
+              }}
+            />
+          )
+        )}
 
-    {max === 'balance' && balance != null ? (
-      <MaxButton underline onClick={onMax} loading={loading} testId={maxTestId}>
-        <BalanceText symbol={symbol} balance={balance} loading={loading} />
-      </MaxButton>
-    ) : (
-      <BalanceText symbol={symbol} balance={balance} loading={loading} />
-    )}
+        <WithSkeleton loading={loading}>
+          <Typography
+            className="balance"
+            variant="highlightXs"
+            color={disabled ? 'textDisabled' : balance == null ? 'textTertiary' : 'textPrimary'}
+            data-testid="balance-value"
+            sx={{ ...VERTICAL_CENTER_TEXT }}
+          >
+            {loading ? '???' : balance == null ? '-' : formatNumber(balance, { abbreviate: true })}
+          </Typography>
+        </WithSkeleton>
 
-    {notionalValueUsd != null && !loading && (
-      <Typography variant="bodyXsRegular" color="textTertiary">
-        {formatNumber(notionalValueUsd, { unit: 'dollar', abbreviate: true })}
-      </Typography>
-    )}
+        <Typography
+          variant="highlightXs"
+          color={disabled ? 'textDisabled' : 'textPrimary'}
+          sx={{ ...VERTICAL_CENTER_TEXT }}
+        >
+          {symbol}
+        </Typography>
 
-    {max === 'button' && balance != null && (
-      // Right-align without flexGrow for a precise click area
-      <MaxButton loading={loading} onClick={onMax} sx={{ marginLeft: 'auto' }} disabled={disabled} testId={maxTestId}>
-        {t`Max`}
-      </MaxButton>
-    )}
-  </Stack>
+        {notionalValueUsd != null && !loading && (
+          <Typography variant="bodyXsRegular" color="textTertiary" sx={{ ...VERTICAL_CENTER_TEXT }}>
+            {formatNumber(notionalValueUsd, { unit: 'dollar', abbreviate: true })}
+          </Typography>
+        )}
+      </Stack>
+    </Tooltip>
+  </WithWrapper>
 )

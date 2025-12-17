@@ -10,6 +10,7 @@ import type {
   SortKey,
 } from '@/dex/components/PagePoolList/types'
 import { parseSearchTermResults } from '@/dex/components/PagePoolList/utils'
+import { CROSS_CHAIN_ADDRESSES } from '@/dex/constants'
 import { SEARCH_TERM } from '@/dex/hooks/useSearchTermMapper'
 import type { State } from '@/dex/store/useStore'
 import {
@@ -27,6 +28,7 @@ import type { Chain } from '@curvefi/prices-api'
 import { combineCampaigns } from '@ui-kit/entities/campaigns'
 import { getCampaignsExternal } from '@ui-kit/entities/campaigns/campaigns-external'
 import { getCampaignsMerkl } from '@ui-kit/entities/campaigns/campaigns-merkl'
+import { MIN_POOLS_DISPLAYED } from '@ui-kit/features/user-profile/store'
 import { groupSearchTerms, searchByText, takeTopWithMin } from '@ui-kit/utils'
 import { fetchNetworks, getNetworks } from '../entities/networks'
 
@@ -111,13 +113,7 @@ const createPoolListSlice = (set: StoreApi<State>['setState'], get: StoreApi<Sta
         return poolDatas.filter(({ pool }) => pool.id.startsWith('factory-stable-ng'))
       } else if (key === 'cross-chain') {
         return poolDatas.filter(
-          ({ pool }) =>
-            pool.address === '0x939721ce04332ca04b100154e0c8fcbb4ebaf695' ||
-            pool.address === '0x228f20f430fd7a6f5b1abea69a5ab8eb2973853c' ||
-            pool.address === '0x6bb9a6b7066445da6bef268b91810ae750431587' ||
-            pool.address === '0x4df0b8323f7b6d45abf39ecbd3f18bd5fcbcb1b2' ||
-            pool.address === '0x6e0dc5a4ef555277db3435703f0e287040013763' ||
-            pool.name.startsWith('CrossCurve'),
+          ({ pool }) => CROSS_CHAIN_ADDRESSES.includes(pool.address) || pool.name.startsWith('CrossCurve'),
         )
       } else if (key === 'others') {
         return poolDatas.filter(({ pool }) => {
@@ -158,10 +154,12 @@ const createPoolListSlice = (set: StoreApi<State>['setState'], get: StoreApi<Sta
     filterSmallTvl: (poolDatas, tvlMapper, chainId) => {
       const networks = getNetworks()
       const { hideSmallPoolsTvl } = networks[chainId]
-
-      const result = takeTopWithMin(poolDatas, (pd) => +(tvlMapper?.[pd.pool.id]?.value || '0'), hideSmallPoolsTvl, 10)
-
-      return result
+      return takeTopWithMin(
+        poolDatas,
+        (pd) => +(tvlMapper?.[pd.pool.id]?.value || '0'),
+        hideSmallPoolsTvl,
+        MIN_POOLS_DISPLAYED,
+      )
     },
     sortFn: (sortKey, order, poolDatas, rewardsApyMapper, tvlMapper, volumeMapper, isCrvRewardsEnabled, chainId) => {
       const networks = getNetworks()

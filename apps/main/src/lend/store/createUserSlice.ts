@@ -6,11 +6,8 @@ import {
   Api,
   OneWayMarketTemplate,
   UserLoanDetails,
-  UserLoanState,
   UserMarketBalances,
   UsersLoansDetailsMapper,
-  UsersLoansHealthsMapper,
-  UsersLoansStatesMapper,
   UsersMarketsBalancesMapper,
 } from '@/lend/types/lend.types'
 import { getLoanExists } from '@/llamalend/queries/loan-exists'
@@ -22,10 +19,6 @@ const { cloneDeep } = lodash
 type SliceState = {
   loansDetailsMapper: UsersLoansDetailsMapper
   marketsBalancesMapper: UsersMarketsBalancesMapper
-
-  // for market list
-  loansHealthsMapper: UsersLoansHealthsMapper
-  loansStatesMapper: UsersLoansStatesMapper
 }
 
 const sliceKey = 'user'
@@ -40,7 +33,6 @@ export type UserSlice = {
     // individual
     fetchUserLoanDetails(api: Api, market: OneWayMarketTemplate, shouldRefetch?: boolean): Promise<UserLoanDetails>
     fetchUserMarketBalances(api: Api, market: OneWayMarketTemplate, shouldRefetch?: boolean): Promise<UserMarketBalances>
-    fetchUserLoanState(api: Api, market: OneWayMarketTemplate, shouldRefetch?: boolean): Promise<UserLoanState>
     fetchAll(api: Api, market: OneWayMarketTemplate, shouldRefetch?: boolean): Promise<{ userLoanDetailsResp: UserLoanDetails | null; userLoanBalancesResp: UserMarketBalances; }>
 
     // helpers
@@ -54,10 +46,6 @@ export type UserSlice = {
 const DEFAULT_STATE: SliceState = {
   loansDetailsMapper: {},
   marketsBalancesMapper: {},
-
-  // for market list
-  loansHealthsMapper: {},
-  loansStatesMapper: {},
 }
 
 const createUserSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): UserSlice => ({
@@ -95,8 +83,6 @@ const createUserSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>[
 
       const fnMapper = {
         loansDetailsMapper: apiLending.user.fetchLoansDetails,
-        loansHealthsMapper: apiLending.user.fetchLoansDetailsHealth,
-        loansStatesMapper: apiLending.user.fetchLoansDetailsState,
         marketsBalancesMapper: apiLending.user.fetchMarketBalances,
       }
 
@@ -144,12 +130,6 @@ const createUserSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>[
     fetchUserLoanDetails: async (api, market, shouldRefetch) => {
       const key = 'loansDetailsMapper'
       await get()[sliceKey].fetchDatas(key, api, [market], shouldRefetch)
-      const userActiveKey = helpers.getUserActiveKey(api, market)
-      return get()[sliceKey][key][userActiveKey]
-    },
-    fetchUserLoanState: async (api, market, shouldRefetch) => {
-      const key = 'loansStatesMapper'
-      await get()[sliceKey].fetchLoanDatas(key, api, [market], shouldRefetch)
       const userActiveKey = helpers.getUserActiveKey(api, market)
       return get()[sliceKey][key][userActiveKey]
     },

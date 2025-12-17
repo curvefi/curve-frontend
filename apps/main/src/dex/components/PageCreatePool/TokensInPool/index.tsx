@@ -14,6 +14,8 @@ import {
   TOKEN_F,
   TOKEN_G,
   TOKEN_H,
+  FXSWAP,
+  NG_ASSET_TYPE,
 } from '@/dex/components/PageCreatePool/constants'
 import SelectToken from '@/dex/components/PageCreatePool/TokensInPool/SelectToken'
 import SetOracle from '@/dex/components/PageCreatePool/TokensInPool/SetOracle'
@@ -21,7 +23,7 @@ import { CreateToken, TokenId, TokensInPoolState } from '@/dex/components/PageCr
 import { checkMetaPool, containsOracle, getBasepoolCoins } from '@/dex/components/PageCreatePool/utils'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import useTokensMapper from '@/dex/hooks/useTokensMapper'
-import { DEFAULT_CREATE_POOL_STATE } from '@/dex/store/createCreatePoolSlice'
+import { DEFAULT_CREATE_POOL_STATE, DEFAULT_ERC4626_STATUS } from '@/dex/store/createCreatePoolSlice'
 import useStore from '@/dex/store/useStore'
 import { CurveApi, ChainId, BasePool } from '@/dex/types/main.types'
 import Box from '@ui/Box'
@@ -46,11 +48,11 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
   const updateTokensInPool = useStore((state) => state.createPool.updateTokensInPool)
   const updateTokenAmount = useStore((state) => state.createPool.updateTokenAmount)
   const updateSwapType = useStore((state) => state.createPool.updateSwapType)
+  const updateNgAssetType = useStore((state) => state.createPool.updateNgAssetType)
   const basePools = useStore((state) => state.pools.basePools[chainId]) ?? DEFAULT_POOLS
   const userBalances = useStore((state) => state.userBalances.userBalancesMapper)
   const { tokensMapper } = useTokensMapper(chainId)
   const nativeToken = curve.getNetworkConstants().NATIVE_TOKEN
-
   const {
     data: { createDisabledTokens, stableswapFactory, tricryptoFactory, twocryptoFactory },
   } = useNetworkByChain({ chainId })
@@ -98,7 +100,15 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
 
   const handleInpChange = useCallback(
     (name: TokenId, value: string, tokensInPoolState: TokensInPoolState) => {
-      if (!value.startsWith('0x')) return
+      const normalizedValue = value.toLowerCase()
+
+      if (!normalizedValue.startsWith('0x')) return
+      const previousAddress = tokensInPoolState[name].address.toLowerCase()
+
+      if (normalizedValue === previousAddress) return
+
+      // reset the ngAssetType to Standard by default
+      updateNgAssetType(name, NG_ASSET_TYPE.STANDARD)
 
       const basePoolCoins: string[] = getBasepoolCoins(
         value,
@@ -143,7 +153,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
             ...updatedFormValues,
             [TOKEN_A]: {
               ...updatedFormValues[TOKEN_A],
-              ngAssetType: 0,
+              ngAssetType: NG_ASSET_TYPE.STANDARD,
               address: value,
               basePool: true,
             },
@@ -162,7 +172,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
             ...updatedFormValues,
             [TOKEN_A]: {
               ...updatedFormValues[TOKEN_A],
-              ngAssetType: 0,
+              ngAssetType: NG_ASSET_TYPE.STANDARD,
               symbol: findSymbol(value),
               address: value,
               basePool: true,
@@ -216,7 +226,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
             ...updatedFormValues,
             [TOKEN_B]: {
               ...updatedFormValues[TOKEN_B],
-              ngAssetType: 0,
+              ngAssetType: NG_ASSET_TYPE.STANDARD,
               address: value,
               symbol: findSymbol(value),
               basePool: true,
@@ -236,7 +246,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
             ...updatedFormValues,
             [TOKEN_B]: {
               ...updatedFormValues[TOKEN_B],
-              ngAssetType: 0,
+              ngAssetType: NG_ASSET_TYPE.STANDARD,
               address: value,
               symbol: findSymbol(value),
               basePool: true,
@@ -290,7 +300,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
             ...updatedFormValues,
             [TOKEN_A]: {
               ...updatedFormValues[TOKEN_A],
-              ngAssetType: 0,
+              ngAssetType: NG_ASSET_TYPE.STANDARD,
               address: value,
               symbol: findSymbol(value),
               basePool: true,
@@ -326,7 +336,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
             ...updatedFormValues,
             [TOKEN_A]: {
               ...updatedFormValues[TOKEN_A],
-              ngAssetType: 0,
+              ngAssetType: NG_ASSET_TYPE.STANDARD,
               address: value,
               symbol: findSymbol(value),
               basePool: true,
@@ -362,7 +372,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
             ...updatedFormValues,
             [TOKEN_A]: {
               ...updatedFormValues[TOKEN_A],
-              ngAssetType: 0,
+              ngAssetType: NG_ASSET_TYPE.STANDARD,
               address: value,
               symbol: findSymbol(value),
               basePool: true,
@@ -398,7 +408,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
             ...updatedFormValues,
             [TOKEN_A]: {
               ...updatedFormValues[TOKEN_A],
-              ngAssetType: 0,
+              ngAssetType: NG_ASSET_TYPE.STANDARD,
               address: value,
               symbol: findSymbol(value),
               basePool: true,
@@ -434,7 +444,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
             ...updatedFormValues,
             [TOKEN_A]: {
               ...updatedFormValues[TOKEN_A],
-              ngAssetType: 0,
+              ngAssetType: NG_ASSET_TYPE.STANDARD,
               address: value,
               symbol: findSymbol(value),
               basePool: true,
@@ -470,7 +480,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
             ...updatedFormValues,
             [TOKEN_A]: {
               ...updatedFormValues[TOKEN_A],
-              ngAssetType: 0,
+              ngAssetType: NG_ASSET_TYPE.STANDARD,
               address: value,
               symbol: findSymbol(value),
               basePool: true,
@@ -511,7 +521,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
         updatedFormValues[TOKEN_H],
       )
     },
-    [tokensInPool, updateTokensInPool, curve, findSymbol, swapType, basePools],
+    [tokensInPool, updateTokensInPool, curve, findSymbol, swapType, basePools, updateNgAssetType],
   )
 
   const addToken = useCallback(() => {
@@ -537,9 +547,10 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
         ...tokensInPoolState[token],
         address: tokenId === token ? '' : tokensInPoolState[token].address,
         symbol: tokenId === token ? '' : tokensInPoolState[token].symbol,
-        ngAssetType: tokenId === token ? 0 : tokensInPoolState[token].ngAssetType,
+        ngAssetType: tokenId === token ? NG_ASSET_TYPE.STANDARD : tokensInPoolState[token].ngAssetType,
         oracleAddress: tokenId === token ? '' : tokensInPoolState[token].oracleAddress,
         oracleFunction: tokenId === token ? '' : tokensInPoolState[token].oracleFunction,
+        erc4626: tokenId === token ? { ...DEFAULT_ERC4626_STATUS } : tokensInPoolState[token].erc4626,
       })
 
       updateTokensInPool(
@@ -773,7 +784,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
       ) : (
         <Row>
           <ExplainerWrapper flex flexColumn>
-            <p>{t`Rebasing tokens are not supported in ${CRYPTOSWAP} pools`}</p>
+            <p>{t`Rebasing tokens are not supported in ${swapType} pools`}</p>
           </ExplainerWrapper>
         </Row>
       )}
@@ -783,6 +794,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
           onClick={addToken}
           variant="filled"
           disabled={
+            swapType === FXSWAP ||
             (swapType === STABLESWAP && stableswapFactory && tokensInPool.tokenAmount === 8) ||
             (swapType === STABLESWAP && !stableswapFactory && tokensInPool.tokenAmount === 4) ||
             (swapType === STABLESWAP && tokensInPool.metaPoolToken) ||

@@ -1,4 +1,4 @@
-import { Address } from 'viem'
+import { Address, Hex } from 'viem'
 import type { IRouteStep } from '@curvefi/api/lib/interfaces'
 
 export type Decimal = `${number}`
@@ -12,6 +12,9 @@ const AddressSchema = { type: 'string', pattern: ADDRESS_HEX_PATTERN } as const
 const AddressArraySchema = { type: 'array', items: AddressSchema, minItems: 1, maxItems: 1 } as const
 const DecimalSchema = { type: 'string', pattern: DECIMAL_PATTERN }
 const AmountArraySchema = { type: 'array', items: DecimalSchema, minItems: 1, maxItems: 1 } as const
+const RouteProviders = ['curve', 'enso', 'odos'] as const
+
+export type RouteProvider = (typeof RouteProviders)[number]
 
 const optimalRouteQuerySchema = {
   type: 'object',
@@ -19,25 +22,38 @@ const optimalRouteQuerySchema = {
   additionalProperties: false,
   properties: {
     chainId: { type: 'integer', minimum: 1, default: 1 },
+    router: {
+      type: 'array',
+      items: { type: 'string', enum: RouteProviders },
+      minItems: 1,
+      maxItems: RouteProviders.length,
+      uniqueItems: true,
+    },
     tokenIn: AddressArraySchema,
     tokenOut: AddressArraySchema,
     amountIn: AmountArraySchema,
     amountOut: AmountArraySchema,
+    fromAddress: AddressSchema,
+    slippage: { type: 'number', minimum: 0 },
   },
 } as const
 
 export type OptimalRouteQuery = {
   chainId: number
+  router?: RouteProvider[]
   tokenIn: [Address]
   tokenOut: [Address]
   amountIn?: [Decimal]
   amountOut?: [Decimal]
+  fromAddress?: Address
+  slippage?: number
 }
 
 const routeItemSchema = {
   type: 'object',
   required: ['amountOut', 'priceImpact', 'createdAt', 'route'],
   properties: {
+    router: { type: 'string', enum: RouteProviders },
     amountIn: DecimalSchema,
     amountOut: DecimalSchema,
     priceImpact: { anyOf: [{ type: 'number' }, { type: 'null' }] },
@@ -47,35 +63,17 @@ const routeItemSchema = {
       type: 'array',
       items: {
         type: 'object',
-        required: ['tokenIn', 'tokenOut', 'protocol', 'action', 'args', 'chainId'],
+        required: ['tokenIn', 'tokenOut', 'protocol', 'action', 'chainId'],
         properties: {
           tokenIn: { type: 'array', items: AddressSchema },
           tokenOut: { type: 'array', items: AddressSchema },
-          protocol: { type: 'string', enum: ['curve'] },
-          action: { type: 'string', enum: ['swap'] },
+          protocol: { type: 'string' },
+          action: { type: 'string' },
           args: {
             type: 'object',
-            required: ['swapAddress', 'swapParams', 'tvl'],
             additionalProperties: true,
-            properties: {
-              poolId: { type: 'string' },
-              swapAddress: AddressSchema,
-              swapParams: {
-                description: 'Array of [inputCoinIndex, outputCoinIndex, swapType, amount, minAmountOut]',
-                type: 'array',
-                items: { type: 'integer' },
-                minItems: 5,
-                maxItems: 5,
-              },
-              poolAddress: AddressSchema,
-              basePool: AddressSchema,
-              baseToken: AddressSchema,
-              secondBasePool: AddressSchema,
-              secondBaseToken: AddressSchema,
-              tvl: { type: 'number' },
-            },
-            chainId: { type: 'integer' },
           },
+          chainId: { type: 'integer' },
         },
       },
     },
@@ -89,24 +87,28 @@ const OptimalRouteSchema = {
 
 export const OptimalRouteOpts = { schema: OptimalRouteSchema } as const
 
-type RouteArgs = Omit<IRouteStep, 'inputCoinAddress' | 'outputCoinAddress' | 'poolId'> & { poolId?: string }
+type CurveRouteArgs = Omit<IRouteStep, 'inputCoinAddress' | 'outputCoinAddress' | 'poolId'> & { poolId?: string }
 
 export type RouteStep = {
   name: string
   tokenIn: [Address]
   tokenOut: [Address]
-  protocol: 'curve'
-  action: 'swap'
-  args: RouteArgs
+  protocol: 'curve' | string
+  action: 'swap' | string
+  args?: CurveRouteArgs | Record<string, unknown>
   chainId: number
 }
 
+export type TransactionData = { data: Hex; to: Address; from: Address; value: Decimal }
+
 export type RouteResponse = {
-  amountIn: Decimal
-  amountOut: Decimal
+  router: RouteProvider
+  amountIn: [Decimal]
+  amountOut: [Decimal]
   priceImpact: number | null
   createdAt: number
   warnings: ('high-slippage' | 'low-exchange-rate')[]
-  isStableswapRoute: boolean
   route: RouteStep[]
+  isStableswapRoute?: boolean
+  tx?: TransactionData
 }

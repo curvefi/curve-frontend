@@ -5,12 +5,11 @@ import {
   DetailInfoLeverageResp,
   DetailInfoResp,
   ExpectedCollateral,
-  HealthMode,
   OneWayMarketTemplate,
 } from '@/lend/types/lend.types'
+import type { HealthMode } from '@/llamalend/llamalend.types'
 import type { Step } from '@ui/Stepper/types'
 
-export type FormType = 'create' | 'vault' | 'leverage'
 export type StepKey = 'APPROVAL' | 'CREATE' | ''
 export type InpError = 'too-much' | 'too-much-max' | ''
 

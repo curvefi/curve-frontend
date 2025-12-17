@@ -1,5 +1,6 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import { styled } from 'styled-components'
+import { DEFAULT_HEALTH_MODE } from '@/llamalend/constants'
 import AlertFormError from '@/loan/components/AlertFormError'
 import AlertFormWarning from '@/loan/components/AlertFormWarning'
 import DetailInfoBorrowRate from '@/loan/components/DetailInfoBorrowRate'
@@ -16,17 +17,13 @@ import type { FormDetailInfo, FormStatus, FormValues } from '@/loan/components/P
 import { DEFAULT_FORM_VALUES } from '@/loan/components/PageLoanManage/LoanDeleverage/utils'
 import { StyledDetailInfoWrapper, StyledInpChip } from '@/loan/components/PageLoanManage/styles'
 import type { PageLoanManageProps } from '@/loan/components/PageLoanManage/types'
-import {
-  DEFAULT_DETAIL_INFO,
-  DEFAULT_FORM_EST_GAS,
-  DEFAULT_HEALTH_MODE,
-  hasDeleverage,
-} from '@/loan/components/PageLoanManage/utils'
+import { DEFAULT_DETAIL_INFO, DEFAULT_FORM_EST_GAS } from '@/loan/components/PageLoanManage/utils'
 import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
 import networks from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
 import { LlamaApi, Llamma } from '@/loan/types/loan.types'
 import { curveProps } from '@/loan/utils/helpers'
+import { hasDeleverage } from '@/loan/utils/leverage'
 import { getStepStatus, getTokenName } from '@/loan/utils/utilsLoan'
 import { getCollateralListPathname } from '@/loan/utils/utilsRouter'
 import AlertBox from '@ui/AlertBox'
@@ -42,14 +39,14 @@ import { notify } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNavigate } from '@ui-kit/hooks/router'
-import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
+import { useLegacyTokenInput } from '@ui-kit/hooks/useFeatureFlags'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import { ReleaseChannel, decimal, type Decimal } from '@ui-kit/utils'
+import { decimal, type Decimal } from '@ui-kit/utils'
 
 // Loan Deleverage
 const LoanDeleverage = ({
@@ -70,6 +67,7 @@ const LoanDeleverage = ({
   const isPageVisible = useLayoutStore((state) => state.isPageVisible)
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
   const userLoanDetails = useUserLoanDetails(llammaId)
+  const userWalletBalances = useStore((state) => state.loans.userWalletBalancesMapper[llammaId])
   const userWalletBalancesLoading = useStore((state) => state.loans.userWalletBalancesLoading)
   const fetchStepRepay = useStore((state) => state.loanDeleverage.fetchStepRepay)
   const setFormValues = useStore((state) => state.loanDeleverage.setFormValues)
@@ -85,7 +83,7 @@ const LoanDeleverage = ({
   const { chainId, haveSigner } = curveProps(curve)
   const { userState } = userLoanDetails ?? {}
   const { collateral: collateralName, stablecoin: stablecoinName } = getTokenName(llamma)
-  const [releaseChannel] = useReleaseChannel()
+
   const network = networks[rChainId]
   const [, collateralAddress] = llamma?.coinAddresses ?? []
   const { data: collateralUsdRate } = useTokenUsdRate({ chainId: network.chainId, tokenAddress: collateralAddress })
@@ -291,7 +289,7 @@ const LoanDeleverage = ({
   return (
     <Box grid gridRowGap={3}>
       {/* collateral field */}
-      {releaseChannel !== ReleaseChannel.Beta ? (
+      {useLegacyTokenInput() ? (
         <Box grid gridRowGap={1}>
           <InputProvider
             grid
@@ -328,6 +326,7 @@ const LoanDeleverage = ({
         <LargeTokenInput
           name="collateral"
           testId="inpCollateral"
+          label={t`Amount to deleverage`}
           isError={!!formValues.collateralError}
           message={
             formValues.collateralError === 'too-much'
@@ -335,12 +334,18 @@ const LoanDeleverage = ({
               : t`Debt ${formatNumber(userState?.debt, { defaultValue: '-' })} ${stablecoinName}`
           }
           disabled={disable}
-          maxBalance={{
+          inputBalanceUsd={decimal(
+            formValues.collateral && collateralUsdRate && collateralUsdRate * +formValues.collateral,
+          )}
+          walletBalance={{
             loading: userWalletBalancesLoading,
-            balance: decimal(userState?.collateral),
+            balance: decimal(userWalletBalances?.collateral),
             symbol: collateralName,
-            ...(collateralUsdRate != null &&
-              userState?.collateral != null && { notionalValueUsd: collateralUsdRate * +userState.collateral }),
+            usdRate: collateralUsdRate,
+          }}
+          maxBalance={{
+            balance: decimal(userState?.collateral),
+            chips: 'max',
           }}
           balance={decimal(formValues.collateral)}
           tokenSelector={

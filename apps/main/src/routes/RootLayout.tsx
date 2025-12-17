@@ -12,7 +12,7 @@ import { OverlayProvider } from '@react-aria/overlays'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { HeadContent, Outlet } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
-import { ConnectionProvider } from '@ui-kit/features/connect-wallet'
+import { CurveProvider } from '@ui-kit/features/connect-wallet'
 import { HydratorMap } from '@ui-kit/features/connect-wallet/lib/types'
 import { useWagmiConfig } from '@ui-kit/features/connect-wallet/lib/wagmi/useWagmiConfig'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
@@ -57,19 +57,14 @@ const NetworkAwareLayout = () => {
     config &&
     networks && (
       <WagmiProvider config={config}>
-        {network && (
-          <ConnectionProvider
-            app={currentApp}
-            network={network}
-            onChainUnavailable={onChainUnavailable}
-            hydrate={hydrate}
-          >
+        <CurveProvider app={currentApp} network={network} onChainUnavailable={onChainUnavailable} hydrate={hydrate}>
+          {network && (
             <GlobalLayout currentApp={currentApp} network={network} networks={networks}>
               <HeadContent />
               <Outlet />
             </GlobalLayout>
-          </ConnectionProvider>
-        )}
+          )}
+        </CurveProvider>
       </WagmiProvider>
     )
   )

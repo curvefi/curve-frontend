@@ -14,15 +14,18 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@curvefi/api": "2.68.11",
-    "fastify": "^5.6.1"
+    "fastify": "^5.6.2"
+  },
+  "peerDependencies": {
+    "@curvefi/api": "*"
   },
   "devDependencies": {
-    "@types/node": "24.7.1",
+    "@curvefi/api": "*",
+    "@types/node": "*",
     "eslint": "*",
     "eslint-config-custom": "*",
-    "tsx": "4.20.6",
+    "tsx": "4.21.0",
     "typescript": "*",
-    "vitest": "^3.2.4"
+    "vitest": "*"
   }
 }

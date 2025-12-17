@@ -16,6 +16,7 @@ import type {
   TotalDebt,
   LiquidationRange,
   BandRange,
+  CollateralLoss,
 } from './BorrowPositionDetails'
 import { LiquidationThresholdTooltipContent } from './tooltips/LiquidationThresholdMetricTooltipContent'
 import { PnlMetricTooltipContent } from './tooltips/PnlMetricTooltipContent'
@@ -41,6 +42,7 @@ type BorrowInformationProps = {
   liquidationRange: LiquidationRange | undefined | null
   bandRange: BandRange | undefined | null
   totalDebt: TotalDebt | undefined | null
+  collateralLoss: CollateralLoss | undefined | null
 }
 
 export const BorrowInformation = ({
@@ -53,6 +55,7 @@ export const BorrowInformation = ({
   liquidationRange,
   bandRange,
   totalDebt,
+  collateralLoss,
 }: BorrowInformationProps) => (
   <Stack>
     <CardHeader title={t`Borrow Information`} size="small" />
@@ -124,7 +127,7 @@ export const BorrowInformation = ({
         valueOptions={{ unit: 'dollar' }}
         valueTooltip={{
           title: t`Collateral value`,
-          body: <CollateralMetricTooltipContent collateralValue={collateralValue} />,
+          body: <CollateralMetricTooltipContent collateralValue={collateralValue} collateralLoss={collateralLoss} />,
           placement: 'top',
           arrow: false,
           clickable: true,
@@ -144,8 +147,7 @@ export const BorrowInformation = ({
           clickable: true,
         }}
       />
-      {leverage &&
-        leverage?.value &&
+      {leverage?.value != null &&
         leverage?.value > 1 && ( // Leverage is only available on lend for now
           <Metric
             size="small"
@@ -162,11 +164,13 @@ export const BorrowInformation = ({
           label={t`PNL`}
           valueOptions={{ unit: 'dollar' }}
           value={
-            pnl?.currentPositionValue && pnl?.currentProfit && pnl?.depositedValue ? pnl?.currentProfit : undefined
+            pnl?.currentPositionValue && pnl?.currentProfit && pnl?.depositedValue
+              ? Number(pnl?.currentProfit)
+              : undefined
           }
           change={
             pnl?.currentPositionValue && pnl?.percentageChange && pnl?.depositedValue
-              ? pnl?.percentageChange
+              ? Number(pnl?.percentageChange)
               : undefined
           }
           loading={pnl?.currentProfit == null && pnl?.loading}

@@ -1,15 +1,11 @@
 import lodash from 'lodash'
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import type { Address } from '@curvefi/prices-api'
-import type { ColumnFiltersState } from '@tanstack/table-core'
 import type { VisibilityVariants } from '@ui-kit/shared/ui/DataTable/visibility.types'
 import { defaultReleaseChannel, ReleaseChannel } from '@ui-kit/utils'
 import { type MigrationOptions, useStoredState } from './useStoredState'
 
 const { kebabCase } = lodash
-
-// old keys that are not used anymore - clean them up
-window.localStorage.removeItem('phishing-warning-dismissed')
 
 function getFromLocalStorage<T>(storageKey: string): T | null {
   if (typeof window === 'undefined') {
@@ -43,6 +39,7 @@ const useLocalStorage = <T>(key: string, initialValue: T, migration?: MigrationO
 /* -- Export specific hooks so that we can keep an overview of all the local storage keys used in the app -- */
 export const useShowTestNets = () => useLocalStorage<boolean>('showTestnets', false)
 
+export const getReleaseChannel = () => getFromLocalStorage<ReleaseChannel>('release-channel') ?? defaultReleaseChannel
 export const useReleaseChannel = () =>
   useLocalStorage<ReleaseChannel>('release-channel', defaultReleaseChannel, {
     version: 1,
@@ -55,12 +52,6 @@ export const useFilterExpanded = (tableTitle: string) =>
 
 export const useBorrowPreset = <T extends 'Safe' | 'MaxLtv' | 'Custom'>(defaultValue: T) =>
   useLocalStorage<T>('borrow-preset', defaultValue)
-
-export const useTableFilters = (
-  tableTitle: string,
-  defaultFilters: ColumnFiltersState,
-  migration: MigrationOptions<ColumnFiltersState>,
-) => useLocalStorage<ColumnFiltersState>(`table-filters-${kebabCase(tableTitle)}`, defaultFilters, migration)
 
 export const useTableColumnVisibility = <Variant extends string, ColumnIds>(
   tableTitle: string,
@@ -77,4 +68,19 @@ export const getFavoriteMarkets = () => getFromLocalStorage<Address[]>('favorite
 export const useFavoriteMarkets = () => {
   const initialValue = useMemo(() => [], [])
   return useLocalStorage<Address[]>('favoriteMarkets', initialValue)
+}
+
+export const useDismissBanner = (bannerKey: string, expirationTime: number) => {
+  const [dismissedAt, setDismissedAt] = useLocalStorage<number | null>(bannerKey, null)
+
+  const shouldShowBanner = useMemo(
+    () => dismissedAt == null || Date.now() - dismissedAt >= expirationTime, // Show if dismissed longer than expiration
+    [dismissedAt, expirationTime],
+  )
+
+  const dismissBanner = useCallback(() => {
+    setDismissedAt(Date.now())
+  }, [setDismissedAt])
+
+  return { shouldShowBanner, dismissBanner }
 }

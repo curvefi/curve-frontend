@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 import { Line, LineChart, YAxis } from 'recharts'
-import { LlamaMarket } from '@/llamalend/entities/llama-markets'
+import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import Box from '@mui/material/Box'
 import Skeleton from '@mui/material/Skeleton'
 import { useTheme } from '@mui/material/styles'

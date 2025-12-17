@@ -7,6 +7,7 @@ import PoolTotalStaked from '@/dex/components/PagePool/PoolDetails/PoolStats/Poo
 import { StyledInformationSquare16 } from '@/dex/components/PagePool/PoolDetails/PoolStats/styles'
 import type { TransferProps } from '@/dex/components/PagePool/types'
 import { useNetworkByChain } from '@/dex/entities/networks'
+import { usePoolIdByAddressOrId } from '@/dex/hooks/usePoolIdByAddressOrId'
 import usePoolTotalStaked from '@/dex/hooks/usePoolTotalStaked'
 import useStore from '@/dex/store/useStore'
 import type { PoolParameters } from '@/dex/types/main.types'
@@ -17,12 +18,12 @@ import { Item, Items } from '@ui/Items'
 import Stats from '@ui/Stats'
 import { Chip } from '@ui/Typography'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
-import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
+import { useActionInfo } from '@ui-kit/hooks/useFeatureFlags'
 import dayjs from '@ui-kit/lib/dayjs'
 import { t } from '@ui-kit/lib/i18n'
 import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { ReleaseChannel, weiToEther } from '@ui-kit/utils'
+import { weiToEther } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -34,13 +35,13 @@ const PoolParameters = ({
 }: {
   parameters: PoolParameters
 } & Pick<TransferProps, 'poolData' | 'poolDataCacheOrApi' | 'routerParams'>) => {
-  const { rChainId, rPoolId } = routerParams
+  const { rChainId, rPoolIdOrAddress } = routerParams
   const {
     data: { pricesApi, isLite },
   } = useNetworkByChain({ chainId: rChainId })
-  const tvl = useStore((state) => state.pools.tvlMapper[rChainId]?.[rPoolId])
-  const volume = useStore((state) => state.pools.volumeMapper[rChainId]?.[rPoolId])
-  const [releaseChannel] = useReleaseChannel()
+  const poolId = usePoolIdByAddressOrId({ chainId: rChainId, poolIdOrAddress: rPoolIdOrAddress })
+  const tvl = useStore((state) => state.pools.tvlMapper[rChainId]?.[poolId ?? ''])
+  const volume = useStore((state) => state.pools.volumeMapper[rChainId]?.[poolId ?? ''])
 
   const haveWrappedCoins = useMemo(() => {
     if (poolData?.pool?.wrappedCoins) {
@@ -63,7 +64,7 @@ const PoolParameters = ({
   const { A, initial_A, initial_A_time, future_A, future_A_time, virtualPrice } = parameters ?? {}
 
   const { gamma, adminFee, fee } = parameters ?? {}
-  if (releaseChannel === ReleaseChannel.Beta) {
+  if (useActionInfo()) {
     const isEymaPools = rChainId === 250 && poolDataCacheOrApi.pool.id.startsWith('factory-eywa')
     return (
       <Stack gap={Spacing.lg}>

@@ -1,11 +1,12 @@
-import type { IChainId, INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
+import type { Address } from 'viem'
+import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { FieldsOf } from '@ui-kit/lib'
-import type { PoolQuery } from '@ui-kit/lib/model'
+import type { MarketQuery } from '@ui-kit/lib/model'
 import type { MakeOptional } from '@ui-kit/types/util'
 import { Decimal } from '@ui-kit/utils'
 
 /** Complete borrow creation form with all fields already filled in (after validation) */
-export type CompleteBorrowForm = {
+type CompleteBorrowForm = {
   userCollateral: Decimal
   userBorrowed: Decimal // currently hidden and always 0
   debt: Decimal
@@ -14,6 +15,7 @@ export type CompleteBorrowForm = {
   leverageEnabled: boolean
 }
 
+// todo: get rid of this, it's incorrect. We only did it because it was easier to run the validation suite
 type CalculatedValues = { maxDebt: Decimal | undefined; maxCollateral: Decimal | undefined }
 
 /** Borrow creation form as used in the UI, with some fields still optional or being filled in */
@@ -25,21 +27,14 @@ export type BorrowFormExternalFields = Omit<BorrowForm, keyof CalculatedValues>
 export type OnBorrowFormUpdate = (form: BorrowFormExternalFields) => Promise<void>
 
 /** Full query type for borrow creation queries, including pool identification and all form fields */
-export type BorrowFormQuery<T = IChainId> = PoolQuery<T> & CompleteBorrowForm
+export type BorrowFormQuery<T = IChainId> = MarketQuery<T> & CompleteBorrowForm
 /** Fields of the borrow form query before validation */
 export type BorrowFormQueryParams<T = IChainId> = FieldsOf<BorrowFormQuery<T>>
 
+/** Borrow form query including max debt field */
+export type BorrowDebtQuery<T = IChainId> = BorrowFormQuery<T> & Pick<BorrowForm, 'maxDebt'>
+/** Fields of the borrow debt query before validation */
+export type BorrowDebtParams<T = IChainId> = FieldsOf<BorrowDebtQuery<T>>
+
 /** A simple token representation */
-export type Token = { symbol: string; address: string; chain: INetworkName }
-
-/**
- * Preset options for borrowing
- * @see BORROW_PRESET_RANGES
- **/
-export enum BorrowPreset {
-  Safe = 'Safe',
-  MaxLtv = 'MaxLtv',
-  Custom = 'Custom',
-}
-
-export type BorrowFormErrors = (readonly [keyof BorrowForm | 'root', string])[]
+export type Token = { symbol: string; address: Address }

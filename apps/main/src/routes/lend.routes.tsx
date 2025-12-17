@@ -32,7 +32,7 @@ export const lendRoutes = lendLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network',
-    loader: ({ params: { network } }) => redirectTo(`/lend/${network}/markets/`),
+    loader: ({ params: { network } }) => redirectTo(`/lend/${network}/markets`),
     ...layoutProps,
   }),
   createRoute({
@@ -58,15 +58,17 @@ export const lendRoutes = lendLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/markets',
-    loader: ({ params: { network } }) => redirectTo(`/llamalend/${network}/markets/`),
+    loader: ({ params: { network } }) => redirectTo(`/llamalend/${network}/markets`),
+    ...layoutProps,
+  }),
+  createRoute({
+    path: '$network/markets/$market',
+    loader: ({ params: { network, market } }) => redirectTo(`/lend/${network}/markets/${market}/manage`),
     ...layoutProps,
   }),
   createRoute({
     path: '$network/markets/$market/create/$formType',
-    component: PageLoanCreate,
-    head: ({ params }) => ({
-      meta: [{ title: `Create - ${params.market} - Curve Llamalend` }],
-    }),
+    loader: ({ params: { network, market } }) => redirectTo(`/lend/${network}/markets/${market}/create`),
     ...layoutProps,
   }),
   createRoute({
@@ -79,10 +81,7 @@ export const lendRoutes = lendLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/markets/$market/manage/$formType',
-    component: PageLoanManage,
-    head: ({ params }) => ({
-      meta: [{ title: `Manage - ${params.market} - Curve Llamalend` }],
-    }),
+    loader: ({ params: { network, market } }) => redirectTo(`/lend/${network}/markets/${market}/manage`),
     ...layoutProps,
   }),
   createRoute({
@@ -95,10 +94,7 @@ export const lendRoutes = lendLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/markets/$market/vault/$formType',
-    component: PageVault,
-    head: ({ params }) => ({
-      meta: [{ title: `Supply - ${params.market} - Curve Llamalend` }],
-    }),
+    loader: ({ params: { network, market } }) => redirectTo(`/lend/${network}/markets/${market}/vault`),
     ...layoutProps,
   }),
   createRoute({

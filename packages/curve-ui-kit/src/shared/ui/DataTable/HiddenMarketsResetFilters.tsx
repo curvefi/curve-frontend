@@ -30,7 +30,9 @@ export const HiddenMarketsResetFilters = ({
       <Stack direction="row" gap={{ mobile: 2, tablet: 1 }} alignItems="center" sx={{ marginLeft: 'auto' }}>
         <Stack direction="row" gap={1} alignItems="center">
           <Typography variant="bodyXsRegular">{t`Hidden`}:</Typography>
-          <Typography variant="highlightS">{hiddenMarketCount ?? '-'}</Typography>
+          <Typography variant="highlightS" data-testid="hidden-market-count">
+            {hiddenMarketCount ?? '-'}
+          </Typography>
         </Stack>
         <ResetFiltersButton onClick={resetFilters} hidden={!hasFilters} />
       </Stack>

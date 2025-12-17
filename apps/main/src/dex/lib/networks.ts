@@ -67,6 +67,7 @@ export const defaultNetworks = Object.entries({
     twocryptoFactoryOld: true,
     twocryptoFactory: true,
     tricryptoFactory: true,
+    fxswapFactory: true,
     hasFactory: true,
     pricesApi: true,
   },
@@ -143,6 +144,7 @@ export const defaultNetworks = Object.entries({
     twocryptoFactoryOld: true,
     twocryptoFactory: true,
     tricryptoFactory: true,
+    fxswapFactory: true,
     hasFactory: true,
     pricesApi: true,
   },
@@ -262,6 +264,7 @@ export const defaultNetworks = Object.entries({
     twocryptoFactoryOld: true,
     twocryptoFactory: true,
     tricryptoFactory: true,
+    fxswapFactory: true,
     hasFactory: true,
     pricesApi: true,
   },
@@ -283,6 +286,7 @@ export const defaultNetworks = Object.entries({
     twocryptoFactoryOld: true,
     twocryptoFactory: true,
     tricryptoFactory: true,
+    fxswapFactory: true,
     hasFactory: true,
     pricesApi: true,
   },
@@ -351,7 +355,7 @@ export async function getNetworks() {
   const liteNetworks = Object.values(resp).reduce((prev, { chainId, ...config }) => {
     const baseConfig = NETWORK_BASE_CONFIG[chainId as keyof typeof NETWORK_BASE_CONFIG]
     const isUpgraded = !!baseConfig // networks upgraded from lite to full
-    const isOnlyPoolRewardsUpgraded = chainId === Chain.Taiko // networks that has only been upgraded to show pool rewards APY
+    const isOnlyPoolRewardsUpgraded = chainId === Chain.Taiko || chainId === 42793 // networks that has only been upgraded to show pool rewards APY, 42793 = Etherlink
     prev[chainId] = {
       ...DEFAULT_NETWORK_CONFIG,
       ...getBaseNetworksConfig<NetworkEnum, ChainId>(Number(chainId), { ...config, ...baseConfig }),
@@ -375,6 +379,7 @@ export async function getNetworks() {
       stableswapFactory: true,
       twocryptoFactory: true,
       tricryptoFactory: true,
+      fxswapFactory: false,
       pricesApi: isUpgraded,
       isLite: !isUpgraded,
       isCrvRewardsEnabled: isUpgraded,

@@ -6,7 +6,7 @@ import type { DesignSystem } from '@ui-kit/themes/design'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
-const { ButtonSize, Sizing, Spacing } = SizesAndSpaces
+const { ButtonSize, Spacing } = SizesAndSpaces
 
 export const defineMuiInputBase = (
   { Inputs: { Base } }: DesignSystem,
@@ -14,7 +14,7 @@ export const defineMuiInputBase = (
 ): Components['MuiInputBase'] => ({
   styleOverrides: {
     root: {
-      backgroundColor: Base.Default.Fill,
+      backgroundColor: Base.Default.Fill.Default,
       // color the whole input base when accepting autofill suggestions in Chromium browsers
       ':has(input:autofill)': {
         backgroundColor: 'light-dark(rgb(232, 240, 254), rgba(70, 90, 126, 0.4))',
@@ -31,18 +31,22 @@ export const defineMuiInputBase = (
       '&.Mui-error .MuiOutlinedInput-notchedOutline': {
         borderColor: Base.Default.Border.Error,
       },
-      '&.MuiInputBase-sizeSmall': {
+      '&.MuiInputBase-sizeSmall input': {
         height: ButtonSize.sm,
       },
-      '&.MuiInputBase-sizeTiny': {
-        ...handleBreakpoints({ height: Sizing.sm, ...typography.bodySBold }),
-        '& input': handleBreakpoints({ height: Sizing.sm, padding: 0, marginInline: Spacing.sm }),
+      '&.MuiInputBase-sizeTiny input': {
+        // not responsive with Sizing, but using ButtonSize as in Figma
+        height: ButtonSize.xs,
+        ...typography.bodySBold,
       },
     },
     input: {
       height: ButtonSize.md,
       boxSizing: 'border-box',
       textOverflow: 'ellipsis',
+      padding: 0,
+      ...typography.bodyMBold,
+      ...handleBreakpoints({ marginInline: Spacing.xs }),
     },
   },
 })

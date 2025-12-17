@@ -4,6 +4,7 @@ import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { useLayoutStore } from '@ui-kit/features/layout'
+import { persister, queryClient } from '@ui-kit/lib/api'
 import { t } from '@ui-kit/lib/i18n'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -16,16 +17,18 @@ export const ErrorPage = ({
   title,
   subtitle,
   resetError,
-  hideRetry,
+  continueUrl,
 }: {
   title: string
   subtitle: string
   resetError?: () => void
-  hideRetry?: boolean
+  continueUrl?: string
 }) => {
   const navHeight = useLayoutStore((state) => state.navHeight)
   const [resetClicked, setResetClicked] = useState(false)
-  const onClick = useCallback(() => {
+  const onRetry = useCallback(() => {
+    queryClient.clear()
+    persister?.removeClient?.()
     if (resetError && !resetClicked) {
       setResetClicked(true)
       resetError()
@@ -60,8 +63,15 @@ export const ErrorPage = ({
         {subtitle}
       </Typography>
       <Stack direction="row" spacing={2} margin={2}>
-        {!hideRetry && (
-          <Button onClick={onClick} variant="contained" data-testid="retry-error-button">{t`Try again`}</Button>
+        {continueUrl ? (
+          <Button
+            component={RouterLink}
+            href={continueUrl}
+            variant="contained"
+            data-testid="continue-button"
+          >{t`Continue`}</Button>
+        ) : (
+          <Button onClick={onRetry} variant="contained" data-testid="retry-error-button">{t`Try again`}</Button>
         )}
         <Button component={RouterLink} href="/" variant="contained">
           {t`Go to homepage`}

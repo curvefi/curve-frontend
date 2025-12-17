@@ -1,11 +1,9 @@
 import { useEffect, useState } from 'react'
 import type { Address } from 'viem'
 import CampaignRewardsBanner from '@/lend/components/CampaignRewardsBanner'
-import ChartOhlcWrapper from '@/lend/components/ChartOhlcWrapper'
 import { MarketInformationComp } from '@/lend/components/MarketInformationComp'
 import { MarketInformationTabs } from '@/lend/components/MarketInformationTabs'
-import LoanMange from '@/lend/components/PageLoanManage/index'
-import type { DetailInfoTypes } from '@/lend/components/PageLoanManage/types'
+import { ManageLoanTabs } from '@/lend/components/PageLoanManage/ManageLoanTabs'
 import { useOneWayMarket } from '@/lend/entities/chain'
 import { useBorrowPositionDetails } from '@/lend/hooks/useBorrowPositionDetails'
 import { useLendPageTitle } from '@/lend/hooks/useLendPageTitle'
@@ -15,47 +13,40 @@ import { helpers } from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
 import { type MarketUrlParams } from '@/lend/types/lend.types'
-import { getVaultPathname, parseMarketParams, scrollToTop } from '@/lend/utils/helpers'
-import { DetailPageStack } from '@/llamalend/components/DetailPageStack'
+import { getVaultPathname, parseMarketParams } from '@/lend/utils/helpers'
+import { getCollateralListPathname } from '@/lend/utils/utilsRouter'
 import { MarketDetails } from '@/llamalend/features/market-details'
 import { BorrowPositionDetails, NoPosition } from '@/llamalend/features/market-position-details'
 import { UserPositionHistory } from '@/llamalend/features/user-position-history'
 import { useUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { useLoanExists } from '@/llamalend/queries/loan-exists'
+import { DetailPageStack } from '@/llamalend/widgets/DetailPageStack'
 import { isChain } from '@curvefi/prices-api'
 import Stack from '@mui/material/Stack'
 import { AppPageFormsWrapper } from '@ui/AppPage'
 import Box from '@ui/Box'
-import {
-  ExpandButton,
-  ExpandIcon,
-  PriceAndTradesExpandedContainer,
-  PriceAndTradesExpandedWrapper,
-} from '@ui/Chart/styles'
-import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
+import { ConnectWalletPrompt, isLoading, useCurve, useWallet } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
+import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 
 const Page = () => {
   const params = useParams<MarketUrlParams>()
-  const { rMarket, rChainId, rFormType } = parseMarketParams(params)
-  const { llamaApi: api = null, connectState } = useConnection()
+  const { rMarket, rChainId } = parseMarketParams(params)
+  const { llamaApi: api = null, connectState } = useCurve()
   const titleMapper = useTitleMapper()
-  const market = useOneWayMarket(rChainId, rMarket).data
+  const { data: market, isSuccess } = useOneWayMarket(rChainId, rMarket)
   const rOwmId = market?.id ?? ''
   const userActiveKey = helpers.getUserActiveKey(api, market!)
-  const isMdUp = useLayoutStore((state) => state.isMdUp)
   const isPageVisible = useLayoutStore((state) => state.isPageVisible)
   const fetchAllMarketDetails = useStore((state) => state.markets.fetchAll)
   const fetchAllUserMarketDetails = useStore((state) => state.user.fetchAll)
   const setMarketsStateKey = useStore((state) => state.markets.setStateByKey)
-  const chartExpanded = useStore((state) => state.ohlcCharts.chartExpanded)
-  const setChartExpanded = useStore((state) => state.ohlcCharts.setChartExpanded)
   const { provider, connect } = useWallet()
 
   const { signerAddress } = api ?? {}
@@ -93,11 +84,8 @@ const Page = () => {
     network,
   })
 
-  // set tabs
-  const DETAIL_INFO_TYPES: { key: DetailInfoTypes; label: string }[] = [{ label: t`Market Details`, key: 'market' }]
-  if (signerAddress) {
-    DETAIL_INFO_TYPES.push({ label: t`Your Details`, key: 'user' })
-  }
+  const isInSoftLiquidation =
+    borrowPositionDetails.liquidationAlert.softLiquidation || borrowPositionDetails.liquidationAlert.hardLiquidation
 
   useEffect(() => {
     if (api && market && isPageVisible) {
@@ -118,25 +106,12 @@ const Page = () => {
     return () => clearTimeout(timer)
   }, [api, fetchAllMarketDetails, fetchAllUserMarketDetails, isLoaded, isPageVisible, loanExists, market])
 
-  useEffect(() => {
-    if (!isMdUp && chartExpanded) {
-      setChartExpanded(false)
-    }
-  }, [chartExpanded, isMdUp, setChartExpanded])
-
-  useEffect(() => {
-    if (chartExpanded) {
-      scrollToTop()
-    }
-  }, [chartExpanded])
-
   useLendPageTitle(market?.collateral_token?.symbol, 'Manage')
 
   const pageProps = {
     params,
     rChainId,
     rOwmId,
-    rFormType,
     isLoaded,
     api,
     market,
@@ -146,46 +121,17 @@ const Page = () => {
 
   const positionDetailsHrefs = {
     borrow: '',
-    supply: getVaultPathname(params, rOwmId, 'deposit'),
+    supply: getVaultPathname(params, rOwmId),
   }
 
-  if (!provider) {
-    return (
-      <Box display="flex" fillWidth flexJustifyContent="center" margin="var(--spacing-3) 0">
-        <ConnectWalletPrompt
-          description={t`Connect your wallet to view market`}
-          connectText={t`Connect`}
-          loadingText={t`Connecting`}
-          connectWallet={() => connect()}
-          isLoading={isLoading(connectState)}
-        />
-      </Box>
-    )
-  }
-
-  return (
+  return isSuccess && !market ? (
+    <ErrorPage title="404" subtitle={t`Market Not Found`} continueUrl={getCollateralListPathname(params)} />
+  ) : provider ? (
     <>
-      {chartExpanded && network.pricesData && (
-        <PriceAndTradesExpandedContainer>
-          <Box flex padding="0 0 var(--spacing-2)">
-            <ExpandButton
-              variant={'select'}
-              onClick={() => {
-                setChartExpanded()
-              }}
-            >
-              {chartExpanded ? 'Minimize' : 'Expand'}
-              <ExpandIcon name={chartExpanded ? 'Minimize' : 'Maximize'} size={16} aria-label={t`Expand chart`} />
-            </ExpandButton>
-          </Box>
-          <PriceAndTradesExpandedWrapper variant="secondary">
-            <ChartOhlcWrapper rChainId={rChainId} userActiveKey={userActiveKey} rOwmId={rOwmId} />
-          </PriceAndTradesExpandedWrapper>
-        </PriceAndTradesExpandedContainer>
-      )}
-
       <DetailPageStack>
-        <AppPageFormsWrapper>{rChainId && rOwmId && <LoanMange {...pageProps} />}</AppPageFormsWrapper>
+        <AppPageFormsWrapper>
+          {rChainId && rOwmId && <ManageLoanTabs isInSoftLiquidation={isInSoftLiquidation} {...pageProps} />}
+        </AppPageFormsWrapper>
         <Stack flexDirection="column" flexGrow={1} sx={{ gap: Spacing.md }}>
           <CampaignRewardsBanner
             chainId={rChainId}
@@ -219,7 +165,6 @@ const Page = () => {
             <MarketDetails {...marketDetails} />
             <MarketInformationComp
               pageProps={pageProps}
-              chartExpanded={chartExpanded}
               userActiveKey={userActiveKey}
               type="borrow"
               loanExists={loanExists}
@@ -228,6 +173,16 @@ const Page = () => {
         </Stack>
       </DetailPageStack>
     </>
+  ) : (
+    <Box display="flex" fillWidth flexJustifyContent="center" margin="var(--spacing-3) 0">
+      <ConnectWalletPrompt
+        description={t`Connect your wallet to view market`}
+        connectText={t`Connect`}
+        loadingText={t`Connecting`}
+        connectWallet={() => connect()}
+        isLoading={isLoading(connectState)}
+      />
+    </Box>
   )
 }
 

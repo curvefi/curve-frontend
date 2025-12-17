@@ -9,28 +9,25 @@ import { t } from '@ui-kit/lib/i18n'
 import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import type { Query } from '@ui-kit/types/util'
 import { Decimal } from '@ui-kit/utils'
-import { useBorrowExpectedCollateral } from '../queries/borrow-expected-collateral.query'
+import { useCreateLoanExpectedCollateral } from '../../../queries/create-loan/create-loan-expected-collateral.query'
 import type { BorrowForm, BorrowFormQueryParams } from '../types'
 
 const { Spacing } = SizesAndSpaces
 
 export const LeverageInput = ({
   form,
-  leverageEnabled,
+  checked,
   params,
-  maxLeverage,
-  isError,
-  isLoading,
+  maxLeverage: { data: maxLeverage, error, isLoading },
 }: {
-  leverageEnabled: boolean
+  checked: boolean
   form: UseFormReturn<BorrowForm>
   params: BorrowFormQueryParams
-  maxLeverage: Decimal | undefined
-  isError: boolean
-  isLoading: boolean
+  maxLeverage: Query<Decimal>
 }) => {
-  const { leverage } = useBorrowExpectedCollateral(params).data ?? {}
+  const { leverage } = useCreateLoanExpectedCollateral(params).data ?? {}
 
   const onLeverageChanged = useCallback(
     (x: ChangeEvent<HTMLInputElement>) => form.setValue('leverageEnabled', x.target.checked),
@@ -44,7 +41,7 @@ export const LeverageInput = ({
           <>
             <Typography variant="headingXsBold">{t`Enable leverage`}</Typography>
             <WithSkeleton loading={isLoading}>
-              <Typography {...(isError && { color: 'error.main' })} variant="bodyXsRegular">
+              <Typography {...(error && { color: 'error.main' })} variant="bodyXsRegular">
                 {t`up to ${formatNumber(maxLeverage, { maximumFractionDigits: 1 })}x 🔥`}
               </Typography>
             </WithSkeleton>
@@ -55,7 +52,7 @@ export const LeverageInput = ({
             data-testid="leverage-checkbox"
             size="small"
             disabled={!maxLeverage}
-            checked={leverageEnabled}
+            checked={checked}
             onChange={onLeverageChanged}
             sx={{ padding: 0, paddingInlineEnd: Spacing.xs, alignSelf: 'start' }}
           />
@@ -64,9 +61,9 @@ export const LeverageInput = ({
       <ActionInfo
         label={t`Leverage`}
         value={leverage == null ? '–' : `${formatNumber(leverage, { maximumFractionDigits: 2 })}x`}
-        valueColor={isError ? 'error' : undefined}
+        valueColor={error ? 'error' : undefined}
         loading={isLoading}
-        error={isError}
+        error={error}
         size="medium"
         data-testid="leverage-value"
       />

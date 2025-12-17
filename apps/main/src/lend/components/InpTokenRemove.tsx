@@ -7,12 +7,12 @@ import Box from '@ui/Box'
 import type { BoxProps } from '@ui/Box/types'
 import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
 import { formatNumber } from '@ui/utils'
-import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
+import { useLegacyTokenInput } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import { ReleaseChannel, decimal, type Decimal } from '@ui-kit/utils'
+import { decimal, type Decimal } from '@ui-kit/utils'
 
 const InpTokenRemove = ({
   network,
@@ -47,10 +47,9 @@ const InpTokenRemove = ({
   handleInpChange(inpValue: string): void
   handleMaxClick(): void
 }) => {
-  const [releaseChannel] = useReleaseChannel()
   const { data: usdRate } = useTokenUsdRate({ chainId: network.chainId, tokenAddress })
   const onBalance = useCallback((val?: Decimal) => handleInpChange(val ?? ''), [handleInpChange])
-  return releaseChannel !== ReleaseChannel.Beta ? (
+  return useLegacyTokenInput() ? (
     <Box grid gridRowGap={1} {...inpStyles}>
       {inpTopLabel && <FieldsTitle>{inpTopLabel}</FieldsTitle>}
       <InputProvider
@@ -92,6 +91,7 @@ const InpTokenRemove = ({
   ) : (
     <LargeTokenInput
       name="collateral"
+      label={t`Collateral to remove`}
       isError={!!inpError}
       message={
         inpError === 'too-much'
@@ -101,11 +101,15 @@ const InpTokenRemove = ({
             : undefined
       }
       disabled={inpDisabled}
-      maxBalance={{
-        loading: tokenBalance == null,
-        balance: decimal(maxRemovable),
+      inputBalanceUsd={decimal(inpValue && usdRate && usdRate * +inpValue)}
+      walletBalance={{
         symbol: tokenSymbol,
-        notionalValueUsd: usdRate != null && maxRemovable != null ? usdRate * +maxRemovable : undefined,
+        balance: decimal(tokenBalance),
+        usdRate,
+      }}
+      maxBalance={{
+        balance: decimal(maxRemovable),
+        chips: 'max',
       }}
       balance={decimal(inpValue)}
       tokenSelector={

@@ -1,17 +1,16 @@
 import { type ReactNode } from 'react'
 import daoNetworks from '@/dao/networks'
 import { useDexAppStats, useDexRoutes } from '@/dex/hooks/useDexAppStats'
-import { useLendAppStats } from '@/lend/hooks/useLendAppStats'
 import lendNetworks from '@/lend/networks'
 import { useLlamalendAppStats } from '@/llamalend/hooks/useLlamalendAppStats'
-import { useLoanAppStats } from '@/loan/hooks/useLoanAppStats'
 import crvusdNetworks from '@/loan/networks'
-import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import type { NetworkDef, NetworkMapping } from '@ui/utils'
+import { useLayoutStore } from '@ui-kit/features/layout'
 import { t } from '@ui-kit/lib/i18n'
 import { APP_LINK, AppMenuOption, type AppName } from '@ui-kit/shared/routes'
+import { ScrollUpButton } from '@ui-kit/shared/ui/ScrollUpButton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { ErrorBoundary } from '@ui-kit/widgets/ErrorBoundary'
 import { Footer } from '@ui-kit/widgets/Footer'
@@ -19,19 +18,21 @@ import { Header as Header } from '@ui-kit/widgets/Header'
 
 const { MinHeight } = SizesAndSpaces
 
-const useAppStats = (currentApp: string, network: NetworkDef) =>
-  ({
-    dao: [],
-    crvusd: useLoanAppStats(currentApp === 'crvusd' && network?.chainId === 1 ? 1 : undefined),
-    lend: useLendAppStats(currentApp === 'lend' ? (network?.chainId as LlamaChainId) : undefined),
-    llamalend: useLlamalendAppStats(currentApp === 'llamalend'),
-    dex: useDexAppStats(currentApp === 'dex' ? network : undefined),
-  })[currentApp]
+const useAppStats = (currentApp: AppName, network: NetworkDef) => {
+  const llamaLendApps: AppName[] = ['crvusd', 'lend', 'llamalend']
+  const isLlamalend = llamaLendApps.includes(currentApp)
+
+  const llamalendStats = useLlamalendAppStats({ chainId: network?.chainId }, isLlamalend)
+  const dexStats = useDexAppStats(currentApp === 'dex' ? network : undefined) // 'disabled' by passing undefined
+
+  return isLlamalend ? llamalendStats : currentApp === 'dex' ? dexStats : []
+}
 
 const useAppRoutes = (network: NetworkDef) => ({
   dao: APP_LINK.dao.routes,
   llamalend: APP_LINK.llamalend.routes,
   dex: useDexRoutes(network),
+  analytics: APP_LINK.analytics.routes,
 })
 
 const useAppMenu = (app: AppName): AppMenuOption =>
@@ -41,6 +42,7 @@ const useAppMenu = (app: AppName): AppMenuOption =>
     lend: 'llamalend' as const,
     llamalend: 'llamalend' as const,
     dex: 'dex' as const,
+    analytics: 'analytics' as const,
   })[app]
 
 const useAppSupportedNetworks = (allNetworks: NetworkMapping, app: AppName) =>
@@ -50,6 +52,7 @@ const useAppSupportedNetworks = (allNetworks: NetworkMapping, app: AppName) =>
     lend: lendNetworks,
     llamalend: lendNetworks,
     dex: allNetworks,
+    analytics: allNetworks,
   })[app]
 
 // when the mobile drawer is open, we want to ignore the scrollbar and expand the content to full page width
@@ -84,5 +87,6 @@ export const GlobalLayout = <TId extends string, TChainId extends number>({
       <ErrorBoundary title={t`Page error`}>{children}</ErrorBoundary>
     </Box>
     <Footer appName={currentApp} networkId={network.id} />
+    <ScrollUpButton visible={useLayoutStore((state) => state.showScrollButton)} />
   </Stack>
 )
