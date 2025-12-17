@@ -1,9 +1,9 @@
-import { getLlamaMarket, hasLeverage } from '@/llamalend/llama.utils'
+import { getLlamaMarket } from '@/llamalend/llama.utils'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { type RepayIsFullParams, type RepayIsFullQuery } from '../validation/manage-loan.types'
 import { repayFromCollateralIsFullValidationSuite } from '../validation/manage-loan.validation'
+import { getRepayImplementation } from './repay-query.helpers'
 
 export type RepayIsApprovedParams<ChainId = IChainId> = RepayIsFullParams<ChainId>
 
@@ -33,19 +33,18 @@ export const { useQuery: useRepayIsApproved, fetchQuery: fetchRepayIsApproved } 
     isFull,
     userAddress,
   }: RepayIsFullQuery): Promise<boolean> => {
-    const market = getLlamaMarket(marketId)
-    if (isFull) return await market.fullRepayIsApproved(userAddress)
-    if (hasLeverage(market)) {
-      if (market instanceof LendMarketTemplate) {
-        return await market.leverage.repayIsApproved(userCollateral, userBorrowed)
-      }
-      if (market.leverageV2.hasLeverage()) {
-        return await market.leverageV2.repayIsApproved(userCollateral, userBorrowed)
-      }
+    if (isFull) return await getLlamaMarket(marketId).fullRepayIsApproved(userAddress)
+    const [type, impl] = getRepayImplementation(marketId, { userCollateral, stateCollateral, userBorrowed })
+    switch (type) {
+      case 'V1':
+      case 'V2':
+        return await impl.repayIsApproved(userCollateral, userBorrowed)
+      case 'deleverage':
+        console.warn('repayIsApproved is not supported for deleverage repay')
+        return true // todo: figure out approval for deleverage repay
+      case 'unleveraged':
+        return await impl.repayIsApproved(userBorrowed)
     }
-    console.assert(!+stateCollateral, `Expected 0 stateCollateral for non-leverage market, got ${stateCollateral}`)
-    console.assert(!+userCollateral, `Expected 0 userCollateral for non-leverage market, got ${userCollateral}`)
-    return await market.repayIsApproved(userCollateral)
   },
   staleTime: '1m',
   validationSuite: repayFromCollateralIsFullValidationSuite,

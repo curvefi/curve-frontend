@@ -1,12 +1,12 @@
 import { useEstimateGas } from '@/llamalend/hooks/useEstimateGas'
-import { getLlamaMarket, hasLeverage } from '@/llamalend/llama.utils'
+import { getLlamaMarket } from '@/llamalend/llama.utils'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { type RepayIsApprovedParams, useRepayIsApproved } from '@/llamalend/queries/repay/repay-is-approved.query'
 import type { IChainId, TGas } from '@curvefi/llamalend-api/lib/interfaces'
-import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { type RepayIsFullQuery } from '../validation/manage-loan.types'
 import { repayFromCollateralIsFullValidationSuite } from '../validation/manage-loan.validation'
+import { getRepayImplementation } from './repay-query.helpers'
 
 const { useQuery: useRepayLoanEstimateGas } = queryFactory({
   queryKey: ({
@@ -41,17 +41,16 @@ const { useQuery: useRepayLoanEstimateGas } = queryFactory({
     if (isFull) {
       return await market.estimateGas.fullRepay(userAddress)
     }
-    if (hasLeverage(market)) {
-      if (market instanceof LendMarketTemplate) {
-        return await market.leverage.estimateGas.repay(stateCollateral, userCollateral, userBorrowed, +slippage)
-      }
-      if (market.leverageV2.hasLeverage()) {
-        return await market.leverageV2.estimateGas.repay(stateCollateral, userCollateral, userBorrowed, +slippage)
-      }
+    const [type, impl] = getRepayImplementation(marketId, { userCollateral, stateCollateral, userBorrowed })
+    switch (type) {
+      case 'V1':
+      case 'V2':
+        return await impl.estimateGas.repay(stateCollateral, userCollateral, userBorrowed, +slippage)
+      case 'deleverage':
+        throw new Error('estimateGas.repay is not supported for deleverage repay')
+      case 'unleveraged':
+        return await impl.estimateGas.repay(userBorrowed)
     }
-    console.assert(!+stateCollateral, `Expected 0 stateCollateral for non-leverage market, got ${stateCollateral}`)
-    console.assert(!+userCollateral, `Expected 0 userCollateral for non-leverage market, got ${userCollateral}`)
-    return await market.estimateGas.repay(userCollateral)
   },
   staleTime: '1m',
   validationSuite: repayFromCollateralIsFullValidationSuite,
@@ -83,21 +82,19 @@ const { useQuery: useRepayLoanApproveEstimateGas } = queryFactory({
     isFull,
     userAddress,
   }: RepayIsFullQuery): Promise<TGas> => {
-    const market = getLlamaMarket(marketId)
     if (isFull) {
-      return await market.estimateGas.fullRepayApprove(userAddress)
+      return await getLlamaMarket(marketId).estimateGas.fullRepayApprove(userAddress)
     }
-    if (hasLeverage(market)) {
-      if (market instanceof LendMarketTemplate) {
-        return await market.leverage.estimateGas.repayApprove(userCollateral, userBorrowed)
-      }
-      if (market.leverageV2.hasLeverage()) {
-        return await market.leverageV2.estimateGas.repayApprove(userCollateral, userBorrowed)
-      }
+    const [type, impl] = getRepayImplementation(marketId, { userCollateral, stateCollateral, userBorrowed })
+    switch (type) {
+      case 'V1':
+      case 'V2':
+        return await impl.estimateGas.repayApprove(userCollateral, userBorrowed)
+      case 'deleverage':
+        throw new Error('estimateGas.repayApprove is not supported for deleverage repay')
+      case 'unleveraged':
+        return await impl.estimateGas.repayApprove(userBorrowed)
     }
-    console.assert(!+stateCollateral, `Expected 0 stateCollateral for non-leverage market, got ${stateCollateral}`)
-    console.assert(!+userCollateral, `Expected 0 userCollateral for non-leverage market, got ${userCollateral}`)
-    return await market.estimateGas.repayApprove(userCollateral)
   },
   staleTime: '1m',
   validationSuite: repayFromCollateralIsFullValidationSuite,

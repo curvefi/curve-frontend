@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
-import { enforce, group, test } from 'vest'
+import { enforce, group, skipWhen, test } from 'vest'
+import { getRepayImplementation } from '@/llamalend/queries/repay/repay-query.helpers'
 import {
   validateBoolean,
   validateLeverageSupported,
@@ -54,6 +55,22 @@ const validateRepayHasValue = (
     enforce(total.gt(0)).isTruthy()
   })
 
+const validateRepayFieldsForMarket = (
+  marketId: string | null | undefined,
+  stateCollateral: Decimal | null | undefined,
+  userCollateral: Decimal | null | undefined,
+  userBorrowed: Decimal | null | undefined,
+) => {
+  skipWhen(!marketId, () => {
+    // Get the implementation to validate fields according to market capabilities. Default to 0 just like the queries
+    getRepayImplementation(marketId!, {
+      stateCollateral: stateCollateral ?? '0',
+      userCollateral: userCollateral ?? '0',
+      userBorrowed: userBorrowed ?? '0',
+    })
+  })
+}
+
 export const collateralValidationGroup = ({ chainId, userCollateral, marketId, userAddress }: CollateralParams) =>
   group('chainValidation', () => {
     marketIdValidationSuite({ chainId, marketId })
@@ -85,6 +102,7 @@ export const repayValidationGroup = <IChainId extends number>(
   validateRepayField('stateCollateral', stateCollateral)
   validateRepayBorrowedField(userBorrowed)
   validateRepayHasValue(stateCollateral, userCollateral, userBorrowed)
+  validateRepayFieldsForMarket(marketId, stateCollateral, userCollateral, userBorrowed)
   validateSlippage(slippage)
   validateLeverageSupported(marketId, leverageRequired)
 }

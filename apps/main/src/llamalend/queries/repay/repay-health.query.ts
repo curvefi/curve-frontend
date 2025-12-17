@@ -1,9 +1,8 @@
-import { getLlamaMarket } from '@/llamalend/llama.utils'
-import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import type { Decimal } from '@ui-kit/utils'
 import { type RepayHealthQuery, type RepayHealthParams } from '../validation/manage-loan.types'
 import { repayFromCollateralIsFullValidationSuite } from '../validation/manage-loan.validation'
+import { getRepayImplementation } from './repay-query.helpers'
 
 export const { getQueryOptions: getRepayHealthOptions, useQuery: useRepayHealth } = queryFactory({
   queryKey: ({
@@ -24,14 +23,16 @@ export const { getQueryOptions: getRepayHealthOptions, useQuery: useRepayHealth 
       { isFull },
     ] as const,
   queryFn: async ({ marketId, stateCollateral, userCollateral, userBorrowed, isFull }: RepayHealthQuery) => {
-    const market = getLlamaMarket(marketId)
-    return (
-      market instanceof LendMarketTemplate
-        ? await market.leverage.repayHealth(stateCollateral, userCollateral, userBorrowed, isFull)
-        : market.leverageV2.hasLeverage()
-          ? await market.leverageV2.repayHealth(stateCollateral, userCollateral, userBorrowed, isFull)
-          : await market.deleverage.repayHealth(userCollateral, isFull)
-    ) as Decimal
+    const [type, impl] = getRepayImplementation(marketId, { userCollateral, stateCollateral, userBorrowed })
+    switch (type) {
+      case 'V1':
+      case 'V2':
+        return (await impl.repayHealth(stateCollateral, userCollateral, userBorrowed, isFull)) as Decimal
+      case 'deleverage':
+        return (await impl.repayHealth(userCollateral, isFull)) as Decimal
+      case 'unleveraged':
+        return '0' as Decimal
+    }
   },
   validationSuite: repayFromCollateralIsFullValidationSuite,
 })

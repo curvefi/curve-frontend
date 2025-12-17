@@ -8,6 +8,7 @@ import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import type { RepayHealthQuery } from '../validation/manage-loan.types'
 import { repayFromCollateralIsFullValidationSuite } from '../validation/manage-loan.validation'
 import { repayIsFullQueryKey } from './repay-is-full.query'
+import { getRepayImplementation } from './repay-query.helpers'
 
 type RepayFromCollateralGasQuery<T = IChainId> = RepayHealthQuery<T>
 type RepayFromCollateralGasParams<T = IChainId> = FieldsOf<RepayFromCollateralGasQuery<T>>
@@ -38,19 +39,22 @@ const { useQuery: useRepayGasEstimate } = queryFactory({
     isFull,
     userAddress,
   }: RepayFromCollateralGasQuery) => {
-    const market = getLlamaMarket(marketId)
     if (isFull) {
+      const market = getLlamaMarket(marketId)
       return market instanceof LendMarketTemplate
         ? await market.estimateGas.fullRepay(userAddress)
         : await market.fullRepayEstimateGas(userAddress)
     }
-    if (market instanceof LendMarketTemplate) {
-      return await market.leverage.estimateGas.repay(stateCollateral, userCollateral, userBorrowed)
+    const [type, impl, args] = getRepayImplementation(marketId, { userCollateral, stateCollateral, userBorrowed })
+    switch (type) {
+      case 'V1':
+      case 'V2':
+        return await impl.estimateGas.repay(...args)
+      case 'deleverage':
+        return await impl.estimateGas.repay(...args)
+      case 'unleveraged':
+        return await impl.estimateGas.repay(...args)
     }
-    if (market.leverageV2.hasLeverage()) {
-      return await market.leverageV2.estimateGas.repay(stateCollateral, userCollateral, userBorrowed)
-    }
-    return await market.deleverage.estimateGas.repay(userCollateral)
   },
   validationSuite: repayFromCollateralIsFullValidationSuite,
   dependencies: ({

@@ -1,6 +1,6 @@
 import { RepayLoanInfoAccordion } from '@/llamalend/features/borrow/components/RepayLoanInfoAccordion'
 import { setValueOptions } from '@/llamalend/features/borrow/react-form.utils'
-import { hasLeverage } from '@/llamalend/llama.utils'
+import { hasDeleverage, hasLeverage } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import type { RepayOptions } from '@/llamalend/mutations/repay.mutation'
 import { LoanFormAlerts } from '@/llamalend/widgets/manage-loan/LoanFormAlerts'
@@ -24,7 +24,7 @@ export const RepayForm = <ChainId extends IChainId>({
   onRepaid,
   fromCollateral,
   fromWallet,
-  fromBorrowed,
+  fromBorrowed: showUserBorrowed,
 }: {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
@@ -59,6 +59,8 @@ export const RepayForm = <ChainId extends IChainId>({
     onRepaid,
   })
   const { withdrawEnabled: withdrawEnabled } = values
+  const showStateCollateral = market && hasLeverage(market) && fromCollateral
+  const showUserCollateral = market && (hasLeverage(market) || hasDeleverage(market)) && fromWallet
   return (
     <LoanFormWrapper
       {...form}
@@ -76,7 +78,7 @@ export const RepayForm = <ChainId extends IChainId>({
       }
     >
       <Stack divider={withdrawEnabled ? <InputDivider /> : undefined}>
-        {fromCollateral && (
+        {showStateCollateral && (
           <LoanFormTokenInput
             label={t`From collateral (position)`}
             token={collateralToken}
@@ -87,7 +89,7 @@ export const RepayForm = <ChainId extends IChainId>({
             network={network}
           />
         )}
-        {fromWallet && (
+        {showUserCollateral && (
           <LoanFormTokenInput
             label={t`From collateral (wallet)`}
             token={collateralToken}
@@ -98,7 +100,7 @@ export const RepayForm = <ChainId extends IChainId>({
             network={network}
           />
         )}
-        {fromBorrowed && (
+        {showUserBorrowed && (
           <LoanFormTokenInput
             label={t`From borrowed token`}
             token={borrowToken}
@@ -133,9 +135,9 @@ export const RepayForm = <ChainId extends IChainId>({
         formErrors={formErrors}
         network={network}
         handledErrors={notFalsy(
-          fromCollateral && 'stateCollateral',
-          fromWallet && 'userCollateral',
-          fromBorrowed && 'userBorrowed',
+          showStateCollateral && 'stateCollateral',
+          showUserCollateral && 'userCollateral',
+          showUserBorrowed && 'userBorrowed',
         )}
         successTitle={t`Loan repaid`}
       />

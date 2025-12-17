@@ -1,8 +1,7 @@
-import { getLlamaMarket, hasLeverage } from '@/llamalend/llama.utils'
-import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { type RepayParams, type RepayQuery } from '../validation/manage-loan.types'
 import { repayValidationSuite } from '../validation/manage-loan.validation'
+import { getRepayImplementation, getUserDebt } from './repay-query.helpers'
 
 export const { useQuery: useRepayIsAvailable } = queryFactory({
   queryKey: ({
@@ -21,23 +20,24 @@ export const { useQuery: useRepayIsAvailable } = queryFactory({
       { userBorrowed },
     ] as const,
   queryFn: async ({
+    chainId,
     marketId,
     stateCollateral,
     userCollateral,
     userBorrowed,
     userAddress,
   }: RepayQuery): Promise<boolean> => {
-    const market = getLlamaMarket(marketId)
-    if (!hasLeverage(market)) {
-      // for simple markets, repay is available if the user has any debt
-      const debt = (await market.userState(userAddress))?.debt
-      return debt != null && +debt > 0
+    const [type, impl] = getRepayImplementation(marketId, { userCollateral, stateCollateral, userBorrowed })
+    switch (type) {
+      case 'V1':
+      case 'V2':
+        return await impl.repayIsAvailable(stateCollateral, userCollateral, userBorrowed, userAddress)
+      case 'deleverage':
+        return await impl.isAvailable(userCollateral, userAddress)
+      case 'unleveraged': {
+        return !!getUserDebt({ chainId, marketId, userAddress })
+      }
     }
-    return market instanceof LendMarketTemplate
-      ? await market.leverage.repayIsAvailable(stateCollateral, userCollateral, userBorrowed, userAddress)
-      : market.leverageV2.hasLeverage()
-        ? await market.leverageV2.repayIsAvailable(stateCollateral, userCollateral, userBorrowed, userAddress)
-        : await market.deleverage.isAvailable(userCollateral, userAddress)
   },
   staleTime: '1m',
   validationSuite: repayValidationSuite({ leverageRequired: false }),
