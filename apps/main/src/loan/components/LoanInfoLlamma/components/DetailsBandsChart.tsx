@@ -70,7 +70,7 @@ const DetailsBandsChart = ({
 
   return (
     <ChartBandBalances
-      llamma={llamma}
+      market={llamma}
       brushIndex={brushIndex}
       data={parsedChartBandBalancesData}
       oraclePrice={oraclePrice}

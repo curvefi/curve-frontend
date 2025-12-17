@@ -92,7 +92,7 @@ export const Banner = ({
     }}
     data-testid={testId}
   >
-    <Stack width="100%" maxWidth={MaxWidth.banner}>
+    <Stack width="100%" maxWidth={MaxWidth.banner} paddingInline={Spacing.xs}>
       <Stack direction="row" alignItems="center" justifyContent="space-between" gap={Spacing.sm}>
         <Typography sx={{ ...BannerSx[severity].title }} variant="headingXsBold">
           {BannerIcons[icon]} {children}

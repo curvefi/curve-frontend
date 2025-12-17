@@ -1,23 +1,19 @@
-import type { INetworkName as CurveNetworkId } from '@curvefi/api/lib/interfaces'
-import type { INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import Link from '@mui/material/Link'
 import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
-import { type AppName, getInternalUrl, PAGE_LEGAL } from '@ui-kit/shared/routes'
+import { getInternalUrl, PAGE_LEGAL } from '@ui-kit/shared/routes'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { pushSearchParams } from '@ui-kit/utils/urls'
+import type { TabProps } from '../../types/tabs'
 import { List } from '../general/List'
 import { Header, Paragraph, Section, Title } from '../general/Section'
+import { LegalIntro } from './LegalIntro'
 
-export const LlamaLend = ({
-  currentApp,
-  network,
-}: {
-  currentApp: AppName
-  network: CurveNetworkId | LlamaNetworkId
-}) => (
+export const LlamaLend = ({ currentApp, network }: TabProps) => (
   <>
     <Section>
+      <LegalIntro currentApp={currentApp} network={network} />
+
       <Paragraph>{t`Curve Lending enables users to permissionlessly create and interact with isolated lending pairs composed of crvUSD, a decentralized stablecoin native to the Curve ecosystem, and various paired tokens. The notifications provided herein address risks associated with Curve Lending activities. The following list is not exhaustive.`}</Paragraph>
 
       <Paragraph>
@@ -151,7 +147,7 @@ export const LlamaLend = ({
       <Paragraph>
         <List type="disc">
           <Typography component="li" variant="bodyMRegular">
-            {t`Investing in crvUSD carries inherent risks that could lead to partial or complete loss of your investment due to its experimental nature. You are responsible for understanding the risks of buying, selling, and using crvUSD and its infrastructure`}
+            {t`Creating crvUSD carries inherent risks that could lead to partial or complete loss of your assets involved due to its experimental nature. You are responsible for understanding the risks of buying, selling, and using crvUSD and its infrastructure`}
           </Typography>
 
           <Typography component="li" variant="bodyMRegular">
