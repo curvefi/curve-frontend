@@ -70,7 +70,7 @@ export type LlammaMutationOptions<TVariables extends object, TData extends Resul
   /** Message to display on success */
   successMessage: (variables: TVariables, context: Context) => string
   /** Callback executed on successful mutation */
-  onSuccess: (
+  onSuccess?: (
     data: TData,
     receipt: FormattedTransactionReceipt,
     variables: TVariables,
@@ -130,10 +130,9 @@ export function useLlammaMutation<TVariables extends object, TData extends Resul
       updateUserEventsApi(wallet!, { id: networkId }, context.market, receipt.transactionHash)
       await invalidateAllUserMarketDetails({ chainId, marketId, userAddress })
       onReset?.()
-      await onSuccess(data, receipt, variables, context)
+      await onSuccess?.(data, receipt, variables, context)
     },
     onError: (error, variables, context) => {
-      console.error(`Error in mutation ${mutationKey}:`, error)
       logError(mutationKey, { error, variables, marketId: context?.market.id })
       notify(error.message, 'error')
     },

@@ -1,4 +1,4 @@
-import { ReactNode, Children } from 'react'
+import { ReactNode, Children, isValidElement } from 'react'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -44,10 +44,8 @@ export const Bold = ({ children }: { children: ReactNode }) => (
 
 export const Section = ({ children }: { children?: ReactNode }) => {
   const childArray = Children.toArray(children)
-  const title = childArray.find((child) => typeof child === 'object' && 'type' in child && child.type === Title)
-  const content = childArray.filter(
-    (child) => typeof child === 'object' && 'type' in child && (child.type === Paragraph || child.type === SubTitle),
-  )
+  const title = childArray.find((child) => isValidElement(child) && child.type === Title)
+  const content = childArray.filter((child) => isValidElement(child) && child.type !== Title)
 
   return (
     <Stack
