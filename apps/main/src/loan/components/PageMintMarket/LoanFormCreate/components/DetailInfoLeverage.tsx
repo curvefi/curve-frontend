@@ -9,7 +9,7 @@ import { DEFAULT_DETAIL_INFO_LEVERAGE } from '@/loan/components/PageMintMarket/u
 import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
 import useStore from '@/loan/store/useStore'
 import { getTokenName } from '@/loan/utils/utilsLoan'
-import DetailInfo from '@ui/DetailInfo'
+import { DetailInfo } from '@ui/DetailInfo'
 import { formatNumber } from '@ui/utils'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'

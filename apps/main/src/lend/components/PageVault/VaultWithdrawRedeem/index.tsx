@@ -14,7 +14,7 @@ import { Api, OneWayMarketTemplate, PageContentProps } from '@/lend/types/lend.t
 import AlertBox from '@ui/AlertBox'
 import Box from '@ui/Box'
 import Checkbox from '@ui/Checkbox'
-import DetailInfo from '@ui/DetailInfo'
+import { DetailInfo } from '@ui/DetailInfo'
 import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
 import { getActiveStep } from '@ui/Stepper/helpers'
 import Stepper from '@ui/Stepper/Stepper'

@@ -1,6 +1,6 @@
 import { useMarketRates } from '@/lend/hooks/useMarketRates'
 import { ChainId, FutureRates } from '@/lend/types/lend.types'
-import DetailInfo from '@ui/DetailInfo'
+import { DetailInfo } from '@ui/DetailInfo'
 import Icon from '@ui/Icon'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
