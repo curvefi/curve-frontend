@@ -271,7 +271,10 @@ describe(`LlamaLend Markets`, () => {
   })
 
   it(`should navigate to market details`, () => {
-    const [type, urlRegex] = oneOf(['mint', /\/crvusd\/\w+\/markets\/.+\/?$/], ['lend', /\/lend\/\w+\/markets\/.+\/?$/])
+    const [type, urlRegex] = oneOf(
+      ['mint', /\/crvusd\/\w+\/markets\/[\w-]+\/?$/],
+      ['lend', /\/lend\/\w+\/markets\/.+\/?$/],
+    )
     withFilterChips(() => {
       cy.get(`[data-testid="chip-${type}"]`).click()
       firstRow().contains(lodash.capitalize(type))
