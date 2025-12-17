@@ -4,7 +4,7 @@ import type { Config } from 'wagmi'
 import { StoreApi } from 'zustand'
 import type { State } from '@/dex/store/useStore'
 import { CurveApi, UserBalancesMapper } from '@/dex/types/main.types'
-import { fetchTokenBalance } from '@ui-kit/queries/token-balance.query'
+import { fetchTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { fetchNetworks } from '../entities/networks'
 
 type StateKey = keyof typeof DEFAULT_STATE
