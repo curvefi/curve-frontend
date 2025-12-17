@@ -1,4 +1,5 @@
 import { useCallback, useMemo } from 'react'
+import { useConfig } from 'wagmi'
 import curvejsApi from '@/dex/lib/curvejs'
 import useStore from '@/dex/store/useStore'
 import { type CurveApi, useCurve } from '@ui-kit/features/connect-wallet'
@@ -32,12 +33,13 @@ export const useAutoRefresh = (chainId: number | undefined) => {
     [chainId, fetchPoolsTvl, fetchPoolsVolume, poolDataMapper, setTokensMapper],
   )
 
+  const config = useConfig()
   usePageVisibleInterval(() => {
     if (curveApi) {
       void fetchPoolsVolumeTvl(curveApi)
 
       if (curveApi.signerAddress) {
-        void fetchAllStoredBalances(curveApi)
+        void fetchAllStoredBalances(config, curveApi)
       }
     }
   }, REFRESH_INTERVAL['5m'])
@@ -45,6 +47,6 @@ export const useAutoRefresh = (chainId: number | undefined) => {
   usePageVisibleInterval(async () => {
     if (!curveApi || !network) return console.warn('Curve API or network is not defined, cannot refetch pools')
     const poolIds = await curvejsApi.network.fetchAllPoolsList(curveApi, network)
-    void fetchPools(curveApi, poolIds, null)
+    void fetchPools(config, curveApi, poolIds, null)
   }, REFRESH_INTERVAL['11m'])
 }

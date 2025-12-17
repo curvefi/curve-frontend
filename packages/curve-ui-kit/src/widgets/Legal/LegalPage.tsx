@@ -118,10 +118,10 @@ export const LegalPage = ({ currentApp }: LegalPageProps) => {
               />
             </Stack>
             <TabPanel>
-              {disclaimerTab === 'dex' && <Dex />}
+              {disclaimerTab === 'dex' && <Dex currentApp={currentApp} network={network} />}
               {disclaimerTab === 'lend' && <LlamaLend currentApp={currentApp} network={network} />}
-              {disclaimerTab === 'crvusd' && <CrvUsd />}
-              {disclaimerTab === 'scrvusd' && <SCrvUsd />}
+              {disclaimerTab === 'crvusd' && <CrvUsd currentApp={currentApp} network={network} />}
+              {disclaimerTab === 'scrvusd' && <SCrvUsd currentApp={currentApp} network={network} />}
               <Footer />
             </TabPanel>
           </>
