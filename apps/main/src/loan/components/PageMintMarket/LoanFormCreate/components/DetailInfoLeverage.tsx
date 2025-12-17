@@ -4,7 +4,6 @@ import DetailInfoEstGas from '@/loan/components/DetailInfoEstimateGas'
 import DetailInfoHealth from '@/loan/components/DetailInfoHealth'
 import DetailInfoLiqRange from '@/loan/components/DetailInfoLiqRange'
 import DetailInfoN from '@/loan/components/DetailInfoN'
-import DetailInfoTradeRoutes from '@/loan/components/PageMintMarket/LoanFormCreate/components/DetailInfoTradeRoutes'
 import type { CreateFormDetailInfo, FormDetailInfoSharedProps } from '@/loan/components/PageMintMarket/types'
 import { DEFAULT_DETAIL_INFO_LEVERAGE } from '@/loan/components/PageMintMarket/utils'
 import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
@@ -16,6 +15,7 @@ import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
 import { LiquidationRangeSlider } from '@ui-kit/shared/ui/LiquidationRangeSlider'
 import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
+import { DetailInfoTradeRoutes } from './DetailInfoTradeRoutes'
 
 const DetailInfoLeverage = ({
   activeKey,
@@ -77,7 +77,6 @@ const DetailInfoLeverage = ({
       <LeverageDetail />
       <LeveragePriceImpactDetail />
       <DetailInfoTradeRoutes
-        isValidFormValues={isValidFormValues}
         loading={!isReady || detailInfo.loading}
         routes={detailInfo.routeName}
         input={formValues.debt}

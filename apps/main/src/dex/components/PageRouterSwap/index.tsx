@@ -9,7 +9,6 @@ import FormConnectWallet from '@/dex/components/FormConnectWallet'
 import WarningModal, { type HighSlippagePriceImpactProps } from '@/dex/components/PagePool/components/WarningModal'
 import DetailInfoExchangeRate from '@/dex/components/PageRouterSwap/components/DetailInfoExchangeRate'
 import DetailInfoPriceImpact from '@/dex/components/PageRouterSwap/components/DetailInfoPriceImpact'
-import DetailInfoTradeRoute from '@/dex/components/PageRouterSwap/components/DetailInfoTradeRoute'
 import RouterSwapAlerts from '@/dex/components/PageRouterSwap/components/RouterSwapAlerts'
 import type {
   FormStatus,
@@ -47,6 +46,7 @@ import { useTokenUsdRate, useTokenUsdRates } from '@ui-kit/lib/model/entities/to
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { decimal, type Decimal } from '@ui-kit/utils'
 import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
+import { DetailInfoTradeRoute } from './components/DetailInfoTradeRoute'
 
 const QuickSwap = ({
   pageLoaded,

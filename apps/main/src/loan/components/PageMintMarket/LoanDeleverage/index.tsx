@@ -13,7 +13,6 @@ import LoanDeleverageAlertFull from '@/loan/components/PageMintMarket/LoanDeleve
 import LoanDeleverageAlertPartial from '@/loan/components/PageMintMarket/LoanDeleverage/components/LoanDeleverageAlertPartial'
 import type { FormDetailInfo, FormStatus, FormValues } from '@/loan/components/PageMintMarket/LoanDeleverage/types'
 import { DEFAULT_FORM_VALUES } from '@/loan/components/PageMintMarket/LoanDeleverage/utils'
-import DetailInfoTradeRoutes from '@/loan/components/PageMintMarket/LoanFormCreate/components/DetailInfoTradeRoutes'
 import { StyledDetailInfoWrapper, StyledInpChip } from '@/loan/components/PageMintMarket/styles'
 import type { ManageLoanProps } from '@/loan/components/PageMintMarket/types'
 import { DEFAULT_DETAIL_INFO, DEFAULT_FORM_EST_GAS } from '@/loan/components/PageMintMarket/utils'
@@ -47,6 +46,7 @@ import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { decimal, type Decimal } from '@ui-kit/utils'
 import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
+import { DetailInfoTradeRoutes } from '../LoanFormCreate/components/DetailInfoTradeRoutes'
 
 // Loan Deleverage
 const LoanDeleverage = ({
@@ -370,7 +370,6 @@ const LoanDeleverage = ({
               <DetailInfoLeverageWrapper>
                 <LeveragePriceImpactDetail />
                 <DetailInfoTradeRoutes
-                  isValidFormValues={isValid}
                   loading={detailInfo.loading}
                   routes={detailInfo.routeName}
                   input={formValues.collateral}
