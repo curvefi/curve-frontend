@@ -1,2 +1,2 @@
 export { SlippageSettings } from './SlippageSettings'
-export { SlippageToleranceActionInfo } from './SlippageToleranceActionInfo'
+export { SlippageToleranceActionInfoPure, SlippageToleranceActionInfo } from './SlippageToleranceActionInfo'

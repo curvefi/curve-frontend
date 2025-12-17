@@ -8,7 +8,6 @@ import DetailInfoLTV from '@/lend/components/DetailInfoLTV'
 import DetailInfoN from '@/lend/components/DetailInfoN'
 import DetailInfoPriceImpact from '@/lend/components/DetailInfoPriceImpact'
 import DetailInfoRate from '@/lend/components/DetailInfoRate'
-import DetailInfoSlippageTolerance from '@/lend/components/DetailInfoSlippageTolerance'
 import type { DetailInfoCompProps, DetailInfoCompAdditionalProps } from '@/lend/components/PageLoanCreate/types'
 import { _parseValue } from '@/lend/components/PageLoanCreate/utils'
 import networks from '@/lend/networks'
@@ -18,6 +17,7 @@ import RouteDetails from '@/llamalend/widgets/RouteDetails'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
 import { LiquidationRangeSlider } from '@ui-kit/shared/ui/LiquidationRangeSlider'
+import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
 
 const DetailInfoLeverage = ({
   activeStep,
@@ -189,7 +189,7 @@ const DetailInfoLeverage = ({
           stepProgress={activeStep && steps.length > 1 ? { active: activeStep, total: steps.length } : null}
         />
       )}
-      <DetailInfoSlippageTolerance maxSlippage={maxSlippage} />
+      <SlippageToleranceActionInfo maxSlippage={maxSlippage} />
     </div>
   )
 }

@@ -7,7 +7,6 @@ import DetailInfoBorrowRate from '@/loan/components/DetailInfoBorrowRate'
 import DetailInfoEstimateGas from '@/loan/components/DetailInfoEstimateGas'
 import DetailInfoHealth from '@/loan/components/DetailInfoHealth'
 import DetailInfoLiqRange from '@/loan/components/DetailInfoLiqRange'
-import DetailInfoSlippageTolerance from '@/loan/components/DetailInfoSlippageTolerance'
 import LoanFormConnect from '@/loan/components/LoanFormConnect'
 import DialogHighPriceImpactWarning from '@/loan/components/PageMintMarket/LoanDeleverage/components/DialogHighPriceImpactWarning'
 import LoanDeleverageAlertFull from '@/loan/components/PageMintMarket/LoanDeleverage/components/LoanDeleverageAlertFull'
@@ -47,6 +46,7 @@ import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { decimal, type Decimal } from '@ui-kit/utils'
+import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
 
 // Loan Deleverage
 const LoanDeleverage = ({
@@ -415,7 +415,7 @@ const LoanDeleverage = ({
           {...formEstGas}
           stepProgress={activeStep && steps.length > 1 ? { active: activeStep, total: steps.length } : null}
         />
-        <DetailInfoSlippageTolerance maxSlippage={maxSlippage} />
+        <SlippageToleranceActionInfo maxSlippage={maxSlippage} />
       </StyledDetailInfoWrapper>
 
       {/* actions */}

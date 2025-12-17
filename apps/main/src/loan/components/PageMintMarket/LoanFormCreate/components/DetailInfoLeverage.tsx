@@ -4,7 +4,6 @@ import DetailInfoEstGas from '@/loan/components/DetailInfoEstimateGas'
 import DetailInfoHealth from '@/loan/components/DetailInfoHealth'
 import DetailInfoLiqRange from '@/loan/components/DetailInfoLiqRange'
 import DetailInfoN from '@/loan/components/DetailInfoN'
-import DetailInfoSlippageTolerance from '@/loan/components/DetailInfoSlippageTolerance'
 import DetailInfoTradeRoutes from '@/loan/components/PageMintMarket/LoanFormCreate/components/DetailInfoTradeRoutes'
 import type { CreateFormDetailInfo, FormDetailInfoSharedProps } from '@/loan/components/PageMintMarket/types'
 import { DEFAULT_DETAIL_INFO_LEVERAGE } from '@/loan/components/PageMintMarket/utils'
@@ -16,6 +15,7 @@ import { formatNumber } from '@ui/utils'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
 import { LiquidationRangeSlider } from '@ui-kit/shared/ui/LiquidationRangeSlider'
+import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
 
 const DetailInfoLeverage = ({
   activeKey,
@@ -139,7 +139,7 @@ const DetailInfoLeverage = ({
       )}
       <DetailInfoBorrowRate parameters={loanDetails?.parameters} />
       {isAdvanceMode && detailInfoLTV}
-      <DetailInfoSlippageTolerance maxSlippage={maxSlippage} />
+      <SlippageToleranceActionInfo maxSlippage={maxSlippage} />
       <DetailInfo
         isDivider
         label={t`Total position collateral:`}

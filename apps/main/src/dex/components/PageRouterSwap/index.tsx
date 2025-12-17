@@ -6,7 +6,6 @@ import ChipInpHelper from '@/dex/components/ChipInpHelper'
 import DetailInfoEstGas from '@/dex/components/DetailInfoEstGas'
 import FieldHelperUsdRate from '@/dex/components/FieldHelperUsdRate'
 import FormConnectWallet from '@/dex/components/FormConnectWallet'
-import DetailInfoSlippageTolerance from '@/dex/components/PagePool/components/DetailInfoSlippageTolerance'
 import WarningModal, { type HighSlippagePriceImpactProps } from '@/dex/components/PagePool/components/WarningModal'
 import DetailInfoExchangeRate from '@/dex/components/PageRouterSwap/components/DetailInfoExchangeRate'
 import DetailInfoPriceImpact from '@/dex/components/PageRouterSwap/components/DetailInfoPriceImpact'
@@ -47,6 +46,7 @@ import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { useTokenUsdRate, useTokenUsdRates } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { decimal, type Decimal } from '@ui-kit/utils'
+import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
 
 const QuickSwap = ({
   pageLoaded,
@@ -601,7 +601,7 @@ const QuickSwap = ({
             stepProgress={activeStep && steps.length > 1 ? { active: activeStep, total: steps.length } : null}
           />
         )}
-        <DetailInfoSlippageTolerance
+        <SlippageToleranceActionInfo
           maxSlippage={storeMaxSlippage}
           stateKey={isStableswapRoute ? 'stable' : 'crypto'}
         />

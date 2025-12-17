@@ -6,7 +6,6 @@ import AlertSummary from '@/lend/components/AlertLoanSummary'
 import AlertNoLoanFound from '@/lend/components/AlertNoLoanFound'
 import DetailInfoEstimateGas from '@/lend/components/DetailInfoEstimateGas'
 import DetailInfoRate from '@/lend/components/DetailInfoRate'
-import DetailInfoSlippageTolerance from '@/lend/components/DetailInfoSlippageTolerance'
 import LoanFormConnect from '@/lend/components/LoanFormConnect'
 import type { FormStatus, StepKey } from '@/lend/components/PageLoanManage/LoanSelfLiquidation/types'
 import type { FormEstGas } from '@/lend/components/PageLoanManage/types'
@@ -36,6 +35,7 @@ import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t, Trans } from '@ui-kit/lib/i18n'
+import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
 
 const LoanSelfLiquidation = ({
   rChainId,
@@ -223,7 +223,7 @@ const LoanSelfLiquidation = ({
           {...formEstGas}
           stepProgress={activeStep && steps.length > 1 ? { active: activeStep, total: steps.length } : null}
         />
-        <DetailInfoSlippageTolerance maxSlippage={maxSlippage} />
+        <SlippageToleranceActionInfo maxSlippage={maxSlippage} />
       </div>
 
       {/* actions */}
