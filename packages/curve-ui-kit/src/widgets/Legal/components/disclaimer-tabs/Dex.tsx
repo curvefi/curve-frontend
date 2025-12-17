@@ -4,13 +4,17 @@ import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import type { TabProps } from '../../types/tabs'
 import { Section, Header, Title, Paragraph } from '../general/Section'
+import { LegalIntro } from './LegalIntro'
 
 const { Spacing } = SizesAndSpaces
 
-export const Dex = () => (
+export const Dex = ({ currentApp, network }: TabProps) => (
   <>
     <Section>
+      <LegalIntro currentApp={currentApp} network={network} />
+
       <Paragraph>{t`Providing liquidity on Curve doesn't come without risks. Before making a deposit, it is best to research and understand the risks involved.`}</Paragraph>
     </Section>
 
