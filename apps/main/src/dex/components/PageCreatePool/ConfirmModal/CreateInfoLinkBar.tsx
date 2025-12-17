@@ -13,6 +13,7 @@ type StylesProps = {
   theme?: 'plain'
 }
 
+/** Returns null when link is undefined, allowing concise usage without conditional checks at call sites. */
 const InfoLinkBar = ({ description, link, theme, className }: Props) =>
   link && (
     <StyledExternalLink className={className} theme={theme} href={link}>

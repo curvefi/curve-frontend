@@ -10,6 +10,7 @@ type ExternalLinkIconButtonProps = {
   children?: ReactNode
 }
 
+/** Returns null when href is undefined, allowing concise usage without conditional checks at call sites. */
 const ExternalLinkIconButton = ({ href, tooltip, children }: ExternalLinkIconButtonProps) =>
   href && (
     <TooltipButton
