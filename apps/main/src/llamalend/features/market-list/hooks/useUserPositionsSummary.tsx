@@ -13,8 +13,12 @@ type QueryOptions =
 
 export type UserPositionSummaryMetric = { label: string; data: number; isLoading: boolean; isError: boolean }
 
-const sumCollateralValue = (acc: number, stat: { data?: { collateral?: number; oraclePrice?: number } }) =>
-  acc + (stat.data?.collateral ?? 0) * (stat.data?.oraclePrice ?? 0)
+const createMetric = (
+  label: string,
+  data: number,
+  isLoading: boolean,
+  isError: boolean,
+): UserPositionSummaryMetric => ({ label, data, isLoading, isError })
 
 export const useUserPositionsSummary = ({
   markets,
@@ -45,20 +49,22 @@ export const useUserPositionsSummary = ({
     }, [])
   }, [markets, userAddress])
 
-  const totalCollateralValue = useQueries({
+  const summary = useQueries({
     queries: userPositionStatsOptions,
     combine: (results) => ({
-      data: results.reduce(sumCollateralValue, 0),
+      data: results.reduce(
+        (acc, stat) => ({
+          totalCollateralValue: acc.totalCollateralValue + (stat.data?.collateral ?? 0) * (stat.data?.oraclePrice ?? 0),
+          totalBorrowedValue: acc.totalBorrowedValue + (stat.data?.debt ?? 0),
+        }),
+        { totalCollateralValue: 0, totalBorrowedValue: 0 },
+      ),
       ...combineQueriesMeta(results),
     }),
   })
 
   return [
-    {
-      label: 'Total Collateral Value',
-      data: totalCollateralValue.data,
-      isLoading: totalCollateralValue.isLoading,
-      isError: totalCollateralValue.isError,
-    },
+    createMetric('Total Collateral Value', summary.data.totalCollateralValue, summary.isLoading, summary.isError),
+    createMetric('Total Borrowed', summary.data.totalBorrowedValue, summary.isLoading, summary.isError),
   ]
 }

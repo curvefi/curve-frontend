@@ -13,10 +13,9 @@ const { Spacing, IconSize } = SizesAndSpaces
 
 type UserPositionStatisticsProps = {
   markets: LlamaMarket[] | undefined
-  loading: boolean
 }
 
-export const UserPositionSummary = ({ markets, loading }: UserPositionStatisticsProps) => {
+export const UserPositionSummary = ({ markets }: UserPositionStatisticsProps) => {
   const summary = useUserPositionsSummary({ markets })
   return (
     <Grid container spacing={Spacing.sm} sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
