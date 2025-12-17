@@ -20,7 +20,7 @@ export const TimestampCell = ({
   const clickable = !isMobile && txUrl // on mobile we use row expansion
 
   return (
-    <HistoryTableCell onClick={clickable ? () => window.open(txUrl, '_blank') : undefined} sx={{ gap: Spacing.xxs }}>
+    <HistoryTableCell {...(clickable && { onClick: () => window.open(txUrl, '_blank') })} sx={{ gap: Spacing.xxs }}>
       <Typography variant="tableCellMBold">{formatDate(timestamp, 'short')}</Typography>
       <Stack direction="row" alignItems="center" justifyContent="end" gap={Spacing.xs}>
         <Typography variant="bodySBold" sx={(t) => ({ color: t.design.Text.TextColors.Secondary })}>
