@@ -109,11 +109,17 @@ export const priceFormatter = (x: number, delta: number) =>
      * would all show as "0.99".
      *
      * Examples:
-     * - delta = 0.1   → -floor(-1) + 2 = 3 decimals
-     * - delta = 0.013 → -floor(-1.89) + 2 = 4 decimals
-     * - delta = 0.001 → -floor(-3) + 2 = 5 decimals
+     * - delta = 0     → 2 - floor(0)     = 3 decimals
+     * - delta = 0.1   → 2 - floor(-1)    = 3 decimals
+     * - delta = 0.013 → 2 - floor(-1.89) = 4 decimals
+     * - delta = 0.001 → 2 - floor(-3)    = 5 decimals
      */
-    decimals: delta >= 1 ? (x > ABBREVIATION_CUTOFF ? ABBREVIATION_DECIMALS : 0) : -Math.floor(Math.log10(delta)) + 2,
+    decimals:
+      delta >= 1
+        ? x > ABBREVIATION_CUTOFF
+          ? ABBREVIATION_DECIMALS
+          : 0
+        : 2 - Math.floor(Math.max(0, Math.log10(delta))),
     abbreviate: x > ABBREVIATION_CUTOFF,
     useGrouping: false,
   })
