@@ -1,5 +1,6 @@
 import { produce } from 'immer'
 import lodash from 'lodash'
+import type { Config } from 'wagmi'
 import type { StoreApi } from 'zustand'
 import curvejsApi from '@/dex/lib/curvejs'
 import type { State } from '@/dex/store/useStore'
@@ -22,7 +23,12 @@ export interface GlobalSlice extends GlobalState {
   setNetworkConfigFromApi(curve: CurveApi): void
 
   /** Hydrate resets states and refreshes store data from the API */
-  hydrate(curveApi: CurveApi | undefined, prevCurveApi: CurveApi | undefined, wallet: Wallet | undefined): Promise<void>
+  hydrate(
+    config: Config,
+    curveApi: CurveApi | undefined,
+    prevCurveApi: CurveApi | undefined,
+    wallet: Wallet | undefined,
+  ): Promise<void>
 
   updateGlobalStoreByKey: <T>(key: DefaultStateKeys, value: T) => void
 
@@ -63,7 +69,7 @@ const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreApi<State
       }),
     )
   },
-  hydrate: async (curveApi, prevCurveApi) => {
+  hydrate: async (config, curveApi, prevCurveApi) => {
     if (!curveApi) return
 
     const state = get()
@@ -117,7 +123,7 @@ const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreApi<State
     const failedFetching24hOldVprice: { [poolAddress: string]: boolean } =
       chainId === 2222 ? await curvejsApi.network.getFailedFetching24hOldVprice() : {}
 
-    await state.pools.fetchPools(curveApi, poolIds, failedFetching24hOldVprice)
+    await state.pools.fetchPools(config, curveApi, poolIds, failedFetching24hOldVprice)
 
     if (isUserSwitched || isNetworkSwitched) {
       void state.pools.fetchPricesApiPools(chainId)

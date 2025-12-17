@@ -49,7 +49,11 @@ export const LoanFormTokenInput = <
     data: balance,
     isLoading: isBalanceLoading,
     error: balanceError,
-  } = useTokenBalance({ chainId: network?.chainId, userAddress }, token)
+  } = useTokenBalance({
+    chainId: network?.chainId,
+    userAddress,
+    tokenAddress: token?.address,
+  })
 
   const errors = form.formState.errors as PartialRecord<FieldPath<TFieldValues>, Error>
   const relatedMaxFieldError = max?.data && max?.fieldName && errors[max.fieldName]
