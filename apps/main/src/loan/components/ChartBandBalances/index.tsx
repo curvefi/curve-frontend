@@ -17,7 +17,7 @@ import { styled } from 'styled-components'
 import ChartBandBalancesSettings from '@/loan/components/ChartBandBalances/ChartBandBalancesSettings'
 import type { BrushStartEndIndex } from '@/loan/components/ChartBandBalances/types'
 import ChartTooltip, { TipContent, TipIcon, TipTitle } from '@/loan/components/ChartTooltip'
-import type { PageLoanManageProps } from '@/loan/components/PageLoanManage/types'
+import type { ManageLoanProps } from '@/loan/components/PageMintMarket/types'
 import useStore from '@/loan/store/useStore'
 import { BandsBalancesData } from '@/loan/types/loan.types'
 import { getTokenName } from '@/loan/utils/utilsLoan'
@@ -26,7 +26,7 @@ import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import { BN, FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 
-interface Props extends Pick<PageLoanManageProps, 'llamma'> {
+interface Props extends Pick<ManageLoanProps, 'market'> {
   brushIndex: BrushStartEndIndex
   data: BandsBalancesData[]
   oraclePrice: string | undefined
@@ -38,7 +38,7 @@ interface Props extends Pick<PageLoanManageProps, 'llamma'> {
 
 const ChartBandBalances = ({
   brushIndex,
-  llamma,
+  market: llamma,
   data,
   oraclePrice,
   oraclePriceBand,

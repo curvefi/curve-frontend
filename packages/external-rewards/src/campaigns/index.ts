@@ -27,7 +27,6 @@ import SolvProtocol from './SolvProtocol.json'
 import StableLabs from './StableLabs.json'
 import Symbiotic from './Symbiotic.json'
 import Tharwa from './Tharwa.json'
-import Usual from './Usual.json'
 import Vnx from './Vnx.json'
 import YieldFi from './YieldFi.json'
 
@@ -37,7 +36,6 @@ export {
   Kelpdao,
   Mellow,
   Symbiotic,
-  Usual,
   Fraxtal,
   Resolv,
   Lombard,
