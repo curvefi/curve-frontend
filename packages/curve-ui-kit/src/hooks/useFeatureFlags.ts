@@ -42,5 +42,6 @@ export const useManageSoftLiquidation = useAlphaChannel
 /** Entire new app containing in-depth analyses for knowledgeable users */
 export const useAnalyticsApp = useAlphaChannel
 
-/** Phishing warning banner only shown in production */
-export const usePhishingBanner = () => defaultReleaseChannel === ReleaseChannel.Stable
+/** Phishing warning banner shown on localhost and production, but hidden on preview */
+export const usePhishingBanner = () =>
+  process.env.NODE_ENV === 'development' || defaultReleaseChannel === ReleaseChannel.Stable
