@@ -32,7 +32,7 @@ const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParametersProps) 
   const { data: network } = useNetworkByChain({ chainId: rChainId })
   const snapshotData = snapshotsMapper[poolAddress]
   const pricesData = pricesApiPoolDataMapper[poolAddress]
-  const basePoolList = isBasePoolsLoading ? [] : basePools[rChainId]
+  const basePoolList = isBasePoolsLoading ? [] : (basePools[rChainId] ?? [])
 
   const convert1e8 = (number: number) => formatNumber(number / 10 ** 8, { decimals: 5 })
   const convert1e10 = (number: number) => formatNumber(number / 10 ** 10, { decimals: 5 })
