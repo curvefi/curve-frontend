@@ -55,7 +55,7 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
   const tokens = market && getTokens(market)
   const collateralToken = tokens?.collateralToken
   const borrowToken = tokens?.borrowToken
-  const { data: maxCollateral } = useTokenBalance({ chainId, userAddress }, collateralToken)
+  const { data: maxCollateral } = useTokenBalance({ chainId, userAddress, tokenAddress: collateralToken?.address })
 
   const form = useForm<CollateralForm>({
     ...formDefaultOptions,
