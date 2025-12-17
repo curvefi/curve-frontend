@@ -14,7 +14,7 @@ export const defineMuiInputBase = (
 ): Components['MuiInputBase'] => ({
   styleOverrides: {
     root: {
-      backgroundColor: Base.Default.Fill,
+      backgroundColor: Base.Default.Fill.Default,
       // color the whole input base when accepting autofill suggestions in Chromium browsers
       ':has(input:autofill)': {
         backgroundColor: 'light-dark(rgb(232, 240, 254), rgba(70, 90, 126, 0.4))',

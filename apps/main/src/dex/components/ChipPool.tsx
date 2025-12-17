@@ -9,7 +9,7 @@ import { getPath } from '@/dex/utils/utilsRouter'
 import Icon from '@ui/Icon'
 import TextEllipsis from '@ui/TextEllipsis'
 import { breakpoints } from '@ui/utils/responsive'
-import { useConnection } from '@ui-kit/features/connect-wallet'
+import { useCurve } from '@ui-kit/features/connect-wallet'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { copyToClipboard, shortenAddress } from '@ui-kit/utils'
 
@@ -47,7 +47,7 @@ interface ChipPoolProps {
 }
 
 const ChipPool = ({ poolId, poolName, poolAddress }: ChipPoolProps) => {
-  const network = useConnection().network?.id as NetworkEnum
+  const network = useCurve().network?.id as NetworkEnum
   const parsedPoolAddress = useMemo(() => {
     if (poolAddress) {
       return `${shortenAddress(poolAddress)}`

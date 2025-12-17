@@ -15,8 +15,10 @@ export type RepayFromCollateralQuery<T = IChainId> = CollateralQuery<T> & {
 }
 
 export type RepayFromCollateralHealthQuery<T = IChainId> = RepayFromCollateralQuery<T> & HealthQuery
+export type RepayFromCollateralIsFullQuery<T = IChainId> = RepayFromCollateralQuery<T> & HealthQuery
 
 export type RepayFromCollateralParams<T = IChainId> = FieldsOf<RepayFromCollateralQuery<T>>
 export type RepayFromCollateralHealthParams<T = IChainId> = FieldsOf<RepayFromCollateralHealthQuery<T>>
+export type RepayFromCollateralIsFullParams<T = IChainId> = FieldsOf<RepayFromCollateralIsFullQuery<T>>
 export type CollateralParams<T = IChainId> = FieldsOf<CollateralQuery<T>>
 export type CollateralHealthParams<T = IChainId> = FieldsOf<CollateralHealthQuery<T>>

@@ -3,7 +3,7 @@ import type { Address } from 'viem'
 import CampaignRewardsBanner from '@/lend/components/CampaignRewardsBanner'
 import { MarketInformationComp } from '@/lend/components/MarketInformationComp'
 import { MarketInformationTabs } from '@/lend/components/MarketInformationTabs'
-import LoanCreate from '@/lend/components/PageLoanCreate/index'
+import { LoanCreateTabs } from '@/lend/components/PageLoanCreate/LoanCreateTabs'
 import { useOneWayMarket } from '@/lend/entities/chain'
 import { useLendPageTitle } from '@/lend/hooks/useLendPageTitle'
 import { useMarketDetails } from '@/lend/hooks/useMarketDetails'
@@ -23,7 +23,7 @@ import { isChain } from '@curvefi/prices-api'
 import Stack from '@mui/material/Stack'
 import { AppPageFormsWrapper } from '@ui/AppPage'
 import Box from '@ui/Box'
-import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
+import { ConnectWalletPrompt, isLoading, useCurve, useWallet } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
@@ -35,10 +35,10 @@ const { Spacing } = SizesAndSpaces
 
 const Page = () => {
   const params = useParams<MarketUrlParams>()
-  const { rMarket, rChainId, rFormType } = parseMarketParams(params)
+  const { rMarket, rChainId } = parseMarketParams(params)
 
   const { data: market, isSuccess } = useOneWayMarket(rChainId, rMarket)
-  const { llamaApi: api = null, connectState } = useConnection()
+  const { llamaApi: api = null, connectState } = useCurve()
   const titleMapper = useTitleMapper()
   const { provider, connect } = useWallet()
 
@@ -88,7 +88,6 @@ const Page = () => {
     params,
     rChainId,
     rOwmId,
-    rFormType,
     api,
     market,
     titleMapper,
@@ -97,7 +96,7 @@ const Page = () => {
   }
   const positionDetailsHrefs = {
     borrow: '',
-    supply: getVaultPathname(params, rOwmId, 'deposit'),
+    supply: getVaultPathname(params, rOwmId),
   }
 
   return isSuccess && !market ? (
@@ -106,7 +105,7 @@ const Page = () => {
     <>
       <DetailPageStack>
         <AppPageFormsWrapper data-testid="form-wrapper">
-          {rChainId && rOwmId && <LoanCreate {...pageProps} params={params} />}
+          {rChainId && rOwmId && <LoanCreateTabs {...pageProps} params={params} />}
         </AppPageFormsWrapper>
         <Stack flexDirection="column" flexGrow={1} sx={{ gap: Spacing.md }}>
           <CampaignRewardsBanner

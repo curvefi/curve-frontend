@@ -1,6 +1,6 @@
 import lodash from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
-import { useAccount } from 'wagmi'
+import { useConnection } from 'wagmi'
 import { DEFAULT_HEALTH_MODE } from '@/llamalend/constants'
 import type { BorrowPositionDetailsProps } from '@/llamalend/features/market-position-details'
 import { calculateRangeToLiquidation } from '@/llamalend/features/market-position-details/utils'
@@ -37,7 +37,7 @@ export const useLoanPositionDetails = ({
   llammaId,
 }: UseLoanPositionDetailsProps): BorrowPositionDetailsProps => {
   const blockchainId = networks[chainId]?.id
-  const { address: userAddress } = useAccount()
+  const { address: userAddress } = useConnection()
   const { data: campaigns } = useCampaignsByAddress({
     blockchainId,
     address: llamma?.controller?.toLocaleLowerCase() as Address,

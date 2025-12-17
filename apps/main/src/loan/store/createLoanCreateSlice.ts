@@ -2,19 +2,21 @@ import lodash from 'lodash'
 import type { StoreApi } from 'zustand'
 import { updateUserEventsApi } from '@/llamalend/llama.utils'
 import { refetchLoanExists } from '@/llamalend/queries/loan-exists'
-import type {
-  FormDetailInfoLeverage,
-  FormStatus,
-  FormValues,
-  MaxRecvLeverage,
-} from '@/loan/components/PageLoanCreate/types'
 import {
+  type CreateFormStatus,
+  type FormDetailInfo,
+  type FormDetailInfoLeverage,
+  type FormEstGas,
+  type FormValues,
+  type MaxRecvLeverage,
+} from '@/loan/components/PageMintMarket/types'
+import {
+  DEFAULT_CREATE_FORM_STATUS,
+  DEFAULT_DETAIL_INFO,
   DEFAULT_DETAIL_INFO_LEVERAGE,
-  DEFAULT_FORM_STATUS,
+  DEFAULT_FORM_EST_GAS,
   DEFAULT_FORM_VALUES,
-} from '@/loan/components/PageLoanCreate/utils'
-import type { FormDetailInfo, FormEstGas } from '@/loan/components/PageLoanManage/types'
-import { DEFAULT_DETAIL_INFO, DEFAULT_FORM_EST_GAS } from '@/loan/components/PageLoanManage/utils'
+} from '@/loan/components/PageMintMarket/utils'
 import networks from '@/loan/networks'
 import type { LiqRange, LiqRangesMapper } from '@/loan/store/types'
 import type { State } from '@/loan/store/useStore'
@@ -33,7 +35,7 @@ type SliceState = {
   detailInfo: { [activeKey: string]: FormDetailInfo }
   detailInfoLeverage: { [activeKey: string]: FormDetailInfoLeverage }
   formEstGas: { [activeKey: string]: FormEstGas }
-  formStatus: FormStatus
+  formStatus: CreateFormStatus
   formValues: FormValues
   liqRanges: { [activeKey: string]: LiqRange[] }
   liqRangesMapper: { [activeKey: string]: LiqRangesMapper }
@@ -122,7 +124,7 @@ const DEFAULT_STATE: SliceState = {
   detailInfo: {},
   detailInfoLeverage: {},
   formEstGas: {},
-  formStatus: DEFAULT_FORM_STATUS,
+  formStatus: DEFAULT_CREATE_FORM_STATUS,
   formValues: DEFAULT_FORM_VALUES,
   liqRanges: {},
   liqRangesMapper: {},

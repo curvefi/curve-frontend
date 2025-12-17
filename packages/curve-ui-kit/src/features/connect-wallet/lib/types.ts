@@ -1,5 +1,6 @@
 import type { Eip1193Provider } from 'ethers'
 import { Address } from 'viem'
+import type { Config } from 'wagmi'
 import { type default as curveApi } from '@curvefi/api'
 import type { IChainId as CurveChainId, INetworkName as CurveNetworkId } from '@curvefi/api/lib/interfaces'
 import { type default as llamaApi } from '@curvefi/llamalend-api'
@@ -45,7 +46,9 @@ export const AppLibs = {
   dex: 'curveApi',
   lend: 'llamaApi',
   llamalend: 'llamaApi',
-} satisfies Record<AppName, LibKey>
+  // Technically this app doesn't need a lib, but making this optional opens a can of worms. Refactor later.
+  analytics: 'curveApi',
+} satisfies Record<AppName, LibKey | undefined>
 type AppLibMap = typeof AppLibs
 
 export type AppLib<A extends AppName> = Libs[AppLibMap[A]]
@@ -53,6 +56,7 @@ export type AppChainId<A extends AppName> = LibChainId[(typeof AppLibs)[A]]
 export type AppNetworkId<A extends AppName> = LibNetworkId[(typeof AppLibs)[A]]
 
 export type Hydrator<App extends AppName> = (
+  config: Config,
   lib: AppLib<App>,
   prevLib: AppLib<App> | undefined,
   wallet?: Wallet,

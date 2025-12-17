@@ -144,7 +144,7 @@ export const createComponents = (
     },
     styleOverrides: {
       paper: {
-        backgroundColor: design.Layer[3].Fill,
+        backgroundColor: design.Layer[2].Fill,
         '& .MuiMenu-list': {
           maxHeight: SizesAndSpaces.MaxHeight.popover,
         },

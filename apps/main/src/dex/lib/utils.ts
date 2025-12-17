@@ -1,4 +1,3 @@
-import fetch from 'cross-fetch'
 import { CurveApi, NetworkConfig } from '@/dex/types/main.types'
 
 export const httpFetcher = (uri: string) => fetch(uri).then((res) => res.json())

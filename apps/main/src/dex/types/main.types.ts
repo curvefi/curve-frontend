@@ -5,6 +5,7 @@ import type { IChainId, IDict, INetworkName } from '@curvefi/api/lib/interfaces'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import type { TooltipProps } from '@ui/Tooltip/types'
 import type { BaseConfig } from '@ui/utils'
+import { BannerProps } from '@ui-kit/shared/ui/Banner'
 
 export type { CurveApi, Wallet } from '@ui-kit/features/connect-wallet'
 
@@ -18,7 +19,7 @@ export type NetworkConfigFromApi = {
 }
 
 export type NetworkUrlParams = { network: INetworkName }
-export type PoolUrlParams = NetworkUrlParams & { pool: string; formType?: RFormType }
+export type PoolUrlParams = NetworkUrlParams & { poolIdOrAddress: string; formType?: RFormType }
 export type CrvLockerUrlParams = NetworkUrlParams & { formType?: RFormType }
 export type UrlParams = NetworkUrlParams & Partial<PoolUrlParams & CrvLockerUrlParams>
 
@@ -273,9 +274,12 @@ export interface PoolAlert extends TooltipProps {
   isInformationOnly?: boolean
   isInformationOnlyAndShowInForm?: boolean
   isCloseOnTooltipOnly?: boolean
+  // banner message, related to the market situation
+  banner?: Omit<BannerProps, 'children'> & { title: string }
   isPoolPageOnly?: boolean // Don't show the pools overview table
   address?: string
-  message: ReactNode
+  // action card message, related to action of user
+  message?: ReactNode
 }
 
 export type EstimatedGas = number | number[] | null

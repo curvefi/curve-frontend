@@ -33,45 +33,47 @@ const AlertBox = ({ className, alertType, children, title, limitHeight, handleBt
   }, [children, limitHeight])
 
   return (
-    <Wrapper className={className} alertType={alertType} enabledHeightToggle={enabledHeightToggle}>
-      {title ? (
-        <>
-          <Header>
-            {IconComp} {title}{' '}
-          </Header>
-          {showFullHeight ? children : cutAlert}
-        </>
-      ) : (
-        <ContentWrapper
-          data-tag="content"
-          grid
-          gridTemplateColumns={handleBtnClose !== undefined ? 'auto 1fr auto' : 'auto 1fr'}
-          gridColumnGap={1}
-          flexAlignItems={'flex-start'}
-          {...props}
-        >
-          {IconComp}
-          <Content flex showFullHeight={showFullHeight} limitHeight={limitHeight} ref={alertContentRef}>
+    (title || children) && (
+      <Wrapper className={className} alertType={alertType} enabledHeightToggle={enabledHeightToggle}>
+        {title ? (
+          <>
+            <Header>
+              {IconComp} {title}{' '}
+            </Header>
             {showFullHeight ? children : cutAlert}
-          </Content>
-          {handleBtnClose !== undefined && (
-            <IconButton size="small" onClick={handleBtnClose}>
-              <Icon name="Close" size={24} />
-            </IconButton>
-          )}
-        </ContentWrapper>
-      )}
-      {limitHeight && enabledHeightToggle && (
-        <AdjustHeightWrapper>
-          <ButtonContainer>
-            <AdjustHeightButton onClick={() => setShowFullHeight(!showFullHeight)}>
-              {showFullHeight ? 'Minimize' : 'Expand'}
-              {showFullHeight ? <Icon name="ChevronUp" size={16} /> : <Icon name="ChevronDown" size={16} />}
-            </AdjustHeightButton>
-          </ButtonContainer>
-        </AdjustHeightWrapper>
-      )}
-    </Wrapper>
+          </>
+        ) : (
+          <ContentWrapper
+            data-tag="content"
+            grid
+            gridTemplateColumns={handleBtnClose !== undefined ? 'auto 1fr auto' : 'auto 1fr'}
+            gridColumnGap={1}
+            flexAlignItems={'flex-start'}
+            {...props}
+          >
+            {IconComp}
+            <Content flex showFullHeight={showFullHeight} limitHeight={limitHeight} ref={alertContentRef}>
+              {showFullHeight ? children : cutAlert}
+            </Content>
+            {handleBtnClose !== undefined && (
+              <IconButton size="small" onClick={handleBtnClose}>
+                <Icon name="Close" size={24} />
+              </IconButton>
+            )}
+          </ContentWrapper>
+        )}
+        {limitHeight && enabledHeightToggle && (
+          <AdjustHeightWrapper>
+            <ButtonContainer>
+              <AdjustHeightButton onClick={() => setShowFullHeight(!showFullHeight)}>
+                {showFullHeight ? 'Minimize' : 'Expand'}
+                {showFullHeight ? <Icon name="ChevronUp" size={16} /> : <Icon name="ChevronDown" size={16} />}
+              </AdjustHeightButton>
+            </ButtonContainer>
+          </AdjustHeightWrapper>
+        )}
+      </Wrapper>
+    )
   )
 }
 

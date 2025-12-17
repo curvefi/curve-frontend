@@ -25,7 +25,7 @@ const AlertNoLoanFound = ({ alertType, owmId }: { alertType?: AlertType; owmId: 
           size="large"
           onClick={() => {
             setStateByKeyMarkets('marketDetailsView', 'market')
-            push(getLoanCreatePathname(params, owmId, 'create'))
+            push(getLoanCreatePathname(params, owmId))
           }}
         >
           Create loan

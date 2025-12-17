@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { useAccount } from 'wagmi'
+import { useConnection } from 'wagmi'
 import { useRepayMutation } from '@/llamalend/mutations/repay.mutation'
 import { useUserBalances } from '@/llamalend/queries/user-balances.query'
 import type { Decimal } from '@ui-kit/utils'
@@ -9,7 +9,7 @@ import { useDebtToken } from './useDebtToken'
 
 /** Hook to cobble up the "improve health" tab */
 export function useImproveHealthTab(params: MarketParams): ImproveHealthProps {
-  const { address: userAddress } = useAccount()
+  const { address: userAddress } = useConnection()
   const { data: userBalances } = useUserBalances({ ...params, userAddress })
 
   const debtToken = useDebtToken(params)
@@ -20,6 +20,7 @@ export function useImproveHealthTab(params: MarketParams): ImproveHealthProps {
         stateCollateral: '0' as Decimal,
         userCollateral: '0' as Decimal,
         userBorrowed: debt,
+        isFull: false, // todo: implement full repays
       })
     },
     [mutate],

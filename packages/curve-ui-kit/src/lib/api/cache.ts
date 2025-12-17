@@ -1,9 +1,16 @@
 import { type Mutation, MutationCache, QueryCache } from '@tanstack/react-query'
 import { logError, logMutation, logSuccess } from '@ui-kit/lib/logging'
 
+// disable logging for queries that are too verbose
+const disableCacheQueryKeys = new Set<unknown>(['readContracts']) // add more query keys here to disable logging
+
 export const queryCache = new QueryCache({
   onError: (error: Error, query) => logError(query.queryKey, error, error.message),
-  onSuccess: (data, query) => logSuccess(query.queryKey, ...[data ? [data] : []]),
+  onSuccess: (data, { queryKey }) => {
+    if (!disableCacheQueryKeys.has(queryKey[0])) {
+      logSuccess(queryKey, ...[data ? [data] : []])
+    }
+  },
 })
 
 const getMutationKey = (mutation: Mutation<unknown, unknown, unknown, unknown>, variables: unknown) => {

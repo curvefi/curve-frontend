@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
 import { useForm } from 'react-hook-form'
-import { useAccount } from 'wagmi'
+import { useConnection } from 'wagmi'
 import { getTokens } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -13,13 +13,16 @@ import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.util
 import { BORROW_PRESET_RANGES, BorrowPreset } from '../../../constants'
 import { type CreateLoanOptions, useCreateLoanMutation } from '../../../mutations/create-loan.mutation'
 import { useBorrowCreateLoanIsApproved } from '../../../queries/create-loan/borrow-create-loan-approved.query'
-import { borrowFormValidationSuite } from '../../../queries/validation/borrow.validation'
+import { borrowQueryValidationSuite } from '../../../queries/validation/borrow.validation'
 import { useFormErrors } from '../react-form.utils'
 import { type BorrowForm } from '../types'
 import { useMaxTokenValues } from './useMaxTokenValues'
 
 const useCallbackAfterFormUpdate = (form: UseFormReturn<BorrowForm>, callback: () => void) =>
   useEffect(() => form.subscribe({ formState: { values: true }, callback }), [form, callback])
+
+// to crete a loan we need the debt/maxDebt, but we skip the market validation as that's given separately to the mutation
+const resolver = vestResolver(borrowQueryValidationSuite({ debtRequired: false, skipMarketValidation: true }))
 
 export function useCreateLoanForm<ChainId extends LlamaChainId>({
   market,
@@ -33,11 +36,10 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
   preset: BorrowPreset
   onCreated: CreateLoanOptions['onCreated']
 }) {
-  const { address: userAddress } = useAccount()
+  const { address: userAddress } = useConnection()
   const form = useForm<BorrowForm>({
     ...formDefaultOptions,
-    // todo: also validate maxLeverage and maxCollateral
-    resolver: vestResolver(borrowFormValidationSuite),
+    resolver,
     defaultValues: {
       userCollateral: undefined,
       userBorrowed: `0` satisfies Decimal,
@@ -75,15 +77,14 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     values,
     params,
     isPending: form.formState.isSubmitting || isCreating,
-    onSubmit: form.handleSubmit(onSubmit), // todo: handle form errors
-    maxTokenValues: useMaxTokenValues(collateralToken, params, form),
+    onSubmit: form.handleSubmit(onSubmit),
+    maxTokenValues: useMaxTokenValues(collateralToken?.address, params, form),
     borrowToken,
     collateralToken,
     isCreated,
     creationError,
     txHash: data?.hash,
     isApproved: useBorrowCreateLoanIsApproved(params),
-    tooMuchDebt: !!form.formState.errors['maxDebt'],
     formErrors: useFormErrors(form.formState),
   }
 }
