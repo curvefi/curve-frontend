@@ -1,5 +1,6 @@
-import { type Address } from 'viem'
+import { type Address, erc20Abi } from 'viem'
 import { useReadContract } from 'wagmi'
+import { decimal } from '@ui-kit/utils'
 
 const buildOracleAbi = (fnName: string) =>
   [
@@ -11,16 +12,6 @@ const buildOracleAbi = (fnName: string) =>
       outputs: [{ name: 'rate', type: 'uint256' }],
     },
   ] as const
-
-const DECIMALS_ABI = [
-  {
-    name: 'decimals',
-    type: 'function',
-    stateMutability: 'view',
-    inputs: [],
-    outputs: [{ name: '', type: 'uint8' }],
-  },
-] as const
 
 type UseOracleRateParams = {
   address?: Address
@@ -45,13 +36,13 @@ export function useOracleRate({ address, functionName, enabled = true }: UseOrac
 
   const { data: decimals } = useReadContract({
     address,
-    abi: DECIMALS_ABI,
+    abi: erc20Abi,
     functionName: 'decimals',
     query: { enabled: enabled && !!address && isSuccess, retry: false },
   })
 
   return {
-    rate: rate?.toString(),
+    rate: decimal(rate?.toString()),
     decimals,
     isLoading,
     isSuccess,

@@ -1,8 +1,7 @@
-import BigNumber from 'bignumber.js'
 import lodash from 'lodash'
 import { useMemo } from 'react'
 import { styled } from 'styled-components'
-import { isAddress } from 'viem'
+import { isAddress, formatEther } from 'viem'
 import TextInput from '@/dex/components/PageCreatePool/components/TextInput'
 import WarningBox from '@/dex/components/PageCreatePool/components/WarningBox'
 import {
@@ -15,6 +14,7 @@ import {
   TOKEN_G,
   TOKEN_H,
   NG_ASSET_TYPE,
+  ORACLE_DECIMALS,
 } from '@/dex/components/PageCreatePool/constants'
 import { useOracleValidation } from '@/dex/components/PageCreatePool/hooks/useOracleValidation'
 import type { TokenState, TokenId } from '@/dex/components/PageCreatePool/types'
@@ -67,7 +67,7 @@ const OracleInputs = ({ token, tokenId, title }: OracleInputProps) => {
 
   const formattedRate = useMemo(() => {
     if (!isSuccess || !rate || decimals === undefined) return null
-    return formatNumber(new BigNumber(rate).dividedBy(new BigNumber(10).pow(decimals)).toNumber(), {
+    return formatNumber(Number(formatEther(BigInt(rate))), {
       abbreviate: false,
     })
   }, [decimals, rate, isSuccess])
@@ -82,14 +82,8 @@ const OracleInputs = ({ token, tokenId, title }: OracleInputProps) => {
         maxLength={42}
         label={t`Address (e.g 0x123...)`}
       />
-      {token.oracle.address.length !== 0 && !token.oracle.address.startsWith('0x') && (
-        <WarningBox message={t`Oracle address needs to start with '0x'.`} />
-      )}
-      {token.oracle.address.length !== 0 && token.oracle.address.length < 42 && (
-        <WarningBox message={t`Oracle address needs to be 42 characters long.`} />
-      )}
       {!isAddress(token.oracle.address) && token.oracle.address.length > 0 && (
-        <WarningBox message={t`Invalid EVM address.`} />
+        <WarningBox message={t`Invalid EVM address. Needs to start with '0x', needs to be 42 characters long.`} />
       )}
       <TextInput
         row
@@ -101,8 +95,8 @@ const OracleInputs = ({ token, tokenId, title }: OracleInputProps) => {
       {token.oracle.functionName !== '' && !validateOracleFunction(token.oracle.functionName) && (
         <WarningBox message={t`Oracle function name needs to end with '()'.`} />
       )}
-      {decimals !== 18 && !isLoading && !error && (
-        <WarningBox message={t`Oracle must have a precision of 18 decimals.`} informational />
+      {decimals !== ORACLE_DECIMALS && !isLoading && !error && (
+        <WarningBox message={t`Oracle must have a precision of ${ORACLE_DECIMALS} decimals.`} informational />
       )}
       {isLoading && <WarningBox message={t`Validating oracle...`} informational />}
       {error && <WarningBox message={t`Unable to validate oracle.`} />}

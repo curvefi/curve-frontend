@@ -13,6 +13,7 @@ import {
   TOKEN_H,
 } from '@/dex/components/PageCreatePool/constants'
 import type { CreatePoolSlice } from '@/dex/store/createCreatePoolSlice'
+import type { Decimal } from '@ui-kit/utils'
 
 export type CreateToken = {
   address: string
@@ -31,7 +32,7 @@ export type OracleType = {
   isSuccess: boolean
   address: string
   functionName: string
-  rate: string | undefined
+  rate: Decimal | undefined
   decimals: number | undefined
 }
 

@@ -19,7 +19,7 @@ export const useOracleValidation = ({ token, tokenId }: UseOracleValidationParam
   const oracleAddress = token.oracle.address
   const oracleFunction = token.oracle.functionName
 
-  const enabled = isAddress(oracleAddress) && oracleFunction !== '' && validateOracleFunction(oracleFunction)
+  const enabled = isAddress(oracleAddress) && validateOracleFunction(oracleFunction)
 
   const { rate, decimals, isLoading, isSuccess, error } = useOracleRate({
     address: oracleAddress as Address,
