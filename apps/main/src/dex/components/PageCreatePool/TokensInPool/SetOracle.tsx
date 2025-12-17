@@ -63,6 +63,9 @@ const OracleInputs = ({ token, tokenId, title }: OracleInputProps) => {
   const updateOracleAddress = useStore((state) => state.createPool.updateOracleAddress)
   const updateOracleFunction = useStore((state) => state.createPool.updateOracleFunction)
 
+  const oracleFunction = token.oracle.functionName
+  const oracleAddress = token.oracle.address
+
   const { isLoading, isSuccess, error, rate, decimals } = useOracleValidation({ token, tokenId })
 
   const formattedRate = useMemo(() => {
@@ -77,25 +80,25 @@ const OracleInputs = ({ token, tokenId, title }: OracleInputProps) => {
       <TokenTitle>{t`${title} ${token.symbol !== '' ? `(${token.symbol})` : ''} Oracle`}</TokenTitle>
       <TextInput
         row
-        defaultValue={token.oracle.address}
+        defaultValue={oracleAddress}
         onChange={lodash.debounce((value) => updateOracleAddress(tokenId, value), 300)}
         maxLength={42}
         label={t`Address (e.g 0x123...)`}
       />
-      {!isAddress(token.oracle.address) && token.oracle.address.length > 0 && (
+      {!isAddress(oracleAddress) && oracleAddress.length > 0 && (
         <WarningBox message={t`Invalid EVM address. Needs to start with '0x', needs to be 42 characters long.`} />
       )}
       <TextInput
         row
-        defaultValue={token.oracle.functionName}
+        defaultValue={oracleFunction}
         onChange={lodash.debounce((value) => updateOracleFunction(tokenId, value), 300)}
         maxLength={42}
         label={t`Function (e.g exchangeRate())`}
       />
-      {token.oracle.functionName !== '' && !validateOracleFunction(token.oracle.functionName) && (
+      {oracleFunction !== '' && !validateOracleFunction(oracleFunction) && (
         <WarningBox message={t`Oracle function name needs to end with '()'.`} />
       )}
-      {decimals !== ORACLE_DECIMALS && !isLoading && !error && (
+      {decimals !== ORACLE_DECIMALS && oracleFunction !== '' && !isLoading && !error && (
         <WarningBox message={t`Oracle must have a precision of ${ORACLE_DECIMALS} decimals.`} informational />
       )}
       {isLoading && <WarningBox message={t`Validating oracle...`} informational />}
