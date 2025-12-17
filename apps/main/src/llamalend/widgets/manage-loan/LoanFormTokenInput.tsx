@@ -6,7 +6,7 @@ import { setValueOptions } from '@/llamalend/features/borrow/react-form.utils'
 import type { LlamaNetwork } from '@/llamalend/llamalend.types'
 import type { INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
 import type { PartialRecord } from '@curvefi/prices-api/objects.util'
-import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
+import { useTokenBalance } from '@ui-kit/queries/token-balance.query'
 import { HelperMessage, LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import type { Query } from '@ui-kit/types/util'
@@ -49,7 +49,11 @@ export const LoanFormTokenInput = <
     data: balance,
     isLoading: isBalanceLoading,
     error: balanceError,
-  } = useTokenBalance({ chainId: network?.chainId, userAddress }, token)
+  } = useTokenBalance({
+    chainId: network?.chainId,
+    userAddress,
+    tokenAddress: token?.address,
+  })
 
   const errors = form.formState.errors as PartialRecord<FieldPath<TFieldValues>, Error>
   const relatedMaxFieldError = max?.data && max?.fieldName && errors[max.fieldName]

@@ -17,7 +17,6 @@ import {
   RewardCrv,
   RewardOther,
   RewardsApy,
-  UserBalancesMapper,
 } from '@/dex/types/main.types'
 import { fulfilledValue, getErrorMessage, isValidAddress } from '@/dex/utils'
 import {
@@ -36,7 +35,6 @@ import {
 } from '@/dex/utils/utilsSwap'
 import type { IProfit } from '@curvefi/api/lib/interfaces'
 import type { DateValue } from '@internationalized/date'
-import PromisePool from '@supercharge/promise-pool/dist'
 import { BN } from '@ui/utils'
 import dayjs from '@ui-kit/lib/dayjs'
 import { waitForTransaction, waitForTransactions } from '@ui-kit/lib/ethers'
@@ -1367,42 +1365,6 @@ const wallet = {
   userPoolShare: async (p: Pool) => {
     log('userPoolShare', p.name)
     return p.userShare()
-  },
-  fetchUserBalances: async (curve: CurveApi, tokenAddresses: string[]) => {
-    const { chainId } = curve
-    log('fetchWalletTokensBalances', chainId, tokenAddresses.length)
-
-    const results: UserBalancesMapper = {}
-    const errors: string[][] = []
-    const chunks = chunk(tokenAddresses, 20)
-    await PromisePool.for(chunks)
-      .withConcurrency(10)
-      .handleError((_, chunk) => {
-        errors.push(chunk)
-      })
-      .process(async (addresses) => {
-        const balances = (await curve.getBalances(addresses)) as string[]
-        for (const idx in balances) {
-          const balance = balances[idx]
-          const tokenAddress = addresses[idx]
-          results[tokenAddress] = balance
-        }
-      })
-
-    const fattenErrors = flatten(errors)
-
-    if (fattenErrors.length) {
-      await PromisePool.for(fattenErrors)
-        .handleError((error, tokenAddress) => {
-          console.error(`Unable to get user balance for ${tokenAddress}`, error)
-          results[tokenAddress] = 'NaN'
-        })
-        .process(async (tokenAddress) => {
-          const [balance] = (await curve.getBalances([tokenAddress])) as string[]
-          results[tokenAddress] = balance
-        })
-    }
-    return results
   },
 }
 
