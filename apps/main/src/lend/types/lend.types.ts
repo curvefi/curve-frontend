@@ -240,3 +240,12 @@ export enum FormError {
   LiquidationMode = 'error-liquidation-mode',
   TotalSupply = 'error-total-supply',
 }
+
+export type FormStatus = {
+  isApproved: boolean
+  isApprovedCompleted: boolean
+  isComplete: boolean
+  isInProgress: boolean
+  error: string
+  stepError: string
+}
