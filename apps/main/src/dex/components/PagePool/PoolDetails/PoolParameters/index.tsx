@@ -4,7 +4,6 @@ import { StyledIconButton, StyledInformationSquare16 } from '@/dex/components/Pa
 import { useNetworkByChain } from '@/dex/entities/networks'
 import useStore from '@/dex/store/useStore'
 import { ChainId, PoolData } from '@/dex/types/main.types'
-import { formatDisplayDate } from '@/dex/utils/utilsDates'
 import Box from '@ui/Box'
 import Icon from '@ui/Icon'
 import { ExternalLink } from '@ui/Link'
@@ -192,11 +191,12 @@ const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParametersProps) 
                   tooltip={
                     <>
                       {t`Amplification coefficient chosen from fluctuation of prices around 1.`}
-                      {rampADetails && rampADetails?.isFutureATimePassedToday && (
+                      {rampADetails && rampADetails?.isFutureATimePassedToday && initial_A_time && future_A_time && (
                         <>
                           <br />{' '}
-                          {t`Last change occurred between ${formatDisplayDate(dayjs(initial_A_time))} and ${formatDisplayDate(
-                            dayjs(future_A_time),
+                          {t`Last change occurred between ${formatDate(initial_A_time, 'short')} and ${formatDate(
+                            future_A_time,
+                            'short',
                           )}, when A ramped from ${initial_A} to ${future_A}.`}
                         </>
                       )}
