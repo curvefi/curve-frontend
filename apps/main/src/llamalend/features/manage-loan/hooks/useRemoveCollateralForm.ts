@@ -51,7 +51,7 @@ export const useRemoveCollateralForm = <
   network: BaseConfig<NetworkName, ChainId>
   networks: NetworkDict<ChainId>
   enabled?: boolean
-  onRemoved: NonNullable<RemoveCollateralOptions['onRemoved']>
+  onRemoved?: NonNullable<RemoveCollateralOptions['onRemoved']>
   isAccordionOpen: boolean
 }) => {
   const { address: userAddress } = useConnection()

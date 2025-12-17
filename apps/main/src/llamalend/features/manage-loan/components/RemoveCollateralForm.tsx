@@ -23,7 +23,7 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
   networks: NetworkDict<ChainId>
   chainId: ChainId
   enabled?: boolean
-  onRemoved: NonNullable<RemoveCollateralOptions['onRemoved']>
+  onRemoved?: NonNullable<RemoveCollateralOptions['onRemoved']>
 }) => {
   const network = networks[chainId]
   const [isOpen, , , toggle] = useSwitch(false)

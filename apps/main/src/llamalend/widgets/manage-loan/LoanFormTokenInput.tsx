@@ -6,7 +6,7 @@ import { setValueOptions } from '@/llamalend/features/borrow/react-form.utils'
 import type { LlamaNetwork } from '@/llamalend/llamalend.types'
 import type { INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
 import type { PartialRecord } from '@curvefi/prices-api/objects.util'
-import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
+import { useTokenBalance } from '@ui-kit/queries/token-balance.query'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LlamaIcon } from '@ui-kit/shared/icons/LlamaIcon'
 import { HelperMessage, LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
@@ -65,7 +65,11 @@ export const LoanFormTokenInput = <
     data: balance,
     isLoading: isBalanceLoading,
     error: balanceError,
-  } = useTokenBalance({ chainId: network?.chainId, userAddress }, token)
+  } = useTokenBalance({
+    chainId: network?.chainId,
+    userAddress,
+    tokenAddress: token?.address,
+  })
   const { data: usdRate } = useTokenUsdRate({
     chainId: network?.chainId,
     tokenAddress: token?.address,

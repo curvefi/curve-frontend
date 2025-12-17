@@ -24,8 +24,8 @@ import {
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { vestResolver } from '@hookform/resolvers/vest'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
-import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { formDefaultOptions } from '@ui-kit/lib/model'
+import { useTokenBalance } from '@ui-kit/queries/token-balance.query'
 import { Decimal, decimal } from '@ui-kit/utils/decimal'
 import { useFormErrors } from '../../borrow/react-form.utils'
 import { useLoanToValueFromUserState } from './useLoanToValueFromUserState'
@@ -45,7 +45,7 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
   network: LlamaNetwork<ChainId>
   networks: NetworkDict<ChainId>
   enabled?: boolean
-  onAdded: NonNullable<AddCollateralOptions['onAdded']>
+  onAdded?: NonNullable<AddCollateralOptions['onAdded']>
   isAccordionOpen: boolean
 }) => {
   const { address: userAddress } = useConnection()

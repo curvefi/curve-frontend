@@ -2,6 +2,7 @@ import { BigNumber } from 'bignumber.js'
 import type { ContractTransactionResponse } from 'ethers'
 import { produce } from 'immer'
 import { zeroAddress } from 'viem'
+import type { Config } from 'wagmi'
 import type { StoreApi } from 'zustand'
 import {
   CRYPTOSWAP,
@@ -141,7 +142,7 @@ export type CreatePoolSlice = {
     updateTokensInPoolValidation: (tokensInPool: boolean) => void
     updateParametersValidation: (parameters: boolean) => void
     updatePoolInfoValidation: (poolInfo: boolean) => void
-    deployPool: (curve: CurveApi) => void
+    deployPool: (config: Config, curve: CurveApi) => void
     resetState: () => void
   }
 }
@@ -766,7 +767,7 @@ const createCreatePoolSlice = (
         }),
       )
     },
-    deployPool: async (curve: CurveApi) => {
+    deployPool: async (config: Config, curve: CurveApi) => {
       const chainId = curve.chainId
       const {
         pools: { fetchNewPool, basePools },
@@ -867,7 +868,7 @@ const createCreatePoolSlice = (
             }),
           )
 
-          const poolData = await fetchNewPool(curve, poolId)
+          const poolData = await fetchNewPool(config, curve, poolId)
           if (poolData) {
             set(
               produce((state) => {
@@ -944,7 +945,7 @@ const createCreatePoolSlice = (
               }),
             )
 
-            const poolData = await fetchNewPool(curve, poolId)
+            const poolData = await fetchNewPool(config, curve, poolId)
             if (poolData) {
               set(
                 produce((state) => {
@@ -1025,7 +1026,7 @@ const createCreatePoolSlice = (
               }),
             )
 
-            const poolData = await fetchNewPool(curve, poolId)
+            const poolData = await fetchNewPool(config, curve, poolId)
             if (poolData) {
               set(
                 produce((state) => {
@@ -1123,7 +1124,7 @@ const createCreatePoolSlice = (
               }),
             )
 
-            const poolData = await fetchNewPool(curve, poolId)
+            const poolData = await fetchNewPool(config, curve, poolId)
             if (poolData) {
               set(
                 produce((state) => {
@@ -1214,7 +1215,7 @@ const createCreatePoolSlice = (
               }),
             )
 
-            const poolData = await fetchNewPool(curve, poolId)
+            const poolData = await fetchNewPool(config, curve, poolId)
             if (poolData) {
               set(
                 produce((state) => {
