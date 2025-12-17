@@ -26,6 +26,7 @@ import { useLoanExists } from '@/llamalend/queries/loan-exists'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import AlertBox from '@ui/AlertBox'
+import { AppFormContentWrapper } from '@ui/AppForm'
 import { getActiveStep } from '@ui/Stepper/helpers'
 import Stepper from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
@@ -40,17 +41,18 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 
+export type LoanBorrowMoreProps = PageContentProps & { isLeverage?: boolean }
+
 const LoanBorrowMore = ({
   rChainId,
   rOwmId,
-  isLeverage = false,
   isLoaded,
   api,
   market,
   userActiveKey,
-}: PageContentProps & { isLeverage?: boolean }) => {
+  isLeverage = false,
+}: LoanBorrowMoreProps) => {
   const isSubscribed = useRef(false)
-
   const activeKey = useStore((state) => state.loanBorrowMore.activeKey)
   const activeKeyMax = useStore((state) => state.loanBorrowMore.activeKeyMax)
   const detailInfoLeverage = useStore((state) => state.loanBorrowMore.detailInfoLeverage[activeKey])
@@ -436,3 +438,14 @@ const LoanBorrowMore = ({
 }
 
 export default LoanBorrowMore
+
+/**
+ * The new implementation of LoanBorrowMore with mui isn't ready yet. For now, we wrap the old one for styling.
+ */
+export const LoanBorrowMoreWrapped = (props: LoanBorrowMoreProps) => (
+  <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
+    <AppFormContentWrapper>
+      <LoanBorrowMore {...props} />
+    </AppFormContentWrapper>
+  </Stack>
+)

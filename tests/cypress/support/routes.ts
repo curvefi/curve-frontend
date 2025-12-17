@@ -30,7 +30,7 @@ export const oneAppRoute = () =>
       `crvusd/ethereum${oneOf(
         ...recordValues(CRVUSD_ROUTES).map((r) =>
           // use market detail page, the list page redirects to the llamalend app
-          r == CRVUSD_ROUTES.PAGE_MARKETS ? `${CRVUSD_ROUTES.PAGE_MARKETS}/WBTC/create` : r,
+          r == CRVUSD_ROUTES.PAGE_MARKETS ? `${CRVUSD_ROUTES.PAGE_MARKETS}/WBTC` : r,
         ),
       )}`,
     llamalend: () => `llamalend/ethereum${oneOf(...recordValues(LLAMALEND_ROUTES))}`,
