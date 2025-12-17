@@ -237,9 +237,7 @@ function formatNetworkName(id: string) {
 }
 
 // Config parameter is nullable because some networks may not be loaded (e.g., lite networks are unavailable in the DAO app)
-export const scanAddressPath = ({ explorerUrl }: Partial<BaseConfig> = {}, hash: string) =>
-  explorerUrl && `${explorerUrl}address/${hash}`
-export const scanTxPath = ({ explorerUrl }: Partial<BaseConfig> = {}, hash: string) =>
-  explorerUrl && `${explorerUrl}tx/${hash}`
-export const scanTokenPath = ({ explorerUrl }: Partial<BaseConfig> = {}, hash: string) =>
-  explorerUrl && `${explorerUrl}token/${hash}`
+export const scanAddressPath = (config: BaseConfig | undefined, hash: string) =>
+  config && `${config.explorerUrl}address/${hash}`
+export const scanTxPath = (config: BaseConfig | undefined, hash: string) => config && `${config.explorerUrl}tx/${hash}`
+export const scanTokenPath = (config: BaseConfig | undefined, hash: string) => config && `${config}token/${hash}`
