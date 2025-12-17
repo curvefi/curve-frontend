@@ -48,5 +48,7 @@ export const LegalIntro = ({ currentApp, network }: TabProps) => (
         </Typography>
       </List>
     </Paragraph>
+
+    <Paragraph>{t`Swiss Stake AG does not operate any Curve Functionalities.`}</Paragraph>
   </>
 )
