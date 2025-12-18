@@ -30,7 +30,7 @@
     "echarts-for-react": "^3.0.5",
     "external-rewards": "*",
     "fuse.js": "^7.1.0",
-    "lightweight-charts": "^5.0.9",
+    "lightweight-charts": "^5.1.0",
     "memoizee": "^0.4.17",
     "react-hook-form": "7.68.0",
     "recharts": "2.15.4",
