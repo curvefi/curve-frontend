@@ -51,7 +51,7 @@
     "@vitejs/plugin-react": "*",
     "eslint": "*",
     "eslint-config-custom": "*",
-    "storybook": "10.1.9",
+    "storybook": "10.1.10",
     "type-fest": "5.3.1",
     "typescript": "*",
     "vite": "*",
