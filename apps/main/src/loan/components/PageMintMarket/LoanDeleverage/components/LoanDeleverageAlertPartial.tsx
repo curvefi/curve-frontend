@@ -3,7 +3,7 @@ import type { FormValues } from '@/loan/components/PageMintMarket/LoanDeleverage
 import { Llamma, UserLoanDetails } from '@/loan/types/loan.types'
 import { getTokenName } from '@/loan/utils/utilsLoan'
 import Box from '@ui/Box'
-import DetailInfo from '@ui/DetailInfo'
+import { DetailInfo } from '@ui/DetailInfo'
 import Icon from '@ui/Icon'
 import { formatNumber, getFractionDigitsOptions } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
