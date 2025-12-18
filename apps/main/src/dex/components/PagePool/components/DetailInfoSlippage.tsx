@@ -1,6 +1,6 @@
 import { ReactNode, useMemo } from 'react'
 import type { Slippage } from '@/dex/components/PagePool/types'
-import DetailInfo from '@ui/DetailInfo'
+import { DetailInfo } from '@ui/DetailInfo'
 import IconTooltip from '@ui/Tooltip/TooltipIcon'
 import { Chip } from '@ui/Typography'
 import { formatNumber } from '@ui/utils'

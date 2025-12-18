@@ -3,7 +3,6 @@ import { styled } from 'styled-components'
 import AlertFormError from '@/loan/components/AlertFormError'
 import AlertFormWarning from '@/loan/components/AlertFormWarning'
 import DetailInfoEstimateGas from '@/loan/components/DetailInfoEstimateGas'
-import DetailInfoSlippageTolerance from '@/loan/components/DetailInfoSlippageTolerance'
 import LoanFormConnect from '@/loan/components/LoanFormConnect'
 import type { FormStatus, StepKey } from '@/loan/components/PageMintMarket/LoanLiquidate/types'
 import type { FormEstGas, ManageLoanProps } from '@/loan/components/PageMintMarket/types'
@@ -27,6 +26,7 @@ import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t, Trans } from '@ui-kit/lib/i18n'
+import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
 
 interface Props extends Pick<ManageLoanProps, 'curve' | 'market' | 'params' | 'rChainId'> {}
 
@@ -217,7 +217,7 @@ const LoanLiquidate = ({ curve, market: llamma, params, rChainId }: Props) => {
           {...formEstGas}
           stepProgress={activeStep && steps.length > 1 ? { active: activeStep, total: steps.length } : null}
         />
-        <DetailInfoSlippageTolerance maxSlippage={maxSlippage} />
+        <SlippageToleranceActionInfo maxSlippage={maxSlippage} />
       </div>
 
       {/* actions */}

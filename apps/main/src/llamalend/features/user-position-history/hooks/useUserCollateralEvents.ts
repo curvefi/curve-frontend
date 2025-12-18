@@ -45,7 +45,7 @@ type CollateralEventToken = {
 
 export type ParsedUserCollateralEvent = Omit<UserCollateralEvent, 'type'> & {
   type: UserCollateralEventType
-  txUrl: string
+  txUrl?: string
   url?: string | null
   borrowToken: CollateralEventToken | undefined
   collateralToken: CollateralEventToken | undefined

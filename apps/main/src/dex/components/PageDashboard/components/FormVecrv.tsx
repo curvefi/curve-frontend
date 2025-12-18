@@ -10,7 +10,6 @@ import useStore from '@/dex/store/useStore'
 import { CurveApi } from '@/dex/types/main.types'
 import AlertBox from '@ui/AlertBox'
 import Button from '@ui/Button'
-import { Items } from '@ui/Items'
 import { InternalLink } from '@ui/Link'
 import { getStepStatus } from '@ui/Stepper/helpers'
 import Stepper from '@ui/Stepper/Stepper'
@@ -203,6 +202,16 @@ const Wrapper = styled.div`
 
   @media (min-width: ${breakpoints.sm}rem) {
     max-width: 18.75rem;
+  }
+`
+
+const Items = styled.ul<{ listItemMargin?: string }>`
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  li {
+    margin: ${({ listItemMargin }) => listItemMargin ?? 0};
   }
 `
 

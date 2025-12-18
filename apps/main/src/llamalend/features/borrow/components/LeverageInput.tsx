@@ -42,7 +42,7 @@ export const LeverageInput = ({
             <Typography variant="headingXsBold">{t`Enable leverage`}</Typography>
             <WithSkeleton loading={isLoading}>
               <Typography {...(error && { color: 'error.main' })} variant="bodyXsRegular">
-                {t`up to ${formatNumber(maxLeverage, { maximumFractionDigits: 1 })}x 🔥`}
+                {`${t`up to`} ${formatNumber(maxLeverage, { maximumFractionDigits: 1 })}x 🔥`}
               </Typography>
             </WithSkeleton>
           </>

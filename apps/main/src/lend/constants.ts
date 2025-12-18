@@ -1,8 +1,7 @@
 import { LEND_ROUTES } from '@ui-kit/shared/routes'
 
 export const MARKET_ROUTES = {
-  PAGE_CREATE: '/create',
-  PAGE_MANAGE: '/manage',
+  PAGE_LOAN: '',
   PAGE_VAULT: '/vault',
 } as const
 

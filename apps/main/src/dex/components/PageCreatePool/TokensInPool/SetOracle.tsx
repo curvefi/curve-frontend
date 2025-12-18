@@ -1,6 +1,7 @@
 import lodash from 'lodash'
+import { useMemo } from 'react'
 import { styled } from 'styled-components'
-import { isAddress } from 'viem'
+import { isAddress, formatEther } from 'viem'
 import TextInput from '@/dex/components/PageCreatePool/components/TextInput'
 import WarningBox from '@/dex/components/PageCreatePool/components/WarningBox'
 import {
@@ -13,12 +14,21 @@ import {
   TOKEN_G,
   TOKEN_H,
   NG_ASSET_TYPE,
+  ORACLE_DECIMALS,
 } from '@/dex/components/PageCreatePool/constants'
+import { useOracleValidation } from '@/dex/components/PageCreatePool/hooks/useOracleValidation'
 import type { TokenState, TokenId } from '@/dex/components/PageCreatePool/types'
 import { validateOracleFunction } from '@/dex/components/PageCreatePool/utils'
 import useStore from '@/dex/store/useStore'
+import Alert from '@mui/material/Alert'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
 import Box from '@ui/Box'
 import { t } from '@ui-kit/lib/i18n'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { formatNumber } from '@ui-kit/utils'
+
+const { Spacing } = SizesAndSpaces
 
 type OracleInputProps = {
   token: TokenState
@@ -53,36 +63,61 @@ const OracleInputs = ({ token, tokenId, title }: OracleInputProps) => {
   const updateOracleAddress = useStore((state) => state.createPool.updateOracleAddress)
   const updateOracleFunction = useStore((state) => state.createPool.updateOracleFunction)
 
+  const oracleFunction = token.oracle.functionName
+  const oracleAddress = token.oracle.address
+
+  const { isLoading, isSuccess, error, rate, decimals } = useOracleValidation({ token, tokenId })
+
+  const formattedRate = useMemo(() => {
+    if (!isSuccess || !rate || decimals === undefined) return null
+    return formatNumber(Number(formatEther(BigInt(rate))), {
+      abbreviate: false,
+    })
+  }, [decimals, rate, isSuccess])
+
   return (
     <InputContainer>
       <TokenTitle>{t`${title} ${token.symbol !== '' ? `(${token.symbol})` : ''} Oracle`}</TokenTitle>
       <TextInput
         row
-        defaultValue={token.oracleAddress}
+        defaultValue={oracleAddress}
         onChange={lodash.debounce((value) => updateOracleAddress(tokenId, value), 300)}
         maxLength={42}
         label={t`Address (e.g 0x123...)`}
       />
-      {token.oracleAddress.length !== 0 && !token.oracleAddress.startsWith('0x') && (
-        <WarningBox message={t`Oracle address needs to start with '0x'.`} />
-      )}
-      {token.oracleAddress.length !== 0 && token.oracleAddress.length < 42 && (
-        <WarningBox message={t`Oracle address needs to be 42 characters long.`} />
-      )}
-      {token.oracleAddress.length === 42 && !isAddress(token.oracleAddress) && (
-        <WarningBox message={t`Invalid EVM address.`} />
+      {!isAddress(oracleAddress) && oracleAddress.length > 0 && (
+        <WarningBox message={t`Invalid EVM address. Needs to start with '0x', needs to be 42 characters long.`} />
       )}
       <TextInput
         row
-        defaultValue={token.oracleFunction}
+        defaultValue={oracleFunction}
         onChange={lodash.debounce((value) => updateOracleFunction(tokenId, value), 300)}
         maxLength={42}
         label={t`Function (e.g exchangeRate())`}
       />
-      {token.oracleFunction !== '' && !validateOracleFunction(token.oracleFunction) && (
+      {oracleFunction !== '' && !validateOracleFunction(oracleFunction) && (
         <WarningBox message={t`Oracle function name needs to end with '()'.`} />
       )}
-      <WarningBox message={t`Oracle must have a precision of 18 decimals.`} informational />
+      {decimals !== ORACLE_DECIMALS && oracleFunction !== '' && !isLoading && !error && (
+        <WarningBox message={t`Oracle must have a precision of ${ORACLE_DECIMALS} decimals.`} informational />
+      )}
+      {isLoading && <WarningBox message={t`Validating oracle...`} informational />}
+      {error && <WarningBox message={t`Unable to validate oracle.`} />}
+      {isSuccess && formattedRate !== null && (
+        <Alert severity="info" variant="standard" sx={{ marginTop: Spacing.sm }}>
+          <Stack gap={Spacing.xs}>
+            <Typography variant="bodySRegular">
+              {t`Oracle rate:`} {formattedRate}
+            </Typography>
+            <Typography variant="bodySRegular">
+              {t`Decimals:`} {decimals}
+            </Typography>
+            <Typography variant="bodySRegular">
+              {t`Raw rate:`} {rate}
+            </Typography>
+          </Stack>
+        </Alert>
+      )}
     </InputContainer>
   )
 }
