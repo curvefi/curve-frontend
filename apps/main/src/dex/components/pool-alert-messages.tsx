@@ -1,4 +1,3 @@
-import Button from '@mui/material/Button'
 import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
 import { ArrowTopRightIcon } from '@ui-kit/shared/icons/ArrowTopRightIcon'
@@ -22,28 +21,21 @@ export const PoolAlertMessage = ({ children }: { children: React.ReactNode }) =>
 )
 
 export const ExternalLink = ({ href, children }: { href: string; children: React.ReactNode }) => (
-  <Button
-    color="ghost"
-    size="extraSmall"
-    component={Link}
-    sx={{ color: 'currentColor', textUnderlineOffset: '2px', '&:hover': { textDecoration: 'underline' } }}
-    endIcon={<ArrowTopRightIcon fontSize={'small'} />}
+  <Link
+    sx={{
+      color: 'currentColor',
+      '&:hover': { textDecoration: 'none' },
+    }}
     href={href}
     target="_blank"
     rel="noreferrer noopener"
   >
-    {children}
-  </Button>
+    {children} <ArrowTopRightIcon fontSize={'small'} />
+  </Link>
 )
 
 export const InternalLink = ({ href, children }: { href: string; children: React.ReactNode }) => (
-  <Button
-    color="ghost"
-    size="extraSmall"
-    component={RouterLink}
-    href={href}
-    sx={{ color: 'currentColor', textUnderlineOffset: '2px', '&:hover': { textDecoration: 'underline' } }}
-  >
+  <RouterLink href={href} sx={{ color: 'currentColor', '&:hover': { textDecoration: 'none' } }}>
     {children}
-  </Button>
+  </RouterLink>
 )
