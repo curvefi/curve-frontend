@@ -49,8 +49,8 @@ export const DetailPageLayout = ({ formTabs, children }: { formTabs: ReactNode; 
       [t.breakpoints.up(MinWidth.twoCardLayout)]: { flexDirection: 'row' },
     })}
   >
-    <Grid size={{ mobile: 12, tablet: 4, desktop: 3 }}>{formTabs || <FormSkeleton />}</Grid>
-    <Grid size={{ mobile: 12, tablet: 8, desktop: 9 }}>
+    <Grid size={{ mobile: 12, tablet: 5, desktop: 4 }}>{formTabs || <FormSkeleton />}</Grid>
+    <Grid size={{ mobile: 12, tablet: 7, desktop: 8 }}>
       <Stack flexDirection="column" flexGrow={1} sx={{ gap: Spacing.md }}>
         {children}
       </Stack>

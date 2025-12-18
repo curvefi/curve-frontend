@@ -40,6 +40,7 @@ import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
+import { FormContent } from '@ui-kit/shared/ui/FormTabs/FormTabs'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { decimal, type Decimal } from '@ui-kit/utils'
 
@@ -344,7 +345,7 @@ const Swap = ({
   )
 
   return (
-    <>
+    <FormContent>
       {/* input fields */}
       <Box grid gridRowGap="1">
         <div>
@@ -678,7 +679,7 @@ const Swap = ({
         {txInfoBar}
         <Stepper steps={steps} />
       </TransferActions>
-    </>
+    </FormContent>
   )
 }
 

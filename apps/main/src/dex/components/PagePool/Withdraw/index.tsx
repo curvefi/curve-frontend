@@ -5,9 +5,8 @@ import FormUnstake from '@/dex/components/PagePool/Withdraw/components/FormUnsta
 import FormWithdraw from '@/dex/components/PagePool/Withdraw/components/FormWithdraw'
 import type { FormType } from '@/dex/components/PagePool/Withdraw/types'
 import useStore from '@/dex/store/useStore'
-import Stack from '@mui/material/Stack'
-import { AppFormContentWrapper } from '@ui/AppForm'
 import { t } from '@ui-kit/lib/i18n'
+import { FormContent } from '@ui-kit/shared/ui/FormTabs/FormTabs'
 import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
 
 const tabs: TabOption<FormType>[] = [
@@ -41,15 +40,22 @@ const Withdraw = (transferProps: TransferProps) => {
   }, [poolData?.pool?.id])
 
   return (
-    <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
-      <TabsSwitcher variant="underlined" size="small" value={tab} onChange={handleTabChange} options={tabs} fullWidth />
-
-      <AppFormContentWrapper>
-        {formType === 'WITHDRAW' && <FormWithdraw {...transferProps} />}
-        {formType === 'UNSTAKE' && <FormUnstake {...transferProps} />}
-        {formType === 'CLAIM' && <FormClaim {...transferProps} />}
-      </AppFormContentWrapper>
-    </Stack>
+    <FormContent
+      header={
+        <TabsSwitcher
+          variant="underlined"
+          size="small"
+          value={tab}
+          onChange={handleTabChange}
+          options={tabs}
+          fullWidth
+        />
+      }
+    >
+      {formType === 'WITHDRAW' && <FormWithdraw {...transferProps} />}
+      {formType === 'UNSTAKE' && <FormUnstake {...transferProps} />}
+      {formType === 'CLAIM' && <FormClaim {...transferProps} />}
+    </FormContent>
   )
 }
 
