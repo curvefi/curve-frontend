@@ -34,7 +34,7 @@ export const LeverageInput = ({
     [form],
   )
   return (
-    <Stack direction="row" justifyContent="space-between" gap={Spacing.sm} alignItems="start">
+    <Stack direction="row" justifyContent="space-between" gap={Spacing.sm} alignItems="start" flexWrap="wrap">
       <FormControlLabel
         sx={{ minWidth: 180 }}
         label={

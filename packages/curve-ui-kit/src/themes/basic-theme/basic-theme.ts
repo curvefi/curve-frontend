@@ -10,11 +10,7 @@ export type ThemeKey = 'light' | 'dark' | 'chad'
 export const basicMuiTheme = createMuiTheme({
   breakpoints: {
     keys: ['mobile', 'tablet', 'desktop'] as const,
-    values: {
-      mobile: 0,
-      tablet: 820,
-      desktop: 1200,
-    },
+    values: { mobile: 0, tablet: 820, desktop: 1200 },
     unit: 'px',
   },
   spacing: [

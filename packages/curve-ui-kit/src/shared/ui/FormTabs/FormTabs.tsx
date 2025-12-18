@@ -10,10 +10,11 @@ const { MaxWidth } = SizesAndSpaces
 
 type FnOrValue<Props extends object, Result> = ((props: Props) => Result | null | undefined) | Result
 
-const applyFnOrValue = <Props extends object, R extends string | boolean>(
-  fnOrValue: FnOrValue<Props, R> | undefined,
+const applyFnOrValue = <Props extends object, Result>(
+  fnOrValue: FnOrValue<Props, Result> | null | undefined,
   props: Props,
-): R | undefined => (typeof fnOrValue === 'function' ? fnOrValue(props) : fnOrValue) ?? undefined
+): Result | undefined =>
+  (typeof fnOrValue === 'function' ? (fnOrValue as (props: Props) => Result)(props) : fnOrValue) ?? undefined
 
 type FormSubTab<Props extends object> = Omit<FormTab<Props>, 'subTabs'>
 
@@ -21,7 +22,7 @@ export type FormTab<Props extends object> = {
   /** Unique value of the tab, it might be used in the URL later */
   value: string
   /** Label of the tab, can be a function that receives the form props */
-  label: FnOrValue<Props, string>
+  label: FnOrValue<Props, ReactNode>
   /** Optional sub-tabs of the tab */
   subTabs?: FormSubTab<Props>[]
   /** Function or value to determine if the tab is visible */
