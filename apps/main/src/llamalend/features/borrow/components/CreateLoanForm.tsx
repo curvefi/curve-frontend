@@ -3,9 +3,9 @@ import { BorrowPreset } from '@/llamalend/constants'
 import { hasLeverage } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import type { CreateLoanOptions } from '@/llamalend/mutations/create-loan.mutation'
+import { LoanForm } from '@/llamalend/widgets/manage-loan/LoanForm'
 import { LoanFormAlerts } from '@/llamalend/widgets/manage-loan/LoanFormAlerts'
 import { LoanFormTokenInput } from '@/llamalend/widgets/manage-loan/LoanFormTokenInput'
-import { LoanFormWrapper } from '@/llamalend/widgets/manage-loan/LoanFormWrapper'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
 import Collapse from '@mui/material/Collapse'
@@ -81,7 +81,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
   useFormSync(values, onUpdate)
 
   return (
-    <LoanFormWrapper
+    <LoanForm
       {...form}
       onSubmit={onSubmit}
       infoAccordion={
@@ -173,6 +173,6 @@ export const CreateLoanForm = <ChainId extends IChainId>({
         handledErrors={['userCollateral', 'debt', 'maxDebt']}
         successTitle={t`Loan created`}
       />
-    </LoanFormWrapper>
+    </LoanForm>
   )
 }

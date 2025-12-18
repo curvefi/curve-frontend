@@ -2,9 +2,9 @@ import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/ho
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import type { RemoveCollateralOptions } from '@/llamalend/mutations/remove-collateral.mutation'
 import { useMarketRates } from '@/llamalend/queries/market-rates'
+import { LoanForm } from '@/llamalend/widgets/manage-loan/LoanForm'
 import { LoanFormAlerts } from '@/llamalend/widgets/manage-loan/LoanFormAlerts'
 import { LoanFormTokenInput } from '@/llamalend/widgets/manage-loan/LoanFormTokenInput'
-import { LoanFormWrapper } from '@/llamalend/widgets/manage-loan/LoanFormWrapper'
 import { LoanInfoAccordion } from '@/llamalend/widgets/manage-loan/LoanInfoAccordion'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
@@ -59,7 +59,7 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
   const marketRates = useMarketRates(params, isOpen)
 
   return (
-    <LoanFormWrapper
+    <LoanForm
       {...form}
       onSubmit={onSubmit}
       infoAccordion={
@@ -127,6 +127,6 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
         handledErrors={['userCollateral']}
         successTitle={t`Collateral removed`}
       />
-    </LoanFormWrapper>
+    </LoanForm>
   )
 }
