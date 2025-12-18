@@ -15,16 +15,20 @@ import { ImproveHealth } from '@/llamalend/features/manage-soft-liquidation/ui/t
 import type { BorrowPositionDetailsProps } from '@/llamalend/features/market-position-details'
 import { useManageLoanMuiForm, useManageSoftLiquidation } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
-import { type FormTab, FormTabs } from '@ui-kit/shared/ui/FormTabs/FormTabs'
+import { FormContent, type FormTab, FormTabs } from '@ui-kit/shared/ui/FormTabs/FormTabs'
 
 type ManageLoanProps = PageContentProps<MarketUrlParams>
 
 const ImproveHealthTab = ({ rChainId, rOwmId }: ManageLoanProps) => (
-  <ImproveHealth {...useImproveHealthTab({ chainId: rChainId, network: networks[rChainId], marketId: rOwmId })} />
+  <FormContent>
+    <ImproveHealth {...useImproveHealthTab({ chainId: rChainId, network: networks[rChainId], marketId: rOwmId })} />
+  </FormContent>
 )
 
 const ClosePositionTab = ({ rChainId, rOwmId }: ManageLoanProps) => (
-  <ClosePosition {...useClosePositionTab({ chainId: rChainId, network: networks[rChainId], marketId: rOwmId })} />
+  <FormContent>
+    <ClosePosition {...useClosePositionTab({ chainId: rChainId, network: networks[rChainId], marketId: rOwmId })} />
+  </FormContent>
 )
 
 const LendManageLegacyMenu = [
@@ -103,6 +107,5 @@ export const ManageLoanTabs = ({
     : shouldUseManageLoanMuiForm
       ? LendManageNewMenu
       : LendManageLegacyMenu
-  const shouldWrap = menu === LendManageLegacyMenu || menu === LendManageSoftLiquidationMenu // todo: LoanFormWrapper in soft liquidation
-  return <FormTabs params={pageProps} menu={menu} shouldWrap={shouldWrap} />
+  return <FormTabs params={pageProps} menu={menu} shouldWrap={menu === LendManageLegacyMenu} />
 }

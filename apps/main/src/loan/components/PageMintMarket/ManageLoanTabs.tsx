@@ -16,18 +16,22 @@ import networks from '@/loan/networks'
 import { hasDeleverage, hasV1Leverage } from '@/loan/utils/leverage'
 import { useManageLoanMuiForm, useManageSoftLiquidation } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
-import { type FormTab, FormTabs } from '@ui-kit/shared/ui/FormTabs/FormTabs'
+import { FormContent, type FormTab, FormTabs } from '@ui-kit/shared/ui/FormTabs/FormTabs'
 
 const ImproveHealthTab = ({ rChainId, market }: ManageLoanProps) => (
-  <ImproveHealth
-    {...useImproveHealthTab({ chainId: rChainId, network: networks[rChainId], marketId: market?.id ?? '' })}
-  />
+  <FormContent>
+    <ImproveHealth
+      {...useImproveHealthTab({ chainId: rChainId, network: networks[rChainId], marketId: market?.id ?? '' })}
+    />
+  </FormContent>
 )
 
 const ClosePositionTab = ({ rChainId, market }: ManageLoanProps) => (
-  <ClosePosition
-    {...useClosePositionTab({ chainId: rChainId, network: networks[rChainId], marketId: market?.id ?? '' })}
-  />
+  <FormContent>
+    <ClosePosition
+      {...useClosePositionTab({ chainId: rChainId, network: networks[rChainId], marketId: market?.id ?? '' })}
+    />
+  </FormContent>
 )
 
 const LoanRepayFromWalletTab = ({ rChainId, market, isReady }: ManageLoanProps) => (
@@ -118,6 +122,5 @@ export const ManageLoanTabs = ({
     : shouldUseManageLoanMuiForm
       ? MintManageNewMenu
       : MintManageLegacyMenu
-  const shouldWrap = menu == MintManageLegacyMenu || menu == MintManageSoftLiquidationMenu // todo: `LoanFormWrapper` in soft liquidation
-  return <FormTabs params={pageProps} menu={menu} shouldWrap={shouldWrap} />
+  return <FormTabs params={pageProps} menu={menu} shouldWrap={menu == MintManageLegacyMenu} />
 }
