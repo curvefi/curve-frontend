@@ -15,7 +15,7 @@ import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 
 type TxInfo = {
   description: string
-  txHash: string
+  txHash: string | undefined
 }
 
 export const DepositStepper = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {
