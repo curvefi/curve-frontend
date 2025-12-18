@@ -58,7 +58,11 @@ const {
   validationSuite: userContractValidationSuite,
 })
 
-const { useQuery: useUserLendingVaultEarningsQuery, invalidate: invalidateUserLendingVaultEarnings } = queryFactory({
+const {
+  useQuery: useUserLendingVaultEarningsQuery,
+  getQueryOptions: getUserLendingVaultEarningsQueryOptions,
+  invalidate: invalidateUserLendingVaultEarnings,
+} = queryFactory({
   queryKey: ({ userAddress, contractAddress, blockchainId }: UserContractParams) =>
     ['user-lending-vault', 'earnings', { blockchainId }, { contractAddress }, { userAddress }, 'v1'] as const,
   queryFn: ({ userAddress, contractAddress, blockchainId }: UserContractQuery) =>
@@ -114,6 +118,7 @@ export function invalidateAllUserLendingSupplies(userAddress: Address | undefine
 }
 
 export const getUserLendingSuppliesOptions = getUserLendingSuppliesQueryOptions
+export const getUserLendingVaultEarningsOptions = getUserLendingVaultEarningsQueryOptions
 export const useUserLendingVaultEarnings = useUserLendingVaultEarningsQuery
 export const getUserLendingVaultsOptions = getUserLendingVaultsQueryOptions
 export const getUserLendingVaultStatsOptions = getUserLendingVaultStatsQueryOptions

@@ -1,15 +1,19 @@
 import { useMemo } from 'react'
 import { useConnection } from 'wagmi'
-import { getUserLendingVaultStatsOptions } from '@/llamalend/queries/market-list/lending-vaults'
+import {
+  getUserLendingVaultEarningsOptions,
+  getUserLendingVaultStatsOptions,
+} from '@/llamalend/queries/market-list/lending-vaults'
 import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { getUserMintMarketsStatsOptions } from '@/llamalend/queries/market-list/mint-markets'
 import { useQueries } from '@tanstack/react-query'
 import { combineQueriesMeta } from '@ui-kit/lib/queries/combine'
 import { LlamaMarketType } from '@ui-kit/types/market'
 
-type QueryOptions =
+type StatsQueryOptions =
   | ReturnType<typeof getUserLendingVaultStatsOptions>
   | ReturnType<typeof getUserMintMarketsStatsOptions>
+type EarningsQueryOptions = ReturnType<typeof getUserLendingVaultEarningsOptions>
 
 export type UserPositionSummaryMetric = { label: string; data: number; isLoading: boolean; isError: boolean }
 
@@ -27,34 +31,42 @@ export const useUserPositionsSummary = ({
 }): UserPositionSummaryMetric[] => {
   const { address: userAddress } = useConnection()
 
-  const userPositionStatsOptions = useMemo(() => {
-    if (!markets) return []
+  const userPositionOptions = useMemo(() => {
+    if (!markets) return { borrow: [], supply: [] }
 
-    return markets.reduce<QueryOptions[]>((options, market) => {
-      if (!market.userHasPositions?.Borrow) return options
+    return markets.reduce<{ borrow: StatsQueryOptions[]; supply: EarningsQueryOptions[] }>(
+      (options, market) => {
+        const isSupply = market.userHasPositions?.Supply
+        const isBorrow = market.userHasPositions?.Borrow
+        if (!market.userHasPositions || (isSupply && !market.vaultAddress)) return options
 
-      const params = {
-        userAddress,
-        contractAddress: market.controllerAddress,
-        blockchainId: market.chain,
-      }
+        const params = {
+          userAddress,
+          blockchainId: market.chain,
+        }
 
-      options.push(
-        market.type === LlamaMarketType.Lend
-          ? getUserLendingVaultStatsOptions(params)
-          : getUserMintMarketsStatsOptions(params),
-      )
+        if (isSupply)
+          options.supply.push(getUserLendingVaultEarningsOptions({ contractAddress: market.vaultAddress, ...params }))
+        if (isBorrow)
+          options.borrow.push(
+            market.type === LlamaMarketType.Lend
+              ? getUserLendingVaultStatsOptions({ contractAddress: market.controllerAddress, ...params })
+              : getUserMintMarketsStatsOptions({ contractAddress: market.controllerAddress, ...params }),
+          )
 
-      return options
-    }, [])
+        return options
+      },
+      { borrow: [], supply: [] },
+    )
   }, [markets, userAddress])
 
-  const summary = useQueries({
-    queries: userPositionStatsOptions,
+  const borrowSummary = useQueries({
+    queries: userPositionOptions.borrow,
     combine: (results) => ({
       data: results.reduce(
         (acc, stat) => ({
           totalCollateralValue: acc.totalCollateralValue + (stat.data?.collateral ?? 0) * (stat.data?.oraclePrice ?? 0),
+          // TODO: multiply by token price
           totalBorrowedValue: acc.totalBorrowedValue + (stat.data?.debt ?? 0),
         }),
         { totalCollateralValue: 0, totalBorrowedValue: 0 },
@@ -63,8 +75,38 @@ export const useUserPositionsSummary = ({
     }),
   })
 
+  const supplySummary = useQueries({
+    queries: userPositionOptions.supply,
+    combine: (results) => ({
+      data: results.reduce(
+        (acc, stat) => ({
+          // TODO: multiply by token price
+          totalSuppliedValue: acc.totalSuppliedValue + (stat.data?.totalCurrentAssets ?? 0),
+        }),
+        { totalSuppliedValue: 0 },
+      ),
+      ...combineQueriesMeta(results),
+    }),
+  })
+
   return [
-    createMetric('Total Collateral Value', summary.data.totalCollateralValue, summary.isLoading, summary.isError),
-    createMetric('Total Borrowed', summary.data.totalBorrowedValue, summary.isLoading, summary.isError),
+    createMetric(
+      'Total Collateral Value',
+      borrowSummary.data.totalCollateralValue,
+      borrowSummary.isLoading,
+      borrowSummary.isError,
+    ),
+    createMetric(
+      'Total Borrowed',
+      borrowSummary.data.totalBorrowedValue,
+      borrowSummary.isLoading,
+      borrowSummary.isError,
+    ),
+    createMetric(
+      'Total Supplied',
+      supplySummary.data.totalSuppliedValue,
+      supplySummary.isLoading,
+      supplySummary.isError,
+    ),
   ]
 }
