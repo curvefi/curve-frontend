@@ -19,46 +19,47 @@ export type ChartOption<T = string> = {
 }
 
 type ChartHeaderProps<T = string> = {
-  isChartExpanded: boolean
-  toggleChartExpanded: () => void
-  chartOptions: ChartOption<T>[]
-  // set timeOptions to show select dropdown
-  timeOptions?: TimeOption[]
-  activeChartOption: T
-  setActiveChartOption: (value: T) => void
-  activeTimeOption?: TimeOption
-  setActiveTimeOption?: (newTimeOption: TimeOption) => void
-  /* 
-  hideExpandChart is used to hide the expand chart button when the
-  chart is already taking up the full width of the viewport
-  */
-  hideExpandChart?: boolean
+  chartOptions: {
+    options: ChartOption<T>[]
+    activeOption: T
+    setActiveOption: (value: T) => void
+  }
+  timeOption?: {
+    options: TimeOption[]
+    activeOption: TimeOption
+    setActiveOption: (newTimeOption: TimeOption) => void
+  }
+  expandChart?: {
+    isExpanded: boolean
+    toggleChartExpanded: () => void
+  }
+  chartOptionVariant: 'select' | 'buttons-group'
+  customButton?: React.ReactNode
 }
 
 const ChartHeader = <T extends string>({
-  isChartExpanded,
-  toggleChartExpanded,
+  expandChart,
   chartOptions,
-  timeOptions,
-  activeChartOption,
-  setActiveChartOption,
-  activeTimeOption,
-  setActiveTimeOption,
-  hideExpandChart = false,
+  timeOption,
+  chartOptionVariant,
+  customButton,
 }: ChartHeaderProps<T>) => {
-  const handleChartOption = (_: MouseEvent<HTMLElement>, key: T) => {
+  const handleChartOptionToggle = (_: MouseEvent<HTMLElement>, key: T) => {
     // ensure that one option is always selected by checking null
-    if (key !== null) setActiveChartOption(key)
+    if (key !== null) chartOptions.setActiveOption(key)
+  }
+  const handleChartOptionSelect = (event: SelectChangeEvent<T>) => {
+    if (event.target.value !== null) chartOptions.setActiveOption(event.target.value as T)
   }
   const handleTimeOption = (event: SelectChangeEvent<TimeOption>) => {
-    if (event.target.value !== null && setActiveTimeOption) setActiveTimeOption(event.target.value as TimeOption)
+    if (event.target.value !== null && timeOption) timeOption.setActiveOption(event.target.value as TimeOption)
   }
   /*
   The small breakpoint is used for placing Title and ToggleButtonGroup in a column 
   and separate the expand Chart button to the right
   */
   const smallBreakPoint = '35.9375rem' // 575px
-  const foundChartOption = chartOptions.find((option) => option.key === activeChartOption)
+  const foundChartOption = chartOptions.options.find((option) => option.key === chartOptions.activeOption)
 
   return (
     <Stack
@@ -76,9 +77,24 @@ const ChartHeader = <T extends string>({
         },
       }}
     >
-      <Typography variant="headingXsBold" color="textSecondary">
-        {foundChartOption?.activeTitle ?? '?'}
-      </Typography>
+      {chartOptionVariant === 'buttons-group' ? (
+        <Typography variant="headingXsBold" color="textSecondary">
+          {foundChartOption?.activeTitle ?? '?'}
+        </Typography>
+      ) : (
+        <Select
+          value={chartOptions.activeOption}
+          onChange={handleChartOptionSelect}
+          size="small"
+          sx={{ alignSelf: 'center' }}
+        >
+          {chartOptions.options.map((option) => (
+            <MenuItem value={option.key} key={option.key}>
+              {option.label}
+            </MenuItem>
+          ))}
+        </Select>
+      )}
       <Stack
         direction="row"
         sx={{
@@ -87,39 +103,41 @@ const ChartHeader = <T extends string>({
       >
         <ToggleButtonGroup
           exclusive
-          value={activeChartOption}
-          onChange={handleChartOption}
+          value={chartOptions.activeOption}
+          onChange={handleChartOptionToggle}
           sx={{ [`@media (max-width: ${smallBreakPoint})`]: { width: '100%', display: 'flex', flexGrow: 1 } }}
         >
-          {chartOptions.map((option) => (
-            <ToggleButton value={option.key} key={option.key} size="small">
-              {option.label}
-            </ToggleButton>
-          ))}
-          {!hideExpandChart && (
+          {chartOptionVariant === 'buttons-group' &&
+            chartOptions.options.map((option) => (
+              <ToggleButton value={option.key} key={option.key} size="small">
+                {option.label}
+              </ToggleButton>
+            ))}
+          {timeOption && (
+            <Select
+              value={timeOption.activeOption}
+              onChange={handleTimeOption}
+              size="small"
+              sx={{ width: '100px', textTransform: 'uppercase', alignSelf: 'center' }}
+            >
+              {timeOption.options.map((option) => (
+                <MenuItem value={option} key={option} sx={{ textTransform: 'uppercase' }}>
+                  {option}
+                </MenuItem>
+              ))}
+            </Select>
+          )}
+          {customButton}
+          {expandChart && (
             <IconButton
               size="small"
-              onClick={toggleChartExpanded}
+              onClick={expandChart.toggleChartExpanded}
               sx={{ [`@media (max-width: ${smallBreakPoint})`]: { marginLeft: 'auto' } }}
             >
-              <Icon name={isChartExpanded ? 'Minimize' : 'Maximize'} size={20} />
+              <Icon name={expandChart?.isExpanded ? 'Minimize' : 'Maximize'} size={20} />
             </IconButton>
           )}
         </ToggleButtonGroup>
-        {timeOptions && (
-          <Select
-            value={activeTimeOption}
-            onChange={handleTimeOption}
-            size="small"
-            sx={{ width: '100px', textTransform: 'uppercase' }}
-          >
-            {timeOptions.map((option) => (
-              <MenuItem value={option} key={option} sx={{ textTransform: 'uppercase' }}>
-                {option}
-              </MenuItem>
-            ))}
-          </Select>
-        )}
       </Stack>
     </Stack>
   )

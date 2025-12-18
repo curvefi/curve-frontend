@@ -61,12 +61,13 @@ const Statistics = ({ isChartExpanded, toggleChartExpanded, hideExpandChart }: S
           <StatsStack />
         </Box>
         <ChartHeader
-          isChartExpanded={isChartExpanded}
-          toggleChartExpanded={toggleChartExpanded}
-          activeChartOption={selectedStatisticsChart}
-          setActiveChartOption={setSelectedStatisticsChart}
-          chartOptions={chartOptions}
-          hideExpandChart={hideExpandChart}
+          chartOptions={{
+            options: chartOptions,
+            activeOption: selectedStatisticsChart,
+            setActiveOption: setSelectedStatisticsChart,
+          }}
+          chartOptionVariant="buttons-group"
+          expandChart={{ isExpanded: isChartExpanded, toggleChartExpanded }}
         />
         {selectedStatisticsChart === 'savingsRate' && (
           <Stack sx={{ marginBottom: smallView ? Spacing.xl : 0 }}>
