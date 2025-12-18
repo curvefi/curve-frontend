@@ -44,6 +44,7 @@ import { convertToLocaleTimestamp } from '@ui-kit/features/candle-chart/utils'
 import { requireLib } from '@ui-kit/features/connect-wallet'
 import { log } from '@ui-kit/lib/logging'
 import { fetchTokenUsdRate, getTokenUsdRateQueryData } from '@ui-kit/lib/model/entities/token-usd-rate'
+import { DAY_IN_MS } from '@ui-kit/themes/design/0_primitives'
 import { fetchNetworks } from '../entities/networks'
 import { getPools } from '../lib/pools'
 
@@ -526,7 +527,7 @@ const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>
     fetchPricesPoolSnapshots: async (chainId: ChainId, poolAddress: string) => {
       const networks = await fetchNetworks()
       if (networks[chainId].pricesApi) {
-        const startTime = Math.floor((Date.now() - 24 * 60 * 60 * 1000) / 1000)
+        const startTime = Math.floor((Date.now() - DAY_IN_MS) / 1000)
         const endTime = Math.floor(Date.now() / 1000)
         const network = networks[chainId].id.toLowerCase()
 

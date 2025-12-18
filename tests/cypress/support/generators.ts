@@ -1,5 +1,6 @@
 import type { Address } from '@curvefi/prices-api'
 import { range, recordValues } from '@curvefi/prices-api/objects.util'
+import { DAY_IN_MS } from '@ui-kit/themes/design/0_primitives'
 
 export const MAX_USD_VALUE = 400_000_000
 
@@ -36,7 +37,7 @@ export const oneTokenType = () => oneOf('collateral', 'borrowed')
 export type TokenType = ReturnType<typeof oneTokenType>
 
 export const oneDate = ({
-  minDate = new Date(Date.now() - 365 * 24 * 60 * 60 * 1000), // 1 year ago
+  minDate = new Date(Date.now() - 365 * DAY_IN_MS), // 1 year ago
   maxDate = new Date(Date.now()),
 }: {
   minDate?: Date

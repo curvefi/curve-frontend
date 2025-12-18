@@ -8,6 +8,7 @@ import {
   SCROLL_WIDTH,
   TABLET_BREAKPOINT,
 } from '@cy/support/ui'
+import { DAY_IN_MS } from '@ui-kit/themes/design/0_primitives'
 
 const expectedMainNavHeight = 56
 const expectedSubNavHeight = 42 // 40 + 2px border
@@ -17,8 +18,6 @@ const expectedConnectHeight = 40
 const expectedFooterXMargin = { mobile: 32, tablet: 48, desktop: 48 }
 const expectedFooterMinWidth = 273
 const expectedFooterMaxWidth = 1536
-
-const DAY_IN_MS = 24 * 60 * 60 * 1000
 
 describe('Header', () => {
   let viewport: readonly [number, number]

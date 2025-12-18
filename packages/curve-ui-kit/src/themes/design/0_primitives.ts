@@ -133,6 +133,8 @@ export const Sizing = {
   '800': '5.5rem', // 88px
 } as const
 
+export const DAY_IN_MS = 24 * 60 * 60 * 1000
+
 export const Duration = {
   Delay: 100,
   Flicker: 1000,
@@ -141,6 +143,10 @@ export const Duration = {
   Snackbar: 6000,
   Tooltip: { Enter: 500, Exit: 500 },
   Transition: 256,
+  Banner: {
+    Daily: DAY_IN_MS,
+    Monthly: 30 * DAY_IN_MS,
+  },
 }
 
 export const TransitionFunction = `ease-out ${Duration.Transition}ms`
