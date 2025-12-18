@@ -1,6 +1,6 @@
 import lodash from 'lodash'
 import type { StoreApi } from 'zustand'
-import type { FormEstGas } from '@/lend/components/PageLoanManage/types'
+import type { FormEstGas } from '@/lend/components/PageLendMarket/types'
 import type { FormStatus, RewardType } from '@/lend/components/PageVault/VaultClaim/types'
 import { DEFAULT_FORM_STATUS } from '@/lend/components/PageVault/VaultClaim/utils'
 import apiLending from '@/lend/lib/apiLending'
