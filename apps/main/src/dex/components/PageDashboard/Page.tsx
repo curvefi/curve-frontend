@@ -23,7 +23,7 @@ export const PageDashboard = () => {
       )}
     </Container>
   ) : (
-    <ConnectWalletPrompt description="Connect wallet to view dashboard" />
+    <ConnectWalletPrompt description="Connect wallet to view dashboard" testId="dashboard-page" />
   )
 }
 

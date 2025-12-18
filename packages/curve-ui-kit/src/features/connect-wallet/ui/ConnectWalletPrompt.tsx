@@ -10,12 +10,12 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing, MaxWidth } = SizesAndSpaces
 
-export const ConnectWalletPrompt = ({ description }: { description: string }) => {
+export const ConnectWalletPrompt = ({ description, testId }: { description: string; testId?: string }) => {
   const { isReconnecting, connectState } = useCurve()
   const { connect } = useWallet()
   const isConnecting = isLoading(connectState) || isReconnecting
   return (
-    <Stack alignItems="center" marginBlock={Spacing.lg}>
+    <Stack alignItems="center" marginBlock={Spacing.lg} data-testid={testId}>
       <Stack
         padding={7}
         spacing={8}
