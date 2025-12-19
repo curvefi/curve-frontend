@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import type { Address } from 'viem'
 import type { Config } from 'wagmi'
 import { requireLib, useCurve, type CurveApi } from '@ui-kit/features/connect-wallet'
@@ -17,7 +18,10 @@ export function usePoolTokenBalances(
   enabled = true,
 ) {
   const { curveApi, isHydrated } = useCurve()
-  const pool = chainId && userAddress && poolId && curveApi && isHydrated ? curveApi.getPool(poolId) : undefined
+  const pool = useMemo(
+    () => (isHydrated && poolId ? curveApi!.getPool(poolId) : undefined),
+    [curveApi, isHydrated, poolId],
+  )
 
   const { data: wrappedCoinsBalances, isLoading: wrappedCoinsLoading } = useTokenBalances(
     {
