@@ -10,13 +10,12 @@ export const InlineLink = ({ href, children }: { href: string; children: React.R
   const isExternal = href.startsWith('http')
   return (
     <Link
-      component={isExternal ? Link : TanstackLink}
       sx={{ color: 'currentColor', '&:hover': { textDecoration: 'none' } }}
       href={href}
-      {...(isExternal && { target: '_blank', rel: 'noreferrer noopener' })}
+      {...(isExternal && { target: '_blank', rel: 'noreferrer noopener', component: TanstackLink })}
     >
       {children}
-      {isExternal && <ArrowTopRightIcon fontSize={'small'} sx={{ verticalAlign: 'bottom' }} />}
+      {isExternal && <ArrowTopRightIcon fontSize="small" sx={{ verticalAlign: 'bottom' }} />}
     </Link>
   )
 }
