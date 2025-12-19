@@ -1,9 +1,7 @@
 import { BrowserProvider } from 'ethers'
-import { createContext, useContext, useMemo } from 'react'
-import { useConnection, useConnectorClient } from 'wagmi'
+import { createContext, useContext, useEffect, useMemo, useState } from 'react'
+import { useConnectorClient, useReconnect } from 'wagmi'
 import type { NetworkDef } from '@ui/utils'
-import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
-import { type Address } from '@ui-kit/utils'
 import { ConnectState, type CurveApi, type LlamaApi, type Wallet } from './types'
 
 const { FAILURE, LOADING } = ConnectState
@@ -28,19 +26,6 @@ export const CurveContext = createContext<CurveContextValue>({
 })
 
 /**
- * Detects if the wallet is in the process of reconnecting.
- * - `isReconnecting` is set when switching pages
- * - `isConnecting` is set when the wallet gets flipped from connecting to connected when loading,
- *   especially without any wallet plugin
- * Therefore, we use a very cumbersome condition to detect if we are reconnecting, and also need some debouncing 😭
- */
-function useWagmiIsReconnecting(address?: Address) {
-  const { isReconnecting, isConnected, isConnecting } = useConnection()
-  const isConnectingDebounced = useDebouncedValue(isConnecting, { defaultValue: true })
-  return !address && (isConnectingDebounced || isReconnecting || isConnected)
-}
-
-/**
  * Separate hook to get the wallet and provider from wagmi.
  * This is moved here so that it's only used once in the context provider.
  *
@@ -51,8 +36,16 @@ function useWagmiIsReconnecting(address?: Address) {
 export function useWagmiWallet() {
   const { data: client } = useConnectorClient()
   const address = client?.account?.address
+  const { mutateAsync: reconnectAsync } = useReconnect()
+  const [isReconnecting, setIsReconnecting] = useState(true)
+
+  useEffect(() => {
+    void reconnectAsync()
+      .catch((e) => console.warn('wagmi reconnect failed', e))
+      .finally(() => setIsReconnecting(false))
+  }, [reconnectAsync])
   return {
-    isReconnecting: useWagmiIsReconnecting(address),
+    isReconnecting,
     ...(useMemo(() => {
       const wallet = address &&
         client?.transport.request && {

@@ -56,7 +56,7 @@ const NetworkAwareLayout = () => {
   return (
     config &&
     networks && (
-      <WagmiProvider config={config}>
+      <WagmiProvider config={config} reconnectOnMount={false}>
         <CurveProvider app={currentApp} network={network} onChainUnavailable={onChainUnavailable} hydrate={hydrate}>
           {network && (
             <GlobalLayout currentApp={currentApp} network={network} networks={networks}>

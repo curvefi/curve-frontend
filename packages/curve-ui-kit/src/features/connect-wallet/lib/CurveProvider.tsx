@@ -1,6 +1,5 @@
 import { type ReactNode, useEffect, useState } from 'react'
-import { useChainId, useSwitchChain } from 'wagmi'
-import { useConfig } from 'wagmi'
+import { useChainId, useConfig, useSwitchChain } from 'wagmi'
 import type { NetworkDef } from '@ui/utils'
 import { CurveContext, useWagmiWallet } from '@ui-kit/features/connect-wallet/lib/CurveContext'
 import {
@@ -50,7 +49,7 @@ export const CurveProvider = <App extends AppName>({
      * Checks the wallet chain if the network changes or the wallet is connected to a different chain.
      * Separate from the heavier `initApp` because `isFocused` changes often.
      */
-    if (isReconnecting) return // wait for wagmi to auto-reconnect
+    if (isReconnecting) return // wait for wagmi to reconnect
     if (!network) return onChainUnavailable(walletChainId) // will redirect to the wallet's chain if supported
     if (network.chainId == walletChainId) return // all good
     if (isFocused) {
@@ -63,7 +62,7 @@ export const CurveProvider = <App extends AppName>({
   }, [isFocused, isReconnecting, walletChainId, network, onChainUnavailable, switchChainAsync, wallet])
 
   useEffect(() => {
-    if (isReconnecting) return // wait for wagmi to auto-reconnect
+    if (isReconnecting) return // wait for wagmi to reconnect
     const abort = new AbortController()
     const signal = abort.signal
 
