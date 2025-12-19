@@ -34,7 +34,7 @@ const DEFAULT_USER_LOSS = {
 }
 
 const DEFAULT_BAND_BALANCES = {
-  0: { stablecoin: '0', collateral: '0' },
+  '0': { stablecoin: '0', collateral: '0' },
 }
 
 const DEFAULT_PARAMETERS = {

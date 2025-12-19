@@ -35,7 +35,6 @@ const ListInfoItem = ({
   const parsedTitleOpacity = isMain ? 1 : null
 
   return (
-    // @ts-ignore
     <Wrapper
       {...props}
       {...(as ? { as } : {})}
