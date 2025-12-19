@@ -6,7 +6,7 @@ import { httpFetcher } from '@/dex/lib/utils'
 import type { State } from '@/dex/store/useStore'
 import type { FilterKey, FormStatus, FormValues } from '@/dex/types/integrations.types'
 import type { ChainId } from '@/dex/types/main.types'
-import type { IntegrationApp, IntegrationsTags } from '@ui/Integration/types'
+import type { IntegrationApp, IntegrationsTags } from '@ui-kit/features/integrations'
 import { fetchNetworks, getNetworks } from '../entities/networks'
 
 type StateKey = keyof typeof DEFAULT_STATE

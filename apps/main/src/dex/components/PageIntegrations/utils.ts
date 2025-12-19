@@ -1,6 +1,6 @@
 import type { FilterKey } from '@/dex/types/integrations.types'
 import { ChainId, NetworkConfig } from '@/dex/types/main.types'
-import type { IntegrationsTags } from '@ui/Integration/types'
+import type { IntegrationsTags } from '@ui-kit/features/integrations'
 
 export function parseSearchParams(
   searchParams: URLSearchParams | null,

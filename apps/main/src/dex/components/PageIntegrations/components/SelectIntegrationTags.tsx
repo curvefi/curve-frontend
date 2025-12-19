@@ -3,8 +3,8 @@ import { Item } from 'react-stately'
 import { styled } from 'styled-components'
 import type { FormStatus } from '@/dex/types/integrations.types'
 import Icon from '@ui/Icon'
-import type { IntegrationTag } from '@ui/Integration/types'
 import Select from '@ui/Select'
+import type { IntegrationTag } from '@ui-kit/features/integrations/types'
 import { t } from '@ui-kit/lib/i18n'
 
 const SelectIntegrationTags = ({
