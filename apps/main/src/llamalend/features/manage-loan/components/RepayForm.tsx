@@ -1,15 +1,17 @@
-import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
+import { RepayLoanInfoAccordion } from '@/llamalend/features/borrow/components/RepayLoanInfoAccordion'
+import { setValueOptions } from '@/llamalend/features/borrow/react-form.utils'
+import { hasDeleverage, hasLeverage } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import type { RepayOptions } from '@/llamalend/mutations/repay.mutation'
-import { useMarketRates } from '@/llamalend/queries/market-rates'
 import { LoanFormAlerts } from '@/llamalend/widgets/manage-loan/LoanFormAlerts'
 import { LoanFormTokenInput } from '@/llamalend/widgets/manage-loan/LoanFormTokenInput'
 import { LoanFormWrapper } from '@/llamalend/widgets/manage-loan/LoanFormWrapper'
-import { LoanInfoAccordion } from '@/llamalend/widgets/manage-loan/LoanInfoAccordion'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import { notFalsy } from '@curvefi/prices-api/objects.util'
 import Button from '@mui/material/Button'
+import Checkbox from '@mui/material/Checkbox'
+import FormControlLabel from '@mui/material/FormControlLabel'
 import Stack from '@mui/material/Stack'
-import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { InputDivider } from '../../../widgets/InputDivider'
 import { useRepayForm } from '../hooks/useRepayForm'
@@ -22,7 +24,7 @@ export const RepayForm = <ChainId extends IChainId>({
   onRepaid,
   fromCollateral,
   fromWallet,
-  fromBorrowed,
+  fromBorrowed: showUserBorrowed,
 }: {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
@@ -34,28 +36,21 @@ export const RepayForm = <ChainId extends IChainId>({
   fromBorrowed?: boolean
 }) => {
   const network = networks[chainId]
-  const [isOpen, , , toggle] = useSwitch(false)
-
   const {
     form,
+    values,
+    params,
     isPending,
     onSubmit,
-    action,
-    bands,
-    health,
-    prices,
-    gas,
     isDisabled,
-    isFull,
-    formErrors,
-    collateralToken,
     borrowToken,
-    params,
-    values,
+    collateralToken,
+    isRepaid,
+    repayError,
     txHash,
-    expectedBorrowed,
-    routeImage,
-    priceImpact,
+    isApproved,
+    formErrors,
+    isFull,
   } = useRepayForm({
     market,
     network,
@@ -63,36 +58,27 @@ export const RepayForm = <ChainId extends IChainId>({
     enabled,
     onRepaid,
   })
-
-  const marketRates = useMarketRates(params, isOpen)
-
+  const { withdrawEnabled: withdrawEnabled } = values
+  const showStateCollateral = market && hasLeverage(market) && fromCollateral
+  const showUserCollateral = market && (hasLeverage(market) || hasDeleverage(market)) && fromWallet
   return (
-    <LoanFormWrapper // todo: prevHealth, prevRates, debt, prevDebt
+    <LoanFormWrapper
       {...form}
       onSubmit={onSubmit}
       infoAccordion={
-        <LoanInfoAccordion
-          isOpen={isOpen}
-          toggle={toggle}
-          health={health}
-          bands={bands}
-          prices={prices}
-          rates={marketRates}
-          loanToValue={useLoanToValueFromUserState({
-            chainId,
-            marketId: params.marketId,
-            userAddress: params.userAddress,
-            collateralToken,
-            borrowToken,
-            enabled: isOpen,
-            expectedBorrowed: expectedBorrowed.data?.totalBorrowed,
-          })}
-          gas={gas}
+        <RepayLoanInfoAccordion
+          params={params}
+          values={values}
+          collateralToken={collateralToken}
+          borrowToken={borrowToken}
+          networks={networks}
+          onSlippageChange={(value) => form.setValue('slippage', value, setValueOptions)}
+          hasLeverage={market && hasLeverage(market)}
         />
       }
     >
-      <Stack divider={<InputDivider />}>
-        {fromCollateral && (
+      <Stack divider={withdrawEnabled ? <InputDivider /> : undefined}>
+        {showStateCollateral && (
           <LoanFormTokenInput
             label={t`From collateral (position)`}
             token={collateralToken}
@@ -103,7 +89,7 @@ export const RepayForm = <ChainId extends IChainId>({
             network={network}
           />
         )}
-        {fromWallet && (
+        {showUserCollateral && (
           <LoanFormTokenInput
             label={t`From collateral (wallet)`}
             token={collateralToken}
@@ -114,7 +100,7 @@ export const RepayForm = <ChainId extends IChainId>({
             network={network}
           />
         )}
-        {fromBorrowed && (
+        {showUserBorrowed && (
           <LoanFormTokenInput
             label={t`From borrowed token`}
             token={borrowToken}
@@ -127,17 +113,32 @@ export const RepayForm = <ChainId extends IChainId>({
         )}
       </Stack>
 
+      <FormControlLabel
+        control={
+          <Checkbox
+            checked={withdrawEnabled}
+            onChange={(e) => form.setValue('withdrawEnabled', e.target.checked, setValueOptions)}
+          />
+        }
+        label={t`Repay & Withdraw`}
+      />
       <Button type="submit" loading={isPending || !market} disabled={isDisabled} data-testid="repay-submit-button">
-        {isPending ? t`Processing...` : isFull.data ? t`Repay full` : t`Repay`}
+        {isPending
+          ? t`Processing...`
+          : notFalsy(isApproved?.data && t`Approve`, isFull.data ? t`Repay full` : t`Repay`).join(' & ')}
       </Button>
 
       <LoanFormAlerts
-        isSuccess={action.isSuccess}
-        error={action.error}
+        isSuccess={isRepaid}
+        error={repayError}
         txHash={txHash}
         formErrors={formErrors}
         network={network}
-        handledErrors={['stateCollateral', 'userCollateral', 'userBorrowed']}
+        handledErrors={notFalsy(
+          showStateCollateral && 'stateCollateral',
+          showUserCollateral && 'userCollateral',
+          showUserBorrowed && 'userBorrowed',
+        )}
         successTitle={t`Loan repaid`}
       />
     </LoanFormWrapper>

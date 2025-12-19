@@ -70,18 +70,20 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
           bands={bands}
           prices={prices}
           rates={marketRates}
-          loanToValue={useLoanToValueFromUserState({
-            chainId: params.chainId!,
-            marketId: params.marketId,
-            userAddress: params.userAddress,
-            collateralToken,
-            borrowToken,
-            enabled: isOpen,
-            collateralDelta:
-              values.userCollateral != null
-                ? (`-${values.userCollateral}` as unknown as import('@ui-kit/utils').Decimal)
-                : undefined,
-          })}
+          loanToValue={useLoanToValueFromUserState(
+            {
+              chainId: params.chainId,
+              marketId: params.marketId,
+              userAddress: params.userAddress,
+              collateralToken,
+              borrowToken,
+              collateralDelta:
+                values.userCollateral != null
+                  ? (`-${values.userCollateral}` as unknown as import('@ui-kit/utils').Decimal)
+                  : undefined,
+            },
+            isOpen,
+          )}
           gas={gas}
         />
       }
