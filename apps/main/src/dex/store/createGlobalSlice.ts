@@ -90,7 +90,6 @@ const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreApi<State
       state.userBalances.resetState()
       state.user.resetState()
       state.userBalances.resetState()
-      state.lockedCrv.resetState()
       state.createPool.resetState()
       state.dashboard.resetState()
     }

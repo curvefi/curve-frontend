@@ -7,9 +7,8 @@ import { usePoolIdByAddressOrId } from '@/dex/hooks/usePoolIdByAddressOrId'
 import usePoolTotalStaked from '@/dex/hooks/usePoolTotalStaked'
 import useStore from '@/dex/store/useStore'
 import type { PoolParameters } from '@/dex/types/main.types'
-import { formatDisplayDate } from '@/dex/utils/utilsDates'
 import Stack from '@mui/material/Stack'
-import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import { FORMAT_OPTIONS, formatDate, formatNumber } from '@ui/utils'
 import dayjs from '@ui-kit/lib/dayjs'
 import { t } from '@ui-kit/lib/i18n'
 import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
@@ -56,6 +55,7 @@ const PoolParameters = ({
 
   const { gamma, adminFee, fee } = parameters ?? {}
   const isEymaPools = rChainId === 250 && poolDataCacheOrApi.pool.id.startsWith('factory-eywa')
+
   return (
     <Stack gap={Spacing.lg}>
       <Stack gap={Spacing.sm}>
@@ -154,16 +154,18 @@ const PoolParameters = ({
               valueTooltip={
                 <Stack gap={Spacing.sm}>
                   {t`Amplification coefficient chosen from fluctuation of prices around 1.`}
-                  {future_A_time != null &&
+                  {initial_A_time != null &&
+                    future_A_time != null &&
                     dayjs().isAfter(future_A_time, 'day') &&
-                    t`Last change occurred between ${formatDisplayDate(dayjs(initial_A_time))} and ${formatDisplayDate(
-                      dayjs(future_A_time),
+                    t`Last change occurred between ${formatDate(initial_A_time, 'short')} and ${formatDate(
+                      future_A_time,
+                      'short',
                     )}, when A ramped from ${initial_A} to ${future_A}.`}
                 </Stack>
               }
             />
           )}
-          {future_A_time != null && !dayjs().isAfter(future_A_time, 'day') && (
+          {initial_A_time != null && future_A_time != null && !dayjs().isAfter(future_A_time, 'day') && (
             <>
               <ActionInfo
                 label={t`Ramping A`}
@@ -173,7 +175,7 @@ const PoolParameters = ({
               />
               <ActionInfo
                 label=" "
-                value={`${formatDisplayDate(dayjs(initial_A_time))} to ${formatDisplayDate(dayjs(future_A_time))}`}
+                value={`${formatDate(initial_A_time, 'short')} to ${formatDate(future_A_time, 'short')}`}
               />
             </>
           )}
