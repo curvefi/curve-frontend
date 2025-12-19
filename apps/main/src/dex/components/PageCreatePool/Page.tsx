@@ -12,7 +12,7 @@ export const PageCreatePool = () => {
       </Container>
     )
   }
-  return <ConnectWalletPrompt description="Connect wallet to access pool creation" data-testid="create-pool-page" />
+  return <ConnectWalletPrompt description="Connect wallet to access pool creation" testId="create-pool-page" />
 }
 
 const Container = styled.div`
