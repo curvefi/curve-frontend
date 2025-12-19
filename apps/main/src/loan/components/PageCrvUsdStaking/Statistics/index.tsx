@@ -6,7 +6,7 @@ import { Stack, Card, CardHeader, Box } from '@mui/material'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { t } from '@ui-kit/lib/i18n'
 import type { TimeOption } from '@ui-kit/lib/types/scrvusd'
-import ChartHeader, { ChartOption } from '@ui-kit/shared/ui/ChartHeader'
+import ChartHeader, { ChartSelections } from '@ui-kit/shared/ui/ChartHeader'
 import { Sizing } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import AdvancedDetails from './AdvancedDetails'
@@ -21,7 +21,7 @@ const chartLabels: Record<StatisticsChart, string> = {
   distributions: t`Distributions`,
 }
 
-const chartOptions: ChartOption<StatisticsChart>[] = [
+const chartSelections: ChartSelections<StatisticsChart>[] = [
   { activeTitle: t`Historical Rate`, label: chartLabels.savingsRate, key: 'savingsRate' },
   { activeTitle: t`Historical Distributions`, label: chartLabels.distributions, key: 'distributions' },
 ]
@@ -31,10 +31,9 @@ const timeOptions: TimeOption[] = ['1M', '6M', '1Y']
 type StatisticsProps = {
   isChartExpanded: boolean
   toggleChartExpanded: () => void
-  hideExpandChart: boolean
 }
 
-const Statistics = ({ isChartExpanded, toggleChartExpanded, hideExpandChart }: StatisticsProps) => {
+const Statistics = ({ isChartExpanded, toggleChartExpanded }: StatisticsProps) => {
   const selectedStatisticsChart = useStore((state) => state.scrvusd.selectedStatisticsChart)
   const setSelectedStatisticsChart = useStore((state) => state.scrvusd.setSelectedStatisticsChart)
   const revenueChartTimeOption = useStore((state) => state.scrvusd.revenueChartTimeOption)
@@ -61,13 +60,14 @@ const Statistics = ({ isChartExpanded, toggleChartExpanded, hideExpandChart }: S
           <StatsStack />
         </Box>
         <ChartHeader
-          chartOptions={{
-            options: chartOptions,
-            activeOption: selectedStatisticsChart,
-            setActiveOption: setSelectedStatisticsChart,
+          chartSelections={{
+            selections: chartSelections,
+            activeSelection: selectedStatisticsChart,
+            setActiveSelection: setSelectedStatisticsChart,
           }}
           chartOptionVariant="buttons-group"
           expandChart={{ isExpanded: isChartExpanded, toggleChartExpanded }}
+          sx={[{ padding: Spacing.md }]}
         />
         {selectedStatisticsChart === 'savingsRate' && (
           <Stack sx={{ marginBottom: smallView ? Spacing.xl : 0 }}>

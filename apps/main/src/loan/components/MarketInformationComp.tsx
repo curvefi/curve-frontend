@@ -31,7 +31,6 @@ const EMPTY_BANDS_BALANCES: never[] = []
  */
 export const MarketInformationComp = ({ llamma, marketId, chainId, page = 'manage' }: MarketInformationCompProps) => {
   const { llamaApi: api } = useCurve()
-  const theme = useTheme()
   const newBandsChartEnabled = useNewBandsChart()
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
   const collateralTokenAddress = llamma?.coinAddresses[1]

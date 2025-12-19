@@ -9,20 +9,23 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import Typography from '@mui/material/Typography'
 import type { TimeOption } from '@ui-kit/lib/types/scrvusd'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import type { SxProps } from '@ui-kit/utils/mui'
 
 const { Spacing } = SizesAndSpaces
 
-export type ChartOption<T = string> = {
+export type ChartSelections<T = string> = {
+  /** Display title of the active selection (in the button-group variant it's on the left) */
   activeTitle: string
+  /** Select dropdown menu item label or button-group button label */
   label: string
   key: T
 }
 
 type ChartHeaderProps<T = string> = {
-  chartOptions: {
-    options: ChartOption<T>[]
-    activeOption: T
-    setActiveOption: (value: T) => void
+  chartSelections: {
+    selections: ChartSelections<T>[]
+    activeSelection: T
+    setActiveSelection: (value: T) => void
   }
   timeOption?: {
     options: TimeOption[]
@@ -35,21 +38,23 @@ type ChartHeaderProps<T = string> = {
   }
   chartOptionVariant: 'select' | 'buttons-group'
   customButton?: React.ReactNode
+  sx?: SxProps[]
 }
 
 const ChartHeader = <T extends string>({
   expandChart,
-  chartOptions,
+  chartSelections,
   timeOption,
   chartOptionVariant,
   customButton,
+  sx = [],
 }: ChartHeaderProps<T>) => {
   const handleChartOptionToggle = (_: MouseEvent<HTMLElement>, key: T) => {
     // ensure that one option is always selected by checking null
-    if (key !== null) chartOptions.setActiveOption(key)
+    if (key !== null) chartSelections.setActiveSelection(key)
   }
   const handleChartOptionSelect = (event: SelectChangeEvent<T>) => {
-    if (event.target.value !== null) chartOptions.setActiveOption(event.target.value as T)
+    if (event.target.value !== null) chartSelections.setActiveSelection(event.target.value as T)
   }
   const handleTimeOption = (event: SelectChangeEvent<TimeOption>) => {
     if (event.target.value !== null && timeOption) timeOption.setActiveOption(event.target.value as TimeOption)
@@ -59,38 +64,43 @@ const ChartHeader = <T extends string>({
   and separate the expand Chart button to the right
   */
   const smallBreakPoint = '35.9375rem' // 575px
-  const foundChartOption = chartOptions.options.find((option) => option.key === chartOptions.activeOption)
+  const foundChartOption = chartSelections.selections.find(
+    (selection) => selection.key === chartSelections.activeSelection,
+  )
 
   return (
     <Stack
       direction="row"
       alignItems="center"
       justifyContent="space-between"
-      sx={{
-        padding: Spacing.md,
-        rowGap: Spacing.md,
-        columnGap: Spacing.sm,
-        [`@media (max-width: ${smallBreakPoint})`]: {
-          flexDirection: 'column',
-          alignItems: 'flex-start',
-          rowGap: Spacing.lg,
+      sx={[
+        {
+          rowGap: Spacing.md,
+          columnGap: Spacing.sm,
+          [`@media (max-width: ${smallBreakPoint})`]: {
+            flexDirection: 'column',
+            alignItems: 'flex-start',
+            rowGap: Spacing.lg,
+          },
         },
-      }}
+        ...sx,
+      ]}
     >
+      {/* Show the active selection title or Select dropdown menu based on the chartOptionVariant */}
       {chartOptionVariant === 'buttons-group' ? (
         <Typography variant="headingXsBold" color="textSecondary">
           {foundChartOption?.activeTitle ?? '?'}
         </Typography>
       ) : (
         <Select
-          value={chartOptions.activeOption}
+          value={chartSelections.activeSelection}
           onChange={handleChartOptionSelect}
           size="small"
           sx={{ alignSelf: 'center' }}
         >
-          {chartOptions.options.map((option) => (
-            <MenuItem value={option.key} key={option.key}>
-              {option.label}
+          {chartSelections.selections.map((selection) => (
+            <MenuItem value={selection.key} key={selection.key}>
+              {selection.activeTitle}
             </MenuItem>
           ))}
         </Select>
@@ -103,14 +113,14 @@ const ChartHeader = <T extends string>({
       >
         <ToggleButtonGroup
           exclusive
-          value={chartOptions.activeOption}
+          value={chartSelections.activeSelection}
           onChange={handleChartOptionToggle}
           sx={{ [`@media (max-width: ${smallBreakPoint})`]: { width: '100%', display: 'flex', flexGrow: 1 } }}
         >
           {chartOptionVariant === 'buttons-group' &&
-            chartOptions.options.map((option) => (
-              <ToggleButton value={option.key} key={option.key} size="small">
-                {option.label}
+            chartSelections.selections.map((selection) => (
+              <ToggleButton value={selection.key} key={selection.key} size="small">
+                {selection.label}
               </ToggleButton>
             ))}
           {timeOption && (
