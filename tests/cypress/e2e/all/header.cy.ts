@@ -8,7 +8,7 @@ import {
   SCROLL_WIDTH,
   TABLET_BREAKPOINT,
 } from '@cy/support/ui'
-import { DAY_IN_MS } from '@ui-kit/themes/design/0_primitives'
+import { TIME_FRAMES } from '@ui-kit/lib/model/time'
 
 const expectedMainNavHeight = 56
 const expectedSubNavHeight = 42 // 40 + 2px border
@@ -190,14 +190,14 @@ describe('Header', () => {
 
     it('should reappear after one month', () => {
       // Set dismissal date to 31 days ago (more than one month)
-      const oneMonthAgo = Date.now() - 31 * DAY_IN_MS
+      const oneMonthAgo = Date.now() - 31 * TIME_FRAMES.DAY_MS
       visitWithDismissedBanner(oneMonthAgo)
       cy.get("[data-testid='phishing-warning-banner']", LOAD_TIMEOUT).should('be.visible')
     })
 
     it('should remain hidden within one month', () => {
       // Set dismissal date to 15 days ago (less than one month)
-      const fifteenDaysAgo = Date.now() - 15 * DAY_IN_MS
+      const fifteenDaysAgo = Date.now() - 15 * TIME_FRAMES.DAY_MS
       visitWithDismissedBanner(fifteenDaysAgo)
       cy.get("[data-testid='phishing-warning-banner']", LOAD_TIMEOUT).should('not.exist')
     })

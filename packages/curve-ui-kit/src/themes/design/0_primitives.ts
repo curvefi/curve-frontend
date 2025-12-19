@@ -1,3 +1,5 @@
+import { TIME_FRAMES } from '@ui-kit/lib/model/time'
+
 export const Grays = {
   '10': '#fdfcfc',
   '25': '#fafafa',
@@ -133,8 +135,6 @@ export const Sizing = {
   '800': '5.5rem', // 88px
 } as const
 
-export const DAY_IN_MS = 24 * 60 * 60 * 1000
-
 export const Duration = {
   Delay: 100,
   Flicker: 1000,
@@ -144,8 +144,8 @@ export const Duration = {
   Tooltip: { Enter: 500, Exit: 500 },
   Transition: 256,
   Banner: {
-    Daily: DAY_IN_MS,
-    Monthly: 30 * DAY_IN_MS,
+    Daily: TIME_FRAMES.DAY_MS,
+    Monthly: TIME_FRAMES.MONTH_MS,
   },
 }
 
