@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { type Address, isAddressEqual, zeroAddress } from 'viem'
 import type { Config } from 'wagmi'
-import { requireLib, useCurve, type CurveApi } from '@ui-kit/features/connect-wallet'
+import { useCurve, type CurveApi } from '@ui-kit/features/connect-wallet'
 import { fetchTokenBalance, useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { isValidAddress } from '../utils'
 
@@ -54,24 +54,21 @@ export function usePoolTokenDepositBalances(
 }
 
 /** Temporary imperative function for some zustand slices */
-export function fetchPoolLpTokenBalance(config: Config, curve: CurveApi, poolId: string) {
-  const pool = requireLib('curveApi').getPool(poolId)
-
-  return fetchTokenBalance(config, {
+export const fetchPoolLpTokenBalance = (config: Config, curve: CurveApi, poolId: string) =>
+  fetchTokenBalance(config, {
     chainId: curve?.chainId,
     userAddress: curve.signerAddress as Address,
-    tokenAddress: pool.lpToken as Address,
+    tokenAddress: curve.getPool(poolId).lpToken as Address,
   })
-}
 
 /** Temporary imperative function for some zustand slices */
-export function fetchPoolGaugeTokenBalance(config: Config, curve: CurveApi, poolId: string) {
-  const pool = requireLib('curveApi').getPool(poolId)
-  if (!isValidAddress(pool.gauge.address)) return Promise.resolve('0')
-
-  return fetchTokenBalance(config, {
-    chainId: curve?.chainId,
-    userAddress: curve.signerAddress as Address,
-    tokenAddress: pool.lpToken as Address,
-  })
+export const fetchPoolGaugeTokenBalance = async (config: Config, curve: CurveApi, poolId: string) => {
+  const { gauge, lpToken } = curve.getPool(poolId)
+  return !isValidAddress(gauge.address)
+    ? await fetchTokenBalance(config, {
+        chainId: curve?.chainId,
+        userAddress: curve.signerAddress as Address,
+        tokenAddress: lpToken as Address,
+      })
+    : '0'
 }

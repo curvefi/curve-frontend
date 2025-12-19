@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import type { Address } from 'viem'
 import type { Config } from 'wagmi'
-import { requireLib, useCurve, type CurveApi } from '@ui-kit/features/connect-wallet'
+import { useCurve, type CurveApi } from '@ui-kit/features/connect-wallet'
 import { fetchTokenBalance, useTokenBalances } from '@ui-kit/hooks/useTokenBalance'
 
 /** Hook to get all pool token balances for underlying tokens */
@@ -51,18 +51,18 @@ export function usePoolTokenBalances(
 }
 
 /** Temporary imperative function for some zustand slices to fetch all pool token balances */
-export async function fetchPoolTokenBalances(config: Config, curve: CurveApi, poolId: string) {
-  const pool = requireLib('curveApi').getPool(poolId)
+export const fetchPoolTokenBalances = async (config: Config, curve: CurveApi, poolId: string) => {
+  const { wrappedCoinAddresses, underlyingCoinAddresses } = curve.getPool(poolId)
   const chainId = curve.chainId
   const userAddress = curve.signerAddress as Address
 
   const balances = await Promise.allSettled([
-    ...(pool.wrappedCoinAddresses as Address[]).map((tokenAddress) =>
+    ...(wrappedCoinAddresses as Address[]).map((tokenAddress) =>
       fetchTokenBalance(config, { chainId, userAddress, tokenAddress }).then(
         (balance) => [tokenAddress, balance] as const,
       ),
     ),
-    ...(pool.underlyingCoinAddresses as Address[]).map((tokenAddress) =>
+    ...(underlyingCoinAddresses as Address[]).map((tokenAddress) =>
       fetchTokenBalance(config, { chainId, userAddress, tokenAddress }).then(
         (balance) => [tokenAddress, balance] as const,
       ),
