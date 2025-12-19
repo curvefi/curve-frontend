@@ -35,10 +35,10 @@ import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useLegacyTokenInput } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
-import { FormContent } from '@ui-kit/shared/ui/FormTabs/FormTabs'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { decimal, type Decimal } from '@ui-kit/utils'
+import { FormContent } from '@ui-kit/widgets/DetailPageLayout/FormContent'
 
 interface Props extends Pick<ManageLoanProps, 'curve' | 'isReady' | 'market'> {}
 

@@ -6,8 +6,8 @@ import FormWithdraw from '@/dex/components/PagePool/Withdraw/components/FormWith
 import type { FormType } from '@/dex/components/PagePool/Withdraw/types'
 import useStore from '@/dex/store/useStore'
 import { t } from '@ui-kit/lib/i18n'
-import { FormContent } from '@ui-kit/shared/ui/FormTabs/FormTabs'
 import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
+import { FormContent } from '@ui-kit/widgets/DetailPageLayout/FormContent'
 
 const tabs: TabOption<FormType>[] = [
   { value: 'WITHDRAW', label: t`Withdraw` },

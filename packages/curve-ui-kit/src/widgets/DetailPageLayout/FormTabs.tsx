@@ -3,7 +3,7 @@ import { notFalsy } from '@curvefi/prices-api/objects.util'
 import Stack from '@mui/material/Stack'
 import { type TabOption, TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
 import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { FormContent } from './FormContent'
 
 type FnOrValue<Props extends object, Result> = ((props: Props) => Result | null | undefined) | Result
 
@@ -73,46 +73,26 @@ function useFormTabs<T extends object>({ menu, params }: UseFormTabOptions<T>) {
   return { tab, tabs, subTabs, subTab, Component: components[0], onChangeTab, onChangeSubTab }
 }
 
-const { Spacing } = SizesAndSpaces
+const marginInline = { mobile: 'auto', desktop: 0 } as const
 
-/** Wrapper that applies margins to the form around the tabs. */
+/** @deprecated This is only necessary until all the forms migrate to using the `FormTabs` component. **/
 export const FormMargins = ({ children }: { children: ReactNode }) => (
-  <Stack marginInline={{ mobile: 'auto', desktop: 0 }}>{children}</Stack>
-)
-
-/**
- * Wrapper that applies background and padding to the form content, including optional header and footer.
- * @param children The main content of the form
- * @param header The optional subtabs, used in legacy forms
- * @param footer The footer of the form outside the background area, used in new forms for the info accordion
- */
-export const FormContent = ({
-  children,
-  header,
-  footer,
-}: {
-  children: ReactNode
-  footer?: ReactNode
-  header?: ReactNode
-}) => (
-  <WithWrapper shouldWrap={footer} Wrapper={Stack} gap={Spacing.md}>
-    <WithWrapper shouldWrap={header} Wrapper={Stack} sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
-      {header}
-      <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }} gap={Spacing.md} padding={Spacing.md}>
-        {children}
-      </Stack>
-    </WithWrapper>
-    {footer}
-  </WithWrapper>
+  <Stack marginInline={marginInline}>{children}</Stack>
 )
 
 /**
  * Form wrapper that displays tabs and handles tab switching. It supports sub-tabs as well.
+ * @param shouldWrap Whether to wrap the form content in a `FormContent` component
+ *    DEPRECATED: for legacy forms only, use `Form` or `FormContent` for new components
+ * @param options - useFormTabs options
  */
-export function FormTabs<T extends object>({ shouldWrap, ...options }: UseFormTabOptions<T> & { shouldWrap: boolean }) {
+export function FormTabs<T extends object>({
+  shouldWrap,
+  ...options
+}: UseFormTabOptions<T> & { shouldWrap?: boolean }) {
   const { tab, tabs, subTabs, subTab, Component, onChangeTab, onChangeSubTab } = useFormTabs(options)
   return (
-    <FormMargins>
+    <Stack marginInline={marginInline}>
       <TabsSwitcher variant="contained" size="medium" value={tab.value} options={tabs} onChange={onChangeTab} />
 
       {subTab && subTabs.length > 1 && (
@@ -130,6 +110,6 @@ export function FormTabs<T extends object>({ shouldWrap, ...options }: UseFormTa
       <WithWrapper shouldWrap={shouldWrap} Wrapper={FormContent}>
         <Component {...options.params} />
       </WithWrapper>
-    </FormMargins>
+    </Stack>
   )
 }

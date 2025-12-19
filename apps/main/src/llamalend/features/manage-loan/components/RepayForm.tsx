@@ -2,7 +2,6 @@ import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/ho
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import type { RepayOptions } from '@/llamalend/mutations/repay.mutation'
 import { useMarketRates } from '@/llamalend/queries/market-rates'
-import { LoanForm } from '@/llamalend/widgets/manage-loan/LoanForm'
 import { LoanFormAlerts } from '@/llamalend/widgets/manage-loan/LoanFormAlerts'
 import { LoanFormTokenInput } from '@/llamalend/widgets/manage-loan/LoanFormTokenInput'
 import { LoanInfoAccordion } from '@/llamalend/widgets/manage-loan/LoanInfoAccordion'
@@ -11,6 +10,7 @@ import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
+import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { InputDivider } from '../../../widgets/InputDivider'
 import { useRepayForm } from '../hooks/useRepayForm'
 
@@ -67,7 +67,7 @@ export const RepayForm = <ChainId extends IChainId>({
   const marketRates = useMarketRates(params, isOpen)
 
   return (
-    <LoanForm // todo: prevHealth, prevRates, debt, prevDebt
+    <Form // todo: prevHealth, prevRates, debt, prevDebt
       {...form}
       onSubmit={onSubmit}
       infoAccordion={
@@ -140,6 +140,6 @@ export const RepayForm = <ChainId extends IChainId>({
         handledErrors={['stateCollateral', 'userCollateral', 'userBorrowed']}
         successTitle={t`Loan repaid`}
       />
-    </LoanForm>
+    </Form>
   )
 }

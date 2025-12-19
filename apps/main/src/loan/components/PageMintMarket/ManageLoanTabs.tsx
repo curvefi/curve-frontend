@@ -16,7 +16,8 @@ import networks from '@/loan/networks'
 import { hasDeleverage, hasV1Leverage } from '@/loan/utils/leverage'
 import { useManageLoanMuiForm, useManageSoftLiquidation } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
-import { FormContent, type FormTab, FormTabs } from '@ui-kit/shared/ui/FormTabs/FormTabs'
+import { FormContent } from '@ui-kit/widgets/DetailPageLayout/FormContent'
+import { type FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
 
 const ImproveHealthTab = ({ rChainId, market }: ManageLoanProps) => (
   <FormContent>

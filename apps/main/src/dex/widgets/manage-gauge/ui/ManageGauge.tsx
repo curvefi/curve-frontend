@@ -6,8 +6,8 @@ import AddRewardToken from '@/dex/features/add-gauge-reward-token'
 import DepositReward from '@/dex/features/deposit-gauge-reward'
 import { ChainId } from '@/dex/types/main.types'
 import { t } from '@ui-kit/lib/i18n'
-import { FormContent } from '@ui-kit/shared/ui/FormTabs/FormTabs'
 import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
+import { FormContent } from '@ui-kit/widgets/DetailPageLayout/FormContent'
 
 const ManageGauge = ({ poolId, chainId }: { poolId: string; chainId: ChainId }) => {
   const { data: signerAddress } = useSignerAddress()

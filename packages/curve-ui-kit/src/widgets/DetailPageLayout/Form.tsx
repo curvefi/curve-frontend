@@ -1,13 +1,15 @@
 import type { FormEventHandler, ReactNode } from 'react'
 import { FormProvider } from 'react-hook-form'
 import type { FieldValues, FormProviderProps } from 'react-hook-form'
-import { FormContent } from '@ui-kit/shared/ui/FormTabs/FormTabs'
+import { FormContent } from './FormContent'
+
+type TContext = null // not used yet, we can make this generic later if needed
 
 /**
- * A form wrapper for loan forms that wraps the form with FormProvider, form and styles.
- * Supports a child info accordion below the form.
+ * A form element that includes a provider, a form tag, and a content wrapper.
+ * Supports a child info accordion below the form (outside the background area).
  */
-export const LoanForm = <TFieldValues extends FieldValues, TContext = any, TTransformedValues = TFieldValues>({
+export const Form = <TFieldValues extends FieldValues>({
   onSubmit,
   children,
   infoAccordion,
@@ -16,7 +18,7 @@ export const LoanForm = <TFieldValues extends FieldValues, TContext = any, TTran
   onSubmit: FormEventHandler<HTMLFormElement>
   children: ReactNode
   infoAccordion: ReactNode
-} & FormProviderProps<TFieldValues, TContext, TTransformedValues>) => (
+} & FormProviderProps<TFieldValues, TContext, TFieldValues>) => (
   <FormProvider {...form}>
     <form onSubmit={onSubmit} style={{ overflowWrap: 'break-word' }}>
       <FormContent footer={infoAccordion}>{children}</FormContent>

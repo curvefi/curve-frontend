@@ -1,4 +1,3 @@
-import { useCallback } from 'react'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import { styled } from '@mui/material/styles'
@@ -17,10 +16,10 @@ export const ConnectWalletPrompt = ({ description, testId }: { description: stri
   return (
     <Stack alignItems="center" marginBlock={Spacing.lg} data-testid={testId}>
       <Stack
-        padding={7}
-        spacing={8}
+        padding={Spacing.xxl}
+        spacing={Spacing['3xl']}
         width={MaxWidth.connectWallet}
-        maxWidth="90vw"
+        maxWidth="90dvw"
         sx={{
           // note: not using mui colors as the color needs to match the background image and we don't have one for chad
           backgroundColor: 'var(--table--background-color)',
@@ -46,7 +45,7 @@ export const ConnectWalletPrompt = ({ description, testId }: { description: stri
           <Button
             size="large"
             color="primary"
-            onClick={useCallback(() => connect(), [connect])}
+            onClick={() => connect()}
             loading={isConnecting}
             loadingPosition="start"
             data-testid={`btn-connect-prompt${isConnecting ? '-loading' : ''}`}

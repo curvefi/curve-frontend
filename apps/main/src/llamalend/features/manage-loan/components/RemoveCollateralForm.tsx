@@ -2,7 +2,6 @@ import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/ho
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import type { RemoveCollateralOptions } from '@/llamalend/mutations/remove-collateral.mutation'
 import { useMarketRates } from '@/llamalend/queries/market-rates'
-import { LoanForm } from '@/llamalend/widgets/manage-loan/LoanForm'
 import { LoanFormAlerts } from '@/llamalend/widgets/manage-loan/LoanFormAlerts'
 import { LoanFormTokenInput } from '@/llamalend/widgets/manage-loan/LoanFormTokenInput'
 import { LoanInfoAccordion } from '@/llamalend/widgets/manage-loan/LoanInfoAccordion'
@@ -12,6 +11,7 @@ import Stack from '@mui/material/Stack'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { Balance } from '@ui-kit/shared/ui/Balance'
+import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { InputDivider } from '../../../widgets/InputDivider'
 import { setValueOptions } from '../../borrow/react-form.utils'
 import { useRemoveCollateralForm } from '../hooks/useRemoveCollateralForm'
@@ -59,7 +59,7 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
   const marketRates = useMarketRates(params, isOpen)
 
   return (
-    <LoanForm
+    <Form
       {...form}
       onSubmit={onSubmit}
       infoAccordion={
@@ -127,6 +127,6 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
         handledErrors={['userCollateral']}
         successTitle={t`Collateral removed`}
       />
-    </LoanForm>
+    </Form>
   )
 }

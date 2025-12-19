@@ -33,8 +33,8 @@ import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
-import { FormContent } from '@ui-kit/shared/ui/FormTabs/FormTabs'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { FormContent } from '@ui-kit/widgets/DetailPageLayout/FormContent'
 
 const { Spacing } = SizesAndSpaces
 
