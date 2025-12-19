@@ -3,7 +3,7 @@ import { useBandsData } from '@/llamalend/features/bands-chart/hooks/useBandsDat
 import { getBandsChartToken } from '@/llamalend/features/bands-chart/utils'
 import { MarketParameters } from '@/llamalend/features/market-parameters/MarketParameters'
 import { BandsComp } from '@/loan/components/BandsComp'
-import ChartOhlcWrapper from '@/loan/components/ChartOhlcWrapper'
+import ChartAndActivityComp from '@/loan/components/ChartAndActivityComp'
 import type { ChainId, Llamma } from '@/loan/types/loan.types'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
@@ -58,7 +58,7 @@ export const MarketInformationComp = ({ llamma, marketId, chainId, page = 'manag
         gridTemplateColumns={{ tablet: newBandsChartEnabled ? '1fr 0.5fr' : undefined }}
         sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, gap: Spacing.md, padding: Spacing.md }}
       >
-        <ChartOhlcWrapper rChainId={chainId} llammaId={marketId} llamma={llamma} />
+        <ChartAndActivityComp rChainId={chainId} llammaId={marketId} llamma={llamma} />
         {newBandsChartEnabled && (
           <BandsChart
             isLoading={isBandsLoading}

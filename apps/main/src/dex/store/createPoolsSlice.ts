@@ -38,7 +38,7 @@ import type {
   PricesApiCoin,
   PricesApiPool,
   PricesApiPoolResponse,
-  TimeOptions,
+  TimeOption,
 } from '@ui-kit/features/candle-chart/types'
 import { convertToLocaleTimestamp } from '@ui-kit/features/candle-chart/utils'
 import { requireLib } from '@ui-kit/features/connect-wallet'
@@ -72,7 +72,7 @@ type SliceState = {
     tradesTokens: LpTradeToken[]
     tradeEventsData: LpTradesData[]
     liquidityEventsData: LpLiquidityEventsData[]
-    timeOption: TimeOptions
+    timeOption: TimeOption
     chartStatus: FetchingStatus
     refetchingCapped: boolean
     lastFetchEndTime: number
@@ -126,7 +126,7 @@ export type PoolsSlice = {
       isFlipped: boolean[],
     ) => void
     fetchPricesApiActivity: (chainId: ChainId, poolAddress: string, chartCombinations: PricesApiCoin[][]) => void
-    setChartTimeOption: (timeOption: TimeOptions) => void
+    setChartTimeOption: (timeOption: TimeOption) => void
     setEmptyPoolListDefault(chainId: ChainId): void
 
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
@@ -827,7 +827,7 @@ const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>
         console.warn(error)
       }
     },
-    setChartTimeOption: (timeOption: TimeOptions) => {
+    setChartTimeOption: (timeOption: TimeOption) => {
       set(
         produce((state: State) => {
           state.pools.pricesApiState.timeOption = timeOption

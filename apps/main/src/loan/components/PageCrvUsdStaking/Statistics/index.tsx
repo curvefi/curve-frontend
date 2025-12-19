@@ -31,9 +31,10 @@ const timeOptions: TimeOption[] = ['1M', '6M', '1Y']
 type StatisticsProps = {
   isChartExpanded: boolean
   toggleChartExpanded: () => void
+  hideExpandChart: boolean
 }
 
-const Statistics = ({ isChartExpanded, toggleChartExpanded }: StatisticsProps) => {
+const Statistics = ({ isChartExpanded, toggleChartExpanded, hideExpandChart }: StatisticsProps) => {
   const selectedStatisticsChart = useStore((state) => state.scrvusd.selectedStatisticsChart)
   const setSelectedStatisticsChart = useStore((state) => state.scrvusd.setSelectedStatisticsChart)
   const revenueChartTimeOption = useStore((state) => state.scrvusd.revenueChartTimeOption)
@@ -66,7 +67,7 @@ const Statistics = ({ isChartExpanded, toggleChartExpanded }: StatisticsProps) =
             setActiveSelection: setSelectedStatisticsChart,
           }}
           chartOptionVariant="buttons-group"
-          expandChart={{ isExpanded: isChartExpanded, toggleChartExpanded }}
+          expandChart={hideExpandChart ? undefined : { isExpanded: isChartExpanded, toggleChartExpanded }}
           sx={[{ padding: Spacing.md }]}
         />
         {selectedStatisticsChart === 'savingsRate' && (

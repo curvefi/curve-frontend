@@ -1,4 +1,5 @@
 import { styled } from 'styled-components'
+import { type LlammaLiquidityCoins } from '@/loan/hooks/useOhlcChartState'
 import networks from '@/loan/networks'
 import { ChainId } from '@/loan/types/loan.types'
 import { LlammaEvent } from '@curvefi/prices-api/llamma'
@@ -8,7 +9,6 @@ import { Chip } from '@ui/Typography'
 import { formatNumber, getFractionDigitsOptions, convertDate, convertTimeAgo, formatDate, scanTxPath } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
-import { LlammaLiquidityCoins } from '../../hooks/useOhlcChartState'
 
 type LiqudityDataProps = {
   llammaControllerData: LlammaEvent[]

@@ -14,7 +14,7 @@ import type {
   LiquidationRanges,
   LpPriceOhlcDataFormatted,
   OraclePriceData,
-  TimeOptions,
+  TimeOption,
 } from './types'
 
 export type OhlcChartProps = {
@@ -31,8 +31,8 @@ export type OhlcChartProps = {
   oraclePriceData?: OraclePriceData[]
   liquidationRange?: LiquidationRanges
   selectedChartIndex?: number
-  timeOption: TimeOptions
-  setChartTimeOption: (option: TimeOptions) => void
+  timeOption: TimeOption
+  setChartTimeOption: (option: TimeOption) => void
   flipChart?: () => void
   refetchPricesData: () => void
   fetchMoreChartData: (lastFetchEndTime: number) => void
