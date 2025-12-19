@@ -54,6 +54,7 @@ export const fetchTokenBalance = async (config: Config, query: TokenBalanceQuery
 /** Hook to fetch the token balance */
 export function useTokenBalance(
   { chainId, userAddress, tokenAddress }: FieldsOf<TokenBalanceQuery>,
+  // TODO: refactor into a validation suite, same for usePoolTokenBalances and usePoolTokenDepositBalances
   enabled: boolean = true,
 ) {
   const config = useConfig()
