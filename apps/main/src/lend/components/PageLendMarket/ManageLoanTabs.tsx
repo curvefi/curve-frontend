@@ -15,21 +15,16 @@ import { ImproveHealth } from '@/llamalend/features/manage-soft-liquidation/ui/t
 import type { BorrowPositionDetailsProps } from '@/llamalend/features/market-position-details'
 import { useManageLoanMuiForm, useManageSoftLiquidation } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
-import { FormContent } from '@ui-kit/widgets/DetailPageLayout/FormContent'
 import { type FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
 
 type ManageLoanProps = PageContentProps<MarketUrlParams>
 
 const ImproveHealthTab = ({ rChainId, rOwmId }: ManageLoanProps) => (
-  <FormContent>
-    <ImproveHealth {...useImproveHealthTab({ chainId: rChainId, network: networks[rChainId], marketId: rOwmId })} />
-  </FormContent>
+  <ImproveHealth {...useImproveHealthTab({ chainId: rChainId, network: networks[rChainId], marketId: rOwmId })} />
 )
 
 const ClosePositionTab = ({ rChainId, rOwmId }: ManageLoanProps) => (
-  <FormContent>
-    <ClosePosition {...useClosePositionTab({ chainId: rChainId, network: networks[rChainId], marketId: rOwmId })} />
-  </FormContent>
+  <ClosePosition {...useClosePositionTab({ chainId: rChainId, network: networks[rChainId], marketId: rOwmId })} />
 )
 
 const LendManageLegacyMenu = [

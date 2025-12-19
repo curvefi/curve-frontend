@@ -16,23 +16,18 @@ import networks from '@/loan/networks'
 import { hasDeleverage, hasV1Leverage } from '@/loan/utils/leverage'
 import { useManageLoanMuiForm, useManageSoftLiquidation } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
-import { FormContent } from '@ui-kit/widgets/DetailPageLayout/FormContent'
 import { type FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
 
 const ImproveHealthTab = ({ rChainId, market }: ManageLoanProps) => (
-  <FormContent>
-    <ImproveHealth
-      {...useImproveHealthTab({ chainId: rChainId, network: networks[rChainId], marketId: market?.id ?? '' })}
-    />
-  </FormContent>
+  <ImproveHealth
+    {...useImproveHealthTab({ chainId: rChainId, network: networks[rChainId], marketId: market?.id ?? '' })}
+  />
 )
 
 const ClosePositionTab = ({ rChainId, market }: ManageLoanProps) => (
-  <FormContent>
-    <ClosePosition
-      {...useClosePositionTab({ chainId: rChainId, network: networks[rChainId], marketId: market?.id ?? '' })}
-    />
-  </FormContent>
+  <ClosePosition
+    {...useClosePositionTab({ chainId: rChainId, network: networks[rChainId], marketId: market?.id ?? '' })}
+  />
 )
 
 const LoanRepayFromWalletTab = ({ rChainId, market, isReady }: ManageLoanProps) => (

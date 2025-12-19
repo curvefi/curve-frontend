@@ -83,7 +83,7 @@ export const FormMargins = ({ children }: { children: ReactNode }) => (
 /**
  * Form wrapper that displays tabs and handles tab switching. It supports sub-tabs as well.
  * @param shouldWrap Whether to wrap the form content in a `FormContent` component
- *    DEPRECATED: for legacy forms only, use `Form` or `FormContent` for new components
+ *                   DEPRECATED: for legacy forms only, use `Form` or `FormContent` for new components
  * @param options - useFormTabs options
  */
 export function FormTabs<T extends object>({
