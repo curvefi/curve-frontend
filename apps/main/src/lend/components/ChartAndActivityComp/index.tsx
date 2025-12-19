@@ -11,6 +11,7 @@ import Stack from '@mui/material/Stack'
 import AlertBox from '@ui/AlertBox'
 import TextCaption from '@ui/TextCaption'
 import ChartWrapper from '@ui-kit/features/candle-chart/ChartWrapper'
+import { TIME_OPTIONS } from '@ui-kit/features/candle-chart/constants'
 import { useNewBandsChart } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import ChartHeader from '@ui-kit/shared/ui/ChartHeader'
@@ -88,6 +89,11 @@ export const ChartAndActivityComp = ({ rChainId, userActiveKey, rOwmId, api }: C
               selections: ohlcChartProps.selectChartList,
               activeSelection: ohlcChartProps.selectChartList[ohlcChartProps.selectedChartIndex ?? 0]?.key ?? '',
               setActiveSelection: ohlcChartProps.setSelectedChart ?? (() => {}),
+            }}
+            timeOption={{
+              options: TIME_OPTIONS,
+              activeOption: ohlcChartProps.timeOption,
+              setActiveOption: ohlcChartProps.setChartTimeOption,
             }}
           />
           <Stack
