@@ -20,8 +20,6 @@ const NETWORK_BASE_CONFIG_DEFAULT = {
   },
   orgUIPath: '',
   isTestnet: false,
-  showInSelectNetwork: false,
-  showRouterSwap: false,
 }
 
 export const NETWORK_BASE_CONFIG = {
@@ -192,7 +190,7 @@ export type NetworkDef<TId extends string = string, TChainId extends number = nu
   symbol: string
   rpcUrl: string
   showInSelectNetwork: boolean
-  showRouterSwap: boolean
+  showRouterSwap?: boolean // only for dex
 }
 
 export type NetworkMapping<TId extends string = string, TChainId extends number = number> = Record<
@@ -222,10 +220,8 @@ export function getBaseNetworksConfig<TId extends string, ChainId extends number
     id: TId
     name?: string
     isTestnet?: boolean
-    showInSelectNetwork?: boolean
-    showRouterSwap?: boolean
   },
-): BaseConfig<TId> {
+): Omit<BaseConfig<TId>, 'showInSelectNetwork' | 'showRouterSwap'> {
   const { name, id, nativeCurrencySymbol, ...rest } = { ...NETWORK_BASE_CONFIG_DEFAULT, ...networkConfig }
   return {
     ...rest,
