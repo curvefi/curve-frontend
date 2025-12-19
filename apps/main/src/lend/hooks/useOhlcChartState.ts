@@ -8,6 +8,7 @@ import type { LiquidationRanges, LlammaLiquididationRange } from '@ui-kit/featur
 import { getThreeHundredResultsAgo, subtractTimeUnit } from '@ui-kit/features/candle-chart/utils'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
+import type { ChartSelections } from '@ui-kit/shared/ui/ChartHeader'
 
 const CHART_HEIGHT = 300
 
@@ -187,22 +188,32 @@ export const useOhlcChartState = ({ rChainId, userActiveKey, rOwmId }: UseOhlcCh
     [market],
   )
 
-  const selectChartList = useMemo(() => {
+  const selectChartList: ChartSelections[] = useMemo(() => {
     if (chartOraclePoolOhlc.fetchStatus === 'LOADING') {
-      return [{ label: t`Loading` }, { label: t`Loading` }]
+      return [{ activeTitle: t`Loading`, label: '-', key: 'loading' }]
     }
 
     if (market) {
       if (chartOraclePoolOhlc.dataDisabled) {
-        return [{ label: t`${coins?.collateralToken.symbol} / ${coins?.borrowedToken.symbol} (LLAMMA)` }]
+        return [
+          {
+            activeTitle: t`${coins?.collateralToken.symbol} / ${coins?.borrowedToken.symbol} (LLAMMA)`,
+            label: t`${coins?.collateralToken.symbol} / ${coins?.borrowedToken.symbol} (LLAMMA)`,
+            key: `${coins?.collateralToken.symbol}-${coins?.borrowedToken.symbol}-llamma`,
+          },
+        ]
       }
 
       return [
         {
+          activeTitle: t`${chartOraclePoolOhlc.collateralToken.symbol} / ${chartOraclePoolOhlc.borrowedToken.symbol}`,
           label: t`${chartOraclePoolOhlc.collateralToken.symbol} / ${chartOraclePoolOhlc.borrowedToken.symbol}`,
+          key: `${chartOraclePoolOhlc.collateralToken.symbol}-${chartOraclePoolOhlc.borrowedToken.symbol}-oracle`,
         },
         {
+          activeTitle: t`${coins?.collateralToken.symbol} / ${coins?.borrowedToken.symbol} (LLAMMA)`,
           label: t`${coins?.collateralToken.symbol} / ${coins?.borrowedToken.symbol} (LLAMMA)`,
+          key: `${coins?.collateralToken.symbol}-${coins?.borrowedToken.symbol}-llamma`,
         },
       ]
     }
@@ -318,6 +329,14 @@ export const useOhlcChartState = ({ rChainId, userActiveKey, rOwmId }: UseOhlcCh
     [timeOption, fetchMoreData, rChainId, market?.addresses.amm, market?.addresses.controller, chartInterval, timeUnit],
   )
 
+  const setSelectedChart = useCallback(
+    (key: string) => {
+      const index = selectChartList.findIndex((chart) => chart.key === key)
+      if (index !== -1) setChartSelectedIndex(index)
+    },
+    [selectChartList],
+  )
+
   const ohlcChartProps: OhlcChartProps = {
     hideCandleSeriesLabel: true,
     chartType: 'crvusd',
@@ -329,8 +348,8 @@ export const useOhlcChartState = ({ rChainId, userActiveKey, rOwmId }: UseOhlcCh
     liquidationRange: selectedLiqRange,
     timeOption,
     selectedChartIndex,
-    setChartSelectedIndex,
     selectChartList,
+    setSelectedChart,
     setChartTimeOption,
     refetchPricesData,
     refetchingCapped: currentChart.refetchingCapped,

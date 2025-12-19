@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react'
+import { useMemo, useRef } from 'react'
 import { styled } from 'styled-components'
 import Button from 'ui/src/Button/Button'
 import Checkbox from 'ui/src/Checkbox'
@@ -6,13 +6,11 @@ import Icon from 'ui/src/Icon'
 import Spinner, { SpinnerWrapper } from 'ui/src/Spinner'
 import { useTheme } from '@mui/material/styles'
 import CandleChart from '@ui-kit/features/candle-chart/CandleChart'
-import DialogSelectChart from '@ui-kit/features/candle-chart/DialogSelectChart'
-import DialogSelectTimeOption from '@ui-kit/features/candle-chart/DialogSelectTimeOption'
 import { useChartPalette } from '@ui-kit/features/candle-chart/hooks/useChartPalette'
+import type { ChartSelections } from '@ui-kit/shared/ui/ChartHeader'
 import type {
   ChartType,
   FetchingStatus,
-  LabelList,
   LiquidationRanges,
   LpPriceOhlcDataFormatted,
   OraclePriceData,
@@ -33,7 +31,6 @@ export type OhlcChartProps = {
   oraclePriceData?: OraclePriceData[]
   liquidationRange?: LiquidationRanges
   selectedChartIndex?: number
-  setChartSelectedIndex?: (index: number) => void
   timeOption: TimeOptions
   setChartTimeOption: (option: TimeOptions) => void
   flipChart?: () => void
@@ -47,7 +44,8 @@ export type OhlcChartProps = {
   liqRangeNewVisible?: boolean
   lastFetchEndTime: number
   refetchingCapped: boolean
-  selectChartList: LabelList[]
+  selectChartList: ChartSelections[]
+  setSelectedChart?: (key: string) => void
   latestOraclePrice?: string
 }
 
@@ -61,10 +59,7 @@ const ChartWrapper = ({
   oraclePriceData,
   liquidationRange,
   selectedChartIndex,
-  setChartSelectedIndex,
   timeOption,
-  setChartTimeOption,
-  flipChart,
   refetchPricesData,
   fetchMoreChartData,
   lastFetchEndTime,
@@ -78,7 +73,6 @@ const ChartWrapper = ({
   toggleLiqRangeNewVisible,
   latestOraclePrice,
 }: OhlcChartProps) => {
-  const [magnet, setMagnet] = useState(false)
   const clonedOhlcData = useMemo(() => [...ohlcData], [ohlcData])
   const theme = useTheme()
 
@@ -89,54 +83,6 @@ const ChartWrapper = ({
   return (
     <Wrapper>
       <ContentWrapper>
-        <SectionHeader>
-          <ChartSelectGroup>
-            {selectedChartIndex !== undefined && setChartSelectedIndex !== undefined ? (
-              <>
-                <DialogSelectChart
-                  isDisabled={false}
-                  selectedChartIndex={selectedChartIndex}
-                  selectChartList={selectChartList ?? []}
-                  setChartSelectedIndex={setChartSelectedIndex}
-                />
-                {selectedChartIndex > 1 && flipChart !== undefined && (
-                  <StyledFlipButton onClick={() => flipChart()} variant={'icon-outlined'}>
-                    <StyledFLipIcon name={'ArrowsHorizontal'} size={16} aria-label={'Flip tokens'} />
-                  </StyledFlipButton>
-                )}
-              </>
-            ) : (
-              <DialogSelectChart
-                isDisabled={false}
-                selectedChartIndex={0}
-                selectChartList={selectChartList ?? []}
-                setChartSelectedIndex={() => 0}
-              />
-            )}
-          </ChartSelectGroup>
-          <RefreshButton
-            size="small"
-            variant="select"
-            onClick={() => {
-              refetchPricesData()
-            }}
-          >
-            <Icon name={'Renew'} size={16} aria-label={'Refresh chart'} />
-          </RefreshButton>
-          <MagnetButton
-            size="small"
-            variant="select"
-            className={magnet ? 'active' : ''}
-            onClick={() => setMagnet(!magnet)}
-          >
-            <Icon name={'Cursor_1'} size={16} aria-label={'Toggle magnet mode'} />
-          </MagnetButton>
-          <DialogSelectTimeOption
-            isDisabled={chartStatus !== 'READY'}
-            currentTimeOption={timeOption}
-            setCurrentTimeOption={setChartTimeOption}
-          />
-        </SectionHeader>
         {chartType === 'crvusd' &&
           toggleOraclePriceVisible &&
           toggleLiqRangeNewVisible &&
@@ -184,7 +130,6 @@ const ChartWrapper = ({
               liquidationRange={liquidationRange}
               timeOption={timeOption}
               wrapperRef={wrapperRef}
-              magnet={magnet}
               colors={colors}
               refetchingCapped={refetchingCapped}
               fetchMoreChartData={fetchMoreChartData}
@@ -223,39 +168,6 @@ const ChartWrapper = ({
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-`
-
-const StyledFlipButton = styled(Button)`
-  margin: auto var(--spacing-3) auto 0;
-`
-
-const StyledFLipIcon = styled(Icon)``
-
-const SectionHeader = styled.div`
-  display: flex;
-  flex-direction: row;
-  margin-bottom: var(--spacing-3);
-  padding-right: var(--spacing-2);
-`
-
-const ChartSelectGroup = styled.div`
-  display: flex;
-  flex-direction: row;
-  margin-right: auto;
-`
-
-const MagnetButton = styled(Button)`
-  margin-left: var(--spacing-2);
-  margin-right: var(--spacing-2);
-  box-shadow: none;
-  display: none;
-  align-items: center;
-  &.active:not(:disabled) {
-    box-shadow: none;
-  }
-  @media (min-width: 31.25rem) {
-    display: flex;
-  }
 `
 
 const RefreshButton = styled(Button)`
