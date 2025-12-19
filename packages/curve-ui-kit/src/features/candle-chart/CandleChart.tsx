@@ -3,21 +3,11 @@ import { createChart, ColorType, CrosshairMode, LineStyle, CandlestickSeries, Li
 import lodash from 'lodash'
 import { useEffect, useRef, useState, useCallback, useMemo, type RefObject } from 'react'
 import { styled } from 'styled-components'
-import { formatNumber } from '@ui-kit/utils/'
 import { createLiquidationRangeSeries } from './custom-series/liquidationRangeSeries'
 import type { LiquidationRangePoint, LiquidationRangeSeriesOptions } from './custom-series/liquidationRangeSeries'
 import type { ChartColors } from './hooks/useChartPalette'
 import type { LpPriceOhlcDataFormatted, OraclePriceData, LiquidationRanges, LlammaLiquididationRange } from './types'
-import { calculateRobustPriceRange } from './utils'
-
-const createPriceFormatter = () => ({
-  type: 'custom' as const,
-  formatter: (price: number) =>
-    formatNumber(price, {
-      abbreviate: false,
-      maximumSignificantDigits: 4,
-    }),
-})
+import { calculateRobustPriceRange, priceFormatter } from './utils'
 
 type RangeValueAccumulator = {
   upper?: number
@@ -62,6 +52,16 @@ const normalizeLiquidationRangePoints = (range?: LlammaLiquididationRange | null
       rangeEndTime,
     }
   })
+}
+
+function getPriceFormatter(ohlcData: LpPriceOhlcDataFormatted[]) {
+  const min = Math.min(...ohlcData.map((x) => x.low))
+  const max = Math.max(...ohlcData.map((x) => x.high))
+
+  return {
+    type: 'custom' as const,
+    formatter: (price: number) => priceFormatter(price, max - min),
+  }
 }
 
 type LiquidationRangeSeriesApi = ISeriesApi<
@@ -200,8 +200,6 @@ const CandleChart = ({
     ],
   )
 
-  const priceFormat = useMemo(() => createPriceFormatter(), [])
-
   // Debounced update of wrapper dimensions
   const debouncedUpdateDimensions = useRef(
     lodash.debounce(() => {
@@ -293,17 +291,6 @@ const CandleChart = ({
       }
     }
   }, [])
-
-  // Ensure price axis labels use the same formatter
-  useEffect(() => {
-    if (!chartRef.current) return
-
-    chartRef.current.applyOptions({
-      localization: {
-        priceFormatter: priceFormat.formatter,
-      },
-    })
-  }, [priceFormat])
 
   // Update chart colors when they change
   useEffect(() => {
@@ -462,10 +449,7 @@ const CandleChart = ({
       wickUpColor: memoizedColors.green,
       wickDownColor: memoizedColors.red,
       lastValueVisible: !hideCandleSeriesLabel,
-      priceFormat: {
-        type: 'price',
-        minMove: 0.0001,
-      },
+      priceFormat: getPriceFormatter(ohlcData),
       autoscaleInfoProvider: (original: () => { priceRange: { minValue: number; maxValue: number } | null } | null) => {
         const originalRange = original()
 
@@ -526,7 +510,7 @@ const CandleChart = ({
     return () => {
       candlestickSeriesRef.current = null
     }
-  }, [hideCandleSeriesLabel, memoizedColors.green, memoizedColors.red])
+  }, [hideCandleSeriesLabel, memoizedColors.green, memoizedColors.red, ohlcData])
 
   // Update candlestick colors when theme colors change
   useEffect(() => {
@@ -555,11 +539,13 @@ const CandleChart = ({
     }
   }, [])
 
-  // Update OHLC data when it changes
+  // Update OHLC data and price formatting when it changes
+  // Update price formatting when OHLC data changes
   useEffect(() => {
-    if (!candlestickSeriesRef.current || !ohlcData) return
+    if (!chartRef.current || !candlestickSeriesRef.current || !ohlcData) return
 
     candlestickSeriesRef.current.setData(ohlcData)
+    chartRef.current?.applyOptions({ localization: { priceFormatter: getPriceFormatter(ohlcData).formatter } })
   }, [ohlcData])
 
   // Update oracle price data when it changes

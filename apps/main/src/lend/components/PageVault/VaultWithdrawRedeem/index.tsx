@@ -3,8 +3,8 @@ import AlertFormError from '@/lend/components/AlertFormError'
 import DetailInfoEstimateGas from '@/lend/components/DetailInfoEstimateGas'
 import DetailInfoRate from '@/lend/components/DetailInfoRate'
 import LoanFormConnect from '@/lend/components/LoanFormConnect'
-import { StyledDetailInfoWrapper, StyledInpChip } from '@/lend/components/PageLoanManage/styles'
 import type { FormStatus, FormValues, StepKey } from '@/lend/components/PageVault/VaultWithdrawRedeem/types'
+import { StyledDetailInfoWrapper, StyledInpChip } from '@/lend/components/styles'
 import { helpers } from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
 import { _getMaxActiveKey } from '@/lend/store/createVaultDepositMintSlice'
@@ -14,7 +14,7 @@ import { Api, OneWayMarketTemplate, PageContentProps } from '@/lend/types/lend.t
 import AlertBox from '@ui/AlertBox'
 import Box from '@ui/Box'
 import Checkbox from '@ui/Checkbox'
-import DetailInfo from '@ui/DetailInfo'
+import { DetailInfo } from '@ui/DetailInfo'
 import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
 import { getActiveStep } from '@ui/Stepper/helpers'
 import Stepper from '@ui/Stepper/Stepper'
@@ -27,15 +27,8 @@ import { t } from '@ui-kit/lib/i18n'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { decimal, type Decimal } from '@ui-kit/utils'
 
-const VaultWithdrawRedeem = ({
-  rChainId,
-  rOwmId,
-  rFormType,
-  isLoaded,
-  api,
-  market,
-  userActiveKey,
-}: PageContentProps) => {
+const VaultWithdrawRedeem = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey }: PageContentProps) => {
+  const rFormType = 'withdraw'
   const isSubscribed = useRef(false)
 
   const activeKey = useStore((state) => state.vaultWithdrawRedeem.activeKey)

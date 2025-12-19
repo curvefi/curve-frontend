@@ -5,7 +5,7 @@ import { ChartLiquidationRange } from '@/llamalend/widgets/ChartLiquidationRange
 import type { LiqRangeSliderIdx } from '@/loan/store/types'
 import { LoanDetails, UserLoanDetails } from '@/loan/types/loan.types'
 import Button from '@ui/Button'
-import DetailInfo from '@ui/DetailInfo'
+import { DetailInfo } from '@ui/DetailInfo'
 import Icon from '@ui/Icon'
 import { Chip } from '@ui/Typography'
 import { formatNumber } from '@ui/utils'

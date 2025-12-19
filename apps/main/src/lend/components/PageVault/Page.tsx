@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import CampaignRewardsBanner from '@/lend/components/CampaignRewardsBanner'
 import { MarketInformationComp } from '@/lend/components/MarketInformationComp'
 import { MarketInformationTabs } from '@/lend/components/MarketInformationTabs'
-import Vault from '@/lend/components/PageVault/index'
+import { VaultTabs } from '@/lend/components/PageVault/VaultTabs'
 import { useOneWayMarket } from '@/lend/entities/chain'
 import { useLendPageTitle } from '@/lend/hooks/useLendPageTitle'
 import { useMarketDetails } from '@/lend/hooks/useMarketDetails'
@@ -11,12 +11,7 @@ import useTitleMapper from '@/lend/hooks/useTitleMapper'
 import { helpers } from '@/lend/lib/apiLending'
 import useStore from '@/lend/store/useStore'
 import { type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
-import {
-  getCollateralListPathname,
-  getLoanCreatePathname,
-  getLoanManagePathname,
-  parseMarketParams,
-} from '@/lend/utils/utilsRouter'
+import { getCollateralListPathname, getLoanPathname, parseMarketParams } from '@/lend/utils/utilsRouter'
 import { MarketDetails } from '@/llamalend/features/market-details'
 import { NoPosition, SupplyPositionDetails } from '@/llamalend/features/market-position-details'
 import { useLoanExists } from '@/llamalend/queries/loan-exists'
@@ -36,7 +31,7 @@ const { Spacing } = SizesAndSpaces
 
 const Page = () => {
   const params = useParams<MarketUrlParams>()
-  const { rMarket, rChainId, rFormType } = parseMarketParams(params)
+  const { rMarket, rChainId } = parseMarketParams(params)
   const { connect, provider } = useWallet()
   const { llamaApi: api = null, connectState } = useCurve()
   const titleMapper = useTitleMapper()
@@ -65,8 +60,8 @@ const Page = () => {
   })
   const marketDetails = useMarketDetails({
     chainId: rChainId,
-    llamma: market,
-    llammaId: rOwmId,
+    market: market,
+    marketId: rOwmId,
   })
 
   useEffect(() => {
@@ -93,13 +88,12 @@ const Page = () => {
     market,
   ])
 
-  useLendPageTitle(market?.collateral_token?.symbol, 'Supply')
+  useLendPageTitle(market?.collateral_token?.symbol, t`Supply`)
 
   const pageProps: PageContentProps = {
     params,
     rChainId,
     rOwmId,
-    rFormType,
     isLoaded,
     api,
     market,
@@ -107,11 +101,7 @@ const Page = () => {
     titleMapper,
   }
 
-  const borrowPathnameFn = loanExists ? getLoanManagePathname : getLoanCreatePathname
-  const positionDetailsHrefs = {
-    borrow: borrowPathnameFn(params, rOwmId, ''),
-    supply: '',
-  }
+  const positionDetailsHrefs = { borrow: getLoanPathname(params, rOwmId), supply: '' }
   const hasSupplyPosition = (supplyPositionDetails.shares.value ?? 0) > 0
 
   return isSuccess && !market ? (
@@ -119,7 +109,7 @@ const Page = () => {
   ) : provider ? (
     <>
       <DetailPageStack>
-        <AppPageFormsWrapper>{rChainId && rOwmId && <Vault {...pageProps} params={params} />}</AppPageFormsWrapper>
+        <AppPageFormsWrapper>{rChainId && rOwmId && <VaultTabs {...pageProps} params={params} />}</AppPageFormsWrapper>
         <Stack flexDirection="column" flexGrow={1} sx={{ gap: Spacing.md }}>
           <CampaignRewardsBanner
             chainId={rChainId}
@@ -137,7 +127,7 @@ const Page = () => {
           </MarketInformationTabs>
           <Stack>
             <MarketDetails {...marketDetails} />
-            <MarketInformationComp pageProps={pageProps} userActiveKey={''} type="supply" />
+            <MarketInformationComp loanExists={loanExists} pageProps={pageProps} userActiveKey={''} type="supply" />
           </Stack>
         </Stack>
       </DetailPageStack>

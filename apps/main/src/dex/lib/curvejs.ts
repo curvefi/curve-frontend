@@ -1,6 +1,5 @@
 import lodash from 'lodash'
 import memoizee from 'memoizee'
-import type { FormType as LockFormType } from '@/dex/components/PageCrvLocker/types'
 import type { FormValues as PoolSwapFormValues } from '@/dex/components/PagePool/Swap/types'
 import type { ExchangeRate, FormValues, Route, SearchedParams } from '@/dex/components/PageRouterSwap/types'
 import { httpFetcher } from '@/dex/lib/utils'
@@ -34,15 +33,13 @@ import {
   routerGetToStoredRate,
 } from '@/dex/utils/utilsSwap'
 import type { IProfit } from '@curvefi/api/lib/interfaces'
-import type { DateValue } from '@internationalized/date'
 import { BN } from '@ui/utils'
-import dayjs from '@ui-kit/lib/dayjs'
 import { waitForTransaction, waitForTransactions } from '@ui-kit/lib/ethers'
 import { t } from '@ui-kit/lib/i18n'
 import { log } from '@ui-kit/lib/logging'
 import { fetchNetworks } from '../entities/networks'
 
-const { chunk, flatten, isUndefined } = lodash
+const { isUndefined } = lodash
 
 const helpers = { waitForTransaction, waitForTransactions }
 
@@ -1378,110 +1375,6 @@ const lockCrv = {
     } catch (error) {
       console.error(error)
       resp.error = getErrorMessage(error, 'error-get-locked-crv-info')
-      return resp
-    }
-  },
-  calcUnlockTime: (curve: CurveApi, formType: LockFormType, currTime: number | null, days: number | null) => {
-    log('calcUnlockTime', formType, currTime, days)
-    let unlockTime = 0
-    if (formType === 'adjust_date' && currTime && days) {
-      unlockTime = curve.boosting.calcUnlockTime(days, currTime)
-    } else if (formType === 'create' && days) {
-      unlockTime = curve.boosting.calcUnlockTime(days)
-    }
-    return dayjs.utc(unlockTime)
-  },
-  createLock: async (
-    activeKey: string,
-    curve: CurveApi,
-    provider: Provider,
-    lockedAmount: string,
-    utcDate: DateValue,
-    days: number,
-  ) => {
-    log('createLock', lockedAmount, utcDate.toString(), days)
-    const resp = { activeKey, hash: '', error: '' }
-    try {
-      resp.hash = await curve.boosting.createLock(lockedAmount, days)
-      await helpers.waitForTransaction(resp.hash, provider)
-      return resp
-    } catch (error) {
-      console.error(error)
-      resp.error = getErrorMessage(error, 'error-step-create-locked-crv')
-      return resp
-    }
-  },
-  estGasApproval: async (
-    activeKey: string,
-    curve: CurveApi,
-    formType: LockFormType,
-    lockedAmount: string,
-    days: number | null,
-  ) => {
-    log('lockCrvEstGasApproval', formType, lockedAmount, days)
-    const resp = { activeKey, isApproved: false, estimatedGas: null as EstimatedGas, error: '' }
-
-    try {
-      resp.isApproved =
-        formType === 'adjust_crv' || formType === 'create' ? await curve.boosting.isApproved(lockedAmount) : true
-
-      if (resp.isApproved) {
-        if (formType === 'create' && days) {
-          resp.estimatedGas = await curve.boosting.estimateGas.createLock(lockedAmount, days)
-        } else if (formType === 'adjust_crv') {
-          resp.estimatedGas = await curve.boosting.estimateGas.increaseAmount(lockedAmount)
-        } else if (formType === 'adjust_date' && days) {
-          resp.estimatedGas = await curve.boosting.estimateGas.increaseUnlockTime(days)
-        }
-      } else {
-        resp.estimatedGas =
-          formType === 'create' || formType === 'adjust_crv'
-            ? await curve.boosting.estimateGas.approve(lockedAmount)
-            : 0
-      }
-      return resp
-    } catch (error) {
-      console.error(error)
-      resp.error = getErrorMessage(error, 'error-est-gas-approval')
-      return resp
-    }
-  },
-  lockCrvApprove: async (activeKey: string, provider: Provider, curve: CurveApi, lockedAmount: string) => {
-    log('userLockCrvApprove', lockedAmount)
-    const resp = { activeKey, hashes: [] as string[], error: '' }
-    try {
-      resp.hashes = await curve.boosting.approve(lockedAmount)
-      await helpers.waitForTransactions(resp.hashes, provider)
-      return resp
-    } catch (error) {
-      console.error(error)
-      resp.error = getErrorMessage(error, 'error-step-approve')
-      return resp
-    }
-  },
-  increaseAmount: async (activeKey: string, curve: CurveApi, provider: Provider, lockedAmount: string) => {
-    log('increaseAmount', lockedAmount)
-    const resp = { activeKey, hash: '', error: '' }
-    try {
-      resp.hash = await curve.boosting.increaseAmount(lockedAmount)
-      await helpers.waitForTransaction(resp.hash, provider)
-      return resp
-    } catch (error) {
-      console.error(error)
-      resp.error = getErrorMessage(error, 'error-step-locked-crv')
-      return resp
-    }
-  },
-  increaseUnlockTime: async (activeKey: string, provider: Provider, curve: CurveApi, days: number) => {
-    log('increaseUnlockTime', days)
-    const resp = { activeKey, hash: '', error: '' }
-    try {
-      resp.hash = await curve.boosting.increaseUnlockTime(days)
-      await helpers.waitForTransaction(resp.hash, provider)
-      return resp
-    } catch (error) {
-      console.error(error)
-      resp.error = getErrorMessage(error, 'error-step-locked-time')
       return resp
     }
   },

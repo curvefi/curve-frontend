@@ -1,5 +1,5 @@
 import { useConnection } from 'wagmi'
-import { LlamaMarketColumnId } from '@/llamalend/features/market-list/columns.enum'
+import { LlamaMarketColumnId } from '@/llamalend/features/market-list/columns'
 import { calculateLtv } from '@/llamalend/llama.utils'
 import { useUserLendingVaultEarnings, useUserLendingVaultStats } from '@/llamalend/queries/market-list/lending-vaults'
 import { type LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
@@ -73,7 +73,7 @@ export function useUserMarketStats(market: LlamaMarket, column?: LlamaMarketColu
     ...(stats && {
       data: {
         softLiquidation: stats.softLiquidation,
-        isCollateralEroded: stats.softLiquidation && stats.debt > 0,
+        liquidated: stats.healthFull < 0 && borrowedAmount === 0,
         health: stats.healthFull,
         borrowed: stats.debt,
         collateral: {

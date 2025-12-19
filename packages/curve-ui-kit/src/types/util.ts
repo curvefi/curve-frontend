@@ -1,5 +1,3 @@
-// Various Typescript utility types, useful everywhere!
-
 /**
  * Creates a deep partial type that makes all properties optional recursively,
  * while preserving function types as-is

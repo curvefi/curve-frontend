@@ -1,4 +1,3 @@
-import { LlamaMarketColumnId } from '@/llamalend/features/market-list/columns.enum'
 import { useUserMarketStats } from '@/llamalend/queries/market-list/llama-market-stats'
 import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { BoostTooltipContent } from '@/llamalend/widgets/tooltips/BoostTooltipContent'
@@ -8,6 +7,7 @@ import type { CellContext } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { formatNumber } from '@ui-kit/utils'
+import { LlamaMarketColumnId } from '../columns'
 
 export const BoostCell = ({ row }: CellContext<LlamaMarket, number>) => {
   const market = row.original

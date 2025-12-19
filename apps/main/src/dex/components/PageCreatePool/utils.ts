@@ -1,5 +1,5 @@
 import { isAddress } from 'viem'
-import { STABLESWAP, CRYPTOSWAP, FXSWAP } from '@/dex/components/PageCreatePool/constants'
+import { STABLESWAP, CRYPTOSWAP, FXSWAP, NG_ASSET_TYPE } from '@/dex/components/PageCreatePool/constants'
 import type { SwapType, TokenState } from '@/dex/components/PageCreatePool/types'
 import { BasePool } from '@/dex/types/main.types'
 export const checkSwapType = (swapType: SwapType) => swapType !== ''
@@ -77,19 +77,19 @@ export const checkParameters = (
 export const checkPoolInfo = (stableswapNg: boolean, swapType: SwapType, poolSymbol: string, poolName: string) =>
   poolSymbol !== '' && poolName !== '' && (swapType == STABLESWAP || stableswapNg)
 
-export const checkOracle = isAddress
-
 export const validateOracleFunction = (functionName: string) => functionName.endsWith('()')
 
 export const oraclesReady = (tokens: TokenState[]) => {
-  const oracleTokens = tokens.filter((token) => token.ngAssetType === 1)
-  const allValid = oracleTokens.every((token) => checkOracle(token.oracleAddress))
-  const functionsValid = oracleTokens.every((token) => validateOracleFunction(token.oracleFunction))
-  return allValid && functionsValid
+  const oracleTokens = tokens.filter((token) => token.ngAssetType === NG_ASSET_TYPE.ORACLE)
+  const addressesValid = oracleTokens.every((token) => isAddress(token.oracle.address))
+  const functionsValid = oracleTokens.every((token) => validateOracleFunction(token.oracle.functionName))
+  const decimalsValid = oracleTokens.every((token) => token.oracle.decimals === 18)
+  const ratesValid = oracleTokens.every((token) => token.oracle.rate !== undefined)
+  return addressesValid && functionsValid && decimalsValid && ratesValid
 }
 
 export const containsOracle = (tokens: TokenState[]) =>
-  tokens.some((token) => token.ngAssetType === 1 && token.address !== '')
+  tokens.some((token) => token.ngAssetType === NG_ASSET_TYPE.ORACLE && token.address !== '')
 
 export const checkFormReady = (
   poolTypeValid: boolean,

@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { t } from '@ui-kit/lib/i18n'
+import type { NgAssetType } from './types'
 
 export const CRYPTOSWAP = 'Cryptoswap'
 export const STABLESWAP = 'Stableswap'
@@ -33,6 +34,15 @@ export type PRESETS = {
       maHalfTime: string
     }
   }
+}
+
+export const ORACLE_DECIMALS = 18
+
+export const NG_ASSET_TYPE: Record<string, NgAssetType> = {
+  STANDARD: 0,
+  ORACLE: 1,
+  REBASING: 2,
+  ERC4626: 3,
 }
 
 const fillerParams = {

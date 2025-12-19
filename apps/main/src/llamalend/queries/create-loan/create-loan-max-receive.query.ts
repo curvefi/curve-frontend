@@ -39,11 +39,19 @@ const convertNumbers = ({
 })
 
 export const maxReceiveValidation = createValidationSuite(
-  ({ chainId, marketId, userBorrowed, userCollateral, range, slippage }: CreateLoanMaxReceiveParams) => {
+  ({
+    chainId,
+    marketId,
+    userBorrowed,
+    userCollateral,
+    range,
+    slippage,
+    leverageEnabled,
+  }: CreateLoanMaxReceiveParams) => {
     marketIdValidationSuite({ chainId, marketId })
     borrowFormValidationGroup(
-      { userBorrowed, userCollateral, debt: undefined, range, slippage },
-      { debtRequired: false },
+      { userBorrowed, userCollateral, debt: undefined, range, slippage, leverageEnabled },
+      { debtRequired: false, isMaxDebtRequired: false, isLeverageRequired: false },
     )
   },
 )
@@ -86,7 +94,7 @@ export const { useQuery: useCreateLoanMaxReceive, queryKey: createLoanMaxReceive
     assert(!+userBorrowed, `userBorrowed must be 0 for non-leverage mint markets`)
     const result = await market.leverage.createLoanMaxRecv(userCollateral, range)
     const { maxBorrowable, maxCollateral, leverage, routeIdx } = result
-    return convertNumbers({ maxDebt: maxBorrowable, maxTotalCollateral: maxCollateral, maxLeverage: '9' })
+    return convertNumbers({ maxDebt: maxBorrowable, maxTotalCollateral: maxCollateral })
   },
   staleTime: '1m',
   validationSuite: maxReceiveValidation,

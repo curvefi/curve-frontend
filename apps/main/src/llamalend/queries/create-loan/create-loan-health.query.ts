@@ -3,7 +3,7 @@ import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import type { Decimal } from '@ui-kit/utils'
 import { decimal } from '@ui-kit/utils'
-import type { BorrowFormQuery, BorrowFormQueryParams } from '../../features/borrow/types'
+import type { BorrowDebtParams, BorrowDebtQuery } from '../../features/borrow/types'
 import { borrowQueryValidationSuite } from '../validation/borrow.validation'
 import { createLoanExpectedCollateralQueryKey } from './create-loan-expected-collateral.query'
 import { createLoanMaxReceiveKey } from './create-loan-max-receive.query'
@@ -17,7 +17,8 @@ export const { useQuery: useCreateLoanHealth } = queryFactory({
     debt,
     leverageEnabled,
     range,
-  }: BorrowFormQueryParams) =>
+    maxDebt,
+  }: BorrowDebtParams) =>
     [
       ...rootKeys.market({ chainId, marketId }),
       'createLoanHealth',
@@ -26,6 +27,7 @@ export const { useQuery: useCreateLoanHealth } = queryFactory({
       { debt },
       { leverageEnabled },
       { range },
+      { maxDebt },
     ] as const,
   queryFn: async ({
     marketId,
@@ -34,7 +36,7 @@ export const { useQuery: useCreateLoanHealth } = queryFactory({
     debt = '0',
     leverageEnabled,
     range,
-  }: BorrowFormQuery): Promise<Decimal> => {
+  }: BorrowDebtQuery): Promise<Decimal> => {
     const market = getLlamaMarket(marketId)
     return decimal(
       leverageEnabled
@@ -47,7 +49,7 @@ export const { useQuery: useCreateLoanHealth } = queryFactory({
     )!
   },
   staleTime: '1m',
-  validationSuite: borrowQueryValidationSuite,
+  validationSuite: borrowQueryValidationSuite({ debtRequired: true }),
   dependencies: (params) => [
     createLoanMaxReceiveKey(params),
     ...(params.leverageEnabled ? [createLoanExpectedCollateralQueryKey(params)] : []),

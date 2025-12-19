@@ -30,14 +30,6 @@ export function getErrorMessage(error: CustomError, defaultErrorMessage: string)
   return errorMessage
 }
 
-export function scrollToTop() {
-  window.scroll({
-    top: 0,
-    left: 0,
-    behavior: 'smooth',
-  })
-}
-
 export function fulfilledValue<T>(result: PromiseSettledResult<T>) {
   if (result.status === 'fulfilled') {
     return result.value
@@ -60,8 +52,4 @@ export function _parseActiveKey(api: Api | null, market: OneWayMarketTemplate | 
   const { chainId = '', signerAddress = '' } = api ?? {}
   const parsedSignerAddress = signerAddress.slice(0, 10)
   return `${chainId}-${parsedSignerAddress}${market?.id}`
-}
-
-export function _showNoLoanFound(signerAddress: string | undefined, isComplete: boolean, loanExists?: boolean) {
-  if (!!signerAddress && !isComplete && typeof loanExists !== 'undefined' && !loanExists) return true
 }

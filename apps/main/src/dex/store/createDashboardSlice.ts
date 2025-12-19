@@ -2,7 +2,6 @@ import lodash from 'lodash'
 import type { Address } from 'viem'
 import { isAddress } from 'viem'
 import { StoreApi } from 'zustand'
-import type { VecrvInfo } from '@/dex/components/PageCrvLocker/types'
 import type {
   DashboardDataMapper,
   DashboardDatasMapper,
@@ -21,6 +20,7 @@ import type { IProfit } from '@curvefi/api/lib/interfaces'
 import { PromisePool } from '@supercharge/promise-pool'
 import { shortenAccount } from '@ui/utils'
 import { useWallet } from '@ui-kit/features/connect-wallet'
+import { Chain } from '@ui-kit/utils'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -37,7 +37,7 @@ type SliceState = {
   formValues: FormValues
   formStatus: FormStatus
   searchedWalletAddresses: string[]
-  vecrvInfo: { [activeKey: string]: VecrvInfo | null }
+  vecrvInfo: { [activeKey: string]: Awaited<ReturnType<typeof curvejsApi.lockCrv.vecrvInfo>>['resp'] | null }
 }
 
 const sliceKey = 'dashboard'
@@ -45,7 +45,6 @@ const sliceKey = 'dashboard'
 // prettier-ignore
 export type DashboardSlice = {
   [sliceKey]: SliceState & {
-    fetchClaimablesAndLockedDetails: (curve: CurveApi) => Promise<void>
     fetchVeCrvAndClaimables: (activeKey: string, curve: CurveApi, walletAddress: string) => Promise<void>
     fetchDashboardData: (curve: CurveApi, walletAddress: string, poolDataMapper: PoolDataMapper) => Promise<{ dashboardDataMapper: DashboardDataMapper, error: string }>
     sortFn: (chainId: ChainId, sortBy: SortId, sortByOrder: Order, walletPoolDatas: WalletPoolData[]) => WalletPoolData[]
@@ -81,28 +80,6 @@ const createDashboardSlice = (_: StoreApi<State>['setState'], get: StoreApi<Stat
   dashboard: {
     ...DEFAULT_STATE,
 
-    fetchClaimablesAndLockedDetails: async (curve) => {
-      const {
-        lockedCrv,
-        [sliceKey]: {
-          activeKey,
-          claimableFees,
-          formValues: { walletAddress },
-          vecrvInfo,
-          ...sliceState
-        },
-      } = get()
-
-      if (Object.keys(claimableFees).length || Object.keys(vecrvInfo).length) return
-
-      void sliceState.fetchVeCrvAndClaimables(activeKey, curve, walletAddress)
-
-      const { signerAddress } = curve
-
-      if (signerAddress && signerAddress.toLowerCase() !== walletAddress) {
-        void lockedCrv.fetchVecrvInfo(curve)
-      }
-    },
     fetchVeCrvAndClaimables: async (activeKey, curve, walletAddress) => {
       const {
         [sliceKey]: { ...sliceState },
@@ -287,7 +264,7 @@ const createDashboardSlice = (_: StoreApi<State>['setState'], get: StoreApi<Stat
       }
 
       // get claimableFees, locked crv info
-      if (chainId === 1) void sliceState.fetchClaimablesAndLockedDetails(curve)
+      if (chainId === Chain.Ethereum) void sliceState.fetchVeCrvAndClaimables(activeKey, curve, walletAddress)
 
       // get dashboard data
       const dashboardDataActiveKey = getDashboardDataActiveKey(chainId, walletAddress)

@@ -36,7 +36,7 @@ export function CopyIconButton({
               : setAlertText('Clipboard not available due to unsecure origin')
           }}
         >
-          <CopyIcon color="primary" />
+          <CopyIcon />
         </IconButton>
       </Tooltip>
 

@@ -5,7 +5,6 @@ import AlertSlippage from '@/dex/components/AlertSlippage'
 import DetailInfoEstGas from '@/dex/components/DetailInfoEstGas'
 import DetailInfoEstLpTokens from '@/dex/components/PagePool/components/DetailInfoEstLpTokens'
 import DetailInfoSlippage from '@/dex/components/PagePool/components/DetailInfoSlippage'
-import DetailInfoSlippageTolerance from '@/dex/components/PagePool/components/DetailInfoSlippageTolerance'
 import TransferActions from '@/dex/components/PagePool/components/TransferActions'
 import HighSlippagePriceImpactModal from '@/dex/components/PagePool/components/WarningModal'
 import FieldsDeposit from '@/dex/components/PagePool/Deposit/components/FieldsDeposit'
@@ -29,6 +28,7 @@ import TxInfoBar from '@ui/TxInfoBar'
 import { scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
+import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
 
 const FormDeposit = ({
   chainIdPoolId,
@@ -304,11 +304,7 @@ const FormDeposit = ({
             stepProgress={activeStep && steps.length > 1 ? { active: activeStep, total: steps.length } : null}
           />
         )}
-        <DetailInfoSlippageTolerance
-          customLabel={t`Additional slippage tolerance:`}
-          maxSlippage={maxSlippage}
-          stateKey={chainIdPoolId}
-        />
+        <SlippageToleranceActionInfo maxSlippage={maxSlippage} stateKey={chainIdPoolId} />
       </div>
 
       {poolAlert && poolAlert?.isInformationOnlyAndShowInForm && (

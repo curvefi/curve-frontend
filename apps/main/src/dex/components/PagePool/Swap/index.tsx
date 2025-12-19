@@ -9,7 +9,6 @@ import AlertSlippage from '@/dex/components/AlertSlippage'
 import ChipInpHelper from '@/dex/components/ChipInpHelper'
 import DetailInfoEstGas from '@/dex/components/DetailInfoEstGas'
 import FieldHelperUsdRate from '@/dex/components/FieldHelperUsdRate'
-import DetailInfoSlippageTolerance from '@/dex/components/PagePool/components/DetailInfoSlippageTolerance'
 import TransferActions from '@/dex/components/PagePool/components/TransferActions'
 import WarningModal from '@/dex/components/PagePool/components/WarningModal'
 import type { ExchangeOutput, FormStatus, FormValues, StepKey } from '@/dex/components/PagePool/Swap/types'
@@ -44,6 +43,7 @@ import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { useTokenBalance } from '@ui-kit/queries/token-balance.query'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { decimal, type Decimal } from '@ui-kit/utils'
+import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
 
 const { cloneDeep, isNaN, isUndefined } = lodash
 
@@ -654,7 +654,7 @@ const Swap = ({
             stepProgress={activeStep && steps.length > 1 ? { active: activeStep, total: steps.length } : null}
           />
         )}
-        <DetailInfoSlippageTolerance maxSlippage={maxSlippage} stateKey={chainIdPoolId} />
+        <SlippageToleranceActionInfo maxSlippage={maxSlippage} stateKey={chainIdPoolId} />
       </Box>
 
       {poolAlert && poolAlert?.isInformationOnlyAndShowInForm && (

@@ -21,9 +21,6 @@ const useLargeTokenInput = useStableChannel
 /** Negation of useLargeTokenInput for readability. */
 export const useLegacyTokenInput = () => !useLargeTokenInput()
 
-/** New ActionInfo with mui should be released together with LargeTokenInput. */
-export const useActionInfo = useLargeTokenInput
-
 /** New DEX market list (PoolListPage) */
 export const useDexMarketList = useBetaChannel
 

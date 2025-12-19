@@ -20,7 +20,7 @@ type RepayMutation = { stateCollateral: Decimal; userCollateral: Decimal; userBo
 export type RepayOptions = {
   marketId: string | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
-  onRepaid: LlammaMutationOptions<RepayMutation>['onSuccess']
+  onRepaid?: LlammaMutationOptions<RepayMutation>['onSuccess']
   onReset?: () => void
   userAddress: Address | undefined
 }
@@ -78,15 +78,18 @@ export const useRepayMutation = ({
 
       await waitForApproval({
         isApproved: () =>
-          fetchRepayIsApproved({
-            chainId,
-            marketId,
-            userAddress,
-            stateCollateral,
-            userCollateral,
-            userBorrowed,
-            isFull,
-          }),
+          fetchRepayIsApproved(
+            {
+              chainId,
+              marketId,
+              userAddress,
+              stateCollateral,
+              userCollateral,
+              userBorrowed,
+              isFull,
+            },
+            { staleTime: 0 },
+          ),
         onApprove: () => approveRepay(market, mutation),
         message: t`Approved repayment`,
         config,

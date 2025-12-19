@@ -1,4 +1,4 @@
-import { LOAD_TIMEOUT } from '@cy/support/ui'
+import { API_LOAD_TIMEOUT, LOAD_TIMEOUT } from '@cy/support/ui'
 
 describe('DEX Swap', () => {
   const FROM_USDT = '0xdac17f958d2ee523a2206206994597c13d831ec7'
@@ -7,7 +7,7 @@ describe('DEX Swap', () => {
   it('shows quotes via router API when disconnected', () => {
     cy.visitWithoutTestConnector(`dex/ethereum/swap?from=${FROM_USDT}&to=${TO_ETH}`)
     cy.get('[data-testid="btn-connect-wallet"]', LOAD_TIMEOUT).should('be.enabled')
-    cy.get(`[data-testid="token-icon-${FROM_USDT}"]`, LOAD_TIMEOUT).should('be.visible')
+    cy.get(`[data-testid="token-icon-${FROM_USDT}"]`, API_LOAD_TIMEOUT).should('be.visible')
 
     cy.get('[data-testid="from-amount"] [name="fromAmount"]').as('from')
     cy.get('[data-testid="to-amount"] [name="toAmount"]').as('to')

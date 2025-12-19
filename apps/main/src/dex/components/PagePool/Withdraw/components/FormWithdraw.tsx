@@ -7,7 +7,6 @@ import AlertFormError from '@/dex/components/AlertFormError'
 import AlertSlippage from '@/dex/components/AlertSlippage'
 import DetailInfoEstGas from '@/dex/components/DetailInfoEstGas'
 import DetailInfoSlippage from '@/dex/components/PagePool/components/DetailInfoSlippage'
-import DetailInfoSlippageTolerance from '@/dex/components/PagePool/components/DetailInfoSlippageTolerance'
 import FieldLpToken from '@/dex/components/PagePool/components/FieldLpToken'
 import FieldToken from '@/dex/components/PagePool/components/FieldToken'
 import SelectedLpTokenExpected from '@/dex/components/PagePool/components/SelectedLpTokenExpected'
@@ -35,6 +34,7 @@ import { mediaQueries } from '@ui/utils/responsive'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRates } from '@ui-kit/lib/model/entities/token-usd-rate'
+import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
 
 const FormWithdraw = ({
   chainIdPoolId,
@@ -481,11 +481,7 @@ const FormWithdraw = ({
             stepProgress={activeStep && steps.length > 1 ? { active: activeStep, total: steps.length } : null}
           />
         )}
-        <DetailInfoSlippageTolerance
-          customLabel={t`Additional slippage tolerance:`}
-          maxSlippage={maxSlippage}
-          stateKey={chainIdPoolId}
-        />
+        <SlippageToleranceActionInfo maxSlippage={maxSlippage} stateKey={chainIdPoolId} />
       </div>
 
       {formStatus.error && (

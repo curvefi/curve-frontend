@@ -1,6 +1,7 @@
 import lodash from 'lodash'
+import { useMemo } from 'react'
 import { styled } from 'styled-components'
-import { isAddress } from 'viem'
+import { isAddress, formatEther } from 'viem'
 import TextInput from '@/dex/components/PageCreatePool/components/TextInput'
 import WarningBox from '@/dex/components/PageCreatePool/components/WarningBox'
 import {
@@ -12,12 +13,22 @@ import {
   TOKEN_F,
   TOKEN_G,
   TOKEN_H,
+  NG_ASSET_TYPE,
+  ORACLE_DECIMALS,
 } from '@/dex/components/PageCreatePool/constants'
+import { useOracleValidation } from '@/dex/components/PageCreatePool/hooks/useOracleValidation'
 import type { TokenState, TokenId } from '@/dex/components/PageCreatePool/types'
 import { validateOracleFunction } from '@/dex/components/PageCreatePool/utils'
 import useStore from '@/dex/store/useStore'
+import Alert from '@mui/material/Alert'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
 import Box from '@ui/Box'
 import { t } from '@ui-kit/lib/i18n'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { formatNumber } from '@ui-kit/utils'
+
+const { Spacing } = SizesAndSpaces
 
 type OracleInputProps = {
   token: TokenState
@@ -26,41 +37,24 @@ type OracleInputProps = {
 }
 
 const SetOracle = () => {
-  const tokenA = useStore((state) => state.createPool.tokensInPool.tokenA)
-  const tokenB = useStore((state) => state.createPool.tokensInPool.tokenB)
-  const tokenC = useStore((state) => state.createPool.tokensInPool.tokenC)
-  const tokenD = useStore((state) => state.createPool.tokensInPool.tokenD)
-  const tokenE = useStore((state) => state.createPool.tokensInPool.tokenE)
-  const tokenF = useStore((state) => state.createPool.tokensInPool.tokenF)
-  const tokenG = useStore((state) => state.createPool.tokensInPool.tokenG)
-  const tokenH = useStore((state) => state.createPool.tokensInPool.tokenH)
+  const tokens = useStore((state) => state.createPool.tokensInPool)
+
+  const oracleTokens: { token: TokenState; tokenId: TokenId; title: string }[] = [
+    { token: tokens.tokenA, tokenId: TOKEN_A as TokenId, title: t`Token A` },
+    { token: tokens.tokenB, tokenId: TOKEN_B as TokenId, title: t`Token B` },
+    { token: tokens.tokenC, tokenId: TOKEN_C as TokenId, title: t`Token C` },
+    { token: tokens.tokenD, tokenId: TOKEN_D as TokenId, title: t`Token D` },
+    { token: tokens.tokenE, tokenId: TOKEN_E as TokenId, title: t`Token E` },
+    { token: tokens.tokenF, tokenId: TOKEN_F as TokenId, title: t`Token F` },
+    { token: tokens.tokenG, tokenId: TOKEN_G as TokenId, title: t`Token G` },
+    { token: tokens.tokenH, tokenId: TOKEN_H as TokenId, title: t`Token H` },
+  ].filter(({ token }) => token.ngAssetType === NG_ASSET_TYPE.ORACLE && token.address !== '')
 
   return (
     <OracleWrapper>
-      {tokenA.ngAssetType === 1 && tokenA.address !== '' && (
-        <OracleInputs token={tokenA} tokenId={TOKEN_A} title={t`Token A`} />
-      )}
-      {tokenB.ngAssetType === 1 && tokenB.address !== '' && (
-        <OracleInputs token={tokenB} tokenId={TOKEN_B} title={t`Token B`} />
-      )}
-      {tokenC.ngAssetType === 1 && tokenC.address !== '' && (
-        <OracleInputs token={tokenC} tokenId={TOKEN_C} title={t`Token C`} />
-      )}
-      {tokenD.ngAssetType === 1 && tokenD.address !== '' && (
-        <OracleInputs token={tokenD} tokenId={TOKEN_D} title={t`Token D`} />
-      )}
-      {tokenD.ngAssetType === 1 && tokenD.address !== '' && (
-        <OracleInputs token={tokenE} tokenId={TOKEN_E} title={t`Token E`} />
-      )}
-      {tokenD.ngAssetType === 1 && tokenD.address !== '' && (
-        <OracleInputs token={tokenF} tokenId={TOKEN_F} title={t`Token F`} />
-      )}
-      {tokenD.ngAssetType === 1 && tokenD.address !== '' && (
-        <OracleInputs token={tokenG} tokenId={TOKEN_G} title={t`Token G`} />
-      )}
-      {tokenD.ngAssetType === 1 && tokenD.address !== '' && (
-        <OracleInputs token={tokenH} tokenId={TOKEN_H} title={t`Token H`} />
-      )}
+      {oracleTokens.map(({ token, tokenId, title }) => (
+        <OracleInputs key={tokenId} token={token} tokenId={tokenId} title={title} />
+      ))}
     </OracleWrapper>
   )
 }
@@ -69,36 +63,61 @@ const OracleInputs = ({ token, tokenId, title }: OracleInputProps) => {
   const updateOracleAddress = useStore((state) => state.createPool.updateOracleAddress)
   const updateOracleFunction = useStore((state) => state.createPool.updateOracleFunction)
 
+  const oracleFunction = token.oracle.functionName
+  const oracleAddress = token.oracle.address
+
+  const { isLoading, isSuccess, error, rate, decimals } = useOracleValidation({ token, tokenId })
+
+  const formattedRate = useMemo(() => {
+    if (!isSuccess || !rate || decimals === undefined) return null
+    return formatNumber(Number(formatEther(BigInt(rate))), {
+      abbreviate: false,
+    })
+  }, [decimals, rate, isSuccess])
+
   return (
     <InputContainer>
       <TokenTitle>{t`${title} ${token.symbol !== '' ? `(${token.symbol})` : ''} Oracle`}</TokenTitle>
       <TextInput
         row
-        defaultValue={token.oracleAddress}
+        defaultValue={oracleAddress}
         onChange={lodash.debounce((value) => updateOracleAddress(tokenId, value), 300)}
         maxLength={42}
         label={t`Address (e.g 0x123...)`}
       />
-      {token.oracleAddress.length !== 0 && !token.oracleAddress.startsWith('0x') && (
-        <WarningBox message={t`Oracle address needs to start with '0x'.`} />
-      )}
-      {token.oracleAddress.length !== 0 && token.oracleAddress.length < 42 && (
-        <WarningBox message={t`Oracle address needs to be 42 characters long.`} />
-      )}
-      {token.oracleAddress.length === 42 && !isAddress(token.oracleAddress) && (
-        <WarningBox message={t`Invalid EVM address.`} />
+      {!isAddress(oracleAddress) && oracleAddress.length > 0 && (
+        <WarningBox message={t`Invalid EVM address. Needs to start with '0x', needs to be 42 characters long.`} />
       )}
       <TextInput
         row
-        defaultValue={token.oracleFunction}
+        defaultValue={oracleFunction}
         onChange={lodash.debounce((value) => updateOracleFunction(tokenId, value), 300)}
         maxLength={42}
         label={t`Function (e.g exchangeRate())`}
       />
-      {token.oracleFunction !== '' && !validateOracleFunction(token.oracleFunction) && (
+      {oracleFunction !== '' && !validateOracleFunction(oracleFunction) && (
         <WarningBox message={t`Oracle function name needs to end with '()'.`} />
       )}
-      <WarningBox message={t`Oracle must have a precision of 18 decimals.`} informational />
+      {decimals !== ORACLE_DECIMALS && oracleFunction !== '' && !isLoading && !error && (
+        <WarningBox message={t`Oracle must have a precision of ${ORACLE_DECIMALS} decimals.`} informational />
+      )}
+      {isLoading && <WarningBox message={t`Validating oracle...`} informational />}
+      {error && <WarningBox message={t`Unable to validate oracle.`} />}
+      {isSuccess && formattedRate !== null && (
+        <Alert severity="info" variant="standard" sx={{ marginTop: Spacing.sm }}>
+          <Stack gap={Spacing.xs}>
+            <Typography variant="bodySRegular">
+              {t`Oracle rate:`} {formattedRate}
+            </Typography>
+            <Typography variant="bodySRegular">
+              {t`Decimals:`} {decimals}
+            </Typography>
+            <Typography variant="bodySRegular">
+              {t`Raw rate:`} {rate}
+            </Typography>
+          </Stack>
+        </Alert>
+      )}
     </InputContainer>
   )
 }
