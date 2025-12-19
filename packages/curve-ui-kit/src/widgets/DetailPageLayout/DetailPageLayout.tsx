@@ -18,6 +18,8 @@ export const DetailPageLayout = ({ formTabs, children }: { formTabs: ReactNode; 
     spacing={Spacing.lg}
     sx={{ marginInline: Spacing.md, marginBlockStart: Spacing.xl, marginBlockEnd: Spacing.xxl }}
   >
+    {/* In Figma, columns are 12/4/3, but too small around breakpoints. I've added one extra column.
+        Ultrawide isn't a breakpoint yet, use maxWidth so it's not too large. */}
     <Grid size={{ mobile: 12, tablet: 5, desktop: 4 }} maxWidth={{ desktop: MaxWidth.actionCard }}>
       {formTabs || <FormSkeleton />}
     </Grid>
