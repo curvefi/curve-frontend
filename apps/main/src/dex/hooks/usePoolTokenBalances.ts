@@ -17,7 +17,11 @@ export function usePoolTokenBalances({ chainId, userAddress, poolId }: Params, e
     [curveApi, isHydrated, poolId],
   )
 
-  const { data: wrappedCoinsBalances, isLoading: wrappedCoinsLoading } = useTokenBalances(
+  const {
+    data: wrappedCoinsBalances,
+    isLoading: wrappedCoinsLoading,
+    error: wrappedCoinsError,
+  } = useTokenBalances(
     {
       chainId,
       userAddress,
@@ -26,7 +30,11 @@ export function usePoolTokenBalances({ chainId, userAddress, poolId }: Params, e
     enabled && isHydrated,
   )
 
-  const { data: underlyingCoinsBalances, isLoading: underlyingCoinsLoading } = useTokenBalances(
+  const {
+    data: underlyingCoinsBalances,
+    isLoading: underlyingCoinsLoading,
+    error: underlyingCoinsError,
+  } = useTokenBalances(
     {
       chainId,
       userAddress,
@@ -35,12 +43,11 @@ export function usePoolTokenBalances({ chainId, userAddress, poolId }: Params, e
     enabled && isHydrated,
   )
 
-  const isLoading = wrappedCoinsLoading || underlyingCoinsLoading
-
   return {
     wrappedCoinsBalances,
     underlyingCoinsBalances,
-    isLoading,
+    isLoading: wrappedCoinsLoading || underlyingCoinsLoading,
+    error: wrappedCoinsError || underlyingCoinsError,
   }
 }
 

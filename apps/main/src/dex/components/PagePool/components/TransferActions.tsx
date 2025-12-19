@@ -11,7 +11,6 @@ import useStore from '@/dex/store/useStore'
 import { getChainPoolIdActiveKey } from '@/dex/utils'
 import AlertBox from '@ui/AlertBox'
 import { useCurve } from '@ui-kit/features/connect-wallet'
-import { t } from '@ui-kit/lib/i18n'
 
 const TransferActions = ({
   children,
@@ -31,11 +30,7 @@ const TransferActions = ({
   const currencyReserves = useStore((state) => state.pools.currencyReserves[getChainPoolIdActiveKey(rChainId, poolId)])
 
   const { address: userAddress } = useConnection()
-  const {
-    wrappedCoinsBalances,
-    underlyingCoinsBalances,
-    isLoading: walletBalancesLoading,
-  } = usePoolTokenBalances({
+  const { isLoading: walletBalancesLoading, error: walletBalancesError } = usePoolTokenBalances({
     chainId: rChainId,
     userAddress,
     poolId,
@@ -49,15 +44,11 @@ const TransferActions = ({
     !seed.loaded ||
     walletBalancesLoading
 
-  const hasWalletBalances = Object.keys(wrappedCoinsBalances).length && Object.keys(underlyingCoinsBalances).length
-
   return (
     <>
       {alert && !alert.isInformationOnly ? <AlertBox alertType={alert.alertType}>{alert.message}</AlertBox> : null}
       <AlertSeedAmounts seed={seed} poolData={poolData} />
-      {signerAddress && !isLoading && !hasWalletBalances && (
-        <AlertBox alertType="error">{t`Unable to get wallet balances`}</AlertBox>
-      )}
+      {signerAddress && walletBalancesError && <AlertBox alertType="error">{walletBalancesError.message}</AlertBox>}
       <FormConnectWallet loading={isLoading}>{children}</FormConnectWallet>
     </>
   )

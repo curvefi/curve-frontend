@@ -37,13 +37,11 @@ export function usePoolTokenDepositBalances({ chainId, userAddress, poolId }: Pa
     enabled && hasGauge,
   )
 
-  const isLoading = lpTokenLoading || gaugeTokenLoading
-
   return {
-    isLoading,
     lpTokenBalance,
     hasGauge,
     gaugeTokenBalance,
+    isLoading: lpTokenLoading || gaugeTokenLoading,
   }
 }
 
