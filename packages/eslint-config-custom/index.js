@@ -47,7 +47,6 @@ module.exports = {
 
     // todo: remove the following rules
     'no-empty-pattern': 'off',
-    '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/no-empty-object-type': 'off',
     '@typescript-eslint/ban-ts-comment': 'off',
     '@typescript-eslint/prefer-as-const': 'off',

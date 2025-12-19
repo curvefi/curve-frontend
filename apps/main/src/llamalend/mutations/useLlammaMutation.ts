@@ -1,11 +1,10 @@
-import type { Suite } from 'vest'
 import type { FormattedTransactionReceipt, Hex } from 'viem'
 import { useConfig } from 'wagmi'
 import { invalidateAllUserMarketDetails } from '@/llamalend/queries/validation/invalidation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useMutation } from '@tanstack/react-query'
 import { notify, useCurve } from '@ui-kit/features/connect-wallet'
-import { assertValidity, logError, logMutation, logSuccess } from '@ui-kit/lib'
+import { assertValidity, logError, logMutation, logSuccess, type ValidationSuite } from '@ui-kit/lib'
 import { waitForTransactionReceipt } from '@wagmi/core'
 import { getLlamaMarket, updateUserEventsApi } from '../llama.utils'
 import type { LlamaMarketTemplate } from '../llamalend.types'
@@ -61,10 +60,8 @@ export type LlammaMutationOptions<TVariables extends object, TData extends Resul
   mutationFn: (variables: TVariables, context: { market: LlamaMarketTemplate }) => Promise<TData>
   /**
    * Validation suite to validate variables before mutationFn is called.
-   * This is using `any` because `vest` will try to match every single field,
-   * and some validators don't validate everything (we pass chainId, marketId, userAddress plus variables).
    **/
-  validationSuite: Suite<any, any> | Suite<never, any>
+  validationSuite: ValidationSuite
   /** Message to display during pending state */
   pendingMessage: (variables: TVariables, context: Omit<Context, 'pendingNotification'>) => string
   /** Message to display on success */
@@ -109,7 +106,7 @@ export function useLlammaMutation<TVariables extends object, TData extends Resul
       if (!llamaApi) throw new Error('Missing llamalend api')
       if (!marketId) throw new Error('Missing llamma market id')
 
-      assertValidity(validationSuite as Suite<any, any>, { chainId, marketId, userAddress, ...variables })
+      assertValidity(validationSuite, { chainId, marketId, userAddress, ...variables })
 
       const market = getLlamaMarket(marketId)
 

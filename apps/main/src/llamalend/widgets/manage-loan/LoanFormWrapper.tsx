@@ -11,7 +11,11 @@ const { Spacing } = SizesAndSpaces
  * A form wrapper for loan forms that wraps the form with FormProvider, form and styles.
  * Supports a child info accordion below the form.
  */
-export const LoanFormWrapper = <TFieldValues extends FieldValues, TContext = any, TTransformedValues = TFieldValues>({
+export const LoanFormWrapper = <
+  TFieldValues extends FieldValues,
+  TContext = unknown,
+  TTransformedValues = TFieldValues,
+>({
   onSubmit,
   children,
   infoAccordion,

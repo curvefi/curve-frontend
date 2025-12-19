@@ -1,4 +1,5 @@
 import { PositionsEmptyState } from '@/llamalend/constants'
+import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import Button from '@mui/material/Button'
 import type { Table } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
@@ -14,7 +15,7 @@ type EmptyStateConfig = {
 }
 
 type UserPositionsEmptyStateProps = {
-  table: Table<any>
+  table: Table<LlamaMarket>
   state: PositionsEmptyState
   tab: MarketRateType
   onReload: () => void

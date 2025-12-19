@@ -38,7 +38,7 @@ export const getFlexAlignment = <T extends TableItem>({ columnDef }: Column<T>) 
  * In the figma design, the first and last columns seem to be aligned to the table title.
  * However, the normal padding causes them to be misaligned.
  */
-export const getExtraColumnPadding = <T>(column: Column<T, any>) => ({
+export const getExtraColumnPadding = <T>(column: Column<T, unknown>) => ({
   ...(column.getIsFirstColumn() && { paddingInlineStart: Spacing.md }),
   ...(column.getIsLastColumn() && { paddingInlineEnd: Spacing.md }),
 })

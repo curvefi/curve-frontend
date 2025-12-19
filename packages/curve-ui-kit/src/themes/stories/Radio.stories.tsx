@@ -22,7 +22,7 @@ const RadioStory = ({ checked, onChange, ...props }: RadioProps) => {
           const newValue = event.target.value
           setValue(newValue)
           const isChecked = newValue === 'option1'
-          onChange?.(event as any, isChecked)
+          onChange?.(event as React.ChangeEvent<HTMLInputElement>, isChecked)
         }}
       >
         <FormControlLabel
