@@ -1,4 +1,5 @@
 import { Contract, ContractRunner, Interface } from 'ethers'
+import type { InterfaceAbi } from 'ethers'
 import lodash from 'lodash'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import AlertFormError from '@/dex/components/AlertFormError'
@@ -78,8 +79,7 @@ const FormCompensation = ({
         const abi = await import('@/dex/components/PageCompensation/abis/vest_abi.json').then(
           (module) => module.default,
         )
-        // @ts-ignore
-        const iface = new Interface(abi)
+        const iface = new Interface(abi as InterfaceAbi)
         const vestedTotals = await Promise.all(
           vestAddresses.map((vc, idx) => getVestedAmount(vc, iface, contracts[idx], idx, signerAddress, signer)),
         )

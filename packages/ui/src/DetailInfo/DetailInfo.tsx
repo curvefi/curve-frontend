@@ -50,7 +50,6 @@ export const DetailInfo = ({
       value={children || '-'}
       valueColor={VariantToColorMap[variant || '']}
       valueTooltip={tooltip}
-      error={variant === 'error'}
       loading={loading && (loadingSkeleton || true)}
       testId={testId}
       {...(isBold && { sx: { '& .MuiTypography-root': { '&': { fontWeight: 'bold' } } } })}

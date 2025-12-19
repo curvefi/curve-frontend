@@ -23,7 +23,6 @@ import type { HealthMode } from '@/llamalend/llamalend.types'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import AlertBox from '@ui/AlertBox'
-import { AppFormContentWrapper } from '@ui/AppForm'
 import { getActiveStep } from '@ui/Stepper/helpers'
 import Stepper from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
@@ -35,6 +34,7 @@ import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { FormContent } from '@ui-kit/widgets/DetailPageLayout/FormContent'
 
 const { Spacing } = SizesAndSpaces
 
@@ -430,9 +430,7 @@ export default LoanBorrowMore
  * The new implementation of LoanBorrowMore with mui isn't ready yet. For now, we wrap the old one for styling.
  */
 export const LoanBorrowMoreWrapped = (props: LoanBorrowMoreProps) => (
-  <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
-    <AppFormContentWrapper>
-      <LoanBorrowMore {...props} />
-    </AppFormContentWrapper>
-  </Stack>
+  <FormContent>
+    <LoanBorrowMore {...props} />
+  </FormContent>
 )

@@ -41,6 +41,7 @@ import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { decimal, type Decimal } from '@ui-kit/utils'
+import { FormContent } from '@ui-kit/widgets/DetailPageLayout/FormContent'
 import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
 
 const { cloneDeep, isNaN, isUndefined } = lodash
@@ -215,8 +216,12 @@ const Swap = ({
                   title: t`Warning!`,
                   content: (
                     // TODO: fix typescript error
-                    // @ts-ignore
-                    <WarningModal {...exchangeOutput.modal} confirmed={confirmedLoss} setConfirmed={setConfirmedLoss} />
+
+                    <WarningModal
+                      {...(exchangeOutput.modal as any)}
+                      confirmed={confirmedLoss}
+                      setConfirmed={setConfirmedLoss}
+                    />
                   ),
                   cancelBtnProps: {
                     label: t`Cancel`,
@@ -344,7 +349,7 @@ const Swap = ({
   )
 
   return (
-    <>
+    <FormContent>
       {/* input fields */}
       <Box grid gridRowGap="1">
         <div>
@@ -678,7 +683,7 @@ const Swap = ({
         {txInfoBar}
         <Stepper steps={steps} />
       </TransferActions>
-    </>
+    </FormContent>
   )
 }
 
