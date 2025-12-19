@@ -1,7 +1,7 @@
 import type { Address } from 'viem'
 import type { Config } from 'wagmi'
 import { requireLib, useCurve, type CurveApi } from '@ui-kit/features/connect-wallet'
-import { fetchTokenBalance, useTokenBalances } from '@ui-kit/queries/token-balance.query'
+import { fetchTokenBalance, useTokenBalances } from '@ui-kit/hooks/useTokenBalance'
 
 /** Hook to get all pool token balances for underlying tokens */
 export function usePoolTokenBalances(

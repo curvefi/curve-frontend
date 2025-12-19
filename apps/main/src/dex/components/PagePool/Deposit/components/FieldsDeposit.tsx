@@ -13,8 +13,8 @@ import useStore from '@/dex/store/useStore'
 import type { CurrencyReserves } from '@/dex/types/main.types'
 import { getChainPoolIdActiveKey } from '@/dex/utils'
 import Checkbox from '@ui/Checkbox'
+import { useTokenBalances } from '@ui-kit/hooks/useTokenBalance'
 import { t } from '@ui-kit/lib/i18n'
-import { useTokenBalances } from '@ui-kit/queries/token-balance.query'
 import { Amount } from '../../utils'
 
 /**

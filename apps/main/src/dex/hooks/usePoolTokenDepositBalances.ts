@@ -1,7 +1,7 @@
 import { type Address, isAddressEqual, zeroAddress } from 'viem'
 import type { Config } from 'wagmi'
 import { requireLib, useCurve, type CurveApi } from '@ui-kit/features/connect-wallet'
-import { fetchTokenBalance, useTokenBalance } from '@ui-kit/queries/token-balance.query'
+import { fetchTokenBalance, useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { isValidAddress } from '../utils'
 
 /** Hook to get lp token and possible gauge token balances */
