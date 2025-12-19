@@ -3,21 +3,15 @@ import { type Address, isAddressEqual, zeroAddress } from 'viem'
 import type { Config } from 'wagmi'
 import { useCurve, type CurveApi } from '@ui-kit/features/connect-wallet'
 import { fetchTokenBalance, useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
+import type { FieldsOf } from '@ui-kit/lib'
+import type { ChainQuery, PoolQuery, UserQuery } from '@ui-kit/lib/model'
 import { isValidAddress } from '../utils'
 
+type Query = ChainQuery & UserQuery & PoolQuery
+type Params = FieldsOf<Query>
+
 /** Hook to get lp token and possible gauge token balances */
-export function usePoolTokenDepositBalances(
-  {
-    chainId,
-    userAddress,
-    poolId,
-  }: {
-    chainId: number | null | undefined
-    userAddress: Address | null | undefined
-    poolId: string | null | undefined
-  },
-  enabled = true,
-) {
+export function usePoolTokenDepositBalances({ chainId, userAddress, poolId }: Params, enabled = true) {
   const { curveApi, isHydrated } = useCurve()
   const pool = useMemo(
     () => (isHydrated && poolId ? curveApi!.getPool(poolId) : undefined),

@@ -3,20 +3,14 @@ import type { Address } from 'viem'
 import type { Config } from 'wagmi'
 import { useCurve, type CurveApi } from '@ui-kit/features/connect-wallet'
 import { fetchTokenBalance, useTokenBalances } from '@ui-kit/hooks/useTokenBalance'
+import type { FieldsOf } from '@ui-kit/lib'
+import type { ChainQuery, PoolQuery, UserQuery } from '@ui-kit/lib/model'
+
+type Query = ChainQuery & UserQuery & PoolQuery
+type Params = FieldsOf<Query>
 
 /** Hook to get all pool token balances for underlying tokens */
-export function usePoolTokenBalances(
-  {
-    chainId,
-    userAddress,
-    poolId,
-  }: {
-    chainId: number | null | undefined
-    userAddress: Address | null | undefined
-    poolId: string | null | undefined
-  },
-  enabled = true,
-) {
+export function usePoolTokenBalances({ chainId, userAddress, poolId }: Params, enabled = true) {
   const { curveApi, isHydrated } = useCurve()
   const pool = useMemo(
     () => (isHydrated && poolId ? curveApi!.getPool(poolId) : undefined),
