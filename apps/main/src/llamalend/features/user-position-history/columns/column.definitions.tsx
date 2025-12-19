@@ -1,11 +1,11 @@
 import { createColumnHelper } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
-import { CollateralChangeCell } from './cells/CollateralChangeCell'
-import { DebtChangeCell } from './cells/DebtChangeCell'
-import { EventTypeCell } from './cells/EventTypeCell'
-import { TimestampCell } from './cells/TimestampCell'
+import { CollateralChangeCell } from '../cells/CollateralChangeCell'
+import { DebtChangeCell } from '../cells/DebtChangeCell'
+import { EventTypeCell } from '../cells/EventTypeCell'
+import { TimestampCell } from '../cells/TimestampCell'
+import type { ParsedUserCollateralEvent } from '../hooks/useUserCollateralEvents'
 import { UserPositionHistoryColumnId } from './columns.enum'
-import type { ParsedUserCollateralEvent } from './hooks/useUserCollateralEvents'
 
 const columnHelper = createColumnHelper<ParsedUserCollateralEvent>()
 
@@ -44,5 +44,3 @@ export const USER_POSITION_HISTORY_COLUMNS = [
     meta: { type: 'numeric' },
   }),
 ]
-
-export const DEFAULT_SORT = [{ id: UserPositionHistoryColumnId.Time, desc: true }]

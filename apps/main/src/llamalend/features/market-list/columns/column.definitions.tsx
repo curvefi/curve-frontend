@@ -10,7 +10,7 @@ import {
   rangeFilterFn,
 } from '@ui-kit/shared/ui/DataTable/filters'
 import { MarketRateType } from '@ui-kit/types/market'
-import { LlamaMarket } from '../../queries/market-list/llama-markets'
+import { LlamaMarket } from '../../../queries/market-list/llama-markets'
 import {
   BoostCell,
   CompactUsdCell,
@@ -22,8 +22,7 @@ import {
   PriceCell,
   RateCell,
   UtilizationCell,
-} from './cells'
-import { LlamaMarketColumnId } from './columns.enum'
+} from '../cells'
 import {
   BorrowRateHeaderTooltipContent,
   CollateralBorrowHeaderTooltipContent,
@@ -31,7 +30,8 @@ import {
   LiquidityUsdHeaderTooltipContent,
   TvlHeaderTooltipContent,
   UtilizationHeaderTooltipContent,
-} from './header-tooltips'
+} from '../header-tooltips'
+import { LlamaMarketColumnId } from './columns.enum'
 
 const columnHelper = createColumnHelper<LlamaMarket>()
 
@@ -225,7 +225,3 @@ export const LLAMA_MARKET_COLUMNS = [
   hidden(LlamaMarketColumnId.DeprecatedMessage, LlamaMarketColumnId.DeprecatedMessage, boolFilterFn),
   hidden(LlamaMarketColumnId.Type, LlamaMarketColumnId.Type, multiFilterFn),
 ] satisfies LlamaColumn[]
-
-export const DEFAULT_SORT = [{ id: LlamaMarketColumnId.Tvl, desc: true }]
-export const DEFAULT_SORT_BORROW = [{ id: LlamaMarketColumnId.UserHealth, desc: false }]
-export const DEFAULT_SORT_SUPPLY = [{ id: LlamaMarketColumnId.UserDeposited, desc: true }]

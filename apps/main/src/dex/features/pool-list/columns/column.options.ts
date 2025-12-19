@@ -1,7 +1,7 @@
 import { notFalsy } from '@curvefi/prices-api/objects.util'
 import { t } from '@ui-kit/lib/i18n'
 import type { VisibilityGroup } from '@ui-kit/shared/ui/DataTable/visibility.types'
-import { PoolColumnId } from './columns'
+import { PoolColumnId } from './index'
 
 const createVisibility = ({ isLite }: { isLite: boolean }): VisibilityGroup<PoolColumnId>[] => [
   {
