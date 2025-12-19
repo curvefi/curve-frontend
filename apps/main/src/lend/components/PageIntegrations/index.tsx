@@ -1,16 +1,15 @@
 import { useCallback, useEffect, useMemo } from 'react'
 import { styled } from 'styled-components'
-import type { FilterKey, FormValues } from '@/lend/components/PageIntegrations/types'
 import useStore from '@/lend/store/useStore'
 import { ChainId } from '@/lend/types/lend.types'
 import { useFocusRing } from '@react-aria/focus'
 import Box from '@ui/Box'
 import IntegrationAppComp from '@ui/Integration/IntegrationApp'
-import type { IntegrationsTags } from '@ui/Integration/types'
 import SearchInput from '@ui/SearchInput'
 import TableButtonFilters from '@ui/TableButtonFilters'
 import TableButtonFiltersMobile from '@ui/TableButtonFiltersMobile'
 import { breakpoints, CURVE_ASSETS_URL } from '@ui/utils'
+import type { Tag, IntegrationsTags, FormValues } from '@ui-kit/features/integrations'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useNavigate } from '@ui-kit/hooks/router'
 import { Trans } from '@ui-kit/lib/i18n'
@@ -50,10 +49,10 @@ const IntegrationsComp = ({
   // get filterKey from url
   const parsedSearchParams = useMemo(() => {
     const searchParamsFilterKey = searchParams?.get('filter')
-    const parsed: { filterKey: FilterKey } = { filterKey: 'all' }
+    const parsed: { filterKey: Tag } = { filterKey: 'all' }
 
     if (searchParamsFilterKey) {
-      parsed.filterKey = (integrationsTags?.[searchParamsFilterKey]?.id ?? 'all') as FilterKey
+      parsed.filterKey = (integrationsTags?.[searchParamsFilterKey]?.id ?? 'all') as Tag
     }
 
     return parsed
@@ -65,7 +64,7 @@ const IntegrationsComp = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [parsedSearchParams.filterKey, rChainId])
 
-  const updateRouteFilterKey = (filterKey: FilterKey) => push(`?filter=${filterKey}`)
+  const updateRouteFilterKey = (filterKey: Tag) => push(`?filter=${filterKey}`)
 
   const parsedResults = results === null ? integrationsList : results
 
