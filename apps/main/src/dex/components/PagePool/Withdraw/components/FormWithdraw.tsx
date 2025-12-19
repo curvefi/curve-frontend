@@ -326,9 +326,9 @@ const FormWithdraw = ({
     <>
       <FieldLpToken
         amount={formValues.lpToken}
-        balance={lpTokenBalance ?? '0'}
+        balance={lpTokenBalance ?? ''}
         balanceLoading={lpTokenBalanceLoading}
-        hasError={haveSigner && +formValues.lpToken > +(lpTokenBalance ?? '0')}
+        hasError={haveSigner && +formValues.lpToken > +(lpTokenBalance ?? '')}
         haveSigner={haveSigner}
         handleAmountChange={useCallback(
           (lpToken: string) =>

@@ -186,7 +186,7 @@ const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed }: 
       <FieldsWrapper>
         <FieldLpToken
           amount={formValues.lpToken}
-          balance={lpTokenBalance ?? '0'}
+          balance={lpTokenBalance ?? ''}
           balanceLoading={lpTokenBalanceLoading}
           hasError={haveSigner ? new BigNumber(formValues.lpToken).isGreaterThan(lpTokenBalance ?? '0') : false}
           haveSigner={haveSigner}
