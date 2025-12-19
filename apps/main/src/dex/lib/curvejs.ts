@@ -396,7 +396,6 @@ const router = {
     log('swap', fromAddress, fromAmount, toAddress, slippageTolerance)
     const resp = { activeKey, hash: '', swappedAmount: '', error: '' }
     try {
-      // @ts-ignore
       const contractTransaction = await curve.router.swap(fromAddress, toAddress, fromAmount, +slippageTolerance)
       if (contractTransaction) {
         await helpers.waitForTransaction(contractTransaction.hash, provider)
@@ -1305,8 +1304,7 @@ const wallet = {
 
     if (isValidAddress(p.gauge.address) && !p.rewardsOnly()) {
       const fetchedCurrentCrvApy = await p.userCrvApy(walletAddress)
-      // @ts-ignore
-      if (fetchedCurrentCrvApy !== 'NaN') {
+      if (String(fetchedCurrentCrvApy) !== 'NaN') {
         userCrvApy = fetchedCurrentCrvApy
       }
     }
