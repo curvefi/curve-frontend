@@ -7,14 +7,12 @@ import DetailInfoBorrowRate from '@/loan/components/DetailInfoBorrowRate'
 import DetailInfoEstimateGas from '@/loan/components/DetailInfoEstimateGas'
 import DetailInfoHealth from '@/loan/components/DetailInfoHealth'
 import DetailInfoLiqRange from '@/loan/components/DetailInfoLiqRange'
-import DetailInfoSlippageTolerance from '@/loan/components/DetailInfoSlippageTolerance'
 import LoanFormConnect from '@/loan/components/LoanFormConnect'
 import DialogHighPriceImpactWarning from '@/loan/components/PageMintMarket/LoanDeleverage/components/DialogHighPriceImpactWarning'
 import LoanDeleverageAlertFull from '@/loan/components/PageMintMarket/LoanDeleverage/components/LoanDeleverageAlertFull'
 import LoanDeleverageAlertPartial from '@/loan/components/PageMintMarket/LoanDeleverage/components/LoanDeleverageAlertPartial'
 import type { FormDetailInfo, FormStatus, FormValues } from '@/loan/components/PageMintMarket/LoanDeleverage/types'
 import { DEFAULT_FORM_VALUES } from '@/loan/components/PageMintMarket/LoanDeleverage/utils'
-import DetailInfoTradeRoutes from '@/loan/components/PageMintMarket/LoanFormCreate/components/DetailInfoTradeRoutes'
 import { StyledDetailInfoWrapper, StyledInpChip } from '@/loan/components/PageMintMarket/styles'
 import type { ManageLoanProps } from '@/loan/components/PageMintMarket/types'
 import { DEFAULT_DETAIL_INFO, DEFAULT_FORM_EST_GAS } from '@/loan/components/PageMintMarket/utils'
@@ -28,7 +26,7 @@ import { getStepStatus, getTokenName } from '@/loan/utils/utilsLoan'
 import { getCollateralListPathname } from '@/loan/utils/utilsRouter'
 import AlertBox from '@ui/AlertBox'
 import Box from '@ui/Box'
-import DetailInfo from '@ui/DetailInfo'
+import { DetailInfo } from '@ui/DetailInfo'
 import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
 import { getActiveStep } from '@ui/Stepper/helpers'
 import Stepper from '@ui/Stepper/Stepper'
@@ -47,6 +45,8 @@ import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { decimal, type Decimal } from '@ui-kit/utils'
+import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
+import { DetailInfoTradeRoutes } from '../LoanFormCreate/components/DetailInfoTradeRoutes'
 
 // Loan Deleverage
 const LoanDeleverage = ({
@@ -370,7 +370,6 @@ const LoanDeleverage = ({
               <DetailInfoLeverageWrapper>
                 <LeveragePriceImpactDetail />
                 <DetailInfoTradeRoutes
-                  isValidFormValues={isValid}
                   loading={detailInfo.loading}
                   routes={detailInfo.routeName}
                   input={formValues.collateral}
@@ -415,7 +414,7 @@ const LoanDeleverage = ({
           {...formEstGas}
           stepProgress={activeStep && steps.length > 1 ? { active: activeStep, total: steps.length } : null}
         />
-        <DetailInfoSlippageTolerance maxSlippage={maxSlippage} />
+        <SlippageToleranceActionInfo maxSlippage={maxSlippage} />
       </StyledDetailInfoWrapper>
 
       {/* actions */}

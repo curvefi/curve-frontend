@@ -4,13 +4,12 @@ import { SummaryInnerContent } from '@/dex/components/PageDashboard/components/S
 import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
 import { Title } from '@/dex/components/PageDashboard/styles'
 import type { FormStatus } from '@/dex/components/PageDashboard/types'
-import { DEFAULT_FORM_STATUS, getIsLockExpired } from '@/dex/components/PageDashboard/utils'
+import { DEFAULT_FORM_STATUS } from '@/dex/components/PageDashboard/utils'
 import { useNetworks } from '@/dex/entities/networks'
 import useStore from '@/dex/store/useStore'
 import { CurveApi } from '@/dex/types/main.types'
 import AlertBox from '@ui/AlertBox'
 import Button from '@ui/Button'
-import { Items } from '@ui/Items'
 import { InternalLink } from '@ui/Link'
 import { getStepStatus } from '@ui/Stepper/helpers'
 import Stepper from '@ui/Stepper/Stepper'
@@ -26,6 +25,7 @@ import { t, Trans } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
 import { getInternalUrl } from '@ui-kit/shared/routes'
 import { Chain } from '@ui-kit/utils/network'
+import { getIsLockExpired } from '@ui-kit/utils/vecrv'
 
 // TODO uncomment locker link code once it is ready
 const FormVecrv = () => {
@@ -203,6 +203,16 @@ const Wrapper = styled.div`
 
   @media (min-width: ${breakpoints.sm}rem) {
     max-width: 18.75rem;
+  }
+`
+
+const Items = styled.ul<{ listItemMargin?: string }>`
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  li {
+    margin: ${({ listItemMargin }) => listItemMargin ?? 0};
   }
 `
 

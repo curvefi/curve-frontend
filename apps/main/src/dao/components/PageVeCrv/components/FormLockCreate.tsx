@@ -10,13 +10,13 @@ import { DEFAULT_FORM_EST_GAS } from '@/dao/components/PageVeCrv/utils'
 import networks from '@/dao/networks'
 import useStore from '@/dao/store/useStore'
 import type { CurveApi } from '@/dao/types/dao.types'
-import { formatDisplayDate, toCalendarDate } from '@/dao/utils/utilsDates'
+import { toCalendarDate } from '@/dao/utils/utilsDates'
 import type { DateValue } from '@react-types/calendar'
 import { getActiveStep, getStepStatus } from '@ui/Stepper/helpers'
 import Stepper from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
 import TxInfoBar from '@ui/TxInfoBar'
-import { formatNumber, scanTxPath } from '@ui/utils'
+import { formatDate, formatNumber, scanTxPath } from '@ui/utils'
 import { isLoading, notify, useCurve } from '@ui-kit/features/connect-wallet'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import dayjs from '@ui-kit/lib/dayjs'
@@ -71,7 +71,7 @@ const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) =>
         {
           utcDate: toCalendarDate(utcDate),
           utcDateError,
-          calcdUtcDate: haveSigner && !utcDate.isSame(calcdUtcDate) ? formatDisplayDate(calcdUtcDate) : '',
+          calcdUtcDate: haveSigner && !utcDate.isSame(calcdUtcDate) ? formatDate(calcdUtcDate.valueOf()) : '',
           days,
         },
         false,
@@ -114,7 +114,7 @@ const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) =>
   const handleBtnClickCreate = useCallback(
     async (activeKey: string, curve: CurveApi, formValues: FormValues) => {
       if (formValues.utcDate) {
-        const localUtcDate = formValues.calcdUtcDate || formatDisplayDate(formValues.utcDate.toString())
+        const localUtcDate = formValues.calcdUtcDate || formatDate(formValues.utcDate.toString())
         const notifyMessage = t`Please confirm locking ${formatNumber(formValues.lockedAmt)} CRV until ${localUtcDate}.`
         const { dismiss } = notify(notifyMessage, 'pending')
         const resp = await fetchStepCreate(activeKey, curve, formValues)
