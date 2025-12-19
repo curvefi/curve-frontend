@@ -63,12 +63,12 @@ export const GlobalBanner = ({ networkId, chainId }: GlobalBannerProps) => {
           {t`There is an issue connecting to the API. Please try to switch your RPC in your wallet settings.`}
         </Banner>
       )}
-      {showAaveBanner && currentApp === 'dex' && (chainId === Chain.Polygon || chainId === Chain.Avalanche) && (
+      {showAaveBanner && currentApp === 'dex' && [Chain.Polygon, Chain.Avalanche].includes(chainId) && (
         <Banner
-          severity="warning"
+          severity="info"
           subtitle={t`Aave is deprecating its V2 markets on Polygon and Avalanche. Deposits and swaps are not supported`}
           onClick={dismissAaveBanner}
-          learnMoreUrl="https://governance.aave.com/t/direct-to-aip-aave-v2-non-ethereum-pools-next-deprecation-steps/22445?utm_source=chatgpt.com"
+          learnMoreUrl="https://governance.aave.com/t/direct-to-aip-aave-v2-non-ethereum-pools-next-deprecation-steps/22445"
         >
           {t`Aave V2 Frozen aTokens`}
         </Banner>
