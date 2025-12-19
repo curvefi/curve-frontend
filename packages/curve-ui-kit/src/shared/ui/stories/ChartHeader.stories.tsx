@@ -3,11 +3,11 @@ import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import type { TimeOption } from '@ui-kit/lib/types/scrvusd'
-import ChartHeader, { ChartOption } from '../ChartHeader'
+import ChartHeader, { ChartSelections } from '../ChartHeader'
 
 type ChartKey = 'savingsRate' | 'distributions'
 
-const defaultChartOptions: ChartOption<ChartKey>[] = [
+const defaultChartSelections: ChartSelections<ChartKey>[] = [
   { key: 'savingsRate', label: 'Savings Rate', activeTitle: 'Historical Rate' },
   { key: 'distributions', label: 'Distributions', activeTitle: 'Historical Distributions' },
 ]
@@ -37,10 +37,10 @@ const ChartHeaderWrapper = ({
     <Box sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 1, maxWidth: 600 }}>
       <ChartHeader
         chartOptionVariant={chartOptionVariant}
-        chartOptions={{
-          options: defaultChartOptions,
-          activeOption: activeChart,
-          setActiveOption: setActiveChart,
+        chartSelections={{
+          selections: defaultChartSelections,
+          activeSelection: activeChart,
+          setActiveSelection: setActiveChart,
         }}
         timeOption={
           showTimeOption
@@ -74,7 +74,7 @@ const meta: Meta<typeof ChartHeader<ChartKey>> = {
       options: ['select', 'buttons-group'],
       description: 'Display chart options as a dropdown select or toggle button group',
     },
-    chartOptions: {
+    chartSelections: {
       control: { disable: true },
       description: 'Object containing options array, activeOption, and setActiveOption callback',
     },
@@ -203,10 +203,10 @@ export const NarrowContainer: Story = {
       <Box sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 1, maxWidth: 400 }}>
         <ChartHeader
           chartOptionVariant="buttons-group"
-          chartOptions={{
-            options: defaultChartOptions,
-            activeOption: activeChart,
-            setActiveOption: setActiveChart,
+          chartSelections={{
+            selections: defaultChartSelections,
+            activeSelection: activeChart,
+            setActiveSelection: setActiveChart,
           }}
           timeOption={{
             options: timeOptions,

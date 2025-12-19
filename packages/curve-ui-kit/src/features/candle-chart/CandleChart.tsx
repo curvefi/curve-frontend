@@ -1,5 +1,5 @@
 import type { IChartApi, Time, ISeriesApi, LineWidth, IPriceLine, CustomSeriesWhitespaceData } from 'lightweight-charts'
-import { createChart, ColorType, CrosshairMode, LineStyle, CandlestickSeries, LineSeries } from 'lightweight-charts'
+import { createChart, ColorType, LineStyle, CandlestickSeries, LineSeries } from 'lightweight-charts'
 import lodash from 'lodash'
 import { useEffect, useRef, useState, useCallback, useMemo, type RefObject } from 'react'
 import { styled } from 'styled-components'
@@ -8,6 +8,8 @@ import type { LiquidationRangePoint, LiquidationRangeSeriesOptions } from './cus
 import type { ChartColors } from './hooks/useChartPalette'
 import type { LpPriceOhlcDataFormatted, OraclePriceData, LiquidationRanges, LlammaLiquididationRange } from './types'
 import { calculateRobustPriceRange, priceFormatter } from './utils'
+
+export type OhlcChartTimeOption = '15m' | '30m' | '1h' | '4h' | '6h' | '12h' | '1d' | '7d' | '14d'
 
 type RangeValueAccumulator = {
   upper?: number
@@ -83,7 +85,6 @@ type Props = {
   timeOption: string
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   wrapperRef: any
-  magnet: boolean
   colors: ChartColors
   refetchingCapped: boolean
   fetchMoreChartData: (lastFetchEndTime: number) => void
@@ -102,7 +103,6 @@ const CandleChart = ({
   liquidationRange,
   timeOption,
   wrapperRef,
-  magnet,
   colors,
   refetchingCapped,
   fetchMoreChartData,
@@ -336,13 +336,12 @@ const CandleChart = ({
     })
   }, [timeOption])
 
-  // Update crosshair settings when magnet or colors change
+  // Update crosshair settings when colors change
   useEffect(() => {
     if (!chartRef.current) return
 
     chartRef.current.applyOptions({
       crosshair: {
-        mode: magnet ? CrosshairMode.Magnet : CrosshairMode.Normal,
         vertLine: {
           width: 4 as LineWidth,
           color: '#C3BCDB44',
@@ -356,7 +355,7 @@ const CandleChart = ({
         },
       },
     })
-  }, [magnet, memoizedColors.cursorLabel, memoizedColors.cursorVertLine])
+  }, [memoizedColors.cursorLabel, memoizedColors.cursorVertLine])
 
   // Liquidation range series effect - create/destroy series based on visibility
   useEffect(() => {

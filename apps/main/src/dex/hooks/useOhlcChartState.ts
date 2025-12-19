@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import useStore from '@/dex/store/useStore'
 import type { ChainId } from '@/dex/types/main.types'
 import type { OhlcChartProps } from '@ui-kit/features/candle-chart/ChartWrapper'
-import type { LabelList, PricesApiCoin, PricesApiPool } from '@ui-kit/features/candle-chart/types'
+import type { PricesApiCoin, PricesApiPool } from '@ui-kit/features/candle-chart/types'
 import {
   calculateChartCombinations,
   getThreeHundredResultsAgo,
@@ -10,6 +10,7 @@ import {
 } from '@ui-kit/features/candle-chart/utils'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
+import type { ChartSelections } from '@ui-kit/shared/ui/ChartHeader'
 
 const CHART_HEIGHT = 300
 
@@ -31,7 +32,6 @@ export const useOhlcChartState = ({ rChainId, pricesApiPoolData }: UseOhlcChartS
   const fetchPricesApiActivity = useStore((state) => state.pools.fetchPricesApiActivity)
   const fetchMorePricesApiCharts = useStore((state) => state.pools.fetchMorePricesApiCharts)
 
-  const [selectChartList, setSelectChartList] = useState<LabelList[]>([])
   const [selectedChartIndex, setChartSelectedIndex] = useState(0)
   const [isFlipped, setIsFlipped] = useState<boolean[]>([])
 
@@ -149,30 +149,41 @@ export const useOhlcChartState = ({ rChainId, pricesApiPoolData }: UseOhlcChartS
     setIsFlipped(flippedList)
   }, [chartCombinations.length])
 
-  useEffect(() => {
-    if (chartOhlcData.length === 0) {
-      setSelectChartList([])
-      return
-    }
+  const selectChartList: ChartSelections[] = useMemo(() => {
+    if (chartOhlcData.length === 0) return []
 
-    const chartsList: LabelList[] = [
+    return [
       {
+        activeTitle: t`LP Token (USD)`,
         label: t`LP Token (USD)`,
+        key: 'lp-token-usd',
       },
       {
+        activeTitle: t`LP Token (${pricesApiPoolData.coins[0].symbol})`,
         label: t`LP Token (${pricesApiPoolData.coins[0].symbol})`,
+        key: `lp-token-${pricesApiPoolData.coins[0].symbol}`,
       },
       ...chartCombinations.map((chart, index) => {
         const mainTokenSymbol = isFlipped[index] ? chart[1].symbol : chart[0].symbol
         const referenceTokenSymbol = isFlipped[index] ? chart[0].symbol : chart[1].symbol
+        const label = `${referenceTokenSymbol} / ${mainTokenSymbol}`
 
         return {
-          label: `${referenceTokenSymbol} / ${mainTokenSymbol}`,
+          activeTitle: label,
+          label,
+          key: `${referenceTokenSymbol}-${mainTokenSymbol}-${index}`,
         }
       }),
     ]
-    setSelectChartList(chartsList)
   }, [pricesApiPoolData.coins, chartCombinations, isFlipped, chartOhlcData.length])
+
+  const setSelectedChart = useCallback(
+    (key: string) => {
+      const index = selectChartList.findIndex((chart) => chart.key === key)
+      if (index !== -1) setChartSelectedIndex(index)
+    },
+    [selectChartList],
+  )
 
   const flipChart = useCallback(() => {
     const updatedList = isFlipped.map((item, index) =>
@@ -190,7 +201,7 @@ export const useOhlcChartState = ({ rChainId, pricesApiPoolData }: UseOhlcChartS
     ohlcData: chartOhlcData,
     selectChartList,
     selectedChartIndex,
-    setChartSelectedIndex,
+    setSelectedChart,
     timeOption,
     setChartTimeOption,
     flipChart,
