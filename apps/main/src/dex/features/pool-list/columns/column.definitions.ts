@@ -11,13 +11,14 @@ import {
   multiFilterFn,
   rangeFilterFn,
 } from '@ui-kit/shared/ui/DataTable/filters'
-import { PoolTitleCell } from './cells/PoolTitleCell/PoolTitleCell'
-import { RewardsBaseCell } from './cells/RewardsBaseCell'
-import { RewardsBaseHeader } from './cells/RewardsBaseHeader'
-import { RewardsOtherCell } from './cells/RewardsOtherCell'
-import { RewardsOtherHeader } from './cells/RewardsOtherHeader'
-import { UsdCell } from './cells/UsdCell'
-import type { PoolListItem } from './types'
+import { PoolTitleCell } from '../cells/PoolTitleCell/PoolTitleCell'
+import { RewardsBaseCell } from '../cells/RewardsBaseCell'
+import { RewardsBaseHeader } from '../cells/RewardsBaseHeader'
+import { RewardsOtherCell } from '../cells/RewardsOtherCell'
+import { RewardsOtherHeader } from '../cells/RewardsOtherHeader'
+import { UsdCell } from '../cells/UsdCell'
+import type { PoolListItem } from '../types'
+import { PoolColumnId } from './column.enum'
 
 const columnHelper = createColumnHelper<PoolListItem>()
 
