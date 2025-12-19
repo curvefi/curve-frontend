@@ -29,7 +29,7 @@ export function usePoolTokenBalances(
       userAddress,
       tokenAddresses: pool?.wrappedCoinAddresses as Address[],
     },
-    enabled && pool != null,
+    enabled && isHydrated,
   )
 
   const { data: underlyingCoinsBalances, isLoading: underlyingCoinsLoading } = useTokenBalances(
@@ -38,7 +38,7 @@ export function usePoolTokenBalances(
       userAddress,
       tokenAddresses: pool?.underlyingCoinAddresses as Address[],
     },
-    enabled && pool != null,
+    enabled && isHydrated,
   )
 
   const isLoading = wrappedCoinsLoading || underlyingCoinsLoading

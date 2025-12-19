@@ -30,7 +30,7 @@ export function usePoolTokenDepositBalances(
       userAddress,
       tokenAddress: pool?.lpToken as Address,
     },
-    enabled && pool != null,
+    enabled && isHydrated,
   )
 
   const hasGauge = pool?.gauge.address != null && !isAddressEqual(pool.gauge.address as Address, zeroAddress)
