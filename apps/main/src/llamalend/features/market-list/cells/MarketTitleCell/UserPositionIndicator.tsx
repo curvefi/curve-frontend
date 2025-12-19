@@ -9,7 +9,7 @@ import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { mapBreakpoints } from '@ui-kit/themes/basic-theme'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { LlamaMarketColumnId } from '../../columns.enum'
+import { LlamaMarketColumnId } from '../../columns'
 
 const { IconSize, Spacing } = SizesAndSpaces
 

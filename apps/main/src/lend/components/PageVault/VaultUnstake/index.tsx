@@ -3,8 +3,8 @@ import AlertFormError from '@/lend/components/AlertFormError'
 import DetailInfoEstimateGas from '@/lend/components/DetailInfoEstimateGas'
 import InpChipVaultSharesUsdRate from '@/lend/components/InpChipVaultShareUsdRate'
 import LoanFormConnect from '@/lend/components/LoanFormConnect'
-import { StyledDetailInfoWrapper, StyledInpChip } from '@/lend/components/PageLoanManage/styles'
 import type { FormStatus, FormValues, StepKey } from '@/lend/components/PageVault/VaultUnstake/types'
+import { StyledDetailInfoWrapper, StyledInpChip } from '@/lend/components/styles'
 import { helpers } from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
@@ -23,7 +23,8 @@ import { t } from '@ui-kit/lib/i18n'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { decimal, type Decimal } from '@ui-kit/utils'
 
-const VaultUnstake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, userActiveKey }: PageContentProps) => {
+const VaultUnstake = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey }: PageContentProps) => {
+  const rFormType = 'unstake'
   const isSubscribed = useRef(false)
 
   const activeKey = useStore((state) => state.vaultUnstake.activeKey)

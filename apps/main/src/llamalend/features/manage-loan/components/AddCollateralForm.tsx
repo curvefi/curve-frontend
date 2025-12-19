@@ -4,13 +4,13 @@ import type { AddCollateralOptions } from '@/llamalend/mutations/add-collateral.
 import { useMarketRates } from '@/llamalend/queries/market-rates'
 import { LoanFormAlerts } from '@/llamalend/widgets/manage-loan/LoanFormAlerts'
 import { LoanFormTokenInput } from '@/llamalend/widgets/manage-loan/LoanFormTokenInput'
-import { LoanFormWrapper } from '@/llamalend/widgets/manage-loan/LoanFormWrapper'
 import { LoanInfoAccordion } from '@/llamalend/widgets/manage-loan/LoanInfoAccordion'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
+import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { InputDivider } from '../../../widgets/InputDivider'
 import { useAddCollateralForm } from '../hooks/useAddCollateralForm'
 
@@ -25,7 +25,7 @@ export const AddCollateralForm = <ChainId extends IChainId>({
   networks: NetworkDict<ChainId>
   chainId: ChainId
   enabled?: boolean
-  onAdded: NonNullable<AddCollateralOptions['onAdded']>
+  onAdded?: NonNullable<AddCollateralOptions['onAdded']>
 }) => {
   const network = networks[chainId]
   const [isOpen, , , toggle] = useSwitch(false)
@@ -57,7 +57,7 @@ export const AddCollateralForm = <ChainId extends IChainId>({
   const marketRates = useMarketRates(params, isOpen)
 
   return (
-    <LoanFormWrapper
+    <Form
       {...form}
       onSubmit={onSubmit}
       infoAccordion={
@@ -111,6 +111,6 @@ export const AddCollateralForm = <ChainId extends IChainId>({
         handledErrors={['userCollateral']}
         successTitle={t`Collateral added`}
       />
-    </LoanFormWrapper>
+    </Form>
   )
 }

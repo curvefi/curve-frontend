@@ -1,5 +1,6 @@
 import { type ReactNode, useEffect, useState } from 'react'
 import { useChainId, useSwitchChain } from 'wagmi'
+import { useConfig } from 'wagmi'
 import type { NetworkDef } from '@ui/utils'
 import { CurveContext, useWagmiWallet } from '@ui-kit/features/connect-wallet/lib/CurveContext'
 import {
@@ -42,6 +43,7 @@ export const CurveProvider = <App extends AppName>({
   const { wallet, provider, isReconnecting } = useWagmiWallet()
   const isFocused = useIsDocumentFocused()
   const libKey = AppLibs[app]
+  const config = useConfig()
 
   useEffect(() => {
     /**
@@ -69,7 +71,7 @@ export const CurveProvider = <App extends AppName>({
     const hydrateApp = async (lib: AppLib<App>, prevLib?: AppLib<App>) => {
       if (globalLibs.hydrated[app] != lib && hydrate[app]) {
         setConnectState(HYDRATING)
-        await hydrate[app](lib, prevLib, wallet) // if thrown, it will be caught in initLib
+        await hydrate[app](config, lib, prevLib, wallet) // if thrown, it will be caught in initLib
       }
       globalLibs.hydrated[app] = lib as (typeof globalLibs.hydrated)[App]
       setConnectState(SUCCESS)
@@ -114,7 +116,7 @@ export const CurveProvider = <App extends AppName>({
     }
     void initLib()
     return () => abort.abort()
-  }, [app, hydrate, isReconnecting, libKey, network, wallet, walletChainId])
+  }, [app, config, hydrate, isReconnecting, libKey, network, wallet, walletChainId])
 
   // the following statements are skipping the render cycle, only update the libs when connectState changes too!
   const curveApi = globalLibs.getMatching('curveApi', wallet, network?.chainId)
@@ -127,6 +129,7 @@ export const CurveProvider = <App extends AppName>({
         connectState,
         network,
         isHydrated,
+        isReconnecting,
         ...(wallet && { wallet }),
         ...(provider && { provider }),
         ...(curveApi && { curveApi }),

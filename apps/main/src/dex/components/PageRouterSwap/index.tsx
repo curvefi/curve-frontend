@@ -1,15 +1,14 @@
 import lodash from 'lodash'
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { ethAddress } from 'viem'
+import { useConfig } from 'wagmi'
 import ChipInpHelper from '@/dex/components/ChipInpHelper'
 import DetailInfoEstGas from '@/dex/components/DetailInfoEstGas'
 import FieldHelperUsdRate from '@/dex/components/FieldHelperUsdRate'
 import FormConnectWallet from '@/dex/components/FormConnectWallet'
-import DetailInfoSlippageTolerance from '@/dex/components/PagePool/components/DetailInfoSlippageTolerance'
 import WarningModal, { type HighSlippagePriceImpactProps } from '@/dex/components/PagePool/components/WarningModal'
 import DetailInfoExchangeRate from '@/dex/components/PageRouterSwap/components/DetailInfoExchangeRate'
 import DetailInfoPriceImpact from '@/dex/components/PageRouterSwap/components/DetailInfoPriceImpact'
-import DetailInfoTradeRoute from '@/dex/components/PageRouterSwap/components/DetailInfoTradeRoute'
 import RouterSwapAlerts from '@/dex/components/PageRouterSwap/components/RouterSwapAlerts'
 import type {
   FormStatus,
@@ -46,6 +45,8 @@ import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { useTokenUsdRate, useTokenUsdRates } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { decimal, type Decimal } from '@ui-kit/utils'
+import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
+import { DetailInfoTradeRoute } from './components/DetailInfoTradeRoute'
 
 const QuickSwap = ({
   pageLoaded,
@@ -131,6 +132,7 @@ const QuickSwap = ({
   const fromToken = tokens.find((x) => x.address.toLocaleLowerCase() == fromAddress)
   const toToken = tokens.find((x) => x.address.toLocaleLowerCase() == toAddress)
 
+  const config = useConfig()
   const updateFormValues = useCallback(
     (
       updatedFormValues: Partial<FormValues>,
@@ -143,6 +145,7 @@ const QuickSwap = ({
       setConfirmedLoss(false)
 
       void setFormValues(
+        config,
         pageLoaded ? curve : null,
         updatedFormValues,
         searchedParams,
@@ -152,7 +155,7 @@ const QuickSwap = ({
         isRefetch,
       )
     },
-    [curve, storeMaxSlippage, pageLoaded, searchedParams, setFormValues],
+    [config, curve, storeMaxSlippage, pageLoaded, searchedParams, setFormValues],
   )
 
   const handleBtnClickSwap = useCallback(
@@ -175,7 +178,7 @@ const QuickSwap = ({
       const { dismiss } = notify(`Please confirm ${notifyMessage}`, 'pending')
       setTxInfoBar(<AlertBox alertType="info">Pending {notifyMessage}</AlertBox>)
 
-      const resp = await fetchStepSwap(actionActiveKey, curve, formValues, searchedParams, maxSlippage)
+      const resp = await fetchStepSwap(actionActiveKey, config, curve, formValues, searchedParams, maxSlippage)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && !resp.error && network) {
         const txMessage = t`Transaction complete. Received ${resp.swappedAmount} ${toSymbol}.`
@@ -190,7 +193,7 @@ const QuickSwap = ({
       if (resp?.error) setTxInfoBar(null)
       if (typeof dismiss === 'function') dismiss()
     },
-    [activeKey, fetchStepSwap, updateFormValues, network],
+    [activeKey, config, fetchStepSwap, updateFormValues, network],
   )
 
   const getSteps = useCallback(
@@ -222,7 +225,7 @@ const QuickSwap = ({
           onClick: async () => {
             const notifyMessage = t`Please approve spending your ${fromSymbol}.`
             const { dismiss } = notify(notifyMessage, 'pending')
-            await fetchStepApprove(activeKey, curve, formValues, searchedParams, storeMaxSlippage)
+            await fetchStepApprove(activeKey, config, curve, formValues, searchedParams, storeMaxSlippage)
             if (typeof dismiss === 'function') dismiss()
           },
         },
@@ -300,7 +303,15 @@ const QuickSwap = ({
 
       return stepsKey.map((key) => stepsObj[key])
     },
-    [confirmedLoss, fetchStepApprove, storeMaxSlippage, handleBtnClickSwap, slippageImpact?.isExpectedToAmount, steps],
+    [
+      config,
+      confirmedLoss,
+      fetchStepApprove,
+      storeMaxSlippage,
+      handleBtnClickSwap,
+      slippageImpact?.isExpectedToAmount,
+      steps,
+    ],
   )
 
   const fetchData = useCallback(() => {
@@ -343,9 +354,9 @@ const QuickSwap = ({
   useEffect(() => fetchData(), [tokensMapperStr, searchedParams.fromAddress, searchedParams.toAddress])
 
   useEffect(() => {
-    void updateTokenList(isReady ? curve : null, tokensMapper)
+    void updateTokenList(config, isReady ? curve : null, tokensMapper)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isReady, tokensMapperStr, curve?.signerAddress])
+  }, [config, isReady, tokensMapperStr, curve?.signerAddress])
 
   // re-fetch data
   usePageVisibleInterval(fetchData, REFRESH_INTERVAL['15s'])
@@ -590,7 +601,7 @@ const QuickSwap = ({
             stepProgress={activeStep && steps.length > 1 ? { active: activeStep, total: steps.length } : null}
           />
         )}
-        <DetailInfoSlippageTolerance
+        <SlippageToleranceActionInfo
           maxSlippage={storeMaxSlippage}
           stateKey={isStableswapRoute ? 'stable' : 'crypto'}
         />

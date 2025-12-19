@@ -1,4 +1,4 @@
-import type { FormStatus as Fs } from '@/lend/components/PageLoanManage/types'
+import type { FormStatus as Fs } from '@/lend/types/lend.types'
 
 export type FormValues = {
   amount: string

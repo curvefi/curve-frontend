@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { fromEntries, recordValues } from '@curvefi/prices-api/objects.util'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
-import { UserPositionHistoryColumnId } from '../columns.enum'
+import { UserPositionHistoryColumnId } from '../columns'
 
 /**
  * Create a map of column visibility for the User Position History table on mobile devices.

@@ -36,6 +36,8 @@ export type PRESETS = {
   }
 }
 
+export const ORACLE_DECIMALS = 18
+
 export const NG_ASSET_TYPE: Record<string, NgAssetType> = {
   STANDARD: 0,
   ORACLE: 1,

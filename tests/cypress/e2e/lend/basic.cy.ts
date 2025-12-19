@@ -19,6 +19,6 @@ describe('Basic Access Test', () => {
 
   it('should open a lend market page succesfully', () => {
     cy.visit('/lend/ethereum/markets/0x23F5a668A9590130940eF55964ead9787976f2CC') // some WETH lend market on ethereum
-    cy.get('[data-testid^="detail-page-stack"]', LOAD_TIMEOUT).should('be.visible')
+    cy.get('[data-testid^="detail-page-layout"]', LOAD_TIMEOUT).should('be.visible')
   })
 })

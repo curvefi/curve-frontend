@@ -1,8 +1,10 @@
 import lodash from 'lodash'
+import type { Address } from 'viem'
+import type { Config } from 'wagmi'
 import { StoreApi } from 'zustand'
-import curvejsApi from '@/dex/lib/curvejs'
 import type { State } from '@/dex/store/useStore'
 import { CurveApi, UserBalancesMapper } from '@/dex/types/main.types'
+import { fetchTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { fetchNetworks } from '../entities/networks'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -18,8 +20,8 @@ const sliceKey = 'userBalances'
 // prettier-ignore
 export type UserBalancesSlice = {
   [sliceKey]: SliceState & {
-    fetchUserBalancesByTokens(curve: CurveApi, addresses: string[]): Promise<UserBalancesMapper>
-    fetchAllStoredBalances(curve: CurveApi): Promise<void>
+    fetchUserBalancesByTokens(config: Config, curve: CurveApi, addresses: string[]): Promise<UserBalancesMapper>
+    fetchAllStoredBalances(config: Config, curve: CurveApi): Promise<void>
     updateUserBalancesFromPool(tokens: UserBalancesMapper): void
 
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
@@ -41,7 +43,7 @@ const createUserBalancesSlice = (
   [sliceKey]: {
     ...DEFAULT_STATE,
 
-    fetchUserBalancesByTokens: async (curve, tokensAddresses) => {
+    fetchUserBalancesByTokens: async (config, curve, tokensAddresses) => {
       const state = get()
       const sliceState = state[sliceKey]
 
@@ -57,7 +59,28 @@ const createUserBalancesSlice = (
       const filteredBadTokens = tokensAddresses.filter((address) => !excludeTokensBalancesMapper[address])
 
       sliceState.setStateByKey('loading', true)
-      const userBalancesMapper = await curvejsApi.wallet.fetchUserBalances(curve, filteredBadTokens)
+
+      // This gets multicall batched by Wagmi and Viem internally
+      const balances = await Promise.allSettled(
+        filteredBadTokens.map((token) =>
+          fetchTokenBalance(config, {
+            chainId,
+            userAddress: signerAddress,
+            tokenAddress: token as Address,
+          }).then((balance) => [token, balance] as const),
+        ),
+      )
+
+      balances.forEach((result, index) => {
+        if (result.status === 'rejected') {
+          console.warn(`Failed to fetch balance for token ${filteredBadTokens[index]}:`, result.reason)
+        }
+      })
+
+      const userBalancesMapper = Object.fromEntries(
+        balances.filter((x) => x.status === 'fulfilled').map((x) => x.value),
+      )
+
       sliceState.setStateByKeys({
         userBalancesMapper: { ...storedUserBalancesMapper, ...userBalancesMapper },
         loading: false,
@@ -65,9 +88,9 @@ const createUserBalancesSlice = (
 
       return get()[sliceKey].userBalancesMapper
     },
-    fetchAllStoredBalances: async (curve) => {
+    fetchAllStoredBalances: async (config, curve) => {
       const tokenAddresses = Object.keys(get().userBalances.userBalancesMapper)
-      await get().userBalances.fetchUserBalancesByTokens(curve, tokenAddresses)
+      await get().userBalances.fetchUserBalancesByTokens(config, curve, tokenAddresses)
     },
     updateUserBalancesFromPool: ({ gauge, lpToken, ...rest }) => {
       get().userBalances.setStateByKey('loading', true)

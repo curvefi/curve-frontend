@@ -9,14 +9,14 @@ import { DEFAULT_FORM_EST_GAS } from '@/dao/components/PageVeCrv/utils'
 import networks from '@/dao/networks'
 import useStore from '@/dao/store/useStore'
 import { CurveApi } from '@/dao/types/dao.types'
-import { formatDisplayDate, toCalendarDate } from '@/dao/utils/utilsDates'
+import { toCalendarDate } from '@/dao/utils/utilsDates'
 import type { DateValue } from '@react-types/calendar'
 import AlertBox from '@ui/AlertBox'
 import { getActiveStep, getStepStatus } from '@ui/Stepper/helpers'
 import Stepper from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
 import TxInfoBar from '@ui/TxInfoBar'
-import { scanTxPath } from '@ui/utils'
+import { formatDate, scanTxPath } from '@ui/utils'
 import { isLoading, notify, useCurve } from '@ui-kit/features/connect-wallet'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import dayjs from '@ui-kit/lib/dayjs'
@@ -82,7 +82,7 @@ const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
           utcDate: toCalendarDate(utcDate),
           utcDateError,
           calcdUtcDate:
-            utcDateError !== 'invalid-date' && !utcDate.isSame(calcdUtcDate) ? formatDisplayDate(calcdUtcDate) : '',
+            utcDateError !== 'invalid-date' && !utcDate.isSame(calcdUtcDate) ? formatDate(calcdUtcDate.valueOf()) : '',
           days,
         },
         false,
@@ -118,7 +118,7 @@ const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
   const handleBtnClickIncrease = useCallback(
     async (activeKey: string, curve: CurveApi, formValues: FormValues) => {
       if (formValues.utcDate) {
-        const localUtcDate = formValues.calcdUtcDate || formatDisplayDate(formValues.utcDate.toString())
+        const localUtcDate = formValues.calcdUtcDate || formatDate(formValues.utcDate.toString())
         const notifyMessage = t`Please confirm changing unlock date to ${localUtcDate}.`
         const { dismiss } = notify(notifyMessage, 'pending')
         const resp = await fetchStepIncreaseTime(activeKey, curve, formValues)
