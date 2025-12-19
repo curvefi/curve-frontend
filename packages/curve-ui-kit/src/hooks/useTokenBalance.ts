@@ -93,22 +93,19 @@ export function useTokenBalance(
 }
 
 /** Get query options for a token balance (handles both native and ERC-20) */
-const getTokenBalanceQueryOptions = (config: Config, query: TokenBalanceQuery) => {
-  if (isNative(query)) {
-    return {
-      ...getNativeBalanceQueryOptions(config, query),
-      select: (data: GetBalanceReturnType) => convertBalance(data),
-    }
-  }
-
-  return {
-    ...readContractsQueryOptions(config, {
-      allowFailure: false,
-      contracts: getERC20QueryContracts(query),
-    }),
-    select: (data: readonly [bigint, number]) => convertBalance({ value: data[0], decimals: data[1] }),
-  }
-}
+const getTokenBalanceQueryOptions = (config: Config, query: TokenBalanceQuery) =>
+  isNative(query)
+    ? {
+        ...getNativeBalanceQueryOptions(config, query),
+        select: (data: GetBalanceReturnType) => convertBalance(data),
+      }
+    : {
+        ...readContractsQueryOptions(config, {
+          allowFailure: false,
+          contracts: getERC20QueryContracts(query),
+        }),
+        select: (data: readonly [bigint, number]) => convertBalance({ value: data[0], decimals: data[1] }),
+      }
 
 /** Hook to fetch balances for multiple tokens */
 export function useTokenBalances(
