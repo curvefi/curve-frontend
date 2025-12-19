@@ -5,6 +5,7 @@ import { Metric } from '@ui-kit/shared/ui/Metric'
 import { Spinner } from '@ui-kit/shared/ui/Spinner'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { Decimal } from '@ui-kit/utils'
+import { FormContent } from '@ui-kit/widgets/DetailPageLayout/FormContent'
 import type { Token } from '../../types'
 import { AlertAdditionalCrvUsd } from '../alerts/AlertAdditionalCrvUsd'
 import { AlertClosePosition } from '../alerts/AlertClosePosition'
@@ -39,7 +40,7 @@ export const ClosePosition = ({
   status = 'idle',
   onClose,
 }: Props) => (
-  <Stack gap={Spacing.md} sx={{ padding: Spacing.md }}>
+  <FormContent>
     <Stack direction="row" gap={Spacing.xs} justifyContent="space-around">
       <Metric
         label={t`Debt to repay`}
@@ -83,5 +84,5 @@ export const ClosePosition = ({
 
       <ButtonGetCrvUsd />
     </Stack>
-  </Stack>
+  </FormContent>
 )

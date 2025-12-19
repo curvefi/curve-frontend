@@ -5,7 +5,7 @@ import VaultUnstake from '@/lend/components/PageVault/VaultUnstake'
 import VaultWithdrawRedeem from '@/lend/components/PageVault/VaultWithdrawRedeem'
 import { type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
 import { t } from '@ui-kit/lib/i18n'
-import { FormTab, FormTabs } from '@ui-kit/shared/ui/FormTabs/FormTabs'
+import { FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
 
 type VaultProps = PageContentProps<MarketUrlParams>
 

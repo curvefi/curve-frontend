@@ -11,6 +11,7 @@ import { useLayoutStore } from '@ui-kit/features/layout'
 import { t } from '@ui-kit/lib/i18n'
 import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { getIsLockExpired } from '@ui-kit/utils/vecrv'
 
 const { Spacing } = SizesAndSpaces
 
@@ -23,8 +24,10 @@ const FormCrvLocker = (pageProps: PageVecrv) => {
   const setFormValues = useStore((state) => state.lockedCrv.setFormValues)
   const signerAddress = curve?.signerAddress
   const { chainId } = curve ?? {}
-  const canUnlock =
-    +vecrvInfo.lockedAmountAndUnlockTime.lockedAmount > 0 && vecrvInfo.lockedAmountAndUnlockTime.unlockTime < Date.now()
+  const canUnlock = getIsLockExpired(
+    vecrvInfo.lockedAmountAndUnlockTime.lockedAmount,
+    vecrvInfo.lockedAmountAndUnlockTime.unlockTime,
+  )
 
   const tabs: TabOption<FormType>[] = [
     { value: 'adjust_crv', label: t`Lock More`, disabled: canUnlock },

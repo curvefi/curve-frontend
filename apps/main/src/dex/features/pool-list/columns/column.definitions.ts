@@ -11,25 +11,14 @@ import {
   multiFilterFn,
   rangeFilterFn,
 } from '@ui-kit/shared/ui/DataTable/filters'
-import { PoolTitleCell } from './cells/PoolTitleCell/PoolTitleCell'
-import { RewardsBaseCell } from './cells/RewardsBaseCell'
-import { RewardsBaseHeader } from './cells/RewardsBaseHeader'
-import { RewardsOtherCell } from './cells/RewardsOtherCell'
-import { RewardsOtherHeader } from './cells/RewardsOtherHeader'
-import { UsdCell } from './cells/UsdCell'
-import type { PoolListItem } from './types'
-
-export enum PoolColumnId {
-  UserHasPositions = 'hasPosition',
-  PoolName = 'PoolName',
-  RewardsBase = 'RewardsBase',
-  RewardsCrv = 'RewardsCrv',
-  RewardsIncentives = 'RewardsIncentives',
-  RewardsOther = 'RewardsOther', // == RewardsCrv + RewardsIncentives
-  Volume = 'volume',
-  Tvl = 'tvl',
-  PoolTags = 'filter', // using `filter` to keep the old links valid
-}
+import { PoolTitleCell } from '../cells/PoolTitleCell/PoolTitleCell'
+import { RewardsBaseCell } from '../cells/RewardsBaseCell'
+import { RewardsBaseHeader } from '../cells/RewardsBaseHeader'
+import { RewardsOtherCell } from '../cells/RewardsOtherCell'
+import { RewardsOtherHeader } from '../cells/RewardsOtherHeader'
+import { UsdCell } from '../cells/UsdCell'
+import type { PoolListItem } from '../types'
+import { PoolColumnId } from './column.enum'
 
 const columnHelper = createColumnHelper<PoolListItem>()
 
