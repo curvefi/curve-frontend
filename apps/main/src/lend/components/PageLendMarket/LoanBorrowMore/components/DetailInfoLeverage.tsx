@@ -6,7 +6,6 @@ import DetailInfoLeverageExpected from '@/lend/components/DetailInfoLeverageExpe
 import DetailInfoLiqRange from '@/lend/components/DetailInfoLiqRange'
 import DetailInfoPriceImpact from '@/lend/components/DetailInfoPriceImpact'
 import DetailInfoRate from '@/lend/components/DetailInfoRate'
-import DetailInfoSlippageTolerance from '@/lend/components/DetailInfoSlippageTolerance'
 import { _parseValues } from '@/lend/components/PageLendMarket/LoanBorrowMore/utils'
 import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
@@ -16,6 +15,7 @@ import RouteDetails from '@/llamalend/widgets/RouteDetails'
 import type { Step } from '@ui/Stepper/types'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
+import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
 
 const DetailInfoLeverage = ({
   rChainId,
@@ -124,7 +124,7 @@ const DetailInfoLeverage = ({
             {...formEstGas}
             stepProgress={activeStep && steps.length > 1 ? { active: activeStep, total: steps.length } : null}
           />
-          <DetailInfoSlippageTolerance maxSlippage={maxSlippage} />
+          <SlippageToleranceActionInfo maxSlippage={maxSlippage} />
         </>
       )}
     </>
