@@ -20,6 +20,7 @@ import type { IProfit } from '@curvefi/api/lib/interfaces'
 import { PromisePool } from '@supercharge/promise-pool'
 import { shortenAccount } from '@ui/utils'
 import { useWallet } from '@ui-kit/features/connect-wallet'
+import { Chain } from '@ui-kit/utils'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 
 type VecrvInfo = {
@@ -270,7 +271,7 @@ const createDashboardSlice = (_: StoreApi<State>['setState'], get: StoreApi<Stat
       }
 
       // get claimableFees, locked crv info
-      if (chainId === 1) void sliceState.fetchVeCrvAndClaimables(activeKey, curve, walletAddress)
+      if (chainId === Chain.Ethereum) void sliceState.fetchVeCrvAndClaimables(activeKey, curve, walletAddress)
 
       // get dashboard data
       const dashboardDataActiveKey = getDashboardDataActiveKey(chainId, walletAddress)
