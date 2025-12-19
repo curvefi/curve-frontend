@@ -11,8 +11,8 @@ import { hasLeverage } from '@/llamalend/llama.utils'
 import { useDebounced } from '@ui-kit/hooks/useDebounce'
 import { useCreateLoanMuiForm } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
-import { type FormTab, FormTabs } from '@ui-kit/shared/ui/FormTabs/FormTabs'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
+import { type FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
 
 type CreateLoanProps = PageContentProps<MarketUrlParams>
 

@@ -20,11 +20,13 @@ type CurveContextValue = {
   provider?: BrowserProvider
   network?: NetworkDef
   isHydrated: boolean
+  isReconnecting: boolean
 }
 
 export const CurveContext = createContext<CurveContextValue>({
   connectState: LOADING,
   isHydrated: false,
+  isReconnecting: true,
 })
 
 /**
