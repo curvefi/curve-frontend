@@ -23,13 +23,6 @@ import { useWallet } from '@ui-kit/features/connect-wallet'
 import { Chain } from '@ui-kit/utils'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 
-type VecrvInfo = {
-  crv: string
-  lockedAmountAndUnlockTime: { lockedAmount: string; unlockTime: number }
-  veCrv: string
-  veCrvPct: string
-}
-
 type StateKey = keyof typeof DEFAULT_STATE
 const { orderBy } = lodash
 
@@ -44,7 +37,7 @@ type SliceState = {
   formValues: FormValues
   formStatus: FormStatus
   searchedWalletAddresses: string[]
-  vecrvInfo: { [activeKey: string]: VecrvInfo | null }
+  vecrvInfo: { [activeKey: string]: Awaited<ReturnType<typeof curvejsApi.lockCrv.vecrvInfo>>['resp'] | null }
 }
 
 const sliceKey = 'dashboard'
