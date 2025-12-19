@@ -15,7 +15,7 @@ import { ImproveHealth } from '@/llamalend/features/manage-soft-liquidation/ui/t
 import type { BorrowPositionDetailsProps } from '@/llamalend/features/market-position-details'
 import { useManageLoanMuiForm, useManageSoftLiquidation } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
-import { type FormTab, FormTabs } from '@ui-kit/shared/ui/FormTabs/FormTabs'
+import { type FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
 
 type ManageLoanProps = PageContentProps<MarketUrlParams>
 
@@ -103,6 +103,5 @@ export const ManageLoanTabs = ({
     : shouldUseManageLoanMuiForm
       ? LendManageNewMenu
       : LendManageLegacyMenu
-  const shouldWrap = menu === LendManageLegacyMenu || menu === LendManageSoftLiquidationMenu // todo: LoanFormWrapper in soft liquidation
-  return <FormTabs params={pageProps} menu={menu} shouldWrap={shouldWrap} />
+  return <FormTabs params={pageProps} menu={menu} shouldWrap={menu === LendManageLegacyMenu} />
 }
