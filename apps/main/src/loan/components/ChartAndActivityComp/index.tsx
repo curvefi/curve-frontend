@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { styled } from 'styled-components'
-import PoolActivity from '@/loan/components/ChartOhlcWrapper/PoolActivity'
 import { useOhlcChartState, type OhlcChartStateProps } from '@/loan/hooks/useOhlcChartState'
 import Stack from '@mui/material/Stack'
 import AlertBox from '@ui/AlertBox'
@@ -9,6 +8,7 @@ import ChartWrapper from '@ui-kit/features/candle-chart/ChartWrapper'
 import { t } from '@ui-kit/lib/i18n'
 import { SubTabsSwitcher } from '@ui-kit/shared/ui/SubTabsSwitcher'
 import { type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
+import PoolActivity from './PoolActivity'
 
 type Tab = 'chart' | 'marketActivity'
 const tabs: TabOption<Tab>[] = [
@@ -16,7 +16,7 @@ const tabs: TabOption<Tab>[] = [
   { value: 'marketActivity', label: t`LLAMMA` },
 ]
 
-const ChartOhlcWrapper = ({ rChainId, llamma, llammaId }: OhlcChartStateProps) => {
+const ChartAndActivityComp = ({ rChainId, llamma, llammaId }: OhlcChartStateProps) => {
   const { poolAddress, coins, ohlcDataUnavailable, ohlcChartProps } = useOhlcChartState({
     rChainId,
     llamma,
@@ -51,4 +51,4 @@ const StyledAlertBox = styled(AlertBox)`
   margin: var(--spacing-narrow) 0;
 `
 
-export default ChartOhlcWrapper
+export default ChartAndActivityComp

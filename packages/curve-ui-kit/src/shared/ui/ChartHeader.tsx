@@ -7,30 +7,29 @@ import Stack from '@mui/material/Stack'
 import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import Typography from '@mui/material/Typography'
-import type { TimeOption } from '@ui-kit/lib/types/scrvusd'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { SxProps } from '@ui-kit/utils/mui'
 
 const { Spacing } = SizesAndSpaces
 
-export type ChartSelections<T = string> = {
+export type ChartSelections<TChartKey = string> = {
   /** Display title of the active selection (in the button-group variant it's on the left) */
   activeTitle: string
   /** Select dropdown menu item label or button-group button label */
   label: string
-  key: T
+  key: TChartKey
 }
 
-type ChartHeaderProps<T = string> = {
+type ChartHeaderProps<TChartKey extends string = string, TTimeOption extends string = string> = {
   chartSelections: {
-    selections: ChartSelections<T>[]
-    activeSelection: T
-    setActiveSelection: (value: T) => void
+    selections: ChartSelections<TChartKey>[]
+    activeSelection: TChartKey
+    setActiveSelection: (value: TChartKey) => void
   }
   timeOption?: {
-    options: TimeOption[]
-    activeOption: TimeOption
-    setActiveOption: (newTimeOption: TimeOption) => void
+    options: TTimeOption[]
+    activeOption: TTimeOption
+    setActiveOption: (newTimeOption: TTimeOption) => void
   }
   expandChart?: {
     isExpanded: boolean
@@ -41,23 +40,23 @@ type ChartHeaderProps<T = string> = {
   sx?: SxProps[]
 }
 
-const ChartHeader = <T extends string>({
+const ChartHeader = <TChartKey extends string, TTimeOption extends string = string>({
   expandChart,
   chartSelections,
   timeOption,
   chartOptionVariant,
   customButton,
   sx = [],
-}: ChartHeaderProps<T>) => {
-  const handleChartOptionToggle = (_: MouseEvent<HTMLElement>, key: T) => {
+}: ChartHeaderProps<TChartKey, TTimeOption>) => {
+  const handleChartOptionToggle = (_: MouseEvent<HTMLElement>, key: TChartKey) => {
     // ensure that one option is always selected by checking null
     if (key !== null) chartSelections.setActiveSelection(key)
   }
-  const handleChartOptionSelect = (event: SelectChangeEvent<T>) => {
-    if (event.target.value !== null) chartSelections.setActiveSelection(event.target.value as T)
+  const handleChartOptionSelect = (event: SelectChangeEvent<TChartKey>) => {
+    if (event.target.value !== null) chartSelections.setActiveSelection(event.target.value as TChartKey)
   }
-  const handleTimeOption = (event: SelectChangeEvent<TimeOption>) => {
-    if (event.target.value !== null && timeOption) timeOption.setActiveOption(event.target.value as TimeOption)
+  const handleTimeOption = (event: SelectChangeEvent<TTimeOption>) => {
+    if (event.target.value !== null && timeOption) timeOption.setActiveOption(event.target.value as TTimeOption)
   }
   /*
   The small breakpoint is used for placing Title and ToggleButtonGroup in a column 
@@ -128,7 +127,7 @@ const ChartHeader = <T extends string>({
               value={timeOption.activeOption}
               onChange={handleTimeOption}
               size="small"
-              sx={{ width: '100px', textTransform: 'uppercase', alignSelf: 'center' }}
+              sx={{ textTransform: 'uppercase', alignSelf: 'center' }}
             >
               {timeOption.options.map((option) => (
                 <MenuItem value={option} key={option} sx={{ textTransform: 'uppercase' }}>
