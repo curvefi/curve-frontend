@@ -1,7 +1,6 @@
 import Fuse from 'fuse.js'
 import { useMemo, useState } from 'react'
 import { styled } from 'styled-components'
-import { ChainId } from '@/loan/types/loan.types'
 import { useFocusRing } from '@react-aria/focus'
 import Box from '@ui/Box'
 import IntegrationAppComp from '@ui/Integration/IntegrationApp'
@@ -15,16 +14,16 @@ import { useNavigate } from '@ui-kit/hooks/router'
 import { Trans } from '@ui-kit/lib/i18n'
 
 // Update integrations list repo: https://github.com/curvefi/curve-external-integrations
-const IntegrationsComp = ({
+export const Integrations = ({
   integrationsList,
   integrationsTags,
-  rChainId,
   searchParams,
+  chainId,
 }: {
   integrationsList: IntegrationApp[]
   integrationsTags: IntegrationsTags
-  rChainId: ChainId | ''
   searchParams: URLSearchParams | null
+  chainId?: number
 }) => {
   const { isFocusVisible, focusProps } = useFocusRing()
   const push = useNavigate()
@@ -103,7 +102,7 @@ const IntegrationsComp = ({
               filterKey={tagFilterKey}
               integrationsTags={integrationsTags}
               integrationsAppNetworks={
-                !rChainId && (
+                chainId && (
                   <Box margin="0.25rem 0 0 0">
                     {Object.keys(app.networks).map((networkId) => (
                       <img
@@ -161,5 +160,3 @@ const NoResultWrapper = styled(Box)`
     margin-right: 0;
   }
 `
-
-export default IntegrationsComp

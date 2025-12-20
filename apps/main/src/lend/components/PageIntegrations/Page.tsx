@@ -1,12 +1,10 @@
 import { styled } from 'styled-components'
-import IntegrationsComp from '@/lend/components/PageIntegrations/index'
 import networks, { networksIdMapper } from '@/lend/networks'
 import type { NetworkUrlParams } from '@/lend/types/lend.types'
 import { ExternalLink } from '@ui/Link'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import { breakpoints } from '@ui/utils/responsive'
-import { useIntegrations } from '@ui-kit/features/integrations/queries/integrations'
-import { useIntegrationsTags } from '@ui-kit/features/integrations/queries/integrations-tags'
+import { Integrations, useIntegrations, useIntegrationsTags } from '@ui-kit/features/integrations'
 import { useSearchParams, useParams } from '@ui-kit/hooks/router'
 import { Trans } from '@ui-kit/lib/i18n'
 
@@ -48,8 +46,7 @@ const Page = () => {
               <Spinner />
             </SpinnerWrapper>
           ) : (
-            <IntegrationsComp
-              rChainId={rChainId}
+            <Integrations
               searchParams={searchParams}
               integrationsList={integrations ?? []}
               integrationsTags={integrationsTags ?? {}}
