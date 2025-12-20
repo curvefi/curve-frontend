@@ -24,9 +24,9 @@ import { InputDebounced, InputMaxBtn } from '@ui/InputComp'
 import { FlexContainer } from '@ui/styled-containers'
 import { formatNumber } from '@ui/utils'
 import { type TokenOption, TokenSelector } from '@ui-kit/features/select-token'
+import { useTokenBalances } from '@ui-kit/hooks/useTokenBalance'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRates } from '@ui-kit/lib/model/entities/token-usd-rate'
-import { useTokenBalances } from '@ui-kit/queries/token-balance.query'
 
 export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {
   const { setValue, getValues, formState, watch } = useFormContext<DepositRewardFormValues>()

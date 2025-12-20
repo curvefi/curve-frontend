@@ -17,8 +17,8 @@ import { vestResolver } from '@hookform/resolvers/vest'
 import { FormErrorsDisplay } from '@ui/FormErrorsDisplay'
 import { BlockSkeleton } from '@ui/skeleton'
 import { FormContainer, FormFieldsContainer, GroupedFieldsContainer } from '@ui/styled-containers'
+import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { formDefaultOptions } from '@ui-kit/lib/model/form'
-import { useTokenBalance } from '@ui-kit/queries/token-balance.query'
 
 export const DepositReward = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {
   const { isPending: isPendingRewardDistributors } = useGaugeRewardsDistributors({
