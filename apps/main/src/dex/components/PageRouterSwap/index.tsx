@@ -314,11 +314,31 @@ const QuickSwap = ({
     ],
   )
 
-  const fetchData = useCallback(() => {
+  const lastFetchTimeRef = useRef<number>(0)
+  const fetchDataRef = useRef<() => void>(() => {})
+
+  // Keep fetchDataRef always pointing to the latest fetchData logic
+  fetchDataRef.current = () => {
     if (isReady && !formStatus.formProcessing && formStatus.formTypeCompleted !== 'SWAP') {
       updateFormValues({}, false, '', false, true)
     }
-  }, [formStatus.formProcessing, formStatus.formTypeCompleted, isReady, updateFormValues])
+  }
+
+  // Direct fetch for user-initiated actions (token changes, input changes)
+  // Also resets timer to prevent redundant background fetch right after
+  const fetchData = useCallback(() => {
+    lastFetchTimeRef.current = Date.now()
+    fetchDataRef.current()
+  }, [])
+
+  // Throttled fetch for background refreshes (page visibility, interval)
+  const throttledFetchData = useCallback(() => {
+    const now = Date.now()
+    if (now - lastFetchTimeRef.current >= REFRESH_INTERVAL['15s']) {
+      lastFetchTimeRef.current = now
+      fetchDataRef.current()
+    }
+  }, [])
 
   // onMount
   useEffect(() => {
@@ -339,7 +359,7 @@ const QuickSwap = ({
 
   // pageVisible re-fetch data
   useEffect(() => {
-    if (isReady) fetchData()
+    if (isReady) throttledFetchData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isPageVisible])
 
@@ -349,9 +369,8 @@ const QuickSwap = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [curve?.chainId])
 
-  // updateForm
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => fetchData(), [tokensMapperStr, searchedParams.fromAddress, searchedParams.toAddress])
+  // updateForm - immediate fetch on token changes
+  useEffect(() => fetchData(), [tokensMapperStr, searchedParams.fromAddress, searchedParams.toAddress, fetchData])
 
   useEffect(() => {
     void updateTokenList(config, isReady ? curve : null, tokensMapper)
@@ -359,7 +378,7 @@ const QuickSwap = ({
   }, [config, isReady, tokensMapperStr, curve?.signerAddress])
 
   // re-fetch data
-  usePageVisibleInterval(fetchData, REFRESH_INTERVAL['15s'])
+  usePageVisibleInterval(throttledFetchData, REFRESH_INTERVAL['15s'])
 
   // steps
   useEffect(() => {

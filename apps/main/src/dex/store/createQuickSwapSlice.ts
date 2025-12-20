@@ -186,14 +186,6 @@ const createQuickSwapSlice = (set: StoreApi<State>['setState'], get: StoreApi<St
 
       if (!signerAddress) return // If no signer, routing handled via `useRouterApi`
 
-      // loading state
-      if (cFormValues.isFrom) {
-        cFormValues.toAmount = ''
-      } else {
-        cFormValues.fromAmount = ''
-      }
-      sliceState.setStateByKey('formValues', cloneDeep(cFormValues))
-
       const poolsMapper = state.pools.poolsMapper[chainId]
       // allow UI to paint first
       await sleep(100)
