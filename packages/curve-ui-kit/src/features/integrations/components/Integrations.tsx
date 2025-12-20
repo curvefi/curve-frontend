@@ -3,7 +3,6 @@ import { useMemo, useState } from 'react'
 import { styled } from 'styled-components'
 import { useFocusRing } from '@react-aria/focus'
 import Box from '@ui/Box'
-import IntegrationAppComp from '@ui/Integration/IntegrationApp'
 import SearchInput from '@ui/SearchInput'
 import TableButtonFilters from '@ui/TableButtonFilters'
 import TableButtonFiltersMobile from '@ui/TableButtonFiltersMobile'
@@ -12,6 +11,7 @@ import type { IntegrationApp, IntegrationsTags, Tag } from '@ui-kit/features/int
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useNavigate } from '@ui-kit/hooks/router'
 import { Trans } from '@ui-kit/lib/i18n'
+import IntegrationAppComp from './IntegrationApp'
 
 // Update integrations list repo: https://github.com/curvefi/curve-external-integrations
 export const Integrations = ({
