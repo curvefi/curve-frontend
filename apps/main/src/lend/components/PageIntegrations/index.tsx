@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useMemo } from 'react'
+import Fuse from 'fuse.js'
+import { useMemo, useState } from 'react'
 import { styled } from 'styled-components'
-import useStore from '@/lend/store/useStore'
 import { ChainId } from '@/lend/types/lend.types'
 import { useFocusRing } from '@react-aria/focus'
 import Box from '@ui/Box'
@@ -9,64 +9,52 @@ import SearchInput from '@ui/SearchInput'
 import TableButtonFilters from '@ui/TableButtonFilters'
 import TableButtonFiltersMobile from '@ui/TableButtonFiltersMobile'
 import { breakpoints, CURVE_ASSETS_URL } from '@ui/utils'
-import type { Tag, IntegrationsTags, FormValues } from '@ui-kit/features/integrations'
+import type { Tag, IntegrationsTags, IntegrationApp } from '@ui-kit/features/integrations'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useNavigate } from '@ui-kit/hooks/router'
 import { Trans } from '@ui-kit/lib/i18n'
 
 // Update integrations list repo: https://github.com/curvefi/curve-external-integrations
 const IntegrationsComp = ({
+  integrationsList,
   integrationsTags,
   rChainId,
   searchParams,
 }: {
+  integrationsList: IntegrationApp[]
   integrationsTags: IntegrationsTags
   rChainId: ChainId | ''
   searchParams: URLSearchParams | null
 }) => {
   const { isFocusVisible, focusProps } = useFocusRing()
   const push = useNavigate()
-  const formStatus = useStore((state) => state.integrations.formStatus)
-  const formValues = useStore((state) => state.integrations.formValues)
-  const integrationsList = useStore((state) => state.integrations.integrationsList)
   const isXSmDown = useLayoutStore((state) => state.isXSmDown)
-  const results = useStore((state) => state.integrations.results)
-  const setFormValues = useStore((state) => state.integrations.setFormValues)
 
-  const updateFormValues = useCallback(
-    (updatedFormValues: Partial<FormValues>) => {
-      setFormValues({ ...formValues, ...updatedFormValues }, rChainId)
-    },
-    [formValues, rChainId, setFormValues],
+  const [searchText, setSearchText] = useState('')
+
+  // get tag key from url
+  const tagFilterKey = useMemo(
+    () => integrationsTags?.[searchParams?.get('tag') ?? 'all']?.id,
+    [integrationsTags, searchParams],
   )
 
-  const filterKeyLabel = useMemo(() => {
-    if (formValues.filterKey) {
-      return integrationsTags?.[formValues.filterKey]?.displayName
+  const integrations = useMemo(() => {
+    let list = [...(integrationsList ?? [])]
+    list = tagFilterKey === 'all' ? list : list.filter((app) => app.tags[tagFilterKey || ''])
+
+    if (searchText) {
+      const fuse = new Fuse<IntegrationApp>(list, {
+        ignoreLocation: true,
+        threshold: 0.01,
+        keys: [{ name: 'name', getFn: (a) => a.name }],
+      })
+
+      return fuse.search(searchText).map((r) => r.item)
     }
-  }, [integrationsTags, formValues.filterKey])
+    return list
+  }, [integrationsList, searchText, tagFilterKey])
 
-  // get filterKey from url
-  const parsedSearchParams = useMemo(() => {
-    const searchParamsFilterKey = searchParams?.get('filter')
-    const parsed: { filterKey: Tag } = { filterKey: 'all' }
-
-    if (searchParamsFilterKey) {
-      parsed.filterKey = (integrationsTags?.[searchParamsFilterKey]?.id ?? 'all') as Tag
-    }
-
-    return parsed
-  }, [integrationsTags, searchParams])
-
-  // update form if url have filter params
-  useEffect(() => {
-    updateFormValues({ filterKey: parsedSearchParams.filterKey })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [parsedSearchParams.filterKey, rChainId])
-
-  const updateRouteFilterKey = (filterKey: Tag) => push(`?filter=${filterKey}`)
-
-  const parsedResults = results === null ? integrationsList : results
+  const updateRouteTagKey = (tagKey: Tag) => push(`?tag=${tagKey}`)
 
   return (
     <>
@@ -75,44 +63,44 @@ const IntegrationsComp = ({
           id="inp-search-integrations"
           className={isFocusVisible ? 'focus-visible' : ''}
           {...focusProps}
-          value={formValues.searchText}
-          handleInputChange={(val) => updateFormValues({ searchText: val })}
-          handleSearchClose={() => updateFormValues({ searchText: '' })}
+          value={searchText}
+          handleInputChange={(val) => setSearchText(val)}
+          handleSearchClose={() => setSearchText('')}
         />
         {!isXSmDown ? (
           <TableButtonFilters
             disabled={false}
             filters={integrationsTags}
-            filterKey={formValues.filterKey}
-            isLoading={formStatus.isLoading}
-            resultsLength={results?.length}
-            updateRouteFilterKey={updateRouteFilterKey}
+            filterKey={tagFilterKey}
+            isLoading={Object.keys(integrationsTags).length === 0}
+            resultsLength={integrations?.length}
+            updateRouteFilterKey={updateRouteTagKey}
           />
         ) : (
           <Box flex gridColumnGap={2} margin="0 0 0 1rem">
             <TableButtonFiltersMobile
               filters={integrationsTags}
-              filterKey={formValues.filterKey}
-              updateRouteFilterKey={updateRouteFilterKey}
+              filterKey={tagFilterKey}
+              updateRouteFilterKey={updateRouteTagKey}
             />
           </Box>
         )}
       </Box>
-      {formStatus.noResult ? (
+      {!integrations.length ? (
         <NoResultWrapper flex flexJustifyContent="center" padding="3rem 0">
           <Trans>
-            No integration apps found with for {formValues.searchText ? <>&ldquo;{formValues.searchText}&rdquo;</> : ''}{' '}
-            {!!formValues.searchText && !!filterKeyLabel ? <>and </> : ''}
-            {filterKeyLabel ? <>&ldquo;{filterKeyLabel}&rdquo;</> : ''}
+            No integration apps found with for {searchText ? <>&ldquo;{searchText}&rdquo;</> : ''}{' '}
+            {!!searchText && !!tagFilterKey ? <>and </> : ''}
+            {tagFilterKey ? <>&ldquo;{tagFilterKey}&rdquo;</> : ''}
           </Trans>
         </NoResultWrapper>
       ) : (
         <IntegrationsWrapper flexAlignItems="flex-start" grid>
-          {(parsedResults ?? []).map((app, idx) => (
+          {(integrations ?? []).map((app, idx) => (
             <IntegrationAppComp
               key={`${app.name}_${idx}`}
               {...app}
-              filterKey={formValues.filterKey}
+              filterKey={tagFilterKey}
               integrationsTags={integrationsTags}
               integrationsAppNetworks={
                 !rChainId && (

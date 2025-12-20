@@ -1,12 +1,12 @@
-import { useEffect } from 'react'
 import { styled } from 'styled-components'
 import IntegrationsComp from '@/lend/components/PageIntegrations/index'
-import { networksIdMapper } from '@/lend/networks'
-import useStore from '@/lend/store/useStore'
+import networks, { networksIdMapper } from '@/lend/networks'
 import type { NetworkUrlParams } from '@/lend/types/lend.types'
 import { ExternalLink } from '@ui/Link'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import { breakpoints } from '@ui/utils/responsive'
+import { useIntegrations } from '@ui-kit/features/integrations/queries/integrations'
+import { useIntegrationsTags } from '@ui-kit/features/integrations/queries/integrations-tags'
 import { useSearchParams, useParams } from '@ui-kit/hooks/router'
 import { Trans } from '@ui-kit/lib/i18n'
 
@@ -15,13 +15,15 @@ const Page = () => {
   const searchParams = useSearchParams()
   const rChainId = networksIdMapper[params.network]
 
-  const init = useStore((state) => state.integrations.init)
-  const integrationsTags = useStore((state) => state.integrations.integrationsTags)
+  const { tagsUrl, listUrl } = networks[rChainId || 1]?.integrations ?? {}
+  const { data: integrations, isLoading: integrationsLoading } = useIntegrations({
+    listUrl,
+  })
+  const { data: integrationsTags, isLoading: integrationsTagsLoading } = useIntegrationsTags({
+    tagsUrl,
+  })
 
-  useEffect(() => {
-    void init(rChainId)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  const isLoading = integrationsLoading || integrationsTagsLoading
 
   return (
     <>
@@ -41,12 +43,17 @@ const Page = () => {
               .
             </Trans>
           </Subtitle>
-          {integrationsTags !== null ? (
-            <IntegrationsComp rChainId={rChainId} searchParams={searchParams} integrationsTags={integrationsTags} />
-          ) : (
+          {isLoading ? (
             <SpinnerWrapper>
               <Spinner />
             </SpinnerWrapper>
+          ) : (
+            <IntegrationsComp
+              rChainId={rChainId}
+              searchParams={searchParams}
+              integrationsList={integrations ?? []}
+              integrationsTags={integrationsTags ?? {}}
+            />
           )}
         </ContainerContent>
       </Container>
