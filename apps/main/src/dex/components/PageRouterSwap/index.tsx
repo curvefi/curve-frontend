@@ -70,7 +70,6 @@ const QuickSwap = ({
   const isSubscribed = useRef(false)
   const { signerAddress } = curve ?? {}
   const { tokensNameMapper } = useTokensNameMapper(chainId)
-  const tokenList = useStore((state) => state.quickSwap.tokenList[chainId])
   const activeKey = useStore((state) => state.quickSwap.activeKey)
   const formEstGas = useStore((state) => state.quickSwap.formEstGas[activeKey])
   const formStatus = useStore((state) => state.quickSwap.formStatus)
@@ -84,7 +83,6 @@ const QuickSwap = ({
   const fetchStepSwap = useStore((state) => state.quickSwap.fetchStepSwap)
   const resetFormErrors = useStore((state) => state.quickSwap.resetFormErrors)
   const setFormValues = useStore((state) => state.quickSwap.setFormValues)
-  const updateTokenList = useStore((state) => state.quickSwap.updateTokenList)
   const { data: networks } = useNetworks()
   const network = (chainId && networks[chainId]) || null
 
@@ -119,15 +117,14 @@ const QuickSwap = ({
     .map(([address]) => address)
   const { data: usdRatesMapper } = useTokenUsdRates({ chainId, tokenAddresses: userTokens })
 
-  const tokens = useMemo(() => {
-    if (lodash.isEmpty(tokenList) || lodash.isEmpty(tokensMapper)) return []
-
-    return tokenList!
-      .map((address) => tokensMapper[address])
-      .filter((token) => !!token)
-      .map(toTokenOption(network?.networkId))
+  const tokens = useMemo(
+    () =>
+      Object.values(tokensMapper ?? {})
+        .filter((token) => !!token)
+        .map(toTokenOption(network?.networkId)),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tokenList, tokensMapperStr, network?.networkId])
+    [tokensMapperStr, network?.networkId],
+  )
 
   const fromToken = tokens.find((x) => x.address.toLocaleLowerCase() == fromAddress)
   const toToken = tokens.find((x) => x.address.toLocaleLowerCase() == toAddress)
@@ -352,11 +349,6 @@ const QuickSwap = ({
   // updateForm
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => fetchData(), [tokensMapperStr, searchedParams.fromAddress, searchedParams.toAddress])
-
-  useEffect(() => {
-    void updateTokenList(config, isReady ? curve : null, tokensMapper)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [config, isReady, tokensMapperStr, curve?.signerAddress])
 
   // re-fetch data
   usePageVisibleInterval(fetchData, REFRESH_INTERVAL['15s'])

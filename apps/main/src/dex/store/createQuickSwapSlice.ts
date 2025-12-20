@@ -13,7 +13,7 @@ import type {
 import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/dex/components/PageRouterSwap/utils'
 import curvejsApi from '@/dex/lib/curvejs'
 import type { State } from '@/dex/store/useStore'
-import { CurveApi, FnStepApproveResponse, FnStepResponse, TokensMapper } from '@/dex/types/main.types'
+import { CurveApi, FnStepApproveResponse, FnStepResponse } from '@/dex/types/main.types'
 import { sleep } from '@/dex/utils'
 import { getMaxAmountMinusGas } from '@/dex/utils/utilsGasPrices'
 import { getSlippageImpact, getSwapActionModalType } from '@/dex/utils/utilsSwap'
@@ -32,7 +32,6 @@ type SliceState = {
   formValues: FormValues
   isMaxLoading: boolean
   routesAndOutput: { [activeKey: string]: RoutesAndOutput }
-  tokenList: { [chainSignerActiveKey: string]: string[] | undefined }
 }
 
 const sliceKey = 'quickSwap'
@@ -67,7 +66,6 @@ export type QuickSwapSlice = {
 
     // select token list
     setPoolListFormValues(hideSmallPools: boolean): void
-    updateTokenList(config: Config, curve: CurveApi | null, tokensMapper: TokensMapper): Promise<void>
 
     // steps
     fetchStepApprove(
@@ -101,7 +99,6 @@ const DEFAULT_STATE: SliceState = {
   formValues: DEFAULT_FORM_VALUES,
   isMaxLoading: false,
   routesAndOutput: {},
-  tokenList: {},
 }
 
 const createQuickSwapSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): QuickSwapSlice => ({
@@ -354,23 +351,6 @@ const createQuickSwapSlice = (set: StoreApi<State>['setState'], get: StoreApi<St
       const storedPoolListFormValues = cloneDeep(get().poolList.formValues)
       storedPoolListFormValues.hideSmallPools = hideSmallPools
       get().poolList.setStateByKey('formValues', storedPoolListFormValues)
-    },
-    updateTokenList: async (config, curve, tokensMapper) => {
-      const state = get()
-      const sliceState = state[sliceKey]
-
-      if (!curve || Object.keys(tokensMapper).length === 0) return
-      const { chainId } = curve
-
-      const tokens = Object.entries(tokensMapper)
-        .map(([_, v]) => v)
-        .filter((token) => !!token)
-        .map(({ address }) => address)
-
-      sliceState.setStateByActiveKey('tokenList', chainId.toString(), tokens)
-
-      // Get user balances
-      await state.userBalances.fetchUserBalancesByTokens(config, curve, tokens)
     },
 
     // steps
