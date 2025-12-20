@@ -1,13 +1,11 @@
 import { styled } from 'styled-components'
-import IntegrationsComp from '@/loan/components/PageIntegrations/index'
 import networks from '@/loan/networks'
 import type { NetworkUrlParams } from '@/loan/types/loan.types'
 import { useChainId } from '@/loan/utils/utilsRouter'
 import { ExternalLink } from '@ui/Link'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import { breakpoints } from '@ui/utils/responsive'
-import { useIntegrations } from '@ui-kit/features/integrations/queries/integrations'
-import { useIntegrationsTags } from '@ui-kit/features/integrations/queries/integrations-tags'
+import { Integrations, useIntegrations, useIntegrationsTags } from '@ui-kit/features/integrations'
 import { useParams, useSearchParams } from '@ui-kit/hooks/router'
 import { Trans } from '@ui-kit/lib/i18n'
 
@@ -47,8 +45,7 @@ const Page = () => {
             <Spinner />
           </SpinnerWrapper>
         ) : (
-          <IntegrationsComp
-            rChainId={rChainId}
+          <Integrations
             searchParams={searchParams}
             integrationsList={integrations ?? []}
             integrationsTags={integrationsTags ?? {}}
