@@ -10,7 +10,7 @@ export type Tag =
   | 'crvusd'
   | 'other'
 
-export type IntegrationTag = { id: string; displayName: string; color: string }
+export type IntegrationTag = { id: Tag; displayName: string; color: string }
 
 export type IntegrationsTags = {
   [k: string]: IntegrationTag
@@ -24,14 +24,4 @@ export type IntegrationApp = {
   networks: { [network: string]: boolean }
   tags: { [tag: string]: boolean }
   twitterUrl: string | null
-}
-
-export type FormValues = {
-  filterKey: Tag
-  searchText: string
-}
-
-export type FormStatus = {
-  isLoading: boolean
-  noResult: boolean
 }
