@@ -46,19 +46,17 @@ export function parseIntegrationsList(integrationsList: IntegrationsResponse) {
 
   if (Array.isArray(integrationsList)) {
     for (const { networks, tags, ...rest } of integrationsList) {
-      if (tags.indexOf('crvusd') !== -1) {
-        const parsedNetworks: { [network: string]: boolean } = {}
-        for (const n of networks) {
-          parsedNetworks[n] = true
-        }
-        const parsedTags: { [tag: string]: boolean } = {}
-        for (const n of tags) {
-          if (n !== 'crvusd') {
-            parsedTags[n] = true
-          }
-        }
-        parsedIntegrationsList.push({ ...rest, networks: parsedNetworks, tags: parsedTags })
+      const parsedNetworks: { [network: string]: boolean } = {}
+      for (const n of networks) {
+        parsedNetworks[n] = true
       }
+      const parsedTags: { [tag: string]: boolean } = {}
+      for (const n of tags) {
+        if (n !== 'crvusd') {
+          parsedTags[n] = true
+        }
+      }
+      parsedIntegrationsList.push({ ...rest, networks: parsedNetworks, tags: parsedTags })
     }
   }
 

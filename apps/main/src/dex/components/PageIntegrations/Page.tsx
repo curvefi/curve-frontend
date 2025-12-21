@@ -1,24 +1,28 @@
-import { useEffect } from 'react'
 import { styled } from 'styled-components'
-import IntegrationsComp from '@/dex/components/PageIntegrations/index'
+import { useNetworks } from '@/dex/entities/networks'
 import { useChainId } from '@/dex/hooks/useChainId'
-import useStore from '@/dex/store/useStore'
 import type { NetworkUrlParams } from '@/dex/types/main.types'
 import { ExternalLink } from '@ui/Link'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import { breakpoints } from '@ui/utils/responsive'
+import { Integrations, useIntegrations, useIntegrationsTags } from '@ui-kit/features/integrations'
 import { useParams } from '@ui-kit/hooks/router'
 import { Trans } from '@ui-kit/lib/i18n'
 
 const Page = () => {
   const { network } = useParams<NetworkUrlParams>()
   const rChainId = useChainId(network)
-  const init = useStore((state) => state.integrations.init)
-  const integrationsTags = useStore((state) => state.integrations.integrationsTags)
+  const { data: networks } = useNetworks()
 
-  useEffect(() => {
-    void init(rChainId)
-  }, [init, rChainId])
+  const { tagsUrl, listUrl } = networks[rChainId || 1]?.integrations ?? {}
+  const { data: integrations, isLoading: integrationsLoading } = useIntegrations({
+    listUrl,
+  })
+  const { data: integrationsTags, isLoading: integrationsTagsLoading } = useIntegrationsTags({
+    tagsUrl,
+  })
+
+  const isLoading = integrationsLoading || integrationsTagsLoading
 
   return (
     <Container data-testid="integrations-page">
@@ -36,12 +40,17 @@ const Page = () => {
             .
           </Trans>
         </Subtitle>
-        {integrationsTags === null ? (
+        {isLoading ? (
           <SpinnerWrapper>
             <Spinner />
           </SpinnerWrapper>
         ) : (
-          <IntegrationsComp rChainId={rChainId} integrationsTags={integrationsTags} />
+          <Integrations
+            integrations={integrations ?? []}
+            tags={integrationsTags ?? {}}
+            networks={Object.values(networks)}
+            chainId={rChainId}
+          />
         )}
       </ContainerContent>
     </Container>
