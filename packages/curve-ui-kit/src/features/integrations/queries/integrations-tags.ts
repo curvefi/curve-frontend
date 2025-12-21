@@ -36,13 +36,11 @@ function parseIntegrationsTags(integrationsTags: { id: Tag; displayName: string 
   if (Array.isArray(integrationsTags)) {
     for (const idx in integrationsTags) {
       const t = integrationsTags[idx]
-      if (t.id !== 'crvusd') {
-        const color = t.id === 'all' ? '' : INTEGRATIONS_TAGS_COLORS[+idx - 1]
-        parsedIntegrationsTags[t.id] = { ...t, color }
+      const color = t.id === 'all' ? '' : INTEGRATIONS_TAGS_COLORS[+idx - 1]
+      parsedIntegrationsTags[t.id] = { ...t, color }
 
-        if (t.id !== 'all' && color === '') {
-          console.warn(`missing integrations tag color for ${t.id}`)
-        }
+      if (t.id !== 'all' && color === '') {
+        console.warn(`missing integrations tag color for ${t.id}`)
       }
     }
   }

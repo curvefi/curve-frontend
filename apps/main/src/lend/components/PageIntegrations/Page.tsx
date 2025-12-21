@@ -5,19 +5,18 @@ import { ExternalLink } from '@ui/Link'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import { breakpoints } from '@ui/utils/responsive'
 import { Integrations, useIntegrations, useIntegrationsTags } from '@ui-kit/features/integrations'
-import { useSearchParams, useParams } from '@ui-kit/hooks/router'
+import { useParams } from '@ui-kit/hooks/router'
 import { Trans } from '@ui-kit/lib/i18n'
 
 const Page = () => {
   const params = useParams<NetworkUrlParams>()
-  const searchParams = useSearchParams()
   const rChainId = networksIdMapper[params.network]
 
   const { tagsUrl, listUrl } = networks[rChainId || 1]?.integrations ?? {}
   const { data: integrations, isLoading: integrationsLoading } = useIntegrations({
     listUrl,
   })
-  const { data: integrationsTags, isLoading: integrationsTagsLoading } = useIntegrationsTags({
+  const { data: tags, isLoading: integrationsTagsLoading } = useIntegrationsTags({
     tagsUrl,
   })
 
@@ -47,9 +46,10 @@ const Page = () => {
             </SpinnerWrapper>
           ) : (
             <Integrations
-              searchParams={searchParams}
-              integrationsList={integrations ?? []}
-              integrationsTags={integrationsTags ?? {}}
+              integrations={integrations ?? []}
+              tags={tags ?? {}}
+              networks={Object.values(networks)}
+              chainId={rChainId}
             />
           )}
         </ContainerContent>
