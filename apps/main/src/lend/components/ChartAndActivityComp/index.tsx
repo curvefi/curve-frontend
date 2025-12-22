@@ -13,10 +13,12 @@ import TextCaption from '@ui/TextCaption'
 import ChartWrapper from '@ui-kit/features/candle-chart/ChartWrapper'
 import { TIME_OPTIONS } from '@ui-kit/features/candle-chart/constants'
 import { useNewBandsChart } from '@ui-kit/hooks/useFeatureFlags'
+import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import ChartHeader from '@ui-kit/shared/ui/ChartHeader'
 import { SubTabsSwitcher } from '@ui-kit/shared/ui/SubTabsSwitcher'
 import { type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
+import { ToggleBandsChartButton } from '@ui-kit/shared/ui/ToggleBandsChartButton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import PoolActivity from './PoolActivity'
 
@@ -38,6 +40,7 @@ type ChartAndActivityCompProps = {
 const EMPTY_ARRAY: never[] = []
 
 export const ChartAndActivityComp = ({ rChainId, userActiveKey, rOwmId, api }: ChartAndActivityCompProps) => {
+  const [isBandsVisible, , , toggleBandsVisible] = useSwitch(true)
   const market = useOneWayMarket(rChainId, rOwmId).data
   const collateralTokenAddress = market?.collateral_token.address
   const borrowedTokenAddress = market?.borrowed_token.address
@@ -87,7 +90,7 @@ export const ChartAndActivityComp = ({ rChainId, userActiveKey, rOwmId, api }: C
             chartOptionVariant="select"
             chartSelections={{
               selections: ohlcChartProps.selectChartList,
-              activeSelection: ohlcChartProps.selectChartList[ohlcChartProps.selectedChartIndex ?? 0]?.key ?? '',
+              activeSelection: ohlcChartProps.selectChartList[ohlcChartProps.selectedChartIndex]?.key,
               setActiveSelection: ohlcChartProps.setSelectedChart ?? (() => {}),
             }}
             timeOption={{
@@ -95,13 +98,16 @@ export const ChartAndActivityComp = ({ rChainId, userActiveKey, rOwmId, api }: C
               activeOption: ohlcChartProps.timeOption,
               setActiveOption: ohlcChartProps.setChartTimeOption,
             }}
+            customButton={
+              <ToggleBandsChartButton label="Bands" isVisible={isBandsVisible} onClick={toggleBandsVisible} />
+            }
           />
           <Stack
-            display={{ mobile: 'block', tablet: newBandsChartEnabled ? 'grid' : undefined }}
-            gridTemplateColumns={{ tablet: newBandsChartEnabled ? '1fr 0.3fr' : undefined }}
+            display={{ mobile: 'block', tablet: newBandsChartEnabled && isBandsVisible ? 'grid' : undefined }}
+            gridTemplateColumns={{ tablet: newBandsChartEnabled && isBandsVisible ? '1fr 0.3fr' : undefined }}
           >
             <ChartWrapper {...ohlcChartProps} />
-            {newBandsChartEnabled && (
+            {newBandsChartEnabled && isBandsVisible && (
               <BandsChart
                 isLoading={isBandsLoading}
                 isError={isBandsError}

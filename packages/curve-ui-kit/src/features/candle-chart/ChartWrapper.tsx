@@ -30,7 +30,7 @@ export type OhlcChartProps = {
   ohlcData: LpPriceOhlcDataFormatted[]
   oraclePriceData?: OraclePriceData[]
   liquidationRange?: LiquidationRanges
-  selectedChartIndex?: number
+  selectedChartIndex: number
   timeOption: TimeOption
   setChartTimeOption: (option: TimeOption) => void
   flipChart?: () => void
