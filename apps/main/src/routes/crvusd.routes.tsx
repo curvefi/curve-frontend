@@ -1,6 +1,6 @@
 import '@/global-extensions'
 import CrvStaking from '@/loan/components/PageCrvUsdStaking/Page'
-import Integrations from '@/loan/components/PageIntegrations/Page'
+import { PageIntegrations } from '@/loan/components/PageIntegrations/Page'
 import { MintMarketPage } from '@/loan/components/PageMintMarket/MintMarketPage'
 import { Page as PegKeepersPage } from '@/loan/components/PagePegKeepers'
 import { CrvUsdClientLayout } from '@/loan/CrvUsdClientLayout'
@@ -56,7 +56,7 @@ export const crvusdRoutes = crvusdLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/integrations',
-    component: Integrations,
+    component: PageIntegrations,
     head: () => ({
       meta: [{ title: 'Integrations - Curve' }],
     }),
