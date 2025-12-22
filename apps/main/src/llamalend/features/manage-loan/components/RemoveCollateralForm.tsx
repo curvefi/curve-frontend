@@ -2,15 +2,14 @@ import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.typ
 import type { RemoveCollateralOptions } from '@/llamalend/mutations/remove-collateral.mutation'
 import { LoanFormAlerts } from '@/llamalend/widgets/manage-loan/LoanFormAlerts'
 import { LoanFormTokenInput } from '@/llamalend/widgets/manage-loan/LoanFormTokenInput'
-import { LoanInfoAccordion } from '@/llamalend/widgets/manage-loan/LoanInfoAccordion'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
-import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { InputDivider } from '../../../widgets/InputDivider'
 import { useRemoveCollateralForm } from '../hooks/useRemoveCollateralForm'
+import { RemoveCollateralInfoAccordion } from './RemoveCollateralInfoAccordion'
 
 export const RemoveCollateralForm = <ChainId extends IChainId>({
   market,
@@ -26,33 +25,23 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
   onRemoved?: NonNullable<RemoveCollateralOptions['onRemoved']>
 }) => {
   const network = networks[chainId]
-  const [isOpen, , , toggle] = useSwitch(false)
 
   const {
     form,
+    params,
     isPending,
     onSubmit,
     action,
+    values,
     maxRemovable,
-    health,
-    gas,
     formErrors,
     collateralToken,
     borrowToken,
     txHash,
-    userState,
-    expectedCollateral,
-    prevHealth,
-    marketRates,
-    prevLoanToValue,
-    loanToValue,
   } = useRemoveCollateralForm({
     market,
     network,
-    networks,
-    enabled,
     onRemoved,
-    isAccordionOpen: isOpen,
   })
 
   return (
@@ -60,21 +49,12 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
       {...form}
       onSubmit={onSubmit}
       infoAccordion={
-        <LoanInfoAccordion // todo: prevRates
-          isOpen={isOpen}
-          toggle={toggle}
-          prevHealth={prevHealth}
-          health={health}
-          rates={marketRates}
-          prevLoanToValue={prevLoanToValue}
-          loanToValue={loanToValue}
-          userState={{
-            ...userState,
-            borrowTokenSymbol: borrowToken?.symbol,
-            collateralTokenSymbol: collateralToken?.symbol,
-          }}
-          gas={gas}
-          collateral={expectedCollateral}
+        <RemoveCollateralInfoAccordion
+          params={params}
+          values={values}
+          collateralToken={collateralToken}
+          borrowToken={borrowToken}
+          networks={networks}
         />
       }
     >

@@ -88,7 +88,6 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
     collateralToken,
     borrowToken,
     txHash: action.data?.hash,
-    isDisabled: formErrors.length > 0,
     isApproved: useAddCollateralIsApproved(params),
     formErrors,
   }
