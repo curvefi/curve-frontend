@@ -9,7 +9,11 @@ export const ERROR_IMAGE_URL = `${CURVE_ASSETS_URL}/branding/four-oh-llama.jpg`
 export const getImageBaseUrl = (blockchainId: string) =>
   `${CURVE_ASSETS_URL}/images/assets${!blockchainId || blockchainId == 'ethereum' ? '' : `-${blockchainId}`}/`
 
+const BLOCKCHAIN_RENAMES: Record<string, string> = {
+  gnosis: 'xdai',
+}
+
 export const getBlockchainIconUrl = (blockchainId: string, theme?: 'dark') =>
-  `${CURVE_ASSETS_URL}/chains/${blockchainId}${theme ? `-${theme}` : ''}.png`
+  `${CURVE_ASSETS_URL}/chains/${BLOCKCHAIN_RENAMES[blockchainId] ?? blockchainId}${theme ? `-${theme}` : ''}.png`
 
 export const getBackgroundUrl = (theme: ThemeKey) => `${CURVE_ASSETS_URL}/branding/curve_illustration-${theme}.svg`
