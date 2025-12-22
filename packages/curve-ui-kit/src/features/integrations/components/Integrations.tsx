@@ -12,8 +12,12 @@ import type { IntegrationApp, IntegrationsTags, Tag } from '@ui-kit/features/int
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useNavigate, useSearchParams } from '@ui-kit/hooks/router'
 import { Trans } from '@ui-kit/lib/i18n'
+import { ChainIcon } from '@ui-kit/shared/icons/ChainIcon'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import IntegrationAppComp from './IntegrationApp'
 import SelectNetwork from './SelectNetwork'
+
+const { Spacing } = SizesAndSpaces
 
 // Update integrations list repo: https://github.com/curvefi/curve-external-integrations
 export const Integrations = ({
@@ -136,18 +140,11 @@ export const Integrations = ({
               integrationsTags={tags}
               integrationsAppNetworks={
                 chainId && (
-                  <Box margin="0.25rem 0 0 0">
+                  <Stack direction="row" gap={Spacing.xs}>
                     {Object.keys(app.networks).map((networkId) => (
-                      <img
-                        key={networkId}
-                        alt={`${networkId} logo`}
-                        src={networkId}
-                        loading="lazy"
-                        width="18"
-                        height="18"
-                      />
+                      <ChainIcon key={networkId} blockchainId={networkId} size="sm" />
                     ))}
-                  </Box>
+                  </Stack>
                 )
               }
               imageUrl={app.imageId ? `${CURVE_ASSETS_URL}/platforms/${app.imageId}` : ''}
