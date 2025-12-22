@@ -1,3 +1,4 @@
+import { usePhishingBanner } from '@ui-kit/hooks/useFeatureFlags'
 import { useDismissBanner } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { Banner } from '@ui-kit/shared/ui/Banner'
@@ -10,10 +11,15 @@ const ONE_MONTH_MS = 30 * 24 * 60 * 60 * 1000 // 30 days in milliseconds
  * The banner will reappear after one month if dismissed.
  */
 export const PhishingWarningBanner = () => {
-  const { shouldShowBanner, dismissBanner } = useDismissBanner('phishing-warning-dismissed', ONE_MONTH_MS)
+  const shouldShowBanner = usePhishingBanner()
+  const { shouldShowBanner: isNotDismissed, dismissBanner } = useDismissBanner(
+    'phishing-warning-dismissed',
+    ONE_MONTH_MS,
+  )
 
   return (
-    shouldShowBanner && (
+    shouldShowBanner &&
+    isNotDismissed && (
       <Banner
         subtitle={t`Always carefully check that your URL is ${URL}.`}
         severity="warning"
