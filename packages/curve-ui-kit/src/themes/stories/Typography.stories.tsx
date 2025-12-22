@@ -41,8 +41,8 @@ type Story = StoryObj<typeof Typography>
 
 interface TypographyDisplayProps {
   variant: TypographyVariantKey
-
-  [key: string]: any
+  children?: ReactNode
+  [key: string]: unknown
 }
 
 const Item = ({ title, value }: { title: string; value: ReactNode }) =>

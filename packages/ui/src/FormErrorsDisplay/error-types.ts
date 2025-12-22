@@ -5,7 +5,7 @@ type SimpleFormError = {
 
 type ServerFormError = {
   code: string
-  info: { key: string; args: any[] }
+  info: { key: string; args: unknown[] }
   operation: string
   ref: undefined
   shortMessage: string

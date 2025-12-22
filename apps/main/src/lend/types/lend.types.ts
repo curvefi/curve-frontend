@@ -105,8 +105,8 @@ export type ParsedBandsBalances = {
   isOraclePriceBand: boolean
   isNGrouped: boolean
   n: number | string
-  p_up: any
-  p_down: any
+  p_up: string
+  p_down: string
   pUpDownMedian: string
 }
 export type MarketStatBands = {

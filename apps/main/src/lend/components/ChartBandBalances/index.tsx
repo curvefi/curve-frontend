@@ -250,8 +250,17 @@ const ChartBandBalances = ({
 
                   <Bar
                     dataKey="collateralBorrowedUsd"
-                    shape={(props: any) => {
-                      const { width, collateralUsd, isLiquidationBand, borrowed, collateralBorrowedUsd } = props
+                    shape={(props: unknown) => {
+                      const { width, collateralUsd, isLiquidationBand, borrowed, collateralBorrowedUsd } = props as {
+                        width: number
+                        collateralUsd: number
+                        isLiquidationBand: boolean
+                        borrowed: number
+                        collateralBorrowedUsd: number
+                        x: number
+                        y: number
+                        height: number
+                      }
 
                       if (barWidth === 0 && +width > 0) {
                         barWidth = width
@@ -269,12 +278,12 @@ const ChartBandBalances = ({
                       return (
                         <>
                           <Rectangle
-                            {...props}
+                            {...(props as object)}
                             width={borrowedWidth + collateralWidth}
                             fill="var(--chart_stablecoin--color)"
                           />
                           <Rectangle
-                            {...props}
+                            {...(props as object)}
                             width={collateralWidth}
                             fill="var(--chart_collateral--color)"
                             stroke={isLiquidationBand ? 'var(--health_mode_soft_liquidation_darkBg--color)' : ''}

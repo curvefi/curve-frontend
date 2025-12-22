@@ -44,7 +44,7 @@ const SliderExtension = (design: DesignSystem, orientation?: SliderProps['orient
   }
 }
 
-const baseRootStyle = (design: DesignSystem, orientation?: SliderProps['orientation']): Record<string, any> => {
+const baseRootStyle = (design: DesignSystem, orientation?: SliderProps['orientation']): Record<string, unknown> => {
   const {
     root: { size, margins },
   } = getOrientationConfig(orientation)

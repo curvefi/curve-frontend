@@ -8,7 +8,7 @@ export const CollateralChangeCell = ({
   row: {
     original: { collateralChange, collateralChangeUsd, collateralToken },
   },
-}: CellContext<ParsedUserCollateralEvent, any>) => (
+}: CellContext<ParsedUserCollateralEvent, unknown>) => (
   <HistoryTableCell>
     <Typography
       variant="tableCellMBold"
