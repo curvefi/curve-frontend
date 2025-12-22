@@ -3,16 +3,15 @@ import { useCallback, useMemo, useState } from 'react'
 import { styled } from 'styled-components'
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
-import { useFocusRing } from '@react-aria/focus'
 import Box from '@ui/Box'
 import Icon from '@ui/Icon'
-import SearchInput from '@ui/SearchInput'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import { breakpoints, CURVE_ASSETS_URL, type BaseConfig } from '@ui/utils'
 import { useIntegrations, useIntegrationsTags, type IntegrationApp, type Tag } from '@ui-kit/features/integrations'
 import { useNavigate, useSearchParams } from '@ui-kit/hooks/router'
-import { Trans } from '@ui-kit/lib/i18n'
+import { t, Trans } from '@ui-kit/lib/i18n'
 import { ChainIcon } from '@ui-kit/shared/icons/ChainIcon'
+import { SearchField } from '@ui-kit/shared/ui/SearchField'
 import { SelectableChip } from '@ui-kit/shared/ui/SelectableChip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import IntegrationAppComp from './IntegrationApp'
@@ -29,7 +28,6 @@ export const IntegrationsList = ({ chainId, networks }: IntegrationsListProps) =
 
   const push = useNavigate()
   const searchParams = useSearchParams()
-  const { isFocusVisible, focusProps } = useFocusRing()
 
   const [searchText, setSearchText] = useState('')
 
@@ -89,14 +87,7 @@ export const IntegrationsList = ({ chainId, networks }: IntegrationsListProps) =
             onSelectionChange={(chainId) => updateFilters({ tag: filterTag, chainId: Number(chainId) })}
           />
 
-          <StyledSearchInput
-            id="inp-search-integrations"
-            className={isFocusVisible ? 'focus-visible' : ''}
-            {...focusProps}
-            value={searchText}
-            handleInputChange={(val) => setSearchText(val)}
-            handleSearchClose={() => setSearchText('')}
-          />
+          <SearchField onSearch={setSearchText} placeholder={t`Search for an integration`} />
         </Stack>
 
         <Grid
@@ -188,17 +179,6 @@ const IntegrationsWrapper = styled(Box)`
 
   @media (min-width: ${breakpoints.md}rem) {
     grid-template-columns: 1fr 1fr 1fr;
-  }
-`
-
-const StyledSearchInput = styled(SearchInput)`
-  flex-grow: 1;
-  margin-left: 1rem;
-  margin-right: 1rem;
-
-  @media (min-width: ${breakpoints.sm}rem) {
-    margin-left: 0;
-    margin-right: 0;
   }
 `
 
