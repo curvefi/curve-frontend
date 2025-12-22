@@ -77,44 +77,42 @@ export const IntegrationsList = ({ chainId, networks }: IntegrationsListProps) =
       <Spinner />
     </SpinnerWrapper>
   ) : (
-    <>
-      <StyledFiltersWrapper>
-        <Stack direction="row" sx={{ gridArea: 'grid-search' }} spacing={2} alignItems="center">
-          <SelectNetwork
-            items={networks}
-            minWidth="8.5em"
-            selectedKey={filterNetwork?.networkId}
-            onSelectionChange={(chainId) => updateFilters({ tag: filterTag, chainId: Number(chainId) })}
-          />
+    <Stack direction="column" gap={Spacing.md}>
+      <Stack direction={{ mobile: 'column', tablet: 'row' }} spacing={Spacing.xs} alignItems="center">
+        <SelectNetwork
+          items={networks}
+          minWidth="8.5em"
+          selectedKey={filterNetwork?.networkId}
+          onSelectionChange={(chainId) => updateFilters({ tag: filterTag, chainId: Number(chainId) })}
+        />
 
-          <SearchField onSearch={setSearchText} placeholder={t`Search for an integration`} />
-        </Stack>
+        <SearchField onSearch={setSearchText} placeholder={t`Search for an integration`} />
+      </Stack>
 
-        <Grid
-          container
-          columnSpacing={Spacing.xs}
-          rowSpacing={Spacing.md}
-          direction="row"
-          size={{ mobile: 12, desktop: 'auto' }}
-        >
-          {Object.values(tags).map((tag) => (
-            <Grid container key={tag.id} size={{ mobile: 12, tablet: 'auto' }} spacing={Spacing.xxs}>
-              <SelectableChip
-                size="small"
-                label={
-                  <Stack direction="row" alignItems="center" gap={Spacing.xs}>
-                    <Icon size={16} name="StopFilledAlt" fill={tag.color} strokeWidth="1px" stroke="white" />
-                    {tag.displayName}
-                  </Stack>
-                }
-                selected={filterTag == tag.id}
-                toggle={() => updateFilters({ tag: tag.id, chainId: filterNetwork?.chainId })}
-                sx={{ width: { mobile: '100%', tablet: 'auto' } }}
-              />
-            </Grid>
-          ))}
-        </Grid>
-      </StyledFiltersWrapper>
+      <Grid
+        container
+        columnSpacing={Spacing.xs}
+        rowSpacing={Spacing.md}
+        direction="row"
+        size={{ mobile: 12, desktop: 'auto' }}
+      >
+        {Object.values(tags).map((tag) => (
+          <Grid container key={tag.id} size={{ mobile: 12, tablet: 'auto' }} spacing={Spacing.xxs}>
+            <SelectableChip
+              size="small"
+              label={
+                <Stack direction="row" alignItems="center" gap={Spacing.xs}>
+                  <Icon size={16} name="StopFilledAlt" fill={tag.color} strokeWidth="1px" stroke="white" />
+                  {tag.displayName}
+                </Stack>
+              }
+              selected={filterTag == tag.id}
+              toggle={() => updateFilters({ tag: tag.id, chainId: filterNetwork?.chainId })}
+              sx={{ width: { mobile: '100%', tablet: 'auto' } }}
+            />
+          </Grid>
+        ))}
+      </Grid>
 
       {!integrations.length ? (
         <NoResultWrapper flex flexJustifyContent="center" padding="3rem 0">
@@ -146,26 +144,9 @@ export const IntegrationsList = ({ chainId, networks }: IntegrationsListProps) =
           ))}
         </IntegrationsWrapper>
       )}
-    </>
+    </Stack>
   )
 }
-
-const StyledFiltersWrapper = styled.div`
-  display: grid;
-  grid-row-gap: 1rem;
-  grid-template-columns: 1fr;
-  grid-template-rows: auto auto;
-  grid-template-areas:
-    'grid-search'
-    'grid-filters';
-  margin: 1rem;
-
-  @media (min-width: ${breakpoints.sm}rem) {
-    grid-gap: 0.5rem;
-    justify-content: flex-start;
-    margin: 1rem 0;
-  }
-`
 
 const IntegrationsWrapper = styled(Box)`
   justify-content: center;
