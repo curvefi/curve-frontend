@@ -1,21 +1,11 @@
-import BigNumber from 'bignumber.js'
 import { useEffect, useMemo } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
 import { useForm } from 'react-hook-form'
 import { useConnection } from 'wagmi'
-import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
 import { getTokens } from '@/llamalend/llama.utils'
-import type { LlamaMarketTemplate, LlamaNetwork, NetworkDict } from '@/llamalend/llamalend.types'
+import type { LlamaMarketTemplate, LlamaNetwork } from '@/llamalend/llamalend.types'
 import { type AddCollateralOptions, useAddCollateralMutation } from '@/llamalend/mutations/add-collateral.mutation'
 import { useAddCollateralIsApproved } from '@/llamalend/queries/add-collateral/add-collateral-approved.query'
-import { useAddCollateralBands } from '@/llamalend/queries/add-collateral/add-collateral-bands.query'
-import { useAddCollateralEstimateGas } from '@/llamalend/queries/add-collateral/add-collateral-gas-estimate.query'
-import { getAddCollateralHealthOptions } from '@/llamalend/queries/add-collateral/add-collateral-health.query'
-import { useAddCollateralPrices } from '@/llamalend/queries/add-collateral/add-collateral-prices.query'
-import { useMarketRates } from '@/llamalend/queries/market-rates'
-import { getUserHealthOptions } from '@/llamalend/queries/user-health.query'
-import { useUserState } from '@/llamalend/queries/user-state.query'
-import { mapQuery } from '@/llamalend/queries/utils'
 import type { CollateralParams } from '@/llamalend/queries/validation/manage-loan.types'
 import {
   addCollateralFormValidationSuite,
@@ -26,9 +16,7 @@ import { vestResolver } from '@hookform/resolvers/vest'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { formDefaultOptions } from '@ui-kit/lib/model'
-import { Decimal, decimal } from '@ui-kit/utils/decimal'
 import { useFormErrors } from '../../borrow/react-form.utils'
-import { useLoanToValueFromUserState } from './useLoanToValueFromUserState'
 
 const useCallbackAfterFormUpdate = (form: UseFormReturn<CollateralForm>, callback: () => void) =>
   useEffect(() => form.subscribe({ formState: { values: true }, callback }), [form, callback])
@@ -36,17 +24,11 @@ const useCallbackAfterFormUpdate = (form: UseFormReturn<CollateralForm>, callbac
 export const useAddCollateralForm = <ChainId extends LlamaChainId>({
   market,
   network,
-  networks,
-  enabled,
   onAdded,
-  isAccordionOpen,
 }: {
   market: LlamaMarketTemplate | undefined
   network: LlamaNetwork<ChainId>
-  networks: NetworkDict<ChainId>
-  enabled?: boolean
   onAdded?: NonNullable<AddCollateralOptions['onAdded']>
-  isAccordionOpen: boolean
 }) => {
   const { address: userAddress } = useConnection()
   const { chainId } = network
@@ -70,18 +52,15 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
 
   const params = useDebouncedValue(
     useMemo(
-      () =>
-        ({
-          chainId,
-          marketId,
-          userAddress,
-          userCollateral: values.userCollateral,
-        }) as CollateralParams<ChainId>,
+      (): CollateralParams<ChainId> => ({
+        chainId,
+        marketId,
+        userAddress,
+        userCollateral: values.userCollateral,
+      }),
       [chainId, marketId, userAddress, values.userCollateral],
     ),
   )
-
-  const isApproved = useAddCollateralIsApproved(params)
 
   const { onSubmit, ...action } = useAddCollateralMutation({
     marketId,
@@ -91,51 +70,9 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
     userAddress,
   })
 
-  useCallbackAfterFormUpdate(form, action.reset)
-
-  const userState = useUserState(params, enabled)
-  const prices = useAddCollateralPrices(params, enabled)
-  const health = useHealthQueries((isFull) => getAddCollateralHealthOptions({ ...params, isFull }, enabled))
-  const gas = useAddCollateralEstimateGas(networks, params, enabled)
-  const prevHealth = useHealthQueries((isFull) => getUserHealthOptions({ ...params, isFull }, enabled))
-  const bands = useAddCollateralBands(params, enabled && isAccordionOpen)
-  const prevLoanToValue = useLoanToValueFromUserState({
-    chainId,
-    marketId: params.marketId,
-    userAddress: params.userAddress,
-    collateralToken,
-    borrowToken,
-    enabled: isAccordionOpen,
-    expectedBorrowed: userState.data?.debt,
-  })
-  const loanToValue = useLoanToValueFromUserState({
-    chainId: params.chainId!,
-    marketId: params.marketId,
-    userAddress: params.userAddress,
-    collateralToken,
-    borrowToken,
-    enabled: isAccordionOpen && !!values.userCollateral,
-    collateralDelta: values.userCollateral,
-    expectedBorrowed: userState.data?.debt,
-  })
-  const marketRates = useMarketRates(params, isAccordionOpen)
-
-  const expectedCollateral = useMemo(
-    () =>
-      mapQuery(
-        userState,
-        (state) =>
-          (values.userCollateral &&
-            state.collateral && {
-              value: decimal(new BigNumber(values.userCollateral).plus(state.collateral)) as Decimal,
-              tokenSymbol: collateralToken?.symbol,
-            }) ??
-          null,
-      ),
-    [collateralToken?.symbol, userState, values.userCollateral],
-  )
-
   const formErrors = useFormErrors(form.formState)
+
+  useCallbackAfterFormUpdate(form, action.reset)
 
   useEffect(() => {
     form.setValue('maxCollateral', maxCollateral, { shouldValidate: true })
@@ -144,23 +81,15 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
   return {
     form,
     values,
+    params,
     isPending: form.formState.isSubmitting || action.isPending,
     onSubmit: form.handleSubmit(onSubmit),
     action,
-    bands,
-    prevHealth,
-    health,
-    prevLoanToValue,
-    loanToValue,
-    marketRates,
-    prices,
-    gas,
-    isApproved,
-    formErrors,
     collateralToken,
-    expectedCollateral,
     borrowToken,
     txHash: action.data?.hash,
-    userState,
+    isDisabled: formErrors.length > 0,
+    isApproved: useAddCollateralIsApproved(params),
+    formErrors,
   }
 }

@@ -2,15 +2,14 @@ import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.typ
 import type { AddCollateralOptions } from '@/llamalend/mutations/add-collateral.mutation'
 import { LoanFormAlerts } from '@/llamalend/widgets/manage-loan/LoanFormAlerts'
 import { LoanFormTokenInput } from '@/llamalend/widgets/manage-loan/LoanFormTokenInput'
-import { LoanInfoAccordion } from '@/llamalend/widgets/manage-loan/LoanInfoAccordion'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
-import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { InputDivider } from '../../../widgets/InputDivider'
 import { useAddCollateralForm } from '../hooks/useAddCollateralForm'
+import { AddCollateralInfoAccordion } from './AddCollateralInfoAccordion'
 
 export const AddCollateralForm = <ChainId extends IChainId>({
   market,
@@ -26,34 +25,23 @@ export const AddCollateralForm = <ChainId extends IChainId>({
   onAdded?: NonNullable<AddCollateralOptions['onAdded']>
 }) => {
   const network = networks[chainId]
-  const [isOpen, , , toggle] = useSwitch(false)
 
   const {
     form,
+    params,
     isPending,
     onSubmit,
     action,
     values,
-    health,
-    gas,
     isApproved,
     formErrors,
     collateralToken,
     borrowToken,
     txHash,
-    userState,
-    expectedCollateral,
-    prevHealth,
-    marketRates,
-    prevLoanToValue,
-    loanToValue,
   } = useAddCollateralForm({
     market,
     network,
-    networks,
-    enabled,
     onAdded,
-    isAccordionOpen: isOpen,
   })
 
   return (
@@ -61,21 +49,12 @@ export const AddCollateralForm = <ChainId extends IChainId>({
       {...form}
       onSubmit={onSubmit}
       infoAccordion={
-        <LoanInfoAccordion // todo: prevRates
-          isOpen={isOpen}
-          toggle={toggle}
-          prevHealth={prevHealth}
-          health={health}
-          rates={marketRates}
-          prevLoanToValue={prevLoanToValue}
-          loanToValue={loanToValue}
-          userState={{
-            ...userState,
-            borrowTokenSymbol: borrowToken?.symbol,
-            collateralTokenSymbol: collateralToken?.symbol,
-          }}
-          gas={gas}
-          collateral={expectedCollateral}
+        <AddCollateralInfoAccordion
+          params={params}
+          values={values}
+          collateralToken={collateralToken}
+          borrowToken={borrowToken}
+          networks={networks}
         />
       }
     >

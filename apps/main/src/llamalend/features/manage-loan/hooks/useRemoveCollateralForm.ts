@@ -140,7 +140,7 @@ export const useRemoveCollateralForm = <
           state.collateral &&
           values.userCollateral && {
             value: decimal(
-              BigNumber.max('0', new BigNumber(state.collateral).minus(new BigNumber(values.userCollateral))),
+              BigNumber.max(0, new BigNumber(state.collateral).minus(new BigNumber(values.userCollateral))),
             ) as Decimal,
             tokenSymbol: collateralToken?.symbol,
           },
