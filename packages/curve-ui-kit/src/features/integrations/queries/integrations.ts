@@ -1,12 +1,11 @@
 import { sortBy } from 'lodash'
-import { enforce, group, test } from 'vest'
 import { FetchError } from '@curvefi/prices-api/fetch'
-import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
+import { CURVE_CDN_URL } from '@ui/utils'
+import { EmptyValidationSuite } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import type { IntegrationApp } from '../types'
 
-type Query = { listUrl: string }
-type Params = FieldsOf<Query>
+const INTEGRATIONS_URL = `${CURVE_CDN_URL}/curve-external-integrations/integrations-list.json`
 
 type IntegrationsResponse = {
   appUrl: string | null
@@ -18,26 +17,19 @@ type IntegrationsResponse = {
   twitterUrl: string | null
 }[]
 
-const listUrlValidationGroup = ({ listUrl }: Params) =>
-  group('listUrlValidation', () => {
-    test('listUrl', () => {
-      enforce(listUrl).isNotEmpty().message('List URL is required')
-    })
-  })
-
 export const { useQuery: useIntegrations } = queryFactory({
-  queryKey: ({ listUrl }: Params) => ['integrations', { listUrl }] as const,
-  queryFn: async ({ listUrl }: Query) => {
-    const resp = await fetch(listUrl, { method: 'GET' })
+  queryKey: () => ['integrations'] as const,
+  queryFn: async () => {
+    const resp = await fetch(INTEGRATIONS_URL, { method: 'GET' })
 
     if (!resp.ok) {
-      throw new FetchError(resp.status, `Integrations list fetch error ${resp.status} for URL: ${listUrl}`)
+      throw new FetchError(resp.status, `Integrations list fetch error ${resp.status} for URL: ${INTEGRATIONS_URL}`)
     }
 
     const integrations = (await resp.json()) as IntegrationsResponse
     return parseIntegrationsList(integrations)
   },
-  validationSuite: createValidationSuite(listUrlValidationGroup),
+  validationSuite: EmptyValidationSuite,
 })
 
 // remove all non crvusd integrations
