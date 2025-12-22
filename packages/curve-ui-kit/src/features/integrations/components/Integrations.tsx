@@ -11,6 +11,7 @@ const { Spacing } = SizesAndSpaces
 export const Integrations = (listProps: IntegrationsListProps) => (
   <Stack
     data-testid="integrations-page"
+    gap={Spacing.md}
     sx={{
       backgroundColor: (t) => t.design.Layer[1].Fill,
       marginInline: 'auto',
