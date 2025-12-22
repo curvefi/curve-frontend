@@ -15,7 +15,7 @@ export const TimestampCell = ({
   row: {
     original: { timestamp, txUrl },
   },
-}: CellContext<ParsedUserCollateralEvent, any>) => {
+}: CellContext<ParsedUserCollateralEvent, unknown>) => {
   const isMobile = useIsMobile()
   const clickable = !isMobile && txUrl // on mobile we use row expansion
 

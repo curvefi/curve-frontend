@@ -8,7 +8,7 @@ export const DebtChangeCell = ({
   row: {
     original: { loanChange, borrowToken },
   },
-}: CellContext<ParsedUserCollateralEvent, any>) => (
+}: CellContext<ParsedUserCollateralEvent, unknown>) => (
   <HistoryTableCell>
     <Typography variant="tableCellMBold" color={!loanChange ? 'textPrimary' : loanChange > 0 ? 'error' : 'success'}>
       {loanChange > 0 ? '+' : ''}

@@ -15,6 +15,9 @@ export const REFRESH_INTERVAL = {
 } as const
 
 export const TIME_FRAMES = {
+  DAY_MS: 24 * 60 * 60 * 1000,
   WEEK: 7 * 24 * 60 * 60,
   MONTH: 30 * 24 * 60 * 60,
+  MONTH_MS: 30 * 24 * 60 * 60 * 1000,
+  YEAR_MS: 365 * 24 * 60 * 60 * 1000,
 } as const

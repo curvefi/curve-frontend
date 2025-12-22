@@ -216,8 +216,8 @@ const Swap = ({
                   title: t`Warning!`,
                   content: (
                     // TODO: fix typescript error
-
                     <WarningModal
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
                       {...(exchangeOutput.modal as any)}
                       confirmed={confirmedLoss}
                       setConfirmed={setConfirmedLoss}

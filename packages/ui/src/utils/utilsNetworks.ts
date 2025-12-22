@@ -19,6 +19,7 @@ const NETWORK_BASE_CONFIG_DEFAULT = {
     tagsUrl: `${CURVE_CDN_URL}/curve-external-reward@latest/reward-tags.json`,
   },
   orgUIPath: '',
+  isTestnet: false,
 }
 
 export const NETWORK_BASE_CONFIG = {
@@ -189,7 +190,7 @@ export type NetworkDef<TId extends string = string, TChainId extends number = nu
   symbol: string
   rpcUrl: string
   showInSelectNetwork: boolean
-  showRouterSwap: boolean
+  showRouterSwap?: boolean // only for dex
 }
 
 export type NetworkMapping<TId extends string = string, TChainId extends number = number> = Record<
@@ -212,10 +213,16 @@ export type BaseConfig<TId extends string = string, TChainId extends number = nu
 
 export function getBaseNetworksConfig<TId extends string, ChainId extends number>(
   chainId: ChainId,
-  networkConfig: any,
-): BaseConfig<TId> {
-  const config = { ...NETWORK_BASE_CONFIG_DEFAULT, ...networkConfig }
-  const { name, explorerUrl, id, nativeCurrencySymbol, rpcUrl, isTestnet = false, ...rest } = config
+  networkConfig: {
+    nativeCurrencySymbol: string
+    explorerUrl: string
+    rpcUrl: string
+    id: TId
+    name?: string
+    isTestnet?: boolean
+  },
+): Omit<BaseConfig<TId>, 'showInSelectNetwork' | 'showRouterSwap'> {
+  const { name, id, nativeCurrencySymbol, ...rest } = { ...NETWORK_BASE_CONFIG_DEFAULT, ...networkConfig }
   return {
     ...rest,
     name: formatNetworkName(name || id),
@@ -224,9 +231,6 @@ export function getBaseNetworksConfig<TId extends string, ChainId extends number
     id, // TODO: remove id or networkId
     networkId: id,
     hex: ethers.toQuantity(chainId),
-    rpcUrl,
-    isTestnet,
-    explorerUrl,
   }
 }
 

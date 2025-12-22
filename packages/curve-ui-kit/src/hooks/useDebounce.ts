@@ -9,7 +9,7 @@ import { Duration } from '@ui-kit/themes/design/0_primitives'
  * @param onChange - Optional callback function that is called immediately when the value changes
  * @returns A tuple containing the debounced function and a cancel function
  */
-export function useDebounced<T extends any[]>(
+export function useDebounced<T extends unknown[]>(
   callback: (...value: T) => void,
   debounceMs: number,
   onChange?: (...value: T) => void,

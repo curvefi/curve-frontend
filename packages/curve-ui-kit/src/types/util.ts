@@ -7,7 +7,7 @@ import { UseQueryResult } from '@tanstack/react-query'
  * @template T - The type to make deeply partial
  */
 export type DeepPartial<T> = {
-  [P in keyof T]?: T[P] extends object ? (T[P] extends (...args: any[]) => any ? T[P] : DeepPartial<T[P]>) : T[P]
+  [P in keyof T]?: T[P] extends object ? (T[P] extends (...args: never[]) => unknown ? T[P] : DeepPartial<T[P]>) : T[P]
 }
 
 /**
