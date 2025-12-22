@@ -19,7 +19,7 @@ const { MaxWidth, Spacing, IconSize } = SizesAndSpaces
 type BannerSeverity = 'info' | 'highlight' | 'warning' | 'alert'
 type BannerIcons = BannerSeverity | 'llama'
 
-// TODO: use Secondary color for subtitle instead of Primary
+// TODO: temporary fix: used secondary color for subtitle instead of primary
 const BannerSx: Record<BannerSeverity, { title: SxProps<Theme>; subtitle: SxProps<Theme>; wrapper: SxProps<Theme> }> = {
   info: {
     title: { color: (t) => t.design.Text.TextColors.FilledFeedback.Info.Primary },

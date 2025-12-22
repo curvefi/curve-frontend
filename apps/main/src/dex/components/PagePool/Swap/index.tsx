@@ -228,8 +228,12 @@ const Swap = ({
                   title: t`Warning!`,
                   content: (
                     // TODO: fix typescript error
-                    // @ts-ignore
-                    <WarningModal {...exchangeOutput.modal} confirmed={confirmedLoss} setConfirmed={setConfirmedLoss} />
+
+                    <WarningModal
+                      {...(exchangeOutput.modal as any)}
+                      confirmed={confirmedLoss}
+                      setConfirmed={setConfirmedLoss}
+                    />
                   ),
                   cancelBtnProps: {
                     label: t`Cancel`,

@@ -70,7 +70,6 @@ const QuickSwap = ({
   const isSubscribed = useRef(false)
   const { signerAddress } = curve ?? {}
   const { tokensNameMapper } = useTokensNameMapper(chainId)
-  const tokenList = useStore((state) => state.quickSwap.tokenList[chainId])
   const activeKey = useStore((state) => state.quickSwap.activeKey)
   const formEstGas = useStore((state) => state.quickSwap.formEstGas[activeKey])
   const formStatus = useStore((state) => state.quickSwap.formStatus)
@@ -84,7 +83,6 @@ const QuickSwap = ({
   const fetchStepSwap = useStore((state) => state.quickSwap.fetchStepSwap)
   const resetFormErrors = useStore((state) => state.quickSwap.resetFormErrors)
   const setFormValues = useStore((state) => state.quickSwap.setFormValues)
-  const updateTokenList = useStore((state) => state.quickSwap.updateTokenList)
   const { data: networks } = useNetworks()
   const network = (chainId && networks[chainId]) || null
 
@@ -119,15 +117,14 @@ const QuickSwap = ({
     .map(([address]) => address)
   const { data: usdRatesMapper } = useTokenUsdRates({ chainId, tokenAddresses: userTokens })
 
-  const tokens = useMemo(() => {
-    if (lodash.isEmpty(tokenList) || lodash.isEmpty(tokensMapper)) return []
-
-    return tokenList!
-      .map((address) => tokensMapper[address])
-      .filter((token) => !!token)
-      .map(toTokenOption(network?.networkId))
+  const tokens = useMemo(
+    () =>
+      Object.values(tokensMapper ?? {})
+        .filter((token) => !!token)
+        .map(toTokenOption(network?.networkId)),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tokenList, tokensMapperStr, network?.networkId])
+    [tokensMapperStr, network?.networkId],
+  )
 
   const fromToken = tokens.find((x) => x.address.toLocaleLowerCase() == fromAddress)
   const toToken = tokens.find((x) => x.address.toLocaleLowerCase() == toAddress)
@@ -314,11 +311,31 @@ const QuickSwap = ({
     ],
   )
 
-  const fetchData = useCallback(() => {
+  const lastFetchTimeRef = useRef<number>(0)
+  const fetchDataRef = useRef<() => void>(() => {})
+
+  // Keep fetchDataRef always pointing to the latest fetchData logic
+  fetchDataRef.current = () => {
     if (isReady && !formStatus.formProcessing && formStatus.formTypeCompleted !== 'SWAP') {
       updateFormValues({}, false, '', false, true)
     }
-  }, [formStatus.formProcessing, formStatus.formTypeCompleted, isReady, updateFormValues])
+  }
+
+  // Direct fetch for user-initiated actions (token changes, input changes)
+  // Also resets timer to prevent redundant background fetch right after
+  const fetchData = useCallback(() => {
+    lastFetchTimeRef.current = Date.now()
+    fetchDataRef.current()
+  }, [])
+
+  // Throttled fetch for background refreshes (page visibility, interval)
+  const throttledFetchData = useCallback(() => {
+    const now = Date.now()
+    if (now - lastFetchTimeRef.current >= REFRESH_INTERVAL['15s']) {
+      lastFetchTimeRef.current = now
+      fetchDataRef.current()
+    }
+  }, [])
 
   // onMount
   useEffect(() => {
@@ -339,7 +356,7 @@ const QuickSwap = ({
 
   // pageVisible re-fetch data
   useEffect(() => {
-    if (isReady) fetchData()
+    if (isReady) throttledFetchData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isPageVisible])
 
@@ -349,17 +366,11 @@ const QuickSwap = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [curve?.chainId])
 
-  // updateForm
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => fetchData(), [tokensMapperStr, searchedParams.fromAddress, searchedParams.toAddress])
-
-  useEffect(() => {
-    void updateTokenList(config, isReady ? curve : null, tokensMapper)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [config, isReady, tokensMapperStr, curve?.signerAddress])
+  // updateForm - immediate fetch on token changes
+  useEffect(() => fetchData(), [tokensMapperStr, searchedParams.fromAddress, searchedParams.toAddress, fetchData])
 
   // re-fetch data
-  usePageVisibleInterval(fetchData, REFRESH_INTERVAL['15s'])
+  usePageVisibleInterval(throttledFetchData, REFRESH_INTERVAL['15s'])
 
   // steps
   useEffect(() => {

@@ -49,8 +49,6 @@ module.exports = {
     'no-empty-pattern': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/no-empty-object-type': 'off',
-    '@typescript-eslint/ban-ts-comment': 'off',
-    '@typescript-eslint/prefer-as-const': 'off',
     '@typescript-eslint/no-wrapper-object-types': 'off',
     '@typescript-eslint/no-unused-expressions': 'off',
     '@typescript-eslint/triple-slash-reference': 'off',
