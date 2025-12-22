@@ -22,6 +22,7 @@ import { getChainPoolIdActiveKey } from '@/dex/utils'
 import { getPath } from '@/dex/utils/utilsRouter'
 import { ManageGauge } from '@/dex/widgets/manage-gauge'
 import { notFalsy } from '@curvefi/prices-api/objects.util'
+import Stack from '@mui/material/Stack'
 import AlertBox from '@ui/AlertBox'
 import { AppPageFormTitleWrapper, AppPageInfoContentWrapper } from '@ui/AppPage'
 import Box from '@ui/Box'
@@ -273,47 +274,48 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
             <PoolInfoData rChainId={rChainId} pricesApiPoolData={pricesApiPoolData} />
           </PriceAndTradesWrapper>
         )}
-        <TabsSwitcher
-          variant="contained"
-          size="medium"
-          value={poolInfoTab}
-          onChange={setPoolInfoTab}
-          options={poolInfoTabs}
-        />
-
-        <AppPageInfoContentWrapper variant="secondary">
-          {poolInfoTab === 'user' && (
-            <MySharesStats
-              curve={curve}
-              poolData={poolData}
-              poolDataCacheOrApi={poolDataCacheOrApi}
-              routerParams={routerParams}
-              tokensMapper={tokensMapper}
-              userPoolBalances={userPoolBalances}
-            />
-          )}
-          {poolInfoTab === 'pool' && (
-            <StatsWrapper
-              as="section"
-              className={!curve || !poolData ? 'loading' : ''}
-              grid
-              gridRowGap="1rem"
-              variant="secondary"
-            >
-              <PoolStats
+        <Stack>
+          <TabsSwitcher
+            variant="contained"
+            size="medium"
+            value={poolInfoTab}
+            onChange={setPoolInfoTab}
+            options={poolInfoTabs}
+          />
+          <AppPageInfoContentWrapper variant="secondary">
+            {poolInfoTab === 'user' && (
+              <MySharesStats
                 curve={curve}
-                routerParams={routerParams}
                 poolData={poolData}
                 poolDataCacheOrApi={poolDataCacheOrApi}
-                poolAlert={poolAlert}
+                routerParams={routerParams}
                 tokensMapper={tokensMapper}
+                userPoolBalances={userPoolBalances}
               />
-            </StatsWrapper>
-          )}
-          {poolInfoTab === 'advanced' && poolData && snapshotsMapper[poolData.pool.address] !== undefined && (
-            <PoolParameters pricesApi={pricesApi} poolData={poolData} rChainId={rChainId} />
-          )}
-        </AppPageInfoContentWrapper>
+            )}
+            {poolInfoTab === 'pool' && (
+              <StatsWrapper
+                as="section"
+                className={!curve || !poolData ? 'loading' : ''}
+                grid
+                gridRowGap="1rem"
+                variant="secondary"
+              >
+                <PoolStats
+                  curve={curve}
+                  routerParams={routerParams}
+                  poolData={poolData}
+                  poolDataCacheOrApi={poolDataCacheOrApi}
+                  poolAlert={poolAlert}
+                  tokensMapper={tokensMapper}
+                />
+              </StatsWrapper>
+            )}
+            {poolInfoTab === 'advanced' && poolData && snapshotsMapper[poolData.pool.address] !== undefined && (
+              <PoolParameters pricesApi={pricesApi} poolData={poolData} rChainId={rChainId} />
+            )}
+          </AppPageInfoContentWrapper>
+        </Stack>
       </DetailPageLayout>
     </>
   )
