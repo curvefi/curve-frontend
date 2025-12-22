@@ -1,5 +1,5 @@
 import '@/global-extensions'
-import PageIntegrations from '@/lend/components/PageIntegrations/Page'
+import { PageIntegrations } from '@/lend/components/PageIntegrations/Page'
 import { LendMarketPage } from '@/lend/components/PageLendMarket/LendMarketPage'
 import PageVault from '@/lend/components/PageVault/Page'
 import { LendLayout } from '@/lend/LendLayout'
