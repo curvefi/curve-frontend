@@ -99,7 +99,7 @@ const ChartHeader = <TChartKey extends string, TTimeOption extends string = stri
         >
           {chartSelections.selections.map((selection) => (
             <MenuItem value={selection.key} key={selection.key}>
-              {selection.activeTitle}
+              <Typography variant="bodySBold">{selection.activeTitle}</Typography>
             </MenuItem>
           ))}
         </Select>
@@ -127,11 +127,13 @@ const ChartHeader = <TChartKey extends string, TTimeOption extends string = stri
               value={timeOption.activeOption}
               onChange={handleTimeOption}
               size="small"
-              sx={{ textTransform: 'uppercase', alignSelf: 'center' }}
+              sx={{ alignSelf: 'center' }}
             >
-              {timeOption.options.map((option) => (
-                <MenuItem value={option} key={option} sx={{ textTransform: 'uppercase' }}>
-                  {option}
+              {timeOption.options.map((timeOption) => (
+                <MenuItem value={timeOption} key={timeOption}>
+                  <Typography variant="bodySBold" sx={{ textTransform: 'uppercase' }}>
+                    {timeOption}
+                  </Typography>
                 </MenuItem>
               ))}
             </Select>
