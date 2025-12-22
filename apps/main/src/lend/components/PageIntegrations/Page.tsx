@@ -2,20 +2,14 @@ import { styled } from 'styled-components'
 import networks, { networksIdMapper } from '@/lend/networks'
 import type { NetworkUrlParams } from '@/lend/types/lend.types'
 import { ExternalLink } from '@ui/Link'
-import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import { breakpoints } from '@ui/utils/responsive'
-import { Integrations, useIntegrations, useIntegrationsTags } from '@ui-kit/features/integrations'
+import { Integrations } from '@ui-kit/features/integrations'
 import { useParams } from '@ui-kit/hooks/router'
 import { Trans } from '@ui-kit/lib/i18n'
 
 const Page = () => {
   const params = useParams<NetworkUrlParams>()
   const rChainId = networksIdMapper[params.network]
-
-  const { data: integrations, isLoading: integrationsLoading } = useIntegrations({})
-  const { data: tags, isLoading: integrationsTagsLoading } = useIntegrationsTags({})
-
-  const isLoading = integrationsLoading || integrationsTagsLoading
 
   return (
     <>
@@ -35,18 +29,7 @@ const Page = () => {
               .
             </Trans>
           </Subtitle>
-          {isLoading ? (
-            <SpinnerWrapper>
-              <Spinner />
-            </SpinnerWrapper>
-          ) : (
-            <Integrations
-              integrations={integrations ?? []}
-              tags={tags ?? {}}
-              networks={Object.values(networks)}
-              chainId={rChainId}
-            />
-          )}
+          <Integrations networks={Object.values(networks)} chainId={rChainId} />
         </ContainerContent>
       </Container>
     </>
