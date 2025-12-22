@@ -84,7 +84,6 @@ function ListBoxSection<T extends {}>({
       <li {...itemProps}>
         {section.rendered && <StyledListSection {...headingProps}>{section.rendered}</StyledListSection>}
         <ul {...groupProps}>
-          {/* @ts-ignore */}
           {[...section.childNodes].map((node) => (
             <Option key={node.key} item={node} state={state} />
           ))}
@@ -103,7 +102,6 @@ function ListBox<T extends {}>(
 
   return (
     <StyledList as="ul" {...listBoxProps} ref={listBoxRef}>
-      {/* @ts-ignore */}
       {[...state.collection].map((item) => (
         <ListBoxSection key={item.key} section={item} state={state} />
       ))}
