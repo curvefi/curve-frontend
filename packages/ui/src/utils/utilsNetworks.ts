@@ -1,6 +1,5 @@
 import { Chain } from 'curve-ui-kit/src/utils/network'
 import { ethers } from 'ethers'
-import { CDN_ROOT_URL, CURVE_CDN_URL } from './utilsConstants'
 
 const NETWORK_BASE_CONFIG_DEFAULT = {
   blocknativeSupport: true,
@@ -9,11 +8,6 @@ const NETWORK_BASE_CONFIG_DEFAULT = {
   gasPricesUnit: 'GWEI',
   gasPricesUrl: '',
   gasPricesDefault: 0,
-  rewards: {
-    baseUrl: CDN_ROOT_URL,
-    campaignsUrl: `${CURVE_CDN_URL}/curve-external-reward@latest/campaign-list.json`,
-    tagsUrl: `${CURVE_CDN_URL}/curve-external-reward@latest/reward-tags.json`,
-  },
   orgUIPath: '',
   isTestnet: false,
 }
@@ -202,7 +196,6 @@ export type BaseConfig<TId extends string = string, TChainId extends number = nu
   gasPricesUnit: string
   gasPricesUrl: string
   gasPricesDefault: number
-  rewards: { baseUrl: string; campaignsUrl: string; tagsUrl: string }
   orgUIPath: string
 }
 

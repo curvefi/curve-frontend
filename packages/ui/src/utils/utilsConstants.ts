@@ -1,6 +1,6 @@
 import { ThemeKey } from 'curve-ui-kit/src/themes/basic-theme'
 
-export const CDN_ROOT_URL = 'https://cdn.jsdelivr.net'
+const CDN_ROOT_URL = 'https://cdn.jsdelivr.net'
 export const CURVE_CDN_URL = `${CDN_ROOT_URL}/gh/curvefi`
 export const CURVE_ASSETS_URL = `${CURVE_CDN_URL}/curve-assets`
 export const CURVE_LOGO_URL = `${CURVE_ASSETS_URL}/branding/logo.png`
