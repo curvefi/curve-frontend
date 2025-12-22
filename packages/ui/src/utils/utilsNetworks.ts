@@ -9,10 +9,6 @@ const NETWORK_BASE_CONFIG_DEFAULT = {
   gasPricesUnit: 'GWEI',
   gasPricesUrl: '',
   gasPricesDefault: 0,
-  integrations: {
-    listUrl: `${CURVE_CDN_URL}/curve-external-integrations/integrations-list.json`,
-    tagsUrl: `${CURVE_CDN_URL}/curve-external-integrations/integrations-tags.json`,
-  },
   rewards: {
     baseUrl: CDN_ROOT_URL,
     campaignsUrl: `${CURVE_CDN_URL}/curve-external-reward@latest/campaign-list.json`,
@@ -206,7 +202,6 @@ export type BaseConfig<TId extends string = string, TChainId extends number = nu
   gasPricesUnit: string
   gasPricesUrl: string
   gasPricesDefault: number
-  integrations: { listUrl: string; tagsUrl: string }
   rewards: { baseUrl: string; campaignsUrl: string; tagsUrl: string }
   orgUIPath: string
 }

@@ -13,13 +13,8 @@ const Page = () => {
   const params = useParams<NetworkUrlParams>()
   const rChainId = useChainId(params)
 
-  const { tagsUrl, listUrl } = networks[rChainId || 1]?.integrations ?? {}
-  const { data: integrations, isLoading: integrationsLoading } = useIntegrations({
-    listUrl,
-  })
-  const { data: tags, isLoading: integrationsTagsLoading } = useIntegrationsTags({
-    tagsUrl,
-  })
+  const { data: integrations, isLoading: integrationsLoading } = useIntegrations({})
+  const { data: tags, isLoading: integrationsTagsLoading } = useIntegrationsTags({})
 
   const isLoading = integrationsLoading || integrationsTagsLoading
 

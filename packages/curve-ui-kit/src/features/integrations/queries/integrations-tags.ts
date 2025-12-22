@@ -1,32 +1,27 @@
-import { enforce, group, test } from 'vest'
 import { FetchError } from '@curvefi/prices-api/fetch'
-import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
+import { CURVE_CDN_URL } from '@ui/utils'
+import { EmptyValidationSuite } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import type { IntegrationsTags, IntegrationTag, Tag } from '../types'
 
-type Query = { tagsUrl: string }
-type Params = FieldsOf<Query>
-
-const tagsUrlValidationGroup = ({ tagsUrl }: Params) =>
-  group('tagsUrlValidation', () => {
-    test('tagsUrl', () => {
-      enforce(tagsUrl).isNotEmpty().message('Tags URL is required')
-    })
-  })
+const INTEGRATIONS_TAGS_URL = `${CURVE_CDN_URL}/curve-external-integrations/integrations-tags.json`
 
 export const { useQuery: useIntegrationsTags } = queryFactory({
-  queryKey: ({ tagsUrl }: Params) => ['integrations-tags', { tagsUrl }] as const,
-  queryFn: async ({ tagsUrl }: Query) => {
-    const resp = await fetch(tagsUrl, { method: 'GET' })
+  queryKey: () => ['integrations-tags'] as const,
+  queryFn: async () => {
+    const resp = await fetch(INTEGRATIONS_TAGS_URL, { method: 'GET' })
 
     if (!resp.ok) {
-      throw new FetchError(resp.status, `Integrations tags fetch error ${resp.status} for URL: ${tagsUrl}`)
+      throw new FetchError(
+        resp.status,
+        `Integrations tags fetch error ${resp.status} for URL: ${INTEGRATIONS_TAGS_URL}`,
+      )
     }
 
     const tags = (await resp.json()) as IntegrationTag[]
     return parseIntegrationsTags(tags)
   },
-  validationSuite: createValidationSuite(tagsUrlValidationGroup),
+  validationSuite: EmptyValidationSuite,
 })
 
 function parseIntegrationsTags(integrationsTags: { id: Tag; displayName: string }[]) {
