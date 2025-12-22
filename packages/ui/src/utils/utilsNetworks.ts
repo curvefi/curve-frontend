@@ -1,8 +1,6 @@
 import { Chain } from 'curve-ui-kit/src/utils/network'
-import { ethers } from 'ethers'
 
 const NETWORK_BASE_CONFIG_DEFAULT = {
-  blocknativeSupport: true,
   name: '',
   gasL2: false,
   gasPricesUnit: 'GWEI',
@@ -190,8 +188,6 @@ export type NetworkMapping<TId extends string = string, TChainId extends number 
 
 export type BaseConfig<TId extends string = string, TChainId extends number = number> = NetworkDef<TId, TChainId> & {
   networkId: string
-  hex: string
-  blocknativeSupport: boolean
   gasL2: boolean
   gasPricesUnit: string
   gasPricesUrl: string
@@ -218,7 +214,6 @@ export function getBaseNetworksConfig<TId extends string, ChainId extends number
     symbol: nativeCurrencySymbol,
     id, // TODO: remove id or networkId
     networkId: id,
-    hex: ethers.toQuantity(chainId),
   }
 }
 
