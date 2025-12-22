@@ -242,7 +242,7 @@ const createProposalsSlice = (set: StoreApi<State>['setState'], get: StoreApi<St
               state[sliceKey].executeTxMapper[voteIdKey] = {
                 status: 'SUCCESS',
                 hash: transactionHash,
-                txLink: scanTxPath(networks[1], transactionHash),
+                txLink: scanTxPath(networks[1], transactionHash) ?? null,
                 error: null,
               }
             }),

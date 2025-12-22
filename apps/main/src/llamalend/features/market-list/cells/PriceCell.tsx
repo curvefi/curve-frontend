@@ -11,7 +11,7 @@ import { useTokenUsdPrice } from '@ui-kit/lib/model/entities/token-usd-prices'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
-import { LlamaMarketColumnId } from '../columns.enum'
+import { LlamaMarketColumnId } from '../columns'
 import { ErrorCell } from './ErrorCell'
 
 export const PriceCell = ({ getValue, row, column }: CellContext<LlamaMarket, number>) => {

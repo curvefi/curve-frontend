@@ -4,7 +4,6 @@ import { StyledIconButton, StyledInformationSquare16 } from '@/dex/components/Pa
 import { useNetworkByChain } from '@/dex/entities/networks'
 import useStore from '@/dex/store/useStore'
 import { ChainId, PoolData } from '@/dex/types/main.types'
-import { formatDisplayDate } from '@/dex/utils/utilsDates'
 import Box from '@ui/Box'
 import Icon from '@ui/Icon'
 import { ExternalLink } from '@ui/Link'
@@ -32,7 +31,7 @@ const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParametersProps) 
   const { data: network } = useNetworkByChain({ chainId: rChainId })
   const snapshotData = snapshotsMapper[poolAddress]
   const pricesData = pricesApiPoolDataMapper[poolAddress]
-  const basePoolList = isBasePoolsLoading ? [] : basePools[rChainId]
+  const basePoolList = isBasePoolsLoading ? [] : (basePools[rChainId] ?? [])
 
   const convert1e8 = (number: number) => formatNumber(number / 10 ** 8, { decimals: 5 })
   const convert1e10 = (number: number) => formatNumber(number / 10 ** 10, { decimals: 5 })
@@ -192,14 +191,18 @@ const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParametersProps) 
                   tooltip={
                     <>
                       {t`Amplification coefficient chosen from fluctuation of prices around 1.`}
-                      {rampADetails && rampADetails?.isFutureATimePassedToday && (
-                        <>
-                          <br />{' '}
-                          {t`Last change occurred between ${formatDisplayDate(dayjs(initial_A_time))} and ${formatDisplayDate(
-                            dayjs(future_A_time),
-                          )}, when A ramped from ${initial_A} to ${future_A}.`}
-                        </>
-                      )}
+                      {rampADetails &&
+                        rampADetails?.isFutureATimePassedToday &&
+                        initial_A_time != null &&
+                        future_A_time != null && (
+                          <>
+                            <br />{' '}
+                            {t`Last change occurred between ${formatDate(initial_A_time, 'short')} and ${formatDate(
+                              future_A_time,
+                              'short',
+                            )}, when A ramped from ${initial_A} to ${future_A}.`}
+                          </>
+                        )}
                     </>
                   }
                   tooltipProps={{ minWidth: '200px' }}

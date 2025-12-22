@@ -6,11 +6,9 @@ import ChipInpHelper from '@/dex/components/ChipInpHelper'
 import DetailInfoEstGas from '@/dex/components/DetailInfoEstGas'
 import FieldHelperUsdRate from '@/dex/components/FieldHelperUsdRate'
 import FormConnectWallet from '@/dex/components/FormConnectWallet'
-import DetailInfoSlippageTolerance from '@/dex/components/PagePool/components/DetailInfoSlippageTolerance'
 import WarningModal, { type HighSlippagePriceImpactProps } from '@/dex/components/PagePool/components/WarningModal'
 import DetailInfoExchangeRate from '@/dex/components/PageRouterSwap/components/DetailInfoExchangeRate'
 import DetailInfoPriceImpact from '@/dex/components/PageRouterSwap/components/DetailInfoPriceImpact'
-import DetailInfoTradeRoute from '@/dex/components/PageRouterSwap/components/DetailInfoTradeRoute'
 import RouterSwapAlerts from '@/dex/components/PageRouterSwap/components/RouterSwapAlerts'
 import type {
   FormStatus,
@@ -47,6 +45,8 @@ import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { useTokenUsdRate, useTokenUsdRates } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { decimal, type Decimal } from '@ui-kit/utils'
+import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
+import { DetailInfoTradeRoute } from './components/DetailInfoTradeRoute'
 
 const QuickSwap = ({
   pageLoaded,
@@ -314,11 +314,31 @@ const QuickSwap = ({
     ],
   )
 
-  const fetchData = useCallback(() => {
+  const lastFetchTimeRef = useRef<number>(0)
+  const fetchDataRef = useRef<() => void>(() => {})
+
+  // Keep fetchDataRef always pointing to the latest fetchData logic
+  fetchDataRef.current = () => {
     if (isReady && !formStatus.formProcessing && formStatus.formTypeCompleted !== 'SWAP') {
       updateFormValues({}, false, '', false, true)
     }
-  }, [formStatus.formProcessing, formStatus.formTypeCompleted, isReady, updateFormValues])
+  }
+
+  // Direct fetch for user-initiated actions (token changes, input changes)
+  // Also resets timer to prevent redundant background fetch right after
+  const fetchData = useCallback(() => {
+    lastFetchTimeRef.current = Date.now()
+    fetchDataRef.current()
+  }, [])
+
+  // Throttled fetch for background refreshes (page visibility, interval)
+  const throttledFetchData = useCallback(() => {
+    const now = Date.now()
+    if (now - lastFetchTimeRef.current >= REFRESH_INTERVAL['15s']) {
+      lastFetchTimeRef.current = now
+      fetchDataRef.current()
+    }
+  }, [])
 
   // onMount
   useEffect(() => {
@@ -339,7 +359,7 @@ const QuickSwap = ({
 
   // pageVisible re-fetch data
   useEffect(() => {
-    if (isReady) fetchData()
+    if (isReady) throttledFetchData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isPageVisible])
 
@@ -349,9 +369,8 @@ const QuickSwap = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [curve?.chainId])
 
-  // updateForm
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => fetchData(), [tokensMapperStr, searchedParams.fromAddress, searchedParams.toAddress])
+  // updateForm - immediate fetch on token changes
+  useEffect(() => fetchData(), [tokensMapperStr, searchedParams.fromAddress, searchedParams.toAddress, fetchData])
 
   useEffect(() => {
     void updateTokenList(config, isReady ? curve : null, tokensMapper)
@@ -359,7 +378,7 @@ const QuickSwap = ({
   }, [config, isReady, tokensMapperStr, curve?.signerAddress])
 
   // re-fetch data
-  usePageVisibleInterval(fetchData, REFRESH_INTERVAL['15s'])
+  usePageVisibleInterval(throttledFetchData, REFRESH_INTERVAL['15s'])
 
   // steps
   useEffect(() => {
@@ -601,7 +620,7 @@ const QuickSwap = ({
             stepProgress={activeStep && steps.length > 1 ? { active: activeStep, total: steps.length } : null}
           />
         )}
-        <DetailInfoSlippageTolerance
+        <SlippageToleranceActionInfo
           maxSlippage={storeMaxSlippage}
           stateKey={isStableswapRoute ? 'stable' : 'crypto'}
         />

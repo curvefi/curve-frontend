@@ -2,13 +2,13 @@ import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.typ
 import type { AddCollateralOptions } from '@/llamalend/mutations/add-collateral.mutation'
 import { LoanFormAlerts } from '@/llamalend/widgets/manage-loan/LoanFormAlerts'
 import { LoanFormTokenInput } from '@/llamalend/widgets/manage-loan/LoanFormTokenInput'
-import { LoanFormWrapper } from '@/llamalend/widgets/manage-loan/LoanFormWrapper'
 import { LoanInfoAccordion } from '@/llamalend/widgets/manage-loan/LoanInfoAccordion'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
+import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { InputDivider } from '../../../widgets/InputDivider'
 import { useAddCollateralForm } from '../hooks/useAddCollateralForm'
 
@@ -57,7 +57,7 @@ export const AddCollateralForm = <ChainId extends IChainId>({
   })
 
   return (
-    <LoanFormWrapper
+    <Form
       {...form}
       onSubmit={onSubmit}
       infoAccordion={
@@ -113,6 +113,6 @@ export const AddCollateralForm = <ChainId extends IChainId>({
             ? t`Add collateral`
             : t`Approve & Add collateral`}
       </Button>
-    </LoanFormWrapper>
+    </Form>
   )
 }

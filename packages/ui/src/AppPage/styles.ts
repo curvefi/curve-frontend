@@ -21,14 +21,6 @@ export const AppPageFormContainer = styled.div<{ isAdvanceMode: boolean }>`
   }
 `
 
-export const AppPageFormsWrapper = styled(Box)`
-  margin-bottom: 2rem;
-
-  @media (min-width: ${breakpoints.md}rem) {
-    align-self: flex-start;
-  }
-`
-
 export const AppPageFormTitleWrapper = styled.header`
   align-items: center;
   color: var(--page--text-color);
@@ -41,15 +33,6 @@ export const AppPageFormTitleWrapper = styled.header`
   @media (min-width: ${breakpoints.sm}rem) {
     padding-top: var(--spacing-normal);
     padding-left: 0;
-  }
-`
-
-export const AppPageInfoWrapper = styled.div`
-  margin-bottom: 2rem;
-  width: 100%;
-
-  @media (min-width: ${breakpoints.md}rem) {
-    margin-left: 1.5rem;
   }
 `
 

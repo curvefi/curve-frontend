@@ -236,6 +236,9 @@ function formatNetworkName(id: string) {
   return formattedText.charAt(0).toUpperCase() + formattedText.slice(1)
 }
 
-export const scanAddressPath = ({ explorerUrl }: BaseConfig, hash: string) => `${explorerUrl}address/${hash}`
-export const scanTxPath = ({ explorerUrl }: BaseConfig, hash: string) => `${explorerUrl}tx/${hash}`
-export const scanTokenPath = ({ explorerUrl }: BaseConfig, hash: string) => `${explorerUrl}token/${hash}`
+// Config parameter is nullable because some networks may not be loaded (e.g., lite networks are unavailable in the DAO app)
+export const scanAddressPath = (config: BaseConfig | undefined, hash: string) =>
+  config && `${config.explorerUrl}address/${hash}`
+export const scanTxPath = (config: BaseConfig | undefined, hash: string) => config && `${config.explorerUrl}tx/${hash}`
+export const scanTokenPath = (config: BaseConfig | undefined, hash: string) =>
+  config && `${config.explorerUrl}token/${hash}`

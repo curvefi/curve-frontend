@@ -9,8 +9,8 @@
   },
   "dependencies": {
     "@carbon/icons-react": "^11.71.0",
-    "react-aria": "3.44.0",
-    "react-stately": "3.42.0"
+    "react-aria": "3.45.0",
+    "react-stately": "3.43.0"
   },
   "devDependencies": {
     "@types/react": "*",

@@ -1,7 +1,7 @@
 import { styled } from 'styled-components'
+import { DetailInfo } from '@ui/DetailInfo'
 import AlertBox from 'ui/src/AlertBox'
 import Box from 'ui/src/Box'
-import DetailInfo from 'ui/src/DetailInfo'
 import TextCaption from 'ui/src/TextCaption'
 import { formatNumber } from 'ui/src/utils'
 

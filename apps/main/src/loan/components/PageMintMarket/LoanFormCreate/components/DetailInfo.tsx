@@ -4,7 +4,7 @@ import DetailInfoLeverage from '@/loan/components/PageMintMarket/LoanFormCreate/
 import DetailInfoNonLeverage from '@/loan/components/PageMintMarket/LoanFormCreate/components/DetailInfoNonLeverage'
 import type { CreateFormDetailInfo, FormDetailInfoSharedProps } from '@/loan/components/PageMintMarket/types'
 import useStore from '@/loan/store/useStore'
-import DetailInfo from '@ui/DetailInfo'
+import { DetailInfo } from '@ui/DetailInfo'
 import { getActiveStep } from '@ui/Stepper/helpers'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'

@@ -1,5 +1,5 @@
 import { useConnection } from 'wagmi'
-import { LlamaMarketColumnId } from '@/llamalend/features/market-list/columns.enum'
+import { LlamaMarketColumnId } from '@/llamalend/features/market-list/columns'
 import { calculateLtv } from '@/llamalend/llama.utils'
 import { useUserLendingVaultEarnings, useUserLendingVaultStats } from '@/llamalend/queries/market-list/lending-vaults'
 import { type LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
