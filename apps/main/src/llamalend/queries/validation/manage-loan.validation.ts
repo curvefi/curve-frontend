@@ -27,11 +27,18 @@ export type RepayForm = FieldsOf<{
   isFull: boolean
 }>
 
-export const collateralValidationGroup = ({ chainId, userCollateral, marketId, userAddress }: CollateralParams) =>
+export const collateralValidationGroup = ({
+  chainId,
+  userCollateral,
+  maxCollateral,
+  marketId,
+  userAddress,
+}: CollateralParams) =>
   group('chainValidation', () => {
     marketIdValidationSuite({ chainId, marketId })
     userAddressValidationGroup({ userAddress })
     validateUserCollateral(userCollateral)
+    validateMaxCollateral(userCollateral, maxCollateral)
   })
 
 export const collateralValidationSuite = createValidationSuite((params: CollateralParams) =>

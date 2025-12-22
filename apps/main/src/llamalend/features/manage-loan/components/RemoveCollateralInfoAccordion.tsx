@@ -4,7 +4,6 @@ import type { Token } from '@/llamalend/features/borrow/types'
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
 import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
-import { useMarketFutureRates } from '@/llamalend/queries/market-future-rates.query'
 import { useMarketRates } from '@/llamalend/queries/market-rates'
 import { useRemoveCollateralEstimateGas } from '@/llamalend/queries/remove-collateral/remove-collateral-gas-estimate.query'
 import { getRemoveCollateralHealthOptions } from '@/llamalend/queries/remove-collateral/remove-collateral-health.query'
@@ -34,7 +33,6 @@ export function RemoveCollateralInfoAccordion<ChainId extends IChainId>({
 }) {
   const [isOpen, , , toggle] = useSwitch(false)
   const userState = q(useUserState(params, isOpen))
-
   const expectedCollateral = useMemo(
     () =>
       // An error will be thrown by the validation suite, the "max" is just for preventing negative collateral in the UI
@@ -59,8 +57,7 @@ export function RemoveCollateralInfoAccordion<ChainId extends IChainId>({
       gas={useRemoveCollateralEstimateGas(networks, params, isOpen)}
       health={useHealthQueries((isFull) => getRemoveCollateralHealthOptions({ ...params, isFull }))}
       prevHealth={useHealthQueries((isFull) => getUserHealthOptions({ ...params, isFull }))}
-      rates={q(useMarketFutureRates(params, isOpen))}
-      prevRates={q(useMarketRates(params, isOpen))}
+      rates={q(useMarketRates(params, isOpen))}
       prevLoanToValue={useLoanToValueFromUserState({
         chainId: params.chainId,
         marketId: params.marketId,
@@ -77,7 +74,7 @@ export function RemoveCollateralInfoAccordion<ChainId extends IChainId>({
         collateralToken,
         borrowToken,
         enabled: isOpen && !!userCollateral,
-        collateralDelta: userCollateral == null ? undefined : (`-${userCollateral}` as Decimal),
+        collateralDelta: userCollateral && (`-${userCollateral}` as Decimal),
         expectedBorrowed: userState.data?.debt,
       })}
       userState={{

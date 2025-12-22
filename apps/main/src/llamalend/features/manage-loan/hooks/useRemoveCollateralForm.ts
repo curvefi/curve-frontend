@@ -30,10 +30,12 @@ export const useRemoveCollateralForm = <
 >({
   market,
   network,
+  enabled,
   onRemoved,
 }: {
   market: LlamaMarketTemplate | undefined
   network: BaseConfig<NetworkName, ChainId>
+  enabled?: boolean
   onRemoved?: NonNullable<RemoveCollateralOptions['onRemoved']>
 }) => {
   const { address: userAddress } = useConnection()
@@ -61,9 +63,9 @@ export const useRemoveCollateralForm = <
         chainId,
         marketId,
         userAddress,
-        userCollateral: values.userCollateral,
+        ...values,
       }),
-      [chainId, marketId, userAddress, values.userCollateral],
+      [chainId, marketId, userAddress, values],
     ),
   )
 
@@ -75,7 +77,7 @@ export const useRemoveCollateralForm = <
     userAddress,
   })
 
-  const maxRemovable = useMaxRemovableCollateral(params)
+  const maxRemovable = useMaxRemovableCollateral(params, enabled)
   const formErrors = useFormErrors(form.formState)
 
   useCallbackAfterFormUpdate(form, action.reset)

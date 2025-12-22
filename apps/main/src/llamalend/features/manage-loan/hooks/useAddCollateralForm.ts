@@ -56,9 +56,9 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
         chainId,
         marketId,
         userAddress,
-        userCollateral: values.userCollateral,
+        ...values,
       }),
-      [chainId, marketId, userAddress, values.userCollateral],
+      [chainId, marketId, userAddress, values],
     ),
   )
 

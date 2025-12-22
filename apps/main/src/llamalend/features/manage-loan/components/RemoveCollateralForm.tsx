@@ -41,6 +41,7 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
   } = useRemoveCollateralForm({
     market,
     network,
+    enabled,
     onRemoved,
   })
 

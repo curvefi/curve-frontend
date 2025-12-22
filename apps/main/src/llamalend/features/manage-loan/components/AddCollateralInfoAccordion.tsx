@@ -6,7 +6,6 @@ import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useAddCollateralEstimateGas } from '@/llamalend/queries/add-collateral/add-collateral-gas-estimate.query'
 import { getAddCollateralHealthOptions } from '@/llamalend/queries/add-collateral/add-collateral-health.query'
-import { useMarketFutureRates } from '@/llamalend/queries/market-future-rates.query'
 import { useMarketRates } from '@/llamalend/queries/market-rates'
 import { getUserHealthOptions } from '@/llamalend/queries/user-health.query'
 import { useUserState } from '@/llamalend/queries/user-state.query'
@@ -56,8 +55,7 @@ export function AddCollateralInfoAccordion<ChainId extends IChainId>({
       gas={useAddCollateralEstimateGas(networks, params, isOpen)}
       health={useHealthQueries((isFull) => getAddCollateralHealthOptions({ ...params, isFull }))}
       prevHealth={useHealthQueries((isFull) => getUserHealthOptions({ ...params, isFull }))}
-      rates={q(useMarketFutureRates(params, isOpen))}
-      prevRates={q(useMarketRates(params, isOpen))}
+      rates={q(useMarketRates(params, isOpen))}
       prevLoanToValue={useLoanToValueFromUserState({
         chainId: params.chainId,
         marketId: params.marketId,

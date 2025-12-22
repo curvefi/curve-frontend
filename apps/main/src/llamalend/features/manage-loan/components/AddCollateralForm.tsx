@@ -15,7 +15,6 @@ export const AddCollateralForm = <ChainId extends IChainId>({
   market,
   networks,
   chainId,
-  enabled,
   onAdded,
 }: {
   market: LlamaMarketTemplate | undefined
