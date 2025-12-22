@@ -3,9 +3,8 @@ import { useNetworks } from '@/dex/entities/networks'
 import { useChainId } from '@/dex/hooks/useChainId'
 import type { NetworkUrlParams } from '@/dex/types/main.types'
 import { ExternalLink } from '@ui/Link'
-import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import { breakpoints } from '@ui/utils/responsive'
-import { Integrations, useIntegrations, useIntegrationsTags } from '@ui-kit/features/integrations'
+import { Integrations } from '@ui-kit/features/integrations'
 import { useParams } from '@ui-kit/hooks/router'
 import { Trans } from '@ui-kit/lib/i18n'
 
@@ -13,11 +12,6 @@ const Page = () => {
   const { network } = useParams<NetworkUrlParams>()
   const rChainId = useChainId(network)
   const { data: networks } = useNetworks()
-
-  const { data: integrations, isLoading: integrationsLoading } = useIntegrations({})
-  const { data: integrationsTags, isLoading: integrationsTagsLoading } = useIntegrationsTags({})
-
-  const isLoading = integrationsLoading || integrationsTagsLoading
 
   return (
     <Container data-testid="integrations-page">
@@ -35,18 +29,7 @@ const Page = () => {
             .
           </Trans>
         </Subtitle>
-        {isLoading ? (
-          <SpinnerWrapper>
-            <Spinner />
-          </SpinnerWrapper>
-        ) : (
-          <Integrations
-            integrations={integrations ?? []}
-            tags={integrationsTags ?? {}}
-            networks={Object.values(networks)}
-            chainId={rChainId}
-          />
-        )}
+        <Integrations networks={Object.values(networks)} chainId={rChainId} />
       </ContainerContent>
     </Container>
   )

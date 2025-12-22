@@ -5,10 +5,11 @@ import Stack from '@mui/material/Stack'
 import { useFocusRing } from '@react-aria/focus'
 import Box from '@ui/Box'
 import SearchInput from '@ui/SearchInput'
+import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import TableButtonFilters from '@ui/TableButtonFilters'
 import TableButtonFiltersMobile from '@ui/TableButtonFiltersMobile'
 import { breakpoints, CURVE_ASSETS_URL, type BaseConfig } from '@ui/utils'
-import type { IntegrationApp, IntegrationsTags, Tag } from '@ui-kit/features/integrations'
+import { useIntegrations, useIntegrationsTags, type IntegrationApp, type Tag } from '@ui-kit/features/integrations'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useNavigate, useSearchParams } from '@ui-kit/hooks/router'
 import { Trans } from '@ui-kit/lib/i18n'
@@ -20,17 +21,11 @@ import SelectNetwork from './SelectNetwork'
 const { Spacing } = SizesAndSpaces
 
 // Update integrations list repo: https://github.com/curvefi/curve-external-integrations
-export const Integrations = ({
-  integrations,
-  tags: tags,
-  networks,
-  chainId,
-}: {
-  integrations: IntegrationApp[]
-  tags: IntegrationsTags
-  networks: BaseConfig[]
-  chainId?: number
-}) => {
+export const Integrations = ({ chainId, networks }: { chainId?: number; networks: BaseConfig[] }) => {
+  const { data: integrations = [], isLoading: integrationsLoading } = useIntegrations({})
+  const { data: tags = {}, isLoading: integrationsTagsLoading } = useIntegrationsTags({})
+  const isLoading = integrationsLoading || integrationsTagsLoading
+
   const push = useNavigate()
   const searchParams = useSearchParams()
   const { isFocusVisible, focusProps } = useFocusRing()
@@ -79,7 +74,11 @@ export const Integrations = ({
       : list
   }, [filterNetwork, filterTag, integrations, searchText])
 
-  return (
+  return isLoading ? (
+    <SpinnerWrapper>
+      <Spinner />
+    </SpinnerWrapper>
+  ) : (
     <>
       <StyledFiltersWrapper>
         <Stack direction="row" sx={{ gridArea: 'grid-search' }} spacing={2} alignItems="center">
