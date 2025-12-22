@@ -1,19 +1,19 @@
 import Fuse from 'fuse.js'
 import { useCallback, useMemo, useState } from 'react'
 import { styled } from 'styled-components'
+import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
 import { useFocusRing } from '@react-aria/focus'
 import Box from '@ui/Box'
+import Icon from '@ui/Icon'
 import SearchInput from '@ui/SearchInput'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
-import TableButtonFilters from '@ui/TableButtonFilters'
-import TableButtonFiltersMobile from '@ui/TableButtonFiltersMobile'
 import { breakpoints, CURVE_ASSETS_URL, type BaseConfig } from '@ui/utils'
 import { useIntegrations, useIntegrationsTags, type IntegrationApp, type Tag } from '@ui-kit/features/integrations'
-import { useLayoutStore } from '@ui-kit/features/layout'
 import { useNavigate, useSearchParams } from '@ui-kit/hooks/router'
 import { Trans } from '@ui-kit/lib/i18n'
 import { ChainIcon } from '@ui-kit/shared/icons/ChainIcon'
+import { SelectableChip } from '@ui-kit/shared/ui/SelectableChip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import IntegrationAppComp from './IntegrationApp'
 import SelectNetwork from './SelectNetwork'
@@ -30,7 +30,6 @@ export const IntegrationsList = ({ chainId, networks }: IntegrationsListProps) =
   const push = useNavigate()
   const searchParams = useSearchParams()
   const { isFocusVisible, focusProps } = useFocusRing()
-  const isXSmDown = useLayoutStore((state) => state.isXSmDown)
 
   const [searchText, setSearchText] = useState('')
 
@@ -100,26 +99,30 @@ export const IntegrationsList = ({ chainId, networks }: IntegrationsListProps) =
           />
         </Stack>
 
-        <Box grid gridArea="filters" flexJustifyContent="flex-start" gridAutoFlow="column" gridGap={2}>
-          {!isXSmDown ? (
-            <TableButtonFilters
-              disabled={false}
-              filters={tags}
-              filterKey={filterTag}
-              isLoading={Object.keys(tags).length === 0}
-              resultsLength={integrations?.length}
-              updateRouteFilterKey={(tag) => updateFilters({ tag: tag as Tag, chainId: filterNetwork?.chainId })}
-            />
-          ) : (
-            <Box flex gridColumnGap={2} margin="0 0 0 1rem">
-              <TableButtonFiltersMobile
-                filters={tags}
-                filterKey={filterTag}
-                updateRouteFilterKey={(tag) => updateFilters({ tag: tag as Tag, chainId: filterNetwork?.chainId })}
+        <Grid
+          container
+          columnSpacing={Spacing.xs}
+          rowSpacing={Spacing.md}
+          direction="row"
+          size={{ mobile: 12, desktop: 'auto' }}
+        >
+          {Object.values(tags).map((tag) => (
+            <Grid container key={tag.id} size={{ mobile: 12, tablet: 'auto' }} spacing={Spacing.xxs}>
+              <SelectableChip
+                size="small"
+                label={
+                  <Stack direction="row" alignItems="center" gap={Spacing.xs}>
+                    <Icon size={16} name="StopFilledAlt" fill={tag.color} strokeWidth="1px" stroke="white" />
+                    {tag.displayName}
+                  </Stack>
+                }
+                selected={filterTag == tag.id}
+                toggle={() => updateFilters({ tag: tag.id, chainId: filterNetwork?.chainId })}
+                sx={{ width: { mobile: '100%', tablet: 'auto' } }}
               />
-            </Box>
-          )}
-        </Box>
+            </Grid>
+          ))}
+        </Grid>
       </StyledFiltersWrapper>
 
       {!integrations.length ? (
