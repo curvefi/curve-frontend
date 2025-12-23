@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { styled } from 'styled-components'
 import { useOneWayMarket } from '@/lend/entities/chain'
 import { useOhlcChartState } from '@/lend/hooks/useOhlcChartState'
@@ -6,8 +6,8 @@ import { Api, ChainId } from '@/lend/types/lend.types'
 import { BandsChart } from '@/llamalend/features/bands-chart/BandsChart'
 import { useBandsData } from '@/llamalend/features/bands-chart/hooks/useBandsData'
 import { getBandsChartToken } from '@/llamalend/features/bands-chart/utils'
-import { Box } from '@mui/material'
 import Stack from '@mui/material/Stack'
+import { useTheme } from '@mui/material/styles'
 import AlertBox from '@ui/AlertBox'
 import TextCaption from '@ui/TextCaption'
 import ChartWrapper from '@ui-kit/features/candle-chart/ChartWrapper'
@@ -15,6 +15,7 @@ import { TIME_OPTIONS } from '@ui-kit/features/candle-chart/constants'
 import { useNewBandsChart } from '@ui-kit/hooks/useFeatureFlags'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
+import { ChartFooter } from '@ui-kit/shared/ui/ChartFooter'
 import ChartHeader from '@ui-kit/shared/ui/ChartHeader'
 import { SubTabsSwitcher } from '@ui-kit/shared/ui/SubTabsSwitcher'
 import { type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
@@ -32,22 +33,21 @@ const tabs: TabOption<Tab>[] = [
 
 type ChartAndActivityCompProps = {
   rChainId: ChainId
-  userActiveKey: string
   rOwmId: string
   api: Api | undefined
 }
 
 const EMPTY_ARRAY: never[] = []
 
-export const ChartAndActivityComp = ({ rChainId, userActiveKey, rOwmId, api }: ChartAndActivityCompProps) => {
+export const ChartAndActivityComp = ({ rChainId, rOwmId, api }: ChartAndActivityCompProps) => {
   const [isBandsVisible, , , toggleBandsVisible] = useSwitch(true)
+  const theme = useTheme()
   const market = useOneWayMarket(rChainId, rOwmId).data
   const collateralTokenAddress = market?.collateral_token.address
   const borrowedTokenAddress = market?.borrowed_token.address
   const newBandsChartEnabled = useNewBandsChart()
-  const { coins, ohlcDataUnavailable, ohlcChartProps } = useOhlcChartState({
+  const { coins, ohlcDataUnavailable, setSelectedChart, setChartTimeOption, ohlcChartProps } = useOhlcChartState({
     rChainId,
-    userActiveKey,
     rOwmId,
   })
   const {
@@ -68,6 +68,20 @@ export const ChartAndActivityComp = ({ rChainId, userActiveKey, rOwmId, api }: C
 
   const [tab, setTab] = useState<Tab>('chart')
 
+  const legendSets = useMemo(
+    () => [
+      {
+        label: t`Oracle Price`,
+        line: { lineStroke: theme.palette.primary.main, dash: 'none' },
+      },
+      {
+        label: t`Conversion zone`,
+        box: { fill: theme.design.Chart.LiquidationZone.Current },
+      },
+    ],
+    [theme.design.Chart.LiquidationZone.Current, theme.palette.primary.main],
+  )
+
   if (ohlcDataUnavailable) {
     return (
       <StyledAlertBox alertType="">
@@ -85,18 +99,18 @@ export const ChartAndActivityComp = ({ rChainId, userActiveKey, rOwmId, api }: C
         <PoolActivity poolAddress={market.addresses.amm} chainId={rChainId} coins={coins} />
       )}
       {tab === 'chart' && (
-        <Box>
+        <Stack sx={{ gap: Spacing.sm }}>
           <ChartHeader
             chartOptionVariant="select"
             chartSelections={{
               selections: ohlcChartProps.selectChartList,
               activeSelection: ohlcChartProps.selectChartList[ohlcChartProps.selectedChartIndex]?.key,
-              setActiveSelection: ohlcChartProps.setSelectedChart ?? (() => {}),
+              setActiveSelection: setSelectedChart,
             }}
             timeOption={{
               options: TIME_OPTIONS,
               activeOption: ohlcChartProps.timeOption,
-              setActiveOption: ohlcChartProps.setChartTimeOption,
+              setActiveOption: setChartTimeOption,
             }}
             customButton={
               <ToggleBandsChartButton label="Bands" isVisible={isBandsVisible} onClick={toggleBandsVisible} />
@@ -106,7 +120,7 @@ export const ChartAndActivityComp = ({ rChainId, userActiveKey, rOwmId, api }: C
             display={{ mobile: 'block', tablet: newBandsChartEnabled && isBandsVisible ? 'grid' : undefined }}
             gridTemplateColumns={{ tablet: newBandsChartEnabled && isBandsVisible ? '1fr 0.3fr' : undefined }}
           >
-            <ChartWrapper {...ohlcChartProps} />
+            <ChartWrapper {...ohlcChartProps} betaBackgroundColor={theme.design.Layer[1].Fill} />
             {newBandsChartEnabled && isBandsVisible && (
               <BandsChart
                 isLoading={isBandsLoading}
@@ -119,7 +133,8 @@ export const ChartAndActivityComp = ({ rChainId, userActiveKey, rOwmId, api }: C
               />
             )}
           </Stack>
-        </Box>
+          <ChartFooter legendSets={legendSets} showSoftLiquidationText />
+        </Stack>
       )}
     </Stack>
   )

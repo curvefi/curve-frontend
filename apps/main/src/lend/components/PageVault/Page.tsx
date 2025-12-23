@@ -121,7 +121,7 @@ const Page = () => {
       </MarketInformationTabs>
       <Stack>
         <MarketDetails {...marketDetails} />
-        <MarketInformationComp loanExists={loanExists} pageProps={pageProps} userActiveKey={''} type="supply" />
+        <MarketInformationComp loanExists={loanExists} pageProps={pageProps} type="supply" />
       </Stack>
     </DetailPageLayout>
   ) : (
