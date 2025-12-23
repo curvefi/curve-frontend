@@ -6,6 +6,7 @@ import { ChainId } from '@/dex/types/main.types'
 import Stack from '@mui/material/Stack'
 import Box from '@ui/Box'
 import ChartWrapper from '@ui-kit/features/candle-chart/ChartWrapper'
+import { TIME_OPTIONS } from '@ui-kit/features/candle-chart/constants'
 import type { PricesApiPool } from '@ui-kit/features/candle-chart/types'
 import { t } from '@ui-kit/lib/i18n'
 import ChartHeader from '@ui-kit/shared/ui/ChartHeader'
@@ -28,10 +29,11 @@ export const OhlcAndActivityComp = ({
   rChainId: ChainId
   pricesApiPoolData: PricesApiPool
 }) => {
-  const { chartCombinations, tradesTokens, chartWrapperProps } = useOhlcChartState({
-    rChainId,
-    pricesApiPoolData,
-  })
+  const { chartCombinations, tradesTokens, setSelectedChart, setChartTimeOption, flipChart, ohlcChartProps } =
+    useOhlcChartState({
+      rChainId,
+      pricesApiPoolData,
+    })
   const [poolInfo, setPoolInfo] = useState<'chart' | 'poolActivity'>('chart')
 
   return (
@@ -49,14 +51,19 @@ export const OhlcAndActivityComp = ({
       {poolInfo === 'chart' && (
         <Stack sx={{ gap: Spacing.md }}>
           <ChartHeader
-            chartSelections={{
-              selections: chartWrapperProps.selectChartList,
-              activeSelection: chartWrapperProps.selectChartList[chartWrapperProps.selectedChartIndex ?? 0]?.key ?? '',
-              setActiveSelection: chartWrapperProps.setSelectedChart ?? (() => {}),
-            }}
             chartOptionVariant="select"
+            chartSelections={{
+              selections: ohlcChartProps.selectChartList,
+              activeSelection: ohlcChartProps.selectChartList[ohlcChartProps.selectedChartIndex ?? 0]?.key ?? '',
+              setActiveSelection: setSelectedChart,
+            }}
+            timeOption={{
+              options: TIME_OPTIONS,
+              activeOption: ohlcChartProps.timeOption,
+              setActiveOption: setChartTimeOption,
+            }}
           />
-          <ChartWrapper {...chartWrapperProps} />
+          <ChartWrapper {...ohlcChartProps} />
         </Stack>
       )}
     </Wrapper>
