@@ -2,17 +2,15 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import useStore from '@/dex/store/useStore'
 import type { ChainId } from '@/dex/types/main.types'
 import type { OhlcChartProps } from '@ui-kit/features/candle-chart/ChartWrapper'
+import { DEFAULT_CHART_HEIGHT } from '@ui-kit/features/candle-chart/constants'
 import type { PricesApiCoin, PricesApiPool } from '@ui-kit/features/candle-chart/types'
 import {
   calculateChartCombinations,
   getThreeHundredResultsAgo,
   subtractTimeUnit,
 } from '@ui-kit/features/candle-chart/utils'
-import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
 import type { ChartSelections } from '@ui-kit/shared/ui/ChartHeader'
-
-const CHART_HEIGHT = 300
 
 type UseOhlcChartStateArgs = {
   rChainId: ChainId
@@ -20,7 +18,6 @@ type UseOhlcChartStateArgs = {
 }
 
 export const useOhlcChartState = ({ rChainId, pricesApiPoolData }: UseOhlcChartStateArgs) => {
-  const theme = useUserProfileStore((state) => state.theme)
   const chartOhlcData = useStore((state) => state.pools.pricesApiState.chartOhlcData)
   const chartStatus = useStore((state) => state.pools.pricesApiState.chartStatus)
   const timeOption = useStore((state) => state.pools.pricesApiState.timeOption)
@@ -192,19 +189,14 @@ export const useOhlcChartState = ({ rChainId, pricesApiPoolData }: UseOhlcChartS
     setIsFlipped(updatedList)
   }, [isFlipped, selectedChartIndex])
 
-  const chartWrapperProps: OhlcChartProps = {
+  const ohlcChartProps: OhlcChartProps = {
     hideCandleSeriesLabel: false,
-    chartType: 'poolPage',
     chartStatus,
-    chartHeight: CHART_HEIGHT,
-    themeType: theme,
+    chartHeight: DEFAULT_CHART_HEIGHT,
     ohlcData: chartOhlcData,
     selectChartList,
     selectedChartIndex,
-    setSelectedChart,
     timeOption,
-    setChartTimeOption,
-    flipChart,
     refetchPricesData,
     refetchingCapped,
     fetchMoreChartData,
@@ -214,6 +206,9 @@ export const useOhlcChartState = ({ rChainId, pricesApiPoolData }: UseOhlcChartS
   return {
     chartCombinations,
     tradesTokens,
-    chartWrapperProps,
+    setSelectedChart,
+    setChartTimeOption,
+    flipChart,
+    ohlcChartProps,
   }
 }

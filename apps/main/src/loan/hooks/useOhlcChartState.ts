@@ -3,13 +3,11 @@ import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
 import useStore from '@/loan/store/useStore'
 import { Llamma, ChainId } from '@/loan/types/loan.types'
 import type { OhlcChartProps } from '@ui-kit/features/candle-chart/ChartWrapper'
+import { DEFAULT_CHART_HEIGHT } from '@ui-kit/features/candle-chart/constants'
 import type { LiquidationRanges, LlammaLiquididationRange } from '@ui-kit/features/candle-chart/types'
 import { getThreeHundredResultsAgo, subtractTimeUnit } from '@ui-kit/features/candle-chart/utils'
-import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
 import type { ChartSelections } from '@ui-kit/shared/ui/ChartHeader'
-
-const CHART_HEIGHT = 300
 
 export type LlammaLiquidityCoins = {
   crvusd: {
@@ -22,7 +20,7 @@ export type LlammaLiquidityCoins = {
   }
 } | null
 
-export type OhlcChartStateProps = {
+type OhlcChartStateProps = {
   rChainId: ChainId
   llamma: Llamma | null
   llammaId: string
@@ -49,7 +47,6 @@ export const useOhlcChartState = ({ rChainId, llamma, llammaId }: OhlcChartState
   const decreaseCollateralPrices = useStore(
     (state) => state.loanCollateralDecrease.detailInfo[collateralDecreaseActiveKey]?.prices ?? null,
   )
-  const theme = useUserProfileStore((state) => state.theme)
   const chartLlammaOhlc = useStore((state) => state.ohlcCharts.chartLlammaOhlc)
   const chartOraclePoolOhlc = useStore((state) => state.ohlcCharts.chartOraclePoolOhlc)
   const timeOption = useStore((state) => state.ohlcCharts.timeOption)
@@ -295,25 +292,18 @@ export const useOhlcChartState = ({ rChainId, llamma, llammaId }: OhlcChartState
 
   const ohlcChartProps: OhlcChartProps = {
     hideCandleSeriesLabel: true,
-    chartType: 'crvusd',
+    chartHeight: DEFAULT_CHART_HEIGHT,
     chartStatus: llamma ? chartOhlcObject.fetchStatus : 'LOADING',
-    chartHeight: CHART_HEIGHT,
-    themeType: theme,
     ohlcData: chartOhlcObject.data,
     oraclePriceData: chartOhlcObject.oraclePriceData,
     liquidationRange: selectedLiqRange,
     timeOption,
     selectedChartIndex,
     selectChartList,
-    setSelectedChart,
-    setChartTimeOption,
     refetchPricesData,
     refetchingCapped: chartOhlcObject.refetchingCapped,
     fetchMoreChartData,
     lastFetchEndTime: chartOhlcObject.lastFetchEndTime,
-    toggleLiqRangeCurrentVisible,
-    toggleLiqRangeNewVisible,
-    toggleOraclePriceVisible,
     liqRangeCurrentVisible,
     liqRangeNewVisible,
     oraclePriceVisible,
@@ -324,6 +314,11 @@ export const useOhlcChartState = ({ rChainId, llamma, llammaId }: OhlcChartState
     poolAddress,
     coins,
     ohlcDataUnavailable,
+    setSelectedChart,
+    setChartTimeOption,
+    toggleLiqRangeCurrentVisible,
+    toggleLiqRangeNewVisible,
+    toggleOraclePriceVisible,
     ohlcChartProps,
   }
 }

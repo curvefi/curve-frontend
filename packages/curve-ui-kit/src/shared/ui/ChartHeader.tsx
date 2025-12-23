@@ -114,7 +114,10 @@ const ChartHeader = <TChartKey extends string, TTimeOption extends string = stri
           exclusive
           value={chartSelections.activeSelection}
           onChange={handleChartOptionToggle}
-          sx={{ [`@media (max-width: ${smallBreakPoint})`]: { width: '100%', display: 'flex', flexGrow: 1 } }}
+          sx={{
+            [`@media (max-width: ${smallBreakPoint})`]: { width: '100%', display: 'flex', flexGrow: 1 },
+            gap: Spacing.xs,
+          }}
         >
           {chartOptionVariant === 'buttons-group' &&
             chartSelections.selections.map((selection) => (

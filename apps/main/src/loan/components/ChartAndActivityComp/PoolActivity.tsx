@@ -5,6 +5,7 @@ import useStore from '@/loan/store/useStore'
 import { ChainId } from '@/loan/types/loan.types'
 import Button from '@ui/Button/Button'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import { DEFAULT_CHART_HEIGHT } from '@ui-kit/features/candle-chart/constants'
 import { t } from '@ui-kit/lib/i18n'
 import LiquidityData from './LiquidityData'
 import TradesData from './TradesData'
@@ -14,8 +15,6 @@ interface Props {
   chainId: ChainId
   coins: LlammaLiquidityCoins
 }
-
-const MIN_HEIGHT = 330
 
 const PoolActivity = ({ chainId, poolAddress, coins }: Props) => {
   const activityFetchStatus = useStore((state) => state.ohlcCharts.activityFetchStatus)
@@ -30,7 +29,7 @@ const PoolActivity = ({ chainId, poolAddress, coins }: Props) => {
   }, [chainId, fetchPoolActivity, poolAddress])
 
   return (
-    <Wrapper maxHeight={`${MIN_HEIGHT}px`}>
+    <Wrapper maxHeight={`${DEFAULT_CHART_HEIGHT}px`}>
       <SectionHeader>
         <SectionTitle>{eventOption === 'TRADE' ? t`AMM` : t`Controller`}</SectionTitle>
         <ButtonGroup>
@@ -56,7 +55,7 @@ const PoolActivity = ({ chainId, poolAddress, coins }: Props) => {
             <EventTitle>{eventOption === 'TRADE' ? t`Swap` : t`Action`}</EventTitle>
             <TimestampColumnTitle>{t`Time`}</TimestampColumnTitle>
           </TitlesRow>
-          <ElementsContainer minHeight={MIN_HEIGHT}>
+          <ElementsContainer minHeight={DEFAULT_CHART_HEIGHT}>
             {eventOption === 'TRADE' ? (
               llammaTradesData.length === 0 ? (
                 <SpinnerWrapper>
@@ -76,12 +75,12 @@ const PoolActivity = ({ chainId, poolAddress, coins }: Props) => {
         </GridContainer>
       )}
       {activityFetchStatus === 'LOADING' && (
-        <SpinnerWrapper minHeight={`${MIN_HEIGHT}px`}>
+        <SpinnerWrapper minHeight={`${DEFAULT_CHART_HEIGHT}px`}>
           <Spinner size={18} />
         </SpinnerWrapper>
       )}
       {activityFetchStatus === 'ERROR' && (
-        <SpinnerWrapper minHeight={`${MIN_HEIGHT}px`}>
+        <SpinnerWrapper minHeight={`${DEFAULT_CHART_HEIGHT}px`}>
           <ErrorMessage>{t`There was an error fetching the pool activity data.`}</ErrorMessage>
         </SpinnerWrapper>
       )}

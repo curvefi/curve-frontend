@@ -3,6 +3,7 @@ import { useEffect, useMemo, memo, useRef } from 'react'
 import Spinner, { SpinnerWrapper } from 'ui/src/Spinner'
 import { BandsChartToken, ChartDataPoint, ParsedBandsBalances } from '@/llamalend/features/bands-chart/types'
 import { Box } from '@mui/material'
+import { DEFAULT_CHART_HEIGHT } from '@ui-kit/features/candle-chart/constants'
 import useResizeObserver from '@ui-kit/hooks/useResizeObserver'
 import { getChartOptions } from './chartOptions'
 import { EmptyState } from './EmptyState'
@@ -41,7 +42,7 @@ const BandsChartComponent = ({
   isLoading,
   userBandsBalances,
   oraclePrice,
-  height = 420, // TODO: set correct default value when the combined chart header (OHLC chart + bands chart) is implemented
+  height = DEFAULT_CHART_HEIGHT,
 }: BandsChartProps) => {
   const palette = useBandsChartPalette()
   const chartRef = useRef<ReactECharts | null>(null)

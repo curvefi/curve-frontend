@@ -1,16 +1,17 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useOneWayMarket } from '@/lend/entities/chain'
 import { useUserLoanDetails } from '@/lend/hooks/useUserLoanDetails'
+import { helpers } from '@/lend/lib/apiLending'
 import useStore from '@/lend/store/useStore'
 import { ChainId } from '@/lend/types/lend.types'
 import type { OhlcChartProps } from '@ui-kit/features/candle-chart/ChartWrapper'
+import { DEFAULT_CHART_HEIGHT } from '@ui-kit/features/candle-chart/constants'
 import type { LiquidationRanges, LlammaLiquididationRange } from '@ui-kit/features/candle-chart/types'
 import { getThreeHundredResultsAgo, subtractTimeUnit } from '@ui-kit/features/candle-chart/utils'
+import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
 import type { ChartSelections } from '@ui-kit/shared/ui/ChartHeader'
-
-const CHART_HEIGHT = 300
 
 export type LendingMarketTokens = {
   borrowedToken: {
@@ -23,14 +24,15 @@ export type LendingMarketTokens = {
   }
 } | null
 
-export type UseOhlcChartStateProps = {
+type UseOhlcChartStateProps = {
   rChainId: ChainId
   rOwmId: string
-  userActiveKey: string
 }
 
-export const useOhlcChartState = ({ rChainId, userActiveKey, rOwmId }: UseOhlcChartStateProps) => {
+export const useOhlcChartState = ({ rChainId, rOwmId }: UseOhlcChartStateProps) => {
+  const { llamaApi: api = null } = useCurve()
   const market = useOneWayMarket(rChainId, rOwmId).data
+  const userActiveKey = helpers.getUserActiveKey(api, market!)
   const borrowMoreActiveKey = useStore((state) => state.loanBorrowMore.activeKey)
   const loanRepayActiveKey = useStore((state) => state.loanRepay.activeKey)
   const loanCollateralAddActiveKey = useStore((state) => state.loanCollateralAdd.activeKey)
@@ -339,25 +341,18 @@ export const useOhlcChartState = ({ rChainId, userActiveKey, rOwmId }: UseOhlcCh
 
   const ohlcChartProps: OhlcChartProps = {
     hideCandleSeriesLabel: true,
-    chartType: 'crvusd',
+    chartHeight: DEFAULT_CHART_HEIGHT,
     chartStatus: currentChart.fetchStatus,
-    chartHeight: CHART_HEIGHT,
-    themeType: theme,
     ohlcData: currentChart.data,
     oraclePriceData,
     liquidationRange: selectedLiqRange,
     timeOption,
     selectedChartIndex,
     selectChartList,
-    setSelectedChart,
-    setChartTimeOption,
     refetchPricesData,
     refetchingCapped: currentChart.refetchingCapped,
     fetchMoreChartData,
     lastFetchEndTime: currentChart.lastFetchEndTime,
-    toggleLiqRangeCurrentVisible,
-    toggleLiqRangeNewVisible,
-    toggleOraclePriceVisible,
     liqRangeCurrentVisible,
     liqRangeNewVisible,
     oraclePriceVisible,
@@ -367,6 +362,11 @@ export const useOhlcChartState = ({ rChainId, userActiveKey, rOwmId }: UseOhlcCh
   return {
     coins,
     ohlcDataUnavailable,
+    setSelectedChart,
+    setChartTimeOption,
+    toggleLiqRangeCurrentVisible,
+    toggleLiqRangeNewVisible,
+    toggleOraclePriceVisible,
     ohlcChartProps,
   }
 }

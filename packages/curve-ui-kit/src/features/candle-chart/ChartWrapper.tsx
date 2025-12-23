@@ -1,59 +1,41 @@
 import { useMemo, useRef } from 'react'
 import { styled } from 'styled-components'
 import Button from 'ui/src/Button/Button'
-import Checkbox from 'ui/src/Checkbox'
 import Icon from 'ui/src/Icon'
 import Spinner, { SpinnerWrapper } from 'ui/src/Spinner'
-import { useTheme } from '@mui/material/styles'
 import CandleChart from '@ui-kit/features/candle-chart/CandleChart'
 import { useChartPalette } from '@ui-kit/features/candle-chart/hooks/useChartPalette'
 import type { ChartSelections } from '@ui-kit/shared/ui/ChartHeader'
-import type {
-  ChartType,
-  FetchingStatus,
-  LiquidationRanges,
-  LpPriceOhlcDataFormatted,
-  OraclePriceData,
-  TimeOption,
-} from './types'
+import type { FetchingStatus, LiquidationRanges, LpPriceOhlcDataFormatted, OraclePriceData, TimeOption } from './types'
 
 export type OhlcChartProps = {
   /**
    * If the chart is used on a Llamalend market page we hide the candle series label and label line.
    */
   hideCandleSeriesLabel: boolean
-  chartType: ChartType
   chartHeight: number
   chartStatus: FetchingStatus
   betaBackgroundColor?: string // Used during the beta phase of the new theme migration to pass theme bg color
-  themeType: string
   ohlcData: LpPriceOhlcDataFormatted[]
   oraclePriceData?: OraclePriceData[]
   liquidationRange?: LiquidationRanges
   selectedChartIndex: number
   timeOption: TimeOption
-  setChartTimeOption: (option: TimeOption) => void
-  flipChart?: () => void
   refetchPricesData: () => void
   fetchMoreChartData: (lastFetchEndTime: number) => void
-  toggleOraclePriceVisible?: () => void
-  toggleLiqRangeCurrentVisible?: () => void
-  toggleLiqRangeNewVisible?: () => void
   oraclePriceVisible?: boolean
   liqRangeCurrentVisible?: boolean
   liqRangeNewVisible?: boolean
   lastFetchEndTime: number
   refetchingCapped: boolean
   selectChartList: ChartSelections[]
-  setSelectedChart?: (key: string) => void
   latestOraclePrice?: string
 }
 
 const ChartWrapper = ({
   hideCandleSeriesLabel,
-  chartType,
-  chartStatus,
   chartHeight,
+  chartStatus,
   betaBackgroundColor,
   ohlcData,
   oraclePriceData,
@@ -62,19 +44,15 @@ const ChartWrapper = ({
   timeOption,
   refetchPricesData,
   fetchMoreChartData,
-  lastFetchEndTime,
-  refetchingCapped,
-  selectChartList,
   oraclePriceVisible,
   liqRangeCurrentVisible,
   liqRangeNewVisible,
-  toggleOraclePriceVisible,
-  toggleLiqRangeCurrentVisible,
-  toggleLiqRangeNewVisible,
+  lastFetchEndTime,
+  refetchingCapped,
+  selectChartList,
   latestOraclePrice,
 }: OhlcChartProps) => {
   const clonedOhlcData = useMemo(() => [...ohlcData], [ohlcData])
-  const theme = useTheme()
 
   const wrapperRef = useRef(null)
 
@@ -83,43 +61,6 @@ const ChartWrapper = ({
   return (
     <Wrapper>
       <ContentWrapper>
-        {chartType === 'crvusd' &&
-          toggleOraclePriceVisible &&
-          toggleLiqRangeNewVisible &&
-          toggleLiqRangeCurrentVisible && (
-            <TipWrapper>
-              {oraclePriceData && oraclePriceData?.length > 0 && (
-                <StyledCheckbox
-                  fillColor={theme.palette.primary.main}
-                  blank
-                  isSelected={oraclePriceVisible}
-                  onChange={() => toggleOraclePriceVisible()}
-                >
-                  Oracle Price
-                </StyledCheckbox>
-              )}
-              {liquidationRange?.new && toggleLiqRangeNewVisible && (
-                <StyledCheckbox
-                  fillColor={theme.design.Chart.LiquidationZone.Future}
-                  blank
-                  isSelected={liqRangeNewVisible}
-                  onChange={() => toggleLiqRangeNewVisible()}
-                >
-                  <TipText>Liquidation Range (New)</TipText>
-                </StyledCheckbox>
-              )}
-              {liquidationRange?.current && (
-                <StyledCheckbox
-                  fillColor={theme.design.Chart.LiquidationZone.Current}
-                  blank
-                  isSelected={liqRangeCurrentVisible}
-                  onChange={() => toggleLiqRangeCurrentVisible()}
-                >
-                  <TipText>Liquidation Range (Current)</TipText>
-                </StyledCheckbox>
-              )}
-            </TipWrapper>
-          )}
         {chartStatus === 'READY' && (
           <ResponsiveContainer ref={wrapperRef} chartHeight={chartHeight}>
             <CandleChart
@@ -204,31 +145,6 @@ const ErrorMessage = styled.p`
 const ContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
-`
-
-const TipWrapper = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: var(--spacing-2);
-`
-
-const StyledCheckbox = styled(Checkbox)`
-  align-items: center;
-  justify-content: center;
-  display: flex;
-  font-size: var(--font-size-1);
-  font-weight: var(--font-weight);
-  margin-right: 0;
-  svg {
-    margin-right: 0;
-  }
-`
-
-const TipText = styled.p`
-  font-size: var(--font-size-1);
-  font-weight: none;
 `
 
 export default ChartWrapper

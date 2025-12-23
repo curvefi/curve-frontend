@@ -1,13 +1,12 @@
 import { MouseEvent } from 'react'
-import LegendLine from '@/loan/components/PageCrvUsdStaking/Statistics/components/LegendLine'
 import { priceLineLabels } from '@/loan/components/PageCrvUsdStaking/Statistics/constants'
 import type { YieldKeys } from '@/loan/components/PageCrvUsdStaking/types'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
 import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
-import Typography from '@mui/material/Typography'
 import type { TimeOption } from '@ui-kit/lib/types/scrvusd'
+import { LegendSet } from '@ui-kit/shared/ui/LegendSet'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
@@ -17,13 +16,6 @@ type Props = {
   activeTimeOption: TimeOption
   setActiveTimeOption: (event: MouseEvent<HTMLElement>, newTimeOption: TimeOption) => void
 }
-
-const LegendSet = ({ label, dash, legendColor }: { label: string; dash: string; legendColor: string }) => (
-  <Stack direction="row" spacing={3} alignItems="center">
-    <LegendLine color={legendColor} dash={dash} />
-    <Typography variant="bodySRegular">{label}</Typography>
-  </Stack>
-)
 
 const RevenueChartFooter = ({ timeOptions, activeTimeOption, setActiveTimeOption }: Props) => {
   const {
