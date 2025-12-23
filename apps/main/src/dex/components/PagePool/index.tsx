@@ -264,11 +264,7 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
         }
       >
         {isMdUp && <TitleComp />}
-        {poolAddress && (
-          <Box>
-            <CampaignRewardsBanner chainId={rChainId} address={poolAddress} />
-          </Box>
-        )}
+        {poolAddress && <CampaignRewardsBanner chainId={rChainId} address={poolAddress} />}
         {!isLite && pricesApiPoolData && pricesApi && (
           <PriceAndTradesWrapper variant="secondary">
             <PoolInfoData rChainId={rChainId} pricesApiPoolData={pricesApiPoolData} />
@@ -341,10 +337,8 @@ const StatsWrapper = styled(Box)`
 
 const PriceAndTradesWrapper = styled(Box)`
   padding: 1.5rem 1rem;
-  margin-bottom: var(--spacing-1);
   @media (min-width: ${breakpoints.sm}rem) {
     margin-top: 0;
-    margin-bottom: var(--spacing-3);
   }
   @media (min-width: ${breakpoints.lg}rem) {
     padding: 1.5rem 1.5rem;

@@ -25,14 +25,13 @@ export const AppPageFormTitleWrapper = styled.header`
   align-items: center;
   color: var(--page--text-color);
   display: inline-flex;
-  padding-top: var(--spacing-wide);
-  padding-bottom: var(--spacing-2);
+  padding-top: 1rem;
   padding-left: 1rem;
-  min-height: 46px;
+  padding-bottom: 1rem;
 
   @media (min-width: ${breakpoints.sm}rem) {
-    padding-top: var(--spacing-normal);
     padding-left: 0;
+    padding-bottom: 0;
   }
 `
 
