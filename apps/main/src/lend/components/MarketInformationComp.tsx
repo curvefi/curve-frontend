@@ -1,7 +1,6 @@
 import { BandsComp } from '@/lend/components/BandsComp'
 import { ChartAndActivityComp } from '@/lend/components/ChartAndActivityComp'
 import DetailsContracts from '@/lend/components/DetailsMarket/components/DetailsContracts'
-import networks from '@/lend/networks'
 import { PageContentProps } from '@/lend/types/lend.types'
 import { MarketParameters } from '@/llamalend/features/market-parameters/MarketParameters'
 import Stack from '@mui/material/Stack'
@@ -15,14 +14,13 @@ const { Spacing } = SizesAndSpaces
 type MarketInformationCompProps = {
   pageProps: PageContentProps
   loanExists: boolean | undefined
-  userActiveKey: string
   type: 'borrow' | 'supply'
 }
 
 /**
  * Reusable component for OHLC charts, Bands (if applicable), and market parameters, used in market and vault pages.
  */
-export const MarketInformationComp = ({ pageProps, loanExists, userActiveKey, type }: MarketInformationCompProps) => {
+export const MarketInformationComp = ({ pageProps, loanExists, type }: MarketInformationCompProps) => {
   const { rChainId, rOwmId, market } = pageProps
   const api = getLib('llamaApi')
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
@@ -30,9 +28,7 @@ export const MarketInformationComp = ({ pageProps, loanExists, userActiveKey, ty
 
   return (
     <>
-      {networks[rChainId]?.pricesData && (
-        <ChartAndActivityComp rChainId={rChainId} rOwmId={rOwmId} userActiveKey={userActiveKey} api={api} />
-      )}
+      <ChartAndActivityComp rChainId={rChainId} rOwmId={rOwmId} api={api} />
       {type === 'borrow' && !newBandsChartEnabled && isAdvancedMode && (
         <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, gap: Spacing.md, padding: Spacing.md }}>
           <BandsComp pageProps={pageProps} loanExists={loanExists} />

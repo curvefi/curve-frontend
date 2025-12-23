@@ -5,11 +5,10 @@ import useStore from '@/lend/store/useStore'
 import { ChainId } from '@/lend/types/lend.types'
 import Button from '@ui/Button/Button'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import { DEFAULT_CHART_HEIGHT } from '@ui-kit/features/candle-chart/constants'
 import { t } from '@ui-kit/lib/i18n'
 import LiquidityData from './LiquidityData'
 import TradesData from './TradesData'
-
-const MIN_HEIGHT = 330
 
 type PoolActivityProps = {
   poolAddress: string
@@ -30,7 +29,7 @@ const PoolActivity = ({ chainId, poolAddress, coins }: PoolActivityProps) => {
   }, [chainId, fetchPoolActivity, poolAddress])
 
   return (
-    <Wrapper maxHeight={`${MIN_HEIGHT}px`}>
+    <Wrapper maxHeight={`${DEFAULT_CHART_HEIGHT}px`}>
       <SectionHeader>
         <SectionTitle>{eventOption === 'TRADE' ? t`AMM` : t`Controller`}</SectionTitle>
         <ButtonGroup>
@@ -56,7 +55,7 @@ const PoolActivity = ({ chainId, poolAddress, coins }: PoolActivityProps) => {
             <EventTitle>{eventOption === 'TRADE' ? t`Swap` : t`Action`}</EventTitle>
             <TimestampColumnTitle>{t`Time`}</TimestampColumnTitle>
           </TitlesRow>
-          <ElementsContainer minHeight={MIN_HEIGHT}>
+          <ElementsContainer minHeight={DEFAULT_CHART_HEIGHT}>
             {eventOption === 'TRADE' ? (
               lendTradesData.length === 0 ? (
                 <SpinnerWrapper>
@@ -76,12 +75,12 @@ const PoolActivity = ({ chainId, poolAddress, coins }: PoolActivityProps) => {
         </GridContainer>
       )}
       {activityFetchStatus === 'LOADING' && (
-        <SpinnerWrapper minHeight={`${MIN_HEIGHT}px`}>
+        <SpinnerWrapper minHeight={`${DEFAULT_CHART_HEIGHT}px`}>
           <Spinner size={18} />
         </SpinnerWrapper>
       )}
       {activityFetchStatus === 'ERROR' && (
-        <SpinnerWrapper minHeight={`${MIN_HEIGHT}px`}>
+        <SpinnerWrapper minHeight={`${DEFAULT_CHART_HEIGHT}px`}>
           <ErrorMessage>{t`There was an error fetching the pool activity data.`}</ErrorMessage>
         </SpinnerWrapper>
       )}

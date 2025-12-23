@@ -6,10 +6,9 @@ import useStore from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
 import Button from '@ui/Button/Button'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import { DEFAULT_CHART_HEIGHT } from '@ui-kit/features/candle-chart/constants'
 import type { LpTradeToken, PricesApiCoin } from '@ui-kit/features/candle-chart/types'
 import { t } from '@ui-kit/lib/i18n'
-
-const MIN_HEIGHT = 330
 
 type PoolActivityProps = {
   poolAddress: string
@@ -60,7 +59,7 @@ const PoolActivity = ({ chainId, poolAddress, coins, tradesTokens, chartCombinat
             <EventTitle>{eventOption === 'TRADE' ? t`Swap` : t`Action`}</EventTitle>
             <TimestampColumnTitle>{t`Time`}</TimestampColumnTitle>
           </TitlesRow>
-          <ElementsContainer minHeight={MIN_HEIGHT}>
+          <ElementsContainer minHeight={DEFAULT_CHART_HEIGHT}>
             {eventOption === 'TRADE' ? (
               tradeEventsData.length === 0 ? (
                 <SpinnerWrapper>
@@ -80,12 +79,12 @@ const PoolActivity = ({ chainId, poolAddress, coins, tradesTokens, chartCombinat
         </GridContainer>
       )}
       {activityStatus === 'LOADING' && (
-        <SpinnerWrapper minHeight={`${MIN_HEIGHT}px`}>
+        <SpinnerWrapper minHeight={`${DEFAULT_CHART_HEIGHT}px`}>
           <Spinner size={18} />
         </SpinnerWrapper>
       )}
       {activityStatus === 'ERROR' && (
-        <SpinnerWrapper minHeight={`${MIN_HEIGHT}px`}>
+        <SpinnerWrapper minHeight={`${DEFAULT_CHART_HEIGHT}px`}>
           <ErrorMessage>{t`There was an error fetching the pool activity data.`}</ErrorMessage>
         </SpinnerWrapper>
       )}

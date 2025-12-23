@@ -73,6 +73,7 @@ const Statistics = ({ isChartExpanded, toggleChartExpanded, hideExpandChart }: S
         {selectedStatisticsChart === 'savingsRate' && (
           <Stack sx={{ marginBottom: smallView ? Spacing.xl : 0 }}>
             <RevenueLineChart data={yieldData ?? []} />
+            {/* TODO: replace with new chart footer */}
             <RevenueChartFooter
               timeOptions={timeOptions}
               activeTimeOption={revenueChartTimeOption}
