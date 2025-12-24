@@ -2,6 +2,8 @@ import { UseQueryOptions, UseQueryResult } from '@tanstack/react-query'
 
 export type QueryOptionsArray = readonly UseQueryOptions<any, any, any, any>[]
 
+export type QueryOptionsData<T> = T extends UseQueryOptions<infer TData, any, any, any> ? TData : never
+
 export type QueryResultsArray<T extends QueryOptionsArray> = {
   [K in keyof T]: T[K] extends UseQueryOptions<infer TData, any, any, any> ? UseQueryResult<TData> : never
 }
