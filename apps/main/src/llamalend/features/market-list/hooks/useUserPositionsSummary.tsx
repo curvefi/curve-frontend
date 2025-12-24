@@ -238,7 +238,7 @@ export const useUserPositionsSummary = ({
 
   return [
     createMetric(
-      'Total Collateral Value',
+      'Total Collateral',
       borrowSummary.totalCollateralValue,
       borrowSummary.isLoading,
       borrowSummary.isError,
