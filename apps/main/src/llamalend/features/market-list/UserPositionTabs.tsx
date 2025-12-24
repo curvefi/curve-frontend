@@ -83,7 +83,7 @@ export const UserPositionsTabs = (props: Omit<UserPositionsTableProps, 'tab' | '
       </Stack>
       {address ? (
         <>
-          {!isMobile && <UserPositionSummary markets={markets} />}
+          {!isMobile && <UserPositionSummary markets={markets} tab={tab} />}
           <Stack
             direction="row"
             justifyContent="space-between"
