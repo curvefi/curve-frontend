@@ -1,4 +1,4 @@
-import { type Address } from 'viem'
+import { type Address, erc20Abi } from 'viem'
 import { useReadContract } from 'wagmi'
 import { decimal } from '@ui-kit/utils'
 
@@ -24,7 +24,7 @@ export function useOracleRate({ address, functionName, enabled = true }: UseOrac
 
   const {
     data: rate,
-    isFetching: isLoading,
+    isFetching: isLoadingRate,
     isSuccess,
     error,
   } = useReadContract({
@@ -34,10 +34,17 @@ export function useOracleRate({ address, functionName, enabled = true }: UseOrac
     query: { enabled: enabled && !!address && !!cleanFunctionName, retry: false },
   })
 
+  const { data: decimals, isFetching: isLoadingDecimals } = useReadContract({
+    address,
+    abi: erc20Abi,
+    functionName: 'decimals',
+    query: { enabled: enabled && !!address && isSuccess, retry: false },
+  })
+
   return {
     rate: decimal(rate?.toString()),
-    decimals: rate ? rate.toString().length - 1 : undefined,
-    isLoading,
+    decimals,
+    isLoading: isLoadingRate || isLoadingDecimals,
     isSuccess,
     error,
   }
