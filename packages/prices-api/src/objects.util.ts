@@ -1,15 +1,15 @@
 type Falsy = false | 0 | '' | null | undefined
-export type PartialRecord<Key extends keyof any, Value> = Partial<Record<Key, Value>>
+export type PartialRecord<Key extends PropertyKey, Value> = Partial<Record<Key, Value>>
 
 /** Object.keys with better type inference */
 export const objectKeys = <T extends object>(values: T): (keyof T)[] => Object.keys(values) as (keyof T)[]
 
 /** Object.values with better type inference for records */
-export const recordValues = <K extends keyof any, T>(obj: Record<K, T> | PartialRecord<K, T>): T[] =>
+export const recordValues = <K extends PropertyKey, T>(obj: Record<K, T> | PartialRecord<K, T>): T[] =>
   Object.values(obj) as T[]
 
 /** Object.fromEntries with better type inference for records */
-export const fromEntries = <K extends keyof any, V>(values: (readonly [K, V])[]): Record<K, V> =>
+export const fromEntries = <K extends PropertyKey, V>(values: (readonly [K, V])[]): Record<K, V> =>
   Object.fromEntries(values) as Record<K, V>
 
 /**

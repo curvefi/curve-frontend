@@ -22,6 +22,7 @@ import { getChainPoolIdActiveKey } from '@/dex/utils'
 import { getPath } from '@/dex/utils/utilsRouter'
 import { ManageGauge } from '@/dex/widgets/manage-gauge'
 import { notFalsy } from '@curvefi/prices-api/objects.util'
+import Stack from '@mui/material/Stack'
 import AlertBox from '@ui/AlertBox'
 import { AppPageFormTitleWrapper, AppPageInfoContentWrapper } from '@ui/AppPage'
 import Box from '@ui/Box'
@@ -263,57 +264,54 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
         }
       >
         {isMdUp && <TitleComp />}
-        {poolAddress && (
-          <Box>
-            <CampaignRewardsBanner chainId={rChainId} address={poolAddress} />
-          </Box>
-        )}
+        {poolAddress && <CampaignRewardsBanner chainId={rChainId} address={poolAddress} />}
         {!isLite && pricesApiPoolData && pricesApi && (
           <PriceAndTradesWrapper variant="secondary">
             <PoolInfoData rChainId={rChainId} pricesApiPoolData={pricesApiPoolData} />
           </PriceAndTradesWrapper>
         )}
-        <TabsSwitcher
-          variant="contained"
-          size="medium"
-          value={poolInfoTab}
-          onChange={setPoolInfoTab}
-          options={poolInfoTabs}
-        />
-
-        <AppPageInfoContentWrapper variant="secondary">
-          {poolInfoTab === 'user' && (
-            <MySharesStats
-              curve={curve}
-              poolData={poolData}
-              poolDataCacheOrApi={poolDataCacheOrApi}
-              routerParams={routerParams}
-              tokensMapper={tokensMapper}
-              userPoolBalances={userPoolBalances}
-            />
-          )}
-          {poolInfoTab === 'pool' && (
-            <StatsWrapper
-              as="section"
-              className={!curve || !poolData ? 'loading' : ''}
-              grid
-              gridRowGap="1rem"
-              variant="secondary"
-            >
-              <PoolStats
+        <Stack>
+          <TabsSwitcher
+            variant="contained"
+            size="medium"
+            value={poolInfoTab}
+            onChange={setPoolInfoTab}
+            options={poolInfoTabs}
+          />
+          <AppPageInfoContentWrapper variant="secondary">
+            {poolInfoTab === 'user' && (
+              <MySharesStats
                 curve={curve}
-                routerParams={routerParams}
                 poolData={poolData}
                 poolDataCacheOrApi={poolDataCacheOrApi}
-                poolAlert={poolAlert}
+                routerParams={routerParams}
                 tokensMapper={tokensMapper}
+                userPoolBalances={userPoolBalances}
               />
-            </StatsWrapper>
-          )}
-          {poolInfoTab === 'advanced' && poolData && snapshotsMapper[poolData.pool.address] !== undefined && (
-            <PoolParameters pricesApi={pricesApi} poolData={poolData} rChainId={rChainId} />
-          )}
-        </AppPageInfoContentWrapper>
+            )}
+            {poolInfoTab === 'pool' && (
+              <StatsWrapper
+                as="section"
+                className={!curve || !poolData ? 'loading' : ''}
+                grid
+                gridRowGap="1rem"
+                variant="secondary"
+              >
+                <PoolStats
+                  curve={curve}
+                  routerParams={routerParams}
+                  poolData={poolData}
+                  poolDataCacheOrApi={poolDataCacheOrApi}
+                  poolAlert={poolAlert}
+                  tokensMapper={tokensMapper}
+                />
+              </StatsWrapper>
+            )}
+            {poolInfoTab === 'advanced' && poolData && snapshotsMapper[poolData.pool.address] !== undefined && (
+              <PoolParameters pricesApi={pricesApi} poolData={poolData} rChainId={rChainId} />
+            )}
+          </AppPageInfoContentWrapper>
+        </Stack>
       </DetailPageLayout>
     </>
   )
@@ -339,10 +337,8 @@ const StatsWrapper = styled(Box)`
 
 const PriceAndTradesWrapper = styled(Box)`
   padding: 1.5rem 1rem;
-  margin-bottom: var(--spacing-1);
   @media (min-width: ${breakpoints.sm}rem) {
     margin-top: 0;
-    margin-bottom: var(--spacing-3);
   }
   @media (min-width: ${breakpoints.lg}rem) {
     padding: 1.5rem 1.5rem;

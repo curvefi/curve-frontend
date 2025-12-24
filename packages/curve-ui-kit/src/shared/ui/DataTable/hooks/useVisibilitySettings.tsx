@@ -41,7 +41,7 @@ export const useVisibilitySettings = <TData, TVariant extends string, ColumnIds 
   tableTitle: string,
   groups: Record<TVariant, VisibilityGroup<ColumnIds>[]>,
   variant: TVariant,
-  columns: ColumnDef<TData, any>[],
+  columns: ColumnDef<TData, unknown>[],
   migration: MigrationOptions<Record<TVariant, VisibilityGroup<ColumnIds>[]>>,
 ) => {
   /** current visibility settings in grouped format */

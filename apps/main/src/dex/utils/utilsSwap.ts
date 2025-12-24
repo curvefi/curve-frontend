@@ -29,7 +29,6 @@ export function excludeLowExchangeRateCheck(fromAddress: string, toAddress: stri
     [`${ethAddress}-0xe95a203b1a91a908f9b9ce46459d101078c2c3cb`]: true, // ETH, ankrETH
     [`0xe95a203b1a91a908f9b9ce46459d101078c2c3cb-${ethAddress}`]: true,
   }
-  // @ts-ignore
   return exclusionPairs[pair1] || exclusionPairs[pair2]
 }
 
