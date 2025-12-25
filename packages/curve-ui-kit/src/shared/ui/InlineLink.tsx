@@ -12,7 +12,9 @@ export const InlineLink = ({ href, children }: { href: string; children: React.R
     <Link
       sx={{ color: 'currentColor', '&:hover': { textDecoration: 'none' } }}
       href={href}
-      {...(isExternal && { target: '_blank', rel: 'noreferrer noopener', component: TanstackLink })}
+      {...(isExternal
+        ? { target: '_blank', rel: 'noreferrer noopener' }
+        : { component: TanstackLink })}
     >
       {children}
       {isExternal && <ArrowTopRightIcon fontSize="small" sx={{ verticalAlign: 'bottom' }} />}
