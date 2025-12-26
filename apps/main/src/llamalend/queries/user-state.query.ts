@@ -1,6 +1,7 @@
 import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { queryFactory, rootKeys, type UserMarketParams, type UserMarketQuery } from '@ui-kit/lib/model'
 import { userMarketValidationSuite } from '@ui-kit/lib/model/query/user-market-validation'
+import type { QueryData } from '@ui-kit/lib/queries'
 import type { Decimal } from '@ui-kit/utils'
 
 export const { useQuery: useUserState, invalidate: invalidateUserState } = queryFactory({
@@ -29,3 +30,5 @@ export const { useQuery: useUserState, invalidate: invalidateUserState } = query
   },
   validationSuite: userMarketValidationSuite,
 })
+
+export type UserState = QueryData<typeof useUserState>

@@ -1,7 +1,7 @@
 import { useEstimateGas } from '@/llamalend/hooks/useEstimateGas'
 import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { type NetworkDict } from '@/llamalend/llamalend.types'
-import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import type { IChainId, TGas } from '@curvefi/llamalend-api/lib/interfaces'
 import { type FieldsOf } from '@ui-kit/lib'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import type { CollateralQuery } from '../validation/manage-loan.types'
@@ -19,7 +19,17 @@ const { useQuery: useAddCollateralGasEstimate } = queryFactory({
     ] as const,
   queryFn: async ({ marketId, userCollateral }: AddCollateralGasQuery) => {
     const market = getLlamaMarket(marketId)
-    return await market.estimateGas.addCollateralApprove(userCollateral)
+    const isApproved = await market.addCollateralIsApproved(userCollateral)
+
+    if (isApproved) {
+      return market.estimateGas.addCollateral(userCollateral)
+    }
+    // When not approved, sum both approval gas and addCollateral gas
+    const [approveGas, addCollateralGas] = await Promise.all([
+      market.estimateGas.addCollateralApprove(userCollateral),
+      market.estimateGas.addCollateral(userCollateral),
+    ])
+    return (Number(approveGas) + Number(addCollateralGas)) as TGas
   },
   validationSuite: collateralValidationSuite,
 })

@@ -3,7 +3,10 @@ import { type FieldsOf } from '@ui-kit/lib'
 import type { UserMarketQuery } from '@ui-kit/lib/model'
 import type { Decimal } from '@ui-kit/utils'
 
-export type CollateralQuery<T = IChainId> = UserMarketQuery<T> & { userCollateral: Decimal }
+export type CollateralQuery<T = IChainId> = UserMarketQuery<T> & {
+  userCollateral: Decimal
+  maxCollateral?: Decimal
+}
 
 type HealthQuery = { isFull: boolean }
 

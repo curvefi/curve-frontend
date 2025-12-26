@@ -7,10 +7,15 @@ import type { LlamaNetwork } from '@/llamalend/llamalend.types'
 import type { INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
 import type { PartialRecord } from '@curvefi/prices-api/objects.util'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
+import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
+import { LlamaIcon } from '@ui-kit/shared/icons/LlamaIcon'
 import { HelperMessage, LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
+import type { LargeTokenInputProps } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import type { Query } from '@ui-kit/types/util'
-import { Decimal } from '@ui-kit/utils'
+import { decimal, Decimal } from '@ui-kit/utils'
+
+type WalletBalanceProps = NonNullable<LargeTokenInputProps['walletBalance']>
 
 /**
  * A large token input field for loan forms, with balance and max handling.
@@ -29,6 +34,7 @@ export const LoanFormTokenInput = <
   testId,
   message,
   network,
+  positionBalance,
 }: {
   label: string
   token: { address: Address; symbol?: string } | undefined
@@ -42,6 +48,16 @@ export const LoanFormTokenInput = <
   form: UseFormReturn<TFieldValues> // the form, used to set the value and get errors
   testId: string
   message?: ReactNode
+  /**
+   * Optional, displays the position balance instead of the wallet balance.
+   */
+  positionBalance?: {
+    position: Query<Decimal>
+    tooltip?: WalletBalanceProps['tooltip']
+  }
+  /**
+   * The network of the token.
+   */
   network: LlamaNetwork
 }) => {
   const { address: userAddress } = useConnection()
@@ -54,11 +70,29 @@ export const LoanFormTokenInput = <
     userAddress,
     tokenAddress: token?.address,
   })
+  const { data: usdRate } = useTokenUsdRate({
+    chainId: network?.chainId,
+    tokenAddress: token?.address,
+  })
+
+  const { position, tooltip } = positionBalance ?? {}
+  const walletBalance = useMemo(
+    // todo: support separate isLoading for balance and for maxBalance in LargeTokenInput
+    () => ({
+      balance: position?.data ?? balance,
+      symbol: token?.symbol,
+      loading: position?.isLoading ?? isBalanceLoading,
+      usdRate,
+      tooltip: tooltip,
+      prefix: position && LlamaIcon,
+    }),
+    [balance, isBalanceLoading, token?.symbol, usdRate, tooltip, position],
+  )
 
   const errors = form.formState.errors as PartialRecord<FieldPath<TFieldValues>, Error>
   const relatedMaxFieldError = max?.data && max?.fieldName && errors[max.fieldName]
   const error = errors[name] || max?.error || balanceError || relatedMaxFieldError
-
+  const value = form.getValues(name)
   return (
     <LargeTokenInput
       name={name}
@@ -72,7 +106,7 @@ export const LoanFormTokenInput = <
           label={token?.symbol ?? '?'}
         />
       }
-      balance={form.getValues(name)}
+      balance={value}
       onBalance={useCallback(
         (v?: Decimal) => {
           form.setValue(name, v as FieldPathValue<TFieldValues, TFieldName>, setValueOptions)
@@ -82,12 +116,9 @@ export const LoanFormTokenInput = <
       )}
       isError={!!error}
       message={error?.message}
-      walletBalance={useMemo(
-        // todo: support separate isLoading for balance and for maxBalance in LargeTokenInput
-        () => ({ balance, symbol: token?.symbol, loading: isBalanceLoading }),
-        [balance, isBalanceLoading, token?.symbol],
-      )}
+      walletBalance={walletBalance}
       maxBalance={useMemo(() => max && { balance: max.data, chips: 'max' }, [max])}
+      inputBalanceUsd={decimal(usdRate && usdRate * +(value ?? 0))}
     >
       {message && <HelperMessage message={message} />}
     </LargeTokenInput>
