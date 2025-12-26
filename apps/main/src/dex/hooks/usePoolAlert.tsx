@@ -130,16 +130,17 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
       alertType: 'danger',
       isDisableDeposit: true,
       isDisableSwap: true,
+      isDisableWithdrawOnly: true,
       isInformationOnly: true,
       isCloseOnTooltipOnly: true,
       banner: {
         title: t`Synthetix USD Deprecated`,
-        subtitle: t`Pool is deprecated. Deposit and swap are disabled.`,
+        subtitle: t`Pool is deprecated. Deposit, swap and withdraw are disabled.`,
         learnMoreUrl: 'https://x.com/synthetix_io/status/1953054538610688198',
       },
       message: (
         <PoolAlertMessage>
-          <p>{t`This pool is in withdraw only mode.`}</p>
+          <p>{t`This pool is disabled. You can still claim your rewards.`}</p>
         </PoolAlertMessage>
       ),
     })
