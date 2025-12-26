@@ -4,10 +4,14 @@ import { ArrowTopRightIcon } from '../icons/ArrowTopRightIcon'
 
 /**
  * InlineLink component is a link that is displayed inline with text.
- * Using either Tanstack Link for internal links or MUI Link for external links (with arrow icon).
+/**
+ * InlineLink component is a link that is displayed inline with text.
+ * Tanstack Link manages both internal and external links
+ */
  */
 export const InlineLink = ({ href, children }: { href: string; children: React.ReactNode }) => {
-  const isExternal = href.startsWith('http')
+export const InlineLink = ({ to, children }: { to?: string; children: React.ReactNode }) => {
+  const isExternal = to?.startsWith('http')
   return (
     <Link
       sx={{ color: 'currentColor', '&:hover': { textDecoration: 'none' } }}
