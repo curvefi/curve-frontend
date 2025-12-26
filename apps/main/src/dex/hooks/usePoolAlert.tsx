@@ -69,8 +69,8 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
           title: t`Deprecated Pool`,
           subtitle: (
             <Trans>
-              This pool has been deprecated. Please use the{' '}
-              <InlineLink href={prismaPoolHref}>PRISMA/yPRISMA</InlineLink> pool instead.
+              This pool has been deprecated. Please use the <InlineLink to={prismaPoolHref}>PRISMA/yPRISMA</InlineLink>{' '}
+              pool instead.
             </Trans>
           ),
         },
@@ -92,14 +92,14 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
             <Trans>
               Please note that exchanges on synthetix synths are expected to be disabled and users can either withdraw
               liquidity from the underlying token, or redeem their synths to sUSD on{' '}
-              <InlineLink href="https://staking.synthetix.io/wallet/balances/">synthetix.io</InlineLink>
+              <InlineLink to="https://staking.synthetix.io/wallet/balances/">synthetix.io</InlineLink>
             </Trans>
           </p>
           <p>
             <Trans>
               Users are encouraged to exit the pools in order to avoid getting their holdings&lsquo; value diluted with
               the discountRate For more information please refer to{' '}
-              <InlineLink href="https://gov.curve.finance/t/kill-gauges-on-all-non-susd-curve-pools-on-ethereum/10033/2">
+              <InlineLink to="https://gov.curve.finance/t/kill-gauges-on-all-non-susd-curve-pools-on-ethereum/10033/2">
                 gov.curve.finance
               </InlineLink>
             </Trans>
@@ -161,7 +161,7 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
         <PoolAlertMessage>
           <p>
             <Trans>
-              Deposit on <InlineLink href="https://yieldbasis.com">yieldbasis.com</InlineLink>
+              Deposit on <InlineLink to="https://yieldbasis.com">yieldbasis.com</InlineLink>
             </Trans>
           </p>
         </PoolAlertMessage>
@@ -194,7 +194,7 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
           <p>
             <Trans>
               Deposit and Swap with wBTC.e will return an error due to an Aave community decision to freeze this asset.{' '}
-              <InlineLink href="https://app.aave.com/governance/v3/proposal/?proposalId=2">More details</InlineLink>
+              <InlineLink to="https://app.aave.com/governance/v3/proposal/?proposalId=2">More details</InlineLink>
             </Trans>
           </p>
         </PoolAlertMessage>
