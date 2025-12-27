@@ -10,13 +10,14 @@ import { gaugeKeys } from './query-keys'
 import { depositRewardAvailable, depositRewardIsApproved } from './query-options'
 
 export const estimateGasDepositRewardApprove = queryFactory({
-  queryKey: ({ rewardTokenId, amount, ...gaugeParams }: DepositRewardApproveParams) =>
+  queryKey: ({ rewardTokenId, amount, userBalance, ...gaugeParams }: DepositRewardApproveParams) =>
     [
       ...rootKeys.gauge({ ...gaugeParams }),
       ...gaugeKeys.estimateGas(),
       'depositRewardApprove',
       { rewardTokenId },
       { amount },
+      { userBalance },
     ] as const,
   queryFn: api.queryEstimateGasDepositRewardApprove,
   refetchInterval: '1m',
@@ -43,7 +44,7 @@ export const estimateGasAddRewardToken = queryFactory({
 })
 
 export const estimateGasDepositReward = queryFactory({
-  queryKey: ({ rewardTokenId, amount, epoch, ...gaugeParams }: DepositRewardParams) =>
+  queryKey: ({ rewardTokenId, amount, epoch, userBalance, ...gaugeParams }: DepositRewardParams) =>
     [
       ...rootKeys.gauge({ ...gaugeParams }),
       ...gaugeKeys.estimateGas(),
@@ -51,6 +52,7 @@ export const estimateGasDepositReward = queryFactory({
       { rewardTokenId },
       { amount },
       { epoch },
+      { userBalance },
     ] as const,
   queryFn: api.queryEstimateGasDepositReward,
   refetchInterval: '1m',

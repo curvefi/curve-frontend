@@ -56,7 +56,7 @@ export const fetchPoolLpTokenBalance = (config: Config, curve: CurveApi, poolId:
 /** Temporary imperative function for some zustand slices */
 export const fetchPoolGaugeTokenBalance = async (config: Config, curve: CurveApi, poolId: string) => {
   const { gauge, lpToken } = curve.getPool(poolId)
-  return !isValidAddress(gauge.address)
+  return isValidAddress(gauge.address)
     ? await fetchTokenBalance(config, {
         chainId: curve?.chainId,
         userAddress: curve.signerAddress as Address,
