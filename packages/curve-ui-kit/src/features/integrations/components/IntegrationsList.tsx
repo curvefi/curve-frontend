@@ -1,12 +1,11 @@
 import Fuse from 'fuse.js'
 import { useCallback, useMemo, useState } from 'react'
-import { styled } from 'styled-components'
+import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import MenuItem from '@mui/material/MenuItem'
 import Select from '@mui/material/Select'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import Box from '@ui/Box'
 import Icon from '@ui/Icon'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import { BLOCKCHAIN_LEGACY_NAMES, breakpoints, CURVE_ASSETS_URL, type BaseConfig } from '@ui/utils'
@@ -136,60 +135,36 @@ export const IntegrationsList = ({ chainId, networks }: IntegrationsListProps) =
       </Grid>
 
       {!integrationsFiltered.length ? (
-        <NoResultWrapper flex flexJustifyContent="center" padding="3rem 0">
+        <Box sx={{ display: 'flex', justifyContent: 'center', padding: Spacing.xxl }}>
           <Trans>
             No integration apps found with for {searchText ? <>&ldquo;{searchText}&rdquo;</> : ''}{' '}
             {!!searchText && !!filterTag ? <>and </> : ''}
             {filterTag ? <>&ldquo;{filterTag}&rdquo;</> : ''}
           </Trans>
-        </NoResultWrapper>
+        </Box>
       ) : (
-        <IntegrationsWrapper flexAlignItems="flex-start" grid>
+        <Grid container spacing={Spacing.md}>
           {(integrationsFiltered ?? []).map((app, idx) => (
-            <IntegrationAppComp
-              key={`${app.name}_${idx}`}
-              {...app}
-              filterKey={filterTag}
-              integrationsTags={tags}
-              integrationsAppNetworks={
-                chainId && (
-                  <Stack direction="row" gap={Spacing.xs}>
-                    {Object.keys(app.networks).map((networkId) => (
-                      <ChainIcon key={networkId} blockchainId={networkId} size="sm" />
-                    ))}
-                  </Stack>
-                )
-              }
-              imageUrl={app.imageId ? `${CURVE_ASSETS_URL}/platforms/${app.imageId}` : ''}
-            />
+            <Grid key={`${app.name}_${idx}`} size={{ mobile: 12, tablet: 6, desktop: 4 }}>
+              <IntegrationAppComp
+                {...app}
+                filterKey={filterTag}
+                integrationsTags={tags}
+                integrationsAppNetworks={
+                  chainId && (
+                    <Stack direction="row" gap={Spacing.xs}>
+                      {Object.keys(app.networks).map((networkId) => (
+                        <ChainIcon key={networkId} blockchainId={networkId} size="sm" />
+                      ))}
+                    </Stack>
+                  )
+                }
+                imageUrl={app.imageId ? `${CURVE_ASSETS_URL}/platforms/${app.imageId}` : ''}
+              />
+            </Grid>
           ))}
-        </IntegrationsWrapper>
+        </Grid>
       )}
     </Stack>
   )
 }
-
-const IntegrationsWrapper = styled(Box)`
-  justify-content: center;
-  padding-bottom: 1.5rem;
-  grid-template-columns: 1fr;
-
-  @media (min-width: ${breakpoints.sm}rem) {
-    grid-gap: 1rem;
-    grid-template-columns: 1fr 1fr;
-  }
-
-  @media (min-width: ${breakpoints.md}rem) {
-    grid-template-columns: 1fr 1fr 1fr;
-  }
-`
-
-const NoResultWrapper = styled(Box)`
-  margin-left: 1rem;
-  margin-right: 1rem;
-
-  @media (min-width: ${breakpoints.sm}rem) {
-    margin-left: 0;
-    margin-right: 0;
-  }
-`
