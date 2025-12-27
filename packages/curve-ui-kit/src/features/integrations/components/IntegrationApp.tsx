@@ -3,8 +3,13 @@ import { styled, css } from 'styled-components'
 import Box from 'ui/src/Box'
 import ExternalLink from 'ui/src/Link/ExternalLink'
 import { breakpoints } from 'ui/src/utils/responsive'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { IntegrationApp, IntegrationsTags } from '../types'
-import IntegrationAppTag from './IntegrationAppTag'
+import { IntegrationAppTag } from './IntegrationAppTag'
+
+const { Spacing } = SizesAndSpaces
 
 const IntegrationAppComp = ({
   appUrl,
@@ -41,11 +46,13 @@ const IntegrationAppComp = ({
           <Description>{description}</Description>
           {integrationsAppNetworks}
           {showFilterKeys && (
-            <Box>
+            <Stack direction="row" gap={Spacing.sm}>
               {Object.keys(tags).map((k, idx) => (
-                <IntegrationAppTag key={`${k}-${idx}`} integrationTag={integrationsTags[k]} />
+                <Typography key={`${k}-${idx}`} variant="bodySRegular">
+                  <IntegrationAppTag tag={integrationsTags[k] ?? {}} />
+                </Typography>
               ))}
-            </Box>
+            </Stack>
           )}
         </IntegrationAppContent>
 
