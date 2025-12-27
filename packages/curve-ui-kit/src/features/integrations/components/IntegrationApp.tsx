@@ -1,21 +1,23 @@
-import { ReactNode } from 'react'
-import { styled, css } from 'styled-components'
-import Box from 'ui/src/Box'
-import ExternalLink from 'ui/src/Link/ExternalLink'
-import { breakpoints } from 'ui/src/utils/responsive'
+import Box from '@mui/material/Box'
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
+import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { CURVE_ASSETS_URL } from '@ui/utils'
+import { ChainIcon } from '@ui-kit/shared/icons/ChainIcon'
+import { InlineLink } from '@ui-kit/shared/ui/InlineLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { IntegrationApp, IntegrationsTags } from '../types'
 import { IntegrationAppTag } from './IntegrationAppTag'
 
-const { Spacing } = SizesAndSpaces
+const { Spacing, IconSize } = SizesAndSpaces
 
-const IntegrationAppComp = ({
+export const IntegrationAppComp = ({
   appUrl,
   description,
-  imageUrl,
-  integrationsAppNetworks,
+  imageId,
+  networks,
   name,
   tags,
   twitterUrl,
@@ -23,134 +25,57 @@ const IntegrationAppComp = ({
   integrationsTags,
 }: IntegrationApp & {
   filterKey: string
-  integrationsAppNetworks: ReactNode
   integrationsTags: IntegrationsTags
-  imageUrl: string | null
-}) => {
-  const showFilterKeys = filterKey === 'all'
-  const haveExternalLinks = !!appUrl || !!twitterUrl
-
-  return (
-    <IntegrationAppWrapper>
-      <ImgWrapper flex flexAlignItems="center">
-        {imageUrl ? <Img src={imageUrl} /> : <ImgPlaceholder />}
-      </ImgWrapper>
-      <Box
-        flex
-        flexDirection="column"
-        flexJustifyContent={haveExternalLinks ? 'space-between' : 'center'}
-        padding="1rem 1rem 1rem 0"
-      >
-        <IntegrationAppContent haveExternalLinks={haveExternalLinks}>
-          <Title>{name}</Title>
-          <Description>{description}</Description>
-          {integrationsAppNetworks}
-          {showFilterKeys && (
-            <Stack direction="row" gap={Spacing.sm}>
-              {Object.keys(tags).map((k, idx) => (
-                <Typography key={`${k}-${idx}`} variant="bodySRegular">
-                  <IntegrationAppTag tag={integrationsTags[k] ?? {}} />
-                </Typography>
-              ))}
-            </Stack>
+}) => (
+  <Card sx={{ height: '100%' }}>
+    <CardContent sx={{ height: '100%', backgroundColor: (t) => t.design.Layer[2].Fill }}>
+      <Grid height="100%" container columnSpacing={Spacing.md}>
+        <Grid size={2}>
+          {imageId && (
+            <Box
+              component="img"
+              src={`${CURVE_ASSETS_URL}/platforms/${imageId}`}
+              sx={{ height: IconSize.xxl, width: IconSize.xxl }}
+            />
           )}
-        </IntegrationAppContent>
+        </Grid>
 
-        <Box flex gridGap={2} margin="0.75rem 0 0 0">
-          {appUrl && <AppExternalLink href={appUrl}>App</AppExternalLink>}
-          {twitterUrl && <AppExternalLink href={twitterUrl}>Twitter</AppExternalLink>}
-        </Box>
-      </Box>
-    </IntegrationAppWrapper>
-  )
-}
+        <Grid height="100%" size={10}>
+          <Stack height="100%" gap={Spacing.xl} justifyContent="space-between">
+            <Stack gap={Spacing.md}>
+              <Typography variant="headingSBold">{name}</Typography>
+              <Typography variant="bodyMRegular">{description}</Typography>
 
-const IntegrationAppWrapper = styled.div`
-  color: var(--link_box--color);
-  background-color: var(--link_box--background-color);
-  border: 1px solid var(--link_box--border-color);
-  border-top-color: transparent;
-  border-left-color: transparent;
-  border-right-color: transparent;
-  display: grid;
-  grid-template-columns: auto 1fr;
-  height: 100%;
-  text-decoration: none;
-  text-transform: initial;
-  width: 100%;
+              <Grid container>
+                <Grid size={6}>
+                  {filterKey === 'all' && (
+                    <Stack gap={Spacing.sm}>
+                      {Object.keys(tags).map((k, idx) => (
+                        <Typography key={`${k}-${idx}`} variant="bodySRegular">
+                          <IntegrationAppTag tag={integrationsTags[k] ?? {}} />
+                        </Typography>
+                      ))}
+                    </Stack>
+                  )}
+                </Grid>
+                <Grid size={6}>
+                  <Stack direction="row-reverse" flexWrap="wrap" gap={Spacing.xs}>
+                    {Object.keys(networks).map((networkId) => (
+                      <ChainIcon key={networkId} blockchainId={networkId} size="sm" />
+                    ))}
+                  </Stack>
+                </Grid>
+              </Grid>
+            </Stack>
 
-  @media (min-width: ${breakpoints.sm}rem) {
-    border-top-color: var(--link_box--border-color);
-    border-left-color: var(--link_box--border-color);
-    border-right-color: var(--link_box--border-color);
-  }
-`
-
-const ImgWrapper = styled(Box)`
-  padding: 1rem;
-
-  @media (min-width: ${breakpoints.sm}rem) {
-    padding-left: 1.5rem;
-  }
-`
-
-const imageCSS = css`
-  height: auto;
-  width: 35px;
-
-  @media (min-width: ${breakpoints.sm}rem) {
-    height: auto;
-    width: 50px;
-  }
-`
-
-const Img = styled.img`
-  ${imageCSS};
-`
-
-const ImgPlaceholder = styled.div`
-  ${imageCSS};
-`
-
-const IntegrationAppContent = styled.div<{ haveExternalLinks: boolean }>`
-  ${({ haveExternalLinks }) => {
-    if (haveExternalLinks) {
-      return `
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-      `
-    }
-  }}
-`
-
-const Title = styled.strong`
-  font-size: var(--font-size-3);
-`
-
-const Description = styled.p`
-  font-size: var(--font-size-2);
-  margin-top: 0.2rem;
-`
-
-const AppExternalLink = styled(ExternalLink)`
-  border: 1px solid var(--nav_button--border-color);
-  color: inherit;
-  padding: 0.2rem 0.5rem;
-  font-size: var(--font-size-2);
-  text-decoration: none;
-
-  transition:
-    background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
-    border-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
-    color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
-    opacity 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-
-  &:hover:not(:disabled) {
-    color: var(--button--color);
-    border: 1px solid var(--nav_button--border-color);
-    background-color: var(--button_filled--hover--background-color);
-  }
-`
-
-export default IntegrationAppComp
+            {/** Could be replaced with icon buttons if somebody's feeling cute */}
+            <Stack direction="row" gap={Spacing.md}>
+              {appUrl && <InlineLink href={appUrl}>App</InlineLink>}
+              {twitterUrl && <InlineLink href={twitterUrl}>Twitter</InlineLink>}
+            </Stack>
+          </Stack>
+        </Grid>
+      </Grid>
+    </CardContent>
+  </Card>
+)
