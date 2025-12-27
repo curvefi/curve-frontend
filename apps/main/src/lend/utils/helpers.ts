@@ -39,8 +39,6 @@ export function fulfilledValue<T>(result: PromiseSettledResult<T>) {
   }
 }
 
-export const httpFetcher = (uri: string) => fetch(uri).then((res) => res.json())
-
 export function _parseStepTokensList(list: { value: string | number; symbol: string }[]) {
   return {
     symbolAndAmountList: list.map(({ value, symbol }) => `${value} ${symbol}`).join(', '),

@@ -3,7 +3,6 @@ import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 import createAppSlice, { AppSlice } from '@/lend/store/createAppSlice'
 import createChartBandsSlice, { ChartBandsSlice } from '@/lend/store/createChartBandsStore'
-import createIntegrationsSlice, { IntegrationsSlice } from '@/lend/store/createIntegrationsSlice'
 import createLoanBorrowMoreSlice, { LoanBorrowMoreSlice } from '@/lend/store/createLoanBorrowMoreSlice'
 import createLoanCollateralAddSlice, { LoanCollateralAddSlice } from '@/lend/store/createLoanCollateralAddSlice'
 import createLoanCollateralRemoveSlice, {
@@ -22,7 +21,6 @@ import createVaultUnstakeSlice, { VaultUnstakeSlice } from '@/lend/store/createV
 import createVaultWithdrawRedeemSlice, { VaultWithdrawRedeemSlice } from '@/lend/store/createVaultWithdrawRedeemSlice'
 
 export type State = AppSlice &
-  IntegrationsSlice &
   ChartBandsSlice &
   UserSlice &
   MarketsSlice &
@@ -54,7 +52,6 @@ const store = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState'
   ...createVaultWithdrawRedeemSlice(set, get),
   ...createVaultStakeSlice(set, get),
   ...createVaultUnstakeSlice(set, get),
-  ...createIntegrationsSlice(set, get),
   ...createVaultClaimSlice(set, get),
   ...createOhlcChartSlice(set, get),
 })
