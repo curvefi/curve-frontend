@@ -135,7 +135,7 @@ export const IntegrationsList = ({ chainId, networks }: IntegrationsListProps) =
         ))}
       </Grid>
 
-      {!integrations.length ? (
+      {!integrationsFiltered.length ? (
         <NoResultWrapper flex flexJustifyContent="center" padding="3rem 0">
           <Trans>
             No integration apps found with for {searchText ? <>&ldquo;{searchText}&rdquo;</> : ''}{' '}
