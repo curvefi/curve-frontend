@@ -6,7 +6,7 @@ import MenuItem from '@mui/material/MenuItem'
 import Select from '@mui/material/Select'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { BLOCKCHAIN_LEGACY_NAMES, CURVE_ASSETS_URL, type BaseConfig } from '@ui/utils'
+import { BLOCKCHAIN_LEGACY_NAMES, type BaseConfig } from '@ui/utils'
 import { useIntegrations, useIntegrationsTags, type IntegrationApp, type Tag } from '@ui-kit/features/integrations'
 import { useNavigate, useSearchParams } from '@ui-kit/hooks/router'
 import { t, Trans } from '@ui-kit/lib/i18n'
@@ -14,7 +14,7 @@ import { ChainIcon } from '@ui-kit/shared/icons/ChainIcon'
 import { SearchField } from '@ui-kit/shared/ui/SearchField'
 import { SelectableChip } from '@ui-kit/shared/ui/SelectableChip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import IntegrationAppComp from './IntegrationApp'
+import { IntegrationAppComp } from './IntegrationApp'
 import { IntegrationAppTag } from './IntegrationAppTag'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 
@@ -138,21 +138,7 @@ export const IntegrationsList = ({ chainId, networks }: IntegrationsListProps) =
           <Grid container spacing={Spacing.md}>
             {(integrationsFiltered ?? []).map((app, idx) => (
               <Grid key={`${app.name}_${idx}`} size={{ mobile: 12, tablet: 6, desktop: 4 }}>
-                <IntegrationAppComp
-                  {...app}
-                  filterKey={filterTag}
-                  integrationsTags={tags}
-                  integrationsAppNetworks={
-                    chainId && (
-                      <Stack direction="row" gap={Spacing.xs}>
-                        {Object.keys(app.networks).map((networkId) => (
-                          <ChainIcon key={networkId} blockchainId={networkId} size="sm" />
-                        ))}
-                      </Stack>
-                    )
-                  }
-                  imageUrl={app.imageId ? `${CURVE_ASSETS_URL}/platforms/${app.imageId}` : ''}
-                />
+                <IntegrationAppComp {...app} filterKey={filterTag} integrationsTags={tags} />
               </Grid>
             ))}
           </Grid>
