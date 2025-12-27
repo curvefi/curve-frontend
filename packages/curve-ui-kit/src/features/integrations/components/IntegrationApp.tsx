@@ -21,10 +21,8 @@ export const IntegrationAppComp = ({
   name,
   tags,
   twitterUrl,
-  filterKey,
   integrationsTags,
 }: IntegrationApp & {
-  filterKey: string
   integrationsTags: IntegrationsTags
 }) => (
   <Card sx={{ height: '100%' }}>
@@ -48,15 +46,13 @@ export const IntegrationAppComp = ({
 
               <Grid container>
                 <Grid size={6}>
-                  {filterKey === 'all' && (
-                    <Stack gap={Spacing.sm}>
-                      {Object.keys(tags).map((k, idx) => (
-                        <Typography key={`${k}-${idx}`} variant="bodySRegular">
-                          <IntegrationAppTag tag={integrationsTags[k] ?? {}} />
-                        </Typography>
-                      ))}
-                    </Stack>
-                  )}
+                  <Stack gap={Spacing.sm}>
+                    {Object.keys(tags).map((k, idx) => (
+                      <Typography key={`${k}-${idx}`} variant="bodySRegular">
+                        <IntegrationAppTag tag={integrationsTags[k] ?? {}} />
+                      </Typography>
+                    ))}
+                  </Stack>
                 </Grid>
                 <Grid size={6}>
                   <Stack direction="row-reverse" flexWrap="wrap" gap={Spacing.xs}>
