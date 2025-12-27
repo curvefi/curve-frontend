@@ -1,24 +1,13 @@
-import { styled } from 'styled-components'
-import Icon from 'ui/src/Icon'
-import { Chip } from 'ui/src/Typography'
+import Box from '@mui/material/Box'
+import Stack from '@mui/material/Stack'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import type { IntegrationTag } from '../types'
 
-const IntegrationAppTag = ({
-  integrationTag,
-}: {
-  integrationTag: { displayName: string; color: string } | undefined
-}) => {
-  const { displayName, color } = integrationTag ?? {}
-  return (
-    <>
-      <FilterIcon size={16} name="StopFilledAlt" fill={color} strokeWidth="1px" stroke="white" />
-      <Chip size="xs">{displayName}</Chip>
-    </>
-  )
-}
+const { Spacing, Sizing } = SizesAndSpaces
 
-const FilterIcon = styled(Icon)`
-  position: relative;
-  top: 4px;
-`
-
-export default IntegrationAppTag
+export const IntegrationAppTag = ({ tag }: { tag: IntegrationTag }) => (
+  <Stack direction="row" alignItems="center" gap={Spacing.xs}>
+    {tag.color && <Box sx={{ width: Sizing.xs, height: Sizing.xs, backgroundColor: tag.color }} />}
+    {tag.displayName}
+  </Stack>
+)

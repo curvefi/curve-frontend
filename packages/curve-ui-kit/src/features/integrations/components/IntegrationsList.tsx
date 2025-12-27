@@ -6,9 +6,8 @@ import MenuItem from '@mui/material/MenuItem'
 import Select from '@mui/material/Select'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import Icon from '@ui/Icon'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
-import { BLOCKCHAIN_LEGACY_NAMES, breakpoints, CURVE_ASSETS_URL, type BaseConfig } from '@ui/utils'
+import { BLOCKCHAIN_LEGACY_NAMES, CURVE_ASSETS_URL, type BaseConfig } from '@ui/utils'
 import { useIntegrations, useIntegrationsTags, type IntegrationApp, type Tag } from '@ui-kit/features/integrations'
 import { useNavigate, useSearchParams } from '@ui-kit/hooks/router'
 import { t, Trans } from '@ui-kit/lib/i18n'
@@ -17,6 +16,7 @@ import { SearchField } from '@ui-kit/shared/ui/SearchField'
 import { SelectableChip } from '@ui-kit/shared/ui/SelectableChip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import IntegrationAppComp from './IntegrationApp'
+import { IntegrationAppTag } from './IntegrationAppTag'
 
 const { Spacing, ButtonSize } = SizesAndSpaces
 
@@ -120,12 +120,7 @@ export const IntegrationsList = ({ chainId, networks }: IntegrationsListProps) =
           <Grid container key={tag.id} size={{ mobile: 12, tablet: 'auto' }} spacing={Spacing.xxs}>
             <SelectableChip
               size="small"
-              label={
-                <Stack direction="row" alignItems="center" gap={Spacing.xs}>
-                  <Icon size={16} name="StopFilledAlt" fill={tag.color} strokeWidth="1px" stroke="white" />
-                  {tag.displayName}
-                </Stack>
-              }
+              label={<IntegrationAppTag tag={tag} />}
               selected={filterTag == tag.id}
               toggle={() => updateFilters({ tag: tag.id })}
               sx={{ width: { mobile: '100%', tablet: 'auto' } }}
