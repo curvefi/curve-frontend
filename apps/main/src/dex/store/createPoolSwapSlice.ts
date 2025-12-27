@@ -1,6 +1,7 @@
 import { Contract, Interface, JsonRpcProvider } from 'ethers'
 import lodash from 'lodash'
 import { ethAddress } from 'viem'
+import type { Config } from 'wagmi'
 import type { StoreApi } from 'zustand'
 import type { ExchangeOutput, FormStatus, FormValues, RouterSwapOutput } from '@/dex/components/PagePool/Swap/types'
 import {
@@ -14,7 +15,6 @@ import type { RoutesAndOutput, RoutesAndOutputModal } from '@/dex/components/Pag
 import curvejsApi from '@/dex/lib/curvejs'
 import type { State } from '@/dex/store/useStore'
 import {
-  Balances,
   ChainId,
   CurrencyReserves,
   CurveApi,
@@ -30,6 +30,7 @@ import { useWallet } from '@ui-kit/features/connect-wallet'
 import { fetchGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 import { fetchNetworks } from '../entities/networks'
+import { fetchPoolTokenBalances } from '../hooks/usePoolTokenBalances'
 
 type StateKey = keyof typeof DEFAULT_STATE
 const { cloneDeep } = lodash
@@ -51,15 +52,14 @@ const sliceKey = 'poolSwap'
 export type PoolSwapSlice = {
   [sliceKey]: SliceState & {
     fetchIgnoreExchangeRateCheck(curve: CurveApi, pool: Pool): Promise<boolean>
-    fetchExchangeOutput(activeKey: string, storedActiveKey: string, curve: CurveApi, pool: Pool, formValues: FormValues, maxSlippage: string): Promise<void>
-    fetchTokenWalletBalance(curve: CurveApi, poolId: string, tokenAddress: string): Promise<Balances>
-    fetchMaxAmount(activeKey: string, curve: CurveApi, pool: Pool, formValues: FormValues, maxSlippage: string): Promise<string>
-    setFormValues(curve: CurveApi | null, poolId: string, poolData: PoolData | undefined, updatedFormValues: Partial<FormValues>, isGetMaxFrom: boolean | null, isSeed: boolean | null, maxSlippage: string): Promise<void>
+    fetchExchangeOutput(activeKey: string, storedActiveKey: string, config: Config, curve: CurveApi, pool: Pool, formValues: FormValues, maxSlippage: string): Promise<void>
+    fetchMaxAmount(activeKey: string, config: Config, curve: CurveApi, pool: Pool, formValues: FormValues, maxSlippage: string): Promise<string>
+    setFormValues(config: Config, curve: CurveApi | null, poolId: string, poolData: PoolData | undefined, updatedFormValues: Partial<FormValues>, isGetMaxFrom: boolean | null, isSeed: boolean | null, maxSlippage: string): Promise<void>
 
     // steps
     fetchEstGasApproval(activeKey: string, chainId: ChainId, pool: Pool, formValues: FormValues, maxSlippage: string): Promise<FnStepEstGasApprovalResponse | undefined>
-    fetchStepApprove(activeKey: string, curve: CurveApi, pool: Pool, formValues: FormValues, globalMaxSlippage: string): Promise<FnStepApproveResponse | undefined>
-    fetchStepSwap(activeKey: string, curve: CurveApi, poolData: PoolData, formValues: FormValues, maxSlippage: string): Promise<FnStepResponse | undefined>
+    fetchStepApprove(activeKey: string, config: Config, curve: CurveApi, pool: Pool, formValues: FormValues, globalMaxSlippage: string): Promise<FnStepApproveResponse | undefined>
+    fetchStepSwap(activeKey: string, config: Config, curve: CurveApi, poolData: PoolData, formValues: FormValues, maxSlippage: string): Promise<FnStepResponse | undefined>
 
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
     setStateByKey<T>(key: StateKey, value: T): void
@@ -119,7 +119,7 @@ const createPoolSwapSlice = (set: StoreApi<State>['setState'], get: StoreApi<Sta
         }
       }
     },
-    fetchExchangeOutput: async (activeKey, storedActiveKey: string, curve, pool, formValues, maxSlippage) => {
+    fetchExchangeOutput: async (activeKey, storedActiveKey: string, config, curve, pool, formValues, maxSlippage) => {
       const state = get()
       const sliceState = state[sliceKey]
 
@@ -162,7 +162,7 @@ const createPoolSwapSlice = (set: StoreApi<State>['setState'], get: StoreApi<Sta
 
         if (curve.signerAddress) {
           // validate fromAmount
-          const userPoolBalances = await get().poolDeposit.fetchUserPoolWalletBalances(curve, pool.id)
+          const userPoolBalances = await fetchPoolTokenBalances(config, curve, pool.id)
           const userFromBalance = userPoolBalances[cFormValues.fromAddress]
           cFormValues.fromError = +userFromBalance >= +cFormValues.fromAmount ? '' : 'too-much'
 
@@ -211,19 +211,16 @@ const createPoolSwapSlice = (set: StoreApi<State>['setState'], get: StoreApi<Sta
         // }
       }
     },
-    fetchTokenWalletBalance: async (curve: CurveApi, poolId: string, tokenAddress: string) => {
-      const storedWalletBalance = get().user.walletBalances[tokenAddress]
-      return storedWalletBalance ?? (await get().user.fetchUserPoolInfo(curve, poolId, true))
-    },
     fetchMaxAmount: async (
       activeKey: string,
+      config: Config,
       curve: CurveApi,
       pool: Pool,
       formValues: FormValues,
       maxSlippage: string,
     ) => {
       // stored values
-      const userPoolBalances = await get()[sliceKey].fetchTokenWalletBalance(curve, pool.id, formValues.fromAddress)
+      const userPoolBalances = await fetchPoolTokenBalances(config, curve, pool.id)
       const walletFromBalance = userPoolBalances[formValues.fromAddress]
       const networks = await fetchNetworks()
       const { basePlusPriority } = await fetchGasInfoAndUpdateLib({
@@ -231,7 +228,7 @@ const createPoolSwapSlice = (set: StoreApi<State>['setState'], get: StoreApi<Sta
         networks,
       })
 
-      let fromAmount = walletFromBalance ?? '0'
+      let fromAmount: string = walletFromBalance ?? '0'
 
       // get max amount for native token
       if (
@@ -259,7 +256,7 @@ const createPoolSwapSlice = (set: StoreApi<State>['setState'], get: StoreApi<Sta
 
       return fromAmount
     },
-    setFormValues: async (curve, poolId, poolData, updatedFormValues, isGetMaxFrom, isSeed, maxSlippage) => {
+    setFormValues: async (config, curve, poolId, poolData, updatedFormValues, isGetMaxFrom, isSeed, maxSlippage) => {
       // stored values
       const storedActiveKey = get()[sliceKey].activeKey
       const storedFormStatus = get()[sliceKey].formStatus
@@ -293,7 +290,14 @@ const createPoolSwapSlice = (set: StoreApi<State>['setState'], get: StoreApi<Sta
 
       // get max fromAmount
       if (isGetMaxFrom) {
-        cFormValues.fromAmount = await get()[sliceKey].fetchMaxAmount(activeKey, curve, pool, cFormValues, maxSlippage)
+        cFormValues.fromAmount = await get()[sliceKey].fetchMaxAmount(
+          activeKey,
+          config,
+          curve,
+          pool,
+          cFormValues,
+          maxSlippage,
+        )
         activeKey = getActiveKey(cFormValues, maxSlippage)
         get()[sliceKey].setStateByKeys({ activeKey, formValues: cloneDeep(cFormValues) })
       }
@@ -319,7 +323,15 @@ const createPoolSwapSlice = (set: StoreApi<State>['setState'], get: StoreApi<Sta
         activeKey,
         cloneDeep({ ...DEFAULT_EXCHANGE_OUTPUT, loading: true }),
       )
-      void get()[sliceKey].fetchExchangeOutput(activeKey, storedActiveKey, curve, pool, cFormValues, maxSlippage)
+      void get()[sliceKey].fetchExchangeOutput(
+        activeKey,
+        storedActiveKey,
+        config,
+        curve,
+        pool,
+        cFormValues,
+        maxSlippage,
+      )
     },
 
     // steps
@@ -350,7 +362,7 @@ const createPoolSwapSlice = (set: StoreApi<State>['setState'], get: StoreApi<Sta
       }
       return resp
     },
-    fetchStepApprove: async (activeKey, curve, pool, formValues, maxSlippage) => {
+    fetchStepApprove: async (activeKey, config, curve, pool, formValues, maxSlippage) => {
       const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
@@ -378,13 +390,21 @@ const createPoolSwapSlice = (set: StoreApi<State>['setState'], get: StoreApi<Sta
 
           // fetch est gas, approval and exchange
           void get()[sliceKey].fetchEstGasApproval(activeKey, curve.chainId, pool, formValues, maxSlippage)
-          await get()[sliceKey].fetchExchangeOutput(activeKey, storedActiveKey, curve, pool, formValues, maxSlippage)
+          await get()[sliceKey].fetchExchangeOutput(
+            activeKey,
+            storedActiveKey,
+            config,
+            curve,
+            pool,
+            formValues,
+            maxSlippage,
+          )
         }
 
         return resp
       }
     },
-    fetchStepSwap: async (activeKey, curve, poolData, formValues, maxSlippage) => {
+    fetchStepSwap: async (activeKey, config, curve, poolData, formValues, maxSlippage) => {
       const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
@@ -438,7 +458,7 @@ const createPoolSwapSlice = (set: StoreApi<State>['setState'], get: StoreApi<Sta
 
           // re-fetch data
           await Promise.all([
-            get().user.fetchUserPoolInfo(curve, poolData.pool.id, true),
+            get().user.fetchUserPoolInfo(config, curve, poolData.pool.id),
             get().pools.fetchPoolStats(curve, poolData),
           ])
         }
