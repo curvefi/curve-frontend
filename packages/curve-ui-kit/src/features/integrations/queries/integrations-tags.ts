@@ -24,9 +24,19 @@ export const { useQuery: useIntegrationsTags } = queryFactory({
   validationSuite: EmptyValidationSuite,
 })
 
+const INTEGRATIONS_TAGS_COLORS = [
+  '#F60000',
+  '#FF8C00',
+  '#FFEE00',
+  '#4DE94C',
+  '#3783FF',
+  '#4815AA',
+  '#EE82EE',
+  '#FF69B4',
+]
+
 function parseIntegrationsTags(integrationsTags: { id: Tag; displayName: string }[]) {
   const parsedIntegrationsTags: IntegrationsTags = {}
-  const INTEGRATIONS_TAGS_COLORS = ['#F60000', '#FF8C00', '#FFEE00', '#4DE94C', '#3783FF', '#4815AA', '#ee82ee']
 
   if (Array.isArray(integrationsTags)) {
     for (const idx in integrationsTags) {
