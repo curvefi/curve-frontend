@@ -2,11 +2,14 @@ import Fuse from 'fuse.js'
 import { useCallback, useMemo, useState } from 'react'
 import { styled } from 'styled-components'
 import Grid from '@mui/material/Grid'
+import MenuItem from '@mui/material/MenuItem'
+import Select from '@mui/material/Select'
 import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
 import Box from '@ui/Box'
 import Icon from '@ui/Icon'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
-import { breakpoints, CURVE_ASSETS_URL, type BaseConfig } from '@ui/utils'
+import { BLOCKCHAIN_LEGACY_NAMES, breakpoints, CURVE_ASSETS_URL, type BaseConfig } from '@ui/utils'
 import { useIntegrations, useIntegrationsTags, type IntegrationApp, type Tag } from '@ui-kit/features/integrations'
 import { useNavigate, useSearchParams } from '@ui-kit/hooks/router'
 import { t, Trans } from '@ui-kit/lib/i18n'
@@ -15,9 +18,15 @@ import { SearchField } from '@ui-kit/shared/ui/SearchField'
 import { SelectableChip } from '@ui-kit/shared/ui/SelectableChip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import IntegrationAppComp from './IntegrationApp'
-import SelectNetwork from './SelectNetwork'
 
-const { Spacing } = SizesAndSpaces
+const { Spacing, ButtonSize } = SizesAndSpaces
+
+const NetworkItem = ({ network }: { network?: BaseConfig }) => (
+  <Stack direction="row" gap={Spacing.sm} alignItems="center">
+    {network && <ChainIcon blockchainId={network.networkId} size="sm" />}
+    <Typography>{network ? network.name : '?'}</Typography>
+  </Stack>
+)
 
 export type IntegrationsListProps = { chainId?: number; networks: BaseConfig[] }
 
@@ -32,12 +41,8 @@ export const IntegrationsList = ({ chainId, networks }: IntegrationsListProps) =
   const [searchText, setSearchText] = useState('')
 
   const filterTag = useMemo(() => tags?.[searchParams?.get('tag') ?? 'all']?.id, [searchParams, tags])
-
   const filterNetwork = useMemo(
-    () =>
-      networks.find(
-        ({ chainId, showInSelectNetwork }) => showInSelectNetwork && chainId == Number(searchParams?.get('chainId')),
-      ),
+    () => networks.find((network) => network.chainId === Number(searchParams?.get('chainId') || chainId)),
     [searchParams, networks],
   )
 
@@ -57,9 +62,15 @@ export const IntegrationsList = ({ chainId, networks }: IntegrationsListProps) =
   )
 
   const integrationsFiltered = useMemo(() => {
+    // Revert back to the original name if there was a chain rename, it seems the integration list was never
+    // updated to use the new blockchain names like 'xdai' rather than 'gnosis'.
+    const networkId =
+      Object.entries(BLOCKCHAIN_LEGACY_NAMES).find(([, rename]) => rename === filterNetwork?.networkId)?.[0] ??
+      filterNetwork?.networkId
+
     let list = [...(integrations ?? [])]
     list = filterTag === 'all' ? list : list.filter((app) => app.tags[filterTag || ''])
-    list = !filterNetwork ? list : list.filter((app) => app.networks[filterNetwork.networkId])
+    list = networkId ? list.filter((app) => app.networks[networkId]) : list
 
     return searchText
       ? new Fuse<IntegrationApp>(list, {
@@ -79,12 +90,22 @@ export const IntegrationsList = ({ chainId, networks }: IntegrationsListProps) =
   ) : (
     <Stack direction="column" gap={Spacing.md}>
       <Stack direction={{ mobile: 'column', tablet: 'row' }} spacing={Spacing.xs} alignItems="center">
-        <SelectNetwork
-          items={networks}
-          minWidth="8.5em"
-          selectedKey={filterNetwork?.networkId}
-          onSelectionChange={(chainId) => updateFilters({ tag: filterTag, chainId: Number(chainId) })}
-        />
+        <Select
+          aria-label={t`Select network`}
+          value={filterNetwork?.chainId}
+          onChange={(e) => {
+            updateFilters({ chainId: Number(e.target.value) })
+          }}
+          displayEmpty
+          renderValue={() => <NetworkItem network={filterNetwork} />}
+          sx={{ minWidth: '12rem', height: ButtonSize.md }}
+        >
+          {networks.map((network) => (
+            <MenuItem key={network.chainId} value={network.chainId}>
+              <NetworkItem network={network} />
+            </MenuItem>
+          ))}
+        </Select>
 
         <SearchField onSearch={setSearchText} placeholder={t`Search for an integration`} />
       </Stack>
@@ -107,7 +128,7 @@ export const IntegrationsList = ({ chainId, networks }: IntegrationsListProps) =
                 </Stack>
               }
               selected={filterTag == tag.id}
-              toggle={() => updateFilters({ tag: tag.id, chainId: filterNetwork?.chainId })}
+              toggle={() => updateFilters({ tag: tag.id })}
               sx={{ width: { mobile: '100%', tablet: 'auto' } }}
             />
           </Grid>
