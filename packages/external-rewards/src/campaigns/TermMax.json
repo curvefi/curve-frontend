@@ -1,0 +1,21 @@
+{
+  "campaignName": "",
+  "platform": "TermMax",
+  "description": "Points for providing liquidity.",
+  "platformImageId": "termmax.png",
+  "dashboardLink": "https://app.termmax.ts.finance",
+  "pools": [
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "null",
+      "campaignStart": "0",
+      "campaignEnd": "1798038766",
+      "address": "0x6C5Ff8DCe52BE77b4eCE6B51996018f0C1713bA9",
+      "network": "ethereum",
+      "multiplier": "30x",
+      "tags": ["points"],
+      "lock": "false"
+    }
+  ]
+}
