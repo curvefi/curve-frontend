@@ -48,6 +48,7 @@ type LoanInfoAccordionProps = {
   // userState values are used as prev values if collateral or debt are available
   userState?: Query<UserState> & { borrowTokenSymbol?: string; collateralTokenSymbol?: string }
   leverage?: LoanLeverageActionInfoProps & { enabled: boolean }
+  userLeverage?: { enabled: boolean; prev: Query<Decimal | null>; expected: Query<Decimal | null> }
 }
 
 export const LoanInfoAccordion = ({
@@ -67,6 +68,7 @@ export const LoanInfoAccordion = ({
   collateral,
   leverage,
   userState,
+  userLeverage,
 }: LoanInfoAccordionProps) => {
   const prevDebt = userState?.data?.debt
   const prevCollateral = userState?.data?.collateral
@@ -154,6 +156,18 @@ export const LoanInfoAccordion = ({
               />
             )}
           </Stack>
+          {userLeverage?.enabled && (
+            <Stack>
+              <ActionInfo
+                label={t`Leverage`}
+                value={formatQueryValue(userLeverage?.expected, (v) => formatNumber(v, { abbreviate: false }))}
+                prevValue={formatQueryValue(userLeverage?.prev, (v) => formatNumber(v, { abbreviate: false }))}
+                {...combineQueryState([userLeverage?.expected, userLeverage?.prev])}
+                testId="user-leverage"
+              />
+            </Stack>
+          )}
+
           {leverage?.enabled && <LoanLeverageActionInfo {...leverage} />}
           {/* TODO: add router provider and slippage */}
           <Stack>
