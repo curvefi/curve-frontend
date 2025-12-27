@@ -3,7 +3,7 @@ import Typography from '@mui/material/Typography'
 import { t, Trans } from '@ui-kit/lib/i18n'
 import { InlineLink } from '@ui-kit/shared/ui/InlineLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { IntegrationsList, type IntegrationsListProps } from './IntegrationsList'
+import { IntegrationsList, type IntegrationsListProps } from './components/IntegrationsList'
 
 const { Spacing } = SizesAndSpaces
 

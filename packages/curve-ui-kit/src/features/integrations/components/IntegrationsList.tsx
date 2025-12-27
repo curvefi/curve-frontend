@@ -7,7 +7,6 @@ import Select from '@mui/material/Select'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { BLOCKCHAIN_LEGACY_NAMES, type BaseConfig } from '@ui/utils'
-import { useIntegrations, useIntegrationsTags, type IntegrationApp, type Tag } from '@ui-kit/features/integrations'
 import { useNavigate, useSearchParams } from '@ui-kit/hooks/router'
 import { t, Trans } from '@ui-kit/lib/i18n'
 import { ChainIcon } from '@ui-kit/shared/icons/ChainIcon'
@@ -17,6 +16,9 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { IntegrationAppComp } from './IntegrationApp'
 import { IntegrationAppTag } from './IntegrationAppTag'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
+import { useIntegrations } from '../queries/integrations'
+import { useIntegrationsTags } from '../queries/integrations-tags'
+import type { IntegrationApp, Tag } from '../types'
 
 const { Spacing, Sizing, ButtonSize } = SizesAndSpaces
 
