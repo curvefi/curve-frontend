@@ -23,7 +23,7 @@ const { Spacing, Sizing, ButtonSize } = SizesAndSpaces
 const NetworkItem = ({ network }: { network?: BaseConfig }) => (
   <Stack direction="row" gap={Spacing.sm} alignItems="center">
     {network && <ChainIcon blockchainId={network.networkId} size="sm" />}
-    <Typography>{network ? network.name : '?'}</Typography>
+    <Typography>{network?.name ?? '?'}</Typography>
   </Stack>
 )
 
