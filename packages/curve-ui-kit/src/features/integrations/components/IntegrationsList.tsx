@@ -12,13 +12,13 @@ import { t, Trans } from '@ui-kit/lib/i18n'
 import { ChainIcon } from '@ui-kit/shared/icons/ChainIcon'
 import { SearchField } from '@ui-kit/shared/ui/SearchField'
 import { SelectableChip } from '@ui-kit/shared/ui/SelectableChip'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { IntegrationAppComp } from './IntegrationApp'
-import { IntegrationAppTag } from './IntegrationAppTag'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { useIntegrations } from '../queries/integrations'
 import { useIntegrationsTags } from '../queries/integrations-tags'
 import type { IntegrationApp, Tag } from '../types'
+import { IntegrationAppComp } from './IntegrationApp'
+import { IntegrationAppTag } from './IntegrationAppTag'
 
 const { Spacing, Sizing, ButtonSize } = SizesAndSpaces
 
@@ -44,7 +44,7 @@ export const IntegrationsList = ({ chainId, networks }: IntegrationsListProps) =
   const filterTag = useMemo(() => tags?.[searchParams?.get('tag') ?? 'all']?.id, [searchParams, tags])
   const filterNetwork = useMemo(
     () => networks.find((network) => network.chainId === Number(searchParams?.get('chainId') || chainId)),
-    [searchParams, networks],
+    [searchParams, networks, chainId],
   )
 
   const updateFilters = useCallback(
