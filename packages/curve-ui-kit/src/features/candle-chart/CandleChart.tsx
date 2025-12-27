@@ -81,6 +81,7 @@ type Props = {
   oraclePriceData?: OraclePriceData[]
   liquidationRange?: LiquidationRanges
   timeOption: string
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   wrapperRef: any
   magnet: boolean
   colors: ChartColors

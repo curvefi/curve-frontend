@@ -1,4 +1,4 @@
-import { Contract } from 'ethers'
+import { Contract, type Signer } from 'ethers'
 import { produce } from 'immer'
 import type { StoreApi } from 'zustand'
 import { ABI_VECRV } from '@/dao/abis/vecrv'
@@ -62,7 +62,7 @@ export type UserSlice = {
     setUserLocksSortBy: (sortBy: UserLocksSortBy) => void
     setUserGaugeVotesSortBy: (sortBy: UserGaugeVotesSortBy) => void
     setUserGaugeVoteWeightsSortBy: (sortBy: UserGaugeVoteWeightSortBy) => void
-    setSnapshotVeCrv(signer: any, userAddress: string, snapshot: number, proposalId: string): void
+    setSnapshotVeCrv(signer: Signer, userAddress: string, snapshot: number, proposalId: string): void
     // helpers
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
     setStateByKey<T>(key: StateKey, value: T): void
@@ -231,7 +231,7 @@ const createUserSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>[
         )
       }
     },
-    setSnapshotVeCrv: async (signer: any, userAddress: string, snapshot: number, proposalId: string) => {
+    setSnapshotVeCrv: async (signer: Signer, userAddress: string, snapshot: number, proposalId: string) => {
       set(
         produce((state) => {
           state[sliceKey].snapshotVeCrvMapper[proposalId] = {

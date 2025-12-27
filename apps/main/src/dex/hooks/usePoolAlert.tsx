@@ -4,7 +4,8 @@ import { PoolAlert, PoolData, PoolDataCache, type UrlParams } from '@/dex/types/
 import { useParams } from '@ui-kit/hooks/router'
 import { t, Trans } from '@ui-kit/lib/i18n'
 import { getInternalUrl } from '@ui-kit/shared/routes'
-import { ExternalLink, InternalLink, PoolAlertMessage } from '../components/pool-alert-messages'
+import { InlineLink } from '@ui-kit/shared/ui/InlineLink'
+import { PoolAlertMessage } from '../components/pool-alert-messages'
 
 const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
   const params = useParams<UrlParams>()
@@ -69,7 +70,7 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
           subtitle: (
             <Trans>
               This pool has been deprecated. Please use the{' '}
-              <InternalLink href={prismaPoolHref}>PRISMA/yPRISMA</InternalLink> pool instead.
+              <InlineLink href={prismaPoolHref}>PRISMA/yPRISMA</InlineLink> pool instead.
             </Trans>
           ),
         },
@@ -91,16 +92,16 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
             <Trans>
               Please note that exchanges on synthetix synths are expected to be disabled and users can either withdraw
               liquidity from the underlying token, or redeem their synths to sUSD on{' '}
-              <ExternalLink href="https://staking.synthetix.io/wallet/balances/">synthetix.io</ExternalLink>
+              <InlineLink href="https://staking.synthetix.io/wallet/balances/">synthetix.io</InlineLink>
             </Trans>
           </p>
           <p>
             <Trans>
               Users are encouraged to exit the pools in order to avoid getting their holdings&lsquo; value diluted with
               the discountRate For more information please refer to{' '}
-              <ExternalLink href="https://gov.curve.finance/t/kill-gauges-on-all-non-susd-curve-pools-on-ethereum/10033/2">
+              <InlineLink href="https://gov.curve.finance/t/kill-gauges-on-all-non-susd-curve-pools-on-ethereum/10033/2">
                 gov.curve.finance
-              </ExternalLink>
+              </InlineLink>
             </Trans>
           </p>
           <p>
@@ -129,16 +130,17 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
       alertType: 'danger',
       isDisableDeposit: true,
       isDisableSwap: true,
+      isDisableWithdrawOnly: true,
       isInformationOnly: true,
       isCloseOnTooltipOnly: true,
       banner: {
         title: t`Synthetix USD Deprecated`,
-        subtitle: t`Pool is deprecated. Deposit and swap are disabled.`,
+        subtitle: t`Pool is deprecated. Deposit, swap and withdraw are disabled.`,
         learnMoreUrl: 'https://x.com/synthetix_io/status/1953054538610688198',
       },
       message: (
         <PoolAlertMessage>
-          <p>{t`This pool is in withdraw only mode.`}</p>
+          <p>{t`This pool is disabled. You can still claim your rewards.`}</p>
         </PoolAlertMessage>
       ),
     })
@@ -160,7 +162,7 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
         <PoolAlertMessage>
           <p>
             <Trans>
-              Deposit on <ExternalLink href="https://yieldbasis.com">yieldbasis.com</ExternalLink>
+              Deposit on <InlineLink href="https://yieldbasis.com">yieldbasis.com</InlineLink>
             </Trans>
           </p>
         </PoolAlertMessage>
@@ -193,7 +195,7 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
           <p>
             <Trans>
               Deposit and Swap with wBTC.e will return an error due to an Aave community decision to freeze this asset.{' '}
-              <ExternalLink href="https://app.aave.com/governance/v3/proposal/?proposalId=2">More details</ExternalLink>
+              <InlineLink href="https://app.aave.com/governance/v3/proposal/?proposalId=2">More details</InlineLink>
             </Trans>
           </p>
         </PoolAlertMessage>

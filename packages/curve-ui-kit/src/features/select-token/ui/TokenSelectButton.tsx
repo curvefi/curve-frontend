@@ -1,5 +1,6 @@
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import Select from '@mui/material/Select'
+import type { Theme } from '@mui/material/styles'
 import type { SxProps } from '@mui/system'
 import { useLegacyTokenInput } from '@ui-kit/hooks/useFeatureFlags'
 import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
@@ -55,15 +56,15 @@ export const TokenSelectButton = ({ token, disabled, onClick, sx }: Props) => {
         ...(useLegacyTokenInput() && {
           marginBlock: 'auto',
           border: 'none',
-          borderBottom: (t: any) => `2px solid ${t.design.Layer[1].Outline}`,
+          borderBottom: (t: Theme) => `2px solid ${t.design.Layer[1].Outline}`,
           ...(!disabled && {
             '&:hover': {
               border: 'none',
-              borderBottom: (t: any) => `2px solid ${t.design.Layer[2].Outline}`,
+              borderBottom: (t: Theme) => `2px solid ${t.design.Layer[2].Outline}`,
             },
             '&:active': {
               border: 'none',
-              borderBottom: (t: any) => `2px solid ${t.design.Layer[3].Outline}`,
+              borderBottom: (t: Theme) => `2px solid ${t.design.Layer[3].Outline}`,
             },
           }),
           '& .MuiOutlinedInput-notchedOutline': {

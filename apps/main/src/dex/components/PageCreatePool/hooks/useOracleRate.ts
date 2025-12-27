@@ -24,7 +24,7 @@ export function useOracleRate({ address, functionName, enabled = true }: UseOrac
 
   const {
     data: rate,
-    isFetching: isLoading,
+    isFetching: isLoadingRate,
     isSuccess,
     error,
   } = useReadContract({
@@ -34,7 +34,7 @@ export function useOracleRate({ address, functionName, enabled = true }: UseOrac
     query: { enabled: enabled && !!address && !!cleanFunctionName, retry: false },
   })
 
-  const { data: decimals } = useReadContract({
+  const { data: decimals, isFetching: isLoadingDecimals } = useReadContract({
     address,
     abi: erc20Abi,
     functionName: 'decimals',
@@ -44,7 +44,7 @@ export function useOracleRate({ address, functionName, enabled = true }: UseOrac
   return {
     rate: decimal(rate?.toString()),
     decimals,
-    isLoading,
+    isLoading: isLoadingRate || isLoadingDecimals,
     isSuccess,
     error,
   }

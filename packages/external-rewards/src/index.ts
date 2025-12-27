@@ -35,7 +35,7 @@ export const campaigns = campaignList
 
     return {
       ...parsedCampaignsJsons[campaignName],
-      pools: parsedCampaignsJsons[campaignName].pools.filter((pool: any) => {
+      pools: parsedCampaignsJsons[campaignName].pools.filter((pool: CampaignPool) => {
         const currentTime = Date.now() / 1000
 
         // allow campaigns with no set period

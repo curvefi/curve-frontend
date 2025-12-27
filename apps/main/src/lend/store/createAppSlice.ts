@@ -5,6 +5,7 @@ import { StoreApi } from 'zustand'
 import { prefetchMarkets } from '@/lend/entities/chain/chain-query'
 import type { State } from '@/lend/store/useStore'
 import { Api, Wallet } from '@/lend/types/lend.types'
+import { recordEntries } from '@curvefi/prices-api/objects.util'
 import { log } from '@ui-kit/lib/logging'
 
 export type SliceKey = keyof State | ''
@@ -36,18 +37,10 @@ const createAppSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['
 
     // reset store
     if (isNetworkSwitched) {
-      Object.keys(get()).forEach((stateKey) => {
-        if (
-          stateKey.startsWith('loan') ||
-          stateKey.startsWith('user') ||
-          stateKey === 'tokens' ||
-          stateKey === 'chartBands' ||
-          stateKey === 'campaigns'
-        ) {
-          // @ts-ignore
-          if ('resetState' in get()[stateKey]) get()[stateKey].resetState()
-        }
-      })
+      recordEntries(get())
+        .filter(([stateKey]) => stateKey.startsWith('loan') || stateKey.startsWith('user') || stateKey === 'chartBands')
+        .filter(([, state]) => 'resetState' in state)
+        .forEach(([, state]) => (state as { resetState: () => void }).resetState())
     }
 
     if (isUserSwitched || !api.signerAddress) {

@@ -19,7 +19,7 @@ type Account = { address: Address; capabilities: Record<string, unknown> }
 /** Default custom transport for Cypress E2E tests, read-only */
 const cypressTransport = (account: PrivateKeyAccount) =>
   custom({
-    request: async ({ method }): Promise<any> => {
+    request: async ({ method }): Promise<unknown> => {
       if (method === 'eth_accounts') {
         return [account.address]
       }
