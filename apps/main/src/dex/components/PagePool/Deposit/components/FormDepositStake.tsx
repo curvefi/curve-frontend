@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useConfig, type Config } from 'wagmi'
 import AlertFormError from '@/dex/components/AlertFormError'
 import AlertSlippage from '@/dex/components/AlertSlippage'
 import DetailInfoEstGas from '@/dex/components/DetailInfoEstGas'
@@ -42,7 +43,6 @@ const FormDepositStake = ({
   routerParams,
   seed,
   tokensMapper,
-  userPoolBalances,
 }: TransferProps) => {
   const isSubscribed = useRef(false)
 
@@ -70,6 +70,8 @@ const FormDepositStake = ({
   const poolId = poolData?.pool?.id
   const haveSigner = !!signerAddress
 
+  const config = useConfig()
+
   const updateFormValues = useCallback(
     (
       updatedFormValues: Partial<FormValues>,
@@ -80,6 +82,7 @@ const FormDepositStake = ({
       setSlippageConfirmed(false)
       void setFormValues(
         'DEPOSIT_STAKE',
+        config,
         curve,
         poolDataCacheOrApi.pool.id,
         poolData,
@@ -89,7 +92,7 @@ const FormDepositStake = ({
         updatedMaxSlippage || maxSlippage,
       )
     },
-    [curve, maxSlippage, poolData, poolDataCacheOrApi.pool.id, seed.isSeed, setFormValues],
+    [config, curve, maxSlippage, poolData, poolDataCacheOrApi.pool.id, seed.isSeed, setFormValues],
   )
 
   const handleApproveClick = useCallback(
@@ -103,11 +106,18 @@ const FormDepositStake = ({
   )
 
   const handleDepositStakeClick = useCallback(
-    async (activeKey: string, curve: CurveApi, poolData: PoolData, formValues: FormValues, maxSlippage: string) => {
+    async (
+      activeKey: string,
+      config: Config,
+      curve: CurveApi,
+      poolData: PoolData,
+      formValues: FormValues,
+      maxSlippage: string,
+    ) => {
       const tokenText = amountsDescription(formValues.amounts)
       const notifyMessage = t`Please confirm deposit and staking of ${tokenText} LP Tokens at max ${maxSlippage}% slippage.`
       const { dismiss } = notify(notifyMessage, 'pending')
-      const resp = await fetchStepDepositStake(activeKey, curve, poolData, formValues, maxSlippage)
+      const resp = await fetchStepDepositStake(activeKey, config, curve, poolData, formValues, maxSlippage)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey) {
         const TxDescription = t`Deposit and staked ${tokenText}`
@@ -121,6 +131,7 @@ const FormDepositStake = ({
   const getSteps = useCallback(
     (
       activeKey: string,
+      config: Config,
       curve: CurveApi,
       poolData: PoolData,
       formValues: FormValues,
@@ -167,13 +178,13 @@ const FormDepositStake = ({
                     onClick: () => setSlippageConfirmed(false),
                   },
                   primaryBtnProps: {
-                    onClick: () => handleDepositStakeClick(activeKey, curve, poolData, formValues, maxSlippage),
+                    onClick: () => handleDepositStakeClick(activeKey, config, curve, poolData, formValues, maxSlippage),
                     disabled: !slippageConfirmed,
                   },
                   primaryBtnLabel: 'Deposit anyway',
                 },
               }
-            : { onClick: () => handleDepositStakeClick(activeKey, curve, poolData, formValues, maxSlippage) }),
+            : { onClick: () => handleDepositStakeClick(activeKey, config, curve, poolData, formValues, maxSlippage) }),
         },
       }
 
@@ -227,6 +238,7 @@ const FormDepositStake = ({
     if (curve && poolData) {
       const updatedSteps = getSteps(
         activeKey,
+        config,
         curve,
         poolData,
         formValues,
@@ -239,7 +251,17 @@ const FormDepositStake = ({
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId, poolId, signerAddress, formValues, formStatus, slippage.isHighSlippage, slippageConfirmed, maxSlippage])
+  }, [
+    config,
+    chainId,
+    poolId,
+    signerAddress,
+    formValues,
+    formStatus,
+    slippage.isHighSlippage,
+    slippageConfirmed,
+    maxSlippage,
+  ])
 
   const activeStep = haveSigner ? getActiveStep(steps) : null
   const disableForm = !seed.loaded || formStatus.formProcessing
@@ -255,6 +277,7 @@ const FormDepositStake = ({
   return (
     <>
       <FieldsDeposit
+        chainId={chainId}
         formProcessing={disableForm}
         formValues={formValues}
         haveSigner={haveSigner}
@@ -264,7 +287,6 @@ const FormDepositStake = ({
         poolDataCacheOrApi={poolDataCacheOrApi}
         routerParams={routerParams}
         tokensMapper={tokensMapper}
-        userPoolBalances={userPoolBalances}
         updateFormValues={updateFormValues}
       />
 
@@ -304,7 +326,6 @@ const FormDepositStake = ({
         loading={!chainId || !steps.length || !seed.loaded}
         routerParams={routerParams}
         seed={seed}
-        userPoolBalances={userPoolBalances}
       >
         <AlertSlippage maxSlippage={maxSlippage} usdAmount={estLpTokenReceivedUsdAmount} />
         {formStatus.error && (

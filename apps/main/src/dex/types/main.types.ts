@@ -271,6 +271,8 @@ export interface PoolAlert extends TooltipProps {
   alertType: AlertType
   isDisableDeposit?: boolean
   isDisableSwap?: boolean
+  // disable only the withdraw sub tab. Unstake and Claim sub tabs still available
+  isDisableWithdrawOnly?: boolean
   isInformationOnly?: boolean
   isInformationOnlyAndShowInForm?: boolean
   isCloseOnTooltipOnly?: boolean
