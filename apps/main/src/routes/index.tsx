@@ -7,6 +7,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { analyticsRoutes } from './analytics.routes'
+import { bridgeRoutes } from './bridge.routes'
 import { crvusdRoutes } from './crvusd.routes'
 import { daoRoutes } from './dao.routes'
 import { dexRoutes } from './dex.routes'
@@ -41,6 +42,7 @@ export const router = createRouter({
     dexRoutes,
     lendRoutes,
     llamalendRoutes,
+    bridgeRoutes,
     integrationsRedirectRoute,
   ]),
   defaultPreload: 'intent',

@@ -21,6 +21,7 @@ const APP_NAMES = {
   dex: 'Curve',
   llamalend: 'LLAMALEND',
   dao: 'DAO',
+  bridge: 'Curve',
   analytics: 'Curve',
 } as const satisfies Record<AppMenuOption, string>
 
