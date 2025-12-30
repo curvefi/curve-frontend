@@ -109,5 +109,8 @@
   },
   {
     "campaign": "Plasma.json"
+  },
+  {
+    "campaign": "TermMax.json"
   }
 ]
