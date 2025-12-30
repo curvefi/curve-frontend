@@ -1,4 +1,3 @@
-import '@/global-extensions'
 import { PageCompensation } from '@/dex/components/PageCompensation/Page'
 import { PageCreatePool } from '@/dex/components/PageCreatePool/Page'
 import { PageDashboard } from '@/dex/components/PageDashboard/Page'
@@ -11,8 +10,8 @@ import { DexLayout } from '@/dex/DexLayout'
 import Skeleton from '@mui/material/Skeleton'
 import { createRoute } from '@tanstack/react-router'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { LegalPage } from '@ui-kit/widgets/Legal'
 import { rootRoute } from './root.routes'
+import { createSharedRoutes } from './shared.routes'
 import { redirectTo } from './util'
 
 const { MinHeight } = SizesAndSpaces
@@ -26,6 +25,7 @@ const dexLayoutRoute = createRoute({
 const layoutProps = { getParentRoute: () => dexLayoutRoute }
 
 export const dexRoutes = dexLayoutRoute.addChildren([
+  ...createSharedRoutes('dex', layoutProps),
   createRoute({
     path: '/',
     /** Redirect is handled by the `RootLayout` component */
@@ -74,19 +74,6 @@ export const dexRoutes = dexLayoutRoute.addChildren([
     component: PageDeployGauge,
     head: () => ({
       meta: [{ title: 'Deploy Gauge - Curve' }],
-    }),
-    ...layoutProps,
-  }),
-  createRoute({
-    path: '$network/disclaimer',
-    loader: ({ params: { network } }) => redirectTo(`/dex/${network}/legal/?tab=disclaimers`),
-    ...layoutProps,
-  }),
-  createRoute({
-    path: '$network/legal',
-    component: () => <LegalPage currentApp="dex" />,
-    head: () => ({
-      meta: [{ title: 'Legal - Curve' }],
     }),
     ...layoutProps,
   }),

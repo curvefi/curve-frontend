@@ -1,3 +1,4 @@
+import '@/global-extensions'
 import { rootRoute } from '@/routes/root.routes'
 import { redirectTo } from '@/routes/util'
 import Skeleton from '@mui/material/Skeleton'
