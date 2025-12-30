@@ -1,4 +1,3 @@
-import '@/global-extensions'
 import { PageIntegrations } from '@/lend/components/PageIntegrations/Page'
 import { LendMarketPage } from '@/lend/components/PageLendMarket/LendMarketPage'
 import PageVault from '@/lend/components/PageVault/Page'
@@ -7,8 +6,8 @@ import type { MarketUrlParams } from '@/lend/types/lend.types'
 import Skeleton from '@mui/material/Skeleton'
 import { createRoute } from '@tanstack/react-router'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { LegalPage } from '@ui-kit/widgets/Legal'
 import { rootRoute } from './root.routes'
+import { createSharedRoutes } from './shared.routes'
 import { redirectTo } from './util'
 
 const { MinHeight } = SizesAndSpaces
@@ -22,6 +21,7 @@ const lendLayoutRoute = createRoute({
 const layoutProps = { getParentRoute: () => lendLayoutRoute }
 
 export const lendRoutes = lendLayoutRoute.addChildren([
+  ...createSharedRoutes('lend', layoutProps),
   createRoute({
     path: '/',
     component: () => <Skeleton width="100%" height={MinHeight.pageContent} />,
@@ -33,19 +33,6 @@ export const lendRoutes = lendLayoutRoute.addChildren([
   createRoute({
     path: '$network',
     loader: ({ params: { network } }) => redirectTo(`/lend/${network}/markets`),
-    ...layoutProps,
-  }),
-  createRoute({
-    path: '$network/disclaimer',
-    loader: ({ params: { network } }) => redirectTo(`/lend/${network}/legal/?tab=disclaimers`),
-    ...layoutProps,
-  }),
-  createRoute({
-    path: '$network/legal',
-    component: () => <LegalPage currentApp="lend" />,
-    head: () => ({
-      meta: [{ title: 'Legal - Curve Lend' }],
-    }),
     ...layoutProps,
   }),
   createRoute({

@@ -1,4 +1,3 @@
-import '@/global-extensions'
 import { PageAnalytics } from '@/dao/components/PageAnalytics/Page'
 import { PageGauge } from '@/dao/components/PageGauge/Page'
 import { PageGauges } from '@/dao/components/PageGauges/Page'
@@ -10,8 +9,8 @@ import { DaoLayout } from '@/dao/DaoLayout'
 import Skeleton from '@mui/material/Skeleton'
 import { createRoute } from '@tanstack/react-router'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { LegalPage } from '@ui-kit/widgets/Legal'
 import { rootRoute } from './root.routes'
+import { createSharedRoutes } from './shared.routes'
 import { redirectTo } from './util'
 
 const { MinHeight } = SizesAndSpaces
@@ -25,6 +24,7 @@ const daoLayoutRoute = createRoute({
 const layoutProps = { getParentRoute: () => daoLayoutRoute }
 
 export const daoRoutes = daoLayoutRoute.addChildren([
+  ...createSharedRoutes('dao', layoutProps),
   createRoute({
     path: '/',
     /** Redirect is handled by the `RootLayout` component */
@@ -49,19 +49,6 @@ export const daoRoutes = daoLayoutRoute.addChildren([
     component: PageAnalytics,
     head: () => ({
       meta: [{ title: 'Analytics - Curve' }],
-    }),
-    ...layoutProps,
-  }),
-  createRoute({
-    path: '$network/disclaimer',
-    loader: ({ params: { network } }) => redirectTo(`/dao/${network}/legal/?tab=disclaimers`),
-    ...layoutProps,
-  }),
-  createRoute({
-    path: '$network/legal',
-    component: () => <LegalPage currentApp="dao" />,
-    head: () => ({
-      meta: [{ title: 'Legal - Curve DAO' }],
     }),
     ...layoutProps,
   }),
