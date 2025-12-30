@@ -3,14 +3,10 @@ import { PageIntegrations } from '@/loan/components/PageIntegrations/Page'
 import { MintMarketPage } from '@/loan/components/PageMintMarket/MintMarketPage'
 import { Page as PegKeepersPage } from '@/loan/components/PagePegKeepers'
 import { CrvUsdClientLayout } from '@/loan/CrvUsdClientLayout'
-import Skeleton from '@mui/material/Skeleton'
 import { createRoute } from '@tanstack/react-router'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { rootRoute } from './root.routes'
 import { createSharedRoutes } from './shared.routes'
 import { redirectTo } from './util'
-
-const { MinHeight } = SizesAndSpaces
 
 const crvusdLayoutRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -22,15 +18,6 @@ const layoutProps = { getParentRoute: () => crvusdLayoutRoute }
 
 export const crvusdRoutes = crvusdLayoutRoute.addChildren([
   ...createSharedRoutes('crvusd', layoutProps),
-  createRoute({
-    path: '/',
-    /** Redirect is handled by the `RootLayout` component */
-    component: () => <Skeleton width="100%" height={MinHeight.pageContent} />,
-    head: () => ({
-      meta: [{ title: 'crvUSD - Curve' }],
-    }),
-    ...layoutProps,
-  }),
   createRoute({
     path: '$network',
     loader: ({ params: { network } }) => redirectTo(`/crvusd/${network}/markets/`),

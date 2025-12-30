@@ -6,14 +6,10 @@ import { PageDao } from '@/dao/components/PageProposals/Page'
 import { PageUser } from '@/dao/components/PageUser/Page'
 import { PageVeCrv } from '@/dao/components/PageVeCrv/Page'
 import { DaoLayout } from '@/dao/DaoLayout'
-import Skeleton from '@mui/material/Skeleton'
 import { createRoute } from '@tanstack/react-router'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { rootRoute } from './root.routes'
 import { createSharedRoutes } from './shared.routes'
 import { redirectTo } from './util'
-
-const { MinHeight } = SizesAndSpaces
 
 const daoLayoutRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -25,15 +21,6 @@ const layoutProps = { getParentRoute: () => daoLayoutRoute }
 
 export const daoRoutes = daoLayoutRoute.addChildren([
   ...createSharedRoutes('dao', layoutProps),
-  createRoute({
-    path: '/',
-    /** Redirect is handled by the `RootLayout` component */
-    component: () => <Skeleton width="100%" height={MinHeight.pageContent} />,
-    head: () => ({
-      meta: [{ title: 'DAO - Curve' }],
-    }),
-    ...layoutProps,
-  }),
   createRoute({
     path: '$network',
     loader: ({ params: { network } }) => redirectTo(`/dao/${network}/proposals/`),

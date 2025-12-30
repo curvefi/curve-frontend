@@ -3,14 +3,10 @@ import { LendMarketPage } from '@/lend/components/PageLendMarket/LendMarketPage'
 import PageVault from '@/lend/components/PageVault/Page'
 import { LendLayout } from '@/lend/LendLayout'
 import type { MarketUrlParams } from '@/lend/types/lend.types'
-import Skeleton from '@mui/material/Skeleton'
 import { createRoute } from '@tanstack/react-router'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { rootRoute } from './root.routes'
 import { createSharedRoutes } from './shared.routes'
 import { redirectTo } from './util'
-
-const { MinHeight } = SizesAndSpaces
 
 const lendLayoutRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -22,14 +18,6 @@ const layoutProps = { getParentRoute: () => lendLayoutRoute }
 
 export const lendRoutes = lendLayoutRoute.addChildren([
   ...createSharedRoutes('lend', layoutProps),
-  createRoute({
-    path: '/',
-    component: () => <Skeleton width="100%" height={MinHeight.pageContent} />,
-    head: () => ({
-      meta: [{ title: 'Lend - Curve' }],
-    }),
-    ...layoutProps,
-  }),
   createRoute({
     path: '$network',
     loader: ({ params: { network } }) => redirectTo(`/lend/${network}/markets`),

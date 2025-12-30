@@ -7,14 +7,10 @@ import { PagePool } from '@/dex/components/PagePool/Page'
 import { PagePoolList } from '@/dex/components/PagePoolList/Page'
 import { PageRouterSwap } from '@/dex/components/PageRouterSwap/Page'
 import { DexLayout } from '@/dex/DexLayout'
-import Skeleton from '@mui/material/Skeleton'
 import { createRoute } from '@tanstack/react-router'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { rootRoute } from './root.routes'
 import { createSharedRoutes } from './shared.routes'
 import { redirectTo } from './util'
-
-const { MinHeight } = SizesAndSpaces
 
 const dexLayoutRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -26,15 +22,6 @@ const layoutProps = { getParentRoute: () => dexLayoutRoute }
 
 export const dexRoutes = dexLayoutRoute.addChildren([
   ...createSharedRoutes('dex', layoutProps),
-  createRoute({
-    path: '/',
-    /** Redirect is handled by the `RootLayout` component */
-    component: () => <Skeleton width="100%" height={MinHeight.pageContent} />,
-    head: () => ({
-      meta: [{ title: 'DEX - Curve' }],
-    }),
-    ...layoutProps,
-  }),
   createRoute({
     path: '$network',
     loader: ({ params: { network } }) => redirectTo(`/dex/${network}/swap/`),
