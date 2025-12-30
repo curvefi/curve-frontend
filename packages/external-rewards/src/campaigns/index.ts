@@ -29,6 +29,7 @@ import Symbiotic from './Symbiotic.json'
 import Tharwa from './Tharwa.json'
 import Vnx from './Vnx.json'
 import YieldFi from './YieldFi.json'
+import Yuzu from './Yuzu.json'
 import TermMax from './TermMax.json'
 
 export {
@@ -63,5 +64,6 @@ export {
   Aegis,
   Ebisu,
   Liquity,
+  Yuzu,
   TermMax
 }

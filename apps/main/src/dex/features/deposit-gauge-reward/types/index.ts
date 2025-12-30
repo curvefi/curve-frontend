@@ -1,4 +1,5 @@
-import { Address } from 'viem'
+import type { Address } from 'viem'
+import type { Decimal } from '@ui-kit/utils'
 
 export enum DepositRewardStep {
   APPROVAL = 'APPROVAL',
@@ -9,6 +10,7 @@ export enum DepositRewardStep {
 export interface DepositRewardFormValues {
   rewardTokenId?: Address
   amount?: string
+  userBalance?: Decimal
   epoch?: number
   step: DepositRewardStep
 }

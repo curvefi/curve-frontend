@@ -3,7 +3,6 @@ import { useConnection } from 'wagmi'
 import FormConnectWallet from '@/dex/components/FormConnectWallet'
 import AlertSeedAmounts from '@/dex/components/PagePool/components/AlertSeedAmounts'
 import type { TransferProps } from '@/dex/components/PagePool/types'
-import { useSignerAddress } from '@/dex/entities/signer'
 import { usePoolIdByAddressOrId } from '@/dex/hooks/usePoolIdByAddressOrId'
 import { usePoolTokenBalances } from '@/dex/hooks/usePoolTokenBalances'
 import useTokenAlert from '@/dex/hooks/useTokenAlert'
@@ -22,7 +21,7 @@ const TransferActions = ({
   loading?: boolean
   children: ReactNode
 } & Pick<TransferProps, 'poolData' | 'poolDataCacheOrApi' | 'routerParams' | 'seed'>) => {
-  const { data: signerAddress } = useSignerAddress()
+  const { address: signerAddress } = useConnection()
   const { rChainId, rPoolIdOrAddress } = routerParams
   const poolId = usePoolIdByAddressOrId({ chainId: rChainId, poolIdOrAddress: rPoolIdOrAddress })
   const alert = useTokenAlert(poolData?.tokenAddressesAll ?? [])
