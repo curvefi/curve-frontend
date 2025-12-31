@@ -10,7 +10,6 @@ export const InlineLink = ({ href, children }: { href: string; children: React.R
   const isExternal = href.startsWith('http')
   return (
     <Link
-      sx={{ color: 'currentColor', '&:hover': { textDecoration: 'none' } }}
       href={href}
       {...(isExternal && { target: '_blank', rel: 'noreferrer noopener', component: TanstackLink, to: href })}
     >
