@@ -64,10 +64,7 @@ export const fetchTokenBalance = async (config: Config, query: TokenBalanceQuery
         .then((balance) => convertBalance({ value: balance.value, decimals: balance.decimals }))
     : await queryClient
         .fetchQuery({
-          ...readContractsQueryOptions(config, {
-            allowFailure: true,
-            contracts: getERC20QueryContracts(query),
-          }),
+          ...readContractsQueryOptions(config, { contracts: getERC20QueryContracts(query) }),
           staleTime: 0,
         })
         .then((results) => convertBalance(parseERC20Results(results)))
@@ -97,7 +94,6 @@ export function useTokenBalance(
   // Spreading with ...readContractsQueryOptions() breaks Typescript's type inference, so we have to settle with the
   // least common denominator that does *not* cause type  inference issues, which is getERC20QueryContracts.
   const erc20Balance = useReadContracts({
-    allowFailure: true,
     contracts: isEnabled ? getERC20QueryContracts({ chainId, userAddress, tokenAddress }) : undefined,
     query: { enabled: isEnabled && !isNativeToken },
   })
@@ -131,10 +127,7 @@ const getTokenBalanceQueryOptions = (config: Config, query: TokenBalanceQuery) =
         select: (data: GetBalanceReturnType) => convertBalance(data),
       }
     : {
-        ...readContractsQueryOptions(config, {
-          allowFailure: true,
-          contracts: getERC20QueryContracts(query),
-        }),
+        ...readContractsQueryOptions(config, { contracts: getERC20QueryContracts(query) }),
         select: (data: ERC20ReadResult) => convertBalance(parseERC20Results(data)),
       }
 
