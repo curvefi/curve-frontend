@@ -39,6 +39,7 @@ export const BridgeOverview = ({ bridges, title }: { bridges: Partner[]; title: 
         direction="row"
         alignItems="end"
         justifyContent="space-between"
+        flexWrap="wrap"
         gap={Spacing.md}
         minHeight={Sizing.xxl}
         paddingBlockEnd={Spacing.sm}
