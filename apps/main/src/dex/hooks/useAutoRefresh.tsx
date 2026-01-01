@@ -16,7 +16,6 @@ export const useAutoRefresh = (chainId: number | undefined) => {
   const fetchPoolsVolume = useStore((state) => state.pools.fetchPoolsVolume)
   const fetchPoolsTvl = useStore((state) => state.pools.fetchPoolsTvl)
   const setTokensMapper = useStore((state) => state.tokens.setTokensMapper)
-  const fetchAllStoredBalances = useStore((state) => state.userBalances.fetchAllStoredBalances)
 
   // this is similar to useNetworkByChain, but it doesn't throw if network is not set (during redirects)
   const network = useMemo(() => chainId && networks[chainId], [chainId, networks])
@@ -37,10 +36,6 @@ export const useAutoRefresh = (chainId: number | undefined) => {
   usePageVisibleInterval(() => {
     if (curveApi) {
       void fetchPoolsVolumeTvl(curveApi)
-
-      if (curveApi.signerAddress) {
-        void fetchAllStoredBalances(config, curveApi)
-      }
     }
   }, REFRESH_INTERVAL['5m'])
 

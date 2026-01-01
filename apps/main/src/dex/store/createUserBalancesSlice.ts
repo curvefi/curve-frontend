@@ -20,7 +20,6 @@ const sliceKey = 'userBalances'
 export type UserBalancesSlice = {
   [sliceKey]: SliceState & {
     fetchUserBalancesByTokens(config: Config, curve: CurveApi, addresses: string[]): Promise<UserBalancesMapper>
-    fetchAllStoredBalances(config: Config, curve: CurveApi): Promise<void>
     updateUserBalancesFromPool(tokens: UserBalancesMapper): void
 
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
@@ -81,10 +80,6 @@ export const createUserBalancesSlice = (
       })
 
       return get()[sliceKey].userBalancesMapper
-    },
-    fetchAllStoredBalances: async (config, curve) => {
-      const tokenAddresses = Object.keys(get().userBalances.userBalancesMapper)
-      await get().userBalances.fetchUserBalancesByTokens(config, curve, tokenAddresses)
     },
     updateUserBalancesFromPool: ({ gauge, lpToken, ...rest }) => {
       get().userBalances.setStateByKey('loading', true)
