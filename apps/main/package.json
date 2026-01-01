@@ -33,7 +33,7 @@
     "lightweight-charts": "^5.1.0",
     "memoizee": "^0.4.17",
     "react-hook-form": "7.68.0",
-    "recharts": "2.15.4",
+    "recharts": "3.6.0",
     "solid-js": "^1.9.10",
     "ui": "*",
     "vest": "^5.4.6",
