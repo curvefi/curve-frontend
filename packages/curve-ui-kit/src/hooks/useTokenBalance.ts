@@ -57,13 +57,11 @@ export function useTokenBalance(
   // TODO: refactor into a validation suite, same for usePoolTokenBalances and usePoolTokenDepositBalances
   enabled: boolean = true,
 ) {
-  const config = useConfig()
-
   const isEnabled = enabled && chainId != null && userAddress != null && tokenAddress != null
   const isNativeToken = tokenAddress != null && isNative({ tokenAddress })
 
   const nativeBalance = useBalance({
-    ...(isEnabled ? getNativeBalanceQueryOptions(config, { chainId, userAddress }) : {}),
+    ...(isEnabled ? { chainId, address: userAddress } : {}),
     query: { enabled: isEnabled && isNativeToken },
   })
 
