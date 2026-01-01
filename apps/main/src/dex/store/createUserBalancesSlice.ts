@@ -1,4 +1,3 @@
-import lodash from 'lodash'
 import type { Address } from 'viem'
 import type { Config } from 'wagmi'
 import { StoreApi } from 'zustand'
@@ -7,7 +6,6 @@ import { CurveApi, UserBalancesMapper } from '@/dex/types/main.types'
 import { fetchTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 
 type StateKey = keyof typeof DEFAULT_STATE
-const { cloneDeep } = lodash
 
 type SliceState = {
   userBalancesMapper: UserBalancesMapper
@@ -20,7 +18,6 @@ const sliceKey = 'userBalances'
 export type UserBalancesSlice = {
   [sliceKey]: SliceState & {
     fetchUserBalancesByTokens(config: Config, curve: CurveApi, addresses: string[]): Promise<UserBalancesMapper>
-    updateUserBalancesFromPool(tokens: UserBalancesMapper): void
 
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
     setStateByKey<T>(key: StateKey, value: T): void
@@ -81,19 +78,6 @@ export const createUserBalancesSlice = (
 
       return get()[sliceKey].userBalancesMapper
     },
-    updateUserBalancesFromPool: ({ gauge, lpToken, ...rest }) => {
-      get().userBalances.setStateByKey('loading', true)
-
-      const results: UserBalancesMapper = {}
-      for (const tokenAddress in rest) {
-        results[tokenAddress] = rest[tokenAddress]
-      }
-
-      get().userBalances.setStateByKeys({
-        userBalancesMapper: cloneDeep(mapUserBalances(results, get().userBalances.userBalancesMapper)),
-        loading: false,
-      })
-    },
 
     // slice helpers
     setStateByActiveKey: (key, activeKey, value) => {
@@ -110,11 +94,3 @@ export const createUserBalancesSlice = (
     },
   },
 })
-
-function mapUserBalances(updatedUserBalancesMapper: UserBalancesMapper, storedUserBalancesMapper: UserBalancesMapper) {
-  const cUserBalancesMapper = cloneDeep(storedUserBalancesMapper)
-  for (const tokenAddress in updatedUserBalancesMapper) {
-    cUserBalancesMapper[tokenAddress] = updatedUserBalancesMapper[tokenAddress]
-  }
-  return cUserBalancesMapper
-}
