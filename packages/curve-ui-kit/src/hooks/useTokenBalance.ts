@@ -2,10 +2,10 @@ import { useCallback, useMemo } from 'react'
 import { erc20Abi, ethAddress, formatUnits, isAddressEqual, type Address } from 'viem'
 import { useConfig } from 'wagmi'
 import { useBalance, useReadContracts } from 'wagmi'
-import { useQueries, type QueriesResults } from '@tanstack/react-query'
+import { useQueries, type QueriesResults, type QueryObserverOptions } from '@tanstack/react-query'
 import { combineQueriesToObject, type FieldsOf } from '@ui-kit/lib'
 import { queryClient } from '@ui-kit/lib/api'
-import type { ChainQuery, UserQuery } from '@ui-kit/lib/model'
+import { REFRESH_INTERVAL, type ChainQuery, type UserQuery } from '@ui-kit/lib/model'
 import { Decimal } from '@ui-kit/utils'
 import type { Config, ReadContractsReturnType } from '@wagmi/core'
 import type { GetBalanceReturnType } from '@wagmi/core'
@@ -70,6 +70,36 @@ export const fetchTokenBalance = async (config: Config, query: TokenBalanceQuery
         .then((results) => convertBalance(parseERC20Results(results)))
 
 /**
+ * Query freshness configuration for singular token balance queries.
+ *
+ * Wagmi defaults:
+ * - `staleTime: 0` - data is immediately stale, refetches on every mount/focus
+ * - `refetchInterval: false` - no automatic background refetching
+ *
+ * We configure these with low intervals, so we both have a bit of auto refreshing
+ * and caching (as it's used in many places and won't cause refetches in quick succession)
+ */
+const QUERY_FRESHNESS_OPTIONS = {
+  staleTime: REFRESH_INTERVAL['10s'],
+  refetchInterval: REFRESH_INTERVAL['1m'],
+} satisfies Pick<QueryObserverOptions, 'staleTime' | 'refetchInterval'>
+
+/**
+ * Query freshness configuration for batch token balance queries via `useQueries`.
+ *
+ * @remarks
+ * Unlike {@link QUERY_FRESHNESS_OPTIONS}, this omits `refetchInterval` to prevent performance
+ * issues when querying large token lists (e.g., token selector modal with 1000+ tokens).
+ *
+ * For the same performance reasons it also has a higher staleTime. We're okay if
+ * balances are not super up to date. Once the user decides to further use a token it'll
+ * get refetched anyway either thanks to {@link useTokenBalance} or {@link fetchTokenBalance}
+ */
+const QUERIES_FRESHNESS_OPTIONS = {
+  staleTime: REFRESH_INTERVAL['15m'],
+} satisfies Pick<QueryObserverOptions, 'staleTime'>
+
+/**
  * Fetch the balance of a single token (native or ERC-20).
  *
  * @remarks Uses `allowFailure: true` for ERC-20 to handle tokens without `decimals()` (e.g., old MKR, gauge tokens).
@@ -86,14 +116,14 @@ export function useTokenBalance(
 
   const nativeBalance = useBalance({
     ...(isEnabled ? { chainId, address: userAddress } : {}),
-    query: { enabled: isEnabled && isNativeToken },
+    query: { enabled: isEnabled && isNativeToken, ...QUERY_FRESHNESS_OPTIONS },
   })
 
   // Spreading with ...readContractsQueryOptions() breaks Typescript's type inference, so we have to settle with the
   // least common denominator that does *not* cause type  inference issues, which is getERC20QueryContracts.
   const erc20Balance = useReadContracts({
     contracts: isEnabled ? getERC20QueryContracts({ chainId, userAddress, tokenAddress }) : undefined,
-    query: { enabled: isEnabled && !isNativeToken },
+    query: { enabled: isEnabled && !isNativeToken, ...QUERY_FRESHNESS_OPTIONS },
   })
 
   if (isNativeToken) {
@@ -129,7 +159,12 @@ const getTokenBalanceQueryOptions = (config: Config, query: TokenBalanceQuery) =
         select: (data: ERC20ReadResult) => convertBalance(parseERC20Results(data)),
       }
 
-/** Hook to fetch balances for multiple tokens */
+/**
+ * Hook to fetch balances for multiple tokens (native and ERC-20).
+ * @remark
+ *   Uses `staleTime` for caching but **no auto-refresh** (`refetchInterval`)
+ *   to prevent performance issues with large token lists (e.g., token selector modal)
+ */
 export function useTokenBalances(
   { chainId, userAddress, tokenAddresses = [] }: FieldsOf<ChainQuery & UserQuery> & { tokenAddresses?: Address[] },
   enabled: boolean = true,
@@ -144,6 +179,7 @@ export function useTokenBalances(
       () =>
         uniqueAddresses.map((tokenAddress) => ({
           ...getTokenBalanceQueryOptions(config, { chainId: chainId!, userAddress: userAddress!, tokenAddress }),
+          ...QUERIES_FRESHNESS_OPTIONS,
           enabled: isEnabled,
         })),
       [config, chainId, userAddress, uniqueAddresses, isEnabled],
