@@ -5,7 +5,6 @@ import { StoreApi } from 'zustand'
 import type { State } from '@/dex/store/useStore'
 import { CurveApi, UserBalancesMapper } from '@/dex/types/main.types'
 import { fetchTokenBalance } from '@ui-kit/hooks/useTokenBalance'
-import { fetchNetworks } from '../entities/networks'
 
 type StateKey = keyof typeof DEFAULT_STATE
 const { cloneDeep } = lodash
@@ -53,16 +52,11 @@ export const createUserBalancesSlice = (
 
       if (!signerAddress) return {}
 
-      // remove bad tokens
-      const networks = await fetchNetworks()
-      const { excludeTokensBalancesMapper } = networks[chainId]
-      const filteredBadTokens = tokensAddresses.filter((address) => !excludeTokensBalancesMapper[address])
-
       sliceState.setStateByKey('loading', true)
 
       // This gets multicall batched by Wagmi and Viem internally
       const balances = await Promise.allSettled(
-        filteredBadTokens.map((token) =>
+        tokensAddresses.map((token) =>
           fetchTokenBalance(config, {
             chainId,
             userAddress: signerAddress,
@@ -73,7 +67,7 @@ export const createUserBalancesSlice = (
 
       balances.forEach((result, index) => {
         if (result.status === 'rejected') {
-          console.warn(`Failed to fetch balance for token ${filteredBadTokens[index]}:`, result.reason)
+          console.warn(`Failed to fetch balance for token ${tokensAddresses[index]}:`, result.reason)
         }
       })
 
