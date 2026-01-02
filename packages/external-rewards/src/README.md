@@ -21,6 +21,9 @@ Only Campaigns listed in [`campaign-list.json`](https://github.com/curvefi/curve
   },
   {
     "campaign": "ProtocolName.json"
+  },
+  {
+    "campaign": "ProtocolName.json"
   }
 ]
 ```
