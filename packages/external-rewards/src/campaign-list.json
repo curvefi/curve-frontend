@@ -109,5 +109,11 @@
   },
   {
     "campaign": "Yuzu.json"
+  },
+  {
+    "campaign": "TermMax.json"
+  },
+  {
+    "campaign": "Re.json"
   }
 ]

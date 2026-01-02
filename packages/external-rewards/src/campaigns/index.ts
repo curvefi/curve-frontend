@@ -22,10 +22,12 @@ import Loop from './Loop.json'
 import Mellow from './Mellow.json'
 import Noon from './Noon.json'
 import Pumpbtc from './Pumpbtc.json'
+import Re from './Re.json'
 import Resolv from './Resolv.json'
 import SolvProtocol from './SolvProtocol.json'
 import StableLabs from './StableLabs.json'
 import Symbiotic from './Symbiotic.json'
+import TermMax from './TermMax.json'
 import Tharwa from './Tharwa.json'
 import Vnx from './Vnx.json'
 import YieldFi from './YieldFi.json'
@@ -64,4 +66,6 @@ export {
   Ebisu,
   Liquity,
   Yuzu,
+  TermMax,
+  Re,
 }
