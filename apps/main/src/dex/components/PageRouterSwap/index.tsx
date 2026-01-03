@@ -35,6 +35,7 @@ import { useLayoutStore } from '@ui-kit/features/layout'
 import { LargeSxProps, TokenSelector } from '@ui-kit/features/select-token'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
+import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { useTokenUsdRate, useTokenUsdRates } from '@ui-kit/lib/model/entities/token-usd-rate'
@@ -99,6 +100,9 @@ const QuickSwap = ({
   const [confirmedLoss, setConfirmedLoss] = useState(false)
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
+
+  const [isOpenFromToken, openModalFromToken, closeModalFromToken] = useSwitch()
+  const [isOpenToToken, openModalToToken, closeModalToToken] = useSwitch()
 
   const { fromAddress, toAddress } = searchedParams
 
@@ -432,6 +436,9 @@ const QuickSwap = ({
             balances={userBalancesMapper}
             disabled={isDisable || !fromToken}
             tokenPrices={usdRatesMapper}
+            isOpen={!!isOpenFromToken}
+            onOpen={openModalFromToken}
+            onClose={closeModalFromToken}
             onToken={({ address: fromAddress }) => {
               const toAddress =
                 fromAddress === searchedParams.toAddress ? searchedParams.fromAddress : searchedParams.toAddress
@@ -477,6 +484,9 @@ const QuickSwap = ({
             disabled={isDisable || !toToken}
             tokenPrices={usdRatesMapper}
             disableMyTokens={true}
+            isOpen={!!isOpenToToken}
+            onOpen={openModalToToken}
+            onClose={closeModalToToken}
             onToken={({ address: toAddress }) => {
               const fromAddress =
                 toAddress === searchedParams.fromAddress ? searchedParams.toAddress : searchedParams.fromAddress

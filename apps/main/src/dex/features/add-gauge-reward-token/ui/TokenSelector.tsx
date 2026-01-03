@@ -11,6 +11,7 @@ import { ChainId, Token } from '@/dex/types/main.types'
 import { toTokenOption } from '@/dex/utils'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import { TokenSelector as TokenSelectorUIKit } from '@ui-kit/features/select-token'
+import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 
 export const TokenSelector = ({
@@ -28,6 +29,8 @@ export const TokenSelector = ({
   const { data: network } = useNetworkByChain({ chainId })
   const rewardTokenId = watch('rewardTokenId')
   const { tokensMapper } = useTokensMapper(chainId)
+
+  const [isOpen, openModal, closeModal] = useSwitch()
 
   const { data: gaugeRewardsDistributors, isSuccess: isGaugeRewardsDistributorsSuccess } = useGaugeRewardsDistributors({
     chainId,
@@ -77,6 +80,9 @@ export const TokenSelector = ({
         selectedToken={selectedToken}
         tokens={filteredTokens}
         disabled={disabled || filteredTokens.length === 0}
+        isOpen={!!isOpen}
+        onOpen={openModal}
+        onClose={closeModal}
         onToken={(token) => {
           setValue('rewardTokenId', token.address, { shouldValidate: true })
         }}
