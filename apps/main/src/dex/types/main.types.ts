@@ -138,7 +138,6 @@ export type Token = {
 }
 export type TokensMapper = { [tokenAddress: string]: Token | undefined }
 export type TokensNameMapper = { [tokenAddress: string]: string }
-export type UserBalancesMapper = { [tokenAddress: string]: string | undefined }
 export type GaugeStatus = { rewardsNeedNudging: boolean; areCrvRewardsStuckInBridge: boolean }
 
 export interface Gauge {
