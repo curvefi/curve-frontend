@@ -35,6 +35,7 @@ import { useLayoutStore } from '@ui-kit/features/layout'
 import { TokenList, TokenSelector } from '@ui-kit/features/select-token'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { usePageVisibleInterval } from '@ui-kit/hooks/usePageVisibleInterval'
+import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { useTokenUsdRate, useTokenUsdRates } from '@ui-kit/lib/model/entities/token-usd-rate'
@@ -99,6 +100,9 @@ export const QuickSwap = ({
   const [confirmedLoss, setConfirmedLoss] = useState(false)
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
+
+  const [isOpenFromToken, openModalFromToken, closeModalFromToken] = useSwitch()
+  const [isOpenToToken, openModalToToken, closeModalToToken] = useSwitch()
 
   const { fromAddress, toAddress } = searchedParams
 
@@ -425,7 +429,13 @@ export const QuickSwap = ({
         disabled={isDisable}
         testId="from-amount"
         tokenSelector={
-          <TokenSelector selectedToken={fromToken} disabled={isDisable || !fromToken}>
+          <TokenSelector
+            selectedToken={fromToken}
+            disabled={isDisable || !fromToken}
+            isOpen={!!isOpenFromToken}
+            onOpen={openModalFromToken}
+            onClose={closeModalFromToken}
+          >
             <TokenList
               tokens={tokens}
               balances={userBalancesMapper}
@@ -469,7 +479,13 @@ export const QuickSwap = ({
         disabled={isDisable}
         testId="to-amount"
         tokenSelector={
-          <TokenSelector selectedToken={toToken} disabled={isDisable || !toToken}>
+          <TokenSelector
+            selectedToken={toToken}
+            disabled={isDisable || !toToken}
+            isOpen={!!isOpenToToken}
+            onOpen={openModalToToken}
+            onClose={closeModalToToken}
+          >
             <TokenList
               tokens={tokens}
               balances={userBalancesMapper}

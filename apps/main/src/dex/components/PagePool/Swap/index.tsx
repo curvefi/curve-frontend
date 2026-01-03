@@ -32,6 +32,7 @@ import { notify } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { TokenList, TokenSelector } from '@ui-kit/features/select-token'
 import { usePageVisibleInterval } from '@ui-kit/hooks/usePageVisibleInterval'
+import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
@@ -124,6 +125,9 @@ export const Swap = ({
 
   const fromToken = selectList.find((x) => x.address.toLocaleLowerCase() == formValues.fromAddress)
   const toToken = selectList.find((x) => x.address.toLocaleLowerCase() == formValues.toAddress)
+
+  const [isOpenFromToken, openModalFromToken, closeModalFromToken] = useSwitch()
+  const [isOpenToToken, openModalToToken, closeModalToToken] = useSwitch()
 
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<FormValues>, isGetMaxFrom: boolean | null, updatedMaxSlippage: string | null) => {
@@ -369,7 +373,14 @@ export const Swap = ({
           balance={decimal(formValues.fromAmount)}
           inputBalanceUsd={decimal(formValues.fromAmount && fromUsdRate && fromUsdRate * +formValues.fromAmount)}
           tokenSelector={
-            <TokenSelector selectedToken={fromToken} disabled={isDisabled || selectList.length === 0} compact>
+            <TokenSelector
+              selectedToken={fromToken}
+              disabled={isDisabled || selectList.length === 0}
+              compact
+              onClose={closeModalFromToken}
+              isOpen={!!isOpenFromToken}
+              onOpen={openModalFromToken}
+            >
               <TokenList
                 tokens={selectList}
                 disableSearch
@@ -438,7 +449,14 @@ export const Swap = ({
           balance={decimal(formValues.toAmount)}
           disabled={isUndefined(hasRouter) || (!isUndefined(hasRouter) && !hasRouter) || isDisabled}
           tokenSelector={
-            <TokenSelector selectedToken={toToken} disabled={isDisabled || selectList.length === 0} compact>
+            <TokenSelector
+              selectedToken={toToken}
+              disabled={isDisabled || selectList.length === 0}
+              compact
+              isOpen={!!isOpenToToken}
+              onOpen={openModalToToken}
+              onClose={closeModalToToken}
+            >
               <TokenList
                 tokens={selectList}
                 disableSearch
