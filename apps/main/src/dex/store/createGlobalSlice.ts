@@ -1,10 +1,12 @@
 import { produce } from 'immer'
 import lodash from 'lodash'
+import type { Address } from 'viem'
 import type { Config } from 'wagmi'
 import type { StoreApi } from 'zustand'
 import { curvejsApi } from '@/dex/lib/curvejs'
 import type { State } from '@/dex/store/useStore'
 import { ChainId, CurveApi, NetworkConfigFromApi, Wallet } from '@/dex/types/main.types'
+import { prefetchTokenBalances } from '@ui-kit/hooks/useTokenBalance'
 import { log } from '@ui-kit/lib/logging'
 import { fetchNetworks } from '../entities/networks'
 
@@ -84,16 +86,13 @@ export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreAp
       state.pools.resetState()
       state.quickSwap.resetState()
       state.tokens.resetState()
-      state.userBalances.resetState()
       state.user.resetState()
-      state.userBalances.resetState()
       state.createPool.resetState()
       state.dashboard.resetState()
     }
 
     if (isUserSwitched) {
       state.user.resetState()
-      state.userBalances.resetState()
     }
 
     // update network settings from api
@@ -119,14 +118,21 @@ export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreAp
     const failedFetching24hOldVprice: { [poolAddress: string]: boolean } =
       chainId === 2222 ? await curvejsApi.network.getFailedFetching24hOldVprice() : {}
 
-    await state.pools.fetchPools(config, curveApi, poolIds, failedFetching24hOldVprice)
+    const pools = await state.pools.fetchPools(curveApi, poolIds, failedFetching24hOldVprice)
+    const userAddress = curveApi.signerAddress
+
+    // Prefetch user balances for the tokens from all pools improving token selector UX.
+    if (userAddress) {
+      const tokenAddresses = pools?.poolDatas.flatMap((pool) => pool.tokenAddresses as Address[]) ?? []
+      prefetchTokenBalances(config, { chainId, userAddress, tokenAddresses })
+    }
 
     if (isUserSwitched || isNetworkSwitched) {
       void state.pools.fetchPricesApiPools(chainId)
       void state.pools.fetchBasePools(curveApi)
     }
 
-    if (curveApi.signerAddress) {
+    if (userAddress) {
       void state.user.fetchUserPoolList(curveApi)
     }
 
