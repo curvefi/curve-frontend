@@ -191,3 +191,30 @@ export function useTokenBalances(
     ),
   })
 }
+
+/**
+ * Prefetch balances for multiple tokens into the query cache.
+ * Fire-and-forget during hydration, no need to await.
+ */
+export const prefetchTokenBalances = (
+  config: Config,
+  { chainId, userAddress, tokenAddresses }: ChainQuery & UserQuery & { tokenAddresses: Address[] },
+) => {
+  const uniqueAddresses = Array.from(new Set(tokenAddresses))
+
+  uniqueAddresses.forEach((tokenAddress) => {
+    const query = { chainId, userAddress, tokenAddress }
+
+    if (isNative(query)) {
+      void queryClient.prefetchQuery({
+        ...getNativeBalanceQueryOptions(config, query),
+        ...QUERIES_FRESHNESS_OPTIONS,
+      })
+    } else {
+      void queryClient.prefetchQuery({
+        ...readContractsQueryOptions(config, { contracts: getERC20QueryContracts(query) }),
+        ...QUERIES_FRESHNESS_OPTIONS,
+      })
+    }
+  })
+}
