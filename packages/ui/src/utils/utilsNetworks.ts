@@ -1,23 +1,11 @@
 import { Chain } from 'curve-ui-kit/src/utils/network'
-import { ethers } from 'ethers'
-import { CDN_ROOT_URL, CURVE_CDN_URL } from './utilsConstants'
 
 const NETWORK_BASE_CONFIG_DEFAULT = {
-  blocknativeSupport: true,
   name: '',
   gasL2: false,
   gasPricesUnit: 'GWEI',
   gasPricesUrl: '',
   gasPricesDefault: 0,
-  integrations: {
-    listUrl: `${CURVE_CDN_URL}/curve-external-integrations/integrations-list.json`,
-    tagsUrl: `${CURVE_CDN_URL}/curve-external-integrations/integrations-tags.json`,
-  },
-  rewards: {
-    baseUrl: CDN_ROOT_URL,
-    campaignsUrl: `${CURVE_CDN_URL}/curve-external-reward@latest/campaign-list.json`,
-    tagsUrl: `${CURVE_CDN_URL}/curve-external-reward@latest/reward-tags.json`,
-  },
   orgUIPath: '',
   isTestnet: false,
 }
@@ -200,14 +188,10 @@ export type NetworkMapping<TId extends string = string, TChainId extends number 
 
 export type BaseConfig<TId extends string = string, TChainId extends number = number> = NetworkDef<TId, TChainId> & {
   networkId: string
-  hex: string
-  blocknativeSupport: boolean
   gasL2: boolean
   gasPricesUnit: string
   gasPricesUrl: string
   gasPricesDefault: number
-  integrations: { listUrl: string; tagsUrl: string }
-  rewards: { baseUrl: string; campaignsUrl: string; tagsUrl: string }
   orgUIPath: string
 }
 
@@ -230,7 +214,6 @@ export function getBaseNetworksConfig<TId extends string, ChainId extends number
     symbol: nativeCurrencySymbol,
     id, // TODO: remove id or networkId
     networkId: id,
-    hex: ethers.toQuantity(chainId),
   }
 }
 
