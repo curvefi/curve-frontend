@@ -1,5 +1,4 @@
 import { enforce, group, test } from 'vest'
-import useStore from '@/dex/store/useStore'
 import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { TIME_FRAMES } from '@ui-kit/lib/model'
@@ -15,20 +14,23 @@ import { AddRewardParams, DepositRewardApproveParams, DepositRewardParams } from
 export const gaugeAddRewardValidationGroup = ({ distributorId, rewardTokenId }: AddRewardParams) =>
   group('gaugeAddRewardValidationGroup', () => {
     test('distributorId', () => addressValidationFn(distributorId))
-
     test('rewardTokenId', () => tokenIdValidationFn(rewardTokenId))
   })
 
-export const gaugeDepositRewardApproveValidationGroup = ({ rewardTokenId, amount }: DepositRewardApproveParams) =>
+export const gaugeDepositRewardApproveValidationGroup = ({
+  rewardTokenId,
+  amount,
+  userBalance,
+}: DepositRewardApproveParams) =>
   group('gaugeDepositRewardApproveValidationGroup', () => {
     test('rewardTokenId', () => tokenIdValidationFn(rewardTokenId))
-    test('amount', () => validateAmount({ rewardTokenId, amount }))
+    test('amount', () => validateAmount({ rewardTokenId, amount, userBalance }))
   })
 
-export const gaugeDepositRewardValidationGroup = ({ rewardTokenId, amount, epoch }: DepositRewardParams) =>
+export const gaugeDepositRewardValidationGroup = ({ rewardTokenId, amount, epoch, userBalance }: DepositRewardParams) =>
   group('gaugeDepositRewardValidationGroup', () => {
     test('rewardTokenId', () => tokenIdValidationFn(rewardTokenId))
-    test('amount', () => validateAmount({ rewardTokenId, amount }))
+    test('amount', () => validateAmount({ rewardTokenId, amount, userBalance }))
     test('epoch', () => {
       enforce(epoch)
         .message(t`Epoch is required`)
@@ -55,18 +57,17 @@ export const gaugeDepositRewardValidationSuite = createValidationSuite((data: De
   gaugeDepositRewardValidationGroup(data)
 })
 
-function validateAmount({ rewardTokenId, amount }: DepositRewardApproveParams) {
+function validateAmount({ rewardTokenId, amount, userBalance }: DepositRewardApproveParams) {
   amountValidationFn(amount)
   if (!rewardTokenId || !amount) return
 
-  const state = useStore.getState()
-  const userBalancesMapper = state.userBalances.userBalancesMapper
-  const tokenBalance = userBalancesMapper[rewardTokenId]
-
-  if (!tokenBalance) return
+  enforce(userBalance).condition((userBalance) => ({
+    pass: userBalance != null && +userBalance > 0,
+    message: t`Wallet balance is zero for the selected reward token`,
+  }))
 
   enforce(amount).condition((amount) => ({
-    pass: +amount < +tokenBalance,
-    message: t`Amount ${formatNumber(amount, { decimals: 5 })} > wallet balance ${formatNumber(tokenBalance, { decimals: 5 })}`,
+    pass: +amount <= +userBalance!,
+    message: t`Amount ${formatNumber(amount, { decimals: 5 })} > wallet balance ${formatNumber(userBalance, { decimals: 5 })}`,
   }))
 }
