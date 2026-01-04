@@ -20,7 +20,7 @@ export const FormContent = ({
   footer?: ReactNode
   header?: ReactNode
 }) => (
-  <WithWrapper shouldWrap={footer} Wrapper={Stack} gap={Spacing.md}>
+  <WithWrapper shouldWrap={footer} Wrapper={Stack} gap={Spacing.sm}>
     <WithWrapper shouldWrap={header} Wrapper={Stack} sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
       {header}
       <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }} gap={Spacing.md} padding={Spacing.md}>
