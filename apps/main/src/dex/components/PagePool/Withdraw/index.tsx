@@ -5,6 +5,7 @@ import FormUnstake from '@/dex/components/PagePool/Withdraw/components/FormUnsta
 import FormWithdraw from '@/dex/components/PagePool/Withdraw/components/FormWithdraw'
 import type { FormType } from '@/dex/components/PagePool/Withdraw/types'
 import useStore from '@/dex/store/useStore'
+import AlertBox from '@ui/AlertBox/AlertBox'
 import { t } from '@ui-kit/lib/i18n'
 import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
 import { FormContent } from '@ui-kit/widgets/DetailPageLayout/FormContent'
@@ -16,7 +17,7 @@ const tabs: TabOption<FormType>[] = [
 ]
 
 const Withdraw = (transferProps: TransferProps) => {
-  const { poolData } = transferProps
+  const { poolAlert, poolData } = transferProps
 
   const formType = useStore((state) => state.poolWithdraw.formType)
   const resetState = useStore((state) => state.poolWithdraw.resetState)
@@ -52,7 +53,12 @@ const Withdraw = (transferProps: TransferProps) => {
         />
       }
     >
-      {formType === 'WITHDRAW' && <FormWithdraw {...transferProps} />}
+      {formType === 'WITHDRAW' &&
+        (poolAlert?.isDisableWithdrawOnly ? (
+          <AlertBox {...poolAlert}>{poolAlert.message}</AlertBox>
+        ) : (
+          <FormWithdraw {...transferProps} />
+        ))}
       {formType === 'UNSTAKE' && <FormUnstake {...transferProps} />}
       {formType === 'CLAIM' && <FormClaim {...transferProps} />}
     </FormContent>
