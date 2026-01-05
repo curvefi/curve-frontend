@@ -36,7 +36,7 @@ export const useMarketDetails = ({
   const {
     data: {
       borrowApr: marketBorrowApr,
-      lendApr: marketLendApr,
+      lendApy: marketLendApy,
       collateralAmount,
       borrowedAmount,
       cap,
@@ -96,36 +96,30 @@ export const useMarketDetails = ({
     [lendingSnapshots],
   )
 
-  const borrowApr = marketBorrowApr == null ? null : Number(marketBorrowApr)
-  const supplyApy = marketLendApr == null ? null : Number(marketLendApr)
+  const borrowApr = marketBorrowApr && Number(marketBorrowApr)
+  const supplyApy = marketLendApy && Number(marketLendApy)
   const supplyAprCrvMinBoost = crvRates?.[0] ?? lendingSnapshots?.[0]?.lendAprCrv0Boost ?? 0
   const supplyAprCrvMaxBoost = crvRates?.[1] ?? lendingSnapshots?.[0]?.lendAprCrvMaxBoost ?? 0
   const collateralRebasingYield = lendingSnapshots?.[lendingSnapshots.length - 1]?.collateralToken?.rebasingYield // take only most recent rebasing yield
   const borrowRebasingYield = lendingSnapshots?.[lendingSnapshots.length - 1]?.borrowedToken?.rebasingYield // take only most recent rebasing yield
   const extraIncentivesTotalApr = sum(rewardsApr?.map((r) => r.apy) ?? [])
   const totalSupplyRateMinBoost =
-    supplyApy == null
-      ? null
-      : Number(supplyApy) + (borrowRebasingYield ?? 0) + extraIncentivesTotalApr + (supplyAprCrvMinBoost ?? 0)
+    supplyApy && Number(supplyApy) + (borrowRebasingYield ?? 0) + extraIncentivesTotalApr + (supplyAprCrvMinBoost ?? 0)
   const totalSupplyRateMaxBoost =
-    supplyApy == null
-      ? null
-      : Number(supplyApy) + (borrowRebasingYield ?? 0) + extraIncentivesTotalApr + (supplyAprCrvMaxBoost ?? 0)
-  const totalAverageBorrowRate = averageBorrowApy == null ? null : averageBorrowApy - (averageBorrowRebasingYield ?? 0)
+    supplyApy && Number(supplyApy) + (borrowRebasingYield ?? 0) + extraIncentivesTotalApr + (supplyAprCrvMaxBoost ?? 0)
+  const totalAverageBorrowRate = averageBorrowApy && averageBorrowApy - (averageBorrowRebasingYield ?? 0)
   const totalAverageSupplyRateMinBoost =
-    averageLendApy == null
-      ? null
-      : averageLendApy +
-        (averageSupplyRebasingYield ?? 0) +
-        (averageTotalExtraIncentivesApr ?? 0) +
-        (averageSupplyAprCrvMinBoost ?? 0)
+    averageLendApy &&
+    averageLendApy +
+      (averageSupplyRebasingYield ?? 0) +
+      (averageTotalExtraIncentivesApr ?? 0) +
+      (averageSupplyAprCrvMinBoost ?? 0)
   const totalAverageSupplyRateMaxBoost =
-    averageLendApy == null
-      ? null
-      : averageLendApy +
-        (averageSupplyRebasingYield ?? 0) +
-        (averageTotalExtraIncentivesApr ?? 0) +
-        (averageSupplyAprCrvMaxBoost ?? 0)
+    averageLendApy &&
+    averageLendApy +
+      (averageSupplyRebasingYield ?? 0) +
+      (averageTotalExtraIncentivesApr ?? 0) +
+      (averageSupplyAprCrvMaxBoost ?? 0)
 
   return {
     marketType: LlamaMarketType.Lend,
@@ -136,7 +130,7 @@ export const useMarketDetails = ({
       total: collateralAmount ?? null,
       totalUsdValue: collateralAmount && collateralUsdRate ? collateralAmount * collateralUsdRate : null,
       usdRate: collateralUsdRate ?? null,
-      loading: !market || isMarketDetailsLoading.marketCollateralAmounts || collateralUsdRateLoading,
+      loading: isMarketDetailsLoading.marketCollateralAmounts || collateralUsdRateLoading || !isHydrated,
     },
     borrowToken: {
       symbol: borrowed_token?.symbol ?? null,
@@ -144,7 +138,7 @@ export const useMarketDetails = ({
       total: borrowedAmount ?? null,
       totalUsdValue: borrowedAmount && borrowedUsdRate ? borrowedAmount * borrowedUsdRate : null,
       usdRate: borrowedUsdRate ?? null,
-      loading: !market || isMarketDetailsLoading.marketCollateralAmounts || borrowedUsdRateLoading,
+      loading: isMarketDetailsLoading.marketCollateralAmounts || borrowedUsdRateLoading || !isHydrated,
     },
     borrowRate: {
       rate: borrowApr,
@@ -155,10 +149,10 @@ export const useMarketDetails = ({
       totalBorrowRate: borrowApr == null ? null : borrowApr - (collateralRebasingYield ?? 0),
       totalAverageBorrowRate,
       extraRewards: campaigns,
-      loading: !market || isSnapshotsLoading || isMarketDetailsLoading.marketRates || !isHydrated,
+      loading: isSnapshotsLoading || isMarketDetailsLoading.marketRates || !isHydrated,
     },
     supplyRate: {
-      rate: supplyApy != null ? Number(supplyApy) : null,
+      rate: supplyApy,
       averageRate: averageLendApy ?? null,
       averageRateLabel: averageMultiplierString,
       supplyAprCrvMinBoost,
@@ -182,7 +176,6 @@ export const useMarketDetails = ({
         : [],
       extraRewards: campaigns,
       loading:
-        !market ||
         isSnapshotsLoading ||
         isMarketDetailsLoading.marketRates ||
         isMarketDetailsLoading.marketOnChainRewards ||
@@ -191,12 +184,12 @@ export const useMarketDetails = ({
     availableLiquidity: {
       value: available ?? null,
       max: cap ?? null,
-      loading: !market || isMarketDetailsLoading.marketCapAndAvailable,
+      loading: isMarketDetailsLoading.marketCapAndAvailable || !isHydrated,
     },
     maxLeverage: maxLeverage
       ? {
           value: Number(maxLeverage),
-          loading: !market || isMarketDetailsLoading.marketMaxLeverage,
+          loading: isMarketDetailsLoading.marketMaxLeverage || !isHydrated,
         }
       : undefined,
   }

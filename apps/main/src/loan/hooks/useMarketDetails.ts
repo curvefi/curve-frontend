@@ -60,7 +60,7 @@ export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetails
   )
 
   const totalAverageBorrowRate = averageRate == null ? null : averageRate - (averageRebasingYield ?? 0)
-  const borrowApr = marketRates?.borrowApr == null ? null : Number(marketRates.borrowApr)
+  const borrowApr = marketRates?.borrowApr && Number(marketRates.borrowApr)
 
   return {
     marketType: LlamaMarketType.Mint,

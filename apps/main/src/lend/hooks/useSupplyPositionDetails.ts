@@ -89,27 +89,24 @@ export const useSupplyPositionDetails = ({
   const supplyAprCrvMaxBoost = onChainRewards?.crvRates?.[1] ?? lendingSnapshots?.[0]?.lendAprCrvMaxBoost ?? 0
   const userCurrentCRVApr = (supplyAprCrvMinBoost ?? 0) * (userSupplyBoost ?? 1)
   const extraIncentivesTotalApr = onChainRewards?.rewardsApr?.reduce((acc, r) => acc + r.apy, 0) ?? 0
-  const userTotalCurrentSupplyApr = supplyApy
-    ? supplyApy + (rebasingYield ?? 0) + extraIncentivesTotalApr + userCurrentCRVApr
-    : null
-  const totalSupplyRateMinBoost = supplyApy
-    ? supplyApy + (rebasingYield ?? 0) + extraIncentivesTotalApr + (supplyAprCrvMinBoost ?? 0)
-    : null
-  const totalSupplyRateMaxBoost = supplyApy
-    ? supplyApy + (rebasingYield ?? 0) + extraIncentivesTotalApr + (supplyAprCrvMaxBoost ?? 0)
-    : null
-  const totalAverageSupplyRateMinBoost = averageRate
-    ? averageRate +
+  const userTotalCurrentSupplyApr =
+    supplyApy && supplyApy + (rebasingYield ?? 0) + extraIncentivesTotalApr + userCurrentCRVApr
+  const totalSupplyRateMinBoost =
+    supplyApy && supplyApy + (rebasingYield ?? 0) + extraIncentivesTotalApr + (supplyAprCrvMinBoost ?? 0)
+  const totalSupplyRateMaxBoost =
+    supplyApy && supplyApy + (rebasingYield ?? 0) + extraIncentivesTotalApr + (supplyAprCrvMaxBoost ?? 0)
+  const totalAverageSupplyRateMinBoost =
+    averageRate &&
+    averageRate +
       (averageRebasingYield ?? 0) +
       (averageTotalExtraIncentivesApr ?? 0) +
       (averageSupplyAprCrvMinBoost ?? 0)
-    : null
-  const totalAverageSupplyRateMaxBoost = averageRate
-    ? averageRate +
+  const totalAverageSupplyRateMaxBoost =
+    averageRate &&
+    averageRate +
       (averageRebasingYield ?? 0) +
       (averageTotalExtraIncentivesApr ?? 0) +
       (averageSupplyAprCrvMaxBoost ?? 0)
-    : null
 
   return {
     supplyRate: {

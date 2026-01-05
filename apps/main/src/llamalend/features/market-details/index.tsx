@@ -38,11 +38,11 @@ type BorrowRate = {
   rate: number | undefined | null
   averageRate: number | undefined | null
   averageRateLabel: string
-  rebasingYield: number | null
-  averageRebasingYield: number | null
+  rebasingYield: number | null | undefined
+  averageRebasingYield: number | null | undefined
   // total = rate - rebasingYield
-  totalBorrowRate: number | null
-  totalAverageBorrowRate: number | null
+  totalBorrowRate: number | null | undefined
+  totalAverageBorrowRate: number | null | undefined
   extraRewards: CampaignPoolRewards[]
   loading: boolean
 }
@@ -54,13 +54,13 @@ type SupplyRate = {
   supplyAprCrvMaxBoost: number | undefined | null
   averageSupplyAprCrvMinBoost: number | undefined | null
   averageSupplyAprCrvMaxBoost: number | undefined | null
-  rebasingYield: number | null
-  averageRebasingYield: number | null
+  rebasingYield: number | null | undefined
+  averageRebasingYield: number | null | undefined
   // total = rate - rebasingYield + combined extra incentives + boosted (min or max) yield
-  totalSupplyRateMinBoost: number | null
-  totalSupplyRateMaxBoost: number | null
-  totalAverageSupplyRateMinBoost: number | null
-  totalAverageSupplyRateMaxBoost: number | null
+  totalSupplyRateMinBoost: number | null | undefined
+  totalSupplyRateMaxBoost: number | null | undefined
+  totalAverageSupplyRateMinBoost: number | null | undefined
+  totalAverageSupplyRateMaxBoost: number | null | undefined
   extraIncentives: ExtraIncentive[]
   averageTotalExtraIncentivesApr: number | undefined | null
   extraRewards: CampaignPoolRewards[]
