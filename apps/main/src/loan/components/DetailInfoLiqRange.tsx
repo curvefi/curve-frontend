@@ -61,14 +61,9 @@ const DetailInfoLiqRange = ({
     ]
   }, [currPrices, newPrices, selectedLiqRange?.prices, loanDetails?.priceInfo])
 
-  const currBandsLabel = useMemo(() => formatNumberRange(currBands), [currBands])
-
-  const newBandsLabel = useMemo(
-    () =>
-      // todo: we should not use +selectedBands as that's an array!
-      formatNumberRange(selectedBands && +selectedBands > 0 ? selectedBands : newBands),
-    [selectedBands, newBands],
-  )
+  const currBandsLabel = formatNumberRange(currBands)
+  // todo: we should not use +selectedBands as that's an array!
+  const newBandsLabel = formatNumberRange(selectedBands && +selectedBands > 0 ? selectedBands : newBands)
 
   return (
     <>
@@ -122,11 +117,14 @@ const DetailInfoLiqRange = ({
           <span>
             {currBandsLabel} <Icon name="ArrowRight" size={16} className="svg-arrow" /> <strong>{newBandsLabel}</strong>
           </span>
-        ) : isValidFormValues && newBandsLabel ? (
-          <span>
-            <strong>{newBandsLabel}</strong>
-          </span>
-        ) : null}
+        ) : (
+          isValidFormValues &&
+          newBandsLabel && (
+            <span>
+              <strong>{newBandsLabel}</strong>
+            </span>
+          )
+        )}
       </DetailInfo>
     </>
   )

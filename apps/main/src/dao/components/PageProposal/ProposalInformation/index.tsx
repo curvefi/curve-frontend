@@ -5,7 +5,7 @@ import { ProposalData } from '@/dao/entities/proposals-mapper'
 import { getEthPath } from '@/dao/utils'
 import Box from '@ui/Box'
 import { InternalLink } from '@ui/Link'
-import { convertToLocaleTimestamp, formatDate } from '@ui/utils'
+import { formatDateFromTimestamp } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
 import { shortenAddress } from '@ui-kit/utils'
@@ -14,20 +14,14 @@ type ProposalInformationProps = {
   proposal: ProposalData | null
 }
 
+const WEEK_SECONDS = 7 * 24 * 60 * 60
+
 const ProposalInformation = ({ proposal }: ProposalInformationProps) => {
-  const createdDate = useMemo(
-    // eslint-disable-next-line react-hooks/preserve-manual-memoization
+  const timestamp = proposal?.timestamp
+  const [createdDate, endDate] = useMemo(
     () =>
-      proposal?.timestamp ? formatDate(new Date(convertToLocaleTimestamp(proposal.timestamp) * 1000), 'long') : '-',
-    [proposal?.timestamp],
-  )
-  const endDate = useMemo(
-    // eslint-disable-next-line react-hooks/preserve-manual-memoization
-    () =>
-      proposal?.timestamp
-        ? formatDate(new Date(convertToLocaleTimestamp(proposal.timestamp + 604800) * 1000), 'long')
-        : '-',
-    [proposal?.timestamp],
+      timestamp ? [0, WEEK_SECONDS].map((offset) => formatDateFromTimestamp(timestamp + offset, 'long')) : ['-', '-'],
+    [timestamp],
   )
 
   return (

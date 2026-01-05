@@ -7,7 +7,7 @@ import { SORT_ID } from '@/dex/components/PageDashboard/utils'
 import TableCellRewardsBase from '@/dex/components/PagePoolList/components/TableCellRewardsBase'
 import TableCellRewardsOthers from '@/dex/components/PagePoolList/components/TableCellRewardsOthers'
 import PoolRewardsCrv from '@/dex/components/PoolRewardsCrv'
-import { RewardsApy, PoolData } from '@/dex/types/main.types'
+import { PoolData, RewardsApy } from '@/dex/types/main.types'
 import { haveRewardsApy } from '@/dex/utils/utilsCurvejs'
 import { Chip } from '@ui/Typography'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
@@ -38,7 +38,6 @@ const TableCellRewards = ({
   const { rewardsNeedNudging, areCrvRewardsStuckInBridge } = poolData?.gauge.status || {}
   const showUserCrvRewards = !!poolData && !rewardsNeedNudging && !areCrvRewardsStuckInBridge
 
-  const parsedUserCrvApy = `${formatNumber(userCrvApy, { ...FORMAT_OPTIONS.PERCENT, defaultValue: '-' })} CRV`
   const rewards = haveRewards && (
     <>
       {!showUserCrvRewards ? (
@@ -60,7 +59,7 @@ const TableCellRewards = ({
           size="md"
         >
           <WithWrapper shouldWrap={sortBy === SORT_ID.userCrvApy} Wrapper={Bold}>
-            {parsedUserCrvApy}
+            {`${formatNumber(userCrvApy, { ...FORMAT_OPTIONS.PERCENT, defaultValue: '-' })} CRV`}
           </WithWrapper>{' '}
           {boostedCrvApy ? <DetailText> of {formatNumber(boostedCrvApy, FORMAT_OPTIONS.PERCENT)}</DetailText> : null}
         </Chip>

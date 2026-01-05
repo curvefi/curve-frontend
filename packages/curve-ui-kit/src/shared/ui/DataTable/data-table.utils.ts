@@ -26,6 +26,11 @@ export type TableItem = { url?: string | null }
 
 export type TanstackTable<T extends TableItem> = ReturnType<typeof useReactTable<T>>
 
+/**
+ * Wrapper around useReactTable to create a table instance.
+ * We ignore the lint rule for now as Tanstack table isn't supported with the React compiler yet.
+ * Note we don't use the compiler due to this reason, we only use the lint rules.
+ */
 export const useTable = <TData extends RowData>(options: TableOptions<TData>) =>
   // eslint-disable-next-line react-hooks/incompatible-library
   useReactTable<TData>(options)

@@ -78,14 +78,9 @@ const DetailInfoLiqRange = ({
     [currPrices, parsedNewPrices, loanPrices?.oraclePrice, loanPrices?.oraclePriceBand],
   )
 
-  const currBandsLabel = useMemo(() => formatNumberRange(currBands), [currBands])
-
-  const newBandsLabel = useMemo(
-    () =>
-      // todo: we should not use +selectedBands as that's an array!
-      formatNumberRange(selectedBands && +selectedBands > 0 ? selectedBands : newBands),
-    [selectedBands, newBands],
-  )
+  const currBandsLabel = formatNumberRange(currBands)
+  // todo: we should not use +selectedBands as that's an array!
+  const newBandsLabel = formatNumberRange(selectedBands && +selectedBands > 0 ? selectedBands : parsedNewBands)
 
   return (
     <>
