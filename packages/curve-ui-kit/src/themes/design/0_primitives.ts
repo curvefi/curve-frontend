@@ -141,6 +141,7 @@ export const Duration = {
   Snackbar: 6000,
   Tooltip: { Enter: 500, Exit: 500 },
   Transition: 256,
+  WalletConnectTimeout: 60000,
 }
 
 export const TransitionFunction = `ease-out ${Duration.Transition}ms`

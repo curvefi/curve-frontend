@@ -6,14 +6,14 @@ const WALLET_CONNECT_PROJECT_ID = '982ea4bdf92e49746bd040a981283b36'
 
 export const BINANCE_CONNECTOR = 'wallet.binance.com'
 
-export type ConnectorType =
+export type SupportedConnectorType =
   | typeof injected.type
   | typeof coinbaseWallet.type
   | typeof safe.type
   | typeof walletConnect.type
   | typeof BINANCE_CONNECTOR
 
-export const connectors: Record<ConnectorType, CreateConnectorFn> = {
+export const connectors: Record<SupportedConnectorType, CreateConnectorFn> = {
   [injected.type]: injected(),
   [BINANCE_CONNECTOR]: injected({
     target: {

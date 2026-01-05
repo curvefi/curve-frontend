@@ -42,10 +42,11 @@ export function useWagmiWallet() {
   const [isReconnecting, setIsReconnecting] = useState(true)
 
   useEffect(() => {
+    if (!isReconnecting) return // guard against multiple calls during development hot reloads
     void reconnectAsync()
       .catch((e) => console.warn('wagmi reconnect failed', e))
       .finally(() => setIsReconnecting(false))
-  }, [reconnectAsync])
+  }, [reconnectAsync, isReconnecting])
   return {
     isReconnecting,
     ...(useMemo(() => {

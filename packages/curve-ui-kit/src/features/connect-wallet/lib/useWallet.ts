@@ -5,7 +5,6 @@ import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useGlobalState } from '@ui-kit/hooks/useGlobalState'
 import { isCypress } from '@ui-kit/utils'
 import type { Wallet } from './types'
-import type { Connector } from './wagmi/wallets'
 
 const state: {
   provider: BrowserProvider | null
@@ -29,7 +28,7 @@ export const useWallet = () => {
   const { mutate: disconnect } = useDisconnect()
 
   const connect = useCallback(
-    async (selectedConnector?: Connector) => {
+    async (selectedConnector?: string) => {
       // When using Cypress, we want to use the one and only (test) connector without blocking modal
       if (!selectedConnector && !isCypress) {
         setShowModal(true)

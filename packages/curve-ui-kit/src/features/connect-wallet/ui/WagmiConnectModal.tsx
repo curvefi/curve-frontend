@@ -1,49 +1,90 @@
-import { useCallback, useState } from 'react'
+import { ReactNode, useCallback, useMemo, useState } from 'react'
 import type { BaseError } from 'viem'
+import { useConnectors } from 'wagmi'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
+import Box from '@mui/material/Box'
 import MenuList from '@mui/material/MenuList'
+import { BINANCE_CONNECTOR } from '@ui-kit/features/connect-wallet/lib/wagmi/connectors'
 import { t } from '@ui-kit/lib/i18n'
+import { BinanceWalletIcon } from '@ui-kit/shared/icons/BinanceWalletIcon'
+import { BrowserWalletIcon } from '@ui-kit/shared/icons/BrowserWalletIcon'
+import { CoinbaseWalletIcon } from '@ui-kit/shared/icons/CoinbaseWalletIcon'
+import { SafeWalletIcon } from '@ui-kit/shared/icons/SafeWalletIcon'
+import { WalletConnectIcon } from '@ui-kit/shared/icons/WalletConnectIcon'
 import { WalletIcon } from '@ui-kit/shared/icons/WalletIcon'
 import { MenuItem } from '@ui-kit/shared/ui/MenuItem'
 import { ModalDialog } from '@ui-kit/shared/ui/ModalDialog'
 import { handleBreakpoints } from '@ui-kit/themes/basic-theme'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { useWallet } from '../lib'
-import { supportedWallets, type Connector, type WalletType } from '../lib/wagmi/wallets'
 
 const { IconSize } = SizesAndSpaces
+
+/**
+ * The Safe connector only works inside the Safe application, where the Curve app is loaded in an iframe.
+ * Trying to use the Safe connector outside the iframe will result in an error.
+ */
+const isInIframe = typeof window !== 'undefined' && window !== window.parent
+
+const walletsIcons = {
+  injected: BrowserWalletIcon,
+  walletConnect: WalletConnectIcon,
+  [BINANCE_CONNECTOR]: BinanceWalletIcon,
+  coinbaseWalletSDK: CoinbaseWalletIcon,
+  safe: SafeWalletIcon,
+}
 
 /**
  * Menu item for each wallet type. Only needed so we can useCallback
  */
 const WalletListItem = ({
-  onConnect: connect,
-  wallet,
+  label,
+  icon,
+  connector,
+  onConnect,
   isLoading,
-  isDisabled,
 }: {
-  wallet: WalletType
-  onConnect: (wallet: WalletType) => Promise<void>
+  label: string
+  icon: ReactNode
+  connector: string
+  onConnect: (connector: string) => Promise<void>
   isLoading?: boolean
-  isDisabled?: boolean
 }) => {
-  const { label, icon: Icon } = wallet
-  const onConnect = useCallback(() => connect(wallet), [connect, wallet])
-
+  const handleConnect = useCallback(() => onConnect(connector), [connector, onConnect])
   return (
     <MenuItem
       key={label}
       label={label}
       labelVariant="bodyMBold"
-      icon={<Icon sx={handleBreakpoints({ width: IconSize.xl, height: IconSize.xl })} />}
+      icon={icon}
       value={label}
-      onSelected={onConnect}
+      onSelected={handleConnect}
       isLoading={isLoading}
-      disabled={isDisabled && !isLoading}
     />
   )
 }
+
+const iconSx = handleBreakpoints({ width: IconSize.xl, height: IconSize.xl })
+
+const getWalletItems = (connectors: ReturnType<typeof useConnectors>) =>
+  connectors
+    .toSorted((a, b) => a.name.localeCompare(b.name))
+    .filter(({ id }) => id != 'safe' || isInIframe)
+    .map(({ icon, id, name }) => {
+      const Icon = walletsIcons[id as keyof typeof walletsIcons]
+      return {
+        label: name.replace(/\s*Injected$/, '') || t`Browser Wallet`,
+        connector: id,
+        icon: Icon ? (
+          <Icon sx={iconSx} />
+        ) : icon ? (
+          <Box component="img" src={icon} alt={name} sx={iconSx} />
+        ) : (
+          <WalletIcon sx={iconSx} />
+        ),
+      }
+    })
 
 /**
  * Display a list of wallets to choose from, connecting to the selected one.
@@ -51,11 +92,12 @@ const WalletListItem = ({
  */
 export const WagmiConnectModal = () => {
   const { connect, showModal, closeModal } = useWallet()
+  const connectors = useConnectors()
   const [error, setError] = useState<unknown>(null)
-  const [isConnectingType, setIsConnectingType] = useState<Connector | null>(null)
+  const [isConnectingType, setIsConnectingType] = useState<string | null>(null)
 
   const onConnect = useCallback(
-    async ({ connector }: WalletType) => {
+    async (connector: string) => {
       setError(null)
       try {
         setIsConnectingType(connector)
@@ -70,14 +112,7 @@ export const WagmiConnectModal = () => {
     [connect],
   )
 
-  const wallets = supportedWallets.map((wallet) => ({
-    wallet: wallet,
-    onConnect: onConnect,
-    key: wallet.label,
-    isLoading: isConnectingType == wallet.connector,
-    isDisabled: !!isConnectingType,
-  }))
-
+  const walletItems = useMemo(() => getWalletItems(connectors), [connectors])
   return (
     <ModalDialog
       open={showModal}
@@ -109,8 +144,13 @@ export const WagmiConnectModal = () => {
         </Alert>
       ) : null}
       <MenuList>
-        {wallets.map(({ key, ...props }) => (
-          <WalletListItem key={key} {...props} />
+        {walletItems.map((wallet) => (
+          <WalletListItem
+            key={wallet.connector}
+            {...wallet}
+            onConnect={onConnect}
+            isLoading={isConnectingType === wallet.connector}
+          />
         ))}
       </MenuList>
     </ModalDialog>
