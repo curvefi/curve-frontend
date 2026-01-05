@@ -35,8 +35,8 @@ export const useMarketDetails = ({
 
   const {
     data: {
-      borrowApy: marketBorrowApy,
-      lendApy: marketLendApy,
+      borrowApr: marketBorrowApr,
+      lendApr: marketLendApr,
       collateralAmount,
       borrowedAmount,
       cap,
@@ -96,8 +96,8 @@ export const useMarketDetails = ({
     [lendingSnapshots],
   )
 
-  const borrowApr = marketBorrowApy == null ? null : Number(marketBorrowApy)
-  const supplyApy = marketLendApy == null ? null : Number(marketLendApy)
+  const borrowApr = marketBorrowApr == null ? null : Number(marketBorrowApr)
+  const supplyApy = marketLendApr == null ? null : Number(marketLendApr)
   const supplyAprCrvMinBoost = crvRates?.[0] ?? lendingSnapshots?.[0]?.lendAprCrv0Boost ?? 0
   const supplyAprCrvMaxBoost = crvRates?.[1] ?? lendingSnapshots?.[0]?.lendAprCrvMaxBoost ?? 0
   const collateralRebasingYield = lendingSnapshots?.[lendingSnapshots.length - 1]?.collateralToken?.rebasingYield // take only most recent rebasing yield
