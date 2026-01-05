@@ -131,9 +131,9 @@ export const IntegrationsList = ({ chainId, networks }: IntegrationsListProps) =
         {!integrationsFiltered.length ? (
           <Box sx={{ display: 'flex', justifyContent: 'center', padding: Spacing.xxl }}>
             <Trans>
-              No integration apps found with for {searchText ? <>&ldquo;{searchText}&rdquo;</> : ''}{' '}
+              No integration apps found with for {searchText ? <>“{searchText}”</> : ''}{' '}
               {!!searchText && !!filterTag ? <>and </> : ''}
-              {filterTag ? <>&ldquo;{filterTag}&rdquo;</> : ''}
+              {filterTag ? <>“{filterTag}”</> : ''}
             </Trans>
           </Box>
         ) : (
