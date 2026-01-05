@@ -9,7 +9,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { LlamaMarketType } from '@ui-kit/types/market'
 import type {
   Pnl,
-  BorrowAPY,
+  BorrowRate,
   Leverage,
   CollateralValue,
   Ltv,
@@ -34,7 +34,7 @@ const dollarUnitOptions = {
 
 type BorrowInformationProps = {
   marketType: LlamaMarketType
-  borrowAPY: BorrowAPY | undefined | null
+  borrowRate: BorrowRate | undefined | null
   pnl: Pnl | undefined | null
   collateralValue: CollateralValue | undefined | null
   ltv: Ltv | undefined | null
@@ -47,7 +47,7 @@ type BorrowInformationProps = {
 
 export const BorrowInformation = ({
   marketType,
-  borrowAPY,
+  borrowRate,
   pnl,
   collateralValue,
   ltv,
@@ -74,13 +74,13 @@ export const BorrowInformation = ({
       <Metric
         size="medium"
         label={t`Borrow rate`}
-        value={borrowAPY?.totalBorrowRate}
-        loading={borrowAPY?.totalBorrowRate == null && borrowAPY?.loading}
+        value={borrowRate?.totalBorrowRate}
+        loading={borrowRate?.totalBorrowRate == null && borrowRate?.loading}
         valueOptions={{ unit: 'percentage', color: 'warning' }}
         notional={
-          borrowAPY?.totalAverageBorrowRate
+          borrowRate?.totalAverageBorrowRate
             ? {
-                value: borrowAPY.totalAverageBorrowRate,
+                value: borrowRate.totalAverageBorrowRate,
                 unit: { symbol: '% 30D Avg', position: 'suffix' },
               }
             : undefined
@@ -90,14 +90,14 @@ export const BorrowInformation = ({
           body: (
             <MarketBorrowRateTooltipContent
               marketType={marketType}
-              borrowRate={borrowAPY?.rate}
-              totalBorrowRate={borrowAPY?.totalBorrowRate}
-              totalAverageBorrowRate={borrowAPY?.totalAverageBorrowRate}
-              averageRate={borrowAPY?.averageRate}
-              rebasingYield={borrowAPY?.rebasingYield}
+              borrowRate={borrowRate?.rate}
+              totalBorrowRate={borrowRate?.totalBorrowRate}
+              totalAverageBorrowRate={borrowRate?.totalAverageBorrowRate}
+              averageRate={borrowRate?.averageRate}
+              rebasingYield={borrowRate?.rebasingYield}
               collateralSymbol={collateralValue?.collateral?.symbol}
-              periodLabel={borrowAPY?.averageRateLabel ?? ''}
-              extraRewards={borrowAPY?.extraRewards ?? []}
+              periodLabel={borrowRate?.averageRateLabel ?? ''}
+              extraRewards={borrowRate?.extraRewards ?? []}
             />
           ),
           placement: 'top',

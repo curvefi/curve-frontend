@@ -60,6 +60,7 @@ export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetails
   )
 
   const totalAverageBorrowRate = averageRate == null ? null : averageRate - (averageRebasingYield ?? 0)
+  const borrowApr = marketRates?.borrowApr == null ? null : Number(marketRates.borrowApr)
 
   return {
     marketType: LlamaMarketType.Mint,
@@ -80,17 +81,16 @@ export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetails
       usdRate: borrowedUsdRate ? Number(borrowedUsdRate) : null,
       loading: borrowedUsdRateLoading || (loanDetails?.loading ?? true),
     },
-    borrowAPY: {
-      rate: marketRates?.borrowApr ? Number(marketRates?.borrowApr) : null,
+    borrowRate: {
+      rate: borrowApr,
       averageRate: averageRate,
       averageRateLabel: averageMultiplierString,
       rebasingYield: crvUsdSnapshots?.[crvUsdSnapshots.length - 1]?.collateralToken.rebasingYield ?? null,
       averageRebasingYield: averageRebasingYield ?? null,
       totalAverageBorrowRate,
       extraRewards: campaigns,
-      totalBorrowRate: marketRates?.borrowApr
-        ? Number(marketRates?.borrowApr) -
-          (crvUsdSnapshots?.[crvUsdSnapshots.length - 1]?.collateralToken.rebasingYield ?? 0)
+      totalBorrowRate: borrowApr
+        ? borrowApr - (crvUsdSnapshots?.[crvUsdSnapshots.length - 1]?.collateralToken.rebasingYield ?? 0)
         : null,
       loading: isSnapshotsLoading || isMarketRatesLoading || !isHydrated,
     },

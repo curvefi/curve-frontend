@@ -2,12 +2,12 @@ import lodash from 'lodash'
 import { useMemo } from 'react'
 import { useMarketDetails as useLendMarketDetails } from '@/lend/entities/market-details'
 import { networks } from '@/lend/networks'
-import useStore from '@/lend/store/useStore'
 import type { ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import type { MarketDetailsProps } from '@/llamalend/features/market-details'
 import type { Chain, Address } from '@curvefi/prices-api'
 import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import { useLendingSnapshots } from '@ui-kit/entities/lending-snapshots'
+import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { calculateAverageRates } from '@ui-kit/utils/averageRates'
@@ -28,13 +28,23 @@ export const useMarketDetails = ({
   market,
   marketId,
 }: UseMarketDetailsProps): Omit<MarketDetailsProps, 'marketPage'> => {
+  const { isHydrated } = useCurve()
   const blockchainId = networks[chainId]?.id as Chain
   const { collateral_token, borrowed_token } = market ?? {}
   const { controller, vault } = market?.addresses ?? {}
-  const marketRate = useStore((state) => state.markets.ratesMapper[chainId]?.[marketId])
 
   const {
-    data: { rates, collateralAmount, borrowedAmount, cap, available, maxLeverage, crvRates, rewardsApr },
+    data: {
+      borrowApy: marketBorrowApy,
+      lendApy: marketLendApy,
+      collateralAmount,
+      borrowedAmount,
+      cap,
+      available,
+      maxLeverage,
+      crvRates,
+      rewardsApr,
+    },
     isLoading: isMarketDetailsLoading,
   } = useLendMarketDetails({ chainId, marketId })
   const { data: lendingSnapshots, isLoading: isSnapshotsLoading } = useLendingSnapshots({
@@ -86,8 +96,8 @@ export const useMarketDetails = ({
     [lendingSnapshots],
   )
 
-  const borrowApy = rates?.borrowApy ?? marketRate?.rates?.borrowApy
-  const supplyApy = rates?.lendApy ?? marketRate?.rates?.lendApy
+  const borrowApr = marketBorrowApy == null ? null : Number(marketBorrowApy)
+  const supplyApy = marketLendApy == null ? null : Number(marketLendApy)
   const supplyAprCrvMinBoost = crvRates?.[0] ?? lendingSnapshots?.[0]?.lendAprCrv0Boost ?? 0
   const supplyAprCrvMaxBoost = crvRates?.[1] ?? lendingSnapshots?.[0]?.lendAprCrvMaxBoost ?? 0
   const collateralRebasingYield = lendingSnapshots?.[lendingSnapshots.length - 1]?.collateralToken?.rebasingYield // take only most recent rebasing yield
@@ -136,18 +146,18 @@ export const useMarketDetails = ({
       usdRate: borrowedUsdRate ?? null,
       loading: !market || isMarketDetailsLoading.marketCollateralAmounts || borrowedUsdRateLoading,
     },
-    borrowAPY: {
-      rate: borrowApy != null ? Number(borrowApy) : null,
+    borrowRate: {
+      rate: borrowApr,
       averageRate: averageBorrowApy ?? null,
       averageRateLabel: averageMultiplierString,
       rebasingYield: collateralRebasingYield ?? null,
       averageRebasingYield: averageBorrowRebasingYield ?? null,
-      totalBorrowRate: borrowApy == null ? null : Number(borrowApy) - (collateralRebasingYield ?? 0),
+      totalBorrowRate: borrowApr == null ? null : borrowApr - (collateralRebasingYield ?? 0),
       totalAverageBorrowRate,
       extraRewards: campaigns,
-      loading: !market || isSnapshotsLoading || isMarketDetailsLoading.marketOnChainRates,
+      loading: !market || isSnapshotsLoading || isMarketDetailsLoading.marketRates || !isHydrated,
     },
-    supplyAPY: {
+    supplyRate: {
       rate: supplyApy != null ? Number(supplyApy) : null,
       averageRate: averageLendApy ?? null,
       averageRateLabel: averageMultiplierString,
@@ -171,7 +181,12 @@ export const useMarketDetails = ({
           }))
         : [],
       extraRewards: campaigns,
-      loading: !market || isSnapshotsLoading || isMarketDetailsLoading.marketOnChainRates,
+      loading:
+        !market ||
+        isSnapshotsLoading ||
+        isMarketDetailsLoading.marketRates ||
+        isMarketDetailsLoading.marketOnChainRewards ||
+        !isHydrated,
     },
     availableLiquidity: {
       value: available ?? null,

@@ -121,6 +121,7 @@ export const useLoanPositionDetails = ({
   }, [collateral, stablecoin, collateralUsdRate])
 
   const collateralRebasingYield = crvUsdSnapshots?.[crvUsdSnapshots.length - 1]?.collateralToken.rebasingYield // take only most recent rebasing yield
+  const borrowApr = marketRates?.borrowApr == null ? null : Number(marketRates.borrowApr)
 
   return {
     marketType: LlamaMarketType.Mint,
@@ -132,13 +133,13 @@ export const useLoanPositionDetails = ({
       value: Number(healthMode.percent),
       loading: userLoanDetailsLoading ?? true,
     },
-    borrowAPY: {
-      rate: marketRates?.borrowApr ? Number(marketRates?.borrowApr) : null,
+    borrowRate: {
+      rate: borrowApr,
       rebasingYield: collateralRebasingYield ?? null,
       averageRate: averageRate,
       averageRebasingYield: averageRebasingYield ?? null,
       averageRateLabel: averageMultiplierString,
-      totalBorrowRate: marketRates?.borrowApr ? Number(marketRates?.borrowApr) - (collateralRebasingYield ?? 0) : null,
+      totalBorrowRate: borrowApr ? borrowApr - (collateralRebasingYield ?? 0) : null,
       totalAverageBorrowRate: averageRate == null ? null : averageRate - (averageRebasingYield ?? 0),
       extraRewards: campaigns,
       loading: isSnapshotsLoading || isMarketRatesLoading || !isHydrated,
