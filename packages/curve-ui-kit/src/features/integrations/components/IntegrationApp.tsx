@@ -66,8 +66,8 @@ export const IntegrationAppComp = ({
 
             {/** Could be replaced with icon buttons if somebody's feeling cute */}
             <Stack direction="row" gap={Spacing.md}>
-              {appUrl && <InlineLink href={appUrl}>App</InlineLink>}
-              {twitterUrl && <InlineLink href={twitterUrl}>Twitter</InlineLink>}
+              {appUrl && <InlineLink to={appUrl}>App</InlineLink>}
+              {twitterUrl && <InlineLink to={twitterUrl}>Twitter</InlineLink>}
             </Stack>
           </Stack>
         </Grid>

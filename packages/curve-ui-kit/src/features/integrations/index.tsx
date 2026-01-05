@@ -27,7 +27,7 @@ export const Integrations = (listProps: IntegrationsListProps) => (
         is made as to the authenticity, veracity or safety of any of these protocols. You assume all risks for using any
         links, so please conduct your own research and exercise caution. If you observe any issues with any link or
         would like to add to this list, please create a PR in the following Github repository{' '}
-        <InlineLink href="https://github.com/curvefi/curve-external-integrations">
+        <InlineLink to="https://github.com/curvefi/curve-external-integrations">
           https://github.com/curvefi/curve-external-integrations
         </InlineLink>
       </Trans>
