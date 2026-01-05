@@ -25,11 +25,7 @@ const averageMultiplierString = `${averageMultiplier}D`
 
 export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetailsProps): MarketDetailsProps => {
   const { isHydrated } = useCurve()
-  const {
-    data: marketRates,
-    isLoading: isMarketRatesLoading,
-    isError: isMarketRatesError,
-  } = useMarketRates({ chainId, marketId: llammaId }, true)
+  const { data: marketRates, isLoading: isMarketRatesLoading } = useMarketRates({ chainId, marketId: llammaId })
   const blockchainId = networks[chainId]?.id
   const { data: campaigns } = useCampaignsByAddress({
     blockchainId,

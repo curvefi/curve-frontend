@@ -39,7 +39,7 @@ export const useLoanPositionDetails = ({
   llammaId,
 }: UseLoanPositionDetailsProps): BorrowPositionDetailsProps => {
   const { isHydrated } = useCurve()
-  const { data: marketRates, isLoading: isMarketRatesLoading } = useMarketRates({ chainId, marketId: llammaId }, true)
+  const { data: marketRates, isLoading: isMarketRatesLoading } = useMarketRates({ chainId, marketId: llammaId })
   const blockchainId = networks[chainId]?.id
   const { address: userAddress } = useConnection()
   const { data: campaigns } = useCampaignsByAddress({
