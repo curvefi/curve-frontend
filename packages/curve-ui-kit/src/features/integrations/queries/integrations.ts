@@ -32,7 +32,6 @@ export const { useQuery: useIntegrations } = queryFactory({
   validationSuite: EmptyValidationSuite,
 })
 
-// remove all non crvusd integrations
 export function parseIntegrationsList(integrationsList: IntegrationsResponse) {
   const parsedIntegrationsList: IntegrationApp[] = []
 
@@ -44,9 +43,7 @@ export function parseIntegrationsList(integrationsList: IntegrationsResponse) {
       }
       const parsedTags: { [tag: string]: boolean } = {}
       for (const n of tags) {
-        if (n !== 'crvusd') {
-          parsedTags[n] = true
-        }
+        parsedTags[n] = true
       }
       parsedIntegrationsList.push({ ...rest, networks: parsedNetworks, tags: parsedTags })
     }
