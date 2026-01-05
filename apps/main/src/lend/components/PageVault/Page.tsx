@@ -15,25 +15,22 @@ import { getCollateralListPathname, getLoanPathname, parseMarketParams } from '@
 import { MarketDetails } from '@/llamalend/features/market-details'
 import { NoPosition, SupplyPositionDetails } from '@/llamalend/features/market-position-details'
 import { useLoanExists } from '@/llamalend/queries/loan-exists'
-import { DetailPageStack } from '@/llamalend/widgets/DetailPageStack'
 import Stack from '@mui/material/Stack'
-import { AppPageFormsWrapper } from '@ui/AppPage'
-import Box from '@ui/Box'
-import { ConnectWalletPrompt, isLoading, useCurve, useWallet } from '@ui-kit/features/connect-wallet'
+import { ConnectWalletPrompt, useCurve } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
 
 const { Spacing } = SizesAndSpaces
 
 const Page = () => {
   const params = useParams<MarketUrlParams>()
   const { rMarket, rChainId } = parseMarketParams(params)
-  const { connect, provider } = useWallet()
-  const { llamaApi: api = null, connectState } = useCurve()
+  const { llamaApi: api = null, provider } = useCurve()
   const titleMapper = useTitleMapper()
   const { data: market, isSuccess } = useOneWayMarket(rChainId, rMarket)
 
@@ -108,41 +105,28 @@ const Page = () => {
   return isSuccess && !market ? (
     <ErrorPage title="404" subtitle={t`Market Not Found`} continueUrl={getCollateralListPathname(params)} />
   ) : provider ? (
-    <>
-      <DetailPageStack>
-        <AppPageFormsWrapper>{rChainId && rOwmId && <VaultTabs {...pageProps} params={params} />}</AppPageFormsWrapper>
-        <Stack flexDirection="column" flexGrow={1} sx={{ gap: Spacing.md }}>
-          <CampaignRewardsBanner
-            chainId={rChainId}
-            borrowAddress={market?.addresses?.controller || ''}
-            supplyAddress={market?.addresses?.vault || ''}
-          />
-          <MarketInformationTabs currentTab="supply" hrefs={positionDetailsHrefs}>
-            {hasSupplyPosition ? (
-              <SupplyPositionDetails {...supplyPositionDetails} />
-            ) : (
-              <Stack padding={Spacing.md} sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
-                <NoPosition type="supply" />
-              </Stack>
-            )}
-          </MarketInformationTabs>
-          <Stack>
-            <MarketDetails {...marketDetails} />
-            <MarketInformationComp loanExists={loanExists} pageProps={pageProps} userActiveKey={''} type="supply" />
-          </Stack>
-        </Stack>
-      </DetailPageStack>
-    </>
-  ) : (
-    <Box display="flex" fillWidth flexJustifyContent="center" margin="var(--spacing-3) 0">
-      <ConnectWalletPrompt
-        description={t`Connect your wallet to view market`}
-        connectText={t`Connect`}
-        loadingText={t`Connecting`}
-        connectWallet={() => connect()}
-        isLoading={isLoading(connectState)}
+    <DetailPageLayout formTabs={rChainId && rOwmId && <VaultTabs {...pageProps} params={params} />}>
+      <CampaignRewardsBanner
+        chainId={rChainId}
+        borrowAddress={market?.addresses?.controller || ''}
+        supplyAddress={market?.addresses?.vault || ''}
       />
-    </Box>
+      <MarketInformationTabs currentTab="supply" hrefs={positionDetailsHrefs}>
+        {hasSupplyPosition ? (
+          <SupplyPositionDetails {...supplyPositionDetails} />
+        ) : (
+          <Stack padding={Spacing.md} sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
+            <NoPosition type="supply" />
+          </Stack>
+        )}
+      </MarketInformationTabs>
+      <Stack>
+        <MarketDetails {...marketDetails} />
+        <MarketInformationComp loanExists={loanExists} pageProps={pageProps} userActiveKey={''} type="supply" />
+      </Stack>
+    </DetailPageLayout>
+  ) : (
+    <ConnectWalletPrompt description={t`Connect your wallet to view market`} />
   )
 }
 

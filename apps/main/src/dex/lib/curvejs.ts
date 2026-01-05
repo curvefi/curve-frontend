@@ -393,7 +393,6 @@ const router = {
     log('swap', fromAddress, fromAmount, toAddress, slippageTolerance)
     const resp = { activeKey, hash: '', swappedAmount: '', error: '' }
     try {
-      // @ts-ignore
       const contractTransaction = await curve.router.swap(fromAddress, toAddress, fromAmount, +slippageTolerance)
       if (contractTransaction) {
         await helpers.waitForTransaction(contractTransaction.hash, provider)
@@ -1219,26 +1218,6 @@ const wallet = {
     }
     return fetchedUserClaimable
   },
-  poolWalletBalances: async (curve: CurveApi, poolId: string) => {
-    log('poolUserPoolBalances', curve?.signerAddress, poolId)
-    const p = curve.getPool(poolId)
-    const [wrappedCoinBalances, underlyingBalances, lpTokenBalances] = await Promise.all([
-      p.wallet.wrappedCoinBalances(),
-      p.wallet.underlyingCoinBalances(),
-      p.wallet.lpTokenBalances(),
-    ])
-    const balances: { [tokenAddress: string]: string } = {}
-
-    Object.entries({
-      ...wrappedCoinBalances,
-      ...underlyingBalances,
-      ...lpTokenBalances,
-    }).forEach(([address, balance]) => {
-      balances[address] = new BN(balance as string).toString()
-    })
-
-    return balances
-  },
   userClaimableFees: async (curve: CurveApi, activeKey: string, walletAddress: string) => {
     log('userClaimableFees', activeKey, walletAddress)
     const resp = { activeKey, '3CRV': '', crvUSD: '', error: '' }
@@ -1302,8 +1281,7 @@ const wallet = {
 
     if (isValidAddress(p.gauge.address) && !p.rewardsOnly()) {
       const fetchedCurrentCrvApy = await p.userCrvApy(walletAddress)
-      // @ts-ignore
-      if (fetchedCurrentCrvApy !== 'NaN') {
+      if (String(fetchedCurrentCrvApy) !== 'NaN') {
         userCrvApy = fetchedCurrentCrvApy
       }
     }

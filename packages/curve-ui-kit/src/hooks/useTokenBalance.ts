@@ -1,7 +1,9 @@
+import { useCallback, useMemo } from 'react'
 import { erc20Abi, ethAddress, formatUnits, isAddressEqual, type Address } from 'viem'
 import { useConfig } from 'wagmi'
 import { useBalance, useReadContracts } from 'wagmi'
-import type { FieldsOf } from '@ui-kit/lib'
+import { useQueries, type QueriesResults } from '@tanstack/react-query'
+import { combineQueriesToObject, type FieldsOf } from '@ui-kit/lib'
 import { queryClient } from '@ui-kit/lib/api'
 import type { ChainQuery, UserQuery } from '@ui-kit/lib/model'
 import { Decimal } from '@ui-kit/utils'
@@ -50,14 +52,16 @@ export const fetchTokenBalance = async (config: Config, query: TokenBalanceQuery
         .then((balance) => convertBalance({ value: balance[0], decimals: balance[1] }))
 
 /** Hook to fetch the token balance */
-export function useTokenBalance({ chainId, userAddress, tokenAddress }: FieldsOf<TokenBalanceQuery>) {
-  const config = useConfig()
-
-  const isEnabled = chainId != null && userAddress != null && tokenAddress != null
+export function useTokenBalance(
+  { chainId, userAddress, tokenAddress }: FieldsOf<TokenBalanceQuery>,
+  // TODO: refactor into a validation suite, same for usePoolTokenBalances and usePoolTokenDepositBalances
+  enabled: boolean = true,
+) {
+  const isEnabled = enabled && chainId != null && userAddress != null && tokenAddress != null
   const isNativeToken = tokenAddress != null && isNative({ tokenAddress })
 
   const nativeBalance = useBalance({
-    ...(isEnabled ? getNativeBalanceQueryOptions(config, { chainId, userAddress }) : {}),
+    ...(isEnabled ? { chainId, address: userAddress } : {}),
     query: { enabled: isEnabled && isNativeToken },
   })
 
@@ -85,4 +89,46 @@ export function useTokenBalance({ chainId, userAddress, tokenAddress }: FieldsOf
         error: erc20Balance.error,
         isLoading: erc20Balance.isLoading,
       }
+}
+
+/** Get query options for a token balance (handles both native and ERC-20) */
+const getTokenBalanceQueryOptions = (config: Config, query: TokenBalanceQuery) =>
+  isNative(query)
+    ? {
+        ...getNativeBalanceQueryOptions(config, query),
+        select: (data: GetBalanceReturnType) => convertBalance(data),
+      }
+    : {
+        ...readContractsQueryOptions(config, {
+          allowFailure: false,
+          contracts: getERC20QueryContracts(query),
+        }),
+        select: (data: readonly [bigint, number]) => convertBalance({ value: data[0], decimals: data[1] }),
+      }
+
+/** Hook to fetch balances for multiple tokens */
+export function useTokenBalances(
+  { chainId, userAddress, tokenAddresses = [] }: FieldsOf<ChainQuery & UserQuery> & { tokenAddresses?: Address[] },
+  enabled: boolean = true,
+) {
+  const config = useConfig()
+
+  const isEnabled = enabled && chainId != null && userAddress != null
+  const uniqueAddresses = useMemo(() => Array.from(new Set(tokenAddresses)), [tokenAddresses])
+
+  return useQueries({
+    queries: useMemo(
+      () =>
+        uniqueAddresses.map((tokenAddress) => ({
+          ...getTokenBalanceQueryOptions(config, { chainId: chainId!, userAddress: userAddress!, tokenAddress }),
+          enabled: isEnabled,
+        })),
+      [config, chainId, userAddress, uniqueAddresses, isEnabled],
+    ),
+    combine: useCallback(
+      (results: QueriesResults<ReturnType<typeof getTokenBalanceQueryOptions>[]>) =>
+        combineQueriesToObject(results, uniqueAddresses),
+      [uniqueAddresses],
+    ),
+  })
 }
