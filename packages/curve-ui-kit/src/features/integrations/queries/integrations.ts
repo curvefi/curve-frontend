@@ -1,5 +1,5 @@
 import { sortBy } from 'lodash'
-import { FetchError } from '@curvefi/prices-api/fetch'
+import { fetchJson } from '@curvefi/prices-api/fetch'
 import { CURVE_CDN_URL } from '@ui/utils'
 import { EmptyValidationSuite } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
@@ -20,14 +20,8 @@ type IntegrationsResponse = {
 export const { useQuery: useIntegrations } = queryFactory({
   queryKey: () => ['integrations'] as const,
   queryFn: async () => {
-    const resp = await fetch(INTEGRATIONS_URL, { method: 'GET' })
-
-    if (!resp.ok) {
-      throw new FetchError(resp.status, `Integrations list fetch error ${resp.status} for URL: ${INTEGRATIONS_URL}`)
-    }
-
-    const integrations = (await resp.json()) as IntegrationsResponse
-    return parseIntegrationsList(integrations)
+    const resp = await fetchJson<IntegrationsResponse>(INTEGRATIONS_URL)
+    return parseIntegrationsList(resp)
   },
   validationSuite: EmptyValidationSuite,
 })

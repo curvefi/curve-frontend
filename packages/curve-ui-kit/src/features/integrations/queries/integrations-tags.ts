@@ -1,4 +1,4 @@
-import { FetchError } from '@curvefi/prices-api/fetch'
+import { fetchJson } from '@curvefi/prices-api/fetch'
 import { CURVE_CDN_URL } from '@ui/utils'
 import { EmptyValidationSuite } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
@@ -9,17 +9,8 @@ const INTEGRATIONS_TAGS_URL = `${CURVE_CDN_URL}/curve-external-integrations/inte
 export const { useQuery: useIntegrationsTags } = queryFactory({
   queryKey: () => ['integrations-tags'] as const,
   queryFn: async () => {
-    const resp = await fetch(INTEGRATIONS_TAGS_URL, { method: 'GET' })
-
-    if (!resp.ok) {
-      throw new FetchError(
-        resp.status,
-        `Integrations tags fetch error ${resp.status} for URL: ${INTEGRATIONS_TAGS_URL}`,
-      )
-    }
-
-    const tags = (await resp.json()) as IntegrationTag[]
-    return parseIntegrationsTags(tags)
+    const resp = await fetchJson<IntegrationTag[]>(INTEGRATIONS_TAGS_URL)
+    return parseIntegrationsTags(resp)
   },
   validationSuite: EmptyValidationSuite,
 })
