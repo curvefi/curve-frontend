@@ -16,8 +16,8 @@ import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { useIntegrations } from '../queries/integrations'
 import { useIntegrationsTags } from '../queries/integrations-tags'
-import type { IntegrationApp, Tag } from '../types'
-import { IntegrationAppComp } from './IntegrationApp'
+import type { Integration, Tag } from '../types'
+import { IntegrationApp } from './IntegrationApp'
 import { IntegrationAppTag } from './IntegrationAppTag'
 
 const { Spacing, Sizing, ButtonSize } = SizesAndSpaces
@@ -74,7 +74,7 @@ export const IntegrationsList = ({ chainId, networks }: IntegrationsListProps) =
     list = networkId ? list.filter((app) => app.networks[networkId]) : list
 
     return searchText
-      ? new Fuse<IntegrationApp>(list, {
+      ? new Fuse<Integration>(list, {
           ignoreLocation: true,
           threshold: 0.01,
           keys: [{ name: 'name', getFn: (a) => a.name }],
@@ -140,7 +140,7 @@ export const IntegrationsList = ({ chainId, networks }: IntegrationsListProps) =
           <Grid container spacing={Spacing.md}>
             {(integrationsFiltered ?? []).map((app, idx) => (
               <Grid key={`${app.name}_${idx}`} size={{ mobile: 12, tablet: 6, desktop: 4 }}>
-                <IntegrationAppComp {...app} integrationsTags={tags} />
+                <IntegrationApp {...app} integrationsTags={tags} />
               </Grid>
             ))}
           </Grid>

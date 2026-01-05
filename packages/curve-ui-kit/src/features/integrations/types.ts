@@ -16,7 +16,7 @@ export type IntegrationsTags = {
   [k: string]: IntegrationTag
 }
 
-export type IntegrationApp = {
+export type Integration = {
   appUrl: string | null
   description: string
   imageId: string | null

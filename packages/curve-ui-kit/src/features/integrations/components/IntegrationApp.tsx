@@ -8,12 +8,12 @@ import { CURVE_ASSETS_URL } from '@ui/utils'
 import { ChainIcon } from '@ui-kit/shared/icons/ChainIcon'
 import { InlineLink } from '@ui-kit/shared/ui/InlineLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import type { IntegrationApp, IntegrationsTags } from '../types'
+import type { Integration, IntegrationsTags } from '../types'
 import { IntegrationAppTag } from './IntegrationAppTag'
 
 const { Spacing, IconSize } = SizesAndSpaces
 
-export const IntegrationAppComp = ({
+export const IntegrationApp = ({
   appUrl,
   description,
   imageId,
@@ -22,7 +22,7 @@ export const IntegrationAppComp = ({
   tags,
   twitterUrl,
   integrationsTags,
-}: IntegrationApp & {
+}: Integration & {
   integrationsTags: IntegrationsTags
 }) => (
   <Card sx={{ height: '100%' }}>

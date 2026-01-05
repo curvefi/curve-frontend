@@ -3,7 +3,7 @@ import { FetchError } from '@curvefi/prices-api/fetch'
 import { CURVE_CDN_URL } from '@ui/utils'
 import { EmptyValidationSuite } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
-import type { IntegrationApp } from '../types'
+import type { Integration } from '../types'
 
 const INTEGRATIONS_URL = `${CURVE_CDN_URL}/curve-external-integrations/integrations-list.json`
 
@@ -33,7 +33,7 @@ export const { useQuery: useIntegrations } = queryFactory({
 })
 
 export function parseIntegrationsList(integrationsList: IntegrationsResponse) {
-  const parsedIntegrationsList: IntegrationApp[] = []
+  const parsedIntegrationsList: Integration[] = []
 
   if (Array.isArray(integrationsList)) {
     for (const { networks, tags, ...rest } of integrationsList) {
