@@ -1,13 +1,14 @@
 import { type Mutation, MutationCache, QueryCache } from '@tanstack/react-query'
 import { logError, logMutation, logSuccess } from '@ui-kit/lib/logging'
+import { QUERY_KEY_IDENTIFIER as USD_RATE_KEY_IDENTIFER } from '../model/entities/token-usd-rate'
 
 // disable logging for queries that are too verbose
-const disableCacheQueryKeys = new Set<unknown>(['readContracts']) // add more query keys here to disable logging
+const disableCacheQueryKeys = new Set<unknown>(['readContracts', USD_RATE_KEY_IDENTIFER])
 
 export const queryCache = new QueryCache({
   onError: (error: Error, query) => logError(query.queryKey, error, error.message),
   onSuccess: (data, { queryKey }) => {
-    if (!disableCacheQueryKeys.has(queryKey[0])) {
+    if (!queryKey.some((key) => disableCacheQueryKeys.has(key))) {
       logSuccess(queryKey, ...[data ? [data] : []])
     }
   },

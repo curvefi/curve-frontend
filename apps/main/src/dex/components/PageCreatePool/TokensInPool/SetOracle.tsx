@@ -69,11 +69,13 @@ const OracleInputs = ({ token, tokenId, title }: OracleInputProps) => {
   const { isLoading, isSuccess, error, rate, decimals } = useOracleValidation({ token, tokenId })
 
   const formattedRate = useMemo(() => {
-    if (!isSuccess || !rate || decimals === undefined) return null
+    if (!isSuccess || !rate) return null
     return formatNumber(Number(formatEther(BigInt(rate))), {
       abbreviate: false,
     })
-  }, [decimals, rate, isSuccess])
+  }, [rate, isSuccess])
+
+  const unableToValidateDecimals = !isLoading && isSuccess && decimals === undefined
 
   return (
     <InputContainer>
@@ -98,11 +100,16 @@ const OracleInputs = ({ token, tokenId, title }: OracleInputProps) => {
       {oracleFunction !== '' && !validateOracleFunction(oracleFunction) && (
         <WarningBox message={t`Oracle function name needs to end with '()'.`} />
       )}
-      {decimals !== ORACLE_DECIMALS && oracleFunction !== '' && !isLoading && !error && (
+      {decimals !== ORACLE_DECIMALS && oracleFunction !== '' && !isLoading && !error && !unableToValidateDecimals && (
         <WarningBox message={t`Oracle must have a precision of ${ORACLE_DECIMALS} decimals.`} informational />
       )}
       {isLoading && <WarningBox message={t`Validating oracle...`} informational />}
       {error && <WarningBox message={t`Unable to validate oracle.`} />}
+      {unableToValidateDecimals && (
+        <WarningBox
+          message={t`Unable to verify decimals. Please make sure oracle rate is returned in 18 decimal precision before proceeding.`}
+        />
+      )}
       {isSuccess && formattedRate !== null && (
         <Alert severity="info" variant="standard" sx={{ marginTop: Spacing.sm }}>
           <Stack gap={Spacing.xs}>
@@ -110,7 +117,7 @@ const OracleInputs = ({ token, tokenId, title }: OracleInputProps) => {
               {t`Oracle rate:`} {formattedRate}
             </Typography>
             <Typography variant="bodySRegular">
-              {t`Decimals:`} {decimals}
+              {t`Decimals:`} {decimals ?? t`Not available`}
             </Typography>
             <Typography variant="bodySRegular">
               {t`Raw rate:`} {rate}

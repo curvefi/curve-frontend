@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { styled } from 'styled-components'
 import { type Address, isAddressEqual } from 'viem'
+import { useConfig } from 'wagmi'
 import CampaignRewardsBanner from '@/dex/components/PagePool/components/CampaignRewardsBanner'
 import Deposit from '@/dex/components/PagePool/Deposit'
 import PoolInfoData from '@/dex/components/PagePool/PoolDetails/ChartOhlcWrapper'
@@ -16,12 +17,12 @@ import { useNetworkByChain } from '@/dex/entities/networks'
 import usePoolAlert from '@/dex/hooks/usePoolAlert'
 import { usePoolIdByAddressOrId } from '@/dex/hooks/usePoolIdByAddressOrId'
 import useTokensMapper from '@/dex/hooks/useTokensMapper'
-import { getUserPoolActiveKey } from '@/dex/store/createUserSlice'
 import useStore from '@/dex/store/useStore'
 import { getChainPoolIdActiveKey } from '@/dex/utils'
 import { getPath } from '@/dex/utils/utilsRouter'
 import { ManageGauge } from '@/dex/widgets/manage-gauge'
 import { notFalsy } from '@curvefi/prices-api/objects.util'
+import Stack from '@mui/material/Stack'
 import AlertBox from '@ui/AlertBox'
 import { AppPageFormTitleWrapper, AppPageInfoContentWrapper } from '@ui/AppPage'
 import Box from '@ui/Box'
@@ -50,10 +51,7 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
   const push = useNavigate()
   const poolAlert = usePoolAlert(poolData)
   const { tokensMapper } = useTokensMapper(rChainId)
-  const userPoolActiveKey = curve && poolId ? getUserPoolActiveKey(curve, poolId) : ''
   const chainIdPoolId = getChainPoolIdActiveKey(rChainId, poolId)
-  const userPoolBalances = useStore((state) => state.user.walletBalances[userPoolActiveKey])
-  const userPoolBalancesLoading = useStore((state) => state.user.walletBalancesLoading)
   const currencyReserves = useStore((state) => state.pools.currencyReserves[chainIdPoolId])
   const isMdUp = useLayoutStore((state) => state.isMdUp)
   const fetchUserPoolInfo = useStore((state) => state.user.fetchUserPoolInfo)
@@ -140,11 +138,12 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
   }, [poolData?.pool?.id, currencyReserves?.total])
 
   // fetch user pool info
+  const config = useConfig()
   useEffect(() => {
     if (curve && poolId && signerAddress) {
-      void fetchUserPoolInfo(curve, poolId)
+      void fetchUserPoolInfo(config, curve, poolId)
     }
-  }, [rChainId, poolId, signerAddress, curve, fetchUserPoolInfo])
+  }, [rChainId, poolId, signerAddress, config, curve, fetchUserPoolInfo])
 
   const isRewardsDistributor = useMemo(
     () =>
@@ -227,8 +226,6 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
                   maxSlippage={maxSlippage}
                   seed={seed}
                   tokensMapper={tokensMapper}
-                  userPoolBalances={userPoolBalances}
-                  userPoolBalancesLoading={userPoolBalancesLoading}
                 />
               )
             ) : rFormType === 'deposit' ? (
@@ -241,8 +238,6 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
                 maxSlippage={maxSlippage}
                 seed={seed}
                 tokensMapper={tokensMapper}
-                userPoolBalances={userPoolBalances}
-                userPoolBalancesLoading={userPoolBalancesLoading}
               />
             ) : rFormType === 'withdraw' ? (
               <Withdraw
@@ -253,8 +248,6 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
                 maxSlippage={maxSlippage}
                 seed={seed}
                 tokensMapper={tokensMapper}
-                userPoolBalances={userPoolBalances}
-                userPoolBalancesLoading={userPoolBalancesLoading}
               />
             ) : (
               rFormType === 'manage-gauge' && poolData && <ManageGauge poolId={poolData.pool.id} chainId={rChainId} />
@@ -263,57 +256,53 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
         }
       >
         {isMdUp && <TitleComp />}
-        {poolAddress && (
-          <Box>
-            <CampaignRewardsBanner chainId={rChainId} address={poolAddress} />
-          </Box>
-        )}
+        {poolAddress && <CampaignRewardsBanner chainId={rChainId} address={poolAddress} />}
         {!isLite && pricesApiPoolData && pricesApi && (
           <PriceAndTradesWrapper variant="secondary">
             <PoolInfoData rChainId={rChainId} pricesApiPoolData={pricesApiPoolData} />
           </PriceAndTradesWrapper>
         )}
-        <TabsSwitcher
-          variant="contained"
-          size="medium"
-          value={poolInfoTab}
-          onChange={setPoolInfoTab}
-          options={poolInfoTabs}
-        />
-
-        <AppPageInfoContentWrapper variant="secondary">
-          {poolInfoTab === 'user' && (
-            <MySharesStats
-              curve={curve}
-              poolData={poolData}
-              poolDataCacheOrApi={poolDataCacheOrApi}
-              routerParams={routerParams}
-              tokensMapper={tokensMapper}
-              userPoolBalances={userPoolBalances}
-            />
-          )}
-          {poolInfoTab === 'pool' && (
-            <StatsWrapper
-              as="section"
-              className={!curve || !poolData ? 'loading' : ''}
-              grid
-              gridRowGap="1rem"
-              variant="secondary"
-            >
-              <PoolStats
+        <Stack>
+          <TabsSwitcher
+            variant="contained"
+            size="medium"
+            value={poolInfoTab}
+            onChange={setPoolInfoTab}
+            options={poolInfoTabs}
+          />
+          <AppPageInfoContentWrapper variant="secondary">
+            {poolInfoTab === 'user' && (
+              <MySharesStats
                 curve={curve}
-                routerParams={routerParams}
                 poolData={poolData}
                 poolDataCacheOrApi={poolDataCacheOrApi}
-                poolAlert={poolAlert}
+                routerParams={routerParams}
                 tokensMapper={tokensMapper}
               />
-            </StatsWrapper>
-          )}
-          {poolInfoTab === 'advanced' && poolData && snapshotsMapper[poolData.pool.address] !== undefined && (
-            <PoolParameters pricesApi={pricesApi} poolData={poolData} rChainId={rChainId} />
-          )}
-        </AppPageInfoContentWrapper>
+            )}
+            {poolInfoTab === 'pool' && (
+              <StatsWrapper
+                as="section"
+                className={!curve || !poolData ? 'loading' : ''}
+                grid
+                gridRowGap="1rem"
+                variant="secondary"
+              >
+                <PoolStats
+                  curve={curve}
+                  routerParams={routerParams}
+                  poolData={poolData}
+                  poolDataCacheOrApi={poolDataCacheOrApi}
+                  poolAlert={poolAlert}
+                  tokensMapper={tokensMapper}
+                />
+              </StatsWrapper>
+            )}
+            {poolInfoTab === 'advanced' && poolData && snapshotsMapper[poolData.pool.address] !== undefined && (
+              <PoolParameters pricesApi={pricesApi} poolData={poolData} rChainId={rChainId} />
+            )}
+          </AppPageInfoContentWrapper>
+        </Stack>
       </DetailPageLayout>
     </>
   )
@@ -339,10 +328,8 @@ const StatsWrapper = styled(Box)`
 
 const PriceAndTradesWrapper = styled(Box)`
   padding: 1.5rem 1rem;
-  margin-bottom: var(--spacing-1);
   @media (min-width: ${breakpoints.sm}rem) {
     margin-top: 0;
-    margin-bottom: var(--spacing-3);
   }
   @media (min-width: ${breakpoints.lg}rem) {
     padding: 1.5rem 1.5rem;

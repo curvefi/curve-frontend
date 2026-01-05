@@ -3,7 +3,7 @@ import { setTimeoutInterval } from './timers'
 
 const createDeferred = <T = void>() => {
   let resolve!: (value: T | PromiseLike<T>) => void
-  let reject!: (reason?: any) => void
+  let reject!: (reason?: unknown) => void
   const promise = new Promise<T>((res, rej) => {
     resolve = res
     reject = rej

@@ -1,7 +1,8 @@
 import lodash from 'lodash'
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { styled } from 'styled-components'
-import { ethAddress } from 'viem'
+import { ethAddress, type Address } from 'viem'
+import { useConfig, useConnection, type Config } from 'wagmi'
 import AlertFormError from '@/dex/components/AlertFormError'
 import AlertFormWarning from '@/dex/components/AlertFormWarning'
 import AlertSlippage from '@/dex/components/AlertSlippage'
@@ -17,7 +18,7 @@ import DetailInfoExchangeRate from '@/dex/components/PageRouterSwap/components/D
 import DetailInfoPriceImpact from '@/dex/components/PageRouterSwap/components/DetailInfoPriceImpact'
 import { useNetworks } from '@/dex/entities/networks'
 import useStore from '@/dex/store/useStore'
-import { Balances, CurveApi, PoolAlert, PoolData, TokensMapper } from '@/dex/types/main.types'
+import { CurveApi, PoolAlert, PoolData, TokensMapper } from '@/dex/types/main.types'
 import { toTokenOption } from '@/dex/utils'
 import { getSlippageImpact } from '@/dex/utils/utilsSwap'
 import AlertBox from '@ui/AlertBox'
@@ -36,6 +37,7 @@ import { useLayoutStore } from '@ui-kit/features/layout'
 import { LargeSxProps, TokenSelector } from '@ui-kit/features/select-token'
 import { useLegacyTokenInput } from '@ui-kit/hooks/useFeatureFlags'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
+import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
@@ -56,16 +58,12 @@ const Swap = ({
   routerParams,
   seed,
   tokensMapper,
-  userPoolBalances,
-  userPoolBalancesLoading,
 }: Pick<PageTransferProps, 'curve' | 'params' | 'poolData' | 'poolDataCacheOrApi' | 'routerParams'> & {
   chainIdPoolId: string
   poolAlert: PoolAlert | null
   maxSlippage: string
   seed: Seed
   tokensMapper: TokensMapper
-  userPoolBalances: Balances | undefined
-  userPoolBalancesLoading: boolean
 }) => {
   const isSubscribed = useRef(false)
 
@@ -98,8 +96,19 @@ const Swap = ({
   const poolId = poolData?.pool?.id
   const haveSigner = !!signerAddress
 
-  const userFromBalance = userPoolBalances?.[formValues.fromAddress]
-  const userToBalance = userPoolBalances?.[formValues.toAddress]
+  const config = useConfig()
+  const { address: userAddress } = useConnection()
+  const { data: userFromBalance, isLoading: userFromBalanceLoading } = useTokenBalance({
+    chainId,
+    userAddress,
+    tokenAddress: (formValues.fromAddress as Address) || undefined,
+  })
+
+  const { data: userToBalance, isLoading: userToBalanceLoading } = useTokenBalance({
+    chainId,
+    userAddress,
+    tokenAddress: (formValues.toAddress as Address) || undefined,
+  })
 
   const { data: fromUsdRate } = useTokenUsdRate(
     { chainId, tokenAddress: formValues.fromAddress },
@@ -126,6 +135,7 @@ const Swap = ({
       setTxInfoBar(null)
 
       void setFormValues(
+        config,
         curve,
         poolDataCacheOrApi.pool.id,
         poolData,
@@ -135,12 +145,13 @@ const Swap = ({
         updatedMaxSlippage || maxSlippage,
       )
     },
-    [setFormValues, curve, poolDataCacheOrApi.pool.id, poolData, seed.isSeed, maxSlippage],
+    [setFormValues, config, curve, poolDataCacheOrApi.pool.id, poolData, seed.isSeed, maxSlippage],
   )
 
   const handleSwapClick = useCallback(
     async (
       actionActiveKey: string,
+      config: Config,
       curve: CurveApi,
       poolData: PoolData,
       formValues: FormValues,
@@ -149,7 +160,7 @@ const Swap = ({
       const { fromAmount, fromToken, toToken } = formValues
       const notifyMessage = t`Please confirm swap ${fromAmount} ${fromToken} for ${toToken} at max slippage ${maxSlippage}%.`
       const { dismiss } = notify(notifyMessage, 'pending')
-      const resp = await fetchStepSwap(actionActiveKey, curve, poolData, formValues, maxSlippage)
+      const resp = await fetchStepSwap(actionActiveKey, config, curve, poolData, formValues, maxSlippage)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && network) {
         setTxInfoBar(
@@ -170,6 +181,7 @@ const Swap = ({
   const getSteps = useCallback(
     (
       actionActiveKey: string,
+      config: Config,
       curve: CurveApi,
       poolData: PoolData,
       formValues: FormValues,
@@ -201,7 +213,7 @@ const Swap = ({
           onClick: async () => {
             const notifyMessage = t`Please approve spending your ${formValues.fromToken}.`
             const { dismiss } = notify(notifyMessage, 'pending')
-            await fetchStepApprove(actionActiveKey, curve, poolData.pool, formValues, maxSlippage)
+            await fetchStepApprove(actionActiveKey, config, curve, poolData.pool, formValues, maxSlippage)
             if (typeof dismiss === 'function') dismiss()
           },
         },
@@ -216,8 +228,8 @@ const Swap = ({
                   title: t`Warning!`,
                   content: (
                     // TODO: fix typescript error
-
                     <WarningModal
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
                       {...(exchangeOutput.modal as any)}
                       confirmed={confirmedLoss}
                       setConfirmed={setConfirmedLoss}
@@ -231,13 +243,13 @@ const Swap = ({
                   },
                   isDismissable: false,
                   primaryBtnProps: {
-                    onClick: () => handleSwapClick(actionActiveKey, curve, poolData, formValues, maxSlippage),
+                    onClick: () => handleSwapClick(actionActiveKey, config, curve, poolData, formValues, maxSlippage),
                     disabled: !confirmedLoss,
                   },
                   primaryBtnLabel: 'Swap anyway',
                 },
               }
-            : { onClick: () => handleSwapClick(actionActiveKey, curve, poolData, formValues, maxSlippage) }),
+            : { onClick: () => handleSwapClick(actionActiveKey, config, curve, poolData, formValues, maxSlippage) }),
         },
       }
 
@@ -279,9 +291,9 @@ const Swap = ({
   // get user balances
   useEffect(() => {
     if (curve && poolId && haveSigner && (isUndefined(userFromBalance) || isUndefined(userToBalance))) {
-      void fetchUserPoolInfo(curve, poolId, true)
+      void fetchUserPoolInfo(config, curve, poolId, true)
     }
-  }, [chainId, poolId, haveSigner, userFromBalance, userToBalance, curve, fetchUserPoolInfo])
+  }, [chainId, poolId, haveSigner, userFromBalance, userToBalance, config, curve, fetchUserPoolInfo])
 
   // curve state change
   useEffect(() => {
@@ -302,6 +314,7 @@ const Swap = ({
     if (curve && poolData && seed.isSeed !== null) {
       const updatedSteps = getSteps(
         activeKey,
+        config,
         curve,
         poolData,
         formValues,
@@ -311,12 +324,13 @@ const Swap = ({
         steps,
         seed.isSeed,
         maxSlippage,
-        userPoolBalancesLoading,
+        userFromBalanceLoading || userToBalanceLoading,
       )
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
+    config,
     chainId,
     poolId,
     confirmedLoss,
@@ -326,7 +340,8 @@ const Swap = ({
     formValues,
     maxSlippage,
     seed.isSeed,
-    userPoolBalancesLoading,
+    userFromBalanceLoading,
+    userToBalanceLoading,
   ])
 
   // pageVisible
@@ -368,7 +383,7 @@ const Swap = ({
                   labelProps={
                     haveSigner && {
                       label: t`Avail.`,
-                      descriptionLoading: userPoolBalancesLoading,
+                      descriptionLoading: userFromBalanceLoading,
                       description: formatNumber(userFromBalance),
                     }
                   }
@@ -463,7 +478,7 @@ const Swap = ({
               disabled={isDisabled}
               walletBalance={{
                 balance: decimal(userFromBalance),
-                loading: userPoolBalancesLoading || isMaxLoading,
+                loading: userFromBalanceLoading || isMaxLoading,
                 symbol: fromToken?.symbol,
                 usdRate: fromUsdRate,
               }}
@@ -512,7 +527,7 @@ const Swap = ({
                 labelProps={
                   haveSigner && {
                     label: t`Avail.`,
-                    descriptionLoading: userPoolBalancesLoading,
+                    descriptionLoading: userToBalanceLoading,
                     description: formatNumber(userToBalance),
                   }
                 }
@@ -587,7 +602,7 @@ const Swap = ({
             }
             walletBalance={{
               balance: decimal(userToBalance),
-              loading: userPoolBalancesLoading,
+              loading: userToBalanceLoading,
               symbol: toToken?.symbol,
               usdRate: toUsdRate,
             }}
@@ -678,7 +693,6 @@ const Swap = ({
         loading={!chainId || !steps.length || !seed.loaded}
         routerParams={routerParams}
         seed={seed}
-        userPoolBalances={userPoolBalances}
       >
         {txInfoBar}
         <Stepper steps={steps} />

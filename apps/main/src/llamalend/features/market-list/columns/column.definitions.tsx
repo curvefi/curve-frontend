@@ -69,6 +69,7 @@ const hidden = (field: DeepKeys<LlamaMarket>, id: LlamaMarketColumnId, filterFn:
     meta: { hidden: true },
   })
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type LlamaColumn = ColumnDef<LlamaMarket, any>
 
 /** Columns for the lending markets table. */

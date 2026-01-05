@@ -4,7 +4,7 @@ import type { InternalLinkProps } from '@ui/Link/InternalLink'
 import { formatNumber } from '@ui/utils'
 
 interface TableRowProps {
-  holder: any
+  holder: Record<string, string | number>
   sortBy: { key: string; label: string; order: 'asc' | 'desc' }
   labels: { key: string; label: string }[]
   gridTemplateColumns?: string

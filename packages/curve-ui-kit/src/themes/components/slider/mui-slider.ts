@@ -17,7 +17,6 @@ import {
   SLIDER_RAIL_GRADIENT_STOPS_VAR,
   getGradientStopsForBackground,
   DEFAULT_SLIDER_SIZE,
-  thumbColorsMap,
 } from './utils'
 /**
  * Generates styles for a pseudo-element that creates a border around the slider
@@ -45,7 +44,7 @@ const SliderExtension = (design: DesignSystem, orientation?: SliderProps['orient
   }
 }
 
-const baseRootStyle = (design: DesignSystem, orientation?: SliderProps['orientation']): Record<string, any> => {
+const baseRootStyle = (design: DesignSystem, orientation?: SliderProps['orientation']): Record<string, unknown> => {
   const {
     root: { size, margins },
   } = getOrientationConfig(orientation)
@@ -105,7 +104,7 @@ export const defineMuiSlider = (design: DesignSystem): Components['MuiSlider'] =
         // Add 2px to the thumb width and height to compensate the border
         width: size.width,
         height: size.height,
-        background: `${thumbColorsMap[design.theme]} url(${sliderThumbImage}) center no-repeat`,
+        background: `${design.Layer.Highlight.Fill} url(${sliderThumbImage}) center no-repeat`,
         transition: `background ${TransitionFunction}, border ${TransitionFunction}`,
         border: `1px solid ${design.Color.Neutral[25]}`,
         borderRadius: 0,

@@ -1,5 +1,6 @@
 import type { Address } from '@curvefi/prices-api'
 import { range, recordValues } from '@curvefi/prices-api/objects.util'
+import { TIME_FRAMES } from '@ui-kit/lib/model/time'
 
 export const MAX_USD_VALUE = 400_000_000
 
@@ -10,7 +11,7 @@ export const oneInt = (minOrMax = 100, maxExclusive?: number): number => Math.fl
 
 export const oneOf = <T>(...options: T[]) => options[oneInt(0, options.length)]
 export const oneBool = () => oneOf(true, false)
-export const oneValueOf = <K extends keyof any, T>(obj: Record<K, T>) => oneOf(...recordValues(obj))
+export const oneValueOf = <K extends PropertyKey, T>(obj: Record<K, T>) => oneOf(...recordValues(obj))
 
 export const oneAddress = (): Address =>
   `0x${range(4) // create separate ints otherwise they aren't large enough
@@ -36,7 +37,7 @@ export const oneTokenType = () => oneOf('collateral', 'borrowed')
 export type TokenType = ReturnType<typeof oneTokenType>
 
 export const oneDate = ({
-  minDate = new Date(Date.now() - 365 * 24 * 60 * 60 * 1000), // 1 year ago
+  minDate = new Date(Date.now() - TIME_FRAMES.YEAR_MS), // 1 year ago
   maxDate = new Date(Date.now()),
 }: {
   minDate?: Date

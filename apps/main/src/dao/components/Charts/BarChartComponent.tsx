@@ -1,11 +1,12 @@
 import { ReactNode } from 'react'
 import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, TooltipProps } from 'recharts'
+import type { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent'
 import { styled } from 'styled-components'
 
 type Props<T> = {
   data: T[]
   dataKey: keyof T & string
-  CustomTooltip: (props: TooltipProps<any, any>) => ReactNode
+  CustomTooltip: (props: TooltipProps<ValueType, NameType>) => ReactNode
 }
 
 const COLORS = [
@@ -21,7 +22,7 @@ const COLORS = [
   '#277DA1',
 ]
 
-const BarChartComponent = <T extends Record<string, any>>({ data, dataKey, CustomTooltip }: Props<T>) => {
+const BarChartComponent = <T extends object>({ data, dataKey, CustomTooltip }: Props<T>) => {
   const height = 300
   const labelWidth = 100
 

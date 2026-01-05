@@ -33,7 +33,9 @@ const ProposalVoteStatusBox = ({ proposalData, className }: ProposalVoteStatusBo
             <HighlightedData>
               {formatNumber(currentQuorumPercentage, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%
             </HighlightedData>{' '}
-            <Data>of {formatNumber(minAcceptQuorumPercent, { notation: 'compact' })}%</Data>
+            <Data>
+              ({formatNumber(minAcceptQuorumPercent, { notation: 'compact' })}% {t`needed`})
+            </Data>
             <TooltipIcon>{t`The minimum share of For votes required to reach quorum is ${minAcceptQuorumPercent}% for this proposal.`}</TooltipIcon>
           </Box>
         </Box>
@@ -54,7 +56,7 @@ const ProposalVoteStatusBox = ({ proposalData, className }: ProposalVoteStatusBo
             <HighlightedData>
               {formatNumber(currentSupport * 100, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%
             </HighlightedData>
-            <Data>{t`of ${minSupport}%`}</Data>
+            <Data>({t`${minSupport}% needed`})</Data>
             <TooltipIcon>{t`The minimum support required to pass this proposal is ${minSupport}%.`}</TooltipIcon>
           </Box>
         </Box>

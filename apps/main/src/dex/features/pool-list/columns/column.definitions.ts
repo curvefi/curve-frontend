@@ -30,7 +30,7 @@ const headers = {
   [PoolColumnId.Tvl]: t`TVL`,
 }
 
-type PoolColumn = ColumnDef<PoolListItem, any>
+type PoolColumn = ColumnDef<PoolListItem, unknown>
 
 /** Define a hidden column. */
 const hidden = (
