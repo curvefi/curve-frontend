@@ -41,7 +41,7 @@ const Page = () => {
             <Spinner />
           </SpinnerWrapper>
         ) : (
-          <IntegrationsComp rChainId={rChainId} params={params} integrationsTags={integrationsTags} />
+          <IntegrationsComp rChainId={rChainId} integrationsTags={integrationsTags} />
         )}
       </ContainerContent>
     </Container>

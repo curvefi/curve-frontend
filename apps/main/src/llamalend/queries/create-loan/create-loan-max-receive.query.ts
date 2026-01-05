@@ -93,7 +93,7 @@ export const { useQuery: useCreateLoanMaxReceive, queryKey: createLoanMaxReceive
 
     assert(!+userBorrowed, `userBorrowed must be 0 for non-leverage mint markets`)
     const result = await market.leverage.createLoanMaxRecv(userCollateral, range)
-    const { maxBorrowable, maxCollateral, leverage, routeIdx } = result
+    const { maxBorrowable, maxCollateral } = result // leverage and routeIdx fields are unused
     return convertNumbers({ maxDebt: maxBorrowable, maxTotalCollateral: maxCollateral })
   },
   staleTime: '1m',

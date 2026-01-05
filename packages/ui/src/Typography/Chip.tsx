@@ -24,12 +24,9 @@ const Chip = ({ as, ...props }: PropsWithChildren<ChipProps & { as?: string }>) 
   return <LabelComp />
 }
 
-interface LabelProps extends Pick<
-  ChipProps,
-  'isBold' | 'isError' | 'isMono' | 'fontVariantNumeric' | 'opacity' | 'size' | 'maxWidth'
-> {}
-
-const Label = styled.span<LabelProps>`
+const Label = styled.span<
+  Pick<ChipProps, 'isBold' | 'isError' | 'isMono' | 'fontVariantNumeric' | 'opacity' | 'size' | 'maxWidth'>
+>`
   ${({ isBold }) => isBold && `font-weight: var(--font-weight--bold);`}
   ${({ fontVariantNumeric }) => fontVariantNumeric && `font-variant-numeric: ${fontVariantNumeric};`}
   ${({ isMono }) => (isMono ? 'font-family: var(--font-mono);' : 'font-family: var(--font);')}

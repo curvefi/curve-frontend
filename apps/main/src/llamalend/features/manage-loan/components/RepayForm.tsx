@@ -51,11 +51,8 @@ export const RepayForm = <ChainId extends IChainId>({
     collateralToken,
     borrowToken,
     params,
-    values,
     txHash,
     expectedBorrowed,
-    routeImage,
-    priceImpact,
   } = useRepayForm({
     market,
     network,

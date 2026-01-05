@@ -63,10 +63,10 @@ const sliceKey = 'poolDeposit'
 // prettier-ignore
 export type PoolDepositSlice = {
   [sliceKey]: SliceState & {
-    fetchExpected(activeKey: string, chainId: ChainId, formType: FormType, pool: Pool, formValues: FormValues): Promise<void>
+    fetchExpected(activeKey: string, formType: FormType, pool: Pool, formValues: FormValues): Promise<void>
     fetchMaxAmount(activeKey: string, chainId: ChainId, pool: Pool, loadMaxAmount: LoadMaxAmount): Promise<Amount[]>
     fetchSeedAmount(poolData: PoolData, formValues: FormValues): Promise<Pick<FormValues, 'amounts' | 'isWrapped'>>
-    fetchSlippage(activeKey: string, chainId: ChainId, formType: FormType, pool: Pool, formValues: FormValues, maxSlippage: string): Promise<void>
+    fetchSlippage(activeKey: string, formType: FormType, pool: Pool, formValues: FormValues, maxSlippage: string): Promise<void>
     setFormValues(formType: FormType, config: Config, curve: CurveApi | null, poolId: string, poolData: PoolData | undefined, formValues: Partial<FormValues>, loadMaxAmount: LoadMaxAmount | null, isSeed: boolean | null, maxSlippage: string): Promise<void>
 
     // steps
@@ -97,13 +97,13 @@ const DEFAULT_STATE: SliceState = {
 }
 
 const createPoolDepositSlice = (
-  set: StoreApi<State>['setState'],
+  _set: StoreApi<State>['setState'],
   get: StoreApi<State>['getState'],
 ): PoolDepositSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 
-    fetchExpected: async (activeKey, chainId, formType, pool, formValues) => {
+    fetchExpected: async (activeKey, formType, pool, formValues) => {
       const { amounts, isWrapped } = formValues
       const depositExpectedFn =
         formType === 'DEPOSIT' ? curvejsApi.poolDeposit.depositExpected : curvejsApi.poolDeposit.depositAndStakeExpected
@@ -186,7 +186,7 @@ const createPoolDepositSlice = (
         }
       }
     },
-    fetchSlippage: async (activeKey, chainId, formType, pool, formValues, maxSlippage) => {
+    fetchSlippage: async (activeKey, formType, pool, formValues, maxSlippage) => {
       const { amounts: cFormAmounts, isWrapped } = formValues
       const amounts = parseAmountsForAPI(cFormAmounts)
       const resp =
@@ -291,7 +291,7 @@ const createPoolDepositSlice = (
             ...(get()[sliceKey].formLpTokenExpected[storedActiveKey] ?? DEFAULT_FORM_LP_TOKEN_EXPECTED),
             loading: true,
           })
-          void get()[sliceKey].fetchExpected(activeKey, chainId, formType, pool, cFormValues)
+          void get()[sliceKey].fetchExpected(activeKey, formType, pool, cFormValues)
 
           if (!isSeed) {
             // fetch slippage
@@ -299,7 +299,7 @@ const createPoolDepositSlice = (
               ...(get()[sliceKey].slippage[storedActiveKey] ?? DEFAULT_SLIPPAGE),
               loading: true,
             })
-            void get()[sliceKey].fetchSlippage(activeKey, chainId, formType, pool, cFormValues, maxSlippage)
+            void get()[sliceKey].fetchSlippage(activeKey, formType, pool, cFormValues, maxSlippage)
           }
 
           if (signerAddress) {

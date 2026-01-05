@@ -56,7 +56,7 @@ const DEFAULT_STATE: SliceState = {
   results: null,
 }
 
-const createIntegrationsSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
+const createIntegrationsSlice = (_set: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
     init: async (chainId: ChainId) => {
@@ -143,7 +143,7 @@ const createIntegrationsSlice = (set: StoreApi<State>['setState'], get: StoreApi
     setStateByKey: <T>(key: StateKey, value: T) => {
       get().setAppStateByKey(sliceKey, key, value)
     },
-    setStateByKeys: <T>(sliceState: Partial<SliceState>) => {
+    setStateByKeys: (sliceState: Partial<SliceState>) => {
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {

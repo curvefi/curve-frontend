@@ -26,7 +26,7 @@ import { useFormErrors } from '../../borrow/react-form.utils'
 const useCallbackAfterFormUpdate = (form: UseFormReturn<RepayForm>, callback: () => void) =>
   useEffect(() => form.subscribe({ formState: { values: true }, callback }), [form, callback])
 
-export const useRepayForm = <ChainId extends LlamaChainId, NetworkName extends LlamaNetworkId = LlamaNetworkId>({
+export const useRepayForm = <ChainId extends LlamaChainId>({
   market,
   network,
   networks,

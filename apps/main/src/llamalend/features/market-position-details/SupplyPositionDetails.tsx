@@ -39,11 +39,6 @@ export type Shares = {
   staked: number | undefined | null
   loading: boolean
 }
-type ClaimableRewards = {
-  crv: string | undefined | null
-  rewards: { token: string; symbol: string; amount: string }[] | undefined | null
-  loading: boolean
-}
 type Boost = {
   value: number | undefined | null
   loading: boolean

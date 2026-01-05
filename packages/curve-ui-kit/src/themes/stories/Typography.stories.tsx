@@ -86,6 +86,7 @@ const createStory = (category: string): Story => ({
           .map((variant) => (
             <TypographyDisplay {...args} key={variant} variant={variant as TypographyVariantKey} />
           ))}
+        <Story />
       </Stack>
     ),
   ],

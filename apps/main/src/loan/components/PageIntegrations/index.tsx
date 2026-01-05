@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo } from 'react'
 import { styled } from 'styled-components'
 import type { FilterKey, FormValues } from '@/loan/components/PageIntegrations/types'
 import useStore from '@/loan/store/useStore'
-import { ChainId, type NetworkUrlParams } from '@/loan/types/loan.types'
+import { ChainId } from '@/loan/types/loan.types'
 import { useFocusRing } from '@react-aria/focus'
 import Box from '@ui/Box'
 import IntegrationAppComp from '@ui/Integration/IntegrationApp'
@@ -18,11 +18,9 @@ import { Trans } from '@ui-kit/lib/i18n'
 // Update integrations list repo: https://github.com/curvefi/curve-external-integrations
 const IntegrationsComp = ({
   integrationsTags,
-  params,
   rChainId,
 }: {
   integrationsTags: IntegrationsTags
-  params: NetworkUrlParams
   rChainId: ChainId | ''
 }) => {
   const searchParams = useSearchParams()

@@ -174,7 +174,7 @@ const addresses = {
 } as const
 
 export const CustomRendering: Story = {
-  render: (args) => (
+  render: () => (
     <MultiSelect
       options={options.map((x) => x)}
       placeholder="Select tokens"

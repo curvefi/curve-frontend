@@ -8,11 +8,9 @@ export type SelectNetworkItem = {
   chainId: number
 }
 
-type SelectNetworkProps = Omit<SelectProps<SelectNetworkItem>, 'children'> & {
-  isDarkTheme?: boolean
-}
+type SelectNetworkProps = Omit<SelectProps<SelectNetworkItem>, 'children'>
 
-export const SelectNetwork = ({ className = '', isDarkTheme, items, ...props }: SelectNetworkProps) => (
+export const SelectNetwork = ({ className = '', items, ...props }: SelectNetworkProps) => (
   <Select {...props} className={className} items={items} aria-label="Select network" label="">
     {({ chainId, networkId }: SelectNetworkItem) => (
       <Item key={chainId} textValue={chainId.toString()}>

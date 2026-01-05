@@ -7,7 +7,7 @@ import { getEthPath } from '@/dao/utils'
 import Box from '@ui/Box'
 import Icon from '@ui/Icon'
 import SearchInput from '@ui/SearchInput'
-import SelectSortingMethod from '@ui/Select/SelectSortingMethod'
+import { SelectSortingMethod } from '@ui/Select/SelectSortingMethod'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import { useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
@@ -78,7 +78,6 @@ const Proposals = () => {
               minWidth="9rem"
               items={PROPOSAL_SORTING_METHODS}
               onSelectionChange={(key) => key != null && setActiveSortBy(key as SortByFilterProposals)}
-              description={t`Sort by`}
             />
             <ToggleDirectionIcon
               size={20}

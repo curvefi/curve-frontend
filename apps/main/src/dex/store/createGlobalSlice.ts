@@ -8,7 +8,6 @@ import { ChainId, CurveApi, NetworkConfigFromApi, Wallet } from '@/dex/types/mai
 import { log } from '@ui-kit/lib/logging'
 import { fetchNetworks } from '../entities/networks'
 
-export type DefaultStateKeys = keyof typeof DEFAULT_STATE
 export type SliceKey = keyof State | ''
 export type StateKey = string
 const { isEqual } = lodash
@@ -29,8 +28,6 @@ export interface GlobalSlice extends GlobalState {
     prevCurveApi: CurveApi | undefined,
     wallet: Wallet | undefined,
   ): Promise<void>
-
-  updateGlobalStoreByKey: <T>(key: DefaultStateKeys, value: T) => void
 
   setAppStateByActiveKey<T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean): void
   setAppStateByKey<T>(sliceKey: SliceKey, key: StateKey, value: T, showLog?: boolean): void
@@ -135,14 +132,6 @@ const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreApi<State
 
     log('Hydrating DEX - Complete')
   },
-  updateGlobalStoreByKey: <T>(key: DefaultStateKeys, value: T) => {
-    set(
-      produce((state) => {
-        state[key] = value
-      }),
-    )
-  },
-
   setAppStateByActiveKey: <T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean) => {
     set(
       produce((state) => {
