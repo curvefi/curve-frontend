@@ -74,6 +74,7 @@ const SelectTokenButton = ({
   }))
 
   if (!overlayTriggerState.isOpen) {
+    // eslint-disable-next-line react-hooks/refs
     visibleTokens.current = {}
   }
 

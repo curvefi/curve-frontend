@@ -66,6 +66,7 @@ const Page = () => {
 
   useEffect(() => {
     if (api && market && isPageVisible) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setLoaded(true)
       const timer = setTimeout(
         () =>

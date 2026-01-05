@@ -270,13 +270,14 @@ export const LargeTokenInput = ({
   const chips = typeof maxBalance?.chips === 'string' ? CHIPS_PRESETS[maxBalance.chips] : maxBalance?.chips
   const showChips = !!chips?.length
 
+  const maxBalanceValue = maxBalance?.balance
   const handlePercentageChange = useCallback(
     (newPercentage: Decimal | undefined) => {
       setPercentage(newPercentage)
-      if (maxBalance?.balance == null) return
-      setBalance(newPercentage == null ? undefined : calculateNewBalance(maxBalance.balance, newPercentage))
+      if (maxBalanceValue != null)
+        setBalance(newPercentage == null ? undefined : calculateNewBalance(maxBalanceValue, newPercentage))
     },
-    [maxBalance?.balance, setBalance],
+    [maxBalanceValue, setBalance],
   )
 
   const handleBalanceChange = useCallback(
@@ -300,11 +301,9 @@ export const LargeTokenInput = ({
       }
 
       setBalance(decimalBalance)
-      setPercentage(
-        maxBalance?.balance && newBalance ? calculateNewPercentage(decimalBalance, maxBalance.balance) : undefined,
-      )
+      setPercentage(maxBalanceValue && newBalance ? calculateNewPercentage(decimalBalance, maxBalanceValue) : undefined)
     },
-    [maxBalance?.balance, setBalance, cancelSetBalance, onBalance],
+    [maxBalanceValue, setBalance, cancelSetBalance, onBalance],
   )
 
   const updatePercentageOnNewMaxBalance = useEffectEvent((newMaxBalance?: Decimal) => {
@@ -312,7 +311,7 @@ export const LargeTokenInput = ({
   })
 
   /** When maxBalance changes, adjust the percentage accordingly. This ensures the slider percentage accurately reflects the balance/maxBalance ratio */
-  useEffect(() => updatePercentageOnNewMaxBalance(maxBalance?.balance), [maxBalance?.balance])
+  useEffect(() => updatePercentageOnNewMaxBalance(maxBalanceValue), [maxBalanceValue])
 
   const resetBalance = useCallback(() => {
     setPercentage(undefined)

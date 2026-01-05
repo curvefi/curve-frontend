@@ -81,6 +81,7 @@ export const useLoanPositionDetails = ({
         '',
         '',
       )
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setHealthMode(fetchedHealthMode)
     } else {
       setHealthMode(DEFAULT_HEALTH_MODE)

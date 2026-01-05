@@ -39,6 +39,7 @@ const SelectPreset = ({ setStableFeeValue, setMidValue, setOutValue }: Props) =>
   // prevent modal button from being pressed when opened
   useEffect(() => {
     if (overlayTriggerState.isOpen) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsButtonDisabled(true)
       const timer = setTimeout(() => {
         setIsButtonDisabled(false)

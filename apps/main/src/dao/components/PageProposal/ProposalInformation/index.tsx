@@ -16,11 +16,13 @@ type ProposalInformationProps = {
 
 const ProposalInformation = ({ proposal }: ProposalInformationProps) => {
   const createdDate = useMemo(
+    // eslint-disable-next-line react-hooks/preserve-manual-memoization
     () =>
       proposal?.timestamp ? formatDate(new Date(convertToLocaleTimestamp(proposal.timestamp) * 1000), 'long') : '-',
     [proposal?.timestamp],
   )
   const endDate = useMemo(
+    // eslint-disable-next-line react-hooks/preserve-manual-memoization
     () =>
       proposal?.timestamp
         ? formatDate(new Date(convertToLocaleTimestamp(proposal.timestamp + 604800) * 1000), 'long')

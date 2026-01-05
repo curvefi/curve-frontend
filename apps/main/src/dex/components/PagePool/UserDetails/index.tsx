@@ -63,6 +63,7 @@ const MySharesStats = ({
     return ''
   }, [poolDataCacheOrApi, userWithdrawAmounts])
 
+  // eslint-disable-next-line react-hooks/preserve-manual-memoization
   const crvRewardsTooltipText = useMemo(() => {
     if (haveBoosting && typeof rewardsApy?.crv?.[0] !== 'undefined' && userCrvApy?.boostApy && userCrvApy?.crvApy) {
       return (

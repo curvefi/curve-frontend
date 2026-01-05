@@ -61,6 +61,7 @@ export const useRemoveCollateralForm = <
     },
   })
 
+  // eslint-disable-next-line react-hooks/incompatible-library
   const values = form.watch()
 
   const params = useDebouncedValue(
