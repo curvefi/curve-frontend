@@ -42,10 +42,7 @@ export const IntegrationsList = ({ chainId, networks }: IntegrationsListProps) =
   const [searchText, setSearchText] = useState('')
 
   const filterTag = useMemo(() => tags?.[searchParams?.get('tag') ?? 'all']?.id, [searchParams, tags])
-  const filterNetwork = useMemo(
-    () => networks.find((network) => network.chainId === Number(searchParams?.get('chainId') || chainId)),
-    [searchParams, networks, chainId],
-  )
+  const filterNetwork = networks.find((network) => network.chainId === Number(searchParams?.get('chainId') || chainId))
 
   const updateFilters = useCallback(
     ({ tag, chainId }: { tag?: Tag; chainId?: number }) => {
