@@ -15,7 +15,7 @@ import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interf
 import { vestResolver } from '@hookform/resolvers/vest'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
-import { formDefaultOptions } from '@ui-kit/lib/model'
+import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { useFormErrors } from '../../borrow/react-form.utils'
 
 const useCallbackAfterFormUpdate = (form: UseFormReturn<CollateralForm>, callback: () => void) =>
@@ -48,8 +48,7 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
     },
   })
 
-  // eslint-disable-next-line react-hooks/incompatible-library
-  const values = form.watch()
+  const values = watchForm(form)
 
   const params = useDebouncedValue(
     useMemo(
@@ -57,9 +56,10 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
         chainId,
         marketId,
         userAddress,
-        ...values,
+        userCollateral: values.userCollateral,
+        maxCollateral: values.maxCollateral,
       }),
-      [chainId, marketId, userAddress, values],
+      [chainId, marketId, userAddress, values.userCollateral, values.maxCollateral],
     ),
   )
 

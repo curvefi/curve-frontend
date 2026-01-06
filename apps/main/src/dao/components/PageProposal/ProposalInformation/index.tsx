@@ -7,6 +7,7 @@ import Box from '@ui/Box'
 import { InternalLink } from '@ui/Link'
 import { formatDateFromTimestamp } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { TIME_FRAMES } from '@ui-kit/lib/model'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
 import { shortenAddress } from '@ui-kit/utils'
 
@@ -14,13 +15,13 @@ type ProposalInformationProps = {
   proposal: ProposalData | null
 }
 
-const WEEK_SECONDS = 7 * 24 * 60 * 60
-
 const ProposalInformation = ({ proposal }: ProposalInformationProps) => {
   const timestamp = proposal?.timestamp
   const [createdDate, endDate] = useMemo(
     () =>
-      timestamp ? [0, WEEK_SECONDS].map((offset) => formatDateFromTimestamp(timestamp + offset, 'long')) : ['-', '-'],
+      timestamp
+        ? [0, TIME_FRAMES.WEEK].map((offset) => formatDateFromTimestamp(timestamp + offset, 'long'))
+        : ['-', '-'],
     [timestamp],
   )
 

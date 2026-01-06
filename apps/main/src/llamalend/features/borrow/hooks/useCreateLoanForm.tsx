@@ -7,7 +7,7 @@ import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { vestResolver } from '@hookform/resolvers/vest'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
-import { formDefaultOptions } from '@ui-kit/lib/model'
+import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { Decimal } from '@ui-kit/utils'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 import { BORROW_PRESET_RANGES, BorrowPreset } from '../../../constants'
@@ -52,12 +52,31 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     },
   })
 
-  // eslint-disable-next-line react-hooks/incompatible-library
-  const values = form.watch()
+  const values = watchForm(form)
   const params = useDebouncedValue(
     useMemo(
-      () => ({ chainId, marketId: market?.id, userAddress, ...values }),
-      [chainId, market?.id, userAddress, values],
+      () => ({
+        chainId,
+        marketId: market?.id,
+        userAddress,
+        debt: values.debt,
+        maxDebt: values.maxDebt,
+        maxCollateral: values.maxCollateral,
+        range: values.range,
+        slippage: values.slippage,
+        leverageEnabled: values.leverageEnabled,
+      }),
+      [
+        chainId,
+        market?.id,
+        userAddress,
+        values.debt,
+        values.maxDebt,
+        values.maxCollateral,
+        values.range,
+        values.slippage,
+        values.leverageEnabled,
+      ],
     ),
   )
 
@@ -70,7 +89,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     reset: resetCreation,
   } = useCreateLoanMutation({ network, marketId: market?.id, onReset: form.reset, onCreated, userAddress })
 
-  const { borrowToken, collateralToken } = useMemo(() => market && getTokens(market), [market]) ?? {}
+  const { borrowToken, collateralToken } = market ? getTokens(market) : {}
 
   useCallbackAfterFormUpdate(form, resetCreation) // reset creation state on form change
 
