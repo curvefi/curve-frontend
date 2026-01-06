@@ -362,55 +362,54 @@ const Swap = ({
   return (
     <FormContent>
       <Stack gap={Spacing.sm}>
-            <LargeTokenInput
-              label={t`Sell`}
-              name="fromAmount"
-              onBalance={setFromAmount}
-              balance={decimal(formValues.fromAmount)}
-              inputBalanceUsd={decimal(formValues.fromAmount && fromUsdRate && fromUsdRate * +formValues.fromAmount)}
-              tokenSelector={
-                <TokenSelector
-                  selectedToken={fromToken}
-                  tokens={selectList}
-                  disabled={isDisabled || selectList.length === 0}
-                  showSearch={false}
-                  showManageList={false}
-                  compact
-                  onToken={({ address, symbol }) =>
-                    updateFormValues(
-                      {
-                        ...formValues,
-                        ...(address === formValues.toAddress && {
-                          toAddress: formValues.fromAddress,
-                          toToken: swapTokensMapper[formValues.fromAddress].symbol,
-                        }),
-                        fromAddress: address,
-                        fromToken: symbol,
-                        ...(formValues.isFrom === false ? { fromAmount: '' } : { toAmount: '' }),
-                      },
-                      null,
-                      '',
-                    )
-                  }
-                />
+        <LargeTokenInput
+          label={t`Sell`}
+          name="fromAmount"
+          onBalance={setFromAmount}
+          balance={decimal(formValues.fromAmount)}
+          inputBalanceUsd={decimal(formValues.fromAmount && fromUsdRate && fromUsdRate * +formValues.fromAmount)}
+          tokenSelector={
+            <TokenSelector
+              selectedToken={fromToken}
+              tokens={selectList}
+              disabled={isDisabled || selectList.length === 0}
+              showSearch={false}
+              showManageList={false}
+              compact
+              onToken={({ address, symbol }) =>
+                updateFormValues(
+                  {
+                    ...formValues,
+                    ...(address === formValues.toAddress && {
+                      toAddress: formValues.fromAddress,
+                      toToken: swapTokensMapper[formValues.fromAddress].symbol,
+                    }),
+                    fromAddress: address,
+                    fromToken: symbol,
+                    ...(formValues.isFrom === false ? { fromAmount: '' } : { toAmount: '' }),
+                  },
+                  null,
+                  '',
+                )
               }
-              {...(formValues.fromError && {
-                isError: true,
-                message: t`Amount > wallet balance ${formatNumber(userFromBalance)}`,
-              })}
-              disabled={isDisabled}
-              walletBalance={{
-                balance: decimal(userFromBalance),
-                loading: userFromBalanceLoading || isMaxLoading,
-                symbol: fromToken?.symbol,
-                usdRate: fromUsdRate,
-              }}
-              maxBalance={{
-                balance: decimal(userFromBalance),
-                chips: 'range',
-              }}
             />
-
+          }
+          {...(formValues.fromError && {
+            isError: true,
+            message: t`Amount > wallet balance ${formatNumber(userFromBalance)}`,
+          })}
+          disabled={isDisabled}
+          walletBalance={{
+            balance: decimal(userFromBalance),
+            loading: userFromBalanceLoading || isMaxLoading,
+            symbol: fromToken?.symbol,
+            usdRate: fromUsdRate,
+          }}
+          maxBalance={{
+            balance: decimal(userFromBalance),
+            chips: 'range',
+          }}
+        />
 
         <IconButton
           disabled={isDisabled}
@@ -433,47 +432,46 @@ const Swap = ({
 
         {/* if hasRouter value is false, it means entering toAmount is not ready */}
 
-          <LargeTokenInput
-            label={t`Buy`}
-            name="toAmount"
-            onBalance={setToAmount}
-            inputBalanceUsd={decimal(formValues.toAmount && toUsdRate && toUsdRate * +formValues.toAmount)}
-            balance={decimal(formValues.toAmount)}
-            disabled={isUndefined(hasRouter) || (!isUndefined(hasRouter) && !hasRouter) || isDisabled}
-            tokenSelector={
-              <TokenSelector
-                selectedToken={toToken}
-                tokens={selectList}
-                disabled={isDisabled || selectList.length === 0}
-                showSearch={false}
-                showManageList={false}
-                compact
-                onToken={({ address, symbol }) =>
-                  updateFormValues(
-                    {
-                      ...formValues,
-                      ...(address === formValues.fromAddress && {
-                        fromAddress: formValues.toAddress,
-                        fromToken: swapTokensMapper[formValues.toAddress].symbol,
-                      }),
-                      toAddress: address,
-                      toToken: symbol,
-                      ...(formValues.isFrom === false ? { fromAmount: '' } : { toAmount: '' }),
-                    },
-                    null,
-                    '',
-                  )
-                }
-              />
-            }
-            walletBalance={{
-              balance: decimal(userToBalance),
-              loading: userToBalanceLoading,
-              symbol: toToken?.symbol,
-              usdRate: toUsdRate,
-            }}
-          />
-
+        <LargeTokenInput
+          label={t`Buy`}
+          name="toAmount"
+          onBalance={setToAmount}
+          inputBalanceUsd={decimal(formValues.toAmount && toUsdRate && toUsdRate * +formValues.toAmount)}
+          balance={decimal(formValues.toAmount)}
+          disabled={isUndefined(hasRouter) || (!isUndefined(hasRouter) && !hasRouter) || isDisabled}
+          tokenSelector={
+            <TokenSelector
+              selectedToken={toToken}
+              tokens={selectList}
+              disabled={isDisabled || selectList.length === 0}
+              showSearch={false}
+              showManageList={false}
+              compact
+              onToken={({ address, symbol }) =>
+                updateFormValues(
+                  {
+                    ...formValues,
+                    ...(address === formValues.fromAddress && {
+                      fromAddress: formValues.toAddress,
+                      fromToken: swapTokensMapper[formValues.toAddress].symbol,
+                    }),
+                    toAddress: address,
+                    toToken: symbol,
+                    ...(formValues.isFrom === false ? { fromAmount: '' } : { toAmount: '' }),
+                  },
+                  null,
+                  '',
+                )
+              }
+            />
+          }
+          walletBalance={{
+            balance: decimal(userToBalance),
+            loading: userToBalanceLoading,
+            symbol: toToken?.symbol,
+            usdRate: toUsdRate,
+          }}
+        />
 
         {poolDataCacheOrApi.hasWrapped && formValues.isWrapped !== null && (
           <div>

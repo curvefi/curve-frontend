@@ -405,43 +405,42 @@ const QuickSwap = ({
   return (
     <Stack gap={Spacing.sm}>
       {/* SWAP FROM */}
-            <LargeTokenInput
-              label={t`Sell`}
-              balance={decimal(formValues.fromAmount)}
-              onBalance={setFromAmount}
-              name="fromAmount"
-              inputBalanceUsd={decimal(formValues.fromAmount && fromUsdRate && fromUsdRate * +formValues.fromAmount)}
-              walletBalance={{
-                loading: userBalancesLoading || isMaxLoading,
-                balance: decimal(userFromBalance),
-                symbol: fromToken?.symbol,
-                usdRate: fromUsdRate,
-              }}
-              maxBalance={{
-                balance: decimal(userFromBalance),
-                chips: 'range',
-              }}
-              isError={!!formValues.fromError}
-              disabled={isDisable}
-              testId="from-amount"
-              tokenSelector={
-                <TokenSelector
-                  selectedToken={fromToken}
-                  tokens={tokens}
-                  balances={userBalancesMapper}
-                  disabled={isDisable || !fromToken}
-                  tokenPrices={usdRatesMapper}
-                  onToken={({ address: fromAddress }) => {
-                    const toAddress =
-                      fromAddress === searchedParams.toAddress ? searchedParams.fromAddress : searchedParams.toAddress
-                    resetFormErrors()
-                    redirect(toAddress, fromAddress)
-                  }}
-                />
-              }
-              message={formValues.fromError && t`Amount > wallet balance ${formatNumber(userFromBalance)}`}
-            />
-
+      <LargeTokenInput
+        label={t`Sell`}
+        balance={decimal(formValues.fromAmount)}
+        onBalance={setFromAmount}
+        name="fromAmount"
+        inputBalanceUsd={decimal(formValues.fromAmount && fromUsdRate && fromUsdRate * +formValues.fromAmount)}
+        walletBalance={{
+          loading: userBalancesLoading || isMaxLoading,
+          balance: decimal(userFromBalance),
+          symbol: fromToken?.symbol,
+          usdRate: fromUsdRate,
+        }}
+        maxBalance={{
+          balance: decimal(userFromBalance),
+          chips: 'range',
+        }}
+        isError={!!formValues.fromError}
+        disabled={isDisable}
+        testId="from-amount"
+        tokenSelector={
+          <TokenSelector
+            selectedToken={fromToken}
+            tokens={tokens}
+            balances={userBalancesMapper}
+            disabled={isDisable || !fromToken}
+            tokenPrices={usdRatesMapper}
+            onToken={({ address: fromAddress }) => {
+              const toAddress =
+                fromAddress === searchedParams.toAddress ? searchedParams.fromAddress : searchedParams.toAddress
+              resetFormErrors()
+              redirect(toAddress, fromAddress)
+            }}
+          />
+        }
+        message={formValues.fromError && t`Amount > wallet balance ${formatNumber(userFromBalance)}`}
+      />
 
       {/* SWAP ICON */}
       <IconButton
@@ -455,38 +454,37 @@ const QuickSwap = ({
 
       {/* SWAP TO */}
 
-          <LargeTokenInput
-            label={t`Buy`}
-            balance={decimal(formValues.toAmount)}
-            inputBalanceUsd={decimal(formValues.toAmount && toUsdRate && toUsdRate * +formValues.toAmount)}
-            onBalance={setToAmount}
-            name="toAmount"
-            walletBalance={{
-              loading: userBalancesLoading,
-              balance: decimal(userToBalance),
-              symbol: toToken?.symbol,
-              usdRate: toUsdRate,
+      <LargeTokenInput
+        label={t`Buy`}
+        balance={decimal(formValues.toAmount)}
+        inputBalanceUsd={decimal(formValues.toAmount && toUsdRate && toUsdRate * +formValues.toAmount)}
+        onBalance={setToAmount}
+        name="toAmount"
+        walletBalance={{
+          loading: userBalancesLoading,
+          balance: decimal(userToBalance),
+          symbol: toToken?.symbol,
+          usdRate: toUsdRate,
+        }}
+        disabled={isDisable}
+        testId="to-amount"
+        tokenSelector={
+          <TokenSelector
+            selectedToken={toToken}
+            tokens={tokens}
+            balances={userBalancesMapper}
+            disabled={isDisable || !toToken}
+            tokenPrices={usdRatesMapper}
+            disableMyTokens={true}
+            onToken={({ address: toAddress }) => {
+              const fromAddress =
+                toAddress === searchedParams.fromAddress ? searchedParams.toAddress : searchedParams.fromAddress
+              resetFormErrors()
+              redirect(toAddress, fromAddress)
             }}
-            disabled={isDisable}
-            testId="to-amount"
-            tokenSelector={
-              <TokenSelector
-                selectedToken={toToken}
-                tokens={tokens}
-                balances={userBalancesMapper}
-                disabled={isDisable || !toToken}
-                tokenPrices={usdRatesMapper}
-                disableMyTokens={true}
-                onToken={({ address: toAddress }) => {
-                  const fromAddress =
-                    toAddress === searchedParams.fromAddress ? searchedParams.toAddress : searchedParams.fromAddress
-                  resetFormErrors()
-                  redirect(toAddress, fromAddress)
-                }}
-              />
-            }
           />
-
+        }
+      />
 
       {/* detail info */}
       <Stack>
