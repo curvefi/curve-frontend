@@ -1,4 +1,5 @@
 import { notFalsy } from 'router-api/src/router.utils'
+import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
 import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
 import type { Query } from '@ui-kit/types/util'
@@ -42,7 +43,7 @@ export const LoanLeverageActionInfo = ({
   const isHighImpact = priceImpactPercent != null && priceImpactPercent > +slippage
 
   return (
-    <>
+    <Stack>
       <ActionInfo
         label={t`Leverage`}
         value={formatInt(leverage)}
@@ -71,6 +72,6 @@ export const LoanLeverageActionInfo = ({
         testId="borrow-price-impact"
       />
       <SlippageToleranceActionInfoPure maxSlippage={slippage} onSave={onSlippageChange} />
-    </>
+    </Stack>
   )
 }
