@@ -7,7 +7,7 @@ import type { Decimal } from '@ui-kit/utils'
 import type { Token } from '../../borrow/types'
 
 type Params<ChainId extends IChainId> = {
-  chainId: ChainId
+  chainId: ChainId | null | undefined
   marketId: string | null | undefined
   userAddress: Address | null | undefined
   collateralToken: Token | undefined

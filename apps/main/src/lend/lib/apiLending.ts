@@ -28,7 +28,8 @@ import {
   UserMarketBalances,
 } from '@/lend/types/lend.types'
 import { OneWayMarketTemplate } from '@/lend/types/lend.types'
-import { fulfilledValue, getErrorMessage, log } from '@/lend/utils/helpers'
+import { fulfilledValue, log } from '@/lend/utils/helpers'
+import { getErrorMessage } from '@/llamalend/helpers'
 import { getIsUserCloseToLiquidation, getLiquidationStatus, reverseBands, sortBandsLend } from '@/llamalend/llama.utils'
 import PromisePool from '@supercharge/promise-pool'
 import type { StepStatus } from '@ui/Stepper/types'

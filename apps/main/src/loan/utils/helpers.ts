@@ -1,6 +1,5 @@
 import networks from '@/loan/networks'
 import { type ChainId, LlamaApi } from '@/loan/types/loan.types'
-import { t } from '@ui-kit/lib/i18n'
 
 interface CustomError extends Error {
   data?: { message: string }
@@ -12,21 +11,6 @@ export function log(fnName: string, ...args: unknown[]) {
   if (isDevelopment) {
     console.info(`curve-frontend -> ${fnName}${args.length ? ':' : ''}`, ...args)
   }
-}
-
-export function getErrorMessage(error: CustomError, defaultErrorMessage: string) {
-  let errorMessage = defaultErrorMessage
-
-  if (error?.message) {
-    if (error.message.startsWith('user rejected transaction')) {
-      errorMessage = t`User rejected transaction`
-    } else if ('data' in error && typeof error.data?.message === 'string') {
-      errorMessage = error.data.message
-    } else {
-      errorMessage = error.message
-    }
-  }
-  return errorMessage
 }
 
 export function fulfilledValue<T>(result: PromiseSettledResult<T>) {

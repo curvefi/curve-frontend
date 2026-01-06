@@ -149,6 +149,7 @@ export type LargeTokenInputProps = {
    */
   tokenSelector?: ReactNode
 
+  // TODO: receive a `maxBalance` ReactNode to allow anything to be injected
   /** Optional wallet balance configuration. */
   walletBalance?: BalanceProps<Decimal>
 
