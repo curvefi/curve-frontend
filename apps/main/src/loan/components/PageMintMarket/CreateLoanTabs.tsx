@@ -10,7 +10,7 @@ import useStore from '@/loan/store/useStore'
 import { hasV1Leverage } from '@/loan/utils/leverage'
 import { useCreateLoanMuiForm } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
-import { FormTab, FormTabs } from '@ui-kit/shared/ui/FormTabs/FormTabs'
+import { FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
 
 /**
  * Callback that synchronizes the `ChartOhlc` component with the `RangeSlider` component in the new `BorrowTabContents`.

@@ -16,8 +16,8 @@ const { sum } = lodash
 
 type UseMarketDetailsProps = {
   chainId: ChainId
-  llamma: OneWayMarketTemplate | null | undefined
-  llammaId: string
+  market: OneWayMarketTemplate | null | undefined
+  marketId: string
 }
 
 const averageMultiplier = 30
@@ -25,18 +25,18 @@ const averageMultiplierString = `${averageMultiplier}D`
 
 export const useMarketDetails = ({
   chainId,
-  llamma,
-  llammaId,
+  market,
+  marketId,
 }: UseMarketDetailsProps): Omit<MarketDetailsProps, 'marketPage'> => {
   const blockchainId = networks[chainId]?.id as Chain
-  const { collateral_token, borrowed_token } = llamma ?? {}
-  const { controller, vault } = llamma?.addresses ?? {}
-  const marketRate = useStore((state) => state.markets.ratesMapper[chainId]?.[llammaId])
+  const { collateral_token, borrowed_token } = market ?? {}
+  const { controller, vault } = market?.addresses ?? {}
+  const marketRate = useStore((state) => state.markets.ratesMapper[chainId]?.[marketId])
 
   const {
     data: { rates, collateralAmount, borrowedAmount, cap, available, maxLeverage, crvRates, rewardsApr },
     isLoading: isMarketDetailsLoading,
-  } = useLendMarketDetails({ chainId, marketId: llammaId })
+  } = useLendMarketDetails({ chainId, marketId })
   const { data: lendingSnapshots, isLoading: isSnapshotsLoading } = useLendingSnapshots({
     blockchainId,
     contractAddress: controller as Address,
@@ -126,7 +126,7 @@ export const useMarketDetails = ({
       total: collateralAmount ?? null,
       totalUsdValue: collateralAmount && collateralUsdRate ? collateralAmount * collateralUsdRate : null,
       usdRate: collateralUsdRate ?? null,
-      loading: !llamma || isMarketDetailsLoading.marketCollateralAmounts || collateralUsdRateLoading,
+      loading: !market || isMarketDetailsLoading.marketCollateralAmounts || collateralUsdRateLoading,
     },
     borrowToken: {
       symbol: borrowed_token?.symbol ?? null,
@@ -134,7 +134,7 @@ export const useMarketDetails = ({
       total: borrowedAmount ?? null,
       totalUsdValue: borrowedAmount && borrowedUsdRate ? borrowedAmount * borrowedUsdRate : null,
       usdRate: borrowedUsdRate ?? null,
-      loading: !llamma || isMarketDetailsLoading.marketCollateralAmounts || borrowedUsdRateLoading,
+      loading: !market || isMarketDetailsLoading.marketCollateralAmounts || borrowedUsdRateLoading,
     },
     borrowAPY: {
       rate: borrowApy != null ? Number(borrowApy) : null,
@@ -145,7 +145,7 @@ export const useMarketDetails = ({
       totalBorrowRate: borrowApy == null ? null : Number(borrowApy) - (collateralRebasingYield ?? 0),
       totalAverageBorrowRate,
       extraRewards: campaigns,
-      loading: !llamma || isSnapshotsLoading || isMarketDetailsLoading.marketOnChainRates,
+      loading: !market || isSnapshotsLoading || isMarketDetailsLoading.marketOnChainRates,
     },
     supplyAPY: {
       rate: supplyApy != null ? Number(supplyApy) : null,
@@ -171,17 +171,17 @@ export const useMarketDetails = ({
           }))
         : [],
       extraRewards: campaigns,
-      loading: !llamma || isSnapshotsLoading || isMarketDetailsLoading.marketOnChainRates,
+      loading: !market || isSnapshotsLoading || isMarketDetailsLoading.marketOnChainRates,
     },
     availableLiquidity: {
       value: available ?? null,
       max: cap ?? null,
-      loading: !llamma || isMarketDetailsLoading.marketCapAndAvailable,
+      loading: !market || isMarketDetailsLoading.marketCapAndAvailable,
     },
     maxLeverage: maxLeverage
       ? {
           value: Number(maxLeverage),
-          loading: !llamma || isMarketDetailsLoading.marketMaxLeverage,
+          loading: !market || isMarketDetailsLoading.marketMaxLeverage,
         }
       : undefined,
   }

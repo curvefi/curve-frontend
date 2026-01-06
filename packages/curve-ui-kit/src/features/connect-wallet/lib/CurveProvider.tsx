@@ -129,6 +129,7 @@ export const CurveProvider = <App extends AppName>({
         connectState,
         network,
         isHydrated,
+        isReconnecting,
         ...(wallet && { wallet }),
         ...(provider && { provider }),
         ...(curveApi && { curveApi }),

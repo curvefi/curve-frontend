@@ -105,8 +105,8 @@ export type ParsedBandsBalances = {
   isOraclePriceBand: boolean
   isNGrouped: boolean
   n: number | string
-  p_up: any
-  p_down: any
+  p_up: string
+  p_down: string
   pUpDownMedian: string
 }
 export type MarketStatBands = {
@@ -239,4 +239,13 @@ export enum FormError {
   StepApprove = 'error-step-approve',
   LiquidationMode = 'error-liquidation-mode',
   TotalSupply = 'error-total-supply',
+}
+
+export type FormStatus = {
+  isApproved: boolean
+  isApprovedCompleted: boolean
+  isComplete: boolean
+  isInProgress: boolean
+  error: string
+  stepError: string
 }

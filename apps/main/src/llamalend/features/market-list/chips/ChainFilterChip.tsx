@@ -7,7 +7,7 @@ import { type FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { parseListFilter, serializeListFilter } from '@ui-kit/shared/ui/DataTable/filters'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { getUniqueSortedStrings } from '@ui-kit/utils/sorting'
-import { LlamaMarketColumnId } from '../columns.enum'
+import { LlamaMarketColumnId } from '../columns'
 
 const { Spacing } = SizesAndSpaces
 

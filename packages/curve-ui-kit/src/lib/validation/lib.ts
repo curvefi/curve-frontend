@@ -4,13 +4,20 @@ import { FieldName, FieldsOf } from './types'
 
 extendEnforce(enforce)
 
-export const checkValidity = <D extends object, S extends Suite<any, any>>(
+/**
+ * This is using `any` because `vest` will try to match every single field,
+ * and some validators don't validate everything (we pass chainId, marketId, userAddress plus variables).
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type ValidationSuite = Suite<any, any> | Suite<never, any>
+
+export const checkValidity = <D extends object, S extends ValidationSuite>(
   suite: S,
   data: FieldsOf<D>,
   fields?: FieldName<D>[],
 ): boolean => Object.keys(suite(data, fields).getErrors()).length === 0
 
-export function assertValidity<D extends object, S extends Suite<any, any>>(
+export function assertValidity<D extends object, S extends ValidationSuite>(
   suite: S,
   data: FieldsOf<D>,
   fields?: FieldName<D>[],

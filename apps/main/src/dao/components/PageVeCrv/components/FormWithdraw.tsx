@@ -17,6 +17,7 @@ import { formatNumber } from '@ui/utils/utilsFormat'
 import { t } from '@ui-kit/lib/i18n'
 import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { getIsLockExpired } from '@ui-kit/utils/vecrv'
 
 const { IconSize } = SizesAndSpaces
 
@@ -28,8 +29,10 @@ const FormWithdraw = ({ rChainId, vecrvInfo }: PageVecrv) => {
   const { address } = useConnection()
 
   const haveSigner = !!address
-  const canUnlock =
-    +vecrvInfo.lockedAmountAndUnlockTime.lockedAmount > 0 && vecrvInfo.lockedAmountAndUnlockTime.unlockTime < Date.now()
+  const canUnlock = getIsLockExpired(
+    vecrvInfo.lockedAmountAndUnlockTime.lockedAmount,
+    vecrvInfo.lockedAmountAndUnlockTime.unlockTime,
+  )
   const { data: lockEstimateWithdrawGas, isLoading: isLoadingLockEstimateWithdrawGas } = useLockEstimateWithdrawGas(
     { chainId: rChainId, userAddress: address },
     canUnlock,

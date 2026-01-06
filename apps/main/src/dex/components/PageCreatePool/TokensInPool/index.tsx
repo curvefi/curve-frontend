@@ -23,7 +23,11 @@ import { CreateToken, TokenId, TokensInPoolState } from '@/dex/components/PageCr
 import { checkMetaPool, containsOracle, getBasepoolCoins } from '@/dex/components/PageCreatePool/utils'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import useTokensMapper from '@/dex/hooks/useTokensMapper'
-import { DEFAULT_CREATE_POOL_STATE, DEFAULT_ERC4626_STATUS } from '@/dex/store/createCreatePoolSlice'
+import {
+  DEFAULT_CREATE_POOL_STATE,
+  DEFAULT_ERC4626_STATUS,
+  DEFAULT_ORACLE_STATUS,
+} from '@/dex/store/createCreatePoolSlice'
 import useStore from '@/dex/store/useStore'
 import { CurveApi, ChainId, BasePool } from '@/dex/types/main.types'
 import Box from '@ui/Box'
@@ -548,8 +552,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
         address: tokenId === token ? '' : tokensInPoolState[token].address,
         symbol: tokenId === token ? '' : tokensInPoolState[token].symbol,
         ngAssetType: tokenId === token ? NG_ASSET_TYPE.STANDARD : tokensInPoolState[token].ngAssetType,
-        oracleAddress: tokenId === token ? '' : tokensInPoolState[token].oracleAddress,
-        oracleFunction: tokenId === token ? '' : tokensInPoolState[token].oracleFunction,
+        oracle: tokenId === token ? { ...DEFAULT_ORACLE_STATUS } : tokensInPoolState[token].oracle,
         erc4626: tokenId === token ? { ...DEFAULT_ERC4626_STATUS } : tokensInPoolState[token].erc4626,
       })
 
@@ -569,7 +572,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
   )
 
   // check if the tokens are withing 0.95 and 1.05 threshold
-  const checkThreshold = useMemo(() => {
+  const checkStableswapThreshold = useMemo(() => {
     // Array of token IDs you want to check
     const tokenIds: TokenId[] = [TOKEN_A, TOKEN_B, TOKEN_C, TOKEN_D, TOKEN_E, TOKEN_F, TOKEN_G, TOKEN_H]
 
@@ -577,6 +580,17 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
     const validTokens = tokenIds.filter(
       (tokenId) => tokensInPool[tokenId].address !== '' && initialPrice[tokenId] !== 0,
     )
+
+    // Skip threshold check for tokens with special asset types (they have their own rate mechanisms)
+    const hasSpecialAssetType = tokenIds.some((tokenId) => {
+      const assetType = tokensInPool[tokenId].ngAssetType
+      return (
+        assetType === NG_ASSET_TYPE.ERC4626 ||
+        assetType === NG_ASSET_TYPE.ORACLE ||
+        assetType === NG_ASSET_TYPE.REBASING
+      )
+    })
+    if (hasSpecialAssetType) return false
 
     if (validTokens.length <= 1) {
       // Not enough tokens for comparison
@@ -760,7 +774,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
       {!chainId && <WarningBox message={t`Please connect a wallet to select tokens`} />}
       {swapType === STABLESWAP ? (
         <>
-          {checkThreshold && twocryptoFactory && (
+          {checkStableswapThreshold && twocryptoFactory && (
             <>
               <WarningBox
                 message={t`Tokens appear to be unpegged (above 5% deviation from 1:1).

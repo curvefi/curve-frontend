@@ -6,7 +6,7 @@ import { combineQueriesToObject, createValidationSuite } from '@ui-kit/lib'
 import { queryFactory, rootKeys, type ChainParams, type TokenParams, type TokenQuery } from '@ui-kit/lib/model/query'
 import { tokenValidationGroup } from '@ui-kit/lib/model/query/token-validation'
 
-const QUERY_KEY_IDENTIFIER = 'usdRate' as const
+export const QUERY_KEY_IDENTIFIER = 'usdRate' as const
 
 /**
  * Hook to fetch the USD rate for a specific token on a specific blockchain.

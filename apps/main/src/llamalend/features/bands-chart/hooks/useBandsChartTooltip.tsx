@@ -37,7 +37,7 @@ export const useBandsChartTooltip = (
       if (Array.isArray(params)) {
         const arr = params as TooltipArrayParams
         dataIndex = arr.length > 0 ? arr[0].dataIndex : undefined
-      } else if (params && typeof params === 'object' && 'dataIndex' in (params as any)) {
+      } else if (params && typeof params === 'object' && 'dataIndex' in params) {
         dataIndex = (params as TooltipItemParams).dataIndex
       }
 

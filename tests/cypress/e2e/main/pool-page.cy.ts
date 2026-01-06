@@ -1,6 +1,6 @@
 import { oneFloat, oneOf } from '@cy/support/generators'
 import type { AppRoute } from '@cy/support/routes'
-import { LOAD_TIMEOUT } from '@cy/support/ui'
+import { API_LOAD_TIMEOUT } from '@cy/support/ui'
 
 describe('Pool page', () => {
   const path: AppRoute = `dex/${oneOf(
@@ -12,7 +12,7 @@ describe('Pool page', () => {
 
   it('should update slippage settings', () => {
     cy.visitWithoutTestConnector(path)
-    cy.get('[data-testid="tab-deposit"]', LOAD_TIMEOUT).should('have.class', 'Mui-selected')
+    cy.get('[data-testid="tab-deposit"]', API_LOAD_TIMEOUT).should('have.class', 'Mui-selected')
     cy.get('[data-testid="borrow-slippage-value"]').contains(path.includes('crypto') ? '0.10%' : '0.03%')
     cy.get('[data-testid="slippage-settings-button"]').click()
     const [isPreset, value] = oneOf([true, oneOf('0.1', '0.5'), [false, oneFloat(5).toFixed(2)]])
