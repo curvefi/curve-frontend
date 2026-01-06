@@ -135,8 +135,8 @@ export const IntegrationsList = ({ chainId, networks }: IntegrationsListProps) =
           </Box>
         ) : (
           <Grid container spacing={Spacing.md}>
-            {(integrationsFiltered ?? []).map((app, idx) => (
-              <Grid key={`${app.name}_${idx}`} size={{ mobile: 12, tablet: 6, desktop: 4 }}>
+            {(integrationsFiltered ?? []).map((app) => (
+              <Grid key={app.name} size={{ mobile: 12, tablet: 6, desktop: 4 }}>
                 <IntegrationApp {...app} integrationsTags={tags} />
               </Grid>
             ))}

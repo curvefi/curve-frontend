@@ -47,8 +47,8 @@ export const IntegrationApp = ({
               <Grid container>
                 <Grid size={6}>
                   <Stack gap={Spacing.sm}>
-                    {Object.keys(tags).map((k, idx) => (
-                      <Typography key={`${k}-${idx}`} variant="bodySRegular">
+                    {Object.keys(tags).map((k) => (
+                      <Typography key={k} variant="bodySRegular">
                         <IntegrationAppTag tag={integrationsTags[k] ?? {}} />
                       </Typography>
                     ))}
