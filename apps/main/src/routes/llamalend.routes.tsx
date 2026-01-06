@@ -1,6 +1,6 @@
 import { PageIntegrations } from '@/lend/components/PageIntegrations/Page'
 import { LlamaMarketsList } from '@/llamalend/features/market-list/LlamaMarketsList'
-import { createRoute, Outlet } from '@tanstack/react-router'
+import { createRoute } from '@tanstack/react-router'
 import { rootRoute } from './root.routes'
 import { createSharedRoutes } from './shared.routes'
 import { redirectTo } from './util'
@@ -8,7 +8,6 @@ import { redirectTo } from './util'
 const llamalendLayoutRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: 'llamalend',
-  component: Outlet,
 })
 
 const layoutProps = { getParentRoute: () => llamalendLayoutRoute }
