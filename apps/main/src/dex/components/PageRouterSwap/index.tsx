@@ -36,7 +36,7 @@ import TxInfoBar from '@ui/TxInfoBar'
 import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
-import { LargeSxProps, TokenSelector } from '@ui-kit/features/select-token'
+import { TokenSelector } from '@ui-kit/features/select-token'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useLegacyTokenInput } from '@ui-kit/hooks/useFeatureFlags'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
@@ -485,7 +485,6 @@ const QuickSwap = ({
               testId="from-amount"
               tokenSelector={
                 <TokenSelector
-                  sx={LargeSxProps}
                   selectedToken={fromToken}
                   tokens={tokens}
                   balances={userBalancesMapper}
@@ -569,7 +568,6 @@ const QuickSwap = ({
             testId="to-amount"
             tokenSelector={
               <TokenSelector
-                sx={LargeSxProps}
                 selectedToken={toToken}
                 tokens={tokens}
                 balances={userBalancesMapper}

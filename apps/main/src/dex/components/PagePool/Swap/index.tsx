@@ -34,7 +34,7 @@ import TxInfoBar from '@ui/TxInfoBar'
 import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
-import { LargeSxProps, TokenSelector } from '@ui-kit/features/select-token'
+import { TokenSelector } from '@ui-kit/features/select-token'
 import { useLegacyTokenInput } from '@ui-kit/hooks/useFeatureFlags'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
@@ -468,7 +468,6 @@ const Swap = ({
                       '',
                     )
                   }
-                  sx={LargeSxProps}
                 />
               }
               {...(formValues.fromError && {
@@ -597,7 +596,6 @@ const Swap = ({
                     '',
                   )
                 }
-                sx={LargeSxProps}
               />
             }
             walletBalance={{

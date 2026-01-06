@@ -103,7 +103,6 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
 
   return {
     form,
-    values,
     params,
     isPending: form.formState.isSubmitting || action.isPending,
     onSubmit: form.handleSubmit(onSubmit),
