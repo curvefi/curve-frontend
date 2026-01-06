@@ -1,5 +1,6 @@
 import Fuse from 'fuse.js'
 import { useCallback, useMemo, useState } from 'react'
+import { notFalsy } from '@curvefi/prices-api/objects.util'
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import MenuItem from '@mui/material/MenuItem'
@@ -128,9 +129,10 @@ export const IntegrationsList = ({ chainId, networks }: IntegrationsListProps) =
         {!integrationsFiltered.length ? (
           <Box sx={{ display: 'flex', justifyContent: 'center', padding: Spacing.xxl }}>
             <Trans>
-              No integration apps found with for {searchText ? <>“{searchText}”</> : ''}{' '}
-              {!!searchText && !!filterTag ? <>and </> : ''}
-              {filterTag ? <>“{filterTag}”</> : ''}
+              No integration apps found with for{' '}
+              {notFalsy(searchText, filterTag)
+                .map((x) => `“${x}”`)
+                .join(t` and `)}
             </Trans>
           </Box>
         ) : (
