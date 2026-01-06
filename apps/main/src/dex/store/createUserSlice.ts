@@ -28,11 +28,15 @@ type SliceState = {
 
 const sliceKey = 'user'
 
-// prettier-ignore
 export type UserSlice = {
   [sliceKey]: SliceState & {
     fetchUserPoolList(curve: CurveApi): Promise<UserPoolListMapper>
-    fetchUserPoolInfo(config: Config, curve: CurveApi, poolId: string, isFetchWalletBalancesOnly?: boolean): Promise<Balances| void>
+    fetchUserPoolInfo(
+      config: Config,
+      curve: CurveApi,
+      poolId: string,
+      isFetchWalletBalancesOnly?: boolean,
+    ): Promise<Balances | void>
 
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
     setStateByKey<T>(key: StateKey, value: T): void
