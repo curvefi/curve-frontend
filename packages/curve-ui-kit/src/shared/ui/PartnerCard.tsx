@@ -57,11 +57,13 @@ export const PartnerCard = ({ name, description, imageId, networks, tags, appUrl
           <Stack justifyContent="center">
             <Typography variant="headingSBold">{name}</Typography>
 
-            {networks && Object.keys(networks).length > 0 && (
+            {networks && Object.values(networks).some((x) => x) && (
               <Stack flexGrow={1} direction="row" gap={Spacing.xs} alignItems="center">
-                {Object.keys(networks).map((networkId) => (
-                  <ChainIcon key={networkId} blockchainId={networkId} size="sm" />
-                ))}
+                {Object.entries(networks)
+                  .filter(([, enabled]) => enabled)
+                  .map(([networkId]) => (
+                    <ChainIcon key={networkId} blockchainId={networkId} size="sm" />
+                  ))}
               </Stack>
             )}
           </Stack>
