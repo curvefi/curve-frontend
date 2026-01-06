@@ -1,3 +1,4 @@
+import type { UrlObject } from 'url'
 import { type ComponentType, type ReactNode, useState } from 'react'
 import { notFalsy } from '@curvefi/prices-api/objects.util'
 import Stack from '@mui/material/Stack'
@@ -20,6 +21,8 @@ export type FormTab<Props extends object> = {
   value: string
   /** Label of the tab, can be a function that receives the form props */
   label: FnOrValue<Props, ReactNode>
+  /** Optional href for tabs that should link out instead of rendering content */
+  href?: FnOrValue<Props, string | UrlObject>
   /** Optional sub-tabs of the tab */
   subTabs?: FormSubTab<Props>[]
   /** Function or value to determine if the tab is visible */
@@ -36,10 +39,11 @@ const createOptions = <Props extends object>(
 ): TabOption<string>[] =>
   tabs
     ?.filter(({ visible }) => applyFnOrValue(visible, params) !== false)
-    .map(({ value, label, disabled }) => ({
+    .map(({ value, label, disabled, href }) => ({
       value,
       label: applyFnOrValue(label, params),
       disabled: applyFnOrValue(disabled, params),
+      href: applyFnOrValue(href, params),
     })) ?? []
 
 const selectVisible = <Props extends object, Tab extends FormSubTab<Props>>(

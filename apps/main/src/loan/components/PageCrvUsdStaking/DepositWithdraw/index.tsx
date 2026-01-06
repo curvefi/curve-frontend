@@ -1,13 +1,16 @@
-import { useEffect } from 'react'
+import { type ComponentType, useEffect } from 'react'
 import { styled } from 'styled-components'
 import useStore from '@/loan/store/useStore'
+import type { NetworkUrlParams } from '@/loan/types/loan.types'
 import { useCurve } from '@ui-kit/features/connect-wallet'
+import { t } from '@ui-kit/lib/i18n'
 import { DEX_ROUTES, getInternalUrl } from '@ui-kit/shared/routes'
-import { type TabOption, TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { CRVUSD_ADDRESS } from '@ui-kit/utils'
+import { type FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
 import { TransactionDetails } from '../components/TransactionDetails'
 import TransactionTracking from '../TransactionTracking'
+import type { DepositWithdrawModule } from '../types'
 import DeployButton from './DeployButton'
 import DepositModule from './DepositModule'
 import WithdrawModule from './WithdrawModule'
@@ -15,17 +18,10 @@ import WithdrawModule from './WithdrawModule'
 const { MaxWidth } = SizesAndSpaces
 
 type DepositWithdrawProps = {
-  className?: string
+  params: NetworkUrlParams
 }
 
-type Tab = 'deposit' | 'withdraw' | 'swap'
-const tabs: TabOption<Tab>[] = [
-  { value: 'deposit', label: 'Deposit' },
-  { value: 'withdraw', label: 'Withdraw' },
-  { value: 'swap', label: 'Swap' },
-]
-
-const DepositWithdraw = ({ className }: DepositWithdrawProps) => {
+const ScrvUsdFormTab = ({ mode, Module }: { mode: DepositWithdrawModule; Module: ComponentType }) => {
   const stakingModule = useStore((state) => state.scrvusd.stakingModule)
   const setStakingModule = useStore((state) => state.scrvusd.setStakingModule)
   const previewAction = useStore((state) => state.scrvusd.previewAction)
@@ -56,6 +52,11 @@ const DepositWithdraw = ({ className }: DepositWithdrawProps) => {
     (stakingModule === 'withdraw' && withdrawTransaction.transactionStatus === 'success')
 
   const isDepositApprovalReady = getInputAmountApproved()
+
+  useEffect(() => {
+    // sync the staking module with the tab mode
+    setStakingModule(mode)
+  }, [mode, setStakingModule])
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -92,21 +93,10 @@ const DepositWithdraw = ({ className }: DepositWithdrawProps) => {
     isDepositApprovalReady,
   ])
 
-  const handleSelectTab = (tab: Tab) => {
-    // Swapping opens a new browser tab for now, temp solution until it can be replaced with an actual tab and an Enzo zap in the future.
-    if (tab === 'swap') {
-      window.open(`${getInternalUrl('dex', 'ethereum', DEX_ROUTES.PAGE_SWAP)}?to=${CRVUSD_ADDRESS}`, '_blank')
-    } else {
-      setStakingModule(tab)
-    }
-  }
-
   return (
-    <Wrapper className={className}>
-      <TabsSwitcher variant="contained" size="medium" value={stakingModule} onChange={handleSelectTab} options={tabs} />
-
+    <Wrapper>
       <ModuleContainer>
-        {stakingModule === 'deposit' ? <DepositModule /> : <WithdrawModule />}
+        <Module />
         {transactionInProgress || transactionSuccess ? <StyledTransactionTracking /> : <StyledDeployButton />}
       </ModuleContainer>
       <TransactionDetailsWrapper>
@@ -115,6 +105,21 @@ const DepositWithdraw = ({ className }: DepositWithdrawProps) => {
     </Wrapper>
   )
 }
+
+const DepositTab = () => <ScrvUsdFormTab mode="deposit" Module={DepositModule} />
+const WithdrawTab = () => <ScrvUsdFormTab mode="withdraw" Module={WithdrawModule} />
+
+const menu = [
+  { value: 'deposit', label: t`Deposit`, component: DepositTab },
+  { value: 'withdraw', label: t`Withdraw`, component: WithdrawTab },
+  {
+    value: 'swap',
+    label: t`Swap`,
+    href: ({ network }) => `${getInternalUrl('dex', network, DEX_ROUTES.PAGE_SWAP)}?to=${CRVUSD_ADDRESS}`,
+  },
+] satisfies FormTab<NetworkUrlParams>[]
+
+export const DepositWithdraw = ({ params }: DepositWithdrawProps) => <FormTabs params={params} menu={menu} />
 
 const Wrapper = styled.div`
   display: flex;
@@ -146,5 +151,3 @@ const StyledDeployButton = styled(DeployButton)`
 const StyledTransactionTracking = styled(TransactionTracking)`
   margin-top: var(--spacing-3);
 `
-
-export default DepositWithdraw
