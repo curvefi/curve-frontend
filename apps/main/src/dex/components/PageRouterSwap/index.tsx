@@ -1,10 +1,7 @@
 import lodash from 'lodash'
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { ethAddress } from 'viem'
 import { useConfig } from 'wagmi'
-import ChipInpHelper from '@/dex/components/ChipInpHelper'
 import DetailInfoEstGas from '@/dex/components/DetailInfoEstGas'
-import FieldHelperUsdRate from '@/dex/components/FieldHelperUsdRate'
 import FormConnectWallet from '@/dex/components/FormConnectWallet'
 import WarningModal, { type HighSlippagePriceImpactProps } from '@/dex/components/PagePool/components/WarningModal'
 import DetailInfoExchangeRate from '@/dex/components/PageRouterSwap/components/DetailInfoExchangeRate'
@@ -24,11 +21,10 @@ import useStore from '@/dex/store/useStore'
 import { ChainId, CurveApi, type NetworkUrlParams, TokensMapper } from '@/dex/types/main.types'
 import { toTokenOption } from '@/dex/utils'
 import { getSlippageImpact } from '@/dex/utils/utilsSwap'
+import Stack from '@mui/material/Stack'
 import AlertBox from '@ui/AlertBox'
-import Box from '@ui/Box'
 import Icon from '@ui/Icon'
 import IconButton from '@ui/IconButton'
-import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
 import { getActiveStep, getStepStatus } from '@ui/Stepper/helpers'
 import Stepper from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
@@ -38,15 +34,17 @@ import { notify } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { TokenSelector } from '@ui-kit/features/select-token'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { useLegacyTokenInput } from '@ui-kit/hooks/useFeatureFlags'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { useTokenUsdRate, useTokenUsdRates } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { decimal, type Decimal } from '@ui-kit/utils'
 import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
 import { DetailInfoTradeRoute } from './components/DetailInfoTradeRoute'
+
+const { Spacing } = SizesAndSpaces
 
 const QuickSwap = ({
   pageLoaded,
@@ -394,7 +392,6 @@ const QuickSwap = ({
   const routesAndOutputLoading =
     !pageLoaded ||
     (haveSigner ? _isRoutesAndOutputLoading(rpcRoutesAndOutput, formValues, formStatus) : apiRoutesLoading)
-  const shouldUseLegacyTokenInput = useLegacyTokenInput()
 
   const setFromAmount = useCallback(
     (fromAmount?: Decimal) => updateFormValues({ isFrom: true, fromAmount: fromAmount ?? '', toAmount: '' }),
@@ -406,64 +403,8 @@ const QuickSwap = ({
   )
 
   return (
-    <>
-      {/* inputs */}
-      <Box grid gridRowGap="1" margin="var(--spacing-3) 0 var(--spacing-3) 0">
-        <div>
-          {shouldUseLegacyTokenInput ? (
-            <Box grid gridGap={1}>
-              <InputProvider
-                id="fromAmount"
-                grid
-                gridTemplateColumns="1fr auto 38%"
-                inputVariant={formValues.fromError ? 'error' : undefined}
-                disabled={isDisable}
-              >
-                <InputDebounced
-                  id="inpFromAmount"
-                  type="number"
-                  labelProps={
-                    haveSigner && {
-                      label: t`Avail.`,
-                      descriptionLoading: userBalancesLoading,
-                      description: formatNumber(userFromBalance),
-                    }
-                  }
-                  testId="from-amount"
-                  value={isMaxLoading ? '' : formValues.fromAmount}
-                  onChange={(fromAmount) => updateFormValues({ isFrom: true, fromAmount, toAmount: '' })}
-                />
-                <InputMaxBtn
-                  loading={isMaxLoading}
-                  disabled={isDisable}
-                  isNetworkToken={searchedParams.fromAddress === ethAddress}
-                  testId="max"
-                  onClick={() => updateFormValues({ isFrom: true, toAmount: '' }, true)}
-                />
-
-                <TokenSelector
-                  selectedToken={fromToken}
-                  tokens={tokens}
-                  balances={userBalancesMapper}
-                  disabled={isDisable || !fromToken}
-                  tokenPrices={usdRatesMapper}
-                  onToken={(token) => {
-                    const fromAddress = token.address
-                    const toAddress =
-                      fromAddress === searchedParams.toAddress ? searchedParams.fromAddress : searchedParams.toAddress
-                    resetFormErrors()
-                    redirect(toAddress, fromAddress)
-                  }}
-                />
-              </InputProvider>
-              <FieldHelperUsdRate amount={formValues.fromAmount} usdRate={fromUsdRate} />
-              {formValues.fromError && (
-                <ChipInpHelper size="xs" isDarkBg isError>
-                  {t`Amount > wallet balance ${formatNumber(userFromBalance)}`}
-                </ChipInpHelper>
-              )}
-            </Box>
-          ) : (
+    <Stack gap={Spacing.sm}>
+      {/* SWAP FROM */}
             <LargeTokenInput
               label={t`Sell`}
               balance={decimal(formValues.fromAmount)}
@@ -500,58 +441,20 @@ const QuickSwap = ({
               }
               message={formValues.fromError && t`Amount > wallet balance ${formatNumber(userFromBalance)}`}
             />
-          )}
-        </div>
 
-        {/* SWAP ICON */}
-        <Box flex flexJustifyContent="center">
-          <IconButton
-            disabled={isDisable}
-            onClick={() => redirect(searchedParams.fromAddress, searchedParams.toAddress)}
-            size="medium"
-            testId="swap-tokens"
-          >
-            <Icon name="ArrowsVertical" size={24} />
-          </IconButton>
-        </Box>
 
-        {/* SWAP TO */}
-        {shouldUseLegacyTokenInput ? (
-          <div>
-            <InputProvider disabled={isDisable} grid gridTemplateColumns="1fr 38%" id="to">
-              <InputDebounced
-                id="inpTo"
-                type="number"
-                labelProps={
-                  haveSigner && {
-                    label: t`Avail.`,
-                    descriptionLoading: userBalancesLoading,
-                    description: formatNumber(userToBalance),
-                  }
-                }
-                testId="to-amount"
-                value={formValues.toAmount}
-                onChange={(toAmount) => updateFormValues({ isFrom: false, toAmount, fromAmount: '' })}
-              />
-              <TokenSelector
-                selectedToken={toToken}
-                tokens={tokens}
-                balances={userBalancesMapper}
-                disabled={isDisable || !toToken}
-                tokenPrices={usdRatesMapper}
-                disableMyTokens={true}
-                onToken={(token) => {
-                  const toAddress = token.address
-                  const fromAddress =
-                    toAddress === searchedParams.fromAddress ? searchedParams.toAddress : searchedParams.fromAddress
-                  resetFormErrors()
-                  redirect(toAddress, fromAddress)
-                }}
-              />
-            </InputProvider>
-            <FieldHelperUsdRate amount={formValues.toAmount} usdRate={toUsdRate} />
-          </div>
-        ) : (
+      {/* SWAP ICON */}
+      <IconButton
+        disabled={isDisable}
+        onClick={() => redirect(searchedParams.fromAddress, searchedParams.toAddress)}
+        size="medium"
+        testId="swap-tokens"
+      >
+        <Icon name="ArrowsVertical" size={24} />
+      </IconButton>
+
+      {/* SWAP TO */}
+
           <LargeTokenInput
             label={t`Buy`}
             balance={decimal(formValues.toAmount)}
@@ -583,11 +486,10 @@ const QuickSwap = ({
               />
             }
           />
-        )}
-      </Box>
+
 
       {/* detail info */}
-      <div>
+      <Stack>
         <DetailInfoExchangeRate loading={routesAndOutputLoading} exchangeRates={routesAndOutput?.exchangeRates} />
         <DetailInfoPriceImpact
           loading={routesAndOutputLoading}
@@ -614,7 +516,7 @@ const QuickSwap = ({
           maxSlippage={storeMaxSlippage}
           stateKey={isStableswapRoute ? 'stable' : 'crypto'}
         />
-      </div>
+      </Stack>
 
       {/* alerts */}
       <RouterSwapAlerts
@@ -634,7 +536,7 @@ const QuickSwap = ({
         {txInfoBar}
         <Stepper steps={steps} testId="swap" />
       </FormConnectWallet>
-    </>
+    </Stack>
   )
 }
 
