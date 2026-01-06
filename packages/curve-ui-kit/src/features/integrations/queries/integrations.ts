@@ -1,9 +1,9 @@
 import { sortBy } from 'lodash'
 import { fetchJson } from '@curvefi/prices-api/fetch'
+import { fromEntries } from '@curvefi/prices-api/objects.util'
 import { CURVE_CDN_URL } from '@ui/utils'
 import { EmptyValidationSuite } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
-import type { Integration } from '../types'
 
 const INTEGRATIONS_URL = `${CURVE_CDN_URL}/curve-external-integrations/integrations-list.json`
 
@@ -27,20 +27,9 @@ export const { useQuery: useIntegrations } = queryFactory({
   validationSuite: EmptyValidationSuite,
 })
 
-export function parseIntegrationsList(integrationsList: IntegrationsResponse) {
-  const parsedIntegrationsList: Integration[] = []
-
-  for (const { networks, tags, ...rest } of integrationsList) {
-    const parsedNetworks: { [network: string]: boolean } = {}
-    for (const n of networks) {
-      parsedNetworks[n] = true
-    }
-    const parsedTags: { [tag: string]: boolean } = {}
-    for (const n of tags) {
-      parsedTags[n] = true
-    }
-    parsedIntegrationsList.push({ ...rest, networks: parsedNetworks, tags: parsedTags })
-  }
-
-  return sortBy(parsedIntegrationsList, (a) => a.name)
-}
+export const parseIntegrationsList = (integrationsList: IntegrationsResponse) =>
+  sortBy(integrationsList, (i) => i.name).map(({ networks, tags, ...rest }) => ({
+    networks: fromEntries(networks.map((n) => [n, true])),
+    tags: fromEntries(tags.map((t) => [t, true])),
+    ...rest,
+  }))
