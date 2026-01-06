@@ -66,9 +66,9 @@ export const IntegrationsList = ({ chainId, networks }: IntegrationsListProps) =
       Object.entries(BLOCKCHAIN_LEGACY_NAMES).find(([, rename]) => rename === filterNetwork?.networkId)?.[0] ??
       filterNetwork?.networkId
 
-    let list = [...(integrations ?? [])]
-    list = filterTag === 'all' ? list : list.filter((app) => app.tags[filterTag || ''])
-    list = networkId ? list.filter((app) => app.networks[networkId]) : list
+    const list = [...(integrations ?? [])]
+      .filter((app) => filterTag === 'all' || app.tags[filterTag || ''])
+      .filter((app) => !networkId || app.networks[networkId])
 
     return searchText
       ? new Fuse<Integration>(list, {
