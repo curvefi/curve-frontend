@@ -55,7 +55,7 @@ export const Default: Story = {
     name: 'CrossCurve',
     description:
       'A decentralized and unified infrastructure for cross-chain liquidity and incentives, powered by Curve AMM.',
-    imageId: 'cross-curve.png',
+    imageId: 'platforms/cross-curve.png',
     networks: {
       ethereum: true,
       arbitrum: true,
