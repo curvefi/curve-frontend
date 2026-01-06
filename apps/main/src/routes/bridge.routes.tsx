@@ -1,6 +1,5 @@
-import { BridgeLayout } from '@/bridge/BridgeLayout'
 import { PageBridges } from '@/bridge/components/PageBridges'
-import { createRoute } from '@tanstack/react-router'
+import { createRoute, Outlet } from '@tanstack/react-router'
 import { rootRoute } from './root.routes'
 import { createSharedRoutes } from './shared.routes'
 import { redirectTo } from './util'
@@ -8,7 +7,7 @@ import { redirectTo } from './util'
 const bridgeLayoutRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: 'bridge',
-  component: BridgeLayout,
+  component: Outlet,
 })
 
 const layoutProps = { getParentRoute: () => bridgeLayoutRoute }

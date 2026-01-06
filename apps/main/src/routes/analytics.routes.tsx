@@ -1,6 +1,5 @@
-import { AnalyticsLayout } from '@/analytics/AnalyticsLayout'
 import { PageHome } from '@/analytics/components/PageHome'
-import { createRoute } from '@tanstack/react-router'
+import { createRoute, Outlet } from '@tanstack/react-router'
 import { rootRoute } from './root.routes'
 import { createSharedRoutes } from './shared.routes'
 import { redirectTo } from './util'
@@ -8,7 +7,7 @@ import { redirectTo } from './util'
 const analyticsLayoutRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: 'analytics',
-  component: AnalyticsLayout,
+  component: Outlet,
 })
 
 const layoutProps = { getParentRoute: () => analyticsLayoutRoute }
