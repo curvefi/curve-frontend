@@ -1,12 +1,11 @@
 import { type ComponentType, useEffect } from 'react'
-import { styled } from 'styled-components'
 import useStore from '@/loan/store/useStore'
 import type { NetworkUrlParams } from '@/loan/types/loan.types'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { DEX_ROUTES, getInternalUrl } from '@ui-kit/shared/routes'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { CRVUSD_ADDRESS } from '@ui-kit/utils'
+import { FormContent } from '@ui-kit/widgets/DetailPageLayout/FormContent'
 import { type FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
 import { TransactionDetails } from '../components/TransactionDetails'
 import TransactionTracking from '../TransactionTracking'
@@ -14,8 +13,6 @@ import type { DepositWithdrawModule } from '../types'
 import DeployButton from './DeployButton'
 import DepositModule from './DepositModule'
 import WithdrawModule from './WithdrawModule'
-
-const { MaxWidth } = SizesAndSpaces
 
 type DepositWithdrawProps = {
   params: NetworkUrlParams
@@ -54,7 +51,7 @@ const ScrvUsdFormTab = ({ mode, Module }: { mode: DepositWithdrawModule; Module:
   const isDepositApprovalReady = getInputAmountApproved()
 
   useEffect(() => {
-    // sync the staking module with the tab mode
+    // sync the staking module with the tab mode, needed until we get rid of the store
     setStakingModule(mode)
   }, [mode, setStakingModule])
 
@@ -94,24 +91,24 @@ const ScrvUsdFormTab = ({ mode, Module }: { mode: DepositWithdrawModule; Module:
   ])
 
   return (
-    <Wrapper>
-      <ModuleContainer>
-        <Module />
-        {transactionInProgress || transactionSuccess ? <StyledTransactionTracking /> : <StyledDeployButton />}
-      </ModuleContainer>
-      <TransactionDetailsWrapper>
-        <TransactionDetails />
-      </TransactionDetailsWrapper>
-    </Wrapper>
+    <FormContent footer={<TransactionDetails />}>
+      <Module />
+      {transactionInProgress || transactionSuccess ? <TransactionTracking /> : <DeployButton />}
+    </FormContent>
   )
 }
 
-const DepositTab = () => <ScrvUsdFormTab mode="deposit" Module={DepositModule} />
-const WithdrawTab = () => <ScrvUsdFormTab mode="withdraw" Module={WithdrawModule} />
-
 const menu = [
-  { value: 'deposit', label: t`Deposit`, component: DepositTab },
-  { value: 'withdraw', label: t`Withdraw`, component: WithdrawTab },
+  {
+    value: 'deposit',
+    label: t`Deposit`,
+    component: () => <ScrvUsdFormTab mode="deposit" Module={DepositModule} />,
+  },
+  {
+    value: 'withdraw',
+    label: t`Withdraw`,
+    component: () => <ScrvUsdFormTab mode="withdraw" Module={WithdrawModule} />,
+  },
   {
     value: 'swap',
     label: t`Swap`,
@@ -120,34 +117,3 @@ const menu = [
 ] satisfies FormTab<NetworkUrlParams>[]
 
 export const DepositWithdraw = ({ params }: DepositWithdrawProps) => <FormTabs params={params} menu={menu} />
-
-const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  max-width: ${MaxWidth.legacyActionCard};
-  width: 100%;
-`
-
-const ModuleContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  background-color: var(--tab--content--background-color);
-  min-width: 100%;
-  padding: var(--spacing-3);
-`
-
-const TransactionDetailsWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  min-width: 100%;
-  padding: var(--spacing-3);
-  background-color: var(--page--background-color);
-`
-
-const StyledDeployButton = styled(DeployButton)`
-  margin: var(--spacing-3) 0 0;
-`
-
-const StyledTransactionTracking = styled(TransactionTracking)`
-  margin-top: var(--spacing-3);
-`
