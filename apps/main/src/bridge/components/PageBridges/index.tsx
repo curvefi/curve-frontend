@@ -39,11 +39,11 @@ export const PageBridges = () => {
     >
       <TabsSwitcher variant="contained" size="medium" value={tab} options={tabs} muiVariant="scrollable" />
       <TabPanel sx={{ paddingBlock: Spacing.sm, paddingInline: Spacing.md }}>
-        {tab === 'web3' && (
-          <BridgeOverview bridges={WEB3_BRIDGES} title={t`Trust & security with chain canonical bridges`} />
-        )}
+        {tab === 'web3' && <BridgeOverview bridges={WEB3_BRIDGES} title={t`Aggregators for the best routes`} />}
 
-        {tab === 'native' && <BridgeOverview bridges={NATIVE_BRIDGES} title={t`Aggregators for the best routes`} />}
+        {tab === 'native' && (
+          <BridgeOverview bridges={NATIVE_BRIDGES} title={t`Trust & security with chain canonical bridges`} />
+        )}
       </TabPanel>
     </Stack>
   )
