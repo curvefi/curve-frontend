@@ -30,15 +30,13 @@ const INTEGRATIONS_TAGS_COLORS = [
 function parseIntegrationsTags(integrationsTags: { id: Tag; displayName: string }[]) {
   const parsedIntegrationsTags: IntegrationsTags = {}
 
-  if (Array.isArray(integrationsTags)) {
-    for (const idx in integrationsTags) {
-      const t = integrationsTags[idx]
-      const color = t.id === 'all' ? '' : INTEGRATIONS_TAGS_COLORS[+idx - 1]
-      parsedIntegrationsTags[t.id] = { ...t, color }
+  for (const idx in integrationsTags) {
+    const t = integrationsTags[idx]
+    const color = t.id === 'all' ? '' : INTEGRATIONS_TAGS_COLORS[+idx - 1]
+    parsedIntegrationsTags[t.id] = { ...t, color }
 
-      if (t.id !== 'all' && color === '') {
-        console.warn(`missing integrations tag color for ${t.id}`)
-      }
+    if (t.id !== 'all' && color === '') {
+      console.warn(`missing integrations tag color for ${t.id}`)
     }
   }
 

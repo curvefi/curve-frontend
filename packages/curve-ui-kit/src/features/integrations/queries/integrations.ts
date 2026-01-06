@@ -30,18 +30,16 @@ export const { useQuery: useIntegrations } = queryFactory({
 export function parseIntegrationsList(integrationsList: IntegrationsResponse) {
   const parsedIntegrationsList: Integration[] = []
 
-  if (Array.isArray(integrationsList)) {
-    for (const { networks, tags, ...rest } of integrationsList) {
-      const parsedNetworks: { [network: string]: boolean } = {}
-      for (const n of networks) {
-        parsedNetworks[n] = true
-      }
-      const parsedTags: { [tag: string]: boolean } = {}
-      for (const n of tags) {
-        parsedTags[n] = true
-      }
-      parsedIntegrationsList.push({ ...rest, networks: parsedNetworks, tags: parsedTags })
+  for (const { networks, tags, ...rest } of integrationsList) {
+    const parsedNetworks: { [network: string]: boolean } = {}
+    for (const n of networks) {
+      parsedNetworks[n] = true
     }
+    const parsedTags: { [tag: string]: boolean } = {}
+    for (const n of tags) {
+      parsedTags[n] = true
+    }
+    parsedIntegrationsList.push({ ...rest, networks: parsedNetworks, tags: parsedTags })
   }
 
   return sortBy(parsedIntegrationsList, (a) => a.name)
