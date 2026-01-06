@@ -1,14 +1,11 @@
 import lodash from 'lodash'
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { styled } from 'styled-components'
-import { ethAddress, type Address } from 'viem'
+import type { Address } from 'viem'
 import { useConfig, useConnection, type Config } from 'wagmi'
 import AlertFormError from '@/dex/components/AlertFormError'
 import AlertFormWarning from '@/dex/components/AlertFormWarning'
 import AlertSlippage from '@/dex/components/AlertSlippage'
-import ChipInpHelper from '@/dex/components/ChipInpHelper'
 import DetailInfoEstGas from '@/dex/components/DetailInfoEstGas'
-import FieldHelperUsdRate from '@/dex/components/FieldHelperUsdRate'
 import TransferActions from '@/dex/components/PagePool/components/TransferActions'
 import WarningModal from '@/dex/components/PagePool/components/WarningModal'
 import type { ExchangeOutput, FormStatus, FormValues, StepKey } from '@/dex/components/PagePool/Swap/types'
@@ -21,12 +18,11 @@ import useStore from '@/dex/store/useStore'
 import { CurveApi, PoolAlert, PoolData, TokensMapper } from '@/dex/types/main.types'
 import { toTokenOption } from '@/dex/utils'
 import { getSlippageImpact } from '@/dex/utils/utilsSwap'
+import Stack from '@mui/material/Stack'
 import AlertBox from '@ui/AlertBox'
-import Box from '@ui/Box'
 import Checkbox from '@ui/Checkbox'
 import Icon from '@ui/Icon'
 import IconButton from '@ui/IconButton'
-import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
 import { getActiveStep, getStepStatus } from '@ui/Stepper/helpers'
 import Stepper from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
@@ -35,18 +31,19 @@ import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { LargeSxProps, TokenSelector } from '@ui-kit/features/select-token'
-import { useLegacyTokenInput } from '@ui-kit/hooks/useFeatureFlags'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { decimal, type Decimal } from '@ui-kit/utils'
 import { FormContent } from '@ui-kit/widgets/DetailPageLayout/FormContent'
 import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
 
 const { cloneDeep, isNaN, isUndefined } = lodash
+const { Spacing } = SizesAndSpaces
 
 const Swap = ({
   chainIdPoolId,
@@ -85,7 +82,6 @@ const Swap = ({
   const setPoolIsWrapped = useStore((state) => state.pools.setPoolIsWrapped)
   const { data: networks } = useNetworks()
   const network = (chainId && networks[chainId]) || null
-  const shouldUseLegacyTokenInput = useLegacyTokenInput()
 
   const slippageImpact = exchangeOutput ? getSlippageImpact({ maxSlippage, ...exchangeOutput }) : null
 
@@ -365,249 +361,118 @@ const Swap = ({
 
   return (
     <FormContent>
-      {/* input fields */}
-      <Box grid gridRowGap="1">
-        <div>
-          {shouldUseLegacyTokenInput ? (
-            <Box grid gridGap={1}>
-              <StyledInputProvider
-                id="fromAmount"
-                grid
-                gridTemplateColumns="1fr auto 38%"
-                inputVariant={formValues.fromError ? 'error' : undefined}
-                disabled={isDisabled}
-              >
-                <InputDebounced
-                  id="inpFromAmount"
-                  type="number"
-                  labelProps={
-                    haveSigner && {
-                      label: t`Avail.`,
-                      descriptionLoading: userFromBalanceLoading,
-                      description: formatNumber(userFromBalance),
-                    }
-                  }
-                  value={formValues.fromAmount}
-                  onChange={(fromAmount) => {
-                    updateFormValues({ isFrom: true, fromAmount, toAmount: '' }, null, null)
-                  }}
-                />
-                <InputMaxBtn
-                  disabled={isDisabled || isMaxLoading}
-                  loading={isMaxLoading}
-                  isNetworkToken={formValues.fromAddress.toLowerCase() === ethAddress}
-                  onClick={() => {
-                    updateFormValues({ isFrom: true, fromAmount: '', toAmount: '' }, true, null)
-                  }}
-                />
-                {
-                  <TokenSelector
-                    selectedToken={fromToken}
-                    tokens={selectList}
-                    disabled={isDisabled || selectList.length === 0}
-                    showSearch={false}
-                    showManageList={false}
-                    compact
-                    onToken={(token) => {
-                      const val = token.address
-                      const cFormValues = cloneDeep(formValues)
-                      if (val === formValues.toAddress) {
-                        cFormValues.toAddress = formValues.fromAddress
-                        cFormValues.toToken = swapTokensMapper[formValues.fromAddress].symbol
-                      }
-
-                      cFormValues.fromAddress = val
-                      cFormValues.fromToken = swapTokensMapper[val].symbol
-
-                      if (formValues.isFrom || formValues.isFrom === null) {
-                        cFormValues.toAmount = ''
-                      } else {
-                        cFormValues.fromAmount = ''
-                      }
-
-                      updateFormValues(cFormValues, null, '')
-                    }}
-                  />
-                }
-              </StyledInputProvider>
-              <FieldHelperUsdRate amount={formValues.fromAmount} usdRate={fromUsdRate} />
-              {formValues.fromError && (
-                <ChipInpHelper size="xs" isDarkBg isError>
-                  {t`Amount > wallet balance ${formatNumber(userFromBalance)}`}
-                </ChipInpHelper>
-              )}
-            </Box>
-          ) : (
-            <LargeTokenInput
-              label={t`Sell`}
-              name="fromAmount"
-              onBalance={setFromAmount}
-              balance={decimal(formValues.fromAmount)}
-              inputBalanceUsd={decimal(formValues.fromAmount && fromUsdRate && fromUsdRate * +formValues.fromAmount)}
-              tokenSelector={
-                <TokenSelector
-                  selectedToken={fromToken}
-                  tokens={selectList}
-                  disabled={isDisabled || selectList.length === 0}
-                  showSearch={false}
-                  showManageList={false}
-                  compact
-                  onToken={({ address, symbol }) =>
-                    updateFormValues(
-                      {
-                        ...formValues,
-                        ...(address === formValues.toAddress && {
-                          toAddress: formValues.fromAddress,
-                          toToken: swapTokensMapper[formValues.fromAddress].symbol,
-                        }),
-                        fromAddress: address,
-                        fromToken: symbol,
-                        ...(formValues.isFrom === false ? { fromAmount: '' } : { toAmount: '' }),
-                      },
-                      null,
-                      '',
-                    )
-                  }
-                  sx={LargeSxProps}
-                />
+      <Stack gap={Spacing.sm}>
+        <LargeTokenInput
+          label={t`Sell`}
+          name="fromAmount"
+          onBalance={setFromAmount}
+          balance={decimal(formValues.fromAmount)}
+          inputBalanceUsd={decimal(formValues.fromAmount && fromUsdRate && fromUsdRate * +formValues.fromAmount)}
+          tokenSelector={
+            <TokenSelector
+              selectedToken={fromToken}
+              tokens={selectList}
+              disabled={isDisabled || selectList.length === 0}
+              showSearch={false}
+              showManageList={false}
+              compact
+              onToken={({ address, symbol }) =>
+                updateFormValues(
+                  {
+                    ...formValues,
+                    ...(address === formValues.toAddress && {
+                      toAddress: formValues.fromAddress,
+                      toToken: swapTokensMapper[formValues.fromAddress].symbol,
+                    }),
+                    fromAddress: address,
+                    fromToken: symbol,
+                    ...(formValues.isFrom === false ? { fromAmount: '' } : { toAmount: '' }),
+                  },
+                  null,
+                  '',
+                )
               }
-              {...(formValues.fromError && {
-                isError: true,
-                message: t`Amount > wallet balance ${formatNumber(userFromBalance)}`,
-              })}
-              disabled={isDisabled}
-              walletBalance={{
-                balance: decimal(userFromBalance),
-                loading: userFromBalanceLoading || isMaxLoading,
-                symbol: fromToken?.symbol,
-                usdRate: fromUsdRate,
-              }}
-              maxBalance={{
-                balance: decimal(userFromBalance),
-                chips: 'range',
-              }}
+              sx={LargeSxProps}
             />
-          )}
-        </div>
+          }
+          {...(formValues.fromError && {
+            isError: true,
+            message: t`Amount > wallet balance ${formatNumber(userFromBalance)}`,
+          })}
+          disabled={isDisabled}
+          walletBalance={{
+            balance: decimal(userFromBalance),
+            loading: userFromBalanceLoading || isMaxLoading,
+            symbol: fromToken?.symbol,
+            usdRate: fromUsdRate,
+          }}
+          maxBalance={{
+            balance: decimal(userFromBalance),
+            chips: 'range',
+          }}
+        />
 
-        <Box flex flexJustifyContent="center">
-          <IconButton
-            disabled={isDisabled}
-            onClick={() => {
-              const cFormValues = cloneDeep(formValues)
-              cFormValues.isFrom = true
-              cFormValues.fromAmount = formValues.toAmount
-              cFormValues.fromToken = formValues.toToken
-              cFormValues.fromAddress = formValues.toAddress
-              cFormValues.toToken = formValues.fromToken
-              cFormValues.toAddress = formValues.fromAddress
-              cFormValues.toAmount = ''
+        <IconButton
+          disabled={isDisabled}
+          onClick={() => {
+            const cFormValues = cloneDeep(formValues)
+            cFormValues.isFrom = true
+            cFormValues.fromAmount = formValues.toAmount
+            cFormValues.fromToken = formValues.toToken
+            cFormValues.fromAddress = formValues.toAddress
+            cFormValues.toToken = formValues.fromToken
+            cFormValues.toAddress = formValues.fromAddress
+            cFormValues.toAmount = ''
 
-              updateFormValues(cFormValues, null, '')
-            }}
-            size="medium"
-          >
-            <Icon name="ArrowsVertical" size={24} aria-label="icon arrow vertical" />
-          </IconButton>
-        </Box>
+            updateFormValues(cFormValues, null, '')
+          }}
+          size="medium"
+        >
+          <Icon name="ArrowsVertical" size={24} aria-label="icon arrow vertical" />
+        </IconButton>
 
         {/* if hasRouter value is false, it means entering toAmount is not ready */}
-        {shouldUseLegacyTokenInput ? (
-          <div>
-            <StyledInputProvider
-              id="toAmount"
-              inputVariant={formValues.toError ? 'error' : undefined}
-              disabled={isUndefined(hasRouter) || (!isUndefined(hasRouter) && !hasRouter) || isDisabled}
-              grid
-              gridTemplateColumns="1fr 38%"
-            >
-              <InputDebounced
-                id="inpToAmount"
-                type="number"
-                labelProps={
-                  haveSigner && {
-                    label: t`Avail.`,
-                    descriptionLoading: userToBalanceLoading,
-                    description: formatNumber(userToBalance),
-                  }
-                }
-                value={formValues.toAmount}
-                onChange={(toAmount) => {
-                  updateFormValues({ isFrom: false, toAmount, fromAmount: '' }, null, '')
-                }}
-              />
-              <TokenSelector
-                selectedToken={toToken}
-                tokens={selectList}
-                disabled={isDisabled || selectList.length === 0}
-                showSearch={false}
-                showManageList={false}
-                compact
-                onToken={(token) => {
-                  const address = token.address
-                  const cFormValues = cloneDeep(formValues)
-                  if (address === formValues.fromAddress) {
-                    cFormValues.fromAddress = formValues.toAddress
-                    cFormValues.fromToken = swapTokensMapper[formValues.toAddress].symbol
-                  }
-
-                  cFormValues.toAddress = address
-                  cFormValues.toToken = swapTokensMapper[address].symbol
-
-                  if (formValues.isFrom || formValues.isFrom === null) {
-                    cFormValues.toAmount = ''
-                  } else {
-                    cFormValues.fromAmount = ''
-                  }
-                  updateFormValues(cFormValues, null, '')
-                }}
-              />
-            </StyledInputProvider>
-            <FieldHelperUsdRate amount={formValues.toAmount} usdRate={toUsdRate} />
-          </div>
-        ) : (
-          <LargeTokenInput
-            label={t`Buy`}
-            name="toAmount"
-            onBalance={setToAmount}
-            inputBalanceUsd={decimal(formValues.toAmount && toUsdRate && toUsdRate * +formValues.toAmount)}
-            balance={decimal(formValues.toAmount)}
-            disabled={isUndefined(hasRouter) || (!isUndefined(hasRouter) && !hasRouter) || isDisabled}
-            tokenSelector={
-              <TokenSelector
-                selectedToken={toToken}
-                tokens={selectList}
-                disabled={isDisabled || selectList.length === 0}
-                showSearch={false}
-                showManageList={false}
-                compact
-                onToken={({ address, symbol }) =>
-                  updateFormValues(
-                    {
-                      ...formValues,
-                      ...(address === formValues.fromAddress && {
-                        fromAddress: formValues.toAddress,
-                        fromToken: swapTokensMapper[formValues.toAddress].symbol,
-                      }),
-                      toAddress: address,
-                      toToken: symbol,
-                      ...(formValues.isFrom === false ? { fromAmount: '' } : { toAmount: '' }),
-                    },
-                    null,
-                    '',
-                  )
-                }
-                sx={LargeSxProps}
-              />
-            }
-            walletBalance={{
-              balance: decimal(userToBalance),
-              loading: userToBalanceLoading,
-              symbol: toToken?.symbol,
-              usdRate: toUsdRate,
-            }}
-          />
-        )}
+        <LargeTokenInput
+          label={t`Buy`}
+          name="toAmount"
+          onBalance={setToAmount}
+          inputBalanceUsd={decimal(formValues.toAmount && toUsdRate && toUsdRate * +formValues.toAmount)}
+          balance={decimal(formValues.toAmount)}
+          disabled={isUndefined(hasRouter) || (!isUndefined(hasRouter) && !hasRouter) || isDisabled}
+          tokenSelector={
+            <TokenSelector
+              selectedToken={toToken}
+              tokens={selectList}
+              disabled={isDisabled || selectList.length === 0}
+              showSearch={false}
+              showManageList={false}
+              compact
+              onToken={({ address, symbol }) =>
+                updateFormValues(
+                  {
+                    ...formValues,
+                    ...(address === formValues.fromAddress && {
+                      fromAddress: formValues.toAddress,
+                      fromToken: swapTokensMapper[formValues.toAddress].symbol,
+                    }),
+                    toAddress: address,
+                    toToken: symbol,
+                    ...(formValues.isFrom === false ? { fromAmount: '' } : { toAmount: '' }),
+                  },
+                  null,
+                  '',
+                )
+              }
+              sx={LargeSxProps}
+            />
+          }
+          walletBalance={{
+            balance: decimal(userToBalance),
+            loading: userToBalanceLoading,
+            symbol: toToken?.symbol,
+            usdRate: toUsdRate,
+          }}
+        />
 
         {poolDataCacheOrApi.hasWrapped && formValues.isWrapped !== null && (
           <div>
@@ -640,9 +505,9 @@ const Swap = ({
             </Checkbox>
           </div>
         )}
-      </Box>
+      </Stack>
 
-      <Box>
+      <Stack>
         <DetailInfoExchangeRate exchangeRates={exchangeOutput.exchangeRates} loading={exchangeOutput.loading} />
 
         <DetailInfoPriceImpact
@@ -660,7 +525,7 @@ const Swap = ({
           />
         )}
         <SlippageToleranceActionInfo maxSlippage={maxSlippage} stateKey={chainIdPoolId} />
-      </Box>
+      </Stack>
 
       {poolAlert && poolAlert?.isInformationOnlyAndShowInForm && (
         <AlertBox {...poolAlert}>{poolAlert.message}</AlertBox>
@@ -700,9 +565,5 @@ const Swap = ({
     </FormContent>
   )
 }
-
-const StyledInputProvider = styled(InputProvider)`
-  padding-right: var(--spacing-1);
-`
 
 export default Swap
