@@ -2,21 +2,16 @@ import { useEffect, useMemo } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
 import { useForm } from 'react-hook-form'
 import { useConnection } from 'wagmi'
-import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
 import { getTokens } from '@/llamalend/llama.utils'
-import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
+import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import {
   type RemoveCollateralOptions,
   useRemoveCollateralMutation,
 } from '@/llamalend/mutations/remove-collateral.mutation'
-import { useRemoveCollateralBands } from '@/llamalend/queries/remove-collateral/remove-collateral-bands.query'
-import { useRemoveCollateralEstimateGas } from '@/llamalend/queries/remove-collateral/remove-collateral-gas-estimate.query'
-import { getRemoveCollateralHealthOptions } from '@/llamalend/queries/remove-collateral/remove-collateral-health.query'
 import { useMaxRemovableCollateral } from '@/llamalend/queries/remove-collateral/remove-collateral-max-removable.query'
-import { useRemoveCollateralPrices } from '@/llamalend/queries/remove-collateral/remove-collateral-prices.query'
 import type { CollateralParams } from '@/llamalend/queries/validation/manage-loan.types'
 import {
-  collateralFormValidationSuite,
+  removeCollateralFormValidationSuite,
   type CollateralForm,
 } from '@/llamalend/queries/validation/manage-loan.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -35,13 +30,11 @@ export const useRemoveCollateralForm = <
 >({
   market,
   network,
-  networks,
   enabled,
   onRemoved,
 }: {
   market: LlamaMarketTemplate | undefined
   network: BaseConfig<NetworkName, ChainId>
-  networks: NetworkDict<ChainId>
   enabled?: boolean
   onRemoved?: NonNullable<RemoveCollateralOptions['onRemoved']>
 }) => {
@@ -55,9 +48,10 @@ export const useRemoveCollateralForm = <
 
   const form = useForm<CollateralForm>({
     ...formDefaultOptions,
-    resolver: vestResolver(collateralFormValidationSuite),
+    resolver: vestResolver(removeCollateralFormValidationSuite),
     defaultValues: {
       userCollateral: undefined,
+      maxCollateral: undefined,
     },
   })
 
@@ -65,14 +59,13 @@ export const useRemoveCollateralForm = <
 
   const params = useDebouncedValue(
     useMemo(
-      () =>
-        ({
-          chainId,
-          marketId,
-          userAddress,
-          userCollateral: values.userCollateral,
-        }) as CollateralParams<ChainId>,
-      [chainId, marketId, userAddress, values.userCollateral],
+      (): CollateralParams<ChainId> => ({
+        chainId,
+        marketId,
+        userAddress,
+        ...values,
+      }),
+      [chainId, marketId, userAddress, values],
     ),
   )
 
@@ -84,15 +77,14 @@ export const useRemoveCollateralForm = <
     userAddress,
   })
 
+  const maxRemovable = useMaxRemovableCollateral(params, enabled)
+  const formErrors = useFormErrors(form.formState)
+
   useCallbackAfterFormUpdate(form, action.reset)
 
-  const maxRemovable = useMaxRemovableCollateral(params, enabled)
-  const bands = useRemoveCollateralBands(params, enabled)
-  const health = useHealthQueries((isFull) => getRemoveCollateralHealthOptions({ ...params, isFull }, enabled))
-  const prices = useRemoveCollateralPrices(params, enabled)
-  const gas = useRemoveCollateralEstimateGas(networks, params, enabled)
-
-  const formErrors = useFormErrors(form.formState)
+  useEffect(() => {
+    form.setValue('maxCollateral', maxRemovable.data, { shouldValidate: true })
+  }, [form, maxRemovable.data])
 
   return {
     form,
@@ -102,13 +94,9 @@ export const useRemoveCollateralForm = <
     onSubmit: form.handleSubmit(onSubmit),
     action,
     maxRemovable,
-    bands,
-    health,
-    prices,
-    gas,
-    txHash: action.data?.hash,
     collateralToken,
     borrowToken,
+    txHash: action.data?.hash,
     formErrors,
   }
 }
