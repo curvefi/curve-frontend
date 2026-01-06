@@ -25,14 +25,14 @@ const DetailInfoRate = ({
     marketId: rOwmId,
   })
 
-  const futureRate = isBorrow ? futureRates?.borrowApr : futureRates?.lendApr
-  const rate = isBorrow ? marketRates?.borrowApr : marketRates?.lendApr
+  const futureRate = isBorrow ? futureRates?.borrowApr : futureRates?.lendApy
+  const rate = isBorrow ? marketRates?.borrowApr : marketRates?.lendApy
 
   return (
     <DetailInfo
       loading={marketRatesLoading}
       loadingSkeleton={[100, 20]}
-      label={isBorrow ? t`Borrow APR:` : t`Lend APR:`}
+      label={isBorrow ? t`Borrow APR:` : t`Lend APY:`}
     >
       <span>
         {marketRatesError ? (

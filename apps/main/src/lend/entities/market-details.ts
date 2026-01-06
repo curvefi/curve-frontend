@@ -1,6 +1,6 @@
 import { USE_API } from '@/lend/shared/config'
 import { ChainId } from '@/lend/types/lend.types'
-import { useMarketRates } from '@/llamalend/queries/market-rates'
+import { invalidateMarketRates, useMarketRates } from '@/llamalend/queries/market-rates'
 import { requireLib } from '@ui-kit/features/connect-wallet'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
@@ -77,6 +77,7 @@ export const invalidateMarketDetails = ({ chainId, marketId }: { chainId: ChainI
   invalidateMarketCollateralAmounts({ chainId, marketId })
   invalidateMarketOnChainRewards({ chainId, marketId })
   invalidateMarketPricePerShare({ chainId, marketId })
+  invalidateMarketRates({ chainId, marketId })
 }
 
 export const useMarketDetails = (params: MarketParams, options?: { enabled?: boolean }) => {
