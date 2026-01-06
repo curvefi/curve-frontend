@@ -28,9 +28,8 @@ type ShortenAddressOptions = {
  * To enforce consistency, there's no option to include the 0x prefix on the starting digits length.
  */
 export function shortenAddress(address: string | undefined, options?: ShortenAddressOptions): string {
-  const { digits = 4 } = options || {}
+  const { digits = 5 } = options || {}
   const addr = getAddress(address || zeroAddress)
-
   return `${addr.slice(0, digits + 2)}...${addr.slice(-digits)}`
 }
 

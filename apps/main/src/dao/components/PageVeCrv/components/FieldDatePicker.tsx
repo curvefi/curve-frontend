@@ -2,11 +2,12 @@ import { useMemo, useState } from 'react'
 import { styled } from 'styled-components'
 import type { FormType, VecrvInfo } from '@/dao/components/PageVeCrv/types'
 import { CurveApi } from '@/dao/types/dao.types'
-import { formatDisplayDate, toCalendarDate } from '@/dao/utils/utilsDates'
+import { toCalendarDate } from '@/dao/utils/utilsDates'
 import type { DateValue } from '@internationalized/date'
 import Button from '@ui/Button'
 import DatePicker from '@ui/DatePicker'
 import { Chip } from '@ui/Typography'
+import { formatDate } from '@ui/utils'
 import { formatNumber } from '@ui/utils/utilsFormat'
 import dayjs from '@ui-kit/lib/dayjs'
 import { t } from '@ui-kit/lib/i18n'
@@ -168,7 +169,7 @@ const FieldDatePicker = ({
         <Chip size="xs">
           {t`Current unlock date:`}{' '}
           {vecrvInfo.lockedAmountAndUnlockTime.unlockTime
-            ? formatDisplayDate(dayjs(vecrvInfo.lockedAmountAndUnlockTime.unlockTime))
+            ? formatDate(vecrvInfo.lockedAmountAndUnlockTime.unlockTime)
             : '-'}{' '}
           UTC
         </Chip>

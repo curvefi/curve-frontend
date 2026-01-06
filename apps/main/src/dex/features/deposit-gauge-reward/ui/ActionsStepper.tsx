@@ -15,7 +15,7 @@ import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 
 type TxInfo = {
   description: string
-  txHash: string
+  txHash: string | undefined
 }
 
 export const DepositStepper = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {
@@ -32,6 +32,7 @@ export const DepositStepper = ({ chainId, poolId }: { chainId: ChainId; poolId: 
   const amount = watch('amount')
   const rewardTokenId = watch('rewardTokenId')
   const step = watch('step')
+  const userBalance = watch('userBalance')
 
   const { mutate: depositRewardApprove, isPending: isPendingDepositRewardApprove } = useDepositRewardApprove({
     chainId,
@@ -59,6 +60,7 @@ export const DepositStepper = ({ chainId, poolId }: { chainId: ChainId; poolId: 
       {
         rewardTokenId: getValues('rewardTokenId'),
         amount: getValues('amount'),
+        userBalance: getValues('userBalance'),
       },
       { onSuccess: onApproveSuccess, onError: onApproveError },
     )
@@ -70,6 +72,7 @@ export const DepositStepper = ({ chainId, poolId }: { chainId: ChainId; poolId: 
         rewardTokenId: getValues('rewardTokenId'),
         amount: getValues('amount'),
         epoch: getValues('epoch'),
+        userBalance: getValues('userBalance'),
       },
       {
         onSuccess: (data: string) => {
@@ -91,6 +94,7 @@ export const DepositStepper = ({ chainId, poolId }: { chainId: ChainId; poolId: 
     poolId,
     rewardTokenId,
     amount,
+    userBalance,
   })
 
   useLayoutEffect(() => {

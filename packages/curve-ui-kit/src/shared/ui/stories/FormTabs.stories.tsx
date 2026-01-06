@@ -1,6 +1,6 @@
 import { Stack, Typography } from '@mui/material'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { FormTabs } from '../FormTabs/FormTabs'
+import { FormTabs } from '../../../widgets/DetailPageLayout/FormTabs'
 
 type DemoParams = {
   availableBalance: number

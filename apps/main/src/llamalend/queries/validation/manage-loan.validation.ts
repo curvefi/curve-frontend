@@ -5,6 +5,7 @@ import {
   validateBoolean,
   validateLeverageSupported,
   validateSlippage,
+  validateMaxCollateral,
   validateUserCollateral,
 } from '@/llamalend/queries/validation/borrow-fields.validation'
 import type {
@@ -20,7 +21,7 @@ import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-valid
 import { userAddressValidationGroup } from '@ui-kit/lib/model/query/user-address-validation'
 import type { Decimal } from '@ui-kit/utils'
 
-export type CollateralForm = FieldsOf<{ userCollateral: Decimal }>
+export type CollateralForm = FieldsOf<{ userCollateral: Decimal; maxCollateral: Decimal }>
 
 export type RepayForm = {
   stateCollateral: Decimal | undefined
@@ -71,21 +72,37 @@ const validateRepayFieldsForMarket = (
   })
 }
 
-export const collateralValidationGroup = ({ chainId, userCollateral, marketId, userAddress }: CollateralParams) =>
+export const collateralValidationGroup = ({
+  chainId,
+  userCollateral,
+  maxCollateral,
+  marketId,
+  userAddress,
+}: CollateralParams) =>
   group('chainValidation', () => {
     marketIdValidationSuite({ chainId, marketId })
     userAddressValidationGroup({ userAddress })
     validateUserCollateral(userCollateral)
+    validateMaxCollateral(userCollateral, maxCollateral)
   })
 
 export const collateralValidationSuite = createValidationSuite((params: CollateralParams) =>
   collateralValidationGroup(params),
 )
 
-export const collateralFormValidationSuite = createValidationSuite((params: CollateralForm) => {
-  validateUserCollateral(params.userCollateral)
+export const addCollateralFormValidationSuite = createValidationSuite((params: CollateralForm) => {
+  validateUserCollateral(params.userCollateral, false)
+  validateMaxCollateral(params.userCollateral, params.maxCollateral)
 })
 
+export const removeCollateralFormValidationSuite = createValidationSuite((params: CollateralForm) => {
+  validateUserCollateral(params.userCollateral, false)
+  validateMaxCollateral(
+    params.userCollateral,
+    params.maxCollateral,
+    'Collateral must be less than or equal to your position balance',
+  )
+})
 export const collateralHealthValidationSuite = createValidationSuite(({ isFull, ...rest }: CollateralHealthParams) => {
   collateralValidationGroup(rest)
   validateBoolean(isFull)

@@ -11,7 +11,7 @@ import { DrawerHeader } from '@ui-kit/shared/ui/SwipeableDrawer/DrawerHeader'
 import { DrawerItems } from '@ui-kit/shared/ui/SwipeableDrawer/DrawerItems'
 import { SwipeableDrawer } from '@ui-kit/shared/ui/SwipeableDrawer/SwipeableDrawer'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { LlamaMarketColumnId } from '../columns.enum'
+import { LlamaMarketColumnId } from '../columns'
 import { useLlamaMarketSortOptions } from '../hooks/useLlamaMarketSortOptions'
 
 const { Spacing, ButtonSize } = SizesAndSpaces

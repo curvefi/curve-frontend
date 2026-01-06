@@ -31,7 +31,6 @@ export const ManageSoftLiquidationCard = ({ actionInfos, improveHealth, closePos
     <Stack
       sx={{
         gap: Spacing.sm,
-        width: { mobile: '100%', tablet: MaxWidth.actionCard },
         marginInline: { mobile: 'auto', desktop: 0 },
       }}
     >

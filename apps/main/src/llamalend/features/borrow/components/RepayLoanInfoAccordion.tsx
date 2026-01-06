@@ -51,10 +51,12 @@ export function RepayLoanInfoAccordion<ChainId extends IChainId>({
       rates={q(useMarketFutureRates(params, isOpen))}
       debt={{
         ...userState,
-        data: userState?.data?.debt && decimal(+userState.data.debt - +(userBorrowed ?? 0)),
-        tokenSymbol: borrowToken?.symbol,
+        data: userState?.data?.debt && {
+          tokenSymbol: borrowToken?.symbol,
+          value: decimal(+userState.data.debt - +(userBorrowed ?? 0))!,
+        },
       }}
-      prevDebt={{ ...userState, data: userState?.data?.debt }}
+      userState={userState}
       prices={q(useRepayPrices(params, isOpen))}
       // routeImage={q(useRepayRouteImage(params, isOpen))}
       loanToValue={useLoanToValueFromUserState(

@@ -5,7 +5,6 @@ import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.typ
 import type { RepayOptions } from '@/llamalend/mutations/repay.mutation'
 import { LoanFormAlerts } from '@/llamalend/widgets/manage-loan/LoanFormAlerts'
 import { LoanFormTokenInput } from '@/llamalend/widgets/manage-loan/LoanFormTokenInput'
-import { LoanFormWrapper } from '@/llamalend/widgets/manage-loan/LoanFormWrapper'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { notFalsy } from '@curvefi/prices-api/objects.util'
 import Button from '@mui/material/Button'
@@ -13,6 +12,7 @@ import Checkbox from '@mui/material/Checkbox'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
+import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { InputDivider } from '../../../widgets/InputDivider'
 import { useRepayForm } from '../hooks/useRepayForm'
 
@@ -62,7 +62,7 @@ export const RepayForm = <ChainId extends IChainId>({
   const showStateCollateral = market && hasLeverage(market) && fromCollateral
   const showUserCollateral = market && (hasLeverage(market) || hasDeleverage(market)) && fromWallet
   return (
-    <LoanFormWrapper
+    <Form // todo: prevHealth, prevRates, debt, prevDebt
       {...form}
       onSubmit={onSubmit}
       infoAccordion={
@@ -141,6 +141,6 @@ export const RepayForm = <ChainId extends IChainId>({
         )}
         successTitle={t`Loan repaid`}
       />
-    </LoanFormWrapper>
+    </Form>
   )
 }

@@ -1,8 +1,10 @@
 import { useMemo } from 'react'
 import { styled } from 'styled-components'
+import { useConnection } from 'wagmi'
 import type { TransferProps } from '@/dex/components/PagePool/types'
 import PoolRewardsCrv from '@/dex/components/PoolRewardsCrv'
 import { usePoolIdByAddressOrId } from '@/dex/hooks/usePoolIdByAddressOrId'
+import { usePoolTokenDepositBalances } from '@/dex/hooks/usePoolTokenDepositBalances'
 import { getUserPoolActiveKey } from '@/dex/store/createUserSlice'
 import useStore from '@/dex/store/useStore'
 import Box from '@ui/Box'
@@ -22,13 +24,9 @@ const MySharesStats = ({
   poolDataCacheOrApi,
   routerParams,
   tokensMapper,
-  userPoolBalances,
 }: {
   className?: string
-} & Pick<
-  TransferProps,
-  'curve' | 'poolData' | 'poolDataCacheOrApi' | 'routerParams' | 'tokensMapper' | 'userPoolBalances'
->) => {
+} & Pick<TransferProps, 'curve' | 'poolData' | 'poolDataCacheOrApi' | 'routerParams' | 'tokensMapper'>) => {
   const { rChainId, rPoolIdOrAddress } = routerParams
   const poolId = usePoolIdByAddressOrId({ chainId: rChainId, poolIdOrAddress: rPoolIdOrAddress })
   const userPoolActiveKey = curve && poolId ? getUserPoolActiveKey(curve, poolId) : ''
@@ -62,6 +60,13 @@ const MySharesStats = ({
     }
     return ''
   }, [poolDataCacheOrApi, userWithdrawAmounts])
+
+  const { address: userAddress } = useConnection()
+  const { lpTokenBalance, gaugeTokenBalance } = usePoolTokenDepositBalances({
+    chainId: rChainId,
+    userAddress,
+    poolId,
+  })
 
   const crvRewardsTooltipText = useMemo(() => {
     if (haveBoosting && typeof rewardsApy?.crv?.[0] !== 'undefined' && userCrvApy?.boostApy && userCrvApy?.crvApy) {
@@ -99,10 +104,10 @@ const MySharesStats = ({
       <LPWrapper>
         <StyledStats label={t`LP Tokens`}>
           <div>
-            {t`Staked:`} <strong>{formatNumber(userPoolBalances?.gauge, { defaultValue: '-' })}</strong>
+            {t`Staked:`} <strong>{formatNumber(gaugeTokenBalance, { defaultValue: '-' })}</strong>
           </div>
           <div>
-            {t`Unstaked:`} <strong>{formatNumber(userPoolBalances?.lpToken, { defaultValue: '-' })}</strong>
+            {t`Unstaked:`} <strong>{formatNumber(lpTokenBalance, { defaultValue: '-' })}</strong>
           </div>
         </StyledStats>
         {(haveCrvRewards || haveBoosting) && (

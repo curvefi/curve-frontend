@@ -22,9 +22,7 @@ import useStore from '@/loan/store/useStore'
 import { type ChainId, LlamaApi, Llamma } from '@/loan/types/loan.types'
 import { curveProps } from '@/loan/utils/helpers'
 import { getStepStatus, getTokenName } from '@/loan/utils/utilsLoan'
-import Stack from '@mui/material/Stack'
 import AlertBox from '@ui/AlertBox'
-import { AppFormContentWrapper } from '@ui/AppForm'
 import Box from '@ui/Box'
 import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
 import { getActiveStep } from '@ui/Stepper/helpers'
@@ -40,6 +38,7 @@ import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { decimal, type Decimal } from '@ui-kit/utils'
+import { FormContent } from '@ui-kit/widgets/DetailPageLayout/FormContent'
 
 interface Props extends Pick<ManageLoanProps, 'curve' | 'isReady' | 'market'> {}
 
@@ -462,9 +461,7 @@ export default LoanIncrease
  * The new implementation of LoanBorrowMore with mui isn't ready yet. For now, we wrap the old one for styling.
  */
 export const LoanIncreaseWrapped = (props: ManageLoanProps) => (
-  <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
-    <AppFormContentWrapper>
-      <LoanIncrease {...props} />
-    </AppFormContentWrapper>
-  </Stack>
+  <FormContent>
+    <LoanIncrease {...props} />
+  </FormContent>
 )

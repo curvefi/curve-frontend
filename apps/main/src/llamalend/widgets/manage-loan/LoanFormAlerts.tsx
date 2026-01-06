@@ -1,3 +1,4 @@
+import { getErrorMessage } from '@/llamalend/helpers'
 import type { INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Hex } from '@curvefi/prices-api'
 import Alert from '@mui/material/Alert'
@@ -56,7 +57,7 @@ export const LoanFormAlerts = <Field extends string>({
         data-testid={'loan-form-error'}
       >
         <AlertTitle>{t`An error occurred`}</AlertTitle>
-        {error.message}
+        {getErrorMessage(error)}
       </Alert>
     )}
   </>

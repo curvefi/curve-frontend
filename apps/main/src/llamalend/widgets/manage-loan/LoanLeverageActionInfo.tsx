@@ -1,10 +1,11 @@
 import { notFalsy } from 'router-api/src/router.utils'
 import type { RepayExpectedBorrowedResult } from '@/llamalend/queries/repay/repay-expected-borrowed.query'
+import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
 import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
 import type { Query } from '@ui-kit/types/util'
 import { type Amount, Decimal, formatNumber, formatPercent } from '@ui-kit/utils'
-import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
+import { SlippageToleranceActionInfoPure } from '@ui-kit/widgets/SlippageSettings'
 import type { LoanLeverageExpectedCollateral, LoanLeverageMaxReceive } from './LoanInfoAccordion'
 
 export type LoanLeverageActionInfoProps = {
@@ -33,7 +34,7 @@ export const LoanLeverageActionInfo = ({
   const isHighImpact = priceImpact.data != null && priceImpact.data > +slippage
 
   return (
-    <>
+    <Stack>
       {expectedCollateral && maxReceive && (
         <ActionInfo
           label={t`Leverage`}
@@ -67,7 +68,7 @@ export const LoanLeverageActionInfo = ({
         loading={priceImpact.isLoading}
         testId="borrow-price-impact"
       />
-      <SlippageToleranceActionInfo maxSlippage={slippage} onSave={onSlippageChange} />
-    </>
+      <SlippageToleranceActionInfoPure maxSlippage={slippage} onSave={onSlippageChange} />
+    </Stack>
   )
 }

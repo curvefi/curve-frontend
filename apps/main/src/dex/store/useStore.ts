@@ -7,7 +7,6 @@ import createDashboardSlice, { DashboardSlice } from '@/dex/store/createDashboar
 import createDeployGaugeSlice, { DeployGaugeSlice } from '@/dex/store/createDeployGaugeSlice'
 import createGlobalSlice, { GlobalSlice } from '@/dex/store/createGlobalSlice'
 import createIntegrationsSlice, { IntegrationsSlice } from '@/dex/store/createIntegrationsSlice'
-import createLockedCrvSlice, { LockedCrvSlice } from '@/dex/store/createLockedCrvSlice'
 import createPoolDepositSlice, { PoolDepositSlice } from '@/dex/store/createPoolDepositSlice'
 import createPoolListSlice, { PoolListSlice } from '@/dex/store/createPoolListSlice'
 import createPoolsSlice, { PoolsSlice } from '@/dex/store/createPoolsSlice'
@@ -32,7 +31,6 @@ export type State = GlobalSlice &
   UserBalancesSlice &
   DashboardSlice &
   TokensSlice &
-  LockedCrvSlice &
   CreatePoolSlice &
   IntegrationsSlice &
   DeployGaugeSlice
@@ -50,7 +48,6 @@ const store = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState'
   ...createQuickSwapSlice(set, get),
   ...createUserBalancesSlice(set, get),
   ...createTokensSlice(set, get),
-  ...createLockedCrvSlice(set, get),
   ...createCreatePoolSlice(set, get),
   ...createIntegrationsSlice(set, get),
   ...createDeployGaugeSlice(set, get),
