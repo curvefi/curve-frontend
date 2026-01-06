@@ -87,16 +87,13 @@ const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreApi<State
       state.pools.resetState()
       state.quickSwap.resetState()
       state.tokens.resetState()
-      state.userBalances.resetState()
       state.user.resetState()
-      state.userBalances.resetState()
       state.createPool.resetState()
       state.dashboard.resetState()
     }
 
     if (isUserSwitched) {
       state.user.resetState()
-      state.userBalances.resetState()
     }
 
     // update network settings from api
@@ -122,7 +119,7 @@ const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreApi<State
     const failedFetching24hOldVprice: { [poolAddress: string]: boolean } =
       chainId === 2222 ? await curvejsApi.network.getFailedFetching24hOldVprice() : {}
 
-    await state.pools.fetchPools(config, curveApi, poolIds, failedFetching24hOldVprice)
+    await state.pools.fetchPools(curveApi, poolIds, failedFetching24hOldVprice)
 
     if (isUserSwitched || isNetworkSwitched) {
       void state.pools.fetchPricesApiPools(chainId)

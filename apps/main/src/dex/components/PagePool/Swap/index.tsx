@@ -32,6 +32,7 @@ import { notify } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { LargeSxProps, TokenSelector } from '@ui-kit/features/select-token'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
+import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
@@ -124,6 +125,9 @@ const Swap = ({
 
   const fromToken = selectList.find((x) => x.address.toLocaleLowerCase() == formValues.fromAddress)
   const toToken = selectList.find((x) => x.address.toLocaleLowerCase() == formValues.toAddress)
+
+  const [isOpenFromToken, openModalFromToken, closeModalFromToken] = useSwitch()
+  const [isOpenToToken, openModalToToken, closeModalToToken] = useSwitch()
 
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<FormValues>, isGetMaxFrom: boolean | null, updatedMaxSlippage: string | null) => {
@@ -376,6 +380,9 @@ const Swap = ({
               showSearch={false}
               showManageList={false}
               compact
+              isOpen={!!isOpenFromToken}
+              onOpen={openModalFromToken}
+              onClose={closeModalFromToken}
               onToken={({ address, symbol }) =>
                 updateFormValues(
                   {
@@ -447,6 +454,9 @@ const Swap = ({
               showSearch={false}
               showManageList={false}
               compact
+              isOpen={!!isOpenToToken}
+              onOpen={openModalToToken}
+              onClose={closeModalToToken}
               onToken={({ address, symbol }) =>
                 updateFormValues(
                   {

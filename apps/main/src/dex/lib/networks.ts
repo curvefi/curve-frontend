@@ -9,10 +9,6 @@ import { Chain } from '@ui-kit/utils/network'
 
 export const defaultNetworks = Object.entries({
   [Chain.Ethereum]: {
-    excludeTokensBalancesMapper: {
-      '0x6b8734ad31d42f5c05a86594314837c416ada984': true,
-      '0x29b41fe7d754b8b43d4060bb43734e436b0b9a33': true,
-    },
     poolCustomTVL: {
       pax: '0',
       busd: '0',
@@ -169,7 +165,6 @@ export const defaultNetworks = Object.entries({
       'factory-stable-ng-14': true, // CrossCurve
       'factory-stable-ng-15': true, // CrossCurve
     },
-    excludeTokensBalancesMapper: { '0x618b22e6fddd6870cdfb4146ef2d4bc62efc660a': true },
     poolFilters: ['all', 'usd', 'btc', 'crypto', 'tricrypto', 'stableng', 'cross-chain', 'others', 'user'],
     swap: {
       fromAddress: '0x8d11ec38a3eb5e956b052f67da8bdc9bef8abf3e',
@@ -184,7 +179,6 @@ export const defaultNetworks = Object.entries({
     pricesApi: true,
   },
   [Chain.Arbitrum]: {
-    excludeTokensBalancesMapper: { '0x3aef260cb6a5b469f970fae7a1e233dbd5939378': true },
     swap: {
       fromAddress: '0xff970a61a04b1ca14834a43f5de4533ebddb5cc8',
       toAddress: '0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9',
