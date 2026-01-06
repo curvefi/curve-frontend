@@ -9,7 +9,7 @@
   "scripts": {
     "lint": "eslint \"**/*.ts*\"",
     "storybook": "storybook dev -p 6006 --no-open",
-    "typecheck": "tsc --noEmit --incremental --tsBuildInfoFile ../../.cache/typecheck/packages-curve-ui-kit.tsbuildinfo",
+    "typecheck": "tsc --tsBuildInfoFile ../../.cache/typecheck/packages-curve-ui-kit.tsbuildinfo",
     "build:storybook": "storybook build"
   },
   "dependencies": {

@@ -8,7 +8,7 @@
     "hoistingLimits": "dependencies"
   },
   "scripts": {
-    "typecheck": "tsc --noEmit --incremental --tsBuildInfoFile ../.cache/typecheck/tests.tsbuildinfo",
+    "typecheck": "tsc --tsBuildInfoFile ../.cache/typecheck/tests.tsbuildinfo",
     "test": "vitest run",
     "test:ui": "vitest --ui",
     "vitest:watch": "vitest --watch",
