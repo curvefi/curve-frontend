@@ -93,7 +93,7 @@ export const IntegrationsList = ({ chainId, networks }: IntegrationsListProps) =
             }}
             displayEmpty
             renderValue={() => <NetworkItem network={filterNetwork} />}
-            sx={{ minWidth: '12rem', height: ButtonSize.md }}
+            sx={{ minWidth: '12rem' /* purely aesthetic */, height: ButtonSize.md }}
           >
             {networks.map((network) => (
               <MenuItem key={network.chainId} value={network.chainId}>
