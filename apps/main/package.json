@@ -11,7 +11,7 @@
     "build": "vite build",
     "lint": "eslint",
     "start": "vite preview",
-    "typecheck": "tsc --noEmit --incremental",
+    "typecheck": "tsc --noEmit --incremental --tsBuildInfoFile ../../.cache/typecheck/apps-main.tsbuildinfo",
     "commit": "commit",
     "prepublishOnly": "pinst --disable",
     "postpublish": "pinst --enable"

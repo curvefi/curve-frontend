@@ -17,7 +17,7 @@
     "dev-router-api": "yarn workspace router-api dev",
     "lint": "eslint . --ext .ts,.tsx",
     "lint:fix": "eslint . --ext .ts,.tsx --fix",
-    "typecheck": "yarn workspaces foreach --parallel --all run typecheck",
+    "typecheck": "mkdir -p .cache/typecheck && yarn workspaces foreach --parallel --all run typecheck",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,md}\"",
     "prepare": "husky",
