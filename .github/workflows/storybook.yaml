@@ -21,6 +21,7 @@ jobs:
         with:
           node-version: 24
           cache: yarn
+      - uses: ./.github/actions/restore-cache
 
       - name: 'Build'
         working-directory: packages/curve-ui-kit
