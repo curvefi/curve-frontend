@@ -12,6 +12,7 @@ export const { useQuery: useIntegrationsTags } = queryFactory({
     const resp = await fetchJson<IntegrationTag[]>(INTEGRATIONS_TAGS_URL)
     return parseIntegrationsTags(resp)
   },
+  staleTime: '1h',
   validationSuite: EmptyValidationSuite,
 })
 
