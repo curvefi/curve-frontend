@@ -9,7 +9,7 @@
   "scripts": {
     "lint": "eslint \"**/*.ts*\"",
     "storybook": "storybook dev -p 6006 --no-open",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit --incremental",
     "build:storybook": "storybook build"
   },
   "dependencies": {

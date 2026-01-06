@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "tsx watch src/dev.ts",
     "lint": "eslint \"src/**/*.ts\"",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit --incremental",
     "test": "vitest run",
     "test:watch": "vitest"
   },
