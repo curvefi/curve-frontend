@@ -1,3 +1,4 @@
+import { t } from '@ui-kit/lib/i18n'
 import type { Partner } from '@ui-kit/shared/ui/PartnerCard'
 
 const TAGS_RECOMMENDED = ['Recommended']
@@ -5,8 +6,7 @@ const TAGS_RECOMMENDED = ['Recommended']
 export const WEB3_BRIDGES: Partner[] = [
   {
     name: 'CrossCurve',
-    description:
-      'A decentralized and unified infrastructure for cross-chain liquidity and incentives, powered by Curve AMM.',
+    description: t`A decentralized and unified infrastructure for cross-chain liquidity and incentives, powered by Curve AMM.`,
     imageId: 'platforms/cross-curve.png',
     networks: { ethereum: true, arbitrum: true, optimism: true },
     tags: TAGS_RECOMMENDED,
@@ -15,7 +15,7 @@ export const WEB3_BRIDGES: Partner[] = [
   },
   {
     name: 'deBridge',
-    description: 'Messaging and cross-chain interoperability protocol enabling the building of cross-chain dapps.',
+    description: t`Messaging and cross-chain interoperability protocol enabling the building of cross-chain dapps.`,
     imageId: 'platforms/debridge.jpg',
     networks: { ethereum: true, arbitrum: true, optimism: true },
     appUrl: 'https://debridge.com/',
@@ -23,7 +23,7 @@ export const WEB3_BRIDGES: Partner[] = [
   },
   {
     name: 'Jumper',
-    description: 'Swap and bridge across +20 networks with no fees and best price guarantees.',
+    description: t`Swap and bridge across +20 networks with no fees and best price guarantees.`,
     imageId: 'platforms/jumper.jpg',
     networks: { ethereum: true, arbitrum: true, optimism: true },
     tags: TAGS_RECOMMENDED,
@@ -32,7 +32,7 @@ export const WEB3_BRIDGES: Partner[] = [
   },
   {
     name: 'Across',
-    description: 'Fastest and lowest-cost bridging for end-users.',
+    description: t`Fastest and lowest-cost bridging for end-users.`,
     imageId: 'platforms/across.jpg',
     networks: { ethereum: true, arbitrum: true, optimism: true },
     appUrl: 'https://across.to/',
@@ -40,7 +40,7 @@ export const WEB3_BRIDGES: Partner[] = [
   },
   {
     name: 'Synapse',
-    description: 'Synapse is the most widely used, extensible, and secure cross-chain communications network.',
+    description: t`Synapse is the most widely used, extensible, and secure cross-chain communications network.`,
     imageId: 'platforms/synapse.jpg',
     networks: { ethereum: true, arbitrum: true, optimism: true },
     appUrl: 'https://synapseprotocol.com/',
@@ -48,7 +48,7 @@ export const WEB3_BRIDGES: Partner[] = [
   },
   {
     name: 'Squid',
-    description: 'Squid powers cross-chain swaps and contract calls across chains in a single click.',
+    description: t`Squid powers cross-chain swaps and contract calls across chains in a single click.`,
     imageId: 'platforms/squid.jpg',
     networks: { ethereum: true, arbitrum: true, optimism: true },
     appUrl: 'https://www.squidrouter.com/',
@@ -56,7 +56,7 @@ export const WEB3_BRIDGES: Partner[] = [
   },
   {
     name: 'Layer Zero',
-    description: 'Protocol for on-chain cross-communication.',
+    description: t`Protocol for on-chain cross-communication.`,
     imageId: 'platforms/layerzero.png',
     networks: { ethereum: true, arbitrum: true, optimism: true },
     appUrl: 'https://layerzero.network/',
