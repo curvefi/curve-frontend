@@ -13,6 +13,7 @@ import { useImproveHealthTab } from '@/llamalend/features/manage-soft-liquidatio
 import { ClosePosition } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ClosePosition'
 import { ImproveHealth } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ImproveHealth'
 import type { BorrowPositionDetailsProps } from '@/llamalend/features/market-position-details'
+import { canRepayFromStateCollateral, canRepayFromUserCollateral } from '@/llamalend/llama.utils'
 import { useManageLoanMuiForm, useManageSoftLiquidation } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { type FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
@@ -59,8 +60,17 @@ const LendManageNewMenu = [
     value: 'repay',
     label: t`Repay`,
     subTabs: [
-      { value: 'from-wallet', label: t`From wallet`, component: LoanRepayFromWalletTab },
-      { value: 'from-collateral', label: t`From collateral`, component: LoanRepayFromCollateralTab },
+      {
+        value: 'from-wallet',
+        label: t`From wallet`,
+        component: LoanRepayFromWalletTab,
+      },
+      {
+        value: 'from-collateral',
+        label: t`From collateral`,
+        component: LoanRepayFromCollateralTab,
+        visible: ({ market }) => !market || canRepayFromStateCollateral(market) || canRepayFromUserCollateral(market),
+      },
     ],
   },
   {

@@ -17,7 +17,7 @@ import type {
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { chainValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
 import { llamaApiValidationGroup } from '@ui-kit/lib/model/query/curve-api-validation'
-import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
+import { marketIdValidationGroup, marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
 import { userAddressValidationGroup } from '@ui-kit/lib/model/query/user-address-validation'
 import type { Decimal } from '@ui-kit/utils'
 
@@ -63,8 +63,9 @@ const validateRepayFieldsForMarket = (
   userBorrowed: Decimal | null | undefined,
 ) => {
   skipWhen(!marketId, () => {
+    if (!marketId) return // somehow, skipWhen doesn't stop execution of the inner function
     // Get the implementation to validate fields according to market capabilities. Default to 0 just like the queries
-    getRepayImplementation(marketId!, {
+    getRepayImplementation(marketId, {
       stateCollateral: stateCollateral ?? '0',
       userCollateral: userCollateral ?? '0',
       userBorrowed: userBorrowed ?? '0',
@@ -114,6 +115,7 @@ export const repayValidationGroup = <IChainId extends number>(
 ) => {
   chainValidationGroup({ chainId })
   llamaApiValidationGroup({ chainId })
+  marketIdValidationGroup({ marketId })
   userAddressValidationGroup({ userAddress })
   validateRepayField('userCollateral', userCollateral)
   validateRepayField('stateCollateral', stateCollateral)

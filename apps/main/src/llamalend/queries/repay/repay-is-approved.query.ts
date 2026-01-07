@@ -40,8 +40,7 @@ export const { useQuery: useRepayIsApproved, fetchQuery: fetchRepayIsApproved } 
       case 'V2':
         return await impl.repayIsApproved(userCollateral, userBorrowed)
       case 'deleverage':
-        console.warn('repayIsApproved is not supported for deleverage repay')
-        return true // todo: figure out approval for deleverage repay
+        return true // deleverage query doesn't need approval because it only uses the user stateCollateral
       case 'unleveraged':
         return await impl.repayIsApproved(userBorrowed)
     }

@@ -3,11 +3,12 @@ import type { UseFormReturn } from 'react-hook-form'
 import { useForm } from 'react-hook-form'
 import { useConnection } from 'wagmi'
 import { getTokens, hasLeverage } from '@/llamalend/llama.utils'
-import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
+import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { type RepayOptions, useRepayMutation } from '@/llamalend/mutations/repay.mutation'
 import { useBorrowCreateLoanIsApproved } from '@/llamalend/queries/create-loan/borrow-create-loan-approved.query'
 import { useRepayIsAvailable } from '@/llamalend/queries/repay/repay-is-available.query'
 import { useRepayIsFull } from '@/llamalend/queries/repay/repay-is-full.query'
+import { useUserState } from '@/llamalend/queries/user-state.query'
 import type { RepayIsFullParams } from '@/llamalend/queries/validation/manage-loan.types'
 import { type RepayForm, repayFormValidationSuite } from '@/llamalend/queries/validation/manage-loan.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -23,13 +24,11 @@ const useCallbackAfterFormUpdate = (form: UseFormReturn<RepayForm>, callback: ()
 export const useRepayForm = <ChainId extends LlamaChainId, NetworkName extends LlamaNetworkId = LlamaNetworkId>({
   market,
   network,
-  networks,
   enabled,
   onRepaid,
 }: {
   market: LlamaMarketTemplate | undefined
   network: { id: LlamaNetworkId; chainId: ChainId }
-  networks: NetworkDict<ChainId>
   enabled?: boolean
   onRepaid?: NonNullable<RepayOptions['onRepaid']>
 }) => {
@@ -46,6 +45,7 @@ export const useRepayForm = <ChainId extends LlamaChainId, NetworkName extends L
     resolver: vestResolver(repayFormValidationSuite),
     defaultValues: {
       stateCollateral: undefined,
+      // todo: maxStateCollateral: undefined,
       userCollateral: undefined,
       userBorrowed: undefined,
       isFull: undefined,
@@ -83,6 +83,7 @@ export const useRepayForm = <ChainId extends LlamaChainId, NetworkName extends L
 
   const isAvailable = useRepayIsAvailable(params, enabled)
   const isFull = useRepayIsFull(params, enabled)
+  const userState = useUserState(params, enabled)
 
   const formErrors = useFormErrors(form.formState)
 
@@ -106,5 +107,6 @@ export const useRepayForm = <ChainId extends LlamaChainId, NetworkName extends L
     isApproved: useBorrowCreateLoanIsApproved(params),
     formErrors: useFormErrors(form.formState),
     isFull,
+    userState,
   }
 }

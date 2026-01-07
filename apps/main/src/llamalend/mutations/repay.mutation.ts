@@ -48,8 +48,8 @@ const approveRepay = async (
   if (market.leverageV2.hasLeverage()) {
     return (await market.leverageV2.repayApprove(userCollateral, userBorrowed)) as Hex[]
   }
-  console.assert(!+userCollateral, `userCollateral should be 0 for non-leverage repay`)
-  return (await market.repayApprove(userBorrowed)) as Hex[]
+  console.assert(!+userBorrowed, `userBorrowed should be 0 for deleverage repay`)
+  return [] // no approve needed, paying from state
 }
 
 const repay = async (
@@ -71,9 +71,9 @@ const repay = async (
     await market.leverageV2.repayExpectedBorrowed(stateCollateral, userCollateral, userBorrowed)
     return (await market.leverageV2.repay(stateCollateral, userCollateral, userBorrowed)) as Hex
   }
-  console.assert(!+stateCollateral, `stateCollateral should be 0 for non-leverage repay`)
+  console.assert(!+userCollateral, `userCollateral should be 0 for non-leverage repay`)
   console.assert(!+userBorrowed, `userBorrowed should be 0 for non-leverage repay`)
-  return (await market.deleverage.repay(userCollateral)) as Hex
+  return (await market.deleverage.repay(stateCollateral)) as Hex
 }
 
 export const useRepayMutation = ({
@@ -91,7 +91,8 @@ export const useRepayMutation = ({
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'repay'] as const,
     mutationFn: async (mutation, { market }) => {
       await waitForApproval({
-        isApproved: async () => await fetchRepayIsApproved(mutation, { staleTime: 0 }),
+        isApproved: async () =>
+          await fetchRepayIsApproved({ marketId, chainId, userAddress, ...mutation }, { staleTime: 0 }),
         onApprove: async () => await approveRepay(market, mutation),
         message: t`Approved repayment`,
         config,

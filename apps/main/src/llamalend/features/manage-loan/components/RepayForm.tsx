@@ -1,8 +1,9 @@
 import { RepayLoanInfoAccordion } from '@/llamalend/features/borrow/components/RepayLoanInfoAccordion'
 import { setValueOptions } from '@/llamalend/features/borrow/react-form.utils'
-import { hasDeleverage, hasLeverage } from '@/llamalend/llama.utils'
+import { canRepayFromStateCollateral, canRepayFromUserCollateral, hasLeverage } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import type { RepayOptions } from '@/llamalend/mutations/repay.mutation'
+import { mapQuery } from '@/llamalend/queries/utils'
 import { LoanFormAlerts } from '@/llamalend/widgets/manage-loan/LoanFormAlerts'
 import { LoanFormTokenInput } from '@/llamalend/widgets/manage-loan/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -12,9 +13,19 @@ import Checkbox from '@mui/material/Checkbox'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
-import { InputDivider } from '../../../widgets/InputDivider'
 import { useRepayForm } from '../hooks/useRepayForm'
+
+const { Spacing } = SizesAndSpaces
+
+/**
+ * Join button texts with commas and ampersand
+ * @example ['Approve', 'Repay', 'Withdraw'] -> 'Approve, Repay & Withdraw'
+ * @example ['Approve', 'Repay'] -> 'Approve & Repay'
+ */
+const joinButtonText = (texts: string[]) =>
+  texts.map((t, i) => (i ? `${i === texts.length - 1 ? ' & ' : ', '}${t}` : t)).join('')
 
 export const RepayForm = <ChainId extends IChainId>({
   market,
@@ -24,7 +35,6 @@ export const RepayForm = <ChainId extends IChainId>({
   onRepaid,
   fromCollateral,
   fromWallet,
-  fromBorrowed: showUserBorrowed,
 }: {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
@@ -33,7 +43,6 @@ export const RepayForm = <ChainId extends IChainId>({
   onRepaid?: RepayOptions['onRepaid']
   fromCollateral?: boolean
   fromWallet?: boolean
-  fromBorrowed?: boolean
 }) => {
   const network = networks[chainId]
   const {
@@ -51,16 +60,17 @@ export const RepayForm = <ChainId extends IChainId>({
     isApproved,
     formErrors,
     isFull,
+    userState,
   } = useRepayForm({
     market,
     network,
-    networks,
     enabled,
     onRepaid,
   })
   const { withdrawEnabled: withdrawEnabled } = values
-  const showStateCollateral = market && hasLeverage(market) && fromCollateral
-  const showUserCollateral = market && (hasLeverage(market) || hasDeleverage(market)) && fromWallet
+  const showStateCollateral = fromCollateral && market && canRepayFromStateCollateral(market)
+  const showUserCollateral = market && canRepayFromUserCollateral(market) && fromCollateral
+  const showUserBorrowed = fromWallet
   return (
     <Form // todo: prevHealth, prevRates, debt, prevDebt
       {...form}
@@ -77,40 +87,55 @@ export const RepayForm = <ChainId extends IChainId>({
         />
       }
     >
-      <Stack divider={withdrawEnabled ? <InputDivider /> : undefined}>
-        {showStateCollateral && (
-          <LoanFormTokenInput
-            label={t`From collateral (position)`}
-            token={collateralToken}
-            blockchainId={network.id}
-            name="stateCollateral"
-            form={form}
-            testId="repay-state-collateral-input"
-            network={network}
-          />
-        )}
-        {showUserCollateral && (
-          <LoanFormTokenInput
-            label={t`From collateral (wallet)`}
-            token={collateralToken}
-            blockchainId={network.id}
-            name="userCollateral"
-            form={form}
-            testId="repay-user-collateral-input"
-            network={network}
-          />
-        )}
-        {showUserBorrowed && (
-          <LoanFormTokenInput
-            label={t`From borrowed token`}
-            token={borrowToken}
-            blockchainId={network.id}
-            name="userBorrowed"
-            form={form}
-            testId="repay-user-borrowed-input"
-            network={network}
-          />
-        )}
+      <Stack gap={Spacing.sm}>
+        {fromCollateral &&
+          (showStateCollateral ? (
+            <LoanFormTokenInput
+              label={t`From collateral (position)`}
+              token={collateralToken}
+              blockchainId={network.id}
+              name="stateCollateral"
+              form={form}
+              testId="repay-state-collateral-input"
+              network={network}
+              positionBalance={
+                userState.data && {
+                  position: mapQuery(userState, (data) => data.collateral),
+                  tooltip: t`Current collateral in position`,
+                }
+              }
+            />
+          ) : (
+            t`This market does not support repaying from collateral.`
+          ))}
+        {fromCollateral &&
+          (showUserCollateral ? (
+            <LoanFormTokenInput
+              label={t`From collateral (wallet)`}
+              token={collateralToken}
+              blockchainId={network.id}
+              name="userCollateral"
+              form={form}
+              testId="repay-user-collateral-input"
+              network={network}
+            />
+          ) : (
+            showStateCollateral || t`This market does not support repaying from wallet collateral.`
+          ))}
+        {fromWallet &&
+          (showUserBorrowed ? (
+            <LoanFormTokenInput
+              label={t`From borrowed token (wallet)`}
+              token={borrowToken}
+              blockchainId={network.id}
+              name="userBorrowed"
+              form={form}
+              testId="repay-user-borrowed-input"
+              network={network}
+            />
+          ) : (
+            t`This market does not support repaying from borrowed token.`
+          ))}
       </Stack>
 
       <FormControlLabel
@@ -125,7 +150,13 @@ export const RepayForm = <ChainId extends IChainId>({
       <Button type="submit" loading={isPending || !market} disabled={isDisabled} data-testid="repay-submit-button">
         {isPending
           ? t`Processing...`
-          : notFalsy(isApproved?.data && t`Approve`, isFull.data ? t`Repay full` : t`Repay`).join(' & ')}
+          : joinButtonText(
+              notFalsy(
+                !isApproved?.data && t`Approve`,
+                isFull.data ? t`Repay full` : t`Repay`,
+                withdrawEnabled && t`Withdraw`,
+              ),
+            )}
       </Button>
 
       <LoanFormAlerts
