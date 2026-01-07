@@ -3,7 +3,7 @@ import { handleBreakpoints } from '@ui-kit/themes/basic-theme'
 import { DesignSystem } from '../../design'
 import { SizesAndSpaces } from '../../design/1_sizes_spaces'
 
-const { Spacing } = SizesAndSpaces
+const { Spacing, ButtonSize } = SizesAndSpaces
 
 // css classes used by the TabSwitcher component
 const contained = 'variant-contained' as const
@@ -12,15 +12,27 @@ const overlined = 'variant-overlined' as const
 const small = 'size-small' as const
 const medium = 'size-medium' as const
 const large = 'size-large' as const
+const extraExtraLarge = 'size-extraExtraLarge' as const
 export const TABS_VARIANT_CLASSES = { contained, underlined, overlined }
 export const TABS_HEIGHT_CLASSES = { small, medium, large }
 export const HIDE_INACTIVE_BORDERS_CLASS = 'hide-inactive-borders'
+export const TAB_LABEL_CONTAINER_CLASS = 'tab-label-container' as const
+export const TAB_SUFFIX_CLASS = 'tab-suffix' as const
 
 export type TabSwitcherVariants = keyof typeof TABS_VARIANT_CLASSES
+
+type TabStyle = { Label?: string; Fill?: string; Outline?: string }
+type TabVariant = { Inset?: string; Default: TabStyle; Hover: TabStyle; Current: TabStyle }
+type SpacingKey = keyof typeof Spacing | string | number
 
 const BORDER_SIZE = '2px' as const
 const BORDER_SIZE_INACTIVE = '1px' as const
 const BORDER_SIZE_LARGE = '4px' as const
+
+const TAB_HEIGHT: Partial<Record<keyof typeof TABS_HEIGHT_CLASSES, string>> = {
+  small: ButtonSize.xs,
+  medium: ButtonSize.sm,
+}
 
 /**
  * Using ::after pseudo-selector for borders instead of CSS border properties for:
@@ -61,22 +73,18 @@ export const defineMuiTab = ({ Tabs: { Transition }, Text }: DesignSystem): Comp
         height: BORDER_SIZE,
       },
 
-      '& .tab-suffix': {
+      [`& .${TAB_SUFFIX_CLASS}`]: {
         color: Text.TextColors.Tertiary,
       },
-      '&:hover .tab-suffix': {
+      [`&:hover .${TAB_SUFFIX_CLASS}`]: {
         color: 'inherit',
       },
-      '&.Mui-selected .tab-suffix': {
+      [`&.Mui-selected .${TAB_SUFFIX_CLASS}`]: {
         color: Text.TextColors.Secondary,
       },
     },
   },
 })
-
-type TabStyle = { Label?: string; Fill?: string; Outline?: string }
-type TabVariant = { Inset?: string; Default: TabStyle; Hover: TabStyle; Current: TabStyle }
-type SpacingKey = keyof typeof Spacing | string | number
 
 const tabStyle = ({ Label, Fill, Outline }: TabStyle, inset?: string) => ({
   color: Label,
@@ -101,10 +109,21 @@ const tabPadding = (blockStart: SpacingKey, blockEnd: SpacingKey, inlineStart: S
     paddingInlineEnd: inlineEnd in Spacing ? Spacing[inlineEnd as keyof typeof Spacing] : inlineEnd,
   })
 
-// Overlined and Underlined have common paddings and sizes.
-const tabSizesNonContained = {
-  [`&.${medium} .MuiTab-root`]: tabPadding('md', 'xs', 'md', 'md'),
-  [`&.${large} .MuiTab-root`]: tabPadding('md', 'xs', 'md', 'md'),
+const containedCommonPadding = {
+  // blockStart padding is 0, spacing is handled by minHeight and justifyContent)
+  // blockEnd padding is handeled by the label container (the component child) to avoid adding extra height to the tab's button
+  ...tabPadding(0, 0, 'sm', 'sm'),
+  [`& .${TAB_LABEL_CONTAINER_CLASS}`]: {
+    ...handleBreakpoints({ paddingBlockEnd: Spacing.xxs }),
+  },
+}
+
+const notContainedCommonStyles = {
+  [`&.${small} .MuiTab-root`]: { ...tabPadding('xs', 'xs', 'sm', 'sm') },
+  [`&.${medium} .MuiTab-root`]: {
+    ...tabPadding(0, 0, 'sm', 'sm'),
+    minHeight: TAB_HEIGHT.medium,
+  },
 }
 
 /**
@@ -134,7 +153,7 @@ export const defineMuiTabs = ({
 
       '& .MuiButtonBase-root': {
         justifyContent: 'flex-end',
-        },
+      },
 
       [`&.${contained}`]: {
         '& .MuiTab-root': tabVariant(Contained),
@@ -143,31 +162,32 @@ export const defineMuiTabs = ({
         },
 
         [`&.${small} .MuiTab-root`]: {
-          // blockStart has no padding (handled by minHeight and justifyContent)
-          // blockEnd padding is handeled by the TabsSwitcher component to avoid adding extra height
-          ...tabPadding(0, 0, 'sm', 'sm'),
-          minHeight: '24px',
+          ...containedCommonPadding,
+          minHeight: TAB_HEIGHT.small,
         },
         [`&.${medium} .MuiTab-root`]: {
-          // blockStart has no padding (handled by minHeight and justifyContent)
-          // blockEnd padding is handeled by the TabsSwitcher component to avoid adding extra height
-          ...tabPadding(0, 0, 'sm', 'sm'),
-          minHeight: '40px',
+          ...containedCommonPadding,
+          minHeight: TAB_HEIGHT.medium,
         },
       },
 
       [`&.${overlined}`]: {
         '& .MuiTab-root': tabVariant(OverLined),
-        [`&.${small} .MuiTab-root`]: tabPadding('xs', 'xs', 'md', 'md'),
+        ...notContainedCommonStyles,
+        [`&.${medium} .MuiTab-root .${TAB_LABEL_CONTAINER_CLASS}`]: {
+          ...handleBreakpoints({ paddingBlockEnd: Spacing.sm, paddingBlockStart: Spacing.sm }),
+        },
+
         // Large overline tabs don't get a hover fill
         [`&.${large} .MuiTab-root:hover`]: { backgroundColor: 'unset' },
-        ...tabSizesNonContained,
       },
 
       [`&.${underlined}`]: {
         '& .MuiTab-root': tabVariant(UnderLined),
-        [`&.${small} .MuiTab-root`]: tabPadding('xs', 'xs', 'sm', 'sm'),
-        ...tabSizesNonContained,
+        ...notContainedCommonStyles,
+        [`&.${medium} .MuiTab-root .${TAB_LABEL_CONTAINER_CLASS}`]: {
+          ...handleBreakpoints({ paddingBlockEnd: Spacing.xxs }),
+        },
       },
 
       // Inactive tabs have a smaller border size
@@ -200,7 +220,7 @@ export const defineMuiTabs = ({
         '&.Mui-disabled': {
           opacity: 0,
         },
-        },
+      },
     },
     indicator: {
       backgroundColor: Layer.Highlight.Outline,

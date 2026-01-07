@@ -11,6 +11,8 @@ import {
   HIDE_INACTIVE_BORDERS_CLASS,
   TABS_VARIANT_CLASSES,
   TabSwitcherVariants,
+  TAB_SUFFIX_CLASS,
+  TAB_LABEL_CONTAINER_CLASS,
 } from '../../themes/components/tabs'
 
 const { Spacing } = SizesAndSpaces
@@ -71,12 +73,12 @@ export const TabsSwitcher = <T extends string | number>({
         key={value}
         value={value}
         label={
-          <Stack direction="row" alignItems="center" gap={Spacing.xxs} sx={{ paddingBlockEnd: Spacing.xxs }}>
+          <Stack direction="row" alignItems="center" gap={Spacing.xxs} className={TAB_LABEL_CONTAINER_CLASS}>
             {startAdornment}
             <Stack direction="row" alignItems="baseline" gap={Spacing.xxs}>
               <Typography variant={textVariant ?? defaultTextVariants[size]}>{label}</Typography>
               {suffix != null && (
-                <Typography variant="highlightXs" className="tab-suffix">
+                <Typography variant="highlightXs" className={TAB_SUFFIX_CLASS}>
                   {suffix}
                 </Typography>
               )}
