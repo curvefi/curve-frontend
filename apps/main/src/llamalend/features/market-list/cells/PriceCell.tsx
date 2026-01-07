@@ -14,76 +14,117 @@ import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { LlamaMarketColumnId } from '../columns'
 import { ErrorCell } from './ErrorCell'
 
+/**
+ * Maps a column ID to the corresponding asset details from a market.
+ * @param columnId - The column identifier to determine which asset to retrieve
+ * @param assets - The market's assets containing collateral and borrowed token details
+ */
+const getAsset = (columnId: LlamaMarketColumnId, assets: LlamaMarket['assets']) =>
+  (
+    ({
+      [LlamaMarketColumnId.UserCollateral]: assets.collateral,
+      [LlamaMarketColumnId.UserBorrowed]: assets.borrowed,
+      [LlamaMarketColumnId.UserEarnings]: assets.borrowed,
+      [LlamaMarketColumnId.UserDeposited]: assets.borrowed,
+    }) as Partial<Record<LlamaMarketColumnId, AssetDetails>>
+  )[columnId]
+
+/**
+ * Maps a column ID to the corresponding value from user market stats.
+ * @param columnId - The column identifier to determine which value to retrieve
+ * @param stats - The user's market statistics containing borrowed, collateral, and earnings data
+ *
+ */
+const getAssetValue = (columnId: LlamaMarketColumnId, stats: ReturnType<typeof useUserMarketStats>['data']) =>
+  (
+    ({
+      [LlamaMarketColumnId.UserCollateral]: stats?.collateral?.amount,
+      [LlamaMarketColumnId.UserBorrowed]: stats?.borrowed,
+      [LlamaMarketColumnId.UserEarnings]: stats?.earnings?.earnings,
+      [LlamaMarketColumnId.UserDeposited]: stats?.earnings?.totalCurrentAssets,
+    }) as Partial<Record<LlamaMarketColumnId, number>>
+  )[columnId]
+
+/** Gets the tooltip title for a given column. */
+const getTooltipTitle = (columnId: LlamaMarketColumnId) =>
+  (
+    ({
+      [LlamaMarketColumnId.UserBorrowed]: t`Borrowed`,
+      [LlamaMarketColumnId.UserCollateral]: t`Collateral`,
+    }) as Partial<Record<LlamaMarketColumnId, string>>
+  )[columnId]
+
+/**
+ * Gets the tooltip body content for columns that require detailed breakdowns.
+ * @param columnId - The column identifier
+ * @param stats - The user's market statistics
+ * @param isLoading - Whether the stats are still loading
+ * @returns The tooltip body React element, or undefined for simple tooltips
+ */
+const getTooltipBody = (
+  columnId: LlamaMarketColumnId,
+  stats: ReturnType<typeof useUserMarketStats>['data'],
+  isLoading: boolean,
+): React.ReactNode | undefined => {
+  if (columnId === LlamaMarketColumnId.UserBorrowed) {
+    return <TotalDebtTooltipContent />
+  }
+
+  if (columnId === LlamaMarketColumnId.UserCollateral) {
+    return (
+      <CollateralMetricTooltipContent
+        collateralValue={{
+          collateral: {
+            value: stats?.collateral?.amount,
+            usdRate: stats?.collateral?.usdRate,
+            symbol: stats?.collateral?.symbol,
+          },
+          borrow: {
+            value: stats?.borrowToken?.amount,
+            usdRate: stats?.borrowToken?.usdRate,
+            symbol: stats?.borrowToken?.symbol,
+          },
+          totalValue:
+            (stats?.collateral?.amount ?? 0) * (stats?.collateral?.usdRate ?? 0) +
+            (stats?.borrowToken?.amount ?? 0) * (stats?.borrowToken?.usdRate ?? 0),
+          loading: isLoading,
+        }}
+        collateralLoss={
+          stats?.collateralLoss && {
+            ...stats.collateralLoss,
+            loading: isLoading,
+          }
+        }
+      />
+    )
+  }
+
+  return undefined
+}
+
 export const PriceCell = ({ getValue, row, column }: CellContext<LlamaMarket, number>) => {
   const market = row.original
   const { assets } = market
   const columnId = column.id as LlamaMarketColumnId
 
-  const assetInfo =
-    (
-      {
-        [LlamaMarketColumnId.UserCollateral]: assets.collateral,
-        [LlamaMarketColumnId.UserBorrowed]: assets.borrowed,
-        [LlamaMarketColumnId.UserEarnings]: assets.borrowed,
-        [LlamaMarketColumnId.UserDeposited]: assets.borrowed,
-      } as Partial<Record<LlamaMarketColumnId, AssetDetails>>
-    )[columnId] ?? assets.borrowed
-  const { chain, address, symbol } = assetInfo // todo: earnings are usually crv
+  const { chain, address, symbol } = getAsset(columnId, assets) ?? assets.borrowed
+
   const { data: stats, error: statsError, isLoading } = useUserMarketStats(market, columnId)
+  const value = getAssetValue(columnId, stats) ?? getValue()
+
   const { data: usdPrice, isLoading: isUsdRateLoading } = useTokenUsdPrice({
     blockchainId: chain,
     contractAddress: address,
   })
-  const { borrowed, earnings: earningsData } = stats ?? {}
-  const value =
-    {
-      [LlamaMarketColumnId.UserBorrowed]: borrowed,
-      [LlamaMarketColumnId.UserCollateral]: stats?.collateral?.amount,
-      [LlamaMarketColumnId.UserEarnings]: earningsData?.earnings, // todo: handle other claimable rewards
-      [LlamaMarketColumnId.UserDeposited]: earningsData?.totalCurrentAssets,
-    }[column.id] ?? getValue()
+
   if (!value) {
     return statsError && <ErrorCell error={statsError} />
   }
 
-  const shouldUseCustomTooltip =
-    columnId === LlamaMarketColumnId.UserBorrowed || columnId === LlamaMarketColumnId.UserCollateral
-  const tooltipTitle = shouldUseCustomTooltip
-    ? {
-        [LlamaMarketColumnId.UserBorrowed]: t`Borrowed`,
-        [LlamaMarketColumnId.UserCollateral]: t`Collateral`,
-      }[columnId]
-    : `${formatNumber(value, { decimals: 5 })} ${symbol}`
-
-  const tooltipBody = shouldUseCustomTooltip
-    ? {
-        [LlamaMarketColumnId.UserBorrowed]: <TotalDebtTooltipContent />,
-        [LlamaMarketColumnId.UserCollateral]: (
-          <CollateralMetricTooltipContent
-            collateralValue={{
-              collateral: { value: stats?.collateral?.amount, usdRate: stats?.collateral?.usdRate, symbol },
-              borrow: {
-                value: stats?.borrowToken?.amount,
-                usdRate: stats?.borrowToken?.usdRate,
-                symbol: stats?.borrowToken?.symbol,
-              },
-              totalValue:
-                (stats?.collateral?.amount ?? 0) * (stats?.collateral?.usdRate ?? 0) +
-                (stats?.borrowToken?.amount ?? 0) * (stats?.borrowToken?.usdRate ?? 0),
-              loading: isLoading,
-            }}
-            collateralLoss={
-              stats?.collateralLoss && {
-                ...stats?.collateralLoss,
-                loading: isLoading,
-              }
-            }
-          />
-        ),
-      }[columnId]
-    : undefined
-
+  const tooltipTitle = getTooltipTitle(columnId) ?? `${formatNumber(value, { decimals: 5 })} ${symbol}`
+  const tooltipBody = getTooltipBody(columnId, stats, isLoading)
   const usdValue = usdPrice && value * usdPrice
+
   return (
     <Stack direction="column" spacing={1} alignItems="end">
       <Tooltip title={tooltipTitle} body={tooltipBody}>
