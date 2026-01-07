@@ -71,7 +71,7 @@ const WithdrawModule = () => {
         }
         {...(hasWallet && {
           walletBalance: {
-            loading: hasWallet && userScrvUsdBalanceLoading,
+            loading: userScrvUsdBalanceLoading,
             balance: decimal(userScrvUsdBalance?.scrvUSD),
             symbol: 'scrvUSD',
           },
@@ -81,7 +81,7 @@ const WithdrawModule = () => {
       <LargeTokenInput
         label={t`To Wallet`}
         name="withdraw-to"
-        balance={hasWallet && !(hasWallet && isLoading(preview.fetchStatus)) ? decimal(preview.value) : undefined}
+        balance={decimal(preview.value)}
         disabled
         tokenSelector={
           <TokenLabel
@@ -93,7 +93,7 @@ const WithdrawModule = () => {
         }
         {...(hasWallet && {
           walletBalance: {
-            loading: hasWallet && userScrvUsdBalanceLoading,
+            loading: userScrvUsdBalanceLoading,
             balance: decimal(userScrvUsdBalance?.crvUSD),
             symbol: 'crvUSD',
           },
