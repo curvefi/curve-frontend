@@ -33,7 +33,7 @@ export const RepayForm = <ChainId extends IChainId>({
   chainId,
   enabled,
   onRepaid,
-  fromCollateral,
+  fromPosition,
   fromWallet,
 }: {
   market: LlamaMarketTemplate | undefined
@@ -41,7 +41,7 @@ export const RepayForm = <ChainId extends IChainId>({
   chainId: ChainId
   enabled?: boolean
   onRepaid?: RepayOptions['onRepaid']
-  fromCollateral?: boolean
+  fromPosition?: boolean
   fromWallet?: boolean
 }) => {
   const network = networks[chainId]
@@ -68,8 +68,8 @@ export const RepayForm = <ChainId extends IChainId>({
     onRepaid,
   })
   const { withdrawEnabled: withdrawEnabled } = values
-  const showStateCollateral = fromCollateral && market && canRepayFromStateCollateral(market)
-  const showUserCollateral = market && canRepayFromUserCollateral(market) && fromCollateral
+  const showStateCollateral = fromPosition && market && canRepayFromStateCollateral(market)
+  const showUserCollateral = market && canRepayFromUserCollateral(market) && fromWallet
   const showUserBorrowed = fromWallet
   return (
     <Form // todo: prevHealth, prevRates, debt, prevDebt
@@ -88,7 +88,7 @@ export const RepayForm = <ChainId extends IChainId>({
       }
     >
       <Stack gap={Spacing.sm}>
-        {fromCollateral &&
+        {fromPosition &&
           (showStateCollateral ? (
             <LoanFormTokenInput
               label={t`From collateral (position)`}
@@ -108,7 +108,7 @@ export const RepayForm = <ChainId extends IChainId>({
           ) : (
             t`This market does not support repaying from collateral.`
           ))}
-        {fromCollateral &&
+        {fromWallet &&
           (showUserCollateral ? (
             <LoanFormTokenInput
               label={t`From collateral (wallet)`}

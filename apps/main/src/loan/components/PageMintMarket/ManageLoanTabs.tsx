@@ -34,8 +34,8 @@ const LoanRepayFromWalletTab = ({ rChainId, market, isReady }: ManageLoanProps) 
   <RepayForm fromWallet networks={networks} chainId={rChainId} market={market ?? undefined} enabled={isReady} />
 )
 
-const LoanRepayFromCollateralTab = ({ rChainId, market, isReady }: ManageLoanProps) => (
-  <RepayForm fromCollateral networks={networks} chainId={rChainId} market={market ?? undefined} enabled={isReady} />
+const LoanRepayFromPositionTab = ({ rChainId, market, isReady }: ManageLoanProps) => (
+  <RepayForm fromPosition networks={networks} chainId={rChainId} market={market ?? undefined} enabled={isReady} />
 )
 
 const LoanAddCollateralTab = ({ rChainId, market, isReady }: ManageLoanProps) => (
@@ -83,7 +83,7 @@ const MintManageNewMenu = [
     label: t`Repay`,
     subTabs: [
       { value: 'from-wallet', label: t`From wallet`, component: LoanRepayFromWalletTab },
-      { value: 'from-collateral', label: t`From collateral`, component: LoanRepayFromCollateralTab },
+      { value: 'from-collateral', label: t`From position`, component: LoanRepayFromPositionTab },
     ],
   },
   {
