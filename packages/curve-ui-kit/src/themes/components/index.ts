@@ -78,6 +78,17 @@ export const createComponents = (
       bar: { backgroundColor: design.Color.Primary[500] },
     },
   },
+  MuiLink: {
+    styleOverrides: {
+      root: {
+        color: 'currentColor',
+        '&:hover': {
+          color: design.Button.Ghost.Default.Label,
+          textDecoration: 'none',
+        },
+      },
+    },
+  },
   MuiToggleButton: defineMuiToggleButton(design),
   MuiToggleButtonGroup: {
     styleOverrides: { root: ({ ownerState }) => ({ columnGap: ownerState.compact ? '0rem' : '2px' }) },

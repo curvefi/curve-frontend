@@ -32,6 +32,7 @@ const useAppRoutes = (network: NetworkDef) => ({
   dao: APP_LINK.dao.routes,
   llamalend: APP_LINK.llamalend.routes,
   dex: useDexRoutes(network),
+  bridge: APP_LINK.bridge.routes,
   analytics: APP_LINK.analytics.routes,
 })
 
@@ -42,6 +43,7 @@ const useAppMenu = (app: AppName): AppMenuOption =>
     lend: 'llamalend' as const,
     llamalend: 'llamalend' as const,
     dex: 'dex' as const,
+    bridge: 'bridge' as const,
     analytics: 'analytics' as const,
   })[app]
 
@@ -52,6 +54,7 @@ const useAppSupportedNetworks = (allNetworks: NetworkMapping, app: AppName) =>
     lend: lendNetworks,
     llamalend: lendNetworks,
     dex: allNetworks,
+    bridge: allNetworks,
     analytics: allNetworks,
   })[app]
 
