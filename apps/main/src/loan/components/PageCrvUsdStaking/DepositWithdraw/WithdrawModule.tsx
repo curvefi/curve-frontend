@@ -77,6 +77,7 @@ const WithdrawModule = () => {
           },
           maxBalance: { balance: decimal(userScrvUsdBalance?.scrvUSD), chips: 'max' },
         })}
+        disabled={!hasWallet}
       />
       <LargeTokenInput
         label={t`To Wallet`}
@@ -119,6 +120,7 @@ const WithdrawModule = () => {
             isLoadingInput={false}
             setValue={setInputAmount}
             setMax={() => setMax(address, 'withdraw')}
+            readOnly={!hasWallet}
           />
         </InputWrapper>
       </Box>

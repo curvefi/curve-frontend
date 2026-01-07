@@ -77,6 +77,7 @@ const DepositModule = () => {
           },
           maxBalance: { balance: decimal(userScrvUsdBalance?.crvUSD), chips: 'max' },
         })}
+        disabled={!hasWallet}
       />
       <LargeTokenInput
         label={t`To Vault`}
