@@ -29,6 +29,7 @@ const VoteGaugeField = ({ powerUsed, userGaugeVoteData, userVeCrv, newVote = fal
     userAddress,
   })
   const { userPower, gaugeAddress } = userGaugeVoteData
+  // eslint-disable-next-line react-hooks/purity
   const canVote = userGaugeVoteNextTime ? Date.now() > userGaugeVoteNextTime : true
   const [power, setPower] = useState(userPower / 100)
   const availablePower = 100 - powerUsed

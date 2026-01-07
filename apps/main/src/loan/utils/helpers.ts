@@ -18,8 +18,6 @@ export function fulfilledValue<T>(result: PromiseSettledResult<T>) {
   }
 }
 
-export const httpFetcher = (uri: string) => fetch(uri).then((res) => res.json())
-
 export const curveProps = (curve: LlamaApi | null) =>
   curve
     ? {

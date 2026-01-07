@@ -17,6 +17,8 @@ jobs:
         with:
           node-version: 24
           cache: yarn
+      - name: Restore cache
+        uses: ./.github/actions/restore-cache
       - run: yarn set version stable
       - run: yarn install --immutable
 

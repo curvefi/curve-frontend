@@ -1,28 +1,23 @@
-import { PropsWithChildren, useRef } from 'react'
+import { PropsWithChildren } from 'react'
 import { styled } from 'styled-components'
+import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
 import Tooltip from 'ui/src/Tooltip/TooltipButton'
 import type { ChipProps } from 'ui/src/Typography/types'
 
-const Chip = ({ as, ...props }: PropsWithChildren<ChipProps & { as?: string }>) => {
-  const { children, className, tooltip, tooltipProps, ...rest } = props
-  const ref = useRef<HTMLDivElement>(null)
-
-  const LabelComp = () => (
-    <Label {...rest} {...(tooltip ? {} : { as })} className={className} ref={ref}>
+const Chip = ({
+  as,
+  children,
+  className,
+  tooltip,
+  tooltipProps,
+  ...rest
+}: PropsWithChildren<ChipProps & { as?: string }>) => (
+  <WithWrapper shouldWrap={tooltip} Wrapper={Tooltip} as={as} tooltip={tooltip} {...tooltipProps}>
+    <Label {...rest} {...(tooltip && { as })} className={className}>
       {children}
     </Label>
-  )
-
-  if (tooltip) {
-    return (
-      <Tooltip as={as} tooltip={tooltip} {...tooltipProps}>
-        <LabelComp />
-      </Tooltip>
-    )
-  }
-
-  return <LabelComp />
-}
+  </WithWrapper>
+)
 
 const Label = styled.span<
   Pick<ChipProps, 'isBold' | 'isError' | 'isMono' | 'fontVariantNumeric' | 'opacity' | 'size' | 'maxWidth'>
