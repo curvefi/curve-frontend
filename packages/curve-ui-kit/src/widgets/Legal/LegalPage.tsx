@@ -82,7 +82,6 @@ export const LegalPage = ({ currentApp }: LegalPageProps) => {
         sx={{
           maxWidth: MaxWidth.disclaimer,
           width: '100%',
-          paddingInline: Spacing.md,
         }}
         data-testid={useAfterHydration('legal-page')}
       >

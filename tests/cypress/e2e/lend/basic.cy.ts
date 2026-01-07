@@ -14,7 +14,7 @@ describe('Basic Access Test', () => {
   it('should redirect from the old nested URL successfully', () => {
     cy.visit('/lend/#/ethereum/disclaimer?tab=lend')
     cy.url(LOAD_TIMEOUT).should('match', /http:\/\/localhost:\d+\/lend\/ethereum\/legal\/?\?tab=disclaimers$/)
-    cy.title().should('equal', 'Legal - Curve Lend')
+    cy.title().should('equal', 'Legal - Curve')
   })
 
   it('should open a lend market page succesfully', () => {

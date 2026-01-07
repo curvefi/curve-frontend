@@ -7,8 +7,9 @@ const defaultPages = {
   crvusd: 'markets',
   dao: 'proposals',
   llamalend: 'markets',
+  bridge: 'bridges',
   analytics: 'home',
-}
+} satisfies Record<AppName, string>
 const oldOrigins = ['lend', 'crvusd', 'dao'] as const
 
 // old redirects that were hardcoded in the react-router routes. The network name gets added in the redirect.
@@ -37,6 +38,7 @@ const OldRoutes: Record<AppName, string[]> = {
   ],
   lend: [LEND_ROUTES.PAGE_MARKETS, LEND_ROUTES.PAGE_INTEGRATIONS],
   llamalend: [LLAMALEND_ROUTES.PAGE_MARKETS, LLAMALEND_ROUTES.PAGE_INTEGRATIONS],
+  bridge: [],
   analytics: [],
 }
 
