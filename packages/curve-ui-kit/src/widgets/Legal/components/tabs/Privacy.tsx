@@ -1,11 +1,10 @@
 import Link from '@mui/material/Link'
 import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
-import type { TabProps } from '../../types/tabs'
 import { List } from '../general/List'
 import { Section, Header, Title, Paragraph, Bold } from '../general/Section'
 
-export const Privacy = ({ currentApp, network }: TabProps) => (
+export const Privacy = () => (
   <>
     <Header>{t`Privacy Notice`}</Header>
     <Section>

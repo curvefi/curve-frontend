@@ -8,7 +8,7 @@ import useStore from '@/dao/store/useStore'
 import type { TopHoldersSortBy } from '@/dao/types/dao.types'
 import type { Locker } from '@curvefi/prices-api/dao'
 import Box from '@ui/Box'
-import SelectSortingMethod from '@ui/Select/SelectSortingMethod'
+import { SelectSortingMethod } from '@ui/Select/SelectSortingMethod'
 import { t } from '@ui-kit/lib/i18n'
 import Spinner from '../../Spinner'
 

@@ -6,11 +6,10 @@ import { styled } from 'styled-components'
 
 export interface PopoverProps extends Omit<AriaPopoverProps, 'popoverRef'> {
   children: ReactElement<OverlayTriggerState>
-  portalContainer?: Element
   state: OverlayTriggerState
 }
 
-function Popover2({ children, state, offset = 8, portalContainer, ...props }: PopoverProps) {
+function Popover2({ children, state, offset = 8, ...props }: PopoverProps) {
   const popoverRef = useRef(null)
   const { popoverProps, underlayProps } = usePopover(
     {

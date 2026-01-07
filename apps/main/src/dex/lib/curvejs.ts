@@ -94,8 +94,8 @@ const network = {
         }
       }
       return failedFetching24hOldVprice
-    } catch (error) {
-      console.warn(`Unable to fetch failedFetching24hOldVprice from ${url}`)
+    } catch (e) {
+      console.warn(`Unable to fetch failedFetching24hOldVprice from ${url}`, e.message)
       return failedFetching24hOldVprice
     }
   },

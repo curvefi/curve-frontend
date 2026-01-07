@@ -33,16 +33,11 @@ export const AdvancedBorrowOptions = ({
   collateralToken: Token | undefined
   borrowToken: Token | undefined
 }) => {
-  const {
-    data: routeImage,
-    isLoading: routeImageLoading,
-    error: routeImageError,
-  } = useCreateLoanRouteImage(params, leverageEnabled)
-  const {
-    data: expectedCollateral,
-    isLoading: expectedCollateralLoading,
-    error: expectedCollateralError,
-  } = useCreateLoanExpectedCollateral(params, leverageEnabled)
+  const { data: routeImage, isLoading: routeImageLoading } = useCreateLoanRouteImage(params, leverageEnabled)
+  const { data: expectedCollateral, isLoading: expectedCollateralLoading } = useCreateLoanExpectedCollateral(
+    params,
+    leverageEnabled,
+  )
 
   return (
     <Stack gap={Spacing.sm} marginBlock={Spacing.sm}>

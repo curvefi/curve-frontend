@@ -59,7 +59,7 @@ const DEFAULT_STATE: SliceState = {
 }
 
 const createVaultMint = (
-  set: StoreApi<State>['setState'],
+  _set: StoreApi<State>['setState'],
   get: StoreApi<State>['getState'],
 ): VaultDepositMintSlice => ({
   [sliceKey]: {
@@ -208,7 +208,7 @@ const createVaultMint = (
     setStateByKey: <T>(key: StateKey, value: T) => {
       get().setAppStateByKey(sliceKey, key, value)
     },
-    setStateByKeys: <T>(sliceState: Partial<SliceState>) => {
+    setStateByKeys: (sliceState: Partial<SliceState>) => {
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {

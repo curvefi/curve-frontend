@@ -26,6 +26,7 @@ type UserLoanDetails = {
   state: { collateral: string; borrowed: string; debt: string; N: string }
   status: { label: string; colorKey: HealthColorKey; tooltip: string }
   leverage: string
+  pnl: Record<string, string> // todo: pnl data is unused for now
 }
 
 const _getUserLoanDetails = async ({ marketId, userAddress }: UserLoanDetailsQuery): Promise<UserLoanDetails> => {
@@ -79,6 +80,7 @@ const _getUserLoanDetails = async ({ marketId, userAddress }: UserLoanDetailsQue
     loss,
     leverage,
     status: getLiquidationStatus(healthNotFull, isCloseToLiquidation, state.borrowed),
+    pnl,
   }
 }
 

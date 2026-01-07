@@ -11,7 +11,6 @@ import { breakpoints } from 'ui/src/utils/responsive'
 
 const ModalDialog = ({
   children,
-  className,
   footerContent,
   maxWidth,
   noContentPadding = false,
@@ -22,7 +21,6 @@ const ModalDialog = ({
 }: AriaOverlayProps &
   AriaDialogProps & {
     children: ReactNode
-    className?: string
     footerContent?: ReactNode
     maxWidth?: string
     noContentPadding?: boolean

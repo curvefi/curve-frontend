@@ -131,7 +131,11 @@ const SelectTokenButton = ({
   const handleClose = () => {
     setFilterValue('')
     setError(undefined)
-    isMobile ? delayAction(overlayTriggerState.close) : overlayTriggerState.close()
+    if (isMobile) {
+      delayAction(overlayTriggerState.close)
+    } else {
+      overlayTriggerState.close()
+    }
   }
 
   return chainId || basePoolsLoading ? (

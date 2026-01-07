@@ -313,7 +313,7 @@ const createPoolWithdrawSlice = (
       poolId,
       poolData,
       updatedFormValues,
-      loadMaxAmount,
+      _loadMaxAmount,
       isSeed,
       maxSlippage,
     ) => {

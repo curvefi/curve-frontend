@@ -8,9 +8,4 @@ export type TokenOption = {
   volume?: number
 }
 
-export function tokenOptionEquals(a?: TokenOption, b?: TokenOption) {
-  return a?.address == b?.address && a?.chain == b?.chain
-}
-
-// todo: the LargeTokenInput balance is taking 100%, so the token selector takes its minWidth
-export const LargeSxProps = { minWidth: 'unset' }
+export const tokenOptionEquals = (a?: TokenOption, b?: TokenOption) => a?.address == b?.address && a?.chain == b?.chain

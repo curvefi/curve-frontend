@@ -40,10 +40,8 @@ import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { decimal, type Decimal } from '@ui-kit/utils'
 import { FormContent } from '@ui-kit/widgets/DetailPageLayout/FormContent'
 
-interface Props extends Pick<ManageLoanProps, 'curve' | 'isReady' | 'market'> {}
-
 // Borrow more
-const LoanIncrease = ({ curve, isReady, market: llamma }: Props) => {
+const LoanIncrease = ({ curve, isReady, market: llamma }: Pick<ManageLoanProps, 'curve' | 'isReady' | 'market'>) => {
   const llammaId = llamma?.id ?? ''
   const isSubscribed = useRef(false)
 

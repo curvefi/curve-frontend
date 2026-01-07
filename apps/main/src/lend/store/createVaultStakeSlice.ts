@@ -52,11 +52,11 @@ const DEFAULT_STATE: SliceState = {
   formValues: DEFAULT_FORM_VALUES,
 }
 
-const createVaultStake = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): VaultStakeSlice => ({
+const createVaultStake = (_set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): VaultStakeSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 
-    fetchEstGasApproval: async (activeKey, formType, api, market) => {
+    fetchEstGasApproval: async (activeKey, _formType, api, market) => {
       const { signerAddress } = api
       const { amount, amountError } = get()[sliceKey].formValues
 
@@ -125,7 +125,7 @@ const createVaultStake = (set: StoreApi<State>['setState'], get: StoreApi<State>
         return resp
       }
     },
-    fetchStepStake: async (activeKey, formType, api, market, formValues) => {
+    fetchStepStake: async (activeKey, _formType, api, market, formValues) => {
       const { provider, wallet } = useWallet.getState()
       const { chainId } = api
       if (!provider || !wallet) return setMissingProvider(get()[sliceKey])
@@ -169,7 +169,7 @@ const createVaultStake = (set: StoreApi<State>['setState'], get: StoreApi<State>
     setStateByKey: <T>(key: StateKey, value: T) => {
       get().setAppStateByKey(sliceKey, key, value)
     },
-    setStateByKeys: <T>(sliceState: Partial<SliceState>) => {
+    setStateByKeys: (sliceState: Partial<SliceState>) => {
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {
