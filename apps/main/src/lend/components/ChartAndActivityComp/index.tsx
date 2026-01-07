@@ -82,16 +82,6 @@ export const ChartAndActivityComp = ({ rChainId, rOwmId, api }: ChartAndActivity
     [theme.design.Chart.LiquidationZone.Current, theme.palette.primary.main],
   )
 
-  if (ohlcDataUnavailable) {
-    return (
-      <StyledAlertBox alertType="">
-        <TextCaption isCaps isBold>
-          {t`Ohlc chart data and pool activity is not yet available for this market.`}
-        </TextCaption>
-      </StyledAlertBox>
-    )
-  }
-
   return (
     <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, gap: Spacing.sm, padding: Spacing.md }}>
       <SubTabsSwitcher tabs={tabs} value={tab} onChange={setTab} />
@@ -120,7 +110,15 @@ export const ChartAndActivityComp = ({ rChainId, rOwmId, api }: ChartAndActivity
             display={{ mobile: 'block', tablet: newBandsChartEnabled && isBandsVisible ? 'grid' : undefined }}
             gridTemplateColumns={{ tablet: newBandsChartEnabled && isBandsVisible ? '1fr 0.3fr' : undefined }}
           >
-            <ChartWrapper {...ohlcChartProps} betaBackgroundColor={theme.design.Layer[1].Fill} />
+            {ohlcDataUnavailable ? (
+              <StyledAlertBox alertType="">
+                <TextCaption isCaps isBold>
+                  {t`Ohlc chart data is unavailable for this market.`}
+                </TextCaption>
+              </StyledAlertBox>
+            ) : (
+              <ChartWrapper {...ohlcChartProps} betaBackgroundColor={theme.design.Layer[1].Fill} />
+            )}
             {newBandsChartEnabled && isBandsVisible && (
               <BandsChart
                 isLoading={isBandsLoading}
@@ -144,5 +142,5 @@ const StyledAlertBox = styled(AlertBox)`
   align-items: center;
   display: flex;
   justify-content: center;
-  margin: var(--spacing-narrow) 0;
+  margin: auto;
 `

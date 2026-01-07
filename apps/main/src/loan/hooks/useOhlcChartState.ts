@@ -1,13 +1,12 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
 import useStore from '@/loan/store/useStore'
 import { Llamma, ChainId } from '@/loan/types/loan.types'
+import { useLlammaChartSelections } from '@ui-kit/features/candle-chart'
 import type { OhlcChartProps } from '@ui-kit/features/candle-chart/ChartWrapper'
 import { DEFAULT_CHART_HEIGHT } from '@ui-kit/features/candle-chart/constants'
 import type { LiquidationRanges, LlammaLiquididationRange } from '@ui-kit/features/candle-chart/types'
 import { getThreeHundredResultsAgo, subtractTimeUnit } from '@ui-kit/features/candle-chart/utils'
-import { t } from '@ui-kit/lib/i18n'
-import type { ChartSelections } from '@ui-kit/shared/ui/ChartHeader'
 
 export type LlammaLiquidityCoins = {
   crvusd: {
@@ -63,10 +62,45 @@ export const useOhlcChartState = ({ rChainId, llamma, llammaId }: OhlcChartState
   const priceInfo = useStore((state) => state.loans.detailsMapper[llammaId]?.priceInfo ?? null)
 
   const { oraclePrice } = priceInfo ?? {}
-  const [selectedChartIndex, setChartSelectedIndex] = useState(0)
 
-  const chartOhlcObject = selectedChartIndex === 0 ? chartOraclePoolOhlc : chartLlammaOhlc
-  const ohlcDataUnavailable = chartLlammaOhlc.dataDisabled && chartOraclePoolOhlc.dataDisabled
+  // Token symbols for chart labels (oracle tokens come from API response)
+  const oracleTokens = useMemo(
+    () =>
+      chartOraclePoolOhlc.collateralToken.symbol && chartOraclePoolOhlc.borrowedToken.symbol
+        ? {
+            collateralSymbol: chartOraclePoolOhlc.collateralToken.symbol,
+            borrowedSymbol: chartOraclePoolOhlc.borrowedToken.symbol,
+          }
+        : null,
+    [chartOraclePoolOhlc.collateralToken.symbol, chartOraclePoolOhlc.borrowedToken.symbol],
+  )
+
+  // LLAMMA tokens from llamma data
+  const llammaTokens = useMemo(
+    () =>
+      llamma
+        ? {
+            collateralSymbol: llamma.coins[1],
+            borrowedSymbol: 'crvUSD',
+          }
+        : null,
+    [llamma],
+  )
+
+  const {
+    currentChart,
+    selectChartList,
+    selectedChartKey,
+    setSelectedChart,
+    oraclePriceData,
+    isLoading,
+    noDataAvailable,
+  } = useLlammaChartSelections({
+    oracleChart: chartOraclePoolOhlc,
+    llammaChart: chartLlammaOhlc,
+    oracleTokens,
+    llammaTokens,
+  })
 
   const selectedLiqRange = useMemo(() => {
     const liqRanges: LiquidationRanges = {
@@ -80,7 +114,7 @@ export const useOhlcChartState = ({ rChainId, llamma, llammaId }: OhlcChartState
         price2: [],
       }
 
-      for (const data of chartOhlcObject.data) {
+      for (const data of currentChart.data) {
         range.price1 = [
           ...range.price1,
           {
@@ -99,7 +133,7 @@ export const useOhlcChartState = ({ rChainId, llamma, llammaId }: OhlcChartState
       return range
     }
 
-    if (formValues.n && liqRangesMapper && chartOhlcObject.data) {
+    if (formValues.n && liqRangesMapper && currentChart.data) {
       const currentPrices = liqRangesMapper[formValues.n].prices
 
       if (currentPrices.length !== 0) {
@@ -107,28 +141,28 @@ export const useOhlcChartState = ({ rChainId, llamma, llammaId }: OhlcChartState
       }
     }
 
-    if (userPrices && chartOhlcObject.data) {
+    if (userPrices && currentChart.data) {
       liqRanges.current = formatRange(userPrices)
     }
-    if (increaseLoanPrices?.length && chartOhlcObject.data) {
+    if (increaseLoanPrices?.length && currentChart.data) {
       liqRanges.new = formatRange(increaseLoanPrices)
     }
-    if (decreaseLoanPrices?.length && chartOhlcObject.data) {
+    if (decreaseLoanPrices?.length && currentChart.data) {
       liqRanges.new = formatRange(decreaseLoanPrices)
     }
-    if (increaseCollateralPrices?.length && chartOhlcObject.data) {
+    if (increaseCollateralPrices?.length && currentChart.data) {
       liqRanges.new = formatRange(increaseCollateralPrices)
     }
-    if (decreaseCollateralPrices?.length && chartOhlcObject.data) {
+    if (decreaseCollateralPrices?.length && currentChart.data) {
       liqRanges.new = formatRange(decreaseCollateralPrices)
     }
-    if (deleveragePrices?.length && chartOhlcObject.data) {
+    if (deleveragePrices?.length && currentChart.data) {
       liqRanges.new = formatRange(deleveragePrices)
     }
 
     return liqRanges
   }, [
-    chartOhlcObject.data,
+    currentChart.data,
     decreaseCollateralPrices,
     decreaseLoanPrices,
     deleveragePrices,
@@ -155,52 +189,6 @@ export const useOhlcChartState = ({ rChainId, llamma, llammaId }: OhlcChartState
         : null,
     [llamma],
   )
-
-  const selectChartList: ChartSelections[] = useMemo(() => {
-    if (chartOraclePoolOhlc.fetchStatus === 'LOADING') {
-      return [{ activeTitle: t`Loading`, label: '-', key: 'loading' }]
-    }
-
-    if (llamma) {
-      if (chartOraclePoolOhlc.dataDisabled) {
-        return [
-          {
-            activeTitle: t`${coins?.collateral.symbol} / crvUSD (LLAMMA)`,
-            label: t`${coins?.collateral.symbol} / crvUSD (LLAMMA)`,
-            key: `${coins?.collateral.symbol}-crvusd-llamma`,
-          },
-        ]
-      }
-
-      return [
-        {
-          activeTitle: t`${chartOraclePoolOhlc.collateralToken.symbol} / ${chartOraclePoolOhlc.borrowedToken.symbol}`,
-          label: t`${chartOraclePoolOhlc.collateralToken.symbol} / ${chartOraclePoolOhlc.borrowedToken.symbol}`,
-          key: `${chartOraclePoolOhlc.collateralToken.symbol}-${chartOraclePoolOhlc.borrowedToken.symbol}-oracle`,
-        },
-        {
-          activeTitle: t`${coins?.collateral.symbol} / crvUSD (LLAMMA)`,
-          label: t`${coins?.collateral.symbol} / crvUSD (LLAMMA)`,
-          key: `${coins?.collateral.symbol}-crvusd-llamma`,
-        },
-      ]
-    }
-
-    return []
-  }, [
-    chartOraclePoolOhlc.borrowedToken.symbol,
-    chartOraclePoolOhlc.collateralToken.symbol,
-    chartOraclePoolOhlc.dataDisabled,
-    chartOraclePoolOhlc.fetchStatus,
-    coins?.collateral.symbol,
-    llamma,
-  ])
-
-  useEffect(() => {
-    if (chartOraclePoolOhlc.dataDisabled) {
-      setChartSelectedIndex(1)
-    }
-  }, [chartOraclePoolOhlc.dataDisabled])
 
   const chartTimeSettings = useMemo(() => {
     const threeHundredResultsAgo = getThreeHundredResultsAgo(timeOption, Date.now() / 1000)
@@ -282,28 +270,26 @@ export const useOhlcChartState = ({ rChainId, llamma, llammaId }: OhlcChartState
     [timeOption, fetchMoreData, rChainId, controllerAddress, poolAddress, chartInterval, timeUnit],
   )
 
-  const setSelectedChart = useCallback(
-    (key: string) => {
-      const index = selectChartList.findIndex((chart) => chart.key === key)
-      if (index !== -1) setChartSelectedIndex(index)
-    },
-    [selectChartList],
-  )
+  // Derive index for ChartWrapper compatibility
+  const selectedChartIndex = selectChartList.findIndex((chart) => chart.key === selectedChartKey)
+
+  // Determine chart status: loading > error (no data) > ready
+  const chartStatus = isLoading || !llamma ? 'LOADING' : noDataAvailable ? 'ERROR' : 'READY'
 
   const ohlcChartProps: OhlcChartProps = {
     hideCandleSeriesLabel: true,
     chartHeight: DEFAULT_CHART_HEIGHT,
-    chartStatus: llamma ? chartOhlcObject.fetchStatus : 'LOADING',
-    ohlcData: chartOhlcObject.data,
-    oraclePriceData: chartOhlcObject.oraclePriceData,
+    chartStatus,
+    ohlcData: currentChart.data,
+    oraclePriceData,
     liquidationRange: selectedLiqRange,
     timeOption,
-    selectedChartIndex,
+    selectedChartIndex: Math.max(0, selectedChartIndex),
     selectChartList,
     refetchPricesData,
-    refetchingCapped: chartOhlcObject.refetchingCapped,
+    refetchingCapped: currentChart.refetchingCapped,
     fetchMoreChartData,
-    lastFetchEndTime: chartOhlcObject.lastFetchEndTime,
+    lastFetchEndTime: currentChart.lastFetchEndTime,
     liqRangeCurrentVisible,
     liqRangeNewVisible,
     oraclePriceVisible,
@@ -313,7 +299,7 @@ export const useOhlcChartState = ({ rChainId, llamma, llammaId }: OhlcChartState
   return {
     poolAddress,
     coins,
-    ohlcDataUnavailable,
+    ohlcDataUnavailable: noDataAvailable,
     setSelectedChart,
     setChartTimeOption,
     toggleLiqRangeCurrentVisible,
