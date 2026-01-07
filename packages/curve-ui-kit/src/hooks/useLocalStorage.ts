@@ -74,6 +74,7 @@ export const useDismissBanner = (bannerKey: string, expirationTime: number) => {
   const [dismissedAt, setDismissedAt] = useLocalStorage<number | null>(bannerKey, null)
 
   const shouldShowBanner = useMemo(
+    // eslint-disable-next-line react-hooks/purity
     () => dismissedAt == null || Date.now() - dismissedAt >= expirationTime, // Show if dismissed longer than expiration
     [dismissedAt, expirationTime],
   )

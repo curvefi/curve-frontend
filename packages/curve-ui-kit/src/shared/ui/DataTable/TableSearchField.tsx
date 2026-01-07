@@ -13,13 +13,21 @@ const { ButtonSize } = SizesAndSpaces
 
 type Props = {
   value: string
+  placeholder?: string
   onChange: (value: string) => void
   testId?: string
   toggleExpanded?: () => void
   isExpanded?: boolean
 }
 
-export const TableSearchField = ({ value, onChange, testId, toggleExpanded, isExpanded = true }: Props) => {
+export const TableSearchField = ({
+  value,
+  placeholder,
+  onChange,
+  testId,
+  toggleExpanded,
+  isExpanded = true,
+}: Props) => {
   const searchInputRef = useRef<HTMLInputElement>(null)
   const [isFocused, onFocus, onBlur] = useSwitch()
   const isMobile = useIsMobile()
@@ -44,6 +52,7 @@ export const TableSearchField = ({ value, onChange, testId, toggleExpanded, isEx
 
   const searchField = (
     <SearchField
+      placeholder={placeholder}
       value={value}
       onFocus={onFocus}
       onBlur={handleBlur}

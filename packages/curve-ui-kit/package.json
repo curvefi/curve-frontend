@@ -7,7 +7,8 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "lint": "eslint \"**/*.ts*\"",
+    "lint": "eslint . --ext .ts,.tsx",
+    "lint:fix": "eslint . --ext .ts,.tsx --fix",
     "storybook": "storybook dev -p 6006 --no-open",
     "typecheck": "tsc --tsBuildInfoFile ../../.cache/typecheck/packages-curve-ui-kit.tsbuildinfo",
     "build:storybook": "storybook build"
