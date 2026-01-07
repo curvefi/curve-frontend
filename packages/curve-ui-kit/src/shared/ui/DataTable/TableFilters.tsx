@@ -87,7 +87,7 @@ export const TableFilters = <ColumnIds extends string>({
               testId="btn-expand-filters"
             />
           )}
-          {onReload && !isMobile && <TableButton onClick={onReload} icon={ReloadIcon} loading={loading} />}
+          {onReload && !isMobile && <TableButton onClick={onReload} icon={ReloadIcon} rotateIcon={loading} />}
           {hasSearchBar && (
             <TableSearchField
               value={searchText}

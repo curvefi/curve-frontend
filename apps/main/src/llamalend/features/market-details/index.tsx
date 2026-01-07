@@ -34,19 +34,19 @@ type BorrowToken = {
   usdRate: number | undefined | null
   loading: boolean
 }
-type BorrowAPY = {
+type BorrowRate = {
   rate: number | undefined | null
   averageRate: number | undefined | null
   averageRateLabel: string
-  rebasingYield: number | null
-  averageRebasingYield: number | null
+  rebasingYield: number | null | undefined
+  averageRebasingYield: number | null | undefined
   // total = rate - rebasingYield
-  totalBorrowRate: number | null
-  totalAverageBorrowRate: number | null
+  totalBorrowRate: number | null | undefined
+  totalAverageBorrowRate: number | null | undefined
   extraRewards: CampaignPoolRewards[]
   loading: boolean
 }
-type SupplyAPY = {
+type SupplyRate = {
   rate: number | undefined | null
   averageRate: number | undefined | null
   averageRateLabel: string
@@ -54,13 +54,13 @@ type SupplyAPY = {
   supplyAprCrvMaxBoost: number | undefined | null
   averageSupplyAprCrvMinBoost: number | undefined | null
   averageSupplyAprCrvMaxBoost: number | undefined | null
-  rebasingYield: number | null
-  averageRebasingYield: number | null
+  rebasingYield: number | null | undefined
+  averageRebasingYield: number | null | undefined
   // total = rate - rebasingYield + combined extra incentives + boosted (min or max) yield
-  totalSupplyRateMinBoost: number | null
-  totalSupplyRateMaxBoost: number | null
-  totalAverageSupplyRateMinBoost: number | null
-  totalAverageSupplyRateMaxBoost: number | null
+  totalSupplyRateMinBoost: number | null | undefined
+  totalSupplyRateMaxBoost: number | null | undefined
+  totalAverageSupplyRateMinBoost: number | null | undefined
+  totalAverageSupplyRateMaxBoost: number | null | undefined
   extraIncentives: ExtraIncentive[]
   averageTotalExtraIncentivesApr: number | undefined | null
   extraRewards: CampaignPoolRewards[]
@@ -79,8 +79,8 @@ type MaxLeverage = {
 export type MarketDetailsProps = {
   collateral: Collateral
   borrowToken: BorrowToken
-  borrowAPY: BorrowAPY
-  supplyAPY?: SupplyAPY
+  borrowRate: BorrowRate
+  supplyRate?: SupplyRate
   availableLiquidity: AvailableLiquidity
   maxLeverage?: MaxLeverage
   blockchainId: string
@@ -104,8 +104,8 @@ const MarketTypeSuffix: Record<LlamaMarketType, string> = {
 export const MarketDetails = ({
   collateral,
   borrowToken,
-  borrowAPY,
-  supplyAPY,
+  borrowRate,
+  supplyRate,
   availableLiquidity,
   maxLeverage,
   blockchainId,
@@ -138,14 +138,14 @@ export const MarketDetails = ({
         <Metric
           size={'medium'}
           label={t`Borrow rate`}
-          value={borrowAPY?.totalBorrowRate}
-          loading={borrowAPY?.totalBorrowRate == null && borrowAPY?.loading}
+          value={borrowRate?.totalBorrowRate}
+          loading={borrowRate?.totalBorrowRate == null && borrowRate?.loading}
           valueOptions={{ unit: 'percentage' }}
           notional={
-            borrowAPY?.totalAverageBorrowRate
+            borrowRate?.totalAverageBorrowRate
               ? {
-                  value: borrowAPY.totalAverageBorrowRate,
-                  unit: { symbol: `% ${borrowAPY.averageRateLabel} Avg`, position: 'suffix' },
+                  value: borrowRate.totalAverageBorrowRate,
+                  unit: { symbol: `% ${borrowRate.averageRateLabel} Avg`, position: 'suffix' },
                 }
               : undefined
           }
@@ -154,32 +154,32 @@ export const MarketDetails = ({
             body: (
               <MarketBorrowRateTooltipContent
                 marketType={marketType}
-                borrowRate={borrowAPY?.rate}
-                totalBorrowRate={borrowAPY?.totalBorrowRate}
-                totalAverageBorrowRate={borrowAPY?.totalAverageBorrowRate}
-                averageRate={borrowAPY?.averageRate}
-                periodLabel={borrowAPY?.averageRateLabel}
-                extraRewards={borrowAPY?.extraRewards ?? []}
-                rebasingYield={borrowAPY?.rebasingYield}
+                borrowRate={borrowRate?.rate}
+                totalBorrowRate={borrowRate?.totalBorrowRate}
+                totalAverageBorrowRate={borrowRate?.totalAverageBorrowRate}
+                averageRate={borrowRate?.averageRate}
+                periodLabel={borrowRate?.averageRateLabel}
+                extraRewards={borrowRate?.extraRewards ?? []}
+                rebasingYield={borrowRate?.rebasingYield}
                 collateralSymbol={collateral?.symbol}
-                isLoading={borrowAPY?.loading}
+                isLoading={borrowRate?.loading}
               />
             ),
             ...TooltipOptions,
           }}
         />
-        {supplyAPY && (
+        {supplyRate && (
           <Metric
             size={'medium'}
             label={t`Supply rate`}
-            value={supplyAPY?.totalSupplyRateMinBoost}
-            loading={supplyAPY?.totalSupplyRateMinBoost == null && supplyAPY?.loading}
+            value={supplyRate?.totalSupplyRateMinBoost}
+            loading={supplyRate?.totalSupplyRateMinBoost == null && supplyRate?.loading}
             valueOptions={{ unit: 'percentage' }}
             notional={
-              supplyAPY?.averageRate
+              supplyRate?.averageRate
                 ? {
-                    value: supplyAPY.averageRate,
-                    unit: { symbol: `% ${supplyAPY.averageRateLabel} Avg`, position: 'suffix' },
+                    value: supplyRate.averageRate,
+                    unit: { symbol: `% ${supplyRate.averageRateLabel} Avg`, position: 'suffix' },
                   }
                 : undefined
             }
@@ -187,19 +187,19 @@ export const MarketDetails = ({
               title: t`Supply Rate`,
               body: (
                 <MarketSupplyRateTooltipContent
-                  supplyRate={supplyAPY?.rate}
-                  averageRate={supplyAPY?.averageRate}
-                  minBoostApr={supplyAPY?.supplyAprCrvMinBoost}
-                  maxBoostApr={supplyAPY?.supplyAprCrvMaxBoost}
-                  totalSupplyRateMinBoost={supplyAPY?.totalSupplyRateMinBoost}
-                  totalSupplyRateMaxBoost={supplyAPY?.totalSupplyRateMaxBoost}
-                  totalAverageSupplyRateMinBoost={supplyAPY?.totalAverageSupplyRateMinBoost}
-                  totalAverageSupplyRateMaxBoost={supplyAPY?.totalAverageSupplyRateMaxBoost}
-                  rebasingYield={supplyAPY?.rebasingYield}
-                  isLoading={supplyAPY?.loading}
-                  periodLabel={supplyAPY?.averageRateLabel}
-                  extraRewards={supplyAPY?.extraRewards ?? []}
-                  extraIncentives={supplyAPY?.extraIncentives ?? []}
+                  supplyRate={supplyRate?.rate}
+                  averageRate={supplyRate?.averageRate}
+                  minBoostApr={supplyRate?.supplyAprCrvMinBoost}
+                  maxBoostApr={supplyRate?.supplyAprCrvMaxBoost}
+                  totalSupplyRateMinBoost={supplyRate?.totalSupplyRateMinBoost}
+                  totalSupplyRateMaxBoost={supplyRate?.totalSupplyRateMaxBoost}
+                  totalAverageSupplyRateMinBoost={supplyRate?.totalAverageSupplyRateMinBoost}
+                  totalAverageSupplyRateMaxBoost={supplyRate?.totalAverageSupplyRateMaxBoost}
+                  rebasingYield={supplyRate?.rebasingYield}
+                  isLoading={supplyRate?.loading}
+                  periodLabel={supplyRate?.averageRateLabel}
+                  extraRewards={supplyRate?.extraRewards ?? []}
+                  extraIncentives={supplyRate?.extraIncentives ?? []}
                 />
               ),
               ...TooltipOptions,
@@ -233,7 +233,7 @@ export const MarketDetails = ({
           }}
         />
         {/* Insert empty box to maintain grid layout when there is no lending APY metric */}
-        {!supplyAPY && <Box />}
+        {!supplyRate && <Box />}
         <Metric
           size="small"
           label={t`Available liquidity`}
