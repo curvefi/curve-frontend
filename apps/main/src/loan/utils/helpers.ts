@@ -22,8 +22,6 @@ export function fulfilledValue<T>(result: PromiseSettledResult<T>) {
   }
 }
 
-export const httpFetcher = (uri: string) => fetch(uri).then((res) => res.json())
-
 export function curveProps(curve: LlamaApi | null) {
   if (curve) {
     const chainId = curve.chainId as ChainId
