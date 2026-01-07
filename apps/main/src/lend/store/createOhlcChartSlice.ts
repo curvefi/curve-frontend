@@ -266,6 +266,7 @@ const createOhlcChart = (set: StoreApi<State>['setState'], get: StoreApi<State>[
           }),
         )
       } catch (error) {
+        console.warn(error)
         set(
           produce((state: State) => {
             state[sliceKey].chartLlammaOhlc = {
@@ -342,6 +343,7 @@ const createOhlcChart = (set: StoreApi<State>['setState'], get: StoreApi<State>[
           lastFetchEndTime: ohlc[0].time.getUTCTimestamp(),
         }
       } catch (error) {
+        console.warn(error)
         set(
           produce((state: State) => {
             state[sliceKey].chartLlammaOhlc.fetchStatus = 'ERROR'
@@ -448,6 +450,7 @@ const createOhlcChart = (set: StoreApi<State>['setState'], get: StoreApi<State>[
           }),
         )
       } catch (error) {
+        console.warn(error)
         set(
           produce((state: State) => {
             state[sliceKey].chartOraclePoolOhlc = {
@@ -533,6 +536,7 @@ const createOhlcChart = (set: StoreApi<State>['setState'], get: StoreApi<State>[
           },
         }
       } catch (error) {
+        console.warn(error)
         set(
           produce((state: State) => {
             state[sliceKey].chartOraclePoolOhlc.fetchStatus = 'ERROR'
@@ -687,6 +691,7 @@ const createOhlcChart = (set: StoreApi<State>['setState'], get: StoreApi<State>[
           )
         }
       } catch (error) {
+        console.warn(error)
         set(
           produce((state: State) => {
             state[sliceKey].activityFetchStatus = 'ERROR'

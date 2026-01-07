@@ -66,7 +66,7 @@ const TableRow = ({
       {columnKeys.map((columnKey, idx) => (
         <Fragment key={`tRow${columnKey}${idx}`}>
           {columnKey === COLUMN_KEYS.inPool && (
-            <CellInPool isIn={isInPool} type="pool" tooltip={t`You have a balance in this pool`} />
+            <CellInPool isIn={isInPool} tooltip={t`You have a balance in this pool`} />
           )}
           {columnKey === COLUMN_KEYS.poolName && (
             <Td $first={!showInPoolColumn}>

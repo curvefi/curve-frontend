@@ -12,7 +12,6 @@ export const { useQuery: useRepayPriceImpact } = queryFactory({
     marketId,
     stateCollateral = '0',
     userCollateral = '0',
-    userBorrowed = '0',
     userAddress,
   }: RepayFromCollateralParams) =>
     [
@@ -20,13 +19,11 @@ export const { useQuery: useRepayPriceImpact } = queryFactory({
       'repayPriceImpact',
       { stateCollateral },
       { userCollateral },
-      { userBorrowed },
     ] as const,
   queryFn: async ({
     marketId,
     stateCollateral,
     userCollateral,
-    userBorrowed,
   }: RepayFromCollateralQuery): Promise<RepayPriceImpactResult> => {
     const market = getLlamaMarket(marketId)
     return market instanceof LendMarketTemplate

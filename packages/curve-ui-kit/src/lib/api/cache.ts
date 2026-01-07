@@ -22,11 +22,11 @@ const getMutationKey = (mutation: Mutation<unknown, unknown, unknown, unknown>, 
 }
 
 export const mutationCache = new MutationCache({
-  onError: (error, variables, context, mutation) => {
+  onError: (error, variables, _context, mutation) => {
     const variablesMutationKey = getMutationKey(mutation, variables)
     logError(variablesMutationKey, error, error.message)
   },
-  onSuccess: (data, variables, context, mutation) => {
+  onSuccess: (data, variables, _context, mutation) => {
     const variablesMutationKey = getMutationKey(mutation, variables)
     logSuccess(variablesMutationKey, { data })
   },

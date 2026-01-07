@@ -1,0 +1,57 @@
+{
+  "campaignName": "",
+  "platform": "Re",
+  "description": "Points for providing liquidity.",
+  "platformImageId": "relogo.png",
+  "dashboardLink": "https://app.re.xyz/points",
+  "pools": [
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "null",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0xf74c91b36C26543A0Aa820bEf407A577e5498BF0",
+      "network": "ethereum",
+      "multiplier": "20x",
+      "tags": ["points"],
+      "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "null",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x43b98EEA5C689F0036918f590a4B55f22D853734",
+      "network": "ethereum",
+      "multiplier": "20x",
+      "tags": ["points"],
+      "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "null",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x5C2ab69Eb2BF12A2f4572D178687Bd4660512972",
+      "network": "ethereum",
+      "multiplier": "20x",
+      "tags": ["points"],
+      "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "null",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x6C5Ff8DCe52BE77b4eCE6B51996018f0C1713bA9",
+      "network": "ethereum",
+      "multiplier": "20x",
+      "tags": ["points"],
+      "lock": "false"
+    }
+  ]
+}

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-object-type */
 import '@mui/material/IconButton'
 import { DesignSystem } from '../../design'
 

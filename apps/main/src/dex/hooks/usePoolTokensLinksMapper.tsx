@@ -20,6 +20,7 @@ const usePoolTokensLinksMapper = (rChainId: ChainId, { pool }: PoolDataCacheOrAp
 
     if (key === Pool.fantomFactoryStableNg24) {
       // prettier-ignore
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setMapper({
         '0x14f8e5851879a18e0fea77b5a17f15523262a99e': getInternalUrl('dex', 'ethereum', `${DEX_ROUTES.PAGE_POOLS}/3pool/deposit`), //s3Crv_e
         '0x2902257ba817e1436b93f9f959ed50b95560b7d5': getInternalUrl('dex', 'arbitrum', `${DEX_ROUTES.PAGE_POOLS}/2pool/deposit`), //s2CRV_ar

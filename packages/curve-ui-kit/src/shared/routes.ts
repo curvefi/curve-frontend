@@ -51,10 +51,14 @@ export const ANALYTICS_ROUTES = {
   PAGE_HOME: '/home',
 }
 
-export const AppNames = ['dex', 'lend', 'crvusd', 'dao', 'llamalend', 'analytics'] as const
+export const BRIDGE_ROUTES = {
+  PAGE_BRIDGES: '/bridges',
+}
+
+export const AppNames = ['dex', 'lend', 'crvusd', 'dao', 'llamalend', 'bridge', 'analytics'] as const
 export type AppName = (typeof AppNames)[number]
 
-export const AppMenuOptions = ['dex', 'llamalend', 'dao', 'analytics'] as const
+export const AppMenuOptions = ['dex', 'llamalend', 'dao', 'bridge', 'analytics'] as const
 export type AppMenuOption = (typeof AppMenuOptions)[number]
 
 export const APP_LINK: Record<AppMenuOption, AppRoutes> = {
@@ -84,6 +88,10 @@ export const APP_LINK: Record<AppMenuOption, AppRoutes> = {
       { app: 'dao', route: DAO_ROUTES.PAGE_ANALYTICS, label: () => t`Analytics` },
       { app: 'dao', route: DAO_ROUTES.DISCUSSION, label: () => t`Discussion`, target: '_blank' },
     ],
+  },
+  bridge: {
+    label: t`Bridge`,
+    routes: [{ app: 'bridge', route: BRIDGE_ROUTES.PAGE_BRIDGES, label: () => t`Bridges` }],
   },
   analytics: {
     label: 'Analytics',

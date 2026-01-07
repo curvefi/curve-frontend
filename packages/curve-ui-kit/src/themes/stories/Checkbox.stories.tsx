@@ -14,6 +14,7 @@ const CheckboxStory = ({ checked, onChange, ...props }: CheckboxProps) => {
 
   // Update internal state when the checked prop changes
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setState((prev) => ({ ...prev, option1: checked ?? false }))
   }, [checked])
 

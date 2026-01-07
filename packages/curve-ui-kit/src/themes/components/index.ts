@@ -29,7 +29,7 @@ export const createComponents = (
   typography: TypographyVariantsOptions,
 ): ThemeOptions['components'] => ({
   MuiAlert: defineMuiAlert(design, typography),
-  MuiAlertTitle: defineMuiAlertTitle(design, typography),
+  MuiAlertTitle: defineMuiAlertTitle(typography),
   MuiButton: defineMuiButton(design),
   MuiButtonBase: {
     defaultProps: {
@@ -78,6 +78,17 @@ export const createComponents = (
       bar: { backgroundColor: design.Color.Primary[500] },
     },
   },
+  MuiLink: {
+    styleOverrides: {
+      root: {
+        color: 'currentColor',
+        '&:hover': {
+          color: design.Button.Ghost.Default.Label,
+          textDecoration: 'none',
+        },
+      },
+    },
+  },
   MuiToggleButton: defineMuiToggleButton(design),
   MuiToggleButtonGroup: {
     styleOverrides: { root: ({ ownerState }) => ({ columnGap: ownerState.compact ? '0rem' : '2px' }) },
@@ -94,7 +105,7 @@ export const createComponents = (
     },
   },
   MuiMenuItem: defineMuiMenuItem(design),
-  MuiSelect: defineMuiSelect(design, typography),
+  MuiSelect: defineMuiSelect(design),
   MuiSlider: defineMuiSlider(design),
   MuiSkeleton: {
     styleOverrides: {

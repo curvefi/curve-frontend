@@ -80,7 +80,7 @@ const DEFAULT_STATE: SliceState = {
   maxRecv: {},
 }
 
-const createLoanIncrease = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
+const createLoanIncrease = (_set: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 
@@ -254,7 +254,7 @@ const createLoanIncrease = (set: StoreApi<State>['setState'], get: StoreApi<Stat
     setStateByKey: <T>(key: StateKey, value: T) => {
       get().setAppStateByKey(sliceKey, key, value)
     },
-    setStateByKeys: <T>(sliceState: Partial<SliceState>) => {
+    setStateByKeys: (sliceState: Partial<SliceState>) => {
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {

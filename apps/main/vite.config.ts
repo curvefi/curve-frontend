@@ -4,13 +4,15 @@ import react from '@vitejs/plugin-react'
 import svgr from 'vite-plugin-svgr'
 import vercel from 'vite-plugin-vercel'
 
-const { API_PROXY_TARGET = 'http://localhost:3010' } = process.env
+const { API_PROXY_TARGET = 'http://localhost:3010', VERCEL_ENV } = process.env
 
 // https://vite.dev/config/
 export default defineConfig(({ command, mode }) => ({
   // the local server starts on port 3000 by default, with hot module reload enabled and /api proxying
   server: { port: 3000, hmr: true, proxy: { '/api': { target: API_PROXY_TARGET, changeOrigin: true } } },
+  build: { sourcemap: [mode, VERCEL_ENV].some((target) => ['development', 'preview'].includes(target!)) },
   preview: { port: 3000 },
+  cacheDir: resolve(__dirname, '../../.cache/vite/apps-main'),
   plugins: [react(), svgr(), vercel()],
   optimizeDeps: { include: ['styled-components', '@mui/material', '@mui/icons-material'] },
   resolve: {

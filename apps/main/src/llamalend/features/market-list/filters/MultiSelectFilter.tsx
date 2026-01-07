@@ -109,6 +109,7 @@ export const MultiSelectFilter = <TKeys, TColumnId extends string>({
           data-testid={`menu-${id}`}
           open={isOpen}
           onClose={close}
+          // eslint-disable-next-line react-hooks/refs
           anchorEl={selectRef.current}
           anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
           slotProps={{
@@ -134,7 +135,7 @@ export const MultiSelectFilter = <TKeys, TColumnId extends string>({
           {options.map((optionId) => {
             const isSelected = selectedOptions?.includes(optionId)
             return (
-              <InvertOnHover hoverEl={menuRef.current} key={optionId}>
+              <InvertOnHover hoverRef={menuRef} key={optionId}>
                 <MenuItem
                   ref={menuRef}
                   value={optionId}

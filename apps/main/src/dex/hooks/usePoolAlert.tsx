@@ -69,8 +69,8 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
           title: t`Deprecated Pool`,
           subtitle: (
             <Trans>
-              This pool has been deprecated. Please use the{' '}
-              <InlineLink href={prismaPoolHref}>PRISMA/yPRISMA</InlineLink> pool instead.
+              This pool has been deprecated. Please use the <InlineLink to={prismaPoolHref}>PRISMA/yPRISMA</InlineLink>{' '}
+              pool instead.
             </Trans>
           ),
         },
@@ -92,14 +92,14 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
             <Trans>
               Please note that exchanges on synthetix synths are expected to be disabled and users can either withdraw
               liquidity from the underlying token, or redeem their synths to sUSD on{' '}
-              <InlineLink href="https://staking.synthetix.io/wallet/balances/">synthetix.io</InlineLink>
+              <InlineLink to="https://staking.synthetix.io/wallet/balances/">synthetix.io</InlineLink>
             </Trans>
           </p>
           <p>
             <Trans>
               Users are encouraged to exit the pools in order to avoid getting their holdings&lsquo; value diluted with
               the discountRate For more information please refer to{' '}
-              <InlineLink href="https://gov.curve.finance/t/kill-gauges-on-all-non-susd-curve-pools-on-ethereum/10033/2">
+              <InlineLink to="https://gov.curve.finance/t/kill-gauges-on-all-non-susd-curve-pools-on-ethereum/10033/2">
                 gov.curve.finance
               </InlineLink>
             </Trans>
@@ -130,16 +130,17 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
       alertType: 'danger',
       isDisableDeposit: true,
       isDisableSwap: true,
+      isDisableWithdrawOnly: true,
       isInformationOnly: true,
       isCloseOnTooltipOnly: true,
       banner: {
         title: t`Synthetix USD Deprecated`,
-        subtitle: t`Pool is deprecated. Deposit and swap are disabled.`,
+        subtitle: t`Pool is deprecated. Deposit, swap and withdraw are disabled.`,
         learnMoreUrl: 'https://x.com/synthetix_io/status/1953054538610688198',
       },
       message: (
         <PoolAlertMessage>
-          <p>{t`This pool is in withdraw only mode.`}</p>
+          <p>{t`This pool is disabled. You can still claim your rewards.`}</p>
         </PoolAlertMessage>
       ),
     })
@@ -161,7 +162,7 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
         <PoolAlertMessage>
           <p>
             <Trans>
-              Deposit on <InlineLink href="https://yieldbasis.com">yieldbasis.com</InlineLink>
+              Deposit on <InlineLink to="https://yieldbasis.com">yieldbasis.com</InlineLink>
             </Trans>
           </p>
         </PoolAlertMessage>
@@ -194,7 +195,7 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
           <p>
             <Trans>
               Deposit and Swap with wBTC.e will return an error due to an Aave community decision to freeze this asset.{' '}
-              <InlineLink href="https://app.aave.com/governance/v3/proposal/?proposalId=2">More details</InlineLink>
+              <InlineLink to="https://app.aave.com/governance/v3/proposal/?proposalId=2">More details</InlineLink>
             </Trans>
           </p>
         </PoolAlertMessage>
@@ -277,6 +278,7 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
       '0x83f24023d15d835a213df24fd309c47dab5beb32': yieldbasisAlert(),
       '0xf1f435b05d255a5dbde37333c0f61da6f69c6127': yieldbasisAlert(),
       '0xd9ff8396554a0d18b2cfbec53e1979b7ecce8373': yieldbasisAlert(),
+      '0x6e5492f8ea2370844ee098a56dd88e1717e4a9c2': yieldbasisAlert(),
       '0x06cf5f9b93e9fcfdb33d6b3791eb152567cd8d36': uspdioAlert(),
 
       // arbitrum
