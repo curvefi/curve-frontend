@@ -26,11 +26,16 @@ const DepositModule = () => {
   const setInputAmount = useStore((state) => state.scrvusd.setInputAmount)
   const setMax = useStore((state) => state.scrvusd.setMax)
 
-  const isLoadingPreview = isLoading(preview.fetchStatus)
+  const hasWallet = !!address
+  const isLoadingPreview = hasWallet && isLoading(preview.fetchStatus)
+  const isLoadingBalances = hasWallet && userScrvUsdBalanceLoading
+  const inputValue = !hasWallet && inputAmount === '0' ? '' : inputAmount
+  const previewValue = hasWallet ? preview.value : ''
+  const crvUsdBalance = hasWallet ? (userScrvUsdBalance?.crvUSD ?? '0') : ''
+  const scrvUsdBalance = hasWallet ? (userScrvUsdBalance?.scrvUSD ?? '0') : ''
 
-  const validationError = userScrvUsdBalance?.crvUSD
-    ? BigNumber(inputAmount).gt(BigNumber(userScrvUsdBalance.crvUSD))
-    : false
+  const validationError =
+    hasWallet && userScrvUsdBalance?.crvUSD ? BigNumber(inputAmount).gt(BigNumber(userScrvUsdBalance.crvUSD)) : false
 
   return (
     <Box flex flexColumn>
@@ -44,13 +49,14 @@ const DepositModule = () => {
             </SelectorBox>
           </Box>
           <StyledInputComp
-            walletBalance={userScrvUsdBalance?.crvUSD ?? '0'}
+            walletBalance={crvUsdBalance}
             walletBalanceSymbol="crvUSD"
-            value={inputAmount}
-            isLoadingBalances={userScrvUsdBalanceLoading}
+            value={inputValue}
+            isLoadingBalances={isLoadingBalances}
             isLoadingInput={false}
             setValue={setInputAmount}
             setMax={() => setMax(address, 'deposit')}
+            readOnly={!hasWallet}
           />
         </InputWrapper>
       </Box>
@@ -68,12 +74,12 @@ const DepositModule = () => {
             </SelectorBox>
           </Box>
           <StyledInputComp
-            walletBalance={userScrvUsdBalance?.scrvUSD ?? '0'}
+            walletBalance={scrvUsdBalance}
             walletBalanceSymbol="scrvUSD"
-            value={preview.value}
+            value={previewValue}
             readOnly
             isLoadingInput={isLoadingPreview}
-            isLoadingBalances={userScrvUsdBalanceLoading}
+            isLoadingBalances={isLoadingBalances}
           />
         </InputWrapper>
       </div>

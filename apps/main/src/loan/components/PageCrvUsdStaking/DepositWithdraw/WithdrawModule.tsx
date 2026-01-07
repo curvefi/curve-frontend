@@ -26,9 +26,15 @@ const WithdrawModule = () => {
   const setInputAmount = useStore((state) => state.scrvusd.setInputAmount)
   const setMax = useStore((state) => state.scrvusd.setMax)
 
-  const isLoadingPreview = isLoading(preview.fetchStatus)
+  const hasWallet = !!address
+  const isLoadingPreview = hasWallet && isLoading(preview.fetchStatus)
+  const isLoadingBalances = hasWallet && userScrvUsdBalanceLoading
+  const inputValue = !hasWallet && inputAmount === '0' ? '' : inputAmount
+  const previewValue = hasWallet ? preview.value : ''
+  const crvUsdBalance = hasWallet ? userScrvUsdBalance?.crvUSD ?? '0' : ''
+  const scrvUsdBalance = hasWallet ? userScrvUsdBalance?.scrvUSD ?? '0' : ''
 
-  const validationError = userScrvUsdBalance?.scrvUSD
+  const validationError = hasWallet && userScrvUsdBalance?.scrvUSD
     ? BigNumber(inputAmount).gt(BigNumber(userScrvUsdBalance.scrvUSD))
     : false
 
@@ -44,13 +50,13 @@ const WithdrawModule = () => {
             </SelectorBox>
           </Box>
           <StyledInputComp
-            value={inputAmount}
-            walletBalance={userScrvUsdBalance?.scrvUSD ?? '0'}
+            value={inputValue}
+            walletBalance={scrvUsdBalance}
             walletBalanceSymbol="scrvUSD"
-            isLoadingBalances={userScrvUsdBalanceLoading}
+            isLoadingBalances={isLoadingBalances}
             isLoadingInput={false}
             setValue={setInputAmount}
-            setMax={() => setMax(address, 'withdraw')}
+            setMax={hasWallet ? () => setMax(address, 'withdraw') : undefined}
           />
         </InputWrapper>
       </Box>
@@ -68,10 +74,10 @@ const WithdrawModule = () => {
             </SelectorBox>
           </Box>
           <StyledInputComp
-            value={preview.value}
-            walletBalance={userScrvUsdBalance?.crvUSD ?? '0'}
+            value={previewValue}
+            walletBalance={crvUsdBalance}
             walletBalanceSymbol="crvUSD"
-            isLoadingBalances={userScrvUsdBalanceLoading}
+            isLoadingBalances={isLoadingBalances}
             isLoadingInput={isLoadingPreview}
             readOnly
           />

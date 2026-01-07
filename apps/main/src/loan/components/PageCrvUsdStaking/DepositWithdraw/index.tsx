@@ -1,6 +1,8 @@
 import { useCallback, useEffect } from 'react'
 import useStore from '@/loan/store/useStore'
 import type { NetworkUrlParams } from '@/loan/types/loan.types'
+import LoanFormConnect from '@/loan/components/LoanFormConnect'
+import { useConnection } from 'wagmi'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useDebounced } from '@ui-kit/hooks/useDebounce'
 import { t } from '@ui-kit/lib/i18n'
@@ -31,6 +33,7 @@ const ScrvUsdDepositFormTab = () => {
   const estimateGasDepositApprove = useStore((state) => state.scrvusd.estimateGas.depositApprove)
   const estimateGasDeposit = useStore((state) => state.scrvusd.estimateGas.deposit)
   const { llamaApi: curve = null } = useCurve()
+  const { address } = useConnection()
 
   const transactionInProgress =
     (approveDepositTransaction.transactionStatus !== '' && approveDepositTransaction.transactionStatus !== 'error') ||
@@ -67,7 +70,9 @@ const ScrvUsdDepositFormTab = () => {
   return (
     <FormContent footer={<TransactionDetails />}>
       <DepositModule />
-      {transactionInProgress || transactionSuccess ? <TransactionTracking /> : <DeployButton />}
+      <LoanFormConnect haveSigner={!!address}>
+        {transactionInProgress || transactionSuccess ? <TransactionTracking /> : <DeployButton />}
+      </LoanFormConnect>
     </FormContent>
   )
 }
@@ -80,6 +85,7 @@ const ScrvUsdWithdrawFormTab = () => {
   const withdrawTransaction = useStore((state) => state.scrvusd.withdrawTransaction)
   const estimateGasWithdraw = useStore((state) => state.scrvusd.estimateGas.withdraw)
   const { llamaApi: curve = null } = useCurve()
+  const { address } = useConnection()
 
   const transactionInProgress =
     withdrawTransaction.transactionStatus !== '' && withdrawTransaction.transactionStatus !== 'error'
@@ -111,7 +117,9 @@ const ScrvUsdWithdrawFormTab = () => {
   return (
     <FormContent footer={<TransactionDetails />}>
       <WithdrawModule />
-      {transactionInProgress || transactionSuccess ? <TransactionTracking /> : <DeployButton />}
+      <LoanFormConnect haveSigner={!!address}>
+        {transactionInProgress || transactionSuccess ? <TransactionTracking /> : <DeployButton />}
+      </LoanFormConnect>
     </FormContent>
   )
 }
