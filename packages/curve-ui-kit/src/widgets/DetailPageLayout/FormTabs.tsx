@@ -1,6 +1,7 @@
 import type { UrlObject } from 'url'
 import { type ComponentType, type ReactNode, useState } from 'react'
 import { notFalsy } from '@curvefi/prices-api/objects.util'
+import Skeleton from '@mui/material/Skeleton'
 import Stack from '@mui/material/Stack'
 import { type TabOption, TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
 import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
@@ -72,9 +73,12 @@ function useFormTabs<T extends object>({ menu, params }: UseFormTabOptions<T>) {
   const subTabs = createOptions(tab.subTabs, params)
 
   const components = notFalsy(subTab?.component, tab.component)
-  if (components.length != 1) throw new Error(`${components.length} components found for [${tabKey}, ${subTabKey}]`)
+  const urls = notFalsy(subTab?.href, tab.href)
+  if (components.length + urls.length != 1)
+    throw new Error(`${components.length} components and ${urls.length} urls found for [${tabKey}, ${subTabKey}]`)
 
-  return { tab, tabs, subTabs, subTab, Component: components[0], onChangeTab, onChangeSubTab }
+  const Component = components[0] || Skeleton // skeleton just for mui Tab validation, won't be rendered due to href
+  return { tab, tabs, subTabs, subTab, Component, onChangeTab, onChangeSubTab }
 }
 
 const marginInline = { mobile: 'auto', desktop: 0 } as const
