@@ -143,10 +143,12 @@ export const Duration = {
   Snackbar: 6000,
   Tooltip: { Enter: 500, Exit: 500 },
   Transition: 256,
+  LoadingAnimation: 1000,
   Banner: {
     Daily: TIME_FRAMES.DAY_MS,
     Monthly: TIME_FRAMES.MONTH_MS,
   },
 }
 
-export const TransitionFunction = `ease-out ${Duration.Transition}ms`
+export const Transition = `ease-out`
+export const TransitionFunction = `${Transition} ${Duration.Transition}ms`
