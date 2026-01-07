@@ -48,12 +48,11 @@ export const defineMuiTab = ({ Tabs: { Transition }, Text }: DesignSystem): Comp
   styleOverrides: {
     root: {
       transition: Transition,
-      textTransform: 'uppercase',
       position: 'relative',
       boxSizing: 'content-box',
       opacity: 1,
       whiteSpace: 'nowrap',
-      minHeight: '2rem', // Not responsive, but Sizing.md is ugly in mobile
+      minHeight: 0, // It's 48px by default in Mui
       minWidth: 0, // It's 90px by default in Mui, but we want it smaller
       maxWidth: 'none', // It's 360px by default in Mui, but that sometimes interferes when displaying fewer tabs than expected (dynamic tab list)
       '&::after': {
@@ -77,6 +76,7 @@ export const defineMuiTab = ({ Tabs: { Transition }, Text }: DesignSystem): Comp
 
 type TabStyle = { Label?: string; Fill?: string; Outline?: string }
 type TabVariant = { Inset?: string; Default: TabStyle; Hover: TabStyle; Current: TabStyle }
+type SpacingKey = keyof typeof Spacing | string | number
 
 const tabStyle = ({ Label, Fill, Outline }: TabStyle, inset?: string) => ({
   color: Label,
@@ -93,17 +93,12 @@ const tabVariant = ({ Current, Default, Hover, Inset }: TabVariant) => ({
   '&.Mui-selected': tabStyle(Current, Inset),
 })
 
-const tabPadding = (
-  blockStart: keyof typeof Spacing,
-  blockEnd: keyof typeof Spacing,
-  inlineStart: keyof typeof Spacing,
-  inlineEnd: keyof typeof Spacing,
-) =>
+const tabPadding = (blockStart: SpacingKey, blockEnd: SpacingKey, inlineStart: SpacingKey, inlineEnd: SpacingKey) =>
   handleBreakpoints({
-    paddingBlockStart: Spacing[blockStart],
-    paddingBlockEnd: Spacing[blockEnd],
-    paddingInlineStart: Spacing[inlineStart],
-    paddingInlineEnd: Spacing[inlineEnd],
+    paddingBlockStart: blockStart in Spacing ? Spacing[blockStart as keyof typeof Spacing] : blockStart,
+    paddingBlockEnd: blockEnd in Spacing ? Spacing[blockEnd as keyof typeof Spacing] : blockEnd,
+    paddingInlineStart: inlineStart in Spacing ? Spacing[inlineStart as keyof typeof Spacing] : inlineStart,
+    paddingInlineEnd: inlineEnd in Spacing ? Spacing[inlineEnd as keyof typeof Spacing] : inlineEnd,
   })
 
 // Overlined and Underlined have common paddings and sizes.
@@ -136,32 +131,29 @@ export const defineMuiTabs = ({
     root: {
       minHeight: 0, // It's 48px by default in Mui, but we want it smaller
       position: 'relative', // For absolute positioning of scroll buttons
-      // Style scroll buttons (arrows) when tabs overflow
-      '& .MuiTabScrollButton-root': {
-        position: 'absolute',
-        top: 0,
-        bottom: 0,
-        zIndex: 1,
-        color: Contained.Current.Outline,
-        opacity: 1,
-        backgroundColor: Layer[1].Fill,
-        '&:first-of-type': {
-          left: 0,
+
+      '& .MuiButtonBase-root': {
+        justifyContent: 'flex-end',
         },
-        '&:last-of-type': {
-          right: 0,
-        },
-        '&.Mui-disabled': {
-          opacity: 0,
-        },
-      },
+
       [`&.${contained}`]: {
         '& .MuiTab-root': tabVariant(Contained),
         '& .MuiTab-root:not(.Mui-selected):not(:last-child)': {
           marginRight: '1px',
         },
-        [`&.${small} .MuiTab-root`]: tabPadding('xs', 'xs', 'md', 'md'),
-        [`&.${medium} .MuiTab-root`]: tabPadding('md', 'xs', 'lg', 'lg'),
+
+        [`&.${small} .MuiTab-root`]: {
+          // blockStart has no padding (handled by minHeight and justifyContent)
+          // blockEnd padding is handeled by the TabsSwitcher component to avoid adding extra height
+          ...tabPadding(0, 0, 'xs', 'xs'),
+          minHeight: '24px',
+        },
+        [`&.${medium} .MuiTab-root`]: {
+          // blockStart has no padding (handled by minHeight and justifyContent)
+          // blockEnd padding is handeled by the TabsSwitcher component to avoid adding extra height
+          ...tabPadding(0, 0, 'sm', 'sm'),
+          minHeight: '40px',
+        },
       },
 
       [`&.${overlined}`]: {
@@ -188,6 +180,26 @@ export const defineMuiTabs = ({
       [`${inactiveTabSelector({ hideInactiveBorders: true }, overlined, underlined)}, &.${large} .MuiTab-root::after`]:
         {
           height: '0px !important',
+        },
+
+      // Style scroll buttons (arrows) when tabs overflow
+      '& .MuiTabScrollButton-root': {
+        position: 'absolute',
+        top: 0,
+        bottom: 0,
+        zIndex: 1,
+        color: Contained.Current.Outline,
+        opacity: 1,
+        backgroundColor: Layer[1].Fill,
+        '&:first-of-type': {
+          left: 0,
+        },
+        '&:last-of-type': {
+          right: 0,
+        },
+        '&.Mui-disabled': {
+          opacity: 0,
+        },
         },
     },
     indicator: {

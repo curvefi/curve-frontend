@@ -16,8 +16,8 @@ import {
 const { Spacing } = SizesAndSpaces
 
 const defaultTextVariants = {
-  small: 'buttonS',
-  medium: 'buttonM',
+  small: 'buttonXs',
+  medium: 'buttonS',
   large: 'headingMBold',
 } as const satisfies Record<keyof typeof TABS_HEIGHT_CLASSES, TypographyVariantKey>
 
@@ -68,7 +68,7 @@ export const TabsSwitcher = <T extends string | number>({
         key={value}
         value={value}
         label={
-          <Stack direction="row" alignItems="baseline" gap={Spacing.xxs}>
+          <Stack direction="row" alignItems="baseline" gap={Spacing.xxs} sx={{ paddingBlockEnd: Spacing.xxs }}>
             <Typography variant={textVariant ?? defaultTextVariants[size]}>{label}</Typography>
             {endAdornment != null && (
               <Typography variant="highlightXs" className="tab-end-adornment">
