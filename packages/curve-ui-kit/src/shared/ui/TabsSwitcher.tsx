@@ -24,7 +24,9 @@ const defaultTextVariants = {
 export type TabOption<T> = Pick<TabProps, 'label' | 'disabled' | 'icon' | 'sx'> & {
   value: T
   href?: string | UrlObject
-  endAdornment?: string
+  suffix?: string
+  startAdornment?: React.ReactNode
+  endAdornment?: React.ReactNode
 }
 
 export type TabsSwitcherProps<T> = Pick<TabsProps, 'sx'> & {
@@ -32,6 +34,7 @@ export type TabsSwitcherProps<T> = Pick<TabsProps, 'sx'> & {
   variant?: TabSwitcherVariants
   muiVariant?: TabsProps['variant']
   textVariant?: TypographyProps['variant']
+  orientation?: TabsProps['orientation']
   value: T | undefined
   options: readonly TabOption<T>[]
   hideInactiveBorders?: boolean
@@ -62,19 +65,23 @@ export const TabsSwitcher = <T extends string | number>({
     sx={{ ...sx, ...(fullWidth && { '& .MuiTab-root': { flexGrow: 1 } }) }}
     {...props}
   >
-    {options.map(({ value, label, href, endAdornment, ...props }) => (
+    {options.map(({ value, label, href, startAdornment, endAdornment, suffix, ...props }) => (
       <Tab
         data-testid={`tab-${value}`}
         key={value}
         value={value}
         label={
-          <Stack direction="row" alignItems="baseline" gap={Spacing.xxs} sx={{ paddingBlockEnd: Spacing.xxs }}>
-            <Typography variant={textVariant ?? defaultTextVariants[size]}>{label}</Typography>
-            {endAdornment != null && (
-              <Typography variant="highlightXs" className="tab-end-adornment">
-                {endAdornment}
-              </Typography>
-            )}
+          <Stack direction="row" alignItems="center" gap={Spacing.xxs} sx={{ paddingBlockEnd: Spacing.xxs }}>
+            {startAdornment}
+            <Stack direction="row" alignItems="baseline" gap={Spacing.xxs}>
+              <Typography variant={textVariant ?? defaultTextVariants[size]}>{label}</Typography>
+              {suffix != null && (
+                <Typography variant="highlightXs" className="tab-suffix">
+                  {suffix}
+                </Typography>
+              )}
+            </Stack>
+            {endAdornment}
           </Stack>
         }
         {...(href && { href, component: Link })}

@@ -60,14 +60,14 @@ export const defineMuiTab = ({ Tabs: { Transition }, Text }: DesignSystem): Comp
         position: 'absolute',
         height: BORDER_SIZE,
       },
-      // Count typography color states
-      '& .tab-end-adornment': {
+
+      '& .tab-suffix': {
         color: Text.TextColors.Tertiary,
       },
-      '&:hover .tab-end-adornment': {
+      '&:hover .tab-suffix': {
         color: 'inherit',
       },
-      '&.Mui-selected .tab-end-adornment': {
+      '&.Mui-selected .tab-suffix': {
         color: Text.TextColors.Secondary,
       },
     },
@@ -145,7 +145,7 @@ export const defineMuiTabs = ({
         [`&.${small} .MuiTab-root`]: {
           // blockStart has no padding (handled by minHeight and justifyContent)
           // blockEnd padding is handeled by the TabsSwitcher component to avoid adding extra height
-          ...tabPadding(0, 0, 'xs', 'xs'),
+          ...tabPadding(0, 0, 'sm', 'sm'),
           minHeight: '24px',
         },
         [`&.${medium} .MuiTab-root`]: {
