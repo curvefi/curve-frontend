@@ -119,7 +119,13 @@ const containedCommonPadding = {
 }
 
 const notContainedCommonStyles = {
-  [`&.${small} .MuiTab-root`]: { ...tabPadding('xs', 'xs', 'sm', 'sm') },
+  [`&.${small} .MuiTab-root`]: {
+    ...tabPadding(0, 0, 'sm', 'sm'),
+    minHeight: TAB_HEIGHT.small,
+    [`& .${TAB_LABEL_CONTAINER_CLASS}`]: {
+      ...handleBreakpoints({ paddingBlock: Spacing.xs }),
+    },
+  },
   [`&.${medium} .MuiTab-root`]: {
     ...tabPadding(0, 0, 'sm', 'sm'),
     minHeight: TAB_HEIGHT.medium,

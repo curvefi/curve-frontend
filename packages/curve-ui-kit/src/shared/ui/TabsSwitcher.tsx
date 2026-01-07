@@ -75,14 +75,16 @@ export const TabsSwitcher = <T extends string | number>({
         label={
           <Stack direction="row" alignItems="center" gap={Spacing.xxs} className={TAB_LABEL_CONTAINER_CLASS}>
             {startAdornment}
-            <Stack direction="row" alignItems="baseline" gap={Spacing.xxs}>
-              <Typography variant={textVariant ?? defaultTextVariants[size]}>{label}</Typography>
-              {suffix != null && (
-                <Typography variant="highlightXs" className={TAB_SUFFIX_CLASS}>
-                  {suffix}
-                </Typography>
-              )}
-            </Stack>
+            {(label || suffix) && (
+              <Stack direction="row" alignItems="baseline" gap={Spacing.xxs}>
+                {label && <Typography variant={textVariant ?? defaultTextVariants[size]}>{label}</Typography>}
+                {suffix && (
+                  <Typography variant="highlightXs" className={TAB_SUFFIX_CLASS}>
+                    {suffix}
+                  </Typography>
+                )}
+              </Stack>
+            )}
             {endAdornment}
           </Stack>
         }
