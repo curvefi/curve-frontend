@@ -13,18 +13,18 @@ const SelectBtn = ({
   ...props
 }: ButtonHTMLAttributes<HTMLButtonElement> &
   AriaButtonProps &
-  ButtonProps & { buttonRef: RefObject<HTMLElement | null>; style?: CSSProperties }) => {
-  const ref = props.buttonRef
-  const { buttonProps } = useButton(props, ref)
+  ButtonProps & { buttonRef: RefObject<HTMLButtonElement | null>; style?: CSSProperties }) => {
+  const { children, buttonRef } = props
+  const { buttonProps } = useButton(props, buttonRef)
 
   return (
-    <StyledBtn {...buttonProps} $loading={loading} ref={ref as RefObject<HTMLButtonElement | null>} style={style}>
+    <StyledBtn {...buttonProps} $loading={loading} ref={buttonRef} style={style}>
       {loading && (
         <StyledSpinnerWrapper>
           <Spinner isDisabled size={17} />
         </StyledSpinnerWrapper>
       )}
-      {props.children}
+      {children}
     </StyledBtn>
   )
 }

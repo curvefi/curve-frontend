@@ -6,7 +6,6 @@ import createCreatePoolSlice, { CreatePoolSlice } from '@/dex/store/createCreate
 import createDashboardSlice, { DashboardSlice } from '@/dex/store/createDashboardSlice'
 import createDeployGaugeSlice, { DeployGaugeSlice } from '@/dex/store/createDeployGaugeSlice'
 import createGlobalSlice, { GlobalSlice } from '@/dex/store/createGlobalSlice'
-import createIntegrationsSlice, { IntegrationsSlice } from '@/dex/store/createIntegrationsSlice'
 import createPoolDepositSlice, { PoolDepositSlice } from '@/dex/store/createPoolDepositSlice'
 import createPoolListSlice, { PoolListSlice } from '@/dex/store/createPoolListSlice'
 import createPoolsSlice, { PoolsSlice } from '@/dex/store/createPoolsSlice'
@@ -32,7 +31,6 @@ export type State = GlobalSlice &
   DashboardSlice &
   TokensSlice &
   CreatePoolSlice &
-  IntegrationsSlice &
   DeployGaugeSlice
 
 const store = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): State => ({
@@ -49,7 +47,6 @@ const store = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState'
   ...createUserBalancesSlice(set, get),
   ...createTokensSlice(set, get),
   ...createCreatePoolSlice(set, get),
-  ...createIntegrationsSlice(set, get),
   ...createDeployGaugeSlice(set, get),
 })
 

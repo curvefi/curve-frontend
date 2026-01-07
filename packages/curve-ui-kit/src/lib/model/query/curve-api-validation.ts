@@ -4,9 +4,7 @@ import { createValidationSuite } from '@ui-kit/lib/validation'
 import { chainValidationGroup } from './chain-validation'
 import { ChainParams } from './root-keys'
 
-export const curveApiValidationGroup = <TChainId extends number, TLib extends { chainId: TChainId }>({
-  chainId,
-}: ChainParams<TChainId>) =>
+export const curveApiValidationGroup = <TChainId extends number>({ chainId }: ChainParams<TChainId>) =>
   group('apiValidation', () => {
     test('api', 'API chain ID mismatch', () => {
       enforce(getLib('curveApi')?.chainId).message('Chain ID should be loaded').equals(chainId)
@@ -20,9 +18,7 @@ export const curveApiValidationSuite = createValidationSuite(
   },
 )
 
-export const llamaApiValidationGroup = <TChainId extends number, TLib extends { chainId: TChainId }>({
-  chainId,
-}: ChainParams<TChainId>) =>
+export const llamaApiValidationGroup = <TChainId extends number>({ chainId }: ChainParams<TChainId>) =>
   group('apiValidation', () => {
     test('api', 'API chain ID mismatch', () => {
       enforce(getLib('llamaApi')?.chainId).message('Chain ID should be loaded').equals(chainId)

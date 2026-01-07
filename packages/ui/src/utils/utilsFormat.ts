@@ -45,3 +45,8 @@ export const formatNumber = (val: number | string | undefined | null, options?: 
               : undefined,
         abbreviate: options?.notation === 'compact',
       })
+
+export const formatNumberRange = (numbers: number[] | null | undefined) =>
+  !numbers || numbers?.some((n) => n == null) || numbers.every((n) => !n)
+    ? ''
+    : numbers.map((n) => formatNumber(n)).join(' - ')

@@ -7,7 +7,7 @@
     "build": "tsc",
     "prepublishOnly": "yarn run build",
     "lint": "eslint \"**/*.ts*\"",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit --tsBuildInfoFile ../../.cache/typecheck/packages-prices-api.tsbuildinfo"
   },
   "peerDependencies": {
     "typescript": "*"

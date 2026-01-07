@@ -79,7 +79,7 @@ const TypographyDisplay = ({ variant, children, ...args }: TypographyDisplayProp
 
 const createStory = (category: string): Story => ({
   decorators: [
-    (Story, { args }) => (
+    (_story, { args }) => (
       <Stack spacing={5}>
         {Object.keys(TYPOGRAPHY_VARIANTS)
           .filter((t) => t.includes(category))

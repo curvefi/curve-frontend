@@ -4,6 +4,7 @@ import tsconfigPaths from 'vite-tsconfig-paths'
 import react from '@vitejs/plugin-react'
 
 export default defineConfig({
+  cacheDir: resolve(__dirname, '../.cache/vite/tests'),
   plugins: [react(), tsconfigPaths()],
   resolve: {
     alias: [

@@ -74,7 +74,7 @@ const DEFAULT_STATE: SliceState = {
   formValues: DEFAULT_FORM_VALUES,
 }
 
-const createLoanCollateralIncrease = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
+const createLoanCollateralIncrease = (_set: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
     fetchEstGasApproval: async (activeKey: string, chainId: ChainId, llamma: Llamma, formValues: FormValues) => {

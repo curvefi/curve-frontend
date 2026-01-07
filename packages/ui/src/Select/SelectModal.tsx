@@ -1,4 +1,4 @@
-import { Key, RefObject, useRef } from 'react'
+import { RefObject, useRef } from 'react'
 import type { AriaListBoxOptions, AriaOverlayProps } from 'react-aria'
 import { useOverlay, DismissButton, FocusScope, usePreventScroll } from 'react-aria'
 import type { SelectState } from 'react-stately'
@@ -9,17 +9,12 @@ import { breakpoints } from 'ui/src/utils'
 function SelectModal<T>({
   menuProps,
   state,
-  selectSearchOptions,
   ...props
 }: AriaOverlayProps & {
   menuProps: AriaListBoxOptions<T>
   minWidth?: string
   mobileRightAlign?: boolean
   popoverRef?: RefObject<HTMLDivElement | null>
-  selectSearchOptions?: {
-    onSelectionChange: (key: Key) => void
-    searchFilterKeys: string[]
-  }
   state: SelectState<T>
 }) {
   const ref = useRef<HTMLDivElement>(null)
