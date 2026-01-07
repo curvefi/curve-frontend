@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import type { MarketDetailsProps } from '@/llamalend/features/market-details'
+import { useMarketRates } from '@/llamalend/queries/market-rates'
 import { CRVUSD_ADDRESS } from '@/loan/constants'
 import { useMintMarketMaxLeverage } from '@/loan/entities/mint-market-max-leverage'
 import networks from '@/loan/networks'
@@ -8,6 +9,7 @@ import { ChainId, Llamma } from '@/loan/types/loan.types'
 import { Address } from '@curvefi/prices-api'
 import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import { useCrvUsdSnapshots } from '@ui-kit/entities/crvusd-snapshots'
+import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { calculateAverageRates } from '@ui-kit/utils/averageRates'
@@ -22,6 +24,8 @@ const averageMultiplier = 30
 const averageMultiplierString = `${averageMultiplier}D`
 
 export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetailsProps): MarketDetailsProps => {
+  const { isHydrated } = useCurve()
+  const { data: marketRates, isLoading: isMarketRatesLoading } = useMarketRates({ chainId, marketId: llammaId })
   const blockchainId = networks[chainId]?.id
   const { data: campaigns } = useCampaignsByAddress({
     blockchainId,
@@ -56,6 +60,7 @@ export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetails
   )
 
   const totalAverageBorrowRate = averageRate == null ? null : averageRate - (averageRebasingYield ?? 0)
+  const borrowApr = marketRates?.borrowApr && Number(marketRates.borrowApr)
 
   return {
     marketType: LlamaMarketType.Mint,
@@ -76,19 +81,18 @@ export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetails
       usdRate: borrowedUsdRate ? Number(borrowedUsdRate) : null,
       loading: borrowedUsdRateLoading || (loanDetails?.loading ?? true),
     },
-    borrowAPY: {
-      rate: loanDetails?.parameters?.rate ? Number(loanDetails?.parameters?.rate) : null,
+    borrowRate: {
+      rate: borrowApr,
       averageRate: averageRate,
       averageRateLabel: averageMultiplierString,
       rebasingYield: crvUsdSnapshots?.[crvUsdSnapshots.length - 1]?.collateralToken.rebasingYield ?? null,
       averageRebasingYield: averageRebasingYield ?? null,
       totalAverageBorrowRate,
       extraRewards: campaigns,
-      totalBorrowRate: loanDetails?.parameters?.rate
-        ? Number(loanDetails?.parameters?.rate) -
-          (crvUsdSnapshots?.[crvUsdSnapshots.length - 1]?.collateralToken.rebasingYield ?? 0)
+      totalBorrowRate: borrowApr
+        ? borrowApr - (crvUsdSnapshots?.[crvUsdSnapshots.length - 1]?.collateralToken.rebasingYield ?? 0)
         : null,
-      loading: isSnapshotsLoading || (loanDetails?.loading ?? true),
+      loading: isSnapshotsLoading || isMarketRatesLoading || !isHydrated,
     },
     maxLeverage: {
       value: maxLeverage,

@@ -1,5 +1,6 @@
 import { USE_API } from '@/lend/shared/config'
 import { ChainId } from '@/lend/types/lend.types'
+import { invalidateMarketRates, useMarketRates } from '@/llamalend/queries/market-rates'
 import { requireLib } from '@ui-kit/features/connect-wallet'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
@@ -14,8 +15,8 @@ export const { useQuery: useMarketCapAndAvailable, invalidate: invalidateMarketC
     const market = getLendMarket(marketId)
     const capAndAvailable = await market.stats.capAndAvailable(false, USE_API)
     return {
-      cap: +capAndAvailable.cap,
-      available: +capAndAvailable.available,
+      cap: Number(capAndAvailable.cap),
+      available: Number(capAndAvailable.available),
     }
   },
   refetchInterval: '1m',
@@ -38,8 +39,8 @@ export const { useQuery: useMarketCollateralAmounts, invalidate: invalidateMarke
     const market = getLendMarket(marketId)
     const ammBalance = await market.stats.ammBalances(false, USE_API)
     return {
-      collateralAmount: +ammBalance.collateral,
-      borrowedAmount: +ammBalance.borrowed,
+      collateralAmount: Number(ammBalance.collateral),
+      borrowedAmount: Number(ammBalance.borrowed),
     }
   },
   refetchInterval: '1m',
@@ -51,10 +52,9 @@ export const { useQuery: useMarketCollateralAmounts, invalidate: invalidateMarke
  * in order to display the most current data when a wallet is connected.
  * The api data can have a few minutes delay.
  * */
-export const { useQuery: useMarketOnChainRates, invalidate: invalidateMarketOnChainRates } = queryFactory({
-  queryKey: (params: MarketParams) => [...rootKeys.market(params), 'marketOnchainData', 'v1'] as const,
+export const { useQuery: useMarketOnChainRewards, invalidate: invalidateMarketOnChainRewards } = queryFactory({
+  queryKey: (params: MarketParams) => [...rootKeys.market(params), 'marketOnchainRewards', 'v2'] as const,
   queryFn: async ({ marketId }: MarketQuery) => ({
-    rates: await getLendMarket(marketId).stats.rates(false, false),
     rewardsApr: await getLendMarket(marketId).vault.rewardsApr(false),
     crvRates: await getLendMarket(marketId).vault.crvApr(false),
   }),
@@ -75,8 +75,9 @@ export const { useQuery: useMarketPricePerShare, invalidate: invalidateMarketPri
 export const invalidateMarketDetails = ({ chainId, marketId }: { chainId: ChainId; marketId: string }) => {
   invalidateMarketCapAndAvailable({ chainId, marketId })
   invalidateMarketCollateralAmounts({ chainId, marketId })
-  invalidateMarketOnChainRates({ chainId, marketId })
+  invalidateMarketOnChainRewards({ chainId, marketId })
   invalidateMarketPricePerShare({ chainId, marketId })
+  invalidateMarketRates({ chainId, marketId })
 }
 
 export const useMarketDetails = (params: MarketParams, options?: { enabled?: boolean }) => {
@@ -87,22 +88,28 @@ export const useMarketDetails = (params: MarketParams, options?: { enabled?: boo
   const { data: marketMaxLeverage, isLoading: isMarketMaxLeverageLoading } = useMarketMaxLeverage(queryParams)
   const { data: marketCollateralAmounts, isLoading: isMarketCollateralAmountsLoading } =
     useMarketCollateralAmounts(queryParams)
-  const { data: marketOnChainRates, isLoading: isMarketOnChainRatesLoading } = useMarketOnChainRates(queryParams)
+  const { data: marketOnChainRewards, isLoading: isMarketOnChainRewardsLoading } = useMarketOnChainRewards(queryParams)
   const { data: marketPricePerShare, isLoading: isMarketPricePerShareLoading } = useMarketPricePerShare(queryParams)
+  const { data: marketRates, isLoading: isMarketRatesLoading } = useMarketRates({
+    chainId: params.chainId as ChainId,
+    marketId: params.marketId,
+  })
 
   return {
     data: {
       ...(marketCapAndAvailable ?? undefined),
       ...(marketMaxLeverage ?? undefined),
       ...(marketCollateralAmounts ?? undefined),
-      ...(marketOnChainRates ?? undefined),
+      ...(marketOnChainRewards ?? undefined),
+      ...(marketRates ?? undefined),
       pricePerShare: marketPricePerShare,
     },
     isLoading: {
       marketCapAndAvailable: isMarketCapAndAvailableLoading,
       marketMaxLeverage: isMarketMaxLeverageLoading,
       marketCollateralAmounts: isMarketCollateralAmountsLoading,
-      marketOnChainRates: isMarketOnChainRatesLoading,
+      marketOnChainRewards: isMarketOnChainRewardsLoading,
+      marketRates: isMarketRatesLoading,
       marketPricePerShare: isMarketPricePerShareLoading,
     },
   }
