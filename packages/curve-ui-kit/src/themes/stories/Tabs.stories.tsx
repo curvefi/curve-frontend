@@ -3,8 +3,8 @@ import { Stack } from '@mui/material'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { LlamaIcon } from '../../shared/icons/LlamaIcon'
 import { TabsSwitcher, type TabOption, type TabsSwitcherProps } from '../../shared/ui/TabsSwitcher'
-import { SizesAndSpaces } from '../design/1_sizes_spaces'
 import { TABS_SIZES_CLASSES } from '../components/tabs/mui-tabs'
+import { SizesAndSpaces } from '../design/1_sizes_spaces'
 
 const { IconSize } = SizesAndSpaces
 
@@ -166,18 +166,29 @@ export const NoInactiveBorders: Story = {
 
 export const OrientationVertical: Story = {
   args: {
-    variant: 'contained',
     orientation: 'vertical',
   },
-  render: (args) => (
-    <Stack direction="row" gap={4}>
-      <TabsSwitcherWrapper {...args} options={getOptionsWithAdornments(4, args.size ?? 'small')} />
+  render: ({ variant, ...rest }) => (
+    <Stack direction="row" gap={4} alignItems="flex-start">
+      <TabsSwitcherWrapper {...rest} variant="contained" size="small" options={getOptionsWithAdornments(4, 'small')} />
+      <TabsSwitcherWrapper
+        {...rest}
+        variant="underlined"
+        size="medium"
+        options={getOptionsWithAdornments(4, 'medium')}
+      />
+      <TabsSwitcherWrapper
+        {...rest}
+        variant="overlined"
+        size="extraExtraLarge"
+        options={getOptionsWithAdornments(4, 'extraExtraLarge')}
+      />
     </Stack>
   ),
   parameters: {
     docs: {
       description: {
-        story: 'Contained tabs with vertical orientation',
+        story: 'Tabs with vertical orientation for each variant and size',
       },
     },
   },
