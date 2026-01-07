@@ -14,8 +14,8 @@ const medium = 'size-medium' as const
 const large = 'size-large' as const
 const extraExtraLarge = 'size-extraExtraLarge' as const
 export const TABS_VARIANT_CLASSES = { contained, underlined, overlined }
-export const TABS_HEIGHT_CLASSES = { small, medium, large }
-export const HIDE_INACTIVE_BORDERS_CLASS = 'hide-inactive-borders'
+export const TABS_SIZES_CLASSES = { small, medium, extraExtraLarge }
+export const HIDE_INACTIVE_BORDERS_CLASS = 'hide-inactive-borders' as const
 export const TAB_LABEL_CONTAINER_CLASS = 'tab-label-container' as const
 export const TAB_SUFFIX_CLASS = 'tab-suffix' as const
 
@@ -29,9 +29,10 @@ const BORDER_SIZE = '2px' as const
 const BORDER_SIZE_INACTIVE = '1px' as const
 const BORDER_SIZE_LARGE = '4px' as const
 
-const TAB_HEIGHT: Partial<Record<keyof typeof TABS_HEIGHT_CLASSES, string>> = {
+const TAB_HEIGHT: Record<keyof typeof TABS_SIZES_CLASSES, string> = {
   small: ButtonSize.xs,
   medium: ButtonSize.sm,
+  extraExtraLarge: '3.25rem', // 52px
 }
 
 /**
@@ -118,6 +119,14 @@ const containedCommonPadding = {
   },
 }
 
+const extraExtraLargeCommonPadding = {
+  ...tabPadding(0, 0, 'md', 'md'),
+  minHeight: TAB_HEIGHT.extraExtraLarge,
+  [`& .${TAB_LABEL_CONTAINER_CLASS}`]: {
+    ...handleBreakpoints({ paddingBlockStart: Spacing.md, paddingBlockEnd: Spacing.xs }),
+  },
+}
+
 const notContainedCommonStyles = {
   [`&.${small} .MuiTab-root`]: {
     ...tabPadding(0, 0, 'sm', 'sm'),
@@ -129,6 +138,9 @@ const notContainedCommonStyles = {
   [`&.${medium} .MuiTab-root`]: {
     ...tabPadding(0, 0, 'sm', 'sm'),
     minHeight: TAB_HEIGHT.medium,
+  },
+  [`&.${extraExtraLarge} .MuiTab-root`]: {
+    ...extraExtraLargeCommonPadding,
   },
 }
 
@@ -175,6 +187,9 @@ export const defineMuiTabs = ({
           ...containedCommonPadding,
           minHeight: TAB_HEIGHT.medium,
         },
+        [`&.${extraExtraLarge} .MuiTab-root`]: {
+          ...extraExtraLargeCommonPadding,
+        },
       },
 
       [`&.${overlined}`]: {
@@ -184,8 +199,8 @@ export const defineMuiTabs = ({
           ...handleBreakpoints({ paddingBlockEnd: Spacing.sm, paddingBlockStart: Spacing.sm }),
         },
 
-        // Large overline tabs don't get a hover fill
-        [`&.${large} .MuiTab-root:hover`]: { backgroundColor: 'unset' },
+        // ExtraExtraLarge overline tabs don't get a hover fill
+        [`&.${extraExtraLarge} .MuiTab-root:hover`]: { backgroundColor: 'unset' },
       },
 
       [`&.${underlined}`]: {
@@ -201,12 +216,10 @@ export const defineMuiTabs = ({
         height: BORDER_SIZE_INACTIVE,
       },
 
-      // Large tabs don't get a hover not over/underline inactive border
+      // ExtraExtraLarge tabs don't have a border hover for the underlined/overlined variants
       // Also override and hide inactive borders if configured so
-      [`${inactiveTabSelector({ hideInactiveBorders: true }, overlined, underlined)}, &.${large} .MuiTab-root::after`]:
-        {
-          height: '0px !important',
-        },
+      [`${inactiveTabSelector({ hideInactiveBorders: true }, overlined, underlined)}, &.${extraExtraLarge} .MuiTab-root::after`]:
+        { height: '0px !important' },
 
       // Style scroll buttons (arrows) when tabs overflow
       '& .MuiTabScrollButton-root': {
@@ -233,7 +246,7 @@ export const defineMuiTabs = ({
       [`.${overlined} &`]: { top: 0 },
       [`.${contained} &`]: { top: 0 },
 
-      [`.${large} &`]: {
+      [`.${extraExtraLarge} &`]: {
         height: BORDER_SIZE_LARGE,
       },
     },

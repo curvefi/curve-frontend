@@ -7,7 +7,7 @@ import { RouterLink as Link } from '@ui-kit/shared/ui/RouterLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
 import {
-  TABS_HEIGHT_CLASSES,
+  TABS_SIZES_CLASSES,
   HIDE_INACTIVE_BORDERS_CLASS,
   TABS_VARIANT_CLASSES,
   TabSwitcherVariants,
@@ -20,8 +20,8 @@ const { Spacing } = SizesAndSpaces
 const defaultTextVariants = {
   small: 'buttonXs',
   medium: 'buttonS',
-  large: 'headingMBold',
-} as const satisfies Record<keyof typeof TABS_HEIGHT_CLASSES, TypographyVariantKey>
+  extraExtraLarge: 'headingMBold',
+} as const satisfies Record<keyof typeof TABS_SIZES_CLASSES, TypographyVariantKey>
 
 export type TabOption<T> = Pick<TabProps, 'label' | 'disabled' | 'icon' | 'sx'> & {
   value: T
@@ -32,7 +32,7 @@ export type TabOption<T> = Pick<TabProps, 'label' | 'disabled' | 'icon' | 'sx'> 
 }
 
 export type TabsSwitcherProps<T> = Pick<TabsProps, 'sx'> & {
-  size?: keyof typeof TABS_HEIGHT_CLASSES
+  size?: keyof typeof TABS_SIZES_CLASSES
   variant?: TabSwitcherVariants
   muiVariant?: TabsProps['variant']
   textVariant?: TypographyProps['variant']
@@ -63,7 +63,7 @@ export const TabsSwitcher = <T extends string | number>({
     textColor="inherit"
     value={value ?? false}
     onChange={(_, newValue) => onChange?.(newValue)}
-    className={`${TABS_VARIANT_CLASSES[variant]} ${TABS_HEIGHT_CLASSES[size]} ${hideInactiveBorders && HIDE_INACTIVE_BORDERS_CLASS}`}
+    className={`${TABS_VARIANT_CLASSES[variant]} ${TABS_SIZES_CLASSES[size]} ${hideInactiveBorders && HIDE_INACTIVE_BORDERS_CLASS}`}
     sx={{ ...sx, ...(fullWidth && { '& .MuiTab-root': { flexGrow: 1 } }) }}
     {...props}
   >
