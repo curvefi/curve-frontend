@@ -25,7 +25,7 @@ type CreateWagmiConfigOptions<TChains extends readonly [Chain, ...Chain[]]> = {
 export const createWagmiConfig = <TChains extends readonly [Chain, ...Chain[]]>({
   chains,
   transports,
-  connectors = Object.values(defaultConnectors),
+  connectors = defaultConnectors,
 }: CreateWagmiConfigOptions<TChains>) => createConfig({ chains, connectors, transports })
 
 export type WagmiChainId = ReturnType<typeof createWagmiConfig>['chains'][number]['id']
