@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { useReactTable, SortingState } from '@tanstack/react-table'
+import { SortingState } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
-import { getTableOptions } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -25,7 +25,7 @@ export const UserEventsTable = ({ events, loading, isError }: UserEventsTablePro
   const { columnVisibility } = useUserPositionHistoryVisibility()
   const [sorting, setSorting] = useState<SortingState>(DEFAULT_SORT)
 
-  const table = useReactTable({
+  const table = useTable({
     data: events,
     columns: USER_POSITION_HISTORY_COLUMNS,
     state: { columnVisibility, sorting },

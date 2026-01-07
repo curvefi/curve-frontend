@@ -66,6 +66,7 @@ export function useDebounced<T extends unknown[]>(
  */
 export function useDebounce<T>(initialValue: T, debounceMs: number, callback: (value: T) => void) {
   const [value, setValue] = useState<T>(initialValue)
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => setValue(initialValue), [initialValue])
   return [value, ...useDebounced(callback, debounceMs, setValue)] as const
 }

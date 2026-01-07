@@ -71,6 +71,7 @@ const ManageSoftLiquidationWithState = (props: Props) => {
         onRepay: async (...args) => {
           props.improveHealth.onRepay(...args)
           await mockExecution(['repay', 'improve-health'])
+          // eslint-disable-next-line react-hooks/immutability
           props.improveHealth.userBalance = decimal(+(props.improveHealth.userBalance ?? 0) - +args[0])
           if (props.improveHealth.debtToken) {
             props.improveHealth.debtToken.amount =

@@ -110,12 +110,11 @@ function ListBox<T extends {}>(
 }
 
 function Button(props: AriaButtonProps & { buttonRef: RefObject<HTMLButtonElement | null>; style?: CSSProperties }) {
-  const ref = props.buttonRef
-  const { buttonProps } = useButton(props, ref)
-
+  const { buttonRef, children, style } = props
+  const { buttonProps } = useButton(props, buttonRef)
   return (
-    <StyledIconButton {...buttonProps} ref={ref} style={props.style ?? {}}>
-      {props.children}
+    <StyledIconButton {...buttonProps} ref={buttonRef} style={style}>
+      {children}
     </StyledIconButton>
   )
 }
