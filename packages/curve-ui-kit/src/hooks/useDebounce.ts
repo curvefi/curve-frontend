@@ -108,7 +108,7 @@ export function useUniqueDebounce<T>({
   equals,
 }: {
   defaultValue: T
-  callback: (value: T) => void
+  callback: ((value: T) => void) | undefined
   debounceMs?: number
   equals?: (a: T, b: T) => boolean
 }) {
@@ -132,7 +132,7 @@ export function useUniqueDebounce<T>({
       const isEqual = equals ? equals(value, lastValue.current) : value === lastValue.current
       if (!isEqual) {
         lastValue.current = value
-        callback(value)
+        callback?.(value)
       }
     },
     [callback, equals],

@@ -189,7 +189,7 @@ export type LargeTokenInputProps = {
   disabled?: boolean
 
   /**
-   * Callback function triggered when the balance changes.
+   * Callback function triggered when the balance changes. It may be omitted when read-only.
    * @param balance The new balance value
    */
   onBalance?: (balance: Decimal | undefined) => void
@@ -259,10 +259,9 @@ export const LargeTokenInput = ({
   children,
 }: LargeTokenInputProps) => {
   const [percentage, setPercentage] = useState<Decimal | undefined>(undefined)
-  const handleOnBalance = useCallback((balance: Decimal | undefined) => onBalance?.(balance), [onBalance])
   const [balance, setBalance, cancelSetBalance] = useUniqueDebounce({
     defaultValue: externalBalance,
-    callback: handleOnBalance,
+    callback: onBalance,
     debounceMs: Duration.FormDebounce,
     // We don't want to trigger onBalance if the value is effectively the same, e.g. "0.0" and "0.00"
     equals: bigNumEquals,

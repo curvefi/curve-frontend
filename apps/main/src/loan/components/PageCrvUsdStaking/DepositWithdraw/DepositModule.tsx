@@ -2,6 +2,7 @@ import BigNumber from 'bignumber.js'
 import { useCallback } from 'react'
 import { RCCrvUSDLogoXS, RCScrvUSDLogoXS } from 'ui/src/images'
 import { useConnection } from 'wagmi'
+import { InputDivider } from '@/llamalend/widgets/InputDivider'
 import { isLoading } from '@/loan/components/PageCrvUsdStaking/utils'
 import { CRVUSD_ADDRESS, SCRVUSD_VAULT_ADDRESS } from '@/loan/constants'
 import { useScrvUsdUserBalances } from '@/loan/entities/scrvusd-userBalances'
@@ -10,7 +11,6 @@ import useStore from '@/loan/store/useStore'
 import { type ChainId } from '@/loan/types/loan.types'
 import Stack from '@mui/material/Stack'
 import Box from '@ui/Box'
-import Icon from '@ui/Icon'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useLargeTokenInputScrvusd } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
@@ -41,66 +41,63 @@ const DepositModule = () => {
   const setMax = useStore((state) => state.scrvusd.setMax)
 
   const hasWallet = !!address
-  const isLoadingPreview = hasWallet && isLoading(preview.fetchStatus)
-  const isLoadingBalances = hasWallet && userScrvUsdBalanceLoading
-  const inputValue = !hasWallet && inputAmount === '0' ? '' : inputAmount
-  const previewValue = hasWallet ? preview.value : ''
-  const crvUsdBalance = hasWallet ? (userScrvUsdBalance?.crvUSD ?? '0') : ''
-  const scrvUsdBalance = hasWallet ? (userScrvUsdBalance?.scrvUSD ?? '0') : ''
-  const shouldUseLargeTokenInput = useLargeTokenInputScrvusd()
+
   const { llamaApi: curve = null } = useCurve()
-  const networkId = curve?.chainId ? networks[curve.chainId as ChainId]?.id : undefined
-  const inputBalance = hasWallet || inputAmount !== '0' ? decimal(inputAmount) : undefined
-  const previewBalance = hasWallet && !isLoadingPreview ? decimal(preview.value) : undefined
-  const walletBalanceCrvUsd = hasWallet ? decimal(crvUsdBalance) : undefined
-  const walletBalanceScrvUsd = hasWallet ? decimal(scrvUsdBalance) : undefined
 
   const onBalance = useCallback((value?: Decimal) => setInputAmount(value ?? '0'), [setInputAmount])
 
   const validationError =
-    hasWallet && userScrvUsdBalance?.crvUSD ? BigNumber(inputAmount).gt(BigNumber(userScrvUsdBalance.crvUSD)) : false
+    hasWallet &&
+    userScrvUsdBalance?.crvUSD &&
+    BigNumber(inputAmount).gt(BigNumber(userScrvUsdBalance.crvUSD)) &&
+    t`Input amount exceeds your balance, click max to use all your balance`
 
-  return shouldUseLargeTokenInput ? (
-    <Stack gap={Spacing.sm}>
+  return useLargeTokenInputScrvusd() ? (
+    <Stack gap={Spacing.sm} divider={<InputDivider />}>
       <LargeTokenInput
         label={t`From Wallet`}
         name="deposit-from"
-        isError={validationError}
-        message={validationError ? t`Input amount exceeds your balance, click max to use all your balance` : undefined}
-        balance={inputBalance}
+        isError={!!validationError}
+        message={validationError}
+        balance={decimal(inputAmount)}
         onBalance={onBalance}
-        tokenSelector={<TokenLabel blockchainId={networkId} tooltip="crvUSD" address={CRVUSD_ADDRESS} label="crvUSD" />}
-        walletBalance={
-          hasWallet
-            ? {
-                loading: isLoadingBalances,
-                balance: walletBalanceCrvUsd,
-                symbol: 'crvUSD',
-              }
-            : undefined
+        tokenSelector={
+          <TokenLabel
+            blockchainId={networks[curve?.chainId as ChainId]?.id}
+            tooltip="crvUSD"
+            address={CRVUSD_ADDRESS}
+            label="crvUSD"
+          />
         }
-        maxBalance={hasWallet ? { balance: walletBalanceCrvUsd, chips: 'max' } : undefined}
+        {...(hasWallet && {
+          walletBalance: {
+            loading: userScrvUsdBalanceLoading,
+            balance: decimal(userScrvUsdBalance?.crvUSD),
+            symbol: 'crvUSD',
+          },
+          maxBalance: { balance: decimal(userScrvUsdBalance?.crvUSD), chips: 'max' },
+        })}
       />
-      <Stack alignItems="center" sx={{ color: (theme) => theme.palette.text.secondary }}>
-        <Icon name="ArrowDown" size={16} />
-      </Stack>
       <LargeTokenInput
         label={t`To Vault`}
         name="deposit-to"
-        balance={previewBalance}
+        balance={decimal(preview.value)}
         disabled
         tokenSelector={
-          <TokenLabel blockchainId={networkId} tooltip="scrvUSD" address={SCRVUSD_VAULT_ADDRESS} label="scrvUSD" />
+          <TokenLabel
+            blockchainId={networks[curve?.chainId as ChainId]?.id}
+            tooltip="scrvUSD"
+            address={SCRVUSD_VAULT_ADDRESS}
+            label="scrvUSD"
+          />
         }
-        walletBalance={
-          hasWallet
-            ? {
-                loading: isLoadingBalances,
-                balance: walletBalanceScrvUsd,
-                symbol: 'scrvUSD',
-              }
-            : undefined
-        }
+        {...(hasWallet && {
+          walletBalance: {
+            loading: userScrvUsdBalanceLoading,
+            balance: decimal(userScrvUsdBalance?.scrvUSD),
+            symbol: 'scrvUSD',
+          },
+        })}
       />
     </Stack>
   ) : (
@@ -115,10 +112,10 @@ const DepositModule = () => {
             </SelectorBox>
           </Box>
           <StyledInputComp
-            walletBalance={crvUsdBalance}
+            walletBalance={userScrvUsdBalance?.crvUSD ?? ''}
             walletBalanceSymbol="crvUSD"
-            value={inputValue}
-            isLoadingBalances={isLoadingBalances}
+            value={inputAmount}
+            isLoadingBalances={hasWallet && userScrvUsdBalanceLoading}
             isLoadingInput={false}
             setValue={setInputAmount}
             setMax={() => setMax(address, 'deposit')}
@@ -126,9 +123,7 @@ const DepositModule = () => {
           />
         </InputWrapper>
       </Box>
-      {validationError && (
-        <ErrorText>{t`Input amount exceeds your balance, click max to use all your balance`}</ErrorText>
-      )}
+      {validationError && <ErrorText>{validationError}</ErrorText>}
       <StyledIcon name="ArrowDown" size={16} />
       <div>
         <InputLabel>{t`To Vault`}</InputLabel>
@@ -140,12 +135,12 @@ const DepositModule = () => {
             </SelectorBox>
           </Box>
           <StyledInputComp
-            walletBalance={scrvUsdBalance}
+            walletBalance={userScrvUsdBalance?.scrvUSD ?? ''}
             walletBalanceSymbol="scrvUSD"
-            value={previewValue}
+            value={preview.value}
             readOnly
-            isLoadingInput={isLoadingPreview}
-            isLoadingBalances={isLoadingBalances}
+            isLoadingInput={hasWallet && isLoading(preview.fetchStatus)}
+            isLoadingBalances={hasWallet && userScrvUsdBalanceLoading}
           />
         </InputWrapper>
       </div>
