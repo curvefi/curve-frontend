@@ -42,12 +42,21 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>
 export type Query<T> = { data: T | undefined; isLoading: boolean; error: Error | null | undefined }
 
 /**
+ * Maps a Query type to extract partial data from it.
+ * Preserves error and loading states while transforming the data.
+ */
+export const mapQuery = <TSource extends object, TResult>(
+  { error, isLoading, data }: Query<TSource>,
+  selector: (data: TSource) => TResult | null | undefined,
+): Query<TResult> => ({
+  error,
+  isLoading,
+  data: (data && selector(data)) ?? undefined,
+})
+
+/**
  * Helper to extract only the relevant fields from a UseQueryResult into the Query type.
  * This is necessary because passing UseQueryResult to any react component will crash the rendering due to
  * react trying to serialize the react-query proxy object.
  */
-export const q = <T>({ data, isLoading, error }: UseQueryResult<T>): Query<T> => ({
-  data,
-  isLoading,
-  error,
-})
+export const q = <T extends object>(result: UseQueryResult<T>): Query<T> => mapQuery(result, (data) => data)

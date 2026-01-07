@@ -45,7 +45,7 @@ export const useRepayForm = <ChainId extends LlamaChainId, NetworkName extends L
     resolver: vestResolver(repayFormValidationSuite),
     defaultValues: {
       stateCollateral: undefined,
-      // todo: maxStateCollateral: undefined,
+      maxStateCollateral: undefined,
       userCollateral: undefined,
       userBorrowed: undefined,
       isFull: undefined,
@@ -88,6 +88,10 @@ export const useRepayForm = <ChainId extends LlamaChainId, NetworkName extends L
   const formErrors = useFormErrors(form.formState)
 
   useEffect(() => form.setValue('isFull', isFull.data, setValueOptions), [form, isFull.data])
+  useEffect(
+    () => form.setValue('maxStateCollateral', userState.data?.collateral, setValueOptions),
+    [form, userState.data?.collateral],
+  )
 
   // todo: remove from form, move this to queries directly as they depend on market only
   useEffect(() => market && form.setValue('leverageEnabled', hasLeverage(market), setValueOptions), [market, form])

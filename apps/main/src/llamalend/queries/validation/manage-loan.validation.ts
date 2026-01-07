@@ -25,6 +25,7 @@ export type CollateralForm = FieldsOf<{ userCollateral: Decimal; maxCollateral: 
 
 export type RepayForm = {
   stateCollateral: Decimal | undefined
+  maxStateCollateral: Decimal | undefined
   userCollateral: Decimal | undefined
   userBorrowed: Decimal | undefined
   isFull: boolean | undefined
@@ -37,6 +38,16 @@ const validateRepayField = (field: 'stateCollateral' | 'userCollateral', value: 
   test(field, `Collateral amount must be a non-negative number`, () => {
     if (value == null) return
     enforce(value).isNumeric().gte(0)
+  })
+
+const validateMaxStateCollateral = (
+  stateCollateral: Decimal | null | undefined,
+  maxStateCollateral: Decimal | null | undefined,
+) =>
+  skipWhen(stateCollateral == null || maxStateCollateral == null, () => {
+    test('maxStateCollateral', 'Collateral must be less than or equal to your position balance', () => {
+      enforce(stateCollateral).lte(maxStateCollateral)
+    })
   })
 
 const validateRepayBorrowedField = (userBorrowed: Decimal | null | undefined) =>
@@ -133,6 +144,7 @@ export const repayFormValidationSuite = createValidationSuite(
   ({
     isFull,
     stateCollateral,
+    maxStateCollateral,
     userCollateral,
     userBorrowed,
     withdrawEnabled,
@@ -141,6 +153,7 @@ export const repayFormValidationSuite = createValidationSuite(
   }: RepayForm) => {
     validateRepayField('userCollateral', userCollateral)
     validateRepayField('stateCollateral', stateCollateral)
+    validateMaxStateCollateral(stateCollateral, maxStateCollateral)
     validateRepayBorrowedField(userBorrowed)
     validateRepayHasValue(stateCollateral, userCollateral, userBorrowed)
     validateBoolean(isFull)

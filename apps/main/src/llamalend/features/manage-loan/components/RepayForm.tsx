@@ -3,7 +3,6 @@ import { setValueOptions } from '@/llamalend/features/borrow/react-form.utils'
 import { canRepayFromStateCollateral, canRepayFromUserCollateral, hasLeverage } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import type { RepayOptions } from '@/llamalend/mutations/repay.mutation'
-import { mapQuery } from '@/llamalend/queries/utils'
 import { LoanFormAlerts } from '@/llamalend/widgets/manage-loan/LoanFormAlerts'
 import { LoanFormTokenInput } from '@/llamalend/widgets/manage-loan/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -14,6 +13,7 @@ import FormControlLabel from '@mui/material/FormControlLabel'
 import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { mapQuery } from '@ui-kit/types/util'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { useRepayForm } from '../hooks/useRepayForm'
 
@@ -68,6 +68,7 @@ export const RepayForm = <ChainId extends IChainId>({
     onRepaid,
   })
   const { withdrawEnabled: withdrawEnabled } = values
+  const stateCollateralMax = mapQuery(userState, (data) => data.collateral)
   const showStateCollateral = fromPosition && market && canRepayFromStateCollateral(market)
   const showUserCollateral = market && canRepayFromUserCollateral(market) && fromWallet
   const showUserBorrowed = fromWallet
@@ -96,11 +97,12 @@ export const RepayForm = <ChainId extends IChainId>({
               blockchainId={network.id}
               name="stateCollateral"
               form={form}
+              max={{ ...stateCollateralMax, fieldName: 'maxStateCollateral' }}
               testId="repay-state-collateral-input"
               network={network}
               positionBalance={
                 userState.data && {
-                  position: mapQuery(userState, (data) => data.collateral),
+                  position: stateCollateralMax,
                   tooltip: t`Current collateral in position`,
                 }
               }
@@ -167,6 +169,7 @@ export const RepayForm = <ChainId extends IChainId>({
         network={network}
         handledErrors={notFalsy(
           showStateCollateral && 'stateCollateral',
+          showStateCollateral && 'maxStateCollateral',
           showUserCollateral && 'userCollateral',
           showUserBorrowed && 'userBorrowed',
         )}
