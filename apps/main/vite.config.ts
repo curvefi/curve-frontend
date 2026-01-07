@@ -11,6 +11,7 @@ export default defineConfig(({ command, mode }) => ({
   // the local server starts on port 3000 by default, with hot module reload enabled and /api proxying
   server: { port: 3000, hmr: true, proxy: { '/api': { target: API_PROXY_TARGET, changeOrigin: true } } },
   preview: { port: 3000 },
+  cacheDir: resolve(__dirname, '../../.cache/vite/apps-main'),
   plugins: [react(), svgr(), vercel()],
   optimizeDeps: { include: ['styled-components', '@mui/material', '@mui/icons-material'] },
   resolve: {
