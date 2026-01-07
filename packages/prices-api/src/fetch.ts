@@ -34,11 +34,13 @@ export class FetchError extends Error {
 export async function fetchJson<T>(url: string, body?: Record<string, unknown>, signal?: AbortSignal): Promise<T> {
   const resp = await fetch(url, {
     method: body ? 'POST' : 'GET',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(body),
+    ...(body && {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    }),
     signal,
   })
 

@@ -1,4 +1,4 @@
-import Integrations from '@/lend/components/PageIntegrations/Page'
+import { PageIntegrations } from '@/lend/components/PageIntegrations/Page'
 import { LlamaMarketsList } from '@/llamalend/features/market-list/LlamaMarketsList'
 import { createRoute, Outlet } from '@tanstack/react-router'
 import { LegalPage } from '@ui-kit/widgets/Legal'
@@ -34,7 +34,7 @@ export const llamalendRoutes = llamalendLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/integrations',
-    component: Integrations,
+    component: PageIntegrations,
     head: () => ({
       meta: [{ title: 'Integrations - Curve Llamalend' }],
     }),

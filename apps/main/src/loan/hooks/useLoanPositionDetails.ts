@@ -7,6 +7,7 @@ import { calculateRangeToLiquidation } from '@/llamalend/features/market-positio
 import { DEFAULT_BORROW_TOKEN_SYMBOL, getHealthMode } from '@/llamalend/health.util'
 import { calculateLtv } from '@/llamalend/llama.utils'
 import { useLoanExists } from '@/llamalend/queries/loan-exists'
+import { useMarketRates } from '@/llamalend/queries/market-rates'
 import { useUserPnl } from '@/llamalend/queries/user-pnl.query'
 import { CRVUSD_ADDRESS } from '@/loan/constants'
 import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
@@ -17,6 +18,7 @@ import { hasV2Leverage } from '@/loan/utils/leverage'
 import { Address } from '@curvefi/prices-api'
 import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import { useCrvUsdSnapshots } from '@ui-kit/entities/crvusd-snapshots'
+import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { calculateAverageRates } from '@ui-kit/utils/averageRates'
@@ -36,6 +38,8 @@ export const useLoanPositionDetails = ({
   llamma,
   llammaId,
 }: UseLoanPositionDetailsProps): BorrowPositionDetailsProps => {
+  const { isHydrated } = useCurve()
+  const { data: marketRates, isLoading: isMarketRatesLoading } = useMarketRates({ chainId, marketId: llammaId })
   const blockchainId = networks[chainId]?.id
   const { address: userAddress } = useConnection()
   const { data: campaigns } = useCampaignsByAddress({
@@ -81,6 +85,7 @@ export const useLoanPositionDetails = ({
         '',
         '',
       )
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setHealthMode(fetchedHealthMode)
     } else {
       setHealthMode(DEFAULT_HEALTH_MODE)
@@ -117,6 +122,7 @@ export const useLoanPositionDetails = ({
   }, [collateral, stablecoin, collateralUsdRate])
 
   const collateralRebasingYield = crvUsdSnapshots?.[crvUsdSnapshots.length - 1]?.collateralToken.rebasingYield // take only most recent rebasing yield
+  const borrowApr = marketRates?.borrowApr == null ? null : Number(marketRates.borrowApr)
 
   return {
     marketType: LlamaMarketType.Mint,
@@ -128,18 +134,16 @@ export const useLoanPositionDetails = ({
       value: Number(healthMode.percent),
       loading: userLoanDetailsLoading ?? true,
     },
-    borrowAPY: {
-      rate: loanDetails?.parameters?.rate ? Number(loanDetails?.parameters?.rate) : null,
+    borrowRate: {
+      rate: borrowApr,
       rebasingYield: collateralRebasingYield ?? null,
       averageRate: averageRate,
       averageRebasingYield: averageRebasingYield ?? null,
       averageRateLabel: averageMultiplierString,
-      totalBorrowRate: loanDetails?.parameters?.rate
-        ? Number(loanDetails?.parameters?.rate) - (collateralRebasingYield ?? 0)
-        : null,
+      totalBorrowRate: borrowApr ? borrowApr - (collateralRebasingYield ?? 0) : null,
       totalAverageBorrowRate: averageRate == null ? null : averageRate - (averageRebasingYield ?? 0),
       extraRewards: campaigns,
-      loading: isSnapshotsLoading || (loanDetails?.loading ?? true),
+      loading: isSnapshotsLoading || isMarketRatesLoading || !isHydrated,
     },
     liquidationRange: {
       value: userPrices ? userPrices.map(Number) : null,
