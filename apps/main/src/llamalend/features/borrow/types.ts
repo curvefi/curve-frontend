@@ -5,8 +5,8 @@ import type { MarketQuery } from '@ui-kit/lib/model'
 import type { MakeOptional } from '@ui-kit/types/util'
 import { Decimal } from '@ui-kit/utils'
 
-/** Complete borrow creation form with all fields already filled in (after validation) */
-type CompleteBorrowForm = {
+/** Complete create loan form with all fields already filled in (after validation) */
+type CompleteCreateLoanForm = {
   userCollateral: Decimal
   userBorrowed: Decimal // currently hidden and always 0
   debt: Decimal
@@ -18,23 +18,23 @@ type CompleteBorrowForm = {
 // todo: get rid of this, it's incorrect. We only did it because it was easier to run the validation suite
 type CalculatedValues = { maxDebt: Decimal | undefined; maxCollateral: Decimal | undefined }
 
-/** Borrow creation form as used in the UI, with some fields still optional or being filled in */
-export type BorrowForm = MakeOptional<CompleteBorrowForm, 'debt' | 'userCollateral'> & CalculatedValues
+/** Create loan form as used in the UI, with some fields still optional or being filled in */
+export type CreateLoanForm = MakeOptional<CompleteCreateLoanForm, 'debt' | 'userCollateral'> & CalculatedValues
 
-/** Fields of the borrow form that are passed back to the origin application for synchronization */
-export type BorrowFormExternalFields = Omit<BorrowForm, keyof CalculatedValues>
-/** Callback type to pass on the external fields of the borrow form */
-export type OnBorrowFormUpdate = (form: BorrowFormExternalFields) => Promise<void>
+/** Fields of the create loan form that are passed back to the origin application for synchronization */
+export type CreateLoanFormExternalFields = Omit<CreateLoanForm, keyof CalculatedValues>
+/** Callback type to pass on the external fields of the create loan form */
+export type OnCreateLoanFormUpdate = (form: CreateLoanFormExternalFields) => Promise<void>
 
-/** Full query type for borrow creation queries, including pool identification and all form fields */
-export type BorrowFormQuery<T = IChainId> = MarketQuery<T> & CompleteBorrowForm
-/** Fields of the borrow form query before validation */
-export type BorrowFormQueryParams<T = IChainId> = FieldsOf<BorrowFormQuery<T>>
+/** Full query type for create loan queries, including pool identification and all form fields */
+export type CreateLoanFormQuery<T = IChainId> = MarketQuery<T> & CompleteCreateLoanForm
+/** Fields of the create loan form query before validation */
+export type CreateLoanFormQueryParams<T = IChainId> = FieldsOf<CreateLoanFormQuery<T>>
 
-/** Borrow form query including max debt field */
-export type BorrowDebtQuery<T = IChainId> = BorrowFormQuery<T> & Pick<BorrowForm, 'maxDebt'>
-/** Fields of the borrow debt query before validation */
-export type BorrowDebtParams<T = IChainId> = FieldsOf<BorrowDebtQuery<T>>
+/** Create loan form query including max debt field */
+export type CreateLoanDebtQuery<T = IChainId> = CreateLoanFormQuery<T> & Pick<CreateLoanForm, 'maxDebt'>
+/** Fields of the create loan debt query before validation */
+export type CreateLoanDebtParams<T = IChainId> = FieldsOf<CreateLoanDebtQuery<T>>
 
 /** A simple token representation */
 export type Token = { symbol: string; address: Address }

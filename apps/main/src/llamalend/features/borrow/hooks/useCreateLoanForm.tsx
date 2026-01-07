@@ -10,19 +10,19 @@ import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions } from '@ui-kit/lib/model'
 import { Decimal } from '@ui-kit/utils'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
-import { BORROW_PRESET_RANGES, BorrowPreset } from '../../../constants'
+import { PRESET_RANGES, LoanPreset } from '../../../constants'
 import { type CreateLoanOptions, useCreateLoanMutation } from '../../../mutations/create-loan.mutation'
-import { useBorrowCreateLoanIsApproved } from '../../../queries/create-loan/borrow-create-loan-approved.query'
-import { borrowQueryValidationSuite } from '../../../queries/validation/borrow.validation'
+import { useCreateLoanIsApproved } from '../../../queries/create-loan/create-loan-approved.query'
+import { createLoanQueryValidationSuite } from '../../../queries/validation/borrow.validation'
 import { useFormErrors } from '../react-form.utils'
-import { type BorrowForm } from '../types'
+import { type CreateLoanForm } from '../types'
 import { useMaxTokenValues } from './useMaxTokenValues'
 
-const useCallbackAfterFormUpdate = (form: UseFormReturn<BorrowForm>, callback: () => void) =>
+const useCallbackAfterFormUpdate = (form: UseFormReturn<CreateLoanForm>, callback: () => void) =>
   useEffect(() => form.subscribe({ formState: { values: true }, callback }), [form, callback])
 
 // to crete a loan we need the debt/maxDebt, but we skip the market validation as that's given separately to the mutation
-const resolver = vestResolver(borrowQueryValidationSuite({ debtRequired: false, skipMarketValidation: true }))
+const resolver = vestResolver(createLoanQueryValidationSuite({ debtRequired: false, skipMarketValidation: true }))
 
 export function useCreateLoanForm<ChainId extends LlamaChainId>({
   market,
@@ -33,11 +33,11 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
 }: {
   market: LlamaMarketTemplate | undefined
   network: { id: LlamaNetworkId; chainId: ChainId }
-  preset: BorrowPreset
+  preset: LoanPreset
   onCreated: CreateLoanOptions['onCreated']
 }) {
   const { address: userAddress } = useConnection()
-  const form = useForm<BorrowForm>({
+  const form = useForm<CreateLoanForm>({
     ...formDefaultOptions,
     resolver,
     defaultValues: {
@@ -46,7 +46,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
       debt: undefined,
       leverageEnabled: false,
       slippage: SLIPPAGE_PRESETS.STABLE,
-      range: BORROW_PRESET_RANGES[preset],
+      range: PRESET_RANGES[preset],
       maxDebt: undefined,
       maxCollateral: undefined,
     },
@@ -84,7 +84,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     isCreated,
     creationError,
     txHash: data?.hash,
-    isApproved: useBorrowCreateLoanIsApproved(params),
+    isApproved: useCreateLoanIsApproved(params),
     formErrors: useFormErrors(form.formState),
   }
 }

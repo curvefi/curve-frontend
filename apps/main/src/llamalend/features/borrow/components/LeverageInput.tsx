@@ -12,7 +12,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { Query } from '@ui-kit/types/util'
 import { Decimal } from '@ui-kit/utils'
 import { useCreateLoanExpectedCollateral } from '../../../queries/create-loan/create-loan-expected-collateral.query'
-import type { BorrowForm, BorrowFormQueryParams } from '../types'
+import type { CreateLoanForm, CreateLoanFormQueryParams } from '../types'
 
 const { Spacing } = SizesAndSpaces
 
@@ -23,8 +23,8 @@ export const LeverageInput = ({
   maxLeverage: { data: maxLeverage, error, isLoading },
 }: {
   checked: boolean
-  form: UseFormReturn<BorrowForm>
-  params: BorrowFormQueryParams
+  form: UseFormReturn<CreateLoanForm>
+  params: CreateLoanFormQueryParams
   maxLeverage: Query<Decimal>
 }) => {
   const { leverage } = useCreateLoanExpectedCollateral(params).data ?? {}
