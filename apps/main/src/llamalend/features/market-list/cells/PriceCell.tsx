@@ -123,7 +123,7 @@ export const PriceCell = ({ getValue, row, column }: CellContext<LlamaMarket, nu
   const { assets } = market
   const columnId = column.id as LlamaMarketColumnId
 
-  const { data: stats, error: statsError, isLoading } = useUserMarketStats(market, columnId)
+  const { data: stats, error: statsError, isLoading: isLoadingStats } = useUserMarketStats(market, columnId)
 
   const [primaryAsset, secondaryAsset] = getAssets(columnId, assets) ?? [assets.borrowed, undefined]
   const [primaryValue, secondaryValue] = getAssetValues(columnId, stats) ?? [getValue(), undefined]
@@ -147,7 +147,7 @@ export const PriceCell = ({ getValue, row, column }: CellContext<LlamaMarket, nu
 
   const tooltipTitle =
     getTooltipTitle(columnId) ?? `${formatNumber(primaryValue, { decimals: 5 })} ${primaryAsset.symbol}`
-  const tooltipBody = getTooltipBody(columnId, stats, isLoading)
+  const tooltipBody = getTooltipBody(columnId, stats, isLoadingStats)
 
   const collateralUsdValue = (primaryPrice && primaryValue * primaryPrice) ?? 0
   const borrowedUsdValue = (secondaryPrice && secondaryValue && secondaryValue * secondaryPrice) ?? 0
@@ -157,7 +157,7 @@ export const PriceCell = ({ getValue, row, column }: CellContext<LlamaMarket, nu
     <Stack direction="column" spacing={1} alignItems="end">
       <Tooltip title={tooltipTitle} body={tooltipBody}>
         <Stack direction="row" spacing={1} alignItems="center" whiteSpace="nowrap">
-          <WithSkeleton loading={isLoading}>
+          <WithSkeleton loading={isLoadingStats}>
             {secondaryAsset && !!secondaryValue && (
               <>
                 <Typography variant="tableCellMBold">
@@ -175,7 +175,7 @@ export const PriceCell = ({ getValue, row, column }: CellContext<LlamaMarket, nu
       <Tooltip title={formatNumber(usdValue, { currency: 'USD', decimals: 5 })}>
         <Typography variant="bodySRegular" color="text.secondary">
           <WithSkeleton
-            loading={isLoading || isPrimaryPriceLoading || isSecondaryPriceLoading}
+            loading={isLoadingStats || isPrimaryPriceLoading || isSecondaryPriceLoading}
             sx={{ transform: 'unset' /* other mui will scale the text down */ }}
           >
             {formatNumber(usdValue, { currency: 'USD', notation: 'compact' })}
