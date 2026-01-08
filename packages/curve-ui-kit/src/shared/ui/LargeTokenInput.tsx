@@ -189,10 +189,10 @@ export type LargeTokenInputProps = {
   disabled?: boolean
 
   /**
-   * Callback function triggered when the balance changes.
+   * Callback function triggered when the balance changes. It may be omitted when read-only.
    * @param balance The new balance value
    */
-  onBalance: (balance: Decimal | undefined) => void
+  onBalance?: (balance: Decimal | undefined) => void
 
   /** Optional props forwarded to the slider */
   sliderProps?: SliderInputProps<Decimal>['sliderProps']
@@ -296,7 +296,7 @@ export const LargeTokenInput = ({
          * rather than being stuck displaying outdated valid data. For example, action cards can show "no change" instead of
          * remaining in a previous valid state that no longer matches the actual input, like going from "5" to empty input.
          */
-        if (!newBalance) onBalance(undefined)
+        if (!newBalance) onBalance?.(undefined)
 
         return
       }
