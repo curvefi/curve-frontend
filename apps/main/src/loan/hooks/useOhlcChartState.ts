@@ -47,8 +47,6 @@ export const useOhlcChartState = ({ rChainId, llamma, llammaId }: OhlcChartState
   )
   const chartLlammaOhlc = useStore((state) => state.ohlcCharts.chartLlammaOhlc)
   const chartOraclePoolOhlc = useStore((state) => state.ohlcCharts.chartOraclePoolOhlc)
-  const timeOption = useStore((state) => state.ohlcCharts.timeOption)
-  const setChartTimeOption = useStore((state) => state.ohlcCharts.setChartTimeOption)
   const fetchLlammaOhlcData = useStore((state) => state.ohlcCharts.fetchLlammaOhlcData)
   const fetchOracleOhlcData = useStore((state) => state.ohlcCharts.fetchOracleOhlcData)
   const fetchMoreData = useStore((state) => state.ohlcCharts.fetchMoreData)
@@ -148,7 +146,7 @@ export const useOhlcChartState = ({ rChainId, llamma, llammaId }: OhlcChartState
     [llamma],
   )
 
-  const { chartTimeSettings, chartInterval, timeUnit } = useChartTimeSettings(timeOption)
+  const { timeOption, setTimeOption, chartTimeSettings, chartInterval, timeUnit } = useChartTimeSettings()
 
   const refetchPricesData = useCallback(() => {
     void fetchOracleOhlcData(
@@ -230,7 +228,7 @@ export const useOhlcChartState = ({ rChainId, llamma, llammaId }: OhlcChartState
     isLoading,
     selectedChartKey,
     setSelectedChart,
-    setChartTimeOption,
+    setTimeOption,
     toggleLiqRangeCurrentVisible,
     toggleLiqRangeNewVisible,
     toggleOraclePriceVisible,

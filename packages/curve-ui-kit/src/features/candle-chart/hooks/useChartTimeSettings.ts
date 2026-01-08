@@ -1,4 +1,5 @@
-import { useMemo } from 'react'
+import { useCallback, useMemo, useState } from 'react'
+import { DEFAULT_TIME_OPTION } from '../constants'
 import type { TimeOption } from '../types'
 import { getThreeHundredResultsAgo } from '../utils'
 
@@ -10,6 +11,10 @@ type ChartTimeSettings = {
 }
 
 type UseChartTimeSettingsReturn = {
+  /** Currently selected time option */
+  timeOption: TimeOption
+  /** Update the selected time option */
+  setTimeOption: (timeOption: TimeOption) => void
   /** Time range for fetching chart data */
   chartTimeSettings: ChartTimeSettings
   /** Interval value for the API (e.g., 15 for 15m, 1 for 1h) */
@@ -19,10 +24,18 @@ type UseChartTimeSettingsReturn = {
 }
 
 /**
- * Converts a time option into the parameters needed for chart API requests.
+ * Manages chart time option state and converts it into the parameters needed for chart API requests.
  * Time settings only recalculate when timeOption changes (not on every render).
  */
-export const useChartTimeSettings = (timeOption: TimeOption): UseChartTimeSettingsReturn => {
+export const useChartTimeSettings = (
+  initialTimeOption: TimeOption = DEFAULT_TIME_OPTION,
+): UseChartTimeSettingsReturn => {
+  const [timeOption, setTimeOptionState] = useState<TimeOption>(initialTimeOption)
+
+  const setTimeOption = useCallback((option: TimeOption) => {
+    setTimeOptionState(option)
+  }, [])
+
   const chartTimeSettings = useMemo(() => {
     // eslint-disable-next-line react-hooks/purity -- Date.now() is intentionally called once per timeOption change
     const now = Date.now() / 1000
@@ -54,5 +67,5 @@ export const useChartTimeSettings = (timeOption: TimeOption): UseChartTimeSettin
     return 'day'
   }, [timeOption])
 
-  return { chartTimeSettings, chartInterval, timeUnit }
+  return { timeOption, setTimeOption, chartTimeSettings, chartInterval, timeUnit }
 }

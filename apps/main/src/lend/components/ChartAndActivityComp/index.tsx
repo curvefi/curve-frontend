@@ -52,7 +52,7 @@ export const ChartAndActivityComp = ({ rChainId, rOwmId, api }: ChartAndActivity
     isLoading: isChartLoading,
     selectedChartKey,
     setSelectedChart,
-    setChartTimeOption,
+    setTimeOption,
     ohlcChartProps,
   } = useOhlcChartState({
     rChainId,
@@ -108,7 +108,7 @@ export const ChartAndActivityComp = ({ rChainId, rOwmId, api }: ChartAndActivity
             timeOption={{
               options: TIME_OPTIONS,
               activeOption: ohlcChartProps.timeOption,
-              setActiveOption: setChartTimeOption,
+              setActiveOption: setTimeOption,
             }}
             isLoading={isChartLoading}
             customButton={
