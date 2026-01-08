@@ -1,10 +1,7 @@
 import LoanBorrowMore, { LoanBorrowMoreWrapped } from '@/lend/components/PageLendMarket/LoanBorrowMore'
 import LoanCollateralAdd, { LoanAddCollateralTab } from '@/lend/components/PageLendMarket/LoanCollateralAdd'
 import LoanCollateralRemove, { LoanRemoveCollateralTab } from '@/lend/components/PageLendMarket/LoanCollateralRemove'
-import LoanRepay, {
-  LoanRepayFromCollateralTab,
-  LoanRepayFromWalletTab,
-} from '@/lend/components/PageLendMarket/LoanRepay'
+import LoanRepay, { LoanRepayTab } from '@/lend/components/PageLendMarket/LoanRepay'
 import LoanSelfLiquidation from '@/lend/components/PageLendMarket/LoanSelfLiquidation'
 import networks from '@/lend/networks'
 import { type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
@@ -13,7 +10,6 @@ import { useImproveHealthTab } from '@/llamalend/features/manage-soft-liquidatio
 import { ClosePosition } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ClosePosition'
 import { ImproveHealth } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ImproveHealth'
 import type { BorrowPositionDetailsProps } from '@/llamalend/features/market-position-details'
-import { canRepayFromStateCollateral, canRepayFromUserCollateral } from '@/llamalend/llama.utils'
 import { useManageLoanMuiForm, useManageSoftLiquidation } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { type FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
@@ -56,23 +52,7 @@ const LendManageLegacyMenu = [
 
 const LendManageNewMenu = [
   { value: 'borrow', label: t`Borrow`, component: LoanBorrowMoreWrapped },
-  {
-    value: 'repay',
-    label: t`Repay`,
-    subTabs: [
-      {
-        value: 'from-wallet',
-        label: t`From wallet`,
-        component: LoanRepayFromWalletTab,
-      },
-      {
-        value: 'from-collateral',
-        label: t`From collateral`,
-        component: LoanRepayFromCollateralTab,
-        visible: ({ market }) => !market || canRepayFromStateCollateral(market) || canRepayFromUserCollateral(market),
-      },
-    ],
-  },
+  { value: 'repay', label: t`Repay`, component: LoanRepayTab },
   {
     value: 'collateral',
     label: t`Collateral`,

@@ -21,19 +21,19 @@ import { TokenOption } from './TokenOption'
 
 const { Spacing, ButtonSize } = SizesAndSpaces
 
-export type TokenSectionProps = Required<
-  Pick<TokenListProps, 'tokens' | 'balances' | 'tokenPrices' | 'disabledTokens'>
+export type TokenSectionProps<T extends Option> = Required<
+  Pick<TokenListProps<T>, 'tokens' | 'balances' | 'tokenPrices' | 'disabledTokens'>
 > &
-  Required<Pick<TokenListCallbacks, 'onToken'>> & {
+  Required<Pick<TokenListCallbacks<T>, 'onToken'>> & {
     title?: string
     /** The label to show on the button that expands the section to show all */
     showAllLabel?: string
     /** List of tokens visible before "Show more" is clicked */
-    preview: Option[]
+    preview: T[]
     onShowAll: () => void
   }
 
-const TokenSection = ({
+const TokenSection = <T extends Option>({
   title,
   showAllLabel,
   preview,
@@ -43,7 +43,7 @@ const TokenSection = ({
   disabledTokens,
   onToken,
   onShowAll,
-}: TokenSectionProps) => {
+}: TokenSectionProps<T>) => {
   if (!tokens.length) return null
 
   const displayTokens = preview.length === 0 ? tokens : preview
@@ -106,18 +106,18 @@ const TokenSection = ({
 }
 
 // Prevent all the token options from re-rendering if only the balance of a single one has changed.
-export type TokenListCallbacks = {
+export type TokenListCallbacks<T extends Option> = {
   /** Callback when a token is selected */
-  onToken: (token: Option) => void
+  onToken: (token: T) => void
   /** Callback when user enters text in the search input (debounced) */
   onSearch: (search: string) => void
 }
 
-export type TokenListProps = {
+export type TokenListProps<T extends Option> = {
   /** List of token options to display */
-  tokens: Option[]
+  tokens: T[]
   /** List of favorite token options to display at the top */
-  favorites: Option[]
+  favorites: T[]
   /** Token balances mapped by token address */
   balances: Record<string, string | undefined>
   /** Token prices in USD mapped by token address */
@@ -136,9 +136,9 @@ export type TokenListProps = {
   customOptions: ReactNode
 }
 
-export type Props = TokenListProps & TokenListCallbacks
+export type Props<T extends Option> = TokenListProps<T> & TokenListCallbacks<T>
 
-export const TokenList = ({
+export const TokenList = <T extends Option>({
   tokens,
   favorites,
   balances,
@@ -151,7 +151,7 @@ export const TokenList = ({
   customOptions,
   onToken,
   onSearch,
-}: Props) => {
+}: Props<T>) => {
   const [search, setSearch] = useState('')
   const [showPreviewMy, setShowPreviewMy] = useState(true)
   const [showPreviewAll, setShowPreviewAll] = useState(true)

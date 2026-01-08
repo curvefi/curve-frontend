@@ -526,10 +526,6 @@ const LoanRepay = ({
 
 export default LoanRepay
 
-export const LoanRepayFromWalletTab = ({ rChainId, market, isLoaded }: PageContentProps) => (
-  <RepayForm fromWallet networks={networks} chainId={rChainId} market={market} enabled={isLoaded} />
-)
-
-export const LoanRepayFromCollateralTab = ({ rChainId, market, isLoaded }: PageContentProps) => (
-  <RepayForm fromPosition networks={networks} chainId={rChainId} market={market} enabled={isLoaded} />
+export const LoanRepayTab = ({ rChainId, market, isLoaded }: PageContentProps) => (
+  <RepayForm networks={networks} chainId={rChainId} market={market} enabled={isLoaded} />
 )

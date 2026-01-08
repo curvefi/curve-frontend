@@ -35,6 +35,7 @@ export const LoanFormTokenInput = <
   message,
   network,
   positionBalance,
+  tokenSelector,
 }: {
   label: string
   token: { address: Address; symbol?: string } | undefined
@@ -59,6 +60,7 @@ export const LoanFormTokenInput = <
    * The network of the token.
    */
   network: LlamaNetwork
+  tokenSelector?: ReactNode
 }) => {
   const { address: userAddress } = useConnection()
   const {
@@ -99,12 +101,14 @@ export const LoanFormTokenInput = <
       label={label}
       testId={testId}
       tokenSelector={
-        <TokenLabel
-          blockchainId={blockchainId}
-          tooltip={token?.symbol}
-          address={token?.address ?? null}
-          label={token?.symbol ?? '?'}
-        />
+        tokenSelector ?? (
+          <TokenLabel
+            blockchainId={blockchainId}
+            tooltip={token?.symbol}
+            address={token?.address ?? null}
+            label={token?.symbol ?? '?'}
+          />
+        )
       }
       balance={value}
       onBalance={useCallback(

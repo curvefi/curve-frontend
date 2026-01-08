@@ -5,6 +5,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { ModalDialog } from '@ui-kit/shared/ui/ModalDialog'
 import { ModalSettingsButton } from '@ui-kit/shared/ui/ModalSettingsButton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import type { TokenOption as Option } from '../../types'
 import { ManageTokenList } from './ManageTokenList'
 import { TokenList, type Props as TokenListProps } from './TokenList'
 
@@ -24,9 +25,15 @@ export type TokenSelectorModalProps = {
   compact: boolean
 }
 
-export type Props = TokenListProps & TokenSelectorModalCallbacks & TokenSelectorModalProps
+export type Props<T extends Option = Option> = TokenListProps<T> & TokenSelectorModalCallbacks & TokenSelectorModalProps
 
-export const TokenSelectorModal = ({ isOpen, showManageList, compact, onClose, ...tokenListProps }: Props) => {
+export const TokenSelectorModal = <T extends Option = Option>({
+  isOpen,
+  showManageList,
+  compact,
+  onClose,
+  ...tokenListProps
+}: Props<T>) => {
   const [isManageListOpen, openManageList, closeManageList] = useSwitch()
 
   return (

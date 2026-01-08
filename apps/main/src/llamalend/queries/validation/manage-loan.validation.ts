@@ -30,7 +30,6 @@ export type RepayForm = {
   userBorrowed: Decimal | undefined
   isFull: boolean | undefined
   slippage: Decimal
-  withdrawEnabled: boolean
   leverageEnabled: boolean
 }
 
@@ -147,7 +146,6 @@ export const repayFormValidationSuite = createValidationSuite(
     maxStateCollateral,
     userCollateral,
     userBorrowed,
-    withdrawEnabled,
     leverageEnabled,
     slippage,
   }: RepayForm) => {
@@ -158,7 +156,6 @@ export const repayFormValidationSuite = createValidationSuite(
     validateRepayHasValue(stateCollateral, userCollateral, userBorrowed)
     validateBoolean(isFull)
     validateBoolean(leverageEnabled)
-    validateBoolean(withdrawEnabled)
     validateSlippage(slippage)
   },
 )

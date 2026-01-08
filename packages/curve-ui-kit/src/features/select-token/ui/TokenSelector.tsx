@@ -5,18 +5,18 @@ import type { TokenListCallbacks, TokenListProps } from './modal/TokenList'
 import { TokenSelectorModal, type TokenSelectorModalProps } from './modal/TokenSelectorModal'
 import { TokenSelectButton } from './TokenSelectButton'
 
-type Props = Partial<TokenListProps> &
-  Partial<TokenListCallbacks> &
+type Props<T extends TokenOption = TokenOption> = Partial<TokenListProps<T>> &
+  Partial<TokenListCallbacks<T>> &
   Partial<TokenSelectorModalProps> & {
     /** Currently selected token */
-    selectedToken: TokenOption | undefined
+    selectedToken: T | undefined
     /** Disables the token selector button and modal */
     disabled?: boolean
     /** Custom styles to apply to the TokenSelectButton */
     sx?: SxProps
   }
 
-export const TokenSelector = ({
+export const TokenSelector = <T extends TokenOption = TokenOption>({
   selectedToken,
   tokens = [],
   favorites = [],
@@ -34,13 +34,13 @@ export const TokenSelector = ({
   onToken,
   onSearch,
   sx,
-}: Props) => {
+}: Props<T>) => {
   const [isOpen, , closeModal, toggleModal] = useSwitch()
 
   return (
     <>
       <TokenSelectButton token={selectedToken} disabled={disabled} onClick={toggleModal} sx={sx} />
-      <TokenSelectorModal
+      <TokenSelectorModal<T>
         tokens={tokens}
         balances={balances}
         tokenPrices={tokenPrices}

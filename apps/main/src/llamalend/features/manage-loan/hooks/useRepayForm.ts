@@ -28,7 +28,7 @@ export const useRepayForm = <ChainId extends LlamaChainId, NetworkName extends L
   onRepaid,
 }: {
   market: LlamaMarketTemplate | undefined
-  network: { id: LlamaNetworkId; chainId: ChainId }
+  network: { id: LlamaNetworkId; chainId: ChainId; name: string }
   enabled?: boolean
   onRepaid?: NonNullable<RepayOptions['onRepaid']>
 }) => {
@@ -36,9 +36,7 @@ export const useRepayForm = <ChainId extends LlamaChainId, NetworkName extends L
   const { chainId } = network
   const marketId = market?.id
 
-  const tokens = market && getTokens(market)
-  const collateralToken = tokens?.collateralToken
-  const borrowToken = tokens?.borrowToken
+  const { borrowToken, collateralToken } = market ? getTokens(market) : {}
 
   const form = useForm<RepayForm>({
     ...formDefaultOptions,
@@ -50,7 +48,6 @@ export const useRepayForm = <ChainId extends LlamaChainId, NetworkName extends L
       userBorrowed: undefined,
       isFull: undefined,
       slippage: SLIPPAGE_PRESETS.STABLE,
-      withdrawEnabled: false,
       leverageEnabled: false,
     },
   })
