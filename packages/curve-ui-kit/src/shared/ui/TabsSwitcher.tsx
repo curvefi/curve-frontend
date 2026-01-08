@@ -47,7 +47,7 @@ export type TabsSwitcherProps<T> = Pick<TabsProps, 'sx'> & {
 
 export const TabsSwitcher = <T extends string | number>({
   variant = 'contained',
-  size = 'small',
+  size = 'medium',
   muiVariant,
   options,
   onChange,
