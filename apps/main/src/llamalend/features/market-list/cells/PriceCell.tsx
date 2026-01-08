@@ -15,34 +15,37 @@ import { LlamaMarketColumnId } from '../columns'
 import { ErrorCell } from './ErrorCell'
 
 /**
- * Maps a column ID to the corresponding asset details from a market.
- * @param columnId - The column identifier to determine which asset to retrieve
+ * Maps a column ID to the corresponding assets of interest from a market.
+ * Returns a tuple of [primary asset, secondary asset] where secondary may be undefined.
+ *
+ * @param columnId - The column identifier to determine which assets to retrieve
  * @param assets - The market's assets containing collateral and borrowed token details
  */
-const getAsset = (columnId: LlamaMarketColumnId, assets: LlamaMarket['assets']) =>
+const getAssets = (columnId: LlamaMarketColumnId, assets: LlamaMarket['assets']) =>
   (
     ({
-      [LlamaMarketColumnId.UserCollateral]: assets.collateral,
-      [LlamaMarketColumnId.UserBorrowed]: assets.borrowed,
-      [LlamaMarketColumnId.UserEarnings]: assets.borrowed,
-      [LlamaMarketColumnId.UserDeposited]: assets.borrowed,
-    }) as Partial<Record<LlamaMarketColumnId, AssetDetails>>
+      [LlamaMarketColumnId.UserCollateral]: [assets.collateral, assets.borrowed],
+      [LlamaMarketColumnId.UserBorrowed]: [assets.borrowed, undefined],
+      [LlamaMarketColumnId.UserEarnings]: [assets.borrowed, undefined],
+      [LlamaMarketColumnId.UserDeposited]: [assets.borrowed, undefined],
+    }) as Partial<Record<LlamaMarketColumnId, [AssetDetails, AssetDetails | undefined]>>
   )[columnId]
 
 /**
- * Maps a column ID to the corresponding value from user market stats.
- * @param columnId - The column identifier to determine which value to retrieve
- * @param stats - The user's market statistics containing borrowed, collateral, and earnings data
+ * Maps a column ID to the corresponding values from user market stats.
+ * Returns a tuple of [primary value, secondary value] where secondary may be undefined.
  *
+ * @param columnId - The column identifier to determine which values to retrieve
+ * @param stats - The user's market statistics containing borrowed, collateral, and earnings data
  */
-const getAssetValue = (columnId: LlamaMarketColumnId, stats: ReturnType<typeof useUserMarketStats>['data']) =>
+const getAssetValues = (columnId: LlamaMarketColumnId, stats: ReturnType<typeof useUserMarketStats>['data']) =>
   (
     ({
-      [LlamaMarketColumnId.UserCollateral]: stats?.collateral?.amount,
-      [LlamaMarketColumnId.UserBorrowed]: stats?.borrowed,
-      [LlamaMarketColumnId.UserEarnings]: stats?.earnings?.earnings,
-      [LlamaMarketColumnId.UserDeposited]: stats?.earnings?.totalCurrentAssets,
-    }) as Partial<Record<LlamaMarketColumnId, number>>
+      [LlamaMarketColumnId.UserCollateral]: [stats?.collateral?.amount, stats?.borrowToken?.amount],
+      [LlamaMarketColumnId.UserBorrowed]: [stats?.borrowed, undefined],
+      [LlamaMarketColumnId.UserEarnings]: [stats?.earnings?.earnings, undefined],
+      [LlamaMarketColumnId.UserDeposited]: [stats?.earnings?.totalCurrentAssets, undefined],
+    }) as Partial<Record<LlamaMarketColumnId, [number, number | undefined]>>
   )[columnId]
 
 /** Gets the tooltip title for a given column. */
@@ -56,10 +59,10 @@ const getTooltipTitle = (columnId: LlamaMarketColumnId) =>
 
 /**
  * Gets the tooltip body content for columns that require detailed breakdowns.
+ *
  * @param columnId - The column identifier
  * @param stats - The user's market statistics
  * @param isLoading - Whether the stats are still loading
- * @returns The tooltip body React element, or undefined for simple tooltips
  */
 const getTooltipBody = (
   columnId: LlamaMarketColumnId,
@@ -102,43 +105,77 @@ const getTooltipBody = (
   return undefined
 }
 
+/**
+ * Displays a price cell with primary and optional secondary asset values.
+ * Helper functions use a 2-sized tuple as it's easier to work with than an object with named properties.
+ * I've also asked around, and lending markets won't support more than 2 collateral tokens,
+ * so it's safe and easier to work with a 2-sized tuple than a dynamically sized array.
+ *
+ * Some columns display a single asset (e.g., UserBorrowed shows just the borrowed token),
+ * while others display two assets (e.g., UserCollateral shows both the collateral token
+ * and the borrowed token when the user has debt tokens in their collateral position due to soft liq).
+ *
+ * The secondary asset, when present, is rendered first so that the primary asset
+ * (real collateral) aligns consistently across all rows in the table.
+ */
 export const PriceCell = ({ getValue, row, column }: CellContext<LlamaMarket, number>) => {
   const market = row.original
   const { assets } = market
   const columnId = column.id as LlamaMarketColumnId
 
-  const { chain, address, symbol } = getAsset(columnId, assets) ?? assets.borrowed
-
   const { data: stats, error: statsError, isLoading } = useUserMarketStats(market, columnId)
-  const value = getAssetValue(columnId, stats) ?? getValue()
 
-  const { data: usdPrice, isLoading: isUsdRateLoading } = useTokenUsdPrice({
-    blockchainId: chain,
-    contractAddress: address,
+  const [primaryAsset, secondaryAsset] = getAssets(columnId, assets) ?? [assets.borrowed, undefined]
+  const [primaryValue, secondaryValue] = getAssetValues(columnId, stats) ?? [getValue(), undefined]
+
+  const { data: primaryPrice, isLoading: isPrimaryPriceLoading } = useTokenUsdPrice({
+    blockchainId: primaryAsset.chain,
+    contractAddress: primaryAsset.address,
   })
 
-  if (!value) {
+  const { data: secondaryPrice, isLoading: isSecondaryPriceLoading } = useTokenUsdPrice(
+    {
+      blockchainId: secondaryAsset?.chain,
+      contractAddress: secondaryAsset?.address,
+    },
+    secondaryAsset && !!secondaryValue,
+  )
+
+  if (!primaryPrice || statsError) {
     return statsError && <ErrorCell error={statsError} />
   }
 
-  const tooltipTitle = getTooltipTitle(columnId) ?? `${formatNumber(value, { decimals: 5 })} ${symbol}`
+  const tooltipTitle =
+    getTooltipTitle(columnId) ?? `${formatNumber(primaryValue, { decimals: 5 })} ${primaryAsset.symbol}`
   const tooltipBody = getTooltipBody(columnId, stats, isLoading)
-  const usdValue = usdPrice && value * usdPrice
+
+  const collateralUsdValue = primaryPrice && primaryValue * primaryPrice
+  const borrowedUsdValue = secondaryPrice && secondaryValue && secondaryValue * secondaryPrice
+  const usdValue = collateralUsdValue + (borrowedUsdValue ?? 0)
 
   return (
     <Stack direction="column" spacing={1} alignItems="end">
       <Tooltip title={tooltipTitle} body={tooltipBody}>
         <Stack direction="row" spacing={1} alignItems="center" whiteSpace="nowrap">
           <WithSkeleton loading={isLoading}>
-            <Typography variant="tableCellMBold">{formatNumber(value, { notation: 'compact' })}</Typography>
-            <TokenIcon blockchainId={chain} address={address} size="mui-md" />
+            {secondaryAsset && secondaryValue && (
+              <>
+                <Typography variant="tableCellMBold">
+                  {formatNumber(secondaryValue, { notation: 'compact' })}
+                </Typography>
+                <TokenIcon blockchainId={secondaryAsset.chain} address={secondaryAsset.address} size="mui-md" />
+                &nbsp; {/** Easier than adding another Stack with gap */}
+              </>
+            )}
+            <Typography variant="tableCellMBold">{formatNumber(primaryValue, { notation: 'compact' })}</Typography>
+            <TokenIcon blockchainId={primaryAsset.chain} address={primaryAsset.address} size="mui-md" />
           </WithSkeleton>
         </Stack>
       </Tooltip>
       <Tooltip title={formatNumber(usdValue, { currency: 'USD', decimals: 5 })}>
         <Typography variant="bodySRegular" color="text.secondary">
           <WithSkeleton
-            loading={isLoading || isUsdRateLoading}
+            loading={isLoading || isPrimaryPriceLoading || isSecondaryPriceLoading}
             sx={{ transform: 'unset' /* other mui will scale the text down */ }}
           >
             {formatNumber(usdValue, { currency: 'USD', notation: 'compact' })}
