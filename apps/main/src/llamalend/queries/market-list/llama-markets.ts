@@ -95,15 +95,15 @@ const DEPRECATED_LLAMAS: PartialRecord<Chain, Record<Address, string>> = {
   },
   sonic: {
     // sTS-crvUSD lend market
-    '0xb8c93fb97884ea07c2eb0ea741f78d10e8c5af9f': t`This market is deprecated.`,
+    '0xB8C93fb97884Ea07c2Eb0eA741f78D10e8C5aF9F': t`This market is deprecated.`,
     // scETH-crvUSD lend market
-    '0x7547e577b3ddc23c02e10792457f8e51a225692e': t`This market is deprecated.`,
+    '0x7547E577B3DDC23c02E10792457f8e51a225692E': t`This market is deprecated.`,
     // wS-crvUSD lend market
-    '0x5ed490a9b71fa797231d2c5d9be25bf91a953c19': t`This market is deprecated.`,
+    '0x5eD490a9B71fa797231d2c5D9bE25bf91a953C19': t`This market is deprecated.`,
     // scUSD-crvUSD lend market
-    '0xbb7a0c558fd34234dc1608f4cd0a334e0075d73a': t`This market is deprecated.`,
+    '0xbb7A0C558Fd34234Dc1608f4CD0a334E0075D73a': t`This market is deprecated.`,
     // wOS-crvUSD lend market
-    '0xdc06056e208ab92bf173ff6dd662f1018ea0e483': t`This market is deprecated.`,
+    '0xDC06056e208aB92bF173FF6DD662F1018ea0E483': t`This market is deprecated.`,
   },
 }
 
