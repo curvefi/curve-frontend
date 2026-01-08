@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { partition, sum, uniqBy } from 'lodash'
 import { useConnection } from 'wagmi'
 import {
   getUserLendingVaultEarningsOptions,
@@ -13,7 +14,7 @@ import { type QueryOptionsData } from '@ui-kit/lib/queries/types'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { type Address } from '@ui-kit/utils'
 
-export type UserPositionSummaryMetric = { label: string; data: number; isLoading: boolean; isError: boolean }
+export type UserPositionSummaryMetric = { label: string; data: number; isLoading: boolean; error?: unknown }
 
 type StatsQueryOptions =
   | ReturnType<typeof getUserLendingVaultStatsOptions>
@@ -39,30 +40,25 @@ type SupplyPositionQuery = {
 
 type TokenPriceEntry = { key: string; chainId: LlamaMarket['chain']; contractAddress: Address }
 
-type SummaryMeta = { isLoading: boolean; isError: boolean }
+type PositionQueryEntry =
+  | { kind: 'borrow'; value: BorrowPositionQuery }
+  | { kind: 'supply'; value: SupplyPositionQuery }
 
-const MISSING_PRICE_RESULT = { data: 0, isLoading: false, isError: true }
+const MISSING_PRICE_RESULT: TokenPriceData = 0
 
 const getTokenKey = (chainId: LlamaMarket['chain'], tokenAddress: Address) => `${chainId}:${tokenAddress.toLowerCase()}`
 
 const createEmptyPositions = () => ({ borrow: [], supply: [] })
 
-const createMetric = (
-  label: string,
-  data: number,
-  isLoading: boolean,
-  isError: boolean,
-): UserPositionSummaryMetric => ({ label, data, isLoading, isError })
+const createMetric = (label: string, data: number, isLoading: boolean, error?: unknown): UserPositionSummaryMetric => ({
+  label,
+  data,
+  isLoading,
+  error,
+})
 
-const collectTokenEntries = <T,>(items: T[], getEntries: (item: T) => TokenPriceEntry[]) => {
-  const entries = new Map<string, TokenPriceEntry>()
-  items.forEach((item) => {
-    getEntries(item).forEach((entry) => {
-      entries.set(entry.key, entry)
-    })
-  })
-  return Array.from(entries.values())
-}
+const collectTokenEntries = <T,>(items: T[], getEntries: (item: T) => TokenPriceEntry[]) =>
+  uniqBy(items.map(getEntries).flat(), (entry) => entry.key)
 
 const createTokenPriceQueries = (entries: TokenPriceEntry[]) =>
   entries.map(({ chainId, contractAddress }) =>
@@ -75,20 +71,17 @@ const splitQueryResults = <TData,>(results: UseQueryResult<unknown>[], positionC
 })
 
 const buildPriceByKey = (entries: TokenPriceEntry[], priceResults: UseQueryResult<TokenPriceData>[]) =>
-  entries.reduce(
-    (acc, entry, index) => {
-      acc[entry.key] = priceResults[index]
-      return acc
-    },
-    {} as Record<string, UseQueryResult<TokenPriceData> | undefined>,
-  )
+  Object.fromEntries(entries.map((entry, index) => [entry.key, priceResults[index]?.data])) as Record<
+    string,
+    TokenPriceData | undefined
+  >
 
-const withQueryMeta = <T extends SummaryMeta>(results: UseQueryResult<unknown>[], data: T) => {
+const withQueryMeta = <T,>(results: UseQueryResult<unknown>[], data: T) => {
   const meta = combineQueriesMeta(results)
   return {
     ...data,
-    isLoading: meta.isLoading || data.isLoading,
-    isError: meta.isError || data.isError,
+    isLoading: meta.isLoading,
+    error: meta.isError,
   }
 }
 
@@ -99,47 +92,65 @@ export const useUserPositionsSummary = ({
 }): UserPositionSummaryMetric[] => {
   const { address: userAddress } = useConnection()
 
-  const userPositionQueries = useMemo(
-    () =>
-      markets
-        ? markets.reduce<{ borrow: BorrowPositionQuery[]; supply: SupplyPositionQuery[] }>((options, market) => {
-            const isSupply = market.userHasPositions?.Supply
-            const isBorrow = market.userHasPositions?.Borrow
-            if (!market.userHasPositions || (isSupply && !market.vaultAddress)) return options
+  const userPositionQueries = useMemo(() => {
+    if (!markets) return createEmptyPositions()
 
-            const queryParams = {
-              userAddress,
-              blockchainId: market.chain,
-            }
+    const positionEntries = markets
+      .map((market) => {
+        const isSupply = market.userHasPositions?.Supply
+        const isBorrow = market.userHasPositions?.Borrow
+        if (!market.userHasPositions || (isSupply && !market.vaultAddress)) return []
 
-            if (isSupply && market.vaultAddress) {
-              const suppliedTokenAddress = market.assets.borrowed.address
-              options.supply.push({
-                query: getUserLendingVaultEarningsOptions({ contractAddress: market.vaultAddress, ...queryParams }),
-                chainId: market.chain,
-                suppliedTokenAddress,
-              })
-            }
+        const queryParams = {
+          userAddress,
+          blockchainId: market.chain,
+        }
 
-            if (isBorrow) {
-              const debtTokenAddress = market.assets.borrowed.address
-              const collateralTokenAddress = market.assets.collateral.address
-              options.borrow.push({
-                query:
-                  market.type === LlamaMarketType.Lend
-                    ? getUserLendingVaultStatsOptions({ contractAddress: market.controllerAddress, ...queryParams })
-                    : getUserMintMarketsStatsOptions({ contractAddress: market.controllerAddress, ...queryParams }),
-                chainId: market.chain,
-                debtTokenAddress,
-                collateralTokenAddress,
-              })
-            }
+        const entries: PositionQueryEntry[] = []
 
-            return options
-          }, createEmptyPositions())
-        : createEmptyPositions(),
-    [markets, userAddress],
-  )
+        if (isSupply && market.vaultAddress) {
+          const suppliedTokenAddress = market.assets.borrowed.address
+          entries.push({
+            kind: 'supply',
+            value: {
+              query: getUserLendingVaultEarningsOptions({ contractAddress: market.vaultAddress, ...queryParams }),
+              chainId: market.chain,
+              suppliedTokenAddress,
+            },
+          })
+        }
+
+        if (isBorrow) {
+          const debtTokenAddress = market.assets.borrowed.address
+          const collateralTokenAddress = market.assets.collateral.address
+          entries.push({
+            kind: 'borrow',
+            value: {
+              query:
+                market.type === LlamaMarketType.Lend
+                  ? getUserLendingVaultStatsOptions({ contractAddress: market.controllerAddress, ...queryParams })
+                  : getUserMintMarketsStatsOptions({ contractAddress: market.controllerAddress, ...queryParams }),
+              chainId: market.chain,
+              debtTokenAddress,
+              collateralTokenAddress,
+            },
+          })
+        }
+
+        return entries
+      })
+      .flat()
+
+    const [borrowEntries, supplyEntries] = partition(positionEntries, (entry) => entry.kind === 'borrow') as [
+      Array<{ kind: 'borrow'; value: BorrowPositionQuery }>,
+      Array<{ kind: 'supply'; value: SupplyPositionQuery }>,
+    ]
+
+    return {
+      borrow: borrowEntries.map((entry) => entry.value),
+      supply: supplyEntries.map((entry) => entry.value),
+    }
+  }, [markets, userAddress])
 
   // Collect unique token contract addresses to price positions in USD.
   const tokenPriceEntries = useMemo(
@@ -173,28 +184,37 @@ export const useUserPositionsSummary = ({
 
       const priceByKey = buildPriceByKey(tokenPriceEntries.borrow, priceResults)
 
-      const data = positionResults.reduce(
-        (acc, stat, index) => {
+      // Missing USD prices contribute 0 and surface as summary errors.
+      const totalCollateralValue = sum(
+        positionResults.map((stat, index) => {
           const borrowMeta = userPositionQueries.borrow[index]
-          if (!borrowMeta) return acc
+          if (!borrowMeta) return 0
 
           const collateralPrice =
             priceByKey[getTokenKey(borrowMeta.chainId, borrowMeta.collateralTokenAddress)] ?? MISSING_PRICE_RESULT
+
+          return (stat.data?.collateral ?? 0) * collateralPrice
+        }),
+      )
+
+      const totalBorrowedValue = sum(
+        positionResults.map((stat, index) => {
+          const borrowMeta = userPositionQueries.borrow[index]
+          if (!borrowMeta) return 0
+
           const debtPrice =
             priceByKey[getTokenKey(borrowMeta.chainId, borrowMeta.debtTokenAddress)] ?? MISSING_PRICE_RESULT
 
-          return {
-            // Missing USD prices contribute 0 and surface as summary errors.
-            totalCollateralValue: acc.totalCollateralValue + (stat.data?.collateral ?? 0) * (collateralPrice.data ?? 0),
-            totalBorrowedValue: acc.totalBorrowedValue + (stat.data?.debt ?? 0) * (debtPrice.data ?? 0),
-            isLoading: acc.isLoading || collateralPrice.isLoading || debtPrice.isLoading,
-            isError: acc.isError || collateralPrice.isError || debtPrice.isError,
-          }
-        },
-        { totalCollateralValue: 0, totalBorrowedValue: 0, isLoading: false, isError: false },
+          return (stat.data?.debt ?? 0) * debtPrice
+        }),
       )
 
-      return withQueryMeta(positionResults, data)
+      const data = {
+        totalCollateralValue,
+        totalBorrowedValue,
+      }
+
+      return withQueryMeta(results, data)
     },
   })
 
@@ -213,37 +233,30 @@ export const useUserPositionsSummary = ({
 
       const priceByKey = buildPriceByKey(tokenPriceEntries.supply, priceResults)
 
-      const data = positionResults.reduce(
-        (acc, stat, index) => {
+      // Missing USD prices contribute 0 and surface as summary errors.
+      const totalSuppliedValue = sum(
+        positionResults.map((stat, index) => {
           const supplyMeta = userPositionQueries.supply[index]
-          if (!supplyMeta) return acc
+          if (!supplyMeta) return 0
 
           const suppliedPrice =
             priceByKey[getTokenKey(supplyMeta.chainId, supplyMeta.suppliedTokenAddress)] ?? MISSING_PRICE_RESULT
 
-          return {
-            // Missing USD prices contribute 0 and surface as summary errors.
-            totalSuppliedValue:
-              acc.totalSuppliedValue + (stat.data?.totalCurrentAssets ?? 0) * (suppliedPrice.data ?? 0),
-            isLoading: acc.isLoading || suppliedPrice.isLoading,
-            isError: acc.isError || suppliedPrice.isError,
-          }
-        },
-        { totalSuppliedValue: 0, isLoading: false, isError: false },
+          return (stat.data?.totalCurrentAssets ?? 0) * suppliedPrice
+        }),
       )
 
-      return withQueryMeta(positionResults, data)
+      const data = {
+        totalSuppliedValue,
+      }
+
+      return withQueryMeta(results, data)
     },
   })
 
   return [
-    createMetric(
-      'Total Collateral',
-      borrowSummary.totalCollateralValue,
-      borrowSummary.isLoading,
-      borrowSummary.isError,
-    ),
-    createMetric('Total Borrowed', borrowSummary.totalBorrowedValue, borrowSummary.isLoading, borrowSummary.isError),
-    createMetric('Total Supplied', supplySummary.totalSuppliedValue, supplySummary.isLoading, supplySummary.isError),
+    createMetric('Total Collateral', borrowSummary.totalCollateralValue, borrowSummary.isLoading, borrowSummary.error),
+    createMetric('Total Borrowed', borrowSummary.totalBorrowedValue, borrowSummary.isLoading, borrowSummary.error),
+    createMetric('Total Supplied', supplySummary.totalSuppliedValue, supplySummary.isLoading, supplySummary.error),
   ]
 }

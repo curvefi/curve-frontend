@@ -26,37 +26,40 @@ const UserPositionStatisticItem = ({
   label,
   data,
   isLoading,
-  isError,
+  error,
   itemSize,
-}: UserPositionSummaryMetric & { itemSize: number }) => (
-  <Grid size={itemSize} padding={Spacing.md}>
-    <Metric
-      value={data}
-      size="large"
-      valueOptions={{
-        decimals: 2,
-        unit: 'dollar',
-        color: 'textPrimary',
-      }}
-      label={label}
-      rightAdornment={
-        <>
-          {isError && (
-            <Tooltip
-              arrow
-              placement="top"
-              title={t`Error fetching ${label}`}
-              body={<TooltipDescription text={t`Some positions may be missing.`} />}
-            >
-              <ExclamationTriangleIcon fontSize="small" color="error" />
-            </Tooltip>
-          )}
-          {isLoading && !isError && <CircularProgress size={IconSize.xs.desktop} />}
-        </>
-      }
-    />
-  </Grid>
-)
+}: UserPositionSummaryMetric & { itemSize: number }) => {
+  const hasError = !!error
+  return (
+    <Grid size={itemSize} padding={Spacing.md}>
+      <Metric
+        value={data}
+        size="large"
+        valueOptions={{
+          decimals: 2,
+          unit: 'dollar',
+          color: 'textPrimary',
+        }}
+        label={label}
+        rightAdornment={
+          <>
+            {hasError && (
+              <Tooltip
+                arrow
+                placement="top"
+                title={t`Error fetching ${label}`}
+                body={<TooltipDescription text={t`Some positions may be missing.`} />}
+              >
+                <ExclamationTriangleIcon fontSize="small" color="error" />
+              </Tooltip>
+            )}
+            {isLoading && !hasError && <CircularProgress size={IconSize.xs.desktop} />}
+          </>
+        }
+      />
+    </Grid>
+  )
+}
 
 export const UserPositionSummary = ({ markets, tab }: UserPositionStatisticsProps) => {
   const searchParams = useSearchParams()
