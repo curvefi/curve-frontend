@@ -95,9 +95,11 @@ const ChartHeader = <TChartKey extends string, TTimeOption extends string = stri
           {isLoading ? t`Loading` : (foundChartOption?.activeTitle ?? '?')}
         </Typography>
       ) : isLoading ? (
-        <Typography variant="bodySBold" color="textSecondary" sx={{ alignSelf: 'center', paddingX: 2 }}>
-          {t`Loading`}
-        </Typography>
+        <Select value="loading" size="small" sx={{ alignSelf: 'center' }} disabled>
+          <MenuItem value="loading">
+            <Typography variant="bodySBold">{t`Loading`}</Typography>
+          </MenuItem>
+        </Select>
       ) : (
         <Select
           value={chartSelections.activeSelection ?? ''}
@@ -139,6 +141,7 @@ const ChartHeader = <TChartKey extends string, TTimeOption extends string = stri
               onChange={handleTimeOption}
               size="small"
               sx={{ alignSelf: 'center' }}
+              disabled={isLoading}
             >
               {timeOption.options.map((timeOption) => (
                 <MenuItem value={timeOption} key={timeOption}>

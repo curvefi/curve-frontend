@@ -18,20 +18,20 @@ type UseChartTimeSettingsReturn = {
   timeUnit: 'minute' | 'hour' | 'day'
 }
 
-const createChartTimeSettings = (timeOption: TimeOption): ChartTimeSettings => {
-  const now = Date.now() / 1000
-  const threeHundredResultsAgo = getThreeHundredResultsAgo(timeOption, now)
-  return {
-    start: +threeHundredResultsAgo,
-    end: Math.floor(now),
-  }
-}
-
 /**
  * Converts a time option into the parameters needed for chart API requests.
+ * Time settings only recalculate when timeOption changes (not on every render).
  */
 export const useChartTimeSettings = (timeOption: TimeOption): UseChartTimeSettingsReturn => {
-  const chartTimeSettings = createChartTimeSettings(timeOption)
+  const chartTimeSettings = useMemo(() => {
+    // eslint-disable-next-line react-hooks/purity -- Date.now() is intentionally called once per timeOption change
+    const now = Date.now() / 1000
+    const threeHundredResultsAgo = getThreeHundredResultsAgo(timeOption, now)
+    return {
+      start: +threeHundredResultsAgo,
+      end: Math.floor(now),
+    }
+  }, [timeOption])
 
   const chartInterval = useMemo(() => {
     const intervals: Record<TimeOption, number> = {

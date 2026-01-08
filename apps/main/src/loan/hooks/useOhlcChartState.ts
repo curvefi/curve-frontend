@@ -86,20 +86,22 @@ export const useOhlcChartState = ({ rChainId, llamma, llammaId }: OhlcChartState
     [llamma],
   )
 
-  const {
-    currentChart,
-    selectChartList,
-    selectedChartKey,
-    setSelectedChart,
-    oraclePriceData,
-    isLoading,
-    noDataAvailable,
-  } = useLlammaChartSelections({
-    oracleChart: chartOraclePoolOhlc,
-    llammaChart: chartLlammaOhlc,
+  const { selectChartList, selectedChartKey, setSelectedChart, isLoading } = useLlammaChartSelections({
+    oracleChart: { fetchStatus: chartOraclePoolOhlc.fetchStatus, hasData: chartOraclePoolOhlc.data.length > 0 },
+    llammaChart: { fetchStatus: chartLlammaOhlc.fetchStatus, hasData: chartLlammaOhlc.data.length > 0 },
     oracleTokens,
     llammaTokens,
   })
+
+  // Select chart data based on current selection
+  const currentChart = selectedChartKey === 'llamma' ? chartLlammaOhlc : chartOraclePoolOhlc
+  const noDataAvailable = !isLoading && chartOraclePoolOhlc.data.length === 0 && chartLlammaOhlc.data.length === 0
+
+  const oraclePriceData = useMemo(() => {
+    if (chartOraclePoolOhlc.oraclePriceData.length > 0) return chartOraclePoolOhlc.oraclePriceData
+    if (chartLlammaOhlc.oraclePriceData.length > 0) return chartLlammaOhlc.oraclePriceData
+    return undefined
+  }, [chartOraclePoolOhlc.oraclePriceData, chartLlammaOhlc.oraclePriceData])
 
   // Determine which new liquidation prices to show (priority order)
   const newLiqPrices = useMemo(() => {
