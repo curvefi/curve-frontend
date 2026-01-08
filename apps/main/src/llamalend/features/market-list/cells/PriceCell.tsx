@@ -158,7 +158,7 @@ export const PriceCell = ({ getValue, row, column }: CellContext<LlamaMarket, nu
       <Tooltip title={tooltipTitle} body={tooltipBody}>
         <Stack direction="row" spacing={1} alignItems="center" whiteSpace="nowrap">
           <WithSkeleton loading={isLoading}>
-            {secondaryAsset && secondaryValue && (
+            {secondaryAsset && !!secondaryValue && (
               <>
                 <Typography variant="tableCellMBold">
                   {formatNumber(secondaryValue, { notation: 'compact' })}
