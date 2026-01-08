@@ -33,8 +33,10 @@ const UserPositionStatisticItem = ({
   return (
     <Grid size={itemSize} padding={Spacing.md}>
       <Metric
-        value={data}
+        value={!hasError && data}
         size="large"
+        // isLoading can still be true if there is an error
+        loading={!hasError && isLoading}
         valueOptions={{
           decimals: 2,
           unit: 'dollar',
@@ -47,7 +49,7 @@ const UserPositionStatisticItem = ({
               arrow
               placement="top"
               title={t`Error fetching ${label}`}
-              body={<TooltipDescription text={t`Some positions may be missing.`} />}
+              body={<TooltipDescription text={t`Some positions could not be loaded correctly.`} />}
             >
               <ExclamationTriangleIcon fontSize="small" color="error" />
             </Tooltip>
