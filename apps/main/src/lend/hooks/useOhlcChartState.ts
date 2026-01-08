@@ -130,7 +130,7 @@ export const useOhlcChartState = ({ rChainId, rOwmId }: UseOhlcChartStateProps) 
     borrowMorePrices,
     formValues.n,
     liqRangesMapper,
-    loanCreateLeverageDetailInfo?.prices,
+    loanCreateLeverageDetailInfo,
   ])
 
   const selectedLiqRange = useLiquidationRange({
@@ -183,12 +183,10 @@ export const useOhlcChartState = ({ rChainId, rOwmId }: UseOhlcChartStateProps) 
     }
   }, [
     chartInterval,
-    chartTimeSettings.end,
-    chartTimeSettings.start,
+    chartTimeSettings,
     fetchLlammaOhlcData,
     fetchOraclePoolOhlcData,
-    market?.addresses.amm,
-    market?.addresses.controller,
+    market,
     rChainId,
     rOwmId,
     timeUnit,

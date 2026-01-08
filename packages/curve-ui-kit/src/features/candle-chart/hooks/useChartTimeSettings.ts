@@ -18,17 +18,20 @@ type UseChartTimeSettingsReturn = {
   timeUnit: 'minute' | 'hour' | 'day'
 }
 
+const createChartTimeSettings = (timeOption: TimeOption): ChartTimeSettings => {
+  const now = Date.now() / 1000
+  const threeHundredResultsAgo = getThreeHundredResultsAgo(timeOption, now)
+  return {
+    start: +threeHundredResultsAgo,
+    end: Math.floor(now),
+  }
+}
+
 /**
  * Converts a time option into the parameters needed for chart API requests.
  */
 export const useChartTimeSettings = (timeOption: TimeOption): UseChartTimeSettingsReturn => {
-  const chartTimeSettings = useMemo(() => {
-    const threeHundredResultsAgo = getThreeHundredResultsAgo(timeOption, Date.now() / 1000)
-    return {
-      start: +threeHundredResultsAgo,
-      end: Math.floor(Date.now() / 1000),
-    }
-  }, [timeOption])
+  const chartTimeSettings = createChartTimeSettings(timeOption)
 
   const chartInterval = useMemo(() => {
     const intervals: Record<TimeOption, number> = {
@@ -53,4 +56,3 @@ export const useChartTimeSettings = (timeOption: TimeOption): UseChartTimeSettin
 
   return { chartTimeSettings, chartInterval, timeUnit }
 }
-
