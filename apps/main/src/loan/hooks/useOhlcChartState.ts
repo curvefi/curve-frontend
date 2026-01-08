@@ -2,11 +2,10 @@ import { useCallback, useEffect, useMemo } from 'react'
 import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
 import useStore from '@/loan/store/useStore'
 import { Llamma, ChainId } from '@/loan/types/loan.types'
-import { useLlammaChartSelections } from '@ui-kit/features/candle-chart'
+import { useLlammaChartSelections, useChartTimeSettings, useLiquidationRange } from '@ui-kit/features/candle-chart'
 import type { OhlcChartProps } from '@ui-kit/features/candle-chart/ChartWrapper'
 import { DEFAULT_CHART_HEIGHT } from '@ui-kit/features/candle-chart/constants'
-import type { LiquidationRanges, LlammaLiquididationRange } from '@ui-kit/features/candle-chart/types'
-import { getThreeHundredResultsAgo, subtractTimeUnit } from '@ui-kit/features/candle-chart/utils'
+import { subtractTimeUnit, getThreeHundredResultsAgo } from '@ui-kit/features/candle-chart/utils'
 
 export type LlammaLiquidityCoins = {
   crvusd: {
@@ -102,76 +101,33 @@ export const useOhlcChartState = ({ rChainId, llamma, llammaId }: OhlcChartState
     llammaTokens,
   })
 
-  const selectedLiqRange = useMemo(() => {
-    const liqRanges: LiquidationRanges = {
-      current: null,
-      new: null,
+  // Determine which new liquidation prices to show (priority order)
+  const newLiqPrices = useMemo(() => {
+    if (deleveragePrices?.length) return deleveragePrices
+    if (decreaseCollateralPrices?.length) return decreaseCollateralPrices
+    if (increaseCollateralPrices?.length) return increaseCollateralPrices
+    if (decreaseLoanPrices?.length) return decreaseLoanPrices
+    if (increaseLoanPrices?.length) return increaseLoanPrices
+    if (formValues.n && liqRangesMapper?.[formValues.n]?.prices?.length) {
+      const prices = liqRangesMapper[formValues.n].prices
+      return [prices[1], prices[0]] // Swap order for this source
     }
-
-    const formatRange = (liqRange: string[]) => {
-      const range: LlammaLiquididationRange = {
-        price1: [],
-        price2: [],
-      }
-
-      for (const data of currentChart.data) {
-        range.price1 = [
-          ...range.price1,
-          {
-            time: data.time,
-            value: +liqRange[1],
-          },
-        ]
-        range.price2 = [
-          ...range.price2,
-          {
-            time: data.time,
-            value: +liqRange[0],
-          },
-        ]
-      }
-      return range
-    }
-
-    if (formValues.n && liqRangesMapper && currentChart.data) {
-      const currentPrices = liqRangesMapper[formValues.n].prices
-
-      if (currentPrices.length !== 0) {
-        liqRanges.new = formatRange([currentPrices[1], currentPrices[0]])
-      }
-    }
-
-    if (userPrices && currentChart.data) {
-      liqRanges.current = formatRange(userPrices)
-    }
-    if (increaseLoanPrices?.length && currentChart.data) {
-      liqRanges.new = formatRange(increaseLoanPrices)
-    }
-    if (decreaseLoanPrices?.length && currentChart.data) {
-      liqRanges.new = formatRange(decreaseLoanPrices)
-    }
-    if (increaseCollateralPrices?.length && currentChart.data) {
-      liqRanges.new = formatRange(increaseCollateralPrices)
-    }
-    if (decreaseCollateralPrices?.length && currentChart.data) {
-      liqRanges.new = formatRange(decreaseCollateralPrices)
-    }
-    if (deleveragePrices?.length && currentChart.data) {
-      liqRanges.new = formatRange(deleveragePrices)
-    }
-
-    return liqRanges
+    return null
   }, [
-    currentChart.data,
-    decreaseCollateralPrices,
-    decreaseLoanPrices,
     deleveragePrices,
-    formValues.n,
+    decreaseCollateralPrices,
     increaseCollateralPrices,
+    decreaseLoanPrices,
     increaseLoanPrices,
+    formValues.n,
     liqRangesMapper,
-    userPrices,
   ])
+
+  const selectedLiqRange = useLiquidationRange({
+    chartData: currentChart.data,
+    currentPrices: userPrices,
+    newPrices: newLiqPrices,
+  })
 
   const coins: LlammaLiquidityCoins = useMemo(
     () =>
@@ -190,38 +146,7 @@ export const useOhlcChartState = ({ rChainId, llamma, llammaId }: OhlcChartState
     [llamma],
   )
 
-  const chartTimeSettings = useMemo(() => {
-    const threeHundredResultsAgo = getThreeHundredResultsAgo(timeOption, Date.now() / 1000)
-
-    return {
-      start: +threeHundredResultsAgo,
-      end: Math.floor(Date.now() / 1000),
-    }
-  }, [timeOption])
-
-  const chartInterval = useMemo(() => {
-    if (timeOption === '15m') return 15
-    if (timeOption === '30m') return 30
-    if (timeOption === '1h') return 1
-    if (timeOption === '4h') return 4
-    if (timeOption === '6h') return 6
-    if (timeOption === '12h') return 12
-    if (timeOption === '1d') return 1
-    if (timeOption === '7d') return 7
-    return 14 // 14d
-  }, [timeOption])
-
-  const timeUnit = useMemo(() => {
-    if (timeOption === '15m') return 'minute'
-    if (timeOption === '30m') return 'minute'
-    if (timeOption === '1h') return 'hour'
-    if (timeOption === '4h') return 'hour'
-    if (timeOption === '6h') return 'hour'
-    if (timeOption === '12h') return 'hour'
-    if (timeOption === '1d') return 'day'
-    if (timeOption === '7d') return 'day'
-    return 'day' // 14d
-  }, [timeOption])
+  const { chartTimeSettings, chartInterval, timeUnit } = useChartTimeSettings(timeOption)
 
   const refetchPricesData = useCallback(() => {
     void fetchOracleOhlcData(
@@ -300,6 +225,8 @@ export const useOhlcChartState = ({ rChainId, llamma, llammaId }: OhlcChartState
     poolAddress,
     coins,
     ohlcDataUnavailable: noDataAvailable,
+    isLoading,
+    selectedChartKey,
     setSelectedChart,
     setChartTimeOption,
     toggleLiqRangeCurrentVisible,

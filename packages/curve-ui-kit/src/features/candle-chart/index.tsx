@@ -1,3 +1,5 @@
 export { default } from './ChartWrapper'
 export { useLlammaChartSelections } from './hooks/useLlammaChartSelections'
+export { useChartTimeSettings } from './hooks/useChartTimeSettings'
+export { useLiquidationRange } from './hooks/useLiquidationRange'
 export type { ChartDataState, ChartOption, ChartKey } from './hooks/useLlammaChartSelections'

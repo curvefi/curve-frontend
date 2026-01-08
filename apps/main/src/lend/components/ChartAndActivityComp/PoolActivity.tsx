@@ -16,6 +16,8 @@ type PoolActivityProps = {
   coins: LendingMarketTokens
 }
 
+const CHART_HEIGHT = DEFAULT_CHART_HEIGHT + 48 // 48px is the height of the section header
+
 const PoolActivity = ({ chainId, poolAddress, coins }: PoolActivityProps) => {
   const activityFetchStatus = useStore((state) => state.ohlcCharts.activityFetchStatus)
   const lendTradesData = useStore((state) => state.ohlcCharts.lendTradesData)
@@ -29,7 +31,7 @@ const PoolActivity = ({ chainId, poolAddress, coins }: PoolActivityProps) => {
   }, [chainId, fetchPoolActivity, poolAddress])
 
   return (
-    <Wrapper maxHeight={`${DEFAULT_CHART_HEIGHT}px`}>
+    <Wrapper maxHeight={`${CHART_HEIGHT}px`}>
       <SectionHeader>
         <SectionTitle>{eventOption === 'TRADE' ? t`AMM` : t`Controller`}</SectionTitle>
         <ButtonGroup>

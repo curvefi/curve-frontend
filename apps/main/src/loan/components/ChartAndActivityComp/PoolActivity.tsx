@@ -16,6 +16,8 @@ interface Props {
   coins: LlammaLiquidityCoins
 }
 
+const CHART_HEIGHT = DEFAULT_CHART_HEIGHT + 48 // 48px is the height of the section header
+
 const PoolActivity = ({ chainId, poolAddress, coins }: Props) => {
   const activityFetchStatus = useStore((state) => state.ohlcCharts.activityFetchStatus)
   const llammaTradesData = useStore((state) => state.ohlcCharts.llammaTradesData)
@@ -29,7 +31,7 @@ const PoolActivity = ({ chainId, poolAddress, coins }: Props) => {
   }, [chainId, fetchPoolActivity, poolAddress])
 
   return (
-    <Wrapper maxHeight={`${DEFAULT_CHART_HEIGHT}px`}>
+    <Wrapper maxHeight={`${CHART_HEIGHT}px`}>
       <SectionHeader>
         <SectionTitle>{eventOption === 'TRADE' ? t`AMM` : t`Controller`}</SectionTitle>
         <ButtonGroup>

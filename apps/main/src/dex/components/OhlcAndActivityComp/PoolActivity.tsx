@@ -18,6 +18,8 @@ type PoolActivityProps = {
   chartCombinations: PricesApiCoin[][]
 }
 
+const CHART_HEIGHT = DEFAULT_CHART_HEIGHT + 48 // 48px is the height of the section header
+
 const PoolActivity = ({ chainId, poolAddress, coins, tradesTokens, chartCombinations }: PoolActivityProps) => {
   const activityStatus = useStore((state) => state.pools.pricesApiState.activityStatus)
   const tradeEventsData = useStore((state) => state.pools.pricesApiState.tradeEventsData)
@@ -31,7 +33,7 @@ const PoolActivity = ({ chainId, poolAddress, coins, tradesTokens, chartCombinat
   }, [chainId, chartCombinations, fetchPricesApiActivity, poolAddress])
 
   return (
-    <Wrapper>
+    <Wrapper maxHeight={`${CHART_HEIGHT}px`}>
       <SectionHeader>
         <>
           <SectionTitle>{eventOption === 'TRADE' ? t`Swaps` : t`Liquidity`}</SectionTitle>
@@ -92,10 +94,10 @@ const PoolActivity = ({ chainId, poolAddress, coins, tradesTokens, chartCombinat
   )
 }
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ maxHeight: string }>`
   display: flex;
   flex-direction: column;
-  max-height: 350px;
+  max-height: ${(props) => props.maxHeight};
 `
 
 const SectionHeader = styled.div`
