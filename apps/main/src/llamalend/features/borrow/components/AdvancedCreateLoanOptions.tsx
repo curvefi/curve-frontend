@@ -9,14 +9,14 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { useCreateLoanExpectedCollateral } from '../../../queries/create-loan/create-loan-expected-collateral.query'
 import { useCreateLoanRouteImage } from '../../../queries/create-loan/create-loan-route-image.query'
 import { useLiquidationRangeChartData } from '../hooks/useLiquidationRangeChartData'
-import type { BorrowForm, BorrowFormQueryParams, Token } from '../types'
+import type { CreateLoanForm, CreateLoanFormQueryParams, Token } from '../types'
 import { LiquidationRangeSlider } from './LiquidationRangeSlider'
 
 const { Spacing } = SizesAndSpaces
 
 const chartHeight = 185
 
-export const AdvancedBorrowOptions = ({
+export const AdvancedCreateLoanOptions = ({
   network,
   params,
   values: { debt, userBorrowed, leverageEnabled, range },
@@ -26,8 +26,8 @@ export const AdvancedBorrowOptions = ({
   borrowToken,
 }: {
   network: INetworkName
-  params: BorrowFormQueryParams
-  values: BorrowForm
+  params: CreateLoanFormQueryParams
+  values: CreateLoanForm
   setRange: (n: number) => void
   market: LlamaMarketTemplate | undefined
   collateralToken: Token | undefined

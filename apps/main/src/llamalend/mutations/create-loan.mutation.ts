@@ -3,8 +3,8 @@ import { useConfig } from 'wagmi'
 import { formatTokenAmounts } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { type LlammaMutationOptions, useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
-import { fetchBorrowCreateLoanIsApproved } from '@/llamalend/queries/create-loan/borrow-create-loan-approved.query'
-import { borrowQueryValidationSuite } from '@/llamalend/queries/validation/borrow.validation'
+import { fetchCreateLoanIsApproved } from '@/llamalend/queries/create-loan/create-loan-approved.query'
+import { createLoanQueryValidationSuite } from '@/llamalend/queries/validation/borrow.validation'
 import type {
   IChainId as LlamaChainId,
   IChainId,
@@ -15,26 +15,26 @@ import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
 import { Address, waitForApproval } from '@ui-kit/utils'
-import type { BorrowForm, BorrowFormQuery } from '../features/borrow/types'
+import type { CreateLoanForm, CreateLoanFormQuery } from '../features/borrow/types'
 
-type BorrowMutationContext = {
+type CreateLoanMutationContext = {
   chainId: IChainId
   marketId: string | undefined
 }
 
-export type BorrowMutation = Omit<BorrowFormQuery, keyof BorrowMutationContext>
+export type CreateLoanMutation = Omit<CreateLoanFormQuery, keyof CreateLoanMutationContext>
 
 export type CreateLoanOptions = {
   marketId: string | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
-  onCreated: LlammaMutationOptions<BorrowMutation>['onSuccess']
+  onCreated: LlammaMutationOptions<CreateLoanMutation>['onSuccess']
   onReset: () => void
   userAddress: Address | undefined
 }
 
 const approve = async (
   market: LlamaMarketTemplate,
-  { userCollateral, userBorrowed, leverageEnabled }: BorrowMutation,
+  { userCollateral, userBorrowed, leverageEnabled }: CreateLoanMutation,
 ) =>
   (leverageEnabled
     ? market instanceof MintMarketTemplate && market.leverageV2.hasLeverage()
@@ -44,7 +44,7 @@ const approve = async (
 
 const create = async (
   market: LlamaMarketTemplate,
-  { debt, userCollateral, userBorrowed, leverageEnabled, range, slippage }: BorrowMutation,
+  { debt, userCollateral, userBorrowed, leverageEnabled, range, slippage }: CreateLoanMutation,
 ) => {
   if (leverageEnabled && (market instanceof LendMarketTemplate || market.leverageV2.hasLeverage())) {
     const parent = market instanceof LendMarketTemplate ? market.leverage : market.leverageV2
@@ -65,28 +65,28 @@ export const useCreateLoanMutation = ({
 }: CreateLoanOptions) => {
   const config = useConfig()
 
-  const { mutateAsync, error, data, isPending, isSuccess, reset } = useLlammaMutation<BorrowMutation>({
+  const { mutateAsync, error, data, isPending, isSuccess, reset } = useLlammaMutation<CreateLoanMutation>({
     network,
     marketId,
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'create-loan'] as const,
     mutationFn: async (mutation, { market }) => {
       const params = { ...mutation, chainId, marketId }
       await waitForApproval({
-        isApproved: async () => await fetchBorrowCreateLoanIsApproved(params, { staleTime: 0 }),
+        isApproved: async () => await fetchCreateLoanIsApproved(params, { staleTime: 0 }),
         onApprove: () => approve(market, mutation),
         message: t`Approved loan creation`,
         config,
       })
       return { hash: await create(market, mutation) }
     },
-    validationSuite: borrowQueryValidationSuite({ debtRequired: true }),
+    validationSuite: createLoanQueryValidationSuite({ debtRequired: true }),
     pendingMessage: (mutation, { market }) => t`Creating loan... ${formatTokenAmounts(market, mutation)}`,
     successMessage: (mutation, { market }) => t`Loan created! ${formatTokenAmounts(market, mutation)}`,
     onSuccess: onCreated,
     onReset,
   })
 
-  const onSubmit = useCallback((data: BorrowForm) => mutateAsync(data as BorrowMutation), [mutateAsync])
+  const onSubmit = useCallback((data: CreateLoanForm) => mutateAsync(data as CreateLoanMutation), [mutateAsync])
 
   return { onSubmit, error, data, isPending, isSuccess, reset }
 }
