@@ -1,5 +1,5 @@
-import { useMemo } from 'react'
 import { partition, sum, uniqBy } from 'lodash'
+import { useMemo } from 'react'
 import { useConnection } from 'wagmi'
 import {
   getUserLendingVaultEarningsOptions,
@@ -13,6 +13,7 @@ import { combineQueriesMeta } from '@ui-kit/lib/queries/combine'
 import { type QueryOptionsData } from '@ui-kit/lib/queries/types'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { type Address } from '@ui-kit/utils'
+import { splitAt } from '@ui-kit/utils/array'
 
 export type UserPositionSummaryMetric = { label: string; data: number; isLoading: boolean; error?: unknown }
 
@@ -38,16 +39,13 @@ type SupplyPositionQuery = {
   suppliedTokenAddress: Address
 }
 
-type TokenPriceEntry = { key: string; chainId: LlamaMarket['chain']; contractAddress: Address }
+type TokenPriceEntry = { chainId: LlamaMarket['chain']; contractAddress: Address }
 
 type PositionQueryEntry =
   | { kind: 'borrow'; value: BorrowPositionQuery }
   | { kind: 'supply'; value: SupplyPositionQuery }
 
 const MISSING_PRICE_RESULT: TokenPriceData = 0
-
-/** Build a stable lookup key for token pricing. */
-const getTokenKey = (chainId: LlamaMarket['chain'], tokenAddress: Address) => `${chainId}:${tokenAddress.toLowerCase()}`
 
 const createEmptyPositions = () => ({ borrow: [], supply: [] })
 
@@ -58,36 +56,23 @@ const createMetric = (label: string, data: number, isLoading: boolean, error?: u
   error,
 })
 
-/** Deduplicate token price lookup entries by key. */
+/** Deduplicate token price lookup entries by chain and address. */
 const collectTokenEntries = <T,>(items: T[], getEntries: (item: T) => TokenPriceEntry[]) =>
-  uniqBy(items.map(getEntries).flat(), (entry) => entry.key)
+  uniqBy(items.map(getEntries).flat(), (entry) => `${entry.chainId}:${entry.contractAddress.toLowerCase()}`)
 
 const createTokenPriceQueries = (entries: TokenPriceEntry[]) =>
   entries.map(({ chainId, contractAddress }) =>
     getTokenUsdPriceQueryOptions({ blockchainId: chainId, contractAddress }),
   )
 
-/** Split combined query results into position and price slices. */
-const splitQueryResults = <TData,>(results: UseQueryResult<unknown>[], positionCount: number) => ({
-  positionResults: results.slice(0, positionCount) as UseQueryResult<TData>[],
-  priceResults: results.slice(positionCount) as UseQueryResult<TokenPriceData>[],
-})
+/** Build a token price lookup that hides key formatting. */
+const buildGetPrice = (entries: TokenPriceEntry[], priceResults: UseQueryResult<TokenPriceData>[]) => {
+  const getKey = (chainId: LlamaMarket['chain'], address: Address) => `${chainId}:${address.toLowerCase()}`
+  const tokenMap = Object.fromEntries(
+    entries.map(({ chainId, contractAddress }, index) => [getKey(chainId, contractAddress), priceResults[index]?.data]),
+  ) as Record<string, TokenPriceData | undefined>
 
-/** Build a map of token keys to resolved USD prices. */
-const buildPriceByKey = (entries: TokenPriceEntry[], priceResults: UseQueryResult<TokenPriceData>[]) =>
-  Object.fromEntries(entries.map((entry, index) => [entry.key, priceResults[index]?.data])) as Record<
-    string,
-    TokenPriceData | undefined
-  >
-
-/** Merge derived totals with combined loading and error flags. */
-const withQueryMeta = <T,>(results: UseQueryResult<unknown>[], data: T) => {
-  const meta = combineQueriesMeta(results)
-  return {
-    ...data,
-    isLoading: meta.isLoading,
-    error: meta.isError,
-  }
+  return (chainId: LlamaMarket['chain'], address: Address) => tokenMap[getKey(chainId, address)] ?? MISSING_PRICE_RESULT
 }
 
 /**
@@ -168,12 +153,12 @@ export const useUserPositionsSummary = ({
       borrow: collectTokenEntries(
         userPositionQueries.borrow,
         ({ chainId, debtTokenAddress, collateralTokenAddress }) => [
-          { key: getTokenKey(chainId, debtTokenAddress), chainId, contractAddress: debtTokenAddress },
-          { key: getTokenKey(chainId, collateralTokenAddress), chainId, contractAddress: collateralTokenAddress },
+          { chainId, contractAddress: debtTokenAddress },
+          { chainId, contractAddress: collateralTokenAddress },
         ],
       ),
       supply: collectTokenEntries(userPositionQueries.supply, ({ chainId, suppliedTokenAddress }) => [
-        { key: getTokenKey(chainId, suppliedTokenAddress), chainId, contractAddress: suppliedTokenAddress },
+        { chainId, contractAddress: suppliedTokenAddress },
       ]),
     }),
     [userPositionQueries],
@@ -187,12 +172,12 @@ export const useUserPositionsSummary = ({
       ...createTokenPriceQueries(tokenPriceEntries.borrow),
     ],
     combine: (results) => {
-      const { positionResults, priceResults } = splitQueryResults<BorrowStatsData>(
-        results,
-        userPositionQueries.borrow.length,
-      )
+      const [positionResults, priceResults] = splitAt(results, userPositionQueries.borrow.length) as [
+        UseQueryResult<BorrowStatsData>[],
+        UseQueryResult<TokenPriceData>[],
+      ]
 
-      const priceByKey = buildPriceByKey(tokenPriceEntries.borrow, priceResults)
+      const getPrice = buildGetPrice(tokenPriceEntries.borrow, priceResults)
 
       // Missing USD prices contribute 0 and surface as summary errors.
       const totalCollateralValue = sum(
@@ -200,8 +185,7 @@ export const useUserPositionsSummary = ({
           const borrowMeta = userPositionQueries.borrow[index]
           if (!borrowMeta) return 0
 
-          const collateralPrice =
-            priceByKey[getTokenKey(borrowMeta.chainId, borrowMeta.collateralTokenAddress)] ?? MISSING_PRICE_RESULT
+          const collateralPrice = getPrice(borrowMeta.chainId, borrowMeta.collateralTokenAddress)
 
           return (stat.data?.collateral ?? 0) * collateralPrice
         }),
@@ -210,21 +194,17 @@ export const useUserPositionsSummary = ({
       const totalBorrowedValue = sum(
         positionResults.map((stat, index) => {
           const borrowMeta = userPositionQueries.borrow[index]
-          if (!borrowMeta) return 0
-
-          const debtPrice =
-            priceByKey[getTokenKey(borrowMeta.chainId, borrowMeta.debtTokenAddress)] ?? MISSING_PRICE_RESULT
+          const debtPrice = getPrice(borrowMeta.chainId, borrowMeta.debtTokenAddress)
 
           return (stat.data?.debt ?? 0) * debtPrice
         }),
       )
-
       const data = {
         totalCollateralValue,
         totalBorrowedValue,
       }
 
-      return withQueryMeta(results, data)
+      return { ...combineQueriesMeta(results), data }
     },
   })
 
@@ -236,37 +216,38 @@ export const useUserPositionsSummary = ({
       ...createTokenPriceQueries(tokenPriceEntries.supply),
     ],
     combine: (results) => {
-      const { positionResults, priceResults } = splitQueryResults<SupplyStatsData>(
-        results,
-        userPositionQueries.supply.length,
-      )
+      const [positionResults, priceResults] = splitAt(results, userPositionQueries.supply.length) as [
+        UseQueryResult<SupplyStatsData>[],
+        UseQueryResult<TokenPriceData>[],
+      ]
 
-      const priceByKey = buildPriceByKey(tokenPriceEntries.supply, priceResults)
+      const getPrice = buildGetPrice(tokenPriceEntries.supply, priceResults)
 
       // Missing USD prices contribute 0 and surface as summary errors.
       const totalSuppliedValue = sum(
         positionResults.map((stat, index) => {
           const supplyMeta = userPositionQueries.supply[index]
-          if (!supplyMeta) return 0
-
-          const suppliedPrice =
-            priceByKey[getTokenKey(supplyMeta.chainId, supplyMeta.suppliedTokenAddress)] ?? MISSING_PRICE_RESULT
+          const suppliedPrice = getPrice(supplyMeta.chainId, supplyMeta.suppliedTokenAddress)
 
           return (stat.data?.totalCurrentAssets ?? 0) * suppliedPrice
         }),
       )
-
       const data = {
         totalSuppliedValue,
       }
 
-      return withQueryMeta(results, data)
+      return { ...combineQueriesMeta(results), data }
     },
   })
 
   return [
-    createMetric('Total Collateral', borrowSummary.totalCollateralValue, borrowSummary.isLoading, borrowSummary.error),
-    createMetric('Total Borrowed', borrowSummary.totalBorrowedValue, borrowSummary.isLoading, borrowSummary.error),
-    createMetric('Total Supplied', supplySummary.totalSuppliedValue, supplySummary.isLoading, supplySummary.error),
+    createMetric(
+      'Total Collateral',
+      borrowSummary.data.totalCollateralValue,
+      borrowSummary.isLoading,
+      borrowSummary.error,
+    ),
+    createMetric('Total Borrowed', borrowSummary.data.totalBorrowedValue, borrowSummary.isLoading, borrowSummary.error),
+    createMetric('Total Supplied', supplySummary.data.totalSuppliedValue, supplySummary.isLoading, supplySummary.error),
   ]
 }

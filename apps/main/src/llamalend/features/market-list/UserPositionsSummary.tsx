@@ -42,19 +42,18 @@ const UserPositionStatisticItem = ({
         }}
         label={label}
         rightAdornment={
-          <>
-            {hasError && (
-              <Tooltip
-                arrow
-                placement="top"
-                title={t`Error fetching ${label}`}
-                body={<TooltipDescription text={t`Some positions may be missing.`} />}
-              >
-                <ExclamationTriangleIcon fontSize="small" color="error" />
-              </Tooltip>
-            )}
-            {isLoading && !hasError && <CircularProgress size={IconSize.xs.desktop} />}
-          </>
+          hasError ? (
+            <Tooltip
+              arrow
+              placement="top"
+              title={t`Error fetching ${label}`}
+              body={<TooltipDescription text={t`Some positions may be missing.`} />}
+            >
+              <ExclamationTriangleIcon fontSize="small" color="error" />
+            </Tooltip>
+          ) : (
+            isLoading && <CircularProgress size={IconSize.xs.desktop} />
+          )
         }
       />
     </Grid>
