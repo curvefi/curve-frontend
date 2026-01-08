@@ -44,7 +44,7 @@ const UserPositionStatisticItem = ({
         }}
         label={label}
         rightAdornment={
-          hasError ? (
+          hasError && (
             <Tooltip
               arrow
               placement="top"
@@ -53,8 +53,6 @@ const UserPositionStatisticItem = ({
             >
               <ExclamationTriangleIcon fontSize="small" color="error" />
             </Tooltip>
-          ) : (
-            isLoading && <CircularProgress size={IconSize.xs.desktop} />
           )
         }
       />
