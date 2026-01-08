@@ -5,7 +5,6 @@ import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { useWallet } from '@ui-kit/features/connect-wallet'
-import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
 import { EmptyStateCard } from '@ui-kit/shared/ui/EmptyStateCard'
 import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
@@ -21,7 +20,6 @@ export const UserPositionsTabs = (props: Omit<UserPositionsTableProps, 'tab' | '
   const { connect } = useWallet()
   const { address } = useConnection()
   const { markets } = props.result ?? {}
-  const isMobile = useIsMobile()
 
   // Calculate total positions number across all markets (independent of filters)
   const openPositionsCount = useMemo(
@@ -84,7 +82,7 @@ export const UserPositionsTabs = (props: Omit<UserPositionsTableProps, 'tab' | '
       </Stack>
       {address ? (
         <>
-          {!isMobile && <UserPositionSummary markets={markets} tab={tab} />}
+          <UserPositionSummary markets={markets} tab={tab} />
           <Stack
             direction="row"
             justifyContent="space-between"

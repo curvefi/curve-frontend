@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { TooltipDescription } from '@/llamalend/widgets/tooltips/TooltipComponents'
 import CircularProgress from '@mui/material/CircularProgress'
-import Grid from '@mui/material/Grid'
+import Grid, { GridProps } from '@mui/material/Grid'
 import { useSearchParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { ExclamationTriangleIcon } from '@ui-kit/shared/icons/ExclamationTriangleIcon'
@@ -28,10 +28,10 @@ const UserPositionStatisticItem = ({
   isLoading,
   error,
   itemSize,
-}: UserPositionSummaryMetric & { itemSize: number }) => {
+}: UserPositionSummaryMetric & { itemSize: GridProps['size'] }) => {
   const hasError = !!error
   return (
-    <Grid size={itemSize} padding={Spacing.md}>
+    <Grid size={itemSize}>
       <Metric
         value={!hasError && data}
         size="large"
@@ -74,9 +74,15 @@ export const UserPositionSummary = ({ markets, tab }: UserPositionStatisticsProp
   )
   const summary = useUserPositionsSummary({ markets: filteredMarkets })
   return (
-    <Grid container spacing={Spacing.sm} sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
+    <Grid
+      container
+      paddingBlockStart={Spacing.md}
+      paddingInline={Spacing.md}
+      spacing={Spacing.md}
+      sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}
+    >
       {summary.map((item) => (
-        <UserPositionStatisticItem key={item.label} itemSize={12 / summary.length} {...item} />
+        <UserPositionStatisticItem key={item.label} itemSize={{ mobile: 6, tablet: 12 / summary.length }} {...item} />
       ))}
     </Grid>
   )
