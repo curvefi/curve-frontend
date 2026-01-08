@@ -153,7 +153,7 @@ export const useOhlcChartState = ({ rChainId, pricesApiPoolData }: UseOhlcChartS
   )
 
   const flipChart = useCallback(() => {
-    const updatedList = isFlipped.map((item, index) =>
+    const updatedList = isFlipped.map((_item, index) =>
       index === selectedChartIndex - 2 ? !isFlipped[selectedChartIndex - 2] : isFlipped[selectedChartIndex - 2],
     )
     setIsFlipped(updatedList)
