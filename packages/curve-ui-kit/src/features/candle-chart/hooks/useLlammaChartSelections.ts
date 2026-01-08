@@ -31,7 +31,7 @@ type UseLlammaChartSelectionsProps = {
 type UseLlammaChartSelectionsReturn = {
   currentChart: ChartDataState
   selectChartList: ChartSelections[]
-  selectedChartKey: ChartKey
+  selectedChartKey: ChartKey | undefined
   setSelectedChart: (key: string) => void
   oraclePriceData: OraclePriceData[] | undefined
   isLoading: boolean
@@ -63,30 +63,32 @@ export const useLlammaChartSelections = ({
   const isLoading = oracleChart.fetchStatus === 'LOADING' || llammaChart.fetchStatus === 'LOADING'
 
   const selectChartList: ChartSelections[] = useMemo(() => {
-    if (isLoading) {
-      return [{ activeTitle: t`Loading`, label: '-', key: 'loading' }]
-    }
-
     const options: ChartSelections[] = []
 
-    if (isOracleAvailable && oracleTokens) {
+    if (isOracleAvailable) {
+      const oracleLabel = oracleTokens
+        ? t`${oracleTokens.collateralSymbol} / ${oracleTokens.borrowedSymbol}`
+        : t`Oracle`
       options.push({
-        activeTitle: t`${oracleTokens.collateralSymbol} / ${oracleTokens.borrowedSymbol}`,
-        label: t`${oracleTokens.collateralSymbol} / ${oracleTokens.borrowedSymbol}`,
+        activeTitle: oracleLabel,
+        label: oracleLabel,
         key: 'oracle',
       })
     }
 
-    if (isLlammaAvailable && llammaTokens) {
+    if (isLlammaAvailable) {
+      const llammaLabel = llammaTokens
+        ? t`${llammaTokens.collateralSymbol} / ${llammaTokens.borrowedSymbol} (LLAMMA)`
+        : t`LLAMMA`
       options.push({
-        activeTitle: t`${llammaTokens.collateralSymbol} / ${llammaTokens.borrowedSymbol} (LLAMMA)`,
-        label: t`${llammaTokens.collateralSymbol} / ${llammaTokens.borrowedSymbol} (LLAMMA)`,
+        activeTitle: llammaLabel,
+        label: llammaLabel,
         key: 'llamma',
       })
     }
 
     return options
-  }, [isLoading, isOracleAvailable, isLlammaAvailable, oracleTokens, llammaTokens])
+  }, [isOracleAvailable, isLlammaAvailable, oracleTokens, llammaTokens])
 
   // Switch to an available chart if the currently selected one has no data
   useEffect(() => {
@@ -100,7 +102,25 @@ export const useLlammaChartSelections = ({
     }
   }, [isLoading, selectedChartKey, isOracleAvailable, isLlammaAvailable, selectChartList])
 
-  const currentChart = selectedChartKey === 'oracle' ? oracleChart : llammaChart
+  // Derive an effective key that's always valid for the current selectChartList.
+  // This handles the timing gap before the useEffect can update selectedChartKey.
+  const effectiveChartKey = useMemo((): ChartKey | undefined => {
+    // During loading, no selection is shown (ChartHeader handles displaying "Loading")
+    if (isLoading) return undefined
+
+    // Check if the current selection is actually in the list
+    const isInList = selectChartList.some((item) => item.key === selectedChartKey)
+    if (isInList) return selectedChartKey
+
+    // Fall back to the first available option
+    const firstKey = selectChartList[0]?.key
+    if (firstKey === 'oracle' || firstKey === 'llamma') return firstKey
+
+    return selectedChartKey
+  }, [isLoading, selectedChartKey, selectChartList])
+
+  // Default to oracle chart during loading or when no selection
+  const currentChart = effectiveChartKey === 'llamma' ? llammaChart : oracleChart
 
   const oraclePriceData = useMemo(() => {
     if (oracleChart.oraclePriceData.length > 0) return oracleChart.oraclePriceData
@@ -119,7 +139,7 @@ export const useLlammaChartSelections = ({
   return {
     currentChart,
     selectChartList,
-    selectedChartKey,
+    selectedChartKey: effectiveChartKey,
     setSelectedChart,
     oraclePriceData,
     isLoading,

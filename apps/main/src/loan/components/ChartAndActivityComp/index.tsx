@@ -46,12 +46,20 @@ const ChartAndActivityComp = ({ rChainId, llamma, llammaId }: ChartAndActivityCo
   const newBandsChartEnabled = useNewBandsChart()
   const collateralTokenAddress = llamma?.coinAddresses[1]
   const borrowedTokenAddress = llamma?.coinAddresses[0]
-  const { poolAddress, coins, ohlcDataUnavailable, setSelectedChart, setChartTimeOption, ohlcChartProps } =
-    useOhlcChartState({
-      rChainId,
-      llamma,
-      llammaId,
-    })
+  const {
+    poolAddress,
+    coins,
+    ohlcDataUnavailable,
+    isLoading: isChartLoading,
+    selectedChartKey,
+    setSelectedChart,
+    setChartTimeOption,
+    ohlcChartProps,
+  } = useOhlcChartState({
+    rChainId,
+    llamma,
+    llammaId,
+  })
   const {
     chartData,
     userBandsBalances,
@@ -94,7 +102,7 @@ const ChartAndActivityComp = ({ rChainId, llamma, llammaId }: ChartAndActivityCo
             chartOptionVariant="select"
             chartSelections={{
               selections: ohlcChartProps.selectChartList,
-              activeSelection: ohlcChartProps.selectChartList[ohlcChartProps.selectedChartIndex]?.key,
+              activeSelection: selectedChartKey,
               setActiveSelection: setSelectedChart,
             }}
             timeOption={{
@@ -102,6 +110,7 @@ const ChartAndActivityComp = ({ rChainId, llamma, llammaId }: ChartAndActivityCo
               activeOption: ohlcChartProps.timeOption,
               setActiveOption: setChartTimeOption,
             }}
+            isLoading={isChartLoading}
             customButton={
               <ToggleBandsChartButton label="Bands" isVisible={isBandsVisible} onClick={toggleBandsVisible} />
             }

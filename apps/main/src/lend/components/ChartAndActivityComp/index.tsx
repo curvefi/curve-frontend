@@ -46,7 +46,15 @@ export const ChartAndActivityComp = ({ rChainId, rOwmId, api }: ChartAndActivity
   const collateralTokenAddress = market?.collateral_token.address
   const borrowedTokenAddress = market?.borrowed_token.address
   const newBandsChartEnabled = useNewBandsChart()
-  const { coins, ohlcDataUnavailable, setSelectedChart, setChartTimeOption, ohlcChartProps } = useOhlcChartState({
+  const {
+    coins,
+    ohlcDataUnavailable,
+    isLoading: isChartLoading,
+    selectedChartKey,
+    setSelectedChart,
+    setChartTimeOption,
+    ohlcChartProps,
+  } = useOhlcChartState({
     rChainId,
     rOwmId,
   })
@@ -94,7 +102,7 @@ export const ChartAndActivityComp = ({ rChainId, rOwmId, api }: ChartAndActivity
             chartOptionVariant="select"
             chartSelections={{
               selections: ohlcChartProps.selectChartList,
-              activeSelection: ohlcChartProps.selectChartList[ohlcChartProps.selectedChartIndex]?.key,
+              activeSelection: selectedChartKey,
               setActiveSelection: setSelectedChart,
             }}
             timeOption={{
@@ -102,6 +110,7 @@ export const ChartAndActivityComp = ({ rChainId, rOwmId, api }: ChartAndActivity
               activeOption: ohlcChartProps.timeOption,
               setActiveOption: setChartTimeOption,
             }}
+            isLoading={isChartLoading}
             customButton={
               <ToggleBandsChartButton label="Bands" isVisible={isBandsVisible} onClick={toggleBandsVisible} />
             }

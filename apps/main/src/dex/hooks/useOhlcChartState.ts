@@ -3,6 +3,7 @@ import useStore from '@/dex/store/useStore'
 import type { ChainId } from '@/dex/types/main.types'
 import type { OhlcChartProps } from '@ui-kit/features/candle-chart/ChartWrapper'
 import { DEFAULT_CHART_HEIGHT } from '@ui-kit/features/candle-chart/constants'
+import { useChartTimeSettings } from '@ui-kit/features/candle-chart/hooks/useChartTimeSettings'
 import type { PricesApiCoin, PricesApiPool } from '@ui-kit/features/candle-chart/types'
 import {
   calculateChartCombinations,
@@ -43,38 +44,7 @@ export const useOhlcChartState = ({ rChainId, pricesApiPoolData }: UseOhlcChartS
     return combinedArray
   }, [pricesApiPoolData.coins, pricesApiPoolData.n_coins])
 
-  const chartTimeSettings = useMemo(() => {
-    const threeHundredResultsAgo = getThreeHundredResultsAgo(timeOption, Date.now() / 1000)
-
-    return {
-      start: +threeHundredResultsAgo,
-      end: Math.floor(Date.now() / 1000),
-    }
-  }, [timeOption])
-
-  const chartInterval = useMemo(() => {
-    if (timeOption === '15m') return 15
-    if (timeOption === '30m') return 30
-    if (timeOption === '1h') return 1
-    if (timeOption === '4h') return 4
-    if (timeOption === '6h') return 6
-    if (timeOption === '12h') return 12
-    if (timeOption === '1d') return 1
-    if (timeOption === '7d') return 7
-    return 14
-  }, [timeOption])
-
-  const timeUnit = useMemo(() => {
-    if (timeOption === '15m') return 'minute'
-    if (timeOption === '30m') return 'minute'
-    if (timeOption === '1h') return 'hour'
-    if (timeOption === '4h') return 'hour'
-    if (timeOption === '6h') return 'hour'
-    if (timeOption === '12h') return 'hour'
-    if (timeOption === '1d') return 'day'
-    if (timeOption === '7d') return 'day'
-    return 'day'
-  }, [timeOption])
+  const { chartTimeSettings, chartInterval, timeUnit } = useChartTimeSettings(timeOption)
 
   const fetchCharts = useCallback(() => {
     fetchPricesApiCharts(
@@ -203,9 +173,12 @@ export const useOhlcChartState = ({ rChainId, pricesApiPoolData }: UseOhlcChartS
     lastFetchEndTime,
   }
 
+  const isLoading = chartStatus === 'LOADING'
+
   return {
     chartCombinations,
     tradesTokens,
+    isLoading,
     setSelectedChart,
     setChartTimeOption,
     flipChart,

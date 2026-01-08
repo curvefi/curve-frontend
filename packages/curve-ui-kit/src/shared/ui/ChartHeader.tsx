@@ -7,6 +7,7 @@ import Stack from '@mui/material/Stack'
 import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import Typography from '@mui/material/Typography'
+import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { SxProps } from '@ui-kit/utils/mui'
 
@@ -23,7 +24,7 @@ export type ChartSelections<TChartKey = string> = {
 type ChartHeaderProps<TChartKey extends string = string, TTimeOption extends string = string> = {
   chartSelections: {
     selections: ChartSelections<TChartKey>[]
-    activeSelection: TChartKey
+    activeSelection: TChartKey | undefined
     setActiveSelection: (value: TChartKey) => void
   }
   timeOption?: {
@@ -37,6 +38,8 @@ type ChartHeaderProps<TChartKey extends string = string, TTimeOption extends str
   }
   chartOptionVariant: 'select' | 'buttons-group'
   customButton?: React.ReactNode
+  /** When true, displays "Loading" in the chart selection area and disables interaction */
+  isLoading?: boolean
   sx?: SxProps[]
 }
 
@@ -46,6 +49,7 @@ const ChartHeader = <TChartKey extends string, TTimeOption extends string = stri
   timeOption,
   chartOptionVariant,
   customButton,
+  isLoading = false,
   sx = [],
 }: ChartHeaderProps<TChartKey, TTimeOption>) => {
   const handleChartOptionToggle = (_: MouseEvent<HTMLElement>, key: TChartKey) => {
@@ -88,11 +92,15 @@ const ChartHeader = <TChartKey extends string, TTimeOption extends string = stri
       {/* Show the active selection title or Select dropdown menu based on the chartOptionVariant */}
       {chartOptionVariant === 'buttons-group' ? (
         <Typography variant="headingXsBold" color="textSecondary">
-          {foundChartOption?.activeTitle ?? '?'}
+          {isLoading ? t`Loading` : (foundChartOption?.activeTitle ?? '?')}
+        </Typography>
+      ) : isLoading ? (
+        <Typography variant="bodySBold" color="textSecondary" sx={{ alignSelf: 'center', paddingX: 2 }}>
+          {t`Loading`}
         </Typography>
       ) : (
         <Select
-          value={chartSelections.activeSelection}
+          value={chartSelections.activeSelection ?? ''}
           onChange={handleChartOptionSelect}
           size="small"
           sx={{ alignSelf: 'center' }}
