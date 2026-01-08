@@ -149,9 +149,9 @@ export const PriceCell = ({ getValue, row, column }: CellContext<LlamaMarket, nu
     getTooltipTitle(columnId) ?? `${formatNumber(primaryValue, { decimals: 5 })} ${primaryAsset.symbol}`
   const tooltipBody = getTooltipBody(columnId, stats, isLoadingStats)
 
-  const collateralUsdValue = (primaryPrice && primaryValue * primaryPrice) ?? 0
-  const borrowedUsdValue = (secondaryPrice && secondaryValue && secondaryValue * secondaryPrice) ?? 0
-  const usdValue = collateralUsdValue + borrowedUsdValue
+  const primaryUsdValue = (primaryPrice && primaryValue * primaryPrice) ?? 0
+  const secondaryUsdValue = (secondaryPrice && secondaryValue && secondaryValue * secondaryPrice) ?? 0
+  const usdValue = primaryUsdValue + secondaryUsdValue
 
   return (
     <Stack direction="column" spacing={1} alignItems="end">
