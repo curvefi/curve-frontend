@@ -46,6 +46,7 @@ type PositionQueryEntry =
 
 const MISSING_PRICE_RESULT: TokenPriceData = 0
 
+/** Build a stable lookup key for token pricing. */
 const getTokenKey = (chainId: LlamaMarket['chain'], tokenAddress: Address) => `${chainId}:${tokenAddress.toLowerCase()}`
 
 const createEmptyPositions = () => ({ borrow: [], supply: [] })
@@ -57,6 +58,7 @@ const createMetric = (label: string, data: number, isLoading: boolean, error?: u
   error,
 })
 
+/** Deduplicate token price lookup entries by key. */
 const collectTokenEntries = <T,>(items: T[], getEntries: (item: T) => TokenPriceEntry[]) =>
   uniqBy(items.map(getEntries).flat(), (entry) => entry.key)
 
@@ -65,17 +67,20 @@ const createTokenPriceQueries = (entries: TokenPriceEntry[]) =>
     getTokenUsdPriceQueryOptions({ blockchainId: chainId, contractAddress }),
   )
 
+/** Split combined query results into position and price slices. */
 const splitQueryResults = <TData,>(results: UseQueryResult<unknown>[], positionCount: number) => ({
   positionResults: results.slice(0, positionCount) as UseQueryResult<TData>[],
   priceResults: results.slice(positionCount) as UseQueryResult<TokenPriceData>[],
 })
 
+/** Build a map of token keys to resolved USD prices. */
 const buildPriceByKey = (entries: TokenPriceEntry[], priceResults: UseQueryResult<TokenPriceData>[]) =>
   Object.fromEntries(entries.map((entry, index) => [entry.key, priceResults[index]?.data])) as Record<
     string,
     TokenPriceData | undefined
   >
 
+/** Merge derived totals with combined loading and error flags. */
 const withQueryMeta = <T,>(results: UseQueryResult<unknown>[], data: T) => {
   const meta = combineQueriesMeta(results)
   return {
@@ -85,6 +90,11 @@ const withQueryMeta = <T,>(results: UseQueryResult<unknown>[], data: T) => {
   }
 }
 
+/**
+ * Summarize user positions into USD totals combining position and price queries together.
+ * It separates the borrow/supply query sets, fetches token prices and positions, and aggregates totals.
+ * Loading/error states of prices and positions are combined.
+ */
 export const useUserPositionsSummary = ({
   markets,
 }: {
@@ -169,8 +179,8 @@ export const useUserPositionsSummary = ({
     [userPositionQueries],
   )
 
-  // Keep price queries in the same useQueries call as position queries and derive totals in combine.
-  // This avoids useMemo deps on proxy query results.
+  /** Keep price queries in the same useQueries call as position queries and derive totals in combine.
+   * This avoids useMemo deps on proxy query results. */
   const borrowSummary = useQueries({
     queries: [
       ...userPositionQueries.borrow.map(({ query }) => query),
@@ -218,8 +228,8 @@ export const useUserPositionsSummary = ({
     },
   })
 
-  // Keep price queries in the same useQueries call and derive totals in combine.
-  // This avoids useMemo deps on proxy results while still reacting to price/position updates.
+  /** Keep price queries in the same useQueries call as position queries and derive totals in combine.
+   * This avoids useMemo deps on proxy query results. */
   const supplySummary = useQueries({
     queries: [
       ...userPositionQueries.supply.map(({ query }) => query),
