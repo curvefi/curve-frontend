@@ -21,7 +21,7 @@ const tryGetPools = (routes: IRouteStep[], curve: CurveJS, log: FastifyBaseLogge
     try {
       return [route, curve.getPool(route.poolId)]
     } catch (error) {
-      log.info({ message: 'routerBestRouteAndOutput missing poolName', poolId: route.poolId })
+      log.info({ message: 'routerBestRouteAndOutput missing poolName', poolId: route.poolId }, error.message)
       return [route, undefined]
     }
   })

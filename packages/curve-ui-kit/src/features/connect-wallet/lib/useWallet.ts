@@ -53,7 +53,7 @@ export const useWallet = () => {
   const { data: ensName } = useEnsName({ address: wallet?.account.address })
   useEffect(() => {
     // not changing the object reference, so we avoid reinitializing the app
-    state.wallet && (state.wallet.account.ensName = ensName ?? undefined)
+    if (state.wallet) state.wallet.account.ensName = ensName ?? undefined
   }, [ensName])
 
   return { wallet, connect, disconnect, provider, showModal, closeModal, connectState }

@@ -79,7 +79,7 @@ export const { useQuery: useCreateLoanExpectedCollateral, queryKey: createLoanEx
       }
 
       assert(!+userBorrowed, `userBorrowed must be 0 for non-leverage mint markets`)
-      const { collateral, leverage, routeIdx } = await market.leverage.createLoanCollateral(userCollateral, debt)
+      const { collateral, leverage } = await market.leverage.createLoanCollateral(userCollateral, debt)
       return convertNumbers({ userCollateral, leverage, totalCollateral: collateral })
     },
     staleTime: '1m',

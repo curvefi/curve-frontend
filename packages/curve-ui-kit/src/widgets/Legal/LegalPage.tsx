@@ -128,7 +128,7 @@ export const LegalPage = ({ currentApp }: LegalPageProps) => {
         ) : (
           <TabPanel>
             {tab === 'terms' && <Terms currentApp={currentApp} network={network} />}
-            {tab === 'privacy' && <Privacy currentApp={currentApp} network={network} />}
+            {tab === 'privacy' && <Privacy />}
           </TabPanel>
         )}
       </Stack>

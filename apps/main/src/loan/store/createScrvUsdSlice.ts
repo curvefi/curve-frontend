@@ -89,7 +89,7 @@ const DEFAULT_STATE: SliceState = {
   withdrawTransaction: { transactionStatus: '', transaction: null, errorMessage: '' },
 }
 
-const createScrvUsdSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
+const createScrvUsdSlice = (_set: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
     checkApproval: {
@@ -556,7 +556,7 @@ const createScrvUsdSlice = (set: StoreApi<State>['setState'], get: StoreApi<Stat
     setStateByKey: <T>(key: StateKey, value: T) => {
       get().setAppStateByKey(sliceKey, key, value)
     },
-    setStateByKeys: <T>(sliceState: Partial<SliceState>) => {
+    setStateByKeys: (sliceState: Partial<SliceState>) => {
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {

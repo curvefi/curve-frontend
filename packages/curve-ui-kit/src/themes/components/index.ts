@@ -29,7 +29,7 @@ export const createComponents = (
   typography: TypographyVariantsOptions,
 ): ThemeOptions['components'] => ({
   MuiAlert: defineMuiAlert(design, typography),
-  MuiAlertTitle: defineMuiAlertTitle(design, typography),
+  MuiAlertTitle: defineMuiAlertTitle(typography),
   MuiButton: defineMuiButton(design),
   MuiButtonBase: {
     defaultProps: {
@@ -105,7 +105,7 @@ export const createComponents = (
     },
   },
   MuiMenuItem: defineMuiMenuItem(design),
-  MuiSelect: defineMuiSelect(design, typography),
+  MuiSelect: defineMuiSelect(design),
   MuiSlider: defineMuiSlider(design),
   MuiSkeleton: {
     styleOverrides: {

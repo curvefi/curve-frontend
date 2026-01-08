@@ -18,9 +18,8 @@ import { TelegramCNIcon } from '@ui-kit/shared/icons/TelegramCNIcon'
 import { TelegramIcon } from '@ui-kit/shared/icons/TelegramIcon'
 import { TelegramRUIcon } from '@ui-kit/shared/icons/TelegramRUIcon'
 import { XIcon } from '@ui-kit/shared/icons/XIcon'
-import { AppName } from '@ui-kit/shared/routes'
 
-export const getSections = (appName: AppName) => [
+export const getSections = () => [
   {
     title: t`Community`,
     links: [
