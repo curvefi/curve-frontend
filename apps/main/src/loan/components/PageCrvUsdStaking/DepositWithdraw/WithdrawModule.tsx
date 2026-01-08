@@ -31,7 +31,7 @@ export const WithdrawModule = () => {
 
   const { llamaApi: curve = null } = useCurve()
 
-  const onMax = useCallback(() => setMax(address, 'deposit'), [setMax, address])
+  const onMax = useCallback(() => setMax(address, 'withdraw'), [setMax, address])
 
   const validationError =
     hasWallet &&
