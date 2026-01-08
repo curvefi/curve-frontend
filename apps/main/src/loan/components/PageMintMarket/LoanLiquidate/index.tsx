@@ -28,7 +28,7 @@ import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t, Trans } from '@ui-kit/lib/i18n'
 import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
 
-const LoanLiquidate = ({
+export const LoanLiquidate = ({
   curve,
   market: llamma,
   params,
@@ -254,5 +254,3 @@ const StyledInternalLink = styled(InternalLink)`
     text-decoration-color: var(--link_light--hover--color);
   }
 `
-
-export default LoanLiquidate

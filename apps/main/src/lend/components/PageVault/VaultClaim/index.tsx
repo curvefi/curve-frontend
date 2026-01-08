@@ -20,7 +20,7 @@ import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 
-const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContentProps) => {
+export const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)
 
   const formStatus = useStore((state) => state.vaultClaim.formStatus)
@@ -228,5 +228,3 @@ const ClaimableWrapper = styled.div`
 function _getRewardsAmount(rewards: { token: string; symbol: string; amount: string }[] | undefined) {
   return (rewards || []).map(({ symbol, amount }) => `${amount} ${symbol}`).join(', ')
 }
-
-export default VaultClaim

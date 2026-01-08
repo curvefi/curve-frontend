@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import FormDeposit from '@/dex/components/PagePool/Deposit/components/FormDeposit'
 import FormDepositStake from '@/dex/components/PagePool/Deposit/components/FormDepositStake'
-import FormStake from '@/dex/components/PagePool/Deposit/components/FormStake'
+import { FormStake } from '@/dex/components/PagePool/Deposit/components/FormStake'
 import type { FormType } from '@/dex/components/PagePool/Deposit/types'
 import { DEFAULT_FORM_STATUS } from '@/dex/components/PagePool/Deposit/utils'
 import type { TransferProps } from '@/dex/components/PagePool/types'

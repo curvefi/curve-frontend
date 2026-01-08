@@ -14,8 +14,8 @@ import { type FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTab
 import { TransactionDetails } from '../components/TransactionDetails'
 import TransactionTracking from '../TransactionTracking'
 import DeployButton from './DeployButton'
-import DepositModule from './DepositModule'
-import WithdrawModule from './WithdrawModule'
+import { DepositModule } from './DepositModule'
+import { WithdrawModule } from './WithdrawModule'
 
 type DepositWithdrawProps = {
   params: NetworkUrlParams

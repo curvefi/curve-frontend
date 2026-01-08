@@ -3,7 +3,7 @@ import { useConnection, type Config } from 'wagmi'
 import { useConfig } from 'wagmi'
 import AlertFormError from '@/dex/components/AlertFormError'
 import DetailInfoEstGas from '@/dex/components/DetailInfoEstGas'
-import FieldLpToken from '@/dex/components/PagePool/components/FieldLpToken'
+import { FieldLpToken } from '@/dex/components/PagePool/components/FieldLpToken'
 import TransferActions from '@/dex/components/PagePool/components/TransferActions'
 import type { TransferProps } from '@/dex/components/PagePool/types'
 import { DEFAULT_ESTIMATED_GAS } from '@/dex/components/PagePool/utils'
@@ -20,7 +20,7 @@ import { scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 
-const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed }: TransferProps) => {
+export const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed }: TransferProps) => {
   const isSubscribed = useRef(false)
 
   const { chainId, signerAddress } = curve || {}
@@ -155,7 +155,6 @@ const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed }
         balanceLoading={gaugeTokenLoading}
         balance={gaugeTokenBalance ?? ''}
         hasError={+formValues.stakedLpToken > +(gaugeTokenBalance ?? '')}
-        haveSigner={haveSigner}
         handleAmountChange={useCallback((stakedLpToken) => updateFormValues({ stakedLpToken }), [updateFormValues])}
         disabled={isDisabled}
       />
@@ -180,5 +179,3 @@ const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed }
     </>
   )
 }
-
-export default FormUnstake

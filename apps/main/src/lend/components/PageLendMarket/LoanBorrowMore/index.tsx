@@ -2,8 +2,8 @@ import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import AlertFormError from '@/lend/components/AlertFormError'
 import AlertLoanSummary from '@/lend/components/AlertLoanSummary'
 import DialogFormWarning from '@/lend/components/DialogFormWarning'
-import InpToken from '@/lend/components/InpToken'
-import InpTokenBorrow from '@/lend/components/InpTokenBorrow'
+import { InpToken } from '@/lend/components/InpToken'
+import { InpTokenBorrow } from '@/lend/components/InpTokenBorrow'
 import LoanFormConnect from '@/lend/components/LoanFormConnect'
 import DetailInfo from '@/lend/components/PageLendMarket/LoanBorrowMore/components/DetailInfo'
 import DetailInfoLeverage from '@/lend/components/PageLendMarket/LoanBorrowMore/components/DetailInfoLeverage'
@@ -27,7 +27,7 @@ import { getActiveStep } from '@ui/Stepper/helpers'
 import Stepper from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
 import TxInfoBar from '@ui/TxInfoBar'
-import { formatNumber, scanTxPath } from '@ui/utils'
+import { scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
@@ -40,7 +40,7 @@ const { Spacing } = SizesAndSpaces
 
 export type LoanBorrowMoreProps = PageContentProps & { isLeverage?: boolean }
 
-const LoanBorrowMore = ({
+export const LoanBorrowMore = ({
   rChainId,
   rOwmId,
   isLoaded,
@@ -354,7 +354,6 @@ const LoanBorrowMore = ({
             inpError={formValues.userCollateralError}
             inpDisabled={disabled}
             inpLabelLoading={!!signerAddress && typeof userBalances?.collateral === 'undefined'}
-            inpLabelDescription={formatNumber(userBalances?.collateral, { defaultValue: '-' })}
             inpValue={formValues.userCollateral}
             tokenAddress={market?.collateral_token?.address}
             tokenSymbol={market?.collateral_token?.symbol}
@@ -370,7 +369,6 @@ const LoanBorrowMore = ({
               inpError={formValues.userBorrowedError}
               inpDisabled={disabled}
               inpLabelLoading={!!signerAddress && typeof userBalances?.borrowed === 'undefined'}
-              inpLabelDescription={formatNumber(userBalances?.borrowed, { defaultValue: '-' })}
               inpValue={formValues.userBorrowed}
               tokenAddress={market?.borrowed_token?.address}
               tokenSymbol={market?.borrowed_token?.symbol}
@@ -423,8 +421,6 @@ const LoanBorrowMore = ({
     </Stack>
   )
 }
-
-export default LoanBorrowMore
 
 /**
  * The new implementation of LoanBorrowMore with mui isn't ready yet. For now, we wrap the old one for styling.

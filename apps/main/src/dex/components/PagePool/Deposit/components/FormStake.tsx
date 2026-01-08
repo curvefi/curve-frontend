@@ -6,7 +6,7 @@ import { useConfig } from 'wagmi'
 import AlertFormError from '@/dex/components/AlertFormError'
 import DetailInfoEstGas from '@/dex/components/DetailInfoEstGas'
 import DetailInfoExpectedApy from '@/dex/components/PagePool/components/DetailInfoExpectedApy'
-import FieldLpToken from '@/dex/components/PagePool/components/FieldLpToken'
+import { FieldLpToken } from '@/dex/components/PagePool/components/FieldLpToken'
 import TransferActions from '@/dex/components/PagePool/components/TransferActions'
 import type { FormStatus, FormValues, StepKey } from '@/dex/components/PagePool/Deposit/types'
 import { FieldsWrapper } from '@/dex/components/PagePool/styles'
@@ -25,7 +25,7 @@ import { scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 
-const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed }: TransferProps) => {
+export const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed }: TransferProps) => {
   const isSubscribed = useRef(false)
 
   const { chainId, signerAddress } = curve || {}
@@ -189,7 +189,6 @@ const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed }: 
           balance={lpTokenBalance ?? ''}
           balanceLoading={lpTokenBalanceLoading}
           hasError={haveSigner ? new BigNumber(formValues.lpToken).isGreaterThan(lpTokenBalance ?? '0') : false}
-          haveSigner={haveSigner}
           handleAmountChange={useCallback((lpToken) => updateFormValues({ lpToken }), [updateFormValues])}
           disabled={disableForm}
         />
@@ -229,5 +228,3 @@ const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed }: 
     </>
   )
 }
-
-export default FormStake

@@ -1,1 +1,1 @@
-export { AddRewardToken as default } from './ui/AddRewardToken'
+export { AddRewardToken } from './ui/AddRewardToken'

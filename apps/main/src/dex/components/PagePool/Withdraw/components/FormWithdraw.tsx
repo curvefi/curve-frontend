@@ -7,8 +7,8 @@ import AlertFormError from '@/dex/components/AlertFormError'
 import AlertSlippage from '@/dex/components/AlertSlippage'
 import DetailInfoEstGas from '@/dex/components/DetailInfoEstGas'
 import DetailInfoSlippage from '@/dex/components/PagePool/components/DetailInfoSlippage'
-import FieldLpToken from '@/dex/components/PagePool/components/FieldLpToken'
-import FieldToken from '@/dex/components/PagePool/components/FieldToken'
+import { FieldLpToken } from '@/dex/components/PagePool/components/FieldLpToken'
+import { FieldToken } from '@/dex/components/PagePool/components/FieldToken'
 import SelectedLpTokenExpected from '@/dex/components/PagePool/components/SelectedLpTokenExpected'
 import SelectedOneCoinExpected from '@/dex/components/PagePool/components/SelectedOneCoinExpected'
 import TransferActions from '@/dex/components/PagePool/components/TransferActions'
@@ -36,7 +36,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRates } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
 
-const FormWithdraw = ({
+export const FormWithdraw = ({
   chainIdPoolId,
   curve,
   blockchainId,
@@ -329,7 +329,6 @@ const FormWithdraw = ({
         balance={lpTokenBalance ?? ''}
         balanceLoading={lpTokenBalanceLoading}
         hasError={haveSigner && +formValues.lpToken > +(lpTokenBalance ?? '')}
-        haveSigner={haveSigner}
         handleAmountChange={useCallback(
           (lpToken: string) =>
             updateFormValues({ amounts: resetFormAmounts(useStore.getState().poolWithdraw.formValues), lpToken }, null),
@@ -532,5 +531,3 @@ const TokensSelectorWrapper = styled.div`
   background-color: var(--box--primary--content--background-color);
   box-shadow: inset 0.5px 0.5px 0 0.5px var(--box--primary--content--shadow-color);
 `
-
-export default FormWithdraw
