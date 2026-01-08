@@ -29,7 +29,7 @@ export const OhlcAndActivityComp = ({
   rChainId: ChainId
   pricesApiPoolData: PricesApiPool
 }) => {
-  const { chartCombinations, tradesTokens, isLoading, setSelectedChart, setChartTimeOption, ohlcChartProps } =
+  const { chartCombinations, tradesTokens, isLoading, setSelectedChart, setTimeOption, ohlcChartProps } =
     useOhlcChartState({
       rChainId,
       pricesApiPoolData,
@@ -60,7 +60,7 @@ export const OhlcAndActivityComp = ({
             timeOption={{
               options: TIME_OPTIONS,
               activeOption: ohlcChartProps.timeOption,
-              setActiveOption: setChartTimeOption,
+              setActiveOption: setTimeOption,
             }}
             isLoading={isLoading}
           />

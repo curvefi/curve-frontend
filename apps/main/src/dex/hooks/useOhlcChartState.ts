@@ -21,11 +21,9 @@ type UseOhlcChartStateArgs = {
 export const useOhlcChartState = ({ rChainId, pricesApiPoolData }: UseOhlcChartStateArgs) => {
   const chartOhlcData = useStore((state) => state.pools.pricesApiState.chartOhlcData)
   const chartStatus = useStore((state) => state.pools.pricesApiState.chartStatus)
-  const timeOption = useStore((state) => state.pools.pricesApiState.timeOption)
   const tradesTokens = useStore((state) => state.pools.pricesApiState.tradesTokens)
   const refetchingCapped = useStore((state) => state.pools.pricesApiState.refetchingCapped)
   const lastFetchEndTime = useStore((state) => state.pools.pricesApiState.lastFetchEndTime)
-  const setChartTimeOption = useStore((state) => state.pools.setChartTimeOption)
   const fetchPricesApiCharts = useStore((state) => state.pools.fetchPricesApiCharts)
   const fetchPricesApiActivity = useStore((state) => state.pools.fetchPricesApiActivity)
   const fetchMorePricesApiCharts = useStore((state) => state.pools.fetchMorePricesApiCharts)
@@ -44,7 +42,7 @@ export const useOhlcChartState = ({ rChainId, pricesApiPoolData }: UseOhlcChartS
     return combinedArray
   }, [pricesApiPoolData.coins, pricesApiPoolData.n_coins])
 
-  const { chartTimeSettings, chartInterval, timeUnit } = useChartTimeSettings(timeOption)
+  const { timeOption, setTimeOption, chartTimeSettings, chartInterval, timeUnit } = useChartTimeSettings()
 
   const fetchCharts = useCallback(() => {
     fetchPricesApiCharts(
@@ -180,7 +178,7 @@ export const useOhlcChartState = ({ rChainId, pricesApiPoolData }: UseOhlcChartS
     tradesTokens,
     isLoading,
     setSelectedChart,
-    setChartTimeOption,
+    setTimeOption,
     flipChart,
     ohlcChartProps,
   }

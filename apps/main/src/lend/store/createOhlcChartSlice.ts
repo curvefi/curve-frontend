@@ -7,9 +7,7 @@ import { ChainId } from '@/lend/types/lend.types'
 import type { Address, Chain } from '@curvefi/prices-api'
 import { getOracle } from '@curvefi/prices-api/lending'
 import { getOHLC, getTrades, type LlammaTrade, getEvents, type LlammaEvent } from '@curvefi/prices-api/llamma'
-import { DEFAULT_TIME_OPTION } from '@ui-kit/features/candle-chart/constants'
 import type {
-  TimeOption,
   FetchingStatus,
   LpPriceOhlcDataFormatted,
   LlamaBaselinePriceData,
@@ -49,7 +47,6 @@ type SliceState = {
   lendTradesData: LlammaTrade[]
   lendControllerData: LlammaEvent[]
   activityFetchStatus: FetchingStatus
-  timeOption: TimeOption
   oraclePriceVisible: boolean
   liqRangeCurrentVisible: boolean
   liqRangeNewVisible: boolean
@@ -59,7 +56,6 @@ const sliceKey = 'ohlcCharts'
 
 export type OhlcChartSlice = {
   [sliceKey]: SliceState & {
-    setChartTimeOption(timeOption: TimeOption): void
     fetchLlammaOhlcData(
       chainId: ChainId,
       llammaId: string,
@@ -160,7 +156,6 @@ const DEFAULT_STATE: SliceState = {
   lendTradesData: [],
   lendControllerData: [],
   activityFetchStatus: 'LOADING',
-  timeOption: DEFAULT_TIME_OPTION,
   oraclePriceVisible: true,
   liqRangeCurrentVisible: true,
   liqRangeNewVisible: true,
@@ -169,13 +164,6 @@ const DEFAULT_STATE: SliceState = {
 const createOhlcChart = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
-    setChartTimeOption: (timeOption: TimeOption) => {
-      set(
-        produce((state: State) => {
-          state[sliceKey].timeOption = timeOption
-        }),
-      )
-    },
     fetchLlammaOhlcData: async (
       chainId: ChainId,
       llammaId: string,

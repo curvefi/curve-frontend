@@ -8,7 +8,6 @@ import type { Address, Chain } from '@curvefi/prices-api'
 import { getOracle } from '@curvefi/prices-api/lending'
 import { getOHLC, getTrades, type LlammaTrade, getEvents, type LlammaEvent } from '@curvefi/prices-api/llamma'
 import type {
-  TimeOption,
   FetchingStatus,
   LpPriceOhlcDataFormatted,
   LlamaBaselinePriceData,
@@ -48,7 +47,6 @@ type SliceState = {
   llammaTradesData: LlammaTrade[]
   llammaControllerData: LlammaEvent[]
   activityFetchStatus: FetchingStatus
-  timeOption: TimeOption
   oraclePriceVisible: boolean
   liqRangeCurrentVisible: boolean
   liqRangeNewVisible: boolean
@@ -58,7 +56,6 @@ const sliceKey = 'ohlcCharts'
 
 export type OhlcChartSlice = {
   [sliceKey]: SliceState & {
-    setChartTimeOption(timeOption: TimeOption): void
     fetchOracleOhlcData(
       chainId: ChainId,
       controller: string,
@@ -159,7 +156,6 @@ const DEFAULT_STATE: SliceState = {
   llammaTradesData: [],
   llammaControllerData: [],
   activityFetchStatus: 'LOADING',
-  timeOption: '1d',
   oraclePriceVisible: true,
   liqRangeCurrentVisible: true,
   liqRangeNewVisible: true,
@@ -168,13 +164,6 @@ const DEFAULT_STATE: SliceState = {
 const createOhlcChart = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
-    setChartTimeOption: (timeOption: TimeOption) => {
-      set(
-        produce((state: State) => {
-          state[sliceKey].timeOption = timeOption
-        }),
-      )
-    },
     fetchOracleOhlcData: async (
       chainId: ChainId,
       controller: string,

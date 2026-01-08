@@ -53,7 +53,7 @@ const ChartAndActivityComp = ({ rChainId, llamma, llammaId }: ChartAndActivityCo
     isLoading: isChartLoading,
     selectedChartKey,
     setSelectedChart,
-    setChartTimeOption,
+    setTimeOption,
     ohlcChartProps,
   } = useOhlcChartState({
     rChainId,
@@ -108,7 +108,7 @@ const ChartAndActivityComp = ({ rChainId, llamma, llammaId }: ChartAndActivityCo
             timeOption={{
               options: TIME_OPTIONS,
               activeOption: ohlcChartProps.timeOption,
-              setActiveOption: setChartTimeOption,
+              setActiveOption: setTimeOption,
             }}
             isLoading={isChartLoading}
             customButton={
