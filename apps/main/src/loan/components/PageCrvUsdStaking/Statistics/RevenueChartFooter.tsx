@@ -40,14 +40,10 @@ const RevenueChartFooter = ({ timeOptions, activeTimeOption, setActiveTimeOption
           <LegendSet
             key={key}
             label={label}
-            dash={dash}
-            legendColor={
-              key === 'apyProjected'
-                ? priceLineColors.apyProjected
-                : key === 'proj_apy_7d_avg'
-                  ? priceLineColors.proj_apy_7d_avg
-                  : priceLineColors.proj_apy_total_avg
-            }
+            line={{
+              lineStroke: priceLineColors[key as YieldKeys],
+              dash,
+            }}
           />
         ))}
       </Stack>
