@@ -1,7 +1,6 @@
 import { useMemo } from 'react'
 import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { TooltipDescription } from '@/llamalend/widgets/tooltips/TooltipComponents'
-import CircularProgress from '@mui/material/CircularProgress'
 import Grid, { GridProps } from '@mui/material/Grid'
 import { useSearchParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
@@ -15,7 +14,7 @@ import { MarketRateType } from '@ui-kit/types/market'
 import { LlamaMarketColumnId } from './columns'
 import { UserPositionSummaryMetric, useUserPositionsSummary } from './hooks/useUserPositionsSummary'
 
-const { Spacing, IconSize } = SizesAndSpaces
+const { Spacing } = SizesAndSpaces
 
 type UserPositionStatisticsProps = {
   markets: LlamaMarket[] | undefined
