@@ -22,12 +22,6 @@ import type { CONNECTOR_IDS } from '../lib/wagmi/connectors'
 
 const { IconSize } = SizesAndSpaces
 
-/**
- * The Safe connector only works inside the Safe application, where the Curve app is loaded in an iframe.
- * Trying to use the Safe connector outside the iframe will result in an error.
- */
-const isInIframe = typeof window !== 'undefined' && window !== window.parent
-
 type Icon = ReturnType<typeof createSvgIcon>
 
 type ConnectorInfo = {
@@ -138,7 +132,10 @@ export const WagmiConnectModal = () => {
       ) : null}
       <MenuList>
         {connectors
-          .filter((connector) => connector.type !== 'safe' || isInIframe)
+          // Safe connector only works inside Safe applications, which are loaded in iframes.
+          .filter(
+            (connector) => connector.type !== 'safe' || (typeof window !== 'undefined' && window !== window.parent),
+          )
           .map((connector) => (
             <WalletListItem
               key={connector.id}
