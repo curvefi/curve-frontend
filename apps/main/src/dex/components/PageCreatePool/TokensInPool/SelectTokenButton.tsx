@@ -14,6 +14,7 @@ import Button from '@ui/Button'
 import Checkbox from '@ui/Checkbox'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import { Chip } from '@ui/Typography'
+import { TokenList } from '@ui-kit/features/select-token/ui/modal/TokenList'
 import { TokenSelectorModal } from '@ui-kit/features/select-token/ui/modal/TokenSelectorModal'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
@@ -158,21 +159,24 @@ const SelectTokenButton = ({
         )}
       </ComboBoxButton>
       {overlayTriggerState.isOpen && (
-        <TokenSelectorModal
-          tokens={options}
-          favorites={favorites}
-          balances={{}}
-          tokenPrices={{}}
-          showSearch={true}
-          showManageList={true}
-          isOpen={true}
-          error={error}
-          disabledTokens={disabledKeys ?? []}
-          disableSorting={true}
-          disableMyTokens={false}
-          compact={false}
-          customOptions={
-            swapType === STABLESWAP && (
+        <TokenSelectorModal showManageList isOpen compact={false} onClose={handleClose}>
+          <TokenList
+            tokens={options}
+            favorites={favorites}
+            error={error}
+            disabledTokens={disabledKeys}
+            disableSorting
+            onToken={({ address }) => {
+              onSelectionChange(address)
+              setFilterBasepools(false)
+              handleClose()
+            }}
+            onSearch={(val) => {
+              setFilterValue(val)
+              setError(undefined)
+            }}
+          >
+            {swapType === STABLESWAP && (
               <Checkbox
                 key={'filter-basepools'}
                 isDisabled={basePools[chainId]?.length === 0}
@@ -182,19 +186,9 @@ const SelectTokenButton = ({
               >
                 View Basepools
               </Checkbox>
-            )
-          }
-          onClose={handleClose}
-          onToken={({ address }) => {
-            onSelectionChange(address)
-            setFilterBasepools(false)
-            handleClose()
-          }}
-          onSearch={(val) => {
-            setFilterValue(val)
-            setError(undefined)
-          }}
-        />
+            )}
+          </TokenList>
+        </TokenSelectorModal>
       )}
     </>
   ) : (
