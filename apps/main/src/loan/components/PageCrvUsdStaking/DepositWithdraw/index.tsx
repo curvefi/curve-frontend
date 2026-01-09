@@ -140,7 +140,7 @@ const menu = [
     value: 'swap',
     label: t`Swap`,
     href: ({ network }) =>
-      `${getInternalUrl('dex', network, DEX_ROUTES.PAGE_SWAP)}?from=${SCRVUSD_VAULT_ADDRESS}&to=${CRVUSD_ADDRESS}`,
+      `${getInternalUrl('dex', network, DEX_ROUTES.PAGE_SWAP)}?from=${CRVUSD_ADDRESS}&to=${SCRVUSD_VAULT_ADDRESS}`,
   },
 ] satisfies FormTab<NetworkUrlParams>[]
 

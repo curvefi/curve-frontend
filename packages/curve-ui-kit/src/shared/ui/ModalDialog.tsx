@@ -74,7 +74,7 @@ export const ModalDialog = ({
   titleColor = 'textSecondary',
   footer,
   compact,
-  maxHeight = { mobile: modalHeight.md, tablet: modalHeight.sm },
+  maxHeight = { mobile: modalHeight.sm, desktop: modalHeight.md },
   sx,
 }: ModalDialogProps) => (
   <Dialog
