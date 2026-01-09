@@ -75,6 +75,7 @@ const SelectTokenButton = ({
   }))
 
   if (!overlayTriggerState.isOpen) {
+    // eslint-disable-next-line react-hooks/refs
     visibleTokens.current = {}
   }
 
@@ -131,7 +132,11 @@ const SelectTokenButton = ({
   const handleClose = () => {
     setFilterValue('')
     setError(undefined)
-    isMobile ? delayAction(overlayTriggerState.close) : overlayTriggerState.close()
+    if (isMobile) {
+      delayAction(overlayTriggerState.close)
+    } else {
+      overlayTriggerState.close()
+    }
   }
 
   return chainId || basePoolsLoading ? (

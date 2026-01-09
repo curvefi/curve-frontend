@@ -28,11 +28,15 @@ type SliceState = {
 
 const sliceKey = 'user'
 
-// prettier-ignore
 export type UserSlice = {
   [sliceKey]: SliceState & {
     fetchUserPoolList(curve: CurveApi): Promise<UserPoolListMapper>
-    fetchUserPoolInfo(config: Config, curve: CurveApi, poolId: string, isFetchWalletBalancesOnly?: boolean): void
+    fetchUserPoolInfo(
+      config: Config,
+      curve: CurveApi,
+      poolId: string,
+      isFetchWalletBalancesOnly?: boolean,
+    ): Promise<Balances | void>
 
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
     setStateByKey<T>(key: StateKey, value: T): void
@@ -56,7 +60,7 @@ const DEFAULT_STATE: SliceState = {
   error: '',
 }
 
-const createUserSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): UserSlice => ({
+const createUserSlice = (_set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): UserSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 
@@ -145,6 +149,7 @@ const createUserSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>[
         get()[sliceKey].setStateByActiveKey('userShare', userPoolActiveKey, userShare)
         get()[sliceKey].setStateByActiveKey('userLiquidityUsd', userPoolActiveKey, liquidityUsd)
       } catch (error) {
+        console.error(error)
         get()[sliceKey].setStateByKey('error', 'error-get-pool-wallet-balances')
       }
     },

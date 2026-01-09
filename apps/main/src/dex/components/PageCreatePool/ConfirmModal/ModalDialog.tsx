@@ -14,21 +14,12 @@ import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 interface Props extends AriaOverlayProps, AriaDialogProps {
   footerContent?: ReactNode
   maxWidth?: string
-  noContentPadding?: boolean
   title: string
   state: OverlayTriggerState
   children: ReactNode
 }
 
-const ModalDialog = ({
-  children,
-  footerContent,
-  maxWidth,
-  noContentPadding = false,
-  state,
-  title,
-  ...props
-}: Props) => {
+const ModalDialog = ({ children, footerContent, maxWidth, state, title, ...props }: Props) => {
   const closeButtonRef = useRef<HTMLButtonElement>(null)
   const modalRef = useRef<HTMLDivElement>(null)
 

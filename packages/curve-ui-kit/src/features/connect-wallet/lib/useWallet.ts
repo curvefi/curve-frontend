@@ -21,7 +21,9 @@ export const useWallet = () => {
   const closeModal = useCallback(() => setShowModal(false), [setShowModal])
   const { wallet, provider, connectState } = useCurve()
   const connectors = useConnectors()
+  // eslint-disable-next-line react-hooks/immutability
   state.wallet = wallet ?? null
+  // eslint-disable-next-line react-hooks/immutability
   state.provider = provider ?? null
 
   // use the async functions so we can properly handle the promise failures. We could instead use query state in the future.
@@ -51,7 +53,7 @@ export const useWallet = () => {
   const { data: ensName } = useEnsName({ address: wallet?.account.address })
   useEffect(() => {
     // not changing the object reference, so we avoid reinitializing the app
-    state.wallet && (state.wallet.account.ensName = ensName ?? undefined)
+    if (state.wallet) state.wallet.account.ensName = ensName ?? undefined
   }, [ensName])
 
   return { wallet, connect, disconnect, provider, showModal, closeModal, connectState }

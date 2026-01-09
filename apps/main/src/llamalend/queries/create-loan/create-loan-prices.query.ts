@@ -3,16 +3,16 @@ import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { type FieldsOf } from '@ui-kit/lib'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { Decimal } from '@ui-kit/utils'
-import type { BorrowDebtQuery, BorrowForm, BorrowFormQuery } from '../../features/borrow/types'
-import { borrowQueryValidationSuite } from '../validation/borrow.validation'
+import type { CreateLoanDebtQuery, CreateLoanForm, CreateLoanFormQuery } from '../../features/borrow/types'
+import { createLoanQueryValidationSuite } from '../validation/borrow.validation'
 import { createLoanExpectedCollateralQueryKey } from './create-loan-expected-collateral.query'
 import { createLoanMaxReceiveKey } from './create-loan-max-receive.query'
 
-type BorrowPricesReceiveQuery = BorrowFormQuery & Pick<BorrowForm, 'maxDebt'>
-type BorrowPricesReceiveParams = FieldsOf<BorrowPricesReceiveQuery>
+type CreateLoanPricesReceiveQuery = CreateLoanFormQuery & Pick<CreateLoanForm, 'maxDebt'>
+type CreateLoanPricesReceiveParams = FieldsOf<CreateLoanPricesReceiveQuery>
 
-type BorrowPricesResult = [Decimal, Decimal]
-const convertNumbers = (prices: string[]) => [prices[0], prices[1]] as BorrowPricesResult
+type CreateLoanPricesResult = [Decimal, Decimal]
+const convertNumbers = (prices: string[]) => [prices[0], prices[1]] as CreateLoanPricesResult
 
 export const { useQuery: useCreateLoanPrices } = queryFactory({
   queryKey: ({
@@ -24,7 +24,7 @@ export const { useQuery: useCreateLoanPrices } = queryFactory({
     leverageEnabled,
     range,
     maxDebt,
-  }: BorrowPricesReceiveParams) =>
+  }: CreateLoanPricesReceiveParams) =>
     [
       ...rootKeys.market({ chainId, marketId }),
       'createLoanPrices',
@@ -42,7 +42,7 @@ export const { useQuery: useCreateLoanPrices } = queryFactory({
     debt = '0',
     leverageEnabled,
     range,
-  }: BorrowDebtQuery): Promise<BorrowPricesResult> => {
+  }: CreateLoanDebtQuery): Promise<CreateLoanPricesResult> => {
     const market = getLlamaMarket(marketId)
     return !leverageEnabled
       ? convertNumbers(await market.createLoanPrices(userCollateral, debt, range))
@@ -53,7 +53,7 @@ export const { useQuery: useCreateLoanPrices } = queryFactory({
           : convertNumbers(await market.leverage.createLoanPrices(userCollateral, debt, range))
   },
   staleTime: '1m',
-  validationSuite: borrowQueryValidationSuite({ debtRequired: true }),
+  validationSuite: createLoanQueryValidationSuite({ debtRequired: true }),
   dependencies: (params) => [
     createLoanMaxReceiveKey(params),
     ...(params.leverageEnabled ? [createLoanExpectedCollateralQueryKey(params)] : []),

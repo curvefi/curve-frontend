@@ -1,5 +1,4 @@
 import { cloneElement, isValidElement, type ReactElement } from 'react'
-import { SxProps } from '@mui/material'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { type TokenOption, tokenOptionEquals } from '../types'
 import { TokenSelectorModal, type TokenSelectorModalProps } from './modal/TokenSelectorModal'
@@ -16,8 +15,6 @@ type Props<T extends TokenOption = TokenOption> = Partial<
   selectedToken: T | undefined
   /** Disables the token selector button and modal */
   disabled?: boolean
-  /** Custom styles to apply to the TokenSelectButton */
-  sx?: SxProps
   /** Token list to render inside the modal */
   children: ReactElement<TokenSelectorChildProps<T>>
 }
@@ -28,7 +25,6 @@ export const TokenSelector = <T extends TokenOption = TokenOption>({
   showManageList = true,
   compact = false,
   children,
-  sx,
 }: Props<T>) => {
   const [isOpen, , closeModal, toggleModal] = useSwitch(false)
   const content = isValidElement(children)
@@ -44,7 +40,7 @@ export const TokenSelector = <T extends TokenOption = TokenOption>({
 
   return (
     <>
-      <TokenSelectButton token={selectedToken} disabled={disabled} onClick={toggleModal} sx={sx} />
+      <TokenSelectButton token={selectedToken} disabled={disabled} onClick={toggleModal} />
       <TokenSelectorModal showManageList={showManageList} isOpen={isOpen} compact={compact} onClose={closeModal}>
         {content}
       </TokenSelectorModal>

@@ -1,0 +1,10 @@
+name: Restore cache
+description: Restore the workspace .cache directory
+runs:
+  using: composite
+  steps:
+    - uses: actions/cache@v4
+      with:
+        path: .cache
+        key: cache-${{ hashFiles('yarn.lock', 'tsconfig*.json', 'apps/**/tsconfig.json', 'packages/**/tsconfig.json', 'tests/tsconfig.json') }}
+        restore-keys: cache-

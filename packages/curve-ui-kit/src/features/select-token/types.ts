@@ -8,6 +8,4 @@ export type TokenOption = {
   volume?: number
 }
 
-export function tokenOptionEquals(a?: TokenOption, b?: TokenOption) {
-  return a?.address == b?.address && a?.chain == b?.chain
-}
+export const tokenOptionEquals = (a?: TokenOption, b?: TokenOption) => a?.address == b?.address && a?.chain == b?.chain

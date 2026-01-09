@@ -732,7 +732,7 @@ const loanIncrease = {
       return resp
     }
   },
-  approve: async (activeKey: string, provider: Provider, llamma: Llamma, collateral: string) => {
+  approve: async (_activeKey: string, provider: Provider, llamma: Llamma, collateral: string) => {
     const parsedCollateral = collateral || '0'
     log('borrowMoreApprove', llamma.collateralSymbol, parsedCollateral)
     const resp = { hashes: [] as string[], error: '' }

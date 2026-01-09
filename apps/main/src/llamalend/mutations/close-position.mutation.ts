@@ -30,10 +30,12 @@ export const useClosePositionMutation = ({
   userAddress,
   onReset,
 }: ClosePositionOptions) =>
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   useLlammaMutation<{}>({
     network,
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'close-position'] as const,
     marketId,
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
     mutationFn: async (_: {}, { market }) => ({
       hash: (await market.selfLiquidate(+useUserProfileStore.getState().maxSlippage.crypto)) as Hex,
     }),

@@ -73,14 +73,7 @@ export const TokenSelector = ({
   return (
     <FlexItemToken>
       <SubTitle>{t`Token`}</SubTitle>
-      <TokenSelectorUIKit
-        selectedToken={selectedToken}
-        disabled={disabled || filteredTokens.length === 0}
-        sx={{
-          width: '100%',
-          height: '100%',
-        }}
-      >
+      <TokenSelectorUIKit selectedToken={selectedToken} disabled={disabled || filteredTokens.length === 0}>
         <TokenList
           tokens={filteredTokens}
           onToken={(token) => setValue('rewardTokenId', token.address, { shouldValidate: true })}

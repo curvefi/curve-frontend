@@ -78,6 +78,7 @@ export const DataTable = <T extends TableItem>({
   const showPagination = !isLimited && table.getPageCount() > 1
 
   const headerGroups = table.getHeaderGroups()
+  // eslint-disable-next-line react-hooks/preserve-manual-memoization
   const columnCount = useMemo(() => headerGroups.reduce((acc, group) => acc + group.headers.length, 0), [headerGroups])
   const top = useLayoutStore((state) => state.navHeight)
   useScrollToTopOnFilterChange(table)

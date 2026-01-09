@@ -453,6 +453,7 @@ const QuickSwap = ({
       </IconButton>
 
       {/* SWAP TO */}
+
       <LargeTokenInput
         label={t`Buy`}
         balance={decimal(formValues.toAmount)}

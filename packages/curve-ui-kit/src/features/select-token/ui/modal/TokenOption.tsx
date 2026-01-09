@@ -44,7 +44,7 @@ export const TokenOption = ({
   const menuItem = useRef<HTMLLIElement>(null)
 
   return (
-    <InvertOnHover hoverEl={menuItem.current}>
+    <InvertOnHover hoverRef={menuItem}>
       <Tooltip title={disabled && 'This token is not available because of'} body={disabledReason} placement="top">
         <MenuItem
           ref={menuItem}

@@ -8,7 +8,7 @@
     "hoistingLimits": "dependencies"
   },
   "scripts": {
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --tsBuildInfoFile ../.cache/typecheck/tests.tsbuildinfo",
     "test": "vitest run",
     "test:ui": "vitest --ui",
     "vitest:watch": "vitest --watch",
@@ -26,7 +26,7 @@
     "@types/wait-on": "^5.3.4",
     "@vitejs/plugin-react": "*",
     "@vitest/ui": "^4.0.15",
-    "cypress": "^15.7.1",
+    "cypress": "^15.8.1",
     "dotenv-flow": "^4.1.0",
     "ethers": "*",
     "typescript": "*",
