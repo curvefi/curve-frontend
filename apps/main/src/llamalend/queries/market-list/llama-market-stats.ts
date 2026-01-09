@@ -82,6 +82,10 @@ export function useUserMarketStats(market: LlamaMarket, column?: LlamaMarketColu
           symbol: market?.assets?.collateral?.symbol,
           usdRate: collateralUsdRate,
         },
+        /**
+         * This is also collateral, namely when the user gets soft liq and
+         * part of the collateral gets converted into the borrow token.
+         */
         borrowToken: {
           amount: borrowedAmount,
           address: market?.assets?.borrowed?.address,

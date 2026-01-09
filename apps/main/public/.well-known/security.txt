@@ -1,4 +1,4 @@
 Contact: mailto:security@curve.finance
-Expires: 2026-02-28T23:00:00.000Z
+Expires: 2026-08-01T00:00:00.000Z
 Preferred-Languages: en
 Canonical: https://www.curve.finance/.well-known/security.txt
