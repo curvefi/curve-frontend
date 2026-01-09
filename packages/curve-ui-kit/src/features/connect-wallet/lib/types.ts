@@ -1,18 +1,11 @@
 import type { Eip1193Provider } from 'ethers'
 import { Address } from 'viem'
-import type { Config, createConfig } from 'wagmi'
+import type { Config } from 'wagmi'
 import { type default as curveApi } from '@curvefi/api'
 import type { IChainId as CurveChainId, INetworkName as CurveNetworkId } from '@curvefi/api/lib/interfaces'
 import { type default as llamaApi } from '@curvefi/llamalend-api'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { AppName } from '@ui-kit/shared/routes'
-
-declare module 'wagmi' {
-  /** Enable Wagmi to infer types in places that wouldn't normally have access to type info via React Context alone. */
-  interface Register {
-    config: ReturnType<typeof createConfig>
-  }
-}
 
 export type Wallet = {
   readonly provider?: Eip1193Provider
@@ -70,7 +63,5 @@ export type Hydrator<App extends AppName> = (
   wallet?: Wallet,
 ) => Promise<void>
 export type HydratorMap = { [A in AppName]?: Hydrator<A> }
-
-export type WagmiChainId = ReturnType<typeof createConfig>['chains'][number]['id']
 
 export { CurveChainId, LlamaChainId, CurveNetworkId, LlamaNetworkId }

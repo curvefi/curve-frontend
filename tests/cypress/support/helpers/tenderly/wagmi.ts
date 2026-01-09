@@ -1,7 +1,7 @@
 import { defineChain, http, type Hex } from 'viem'
 import { mainnet, arbitrum } from 'viem/chains'
-import { createConfig } from 'wagmi'
 import type { TenderlyConfig } from '@cy/support/helpers/tenderly/account'
+import { createWagmiConfig } from '@ui-kit/features/connect-wallet'
 import { createTenderlyConnector } from './connector'
 
 /** Configuration options for creating a test Wagmi config */
@@ -31,7 +31,7 @@ export function createTenderlyWagmiConfig({ privateKey, rpcUrl, explorerUrl, cha
     blockExplorers: explorerUrl ? { default: { name: 'Tenderly Explorer', url: explorerUrl } } : undefined,
   })
 
-  return createConfig({
+  return createWagmiConfig({
     chains: [chain],
     transports: { [chain.id]: http(rpcUrl) },
     connectors: [createTenderlyConnector({ privateKey, chain, tenderly })],
