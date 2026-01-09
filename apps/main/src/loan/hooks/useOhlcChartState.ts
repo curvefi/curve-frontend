@@ -2,7 +2,12 @@ import { useCallback, useEffect, useMemo } from 'react'
 import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
 import useStore from '@/loan/store/useStore'
 import { Llamma, ChainId } from '@/loan/types/loan.types'
-import { useLlammaChartSelections, useChartTimeSettings, useLiquidationRange } from '@ui-kit/features/candle-chart'
+import {
+  useLlammaChartSelections,
+  useChartTimeSettings,
+  useLiquidationRange,
+  useChartLegendToggles,
+} from '@ui-kit/features/candle-chart'
 import type { OhlcChartProps } from '@ui-kit/features/candle-chart/ChartWrapper'
 import { DEFAULT_CHART_HEIGHT } from '@ui-kit/features/candle-chart/constants'
 import { subtractTimeUnit, getThreeHundredResultsAgo } from '@ui-kit/features/candle-chart/utils'
@@ -50,12 +55,6 @@ export const useOhlcChartState = ({ rChainId, llamma, llammaId }: OhlcChartState
   const fetchLlammaOhlcData = useStore((state) => state.ohlcCharts.fetchLlammaOhlcData)
   const fetchOracleOhlcData = useStore((state) => state.ohlcCharts.fetchOracleOhlcData)
   const fetchMoreData = useStore((state) => state.ohlcCharts.fetchMoreData)
-  const toggleLiqRangeCurrentVisible = useStore((state) => state.ohlcCharts.toggleLiqRangeCurrentVisible)
-  const toggleLiqRangeNewVisible = useStore((state) => state.ohlcCharts.toggleLiqRangeNewVisible)
-  const toggleOraclePriceVisible = useStore((state) => state.ohlcCharts.toggleOraclePriceVisible)
-  const liqRangeCurrentVisible = useStore((state) => state.ohlcCharts.liqRangeCurrentVisible)
-  const liqRangeNewVisible = useStore((state) => state.ohlcCharts.liqRangeNewVisible)
-  const oraclePriceVisible = useStore((state) => state.ohlcCharts.oraclePriceVisible)
   const priceInfo = useStore((state) => state.loans.detailsMapper[llammaId]?.priceInfo ?? null)
 
   const { oraclePrice } = priceInfo ?? {}
@@ -122,6 +121,10 @@ export const useOhlcChartState = ({ rChainId, llamma, llammaId }: OhlcChartState
     formValues.n,
     liqRangesMapper,
   ])
+
+  const { oraclePriceVisible, liqRangeCurrentVisible, liqRangeNewVisible, legendSets } = useChartLegendToggles({
+    hasNewLiquidationRange: !!newLiqPrices,
+  })
 
   const selectedLiqRange = useLiquidationRange({
     chartData: currentChart.data,
@@ -229,9 +232,7 @@ export const useOhlcChartState = ({ rChainId, llamma, llammaId }: OhlcChartState
     selectedChartKey,
     setSelectedChart,
     setTimeOption,
-    toggleLiqRangeCurrentVisible,
-    toggleLiqRangeNewVisible,
-    toggleOraclePriceVisible,
+    legendSets,
     ohlcChartProps,
   }
 }

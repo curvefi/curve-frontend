@@ -106,6 +106,10 @@ const ChartHeader = <TChartKey extends string, TTimeOption extends string = stri
           onChange={handleChartOptionSelect}
           size="small"
           sx={{ alignSelf: 'center' }}
+          MenuProps={{
+            anchorOrigin: { vertical: 'bottom', horizontal: 'left' },
+            transformOrigin: { vertical: 'top', horizontal: 'left' },
+          }}
         >
           {chartSelections.selections.map((selection) => (
             <MenuItem value={selection.key} key={selection.key}>
@@ -142,6 +146,10 @@ const ChartHeader = <TChartKey extends string, TTimeOption extends string = stri
               size="small"
               sx={{ alignSelf: 'center' }}
               disabled={isLoading}
+              MenuProps={{
+                anchorOrigin: { vertical: 'bottom', horizontal: 'right' },
+                transformOrigin: { vertical: 'top', horizontal: 'right' },
+              }}
             >
               {timeOption.options.map((timeOption) => (
                 <MenuItem value={timeOption} key={timeOption}>

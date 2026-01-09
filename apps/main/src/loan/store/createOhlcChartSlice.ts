@@ -47,9 +47,6 @@ type SliceState = {
   llammaTradesData: LlammaTrade[]
   llammaControllerData: LlammaEvent[]
   activityFetchStatus: FetchingStatus
-  oraclePriceVisible: boolean
-  liqRangeCurrentVisible: boolean
-  liqRangeNewVisible: boolean
 }
 
 const sliceKey = 'ohlcCharts'
@@ -119,9 +116,6 @@ export type OhlcChartSlice = {
       end: number,
     ): Promise<void>
     fetchPoolActivity(chainId: ChainId, poolAddress: string): void
-    toggleOraclePriceVisible: () => void
-    toggleLiqRangeCurrentVisible: () => void
-    toggleLiqRangeNewVisible: () => void
     resetState(chainId: ChainId): void
   }
 }
@@ -156,9 +150,6 @@ const DEFAULT_STATE: SliceState = {
   llammaTradesData: [],
   llammaControllerData: [],
   activityFetchStatus: 'LOADING',
-  oraclePriceVisible: true,
-  liqRangeCurrentVisible: true,
-  liqRangeNewVisible: true,
 }
 
 const createOhlcChart = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
@@ -688,27 +679,6 @@ const createOhlcChart = (set: StoreApi<State>['setState'], get: StoreApi<State>[
           }),
         )
       }
-    },
-    toggleOraclePriceVisible: () => {
-      set(
-        produce((state: State) => {
-          state[sliceKey].oraclePriceVisible = !get()[sliceKey].oraclePriceVisible
-        }),
-      )
-    },
-    toggleLiqRangeCurrentVisible: () => {
-      set(
-        produce((state: State) => {
-          state[sliceKey].liqRangeCurrentVisible = !get()[sliceKey].liqRangeCurrentVisible
-        }),
-      )
-    },
-    toggleLiqRangeNewVisible: () => {
-      set(
-        produce((state: State) => {
-          state[sliceKey].liqRangeNewVisible = !get()[sliceKey].liqRangeNewVisible
-        }),
-      )
     },
     resetState: () => {
       get().resetAppState(sliceKey, DEFAULT_STATE)

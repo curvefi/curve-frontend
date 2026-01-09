@@ -1,3 +1,4 @@
+import ButtonBase from '@mui/material/ButtonBase'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
@@ -26,12 +27,43 @@ export type LegendSetType = {
     outlineStroke?: string
     fill: string
   }
+  checked?: boolean
+  onToggle?: (label: string) => void
 }
 
-export const LegendSet = ({ label, line, box }: LegendSetType) => (
-  <Stack direction="row" spacing={2} alignItems="center">
-    {line && <LegendLine color={line.lineStroke} dash={line.dash} />}
-    {box && <LegendBox outline={box.outlineStroke ?? 'none'} fill={box.fill} />}
-    <Typography variant="bodySRegular">{label}</Typography>
-  </Stack>
-)
+export const LegendSet = ({ label, line, box, checked = true, onToggle }: LegendSetType) => {
+  const isInteractive = onToggle !== undefined
+  const opacity = checked ? 1 : 0.35
+
+  const content = (
+    <Stack
+      direction="row"
+      spacing={2}
+      alignItems="center"
+      sx={{
+        opacity,
+        transition: 'opacity 0.15s ease-in-out',
+      }}
+    >
+      {line && <LegendLine color={line.lineStroke} dash={line.dash} />}
+      {box && <LegendBox outline={box.outlineStroke ?? 'none'} fill={box.fill} />}
+      <Typography variant="bodySRegular">{label}</Typography>
+    </Stack>
+  )
+
+  if (!isInteractive) {
+    return content
+  }
+
+  return (
+    <ButtonBase
+      onClick={() => onToggle(label)}
+      sx={{
+        borderRadius: 1,
+        padding: 0.5,
+      }}
+    >
+      {content}
+    </ButtonBase>
+  )
+}

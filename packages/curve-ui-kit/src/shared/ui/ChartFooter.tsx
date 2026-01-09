@@ -37,7 +37,14 @@ export const ChartFooter = <T extends string>({
       >
         <Stack direction="row" alignItems="center" gap={Spacing.sm} flexWrap="wrap">
           {legendSets.map((legendSet) => (
-            <LegendSet key={legendSet.label} label={legendSet.label} line={legendSet.line} box={legendSet.box} />
+            <LegendSet
+              key={legendSet.label}
+              label={legendSet.label}
+              line={legendSet.line}
+              box={legendSet.box}
+              checked={legendSet.checked}
+              onToggle={legendSet.onToggle}
+            />
           ))}
         </Stack>
         {hasToggle && (
