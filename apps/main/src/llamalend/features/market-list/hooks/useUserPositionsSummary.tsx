@@ -7,6 +7,7 @@ import {
 } from '@/llamalend/queries/market-list/lending-vaults'
 import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { getUserMintMarketsStatsOptions } from '@/llamalend/queries/market-list/mint-markets'
+import { notFalsy } from '@curvefi/prices-api/objects.util'
 import { useQueries, type UseQueryResult } from '@tanstack/react-query'
 import { t } from '@ui-kit/lib/i18n'
 import { getTokenUsdPriceQueryOptions } from '@ui-kit/lib/model/entities/token-usd-prices'
@@ -58,6 +59,49 @@ const createMetric = (label: string, data: number, isLoading: boolean, error?: u
   error,
 })
 
+const getSupplyEntry = (market: LlamaMarket, userAddress: Address | undefined): PositionQueryEntry | null => {
+  if (!market.userHasPositions?.Supply || !market.vaultAddress) return null
+
+  return {
+    kind: 'supply',
+    value: {
+      query: getUserLendingVaultEarningsOptions({
+        contractAddress: market.vaultAddress,
+        userAddress,
+        blockchainId: market.chain,
+      }),
+      chainId: market.chain,
+      suppliedTokenAddress: market.assets.borrowed.address,
+    },
+  }
+}
+
+const getBorrowEntry = (market: LlamaMarket, userAddress: Address | undefined): PositionQueryEntry | null => {
+  if (!market.userHasPositions?.Borrow) return null
+
+  return {
+    kind: 'borrow',
+    value: {
+      query:
+        market.type === LlamaMarketType.Lend
+          ? getUserLendingVaultStatsOptions({
+              contractAddress: market.controllerAddress,
+              userAddress,
+              blockchainId: market.chain,
+            })
+          : getUserMintMarketsStatsOptions({
+              contractAddress: market.controllerAddress,
+              userAddress,
+              blockchainId: market.chain,
+            }),
+      chainId: market.chain,
+      debtTokenAddress: market.assets.borrowed.address,
+      collateralTokenAddress: market.assets.collateral.address,
+      marketType: market.type,
+    },
+  }
+}
+
 /** Deduplicate token price lookup entries by chain and address. */
 const collectTokenEntries = <T,>(items: T[], getEntries: (item: T) => TokenPriceEntry[]) =>
   uniqBy(items.flatMap(getEntries), (entry) => `${entry.chainId}:${entry.contractAddress.toLowerCase()}`)
@@ -105,58 +149,16 @@ export const useUserPositionsSummary = ({
 
     const positionEntries = markets.flatMap((market) => {
       const isSupply = market.userHasPositions?.Supply
-      const isBorrow = market.userHasPositions?.Borrow
       if (!market.userHasPositions || (isSupply && !market.vaultAddress)) return []
 
-      const queryParams = {
-        userAddress,
-        blockchainId: market.chain,
-      }
-
-      const entries: PositionQueryEntry[] = []
-
-      if (isSupply && market.vaultAddress) {
-        const suppliedTokenAddress = market.assets.borrowed.address
-        entries.push({
-          kind: 'supply',
-          value: {
-            query: getUserLendingVaultEarningsOptions({ contractAddress: market.vaultAddress, ...queryParams }),
-            chainId: market.chain,
-            suppliedTokenAddress,
-          },
-        })
-      }
-
-      if (isBorrow) {
-        const debtTokenAddress = market.assets.borrowed.address
-        const collateralTokenAddress = market.assets.collateral.address
-        entries.push({
-          kind: 'borrow',
-          value: {
-            query:
-              market.type === LlamaMarketType.Lend
-                ? getUserLendingVaultStatsOptions({ contractAddress: market.controllerAddress, ...queryParams })
-                : getUserMintMarketsStatsOptions({ contractAddress: market.controllerAddress, ...queryParams }),
-            chainId: market.chain,
-            debtTokenAddress,
-            collateralTokenAddress,
-            marketType: market.type,
-          },
-        })
-      }
-
-      return entries
+      return notFalsy<PositionQueryEntry>(getSupplyEntry(market, userAddress), getBorrowEntry(market, userAddress))
     })
 
-    const [borrowEntries, supplyEntries] = partition(positionEntries, (entry) => entry.kind === 'borrow') as [
-      Array<{ kind: 'borrow'; value: BorrowPositionQuery }>,
-      Array<{ kind: 'supply'; value: SupplyPositionQuery }>,
-    ]
+    const [borrow, supply] = partition(positionEntries, (entry) => entry.kind === 'borrow').map((entries) =>
+      entries.map((entry) => entry.value),
+    ) as [BorrowPositionQuery[], SupplyPositionQuery[]]
 
-    return {
-      borrow: borrowEntries.map((entry) => entry.value),
-      supply: supplyEntries.map((entry) => entry.value),
-    }
+    return { borrow, supply }
   }, [markets, userAddress])
 
   // Collect unique token contract addresses to price positions in USD.
