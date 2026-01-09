@@ -1,6 +1,7 @@
 import { useCallback, useEffect } from 'react'
 import { useConnection } from 'wagmi'
 import LoanFormConnect from '@/loan/components/LoanFormConnect'
+import { SCRVUSD_VAULT_ADDRESS } from '@/loan/constants'
 import useStore from '@/loan/store/useStore'
 import type { NetworkUrlParams } from '@/loan/types/loan.types'
 import { useCurve } from '@ui-kit/features/connect-wallet'
@@ -138,7 +139,8 @@ const menu = [
   {
     value: 'swap',
     label: t`Swap`,
-    href: ({ network }) => `${getInternalUrl('dex', network, DEX_ROUTES.PAGE_SWAP)}?to=${CRVUSD_ADDRESS}`,
+    href: ({ network }) =>
+      `${getInternalUrl('dex', network, DEX_ROUTES.PAGE_SWAP)}?from=${SCRVUSD_VAULT_ADDRESS}&to=${CRVUSD_ADDRESS}`,
   },
 ] satisfies FormTab<NetworkUrlParams>[]
 
