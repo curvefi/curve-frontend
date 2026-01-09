@@ -11,7 +11,7 @@ import { BrowserWalletIcon } from '@ui-kit/shared/icons/BrowserWalletIcon'
 import { CoinbaseWalletIcon } from '@ui-kit/shared/icons/CoinbaseWalletIcon'
 import { SafeWalletIcon } from '@ui-kit/shared/icons/SafeWalletIcon'
 import { WalletConnectIcon } from '@ui-kit/shared/icons/WalletConnectIcon'
-import { WalletIcon } from '@ui-kit/shared/icons/WalletIcon'
+import { WalletIcon as DefaultWalletIcon } from '@ui-kit/shared/icons/WalletIcon'
 import { MenuItem } from '@ui-kit/shared/ui/MenuItem'
 import { ModalDialog } from '@ui-kit/shared/ui/ModalDialog'
 import { handleBreakpoints } from '@ui-kit/themes/basic-theme'
@@ -22,50 +22,41 @@ import { BINANCE_CONNECTOR_ID } from '../lib/wagmi/connectors'
 
 const { IconSize } = SizesAndSpaces
 
-type Icon = ReturnType<typeof createSvgIcon>
-
-type ConnectorInfo = {
-  label: string
-  icon: Icon
-}
-
-const CONNECTOR_INFO: Record<string, ConnectorInfo> = {
-  injected: { label: t`Browser Wallet`, icon: BrowserWalletIcon },
-  walletConnect: { label: t`Wallet Connect`, icon: WalletConnectIcon },
-  [BINANCE_CONNECTOR_ID]: { label: t`Binance Wallet`, icon: BinanceWalletIcon },
-  coinbaseWalletSDK: { label: t`Coinbase`, icon: CoinbaseWalletIcon },
-  safe: { label: t`Safe`, icon: SafeWalletIcon },
+const WALLET_ICONS: Record<string, ReturnType<typeof createSvgIcon>> = {
+  injected: BrowserWalletIcon,
+  walletConnect: WalletConnectIcon,
+  [BINANCE_CONNECTOR_ID]: BinanceWalletIcon,
+  coinbaseWalletSDK: CoinbaseWalletIcon,
+  safe: SafeWalletIcon,
 }
 
 const WALLET_ICON_SIZE = handleBreakpoints({ width: IconSize.xl, height: IconSize.xl })
 
+const WalletIcon = ({ connector }: { connector: Connector }) =>
+  ((Icon) =>
+    Icon ? (
+      <Icon sx={WALLET_ICON_SIZE} />
+    ) : connector.icon ? (
+      <Box component="img" src={connector.icon} alt={connector.name} sx={{ width: IconSize.xl, height: IconSize.xl }} />
+    ) : (
+      <DefaultWalletIcon sx={WALLET_ICON_SIZE} />
+    ))(WALLET_ICONS[connector.id])
+
 /** Menu item for each wallet type */
 const WalletListItem = ({
   connector,
-  label,
-  Icon,
   isLoading,
   onConnect,
 }: {
   connector: Connector
-  label: string
-  Icon?: Icon
   isLoading?: boolean
   onConnect: (connector: Connector) => Promise<void>
 }) => (
   <MenuItem
     key={connector.type}
-    label={label}
+    label={connector.name}
     labelVariant="bodyMBold"
-    icon={
-      Icon ? (
-        <Icon sx={WALLET_ICON_SIZE} />
-      ) : connector.icon ? (
-        <Box component="img" src={connector.icon} alt={label} sx={{ width: IconSize.xl, height: IconSize.xl }} />
-      ) : (
-        <WalletIcon sx={WALLET_ICON_SIZE} />
-      )
-    }
+    icon={<WalletIcon connector={connector} />}
     value={connector.id}
     onSelected={() => onConnect(connector)}
     isLoading={isLoading}
@@ -102,7 +93,7 @@ export const WagmiConnectModal = () => {
       open={showModal}
       onClose={closeModal}
       title={t`Connect Wallet`}
-      titleAction={<WalletIcon />}
+      titleAction={<DefaultWalletIcon />}
       compact
       sx={{
         /*
@@ -139,8 +130,6 @@ export const WagmiConnectModal = () => {
             <WalletListItem
               key={connector.id}
               connector={connector}
-              label={CONNECTOR_INFO[connector.id]?.label ?? connector.name}
-              Icon={CONNECTOR_INFO[connector.id]?.icon}
               onConnect={onConnect}
               isLoading={connectingToId == connector.id}
             />
