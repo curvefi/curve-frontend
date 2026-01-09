@@ -278,6 +278,7 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
       '0x83f24023d15d835a213df24fd309c47dab5beb32': yieldbasisAlert(),
       '0xf1f435b05d255a5dbde37333c0f61da6f69c6127': yieldbasisAlert(),
       '0xd9ff8396554a0d18b2cfbec53e1979b7ecce8373': yieldbasisAlert(),
+      '0x6e5492f8ea2370844ee098a56dd88e1717e4a9c2': yieldbasisAlert(),
       '0x06cf5f9b93e9fcfdb33d6b3791eb152567cd8d36': uspdioAlert(),
 
       // arbitrum

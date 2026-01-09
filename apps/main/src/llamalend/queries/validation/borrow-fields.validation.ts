@@ -1,5 +1,5 @@
 import { enforce, test, skipWhen } from 'vest'
-import { BORROW_PRESET_RANGES } from '@/llamalend/constants'
+import { PRESET_RANGES } from '@/llamalend/constants'
 import { Decimal } from '@ui-kit/utils'
 
 export const validateUserBorrowed = (userBorrowed: Decimal | null | undefined) => {
@@ -30,7 +30,7 @@ export const validateSlippage = (slippage: Decimal | null | undefined) => {
   })
 }
 
-export const validateRange = (range: number | null | undefined, { MaxLtv, Safe } = BORROW_PRESET_RANGES) => {
+export const validateRange = (range: number | null | undefined, { MaxLtv, Safe } = PRESET_RANGES) => {
   test('range', `Range must be number between ${MaxLtv} and ${Safe}`, () => {
     enforce(range).isNumeric().gte(MaxLtv).lte(Safe)
   })
