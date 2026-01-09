@@ -228,7 +228,6 @@ const meta: Meta<typeof TokenSelectorComponent> = {
     balances: defaultBalances,
     tokenPrices: defaultTokenPrices,
     disabled: false,
-    showManageList: true,
     compact: false,
     error: '',
     disabledTokens: defaultDisabledTokens,
@@ -257,10 +256,6 @@ const meta: Meta<typeof TokenSelectorComponent> = {
     disableSearch: {
       control: 'boolean',
       description: 'Disables search input in token selector modal',
-    },
-    showManageList: {
-      control: 'boolean',
-      description: 'Shows token list management options (currently disabled in UI but wired for future use)',
     },
     compact: {
       control: 'boolean',

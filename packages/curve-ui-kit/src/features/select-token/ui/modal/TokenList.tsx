@@ -1,5 +1,6 @@
 import lodash from 'lodash'
 import { type ReactNode, useMemo, useState } from 'react'
+import { notFalsy } from '@curvefi/prices-api/objects.util'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import Divider from '@mui/material/Divider'
@@ -36,7 +37,7 @@ export type TokenListProps = Pick<TokenSectionProps, 'tokens' | 'onToken'> &
 
 export const TokenList = ({
   tokens,
-  favorites: favorites,
+  favorites,
   balances,
   tokenPrices,
   error,
@@ -130,26 +131,18 @@ export const TokenList = ({
    * This keeps the UI clean while ensuring all tokens remain accessible.
    */
   const allTokens = useMemo(() => {
-    const allTokensBase = disableMyTokens
-      ? tokensSearched
-      : tokensSearched.filter((token) => +(balances?.[token.address] ?? 0) === 0)
+    const allTokensBase = notFalsy(
+      disableMyTokens ? tokensSearched : tokensSearched.filter((token) => +(balances?.[token.address] ?? 0) === 0),
 
-    // Add tokens that have balance but aren't in the preview (dust tokens)
-    // Only add dust tokens if we're still showing the preview (showPreviewMy is true)
-    // When showPreviewMy is false, those dust tokens should be in the myTokens section
-    if (showPreviewMy) {
-      const dustTokens = myTokens.filter(
-        (token) => !previewMy.some((previewToken) => previewToken.address === token.address),
-      )
-      allTokensBase.push(...dustTokens)
-    }
-
-    if (!disableSorting) {
-      // Sort all non-balance tokens by volume then symbol
-      allTokensBase.sort((a, b) => (b.volume ?? 0) - (a.volume ?? 0) || a.symbol.localeCompare(b.symbol))
-    }
-
-    return allTokensBase
+      showPreviewMy &&
+        // Add tokens that have balance but aren't in the preview (dust tokens)
+        // Only add dust tokens if we're still showing the preview (showPreviewMy is true)
+        // When showPreviewMy is false, those dust tokens should be in the myTokens section
+        myTokens.filter((token) => !previewMy.some((previewToken) => previewToken.address === token.address)),
+    ).flat()
+    return disableSorting
+      ? allTokensBase
+      : allTokensBase.sort((a, b) => (b.volume ?? 0) - (a.volume ?? 0) || a.symbol.localeCompare(b.symbol))
   }, [disableMyTokens, tokensSearched, showPreviewMy, myTokens, disableSorting, balances, previewMy])
 
   /**

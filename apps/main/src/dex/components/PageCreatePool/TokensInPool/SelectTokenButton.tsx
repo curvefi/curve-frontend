@@ -164,7 +164,7 @@ const SelectTokenButton = ({
         )}
       </ComboBoxButton>
       {overlayTriggerState.isOpen && (
-        <TokenSelectorModal showManageList isOpen compact={false} onClose={handleClose}>
+        <TokenSelectorModal isOpen compact={false} onClose={handleClose}>
           <TokenList
             tokens={options}
             favorites={favorites}

@@ -13,8 +13,6 @@ export type TokenSelectorModalCallbacks = {
 export type TokenSelectorModalProps = {
   /** Controls visibility of the modal */
   isOpen: boolean
-  /** Shows token list management options (currently disabled in UI but wired for future use) */
-  showManageList: boolean
   /** Controls whether the modal should use a compact layout with fixed height */
   compact: boolean
   /** The content of the modal */

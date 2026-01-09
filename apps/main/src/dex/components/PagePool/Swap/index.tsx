@@ -369,12 +369,7 @@ const Swap = ({
           balance={decimal(formValues.fromAmount)}
           inputBalanceUsd={decimal(formValues.fromAmount && fromUsdRate && fromUsdRate * +formValues.fromAmount)}
           tokenSelector={
-            <TokenSelector
-              selectedToken={fromToken}
-              disabled={isDisabled || selectList.length === 0}
-              showManageList={false}
-              compact
-            >
+            <TokenSelector selectedToken={fromToken} disabled={isDisabled || selectList.length === 0} compact>
               <TokenList
                 tokens={selectList}
                 disableSearch
@@ -443,12 +438,7 @@ const Swap = ({
           balance={decimal(formValues.toAmount)}
           disabled={isUndefined(hasRouter) || (!isUndefined(hasRouter) && !hasRouter) || isDisabled}
           tokenSelector={
-            <TokenSelector
-              selectedToken={toToken}
-              disabled={isDisabled || selectList.length === 0}
-              showManageList={false}
-              compact
-            >
+            <TokenSelector selectedToken={toToken} disabled={isDisabled || selectList.length === 0} compact>
               <TokenList
                 tokens={selectList}
                 disableSearch
