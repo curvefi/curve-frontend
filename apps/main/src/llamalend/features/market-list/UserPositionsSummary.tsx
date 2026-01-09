@@ -37,7 +37,6 @@ const UserPositionStatisticItem = ({
         // isLoading can still be true if there is an error
         loading={!hasError && isLoading}
         valueOptions={{
-          decimals: 2,
           unit: 'dollar',
         }}
         label={label}
