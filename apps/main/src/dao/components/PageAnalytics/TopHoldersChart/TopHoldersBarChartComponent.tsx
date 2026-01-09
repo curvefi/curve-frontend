@@ -91,7 +91,7 @@ const TopHoldersBarChart = ({ data, filter }: TopHoldersBarChartProps) => {
           />
           <Tooltip content={CustomTooltip} cursor={{ opacity: 0.3 }} />
           <Bar dataKey={filter} label={false} isAnimationActive={false}>
-            {dataFormatted.map((entry, index) => (
+            {dataFormatted.map((_entry, index) => (
               <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
             ))}
           </Bar>

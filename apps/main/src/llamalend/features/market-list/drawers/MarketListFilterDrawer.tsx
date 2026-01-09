@@ -76,7 +76,7 @@ export const MarketListFilterDrawer = ({
           )}
         </Grid>
         <DrawerHeader title={t`Extras Filters`} />
-        <LendingMarketsFilters {...filterProps} data={data} minLiquidity={minLiquidity} />
+        <LendingMarketsFilters {...filterProps} data={data} />
       </DrawerItems>
     </SwipeableDrawer>
   )

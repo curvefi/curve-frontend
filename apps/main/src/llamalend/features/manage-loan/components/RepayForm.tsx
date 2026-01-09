@@ -11,7 +11,7 @@ import { LoanFormTokenInput } from '@/llamalend/widgets/manage-loan/LoanFormToke
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { notFalsy } from '@curvefi/prices-api/objects.util'
 import Button from '@mui/material/Button'
-import { TokenSelector } from '@ui-kit/features/select-token'
+import { TokenList, type TokenOption, TokenSelector } from '@ui-kit/features/select-token'
 import { useTokenBalances } from '@ui-kit/hooks/useTokenBalance'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRates } from '@ui-kit/lib/model/entities/token-usd-rate'
@@ -27,8 +27,6 @@ import { useRepayForm } from '../hooks/useRepayForm'
  */
 const joinButtonText = (texts: string[]) =>
   texts.map((t, i) => (i ? `${i === texts.length - 1 ? ' & ' : ', '}${t}` : t)).join('')
-
-const favorites: RepayTokenOption[] = []
 
 function RepayTokenSelector<ChainId extends IChainId>({
   market,
@@ -59,18 +57,17 @@ function RepayTokenSelector<ChainId extends IChainId>({
     onSelect,
   })
   return (
-    <TokenSelector
-      selectedToken={selected}
-      showSearch={false}
-      showManageList={false}
-      disableSorting={true}
-      disableMyTokens={true}
-      tokens={options}
-      balances={tokenBalances}
-      tokenPrices={tokenPrices}
-      favorites={favorites}
-      onToken={onSelect}
-    />
+    <TokenSelector selectedToken={selected}>
+      <TokenList
+        disableSearch
+        disableSorting
+        disableMyTokens
+        tokens={options}
+        balances={tokenBalances}
+        tokenPrices={tokenPrices}
+        onToken={onSelect as (token: TokenOption) => void} // todo: implement new tokenList for RepayTokens
+      />
+    </TokenSelector>
   )
 }
 

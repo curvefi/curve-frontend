@@ -62,7 +62,7 @@ const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParametersProps) 
     }
   }, [future_A, future_A_time, initial_A, initial_A_time])
 
-  const returnPoolType = (poolType: string, coins: number) => {
+  const returnPoolType = (_poolType: string, coins: number) => {
     const isCrypto = poolData.pool.isCrypto
     const isNg = poolData.pool.isNg
 

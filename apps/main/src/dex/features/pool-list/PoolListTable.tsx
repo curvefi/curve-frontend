@@ -3,7 +3,7 @@ import { useNetworkFromUrl } from '@/dex/hooks/useChainId'
 import { type NetworkConfig } from '@/dex/types/main.types'
 import { notFalsy } from '@curvefi/prices-api/objects.util'
 import type { PartialRecord } from '@curvefi/prices-api/objects.util'
-import { ExpandedState, getPaginationRowModel, useReactTable } from '@tanstack/react-table'
+import { ExpandedState, getPaginationRowModel } from '@tanstack/react-table'
 import { CurveApi } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { MIN_POOLS_DISPLAYED, SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
@@ -11,7 +11,7 @@ import { useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { usePageFromQueryString } from '@ui-kit/hooks/usePageFromQueryString'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import { t } from '@ui-kit/lib/i18n'
-import { getTableOptions } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
 import { serializeRangeFilter } from '@ui-kit/shared/ui/DataTable/filters'
@@ -82,7 +82,8 @@ export const PoolListTable = ({ network, curve }: { network: NetworkConfig; curv
   })
   const [expanded, onExpandedChange] = useState<ExpandedState>({})
   const [searchText, onSearch] = useSearch(columnFiltersById, setColumnFilter)
-  const table = useReactTable({
+
+  const table = useTable({
     columns: POOL_LIST_COLUMNS,
     data: data ?? EMPTY,
     state: { expanded, sorting, columnVisibility, columnFilters, pagination },

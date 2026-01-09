@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 import { orderBy } from 'lodash'
 import { oneOf } from '@cy/support/generators'
 import { setShowSmallPools } from '@cy/support/helpers/user-profile'

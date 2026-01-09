@@ -79,7 +79,7 @@ const DEFAULT_STATE: SliceState = {
   formValues: DEFAULT_FORM_VALUES,
 }
 
-const createPoolSwapSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): PoolSwapSlice => ({
+const createPoolSwapSlice = (_set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): PoolSwapSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 
@@ -112,7 +112,7 @@ const createPoolSwapSlice = (set: StoreApi<State>['setState'], get: StoreApi<Sta
           })
           sliceState.setStateByActiveKey('ignoreExchangeRateCheck', pool.id, ignoreExchangeRateCheck)
           return ignoreExchangeRateCheck
-        } catch (error) {
+        } catch (_error) {
           // ignore error, only stablswap ng pools have stored_rates
           sliceState.setStateByActiveKey('ignoreExchangeRateCheck', pool.id, false)
           return false
@@ -477,7 +477,7 @@ const createPoolSwapSlice = (set: StoreApi<State>['setState'], get: StoreApi<Sta
     setStateByKey: <T>(key: StateKey, value: T) => {
       get().setAppStateByKey(sliceKey, key, value)
     },
-    setStateByKeys: <T>(sliceState: Partial<SliceState>) => {
+    setStateByKeys: (sliceState: Partial<SliceState>) => {
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: ({ tokens, tokenAddresses, isWrapped }) => {
@@ -547,7 +547,7 @@ function getReservesBalanceError(currencyReserves: CurrencyReserves, address: st
   return ''
 }
 
-export function getActiveKey({ fromAddress, fromAmount, toAmount, toAddress }: FormValues, maxSlippage: string) {
+export function getActiveKey({ fromAddress, fromAmount, toAddress }: FormValues, maxSlippage: string) {
   const parsedFromAddress = fromAddress ? fromAddress.slice(fromAddress.length - 4) : ''
   const parsedToAddress = toAddress ? toAddress.slice(toAddress.length - 4) : ''
   return `${parsedFromAddress}-${fromAmount}-${parsedToAddress}-${maxSlippage}`

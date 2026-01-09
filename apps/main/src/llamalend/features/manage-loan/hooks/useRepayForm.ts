@@ -5,7 +5,7 @@ import { useConnection } from 'wagmi'
 import { getTokens, hasLeverage } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { type RepayOptions, useRepayMutation } from '@/llamalend/mutations/repay.mutation'
-import { useBorrowCreateLoanIsApproved } from '@/llamalend/queries/create-loan/borrow-create-loan-approved.query'
+import { useCreateLoanIsApproved } from '@/llamalend/queries/create-loan/create-loan-approved.query'
 import { useRepayIsAvailable } from '@/llamalend/queries/repay/repay-is-available.query'
 import { useRepayIsFull } from '@/llamalend/queries/repay/repay-is-full.query'
 import { useUserState } from '@/llamalend/queries/user-state.query'
@@ -14,14 +14,14 @@ import { type RepayForm, repayFormValidationSuite } from '@/llamalend/queries/va
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { vestResolver } from '@hookform/resolvers/vest'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
-import { formDefaultOptions } from '@ui-kit/lib/model'
+import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 import { setValueOptions, useFormErrors } from '../../borrow/react-form.utils'
 
 const useCallbackAfterFormUpdate = (form: UseFormReturn<RepayForm>, callback: () => void) =>
   useEffect(() => form.subscribe({ formState: { values: true }, callback }), [form, callback])
 
-export const useRepayForm = <ChainId extends LlamaChainId, NetworkName extends LlamaNetworkId = LlamaNetworkId>({
+export const useRepayForm = <ChainId extends LlamaChainId>({
   market,
   network,
   enabled,
@@ -52,7 +52,7 @@ export const useRepayForm = <ChainId extends LlamaChainId, NetworkName extends L
     },
   })
 
-  const values = form.watch()
+  const values = watchForm(form)
 
   const params = useDebouncedValue(
     useMemo(
@@ -105,7 +105,7 @@ export const useRepayForm = <ChainId extends LlamaChainId, NetworkName extends L
     isRepaid,
     repayError,
     txHash: data?.hash,
-    isApproved: useBorrowCreateLoanIsApproved(params),
+    isApproved: useCreateLoanIsApproved(params),
     formErrors: useFormErrors(form.formState),
     isFull,
     userState,

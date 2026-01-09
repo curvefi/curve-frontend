@@ -1106,7 +1106,7 @@ const loanRepay = {
 }
 
 const loanSelfLiquidation = {
-  detailInfo: async (api: Api, market: OneWayMarketTemplate, slippage: string) => {
+  detailInfo: async (market: OneWayMarketTemplate, slippage: string) => {
     log('detailInfo', slippage)
     const resp: { tokensToLiquidate: string; futureRates: FutureRates | null; error: string } = {
       tokensToLiquidate: '',

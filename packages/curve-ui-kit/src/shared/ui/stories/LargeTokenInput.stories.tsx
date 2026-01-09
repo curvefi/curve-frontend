@@ -34,7 +34,7 @@ const TokenSelector = ({
         const selectedToken = e.target.value
         setValue(selectedToken)
         const selectedOption = TOKEN_OPTIONS.find((option) => option.name === selectedToken)
-        selectedOption && onTokenChange(selectedOption.walletBalance)
+        if (selectedOption) onTokenChange(selectedOption.walletBalance)
       }}
       size="small"
       displayEmpty
@@ -65,7 +65,7 @@ const LargeTokenInputWithTokenSelector = (props: LargeTokenInputProps) => {
         <TokenSelector
           onTokenChange={(newToken) => {
             // Check if for the WithoutWalletBalance story so selecting a token won't make pop up the wallet balance.
-            walletBalance && setWalletBalance(newToken)
+            if (walletBalance) setWalletBalance(newToken)
             inputRef.current?.resetBalance()
           }}
         />

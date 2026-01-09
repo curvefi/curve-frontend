@@ -31,14 +31,16 @@ const MySharesStats = ({
   const poolId = usePoolIdByAddressOrId({ chainId: rChainId, poolIdOrAddress: rPoolIdOrAddress })
   const userPoolActiveKey = curve && poolId ? getUserPoolActiveKey(curve, poolId) : ''
   const rewardsApy = useStore((state) => state.pools.rewardsApyMapper[rChainId]?.[poolId ?? ''])
-  const userCrvApy = useStore((state) => state.user.userCrvApy[userPoolActiveKey])
+  const { boostApy: userBoostApy, crvApy: userCrvApyValue } =
+    useStore((state) => state.user.userCrvApy[userPoolActiveKey]) ?? {}
   const userLiquidityUsd = useStore((state) => state.user.userLiquidityUsd[userPoolActiveKey])
   const userShare = useStore((state) => state.user.userShare[userPoolActiveKey])
   const userWithdrawAmounts =
     useStore((state) => state.user.userWithdrawAmounts[userPoolActiveKey]) ?? DEFAULT_WITHDRAW_AMOUNTS
 
   const haveBoosting = rChainId === 1
-  const haveCrvRewards = rewardsApy?.crv?.[0] !== 0
+  const crvRewards = rewardsApy?.crv
+  const haveCrvRewards = crvRewards?.[0] !== 0
   const { rewardsNeedNudging, areCrvRewardsStuckInBridge } = poolData?.gauge.status || {}
 
   const userShareLabel = useMemo(() => {
@@ -69,20 +71,20 @@ const MySharesStats = ({
   })
 
   const crvRewardsTooltipText = useMemo(() => {
-    if (haveBoosting && typeof rewardsApy?.crv?.[0] !== 'undefined' && userCrvApy?.boostApy && userCrvApy?.crvApy) {
+    if (haveBoosting && typeof crvRewards?.[0] !== 'undefined' && userBoostApy && userCrvApyValue) {
       return (
         <CrvRewardsTooltipWrapper>
           <tbody>
             <tr>
-              <td className="right">{formatNumber(rewardsApy.crv[0], FORMAT_OPTIONS.PERCENT)}</td>
+              <td className="right">{formatNumber(crvRewards[0], FORMAT_OPTIONS.PERCENT)}</td>
               <td>&nbsp;({t`min. CRV tAPR %`})</td>
             </tr>
             <tr>
-              <td className="right">x {formatNumber(userCrvApy.boostApy, FORMAT_OPTIONS.PERCENT)}</td>
+              <td className="right">x {formatNumber(userBoostApy, FORMAT_OPTIONS.PERCENT)}</td>
               <td>&nbsp;({t`your boost`})</td>
             </tr>
             <tr>
-              <td className="right">= {formatNumber(userCrvApy.crvApy, FORMAT_OPTIONS.PERCENT)}</td>
+              <td className="right">= {formatNumber(userCrvApyValue, FORMAT_OPTIONS.PERCENT)}</td>
               <td>%</td>
             </tr>
           </tbody>
@@ -90,7 +92,7 @@ const MySharesStats = ({
       )
     }
     return ''
-  }, [haveBoosting, rewardsApy?.crv, userCrvApy?.boostApy, userCrvApy?.crvApy])
+  }, [haveBoosting, crvRewards, userBoostApy, userCrvApyValue])
 
   return (
     <MyStatsContainer className={className}>
@@ -120,7 +122,7 @@ const MySharesStats = ({
             ) : (
               <Chip size="md" tooltip={crvRewardsTooltipText} tooltipProps={{ minWidth: '350px' }}>
                 {t`Your CRV Rewards tAPR:`}{' '}
-                {userCrvApy?.crvApy ? <strong>{formatNumber(userCrvApy.crvApy, FORMAT_OPTIONS.PERCENT)}</strong> : '-'}
+                {userCrvApyValue ? <strong>{formatNumber(userCrvApyValue, FORMAT_OPTIONS.PERCENT)}</strong> : '-'}
               </Chip>
             )}
             {haveBoosting && (
@@ -128,11 +130,7 @@ const MySharesStats = ({
                 <br />
                 <Chip size="md">
                   {t`Current Boost:`}{' '}
-                  {userCrvApy?.boostApy ? (
-                    <strong>{formatNumber(userCrvApy.boostApy, { maximumFractionDigits: 3 })}x</strong>
-                  ) : (
-                    '-'
-                  )}
+                  {userBoostApy ? <strong>{formatNumber(userBoostApy, { maximumFractionDigits: 3 })}x</strong> : '-'}
                 </Chip>
                 {/* TODO: future boost */}
               </>

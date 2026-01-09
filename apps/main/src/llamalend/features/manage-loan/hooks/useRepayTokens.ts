@@ -58,7 +58,7 @@ export const useRepayTokens = <ChainId extends LlamaChainId, NetworkId extends L
   network: { name: networkName, id: networkId },
 }: {
   market: LlamaMarketTemplate | undefined
-  network: { id: LlamaNetworkId; name: string }
+  network: { id: NetworkId; chainId: ChainId; name: string }
 }) => {
   const [selected, onSelect] = useState<RepayTokenOption | undefined>()
   const options = useMemo(() => getTokenOptions({ market, networkId, networkName }), [market, networkId, networkName])

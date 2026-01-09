@@ -75,6 +75,7 @@ const SelectTokenButton = ({
   }))
 
   if (!overlayTriggerState.isOpen) {
+    // eslint-disable-next-line react-hooks/refs
     visibleTokens.current = {}
   }
 
@@ -131,7 +132,11 @@ const SelectTokenButton = ({
   const handleClose = () => {
     setFilterValue('')
     setError(undefined)
-    isMobile ? delayAction(overlayTriggerState.close) : overlayTriggerState.close()
+    if (isMobile) {
+      delayAction(overlayTriggerState.close)
+    } else {
+      overlayTriggerState.close()
+    }
   }
 
   return chainId || basePoolsLoading ? (
@@ -159,30 +164,13 @@ const SelectTokenButton = ({
         )}
       </ComboBoxButton>
       {overlayTriggerState.isOpen && (
-        <TokenSelectorModal showManageList isOpen compact={false} onClose={handleClose}>
+        <TokenSelectorModal isOpen compact={false} onClose={handleClose}>
           <TokenList
             tokens={options}
             favorites={favorites}
-            balances={{}}
-            tokenPrices={{}}
-            showSearch={true}
             error={error}
-            disabledTokens={disabledKeys ?? []}
-            disableSorting={true}
-            disableMyTokens={false}
-            customOptions={
-              swapType === STABLESWAP && (
-                <Checkbox
-                  key={'filter-basepools'}
-                  isDisabled={basePools[chainId]?.length === 0}
-                  className={filterBasepools ? 'active' : ''}
-                  isSelected={filterBasepools}
-                  onChange={() => setFilterBasepools(!filterBasepools)}
-                >
-                  View Basepools
-                </Checkbox>
-              )
-            }
+            disabledTokens={disabledKeys}
+            disableSorting
             onToken={({ address }) => {
               onSelectionChange(address)
               setFilterBasepools(false)
@@ -192,7 +180,19 @@ const SelectTokenButton = ({
               setFilterValue(val)
               setError(undefined)
             }}
-          />
+          >
+            {swapType === STABLESWAP && (
+              <Checkbox
+                key={'filter-basepools'}
+                isDisabled={basePools[chainId]?.length === 0}
+                className={filterBasepools ? 'active' : ''}
+                isSelected={filterBasepools}
+                onChange={() => setFilterBasepools(!filterBasepools)}
+              >
+                View Basepools
+              </Checkbox>
+            )}
+          </TokenList>
         </TokenSelectorModal>
       )}
     </>

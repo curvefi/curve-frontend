@@ -82,10 +82,7 @@ export const defineMuiAlert = (
   },
 })
 
-export const defineMuiAlertTitle = (
-  {}: DesignSystem,
-  { bodySBold }: TypographyVariantsOptions,
-): Components['MuiAlertTitle'] => ({
+export const defineMuiAlertTitle = ({ bodySBold }: TypographyVariantsOptions): Components['MuiAlertTitle'] => ({
   styleOverrides: {
     root: handleBreakpoints({
       ...bodySBold,

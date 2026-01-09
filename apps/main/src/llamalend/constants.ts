@@ -1,19 +1,19 @@
 import type { HealthMode } from './llamalend.types'
 
 /**
- * Preset options for borrowing
- * @see BORROW_PRESET_RANGES
+ * Preset options for loan creation
+ * @see PRESET_RANGES
  **/
-export enum BorrowPreset {
+export enum LoanPreset {
   Safe = 'Safe',
   MaxLtv = 'MaxLtv',
   Custom = 'Custom',
 }
 
-export const BORROW_PRESET_RANGES = {
-  [BorrowPreset.Safe]: 50,
-  [BorrowPreset.MaxLtv]: 4,
-  [BorrowPreset.Custom]: 10,
+export const PRESET_RANGES = {
+  [LoanPreset.Safe]: 50,
+  [LoanPreset.MaxLtv]: 4,
+  [LoanPreset.Custom]: 10,
 }
 
 export const LLAMA_MONITOR_BOT_URL = 'https://t.me/LlamalendMonitorBot'

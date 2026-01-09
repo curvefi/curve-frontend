@@ -94,7 +94,7 @@ const PoolList = ({
       return keys.concat([COLUMN_KEYS.rewardsLite, COLUMN_KEYS.tvl])
     }
 
-    !isMobile ? keys.push(COLUMN_KEYS.rewardsDesktop) : keys.push(COLUMN_KEYS.rewardsMobile)
+    keys.push(isMobile ? COLUMN_KEYS.rewardsMobile : COLUMN_KEYS.rewardsDesktop)
     return keys.concat([COLUMN_KEYS.volume, COLUMN_KEYS.tvl])
   }, [isLite, isMobile, showInPoolColumn])
 

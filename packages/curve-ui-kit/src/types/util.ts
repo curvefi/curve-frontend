@@ -46,12 +46,12 @@ export type Query<T> = { data: T | undefined; isLoading: boolean; error: Error |
  * Preserves error and loading states while transforming the data.
  */
 export const mapQuery = <TSource extends object, TResult>(
-  { error, isLoading, data }: Query<TSource>,
+  { data, isLoading, error }: Query<TSource>,
   selector: (data: TSource) => TResult | null | undefined,
 ): Query<TResult> => ({
-  error,
   isLoading,
   data: (data && selector(data)) ?? undefined,
+  error,
 })
 
 /**
@@ -59,4 +59,4 @@ export const mapQuery = <TSource extends object, TResult>(
  * This is necessary because passing UseQueryResult to any react component will crash the rendering due to
  * react trying to serialize the react-query proxy object.
  */
-export const q = <T extends object>(result: UseQueryResult<T>): Query<T> => mapQuery(result, (data) => data)
+export const q = <T>({ data, isLoading, error }: UseQueryResult<T>): Query<T> => ({ data, isLoading, error })

@@ -40,12 +40,10 @@ const SelectedToken = ({ symbol, tokens }: { symbol: string; tokens: Dictionary<
  * Filters for the lending markets table. Includes filters for chain, collateral token, debt token, liquidity, and utilization.
  */
 export const LendingMarketsFilters = ({
-  minLiquidity = 0,
   data,
   ...filterProps
 }: FilterProps<LlamaMarketColumnId> & {
   data: LlamaMarket[]
-  minLiquidity?: number
 }) => {
   // Filter options are scoped to selected chains to prevent cross-chain filter data pollution.
   // Example: When viewing Ethereum markets, Arbitrum market data should not influence filter options.
