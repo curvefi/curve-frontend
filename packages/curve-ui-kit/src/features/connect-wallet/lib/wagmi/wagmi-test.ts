@@ -12,7 +12,7 @@ import {
 import { privateKeyToAccount } from 'viem/accounts'
 import { type CreateConnectorFn, createConnector } from 'wagmi'
 
-type ConnectParams<T> = { chainId?: number; isReconnecting?: boolean; withCapabilities: T }
+type ConnectParams<T> = { chainId?: number; withCapabilities: T }
 type ConnectResult<T> = { accounts: readonly T[]; chainId: number }
 type Account = { address: Address; capabilities: Record<string, unknown> }
 

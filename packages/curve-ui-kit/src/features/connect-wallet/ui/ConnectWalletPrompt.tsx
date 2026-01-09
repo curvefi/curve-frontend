@@ -1,3 +1,4 @@
+import { useConnection } from 'wagmi'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import { styled } from '@mui/material/styles'
@@ -10,7 +11,8 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 const { Spacing, MaxWidth } = SizesAndSpaces
 
 export const ConnectWalletPrompt = ({ description, testId }: { description: string; testId?: string }) => {
-  const { isReconnecting, connectState } = useCurve()
+  const { isReconnecting } = useConnection()
+  const { connectState } = useCurve()
   const { connect } = useWallet()
   const isConnecting = isLoading(connectState) || isReconnecting
   return (

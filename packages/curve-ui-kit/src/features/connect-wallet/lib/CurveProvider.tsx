@@ -40,7 +40,7 @@ export const CurveProvider = <App extends AppName>({
   const [connectState, setConnectState] = useState<ConnectState>(LOADING)
   const walletChainId = useChainId()
   const { mutateAsync: switchChainAsync } = useSwitchChain()
-  const { wallet, provider, isReconnecting } = useWagmiWallet()
+  const { wallet, provider } = useWagmiWallet()
   const isFocused = useIsDocumentFocused()
   const libKey = AppLibs[app]
   const config = useConfig()
@@ -50,7 +50,6 @@ export const CurveProvider = <App extends AppName>({
      * Checks the wallet chain if the network changes or the wallet is connected to a different chain.
      * Separate from the heavier `initApp` because `isFocused` changes often.
      */
-    if (isReconnecting) return // wait for wagmi to auto-reconnect
     if (!network) return onChainUnavailable(walletChainId) // will redirect to the wallet's chain if supported
     if (network.chainId == walletChainId) return // all good
     if (isFocused) {
@@ -61,10 +60,9 @@ export const CurveProvider = <App extends AppName>({
         setConnectState(FAILURE)
       })
     }
-  }, [isFocused, isReconnecting, walletChainId, network, onChainUnavailable, switchChainAsync, wallet])
+  }, [isFocused, walletChainId, network, onChainUnavailable, switchChainAsync, wallet])
 
   useEffect(() => {
-    if (isReconnecting) return // wait for wagmi to auto-reconnect
     const abort = new AbortController()
     const signal = abort.signal
 
@@ -117,7 +115,7 @@ export const CurveProvider = <App extends AppName>({
     }
     void initLib()
     return () => abort.abort()
-  }, [app, config, hydrate, isReconnecting, libKey, network, wallet, walletChainId])
+  }, [app, config, hydrate, libKey, network, wallet, walletChainId])
 
   // the following statements are skipping the render cycle, only update the libs when connectState changes too!
   const curveApi = globalLibs.getMatching('curveApi', wallet, network?.chainId)
@@ -130,7 +128,6 @@ export const CurveProvider = <App extends AppName>({
         connectState,
         network,
         isHydrated,
-        isReconnecting,
         ...(wallet && { wallet }),
         ...(provider && { provider }),
         ...(curveApi && { curveApi }),
