@@ -209,7 +209,7 @@ export const POOL_PRESETS: PRESETS = {
       gamma: '0.0001', // 10**14 (irrelevant for fx pools)
       allowedExtraProfit: '0.000000000001', // 1e-12 * 10**18
       feeGamma: '0.001', // 0.001 * 1e18
-      adjustmentStep: '0.0000001', // 1e-7 * 1e18
+      adjustmentStep: '0.005', // 0.5/100*10**18
       maHalfTime: '600', // 866 * 0.693 (half life in seconds)
     },
   },
