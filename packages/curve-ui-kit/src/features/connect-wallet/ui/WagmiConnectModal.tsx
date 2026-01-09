@@ -133,6 +133,8 @@ export const WagmiConnectModal = () => {
           .filter(
             (connector) => connector.type !== 'safe' || (typeof window !== 'undefined' && window !== window.parent),
           )
+          // TODO: check if we can remove the connector at the connectors.ts level. Hard to test being a geo-blocked dev.
+          .filter((connector) => connector.id !== BINANCE_CONNECTOR_ID || window.binancew3w?.ethereum)
           .map((connector) => (
             <WalletListItem
               key={connector.id}
