@@ -31,7 +31,7 @@ export const ChartFooter = <T extends string>({
       <Stack
         direction="row"
         alignItems="center"
-        gap={Spacing.md}
+        gap={Spacing.sm}
         flexWrap="wrap"
         justifyContent={hasToggle ? 'space-between' : undefined}
       >
