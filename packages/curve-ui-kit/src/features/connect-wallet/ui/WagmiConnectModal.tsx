@@ -45,14 +45,12 @@ const WalletListItem = ({
   label,
   Icon,
   isLoading,
-  isDisabled,
   onConnect,
 }: {
   connector: Connector
   label: string
   Icon?: Icon
   isLoading?: boolean
-  isDisabled?: boolean
   onConnect: (connector: Connector) => Promise<void>
 }) => (
   <MenuItem
@@ -71,7 +69,6 @@ const WalletListItem = ({
     value={connector.id}
     onSelected={() => onConnect(connector)}
     isLoading={isLoading}
-    disabled={isDisabled && !isLoading}
   />
 )
 
@@ -144,7 +141,6 @@ export const WagmiConnectModal = () => {
               Icon={CONNECTOR_INFO[connector.id]?.icon}
               onConnect={onConnect}
               isLoading={connectingToId == connector.id}
-              isDisabled={!!connectingToId}
             />
           ))}
       </MenuList>
