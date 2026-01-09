@@ -29,6 +29,7 @@ export const useWallet = () => {
   const { mutateAsync: connectAsync } = useConnect()
   const { mutate: disconnect } = useDisconnect()
 
+  // Opens modal when no connector given (clicking 'Connect Wallet' button), otherwise connects directly with the provided connector
   const connect = useCallback(
     async (connector?: Connector) => {
       // When using Cypress, we want to use the one and only (test) connector without blocking modal
