@@ -1,9 +1,9 @@
 import { useState } from 'react'
-import { Stack } from '@mui/material'
+import { Stack, Typography } from '@mui/material'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { LlamaIcon } from '../../shared/icons/LlamaIcon'
 import { TabsSwitcher, type TabOption, type TabsSwitcherProps } from '../../shared/ui/TabsSwitcher'
-import { TABS_SIZES_CLASSES } from '../components/tabs/mui-tabs'
+import { TAB_TEXT_VARIANTS, TABS_SIZES_CLASSES } from '../components/tabs/mui-tabs'
 import { SizesAndSpaces } from '../design/1_sizes_spaces'
 
 const { IconSize } = SizesAndSpaces
@@ -32,6 +32,20 @@ const getOptionsWithAdornments = (count: number, size: keyof typeof TABS_SIZES_C
       startAdornment: <LlamaIcon sx={{ width: iconSize, height: iconSize }} />,
       endAdornment: <LlamaIcon sx={{ width: iconSize, height: iconSize }} />,
     }),
+  }))
+}
+
+const getOptionsWithIconsOnly = (count: number, size: keyof typeof TABS_SIZES_CLASSES): TabOption<TabValue>[] => {
+  const iconSize = SIZE_TO_ICON_SIZE[size]
+
+  return DEFAULT_TABS.slice(0, count).map((tab) => ({
+    ...tab,
+    label: null,
+    startAdornment: (
+      <Typography variant={TAB_TEXT_VARIANTS[size]}>
+        <LlamaIcon sx={{ width: iconSize, height: iconSize }} />
+      </Typography>
+    ),
   }))
 }
 
@@ -189,6 +203,32 @@ export const OrientationVertical: Story = {
     docs: {
       description: {
         story: 'Tabs with vertical orientation for each variant and size',
+      },
+    },
+  },
+}
+
+export const IconsOnly: Story = {
+  render: () => (
+    <Stack gap={4}>
+      {(Object.keys(TABS_SIZES_CLASSES) as Array<keyof typeof TABS_SIZES_CLASSES>).map((size) => (
+        <Stack key={size} gap={4} direction="row" alignItems="center">
+          {(['contained', 'underlined', 'overlined'] as const).map((variant) => (
+            <TabsSwitcherWrapper
+              key={`${variant}-${size}`}
+              variant={variant}
+              size={size}
+              options={getOptionsWithIconsOnly(4, size)}
+            />
+          ))}
+        </Stack>
+      ))}
+    </Stack>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story: 'Icon-only tabs for each variant and size',
       },
     },
   },

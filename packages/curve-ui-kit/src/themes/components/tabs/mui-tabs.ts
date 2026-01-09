@@ -1,6 +1,7 @@
 import type { Components } from '@mui/material/styles'
 import type { TabsProps } from '@mui/material/Tabs'
 import { handleBreakpoints } from '@ui-kit/themes/basic-theme'
+import { TypographyVariantKey } from '@ui-kit/themes/typography'
 import { DesignSystem } from '../../design'
 import { SizesAndSpaces } from '../../design/1_sizes_spaces'
 
@@ -25,11 +26,17 @@ type TabStyle = { Label?: string; Fill?: string; Outline?: string }
 type TabVariant = { Inset?: string; Default: TabStyle; Hover: TabStyle; Current: TabStyle }
 type SpacingKey = keyof typeof Spacing | string | number
 
+type TabOrientationValues = Record<NonNullable<TabsProps['orientation']>, string>
+
+export const TAB_TEXT_VARIANTS = {
+  small: 'buttonXs',
+  medium: 'buttonS',
+  extraExtraLarge: 'headingMBold',
+} as const satisfies Record<keyof typeof TABS_SIZES_CLASSES, TypographyVariantKey>
+
 const BORDER_SIZE = '2px' as const
 const BORDER_SIZE_INACTIVE = '1px' as const
 const BORDER_SIZE_LARGE = '4px' as const
-
-type TabOrientationValues = Record<NonNullable<TabsProps['orientation']>, string>
 
 const TAB_HEIGHT: Record<keyof typeof TABS_SIZES_CLASSES, TabOrientationValues | string> = {
   small: ButtonSize.xs,

@@ -5,7 +5,6 @@ import Tabs, { type TabsProps } from '@mui/material/Tabs'
 import Typography, { type TypographyProps } from '@mui/material/Typography'
 import { RouterLink as Link } from '@ui-kit/shared/ui/RouterLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import type { TypographyVariantKey } from '@ui-kit/themes/typography'
 import {
   TABS_SIZES_CLASSES,
   HIDE_INACTIVE_BORDERS_CLASS,
@@ -13,15 +12,10 @@ import {
   TabSwitcherVariants,
   TAB_SUFFIX_CLASS,
   TAB_LABEL_CONTAINER_CLASS,
+  TAB_TEXT_VARIANTS,
 } from '../../themes/components/tabs'
 
 const { Spacing } = SizesAndSpaces
-
-const defaultTextVariants = {
-  small: 'buttonXs',
-  medium: 'buttonS',
-  extraExtraLarge: 'headingMBold',
-} as const satisfies Record<keyof typeof TABS_SIZES_CLASSES, TypographyVariantKey>
 
 export type TabOption<T> = Pick<TabProps, 'label' | 'disabled' | 'icon' | 'sx'> & {
   value: T
@@ -77,7 +71,7 @@ export const TabsSwitcher = <T extends string | number>({
             {startAdornment}
             {(label || suffix) && (
               <Stack direction="row" alignItems="baseline" gap={Spacing.xxs}>
-                {label && <Typography variant={textVariant ?? defaultTextVariants[size]}>{label}</Typography>}
+                {label && <Typography variant={textVariant ?? TAB_TEXT_VARIANTS[size]}>{label}</Typography>}
                 {suffix && (
                   <Typography variant="highlightXs" className={TAB_SUFFIX_CLASS}>
                     {suffix}
