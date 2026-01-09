@@ -28,9 +28,11 @@ const { IconSize } = SizesAndSpaces
  */
 const isInIframe = typeof window !== 'undefined' && window !== window.parent
 
+type Icon = ReturnType<typeof createSvgIcon>
+
 type ConnectorInfo = {
   label: string
-  icon: ReturnType<typeof createSvgIcon>
+  icon: Icon
 }
 
 const CONNECTOR_INFO = {
@@ -41,45 +43,43 @@ const CONNECTOR_INFO = {
   safe: { label: 'Safe', icon: SafeWalletIcon },
 } satisfies Record<(typeof CONNECTOR_IDS)[number], ConnectorInfo>
 
-/** Menu item for each wallet type. Only needed so we can useCallback */
+const WALLET_ICON_SIZE = handleBreakpoints({ width: IconSize.xl, height: IconSize.xl })
+
+/** Menu item for each wallet type */
 const WalletListItem = ({
   connector,
+  label,
+  Icon,
   isLoading,
   isDisabled,
   onConnect,
 }: {
   connector: Connector
+  label: string
+  Icon?: Icon
   isLoading?: boolean
   isDisabled?: boolean
   onConnect: (connector: Connector) => Promise<void>
-}) => {
-  const connectorId = connector.id as keyof typeof CONNECTOR_INFO
-  const { label = connector.name, icon: ConnectorIcon } = CONNECTOR_INFO[connectorId] ?? {}
-  const iconSize = handleBreakpoints({ width: IconSize.xl, height: IconSize.xl })
-
-  const handleSelect = useCallback(() => onConnect(connector), [onConnect, connector])
-
-  const icon = ConnectorIcon ? (
-    <ConnectorIcon sx={iconSize} />
-  ) : connector.icon ? (
-    <Box component="img" src={connector.icon} alt={label} sx={{ width: IconSize.xl, height: IconSize.xl }} />
-  ) : (
-    <WalletIcon sx={iconSize} />
-  )
-
-  return (
-    <MenuItem
-      key={connector.type}
-      label={label}
-      labelVariant="bodyMBold"
-      icon={icon}
-      value={connector.id}
-      onSelected={handleSelect}
-      isLoading={isLoading}
-      disabled={isDisabled && !isLoading}
-    />
-  )
-}
+}) => (
+  <MenuItem
+    key={connector.type}
+    label={label}
+    labelVariant="bodyMBold"
+    icon={
+      Icon ? (
+        <Icon sx={WALLET_ICON_SIZE} />
+      ) : connector.icon ? (
+        <Box component="img" src={connector.icon} alt={label} sx={{ width: IconSize.xl, height: IconSize.xl }} />
+      ) : (
+        <WalletIcon sx={WALLET_ICON_SIZE} />
+      )
+    }
+    value={connector.id}
+    onSelected={() => onConnect(connector)}
+    isLoading={isLoading}
+    disabled={isDisabled && !isLoading}
+  />
+)
 
 /**
  * Display a list of wallets to choose from, connecting to the selected one.
@@ -143,6 +143,8 @@ export const WagmiConnectModal = () => {
             <WalletListItem
               key={connector.id}
               connector={connector}
+              label={CONNECTOR_INFO[connector.id as keyof typeof CONNECTOR_INFO]?.label ?? connector.name}
+              Icon={CONNECTOR_INFO[connector.id as keyof typeof CONNECTOR_INFO]?.icon}
               onConnect={onConnect}
               isLoading={connectingToId == connector.id}
               isDisabled={!!connectingToId}
