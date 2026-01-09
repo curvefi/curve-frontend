@@ -33,7 +33,7 @@ export function getFractionDigitsOptions(val: number | string | undefined | null
 
 /** Wrapper function to keep the PR small. In the future all calls to this function should be replaced with a direct call to the new number formatter. */
 export const formatNumber = (val: number | string | undefined | null, options?: NumberFormatOptions) =>
-  val == null || (typeof val === 'number' && isNaN(val))
+  val == null || (typeof val === 'number' && isNaN(val)) || val === ''
     ? (options?.defaultValue ?? '-')
     : newFormatNumber(Number(val), {
         ...options,

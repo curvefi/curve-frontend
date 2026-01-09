@@ -1,5 +1,7 @@
+import type { UrlObject } from 'url'
 import { type ComponentType, type ReactNode, useState } from 'react'
 import { notFalsy } from '@curvefi/prices-api/objects.util'
+import Skeleton from '@mui/material/Skeleton'
 import Stack from '@mui/material/Stack'
 import { type TabOption, TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
 import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
@@ -20,6 +22,8 @@ export type FormTab<Props extends object> = {
   value: string
   /** Label of the tab, can be a function that receives the form props */
   label: FnOrValue<Props, ReactNode>
+  /** Optional href for tabs that should link out instead of rendering content */
+  href?: FnOrValue<Props, string | UrlObject>
   /** Optional sub-tabs of the tab */
   subTabs?: FormSubTab<Props>[]
   /** Function or value to determine if the tab is visible */
@@ -36,10 +40,11 @@ const createOptions = <Props extends object>(
 ): TabOption<string>[] =>
   tabs
     ?.filter(({ visible }) => applyFnOrValue(visible, params) !== false)
-    .map(({ value, label, disabled }) => ({
+    .map(({ value, label, disabled, href }) => ({
       value,
       label: applyFnOrValue(label, params),
       disabled: applyFnOrValue(disabled, params),
+      href: applyFnOrValue(href, params),
     })) ?? []
 
 const selectVisible = <Props extends object, Tab extends FormSubTab<Props>>(
@@ -68,9 +73,12 @@ function useFormTabs<T extends object>({ menu, params }: UseFormTabOptions<T>) {
   const subTabs = createOptions(tab.subTabs, params)
 
   const components = notFalsy(subTab?.component, tab.component)
-  if (components.length != 1) throw new Error(`${components.length} components found for [${tabKey}, ${subTabKey}]`)
+  const urls = notFalsy(subTab?.href, tab.href)
+  if (components.length + urls.length != 1)
+    throw new Error(`${components.length} components and ${urls.length} urls found for [${tabKey}, ${subTabKey}]`)
 
-  return { tab, tabs, subTabs, subTab, Component: components[0], onChangeTab, onChangeSubTab }
+  const Component = components[0] || Skeleton // skeleton just for mui Tab validation, won't be rendered due to href
+  return { tab, tabs, subTabs, subTab, Component, onChangeTab, onChangeSubTab }
 }
 
 const marginInline = { mobile: 'auto', desktop: 0 } as const

@@ -50,8 +50,8 @@ export const useReleaseChannel = () =>
 export const useFilterExpanded = (tableTitle: string) =>
   useLocalStorage<boolean>(`filter-expanded-${kebabCase(tableTitle)}`, false)
 
-export const useBorrowPreset = <T extends 'Safe' | 'MaxLtv' | 'Custom'>(defaultValue: T) =>
-  useLocalStorage<T>('borrow-preset', defaultValue)
+export const useCreateLoanPreset = <T extends 'Safe' | 'MaxLtv' | 'Custom'>(defaultValue: T) =>
+  useLocalStorage<T>('create-loan-preset', defaultValue)
 
 export const useTableColumnVisibility = <Variant extends string, ColumnIds>(
   tableTitle: string,

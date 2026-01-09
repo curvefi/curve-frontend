@@ -4,13 +4,13 @@ import { useMarketOraclePrice } from '@/llamalend/queries/market-oracle-price.qu
 import type { LiquidationRangeData } from '@/llamalend/widgets/ChartLiquidationRange'
 import { t } from '@ui-kit/lib/i18n'
 import { useCreateLoanPrices } from '../../../queries/create-loan/create-loan-prices.query'
-import type { BorrowFormQueryParams } from '../types'
+import type { CreateLoanFormQueryParams } from '../types'
 
 /**
- * Retrieves the liquidation range chart data for the borrow form.
+ * Retrieves the liquidation range chart data for the create loan form.
  * Queries are always enabled since the data is used on the OHLC chart, even if the ChartLiquidationRange is invisible.
  */
-export const useLiquidationRangeChartData = (params: BorrowFormQueryParams): LiquidationRangeData[] => {
+export const useLiquidationRangeChartData = (params: CreateLoanFormQueryParams): LiquidationRangeData[] => {
   const { data: prices } = useCreateLoanPrices(params)
   const { data: oraclePrice } = useMarketOraclePrice(params)
   const { data: oraclePriceBand } = useMarketOraclePriceBand(params)

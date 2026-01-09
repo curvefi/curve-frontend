@@ -93,6 +93,18 @@ const DEPRECATED_LLAMAS: PartialRecord<Chain, Record<Address, string>> = {
     // iBTC-crvUSD lend market
     '0x3e293dB65c81742e32b74E21A0787d2936beeDf7': t`iBTC is undergoing systematic unwinding`,
   },
+  sonic: {
+    // sTS-crvUSD lend market
+    '0xB8C93fb97884Ea07c2Eb0eA741f78D10e8C5aF9F': t`This market is deprecated.`,
+    // scETH-crvUSD lend market
+    '0x7547E577B3DDC23c02E10792457f8e51a225692E': t`This market is deprecated.`,
+    // wS-crvUSD lend market
+    '0x5eD490a9B71fa797231d2c5D9bE25bf91a953C19': t`This market is deprecated.`,
+    // scUSD-crvUSD lend market
+    '0xbb7A0C558Fd34234Dc1608f4CD0a334E0075D73a': t`This market is deprecated.`,
+    // wOS-crvUSD lend market
+    '0xDC06056e208aB92bF173FF6DD662F1018ea0E483': t`This market is deprecated.`,
+  },
 }
 
 /**

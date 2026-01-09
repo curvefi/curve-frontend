@@ -11,9 +11,9 @@ import {
 } from '@/llamalend/queries/validation/borrow-fields.validation'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
-import { type BorrowDebtParams, type BorrowForm } from '../../features/borrow/types'
+import { type CreateLoanDebtParams, type CreateLoanForm } from '../../features/borrow/types'
 
-export const borrowFormValidationGroup = (
+export const createLoanFormValidationGroup = (
   {
     userBorrowed,
     userCollateral,
@@ -23,14 +23,14 @@ export const borrowFormValidationGroup = (
     maxDebt,
     maxCollateral,
     leverageEnabled,
-  }: FieldsOf<BorrowForm>,
+  }: FieldsOf<CreateLoanForm>,
   {
     debtRequired,
     isMaxDebtRequired,
     isLeverageRequired,
   }: { debtRequired: boolean; isMaxDebtRequired: boolean; isLeverageRequired: boolean },
 ) =>
-  group('borrowFormValidationGroup', () => {
+  group('createLoanFormValidationGroup', () => {
     validateUserBorrowed(userBorrowed)
     validateUserCollateral(userCollateral)
     validateDebt(debt, debtRequired)
@@ -41,7 +41,7 @@ export const borrowFormValidationGroup = (
     validateLeverageEnabled(leverageEnabled, isLeverageRequired)
   })
 
-export const borrowQueryValidationSuite = ({
+export const createLoanQueryValidationSuite = ({
   debtRequired,
   isMaxDebtRequired = debtRequired,
   isLeverageRequired = false,
@@ -52,12 +52,12 @@ export const borrowQueryValidationSuite = ({
   isLeverageRequired?: boolean
   skipMarketValidation?: boolean
 }) =>
-  createValidationSuite((params: BorrowDebtParams) => {
+  createValidationSuite((params: CreateLoanDebtParams) => {
     const { chainId, leverageEnabled, marketId, userBorrowed, userCollateral, debt, range, slippage, maxDebt } = params
     skipWhen(skipMarketValidation, () => {
       marketIdValidationSuite({ chainId, marketId })
     })
-    borrowFormValidationGroup(
+    createLoanFormValidationGroup(
       { userBorrowed, userCollateral, debt, range, slippage, leverageEnabled, maxDebt },
       { debtRequired, isMaxDebtRequired, isLeverageRequired },
     )

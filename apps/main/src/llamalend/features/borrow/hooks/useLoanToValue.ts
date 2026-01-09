@@ -3,7 +3,7 @@ import { useCreateLoanExpectedCollateral } from '@/llamalend/queries/create-loan
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { Decimal } from '@ui-kit/utils'
-import type { BorrowFormQueryParams, Token } from '../types'
+import type { CreateLoanFormQueryParams, Token } from '../types'
 
 /**
  * Hook to calculate the Loan to Value (LTV) ratio in percentage points.
@@ -19,7 +19,7 @@ export const useLoanToValue = <ChainId extends IChainId>(
     collateralToken,
     borrowToken,
   }: {
-    params: BorrowFormQueryParams<ChainId>
+    params: CreateLoanFormQueryParams<ChainId>
     collateralToken: Token | undefined
     borrowToken: Token | undefined
   },

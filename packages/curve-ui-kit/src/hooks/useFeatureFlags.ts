@@ -16,7 +16,10 @@ const useStableChannel = () => useReleaseChannel()[0] !== ReleaseChannel.Legacy
 const useAlphaChannel = () => useBetaChannel() && defaultReleaseChannel === ReleaseChannel.Beta
 
 /** LargeTokenInput replaces legacy amount inputs */
-const useLargeTokenInput = useStableChannel
+export const useLargeTokenInput = useStableChannel
+
+/** LargeTokenInput specifically for scrvUSD page, was implemented after the rest */
+export const useLargeTokenInputScrvusd = useBetaChannel
 
 /** Negation of useLargeTokenInput for readability. */
 export const useLegacyTokenInput = () => !useLargeTokenInput()

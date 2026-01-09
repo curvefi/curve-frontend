@@ -57,14 +57,15 @@ const InputComp = ({
               <Loader isLightBg skeleton={[36, 14]} />
             ) : (
               <WalletBalance>
-                {formatNumber(walletBalance, { minimumFractionDigits: 2, maximumFractionDigits: 4 })}{' '}
-                {walletBalanceSymbol}
+                {walletBalance
+                  ? `${formatNumber(walletBalance, { minimumFractionDigits: 2, maximumFractionDigits: 4 })} ${walletBalanceSymbol}`
+                  : '-'}
               </WalletBalance>
             )}
           </BalancesWrapper>
         </WalletBalanceWrapper>
       </Box>
-      {!readOnly && <StyledButton variant="filled" onClick={setMax}>{t`Max`}</StyledButton>}
+      {!readOnly && setMax && <StyledButton variant="filled" onClick={setMax}>{t`Max`}</StyledButton>}
     </InputCompWrapper>
   )
 }

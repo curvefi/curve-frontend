@@ -4,10 +4,10 @@ import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
 import { assert, decimal, Decimal } from '@ui-kit/utils'
-import type { BorrowFormQuery } from '../../features/borrow/types'
-import { borrowFormValidationGroup } from '../validation/borrow.validation'
+import type { CreateLoanFormQuery } from '../../features/borrow/types'
+import { createLoanFormValidationGroup } from '../validation/borrow.validation'
 
-type CreateLoanMaxReceiveQuery = Omit<BorrowFormQuery, 'userCollateral' | 'debt'> & { userCollateral: Decimal }
+type CreateLoanMaxReceiveQuery = Omit<CreateLoanFormQuery, 'userCollateral' | 'debt'> & { userCollateral: Decimal }
 type CreateLoanMaxReceiveParams = FieldsOf<CreateLoanMaxReceiveQuery>
 
 type CreateLoanMaxReceiveResult = {
@@ -49,7 +49,7 @@ export const maxReceiveValidation = createValidationSuite(
     leverageEnabled,
   }: CreateLoanMaxReceiveParams) => {
     marketIdValidationSuite({ chainId, marketId })
-    borrowFormValidationGroup(
+    createLoanFormValidationGroup(
       { userBorrowed, userCollateral, debt: undefined, range, slippage, leverageEnabled },
       { debtRequired: false, isMaxDebtRequired: false, isLeverageRequired: false },
     )
