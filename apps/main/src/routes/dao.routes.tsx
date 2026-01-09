@@ -27,11 +27,6 @@ export const daoRoutes = daoLayoutRoute.addChildren([
     ...layoutProps,
   }),
   createRoute({
-    path: '$network/integrations',
-    loader: ({ params: { network } }) => redirectTo(`/dex/${network}/integrations/`),
-    ...layoutProps,
-  }),
-  createRoute({
     path: '$network/analytics',
     component: PageAnalytics,
     head: () => ({

@@ -1,5 +1,4 @@
 import CrvStaking from '@/loan/components/PageCrvUsdStaking/Page'
-import { PageIntegrations } from '@/loan/components/PageIntegrations/Page'
 import { MintMarketPage } from '@/loan/components/PageMintMarket/MintMarketPage'
 import { Page as PegKeepersPage } from '@/loan/components/PagePegKeepers'
 import { CrvUsdClientLayout } from '@/loan/CrvUsdClientLayout'
@@ -26,14 +25,6 @@ export const crvusdRoutes = crvusdLayoutRoute.addChildren([
   createRoute({
     path: '$network/beta-markets',
     loader: ({ params: { network } }) => redirectTo(`/llamalend/${network}/markets/`),
-    ...layoutProps,
-  }),
-  createRoute({
-    path: '$network/integrations',
-    component: PageIntegrations,
-    head: () => ({
-      meta: [{ title: 'Integrations - Curve' }],
-    }),
     ...layoutProps,
   }),
   createRoute({

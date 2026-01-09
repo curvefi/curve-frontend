@@ -7,7 +7,7 @@ import MenuItem from '@mui/material/MenuItem'
 import Select from '@mui/material/Select'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { BLOCKCHAIN_LEGACY_NAMES, type BaseConfig } from '@ui/utils'
+import { BLOCKCHAIN_LEGACY_NAMES } from '@ui/utils'
 import { useNavigate, useSearchParams } from '@ui-kit/hooks/router'
 import { t, Trans } from '@ui-kit/lib/i18n'
 import { ChainIcon } from '@ui-kit/shared/icons/ChainIcon'
@@ -23,19 +23,31 @@ import { IntegrationAppTag } from './IntegrationAppTag'
 
 const { Spacing, Sizing, ButtonSize } = SizesAndSpaces
 
-const NetworkItem = ({ network }: { network?: BaseConfig }) => (
+const NetworkItem = ({ networkId }: { networkId: string }) => (
   <Stack direction="row" gap={Spacing.sm} alignItems="center">
-    {network && <ChainIcon blockchainId={network.networkId} size="sm" />}
-    <Typography>{network?.name ?? '?'}</Typography>
+    <ChainIcon blockchainId={networkId} size="sm" />
+    <Typography>{networkId}</Typography>
   </Stack>
 )
 
-export type IntegrationsListProps = { chainId?: number; networks: BaseConfig[] }
-
-export const IntegrationsList = ({ chainId, networks }: IntegrationsListProps) => {
+export const IntegrationsList = ({ networkId }: { networkId?: string }) => {
   const { data: integrations = [], isLoading: integrationsLoading } = useIntegrations({})
   const { data: tags = {}, isLoading: integrationsTagsLoading } = useIntegrationsTags({})
   const isLoading = integrationsLoading || integrationsTagsLoading
+
+  // Collect the unique list of networks from the integrations response
+  const networks = useMemo(
+    () => [
+      ...new Set(
+        integrations.flatMap((integration) =>
+          Object.entries(integration.networks)
+            .filter(([, enabled]) => enabled)
+            .map(([networkId]) => networkId),
+        ),
+      ),
+    ],
+    [integrations],
+  )
 
   const push = useNavigate()
   const searchParams = useSearchParams()
@@ -43,17 +55,20 @@ export const IntegrationsList = ({ chainId, networks }: IntegrationsListProps) =
   const [searchText, setSearchText] = useState('')
 
   const filterTag = useMemo(() => tags?.[searchParams?.get('tag') ?? 'all']?.id, [searchParams, tags])
-  const filterNetwork = networks.find((network) => network.chainId === Number(searchParams?.get('chainId') || chainId))
+  const filterNetwork = useMemo(
+    () => networks.find((network) => network === searchParams?.get('network')) || networkId,
+    [networkId, networks, searchParams],
+  )
 
   const updateFilters = useCallback(
-    ({ tag, chainId }: { tag?: Tag; chainId?: number }) => {
+    ({ tag, network }: { tag?: Tag; network?: string }) => {
       const pTag = tag ?? filterTag
-      const pChainId = chainId ?? filterNetwork?.chainId ?? ''
+      const pNetwork = network ?? filterNetwork
 
       push(
         `?${new URLSearchParams({
           ...(pTag && { tag: pTag.toString() }),
-          ...(pChainId && { chainId: pChainId.toString() }),
+          ...(pNetwork && { network: pNetwork.toString() }),
         })}`,
       )
     },
@@ -64,8 +79,7 @@ export const IntegrationsList = ({ chainId, networks }: IntegrationsListProps) =
     // Revert back to the original name if there was a chain rename, it seems the integration list was never
     // updated to use the new blockchain names like 'xdai' rather than 'gnosis'.
     const networkId =
-      Object.entries(BLOCKCHAIN_LEGACY_NAMES).find(([, rename]) => rename === filterNetwork?.networkId)?.[0] ??
-      filterNetwork?.networkId
+      Object.entries(BLOCKCHAIN_LEGACY_NAMES).find(([, rename]) => rename === filterNetwork)?.[0] ?? filterNetwork
 
     const list = [...(integrations ?? [])]
       .filter((app) => filterTag === 'all' || app.tags[filterTag || ''])
@@ -88,17 +102,17 @@ export const IntegrationsList = ({ chainId, networks }: IntegrationsListProps) =
         <Stack direction={{ mobile: 'column', tablet: 'row' }} spacing={Spacing.xs} alignItems="center">
           <Select
             aria-label={t`Select network`}
-            value={filterNetwork?.chainId}
+            value={filterNetwork}
             onChange={(e) => {
-              updateFilters({ chainId: Number(e.target.value) })
+              updateFilters({ network: e.target.value })
             }}
             displayEmpty
-            renderValue={() => <NetworkItem network={filterNetwork} />}
+            renderValue={() => <NetworkItem networkId={filterNetwork ?? 'ethereum'} />}
             sx={{ minWidth: '12rem' /* purely aesthetic */, height: ButtonSize.md }}
           >
             {networks.map((network) => (
-              <MenuItem key={network.chainId} value={network.chainId}>
-                <NetworkItem network={network} />
+              <MenuItem key={network} value={network}>
+                <NetworkItem networkId={network} />
               </MenuItem>
             ))}
           </Select>

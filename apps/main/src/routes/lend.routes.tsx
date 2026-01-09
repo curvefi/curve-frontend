@@ -1,4 +1,3 @@
-import { PageIntegrations } from '@/lend/components/PageIntegrations/Page'
 import { LendMarketPage } from '@/lend/components/PageLendMarket/LendMarketPage'
 import PageVault from '@/lend/components/PageVault/Page'
 import { LendLayout } from '@/lend/LendLayout'
@@ -21,14 +20,6 @@ export const lendRoutes = lendLayoutRoute.addChildren([
   createRoute({
     path: '$network',
     loader: ({ params: { network } }) => redirectTo(`/lend/${network}/markets`),
-    ...layoutProps,
-  }),
-  createRoute({
-    path: '$network/integrations',
-    component: PageIntegrations,
-    head: () => ({
-      meta: [{ title: 'Integrations - Curve Lend' }],
-    }),
     ...layoutProps,
   }),
   createRoute({
