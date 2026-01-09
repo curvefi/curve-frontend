@@ -1,29 +1,26 @@
 import { useEffect, useState } from 'react'
 import { styled } from 'styled-components'
-import LiquidityData from '@/dex/components/PagePool/PoolDetails/ChartOhlcWrapper/LiquidityData'
-import TradesData from '@/dex/components/PagePool/PoolDetails/ChartOhlcWrapper/TradesData'
+import LiquidityData from '@/dex/components/OhlcAndActivityComp/LiquidityData'
+import TradesData from '@/dex/components/OhlcAndActivityComp/TradesData'
 import useStore from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
 import Button from '@ui/Button/Button'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import { DEFAULT_CHART_HEIGHT } from '@ui-kit/features/candle-chart/constants'
 import type { LpTradeToken, PricesApiCoin } from '@ui-kit/features/candle-chart/types'
 import { t } from '@ui-kit/lib/i18n'
 
-const MIN_HEIGHT = 330
-
-const PoolActivity = ({
-  chainId,
-  poolAddress,
-  coins,
-  tradesTokens,
-  chartCombinations,
-}: {
+type PoolActivityProps = {
   poolAddress: string
   chainId: ChainId
   coins: PricesApiCoin[]
   tradesTokens: LpTradeToken[]
   chartCombinations: PricesApiCoin[][]
-}) => {
+}
+
+const CHART_HEIGHT = DEFAULT_CHART_HEIGHT + 48 // 48px is the height of the section header
+
+const PoolActivity = ({ chainId, poolAddress, coins, tradesTokens, chartCombinations }: PoolActivityProps) => {
   const activityStatus = useStore((state) => state.pools.pricesApiState.activityStatus)
   const tradeEventsData = useStore((state) => state.pools.pricesApiState.tradeEventsData)
   const liquidityEventsData = useStore((state) => state.pools.pricesApiState.liquidityEventsData)
@@ -36,7 +33,7 @@ const PoolActivity = ({
   }, [chainId, chartCombinations, fetchPricesApiActivity, poolAddress])
 
   return (
-    <Wrapper>
+    <Wrapper maxHeight={`${CHART_HEIGHT}px`}>
       <SectionHeader>
         <>
           <SectionTitle>{eventOption === 'TRADE' ? t`Swaps` : t`Liquidity`}</SectionTitle>
@@ -64,7 +61,7 @@ const PoolActivity = ({
             <EventTitle>{eventOption === 'TRADE' ? t`Swap` : t`Action`}</EventTitle>
             <TimestampColumnTitle>{t`Time`}</TimestampColumnTitle>
           </TitlesRow>
-          <ElementsContainer minHeight={MIN_HEIGHT}>
+          <ElementsContainer minHeight={DEFAULT_CHART_HEIGHT}>
             {eventOption === 'TRADE' ? (
               tradeEventsData.length === 0 ? (
                 <SpinnerWrapper>
@@ -84,12 +81,12 @@ const PoolActivity = ({
         </GridContainer>
       )}
       {activityStatus === 'LOADING' && (
-        <SpinnerWrapper minHeight={`${MIN_HEIGHT}px`}>
+        <SpinnerWrapper minHeight={`${DEFAULT_CHART_HEIGHT}px`}>
           <Spinner size={18} />
         </SpinnerWrapper>
       )}
       {activityStatus === 'ERROR' && (
-        <SpinnerWrapper minHeight={`${MIN_HEIGHT}px`}>
+        <SpinnerWrapper minHeight={`${DEFAULT_CHART_HEIGHT}px`}>
           <ErrorMessage>{t`There was an error fetching the pool activity data.`}</ErrorMessage>
         </SpinnerWrapper>
       )}
@@ -97,10 +94,10 @@ const PoolActivity = ({
   )
 }
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ maxHeight: string }>`
   display: flex;
   flex-direction: column;
-  max-height: 350px;
+  max-height: ${(props) => props.maxHeight};
 `
 
 const SectionHeader = styled.div`

@@ -7,78 +7,117 @@ import Stack from '@mui/material/Stack'
 import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import Typography from '@mui/material/Typography'
-import type { TimeOption } from '@ui-kit/lib/types/scrvusd'
+import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import type { SxProps } from '@ui-kit/utils/mui'
 
 const { Spacing } = SizesAndSpaces
 
-export type ChartOption<T = string> = {
+export type ChartSelections<TChartKey = string> = {
+  /** Display title of the active selection (in the button-group variant it's on the left) */
   activeTitle: string
+  /** Select dropdown menu item label or button-group button label */
   label: string
-  key: T
+  key: TChartKey
 }
 
-type ChartHeaderProps<T = string> = {
-  isChartExpanded: boolean
-  toggleChartExpanded: () => void
-  chartOptions: ChartOption<T>[]
-  // set timeOptions to show select dropdown
-  timeOptions?: TimeOption[]
-  activeChartOption: T
-  setActiveChartOption: (value: T) => void
-  activeTimeOption?: TimeOption
-  setActiveTimeOption?: (newTimeOption: TimeOption) => void
-  /* 
-  hideExpandChart is used to hide the expand chart button when the
-  chart is already taking up the full width of the viewport
-  */
-  hideExpandChart?: boolean
-}
-
-const ChartHeader = <T extends string>({
-  isChartExpanded,
-  toggleChartExpanded,
-  chartOptions,
-  timeOptions,
-  activeChartOption,
-  setActiveChartOption,
-  activeTimeOption,
-  setActiveTimeOption,
-  hideExpandChart = false,
-}: ChartHeaderProps<T>) => {
-  const handleChartOption = (_: MouseEvent<HTMLElement>, key: T) => {
-    // ensure that one option is always selected by checking null
-    if (key !== null) setActiveChartOption(key)
+type ChartHeaderProps<TChartKey extends string = string, TTimeOption extends string = string> = {
+  chartSelections: {
+    selections: ChartSelections<TChartKey>[]
+    activeSelection: TChartKey | undefined
+    setActiveSelection: (value: TChartKey) => void
   }
-  const handleTimeOption = (event: SelectChangeEvent<TimeOption>) => {
-    if (event.target.value !== null && setActiveTimeOption) setActiveTimeOption(event.target.value as TimeOption)
+  timeOption?: {
+    options: TTimeOption[]
+    activeOption: TTimeOption
+    setActiveOption: (newTimeOption: TTimeOption) => void
+  }
+  expandChart?: {
+    isExpanded: boolean
+    toggleChartExpanded: () => void
+  }
+  chartOptionVariant: 'select' | 'buttons-group'
+  customButton?: React.ReactNode
+  /** When true, displays "Loading" in the chart selection area and disables interaction */
+  isLoading?: boolean
+  sx?: SxProps[]
+}
+
+const ChartHeader = <TChartKey extends string, TTimeOption extends string = string>({
+  expandChart,
+  chartSelections,
+  timeOption,
+  chartOptionVariant,
+  customButton,
+  isLoading = false,
+  sx = [],
+}: ChartHeaderProps<TChartKey, TTimeOption>) => {
+  const handleChartOptionToggle = (_: MouseEvent<HTMLElement>, key: TChartKey) => {
+    // ensure that one option is always selected by checking null
+    if (key !== null) chartSelections.setActiveSelection(key)
+  }
+  const handleChartOptionSelect = (event: SelectChangeEvent<TChartKey>) => {
+    if (event.target.value !== null) chartSelections.setActiveSelection(event.target.value as TChartKey)
+  }
+  const handleTimeOption = (event: SelectChangeEvent<TTimeOption>) => {
+    if (event.target.value !== null && timeOption) timeOption.setActiveOption(event.target.value as TTimeOption)
   }
   /*
   The small breakpoint is used for placing Title and ToggleButtonGroup in a column 
   and separate the expand Chart button to the right
   */
   const smallBreakPoint = '35.9375rem' // 575px
-  const foundChartOption = chartOptions.find((option) => option.key === activeChartOption)
+  const foundChartOption = chartSelections.selections.find(
+    (selection) => selection.key === chartSelections.activeSelection,
+  )
 
   return (
     <Stack
       direction="row"
       alignItems="center"
       justifyContent="space-between"
-      sx={{
-        padding: Spacing.md,
-        rowGap: Spacing.md,
-        columnGap: Spacing.sm,
-        [`@media (max-width: ${smallBreakPoint})`]: {
-          flexDirection: 'column',
-          alignItems: 'flex-start',
-          rowGap: Spacing.lg,
+      sx={[
+        {
+          rowGap: Spacing.md,
+          columnGap: Spacing.sm,
+          [`@media (max-width: ${smallBreakPoint})`]: {
+            flexDirection: 'column',
+            alignItems: 'flex-start',
+            rowGap: Spacing.lg,
+          },
         },
-      }}
+        ...sx,
+      ]}
     >
-      <Typography variant="headingXsBold" color="textSecondary">
-        {foundChartOption?.activeTitle ?? '?'}
-      </Typography>
+      {/* Show the active selection title or Select dropdown menu based on the chartOptionVariant */}
+      {chartOptionVariant === 'buttons-group' ? (
+        <Typography variant="headingXsBold" color="textSecondary">
+          {isLoading ? t`Loading` : (foundChartOption?.activeTitle ?? '?')}
+        </Typography>
+      ) : isLoading ? (
+        <Select value="loading" size="small" sx={{ alignSelf: 'center' }} disabled>
+          <MenuItem value="loading">
+            <Typography variant="bodySBold">{t`Loading`}</Typography>
+          </MenuItem>
+        </Select>
+      ) : (
+        <Select
+          value={chartSelections.activeSelection ?? ''}
+          onChange={handleChartOptionSelect}
+          size="small"
+          sx={{ alignSelf: 'center' }}
+          MenuProps={{
+            anchorOrigin: { vertical: 'bottom', horizontal: 'left' },
+            transformOrigin: { vertical: 'top', horizontal: 'left' },
+          }}
+        >
+          {chartSelections.selections.map((selection) => (
+            <MenuItem value={selection.key} key={selection.key}>
+              <Typography variant="bodySBold">{selection.activeTitle}</Typography>
+            </MenuItem>
+          ))}
+        </Select>
+      )}
       <Stack
         direction="row"
         sx={{
@@ -87,39 +126,51 @@ const ChartHeader = <T extends string>({
       >
         <ToggleButtonGroup
           exclusive
-          value={activeChartOption}
-          onChange={handleChartOption}
-          sx={{ [`@media (max-width: ${smallBreakPoint})`]: { width: '100%', display: 'flex', flexGrow: 1 } }}
+          value={chartSelections.activeSelection}
+          onChange={handleChartOptionToggle}
+          sx={{
+            [`@media (max-width: ${smallBreakPoint})`]: { width: '100%', display: 'flex', flexGrow: 1 },
+            gap: Spacing.xs,
+          }}
         >
-          {chartOptions.map((option) => (
-            <ToggleButton value={option.key} key={option.key} size="small">
-              {option.label}
-            </ToggleButton>
-          ))}
-          {!hideExpandChart && (
+          {chartOptionVariant === 'buttons-group' &&
+            chartSelections.selections.map((selection) => (
+              <ToggleButton value={selection.key} key={selection.key} size="small">
+                {selection.label}
+              </ToggleButton>
+            ))}
+          {timeOption && (
+            <Select
+              value={timeOption.activeOption}
+              onChange={handleTimeOption}
+              size="small"
+              sx={{ alignSelf: 'center' }}
+              disabled={isLoading}
+              MenuProps={{
+                anchorOrigin: { vertical: 'bottom', horizontal: 'right' },
+                transformOrigin: { vertical: 'top', horizontal: 'right' },
+              }}
+            >
+              {timeOption.options.map((timeOption) => (
+                <MenuItem value={timeOption} key={timeOption}>
+                  <Typography variant="bodySBold" sx={{ textTransform: 'uppercase' }}>
+                    {timeOption}
+                  </Typography>
+                </MenuItem>
+              ))}
+            </Select>
+          )}
+          {customButton}
+          {expandChart && (
             <IconButton
               size="small"
-              onClick={toggleChartExpanded}
+              onClick={expandChart.toggleChartExpanded}
               sx={{ [`@media (max-width: ${smallBreakPoint})`]: { marginLeft: 'auto' } }}
             >
-              <Icon name={isChartExpanded ? 'Minimize' : 'Maximize'} size={20} />
+              <Icon name={expandChart?.isExpanded ? 'Minimize' : 'Maximize'} size={20} />
             </IconButton>
           )}
         </ToggleButtonGroup>
-        {timeOptions && (
-          <Select
-            value={activeTimeOption}
-            onChange={handleTimeOption}
-            size="small"
-            sx={{ width: '100px', textTransform: 'uppercase' }}
-          >
-            {timeOptions.map((option) => (
-              <MenuItem value={option} key={option} sx={{ textTransform: 'uppercase' }}>
-                {option}
-              </MenuItem>
-            ))}
-          </Select>
-        )}
       </Stack>
     </Stack>
   )

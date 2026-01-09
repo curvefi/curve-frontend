@@ -1,14 +1,22 @@
 import { useEffect, useState } from 'react'
 import { styled } from 'styled-components'
-import LiquidityData from '@/lend/components/ChartOhlcWrapper/LiquidityData'
-import TradesData from '@/lend/components/ChartOhlcWrapper/TradesData'
+import { LendingMarketTokens } from '@/lend/hooks/useOhlcChartState'
 import useStore from '@/lend/store/useStore'
+import { ChainId } from '@/lend/types/lend.types'
 import Button from '@ui/Button/Button'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import { DEFAULT_CHART_HEIGHT } from '@ui-kit/features/candle-chart/constants'
 import { t } from '@ui-kit/lib/i18n'
-import { PoolActivityProps } from './types'
+import LiquidityData from './LiquidityData'
+import TradesData from './TradesData'
 
-const MIN_HEIGHT = 330
+type PoolActivityProps = {
+  poolAddress: string
+  chainId: ChainId
+  coins: LendingMarketTokens
+}
+
+const CHART_HEIGHT = DEFAULT_CHART_HEIGHT + 48 // 48px is the height of the section header
 
 const PoolActivity = ({ chainId, poolAddress, coins }: PoolActivityProps) => {
   const activityFetchStatus = useStore((state) => state.ohlcCharts.activityFetchStatus)
@@ -23,7 +31,7 @@ const PoolActivity = ({ chainId, poolAddress, coins }: PoolActivityProps) => {
   }, [chainId, fetchPoolActivity, poolAddress])
 
   return (
-    <Wrapper maxHeight={`${MIN_HEIGHT}px`}>
+    <Wrapper maxHeight={`${CHART_HEIGHT}px`}>
       <SectionHeader>
         <SectionTitle>{eventOption === 'TRADE' ? t`AMM` : t`Controller`}</SectionTitle>
         <ButtonGroup>
@@ -49,7 +57,7 @@ const PoolActivity = ({ chainId, poolAddress, coins }: PoolActivityProps) => {
             <EventTitle>{eventOption === 'TRADE' ? t`Swap` : t`Action`}</EventTitle>
             <TimestampColumnTitle>{t`Time`}</TimestampColumnTitle>
           </TitlesRow>
-          <ElementsContainer minHeight={MIN_HEIGHT}>
+          <ElementsContainer minHeight={DEFAULT_CHART_HEIGHT}>
             {eventOption === 'TRADE' ? (
               lendTradesData.length === 0 ? (
                 <SpinnerWrapper>
@@ -69,12 +77,12 @@ const PoolActivity = ({ chainId, poolAddress, coins }: PoolActivityProps) => {
         </GridContainer>
       )}
       {activityFetchStatus === 'LOADING' && (
-        <SpinnerWrapper minHeight={`${MIN_HEIGHT}px`}>
+        <SpinnerWrapper minHeight={`${DEFAULT_CHART_HEIGHT}px`}>
           <Spinner size={18} />
         </SpinnerWrapper>
       )}
       {activityFetchStatus === 'ERROR' && (
-        <SpinnerWrapper minHeight={`${MIN_HEIGHT}px`}>
+        <SpinnerWrapper minHeight={`${DEFAULT_CHART_HEIGHT}px`}>
           <ErrorMessage>{t`There was an error fetching the pool activity data.`}</ErrorMessage>
         </SpinnerWrapper>
       )}

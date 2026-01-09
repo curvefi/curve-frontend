@@ -1,8 +1,7 @@
 import { formatNumber } from '@ui-kit/utils'
-import type { TimeOptions } from './types'
+import type { TimeOption } from './types'
 
-const seconds = {
-  '5m': 5 * 60,
+const seconds: Record<TimeOption, number> = {
   '15m': 15 * 60,
   '30m': 30 * 60,
   '1h': 60 * 60,
@@ -14,9 +13,9 @@ const seconds = {
   '14d': 14 * 24 * 60 * 60,
 } as const
 
-export const subtractTimeUnit = (timeOption: TimeOptions, timestamp: number) => timestamp - seconds[timeOption]
+export const subtractTimeUnit = (timeOption: TimeOption, timestamp: number) => timestamp - seconds[timeOption]
 
-export const getThreeHundredResultsAgo = (timeOption: TimeOptions, timestamp: number) =>
+export const getThreeHundredResultsAgo = (timeOption: TimeOption, timestamp: number) =>
   Math.floor(timestamp - 299 * seconds[timeOption])
 
 export const convertToLocaleTimestamp = (unixTimestamp: number) => {
@@ -123,3 +122,39 @@ export const priceFormatter = (x: number, delta: number) =>
     abbreviate: x > ABBREVIATION_CUTOFF,
     useGrouping: false,
   })
+
+/**
+ * Generates all possible combinations of elements from an input array with a specified size.
+ * Each element can only be used once per combination.
+ *
+ * @example
+ * // Returns [[1,2],[1,3],[2,3]]
+ * combinations([1,2,3], 2)
+ *
+ * @param inputArray Array of elements to generate combinations from
+ * @param size Size of each combination
+ * @returns Array of all possible combinations where each element appears once per combination
+ */
+
+export function calculateChartCombinations<T>(inputArray: T[], size: number): T[][] {
+  const result: T[][] = []
+
+  function combinationHelper(start: number, chosen: T[]) {
+    if (chosen.length === size) {
+      result.push([...chosen])
+      return
+    }
+
+    for (let i = start; i < inputArray.length; i++) {
+      // Choose one element
+      chosen.push(inputArray[i])
+      // Generate combinations of smaller size
+      combinationHelper(i + 1, chosen)
+      // Un-choose the chosen element
+      chosen.pop()
+    }
+  }
+
+  combinationHelper(0, [])
+  return result
+}

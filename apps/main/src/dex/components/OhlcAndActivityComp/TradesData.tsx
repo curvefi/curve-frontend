@@ -8,15 +8,13 @@ import { formatNumber, getFractionDigitsOptions, convertDate, convertTimeAgo, fo
 import type { LpTradesData, LpTradeToken } from '@ui-kit/features/candle-chart/types'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 
-const TradesData = ({
-  lpTradesData,
-  chainId,
-  tradesTokens,
-}: {
+type TradesDataProps = {
   lpTradesData: LpTradesData[]
   chainId: ChainId
   tradesTokens: LpTradeToken[]
-}) => {
+}
+
+const TradesData = ({ lpTradesData, chainId, tradesTokens }: TradesDataProps) => {
   const { data: network } = useNetworkByChain({ chainId })
   return lpTradesData.map((transaction, index) => {
     const boughtToken = tradesTokens.find((token) => token.event_index === transaction.bought_id)
