@@ -36,11 +36,11 @@ type ConnectorInfo = {
 }
 
 const CONNECTOR_INFO = {
-  injected: { label: `Browser Wallet`, icon: BrowserWalletIcon },
-  walletConnect: { label: `Wallet Connect`, icon: WalletConnectIcon },
-  'wallet.binance.com': { label: `Binance Wallet`, icon: BinanceWalletIcon },
-  coinbaseWalletSDK: { label: `Coinbase`, icon: CoinbaseWalletIcon },
-  safe: { label: 'Safe', icon: SafeWalletIcon },
+  injected: { label: t`Browser Wallet`, icon: BrowserWalletIcon },
+  walletConnect: { label: t`Wallet Connect`, icon: WalletConnectIcon },
+  'wallet.binance.com': { label: t`Binance Wallet`, icon: BinanceWalletIcon },
+  coinbaseWalletSDK: { label: t`Coinbase`, icon: CoinbaseWalletIcon },
+  safe: { label: t`Safe`, icon: SafeWalletIcon },
 } satisfies Record<(typeof CONNECTOR_IDS)[number], ConnectorInfo>
 
 const WALLET_ICON_SIZE = handleBreakpoints({ width: IconSize.xl, height: IconSize.xl })
