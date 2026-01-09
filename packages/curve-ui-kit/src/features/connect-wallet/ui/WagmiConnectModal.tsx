@@ -18,7 +18,7 @@ import { handleBreakpoints } from '@ui-kit/themes/basic-theme'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { Connector } from '@wagmi/core'
 import { useWallet } from '../lib'
-import { BINANCE_CONNECTOR_ID } from '../lib/wagmi/connectors'
+import { BINANCE_CONNECTOR_ID, INJECTED_CONNECTOR_ID } from '../lib/wagmi/connectors'
 
 const { IconSize } = SizesAndSpaces
 
@@ -120,12 +120,16 @@ export const WagmiConnectModal = () => {
       ) : null}
       <MenuList>
         {connectors
-          // Safe connector only works inside Safe applications, which are loaded in iframes.
+          // Safe connector only works inside Safe applications, which are loaded in iframes
           .filter(
             (connector) => connector.type !== 'safe' || (typeof window !== 'undefined' && window !== window.parent),
           )
-          // TODO: check if we can remove the connector at the connectors.ts level. Hard to test being a geo-blocked dev.
+          // TODO: check if we can remove the connector at the connectors.ts level. Hard to test being a geo-blocked dev
           .filter((connector) => connector.id !== BINANCE_CONNECTOR_ID || window.binancew3w?.ethereum)
+          // Put EIP-6963 detected connectors on top (they come after the pre-defined connectors)
+          .toReversed()
+          // Put browser injected wallet first as it's a good fallback that's supposed to work in most cases
+          .toSorted((a, b) => (a.id === INJECTED_CONNECTOR_ID ? -1 : b.id === INJECTED_CONNECTOR_ID ? 1 : 0))
           .map((connector) => (
             <WalletListItem
               key={connector.id}
