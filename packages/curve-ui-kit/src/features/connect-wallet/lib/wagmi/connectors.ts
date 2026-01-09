@@ -4,9 +4,7 @@ import type { CreateConnectorFn } from '@wagmi/core'
 // project managed at https://cloud.reown.com/ set up by Schiavini, Michael also has access.
 const WALLET_CONNECT_PROJECT_ID = '982ea4bdf92e49746bd040a981283b36'
 
-const BINANCE_CONNECTOR_ID = 'wallet.binance.com'
-
-export const CONNECTOR_IDS = ['injected', BINANCE_CONNECTOR_ID, 'coinbaseWalletSDK', 'safe', 'walletConnect'] as const
+export const BINANCE_CONNECTOR_ID = 'wallet.binance.com'
 
 export const connectors: CreateConnectorFn[] = [
   injected(),

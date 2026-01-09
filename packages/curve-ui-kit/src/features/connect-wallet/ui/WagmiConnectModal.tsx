@@ -18,7 +18,7 @@ import { handleBreakpoints } from '@ui-kit/themes/basic-theme'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { Connector } from '@wagmi/core'
 import { useWallet } from '../lib'
-import type { CONNECTOR_IDS } from '../lib/wagmi/connectors'
+import { BINANCE_CONNECTOR_ID } from '../lib/wagmi/connectors'
 
 const { IconSize } = SizesAndSpaces
 
@@ -29,13 +29,13 @@ type ConnectorInfo = {
   icon: Icon
 }
 
-const CONNECTOR_INFO = {
+const CONNECTOR_INFO: Record<string, ConnectorInfo> = {
   injected: { label: t`Browser Wallet`, icon: BrowserWalletIcon },
   walletConnect: { label: t`Wallet Connect`, icon: WalletConnectIcon },
-  'wallet.binance.com': { label: t`Binance Wallet`, icon: BinanceWalletIcon },
+  [BINANCE_CONNECTOR_ID]: { label: t`Binance Wallet`, icon: BinanceWalletIcon },
   coinbaseWalletSDK: { label: t`Coinbase`, icon: CoinbaseWalletIcon },
   safe: { label: t`Safe`, icon: SafeWalletIcon },
-} satisfies Record<(typeof CONNECTOR_IDS)[number], ConnectorInfo>
+}
 
 const WALLET_ICON_SIZE = handleBreakpoints({ width: IconSize.xl, height: IconSize.xl })
 
@@ -140,8 +140,8 @@ export const WagmiConnectModal = () => {
             <WalletListItem
               key={connector.id}
               connector={connector}
-              label={CONNECTOR_INFO[connector.id as keyof typeof CONNECTOR_INFO]?.label ?? connector.name}
-              Icon={CONNECTOR_INFO[connector.id as keyof typeof CONNECTOR_INFO]?.icon}
+              label={CONNECTOR_INFO[connector.id]?.label ?? connector.name}
+              Icon={CONNECTOR_INFO[connector.id]?.icon}
               onConnect={onConnect}
               isLoading={connectingToId == connector.id}
               isDisabled={!!connectingToId}
