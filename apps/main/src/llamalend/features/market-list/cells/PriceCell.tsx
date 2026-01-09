@@ -2,6 +2,7 @@ import { useUserMarketStats } from '@/llamalend/queries/market-list/llama-market
 import { AssetDetails, LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { CollateralMetricTooltipContent } from '@/llamalend/widgets/tooltips/CollateralMetricTooltipContent'
 import { TotalDebtTooltipContent } from '@/llamalend/widgets/tooltips/TotalDebtTooltipContent'
+import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { CellContext } from '@tanstack/react-table'
@@ -11,8 +12,11 @@ import { useTokenUsdPrice } from '@ui-kit/lib/model/entities/token-usd-prices'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketColumnId } from '../columns'
 import { ErrorCell } from './ErrorCell'
+
+const { Spacing } = SizesAndSpaces
 
 /**
  * Maps a column ID to the corresponding assets of interest from a market.
@@ -105,6 +109,47 @@ const getTooltipBody = (
   return undefined
 }
 
+/** Displays an asset value with its token icon, wrapped in a tooltip. */
+const AssetValue = ({
+  asset,
+  value,
+  isValueLoading,
+  tooltipTitle,
+  tooltipBody,
+}: {
+  asset: AssetDetails
+  value: number | undefined
+  isValueLoading: boolean
+  tooltipTitle: string
+  tooltipBody: React.ReactNode
+}) => (
+  <WithSkeleton loading={isValueLoading}>
+    <Tooltip title={tooltipTitle} body={tooltipBody}>
+      <Stack direction="row" spacing={Spacing.xs} alignItems="center">
+        <Typography variant="tableCellMBold">{formatNumber(value, { notation: 'compact' })}</Typography>
+        <TokenIcon blockchainId={asset.chain} address={asset.address} size="mui-md" />
+      </Stack>
+    </Tooltip>
+  </WithSkeleton>
+)
+
+/** Displays a USD value with a tooltip showing the full precision value. */
+const AssetUsdValue = ({
+  usdValue,
+  isPriceLoading,
+}: {
+  usdValue: number | null | undefined
+  isPriceLoading: boolean
+}) => (
+  <WithSkeleton loading={isPriceLoading}>
+    <Tooltip title={formatNumber(usdValue, { currency: 'USD', decimals: 5 })}>
+      <Typography variant="bodySRegular" color="text.secondary">
+        {formatNumber(usdValue, { currency: 'USD', notation: 'compact' })}
+      </Typography>
+    </Tooltip>
+  </WithSkeleton>
+)
+
 /**
  * Displays a price cell with primary and optional secondary asset values.
  * Helper functions use a 2-sized tuple as it's easier to work with than an object with named properties.
@@ -115,8 +160,10 @@ const getTooltipBody = (
  * while others display two assets (e.g., UserCollateral shows both the collateral token
  * and the borrowed token when the user has debt tokens in their collateral position due to soft liq).
  *
- * The secondary asset, when present, is rendered first so that the primary asset
- * (real collateral) aligns consistently across all rows in the table.
+ * Layout uses CSS Grid with explicit `gridRow` placement:
+ * - Single asset (1 column, 2 rows): Value in row 1, USD in row 2
+ * - Two assets (2 columns, 2 rows): Each row shows [USD | Value] for each asset
+ * This behaviour is easier to achieve with a vanilla CSS grid compared to MUI's Grid component.
  */
 export const PriceCell = ({ getValue, row, column }: CellContext<LlamaMarket, number>) => {
   const market = row.original
@@ -152,41 +199,47 @@ export const PriceCell = ({ getValue, row, column }: CellContext<LlamaMarket, nu
   const primaryUsdValue = primaryPrice && primaryValue * primaryPrice
   const secondaryUsdValue = secondaryPrice && secondaryValue && secondaryValue * secondaryPrice
 
-  /** Undefined if primary usd is unavailable or if secondary is expected but its usd is not yet loaded */
-  const usdValue =
-    primaryUsdValue == null || (secondaryValue && secondaryUsdValue == null)
-      ? undefined
-      : primaryUsdValue + (secondaryUsdValue ?? 0)
+  const hasSecondaryAsset = secondaryAsset && !!secondaryValue
+
+  const gridAssets = [
+    { asset: primaryAsset, value: primaryValue, usdValue: primaryUsdValue, isPriceLoading: isPrimaryPriceLoading },
+    ...(hasSecondaryAsset
+      ? [
+          {
+            asset: secondaryAsset,
+            value: secondaryValue,
+            usdValue: secondaryUsdValue,
+            isPriceLoading: isSecondaryPriceLoading,
+          },
+        ]
+      : []),
+  ]
 
   return (
-    <Stack direction="column" spacing={1} alignItems="end">
-      <Tooltip title={tooltipTitle} body={tooltipBody}>
-        <Stack direction="row" spacing={1} alignItems="center" whiteSpace="nowrap">
-          <WithSkeleton loading={isLoadingStats}>
-            {secondaryAsset && !!secondaryValue && (
-              <>
-                <Typography variant="tableCellMBold">
-                  {formatNumber(secondaryValue, { notation: 'compact' })}
-                </Typography>
-                <TokenIcon blockchainId={secondaryAsset.chain} address={secondaryAsset.address} size="mui-md" />
-                &nbsp; {/** Easier than adding another Stack with gap */}
-              </>
-            )}
-            <Typography variant="tableCellMBold">{formatNumber(primaryValue, { notation: 'compact' })}</Typography>
-            <TokenIcon blockchainId={primaryAsset.chain} address={primaryAsset.address} size="mui-md" />
-          </WithSkeleton>
-        </Stack>
-      </Tooltip>
-      <Tooltip title={formatNumber(usdValue, { currency: 'USD', decimals: 5 })}>
-        <Typography variant="bodySRegular" color="text.secondary">
-          <WithSkeleton
-            loading={isLoadingStats || isPrimaryPriceLoading || isSecondaryPriceLoading}
-            sx={{ transform: 'unset' /* other mui will scale the text down */ }}
-          >
-            {formatNumber(usdValue, { currency: 'USD', notation: 'compact' })}
-          </WithSkeleton>
-        </Typography>
-      </Tooltip>
-    </Stack>
+    <Box
+      sx={{
+        display: 'grid',
+        gridTemplateColumns: hasSecondaryAsset ? '1fr 1fr' : '1fr',
+        rowGap: Spacing.xs,
+        columnGap: Spacing.md,
+        justifyItems: 'end',
+        alignItems: 'center',
+      }}
+    >
+      {gridAssets.flatMap(({ asset, value, usdValue, isPriceLoading }) => [
+        <Box key={`${asset.address}-usd`} sx={{ gridRow: hasSecondaryAsset ? 'auto' : 2 }}>
+          <AssetUsdValue usdValue={usdValue} isPriceLoading={isPriceLoading} />
+        </Box>,
+        <Box key={`${asset.address}-value`} sx={{ gridRow: hasSecondaryAsset ? 'auto' : 1 }}>
+          <AssetValue
+            asset={asset}
+            value={value}
+            isValueLoading={isLoadingStats}
+            tooltipTitle={tooltipTitle}
+            tooltipBody={tooltipBody}
+          />
+        </Box>,
+      ])}
+    </Box>
   )
 }
