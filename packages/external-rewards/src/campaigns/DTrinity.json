@@ -37,7 +37,7 @@
       "campaignEnd": "1770000000",
       "address": "0x40F1DAd51055A693Dc6D0a8d68A3E7e2Ae13031A",
       "network": "sonic",
-      "multiplier": "50x",
+      "multiplier": "",
       "tags": ["points"],
       "lock": "false"
     },
@@ -61,7 +61,7 @@
       "campaignEnd": "1770000000",
       "address": "0x4C86d266e969E186A2F197d859DF2D91e5eA1eD2",
       "network": "fraxtal",
-      "multiplier": "50x",
+      "multiplier": "",
       "tags": ["points"],
       "lock": "false"
     },
