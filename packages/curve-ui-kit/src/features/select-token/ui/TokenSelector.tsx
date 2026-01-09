@@ -1,7 +1,7 @@
 import { SxProps } from '@mui/material'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { type TokenOption, tokenOptionEquals } from '../types'
-import type { TokenListCallbacks, TokenListProps } from './modal/TokenList'
+import { TokenList, type TokenListCallbacks, type TokenListProps } from './modal/TokenList'
 import { TokenSelectorModal, type TokenSelectorModalProps } from './modal/TokenSelectorModal'
 import { TokenSelectButton } from './TokenSelectButton'
 
@@ -40,30 +40,28 @@ export const TokenSelector = <T extends TokenOption = TokenOption>({
   return (
     <>
       <TokenSelectButton token={selectedToken} disabled={disabled} onClick={toggleModal} sx={sx} />
-      <TokenSelectorModal<T>
-        tokens={tokens}
-        balances={balances}
-        tokenPrices={tokenPrices}
-        favorites={favorites}
-        showSearch={showSearch}
-        showManageList={showManageList}
-        isOpen={!!isOpen}
-        error={error}
-        disabledTokens={disabledTokens}
-        disableSorting={disableSorting}
-        disableMyTokens={disableMyTokens}
-        customOptions={customOptions}
-        compact={compact}
-        onClose={closeModal}
-        onToken={(token) => {
-          toggleModal()
+      <TokenSelectorModal showManageList={showManageList} isOpen={!!isOpen} compact={compact} onClose={closeModal}>
+        <TokenList<T>
+          tokens={tokens}
+          balances={balances}
+          tokenPrices={tokenPrices}
+          favorites={favorites}
+          showSearch={showSearch}
+          error={error}
+          disabledTokens={disabledTokens}
+          disableSorting={disableSorting}
+          disableMyTokens={disableMyTokens}
+          customOptions={customOptions}
+          onToken={(token) => {
+            toggleModal()
 
-          if (!tokenOptionEquals(token, selectedToken)) {
-            onToken?.(token)
-          }
-        }}
-        onSearch={(search) => onSearch?.(search)}
-      />
+            if (!tokenOptionEquals(token, selectedToken)) {
+              onToken?.(token)
+            }
+          }}
+          onSearch={(search) => onSearch?.(search)}
+        />
+      </TokenSelectorModal>
     </>
   )
 }

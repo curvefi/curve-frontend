@@ -1,25 +1,19 @@
 import lodash from 'lodash'
 import { type ReactNode, useMemo, useState } from 'react'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
-import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
-import CardHeader from '@mui/material/CardHeader'
 import Divider from '@mui/material/Divider'
-import MenuList from '@mui/material/MenuList'
 import Stack from '@mui/material/Stack'
+import { TokenSection } from '@ui-kit/features/select-token/ui/modal/TokenSection'
 import { t } from '@ui-kit/lib/i18n'
 import { SearchField } from '@ui-kit/shared/ui/SearchField'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { searchByText } from '@ui-kit/utils/searchText'
-import { blacklist } from '../../blacklist'
 import type { TokenOption as Option } from '../../types'
 import { ErrorAlert } from './ErrorAlert'
 import { FavoriteTokens } from './FavoriteTokens'
-import { TokenOption } from './TokenOption'
 
-const { Spacing, ButtonSize } = SizesAndSpaces
+const { Spacing } = SizesAndSpaces
 
 export type TokenSectionProps<T extends Option> = Required<
   Pick<TokenListProps<T>, 'tokens' | 'balances' | 'tokenPrices' | 'disabledTokens'>
@@ -32,78 +26,6 @@ export type TokenSectionProps<T extends Option> = Required<
     preview: T[]
     onShowAll: () => void
   }
-
-const TokenSection = <T extends Option>({
-  title,
-  showAllLabel,
-  preview,
-  tokens,
-  balances,
-  tokenPrices,
-  disabledTokens,
-  onToken,
-  onShowAll,
-}: TokenSectionProps<T>) => {
-  if (!tokens.length) return null
-
-  const displayTokens = preview.length === 0 ? tokens : preview
-  const hasMore = preview.length > 0 && preview.length < tokens.length
-
-  // If there's a list of preview tokens, show that with a 'Show more' button.
-  // If not, then just display all tokens from the list.
-  return (
-    <>
-      {title && (
-        <Box
-          sx={{
-            position: 'sticky',
-            top: 0,
-            zIndex: 1,
-            backgroundColor: (theme) => theme.palette.background.paper,
-          }}
-        >
-          <CardHeader title={title} size="small" />
-          <Divider />
-        </Box>
-      )}
-
-      <MenuList variant="menu" sx={{ paddingBlock: 0 }}>
-        {displayTokens.map((token) => {
-          const blacklistEntry = blacklist.find(
-            (x) => x.address.toLocaleLowerCase() === token.address.toLocaleLowerCase(),
-          )
-
-          return (
-            <TokenOption
-              key={token.address}
-              {...token}
-              balance={balances[token.address]}
-              tokenPrice={tokenPrices[token.address]}
-              disabled={disabledTokens.includes(token.address) || !!blacklistEntry}
-              disabledReason={blacklistEntry?.reason}
-              onToken={() => onToken(token)}
-            />
-          )
-        })}
-
-        {hasMore && (
-          <Button
-            fullWidth
-            variant="link"
-            color="ghost"
-            size="medium"
-            endIcon={<ExpandMoreIcon />}
-            onClick={onShowAll}
-            // Override variant button height to match menu list item height, so !important is required over '&'.
-            sx={{ height: `${ButtonSize.md} !important` }}
-          >
-            {showAllLabel || t`Show more`}
-          </Button>
-        )}
-      </MenuList>
-    </>
-  )
-}
 
 // Prevent all the token options from re-rendering if only the balance of a single one has changed.
 export type TokenListCallbacks<T extends Option> = {
