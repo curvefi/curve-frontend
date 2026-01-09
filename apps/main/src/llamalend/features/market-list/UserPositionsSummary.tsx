@@ -39,7 +39,6 @@ const UserPositionStatisticItem = ({
         valueOptions={{
           decimals: 2,
           unit: 'dollar',
-          color: 'textPrimary',
         }}
         label={label}
         rightAdornment={

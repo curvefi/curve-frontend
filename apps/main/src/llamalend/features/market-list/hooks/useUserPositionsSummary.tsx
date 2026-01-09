@@ -8,6 +8,7 @@ import {
 import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { getUserMintMarketsStatsOptions } from '@/llamalend/queries/market-list/mint-markets'
 import { useQueries, type UseQueryResult } from '@tanstack/react-query'
+import { t } from '@ui-kit/lib/i18n'
 import { getTokenUsdPriceQueryOptions } from '@ui-kit/lib/model/entities/token-usd-prices'
 import { combineQueriesMeta } from '@ui-kit/lib/queries/combine'
 import { type QueryOptionsData } from '@ui-kit/lib/queries/types'
@@ -22,7 +23,9 @@ type StatsQueryOptions =
   | ReturnType<typeof getUserMintMarketsStatsOptions>
 type EarningsQueryOptions = ReturnType<typeof getUserLendingVaultEarningsOptions>
 
-type BorrowStatsData = QueryOptionsData<StatsQueryOptions>
+type LendBorrowStatsData = QueryOptionsData<ReturnType<typeof getUserLendingVaultStatsOptions>>
+type MintBorrowStatsData = QueryOptionsData<ReturnType<typeof getUserMintMarketsStatsOptions>>
+type BorrowStatsData = LendBorrowStatsData | MintBorrowStatsData
 type SupplyStatsData = QueryOptionsData<EarningsQueryOptions>
 type TokenPriceData = QueryOptionsData<ReturnType<typeof getTokenUsdPriceQueryOptions>>
 
@@ -31,6 +34,7 @@ type BorrowPositionQuery = {
   chainId: LlamaMarket['chain']
   debtTokenAddress: Address
   collateralTokenAddress: Address
+  marketType: LlamaMarketType
 }
 
 type SupplyPositionQuery = {
@@ -47,8 +51,6 @@ type PositionQueryEntry =
 
 const MISSING_PRICE_RESULT: TokenPriceData = 0
 
-const createEmptyPositions = () => ({ borrow: [], supply: [] })
-
 const createMetric = (label: string, data: number, isLoading: boolean, error?: unknown): UserPositionSummaryMetric => ({
   label,
   data,
@@ -58,7 +60,7 @@ const createMetric = (label: string, data: number, isLoading: boolean, error?: u
 
 /** Deduplicate token price lookup entries by chain and address. */
 const collectTokenEntries = <T,>(items: T[], getEntries: (item: T) => TokenPriceEntry[]) =>
-  uniqBy(items.map(getEntries).flat(), (entry) => `${entry.chainId}:${entry.contractAddress.toLowerCase()}`)
+  uniqBy(items.flatMap(getEntries), (entry) => `${entry.chainId}:${entry.contractAddress.toLowerCase()}`)
 
 const createTokenPriceQueries = (entries: TokenPriceEntry[]) =>
   entries.map(({ chainId, contractAddress }) =>
@@ -75,6 +77,17 @@ const buildGetPrice = (entries: TokenPriceEntry[], priceResults: UseQueryResult<
   return (chainId: LlamaMarket['chain'], address: Address) => tokenMap[getKey(chainId, address)] ?? MISSING_PRICE_RESULT
 }
 
+const isMintMarketStats = (stats: BorrowStatsData | undefined) => stats && 'stablecoin' in stats
+
+/** Get the amount of borrowed tokens when in soft liquidation.
+ * If mint market, return the .stablecoin, if lend market, return the .borrowed */
+const getSoftLiquidationBorrowedAmount = (marketType: LlamaMarketType, stats: BorrowStatsData | undefined) =>
+  marketType === LlamaMarketType.Mint && isMintMarketStats(stats)
+    ? ((stats as MintBorrowStatsData)?.stablecoin ?? MISSING_PRICE_RESULT)
+    : marketType === LlamaMarketType.Lend && !isMintMarketStats(stats)
+      ? ((stats as LendBorrowStatsData)?.borrowed ?? MISSING_PRICE_RESULT)
+      : MISSING_PRICE_RESULT
+
 /**
  * Summarize user positions into USD totals combining position and price queries together.
  * It separates the borrow/supply query sets, fetches token prices and positions, and aggregates totals.
@@ -88,53 +101,52 @@ export const useUserPositionsSummary = ({
   const { address: userAddress } = useConnection()
 
   const userPositionQueries = useMemo(() => {
-    if (!markets) return createEmptyPositions()
+    if (!markets) return { borrow: [], supply: [] }
 
-    const positionEntries = markets
-      .map((market) => {
-        const isSupply = market.userHasPositions?.Supply
-        const isBorrow = market.userHasPositions?.Borrow
-        if (!market.userHasPositions || (isSupply && !market.vaultAddress)) return []
+    const positionEntries = markets.flatMap((market) => {
+      const isSupply = market.userHasPositions?.Supply
+      const isBorrow = market.userHasPositions?.Borrow
+      if (!market.userHasPositions || (isSupply && !market.vaultAddress)) return []
 
-        const queryParams = {
-          userAddress,
-          blockchainId: market.chain,
-        }
+      const queryParams = {
+        userAddress,
+        blockchainId: market.chain,
+      }
 
-        const entries: PositionQueryEntry[] = []
+      const entries: PositionQueryEntry[] = []
 
-        if (isSupply && market.vaultAddress) {
-          const suppliedTokenAddress = market.assets.borrowed.address
-          entries.push({
-            kind: 'supply',
-            value: {
-              query: getUserLendingVaultEarningsOptions({ contractAddress: market.vaultAddress, ...queryParams }),
-              chainId: market.chain,
-              suppliedTokenAddress,
-            },
-          })
-        }
+      if (isSupply && market.vaultAddress) {
+        const suppliedTokenAddress = market.assets.borrowed.address
+        entries.push({
+          kind: 'supply',
+          value: {
+            query: getUserLendingVaultEarningsOptions({ contractAddress: market.vaultAddress, ...queryParams }),
+            chainId: market.chain,
+            suppliedTokenAddress,
+          },
+        })
+      }
 
-        if (isBorrow) {
-          const debtTokenAddress = market.assets.borrowed.address
-          const collateralTokenAddress = market.assets.collateral.address
-          entries.push({
-            kind: 'borrow',
-            value: {
-              query:
-                market.type === LlamaMarketType.Lend
-                  ? getUserLendingVaultStatsOptions({ contractAddress: market.controllerAddress, ...queryParams })
-                  : getUserMintMarketsStatsOptions({ contractAddress: market.controllerAddress, ...queryParams }),
-              chainId: market.chain,
-              debtTokenAddress,
-              collateralTokenAddress,
-            },
-          })
-        }
+      if (isBorrow) {
+        const debtTokenAddress = market.assets.borrowed.address
+        const collateralTokenAddress = market.assets.collateral.address
+        entries.push({
+          kind: 'borrow',
+          value: {
+            query:
+              market.type === LlamaMarketType.Lend
+                ? getUserLendingVaultStatsOptions({ contractAddress: market.controllerAddress, ...queryParams })
+                : getUserMintMarketsStatsOptions({ contractAddress: market.controllerAddress, ...queryParams }),
+            chainId: market.chain,
+            debtTokenAddress,
+            collateralTokenAddress,
+            marketType: market.type,
+          },
+        })
+      }
 
-        return entries
-      })
-      .flat()
+      return entries
+    })
 
     const [borrowEntries, supplyEntries] = partition(positionEntries, (entry) => entry.kind === 'borrow') as [
       Array<{ kind: 'borrow'; value: BorrowPositionQuery }>,
@@ -183,11 +195,15 @@ export const useUserPositionsSummary = ({
       const totalCollateralValue = sum(
         positionResults.map((stat, index) => {
           const borrowMeta = userPositionQueries.borrow[index]
-          if (!borrowMeta) return 0
+          const collateralTokenPrice = getPrice(borrowMeta.chainId, borrowMeta.collateralTokenAddress)
+          const borrowedTokenPrice = getPrice(borrowMeta.chainId, borrowMeta.debtTokenAddress)
 
-          const collateralPrice = getPrice(borrowMeta.chainId, borrowMeta.collateralTokenAddress)
+          const collateralValue = (stat.data?.collateral ?? 0) * collateralTokenPrice
+          // part of the collateral is converted in the borrowed token when in soft liquidation
+          const borrowedAmount = getSoftLiquidationBorrowedAmount(borrowMeta.marketType, stat.data)
+          const borrowedValue = borrowedAmount * borrowedTokenPrice
 
-          return (stat.data?.collateral ?? 0) * collateralPrice
+          return collateralValue + borrowedValue
         }),
       )
 
@@ -242,12 +258,22 @@ export const useUserPositionsSummary = ({
 
   return [
     createMetric(
-      'Total Collateral',
+      t`Total Collateral`,
       borrowSummary.data.totalCollateralValue,
       borrowSummary.isLoading,
       borrowSummary.error,
     ),
-    createMetric('Total Borrowed', borrowSummary.data.totalBorrowedValue, borrowSummary.isLoading, borrowSummary.error),
-    createMetric('Total Supplied', supplySummary.data.totalSuppliedValue, supplySummary.isLoading, supplySummary.error),
+    createMetric(
+      t`Total Borrowed`,
+      borrowSummary.data.totalBorrowedValue,
+      borrowSummary.isLoading,
+      borrowSummary.error,
+    ),
+    createMetric(
+      t`Total Supplied`,
+      supplySummary.data.totalSuppliedValue,
+      supplySummary.isLoading,
+      supplySummary.error,
+    ),
   ]
 }
