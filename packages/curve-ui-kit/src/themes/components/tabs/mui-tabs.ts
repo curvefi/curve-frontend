@@ -275,6 +275,8 @@ export const defineMuiTabs = ({
         color: Contained.Current.Outline,
         opacity: 1,
         backgroundColor: Layer[1].Fill,
+        minWidth: 'auto',
+        width: 'auto',
         '&:first-of-type': {
           left: 0,
         },
