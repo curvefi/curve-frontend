@@ -1,11 +1,11 @@
-import { ComponentProps, useState } from 'react'
+import { type ComponentProps, type ReactNode, useState } from 'react'
 import { action } from 'storybook/actions'
-import { fn } from 'storybook/test'
 import { ethAddress } from 'viem'
 import { Button, Stack, Typography } from '@mui/material'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TokenOption } from './types'
+import { TokenList, type TokenListProps } from './ui/modal/TokenList'
 import { TokenSelector } from './'
 
 const { Spacing } = SizesAndSpaces
@@ -172,25 +172,53 @@ const defaultFavorites = [defaultTokens[0], defaultTokens[1]]
 
 const defaultDisabledTokens = [defaultTokens[2].address]
 
+type TokenSelectorStoryProps = Omit<ComponentProps<typeof TokenSelector>, 'children'> &
+  Omit<TokenListProps, 'onToken' | 'children'> & {
+    listChildren?: ReactNode
+  }
+
 const TokenSelectorComponent = ({
   selectedToken: selectedTokenInit,
+  tokens,
+  balances,
+  tokenPrices,
+  favorites,
+  disableSearch,
+  error,
+  disabledTokens,
+  disableSorting,
+  disableMyTokens,
+  onSearch,
+  listChildren,
   ...props
-}: ComponentProps<typeof TokenSelector>) => {
+}: TokenSelectorStoryProps) => {
   const [selectedToken, setSelectedToken] = useState(selectedTokenInit)
 
   return (
-    <TokenSelector
-      {...props}
-      selectedToken={selectedToken}
-      onToken={(newToken) => {
-        action('onToken')(newToken)
-        setSelectedToken(newToken)
-      }}
-    />
+    <TokenSelector {...props} selectedToken={selectedToken}>
+      <TokenList
+        tokens={tokens}
+        balances={balances}
+        tokenPrices={tokenPrices}
+        favorites={favorites}
+        disableSearch={disableSearch}
+        error={error}
+        disabledTokens={disabledTokens}
+        disableSorting={disableSorting}
+        disableMyTokens={disableMyTokens}
+        onToken={(newToken) => {
+          action('onToken')(newToken)
+          setSelectedToken(newToken)
+        }}
+        onSearch={onSearch}
+      >
+        {listChildren}
+      </TokenList>
+    </TokenSelector>
   )
 }
 
-const meta: Meta<typeof TokenSelector> = {
+const meta: Meta<typeof TokenSelectorComponent> = {
   title: 'UI Kit/Features/TokenSelector',
   component: TokenSelectorComponent,
   args: {
@@ -200,13 +228,9 @@ const meta: Meta<typeof TokenSelector> = {
     balances: defaultBalances,
     tokenPrices: defaultTokenPrices,
     disabled: false,
-    showSearch: true,
-    showManageList: true,
     compact: false,
     error: '',
     disabledTokens: defaultDisabledTokens,
-    disableSorting: false,
-    onToken: fn(),
   },
   argTypes: {
     tokens: {
@@ -229,13 +253,9 @@ const meta: Meta<typeof TokenSelector> = {
       control: 'boolean',
       description: 'Disables the token selector button and modal',
     },
-    showSearch: {
+    disableSearch: {
       control: 'boolean',
-      description: 'Shows search input in token selector modal',
-    },
-    showManageList: {
-      control: 'boolean',
-      description: 'Shows token list management options (currently disabled in UI but wired for future use)',
+      description: 'Disables search input in token selector modal',
     },
     compact: {
       control: 'boolean',
@@ -257,7 +277,7 @@ const meta: Meta<typeof TokenSelector> = {
       control: 'boolean',
       description: 'Disable automatic sorting so you can apply your own in the tokens property',
     },
-    customOptions: {
+    listChildren: {
       control: false,
       description: 'Adds extra custom options to the modal, below the favorites',
     },
@@ -265,14 +285,14 @@ const meta: Meta<typeof TokenSelector> = {
       control: 'boolean',
       description: 'Disables the "My Tokens" tab in the token selector modal',
     },
-    onToken: {
-      action: 'token selected',
-      description: 'Callback when a token is selected',
+    onSearch: {
+      action: 'search updated',
+      description: 'Callback when user enters text in the search input',
     },
   },
 }
 
-type Story = StoryObj<typeof TokenSelector>
+type Story = StoryObj<typeof TokenSelectorComponent>
 
 export const Default: Story = {
   parameters: {
@@ -330,7 +350,7 @@ export const CompactMode: Story = {
 
 export const WithCustomOptions: Story = {
   args: {
-    customOptions: (
+    listChildren: (
       <Stack gap={Spacing.xs}>
         <Typography variant="headingXsBold">Custom Options</Typography>
         <Button variant="outlined" fullWidth onClick={() => console.info('Custom option clicked')}>

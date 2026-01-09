@@ -32,7 +32,7 @@ import TxInfoBar from '@ui/TxInfoBar'
 import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
-import { TokenSelector } from '@ui-kit/features/select-token'
+import { TokenList, TokenSelector } from '@ui-kit/features/select-token'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
@@ -425,19 +425,19 @@ const QuickSwap = ({
         disabled={isDisable}
         testId="from-amount"
         tokenSelector={
-          <TokenSelector
-            selectedToken={fromToken}
-            tokens={tokens}
-            balances={userBalancesMapper}
-            disabled={isDisable || !fromToken}
-            tokenPrices={usdRatesMapper}
-            onToken={({ address: fromAddress }) => {
-              const toAddress =
-                fromAddress === searchedParams.toAddress ? searchedParams.fromAddress : searchedParams.toAddress
-              resetFormErrors()
-              redirect(toAddress, fromAddress)
-            }}
-          />
+          <TokenSelector selectedToken={fromToken} disabled={isDisable || !fromToken}>
+            <TokenList
+              tokens={tokens}
+              balances={userBalancesMapper}
+              tokenPrices={usdRatesMapper}
+              onToken={({ address: fromAddress }) => {
+                const toAddress =
+                  fromAddress === searchedParams.toAddress ? searchedParams.fromAddress : searchedParams.toAddress
+                resetFormErrors()
+                redirect(toAddress, fromAddress)
+              }}
+            />
+          </TokenSelector>
         }
         message={formValues.fromError && t`Amount > wallet balance ${formatNumber(userFromBalance)}`}
       />
@@ -469,20 +469,20 @@ const QuickSwap = ({
         disabled={isDisable}
         testId="to-amount"
         tokenSelector={
-          <TokenSelector
-            selectedToken={toToken}
-            tokens={tokens}
-            balances={userBalancesMapper}
-            disabled={isDisable || !toToken}
-            tokenPrices={usdRatesMapper}
-            disableMyTokens={true}
-            onToken={({ address: toAddress }) => {
-              const fromAddress =
-                toAddress === searchedParams.fromAddress ? searchedParams.toAddress : searchedParams.fromAddress
-              resetFormErrors()
-              redirect(toAddress, fromAddress)
-            }}
-          />
+          <TokenSelector selectedToken={toToken} disabled={isDisable || !toToken}>
+            <TokenList
+              tokens={tokens}
+              balances={userBalancesMapper}
+              tokenPrices={usdRatesMapper}
+              disableMyTokens
+              onToken={({ address: toAddress }) => {
+                const fromAddress =
+                  toAddress === searchedParams.fromAddress ? searchedParams.toAddress : searchedParams.fromAddress
+                resetFormErrors()
+                redirect(toAddress, fromAddress)
+              }}
+            />
+          </TokenSelector>
         }
       />
 
