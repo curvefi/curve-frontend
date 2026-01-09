@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { styled } from 'styled-components'
 import { useOneWayMarket } from '@/lend/entities/chain'
 import { useOhlcChartState } from '@/lend/hooks/useOhlcChartState'
@@ -53,6 +53,7 @@ export const ChartAndActivityComp = ({ rChainId, rOwmId, api }: ChartAndActivity
     selectedChartKey,
     setSelectedChart,
     setTimeOption,
+    legendSets,
     ohlcChartProps,
   } = useOhlcChartState({
     rChainId,
@@ -75,20 +76,6 @@ export const ChartAndActivityComp = ({ rChainId, rOwmId, api }: ChartAndActivity
   const borrowToken = getBandsChartToken(borrowedTokenAddress, market?.borrowed_token.symbol)
 
   const [tab, setTab] = useState<Tab>('chart')
-
-  const legendSets = useMemo(
-    () => [
-      {
-        label: t`Oracle Price`,
-        line: { lineStroke: theme.palette.primary.main, dash: 'none' },
-      },
-      {
-        label: t`Conversion zone`,
-        box: { fill: theme.design.Chart.LiquidationZone.Current },
-      },
-    ],
-    [theme.design.Chart.LiquidationZone.Current, theme.palette.primary.main],
-  )
 
   return (
     <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, gap: Spacing.sm, padding: Spacing.md }}>

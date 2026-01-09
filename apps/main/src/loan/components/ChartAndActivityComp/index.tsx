@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { styled } from 'styled-components'
 import { BandsChart } from '@/llamalend/features/bands-chart/BandsChart'
 import { useBandsData } from '@/llamalend/features/bands-chart/hooks/useBandsData'
@@ -54,6 +54,7 @@ const ChartAndActivityComp = ({ rChainId, llamma, llammaId }: ChartAndActivityCo
     selectedChartKey,
     setSelectedChart,
     setTimeOption,
+    legendSets,
     ohlcChartProps,
   } = useOhlcChartState({
     rChainId,
@@ -77,20 +78,6 @@ const ChartAndActivityComp = ({ rChainId, llamma, llammaId }: ChartAndActivityCo
   const borrowToken = getBandsChartToken(borrowedTokenAddress, llamma?.coins[0])
 
   const [tab, setTab] = useState<Tab>('chart')
-
-  const legendSets = useMemo(
-    () => [
-      {
-        label: t`Oracle Price`,
-        line: { lineStroke: theme.palette.primary.main, dash: 'none' },
-      },
-      {
-        label: t`Conversion zone`,
-        box: { fill: theme.design.Chart.LiquidationZone.Current },
-      },
-    ],
-    [theme.design.Chart.LiquidationZone.Current, theme.palette.primary.main],
-  )
 
   return (
     <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, gap: Spacing.sm, padding: Spacing.md }}>
