@@ -13,7 +13,7 @@ import { SelectableChip } from '@ui-kit/shared/ui/SelectableChip'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { useIntegrations } from '../queries/integrations'
-import { useIntegrationsTags, type Tag } from '../queries/integrations-tags'
+import { useIntegrationsTags } from '../queries/integrations-tags'
 
 const { Spacing, Sizing } = SizesAndSpaces
 
@@ -46,7 +46,7 @@ export const IntegrationsList = ({ networkId, searchText }: { networkId?: string
   )
 
   const updateFilters = useCallback(
-    ({ tag, network }: { tag?: Tag; network?: string }) => {
+    ({ tag, network }: { tag?: string; network?: string }) => {
       const pTag = tag ?? filterTag
       const pNetwork = network ?? filterNetwork
 
