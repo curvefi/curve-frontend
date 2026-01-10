@@ -3,10 +3,13 @@ import { useMemo } from 'react'
 import type { Token } from '@/llamalend/features/borrow/types'
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
 import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
+import { getLlamaMarket } from '@/llamalend/llama.utils'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useMarketRates } from '@/llamalend/queries/market-rates'
+import { useRemoveCollateralFutureLeverage } from '@/llamalend/queries/remove-collateral/remove-collateral-future-leverage.query'
 import { useRemoveCollateralEstimateGas } from '@/llamalend/queries/remove-collateral/remove-collateral-gas-estimate.query'
 import { getRemoveCollateralHealthOptions } from '@/llamalend/queries/remove-collateral/remove-collateral-health.query'
+import { useUserCurrentLeverage } from '@/llamalend/queries/user-current-leverage.query'
 import { getUserHealthOptions } from '@/llamalend/queries/user-health.query'
 import { useUserState } from '@/llamalend/queries/user-state.query'
 import { mapQuery } from '@/llamalend/queries/utils'
@@ -14,6 +17,7 @@ import { CollateralParams } from '@/llamalend/queries/validation/manage-loan.typ
 import type { CollateralForm } from '@/llamalend/queries/validation/manage-loan.validation'
 import { LoanInfoAccordion } from '@/llamalend/widgets/manage-loan/LoanInfoAccordion'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets/LendMarketTemplate'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { q } from '@ui-kit/types/util'
 import { decimal, Decimal } from '@ui-kit/utils'
@@ -50,6 +54,8 @@ export function RemoveCollateralInfoAccordion<ChainId extends IChainId>({
     [collateralToken?.symbol, userState, userCollateral],
   )
 
+  const displayUserLeverage = params.marketId && getLlamaMarket(params.marketId) instanceof LendMarketTemplate
+
   return (
     <LoanInfoAccordion
       isOpen={isOpen}
@@ -83,6 +89,11 @@ export function RemoveCollateralInfoAccordion<ChainId extends IChainId>({
         collateralTokenSymbol: collateralToken?.symbol,
       }}
       collateral={expectedCollateral}
+      userLeverage={{
+        enabled: !!displayUserLeverage,
+        prev: useUserCurrentLeverage(params),
+        expected: useRemoveCollateralFutureLeverage(params, isOpen),
+      }}
     />
   )
 }
