@@ -18,7 +18,7 @@ export type Tag =
   | 'crvusd'
   | 'other'
 
-export type IntegrationTag = { id: Tag; displayName: string; color: string }
+type IntegrationTag = { id: Tag; displayName: string; color: string }
 
 export const { useQuery: useIntegrationsTags } = queryFactory({
   queryKey: () => ['integrations-tags'] as const,

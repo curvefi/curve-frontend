@@ -13,16 +13,9 @@ import { SelectableChip } from '@ui-kit/shared/ui/SelectableChip'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { useIntegrations } from '../queries/integrations'
-import { useIntegrationsTags, type IntegrationTag, type Tag } from '../queries/integrations-tags'
+import { useIntegrationsTags, type Tag } from '../queries/integrations-tags'
 
 const { Spacing, Sizing } = SizesAndSpaces
-
-const TagChip = ({ tag }: { tag: IntegrationTag }) => (
-  <Stack direction="row" alignItems="center" gap={Spacing.sm}>
-    {tag.color && <Box sx={{ width: Sizing.xs, height: Sizing.xs, backgroundColor: tag.color }} />}
-    {tag.displayName}
-  </Stack>
-)
 
 export const IntegrationsList = ({ networkId, searchText }: { networkId?: string; searchText?: string }) => {
   const { data: integrations = [], isLoading: integrationsLoading } = useIntegrations({})
@@ -110,7 +103,12 @@ export const IntegrationsList = ({ networkId, searchText }: { networkId?: string
             <Grid container key={tag.id} size={{ mobile: 12, tablet: 'auto' }} spacing={Spacing.xxs}>
               <SelectableChip
                 size="small"
-                label={<TagChip tag={tag} />}
+                label={
+                  <Stack direction="row" alignItems="center" gap={Spacing.sm}>
+                    {tag.color && <Box sx={{ width: Sizing.xs, height: Sizing.xs, backgroundColor: tag.color }} />}
+                    {tag.displayName}
+                  </Stack>
+                }
                 selected={filterTag == tag.id}
                 toggle={() => updateFilters({ tag: tag.id })}
                 sx={{ width: { mobile: '100%', tablet: 'auto' } }}
