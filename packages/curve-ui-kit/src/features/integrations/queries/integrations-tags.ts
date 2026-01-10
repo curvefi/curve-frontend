@@ -3,9 +3,22 @@ import { fromEntries } from '@curvefi/prices-api/objects.util'
 import { CURVE_CDN_URL } from '@ui/utils'
 import { EmptyValidationSuite } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
-import type { IntegrationTag, Tag } from '../types'
 
 const INTEGRATIONS_TAGS_URL = `${CURVE_CDN_URL}/curve-external-integrations/integrations-tags.json`
+
+export type Tag =
+  | 'all'
+  | 'automation'
+  | 'bots'
+  | 'defi'
+  | 'gameNft'
+  | 'learningData'
+  | 'votingIncentives'
+  | 'portfolio'
+  | 'crvusd'
+  | 'other'
+
+export type IntegrationTag = { id: Tag; displayName: string; color: string }
 
 export const { useQuery: useIntegrationsTags } = queryFactory({
   queryKey: () => ['integrations-tags'] as const,

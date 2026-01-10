@@ -13,8 +13,7 @@ import { SelectableChip } from '@ui-kit/shared/ui/SelectableChip'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { useIntegrations } from '../queries/integrations'
-import { useIntegrationsTags } from '../queries/integrations-tags'
-import type { IntegrationTag, Tag } from '../types'
+import { useIntegrationsTags, type IntegrationTag, type Tag } from '../queries/integrations-tags'
 
 const { Spacing, Sizing } = SizesAndSpaces
 
