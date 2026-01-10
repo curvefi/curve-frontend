@@ -1,10 +1,10 @@
 import ButtonBase from '@mui/material/ButtonBase'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
-/**
- * Legend line component to be used together with Charts
- */
+const { Spacing } = SizesAndSpaces
+
 export const LegendLine = ({ color, dash }: { color: string; dash?: string }) => (
   <svg width="20" height="2">
     <line x1="0" y1="1" x2="20" y2="1" stroke={color} strokeWidth={2} strokeDasharray={dash} />
@@ -17,7 +17,7 @@ export const LegendBox = ({ outline, fill }: { outline: string; fill: string }) 
   </svg>
 )
 
-export type LegendSetType = {
+export type LegendItem = {
   label: string
   line?: {
     lineStroke: string
@@ -27,18 +27,18 @@ export type LegendSetType = {
     outlineStroke?: string
     fill: string
   }
-  checked?: boolean
+  toggled?: boolean
   onToggle?: (label: string) => void
 }
 
-export const LegendSet = ({ label, line, box, checked = true, onToggle }: LegendSetType) => {
+export const LegendSet = ({ label, line, box, toggled = true, onToggle }: LegendItem) => {
   const isInteractive = onToggle !== undefined
-  const opacity = checked ? 1 : 0.35
+  const opacity = toggled ? 1 : 0.35
 
   const content = (
     <Stack
       direction="row"
-      spacing={2}
+      spacing={Spacing.xs}
       alignItems="center"
       sx={{
         opacity,
@@ -59,7 +59,6 @@ export const LegendSet = ({ label, line, box, checked = true, onToggle }: Legend
     <ButtonBase
       onClick={() => onToggle(label)}
       sx={{
-        borderRadius: 1,
         padding: 0.5,
       }}
     >
