@@ -17,6 +17,38 @@ import { useIntegrationsTags } from '../queries/integrations-tags'
 
 const { Spacing, Sizing } = SizesAndSpaces
 
+const filterIntegrations = ({
+  integrations,
+  network,
+  tag,
+  searchText,
+}: {
+  integrations: Partner[]
+  network: string
+  tag: string
+  searchText?: string
+}): Partner[] => {
+  // Revert back to the original name if there was a chain rename, it seems the integration list was never
+  // updated to use the new blockchain names like 'xdai' rather than 'gnosis'.
+  const networkId = Object.entries(BLOCKCHAIN_LEGACY_NAMES).find(([, rename]) => rename === network)?.[0] ?? network
+
+  const list = [...integrations]
+    .filter((app) => tag === 'all' || app.tags?.includes(tag))
+    .filter((app) => !networkId || app.networks?.[networkId])
+
+  if (!searchText) {
+    return list
+  }
+
+  return new Fuse<Partner>(list, {
+    ignoreLocation: true,
+    threshold: 0.01,
+    keys: [{ name: 'name', getFn: (a) => a.name }],
+  })
+    .search(searchText)
+    .map((r) => r.item)
+}
+
 export const IntegrationsList = ({ networkId, searchText }: { networkId?: string; searchText?: string }) => {
   const { data: integrations = [], isLoading: integrationsLoading } = useIntegrations({})
   const { data: tags = {}, isLoading: integrationsTagsLoading } = useIntegrationsTags({})
@@ -60,26 +92,10 @@ export const IntegrationsList = ({ networkId, searchText }: { networkId?: string
     [filterTag, filterNetwork, push],
   )
 
-  const integrationsFiltered = useMemo(() => {
-    // Revert back to the original name if there was a chain rename, it seems the integration list was never
-    // updated to use the new blockchain names like 'xdai' rather than 'gnosis'.
-    const networkId =
-      Object.entries(BLOCKCHAIN_LEGACY_NAMES).find(([, rename]) => rename === filterNetwork)?.[0] ?? filterNetwork
-
-    const list = [...(integrations ?? [])]
-      .filter((app) => filterTag === 'all' || app.tags?.includes(filterTag))
-      .filter((app) => !networkId || app.networks?.[networkId])
-
-    return searchText
-      ? new Fuse<Partner>(list, {
-          ignoreLocation: true,
-          threshold: 0.01,
-          keys: [{ name: 'name', getFn: (a) => a.name }],
-        })
-          .search(searchText)
-          .map((r) => r.item)
-      : list
-  }, [filterNetwork, filterTag, integrations, searchText])
+  const integrationsFiltered = useMemo(
+    () => filterIntegrations({ integrations, network: filterNetwork, tag: filterTag, searchText }),
+    [filterNetwork, filterTag, integrations, searchText],
+  )
 
   return (
     <WithSkeleton loading={isLoading} sx={{ height: Sizing.xxl }}>
