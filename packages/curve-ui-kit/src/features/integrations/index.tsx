@@ -30,7 +30,7 @@ export const Integrations = () => {
         backgroundColor: (t) => t.design.Layer[1].Fill,
         marginInline: 'auto',
         marginBlockStart: Spacing.xl,
-        marginBlockEnd: Spacing.xxl,
+        paddingBlockEnd: Spacing.lg,
         paddingInline: Spacing.md,
       }}
     >

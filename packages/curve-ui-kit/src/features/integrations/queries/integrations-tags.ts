@@ -3,7 +3,7 @@ import { fromEntries } from '@curvefi/prices-api/objects.util'
 import { CURVE_CDN_URL } from '@ui/utils'
 import { EmptyValidationSuite } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
-import type { IntegrationsTags, IntegrationTag, Tag } from '../types'
+import type { IntegrationTag, Tag } from '../types'
 
 const INTEGRATIONS_TAGS_URL = `${CURVE_CDN_URL}/curve-external-integrations/integrations-tags.json`
 
@@ -28,7 +28,11 @@ const INTEGRATIONS_TAGS_COLORS = [
   '#FF69B4',
 ]
 
-const parseIntegrationsTags = (integrationsTags: { id: Tag; displayName: string }[]): IntegrationsTags =>
+const parseIntegrationsTags = (
+  integrationsTags: { id: Tag; displayName: string }[],
+): {
+  [k: string]: IntegrationTag
+} =>
   fromEntries(
     integrationsTags.map((t, idx) => {
       if (t.id === 'all') return ['all', { ...t, color: '' }]

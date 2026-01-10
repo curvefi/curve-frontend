@@ -8,16 +8,22 @@ import { BLOCKCHAIN_LEGACY_NAMES } from '@ui/utils'
 import { useNavigate, useSearchParams } from '@ui-kit/hooks/router'
 import { t, Trans } from '@ui-kit/lib/i18n'
 import { ChainFilterChips } from '@ui-kit/shared/ui/DataTable/chips/ChainFilterChips'
+import { PartnerCard, type Partner } from '@ui-kit/shared/ui/PartnerCard'
 import { SelectableChip } from '@ui-kit/shared/ui/SelectableChip'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { useIntegrations } from '../queries/integrations'
 import { useIntegrationsTags } from '../queries/integrations-tags'
-import type { Integration, Tag } from '../types'
-import { IntegrationApp } from './IntegrationApp'
-import { IntegrationAppTag } from './IntegrationAppTag'
+import type { IntegrationTag, Tag } from '../types'
 
 const { Spacing, Sizing } = SizesAndSpaces
+
+const IntegrationAppTag = ({ tag }: { tag: IntegrationTag }) => (
+  <Stack direction="row" alignItems="center" gap={Spacing.sm}>
+    {tag.color && <Box sx={{ width: Sizing.xs, height: Sizing.xs, backgroundColor: tag.color }} />}
+    {tag.displayName}
+  </Stack>
+)
 
 export const IntegrationsList = ({ networkId, searchText }: { networkId?: string; searchText?: string }) => {
   const { data: integrations = [], isLoading: integrationsLoading } = useIntegrations({})
@@ -29,7 +35,7 @@ export const IntegrationsList = ({ networkId, searchText }: { networkId?: string
     () => [
       ...new Set(
         integrations.flatMap((integration) =>
-          Object.entries(integration.networks)
+          Object.entries(integration.networks ?? [])
             .filter(([, enabled]) => enabled)
             .map(([networkId]) => networkId),
         ),
@@ -43,7 +49,7 @@ export const IntegrationsList = ({ networkId, searchText }: { networkId?: string
 
   const filterTag = useMemo(() => tags?.[searchParams?.get('tag') ?? 'all']?.id, [searchParams, tags])
   const filterNetwork = useMemo(
-    () => networks.find((network) => network === searchParams?.get('network')) || networkId,
+    () => (networks.find((network) => network === searchParams?.get('network')) || networkId) ?? 'ethereum',
     [networkId, networks, searchParams],
   )
 
@@ -69,11 +75,11 @@ export const IntegrationsList = ({ networkId, searchText }: { networkId?: string
       Object.entries(BLOCKCHAIN_LEGACY_NAMES).find(([, rename]) => rename === filterNetwork)?.[0] ?? filterNetwork
 
     const list = [...(integrations ?? [])]
-      .filter((app) => filterTag === 'all' || app.tags[filterTag || ''])
-      .filter((app) => !networkId || app.networks[networkId])
+      .filter((app) => filterTag === 'all' || app.tags?.includes(filterTag))
+      .filter((app) => !networkId || app.networks?.[networkId])
 
     return searchText
-      ? new Fuse<Integration>(list, {
+      ? new Fuse<Partner>(list, {
           ignoreLocation: true,
           threshold: 0.01,
           keys: [{ name: 'name', getFn: (a) => a.name }],
@@ -88,7 +94,7 @@ export const IntegrationsList = ({ networkId, searchText }: { networkId?: string
       <Stack direction="column" gap={Spacing.sm}>
         <ChainFilterChips
           chains={networks}
-          selectedChains={[filterNetwork ?? 'ethereum']}
+          selectedChains={[filterNetwork]}
           toggleChain={(network) => {
             updateFilters({ network })
           }}
@@ -124,10 +130,10 @@ export const IntegrationsList = ({ networkId, searchText }: { networkId?: string
             </Trans>
           </Box>
         ) : (
-          <Grid container spacing={Spacing.md}>
+          <Grid container spacing={Spacing.md} sx={{ marginBlockStart: Spacing.sm }}>
             {(integrationsFiltered ?? []).map((app) => (
               <Grid key={app.name} size={{ mobile: 12, tablet: 6, desktop: 4 }}>
-                <IntegrationApp {...app} integrationsTags={tags} />
+                <PartnerCard {...app} tags={(app.tags ?? []).map((tag) => tags[tag]?.displayName ?? tag)} />
               </Grid>
             ))}
           </Grid>
