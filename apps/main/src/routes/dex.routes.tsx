@@ -2,7 +2,6 @@ import { PageCompensation } from '@/dex/components/PageCompensation/Page'
 import { PageCreatePool } from '@/dex/components/PageCreatePool/Page'
 import { PageDashboard } from '@/dex/components/PageDashboard/Page'
 import { PageDeployGauge } from '@/dex/components/PageDeployGauge/Page'
-import { PageIntegrations } from '@/dex/components/PageIntegrations/Page'
 import { PagePool } from '@/dex/components/PagePool/Page'
 import { PagePoolList } from '@/dex/components/PagePoolList/Page'
 import { PageRouterSwap } from '@/dex/components/PageRouterSwap/Page'
@@ -61,14 +60,6 @@ export const dexRoutes = dexLayoutRoute.addChildren([
     component: PageDeployGauge,
     head: () => ({
       meta: [{ title: 'Deploy Gauge - Curve' }],
-    }),
-    ...layoutProps,
-  }),
-  createRoute({
-    path: '$network/integrations',
-    component: PageIntegrations,
-    head: () => ({
-      meta: [{ title: 'Integrations - Curve' }],
     }),
     ...layoutProps,
   }),

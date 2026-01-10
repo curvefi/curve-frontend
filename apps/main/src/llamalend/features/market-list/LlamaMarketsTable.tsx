@@ -16,7 +16,7 @@ import { useColumnFilters } from '@ui-kit/shared/ui/DataTable/hooks/useColumnFil
 import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
 import { TableFiltersTitles } from '@ui-kit/shared/ui/DataTable/TableFiltersTitles'
 import { EmptyStateCard } from '@ui-kit/shared/ui/EmptyStateCard'
-import { ChainFilterChip } from './chips/ChainFilterChip'
+import { LlamaChainFilterChips } from './chips/LlamaChainFilterChips'
 import { LlamaListChips } from './chips/LlamaListChips'
 import { DEFAULT_SORT } from './columns'
 import { LLAMA_MARKET_COLUMNS } from './columns'
@@ -119,7 +119,7 @@ export const LlamaMarketsTable = ({
         collapsible={<LendingMarketsFilters data={data} {...filterProps} />}
         chips={
           <>
-            <ChainFilterChip data={data} {...filterProps} />
+            <LlamaChainFilterChips data={data} {...filterProps} />
             <LlamaListChips
               hiddenMarketCount={result ? data.length - table.getFilteredRowModel().rows.length : 0}
               hasFilters={hasFilters}
