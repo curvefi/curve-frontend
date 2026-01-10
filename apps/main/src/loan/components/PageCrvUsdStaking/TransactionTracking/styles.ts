@@ -31,11 +31,11 @@ export const StepTitle = styled.p`
 
 export const TransactionLink = styled(ExternalLink)`
   font-size: var(--font-size-1);
-  color: var(--primary_darkBg-400);
+  color: var(--link-400);
   text-decoration: none;
   border: none;
   &:hover {
-    color: var(--primary_darkBg-400);
+    color: var(--link-400);
   }
 `
 
@@ -79,9 +79,9 @@ export const DividerLine = styled.div`
 
 export const ResetButton = styled(Button)`
   margin: var(--spacing-2) auto 0;
-  color: var(--primary_darkBg-400);
+  color: var(--link-400);
   &:hover:not(:disabled),
   &:active:not(:disabled) {
-    color: var(--primary_darkBg-400);
+    color: var(--link-400);
   }
 `
