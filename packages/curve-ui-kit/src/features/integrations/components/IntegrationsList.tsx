@@ -3,14 +3,11 @@ import { useCallback, useMemo } from 'react'
 import { notFalsy } from '@curvefi/prices-api/objects.util'
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
-import MenuItem from '@mui/material/MenuItem'
-import Select from '@mui/material/Select'
 import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
 import { BLOCKCHAIN_LEGACY_NAMES } from '@ui/utils'
 import { useNavigate, useSearchParams } from '@ui-kit/hooks/router'
 import { t, Trans } from '@ui-kit/lib/i18n'
-import { ChainIcon } from '@ui-kit/shared/icons/ChainIcon'
+import { ChainFilterChips } from '@ui-kit/shared/ui/DataTable/chips/ChainFilterChips'
 import { SelectableChip } from '@ui-kit/shared/ui/SelectableChip'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -20,14 +17,7 @@ import type { Integration, Tag } from '../types'
 import { IntegrationApp } from './IntegrationApp'
 import { IntegrationAppTag } from './IntegrationAppTag'
 
-const { Spacing, Sizing, ButtonSize } = SizesAndSpaces
-
-const NetworkItem = ({ networkId }: { networkId: string }) => (
-  <Stack direction="row" gap={Spacing.sm} alignItems="center">
-    <ChainIcon blockchainId={networkId} size="sm" />
-    <Typography>{networkId}</Typography>
-  </Stack>
-)
+const { Spacing, Sizing } = SizesAndSpaces
 
 export const IntegrationsList = ({ networkId, searchText }: { networkId?: string; searchText?: string }) => {
   const { data: integrations = [], isLoading: integrationsLoading } = useIntegrations({})
@@ -96,22 +86,13 @@ export const IntegrationsList = ({ networkId, searchText }: { networkId?: string
   return (
     <WithSkeleton loading={isLoading} sx={{ height: Sizing.xxl }}>
       <Stack direction="column" gap={Spacing.sm}>
-        <Select
-          aria-label={t`Select network`}
-          value={filterNetwork}
-          onChange={(e) => {
-            updateFilters({ network: e.target.value })
+        <ChainFilterChips
+          chains={networks}
+          selectedChains={[filterNetwork ?? 'ethereum']}
+          toggleChain={(network) => {
+            updateFilters({ network })
           }}
-          displayEmpty
-          renderValue={() => <NetworkItem networkId={filterNetwork ?? 'ethereum'} />}
-          sx={{ minWidth: '12rem' /* purely aesthetic */, height: ButtonSize.md }}
-        >
-          {networks.map((network) => (
-            <MenuItem key={network} value={network}>
-              <NetworkItem networkId={network} />
-            </MenuItem>
-          ))}
-        </Select>
+        />
 
         <Grid
           container
