@@ -17,7 +17,7 @@ import { useIntegrationsTags, type IntegrationTag, type Tag } from '../queries/i
 
 const { Spacing, Sizing } = SizesAndSpaces
 
-const IntegrationAppTag = ({ tag }: { tag: IntegrationTag }) => (
+const TagChip = ({ tag }: { tag: IntegrationTag }) => (
   <Stack direction="row" alignItems="center" gap={Spacing.sm}>
     {tag.color && <Box sx={{ width: Sizing.xs, height: Sizing.xs, backgroundColor: tag.color }} />}
     {tag.displayName}
@@ -110,7 +110,7 @@ export const IntegrationsList = ({ networkId, searchText }: { networkId?: string
             <Grid container key={tag.id} size={{ mobile: 12, tablet: 'auto' }} spacing={Spacing.xxs}>
               <SelectableChip
                 size="small"
-                label={<IntegrationAppTag tag={tag} />}
+                label={<TagChip tag={tag} />}
                 selected={filterTag == tag.id}
                 toggle={() => updateFilters({ tag: tag.id })}
                 sx={{ width: { mobile: '100%', tablet: 'auto' } }}
