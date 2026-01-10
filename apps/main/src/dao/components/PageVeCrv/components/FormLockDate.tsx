@@ -23,7 +23,7 @@ import dayjs from '@ui-kit/lib/dayjs'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 
-const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
+export const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
   const isSubscribed = useRef(false)
 
   const activeKey = useStore((state) => state.lockedCrv.activeKey)
@@ -233,5 +233,3 @@ const StyledForm = styled.form`
   display: grid;
   grid-row-gap: var(--spacing-3);
 `
-
-export default FormLockDate

@@ -15,20 +15,11 @@ const useStableChannel = () => useReleaseChannel()[0] !== ReleaseChannel.Legacy
  *  */
 const useAlphaChannel = () => useBetaChannel() && defaultReleaseChannel === ReleaseChannel.Beta
 
-/** LargeTokenInput replaces legacy amount inputs */
-export const useLargeTokenInput = useStableChannel
-
-/** LargeTokenInput specifically for scrvUSD page, was implemented after the rest */
-export const useLargeTokenInputScrvusd = useBetaChannel
-
-/** Negation of useLargeTokenInput for readability. */
-export const useLegacyTokenInput = () => !useLargeTokenInput()
-
 /** New DEX market list (PoolListPage) */
 export const useDexMarketList = useBetaChannel
 
 /** New unified create loan form */
-export const useCreateLoanMuiForm = useBetaChannel
+export const useCreateLoanMuiForm = useStableChannel
 
 /** New manage loan forms (add/remove/repay) */
 export const useManageLoanMuiForm = useAlphaChannel

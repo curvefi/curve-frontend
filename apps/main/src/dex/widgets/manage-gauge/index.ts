@@ -1,1 +1,1 @@
-export { default as ManageGauge } from './ui/ManageGauge'
+export { ManageGauge } from './ui/ManageGauge'

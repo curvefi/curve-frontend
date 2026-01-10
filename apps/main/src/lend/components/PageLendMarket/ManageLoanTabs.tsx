@@ -1,7 +1,8 @@
-import LoanBorrowMore, { LoanBorrowMoreWrapped } from '@/lend/components/PageLendMarket/LoanBorrowMore'
-import LoanCollateralAdd, { LoanAddCollateralTab } from '@/lend/components/PageLendMarket/LoanCollateralAdd'
-import LoanCollateralRemove, { LoanRemoveCollateralTab } from '@/lend/components/PageLendMarket/LoanCollateralRemove'
-import LoanRepay, {
+import { LoanBorrowMore, LoanBorrowMoreWrapped } from '@/lend/components/PageLendMarket/LoanBorrowMore'
+import { LoanCollateralAdd, LoanAddCollateralTab } from '@/lend/components/PageLendMarket/LoanCollateralAdd'
+import { LoanCollateralRemove, LoanRemoveCollateralTab } from '@/lend/components/PageLendMarket/LoanCollateralRemove'
+import {
+  LoanRepay,
   LoanRepayFromCollateralTab,
   LoanRepayFromWalletTab,
 } from '@/lend/components/PageLendMarket/LoanRepay'

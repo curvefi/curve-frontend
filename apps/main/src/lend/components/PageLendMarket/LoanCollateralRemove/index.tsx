@@ -5,7 +5,7 @@ import DetailInfoEstimateGas from '@/lend/components/DetailInfoEstimateGas'
 import DetailInfoHealth from '@/lend/components/DetailInfoHealth'
 import DetailInfoLiqRange from '@/lend/components/DetailInfoLiqRange'
 import DialogFormWarning from '@/lend/components/DialogFormWarning'
-import InpTokenRemove from '@/lend/components/InpTokenRemove'
+import { InpTokenRemove } from '@/lend/components/InpTokenRemove'
 import LoanFormConnect from '@/lend/components/LoanFormConnect'
 import type { FormStatus, FormValues, StepKey } from '@/lend/components/PageLendMarket/LoanCollateralRemove/types'
 import type { FormEstGas } from '@/lend/components/PageLendMarket/types'
@@ -26,12 +26,12 @@ import { getActiveStep } from '@ui/Stepper/helpers'
 import Stepper from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
 import TxInfoBar from '@ui/TxInfoBar'
-import { formatNumber, scanTxPath } from '@ui/utils'
+import { scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
 
-const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey }: PageContentProps) => {
+export const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)
 
   const activeKey = useStore((state) => state.loanCollateralRemove.activeKey)
@@ -225,7 +225,6 @@ const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, userAct
         inpError={formValues.collateralError}
         inpDisabled={disabled}
         inpLabelLoading={!!signerAddress && typeof userBalances?.collateral === 'undefined'}
-        inpLabelDescription={formatNumber(userBalances?.collateral, { defaultValue: '-' })}
         inpValue={formValues.collateral}
         maxRemovable={maxRemovable}
         tokenAddress={market?.collateral_token?.address}
@@ -282,8 +281,6 @@ const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, userAct
     </>
   )
 }
-
-export default LoanCollateralRemove
 
 export const LoanRemoveCollateralTab = ({ rChainId, market, isLoaded }: PageContentProps) => (
   <RemoveCollateralForm networks={networks} chainId={rChainId} market={market} enabled={isLoaded} />
