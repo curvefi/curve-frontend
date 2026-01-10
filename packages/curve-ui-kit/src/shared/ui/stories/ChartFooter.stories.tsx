@@ -5,7 +5,7 @@ import { useTheme } from '@mui/material/styles'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { t } from '@ui-kit/lib/i18n'
 import { ChartFooter } from '../ChartFooter'
-import type { LegendSetType } from '../LegendSet'
+import type { LegendItem } from '../LegendSet'
 
 type TimeRange = '1D' | '1W' | '1M'
 const timeRanges: TimeRange[] = ['1D', '1W', '1M']
@@ -18,7 +18,7 @@ const meta: Meta<typeof ChartFooter> = {
       control: { disable: true },
       description: 'Array of legend items to display. Each can have a line, box, or both.',
     },
-    showSoftLiquidationText: {
+    description: {
       control: 'boolean',
       description: 'Whether to show the soft liquidation warning text below the legends',
     },
@@ -43,7 +43,7 @@ type Story = StoryObj<typeof ChartFooter<TimeRange>>
 const BasicLegendsWrapper = () => {
   const theme = useTheme()
 
-  const legendSets: LegendSetType[] = [
+  const legendSets: LegendItem[] = [
     {
       label: t`Oracle Price`,
       line: { lineStroke: theme.palette.primary.main, dash: 'none' },
@@ -94,23 +94,23 @@ const InteractiveLegendsWrapper = () => {
     }
   }
 
-  const legendSets: LegendSetType[] = [
+  const legendSets: LegendItem[] = [
     {
       label: t`Oracle Price`,
       line: { lineStroke: theme.palette.primary.main, dash: 'none' },
-      checked: visibility.oraclePrice,
+      toggled: visibility.oraclePrice,
       onToggle: toggleVisibility,
     },
     {
       label: t`Conversion zone`,
       box: { fill: theme.design.Chart.LiquidationZone.Current },
-      checked: visibility.conversionZone,
+      toggled: visibility.conversionZone,
       onToggle: toggleVisibility,
     },
     {
       label: t`New conversion zone`,
       box: { fill: theme.design.Chart.LiquidationZone.Future },
-      checked: visibility.newConversionZone,
+      toggled: visibility.newConversionZone,
       onToggle: toggleVisibility,
     },
   ]
@@ -138,7 +138,7 @@ export const WithInteractiveLegends: Story = {
 const WithSoftLiquidationWrapper = () => {
   const theme = useTheme()
 
-  const legendSets: LegendSetType[] = [
+  const legendSets: LegendItem[] = [
     {
       label: t`Oracle Price`,
       line: { lineStroke: theme.palette.primary.main, dash: 'none' },
@@ -151,7 +151,10 @@ const WithSoftLiquidationWrapper = () => {
 
   return (
     <Box sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 1, p: 2, maxWidth: 600 }}>
-      <ChartFooter legendSets={legendSets} showSoftLiquidationText />
+      <ChartFooter
+        legendSets={legendSets}
+        description={t`When the price enters the liquidation zone, health will start decreasing putting your position at risk. Repay debt to improve health or close your position to avoid liquidation.`}
+      />
     </Box>
   )
 }
@@ -178,7 +181,7 @@ const WithToggleButtonsWrapper = () => {
     }
   }
 
-  const legendSets: LegendSetType[] = [
+  const legendSets: LegendItem[] = [
     {
       label: t`Oracle Price`,
       line: { lineStroke: theme.palette.primary.main, dash: 'none' },
@@ -238,23 +241,23 @@ const FullFeaturedWrapper = () => {
     }
   }
 
-  const legendSets: LegendSetType[] = [
+  const legendSets: LegendItem[] = [
     {
       label: t`Oracle Price`,
       line: { lineStroke: theme.palette.primary.main, dash: 'none' },
-      checked: visibility.oraclePrice,
+      toggled: visibility.oraclePrice,
       onToggle: toggleVisibility,
     },
     {
       label: t`Conversion zone`,
       box: { fill: theme.design.Chart.LiquidationZone.Current },
-      checked: visibility.conversionZone,
+      toggled: visibility.conversionZone,
       onToggle: toggleVisibility,
     },
     {
       label: t`New conversion zone`,
       box: { fill: theme.design.Chart.LiquidationZone.Future },
-      checked: visibility.newConversionZone,
+      toggled: visibility.newConversionZone,
       onToggle: toggleVisibility,
     },
   ]
@@ -266,7 +269,7 @@ const FullFeaturedWrapper = () => {
         toggleOptions={timeRanges}
         activeToggleOption={activeTime}
         onToggleChange={handleToggleChange}
-        showSoftLiquidationText
+        description={t`When the price enters the liquidation zone, health will start decreasing putting your position at risk. Repay debt to improve health or close your position to avoid liquidation.`}
       />
     </Box>
   )
@@ -287,7 +290,7 @@ export const FullFeatured: Story = {
 const LineLegendsWrapper = () => {
   const theme = useTheme()
 
-  const legendSets: LegendSetType[] = [
+  const legendSets: LegendItem[] = [
     { label: 'Line 1', line: { lineStroke: theme.design.Chart.Lines.Line1, dash: 'none' } },
     { label: 'Line 2', line: { lineStroke: theme.design.Chart.Lines.Line2, dash: '4 2' } },
     { label: 'Line 3', line: { lineStroke: theme.design.Chart.Lines.Line3, dash: '2 2' } },
@@ -315,7 +318,7 @@ export const LineLegendsOnly: Story = {
 const BoxLegendsWrapper = () => {
   const theme = useTheme()
 
-  const legendSets: LegendSetType[] = [
+  const legendSets: LegendItem[] = [
     {
       label: 'Positive (Candle)',
       box: { outlineStroke: theme.design.Chart.Candles.Positive, fill: `${theme.design.Chart.Candles.Positive}33` },
@@ -363,7 +366,7 @@ const NarrowContainerWrapper = () => {
     }
   }
 
-  const legendSets: LegendSetType[] = [
+  const legendSets: LegendItem[] = [
     {
       label: t`Oracle Price`,
       line: { lineStroke: theme.palette.primary.main, dash: 'none' },
@@ -385,7 +388,7 @@ const NarrowContainerWrapper = () => {
         toggleOptions={timeRanges}
         activeToggleOption={activeTime}
         onToggleChange={handleToggleChange}
-        showSoftLiquidationText={true}
+        description={t`When the price enters the liquidation zone, health will start decreasing putting your position at risk. Repay debt to improve health or close your position to avoid liquidation.`}
       />
     </Box>
   )
