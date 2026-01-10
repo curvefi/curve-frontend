@@ -55,7 +55,7 @@ const BasicLegendsWrapper = () => {
   ]
 
   return (
-    <Box sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 1, p: 2, maxWidth: 600 }}>
+    <Box sx={{ maxWidth: 600 }}>
       <ChartFooter legendSets={legendSets} />
     </Box>
   )
@@ -116,7 +116,7 @@ const InteractiveLegendsWrapper = () => {
   ]
 
   return (
-    <Box sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 1, p: 2, maxWidth: 600 }}>
+    <Box sx={{ maxWidth: 600 }}>
       <ChartFooter legendSets={legendSets} />
     </Box>
   )
@@ -150,7 +150,7 @@ const WithSoftLiquidationWrapper = () => {
   ]
 
   return (
-    <Box sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 1, p: 2, maxWidth: 600 }}>
+    <Box sx={{ maxWidth: 600 }}>
       <ChartFooter
         legendSets={legendSets}
         description={t`When the price enters the liquidation zone, health will start decreasing putting your position at risk. Repay debt to improve health or close your position to avoid liquidation.`}
@@ -193,7 +193,7 @@ const WithToggleButtonsWrapper = () => {
   ]
 
   return (
-    <Box sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 1, p: 2, maxWidth: 600 }}>
+    <Box sx={{ maxWidth: 600 }}>
       <ChartFooter
         legendSets={legendSets}
         toggleOptions={timeRanges}
@@ -263,7 +263,7 @@ const FullFeaturedWrapper = () => {
   ]
 
   return (
-    <Box sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 1, p: 2, maxWidth: 600 }}>
+    <Box sx={{ maxWidth: 600 }}>
       <ChartFooter
         legendSets={legendSets}
         toggleOptions={timeRanges}
@@ -297,7 +297,7 @@ const LineLegendsWrapper = () => {
   ]
 
   return (
-    <Box sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 1, p: 2, maxWidth: 600 }}>
+    <Box sx={{ maxWidth: 600 }}>
       <ChartFooter legendSets={legendSets} />
     </Box>
   )
@@ -338,7 +338,7 @@ const BoxLegendsWrapper = () => {
   ]
 
   return (
-    <Box sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 1, p: 2, maxWidth: 600 }}>
+    <Box sx={{ maxWidth: 600 }}>
       <ChartFooter legendSets={legendSets} />
     </Box>
   )
@@ -382,7 +382,7 @@ const NarrowContainerWrapper = () => {
   ]
 
   return (
-    <Box sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 1, p: 2, maxWidth: 350 }}>
+    <Box sx={{ maxWidth: 350 }}>
       <ChartFooter
         legendSets={legendSets}
         toggleOptions={timeRanges}
