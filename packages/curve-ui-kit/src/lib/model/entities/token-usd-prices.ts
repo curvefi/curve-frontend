@@ -9,7 +9,7 @@ import { contractValidationSuite } from '@ui-kit/lib/model/query/contract-valida
  * However, it works multi-chain and without llamalend-js being initialized (which requires a wallet).
  * @returns The USD price of the token, or undefined if not found.
  */
-export const { useQuery: useTokenUsdPrice } = queryFactory({
+export const { useQuery: useTokenUsdPrice, getQueryOptions: getTokenUsdPriceQueryOptions } = queryFactory({
   queryKey: (params: ContractParams) => [...rootKeys.contract(params), 'usd-price'] as const,
   queryFn: async ({ blockchainId, contractAddress }: ContractQuery) => {
     try {
