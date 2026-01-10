@@ -1,9 +1,11 @@
 import type { Components } from '@mui/material/styles'
+import type { TabsProps } from '@mui/material/Tabs'
 import { handleBreakpoints } from '@ui-kit/themes/basic-theme'
+import { TypographyVariantKey } from '@ui-kit/themes/typography'
 import { DesignSystem } from '../../design'
 import { SizesAndSpaces } from '../../design/1_sizes_spaces'
 
-const { Spacing } = SizesAndSpaces
+const { Spacing, ButtonSize } = SizesAndSpaces
 
 // css classes used by the TabSwitcher component
 const contained = 'variant-contained' as const
@@ -11,16 +13,39 @@ const underlined = 'variant-underlined' as const
 const overlined = 'variant-overlined' as const
 const small = 'size-small' as const
 const medium = 'size-medium' as const
-const large = 'size-large' as const
+const extraExtraLarge = 'size-extraExtraLarge' as const
 export const TABS_VARIANT_CLASSES = { contained, underlined, overlined }
-export const TABS_HEIGHT_CLASSES = { small, medium, large }
-export const HIDE_INACTIVE_BORDERS_CLASS = 'hide-inactive-borders'
+export const TABS_SIZES_CLASSES = { small, medium, extraExtraLarge }
+export const HIDE_INACTIVE_BORDERS_CLASS = 'hide-inactive-borders' as const
+export const TAB_LABEL_CONTAINER_CLASS = 'tab-label-container' as const
+export const TAB_SUFFIX_CLASS = 'tab-suffix' as const
 
 export type TabSwitcherVariants = keyof typeof TABS_VARIANT_CLASSES
+
+type TabStyle = { Label?: string; Fill?: string; Outline?: string }
+type TabVariant = { Inset?: string; Default: TabStyle; Hover: TabStyle; Current: TabStyle }
+type SpacingKey = keyof typeof Spacing | string | number
+
+type TabOrientationValues = Record<NonNullable<TabsProps['orientation']>, string>
+
+export const TAB_TEXT_VARIANTS = {
+  small: 'buttonXs',
+  medium: 'buttonS',
+  extraExtraLarge: 'headingMBold',
+} as const satisfies Record<keyof typeof TABS_SIZES_CLASSES, TypographyVariantKey>
 
 const BORDER_SIZE = '2px' as const
 const BORDER_SIZE_INACTIVE = '1px' as const
 const BORDER_SIZE_LARGE = '4px' as const
+
+const TAB_HEIGHT: Record<keyof typeof TABS_SIZES_CLASSES, TabOrientationValues | string> = {
+  small: ButtonSize.xs,
+  medium: ButtonSize.sm,
+  extraExtraLarge: {
+    vertical: '3.25rem', // 52px
+    horizontal: '2rem', // 32px
+  },
+}
 
 /**
  * Using ::after pseudo-selector for borders instead of CSS border properties for:
@@ -48,35 +73,37 @@ export const defineMuiTab = ({ Tabs: { Transition }, Text }: DesignSystem): Comp
   styleOverrides: {
     root: {
       transition: Transition,
-      textTransform: 'uppercase',
       position: 'relative',
       boxSizing: 'content-box',
       opacity: 1,
       whiteSpace: 'nowrap',
-      minHeight: '2rem', // Not responsive, but Sizing.md is ugly in mobile
+      minHeight: 0, // It's 48px by default in Mui
       minWidth: 0, // It's 90px by default in Mui, but we want it smaller
       maxWidth: 'none', // It's 360px by default in Mui, but that sometimes interferes when displaying fewer tabs than expected (dynamic tab list)
       '&::after': {
         content: '""',
         position: 'absolute',
         height: BORDER_SIZE,
+        '.MuiTabs-vertical &': {
+          height: '100%',
+          width: BORDER_SIZE,
+          left: 0,
+          top: 0,
+        },
       },
-      // Count typography color states
-      '& .tab-end-adornment': {
+
+      [`& .${TAB_SUFFIX_CLASS}`]: {
         color: Text.TextColors.Tertiary,
       },
-      '&:hover .tab-end-adornment': {
+      [`&:hover .${TAB_SUFFIX_CLASS}`]: {
         color: 'inherit',
       },
-      '&.Mui-selected .tab-end-adornment': {
+      [`&.Mui-selected .${TAB_SUFFIX_CLASS}`]: {
         color: Text.TextColors.Secondary,
       },
     },
   },
 })
-
-type TabStyle = { Label?: string; Fill?: string; Outline?: string }
-type TabVariant = { Inset?: string; Default: TabStyle; Hover: TabStyle; Current: TabStyle }
 
 const tabStyle = ({ Label, Fill, Outline }: TabStyle, inset?: string) => ({
   color: Label,
@@ -93,23 +120,63 @@ const tabVariant = ({ Current, Default, Hover, Inset }: TabVariant) => ({
   '&.Mui-selected': tabStyle(Current, Inset),
 })
 
-const tabPadding = (
-  blockStart: keyof typeof Spacing,
-  blockEnd: keyof typeof Spacing,
-  inlineStart: keyof typeof Spacing,
-  inlineEnd: keyof typeof Spacing,
-) =>
+const tabPadding = (blockStart: SpacingKey, blockEnd: SpacingKey, inlineStart: SpacingKey, inlineEnd: SpacingKey) =>
   handleBreakpoints({
-    paddingBlockStart: Spacing[blockStart],
-    paddingBlockEnd: Spacing[blockEnd],
-    paddingInlineStart: Spacing[inlineStart],
-    paddingInlineEnd: Spacing[inlineEnd],
+    paddingBlockStart: blockStart in Spacing ? Spacing[blockStart as keyof typeof Spacing] : blockStart,
+    paddingBlockEnd: blockEnd in Spacing ? Spacing[blockEnd as keyof typeof Spacing] : blockEnd,
+    paddingInlineStart: inlineStart in Spacing ? Spacing[inlineStart as keyof typeof Spacing] : inlineStart,
+    paddingInlineEnd: inlineEnd in Spacing ? Spacing[inlineEnd as keyof typeof Spacing] : inlineEnd,
   })
 
-// Overlined and Underlined have common paddings and sizes.
-const tabSizesNonContained = {
-  [`&.${medium} .MuiTab-root`]: tabPadding('md', 'xs', 'md', 'md'),
-  [`&.${large} .MuiTab-root`]: tabPadding('md', 'xs', 'md', 'md'),
+const containedCommonPadding = {
+  // blockStart padding is 0, spacing is handled by minHeight and justifyContent)
+  // blockEnd padding is handeled by the label container (the component child) to avoid adding extra height to the tab's button
+  ...tabPadding(0, 0, 'sm', 'sm'),
+  [`& .${TAB_LABEL_CONTAINER_CLASS}`]: {
+    ...handleBreakpoints({ paddingBlockEnd: Spacing.xxs }),
+  },
+}
+
+const extraExtraLargeCommonPadding = {
+  ...tabPadding(0, 0, 'md', 'md'),
+  minHeight: (TAB_HEIGHT.extraExtraLarge as TabOrientationValues).horizontal,
+  [`& .${TAB_LABEL_CONTAINER_CLASS}`]: {
+    ...handleBreakpoints({ paddingBlockStart: Spacing.md, paddingBlockEnd: Spacing.xs }),
+  },
+  '.MuiTabs-vertical &': {
+    minHeight: (TAB_HEIGHT.extraExtraLarge as TabOrientationValues).vertical,
+  },
+}
+
+const verticalOrientatationCommonPadding = () =>
+  // Remove block padding for vertical orientation tabs to center the label container
+  Object.assign(
+    {},
+    ...Object.values(TABS_SIZES_CLASSES).map((size) => ({
+      [`&.MuiTabs-vertical.${size} .MuiTab-root`]: {
+        [`& .${TAB_LABEL_CONTAINER_CLASS}`]: {
+          ...handleBreakpoints({ paddingBlock: 0 }),
+        },
+      },
+    })),
+  )
+
+const notContainedCommonStyles = {
+  [`&.${small} .MuiTab-root`]: {
+    ...tabPadding(0, 0, 'sm', 'sm'),
+    minHeight: TAB_HEIGHT.small,
+    [`& .${TAB_LABEL_CONTAINER_CLASS}`]: {
+      ...handleBreakpoints({ paddingBlock: Spacing.xs }),
+    },
+  },
+  [`&.${medium} .MuiTab-root`]: {
+    ...tabPadding(0, 0, 'sm', 'sm'),
+    minHeight: TAB_HEIGHT.medium,
+  },
+  [`&.${extraExtraLarge} .MuiTab-root`]: {
+    ...extraExtraLargeCommonPadding,
+  },
+  ...verticalOrientatationCommonPadding(),
 }
 
 /**
@@ -136,6 +203,76 @@ export const defineMuiTabs = ({
     root: {
       minHeight: 0, // It's 48px by default in Mui, but we want it smaller
       position: 'relative', // For absolute positioning of scroll buttons
+
+      '& .MuiButtonBase-root': {
+        justifyContent: 'flex-end',
+      },
+      '&.MuiTabs-vertical .MuiButtonBase-root': {
+        justifyContent: 'center',
+        alignItems: 'start',
+      },
+
+      [`&.${contained}`]: {
+        '& .MuiTab-root': tabVariant(Contained),
+        // horizontal orientation
+        '& .MuiTab-root:not(.Mui-selected):not(:last-child)': {
+          marginRight: '1px',
+        },
+        // vertical orientation
+        '&.MuiTabs-vertical .MuiTab-root:not(.Mui-selected):not(:last-child)': {
+          marginRight: 0,
+          marginBottom: '1px',
+        },
+
+        [`&.${small} .MuiTab-root`]: {
+          ...containedCommonPadding,
+          minHeight: TAB_HEIGHT.small,
+        },
+        [`&.${medium} .MuiTab-root`]: {
+          ...containedCommonPadding,
+          minHeight: TAB_HEIGHT.medium,
+        },
+        [`&.${extraExtraLarge} .MuiTab-root`]: {
+          ...extraExtraLargeCommonPadding,
+        },
+        ...verticalOrientatationCommonPadding(),
+      },
+
+      [`&.${overlined}`]: {
+        '& .MuiTab-root': tabVariant(OverLined),
+        ...notContainedCommonStyles,
+        [`&.${medium} .MuiTab-root .${TAB_LABEL_CONTAINER_CLASS}`]: {
+          ...handleBreakpoints({ paddingBlockEnd: Spacing.sm, paddingBlockStart: Spacing.sm }),
+        },
+      },
+
+      [`&.${underlined}`]: {
+        '& .MuiTab-root': tabVariant(UnderLined),
+        ...notContainedCommonStyles,
+        [`&.${medium} .MuiTab-root .${TAB_LABEL_CONTAINER_CLASS}`]: {
+          ...handleBreakpoints({ paddingBlockEnd: Spacing.xxs }),
+        },
+      },
+
+      // Inactive tabs have a smaller border size
+      [inactiveTabSelector({ hideInactiveBorders: false }, overlined, underlined)]: {
+        height: BORDER_SIZE_INACTIVE,
+        '.MuiTabs-vertical &': {
+          height: '100%',
+          width: BORDER_SIZE_INACTIVE,
+        },
+      },
+
+      // ExtraExtraLarge tabs don't have a border hover for the underlined/overlined variants
+      // Also override and hide inactive borders if configured so
+      [`${inactiveTabSelector({ hideInactiveBorders: true }, overlined, underlined)}, &.${extraExtraLarge} .MuiTab-root::after`]:
+        {
+          height: '0px !important',
+          '.MuiTabs-vertical &': {
+            width: '0px !important',
+          },
+        },
+
       // Style scroll buttons (arrows) when tabs overflow
       '& .MuiTabScrollButton-root': {
         position: 'absolute',
@@ -145,6 +282,8 @@ export const defineMuiTabs = ({
         color: Contained.Current.Outline,
         opacity: 1,
         backgroundColor: Layer[1].Fill,
+        minWidth: 'auto',
+        width: 'auto',
         '&:first-of-type': {
           left: 0,
         },
@@ -155,48 +294,23 @@ export const defineMuiTabs = ({
           opacity: 0,
         },
       },
-      [`&.${contained}`]: {
-        '& .MuiTab-root': tabVariant(Contained),
-        '& .MuiTab-root:not(.Mui-selected):not(:last-child)': {
-          marginRight: '1px',
-        },
-        [`&.${small} .MuiTab-root`]: tabPadding('xs', 'xs', 'md', 'md'),
-        [`&.${medium} .MuiTab-root`]: tabPadding('md', 'xs', 'lg', 'lg'),
-      },
-
-      [`&.${overlined}`]: {
-        '& .MuiTab-root': tabVariant(OverLined),
-        [`&.${small} .MuiTab-root`]: tabPadding('xs', 'xs', 'md', 'md'),
-        // Large overline tabs don't get a hover fill
-        [`&.${large} .MuiTab-root:hover`]: { backgroundColor: 'unset' },
-        ...tabSizesNonContained,
-      },
-
-      [`&.${underlined}`]: {
-        '& .MuiTab-root': tabVariant(UnderLined),
-        [`&.${small} .MuiTab-root`]: tabPadding('xs', 'xs', 'sm', 'sm'),
-        ...tabSizesNonContained,
-      },
-
-      // Inactive tabs have a smaller border size
-      [inactiveTabSelector({ hideInactiveBorders: false }, overlined, underlined)]: {
-        height: BORDER_SIZE_INACTIVE,
-      },
-
-      // Large tabs don't get a hover not over/underline inactive border
-      // Also override and hide inactive borders if configured so
-      [`${inactiveTabSelector({ hideInactiveBorders: true }, overlined, underlined)}, &.${large} .MuiTab-root::after`]:
-        {
-          height: '0px !important',
-        },
     },
     indicator: {
       backgroundColor: Layer.Highlight.Outline,
       [`.${overlined} &`]: { top: 0 },
       [`.${contained} &`]: { top: 0 },
 
-      [`.${large} &`]: {
+      [`.${extraExtraLarge} &`]: {
         height: BORDER_SIZE_LARGE,
+      },
+
+      '.MuiTabs-vertical &': {
+        left: 0,
+        right: 'auto',
+        width: BORDER_SIZE,
+      },
+      [`.MuiTabs-vertical.${extraExtraLarge} &`]: {
+        width: BORDER_SIZE_LARGE,
       },
     },
   },
