@@ -12,7 +12,6 @@ type Params<ChainId extends IChainId> = {
   userAddress: Address | null | undefined
   collateralToken: Token | undefined
   borrowToken: Token | undefined
-  enabled: boolean
   /**
    * Net change applied to on-chain collateral (positive = adding, negative = removing).
    * TODO: use expectedCollateral from llamalend-js, currently being implemented by @0xPearce
@@ -29,16 +28,10 @@ type Params<ChainId extends IChainId> = {
  * It uses the generic userState query so it can be reused across
  * add-collateral, remove-collateral and repay flows.
  */
-export const useLoanToValueFromUserState = <ChainId extends IChainId>({
-  chainId,
-  marketId,
-  userAddress,
-  collateralToken,
-  borrowToken,
-  enabled,
-  collateralDelta,
-  expectedBorrowed,
-}: Params<ChainId>) => {
+export const useLoanToValueFromUserState = <ChainId extends IChainId>(
+  { chainId, marketId, userAddress, collateralToken, borrowToken, collateralDelta, expectedBorrowed }: Params<ChainId>,
+  enabled: boolean,
+) => {
   const {
     data: userState,
     isLoading: isUserLoading,

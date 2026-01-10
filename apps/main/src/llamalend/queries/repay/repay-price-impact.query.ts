@@ -1,8 +1,7 @@
-import { getLlamaMarket } from '@/llamalend/llama.utils'
-import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
-import { type RepayFromCollateralParams, type RepayFromCollateralQuery } from '../validation/manage-loan.types'
-import { repayFromCollateralValidationSuite } from '../validation/manage-loan.validation'
+import { type RepayParams, type RepayQuery } from '../validation/manage-loan.types'
+import { repayValidationSuite } from '../validation/manage-loan.validation'
+import { getRepayImplementation } from './repay-query.helpers'
 
 type RepayPriceImpactResult = number
 
@@ -12,26 +11,33 @@ export const { useQuery: useRepayPriceImpact } = queryFactory({
     marketId,
     stateCollateral = '0',
     userCollateral = '0',
+    userBorrowed = '0',
     userAddress,
-  }: RepayFromCollateralParams) =>
+  }: RepayParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
       'repayPriceImpact',
       { stateCollateral },
       { userCollateral },
+      { userBorrowed },
     ] as const,
   queryFn: async ({
     marketId,
     stateCollateral,
     userCollateral,
-  }: RepayFromCollateralQuery): Promise<RepayPriceImpactResult> => {
-    const market = getLlamaMarket(marketId)
-    return market instanceof LendMarketTemplate
-      ? +(await market.leverage.repayPriceImpact(stateCollateral, userCollateral))
-      : market.leverageV2.hasLeverage()
-        ? +(await market.leverageV2.repayPriceImpact(stateCollateral, userCollateral))
-        : +(await market.deleverage.priceImpact(userCollateral))
+    userBorrowed,
+  }: RepayQuery): Promise<RepayPriceImpactResult> => {
+    const [type, impl] = getRepayImplementation(marketId, { userCollateral, stateCollateral, userBorrowed })
+    switch (type) {
+      case 'V1':
+      case 'V2':
+        return +(await impl.repayPriceImpact(stateCollateral, userCollateral))
+      case 'deleverage':
+        return +(await impl.priceImpact(userCollateral))
+      case 'unleveraged':
+        return 0
+    }
   },
   staleTime: '1m',
-  validationSuite: repayFromCollateralValidationSuite,
+  validationSuite: repayValidationSuite({ leverageRequired: true }),
 })

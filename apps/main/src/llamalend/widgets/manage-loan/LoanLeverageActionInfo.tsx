@@ -1,4 +1,5 @@
 import { notFalsy } from 'router-api/src/router.utils'
+import type { RepayExpectedBorrowedResult } from '@/llamalend/queries/repay/repay-expected-borrowed.query'
 import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
 import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
@@ -8,8 +9,9 @@ import { SlippageToleranceActionInfoPure } from '@ui-kit/widgets/SlippageSetting
 import type { LoanLeverageExpectedCollateral, LoanLeverageMaxReceive } from './LoanInfoAccordion'
 
 export type LoanLeverageActionInfoProps = {
-  expectedCollateral: Query<LoanLeverageExpectedCollateral | null>
-  maxReceive: Query<LoanLeverageMaxReceive | null>
+  expectedCollateral?: Query<LoanLeverageExpectedCollateral | null>
+  expectedBorrowed?: Query<RepayExpectedBorrowedResult | null>
+  maxReceive?: Query<LoanLeverageMaxReceive | null>
   priceImpact: Query<number | null>
   slippage: Decimal
   onSlippageChange: (newSlippage: Decimal) => void
@@ -29,46 +31,41 @@ export const LoanLeverageActionInfo = ({
   onSlippageChange,
   collateralSymbol,
 }: LoanLeverageActionInfoProps) => {
-  const {
-    data: expectedCollateralData,
-    isLoading: expectedCollateralLoading,
-    error: expectedCollateralError,
-  } = expectedCollateral
-  const { data: maxReceiveData, isLoading: maxReceiveLoading, error: maxReceiveError } = maxReceive
-  const { data: priceImpactPercent, isLoading: priceImpactPercentLoading, error: priceImpactPercentError } = priceImpact
-
-  const { totalCollateral, leverage } = expectedCollateralData ?? {}
-  const { avgPrice, maxLeverage } = maxReceiveData ?? {}
-
-  const isHighImpact = priceImpactPercent != null && priceImpactPercent > +slippage
+  const isHighImpact = priceImpact.data != null && priceImpact.data > +slippage
 
   return (
     <Stack>
-      <ActionInfo
-        label={t`Leverage`}
-        value={formatInt(leverage)}
-        valueRight={maxLeverage && ` (max ${formatInt(maxLeverage)})`}
-        error={expectedCollateralError || maxReceiveError}
-        loading={expectedCollateralLoading || maxReceiveLoading}
-      />
-      <ActionInfo
-        label={t`Expected`}
-        value={format(totalCollateral, collateralSymbol)}
-        error={expectedCollateralError}
-        loading={expectedCollateralLoading}
-      />
-      <ActionInfo
-        label={t`Expected avg. price`}
-        value={format(avgPrice)}
-        error={maxReceiveError}
-        loading={maxReceiveLoading}
-      />
+      {expectedCollateral && maxReceive && (
+        <ActionInfo
+          label={t`Leverage`}
+          value={formatInt((expectedCollateral.data ?? {}).leverage)}
+          valueRight={maxReceive.data?.maxLeverage && ` (max ${formatInt(maxReceive.data.maxLeverage)})`}
+          error={[expectedCollateral, maxReceive].find((q) => q.error)?.error}
+          loading={[expectedCollateral, maxReceive].some((q) => q.isLoading)}
+        />
+      )}
+      {expectedCollateral && (
+        <ActionInfo
+          label={t`Expected`}
+          value={format(expectedCollateral.data?.totalCollateral, collateralSymbol)}
+          error={expectedCollateral.error}
+          loading={expectedCollateral.isLoading}
+        />
+      )}
+      {maxReceive && (
+        <ActionInfo
+          label={t`Expected avg. price`}
+          value={format(maxReceive.data?.avgPrice)}
+          error={maxReceive.error}
+          loading={maxReceive.isLoading}
+        />
+      )}
       <ActionInfo
         label={isHighImpact ? t`High price impact` : t`Price impact`}
-        value={formatPercent(priceImpactPercent)}
+        value={formatPercent(priceImpact.data)}
         {...(isHighImpact && { valueColor: 'error' })}
-        error={priceImpactPercentError}
-        loading={priceImpactPercentLoading}
+        error={priceImpact.error}
+        loading={priceImpact.isLoading}
         testId="borrow-price-impact"
       />
       <SlippageToleranceActionInfoPure maxSlippage={slippage} onSave={onSlippageChange} />

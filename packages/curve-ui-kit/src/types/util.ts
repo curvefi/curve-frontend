@@ -1,4 +1,4 @@
-import { UseQueryResult } from '@tanstack/react-query'
+import type { UseQueryResult } from '@tanstack/react-query'
 
 /**
  * Creates a deep partial type that makes all properties optional recursively,
@@ -40,13 +40,23 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>
  * @template T - The type of the data returned by the query.
  */
 export type Query<T> = { data: T | undefined; isLoading: boolean; error: Error | null | undefined }
+
+/**
+ * Maps a Query type to extract partial data from it.
+ * Preserves error and loading states while transforming the data.
+ */
+export const mapQuery = <TSource extends object, TResult>(
+  { data, isLoading, error }: Query<TSource>,
+  selector: (data: TSource) => TResult | null | undefined,
+): Query<TResult> => ({
+  isLoading,
+  data: (data && selector(data)) ?? undefined,
+  error,
+})
+
 /**
  * Helper to extract only the relevant fields from a UseQueryResult into the Query type.
  * This is necessary because passing UseQueryResult to any react component will crash the rendering due to
  * react trying to serialize the react-query proxy object.
  */
-export const q = <T>({ data, isLoading, error }: UseQueryResult<T>): Query<T> => ({
-  data,
-  isLoading,
-  error,
-})
+export const q = <T>({ data, isLoading, error }: UseQueryResult<T>): Query<T> => ({ data, isLoading, error })

@@ -1,8 +1,7 @@
-import { getLlamaMarket } from '@/llamalend/llama.utils'
-import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
-import { type RepayFromCollateralParams, type RepayFromCollateralQuery } from '../validation/manage-loan.types'
-import { repayFromCollateralValidationSuite } from '../validation/manage-loan.validation'
+import { type RepayParams, type RepayQuery } from '../validation/manage-loan.types'
+import { repayValidationSuite } from '../validation/manage-loan.validation'
+import { getRepayImplementation } from './repay-query.helpers'
 
 export const { useQuery: useRepayBands } = queryFactory({
   queryKey: ({
@@ -12,7 +11,7 @@ export const { useQuery: useRepayBands } = queryFactory({
     userCollateral = '0',
     userBorrowed = '0',
     userAddress,
-  }: RepayFromCollateralParams) =>
+  }: RepayParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
       'repayBands',
@@ -25,13 +24,17 @@ export const { useQuery: useRepayBands } = queryFactory({
     stateCollateral,
     userCollateral,
     userBorrowed,
-  }: RepayFromCollateralQuery): Promise<[number, number]> => {
-    const market = getLlamaMarket(marketId)
-    return market instanceof LendMarketTemplate
-      ? await market.leverage.repayBands(stateCollateral, userCollateral, userBorrowed)
-      : market.leverageV2.hasLeverage()
-        ? await market.leverageV2.repayBands(stateCollateral, userCollateral, userBorrowed)
-        : await market.deleverage.repayBands(userCollateral)
+  }: RepayQuery): Promise<[number, number]> => {
+    const [type, impl, args] = getRepayImplementation(marketId, { userCollateral, stateCollateral, userBorrowed })
+    switch (type) {
+      case 'V1':
+      case 'V2':
+        return impl.repayBands(...args)
+      case 'deleverage':
+        return impl.repayBands(...args)
+      case 'unleveraged':
+        return impl.repayBands(...args)
+    }
   },
-  validationSuite: repayFromCollateralValidationSuite,
+  validationSuite: repayValidationSuite({ leverageRequired: false }),
 })

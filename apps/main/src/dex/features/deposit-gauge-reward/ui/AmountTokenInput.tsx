@@ -23,7 +23,7 @@ import { toTokenOption } from '@/dex/utils'
 import { InputDebounced, InputMaxBtn } from '@ui/InputComp'
 import { FlexContainer } from '@ui/styled-containers'
 import { formatNumber } from '@ui/utils'
-import { type TokenOption, TokenSelector } from '@ui-kit/features/select-token'
+import { TokenList, type TokenOption, TokenSelector } from '@ui-kit/features/select-token'
 import { useTokenBalances } from '@ui-kit/hooks/useTokenBalance'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRates } from '@ui-kit/lib/model/entities/token-usd-rate'
@@ -152,14 +152,14 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
           />
         </FlexItemMaxBtn>
         <FlexItemToken>
-          <TokenSelector
-            selectedToken={token}
-            tokens={filteredTokens}
-            disabled={isDisabled}
-            balances={tokenBalances}
-            tokenPrices={tokenPrices}
-            onToken={onChangeToken}
-          />
+          <TokenSelector selectedToken={token} disabled={isDisabled}>
+            <TokenList
+              tokens={filteredTokens}
+              balances={tokenBalances}
+              tokenPrices={tokenPrices}
+              onToken={onChangeToken}
+            />
+          </TokenSelector>
         </FlexItemToken>
       </StyledInputProvider>
     </FlexContainer>

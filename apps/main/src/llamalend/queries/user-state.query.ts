@@ -4,7 +4,11 @@ import { userMarketValidationSuite } from '@ui-kit/lib/model/query/user-market-v
 import type { QueryData } from '@ui-kit/lib/queries'
 import type { Decimal } from '@ui-kit/utils'
 
-export const { useQuery: useUserState, invalidate: invalidateUserState } = queryFactory({
+export const {
+  useQuery: useUserState,
+  invalidate: invalidateUserState,
+  getQueryData: getUserState,
+} = queryFactory({
   queryKey: (params: UserMarketParams) => [...rootKeys.userMarket(params), 'market-user-state'] as const,
   queryFn: async ({ marketId, userAddress }: UserMarketQuery) => {
     const market = getLlamaMarket(marketId)

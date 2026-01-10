@@ -21,6 +21,7 @@ export function useImproveHealthTab(params: MarketParams): ImproveHealthProps {
         userCollateral: '0' as Decimal,
         userBorrowed: debt,
         isFull: false, // todo: implement full repays
+        leverageEnabled: false, // todo: implement leverage
       })
     },
     [mutate],
