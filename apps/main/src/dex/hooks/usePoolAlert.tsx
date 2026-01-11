@@ -301,7 +301,7 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
       '0x06cf5f9b93e9fcfdb33d6b3791eb152567cd8d36': uspdioAlert(),
 
       // arbitrum
-      '0x960ea3e3c7fb317332d990873d354e18d7645590': possibleVyperExploitedAlert(),// tricrypto
+      '0x960ea3e3c7fb317332d990873d354e18d7645590': possibleVyperExploitedAlert(), // tricrypto
       '0xc55be2dc490578560a030b6ba387aba0fe03cc73': misconfiguredPoolsAlert(),
       '0xc5f069dd8112614673890aa21d8989d5d0db69d8': misconfiguredPoolsAlert(),
       '0x2e6cfeeb00038f6a88a008e8b3c2bbd2f6c6bf9f': misconfiguredPoolsAlert(),
