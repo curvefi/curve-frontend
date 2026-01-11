@@ -62,12 +62,6 @@ export type GaugeWeightHistoryData = {
   epoch: number
 }
 
-export interface UserMapper {
-  [userAddress: string]: {
-    ens: string
-  }
-}
-
 export type SnapshotVotingPower = {
   loading: boolean
   value: number

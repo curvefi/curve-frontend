@@ -11,11 +11,9 @@ import {
   UserGaugeVotesSortBy,
   UserGaugeVoteWeightSortBy,
   UserLocksSortBy,
-  UserMapper,
   UserProposalVotesSortBy,
   type Wallet,
 } from '@/dao/types/dao.types'
-import { useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -31,7 +29,6 @@ type SliceState = {
   }
   userAddress: string | null
   userEns: string | null
-  userMapper: UserMapper
   userLocksSortBy: {
     key: UserLocksSortBy
     order: SortDirection
@@ -56,7 +53,6 @@ const sliceKey = 'user'
 export type UserSlice = {
   [sliceKey]: SliceState & {
     updateUserData(curve: CurveApi, wallet: Wallet): void
-    getUserEns(userAddress: string): Promise<void>
 
     setUserProposalVotesSortBy(sortBy: UserProposalVotesSortBy): void
     setUserLocksSortBy: (sortBy: UserLocksSortBy) => void
@@ -81,7 +77,6 @@ const DEFAULT_STATE: SliceState = {
   snapshotVeCrvMapper: {},
   userAddress: null,
   userEns: null,
-  userMapper: {},
   userLocksSortBy: {
     key: 'timestamp',
     order: 'desc',
@@ -121,35 +116,6 @@ export const createUserSlice = (set: StoreApi<State>['setState'], get: StoreApi<
         userEns: wallet.account?.ensName,
         snapshotVeCrvMapper: {},
       })
-    },
-    getUserEns: async (userAddress: string) => {
-      const { provider } = useWallet.getState()
-
-      if (!provider) {
-        console.error("Can't fetch ens, no provider available")
-        return
-      }
-
-      try {
-        const ensName = await provider.lookupAddress(userAddress)
-
-        set(
-          produce((state) => {
-            state[sliceKey].userMapper[userAddress] = {
-              ens: ensName || null,
-            }
-          }),
-        )
-      } catch (error) {
-        console.error('Error fetching ENS name:', error)
-        set(
-          produce((state) => {
-            state[sliceKey].userMapper[userAddress] = {
-              ens: null,
-            }
-          }),
-        )
-      }
     },
     setUserLocksSortBy: (sortBy: UserLocksSortBy) => {
       const { userLocksSortBy } = get()[sliceKey]
