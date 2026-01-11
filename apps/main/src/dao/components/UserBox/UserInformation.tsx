@@ -92,11 +92,7 @@ export const UserInformation = ({ noLink, snapshotVotingPower, activeProposal, v
                 <p>{t`Voting power at snapshot block ${votingPower.blockNumber}`}</p>
               </TooltipIcon>
             </Box>
-            {votingPower.loading ? (
-              <Loader isLightBg skeleton={[80, 16.5]} />
-            ) : (
-              <h4>{formatNumber(votingPower.value)} veCRV</h4>
-            )}
+            <h4>{formatNumber(votingPower.value)} veCRV</h4>
           </Box>
         )}
         {decayedVeCrv.decaying && votingPower?.value !== 0 && (

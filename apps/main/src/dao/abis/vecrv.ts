@@ -23,4 +23,4 @@ export const ABI_VECRV = [
     stateMutability: 'view',
     type: 'function',
   },
-]
+] as const

@@ -63,7 +63,6 @@ export type GaugeWeightHistoryData = {
 }
 
 export type SnapshotVotingPower = {
-  loading: boolean
   value: number
   blockNumber: number
 }

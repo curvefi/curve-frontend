@@ -1,12 +1,12 @@
-import { useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 import { styled } from 'styled-components'
-import { useConnection } from 'wagmi'
+import { useConnection, useReadContract } from 'wagmi'
+import { ABI_VECRV } from '@/dao/abis/vecrv'
 import { ErrorMessage } from '@/dao/components/ErrorMessage'
 import { MetricsTitle } from '@/dao/components/MetricsComp'
+import { CONTRACT_VECRV } from '@/dao/constants'
 import { useProposalPricesApiQuery, invalidateProposalPricesApi } from '@/dao/entities/proposal-prices-api'
 import { useProposalsMapperQuery } from '@/dao/entities/proposals-mapper'
-import { networksIdMapper } from '@/dao/networks'
-import { useStore } from '@/dao/store/useStore'
 import type { ProposalUrlParams } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils'
 import { ProposalType } from '@curvefi/prices-api/proposal/models'
@@ -16,10 +16,9 @@ import { IconButton } from '@ui/IconButton'
 import { SpinnerWrapper, Spinner } from '@ui/Spinner'
 import { TooltipButton as Tooltip } from '@ui/Tooltip/TooltipButton'
 import { breakpoints } from '@ui/utils'
-import { useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
-import { copyToClipboard } from '@ui-kit/utils'
+import { Chain, copyToClipboard } from '@ui-kit/utils'
 import { BackButton } from '../BackButton'
 import { ProposalVoteStatusBox } from '../ProposalVoteStatusBox'
 import { UserBox } from '../UserBox'
@@ -29,13 +28,9 @@ import { ProposalHeader } from './ProposalHeader'
 import { ProposalInformation } from './ProposalInformation'
 import { Voters } from './Voters'
 
-export const Proposal = ({ proposalId: rProposalId, network }: ProposalUrlParams) => {
-  const rChainId = networksIdMapper[network]
+export const Proposal = ({ proposalId: rProposalId }: ProposalUrlParams) => {
   const [voteId, voteType] = rProposalId.split('-') as [string, ProposalType]
   const proposalType = voteType.toLowerCase() as ProposalType
-  const { provider } = useWallet()
-  const setSnapshotVeCrv = useStore((state) => state.user.setSnapshotVeCrv)
-  const snapshotVeCrv = useStore((state) => state.user.snapshotVeCrvMapper[rProposalId])
   const { address: userAddress } = useConnection()
 
   const {
@@ -66,16 +61,28 @@ export const Proposal = ({ proposalId: rProposalId, network }: ProposalUrlParams
     [proposal?.status, proposal?.timestamp],
   )
 
-  useEffect(() => {
-    if (snapshotVeCrv === undefined && rChainId === 1 && provider && userAddress && proposal?.block) {
-      const getVeCrv = async () => {
-        const signer = await provider.getSigner()
-        setSnapshotVeCrv(signer, userAddress, proposal.block, rProposalId)
-      }
+  const { data: votingPower, isLoading: snapshotVeCrvLoading } = useReadContract({
+    chainId: Chain.Ethereum,
+    abi: ABI_VECRV,
+    address: CONTRACT_VECRV,
+    functionName: 'balanceOfAt',
+    args: [userAddress!, BigInt(proposal!.block)],
+    query: {
+      enabled: !!userAddress && !!proposal,
+      select: (vecrv) => Number(vecrv) / 1e18,
+    },
+  })
 
-      void getVeCrv()
-    }
-  }, [provider, rChainId, rProposalId, setSnapshotVeCrv, proposal?.block, snapshotVeCrv, userAddress])
+  const snapshotVeCrv = useMemo(
+    () =>
+      proposal != null && votingPower != null
+        ? {
+            value: votingPower,
+            blockNumber: proposal.block,
+          }
+        : undefined,
+    [proposal, votingPower],
+  )
 
   return (
     <Wrapper>
@@ -141,7 +148,7 @@ export const Proposal = ({ proposalId: rProposalId, network }: ProposalUrlParams
           </ProposalContainer>
           <UserSmScreenWrapper variant="secondary">
             <UserBox votingPower={snapshotVeCrv} snapshotVotingPower activeProposal={activeProposal}>
-              {proposal && userAddress && snapshotVeCrv !== undefined && !snapshotVeCrv.loading! && (
+              {proposal && userAddress && snapshotVeCrv != null && !snapshotVeCrvLoading && (
                 <VoteDialog
                   userAddress={userAddress}
                   snapshotVotingPower
@@ -166,7 +173,7 @@ export const Proposal = ({ proposalId: rProposalId, network }: ProposalUrlParams
                   : undefined
               }
             >
-              {proposal && userAddress && snapshotVeCrv !== undefined && !snapshotVeCrv.loading! && (
+              {proposal && userAddress && snapshotVeCrv != null && !snapshotVeCrvLoading && (
                 <VoteDialog
                   userAddress={userAddress}
                   snapshotVotingPower
