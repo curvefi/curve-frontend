@@ -257,7 +257,7 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
     })
 
     // Pool creator configured bad price oracles, leading to users losing funds.
-     const misconfiguredPoolsAlert = (): PoolAlert => ({
+    const misconfiguredPoolsAlert = (): PoolAlert => ({
       alertType: 'danger',
       isDisableDeposit: true,
       isDisableSwap: true,
