@@ -28,7 +28,6 @@ type SliceState = {
     [proposalId: string]: SnapshotVotingPower
   }
   userAddress: string | null
-  userEns: string | null
   userLocksSortBy: {
     key: UserLocksSortBy
     order: SortDirection
@@ -76,7 +75,6 @@ const DEFAULT_STATE: SliceState = {
   },
   snapshotVeCrvMapper: {},
   userAddress: null,
-  userEns: null,
   userLocksSortBy: {
     key: 'timestamp',
     order: 'desc',
@@ -101,7 +99,7 @@ export const createUserSlice = (set: StoreApi<State>['setState'], get: StoreApi<
   [sliceKey]: {
     ...DEFAULT_STATE,
     updateUserData: async (curve: CurveApi, wallet: Wallet) => {
-      const userAddress = wallet.account.address
+      const userAddress = wallet.address
 
       try {
         const veCRV = await curve.dao.userVeCrv(userAddress)
@@ -113,7 +111,6 @@ export const createUserSlice = (set: StoreApi<State>['setState'], get: StoreApi<
 
       get()[sliceKey].setStateByKeys({
         userAddress: userAddress.toLowerCase(),
-        userEns: wallet.account?.ensName,
         snapshotVeCrvMapper: {},
       })
     },

@@ -179,7 +179,7 @@ export const createLoanSelfLiquidationSlice = (
         const loanExists = await refetchLoanExists({
           chainId,
           marketId: market.id,
-          userAddress: wallet?.account?.address,
+          userAddress: wallet?.address,
         })
 
         if (error) {

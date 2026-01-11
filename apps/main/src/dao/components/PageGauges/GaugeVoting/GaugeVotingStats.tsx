@@ -1,4 +1,6 @@
 import { styled } from 'styled-components'
+import type { Address } from 'viem'
+import { useEnsName } from 'wagmi'
 import { ComboBoxGauges as ComboBoxSelectGauge } from '@/dao/components/ComboBoxSelectGauge'
 import { MetricsColumnData, MetricsComp } from '@/dao/components/MetricsComp'
 import { useUserGaugeWeightVotesQuery } from '@/dao/entities/user-gauge-weight-votes'
@@ -19,7 +21,7 @@ export const GaugeVotingStats = ({ userAddress }: { userAddress: string }) => {
     chainId: Chain.Ethereum, // DAO is only used on mainnet
     userAddress: userAddress ?? '',
   })
-  const userEns = useStore((state) => state.user.userEns)
+  const { data: userEns } = useEnsName({ address: userAddress as Address })
   const userVeCrv = useStore((state) => state.user.userVeCrv)
 
   const isUserPowerStale = calculateUserPowerStale(
