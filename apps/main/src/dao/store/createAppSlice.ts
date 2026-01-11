@@ -34,8 +34,8 @@ export const createAppSlice = (set: StoreApi<State>['setState'], get: StoreApi<S
       isNetworkSwitched,
     })
 
-    const { user, gauges } = get()
-    await Promise.all([api && wallet?.provider && user.updateUserData(api, wallet), gauges.getGaugesData()])
+    const { user } = get()
+    await Promise.all([api && wallet?.provider && user.updateUserData(api, wallet)])
 
     log('Hydrating DAO - Complete')
   },

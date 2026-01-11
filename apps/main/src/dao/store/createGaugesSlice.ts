@@ -5,9 +5,7 @@ import { invalidateUserGaugeVoteNextTimeQuery } from '@/dao/entities/user-gauge-
 import { invalidateUserGaugeWeightVotesQuery } from '@/dao/entities/user-gauge-weight-votes'
 import type { State } from '@/dao/store/useStore'
 import {
-  CurveGaugeResponse,
   FetchingState,
-  GaugeCurveApiDataMapper,
   GaugeVotesMapper,
   GaugeVotesResponse,
   GaugeVotesSortBy,
@@ -34,10 +32,6 @@ type SliceState = {
   filteringGaugesLoading: boolean
   gaugeListSortBy: SortByFilterGauges
   searchValue: string
-  gaugeCurveApiData: {
-    fetchingState: FetchingState
-    data: GaugeCurveApiDataMapper
-  }
   gaugeVotesMapper: GaugeVotesMapper
   gaugeWeightHistoryMapper: { [address: string]: { loadingState: FetchingState; data: GaugeWeightHistoryData[] } }
   filteredGauges: GaugeFormattedData[]
@@ -60,7 +54,6 @@ const sliceKey = 'gauges'
 // prettier-ignore
 export type GaugesSlice = {
   [sliceKey]: SliceState & {
-    getGaugesData(): Promise<void>
     getGaugeVotes(gaugeAddress: string): Promise<void>
     getHistoricGaugeWeights(gaugeAddress: string): Promise<void>
 
@@ -87,10 +80,6 @@ const DEFAULT_STATE: SliceState = {
     order: 'desc',
   },
   searchValue: '',
-  gaugeCurveApiData: {
-    fetchingState: 'LOADING',
-    data: {},
-  },
   gaugeVotesMapper: {},
   gaugeWeightHistoryMapper: {},
   filteredGauges: [],
@@ -106,44 +95,6 @@ const DEFAULT_STATE: SliceState = {
 export const createGaugesSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): GaugesSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
-    getGaugesData: async () => {
-      set(
-        produce(get(), (state) => {
-          state[sliceKey].gaugeCurveApiData = {
-            fetchingState: 'LOADING',
-            data: {},
-          }
-        }),
-      )
-
-      try {
-        const response = await fetch(`https://api.curve.finance/v1/getAllGauges`)
-        const data: CurveGaugeResponse = await response.json()
-
-        const gaugeDataMapper: GaugeCurveApiDataMapper = Object.values(data.data).reduce((acc, gaugeData) => {
-          if (gaugeData.gauge) {
-            acc[gaugeData.gauge.toLowerCase()] = gaugeData
-          }
-          return acc
-        }, {} as GaugeCurveApiDataMapper)
-
-        set(
-          produce(get(), (state) => {
-            state[sliceKey].gaugeCurveApiData = {
-              fetchingState: 'SUCCESS',
-              data: gaugeDataMapper,
-            }
-          }),
-        )
-      } catch (error) {
-        console.error('Error fetching gauges data:', error)
-        set(
-          produce(get(), (state) => {
-            state[sliceKey].gaugeCurveApiData.fetchingState = 'ERROR'
-          }),
-        )
-      }
-    },
     getGaugeVotes: async (gaugeAddress: string) => {
       const address = gaugeAddress.toLowerCase()
 

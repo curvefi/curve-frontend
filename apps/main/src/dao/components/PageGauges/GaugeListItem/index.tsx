@@ -10,6 +10,7 @@ import { GaugeWeightVotesColumns } from '@/dao/components/PageGauges/GaugeListIt
 import { TitleComp } from '@/dao/components/PageGauges/GaugeListItem/TitleComp'
 import { VoteGaugeField } from '@/dao/components/PageGauges/GaugeVoting/VoteGaugeField'
 import { useUserGaugeVoteNextTimeQuery } from '@/dao/entities/user-gauge-vote-next-time'
+import { useGaugesLegacy } from '@/dao/queries/gauges-legacy.query'
 import { useStore } from '@/dao/store/useStore'
 import { GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
 import { Box } from '@ui/Box'
@@ -48,12 +49,11 @@ export const GaugeListItem = ({
   })
   const gaugeWeightHistoryMapper = useStore((state) => state.gauges.gaugeWeightHistoryMapper)
   const getHistoricGaugeWeights = useStore((state) => state.gauges.getHistoricGaugeWeights)
-  const gaugeCurveApiData = useStore(
-    (state) =>
-      state.gauges.gaugeCurveApiData.data[
-        gaugeData.effective_address?.toLowerCase() ?? gaugeData.address.toLowerCase()
-      ],
-  )
+  const { data: gaugesLegacy } = useGaugesLegacy({})
+
+  const gaugeCurveApiData =
+    gaugesLegacy?.[gaugeData.effective_address?.toLowerCase() ?? gaugeData.address.toLowerCase()]
+
   const userVeCrv = useStore((state) => state.user.userVeCrv)
   const [open, setOpen] = useState(false)
   const canVote = userGaugeVoteNextTime ? Date.now() > userGaugeVoteNextTime : true
