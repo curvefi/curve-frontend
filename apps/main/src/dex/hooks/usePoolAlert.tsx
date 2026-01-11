@@ -274,7 +274,7 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
         </PoolAlertMessage>
       ),
     })
-    
+
     // prettier-ignore
     const alerts: { [poolAddress: string]: PoolAlert } = {
       // ethereum
