@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { styled } from 'styled-components'
 import { ErrorMessage } from '@/dao/components/ErrorMessage'
 import { useUserGaugeWeightVotesQuery } from '@/dao/entities/user-gauge-weight-votes'
-import { useStore } from '@/dao/store/useStore'
+import { refetchGauges, useGauges } from '@/dao/queries/gauges.query'
 import { GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
 import { Box } from '@ui/Box'
 import { SpinnerWrapper, Spinner } from '@ui/Spinner'
@@ -27,13 +27,16 @@ export const GaugeWeightDistribution = ({ isUserVotes, userAddress }: GaugeWeigh
     chainId: Chain.Ethereum, // DAO is only used on mainnet
     userAddress: userAddress ?? '',
   })
-  const getGauges = useStore((state) => state.gauges.getGauges)
-  const gaugesLoading = useStore((state) => state.gauges.gaugesLoading)
-  const gaugeMapper = useStore((state) => state.gauges.gaugeMapper)
+  const {
+    data: gaugeMapper = {},
+    isSuccess: isSuccessGauges,
+    isLoading: isLoadingGauges,
+    isError: isErrorGauges,
+  } = useGauges({})
 
-  const isLoading = isUserVotes ? userGaugeWeightsLoading : gaugesLoading === 'LOADING'
-  const isError = isUserVotes ? userGaugeWeightsError : gaugesLoading === 'ERROR'
-  const isSuccess = isUserVotes ? userGaugeWeightsSuccess : gaugesLoading === 'SUCCESS'
+  const isLoading = isUserVotes ? userGaugeWeightsLoading : isLoadingGauges
+  const isError = isUserVotes ? userGaugeWeightsError : isErrorGauges
+  const isSuccess = isUserVotes ? userGaugeWeightsSuccess : isSuccessGauges
 
   const dataKey = isUserVotes ? 'userPower' : 'gauge_relative_weight'
   const formattedData: (UserGaugeVoteWeight | GaugeFormattedData)[] = useMemo(() => {
@@ -73,7 +76,7 @@ export const GaugeWeightDistribution = ({ isUserVotes, userAddress }: GaugeWeigh
         )}
         {isError && (
           <ErrorMessageWrapper>
-            <ErrorMessage message={t`Error fetching gauges`} onClick={() => getGauges(true)} />
+            <ErrorMessage message={t`Error fetching gauges`} onClick={() => refetchGauges({})} />
           </ErrorMessageWrapper>
         )}
         {isSuccess && formattedData.length > 0 && (

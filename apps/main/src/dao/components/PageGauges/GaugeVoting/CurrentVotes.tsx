@@ -9,6 +9,7 @@ import {
   invalidateUserGaugeWeightVotesQuery,
   useUserGaugeWeightVotesQuery,
 } from '@/dao/entities/user-gauge-weight-votes'
+import { useGauges } from '@/dao/queries/gauges.query'
 import { useStore } from '@/dao/store/useStore'
 import {
   GaugeFormattedData,
@@ -32,9 +33,8 @@ const sortGauges = (gauges: UserGaugeVoteWeight[], order: SortDirection, sortBy:
 export const CurrentVotes = ({ userAddress: userAddressProp }: CurrentVotesProps) => {
   const setUserGaugeVoteWeightsSortBy = useStore((state) => state.user.setUserGaugeVoteWeightsSortBy)
   const userGaugeVoteWeightsSortBy = useStore((state) => state.user.userGaugeVoteWeightsSortBy)
-  const gaugeMapper = useStore((state) => state.gauges.gaugeMapper)
+  const { data: gaugeMapper = {}, isLoading: isLoadingGauges } = useGauges({})
   const selectedGauge = useStore((state) => state.gauges.selectedGauge)
-  const gaugesLoading = useStore((state) => state.gauges.gaugesLoading)
   const userAddress = userAddressProp ?? ''
 
   const {
@@ -47,8 +47,7 @@ export const CurrentVotes = ({ userAddress: userAddressProp }: CurrentVotesProps
     userAddress: userAddress,
   })
 
-  const gaugeMapperLoading = gaugesLoading === 'LOADING'
-  const tableLoading = userGaugeWeightsLoading || gaugeMapperLoading
+  const tableLoading = userGaugeWeightsLoading || isLoadingGauges
 
   const tableMinWidth = 0
   const gridTemplateColumns = '17.5rem 1fr 1fr 1fr'

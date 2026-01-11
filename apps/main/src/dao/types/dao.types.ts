@@ -6,6 +6,8 @@ import type { Address } from '@ui-kit/utils'
 
 export type { CurveApi, Wallet } from '@ui-kit/features/connect-wallet'
 
+export type { GaugeFormattedData, GaugeMapper } from '../queries/gauges.query'
+
 export type ChainId = number
 export type NetworkEnum = INetworkName
 
@@ -27,39 +29,6 @@ export type Provider = ethers.BrowserProvider
 export type EstimatedGas = number | number[] | null
 export type CurveJsProposalType = 'PARAMETER' | 'OWNERSHIP'
 
-export type PricesGaugeOverviewData = {
-  address: string
-  effective_address?: string
-  gauge_type: string
-  name: string | null
-  version: string | null
-  lp_token: string
-  pool: {
-    address: string
-    name: string
-    chain: string
-    tvl_usd: number
-    trading_volume_24h: number
-  } | null
-  tokens: [{ symbol: string; address: string; precision: number }]
-  market: {
-    name: string
-    chain: string
-  } | null
-  is_killed: boolean | null
-  emissions: number
-  prev_epoch_emissions: number
-  gauge_weight: string
-  gauge_weight_7d_delta: number | null
-  gauge_weight_60d_delta: number | null
-  gauge_relative_weight: number
-  gauge_relative_weight_7d_delta: number | null
-  gauge_relative_weight_60d_delta: number | null
-  creation_tx: string
-  creation_date: string
-  last_vote_date: string
-  last_vote_tx: string
-}
 export type CurveApiBaseGauge = {
   isPool: boolean
   name: string
@@ -113,19 +82,6 @@ export type CurveGaugeResponse = {
     [poolId: string]: CurveApiGaugeData
   }
   generatedTimeMs: number
-}
-export type PricesGaugeOverviewResponse = {
-  gauges: PricesGaugeOverviewData[]
-}
-
-export interface GaugeFormattedData extends Omit<PricesGaugeOverviewData, 'gauge_weight'> {
-  title: string
-  platform: string
-  gauge_weight: number
-}
-
-export interface GaugeMapper {
-  [gaugeAddress: string]: GaugeFormattedData
 }
 
 export interface GaugeCurveApiDataMapper {

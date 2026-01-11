@@ -4,6 +4,7 @@ import { ErrorMessage } from '@/dao/components/ErrorMessage'
 import { GaugeListItem } from '@/dao/components/PageGauges/GaugeListItem'
 import { SmallScreenCard } from '@/dao/components/PageGauges/GaugeListItem/SmallScreenCard'
 import { PaginatedTable } from '@/dao/components/PaginatedTable'
+import { refetchGauges, useGauges } from '@/dao/queries/gauges.query'
 import { useStore } from '@/dao/store/useStore'
 import { GaugeFormattedData, SortByFilterGaugesKeys } from '@/dao/types/dao.types'
 import { SearchInput } from '@ui/SearchInput'
@@ -13,9 +14,8 @@ import { t } from '@ui-kit/lib/i18n'
 import { GAUGE_VOTES_TABLE_LABELS, GAUGE_VOTES_SORTING_METHODS } from '../constants'
 
 export const GaugesList = () => {
-  const getGauges = useStore((state) => state.gauges.getGauges)
+  const { data: gauges, isSuccess: isSuccessGauges, isLoading: isLoadingGauges, isError: isErrorGauges } = useGauges({})
   const setGauges = useStore((state) => state.gauges.setGauges)
-  const gaugesLoading = useStore((state) => state.gauges.gaugesLoading)
   const gaugeListSortBy = useStore((state) => state.gauges.gaugeListSortBy)
   const setGaugeListSortBy = useStore((state) => state.gauges.setGaugeListSortBy)
   const setSearchValue = useStore((state) => state.gauges.setSearchValue)
@@ -25,15 +25,11 @@ export const GaugesList = () => {
   const gridTemplateColumns = '17.5rem 1fr 1fr 1fr 0.2fr'
   const smallScreenBreakpoint = 42.3125
 
-  const isLoading = gaugesLoading === 'LOADING'
-  const isSuccess = gaugesLoading === 'SUCCESS'
-  const isError = gaugesLoading === 'ERROR'
-
   useEffect(() => {
-    if (isSuccess) {
+    if (isSuccessGauges) {
       setGauges(searchValue)
     }
-  }, [isSuccess, searchValue, setGauges, gaugeListSortBy])
+  }, [searchValue, setGauges, gaugeListSortBy, isSuccessGauges])
 
   const handleSortChange = useCallback(
     (key: Key | null) => {
@@ -72,29 +68,29 @@ export const GaugesList = () => {
             {t`Showing results (${filteredGauges.length}) for`} &quot;<strong>{searchValue}</strong>&quot;:
           </SearchMessage>
         )}
-        {gaugesLoading === 'LOADING' && (
+        {isLoadingGauges && (
           <StyledSpinnerWrapper vSpacing={5}>
             <Spinner size={24} />
           </StyledSpinnerWrapper>
         )}
-        {gaugesLoading === 'ERROR' && (
+        {isErrorGauges && (
           <ErrorMessageWrapper>
-            <ErrorMessage message={t`Error fetching gauges`} onClick={() => getGauges(true)} />
+            <ErrorMessage message={t`Error fetching gauges`} onClick={() => refetchGauges({})} />
           </ErrorMessageWrapper>
         )}
-        {gaugesLoading === 'SUCCESS' && (
+        {gauges && (
           <PaginatedTable<GaugeFormattedData>
             data={filteredGauges}
             minWidth={tableMinWidth}
-            isLoading={isLoading}
-            isError={isError}
-            isSuccess={isSuccess}
+            isLoading={isLoadingGauges}
+            isError={isErrorGauges}
+            isSuccess={isSuccessGauges}
             columns={GAUGE_VOTES_TABLE_LABELS}
             sortBy={gaugeListSortBy}
             errorMessage={t`An error occurred while fetching gauges.`}
             noDataMessage={t`No gauges found`}
             setSortBy={handleSortChange}
-            getData={() => getGauges(true)}
+            getData={() => refetchGauges({})}
             renderRow={(gauge, index) => (
               <Fragment key={index}>
                 <GaugeListItemWrapper>
