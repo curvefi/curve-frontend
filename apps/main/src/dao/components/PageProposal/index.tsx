@@ -1,5 +1,6 @@
 import { useEffect, useMemo } from 'react'
 import { styled } from 'styled-components'
+import { useConnection } from 'wagmi'
 import { ErrorMessage } from '@/dao/components/ErrorMessage'
 import { MetricsTitle } from '@/dao/components/MetricsComp'
 import { useProposalPricesApiQuery, invalidateProposalPricesApi } from '@/dao/entities/proposal-prices-api'
@@ -34,8 +35,8 @@ export const Proposal = ({ proposalId: rProposalId, network }: ProposalUrlParams
   const proposalType = voteType.toLowerCase() as ProposalType
   const { provider } = useWallet()
   const setSnapshotVeCrv = useStore((state) => state.user.setSnapshotVeCrv)
-  const userAddress = useStore((state) => state.user.userAddress)
   const snapshotVeCrv = useStore((state) => state.user.snapshotVeCrvMapper[rProposalId])
+  const { address: userAddress } = useConnection()
 
   const {
     data: proposalsMapper,
@@ -140,9 +141,9 @@ export const Proposal = ({ proposalId: rProposalId, network }: ProposalUrlParams
           </ProposalContainer>
           <UserSmScreenWrapper variant="secondary">
             <UserBox votingPower={snapshotVeCrv} snapshotVotingPower activeProposal={activeProposal}>
-              {proposal && snapshotVeCrv !== undefined && !snapshotVeCrv.loading! && (
+              {proposal && userAddress && snapshotVeCrv !== undefined && !snapshotVeCrv.loading! && (
                 <VoteDialog
-                  userAddress={userAddress ?? ''}
+                  userAddress={userAddress}
                   snapshotVotingPower
                   activeProposal={activeProposal}
                   votingPower={snapshotVeCrv}
@@ -165,9 +166,9 @@ export const Proposal = ({ proposalId: rProposalId, network }: ProposalUrlParams
                   : undefined
               }
             >
-              {proposal && snapshotVeCrv !== undefined && !snapshotVeCrv.loading! && (
+              {proposal && userAddress && snapshotVeCrv !== undefined && !snapshotVeCrv.loading! && (
                 <VoteDialog
-                  userAddress={userAddress ?? ''}
+                  userAddress={userAddress}
                   snapshotVotingPower
                   activeProposal={activeProposal}
                   votingPower={snapshotVeCrv}

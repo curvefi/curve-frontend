@@ -1,4 +1,5 @@
 import { styled } from 'styled-components'
+import type { Address } from 'viem'
 import { PendingTx } from '@/dao/components/UserBox/PendingTx'
 import { useProposalPricesApiQuery } from '@/dao/entities/proposal-prices-api'
 import { useProposalsMapperQuery, createProposalKey } from '@/dao/entities/proposals-mapper'
@@ -14,7 +15,7 @@ import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 
 type Props = {
-  userAddress: string
+  userAddress: Address
   activeProposal?: ActiveProposal
   proposalId: number
   proposalType: ProposalType

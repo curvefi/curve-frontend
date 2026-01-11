@@ -1,7 +1,6 @@
 import { useMemo } from 'react'
 import { styled } from 'styled-components'
-import type { Address } from 'viem'
-import { useEnsName } from 'wagmi'
+import { useConnection, useEnsName } from 'wagmi'
 import { useStore } from '@/dao/store/useStore'
 import { SnapshotVotingPower, ActiveProposal } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils'
@@ -22,10 +21,10 @@ type Props = {
 }
 
 export const UserInformation = ({ noLink, snapshotVotingPower, activeProposal, votingPower }: Props) => {
-  const userAddress = useStore((state) => state.user.userAddress)
-  const userVeCrv = useStore((state) => state.user.userVeCrv)
+  const { address: userAddress } = useConnection()
+  const { data: userEns } = useEnsName({ address: userAddress })
 
-  const { data: userEns } = useEnsName({ address: userAddress as Address })
+  const userVeCrv = useStore((state) => state.user.userVeCrv)
 
   const decayedVeCrv = useMemo(() => {
     if (activeProposal?.active && votingPower) {

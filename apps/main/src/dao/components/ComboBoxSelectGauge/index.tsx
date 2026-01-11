@@ -2,6 +2,7 @@ import Fuse from 'fuse.js'
 import { useCallback, useState } from 'react'
 import { useFilter } from 'react-aria'
 import { useOverlayTriggerState } from 'react-stately'
+import { useConnection } from 'wagmi'
 import { ComboBox } from '@/dao/components/ComboBoxSelectGauge/ComboBox'
 import { ComboBoxSelectedGaugeButton } from '@/dao/components/ComboBoxSelectGauge/ComboBoxSelectedGaugeButton'
 import type { EndsWith } from '@/dao/components/ComboBoxSelectGauge/types'
@@ -31,7 +32,7 @@ export const ComboBoxGauges = ({
   const { endsWith } = useFilter({ sensitivity: 'base' })
   const overlayTriggerState = useOverlayTriggerState({})
 
-  const userAddress = useStore((state) => state.user.userAddress)
+  const { address: userAddress } = useConnection()
   const selectedGauge = useStore((state) => state.gauges.selectedGauge)
   const setSelectedGauge = useStore((state) => state.gauges.setSelectedGauge)
   const setStateByKey = useStore((state) => state.gauges.setStateByKey)

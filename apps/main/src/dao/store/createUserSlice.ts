@@ -27,7 +27,6 @@ type SliceState = {
   snapshotVeCrvMapper: {
     [proposalId: string]: SnapshotVotingPower
   }
-  userAddress: string | null
   userLocksSortBy: {
     key: UserLocksSortBy
     order: SortDirection
@@ -74,7 +73,6 @@ const DEFAULT_STATE: SliceState = {
     unlockTime: 0,
   },
   snapshotVeCrvMapper: {},
-  userAddress: null,
   userLocksSortBy: {
     key: 'timestamp',
     order: 'desc',
@@ -110,7 +108,6 @@ export const createUserSlice = (set: StoreApi<State>['setState'], get: StoreApi<
       }
 
       get()[sliceKey].setStateByKeys({
-        userAddress: userAddress.toLowerCase(),
         snapshotVeCrvMapper: {},
       })
     },
