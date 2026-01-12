@@ -252,8 +252,8 @@ export const createLightDesign = (
         Outline: Layer[2].Outline,
       },
       Hover: {
-        Label: Text.TextColors.Primary,
-        Outline: Color.Neutral[500],
+        Label: Text.TextColors.Highlight,
+        Outline: Layer.Highlight.Outline,
       },
       Current: {
         Label: Text.TextColors.Primary,
@@ -701,8 +701,8 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
         Outline: Layer[2].Outline,
       },
       Hover: {
-        Label: Text.TextColors.Primary,
-        Outline: Color.Neutral[500],
+        Label: Text.TextColors.Highlight,
+        Outline: Layer.Highlight.Outline,
       },
       Current: {
         Label: Text.TextColors.Primary,
@@ -1111,8 +1111,8 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
         Outline: Layer[2].Outline,
       },
       Hover: {
-        Label: Text.TextColors.Primary,
-        Outline: Color.Neutral[500],
+        Label: Text.TextColors.Highlight,
+        Outline: Layer.Highlight.Outline,
       },
       Current: {
         Label: Text.TextColors.Primary,
