@@ -30,6 +30,8 @@ export type FormTab<Props extends object> = {
   visible?: FnOrValue<Props, boolean>
   /** Function or value to determine if the tab is disabled */
   disabled?: FnOrValue<Props, boolean>
+  /** Force the tab into the overflow menu */
+  alwaysInKebab?: FnOrValue<Props, boolean>
   /** Component to render when the tab is selected */
   component?: ComponentType<Props>
 }
@@ -40,10 +42,11 @@ const createOptions = <Props extends object>(
 ): TabOption<string>[] =>
   tabs
     ?.filter(({ visible }) => applyFnOrValue(visible, params) !== false)
-    .map(({ value, label, disabled, href }) => ({
+    .map(({ value, label, disabled, alwaysInKebab, href }) => ({
       value,
       label: applyFnOrValue(label, params),
       disabled: applyFnOrValue(disabled, params),
+      alwaysInKebab: applyFnOrValue(alwaysInKebab, params),
       href: applyFnOrValue(href, params),
     })) ?? []
 
@@ -94,14 +97,29 @@ export const FormMargins = ({ children }: { children: ReactNode }) => (
  *                   DEPRECATED: for legacy forms only, use `Form` or `FormContent` for new components
  * @param options - useFormTabs options
  */
+type FormTabsProps<T extends object> = UseFormTabOptions<T> & {
+  shouldWrap?: boolean
+  overflow?: 'standard' | 'scrollable' | 'kebab'
+  showOverflowMenu?: boolean
+}
+
 export function FormTabs<T extends object>({
   shouldWrap,
+  overflow = 'standard',
+  showOverflowMenu = false,
   ...options
-}: UseFormTabOptions<T> & { shouldWrap?: boolean }) {
+}: FormTabsProps<T>) {
   const { tab, tabs, subTabs, subTab, Component, onChangeTab, onChangeSubTab } = useFormTabs(options)
   return (
     <Stack marginInline={marginInline}>
-      <TabsSwitcher variant="contained" size="medium" value={tab.value} options={tabs} onChange={onChangeTab} />
+      <TabsSwitcher
+        variant="contained"
+        size="medium"
+        value={tab.value}
+        options={tabs}
+        onChange={onChangeTab}
+        overflow={overflow}
+      />
 
       {subTab && subTabs.length > 1 && (
         <TabsSwitcher
