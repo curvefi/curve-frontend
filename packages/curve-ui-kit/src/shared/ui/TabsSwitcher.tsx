@@ -11,7 +11,6 @@ import {
   TABS_VARIANT_CLASSES,
   TabSwitcherVariants,
   TAB_SUFFIX_CLASS,
-  TAB_LABEL_CONTAINER_CLASS,
   TAB_TEXT_VARIANTS,
 } from '../../themes/components/tabs'
 
@@ -67,7 +66,7 @@ export const TabsSwitcher = <T extends string | number>({
         key={value}
         value={value}
         label={
-          <Stack direction="row" alignItems="center" gap={Spacing.xxs} className={TAB_LABEL_CONTAINER_CLASS}>
+          <Stack direction="row" alignItems="center" gap={Spacing.xxs}>
             {startAdornment}
             {(label || suffix) && (
               <Stack direction="row" alignItems="baseline" gap={Spacing.xxs}>
