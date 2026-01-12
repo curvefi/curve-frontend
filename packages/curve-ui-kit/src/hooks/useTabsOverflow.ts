@@ -62,14 +62,22 @@ export function useTabsOverflow<T extends string | number>(
     const visibleIndices = new Set<number>()
     const overflowIndices = new Set<number>()
     let usedWidth = 0
+    let reachedOverflow = false
 
     standardTabs.forEach((item) => {
+      if (reachedOverflow) {
+        overflowIndices.add(item.index)
+        return
+      }
+
       if (usedWidth + item.width <= availableWidth) {
         visibleIndices.add(item.index)
         usedWidth += item.width
-      } else {
-        overflowIndices.add(item.index)
+        return
       }
+
+      overflowIndices.add(item.index)
+      reachedOverflow = true
     })
 
     const visibleOptions = options.filter((_, index) => visibleIndices.has(index))
