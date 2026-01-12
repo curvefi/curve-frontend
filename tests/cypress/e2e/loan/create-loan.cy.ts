@@ -16,10 +16,11 @@ describe(`Create Mint market loan`, () => {
     cy.visit(path)
   })
 
-  it(`should open the borrow details`, () => {
+  it(`may be created`, () => {
     writeCreateLoanForm({ collateral, borrow, leverageEnabled })
     checkLoanDetailsLoaded({ leverageEnabled })
     checkLoanRangeSlider(leverageEnabled)
+    // e2e tests run with a 'fake' account so the transaction fails
     submitCreateLoanForm().then(() => expect(cy.get('[data-testid="loan-form-error"]')).includes('unknown account'))
   })
 })

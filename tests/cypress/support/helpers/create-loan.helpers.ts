@@ -99,6 +99,9 @@ export function checkLoanRangeSlider(leverageEnabled: boolean) {
   checkLoanDetailsLoaded({ leverageEnabled })
 }
 
+/**
+ * Submit the create loan form and wait for the button to be re-enabled.
+ */
 export function submitCreateLoanForm() {
   cy.get('[data-testid="create-loan-submit-button"]').click()
   cy.get('[data-testid="create-loan-submit-button"]').should('be.disabled')
