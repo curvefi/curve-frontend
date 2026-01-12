@@ -1,5 +1,6 @@
 import Typography from '@mui/material/Typography'
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { FireIcon } from '@ui-kit/shared/icons/FireIcon'
 import { Metric, SIZES, ALIGNMENTS } from '../Metric'
 
 const meta: Meta<typeof Metric> = {
@@ -180,6 +181,20 @@ export const NotAvailable: Story = {
       description: {
         story:
           'Demonstrates the Metric component when the value is not available (e.g., null, undefined, "", false, NaN).',
+      },
+    },
+  },
+}
+
+export const RightAdornment: Story = {
+  args: {
+    size: 'large',
+    rightAdornment: <FireIcon fontSize="small" color="error" />,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Demonstrates the Metric component with a right adornment',
       },
     },
   },

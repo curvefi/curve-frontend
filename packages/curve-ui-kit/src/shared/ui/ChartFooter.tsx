@@ -3,15 +3,14 @@ import { Typography } from '@mui/material'
 import Stack from '@mui/material/Stack'
 import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
-import { t } from '@ui-kit/lib/i18n'
-import { LegendSet, type LegendSetType } from '@ui-kit/shared/ui/LegendSet'
+import { LegendSet, type LegendItem } from '@ui-kit/shared/ui/LegendSet'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 
 type ChartFooterProps<T extends string> = {
-  legendSets: LegendSetType[]
-  showSoftLiquidationText?: boolean
+  legendSets: LegendItem[]
+  description?: string
   toggleOptions?: T[]
   activeToggleOption?: T
   onToggleChange?: (event: MouseEvent<HTMLElement>, newOption: T) => void
@@ -19,12 +18,12 @@ type ChartFooterProps<T extends string> = {
 
 export const ChartFooter = <T extends string>({
   legendSets,
-  showSoftLiquidationText = false,
+  description,
   toggleOptions,
   activeToggleOption,
   onToggleChange,
 }: ChartFooterProps<T>) => {
-  const hasToggle = toggleOptions && toggleOptions.length > 0
+  const hasToggle = !!toggleOptions?.length
 
   return (
     <Stack gap={Spacing.sm}>
@@ -42,7 +41,7 @@ export const ChartFooter = <T extends string>({
               label={legendSet.label}
               line={legendSet.line}
               box={legendSet.box}
-              checked={legendSet.checked}
+              toggled={legendSet.toggled}
               onToggle={legendSet.onToggle}
             />
           ))}
@@ -57,11 +56,7 @@ export const ChartFooter = <T extends string>({
           </ToggleButtonGroup>
         )}
       </Stack>
-      {showSoftLiquidationText && (
-        <Typography variant="bodySRegular">
-          {t`When the price enters the liquidation zone, health will start decreasing putting your position at risk. Repay debt to improve health or close your position to avoid liquidation.`}
-        </Typography>
-      )}
+      {description && <Typography variant="bodySRegular">{description}</Typography>}
     </Stack>
   )
 }

@@ -40,7 +40,11 @@ const {
 
 export const getUserMintMarketsOptions = getUserMintMarketsQueryOptions
 
-const { useQuery: useUserMintMarketStatsQuery, invalidate: invalidateUserMintMarketStats } = queryFactory({
+const {
+  getQueryOptions: getUserMintMarketStatsQueryOptions,
+  useQuery: useUserMintMarketStatsQuery,
+  invalidate: invalidateUserMintMarketStats,
+} = queryFactory({
   queryKey: ({ userAddress, blockchainId, contractAddress }: UserContractParams) =>
     ['user-mint-markets', 'stats', { blockchainId }, { contractAddress }, { userAddress }, 'v1'] as const,
   queryFn: ({ userAddress, blockchainId, contractAddress }: UserContractQuery) =>
@@ -62,3 +66,4 @@ export const invalidateAllUserMintMarkets = (userAddress: Address | undefined) =
 }
 
 export const useUserMintMarketStats = useUserMintMarketStatsQuery
+export const getUserMintMarketsStatsOptions = getUserMintMarketStatsQueryOptions

@@ -65,6 +65,8 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
         range: values.range,
         slippage: values.slippage,
         leverageEnabled: values.leverageEnabled,
+        userCollateral: values.userCollateral,
+        userBorrowed: values.userBorrowed,
       }),
       [
         chainId,
@@ -76,6 +78,8 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
         values.range,
         values.slippage,
         values.leverageEnabled,
+        values.userCollateral,
+        values.userBorrowed,
       ],
     ),
   )
