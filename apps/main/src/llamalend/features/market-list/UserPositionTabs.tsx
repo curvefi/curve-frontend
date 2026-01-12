@@ -11,6 +11,7 @@ import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { MarketRateType } from '@ui-kit/types/market'
 import { LlamaMonitorBotButton } from './LlamaMonitorBotButton'
+import { UserPositionSummary } from './UserPositionsSummary'
 import { UserPositionsTable, type UserPositionsTableProps } from './UserPositionsTable'
 
 const { Spacing, Height } = SizesAndSpaces
@@ -81,6 +82,7 @@ export const UserPositionsTabs = (props: Omit<UserPositionsTableProps, 'tab' | '
       </Stack>
       {address ? (
         <>
+          <UserPositionSummary markets={markets} tab={tab} />
           <Stack
             direction="row"
             justifyContent="space-between"
