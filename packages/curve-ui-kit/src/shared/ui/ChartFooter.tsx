@@ -23,7 +23,7 @@ export const ChartFooter = <T extends string>({
   activeToggleOption,
   onToggleChange,
 }: ChartFooterProps<T>) => {
-  const hasToggle = toggleOptions && toggleOptions.length > 0
+  const hasToggle = !!toggleOptions?.length
 
   return (
     <Stack gap={Spacing.sm}>

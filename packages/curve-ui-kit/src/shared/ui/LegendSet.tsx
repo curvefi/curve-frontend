@@ -1,6 +1,7 @@
 import ButtonBase from '@mui/material/ButtonBase'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
@@ -32,37 +33,23 @@ export type LegendItem = {
 }
 
 export const LegendSet = ({ label, line, box, toggled = true, onToggle }: LegendItem) => {
-  const isInteractive = onToggle !== undefined
   const opacity = toggled ? 1 : 0.35
 
-  const content = (
-    <Stack
-      direction="row"
-      spacing={Spacing.xs}
-      alignItems="center"
-      sx={{
-        opacity,
-        transition: 'opacity 0.15s ease-in-out',
-      }}
-    >
-      {line && <LegendLine color={line.lineStroke} dash={line.dash} />}
-      {box && <LegendBox outline={box.outlineStroke ?? 'none'} fill={box.fill} />}
-      <Typography variant="bodySRegular">{label}</Typography>
-    </Stack>
-  )
-
-  if (!isInteractive) {
-    return content
-  }
-
   return (
-    <ButtonBase
-      onClick={() => onToggle(label)}
-      sx={{
-        padding: 0.5,
-      }}
-    >
-      {content}
-    </ButtonBase>
+    <WithWrapper shouldWrap={onToggle} Wrapper={ButtonBase} onClick={() => onToggle?.(label)}>
+      <Stack
+        direction="row"
+        spacing={Spacing.xs}
+        alignItems="center"
+        sx={{
+          opacity,
+          transition: 'opacity 0.15s ease-in-out',
+        }}
+      >
+        {line && <LegendLine color={line.lineStroke} dash={line.dash} />}
+        {box && <LegendBox outline={box.outlineStroke ?? 'none'} fill={box.fill} />}
+        <Typography variant="bodySRegular">{label}</Typography>
+      </Stack>
+    </WithWrapper>
   )
 }
