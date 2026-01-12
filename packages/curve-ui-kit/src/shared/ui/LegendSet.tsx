@@ -2,6 +2,7 @@ import ButtonBase from '@mui/material/ButtonBase'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
+import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
@@ -43,7 +44,7 @@ export const LegendSet = ({ label, line, box, toggled = true, onToggle }: Legend
         alignItems="center"
         sx={{
           opacity,
-          transition: 'opacity 0.15s ease-in-out',
+          transition: `opacity ${TransitionFunction}`,
         }}
       >
         {line && <LegendLine color={line.lineStroke} dash={line.dash} />}
