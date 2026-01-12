@@ -37,7 +37,7 @@
       "campaignEnd": "1770000000",
       "address": "0x40F1DAd51055A693Dc6D0a8d68A3E7e2Ae13031A",
       "network": "sonic",
-      "multiplier": "50x",
+      "multiplier": "",
       "tags": ["points"],
       "lock": "false"
     },
@@ -61,7 +61,7 @@
       "campaignEnd": "1770000000",
       "address": "0x4C86d266e969E186A2F197d859DF2D91e5eA1eD2",
       "network": "fraxtal",
-      "multiplier": "50x",
+      "multiplier": "",
       "tags": ["points"],
       "lock": "false"
     },
@@ -97,18 +97,6 @@
       "campaignEnd": "1770000000",
       "address": "0x4DE61e58f5f1E495e3BC58516268Bba25b5a57Fd",
       "network": "ethereum",
-      "multiplier": "",
-      "tags": ["points"],
-      "lock": "false"
-    },
-    {
-      "id": "null",
-      "action": "lp",
-      "description": "null",
-      "campaignStart": "0",
-      "campaignEnd": "1770000000",
-      "address": "0x5eCFA6940a33A2dAd5c473896452f018c6c04577",
-      "network": "fraxtal",
       "multiplier": "",
       "tags": ["points"],
       "lock": "false"

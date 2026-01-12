@@ -11,7 +11,7 @@ type ColumnEnum<TColumnId extends string> = Record<string, TColumnId>
 /** Get scoped prefix for URL keys, so we can have multiple tables on the same page without conflicts. */
 const scopedPrefix = (scope: string | undefined) => (scope ? `${scope}-` : '')
 /** Get scoped key for URLSearchParams */
-const scopedKey = (scope: string | undefined, columnId: string) => `${scopedPrefix(scope)}${columnId}`
+export const scopedKey = (scope: string | undefined, columnId: string) => `${scopedPrefix(scope)}${columnId}`
 
 /**
  * Parse URLSearchParams into ColumnFilters, keeping only allowed keys.
