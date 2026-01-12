@@ -19,7 +19,7 @@ export type OhlcChartProps = {
   ohlcData: LpPriceOhlcDataFormatted[]
   oraclePriceData?: OraclePriceData[]
   liquidationRange?: LiquidationRanges
-  selectedChartIndex: number
+  selectedChartKey: string
   timeOption: TimeOption
   refetchPricesData: () => void
   fetchMoreChartData: (lastFetchEndTime: number) => void
@@ -40,7 +40,7 @@ const ChartWrapper = ({
   ohlcData,
   oraclePriceData,
   liquidationRange,
-  selectedChartIndex,
+  selectedChartKey,
   timeOption,
   refetchPricesData,
   fetchMoreChartData,
@@ -89,7 +89,7 @@ const ChartWrapper = ({
         )}
         {chartStatus === 'ERROR' && (
           <StyledSpinnerWrapper minHeight={`${chartHeight}px`}>
-            <ErrorMessage>{`Unable to fetch ${selectChartList?.[selectedChartIndex ?? 0]?.label ?? ''} data.`}</ErrorMessage>
+            <ErrorMessage>{`Unable to fetch ${selectChartList?.find((c) => c.key === selectedChartKey)?.label ?? ''} data.`}</ErrorMessage>
             <RefreshButton
               size="small"
               variant="text"

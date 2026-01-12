@@ -9,6 +9,11 @@ export interface PricesApiCoin {
   address: string
 }
 
+export type ChartSelection =
+  | { type: 'lp-usd' }
+  | { type: 'lp-token'; symbol: string }
+  | { type: 'pair'; mainToken: PricesApiCoin; refToken: PricesApiCoin }
+
 export interface PricesApiPool {
   name: string
   address: string

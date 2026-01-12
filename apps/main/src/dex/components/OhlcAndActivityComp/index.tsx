@@ -29,7 +29,7 @@ export const OhlcAndActivityComp = ({
   rChainId: ChainId
   pricesApiPoolData: PricesApiPool
 }) => {
-  const { chartCombinations, tradesTokens, isLoading, setSelectedChart, setTimeOption, ohlcChartProps } =
+  const { chartCombinations, tradesTokens, isLoading, setSelectedChart, setTimeOption, ohlcChartProps, flipChart } =
     useOhlcChartState({
       rChainId,
       pricesApiPoolData,
@@ -51,10 +51,11 @@ export const OhlcAndActivityComp = ({
       {poolInfo === 'chart' && (
         <Stack sx={{ gap: Spacing.md }}>
           <ChartHeader
+            flipChart={flipChart}
             chartOptionVariant="select"
             chartSelections={{
               selections: ohlcChartProps.selectChartList,
-              activeSelection: ohlcChartProps.selectChartList[ohlcChartProps.selectedChartIndex ?? 0]?.key,
+              activeSelection: ohlcChartProps.selectedChartKey,
               setActiveSelection: setSelectedChart,
             }}
             timeOption={{

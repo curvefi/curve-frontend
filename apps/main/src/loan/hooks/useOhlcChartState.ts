@@ -59,7 +59,7 @@ export const useOhlcChartState = ({ rChainId, llamma, llammaId }: OhlcChartState
 
   const { oraclePrice } = priceInfo ?? {}
 
-  // Token symbols for chart labels (oracle tokens come from API response)
+  // Token symbols for chart labels (oracle tokens comes from API response)
   const oracleTokens = useMemo(
     () =>
       chartOraclePoolOhlc.collateralToken.symbol && chartOraclePoolOhlc.borrowedToken.symbol
@@ -198,9 +198,6 @@ export const useOhlcChartState = ({ rChainId, llamma, llammaId }: OhlcChartState
     [timeOption, fetchMoreData, rChainId, controllerAddress, poolAddress, chartInterval, timeUnit],
   )
 
-  // Derive index for ChartWrapper compatibility
-  const selectedChartIndex = selectChartList.findIndex((chart) => chart.key === selectedChartKey)
-
   // Determine chart status: loading > error (no data) > ready
   const chartStatus = isLoading || !llamma ? 'LOADING' : noDataAvailable ? 'ERROR' : 'READY'
 
@@ -212,7 +209,7 @@ export const useOhlcChartState = ({ rChainId, llamma, llammaId }: OhlcChartState
     oraclePriceData,
     liquidationRange: selectedLiqRange,
     timeOption,
-    selectedChartIndex: Math.max(0, selectedChartIndex),
+    selectedChartKey: selectedChartKey ?? '',
     selectChartList,
     refetchPricesData,
     refetchingCapped: currentChart.refetchingCapped,

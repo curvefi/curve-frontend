@@ -25,7 +25,7 @@ type UseChartTimeSettingsReturn = {
 
 /**
  * Manages chart time option state and converts it into the parameters needed for chart API requests.
- * Time settings only recalculate when timeOption changes (not on every render).
+ * Time settings only recalculate when timeOption changes.
  */
 export const useChartTimeSettings = (
   initialTimeOption: TimeOption = DEFAULT_TIME_OPTION,

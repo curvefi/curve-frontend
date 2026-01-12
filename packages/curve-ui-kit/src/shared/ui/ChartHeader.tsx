@@ -8,6 +8,7 @@ import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
+import { ArrowsHorizontalIcon } from '@ui-kit/shared/icons/ArrowsHorizontalIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { SxProps } from '@ui-kit/utils/mui'
 
@@ -37,6 +38,7 @@ type ChartHeaderProps<TChartKey extends string = string, TTimeOption extends str
     toggleChartExpanded: () => void
   }
   chartOptionVariant: 'select' | 'buttons-group'
+  flipChart?: () => void
   customButton?: React.ReactNode
   /** When true, displays "Loading" in the chart selection area and disables interaction */
   isLoading?: boolean
@@ -48,6 +50,7 @@ const ChartHeader = <TChartKey extends string, TTimeOption extends string = stri
   chartSelections,
   timeOption,
   chartOptionVariant,
+  flipChart,
   customButton,
   isLoading = false,
   sx = [],
@@ -101,22 +104,29 @@ const ChartHeader = <TChartKey extends string, TTimeOption extends string = stri
           </MenuItem>
         </Select>
       ) : (
-        <Select
-          value={chartSelections.activeSelection ?? ''}
-          onChange={handleChartOptionSelect}
-          size="small"
-          sx={{ alignSelf: 'center' }}
-          MenuProps={{
-            anchorOrigin: { vertical: 'bottom', horizontal: 'left' },
-            transformOrigin: { vertical: 'top', horizontal: 'left' },
-          }}
-        >
-          {chartSelections.selections.map((selection) => (
-            <MenuItem value={selection.key} key={selection.key}>
-              <Typography variant="bodySBold">{selection.activeTitle}</Typography>
-            </MenuItem>
-          ))}
-        </Select>
+        <Stack direction="row" alignItems="center" gap={Spacing.sm}>
+          <Select
+            value={chartSelections.activeSelection ?? ''}
+            onChange={handleChartOptionSelect}
+            size="small"
+            sx={{ alignSelf: 'center' }}
+            MenuProps={{
+              anchorOrigin: { vertical: 'bottom', horizontal: 'left' },
+              transformOrigin: { vertical: 'top', horizontal: 'left' },
+            }}
+          >
+            {chartSelections.selections.map((selection) => (
+              <MenuItem value={selection.key} key={selection.key}>
+                <Typography variant="bodySBold">{selection.activeTitle}</Typography>
+              </MenuItem>
+            ))}
+          </Select>
+          {flipChart && (
+            <IconButton color="ghost" size="extraSmall" onClick={flipChart}>
+              <ArrowsHorizontalIcon />
+            </IconButton>
+          )}
+        </Stack>
       )}
       <Stack
         direction="row"
