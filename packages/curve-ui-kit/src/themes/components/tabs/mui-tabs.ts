@@ -131,6 +131,11 @@ const containedTabPaddingVertical = (inline: SpacingKey) => ({
   ...tabPadding(0, 0, inline, inline),
 })
 
+const underlinedTabPadding = (inline: SpacingKey) => ({
+  boxSizing: 'border-box',
+  ...tabPadding(0, 0, inline, inline),
+})
+
 const extraExtraLargeCommonPadding = {
   ...tabPadding(0, 0, 'md', 'md'),
   minHeight: TAB_HEIGHT.extraExtraLarge,
@@ -250,10 +255,32 @@ export const defineMuiTabs = ({
       },
 
       [`&.${underlined}`]: {
-        '& .MuiTab-root': tabVariant(UnderLined),
+        '& .MuiTab-root': {
+          ...tabVariant(UnderLined),
+          justifyContent: 'center',
+          alignItems: 'center',
+        },
         ...notContainedCommonStyles,
-        [`&.${medium} .MuiTab-root .${TAB_LABEL_CONTAINER_CLASS}`]: {
-          ...handleBreakpoints({ paddingBlockEnd: Spacing.xxs }),
+        [`&.${small} .MuiTab-root`]: {
+          ...underlinedTabPadding('sm'),
+          height: TAB_HEIGHT.small,
+          [`& .${TAB_LABEL_CONTAINER_CLASS}`]: {
+            ...handleBreakpoints({ paddingBlock: 0 }),
+          },
+        },
+        [`&.${medium} .MuiTab-root`]: {
+          ...underlinedTabPadding('sm'),
+          height: TAB_HEIGHT.medium,
+          [`& .${TAB_LABEL_CONTAINER_CLASS}`]: {
+            ...handleBreakpoints({ paddingBlock: 0 }),
+          },
+        },
+        [`&.${extraExtraLarge} .MuiTab-root`]: {
+          ...underlinedTabPadding('md'),
+          height: TAB_HEIGHT.extraExtraLarge,
+          [`& .${TAB_LABEL_CONTAINER_CLASS}`]: {
+            ...handleBreakpoints({ paddingBlock: 0 }),
+          },
         },
       },
 
