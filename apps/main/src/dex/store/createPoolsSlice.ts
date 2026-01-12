@@ -565,6 +565,7 @@ const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>
       const network = networks[chainId].id.toLowerCase()
       const baseParams = `agg_number=${interval}&agg_units=${timeUnit}&start=${start}&end=${end}`
 
+      // TODO: refactor getOHLC from prices-api to the extra needs of /dex pools and use it here
       const url =
         chartSelection.type === 'pair'
           ? `https://prices.curve.finance/v1/ohlc/${network}/${poolAddress}?main_token=${chartSelection.mainToken.address}&reference_token=${chartSelection.refToken.address}&${baseParams}`
