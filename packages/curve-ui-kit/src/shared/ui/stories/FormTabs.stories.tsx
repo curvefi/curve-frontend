@@ -15,21 +15,18 @@ const Panel = ({ title, body }: { title: string; body: string }) => (
     <Typography variant="bodyMRegular">{body}</Typography>
   </Stack>
 )
-
 const OverviewTab = ({ availableBalance, userAddress }: DemoParams) => (
   <Panel
     title="Overview"
     body={`Connected as ${userAddress}. Available balance: ${availableBalance.toLocaleString()} crvUSD.`}
   />
 )
-
 const DepositTab = ({ availableBalance }: DemoParams) => (
   <Panel
     title="Deposit"
     body={`Use this tab for simple flows. Balance shown in labels comes from props (${availableBalance.toLocaleString()} crvUSD).`}
   />
 )
-
 const WithdrawTab = ({ canWithdraw }: DemoParams) => (
   <Panel
     title="Withdraw"
@@ -40,11 +37,10 @@ const WithdrawTab = ({ canWithdraw }: DemoParams) => (
     }
   />
 )
-
 const AdvancedTab = () => <Panel title="Advanced" body="Conditional tab that appears when enabled." />
-const RewardsTab = () => <Panel title="Rewards" body="Additional tab to showcase kebab menu overflow." />
-const HistoryTab = () => <Panel title="History" body="Additional tab to showcase kebab menu overflow." />
-const SettingsTab = () => <Panel title="Settings" body="Additional tab to showcase kebab menu overflow." />
+const RewardsTab = () => <Panel title="Rewards" body="Additional tab" />
+const HistoryTab = () => <Panel title="History" body="Additional tab" />
+const SettingsTab = () => <Panel title="Settings" body="Additional tab" />
 const AlwaysInMenuTab = () => (
   <Panel title="Always in Menu" body="This tab is configured to always be in the kebab menu." />
 )
@@ -79,8 +75,7 @@ const baseMenu: FormTab<DemoParams>[] = [
   },
 ]
 
-const kebabMenu: FormTab<DemoParams>[] = [
-  ...baseMenu,
+const additionalTabs: FormTab<DemoParams>[] = [
   {
     value: 'rewards',
     label: 'Rewards',
@@ -101,8 +96,10 @@ const kebabMenu: FormTab<DemoParams>[] = [
   },
 ]
 
+const kebabMenuAutoOverflow: FormTab<DemoParams>[] = [...baseMenu, ...additionalTabs]
+
 const kebabMenuWithForcedOverflow: FormTab<DemoParams>[] = [
-  ...kebabMenu,
+  ...additionalTabs,
   {
     value: 'kebab-item',
     label: 'Always in Menu',
@@ -241,7 +238,7 @@ export const KebabAutoOverflow: Story = {
   args: {
     overflow: 'kebab',
     showAdvanced: true,
-    menu: kebabMenu,
+    menu: kebabMenuAutoOverflow,
   },
 
   parameters: {
