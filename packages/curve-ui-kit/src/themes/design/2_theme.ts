@@ -235,11 +235,9 @@ export const createLightDesign = (
     Contained: {
       Default: {
         Label: Text.TextColors.Secondary,
-        Fill: Color.Neutral[300],
       },
       Hover: {
-        Label: Color.Neutral[50],
-        Fill: Color.Neutral[900],
+        Label: Text.TextColors.Highlight,
       },
       Current: {
         Label: Text.TextColors.Primary,
@@ -686,11 +684,9 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
     Contained: {
       Default: {
         Label: Text.TextColors.Secondary,
-        Fill: Color.Neutral[200],
       },
       Hover: {
-        Label: Color.Neutral[50],
-        Fill: Color.Neutral[900],
+        Label: Text.TextColors.Highlight,
       },
       Current: {
         Label: Text.TextColors.Primary,
@@ -1097,12 +1093,10 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
     },
     Contained: {
       Default: {
-        Label: Chad.Text.FilledFeedback.Highlight.Secondary,
-        Fill: Color.Primary[950],
+        Label: Text.TextColors.Secondary,
       },
       Hover: {
-        Label: Color.Neutral[50],
-        Fill: Color.Primary[800],
+        Label: Text.TextColors.Highlight,
       },
       Current: {
         Label: Text.TextColors.Primary,
