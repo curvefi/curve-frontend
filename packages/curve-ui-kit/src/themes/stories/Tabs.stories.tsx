@@ -88,21 +88,6 @@ const meta: Meta<typeof TabsSwitcherWrapper> = {
 export default meta
 type Story = StoryObj<typeof TabsSwitcherWrapper>
 
-export const Default: Story = {
-  args: {
-    variant: 'contained',
-    size: 'small',
-  },
-  render: (args) => <TabsSwitcherWrapper {...args} options={DEFAULT_TABS.slice(0, 4)} />,
-  parameters: {
-    docs: {
-      description: {
-        story: 'Small contained tabs without adornments and suffix',
-      },
-    },
-  },
-}
-
 export const Contained: Story = {
   args: {
     variant: 'contained',
@@ -163,6 +148,69 @@ export const Overlined: Story = {
   },
 }
 
+export const VerticalContained: Story = {
+  args: {
+    variant: 'contained',
+    orientation: 'vertical',
+  },
+  render: (args) => (
+    <Stack gap={4} direction="row">
+      {(Object.keys(TABS_SIZES_CLASSES) as Array<keyof typeof TABS_SIZES_CLASSES>).map((size) => (
+        <TabsSwitcherWrapper key={size} {...args} size={size} options={getOptionsWithAdornments(4, size)} />
+      ))}
+    </Stack>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story: 'Vertical contained tabs with adornments and suffix for each size',
+      },
+    },
+  },
+}
+
+export const VerticalUnderlined: Story = {
+  args: {
+    variant: 'underlined',
+    orientation: 'vertical',
+  },
+  render: (args) => (
+    <Stack gap={4} direction="row">
+      {(Object.keys(TABS_SIZES_CLASSES) as Array<keyof typeof TABS_SIZES_CLASSES>).map((size) => (
+        <TabsSwitcherWrapper key={size} {...args} size={size} options={getOptionsWithAdornments(4, size)} />
+      ))}
+    </Stack>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story: 'Vertical underlined tabs with adornments and suffix for each size',
+      },
+    },
+  },
+}
+
+export const VerticalOverlined: Story = {
+  args: {
+    variant: 'overlined',
+    orientation: 'vertical',
+  },
+  render: (args) => (
+    <Stack gap={4} direction="row">
+      {(Object.keys(TABS_SIZES_CLASSES) as Array<keyof typeof TABS_SIZES_CLASSES>).map((size) => (
+        <TabsSwitcherWrapper key={size} {...args} size={size} options={getOptionsWithAdornments(4, size)} />
+      ))}
+    </Stack>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story: 'Vertical overlined tabs with adornments and suffix for each size',
+      },
+    },
+  },
+}
+
 export const NoInactiveBorders: Story = {
   args: {
     variant: 'underlined',
@@ -173,36 +221,6 @@ export const NoInactiveBorders: Story = {
     docs: {
       description: {
         story: 'Underlined tabs with inactive borders hidden',
-      },
-    },
-  },
-}
-
-export const OrientationVertical: Story = {
-  args: {
-    orientation: 'vertical',
-  },
-  render: ({ variant, ...rest }) => (
-    <Stack direction="row" gap={4} alignItems="flex-start">
-      <TabsSwitcherWrapper {...rest} variant="contained" size="small" options={getOptionsWithAdornments(4, 'small')} />
-      <TabsSwitcherWrapper
-        {...rest}
-        variant="underlined"
-        size="medium"
-        options={getOptionsWithAdornments(4, 'medium')}
-      />
-      <TabsSwitcherWrapper
-        {...rest}
-        variant="overlined"
-        size="extraExtraLarge"
-        options={getOptionsWithAdornments(4, 'extraExtraLarge')}
-      />
-    </Stack>
-  ),
-  parameters: {
-    docs: {
-      description: {
-        story: 'Tabs with vertical orientation for each variant and size',
       },
     },
   },
