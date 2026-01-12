@@ -1,7 +1,7 @@
 import { useState, useCallback, useMemo } from 'react'
 import { useTheme } from '@mui/material/styles'
 import { t } from '@ui-kit/lib/i18n'
-import type { LegendSetType } from '@ui-kit/shared/ui/LegendSet'
+import type { LegendItem } from '@ui-kit/shared/ui/LegendSet'
 
 type UseChartLegendTogglesOptions = {
   hasNewLiquidationRange?: boolean
@@ -22,18 +22,18 @@ export const useChartLegendToggles = ({ hasNewLiquidationRange = false }: UseCha
   const toggleLiqRangeCurrentVisible = useCallback(() => setLiqRangeCurrentVisible((v) => !v), [])
   const toggleLiqRangeNewVisible = useCallback(() => setLiqRangeNewVisible((v) => !v), [])
 
-  const legendSets: LegendSetType[] = useMemo(() => {
-    const baseLegends: LegendSetType[] = [
+  const legendSets: LegendItem[] = useMemo(() => {
+    const baseLegends: LegendItem[] = [
       {
         label: t`Oracle Price`,
         line: { lineStroke: theme.palette.primary.main, dash: 'none' },
-        checked: oraclePriceVisible,
+        toggled: oraclePriceVisible,
         onToggle: toggleOraclePriceVisible,
       },
       {
         label: t`Conversion zone`,
         box: { fill: theme.design.Chart.LiquidationZone.Current },
-        checked: liqRangeCurrentVisible,
+        toggled: liqRangeCurrentVisible,
         onToggle: toggleLiqRangeCurrentVisible,
       },
     ]
@@ -42,7 +42,7 @@ export const useChartLegendToggles = ({ hasNewLiquidationRange = false }: UseCha
       baseLegends.push({
         label: t`New conversion zone`,
         box: { fill: theme.design.Chart.LiquidationZone.Future },
-        checked: liqRangeNewVisible,
+        toggled: liqRangeNewVisible,
         onToggle: toggleLiqRangeNewVisible,
       })
     }

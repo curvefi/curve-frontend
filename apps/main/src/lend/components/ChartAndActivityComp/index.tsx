@@ -11,7 +11,7 @@ import { useTheme } from '@mui/material/styles'
 import AlertBox from '@ui/AlertBox'
 import TextCaption from '@ui/TextCaption'
 import ChartWrapper from '@ui-kit/features/candle-chart/ChartWrapper'
-import { TIME_OPTIONS } from '@ui-kit/features/candle-chart/constants'
+import { TIME_OPTIONS, SOFT_LIQUIDATION_DESCRIPTION } from '@ui-kit/features/candle-chart/constants'
 import { useNewBandsChart } from '@ui-kit/hooks/useFeatureFlags'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
@@ -127,7 +127,7 @@ export const ChartAndActivityComp = ({ rChainId, rOwmId, api }: ChartAndActivity
               />
             )}
           </Stack>
-          <ChartFooter legendSets={legendSets} showSoftLiquidationText />
+          <ChartFooter legendSets={legendSets} description={SOFT_LIQUIDATION_DESCRIPTION} />
         </Stack>
       )}
     </Stack>

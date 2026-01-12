@@ -10,7 +10,7 @@ import { t } from '@ui-kit/lib/i18n'
 import type { TimeOption } from '@ui-kit/lib/types/scrvusd'
 import { ChartFooter } from '@ui-kit/shared/ui/ChartFooter'
 import ChartHeader, { ChartSelections } from '@ui-kit/shared/ui/ChartHeader'
-import type { LegendSetType } from '@ui-kit/shared/ui/LegendSet'
+import type { LegendItem } from '@ui-kit/shared/ui/LegendSet'
 import { Sizing } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import AdvancedDetails from './AdvancedDetails'
@@ -60,7 +60,7 @@ const Statistics = ({ isChartExpanded, toggleChartExpanded, hideExpandChart }: S
     proj_apy_total_avg: Color.Tertiary[400],
   } as const satisfies Record<YieldKeys, string>
 
-  const legendSets: LegendSetType[] = Object.entries(priceLineLabels).map(([key, { label, dash }]) => ({
+  const legendSets: LegendItem[] = Object.entries(priceLineLabels).map(([key, { label, dash }]) => ({
     label,
     line: {
       lineStroke: priceLineColors[key as YieldKeys],
