@@ -1,9 +1,9 @@
-import { useEffect, useMemo } from 'react'
-import { useConnection } from 'wagmi'
+import { useEffect } from 'react'
 import { RepayLoanInfoAccordion } from '@/llamalend/features/borrow/components/RepayLoanInfoAccordion'
 import { setValueOptions } from '@/llamalend/features/borrow/react-form.utils'
-import { RepayTokenOption, useRepayTokens } from '@/llamalend/features/manage-loan/hooks/useRepayTokens'
-import { getTokens, hasLeverage } from '@/llamalend/llama.utils'
+import { RepayTokenSelector } from '@/llamalend/features/manage-loan/components/RepayTokenSelector'
+import { useRepayTokens } from '@/llamalend/features/manage-loan/hooks/useRepayTokens'
+import { hasLeverage } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import type { RepayOptions } from '@/llamalend/mutations/repay.mutation'
 import { LoanFormAlerts } from '@/llamalend/widgets/manage-loan/LoanFormAlerts'
@@ -11,12 +11,8 @@ import { LoanFormTokenInput } from '@/llamalend/widgets/manage-loan/LoanFormToke
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { notFalsy } from '@curvefi/prices-api/objects.util'
 import Button from '@mui/material/Button'
-import { TokenList, type TokenOption, TokenSelector } from '@ui-kit/features/select-token'
-import { useTokenBalances } from '@ui-kit/hooks/useTokenBalance'
 import { t } from '@ui-kit/lib/i18n'
-import { useTokenUsdRates } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { mapQuery } from '@ui-kit/types/util'
-import { useTraceProps } from '@ui-kit/utils/useTraceProps'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { useRepayForm } from '../hooks/useRepayForm'
 
@@ -27,49 +23,6 @@ import { useRepayForm } from '../hooks/useRepayForm'
  */
 const joinButtonText = (texts: string[]) =>
   texts.map((t, i) => (i ? `${i === texts.length - 1 ? ' & ' : ', '}${t}` : t)).join('')
-
-function RepayTokenSelector<ChainId extends IChainId>({
-  market,
-  network,
-  selected,
-  onSelect,
-  options,
-}: {
-  market: LlamaMarketTemplate | undefined
-  network: NetworkDict<ChainId>[ChainId]
-  selected: RepayTokenOption | undefined
-  onSelect: (token: RepayTokenOption) => void
-  options: RepayTokenOption[]
-}) {
-  const { address: userAddress } = useConnection()
-  const { borrowToken, collateralToken } = market ? getTokens(market) : {}
-  const tokenAddresses = useMemo(
-    () => notFalsy(collateralToken?.address, borrowToken?.address),
-    [collateralToken?.address, borrowToken?.address],
-  )
-  const { data: tokenBalances } = useTokenBalances({ chainId: network.chainId, userAddress, tokenAddresses })
-  const { data: tokenPrices } = useTokenUsdRates({ chainId: network.chainId, tokenAddresses })
-  useTraceProps('RepayForm', {
-    selected,
-    options,
-    tokenBalances,
-    tokenPrices,
-    onSelect,
-  })
-  return (
-    <TokenSelector selectedToken={selected}>
-      <TokenList
-        disableSearch
-        disableSorting
-        disableMyTokens
-        tokens={options}
-        balances={tokenBalances}
-        tokenPrices={tokenPrices}
-        onToken={onSelect as (token: TokenOption) => void} // todo: implement new tokenList for RepayTokens
-      />
-    </TokenSelector>
-  )
-}
 
 // todo: net borrow APR (Net borrow rate includes the intrinsic yield + rewards, while the Borrow APR doesn't)
 export const RepayForm = <ChainId extends IChainId>({
@@ -164,6 +117,7 @@ export const RepayForm = <ChainId extends IChainId>({
             selected={selected}
             onSelect={onSelect}
             options={options}
+            positionCollateral={stateCollateralMax.data}
           />
         }
       />

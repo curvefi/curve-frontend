@@ -8,7 +8,7 @@ type TokenSelectorChildProps<T extends TokenOption = TokenOption> = {
   onToken: (token: T) => void
 }
 
-type Props<T extends TokenOption = TokenOption> = Partial<Pick<TokenSelectorModalProps, 'compact'>> & {
+type Props<T extends TokenOption = TokenOption> = Partial<Pick<TokenSelectorModalProps, 'compact' | 'title'>> & {
   /** Currently selected token */
   selectedToken: T | undefined
   /** Disables the token selector button and modal */
@@ -21,13 +21,14 @@ export const TokenSelector = <T extends TokenOption = TokenOption>({
   selectedToken,
   disabled = false,
   compact = false,
+  title,
   children,
 }: Props<T>) => {
   const [isOpen, , closeModal, toggleModal] = useSwitch(false)
   return (
     <>
       <TokenSelectButton token={selectedToken} disabled={disabled} onClick={toggleModal} />
-      <TokenSelectorModal isOpen={isOpen} compact={compact} onClose={closeModal}>
+      <TokenSelectorModal isOpen={isOpen} compact={compact} title={title} onClose={closeModal}>
         {isValidElement(children)
           ? cloneElement(children, {
               onToken: (token: T) => {

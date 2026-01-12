@@ -177,7 +177,7 @@ export const TokenList = ({
           <AlertTitle>{t`No tokens found`}</AlertTitle>
         </Alert>
       ) : (
-        <Stack sx={{ overflowY: 'auto' }}>
+        <>
           <TokenSection
             title={t`My tokens`}
             tokens={myTokens}
@@ -200,7 +200,7 @@ export const TokenList = ({
             onShowAll={closeShowPreviewAll}
             onToken={onToken}
           />
-        </Stack>
+        </>
       )}
     </Stack>
   )

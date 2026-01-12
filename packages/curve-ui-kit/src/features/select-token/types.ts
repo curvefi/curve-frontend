@@ -4,6 +4,7 @@ export type TokenOption = {
   address: Address
   symbol: string
   chain?: string
+  name?: string
   label?: string
   volume?: number
 }
