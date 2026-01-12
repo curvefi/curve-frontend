@@ -1,5 +1,4 @@
 import type { Components } from '@mui/material/styles'
-import type { TabsProps } from '@mui/material/Tabs'
 import { handleBreakpoints } from '@ui-kit/themes/basic-theme'
 import { TypographyVariantKey } from '@ui-kit/themes/typography'
 import { DesignSystem } from '../../design'
@@ -26,8 +25,6 @@ type TabStyle = { Label?: string; Fill?: string; Outline?: string }
 type TabVariant = { Inset?: string; Default: TabStyle; Hover: TabStyle; Current: TabStyle }
 type SpacingKey = keyof typeof Spacing | string | number
 
-type TabOrientationValues = Record<NonNullable<TabsProps['orientation']>, string>
-
 export const TAB_TEXT_VARIANTS = {
   small: 'buttonXs',
   medium: 'buttonS',
@@ -38,13 +35,10 @@ const BORDER_SIZE = '2px' as const
 const BORDER_SIZE_INACTIVE = '1px' as const
 const BORDER_SIZE_LARGE = '4px' as const
 
-const TAB_HEIGHT: Record<keyof typeof TABS_SIZES_CLASSES, TabOrientationValues | string> = {
+const TAB_HEIGHT: Record<keyof typeof TABS_SIZES_CLASSES, string> = {
   small: ButtonSize.xs,
   medium: ButtonSize.sm,
-  extraExtraLarge: {
-    vertical: '3.25rem', // 52px
-    horizontal: '2rem', // 32px
-  },
+  extraExtraLarge: ButtonSize.md,
 }
 
 /**
@@ -128,23 +122,23 @@ const tabPadding = (blockStart: SpacingKey, blockEnd: SpacingKey, inlineStart: S
     paddingInlineEnd: inlineEnd in Spacing ? Spacing[inlineEnd as keyof typeof Spacing] : inlineEnd,
   })
 
-const containedCommonPadding = {
-  // blockStart padding is 0, spacing is handled by minHeight and justifyContent)
-  // blockEnd padding is handeled by the label container (the component child) to avoid adding extra height to the tab's button
-  ...tabPadding(0, 0, 'sm', 'sm'),
-  [`& .${TAB_LABEL_CONTAINER_CLASS}`]: {
-    ...handleBreakpoints({ paddingBlockEnd: Spacing.xxs }),
-  },
-}
+const containedTabPadding = (inline: SpacingKey, blockEnd: SpacingKey) => ({
+  boxSizing: 'border-box',
+  ...tabPadding(0, blockEnd, inline, inline),
+})
+
+const containedTabPaddingVertical = (inline: SpacingKey) => ({
+  ...tabPadding(0, 0, inline, inline),
+})
 
 const extraExtraLargeCommonPadding = {
   ...tabPadding(0, 0, 'md', 'md'),
-  minHeight: (TAB_HEIGHT.extraExtraLarge as TabOrientationValues).horizontal,
+  minHeight: TAB_HEIGHT.extraExtraLarge,
   [`& .${TAB_LABEL_CONTAINER_CLASS}`]: {
     ...handleBreakpoints({ paddingBlockStart: Spacing.md, paddingBlockEnd: Spacing.xs }),
   },
   '.MuiTabs-vertical &': {
-    minHeight: (TAB_HEIGHT.extraExtraLarge as TabOrientationValues).vertical,
+    minHeight: TAB_HEIGHT.extraExtraLarge,
   },
 }
 
@@ -225,17 +219,26 @@ export const defineMuiTabs = ({
         },
 
         [`&.${small} .MuiTab-root`]: {
-          ...containedCommonPadding,
-          minHeight: TAB_HEIGHT.small,
+          ...containedTabPadding('sm', 'xxs'),
+          height: TAB_HEIGHT.small,
         },
         [`&.${medium} .MuiTab-root`]: {
-          ...containedCommonPadding,
-          minHeight: TAB_HEIGHT.medium,
+          ...containedTabPadding('sm', 'xxs'),
+          height: TAB_HEIGHT.medium,
         },
         [`&.${extraExtraLarge} .MuiTab-root`]: {
-          ...extraExtraLargeCommonPadding,
+          ...containedTabPadding('md', 'xxs'),
+          height: TAB_HEIGHT.extraExtraLarge,
         },
-        ...verticalOrientatationCommonPadding(),
+        [`&.MuiTabs-vertical.${small} .MuiTab-root`]: {
+          ...containedTabPaddingVertical('sm'),
+        },
+        [`&.MuiTabs-vertical.${medium} .MuiTab-root`]: {
+          ...containedTabPaddingVertical('sm'),
+        },
+        [`&.MuiTabs-vertical.${extraExtraLarge} .MuiTab-root`]: {
+          ...containedTabPaddingVertical('md'),
+        },
       },
 
       [`&.${overlined}`]: {
