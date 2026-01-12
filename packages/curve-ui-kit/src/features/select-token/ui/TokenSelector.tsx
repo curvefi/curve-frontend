@@ -1,4 +1,4 @@
-import { cloneElement, isValidElement, type ReactElement } from 'react'
+import { cloneElement, type ReactElement } from 'react'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { type TokenOption, tokenOptionEquals } from '../types'
 import { TokenSelectorModal, type TokenSelectorModalProps } from './modal/TokenSelectorModal'
@@ -13,7 +13,11 @@ type Props<T extends TokenOption = TokenOption> = Partial<Pick<TokenSelectorModa
   selectedToken: T | undefined
   /** Disables the token selector button and modal */
   disabled?: boolean
-  /** Token list to render inside the modal */
+  /**
+   * Token list to render inside the modal.
+   * It may be any valid React element as long as it accepts `onToken` prop.
+   * We use `cloneElement` to close the modal when a token changes.
+   **/
   children: ReactElement<TokenSelectorChildProps<T>>
 }
 
@@ -23,21 +27,19 @@ export const TokenSelector = <T extends TokenOption = TokenOption>({
   compact = false,
   children,
 }: Props<T>) => {
-  const [isOpen, , closeModal, toggleModal] = useSwitch(false)
+  const [isOpen, openModal, closeModal] = useSwitch(false)
   return (
     <>
-      <TokenSelectButton token={selectedToken} disabled={disabled} onClick={toggleModal} />
+      <TokenSelectButton token={selectedToken} disabled={disabled} onClick={openModal} />
       <TokenSelectorModal isOpen={isOpen} compact={compact} onClose={closeModal}>
-        {isValidElement(children)
-          ? cloneElement(children, {
-              onToken: (token: T) => {
-                closeModal()
-                if (!tokenOptionEquals(token, selectedToken)) {
-                  children.props.onToken(token)
-                }
-              },
-            })
-          : children}
+        {cloneElement(children, {
+          onToken: (token: T) => {
+            closeModal()
+            if (!tokenOptionEquals(token, selectedToken)) {
+              children.props.onToken(token)
+            }
+          },
+        })}
       </TokenSelectorModal>
     </>
   )

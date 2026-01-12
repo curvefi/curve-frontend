@@ -18,7 +18,7 @@ import { FavoriteTokens } from './FavoriteTokens'
 const { Spacing } = SizesAndSpaces
 
 export type TokenListProps = Pick<TokenSectionProps, 'tokens' | 'onToken'> &
-  Partial<Pick<TokenSectionProps, 'balances' | 'tokenPrices' | 'disabledTokens'>> & {
+  Pick<TokenSectionProps, 'balances' | 'tokenPrices' | 'disabledTokens'> & {
     /** Callback when user enters text in the search input (debounced) */
     onSearch?: (search: string) => void
     /** List of favorite token options to display at the top */
