@@ -320,6 +320,10 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
       // avalanche
       '0xb755b949c126c04e0348dd881a5cf55d424742b2': atricryptoAlert(),
 
+      // polygon
+      '0xbeb90d2d165d010706aca022a85a3b2d6a49eaa1': misconfiguredPoolsAlert(),
+      '0x810528a5086e997e39e12dccf02bad54a7bbe95b': misconfiguredPoolsAlert(),
+
       // monad
       '0x2fd13b49f970e8c6d89283056c1c6281214b7eb6': monadEthConverterAlert()
     }
