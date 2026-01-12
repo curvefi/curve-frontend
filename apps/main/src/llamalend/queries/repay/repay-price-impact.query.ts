@@ -35,7 +35,7 @@ export const { useQuery: useRepayPriceImpact } = queryFactory({
       case 'deleverage':
         return +(await impl.priceImpact(userCollateral))
       case 'unleveraged':
-        return 0
+        return 0 // there is no price impact, user repays debt directly
     }
   },
   staleTime: '1m',

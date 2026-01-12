@@ -2,7 +2,7 @@ import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { decimal, type Decimal } from '@ui-kit/utils'
 import { type RepayParams, type RepayQuery } from '../validation/manage-loan.types'
 import { repayValidationSuite } from '../validation/manage-loan.validation'
-import { getRepayImplementation, getUserDebt } from './repay-query.helpers'
+import { getRepayImplementation, getUserDebtFromQueryCache } from './repay-query.helpers'
 
 export type RepayExpectedBorrowedResult = {
   totalBorrowed: Decimal
@@ -40,8 +40,7 @@ export const { useQuery: useRepayExpectedBorrowed } = queryFactory({
       }
       case 'unleveraged':
         return {
-          // todo: double if this is correct or if we should use the `debt` field from userState
-          totalBorrowed: decimal(getUserDebt({ chainId, marketId, userAddress }) - +userBorrowed)!,
+          totalBorrowed: decimal(getUserDebtFromQueryCache({ chainId, marketId, userAddress }) - +userBorrowed)!,
         }
     }
   },

@@ -1,7 +1,7 @@
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { type RepayParams, type RepayQuery } from '../validation/manage-loan.types'
 import { repayValidationSuite } from '../validation/manage-loan.validation'
-import { getRepayImplementation, getUserDebt } from './repay-query.helpers'
+import { getRepayImplementation, getUserDebtFromQueryCache } from './repay-query.helpers'
 
 export const { useQuery: useRepayIsAvailable } = queryFactory({
   queryKey: ({
@@ -34,9 +34,9 @@ export const { useQuery: useRepayIsAvailable } = queryFactory({
         return await impl.repayIsAvailable(stateCollateral, userCollateral, userBorrowed, userAddress)
       case 'deleverage':
         return await impl.isAvailable(userCollateral, userAddress)
-      case 'unleveraged': {
-        return !!getUserDebt({ chainId, marketId, userAddress })
-      }
+      case 'unleveraged':
+        // For unleveraged markets, repayment is available when user has debt
+        return !!getUserDebtFromQueryCache({ chainId, marketId, userAddress })
     }
   },
   staleTime: '1m',

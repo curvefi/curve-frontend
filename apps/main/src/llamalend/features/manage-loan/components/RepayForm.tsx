@@ -62,8 +62,8 @@ export const RepayForm = <ChainId extends IChainId>({
     onRepaid,
   })
   const stateCollateralMax = mapQuery(userState, (data) => data.collateral)
-  const { options, selected, onSelect } = useRepayTokens({ market, network })
-  const selectedField = selected?.field ?? 'userBorrowed'
+  const repayTokenProps = useRepayTokens({ market, network })
+  const selectedField = repayTokenProps.token?.field ?? 'userBorrowed'
 
   useEffect(
     () =>
@@ -114,10 +114,8 @@ export const RepayForm = <ChainId extends IChainId>({
           <RepayTokenSelector
             market={market}
             network={network}
-            selected={selected}
-            onSelect={onSelect}
-            options={options}
             positionCollateral={stateCollateralMax.data}
+            {...repayTokenProps}
           />
         }
       />

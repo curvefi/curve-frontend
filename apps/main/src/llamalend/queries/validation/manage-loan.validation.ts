@@ -140,22 +140,13 @@ export const repayValidationSuite = ({ leverageRequired }: { leverageRequired: b
   createValidationSuite((params: RepayParams) => repayValidationGroup(params, { leverageRequired }))
 
 export const repayFormValidationSuite = createValidationSuite(
-  ({
-    isFull,
-    stateCollateral,
-    maxStateCollateral,
-    userCollateral,
-    userBorrowed,
-    leverageEnabled,
-    slippage,
-  }: RepayForm) => {
+  ({ isFull, stateCollateral, maxStateCollateral, userCollateral, userBorrowed, slippage }: RepayForm) => {
     validateRepayField('userCollateral', userCollateral)
     validateRepayField('stateCollateral', stateCollateral)
     validateMaxStateCollateral(stateCollateral, maxStateCollateral)
     validateRepayBorrowedField(userBorrowed)
     validateRepayHasValue(stateCollateral, userCollateral, userBorrowed)
     validateBoolean(isFull)
-    validateBoolean(leverageEnabled)
     validateSlippage(slippage)
   },
 )

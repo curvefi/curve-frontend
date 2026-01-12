@@ -48,7 +48,6 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
       userBorrowed: undefined,
       isFull: undefined,
       slippage: SLIPPAGE_PRESETS.STABLE,
-      leverageEnabled: false,
     },
   })
 

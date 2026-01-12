@@ -40,8 +40,11 @@ export function getRepayImplementation(
   return ['unleveraged', market, [userBorrowed]] as const
 }
 
-// todo: check if we should use `stablecoin` instead of `debt`
-export const getUserDebt = ({ chainId, userAddress, marketId }: UserMarketQuery) =>
+/**
+ * This helper gets the user's debt from the user state query cache and converts it to a number. It is only safe to use
+ * in when the user state query was called before (usually checked in the validation).
+ */
+export const getUserDebtFromQueryCache = ({ chainId, userAddress, marketId }: UserMarketQuery) =>
   +(
     getUserState({
       chainId,

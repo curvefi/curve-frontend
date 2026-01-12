@@ -11,7 +11,10 @@ const formatLabel = (address: string, networkName: string) => `${networkName} ${
 
 export type RepayTokenOption = TokenOption & { field: 'stateCollateral' | 'userCollateral' | 'userBorrowed' }
 
-function getTokenOptions({
+/**
+ * Get token options for repayment based on market and network
+ */
+const getTokenOptions = ({
   market,
   networkId,
   networkName,
@@ -19,7 +22,7 @@ function getTokenOptions({
   market: LlamaMarketTemplate | undefined
   networkId: string
   networkName: string
-}) {
+}) => {
   const { borrowToken, collateralToken } = market ? getTokens(market) : {}
   return notFalsy<RepayTokenOption>(
     market &&
@@ -51,6 +54,9 @@ function getTokenOptions({
   )
 }
 
+/**
+ * Hook that returns repay token options, containing the logic to select between different repayment sources
+ */
 export const useRepayTokens = <ChainId extends LlamaChainId, NetworkId extends LlamaNetworkId = LlamaNetworkId>({
   market,
   network: { name: networkName, id: networkId },
@@ -58,11 +64,7 @@ export const useRepayTokens = <ChainId extends LlamaChainId, NetworkId extends L
   market: LlamaMarketTemplate | undefined
   network: { id: NetworkId; chainId: ChainId; name: string }
 }) => {
-  const [selected, onSelect] = useState<RepayTokenOption | undefined>()
-  const options = useMemo(() => getTokenOptions({ market, networkId, networkName }), [market, networkId, networkName])
-  return {
-    options,
-    selected: selected ?? options[0],
-    onSelect,
-  }
+  const [token, onToken] = useState<RepayTokenOption | undefined>()
+  const tokens = useMemo(() => getTokenOptions({ market, networkId, networkName }), [market, networkId, networkName])
+  return { tokens, token: token ?? tokens[0], onToken }
 }

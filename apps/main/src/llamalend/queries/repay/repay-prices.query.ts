@@ -22,6 +22,7 @@ export const { useQuery: useRepayPrices } = queryFactory({
     ] as const,
   queryFn: async ({ marketId, stateCollateral, userCollateral, userBorrowed }: RepayQuery) => {
     const [type, impl, args] = getRepayImplementation(marketId, { userCollateral, stateCollateral, userBorrowed })
+    // it looks like all implementations have the same signature, but `args` is typed differently for each
     switch (type) {
       case 'V1':
       case 'V2':
