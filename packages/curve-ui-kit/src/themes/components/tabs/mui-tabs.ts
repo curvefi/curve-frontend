@@ -247,10 +247,32 @@ export const defineMuiTabs = ({
       },
 
       [`&.${overlined}`]: {
-        '& .MuiTab-root': tabVariant(OverLined),
+        '& .MuiTab-root': {
+          ...tabVariant(OverLined),
+          justifyContent: 'center',
+          alignItems: 'center',
+        },
         ...notContainedCommonStyles,
-        [`&.${medium} .MuiTab-root .${TAB_LABEL_CONTAINER_CLASS}`]: {
-          ...handleBreakpoints({ paddingBlockEnd: Spacing.sm, paddingBlockStart: Spacing.sm }),
+        [`&.${small} .MuiTab-root`]: {
+          ...underlinedTabPadding('sm'),
+          height: TAB_HEIGHT.small,
+          [`& .${TAB_LABEL_CONTAINER_CLASS}`]: {
+            ...handleBreakpoints({ paddingBlock: 0 }),
+          },
+        },
+        [`&.${medium} .MuiTab-root`]: {
+          ...underlinedTabPadding('sm'),
+          height: TAB_HEIGHT.medium,
+          [`& .${TAB_LABEL_CONTAINER_CLASS}`]: {
+            ...handleBreakpoints({ paddingBlock: 0 }),
+          },
+        },
+        [`&.${extraExtraLarge} .MuiTab-root`]: {
+          ...underlinedTabPadding('md'),
+          height: TAB_HEIGHT.extraExtraLarge,
+          [`& .${TAB_LABEL_CONTAINER_CLASS}`]: {
+            ...handleBreakpoints({ paddingBlock: 0 }),
+          },
         },
       },
 
