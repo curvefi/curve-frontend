@@ -256,6 +256,25 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
       ),
     })
 
+    // Pool creator configured bad price oracles, leading to users losing funds.
+    const misconfiguredPoolsAlert = (): PoolAlert => ({
+      alertType: 'danger',
+      isDisableDeposit: true,
+      isDisableSwap: true,
+      isInformationOnly: true,
+      isInformationOnlyAndShowInForm: true,
+      isCloseOnTooltipOnly: true,
+      banner: {
+        title: t`Misconfigured Pool`,
+        subtitle: t`This pool has been misconfigured. It has been set to withdraw only.`,
+      },
+      message: (
+        <PoolAlertMessage>
+          <p>{t`This pool is in withdraw only mode.`}</p>
+        </PoolAlertMessage>
+      ),
+    })
+
     // prettier-ignore
     const alerts: { [poolAddress: string]: PoolAlert } = {
       // ethereum
@@ -283,9 +302,28 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
 
       // arbitrum
       '0x960ea3e3c7fb317332d990873d354e18d7645590': possibleVyperExploitedAlert(), // tricrypto
+      '0xc55be2dc490578560a030b6ba387aba0fe03cc73': misconfiguredPoolsAlert(),
+      '0xc5f069dd8112614673890aa21d8989d5d0db69d8': misconfiguredPoolsAlert(),
+      '0x2e6cfeeb00038f6a88a008e8b3c2bbd2f6c6bf9f': misconfiguredPoolsAlert(),
+      '0x2b7dcdc718e03749de0a138c56b0e18f9750134b': misconfiguredPoolsAlert(),
+      '0x533482d1d126ad8dd1ed925655b717a3425adf39': misconfiguredPoolsAlert(),
+      '0xc1005bbafa47f8aeb084646ffd83fd8dada3bb3b': misconfiguredPoolsAlert(),
+      '0x8afce00f46938db8e958fa7f8a1f4626c26242b7': misconfiguredPoolsAlert(),
+      '0xf9ae77094ae7308debf9ea25aeb3c8ab55714f32': misconfiguredPoolsAlert(),
+      '0x172cb45033b5495ca66f6866a01aa87cbad8f560': misconfiguredPoolsAlert(),
+      '0x4f4dcb8d373c26cc7db78ad1dc5ffdfcb45f4e55': misconfiguredPoolsAlert(),
+      '0x60d7ce16f815ea69e803c8146b8c32c84cc9982b': misconfiguredPoolsAlert(),
+      '0x03e9f4a7dcf587a5437f2d0332e35a73ded52d7d': misconfiguredPoolsAlert(),
+      '0x14515323e5c48e0ae75ad333e885cf050d0e3d9b': misconfiguredPoolsAlert(),
+      '0x11fd5664121e9b464b5e8434aa7d70b8e9146ca6': misconfiguredPoolsAlert(),
+      '0x2ff3ba10deb05573d2fae704a962183461d106d8': misconfiguredPoolsAlert(),
       
       // avalanche
       '0xb755b949c126c04e0348dd881a5cf55d424742b2': atricryptoAlert(),
+
+      // polygon
+      '0xbeb90d2d165d010706aca022a85a3b2d6a49eaa1': misconfiguredPoolsAlert(),
+      '0x810528a5086e997e39e12dccf02bad54a7bbe95b': misconfiguredPoolsAlert(),
 
       // monad
       '0x2fd13b49f970e8c6d89283056c1c6281214b7eb6': monadEthConverterAlert()
