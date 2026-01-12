@@ -1,6 +1,6 @@
 import { Stack, Typography } from '@mui/material'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { FormTabs } from '../../../widgets/DetailPageLayout/FormTabs'
+import { FormTab, FormTabs } from '../../../widgets/DetailPageLayout/FormTabs'
 
 type DemoParams = {
   availableBalance: number
@@ -42,43 +42,93 @@ const WithdrawTab = ({ canWithdraw }: DemoParams) => (
 )
 
 const AdvancedTab = () => <Panel title="Advanced" body="Conditional tab that appears when enabled." />
+const RewardsTab = () => <Panel title="Rewards" body="Additional tab to showcase kebab menu overflow." />
+const HistoryTab = () => <Panel title="History" body="Additional tab to showcase kebab menu overflow." />
+const SettingsTab = () => <Panel title="Settings" body="Additional tab to showcase kebab menu overflow." />
+const AlwaysInMenuTab = () => (
+  <Panel title="Always in Menu" body="This tab is configured to always be in the kebab menu." />
+)
 
-type StoryArgs = DemoParams & { shouldWrap: boolean }
+const baseMenu: FormTab<DemoParams>[] = [
+  {
+    value: 'overview',
+    label: 'Overview',
+    visible: () => true,
+    component: OverviewTab,
+  },
+  {
+    value: 'manage',
+    label: ({ availableBalance }) => `Manage (${availableBalance.toLocaleString()} crvUSD)`,
+    visible: () => true,
+    subTabs: [
+      { value: 'deposit', label: 'Deposit', visible: () => true, component: DepositTab },
+      {
+        value: 'withdraw',
+        label: ({ canWithdraw }) => (canWithdraw ? 'Withdraw' : 'Withdraw (locked)'),
+        visible: () => true,
+        disabled: ({ canWithdraw }) => !canWithdraw,
+        component: WithdrawTab,
+      },
+    ],
+  },
+  {
+    value: 'advanced',
+    label: 'Advanced',
+    visible: ({ showAdvanced }) => showAdvanced,
+    component: AdvancedTab,
+  },
+]
 
-const FormTabsStory = ({ shouldWrap, ...params }: StoryArgs) => (
-  <FormTabs<DemoParams>
-    params={params}
-    shouldWrap={shouldWrap}
-    menu={[
-      {
-        value: 'overview',
-        label: 'Overview',
-        visible: () => true,
-        component: OverviewTab,
-      },
-      {
-        value: 'manage',
-        label: ({ availableBalance }) => `Manage (${availableBalance.toLocaleString()} crvUSD)`,
-        visible: () => true,
-        subTabs: [
-          { value: 'deposit', label: 'Deposit', visible: () => true, component: DepositTab },
-          {
-            value: 'withdraw',
-            label: ({ canWithdraw }) => (canWithdraw ? 'Withdraw' : 'Withdraw (locked)'),
-            visible: () => true,
-            disabled: ({ canWithdraw }) => !canWithdraw,
-            component: WithdrawTab,
-          },
-        ],
-      },
-      {
-        value: 'advanced',
-        label: 'Advanced',
-        visible: ({ showAdvanced }) => showAdvanced,
-        component: AdvancedTab,
-      },
-    ]}
-  />
+const kebabMenu: FormTab<DemoParams>[] = [
+  ...baseMenu,
+  {
+    value: 'rewards',
+    label: 'Rewards',
+    visible: () => true,
+    component: RewardsTab,
+  },
+  {
+    value: 'history',
+    label: 'History',
+    visible: () => true,
+    component: HistoryTab,
+  },
+  {
+    value: 'settings',
+    label: 'Settings',
+    visible: () => true,
+    component: SettingsTab,
+  },
+]
+
+const kebabMenuWithForcedOverflow: FormTab<DemoParams>[] = [
+  ...kebabMenu,
+  {
+    value: 'kebab-item',
+    label: 'Always in Menu',
+    alwaysInKebab: () => true,
+    visible: () => true,
+    component: AlwaysInMenuTab,
+  },
+]
+
+type StoryArgs = DemoParams & {
+  shouldWrap: boolean
+  overflow: 'standard' | 'scrollable' | 'kebab'
+  showOverflowMenu: boolean
+  menu: FormTab<DemoParams>[]
+}
+
+const FormTabsStory = ({ shouldWrap, overflow, showOverflowMenu, menu, ...params }: StoryArgs) => (
+  <Stack sx={{ width: '500px', marginInline: 'auto' }}>
+    <FormTabs<DemoParams>
+      params={params}
+      shouldWrap={shouldWrap}
+      overflow={overflow}
+      showOverflowMenu={showOverflowMenu}
+      menu={menu}
+    />
+  </Stack>
 )
 
 const meta: Meta<typeof FormTabsStory> = {
@@ -90,6 +140,9 @@ const meta: Meta<typeof FormTabsStory> = {
     showAdvanced: false,
     userAddress: '0x1234...cafe',
     shouldWrap: false,
+    overflow: 'standard',
+    showOverflowMenu: false,
+    menu: baseMenu,
   },
   argTypes: {
     availableBalance: {
@@ -111,6 +164,11 @@ const meta: Meta<typeof FormTabsStory> = {
     shouldWrap: {
       control: 'boolean',
       description: 'Renders content with the legacy AppForm wrapper background.',
+    },
+    overflow: {
+      control: 'select',
+      options: ['standard', 'scrollable', 'kebab'],
+      description: 'The overflow behavior of the tabs.',
     },
   },
   parameters: {
@@ -163,6 +221,33 @@ export const LegacyWrapped: Story = {
     docs: {
       description: {
         story: 'Illustrates the legacy AppForm background applied via shouldWrap.',
+      },
+    },
+  },
+}
+
+export const KebabOverflow: Story = {
+  args: { overflow: 'kebab', showAdvanced: true, showOverflowMenu: true, menu: kebabMenuWithForcedOverflow },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Kebab mode with forced overflow menu and conditional tab enabled.',
+      },
+    },
+  },
+}
+
+export const KebabAutoOverflow: Story = {
+  args: {
+    overflow: 'kebab',
+    showAdvanced: true,
+    menu: kebabMenu,
+  },
+
+  parameters: {
+    docs: {
+      description: {
+        story: 'Kebab mode with extra tabs to trigger automatic overflow.',
       },
     },
   },
