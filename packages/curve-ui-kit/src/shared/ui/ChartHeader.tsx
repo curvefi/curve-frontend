@@ -65,11 +65,6 @@ const ChartHeader = <TChartKey extends string, TTimeOption extends string = stri
   const handleTimeOption = (event: SelectChangeEvent<TTimeOption>) => {
     if (event.target.value !== null && timeOption) timeOption.setActiveOption(event.target.value as TTimeOption)
   }
-  /*
-  The small breakpoint is used for placing Title and ToggleButtonGroup in a column 
-  and separate the expand Chart button to the right
-  */
-  const smallBreakPoint = '35.9375rem' // 575px
   const foundChartOption = chartSelections.selections.find(
     (selection) => selection.key === chartSelections.activeSelection,
   )
@@ -79,15 +74,11 @@ const ChartHeader = <TChartKey extends string, TTimeOption extends string = stri
       direction="row"
       alignItems="center"
       justifyContent="space-between"
+      flexWrap="wrap"
       sx={[
         {
           rowGap: Spacing.md,
           columnGap: Spacing.sm,
-          [`@media (max-width: ${smallBreakPoint})`]: {
-            flexDirection: 'column',
-            alignItems: 'flex-start',
-            rowGap: Spacing.lg,
-          },
         },
         ...sx,
       ]}
@@ -128,21 +119,8 @@ const ChartHeader = <TChartKey extends string, TTimeOption extends string = stri
           )}
         </Stack>
       )}
-      <Stack
-        direction="row"
-        sx={{
-          [`@media (max-width: ${smallBreakPoint})`]: { width: '100%' },
-        }}
-      >
-        <ToggleButtonGroup
-          exclusive
-          value={chartSelections.activeSelection}
-          onChange={handleChartOptionToggle}
-          sx={{
-            [`@media (max-width: ${smallBreakPoint})`]: { width: '100%', display: 'flex', flexGrow: 1 },
-            gap: Spacing.xs,
-          }}
-        >
+      <Stack direction="row" alignItems="center">
+        <ToggleButtonGroup exclusive value={chartSelections.activeSelection} onChange={handleChartOptionToggle}>
           {chartOptionVariant === 'buttons-group' &&
             chartSelections.selections.map((selection) => (
               <ToggleButton value={selection.key} key={selection.key} size="small">
@@ -172,11 +150,7 @@ const ChartHeader = <TChartKey extends string, TTimeOption extends string = stri
           )}
           {customButton}
           {expandChart && (
-            <IconButton
-              size="small"
-              onClick={expandChart.toggleChartExpanded}
-              sx={{ [`@media (max-width: ${smallBreakPoint})`]: { marginLeft: 'auto' } }}
-            >
+            <IconButton size="small" onClick={expandChart.toggleChartExpanded}>
               <Icon name={expandChart?.isExpanded ? 'Minimize' : 'Maximize'} size={20} />
             </IconButton>
           )}
