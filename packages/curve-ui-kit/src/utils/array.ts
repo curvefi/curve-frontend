@@ -54,3 +54,6 @@ export function minCutoffForTopK<T>(
   const count = minCount >= valuesDesc.length ? valuesDesc.length : minCount
   return valuesDesc[count - 1]
 }
+
+/** Split a list into two slices at the given index. */
+export const splitAt = <T>(items: T[], index: number) => [items.slice(0, index), items.slice(index)]
