@@ -31,7 +31,7 @@ export const CurrentVotes = () => {
   const { address: userAddress } = useConnection()
   const setUserGaugeVoteWeightsSortBy = useStore((state) => state.user.setUserGaugeVoteWeightsSortBy)
   const userGaugeVoteWeightsSortBy = useStore((state) => state.user.userGaugeVoteWeightsSortBy)
-  const { data: gaugeMapper = {}, isLoading: isLoadingGauges } = useGauges({})
+  const { data: gaugeMapper = {}, isLoading: gaugesIsLoading } = useGauges({})
   const selectedGauge = useStore((state) => state.gauges.selectedGauge)
 
   const {
@@ -44,7 +44,7 @@ export const CurrentVotes = () => {
     userAddress: userAddress ?? '',
   })
 
-  const tableLoading = userGaugeWeightsLoading || isLoadingGauges
+  const tableLoading = userGaugeWeightsLoading || gaugesIsLoading
 
   const tableMinWidth = 0
   const gridTemplateColumns = '17.5rem 1fr 1fr 1fr'

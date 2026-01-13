@@ -30,14 +30,14 @@ export const GaugeWeightDistribution = ({ isUserVotes }: GaugeWeightDistribution
   })
   const {
     data: gaugeMapper = {},
-    isSuccess: isSuccessGauges,
-    isLoading: isLoadingGauges,
-    isError: isErrorGauges,
+    isSuccess: gaugesIsSuccess,
+    isLoading: gaugesIsLoading,
+    isError: gaugesIsError,
   } = useGauges({})
 
-  const isLoading = isUserVotes ? userGaugeWeightsLoading : isLoadingGauges
-  const isError = isUserVotes ? userGaugeWeightsError : isErrorGauges
-  const isSuccess = isUserVotes ? userGaugeWeightsSuccess : isSuccessGauges
+  const isLoading = isUserVotes ? userGaugeWeightsLoading : gaugesIsLoading
+  const isError = isUserVotes ? userGaugeWeightsError : gaugesIsError
+  const isSuccess = isUserVotes ? userGaugeWeightsSuccess : gaugesIsSuccess
 
   const dataKey = isUserVotes ? 'userPower' : 'gauge_relative_weight'
   const formattedData: (UserGaugeVoteWeight | GaugeFormattedData)[] = useMemo(() => {

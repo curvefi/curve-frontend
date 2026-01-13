@@ -16,7 +16,7 @@ type GaugeProps = {
 
 export const Gauge = ({ routerParams: { gaugeAddress: rGaugeAddress } }: GaugeProps) => {
   const gaugeAddress = rGaugeAddress.toLowerCase()
-  const { data: gauges, isLoading: isLoadingGauges } = useGauges({})
+  const { data: gauges, isLoading: gaugesIsLoading } = useGauges({})
   const gaugeData = gauges?.[gaugeAddress]
 
   const tableMinWidth = 21.875
@@ -25,8 +25,8 @@ export const Gauge = ({ routerParams: { gaugeAddress: rGaugeAddress } }: GaugePr
     <Wrapper>
       <BackButton path={getEthPath(DAO_ROUTES.PAGE_GAUGES)} label="Back to gauges" />
       <GaugePageContainer variant="secondary">
-        <GaugeHeader gaugeData={gaugeData} dataLoading={isLoadingGauges} />
-        <GaugeMetrics gaugeData={gaugeData} dataLoading={isLoadingGauges} />
+        <GaugeHeader gaugeData={gaugeData} dataLoading={gaugesIsLoading} />
+        <GaugeMetrics gaugeData={gaugeData} dataLoading={gaugesIsLoading} />
         <Content>{gaugeData && <GaugeWeightHistoryChart gaugeAddress={gaugeData.address} minHeight={25} />}</Content>
         {gaugeData && <GaugeVotesTable gaugeAddress={gaugeData.address} tableMinWidth={tableMinWidth} />}
       </GaugePageContainer>

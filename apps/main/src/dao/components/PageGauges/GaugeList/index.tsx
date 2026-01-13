@@ -14,7 +14,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { GAUGE_VOTES_TABLE_LABELS, GAUGE_VOTES_SORTING_METHODS } from '../constants'
 
 export const GaugesList = () => {
-  const { data: gauges, isSuccess: isSuccessGauges, isLoading: isLoadingGauges, isError: isErrorGauges } = useGauges({})
+  const { data: gauges, isSuccess: gaugesIsSuccess, isLoading: gaugesIsLoading, isError: gaugesIsError } = useGauges({})
   const setGauges = useStore((state) => state.gauges.setGauges)
   const gaugeListSortBy = useStore((state) => state.gauges.gaugeListSortBy)
   const setGaugeListSortBy = useStore((state) => state.gauges.setGaugeListSortBy)
@@ -26,10 +26,10 @@ export const GaugesList = () => {
   const smallScreenBreakpoint = 42.3125
 
   useEffect(() => {
-    if (isSuccessGauges) {
+    if (gaugesIsSuccess) {
       setGauges(searchValue)
     }
-  }, [searchValue, setGauges, gaugeListSortBy, isSuccessGauges])
+  }, [searchValue, setGauges, gaugeListSortBy, gaugesIsSuccess])
 
   const handleSortChange = useCallback(
     (key: Key | null) => {
@@ -68,12 +68,12 @@ export const GaugesList = () => {
             {t`Showing results (${filteredGauges.length}) for`} &quot;<strong>{searchValue}</strong>&quot;:
           </SearchMessage>
         )}
-        {isLoadingGauges && (
+        {gaugesIsLoading && (
           <StyledSpinnerWrapper vSpacing={5}>
             <Spinner size={24} />
           </StyledSpinnerWrapper>
         )}
-        {isErrorGauges && (
+        {gaugesIsError && (
           <ErrorMessageWrapper>
             <ErrorMessage message={t`Error fetching gauges`} onClick={() => refetchGauges({})} />
           </ErrorMessageWrapper>
@@ -82,9 +82,9 @@ export const GaugesList = () => {
           <PaginatedTable<GaugeFormattedData>
             data={filteredGauges}
             minWidth={tableMinWidth}
-            isLoading={isLoadingGauges}
-            isError={isErrorGauges}
-            isSuccess={isSuccessGauges}
+            isLoading={gaugesIsLoading}
+            isError={gaugesIsError}
+            isSuccess={gaugesIsSuccess}
             columns={GAUGE_VOTES_TABLE_LABELS}
             sortBy={gaugeListSortBy}
             errorMessage={t`An error occurred while fetching gauges.`}
