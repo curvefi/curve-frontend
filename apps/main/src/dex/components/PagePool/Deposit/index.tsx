@@ -46,16 +46,7 @@ const Deposit = ({ hasDepositAndStake, ...transferProps }: TransferProps & { has
 
   return (
     <FormContent
-      header={
-        <TabsSwitcher
-          variant="underlined"
-          size="small"
-          value={tab}
-          onChange={handleTabChange}
-          options={tabs}
-          fullWidth
-        />
-      }
+      header={<TabsSwitcher variant="underlined" value={tab} onChange={handleTabChange} options={tabs} fullWidth />}
     >
       {poolAlert && poolAlert.isDisableDeposit ? (
         <AlertBox {...poolAlert}>{poolAlert.message}</AlertBox>
