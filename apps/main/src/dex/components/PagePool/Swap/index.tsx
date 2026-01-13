@@ -30,7 +30,7 @@ import TxInfoBar from '@ui/TxInfoBar'
 import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
-import { TokenSelector } from '@ui-kit/features/select-token'
+import { TokenList, TokenSelector } from '@ui-kit/features/select-token'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { t } from '@ui-kit/lib/i18n'
@@ -369,30 +369,28 @@ const Swap = ({
           balance={decimal(formValues.fromAmount)}
           inputBalanceUsd={decimal(formValues.fromAmount && fromUsdRate && fromUsdRate * +formValues.fromAmount)}
           tokenSelector={
-            <TokenSelector
-              selectedToken={fromToken}
-              tokens={selectList}
-              disabled={isDisabled || selectList.length === 0}
-              showSearch={false}
-              showManageList={false}
-              compact
-              onToken={({ address, symbol }) =>
-                updateFormValues(
-                  {
-                    ...formValues,
-                    ...(address === formValues.toAddress && {
-                      toAddress: formValues.fromAddress,
-                      toToken: swapTokensMapper[formValues.fromAddress].symbol,
-                    }),
-                    fromAddress: address,
-                    fromToken: symbol,
-                    ...(formValues.isFrom === false ? { fromAmount: '' } : { toAmount: '' }),
-                  },
-                  null,
-                  '',
-                )
-              }
-            />
+            <TokenSelector selectedToken={fromToken} disabled={isDisabled || selectList.length === 0} compact>
+              <TokenList
+                tokens={selectList}
+                disableSearch
+                onToken={({ address, symbol }) =>
+                  updateFormValues(
+                    {
+                      ...formValues,
+                      ...(address === formValues.toAddress && {
+                        toAddress: formValues.fromAddress,
+                        toToken: swapTokensMapper[formValues.fromAddress].symbol,
+                      }),
+                      fromAddress: address,
+                      fromToken: symbol,
+                      ...(formValues.isFrom === false ? { fromAmount: '' } : { toAmount: '' }),
+                    },
+                    null,
+                    '',
+                  )
+                }
+              />
+            </TokenSelector>
           }
           {...(formValues.fromError && {
             isError: true,
@@ -440,30 +438,28 @@ const Swap = ({
           balance={decimal(formValues.toAmount)}
           disabled={isUndefined(hasRouter) || (!isUndefined(hasRouter) && !hasRouter) || isDisabled}
           tokenSelector={
-            <TokenSelector
-              selectedToken={toToken}
-              tokens={selectList}
-              disabled={isDisabled || selectList.length === 0}
-              showSearch={false}
-              showManageList={false}
-              compact
-              onToken={({ address, symbol }) =>
-                updateFormValues(
-                  {
-                    ...formValues,
-                    ...(address === formValues.fromAddress && {
-                      fromAddress: formValues.toAddress,
-                      fromToken: swapTokensMapper[formValues.toAddress].symbol,
-                    }),
-                    toAddress: address,
-                    toToken: symbol,
-                    ...(formValues.isFrom === false ? { fromAmount: '' } : { toAmount: '' }),
-                  },
-                  null,
-                  '',
-                )
-              }
-            />
+            <TokenSelector selectedToken={toToken} disabled={isDisabled || selectList.length === 0} compact>
+              <TokenList
+                tokens={selectList}
+                disableSearch
+                onToken={({ address, symbol }) =>
+                  updateFormValues(
+                    {
+                      ...formValues,
+                      ...(address === formValues.fromAddress && {
+                        fromAddress: formValues.toAddress,
+                        fromToken: swapTokensMapper[formValues.toAddress].symbol,
+                      }),
+                      toAddress: address,
+                      toToken: symbol,
+                      ...(formValues.isFrom === false ? { fromAmount: '' } : { toAmount: '' }),
+                    },
+                    null,
+                    '',
+                  )
+                }
+              />
+            </TokenSelector>
           }
           walletBalance={{
             balance: decimal(userToBalance),
