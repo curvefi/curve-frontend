@@ -5,7 +5,7 @@ import { Box } from '@ui/Box'
 import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 
-export const BarChartCustomTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) => {
+export const GaugesBarChartCustomTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) => {
   if (active && payload && payload.length) {
     const sevenDayDelta = payload[0].payload.gauge_relative_weight_7d_delta
     const sixtyDayDelta = payload[0].payload.gauge_relative_weight_60d_delta

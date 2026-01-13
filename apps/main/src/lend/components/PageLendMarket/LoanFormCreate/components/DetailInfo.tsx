@@ -7,7 +7,10 @@ import { useStore } from '@/lend/store/useStore'
 import { PageContentProps } from '@/lend/types/lend.types'
 import { getActiveStep } from '@ui/Stepper/helpers'
 
-export const DetailInfoComp = ({ isLeverage, ...props }: PageContentProps & DetailInfoCompProps & { isLeverage: boolean }) => {
+export const DetailInfoComp = ({
+  isLeverage,
+  ...props
+}: PageContentProps & DetailInfoCompProps & { isLeverage: boolean }) => {
   const { api, market, steps, updateFormValues } = props
 
   const { signerAddress } = api ?? {}

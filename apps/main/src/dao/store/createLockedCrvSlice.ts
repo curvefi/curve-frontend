@@ -74,7 +74,10 @@ export const DEFAULT_STATE: SliceState = {
   },
 }
 
-export const createLockedCrvSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): LockedCrvSlice => ({
+export const createLockedCrvSlice = (
+  set: StoreApi<State>['setState'],
+  get: StoreApi<State>['getState'],
+): LockedCrvSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
     setFormValues: async (curve, isLoadingCurve, rFormType, updatedFormValues, vecrvInfo, isFullReset) => {

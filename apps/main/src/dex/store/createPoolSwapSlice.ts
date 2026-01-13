@@ -79,7 +79,10 @@ const DEFAULT_STATE: SliceState = {
   formValues: DEFAULT_FORM_VALUES,
 }
 
-export const createPoolSwapSlice = (_set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): PoolSwapSlice => ({
+export const createPoolSwapSlice = (
+  _set: StoreApi<State>['setState'],
+  get: StoreApi<State>['getState'],
+): PoolSwapSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 

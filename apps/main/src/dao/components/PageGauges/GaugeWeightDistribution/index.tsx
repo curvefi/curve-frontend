@@ -9,8 +9,8 @@ import { SpinnerWrapper, Spinner } from '@ui/Spinner'
 import { t } from '@ui-kit/lib/i18n'
 import { Chain } from '@ui-kit/utils/network'
 import { BarChartComponent } from '../../Charts/BarChartComponent'
-import { BarChartCustomTooltip as GaugesCustomTooltip } from '../../Charts/GaugesBarChartCustomTooltip'
-import { BarChartCustomTooltip as GaugeVotingCustomTooltip } from '../../Charts/GaugeVotingBarChartCustomTooltip'
+import { GaugesBarChartCustomTooltip } from '../../Charts/GaugesBarChartCustomTooltip'
+import { GaugeVotingBarChartCustomTooltip } from '../../Charts/GaugeVotingBarChartCustomTooltip'
 
 type GaugeWeightDistributionProps = {
   isUserVotes: boolean
@@ -80,7 +80,7 @@ export const GaugeWeightDistribution = ({ isUserVotes, userAddress }: GaugeWeigh
           <BarChartComponent
             data={formattedData}
             dataKey={dataKey as keyof (typeof formattedData)[0]}
-            CustomTooltip={isUserVotes ? GaugeVotingCustomTooltip : GaugesCustomTooltip}
+            CustomTooltip={isUserVotes ? GaugeVotingBarChartCustomTooltip : GaugesBarChartCustomTooltip}
           />
         )}
         {!isLoading && !isError && formattedData.length === 0 && (

@@ -101,7 +101,10 @@ const DEFAULT_STATE: SliceState = {
   routesAndOutput: {},
 }
 
-export const createQuickSwapSlice = (_set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): QuickSwapSlice => ({
+export const createQuickSwapSlice = (
+  _set: StoreApi<State>['setState'],
+  get: StoreApi<State>['getState'],
+): QuickSwapSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 

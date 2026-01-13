@@ -5,7 +5,7 @@ import { Box } from '@ui/Box'
 import { TextCaption } from '@ui/TextCaption'
 import type { ChipProps } from '@ui/Typography/types'
 
-export const ChipVaultSharesUsdRate = ({
+export const InpChipVaultShareUsdRate = ({
   className = '',
   rChainId,
   rOwmId,

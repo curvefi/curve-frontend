@@ -3,7 +3,9 @@ import { LoanAddCollateralTab, LoanCollateralAdd } from '@/lend/components/PageL
 import { LoanRemoveCollateralTab, LoanCollateralRemove } from '@/lend/components/PageLendMarket/LoanCollateralRemove'
 import {
   LoanRepayFromCollateralTab,
-  LoanRepayFromWalletTab, LoanRepay } from '@/lend/components/PageLendMarket/LoanRepay'
+  LoanRepayFromWalletTab,
+  LoanRepay,
+} from '@/lend/components/PageLendMarket/LoanRepay'
 import { LoanSelfLiquidation } from '@/lend/components/PageLendMarket/LoanSelfLiquidation'
 import { networks } from '@/lend/networks'
 import { type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'

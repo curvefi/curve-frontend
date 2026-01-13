@@ -43,7 +43,10 @@ const DEFAULT_STATE: SliceState = {
   loading: true,
 }
 
-export const createTokensSlice = (_set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): TokensSlice => ({
+export const createTokensSlice = (
+  _set: StoreApi<State>['setState'],
+  get: StoreApi<State>['getState'],
+): TokensSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 

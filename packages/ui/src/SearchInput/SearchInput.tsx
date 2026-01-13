@@ -15,7 +15,15 @@ interface Props extends InputHTMLAttributes<HTMLInputElement> {
   handleSearchClose: () => void
 }
 
-export const SearchInput = ({ className, id, value, variant, handleInputChange, handleSearchClose, ...props }: Props) => (
+export const SearchInput = ({
+  className,
+  id,
+  value,
+  variant,
+  handleInputChange,
+  handleSearchClose,
+  ...props
+}: Props) => (
   <InputProvider
     className={className}
     grid

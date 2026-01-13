@@ -52,7 +52,10 @@ const DEFAULT_STATE: SliceState = {
   formValues: DEFAULT_FORM_VALUES,
 }
 
-export const createVaultStake = (_set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): VaultStakeSlice => ({
+export const createVaultStake = (
+  _set: StoreApi<State>['setState'],
+  get: StoreApi<State>['getState'],
+): VaultStakeSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 

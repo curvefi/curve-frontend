@@ -5,7 +5,15 @@ import { Box } from 'ui/src/Box'
 import { Icon } from 'ui/src/Icon'
 import { IconButton } from 'ui/src/IconButton'
 
-export const AlertBox = ({ className, alertType, children, title, limitHeight, handleBtnClose, ...props }: AlertBoxProps) => {
+export const AlertBox = ({
+  className,
+  alertType,
+  children,
+  title,
+  limitHeight,
+  handleBtnClose,
+  ...props
+}: AlertBoxProps) => {
   const [enabledHeightToggle, setEnabledHeightToggle] = useState(false)
   const [showFullHeight, setShowFullHeight] = useState(false)
   const IconComp =

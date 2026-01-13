@@ -83,7 +83,10 @@ const DEFAULT_STATE: SliceState = {
   },
 }
 
-export const createAnalyticsSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): AnalyticsSlice => ({
+export const createAnalyticsSlice = (
+  set: StoreApi<State>['setState'],
+  get: StoreApi<State>['getState'],
+): AnalyticsSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
     getVeCrvFees: async () => {

@@ -2,7 +2,7 @@ import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import { AlertFormError } from '@/lend/components/AlertFormError'
 import { DetailInfoCrvIncentives } from '@/lend/components/DetailInfoCrvIncentives'
 import { DetailInfoEstimateGas } from '@/lend/components/DetailInfoEstimateGas'
-import { ChipVaultSharesUsdRate as InpChipVaultSharesUsdRate } from '@/lend/components/InpChipVaultShareUsdRate'
+import { InpChipVaultShareUsdRate } from '@/lend/components/InpChipVaultShareUsdRate'
 import { LoanFormConnect } from '@/lend/components/LoanFormConnect'
 import type { FormStatus, FormValues, StepKey } from '@/lend/components/PageVault/VaultStake/types'
 import { StyledDetailInfoWrapper, StyledInpChip } from '@/lend/components/styles'
@@ -198,7 +198,7 @@ export const VaultStake = ({ rChainId, rOwmId, isLoaded, api, market, userActive
               />
               <InputMaxBtn onClick={() => handleInpAmountChange(userBalances?.vaultShares ?? '')} />
             </InputProvider>
-            <InpChipVaultSharesUsdRate rChainId={rChainId} rOwmId={rOwmId} amount={formValues?.amount} />
+            <InpChipVaultShareUsdRate rChainId={rChainId} rOwmId={rOwmId} amount={formValues?.amount} />
             <StyledInpChip size="xs" isDarkBg isError>
               {formValues.amountError === 'too-much-wallet' && (
                 <>

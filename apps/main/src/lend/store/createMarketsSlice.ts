@@ -54,7 +54,10 @@ const DEFAULT_STATE: SliceState = {
   marketDetailsView: '',
 }
 
-export const createMarketsSlice = (_set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): MarketsSlice => ({
+export const createMarketsSlice = (
+  _set: StoreApi<State>['setState'],
+  get: StoreApi<State>['getState'],
+): MarketsSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
     fetchDatas: async (key, api, markets, shouldRefetch) => {

@@ -43,7 +43,10 @@ const DEFAULT_STATE: SliceState = {
   formStatus: DEFAULT_FORM_STATUS,
 }
 
-export const createVaultClaim = (_set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): VaultClaimSlice => ({
+export const createVaultClaim = (
+  _set: StoreApi<State>['setState'],
+  get: StoreApi<State>['getState'],
+): VaultClaimSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 

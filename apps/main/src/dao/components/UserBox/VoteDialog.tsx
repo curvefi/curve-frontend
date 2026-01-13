@@ -25,7 +25,14 @@ type Props = {
 
 const votePercentage = (vote: number, total: number) => `(${formatNumber((vote / total) * 100, { style: 'percent' })})`
 
-export const VoteDialog = ({ userAddress, activeProposal, className, votingPower, proposalId, proposalType }: Props) => {
+export const VoteDialog = ({
+  userAddress,
+  activeProposal,
+  className,
+  votingPower,
+  proposalId,
+  proposalType,
+}: Props) => {
   const { data: proposalsMapper } = useProposalsMapperQuery({})
   const { data: pricesProposal } = useProposalPricesApiQuery({ proposalId: proposalId, proposalType: proposalType })
   const { data: userProposalVotes, isSuccess: userProposalVotesSuccess } = useUserProposalVotesQuery({

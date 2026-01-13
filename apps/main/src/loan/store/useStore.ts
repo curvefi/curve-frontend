@@ -4,9 +4,13 @@ import { devtools } from 'zustand/middleware'
 import { AppSlice, createAppSlice } from '@/loan/store/createAppSlice'
 import { ChartBandsSlice, createChartBandsSlice } from '@/loan/store/createChartBandsStore'
 import {
-  LoanCollateralDecreaseSlice, createLoanCollateralDecrease } from '@/loan/store/createLoanCollateralDecreaseSlice'
+  LoanCollateralDecreaseSlice,
+  createLoanCollateralDecrease,
+} from '@/loan/store/createLoanCollateralDecreaseSlice'
 import {
-  LoanCollateralIncreaseSlice, createLoanCollateralIncrease } from '@/loan/store/createLoanCollateralIncreaseSlice'
+  LoanCollateralIncreaseSlice,
+  createLoanCollateralIncrease,
+} from '@/loan/store/createLoanCollateralIncreaseSlice'
 import { LoanCreateSlice, createLoanCreate } from '@/loan/store/createLoanCreateSlice'
 import { LoanDecreaseSlice, createLoanDecrease } from '@/loan/store/createLoanDecreaseSlice'
 import { LoanDeleverageSlice, createLoanDeleverageSlice } from '@/loan/store/createLoanDeleverageSlice'

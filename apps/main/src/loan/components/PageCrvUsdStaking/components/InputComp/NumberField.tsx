@@ -12,7 +12,14 @@ interface NumberFieldProps {
   maxDecimals?: number
 }
 
-export const NumberField = ({ value, isDisabled = false, onChange, maxDecimals = 18, onFocus, onBlur }: NumberFieldProps) => {
+export const NumberField = ({
+  value,
+  isDisabled = false,
+  onChange,
+  maxDecimals = 18,
+  onFocus,
+  onBlur,
+}: NumberFieldProps) => {
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
     // Allow numbers and both . and , as decimal separators

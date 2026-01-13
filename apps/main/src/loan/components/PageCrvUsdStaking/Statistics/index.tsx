@@ -12,7 +12,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { AdvancedDetails } from './AdvancedDetails'
 import { RevenueDistributionsBarChart as DistributionsBarChart } from './DistributionsBarChart'
 import { RevenueChartFooter } from './RevenueChartFooter'
-import { LineChartComponent as RevenueLineChart } from './RevenueLineChart'
+import { RevenueLineChart } from './RevenueLineChart'
 import { StatsStack } from './StatsStack'
 const { Spacing, MaxWidth } = SizesAndSpaces
 

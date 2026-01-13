@@ -5,7 +5,7 @@ import { Box } from '@ui/Box'
 import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 
-export const BarChartCustomTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) => {
+export const GaugeVotingBarChartCustomTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) => {
   if (active && payload && payload.length) {
     return (
       <TooltipWrapper>

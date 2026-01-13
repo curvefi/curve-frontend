@@ -14,7 +14,13 @@ import { t } from '@ui-kit/lib/i18n'
 
 const CHART_HEIGHT = 300
 
-export const PoolInfoData = ({ rChainId, pricesApiPoolData }: { rChainId: ChainId; pricesApiPoolData: PricesApiPool }) => {
+export const PoolInfoData = ({
+  rChainId,
+  pricesApiPoolData,
+}: {
+  rChainId: ChainId
+  pricesApiPoolData: PricesApiPool
+}) => {
   const theme = useUserProfileStore((state) => state.theme)
   const chartOhlcData = useStore((state) => state.pools.pricesApiState.chartOhlcData)
   const chartStatus = useStore((state) => state.pools.pricesApiState.chartStatus)

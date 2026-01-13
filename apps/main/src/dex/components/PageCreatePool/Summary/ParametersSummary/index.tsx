@@ -1,5 +1,5 @@
 import { STABLESWAP } from '@/dex/components/PageCreatePool/constants'
-import { StableswapParameters as CryptoswapParameters } from '@/dex/components/PageCreatePool/Summary/ParametersSummary/CryptoswapParameters'
+import { CryptoswapParameters } from '@/dex/components/PageCreatePool/Summary/ParametersSummary/CryptoswapParameters'
 import { StableswapParameters } from '@/dex/components/PageCreatePool/Summary/ParametersSummary/StableswapParameters'
 import { PoolPresetSummary } from '@/dex/components/PageCreatePool/Summary/PoolPresetSummary'
 import { CategoryColumn, SummaryCategoryTitle, StyledCheckmark } from '@/dex/components/PageCreatePool/Summary/styles'
@@ -15,7 +15,7 @@ type Props = {
 export const ParametersSummary = ({ chainId }: Props) => {
   const swapType = useStore((state) => state.createPool.swapType)
   const validation = useStore((state) => state.createPool.validation)
-
+  const Parameters = swapType === STABLESWAP ? StableswapParameters : CryptoswapParameters
   return (
     <CategoryColumn>
       <Box flex>
@@ -25,11 +25,7 @@ export const ParametersSummary = ({ chainId }: Props) => {
         <SummaryCategoryTitle>{t`Parameters:`}</SummaryCategoryTitle>
       </Box>
       <PoolPresetSummary />
-      {swapType === STABLESWAP ? (
-        <StableswapParameters chainId={chainId} />
-      ) : (
-        <CryptoswapParameters chainId={chainId} />
-      )}
+      <Parameters chainId={chainId} />
     </CategoryColumn>
   )
 }

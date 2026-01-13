@@ -89,7 +89,10 @@ const DEFAULT_STATE: SliceState = {
 const { loanCreate } = apiLending
 const { isTooMuch } = helpers
 
-export const createLoanCreate = (_set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): LoanCreateSlice => ({
+export const createLoanCreate = (
+  _set: StoreApi<State>['setState'],
+  get: StoreApi<State>['getState'],
+): LoanCreateSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 

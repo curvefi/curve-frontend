@@ -68,7 +68,10 @@ const DEFAULT_STATE: SliceState = {
   activeSortDirection: 'desc',
 }
 
-export const createProposalsSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): ProposalsSlice => ({
+export const createProposalsSlice = (
+  set: StoreApi<State>['setState'],
+  get: StoreApi<State>['getState'],
+): ProposalsSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
     setSearchValue: (filterValue) => {

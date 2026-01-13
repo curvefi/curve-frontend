@@ -8,7 +8,13 @@ type Props = Pick<WalletPoolData, 'claimableCrv' | 'claimableOthers' | 'claimabl
   isHighLight: boolean
 }
 
-export const TableCellClaimables = ({ isHighLight, claimableCrv, claimableOthers, claimablesTotalUsd, isMobile }: Props) => (
+export const TableCellClaimables = ({
+  isHighLight,
+  claimableCrv,
+  claimableOthers,
+  claimablesTotalUsd,
+  isMobile,
+}: Props) => (
   <>
     {claimableCrv?.map(({ symbol, amount }, idx) => {
       const formatted = `${formatNumber(amount)} CRV`

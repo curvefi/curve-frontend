@@ -18,7 +18,15 @@ interface Props {
   network: BaseConfig
 }
 
-export const TrSearchedTextResult = ({ className = '', id, isMobile, colSpan, result, searchTermMapper, network }: Props) => {
+export const TrSearchedTextResult = ({
+  className = '',
+  id,
+  isMobile,
+  colSpan,
+  result,
+  searchTermMapper,
+  network,
+}: Props) => {
   const parsedResult = useMemo(() => removeDuplicateValues(result), [result])
 
   return (

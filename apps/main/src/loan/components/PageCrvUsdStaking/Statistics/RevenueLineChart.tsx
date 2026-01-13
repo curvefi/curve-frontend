@@ -12,7 +12,7 @@ const { FontSize } = SizesAndSpaces
 
 type Props = { data: ScrvUsdYieldWithAverages[]; height?: number }
 
-export const LineChartComponent = ({ data, height = 400 }: Props) => {
+export const RevenueLineChart = ({ data, height = 400 }: Props) => {
   const {
     design: { Color, Text },
   } = useTheme()

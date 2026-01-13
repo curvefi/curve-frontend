@@ -1,5 +1,5 @@
 import { styled } from 'styled-components'
-import { StyledInactiveChip as ChipInactive } from '@/dex/components/ChipInactive'
+import { ChipInactive } from '@/dex/components/ChipInactive'
 import { AddGaugeLink } from '@/dex/components/PagePool/components/AddGaugeLink'
 import type { PageTransferProps } from '@/dex/components/PagePool/types'
 import { useNetworkByChain } from '@/dex/entities/networks'

@@ -41,7 +41,11 @@ import { decimal, type Decimal } from '@ui-kit/utils'
 import { FormContent } from '@ui-kit/widgets/DetailPageLayout/FormContent'
 
 // Borrow more
-export const LoanIncrease = ({ curve, isReady, market: llamma }: Pick<ManageLoanProps, 'curve' | 'isReady' | 'market'>) => {
+export const LoanIncrease = ({
+  curve,
+  isReady,
+  market: llamma,
+}: Pick<ManageLoanProps, 'curve' | 'isReady' | 'market'>) => {
   const llammaId = llamma?.id ?? ''
   const isSubscribed = useRef(false)
 

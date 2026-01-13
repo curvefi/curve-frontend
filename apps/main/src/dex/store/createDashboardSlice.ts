@@ -76,7 +76,10 @@ const DEFAULT_STATE: SliceState = {
   vecrvInfo: {},
 }
 
-export const createDashboardSlice = (_: StoreApi<State>['setState'], get: StoreApi<State>['getState']): DashboardSlice => ({
+export const createDashboardSlice = (
+  _: StoreApi<State>['setState'],
+  get: StoreApi<State>['getState'],
+): DashboardSlice => ({
   dashboard: {
     ...DEFAULT_STATE,
 

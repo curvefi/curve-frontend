@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { styled } from 'styled-components'
-import { StyledInactiveChip as ChipInactive } from '@/dex/components/ChipInactive'
+import { ChipInactive } from '@/dex/components/ChipInactive'
 import { RewardsApy, PoolData, PoolDataCache } from '@/dex/types/main.types'
 import { Icon } from '@ui/Icon'
 import { TooltipIcon as IconTooltip } from '@ui/Tooltip/TooltipIcon'

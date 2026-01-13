@@ -22,7 +22,14 @@ type PoolStatsProps = {
   tokensMapper: TokensMapper
 } & Pick<PageTransferProps, 'curve' | 'poolData' | 'poolDataCacheOrApi' | 'routerParams'>
 
-export const PoolStats = ({ curve, routerParams, poolAlert, poolData, poolDataCacheOrApi, tokensMapper }: PoolStatsProps) => {
+export const PoolStats = ({
+  curve,
+  routerParams,
+  poolAlert,
+  poolData,
+  poolDataCacheOrApi,
+  tokensMapper,
+}: PoolStatsProps) => {
   const tokenAlert = useTokenAlert(poolData?.tokenAddressesAll ?? [])
   const { rChainId, rPoolIdOrAddress } = routerParams
   const poolId = usePoolIdByAddressOrId({ chainId: rChainId, poolIdOrAddress: rPoolIdOrAddress })

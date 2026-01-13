@@ -15,7 +15,7 @@ type Props = {
   chainId: ChainId
 }
 
-export const StableswapParameters = ({ chainId }: Props) => {
+export const CryptoswapParameters = ({ chainId }: Props) => {
   const tokensInPool = useStore((state) => state.createPool.tokensInPool)
   const initialPrice = useStore((state) => state.createPool.initialPrice)
   const advanced = useStore((state) => state.createPool.advanced)
