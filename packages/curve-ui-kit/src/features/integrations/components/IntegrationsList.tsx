@@ -108,13 +108,7 @@ export const IntegrationsList = ({ networkId, searchText }: { networkId?: string
           }}
         />
 
-        <Grid
-          container
-          columnSpacing={Spacing.xs}
-          rowSpacing={Spacing.xs}
-          direction="row"
-          size={{ mobile: 12, desktop: 'auto' }}
-        >
+        <Stack gap={Spacing.xs} direction="row" flexWrap="wrap">
           {Object.values(tags).map((tag) => (
             <SelectableChip
               key={tag.id}
@@ -130,7 +124,7 @@ export const IntegrationsList = ({ networkId, searchText }: { networkId?: string
               sx={{ width: { mobile: 'auto' } }}
             />
           ))}
-        </Grid>
+        </Stack>
 
         {!integrationsFiltered.length ? (
           <Box sx={{ display: 'flex', justifyContent: 'center', padding: Spacing.xxl }}>
