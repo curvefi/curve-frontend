@@ -1,1 +1,1 @@
-export { SortIcon as SortIcon } from './SortIcon'
+export { SortIcon } from './SortIcon'

@@ -1,1 +1,1 @@
-export { Chip as Chip } from './Chip'
+export { Chip } from './Chip'
