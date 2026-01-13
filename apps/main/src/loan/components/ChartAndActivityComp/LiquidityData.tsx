@@ -1,10 +1,10 @@
 import { styled } from 'styled-components'
 import { type LlammaLiquidityCoins } from '@/loan/hooks/useOhlcChartState'
-import networks from '@/loan/networks'
+import { networks } from '@/loan/networks'
 import { ChainId } from '@/loan/types/loan.types'
 import { LlammaEvent } from '@curvefi/prices-api/llamma'
-import Box from '@ui/Box'
-import Tooltip from '@ui/Tooltip/TooltipButton'
+import { Box } from '@ui/Box'
+import { TooltipButton as Tooltip } from '@ui/Tooltip/TooltipButton'
 import { Chip } from '@ui/Typography'
 import { formatNumber, getFractionDigitsOptions, convertDate, convertTimeAgo, formatDate, scanTxPath } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
@@ -16,7 +16,7 @@ type LiqudityDataProps = {
   coins: LlammaLiquidityCoins
 }
 
-const LiquidityData = ({ llammaControllerData, chainId, coins }: LiqudityDataProps) => (
+export const LiquidityData = ({ llammaControllerData, chainId, coins }: LiqudityDataProps) => (
   <>
     {coins &&
       llammaControllerData.map((transaction, index) => (
@@ -169,5 +169,3 @@ const TimestampColumn = styled.span`
   display: flex;
   justify-content: end;
 `
-
-export default LiquidityData

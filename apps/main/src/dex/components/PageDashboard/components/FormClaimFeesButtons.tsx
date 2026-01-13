@@ -11,18 +11,18 @@ import {
 import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
 import { DEFAULT_FORM_STATUS } from '@/dex/components/PageDashboard/utils'
 import { useNetworks } from '@/dex/entities/networks'
-import useStore from '@/dex/store/useStore'
+import { useStore } from '@/dex/store/useStore'
 import { claimButtonsKey } from '@/dex/types/main.types'
-import Button from '@ui/Button'
+import { Button } from '@ui/Button'
 import type { ButtonProps } from '@ui/Button/types'
-import Stepper from '@ui/Stepper/Stepper'
+import { Stepper } from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
-import TxInfoBar from '@ui/TxInfoBar'
+import { TxInfoBar } from '@ui/TxInfoBar'
 import { scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 
-const FormClaimFeesButtons = ({
+export const FormClaimFeesButtons = ({
   activeKey,
   loading,
   walletAddress,
@@ -142,5 +142,3 @@ const FormClaimFeesButtons = ({
     </>
   )
 }
-
-export default FormClaimFeesButtons

@@ -1,4 +1,4 @@
-import ActionInfo, { type ActionInfoProps } from '@ui-kit/shared/ui/ActionInfo'
+import { type ActionInfoProps, ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 import type { Delta } from './types'
 import { formatValue } from './util'
 

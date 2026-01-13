@@ -2,14 +2,14 @@ import { styled } from 'styled-components'
 import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
 import type { Order, SortId, TableLabel } from '@/dex/components/PageDashboard/types'
 import { SORT_ID } from '@/dex/components/PageDashboard/utils'
-import Box from '@ui/Box'
+import { Box } from '@ui/Box'
 import { Th, Thead, TheadSortButton } from '@ui/Table'
 import type { TheadSortButtonProps } from '@ui/Table/TheadSortButton'
-import IconTooltip from '@ui/Tooltip/TooltipIcon'
+import { TooltipIcon as IconTooltip } from '@ui/Tooltip/TooltipIcon'
 import { breakpoints } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 
-const TableHead = ({ tableLabel }: { tableLabel: TableLabel }) => {
+export const TableHead = ({ tableLabel }: { tableLabel: TableLabel }) => {
   const { isLite, isLoading, formValues, updateFormValues } = useDashboardContext()
 
   const handleBtnClickSort = (sortBy: string, sortByOrder: Order) => {
@@ -103,5 +103,3 @@ const Col = styled.col`
     }
   }
 `
-
-export default TableHead

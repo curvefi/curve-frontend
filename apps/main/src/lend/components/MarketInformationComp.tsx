@@ -1,6 +1,6 @@
 import { BandsComp } from '@/lend/components/BandsComp'
 import { ChartAndActivityComp } from '@/lend/components/ChartAndActivityComp'
-import DetailsContracts from '@/lend/components/DetailsMarket/components/DetailsContracts'
+import { DetailsContracts } from '@/lend/components/DetailsMarket/components/DetailsContracts'
 import { PageContentProps } from '@/lend/types/lend.types'
 import { MarketParameters } from '@/llamalend/features/market-parameters/MarketParameters'
 import Stack from '@mui/material/Stack'

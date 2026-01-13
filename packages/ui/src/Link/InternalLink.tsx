@@ -6,7 +6,7 @@ import { linkStyles } from './styles'
 
 export interface InternalLinkProps extends AnchorHTMLAttributes<HTMLAnchorElement>, LinkProps {}
 
-const InternalLink = ({ children, href = '', ...props }: InternalLinkProps) => (
+export const InternalLink = ({ children, href = '', ...props }: InternalLinkProps) => (
   <StyledLink {...props} to={href}>
     {children}
   </StyledLink>
@@ -15,5 +15,3 @@ const InternalLink = ({ children, href = '', ...props }: InternalLinkProps) => (
 const StyledLink = styled(RouterLink)`
   ${linkStyles}
 `
-
-export default InternalLink

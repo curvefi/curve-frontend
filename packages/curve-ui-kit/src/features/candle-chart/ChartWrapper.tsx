@@ -1,9 +1,9 @@
 import { useMemo, useRef } from 'react'
 import { styled } from 'styled-components'
-import Button from 'ui/src/Button/Button'
-import Icon from 'ui/src/Icon'
-import Spinner, { SpinnerWrapper } from 'ui/src/Spinner'
-import CandleChart from '@ui-kit/features/candle-chart/CandleChart'
+import { Button } from '@ui/Button/Button'
+import { Icon } from '@ui/Icon'
+import { Spinner, SpinnerWrapper } from '@ui/Spinner'
+import { CandleChart } from '@ui-kit/features/candle-chart/CandleChart'
 import { useChartPalette } from '@ui-kit/features/candle-chart/hooks/useChartPalette'
 import type { ChartSelections } from '@ui-kit/shared/ui/ChartHeader'
 import type { FetchingStatus, LiquidationRanges, LpPriceOhlcDataFormatted, OraclePriceData, TimeOption } from './types'
@@ -32,7 +32,7 @@ export type OhlcChartProps = {
   latestOraclePrice?: string
 }
 
-const ChartWrapper = ({
+export const ChartWrapper = ({
   hideCandleSeriesLabel,
   chartHeight,
   chartStatus,
@@ -146,5 +146,3 @@ const ContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
 `
-
-export default ChartWrapper

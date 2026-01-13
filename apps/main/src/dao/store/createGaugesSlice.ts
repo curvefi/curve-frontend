@@ -112,7 +112,7 @@ const DEFAULT_STATE: SliceState = {
   selectedGauge: null,
 }
 
-const createGaugesSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): GaugesSlice => ({
+export const createGaugesSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): GaugesSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
     getGauges: async (forceReload: boolean = false) => {
@@ -513,5 +513,3 @@ const formatGaugeTitle = (poolName: string | undefined, marketName: string | nul
   }
   return marketName ?? shortenAddress(address) ?? ''
 }
-
-export default createGaugesSlice

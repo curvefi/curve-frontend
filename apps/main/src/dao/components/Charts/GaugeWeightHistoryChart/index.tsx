@@ -1,9 +1,9 @@
 import { MouseEvent, useEffect } from 'react'
 import { styled } from 'styled-components'
-import LineChartComponent from '@/dao/components/Charts/LineChartComponent'
-import ErrorMessage from '@/dao/components/ErrorMessage'
-import useStore from '@/dao/store/useStore'
-import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import { LineChartComponent } from '@/dao/components/Charts/LineChartComponent'
+import { ErrorMessage } from '@/dao/components/ErrorMessage'
+import { useStore } from '@/dao/store/useStore'
+import { SpinnerWrapper, Spinner } from '@ui/Spinner'
 import { t } from '@ui-kit/lib/i18n'
 
 interface GaugeWeightHistoryChartProps {
@@ -11,7 +11,7 @@ interface GaugeWeightHistoryChartProps {
   minHeight: number
 }
 
-const GaugeWeightHistoryChart = ({ gaugeAddress, minHeight }: GaugeWeightHistoryChartProps) => {
+export const GaugeWeightHistoryChart = ({ gaugeAddress, minHeight }: GaugeWeightHistoryChartProps) => {
   const gaugeWeightHistoryMapper = useStore((state) => state.gauges.gaugeWeightHistoryMapper)
   const getHistoricGaugeWeights = useStore((state) => state.gauges.getHistoricGaugeWeights)
 
@@ -63,5 +63,3 @@ const ErrorWrapper = styled.div<{ $minHeight: number }>`
 const StyledSpinnerWrapper = styled(SpinnerWrapper)<{ $minHeight: number }>`
   height: ${({ $minHeight }) => `${$minHeight}rem`};
 `
-
-export default GaugeWeightHistoryChart

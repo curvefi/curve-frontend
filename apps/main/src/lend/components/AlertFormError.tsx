@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { FormError } from '@/lend/types/lend.types'
-import AlertBox from '@ui/AlertBox'
+import { AlertBox } from '@ui/AlertBox'
 import type { AlertBoxProps } from '@ui/AlertBox/types'
 import { t } from '@ui-kit/lib/i18n'
 
@@ -9,7 +9,7 @@ interface Props extends Omit<AlertBoxProps, 'alertType'> {
 }
 
 // generate message that only display if it cannot get error message from api.
-const AlertFormError = ({ errorKey, ...props }: Props) => {
+export const AlertFormError = ({ errorKey, ...props }: Props) => {
   const errorMessage = useMemo(() => {
     // locale will update inside component
     const messages: { [key: FormError | string]: string } = {
@@ -39,5 +39,3 @@ const AlertFormError = ({ errorKey, ...props }: Props) => {
     </AlertBox>
   ) : null
 }
-
-export default AlertFormError

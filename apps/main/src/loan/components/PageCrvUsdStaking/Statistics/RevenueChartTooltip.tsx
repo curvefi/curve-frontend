@@ -34,7 +34,7 @@ const DataSet = ({
 
 const format = (value: number) => formatNumber(value, { unit: 'percentage', abbreviate: false })
 
-const CustomTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) => {
+export const CustomTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) => {
   const {
     design: { Color, Layer },
   } = useTheme()
@@ -67,5 +67,3 @@ const CustomTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) =
     </Paper>
   )
 }
-
-export default CustomTooltip

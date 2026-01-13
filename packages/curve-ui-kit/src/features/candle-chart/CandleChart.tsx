@@ -95,7 +95,7 @@ type Props = {
   latestOraclePrice?: string
 }
 
-const CandleChart = ({
+export const CandleChart = ({
   hideCandleSeriesLabel,
   chartHeight,
   ohlcData,
@@ -775,5 +775,3 @@ const Container = styled.div`
   width: 100%;
   font-variant-numeric: tabular-nums;
 `
-
-export default CandleChart

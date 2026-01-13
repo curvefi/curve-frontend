@@ -1,13 +1,13 @@
 import { styled } from 'styled-components'
 import type { ComboBoxSelectGaugeProps } from '@/dao/components/ComboBoxSelectGauge/types'
 import { GaugeFormattedData } from '@/dao/types/dao.types'
-import Box from '@ui/Box'
-import Button from '@ui/Button'
-import Chip from '@ui/Typography/Chip'
+import { Box } from '@ui/Box'
+import { Button } from '@ui/Button'
+import { Chip } from '@ui/Typography/Chip'
 import { focusVisible } from '@ui/utils'
 import { shortenAddress } from '@ui-kit/utils'
 
-const ComboBoxListItem = ({
+export const ComboBoxListItem = ({
   testId,
   selectedGauge,
   handleOnSelectChange,
@@ -66,5 +66,3 @@ const LabelTextWrapper = styled(Box)`
   overflow: hidden;
   text-overflow: ellipsis;
 `
-
-export default ComboBoxListItem

@@ -1,10 +1,10 @@
 import { styled } from 'styled-components'
-import CopyIconButton from '@/dao/components/CopyIconButton'
-import ExternalLinkIconButton from '@/dao/components/ExternalLinkIconButton'
-import SmallLabel from '@/dao/components/SmallLabel'
-import networks from '@/dao/networks'
+import { CopyIconButton } from '@/dao/components/CopyIconButton'
+import { ExternalLinkIconButton } from '@/dao/components/ExternalLinkIconButton'
+import { SmallLabel } from '@/dao/components/SmallLabel'
+import { networks } from '@/dao/networks'
 import { GaugeFormattedData } from '@/dao/types/dao.types'
-import Box from '@ui/Box'
+import { Box } from '@ui/Box'
 import { scanAddressPath } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { TokenIcons } from '@ui-kit/shared/ui/TokenIcons'
@@ -15,7 +15,7 @@ interface TitleCompProps {
   gaugeAddress?: string
 }
 
-const TitleComp = ({ gaugeData, gaugeAddress }: TitleCompProps) => (
+export const TitleComp = ({ gaugeData, gaugeAddress }: TitleCompProps) => (
   <Wrapper>
     {gaugeData.tokens && (
       <TokenIcons blockchainId={gaugeData?.pool?.chain ?? gaugeData?.market?.chain ?? ''} tokens={gaugeData.tokens} />
@@ -107,5 +107,3 @@ const ButtonsWrapper = styled.div`
   display: flex;
   gap: var(--spacing-1);
 `
-
-export default TitleComp

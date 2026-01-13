@@ -28,7 +28,7 @@ const DEFAULT_STATE: SliceState = {
   isPageVisible: true,
 }
 
-const createAppSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): AppSlice => ({
+export const createAppSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): AppSlice => ({
   ...DEFAULT_STATE,
 
   hydrate: async (_config, curveApi, prevCurveApi) => {
@@ -120,7 +120,4 @@ const createAppSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['
     )
   },
 })
-
-export default createAppSlice
-
 // HELPERS

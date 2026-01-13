@@ -7,7 +7,7 @@ type Props = {
   showInPoolColumn: boolean
 }
 
-const TableHeadMobile = ({ showInPoolColumn }: Props) => (
+export const TableHeadMobile = ({ showInPoolColumn }: Props) => (
   <>
     <colgroup>
       {showInPoolColumn && <ColInPool />}
@@ -37,5 +37,3 @@ const Col = styled.col`
 const ColInPool = styled.col`
   width: 25px;
 `
-
-export default TableHeadMobile

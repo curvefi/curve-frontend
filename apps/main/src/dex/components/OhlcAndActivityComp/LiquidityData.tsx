@@ -1,9 +1,9 @@
 import { styled } from 'styled-components'
 import { useNetworkByChain } from '@/dex/entities/networks'
-import useStore from '@/dex/store/useStore'
+import { useStore } from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
-import Box from '@ui/Box'
-import Tooltip from '@ui/Tooltip/TooltipButton'
+import { Box } from '@ui/Box'
+import { TooltipButton as Tooltip } from '@ui/Tooltip/TooltipButton'
 import { Chip } from '@ui/Typography'
 import { formatNumber, getFractionDigitsOptions, convertDate, convertTimeAgo, formatDate, scanTxPath } from '@ui/utils'
 import type { LpLiquidityEventsData, PricesApiCoin } from '@ui-kit/features/candle-chart/types'
@@ -16,7 +16,7 @@ type LiquidityDataProps = {
   coins: PricesApiCoin[]
 }
 
-const LiquidityData = ({ lpEventsData, chainId, coins }: LiquidityDataProps) => {
+export const LiquidityData = ({ lpEventsData, chainId, coins }: LiquidityDataProps) => {
   const tokensMapper = useStore((state) => state.tokens.tokensMapper)
   const { data: network } = useNetworkByChain({ chainId })
 
@@ -168,5 +168,3 @@ const TimestampColumn = styled.span`
   display: flex;
   justify-content: end;
 `
-
-export default LiquidityData

@@ -1,23 +1,23 @@
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
 import { styled } from 'styled-components'
-import ExternalLink from 'ui/src/Link/ExternalLink'
 import { useOneWayMarket } from '@/lend/entities/chain'
-import useStore from '@/lend/store/useStore'
+import { useStore } from '@/lend/store/useStore'
 import { PageContentProps } from '@/lend/types/lend.types'
 import { DEFAULT_HEALTH_MODE } from '@/llamalend/constants'
 import { getHealthMode } from '@/llamalend/health.util'
 import type { HealthColorKey, HealthMode } from '@/llamalend/llamalend.types'
-import Box from '@ui/Box'
+import { Box } from '@ui/Box'
 import { DetailInfo } from '@ui/DetailInfo'
-import Icon from '@ui/Icon'
-import IconTooltip from '@ui/Tooltip/TooltipIcon'
+import { Icon } from '@ui/Icon'
+import { ExternalLink } from '@ui/Link/ExternalLink'
+import { TooltipIcon as IconTooltip } from '@ui/Tooltip/TooltipIcon'
 import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { useUserLoanDetails } from '../hooks/useUserLoanDetails'
 
 type FormType = 'create-loan' | 'collateral-decrease' | ''
 
-const DetailInfoHealth = ({
+export const DetailInfoHealth = ({
   rChainId,
   rOwmId,
   amount,
@@ -174,5 +174,3 @@ const DetailInfoHealth = ({
 const HealthPercent = styled.span<{ colorKey: HealthColorKey }>`
   color: ${({ colorKey }) => `var(--health_mode_${colorKey}_darkBg--color)`};
 `
-
-export default DetailInfoHealth

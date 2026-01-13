@@ -1,8 +1,8 @@
 import { ReactNode, useEffect, useMemo, useState } from 'react'
-import ChartBandBalances from '@/loan/components/ChartBandBalances'
+import { ChartBandBalances } from '@/loan/components/ChartBandBalances'
 import type { BrushStartEndIndex } from '@/loan/components/ChartBandBalances/types'
 import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
-import useStore from '@/loan/store/useStore'
+import { useStore } from '@/loan/store/useStore'
 import { Llamma } from '@/loan/types/loan.types'
 import { t } from '@ui-kit/lib/i18n'
 
@@ -20,7 +20,7 @@ const DEFAULT_BAND_CHART_DATA = {
   collateralStablecoinUsd: 0,
 }
 
-const ChartUserBands = ({
+export const ChartUserBands = ({
   llammaId,
   llamma,
   selectorMenu,
@@ -89,5 +89,3 @@ const ChartUserBands = ({
     />
   )
 }
-
-export default ChartUserBands

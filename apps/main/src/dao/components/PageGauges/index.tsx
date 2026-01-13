@@ -1,12 +1,12 @@
 import { useState } from 'react'
 import { styled } from 'styled-components'
 import { useConnection } from 'wagmi'
-import Box from '@ui/Box'
+import { Box } from '@ui/Box'
 import { t } from '@ui-kit/lib/i18n'
 import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
-import GaugesList from './GaugeList'
-import GaugeVoting from './GaugeVoting'
-import GaugeWeightDistribution from './GaugeWeightDistribution'
+import { GaugesList } from './GaugeList'
+import { GaugeVoting } from './GaugeVoting'
+import { GaugeWeightDistribution } from './GaugeWeightDistribution'
 
 type Tab = 'gaugeList' | 'gaugeVoting'
 const tabs: TabOption<Tab>[] = [
@@ -14,7 +14,7 @@ const tabs: TabOption<Tab>[] = [
   { value: 'gaugeVoting', label: t`Voting` },
 ]
 
-const Gauges = () => {
+export const Gauges = () => {
   const { address: userAddress } = useConnection()
   const [tab, setTab] = useState<Tab>('gaugeList')
 
@@ -57,5 +57,3 @@ const Container = styled(Box)`
   height: 100%;
   border: none;
 `
-
-export default Gauges

@@ -1,4 +1,4 @@
-import lib from '@/dao/lib/curvejs'
+import { curvejsApi as lib } from '@/dao/lib/curvejs'
 import type { ChainId } from '@/dao/types/dao.types'
 import { requireLib } from '@ui-kit/features/connect-wallet'
 import type { ChainParams, ChainQuery, UserParams, UserQuery } from '@ui-kit/lib/model/query'

@@ -2,21 +2,21 @@ import { priceLineLabels } from '@/loan/components/PageCrvUsdStaking/Statistics/
 import type { StatisticsChart, YieldKeys } from '@/loan/components/PageCrvUsdStaking/types'
 import { useScrvUsdRevenue } from '@/loan/entities/scrvusd-revenue'
 import { useScrvUsdYield } from '@/loan/entities/scrvusd-yield'
-import useStore from '@/loan/store/useStore'
+import { useStore } from '@/loan/store/useStore'
 import { Stack, Card, CardHeader, Box } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { t } from '@ui-kit/lib/i18n'
 import type { TimeOption } from '@ui-kit/lib/types/scrvusd'
 import { ChartFooter } from '@ui-kit/shared/ui/ChartFooter'
-import ChartHeader, { ChartSelections } from '@ui-kit/shared/ui/ChartHeader'
+import { ChartHeader, type ChartSelections } from '@ui-kit/shared/ui/ChartHeader'
 import type { LegendItem } from '@ui-kit/shared/ui/LegendSet'
 import { Sizing } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import AdvancedDetails from './AdvancedDetails'
-import DistributionsBarChart from './DistributionsBarChart'
-import RevenueLineChart from './RevenueLineChart'
-import StatsStack from './StatsStack'
+import { AdvancedDetails } from './AdvancedDetails'
+import { RevenueDistributionsBarChart } from './DistributionsBarChart'
+import { RevenueLineChart } from './RevenueLineChart'
+import { StatsStack } from './StatsStack'
 
 const { Spacing, MaxWidth } = SizesAndSpaces
 
@@ -38,7 +38,7 @@ type StatisticsProps = {
   hideExpandChart: boolean
 }
 
-const Statistics = ({ isChartExpanded, toggleChartExpanded, hideExpandChart }: StatisticsProps) => {
+export const Statistics = ({ isChartExpanded, toggleChartExpanded, hideExpandChart }: StatisticsProps) => {
   const selectedStatisticsChart = useStore((state) => state.scrvusd.selectedStatisticsChart)
   const setSelectedStatisticsChart = useStore((state) => state.scrvusd.setSelectedStatisticsChart)
   const revenueChartTimeOption = useStore((state) => state.scrvusd.revenueChartTimeOption)
@@ -105,11 +105,9 @@ const Statistics = ({ isChartExpanded, toggleChartExpanded, hideExpandChart }: S
             </Box>
           </Stack>
         )}
-        {selectedStatisticsChart === 'distributions' && <DistributionsBarChart data={revenueData ?? null} />}
+        {selectedStatisticsChart === 'distributions' && <RevenueDistributionsBarChart data={revenueData ?? null} />}
       </Card>
       <AdvancedDetails />
     </Stack>
   )
 }
-
-export default Statistics

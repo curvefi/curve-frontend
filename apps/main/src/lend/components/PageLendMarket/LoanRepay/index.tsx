@@ -1,10 +1,10 @@
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import AlertFormError from '@/lend/components/AlertFormError'
-import AlertSummary from '@/lend/components/AlertLoanSummary'
-import DialogFormWarning from '@/lend/components/DialogFormWarning'
-import InpToken from '@/lend/components/InpToken'
-import LoanFormConnect from '@/lend/components/LoanFormConnect'
-import DetailInfo from '@/lend/components/PageLendMarket/LoanRepay/components/DetailInfo'
+import { AlertFormError } from '@/lend/components/AlertFormError'
+import { AlertLoanSummary as AlertSummary } from '@/lend/components/AlertLoanSummary'
+import { DialogFormWarning } from '@/lend/components/DialogFormWarning'
+import { InpToken } from '@/lend/components/InpToken'
+import { LoanFormConnect } from '@/lend/components/LoanFormConnect'
+import { DetailInfo } from '@/lend/components/PageLendMarket/LoanRepay/components/DetailInfo'
 import type { FormStatus, FormValues, StepKey } from '@/lend/components/PageLendMarket/LoanRepay/types'
 import { _parseValues, DEFAULT_FORM_VALUES } from '@/lend/components/PageLendMarket/LoanRepay/utils'
 import type { FormEstGas } from '@/lend/components/PageLendMarket/types'
@@ -13,8 +13,8 @@ import { StyledDetailInfoWrapper } from '@/lend/components/styles'
 import { NOFITY_MESSAGE } from '@/lend/constants'
 import { useUserLoanDetails } from '@/lend/hooks/useUserLoanDetails'
 import { helpers } from '@/lend/lib/apiLending'
-import networks from '@/lend/networks'
-import useStore from '@/lend/store/useStore'
+import { networks } from '@/lend/networks'
+import { useStore } from '@/lend/store/useStore'
 import { Api, FormError, type MarketUrlParams, OneWayMarketTemplate, PageContentProps } from '@/lend/types/lend.types'
 import { getCollateralListPathname } from '@/lend/utils/utilsRouter'
 import { DEFAULT_HEALTH_MODE } from '@/llamalend/constants'
@@ -22,17 +22,17 @@ import { RepayForm } from '@/llamalend/features/manage-loan/components/RepayForm
 import type { HealthMode } from '@/llamalend/llamalend.types'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import AlertBox from '@ui/AlertBox'
-import Checkbox from '@ui/Checkbox'
+import { AlertBox } from '@ui/AlertBox'
+import { Checkbox } from '@ui/Checkbox'
 import { getActiveStep } from '@ui/Stepper/helpers'
-import Stepper from '@ui/Stepper/Stepper'
+import { Stepper } from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
-import TxInfoBar from '@ui/TxInfoBar'
+import { TxInfoBar } from '@ui/TxInfoBar'
 import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNavigate } from '@ui-kit/hooks/router'
-import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
+import { usePageVisibleInterval } from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -40,7 +40,7 @@ import { getPercentage, isGreaterThan, isGreaterThanOrEqualTo, sum } from '@ui-k
 
 const { Spacing } = SizesAndSpaces
 
-const LoanRepay = ({
+export const LoanRepay = ({
   rChainId,
   rOwmId,
   isLoaded,
@@ -523,9 +523,6 @@ const LoanRepay = ({
     </Stack>
   )
 }
-
-export default LoanRepay
-
 export const LoanRepayFromWalletTab = ({ rChainId, market, isLoaded }: PageContentProps) => (
   <RepayForm fromWallet networks={networks} chainId={rChainId} market={market} enabled={isLoaded} />
 )

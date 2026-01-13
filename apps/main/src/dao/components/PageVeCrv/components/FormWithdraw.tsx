@@ -1,27 +1,27 @@
 import { ReactNode, useEffect, useState } from 'react'
 import { styled } from 'styled-components'
 import { useConnection } from 'wagmi'
-import AlertFormError from '@/dao/components/AlertFormError'
-import Countdown from '@/dao/components/Countdown'
-import FormActions from '@/dao/components/PageVeCrv/components/FormActions'
+import { AlertFormError } from '@/dao/components/AlertFormError'
+import { Countdown } from '@/dao/components/Countdown'
+import { FormActions } from '@/dao/components/PageVeCrv/components/FormActions'
 import type { PageVecrv } from '@/dao/components/PageVeCrv/types'
 import { useLockEstimateWithdrawGas } from '@/dao/entities/locker-estimate-withdraw-gas'
-import useEstimateGasConversion from '@/dao/hooks/useEstimateGasConversion'
-import useStore from '@/dao/store/useStore'
+import { useEstimateGasConversion } from '@/dao/hooks/useEstimateGasConversion'
+import { useStore } from '@/dao/store/useStore'
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment'
-import AlertBox from '@ui/AlertBox'
-import Box from '@ui/Box'
-import Button from '@ui/Button'
-import TxInfoBar from '@ui/TxInfoBar'
+import { AlertBox } from '@ui/AlertBox'
+import { Box } from '@ui/Box'
+import { Button } from '@ui/Button'
+import { TxInfoBar } from '@ui/TxInfoBar'
 import { formatNumber } from '@ui/utils/utilsFormat'
 import { t } from '@ui-kit/lib/i18n'
-import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
+import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { getIsLockExpired } from '@ui-kit/utils/vecrv'
 
 const { IconSize } = SizesAndSpaces
 
-const FormWithdraw = ({ rChainId, vecrvInfo }: PageVecrv) => {
+export const FormWithdraw = ({ rChainId, vecrvInfo }: PageVecrv) => {
   const withdrawLockedCrv = useStore((state) => state.lockedCrv.withdrawLockedCrv)
   const withdrawLockedCrvStatus = useStore((state) => state.lockedCrv.withdrawLockedCrvStatus)
   const [txInfoBar, setTxInfoBar] = useState<ReactNode | null>(null)
@@ -144,5 +144,3 @@ const SuccessBox = styled.div`
   background-color: var(--success-600);
   text-align: center;
 `
-
-export default FormWithdraw

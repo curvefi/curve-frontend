@@ -1,10 +1,10 @@
-import Item from '@/lend/components/AlertLoanSummary/components/Item'
+import { Item } from '@/lend/components/AlertLoanSummary/components/Item'
 import type { SummaryProps } from '@/lend/components/AlertLoanSummary/types'
 import { format } from '@/lend/components/AlertLoanSummary/utils'
-import Icon from '@ui/Icon'
+import { Icon } from '@ui/Icon'
 import { t } from '@ui-kit/lib/i18n'
 
-const SummaryChange = ({
+export const SummaryChange = ({
   title,
   pendingMessage,
   borrowedSymbol,
@@ -56,5 +56,3 @@ const SummaryChange = ({
     </>
   )
 }
-
-export default SummaryChange

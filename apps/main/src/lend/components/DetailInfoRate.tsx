@@ -1,11 +1,11 @@
 import { ChainId, FutureRates } from '@/lend/types/lend.types'
 import { useMarketRates } from '@/llamalend/queries/market-rates'
 import { DetailInfo } from '@ui/DetailInfo'
-import Icon from '@ui/Icon'
+import { Icon } from '@ui/Icon'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 
-const DetailInfoRate = ({
+export const DetailInfoRate = ({
   rChainId,
   rOwmId,
   isBorrow,
@@ -56,5 +56,3 @@ const DetailInfoRate = ({
     </DetailInfo>
   )
 }
-
-export default DetailInfoRate

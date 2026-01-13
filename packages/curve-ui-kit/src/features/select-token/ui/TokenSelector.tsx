@@ -1,65 +1,46 @@
+import { cloneElement, type ReactElement } from 'react'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { type TokenOption, tokenOptionEquals } from '../types'
-import type { TokenListCallbacks, TokenListProps } from './modal/TokenList'
 import { TokenSelectorModal, type TokenSelectorModalProps } from './modal/TokenSelectorModal'
 import { TokenSelectButton } from './TokenSelectButton'
 
-type Props = Partial<TokenListProps> &
-  Partial<TokenListCallbacks> &
-  Partial<TokenSelectorModalProps> & {
-    /** Currently selected token */
-    selectedToken: TokenOption | undefined
-    /** Disables the token selector button and modal */
-    disabled?: boolean
-  }
+type TokenSelectorChildProps<T extends TokenOption = TokenOption> = {
+  onToken: (token: T) => void
+}
 
-export const TokenSelector = ({
+type Props<T extends TokenOption = TokenOption> = Partial<Pick<TokenSelectorModalProps, 'compact'>> & {
+  /** Currently selected token */
+  selectedToken: T | undefined
+  /** Disables the token selector button and modal */
+  disabled?: boolean
+  /**
+   * Token list to render inside the modal.
+   * It may be any valid React element as long as it accepts `onToken` prop.
+   * We use `cloneElement` to close the modal when a token changes.
+   **/
+  children: ReactElement<TokenSelectorChildProps<T>>
+}
+
+export const TokenSelector = <T extends TokenOption = TokenOption>({
   selectedToken,
-  tokens = [],
-  favorites = [],
-  balances = {},
-  tokenPrices = {},
   disabled = false,
-  showSearch = true,
-  showManageList = true,
-  error = '',
-  disabledTokens = [],
-  disableSorting = false,
-  disableMyTokens = false,
-  customOptions,
   compact = false,
-  onToken,
-  onSearch,
-}: Props) => {
-  const [isOpen, , closeModal, toggleModal] = useSwitch()
-
+  children,
+}: Props<T>) => {
+  const [isOpen, openModal, closeModal] = useSwitch(false)
   return (
     <>
-      <TokenSelectButton token={selectedToken} disabled={disabled} onClick={toggleModal} />
-      <TokenSelectorModal
-        tokens={tokens}
-        balances={balances}
-        tokenPrices={tokenPrices}
-        favorites={favorites}
-        showSearch={showSearch}
-        showManageList={showManageList}
-        isOpen={!!isOpen}
-        error={error}
-        disabledTokens={disabledTokens}
-        disableSorting={disableSorting}
-        disableMyTokens={disableMyTokens}
-        customOptions={customOptions}
-        compact={compact}
-        onClose={closeModal}
-        onToken={(token) => {
-          toggleModal()
-
-          if (!tokenOptionEquals(token, selectedToken)) {
-            onToken?.(token)
-          }
-        }}
-        onSearch={(search) => onSearch?.(search)}
-      />
+      <TokenSelectButton token={selectedToken} disabled={disabled} onClick={openModal} />
+      <TokenSelectorModal isOpen={isOpen} compact={compact} onClose={closeModal}>
+        {cloneElement(children, {
+          onToken: (token: T) => {
+            closeModal()
+            if (!tokenOptionEquals(token, selectedToken)) {
+              children.props.onToken(token)
+            }
+          },
+        })}
+      </TokenSelectorModal>
     </>
   )
 }

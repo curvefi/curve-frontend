@@ -1,9 +1,9 @@
 import { styled } from 'styled-components'
-import networks from '@/loan/networks'
+import { networks } from '@/loan/networks'
 import { ChainId } from '@/loan/types/loan.types'
-import { LlammaTrade } from '@curvefi/prices-api/llamma'
-import Box from '@ui/Box'
-import Tooltip from '@ui/Tooltip/TooltipButton'
+import type { LlammaTrade } from '@curvefi/prices-api/llamma'
+import { Box } from '@ui/Box'
+import { TooltipButton as Tooltip } from '@ui/Tooltip/TooltipButton'
 import { Chip } from '@ui/Typography'
 import { formatNumber, getFractionDigitsOptions, convertDate, convertTimeAgo, formatDate, scanTxPath } from '@ui/utils'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
@@ -13,7 +13,7 @@ type TradesDataProps = {
   chainId: ChainId
 }
 
-const TradesData = ({ llammaTradesData, chainId }: TradesDataProps) => (
+export const TradesData = ({ llammaTradesData, chainId }: TradesDataProps) => (
   <>
     {llammaTradesData.map((transaction, index) => (
       <TransactionRow key={`${transaction.txHash}-${transaction.idSold}-trade-${index}`}>
@@ -152,5 +152,3 @@ const TradeToAmount = styled.span`
   font-weight: var(--bold);
   font-size: var(--font-size-2);
 `
-
-export default TradesData

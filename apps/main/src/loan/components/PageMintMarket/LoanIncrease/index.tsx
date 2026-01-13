@@ -1,12 +1,12 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import { DEFAULT_HEALTH_MODE } from '@/llamalend/constants'
-import AlertFormError from '@/loan/components/AlertFormError'
-import DetailInfoBorrowRate from '@/loan/components/DetailInfoBorrowRate'
-import DetailInfoEstimateGas from '@/loan/components/DetailInfoEstimateGas'
-import DetailInfoHealth from '@/loan/components/DetailInfoHealth'
-import DetailInfoLiqRange from '@/loan/components/DetailInfoLiqRange'
-import DialogHealthWarning from '@/loan/components/DialogHealthWarning'
-import LoanFormConnect from '@/loan/components/LoanFormConnect'
+import { AlertFormError } from '@/loan/components/AlertFormError'
+import { DetailInfoBorrowRate } from '@/loan/components/DetailInfoBorrowRate'
+import { DetailInfoEstimateGas } from '@/loan/components/DetailInfoEstimateGas'
+import { DetailInfoHealth } from '@/loan/components/DetailInfoHealth'
+import { DetailInfoLiqRange } from '@/loan/components/DetailInfoLiqRange'
+import { DialogHealthWarning } from '@/loan/components/DialogHealthWarning'
+import { LoanFormConnect } from '@/loan/components/LoanFormConnect'
 import type { FormStatus, FormValues, StepKey } from '@/loan/components/PageMintMarket/LoanIncrease/types'
 import { StyledDetailInfoWrapper, StyledInpChip } from '@/loan/components/PageMintMarket/styles'
 import type { FormEstGas, ManageLoanProps } from '@/loan/components/PageMintMarket/types'
@@ -16,19 +16,19 @@ import {
   DEFAULT_USER_WALLET_BALANCES,
 } from '@/loan/components/PageMintMarket/utils'
 import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
-import networks from '@/loan/networks'
+import { networks } from '@/loan/networks'
 import { DEFAULT_FORM_STATUS, getMaxRecvActiveKey } from '@/loan/store/createLoanIncreaseSlice'
-import useStore from '@/loan/store/useStore'
+import { useStore } from '@/loan/store/useStore'
 import { type ChainId, LlamaApi, Llamma } from '@/loan/types/loan.types'
 import { curveProps } from '@/loan/utils/helpers'
 import { getStepStatus, getTokenName } from '@/loan/utils/utilsLoan'
-import AlertBox from '@ui/AlertBox'
-import Box from '@ui/Box'
-import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
+import { AlertBox } from '@ui/AlertBox'
+import { Box } from '@ui/Box'
+import { InputDebounced, InputMaxBtn, InputProvider } from '@ui/InputComp'
 import { getActiveStep } from '@ui/Stepper/helpers'
-import Stepper from '@ui/Stepper/Stepper'
+import { Stepper } from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
-import TxInfoBar from '@ui/TxInfoBar'
+import { TxInfoBar } from '@ui/TxInfoBar'
 import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
@@ -41,7 +41,11 @@ import { decimal, type Decimal } from '@ui-kit/utils'
 import { FormContent } from '@ui-kit/widgets/DetailPageLayout/FormContent'
 
 // Borrow more
-const LoanIncrease = ({ curve, isReady, market: llamma }: Pick<ManageLoanProps, 'curve' | 'isReady' | 'market'>) => {
+export const LoanIncrease = ({
+  curve,
+  isReady,
+  market: llamma,
+}: Pick<ManageLoanProps, 'curve' | 'isReady' | 'market'>) => {
   const llammaId = llamma?.id ?? ''
   const isSubscribed = useRef(false)
 
@@ -452,9 +456,6 @@ const LoanIncrease = ({ curve, isReady, market: llamma }: Pick<ManageLoanProps, 
     </>
   )
 }
-
-export default LoanIncrease
-
 /**
  * The new implementation of LoanBorrowMore with mui isn't ready yet. For now, we wrap the old one for styling.
  */

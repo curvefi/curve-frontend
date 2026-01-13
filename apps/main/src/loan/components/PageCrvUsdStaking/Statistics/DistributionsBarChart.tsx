@@ -4,12 +4,12 @@ import { Stack, Box } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import { formatNumber, formatDate } from '@ui/utils'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import DistributionsChartTooltip from './DistributionsChartTooltip'
+import { DistributionsChartTooltip } from './DistributionsChartTooltip'
 const { FontSize } = SizesAndSpaces
 
 type RevenueDistributionsBarChartProps = { data: ScrvUsdRevenue | null; height?: number }
 
-const RevenueDistributionsBarChart = ({ data, height = 400 }: RevenueDistributionsBarChartProps) => {
+export const RevenueDistributionsBarChart = ({ data, height = 400 }: RevenueDistributionsBarChartProps) => {
   const {
     design: { Color, Text },
   } = useTheme()
@@ -57,5 +57,3 @@ const RevenueDistributionsBarChart = ({ data, height = 400 }: RevenueDistributio
     </Stack>
   )
 }
-
-export default RevenueDistributionsBarChart

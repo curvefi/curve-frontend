@@ -7,7 +7,7 @@ import { Typography } from '@mui/material'
 import Stack from '@mui/material/Stack'
 import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
-import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
+import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { MarketLoanParameters } from './MarketLoanParameters'
 

@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 import Divider from '@mui/material/Divider'
-import ActionInfo, { ActionInfoProps } from '@ui-kit/shared/ui/ActionInfo'
+import { ActionInfoProps, ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces

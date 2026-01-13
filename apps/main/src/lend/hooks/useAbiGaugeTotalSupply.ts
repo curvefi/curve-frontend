@@ -1,10 +1,10 @@
 import { Contract, Interface, JsonRpcProvider } from 'ethers'
 import { useCallback, useEffect, useState } from 'react'
-import networks from '@/lend/networks'
+import { networks } from '@/lend/networks'
 import { ChainId, Provider } from '@/lend/types/lend.types'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 
-const useAbiGaugeTotalSupply = (
+export const useAbiGaugeTotalSupply = (
   rChainId: ChainId,
   signerRequired: boolean,
   jsonModuleName: string,
@@ -48,5 +48,3 @@ const useAbiGaugeTotalSupply = (
 
   return contract
 }
-
-export default useAbiGaugeTotalSupply

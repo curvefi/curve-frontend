@@ -3,8 +3,8 @@ import { useOverlayTrigger } from 'react-aria'
 import { useOverlayTriggerState } from 'react-stately'
 import { styled } from 'styled-components'
 import { OverlayTriggerProps } from '@react-types/overlays'
-import Icon from 'ui/src/Icon/Icon'
-import { Popover2, Popover2Button } from 'ui/src/Popover2'
+import { Icon } from '@ui/Icon/Icon'
+import { Popover2, Popover2Button } from '@ui/Popover2'
 import { PopoverProps } from './Popover2'
 import { Popover2ButtonProps } from './Popover2Button'
 import { DialogProps } from './Popover2Dialog'
@@ -18,7 +18,7 @@ type Props = Partial<PopoverProps> &
     children: ReactElement<DialogProps>
   }
 
-function Popover2Trigger({ label, children, showExpandIcon = false, ...props }: Props) {
+export function Popover2Trigger({ label, children, showExpandIcon = false, ...props }: Props) {
   const ref = useRef(null)
   const state = useOverlayTriggerState(props)
   const { triggerProps, overlayProps } = useOverlayTrigger({ type: 'dialog' }, state, ref)
@@ -54,5 +54,3 @@ const ButtonWrapper = styled.span`
   display: inline-flex;
   align-items: center;
 `
-
-export default Popover2Trigger

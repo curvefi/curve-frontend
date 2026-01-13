@@ -274,7 +274,7 @@ const calculateInitialPrice = (tokenA: number, tokenB: number) => {
   return initialPrice.toPrecision(4).toString()
 }
 
-const createCreatePoolSlice = (
+export const createCreatePoolSlice = (
   set: StoreApi<State>['setState'],
   get: StoreApi<State>['getState'],
 ): CreatePoolSlice => ({
@@ -1260,5 +1260,3 @@ const createCreatePoolSlice = (
       ),
   },
 })
-
-export default createCreatePoolSlice

@@ -1,14 +1,14 @@
 import { styled } from 'styled-components'
-import SummaryChange from '@/lend/components/AlertLoanSummary/components/SummaryChange'
-import SummaryCreate from '@/lend/components/AlertLoanSummary/components/SummaryCreate'
-import SummaryFull from '@/lend/components/AlertLoanSummary/components/SummaryFull'
-import SummaryPartial from '@/lend/components/AlertLoanSummary/components/SummaryPartial'
-import SummarySelfLiquidate from '@/lend/components/AlertLoanSummary/components/SummarySelfLiquidate'
+import { SummaryChange } from '@/lend/components/AlertLoanSummary/components/SummaryChange'
+import { SummaryCreate } from '@/lend/components/AlertLoanSummary/components/SummaryCreate'
+import { SummaryFull } from '@/lend/components/AlertLoanSummary/components/SummaryFull'
+import { SummaryPartial } from '@/lend/components/AlertLoanSummary/components/SummaryPartial'
+import { SummarySelfLiquidate } from '@/lend/components/AlertLoanSummary/components/SummarySelfLiquidate'
 import type { AlertSummaryProps } from '@/lend/components/AlertLoanSummary/types'
-import Box from '@ui/Box'
+import { Box } from '@ui/Box'
 import { t } from '@ui-kit/lib/i18n'
 
-const AlertLoanSummary = ({ market, type, ...props }: AlertSummaryProps) => {
+export const AlertLoanSummary = ({ market, type, ...props }: AlertSummaryProps) => {
   const { symbol: collateralSymbol = '' } = market?.collateral_token ?? {}
   const { symbol: borrowedSymbol = '' } = market?.borrowed_token ?? {}
 
@@ -62,5 +62,3 @@ const Title = styled.h3`
   font-size: inherit;
   text-transform: uppercase;
 `
-
-export default AlertLoanSummary

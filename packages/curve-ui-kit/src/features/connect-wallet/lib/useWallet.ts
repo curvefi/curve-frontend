@@ -1,11 +1,10 @@
 import { type BrowserProvider } from 'ethers'
 import { useCallback, useEffect } from 'react'
-import { useConnect, useConnectors, useDisconnect, useEnsName } from 'wagmi'
+import { useConnect, useConnectors, useDisconnect, useEnsName, type Connector } from 'wagmi'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useGlobalState } from '@ui-kit/hooks/useGlobalState'
 import { isCypress } from '@ui-kit/utils'
 import type { Wallet } from './types'
-import type { Connector } from './wagmi/wallets'
 
 const state: {
   provider: BrowserProvider | null
@@ -30,17 +29,17 @@ export const useWallet = () => {
   const { mutateAsync: connectAsync } = useConnect()
   const { mutate: disconnect } = useDisconnect()
 
+  // Opens modal when no connector given (clicking 'Connect Wallet' button), otherwise connects directly with the provided connector
   const connect = useCallback(
-    async (selectedConnector?: Connector) => {
+    async (connector?: Connector) => {
       // When using Cypress, we want to use the one and only (test) connector without blocking modal
-      if (!selectedConnector && !isCypress) {
+      if (!connector && !isCypress) {
         setShowModal(true)
         return
       }
 
-      const connector = connectors.find((x) => x.id === selectedConnector) ?? connectors[0]
       try {
-        await connectAsync({ connector })
+        await connectAsync({ connector: connector ?? connectors[0] })
         setShowModal(false)
       } catch (err) {
         console.error('Error connecting wallet:', err)
@@ -56,7 +55,7 @@ export const useWallet = () => {
     if (state.wallet) state.wallet.account.ensName = ensName ?? undefined
   }, [ensName])
 
-  return { wallet, connect, disconnect, provider, showModal, closeModal, connectState }
+  return { wallet, connectors, connect, disconnect, provider, showModal, closeModal, connectState }
 }
 
 useWallet.getState = () => ({ wallet: state.wallet, provider: state.provider })

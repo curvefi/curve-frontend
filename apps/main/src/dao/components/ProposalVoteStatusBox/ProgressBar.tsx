@@ -8,7 +8,7 @@ interface ProgressBarProps {
   quorum?: boolean
 }
 
-const ProgressBar = ({ support, minSupport, quorum, active }: ProgressBarProps) => (
+export const ProgressBar = ({ support, minSupport, quorum, active }: ProgressBarProps) => (
   <ProgressBarContainer active={active} quorum={quorum}>
     {quorum && <SupportLine quorum={quorum} minSupport={minSupport} active={active} />}
     <ProgressBarFill quorum={quorum} support={support} />
@@ -41,5 +41,3 @@ const SupportLine = styled.div<{ quorum: boolean; minSupport: number; active: bo
   background-color: var(--page--text-color);
   transform: translateY(calc(-50%));
 `
-
-export default ProgressBar

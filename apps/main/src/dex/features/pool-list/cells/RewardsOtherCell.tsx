@@ -1,6 +1,6 @@
 import { Fragment } from 'react'
-import CampaignRewardsRow from '@/dex/components/CampaignRewardsRow'
-import PoolRewardsCrv from '@/dex/components/PoolRewardsCrv'
+import { CampaignRewardsRow } from '@/dex/components/CampaignRewardsRow'
+import { PoolRewardsCrv } from '@/dex/components/PoolRewardsCrv'
 import { RewardsApy } from '@/dex/types/main.types'
 import type { Chain } from '@curvefi/prices-api'
 import Typography from '@mui/material/Typography'

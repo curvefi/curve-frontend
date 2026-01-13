@@ -22,7 +22,7 @@ const COLORS = [
   '#277DA1',
 ]
 
-const BarChartComponent = <T extends object>({ data, dataKey, CustomTooltip }: Props<T>) => {
+export const BarChartComponent = <T extends object>({ data, dataKey, CustomTooltip }: Props<T>) => {
   const height = 300
   const labelWidth = 100
 
@@ -83,5 +83,3 @@ const ChartContainer = styled.div<{ height: number }>`
   width: 100%;
   height: ${({ height }) => height}px;
 `
-
-export default BarChartComponent

@@ -1,5 +1,5 @@
 import { styled } from 'styled-components'
-import ShadowedBox from '@ui/ShadowedBox'
+import { ShadowedBox } from '@ui/ShadowedBox'
 
 export const Wrapper = styled(ShadowedBox)`
   justify-content: flex-start;

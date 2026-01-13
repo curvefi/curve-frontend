@@ -1,18 +1,18 @@
 import { useEffect, useCallback, Key, Fragment } from 'react'
 import { styled } from 'styled-components'
-import ErrorMessage from '@/dao/components/ErrorMessage'
-import GaugeListItem from '@/dao/components/PageGauges/GaugeListItem'
-import SmallScreenCard from '@/dao/components/PageGauges/GaugeListItem/SmallScreenCard'
-import PaginatedTable from '@/dao/components/PaginatedTable'
-import useStore from '@/dao/store/useStore'
+import { ErrorMessage } from '@/dao/components/ErrorMessage'
+import { GaugeListItem } from '@/dao/components/PageGauges/GaugeListItem'
+import { SmallScreenCard } from '@/dao/components/PageGauges/GaugeListItem/SmallScreenCard'
+import { PaginatedTable } from '@/dao/components/PaginatedTable'
+import { useStore } from '@/dao/store/useStore'
 import { GaugeFormattedData, SortByFilterGaugesKeys } from '@/dao/types/dao.types'
-import SearchInput from '@ui/SearchInput'
+import { SearchInput } from '@ui/SearchInput'
 import { SelectSortingMethod } from '@ui/Select/SelectSortingMethod'
-import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import { SpinnerWrapper, Spinner } from '@ui/Spinner'
 import { t } from '@ui-kit/lib/i18n'
 import { GAUGE_VOTES_TABLE_LABELS, GAUGE_VOTES_SORTING_METHODS } from '../constants'
 
-const GaugesList = () => {
+export const GaugesList = () => {
   const getGauges = useStore((state) => state.gauges.getGauges)
   const setGauges = useStore((state) => state.gauges.setGauges)
   const gaugesLoading = useStore((state) => state.gauges.gaugesLoading)
@@ -202,5 +202,3 @@ const StyledSelectFilter = styled(SelectSortingMethod)<{ smallScreenBreakpoint: 
     margin: auto 0;
   }
 `
-
-export default GaugesList

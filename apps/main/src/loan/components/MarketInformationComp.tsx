@@ -1,6 +1,6 @@
 import { MarketParameters } from '@/llamalend/features/market-parameters/MarketParameters'
 import { BandsComp } from '@/loan/components/BandsComp'
-import ChartAndActivityComp from '@/loan/components/ChartAndActivityComp'
+import { ChartAndActivityComp } from '@/loan/components/ChartAndActivityComp'
 import type { ChainId, Llamma } from '@/loan/types/loan.types'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'

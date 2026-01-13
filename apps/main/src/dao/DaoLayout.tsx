@@ -1,5 +1,5 @@
 import { useAutoRefresh } from '@/dao/hooks/useAutoRefresh'
-import networks, { networksIdMapper } from '@/dao/networks'
+import { networksIdMapper, networks } from '@/dao/networks'
 import type { UrlParams } from '@/dao/types/dao.types'
 import { Outlet } from '@tanstack/react-router'
 import { useCurve } from '@ui-kit/features/connect-wallet'

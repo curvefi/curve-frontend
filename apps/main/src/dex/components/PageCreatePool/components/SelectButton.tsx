@@ -1,6 +1,6 @@
 import { styled } from 'styled-components'
-import Box from '@ui/Box'
-import Button from '@ui/Button'
+import { Box } from '@ui/Box'
+import { Button } from '@ui/Button'
 
 type Props = {
   variant?: 'outlined'
@@ -17,7 +17,7 @@ type Props = {
   handleClick: () => void
 }
 
-const SelectButton = ({
+export const SelectButton = ({
   variant,
   paddingSize,
   selected,
@@ -114,5 +114,3 @@ const ButtonSubName = styled.h5`
 const ButtonSubData = styled.p`
   margin-top: var(--spacing-1);
 `
-
-export default SelectButton

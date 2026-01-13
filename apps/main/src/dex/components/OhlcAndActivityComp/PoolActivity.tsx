@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
 import { styled } from 'styled-components'
-import LiquidityData from '@/dex/components/OhlcAndActivityComp/LiquidityData'
-import TradesData from '@/dex/components/OhlcAndActivityComp/TradesData'
-import useStore from '@/dex/store/useStore'
+import { LiquidityData } from '@/dex/components/OhlcAndActivityComp/LiquidityData'
+import { TradesData } from '@/dex/components/OhlcAndActivityComp/TradesData'
+import { useStore } from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
-import Button from '@ui/Button/Button'
-import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import { Button } from '@ui/Button/Button'
+import { SpinnerWrapper, Spinner } from '@ui/Spinner'
 import { DEFAULT_CHART_HEIGHT } from '@ui-kit/features/candle-chart/constants'
 import type { LpTradeToken, PricesApiCoin } from '@ui-kit/features/candle-chart/types'
 import { t } from '@ui-kit/lib/i18n'
@@ -20,7 +20,7 @@ type PoolActivityProps = {
 
 const CHART_HEIGHT = DEFAULT_CHART_HEIGHT + 48 // 48px is the height of the section header
 
-const PoolActivity = ({ chainId, poolAddress, coins, tradesTokens, chartCombinations }: PoolActivityProps) => {
+export const PoolActivity = ({ chainId, poolAddress, coins, tradesTokens, chartCombinations }: PoolActivityProps) => {
   const activityStatus = useStore((state) => state.pools.pricesApiState.activityStatus)
   const tradeEventsData = useStore((state) => state.pools.pricesApiState.tradeEventsData)
   const liquidityEventsData = useStore((state) => state.pools.pricesApiState.liquidityEventsData)
@@ -166,5 +166,3 @@ const TimestampColumnTitle = styled.span`
   text-align: right;
   padding: var(--spacing-1) var(--spacing-1);
 `
-
-export default PoolActivity

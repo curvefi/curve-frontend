@@ -1,7 +1,7 @@
 import { ReactNode, useMemo } from 'react'
 import type { Slippage } from '@/dex/components/PagePool/types'
 import { DetailInfo } from '@ui/DetailInfo'
-import IconTooltip from '@ui/Tooltip/TooltipIcon'
+import { TooltipIcon as IconTooltip } from '@ui/Tooltip/TooltipIcon'
 import { Chip } from '@ui/Typography'
 import { formatNumber } from '@ui/utils'
 import { t, Trans } from '@ui-kit/lib/i18n'
@@ -13,7 +13,7 @@ type SlippageDetail = {
   variant: 'warning' | 'success' | ''
 }
 
-const DetailInfoSlippage = ({ loading, isHighSlippage, isBonus, slippage }: Slippage) => {
+export const DetailInfoSlippage = ({ loading, isHighSlippage, isBonus, slippage }: Slippage) => {
   const { isBold, label, tip, variant } = useMemo(() => {
     const slippageDetail: SlippageDetail = {
       isBold: false,
@@ -68,5 +68,3 @@ const DetailInfoSlippage = ({ loading, isHighSlippage, isBonus, slippage }: Slip
     </DetailInfo>
   )
 }
-
-export default DetailInfoSlippage

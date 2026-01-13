@@ -1,5 +1,5 @@
 import { GasIcon } from '@ui-kit/shared/icons/FireIcon'
-import ActionInfo, { type ActionInfoProps } from '@ui-kit/shared/ui/ActionInfo'
+import { type ActionInfoProps, ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatValue } from './util'
 

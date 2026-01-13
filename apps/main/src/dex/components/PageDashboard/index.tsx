@@ -2,31 +2,31 @@ import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { styled } from 'styled-components'
 import type { Address } from 'viem'
 import { isAddress } from 'viem'
-import ClassicPoolsOnlyDescription from '@/dex/components/PageDashboard/components/ClassicPoolsOnlyDescription'
-import Summary from '@/dex/components/PageDashboard/components/Summary'
-import TableHead from '@/dex/components/PageDashboard/components/TableHead'
-import TableHeadMobile from '@/dex/components/PageDashboard/components/TableHeadMobile'
-import TableRow from '@/dex/components/PageDashboard/components/TableRow'
-import TableRowMobile from '@/dex/components/PageDashboard/components/TableRowMobile'
-import TableRowNoResult from '@/dex/components/PageDashboard/components/TableRowNoResult'
-import TableSortDialog from '@/dex/components/PageDashboard/components/TableSortDialog'
+import { ClassicPoolsOnlyDescription } from '@/dex/components/PageDashboard/components/ClassicPoolsOnlyDescription'
+import { Summary } from '@/dex/components/PageDashboard/components/Summary'
+import { TableHead } from '@/dex/components/PageDashboard/components/TableHead'
+import { TableHeadMobile } from '@/dex/components/PageDashboard/components/TableHeadMobile'
+import { TableRow } from '@/dex/components/PageDashboard/components/TableRow'
+import { TableRowMobile } from '@/dex/components/PageDashboard/components/TableRowMobile'
+import { TableRowNoResult } from '@/dex/components/PageDashboard/components/TableRowNoResult'
+import { TableSortDialog } from '@/dex/components/PageDashboard/components/TableSortDialog'
 import { DashboardContextProvider } from '@/dex/components/PageDashboard/dashboardContext'
 import type { DashboardTableRowProps, FormValues, TableLabel } from '@/dex/components/PageDashboard/types'
 import { ROUTE } from '@/dex/constants'
 import { useNetworkByChain } from '@/dex/entities/networks'
-import curvejsApi from '@/dex/lib/curvejs'
+import { curvejsApi } from '@/dex/lib/curvejs'
 import { getDashboardDataActiveKey } from '@/dex/store/createDashboardSlice'
-import useStore from '@/dex/store/useStore'
+import { useStore } from '@/dex/store/useStore'
 import { ChainId, CurveApi, type NetworkUrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
-import Spinner, { SpinnerWrapper } from '@ui/Spinner'
-import Table from '@ui/Table'
+import { SpinnerWrapper, Spinner } from '@ui/Spinner'
+import { Table } from '@ui/Table'
 import { breakpoints } from '@ui/utils'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 
-const Dashboard = ({
+export const Dashboard = ({
   curve,
   rChainId,
   params,
@@ -279,5 +279,3 @@ const TableWrapper = styled.div`
     padding: 2rem 1rem 1rem 1rem;
   }
 `
-
-export default Dashboard

@@ -1,14 +1,12 @@
 import { useEffect, useState } from 'react'
 import { styled } from 'styled-components'
-import { LendingMarketTokens } from '@/lend/hooks/useOhlcChartState'
-import useStore from '@/lend/store/useStore'
+import type { LendingMarketTokens } from '@/lend/hooks/useOhlcChartState'
+import { useStore } from '@/lend/store/useStore'
 import { ChainId } from '@/lend/types/lend.types'
-import Button from '@ui/Button/Button'
-import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import { Button } from '@ui/Button/Button'
+import { SpinnerWrapper, Spinner } from '@ui/Spinner'
 import { DEFAULT_CHART_HEIGHT } from '@ui-kit/features/candle-chart/constants'
 import { t } from '@ui-kit/lib/i18n'
-import LiquidityData from './LiquidityData'
-import TradesData from './TradesData'
 
 type PoolActivityProps = {
   poolAddress: string
@@ -18,7 +16,7 @@ type PoolActivityProps = {
 
 const CHART_HEIGHT = DEFAULT_CHART_HEIGHT + 48 // 48px is the height of the section header
 
-const PoolActivity = ({ chainId, poolAddress, coins }: PoolActivityProps) => {
+export const PoolActivity = ({ chainId, poolAddress, coins }: PoolActivityProps) => {
   const activityFetchStatus = useStore((state) => state.ohlcCharts.activityFetchStatus)
   const lendTradesData = useStore((state) => state.ohlcCharts.lendTradesData)
   const lendControllerData = useStore((state) => state.ohlcCharts.lendControllerData)
@@ -162,5 +160,3 @@ const TimestampColumnTitle = styled.span`
   text-align: right;
   padding: var(--spacing-1) var(--spacing-1);
 `
-
-export default PoolActivity

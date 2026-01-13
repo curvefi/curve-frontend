@@ -1,20 +1,20 @@
 import { styled } from 'styled-components'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { ChainId } from '@/dex/types/main.types'
-import Box from '@ui/Box'
-import Tooltip from '@ui/Tooltip/TooltipButton'
+import { Box } from '@ui/Box'
+import { TooltipButton as Tooltip } from '@ui/Tooltip/TooltipButton'
 import { Chip } from '@ui/Typography'
 import { formatNumber, getFractionDigitsOptions, convertDate, convertTimeAgo, formatDate, scanTxPath } from '@ui/utils'
 import type { LpTradesData, LpTradeToken } from '@ui-kit/features/candle-chart/types'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 
-type TradesDataProps = {
+export type TradesDataProps = {
   lpTradesData: LpTradesData[]
   chainId: ChainId
   tradesTokens: LpTradeToken[]
 }
 
-const TradesData = ({ lpTradesData, chainId, tradesTokens }: TradesDataProps) => {
+export const TradesData = ({ lpTradesData, chainId, tradesTokens }: TradesDataProps) => {
   const { data: network } = useNetworkByChain({ chainId })
   return lpTradesData.map((transaction, index) => {
     const boughtToken = tradesTokens.find((token) => token.event_index === transaction.bought_id)
@@ -157,5 +157,3 @@ const TradeToAmount = styled.span`
   font-weight: var(--bold);
   font-size: var(--font-size-2);
 `
-
-export default TradesData

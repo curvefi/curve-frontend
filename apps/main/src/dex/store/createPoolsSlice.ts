@@ -4,7 +4,7 @@ import lodash from 'lodash'
 import { zeroAddress } from 'viem'
 import type { Config } from 'wagmi'
 import type { StoreApi } from 'zustand'
-import curvejsApi from '@/dex/lib/curvejs'
+import { curvejsApi } from '@/dex/lib/curvejs'
 import type { State } from '@/dex/store/useStore'
 import {
   BasePool,
@@ -156,7 +156,7 @@ const DEFAULT_STATE: SliceState = {
   error: '',
 } as const
 
-const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): PoolsSlice => ({
+export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): PoolsSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 
@@ -746,9 +746,6 @@ const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>
     },
   },
 })
-
-export default createPoolsSlice
-
 // check for duplicate token name
 export function updateHaveSameTokenNames(tokensMapper: TokensMapper) {
   const grouped = groupBy(tokensMapper, (v) => v!.symbol)
