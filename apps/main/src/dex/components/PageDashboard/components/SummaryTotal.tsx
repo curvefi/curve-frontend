@@ -6,12 +6,12 @@ import {
   SummarySpinnerWrapper,
 } from '@/dex/components/PageDashboard/components/Summary'
 import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
-import Spinner from '@ui/Spinner'
+import { Spinner } from '@ui/Spinner'
 import { Chip } from '@ui/Typography'
 import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 
-const SummaryTotal = () => {
+export const SummaryTotal = () => {
   const { dashboardDataMapper, isValidAddress } = useDashboardContext()
   const { isLoading } = useDashboardContext()
 
@@ -47,5 +47,3 @@ const H2 = styled.h2`
   font-size: var(--font-size-3);
   margin-bottom: 0.25rem;
 `
-
-export default SummaryTotal

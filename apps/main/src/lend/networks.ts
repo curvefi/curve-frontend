@@ -77,5 +77,3 @@ export const { networks, networksIdMapper } = Object.entries(networksConfig).red
     networksIdMapper: {} as Record<NetworkEnum, ChainId>,
   },
 )
-
-export default networks

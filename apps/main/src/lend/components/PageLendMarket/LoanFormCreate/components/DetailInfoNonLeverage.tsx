@@ -1,16 +1,16 @@
-import DetailInfoEstGas from '@/lend/components/DetailInfoEstimateGas'
-import DetailInfoHealth from '@/lend/components/DetailInfoHealth'
-import DetailInfoLiqRange from '@/lend/components/DetailInfoLiqRange'
-import DetailInfoLTV from '@/lend/components/DetailInfoLTV'
-import DetailInfoN from '@/lend/components/DetailInfoN'
-import DetailInfoRate from '@/lend/components/DetailInfoRate'
+import { DetailInfoEstimateGas as DetailInfoEstGas } from '@/lend/components/DetailInfoEstimateGas'
+import { DetailInfoHealth } from '@/lend/components/DetailInfoHealth'
+import { DetailInfoLiqRange } from '@/lend/components/DetailInfoLiqRange'
+import { DetailInfoLTV } from '@/lend/components/DetailInfoLTV'
+import { DetailInfoN } from '@/lend/components/DetailInfoN'
+import { DetailInfoRate } from '@/lend/components/DetailInfoRate'
 import type { DetailInfoCompProps, DetailInfoCompAdditionalProps } from '@/lend/components/PageLendMarket/types'
-import useStore from '@/lend/store/useStore'
+import { useStore } from '@/lend/store/useStore'
 import { PageContentProps } from '@/lend/types/lend.types'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { LiquidationRangeSlider } from '@ui-kit/shared/ui/LiquidationRangeSlider'
 
-const DetailInfoNonLeverage = ({
+export const DetailInfoNonLeverage = ({
   activeStep,
   rChainId,
   rOwmId,
@@ -98,5 +98,3 @@ const DetailInfoNonLeverage = ({
     </div>
   )
 }
-
-export default DetailInfoNonLeverage

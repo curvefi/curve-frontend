@@ -1,18 +1,18 @@
 import { useEffect } from 'react'
 import { styled } from 'styled-components'
-import CurrencyReserves from '@/dex/components/PagePool/PoolDetails/CurrencyReserves'
-import PoolParameters from '@/dex/components/PagePool/PoolDetails/PoolStats/PoolParameters'
-import RewardsComp from '@/dex/components/PagePool/PoolDetails/PoolStats/Rewards'
+import { CurrencyReserves } from '@/dex/components/PagePool/PoolDetails/CurrencyReserves'
+import { PoolParameters } from '@/dex/components/PagePool/PoolDetails/PoolStats/PoolParameters'
+import { Rewards as RewardsComp } from '@/dex/components/PagePool/PoolDetails/PoolStats/Rewards'
 import type { PageTransferProps } from '@/dex/components/PagePool/types'
 import { usePoolIdByAddressOrId } from '@/dex/hooks/usePoolIdByAddressOrId'
-import useTokenAlert from '@/dex/hooks/useTokenAlert'
-import useStore from '@/dex/store/useStore'
+import { useTokenAlert } from '@/dex/hooks/useTokenAlert'
+import { useStore } from '@/dex/store/useStore'
 import { PoolAlert, TokensMapper, type UrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
-import AlertBox from '@ui/AlertBox'
-import Box from '@ui/Box'
+import { AlertBox } from '@ui/AlertBox'
+import { Box } from '@ui/Box'
 import { InternalLink } from '@ui/Link'
-import ExternalLink from '@ui/Link/ExternalLink'
+import { ExternalLink } from '@ui/Link/ExternalLink'
 import { breakpoints } from '@ui/utils/responsive'
 import { useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
@@ -22,7 +22,14 @@ type PoolStatsProps = {
   tokensMapper: TokensMapper
 } & Pick<PageTransferProps, 'curve' | 'poolData' | 'poolDataCacheOrApi' | 'routerParams'>
 
-const PoolStats = ({ curve, routerParams, poolAlert, poolData, poolDataCacheOrApi, tokensMapper }: PoolStatsProps) => {
+export const PoolStats = ({
+  curve,
+  routerParams,
+  poolAlert,
+  poolData,
+  poolDataCacheOrApi,
+  tokensMapper,
+}: PoolStatsProps) => {
   const tokenAlert = useTokenAlert(poolData?.tokenAddressesAll ?? [])
   const { rChainId, rPoolIdOrAddress } = routerParams
   const poolId = usePoolIdByAddressOrId({ chainId: rChainId, poolIdOrAddress: rPoolIdOrAddress })
@@ -132,5 +139,3 @@ const OtherStatsWrapper = styled(Box)`
     height: 100%;
   }
 `
-
-export default PoolStats

@@ -1,10 +1,10 @@
 import { styled } from 'styled-components'
-import Box from '@ui/Box'
+import { Box } from '@ui/Box'
 import { formatNumber } from '@ui/utils'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { format } from '../utils'
 
-const RouteToken = ({
+export const RouteToken = ({
   blockchainId,
   tokenAddress = '',
   tokenSymbol = '',
@@ -51,5 +51,3 @@ const Label = styled.div`
 const AvgPrice = styled.span`
   padding-top: var(--spacing-1);
 `
-
-export default RouteToken

@@ -1,6 +1,6 @@
 import type { StoreApi } from 'zustand'
 import { invalidateMarketDetails } from '@/lend/entities/market-details'
-import apiLending from '@/lend/lib/apiLending'
+import { apiLending } from '@/lend/lib/apiLending'
 import type { State } from '@/lend/store/useStore'
 import {
   Api,
@@ -54,7 +54,10 @@ const DEFAULT_STATE: SliceState = {
   marketDetailsView: '',
 }
 
-const createMarketsSlice = (_set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): MarketsSlice => ({
+export const createMarketsSlice = (
+  _set: StoreApi<State>['setState'],
+  get: StoreApi<State>['getState'],
+): MarketsSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
     fetchDatas: async (key, api, markets, shouldRefetch) => {
@@ -119,5 +122,3 @@ const createMarketsSlice = (_set: StoreApi<State>['setState'], get: StoreApi<Sta
     },
   },
 })
-
-export default createMarketsSlice

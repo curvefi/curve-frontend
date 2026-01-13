@@ -1,14 +1,14 @@
 import { useState } from 'react'
 import { styled } from 'styled-components'
-import Button from '@ui/Button'
-import TextCaption from '@ui/TextCaption'
+import { Button } from '@ui/Button'
+import { TextCaption } from '@ui/TextCaption'
 import { t } from '@ui-kit/lib/i18n'
-import ExpectedLabel from './components/ExpectedLabel'
-import ExpectedSummary from './components/ExpectedSummary'
-import ExpectedSwapDetails from './components/ExpectedSwapDetails'
+import { ExpectedLabel } from './components/ExpectedLabel'
+import { ExpectedSummary } from './components/ExpectedSummary'
+import { ExpectedSwapDetails } from './components/ExpectedSwapDetails'
 import type { RouteDetailsProps } from './types'
 
-const RouteDetails = ({
+export const RouteDetails = ({
   loading,
   swapFrom,
   swapFromAmounts,
@@ -106,5 +106,3 @@ export const DetailsButton = styled(Button)<{ $isOpen?: boolean }>`
     color: inherit;
   }
 `
-
-export default RouteDetails

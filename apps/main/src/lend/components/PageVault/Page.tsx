@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import CampaignRewardsBanner from '@/lend/components/CampaignRewardsBanner'
+import { CampaignRewardsBanner } from '@/lend/components/CampaignRewardsBanner'
 import { MarketInformationComp } from '@/lend/components/MarketInformationComp'
 import { MarketInformationTabs } from '@/lend/components/MarketInformationTabs'
 import { VaultTabs } from '@/lend/components/PageVault/VaultTabs'
@@ -7,9 +7,9 @@ import { useOneWayMarket } from '@/lend/entities/chain'
 import { useLendPageTitle } from '@/lend/hooks/useLendPageTitle'
 import { useMarketDetails } from '@/lend/hooks/useMarketDetails'
 import { useSupplyPositionDetails } from '@/lend/hooks/useSupplyPositionDetails'
-import useTitleMapper from '@/lend/hooks/useTitleMapper'
+import { useTitleMapper } from '@/lend/hooks/useTitleMapper'
 import { helpers } from '@/lend/lib/apiLending'
-import useStore from '@/lend/store/useStore'
+import { useStore } from '@/lend/store/useStore'
 import { type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
 import { getCollateralListPathname, getLoanPathname, parseMarketParams } from '@/lend/utils/utilsRouter'
 import { MarketDetails } from '@/llamalend/features/market-details'
@@ -27,7 +27,7 @@ import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLay
 
 const { Spacing } = SizesAndSpaces
 
-const Page = () => {
+export const Page = () => {
   const params = useParams<MarketUrlParams>()
   const { rMarket, rChainId } = parseMarketParams(params)
   const { llamaApi: api = null, provider } = useCurve()
@@ -129,5 +129,3 @@ const Page = () => {
     <ConnectWalletPrompt description={t`Connect your wallet to view market`} />
   )
 }
-
-export default Page

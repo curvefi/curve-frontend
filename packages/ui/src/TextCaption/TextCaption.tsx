@@ -1,6 +1,6 @@
 import { styled } from 'styled-components'
 
-const TextCaption = styled.span<{ isBold?: boolean; isBlock?: boolean; isCaps?: boolean }>`
+export const TextCaption = styled.span<{ isBold?: boolean; isBlock?: boolean; isCaps?: boolean }>`
   font-size: var(--font-size-1);
   text-transform: ${({ isCaps }) => (isCaps ? 'uppercase' : 'initial')};
 
@@ -19,4 +19,3 @@ const TextCaption = styled.span<{ isBold?: boolean; isBlock?: boolean; isCaps?: 
     }
   }};
 `
-export default TextCaption

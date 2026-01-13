@@ -1,8 +1,8 @@
 import { styled } from 'styled-components'
-import SmallLabel from '@/dao/components/SmallLabel'
+import { SmallLabel } from '@/dao/components/SmallLabel'
 import { GaugeFormattedData } from '@/dao/types/dao.types'
-import Box from '@ui/Box'
-import Loader from '@ui/Loader'
+import { Box } from '@ui/Box'
+import { Loader } from '@ui/Loader'
 import { t } from '@ui-kit/lib/i18n'
 import { TokenIcons } from '@ui-kit/shared/ui/TokenIcons'
 
@@ -11,7 +11,7 @@ interface GaugeHeaderProps {
   dataLoading: boolean
 }
 
-const GaugeHeader = ({ gaugeData, dataLoading }: GaugeHeaderProps) => (
+export const GaugeHeader = ({ gaugeData, dataLoading }: GaugeHeaderProps) => (
   <Wrapper variant="secondary">
     <BoxedDataComp>
       {gaugeData?.tokens && (
@@ -65,5 +65,3 @@ const BoxedDataComp = styled.div`
     margin-right: var(--spacing-1);
   }
 `
-
-export default GaugeHeader

@@ -3,7 +3,7 @@ import { useMarketOraclePrice } from '@/llamalend/queries/market-oracle-price.qu
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
-import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
+import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 
 export const MarketPrices = ({ chainId, marketId }: { chainId: IChainId; marketId: string }) => {
   const {

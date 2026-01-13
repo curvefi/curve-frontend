@@ -1,6 +1,6 @@
 import { css } from 'styled-components'
-import type { ButtonProps } from 'ui/src/Button/types'
-import { focusVisible } from 'ui/src/utils/sharedStyles'
+import type { ButtonProps } from '@ui/Button/types'
+import { focusVisible } from '@ui/utils/sharedStyles'
 
 export const buttonFilledStyles = css`
   color: var(--button--color);

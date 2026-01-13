@@ -22,7 +22,7 @@ import {
   parseAmountsForAPI,
 } from '@/dex/components/PagePool/utils'
 import type { Amount } from '@/dex/components/PagePool/utils'
-import curvejsApi from '@/dex/lib/curvejs'
+import { curvejsApi } from '@/dex/lib/curvejs'
 import type { State } from '@/dex/store/useStore'
 import {
   ChainId,
@@ -96,7 +96,7 @@ const DEFAULT_STATE: SliceState = {
   slippage: {},
 }
 
-const createPoolDepositSlice = (
+export const createPoolDepositSlice = (
   _set: StoreApi<State>['setState'],
   get: StoreApi<State>['getState'],
 ): PoolDepositSlice => ({
@@ -637,5 +637,3 @@ function resetFormValues(formValues: FormValues): FormValues {
     amounts: formValues.amounts.map((a) => ({ ...a, value: '' })),
   }
 }
-
-export default createPoolDepositSlice

@@ -1,18 +1,18 @@
 import { ReactNode, useState } from 'react'
 import { styled } from 'styled-components'
-import AlertFormError from '@/dex/components/AlertFormError'
-import FormClaimFeesButtons from '@/dex/components/PageDashboard/components/FormClaimFeesButtons'
+import { AlertFormError } from '@/dex/components/AlertFormError'
+import { FormClaimFeesButtons } from '@/dex/components/PageDashboard/components/FormClaimFeesButtons'
 import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
 import { DEFAULT_FORM_STATUS } from '@/dex/components/PageDashboard/utils'
-import useStore from '@/dex/store/useStore'
+import { useStore } from '@/dex/store/useStore'
 import { claimButtonsKey } from '@/dex/types/main.types'
 import type { Step } from '@ui/Stepper/types'
-import IconTooltip from '@ui/Tooltip/TooltipIcon'
+import { TooltipIcon as IconTooltip } from '@ui/Tooltip/TooltipIcon'
 import { formatNumber } from '@ui/utils'
 import { breakpoints } from '@ui/utils/responsive'
 import { t } from '@ui-kit/lib/i18n'
 
-const FormClaimFees = () => {
+export const FormClaimFees = () => {
   const {
     activeKey,
     isLoading,
@@ -67,5 +67,3 @@ const Tooltip = styled(IconTooltip)`
   position: relative;
   top: 2px;
 `
-
-export default FormClaimFees

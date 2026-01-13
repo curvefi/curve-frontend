@@ -1,4 +1,4 @@
-import useIntersectionObserver from 'curve-ui-kit/src/hooks/useIntersectionObserver'
+import { useIntersectionObserver } from 'curve-ui-kit/src/hooks/useIntersectionObserver'
 import { HTMLAttributes, useEffect, useRef, useState } from 'react'
 import { styled } from 'styled-components'
 
@@ -9,7 +9,7 @@ type Props = {
 /**
  * Component to lazy load the <Item> table row when it is visible in the viewport.
  */
-const LazyItem = ({ children, id, style, ...props }: Props) => {
+export const LazyItem = ({ children, id, style, ...props }: Props) => {
   const ref = useRef<HTMLDivElement>(null)
   const { isIntersecting: isVisible } = useIntersectionObserver(ref) ?? {}
 
@@ -29,5 +29,3 @@ const LazyItem = ({ children, id, style, ...props }: Props) => {
 }
 
 const Item = styled.div``
-
-export default LazyItem

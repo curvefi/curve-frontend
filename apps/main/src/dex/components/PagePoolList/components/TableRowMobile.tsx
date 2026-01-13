@@ -1,22 +1,22 @@
 import { Dispatch, SetStateAction, useMemo } from 'react'
 import { styled } from 'styled-components'
-import CampaignRewardsRow from '@/dex/components/CampaignRewardsRow'
-import TCellRewards from '@/dex/components/PagePoolList/components/TableCellRewards'
-import TableCellRewardsBase from '@/dex/components/PagePoolList/components/TableCellRewardsBase'
-import TableCellRewardsCrv from '@/dex/components/PagePoolList/components/TableCellRewardsCrv'
-import TableCellRewardsOthers from '@/dex/components/PagePoolList/components/TableCellRewardsOthers'
-import TableCellTvl from '@/dex/components/PagePoolList/components/TableCellTvl'
-import TableCellVolume from '@/dex/components/PagePoolList/components/TableCellVolume'
+import { CampaignRewardsRow } from '@/dex/components/CampaignRewardsRow'
+import { TCellRewards } from '@/dex/components/PagePoolList/components/TableCellRewards'
+import { TableCellRewardsBase } from '@/dex/components/PagePoolList/components/TableCellRewardsBase'
+import { TableCellRewardsCrv } from '@/dex/components/PagePoolList/components/TableCellRewardsCrv'
+import { TableCellRewardsOthers } from '@/dex/components/PagePoolList/components/TableCellRewardsOthers'
+import { TableCellTvl } from '@/dex/components/PagePoolList/components/TableCellTvl'
+import { TableCellVolume } from '@/dex/components/PagePoolList/components/TableCellVolume'
 import { LazyItem, type TableRowProps } from '@/dex/components/PagePoolList/components/TableRow'
 import type { PoolListTableLabel } from '@/dex/components/PagePoolList/types'
 import { COLUMN_KEYS } from '@/dex/components/PagePoolList/utils'
-import PoolLabel from '@/dex/components/PoolLabel'
+import { PoolLabel } from '@/dex/components/PoolLabel'
 import type { Chain } from '@curvefi/prices-api'
-import Box from '@ui/Box'
-import Button from '@ui/Button'
-import Icon from '@ui/Icon'
-import IconButton from '@ui/IconButton'
-import ListInfoItem, { ListInfoItems } from '@ui/ListInfo'
+import { Box } from '@ui/Box'
+import { Button } from '@ui/Button'
+import { Icon } from '@ui/Icon'
+import { IconButton } from '@ui/IconButton'
+import { ListInfoItems, ListInfoItem } from '@ui/ListInfo'
 import { CellInPool } from '@ui/Table'
 import { formatNumber } from '@ui/utils'
 import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
@@ -31,7 +31,7 @@ type TableRowMobileProps = Omit<TableRowProps, 'isMdUp'> & {
   tableLabel: PoolListTableLabel
 }
 
-const TableRowMobile = ({
+export const TableRowMobile = ({
   index,
   columnKeys,
   isInPool,
@@ -203,5 +203,3 @@ const MobileTableContentWrapper = styled.div`
     transition: max-height 1s ease-in-out;
   }
 `
-
-export default TableRowMobile

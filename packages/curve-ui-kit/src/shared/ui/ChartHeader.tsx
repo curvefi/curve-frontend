@@ -1,5 +1,4 @@
 import { MouseEvent } from 'react'
-import Icon from 'ui/src/Icon'
 import IconButton from '@mui/material/IconButton'
 import MenuItem from '@mui/material/MenuItem'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
@@ -7,6 +6,7 @@ import Stack from '@mui/material/Stack'
 import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import Typography from '@mui/material/Typography'
+import { Icon } from '@ui/Icon'
 import type { TimeOption } from '@ui-kit/lib/types/scrvusd'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
@@ -35,7 +35,7 @@ type ChartHeaderProps<T = string> = {
   hideExpandChart?: boolean
 }
 
-const ChartHeader = <T extends string>({
+export const ChartHeader = <T extends string>({
   isChartExpanded,
   toggleChartExpanded,
   chartOptions,
@@ -124,5 +124,3 @@ const ChartHeader = <T extends string>({
     </Stack>
   )
 }
-
-export default ChartHeader

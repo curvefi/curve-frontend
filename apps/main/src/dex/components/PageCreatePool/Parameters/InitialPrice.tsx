@@ -1,10 +1,10 @@
 import { styled } from 'styled-components'
-import NumberField from '@/dex/components/PageCreatePool/components/NumberField'
-import SwitchTokensButton from '@/dex/components/PageCreatePool/components/SwitchTokensButton'
+import { NumberField } from '@/dex/components/PageCreatePool/components/NumberField'
+import { SwitchTokensButton } from '@/dex/components/PageCreatePool/components/SwitchTokensButton'
 import { TOKEN_A, TOKEN_B, TOKEN_C } from '@/dex/components/PageCreatePool/constants'
-import useStore from '@/dex/store/useStore'
+import { useStore } from '@/dex/store/useStore'
 import { CurveApi } from '@/dex/types/main.types'
-import Box from '@ui/Box'
+import { Box } from '@ui/Box'
 import { t } from '@ui-kit/lib/i18n'
 
 type Props = {
@@ -12,7 +12,7 @@ type Props = {
   haveSigner: boolean
 }
 
-const InitialPrice = ({ curve }: Props) => {
+export const InitialPrice = ({ curve }: Props) => {
   const tokenA = useStore((state) => state.createPool.tokensInPool.tokenA)
   const tokenB = useStore((state) => state.createPool.tokensInPool.tokenB)
   const tokenC = useStore((state) => state.createPool.tokensInPool.tokenC)
@@ -191,5 +191,3 @@ const InitialPriceSum = styled.h4`
   font-weight: var(--semi-bold);
   text-align: left;
 `
-
-export default InitialPrice

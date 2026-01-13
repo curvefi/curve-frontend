@@ -1,32 +1,32 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import { DEFAULT_HEALTH_MODE } from '@/llamalend/constants'
-import AlertFormError from '@/loan/components/AlertFormError'
-import AlertFormWarning from '@/loan/components/AlertFormWarning'
-import DetailInfoBorrowRate from '@/loan/components/DetailInfoBorrowRate'
-import DetailInfoEstimateGas from '@/loan/components/DetailInfoEstimateGas'
-import DetailInfoHealth from '@/loan/components/DetailInfoHealth'
-import DetailInfoLiqRange from '@/loan/components/DetailInfoLiqRange'
-import LoanFormConnect from '@/loan/components/LoanFormConnect'
+import { AlertFormError } from '@/loan/components/AlertFormError'
+import { AlertFormWarning } from '@/loan/components/AlertFormWarning'
+import { DetailInfoBorrowRate } from '@/loan/components/DetailInfoBorrowRate'
+import { DetailInfoEstimateGas } from '@/loan/components/DetailInfoEstimateGas'
+import { DetailInfoHealth } from '@/loan/components/DetailInfoHealth'
+import { DetailInfoLiqRange } from '@/loan/components/DetailInfoLiqRange'
+import { LoanFormConnect } from '@/loan/components/LoanFormConnect'
 import type { FormStatus, FormValues, StepKey } from '@/loan/components/PageMintMarket/LoanDecrease/types'
 import { StyledDetailInfoWrapper, StyledInpChip } from '@/loan/components/PageMintMarket/styles'
 import type { FormEstGas, ManageLoanProps } from '@/loan/components/PageMintMarket/types'
 import { DEFAULT_DETAIL_INFO, DEFAULT_FORM_EST_GAS } from '@/loan/components/PageMintMarket/utils'
 import { DEFAULT_WALLET_BALANCES } from '@/loan/constants'
 import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
-import networks from '@/loan/networks'
+import { networks } from '@/loan/networks'
 import { DEFAULT_FORM_STATUS } from '@/loan/store/createLoanDecreaseSlice'
-import useStore from '@/loan/store/useStore'
+import { useStore } from '@/loan/store/useStore'
 import { LlamaApi, Llamma } from '@/loan/types/loan.types'
 import { curveProps } from '@/loan/utils/helpers'
 import { getStepStatus, getTokenName } from '@/loan/utils/utilsLoan'
 import { getCollateralListPathname } from '@/loan/utils/utilsRouter'
-import Box from '@ui/Box'
-import Checkbox from '@ui/Checkbox'
-import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
+import { Box } from '@ui/Box'
+import { Checkbox } from '@ui/Checkbox'
+import { InputDebounced, InputMaxBtn, InputProvider } from '@ui/InputComp'
 import { getActiveStep } from '@ui/Stepper/helpers'
-import Stepper from '@ui/Stepper/Stepper'
+import { Stepper } from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
-import TxInfoBar from '@ui/TxInfoBar'
+import { TxInfoBar } from '@ui/TxInfoBar'
 import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
@@ -39,7 +39,7 @@ import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { decimal, type Decimal } from '@ui-kit/utils'
 
 // Loan repay
-const LoanDecrease = ({
+export const LoanDecrease = ({
   curve,
   market: llamma,
   params,
@@ -399,5 +399,3 @@ const LoanDecrease = ({
     </>
   )
 }
-
-export default LoanDecrease

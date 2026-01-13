@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import networks from '@/lend/networks'
+import { networks } from '@/lend/networks'
 import { ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import { ChainParams } from '@ui-kit/lib/model/query'

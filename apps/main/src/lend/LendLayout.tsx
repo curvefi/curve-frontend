@@ -1,4 +1,4 @@
-import networks, { networksIdMapper } from '@/lend/networks'
+import { networksIdMapper, networks } from '@/lend/networks'
 import type { UrlParams } from '@/lend/types/lend.types'
 import { Outlet } from '@tanstack/react-router'
 import { useParams } from '@ui-kit/hooks/router'

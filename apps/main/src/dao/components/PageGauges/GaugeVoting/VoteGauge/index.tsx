@@ -1,14 +1,14 @@
 import { useState } from 'react'
 import { styled } from 'styled-components'
-import useStore from '@/dao/store/useStore'
+import { useStore } from '@/dao/store/useStore'
 import { GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
-import Box from '@ui/Box'
-import Icon from '@ui/Icon'
-import IconButton from '@ui/IconButton'
+import { Box } from '@ui/Box'
+import { Icon } from '@ui/Icon'
+import { IconButton } from '@ui/IconButton'
 import { t } from '@ui-kit/lib/i18n'
-import GaugeDetails from '../../GaugeListItem/GaugeDetails'
-import TitleComp from '../../GaugeListItem/TitleComp'
-import VoteGaugeField from '../VoteGaugeField'
+import { GaugeDetails } from '../../GaugeListItem/GaugeDetails'
+import { TitleComp } from '../../GaugeListItem/TitleComp'
+import { VoteGaugeField } from '../VoteGaugeField'
 
 type VoteGaugeProps = {
   gaugeData: GaugeFormattedData
@@ -16,7 +16,7 @@ type VoteGaugeProps = {
   powerUsed: number
 }
 
-const VoteGauge = ({ gaugeData, userGaugeVoteData, powerUsed }: VoteGaugeProps) => {
+export const VoteGauge = ({ gaugeData, userGaugeVoteData, powerUsed }: VoteGaugeProps) => {
   const [showDetails, setShowDetails] = useState(false)
   const setSelectedGauge = useStore((state) => state.gauges.setSelectedGauge)
   const userVeCrv = useStore((state) => state.user.userVeCrv)
@@ -100,5 +100,3 @@ const StyledIconButton = styled(IconButton)<{ showDetails: boolean }>`
     margin: 0 0 0 auto;
   }
 `
-
-export default VoteGauge

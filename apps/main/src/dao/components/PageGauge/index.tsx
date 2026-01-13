@@ -1,20 +1,20 @@
 import { styled } from 'styled-components'
-import GaugeWeightHistoryChart from '@/dao/components/Charts/GaugeWeightHistoryChart'
-import useStore from '@/dao/store/useStore'
+import { GaugeWeightHistoryChart } from '@/dao/components/Charts/GaugeWeightHistoryChart'
+import { useStore } from '@/dao/store/useStore'
 import type { GaugeUrlParams } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils'
-import Box from '@ui/Box'
+import { Box } from '@ui/Box'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
-import BackButton from '../BackButton'
-import GaugeHeader from './GaugeHeader'
-import GaugeMetrics from './GaugeMetrics'
-import GaugeVotesTable from './GaugeVotesTable'
+import { BackButton } from '../BackButton'
+import { GaugeHeader } from './GaugeHeader'
+import { GaugeMetrics } from './GaugeMetrics'
+import { GaugeVotesTable } from './GaugeVotesTable'
 
 type GaugeProps = {
   routerParams: GaugeUrlParams
 }
 
-const Gauge = ({ routerParams: { gaugeAddress: rGaugeAddress } }: GaugeProps) => {
+export const Gauge = ({ routerParams: { gaugeAddress: rGaugeAddress } }: GaugeProps) => {
   const gaugeAddress = rGaugeAddress.toLowerCase()
   const gaugeMapper = useStore((state) => state.gauges.gaugeMapper)
   const gaugesLoading = useStore((state) => state.gauges.gaugesLoading)
@@ -63,5 +63,3 @@ const Content = styled.div`
   padding: var(--spacing-3);
   width: 100%;
 `
-
-export default Gauge

@@ -1,16 +1,16 @@
 import BigNumber from 'bignumber.js'
 import { useCallback } from 'react'
-import { RCCrvUSDLogoXS, RCScrvUSDLogoXS } from 'ui/src/images'
 import { useConnection } from 'wagmi'
 import { InputDivider } from '@/llamalend/widgets/InputDivider'
 import { isLoading } from '@/loan/components/PageCrvUsdStaking/utils'
 import { CRVUSD_ADDRESS, SCRVUSD_VAULT_ADDRESS } from '@/loan/constants'
 import { useScrvUsdUserBalances } from '@/loan/entities/scrvusd-userBalances'
-import networks from '@/loan/networks'
-import useStore from '@/loan/store/useStore'
+import { networks } from '@/loan/networks'
+import { useStore } from '@/loan/store/useStore'
 import { type ChainId } from '@/loan/types/loan.types'
 import Stack from '@mui/material/Stack'
-import Box from '@ui/Box'
+import { Box } from '@ui/Box'
+import { RCCrvUSDLogoXS, RCScrvUSDLogoXS } from '@ui/images'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useLargeTokenInputScrvusd } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
@@ -30,7 +30,7 @@ import {
 
 const { Spacing } = SizesAndSpaces
 
-const WithdrawModule = () => {
+export const WithdrawModule = () => {
   const { address } = useConnection()
   const { data: userScrvUsdBalance, isLoading: userScrvUsdBalanceLoading } = useScrvUsdUserBalances({
     userAddress: address,
@@ -148,5 +148,3 @@ const WithdrawModule = () => {
     </Box>
   )
 }
-
-export default WithdrawModule

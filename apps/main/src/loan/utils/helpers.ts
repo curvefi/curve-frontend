@@ -1,4 +1,4 @@
-import networks from '@/loan/networks'
+import { networks } from '@/loan/networks'
 import { type ChainId, LlamaApi } from '@/loan/types/loan.types'
 
 export const isDevelopment = process.env.NODE_ENV === 'development'

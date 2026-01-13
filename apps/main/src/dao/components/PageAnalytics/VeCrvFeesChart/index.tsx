@@ -1,13 +1,13 @@
 import { useMemo } from 'react'
 import { styled } from 'styled-components'
-import ErrorMessage from '@/dao/components/ErrorMessage'
-import useStore from '@/dao/store/useStore'
-import Box from '@ui/Box'
+import { ErrorMessage } from '@/dao/components/ErrorMessage'
+import { useStore } from '@/dao/store/useStore'
+import { Box } from '@ui/Box'
 import { t } from '@ui-kit/lib/i18n'
-import Spinner from '../../Spinner'
-import FeesBarChart from './FeesBarChart'
+import { SpinnerComponent as Spinner } from '../../Spinner'
+import { FeesBarChart } from './FeesBarChart'
 
-const VeCrvFeesChart = () => {
+export const VeCrvFeesChart = () => {
   const veCrvFees = useStore((state) => state.analytics.veCrvFees)
   const getVeCrvFees = useStore((state) => state.analytics.getVeCrvFees)
 
@@ -55,5 +55,3 @@ const BoxTitle = styled.h4`
 const Content = styled.div`
   padding: 0 var(--spacing-3) var(--spacing-3);
 `
-
-export default VeCrvFeesChart

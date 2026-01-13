@@ -1,7 +1,5 @@
-import Icon from 'ui/src/Icon'
+import { Icon } from '@ui/Icon'
 
-const TableButtonFiltersMobileItemIcon = ({ color }: { color?: string }) => (
+export const TableButtonFiltersMobileItemIcon = ({ color }: { color?: string }) => (
   <Icon size={16} name="StopFilledAlt" fill={color} strokeWidth="1px" stroke="white" />
 )
-
-export default TableButtonFiltersMobileItemIcon

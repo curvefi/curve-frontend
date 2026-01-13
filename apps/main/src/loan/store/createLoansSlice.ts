@@ -2,7 +2,7 @@ import lodash from 'lodash'
 import { StoreApi } from 'zustand'
 import { refetchLoanExists } from '@/llamalend/queries/loan-exists'
 import { invalidateMarketRates } from '@/llamalend/queries/market-rates'
-import networks from '@/loan/networks'
+import { networks } from '@/loan/networks'
 import type { State } from '@/loan/store/useStore'
 import {
   type ChainId,
@@ -53,7 +53,7 @@ const DEFAULT_STATE: SliceState = {
   userWalletBalancesLoading: false,
 }
 
-const createLoansSlice = (_: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
+export const createLoansSlice = (_: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 
@@ -156,5 +156,3 @@ const createLoansSlice = (_: StoreApi<State>['setState'], get: StoreApi<State>['
     },
   },
 })
-
-export default createLoansSlice

@@ -4,14 +4,14 @@ import type { HealthMode } from '@/llamalend/llamalend.types'
 import { ChartLiquidationRange } from '@/llamalend/widgets/ChartLiquidationRange'
 import type { LiqRangeSliderIdx } from '@/loan/store/types'
 import { LoanDetails, UserLoanDetails } from '@/loan/types/loan.types'
-import Button from '@ui/Button'
+import { Button } from '@ui/Button'
 import { DetailInfo } from '@ui/DetailInfo'
-import Icon from '@ui/Icon'
+import { Icon } from '@ui/Icon'
 import { Chip } from '@ui/Typography'
 import { formatNumberRange } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 
-const DetailInfoLiqRange = ({
+export const DetailInfoLiqRange = ({
   bands: newBands,
   detailInfoLeverage,
   healthMode,
@@ -161,5 +161,3 @@ const LiqRangeEditButton = styled(Button)`
     cursor: initial;
   }
 `
-
-export default DetailInfoLiqRange

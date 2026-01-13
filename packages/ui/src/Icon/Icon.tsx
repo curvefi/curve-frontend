@@ -94,7 +94,7 @@ export interface IconProps extends CarbonIconProps {
   size: 16 | 20 | 24 | 32
 }
 
-const Icon = ({ className, name, size, ...props }: IconProps) => {
+export const Icon = ({ className, name, size, ...props }: IconProps) => {
   const IconSvg = useMemo(() => {
     if (name && name in icon) {
       return icon[name]
@@ -103,5 +103,3 @@ const Icon = ({ className, name, size, ...props }: IconProps) => {
 
   return IconSvg ? <IconSvg className={className} size={size} {...props} /> : <></>
 }
-
-export default Icon

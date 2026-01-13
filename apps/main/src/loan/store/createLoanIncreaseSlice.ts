@@ -8,7 +8,7 @@ import {
   DEFAULT_FORM_EST_GAS,
   DEFAULT_FORM_STATUS as FORM_STATUS,
 } from '@/loan/components/PageMintMarket/utils'
-import networks from '@/loan/networks'
+import { networks } from '@/loan/networks'
 import type { State } from '@/loan/store/useStore'
 import { ChainId, LlamaApi, Llamma } from '@/loan/types/loan.types'
 import { useWallet } from '@ui-kit/features/connect-wallet'
@@ -80,7 +80,7 @@ const DEFAULT_STATE: SliceState = {
   maxRecv: {},
 }
 
-const createLoanIncrease = (_set: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
+export const createLoanIncrease = (_set: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 
@@ -262,8 +262,6 @@ const createLoanIncrease = (_set: StoreApi<State>['setState'], get: StoreApi<Sta
     },
   },
 })
-
-export default createLoanIncrease
 
 export function getLoanIncreaseActiveKey(llamma: Llamma, { collateral, debt }: FormValues) {
   return `${llamma.id}-${collateral}-${debt}`

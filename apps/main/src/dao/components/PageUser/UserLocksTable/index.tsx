@@ -1,8 +1,8 @@
 import lodash from 'lodash'
-import PaginatedTable from '@/dao/components/PaginatedTable'
+import { PaginatedTable } from '@/dao/components/PaginatedTable'
 import { TableRowWrapper, TableData } from '@/dao/components/PaginatedTable/TableRow'
 import { type UserLockFormatted, invalidateUserLocks, useUserLocksQuery } from '@/dao/entities/user-locks'
-import useStore from '@/dao/store/useStore'
+import { useStore } from '@/dao/store/useStore'
 import { SortDirection, UserLocksSortBy } from '@/dao/types/dao.types'
 import { LockType } from '@curvefi/prices-api/dao/models'
 import { formatLocaleDateFromTimestamp, formatNumber } from '@ui/utils'
@@ -31,7 +31,7 @@ const lockTypeLabel = (lockType: LockType) => {
   }
 }
 
-const UserLocksTable = ({ userAddress }: UserLocksTableProps) => {
+export const UserLocksTable = ({ userAddress }: UserLocksTableProps) => {
   const { data: userLocks, isLoading, isError, isSuccess } = useUserLocksQuery({ userAddress })
   const userLocksSortBy = useStore((state) => state.user.userLocksSortBy)
   const setUserLocksSortBy = useStore((state) => state.user.setUserLocksSortBy)
@@ -70,5 +70,3 @@ const UserLocksTable = ({ userAddress }: UserLocksTableProps) => {
     />
   )
 }
-
-export default UserLocksTable

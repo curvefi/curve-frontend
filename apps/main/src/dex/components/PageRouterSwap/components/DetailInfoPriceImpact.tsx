@@ -1,9 +1,9 @@
 import { DetailInfo } from '@ui/DetailInfo'
-import IconTooltip from '@ui/Tooltip/TooltipIcon'
+import { TooltipIcon as IconTooltip } from '@ui/Tooltip/TooltipIcon'
 import { formatNumber, getFractionDigitsOptions } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 
-const DetailInfoPriceImpact = ({
+export const DetailInfoPriceImpact = ({
   loading,
   priceImpact,
   isHighImpact,
@@ -28,5 +28,3 @@ const DetailInfoPriceImpact = ({
     {formatNumber(priceImpact, { style: 'percent', ...getFractionDigitsOptions(priceImpact, 5) })}
   </DetailInfo>
 )
-
-export default DetailInfoPriceImpact

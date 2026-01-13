@@ -1,6 +1,6 @@
 import { styled } from 'styled-components'
-import Popover, { Popover2Dialog } from 'ui/src/Popover2'
-import DialogSelectContent from '@ui-kit/features/candle-chart/DialogSelectTimeOptionContent'
+import { Popover2Dialog, Popover2Trigger as Popover } from '@ui/Popover2'
+import { DialogSelectChart as DialogSelectContent } from '@ui-kit/features/candle-chart/DialogSelectTimeOptionContent'
 import type { TimeOptions } from './types'
 
 type Props = {
@@ -9,7 +9,7 @@ type Props = {
   setCurrentTimeOption: (timeOption: TimeOptions) => void
 }
 
-const DialogSelect = ({ currentTimeOption, setCurrentTimeOption, isDisabled }: Props) => (
+export const DialogSelect = ({ currentTimeOption, setCurrentTimeOption, isDisabled }: Props) => (
   <Popover
     buttonProps={{ isDisabled }}
     placement="bottom"
@@ -33,5 +33,3 @@ const StyledPopover2Dialog = styled(Popover2Dialog)`
     margin-right: auto;
   }
 `
-
-export default DialogSelect

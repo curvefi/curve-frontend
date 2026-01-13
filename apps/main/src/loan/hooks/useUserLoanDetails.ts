@@ -1,4 +1,4 @@
-import useStore from '@/loan/store/useStore'
+import { useStore } from '@/loan/store/useStore'
 import type { UserLoanDetails } from '@/loan/types/loan.types'
 
 /**

@@ -1,17 +1,17 @@
 import { ReactNode } from 'react'
 import { useConnection } from 'wagmi'
-import FormConnectWallet from '@/dex/components/FormConnectWallet'
-import AlertSeedAmounts from '@/dex/components/PagePool/components/AlertSeedAmounts'
+import { FormConnectWallet } from '@/dex/components/FormConnectWallet'
+import { AlertSeedAmounts } from '@/dex/components/PagePool/components/AlertSeedAmounts'
 import type { TransferProps } from '@/dex/components/PagePool/types'
 import { usePoolIdByAddressOrId } from '@/dex/hooks/usePoolIdByAddressOrId'
 import { usePoolTokenBalances } from '@/dex/hooks/usePoolTokenBalances'
-import useTokenAlert from '@/dex/hooks/useTokenAlert'
-import useStore from '@/dex/store/useStore'
+import { useTokenAlert } from '@/dex/hooks/useTokenAlert'
+import { useStore } from '@/dex/store/useStore'
 import { getChainPoolIdActiveKey } from '@/dex/utils'
-import AlertBox from '@ui/AlertBox'
+import { AlertBox } from '@ui/AlertBox'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 
-const TransferActions = ({
+export const TransferActions = ({
   children,
   seed,
   loading,
@@ -52,5 +52,3 @@ const TransferActions = ({
     </>
   )
 }
-
-export default TransferActions

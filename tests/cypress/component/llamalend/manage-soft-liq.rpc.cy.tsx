@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { prefetchMarkets } from '@/lend/entities/chain/chain-query'
 import { ManageSoftLiquidation } from '@/llamalend/features/manage-soft-liquidation'
-import networks from '@/loan/networks'
+import { networks } from '@/loan/networks'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import { createTenderlyWagmiConfigFromVNet, forkVirtualTestnet } from '@cy/support/helpers/tenderly'
 import Skeleton from '@mui/material/Skeleton'

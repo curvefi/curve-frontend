@@ -8,7 +8,7 @@ interface Props extends AriaSwitchProps {
   isActive: boolean
 }
 
-function Switch({ isActive, ...props }: Props) {
+export function Switch({ isActive, ...props }: Props) {
   const state = useToggleState({ ...props })
   const ref = useRef(null)
   const { inputProps } = useSwitch({ ...props, 'aria-label': 'Toggle switch' }, state, ref)
@@ -64,5 +64,3 @@ const Title = styled.p`
   margin-top: 0.2rem;
   color: var(--box--primary--color);
 `
-
-export default Switch

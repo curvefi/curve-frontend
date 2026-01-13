@@ -2,19 +2,19 @@ import Fuse from 'fuse.js'
 import { useCallback, useState } from 'react'
 import { useFilter } from 'react-aria'
 import { useOverlayTriggerState } from 'react-stately'
-import ComboBox from '@/dao/components/ComboBoxSelectGauge/ComboBox'
-import ComboBoxSelectedGaugeButton from '@/dao/components/ComboBoxSelectGauge/ComboBoxSelectedGaugeButton'
+import { ComboBox } from '@/dao/components/ComboBoxSelectGauge/ComboBox'
+import { ComboBoxSelectedGaugeButton } from '@/dao/components/ComboBoxSelectGauge/ComboBoxSelectedGaugeButton'
 import type { EndsWith } from '@/dao/components/ComboBoxSelectGauge/types'
 import { useUserGaugeWeightVotesQuery } from '@/dao/entities/user-gauge-weight-votes'
-import useStore from '@/dao/store/useStore'
+import { useStore } from '@/dao/store/useStore'
 import { GaugeFormattedData } from '@/dao/types/dao.types'
 import { delayAction } from '@/dao/utils'
-import ModalDialog from '@ui/Dialog/ModalDialog'
+import { ModalDialog } from '@ui/Dialog/ModalDialog'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
 import { Chain } from '@ui-kit/utils/network'
 
-const ComboBoxGauges = ({
+export const ComboBoxGauges = ({
   disabled,
   listBoxHeight,
   testId,
@@ -133,5 +133,3 @@ function _filter(filterValue: string, endsWith: EndsWith, gauges: GaugeFormatted
     return gauges.filter((item) => endsWith(item.address, filterValue))
   }
 }
-
-export default ComboBoxGauges

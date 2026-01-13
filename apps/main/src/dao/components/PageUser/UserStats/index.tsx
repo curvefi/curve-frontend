@@ -1,7 +1,7 @@
 import { styled } from 'styled-components'
-import MetricsComp, { MetricsColumnData } from '@/dao/components/MetricsComp'
+import { MetricsColumnData, MetricsComp } from '@/dao/components/MetricsComp'
 import type { Locker } from '@curvefi/prices-api/dao'
-import Box from '@ui/Box'
+import { Box } from '@ui/Box'
 import { formatNumber, formatDate } from '@ui/utils/'
 import { t } from '@ui-kit/lib/i18n'
 
@@ -10,7 +10,7 @@ interface UserStatsProps {
   holdersLoading: boolean
 }
 
-const UserStats = ({ veCrvHolder, holdersLoading }: UserStatsProps) => (
+export const UserStats = ({ veCrvHolder, holdersLoading }: UserStatsProps) => (
   <Wrapper>
     <h4>{t`USER STATS`}</h4>
     <MetricsContainer>
@@ -57,5 +57,3 @@ const MetricsContainer = styled(Box)`
     grid-template-columns: 1fr 1fr 1fr 1fr;
   }
 `
-
-export default UserStats

@@ -1,11 +1,11 @@
 import { RefObject, useRef } from 'react'
 import { styled } from 'styled-components'
-import SelectGaugeListItem from '@/dao/components/ComboBoxSelectGauge/ComboBoxListItem'
+import { ComboBoxListItem as SelectGaugeListItem } from '@/dao/components/ComboBoxSelectGauge/ComboBoxListItem'
 import type { ComboBoxSelectGaugeProps } from '@/dao/components/ComboBoxSelectGauge/types'
 import { GaugeFormattedData } from '@/dao/types/dao.types'
-import useIntersectionObserver from '@ui-kit/hooks/useIntersectionObserver'
+import { useIntersectionObserver } from '@ui-kit/hooks/useIntersectionObserver'
 
-const SelectGaugeListChunk = ({
+export const SelectGaugeListChunk = ({
   testId,
   inputRef,
   selectedGauge,
@@ -67,5 +67,3 @@ const SelectGaugeListChunk = ({
 const ItemsWrapper = styled.ul<{ count: number }>`
   height: ${({ count }) => `${count * 50}px`};
 `
-
-export default SelectGaugeListChunk

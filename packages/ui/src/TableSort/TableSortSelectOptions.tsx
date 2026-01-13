@@ -1,8 +1,8 @@
 import { styled } from 'styled-components'
-import Icon from 'ui/src/Icon'
-import { Radio, RadioGroup } from 'ui/src/Radio'
-import type { LabelsMapper } from 'ui/src/TableSort/types'
-import { Chip } from 'ui/src/Typography'
+import { Icon } from '@ui/Icon'
+import { Radio, RadioGroup } from '@ui/Radio'
+import type { LabelsMapper } from '@ui/TableSort/types'
+import { Chip } from '@ui/Typography'
 
 const sortOrder = {
   asc: { label: 'Ascending', icon: <Icon name="ArrowUp" size={24} /> },
@@ -16,7 +16,7 @@ type Props = {
   handleRadioGroupChange(updatedSortValue: string, cb: (() => void) | undefined): void
 }
 
-const TableSortSelectOptions = ({ labelsMapper, value, handleRadioGroupChange, toggle }: Props) => (
+export const TableSortSelectOptions = ({ labelsMapper, value, handleRadioGroupChange, toggle }: Props) => (
   <>
     <SortHeader>
       <StyledChip>Asc</StyledChip> <StyledChip>Desc</StyledChip>
@@ -91,5 +91,3 @@ const RadioWrapper = styled.div`
 
   font-weight: var(--font-weight--bold);
 `
-
-export default TableSortSelectOptions
