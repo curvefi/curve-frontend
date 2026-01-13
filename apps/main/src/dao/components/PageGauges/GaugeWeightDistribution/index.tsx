@@ -29,7 +29,7 @@ export const GaugeWeightDistribution = ({ isUserVotes }: GaugeWeightDistribution
     userAddress: userAddress ?? '',
   })
   const {
-    data: gaugeMapper = {},
+    data: gaugeMapper,
     isSuccess: gaugesIsSuccess,
     isLoading: gaugesIsLoading,
     isError: gaugesIsError,
@@ -45,12 +45,12 @@ export const GaugeWeightDistribution = ({ isUserVotes }: GaugeWeightDistribution
       return (
         userGaugeWeightVotes?.gauges.map((gauge) => ({
           ...gauge,
-          title: gaugeMapper[gauge.gaugeAddress]?.title ?? '',
+          title: gaugeMapper?.[gauge.gaugeAddress]?.title ?? '',
         })) ?? []
       )
     }
 
-    return Object.values(gaugeMapper)
+    return Object.values(gaugeMapper ?? {})
       .filter((gauge) => gauge.gauge_relative_weight > 0.5)
       .sort((a, b) => b.gauge_relative_weight - a.gauge_relative_weight)
   }, [gaugeMapper, isUserVotes, userGaugeWeightVotes?.gauges])

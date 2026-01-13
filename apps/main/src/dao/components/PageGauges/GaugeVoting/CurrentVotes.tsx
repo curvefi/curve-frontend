@@ -31,7 +31,7 @@ export const CurrentVotes = () => {
   const { address: userAddress } = useConnection()
   const setUserGaugeVoteWeightsSortBy = useStore((state) => state.user.setUserGaugeVoteWeightsSortBy)
   const userGaugeVoteWeightsSortBy = useStore((state) => state.user.userGaugeVoteWeightsSortBy)
-  const { data: gaugeMapper = {}, isLoading: gaugesIsLoading } = useGauges({})
+  const { data: gaugeMapper, isLoading: gaugesIsLoading } = useGauges({})
   const selectedGauge = useStore((state) => state.gauges.selectedGauge)
 
   const {
@@ -54,7 +54,7 @@ export const CurrentVotes = () => {
     () =>
       userGaugeWeightVotes?.gauges.map((gauge) => ({
         ...gauge,
-        rootGaugeAddress: findRootGauge(gauge.gaugeAddress, gaugeMapper),
+        rootGaugeAddress: findRootGauge(gauge.gaugeAddress, gaugeMapper ?? {}),
       })) ?? [],
     [userGaugeWeightVotes, gaugeMapper],
   )
@@ -83,14 +83,14 @@ export const CurrentVotes = () => {
         <h3>{t`USER GAUGE VOTES`}</h3>
         {<GaugeVotingStats />}
       </VoteStats>
-      {selectedGauge && (
+      {selectedGauge && gaugeMapper && (
         <VoteGauge
           gaugeData={gaugeMapper[formattedSelectedGauge.gaugeAddress]}
           userGaugeVoteData={formattedSelectedGauge}
           powerUsed={userGaugeWeightVotes?.powerUsed ?? 0}
         />
       )}
-      {userAddress && (
+      {userAddress && gaugeMapper && (
         <PaginatedTable<UserGaugeVoteWeight>
           data={sortGauges(userGauges, userGaugeVoteWeightsSortBy.order, userGaugeVoteWeightsSortBy.key)}
           minWidth={tableMinWidth}
