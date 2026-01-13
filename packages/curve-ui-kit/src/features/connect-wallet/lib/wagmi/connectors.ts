@@ -1,31 +1,18 @@
+import { t } from '@ui-kit/lib/i18n'
 import { coinbaseWallet, injected, safe, walletConnect } from '@wagmi/connectors'
 import type { CreateConnectorFn } from '@wagmi/core'
 
 // project managed at https://cloud.reown.com/ set up by Schiavini, Michael also has access.
 const WALLET_CONNECT_PROJECT_ID = '982ea4bdf92e49746bd040a981283b36'
 
-export const BINANCE_CONNECTOR = 'wallet.binance.com'
+export const INJECTED_CONNECTOR_ID = 'injected'
+export const BINANCE_CONNECTOR_ID = 'wallet.binance.com'
 
-export type ConnectorType =
-  | typeof injected.type
-  | typeof coinbaseWallet.type
-  | typeof safe.type
-  | typeof walletConnect.type
-  | typeof BINANCE_CONNECTOR
-
-export const connectors: Record<ConnectorType, CreateConnectorFn> = {
-  [injected.type]: injected(),
-  [BINANCE_CONNECTOR]: injected({
-    target: {
-      // Provide the injected target to avoid window.ethereum provider overwrite conflict
-      id: BINANCE_CONNECTOR,
-      name: 'Binance Wallet Injected',
-      provider: () => window.binancew3w?.ethereum,
-    },
-  }),
-  [coinbaseWallet.type]: coinbaseWallet({ preference: { options: 'all', telemetry: false } }),
-  [safe.type]: safe(),
-  [walletConnect.type]: walletConnect({
+// Order matters for the connect wallet modal, list grows from bottom to top, so first one is shown all the way down.
+export const connectors: CreateConnectorFn[] = [
+  coinbaseWallet({ preference: { options: 'all', telemetry: false } }),
+  safe(),
+  walletConnect({
     projectId: WALLET_CONNECT_PROJECT_ID,
     showQrModal: true,
     qrModalOptions: {
@@ -35,4 +22,8 @@ export const connectors: Record<ConnectorType, CreateConnectorFn> = {
       },
     },
   }),
-}
+  injected({ target: { id: 'injected', name: t`Browser Wallet`, provider: () => window.ethereum } }),
+  injected({
+    target: { id: BINANCE_CONNECTOR_ID, name: t`Binance Wallet`, provider: () => window.binancew3w?.ethereum },
+  }),
+]
