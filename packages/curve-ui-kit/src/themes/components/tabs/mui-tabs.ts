@@ -31,16 +31,16 @@ export const TAB_TEXT_VARIANTS = {
   extraExtraLarge: 'headingMBold',
 } as const satisfies Record<keyof typeof TABS_SIZES_CLASSES, TypographyVariantKey>
 
-const BORDER_SIZE = '2px' as const
-const BORDER_SIZE_INACTIVE = '1px' as const
-const BORDER_SIZE_LARGE = '4px' as const
-const TAB_BOX_SIZING = 'border-box' as const
-
-const TAB_HEIGHT: Record<keyof typeof TABS_SIZES_CLASSES, string> = {
+export const TAB_HEIGHT: Record<keyof typeof TABS_SIZES_CLASSES, string> = {
   small: ButtonSize.xs,
   medium: ButtonSize.sm,
   extraExtraLarge: ButtonSize.md,
 }
+
+const BORDER_SIZE = '2px' as const
+const BORDER_SIZE_INACTIVE = '1px' as const
+const BORDER_SIZE_LARGE = '4px' as const
+const TAB_BOX_SIZING = 'border-box' as const
 
 type TabSizeConfig = {
   className: string

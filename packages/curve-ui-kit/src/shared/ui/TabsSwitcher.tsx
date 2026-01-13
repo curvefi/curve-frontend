@@ -16,6 +16,7 @@ import {
   TabSwitcherVariants,
   TAB_SUFFIX_CLASS,
   TAB_TEXT_VARIANTS,
+  TAB_HEIGHT,
 } from '../../themes/components/tabs'
 
 const { Spacing, ButtonSize } = SizesAndSpaces
@@ -112,7 +113,14 @@ export const TabsSwitcher = <T extends string | number>({
   const tabsClassName = `${TABS_VARIANT_CLASSES[variant]} ${TABS_SIZES_CLASSES[size]} ${hideInactiveBorders && HIDE_INACTIVE_BORDERS_CLASS}`
 
   return (
-    <Stack ref={tabsContainerRef} sx={{ position: 'relative' }}>
+    <Stack
+      ref={tabsContainerRef}
+      sx={{
+        position: 'relative',
+        // Keep kebab button visible when no visible tabs render
+        minHeight: TAB_HEIGHT[size],
+      }}
+    >
       <Tabs
         variant={finalMuiVariant}
         textColor="inherit"

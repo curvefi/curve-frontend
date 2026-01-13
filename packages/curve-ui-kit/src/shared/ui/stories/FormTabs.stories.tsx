@@ -88,21 +88,15 @@ const additionalTabs: FormTab<DemoParams>[] = [
     visible: () => true,
     component: HistoryTab,
   },
-  {
-    value: 'settings',
-    label: 'Settings',
-    visible: () => true,
-    component: SettingsTab,
-  },
 ]
 
 const kebabMenuAutoOverflow: FormTab<DemoParams>[] = [...baseMenu, ...additionalTabs]
 
 const kebabMenuWithForcedOverflow: FormTab<DemoParams>[] = [
-  ...additionalTabs,
+  ...baseMenu,
   {
     value: 'kebab-item',
-    label: 'Always in Menu',
+    label: 'Settings',
     alwaysInKebab: () => true,
     visible: () => true,
     component: AlwaysInMenuTab,
@@ -224,7 +218,7 @@ export const LegacyWrapped: Story = {
 }
 
 export const KebabOverflow: Story = {
-  args: { overflow: 'kebab', showAdvanced: true, showOverflowMenu: true, menu: kebabMenuWithForcedOverflow },
+  args: { overflow: 'kebab', showOverflowMenu: true, menu: kebabMenuWithForcedOverflow },
   parameters: {
     docs: {
       description: {
