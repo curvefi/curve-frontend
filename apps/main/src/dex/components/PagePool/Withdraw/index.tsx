@@ -42,16 +42,7 @@ const Withdraw = (transferProps: TransferProps) => {
 
   return (
     <FormContent
-      header={
-        <TabsSwitcher
-          variant="underlined"
-          size="small"
-          value={tab}
-          onChange={handleTabChange}
-          options={tabs}
-          fullWidth
-        />
-      }
+      header={<TabsSwitcher variant="underlined" value={tab} onChange={handleTabChange} options={tabs} fullWidth />}
     >
       {formType === 'WITHDRAW' &&
         (poolAlert?.isDisableWithdrawOnly ? (

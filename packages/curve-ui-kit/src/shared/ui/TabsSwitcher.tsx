@@ -5,33 +5,31 @@ import Tabs, { type TabsProps } from '@mui/material/Tabs'
 import Typography, { type TypographyProps } from '@mui/material/Typography'
 import { RouterLink as Link } from '@ui-kit/shared/ui/RouterLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import type { TypographyVariantKey } from '@ui-kit/themes/typography'
 import {
-  TABS_HEIGHT_CLASSES,
+  TABS_SIZES_CLASSES,
   HIDE_INACTIVE_BORDERS_CLASS,
   TABS_VARIANT_CLASSES,
   TabSwitcherVariants,
+  TAB_SUFFIX_CLASS,
+  TAB_TEXT_VARIANTS,
 } from '../../themes/components/tabs'
 
 const { Spacing } = SizesAndSpaces
 
-const defaultTextVariants = {
-  small: 'buttonS',
-  medium: 'buttonM',
-  large: 'headingMBold',
-} as const satisfies Record<keyof typeof TABS_HEIGHT_CLASSES, TypographyVariantKey>
-
 export type TabOption<T> = Pick<TabProps, 'label' | 'disabled' | 'icon' | 'sx'> & {
   value: T
   href?: string | UrlObject
-  endAdornment?: string
+  suffix?: string
+  startAdornment?: React.ReactNode
+  endAdornment?: React.ReactNode
 }
 
 export type TabsSwitcherProps<T> = Pick<TabsProps, 'sx'> & {
-  size?: keyof typeof TABS_HEIGHT_CLASSES
+  size?: keyof typeof TABS_SIZES_CLASSES
   variant?: TabSwitcherVariants
   muiVariant?: TabsProps['variant']
   textVariant?: TypographyProps['variant']
+  orientation?: TabsProps['orientation']
   value: T | undefined
   options: readonly TabOption<T>[]
   hideInactiveBorders?: boolean
@@ -42,7 +40,7 @@ export type TabsSwitcherProps<T> = Pick<TabsProps, 'sx'> & {
 
 export const TabsSwitcher = <T extends string | number>({
   variant = 'contained',
-  size = 'small',
+  size = 'medium',
   muiVariant,
   options,
   onChange,
@@ -58,23 +56,29 @@ export const TabsSwitcher = <T extends string | number>({
     textColor="inherit"
     value={value ?? false}
     onChange={(_, newValue) => onChange?.(newValue)}
-    className={`${TABS_VARIANT_CLASSES[variant]} ${TABS_HEIGHT_CLASSES[size]} ${hideInactiveBorders && HIDE_INACTIVE_BORDERS_CLASS}`}
+    className={`${TABS_VARIANT_CLASSES[variant]} ${TABS_SIZES_CLASSES[size]} ${hideInactiveBorders && HIDE_INACTIVE_BORDERS_CLASS}`}
     sx={{ ...sx, ...(fullWidth && { '& .MuiTab-root': { flexGrow: 1 } }) }}
     {...props}
   >
-    {options.map(({ value, label, href, endAdornment, ...props }) => (
+    {options.map(({ value, label, href, startAdornment, endAdornment, suffix, ...props }) => (
       <Tab
         data-testid={`tab-${value}`}
         key={value}
         value={value}
         label={
-          <Stack direction="row" alignItems="baseline" gap={Spacing.xxs}>
-            <Typography variant={textVariant ?? defaultTextVariants[size]}>{label}</Typography>
-            {endAdornment != null && (
-              <Typography variant="highlightXs" className="tab-end-adornment">
-                {endAdornment}
-              </Typography>
+          <Stack direction="row" alignItems="center" gap={Spacing.xxs}>
+            {startAdornment}
+            {(label || suffix) && (
+              <Stack direction="row" alignItems="baseline" gap={Spacing.xxs}>
+                {label && <Typography variant={textVariant ?? TAB_TEXT_VARIANTS[size]}>{label}</Typography>}
+                {suffix && (
+                  <Typography variant="highlightXs" className={TAB_SUFFIX_CLASS}>
+                    {suffix}
+                  </Typography>
+                )}
+              </Stack>
             )}
+            {endAdornment}
           </Stack>
         }
         {...(href && { href, component: Link })}
