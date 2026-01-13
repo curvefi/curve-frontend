@@ -5,12 +5,12 @@ import { formatTokenAmounts } from '@/llamalend/llama.utils'
 import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { type LlammaMutationOptions, useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
 import { fetchRepayIsApproved } from '@/llamalend/queries/repay/repay-is-approved.query'
+import { getRepayImplementation } from '@/llamalend/queries/repay/repay-query.helpers'
 import {
   type RepayForm,
   repayFromCollateralIsFullValidationSuite,
 } from '@/llamalend/queries/validation/manage-loan.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
-import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
 import { type Decimal, waitForApproval } from '@ui-kit/utils'
@@ -20,7 +20,6 @@ type RepayMutation = {
   userCollateral: Decimal
   userBorrowed: Decimal
   isFull: boolean
-  leverageEnabled: boolean
 }
 
 export type RepayOptions = {
@@ -33,47 +32,41 @@ export type RepayOptions = {
 
 const approveRepay = async (
   market: LlamaMarketTemplate,
-  { userCollateral, userBorrowed, isFull, leverageEnabled }: RepayMutation,
+  { stateCollateral, userCollateral, userBorrowed, isFull }: RepayMutation,
 ) => {
-  if (isFull) {
+  if (isFull && !+stateCollateral && !+userCollateral) {
     return (await market.fullRepayApprove()) as Hex[]
   }
-  if (!leverageEnabled) {
-    console.assert(!+userCollateral, `userCollateral should be 0 for non-leverage repay`)
-    return (await market.repayApprove(userBorrowed)) as Hex[]
+  const [type, impl] = getRepayImplementation(market.id, { userCollateral, stateCollateral, userBorrowed })
+  switch (type) {
+    case 'V1':
+    case 'V2':
+      return (await impl.repayApprove(userCollateral, userBorrowed)) as Hex[]
+    case 'deleverage':
+      return [] // no approve needed, paying from state
+    case 'unleveraged':
+      return (await impl.repayApprove(userBorrowed)) as Hex[]
   }
-  if (market instanceof LendMarketTemplate) {
-    return (await market.leverage.repayApprove(userCollateral, userBorrowed)) as Hex[]
-  }
-  if (market.leverageV2.hasLeverage()) {
-    return (await market.leverageV2.repayApprove(userCollateral, userBorrowed)) as Hex[]
-  }
-  console.assert(!+userBorrowed, `userBorrowed should be 0 for deleverage repay`)
-  return [] // no approve needed, paying from state
 }
 
 const repay = async (
   market: LlamaMarketTemplate,
-  { stateCollateral, userCollateral, userBorrowed, isFull, leverageEnabled }: RepayMutation,
+  { stateCollateral, userCollateral, userBorrowed, isFull }: RepayMutation,
 ): Promise<Hex> => {
-  if (isFull) {
+  if (isFull && !+stateCollateral && !+userCollateral) {
     return (await market.fullRepay()) as Hex
   }
-  if (!leverageEnabled) {
-    console.assert(!+userCollateral, `userCollateral should be 0 for non-leverage repay`)
-    return (await market.repay(userBorrowed)) as Hex
+  const [type, impl] = getRepayImplementation(market.id, { userCollateral, stateCollateral, userBorrowed })
+  switch (type) {
+    case 'V1':
+    case 'V2':
+      await impl.repayExpectedBorrowed(stateCollateral, userCollateral, userBorrowed)
+      return (await impl.repay(stateCollateral, userCollateral, userBorrowed)) as Hex
+    case 'deleverage':
+      return (await impl.repay(stateCollateral)) as Hex
+    case 'unleveraged':
+      return (await impl.repay(userBorrowed)) as Hex
   }
-  if (market instanceof LendMarketTemplate) {
-    await market.leverage.repayExpectedBorrowed(stateCollateral, userCollateral, userBorrowed)
-    return (await market.leverage.repay(stateCollateral, userCollateral, userBorrowed)) as Hex
-  }
-  if (market.leverageV2.hasLeverage()) {
-    await market.leverageV2.repayExpectedBorrowed(stateCollateral, userCollateral, userBorrowed)
-    return (await market.leverageV2.repay(stateCollateral, userCollateral, userBorrowed)) as Hex
-  }
-  console.assert(!+userCollateral, `userCollateral should be 0 for non-leverage repay`)
-  console.assert(!+userBorrowed, `userBorrowed should be 0 for non-leverage repay`)
-  return (await market.deleverage.repay(stateCollateral)) as Hex
 }
 
 export const useRepayMutation = ({

@@ -75,7 +75,7 @@ export const RepayForm = <ChainId extends IChainId>({
   )
 
   return (
-    <Form // todo: prevHealth, prevRates, debt, prevDebt
+    <Form
       {...form}
       onSubmit={onSubmit}
       infoAccordion={

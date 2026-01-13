@@ -33,7 +33,8 @@ export const { useQuery: useRepayIsApproved, fetchQuery: fetchRepayIsApproved } 
     isFull,
     userAddress,
   }: RepayIsFullQuery): Promise<boolean> => {
-    if (isFull) return await getLlamaMarket(marketId).fullRepayIsApproved(userAddress)
+    const useFullRepay = isFull && !+stateCollateral && !+userCollateral
+    if (useFullRepay) return await getLlamaMarket(marketId).fullRepayIsApproved(userAddress)
     const [type, impl] = getRepayImplementation(marketId, { userCollateral, stateCollateral, userBorrowed })
     switch (type) {
       case 'V1':

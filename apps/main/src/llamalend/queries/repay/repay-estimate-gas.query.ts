@@ -38,7 +38,8 @@ const { useQuery: useRepayLoanEstimateGas } = queryFactory({
     slippage,
   }: RepayIsFullQuery): Promise<TGas> => {
     const market = getLlamaMarket(marketId)
-    if (isFull) {
+    const useFullRepay = isFull && !+stateCollateral && !+userCollateral
+    if (useFullRepay) {
       return await market.estimateGas.fullRepay(userAddress)
     }
     const [type, impl] = getRepayImplementation(marketId, { userCollateral, stateCollateral, userBorrowed })
@@ -82,7 +83,8 @@ const { useQuery: useRepayLoanApproveEstimateGas } = queryFactory({
     isFull,
     userAddress,
   }: RepayIsFullQuery): Promise<TGas> => {
-    if (isFull) {
+    const useFullRepay = isFull && !+stateCollateral && !+userCollateral
+    if (useFullRepay) {
       return await getLlamaMarket(marketId).estimateGas.fullRepayApprove(userAddress)
     }
     const [type, impl] = getRepayImplementation(marketId, { userCollateral, stateCollateral, userBorrowed })
