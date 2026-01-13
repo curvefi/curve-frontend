@@ -2,7 +2,7 @@ import { ReactNode, useLayoutEffect, useRef, useState } from 'react'
 import type { AriaButtonProps } from 'react-aria'
 import { useButton } from 'react-aria'
 import { styled } from 'styled-components'
-import { Icon } from 'ui/src/Icon/Icon'
+import { Icon } from '@ui/Icon/Icon'
 
 function Button(
   props: AriaButtonProps & {

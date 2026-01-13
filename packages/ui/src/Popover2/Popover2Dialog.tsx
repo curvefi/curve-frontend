@@ -2,7 +2,7 @@ import { cloneElement, ReactElement, ReactNode, useRef } from 'react'
 import type { AriaDialogProps } from 'react-aria'
 import { useDialog } from 'react-aria'
 import { styled } from 'styled-components'
-import { focusVisible } from 'ui/src/utils/sharedStyles'
+import { focusVisible } from '@ui/utils/sharedStyles'
 
 export interface DialogProps extends AriaDialogProps {
   className?: string

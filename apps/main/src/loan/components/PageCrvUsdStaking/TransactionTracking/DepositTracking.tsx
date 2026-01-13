@@ -1,8 +1,8 @@
-import { RCCrvUSDLogoXS, RCScrvUSDLogoXS } from 'ui/src/images'
 import { txIsConfirming, txIsSuccess, txIsLoading } from '@/loan/components/PageCrvUsdStaking/utils'
 import { useStore } from '@/loan/store/useStore'
 import { Box } from '@ui/Box'
 import { Icon } from '@ui/Icon'
+import { RCCrvUSDLogoXS, RCScrvUSDLogoXS } from '@ui/images'
 import { Spinner } from '@ui/Spinner'
 import { t } from '@ui-kit/lib/i18n'
 import {

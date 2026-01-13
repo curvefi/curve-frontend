@@ -1,6 +1,6 @@
 import { styled } from 'styled-components'
-import { Box } from 'ui/src/Box'
-import { Spinner } from 'ui/src/Spinner'
+import { Box } from '@ui/Box'
+import { Spinner } from '@ui/Spinner'
 
 type Props = {
   pendingMessage: string

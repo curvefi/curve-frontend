@@ -1,5 +1,5 @@
 import { styled } from 'styled-components'
-import { breakpoints } from 'ui/src/utils/responsive'
+import { breakpoints } from '@ui/utils/responsive'
 import type { BoxProps } from './types'
 
 function attributes({ className, fillHeight, fillWidth, ...rest }: BoxProps) {

@@ -1,5 +1,5 @@
 import { styled } from 'styled-components'
-import { Radio } from 'ui/src/Radio'
+import { Radio } from '@ui/Radio'
 import { TableButtonFiltersMobileItemIcon } from './TableButtonFiltersMobileItemIcon'
 
 export const TableButtonFiltersMobileItem = ({

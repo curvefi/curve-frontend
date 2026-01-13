@@ -4,10 +4,10 @@ import { FocusScope, Overlay, useButton, useDialog, useModalOverlay, usePreventS
 import type { OverlayTriggerState } from 'react-stately'
 import { styled } from 'styled-components'
 import type { AriaDialogProps } from '@react-types/dialog'
-import { Box } from 'ui/src/Box/Box'
-import { Icon } from 'ui/src/Icon/Icon'
-import { IconButton } from 'ui/src/IconButton'
-import { breakpoints } from 'ui/src/utils/responsive'
+import { Box } from '@ui/Box/Box'
+import { Icon } from '@ui/Icon/Icon'
+import { IconButton } from '@ui/IconButton'
+import { breakpoints } from '@ui/utils/responsive'
 
 export const ModalDialog = ({
   children,

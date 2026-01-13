@@ -1,5 +1,5 @@
 import { styled } from 'styled-components'
-import { breakpoints } from 'ui/src/utils'
+import { breakpoints } from '@ui/utils'
 
 export const Th = styled.th<{ $first?: boolean; $last?: boolean }>`
   padding: var(--spacing-1) var(--spacing-2);

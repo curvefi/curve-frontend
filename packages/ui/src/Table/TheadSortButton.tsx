@@ -1,9 +1,9 @@
 import { ButtonHTMLAttributes } from 'react'
 import { styled } from 'styled-components'
-import type { ButtonProps } from 'ui/src/Button/types'
-import { SortIcon } from 'ui/src/SortIcon/SortIcon'
-import { Spinner } from 'ui/src/Spinner/Spinner'
-import { TheadButton } from 'ui/src/Table'
+import type { ButtonProps } from '@ui/Button/types'
+import { SortIcon } from '@ui/SortIcon/SortIcon'
+import { Spinner } from '@ui/Spinner/Spinner'
+import { TheadButton } from '@ui/Table'
 import type { IndicatorPlacement } from './types'
 
 export type Order = 'desc' | 'asc'

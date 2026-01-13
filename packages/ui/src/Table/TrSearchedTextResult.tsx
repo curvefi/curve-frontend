@@ -1,10 +1,10 @@
 import { copyToClipboard, shortenAddress } from 'curve-ui-kit/src/utils'
 import { useMemo } from 'react'
 import { styled } from 'styled-components'
-import { Icon } from 'ui/src/Icon'
-import { IconButton } from 'ui/src/IconButton'
-import { ExternalLink } from 'ui/src/Link/ExternalLink'
-import { breakpoints, scanAddressPath, type BaseConfig } from 'ui/src/utils'
+import { Icon } from '@ui/Icon'
+import { IconButton } from '@ui/IconButton'
+import { ExternalLink } from '@ui/Link/ExternalLink'
+import { breakpoints, scanAddressPath, type BaseConfig } from '@ui/utils'
 
 type Result = { [key: string]: { value: string } }
 

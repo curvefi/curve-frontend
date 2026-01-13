@@ -1,9 +1,9 @@
 import { ReactNode } from 'react'
 import { styled } from 'styled-components'
-import { Icon } from 'ui/src/Icon'
-import type { TooltipProps } from 'ui/src/Tooltip/types'
-import { Chip } from 'ui/src/Typography/Chip'
-import { breakpoints } from 'ui/src/utils'
+import { Icon } from '@ui/Icon'
+import type { TooltipProps } from '@ui/Tooltip/types'
+import { Chip } from '@ui/Typography/Chip'
+import { breakpoints } from '@ui/utils'
 
 type Props = TooltipProps & {
   children: ReactNode

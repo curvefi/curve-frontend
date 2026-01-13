@@ -1,7 +1,7 @@
 import { styled } from 'styled-components'
-import { Icon } from 'ui/src/Icon'
-import { ExternalLink } from 'ui/src/Link/ExternalLink'
-import { Spinner } from 'ui/src/Spinner'
+import { Icon } from '@ui/Icon'
+import { ExternalLink } from '@ui/Link/ExternalLink'
+import { Spinner } from '@ui/Spinner'
 
 type Props = {
   transactionHash: string

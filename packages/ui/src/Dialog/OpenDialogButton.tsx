@@ -3,10 +3,10 @@ import { ReactNode, useRef } from 'react'
 import { useButton } from 'react-aria'
 import { styled } from 'styled-components'
 import type { OverlayTriggerState } from '@react-stately/overlays'
+import { Button } from '@ui/Button'
+import type { ButtonProps } from '@ui/Button/types'
+import { Icon } from '@ui/Icon/Icon'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
-import { Button } from 'ui/src/Button'
-import type { ButtonProps } from 'ui/src/Button/types'
-import { Icon } from 'ui/src/Icon/Icon'
 
 interface OpenDialogButtonProps extends ButtonProps {
   children: ReactNode

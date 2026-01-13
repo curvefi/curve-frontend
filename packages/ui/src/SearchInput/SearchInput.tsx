@@ -1,10 +1,10 @@
 import { InputHTMLAttributes } from 'react'
 import { styled } from 'styled-components'
-import { Icon } from 'ui/src/Icon/Icon'
-import { IconButton } from 'ui/src/IconButton'
-import { RCEditClear } from 'ui/src/images'
-import { InputDebounced } from 'ui/src/InputComp/InputDebounced'
-import { InputProvider } from 'ui/src/InputComp/InputProvider'
+import { Icon } from '@ui/Icon/Icon'
+import { IconButton } from '@ui/IconButton'
+import { RCEditClear } from '@ui/images'
+import { InputDebounced } from '@ui/InputComp/InputDebounced'
+import { InputProvider } from '@ui/InputComp/InputProvider'
 
 interface Props extends InputHTMLAttributes<HTMLInputElement> {
   className?: string

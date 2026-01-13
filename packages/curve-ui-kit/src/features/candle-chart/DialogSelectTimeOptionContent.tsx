@@ -1,5 +1,5 @@
 import { styled } from 'styled-components'
-import { Button } from 'ui/src/Button/Button'
+import { Button } from '@ui/Button/Button'
 import type { TimeOptions } from './types'
 
 type Props = {

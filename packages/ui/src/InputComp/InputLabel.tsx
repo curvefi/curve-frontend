@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { styled } from 'styled-components'
-import { Loader } from 'ui/src/Loader'
+import { Loader } from '@ui/Loader'
 import { useInputContext } from './InputContext'
 import type { InputLabelProps } from './types'
 

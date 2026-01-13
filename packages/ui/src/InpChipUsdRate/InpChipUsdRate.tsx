@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
 import { styled } from 'styled-components'
-import { TextCaption } from 'ui/src/TextCaption'
-import { Chip } from 'ui/src/Typography/Chip'
-import type { ChipProps } from 'ui/src/Typography/types'
-import { FORMAT_OPTIONS, formatNumber } from 'ui/src/utils'
+import { TextCaption } from '@ui/TextCaption'
+import { Chip } from '@ui/Typography/Chip'
+import type { ChipProps } from '@ui/Typography/types'
+import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 
 export type InpChipUsdRateProps = ChipProps & {
   className?: string

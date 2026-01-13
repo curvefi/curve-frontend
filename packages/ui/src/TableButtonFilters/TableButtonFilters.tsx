@@ -1,8 +1,8 @@
 import { styled } from 'styled-components'
-import { Box } from 'ui/src/Box'
-import { Button } from 'ui/src/Button'
-import { Icon } from 'ui/src/Icon'
-import { Spinner } from 'ui/src/Spinner'
+import { Box } from '@ui/Box'
+import { Button } from '@ui/Button'
+import { Icon } from '@ui/Icon'
+import { Spinner } from '@ui/Spinner'
 
 type Filter = { [_: string]: { id: string; displayName: string; color?: string } } | undefined
 

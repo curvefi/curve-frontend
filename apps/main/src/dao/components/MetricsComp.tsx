@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 import { styled } from 'styled-components'
-import { Box } from 'ui/src/Box/Box'
-import { Loader } from 'ui/src/Loader/Loader'
+import { Box } from '@ui/Box/Box'
+import { Loader } from '@ui/Loader/Loader'
 
 interface Props {
   loading?: boolean

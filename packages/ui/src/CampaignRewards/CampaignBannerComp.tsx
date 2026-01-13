@@ -1,7 +1,7 @@
 import { styled } from 'styled-components'
+import { RCPointsIcon } from '@ui/images'
+import { ExternalLink } from '@ui/Link'
 import type { CampaignPoolRewards } from '@ui-kit/entities/campaigns'
-import { RCPointsIcon } from 'ui/src/images'
-import { ExternalLink } from 'ui/src/Link'
 import { RewardsCompSmall } from './CampaignRewardsComp'
 
 type CampaignRewardsBannerCompProps = {

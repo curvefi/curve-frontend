@@ -1,5 +1,4 @@
 import { useCallback, useMemo } from 'react'
-import { TrSearchedTextResult } from 'ui/src/Table'
 import { TableRowProps, TableRow } from '@/dex/components/PagePoolList/components/TableRow'
 import { TableRowMobile } from '@/dex/components/PagePoolList/components/TableRowMobile'
 import type {
@@ -15,6 +14,7 @@ import { getUserActiveKey } from '@/dex/store/createUserSlice'
 import { useStore } from '@/dex/store/useStore'
 import { CurveApi, ChainId } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
+import { TrSearchedTextResult } from '@ui/Table'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNavigate } from '@ui-kit/hooks/router'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'

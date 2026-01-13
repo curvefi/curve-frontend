@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { styled } from 'styled-components'
-import type { AlertBoxProps } from 'ui/src/AlertBox/types'
-import { Box } from 'ui/src/Box'
-import { Icon } from 'ui/src/Icon'
-import { IconButton } from 'ui/src/IconButton'
+import type { AlertBoxProps } from '@ui/AlertBox/types'
+import { Box } from '@ui/Box'
+import { Icon } from '@ui/Icon'
+import { IconButton } from '@ui/IconButton'
 
 export const AlertBox = ({
   className,

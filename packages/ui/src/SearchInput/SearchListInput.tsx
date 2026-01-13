@@ -1,7 +1,7 @@
 import { InputHTMLAttributes } from 'react'
 import { styled } from 'styled-components'
 import { useFocusRing } from '@react-aria/focus'
-import { SearchInput } from 'ui/src/SearchInput/index'
+import { SearchInput } from '@ui/SearchInput/index'
 
 interface Props extends InputHTMLAttributes<HTMLInputElement> {
   className?: string

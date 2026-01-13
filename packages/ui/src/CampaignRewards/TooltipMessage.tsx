@@ -1,7 +1,7 @@
 import { styled } from 'styled-components'
+import { Box } from '@ui/Box'
+import { ExternalLink } from '@ui/Link'
 import type { CampaignPoolRewards } from '@ui-kit/entities/campaigns'
-import { Box } from 'ui/src/Box'
-import { ExternalLink } from 'ui/src/Link'
 import { formatDate } from '../utils'
 
 export const TooltipMessage = ({ rewardsPool }: { rewardsPool: CampaignPoolRewards }) => {

@@ -1,6 +1,6 @@
 import { styled } from 'styled-components'
-import { Box } from 'ui/src/Box'
-import { breakpoints } from 'ui/src/utils'
+import { Box } from '@ui/Box'
+import { breakpoints } from '@ui/utils'
 
 // PAGE STYLES WITH FORMS
 export const AppPageFormContainer = styled.div<{ isAdvanceMode: boolean }>`

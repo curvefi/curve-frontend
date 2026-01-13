@@ -1,6 +1,6 @@
 import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine, ResponsiveContainer } from 'recharts'
-import { formatDate, formatNumber } from 'ui/src/utils'
 import { LocksDaily } from '@curvefi/prices-api/dao'
+import { formatDate, formatNumber } from '@ui/utils'
 import { PositiveAndNegativeBarChartTooltip } from './PositiveAndNegativeBarChartTooltip'
 
 type PositiveAndNegativeBarChartProps = {

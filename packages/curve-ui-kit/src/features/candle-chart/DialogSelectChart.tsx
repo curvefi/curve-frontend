@@ -1,5 +1,5 @@
 import { styled } from 'styled-components'
-import { Popover2Dialog, Popover2Trigger as Popover } from 'ui/src/Popover2'
+import { Popover2Dialog, Popover2Trigger as Popover } from '@ui/Popover2'
 import { DialogSelectChart as DialogSelectContent } from '@ui-kit/features/candle-chart/DialogSelectChartContent'
 import type { LabelList } from './types'
 

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { styled } from 'styled-components'
-import { Box } from 'ui/src/Box/Box'
-import { focusVisible } from 'ui/src/utils/sharedStyles'
+import { Box } from '@ui/Box/Box'
+import { focusVisible } from '@ui/utils/sharedStyles'
 import { type InputProviderProps, InputContext } from './InputContext'
 import type { InputMinHeight, InputVariant } from './types'
 
