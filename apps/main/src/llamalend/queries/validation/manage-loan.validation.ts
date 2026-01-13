@@ -25,9 +25,11 @@ export type CollateralForm = FieldsOf<{ userCollateral: Decimal; maxCollateral: 
 
 export type RepayForm = {
   stateCollateral: Decimal | undefined
-  maxStateCollateral: Decimal | undefined
   userCollateral: Decimal | undefined
   userBorrowed: Decimal | undefined
+  maxStateCollateral: Decimal | undefined
+  maxCollateral: Decimal | undefined
+  maxBorrowed: Decimal | undefined
   isFull: boolean | undefined
   slippage: Decimal
   leverageEnabled: boolean
@@ -44,8 +46,15 @@ const validateMaxStateCollateral = (
   maxStateCollateral: Decimal | null | undefined,
 ) =>
   skipWhen(stateCollateral == null || maxStateCollateral == null, () => {
-    test('maxStateCollateral', 'Collateral must be less than or equal to your position balance', () => {
+    test('maxStateCollateral', 'Collateral cannot exceed the amount in your wallet', () => {
       enforce(stateCollateral).lte(maxStateCollateral)
+    })
+  })
+
+const validateMaxBorrowed = (userBorrowed: Decimal | null | undefined, maxBorrowed: Decimal | null | undefined) =>
+  skipWhen(userBorrowed == null || maxBorrowed == null, () => {
+    test('userBorrowed', 'Borrow token amount cannot exceed your wallet balance or the current debt', () => {
+      enforce(userBorrowed).lte(maxBorrowed)
     })
   })
 
@@ -140,11 +149,22 @@ export const repayValidationSuite = ({ leverageRequired }: { leverageRequired: b
   createValidationSuite((params: RepayParams) => repayValidationGroup(params, { leverageRequired }))
 
 export const repayFormValidationSuite = createValidationSuite(
-  ({ isFull, stateCollateral, maxStateCollateral, userCollateral, userBorrowed, slippage }: RepayForm) => {
+  ({
+    isFull,
+    stateCollateral,
+    maxStateCollateral,
+    userCollateral,
+    maxCollateral,
+    userBorrowed,
+    maxBorrowed,
+    slippage,
+  }: RepayForm) => {
     validateRepayField('userCollateral', userCollateral)
     validateRepayField('stateCollateral', stateCollateral)
     validateMaxStateCollateral(stateCollateral, maxStateCollateral)
     validateRepayBorrowedField(userBorrowed)
+    validateMaxCollateral(userCollateral, maxCollateral)
+    validateMaxBorrowed(userBorrowed, maxBorrowed)
     validateRepayHasValue(stateCollateral, userCollateral, userBorrowed)
     validateBoolean(isFull)
     validateSlippage(slippage)

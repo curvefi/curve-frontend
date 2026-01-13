@@ -14,6 +14,7 @@ import { useTokenBalances } from '@ui-kit/hooks/useTokenBalance'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRates } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { Query } from '@ui-kit/types/util'
 import type { Decimal } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
@@ -23,13 +24,13 @@ export function RepayTokenList<ChainId extends IChainId>({
   network,
   onToken,
   tokens,
-  positionCollateral,
+  stateCollateral: { data: positionCollateral },
 }: {
   market: LlamaMarketTemplate | undefined
   network: NetworkDict<ChainId>[ChainId]
   onToken: (token: RepayTokenOption) => void
   tokens: RepayTokenOption[]
-  positionCollateral: Decimal | undefined
+  stateCollateral: Query<Decimal | undefined>
 }) {
   const { address: userAddress } = useConnection()
   const { borrowToken, collateralToken } = market ? getTokens(market) : {}
