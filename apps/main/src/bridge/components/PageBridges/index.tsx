@@ -37,7 +37,7 @@ export const PageBridges = () => {
         marginBlockEnd: Spacing.xxl,
       }}
     >
-      <TabsSwitcher variant="contained" size="medium" value={tab} options={tabs} muiVariant="scrollable" />
+      <TabsSwitcher variant="contained" value={tab} options={tabs} muiVariant="scrollable" />
       <TabPanel sx={{ paddingBlock: Spacing.sm, paddingInline: Spacing.md }}>
         {tab === 'web3' && <BridgeOverview bridges={WEB3_BRIDGES} title={t`Aggregators for the best routes`} />}
 

@@ -23,7 +23,7 @@ const Gauges = () => {
       <Box flex flexColumn fillWidth flexGap={'var(--spacing-3)'}>
         <GaugeWeightDistribution isUserVotes={tab === 'gaugeVoting'} userAddress={userAddress} />
         <Box>
-          <TabsSwitcher variant="contained" size="medium" value={tab} onChange={setTab} options={tabs} />
+          <TabsSwitcher variant="contained" value={tab} onChange={setTab} options={tabs} />
 
           <Container variant="secondary">
             {tab === 'gaugeList' && <GaugesList />}
