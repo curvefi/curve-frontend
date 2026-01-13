@@ -1,3 +1,4 @@
+import { fromEntries, recordValues } from '@curvefi/prices-api/objects.util'
 import type { Components } from '@mui/material/styles'
 import { handleBreakpoints } from '@ui-kit/themes/basic-theme'
 import { TypographyVariantKey } from '@ui-kit/themes/typography'
@@ -150,20 +151,16 @@ const inactiveTabSelector = ({ hideInactiveBorders }: { hideInactiveBorders: boo
 
 // Generate per-size tab styles in the default horizontal orientation
 const tabSizeStyles = (styles: (config: TabSizeConfig) => Record<string, unknown>) =>
-  Object.assign(
-    {},
-    ...Object.values(TAB_SIZE_CONFIG).map((config) => ({
-      [`&.${config.className} .MuiTab-root`]: styles(config),
-    })),
+  fromEntries(
+    recordValues(TAB_SIZE_CONFIG).map((config) => [`&.${config.className} .MuiTab-root`, styles(config)] as const),
   )
 
 // Generate per-size tab styles scoped to vertical orientation
 const tabVerticalSizeStyles = (styles: (config: TabSizeConfig) => Record<string, unknown>) =>
-  Object.assign(
-    {},
-    ...Object.values(TAB_SIZE_CONFIG).map((config) => ({
-      [`&.MuiTabs-vertical.${config.className} .MuiTab-root`]: styles(config),
-    })),
+  fromEntries(
+    recordValues(TAB_SIZE_CONFIG).map(
+      (config) => [`&.MuiTabs-vertical.${config.className} .MuiTab-root`, styles(config)] as const,
+    ),
   )
 
 const containedTabPadding = (inline: SpacingKey, blockEnd: SpacingKey) => ({
@@ -198,9 +195,7 @@ const containedSizeStyles = tabSizeStyles(({ inline, height }) => ({
   height,
 }))
 
-const containedVerticalSizeStyles = tabVerticalSizeStyles(({ inline }) => ({
-  ...containedTabPaddingVertical(inline),
-}))
+const containedVerticalSizeStyles = tabVerticalSizeStyles(({ inline }) => containedTabPaddingVertical(inline))
 
 // note: mui tabs do not support custom variants. Customize the standard variant. The custom TabSwitcher component should be used.
 export const defineMuiTabs = ({

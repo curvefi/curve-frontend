@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { objectKeys } from '@curvefi/prices-api/objects.util'
 import { Stack, Typography } from '@mui/material'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { LlamaIcon } from '../../shared/icons/LlamaIcon'
@@ -94,7 +95,7 @@ export const Contained: Story = {
   },
   render: (args) => (
     <Stack gap={4}>
-      {(Object.keys(TABS_SIZES_CLASSES) as Array<keyof typeof TABS_SIZES_CLASSES>).map((size) => (
+      {objectKeys(TABS_SIZES_CLASSES).map((size) => (
         <TabsSwitcherWrapper key={size} {...args} size={size} options={getOptionsWithAdornments(4, size)} />
       ))}
     </Stack>
