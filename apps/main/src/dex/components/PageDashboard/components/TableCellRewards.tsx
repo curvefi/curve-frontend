@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import { styled } from 'styled-components'
 import TableCellRewardsTooltip from '@/dex/components/PageDashboard/components/TableCellRewardsTooltip'
 import { DetailText } from '@/dex/components/PageDashboard/components/TableRow'
@@ -6,10 +7,13 @@ import { SORT_ID } from '@/dex/components/PageDashboard/utils'
 import TableCellRewardsBase from '@/dex/components/PagePoolList/components/TableCellRewardsBase'
 import TableCellRewardsOthers from '@/dex/components/PagePoolList/components/TableCellRewardsOthers'
 import PoolRewardsCrv from '@/dex/components/PoolRewardsCrv'
-import { RewardsApy, PoolData } from '@/dex/types/main.types'
+import { PoolData, RewardsApy } from '@/dex/types/main.types'
 import { haveRewardsApy } from '@/dex/utils/utilsCurvejs'
 import { Chip } from '@ui/Typography'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
+
+const Bold = ({ children }: { children: ReactNode }) => <strong>{children}</strong>
 
 const TableCellRewards = ({
   poolData,
@@ -34,40 +38,35 @@ const TableCellRewards = ({
   const { rewardsNeedNudging, areCrvRewardsStuckInBridge } = poolData?.gauge.status || {}
   const showUserCrvRewards = !!poolData && !rewardsNeedNudging && !areCrvRewardsStuckInBridge
 
-  const Rewards = () => {
-    const parsedUserCrvApy = `${formatNumber(userCrvApy, { ...FORMAT_OPTIONS.PERCENT, defaultValue: '-' })} CRV`
-    return (
-      <>
-        {!showUserCrvRewards ? (
-          <PoolRewardsCrv rewardsApy={rewardsApy} poolData={poolData} />
-        ) : typeof userCrvApy !== 'undefined' && haveCrv ? (
-          <Chip
-            isBlock
-            {...(haveUserCrvApy && boostedCrvApy && fetchUserPoolBoost
-              ? {
-                  tooltip: (
-                    <TableCellRewardsTooltip
-                      crv={crv}
-                      userCrvApy={userCrvApy}
-                      fetchUserPoolBoost={fetchUserPoolBoost}
-                    />
-                  ),
-                  tooltipProps: {
-                    textAlign: 'left',
-                    minWidth: '300px',
-                  },
-                }
-              : {})}
-            size="md"
-          >
-            {sortBy === SORT_ID.userCrvApy ? <strong>{parsedUserCrvApy}</strong> : parsedUserCrvApy}{' '}
-            {boostedCrvApy ? <DetailText> of {formatNumber(boostedCrvApy, FORMAT_OPTIONS.PERCENT)}</DetailText> : null}
-          </Chip>
-        ) : null}
-        <TableCellRewardsOthers isHighlight={sortBy === SORT_ID.rewardOthers} rewardsApy={rewardsApy} />
-      </>
-    )
-  }
+  const rewards = haveRewards && (
+    <>
+      {!showUserCrvRewards ? (
+        <PoolRewardsCrv rewardsApy={rewardsApy} poolData={poolData} />
+      ) : typeof userCrvApy !== 'undefined' && haveCrv ? (
+        <Chip
+          isBlock
+          {...(haveUserCrvApy && boostedCrvApy && fetchUserPoolBoost
+            ? {
+                tooltip: (
+                  <TableCellRewardsTooltip crv={crv} userCrvApy={userCrvApy} fetchUserPoolBoost={fetchUserPoolBoost} />
+                ),
+                tooltipProps: {
+                  textAlign: 'left',
+                  minWidth: '300px',
+                },
+              }
+            : {})}
+          size="md"
+        >
+          <WithWrapper shouldWrap={sortBy === SORT_ID.userCrvApy} Wrapper={Bold}>
+            {`${formatNumber(userCrvApy, { ...FORMAT_OPTIONS.PERCENT, defaultValue: '-' })} CRV`}
+          </WithWrapper>{' '}
+          {boostedCrvApy ? <DetailText> of {formatNumber(boostedCrvApy, FORMAT_OPTIONS.PERCENT)}</DetailText> : null}
+        </Chip>
+      ) : null}
+      <TableCellRewardsOthers isHighlight={sortBy === SORT_ID.rewardOthers} rewardsApy={rewardsApy} />
+    </>
+  )
 
   if (rewardsApyKey === 'baseApy') {
     return (
@@ -76,7 +75,7 @@ const TableCellRewards = ({
       </RewardsWrapper>
     )
   } else if (rewardsApyKey === 'rewardsApy') {
-    return <RewardsWrapper>{haveRewards ? <Rewards /> : null}</RewardsWrapper>
+    return <RewardsWrapper>{rewards}</RewardsWrapper>
   } else if (rewardsApyKey === 'all') {
     return (
       <RewardsWrapper>
@@ -91,7 +90,7 @@ const TableCellRewards = ({
         ) : (
           '-'
         )}
-        {haveRewards ? <Rewards /> : null}
+        {rewards}
       </RewardsWrapper>
     )
   }

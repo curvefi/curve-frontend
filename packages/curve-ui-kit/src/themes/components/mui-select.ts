@@ -1,6 +1,6 @@
 /// <reference types="./mui-select.d.ts" />
 import type { SelectProps } from '@mui/material/Select'
-import type { Components, TypographyVariantsOptions } from '@mui/material/styles'
+import type { Components } from '@mui/material/styles'
 import { ChevronDownIcon } from '@ui-kit/shared/icons/ChevronDownIcon'
 import { DesignSystem } from '@ui-kit/themes/design'
 import { handleBreakpoints, type Responsive } from '../basic-theme'
@@ -38,10 +38,7 @@ const selectSizes: Record<SelectSizes, SelectSizeDefinition> = {
   },
 }
 
-export const defineMuiSelect = (
-  design: DesignSystem,
-  typography: TypographyVariantsOptions,
-): Components['MuiSelect'] => ({
+export const defineMuiSelect = (design: DesignSystem): Components['MuiSelect'] => ({
   defaultProps: {
     IconComponent: ChevronDownIcon,
   },

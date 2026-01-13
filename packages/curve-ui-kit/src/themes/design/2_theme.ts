@@ -1,10 +1,7 @@
 import { alpha } from '@mui/material'
-import { Blues, Grays, Greens, Reds, Yellows, Oranges, Violets, Transparent, TransitionFunction } from './0_primitives'
+import { Blues, Grays, Greens, Oranges, Reds, Transparent, Violets, Yellows } from './0_primitives'
 import { SurfacesAndText } from './1_surfaces_text'
 
-const { plain, inverted } = SurfacesAndText
-
-const Transition = `all ${TransitionFunction}`
 const InsetOverline = '0 0 auto' as const // Top border only
 const InsetUnderline = 'auto 0 0' as const // Bottom border only
 
@@ -19,7 +16,9 @@ const SliderBackground = {
   },
 } as const
 
-export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Light) => {
+export const createLightDesign = (
+  Light: typeof SurfacesAndText.plain.Light | typeof SurfacesAndText.inverted.Light,
+) => {
   const Color = {
     Neutral: Grays,
     Primary: Blues,
@@ -363,8 +362,6 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
     },
   } as const
 
-  const InputBaseDefaultFill = Grays[100]
-
   const Inputs = {
     Base: {
       Default: {
@@ -433,7 +430,7 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
   } as const
 }
 
-export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark) => {
+export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeof SurfacesAndText.inverted.Dark) => {
   const Color = {
     Neutral: {
       '25': Grays[975],
@@ -816,8 +813,6 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
     },
   } as const
 
-  const InputBaseDefaultFill = Grays[900]
-
   const Inputs = {
     Base: {
       Default: {
@@ -886,7 +881,7 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
   } as const
 }
 
-export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad) => {
+export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeof SurfacesAndText.inverted.Chad) => {
   const Color = {
     Neutral: Grays,
     Primary: Violets,
@@ -1229,8 +1224,6 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
       Hover: Chad.Tables.Row.Hover,
     },
   } as const
-
-  const InputBaseDefaultFill = Grays[100]
 
   const Inputs = {
     Base: {

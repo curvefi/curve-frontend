@@ -17,6 +17,7 @@ export const useLayoutStoreResponsive = () => {
     if (window?.innerWidth) setLayoutWidth(getPageWidthClassName(window.innerWidth))
   }, [setLayoutWidth])
 
+  // eslint-disable-next-line react-hooks/immutability
   useEffect(() => {
     if (!pageWidth || !document) return
     document.body.className = `theme-${theme} ${pageWidth}`.replace(/ +(?= )/g, '').trim()

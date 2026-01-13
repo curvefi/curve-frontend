@@ -61,7 +61,7 @@ export const Footer = ({ appName, networkId }: FooterProps) => {
           <Description />
         </Grid>
 
-        {getSections(appName).map((section) => (
+        {getSections().map((section) => (
           <Grid
             key={section.title}
             size={{

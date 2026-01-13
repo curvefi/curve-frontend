@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo, useCallback } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { styled } from 'styled-components'
 import PoolActivity from '@/dex/components/PagePool/PoolDetails/ChartOhlcWrapper/PoolActivity'
 import { combinations } from '@/dex/components/PagePool/PoolDetails/ChartOhlcWrapper/utils'
@@ -7,7 +7,7 @@ import { ChainId } from '@/dex/types/main.types'
 import Box from '@ui/Box'
 import Button from '@ui/Button'
 import ChartWrapper from '@ui-kit/features/candle-chart/ChartWrapper'
-import type { PricesApiPool, PricesApiCoin, LabelList } from '@ui-kit/features/candle-chart/types'
+import type { LabelList, PricesApiCoin, PricesApiPool } from '@ui-kit/features/candle-chart/types'
 import { getThreeHundredResultsAgo, subtractTimeUnit } from '@ui-kit/features/candle-chart/utils'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
@@ -179,12 +179,12 @@ const PoolInfoData = ({ rChainId, pricesApiPoolData }: { rChainId: ChainId; pric
     setIsFlipped(flippedList)
   }, [chartCombinations.length])
 
-  const flipChart = () => {
-    const updatedList = isFlipped.map((item, index) =>
-      index === selectedChartIndex - 2 ? !isFlipped[selectedChartIndex - 2] : isFlipped[selectedChartIndex - 2],
+  const flipChart = () =>
+    setIsFlipped(
+      isFlipped.map((_item, index) =>
+        index === selectedChartIndex - 2 ? !isFlipped[selectedChartIndex - 2] : isFlipped[selectedChartIndex - 2],
+      ),
     )
-    setIsFlipped(updatedList)
-  }
 
   return (
     <Wrapper>

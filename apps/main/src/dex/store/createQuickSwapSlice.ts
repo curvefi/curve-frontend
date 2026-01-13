@@ -101,7 +101,7 @@ const DEFAULT_STATE: SliceState = {
   routesAndOutput: {},
 }
 
-const createQuickSwapSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): QuickSwapSlice => ({
+const createQuickSwapSlice = (_set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): QuickSwapSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 
@@ -217,12 +217,7 @@ const createQuickSwapSlice = (set: StoreApi<State>['setState'], get: StoreApi<St
               [cActiveKey]: {
                 ...resp,
                 loading: false,
-                exchangeRates: getRouterSwapsExchangeRates(
-                  exchangeRates,
-                  cFormValues,
-                  searchedParams,
-                  tokensNameMapper,
-                ),
+                exchangeRates: getRouterSwapsExchangeRates(exchangeRates, searchedParams, tokensNameMapper),
                 fetchedToAmount: '',
                 modal: getRouterWarningModal(
                   resp,
@@ -494,9 +489,8 @@ function getRouterActiveKey(
 
 export function getRouterSwapsExchangeRates(
   exchangeRates: string[],
-  formValues: FormValues,
   searchedParams: SearchedParams,
-  tokensNameMapper: { [address: string]: string },
+  tokensNameMapper: { [p: string]: string },
 ) {
   const fromToken = tokensNameMapper[searchedParams.fromAddress]
   const toToken = tokensNameMapper[searchedParams.toAddress]

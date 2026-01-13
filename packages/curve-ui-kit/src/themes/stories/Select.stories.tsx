@@ -113,6 +113,7 @@ const MultiSelect = <T extends string>({
         <Menu
           open={isOpen}
           onClose={close}
+          // eslint-disable-next-line react-hooks/refs
           anchorEl={selectRef.current}
           anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
           slotProps={{ list: { sx: { minWidth: Math.round(selectWidth || 100) + 'px', paddingBlock: 0 } } }}
@@ -129,7 +130,7 @@ const MultiSelect = <T extends string>({
             </Button>
           </Box>
           {options.map((option) => (
-            <InvertOnHover hoverEl={menuRef.current} key={option}>
+            <InvertOnHover hoverRef={menuRef} key={option}>
               <MenuItem
                 ref={menuRef}
                 value={option}
@@ -174,7 +175,7 @@ const addresses = {
 } as const
 
 export const CustomRendering: Story = {
-  render: (args) => (
+  render: () => (
     <MultiSelect
       options={options.map((x) => x)}
       placeholder="Select tokens"

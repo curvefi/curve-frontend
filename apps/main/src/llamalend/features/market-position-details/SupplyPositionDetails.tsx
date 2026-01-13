@@ -12,7 +12,7 @@ import { VaultSharesTooltipContent } from './tooltips/VaultSharesTooltipContent'
 
 const { Spacing } = SizesAndSpaces
 
-type SupplyAPY = {
+type SupplyRate = {
   rate: number | undefined | null
   averageRate: number | undefined | null
   averageRateLabel: string
@@ -39,11 +39,6 @@ export type Shares = {
   staked: number | undefined | null
   loading: boolean
 }
-type ClaimableRewards = {
-  crv: string | undefined | null
-  rewards: { token: string; symbol: string; amount: string }[] | undefined | null
-  loading: boolean
-}
 type Boost = {
   value: number | undefined | null
   loading: boolean
@@ -58,13 +53,13 @@ export type SupplyAsset = {
 }
 
 export type SupplyPositionDetailsProps = {
-  supplyAPY: SupplyAPY
+  supplyRate: SupplyRate
   shares: Shares
   supplyAsset: SupplyAsset
   boost: Boost
 }
 
-export const SupplyPositionDetails = ({ supplyAPY, shares, supplyAsset, boost }: SupplyPositionDetailsProps) => {
+export const SupplyPositionDetails = ({ supplyRate, shares, supplyAsset, boost }: SupplyPositionDetailsProps) => {
   const {
     totalSupplyRateMaxBoost,
     totalSupplyRateMinBoost,
@@ -78,9 +73,9 @@ export const SupplyPositionDetails = ({ supplyAPY, shares, supplyAsset, boost }:
     supplyAprCrvMinBoost,
     supplyAprCrvMaxBoost,
     userTotalCurrentSupplyApr,
-    loading: supplyAPYLoading,
+    loading: supplyRateLoading,
     rebasingYield,
-  } = supplyAPY
+  } = supplyRate
   const { loading: supplyAssetLoading, symbol: supplyAssetSymbol, depositedAmount } = supplyAsset
   const { value: sharesValue, staked: sharesStaked, loading: sharesLoading } = shares
   const { value: boostValue, loading: boostLoading } = boost
@@ -104,7 +99,7 @@ export const SupplyPositionDetails = ({ supplyAPY, shares, supplyAsset, boost }:
           size="medium"
           label={t`Supply rate`}
           value={userTotalCurrentSupplyApr ?? totalSupplyRateMinBoost}
-          loading={totalSupplyRateMinBoost == null && supplyAPYLoading}
+          loading={totalSupplyRateMinBoost == null && supplyRateLoading}
           valueOptions={{ unit: 'percentage', color: 'warning' }}
           notional={
             totalSupplyRateMaxBoost
@@ -130,7 +125,7 @@ export const SupplyPositionDetails = ({ supplyAPY, shares, supplyAsset, boost }:
                 totalAverageSupplyRateMaxBoost={totalAverageSupplyRateMaxBoost}
                 rebasingYield={rebasingYield}
                 rebasingSymbol={supplyAssetSymbol}
-                isLoading={supplyAPYLoading}
+                isLoading={supplyRateLoading}
               />
             ),
             placement: 'top',

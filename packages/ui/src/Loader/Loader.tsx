@@ -14,9 +14,7 @@ const AnimateShimmer = keyframes`
   100% { transform: translateX(100%); }
 `
 
-interface TextSkeletonProps extends Pick<Props, 'isLightBg' | 'skeleton'> {}
-
-const TextSkeleton = styled.span<TextSkeletonProps>`
+const TextSkeleton = styled.span<Pick<Props, 'isLightBg' | 'skeleton'>>`
   display: inline-block;
   position: relative;
   overflow: hidden;

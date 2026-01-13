@@ -1,4 +1,4 @@
-import { type ReactElement } from 'react'
+import { type ReactElement, type RefObject } from 'react'
 import type { Theme } from '@mui/material'
 import type { SxProps } from '@ui-kit/utils'
 
@@ -26,7 +26,7 @@ type InvertOnHoverProps = {
   /**
    * A ref to the element that should trigger the hover effect. Used to handle the focus-visible state.
    */
-  hoverEl: HTMLLIElement | HTMLTableRowElement | null
+  hoverRef: RefObject<HTMLLIElement | HTMLTableRowElement | null>
 
   /** Whether to disable the hover effect */
   disabled?: boolean

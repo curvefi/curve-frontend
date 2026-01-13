@@ -38,6 +38,7 @@ const Accordion = ({
 
   const [show, setShow] = useState(defaultOpen ?? false)
 
+  // eslint-disable-next-line react-hooks/refs
   const { scrollHeight } = contentRef.current ?? {}
 
   const MAX_HEIGHT = '1000px'

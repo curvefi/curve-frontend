@@ -6,8 +6,6 @@ import { Chip } from '@ui/Typography'
 import { formatNumber } from '@ui/utils'
 import { t, Trans } from '@ui-kit/lib/i18n'
 
-interface Props extends Slippage {}
-
 type SlippageDetail = {
   isBold: boolean
   label: ReactNode
@@ -15,7 +13,7 @@ type SlippageDetail = {
   variant: 'warning' | 'success' | ''
 }
 
-const DetailInfoSlippage = ({ loading, isHighSlippage, isBonus, slippage }: Props) => {
+const DetailInfoSlippage = ({ loading, isHighSlippage, isBonus, slippage }: Slippage) => {
   const { isBold, label, tip, variant } = useMemo(() => {
     const slippageDetail: SlippageDetail = {
       isBold: false,

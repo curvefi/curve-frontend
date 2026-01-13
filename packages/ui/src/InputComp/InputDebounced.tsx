@@ -6,7 +6,6 @@ import { useInputContext } from './InputContext'
 import type { InputLabelProps, InputProps } from './types'
 
 const InputDebounced = ({
-  className,
   delay = 700,
   disabled,
   labelProps,
@@ -15,7 +14,6 @@ const InputDebounced = ({
   testId,
   ...inputProps
 }: Omit<InputProps, 'onChange'> & {
-  className?: string
   delay?: number
   labelProps?: InputLabelProps | false
   value: string

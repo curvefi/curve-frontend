@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import { CreateLoanForm } from '@/llamalend/features/borrow/components/CreateLoanForm'
-import type { OnBorrowFormUpdate } from '@/llamalend/features/borrow/types'
-import type { BorrowMutation, CreateLoanOptions } from '@/llamalend/mutations/create-loan.mutation'
+import type { OnCreateLoanFormUpdate } from '@/llamalend/features/borrow/types'
+import type { CreateLoanMutation, CreateLoanOptions } from '@/llamalend/mutations/create-loan.mutation'
 import LoanFormCreate from '@/loan/components/PageMintMarket/LoanFormCreate'
 import type { FormValues, PageLoanCreateProps } from '@/loan/components/PageMintMarket/types'
 import { DEFAULT_FORM_VALUES } from '@/loan/components/PageMintMarket/utils'
@@ -13,9 +13,9 @@ import { t } from '@ui-kit/lib/i18n'
 import { FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
 
 /**
- * Callback that synchronizes the `ChartOhlc` component with the `RangeSlider` component in the new `BorrowTabContents`.
+ * Callback that synchronizes the `ChartOhlc` component with the `RangeSlider` component in the new `CreateLoanForm`.
  */
-const useOnFormUpdate = ({ curve, market }: Pick<PageLoanCreateProps, 'market' | 'curve'>): OnBorrowFormUpdate =>
+const useOnFormUpdate = ({ curve, market }: Pick<PageLoanCreateProps, 'market' | 'curve'>): OnCreateLoanFormUpdate =>
   useCallback(
     async ({ debt, userCollateral, range, slippage, leverageEnabled }) => {
       if (!curve || !market) return
@@ -35,7 +35,7 @@ const useOnFormUpdate = ({ curve, market }: Pick<PageLoanCreateProps, 'market' |
 function CreateLoanTab({ market, curve, rChainId }: PageLoanCreateProps) {
   const onLoanCreated = useStore((state) => state.loanCreate.onLoanCreated)
   const onCreated: NonNullable<CreateLoanOptions['onCreated']> = useCallback(
-    async (_data, _receipt, { slippage, leverageEnabled }: BorrowMutation) =>
+    async (_data, _receipt, { slippage, leverageEnabled }: CreateLoanMutation) =>
       curve && market && (await onLoanCreated(curve, leverageEnabled, market, slippage)),
     [curve, market, onLoanCreated],
   )

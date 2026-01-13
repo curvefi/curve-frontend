@@ -18,18 +18,17 @@ export type Popover2ButtonProps = AriaButtonOptions<'button'> &
   }
 
 function Popover2Button({ buttonVariant, ...props }: Popover2ButtonProps) {
-  const ref = props.buttonRef
+  const { loading, onSelectionDelete, buttonRef: ref, buttonStyles, children } = props
   const { buttonProps } = useButton(props, ref)
   return (
     <Wrapper variant={buttonVariant}>
-      <Button {...buttonProps} variant={buttonVariant} ref={ref} style={props.buttonStyles}>
-        {props.children}
+      <Button {...buttonProps} variant={buttonVariant} ref={ref} style={buttonStyles}>
+        {children}
       </Button>
-
-      {props.onSelectionDelete && (
+      {onSelectionDelete && (
         <>
           <DividerHorizontal />
-          <SelectIconBtnDelete loading={props.loading} onSelectionDelete={props.onSelectionDelete} />
+          <SelectIconBtnDelete loading={loading} onSelectionDelete={onSelectionDelete} />
         </>
       )}
     </Wrapper>

@@ -32,6 +32,7 @@ export const DepositReward = ({ chainId, poolId }: { chainId: ChainId; poolId: s
     defaultValues: DepositRewardDefaultValues,
   })
 
+  // eslint-disable-next-line react-hooks/incompatible-library
   const rewardTokenId = methods.watch('rewardTokenId')
   const { address: userAddress } = useConnection()
   const { data: userBalance } = useTokenBalance({ chainId, userAddress, tokenAddress: rewardTokenId })

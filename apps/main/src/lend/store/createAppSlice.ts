@@ -23,7 +23,7 @@ export interface AppSlice {
 }
 
 const createAppSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): AppSlice => ({
-  hydrate: async (config, api, prevApi) => {
+  hydrate: async (_config, api, prevApi) => {
     if (!api) return
 
     const isNetworkSwitched = !!prevApi?.chainId && prevApi.chainId !== api.chainId

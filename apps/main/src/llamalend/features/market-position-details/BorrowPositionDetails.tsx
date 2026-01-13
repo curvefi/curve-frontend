@@ -21,7 +21,7 @@ export type Pnl = {
   loading: boolean
 }
 export type Health = { value: number | undefined | null; loading: boolean }
-export type BorrowAPY = {
+export type BorrowRate = {
   rate: number | undefined | null
   averageRate: number | undefined | null
   averageRateLabel: string
@@ -68,7 +68,7 @@ export type BorrowPositionDetailsProps = {
   marketType: LlamaMarketType
   liquidationAlert: LiquidationAlert
   health: Health
-  borrowAPY: BorrowAPY
+  borrowRate: BorrowRate
   pnl?: Pnl // not all mint markets has PNL data (requires v2 leverage support)
   liquidationRange: LiquidationRange
   bandRange: BandRange
@@ -115,7 +115,7 @@ export const BorrowPositionDetails = ({
   marketType,
   liquidationAlert,
   health,
-  borrowAPY,
+  borrowRate,
   pnl,
   liquidationRange,
   bandRange,
@@ -131,7 +131,7 @@ export const BorrowPositionDetails = ({
     <HealthDetails health={health} liquidationAlert={liquidationAlert} />
     <BorrowInformation
       marketType={marketType}
-      borrowAPY={borrowAPY}
+      borrowRate={borrowRate}
       pnl={pnl}
       collateralValue={collateralValue}
       ltv={ltv}

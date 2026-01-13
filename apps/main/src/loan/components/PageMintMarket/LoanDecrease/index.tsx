@@ -38,10 +38,13 @@ import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { decimal, type Decimal } from '@ui-kit/utils'
 
-interface Props extends Pick<ManageLoanProps, 'curve' | 'market' | 'params' | 'rChainId'> {}
-
 // Loan repay
-const LoanDecrease = ({ curve, market: llamma, params, rChainId }: Props) => {
+const LoanDecrease = ({
+  curve,
+  market: llamma,
+  params,
+  rChainId,
+}: Pick<ManageLoanProps, 'curve' | 'market' | 'params' | 'rChainId'>) => {
   const llammaId = llamma?.id ?? ''
   const isSubscribed = useRef(false)
   const push = useNavigate()

@@ -1,32 +1,28 @@
-import { useEffect } from 'react'
-import { styled } from 'styled-components'
+import { useCallback, useEffect } from 'react'
+import { useConnection } from 'wagmi'
+import LoanFormConnect from '@/loan/components/LoanFormConnect'
+import { SCRVUSD_VAULT_ADDRESS } from '@/loan/constants'
 import useStore from '@/loan/store/useStore'
+import type { NetworkUrlParams } from '@/loan/types/loan.types'
 import { useCurve } from '@ui-kit/features/connect-wallet'
+import { useDebounced } from '@ui-kit/hooks/useDebounce'
+import { t } from '@ui-kit/lib/i18n'
 import { DEX_ROUTES, getInternalUrl } from '@ui-kit/shared/routes'
-import { type TabOption, TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { Duration } from '@ui-kit/themes/design/0_primitives'
 import { CRVUSD_ADDRESS } from '@ui-kit/utils'
+import { FormContent } from '@ui-kit/widgets/DetailPageLayout/FormContent'
+import { type FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
 import { TransactionDetails } from '../components/TransactionDetails'
 import TransactionTracking from '../TransactionTracking'
 import DeployButton from './DeployButton'
 import DepositModule from './DepositModule'
 import WithdrawModule from './WithdrawModule'
 
-const { MaxWidth } = SizesAndSpaces
-
 type DepositWithdrawProps = {
-  className?: string
+  params: NetworkUrlParams
 }
 
-type Tab = 'deposit' | 'withdraw' | 'swap'
-const tabs: TabOption<Tab>[] = [
-  { value: 'deposit', label: 'Deposit' },
-  { value: 'withdraw', label: 'Withdraw' },
-  { value: 'swap', label: 'Swap' },
-]
-
-const DepositWithdraw = ({ className }: DepositWithdrawProps) => {
-  const stakingModule = useStore((state) => state.scrvusd.stakingModule)
+const ScrvUsdDepositFormTab = () => {
   const setStakingModule = useStore((state) => state.scrvusd.setStakingModule)
   const previewAction = useStore((state) => state.scrvusd.previewAction)
   const inputAmount = useStore((state) => state.scrvusd.inputAmount)
@@ -35,116 +31,117 @@ const DepositWithdraw = ({ className }: DepositWithdrawProps) => {
   const depositTransaction = useStore((state) => state.scrvusd.depositTransaction)
   const depositApproval = useStore((state) => state.scrvusd.depositApproval)
   const getInputAmountApproved = useStore((state) => state.scrvusd.getInputAmountApproved)
-  const withdrawTransaction = useStore((state) => state.scrvusd.withdrawTransaction)
   const estimateGasDepositApprove = useStore((state) => state.scrvusd.estimateGas.depositApprove)
   const estimateGasDeposit = useStore((state) => state.scrvusd.estimateGas.deposit)
-  const estimateGasWithdraw = useStore((state) => state.scrvusd.estimateGas.withdraw)
   const { llamaApi: curve = null } = useCurve()
+  const { address } = useConnection()
 
   const transactionInProgress =
-    (stakingModule === 'deposit' &&
-      approveDepositTransaction.transactionStatus !== '' &&
-      approveDepositTransaction.transactionStatus !== 'error') ||
-    (stakingModule === 'deposit' &&
-      depositTransaction.transactionStatus !== '' &&
-      depositTransaction.transactionStatus !== 'error') ||
-    (stakingModule === 'withdraw' &&
-      withdrawTransaction.transactionStatus !== '' &&
-      withdrawTransaction.transactionStatus !== 'error')
-  const transactionSuccess =
-    (stakingModule === 'deposit' && depositTransaction.transactionStatus === 'success') ||
-    (stakingModule === 'withdraw' && withdrawTransaction.transactionStatus === 'success')
-
+    (approveDepositTransaction.transactionStatus !== '' && approveDepositTransaction.transactionStatus !== 'error') ||
+    (depositTransaction.transactionStatus !== '' && depositTransaction.transactionStatus !== 'error')
+  const transactionSuccess = depositTransaction.transactionStatus === 'success'
   const isDepositApprovalReady = getInputAmountApproved()
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      if (curve && inputAmount !== '0') {
-        if (stakingModule === 'deposit') {
-          if (isDepositApprovalReady) {
-            void estimateGasDeposit(inputAmount)
+    setStakingModule('deposit') // sync the staking module with the tab mode, needed until we get rid of the store
+  }, [setStakingModule])
+
+  const [debouncedPreview] = useDebounced(
+    useCallback(
+      (currentInputAmount: string, isApprovalReady: boolean, hasCurve: boolean) => {
+        if (currentInputAmount === '0') return setPreviewReset()
+        if (hasCurve) {
+          if (isApprovalReady) {
+            void estimateGasDeposit(currentInputAmount)
           } else {
-            void estimateGasDepositApprove(inputAmount)
+            void estimateGasDepositApprove(currentInputAmount)
           }
-          previewAction('deposit', inputAmount)
-        } else {
-          void estimateGasWithdraw(inputAmount)
-          previewAction('withdraw', inputAmount)
+          previewAction('deposit', currentInputAmount)
         }
-      }
+      },
+      [estimateGasDeposit, estimateGasDepositApprove, previewAction, setPreviewReset],
+    ),
+    Duration.FormDebounce,
+  )
 
-      if (inputAmount === '0') {
-        setPreviewReset()
-      }
-    }, 500)
-
-    return () => clearTimeout(timer)
-  }, [
-    estimateGasDepositApprove,
-    curve,
-    inputAmount,
-    stakingModule,
-    previewAction,
-    setPreviewReset,
-    estimateGasDeposit,
-    depositApproval.approval,
-    estimateGasWithdraw,
-    isDepositApprovalReady,
-  ])
-
-  const handleSelectTab = (tab: Tab) => {
-    // Swapping opens a new browser tab for now, temp solution until it can be replaced with an actual tab and an Enzo zap in the future.
-    if (tab === 'swap') {
-      window.open(`${getInternalUrl('dex', 'ethereum', DEX_ROUTES.PAGE_SWAP)}?to=${CRVUSD_ADDRESS}`, '_blank')
-    } else {
-      setStakingModule(tab)
-    }
-  }
+  useEffect(() => {
+    debouncedPreview(inputAmount, isDepositApprovalReady, !!curve)
+  }, [curve, debouncedPreview, depositApproval.approval, inputAmount, isDepositApprovalReady])
 
   return (
-    <Wrapper className={className}>
-      <TabsSwitcher variant="contained" size="medium" value={stakingModule} onChange={handleSelectTab} options={tabs} />
-
-      <ModuleContainer>
-        {stakingModule === 'deposit' ? <DepositModule /> : <WithdrawModule />}
-        {transactionInProgress || transactionSuccess ? <StyledTransactionTracking /> : <StyledDeployButton />}
-      </ModuleContainer>
-      <TransactionDetailsWrapper>
-        <TransactionDetails />
-      </TransactionDetailsWrapper>
-    </Wrapper>
+    <FormContent footer={<TransactionDetails />}>
+      <DepositModule />
+      <LoanFormConnect haveSigner={!!address}>
+        {transactionInProgress || transactionSuccess ? <TransactionTracking /> : <DeployButton />}
+      </LoanFormConnect>
+    </FormContent>
   )
 }
 
-const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  max-width: ${MaxWidth.legacyActionCard};
-  width: 100%;
-`
+const ScrvUsdWithdrawFormTab = () => {
+  const setStakingModule = useStore((state) => state.scrvusd.setStakingModule)
+  const previewAction = useStore((state) => state.scrvusd.previewAction)
+  const inputAmount = useStore((state) => state.scrvusd.inputAmount)
+  const setPreviewReset = useStore((state) => state.scrvusd.setPreviewReset)
+  const withdrawTransaction = useStore((state) => state.scrvusd.withdrawTransaction)
+  const estimateGasWithdraw = useStore((state) => state.scrvusd.estimateGas.withdraw)
+  const { llamaApi: curve = null } = useCurve()
+  const { address } = useConnection()
 
-const ModuleContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  background-color: var(--tab--content--background-color);
-  min-width: 100%;
-  padding: var(--spacing-3);
-`
+  const transactionInProgress =
+    withdrawTransaction.transactionStatus !== '' && withdrawTransaction.transactionStatus !== 'error'
+  const transactionSuccess = withdrawTransaction.transactionStatus === 'success'
 
-const TransactionDetailsWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  min-width: 100%;
-  padding: var(--spacing-3);
-  background-color: var(--page--background-color);
-`
+  useEffect(() => {
+    // sync the staking module with the tab mode, needed until we get rid of the store
+    setStakingModule('withdraw')
+  }, [setStakingModule])
 
-const StyledDeployButton = styled(DeployButton)`
-  margin: var(--spacing-3) 0 0;
-`
+  const [debouncedPreview] = useDebounced(
+    useCallback(
+      (currentInputAmount: string, hasCurve: boolean) => {
+        if (currentInputAmount === '0') return setPreviewReset()
+        if (hasCurve) {
+          void estimateGasWithdraw(currentInputAmount)
+          previewAction('withdraw', currentInputAmount)
+        }
+      },
+      [estimateGasWithdraw, previewAction, setPreviewReset],
+    ),
+    Duration.FormDebounce,
+  )
 
-const StyledTransactionTracking = styled(TransactionTracking)`
-  margin-top: var(--spacing-3);
-`
+  useEffect(() => {
+    debouncedPreview(inputAmount, !!curve)
+  }, [curve, debouncedPreview, inputAmount])
 
-export default DepositWithdraw
+  return (
+    <FormContent footer={<TransactionDetails />}>
+      <WithdrawModule />
+      <LoanFormConnect haveSigner={!!address}>
+        {transactionInProgress || transactionSuccess ? <TransactionTracking /> : <DeployButton />}
+      </LoanFormConnect>
+    </FormContent>
+  )
+}
+
+const menu = [
+  {
+    value: 'deposit',
+    label: t`Deposit`,
+    component: ScrvUsdDepositFormTab,
+  },
+  {
+    value: 'withdraw',
+    label: t`Withdraw`,
+    component: ScrvUsdWithdrawFormTab,
+  },
+  {
+    value: 'swap',
+    label: t`Swap`,
+    href: ({ network }) =>
+      `${getInternalUrl('dex', network, DEX_ROUTES.PAGE_SWAP)}?from=${CRVUSD_ADDRESS}&to=${SCRVUSD_VAULT_ADDRESS}`,
+  },
+] satisfies FormTab<NetworkUrlParams>[]
+
+export const DepositWithdraw = ({ params }: DepositWithdrawProps) => <FormTabs params={params} menu={menu} />

@@ -1,4 +1,3 @@
-import { SxProps } from '@mui/material'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { type TokenOption, tokenOptionEquals } from '../types'
 import type { TokenListCallbacks, TokenListProps } from './modal/TokenList'
@@ -12,8 +11,6 @@ type Props = Partial<TokenListProps> &
     selectedToken: TokenOption | undefined
     /** Disables the token selector button and modal */
     disabled?: boolean
-    /** Custom styles to apply to the TokenSelectButton */
-    sx?: SxProps
   }
 
 export const TokenSelector = ({
@@ -33,13 +30,12 @@ export const TokenSelector = ({
   compact = false,
   onToken,
   onSearch,
-  sx,
 }: Props) => {
   const [isOpen, , closeModal, toggleModal] = useSwitch()
 
   return (
     <>
-      <TokenSelectButton token={selectedToken} disabled={disabled} onClick={toggleModal} sx={sx} />
+      <TokenSelectButton token={selectedToken} disabled={disabled} onClick={toggleModal} />
       <TokenSelectorModal
         tokens={tokens}
         balances={balances}

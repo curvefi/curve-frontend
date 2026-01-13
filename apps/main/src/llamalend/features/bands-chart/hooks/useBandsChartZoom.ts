@@ -57,6 +57,7 @@ export const useBandsChartZoom = ({
       const endValue = chartData[endIdx]?.pUpDownMedian
 
       if (typeof startValue === 'number' && typeof endValue === 'number') {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setDefaultZoom({ startValue, endValue })
       } else {
         const start = (startIdx / chartDataLength) * 100

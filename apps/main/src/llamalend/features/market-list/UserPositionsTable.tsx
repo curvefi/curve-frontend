@@ -1,10 +1,10 @@
 import lodash from 'lodash'
 import { useMemo, useState } from 'react'
 import { PositionsEmptyState } from '@/llamalend/constants'
-import { ExpandedState, useReactTable } from '@tanstack/react-table'
+import { ExpandedState } from '@tanstack/react-table'
 import { useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
-import { getTableOptions } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { useColumnFilters } from '@ui-kit/shared/ui/DataTable/hooks/useColumnFilters'
 import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
@@ -74,7 +74,7 @@ export const UserPositionsTable = ({ onReload, result, loading, isError, tab }: 
   const [searchText, onSearch] = useSearch(columnFiltersById, setColumnFilter)
   const filterProps = { columnFiltersById, setColumnFilter }
 
-  const table = useReactTable({
+  const table = useTable({
     columns: LLAMA_MARKET_COLUMNS,
     data: userData,
     state: { expanded, sorting, columnVisibility, columnFilters },

@@ -1,10 +1,10 @@
 import { useMemo } from 'react'
 import { zeroAddress } from 'viem'
 import { useOneWayMarket } from '@/lend/entities/chain'
-import { useMarketOnChainRates } from '@/lend/entities/market-details'
 import useStore from '@/lend/store/useStore'
 import { ChainId, MarketRates, RewardOther, MarketRewards } from '@/lend/types/lend.types'
 import { getTotalApr } from '@/lend/utils/utilsRewards'
+import { useMarketRates } from '@/llamalend/queries/market-rates'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 
 function useSupplyTotalApr(rChainId: ChainId, rOwmId: string) {
@@ -12,16 +12,23 @@ function useSupplyTotalApr(rChainId: ChainId, rOwmId: string) {
   const marketRewardsResp = useStore((state) => state.markets.rewardsMapper[rChainId]?.[rOwmId])
   const marketRatesResp = useStore((state) => state.markets.ratesMapper[rChainId]?.[rOwmId])
   const {
-    data: onChainData,
+    data: marketRatesData,
     isError: onChainError,
     isSuccess: onChainSuccess,
-  } = useMarketOnChainRates({ chainId: rChainId, marketId: rOwmId })
+  } = useMarketRates({ chainId: rChainId, marketId: rOwmId })
 
   const { gauge } = market?.addresses ?? {}
   const { error: rewardsError } = marketRewardsResp ?? {}
   const { error: ratesError } = marketRatesResp ?? {}
   const onChainRatesObj: MarketRates = {
-    rates: onChainData?.rates ?? null,
+    rates: marketRatesData
+      ? {
+          borrowApr: marketRatesData.borrowApr?.toString() ?? '',
+          lendApr: marketRatesData.lendApr?.toString() ?? '',
+          borrowApy: marketRatesData.borrowApy?.toString() ?? '',
+          lendApy: marketRatesData.lendApy?.toString() ?? '',
+        }
+      : null,
     error: onChainError ? 'Error fetching on chain data' : '',
   }
 
@@ -65,8 +72,8 @@ function _getTotalAndTooltip(marketRewardsResp: MarketRewards, marketRatesResp: 
   const { other, crv } = marketRewardsResp.rewards ?? {}
   const { rates } = marketRatesResp ?? {}
 
-  const lendApr = +(rates?.lendApr || '0')
-  const lendApy = +(rates?.lendApy || '0')
+  const lendApr = Number(rates?.lendApr || '0')
+  const lendApy = Number(rates?.lendApy || '0')
   const [crvBase = 0, crvBoost = 0] = crv ?? []
   const others = other ?? []
 

@@ -8,25 +8,17 @@ type ItemObj = {
   key: string
 }
 
-interface SelectSortingMethodProps extends Omit<SelectProps<ItemObj>, 'children'> {
-  description?: string
-}
-
-export function SelectSortingMethod({ description, ...props }: SelectSortingMethodProps) {
-  return (
-    <Select {...props} aria-label="Sort By">
-      {({ label, key }: ItemObj) => (
-        <StyledItem key={key} textValue={label}>
-          <strong>{label}</strong>
-        </StyledItem>
-      )}
-    </Select>
-  )
-}
+export const SelectSortingMethod = (props: Omit<SelectProps<ItemObj>, 'children'>) => (
+  <Select {...props} aria-label="Sort By">
+    {({ label, key }: ItemObj) => (
+      <StyledItem key={key} textValue={label}>
+        <strong>{label}</strong>
+      </StyledItem>
+    )}
+  </Select>
+)
 
 const StyledItem = styled(Item)`
   display: flex;
   flex-wrap: no-wrap;
 `
-
-export default SelectSortingMethod

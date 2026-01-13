@@ -6,7 +6,6 @@ import { type State } from '@/loan/store/useStore'
 import { type LlamaApi, Wallet } from '@/loan/types/loan.types'
 import { log } from '@/loan/utils/helpers'
 
-export type DefaultStateKeys = keyof typeof DEFAULT_STATE
 export type SliceKey = keyof State | ''
 export type StateKey = string
 
@@ -16,8 +15,6 @@ type SliceState = {
 
 // prettier-ignore
 export interface AppSlice extends SliceState {
-  updateGlobalStoreByKey<T>(key: DefaultStateKeys, value: T): void
-
   /** Hydrate resets states and refreshes store data from the API */
   hydrate(config: Config, curve: LlamaApi | undefined, prevCurveApi: LlamaApi | undefined, wallet: Wallet | undefined): Promise<void>
 
@@ -34,15 +31,7 @@ const DEFAULT_STATE: SliceState = {
 const createAppSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): AppSlice => ({
   ...DEFAULT_STATE,
 
-  updateGlobalStoreByKey: <T>(key: DefaultStateKeys, value: T) => {
-    set(
-      produce((state) => {
-        state[key] = value
-      }),
-    )
-  },
-
-  hydrate: async (config, curveApi, prevCurveApi) => {
+  hydrate: async (_config, curveApi, prevCurveApi) => {
     if (!curveApi) return
 
     const { loans } = get()

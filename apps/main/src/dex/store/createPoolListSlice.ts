@@ -94,7 +94,7 @@ const DEFAULT_STATE: SliceState = {
 
 const sliceKey = 'poolList'
 
-const createPoolListSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): PoolListSlice => ({
+const createPoolListSlice = (_set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): PoolListSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 

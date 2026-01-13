@@ -58,12 +58,13 @@ export const SelectFilter = <T extends string>({
           data-testid={`menu-${name}`}
           open={isOpen}
           onClose={close}
+          // eslint-disable-next-line react-hooks/refs
           anchorEl={selectRef.current}
           anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
           slotProps={{ list: { sx: { minWidth: Math.round(selectWidth || 100) + 'px', paddingBlock: 0 } } }}
         >
           {options.map(({ id, label }) => (
-            <InvertOnHover hoverEl={menuRef.current} key={id}>
+            <InvertOnHover hoverRef={menuRef} key={id}>
               <MenuItem
                 ref={menuRef}
                 value={id}

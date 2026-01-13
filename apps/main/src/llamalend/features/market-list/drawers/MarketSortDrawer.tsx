@@ -56,7 +56,7 @@ export const MarketSortDrawer = ({ onSortingChange, sortField }: Props) => {
       <DrawerHeader title={t`Sort by`} />
       <DrawerItems data-testid="drawer-sort-menu-lamalend-markets">
         {sortOptions.map(({ id, label }) => (
-          <InvertOnHover hoverEl={menuRef.current} key={id}>
+          <InvertOnHover hoverRef={menuRef} key={id}>
             <MenuItem
               ref={menuRef}
               value={id}

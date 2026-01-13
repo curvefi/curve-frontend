@@ -14,7 +14,7 @@ import type { PoolListItem } from '../types'
 
 type Prop = CellContext<PoolListItem, RewardsApy | undefined>
 
-export const RewardsOtherCell = ({ getValue, table, column, row: { original: poolData } }: Prop) => {
+export const RewardsOtherCell = ({ getValue, table, row: { original: poolData } }: Prop) => {
   const { data: campaigns } = useCampaignsByAddress({
     blockchainId: poolData.network as Chain,
     address: poolData?.pool?.address as Address,

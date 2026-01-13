@@ -30,7 +30,7 @@ import TxInfoBar from '@ui/TxInfoBar'
 import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
-import { LargeSxProps, TokenSelector } from '@ui-kit/features/select-token'
+import { TokenSelector } from '@ui-kit/features/select-token'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { t } from '@ui-kit/lib/i18n'
@@ -392,7 +392,6 @@ const Swap = ({
                   '',
                 )
               }
-              sx={LargeSxProps}
             />
           }
           {...(formValues.fromError && {
@@ -432,6 +431,7 @@ const Swap = ({
         </IconButton>
 
         {/* if hasRouter value is false, it means entering toAmount is not ready */}
+
         <LargeTokenInput
           label={t`Buy`}
           name="toAmount"
@@ -463,7 +463,6 @@ const Swap = ({
                   '',
                 )
               }
-              sx={LargeSxProps}
             />
           }
           walletBalance={{

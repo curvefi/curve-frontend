@@ -89,7 +89,7 @@ const DEFAULT_STATE: SliceState = {
 const { loanCreate } = apiLending
 const { isTooMuch } = helpers
 
-const createLoanCreate = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): LoanCreateSlice => ({
+const createLoanCreate = (_set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): LoanCreateSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 
@@ -135,7 +135,7 @@ const createLoanCreate = (set: StoreApi<State>['setState'], get: StoreApi<State>
       sliceState.setStateByActiveKey('maxRecv', activeKeyMax, maxRecv)
       return maxRecv
     },
-    fetchDetailInfo: async (activeKey, api, market, maxSlippage, isLeverage) => {
+    fetchDetailInfo: async (activeKey, _api, market, maxSlippage, isLeverage) => {
       const { detailInfo, detailInfoLeverage, formStatus, formValues, ...sliceState } = get()[sliceKey]
       const { userCollateral, userBorrowed, debt, n } = formValues
       const { haveValues, haveDebt } = _parseValue(formValues)
@@ -167,7 +167,7 @@ const createLoanCreate = (set: StoreApi<State>['setState'], get: StoreApi<State>
         if (resp.error) sliceState.setStateByKey('formStatus', { ...formStatus, error: resp.error })
       }
     },
-    fetchLiqRanges: async (activeKeyLiqRange, api, market, isLeverage) => {
+    fetchLiqRanges: async (activeKeyLiqRange, _api, market, isLeverage) => {
       const { detailInfoLeverage, formValues, ...sliceState } = get()[sliceKey]
       const { userCollateral, userBorrowed, debt } = formValues
       const { totalCollateral } = detailInfoLeverage[activeKeyLiqRange]?.expectedCollateral ?? {}
@@ -297,7 +297,6 @@ const createLoanCreate = (set: StoreApi<State>['setState'], get: StoreApi<State>
       }
     },
     fetchStepCreate: async (activeKey, api, market, maxSlippage, formValues, isLeverage) => {
-      const { markets, user } = get()
       const { formStatus, ...sliceState } = get()[sliceKey]
       const { userCollateral, userBorrowed, debt, n } = formValues
       const { provider, wallet } = useWallet.getState()
@@ -375,7 +374,7 @@ const createLoanCreate = (set: StoreApi<State>['setState'], get: StoreApi<State>
     setStateByKey: <T>(key: StateKey, value: T) => {
       get().setAppStateByKey(sliceKey, key, value)
     },
-    setStateByKeys: <T>(sliceState: Partial<SliceState>) => {
+    setStateByKeys: (sliceState: Partial<SliceState>) => {
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {

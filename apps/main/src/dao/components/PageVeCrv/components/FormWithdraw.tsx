@@ -49,6 +49,7 @@ const FormWithdraw = ({ rChainId, vecrvInfo }: PageVecrv) => {
 
   useEffect(() => {
     if (withdrawTxSuccess) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setTxInfoBar(
         <TxInfoBar
           description={t`Locked CRV withdrawn`}

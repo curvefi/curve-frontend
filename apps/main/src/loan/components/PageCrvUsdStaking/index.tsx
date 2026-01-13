@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { useEffect } from 'react'
 import { useConnection } from 'wagmi'
-import DepositWithdraw from '@/loan/components/PageCrvUsdStaking/DepositWithdraw'
+import { DepositWithdraw } from '@/loan/components/PageCrvUsdStaking/DepositWithdraw'
 import Statistics from '@/loan/components/PageCrvUsdStaking/Statistics'
 import StatsBanner from '@/loan/components/PageCrvUsdStaking/StatsBanner'
 import UserInformation from '@/loan/components/PageCrvUsdStaking/UserInformation'
@@ -120,7 +120,7 @@ const CrvUsdStaking = ({ params }: { params: NetworkUrlParams }) => {
               />
             </>
           )}
-          <DepositWithdraw />
+          <DepositWithdraw params={params} />
           {!isChartExpanded && (
             <Stack
               gap={Sizing[200]}

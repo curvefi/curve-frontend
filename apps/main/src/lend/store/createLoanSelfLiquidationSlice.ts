@@ -61,7 +61,7 @@ const DEFAULT_STATE: SliceState = {
 const { loanSelfLiquidation } = apiLending
 
 const createLoanSelfLiquidationSlice = (
-  set: StoreApi<State>['setState'],
+  _set: StoreApi<State>['setState'],
   get: StoreApi<State>['getState'],
 ): LoanSelfLiquidationSlice => ({
   [sliceKey]: {
@@ -85,7 +85,7 @@ const createLoanSelfLiquidationSlice = (
         const walletBorrowed = userLoanBalancesResp.borrowed
         const { borrowed: stateBorrowed = '0', debt: stateDebt = '0' } = userLoanDetailsResp.details?.state ?? {}
 
-        const resp = await loanSelfLiquidation.detailInfo(api, market, maxSlippage)
+        const resp = await loanSelfLiquidation.detailInfo(market, maxSlippage)
         const { tokensToLiquidate, futureRates } = resp
         const liquidationAmt = isGreaterThanOrEqualTo(stateBorrowed, tokensToLiquidate, borrowedTokenDecimals)
           ? '0'
@@ -156,7 +156,7 @@ const createLoanSelfLiquidationSlice = (
         return { ...resp, error }
       }
     },
-    fetchStepLiquidate: async (api, market, liquidationAmt, maxSlippage) => {
+    fetchStepLiquidate: async (api, market, _liquidationAmt, maxSlippage) => {
       const { markets, user } = get()
       const { formStatus, ...sliceState } = get()[sliceKey]
       const { chainId } = api
@@ -212,7 +212,7 @@ const createLoanSelfLiquidationSlice = (
     setStateByKey: <T>(key: StateKey, value: T) => {
       get().setAppStateByKey(sliceKey, key, value)
     },
-    setStateByKeys: <T>(sliceState: Partial<SliceState>) => {
+    setStateByKeys: (sliceState: Partial<SliceState>) => {
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {

@@ -8,11 +8,10 @@ type Props = {
   as?: keyof JSX.IntrinsicElements
   isIn?: boolean
   isMobile?: boolean
-  type: 'pool' | 'market'
   tooltip: string
 }
 
-const CellInPool = ({ isIn, isMobile, type, tooltip, ...rest }: Props) => (
+const CellInPool = ({ isIn, isMobile, tooltip, ...rest }: Props) => (
   <Td {...rest} $isIn={isIn} $isMobile={isMobile} className={isIn ? 'active' : ''}>
     {isIn && (
       <Chip tooltip={tooltip} tooltipProps={{ placement: 'top-start' }}>

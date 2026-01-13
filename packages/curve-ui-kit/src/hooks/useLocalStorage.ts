@@ -50,8 +50,8 @@ export const useReleaseChannel = () =>
 export const useFilterExpanded = (tableTitle: string) =>
   useLocalStorage<boolean>(`filter-expanded-${kebabCase(tableTitle)}`, false)
 
-export const useBorrowPreset = <T extends 'Safe' | 'MaxLtv' | 'Custom'>(defaultValue: T) =>
-  useLocalStorage<T>('borrow-preset', defaultValue)
+export const useCreateLoanPreset = <T extends 'Safe' | 'MaxLtv' | 'Custom'>(defaultValue: T) =>
+  useLocalStorage<T>('create-loan-preset', defaultValue)
 
 export const useTableColumnVisibility = <Variant extends string, ColumnIds>(
   tableTitle: string,
@@ -74,6 +74,7 @@ export const useDismissBanner = (bannerKey: string, expirationTime: number) => {
   const [dismissedAt, setDismissedAt] = useLocalStorage<number | null>(bannerKey, null)
 
   const shouldShowBanner = useMemo(
+    // eslint-disable-next-line react-hooks/purity
     () => dismissedAt == null || Date.now() - dismissedAt >= expirationTime, // Show if dismissed longer than expiration
     [dismissedAt, expirationTime],
   )

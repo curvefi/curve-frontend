@@ -19,6 +19,7 @@ function useMobileTooltip(onClick: { (): void | undefined } | (() => void) | und
   const handleScroll = useCallback(() => {
     if (scrollY !== window.scrollY) {
       setOpen(false)
+      // eslint-disable-next-line react-hooks/immutability
       window.removeEventListener('scroll', handleScroll)
     }
   }, [scrollY])

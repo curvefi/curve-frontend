@@ -59,7 +59,7 @@ const DEFAULT_STATE: SliceState = {
 }
 
 const createVaultWithdrawRedeem = (
-  set: StoreApi<State>['setState'],
+  _set: StoreApi<State>['setState'],
   get: StoreApi<State>['getState'],
 ): VaultWithdrawRedeemSlice => ({
   [sliceKey]: {
@@ -83,7 +83,7 @@ const createVaultWithdrawRedeem = (
         : cFormValues.amountError
       get()[sliceKey].setStateByKey('formValues', cFormValues)
     },
-    fetchEstGas: async (activeKey, formType, api, market) => {
+    fetchEstGas: async (activeKey, _formType, api, market) => {
       const { signerAddress } = api
       const { amount, amountError, isFullWithdraw } = get()[sliceKey].formValues
 
@@ -179,7 +179,7 @@ const createVaultWithdrawRedeem = (
     setStateByKey: <T>(key: StateKey, value: T) => {
       get().setAppStateByKey(sliceKey, key, value)
     },
-    setStateByKeys: <T>(sliceState: Partial<SliceState>) => {
+    setStateByKeys: (sliceState: Partial<SliceState>) => {
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {

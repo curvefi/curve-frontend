@@ -55,7 +55,7 @@ const Popover = (props: AriaOverlayProps & { popoverRef: RefObject<HTMLDivElemen
   )
 }
 
-function Option<T extends {}>({ item, state }: AriaOptionProps & { state: ListState<T>; item: Node<T> }) {
+function Option<T extends object>({ item, state }: AriaOptionProps & { state: ListState<T>; item: Node<T> }) {
   const ref = useRef<HTMLLIElement>(null)
   const { optionProps, isFocused } = useOption({ key: item.key }, state, ref)
   const { focusProps } = useFocusRing()
@@ -67,7 +67,7 @@ function Option<T extends {}>({ item, state }: AriaOptionProps & { state: ListSt
   )
 }
 
-function ListBoxSection<T extends {}>({
+function ListBoxSection<T extends object>({
   section,
   state,
 }: AriaListBoxSectionProps & { state: ListState<T>; section: Node<T> }) {
@@ -93,7 +93,7 @@ function ListBoxSection<T extends {}>({
   )
 }
 
-function ListBox<T extends {}>(
+function ListBox<T extends object>(
   props: AriaListBoxOptions<T> & { listBoxRef: RefObject<HTMLUListElement | null>; state: ListState<T> },
 ) {
   const ref = useRef<HTMLUListElement>(null)
@@ -110,17 +110,16 @@ function ListBox<T extends {}>(
 }
 
 function Button(props: AriaButtonProps & { buttonRef: RefObject<HTMLButtonElement | null>; style?: CSSProperties }) {
-  const ref = props.buttonRef
-  const { buttonProps } = useButton(props, ref)
-
+  const { buttonRef, children, style } = props
+  const { buttonProps } = useButton(props, buttonRef)
   return (
-    <StyledIconButton {...buttonProps} ref={ref} style={props.style ?? {}}>
-      {props.children}
+    <StyledIconButton {...buttonProps} ref={buttonRef} style={style}>
+      {children}
     </StyledIconButton>
   )
 }
 
-function ComboBoxAddress<T extends {}>(props: ComboBoxStateOptions<T>) {
+function ComboBoxAddress<T extends object>(props: ComboBoxStateOptions<T>) {
   const buttonRef = useRef<HTMLButtonElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const listBoxRef = useRef<HTMLUListElement>(null)

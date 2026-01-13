@@ -53,16 +53,17 @@ function useWagmiIsReconnecting(address?: Address) {
 export function useWagmiWallet() {
   const { data: client } = useConnectorClient()
   const address = client?.account?.address
+  const request = client?.transport.request
+  const wallet = useMemo(
+    () =>
+      // `wallet.account.ensName` is set later when detected
+      address && request ? { provider: { request }, account: { address } } : undefined,
+    [address, request],
+  )
   return {
     isReconnecting: useWagmiIsReconnecting(address),
-    ...(useMemo(() => {
-      const wallet = address &&
-        client?.transport.request && {
-          provider: { request: client.transport.request },
-          account: { address }, // the ensName is set later when detected
-        }
-      return { wallet, provider: wallet ? new BrowserProvider(wallet.provider) : null }
-    }, [address, client?.transport.request]) ?? null),
+    wallet,
+    provider: useMemo(() => wallet && new BrowserProvider(wallet.provider), [wallet]),
   }
 }
 

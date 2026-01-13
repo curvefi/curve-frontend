@@ -46,6 +46,7 @@ export const AppLibs = {
   dex: 'curveApi',
   lend: 'llamaApi',
   llamalend: 'llamaApi',
+  bridge: 'curveApi',
   // Technically this app doesn't need a lib, but making this optional opens a can of worms. Refactor later.
   analytics: 'curveApi',
 } satisfies Record<AppName, LibKey | undefined>

@@ -51,7 +51,7 @@ const DEFAULT_STATE: SliceState = {
 }
 
 const createLoanDeleverageSlice = (
-  set: StoreApi<State>['setState'],
+  _set: StoreApi<State>['setState'],
   get: StoreApi<State>['getState'],
 ): LoanDeleverageSlice => ({
   [sliceKey]: {

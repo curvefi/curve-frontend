@@ -28,9 +28,12 @@ import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t, Trans } from '@ui-kit/lib/i18n'
 import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
 
-interface Props extends Pick<ManageLoanProps, 'curve' | 'market' | 'params' | 'rChainId'> {}
-
-const LoanLiquidate = ({ curve, market: llamma, params, rChainId }: Props) => {
+const LoanLiquidate = ({
+  curve,
+  market: llamma,
+  params,
+  rChainId,
+}: Pick<ManageLoanProps, 'curve' | 'market' | 'params' | 'rChainId'>) => {
   const llammaId = llamma?.id ?? ''
   const { chainId, haveSigner } = curveProps(curve)
   const isSubscribed = useRef(false)

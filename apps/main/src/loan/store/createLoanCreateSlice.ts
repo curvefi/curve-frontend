@@ -133,7 +133,7 @@ const DEFAULT_STATE: SliceState = {
   isEditLiqRange: false,
 }
 
-const createLoanCreate = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
+const createLoanCreate = (_set: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 
@@ -478,7 +478,7 @@ const createLoanCreate = (set: StoreApi<State>['setState'], get: StoreApi<State>
     setStateByKey: <T>(key: StateKey, value: T) => {
       get().setAppStateByKey(sliceKey, key, value)
     },
-    setStateByKeys: <T>(sliceState: Partial<SliceState>) => {
+    setStateByKeys: (sliceState: Partial<SliceState>) => {
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {

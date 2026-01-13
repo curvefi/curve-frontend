@@ -54,7 +54,7 @@ const DEFAULT_STATE: SliceState = {
   marketDetailsView: '',
 }
 
-const createMarketsSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): MarketsSlice => ({
+const createMarketsSlice = (_set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): MarketsSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
     fetchDatas: async (key, api, markets, shouldRefetch) => {
@@ -111,7 +111,7 @@ const createMarketsSlice = (set: StoreApi<State>['setState'], get: StoreApi<Stat
     setStateByKey: <T>(key: StateKey, value: T) => {
       get().setAppStateByKey(sliceKey, key, value)
     },
-    setStateByKeys: <T>(sliceState: Partial<SliceState>) => {
+    setStateByKeys: (sliceState: Partial<SliceState>) => {
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {

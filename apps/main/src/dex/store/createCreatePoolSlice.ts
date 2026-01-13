@@ -695,57 +695,46 @@ const createCreatePoolSlice = (
     updateGamma: (value: number | string) =>
       set(
         produce((state) => {
-          value === typeof 'string'
-            ? (state.createPool.parameters.gamma = value)
-            : (state.createPool.parameters.gamma = new BigNumber(value).toString())
+          state.createPool.parameters.gamma = typeof value === 'string' ? value : new BigNumber(value).toString()
         }),
       ),
     updateAllowedExtraProfit: (value: number | string) =>
       set(
         produce((state) => {
-          value === typeof 'string'
-            ? (state.createPool.parameters.allowedExtraProfit = value)
-            : (state.createPool.parameters.allowedExtraProfit = new BigNumber(value).toString())
+          state.createPool.parameters.allowedExtraProfit =
+            typeof value === 'string' ? value : new BigNumber(value).toString()
         }),
       ),
     updateFeeGamma: (value: number | string) =>
       set(
         produce((state) => {
-          value === typeof 'string'
-            ? (state.createPool.parameters.feeGamma = value)
-            : (state.createPool.parameters.feeGamma = new BigNumber(value).toString())
+          state.createPool.parameters.feeGamma = typeof value === 'string' ? value : new BigNumber(value).toString()
         }),
       ),
     updateAdjustmentStep: (value: number | string) =>
       set(
         produce((state) => {
-          value === typeof 'string'
-            ? (state.createPool.parameters.adjustmentStep = value)
-            : (state.createPool.parameters.adjustmentStep = new BigNumber(value).toString())
+          state.createPool.parameters.adjustmentStep =
+            typeof value === 'string' ? value : new BigNumber(value).toString()
         }),
       ),
     updateMaHalfTime: (value: number | string) =>
       set(
         produce((state) => {
-          value === typeof 'string'
-            ? (state.createPool.parameters.maHalfTime = value)
-            : (state.createPool.parameters.maHalfTime = new BigNumber(value).toString())
+          state.createPool.parameters.maHalfTime = typeof value === 'string' ? value : new BigNumber(value).toString()
         }),
       ),
     updateMaExpTime: (value: number | string) =>
       set(
         produce((state) => {
-          value === typeof 'string'
-            ? (state.createPool.parameters.maExpTime = value)
-            : (state.createPool.parameters.maExpTime = new BigNumber(value).toString())
+          state.createPool.parameters.maExpTime = typeof value === 'string' ? value : new BigNumber(value).toString()
         }),
       ),
     updateOffpegFeeMultiplier: (value: number | string) =>
       set(
         produce((state) => {
-          value === typeof 'string'
-            ? (state.createPool.parameters.offpegFeeMultiplier = value)
-            : (state.createPool.parameters.offpegFeeMultiplier = new BigNumber(value).toString())
+          state.createPool.parameters.offpegFeeMultiplier =
+            typeof value === 'string' ? value : new BigNumber(value).toString()
         }),
       ),
     updatePoolName: (name: string) =>

@@ -48,7 +48,7 @@ const DEFAULT_STATE: SliceState = {
   marketsBalancesMapper: {},
 }
 
-const createUserSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): UserSlice => ({
+const createUserSlice = (_set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): UserSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 

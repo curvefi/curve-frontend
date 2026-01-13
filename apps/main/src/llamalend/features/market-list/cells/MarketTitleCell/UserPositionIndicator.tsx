@@ -51,6 +51,7 @@ export const UserPositionIndicator = ({ market }: { market: LlamaMarket }) => {
   const [colorState, setColorState] = useState<ColorState>('info')
 
   useEffect(
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     () => (softLiquidation ? flickerEffect(setColorState) : liquidated ? setColorState('red') : setColorState('info')),
     [softLiquidation, liquidated],
   )

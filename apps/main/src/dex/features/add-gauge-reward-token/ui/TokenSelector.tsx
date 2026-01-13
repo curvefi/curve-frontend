@@ -77,13 +77,7 @@ export const TokenSelector = ({
         selectedToken={selectedToken}
         tokens={filteredTokens}
         disabled={disabled || filteredTokens.length === 0}
-        onToken={(token) => {
-          setValue('rewardTokenId', token.address, { shouldValidate: true })
-        }}
-        sx={{
-          width: '100%',
-          height: '100%',
-        }}
+        onToken={(token) => setValue('rewardTokenId', token.address, { shouldValidate: true })}
       />
     </FlexItemToken>
   )

@@ -764,7 +764,7 @@ const CandleChart = ({
       setIsUnmounting(true)
       debouncedUpdate.cancel()
 
-      wrapperRef?.current && wrapperRef.current.disconnect()
+      if (wrapperRef?.current) wrapperRef.current.disconnect()
     }
   }, [wrapperRef, isUnmounting])
 

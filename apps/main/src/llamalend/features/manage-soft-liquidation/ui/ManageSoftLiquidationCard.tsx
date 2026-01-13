@@ -8,7 +8,7 @@ import { ActionInfos, type Props as ActionInfosProps } from './ActionInfos'
 import { ClosePosition, type Props as ClosePositionProps } from './tabs/ClosePosition'
 import { ImproveHealth, type Props as ImproveHealthProps } from './tabs/ImproveHealth'
 
-const { Spacing, MaxWidth, MinWidth } = SizesAndSpaces
+const { Spacing } = SizesAndSpaces
 
 const tabs: TabOption<'manage'>[] = [{ value: 'manage', label: t`Manage soft-liquidation` }]
 

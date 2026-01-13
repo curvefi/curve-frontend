@@ -85,6 +85,7 @@ const DetailInfoHealth = ({
   useEffect(() => {
     if (typeof oraclePriceBand !== 'undefined' && userLoanDetails) {
       const { healthFull, healthNotFull, userBands } = userLoanDetails
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setCurrentHealthMode(
         getHealthMode(
           DEFAULT_BORROW_TOKEN_SYMBOL,

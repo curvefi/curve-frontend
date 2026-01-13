@@ -1,17 +1,12 @@
-import '@/global-extensions'
 import CrvStaking from '@/loan/components/PageCrvUsdStaking/Page'
-import Integrations from '@/loan/components/PageIntegrations/Page'
+import { PageIntegrations } from '@/loan/components/PageIntegrations/Page'
 import { MintMarketPage } from '@/loan/components/PageMintMarket/MintMarketPage'
 import { Page as PegKeepersPage } from '@/loan/components/PagePegKeepers'
 import { CrvUsdClientLayout } from '@/loan/CrvUsdClientLayout'
-import Skeleton from '@mui/material/Skeleton'
 import { createRoute } from '@tanstack/react-router'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { LegalPage } from '@ui-kit/widgets/Legal'
 import { rootRoute } from './root.routes'
+import { createSharedRoutes } from './shared.routes'
 import { redirectTo } from './util'
-
-const { MinHeight } = SizesAndSpaces
 
 const crvusdLayoutRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -22,15 +17,7 @@ const crvusdLayoutRoute = createRoute({
 const layoutProps = { getParentRoute: () => crvusdLayoutRoute }
 
 export const crvusdRoutes = crvusdLayoutRoute.addChildren([
-  createRoute({
-    path: '/',
-    /** Redirect is handled by the `RootLayout` component */
-    component: () => <Skeleton width="100%" height={MinHeight.pageContent} />,
-    head: () => ({
-      meta: [{ title: 'crvUSD - Curve' }],
-    }),
-    ...layoutProps,
-  }),
+  ...createSharedRoutes('crvusd', layoutProps),
   createRoute({
     path: '$network',
     loader: ({ params: { network } }) => redirectTo(`/crvusd/${network}/markets/`),
@@ -42,21 +29,8 @@ export const crvusdRoutes = crvusdLayoutRoute.addChildren([
     ...layoutProps,
   }),
   createRoute({
-    path: '$network/disclaimer',
-    loader: ({ params: { network } }) => redirectTo(`/crvusd/${network}/legal/?tab=disclaimers`),
-    ...layoutProps,
-  }),
-  createRoute({
-    path: '$network/legal',
-    component: () => <LegalPage currentApp="crvusd" />,
-    head: () => ({
-      meta: [{ title: 'Legal - Curve' }],
-    }),
-    ...layoutProps,
-  }),
-  createRoute({
     path: '$network/integrations',
-    component: Integrations,
+    component: PageIntegrations,
     head: () => ({
       meta: [{ title: 'Integrations - Curve' }],
     }),

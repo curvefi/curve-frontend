@@ -1,4 +1,3 @@
-import '@/global-extensions'
 import { PageCompensation } from '@/dex/components/PageCompensation/Page'
 import { PageCreatePool } from '@/dex/components/PageCreatePool/Page'
 import { PageDashboard } from '@/dex/components/PageDashboard/Page'
@@ -8,14 +7,10 @@ import { PagePool } from '@/dex/components/PagePool/Page'
 import { PagePoolList } from '@/dex/components/PagePoolList/Page'
 import { PageRouterSwap } from '@/dex/components/PageRouterSwap/Page'
 import { DexLayout } from '@/dex/DexLayout'
-import Skeleton from '@mui/material/Skeleton'
 import { createRoute } from '@tanstack/react-router'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { LegalPage } from '@ui-kit/widgets/Legal'
 import { rootRoute } from './root.routes'
+import { createSharedRoutes } from './shared.routes'
 import { redirectTo } from './util'
-
-const { MinHeight } = SizesAndSpaces
 
 const dexLayoutRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -26,15 +21,7 @@ const dexLayoutRoute = createRoute({
 const layoutProps = { getParentRoute: () => dexLayoutRoute }
 
 export const dexRoutes = dexLayoutRoute.addChildren([
-  createRoute({
-    path: '/',
-    /** Redirect is handled by the `RootLayout` component */
-    component: () => <Skeleton width="100%" height={MinHeight.pageContent} />,
-    head: () => ({
-      meta: [{ title: 'DEX - Curve' }],
-    }),
-    ...layoutProps,
-  }),
+  ...createSharedRoutes('dex', layoutProps),
   createRoute({
     path: '$network',
     loader: ({ params: { network } }) => redirectTo(`/dex/${network}/swap/`),
@@ -74,19 +61,6 @@ export const dexRoutes = dexLayoutRoute.addChildren([
     component: PageDeployGauge,
     head: () => ({
       meta: [{ title: 'Deploy Gauge - Curve' }],
-    }),
-    ...layoutProps,
-  }),
-  createRoute({
-    path: '$network/disclaimer',
-    loader: ({ params: { network } }) => redirectTo(`/dex/${network}/legal/?tab=disclaimers`),
-    ...layoutProps,
-  }),
-  createRoute({
-    path: '$network/legal',
-    component: () => <LegalPage currentApp="dex" />,
-    head: () => ({
-      meta: [{ title: 'Legal - Curve' }],
     }),
     ...layoutProps,
   }),

@@ -73,7 +73,7 @@ const DEFAULT_STATE: SliceState = {
   maxRemovable: '',
 }
 
-const createLoanCollateralDecrease = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
+const createLoanCollateralDecrease = (_set: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 
@@ -196,7 +196,7 @@ const createLoanCollateralDecrease = (set: StoreApi<State>['setState'], get: Sto
     setStateByKey: <T>(key: StateKey, value: T) => {
       get().setAppStateByKey(sliceKey, key, value)
     },
-    setStateByKeys: <T>(sliceState: Partial<SliceState>) => {
+    setStateByKeys: (sliceState: Partial<SliceState>) => {
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {

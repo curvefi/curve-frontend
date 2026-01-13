@@ -21,6 +21,7 @@ const AlertBox = ({ className, alertType, children, title, limitHeight, handleBt
 
   useEffect(() => {
     if (typeof children === 'string' && children.length > 200) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setEnabledHeightToggle(true)
     }
   }, [children])

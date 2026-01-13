@@ -11,17 +11,10 @@ import Icon from 'ui/src/Icon/Icon'
 interface OpenDialogButtonProps extends ButtonProps {
   children: ReactNode
   overlayTriggerState: OverlayTriggerState
-  showBorder?: boolean
   showCaret?: boolean
 }
 
-const OpenDialogButton = ({
-  children,
-  overlayTriggerState,
-  showBorder,
-  showCaret,
-  ...props
-}: OpenDialogButtonProps) => {
+const OpenDialogButton = ({ children, overlayTriggerState, showCaret, ...props }: OpenDialogButtonProps) => {
   const openButtonRef = useRef<HTMLButtonElement>(null)
   const isMobile = useIsMobile()
   const { buttonProps } = useButton(

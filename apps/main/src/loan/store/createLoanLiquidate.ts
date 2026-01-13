@@ -65,7 +65,7 @@ const DEFAULT_STATE: SliceState = {
   liquidationAmt: '',
 }
 
-const createLoanLiquidate = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
+const createLoanLiquidate = (_set: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
   loanLiquidate: {
     ...DEFAULT_STATE,
 
@@ -84,7 +84,7 @@ const createLoanLiquidate = (set: StoreApi<State>['setState'], get: StoreApi<Sta
     fetchTokensToLiquidate: async (
       chainId: ChainId,
       llamma: Llamma,
-      llammaId: string,
+      _llammaId: string,
       maxSlippage: string,
       userWalletBalances: UserWalletBalances,
     ) => {
@@ -126,7 +126,7 @@ const createLoanLiquidate = (set: StoreApi<State>['setState'], get: StoreApi<Sta
       void get()[sliceKey].fetchEstGasApproval(chainId, llamma, maxSlippage, updatedFormStatus)
       return resp
     },
-    fetchStepLiquidate: async (curve: LlamaApi, llamma: Llamma, liquidationAmt: string, maxSlippage: string) => {
+    fetchStepLiquidate: async (curve: LlamaApi, llamma: Llamma, _liquidationAmt: string, maxSlippage: string) => {
       const { provider, wallet } = useWallet.getState()
       if (!provider || !wallet) return setMissingProvider(get()[sliceKey])
 
@@ -164,7 +164,7 @@ const createLoanLiquidate = (set: StoreApi<State>['setState'], get: StoreApi<Sta
     setStateByKey: <T>(key: StateKey, value: T) => {
       get().setAppStateByKey(sliceKey, key, value)
     },
-    setStateByKeys: <T>(sliceState: Partial<SliceState>) => {
+    setStateByKeys: (sliceState: Partial<SliceState>) => {
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {

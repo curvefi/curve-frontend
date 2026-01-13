@@ -3,7 +3,6 @@ import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 import createAppSlice, { AppSlice } from '@/loan/store/createAppSlice'
 import createChartBandsSlice, { ChartBandsSlice } from '@/loan/store/createChartBandsStore'
-import createIntegrationsSlice, { IntegrationsSlice } from '@/loan/store/createIntegrationsSlice'
 import createLoanCollateralDecrease, {
   LoanCollateralDecreaseSlice,
 } from '@/loan/store/createLoanCollateralDecreaseSlice'
@@ -29,7 +28,6 @@ export type State = AppSlice &
   LoanDeleverageSlice &
   LoanIncreaseSlice &
   LoanLiquidateSlice &
-  IntegrationsSlice &
   OhlcChartSlice &
   ScrvUsdSlice
 
@@ -44,7 +42,6 @@ const store = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState'
   ...createLoanDeleverageSlice(set, get),
   ...createLoanIncrease(set, get),
   ...createLoanLiquidate(set, get),
-  ...createIntegrationsSlice(set, get),
   ...createOhlcChartSlice(set, get),
   ...createScrvUsdSlice(set, get),
 })

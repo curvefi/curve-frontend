@@ -87,7 +87,7 @@ export const TableFilters = <ColumnIds extends string>({
               testId="btn-expand-filters"
             />
           )}
-          {onReload && !isMobile && <TableButton onClick={onReload} icon={ReloadIcon} loading={loading} />}
+          {onReload && !isMobile && <TableButton onClick={onReload} icon={ReloadIcon} rotateIcon={loading} />}
           {hasSearchBar && (
             <TableSearchField
               value={searchText}
@@ -104,9 +104,9 @@ export const TableFilters = <ColumnIds extends string>({
       </Grid>
       {isCollapsible && !isMobile && <Collapse in={filterExpanded}>{collapsible}</Collapse>}
 
-      {visibilitySettingsOpen != null && settingsRef.current && toggleVisibility && (
+      {visibilitySettingsOpen != null && toggleVisibility && (
         <TableVisibilitySettingsPopover<ColumnIds>
-          anchorEl={settingsRef.current}
+          anchorRef={settingsRef}
           visibilityGroups={visibilityGroups}
           toggleVisibility={toggleVisibility}
           open={visibilitySettingsOpen}

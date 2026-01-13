@@ -128,9 +128,11 @@ async function downloadLatestArtifacts({ cleanup }: { cleanup: boolean }): Promi
   console.info(`Downloading artifacts for branch '${branch}' (workflow: ${workflow}, run: ${runId}) into '${dest}'...`)
   downloadArtifacts(runId, dest)
 
-  console.info('Cleaning up videos from successful tests...')
-  await cleanupSuccessfulTestVideos(dest)
-  console.info('Cleanup complete.')
+  if (cleanup) {
+    console.info('Cleaning up videos from successful tests...')
+    await cleanupSuccessfulTestVideos(dest)
+    console.info('Cleanup complete.')
+  }
 }
 
 /**
