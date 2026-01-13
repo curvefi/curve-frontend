@@ -2,24 +2,16 @@ import { produce } from 'immer'
 import type { StoreApi } from 'zustand'
 import type { State } from '@/dao/store/useStore'
 import {
-  CurveApi,
   SortDirection,
   UserGaugeVotesSortBy,
   UserGaugeVoteWeightSortBy,
   UserLocksSortBy,
   UserProposalVotesSortBy,
-  type Wallet,
 } from '@/dao/types/dao.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
 type SliceState = {
-  userVeCrv: {
-    veCrv: string
-    veCrvPct: string
-    lockedCrv: string
-    unlockTime: number
-  }
   userLocksSortBy: {
     key: UserLocksSortBy
     order: SortDirection
@@ -43,8 +35,6 @@ const sliceKey = 'user'
 // prettier-ignore
 export type UserSlice = {
   [sliceKey]: SliceState & {
-    updateUserData(curve: CurveApi, wallet: Wallet): void
-
     setUserProposalVotesSortBy(sortBy: UserProposalVotesSortBy): void
     setUserLocksSortBy: (sortBy: UserLocksSortBy) => void
     setUserGaugeVotesSortBy: (sortBy: UserGaugeVotesSortBy) => void
@@ -58,12 +48,6 @@ export type UserSlice = {
 }
 
 const DEFAULT_STATE: SliceState = {
-  userVeCrv: {
-    veCrv: '0',
-    veCrvPct: '0',
-    lockedCrv: '0',
-    unlockTime: 0,
-  },
   userLocksSortBy: {
     key: 'timestamp',
     order: 'desc',
@@ -87,17 +71,6 @@ const DEFAULT_STATE: SliceState = {
 export const createUserSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): UserSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
-    updateUserData: async (curve: CurveApi, wallet: Wallet) => {
-      const userAddress = wallet.address
-
-      try {
-        const veCRV = await curve.dao.userVeCrv(userAddress)
-
-        get()[sliceKey].setStateByKey('userVeCrv', veCRV)
-      } catch (error) {
-        console.error(error)
-      }
-    },
     setUserLocksSortBy: (sortBy: UserLocksSortBy) => {
       const { userLocksSortBy } = get()[sliceKey]
       let order = userLocksSortBy.order

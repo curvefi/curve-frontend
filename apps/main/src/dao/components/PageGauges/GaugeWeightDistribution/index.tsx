@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import { styled } from 'styled-components'
+import { useConnection } from 'wagmi'
 import { ErrorMessage } from '@/dao/components/ErrorMessage'
 import { useUserGaugeWeightVotesQuery } from '@/dao/entities/user-gauge-weight-votes'
 import { refetchGauges, useGauges } from '@/dao/queries/gauges.query'
@@ -14,10 +15,10 @@ import { GaugeVotingBarChartCustomTooltip } from '../../Charts/GaugeVotingBarCha
 
 type GaugeWeightDistributionProps = {
   isUserVotes: boolean
-  userAddress?: string
 }
 
-export const GaugeWeightDistribution = ({ isUserVotes, userAddress }: GaugeWeightDistributionProps) => {
+export const GaugeWeightDistribution = ({ isUserVotes }: GaugeWeightDistributionProps) => {
+  const { address: userAddress } = useConnection()
   const {
     data: userGaugeWeightVotes,
     isSuccess: userGaugeWeightsSuccess,

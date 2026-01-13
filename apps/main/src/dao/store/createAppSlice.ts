@@ -24,8 +24,8 @@ export interface AppSlice {
   resetAppState<T>(sliceKey: SliceKey, defaultState: T): void
 }
 
-export const createAppSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): AppSlice => ({
-  hydrate: async (_, api, prevApi, wallet) => {
+export const createAppSlice = (set: StoreApi<State>['setState'], _get: StoreApi<State>['getState']): AppSlice => ({
+  hydrate: async (_, api, prevApi, _wallet) => {
     if (!api) return
 
     const isNetworkSwitched = prevApi?.chainId != api.chainId
@@ -33,9 +33,6 @@ export const createAppSlice = (set: StoreApi<State>['setState'], get: StoreApi<S
     log('Hydrating DAO', api?.chainId, {
       isNetworkSwitched,
     })
-
-    const { user } = get()
-    await Promise.all([api && wallet?.provider && user.updateUserData(api, wallet)])
 
     log('Hydrating DAO - Complete')
   },

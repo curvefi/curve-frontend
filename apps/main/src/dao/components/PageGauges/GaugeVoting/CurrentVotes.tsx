@@ -1,5 +1,6 @@
 import { Fragment, useMemo } from 'react'
 import { styled } from 'styled-components'
+import { useConnection } from 'wagmi'
 import { GaugeListItem } from '@/dao/components/PageGauges/GaugeListItem'
 import { SmallScreenCard } from '@/dao/components/PageGauges/GaugeListItem/SmallScreenCard'
 import { GaugeVotingStats } from '@/dao/components/PageGauges/GaugeVoting/GaugeVotingStats'
@@ -23,19 +24,15 @@ import { t } from '@ui-kit/lib/i18n'
 import { Chain } from '@ui-kit/utils/network'
 import { USER_VOTES_TABLE_LABELS } from './constants'
 
-type CurrentVotesProps = {
-  userAddress: string | undefined
-}
-
 const sortGauges = (gauges: UserGaugeVoteWeight[], order: SortDirection, sortBy: UserGaugeVoteWeightSortBy) =>
   [...gauges].sort((a, b) => (order === 'asc' ? a[sortBy] - b[sortBy] : b[sortBy] - a[sortBy]))
 
-export const CurrentVotes = ({ userAddress: userAddressProp }: CurrentVotesProps) => {
+export const CurrentVotes = () => {
+  const { address: userAddress } = useConnection()
   const setUserGaugeVoteWeightsSortBy = useStore((state) => state.user.setUserGaugeVoteWeightsSortBy)
   const userGaugeVoteWeightsSortBy = useStore((state) => state.user.userGaugeVoteWeightsSortBy)
   const { data: gaugeMapper = {}, isLoading: isLoadingGauges } = useGauges({})
   const selectedGauge = useStore((state) => state.gauges.selectedGauge)
-  const userAddress = userAddressProp ?? ''
 
   const {
     data: userGaugeWeightVotes,
@@ -44,7 +41,7 @@ export const CurrentVotes = ({ userAddress: userAddressProp }: CurrentVotesProps
     isError: userGaugeWeightsError,
   } = useUserGaugeWeightVotesQuery({
     chainId: Chain.Ethereum, // DAO is only used on mainnet
-    userAddress: userAddress,
+    userAddress: userAddress ?? '',
   })
 
   const tableLoading = userGaugeWeightsLoading || isLoadingGauges
@@ -84,7 +81,7 @@ export const CurrentVotes = ({ userAddress: userAddressProp }: CurrentVotesProps
     <Wrapper>
       <VoteStats selectedGauge={selectedGauge}>
         <h3>{t`USER GAUGE VOTES`}</h3>
-        {userAddress && <GaugeVotingStats userAddress={userAddress} />}
+        {<GaugeVotingStats />}
       </VoteStats>
       {selectedGauge && (
         <VoteGauge
@@ -115,7 +112,6 @@ export const CurrentVotes = ({ userAddress: userAddressProp }: CurrentVotesProps
                   gridTemplateColumns={gridTemplateColumns}
                   powerUsed={userGaugeWeightVotes?.powerUsed ?? 0}
                   userGaugeVote={true}
-                  userAddress={userAddress}
                 />
               </GaugeListItemWrapper>
               <SmallScreenCardWrapper>

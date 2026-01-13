@@ -1,10 +1,11 @@
 import { styled } from 'styled-components'
 import type { Address } from 'viem'
 import { useEnsName } from 'wagmi'
+import { useConnection } from 'wagmi'
 import { ComboBoxGauges as ComboBoxSelectGauge } from '@/dao/components/ComboBoxSelectGauge'
 import { MetricsColumnData, MetricsComp } from '@/dao/components/MetricsComp'
+import { useLockerVecrvUser } from '@/dao/entities/locker-vecrv-user'
 import { useUserGaugeWeightVotesQuery } from '@/dao/entities/user-gauge-weight-votes'
-import { useStore } from '@/dao/store/useStore'
 import { getEthPath } from '@/dao/utils'
 import { AlertBox } from '@ui/AlertBox'
 import { Box } from '@ui/Box'
@@ -16,16 +17,17 @@ import { shortenAddress } from '@ui-kit/utils'
 import { Chain } from '@ui-kit/utils/network'
 import { calculateUserPowerStale } from './utils'
 
-export const GaugeVotingStats = ({ userAddress }: { userAddress: string }) => {
+export const GaugeVotingStats = () => {
+  const { address: userAddress } = useConnection()
   const { data: userGaugeWeightVotes, isLoading: userGaugeWeightsLoading } = useUserGaugeWeightVotesQuery({
     chainId: Chain.Ethereum, // DAO is only used on mainnet
     userAddress: userAddress ?? '',
   })
   const { data: userEns } = useEnsName({ address: userAddress as Address })
-  const userVeCrv = useStore((state) => state.user.userVeCrv)
+  const { data: userVeCrv, isLoading: userVeCrvLoading } = useLockerVecrvUser({ chainId: Chain.Ethereum, userAddress })
 
   const isUserPowerStale = calculateUserPowerStale(
-    +userVeCrv.veCrv,
+    +(userVeCrv?.veCrv ?? 0),
     userGaugeWeightVotes?.powerUsed ?? 0,
     userGaugeWeightVotes?.veCrvUsed ?? 0,
   )
@@ -48,9 +50,9 @@ export const GaugeVotingStats = ({ userAddress }: { userAddress: string }) => {
           data={<MetricsColumnData>{userGaugeWeightVotes?.powerUsed}%</MetricsColumnData>}
         />
         <MetricsComp
-          loading={userGaugeWeightsLoading}
+          loading={userVeCrvLoading}
           title="veCRV"
-          data={<MetricsColumnData>{formatNumber(userVeCrv.veCrv)}</MetricsColumnData>}
+          data={<MetricsColumnData>{formatNumber(userVeCrv?.veCrv)}</MetricsColumnData>}
         />
         <MetricsComp
           loading={userGaugeWeightsLoading}
