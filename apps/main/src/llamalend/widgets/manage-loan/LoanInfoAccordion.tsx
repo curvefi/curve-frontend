@@ -6,13 +6,10 @@ import { t } from '@ui-kit/lib/i18n'
 import { FireIcon } from '@ui-kit/shared/icons/FireIcon'
 import { Accordion } from '@ui-kit/shared/ui/Accordion'
 import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { Query } from '@ui-kit/types/util'
 import { Decimal, formatNumber, formatPercent, formatUsd } from '@ui-kit/utils'
 import { getHealthValueColor } from '../../features/market-position-details/utils'
 import { LoanLeverageActionInfo, type LoanLeverageActionInfoProps } from './LoanLeverageActionInfo'
-
-const { Spacing } = SizesAndSpaces
 
 export type LoanInfoGasData = {
   estGasCostUsd?: number | Decimal | `${number}`
