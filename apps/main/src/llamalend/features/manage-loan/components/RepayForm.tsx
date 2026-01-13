@@ -13,7 +13,7 @@ import { notFalsy } from '@curvefi/prices-api/objects.util'
 import Button from '@mui/material/Button'
 import { TokenSelector } from '@ui-kit/features/select-token'
 import { t } from '@ui-kit/lib/i18n'
-import { mapQuery } from '@ui-kit/types/util'
+import { Balance } from '@ui-kit/shared/ui/Balance'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { useRepayForm } from '../hooks/useRepayForm'
 
@@ -54,17 +54,17 @@ export const RepayForm = <ChainId extends IChainId>({
     txHash,
     isApproved,
     formErrors,
+    max,
     isFull,
-    userState,
   } = useRepayForm({
     market,
     network,
     enabled,
     onRepaid,
   })
-  const stateCollateralMax = mapQuery(userState, (data) => data.collateral)
   const { token, onToken, tokens } = useRepayTokens({ market, network })
   const selectedField = token?.field ?? 'userBorrowed'
+  const selectedToken = selectedField == 'userBorrowed' ? borrowToken : collateralToken
 
   useEffect(
     () =>
@@ -75,7 +75,7 @@ export const RepayForm = <ChainId extends IChainId>({
   )
 
   return (
-    <Form // todo: prevHealth, prevRates, debt, prevDebt
+    <Form
       {...form}
       onSubmit={onSubmit}
       infoAccordion={
@@ -98,16 +98,13 @@ export const RepayForm = <ChainId extends IChainId>({
             userBorrowed: t`From borrowed token (wallet)`,
           }[selectedField]
         }
-        token={selectedField == 'userBorrowed' ? borrowToken : collateralToken}
+        token={selectedToken}
         blockchainId={network.id}
         name={selectedField}
         form={form}
+        max={max[selectedField]}
         {...(selectedField === 'stateCollateral' && {
-          max: { ...stateCollateralMax, fieldName: 'maxStateCollateral' },
-          positionBalance: {
-            position: stateCollateralMax,
-            tooltip: t`Current collateral in position`,
-          },
+          positionBalance: { position: max.stateCollateral, tooltip: t`Current collateral in position` },
         })}
         testId={'repay-input-' + selectedField}
         network={network}
@@ -116,11 +113,25 @@ export const RepayForm = <ChainId extends IChainId>({
             <RepayTokenList
               market={market}
               network={network}
-              positionCollateral={stateCollateralMax.data}
+              stateCollateral={max.stateCollateral}
               onToken={onToken}
               tokens={tokens}
             />
           </TokenSelector>
+        }
+        message={
+          <Balance
+            prefix={t`Max:`}
+            tooltip={t`Max available to repay`}
+            symbol={selectedToken?.symbol}
+            balance={max[selectedField].data}
+            loading={max[selectedField].isLoading}
+            onClick={() => {
+              form.setValue(selectedField, max[selectedField].data, setValueOptions)
+              void form.trigger(max[selectedField].field) // re-validate max
+            }}
+            buttonTestId="borrow-set-debt-to-max"
+          />
         }
       />
       <Button type="submit" loading={isPending || !market} disabled={isDisabled} data-testid="repay-submit-button">

@@ -12,7 +12,7 @@ export type RepayExpectedBorrowedResult = {
   avgPrice?: Decimal
 }
 
-export const { useQuery: useRepayExpectedBorrowed } = queryFactory({
+export const { useQuery: useRepayExpectedBorrowed, queryKey: repayExpectedBorrowedQueryKey } = queryFactory({
   queryKey: ({
     chainId,
     marketId,

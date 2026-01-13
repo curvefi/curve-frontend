@@ -10,5 +10,3 @@ export type TokenOption = {
   label?: string
   volume?: number
 }
-
-export const tokenOptionEquals = (a?: TokenOption, b?: TokenOption) => a?.address == b?.address && a?.chain == b?.chain

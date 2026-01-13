@@ -1,6 +1,6 @@
 import { cloneElement, type ReactElement } from 'react'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
-import { type TokenOption, tokenOptionEquals } from '../types'
+import { type TokenOption } from '../types'
 import { TokenSelectorModal, type TokenSelectorModalProps } from './modal/TokenSelectorModal'
 import { TokenSelectButton } from './TokenSelectButton'
 
@@ -44,9 +44,7 @@ export const TokenSelector = <T extends TokenOption = TokenOption>({
         {cloneElement(children, {
           onToken: (token: T) => {
             closeModal()
-            if (!tokenOptionEquals(token, selectedToken)) {
-              onToken(token)
-            }
+            onToken(token)
           },
         })}
       </TokenSelectorModal>

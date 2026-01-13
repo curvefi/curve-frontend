@@ -39,10 +39,9 @@ export const hasDeleverage = (market: LlamaMarketTemplate) =>
   hasV1Deleverage(market) || (market instanceof MintMarketTemplate && hasV2Leverage(market))
 
 export const canRepayFromStateCollateral = (market: LlamaMarketTemplate) =>
-  hasDeleverage(market) || (market instanceof LendMarketTemplate && hasV1Deleverage(market))
+  market instanceof MintMarketTemplate ? hasDeleverage(market) : hasLeverage(market)
 
-export const canRepayFromUserCollateral = (market: LlamaMarketTemplate) =>
-  market instanceof MintMarketTemplate ? hasV2Leverage(market) : hasLeverage(market)
+export const canRepayFromUserCollateral = (market: LlamaMarketTemplate) => hasLeverage(market)
 
 const getBorrowSymbol = (market: LlamaMarketTemplate) =>
   market instanceof MintMarketTemplate ? CRVUSD.symbol : market.borrowed_token.symbol

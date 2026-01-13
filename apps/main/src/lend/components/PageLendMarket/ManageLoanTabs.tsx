@@ -51,8 +51,8 @@ const LendManageLegacyMenu = [
 ] satisfies FormTab<ManageLoanProps>[]
 
 const LendManageNewMenu = [
-  { value: 'borrow', label: t`Borrow`, component: LoanBorrowMoreWrapped },
-  { value: 'repay', label: t`Repay`, component: LoanRepayTab },
+  { value: 'loan-increase', label: t`Borrow more`, component: LoanBorrowMoreWrapped },
+  { value: 'loan-decrease', label: t`Repay`, component: LoanRepayTab },
   {
     value: 'collateral',
     label: t`Collateral`,
