@@ -1,23 +1,25 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 import { prefetchMarkets } from '@/lend/entities/chain/chain-query'
 import { CreateLoanForm } from '@/llamalend/features/borrow/components/CreateLoanForm'
 import type { OnCreateLoanFormUpdate } from '@/llamalend/features/borrow/types'
+import { RepayForm } from '@/llamalend/features/manage-loan/components/RepayForm'
 import { getLlamaMarket } from '@/llamalend/llama.utils'
-import type { CreateLoanOptions } from '@/llamalend/mutations/create-loan.mutation'
+import type { RepayOptions } from '@/llamalend/mutations/repay.mutation'
 import networks from '@/loan/networks'
-import { oneBool, oneValueOf } from '@cy/support/generators'
+import { oneValueOf } from '@cy/support/generators'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
+import { checkLoanDetailsLoaded, oneLoanTestMarket, writeCreateLoanForm } from '@cy/support/helpers/create-loan.helpers'
 import {
-  checkLoanDetailsLoaded,
-  checkLoanRangeSlider,
-  oneLoanTestMarket,
-  submitCreateLoanForm,
-  writeCreateLoanForm,
-} from '@cy/support/helpers/create-loan.helpers'
+  checkRepayDetailsLoaded,
+  selectRepayToken,
+  submitRepayForm,
+  writeRepayLoanForm,
+} from '@cy/support/helpers/repay-loan.helpers'
 import { createTenderlyWagmiConfigFromVNet, createVirtualTestnet } from '@cy/support/helpers/tenderly'
 import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
 import { fundErc20, fundEth } from '@cy/support/helpers/tenderly/vnet-fund'
+import { LOAD_TIMEOUT } from '@cy/support/ui'
 import Box from '@mui/material/Box'
 import Skeleton from '@mui/material/Skeleton'
 import { useCurve } from '@ui-kit/features/connect-wallet/lib/CurveContext'
@@ -28,33 +30,21 @@ const oneEthInWei = '0xde0b6b3a7640000' // 1 ETH=1e18 wei
 
 const onUpdate: OnCreateLoanFormUpdate = async (form) => console.info('form updated', form)
 
-type BorrowTabTestProps = Pick<CreateLoanOptions, 'onCreated'>
+type RepayFlowTestProps = Pick<RepayOptions, 'onRepaid'>
 
 const prefetch = () => prefetchMarkets({})
 
-describe('CreateLoanForm Component Tests', () => {
+describe('RepayForm Component Tests', () => {
   const privateKey = generatePrivateKey()
   const { address } = privateKeyToAccount(privateKey)
   const getVirtualNetwork = createVirtualTestnet((uuid) => ({
-    slug: `borrow-tab-${uuid}`,
-    display_name: `BorrowTab (${uuid})`,
-    // calldata is created by Odos, which uses the real mainnet state. Fork isn't fully synced, but the chance of reverts is smaller this way
+    slug: `repay-form-${uuid}`,
+    display_name: `RepayForm (${uuid})`,
     fork_config: { block_number: 'latest' },
   }))
 
   const marketType = oneValueOf(LlamaMarketType)
   const { id, collateralAddress: tokenAddress, collateral, borrow, chainId } = oneLoanTestMarket(marketType)
-  const leverageEnabled = oneBool() // test with and without leverage
-
-  function BorrowTabTest({ onCreated }: BorrowTabTestProps) {
-    const { isHydrated } = useCurve()
-    const market = useMemo(() => isHydrated && getLlamaMarket(id), [isHydrated])
-    return market ? (
-      <CreateLoanForm market={market} networks={networks} chainId={chainId} onUpdate={onUpdate} onCreated={onCreated} />
-    ) : (
-      <Skeleton />
-    )
-  }
 
   beforeEach(() => {
     const vnet = getVirtualNetwork()
@@ -64,7 +54,28 @@ describe('CreateLoanForm Component Tests', () => {
     cy.log(`Funded some eth and collateral to ${address} in vnet ${vnet.slug}`)
   })
 
-  const BorrowTabTestWrapper = (props: BorrowTabTestProps) => (
+  function RepayFlowTest({ onRepaid }: RepayFlowTestProps) {
+    const { isHydrated } = useCurve()
+    const [mode, setMode] = useState<'create' | 'repay'>('create')
+    const market = useMemo(() => isHydrated && getLlamaMarket(id), [isHydrated])
+
+    if (!market) {
+      return <Skeleton />
+    }
+    return mode === 'create' ? (
+      <CreateLoanForm
+        market={market}
+        networks={networks}
+        chainId={chainId}
+        onUpdate={onUpdate}
+        onCreated={() => setMode('repay')}
+      />
+    ) : (
+      <RepayForm market={market} networks={networks} chainId={chainId} enabled onRepaid={onRepaid} />
+    )
+  }
+
+  const RepayFlowTestWrapper = (props: Omit<RepayFlowTestProps, 'marketId' | 'chainId'>) => (
     <ComponentTestWrapper
       config={createTenderlyWagmiConfigFromVNet({ vnet: getVirtualNetwork(), privateKey })}
       autoConnect
@@ -75,19 +86,23 @@ describe('CreateLoanForm Component Tests', () => {
         onChainUnavailable={console.error}
         hydrate={{ llamalend: prefetch }}
       >
-        <Box sx={{ maxWidth: 500 }}>
-          <BorrowTabTest {...props} />
+        <Box sx={{ maxWidth: 520 }}>
+          <RepayFlowTest {...props} />
         </Box>
       </CurveProvider>
     </ComponentTestWrapper>
   )
 
-  it(`calculates max debt and health for ${marketType} market ${leverageEnabled ? 'with' : 'without'} leverage`, () => {
-    const onCreated = cy.stub()
-    cy.mount(<BorrowTabTestWrapper onCreated={onCreated} />)
-    writeCreateLoanForm({ collateral, borrow, leverageEnabled })
-    checkLoanDetailsLoaded({ leverageEnabled })
-    checkLoanRangeSlider(leverageEnabled)
-    submitCreateLoanForm().then(() => expect(onCreated).to.be.called)
+  it(`repays a ${marketType} market loan`, () => {
+    const onRepaid = cy.stub()
+    cy.mount(<RepayFlowTestWrapper onRepaid={onRepaid} />)
+    writeCreateLoanForm({ collateral, borrow, leverageEnabled: false })
+    checkLoanDetailsLoaded({ leverageEnabled: false })
+    cy.get('[data-testid="create-loan-submit-button"]', LOAD_TIMEOUT).click()
+    cy.get('[data-testid="repay-submit-button"]', LOAD_TIMEOUT).should('be.enabled')
+    selectRepayToken('crvUSD')
+    writeRepayLoanForm({ amount: '1' })
+    checkRepayDetailsLoaded()
+    submitRepayForm().then(() => expect(onRepaid).to.be.called)
   })
 })

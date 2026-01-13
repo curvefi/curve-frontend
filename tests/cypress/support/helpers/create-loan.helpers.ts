@@ -78,7 +78,7 @@ export function writeCreateLoanForm({
   getActionValue('borrow-health').should('have.text', '∞')
   cy.get('[data-testid="borrow-debt-input"] input[type="text"]').first().type(borrow)
   getActionValue('borrow-health').should('not.contain.text', '∞')
-  cy.contains('button', 'Health').click() // open the accordion
+  cy.get('[data-testid="loan-info-accordion"] button', LOAD_TIMEOUT).click() // open the accordion
 
   if (leverageEnabled) {
     cy.get('[data-testid="leverage-checkbox"]').click()
