@@ -99,7 +99,9 @@ export const ChartAndActivityComp = ({ rChainId, rOwmId, api }: ChartAndActivity
             }}
             isLoading={isChartLoading}
             customButton={
-              <ToggleBandsChartButton label="Bands" isVisible={isBandsVisible} onClick={toggleBandsVisible} />
+              newBandsChartEnabled && (
+                <ToggleBandsChartButton label="Bands" isVisible={isBandsVisible} onClick={toggleBandsVisible} />
+              )
             }
           />
           <Stack
