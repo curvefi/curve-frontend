@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo } from 'react'
 import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
-import useStore from '@/loan/store/useStore'
+import { useStore } from '@/loan/store/useStore'
 import { Llamma, ChainId } from '@/loan/types/loan.types'
 import {
   useLlammaChartSelections,

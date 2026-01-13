@@ -7,6 +7,8 @@ import { Button } from '@ui/Button/Button'
 import { SpinnerWrapper, Spinner } from '@ui/Spinner'
 import { DEFAULT_CHART_HEIGHT } from '@ui-kit/features/candle-chart/constants'
 import { t } from '@ui-kit/lib/i18n'
+import { LiquidityData } from './LiquidityData'
+import { TradesData } from './TradesData'
 
 type PoolActivityProps = {
   poolAddress: string

@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from 'react'
-import useStore from '@/dex/store/useStore'
+import { useStore } from '@/dex/store/useStore'
 import type { ChainId } from '@/dex/types/main.types'
 import type { OhlcChartProps } from '@ui-kit/features/candle-chart/ChartWrapper'
 import { DEFAULT_CHART_HEIGHT } from '@ui-kit/features/candle-chart/constants'

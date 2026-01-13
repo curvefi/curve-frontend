@@ -7,21 +7,21 @@ import { useOhlcChartState } from '@/loan/hooks/useOhlcChartState'
 import { ChainId, Llamma } from '@/loan/types/loan.types'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
-import AlertBox from '@ui/AlertBox'
-import TextCaption from '@ui/TextCaption'
-import ChartWrapper from '@ui-kit/features/candle-chart/ChartWrapper'
+import { AlertBox } from '@ui/AlertBox'
+import { TextCaption } from '@ui/TextCaption'
+import { ChartWrapper } from '@ui-kit/features/candle-chart/ChartWrapper'
 import { TIME_OPTIONS, SOFT_LIQUIDATION_DESCRIPTION } from '@ui-kit/features/candle-chart/constants'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useNewBandsChart } from '@ui-kit/hooks/useFeatureFlags'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { ChartFooter } from '@ui-kit/shared/ui/ChartFooter'
-import ChartHeader from '@ui-kit/shared/ui/ChartHeader'
+import { ChartHeader } from '@ui-kit/shared/ui/ChartHeader'
 import { SubTabsSwitcher } from '@ui-kit/shared/ui/SubTabsSwitcher'
 import { type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
 import { ToggleBandsChartButton } from '@ui-kit/shared/ui/ToggleBandsChartButton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import PoolActivity from './PoolActivity'
+import { PoolActivity } from './PoolActivity'
 
 const { Spacing } = SizesAndSpaces
 
@@ -39,7 +39,7 @@ type ChartAndActivityCompProps = {
 
 const EMPTY_ARRAY: never[] = []
 
-const ChartAndActivityComp = ({ rChainId, llamma, llammaId }: ChartAndActivityCompProps) => {
+export const ChartAndActivityComp = ({ rChainId, llamma, llammaId }: ChartAndActivityCompProps) => {
   const { llamaApi: api = null } = useCurve()
   const theme = useTheme()
   const [isBandsVisible, , , toggleBandsVisible] = useSwitch(true)
@@ -142,5 +142,3 @@ const StyledAlertBox = styled(AlertBox)`
   justify-content: center;
   margin: auto;
 `
-
-export default ChartAndActivityComp

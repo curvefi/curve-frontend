@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo } from 'react'
 import { useOneWayMarket } from '@/lend/entities/chain'
 import { useUserLoanDetails } from '@/lend/hooks/useUserLoanDetails'
 import { helpers } from '@/lend/lib/apiLending'
-import useStore from '@/lend/store/useStore'
+import { useStore } from '@/lend/store/useStore'
 import { ChainId } from '@/lend/types/lend.types'
 import {
   useLlammaChartSelections,
