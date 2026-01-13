@@ -64,6 +64,7 @@ const formatGaugeTitle = (poolName: string | undefined, marketName: string | nul
   return marketName ?? shortenAddress(address) ?? ''
 }
 
+/** TODO: This query body implementation can probably be replaced with a simple call of getGauges from prices-api\src\gauge\api.ts? */
 export const {
   useQuery: useGauges,
   getQueryData: getGauges,
