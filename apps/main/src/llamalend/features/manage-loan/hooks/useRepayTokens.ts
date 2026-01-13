@@ -14,7 +14,7 @@ export type RepayTokenOption = TokenOption & { field: 'stateCollateral' | 'userC
 /**
  * Get token options for repayment based on market and network
  */
-const getTokenOptions = ({
+const getRepayTokenOptions = ({
   market,
   networkId,
   networkName,
@@ -65,6 +65,9 @@ export const useRepayTokens = <ChainId extends LlamaChainId, NetworkId extends L
   network: { id: NetworkId; chainId: ChainId; name: string }
 }) => {
   const [token, onToken] = useState<RepayTokenOption | undefined>()
-  const tokens = useMemo(() => getTokenOptions({ market, networkId, networkName }), [market, networkId, networkName])
+  const tokens = useMemo(
+    () => getRepayTokenOptions({ market, networkId, networkName }),
+    [market, networkId, networkName],
+  )
   return { tokens, token: token ?? tokens[0], onToken }
 }
