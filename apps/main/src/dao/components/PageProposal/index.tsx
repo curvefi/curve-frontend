@@ -148,7 +148,7 @@ export const Proposal = ({ proposalId: rProposalId }: ProposalUrlParams) => {
           </ProposalContainer>
           <UserSmScreenWrapper variant="secondary">
             <UserBox votingPower={snapshotVeCrv} snapshotVotingPower activeProposal={activeProposal}>
-              {proposal && userAddress && snapshotVeCrv != null && !snapshotVeCrvLoading && (
+              {proposal && snapshotVeCrv != null && !snapshotVeCrvLoading && (
                 <VoteDialog
                   userAddress={userAddress}
                   snapshotVotingPower
@@ -173,7 +173,7 @@ export const Proposal = ({ proposalId: rProposalId }: ProposalUrlParams) => {
                   : undefined
               }
             >
-              {proposal && userAddress && snapshotVeCrv != null && !snapshotVeCrvLoading && (
+              {proposal && snapshotVeCrv != null && !snapshotVeCrvLoading && (
                 <VoteDialog
                   userAddress={userAddress}
                   snapshotVotingPower

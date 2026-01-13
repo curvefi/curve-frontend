@@ -15,7 +15,7 @@ import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 
 type Props = {
-  userAddress: Address
+  userAddress?: Address
   activeProposal?: ActiveProposal
   proposalId: number
   proposalType: ProposalType
@@ -37,7 +37,7 @@ export const VoteDialog = ({
   const { data: proposalsMapper } = useProposalsMapperQuery({})
   const { data: pricesProposal } = useProposalPricesApiQuery({ proposalId: proposalId, proposalType: proposalType })
   const { data: userProposalVotes, isSuccess: userProposalVotesSuccess } = useUserProposalVotesQuery({
-    userAddress,
+    userAddress: userAddress ?? '',
   })
   const proposalKey = createProposalKey(proposalId, proposalType)
   const proposal = proposalsMapper?.[proposalKey] ?? null
