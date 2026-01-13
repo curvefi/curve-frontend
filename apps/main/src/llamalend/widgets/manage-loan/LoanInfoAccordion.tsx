@@ -94,82 +94,78 @@ export const LoanInfoAccordion = ({
         expanded={isOpen}
         toggle={toggle}
       >
-        <Stack gap={Spacing.md}>
-          <Stack>
-            {(debt || prevDebt) && (
-              <ActionInfo
-                label={t`Debt`}
-                value={debt?.data && formatNumber(debt.data.value, { abbreviate: false })}
-                prevValue={prevDebt && formatNumber(prevDebt, { abbreviate: false })}
-                {...combineQueryState(debt, userState)}
-                valueRight={debt?.data?.tokenSymbol ?? userState?.borrowTokenSymbol}
-                testId="borrow-debt"
-              />
-            )}
-            {(collateral || prevCollateral) && (
-              <ActionInfo
-                label={t`Collateral`}
-                value={collateral?.data && formatNumber(collateral.data.value, { abbreviate: false })}
-                prevValue={prevCollateral && formatNumber(prevCollateral, { abbreviate: false })}
-                {...combineQueryState(collateral, userState)}
-                valueRight={collateral?.data?.tokenSymbol ?? userState?.collateralTokenSymbol}
-                testId="borrow-collateral"
-              />
-            )}
-            {bands && (
-              <ActionInfo
-                label={t`Band range`}
-                value={bands.data && `${bands.data[0]} to ${bands.data[1]}`}
-                error={bands.error}
-                loading={bands.isLoading}
-                testId="borrow-band-range"
-              />
-            )}
-            {prices && (
-              <ActionInfo
-                label={t`Price range`}
-                value={prices.data?.map((p) => formatNumber(p, { abbreviate: false })).join(' - ')}
-                error={prices.error}
-                loading={prices.isLoading}
-                testId="borrow-price-range"
-              />
-            )}
-            {range != null && (
-              <ActionInfo
-                label={t`N`}
-                value={formatNumber(range, { decimals: 0, abbreviate: false })}
-                testId="borrow-n"
-              />
-            )}
+        <Stack>
+          {(debt || prevDebt) && (
             <ActionInfo
-              label={t`Borrow APR`}
-              value={rates.data?.borrowApr && formatPercent(rates.data.borrowApr)}
-              prevValue={prevRates?.data?.borrowApr && formatPercent(prevRates.data.borrowApr)}
-              {...combineQueryState(rates, prevRates)}
-              testId="borrow-apr"
+              label={t`Debt`}
+              value={debt?.data && formatNumber(debt.data.value, { abbreviate: false })}
+              prevValue={prevDebt && formatNumber(prevDebt, { abbreviate: false })}
+              {...combineQueryState(debt, userState)}
+              valueRight={debt?.data?.tokenSymbol ?? userState?.borrowTokenSymbol}
+              testId="borrow-debt"
             />
-            {(loanToValue || prevLoanToValue) && (
-              <ActionInfo
-                label={t`Loan to value ratio`}
-                value={loanToValue?.data && formatPercent(loanToValue.data)}
-                prevValue={prevLoanToValue?.data && formatPercent(prevLoanToValue.data)}
-                {...combineQueryState(loanToValue, prevLoanToValue)}
-                testId="borrow-ltv"
-              />
-            )}
-          </Stack>
+          )}
+          {(collateral || prevCollateral) && (
+            <ActionInfo
+              label={t`Collateral`}
+              value={collateral?.data && formatNumber(collateral.data.value, { abbreviate: false })}
+              prevValue={prevCollateral && formatNumber(prevCollateral, { abbreviate: false })}
+              {...combineQueryState(collateral, userState)}
+              valueRight={collateral?.data?.tokenSymbol ?? userState?.collateralTokenSymbol}
+              testId="borrow-collateral"
+            />
+          )}
+          {bands && (
+            <ActionInfo
+              label={t`Band range`}
+              value={bands.data && `${bands.data[0]} to ${bands.data[1]}`}
+              error={bands.error}
+              loading={bands.isLoading}
+              testId="borrow-band-range"
+            />
+          )}
+          {prices && (
+            <ActionInfo
+              label={t`Price range`}
+              value={prices.data?.map((p) => formatNumber(p, { abbreviate: false })).join(' - ')}
+              error={prices.error}
+              loading={prices.isLoading}
+              testId="borrow-price-range"
+            />
+          )}
+          {range != null && (
+            <ActionInfo
+              label={t`N`}
+              value={formatNumber(range, { decimals: 0, abbreviate: false })}
+              testId="borrow-n"
+            />
+          )}
+          <ActionInfo
+            label={t`Borrow APR`}
+            value={rates.data?.borrowApr && formatPercent(rates.data.borrowApr)}
+            prevValue={prevRates?.data?.borrowApr && formatPercent(prevRates.data.borrowApr)}
+            {...combineQueryState(rates, prevRates)}
+            testId="borrow-apr"
+          />
+          {(loanToValue || prevLoanToValue) && (
+            <ActionInfo
+              label={t`Loan to value ratio`}
+              value={loanToValue?.data && formatPercent(loanToValue.data)}
+              prevValue={prevLoanToValue?.data && formatPercent(prevLoanToValue.data)}
+              {...combineQueryState(loanToValue, prevLoanToValue)}
+              testId="borrow-ltv"
+            />
+          )}
           {leverage?.enabled && <LoanLeverageActionInfo {...leverage} />}
           {/* TODO: add router provider and slippage */}
-          <Stack>
-            {/* TODO: add gas estimate steps (1. approve, 2. add collateral) */}
-            <ActionInfo
-              label={t`Estimated tx cost`}
-              value={gas.data?.estGasCostUsd == null ? undefined : formatUsd(gas.data.estGasCostUsd)}
-              valueTooltip={gas.data?.tooltip}
-              loading={gas.isLoading}
-              valueLeft={<FireIcon fontSize="small" />}
-            />
-          </Stack>
+          {/* TODO: add gas estimate steps (1. approve, 2. add collateral) */}
+          <ActionInfo
+            label={t`Estimated tx cost`}
+            value={gas.data?.estGasCostUsd == null ? undefined : formatUsd(gas.data.estGasCostUsd)}
+            valueTooltip={gas.data?.tooltip}
+            loading={gas.isLoading}
+            valueLeft={<FireIcon fontSize="small" />}
+          />
         </Stack>
       </Accordion>
     </Box>
