@@ -11,7 +11,7 @@ import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
 import { TableSearchField } from '@ui-kit/shared/ui/DataTable/TableSearchField'
 import { MarketRateType } from '@ui-kit/types/market'
 import { type LlamaMarketsResult } from '../../queries/market-list/llama-markets'
-import { ChainFilterChip } from './chips/ChainFilterChip'
+import { LlamaChainFilterChips } from './chips/LlamaChainFilterChips'
 import { LlamaListChips } from './chips/LlamaListChips'
 import { DEFAULT_SORT_BORROW, DEFAULT_SORT_SUPPLY } from './columns'
 import { LLAMA_MARKET_COLUMNS } from './columns'
@@ -120,7 +120,7 @@ export const UserPositionsTable = ({ onReload, result, loading, isError, tab }: 
         }
         chips={
           <>
-            <ChainFilterChip data={userData} {...filterProps} />
+            <LlamaChainFilterChips data={userData} {...filterProps} />
             <LlamaListChips
               hiddenMarketCount={result ? userData.length - table.getFilteredRowModel().rows.length : undefined}
               hasFilters={columnFilters.length > 0 && !isEqual(columnFilters, defaultFilters)}
