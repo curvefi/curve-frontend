@@ -28,12 +28,20 @@ export const { useQuery: useRepayExpectedBorrowed, queryKey: repayExpectedBorrow
       { userCollateral },
       { userBorrowed },
     ] as const,
-  queryFn: async ({ chainId, marketId, userAddress, stateCollateral, userCollateral, userBorrowed }: RepayQuery) => {
+  queryFn: async ({
+    chainId,
+    marketId,
+    userAddress,
+    stateCollateral,
+    userCollateral,
+    userBorrowed,
+    slippage,
+  }: RepayQuery) => {
     const [type, impl, args] = getRepayImplementation(marketId, { userCollateral, stateCollateral, userBorrowed })
     switch (type) {
       case 'V1':
       case 'V2':
-        return (await impl.repayExpectedBorrowed(...args)) as RepayExpectedBorrowedResult
+        return (await impl.repayExpectedBorrowed(...args, +slippage)) as RepayExpectedBorrowedResult
       case 'deleverage': {
         const { stablecoins, routeIdx } = await impl.repayStablecoins(...args)
         return { totalBorrowed: stablecoins[routeIdx] as Decimal }
@@ -45,5 +53,5 @@ export const { useQuery: useRepayExpectedBorrowed, queryKey: repayExpectedBorrow
     }
   },
   staleTime: '1m',
-  validationSuite: repayValidationSuite({ leverageRequired: true }),
+  validationSuite: repayValidationSuite({ leverageRequired: false }),
 })

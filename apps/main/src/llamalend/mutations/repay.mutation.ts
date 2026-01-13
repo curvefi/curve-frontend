@@ -20,6 +20,7 @@ type RepayMutation = {
   userCollateral: Decimal
   userBorrowed: Decimal
   isFull: boolean
+  slippage: Decimal
 }
 
 export type RepayOptions = {
@@ -51,7 +52,7 @@ const approveRepay = async (
 
 const repay = async (
   market: LlamaMarketTemplate,
-  { stateCollateral, userCollateral, userBorrowed, isFull }: RepayMutation,
+  { stateCollateral, userCollateral, userBorrowed, isFull, slippage }: RepayMutation,
 ): Promise<Hex> => {
   if (isFull && !+stateCollateral && !+userCollateral) {
     return (await market.fullRepay()) as Hex
@@ -60,10 +61,10 @@ const repay = async (
   switch (type) {
     case 'V1':
     case 'V2':
-      await impl.repayExpectedBorrowed(stateCollateral, userCollateral, userBorrowed)
-      return (await impl.repay(stateCollateral, userCollateral, userBorrowed)) as Hex
+      await impl.repayExpectedBorrowed(stateCollateral, userCollateral, userBorrowed, +slippage)
+      return (await impl.repay(stateCollateral, userCollateral, userBorrowed, +slippage)) as Hex
     case 'deleverage':
-      return (await impl.repay(stateCollateral)) as Hex
+      return (await impl.repay(stateCollateral, +slippage)) as Hex
     case 'unleveraged':
       return (await impl.repay(userBorrowed)) as Hex
   }

@@ -4,7 +4,11 @@ import { type RepayParams, type RepayQuery } from '../validation/manage-loan.typ
 import { repayValidationSuite } from '../validation/manage-loan.validation'
 import { getRepayImplementation, getUserDebtFromQueryCache } from './repay-query.helpers'
 
-export const { useQuery: useRepayIsFull, queryKey: repayIsFullQueryKey } = queryFactory({
+export const {
+  useQuery: useRepayIsFull,
+  queryKey: repayIsFullQueryKey,
+  getQueryOptions: getRepayIsFullQueryOptions,
+} = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -34,7 +38,7 @@ export const { useQuery: useRepayIsFull, queryKey: repayIsFullQueryKey } = query
       case 'V2':
         return await impl.repayIsFull(stateCollateral, userCollateral, userBorrowed, userAddress)
       case 'deleverage':
-        return await impl.isFullRepayment(userCollateral, userAddress)
+        return await impl.isFullRepayment(stateCollateral, userAddress)
       case 'unleveraged':
         // For unleveraged markets, full repayment is when userBorrowed >= userDebt
         return +userBorrowed >= getUserDebtFromQueryCache({ chainId, marketId, userAddress })

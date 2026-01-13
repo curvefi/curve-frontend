@@ -6,7 +6,7 @@ import { useMaxRepayTokenValues } from '@/llamalend/features/manage-loan/hooks/u
 import { getTokens } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { type RepayOptions, useRepayMutation } from '@/llamalend/mutations/repay.mutation'
-import { useCreateLoanIsApproved } from '@/llamalend/queries/create-loan/create-loan-approved.query'
+import { useRepayIsApproved } from '@/llamalend/queries/repay/repay-is-approved.query'
 import { useRepayIsAvailable } from '@/llamalend/queries/repay/repay-is-available.query'
 import type { RepayIsFullParams } from '@/llamalend/queries/validation/manage-loan.types'
 import { type RepayForm, repayFormValidationSuite } from '@/llamalend/queries/validation/manage-loan.validation'
@@ -86,7 +86,7 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
     isRepaid,
     repayError,
     txHash: data?.hash,
-    isApproved: useCreateLoanIsApproved(params),
+    isApproved: useRepayIsApproved(params, enabled && typeof values.isFull === 'boolean'),
     formErrors: useFormErrors(form.formState),
     isFull,
     max,
