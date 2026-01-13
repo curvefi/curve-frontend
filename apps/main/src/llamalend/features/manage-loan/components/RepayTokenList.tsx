@@ -9,7 +9,6 @@ import { notFalsy } from '@curvefi/prices-api/objects.util'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import Stack from '@mui/material/Stack'
-import { TokenSelector } from '@ui-kit/features/select-token'
 import { TokenSection } from '@ui-kit/features/select-token/ui/modal/TokenSection'
 import { useTokenBalances } from '@ui-kit/hooks/useTokenBalance'
 import { t } from '@ui-kit/lib/i18n'
@@ -19,17 +18,15 @@ import type { Decimal } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
-export function RepayTokenSelector<ChainId extends IChainId>({
+export function RepayTokenList<ChainId extends IChainId>({
   market,
   network,
-  token,
   onToken,
   tokens,
   positionCollateral,
 }: {
   market: LlamaMarketTemplate | undefined
   network: NetworkDict<ChainId>[ChainId]
-  token: RepayTokenOption | undefined
   onToken: (token: RepayTokenOption) => void
   tokens: RepayTokenOption[]
   positionCollateral: Decimal | undefined
@@ -49,32 +46,30 @@ export function RepayTokenSelector<ChainId extends IChainId>({
   )
 
   return (
-    <TokenSelector selectedToken={token} title={t`Select Repay Token`}>
-      <Stack gap={Spacing.sm} sx={{ overflowY: 'auto' }}>
-        {tokens.length ? (
-          <>
-            <TokenSection
-              title={t`In wallet`}
-              tokens={walletTokens}
-              balances={balances}
-              tokenPrices={tokenPrices}
-              onToken={onToken}
-            />
+    <Stack gap={Spacing.sm} sx={{ overflowY: 'auto', height: '100%' }}>
+      {tokens.length ? (
+        <>
+          <TokenSection
+            title={t`In wallet`}
+            tokens={walletTokens}
+            balances={balances}
+            tokenPrices={tokenPrices}
+            onToken={onToken}
+          />
 
-            <TokenSection
-              title={t`Llamalend`}
-              tokens={[stateCollateralToken]}
-              balances={{ ...(stateCollateralToken && { [stateCollateralToken.address]: positionCollateral }) }}
-              tokenPrices={tokenPrices}
-              onToken={onToken}
-            />
-          </>
-        ) : (
-          <Alert variant="filled" severity="info">
-            <AlertTitle>{t`No tokens found`}</AlertTitle>
-          </Alert>
-        )}
-      </Stack>
-    </TokenSelector>
+          <TokenSection
+            title={t`Llamalend`}
+            tokens={[stateCollateralToken]}
+            balances={{ ...(stateCollateralToken && { [stateCollateralToken.address]: positionCollateral }) }}
+            tokenPrices={tokenPrices}
+            onToken={onToken}
+          />
+        </>
+      ) : (
+        <Alert variant="filled" severity="info">
+          <AlertTitle>{t`No tokens found`}</AlertTitle>
+        </Alert>
+      )}
+    </Stack>
   )
 }

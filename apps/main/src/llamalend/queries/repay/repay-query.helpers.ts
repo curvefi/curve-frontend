@@ -6,9 +6,9 @@ import { type UserMarketQuery } from '@ui-kit/lib/model'
 
 /**
  * Determines the appropriate repay implementation and its parameters based on the market type and leverage options.
- * We will use V2 leverage if available, then leverage V1. Otherwise:
- * - if deleverage is supported and userCollateral > 0, we use deleverage
- * - otherwise, we use the unleveraged implementation.
+ * We will use V2 leverage if available, then leverage V1 (lend markets only). Otherwise:
+ * - mint markets: use deleverage when stateCollateral > 0 and deleverage is supported
+ * - fallback to unleveraged repay from borrowed token
  */
 export function getRepayImplementation(
   marketId: string,
@@ -24,19 +24,18 @@ export function getRepayImplementation(
     if (hasV2Leverage(market)) {
       return ['V2', market.leverageV2, [stateCollateral, userCollateral, userBorrowed]] as const
     }
-    if (+userCollateral && hasDeleverage(market)) {
-      // use deleverage only if userCollateral > 0 & supported, otherwise fall back to unleveraged
+    if (+stateCollateral && hasDeleverage(market)) {
+      // use deleverage only if stateCollateral > 0 & supported, otherwise fall back to unleveraged
       if (+userBorrowed) throw new Error(`Invalid userBorrowed for deleverage: ${userBorrowed}`)
-      if (+stateCollateral) throw new Error(`Invalid stateCollateral for deleverage: ${stateCollateral}`)
-      return ['deleverage', market.deleverage, [userCollateral]] as const
+      if (+userCollateral) throw new Error(`Invalid userCollateral for deleverage: ${userCollateral}`)
+      return ['deleverage', market.deleverage, [stateCollateral]] as const
     }
   } else if (hasLeverage(market)) {
-    // v1 leverage for mint markets is ignored, it doesn't support repay. Supported via deleverage above
     return ['V1', market.leverage, [stateCollateral, userCollateral, userBorrowed]] as const
   }
 
-  if (+userCollateral) throw new Error(`Invalid userCollateral for deleverage: ${userCollateral}`)
-  if (+stateCollateral) throw new Error(`Invalid stateCollateral for deleverage: ${stateCollateral}`)
+  if (+userCollateral) throw new Error(`Invalid userCollateral for repay: ${userCollateral}`)
+  if (+stateCollateral) throw new Error(`Invalid stateCollateral for repay: ${stateCollateral}`)
   return ['unleveraged', market, [userBorrowed]] as const
 }
 
