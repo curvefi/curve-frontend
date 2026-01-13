@@ -1,1 +1,1 @@
-export { DepositReward as default } from './ui/DepositReward'
+export { DepositReward } from './ui/DepositReward'

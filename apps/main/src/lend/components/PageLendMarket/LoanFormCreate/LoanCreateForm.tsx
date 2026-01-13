@@ -2,8 +2,8 @@ import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import AlertFormError from '@/lend/components/AlertFormError'
 import AlertLoanSummary from '@/lend/components/AlertLoanSummary'
 import DialogFormWarning from '@/lend/components/DialogFormWarning'
-import InpToken from '@/lend/components/InpToken'
-import InpTokenBorrow from '@/lend/components/InpTokenBorrow'
+import { InpToken } from '@/lend/components/InpToken'
+import { InpTokenBorrow } from '@/lend/components/InpTokenBorrow'
 import LoanFormConnect from '@/lend/components/LoanFormConnect'
 import DetailInfo from '@/lend/components/PageLendMarket/LoanFormCreate/components/DetailInfo'
 import type { FormEstGas, FormStatus, FormValues, StepKey } from '@/lend/components/PageLendMarket/types'
@@ -312,7 +312,6 @@ export const LoanCreateForm = ({
           inpError={formValues.userCollateralError}
           inpDisabled={disabled}
           inpLabelLoading={!!signerAddress && typeof userBalances === 'undefined'}
-          inpLabelDescription={formatNumber(userBalances?.collateral, { defaultValue: '-' })}
           inpValue={formValues.userCollateral}
           tokenAddress={collateral_token?.address}
           tokenSymbol={collateral_token?.symbol}
@@ -331,7 +330,6 @@ export const LoanCreateForm = ({
             inpError={formValues.userBorrowedError}
             inpDisabled={disabled}
             inpLabelLoading={!!signerAddress && typeof userBalances === 'undefined'}
-            inpLabelDescription={formatNumber(userBalances?.borrowed, { defaultValue: '-' })}
             inpValue={formValues.userBorrowed}
             tokenAddress={borrowed_token?.address}
             tokenSymbol={borrowed_token?.symbol}

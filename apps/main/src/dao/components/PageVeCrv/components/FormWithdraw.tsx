@@ -21,7 +21,7 @@ import { getIsLockExpired } from '@ui-kit/utils/vecrv'
 
 const { IconSize } = SizesAndSpaces
 
-const FormWithdraw = ({ rChainId, vecrvInfo }: PageVecrv) => {
+export const FormWithdraw = ({ rChainId, vecrvInfo }: PageVecrv) => {
   const withdrawLockedCrv = useStore((state) => state.lockedCrv.withdrawLockedCrv)
   const withdrawLockedCrvStatus = useStore((state) => state.lockedCrv.withdrawLockedCrvStatus)
   const [txInfoBar, setTxInfoBar] = useState<ReactNode | null>(null)
@@ -144,5 +144,3 @@ const SuccessBox = styled.div`
   background-color: var(--success-600);
   text-align: center;
 `
-
-export default FormWithdraw

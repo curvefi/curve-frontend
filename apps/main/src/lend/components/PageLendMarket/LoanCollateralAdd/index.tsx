@@ -4,7 +4,7 @@ import AlertSummary from '@/lend/components/AlertLoanSummary'
 import DetailInfoEstimateGas from '@/lend/components/DetailInfoEstimateGas'
 import DetailInfoHealth from '@/lend/components/DetailInfoHealth'
 import DetailInfoLiqRange from '@/lend/components/DetailInfoLiqRange'
-import InpToken from '@/lend/components/InpToken'
+import { InpToken } from '@/lend/components/InpToken'
 import LoanFormConnect from '@/lend/components/LoanFormConnect'
 import type { FormStatus, FormValues, StepKey } from '@/lend/components/PageLendMarket/LoanCollateralAdd/types'
 import type { FormEstGas } from '@/lend/components/PageLendMarket/types'
@@ -23,12 +23,12 @@ import { getActiveStep } from '@ui/Stepper/helpers'
 import Stepper from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
 import TxInfoBar from '@ui/TxInfoBar'
-import { formatNumber, scanTxPath } from '@ui/utils'
+import { scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
 
-const LoanCollateralAdd = ({ rChainId, rOwmId, api, isLoaded, market, userActiveKey }: PageContentProps) => {
+export const LoanCollateralAdd = ({ rChainId, rOwmId, api, isLoaded, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)
 
   const activeKey = useStore((state) => state.loanCollateralAdd.activeKey)
@@ -184,7 +184,6 @@ const LoanCollateralAdd = ({ rChainId, rOwmId, api, isLoaded, market, userActive
           inpError={formValues.collateralError}
           inpDisabled={disabled}
           inpLabelLoading={!!signerAddress && typeof userBalances === 'undefined'}
-          inpLabelDescription={formatNumber(userBalances?.collateral, { defaultValue: '-' })}
           inpValue={formValues.collateral}
           inpLabel={t`Collateral to add`}
           tokenAddress={market?.collateral_token?.address}
@@ -244,8 +243,6 @@ const LoanCollateralAdd = ({ rChainId, rOwmId, api, isLoaded, market, userActive
     </>
   )
 }
-
-export default LoanCollateralAdd
 
 export const LoanAddCollateralTab = ({ rChainId, market, isLoaded }: PageContentProps) => (
   <AddCollateralForm networks={networks} chainId={rChainId} market={market} enabled={isLoaded} />

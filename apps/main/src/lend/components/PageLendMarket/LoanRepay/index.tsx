@@ -2,7 +2,7 @@ import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 're
 import AlertFormError from '@/lend/components/AlertFormError'
 import AlertSummary from '@/lend/components/AlertLoanSummary'
 import DialogFormWarning from '@/lend/components/DialogFormWarning'
-import InpToken from '@/lend/components/InpToken'
+import { InpToken } from '@/lend/components/InpToken'
 import LoanFormConnect from '@/lend/components/LoanFormConnect'
 import DetailInfo from '@/lend/components/PageLendMarket/LoanRepay/components/DetailInfo'
 import type { FormStatus, FormValues, StepKey } from '@/lend/components/PageLendMarket/LoanRepay/types'
@@ -40,7 +40,7 @@ import { getPercentage, isGreaterThan, isGreaterThanOrEqualTo, sum } from '@ui-k
 
 const { Spacing } = SizesAndSpaces
 
-const LoanRepay = ({
+export const LoanRepay = ({
   rChainId,
   rOwmId,
   isLoaded,
@@ -368,7 +368,6 @@ const LoanRepay = ({
             inpError={formValues.stateCollateralError}
             inpDisabled={disable}
             inpLabelLoading={!!signerAddress && typeof userState?.collateral === 'undefined'}
-            inpLabelDescription={formatNumber(userState?.collateral, { defaultValue: '-' })}
             inpValue={formValues.stateCollateral}
             tokenAddress={collateral_token?.address}
             tokenSymbol={collateral_token?.symbol}
@@ -392,7 +391,6 @@ const LoanRepay = ({
               inpError={formValues.userCollateralError}
               inpDisabled={disable}
               inpLabelLoading={!!signerAddress && typeof userBalances?.collateral === 'undefined'}
-              inpLabelDescription={formatNumber(userBalances?.collateral, { defaultValue: '-' })}
               inpValue={formValues.userCollateral}
               tokenAddress={collateral_token?.address}
               tokenSymbol={collateral_token?.symbol}
@@ -410,7 +408,6 @@ const LoanRepay = ({
             inpError={formValues.userBorrowedError}
             inpDisabled={disable || (!hasLeverage && !userState)}
             inpLabelLoading={!!signerAddress && typeof userBalances?.borrowed === 'undefined'}
-            inpLabelDescription={formatNumber(userBalances?.borrowed, { defaultValue: '-' })}
             inpValue={formValues.userBorrowed}
             tokenAddress={borrowed_token?.address}
             tokenSymbol={borrowed_token?.symbol}
@@ -523,8 +520,6 @@ const LoanRepay = ({
     </Stack>
   )
 }
-
-export default LoanRepay
 
 export const LoanRepayFromWalletTab = ({ rChainId, market, isLoaded }: PageContentProps) => (
   <RepayForm fromWallet networks={networks} chainId={rChainId} market={market} enabled={isLoaded} />
