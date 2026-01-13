@@ -128,10 +128,10 @@ const tabVariant = ({ Current, Default, Hover, Inset }: TabVariant) => ({
 
 const tabPadding = (blockStart: SpacingKey, blockEnd: SpacingKey, inlineStart: SpacingKey, inlineEnd: SpacingKey) =>
   handleBreakpoints({
-    paddingBlockStart: blockStart in Spacing ? Spacing[blockStart as keyof typeof Spacing] : blockStart,
-    paddingBlockEnd: blockEnd in Spacing ? Spacing[blockEnd as keyof typeof Spacing] : blockEnd,
-    paddingInlineStart: inlineStart in Spacing ? Spacing[inlineStart as keyof typeof Spacing] : inlineStart,
-    paddingInlineEnd: inlineEnd in Spacing ? Spacing[inlineEnd as keyof typeof Spacing] : inlineEnd,
+    paddingBlockStart: Spacing[blockStart as keyof typeof Spacing] ?? blockStart,
+    paddingBlockEnd: Spacing[blockEnd as keyof typeof Spacing] ?? blockEnd,
+    paddingInlineStart: Spacing[inlineStart as keyof typeof Spacing] ?? inlineStart,
+    paddingInlineEnd: Spacing[inlineEnd as keyof typeof Spacing] ?? inlineEnd,
   })
 
 /**
@@ -168,9 +168,7 @@ const containedTabPadding = (inline: SpacingKey, blockEnd: SpacingKey) => ({
   ...tabPadding(0, blockEnd, inline, inline),
 })
 
-const containedTabPaddingVertical = (inline: SpacingKey) => ({
-  ...tabPadding(0, 0, inline, inline),
-})
+const containedTabPaddingVertical = (inline: SpacingKey) => tabPadding(0, 0, inline, inline)
 
 const linedTabPadding = (inline: SpacingKey) => ({
   boxSizing: TAB_BOX_SIZING,

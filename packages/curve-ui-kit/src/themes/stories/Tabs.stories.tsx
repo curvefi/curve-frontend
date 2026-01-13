@@ -1,27 +1,27 @@
 import { useState } from 'react'
 import { objectKeys } from '@curvefi/prices-api/objects.util'
-import { Stack, Typography } from '@mui/material'
+import { Stack } from '@mui/material'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { LlamaIcon } from '../../shared/icons/LlamaIcon'
 import { TabsSwitcher, type TabOption, type TabsSwitcherProps } from '../../shared/ui/TabsSwitcher'
-import { TAB_TEXT_VARIANTS, TABS_SIZES_CLASSES } from '../components/tabs/mui-tabs'
+import { TABS_SIZES_CLASSES } from '../components/tabs/mui-tabs'
 import { SizesAndSpaces } from '../design/1_sizes_spaces'
 
 const { IconSize } = SizesAndSpaces
 
 type TabValue = string
-const tabsLabels = ['Deposit', 'Withdraw', 'Staking', 'Unstaking']
 
+const TABS_LABELS = ['Deposit', 'Withdraw', 'Staking', 'Unstaking'] as const
 const DEFAULT_TABS: TabOption<TabValue>[] = Array.from({ length: 8 }, (_, i) => ({
   value: `${i}`,
-  label: tabsLabels[i % tabsLabels.length],
+  label: TABS_LABELS[i % TABS_LABELS.length],
 }))
-
 const SIZE_TO_ICON_SIZE = {
   small: IconSize.sm,
   medium: IconSize.md,
   extraExtraLarge: IconSize.lg,
 } as const
+const TAB_SIZE_KEYS = objectKeys(TABS_SIZES_CLASSES)
 
 const getOptionsWithAdornments = (count: number, size: keyof typeof TABS_SIZES_CLASSES): TabOption<TabValue>[] => {
   const iconSize = SIZE_TO_ICON_SIZE[size]
@@ -42,11 +42,7 @@ const getOptionsWithIconsOnly = (count: number, size: keyof typeof TABS_SIZES_CL
   return DEFAULT_TABS.slice(0, count).map((tab) => ({
     ...tab,
     label: null,
-    startAdornment: (
-      <Typography variant={TAB_TEXT_VARIANTS[size]}>
-        <LlamaIcon sx={{ width: iconSize, height: iconSize }} />
-      </Typography>
-    ),
+    startAdornment: <LlamaIcon sx={{ width: iconSize, height: iconSize }} />,
   }))
 }
 
@@ -73,7 +69,7 @@ const meta: Meta<typeof TabsSwitcherWrapper> = {
     },
     size: {
       control: 'select',
-      options: Object.keys(TABS_SIZES_CLASSES),
+      options: TAB_SIZE_KEYS,
     },
     orientation: {
       control: 'select',
@@ -95,7 +91,7 @@ export const Contained: Story = {
   },
   render: (args) => (
     <Stack gap={4}>
-      {objectKeys(TABS_SIZES_CLASSES).map((size) => (
+      {TAB_SIZE_KEYS.map((size) => (
         <TabsSwitcherWrapper key={size} {...args} size={size} options={getOptionsWithAdornments(4, size)} />
       ))}
     </Stack>
@@ -115,7 +111,7 @@ export const Underlined: Story = {
   },
   render: (args) => (
     <Stack gap={4}>
-      {(Object.keys(TABS_SIZES_CLASSES) as Array<keyof typeof TABS_SIZES_CLASSES>).map((size) => (
+      {TAB_SIZE_KEYS.map((size) => (
         <TabsSwitcherWrapper key={size} {...args} size={size} options={getOptionsWithAdornments(4, size)} />
       ))}
     </Stack>
@@ -135,7 +131,7 @@ export const Overlined: Story = {
   },
   render: (args) => (
     <Stack gap={4}>
-      {(Object.keys(TABS_SIZES_CLASSES) as Array<keyof typeof TABS_SIZES_CLASSES>).map((size) => (
+      {TAB_SIZE_KEYS.map((size) => (
         <TabsSwitcherWrapper key={size} {...args} size={size} options={getOptionsWithAdornments(4, size)} />
       ))}
     </Stack>
@@ -156,7 +152,7 @@ export const VerticalContained: Story = {
   },
   render: (args) => (
     <Stack gap={4} direction="row">
-      {(Object.keys(TABS_SIZES_CLASSES) as Array<keyof typeof TABS_SIZES_CLASSES>).map((size) => (
+      {TAB_SIZE_KEYS.map((size) => (
         <TabsSwitcherWrapper key={size} {...args} size={size} options={getOptionsWithAdornments(4, size)} />
       ))}
     </Stack>
@@ -177,7 +173,7 @@ export const VerticalUnderlined: Story = {
   },
   render: (args) => (
     <Stack gap={4} direction="row">
-      {(Object.keys(TABS_SIZES_CLASSES) as Array<keyof typeof TABS_SIZES_CLASSES>).map((size) => (
+      {TAB_SIZE_KEYS.map((size) => (
         <TabsSwitcherWrapper key={size} {...args} size={size} options={getOptionsWithAdornments(4, size)} />
       ))}
     </Stack>
@@ -198,7 +194,7 @@ export const VerticalOverlined: Story = {
   },
   render: (args) => (
     <Stack gap={4} direction="row">
-      {(Object.keys(TABS_SIZES_CLASSES) as Array<keyof typeof TABS_SIZES_CLASSES>).map((size) => (
+      {TAB_SIZE_KEYS.map((size) => (
         <TabsSwitcherWrapper key={size} {...args} size={size} options={getOptionsWithAdornments(4, size)} />
       ))}
     </Stack>
@@ -230,7 +226,7 @@ export const NoInactiveBorders: Story = {
 export const IconsOnly: Story = {
   render: () => (
     <Stack gap={4}>
-      {(Object.keys(TABS_SIZES_CLASSES) as Array<keyof typeof TABS_SIZES_CLASSES>).map((size) => (
+      {TAB_SIZE_KEYS.map((size) => (
         <Stack key={size} gap={4} direction="row" alignItems="center">
           {(['contained', 'underlined', 'overlined'] as const).map((variant) => (
             <TabsSwitcherWrapper
@@ -260,7 +256,7 @@ export const ContainedScrollableTabs: Story = {
   },
   render: (args) => (
     <Stack gap={4} sx={{ maxWidth: '24rem' }}>
-      {(Object.keys(TABS_SIZES_CLASSES) as Array<keyof typeof TABS_SIZES_CLASSES>).map((size) => (
+      {TAB_SIZE_KEYS.map((size) => (
         <TabsSwitcherWrapper key={size} {...args} size={size} options={getOptionsWithAdornments(8, size)} />
       ))}
     </Stack>
