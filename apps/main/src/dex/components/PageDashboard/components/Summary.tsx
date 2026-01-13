@@ -81,7 +81,7 @@ export const Summary = () => {
           <>
             <TabContentWrapper>
               <SummaryTitle>{t`Total Summary`}</SummaryTitle>
-              <TabsSwitcher variant="underlined" size="small" value={tab} onChange={setTab} options={tabs} />
+              <TabsSwitcher variant="underlined" value={tab} onChange={setTab} options={tabs} />
               {tab === 'DAY_PROFITS' && <SummaryRecurrence />}
               {tab === 'CLAIMABLE_TOKENS' && <SummaryClaimable />}
             </TabContentWrapper>

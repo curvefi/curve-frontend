@@ -39,12 +39,12 @@ export const UserPositionsTabs = (props: Omit<UserPositionsTableProps, 'tab' | '
       {
         value: MarketRateType.Borrow,
         label: t`Borrowing`,
-        endAdornment: openPositionsCount[MarketRateType.Borrow],
+        suffix: openPositionsCount[MarketRateType.Borrow],
       },
       {
         value: MarketRateType.Supply,
         label: t`Lending`,
-        endAdornment: openPositionsCount[MarketRateType.Supply],
+        suffix: openPositionsCount[MarketRateType.Supply],
       },
     ],
     [openPositionsCount],
@@ -92,7 +92,7 @@ export const UserPositionsTabs = (props: Omit<UserPositionsTableProps, 'tab' | '
               backgroundColor: (t) => t.design.Layer[1].Fill,
             }}
           >
-            <TabsSwitcher value={tab} onChange={setTab} variant="underlined" size="small" options={tabs} />
+            <TabsSwitcher value={tab} onChange={setTab} variant="underlined" options={tabs} />
             <Stack
               alignItems="center"
               direction="row"

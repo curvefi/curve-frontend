@@ -210,7 +210,6 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
             {!isMdUp && <TitleComp />}
             <TabsSwitcher
               variant="contained"
-              size="medium"
               value={!rFormType ? 'deposit' : rFormType}
               onChange={(key) => toggleForm(key as TransferFormType)}
               options={tabs}
@@ -263,13 +262,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
           </PriceAndTradesWrapper>
         )}
         <Stack>
-          <TabsSwitcher
-            variant="contained"
-            size="medium"
-            value={poolInfoTab}
-            onChange={setPoolInfoTab}
-            options={poolInfoTabs}
-          />
+          <TabsSwitcher variant="contained" value={poolInfoTab} onChange={setPoolInfoTab} options={poolInfoTabs} />
           <AppPageInfoContentWrapper variant="secondary">
             {poolInfoTab === 'user' && (
               <MySharesStats

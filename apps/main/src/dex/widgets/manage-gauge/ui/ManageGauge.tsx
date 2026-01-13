@@ -41,9 +41,7 @@ export const ManageGauge = ({ poolId, chainId }: { poolId: string; chainId: Chai
   const [tab, setTab] = useState<Tab>(isGaugeManager ? 'add_reward' : 'deposit_reward')
 
   return (
-    <FormContent
-      header={<TabsSwitcher variant="underlined" size="small" value={tab} onChange={setTab} options={tabs} fullWidth />}
-    >
+    <FormContent header={<TabsSwitcher variant="underlined" value={tab} onChange={setTab} options={tabs} fullWidth />}>
       {tab === 'add_reward' && <AddRewardToken chainId={chainId} poolId={poolId} />}
       {tab === 'deposit_reward' && <DepositReward chainId={chainId} poolId={poolId} />}
     </FormContent>

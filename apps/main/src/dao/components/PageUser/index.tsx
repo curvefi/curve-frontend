@@ -69,7 +69,7 @@ export const UserPage = ({ routerParams: { userAddress: rUserAddress } }: UserPa
         <UserStats veCrvHolder={veCrvHolder} holdersLoading={holdersLoading} />
       </UserPageContainer>
       <Box>
-        <TabsSwitcher variant="contained" size="medium" value={tab} onChange={setTab} options={tabs} />
+        <TabsSwitcher variant="contained" value={tab} onChange={setTab} options={tabs} />
 
         <Container variant="secondary">
           {tab === 'proposals' && <UserProposalVotesTable userAddress={userAddress} tableMinWidth={tableMinWidth} />}
