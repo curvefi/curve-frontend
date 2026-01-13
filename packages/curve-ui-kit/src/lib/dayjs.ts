@@ -1,3 +1,4 @@
+export { default as dayjs } from 'dayjs'
 import dayjs from 'dayjs'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 import isLeapYear from 'dayjs/plugin/isLeapYear'
@@ -8,5 +9,3 @@ dayjs.extend(isLeapYear)
 dayjs.extend(utc)
 dayjs.extend(customParseFormat)
 dayjs.extend(localizedFormat)
-
-export default dayjs

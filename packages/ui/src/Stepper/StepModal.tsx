@@ -1,15 +1,15 @@
 import { type MouseEvent, useEffect } from 'react'
 import Button from '@mui/material/Button'
 import type { OverlayTriggerState } from '@react-stately/overlays'
-import Box from 'ui/src/Box'
-import ModalDialog from 'ui/src/Dialog/ModalDialog'
+import { Box } from 'ui/src/Box'
+import { ModalDialog } from 'ui/src/Dialog/ModalDialog'
 import type { StepActionModal } from 'ui/src/Stepper/types'
 
 interface StepModalProps extends Pick<StepActionModal, 'modal'> {
   overlayTriggerState: OverlayTriggerState
 }
 
-const StepModal = ({ modal, overlayTriggerState }: StepModalProps) => {
+export const StepModal = ({ modal, overlayTriggerState }: StepModalProps) => {
   const { title, testId, content, cancelBtnProps, primaryBtnProps, primaryBtnLabel } = modal
   const { onClick: onClickCancel } = cancelBtnProps ?? {}
   const { onClick } = primaryBtnProps
@@ -49,5 +49,3 @@ const StepModal = ({ modal, overlayTriggerState }: StepModalProps) => {
     </ModalDialog>
   )
 }
-
-export default StepModal

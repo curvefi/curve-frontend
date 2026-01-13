@@ -1,8 +1,8 @@
 import lodash from 'lodash'
 import { useMemo, useCallback } from 'react'
 import { styled } from 'styled-components'
-import SwitchTokensButton from '@/dex/components/PageCreatePool/components/SwitchTokensButton'
-import WarningBox from '@/dex/components/PageCreatePool/components/WarningBox'
+import { SwitchTokensButton } from '@/dex/components/PageCreatePool/components/SwitchTokensButton'
+import { WarningBox } from '@/dex/components/PageCreatePool/components/WarningBox'
 import {
   STABLESWAP,
   CRYPTOSWAP,
@@ -17,21 +17,21 @@ import {
   FXSWAP,
   NG_ASSET_TYPE,
 } from '@/dex/components/PageCreatePool/constants'
-import SelectToken from '@/dex/components/PageCreatePool/TokensInPool/SelectToken'
-import SetOracle from '@/dex/components/PageCreatePool/TokensInPool/SetOracle'
+import { SelectToken } from '@/dex/components/PageCreatePool/TokensInPool/SelectToken'
+import { SetOracle } from '@/dex/components/PageCreatePool/TokensInPool/SetOracle'
 import { CreateToken, TokenId, TokensInPoolState } from '@/dex/components/PageCreatePool/types'
 import { checkMetaPool, containsOracle, getBasepoolCoins } from '@/dex/components/PageCreatePool/utils'
 import { useNetworkByChain } from '@/dex/entities/networks'
-import useTokensMapper from '@/dex/hooks/useTokensMapper'
+import { useTokensMapper } from '@/dex/hooks/useTokensMapper'
 import {
   DEFAULT_CREATE_POOL_STATE,
   DEFAULT_ERC4626_STATUS,
   DEFAULT_ORACLE_STATUS,
 } from '@/dex/store/createCreatePoolSlice'
-import useStore from '@/dex/store/useStore'
+import { useStore } from '@/dex/store/useStore'
 import { CurveApi, ChainId, BasePool } from '@/dex/types/main.types'
-import Box from '@ui/Box'
-import Button from '@ui/Button'
+import { Box } from '@ui/Box'
+import { Button } from '@ui/Button'
 import { t } from '@ui-kit/lib/i18n'
 
 type Props = {
@@ -42,7 +42,7 @@ type Props = {
 
 const DEFAULT_POOLS: BasePool[] = []
 
-const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
+export const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
   const userAddedTokens = useStore((state) => state.createPool.userAddedTokens)
   const poolPresetIndex = useStore((state) => state.createPool.poolPresetIndex)
   const resetPoolPresetIndex = useStore((state) => state.createPool.resetPoolPresetIndex)
@@ -880,5 +880,3 @@ const SwitchWrapper = styled(Box)`
     margin-top: var(--spacing-4);
   }
 `
-
-export default TokensInPool

@@ -1,14 +1,14 @@
 import { styled } from 'styled-components'
-import networks from '@/loan/networks'
-import Box from '@ui/Box'
-import Tooltip from '@ui/Tooltip/TooltipButton'
+import { networks } from '@/loan/networks'
+import { Box } from '@ui/Box'
+import { TooltipButton as Tooltip } from '@ui/Tooltip/TooltipButton'
 import { Chip } from '@ui/Typography'
 import { formatNumber, getFractionDigitsOptions, convertDate, convertTimeAgo, formatDate, scanTxPath } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { LiqudityDataProps } from './types'
 
-const LiquidityData = ({ llammaControllerData, chainId, coins }: LiqudityDataProps) => (
+export const LiquidityData = ({ llammaControllerData, chainId, coins }: LiqudityDataProps) => (
   <>
     {coins &&
       llammaControllerData.map((transaction, index) => (
@@ -161,5 +161,3 @@ const TimestampColumn = styled.span`
   display: flex;
   justify-content: end;
 `
-
-export default LiquidityData

@@ -1,8 +1,8 @@
 import { ReactNode } from 'react'
 import { styled } from 'styled-components'
-import Icon from 'ui/src/Icon'
+import { Icon } from 'ui/src/Icon'
 import type { TooltipProps } from 'ui/src/Tooltip/types'
-import Chip from 'ui/src/Typography/Chip'
+import { Chip } from 'ui/src/Typography/Chip'
 import { breakpoints } from 'ui/src/utils'
 
 type Props = TooltipProps & {
@@ -18,7 +18,7 @@ type Props = TooltipProps & {
   tooltipProps?: TooltipProps
 }
 
-const ListInfoItem = ({
+export const ListInfoItem = ({
   children,
   className = '',
   as,
@@ -119,5 +119,3 @@ const TitleDescription = styled.span`
 const MainValue = styled.span`
   font-size: var(--font-size-6);
 `
-
-export default ListInfoItem

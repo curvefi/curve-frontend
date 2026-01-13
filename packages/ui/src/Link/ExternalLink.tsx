@@ -7,7 +7,7 @@ export interface ExternalLinkProps extends AnchorHTMLAttributes<HTMLAnchorElemen
   isNumber?: boolean
 }
 
-function ExternalLink({ className, children, ...props }: ExternalLinkProps) {
+export function ExternalLink({ className, children, ...props }: ExternalLinkProps) {
   return (
     <StyledLink target="_blank" {...props} className={className} rel="noreferrer noopener">
       {children}
@@ -18,5 +18,3 @@ function ExternalLink({ className, children, ...props }: ExternalLinkProps) {
 const StyledLink = styled.a`
   ${linkStyles}
 `
-
-export default ExternalLink

@@ -1,11 +1,11 @@
 import { ButtonHTMLAttributes } from 'react'
 import { styled } from 'styled-components'
-import Box from 'ui/src/Box'
-import Button from 'ui/src/Button'
+import { Box } from 'ui/src/Box'
+import { Button } from 'ui/src/Button'
 import type { ButtonProps } from 'ui/src/Button/types'
 import { useInputContext } from './InputContext'
 
-const InputMaxBtn = ({
+export const InputMaxBtn = ({
   className,
   disabled,
   isNetworkToken,
@@ -45,5 +45,3 @@ const StyledButton = styled(Button)<ButtonProps>`
 `
 
 InputMaxBtn.displayName = 'InputMaxBtn'
-
-export default InputMaxBtn

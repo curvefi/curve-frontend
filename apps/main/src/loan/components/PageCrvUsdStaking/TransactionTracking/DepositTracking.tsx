@@ -1,9 +1,9 @@
 import { RCCrvUSDLogoXS, RCScrvUSDLogoXS } from 'ui/src/images'
 import { txIsConfirming, txIsSuccess, txIsLoading } from '@/loan/components/PageCrvUsdStaking/utils'
-import useStore from '@/loan/store/useStore'
-import Box from '@ui/Box'
-import Icon from '@ui/Icon'
-import Spinner from '@ui/Spinner'
+import { useStore } from '@/loan/store/useStore'
+import { Box } from '@ui/Box'
+import { Icon } from '@ui/Icon'
+import { Spinner } from '@ui/Spinner'
 import { t } from '@ui-kit/lib/i18n'
 import {
   Wrapper,
@@ -24,7 +24,7 @@ type DepositTrackingProps = {
   className?: string
 }
 
-const DepositTracking = ({ className }: DepositTrackingProps) => {
+export const DepositTracking = ({ className }: DepositTrackingProps) => {
   const stakingModule = useStore((state) => state.scrvusd.stakingModule)
   const depositApproval = useStore((state) => state.scrvusd.depositApproval)
   const approveDepositTransaction = useStore((state) => state.scrvusd.approveDepositTransaction)
@@ -108,5 +108,3 @@ const DepositTracking = ({ className }: DepositTrackingProps) => {
     </Wrapper>
   )
 }
-
-export default DepositTracking

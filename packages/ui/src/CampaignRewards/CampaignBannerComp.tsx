@@ -2,14 +2,14 @@ import { styled } from 'styled-components'
 import type { CampaignPoolRewards } from '@ui-kit/entities/campaigns'
 import { RCPointsIcon } from 'ui/src/images'
 import { ExternalLink } from 'ui/src/Link'
-import RewardsCompSmall from './CampaignRewardsComp'
+import { RewardsCompSmall } from './CampaignRewardsComp'
 
 type CampaignRewardsBannerCompProps = {
   campaignRewardsPool: CampaignPoolRewards[]
   message: string
 }
 
-const CampaignBannerComp = ({ campaignRewardsPool, message }: CampaignRewardsBannerCompProps) => (
+export const CampaignBannerComp = ({ campaignRewardsPool, message }: CampaignRewardsBannerCompProps) => (
   <Wrapper>
     <StyledPointsIcon />
     <RewardsMessage>
@@ -59,5 +59,3 @@ const RewardsIconsWrapper = styled.div`
   justify-content: flex-end;
   flex-shrink: 1;
 `
-
-export default CampaignBannerComp

@@ -3,11 +3,11 @@ import { styled } from 'styled-components'
 import { useChainId, useConnection } from 'wagmi'
 import { ConnectEthereum } from '@/dao/components/ConnectEthereum'
 import { ActiveProposal, SnapshotVotingPower } from '@/dao/types/dao.types'
-import Box from '@ui/Box'
-import Button from '@ui/Button'
+import { Box } from '@ui/Box'
+import { Button } from '@ui/Button'
 import { isLoading, useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
-import UserInformation from './UserInformation'
+import { UserInformation } from './UserInformation'
 
 type Props = {
   children?: ReactNode
@@ -17,7 +17,7 @@ type Props = {
   snapshotVotingPower: boolean
 }
 
-const UserBox = ({ className, children, votingPower, snapshotVotingPower, activeProposal }: Props) => {
+export const UserBox = ({ className, children, votingPower, snapshotVotingPower, activeProposal }: Props) => {
   const { address } = useConnection()
   const chainId = useChainId()
   const { connectState, connect } = useWallet()
@@ -69,5 +69,3 @@ const StyledButton = styled(Button)`
     background-color: var(--success-600);
   }
 `
-
-export default UserBox

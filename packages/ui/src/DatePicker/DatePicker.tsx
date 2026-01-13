@@ -1,4 +1,4 @@
-import dayjs from 'curve-ui-kit/src/lib/dayjs'
+import { dayjs } from 'curve-ui-kit/src/lib/dayjs'
 import { ReactNode, useEffect, useRef } from 'react'
 import type { AriaButtonProps, DateValue } from 'react-aria'
 import {
@@ -20,12 +20,12 @@ import { CalendarState, RangeCalendarState } from '@react-stately/calendar'
 import { DateFieldState } from '@react-stately/datepicker'
 import { AriaCalendarProps } from '@react-types/calendar'
 import { AriaDatePickerProps, DatePickerProps } from '@react-types/datepicker'
-import Box from 'ui/src/Box'
-import ModalDialog from 'ui/src/Dialog/ModalDialog'
-import Icon from 'ui/src/Icon'
-import IconButton from 'ui/src/IconButton'
-import InputProvider from 'ui/src/InputComp'
-import Chip from 'ui/src/Typography/Chip'
+import { Box } from 'ui/src/Box'
+import { ModalDialog } from 'ui/src/Dialog/ModalDialog'
+import { Icon } from 'ui/src/Icon'
+import { IconButton } from 'ui/src/IconButton'
+import { InputProvider } from 'ui/src/InputComp'
+import { Chip } from 'ui/src/Typography/Chip'
 import { type InputProviderProps } from '../InputComp/InputContext'
 
 // See https://react-spectrum.adobe.com/react-aria/useDatePicker.html for details
@@ -148,7 +148,7 @@ function CalendarCell({ state, date }: AriaCalendarCellProps & { state: Calendar
   )
 }
 
-function DatePicker<T extends DateValue>(
+export function DatePicker<T extends DateValue>(
   props: AriaDatePickerProps<T> & { quickActionValue?: dayjs.Dayjs | null; quickActions?: ReactNode } & {
     inputProviderProps: Partial<InputProviderProps> & { hasError?: boolean; showError?: boolean; id: string }
     dateFieldProps?: Omit<DatePickerProps<T>, 'locale' | 'createCalendar'>
@@ -290,5 +290,3 @@ const CalendarWrapper = styled.div`
 const StyledButton = styled(IconButton)`
   color: inherit;
 `
-
-export default DatePicker

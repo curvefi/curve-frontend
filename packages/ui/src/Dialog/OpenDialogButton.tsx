@@ -4,9 +4,9 @@ import { useButton } from 'react-aria'
 import { styled } from 'styled-components'
 import type { OverlayTriggerState } from '@react-stately/overlays'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
-import Button from 'ui/src/Button'
+import { Button } from 'ui/src/Button'
 import type { ButtonProps } from 'ui/src/Button/types'
-import Icon from 'ui/src/Icon/Icon'
+import { Icon } from 'ui/src/Icon/Icon'
 
 interface OpenDialogButtonProps extends ButtonProps {
   children: ReactNode
@@ -14,7 +14,7 @@ interface OpenDialogButtonProps extends ButtonProps {
   showCaret?: boolean
 }
 
-const OpenDialogButton = ({ children, overlayTriggerState, showCaret, ...props }: OpenDialogButtonProps) => {
+export const OpenDialogButton = ({ children, overlayTriggerState, showCaret, ...props }: OpenDialogButtonProps) => {
   const openButtonRef = useRef<HTMLButtonElement>(null)
   const isMobile = useIsMobile()
   const { buttonProps } = useButton(
@@ -32,5 +32,3 @@ const OpenDialogButton = ({ children, overlayTriggerState, showCaret, ...props }
 const StyledCaretDown16 = styled(Icon)`
   margin-left: var(--spacing-1);
 `
-
-export default OpenDialogButton

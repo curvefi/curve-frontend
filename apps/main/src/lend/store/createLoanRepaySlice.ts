@@ -10,8 +10,8 @@ import type { FormDetailInfo, FormEstGas } from '@/lend/components/PageLendMarke
 import { DEFAULT_FORM_EST_GAS } from '@/lend/components/PageLendMarket/utils'
 import { invalidateMarketDetails } from '@/lend/entities/market-details'
 import { invalidateAllUserBorrowDetails } from '@/lend/entities/user-loan-details'
-import apiLending, { helpers } from '@/lend/lib/apiLending'
-import networks from '@/lend/networks'
+import { helpers, apiLending } from '@/lend/lib/apiLending'
+import { networks } from '@/lend/networks'
 import type { State } from '@/lend/store/useStore'
 import { Api, FormError, OneWayMarketTemplate, UserLoanState } from '@/lend/types/lend.types'
 import { _parseActiveKey } from '@/lend/utils/helpers'
@@ -66,7 +66,7 @@ const DEFAULT_STATE: SliceState = {
 const { getUserActiveKey, isTooMuch } = helpers
 const { loanRepay } = apiLending
 
-const createLoanRepaySlice = (_set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): LoanRepaySlice => ({
+export const createLoanRepaySlice = (_set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): LoanRepaySlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 
@@ -317,8 +317,6 @@ const createLoanRepaySlice = (_set: StoreApi<State>['setState'], get: StoreApi<S
     },
   },
 })
-
-export default createLoanRepaySlice
 
 function _getActiveKey(
   api: Api | null,

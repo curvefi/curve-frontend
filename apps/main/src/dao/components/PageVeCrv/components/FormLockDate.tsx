@@ -1,29 +1,29 @@
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { styled } from 'styled-components'
-import AlertFormError from '@/dao/components/AlertFormError'
-import DetailInfoEstGas from '@/dao/components/DetailInfoEstGas'
-import FieldDatePicker from '@/dao/components/PageVeCrv/components/FieldDatePicker'
-import FormActions from '@/dao/components/PageVeCrv/components/FormActions'
+import { AlertFormError } from '@/dao/components/AlertFormError'
+import { DetailInfoEstGas } from '@/dao/components/DetailInfoEstGas'
+import { FieldDatePicker } from '@/dao/components/PageVeCrv/components/FieldDatePicker'
+import { FormActions } from '@/dao/components/PageVeCrv/components/FormActions'
 import type { FormEstGas, FormStatus, FormValues, PageVecrv, StepKey } from '@/dao/components/PageVeCrv/types'
 import { DEFAULT_FORM_EST_GAS } from '@/dao/components/PageVeCrv/utils'
-import networks from '@/dao/networks'
-import useStore from '@/dao/store/useStore'
+import { networks } from '@/dao/networks'
+import { useStore } from '@/dao/store/useStore'
 import { CurveApi } from '@/dao/types/dao.types'
 import { toCalendarDate } from '@/dao/utils/utilsDates'
 import type { DateValue } from '@react-types/calendar'
-import AlertBox from '@ui/AlertBox'
+import { AlertBox } from '@ui/AlertBox'
 import { getActiveStep, getStepStatus } from '@ui/Stepper/helpers'
-import Stepper from '@ui/Stepper/Stepper'
+import { Stepper } from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
-import TxInfoBar from '@ui/TxInfoBar'
+import { TxInfoBar } from '@ui/TxInfoBar'
 import { formatDate, scanTxPath } from '@ui/utils'
 import { isLoading, notify, useCurve } from '@ui-kit/features/connect-wallet'
-import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
-import dayjs from '@ui-kit/lib/dayjs'
+import { usePageVisibleInterval } from '@ui-kit/hooks/usePageVisibleInterval'
+import { dayjs } from '@ui-kit/lib/dayjs'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 
-const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
+export const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
   const isSubscribed = useRef(false)
 
   const activeKey = useStore((state) => state.lockedCrv.activeKey)
@@ -233,5 +233,3 @@ const StyledForm = styled.form`
   display: grid;
   grid-row-gap: var(--spacing-3);
 `
-
-export default FormLockDate

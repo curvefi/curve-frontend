@@ -5,7 +5,7 @@ type SpinnerWrapperProps = {
   minHeight?: string
 }
 
-const SpinnerWrapper = styled.div<SpinnerWrapperProps>`
+export const SpinnerWrapper = styled.div<SpinnerWrapperProps>`
   align-items: center;
   display: flex;
   justify-content: center;
@@ -32,5 +32,3 @@ const SpinnerWrapper = styled.div<SpinnerWrapperProps>`
     }
   }
 `
-
-export default SpinnerWrapper

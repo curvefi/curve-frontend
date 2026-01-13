@@ -1,7 +1,7 @@
 import { styled } from 'styled-components'
 import { ProposalListFilter, ProposalListFilterItem } from '@/dao/types/dao.types'
-import Button from '@ui/Button'
-import Spinner from '@ui/Spinner'
+import { Button } from '@ui/Button'
+import { Spinner } from '@ui/Spinner'
 
 type Props = {
   className?: string
@@ -12,7 +12,7 @@ type Props = {
   setActiveFilter: (filter: ProposalListFilter) => void
 }
 
-const ProposalsFilters = ({
+export const ProposalsFilters = ({
   filters,
   activeFilter,
   listLength,
@@ -53,5 +53,3 @@ const Filter = styled(Button)`
   align-items: center;
   gap: var(--spacing-1);
 `
-
-export default ProposalsFilters

@@ -1,7 +1,7 @@
 import { styled } from 'styled-components'
 import { breakpoints } from 'ui/src/utils'
 
-const Td = styled.td<{ $first?: boolean; $last?: boolean }>`
+export const Td = styled.td<{ $first?: boolean; $last?: boolean }>`
   padding: 0.5rem;
 
   &.border-right {
@@ -16,5 +16,3 @@ const Td = styled.td<{ $first?: boolean; $last?: boolean }>`
     ${({ $last }) => $last && `padding-right: var(--spacing-normal);`};
   }
 `
-
-export default Td

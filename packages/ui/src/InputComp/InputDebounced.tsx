@@ -1,11 +1,11 @@
 import { useDebounce } from 'curve-ui-kit/src/hooks/useDebounce'
-import Box from 'ui/src/Box/Box'
+import { Box } from 'ui/src/Box/Box'
 import { InputLabel } from 'ui/src/InputComp'
-import Input from 'ui/src/InputComp/Input'
+import { Input } from 'ui/src/InputComp/Input'
 import { useInputContext } from './InputContext'
 import type { InputLabelProps, InputProps } from './types'
 
-const InputDebounced = ({
+export const InputDebounced = ({
   delay = 700,
   disabled,
   labelProps,
@@ -38,5 +38,3 @@ const InputDebounced = ({
 }
 
 InputDebounced.displayName = 'InputDebounced'
-
-export default InputDebounced

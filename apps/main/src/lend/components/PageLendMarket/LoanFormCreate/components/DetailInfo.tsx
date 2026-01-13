@@ -1,13 +1,13 @@
 import { useMemo } from 'react'
-import DetailInfoLeverage from '@/lend/components/PageLendMarket/LoanFormCreate/components/DetailInfoLeverage'
-import DetailInfoNonLeverage from '@/lend/components/PageLendMarket/LoanFormCreate/components/DetailInfoNonLeverage'
+import { DetailInfoLeverage } from '@/lend/components/PageLendMarket/LoanFormCreate/components/DetailInfoLeverage'
+import { DetailInfoNonLeverage } from '@/lend/components/PageLendMarket/LoanFormCreate/components/DetailInfoNonLeverage'
 import type { DetailInfoCompAdditionalProps, DetailInfoCompProps } from '@/lend/components/PageLendMarket/types'
 import type { LiqRangeSliderIdx } from '@/lend/store/types'
-import useStore from '@/lend/store/useStore'
+import { useStore } from '@/lend/store/useStore'
 import { PageContentProps } from '@/lend/types/lend.types'
 import { getActiveStep } from '@ui/Stepper/helpers'
 
-const DetailInfoComp = ({ isLeverage, ...props }: PageContentProps & DetailInfoCompProps & { isLeverage: boolean }) => {
+export const DetailInfoComp = ({ isLeverage, ...props }: PageContentProps & DetailInfoCompProps & { isLeverage: boolean }) => {
   const { api, market, steps, updateFormValues } = props
 
   const { signerAddress } = api ?? {}
@@ -52,5 +52,3 @@ const DetailInfoComp = ({ isLeverage, ...props }: PageContentProps & DetailInfoC
     <DetailInfoNonLeverage {...props} {...additionalProps} />
   )
 }
-
-export default DetailInfoComp

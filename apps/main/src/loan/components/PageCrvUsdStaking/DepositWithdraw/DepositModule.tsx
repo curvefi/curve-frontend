@@ -6,11 +6,11 @@ import { InputDivider } from '@/llamalend/widgets/InputDivider'
 import { isLoading } from '@/loan/components/PageCrvUsdStaking/utils'
 import { CRVUSD_ADDRESS, SCRVUSD_VAULT_ADDRESS } from '@/loan/constants'
 import { useScrvUsdUserBalances } from '@/loan/entities/scrvusd-userBalances'
-import networks from '@/loan/networks'
-import useStore from '@/loan/store/useStore'
+import { networks } from '@/loan/networks'
+import { useStore } from '@/loan/store/useStore'
 import { type ChainId } from '@/loan/types/loan.types'
 import Stack from '@mui/material/Stack'
-import Box from '@ui/Box'
+import { Box } from '@ui/Box'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useLargeTokenInputScrvusd } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
@@ -30,7 +30,7 @@ import {
 
 const { Spacing } = SizesAndSpaces
 
-const DepositModule = () => {
+export const DepositModule = () => {
   const { address } = useConnection()
   const { data: userScrvUsdBalance, isLoading: userScrvUsdBalanceLoading } = useScrvUsdUserBalances({
     userAddress: address,
@@ -148,5 +148,3 @@ const DepositModule = () => {
     </Box>
   )
 }
-
-export default DepositModule

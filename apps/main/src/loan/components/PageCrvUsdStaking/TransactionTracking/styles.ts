@@ -1,7 +1,7 @@
 import { styled } from 'styled-components'
 import { RCPinBottom } from 'ui/src/images'
-import Button from '@ui/Button'
-import Icon from '@ui/Icon'
+import { Button } from '@ui/Button'
+import { Icon } from '@ui/Icon'
 import { ExternalLink } from '@ui/Link'
 
 export const Wrapper = styled.div`

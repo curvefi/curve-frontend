@@ -1,17 +1,17 @@
 import { styled } from 'styled-components'
-import SelectButton from '@/dex/components/PageCreatePool/components/SelectButton'
+import { SelectButton } from '@/dex/components/PageCreatePool/components/SelectButton'
 import { STABLESWAP, CRYPTOSWAP, FXSWAP } from '@/dex/components/PageCreatePool/constants'
 import { useNetworkByChain } from '@/dex/entities/networks'
-import useStore from '@/dex/store/useStore'
+import { useStore } from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
-import Box from '@ui/Box'
+import { Box } from '@ui/Box'
 import { t } from '@ui-kit/lib/i18n'
 
 type Props = {
   chainId: ChainId
 }
 
-const PoolType = ({ chainId }: Props) => {
+export const PoolType = ({ chainId }: Props) => {
   const swapType = useStore((state) => state.createPool.swapType)
   const updateSwapType = useStore((state) => state.createPool.updateSwapType)
   const {
@@ -98,5 +98,3 @@ const SectionLabel = styled.p`
   color: var(--box--primary--color);
   font-size: var(--font-size-2);
 `
-
-export default PoolType

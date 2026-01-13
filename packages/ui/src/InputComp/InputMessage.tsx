@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { styled } from 'styled-components'
-import Icon from 'ui/src/Icon/Icon'
+import { Icon } from 'ui/src/Icon/Icon'
 import { useInputContext } from './InputContext'
 import type { InputVariant } from './types'
 
@@ -8,7 +8,7 @@ export interface InputMessageProps {
   message?: string
 }
 
-const InputMessage = ({ message }: InputMessageProps) => {
+export const InputMessage = ({ message }: InputMessageProps) => {
   const { inputVariant } = useInputContext() ?? {}
 
   const IconComp = useMemo(() => {
@@ -68,5 +68,3 @@ const Message = styled.div<{
 `
 
 InputMessage.displayName = 'InputMessage'
-
-export default InputMessage

@@ -4,7 +4,7 @@ type Props = {
   script: string
 }
 
-const Script = ({ script }: Props) => (
+export const Script = ({ script }: Props) => (
   <Wrapper>
     <SubTitle>Calldata</SubTitle>
     <CallData>
@@ -44,5 +44,3 @@ const CallData = styled.div`
 `
 
 const ScriptText = styled.div``
-
-export default Script

@@ -1,10 +1,10 @@
 import { PropsWithChildren } from 'react'
 import { styled } from 'styled-components'
 import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
-import Tooltip from 'ui/src/Tooltip/TooltipButton'
+import { TooltipButton as Tooltip } from 'ui/src/Tooltip/TooltipButton'
 import type { ChipProps } from 'ui/src/Typography/types'
 
-const Chip = ({
+export const Chip = ({
   as,
   children,
   className,
@@ -65,5 +65,3 @@ const Label = styled.span<
     }
   }
 `
-
-export default Chip

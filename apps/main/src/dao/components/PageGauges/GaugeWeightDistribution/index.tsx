@@ -1,23 +1,23 @@
 import { useMemo } from 'react'
 import { styled } from 'styled-components'
-import ErrorMessage from '@/dao/components/ErrorMessage'
+import { ErrorMessage } from '@/dao/components/ErrorMessage'
 import { useUserGaugeWeightVotesQuery } from '@/dao/entities/user-gauge-weight-votes'
-import useStore from '@/dao/store/useStore'
+import { useStore } from '@/dao/store/useStore'
 import { GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
-import Box from '@ui/Box'
-import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import { Box } from '@ui/Box'
+import { SpinnerWrapper, Spinner } from '@ui/Spinner'
 import { t } from '@ui-kit/lib/i18n'
 import { Chain } from '@ui-kit/utils/network'
-import BarChartComponent from '../../Charts/BarChartComponent'
-import GaugesCustomTooltip from '../../Charts/GaugesBarChartCustomTooltip'
-import GaugeVotingCustomTooltip from '../../Charts/GaugeVotingBarChartCustomTooltip'
+import { BarChartComponent } from '../../Charts/BarChartComponent'
+import { BarChartCustomTooltip as GaugesCustomTooltip } from '../../Charts/GaugesBarChartCustomTooltip'
+import { BarChartCustomTooltip as GaugeVotingCustomTooltip } from '../../Charts/GaugeVotingBarChartCustomTooltip'
 
 type GaugeWeightDistributionProps = {
   isUserVotes: boolean
   userAddress?: string
 }
 
-const GaugeWeightDistribution = ({ isUserVotes, userAddress }: GaugeWeightDistributionProps) => {
+export const GaugeWeightDistribution = ({ isUserVotes, userAddress }: GaugeWeightDistributionProps) => {
   const {
     data: userGaugeWeightVotes,
     isSuccess: userGaugeWeightsSuccess,
@@ -131,5 +131,3 @@ const ErrorMessageWrapper = styled.div`
   padding: var(--spacing-5);
   margin-bottom: var(--spacing-2);
 `
-
-export default GaugeWeightDistribution

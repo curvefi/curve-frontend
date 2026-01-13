@@ -1,11 +1,11 @@
 import { ChangeEventHandler } from 'react'
 import { styled } from 'styled-components'
-import Box from 'ui/src/Box/Box'
+import { Box } from 'ui/src/Box/Box'
 import { InputLabel, InputMessage } from 'ui/src/InputComp'
-import Input from 'ui/src/InputComp/Input'
+import { Input } from 'ui/src/InputComp/Input'
 import type { InputLabelProps, InputProps } from 'ui/src/InputComp/types'
 
-const InputField = ({
+export const InputField = ({
   className,
   labelProps,
   message,
@@ -33,5 +33,3 @@ const StyledInput = styled(Input)`
 `
 
 InputField.displayName = 'InputField'
-
-export default InputField

@@ -1,16 +1,16 @@
 import { useState } from 'react'
 import { styled } from 'styled-components'
-import MetricsComp, { MetricsColumnData } from '@/dao/components/MetricsComp'
+import { MetricsColumnData, MetricsComp } from '@/dao/components/MetricsComp'
 import { useUserGaugeVoteNextTimeQuery } from '@/dao/entities/user-gauge-vote-next-time'
-import useStore from '@/dao/store/useStore'
+import { useStore } from '@/dao/store/useStore'
 import { UserGaugeVoteWeight } from '@/dao/types/dao.types'
-import Box from '@ui/Box'
-import Button from '@ui/Button'
-import TooltipIcon from '@ui/Tooltip/TooltipIcon'
+import { Box } from '@ui/Box'
+import { Button } from '@ui/Button'
+import { TooltipIcon } from '@ui/Tooltip/TooltipIcon'
 import { convertToLocaleTimestamp, formatDate, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { Chain } from '@ui-kit/utils/network'
-import NumberField from './NumberField'
+import { NumberField } from './NumberField'
 
 type VoteGaugeFieldProps = {
   powerUsed: number
@@ -19,7 +19,7 @@ type VoteGaugeFieldProps = {
   newVote?: boolean
 }
 
-const VoteGaugeField = ({ powerUsed, userGaugeVoteData, userVeCrv, newVote = false }: VoteGaugeFieldProps) => {
+export const VoteGaugeField = ({ powerUsed, userGaugeVoteData, userVeCrv, newVote = false }: VoteGaugeFieldProps) => {
   const userAddress = useStore((state) => state.user.userAddress)
   const castVote = useStore((state) => state.gauges.castVote)
   const txCastVoteState = useStore((state) => state.gauges.txCastVoteState)
@@ -212,5 +212,3 @@ const LabelTitle = styled.p`
 `
 
 const LabelData = styled.p``
-
-export default VoteGaugeField

@@ -1,1 +1,1 @@
-export { default } from './InpChipUsdRate'
+export { InpChipUsdRate } from './InpChipUsdRate'

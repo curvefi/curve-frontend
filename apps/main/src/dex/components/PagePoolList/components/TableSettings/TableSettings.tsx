@@ -1,16 +1,16 @@
 import { useMemo } from 'react'
 import { styled } from 'styled-components'
-import TableSortSelect from 'ui/src/TableSort/TableSortSelect'
-import TableSortSelectMobile from 'ui/src/TableSort/TableSortSelectMobile'
-import TableCheckboxHideSmallPools from '@/dex/components/PagePoolList/components/TableSettings/TableCheckboxHideSmallPools'
+import { TableSortSelect } from 'ui/src/TableSort/TableSortSelect'
+import { TableSortSelectMobile } from 'ui/src/TableSort/TableSortSelectMobile'
+import { TableCheckboxHideSmallPools } from '@/dex/components/PagePoolList/components/TableSettings/TableCheckboxHideSmallPools'
 import type { FilterKey, PoolListFilter, PoolListTableLabel, SearchParams } from '@/dex/components/PagePoolList/types'
 import { useNetworkByChain } from '@/dex/entities/networks'
-import useStore from '@/dex/store/useStore'
+import { useStore } from '@/dex/store/useStore'
 import { ChainId, PoolData } from '@/dex/types/main.types'
-import Box from '@ui/Box'
-import SearchListInput from '@ui/SearchInput/SearchListInput'
-import TableButtonFilters from '@ui/TableButtonFilters'
-import TableButtonFiltersMobile from '@ui/TableButtonFiltersMobile'
+import { Box } from '@ui/Box'
+import { SearchListInput } from '@ui/SearchInput/SearchListInput'
+import { TableButtonFilters } from '@ui/TableButtonFilters'
+import { TableButtonFiltersMobile } from '@ui/TableButtonFiltersMobile'
 import { breakpoints } from '@ui/utils'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { t } from '@ui-kit/lib/i18n'
@@ -28,7 +28,7 @@ type Props = {
   updatePath(updatedSearchParams: Partial<SearchParams>): void
 }
 
-const TableSettings = ({
+export const TableSettings = ({
   isReady,
   activeKey,
   rChainId,
@@ -152,5 +152,3 @@ const FiltersWrapper = styled(Box)<{ $isLite: boolean }>`
     grid-template-columns: ${({ $isLite }) => ($isLite ? 'auto 1fr auto' : '1fr auto auto')};
   }
 `
-
-export default TableSettings

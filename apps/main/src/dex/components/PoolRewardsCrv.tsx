@@ -1,14 +1,14 @@
 import { useMemo } from 'react'
 import { styled } from 'styled-components'
-import ChipInactive from '@/dex/components/ChipInactive'
+import { StyledInactiveChip as ChipInactive } from '@/dex/components/ChipInactive'
 import { RewardsApy, PoolData, PoolDataCache } from '@/dex/types/main.types'
-import Icon from '@ui/Icon'
-import IconTooltip from '@ui/Tooltip/TooltipIcon'
+import { Icon } from '@ui/Icon'
+import { TooltipIcon as IconTooltip } from '@ui/Tooltip/TooltipIcon'
 import { Chip } from '@ui/Typography'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { t, Trans } from '@ui-kit/lib/i18n'
 
-const PoolRewardsCrv = ({
+export const PoolRewardsCrv = ({
   isHighlight,
   isLoading,
   poolData,
@@ -105,5 +105,3 @@ const RewardsNudgingIcon = styled(Icon)`
 const StyledRewardsNudge = styled(Chip)`
   vertical-align: text-bottom;
 `
-
-export default PoolRewardsCrv

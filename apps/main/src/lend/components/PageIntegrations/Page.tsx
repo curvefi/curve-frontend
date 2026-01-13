@@ -1,4 +1,4 @@
-import networks, { networksIdMapper } from '@/lend/networks'
+import { networksIdMapper, networks } from '@/lend/networks'
 import type { NetworkUrlParams } from '@/lend/types/lend.types'
 import { Integrations } from '@ui-kit/features/integrations'
 import { useParams } from '@ui-kit/hooks/router'

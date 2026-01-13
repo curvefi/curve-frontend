@@ -1,4 +1,4 @@
-import CrvStaking from '@/loan/components/PageCrvUsdStaking/Page'
+import { Page as CrvStaking } from '@/loan/components/PageCrvUsdStaking/Page'
 import { PageIntegrations } from '@/loan/components/PageIntegrations/Page'
 import { MintMarketPage } from '@/loan/components/PageMintMarket/MintMarketPage'
 import { Page as PegKeepersPage } from '@/loan/components/PagePegKeepers'

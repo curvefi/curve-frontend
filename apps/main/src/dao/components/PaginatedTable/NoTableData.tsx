@@ -1,6 +1,6 @@
 import { styled } from 'styled-components'
-import ErrorMessage from '@/dao/components/ErrorMessage'
-import Box from '@ui/Box'
+import { ErrorMessage } from '@/dao/components/ErrorMessage'
+import { Box } from '@ui/Box'
 
 type NoTableDataProps = {
   height: string
@@ -8,7 +8,7 @@ type NoTableDataProps = {
   refetchData: () => void
 }
 
-const NoTableData = ({ height, noDataMessage, refetchData }: NoTableDataProps) => (
+export const NoTableData = ({ height, noDataMessage, refetchData }: NoTableDataProps) => (
   <Wrapper height={height}>
     <ErrorMessage message={noDataMessage} onClick={refetchData} />
   </Wrapper>
@@ -27,5 +27,3 @@ const Wrapper = styled(Box)<{ height: string }>`
     line-height: 1.5;
   }
 `
-
-export default NoTableData

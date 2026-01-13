@@ -1,6 +1,6 @@
 import { Item } from 'react-stately'
 import { styled } from 'styled-components'
-import Select from 'ui/src/Select'
+import { Select } from 'ui/src/Select'
 import type { SelectProps } from 'ui/src/Select/Select'
 
 type ItemObj = {

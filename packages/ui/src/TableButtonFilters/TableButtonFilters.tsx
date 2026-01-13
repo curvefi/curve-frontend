@@ -1,12 +1,12 @@
 import { styled } from 'styled-components'
-import Box from 'ui/src/Box'
-import Button from 'ui/src/Button'
-import Icon from 'ui/src/Icon'
-import Spinner from 'ui/src/Spinner'
+import { Box } from 'ui/src/Box'
+import { Button } from 'ui/src/Button'
+import { Icon } from 'ui/src/Icon'
+import { Spinner } from 'ui/src/Spinner'
 
 type Filter = { [_: string]: { id: string; displayName: string; color?: string } } | undefined
 
-const TableButtonFilters = ({
+export const TableButtonFilters = ({
   className = '',
   disabled,
   filters,
@@ -72,5 +72,3 @@ const FilterIcon = styled(Icon)`
   position: relative;
   top: 3px;
 `
-
-export default TableButtonFilters

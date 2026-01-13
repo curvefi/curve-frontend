@@ -1,7 +1,7 @@
 import { styled } from 'styled-components'
-import Icon from 'ui/src/Icon'
-import ExternalLink from 'ui/src/Link/ExternalLink'
-import Spinner from 'ui/src/Spinner'
+import { Icon } from 'ui/src/Icon'
+import { ExternalLink } from 'ui/src/Link/ExternalLink'
+import { Spinner } from 'ui/src/Spinner'
 
 type Props = {
   transactionHash: string
@@ -9,7 +9,7 @@ type Props = {
   pendingMessage: string
 }
 
-const ModalPendingTx = ({ transactionHash, txLink, pendingMessage }: Props) => {
+export const ModalPendingTx = ({ transactionHash, txLink, pendingMessage }: Props) => {
   const formatAddress = `${transactionHash.slice(0, 4 + 2)}...${transactionHash.slice(-4)}`
 
   return (
@@ -75,5 +75,3 @@ const StyledPendingSpinner = styled(Spinner)`
     border-color: var(--page--text-color) transparent transparent transparent;
   }
 `
-
-export default ModalPendingTx

@@ -1,9 +1,9 @@
 import { copyToClipboard, shortenAddress } from 'curve-ui-kit/src/utils'
 import { useMemo } from 'react'
 import { styled } from 'styled-components'
-import Icon from 'ui/src/Icon'
-import IconButton from 'ui/src/IconButton'
-import ExternalLink from 'ui/src/Link/ExternalLink'
+import { Icon } from 'ui/src/Icon'
+import { IconButton } from 'ui/src/IconButton'
+import { ExternalLink } from 'ui/src/Link/ExternalLink'
 import { breakpoints, scanAddressPath, type BaseConfig } from 'ui/src/utils'
 
 type Result = { [key: string]: { value: string } }
@@ -18,7 +18,7 @@ interface Props {
   network: BaseConfig
 }
 
-const TrSearchedTextResult = ({ className = '', id, isMobile, colSpan, result, searchTermMapper, network }: Props) => {
+export const TrSearchedTextResult = ({ className = '', id, isMobile, colSpan, result, searchTermMapper, network }: Props) => {
   const parsedResult = useMemo(() => removeDuplicateValues(result), [result])
 
   return (
@@ -91,8 +91,6 @@ const StyledExternalLink = styled(ExternalLink)`
     padding-top: 0.3125rem;
   }
 `
-
-export default TrSearchedTextResult
 
 function removeDuplicateValues(result: Result) {
   const values = new Set()

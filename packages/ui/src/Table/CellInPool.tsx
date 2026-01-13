@@ -1,7 +1,7 @@
 import type { JSX } from 'react'
 import { styled } from 'styled-components'
-import Icon from 'ui/src/Icon'
-import Chip from 'ui/src/Typography/Chip'
+import { Icon } from 'ui/src/Icon'
+import { Chip } from 'ui/src/Typography/Chip'
 import { breakpoints } from 'ui/src/utils'
 
 type Props = {
@@ -11,7 +11,7 @@ type Props = {
   tooltip: string
 }
 
-const CellInPool = ({ isIn, isMobile, tooltip, ...rest }: Props) => (
+export const CellInPool = ({ isIn, isMobile, tooltip, ...rest }: Props) => (
   <Td {...rest} $isIn={isIn} $isMobile={isMobile} className={isIn ? 'active' : ''}>
     {isIn && (
       <Chip tooltip={tooltip} tooltipProps={{ placement: 'top-start' }}>
@@ -51,5 +51,3 @@ const Td = styled.td<{ $isIn?: boolean; $isMobile?: boolean }>`
 const StyledIcon = styled(Icon)`
   width: 21px;
 `
-
-export default CellInPool

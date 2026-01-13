@@ -1,8 +1,8 @@
 import { ReactNode } from 'react'
 import { styled } from 'styled-components'
-import Box from 'ui/src/Box'
-import Icon from 'ui/src/Icon'
-import IconButton from 'ui/src/IconButton'
+import { Box } from 'ui/src/Box'
+import { Icon } from 'ui/src/Icon'
+import { IconButton } from 'ui/src/IconButton'
 import { RCExternal } from 'ui/src/images'
 import { ExternalLink } from 'ui/src/Link'
 
@@ -12,7 +12,7 @@ type Props = {
   onClose?: () => void
 }
 
-const TxInfoBar = ({ description, txHash, onClose }: Props) => (
+export const TxInfoBar = ({ description, txHash, onClose }: Props) => (
   <StyledInfoBar grid gridTemplateColumns="1fr auto" gridColumnGap="3" flexAlignItems="center" fillWidth>
     <InfoTitle>
       {description}{' '}
@@ -61,5 +61,3 @@ const InfoTitle = styled.span`
   font-weight: var(--font-weight--bold);
   word-break: break-word;
 `
-
-export default TxInfoBar

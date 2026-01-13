@@ -1,4 +1,4 @@
-import networks from '@/loan/networks'
+import { networks } from '@/loan/networks'
 import type { NetworkUrlParams } from '@/loan/types/loan.types'
 import { useChainId } from '@/loan/utils/utilsRouter'
 import { Integrations } from '@ui-kit/features/integrations'

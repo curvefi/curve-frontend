@@ -2,9 +2,9 @@ import { styled } from 'styled-components'
 import { WrongNetwork } from '@/dao/components/PageVeCrv/WrongNetwork'
 import { ConnectWalletPrompt, useCurve } from '@ui-kit/features/connect-wallet'
 import { Chain } from '@ui-kit/utils'
-import CurrentVotes from './CurrentVotes'
+import { CurrentVotes } from './CurrentVotes'
 
-const GaugeVoting = ({ userAddress }: { userAddress: string | undefined }) => {
+export const GaugeVoting = ({ userAddress }: { userAddress: string | undefined }) => {
   const { provider, curveApi: { chainId } = {} } = useCurve()
   if (chainId !== Chain.Ethereum) {
     return <WrongNetwork />
@@ -25,5 +25,3 @@ const Wrapper = styled.div`
   flex-grow: 1;
   min-height: 100%;
 `
-
-export default GaugeVoting

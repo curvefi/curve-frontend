@@ -3,9 +3,9 @@ import type { AriaListBoxOptions } from 'react-aria'
 import { useListBox } from 'react-aria'
 import type { SelectState } from 'react-stately'
 import { styled } from 'styled-components'
-import SelectModalListBoxItem from 'ui/src/Select/SelectModalListBoxItem'
+import { SelectModalListBoxItem } from 'ui/src/Select/SelectModalListBoxItem'
 
-function SelectModalListBox<T>(
+export function SelectModalListBox<T>(
   props: AriaListBoxOptions<T> & {
     state: SelectState<T>
     listBoxRef?: RefObject<HTMLUListElement | null>
@@ -35,5 +35,3 @@ const StyledListBox = styled.ul<{ minWidth?: string }>`
   overflow-x: auto;
   ${({ minWidth }) => minWidth && `min-width: ${minWidth};`}//overflow: auto;
 `
-
-export default SelectModalListBox

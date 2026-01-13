@@ -1,12 +1,12 @@
 import { styled } from 'styled-components'
-import Box from 'ui/src/Box/Box'
+import { Box } from 'ui/src/Box/Box'
 import { RCCross, RCCheck } from 'ui/src/images'
 import { statusColorMap } from 'ui/src/Stepper/helpers'
-import StepAction from 'ui/src/Stepper/StepAction'
-import StepNumberConnector from 'ui/src/Stepper/StepNumberConnector'
+import { StepAction } from 'ui/src/Stepper/StepAction'
+import { StepNumberConnector } from 'ui/src/Stepper/StepNumberConnector'
 import type { Step, StepStatus } from 'ui/src/Stepper/types'
 
-const Stepper = ({ steps, testId, hideStepNumber }: { steps: Step[]; testId?: string; hideStepNumber?: boolean }) => (
+export const Stepper = ({ steps, testId, hideStepNumber }: { steps: Step[]; testId?: string; hideStepNumber?: boolean }) => (
   <StepsContainer data-testid={`stepper-${testId}`}>
     {steps.map((step, i) => (
       <StepContainer key={i} flex flexAlignItems="center" flexJustifyContent="space-between" fillWidth>
@@ -83,5 +83,3 @@ const Number = styled(Box)<{ status: StepStatus }>`
     }
   }}
 `
-
-export default Stepper

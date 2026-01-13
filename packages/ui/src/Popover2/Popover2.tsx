@@ -9,7 +9,7 @@ export interface PopoverProps extends Omit<AriaPopoverProps, 'popoverRef'> {
   state: OverlayTriggerState
 }
 
-function Popover2({ children, state, offset = 8, ...props }: PopoverProps) {
+export function Popover2({ children, state, offset = 8, ...props }: PopoverProps) {
   const popoverRef = useRef(null)
   const { popoverProps, underlayProps } = usePopover(
     {
@@ -51,5 +51,3 @@ const Popover = styled.div`
   border: 1px solid var(--popover--border-color);
   box-shadow: var(--popover--box-shadow);
 `
-
-export default Popover2

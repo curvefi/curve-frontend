@@ -1,20 +1,20 @@
 import { MouseEvent, useEffect, useState } from 'react'
 import { styled } from 'styled-components'
-import LineChartComponent from '@/dao/components/Charts/LineChartComponent'
-import ErrorMessage from '@/dao/components/ErrorMessage'
-import InternalLinkButton from '@/dao/components/InternalLinkButton'
-import useStore from '@/dao/store/useStore'
+import { LineChartComponent } from '@/dao/components/Charts/LineChartComponent'
+import { ErrorMessage } from '@/dao/components/ErrorMessage'
+import { InternalLinkButton } from '@/dao/components/InternalLinkButton'
+import { useStore } from '@/dao/store/useStore'
 import { GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
-import Box from '@ui/Box'
-import Icon from '@ui/Icon'
-import IconButton from '@ui/IconButton'
-import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import { Box } from '@ui/Box'
+import { Icon } from '@ui/Icon'
+import { IconButton } from '@ui/IconButton'
+import { SpinnerWrapper, Spinner } from '@ui/Spinner'
 import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
 import { formatNumber } from '@ui-kit/utils'
-import VoteGaugeField from '../GaugeVoting/VoteGaugeField'
-import GaugeDetailsSm from './GaugeDetailsSm'
-import TitleComp from './TitleComp'
+import { VoteGaugeField } from '../GaugeVoting/VoteGaugeField'
+import { GaugeDetailsSm } from './GaugeDetailsSm'
+import { TitleComp } from './TitleComp'
 
 type Props = {
   gaugeData: GaugeFormattedData
@@ -24,7 +24,7 @@ type Props = {
   addUserVote?: boolean
 }
 
-const SmallScreenCard = ({
+export const SmallScreenCard = ({
   gaugeData,
   userGaugeWeightVoteData,
   powerUsed,
@@ -210,5 +210,3 @@ const ErrorWrapper = styled.div`
 const StyledSpinnerWrapper = styled(SpinnerWrapper)`
   height: 400px;
 `
-
-export default SmallScreenCard

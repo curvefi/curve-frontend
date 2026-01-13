@@ -1,22 +1,20 @@
 import type { StoreApi } from 'zustand'
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
-import createAppSlice, { AppSlice } from '@/loan/store/createAppSlice'
-import createChartBandsSlice, { ChartBandsSlice } from '@/loan/store/createChartBandsStore'
-import createLoanCollateralDecrease, {
-  LoanCollateralDecreaseSlice,
-} from '@/loan/store/createLoanCollateralDecreaseSlice'
-import createLoanCollateralIncrease, {
-  LoanCollateralIncreaseSlice,
-} from '@/loan/store/createLoanCollateralIncreaseSlice'
-import createLoanCreate, { LoanCreateSlice } from '@/loan/store/createLoanCreateSlice'
-import createLoanDecrease, { LoanDecreaseSlice } from '@/loan/store/createLoanDecreaseSlice'
-import createLoanDeleverageSlice, { LoanDeleverageSlice } from '@/loan/store/createLoanDeleverageSlice'
-import createLoanIncrease, { LoanIncreaseSlice } from '@/loan/store/createLoanIncreaseSlice'
-import createLoanLiquidate, { LoanLiquidateSlice } from '@/loan/store/createLoanLiquidate'
-import createLoansSlice, { LoansSlice } from '@/loan/store/createLoansSlice'
-import createOhlcChartSlice, { OhlcChartSlice } from '@/loan/store/createOhlcChartSlice'
-import createScrvUsdSlice, { ScrvUsdSlice } from '@/loan/store/createScrvUsdSlice'
+import { AppSlice, createAppSlice } from '@/loan/store/createAppSlice'
+import { ChartBandsSlice, createChartBandsSlice } from '@/loan/store/createChartBandsStore'
+import {
+  LoanCollateralDecreaseSlice, createLoanCollateralDecrease } from '@/loan/store/createLoanCollateralDecreaseSlice'
+import {
+  LoanCollateralIncreaseSlice, createLoanCollateralIncrease } from '@/loan/store/createLoanCollateralIncreaseSlice'
+import { LoanCreateSlice, createLoanCreate } from '@/loan/store/createLoanCreateSlice'
+import { LoanDecreaseSlice, createLoanDecrease } from '@/loan/store/createLoanDecreaseSlice'
+import { LoanDeleverageSlice, createLoanDeleverageSlice } from '@/loan/store/createLoanDeleverageSlice'
+import { LoanIncreaseSlice, createLoanIncrease } from '@/loan/store/createLoanIncreaseSlice'
+import { LoanLiquidateSlice, createLoanLiquidate } from '@/loan/store/createLoanLiquidate'
+import { LoansSlice, createLoansSlice } from '@/loan/store/createLoansSlice'
+import { OhlcChartSlice, createOhlcChart as createOhlcChartSlice } from '@/loan/store/createOhlcChartSlice'
+import { ScrvUsdSlice, createScrvUsdSlice } from '@/loan/store/createScrvUsdSlice'
 
 export type State = AppSlice &
   ChartBandsSlice &
@@ -46,6 +44,4 @@ const store = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState'
   ...createScrvUsdSlice(set, get),
 })
 
-const useStore = process.env.NODE_ENV === 'development' ? create(devtools(store)) : create(store)
-
-export default useStore
+export const useStore = process.env.NODE_ENV === 'development' ? create(devtools(store)) : create(store)

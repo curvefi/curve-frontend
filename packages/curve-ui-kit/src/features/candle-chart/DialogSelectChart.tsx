@@ -1,6 +1,6 @@
 import { styled } from 'styled-components'
-import Popover, { Popover2Dialog } from 'ui/src/Popover2'
-import DialogSelectContent from '@ui-kit/features/candle-chart/DialogSelectChartContent'
+import { Popover2Dialog, Popover2Trigger as Popover } from 'ui/src/Popover2'
+import { DialogSelectChart as DialogSelectContent } from '@ui-kit/features/candle-chart/DialogSelectChartContent'
 import type { LabelList } from './types'
 
 type Props = {
@@ -10,7 +10,7 @@ type Props = {
   setChartSelectedIndex: (index: number) => void
 }
 
-const DialogSelect = ({ selectedChartIndex, selectChartList, setChartSelectedIndex, isDisabled }: Props) => (
+export const DialogSelect = ({ selectedChartIndex, selectChartList, setChartSelectedIndex, isDisabled }: Props) => (
   <>
     {selectChartList.length === 1 ? (
       <ChartsTitle>{selectChartList[0]?.label ?? `Loading`}</ChartsTitle>
@@ -48,5 +48,3 @@ const ChartsTitle = styled.h3`
   margin: auto;
   padding-left: var(--spacing-2);
 `
-
-export default DialogSelect

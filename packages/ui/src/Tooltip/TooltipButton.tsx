@@ -2,7 +2,7 @@ import { useIsMobile } from 'curve-ui-kit/src/hooks/useBreakpoints'
 import { Tooltip } from 'curve-ui-kit/src/shared/ui/Tooltip'
 import { ReactNode, useCallback, useState } from 'react'
 import { styled } from 'styled-components'
-import Icon from 'ui/src/Icon'
+import { Icon } from 'ui/src/Icon'
 import type { TooltipProps } from 'ui/src/Tooltip/types'
 import { breakpoints } from 'ui/src/utils'
 
@@ -43,7 +43,7 @@ function useMobileTooltip(onClick: { (): void | undefined } | (() => void) | und
   }
 }
 
-function TooltipButton({
+export function TooltipButton({
   className = '',
   children,
   showIcon,
@@ -135,5 +135,3 @@ const StyledIcon = styled(Icon)<IconStyles>`
   position: relative;
   top: ${({ $svgTop }) => $svgTop || `0.2rem`};
 `
-
-export default TooltipButton

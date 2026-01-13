@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { styled } from 'styled-components'
-import TextCaption from 'ui/src/TextCaption'
-import Chip from 'ui/src/Typography/Chip'
+import { TextCaption } from 'ui/src/TextCaption'
+import { Chip } from 'ui/src/Typography/Chip'
 import type { ChipProps } from 'ui/src/Typography/types'
 import { FORMAT_OPTIONS, formatNumber } from 'ui/src/utils'
 
@@ -12,7 +12,7 @@ export type InpChipUsdRateProps = ChipProps & {
   usdRate: string | number | undefined
 }
 
-const InpChipUsdRate = ({ className = '', amount, hideRate, usdRate, ...props }: InpChipUsdRateProps) => {
+export const InpChipUsdRate = ({ className = '', amount, hideRate, usdRate, ...props }: InpChipUsdRateProps) => {
   const amountUsd = useMemo(() => {
     if (typeof usdRate === 'undefined' || typeof amount === 'undefined') return undefined
     return +amount * +usdRate
@@ -40,5 +40,3 @@ const StyledInpChip = styled(Chip)<{ noPadding?: boolean }>`
   min-height: 0.875rem; // 14px
   opacity: 0.9;
 `
-
-export default InpChipUsdRate

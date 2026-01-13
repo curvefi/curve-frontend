@@ -1,10 +1,10 @@
 import { ReactNode } from 'react'
-import Button from '@ui/Button'
-import Spinner from '@ui/Spinner'
+import { Button } from '@ui/Button'
+import { Spinner } from '@ui/Spinner'
 import { isLoading, useCurve, useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 
-const FormConnectWallet = ({ loading, children }: { loading: boolean; children: ReactNode }) => {
+export const FormConnectWallet = ({ loading, children }: { loading: boolean; children: ReactNode }) => {
   const { connectState, curveApi } = useCurve()
   const { connect: connectWallet } = useWallet()
   return (
@@ -30,5 +30,3 @@ const FormConnectWallet = ({ loading, children }: { loading: boolean; children: 
     </>
   )
 }
-
-export default FormConnectWallet

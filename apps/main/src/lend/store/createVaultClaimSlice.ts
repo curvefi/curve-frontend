@@ -3,7 +3,7 @@ import type { StoreApi } from 'zustand'
 import type { FormEstGas } from '@/lend/components/PageLendMarket/types'
 import type { FormStatus, RewardType } from '@/lend/components/PageVault/VaultClaim/types'
 import { DEFAULT_FORM_STATUS } from '@/lend/components/PageVault/VaultClaim/utils'
-import apiLending from '@/lend/lib/apiLending'
+import { apiLending } from '@/lend/lib/apiLending'
 import type { State } from '@/lend/store/useStore'
 import { Api, MarketClaimable, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { useWallet } from '@ui-kit/features/connect-wallet'
@@ -43,7 +43,7 @@ const DEFAULT_STATE: SliceState = {
   formStatus: DEFAULT_FORM_STATUS,
 }
 
-const createVaultClaim = (_set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): VaultClaimSlice => ({
+export const createVaultClaim = (_set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): VaultClaimSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 
@@ -121,5 +121,3 @@ const createVaultClaim = (_set: StoreApi<State>['setState'], get: StoreApi<State
     },
   },
 })
-
-export default createVaultClaim

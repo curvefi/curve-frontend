@@ -6,8 +6,8 @@ import { getAddress } from 'viem'
 import { ROUTE } from '@/dex/constants'
 import type { NetworkEnum } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
-import Icon from '@ui/Icon'
-import TextEllipsis from '@ui/TextEllipsis'
+import { Icon } from '@ui/Icon'
+import { TextEllipsis } from '@ui/TextEllipsis'
 import { breakpoints } from '@ui/utils/responsive'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
@@ -46,7 +46,7 @@ interface ChipPoolProps {
   poolAddress: string
 }
 
-const ChipPool = ({ poolId, poolName, poolAddress }: ChipPoolProps) => {
+export const ChipPool = ({ poolId, poolName, poolAddress }: ChipPoolProps) => {
   const network = useCurve().network?.id as NetworkEnum
   const parsedPoolAddress = useMemo(() => {
     if (poolAddress) {
@@ -127,5 +127,3 @@ const ChipPoolCopyButtonIcon = styled(Icon)`
   position: relative;
   top: 2px;
 `
-
-export default ChipPool

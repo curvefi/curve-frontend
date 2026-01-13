@@ -3,10 +3,10 @@ import type { AriaListBoxOptions, AriaOverlayProps } from 'react-aria'
 import { useOverlay, DismissButton, FocusScope, usePreventScroll } from 'react-aria'
 import type { SelectState } from 'react-stately'
 import { styled } from 'styled-components'
-import SelectModalListBox from 'ui/src/Select/SelectModalListBox'
+import { SelectModalListBox } from 'ui/src/Select/SelectModalListBox'
 import { breakpoints } from 'ui/src/utils'
 
-function SelectModal<T>({
+export function SelectModal<T>({
   menuProps,
   state,
   ...props
@@ -65,5 +65,3 @@ const StyledPopover = styled.div<{ minWidth?: string }>`
     right: auto;
   }
 `
-
-export default SelectModal

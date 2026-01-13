@@ -1,11 +1,11 @@
 import type { SelectProps as ReactStatelySelectProps, SelectState } from 'react-stately'
 import { styled } from 'styled-components'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
-import DelayRender from 'ui/src/DelayRender'
-import ModalDialog from 'ui/src/Dialog/ModalDialog'
+import { DelayRender } from 'ui/src/DelayRender'
+import { ModalDialog } from 'ui/src/Dialog/ModalDialog'
 import { Radio, RadioGroup } from 'ui/src/Radio'
 
-function SelectModalFull<T extends object>({
+export function SelectModalFull<T extends object>({
   title,
   state,
   onSelectionChange,
@@ -42,5 +42,3 @@ SelectModalFull.displayName = 'SelectModalFull'
 const StyledRadio = styled(Radio)`
   min-height: var(--height-medium);
 `
-
-export default SelectModalFull

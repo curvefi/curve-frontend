@@ -1,10 +1,10 @@
 import { Dispatch, SetStateAction } from 'react'
-import AlertBox from '@ui/AlertBox'
-import Box from '@ui/Box'
-import Checkbox from '@ui/Checkbox'
+import { AlertBox } from '@ui/AlertBox'
+import { Box } from '@ui/Box'
+import { Checkbox } from '@ui/Checkbox'
 import { t } from '@ui-kit/lib/i18n'
 
-function DialogHighPriceImpactWarning({
+export function DialogHighPriceImpactWarning({
   priceImpact,
   confirmed,
   setConfirmed,
@@ -27,5 +27,3 @@ function DialogHighPriceImpactWarning({
     </Box>
   )
 }
-
-export default DialogHighPriceImpactWarning

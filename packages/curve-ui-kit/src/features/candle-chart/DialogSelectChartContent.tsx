@@ -1,5 +1,5 @@
 import { styled } from 'styled-components'
-import Button from 'ui/src/Button/Button'
+import { Button } from 'ui/src/Button/Button'
 import type { LabelList } from './types'
 
 type Props = {
@@ -9,7 +9,7 @@ type Props = {
   close?: () => void
 }
 
-const DialogSelectChart = ({ data, currentData, setCurrentData, ...props }: Props) => {
+export const DialogSelectChart = ({ data, currentData, setCurrentData, ...props }: Props) => {
   const handleClick = (index: number) => {
     setCurrentData(index)
     if (props.close) {
@@ -55,5 +55,3 @@ const StyledSelectButton = styled(Button)`
     }
   }
 `
-
-export default DialogSelectChart

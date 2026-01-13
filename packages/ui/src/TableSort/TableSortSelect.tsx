@@ -1,12 +1,12 @@
 import { useMemo } from 'react'
-import Popover, { Popover2Dialog } from 'ui/src/Popover2'
-import TableSortSelectOptions from 'ui/src/TableSort/TableSortSelectOptions'
+import { Popover2Dialog, Popover2Trigger as Popover } from 'ui/src/Popover2'
+import { TableSortSelectOptions } from 'ui/src/TableSort/TableSortSelectOptions'
 import type { TableSortSelectProps } from 'ui/src/TableSort/types'
 import { getLabel } from 'ui/src/TableSort/utils'
 
 const title = 'Sort by'
 
-function TableSortSelect<T extends { sortBy: string; sortByOrder: 'asc' | 'desc' }>({
+export function TableSortSelect<T extends { sortBy: string; sortByOrder: 'asc' | 'desc' }>({
   searchParams,
   labelsMapper,
   onSelectionDelete,
@@ -53,5 +53,3 @@ function TableSortSelect<T extends { sortBy: string; sortByOrder: 'asc' | 'desc'
     </Popover>
   )
 }
-
-export default TableSortSelect

@@ -1,3 +1,3 @@
-export { default as RadioContext } from './RadioContext'
-export { default as RadioGroup } from './RadioGroup'
-export { default as Radio } from './Radio'
+export { RadioContext as RadioContext } from './RadioContext'
+export { RadioGroup as RadioGroup } from './RadioGroup'
+export { Radio as Radio } from './Radio'

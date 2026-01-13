@@ -6,7 +6,7 @@ import type { AriaRadioGroupProps, RadioGroupProps } from '@react-types/radio'
 import { RadioContext } from 'ui/src/Radio'
 import { mediaQueries } from 'ui/src/utils/responsive'
 
-const RadioGroup = ({
+export const RadioGroup = ({
   children,
   className,
   testId,
@@ -36,5 +36,3 @@ const RadioGroupContainer = styled.div`
     column-gap: 10px;
   `)}
 `
-
-export default RadioGroup

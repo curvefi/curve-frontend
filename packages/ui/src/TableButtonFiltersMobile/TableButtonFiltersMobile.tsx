@@ -2,17 +2,17 @@ import { useIsMobile } from 'curve-ui-kit/src/hooks/useBreakpoints'
 import { useMemo } from 'react'
 import { useOverlayTriggerState } from '@react-stately/overlays'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
-import ModalDialog from 'ui/src/Dialog/ModalDialog'
-import OpenDialogButton from 'ui/src/Dialog/OpenDialogButton'
+import { ModalDialog } from 'ui/src/Dialog/ModalDialog'
+import { OpenDialogButton } from 'ui/src/Dialog/OpenDialogButton'
 import { RadioGroup } from 'ui/src/Radio'
-import TableButtonFiltersMobileItem from './components/TableButtonFiltersMobileItem'
-import TableButtonFiltersMobileItemIcon from './components/TableButtonFiltersMobileItemIcon'
+import { TableButtonFiltersMobileItem } from './components/TableButtonFiltersMobileItem'
+import { TableButtonFiltersMobileItemIcon } from './components/TableButtonFiltersMobileItemIcon'
 
 type Filters = { [_: string]: { id: string; displayName: string; color?: string } } | undefined
 
 const FILTER_DEFAULT = { selectedLabel: 'Filter by', selectedColor: null }
 
-const TableButtonFiltersMobile = ({
+export const TableButtonFiltersMobile = ({
   filters,
   filterKey,
   updateRouteFilterKey,
@@ -61,5 +61,3 @@ const TableButtonFiltersMobile = ({
     </>
   )
 }
-
-export default TableButtonFiltersMobile

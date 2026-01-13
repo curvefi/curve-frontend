@@ -6,8 +6,8 @@ import type { FormStatus, FormValues } from '@/lend/components/PageVault/VaultSt
 import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/lend/components/PageVault/VaultStake/utils'
 import { invalidateMarketDetails } from '@/lend/entities/market-details'
 import { invalidateAllUserBorrowDetails } from '@/lend/entities/user-loan-details'
-import apiLending, { helpers } from '@/lend/lib/apiLending'
-import networks from '@/lend/networks'
+import { helpers, apiLending } from '@/lend/lib/apiLending'
+import { networks } from '@/lend/networks'
 import type { State } from '@/lend/store/useStore'
 import { Api, ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { updateUserEventsApi } from '@/llamalend/llama.utils'
@@ -52,7 +52,7 @@ const DEFAULT_STATE: SliceState = {
   formValues: DEFAULT_FORM_VALUES,
 }
 
-const createVaultStake = (_set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): VaultStakeSlice => ({
+export const createVaultStake = (_set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): VaultStakeSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 
@@ -186,5 +186,3 @@ export function _getActiveKey(
 ) {
   return `${rChainId}-${formType}-${market?.id ?? ''}-${amount}`
 }
-
-export default createVaultStake

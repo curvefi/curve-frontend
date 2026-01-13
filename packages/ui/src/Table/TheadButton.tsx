@@ -25,5 +25,3 @@ export const TheadButton = styled.button<{ nowrap?: boolean }>`
     font-size: var(--font-size-2);
   }
 `
-
-export default TheadButton

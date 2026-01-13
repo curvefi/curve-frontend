@@ -90,7 +90,7 @@ const DEFAULT_STATE: SliceState = {
   },
 }
 
-const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
+export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
   deployGauge: {
     ...DEFAULT_STATE,
 
@@ -797,8 +797,6 @@ const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: StoreApi<
     },
   },
 })
-
-export default createDeployGaugeSlice
 
 function cutSalt(address: string) {
   return address.substring(0, 16)

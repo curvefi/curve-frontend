@@ -1,5 +1,5 @@
 import { styled } from 'styled-components'
-import Box from 'ui/src/Box'
+import { Box } from 'ui/src/Box'
 import { breakpoints } from 'ui/src/utils'
 
 // PAGE STYLES WITH FORMS

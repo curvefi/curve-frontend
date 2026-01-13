@@ -9,7 +9,7 @@ type StepNumberConnector = {
   direction: 'up' | 'down'
 }
 
-const StepNumberConnector = styled.div<StepNumberConnector>`
+export const StepNumberConnector = styled.div<StepNumberConnector>`
   width: 5px;
   flex-grow: 1;
   margin-right: 20px;
@@ -42,4 +42,3 @@ const StepNumberConnector = styled.div<StepNumberConnector>`
     }
   }}
 `
-export default StepNumberConnector

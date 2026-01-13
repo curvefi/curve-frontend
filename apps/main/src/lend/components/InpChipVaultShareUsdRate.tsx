@@ -1,11 +1,11 @@
 import { StyledInpChip } from '@/lend/components/styles'
-import useVaultShares from '@/lend/hooks/useVaultShares'
+import { useVaultShares } from '@/lend/hooks/useVaultShares'
 import { ChainId } from '@/lend/types/lend.types'
-import Box from '@ui/Box'
-import TextCaption from '@ui/TextCaption'
+import { Box } from '@ui/Box'
+import { TextCaption } from '@ui/TextCaption'
 import type { ChipProps } from '@ui/Typography/types'
 
-const ChipVaultSharesUsdRate = ({
+export const ChipVaultSharesUsdRate = ({
   className = '',
   rChainId,
   rOwmId,
@@ -48,5 +48,3 @@ const ChipVaultSharesUsdRate = ({
     </>
   )
 }
-
-export default ChipVaultSharesUsdRate

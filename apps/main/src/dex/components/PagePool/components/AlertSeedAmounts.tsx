@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { styled } from 'styled-components'
 import type { Seed } from '@/dex/components/PagePool/types'
 import { PoolData } from '@/dex/types/main.types'
-import AlertBox from '@ui/AlertBox'
+import { AlertBox } from '@ui/AlertBox'
 import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 
@@ -11,7 +11,7 @@ type Props = {
   poolData: PoolData | undefined
 }
 
-const AlertSeedAmounts = ({ seed, poolData }: Props) => {
+export const AlertSeedAmounts = ({ seed, poolData }: Props) => {
   const [seedAmounts, setSeedAmounts] = useState<string[]>([])
 
   const { isSeed, loaded } = seed
@@ -73,5 +73,3 @@ const StyledSeedAmount = styled.li`
   margin-left: var(--spacing-normal);
   margin-bottom: var(--spacing-1);
 `
-
-export default AlertSeedAmounts

@@ -1,8 +1,8 @@
 import { ButtonHTMLAttributes } from 'react'
 import { styled } from 'styled-components'
 import type { ButtonProps } from 'ui/src/Button/types'
-import SortIcon from 'ui/src/SortIcon/SortIcon'
-import Spinner from 'ui/src/Spinner/Spinner'
+import { SortIcon } from 'ui/src/SortIcon/SortIcon'
+import { Spinner } from 'ui/src/Spinner/Spinner'
 import { TheadButton } from 'ui/src/Table'
 import type { IndicatorPlacement } from './types'
 
@@ -20,7 +20,7 @@ export type TheadSortButtonProps<T> = ButtonHTMLAttributes<HTMLButtonElement> &
     handleBtnClickSort: (sortBy: string, sortByOrder: Order) => void
   }
 
-const TheadSortButton = ({
+export const TheadSortButton = ({
   children,
   disabled,
   indicatorPlacement = 'left',
@@ -69,5 +69,3 @@ const StyledSortIcon = styled(SortIcon)<{ isVisible: boolean }>`
   display: ${({ isVisible }) => (isVisible ? 'inline-block' : 'none')};
   font-size: 5px;
 `
-
-export default TheadSortButton

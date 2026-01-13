@@ -1,4 +1,4 @@
-import curvejsApi from '@/dex/lib/curvejs'
+import { curvejsApi } from '@/dex/lib/curvejs'
 import type { ChainId } from '@/dex/types/main.types'
 import { requireLib } from '@ui-kit/features/connect-wallet'
 import type { ChainParams } from '@ui-kit/lib/model/query'

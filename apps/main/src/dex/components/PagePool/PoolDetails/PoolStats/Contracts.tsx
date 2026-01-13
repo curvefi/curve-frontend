@@ -1,6 +1,6 @@
 import { styled } from 'styled-components'
-import ChipInactive from '@/dex/components/ChipInactive'
-import AddGaugeLink from '@/dex/components/PagePool/components/AddGaugeLink'
+import { StyledInactiveChip as ChipInactive } from '@/dex/components/ChipInactive'
+import { AddGaugeLink } from '@/dex/components/PagePool/components/AddGaugeLink'
 import type { PageTransferProps } from '@/dex/components/PagePool/types'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
@@ -13,7 +13,7 @@ type ContractsProps = {
   poolDataCacheOrApi: PoolDataCacheOrApi
 } & Pick<PageTransferProps, 'poolDataCacheOrApi'>
 
-const Contracts = ({ rChainId, poolDataCacheOrApi }: ContractsProps) => {
+export const Contracts = ({ rChainId, poolDataCacheOrApi }: ContractsProps) => {
   const { address = '', lpToken = '', gauge } = poolDataCacheOrApi.pool
   const isSameAddress = address === lpToken
   const gaugeAddress = isValidAddress(gauge.address) ? gauge.address : ''
@@ -59,5 +59,3 @@ const Article = styled.article`
     border-bottom: none;
   }
 `
-
-export default Contracts

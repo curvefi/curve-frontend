@@ -1,12 +1,12 @@
 import lodash from 'lodash'
-import PaginatedTable from '@/dao/components/PaginatedTable'
+import { PaginatedTable } from '@/dao/components/PaginatedTable'
 import { TableData, TableDataLink, TableRowWrapper } from '@/dao/components/PaginatedTable/TableRow'
 import {
   type UserProposalVoteFormatted,
   useUserProposalVotesQuery,
   invalidateUserProposalVotesQuery,
 } from '@/dao/entities/user-proposal-votes'
-import useStore from '@/dao/store/useStore'
+import { useStore } from '@/dao/store/useStore'
 import { SortDirection, UserProposalVotesSortBy } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils'
 import { formatLocaleDateFromTimestamp, formatNumber } from '@ui/utils/'
@@ -27,7 +27,7 @@ const sortUserProposalVotes = (
   return lodash.orderBy(userProposalVotes, [key], [order])
 }
 
-const UserProposalVotesTable = ({ userAddress, tableMinWidth }: UserProposalVotesTableProps) => {
+export const UserProposalVotesTable = ({ userAddress, tableMinWidth }: UserProposalVotesTableProps) => {
   const {
     data: userProposalVotes,
     isLoading: userProposalVotesLoading,
@@ -93,5 +93,3 @@ const UserProposalVotesTable = ({ userAddress, tableMinWidth }: UserProposalVote
     />
   )
 }
-
-export default UserProposalVotesTable

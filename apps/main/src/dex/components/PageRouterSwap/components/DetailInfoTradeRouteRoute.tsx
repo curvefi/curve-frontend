@@ -6,13 +6,13 @@ import { ROUTE } from '@/dex/constants'
 import { useNetworks } from '@/dex/entities/networks'
 import { type UrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
-import Icon from '@ui/Icon'
+import { Icon } from '@ui/Icon'
 import { ExternalLink } from '@ui/Link'
-import TextEllipsis from '@ui/TextEllipsis'
+import { TextEllipsis } from '@ui/TextEllipsis'
 import { RouterLink as Link } from '@ui-kit/shared/ui/RouterLink'
 import { shortenAddress } from '@ui-kit/utils'
 
-const DetailInfoTradeRouteRoute = ({
+export const DetailInfoTradeRouteRoute = ({
   params,
   route,
   routesLength,
@@ -91,5 +91,3 @@ const RouteName = styled(Link)`
   text-overflow: ellipsis;
   line-height: 1.4;
 `
-
-export default DetailInfoTradeRouteRoute

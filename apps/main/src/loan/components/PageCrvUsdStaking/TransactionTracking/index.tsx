@@ -1,6 +1,6 @@
-import useStore from '@/loan/store/useStore'
-import DepositTracking from './DepositTracking'
-import WithdrawTracking from './WithdrawTracking'
+import { useStore } from '@/loan/store/useStore'
+import { DepositTracking } from './DepositTracking'
+import { WithdrawTracking } from './WithdrawTracking'
 
 type TransactionTrackingProps = {
   className?: string
@@ -9,10 +9,8 @@ type TransactionTrackingProps = {
 
 const components = { deposit: DepositTracking, withdraw: WithdrawTracking }
 
-const TransactionTracking = ({ className }: TransactionTrackingProps) => {
+export const TransactionTracking = ({ className }: TransactionTrackingProps) => {
   const stakingModule = useStore((state) => state.scrvusd.stakingModule)
   const Component = components[stakingModule]
   return <Component className={className} />
 }
-
-export default TransactionTracking

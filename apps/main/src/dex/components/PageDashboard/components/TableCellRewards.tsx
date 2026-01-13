@@ -1,12 +1,12 @@
 import type { ReactNode } from 'react'
 import { styled } from 'styled-components'
-import TableCellRewardsTooltip from '@/dex/components/PageDashboard/components/TableCellRewardsTooltip'
+import { TableCellRewardsTooltip } from '@/dex/components/PageDashboard/components/TableCellRewardsTooltip'
 import { DetailText } from '@/dex/components/PageDashboard/components/TableRow'
 import type { SortId } from '@/dex/components/PageDashboard/types'
 import { SORT_ID } from '@/dex/components/PageDashboard/utils'
-import TableCellRewardsBase from '@/dex/components/PagePoolList/components/TableCellRewardsBase'
-import TableCellRewardsOthers from '@/dex/components/PagePoolList/components/TableCellRewardsOthers'
-import PoolRewardsCrv from '@/dex/components/PoolRewardsCrv'
+import { TableCellRewardsBase } from '@/dex/components/PagePoolList/components/TableCellRewardsBase'
+import { TableCellRewardsOthers } from '@/dex/components/PagePoolList/components/TableCellRewardsOthers'
+import { PoolRewardsCrv } from '@/dex/components/PoolRewardsCrv'
 import { PoolData, RewardsApy } from '@/dex/types/main.types'
 import { haveRewardsApy } from '@/dex/utils/utilsCurvejs'
 import { Chip } from '@ui/Typography'
@@ -15,7 +15,7 @@ import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
 
 const Bold = ({ children }: { children: ReactNode }) => <strong>{children}</strong>
 
-const TableCellRewards = ({
+export const TableCellRewards = ({
   poolData,
   rewardsApy,
   rewardsApyKey,
@@ -101,5 +101,3 @@ const TableCellRewards = ({
 const RewardsWrapper = styled.div`
   line-height: 1.2;
 `
-
-export default TableCellRewards

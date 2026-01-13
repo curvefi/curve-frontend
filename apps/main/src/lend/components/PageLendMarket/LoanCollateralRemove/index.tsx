@@ -1,12 +1,12 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
-import AlertFormError from '@/lend/components/AlertFormError'
-import AlertSummary from '@/lend/components/AlertLoanSummary'
-import DetailInfoEstimateGas from '@/lend/components/DetailInfoEstimateGas'
-import DetailInfoHealth from '@/lend/components/DetailInfoHealth'
-import DetailInfoLiqRange from '@/lend/components/DetailInfoLiqRange'
-import DialogFormWarning from '@/lend/components/DialogFormWarning'
-import InpTokenRemove from '@/lend/components/InpTokenRemove'
-import LoanFormConnect from '@/lend/components/LoanFormConnect'
+import { AlertFormError } from '@/lend/components/AlertFormError'
+import { AlertLoanSummary as AlertSummary } from '@/lend/components/AlertLoanSummary'
+import { DetailInfoEstimateGas } from '@/lend/components/DetailInfoEstimateGas'
+import { DetailInfoHealth } from '@/lend/components/DetailInfoHealth'
+import { DetailInfoLiqRange } from '@/lend/components/DetailInfoLiqRange'
+import { DialogFormWarning } from '@/lend/components/DialogFormWarning'
+import { InpTokenRemove } from '@/lend/components/InpTokenRemove'
+import { LoanFormConnect } from '@/lend/components/LoanFormConnect'
 import type { FormStatus, FormValues, StepKey } from '@/lend/components/PageLendMarket/LoanCollateralRemove/types'
 import type { FormEstGas } from '@/lend/components/PageLendMarket/types'
 import { DEFAULT_CONFIRM_WARNING } from '@/lend/components/PageLendMarket/utils'
@@ -14,24 +14,24 @@ import { StyledDetailInfoWrapper } from '@/lend/components/styles'
 import { NOFITY_MESSAGE } from '@/lend/constants'
 import { useUserLoanDetails } from '@/lend/hooks/useUserLoanDetails'
 import { helpers } from '@/lend/lib/apiLending'
-import networks from '@/lend/networks'
+import { networks } from '@/lend/networks'
 import { DEFAULT_FORM_VALUES } from '@/lend/store/createLoanCollateralRemoveSlice'
-import useStore from '@/lend/store/useStore'
+import { useStore } from '@/lend/store/useStore'
 import { Api, OneWayMarketTemplate, PageContentProps } from '@/lend/types/lend.types'
 import { DEFAULT_HEALTH_MODE } from '@/llamalend/constants'
 import { RemoveCollateralForm } from '@/llamalend/features/manage-loan/components/RemoveCollateralForm'
 import type { HealthMode } from '@/llamalend/llamalend.types'
-import AlertBox from '@ui/AlertBox'
+import { AlertBox } from '@ui/AlertBox'
 import { getActiveStep } from '@ui/Stepper/helpers'
-import Stepper from '@ui/Stepper/Stepper'
+import { Stepper } from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
-import TxInfoBar from '@ui/TxInfoBar'
+import { TxInfoBar } from '@ui/TxInfoBar'
 import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
 
-const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey }: PageContentProps) => {
+export const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)
 
   const activeKey = useStore((state) => state.loanCollateralRemove.activeKey)
@@ -282,9 +282,6 @@ const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, userAct
     </>
   )
 }
-
-export default LoanCollateralRemove
-
 export const LoanRemoveCollateralTab = ({ rChainId, market, isLoaded }: PageContentProps) => (
   <RemoveCollateralForm networks={networks} chainId={rChainId} market={market} enabled={isLoaded} />
 )

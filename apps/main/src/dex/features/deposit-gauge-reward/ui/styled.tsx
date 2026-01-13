@@ -1,5 +1,5 @@
 import { styled } from 'styled-components'
-import InputProvider from '@ui/InputComp'
+import { InputProvider } from '@ui/InputComp'
 
 export const StyledInputProvider = styled(InputProvider)`
   width: 100%;

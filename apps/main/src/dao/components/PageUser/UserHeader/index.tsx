@@ -1,11 +1,11 @@
 import { styled } from 'styled-components'
 import { getAddress } from 'viem'
 import { TOP_HOLDERS } from '@/dao/constants'
-import networks from '@/dao/networks'
+import { networks } from '@/dao/networks'
 import { UserMapper } from '@/dao/types/dao.types'
-import Box from '@ui/Box'
-import Icon from '@ui/Icon'
-import IconButton from '@ui/IconButton'
+import { Box } from '@ui/Box'
+import { Icon } from '@ui/Icon'
+import { IconButton } from '@ui/IconButton'
 import { ExternalLink } from '@ui/Link'
 import { scanAddressPath } from '@ui/utils'
 import { copyToClipboard } from '@ui-kit/utils'
@@ -15,7 +15,7 @@ interface UserHeaderProps {
   userMapper: UserMapper
 }
 
-const UserHeader = ({ userAddress, userMapper }: UserHeaderProps) => {
+export const UserHeader = ({ userAddress, userMapper }: UserHeaderProps) => {
   const user = userMapper[userAddress]
 
   return (
@@ -91,5 +91,3 @@ const StyledExternalLink = styled(ExternalLink)`
 const UserAddress = styled.p`
   line-break: anywhere;
 `
-
-export default UserHeader

@@ -1,7 +1,7 @@
 import { styled } from 'styled-components'
 import { breakpoints } from 'ui/src/utils'
 
-const Th = styled.th<{ $first?: boolean; $last?: boolean }>`
+export const Th = styled.th<{ $first?: boolean; $last?: boolean }>`
   padding: var(--spacing-1) var(--spacing-2);
   height: 1px;
 
@@ -13,5 +13,3 @@ const Th = styled.th<{ $first?: boolean; $last?: boolean }>`
     ${({ $last }) => $last && `padding-right: var(--spacing-normal);`};
   }
 `
-
-export default Th

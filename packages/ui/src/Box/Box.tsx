@@ -9,7 +9,7 @@ function attributes({ className, fillHeight, fillWidth, ...rest }: BoxProps) {
   return { ...rest, className: classNames }
 }
 
-const Box = styled.div.attrs(attributes)<BoxProps>`
+export const Box = styled.div.attrs(attributes)<BoxProps>`
   /* Flexbox styles */
   ${({ flex }) => flex && 'display: flex;'}
   ${({ flexDirection }) => flexDirection && `flex-direction: ${flexDirection};`}
@@ -92,5 +92,3 @@ const Box = styled.div.attrs(attributes)<BoxProps>`
     }
   }}
 `
-
-export default Box

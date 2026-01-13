@@ -12,7 +12,7 @@ import {
 } from '@/dex/components/PagePool/Swap/utils'
 import type { EstimatedGas as FormEstGas } from '@/dex/components/PagePool/types'
 import type { RoutesAndOutput, RoutesAndOutputModal } from '@/dex/components/PageRouterSwap/types'
-import curvejsApi from '@/dex/lib/curvejs'
+import { curvejsApi } from '@/dex/lib/curvejs'
 import type { State } from '@/dex/store/useStore'
 import {
   ChainId,
@@ -79,7 +79,7 @@ const DEFAULT_STATE: SliceState = {
   formValues: DEFAULT_FORM_VALUES,
 }
 
-const createPoolSwapSlice = (_set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): PoolSwapSlice => ({
+export const createPoolSwapSlice = (_set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): PoolSwapSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 
@@ -552,5 +552,3 @@ export function getActiveKey({ fromAddress, fromAmount, toAddress }: FormValues,
   const parsedToAddress = toAddress ? toAddress.slice(toAddress.length - 4) : ''
   return `${parsedFromAddress}-${fromAmount}-${parsedToAddress}-${maxSlippage}`
 }
-
-export default createPoolSwapSlice

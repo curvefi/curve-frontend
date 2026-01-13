@@ -1,6 +1,6 @@
 import { styled } from 'styled-components'
 import { RCExternal } from '@ui/images'
-import ExternalLink from '@ui/Link/ExternalLink'
+import { ExternalLink } from '@ui/Link/ExternalLink'
 
 type Props = {
   description: string
@@ -14,7 +14,7 @@ type StylesProps = {
 }
 
 /** Returns null when link is undefined, allowing concise usage without conditional checks at call sites. */
-const InfoLinkBar = ({ description, link, theme, className }: Props) =>
+export const InfoLinkBar = ({ description, link, theme, className }: Props) =>
   link && (
     <StyledExternalLink className={className} theme={theme} href={link}>
       <InfoDescription>{description}</InfoDescription>
@@ -51,5 +51,3 @@ const InfoDescription = styled.span`
   margin: auto auto auto 0;
   text-transform: none;
 `
-
-export default InfoLinkBar

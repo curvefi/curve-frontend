@@ -6,7 +6,7 @@ type SpinnerProps = {
   size?: number
 }
 
-const Spinner = ({ isDisabled = false, size, ...props }: SpinnerProps) => (
+export const Spinner = ({ isDisabled = false, size, ...props }: SpinnerProps) => (
   <StyledSpinner {...props} isDisabled={isDisabled} size={size}>
     <div></div>
     <div></div>
@@ -66,5 +66,3 @@ function getSpinnerColor(isDisabled: boolean) {
     return 'var(--spinner--background-color)'
   }
 }
-
-export default Spinner

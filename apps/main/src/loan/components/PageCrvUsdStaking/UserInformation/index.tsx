@@ -5,7 +5,7 @@ import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
-import Icon from '@ui/Icon'
+import { Icon } from '@ui/Icon'
 import { t } from '@ui-kit/lib/i18n'
 import { YieldGrowth } from '@ui-kit/shared/icons/YieldGrowth'
 import { DEX_ROUTES, getInternalUrl } from '@ui-kit/shared/routes'
@@ -14,7 +14,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 
-const UserInformation = ({ params: { network } }: { params: NetworkUrlParams }) => {
+export const UserInformation = ({ params: { network } }: { params: NetworkUrlParams }) => {
   const {
     design: { Layer },
   } = useTheme()
@@ -85,5 +85,3 @@ const UserInformation = ({ params: { network } }: { params: NetworkUrlParams }) 
     </Stack>
   )
 }
-
-export default UserInformation

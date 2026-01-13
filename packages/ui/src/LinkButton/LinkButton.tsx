@@ -7,7 +7,7 @@ interface Props extends ButtonProps, Omit<RouterLinkProps, 'to'> {
   href?: string
 }
 
-const LinkButton = ({ children, href, ...rest }: Props) => (
+export const LinkButton = ({ children, href, ...rest }: Props) => (
   <StyledLink to={href || '/'} {...rest}>
     {children}
   </StyledLink>
@@ -27,5 +27,3 @@ const StyledLink = styled(RouterLink)<ButtonProps>`
     }
   }}
 `
-
-export default LinkButton

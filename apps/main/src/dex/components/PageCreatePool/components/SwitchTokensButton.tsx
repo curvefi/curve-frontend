@@ -9,10 +9,10 @@ import {
   TOKEN_G,
   TOKEN_H,
 } from '@/dex/components/PageCreatePool/constants'
-import useStore from '@/dex/store/useStore'
+import { useStore } from '@/dex/store/useStore'
 import { CurveApi } from '@/dex/types/main.types'
-import Icon from '@ui/Icon'
-import IconButton from '@ui/IconButton'
+import { Icon } from '@ui/Icon'
+import { IconButton } from '@ui/IconButton'
 import { t } from '@ui-kit/lib/i18n'
 
 type Props = {
@@ -37,7 +37,7 @@ type Props = {
   className?: string
 }
 
-const SwitchTokensButton = ({ curve, from, to, disabled, className }: Props) => {
+export const SwitchTokensButton = ({ curve, from, to, disabled, className }: Props) => {
   const tokenA = useStore((state) => state.createPool.tokensInPool.tokenA)
   const tokenB = useStore((state) => state.createPool.tokensInPool.tokenB)
   const tokenC = useStore((state) => state.createPool.tokensInPool.tokenC)
@@ -83,5 +83,3 @@ const SwitchTokensButton = ({ curve, from, to, disabled, className }: Props) => 
 const StyledArrowsVertical = styled(Icon)`
   color: var(--box--primary--color);
 `
-
-export default SwitchTokensButton

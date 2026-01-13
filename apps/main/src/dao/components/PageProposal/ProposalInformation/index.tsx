@@ -3,7 +3,7 @@ import { styled } from 'styled-components'
 import { MetricsTitle } from '@/dao/components/MetricsComp'
 import { ProposalData } from '@/dao/entities/proposals-mapper'
 import { getEthPath } from '@/dao/utils'
-import Box from '@ui/Box'
+import { Box } from '@ui/Box'
 import { InternalLink } from '@ui/Link'
 import { formatDateFromTimestamp } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
@@ -15,7 +15,7 @@ type ProposalInformationProps = {
   proposal: ProposalData | null
 }
 
-const ProposalInformation = ({ proposal }: ProposalInformationProps) => {
+export const ProposalInformation = ({ proposal }: ProposalInformationProps) => {
   const timestamp = proposal?.timestamp
   const [createdDate, endDate] = useMemo(
     () =>
@@ -75,5 +75,3 @@ const StyledInternalLink = styled(InternalLink)`
     cursor: pointer;
   }
 `
-
-export default ProposalInformation

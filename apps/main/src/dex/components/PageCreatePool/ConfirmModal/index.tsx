@@ -1,25 +1,25 @@
 import { useCallback, useMemo, useRef } from 'react'
 import { styled } from 'styled-components'
-import ModalPendingTx from 'ui/src/ModalPendingTx'
-import Spinner from 'ui/src/Spinner/Spinner'
-import InfoLinkBar from '@/dex/components/PageCreatePool/ConfirmModal/CreateInfoLinkBar'
-import CreatePoolButton from '@/dex/components/PageCreatePool/ConfirmModal/CreatePoolButton'
-import ModalDialog from '@/dex/components/PageCreatePool/ConfirmModal/ModalDialog'
-import ParametersSummary from '@/dex/components/PageCreatePool/Summary/ParametersSummary'
-import PoolInfoSummary from '@/dex/components/PageCreatePool/Summary/PoolInfoSummary'
-import PoolTypeSummary from '@/dex/components/PageCreatePool/Summary/PoolTypeSummary'
-import TokensInPoolSummary from '@/dex/components/PageCreatePool/Summary/TokensInPoolSummary'
+import { ModalPendingTx } from 'ui/src/ModalPendingTx'
+import { Spinner } from 'ui/src/Spinner/Spinner'
+import { InfoLinkBar } from '@/dex/components/PageCreatePool/ConfirmModal/CreateInfoLinkBar'
+import { CreatePoolButton } from '@/dex/components/PageCreatePool/ConfirmModal/CreatePoolButton'
+import { ModalDialog } from '@/dex/components/PageCreatePool/ConfirmModal/ModalDialog'
+import { ParametersSummary } from '@/dex/components/PageCreatePool/Summary/ParametersSummary'
+import { PoolInfoSummary } from '@/dex/components/PageCreatePool/Summary/PoolInfoSummary'
+import { PoolTypeSummary } from '@/dex/components/PageCreatePool/Summary/PoolTypeSummary'
+import { TokensInPoolSummary } from '@/dex/components/PageCreatePool/Summary/TokensInPoolSummary'
 import { checkFormReady } from '@/dex/components/PageCreatePool/utils'
 import { ROUTE } from '@/dex/constants'
-import useStore from '@/dex/store/useStore'
+import { useStore } from '@/dex/store/useStore'
 import { ChainId, CurveApi, type UrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
 import MuiButton from '@mui/material/Button'
 import { useButton } from '@react-aria/button'
 import { useOverlayTriggerState } from '@react-stately/overlays'
-import Box from '@ui/Box'
-import Button from '@ui/Button'
-import Icon from '@ui/Icon'
+import { Box } from '@ui/Box'
+import { Button } from '@ui/Button'
+import { Icon } from '@ui/Icon'
 import { breakpoints } from '@ui/utils/responsive'
 import { useParams, useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
@@ -34,7 +34,7 @@ type Props = {
   fixedNavButton?: boolean
 }
 
-const ConfirmModal = ({
+export const ConfirmModal = ({
   disabled,
   blockchainId,
   chainId,
@@ -378,5 +378,3 @@ const StyledButtonSpinner = styled(Spinner)`
 const ButtonWrapper = styled.div`
   margin: 0 var(--spacing-normal);
 `
-
-export default ConfirmModal

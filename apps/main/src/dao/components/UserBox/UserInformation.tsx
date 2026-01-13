@@ -1,12 +1,12 @@
 import { useMemo } from 'react'
 import { styled } from 'styled-components'
-import Loader from 'ui/src/Loader/Loader'
-import useStore from '@/dao/store/useStore'
+import { Loader } from 'ui/src/Loader/Loader'
+import { useStore } from '@/dao/store/useStore'
 import { SnapshotVotingPower, ActiveProposal } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils'
-import Box from '@ui/Box'
-import InternalLink from '@ui/Link/InternalLink'
-import TooltipIcon from '@ui/Tooltip/TooltipIcon'
+import { Box } from '@ui/Box'
+import { InternalLink } from '@ui/Link/InternalLink'
+import { TooltipIcon } from '@ui/Tooltip/TooltipIcon'
 import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
@@ -19,7 +19,7 @@ type Props = {
   votingPower?: SnapshotVotingPower
 }
 
-const UserInformation = ({ noLink, snapshotVotingPower, activeProposal, votingPower }: Props) => {
+export const UserInformation = ({ noLink, snapshotVotingPower, activeProposal, votingPower }: Props) => {
   const userAddress = useStore((state) => state.user.userAddress)
   const userEns = useStore((state) => state.user.userEns)
   const userVeCrv = useStore((state) => state.user.userVeCrv)
@@ -133,5 +133,3 @@ const SubTitle = styled.h4`
   font-size: var(--font-size-1);
   opacity: 0.5;
 `
-
-export default UserInformation

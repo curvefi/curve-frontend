@@ -2,15 +2,15 @@ import { useMemo } from 'react'
 import { styled } from 'styled-components'
 import { useOverlayTriggerState } from '@react-stately/overlays'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
-import Box from 'ui/src/Box'
-import ModalDialog from 'ui/src/Dialog/ModalDialog'
-import OpenDialogButton from 'ui/src/Dialog/OpenDialogButton'
-import TableSortSelectOptions from 'ui/src/TableSort/TableSortSelectOptions'
+import { Box } from 'ui/src/Box'
+import { ModalDialog } from 'ui/src/Dialog/ModalDialog'
+import { OpenDialogButton } from 'ui/src/Dialog/OpenDialogButton'
+import { TableSortSelectOptions } from 'ui/src/TableSort/TableSortSelectOptions'
 import type { TableSortSelectProps } from 'ui/src/TableSort/types'
 import { getLabel } from 'ui/src/TableSort/utils'
-import Chip from 'ui/src/Typography/Chip'
+import { Chip } from 'ui/src/Typography/Chip'
 
-function TableSortSelectMobile<T extends { sortBy: string; sortByOrder: 'asc' | 'desc' }>({
+export function TableSortSelectMobile<T extends { sortBy: string; sortByOrder: 'asc' | 'desc' }>({
   className,
   searchParams,
   labelsMapper,
@@ -55,5 +55,3 @@ function TableSortSelectMobile<T extends { sortBy: string; sortByOrder: 'asc' | 
 const ButtonText = styled.span`
   vertical-align: middle;
 `
-
-export default TableSortSelectMobile

@@ -1,15 +1,15 @@
 import { Dispatch, SetStateAction } from 'react'
-import DetailInfoEstimateGas from '@/lend/components/DetailInfoEstimateGas'
-import DetailInfoHealth from '@/lend/components/DetailInfoHealth'
-import DetailInfoLiqRange from '@/lend/components/DetailInfoLiqRange'
-import DetailInfoRate from '@/lend/components/DetailInfoRate'
-import useStore from '@/lend/store/useStore'
+import { DetailInfoEstimateGas } from '@/lend/components/DetailInfoEstimateGas'
+import { DetailInfoHealth } from '@/lend/components/DetailInfoHealth'
+import { DetailInfoLiqRange } from '@/lend/components/DetailInfoLiqRange'
+import { DetailInfoRate } from '@/lend/components/DetailInfoRate'
+import { useStore } from '@/lend/store/useStore'
 import { PageContentProps } from '@/lend/types/lend.types'
 import type { HealthMode } from '@/llamalend/llamalend.types'
 import type { Step } from '@ui/Stepper/types'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
-const DetailInfo = ({
+export const DetailInfo = ({
   rChainId,
   rOwmId,
   api,
@@ -70,5 +70,3 @@ const DetailInfo = ({
     </>
   )
 }
-
-export default DetailInfo

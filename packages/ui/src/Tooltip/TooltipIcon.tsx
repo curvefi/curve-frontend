@@ -1,11 +1,11 @@
 import { ReactNode } from 'react'
-import TooltipButton, { IconStyles } from 'ui/src/Tooltip/TooltipButton'
+import { IconStyles, TooltipButton } from 'ui/src/Tooltip/TooltipButton'
 import type { TooltipProps } from 'ui/src/Tooltip/types'
 
 /**
  * Similar to `TooltipButton`, but renders an icon and uses the children for the tooltip text.
  */
-const TooltipIcon = ({
+export const TooltipIcon = ({
   children,
   customIcon,
   ...props
@@ -14,5 +14,3 @@ const TooltipIcon = ({
   iconStyles?: IconStyles
   customIcon?: ReactNode
 }) => <TooltipButton {...props} showIcon customIcon={customIcon} tooltip={children}></TooltipButton>
-
-export default TooltipIcon
