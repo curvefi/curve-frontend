@@ -32,7 +32,7 @@ const getTokenOptions = ({
         chain: networkId,
         symbol: collateralToken.symbol,
         name: `${notFalsy(collateralToken.symbol, borrowToken?.symbol).join(' • ')} ${t`position`}`,
-        label: collateralToken.address,
+        label: shortenAddress(collateralToken.address),
         field: 'stateCollateral',
       },
     borrowToken && {

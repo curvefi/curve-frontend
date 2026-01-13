@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { RepayLoanInfoAccordion } from '@/llamalend/features/borrow/components/RepayLoanInfoAccordion'
 import { setValueOptions } from '@/llamalend/features/borrow/react-form.utils'
-import { RepayTokenSelector } from '@/llamalend/features/manage-loan/components/RepayTokenSelector'
+import { RepayTokenList } from '@/llamalend/features/manage-loan/components/RepayTokenList'
 import { useRepayTokens } from '@/llamalend/features/manage-loan/hooks/useRepayTokens'
 import { hasLeverage } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
@@ -11,6 +11,7 @@ import { LoanFormTokenInput } from '@/llamalend/widgets/manage-loan/LoanFormToke
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { notFalsy } from '@curvefi/prices-api/objects.util'
 import Button from '@mui/material/Button'
+import { TokenSelector } from '@ui-kit/features/select-token'
 import { t } from '@ui-kit/lib/i18n'
 import { mapQuery } from '@ui-kit/types/util'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
@@ -62,8 +63,8 @@ export const RepayForm = <ChainId extends IChainId>({
     onRepaid,
   })
   const stateCollateralMax = mapQuery(userState, (data) => data.collateral)
-  const repayTokenProps = useRepayTokens({ market, network })
-  const selectedField = repayTokenProps.token?.field ?? 'userBorrowed'
+  const { token, onToken, tokens } = useRepayTokens({ market, network })
+  const selectedField = token?.field ?? 'userBorrowed'
 
   useEffect(
     () =>
@@ -111,12 +112,15 @@ export const RepayForm = <ChainId extends IChainId>({
         testId={'repay-input-' + selectedField}
         network={network}
         tokenSelector={
-          <RepayTokenSelector
-            market={market}
-            network={network}
-            positionCollateral={stateCollateralMax.data}
-            {...repayTokenProps}
-          />
+          <TokenSelector selectedToken={token} title={t`Select Repay Token`}>
+            <RepayTokenList
+              market={market}
+              network={network}
+              positionCollateral={stateCollateralMax.data}
+              onToken={onToken}
+              tokens={tokens}
+            />
+          </TokenSelector>
         }
       />
       <Button type="submit" loading={isPending || !market} disabled={isDisabled} data-testid="repay-submit-button">

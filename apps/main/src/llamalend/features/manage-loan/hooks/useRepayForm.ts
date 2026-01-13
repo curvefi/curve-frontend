@@ -2,7 +2,7 @@ import { useEffect, useMemo } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
 import { useForm } from 'react-hook-form'
 import { useConnection } from 'wagmi'
-import { getTokens, hasLeverage } from '@/llamalend/llama.utils'
+import { getTokens } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { type RepayOptions, useRepayMutation } from '@/llamalend/mutations/repay.mutation'
 import { useCreateLoanIsApproved } from '@/llamalend/queries/create-loan/create-loan-approved.query'
@@ -88,9 +88,6 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
     () => form.setValue('maxStateCollateral', userState.data?.collateral, setValueOptions),
     [form, userState.data?.collateral],
   )
-
-  // todo: remove from form, move this to queries directly as they depend on market only
-  useEffect(() => market && form.setValue('leverageEnabled', hasLeverage(market), setValueOptions), [market, form])
 
   return {
     form,
