@@ -1,6 +1,6 @@
 import { styled } from 'styled-components'
-import Icon from 'ui/src/Icon/Icon'
-import { breakpoints } from 'ui/src/utils/responsive'
+import { Icon } from '@ui/Icon/Icon'
+import { breakpoints } from '@ui/utils/responsive'
 
 type SortIconProps = {
   className?: string
@@ -31,5 +31,3 @@ const Wrapper = styled.div`
     font-size: 7px;
   }
 `
-
-export default SortIcon

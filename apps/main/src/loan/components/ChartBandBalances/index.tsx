@@ -14,15 +14,15 @@ import {
   YAxis,
 } from 'recharts'
 import { styled } from 'styled-components'
-import ChartBandBalancesSettings from '@/loan/components/ChartBandBalances/ChartBandBalancesSettings'
+import { ChartBandBalancesSettings } from '@/loan/components/ChartBandBalances/ChartBandBalancesSettings'
 import type { BrushStartEndIndex } from '@/loan/components/ChartBandBalances/types'
-import ChartTooltip, { TipContent, TipIcon, TipTitle } from '@/loan/components/ChartTooltip'
+import { TipContent, TipIcon, TipTitle, ChartTooltip } from '@/loan/components/ChartTooltip'
 import type { ManageLoanProps } from '@/loan/components/PageMintMarket/types'
-import useStore from '@/loan/store/useStore'
+import { useStore } from '@/loan/store/useStore'
 import { BandsBalancesData } from '@/loan/types/loan.types'
 import { getTokenName } from '@/loan/utils/utilsLoan'
-import Box from '@ui/Box'
-import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import { Box } from '@ui/Box'
+import { SpinnerWrapper, Spinner } from '@ui/Spinner'
 import { BN, FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 
@@ -36,7 +36,7 @@ interface Props extends Pick<ManageLoanProps, 'market'> {
   setBrushIndex: Dispatch<BrushStartEndIndex>
 }
 
-const ChartBandBalances = ({
+export const ChartBandBalances = ({
   brushIndex,
   market: llamma,
   data,
@@ -379,5 +379,3 @@ const Header = styled.header`
 const SubTitle = styled.h3`
   font-size: var(--font-size-3);
 `
-
-export default ChartBandBalances

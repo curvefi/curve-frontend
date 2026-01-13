@@ -13,7 +13,7 @@ interface CheckboxProps extends ToggleProps {
   blank?: boolean
 }
 
-const Checkbox = ({ className, isDisabled = false, fillColor, blank, ...props }: CheckboxProps) => {
+export const Checkbox = ({ className, isDisabled = false, fillColor, blank, ...props }: CheckboxProps) => {
   const ref = useRef<HTMLInputElement>(null)
   const state = useToggleState(props)
   const { inputProps } = useCheckbox(props, state, ref)
@@ -103,5 +103,3 @@ const FocusRect = styled.rect`
 `
 
 Checkbox.displayName = 'Checkbox'
-
-export default Checkbox

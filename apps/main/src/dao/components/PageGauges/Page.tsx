@@ -1,5 +1,5 @@
 import { styled } from 'styled-components'
-import Gauges from '@/dao/components/PageGauges/index'
+import { Gauges } from '@/dao/components/PageGauges/index'
 import { breakpoints } from '@ui/utils'
 
 export const PageGauges = () => (

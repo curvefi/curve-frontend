@@ -6,8 +6,8 @@ import type { FormStatus, FormValues } from '@/lend/components/PageVault/VaultDe
 import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/lend/components/PageVault/VaultDepositMint/utils'
 import { invalidateMarketDetails } from '@/lend/entities/market-details'
 import { invalidateAllUserBorrowDetails } from '@/lend/entities/user-loan-details'
-import apiLending, { helpers } from '@/lend/lib/apiLending'
-import networks from '@/lend/networks'
+import { helpers, apiLending } from '@/lend/lib/apiLending'
+import { networks } from '@/lend/networks'
 import type { State } from '@/lend/store/useStore'
 import { Api, ChainId, FutureRates, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { updateUserEventsApi } from '@/llamalend/llama.utils'
@@ -58,7 +58,7 @@ const DEFAULT_STATE: SliceState = {
   formValues: DEFAULT_FORM_VALUES,
 }
 
-const createVaultMint = (
+export const createVaultMint = (
   _set: StoreApi<State>['setState'],
   get: StoreApi<State>['getState'],
 ): VaultDepositMintSlice => ({
@@ -233,5 +233,3 @@ export function _getActiveKey(
 export function _getMaxActiveKey(rChainId: ChainId, formType: string | null, market: OneWayMarketTemplate | undefined) {
   return `${rChainId}-${formType}-${market?.id ?? ''}`
 }
-
-export default createVaultMint

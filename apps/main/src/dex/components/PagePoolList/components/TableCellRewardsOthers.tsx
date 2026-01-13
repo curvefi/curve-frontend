@@ -8,7 +8,7 @@ type Prop = {
   rewardsApy: RewardsApy | undefined
 }
 
-const TableCellRewardsOthers = ({ isHighlight, rewardsApy }: Prop) => {
+export const TableCellRewardsOthers = ({ isHighlight, rewardsApy }: Prop) => {
   if (!rewardsApy?.other || rewardsApy.other.length === 0) {
     return null
   }
@@ -26,5 +26,3 @@ const TableCellRewardsOthers = ({ isHighlight, rewardsApy }: Prop) => {
     </div>
   )
 }
-
-export default TableCellRewardsOthers

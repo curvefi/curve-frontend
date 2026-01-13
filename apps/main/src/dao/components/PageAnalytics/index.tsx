@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react'
 import { styled } from 'styled-components'
-import useStore from '@/dao/store/useStore'
-import Box from '@ui/Box'
+import { useStore } from '@/dao/store/useStore'
+import { Box } from '@ui/Box'
 import { t } from '@ui-kit/lib/i18n'
 import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
-import CrvStats from './CrvStats'
-import DailyLocks from './DailyLocksChart'
-import HoldersTable from './HoldersTable'
-import TopHolders from './TopHoldersChart'
-import VeCrvFees from './VeCrvFeesTable'
+import { CrvStats } from './CrvStats'
+import { DailyLocks } from './DailyLocksChart'
+import { TopHoldersTable as HoldersTable } from './HoldersTable'
+import { TopLockers as TopHolders } from './TopHoldersChart'
+import { VeCrcFees as VeCrvFees } from './VeCrvFeesTable'
 
 type Tab = 'fees' | 'holders' | 'locks'
 const tabs: TabOption<Tab>[] = [
@@ -17,7 +17,7 @@ const tabs: TabOption<Tab>[] = [
   { value: 'locks', label: t`Locks` },
 ]
 
-const Analytics = () => {
+export const Analytics = () => {
   const getVeCrvHolders = useStore((state) => state.analytics.getVeCrvHolders)
   const veCrvHolders = useStore((state) => state.analytics.veCrvHolders)
   const [tab, setTab] = useState<Tab>('fees')
@@ -72,5 +72,3 @@ const Container = styled(Box)`
   height: 100%;
   border: none;
 `
-
-export default Analytics

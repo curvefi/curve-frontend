@@ -1,13 +1,13 @@
 import type { AnchorHTMLAttributes } from 'react'
 import { styled } from 'styled-components'
-import type { LinkProps } from 'ui/src/Link/styles'
-import { linkStyles } from 'ui/src/Link/styles'
+import type { LinkProps } from '@ui/Link/styles'
+import { linkStyles } from '@ui/Link/styles'
 
 export interface ExternalLinkProps extends AnchorHTMLAttributes<HTMLAnchorElement>, LinkProps {
   isNumber?: boolean
 }
 
-function ExternalLink({ className, children, ...props }: ExternalLinkProps) {
+export function ExternalLink({ className, children, ...props }: ExternalLinkProps) {
   return (
     <StyledLink target="_blank" {...props} className={className} rel="noreferrer noopener">
       {children}
@@ -18,5 +18,3 @@ function ExternalLink({ className, children, ...props }: ExternalLinkProps) {
 const StyledLink = styled.a`
   ${linkStyles}
 `
-
-export default ExternalLink

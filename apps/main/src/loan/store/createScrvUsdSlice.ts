@@ -5,7 +5,7 @@ import type { DepositWithdrawModule, StatisticsChart } from '@/loan/components/P
 import { SCRVUSD_GAS_ESTIMATE } from '@/loan/constants'
 import type { ScrvUsdUserBalances } from '@/loan/entities/scrvusd-userBalances'
 import { invalidateScrvUsdUserBalances } from '@/loan/entities/scrvusd-userBalances'
-import networks from '@/loan/networks'
+import { networks } from '@/loan/networks'
 import type { State } from '@/loan/store/useStore'
 import { type ChainId, FetchStatus, TransactionStatus } from '@/loan/types/loan.types'
 import { scanTxPath } from '@ui/utils'
@@ -89,7 +89,7 @@ const DEFAULT_STATE: SliceState = {
   withdrawTransaction: { transactionStatus: '', transaction: null, errorMessage: '' },
 }
 
-const createScrvUsdSlice = (_set: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
+export const createScrvUsdSlice = (_set: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
     checkApproval: {
@@ -564,5 +564,3 @@ const createScrvUsdSlice = (_set: StoreApi<State>['setState'], get: StoreApi<Sta
     },
   },
 })
-
-export default createScrvUsdSlice

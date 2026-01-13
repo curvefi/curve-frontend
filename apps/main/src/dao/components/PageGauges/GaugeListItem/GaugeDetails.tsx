@@ -1,12 +1,12 @@
 import { styled } from 'styled-components'
-import CopyIconButton from '@/dao/components/CopyIconButton'
-import ExternalLinkIconButton from '@/dao/components/ExternalLinkIconButton'
+import { CopyIconButton } from '@/dao/components/CopyIconButton'
+import { ExternalLinkIconButton } from '@/dao/components/ExternalLinkIconButton'
 import { ETHEREUM_CHAIN_ID } from '@/dao/constants'
-import networks from '@/dao/networks'
+import { networks } from '@/dao/networks'
 import { GaugeFormattedData } from '@/dao/types/dao.types'
 import { getChainIdFromGaugeData } from '@/dao/utils'
-import Box from '@ui/Box'
-import Icon from '@ui/Icon'
+import { Box } from '@ui/Box'
+import { Icon } from '@ui/Icon'
 import { ExternalLink } from '@ui/Link'
 import { Chip } from '@ui/Typography'
 import { convertToLocaleTimestamp, formatDate, formatNumber, scanAddressPath } from '@ui/utils'
@@ -21,7 +21,7 @@ export const StyledInformationSquare16 = styled(Icon)`
   }
 `
 
-const GaugeDetails = ({ gaugeData, className }: { gaugeData: GaugeFormattedData; className?: string }) => {
+export const GaugeDetails = ({ gaugeData, className }: { gaugeData: GaugeFormattedData; className?: string }) => {
   const chainId = getChainIdFromGaugeData(gaugeData)
   const isSideChain = chainId !== Chain.Ethereum
   const emissions = isSideChain ? gaugeData.prev_epoch_emissions : gaugeData.emissions
@@ -137,5 +137,3 @@ const StyledExternalLink = styled(ExternalLink)`
     cursor: pointer;
   }
 `
-
-export default GaugeDetails

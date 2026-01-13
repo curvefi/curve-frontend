@@ -1,5 +1,5 @@
 import { ethers } from 'ethers'
-import curvejsApi from '@/dao/lib/curvejs'
+import { curvejsApi } from '@/dao/lib/curvejs'
 import type { INetworkName } from '@curvefi/api/lib/interfaces'
 import type { BaseConfig } from '@ui/utils'
 import type { Address } from '@ui-kit/utils'

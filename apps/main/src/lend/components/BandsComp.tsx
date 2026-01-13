@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import { styled } from 'styled-components'
-import DetailsLoanChartBalances from '@/lend/components/DetailsMarket/components/DetailsLoanChartBalances'
-import DetailsUserLoanChartBandBalances from '@/lend/components/DetailsUser/components/DetailsUserLoanChartBandBalances'
+import { DetailsLoanChartBalances } from '@/lend/components/DetailsMarket/components/DetailsLoanChartBalances'
+import { DetailsUserLoanChartBandBalances } from '@/lend/components/DetailsUser/components/DetailsUserLoanChartBandBalances'
 import { PageContentProps } from '@/lend/types/lend.types'
 import { Stack } from '@mui/material'
-import Button from '@ui/Button'
+import { Button } from '@ui/Button'
 import { t } from '@ui-kit/lib/i18n'
 
 type BandsCompProps = {

@@ -1,9 +1,9 @@
-import Item from '@/lend/components/AlertLoanSummary/components/Item'
+import { Item } from '@/lend/components/AlertLoanSummary/components/Item'
 import type { SummaryProps } from '@/lend/components/AlertLoanSummary/types'
 import { format } from '@/lend/components/AlertLoanSummary/utils'
 import { t } from '@ui-kit/lib/i18n'
 
-const SummaryCreate = ({
+export const SummaryCreate = ({
   title,
   pendingMessage,
   receive = '',
@@ -20,5 +20,3 @@ const SummaryCreate = ({
     <Item label={t`Collateral:`} value={`${format(receive)} ${collateralSymbol}`} />
   </>
 )
-
-export default SummaryCreate

@@ -23,15 +23,15 @@ import {
   TokensInPoolState,
 } from '@/dex/components/PageCreatePool/types'
 import { useNetworkByChain } from '@/dex/entities/networks'
-import useStore from '@/dex/store/useStore'
+import { useStore } from '@/dex/store/useStore'
 import { CurveApi, ChainId } from '@/dex/types/main.types'
-import Box from '@ui/Box'
-import Button from '@ui/Button'
-import Checkbox from '@ui/Checkbox'
-import Icon from '@ui/Icon'
+import { Box } from '@ui/Box'
+import { Button } from '@ui/Button'
+import { Checkbox } from '@ui/Checkbox'
+import { Icon } from '@ui/Icon'
 import { t } from '@ui-kit/lib/i18n'
-import WarningBox from '../components/WarningBox'
-import SelectTokenButton from './SelectTokenButton'
+import { WarningBox } from '../components/WarningBox'
+import { SelectTokenButton } from './SelectTokenButton'
 
 type Props = {
   curve: CurveApi
@@ -46,7 +46,7 @@ type Props = {
   removeToken?: (tokenId: TokenId, tokensInPoolState: TokensInPoolState) => void
 }
 
-const SelectToken = ({
+export const SelectToken = ({
   curve,
   haveSigner,
   chainId,
@@ -199,5 +199,3 @@ const RemoveButton = styled(Button)`
     color: var(--button_filled-hover-contrast--background-color);
   }
 `
-
-export default SelectToken

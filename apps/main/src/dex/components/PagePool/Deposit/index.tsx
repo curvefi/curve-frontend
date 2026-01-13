@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useState } from 'react'
-import FormDeposit from '@/dex/components/PagePool/Deposit/components/FormDeposit'
-import FormDepositStake from '@/dex/components/PagePool/Deposit/components/FormDepositStake'
-import FormStake from '@/dex/components/PagePool/Deposit/components/FormStake'
+import { FormDeposit } from '@/dex/components/PagePool/Deposit/components/FormDeposit'
+import { FormDepositStake } from '@/dex/components/PagePool/Deposit/components/FormDepositStake'
+import { FormStake } from '@/dex/components/PagePool/Deposit/components/FormStake'
 import type { FormType } from '@/dex/components/PagePool/Deposit/types'
 import { DEFAULT_FORM_STATUS } from '@/dex/components/PagePool/Deposit/utils'
 import type { TransferProps } from '@/dex/components/PagePool/types'
-import useStore from '@/dex/store/useStore'
-import AlertBox from '@ui/AlertBox'
+import { useStore } from '@/dex/store/useStore'
+import { AlertBox } from '@ui/AlertBox'
 import { t } from '@ui-kit/lib/i18n'
 import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
 import { FormContent } from '@ui-kit/widgets/DetailPageLayout/FormContent'
@@ -17,7 +17,7 @@ const tabs: TabOption<FormType>[] = [
   { value: 'DEPOSIT_STAKE', label: t`Deposit & Stake` },
 ]
 
-const Deposit = ({ hasDepositAndStake, ...transferProps }: TransferProps & { hasDepositAndStake: boolean }) => {
+export const Deposit = ({ hasDepositAndStake, ...transferProps }: TransferProps & { hasDepositAndStake: boolean }) => {
   const { poolAlert, poolData, poolDataCacheOrApi } = transferProps
   const formType = useStore((state) => state.poolDeposit.formType)
   const resetState = useStore((state) => state.poolDeposit.resetState)
@@ -76,5 +76,3 @@ const Deposit = ({ hasDepositAndStake, ...transferProps }: TransferProps & { has
     </FormContent>
   )
 }
-
-export default Deposit

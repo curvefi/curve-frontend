@@ -1,20 +1,20 @@
 import { styled } from 'styled-components'
 import type { CurrencyReservesProps } from '@/dex/components/PagePool/PoolDetails/CurrencyReserves/types'
 import { StyledStats } from '@/dex/components/PagePool/PoolDetails/PoolStats/styles'
-import Box from '@ui/Box'
-import Icon from '@ui/Icon'
-import ExternalLink from '@ui/Link/ExternalLink'
-import TextEllipsis from '@ui/TextEllipsis'
-import TooltipButton from '@ui/Tooltip/TooltipButton'
-import IconTooltip from '@ui/Tooltip/TooltipIcon'
-import Chip from '@ui/Typography/Chip'
+import { Box } from '@ui/Box'
+import { Icon } from '@ui/Icon'
+import { ExternalLink } from '@ui/Link/ExternalLink'
+import { TextEllipsis } from '@ui/TextEllipsis'
+import { TooltipButton } from '@ui/Tooltip/TooltipButton'
+import { TooltipIcon as IconTooltip } from '@ui/Tooltip/TooltipIcon'
+import { Chip } from '@ui/Typography/Chip'
 import { breakpoints, formatNumber, scanTokenPath } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { shortenAddress } from '@ui-kit/utils'
 
-const CurrencyReservesContent = ({
+export const CurrencyReservesContent = ({
   cr,
   haveSameTokenName,
   network,
@@ -106,4 +106,3 @@ export const ExternalLinkToken = styled(TextEllipsis)`
   font-weight: bold;
   text-transform: initial;
 `
-export default CurrencyReservesContent

@@ -7,7 +7,7 @@ type Props = Pick<WalletPoolData, 'profitBase' | 'profitCrv' | 'profitOthers' | 
   sortBy: SortId
 }
 
-const TableCellProfit = ({ profitBase, profitCrv, profitOthers, profitsTotalUsd, sortBy }: Props) => {
+export const TableCellProfit = ({ profitBase, profitCrv, profitOthers, profitsTotalUsd, sortBy }: Props) => {
   const formattedBaseProfit = useMemo(() => formatNumber(profitBase?.day || 0), [profitBase?.day])
   const formattedCrvProfit = useMemo(() => `${formatNumber(profitCrv?.day || '0')} CRV`, [profitCrv?.day])
   const isHighLight = sortBy === 'profits'
@@ -35,5 +35,3 @@ const TableCellProfit = ({ profitBase, profitCrv, profitOthers, profitsTotalUsd,
     </>
   )
 }
-
-export default TableCellProfit

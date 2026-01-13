@@ -5,7 +5,7 @@ import { useNetworkByChain } from '@/dex/entities/networks'
 import { ExternalLink } from '@ui/Link'
 import { t } from '@ui-kit/lib/i18n'
 
-const ClassicPoolsOnlyDescription = () => {
+export const ClassicPoolsOnlyDescription = () => {
   const { rChainId, signerAddress } = useDashboardContext()
   const {
     data: { missingPools, orgUIPath },
@@ -33,5 +33,3 @@ const ClassicPoolsOnlyDescription = () => {
 const MissingPoolDescription = styled.p`
   padding: 1rem;
 `
-
-export default ClassicPoolsOnlyDescription

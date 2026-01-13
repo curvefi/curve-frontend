@@ -7,7 +7,7 @@ import { type Amount, DEFAULT_SLIPPAGE } from '@/dex/components/PagePool/utils'
 import { parseAmountsForAPI } from '@/dex/components/PagePool/utils'
 import type { FormStatus, FormType, FormValues } from '@/dex/components/PagePool/Withdraw/types'
 import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/dex/components/PagePool/Withdraw/utils'
-import curvejsApi from '@/dex/lib/curvejs'
+import { curvejsApi } from '@/dex/lib/curvejs'
 import type { State } from '@/dex/store/useStore'
 import {
   ChainId,
@@ -83,7 +83,7 @@ const DEFAULT_STATE: SliceState = {
   slippage: {},
 }
 
-const createPoolWithdrawSlice = (
+export const createPoolWithdrawSlice = (
   _: StoreApi<State>['setState'],
   get: StoreApi<State>['getState'],
 ): PoolWithdrawSlice => ({
@@ -689,5 +689,3 @@ function resetFormValues(formValues: FormValues) {
     stakedLpToken: '',
   }
 }
-
-export default createPoolWithdrawSlice

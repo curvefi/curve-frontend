@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import { styled } from 'styled-components'
-import DetailsBandsChart from '@/loan/components/LoanInfoLlamma/components/DetailsBandsChart'
+import { DetailsBandsChart } from '@/loan/components/LoanInfoLlamma/components/DetailsBandsChart'
 import type { Llamma } from '@/loan/types/loan.types'
 import { Stack } from '@mui/material'
-import Button from '@ui/Button'
+import { Button } from '@ui/Button'
 import { t } from '@ui-kit/lib/i18n'
-import ChartUserBands from './ChartUserBands'
+import { ChartUserBands } from './ChartUserBands'
 
 type BandsCompProps = {
   llamma: Llamma | null

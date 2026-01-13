@@ -1,1 +1,1 @@
-export { default } from './divider-horizontal'
+export { DividerHorizontal } from './divider-horizontal'

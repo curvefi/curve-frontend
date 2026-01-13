@@ -1,15 +1,15 @@
 import { Fragment, useMemo } from 'react'
 import { styled } from 'styled-components'
-import GaugeListItem from '@/dao/components/PageGauges/GaugeListItem'
-import SmallScreenCard from '@/dao/components/PageGauges/GaugeListItem/SmallScreenCard'
-import GaugeVotingStats from '@/dao/components/PageGauges/GaugeVoting/GaugeVotingStats'
-import VoteGauge from '@/dao/components/PageGauges/GaugeVoting/VoteGauge'
-import PaginatedTable from '@/dao/components/PaginatedTable'
+import { GaugeListItem } from '@/dao/components/PageGauges/GaugeListItem'
+import { SmallScreenCard } from '@/dao/components/PageGauges/GaugeListItem/SmallScreenCard'
+import { GaugeVotingStats } from '@/dao/components/PageGauges/GaugeVoting/GaugeVotingStats'
+import { VoteGauge } from '@/dao/components/PageGauges/GaugeVoting/VoteGauge'
+import { PaginatedTable } from '@/dao/components/PaginatedTable'
 import {
   invalidateUserGaugeWeightVotesQuery,
   useUserGaugeWeightVotesQuery,
 } from '@/dao/entities/user-gauge-weight-votes'
-import useStore from '@/dao/store/useStore'
+import { useStore } from '@/dao/store/useStore'
 import {
   GaugeFormattedData,
   UserGaugeVoteWeight,
@@ -17,7 +17,7 @@ import {
   SortDirection,
 } from '@/dao/types/dao.types'
 import { findRootGauge } from '@/dao/utils'
-import Box from '@ui/Box'
+import { Box } from '@ui/Box'
 import { t } from '@ui-kit/lib/i18n'
 import { Chain } from '@ui-kit/utils/network'
 import { USER_VOTES_TABLE_LABELS } from './constants'
@@ -29,7 +29,7 @@ type CurrentVotesProps = {
 const sortGauges = (gauges: UserGaugeVoteWeight[], order: SortDirection, sortBy: UserGaugeVoteWeightSortBy) =>
   [...gauges].sort((a, b) => (order === 'asc' ? a[sortBy] - b[sortBy] : b[sortBy] - a[sortBy]))
 
-const CurrentVotes = ({ userAddress: userAddressProp }: CurrentVotesProps) => {
+export const CurrentVotes = ({ userAddress: userAddressProp }: CurrentVotesProps) => {
   const setUserGaugeVoteWeightsSortBy = useStore((state) => state.user.setUserGaugeVoteWeightsSortBy)
   const userGaugeVoteWeightsSortBy = useStore((state) => state.user.userGaugeVoteWeightsSortBy)
   const gaugeMapper = useStore((state) => state.gauges.gaugeMapper)
@@ -167,5 +167,3 @@ const SmallScreenCardWrapper = styled.div`
     display: block;
   }
 `
-
-export default CurrentVotes

@@ -3,7 +3,7 @@ import { CurveApi, Provider, EstimatedGas, ClaimButtonsKey } from '@/dao/types/d
 import { getErrorMessage } from '@/dao/utils'
 import type { DateValue } from '@internationalized/date'
 import { log } from '@ui-kit/lib'
-import dayjs from '@ui-kit/lib/dayjs'
+import { dayjs } from '@ui-kit/lib/dayjs'
 import { waitForTransaction, waitForTransactions } from '@ui-kit/lib/ethers'
 
 export const helpers = {
@@ -190,9 +190,7 @@ const lockCrv = {
   },
 }
 
-const curvejsApi = {
+export const curvejsApi = {
   helpers,
   lockCrv,
 }
-
-export default curvejsApi

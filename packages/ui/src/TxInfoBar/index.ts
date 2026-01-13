@@ -1,1 +1,1 @@
-export { default } from './TxInfoBar'
+export { TxInfoBar } from './TxInfoBar'

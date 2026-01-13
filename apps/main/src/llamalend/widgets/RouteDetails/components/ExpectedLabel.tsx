@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction } from 'react'
 import { styled } from 'styled-components'
-import Loader from '@ui/Loader'
+import { Loader } from '@ui/Loader'
 import { t } from '@ui-kit/lib/i18n'
 import { ChevronDownIcon } from '@ui-kit/shared/icons/ChevronDownIcon'
 import { RotatableIcon } from '@ui-kit/shared/ui/DataTable/RotatableIcon'
@@ -8,7 +8,7 @@ import { DetailsButton } from '../index'
 import type { RouteDetailsProps } from '../types'
 import { format } from '../utils'
 
-const ExpectedLabel = ({
+export const ExpectedLabel = ({
   loading,
   label,
   total,
@@ -56,5 +56,3 @@ const Label = styled.h3`
     display: inline-flex;
   }
 `
-
-export default ExpectedLabel

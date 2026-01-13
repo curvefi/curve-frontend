@@ -3,11 +3,11 @@ import { type AriaSelectOptions, HiddenSelect, useSelect, type AriaSelectProps }
 import type { SelectProps as ReactStatelySelectProps } from 'react-stately'
 import { useSelectState } from 'react-stately'
 import { styled } from 'styled-components'
-import Icon from 'ui/src/Icon/Icon'
-import SelectBtn from 'ui/src/Select/SelectBtn'
-import SelectModal from 'ui/src/Select/SelectModal'
-import SelectModalFull from 'ui/src/Select/SelectModalFull'
-import { getIsFullScreen } from 'ui/src/utils'
+import { Icon } from '@ui/Icon/Icon'
+import { SelectBtn } from '@ui/Select/SelectBtn'
+import { SelectModal } from '@ui/Select/SelectModal'
+import { SelectModalFull } from '@ui/Select/SelectModalFull'
+import { getIsFullScreen } from '@ui/utils'
 
 export interface SelectProps<T extends object>
   extends Omit<ReactStatelySelectProps<T>, 'children'>, AriaSelectOptions<T> {
@@ -25,7 +25,7 @@ export interface SelectProps<T extends object>
   children?: AriaSelectProps<T>['children'] // todo: children is excluded from AriaSelectOptions for some reason, does this even work?
 }
 
-function Select<T extends object>({
+export function Select<T extends object>({
   buttonStyles = {},
   noLabelChange,
   onSelectionDelete,
@@ -115,5 +115,3 @@ const StyledIcon = styled(Icon)<{ $hideIcon: boolean }>`
     }
   }}
 `
-
-export default Select

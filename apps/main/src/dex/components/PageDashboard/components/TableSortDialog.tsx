@@ -2,10 +2,10 @@ import { styled } from 'styled-components'
 import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
 import type { Order, SortId, TableLabel } from '@/dex/components/PageDashboard/types'
 import { useOverlayTriggerState } from '@react-stately/overlays'
-import Box from '@ui/Box'
-import ModalDialog from '@ui/Dialog/ModalDialog'
-import OpenDialogButton from '@ui/Dialog/OpenDialogButton'
-import Icon from '@ui/Icon'
+import { Box } from '@ui/Box'
+import { ModalDialog } from '@ui/Dialog/ModalDialog'
+import { OpenDialogButton } from '@ui/Dialog/OpenDialogButton'
+import { Icon } from '@ui/Icon'
 import { Radio, RadioGroup } from '@ui/Radio'
 import { Chip } from '@ui/Typography'
 
@@ -19,7 +19,7 @@ type Props = {
   tableLabel: TableLabel
 }
 
-const TableSortDialog = ({ className = '', tableLabel }: Props) => {
+export const TableSortDialog = ({ className = '', tableLabel }: Props) => {
   const overlayTriggerState = useOverlayTriggerState({})
 
   const {
@@ -122,5 +122,3 @@ const RadioWrapper = styled(Box)`
 const ButtonText = styled.span`
   vertical-align: middle;
 `
-
-export default TableSortDialog

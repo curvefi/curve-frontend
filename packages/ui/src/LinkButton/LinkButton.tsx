@@ -1,13 +1,13 @@
 import { styled } from 'styled-components'
 import { Link as RouterLink, LinkProps as RouterLinkProps } from '@tanstack/react-router'
-import { buttonBaseStyles } from 'ui/src/Button/styles'
-import type { ButtonProps } from 'ui/src/Button/types'
+import { buttonBaseStyles } from '@ui/Button/styles'
+import type { ButtonProps } from '@ui/Button/types'
 
 interface Props extends ButtonProps, Omit<RouterLinkProps, 'to'> {
   href?: string
 }
 
-const LinkButton = ({ children, href, ...rest }: Props) => (
+export const LinkButton = ({ children, href, ...rest }: Props) => (
   <StyledLink to={href || '/'} {...rest}>
     {children}
   </StyledLink>
@@ -27,5 +27,3 @@ const StyledLink = styled(RouterLink)<ButtonProps>`
     }
   }}
 `
-
-export default LinkButton

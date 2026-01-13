@@ -1,16 +1,16 @@
 import { styled } from 'styled-components'
 import type { Amount } from '@/dex/components/PagePool/utils'
 import { TokensMapper, PoolDataCacheOrApi } from '@/dex/types/main.types'
-import Box from '@ui/Box'
-import Loader from '@ui/Loader'
-import Spacer from '@ui/Spacer'
-import TextEllipsis from '@ui/TextEllipsis'
+import { Box } from '@ui/Box'
+import { Loader } from '@ui/Loader'
+import { Spacer } from '@ui/Spacer'
+import { TextEllipsis } from '@ui/TextEllipsis'
 import { Chip } from '@ui/Typography'
 import { formatNumber } from '@ui/utils'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { shortenAddress } from '@ui-kit/utils'
 
-const SelectedLpTokenExpected = ({
+export const SelectedLpTokenExpected = ({
   amounts,
   blockchainId,
   loading,
@@ -56,5 +56,3 @@ const SelectedLpTokenExpected = ({
 const StyledTokenIcon = styled(TokenIcon)`
   margin-right: var(--spacing-1);
 `
-
-export default SelectedLpTokenExpected

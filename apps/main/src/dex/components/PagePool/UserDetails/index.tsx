@@ -2,14 +2,14 @@ import { useMemo } from 'react'
 import { styled } from 'styled-components'
 import { useConnection } from 'wagmi'
 import type { TransferProps } from '@/dex/components/PagePool/types'
-import PoolRewardsCrv from '@/dex/components/PoolRewardsCrv'
+import { PoolRewardsCrv } from '@/dex/components/PoolRewardsCrv'
 import { usePoolIdByAddressOrId } from '@/dex/hooks/usePoolIdByAddressOrId'
 import { usePoolTokenDepositBalances } from '@/dex/hooks/usePoolTokenDepositBalances'
 import { getUserPoolActiveKey } from '@/dex/store/createUserSlice'
-import useStore from '@/dex/store/useStore'
-import Box from '@ui/Box'
-import Stats from '@ui/Stats'
-import Table from '@ui/Table'
+import { useStore } from '@/dex/store/useStore'
+import { Box } from '@ui/Box'
+import { Stats } from '@ui/Stats'
+import { Table } from '@ui/Table'
 import { Chip } from '@ui/Typography'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
@@ -17,7 +17,7 @@ import { shortenAddress } from '@ui-kit/utils'
 
 const DEFAULT_WITHDRAW_AMOUNTS: string[] = []
 
-const MySharesStats = ({
+export const MySharesStats = ({
   className,
   curve,
   poolData,
@@ -232,5 +232,3 @@ const CrvRewardsTooltipWrapper = styled(Table)`
     padding: 0.25rem 0;
   }
 `
-
-export default MySharesStats

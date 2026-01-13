@@ -1,8 +1,8 @@
-import Compensation from '@/dex/components/PageCompensation/components/Compensation'
+import { Compensation } from '@/dex/components/PageCompensation/components/Compensation'
 import type { Balances, EtherContract, VestedTotals } from '@/dex/components/PageCompensation/types'
 import { CurveApi, ChainId, Provider } from '@/dex/types/main.types'
 
-const Compensations = ({
+export const Compensations = ({
   poolId,
   contracts,
   balances,
@@ -42,5 +42,3 @@ const Compensations = ({
     </>
   )
 }
-
-export default Compensations

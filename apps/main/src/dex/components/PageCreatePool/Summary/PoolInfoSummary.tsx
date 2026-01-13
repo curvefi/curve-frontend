@@ -8,11 +8,11 @@ import {
   SummaryDataPlaceholder,
   StyledCheckmark,
 } from '@/dex/components/PageCreatePool/Summary/styles'
-import useStore from '@/dex/store/useStore'
-import Box from '@ui/Box'
+import { useStore } from '@/dex/store/useStore'
+import { Box } from '@ui/Box'
 import { t } from '@ui-kit/lib/i18n'
 
-const PoolInfoSummary = () => {
+export const PoolInfoSummary = () => {
   const poolSymbol = useStore((state) => state.createPool.poolSymbol)
   const poolName = useStore((state) => state.createPool.poolName)
   const validation = useStore((state) => state.createPool.validation)
@@ -48,5 +48,3 @@ const PoolInfoSummary = () => {
 const StyledCategoryColumn = styled(CategoryColumn)`
   border-bottom: none;
 `
-
-export default PoolInfoSummary

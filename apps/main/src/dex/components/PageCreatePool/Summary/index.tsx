@@ -1,13 +1,13 @@
 import { styled } from 'styled-components'
-import ConfirmModal from '@/dex/components/PageCreatePool/ConfirmModal'
-import ParametersSummary from '@/dex/components/PageCreatePool/Summary/ParametersSummary'
-import PoolInfoSummary from '@/dex/components/PageCreatePool/Summary/PoolInfoSummary'
-import PoolTypeSummary from '@/dex/components/PageCreatePool/Summary/PoolTypeSummary'
-import TokensInPoolSummary from '@/dex/components/PageCreatePool/Summary/TokensInPoolSummary'
+import { ConfirmModal } from '@/dex/components/PageCreatePool/ConfirmModal'
+import { ParametersSummary } from '@/dex/components/PageCreatePool/Summary/ParametersSummary'
+import { PoolInfoSummary } from '@/dex/components/PageCreatePool/Summary/PoolInfoSummary'
+import { PoolTypeSummary } from '@/dex/components/PageCreatePool/Summary/PoolTypeSummary'
+import { TokensInPoolSummary } from '@/dex/components/PageCreatePool/Summary/TokensInPoolSummary'
 import { checkFormReady } from '@/dex/components/PageCreatePool/utils'
-import useStore from '@/dex/store/useStore'
+import { useStore } from '@/dex/store/useStore'
 import { CurveApi, ChainId } from '@/dex/types/main.types'
-import Box from '@ui/Box'
+import { Box } from '@ui/Box'
 import { t } from '@ui-kit/lib/i18n'
 
 type Props = {
@@ -16,7 +16,7 @@ type Props = {
   curve: CurveApi
 }
 
-const Summary = ({ blockchainId, chainId, curve }: Props) => {
+export const Summary = ({ blockchainId, chainId, curve }: Props) => {
   const advanced = useStore((state) => state.createPool.advanced)
   const validationPoolType = useStore((state) => state.createPool.validation.poolType)
   const validationTokensInPool = useStore((state) => state.createPool.validation.tokensInPool)
@@ -82,5 +82,3 @@ const BottomBox = styled(Box)`
   background: var(--box--secondary--content--background-color);
   padding: var(--spacing-3) var(--spacing-normal);
 `
-
-export default Summary

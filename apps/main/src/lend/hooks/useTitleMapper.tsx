@@ -1,9 +1,9 @@
-import ExternalLink from 'ui/src/Link/ExternalLink'
 import { TitleMapper } from '@/lend/types/lend.types'
-import Box from '@ui/Box'
+import { Box } from '@ui/Box'
+import { ExternalLink } from '@ui/Link/ExternalLink'
 import { t } from '@ui-kit/lib/i18n'
 
-const useTitleMapper = (): TitleMapper => ({
+export const useTitleMapper = (): TitleMapper => ({
   isInMarket: { title: '' },
   name: { title: t`Markets` },
   available: { title: t`Available` },
@@ -62,5 +62,3 @@ const useTitleMapper = (): TitleMapper => ({
   profitAndLoss: { title: t`PNL` },
   positionCurrentLeverage: { title: t`Position leverage` },
 })
-
-export default useTitleMapper

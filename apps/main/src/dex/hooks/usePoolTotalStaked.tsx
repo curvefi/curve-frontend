@@ -1,13 +1,13 @@
 import { Contract, Interface, JsonRpcProvider } from 'ethers'
 import { useCallback, useEffect } from 'react'
-import useStore from '@/dex/store/useStore'
+import { useStore } from '@/dex/store/useStore'
 import { PoolDataCacheOrApi, Provider } from '@/dex/types/main.types'
 import { isValidAddress } from '@/dex/utils'
 import { useCurve, useWallet } from '@ui-kit/features/connect-wallet'
-import dayjs from '@ui-kit/lib/dayjs'
+import { dayjs } from '@ui-kit/lib/dayjs'
 import { useNetworks } from '../entities/networks'
 
-const usePoolTotalStaked = (poolDataCacheOrApi: PoolDataCacheOrApi) => {
+export const usePoolTotalStaked = (poolDataCacheOrApi: PoolDataCacheOrApi) => {
   const { address, lpToken, gauge } = poolDataCacheOrApi?.pool ?? {}
   const { curveApi = null } = useCurve()
   const { provider: walletProvider } = useWallet()
@@ -83,5 +83,3 @@ const usePoolTotalStaked = (poolDataCacheOrApi: PoolDataCacheOrApi) => {
 
   return staked
 }
-
-export default usePoolTotalStaked

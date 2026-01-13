@@ -1,9 +1,9 @@
-import { RCScrvUSDLogoSM } from 'ui/src/images'
-import CrvUsdStaking from '@/loan/components/PageCrvUsdStaking'
+import { CrvUsdStaking } from '@/loan/components/PageCrvUsdStaking'
 import type { NetworkUrlParams } from '@/loan/types/loan.types'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import Box from '@ui/Box'
+import { Box } from '@ui/Box'
+import { RCScrvUSDLogoSM } from '@ui/images'
 import { useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { Spacing as PrimitiveSpacing } from '@ui-kit/themes/design/0_primitives'
@@ -11,7 +11,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing, MaxWidth } = SizesAndSpaces
 
-const Page = () => (
+export const Page = () => (
   <Stack
     data-testid="scrvusd-page"
     direction="column"
@@ -40,5 +40,3 @@ const Page = () => (
     <CrvUsdStaking params={useParams<NetworkUrlParams>()} />
   </Stack>
 )
-
-export default Page

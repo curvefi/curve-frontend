@@ -1,19 +1,19 @@
 import { ReactNode, useMemo } from 'react'
 import { styled } from 'styled-components'
 import type { LiqRangeSliderIdx } from '@/lend/store/types'
-import useStore from '@/lend/store/useStore'
+import { useStore } from '@/lend/store/useStore'
 import { ChainId } from '@/lend/types/lend.types'
 import type { HealthMode } from '@/llamalend/llamalend.types'
 import { ChartLiquidationRange } from '@/llamalend/widgets/ChartLiquidationRange'
-import Button from '@ui/Button'
+import { Button } from '@ui/Button'
 import { DetailInfo } from '@ui/DetailInfo'
-import Icon from '@ui/Icon'
+import { Icon } from '@ui/Icon'
 import { Chip } from '@ui/Typography'
 import { formatNumber, formatNumberRange } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { useUserLoanDetails } from '../hooks/useUserLoanDetails'
 
-const DetailInfoLiqRange = ({
+export const DetailInfoLiqRange = ({
   rChainId,
   rOwmId,
   bands: newBands,
@@ -172,5 +172,3 @@ const LiqRangeEditButton = styled(Button)`
     cursor: initial;
   }
 `
-
-export default DetailInfoLiqRange

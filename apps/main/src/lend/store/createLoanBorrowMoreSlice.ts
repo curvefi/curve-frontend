@@ -14,8 +14,8 @@ import type { FormDetailInfo, FormEstGas } from '@/lend/components/PageLendMarke
 import { DEFAULT_FORM_EST_GAS } from '@/lend/components/PageLendMarket/utils'
 import { invalidateMarketDetails } from '@/lend/entities/market-details'
 import { invalidateAllUserBorrowDetails } from '@/lend/entities/user-loan-details'
-import apiLending, { helpers } from '@/lend/lib/apiLending'
-import networks from '@/lend/networks'
+import { helpers, apiLending } from '@/lend/lib/apiLending'
+import { networks } from '@/lend/networks'
 import type { State } from '@/lend/store/useStore'
 import { Api, ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { _parseActiveKey } from '@/lend/utils/helpers'
@@ -75,7 +75,7 @@ const DEFAULT_STATE: SliceState = {
 const { loanBorrowMore } = apiLending
 const { isTooMuch } = helpers
 
-const createLoanBorrowMore = (
+export const createLoanBorrowMore = (
   _: StoreApi<State>['setState'],
   get: StoreApi<State>['getState'],
 ): LoanBorrowMoreSlice => ({
@@ -355,8 +355,6 @@ const createLoanBorrowMore = (
     },
   },
 })
-
-export default createLoanBorrowMore
 
 export function _getActiveKeys(
   api: Api | null,

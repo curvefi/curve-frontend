@@ -1,5 +1,5 @@
 import { styled } from 'styled-components'
-import PoolCreation from '@/dex/components/PageCreatePool/index'
+import { CreatePool as PoolCreation } from '@/dex/components/PageCreatePool/index'
 import { breakpoints } from '@ui/utils/responsive'
 import { ConnectWalletPrompt, useCurve } from '@ui-kit/features/connect-wallet'
 

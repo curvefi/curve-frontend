@@ -1,7 +1,7 @@
 import { styled } from 'styled-components'
 import { RCCircle } from '@ui/images'
 
-const RouteLine = () => (
+export const RouteLine = () => (
   <RouteTravelDecor>
     <CircleIcon />
     <RouteTravelBar></RouteTravelBar>
@@ -27,5 +27,3 @@ const RouteTravelDecor = styled.div`
   margin-left: var(--spacing-1);
   opacity: 0.7;
 `
-
-export default RouteLine
