@@ -1,8 +1,8 @@
 import { styled } from 'styled-components'
-import { shortenAddress } from '@ui-kit/utils/address'
 import { Icon } from '@ui/Icon'
 import { ExternalLink } from '@ui/Link/ExternalLink'
 import { Spinner } from '@ui/Spinner'
+import { shortenAddress } from '@ui-kit/utils/address'
 
 type Props = {
   transactionHash: string
