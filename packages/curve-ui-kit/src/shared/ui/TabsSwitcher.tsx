@@ -1,5 +1,5 @@
 import type { UrlObject } from 'url'
-import { type ReactNode } from 'react'
+import { useMemo, useState, type ReactNode } from 'react'
 import Icon from 'ui/src/Icon'
 import Popover from '@mui/material/Popover'
 import Stack from '@mui/material/Stack'
@@ -16,10 +16,9 @@ import {
   TabSwitcherVariants,
   TAB_SUFFIX_CLASS,
   TAB_TEXT_VARIANTS,
-  TAB_HEIGHT,
 } from '../../themes/components/tabs'
 
-const { Spacing, ButtonSize } = SizesAndSpaces
+const { Spacing } = SizesAndSpaces
 
 export type TabOption<T> = Pick<TabProps, 'label' | 'disabled' | 'icon' | 'sx'> & {
   value: T
@@ -33,8 +32,7 @@ export type TabOption<T> = Pick<TabProps, 'label' | 'disabled' | 'icon' | 'sx'> 
 export type TabsSwitcherProps<T> = Pick<TabsProps, 'sx'> & {
   size?: keyof typeof TABS_SIZES_CLASSES
   variant?: TabSwitcherVariants
-  overflow?: 'standard' | 'scrollable' | 'kebab'
-  muiVariant?: TabsProps['variant']
+  overflow?: 'standard' | 'kebab' | 'fullWidth'
   textVariant?: TypographyProps['variant']
   orientation?: TabsProps['orientation']
   value: T | undefined
@@ -49,11 +47,19 @@ export type TabsSwitcherProps<T> = Pick<TabsProps, 'sx'> & {
 
 const KEBAB_TAB_VALUE = '__kebab__'
 
+const overflowToMuiVariant: Record<
+  NonNullable<TabsSwitcherProps<string>['overflow']>,
+  NonNullable<TabsProps['variant']>
+> = {
+  standard: 'standard',
+  kebab: 'scrollable',
+  fullWidth: 'fullWidth',
+}
+
 export const TabsSwitcher = <T extends string | number>({
   variant = 'contained',
   size = 'medium',
   overflow = 'standard',
-  muiVariant,
   options,
   onChange,
   value,
@@ -65,17 +71,15 @@ export const TabsSwitcher = <T extends string | number>({
   children,
   ...props
 }: TabsSwitcherProps<T>) => {
-  const isKebabMode = overflow === 'kebab'
-  const {
-    visibleOptions,
-    hiddenOptions,
-    showKebabButton,
-    isKebabOpen,
-    anchorEl,
-    setAnchorEl,
-    tabsContainerRef,
-    measureRef,
-  } = useTabsOverflow(options, isKebabMode, value)
+  // TODO: make kebab mode only available in vertical orientation
+  const isKebabMode = overflow === 'kebab' && props.orientation !== 'vertical'
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
+  const isKebabOpen = !!anchorEl
+  const { renderedOptions, visibleOptions, hiddenOptions, visibleTabsRef } = useTabsOverflow(
+    options,
+    isKebabMode,
+    value,
+  )
 
   const isActiveTabHidden = isKebabMode && hiddenOptions.some((option) => option.value === value)
   const isActiveTabVisible = visibleOptions.some((option) => option.value === value)
@@ -103,80 +107,72 @@ export const TabsSwitcher = <T extends string | number>({
       {endAdornment}
     </Stack>
   )
-  const finalMuiVariant = muiVariant ?? (overflow === 'scrollable' ? 'scrollable' : 'standard')
   const tabsSx = {
     ...sx,
     ...(fullWidth && { '& .MuiTab-root': { flexGrow: 1 } }),
     ...(isKebabMode && { width: '100%' }),
-    ...(showKebabButton && { paddingRight: ButtonSize.sm }),
   }
   const tabsClassName = `${TABS_VARIANT_CLASSES[variant]} ${TABS_SIZES_CLASSES[size]} ${hideInactiveBorders && HIDE_INACTIVE_BORDERS_CLASS}`
+  const hasHiddenTabs = isKebabMode && hiddenOptions.length > 0
+  const hiddenValues = useMemo(() => new Set(hiddenOptions.map((option) => option.value)), [hiddenOptions])
 
   return (
-    <Stack
-      ref={tabsContainerRef}
-      sx={{
-        position: 'relative',
-        // Keep kebab button visible when no visible tabs render
-        minHeight: TAB_HEIGHT[size],
-      }}
-    >
-      <Tabs
-        variant={finalMuiVariant}
-        textColor="inherit"
-        value={tabsValue}
-        onChange={(_, newValue) => onChange?.(newValue as T)}
-        className={tabsClassName}
-        sx={tabsSx}
-        {...props}
-      >
-        {visibleOptions.map(
-          ({ value: val, label, href, startAdornment, endAdornment, alwaysInKebab, suffix, ...props }) => (
-            <Tab
-              data-testid={`${testIdPrefix}-${val}`}
-              key={val}
-              value={val}
-              label={renderTabLabel({ label, suffix, startAdornment, endAdornment })}
-              {...(href && { href, component: Link })}
-              {...props}
-            />
-          ),
-        )}
-        {children}
-      </Tabs>
-      {showKebabButton && (
+    <Stack direction="row" justifyContent="space-between" gap={Spacing.xs}>
+      <Stack ref={visibleTabsRef} sx={{ flex: 1, minWidth: 0 }}>
         <Tabs
-          value={kebabTabsValue}
+          variant={overflowToMuiVariant[overflow]}
           textColor="inherit"
+          value={tabsValue}
+          onChange={(_, newValue) => onChange?.(newValue as T)}
           className={tabsClassName}
-          sx={{
-            position: 'absolute',
-            right: 0,
-            top: 0,
-            bottom: 0,
-            zIndex: 1,
-            minHeight: 0,
-          }}
+          sx={tabsSx}
+          {...props}
         >
-          <Tab
-            aria-label="More tabs"
-            data-testid={`${testIdPrefix}-kebab`}
-            value={KEBAB_TAB_VALUE}
-            onClick={(event) => setAnchorEl(event.currentTarget)}
-            label={renderTabLabel({
-              label: null,
-              startAdornment: (
-                <Typography variant={labelVariant}>
-                  <Icon name="OverflowMenuVertical" size={20} />
-                </Typography>
-              ),
-            })}
-          />
+          {renderedOptions.map(
+            ({ value: val, label, href, startAdornment, endAdornment, suffix, sx: tabSx, ...props }) => {
+              const isHidden = isKebabMode && hiddenValues.has(val)
+              return (
+                <Tab
+                  data-testid={`${testIdPrefix}-${val}`}
+                  key={val}
+                  value={val}
+                  label={renderTabLabel({ label, suffix, startAdornment, endAdornment })}
+                  sx={{
+                    ...tabSx,
+                    ...(isHidden && { visibility: 'hidden', position: 'absolute', pointerEvents: 'none' }),
+                  }}
+                  {...(href && { href, component: Link })}
+                  {...props}
+                />
+              )
+            },
+          )}
+          {children}
         </Tabs>
+      </Stack>
+      {hasHiddenTabs && (
+        <Stack sx={{ flexShrink: 0 }}>
+          <Tabs value={kebabTabsValue} textColor="inherit" className={tabsClassName} sx={{ minHeight: 0 }}>
+            <Tab
+              aria-label="More tabs"
+              data-testid={`${testIdPrefix}-kebab`}
+              value={KEBAB_TAB_VALUE}
+              onClick={(event) => setAnchorEl(event.currentTarget)}
+              label={renderTabLabel({
+                label: null,
+                startAdornment: (
+                  <Typography variant={labelVariant}>
+                    <Icon name="OverflowMenuVertical" size={20} />
+                  </Typography>
+                ),
+              })}
+            />
+          </Tabs>
+        </Stack>
       )}
 
       {/* Kebab menu content */}
-      {isKebabMode && (
+      {isKebabMode && hasHiddenTabs && (
         <Popover
           open={isKebabOpen}
           anchorEl={anchorEl}
@@ -213,24 +209,6 @@ export const TabsSwitcher = <T extends string | number>({
             )}
           </Tabs>
         </Popover>
-      )}
-
-      {/* Measure ref for calculating tab widths. Not visible to the user. */}
-      {isKebabMode && (
-        <div
-          ref={measureRef}
-          aria-hidden="true"
-          style={{ position: 'absolute', top: -10000, left: -10000, visibility: 'hidden', pointerEvents: 'none' }}
-        >
-          <TabsSwitcher
-            variant={variant}
-            size={size}
-            value={value}
-            options={options}
-            muiVariant="standard"
-            testIdPrefix="measure-tab"
-          />
-        </div>
       )}
     </Stack>
   )

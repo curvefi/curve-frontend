@@ -41,6 +41,7 @@ const BORDER_SIZE = '2px' as const
 const BORDER_SIZE_INACTIVE = '1px' as const
 const BORDER_SIZE_LARGE = '4px' as const
 const TAB_BOX_SIZING = 'border-box' as const
+export const CONTAINED_TABS_MARGIN_RIGHT = 1
 
 type TabSizeConfig = {
   className: string
@@ -217,7 +218,7 @@ export const defineMuiTabs = ({
         '& .MuiTab-root': tabVariant(Contained),
         // horizontal orientation
         '& .MuiTab-root:not(.Mui-selected):not(:last-child)': {
-          marginRight: '1px',
+          marginRight: `${CONTAINED_TABS_MARGIN_RIGHT}px`,
         },
         // vertical orientation
         '&.MuiTabs-vertical .MuiTab-root:not(.Mui-selected):not(:last-child)': {

@@ -1,6 +1,12 @@
-import { Stack, Typography } from '@mui/material'
+import Grid from '@mui/material/Grid'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { FormTab, FormTabs } from '../../../widgets/DetailPageLayout/FormTabs'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { TabsSwitcherProps } from '../TabsSwitcher'
+
+const { MaxWidth } = SizesAndSpaces
 
 type DemoParams = {
   availableBalance: number
@@ -38,9 +44,19 @@ const WithdrawTab = ({ canWithdraw }: DemoParams) => (
   />
 )
 const AdvancedTab = () => <Panel title="Advanced" body="Conditional tab that appears when enabled." />
-const RewardsTab = () => <Panel title="Rewards" body="Additional tab" />
-const HistoryTab = () => <Panel title="History" body="Additional tab" />
-const SettingsTab = () => <Panel title="Settings" body="Additional tab" />
+const numberedTabs = (length: number): FormTab<DemoParams>[] =>
+  Array.from({ length }, (_, index) => ({
+    value: `additional-tab-${index}`,
+    label: `Tab ${index + 1}`,
+    visible: () => true,
+    component: () => (
+      <Panel
+        title={`Title ${index + 1}`}
+        body="crvUSD is Curve’s USD-pegged stablecoin that can be borrowed against a variety of battle-tested crypto collaterals."
+      />
+    ),
+  }))
+
 const AlwaysInMenuTab = () => (
   <Panel title="Always in Menu" body="This tab is configured to always be in the kebab menu." />
 )
@@ -75,23 +91,6 @@ const baseMenu: FormTab<DemoParams>[] = [
   },
 ]
 
-const additionalTabs: FormTab<DemoParams>[] = [
-  {
-    value: 'rewards',
-    label: 'Rewards',
-    visible: () => true,
-    component: RewardsTab,
-  },
-  {
-    value: 'history',
-    label: 'History',
-    visible: () => true,
-    component: HistoryTab,
-  },
-]
-
-const kebabMenuAutoOverflow: FormTab<DemoParams>[] = [...baseMenu, ...additionalTabs]
-
 const kebabMenuWithForcedOverflow: FormTab<DemoParams>[] = [
   ...baseMenu,
   {
@@ -105,21 +104,14 @@ const kebabMenuWithForcedOverflow: FormTab<DemoParams>[] = [
 
 type StoryArgs = DemoParams & {
   shouldWrap: boolean
-  overflow: 'standard' | 'scrollable' | 'kebab'
-  showOverflowMenu: boolean
+  overflow: TabsSwitcherProps<DemoParams>['overflow']
   menu: FormTab<DemoParams>[]
 }
 
-const FormTabsStory = ({ shouldWrap, overflow, showOverflowMenu, menu, ...params }: StoryArgs) => (
-  <Stack sx={{ width: '500px', marginInline: 'auto' }}>
-    <FormTabs<DemoParams>
-      params={params}
-      shouldWrap={shouldWrap}
-      overflow={overflow}
-      showOverflowMenu={showOverflowMenu}
-      menu={menu}
-    />
-  </Stack>
+const FormTabsStory = ({ shouldWrap, overflow, menu, ...params }: StoryArgs) => (
+  <Grid size={{ mobile: 12, tablet: 5, desktop: 4 }} width={{ desktop: MaxWidth.actionCard }}>
+    <FormTabs<DemoParams> params={params} shouldWrap={shouldWrap} overflow={overflow} menu={menu} />
+  </Grid>
 )
 
 const meta: Meta<typeof FormTabsStory> = {
@@ -132,7 +124,6 @@ const meta: Meta<typeof FormTabsStory> = {
     userAddress: '0x1234...cafe',
     shouldWrap: false,
     overflow: 'standard',
-    showOverflowMenu: false,
     menu: baseMenu,
   },
   argTypes: {
@@ -158,7 +149,7 @@ const meta: Meta<typeof FormTabsStory> = {
     },
     overflow: {
       control: 'select',
-      options: ['standard', 'scrollable', 'kebab'],
+      options: ['standard', 'kebab', 'fullWidth'],
       description: 'The overflow behavior of the tabs.',
     },
   },
@@ -217,8 +208,8 @@ export const LegacyWrapped: Story = {
   },
 }
 
-export const KebabOverflow: Story = {
-  args: { overflow: 'kebab', showOverflowMenu: true, menu: kebabMenuWithForcedOverflow },
+export const KebabMenu: Story = {
+  args: { overflow: 'kebab', menu: kebabMenuWithForcedOverflow },
   parameters: {
     docs: {
       description: {
@@ -228,17 +219,25 @@ export const KebabOverflow: Story = {
   },
 }
 
-export const KebabAutoOverflow: Story = {
+export const KebabMenuAutoOverflow: Story = {
   args: {
     overflow: 'kebab',
-    showAdvanced: true,
-    menu: kebabMenuAutoOverflow,
+    menu: numberedTabs(10),
   },
+  render: ({ shouldWrap, overflow, menu, ...params }) => (
+    <Stack gap={4}>
+      {['40rem', '28rem', '20rem'].map((width) => (
+        <Grid key={width} size={4} width={width}>
+          <FormTabs<DemoParams> params={params} shouldWrap={shouldWrap} overflow={overflow} menu={menu} />
+        </Grid>
+      ))}
+    </Stack>
+  ),
 
   parameters: {
     docs: {
       description: {
-        story: 'Kebab mode with extra tabs to trigger automatic overflow.',
+        story: 'Kebab mode with extra tabs to trigger automatic overflow at different container widths.',
       },
     },
   },

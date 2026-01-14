@@ -1,99 +1,71 @@
 import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 import useResizeObserver from '@ui-kit/hooks/useResizeObserver'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TabOption } from '../shared/ui/TabsSwitcher'
+import { partition } from 'lodash'
+import { splitAt } from '@ui-kit/utils/array'
+import { CONTAINED_TABS_MARGIN_RIGHT } from '@ui-kit/themes/components/tabs/mui-tabs'
 
-const { ButtonSize } = SizesAndSpaces
-const kebabButtonSizePx = Number.parseFloat(ButtonSize.sm) * 16
-
-const OVERFLOW_THRESHOLD = 1 // px
+// threshold from when the tabs start to overflow
+const OVERFLOW_THRESHOLD = 0 // px
+const MUI_TAB_SELECTOR = '.MuiTab-root'
 
 export function useTabsOverflow<T extends string | number>(
   options: readonly TabOption<T>[],
   isKebabMode: boolean,
   currentValue: T | undefined,
 ) {
-  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
-  const isKebabOpen = Boolean(anchorEl)
-  const tabsContainerRef = useRef<HTMLDivElement>(null)
-  const measureRef = useRef<HTMLDivElement>(null)
+  const visibleTabsRef = useRef<HTMLDivElement>(null)
+  const [tabsContainerWidth] = useResizeObserver(visibleTabsRef, { threshold: 1 }) ?? []
   const [tabWidths, setTabWidths] = useState<number[]>([])
-  const [tabsContainerWidth] = useResizeObserver(tabsContainerRef, { threshold: 1 }) ?? []
 
   useLayoutEffect(() => {
-    if (!isKebabMode) return
-    const node = measureRef.current
-    if (!node) return
-    const tabNodes = Array.from(node.querySelectorAll<HTMLElement>('.MuiTab-root'))
-    const widths = tabNodes.map((tabNode) => Math.ceil(tabNode.getBoundingClientRect().width))
-    setTabWidths((prev) =>
-      prev.length === widths.length && prev.every((width, index) => width === widths[index]) ? prev : widths,
-    )
-  }, [isKebabMode, options, currentValue])
+    const node = visibleTabsRef.current
+    if (node && isKebabMode) {
+      const widths = Array.from(node.querySelectorAll<HTMLElement>(MUI_TAB_SELECTOR)).map(
+        (tabNode) => tabNode.getBoundingClientRect().width,
+      )
+      setTabWidths(widths)
+    }
+  }, [isKebabMode, options, currentValue, tabsContainerWidth])
 
-  const { visibleOptions, hiddenOptions, showKebabButton } = useMemo(() => {
+  const { renderedOptions, visibleOptions, hiddenOptions } = useMemo(() => {
     if (!isKebabMode) {
-      return { visibleOptions: options, hiddenOptions: [], showKebabButton: false }
+      return { renderedOptions: options, visibleOptions: options, hiddenOptions: [] }
     }
 
-    const tabMeta = options.map((option, index) => ({
-      option,
-      index,
-      width: tabWidths[index] ?? 0,
-    }))
+    const [alwaysInKebabOptions, standardOptions] = partition(options, (option) => option.alwaysInKebab)
 
-    const standardTabs = tabMeta.filter((item) => item.option.alwaysInKebab !== true)
-    const hasAlwaysInKebab = tabMeta.some((item) => item.option.alwaysInKebab === true)
-    const totalStandardWidth = standardTabs.reduce((sum, item) => sum + item.width, 0)
-    const isOverflowing = tabsContainerWidth != null && totalStandardWidth - tabsContainerWidth >= OVERFLOW_THRESHOLD
-    const shouldShowKebab = hasAlwaysInKebab || isOverflowing
-
-    if (!shouldShowKebab) {
-      return { visibleOptions: options, hiddenOptions: [], showKebabButton: false }
-    }
-
-    if (tabsContainerWidth == null) {
-      const visibleOptions = options.filter((option) => !option.alwaysInKebab)
-      const hiddenOptions = options.filter((option) => option.alwaysInKebab)
-      return { visibleOptions, hiddenOptions, showKebabButton: true }
-    }
-
-    const availableWidth = Math.max(tabsContainerWidth - kebabButtonSizePx, 0)
-    const visibleIndices = new Set<number>()
-    const overflowIndices = new Set<number>()
-    let usedWidth = 0
-    let reachedOverflow = false
-
-    standardTabs.forEach((item) => {
-      if (reachedOverflow) {
-        overflowIndices.add(item.index)
-        return
+    if (!tabsContainerWidth || !tabWidths.length) {
+      return {
+        renderedOptions: standardOptions,
+        visibleOptions: standardOptions,
+        hiddenOptions: alwaysInKebabOptions,
       }
+    }
 
-      if (usedWidth + item.width <= availableWidth) {
-        visibleIndices.add(item.index)
-        usedWidth += item.width
-        return
-      }
-
-      overflowIndices.add(item.index)
-      reachedOverflow = true
+    const lastIndex = standardOptions.length - 1
+    let totalWidth = 0
+    const overflowIndex = standardOptions.findIndex((option, index) => {
+      const margin = option.value !== currentValue && index !== lastIndex ? CONTAINED_TABS_MARGIN_RIGHT : 0
+      totalWidth += (tabWidths[index] ?? 0) + margin
+      return totalWidth - tabsContainerWidth >= OVERFLOW_THRESHOLD
     })
+    const [visibleOptions, overflowOptions] = splitAt(
+      standardOptions,
+      overflowIndex === -1 ? standardOptions.length : overflowIndex,
+    )
 
-    const visibleOptions = options.filter((_, index) => visibleIndices.has(index))
-    const hiddenOptions = options.filter((option, index) => option.alwaysInKebab || overflowIndices.has(index))
-
-    return { visibleOptions, hiddenOptions, showKebabButton: true }
-  }, [isKebabMode, options, tabWidths, tabsContainerWidth])
+    return {
+      renderedOptions: standardOptions,
+      visibleOptions,
+      hiddenOptions: [...overflowOptions, ...alwaysInKebabOptions],
+    }
+  }, [currentValue, isKebabMode, options, tabWidths, tabsContainerWidth])
 
   return {
+    renderedOptions,
     visibleOptions,
     hiddenOptions,
-    showKebabButton,
-    isKebabOpen,
-    anchorEl,
-    setAnchorEl,
-    tabsContainerRef,
-    measureRef,
+    visibleTabsRef,
   }
 }

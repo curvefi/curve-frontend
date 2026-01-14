@@ -3,7 +3,7 @@ import { type ComponentType, type ReactNode, useState } from 'react'
 import { notFalsy } from '@curvefi/prices-api/objects.util'
 import Skeleton from '@mui/material/Skeleton'
 import Stack from '@mui/material/Stack'
-import { type TabOption, TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
+import { type TabOption, TabsSwitcher, TabsSwitcherProps } from '@ui-kit/shared/ui/TabsSwitcher'
 import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
 import { FormContent } from './FormContent'
 
@@ -99,13 +99,13 @@ export const FormMargins = ({ children }: { children: ReactNode }) => (
  */
 type FormTabsProps<T extends object> = UseFormTabOptions<T> & {
   shouldWrap?: boolean
-  overflow?: 'standard' | 'scrollable' | 'kebab'
+  overflow?: TabsSwitcherProps<T>['overflow']
   showOverflowMenu?: boolean
 }
 
 export function FormTabs<T extends object>({
   shouldWrap,
-  overflow = 'standard',
+  overflow,
   showOverflowMenu = false,
   ...options
 }: FormTabsProps<T>) {
