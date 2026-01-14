@@ -157,7 +157,7 @@ export const TokenList = ({
   const previewAll = useMemo(() => (showPreviewAll ? allTokens.slice(0, 300) : []), [allTokens, showPreviewAll])
 
   return (
-    <Stack gap={Spacing.sm} sx={{ overflowY: 'auto', backgroundColor: 'background.paper' }}>
+    <Stack gap={Spacing.sm} sx={{ overflowY: 'auto' }}>
       {!disableSearch && (
         <SearchField
           name="tokenName"

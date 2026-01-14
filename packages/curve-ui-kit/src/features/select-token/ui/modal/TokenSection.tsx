@@ -54,7 +54,7 @@ export const TokenSection = <T extends Option = Option>({
   return (
     <>
       {title && (
-        <Box sx={{ position: 'sticky', top: 0, zIndex: 1 }}>
+        <Box sx={{ position: 'sticky', top: 0, zIndex: 1, backgroundColor: (t) => t.design.Layer[1].Fill }}>
           <CardHeader title={title} size="small" />
           <Divider />
         </Box>
