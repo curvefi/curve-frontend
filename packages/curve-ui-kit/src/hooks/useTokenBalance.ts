@@ -131,6 +131,7 @@ export function useTokenBalance(
       data: nativeBalance.data && convertBalance(nativeBalance.data),
       error: nativeBalance.error,
       isLoading: nativeBalance.isLoading,
+      refetch: nativeBalance.refetch,
     }
   }
 
@@ -144,6 +145,7 @@ export function useTokenBalance(
         : undefined,
     error: erc20Balance.error ?? (balance?.status === 'failure' ? balance.error : null),
     isLoading: erc20Balance.isLoading,
+    refetch: erc20Balance.refetch,
   }
 }
 

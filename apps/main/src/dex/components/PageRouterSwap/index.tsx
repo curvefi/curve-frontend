@@ -120,7 +120,11 @@ export const QuickSwap = ({
   const fromToken = tokens.find((x) => x.address.toLocaleLowerCase() == fromAddress)
   const toToken = tokens.find((x) => x.address.toLocaleLowerCase() == toAddress)
 
-  const { data: userFromBalance, isLoading: userFromBalanceLoading } = useTokenBalance(
+  const {
+    data: userFromBalance,
+    isLoading: userFromBalanceLoading,
+    refetch: refetchUserFromBalance,
+  } = useTokenBalance(
     {
       chainId,
       userAddress: signerAddress,
@@ -129,7 +133,11 @@ export const QuickSwap = ({
     !!signerAddress && !!fromAddress,
   )
 
-  const { data: userToBalance, isLoading: userToBalanceLoading } = useTokenBalance(
+  const {
+    data: userToBalance,
+    isLoading: userToBalanceLoading,
+    refetch: refetchUserToBalance,
+  } = useTokenBalance(
     {
       chainId,
       userAddress: signerAddress,
@@ -195,6 +203,8 @@ export const QuickSwap = ({
       const resp = await fetchStepSwap(actionActiveKey, config, curve, formValues, searchedParams, maxSlippage)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && !resp.error && network) {
+        void refetchUserFromBalance()
+        void refetchUserToBalance()
         const txMessage = t`Transaction complete. Received ${resp.swappedAmount} ${toSymbol}.`
         setTxInfoBar(
           <TxInfoBar
@@ -207,7 +217,7 @@ export const QuickSwap = ({
       if (resp?.error) setTxInfoBar(null)
       if (typeof dismiss === 'function') dismiss()
     },
-    [activeKey, config, fetchStepSwap, updateFormValues, network],
+    [fetchStepSwap, config, activeKey, network, refetchUserFromBalance, refetchUserToBalance, updateFormValues],
   )
 
   const getSteps = useCallback(

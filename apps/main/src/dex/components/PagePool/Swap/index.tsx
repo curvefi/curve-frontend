@@ -95,13 +95,21 @@ export const Swap = ({
 
   const config = useConfig()
   const { address: userAddress } = useConnection()
-  const { data: userFromBalance, isLoading: userFromBalanceLoading } = useTokenBalance({
+  const {
+    data: userFromBalance,
+    isLoading: userFromBalanceLoading,
+    refetch: refetchUserFromBalance,
+  } = useTokenBalance({
     chainId,
     userAddress,
     tokenAddress: (formValues.fromAddress as Address) || undefined,
   })
 
-  const { data: userToBalance, isLoading: userToBalanceLoading } = useTokenBalance({
+  const {
+    data: userToBalance,
+    isLoading: userToBalanceLoading,
+    refetch: refetchUserToBalance,
+  } = useTokenBalance({
     chainId,
     userAddress,
     tokenAddress: (formValues.toAddress as Address) || undefined,
@@ -163,6 +171,8 @@ export const Swap = ({
       const resp = await fetchStepSwap(actionActiveKey, config, curve, poolData, formValues, maxSlippage)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && network) {
+        void refetchUserFromBalance()
+        void refetchUserToBalance()
         setTxInfoBar(
           <TxInfoBar
             description={`Swapped ${fromAmount} ${fromToken}.`}
@@ -175,7 +185,7 @@ export const Swap = ({
       }
       if (typeof dismiss === 'function') dismiss()
     },
-    [activeKey, fetchStepSwap, updateFormValues, network],
+    [fetchStepSwap, activeKey, network, refetchUserFromBalance, refetchUserToBalance, updateFormValues],
   )
 
   const getSteps = useCallback(
