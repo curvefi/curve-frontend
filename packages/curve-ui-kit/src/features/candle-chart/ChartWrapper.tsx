@@ -1,13 +1,15 @@
 import { useMemo, useRef } from 'react'
-import { styled } from 'styled-components'
 import Box from '@mui/material/Box'
-import { Button } from '@ui/Button/Button'
-import { Icon } from '@ui/Icon'
+import Stack from '@mui/material/Stack'
 import { CandleChart } from '@ui-kit/features/candle-chart/CandleChart'
+import { ErrorMessage } from '@ui-kit/features/candle-chart/ErrorMessage'
 import { useChartPalette } from '@ui-kit/features/candle-chart/hooks/useChartPalette'
 import type { ChartSelections } from '@ui-kit/shared/ui/ChartHeader'
 import { Spinner } from '@ui-kit/shared/ui/Spinner'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { FetchingStatus, LiquidationRanges, LpPriceOhlcDataFormatted, OraclePriceData, TimeOption } from './types'
+
+const { Spacing } = SizesAndSpaces
 
 export type OhlcChartProps = {
   /**
@@ -54,111 +56,75 @@ export const ChartWrapper = ({
   latestOraclePrice,
 }: OhlcChartProps) => {
   const clonedOhlcData = useMemo(() => [...ohlcData], [ohlcData])
-
   const wrapperRef = useRef(null)
-
   const colors = useChartPalette({ backgroundOverride: betaBackgroundColor })
 
   return (
-    <Wrapper>
-      <ContentWrapper>
-        {chartStatus === 'READY' && (
-          <ResponsiveContainer ref={wrapperRef} chartHeight={chartHeight}>
-            <CandleChart
-              hideCandleSeriesLabel={hideCandleSeriesLabel}
-              chartHeight={chartHeight}
-              ohlcData={clonedOhlcData}
-              oraclePriceData={oraclePriceData}
-              liquidationRange={liquidationRange}
-              timeOption={timeOption}
-              wrapperRef={wrapperRef}
-              colors={colors}
-              refetchingCapped={refetchingCapped}
-              fetchMoreChartData={fetchMoreChartData}
-              lastFetchEndTime={lastFetchEndTime}
-              liqRangeCurrentVisible={liqRangeCurrentVisible}
-              liqRangeNewVisible={liqRangeNewVisible}
-              oraclePriceVisible={oraclePriceVisible}
-              latestOraclePrice={latestOraclePrice}
-            />
-          </ResponsiveContainer>
-        )}
-        {chartStatus === 'LOADING' && (
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: '100%',
-              minHeight: chartHeight,
-              gap: 'var(--spacing-2)',
-            }}
-          >
-            <Spinner />
-          </Box>
-        )}
-        {chartStatus === 'ERROR' && (
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: '100%',
-              minHeight: chartHeight,
-              gap: 'var(--spacing-2)',
-            }}
-          >
-            <ErrorMessage>{`Unable to fetch ${selectChartList?.find((c) => c.key === selectedChartKey)?.label ?? ''} data.`}</ErrorMessage>
-            <RefreshButton
-              size="small"
-              variant="text"
-              onClick={() => {
-                refetchPricesData()
-              }}
-            >
-              <Icon name={'Renew'} size={16} aria-label={'Refresh chart'} />
-            </RefreshButton>
-          </Box>
-        )}
-      </ContentWrapper>
-    </Wrapper>
+    <Stack direction="column">
+      {chartStatus === 'READY' && (
+        <Box
+          ref={wrapperRef}
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            position: 'relative',
+            width: '100%',
+            minHeight: chartHeight,
+            paddingBottom: Spacing.sm,
+          }}
+        >
+          <CandleChart
+            hideCandleSeriesLabel={hideCandleSeriesLabel}
+            chartHeight={chartHeight}
+            ohlcData={clonedOhlcData}
+            oraclePriceData={oraclePriceData}
+            liquidationRange={liquidationRange}
+            timeOption={timeOption}
+            wrapperRef={wrapperRef}
+            colors={colors}
+            refetchingCapped={refetchingCapped}
+            fetchMoreChartData={fetchMoreChartData}
+            lastFetchEndTime={lastFetchEndTime}
+            liqRangeCurrentVisible={liqRangeCurrentVisible}
+            liqRangeNewVisible={liqRangeNewVisible}
+            oraclePriceVisible={oraclePriceVisible}
+            latestOraclePrice={latestOraclePrice}
+          />
+        </Box>
+      )}
+      {chartStatus === 'LOADING' && (
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '100%',
+            minHeight: chartHeight,
+            gap: Spacing.md,
+          }}
+        >
+          <Spinner />
+        </Box>
+      )}
+      {chartStatus === 'ERROR' && (
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '100%',
+            minHeight: chartHeight,
+            gap: Spacing.md,
+          }}
+        >
+          <ErrorMessage
+            errorMessage={`Unable to fetch ${selectChartList?.find((c) => c.key === selectedChartKey)?.label ?? ''} data.`}
+            refreshData={refetchPricesData}
+          />
+        </Box>
+      )}
+    </Stack>
   )
 }
-
-const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-`
-
-const RefreshButton = styled(Button)`
-  margin-left: var(--spacing-2);
-  box-shadow: none;
-  display: none;
-  align-items: center;
-  &.active:not(:disabled) {
-    box-shadow: none;
-  }
-  @media (min-width: 31.25rem) {
-    display: flex;
-  }
-`
-
-const ResponsiveContainer = styled.div<{ chartHeight: number }>`
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  width: 100%;
-  min-height: ${(props) => `${props.chartHeight}px`};
-  padding-bottom: var(--spacing-3);
-`
-
-const ErrorMessage = styled.p`
-  font-size: var(--font-size-2);
-`
-
-const ContentWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-`
