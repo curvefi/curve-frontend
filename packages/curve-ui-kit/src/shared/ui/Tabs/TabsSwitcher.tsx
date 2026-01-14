@@ -40,11 +40,10 @@ export type TabsSwitcherProps<T> = Pick<TabsProps, 'sx'> & {
   value: T | undefined
   options: readonly TabOption<T>[]
   hideInactiveBorders?: boolean
-  /** Tabs make use of all available width (so they're not as small and compact as possible) */
-  fullWidth?: boolean
   onChange?: (value: T) => void
   testIdPrefix?: string
   children?: ReactNode
+  // fullWidth: deprecated, use overflow="fullWidth" instead
 }
 
 const overflowToMuiVariant: Record<
@@ -53,7 +52,9 @@ const overflowToMuiVariant: Record<
 > = {
   standard: 'standard',
   kebab: 'scrollable',
-  fullWidth: 'fullWidth',
+  /** native MUI's fullWidth doesn't behave as expected because all tabs have the same width.
+   * Instead below we use flexGrow: 1 to make the tabs take all available width while having different tab's widths. */
+  fullWidth: 'standard',
 }
 
 export const TabsSwitcher = <T extends string | number>({
@@ -65,7 +66,6 @@ export const TabsSwitcher = <T extends string | number>({
   value,
   textVariant,
   hideInactiveBorders = false,
-  fullWidth = false,
   testIdPrefix = 'tab',
   sx,
   children,
@@ -110,7 +110,7 @@ export const TabsSwitcher = <T extends string | number>({
           className={tabsClassName}
           sx={{
             ...sx,
-            ...(fullWidth && { '& .MuiTab-root': { flexGrow: 1 } }),
+            ...(overflow === 'fullWidth' && { '& .MuiTab-root': { flexGrow: 1 } }),
             ...(isKebabMode && { width: '100%' }),
           }}
           {...props}

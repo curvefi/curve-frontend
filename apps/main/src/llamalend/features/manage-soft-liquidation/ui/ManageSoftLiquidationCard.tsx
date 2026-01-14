@@ -35,9 +35,15 @@ export const ManageSoftLiquidationCard = ({ actionInfos, improveHealth, closePos
       }}
     >
       <Stack>
-        <TabsSwitcher variant="contained" value="manage" options={tabs} fullWidth />
+        <TabsSwitcher variant="contained" value="manage" options={tabs} overflow="fullWidth" />
         <Box sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
-          <TabsSwitcher variant="underlined" value={subTab} options={subTabs} onChange={setSubTab} fullWidth />
+          <TabsSwitcher
+            variant="underlined"
+            value={subTab}
+            options={subTabs}
+            onChange={setSubTab}
+            overflow="fullWidth"
+          />
           {subTab === 'improve-health' && <ImproveHealth {...improveHealth} />}
           {subTab === 'close-position' && <ClosePosition {...closePosition} />}
         </Box>

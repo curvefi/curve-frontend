@@ -113,7 +113,7 @@ export function FormTabs<T extends object>({ shouldWrap, overflow, ...options }:
           variant="underlined"
           value={subTab.value}
           options={subTabs}
-          fullWidth
+          overflow="fullWidth"
           sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}
           onChange={onChangeSubTab}
         />

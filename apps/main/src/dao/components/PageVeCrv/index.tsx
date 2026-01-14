@@ -60,7 +60,7 @@ const FormCrvLocker = (pageProps: PageVecrv) => {
 
   return tab === 'adjust_crv' || tab === 'adjust_date' || tab === 'withdraw' ? (
     <>
-      <TabsSwitcher variant="underlined" value={tab} onChange={setTab} options={tabs} fullWidth />
+      <TabsSwitcher variant="underlined" value={tab} onChange={setTab} options={tabs} overflow="fullWidth" />
 
       <Stack gap={Spacing.md} padding={Spacing.md} paddingBlockStart={Spacing.xs}>
         {tab === 'adjust_crv' && <FormLockCrv {...pageProps} rFormType={tab} />}

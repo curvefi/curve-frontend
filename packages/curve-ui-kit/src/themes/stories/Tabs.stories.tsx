@@ -8,7 +8,7 @@ import { TabsSwitcher, type TabOption, type TabsSwitcherProps } from '../../shar
 import { TABS_SIZES_CLASSES } from '../components/tabs/mui-tabs'
 
 type TabValue = string
-
+const VARIANTS = ['contained', 'underlined', 'overlined'] as const
 const TABS_LABELS = ['Deposit', 'Withdraw', 'Staking', 'Unstaking'] as const
 const DEFAULT_TABS: TabOption<TabValue>[] = Array.from({ length: 8 }, (_, i) => ({
   value: `${i}`,
@@ -17,7 +17,10 @@ const DEFAULT_TABS: TabOption<TabValue>[] = Array.from({ length: 8 }, (_, i) => 
 
 const TAB_SIZE_KEYS = objectKeys(TABS_SIZES_CLASSES)
 
-const getOptionsWithAdornments = (count: number, size: keyof typeof TABS_SIZES_CLASSES): TabOption<TabValue>[] => {
+const getOptionsWithAdornments = (
+  count: number,
+  size: keyof typeof TABS_SIZES_CLASSES = 'medium',
+): TabOption<TabValue>[] => {
   const iconSize = SIZE_TO_ICON_SIZE[size]
 
   return DEFAULT_TABS.slice(0, count).map((tab, i) => ({
@@ -59,7 +62,7 @@ const meta: Meta<typeof TabsSwitcherWrapper> = {
   argTypes: {
     variant: {
       control: 'select',
-      options: ['contained', 'underlined', 'overlined'],
+      options: VARIANTS,
     },
     size: {
       control: 'select',
@@ -222,7 +225,7 @@ export const IconsOnly: Story = {
     <Stack gap={4}>
       {TAB_SIZE_KEYS.map((size) => (
         <Stack key={size} gap={4} direction="row" alignItems="center">
-          {(['contained', 'underlined', 'overlined'] as const).map((variant) => (
+          {VARIANTS.map((variant) => (
             <TabsSwitcherWrapper
               key={`${variant}-${size}`}
               variant={variant}
@@ -243,7 +246,28 @@ export const IconsOnly: Story = {
   },
 }
 
-export const OverflowTabs: Story = {
+export const OverflowFullWidth: Story = {
+  args: {
+    variant: 'contained',
+    overflow: 'fullWidth',
+  },
+  render: (args) => (
+    <Stack gap={4} width="40rem">
+      {VARIANTS.map((variant) => (
+        <TabsSwitcherWrapper key={variant} {...args} variant={variant} options={getOptionsWithAdornments(3)} />
+      ))}
+    </Stack>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story: 'Contained tabs with fullWidth variant for each size',
+      },
+    },
+  },
+}
+
+export const OverflowKebab: Story = {
   args: {
     variant: 'contained',
     overflow: 'kebab',

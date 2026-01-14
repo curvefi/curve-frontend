@@ -41,7 +41,9 @@ const ManageGauge = ({ poolId, chainId }: { poolId: string; chainId: ChainId }) 
   const [tab, setTab] = useState<Tab>(isGaugeManager ? 'add_reward' : 'deposit_reward')
 
   return (
-    <FormContent header={<TabsSwitcher variant="underlined" value={tab} onChange={setTab} options={tabs} fullWidth />}>
+    <FormContent
+      header={<TabsSwitcher variant="underlined" value={tab} onChange={setTab} options={tabs} overflow="fullWidth" />}
+    >
       {tab === 'add_reward' && <AddRewardToken chainId={chainId} poolId={poolId} />}
       {tab === 'deposit_reward' && <DepositReward chainId={chainId} poolId={poolId} />}
     </FormContent>
