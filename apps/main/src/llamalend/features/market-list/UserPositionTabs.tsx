@@ -92,7 +92,7 @@ export const UserPositionsTabs = (props: Omit<UserPositionsTableProps, 'tab' | '
               backgroundColor: (t) => t.design.Layer[1].Fill,
             }}
           >
-            <TabsSwitcher value={tab} onChange={setTab} variant="underlined" options={tabs} />
+            <TabsSwitcher value={tab} onChange={setTab} variant="underlined" options={tabs} overflow="standard" />
             <Stack
               alignItems="center"
               direction="row"

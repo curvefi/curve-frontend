@@ -90,7 +90,7 @@ export const LegalPage = ({ currentApp }: LegalPageProps) => {
             <LastUpdated />
           </Grid>
           <Grid size={12}>
-            <TabsSwitcher variant="contained" value={tab} options={tabs} overflow="kebab" />
+            <TabsSwitcher variant="contained" value={tab} options={tabs} />
           </Grid>
         </Grid>
 
@@ -101,7 +101,7 @@ export const LegalPage = ({ currentApp }: LegalPageProps) => {
               justifyContent="space-between"
               sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}
             >
-              <TabsSwitcher variant="underlined" value={disclaimerTab} options={disclaimerTabs} overflow="kebab" />
+              <TabsSwitcher variant="underlined" value={disclaimerTab} options={disclaimerTabs} />
               {/* Box with bottom border for consistent underline of the TabsSwitcher */}
               <Box
                 sx={{

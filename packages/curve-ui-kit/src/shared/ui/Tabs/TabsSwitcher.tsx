@@ -33,7 +33,7 @@ export type TabOption<T> = Pick<TabProps, 'label' | 'disabled' | 'icon' | 'sx'> 
 export type TabsSwitcherProps<T> = Pick<TabsProps, 'sx'> & {
   size?: keyof typeof TABS_SIZES_CLASSES
   variant?: TabSwitcherVariants
-  /** The overflow behavior of the tabs. This is directly mapped to the MUI's variant prop. Note that "kebab" mode overrides the "scrollable" variant */
+  /** The overflow behavior of the tabs. This is directly mapped to the MUI's variant prop. */
   overflow?: Exclude<TabsProps['variant'], 'scrollable'> | 'kebab'
   textVariant?: TypographyProps['variant']
   orientation?: TabsProps['orientation']
@@ -60,7 +60,7 @@ const overflowToMuiVariant: Record<
 export const TabsSwitcher = <T extends string | number>({
   variant = 'contained',
   size = 'medium',
-  overflow = 'standard',
+  overflow = 'kebab',
   options,
   onChange,
   value,

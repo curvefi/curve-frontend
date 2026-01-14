@@ -95,6 +95,7 @@ export const FormMargins = ({ children }: { children: ReactNode }) => (
  * Form wrapper that displays tabs and handles tab switching. It supports sub-tabs as well.
  * @param shouldWrap Whether to wrap the form content in a `FormContent` component
  *                   DEPRECATED: for legacy forms only, use `Form` or `FormContent` for new components
+ * @param overflow - the overflow mode of the tabs switcher, default is 'kebab'
  * @param options - useFormTabs options
  */
 type FormTabsProps<T extends object> = UseFormTabOptions<T> & {
@@ -102,7 +103,7 @@ type FormTabsProps<T extends object> = UseFormTabOptions<T> & {
   overflow?: TabsSwitcherProps<T>['overflow']
 }
 
-export function FormTabs<T extends object>({ shouldWrap, overflow, ...options }: FormTabsProps<T>) {
+export function FormTabs<T extends object>({ shouldWrap, overflow = 'kebab', ...options }: FormTabsProps<T>) {
   const { tab, tabs, subTabs, subTab, Component, onChangeTab, onChangeSubTab } = useFormTabs(options)
   return (
     <Stack marginInline={marginInline}>
