@@ -100,15 +100,9 @@ export const FormMargins = ({ children }: { children: ReactNode }) => (
 type FormTabsProps<T extends object> = UseFormTabOptions<T> & {
   shouldWrap?: boolean
   overflow?: TabsSwitcherProps<T>['overflow']
-  showOverflowMenu?: boolean
 }
 
-export function FormTabs<T extends object>({
-  shouldWrap,
-  overflow,
-  showOverflowMenu = false,
-  ...options
-}: FormTabsProps<T>) {
+export function FormTabs<T extends object>({ shouldWrap, overflow, ...options }: FormTabsProps<T>) {
   const { tab, tabs, subTabs, subTab, Component, onChangeTab, onChangeSubTab } = useFormTabs(options)
   return (
     <Stack marginInline={marginInline}>

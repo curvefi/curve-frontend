@@ -1,9 +1,9 @@
+import { partition, sumBy } from 'lodash'
 import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 import useResizeObserver from '@ui-kit/hooks/useResizeObserver'
-import type { TabOption } from '../shared/ui/Tabs/TabsSwitcher'
-import { partition, sumBy } from 'lodash'
-import { splitAtFirst } from '@ui-kit/utils/array'
 import { CONTAINED_TABS_MARGIN_RIGHT } from '@ui-kit/themes/components/tabs/mui-tabs'
+import { splitAtFirst } from '@ui-kit/utils/array'
+import type { TabOption } from '../shared/ui/Tabs/TabsSwitcher'
 import { useSwitch } from './useSwitch'
 
 // threshold from when the tabs start to overflow
@@ -17,13 +17,8 @@ const MUI_TAB_SELECTOR = '.MuiTab-root'
  * The hidden options are the Tabs that are rendered inside the kebab menu.
  * @param options - The options to render.
  * @param isKebabMode - Whether the tabs are in kebab mode.
- * @param currentValue - The current value of the tabs.
  */
-export function useTabsOverflow<T extends string | number>(
-  options: readonly TabOption<T>[],
-  isKebabMode: boolean,
-  currentValue: T | undefined,
-) {
+export function useTabsOverflow<T extends string | number>(options: readonly TabOption<T>[], isKebabMode: boolean) {
   const [kebabMenuOpen, openKebabMenu, closeKebabMenu] = useSwitch()
   const visibleTabsRef = useRef<HTMLDivElement>(null)
   const kebabTabRef = useRef<HTMLDivElement | null>(null)
@@ -38,7 +33,7 @@ export function useTabsOverflow<T extends string | number>(
       )
       setTabWidths(widths)
     }
-  }, [isKebabMode, options, currentValue, tabsContainerWidth])
+  }, [isKebabMode, options, tabsContainerWidth])
 
   const { renderedOptions, visibleOptions, hiddenOptions } = useMemo(() => {
     if (!isKebabMode) {
@@ -74,7 +69,7 @@ export function useTabsOverflow<T extends string | number>(
       visibleOptions: standardOptions,
       hiddenOptions: alwaysInKebabOptions,
     }
-  }, [currentValue, isKebabMode, options, tabWidths, tabsContainerWidth])
+  }, [isKebabMode, options, tabWidths, tabsContainerWidth])
 
   return {
     renderedOptions,

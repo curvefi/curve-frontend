@@ -82,7 +82,7 @@ export const TabsSwitcher = <T extends string | number>({
     kebabMenuOpen,
     openKebabMenu,
     closeKebabMenu,
-  } = useTabsOverflow(options, isKebabMode, value)
+  } = useTabsOverflow(options, isKebabMode)
 
   const isActiveTabHidden = isKebabMode && hiddenOptions.some((option) => option.value === value)
   const isActiveTabVisible = visibleOptions.some((option) => option.value === value)
@@ -95,13 +95,14 @@ export const TabsSwitcher = <T extends string | number>({
   const hiddenValues = useMemo(() => new Set(hiddenOptions.map((option) => option.value)), [hiddenOptions])
 
   return (
-    <Stack direction="row" justifyContent="space-between" gap={Spacing.xs}>
+    <Stack direction="row" justifyContent="space-between" gap={Spacing.xs} width={isKebabMode ? '100%' : undefined}>
       <Stack ref={visibleTabsRef} sx={{ flex: 1, minWidth: 0 }}>
         <Tabs
           variant={overflowToMuiVariant[overflow]}
           textColor="inherit"
           value={tabsValue}
           onChange={(_, newValue) => onChange?.(newValue as T)}
+          scrollButtons={false}
           className={tabsClassName}
           sx={{
             ...sx,

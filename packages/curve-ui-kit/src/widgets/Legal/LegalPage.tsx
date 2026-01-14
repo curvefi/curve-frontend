@@ -101,12 +101,7 @@ export const LegalPage = ({ currentApp }: LegalPageProps) => {
               justifyContent="space-between"
               sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}
             >
-              <TabsSwitcher
-                variant="underlined"
-                value={disclaimerTab}
-                options={disclaimerTabs}
-                muiVariant="scrollable"
-              />
+              <TabsSwitcher variant="underlined" value={disclaimerTab} options={disclaimerTabs} overflow="kebab" />
               {/* Box with bottom border for consistent underline of the TabsSwitcher */}
               <Box
                 sx={{

@@ -1,8 +1,8 @@
 import Stack from '@mui/material/Stack'
 import Typography, { type TypographyProps } from '@mui/material/Typography'
-import { TabOption } from './TabsSwitcher'
 import { TAB_SUFFIX_CLASS } from '@ui-kit/themes/components/tabs'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { TabOption } from './TabsSwitcher'
 
 const { Spacing } = SizesAndSpaces
 
