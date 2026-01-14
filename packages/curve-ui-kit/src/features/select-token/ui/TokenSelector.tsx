@@ -1,3 +1,4 @@
+import { isEqual } from 'lodash'
 import { cloneElement, type ReactElement } from 'react'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { type TokenOption } from '../types'
@@ -44,7 +45,10 @@ export const TokenSelector = <T extends TokenOption = TokenOption>({
         {cloneElement(children, {
           onToken: (token: T) => {
             closeModal()
-            onToken(token)
+            if (!isEqual(token, selectedToken)) {
+              // prevent legacy forms like quickswap from triggering form updates when nothing changed
+              onToken(token)
+            }
           },
         })}
       </TokenSelectorModal>
