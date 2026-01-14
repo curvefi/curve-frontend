@@ -1,3 +1,4 @@
+import { repayExpectedBorrowedQueryKey } from '@/llamalend/queries/repay/repay-expected-borrowed.query'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { type RepayParams, type RepayQuery } from '../validation/manage-loan.types'
 import { repayValidationSuite } from '../validation/manage-loan.validation'
@@ -37,4 +38,5 @@ export const { useQuery: useRepayBands } = queryFactory({
     }
   },
   validationSuite: repayValidationSuite({ leverageRequired: false }),
+  dependencies: (params) => [repayExpectedBorrowedQueryKey(params)],
 })

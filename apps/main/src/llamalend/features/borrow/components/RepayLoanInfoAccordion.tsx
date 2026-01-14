@@ -17,12 +17,12 @@ import type { RepayForm } from '@/llamalend/queries/validation/manage-loan.valid
 import { LoanInfoAccordion } from '@/llamalend/widgets/manage-loan/LoanInfoAccordion'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
-import { q } from '@ui-kit/types/util'
+import { mapQuery, q } from '@ui-kit/types/util'
 import { decimal, Decimal } from '@ui-kit/utils'
 
 export function RepayLoanInfoAccordion<ChainId extends IChainId>({
   params,
-  values: { slippage, userCollateral, userBorrowed },
+  values: { slippage, userCollateral, isFull },
   collateralToken,
   borrowToken,
   networks,
@@ -39,6 +39,7 @@ export function RepayLoanInfoAccordion<ChainId extends IChainId>({
 }) {
   const [isOpen, , , toggle] = useSwitch(false)
   const userState = q(useUserState(params, isOpen))
+  const expectedBorrowed = useRepayExpectedBorrowed(params, isOpen)
   return (
     <LoanInfoAccordion
       isOpen={isOpen}
@@ -47,15 +48,17 @@ export function RepayLoanInfoAccordion<ChainId extends IChainId>({
       gas={useRepayEstimateGas(networks, params, isOpen)}
       health={q(useRepayHealth(params, isOpen))}
       prevHealth={useHealthQueries((isFull) => getUserHealthOptions({ ...params, isFull }))}
+      isFullRepay={isFull}
       prevRates={q(useMarketRates(params, isOpen))}
       rates={q(useMarketFutureRates(params, isOpen))}
       debt={{
-        ...userState,
-        data: userState?.data?.debt && {
+        ...expectedBorrowed,
+        data: expectedBorrowed.data && {
           tokenSymbol: borrowToken?.symbol,
-          value: decimal(+userState.data.debt - +(userBorrowed ?? 0))!,
+          value: decimal(expectedBorrowed.data.totalBorrowed)!,
         },
       }}
+      withdraw={mapQuery(expectedBorrowed, (data) => ({ value: data.totalBorrowed, tokenSymbol: borrowToken?.symbol }))}
       userState={userState}
       prices={q(useRepayPrices(params, isOpen))}
       // routeImage={q(useRepayRouteImage(params, isOpen))}
@@ -72,7 +75,6 @@ export function RepayLoanInfoAccordion<ChainId extends IChainId>({
       )}
       leverage={{
         enabled: !!hasLeverage,
-        expectedBorrowed: useRepayExpectedBorrowed(params, isOpen),
         priceImpact: useRepayPriceImpact(params, isOpen),
         slippage,
         onSlippageChange,

@@ -32,6 +32,7 @@ export type LoanInfoAccordionProps = {
   range?: number
   health: Query<Decimal>
   prevHealth?: Query<Decimal>
+  isFullRepay?: boolean
   bands?: Query<[number, number]>
   prices?: Query<readonly Decimal[]>
   rates: Query<{ borrowApr?: Decimal } | null>
@@ -40,6 +41,7 @@ export type LoanInfoAccordionProps = {
   prevLoanToValue?: Query<Decimal | null>
   gas: Query<LoanInfoGasData | null>
   debt?: Query<{ value: Decimal; tokenSymbol?: string | undefined } | null>
+  withdraw?: Query<{ value: Decimal; tokenSymbol?: string | undefined } | null>
   collateral?: Query<{ value: Decimal; tokenSymbol?: string } | null>
   // userState values are used as prev values if collateral or debt are available
   userState?: Query<UserState> & { borrowTokenSymbol?: string; collateralTokenSymbol?: string }
@@ -57,6 +59,7 @@ export const LoanInfoAccordion = ({
   range,
   health,
   prevHealth,
+  isFullRepay,
   bands,
   prices,
   prevRates,
@@ -65,6 +68,7 @@ export const LoanInfoAccordion = ({
   prevLoanToValue,
   gas,
   debt,
+  withdraw,
   collateral,
   leverage,
   userState,
@@ -80,11 +84,11 @@ export const LoanInfoAccordion = ({
         info={
           <ActionInfo
             label=""
-            value={health?.data && formatNumber(health.data, { abbreviate: false })}
+            value={isFullRepay ? '∞' : health?.data && formatNumber(health.data, { abbreviate: false })}
             prevValue={prevHealth?.data && formatNumber(prevHealth.data, { abbreviate: false })}
             emptyValue="∞"
             {...combineQueryState(health, prevHealth)}
-            valueColor={getHealthValueColor(Number(health.data ?? prevHealth?.data ?? 100), useTheme())}
+            valueColor={getHealthValueColor(Number(health.data ?? prevHealth?.data ?? 100), useTheme(), isFullRepay)}
             testId="borrow-health"
           />
         }
@@ -92,6 +96,17 @@ export const LoanInfoAccordion = ({
         toggle={toggle}
       >
         <Stack>
+          {withdraw && (
+            <ActionInfo
+              label={t`Withdraw amount`}
+              value={
+                withdraw.data &&
+                `${formatNumber(withdraw.data.value, { abbreviate: true })} ${withdraw.data.tokenSymbol}`
+              }
+              error={withdraw.error}
+              loading={withdraw.isLoading}
+            />
+          )}
           {(debt || prevDebt) && (
             <ActionInfo
               label={t`Debt`}
@@ -112,7 +127,7 @@ export const LoanInfoAccordion = ({
               testId="borrow-collateral"
             />
           )}
-          {bands && (
+          {bands && !isFullRepay && (
             <ActionInfo
               label={t`Band range`}
               value={bands.data && `${bands.data[0]} to ${bands.data[1]}`}
@@ -121,7 +136,7 @@ export const LoanInfoAccordion = ({
               testId="borrow-band-range"
             />
           )}
-          {prices && (
+          {prices && !isFullRepay && (
             <ActionInfo
               label={t`Price range`}
               value={prices.data?.map((p) => formatNumber(p, { abbreviate: false })).join(' - ')}

@@ -20,6 +20,7 @@ export const { useQuery: useRepayExpectedBorrowed, queryKey: repayExpectedBorrow
     userCollateral = '0',
     userBorrowed = '0',
     userAddress,
+    slippage,
   }: RepayParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
@@ -27,6 +28,7 @@ export const { useQuery: useRepayExpectedBorrowed, queryKey: repayExpectedBorrow
       { stateCollateral },
       { userCollateral },
       { userBorrowed },
+      { slippage },
     ] as const,
   queryFn: async ({
     chainId,
