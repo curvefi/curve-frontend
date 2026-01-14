@@ -3,14 +3,15 @@ import Popover from '@mui/material/Popover'
 import Stack from '@mui/material/Stack'
 import Tab from '@mui/material/Tab'
 import Tabs from '@mui/material/Tabs'
-import Typography, { type TypographyProps } from '@mui/material/Typography'
+import { type TypographyProps } from '@mui/material/Typography'
 import { RouterLink as Link } from '@ui-kit/shared/ui/RouterLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { DotsVerticalIcon } from '../../icons/DotsVertical'
 import { TabLabel } from './TabsLabel'
-import { TabOption } from './TabsSwitcher'
+import { TabOption, TabsSwitcherProps } from './TabsSwitcher'
 
-type KebabTabProps = {
+type KebabTabProps<T> = {
+  size: NonNullable<TabsSwitcherProps<T>['size']>
   kebabTabsValue: string | false
   kebabTabRef: RefObject<HTMLDivElement | null>
   tabsClassName: string
@@ -31,37 +32,43 @@ type KebabMenuProps<T> = {
 
 export const KEBAB_TAB_VALUE = '__kebab__'
 
-const { Spacing } = SizesAndSpaces
+const { Spacing, IconSize } = SizesAndSpaces
 
-export const KebabTab = ({
+export const SIZE_TO_ICON_SIZE = {
+  small: IconSize.sm,
+  medium: IconSize.md,
+  extraExtraLarge: IconSize.lg,
+} as const
+
+export const KebabTab = <T extends string | number>({
   kebabTabsValue,
+  size,
   kebabTabRef,
   tabsClassName,
   testIdPrefix,
   openKebabMenu,
-}: KebabTabProps) => (
-  <Stack sx={{ flexShrink: 0 }}>
-    <Tabs value={kebabTabsValue} textColor="inherit" className={tabsClassName} sx={{ minHeight: 0 }}>
-      <Tab
-        aria-label="More tabs"
-        ref={kebabTabRef}
-        data-testid={`${testIdPrefix}-kebab`}
-        value={KEBAB_TAB_VALUE}
-        onClick={openKebabMenu}
-        label={
-          <TabLabel
-            labelVariant={undefined}
-            startAdornment={
-              <Typography>
-                <DotsVerticalIcon fontSize="small" />
-              </Typography>
-            }
-          />
-        }
-      />
-    </Tabs>
-  </Stack>
-)
+}: KebabTabProps<T>) => {
+  const iconSize = SIZE_TO_ICON_SIZE[size]
+  return (
+    <Stack sx={{ flexShrink: 0 }}>
+      <Tabs value={kebabTabsValue} textColor="inherit" className={tabsClassName} sx={{ minHeight: 0 }}>
+        <Tab
+          aria-label="More tabs"
+          ref={kebabTabRef}
+          data-testid={`${testIdPrefix}-kebab`}
+          value={KEBAB_TAB_VALUE}
+          onClick={openKebabMenu}
+          label={
+            <TabLabel
+              labelVariant={undefined}
+              startAdornment={<DotsVerticalIcon sx={{ width: iconSize, height: iconSize }} />}
+            />
+          }
+        />
+      </Tabs>
+    </Stack>
+  )
+}
 
 export const KebabMenu = <T extends string | number>({
   kebabMenuOpen,

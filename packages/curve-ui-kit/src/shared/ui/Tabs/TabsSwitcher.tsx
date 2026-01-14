@@ -84,15 +84,19 @@ export const TabsSwitcher = <T extends string | number>({
     closeKebabMenu,
   } = useTabsOverflow(options, isKebabMode)
 
-  const isActiveTabHidden = isKebabMode && hiddenOptions.some((option) => option.value === value)
-  const isActiveTabVisible = visibleOptions.some((option) => option.value === value)
-  const tabsValue = isActiveTabVisible ? value : false
-  const kebabTabsValue = isActiveTabHidden ? KEBAB_TAB_VALUE : false
-  const labelVariant = textVariant ?? TAB_TEXT_VARIANTS[size]
-
-  const tabsClassName = `${TABS_VARIANT_CLASSES[variant]} ${TABS_SIZES_CLASSES[size]} ${hideInactiveBorders && HIDE_INACTIVE_BORDERS_CLASS}`
-  const hasHiddenTabs = isKebabMode && hiddenOptions.length > 0
+  const tabsValue = useMemo(
+    () => (visibleOptions.some((option) => option.value === value) ? value : false),
+    [visibleOptions, value],
+  )
+  const kebabTabsValue = useMemo(
+    () => (isKebabMode && hiddenOptions.some((option) => option.value === value) ? KEBAB_TAB_VALUE : false),
+    [isKebabMode, hiddenOptions, value],
+  )
   const hiddenValues = useMemo(() => new Set(hiddenOptions.map((option) => option.value)), [hiddenOptions])
+  const hasHiddenTabs = isKebabMode && hiddenOptions.length > 0
+
+  const labelVariant = textVariant ?? TAB_TEXT_VARIANTS[size]
+  const tabsClassName = `${TABS_VARIANT_CLASSES[variant]} ${TABS_SIZES_CLASSES[size]} ${hideInactiveBorders && HIDE_INACTIVE_BORDERS_CLASS}`
 
   return (
     <Stack direction="row" justifyContent="space-between" gap={Spacing.xs} width={isKebabMode ? '100%' : undefined}>
@@ -140,6 +144,7 @@ export const TabsSwitcher = <T extends string | number>({
         </Tabs>
       </Stack>
 
+      {/* Kebab tab button */}
       {hasHiddenTabs && (
         <KebabTab
           kebabTabsValue={kebabTabsValue}
@@ -147,6 +152,7 @@ export const TabsSwitcher = <T extends string | number>({
           tabsClassName={tabsClassName}
           testIdPrefix={testIdPrefix}
           openKebabMenu={openKebabMenu}
+          size={size}
         />
       )}
 

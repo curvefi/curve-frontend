@@ -30,7 +30,7 @@ export type FormTab<Props extends object> = {
   visible?: FnOrValue<Props, boolean>
   /** Function or value to determine if the tab is disabled */
   disabled?: FnOrValue<Props, boolean>
-  /** Force the tab into the overflow menu */
+  /** Force the tab into the kebab menu */
   alwaysInKebab?: FnOrValue<Props, boolean>
   /** Component to render when the tab is selected */
   component?: ComponentType<Props>

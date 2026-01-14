@@ -2,12 +2,10 @@ import { useState } from 'react'
 import { objectKeys } from '@curvefi/prices-api/objects.util'
 import { Stack } from '@mui/material'
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { SIZE_TO_ICON_SIZE } from '@ui-kit/shared/ui/Tabs/tabs-kebab'
 import { LlamaIcon } from '../../shared/icons/LlamaIcon'
 import { TabsSwitcher, type TabOption, type TabsSwitcherProps } from '../../shared/ui/Tabs/TabsSwitcher'
 import { TABS_SIZES_CLASSES } from '../components/tabs/mui-tabs'
-import { SizesAndSpaces } from '../design/1_sizes_spaces'
-
-const { IconSize } = SizesAndSpaces
 
 type TabValue = string
 
@@ -16,11 +14,7 @@ const DEFAULT_TABS: TabOption<TabValue>[] = Array.from({ length: 8 }, (_, i) => 
   value: `${i}`,
   label: TABS_LABELS[i % TABS_LABELS.length],
 }))
-const SIZE_TO_ICON_SIZE = {
-  small: IconSize.sm,
-  medium: IconSize.md,
-  extraExtraLarge: IconSize.lg,
-} as const
+
 const TAB_SIZE_KEYS = objectKeys(TABS_SIZES_CLASSES)
 
 const getOptionsWithAdornments = (count: number, size: keyof typeof TABS_SIZES_CLASSES): TabOption<TabValue>[] => {
@@ -255,7 +249,7 @@ export const OverflowTabs: Story = {
     overflow: 'kebab',
   },
   render: (args) => (
-    <Stack gap={4} sx={{ maxWidth: '24rem' }}>
+    <Stack gap={4} width="30rem">
       {TAB_SIZE_KEYS.map((size) => (
         <TabsSwitcherWrapper key={size} {...args} size={size} options={getOptionsWithAdornments(8, size)} />
       ))}
