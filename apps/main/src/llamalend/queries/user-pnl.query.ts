@@ -1,8 +1,7 @@
 import { enforce, group, test } from 'vest'
 import { getLlamaMarket } from '@/llamalend/llama.utils'
-import type { IChainId } from '@curvefi/api/lib/interfaces'
 import { type FieldsOf } from '@ui-kit/lib'
-import { type MarketQuery, queryFactory, rootKeys, type UserQuery } from '@ui-kit/lib/model'
+import { queryFactory, rootKeys, UserMarketQuery } from '@ui-kit/lib/model'
 import { loanExistsValidationGroup } from '@ui-kit/lib/model/query/loan-exists-validation'
 import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
 import { createValidationSuite } from '@ui-kit/lib/validation'
@@ -12,12 +11,17 @@ import { decimal } from '@ui-kit/utils'
  * Query for fetching user PNL data in lend and mint markets.
  * PNL data from llamalend-js for mint markets is currently only available when v2 leverage is enabled.
  */
-type UserPnlQuery = UserQuery & MarketQuery<IChainId> & { loanExists: boolean; hasV2Leverage: boolean }
+type UserPnlQuery = UserMarketQuery & { loanExists: boolean; hasV2Leverage: boolean }
 type UserPnlParams = FieldsOf<UserPnlQuery>
 
 export const { useQuery: useUserPnl, invalidate: invalidateUserPnl } = queryFactory({
-  queryKey: ({ chainId, marketId, userAddress }: UserPnlParams) =>
-    [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'user-pnl'] as const,
+  queryKey: ({ chainId, marketId, userAddress, loanExists, hasV2Leverage }: UserPnlParams) =>
+    [
+      ...rootKeys.userMarket({ chainId, marketId, userAddress }),
+      'user-pnl',
+      { loanExists },
+      { hasV2Leverage },
+    ] as const,
   queryFn: async ({ marketId, userAddress }: UserPnlQuery) => {
     const market = getLlamaMarket(marketId)
 
@@ -40,3 +44,6 @@ export const { useQuery: useUserPnl, invalidate: invalidateUserPnl } = queryFact
     })
   }),
 })
+
+export const invalidateUserPnlForMarket = (params: UserMarketQuery) =>
+  invalidateUserPnl({ ...params, loanExists: true, hasV2Leverage: true })
