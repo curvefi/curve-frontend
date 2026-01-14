@@ -67,10 +67,8 @@ export const RepayForm = <ChainId extends IChainId>({
   const selectedToken = selectedField == 'userBorrowed' ? borrowToken : collateralToken
 
   useEffect(
-    () =>
-      // Reset other fields when selectedField changes
-      () =>
-        form.setValue(selectedField, undefined, setValueOptions),
+    // Reset field when selectedField changes
+    () => () => form.setValue(selectedField, undefined, setValueOptions),
     [form, selectedField],
   )
 

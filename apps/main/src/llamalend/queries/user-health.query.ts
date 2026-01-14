@@ -3,7 +3,7 @@ import { queryFactory, rootKeys, type UserMarketParams, type UserMarketQuery } f
 import { userMarketValidationSuite } from '@ui-kit/lib/model/query/user-market-validation'
 import { createValidationSuite } from '@ui-kit/lib/validation'
 import type { Decimal } from '@ui-kit/utils'
-import { validateBoolean } from './validation/borrow-fields.validation'
+import { validateIsFull } from './validation/borrow-fields.validation'
 
 type UserHealthParams = UserMarketParams & { isFull: boolean }
 type UserHealthQuery = UserMarketQuery & { isFull: boolean }
@@ -19,6 +19,6 @@ export const { getQueryOptions: getUserHealthOptions, invalidate: invalidateUser
     (await getLlamaMarket(marketId).userHealth(isFull, userAddress)) as Decimal,
   validationSuite: createValidationSuite(({ userAddress, isFull, marketId, chainId }: UserHealthParams) => {
     userMarketValidationSuite({ userAddress, marketId, chainId })
-    validateBoolean(isFull)
+    validateIsFull(isFull)
   }),
 })

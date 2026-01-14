@@ -52,7 +52,7 @@ const approveRepay = async (
 
 const repay = async (
   market: LlamaMarketTemplate,
-  { stateCollateral, userCollateral, userBorrowed, isFull, slippage }: RepayMutation,
+  { stateCollateral = '0', userCollateral = '0', userBorrowed = '0', isFull, slippage }: RepayMutation,
 ): Promise<Hex> => {
   if (isFull && !+stateCollateral && !+userCollateral) {
     return (await market.fullRepay()) as Hex
@@ -100,7 +100,7 @@ export const useRepayMutation = ({
     onReset,
   })
 
-  const onSubmit = useCallback((form: RepayForm) => mutateAsync(form as RepayMutation), [mutateAsync])
+  const onSubmit = useCallback(async (form: RepayForm) => mutateAsync(form as RepayMutation), [mutateAsync])
 
   return { onSubmit, mutate, mutateAsync, error, data, isPending, isSuccess, reset }
 }

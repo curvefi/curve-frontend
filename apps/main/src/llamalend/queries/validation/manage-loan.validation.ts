@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 import { enforce, group, skipWhen, test } from 'vest'
 import { getRepayImplementation } from '@/llamalend/queries/repay/repay-query.helpers'
 import {
-  validateBoolean,
+  validateIsFull,
   validateLeverageSupported,
   validateSlippage,
   validateMaxCollateral,
@@ -32,7 +32,6 @@ export type RepayForm = {
   maxBorrowed: Decimal | undefined
   isFull: boolean | undefined
   slippage: Decimal
-  leverageEnabled: boolean
 }
 
 const validateRepayField = (field: 'stateCollateral' | 'userCollateral', value: Decimal | null | undefined) =>
@@ -125,7 +124,7 @@ export const removeCollateralFormValidationSuite = createValidationSuite((params
 })
 export const collateralHealthValidationSuite = createValidationSuite(({ isFull, ...rest }: CollateralHealthParams) => {
   collateralValidationGroup(rest)
-  validateBoolean(isFull)
+  validateIsFull(isFull)
 })
 
 export const repayValidationGroup = <IChainId extends number>(
@@ -166,7 +165,7 @@ export const repayFormValidationSuite = createValidationSuite(
     validateMaxCollateral(userCollateral, maxCollateral)
     validateMaxBorrowed(userBorrowed, maxBorrowed)
     validateRepayHasValue(stateCollateral, userCollateral, userBorrowed)
-    validateBoolean(isFull)
+    validateIsFull(isFull)
     validateSlippage(slippage)
   },
 )
@@ -174,6 +173,6 @@ export const repayFormValidationSuite = createValidationSuite(
 export const repayFromCollateralIsFullValidationSuite = createValidationSuite(
   ({ isFull, ...params }: RepayIsFullParams) => {
     repayValidationGroup(params)
-    group('isFull', () => validateBoolean(isFull))
+    group('isFull', () => validateIsFull(isFull))
   },
 )

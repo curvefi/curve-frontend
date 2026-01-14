@@ -22,7 +22,6 @@ import { combineQueriesMeta } from '@ui-kit/lib/queries/combine'
 import { q } from '@ui-kit/types/util'
 import { Decimal, decimal } from '@ui-kit/utils'
 
-const ZERO = '0' as const
 const remainingDebt = (debt: Decimal, repayAmount: Decimal, stateBorrowed: Decimal) => {
   const repayTotal = new BigNumber(repayAmount).plus(stateBorrowed)
   const remaining = new BigNumber(debt).minus(repayTotal)
@@ -54,7 +53,7 @@ export function RepayLoanInfoAccordion<ChainId extends IChainId>({
   const borrowed = swapRequired ? expectedBorrowedQuery.data?.totalBorrowed : userBorrowed
   const debt = {
     data: isFull
-      ? { value: ZERO, tokenSymbol: borrowToken?.symbol }
+      ? { value: '0' as const, tokenSymbol: borrowToken?.symbol }
       : userStateQuery.data &&
         borrowed && {
           value: remainingDebt(userStateQuery.data.debt, borrowed, userStateQuery.data.stablecoin),
