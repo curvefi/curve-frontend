@@ -3,10 +3,11 @@ import { styled } from 'styled-components'
 import type { LendingMarketTokens } from '@/lend/hooks/useOhlcChartState'
 import { useStore } from '@/lend/store/useStore'
 import { ChainId } from '@/lend/types/lend.types'
+import Box from '@mui/material/Box'
 import { Button } from '@ui/Button/Button'
-import { SpinnerWrapper, Spinner } from '@ui/Spinner'
 import { DEFAULT_CHART_HEIGHT } from '@ui-kit/features/candle-chart/constants'
 import { t } from '@ui-kit/lib/i18n'
+import { Spinner } from '@ui-kit/shared/ui/Spinner'
 import { LiquidityData } from './LiquidityData'
 import { TradesData } from './TradesData'
 
@@ -60,16 +61,18 @@ export const PoolActivity = ({ chainId, poolAddress, coins }: PoolActivityProps)
           <ElementsContainer minHeight={DEFAULT_CHART_HEIGHT}>
             {eventOption === 'TRADE' ? (
               lendTradesData.length === 0 ? (
-                <SpinnerWrapper>
+                <Box
+                  sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', padding: 5 }}
+                >
                   <ErrorMessage>{t`No trades data found.`}</ErrorMessage>
-                </SpinnerWrapper>
+                </Box>
               ) : (
                 <TradesData lendTradesData={lendTradesData} chainId={chainId} />
               )
             ) : lendControllerData.length === 0 ? (
-              <SpinnerWrapper>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', padding: 5 }}>
                 <ErrorMessage>{t`No controller data found.`}</ErrorMessage>
-              </SpinnerWrapper>
+              </Box>
             ) : (
               <LiquidityData lendControllerData={lendControllerData} chainId={chainId} coins={coins} />
             )}
@@ -77,14 +80,30 @@ export const PoolActivity = ({ chainId, poolAddress, coins }: PoolActivityProps)
         </GridContainer>
       )}
       {activityFetchStatus === 'LOADING' && (
-        <SpinnerWrapper minHeight={`${DEFAULT_CHART_HEIGHT}px`}>
-          <Spinner size={18} />
-        </SpinnerWrapper>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '100%',
+            minHeight: DEFAULT_CHART_HEIGHT,
+          }}
+        >
+          <Spinner />
+        </Box>
       )}
       {activityFetchStatus === 'ERROR' && (
-        <SpinnerWrapper minHeight={`${DEFAULT_CHART_HEIGHT}px`}>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '100%',
+            minHeight: DEFAULT_CHART_HEIGHT,
+          }}
+        >
           <ErrorMessage>{t`There was an error fetching the pool activity data.`}</ErrorMessage>
-        </SpinnerWrapper>
+        </Box>
       )}
     </Wrapper>
   )

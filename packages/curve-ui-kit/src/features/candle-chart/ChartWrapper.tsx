@@ -1,11 +1,12 @@
 import { useMemo, useRef } from 'react'
 import { styled } from 'styled-components'
+import Box from '@mui/material/Box'
 import { Button } from '@ui/Button/Button'
 import { Icon } from '@ui/Icon'
-import { Spinner, SpinnerWrapper } from '@ui/Spinner'
 import { CandleChart } from '@ui-kit/features/candle-chart/CandleChart'
 import { useChartPalette } from '@ui-kit/features/candle-chart/hooks/useChartPalette'
 import type { ChartSelections } from '@ui-kit/shared/ui/ChartHeader'
+import { Spinner } from '@ui-kit/shared/ui/Spinner'
 import type { FetchingStatus, LiquidationRanges, LpPriceOhlcDataFormatted, OraclePriceData, TimeOption } from './types'
 
 export type OhlcChartProps = {
@@ -83,12 +84,32 @@ export const ChartWrapper = ({
           </ResponsiveContainer>
         )}
         {chartStatus === 'LOADING' && (
-          <StyledSpinnerWrapper minHeight={`${chartHeight}px`}>
-            <Spinner size={18} />
-          </StyledSpinnerWrapper>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '100%',
+              minHeight: chartHeight,
+              gap: 'var(--spacing-2)',
+            }}
+          >
+            <Spinner />
+          </Box>
         )}
         {chartStatus === 'ERROR' && (
-          <StyledSpinnerWrapper minHeight={`${chartHeight}px`}>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '100%',
+              minHeight: chartHeight,
+              gap: 'var(--spacing-2)',
+            }}
+          >
             <ErrorMessage>{`Unable to fetch ${selectChartList?.find((c) => c.key === selectedChartKey)?.label ?? ''} data.`}</ErrorMessage>
             <RefreshButton
               size="small"
@@ -99,7 +120,7 @@ export const ChartWrapper = ({
             >
               <Icon name={'Renew'} size={16} aria-label={'Refresh chart'} />
             </RefreshButton>
-          </StyledSpinnerWrapper>
+          </Box>
         )}
       </ContentWrapper>
     </Wrapper>
@@ -131,11 +152,6 @@ const ResponsiveContainer = styled.div<{ chartHeight: number }>`
   width: 100%;
   min-height: ${(props) => `${props.chartHeight}px`};
   padding-bottom: var(--spacing-3);
-`
-
-const StyledSpinnerWrapper = styled(SpinnerWrapper)`
-  flex-direction: column;
-  gap: var(--spacing-2);
 `
 
 const ErrorMessage = styled.p`
