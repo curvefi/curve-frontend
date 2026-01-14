@@ -45,5 +45,5 @@ export const { useQuery: useUserPnl, invalidate: invalidateUserPnl } = queryFact
   }),
 })
 
-export const invalidateUserPnlForMarket = (params: UserMarketQuery) =>
+export const invalidateUserPnlForMarket = (params: UserPnlParams) =>
   invalidateUserPnl({ ...params, loanExists: true, hasV2Leverage: true })

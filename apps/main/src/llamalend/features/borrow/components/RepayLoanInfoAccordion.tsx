@@ -1,3 +1,4 @@
+import { BigNumber } from 'bignumber.js'
 import type { Token } from '@/llamalend/features/borrow/types'
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
 import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
@@ -17,12 +18,20 @@ import type { RepayForm } from '@/llamalend/queries/validation/manage-loan.valid
 import { LoanInfoAccordion } from '@/llamalend/widgets/manage-loan/LoanInfoAccordion'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
-import { mapQuery, q } from '@ui-kit/types/util'
-import { decimal, Decimal } from '@ui-kit/utils'
+import { combineQueriesMeta } from '@ui-kit/lib/queries/combine'
+import { q } from '@ui-kit/types/util'
+import { Decimal, decimal } from '@ui-kit/utils'
+
+const ZERO = '0' as const
+const remainingDebt = (debt: Decimal, repayAmount: Decimal, stateBorrowed: Decimal) => {
+  const repayTotal = new BigNumber(repayAmount).plus(stateBorrowed)
+  const remaining = new BigNumber(debt).minus(repayTotal)
+  return decimal(remaining.isNegative() ? 0 : remaining)!
+}
 
 export function RepayLoanInfoAccordion<ChainId extends IChainId>({
   params,
-  values: { slippage, userCollateral, isFull },
+  values: { slippage, userCollateral, stateCollateral, userBorrowed, isFull },
   collateralToken,
   borrowToken,
   networks,
@@ -38,8 +47,21 @@ export function RepayLoanInfoAccordion<ChainId extends IChainId>({
   hasLeverage: boolean | undefined
 }) {
   const [isOpen, , , toggle] = useSwitch(false)
-  const userState = q(useUserState(params, isOpen))
-  const expectedBorrowed = useRepayExpectedBorrowed(params, isOpen)
+  const userStateQuery = useUserState(params, isOpen)
+  const userState = q(userStateQuery)
+  const swapRequired = +(stateCollateral ?? 0) > 0 || +(userCollateral ?? 0) > 0
+  const expectedBorrowedQuery = useRepayExpectedBorrowed(params, isOpen && swapRequired)
+  const borrowed = swapRequired ? expectedBorrowedQuery.data?.totalBorrowed : userBorrowed
+  const debt = {
+    data: isFull
+      ? { value: ZERO, tokenSymbol: borrowToken?.symbol }
+      : userStateQuery.data &&
+        borrowed && {
+          value: remainingDebt(userStateQuery.data.debt, borrowed, userStateQuery.data.stablecoin),
+          tokenSymbol: borrowToken?.symbol,
+        },
+    ...combineQueriesMeta([userStateQuery, ...(swapRequired ? [expectedBorrowedQuery] : [])]),
+  }
   return (
     <LoanInfoAccordion
       isOpen={isOpen}
@@ -51,14 +73,8 @@ export function RepayLoanInfoAccordion<ChainId extends IChainId>({
       isFullRepay={isFull}
       prevRates={q(useMarketRates(params, isOpen))}
       rates={q(useMarketFutureRates(params, isOpen))}
-      debt={{
-        ...expectedBorrowed,
-        data: expectedBorrowed.data && {
-          tokenSymbol: borrowToken?.symbol,
-          value: decimal(expectedBorrowed.data.totalBorrowed)!,
-        },
-      }}
-      withdraw={mapQuery(expectedBorrowed, (data) => ({ value: data.totalBorrowed, tokenSymbol: borrowToken?.symbol }))}
+      debt={debt}
+      withdraw={stateCollateral && { value: stateCollateral, tokenSymbol: collateralToken?.symbol }}
       userState={userState}
       prices={q(useRepayPrices(params, isOpen))}
       // routeImage={q(useRepayRouteImage(params, isOpen))}

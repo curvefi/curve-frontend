@@ -41,7 +41,7 @@ export type LoanInfoAccordionProps = {
   prevLoanToValue?: Query<Decimal | null>
   gas: Query<LoanInfoGasData | null>
   debt?: Query<{ value: Decimal; tokenSymbol?: string | undefined } | null>
-  withdraw?: Query<{ value: Decimal; tokenSymbol?: string | undefined } | null>
+  withdraw?: { value: Decimal; tokenSymbol?: string | undefined }
   collateral?: Query<{ value: Decimal; tokenSymbol?: string } | null>
   // userState values are used as prev values if collateral or debt are available
   userState?: Query<UserState> & { borrowTokenSymbol?: string; collateralTokenSymbol?: string }
@@ -96,15 +96,10 @@ export const LoanInfoAccordion = ({
         toggle={toggle}
       >
         <Stack>
-          {withdraw && (
+          {withdraw && Number(withdraw.value) > 0 && (
             <ActionInfo
               label={t`Withdraw amount`}
-              value={
-                withdraw.data &&
-                `${formatNumber(withdraw.data.value, { abbreviate: true })} ${withdraw.data.tokenSymbol}`
-              }
-              error={withdraw.error}
-              loading={withdraw.isLoading}
+              value={`${formatNumber(withdraw.value, { abbreviate: true })} ${withdraw.tokenSymbol}`}
             />
           )}
           {(debt || prevDebt) && (
