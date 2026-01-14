@@ -1,5 +1,5 @@
-import Icon from '@ui/Icon'
-import TooltipButton from '@ui/Tooltip/TooltipButton'
+import { Icon } from '@ui/Icon'
+import { TooltipButton } from '@ui/Tooltip/TooltipButton'
 import { copyToClipboard } from '@ui-kit/utils'
 
 type CopyIconButtonProps = {
@@ -7,7 +7,7 @@ type CopyIconButtonProps = {
   tooltip: string
 }
 
-const CopyIconButton = ({ copyContent, tooltip }: CopyIconButtonProps) => (
+export const CopyIconButton = ({ copyContent, tooltip }: CopyIconButtonProps) => (
   <TooltipButton
     clickable
     onClick={() => copyToClipboard(copyContent)}
@@ -16,5 +16,3 @@ const CopyIconButton = ({ copyContent, tooltip }: CopyIconButtonProps) => (
     customIcon={<Icon name="Copy" size={16} />}
   />
 )
-
-export default CopyIconButton

@@ -36,7 +36,7 @@ const DEFAULT_STATE: SliceState = {
   loading: false,
 }
 
-const createUserBalancesSlice = (
+export const createUserBalancesSlice = (
   _: StoreApi<State>['setState'],
   get: StoreApi<State>['getState'],
 ): UserBalancesSlice => ({
@@ -129,5 +129,3 @@ function mapUserBalances(updatedUserBalancesMapper: UserBalancesMapper, storedUs
   }
   return cUserBalancesMapper
 }
-
-export default createUserBalancesSlice

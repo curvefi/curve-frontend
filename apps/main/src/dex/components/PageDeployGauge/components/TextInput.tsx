@@ -2,13 +2,13 @@ import { useRef } from 'react'
 import type { AriaTextFieldProps } from 'react-aria'
 import { useTextField } from 'react-aria'
 import { styled } from 'styled-components'
-import InputProvider from '@ui/InputComp'
+import { InputProvider } from '@ui/InputComp'
 
 interface Props extends AriaTextFieldProps {
   label: string
 }
 
-const TextInput = (props: Props) => {
+export const TextInput = (props: Props) => {
   const ref = useRef(null)
   const { inputProps } = useTextField(props, ref)
 
@@ -37,5 +37,3 @@ const StyledInput = styled.input`
     outline: none;
   }
 `
-
-export default TextInput

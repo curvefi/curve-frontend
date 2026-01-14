@@ -1,4 +1,4 @@
-import DetailInfoEstGas from '@/dex/components/DetailInfoEstGas'
+import { DetailInfoEstGas } from '@/dex/components/DetailInfoEstGas'
 import { useEstimateGasAddRewardToken } from '@/dex/entities/gauge'
 import { useAddRewardTokenFormContext } from '@/dex/features/add-gauge-reward-token/lib'
 import { ChainId } from '@/dex/types/main.types'

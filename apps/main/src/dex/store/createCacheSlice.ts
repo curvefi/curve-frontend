@@ -44,7 +44,7 @@ const DEFAULT_STATE: SliceState = {
 
 const TIMEOUT_MS = 4000
 
-const createCacheSlice = (_: StoreApi<State>['setState'], get: StoreApi<State>['getState']): CacheSlice => ({
+export const createCacheSlice = (_: StoreApi<State>['setState'], get: StoreApi<State>['getState']): CacheSlice => ({
   storeCache: {
     ...DEFAULT_STATE,
 
@@ -77,5 +77,3 @@ const createCacheSlice = (_: StoreApi<State>['setState'], get: StoreApi<State>['
     },
   },
 })
-
-export default createCacheSlice

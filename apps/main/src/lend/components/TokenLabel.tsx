@@ -1,17 +1,17 @@
 import { styled } from 'styled-components'
-import networks from '@/lend/networks'
+import { networks } from '@/lend/networks'
 import { ChainId, type OneWayMarketTemplate } from '@/lend/types/lend.types'
-import Box from '@ui/Box'
+import { Box } from '@ui/Box'
 import type { BoxProps } from '@ui/Box/types'
-import Icon from '@ui/Icon'
-import IconButton from '@ui/IconButton'
-import ExternalLink from '@ui/Link/ExternalLink'
-import TextEllipsis from '@ui/TextEllipsis'
+import { Icon } from '@ui/Icon'
+import { IconButton } from '@ui/IconButton'
+import { ExternalLink } from '@ui/Link/ExternalLink'
+import { TextEllipsis } from '@ui/TextEllipsis'
 import { scanTokenPath } from '@ui/utils'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { copyToClipboard } from '@ui-kit/utils'
 
-const TokenLabel = ({
+export const TokenLabel = ({
   rChainId,
   token,
   isDisplayOnly,
@@ -100,5 +100,3 @@ const StyledIconButton = styled(IconButton)`
     background-color: var(--button_icon--hover--background-color);
   }
 `
-
-export default TokenLabel

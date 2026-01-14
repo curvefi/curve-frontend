@@ -1,9 +1,9 @@
 import { styled } from 'styled-components'
-import ProgressBar from '@/dao/components/ProposalVoteStatusBox/ProgressBar'
+import { ProgressBar } from '@/dao/components/ProposalVoteStatusBox/ProgressBar'
 import { ProposalData } from '@/dao/entities/proposals-mapper'
-import Box from '@ui/Box'
-import Tooltip from '@ui/Tooltip/TooltipButton'
-import TooltipIcon from '@ui/Tooltip/TooltipIcon'
+import { Box } from '@ui/Box'
+import { TooltipButton as Tooltip } from '@ui/Tooltip/TooltipButton'
+import { TooltipIcon } from '@ui/Tooltip/TooltipIcon'
 import { breakpoints, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 
@@ -12,7 +12,7 @@ type ProposalVoteStatusBoxProps = {
   className?: string
 }
 
-const ProposalVoteStatusBox = ({ proposalData, className }: ProposalVoteStatusBoxProps) => {
+export const ProposalVoteStatusBox = ({ proposalData, className }: ProposalVoteStatusBoxProps) => {
   const { votesFor, votesAgainst, quorum, support, currentQuorumPercentage } = proposalData
   const minAcceptQuorumPercent = quorum * 100
   const minSupport = support * 100
@@ -119,5 +119,3 @@ const HighlightedData = styled(Data)`
     padding-bottom: 0;
   }
 `
-
-export default ProposalVoteStatusBox

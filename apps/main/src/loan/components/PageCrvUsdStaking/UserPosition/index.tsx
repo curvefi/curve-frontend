@@ -4,7 +4,7 @@ import { isReady } from '@/loan/components/PageCrvUsdStaking/utils'
 import { oneMonthProjectionYield, oneYearProjectionYield } from '@/loan/components/PageCrvUsdStaking/utils'
 import { useScrvUsdStatistics } from '@/loan/entities/scrvusd-statistics'
 import { useScrvUsdUserBalances } from '@/loan/entities/scrvusd-userBalances'
-import useStore from '@/loan/store/useStore'
+import { useStore } from '@/loan/store/useStore'
 import { Card, CardHeader, Stack } from '@mui/material'
 import Grid from '@mui/material/Grid'
 import { useTheme } from '@mui/material/styles'
@@ -16,7 +16,7 @@ const { MaxWidth, Spacing } = SizesAndSpaces
 
 const CRVUSD_OPTIONS = { symbol: 'crvUSD', position: 'suffix' as const, abbreviate: true }
 
-const UserPosition = ({ chartExpanded = false }: { chartExpanded?: boolean }) => {
+export const UserPosition = ({ chartExpanded = false }: { chartExpanded?: boolean }) => {
   const { address } = useConnection()
   const {
     design: { Layer },
@@ -112,5 +112,3 @@ This value is an indicator based on the historical yield of the crvUSD Savings V
     </Card>
   )
 }
-
-export default UserPosition

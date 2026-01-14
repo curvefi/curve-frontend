@@ -8,7 +8,7 @@ interface Props extends ToggleProps {
   isDarkBg?: boolean
 }
 
-function Switch(props: Props) {
+export function Switch(props: Props) {
   const ref = useRef<HTMLInputElement>(null)
   const state = useToggleState(props)
   const { inputProps } = useSwitch(props, state, ref)
@@ -94,5 +94,3 @@ const SwitchLabel = styled.label<{ isDisabled?: boolean }>`
   display: flex;
   opacity: ${({ isDisabled }) => (isDisabled ? 0.4 : 1)};
 `
-
-export default Switch

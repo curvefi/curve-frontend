@@ -1,25 +1,25 @@
 import lodash from 'lodash'
 import { ChangeEvent, useEffect, useRef, useState } from 'react'
 import { styled } from 'styled-components'
-import ComboBoxListChunk from '@/dao/components/ComboBoxSelectGauge/ComboBoxListChunk'
+import { SelectGaugeListChunk as ComboBoxListChunk } from '@/dao/components/ComboBoxSelectGauge/ComboBoxListChunk'
 import type { ComboBoxSelectGaugeProps } from '@/dao/components/ComboBoxSelectGauge/types'
-import useStore from '@/dao/store/useStore'
+import { useStore } from '@/dao/store/useStore'
 import { GaugeFormattedData } from '@/dao/types/dao.types'
-import Box from '@ui/Box/Box'
-import Icon from '@ui/Icon'
-import IconButton from '@ui/IconButton/IconButton'
+import { Box } from '@ui/Box/Box'
+import { Icon } from '@ui/Icon'
+import { IconButton } from '@ui/IconButton/IconButton'
 import { RCEditClear } from '@ui/images'
-import InputProvider from '@ui/InputComp/InputProvider'
+import { InputProvider } from '@ui/InputComp/InputProvider'
 import { StyledInput } from '@ui/InputComp/styles'
-import Popover from '@ui/Popover/Popover'
-import Spinner from '@ui/Spinner'
-import SpinnerWrapper from '@ui/Spinner/SpinnerWrapper'
+import { Popover } from '@ui/Popover/Popover'
+import { Spinner } from '@ui/Spinner'
+import { SpinnerWrapper } from '@ui/Spinner/SpinnerWrapper'
 import { breakpoints } from '@ui/utils/responsive'
 import { t } from '@ui-kit/lib/i18n'
 
 const { chunk } = lodash
 
-const ComboBox = ({
+export const ComboBox = ({
   testId,
   dialogClose,
   listBoxHeight,
@@ -175,5 +175,3 @@ const ComboBoxListNoResult = styled.li`
   text-align: center;
   padding: var(--spacing-wide) var(--spacing-2);
 `
-
-export default ComboBox

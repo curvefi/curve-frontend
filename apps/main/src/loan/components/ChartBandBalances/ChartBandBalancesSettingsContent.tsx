@@ -1,7 +1,7 @@
 import { styled } from 'styled-components'
-import useStore from '@/loan/store/useStore'
-import Button from '@ui/Button'
-import TextCaption from '@ui/TextCaption'
+import { useStore } from '@/loan/store/useStore'
+import { Button } from '@ui/Button'
+import { TextCaption } from '@ui/TextCaption'
 import { breakpoints } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 
@@ -9,7 +9,7 @@ type Props = {
   toggle?: () => void
 }
 
-const ChartBandBalancesSettingsContent = ({ toggle }: Props) => {
+export const ChartBandBalancesSettingsContent = ({ toggle }: Props) => {
   const xAxisDisplayType = useStore((state) => state.chartBands.xAxisDisplayType)
   const setStateByKey = useStore((state) => state.chartBands.setStateByKey)
 
@@ -67,5 +67,3 @@ const ActionButton = styled(Button)`
     max-width: 220px;
   }
 `
-
-export default ChartBandBalancesSettingsContent

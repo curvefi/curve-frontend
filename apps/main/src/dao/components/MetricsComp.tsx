@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 import { styled } from 'styled-components'
-import Box from 'ui/src/Box/Box'
-import Loader from 'ui/src/Loader/Loader'
+import { Box } from '@ui/Box/Box'
+import { Loader } from '@ui/Loader/Loader'
 
 interface Props {
   loading?: boolean
@@ -11,7 +11,7 @@ interface Props {
   row?: boolean
 }
 
-const MetricsComp = ({ loading = false, title, data, className, row = false }: Props) => (
+export const MetricsComp = ({ loading = false, title, data, className, row = false }: Props) => (
   <Wrapper className={className} row={row}>
     <MetricsTitle row={row}>{title}</MetricsTitle>
     {loading ? <StyledLoader isLightBg skeleton={[56, 16.5]} row={row} /> : data}
@@ -48,4 +48,3 @@ export const MetricsColumnData = styled.h3<{ noMargin?: boolean; capitalize?: bo
   font-size: var(--font-size-2);
   text-transform: ${({ capitalize }) => (capitalize ? 'capitalize' : 'none')};
 `
-export default MetricsComp

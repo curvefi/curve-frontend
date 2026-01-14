@@ -1,11 +1,11 @@
 import { useMemo } from 'react'
 import { styled } from 'styled-components'
-import ExternalLink from 'ui/src/Link/ExternalLink'
 import type { SearchParams } from '@/dex/components/PagePoolList/types'
-import useStore from '@/dex/store/useStore'
-import AlertBox from '@ui/AlertBox'
-import Box from '@ui/Box'
-import Button from '@ui/Button'
+import { useStore } from '@/dex/store/useStore'
+import { AlertBox } from '@ui/AlertBox'
+import { Box } from '@ui/Box'
+import { Button } from '@ui/Button'
+import { ExternalLink } from '@ui/Link/ExternalLink'
 import { Td, Tr } from '@ui/Table'
 import { shortenAccount } from '@ui/utils'
 import { Trans } from '@ui-kit/lib/i18n'
@@ -23,7 +23,7 @@ type Props = {
   updatePath(searchParams: Partial<SearchParams>): void
 }
 
-const TableRowNoResult = ({ colSpan, searchParams, signerAddress, updatePath }: Props) => {
+export const TableRowNoResult = ({ colSpan, searchParams, signerAddress, updatePath }: Props) => {
   const { filterKey, searchText } = searchParams
 
   const userPoolListLoaded = useStore((state) => state.user.poolListLoaded)
@@ -93,5 +93,3 @@ const Wrapper = styled.div`
   padding: var(--spacing-5);
   text-align: center;
 `
-
-export default TableRowNoResult

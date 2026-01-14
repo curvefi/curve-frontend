@@ -6,7 +6,7 @@ type Props = {
   skeleton?: [number, number]
 }
 
-const Loader = ({ className, isLightBg = false, skeleton = [12, 12], ...props }: Props) => (
+export const Loader = ({ className, isLightBg = false, skeleton = [12, 12], ...props }: Props) => (
   <TextSkeleton className={className} isLightBg={isLightBg} skeleton={skeleton} {...props} />
 )
 
@@ -51,5 +51,3 @@ const TextSkeleton = styled.span<Pick<Props, 'isLightBg' | 'skeleton'>>`
         ? `background-image: var(--skeleton_light--background-image);`
         : `background-image: var(--skeleton--background-image);`}
 `
-
-export default Loader

@@ -1,34 +1,34 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import { styled } from 'styled-components'
-import AlertFormError from '@/loan/components/AlertFormError'
-import AlertFormWarning from '@/loan/components/AlertFormWarning'
-import DetailInfoEstimateGas from '@/loan/components/DetailInfoEstimateGas'
-import LoanFormConnect from '@/loan/components/LoanFormConnect'
+import { AlertFormError } from '@/loan/components/AlertFormError'
+import { AlertFormWarning } from '@/loan/components/AlertFormWarning'
+import { DetailInfoEstimateGas } from '@/loan/components/DetailInfoEstimateGas'
+import { LoanFormConnect } from '@/loan/components/LoanFormConnect'
 import type { FormStatus, StepKey } from '@/loan/components/PageMintMarket/LoanLiquidate/types'
 import type { FormEstGas, ManageLoanProps } from '@/loan/components/PageMintMarket/types'
 import { DEFAULT_FORM_EST_GAS } from '@/loan/components/PageMintMarket/utils'
 import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
-import networks from '@/loan/networks'
+import { networks } from '@/loan/networks'
 import { DEFAULT_FORM_STATUS, haveEnoughCrvusdForLiquidation } from '@/loan/store/createLoanLiquidate'
-import useStore from '@/loan/store/useStore'
+import { useStore } from '@/loan/store/useStore'
 import { type ChainId, LlamaApi, Llamma, UserWalletBalances } from '@/loan/types/loan.types'
 import { curveProps } from '@/loan/utils/helpers'
 import { getStepStatus, getTokenName } from '@/loan/utils/utilsLoan'
 import { getCollateralListPathname } from '@/loan/utils/utilsRouter'
 import { AlertInfoSelfLiquidation } from '@ui/AlertBox'
-import InputReadOnly from '@ui/InputReadOnly'
-import InternalLink from '@ui/Link/InternalLink'
+import { InputReadyOnly as InputReadOnly } from '@ui/InputReadOnly'
+import { InternalLink } from '@ui/Link/InternalLink'
 import { getActiveStep } from '@ui/Stepper/helpers'
-import Stepper from '@ui/Stepper/Stepper'
+import { Stepper } from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
-import TxInfoBar from '@ui/TxInfoBar'
+import { TxInfoBar } from '@ui/TxInfoBar'
 import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t, Trans } from '@ui-kit/lib/i18n'
 import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
 
-const LoanLiquidate = ({
+export const LoanLiquidate = ({
   curve,
   market: llamma,
   params,
@@ -254,5 +254,3 @@ const StyledInternalLink = styled(InternalLink)`
     text-decoration-color: var(--link_light--hover--color);
   }
 `
-
-export default LoanLiquidate

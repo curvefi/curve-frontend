@@ -1,9 +1,9 @@
 import { useCallback } from 'react'
-import InpChipUsdRate from '@/lend/components/InpChipUsdRate'
+import { InpChipUsdRate } from '@/lend/components/InpChipUsdRate'
 import { StyledInpChip } from '@/lend/components/styles'
 import type { NetworkConfig } from '@/lend/types/lend.types'
-import Box from '@ui/Box'
-import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
+import { Box } from '@ui/Box'
+import { InputDebounced, InputMaxBtn, InputProvider } from '@ui/InputComp'
 import { formatNumber } from '@ui/utils'
 import { useLegacyTokenInput } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
@@ -12,7 +12,7 @@ import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { decimal, type Decimal } from '@ui-kit/utils'
 
-const InpToken = ({
+export const InpToken = ({
   id,
   testId,
   maxTestId,
@@ -120,5 +120,3 @@ const InpToken = ({
     />
   )
 }
-
-export default InpToken

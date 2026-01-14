@@ -1,1 +1,1 @@
-export { default } from './ShadowedBox'
+export { ShadowedBox } from './ShadowedBox'

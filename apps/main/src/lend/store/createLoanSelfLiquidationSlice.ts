@@ -5,8 +5,8 @@ import type { FormEstGas } from '@/lend/components/PageLendMarket/types'
 import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@/lend/components/PageLendMarket/utils'
 import { invalidateMarketDetails } from '@/lend/entities/market-details'
 import { invalidateAllUserBorrowDetails } from '@/lend/entities/user-loan-details'
-import apiLending from '@/lend/lib/apiLending'
-import networks from '@/lend/networks'
+import { apiLending } from '@/lend/lib/apiLending'
+import { networks } from '@/lend/networks'
 import type { State } from '@/lend/store/useStore'
 import { Api, FormWarning, FutureRates, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { updateUserEventsApi } from '@/llamalend/llama.utils'
@@ -60,7 +60,7 @@ const DEFAULT_STATE: SliceState = {
 
 const { loanSelfLiquidation } = apiLending
 
-const createLoanSelfLiquidationSlice = (
+export const createLoanSelfLiquidationSlice = (
   _set: StoreApi<State>['setState'],
   get: StoreApi<State>['getState'],
 ): LoanSelfLiquidationSlice => ({
@@ -220,8 +220,6 @@ const createLoanSelfLiquidationSlice = (
     },
   },
 })
-
-export default createLoanSelfLiquidationSlice
 
 export function _canSelfLiquidate(walletStablecoin: string, tokensToLiquidate: string) {
   return +(walletStablecoin ?? '0') >= +tokensToLiquidate * 1.0001

@@ -2,7 +2,7 @@ import { produce } from 'immer'
 import lodash from 'lodash'
 import type { Config } from 'wagmi'
 import type { StoreApi } from 'zustand'
-import curvejsApi from '@/dex/lib/curvejs'
+import { curvejsApi } from '@/dex/lib/curvejs'
 import type { State } from '@/dex/store/useStore'
 import { ChainId, CurveApi, NetworkConfigFromApi, Wallet } from '@/dex/types/main.types'
 import { log } from '@ui-kit/lib/logging'
@@ -40,7 +40,7 @@ const DEFAULT_STATE = {
   hasRouter: {},
 } satisfies GlobalState
 
-const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): GlobalSlice => ({
+export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): GlobalSlice => ({
   ...DEFAULT_STATE,
 
   getNetworkConfigFromApi: (chainId: ChainId | '') => {
@@ -197,5 +197,3 @@ const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreApi<State
     )
   },
 })
-
-export default createGlobalSlice

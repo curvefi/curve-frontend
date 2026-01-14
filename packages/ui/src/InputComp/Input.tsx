@@ -2,7 +2,7 @@ import { forwardRef, useRef } from 'react'
 import { StyledInput } from './styles'
 import type { InputProps } from './types'
 
-const Input = forwardRef<HTMLInputElement, InputProps & { testId?: string }>(
+export const Input = forwardRef<HTMLInputElement, InputProps & { testId?: string }>(
   ({ id, globalDisabled, testId, ...inputProps }, ref) => {
     const inputRef = useRef<HTMLInputElement>(null)
     const { disabled, ...props } = inputProps ?? {}
@@ -22,5 +22,3 @@ const Input = forwardRef<HTMLInputElement, InputProps & { testId?: string }>(
 )
 
 Input.displayName = 'Input'
-
-export default Input

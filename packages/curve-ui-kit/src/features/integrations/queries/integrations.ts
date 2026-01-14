@@ -4,6 +4,7 @@ import { fromEntries } from '@curvefi/prices-api/objects.util'
 import { CURVE_CDN_URL } from '@ui/utils'
 import { EmptyValidationSuite } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
+import type { Partner } from '@ui-kit/shared/ui/PartnerCard'
 
 const INTEGRATIONS_URL = `${CURVE_CDN_URL}/curve-external-integrations/integrations-list.json`
 
@@ -28,8 +29,14 @@ export const { useQuery: useIntegrations } = queryFactory({
 })
 
 export const parseIntegrationsList = (integrationsList: IntegrationsResponse) =>
-  sortBy(integrationsList, (i) => i.name).map(({ networks, tags, ...rest }) => ({
-    networks: fromEntries(networks.map((n) => [n, true])),
-    tags: fromEntries(tags.map((t) => [t, true])),
-    ...rest,
-  }))
+  sortBy(integrationsList, (i) => i.name).map(
+    (app): Partner => ({
+      name: app.name,
+      description: app.description,
+      imageId: `platforms/${app.imageId}`,
+      networks: fromEntries(app.networks.map((n) => [n, true])),
+      tags: app.tags,
+      appUrl: app.appUrl ?? undefined,
+      twitterUrl: app.twitterUrl ?? undefined,
+    }),
+  )

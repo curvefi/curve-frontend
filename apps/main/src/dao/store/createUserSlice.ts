@@ -102,7 +102,7 @@ const DEFAULT_STATE: SliceState = {
 
 // key user address for user specific snapshots, votes, mappers
 
-const createUserSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): UserSlice => ({
+export const createUserSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): UserSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
     updateUserData: async (curve: CurveApi, wallet: Wallet) => {
@@ -270,5 +270,3 @@ const createUserSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>[
     },
   },
 })
-
-export default createUserSlice

@@ -3,8 +3,8 @@ import type { AriaButtonProps } from 'react-aria'
 import { useButton } from 'react-aria'
 import { styled } from 'styled-components'
 import { useChainId } from 'wagmi'
-import Icon from '@ui/Icon'
-import Spinner from '@ui/Spinner'
+import { Icon } from '@ui/Icon'
+import { Spinner } from '@ui/Spinner'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { fetchTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { copyToClipboard, shortenAddress } from '@ui-kit/utils'
@@ -45,7 +45,7 @@ interface ChipTokenProps extends AriaButtonProps {
   tokenAddress: string
 }
 
-const ChipToken = ({ className, isHighlight, tokenName, tokenAddress, ...props }: ChipTokenProps) => {
+export const ChipToken = ({ className, isHighlight, tokenName, tokenAddress, ...props }: ChipTokenProps) => {
   const chainId = useChainId()
   const [usdRate, setUsdRate] = useState<number | undefined>(undefined)
   const parsedUsdRate = formatNumber(usdRate, { ...FORMAT_OPTIONS.USD, defaultValue: '-' })
@@ -128,5 +128,3 @@ const ChipTokenUsdRateSpinner = styled(Spinner)``
 const ChipTokenCopyButtonIcon = styled(Icon)`
   margin-bottom: 2px;
 `
-
-export default ChipToken

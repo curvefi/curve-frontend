@@ -1,10 +1,10 @@
 import { styled } from 'styled-components'
-import ConfirmModal from '@/dex/components/PageCreatePool/ConfirmModal'
+import { ConfirmModal } from '@/dex/components/PageCreatePool/ConfirmModal'
 import { checkFormReady } from '@/dex/components/PageCreatePool/utils'
-import useStore from '@/dex/store/useStore'
+import { useStore } from '@/dex/store/useStore'
 import { CurveApi, ChainId } from '@/dex/types/main.types'
-import Button from '@ui/Button'
-import Icon from '@ui/Icon'
+import { Button } from '@ui/Button'
+import { Icon } from '@ui/Icon'
 import { t } from '@ui-kit/lib/i18n'
 
 interface Props {
@@ -16,7 +16,7 @@ interface Props {
   curve: CurveApi
 }
 
-const Navigation = ({ navigation, setNavigation, blockchainId, chainId, curve }: Props) => {
+export const Navigation = ({ navigation, setNavigation, blockchainId, chainId, curve }: Props) => {
   const validation = useStore((state) => state.createPool.validation)
 
   return (
@@ -141,5 +141,3 @@ const ButtonStyles = styled(Button)`
     }
   }
 `
-
-export default Navigation

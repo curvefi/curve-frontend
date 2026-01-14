@@ -1,22 +1,22 @@
-import DetailInfoEstimateGas from '@/lend/components/DetailInfoEstimateGas'
-import DetailInfoHealth from '@/lend/components/DetailInfoHealth'
-import DetailInfoLeverageAvgPrice from '@/lend/components/DetailInfoLeverageAvgPrice'
-import DetailInfoLeverageExpected from '@/lend/components/DetailInfoLeverageExpected'
-import DetailInfoLiqRange from '@/lend/components/DetailInfoLiqRange'
-import DetailInfoPriceImpact from '@/lend/components/DetailInfoPriceImpact'
-import DetailInfoRate from '@/lend/components/DetailInfoRate'
+import { DetailInfoEstimateGas } from '@/lend/components/DetailInfoEstimateGas'
+import { DetailInfoHealth } from '@/lend/components/DetailInfoHealth'
+import { DetailInfoLeverageAvgPrice } from '@/lend/components/DetailInfoLeverageAvgPrice'
+import { DetailInfoLeverageExpected } from '@/lend/components/DetailInfoLeverageExpected'
+import { DetailInfoLiqRange } from '@/lend/components/DetailInfoLiqRange'
+import { DetailInfoPriceImpact } from '@/lend/components/DetailInfoPriceImpact'
+import { DetailInfoRate } from '@/lend/components/DetailInfoRate'
 import type { DetailProps, FormDetailInfoLeverage } from '@/lend/components/PageLendMarket/LoanRepay/types'
 import { _parseValues } from '@/lend/components/PageLendMarket/LoanRepay/utils'
 import type { FormDetailInfo } from '@/lend/components/PageLendMarket/types'
-import networks from '@/lend/networks'
-import useStore from '@/lend/store/useStore'
+import { networks } from '@/lend/networks'
+import { useStore } from '@/lend/store/useStore'
 import { PageContentProps } from '@/lend/types/lend.types'
-import RouteDetails from '@/llamalend/widgets/RouteDetails'
+import { RouteDetails } from '@/llamalend/widgets/RouteDetails'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
 import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
 
-const DetailInfo = ({
+export const DetailInfo = ({
   rChainId,
   rOwmId,
   activeKey,
@@ -137,5 +137,3 @@ const DetailInfo = ({
     </>
   )
 }
-
-export default DetailInfo

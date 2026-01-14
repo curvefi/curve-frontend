@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { styled } from 'styled-components'
-import PoolActivity from '@/dex/components/PagePool/PoolDetails/ChartOhlcWrapper/PoolActivity'
+import { PoolActivity } from '@/dex/components/PagePool/PoolDetails/ChartOhlcWrapper/PoolActivity'
 import { combinations } from '@/dex/components/PagePool/PoolDetails/ChartOhlcWrapper/utils'
-import useStore from '@/dex/store/useStore'
+import { useStore } from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
-import Box from '@ui/Box'
-import Button from '@ui/Button'
-import ChartWrapper from '@ui-kit/features/candle-chart/ChartWrapper'
+import { Box } from '@ui/Box'
+import { Button } from '@ui/Button'
+import { ChartWrapper } from '@ui-kit/features/candle-chart/ChartWrapper'
 import type { LabelList, PricesApiCoin, PricesApiPool } from '@ui-kit/features/candle-chart/types'
 import { getThreeHundredResultsAgo, subtractTimeUnit } from '@ui-kit/features/candle-chart/utils'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
@@ -14,7 +14,13 @@ import { t } from '@ui-kit/lib/i18n'
 
 const CHART_HEIGHT = 300
 
-const PoolInfoData = ({ rChainId, pricesApiPoolData }: { rChainId: ChainId; pricesApiPoolData: PricesApiPool }) => {
+export const PoolInfoData = ({
+  rChainId,
+  pricesApiPoolData,
+}: {
+  rChainId: ChainId
+  pricesApiPoolData: PricesApiPool
+}) => {
   const theme = useUserProfileStore((state) => state.theme)
   const chartOhlcData = useStore((state) => state.pools.pricesApiState.chartOhlcData)
   const chartStatus = useStore((state) => state.pools.pricesApiState.chartStatus)
@@ -260,5 +266,3 @@ const SelectorButton = styled(Button)`
     border-bottom: 2px solid var(--page--text-color);
   }
 `
-
-export default PoolInfoData

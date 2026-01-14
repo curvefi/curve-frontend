@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import { styled } from 'styled-components'
-import Box from 'ui/src/Box'
-import Button from 'ui/src/Button'
-import Icon from 'ui/src/Icon'
-import NumberField from '@/loan/components/PageCrvUsdStaking/components/InputComp/NumberField'
-import Loader from '@ui/Loader'
+import { NumberField } from '@/loan/components/PageCrvUsdStaking/components/InputComp/NumberField'
+import { Box } from '@ui/Box'
+import { Button } from '@ui/Button'
+import { Icon } from '@ui/Icon'
+import { Loader } from '@ui/Loader'
 import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 
@@ -20,7 +20,7 @@ type InputCompProps = {
   readOnly?: boolean
 }
 
-const InputComp = ({
+export const InputComp = ({
   className,
   readOnly = false,
   walletBalance,
@@ -117,5 +117,3 @@ const StyledButton = styled(Button)`
   margin: auto var(--spacing-1) auto 0;
   text-transform: uppercase;
 `
-
-export default InputComp

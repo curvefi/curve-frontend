@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import { styled } from 'styled-components'
-import Box from 'ui/src/Box/Box'
-import { focusVisible } from 'ui/src/utils/sharedStyles'
+import { Box } from '@ui/Box/Box'
+import { focusVisible } from '@ui/utils/sharedStyles'
 import { type InputProviderProps, InputContext } from './InputContext'
 import type { InputMinHeight, InputVariant } from './types'
 
-const InputProvider = ({ className, children, disabled, id, inputVariant, ...boxProps }: InputProviderProps) => {
+export const InputProvider = ({ className, children, disabled, id, inputVariant, ...boxProps }: InputProviderProps) => {
   const [isFocusVisible, setIsFocusVisible] = useState(false)
 
   return (
@@ -69,5 +69,3 @@ export const InputWrapper = styled(Box)<InputWrapperProps>`
 `
 
 InputProvider.displayName = 'InputProvider'
-
-export default InputProvider

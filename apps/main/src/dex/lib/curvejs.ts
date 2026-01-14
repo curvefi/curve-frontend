@@ -1414,7 +1414,7 @@ async function warnIncorrectEstGas(chainId: ChainId, estimatedGas: EstimatedGas)
   }
 }
 
-const curvejsApi = {
+export const curvejsApi = {
   helpers,
   network,
   router,
@@ -1425,5 +1425,3 @@ const curvejsApi = {
   wallet,
   lockCrv,
 }
-
-export default curvejsApi

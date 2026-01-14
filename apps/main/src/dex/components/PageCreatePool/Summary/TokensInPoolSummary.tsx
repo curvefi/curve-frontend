@@ -11,7 +11,7 @@ import {
   TOKEN_H,
   NG_ASSET_TYPE,
 } from '@/dex/components/PageCreatePool/constants'
-import OracleSummary from '@/dex/components/PageCreatePool/Summary/OracleSummary'
+import { OracleSummary } from '@/dex/components/PageCreatePool/Summary/OracleSummary'
 import {
   CategoryColumn,
   CategoryDataColumn,
@@ -27,10 +27,10 @@ import {
 import { SwapType, TokenState } from '@/dex/components/PageCreatePool/types'
 import { checkTokensInPoolUnset, containsOracle } from '@/dex/components/PageCreatePool/utils'
 import { useNetworkByChain } from '@/dex/entities/networks'
-import useStore from '@/dex/store/useStore'
+import { useStore } from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
-import Box from '@ui/Box'
-import Icon from '@ui/Icon'
+import { Box } from '@ui/Box'
+import { Icon } from '@ui/Icon'
 import { Chip } from '@ui/Typography'
 import { scanAddressPath } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
@@ -48,7 +48,7 @@ type TokenSummary = {
   swapType: SwapType
 }
 
-const TokensInPoolSummary = ({ blockchainId, chainId }: Props) => {
+export const TokensInPoolSummary = ({ blockchainId, chainId }: Props) => {
   const tokensInPool = useStore((state) => state.createPool.tokensInPool)
   const swapType = useStore((state) => state.createPool.swapType)
   const validation = useStore((state) => state.createPool.validation)
@@ -238,5 +238,3 @@ const BasepoolLabel = styled(Chip)`
   color: var(--black);
   letter-spacing: 0;
 `
-
-export default TokensInPoolSummary

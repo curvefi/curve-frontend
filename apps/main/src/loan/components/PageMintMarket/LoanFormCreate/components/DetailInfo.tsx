@@ -1,16 +1,16 @@
 import { useMemo } from 'react'
 import { useChainId } from 'wagmi'
-import DetailInfoLeverage from '@/loan/components/PageMintMarket/LoanFormCreate/components/DetailInfoLeverage'
-import DetailInfoNonLeverage from '@/loan/components/PageMintMarket/LoanFormCreate/components/DetailInfoNonLeverage'
+import { DetailInfoLeverage } from '@/loan/components/PageMintMarket/LoanFormCreate/components/DetailInfoLeverage'
+import { DetailInfoNonLeverage } from '@/loan/components/PageMintMarket/LoanFormCreate/components/DetailInfoNonLeverage'
 import type { CreateFormDetailInfo, FormDetailInfoSharedProps } from '@/loan/components/PageMintMarket/types'
-import useStore from '@/loan/store/useStore'
+import { useStore } from '@/loan/store/useStore'
 import { DetailInfo } from '@ui/DetailInfo'
 import { getActiveStep } from '@ui/Stepper/helpers'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 
-const DetailInfoComp = (props: CreateFormDetailInfo) => {
+export const DetailInfoComp = (props: CreateFormDetailInfo) => {
   const { activeKeyLiqRange, formValues, isLeverage, isReady, llamma, haveSigner, steps, updateFormValues } = props
 
   const chainId = useChainId()
@@ -70,5 +70,3 @@ const DetailInfoComp = (props: CreateFormDetailInfo) => {
     <DetailInfoNonLeverage {...props} {...additionalProps} detailInfoLTV={detailInfoLTV} />
   )
 }
-
-export default DetailInfoComp

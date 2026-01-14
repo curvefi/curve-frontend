@@ -1,15 +1,15 @@
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
 import { styled } from 'styled-components'
-import SelectButton from '@/dex/components/PageCreatePool/components/SelectButton'
-import ModalDialog from '@/dex/components/PageCreatePool/ConfirmModal/ModalDialog'
+import { SelectButton } from '@/dex/components/PageCreatePool/components/SelectButton'
+import { ModalDialog } from '@/dex/components/PageCreatePool/ConfirmModal/ModalDialog'
 import { CRYPTOSWAP, FXSWAP, POOL_PRESETS, STABLESWAP } from '@/dex/components/PageCreatePool/constants'
-import useStore from '@/dex/store/useStore'
+import { useStore } from '@/dex/store/useStore'
 import type { UrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
 import { useButton } from '@react-aria/button'
 import { useOverlayTriggerState } from '@react-stately/overlays'
-import Box from '@ui/Box'
-import Button from '@ui/Button'
+import { Box } from '@ui/Box'
+import { Button } from '@ui/Button'
 import { ExternalLink } from '@ui/Link'
 import { breakpoints } from '@ui/utils/responsive'
 import { useParams } from '@ui-kit/hooks/router'
@@ -22,7 +22,7 @@ type Props = {
   setOutValue: Dispatch<SetStateAction<string>>
 }
 
-const SelectPreset = ({ setStableFeeValue, setMidValue, setOutValue }: Props) => {
+export const SelectPreset = ({ setStableFeeValue, setMidValue, setOutValue }: Props) => {
   const swapType = useStore((state) => state.createPool.swapType)
   const poolPresetIndex = useStore((state) => state.createPool.poolPresetIndex)
   const updatePoolPresetIndex = useStore((state) => state.createPool.updatePoolPresetIndex)
@@ -374,5 +374,3 @@ const StyledExternalLink = styled(ExternalLink)`
     cursor: pointer;
   }
 `
-
-export default SelectPreset

@@ -1,4 +1,4 @@
-import PoolRewardsCrv from '@/dex/components/PoolRewardsCrv'
+import { PoolRewardsCrv } from '@/dex/components/PoolRewardsCrv'
 import { RewardsApy, PoolData, PoolDataCache } from '@/dex/types/main.types'
 
 type Prop = {
@@ -7,8 +7,6 @@ type Prop = {
   rewardsApy: RewardsApy | undefined
 }
 
-const TableCellRewardsCrv = ({ isHighlight, poolData, rewardsApy }: Prop) => (
+export const TableCellRewardsCrv = ({ isHighlight, poolData, rewardsApy }: Prop) => (
   <PoolRewardsCrv poolData={poolData} rewardsApy={rewardsApy} isHighlight={isHighlight} />
 )
-
-export default TableCellRewardsCrv

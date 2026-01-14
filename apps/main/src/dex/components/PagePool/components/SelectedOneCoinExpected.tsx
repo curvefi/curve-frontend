@@ -1,17 +1,17 @@
 import { styled } from 'styled-components'
 import type { Amount } from '@/dex/components/PagePool/utils'
 import { TokensMapper, PoolDataCacheOrApi } from '@/dex/types/main.types'
-import Loader from '@ui/Loader'
+import { Loader } from '@ui/Loader'
 import { Radio, RadioGroup } from '@ui/Radio'
-import Spacer from '@ui/Spacer'
-import Spinner, { SpinnerWrapper } from '@ui/Spinner'
-import TextEllipsis from '@ui/TextEllipsis'
+import { Spacer } from '@ui/Spacer'
+import { SpinnerWrapper, Spinner } from '@ui/Spinner'
+import { TextEllipsis } from '@ui/TextEllipsis'
 import { Chip } from '@ui/Typography'
 import { formatNumber } from '@ui/utils'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { shortenAddress } from '@ui-kit/utils'
 
-const SelectedOneCoinExpected = ({
+export const SelectedOneCoinExpected = ({
   amounts,
   haveSigner,
   blockchainId,
@@ -86,5 +86,3 @@ const StyledTokenIcon = styled(TokenIcon)`
 const StyledRadioGroup = styled(RadioGroup)`
   grid-gap: var(--spacing-2);
 `
-
-export default SelectedOneCoinExpected

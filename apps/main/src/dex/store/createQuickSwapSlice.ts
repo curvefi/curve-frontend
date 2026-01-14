@@ -11,7 +11,7 @@ import type {
   SearchedParams,
 } from '@/dex/components/PageRouterSwap/types'
 import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/dex/components/PageRouterSwap/utils'
-import curvejsApi from '@/dex/lib/curvejs'
+import { curvejsApi } from '@/dex/lib/curvejs'
 import type { State } from '@/dex/store/useStore'
 import { CurveApi, FnStepApproveResponse, FnStepResponse } from '@/dex/types/main.types'
 import { sleep } from '@/dex/utils'
@@ -101,7 +101,10 @@ const DEFAULT_STATE: SliceState = {
   routesAndOutput: {},
 }
 
-const createQuickSwapSlice = (_set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): QuickSwapSlice => ({
+export const createQuickSwapSlice = (
+  _set: StoreApi<State>['setState'],
+  get: StoreApi<State>['getState'],
+): QuickSwapSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 
@@ -556,5 +559,3 @@ export function getRouterWarningModal(
   }
   return null
 }
-
-export default createQuickSwapSlice

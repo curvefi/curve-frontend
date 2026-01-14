@@ -1,6 +1,6 @@
 import { ReactNode, useEffect, useState } from 'react'
 
-const DelayRender = ({ children, ms }: { ms?: number; children: ReactNode }) => {
+export const DelayRender = ({ children, ms }: { ms?: number; children: ReactNode }) => {
   const [showComponent, setShowComponent] = useState(false)
 
   useEffect(() => {
@@ -14,5 +14,3 @@ const DelayRender = ({ children, ms }: { ms?: number; children: ReactNode }) => 
 
   return <>{showComponent ? children : null}</>
 }
-
-export default DelayRender

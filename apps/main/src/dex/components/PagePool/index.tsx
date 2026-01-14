@@ -2,38 +2,38 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { styled } from 'styled-components'
 import { type Address, isAddressEqual } from 'viem'
 import { useConfig } from 'wagmi'
-import CampaignRewardsBanner from '@/dex/components/PagePool/components/CampaignRewardsBanner'
-import Deposit from '@/dex/components/PagePool/Deposit'
-import PoolInfoData from '@/dex/components/PagePool/PoolDetails/ChartOhlcWrapper'
-import PoolParameters from '@/dex/components/PagePool/PoolDetails/PoolParameters'
-import PoolStats from '@/dex/components/PagePool/PoolDetails/PoolStats'
-import Swap from '@/dex/components/PagePool/Swap'
+import { CampaignRewardsBanner } from '@/dex/components/PagePool/components/CampaignRewardsBanner'
+import { Deposit } from '@/dex/components/PagePool/Deposit'
+import { PoolInfoData } from '@/dex/components/PagePool/PoolDetails/ChartOhlcWrapper'
+import { PoolParameters } from '@/dex/components/PagePool/PoolDetails/PoolParameters'
+import { PoolStats } from '@/dex/components/PagePool/PoolDetails/PoolStats'
+import { Swap } from '@/dex/components/PagePool/Swap'
 import type { PageTransferProps, Seed, TransferFormType } from '@/dex/components/PagePool/types'
-import MySharesStats from '@/dex/components/PagePool/UserDetails'
-import Withdraw from '@/dex/components/PagePool/Withdraw'
+import { MySharesStats } from '@/dex/components/PagePool/UserDetails'
+import { Withdraw } from '@/dex/components/PagePool/Withdraw'
 import { ROUTE } from '@/dex/constants'
 import { useGaugeManager, useGaugeRewardsDistributors } from '@/dex/entities/gauge'
 import { useNetworkByChain } from '@/dex/entities/networks'
-import usePoolAlert from '@/dex/hooks/usePoolAlert'
+import { usePoolAlert } from '@/dex/hooks/usePoolAlert'
 import { usePoolIdByAddressOrId } from '@/dex/hooks/usePoolIdByAddressOrId'
-import useTokensMapper from '@/dex/hooks/useTokensMapper'
-import useStore from '@/dex/store/useStore'
+import { useTokensMapper } from '@/dex/hooks/useTokensMapper'
+import { useStore } from '@/dex/store/useStore'
 import { getChainPoolIdActiveKey } from '@/dex/utils'
 import { getPath } from '@/dex/utils/utilsRouter'
 import { ManageGauge } from '@/dex/widgets/manage-gauge'
 import { notFalsy } from '@curvefi/prices-api/objects.util'
 import Stack from '@mui/material/Stack'
-import AlertBox from '@ui/AlertBox'
+import { AlertBox } from '@ui/AlertBox'
 import { AppPageFormTitleWrapper, AppPageInfoContentWrapper } from '@ui/AppPage'
-import Box from '@ui/Box'
+import { Box } from '@ui/Box'
 import { ExternalLink } from '@ui/Link'
-import TextEllipsis from '@ui/TextEllipsis'
+import { TextEllipsis } from '@ui/TextEllipsis'
 import { scanAddressPath } from '@ui/utils'
 import { breakpoints } from '@ui/utils/responsive'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNavigate } from '@ui-kit/hooks/router'
-import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
+import { usePageVisibleInterval } from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { type TabOption, TabsSwitcher } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
@@ -43,7 +43,7 @@ import { PoolAlertBanner } from '../PoolAlertBanner'
 
 const DEFAULT_SEED: Seed = { isSeed: null, loaded: false }
 
-const Transfer = (pageTransferProps: PageTransferProps) => {
+export const Transfer = (pageTransferProps: PageTransferProps) => {
   const { params, curve, hasDepositAndStake, poolData, poolDataCacheOrApi, routerParams } = pageTransferProps
   const { rChainId, rFormType, rPoolIdOrAddress } = routerParams
   const poolId = usePoolIdByAddressOrId({ chainId: rChainId, poolIdOrAddress: rPoolIdOrAddress })
@@ -328,5 +328,3 @@ const PriceAndTradesWrapper = styled(Box)`
     padding: 1.5rem 1.5rem;
   }
 `
-
-export default Transfer

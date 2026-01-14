@@ -1,5 +1,5 @@
 import { MouseEvent } from 'react'
-import LegendLine from '@/loan/components/PageCrvUsdStaking/Statistics/components/LegendLine'
+import { LegendLine } from '@/loan/components/PageCrvUsdStaking/Statistics/components/LegendLine'
 import { priceLineLabels } from '@/loan/components/PageCrvUsdStaking/Statistics/constants'
 import type { YieldKeys } from '@/loan/components/PageCrvUsdStaking/types'
 import Stack from '@mui/material/Stack'
@@ -25,7 +25,7 @@ const LegendSet = ({ label, dash, legendColor }: { label: string; dash: string; 
   </Stack>
 )
 
-const RevenueChartFooter = ({ timeOptions, activeTimeOption, setActiveTimeOption }: Props) => {
+export const RevenueChartFooter = ({ timeOptions, activeTimeOption, setActiveTimeOption }: Props) => {
   const {
     design: { Color },
   } = useTheme()
@@ -74,5 +74,3 @@ const RevenueChartFooter = ({ timeOptions, activeTimeOption, setActiveTimeOption
     </Stack>
   )
 }
-
-export default RevenueChartFooter
