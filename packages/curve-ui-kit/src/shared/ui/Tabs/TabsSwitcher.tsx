@@ -89,8 +89,12 @@ export const TabsSwitcher = <T extends string | number>({
     () => (visibleOptions.some((option) => option.value === value) ? value : false),
     [visibleOptions, value],
   )
-  const kebabTabsValue = useMemo(
-    () => (isKebabMode && hiddenOptions.some((option) => option.value === value) ? KEBAB_TAB_VALUE : false),
+
+  const [kebabMenuValue, kebabTabsValue] = useMemo(
+    () =>
+      isKebabMode && hiddenOptions.some((option) => option.value === value)
+        ? [value ?? false, KEBAB_TAB_VALUE]
+        : [false, false],
     [isKebabMode, hiddenOptions, value],
   )
   const hiddenValues = useMemo(() => new Set(hiddenOptions.map((option) => option.value)), [hiddenOptions])
@@ -179,7 +183,7 @@ export const TabsSwitcher = <T extends string | number>({
           labelVariant={labelVariant}
           onChange={onChange}
           tabsClassName={tabsClassName}
-          value={value}
+          value={kebabMenuValue}
         />
       )}
     </Stack>

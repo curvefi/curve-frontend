@@ -12,7 +12,7 @@ import { TabOption, TabsSwitcherProps } from './TabsSwitcher'
 
 type KebabTabProps<T> = {
   size: NonNullable<TabsSwitcherProps<T>['size']>
-  kebabTabsValue: string | false
+  kebabTabsValue: string | boolean
   kebabTabRef: RefObject<HTMLDivElement | null>
   tabsClassName: string
   testIdPrefix: string
@@ -27,7 +27,7 @@ type KebabMenuProps<T> = {
   labelVariant: TypographyProps['variant']
   onChange?: (value: T) => void
   tabsClassName: string
-  value: T | undefined
+  value: T | boolean
 }
 
 export const KEBAB_TAB_VALUE = '__kebab__'
@@ -96,7 +96,7 @@ export const KebabMenu = <T extends string | number>({
       <Tabs
         orientation="vertical"
         textColor="inherit"
-        value={value ?? false}
+        value={value}
         onChange={(_, newValue) => {
           onChange?.(newValue as T)
           closeKebabMenu()
