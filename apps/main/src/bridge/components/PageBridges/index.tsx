@@ -2,7 +2,7 @@ import { MouseEvent, useMemo } from 'react'
 import Stack from '@mui/material/Stack'
 import { useSearchParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
-import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
+import { TabsSwitcher } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { pushSearchParams } from '@ui-kit/utils/urls'
 import { TabPanel } from '@ui-kit/widgets/Legal/components/general/TabPanel'
@@ -37,7 +37,7 @@ export const PageBridges = () => {
         marginBlockEnd: Spacing.xxl,
       }}
     >
-      <TabsSwitcher variant="contained" value={tab} options={tabs} muiVariant="scrollable" />
+      <TabsSwitcher variant="contained" value={tab} options={tabs} overflow="kebab" />
       <TabPanel sx={{ paddingBlock: Spacing.sm, paddingInline: Spacing.md }}>
         {tab === 'web3' && <BridgeOverview bridges={WEB3_BRIDGES} title={t`Aggregators for the best routes`} />}
 

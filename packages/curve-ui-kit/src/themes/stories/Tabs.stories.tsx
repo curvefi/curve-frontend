@@ -75,9 +75,9 @@ const meta: Meta<typeof TabsSwitcherWrapper> = {
       control: 'select',
       options: ['horizontal', 'vertical'],
     },
-    muiVariant: {
+    overflow: {
       control: 'select',
-      options: ['standard', 'scrollable', 'fullWidth'],
+      options: ['standard', 'kebab', 'fullWidth'],
     },
   },
 }
@@ -249,10 +249,10 @@ export const IconsOnly: Story = {
   },
 }
 
-export const ContainedScrollableTabs: Story = {
+export const OverflowTabs: Story = {
   args: {
     variant: 'contained',
-    muiVariant: 'scrollable',
+    overflow: 'kebab',
   },
   render: (args) => (
     <Stack gap={4} sx={{ maxWidth: '24rem' }}>

@@ -23,7 +23,6 @@ export const PageTabs = ({ pages }: PageTabsProps) => (
       [pages],
     )}
     variant="overlined"
-    muiVariant="standard"
     hideInactiveBorders
     sx={{ overflow: 'visible' }}
   />
