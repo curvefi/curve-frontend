@@ -1,10 +1,8 @@
 import { useState } from 'react'
-import { styled } from 'styled-components'
 import { PoolActivity } from '@/dex/components/OhlcAndActivityComp/PoolActivity'
 import { useOhlcChartState } from '@/dex/hooks/useOhlcChartState'
 import { ChainId } from '@/dex/types/main.types'
 import Stack from '@mui/material/Stack'
-import { Box } from '@ui/Box'
 import { ChartWrapper } from '@ui-kit/features/candle-chart/ChartWrapper'
 import { TIME_OPTIONS } from '@ui-kit/features/candle-chart/constants'
 import type { PricesApiPool } from '@ui-kit/features/candle-chart/types'
@@ -37,7 +35,7 @@ export const OhlcAndActivityComp = ({
   const [poolInfo, setPoolInfo] = useState<'chart' | 'poolActivity'>('chart')
 
   return (
-    <Wrapper>
+    <Stack gap={Spacing.md}>
       <SubTabsSwitcher tabs={tabs} value={poolInfo} onChange={setPoolInfo} />
       {pricesApiPoolData && poolInfo === 'poolActivity' && (
         <PoolActivity
@@ -68,12 +66,6 @@ export const OhlcAndActivityComp = ({
           <ChartWrapper {...ohlcChartProps} />
         </Stack>
       )}
-    </Wrapper>
+    </Stack>
   )
 }
-
-const Wrapper = styled(Box)`
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-2);
-`

@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { styled } from 'styled-components'
 import { useOneWayMarket } from '@/lend/entities/chain'
 import { useOhlcChartState } from '@/lend/hooks/useOhlcChartState'
 import { Api, ChainId } from '@/lend/types/lend.types'
@@ -8,10 +7,9 @@ import { useBandsData } from '@/llamalend/features/bands-chart/hooks/useBandsDat
 import { getBandsChartToken } from '@/llamalend/features/bands-chart/utils'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
-import { AlertBox } from '@ui/AlertBox'
-import { TextCaption } from '@ui/TextCaption'
 import { ChartWrapper } from '@ui-kit/features/candle-chart/ChartWrapper'
 import { TIME_OPTIONS, SOFT_LIQUIDATION_DESCRIPTION } from '@ui-kit/features/candle-chart/constants'
+import { ErrorMessage } from '@ui-kit/features/candle-chart/ErrorMessage'
 import { useNewBandsChart } from '@ui-kit/hooks/useFeatureFlags'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
@@ -109,11 +107,10 @@ export const ChartAndActivityComp = ({ rChainId, rOwmId, api }: ChartAndActivity
             gridTemplateColumns={{ tablet: newBandsChartEnabled && isBandsVisible ? '1fr 0.3fr' : undefined }}
           >
             {ohlcDataUnavailable ? (
-              <StyledAlertBox alertType="">
-                <TextCaption isCaps isBold>
-                  {t`Ohlc chart data is unavailable for this market.`}
-                </TextCaption>
-              </StyledAlertBox>
+              <ErrorMessage
+                errorMessage={t`Chart data is not available for this market.`}
+                sx={{ alignSelf: 'center' }}
+              />
             ) : (
               <ChartWrapper {...ohlcChartProps} betaBackgroundColor={theme.design.Layer[1].Fill} />
             )}
@@ -135,10 +132,3 @@ export const ChartAndActivityComp = ({ rChainId, rOwmId, api }: ChartAndActivity
     </Stack>
   )
 }
-
-const StyledAlertBox = styled(AlertBox)`
-  align-items: center;
-  display: flex;
-  justify-content: center;
-  margin: auto;
-`
