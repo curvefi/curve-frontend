@@ -22,7 +22,7 @@ export const useTokenSelectorData = (
     chainId: number
     userAddress?: Address
   },
-  enabled = true,
+  { enabled, prefetch }: { enabled: boolean; prefetch: boolean },
 ): Pick<TokenListProps, 'balances' | 'tokenPrices'> => {
   const config = useConfig()
   const tokenAddresses = useMemo(() => tokens.map((token) => token.address), [tokens])
@@ -31,10 +31,10 @@ export const useTokenSelectorData = (
   // This reduces the visible "trickle-in" effect of balances loading one by one,
   // minimizing re-renders and providing a smoother user experience.
   useEffect(() => {
-    if (chainId && userAddress && tokenAddresses.length > 0) {
+    if (prefetch && chainId && userAddress && tokenAddresses.length > 0) {
       prefetchTokenBalances(config, { chainId, userAddress, tokenAddresses })
     }
-  }, [config, chainId, userAddress, tokenAddresses])
+  }, [prefetch, config, chainId, userAddress, tokenAddresses])
 
   const { data: balances } = useTokenBalances(
     { chainId, userAddress, tokenAddresses: enabled ? tokenAddresses : [] },
