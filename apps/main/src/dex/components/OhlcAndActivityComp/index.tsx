@@ -7,7 +7,7 @@ import { ChartWrapper } from '@ui-kit/features/candle-chart/ChartWrapper'
 import { TIME_OPTIONS } from '@ui-kit/features/candle-chart/constants'
 import type { PricesApiPool } from '@ui-kit/features/candle-chart/types'
 import { t } from '@ui-kit/lib/i18n'
-import { ChartHeader } from '@ui-kit/shared/ui/ChartHeader'
+import { ChartHeader } from '@ui-kit/shared/ui/Chart/ChartHeader'
 import { SubTabsSwitcher } from '@ui-kit/shared/ui/SubTabsSwitcher'
 import { type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -32,12 +32,12 @@ export const OhlcAndActivityComp = ({
       rChainId,
       pricesApiPoolData,
     })
-  const [poolInfo, setPoolInfo] = useState<'chart' | 'poolActivity'>('chart')
+  const [tab, setTab] = useState<'chart' | 'poolActivity'>('chart')
 
   return (
     <Stack gap={Spacing.md}>
-      <SubTabsSwitcher tabs={tabs} value={poolInfo} onChange={setPoolInfo} />
-      {pricesApiPoolData && poolInfo === 'poolActivity' && (
+      <SubTabsSwitcher tabs={tabs} value={tab} onChange={setTab} />
+      {pricesApiPoolData && tab === 'poolActivity' && (
         <PoolActivity
           coins={pricesApiPoolData.coins}
           tradesTokens={tradesTokens}
@@ -46,7 +46,7 @@ export const OhlcAndActivityComp = ({
           chartCombinations={chartCombinations}
         />
       )}
-      {poolInfo === 'chart' && (
+      {tab === 'chart' && (
         <Stack sx={{ gap: Spacing.md }}>
           <ChartHeader
             flipChart={flipChart}

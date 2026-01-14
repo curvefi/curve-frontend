@@ -9,8 +9,6 @@ import type { ChartColors } from './hooks/useChartPalette'
 import type { LpPriceOhlcDataFormatted, OraclePriceData, LiquidationRanges, LlammaLiquididationRange } from './types'
 import { calculateRobustPriceRange, priceFormatter } from './utils'
 
-export type OhlcChartTimeOption = '15m' | '30m' | '1h' | '4h' | '6h' | '12h' | '1d' | '7d' | '14d'
-
 type RangeValueAccumulator = {
   upper?: number
   lower?: number

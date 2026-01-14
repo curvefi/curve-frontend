@@ -2,10 +2,12 @@ import ButtonBase from '@mui/material/ButtonBase'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
-import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
+import { Transition, Duration } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
+
+const TransitionFunction = `${Transition} ${Duration.Delay}ms`
 
 export const LegendLine = ({ color, dash, opacity = 1 }: { color: string; dash?: string; opacity?: number }) => (
   <svg width="20" height="2" style={{ opacity, transition: `opacity ${TransitionFunction}` }}>

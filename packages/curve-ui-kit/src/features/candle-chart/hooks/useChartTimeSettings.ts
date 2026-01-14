@@ -23,6 +23,18 @@ type UseChartTimeSettingsReturn = {
   timeUnit: 'minute' | 'hour' | 'day'
 }
 
+const intervals: Record<TimeOption, number> = {
+  '15m': 15,
+  '30m': 30,
+  '1h': 1,
+  '4h': 4,
+  '6h': 6,
+  '12h': 12,
+  '1d': 1,
+  '7d': 7,
+  '14d': 14,
+}
+
 /**
  * Manages chart time option state and converts it into the parameters needed for chart API requests.
  * Time settings only recalculate when timeOption changes.
@@ -46,24 +58,11 @@ export const useChartTimeSettings = (
     }
   }, [timeOption])
 
-  const chartInterval = useMemo(() => {
-    const intervals: Record<TimeOption, number> = {
-      '15m': 15,
-      '30m': 30,
-      '1h': 1,
-      '4h': 4,
-      '6h': 6,
-      '12h': 12,
-      '1d': 1,
-      '7d': 7,
-      '14d': 14,
-    }
-    return intervals[timeOption]
-  }, [timeOption])
+  const chartInterval = useMemo(() => intervals[timeOption], [timeOption])
 
-  const timeUnit = useMemo((): 'minute' | 'hour' | 'day' => {
-    if (timeOption === '15m' || timeOption === '30m') return 'minute'
-    if (timeOption === '1h' || timeOption === '4h' || timeOption === '6h' || timeOption === '12h') return 'hour'
+  const timeUnit = useMemo(() => {
+    if (timeOption.endsWith('m')) return 'minute'
+    if (timeOption.endsWith('h')) return 'hour'
     return 'day'
   }, [timeOption])
 

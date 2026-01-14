@@ -2,8 +2,8 @@ import { useMemo, useState } from 'react'
 import Box from '@mui/material/Box'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { DEFAULT_TIME_OPTION, TIME_OPTIONS } from '@ui-kit/features/candle-chart/constants'
-import { ChartHeader, type ChartSelections } from '../ChartHeader'
-import { ToggleBandsChartButton } from '../ToggleBandsChartButton'
+import { ChartHeader, type ChartSelections } from '@ui-kit/shared/ui/Chart/ChartHeader'
+import { ToggleBandsChartButton } from '@ui-kit/shared/ui/Chart/ToggleBandsChartButton'
 
 type DexChartKey = 'lp-usd' | 'lp-token' | 'pair'
 const dexSelections: ChartSelections<DexChartKey>[] = [

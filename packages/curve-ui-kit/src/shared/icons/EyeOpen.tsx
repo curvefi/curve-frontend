@@ -1,7 +1,7 @@
 import { createSvgIcon } from '@mui/material/utils'
 
 export const EyeOpen = createSvgIcon(
-  <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path
       d="M7.5 9.5C8.60457 9.5 9.5 8.60457 9.5 7.5C9.5 6.39543 8.60457 5.5 7.5 5.5C6.39543 5.5 5.5 6.39543 5.5 7.5C5.5 8.60457 6.39543 9.5 7.5 9.5Z"
       fill="currentColor"

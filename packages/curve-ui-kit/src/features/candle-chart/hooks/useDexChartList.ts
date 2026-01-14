@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from 'react'
 import { t } from '@ui-kit/lib/i18n'
-import type { ChartSelections } from '@ui-kit/shared/ui/ChartHeader'
+import type { ChartSelections } from '@ui-kit/shared/ui/Chart/ChartHeader'
 import type { ChartSelection, PricesApiCoin } from '../types'
 import { calculateChartCombinations } from '../utils'
 

@@ -1,7 +1,7 @@
 import { useState, useCallback, useMemo } from 'react'
 import { useTheme } from '@mui/material/styles'
 import { t } from '@ui-kit/lib/i18n'
-import type { LegendItem } from '@ui-kit/shared/ui/LegendSet'
+import type { LegendItem } from '@ui-kit/shared/ui/Chart/LegendSet'
 
 type UseChartLegendTogglesOptions = {
   hasNewLiquidationRange?: boolean
