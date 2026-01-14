@@ -11,6 +11,7 @@ import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import {
   checkLoanDetailsLoaded,
   checkLoanRangeSlider,
+  CREATE_LOAN_FUND_AMOUNT,
   oneLoanTestMarket,
   submitCreateLoanForm,
   writeCreateLoanForm,
@@ -23,8 +24,6 @@ import Skeleton from '@mui/material/Skeleton'
 import { useCurve } from '@ui-kit/features/connect-wallet/lib/CurveContext'
 import { CurveProvider } from '@ui-kit/features/connect-wallet/lib/CurveProvider'
 import { LlamaMarketType } from '@ui-kit/types/market'
-
-const oneEthInWei = '0xde0b6b3a7640000' // 1 ETH=1e18 wei
 
 const onUpdate: OnCreateLoanFormUpdate = async (form) => console.info('form updated', form)
 
@@ -59,8 +58,8 @@ describe('CreateLoanForm Component Tests', () => {
   beforeEach(() => {
     const vnet = getVirtualNetwork()
     const { adminRpcUrl } = getRpcUrls(vnet)
-    fundEth({ adminRpcUrl, amountWei: oneEthInWei, recipientAddresses: [address] })
-    fundErc20({ adminRpcUrl, amountWei: oneEthInWei, tokenAddress, recipientAddresses: [address] })
+    fundEth({ adminRpcUrl, amountWei: CREATE_LOAN_FUND_AMOUNT, recipientAddresses: [address] })
+    fundErc20({ adminRpcUrl, amountWei: CREATE_LOAN_FUND_AMOUNT, tokenAddress, recipientAddresses: [address] })
     cy.log(`Funded some eth and collateral to ${address} in vnet ${vnet.slug}`)
   })
 
