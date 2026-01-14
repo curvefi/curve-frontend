@@ -19,7 +19,7 @@ import { chainValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
 import { llamaApiValidationGroup } from '@ui-kit/lib/model/query/curve-api-validation'
 import { marketIdValidationGroup, marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
 import { userAddressValidationGroup } from '@ui-kit/lib/model/query/user-address-validation'
-import type { Decimal } from '@ui-kit/utils'
+import { Decimal, formatNumber } from '@ui-kit/utils'
 
 export type CollateralForm = FieldsOf<{ userCollateral: Decimal; maxCollateral: Decimal }>
 
@@ -52,9 +52,13 @@ const validateMaxStateCollateral = (
 
 const validateMaxBorrowed = (userBorrowed: Decimal | null | undefined, maxBorrowed: Decimal | null | undefined) =>
   skipWhen(userBorrowed == null || maxBorrowed == null, () => {
-    test('userBorrowed', 'Borrow token amount cannot exceed your wallet balance or the current debt', () => {
-      enforce(userBorrowed).lte(maxBorrowed)
-    })
+    test(
+      'userBorrowed',
+      `Borrow token amount cannot exceed ${formatNumber(maxBorrowed ?? 0, { abbreviate: false })}`,
+      () => {
+        enforce(userBorrowed).lte(maxBorrowed)
+      },
+    )
   })
 
 const validateRepayBorrowedField = (userBorrowed: Decimal | null | undefined) =>
