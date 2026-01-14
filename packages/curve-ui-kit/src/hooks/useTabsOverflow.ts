@@ -1,20 +1,32 @@
 import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 import useResizeObserver from '@ui-kit/hooks/useResizeObserver'
 import type { TabOption } from '../shared/ui/TabsSwitcher'
-import { partition } from 'lodash'
-import { splitAt } from '@ui-kit/utils/array'
+import { partition, sumBy } from 'lodash'
+import { splitAtFirst } from '@ui-kit/utils/array'
 import { CONTAINED_TABS_MARGIN_RIGHT } from '@ui-kit/themes/components/tabs/mui-tabs'
+import { useSwitch } from './useSwitch'
 
 // threshold from when the tabs start to overflow
 const OVERFLOW_THRESHOLD = 0 // px
 const MUI_TAB_SELECTOR = '.MuiTab-root'
 
+/**
+ * Hook to handle tabs overflow.
+ * The rendered options are the Tabs that are rendered, but not necessarily visible.
+ * The visible options are the rendered Tabs that are visible and clickable.
+ * The hidden options are the Tabs that are rendered inside the kebab menu.
+ * @param options - The options to render.
+ * @param isKebabMode - Whether the tabs are in kebab mode.
+ * @param currentValue - The current value of the tabs.
+ */
 export function useTabsOverflow<T extends string | number>(
   options: readonly TabOption<T>[],
   isKebabMode: boolean,
   currentValue: T | undefined,
 ) {
+  const [kebabMenuOpen, openKebabMenu, closeKebabMenu] = useSwitch()
   const visibleTabsRef = useRef<HTMLDivElement>(null)
+  const kebabTabRef = useRef<HTMLDivElement>(null)
   const [tabsContainerWidth] = useResizeObserver(visibleTabsRef, { threshold: 1 }) ?? []
   const [tabWidths, setTabWidths] = useState<number[]>([])
 
@@ -35,30 +47,32 @@ export function useTabsOverflow<T extends string | number>(
 
     const [alwaysInKebabOptions, standardOptions] = partition(options, (option) => option.alwaysInKebab)
 
-    if (!tabsContainerWidth || !tabWidths.length) {
+    if (tabsContainerWidth && tabWidths.length) {
+      const standardOptionsWithWidth = standardOptions.map((option, index) => ({
+        ...option,
+        width: tabWidths[index] ?? 0,
+      }))
+
+      const [visibleOptions, overflowOptions] = splitAtFirst(standardOptionsWithWidth, (_, index) => {
+        const currentWidth = sumBy(
+          standardOptionsWithWidth.slice(0, index + 1),
+          // contained tabs have an additional margin to the right. Actually the selected tab and the last one do not have this margin, but it's ignored here
+          (option) => option.width + CONTAINED_TABS_MARGIN_RIGHT,
+        )
+        return currentWidth - tabsContainerWidth >= OVERFLOW_THRESHOLD
+      })
+
       return {
         renderedOptions: standardOptions,
-        visibleOptions: standardOptions,
-        hiddenOptions: alwaysInKebabOptions,
+        visibleOptions,
+        hiddenOptions: [...overflowOptions, ...alwaysInKebabOptions],
       }
     }
 
-    const lastIndex = standardOptions.length - 1
-    let totalWidth = 0
-    const overflowIndex = standardOptions.findIndex((option, index) => {
-      const margin = option.value !== currentValue && index !== lastIndex ? CONTAINED_TABS_MARGIN_RIGHT : 0
-      totalWidth += (tabWidths[index] ?? 0) + margin
-      return totalWidth - tabsContainerWidth >= OVERFLOW_THRESHOLD
-    })
-    const [visibleOptions, overflowOptions] = splitAt(
-      standardOptions,
-      overflowIndex === -1 ? standardOptions.length : overflowIndex,
-    )
-
     return {
       renderedOptions: standardOptions,
-      visibleOptions,
-      hiddenOptions: [...overflowOptions, ...alwaysInKebabOptions],
+      visibleOptions: standardOptions,
+      hiddenOptions: alwaysInKebabOptions,
     }
   }, [currentValue, isKebabMode, options, tabWidths, tabsContainerWidth])
 
@@ -67,5 +81,9 @@ export function useTabsOverflow<T extends string | number>(
     visibleOptions,
     hiddenOptions,
     visibleTabsRef,
+    kebabTabRef,
+    kebabMenuOpen,
+    openKebabMenu,
+    closeKebabMenu,
   }
 }
