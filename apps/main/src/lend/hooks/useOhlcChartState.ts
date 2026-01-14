@@ -134,6 +134,7 @@ export const useOhlcChartState = ({ rChainId, rOwmId }: UseOhlcChartStateProps) 
 
   const { oraclePriceVisible, liqRangeCurrentVisible, liqRangeNewVisible, legendSets } = useChartLegendToggles({
     hasNewLiquidationRange: !!newLiqPrices,
+    hasLiquidationRange: !!userPrices,
   })
 
   const selectedLiqRange = useLiquidationRange({
