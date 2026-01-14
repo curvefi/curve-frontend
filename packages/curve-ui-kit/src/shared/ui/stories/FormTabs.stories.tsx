@@ -4,7 +4,7 @@ import Typography from '@mui/material/Typography'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { FormTab, FormTabs } from '../../../widgets/DetailPageLayout/FormTabs'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { TabsSwitcherProps } from '../TabsSwitcher'
+import { TabsSwitcherProps } from '../Tabs/TabsSwitcher'
 
 const { MaxWidth } = SizesAndSpaces
 

@@ -3,7 +3,7 @@ import { type ComponentType, type ReactNode, useState } from 'react'
 import { notFalsy } from '@curvefi/prices-api/objects.util'
 import Skeleton from '@mui/material/Skeleton'
 import Stack from '@mui/material/Stack'
-import { type TabOption, TabsSwitcher, TabsSwitcherProps } from '@ui-kit/shared/ui/TabsSwitcher'
+import { type TabOption, TabsSwitcher, TabsSwitcherProps } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
 import { FormContent } from './FormContent'
 

@@ -1,6 +1,6 @@
 import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 import useResizeObserver from '@ui-kit/hooks/useResizeObserver'
-import type { TabOption } from '../shared/ui/TabsSwitcher'
+import type { TabOption } from '../shared/ui/Tabs/TabsSwitcher'
 import { partition, sumBy } from 'lodash'
 import { splitAtFirst } from '@ui-kit/utils/array'
 import { CONTAINED_TABS_MARGIN_RIGHT } from '@ui-kit/themes/components/tabs/mui-tabs'
@@ -26,7 +26,7 @@ export function useTabsOverflow<T extends string | number>(
 ) {
   const [kebabMenuOpen, openKebabMenu, closeKebabMenu] = useSwitch()
   const visibleTabsRef = useRef<HTMLDivElement>(null)
-  const kebabTabRef = useRef<HTMLDivElement>(null)
+  const kebabTabRef = useRef<HTMLDivElement | null>(null)
   const [tabsContainerWidth] = useResizeObserver(visibleTabsRef, { threshold: 1 }) ?? []
   const [tabWidths, setTabWidths] = useState<number[]>([])
 

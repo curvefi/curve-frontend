@@ -3,7 +3,7 @@ import { objectKeys } from '@curvefi/prices-api/objects.util'
 import { Stack } from '@mui/material'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { LlamaIcon } from '../../shared/icons/LlamaIcon'
-import { TabsSwitcher, type TabOption, type TabsSwitcherProps } from '../../shared/ui/TabsSwitcher'
+import { TabsSwitcher, type TabOption, type TabsSwitcherProps } from '../../shared/ui/Tabs/TabsSwitcher'
 import { TABS_SIZES_CLASSES } from '../components/tabs/mui-tabs'
 import { SizesAndSpaces } from '../design/1_sizes_spaces'
 
