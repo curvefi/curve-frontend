@@ -18,7 +18,7 @@ const DataSet = ({ label, value }: { label: string; value: string }) => (
   </Stack>
 )
 
-const DistributionsChartTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) => {
+export const DistributionsChartTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) => {
   if (!active || !payload || !payload.length) return null
 
   const { endDate, weeklyRevenue } = payload[0].payload as Epoch
@@ -47,5 +47,3 @@ const DistributionsChartTooltip = ({ active, payload }: TooltipProps<ValueType, 
     </Paper>
   )
 }
-
-export default DistributionsChartTooltip

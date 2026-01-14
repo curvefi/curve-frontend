@@ -1,22 +1,22 @@
 import { MouseEvent, useEffect, useState } from 'react'
 import { styled } from 'styled-components'
-import LineChartComponent from '@/dao/components/Charts/LineChartComponent'
-import ErrorMessage from '@/dao/components/ErrorMessage'
-import ExternalLinkIconButton from '@/dao/components/ExternalLinkIconButton'
-import InternalLinkButton from '@/dao/components/InternalLinkButton'
-import GaugeDetails from '@/dao/components/PageGauges/GaugeListItem/GaugeDetails'
-import GaugeListColumns from '@/dao/components/PageGauges/GaugeListItem/GaugeListColumns'
-import GaugeWeightVotesColumns from '@/dao/components/PageGauges/GaugeListItem/GaugeWeightVotesColumns'
-import TitleComp from '@/dao/components/PageGauges/GaugeListItem/TitleComp'
-import VoteGaugeField from '@/dao/components/PageGauges/GaugeVoting/VoteGaugeField'
+import { LineChartComponent } from '@/dao/components/Charts/LineChartComponent'
+import { ErrorMessage } from '@/dao/components/ErrorMessage'
+import { ExternalLinkIconButton } from '@/dao/components/ExternalLinkIconButton'
+import { InternalLinkButton } from '@/dao/components/InternalLinkButton'
+import { GaugeDetails } from '@/dao/components/PageGauges/GaugeListItem/GaugeDetails'
+import { GaugeListColumns } from '@/dao/components/PageGauges/GaugeListItem/GaugeListColumns'
+import { GaugeWeightVotesColumns } from '@/dao/components/PageGauges/GaugeListItem/GaugeWeightVotesColumns'
+import { TitleComp } from '@/dao/components/PageGauges/GaugeListItem/TitleComp'
+import { VoteGaugeField } from '@/dao/components/PageGauges/GaugeVoting/VoteGaugeField'
 import { useUserGaugeVoteNextTimeQuery } from '@/dao/entities/user-gauge-vote-next-time'
-import useStore from '@/dao/store/useStore'
+import { useStore } from '@/dao/store/useStore'
 import { GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
-import Box from '@ui/Box'
-import Button from '@ui/Button'
-import Icon from '@ui/Icon'
-import IconButton from '@ui/IconButton'
-import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import { Box } from '@ui/Box'
+import { Button } from '@ui/Button'
+import { Icon } from '@ui/Icon'
+import { IconButton } from '@ui/IconButton'
+import { SpinnerWrapper, Spinner } from '@ui/Spinner'
 import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
 import { Chain } from '@ui-kit/utils/network'
@@ -31,7 +31,7 @@ type Props = {
   userAddress?: string
 }
 
-const GaugeListItem = ({
+export const GaugeListItem = ({
   gaugeData,
   gridTemplateColumns,
   userGaugeWeightVoteData,
@@ -221,5 +221,3 @@ const UpdateGaugeIndicator = styled(Button)`
   font-weight: var(--bold);
   font-size: var(--font-size-1);
 `
-
-export default GaugeListItem

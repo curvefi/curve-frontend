@@ -24,7 +24,7 @@ export interface AppSlice {
   resetAppState<T>(sliceKey: SliceKey, defaultState: T): void
 }
 
-const createAppSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): AppSlice => ({
+export const createAppSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): AppSlice => ({
   hydrate: async (_, api, prevApi, wallet) => {
     if (!api) return
 
@@ -96,5 +96,3 @@ const createAppSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['
     )
   },
 })
-
-export default createAppSlice

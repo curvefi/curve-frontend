@@ -1,7 +1,7 @@
 import lodash from 'lodash'
 import type { Config } from 'wagmi'
 import type { StoreApi } from 'zustand'
-import curvejsApi from '@/dex/lib/curvejs'
+import { curvejsApi } from '@/dex/lib/curvejs'
 import type { State } from '@/dex/store/useStore'
 import { Balances, CurveApi, UserPoolListMapper } from '@/dex/types/main.types'
 import { fulfilledValue, isValidAddress } from '@/dex/utils'
@@ -60,7 +60,7 @@ const DEFAULT_STATE: SliceState = {
   error: '',
 }
 
-const createUserSlice = (_set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): UserSlice => ({
+export const createUserSlice = (_set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): UserSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 
@@ -180,5 +180,3 @@ export function getUserActiveKey(curve: CurveApi | undefined | null) {
 export function getUserPoolActiveKey(curve: CurveApi, poolId: string) {
   return `${curve.chainId}-${shortenAccount(curve.signerAddress).toLowerCase()}-${poolId}`
 }
-
-export default createUserSlice

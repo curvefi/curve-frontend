@@ -1,5 +1,5 @@
 import type { HealthMode } from '@/llamalend/llamalend.types'
-import Icon from '@ui/Icon'
+import { Icon } from '@ui/Icon'
 import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { getIsUserCloseToLiquidation } from './llama.utils'

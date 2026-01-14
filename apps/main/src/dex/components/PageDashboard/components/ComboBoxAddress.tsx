@@ -24,11 +24,11 @@ import type { ComboBoxStateOptions, ListState } from 'react-stately'
 import { useComboBoxState } from 'react-stately'
 import { styled } from 'styled-components'
 import type { Node } from '@react-types/shared'
-import Box from '@ui/Box'
-import Icon from '@ui/Icon'
-import IconButton from '@ui/IconButton'
-import InputProvider from '@ui/InputComp'
-import ShadowedBox from '@ui/ShadowedBox'
+import { Box } from '@ui/Box'
+import { Icon } from '@ui/Icon'
+import { IconButton } from '@ui/IconButton'
+import { InputProvider } from '@ui/InputComp'
+import { ShadowedBox } from '@ui/ShadowedBox'
 import { breakpoints } from '@ui/utils/responsive'
 
 const Popover = (props: AriaOverlayProps & { popoverRef: RefObject<HTMLDivElement | null>; children: ReactNode }) => {
@@ -119,7 +119,7 @@ function Button(props: AriaButtonProps & { buttonRef: RefObject<HTMLButtonElemen
   )
 }
 
-function ComboBoxAddress<T extends object>(props: ComboBoxStateOptions<T>) {
+export function ComboBoxAddress<T extends object>(props: ComboBoxStateOptions<T>) {
   const buttonRef = useRef<HTMLButtonElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const listBoxRef = useRef<HTMLUListElement>(null)
@@ -229,5 +229,3 @@ const ComboBoxWrapper = styled.div`
     min-width: 492px;
   }
 `
-
-export default ComboBoxAddress

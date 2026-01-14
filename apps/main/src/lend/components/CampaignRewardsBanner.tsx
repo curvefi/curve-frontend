@@ -1,7 +1,7 @@
-import CampaignBannerComp from 'ui/src/CampaignRewards/CampaignBannerComp'
-import networks from '@/lend/networks'
+import { networks } from '@/lend/networks'
 import { ChainId } from '@/lend/types/lend.types'
 import type { Chain } from '@curvefi/prices-api'
+import { CampaignBannerComp } from '@ui/CampaignRewards/CampaignBannerComp'
 import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
 import type { Address } from '@ui-kit/utils'
@@ -12,7 +12,7 @@ interface CampaignRewardsBannerProps {
   supplyAddress: string
 }
 
-const CampaignRewardsBanner = ({ chainId, borrowAddress, supplyAddress }: CampaignRewardsBannerProps) => {
+export const CampaignRewardsBanner = ({ chainId, borrowAddress, supplyAddress }: CampaignRewardsBannerProps) => {
   const blockchainId = networks[chainId].id as Chain
   const { data: supplyCampaigns } = useCampaignsByAddress({ blockchainId, address: supplyAddress as Address })
   const { data: borrowCampaigns } = useCampaignsByAddress({ blockchainId, address: borrowAddress as Address })
@@ -32,5 +32,3 @@ const CampaignRewardsBanner = ({ chainId, borrowAddress, supplyAddress }: Campai
     )
   )
 }
-
-export default CampaignRewardsBanner

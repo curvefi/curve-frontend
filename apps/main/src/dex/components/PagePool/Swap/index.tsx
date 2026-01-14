@@ -2,36 +2,36 @@ import lodash from 'lodash'
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { Address } from 'viem'
 import { useConfig, useConnection, type Config } from 'wagmi'
-import AlertFormError from '@/dex/components/AlertFormError'
-import AlertFormWarning from '@/dex/components/AlertFormWarning'
-import AlertSlippage from '@/dex/components/AlertSlippage'
-import DetailInfoEstGas from '@/dex/components/DetailInfoEstGas'
-import TransferActions from '@/dex/components/PagePool/components/TransferActions'
-import WarningModal from '@/dex/components/PagePool/components/WarningModal'
+import { AlertFormError } from '@/dex/components/AlertFormError'
+import { AlertFormWarning } from '@/dex/components/AlertFormWarning'
+import { AlertSlippage } from '@/dex/components/AlertSlippage'
+import { DetailInfoEstGas } from '@/dex/components/DetailInfoEstGas'
+import { TransferActions } from '@/dex/components/PagePool/components/TransferActions'
+import { WarningModal } from '@/dex/components/PagePool/components/WarningModal'
 import type { ExchangeOutput, FormStatus, FormValues, StepKey } from '@/dex/components/PagePool/Swap/types'
 import { DEFAULT_EST_GAS, DEFAULT_EXCHANGE_OUTPUT, getSwapTokens } from '@/dex/components/PagePool/Swap/utils'
 import type { PageTransferProps, Seed } from '@/dex/components/PagePool/types'
-import DetailInfoExchangeRate from '@/dex/components/PageRouterSwap/components/DetailInfoExchangeRate'
-import DetailInfoPriceImpact from '@/dex/components/PageRouterSwap/components/DetailInfoPriceImpact'
+import { DetailInfoExchangeRate } from '@/dex/components/PageRouterSwap/components/DetailInfoExchangeRate'
+import { DetailInfoPriceImpact } from '@/dex/components/PageRouterSwap/components/DetailInfoPriceImpact'
 import { useNetworks } from '@/dex/entities/networks'
-import useStore from '@/dex/store/useStore'
+import { useStore } from '@/dex/store/useStore'
 import { CurveApi, PoolAlert, PoolData, TokensMapper } from '@/dex/types/main.types'
 import { toTokenOption } from '@/dex/utils'
 import { getSlippageImpact } from '@/dex/utils/utilsSwap'
 import Stack from '@mui/material/Stack'
-import AlertBox from '@ui/AlertBox'
-import Checkbox from '@ui/Checkbox'
-import Icon from '@ui/Icon'
-import IconButton from '@ui/IconButton'
+import { AlertBox } from '@ui/AlertBox'
+import { Checkbox } from '@ui/Checkbox'
+import { Icon } from '@ui/Icon'
+import { IconButton } from '@ui/IconButton'
 import { getActiveStep, getStepStatus } from '@ui/Stepper/helpers'
-import Stepper from '@ui/Stepper/Stepper'
+import { Stepper } from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
-import TxInfoBar from '@ui/TxInfoBar'
+import { TxInfoBar } from '@ui/TxInfoBar'
 import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { TokenList, TokenSelector } from '@ui-kit/features/select-token'
-import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
+import { usePageVisibleInterval } from '@ui-kit/hooks/usePageVisibleInterval'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
@@ -45,7 +45,7 @@ import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
 const { cloneDeep, isNaN, isUndefined } = lodash
 const { Spacing } = SizesAndSpaces
 
-const Swap = ({
+export const Swap = ({
   chainIdPoolId,
   curve,
   maxSlippage,
@@ -560,5 +560,3 @@ const Swap = ({
     </FormContent>
   )
 }
-
-export default Swap

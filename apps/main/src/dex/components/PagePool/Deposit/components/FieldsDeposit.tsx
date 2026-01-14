@@ -3,16 +3,16 @@ import lodash from 'lodash'
 import { useCallback, useMemo } from 'react'
 import type { Address } from 'viem'
 import { useConnection } from 'wagmi'
-import FieldToken from '@/dex/components/PagePool/components/FieldToken'
+import { FieldToken } from '@/dex/components/PagePool/components/FieldToken'
 import type { FormValues, LoadMaxAmount } from '@/dex/components/PagePool/Deposit/types'
 import { FieldsWrapper } from '@/dex/components/PagePool/styles'
 import type { TransferProps } from '@/dex/components/PagePool/types'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { usePoolIdByAddressOrId } from '@/dex/hooks/usePoolIdByAddressOrId'
-import useStore from '@/dex/store/useStore'
+import { useStore } from '@/dex/store/useStore'
 import type { CurrencyReserves } from '@/dex/types/main.types'
 import { getChainPoolIdActiveKey } from '@/dex/utils'
-import Checkbox from '@ui/Checkbox'
+import { Checkbox } from '@ui/Checkbox'
 import { useTokenBalances } from '@ui-kit/hooks/useTokenBalance'
 import { t } from '@ui-kit/lib/i18n'
 import { Amount } from '../../utils'
@@ -56,7 +56,7 @@ function calculateBalancedValues(
   })
 }
 
-const FieldsDeposit = ({
+export const FieldsDeposit = ({
   chainId,
   formProcessing,
   formValues,
@@ -213,5 +213,3 @@ const FieldsDeposit = ({
     </FieldsWrapper>
   )
 }
-
-export default FieldsDeposit

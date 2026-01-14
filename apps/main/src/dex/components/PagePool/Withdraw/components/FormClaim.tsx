@@ -2,27 +2,27 @@ import lodash from 'lodash'
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import { styled } from 'styled-components'
 import { useConfig, type Config } from 'wagmi'
-import AlertFormError from '@/dex/components/AlertFormError'
-import TransferActions from '@/dex/components/PagePool/components/TransferActions'
+import { AlertFormError } from '@/dex/components/AlertFormError'
+import { TransferActions } from '@/dex/components/PagePool/components/TransferActions'
 import type { TransferProps } from '@/dex/components/PagePool/types'
 import type { FormStatus, FormValues } from '@/dex/components/PagePool/Withdraw/types'
 import { DEFAULT_FORM_STATUS, getClaimText } from '@/dex/components/PagePool/Withdraw/utils'
 import { useNetworks } from '@/dex/entities/networks'
-import useStore from '@/dex/store/useStore'
+import { useStore } from '@/dex/store/useStore'
 import { CurveApi, PoolData } from '@/dex/types/main.types'
-import AlertBox from '@ui/AlertBox'
-import Box from '@ui/Box'
-import Button from '@ui/Button'
-import Stats from '@ui/Stats'
+import { AlertBox } from '@ui/AlertBox'
+import { Box } from '@ui/Box'
+import { Button } from '@ui/Button'
+import { Stats } from '@ui/Stats'
 import { getStepStatus } from '@ui/Stepper/helpers'
-import Stepper from '@ui/Stepper/Stepper'
+import { Stepper } from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
-import TxInfoBar from '@ui/TxInfoBar'
+import { TxInfoBar } from '@ui/TxInfoBar'
 import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t, Trans } from '@ui-kit/lib/i18n'
 
-const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed }: TransferProps) => {
+export const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed }: TransferProps) => {
   const isSubscribed = useRef(false)
 
   const { chainId, signerAddress } = curve || {}
@@ -280,5 +280,3 @@ const ClaimableTokensWrapper = styled.div`
   box-shadow: inset 0.5px 0.5px 0 0.5px var(--box--primary--content--shadow-color);
   background-color: var(--box--primary--content--background-color);
 `
-
-export default FormClaim

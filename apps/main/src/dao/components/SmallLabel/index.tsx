@@ -8,7 +8,7 @@ type SmallLabelProps = {
   className?: string
 }
 
-const SmallLabel = ({ description, isKilled, className, isNetwork }: SmallLabelProps) => (
+export const SmallLabel = ({ description, isKilled, className, isNetwork }: SmallLabelProps) => (
   <BoxedData isKilled={!!isKilled} isNetwork={isNetwork} className={className}>
     {description}
   </BoxedData>
@@ -39,5 +39,3 @@ const BoxedData = styled.span<{ isKilled?: boolean; isNetwork?: boolean }>`
       border: 1px solid var(--primary-400);
     `}
 `
-
-export default SmallLabel

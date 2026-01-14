@@ -1,11 +1,11 @@
 import { styled } from 'styled-components'
-import TextInput from '@/dex/components/PageCreatePool/components/TextInput'
+import { TextInput } from '@/dex/components/PageCreatePool/components/TextInput'
 import { INVALID_POOLS_NAME_CHARACTERS } from '@/dex/constants'
-import useStore from '@/dex/store/useStore'
-import Box from '@ui/Box'
+import { useStore } from '@/dex/store/useStore'
+import { Box } from '@ui/Box'
 import { t } from '@ui-kit/lib/i18n'
 
-const PoolInfo = () => {
+export const PoolInfo = () => {
   const poolName = useStore((state) => state.createPool.poolName)
   const poolSymbol = useStore((state) => state.createPool.poolSymbol)
   const updatePoolName = useStore((state) => state.createPool.updatePoolName)
@@ -54,5 +54,3 @@ const Row = styled(Box)`
     flex-direction: row;
   }
 `
-
-export default PoolInfo

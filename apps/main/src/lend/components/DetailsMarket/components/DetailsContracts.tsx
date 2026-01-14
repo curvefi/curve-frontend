@@ -1,15 +1,15 @@
 import { ReactNode } from 'react'
 import { zeroAddress } from 'viem'
-import ChipInactive from '@/lend/components/ChipInactive'
-import TokenLabel from '@/lend/components/TokenLabel'
-import networks from '@/lend/networks'
+import { StyledInactiveChip as ChipInactive } from '@/lend/components/ChipInactive'
+import { TokenLabel } from '@/lend/components/TokenLabel'
+import { networks } from '@/lend/networks'
 import { PageContentProps } from '@/lend/types/lend.types'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import Box from '@ui/Box'
-import Chip from '@ui/Typography/Chip'
+import { Box } from '@ui/Box'
+import { Chip } from '@ui/Typography/Chip'
 import { t } from '@ui-kit/lib/i18n'
-import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
+import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { AddressActionInfo } from '@ui-kit/shared/ui/AddressActionInfo'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
@@ -17,7 +17,7 @@ const { Spacing } = SizesAndSpaces
 
 type ContractItems = { label: ReactNode; address: string | undefined; invalidText?: string }[]
 
-const DetailsContracts = ({ rChainId, market }: Pick<PageContentProps, 'rChainId' | 'market'>) => {
+export const DetailsContracts = ({ rChainId, market }: Pick<PageContentProps, 'rChainId' | 'market'>) => {
   const { addresses, borrowed_token, collateral_token } = market ?? {}
 
   // prettier-ignore
@@ -72,5 +72,3 @@ const DetailsContracts = ({ rChainId, market }: Pick<PageContentProps, 'rChainId
     </Stack>
   )
 }
-
-export default DetailsContracts

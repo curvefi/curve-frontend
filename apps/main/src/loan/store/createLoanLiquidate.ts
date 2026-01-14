@@ -4,7 +4,7 @@ import { updateUserEventsApi } from '@/llamalend/llama.utils'
 import type { FormStatus } from '@/loan/components/PageMintMarket/LoanLiquidate/types'
 import type { FormEstGas } from '@/loan/components/PageMintMarket/types'
 import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@/loan/components/PageMintMarket/utils'
-import networks from '@/loan/networks'
+import { networks } from '@/loan/networks'
 import type { State } from '@/loan/store/useStore'
 import { ChainId, LlamaApi, Llamma, UserWalletBalances } from '@/loan/types/loan.types'
 import { useWallet } from '@ui-kit/features/connect-wallet'
@@ -65,7 +65,7 @@ const DEFAULT_STATE: SliceState = {
   liquidationAmt: '',
 }
 
-const createLoanLiquidate = (_set: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
+export const createLoanLiquidate = (_set: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
   loanLiquidate: {
     ...DEFAULT_STATE,
 
@@ -172,8 +172,6 @@ const createLoanLiquidate = (_set: StoreApi<State>['setState'], get: StoreApi<St
     },
   },
 })
-
-export default createLoanLiquidate
 
 export function haveEnoughCrvusdForLiquidation(walletStablecoin: string, tokensToLiquidate: string) {
   return +(walletStablecoin ?? '0') >= +tokensToLiquidate * 1.0001

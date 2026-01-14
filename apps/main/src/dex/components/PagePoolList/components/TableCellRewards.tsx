@@ -1,7 +1,7 @@
 import { styled } from 'styled-components'
-import TableCellRewardsBase from '@/dex/components/PagePoolList/components/TableCellRewardsBase'
-import TableCellRewardsOthers from '@/dex/components/PagePoolList/components/TableCellRewardsOthers'
-import PoolRewardsCrv from '@/dex/components/PoolRewardsCrv'
+import { TableCellRewardsBase } from '@/dex/components/PagePoolList/components/TableCellRewardsBase'
+import { TableCellRewardsOthers } from '@/dex/components/PagePoolList/components/TableCellRewardsOthers'
+import { PoolRewardsCrv } from '@/dex/components/PoolRewardsCrv'
 import { RewardsApy, PoolData, PoolDataCache } from '@/dex/types/main.types'
 import { useLayoutStore } from '@ui-kit/features/layout'
 
@@ -13,7 +13,7 @@ interface Props {
   rewardsApy: RewardsApy | undefined
 }
 
-const TCellRewards = ({ isHighlightBase, isHighlightCrv, isHighlightOther, poolData, rewardsApy }: Props) => {
+export const TCellRewards = ({ isHighlightBase, isHighlightCrv, isHighlightOther, poolData, rewardsApy }: Props) => {
   const isMdUp = useLayoutStore((state) => state.isMdUp)
   const isXSmDown = useLayoutStore((state) => state.isXSmDown)
   if (typeof rewardsApy === 'undefined') {
@@ -36,5 +36,3 @@ const TCellRewards = ({ isHighlightBase, isHighlightCrv, isHighlightOther, poolD
 const Wrapper = styled.div`
   line-height: 1.2;
 `
-
-export default TCellRewards

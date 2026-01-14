@@ -11,7 +11,7 @@ type Props = {
   children?: ReactNode
 }
 
-const Stats = ({ className, description, isAlignRight, isBorderBottom, isOneLine, label, children }: Props) => {
+export const Stats = ({ className, description, isAlignRight, isBorderBottom, isOneLine, label, children }: Props) => {
   const classNames = `${className} stats`.trim()
   return (
     <DetailInfo
@@ -78,5 +78,3 @@ const DetailInfo = styled.div<DetailInfoProps>`
     }
   }}
 `
-
-export default Stats

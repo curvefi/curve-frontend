@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import AlertBox from '@ui/AlertBox'
+import { AlertBox } from '@ui/AlertBox'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { Trans } from '@ui-kit/lib/i18n'
 
@@ -8,7 +8,7 @@ type Props = {
   usdAmount?: string | number
 }
 
-const AlertSlippage = ({ maxSlippage, usdAmount }: Props) => {
+export const AlertSlippage = ({ maxSlippage, usdAmount }: Props) => {
   const maxUsdSlippage = useMemo(() => {
     if (maxSlippage && usdAmount && usdAmount !== 'NaN') {
       const max = Number(usdAmount) * (Number(maxSlippage) / 100)
@@ -33,5 +33,3 @@ const AlertSlippage = ({ maxSlippage, usdAmount }: Props) => {
     </AlertBox>
   ) : null
 }
-
-export default AlertSlippage

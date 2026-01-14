@@ -1,7 +1,7 @@
 import { styled } from 'styled-components'
-import Box from '@ui/Box'
-import Button from '@ui/Button'
-import Icon from '@ui/Icon'
+import { Box } from '@ui/Box'
+import { Button } from '@ui/Button'
+import { Icon } from '@ui/Icon'
 import { useNavigate } from '@ui-kit/hooks/router'
 
 type BackButtonProps = {
@@ -9,7 +9,7 @@ type BackButtonProps = {
   label: string
 }
 
-const BackButton = ({ path, label }: BackButtonProps) => {
+export const BackButton = ({ path, label }: BackButtonProps) => {
   const push = useNavigate()
   return (
     <BackButtonWrapper variant="secondary">
@@ -32,5 +32,3 @@ const StyledButton = styled(Button)`
   gap: var(--spacing-2);
   color: var(--page--text-color);
 `
-
-export default BackButton

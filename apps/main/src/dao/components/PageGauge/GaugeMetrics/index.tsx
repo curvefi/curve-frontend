@@ -1,13 +1,13 @@
 import { styled } from 'styled-components'
-import CopyIconButton from '@/dao/components/CopyIconButton'
-import ExternalLinkIconButton from '@/dao/components/ExternalLinkIconButton'
-import MetricsComp, { MetricsColumnData } from '@/dao/components/MetricsComp'
+import { CopyIconButton } from '@/dao/components/CopyIconButton'
+import { ExternalLinkIconButton } from '@/dao/components/ExternalLinkIconButton'
+import { MetricsColumnData, MetricsComp } from '@/dao/components/MetricsComp'
 import { ETHEREUM_CHAIN_ID } from '@/dao/constants'
-import networks from '@/dao/networks'
-import useStore from '@/dao/store/useStore'
+import { networks } from '@/dao/networks'
+import { useStore } from '@/dao/store/useStore'
 import { GaugeFormattedData } from '@/dao/types/dao.types'
 import { getChainIdFromGaugeData } from '@/dao/utils'
-import Box from '@ui/Box'
+import { Box } from '@ui/Box'
 import { formatDate, formatNumber, scanAddressPath } from '@ui/utils/'
 import { t } from '@ui-kit/lib/i18n'
 import { Chain, shortenAddress } from '@ui-kit/utils'
@@ -17,7 +17,7 @@ interface GaugeMetricsProps {
   dataLoading: boolean
 }
 
-const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
+export const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
   const gaugeAddress = gaugeData?.effective_address?.toLowerCase() ?? gaugeData?.address?.toLowerCase() ?? ''
   const gaugeCurveApiData = useStore((state) => state.gauges.gaugeCurveApiData.data[gaugeAddress])
   const chainId = getChainIdFromGaugeData(gaugeData)
@@ -240,5 +240,3 @@ const BigScreenButtonsWrapper = styled.div`
     gap: var(--spacing-1);
   }
 `
-
-export default GaugeMetrics

@@ -1,11 +1,11 @@
 import { ReactNode, useState } from 'react'
 import { styled } from 'styled-components'
-import ErrorMessage from '@/dao/components/ErrorMessage'
-import Spinner from '@/dao/components/Spinner'
-import Box from '@ui/Box'
-import NoTableData from './NoTableData'
-import Pagination from './Pagination'
-import TableHeader from './TableHeader'
+import { ErrorMessage } from '@/dao/components/ErrorMessage'
+import { SpinnerComponent as Spinner } from '@/dao/components/Spinner'
+import { Box } from '@ui/Box'
+import { NoTableData } from './NoTableData'
+import { Pagination } from './Pagination'
+import { TableHeader } from './TableHeader'
 
 export interface Column<T> {
   key: keyof T
@@ -32,7 +32,7 @@ interface PaginatedTableProps<T> {
   gridTemplateColumns?: string
 }
 
-const PaginatedTable = <T,>({
+export const PaginatedTable = <T,>({
   sortBy,
   columns,
   data,
@@ -132,5 +132,3 @@ const TableBody = styled.div<{ noPagination: boolean }>`
   flex-direction: column;
   ${({ noPagination }) => noPagination && 'padding-bottom: var(--spacing-3)'}
 `
-
-export default PaginatedTable

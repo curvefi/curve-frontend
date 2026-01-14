@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { AlertType, FormWarning } from '@/lend/types/lend.types'
-import AlertBox from '@ui/AlertBox/AlertBox'
+import { AlertBox } from '@ui/AlertBox/AlertBox'
 import type { AlertBoxProps } from '@ui/AlertBox/types'
 import { t } from '@ui-kit/lib/i18n'
 
@@ -8,7 +8,7 @@ interface Props extends Omit<AlertBoxProps, 'alertType'> {
   errorKey: FormWarning | string
 }
 
-const AlertFormWarning = ({ errorKey, ...props }: Props) => {
+export const AlertFormWarning = ({ errorKey, ...props }: Props) => {
   const errorMessage = useMemo(() => {
     const messages: { [key: FormWarning | string]: { message: string; alertType?: AlertType } } = {
       [FormWarning.FullRepaymentOnly]: {
@@ -38,5 +38,3 @@ const AlertFormWarning = ({ errorKey, ...props }: Props) => {
     </AlertBox>
   ) : null
 }
-
-export default AlertFormWarning

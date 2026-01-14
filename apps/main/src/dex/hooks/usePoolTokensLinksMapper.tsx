@@ -8,7 +8,7 @@ enum Pool {
 }
 
 // Custom link for each token in a pool.
-const usePoolTokensLinksMapper = (rChainId: ChainId, { pool }: PoolDataCacheOrApi) => {
+export const usePoolTokensLinksMapper = (rChainId: ChainId, { pool }: PoolDataCacheOrApi) => {
   const poolId = pool?.id
 
   const [mapper, setMapper] = useState<{ [tokenAddress: string]: string } | null>(null)
@@ -45,5 +45,3 @@ const usePoolTokensLinksMapper = (rChainId: ChainId, { pool }: PoolDataCacheOrAp
 
   return mapper
 }
-
-export default usePoolTokensLinksMapper

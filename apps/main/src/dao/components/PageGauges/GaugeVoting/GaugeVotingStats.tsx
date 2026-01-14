@@ -1,12 +1,12 @@
 import { styled } from 'styled-components'
-import ComboBoxSelectGauge from '@/dao/components/ComboBoxSelectGauge'
-import MetricsComp, { MetricsColumnData } from '@/dao/components/MetricsComp'
+import { ComboBoxGauges as ComboBoxSelectGauge } from '@/dao/components/ComboBoxSelectGauge'
+import { MetricsColumnData, MetricsComp } from '@/dao/components/MetricsComp'
 import { useUserGaugeWeightVotesQuery } from '@/dao/entities/user-gauge-weight-votes'
-import useStore from '@/dao/store/useStore'
+import { useStore } from '@/dao/store/useStore'
 import { getEthPath } from '@/dao/utils'
-import AlertBox from '@ui/AlertBox'
-import Box from '@ui/Box'
-import InternalLink from '@ui/Link/InternalLink'
+import { AlertBox } from '@ui/AlertBox'
+import { Box } from '@ui/Box'
+import { InternalLink } from '@ui/Link/InternalLink'
 import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
@@ -14,7 +14,7 @@ import { shortenAddress } from '@ui-kit/utils'
 import { Chain } from '@ui-kit/utils/network'
 import { calculateUserPowerStale } from './utils'
 
-const GaugeVotingStats = ({ userAddress }: { userAddress: string }) => {
+export const GaugeVotingStats = ({ userAddress }: { userAddress: string }) => {
   const { data: userGaugeWeightVotes, isLoading: userGaugeWeightsLoading } = useUserGaugeWeightVotesQuery({
     chainId: Chain.Ethereum, // DAO is only used on mainnet
     userAddress: userAddress ?? '',
@@ -74,5 +74,3 @@ const StyledInternalLink = styled(InternalLink)`
   text-decoration: none;
   color: inherit;
 `
-
-export default GaugeVotingStats

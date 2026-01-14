@@ -1,16 +1,16 @@
 import lodash from 'lodash'
 import { ReactNode, useMemo } from 'react'
 import { styled } from 'styled-components'
-import ChipPool from '@/dex/components/ChipPool'
-import ChipToken from '@/dex/components/ChipToken'
-import usePoolAlert from '@/dex/hooks/usePoolAlert'
-import useTokenAlert from '@/dex/hooks/useTokenAlert'
-import useStore from '@/dex/store/useStore'
+import { ChipPool } from '@/dex/components/ChipPool'
+import { ChipToken } from '@/dex/components/ChipToken'
+import { usePoolAlert } from '@/dex/hooks/usePoolAlert'
+import { useTokenAlert } from '@/dex/hooks/useTokenAlert'
+import { useStore } from '@/dex/store/useStore'
 import { PoolData, PoolDataCache } from '@/dex/types/main.types'
 import type { INetworkName } from '@curvefi/api/lib/interfaces'
-import AlertBox from '@ui/AlertBox'
-import Box from '@ui/Box'
-import { default as AlertTooltipIcon } from '@ui/Tooltip/TooltipAlert'
+import { AlertBox } from '@ui/AlertBox'
+import { Box } from '@ui/Box'
+import { TooltipAlert } from '@ui/Tooltip/TooltipAlert'
 import { Chip } from '@ui/Typography'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { TokenIcons } from '@ui-kit/shared/ui/TokenIcons'
@@ -24,7 +24,14 @@ type Props = {
   onClick?: (target: EventTarget) => void
 }
 
-const PoolLabel = ({ className = '', blockchainId, isVisible = true, poolData, quickViewValue, onClick }: Props) => {
+export const PoolLabel = ({
+  className = '',
+  blockchainId,
+  isVisible = true,
+  poolData,
+  quickViewValue,
+  onClick,
+}: Props) => {
   const { pool } = poolData ?? {}
   const tokens = useMemo(
     () =>
@@ -83,14 +90,14 @@ const PoolLabel = ({ className = '', blockchainId, isVisible = true, poolData, q
             {!isMobile && (
               <>
                 {(poolAlert?.isInformationOnly || poolAlert?.isInformationOnlyAndShowInForm) && (
-                  <AlertTooltipIcon minWidth="300px" placement="right-start" {...poolAlert}>
+                  <TooltipAlert minWidth="300px" placement="right-start" {...poolAlert}>
                     {poolAlert.message}
-                  </AlertTooltipIcon>
+                  </TooltipAlert>
                 )}
                 {tokenAlert && (
-                  <AlertTooltipIcon minWidth="300px" placement="right-start" {...tokenAlert}>
+                  <TooltipAlert minWidth="300px" placement="right-start" {...tokenAlert}>
                     {tokenAlert.message}
-                  </AlertTooltipIcon>
+                  </TooltipAlert>
                 )}
               </>
             )}
@@ -161,5 +168,3 @@ const StyledAlertBox = styled(AlertBox)`
   overflow: scroll;
   max-width: 260px;
 `
-
-export default PoolLabel

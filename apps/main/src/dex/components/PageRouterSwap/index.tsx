@@ -1,12 +1,12 @@
 import lodash from 'lodash'
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useConfig } from 'wagmi'
-import DetailInfoEstGas from '@/dex/components/DetailInfoEstGas'
-import FormConnectWallet from '@/dex/components/FormConnectWallet'
-import WarningModal, { type HighSlippagePriceImpactProps } from '@/dex/components/PagePool/components/WarningModal'
-import DetailInfoExchangeRate from '@/dex/components/PageRouterSwap/components/DetailInfoExchangeRate'
-import DetailInfoPriceImpact from '@/dex/components/PageRouterSwap/components/DetailInfoPriceImpact'
-import RouterSwapAlerts from '@/dex/components/PageRouterSwap/components/RouterSwapAlerts'
+import { DetailInfoEstGas } from '@/dex/components/DetailInfoEstGas'
+import { FormConnectWallet } from '@/dex/components/FormConnectWallet'
+import { type HighSlippagePriceImpactProps, WarningModal } from '@/dex/components/PagePool/components/WarningModal'
+import { DetailInfoExchangeRate } from '@/dex/components/PageRouterSwap/components/DetailInfoExchangeRate'
+import { DetailInfoPriceImpact } from '@/dex/components/PageRouterSwap/components/DetailInfoPriceImpact'
+import { RouterSwapAlerts } from '@/dex/components/PageRouterSwap/components/RouterSwapAlerts'
 import type {
   FormStatus,
   FormValues,
@@ -16,25 +16,25 @@ import type {
 } from '@/dex/components/PageRouterSwap/types'
 import { useNetworks } from '@/dex/entities/networks'
 import { useRouterApi } from '@/dex/hooks/useRouterApi'
-import useTokensNameMapper from '@/dex/hooks/useTokensNameMapper'
-import useStore from '@/dex/store/useStore'
+import { useTokensNameMapper } from '@/dex/hooks/useTokensNameMapper'
+import { useStore } from '@/dex/store/useStore'
 import { ChainId, CurveApi, type NetworkUrlParams, TokensMapper } from '@/dex/types/main.types'
 import { toTokenOption } from '@/dex/utils'
 import { getSlippageImpact } from '@/dex/utils/utilsSwap'
 import Stack from '@mui/material/Stack'
-import AlertBox from '@ui/AlertBox'
-import Icon from '@ui/Icon'
-import IconButton from '@ui/IconButton'
+import { AlertBox } from '@ui/AlertBox'
+import { Icon } from '@ui/Icon'
+import { IconButton } from '@ui/IconButton'
 import { getActiveStep, getStepStatus } from '@ui/Stepper/helpers'
-import Stepper from '@ui/Stepper/Stepper'
+import { Stepper } from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
-import TxInfoBar from '@ui/TxInfoBar'
+import { TxInfoBar } from '@ui/TxInfoBar'
 import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { TokenList, TokenSelector } from '@ui-kit/features/select-token'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
+import { usePageVisibleInterval } from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { useTokenUsdRate, useTokenUsdRates } from '@ui-kit/lib/model/entities/token-usd-rate'
@@ -46,7 +46,7 @@ import { DetailInfoTradeRoute } from './components/DetailInfoTradeRoute'
 
 const { Spacing } = SizesAndSpaces
 
-const QuickSwap = ({
+export const QuickSwap = ({
   pageLoaded,
   params,
   rChainId: chainId,
@@ -548,5 +548,3 @@ function _isRoutesAndOutputLoading(
   }
   return !error && ((isFrom && +fromAmount > 0) || (!isFrom && +toAmount > 0))
 }
-
-export default QuickSwap

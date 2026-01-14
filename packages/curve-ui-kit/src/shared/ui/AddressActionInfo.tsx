@@ -4,7 +4,7 @@ import LinkMui from '@mui/material/Link'
 import { BaseConfig, scanAddressPath } from '@ui/utils'
 import { shortenAddress } from '../../utils'
 import { ArrowTopRightIcon } from '../icons/ArrowTopRightIcon'
-import ActionInfo from './ActionInfo'
+import { ActionInfo } from './ActionInfo'
 
 export interface AddressActionInfoProps {
   network: BaseConfig | undefined

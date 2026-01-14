@@ -14,5 +14,3 @@ export const BoxHeader = styled.header`
   font-size: var(--box_header--font-size);
   font-weight: var(--box_header--font-weight);
 `
-
-export default BoxHeader

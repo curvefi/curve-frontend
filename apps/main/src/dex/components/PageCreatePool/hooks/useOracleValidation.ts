@@ -3,7 +3,7 @@ import { isAddress, type Address } from 'viem'
 import { useOracleRate } from '@/dex/components/PageCreatePool/hooks/useOracleRate'
 import { TokenId, TokenState } from '@/dex/components/PageCreatePool/types'
 import { validateOracleFunction } from '@/dex/components/PageCreatePool/utils'
-import useStore from '@/dex/store/useStore'
+import { useStore } from '@/dex/store/useStore'
 
 type UseOracleValidationParams = {
   token: TokenState

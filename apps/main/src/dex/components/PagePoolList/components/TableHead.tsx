@@ -1,12 +1,12 @@
 import { Fragment, useCallback } from 'react'
 import { styled } from 'styled-components'
-import TableHeadRewards from '@/dex/components/PagePoolList/components/TableHeadRewards'
+import { TableHeadRewards } from '@/dex/components/PagePoolList/components/TableHeadRewards'
 import type { ColumnKeys, Order, PoolListTableLabel, SearchParams, SortKey } from '@/dex/components/PagePoolList/types'
 import { COLUMN_KEYS } from '@/dex/components/PagePoolList/utils'
-import Box from '@ui/Box'
+import { Box } from '@ui/Box'
 import { Th, Thead, TheadSortButton } from '@ui/Table'
 import type { TheadSortButtonProps } from '@ui/Table/TheadSortButton'
-import IconTooltip from '@ui/Tooltip/TooltipIcon'
+import { TooltipIcon as IconTooltip } from '@ui/Tooltip/TooltipIcon'
 import { breakpoints } from '@ui/utils/responsive'
 import { t } from '@ui-kit/lib/i18n'
 
@@ -21,7 +21,7 @@ type Props = {
   updatePath(searchParams: Partial<SearchParams>): void
 }
 
-const TableHead = ({
+export const TableHead = ({
   isLite,
   isReadyRewardsApy,
   isReadyTvl,
@@ -196,5 +196,3 @@ const StyledTheadSortButton = styled(TheadSortButton)`
   width: 100%;
   height: 100%;
 `
-
-export default TableHead

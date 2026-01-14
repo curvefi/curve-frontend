@@ -1,20 +1,20 @@
 import { styled } from 'styled-components'
-import CampaignRewardsRow from '@/dex/components/CampaignRewardsRow'
+import { CampaignRewardsRow } from '@/dex/components/CampaignRewardsRow'
 import { DescriptionChip, StyledIconButton, StyledStats } from '@/dex/components/PagePool/PoolDetails/PoolStats/styles'
-import ChipVolatileBaseApy from '@/dex/components/PagePoolList/components/ChipVolatileBaseApy'
-import PoolRewardsCrv from '@/dex/components/PoolRewardsCrv'
+import { ChipVolatileBaseApy } from '@/dex/components/PagePoolList/components/ChipVolatileBaseApy'
+import { PoolRewardsCrv } from '@/dex/components/PoolRewardsCrv'
 import { LARGE_APY } from '@/dex/constants'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { ChainId, RewardsApy, PoolData } from '@/dex/types/main.types'
 import { shortenTokenName } from '@/dex/utils'
 import { haveRewardsApy } from '@/dex/utils/utilsCurvejs'
 import type { Chain } from '@curvefi/prices-api'
-import Box from '@ui/Box'
-import Icon from '@ui/Icon'
+import { Box } from '@ui/Box'
+import { Icon } from '@ui/Icon'
 import { ExternalLink } from '@ui/Link'
-import Spacer from '@ui/Spacer'
-import Tooltip from '@ui/Tooltip/TooltipButton'
-import IconTooltip from '@ui/Tooltip/TooltipIcon'
+import { Spacer } from '@ui/Spacer'
+import { TooltipButton as Tooltip } from '@ui/Tooltip/TooltipButton'
+import { TooltipIcon as IconTooltip } from '@ui/Tooltip/TooltipIcon'
 import { Chip } from '@ui/Typography'
 import { FORMAT_OPTIONS, formatNumber, scanTokenPath } from '@ui/utils'
 import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
@@ -27,7 +27,7 @@ type RewardsProps = {
   rewardsApy: RewardsApy | undefined
 }
 
-const Rewards = ({ chainId, poolData, rewardsApy }: RewardsProps) => {
+export const Rewards = ({ chainId, poolData, rewardsApy }: RewardsProps) => {
   const { base, other } = rewardsApy ?? {}
   const { haveBase, haveOther, haveCrv } = haveRewardsApy(rewardsApy ?? {})
   const { data: network } = useNetworkByChain({ chainId })
@@ -221,5 +221,3 @@ const CampaignRewardsWrapper = styled.div`
     align-items: center;
   }
 `
-
-export default Rewards

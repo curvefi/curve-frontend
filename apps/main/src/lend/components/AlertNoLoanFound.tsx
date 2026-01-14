@@ -1,14 +1,14 @@
 import { styled } from 'styled-components'
-import useStore from '@/lend/store/useStore'
+import { useStore } from '@/lend/store/useStore'
 import type { UrlParams } from '@/lend/types/lend.types'
 import { getLoanPathname } from '@/lend/utils/utilsRouter'
-import AlertBox from '@ui/AlertBox'
+import { AlertBox } from '@ui/AlertBox'
 import type { AlertType } from '@ui/AlertBox/types'
-import Button from '@ui/Button'
+import { Button } from '@ui/Button'
 import { useParams, useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 
-const AlertNoLoanFound = ({ alertType, owmId }: { alertType?: AlertType; owmId: string }) => {
+export const AlertNoLoanFound = ({ alertType, owmId }: { alertType?: AlertType; owmId: string }) => {
   const params = useParams<UrlParams>()
   const push = useNavigate()
 
@@ -53,5 +53,3 @@ const StyledAlertBox = styled(AlertBox)<{ alertType: AlertType }>`
     }
   }}
 `
-
-export default AlertNoLoanFound

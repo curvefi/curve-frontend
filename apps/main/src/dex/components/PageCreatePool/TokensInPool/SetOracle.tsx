@@ -2,8 +2,8 @@ import lodash from 'lodash'
 import { useMemo } from 'react'
 import { styled } from 'styled-components'
 import { isAddress, formatEther } from 'viem'
-import TextInput from '@/dex/components/PageCreatePool/components/TextInput'
-import WarningBox from '@/dex/components/PageCreatePool/components/WarningBox'
+import { TextInput } from '@/dex/components/PageCreatePool/components/TextInput'
+import { WarningBox } from '@/dex/components/PageCreatePool/components/WarningBox'
 import {
   TOKEN_A,
   TOKEN_B,
@@ -19,11 +19,11 @@ import {
 import { useOracleValidation } from '@/dex/components/PageCreatePool/hooks/useOracleValidation'
 import type { TokenState, TokenId } from '@/dex/components/PageCreatePool/types'
 import { validateOracleFunction } from '@/dex/components/PageCreatePool/utils'
-import useStore from '@/dex/store/useStore'
+import { useStore } from '@/dex/store/useStore'
 import Alert from '@mui/material/Alert'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import Box from '@ui/Box'
+import { Box } from '@ui/Box'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatNumber } from '@ui-kit/utils'
@@ -36,7 +36,7 @@ type OracleInputProps = {
   title: string
 }
 
-const SetOracle = () => {
+export const SetOracle = () => {
   const tokens = useStore((state) => state.createPool.tokensInPool)
 
   const oracleTokens: { token: TokenState; tokenId: TokenId; title: string }[] = [
@@ -144,5 +144,3 @@ const OracleWrapper = styled(Box)`
   padding-top: var(--spacing-4);
   margin: var(--spacing-wide) 0;
 `
-
-export default SetOracle

@@ -1,1 +1,1 @@
-export { default } from './TextCaption'
+export { TextCaption } from './TextCaption'
