@@ -37,6 +37,8 @@ export type LoanInfoAccordionProps = {
   prices?: Query<readonly Decimal[]>
   rates: Query<{ borrowApr?: Decimal } | null>
   prevRates?: Query<{ borrowApr?: Decimal } | null>
+  netBorrowApr?: Query<Decimal | null>
+  prevNetBorrowApr?: Query<Decimal | null>
   loanToValue: Query<Decimal | null>
   prevLoanToValue?: Query<Decimal | null>
   gas: Query<LoanInfoGasData | null>
@@ -64,6 +66,8 @@ export const LoanInfoAccordion = ({
   prices,
   prevRates,
   rates,
+  netBorrowApr,
+  prevNetBorrowApr,
   loanToValue,
   prevLoanToValue,
   gas,
@@ -154,6 +158,15 @@ export const LoanInfoAccordion = ({
             {...combineQueryState(rates, prevRates)}
             testId="borrow-apr"
           />
+          {netBorrowApr && (
+            <ActionInfo
+              label={t`Net Borrow APR`}
+              value={netBorrowApr.data && formatPercent(netBorrowApr.data)}
+              prevValue={prevNetBorrowApr?.data && formatPercent(prevNetBorrowApr.data)}
+              {...combineQueryState(netBorrowApr, prevNetBorrowApr)}
+              testId="borrow-net-apr"
+            />
+          )}
           {(loanToValue || prevLoanToValue) && (
             <ActionInfo
               label={t`Loan to value ratio`}
