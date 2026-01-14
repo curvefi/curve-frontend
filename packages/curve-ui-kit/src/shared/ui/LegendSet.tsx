@@ -7,14 +7,14 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 
-export const LegendLine = ({ color, dash }: { color: string; dash?: string }) => (
-  <svg width="20" height="2">
+export const LegendLine = ({ color, dash, opacity = 1 }: { color: string; dash?: string; opacity?: number }) => (
+  <svg width="20" height="2" style={{ opacity, transition: `opacity ${TransitionFunction}` }}>
     <line x1="0" y1="1" x2="20" y2="1" stroke={color} strokeWidth={2} strokeDasharray={dash} />
   </svg>
 )
 
-export const LegendBox = ({ outline, fill }: { outline: string; fill: string }) => (
-  <svg width="12" height="12">
+export const LegendBox = ({ outline, fill, opacity = 1 }: { outline: string; fill: string; opacity?: number }) => (
+  <svg width="12" height="12" style={{ opacity, transition: `opacity ${TransitionFunction}` }}>
     <rect x="0" y="0" width="12" height="12" stroke={outline} fill={fill} />
   </svg>
 )
@@ -33,24 +33,21 @@ export type LegendItem = {
   onToggle?: (label: string) => void
 }
 
-export const LegendSet = ({ label, line, box, toggled = true, onToggle }: LegendItem) => {
-  const opacity = toggled ? 1 : 0.35
-
-  return (
-    <WithWrapper shouldWrap={onToggle} Wrapper={ButtonBase} onClick={() => onToggle?.(label)}>
-      <Stack
-        direction="row"
-        spacing={Spacing.xs}
-        alignItems="center"
-        sx={{
-          opacity,
-          transition: `opacity ${TransitionFunction}`,
-        }}
+export const LegendSet = ({ label, line, box, toggled = true, onToggle }: LegendItem) => (
+  <WithWrapper shouldWrap={onToggle} Wrapper={ButtonBase} onClick={() => onToggle?.(label)}>
+    <Stack direction="row" spacing={Spacing.xs} alignItems="center">
+      {line && <LegendLine color={line.lineStroke} dash={line.dash} opacity={toggled ? 1 : 0.7} />}
+      {box && <LegendBox outline={box.outlineStroke ?? 'none'} fill={box.fill} opacity={toggled ? 1 : 0.7} />}
+      <Typography
+        variant="bodySRegular"
+        sx={(theme) => ({
+          color: toggled ? undefined : theme.palette.text.disabled,
+          transition: `color ${TransitionFunction}`,
+          'button:hover &': { color: theme.palette.text.highlight },
+        })}
       >
-        {line && <LegendLine color={line.lineStroke} dash={line.dash} />}
-        {box && <LegendBox outline={box.outlineStroke ?? 'none'} fill={box.fill} />}
-        <Typography variant="bodySRegular">{label}</Typography>
-      </Stack>
-    </WithWrapper>
-  )
-}
+        {label}
+      </Typography>
+    </Stack>
+  </WithWrapper>
+)
