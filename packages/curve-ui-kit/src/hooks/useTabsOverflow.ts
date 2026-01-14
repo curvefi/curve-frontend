@@ -27,7 +27,7 @@ export function useTabsOverflow<T extends string | number>(options: readonly Tab
 
   useLayoutEffect(() => {
     const node = visibleTabsRef.current
-    if (node && isKebabMode) {
+    if (node && isKebabMode && tabsContainerWidth) {
       const widths = Array.from(node.querySelectorAll<HTMLElement>(MUI_TAB_SELECTOR)).map(
         (tabNode) => tabNode.getBoundingClientRect().width,
       )
@@ -39,7 +39,6 @@ export function useTabsOverflow<T extends string | number>(options: readonly Tab
     if (!isKebabMode) {
       return { renderedOptions: options, visibleOptions: options, hiddenOptions: [] }
     }
-
     const [alwaysInKebabOptions, standardOptions] = partition(options, (option) => option.alwaysInKebab)
 
     if (tabsContainerWidth && tabWidths.length) {
@@ -57,10 +56,15 @@ export function useTabsOverflow<T extends string | number>(options: readonly Tab
         return currentWidth - tabsContainerWidth >= OVERFLOW_THRESHOLD
       })
 
+      const [firstOption, ...restOverflow] = overflowOptions
+      // always make visible at least one tab, this is to avoid infinite loop of rendering/not rendering the kebab menu
+      // when screen size very small or parent node has no width
+      const hasVisibleTabs = visibleOptions.length > 0 || !firstOption
+
       return {
         renderedOptions: standardOptions,
-        visibleOptions,
-        hiddenOptions: [...overflowOptions, ...alwaysInKebabOptions],
+        visibleOptions: hasVisibleTabs ? visibleOptions : [firstOption],
+        hiddenOptions: [...(hasVisibleTabs ? overflowOptions : restOverflow), ...alwaysInKebabOptions],
       }
     }
 
