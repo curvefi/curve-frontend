@@ -103,23 +103,35 @@ export const KebabMenu = <T extends string | number>({
         }}
         className={tabsClassName}
       >
-        {hiddenOptions.map(({ value: val, label, href, startAdornment, endAdornment, suffix, ...props }) => (
-          <Tab
-            key={val}
-            value={val}
-            label={
-              <TabLabel
-                label={label}
-                suffix={suffix}
-                startAdornment={startAdornment}
-                endAdornment={endAdornment}
-                labelVariant={labelVariant}
-              />
-            }
-            {...(href && { href, component: Link })}
-            {...props}
-          />
-        ))}
+        {hiddenOptions.map(
+          ({
+            value: val,
+            label,
+            href,
+            startAdornment,
+            endAdornment,
+            suffix,
+            // avoids passing the alwaysInKebab prop to the DOM element
+            alwaysInKebab: _alwaysInKebab,
+            ...props
+          }) => (
+            <Tab
+              key={val}
+              value={val}
+              label={
+                <TabLabel
+                  label={label}
+                  suffix={suffix}
+                  startAdornment={startAdornment}
+                  endAdornment={endAdornment}
+                  labelVariant={labelVariant}
+                />
+              }
+              {...(href && { href, component: Link })}
+              {...props}
+            />
+          ),
+        )}
       </Tabs>
     </Popover>
   )

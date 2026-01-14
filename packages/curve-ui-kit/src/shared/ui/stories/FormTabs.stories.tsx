@@ -93,10 +93,9 @@ const baseMenu: FormTab<DemoParams>[] = [
   },
 ]
 
-const kebabMenuWithForcedOverflow: FormTab<DemoParams>[] = [
-  ...baseMenu,
+const alwaysInMenu: FormTab<DemoParams>[] = [
   {
-    value: 'kebab-item',
+    value: 'settings',
     label: 'Settings',
     alwaysInKebab: () => true,
     visible: () => true,
@@ -211,7 +210,7 @@ export const LegacyWrapped: Story = {
 }
 
 export const ForcedKebabMenu: Story = {
-  args: { overflow: 'kebab', menu: kebabMenuWithForcedOverflow },
+  args: { overflow: 'kebab', menu: [...baseMenu, ...alwaysInMenu] },
   parameters: {
     docs: {
       description: {

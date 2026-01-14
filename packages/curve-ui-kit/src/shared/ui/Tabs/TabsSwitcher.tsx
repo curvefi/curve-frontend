@@ -26,7 +26,8 @@ export type TabOption<T> = Pick<TabProps, 'label' | 'disabled' | 'icon' | 'sx'> 
   suffix?: string
   startAdornment?: React.ReactNode
   endAdornment?: React.ReactNode
-  /**  If true, the tab will always be in the kebab menu, even if there is enough space to show it.*/
+  /**  If true, the tab will always be in the kebab menu, even if there is enough space to show it.
+   * The TabsSwitcher's overflow="kebab" mode is required for this to work. */
   alwaysInKebab?: boolean
 }
 
@@ -116,7 +117,19 @@ export const TabsSwitcher = <T extends string | number>({
           {...props}
         >
           {renderedOptions.map(
-            ({ value: val, label, href, startAdornment, endAdornment, suffix, sx: tabSx, ...props }) => (
+            ({
+              value: val,
+              label,
+              href,
+              startAdornment,
+              endAdornment,
+              suffix,
+              sx: tabSx,
+              // avoids passing the alwaysInKebab prop to the DOM element
+              alwaysInKebab: _alwaysInKebab,
+
+              ...props
+            }) => (
               <Tab
                 data-testid={`${testIdPrefix}-${val}`}
                 key={val}

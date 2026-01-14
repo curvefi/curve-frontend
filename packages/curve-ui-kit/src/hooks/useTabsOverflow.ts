@@ -1,6 +1,6 @@
 import { partition, sumBy } from 'lodash'
 import { useLayoutEffect, useMemo, useRef, useState } from 'react'
-import useResizeObserver from '@ui-kit/hooks/useResizeObserver'
+import { useResizeObserver } from '@ui-kit/hooks/useResizeObserver'
 import { CONTAINED_TABS_MARGIN_RIGHT } from '@ui-kit/themes/components/tabs/mui-tabs'
 import { splitAtFirst } from '@ui-kit/utils/array'
 import type { TabOption } from '../shared/ui/Tabs/TabsSwitcher'
@@ -47,6 +47,8 @@ export function useTabsOverflow<T extends string | number>(options: readonly Tab
         width: tabWidths[index] ?? 0,
       }))
 
+      // By choice the tabs are rendered in the same order as the options array.
+      // This means that as soon as the first tab overflows, the rest of the tabs will be hidden, even if there is still enough space.
       const [visibleOptions, overflowOptions] = splitAtFirst(standardOptionsWithWidth, (_, index) => {
         const currentWidth = sumBy(
           standardOptionsWithWidth.slice(0, index + 1),
