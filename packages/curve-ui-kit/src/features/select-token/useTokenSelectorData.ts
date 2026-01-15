@@ -23,7 +23,7 @@ export const useTokenSelectorData = (
     userAddress?: Address
   },
   { enabled, prefetch }: { enabled: boolean; prefetch: boolean },
-): Pick<TokenListProps, 'balances' | 'tokenPrices'> => {
+): Pick<TokenListProps, 'balances' | 'tokenPrices' | 'isLoading'> => {
   const config = useConfig()
   const tokenAddresses = useMemo(() => tokens.map((token) => token.address), [tokens])
 
@@ -45,7 +45,7 @@ export const useTokenSelectorData = (
     }
   }, [prefetch, config, chainId, userAddress, tokenAddresses])
 
-  const { data: balances } = useTokenBalances(
+  const { data: balances, isLoading } = useTokenBalances(
     { chainId, userAddress, tokenAddresses: enabled ? tokenAddresses : [] },
     enabled,
   )
@@ -63,5 +63,5 @@ export const useTokenSelectorData = (
 
   const { data: tokenPrices } = useTokenUsdRates({ chainId, tokenAddresses: tokenAddressesWithBalance }, enabled)
 
-  return { balances, tokenPrices }
+  return { balances, tokenPrices, isLoading }
 }
