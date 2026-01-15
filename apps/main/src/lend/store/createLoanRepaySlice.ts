@@ -271,7 +271,7 @@ export const createLoanRepaySlice = (
         const loanExists = await refetchLoanExists({
           chainId,
           marketId: market.id,
-          userAddress: wallet?.account?.address,
+          userAddress: wallet?.address,
         })
 
         if (error) {

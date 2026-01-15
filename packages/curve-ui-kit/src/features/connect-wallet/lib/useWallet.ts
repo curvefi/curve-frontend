@@ -1,6 +1,6 @@
 import { type BrowserProvider } from 'ethers'
-import { useCallback, useEffect } from 'react'
-import { useConnect, useConnectors, useDisconnect, useEnsName, type Connector } from 'wagmi'
+import { useCallback } from 'react'
+import { useConnect, useConnectors, useDisconnect, type Connector } from 'wagmi'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useGlobalState } from '@ui-kit/hooks/useGlobalState'
 import { isCypress } from '@ui-kit/utils'
@@ -48,12 +48,6 @@ export const useWallet = () => {
     },
     [connectAsync, connectors, setShowModal],
   )
-
-  const { data: ensName } = useEnsName({ address: wallet?.account.address })
-  useEffect(() => {
-    // not changing the object reference, so we avoid reinitializing the app
-    if (state.wallet) state.wallet.account.ensName = ensName ?? undefined
-  }, [ensName])
 
   return { wallet, connectors, connect, disconnect, provider, showModal, closeModal, connectState }
 }
