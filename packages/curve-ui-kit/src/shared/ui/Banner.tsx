@@ -125,11 +125,13 @@ export const Banner = ({
             ))}
         </Stack>
       </Stack>
-      <Stack direction="row" alignItems="center" justifyContent="start">
-        <Typography sx={{ ...BannerSx[severity].subtitle }} variant="bodySRegular">
-          {subtitle}
-        </Typography>
-      </Stack>
+      {subtitle && (
+        <Stack direction="row" alignItems="center" justifyContent="start">
+          <Typography sx={{ ...BannerSx[severity].subtitle }} variant="bodySRegular">
+            {subtitle}
+          </Typography>
+        </Stack>
+      )}
     </Stack>
   </Card>
 )
