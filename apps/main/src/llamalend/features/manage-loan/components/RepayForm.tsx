@@ -25,7 +25,6 @@ import { useRepayForm } from '../hooks/useRepayForm'
 const joinButtonText = (texts: string[]) =>
   texts.map((t, i) => (i ? `${i === texts.length - 1 ? ' & ' : ', '}${t}` : t)).join('')
 
-// todo: net borrow APR (includes the intrinsic yield + rewards, while the Borrow APR doesn't)
 export const RepayForm = <ChainId extends IChainId>({
   market,
   networks,
@@ -85,6 +84,7 @@ export const RepayForm = <ChainId extends IChainId>({
           networks={networks}
           onSlippageChange={(value) => form.setValue('slippage', value, setValueOptions)}
           hasLeverage={market && hasLeverage(market)}
+          market={market}
         />
       }
     >
