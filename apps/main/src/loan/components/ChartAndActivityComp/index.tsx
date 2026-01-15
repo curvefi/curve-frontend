@@ -31,19 +31,19 @@ const tabs: TabOption<Tab>[] = [
 
 type ChartAndActivityCompProps = {
   rChainId: ChainId
-  llamma: Llamma | null
+  market: Llamma | null
   llammaId: string
 }
 
 const EMPTY_ARRAY: never[] = []
 
-export const ChartAndActivityComp = ({ rChainId, llamma, llammaId }: ChartAndActivityCompProps) => {
+export const ChartAndActivityComp = ({ rChainId, market, llammaId }: ChartAndActivityCompProps) => {
   const { llamaApi: api = null } = useCurve()
   const theme = useTheme()
   const [isBandsVisible, , , toggleBandsVisible] = useSwitch(true)
   const newBandsChartEnabled = useNewBandsChart()
-  const collateralTokenAddress = llamma?.coinAddresses[1]
-  const borrowedTokenAddress = llamma?.coinAddresses[0]
+  const collateralTokenAddress = market?.coinAddresses[1]
+  const borrowedTokenAddress = market?.coinAddresses[0]
   const {
     poolAddress,
     coins,
@@ -56,7 +56,7 @@ export const ChartAndActivityComp = ({ rChainId, llamma, llammaId }: ChartAndAct
     ohlcChartProps,
   } = useOhlcChartState({
     rChainId,
-    llamma,
+    market: market,
     llammaId,
   })
   const {
@@ -72,8 +72,8 @@ export const ChartAndActivityComp = ({ rChainId, llamma, llammaId }: ChartAndAct
     collateralTokenAddress,
     borrowedTokenAddress,
   })
-  const collateralToken = getBandsChartToken(collateralTokenAddress, llamma?.collateralSymbol)
-  const borrowToken = getBandsChartToken(borrowedTokenAddress, llamma?.coins[0])
+  const collateralToken = getBandsChartToken(collateralTokenAddress, market?.collateralSymbol)
+  const borrowToken = getBandsChartToken(borrowedTokenAddress, market?.coins[0])
 
   const [tab, setTab] = useState<Tab>('chart')
 

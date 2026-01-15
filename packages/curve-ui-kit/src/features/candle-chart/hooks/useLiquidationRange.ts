@@ -27,45 +27,22 @@ export const useLiquidationRange = ({
   newPrices,
 }: UseLiquidationRangeProps): LiquidationRanges =>
   useMemo(() => {
-    const liqRanges: LiquidationRanges = {
-      current: null,
-      new: null,
-    }
-
     const timeSeriesData: TimeSeriesData = chartData.length > 0 ? chartData : fallbackData
 
     if (timeSeriesData.length === 0) {
-      return liqRanges
+      return { current: null, new: null }
     }
 
     const formatRange = (prices: string[]): LlammaLiquididationRange => {
       const [lowPrice, highPrice] = prices
-      const range: LlammaLiquididationRange = {
-        price1: [],
-        price2: [],
+      return {
+        price1: timeSeriesData.map((data) => ({ time: data.time, value: Number(highPrice) })),
+        price2: timeSeriesData.map((data) => ({ time: data.time, value: Number(lowPrice) })),
       }
-
-      for (const data of timeSeriesData) {
-        range.price1.push({
-          time: data.time,
-          value: +highPrice,
-        })
-        range.price2.push({
-          time: data.time,
-          value: +lowPrice,
-        })
-      }
-
-      return range
     }
 
-    if (currentPrices && currentPrices.length >= 2) {
-      liqRanges.current = formatRange(currentPrices)
+    return {
+      current: currentPrices && currentPrices.length >= 2 ? formatRange(currentPrices) : null,
+      new: newPrices && newPrices.length >= 2 ? formatRange(newPrices) : null,
     }
-
-    if (newPrices && newPrices.length >= 2) {
-      liqRanges.new = formatRange(newPrices)
-    }
-
-    return liqRanges
   }, [chartData, fallbackData, currentPrices, newPrices])

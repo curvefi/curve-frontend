@@ -1,4 +1,5 @@
 import { useState, useCallback, useMemo } from 'react'
+import { notFalsy } from '@curvefi/prices-api/objects.util'
 import { useTheme } from '@mui/material/styles'
 import { t } from '@ui-kit/lib/i18n'
 import type { LegendItem } from '@ui-kit/shared/ui/Chart/LegendSet'
@@ -26,48 +27,42 @@ export const useChartLegendToggles = ({
   const toggleLiqRangeCurrentVisible = useCallback(() => setLiqRangeCurrentVisible((v) => !v), [])
   const toggleLiqRangeNewVisible = useCallback(() => setLiqRangeNewVisible((v) => !v), [])
 
-  const legendSets: LegendItem[] = useMemo(() => {
-    const baseLegends: LegendItem[] = [
-      {
-        label: t`Oracle Price`,
-        line: { lineStroke: theme.palette.primary.main, dash: 'none' },
-        toggled: oraclePriceVisible,
-        onToggle: toggleOraclePriceVisible,
-      },
-    ]
-
-    if (hasLiquidationRange) {
-      baseLegends.push({
-        label: t`Conversion zone`,
-        box: { fill: theme.design.Chart.LiquidationZone.Current },
-        toggled: liqRangeCurrentVisible,
-        onToggle: toggleLiqRangeCurrentVisible,
-      })
-    }
-
-    if (hasNewLiquidationRange) {
-      baseLegends.push({
-        label: t`New conversion zone`,
-        box: { fill: theme.design.Chart.LiquidationZone.Future },
-        toggled: liqRangeNewVisible,
-        onToggle: toggleLiqRangeNewVisible,
-      })
-    }
-
-    return baseLegends
-  }, [
-    theme.palette.primary.main,
-    theme.design.Chart.LiquidationZone.Current,
-    theme.design.Chart.LiquidationZone.Future,
-    oraclePriceVisible,
-    toggleOraclePriceVisible,
-    hasLiquidationRange,
-    hasNewLiquidationRange,
-    liqRangeCurrentVisible,
-    toggleLiqRangeCurrentVisible,
-    liqRangeNewVisible,
-    toggleLiqRangeNewVisible,
-  ])
+  const legendSets: LegendItem[] = useMemo(
+    () =>
+      notFalsy(
+        {
+          label: t`Oracle Price`,
+          line: { lineStroke: theme.palette.primary.main, dash: 'none' },
+          toggled: oraclePriceVisible,
+          onToggle: toggleOraclePriceVisible,
+        },
+        hasLiquidationRange && {
+          label: t`Conversion zone`,
+          box: { fill: theme.design.Chart.LiquidationZone.Current },
+          toggled: liqRangeCurrentVisible,
+          onToggle: toggleLiqRangeCurrentVisible,
+        },
+        hasNewLiquidationRange && {
+          label: t`New conversion zone`,
+          box: { fill: theme.design.Chart.LiquidationZone.Future },
+          toggled: liqRangeNewVisible,
+          onToggle: toggleLiqRangeNewVisible,
+        },
+      ),
+    [
+      theme.palette.primary.main,
+      theme.design.Chart.LiquidationZone.Current,
+      theme.design.Chart.LiquidationZone.Future,
+      oraclePriceVisible,
+      toggleOraclePriceVisible,
+      hasLiquidationRange,
+      hasNewLiquidationRange,
+      liqRangeCurrentVisible,
+      toggleLiqRangeCurrentVisible,
+      liqRangeNewVisible,
+      toggleLiqRangeNewVisible,
+    ],
+  )
 
   return {
     oraclePriceVisible,

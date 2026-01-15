@@ -29,7 +29,7 @@ type ChartHeaderProps<TChartKey extends string = string, TTimeOption extends str
     setActiveSelection: (value: TChartKey) => void
   }
   timeOption?: {
-    options: TTimeOption[]
+    options: readonly TTimeOption[]
     activeOption: TTimeOption
     setActiveOption: (newTimeOption: TTimeOption) => void
   }
@@ -57,7 +57,7 @@ export const ChartHeader = <TChartKey extends string, TTimeOption extends string
 }: ChartHeaderProps<TChartKey, TTimeOption>) => {
   const handleChartOptionToggle = (_: MouseEvent<HTMLElement>, key: TChartKey) => {
     // ensure that one option is always selected by checking null
-    if (key !== null) chartSelections.setActiveSelection(key)
+    if (key != null) chartSelections.setActiveSelection(key)
   }
   const handleChartOptionSelect = (event: SelectChangeEvent<TChartKey>) => {
     if (event.target.value !== null) chartSelections.setActiveSelection(event.target.value as TChartKey)

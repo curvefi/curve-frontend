@@ -36,12 +36,12 @@ export const LiquidityData = ({ llammaControllerData, chainId, coins }: Liqudity
                       ...getFractionDigitsOptions(transaction.deposit.amount, 2),
                     })}
                   </Chip>
-                  <LiquiditySymbol>{coins.collateral.symbol}</LiquiditySymbol>
+                  <LiquiditySymbol>{coins.collateralToken.symbol}</LiquiditySymbol>
                   <StyledTokenIcon
                     size="sm"
                     blockchainId={networks[chainId].networkId}
-                    tooltip={coins.collateral.symbol}
-                    address={coins.collateral.address}
+                    tooltip={coins.collateralToken.symbol}
+                    address={coins.collateralToken.address}
                   />
                 </LiquidityEventRow>
               </>
@@ -57,12 +57,12 @@ export const LiquidityData = ({ llammaControllerData, chainId, coins }: Liqudity
                           ...getFractionDigitsOptions(transaction.withdrawal.amountCollateral, 2),
                         })}
                       </Chip>
-                      <LiquiditySymbol>{coins.collateral.symbol}</LiquiditySymbol>
+                      <LiquiditySymbol>{coins.collateralToken.symbol}</LiquiditySymbol>
                       <StyledTokenIcon
                         size="sm"
                         blockchainId={networks[chainId].networkId}
-                        tooltip={coins.collateral.symbol}
-                        address={coins.collateral.address}
+                        tooltip={coins.collateralToken.symbol}
+                        address={coins.collateralToken.address}
                       />
                     </LiquidityEventRow>
                   )}
@@ -73,12 +73,12 @@ export const LiquidityData = ({ llammaControllerData, chainId, coins }: Liqudity
                           ...getFractionDigitsOptions(transaction.withdrawal.amountBorrowed, 2),
                         })}
                       </Chip>
-                      <LiquiditySymbol>{coins.crvusd.symbol}</LiquiditySymbol>
+                      <LiquiditySymbol>{coins.borrowToken.symbol}</LiquiditySymbol>
                       <StyledTokenIcon
                         size="sm"
                         blockchainId={networks[chainId].networkId}
-                        tooltip={coins.crvusd.symbol}
-                        address={coins.crvusd.address}
+                        tooltip={coins.borrowToken.symbol}
+                        address={coins.borrowToken.address}
                       />
                     </LiquidityEventRow>
                   )}

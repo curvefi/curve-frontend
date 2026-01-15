@@ -4,6 +4,7 @@ import { useUserLoanDetails } from '@/lend/hooks/useUserLoanDetails'
 import { helpers } from '@/lend/lib/apiLending'
 import { useStore } from '@/lend/store/useStore'
 import { ChainId } from '@/lend/types/lend.types'
+import { getTokens } from '@/llamalend/llama.utils'
 import {
   useLlammaChartSelections,
   useChartTimeSettings,
@@ -16,16 +17,7 @@ import type { FetchingStatus } from '@ui-kit/features/candle-chart/types'
 import { subtractTimeUnit, getThreeHundredResultsAgo } from '@ui-kit/features/candle-chart/utils'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 
-export type LendingMarketTokens = {
-  borrowedToken: {
-    symbol: string
-    address: string
-  }
-  collateralToken: {
-    symbol: string
-    address: string
-  }
-} | null
+export type LendingMarketTokens = ReturnType<typeof getTokens> | undefined
 
 type UseOhlcChartStateProps = {
   rChainId: ChainId
@@ -78,7 +70,7 @@ export const useOhlcChartState = ({ rChainId, rOwmId }: UseOhlcChartStateProps) 
   )
 
   // LLAMMA tokens come from market data
-  const llammaTokens = useMemo(
+  const marketTokens = useMemo(
     () =>
       market
         ? {
@@ -93,7 +85,7 @@ export const useOhlcChartState = ({ rChainId, rOwmId }: UseOhlcChartStateProps) 
     oracleChart: { fetchStatus: chartOraclePoolOhlc.fetchStatus, hasData: chartOraclePoolOhlc.data.length > 0 },
     llammaChart: { fetchStatus: chartLlammaOhlc.fetchStatus, hasData: chartLlammaOhlc.data.length > 0 },
     oracleTokens,
-    llammaTokens,
+    marketTokens,
   })
 
   // Select chart data based on current selection
@@ -115,12 +107,9 @@ export const useOhlcChartState = ({ rChainId, rOwmId }: UseOhlcChartStateProps) 
     if (borrowMorePrices?.length) return borrowMorePrices
     if (formValues.n && liqRangesMapper?.[formValues.n]?.prices?.length) {
       const prices = liqRangesMapper[formValues.n].prices
-      return [prices[1], prices[0]] // Swap order for this source
+      return [prices[1], prices[0]] // Swap order for this source to match the order we want to display in
     }
-    if (loanCreateLeverageDetailInfo?.prices) {
-      return loanCreateLeverageDetailInfo.prices
-    }
-    return null
+    return loanCreateLeverageDetailInfo?.prices
   }, [
     repayLeveragePrices,
     removeCollateralPrices,
@@ -144,22 +133,7 @@ export const useOhlcChartState = ({ rChainId, rOwmId }: UseOhlcChartStateProps) 
     newPrices: newLiqPrices,
   })
 
-  const coins: LendingMarketTokens = useMemo(
-    () =>
-      market
-        ? {
-            borrowedToken: {
-              symbol: market?.borrowed_token.symbol,
-              address: market?.borrowed_token.address,
-            },
-            collateralToken: {
-              symbol: market?.collateral_token.symbol,
-              address: market?.collateral_token.address,
-            },
-          }
-        : null,
-    [market],
-  )
+  const coins: LendingMarketTokens = useMemo(() => market && getTokens(market), [market])
 
   const { timeOption, setTimeOption, chartTimeSettings, chartInterval, timeUnit } = useChartTimeSettings()
 

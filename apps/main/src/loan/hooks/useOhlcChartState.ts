@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo } from 'react'
+import { getTokens } from '@/llamalend/llama.utils'
 import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
 import { useStore } from '@/loan/store/useStore'
 import { Llamma, ChainId } from '@/loan/types/loan.types'
@@ -12,26 +13,17 @@ import type { OhlcChartProps } from '@ui-kit/features/candle-chart/ChartWrapper'
 import { DEFAULT_CHART_HEIGHT } from '@ui-kit/features/candle-chart/constants'
 import { subtractTimeUnit, getThreeHundredResultsAgo } from '@ui-kit/features/candle-chart/utils'
 
-export type LlammaLiquidityCoins = {
-  crvusd: {
-    symbol: string
-    address: string
-  }
-  collateral: {
-    symbol: string
-    address: string
-  }
-} | null
+export type LlammaLiquidityCoins = ReturnType<typeof getTokens> | undefined | null
 
 type OhlcChartStateProps = {
   rChainId: ChainId
-  llamma: Llamma | null
+  market: Llamma | null
   llammaId: string
 }
 
-export const useOhlcChartState = ({ rChainId, llamma, llammaId }: OhlcChartStateProps) => {
-  const poolAddress = llamma?.address ?? ''
-  const controllerAddress = llamma?.controller ?? ''
+export const useOhlcChartState = ({ rChainId, market, llammaId }: OhlcChartStateProps) => {
+  const poolAddress = market?.address ?? ''
+  const controllerAddress = market?.controller ?? ''
   const increaseActiveKey = useStore((state) => state.loanIncrease.activeKey)
   const decreaseActiveKey = useStore((state) => state.loanDecrease.activeKey)
   const deleverageActiveKey = useStore((state) => state.loanDeleverage.activeKey)
@@ -71,23 +63,23 @@ export const useOhlcChartState = ({ rChainId, llamma, llammaId }: OhlcChartState
     [chartOraclePoolOhlc.collateralToken.symbol, chartOraclePoolOhlc.borrowedToken.symbol],
   )
 
-  // LLAMMA tokens from llamma data
-  const llammaTokens = useMemo(
+  // Market tokens from llamma data
+  const marketTokens = useMemo(
     () =>
-      llamma
+      market
         ? {
-            collateralSymbol: llamma.coins[1],
+            collateralSymbol: market.coins[1],
             borrowedSymbol: 'crvUSD',
           }
         : null,
-    [llamma],
+    [market],
   )
 
   const { selectChartList, selectedChartKey, setSelectedChart, isLoading } = useLlammaChartSelections({
     oracleChart: { fetchStatus: chartOraclePoolOhlc.fetchStatus, hasData: chartOraclePoolOhlc.data.length > 0 },
     llammaChart: { fetchStatus: chartLlammaOhlc.fetchStatus, hasData: chartLlammaOhlc.data.length > 0 },
     oracleTokens,
-    llammaTokens,
+    marketTokens,
   })
 
   // Select chart data based on current selection
@@ -109,7 +101,7 @@ export const useOhlcChartState = ({ rChainId, llamma, llammaId }: OhlcChartState
     if (increaseLoanPrices?.length) return increaseLoanPrices
     if (formValues.n && liqRangesMapper?.[formValues.n]?.prices?.length) {
       const prices = liqRangesMapper[formValues.n].prices
-      return [prices[1], prices[0]] // Swap order for this source
+      return [prices[1], prices[0]] // Swap order for this source to match the order we want to display in
     }
     return null
   }, [
@@ -133,22 +125,7 @@ export const useOhlcChartState = ({ rChainId, llamma, llammaId }: OhlcChartState
     newPrices: newLiqPrices,
   })
 
-  const coins: LlammaLiquidityCoins = useMemo(
-    () =>
-      llamma
-        ? {
-            crvusd: {
-              symbol: llamma?.coins[0],
-              address: llamma?.coinAddresses[0],
-            },
-            collateral: {
-              symbol: llamma?.coins[1],
-              address: llamma?.coinAddresses[1],
-            },
-          }
-        : null,
-    [llamma],
-  )
+  const coins: LlammaLiquidityCoins = useMemo(() => market && getTokens(market), [market])
 
   const { timeOption, setTimeOption, chartTimeSettings, chartInterval, timeUnit } = useChartTimeSettings()
 
@@ -184,10 +161,10 @@ export const useOhlcChartState = ({ rChainId, llamma, llammaId }: OhlcChartState
   ])
 
   useEffect(() => {
-    if (llamma !== undefined) {
+    if (market !== undefined) {
       refetchPricesData()
     }
-  }, [llamma, refetchPricesData])
+  }, [market, refetchPricesData])
 
   const fetchMoreChartData = useCallback(
     (lastFetchEndTime: number) => {
@@ -200,7 +177,7 @@ export const useOhlcChartState = ({ rChainId, llamma, llammaId }: OhlcChartState
   )
 
   // Determine chart status: loading > error (no data) > ready
-  const chartStatus = isLoading || !llamma ? 'LOADING' : noDataAvailable ? 'ERROR' : 'READY'
+  const chartStatus = isLoading || !market ? 'LOADING' : noDataAvailable ? 'ERROR' : 'READY'
 
   const ohlcChartProps: OhlcChartProps = {
     hideCandleSeriesLabel: true,

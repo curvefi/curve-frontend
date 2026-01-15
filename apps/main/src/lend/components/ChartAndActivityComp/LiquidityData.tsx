@@ -73,12 +73,12 @@ export const LiquidityData = ({ lendControllerData, chainId, coins }: LiquidityD
                           ...getFractionDigitsOptions(transaction.withdrawal.amountBorrowed, 2),
                         })}
                       </Chip>
-                      <LiquiditySymbol>{coins.borrowedToken.symbol}</LiquiditySymbol>
+                      <LiquiditySymbol>{coins.borrowToken.symbol}</LiquiditySymbol>
                       <StyledTokenIcon
                         size="sm"
                         blockchainId={networks[chainId].networkId}
-                        tooltip={coins.borrowedToken.symbol}
-                        address={coins.borrowedToken.address}
+                        tooltip={coins.borrowToken.symbol}
+                        address={coins.borrowToken.address}
                       />
                     </LiquidityEventRow>
                   )}

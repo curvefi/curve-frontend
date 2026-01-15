@@ -10,16 +10,19 @@ type ChartAvailability = {
   hasData: boolean
 }
 
-type TokenLabels = {
-  collateralSymbol: string
-  borrowedSymbol: string
-} | null
+type TokenLabels =
+  | {
+      collateralSymbol: string
+      borrowedSymbol: string
+    }
+  | null
+  | undefined
 
 type UseLlammaChartSelectionsProps = {
   oracleChart: ChartAvailability
   llammaChart: ChartAvailability
   oracleTokens: TokenLabels
-  llammaTokens: TokenLabels
+  marketTokens: TokenLabels
 }
 
 /**
@@ -30,7 +33,7 @@ export const useLlammaChartSelections = ({
   oracleChart,
   llammaChart,
   oracleTokens,
-  llammaTokens,
+  marketTokens,
 }: UseLlammaChartSelectionsProps) => {
   const [selectedChartKey, setSelectedChartKey] = useState<ChartKey>('oracle')
 
@@ -45,14 +48,14 @@ export const useLlammaChartSelections = ({
     }
 
     if (llammaChart.hasData) {
-      const label = llammaTokens
-        ? t`${llammaTokens.collateralSymbol} / ${llammaTokens.borrowedSymbol} (LLAMMA)`
+      const label = marketTokens
+        ? t`${marketTokens.collateralSymbol} / ${marketTokens.borrowedSymbol} (LLAMMA)`
         : t`LLAMMA`
       options.push({ activeTitle: label, label, key: 'llamma' })
     }
 
     return options
-  }, [oracleChart.hasData, llammaChart.hasData, oracleTokens, llammaTokens])
+  }, [oracleChart.hasData, llammaChart.hasData, oracleTokens, marketTokens])
 
   // Auto-switch to available chart when current selection has no data
   useEffect(() => {
