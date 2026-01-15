@@ -59,6 +59,9 @@ const TabsSwitcherWrapper = ({
 const meta: Meta<typeof TabsSwitcherWrapper> = {
   title: 'UI Kit/Primitives/Tabs',
   component: TabsSwitcherWrapper,
+  args: {
+    overflow: 'standard',
+  },
   argTypes: {
     variant: {
       control: 'select',
@@ -230,6 +233,7 @@ export const IconsOnly: Story = {
               key={`${variant}-${size}`}
               variant={variant}
               size={size}
+              overflow="standard"
               options={getOptionsWithIconsOnly(4, size)}
             />
           ))}
