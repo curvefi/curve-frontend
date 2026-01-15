@@ -2,7 +2,7 @@ import { styled } from 'styled-components'
 import { Icon } from '@ui/Icon'
 import { ExternalLink } from '@ui/Link/ExternalLink'
 import { Spinner } from '@ui/Spinner'
-import { shortenAddress } from '@ui-kit/utils/address'
+import { shortenHash } from '@ui-kit/utils/address'
 
 type Props = {
   transactionHash: string
@@ -16,7 +16,7 @@ export const ModalPendingTx = ({ transactionHash, txLink, pendingMessage }: Prop
       <PendingMessage>{pendingMessage}</PendingMessage>
       <StyledPendingSpinner isDisabled size={24} />
       <Transaction variant={'contained'} href={txLink}>
-        <p>Transaction: {shortenAddress(transactionHash)}</p>
+        <p>Transaction: {shortenHash(transactionHash)}</p>
         <StyledIcon name={'Launch'} size={16} />
       </Transaction>
     </PendingWrapper>
