@@ -25,6 +25,8 @@ export function useTabsOverflow<T extends string | number>(options: readonly Tab
   const [tabsContainerWidth] = useResizeObserver(visibleTabsRef, { threshold: 1 }) ?? []
   const [tabWidths, setTabWidths] = useState<number[]>([])
 
+  // useLayoutEffect is used to measure tab widths before the browser paints, ensuring that
+  // hidden tabs are moved to the kebab menu without causing a visible flash or flicker
   useLayoutEffect(() => {
     const node = visibleTabsRef.current
     if (node && isKebabMode && tabsContainerWidth) {
