@@ -19,11 +19,10 @@ const { MaxWidth, Spacing, IconSize } = SizesAndSpaces
 type BannerSeverity = 'info' | 'highlight' | 'warning' | 'alert'
 type BannerIcons = BannerSeverity | 'llama'
 
-// TODO: temporary fix: used secondary color for subtitle instead of primary
 const BannerSx: Record<BannerSeverity, { title: SxProps<Theme>; subtitle: SxProps<Theme>; wrapper: SxProps<Theme> }> = {
   info: {
     title: { color: (t) => t.design.Text.TextColors.FilledFeedback.Info.Primary },
-    subtitle: { color: (t) => t.design.Text.TextColors.FilledFeedback.Info.Primary },
+    subtitle: { color: (t) => t.design.Text.TextColors.FilledFeedback.Info.Secondary },
     wrapper: {
       border: (t) => `1px solid ${t.design.Layer.Highlight.Outline}`,
       backgroundColor: (t) => t.design.Layer[1].Fill,
@@ -31,17 +30,17 @@ const BannerSx: Record<BannerSeverity, { title: SxProps<Theme>; subtitle: SxProp
   },
   highlight: {
     title: { color: (t) => t.design.Text.TextColors.FilledFeedback.Highlight.Primary },
-    subtitle: { color: (t) => t.design.Text.TextColors.FilledFeedback.Highlight.Primary },
+    subtitle: { color: (t) => t.design.Text.TextColors.FilledFeedback.Highlight.Secondary },
     wrapper: { backgroundColor: (t) => t.design.Layer.Feedback.Info },
   },
   warning: {
     title: { color: (t) => t.design.Text.TextColors.FilledFeedback.Warning.Primary },
-    subtitle: { color: (t) => t.design.Text.TextColors.FilledFeedback.Warning.Primary },
+    subtitle: { color: (t) => t.design.Text.TextColors.FilledFeedback.Warning.Secondary },
     wrapper: { backgroundColor: (t) => t.design.Layer.Feedback.Warning },
   },
   alert: {
     title: { color: (t) => t.design.Text.TextColors.FilledFeedback.Alert.Primary },
-    subtitle: { color: (t) => t.design.Text.TextColors.FilledFeedback.Alert.Primary },
+    subtitle: { color: (t) => t.design.Text.TextColors.FilledFeedback.Alert.Secondary },
     wrapper: { backgroundColor: (t) => t.design.Layer.Feedback.Error },
   },
 }
@@ -85,14 +84,14 @@ export const Banner = ({
     sx={{
       display: 'flex',
       alignSelf: 'stretch',
-      paddingInline: Spacing.md,
+      paddingInline: Spacing.sm,
       paddingBlock: Spacing.xs,
       justifyContent: 'center',
       ...BannerSx[severity].wrapper,
     }}
     data-testid={testId}
   >
-    <Stack width="100%" maxWidth={MaxWidth.banner} paddingInline={Spacing.xs}>
+    <Stack width="100%" maxWidth={MaxWidth.banner}>
       <Stack direction="row" alignItems="center" justifyContent="space-between" gap={Spacing.sm}>
         <Typography sx={{ ...BannerSx[severity].title }} variant="headingXsBold">
           {BannerIcons[icon]} {children}
