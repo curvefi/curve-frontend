@@ -160,7 +160,7 @@ function createDarkSurfaces() {
     Feedback: {
       Info: Blues[50],
       Success: Greens[300],
-      Warning: Oranges[500],
+      Warning: Yellows[500],
       Error: Reds[500],
     },
     Highlight: Blues[50],
