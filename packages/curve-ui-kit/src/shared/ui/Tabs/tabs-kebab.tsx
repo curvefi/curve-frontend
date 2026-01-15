@@ -24,7 +24,8 @@ type KebabMenuProps<T> = {
   kebabTabRef: RefObject<HTMLDivElement | null>
   closeKebabMenu: () => void
   hiddenOptions: readonly TabOption<T>[]
-  labelVariant: TypographyProps['variant']
+  size: NonNullable<TabsSwitcherProps<T>['size']>
+  textVariant?: TypographyProps['variant']
   onChange?: (value: T) => void
   tabsClassName: string
   value: T | boolean
@@ -59,10 +60,7 @@ export const KebabTab = <T extends string | number>({
           value={KEBAB_TAB_VALUE}
           onClick={openKebabMenu}
           label={
-            <TabLabel
-              labelVariant={undefined}
-              startAdornment={<DotsVerticalIcon sx={{ width: iconSize, height: iconSize }} />}
-            />
+            <TabLabel size={size} startAdornment={<DotsVerticalIcon sx={{ width: iconSize, height: iconSize }} />} />
           }
         />
       </Tabs>
@@ -75,7 +73,8 @@ export const KebabMenu = <T extends string | number>({
   kebabTabRef: { current: kebabTabEl },
   closeKebabMenu,
   hiddenOptions,
-  labelVariant,
+  size,
+  textVariant,
   onChange,
   tabsClassName,
   value,
@@ -124,7 +123,8 @@ export const KebabMenu = <T extends string | number>({
                   suffix={suffix}
                   startAdornment={startAdornment}
                   endAdornment={endAdornment}
-                  labelVariant={labelVariant}
+                  size={size}
+                  textVariant={textVariant}
                 />
               }
               {...(href && { href, component: Link })}

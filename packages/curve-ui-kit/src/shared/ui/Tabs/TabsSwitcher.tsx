@@ -12,7 +12,6 @@ import {
   HIDE_INACTIVE_BORDERS_CLASS,
   TABS_VARIANT_CLASSES,
   TabSwitcherVariants,
-  TAB_TEXT_VARIANTS,
 } from '../../../themes/components/tabs'
 import { KEBAB_TAB_VALUE, KebabMenu, KebabTab } from './tabs-kebab'
 import { TabLabel } from './TabsLabel'
@@ -100,7 +99,6 @@ export const TabsSwitcher = <T extends string | number>({
   const hiddenValues = useMemo(() => new Set(hiddenOptions.map((option) => option.value)), [hiddenOptions])
   const hasHiddenTabs = isKebabMode && hiddenOptions.length > 0
 
-  const labelVariant = textVariant ?? TAB_TEXT_VARIANTS[size]
   const tabsClassName = `${TABS_VARIANT_CLASSES[variant]} ${TABS_SIZES_CLASSES[size]} ${hideInactiveBorders && HIDE_INACTIVE_BORDERS_CLASS}`
 
   return (
@@ -141,10 +139,11 @@ export const TabsSwitcher = <T extends string | number>({
                 label={
                   <TabLabel
                     label={label}
-                    labelVariant={labelVariant}
                     suffix={suffix}
                     startAdornment={startAdornment}
                     endAdornment={endAdornment}
+                    size={size}
+                    textVariant={textVariant}
                   />
                 }
                 sx={{
@@ -180,7 +179,8 @@ export const TabsSwitcher = <T extends string | number>({
           kebabTabRef={kebabTabRef}
           closeKebabMenu={closeKebabMenu}
           hiddenOptions={hiddenOptions}
-          labelVariant={labelVariant}
+          size={size}
+          textVariant={textVariant}
           onChange={onChange}
           tabsClassName={tabsClassName}
           value={kebabMenuValue}
