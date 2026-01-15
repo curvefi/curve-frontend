@@ -66,7 +66,7 @@ export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreAp
       }),
     )
   },
-  hydrate: async (config, curveApi, prevCurveApi) => {
+  hydrate: async (_config, curveApi, prevCurveApi) => {
     if (!curveApi) return
 
     const state = get()
@@ -84,16 +84,13 @@ export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreAp
       state.pools.resetState()
       state.quickSwap.resetState()
       state.tokens.resetState()
-      state.userBalances.resetState()
       state.user.resetState()
-      state.userBalances.resetState()
       state.createPool.resetState()
       state.dashboard.resetState()
     }
 
     if (isUserSwitched) {
       state.user.resetState()
-      state.userBalances.resetState()
     }
 
     // update network settings from api
@@ -119,7 +116,7 @@ export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreAp
     const failedFetching24hOldVprice: { [poolAddress: string]: boolean } =
       chainId === 2222 ? await curvejsApi.network.getFailedFetching24hOldVprice() : {}
 
-    await state.pools.fetchPools(config, curveApi, poolIds, failedFetching24hOldVprice)
+    await state.pools.fetchPools(curveApi, poolIds, failedFetching24hOldVprice)
 
     if (isUserSwitched || isNetworkSwitched) {
       void state.pools.fetchPricesApiPools(chainId)

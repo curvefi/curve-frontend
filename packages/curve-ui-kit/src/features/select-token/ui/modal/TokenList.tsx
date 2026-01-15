@@ -18,7 +18,7 @@ import { FavoriteTokens } from './FavoriteTokens'
 const { Spacing } = SizesAndSpaces
 
 export type TokenListProps = Pick<TokenSectionProps, 'tokens' | 'onToken'> &
-  Pick<TokenSectionProps, 'balances' | 'tokenPrices' | 'disabledTokens'> & {
+  Pick<TokenSectionProps, 'balances' | 'tokenPrices' | 'disabledTokens' | 'isLoading'> & {
     /** Callback when user enters text in the search input (debounced) */
     onSearch?: (search: string) => void
     /** List of favorite token options to display at the top */
@@ -42,6 +42,7 @@ export const TokenList = ({
   tokenPrices,
   error,
   disabledTokens,
+  isLoading = false,
   disableSorting = false,
   disableMyTokens = false,
   disableSearch = false,
@@ -186,6 +187,7 @@ export const TokenList = ({
             disabledTokens={disabledTokens}
             preview={previewMy}
             showAllLabel={t`Show dust`}
+            isLoading={isLoading}
             onShowAll={closeShowPreviewMy}
             onToken={onToken}
           />
@@ -197,6 +199,7 @@ export const TokenList = ({
             tokenPrices={tokenPrices}
             disabledTokens={disabledTokens}
             preview={previewAll}
+            isLoading={isLoading}
             onShowAll={closeShowPreviewAll}
             onToken={onToken}
           />
