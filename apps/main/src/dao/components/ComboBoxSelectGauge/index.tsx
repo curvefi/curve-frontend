@@ -2,10 +2,12 @@ import Fuse from 'fuse.js'
 import { useCallback, useState } from 'react'
 import { useFilter } from 'react-aria'
 import { useOverlayTriggerState } from 'react-stately'
+import { useConnection } from 'wagmi'
 import { ComboBox } from '@/dao/components/ComboBoxSelectGauge/ComboBox'
 import { ComboBoxSelectedGaugeButton } from '@/dao/components/ComboBoxSelectGauge/ComboBoxSelectedGaugeButton'
 import type { EndsWith } from '@/dao/components/ComboBoxSelectGauge/types'
 import { useUserGaugeWeightVotesQuery } from '@/dao/entities/user-gauge-weight-votes'
+import { useGauges } from '@/dao/queries/gauges.query'
 import { useStore } from '@/dao/store/useStore'
 import { GaugeFormattedData } from '@/dao/types/dao.types'
 import { delayAction } from '@/dao/utils'
@@ -30,18 +32,19 @@ export const ComboBoxGauges = ({
   const { endsWith } = useFilter({ sensitivity: 'base' })
   const overlayTriggerState = useOverlayTriggerState({})
 
-  const userAddress = useStore((state) => state.user.userAddress)
+  const { address: userAddress } = useConnection()
   const selectedGauge = useStore((state) => state.gauges.selectedGauge)
   const setSelectedGauge = useStore((state) => state.gauges.setSelectedGauge)
   const setStateByKey = useStore((state) => state.gauges.setStateByKey)
-  const gaugeMapper = useStore((state) => state.gauges.gaugeMapper)
   const isMobile = useIsMobile()
+
+  const { data: gaugeMapper } = useGauges({})
 
   const { data: userGaugeWeightVotes } = useUserGaugeWeightVotesQuery({
     chainId: Chain.Ethereum, // DAO is only used on mainnet
     userAddress: userAddress ?? '',
   })
-  const gauges = Object.values(gaugeMapper)
+  const gauges = Object.values(gaugeMapper ?? {})
     .filter(
       (gauge) =>
         !userGaugeWeightVotes?.gauges.some(
@@ -64,8 +67,11 @@ export const ComboBoxGauges = ({
   )
 
   const handleOnSelectChange = (gaugeAddress: string) => {
-    setSelectedGauge(gaugeMapper[gaugeAddress.toLowerCase()])
-    handleClose()
+    const gauge = gaugeMapper?.[gaugeAddress.toLowerCase()]
+    if (gauge) {
+      setSelectedGauge(gauge)
+      handleClose()
+    }
   }
 
   const handleOpen = () => {

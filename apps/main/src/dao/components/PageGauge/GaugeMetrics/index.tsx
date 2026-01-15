@@ -4,7 +4,7 @@ import { ExternalLinkIconButton } from '@/dao/components/ExternalLinkIconButton'
 import { MetricsColumnData, MetricsComp } from '@/dao/components/MetricsComp'
 import { ETHEREUM_CHAIN_ID } from '@/dao/constants'
 import { networks } from '@/dao/networks'
-import { useStore } from '@/dao/store/useStore'
+import { useGaugesLegacy } from '@/dao/queries/gauges-legacy.query'
 import { GaugeFormattedData } from '@/dao/types/dao.types'
 import { getChainIdFromGaugeData } from '@/dao/utils'
 import { Box } from '@ui/Box'
@@ -19,7 +19,8 @@ interface GaugeMetricsProps {
 
 export const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
   const gaugeAddress = gaugeData?.effective_address?.toLowerCase() ?? gaugeData?.address?.toLowerCase() ?? ''
-  const gaugeCurveApiData = useStore((state) => state.gauges.gaugeCurveApiData.data[gaugeAddress])
+  const { data: gaugesLegacy } = useGaugesLegacy({})
+  const gaugeCurveApiData = gaugesLegacy?.[gaugeAddress]
   const chainId = getChainIdFromGaugeData(gaugeData)
   const isSideChain = chainId !== Chain.Ethereum
   const emissions = isSideChain ? gaugeData?.prev_epoch_emissions : gaugeData?.emissions

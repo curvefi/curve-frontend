@@ -188,7 +188,7 @@ export const createLoanCollateralAdd = (
           const loanExists = await refetchLoanExists({
             chainId,
             marketId: market.id,
-            userAddress: wallet?.account?.address,
+            userAddress: wallet?.address,
           })
           if (loanExists) {
             void user.fetchAll(api, market, true)

@@ -4,7 +4,7 @@ import { ConnectWalletPrompt, useCurve } from '@ui-kit/features/connect-wallet'
 import { Chain } from '@ui-kit/utils'
 import { CurrentVotes } from './CurrentVotes'
 
-export const GaugeVoting = ({ userAddress }: { userAddress: string | undefined }) => {
+export const GaugeVoting = () => {
   const { provider, curveApi: { chainId } = {} } = useCurve()
   if (chainId !== Chain.Ethereum) {
     return <WrongNetwork />
@@ -14,7 +14,7 @@ export const GaugeVoting = ({ userAddress }: { userAddress: string | undefined }
   }
   return (
     <Wrapper>
-      <CurrentVotes userAddress={userAddress} />
+      <CurrentVotes />
     </Wrapper>
   )
 }
