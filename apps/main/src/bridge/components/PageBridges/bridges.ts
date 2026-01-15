@@ -10,7 +10,8 @@ export const WEB3_BRIDGES: Partner[] = [
     imageId: 'platforms/cross-curve.png',
     networks: { ethereum: true, arbitrum: true, optimism: true },
     tags: TAGS_RECOMMENDED,
-    appUrl: 'https://crosscurve.fi/',
+    appUrl:
+      'https://app.crosscurve.fi/swap?inputChainId=7&inputToken=0x498bf2b1e120fed3ad3d42ea2165e9b73f99c1e5&outputChainId=13&utm_source=Curve+Finance&utm_medium=web&utm_campaign=Curve+Bridge+Page',
     twitterUrl: 'https://x.com/crosscurvefi',
   },
   {

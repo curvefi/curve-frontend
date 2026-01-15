@@ -283,7 +283,7 @@ export const createScrvUsdSlice = (_set: StoreApi<State>['setState'], get: Store
           dismissNotificationHandler()
 
           // invalidate user balances query
-          invalidateScrvUsdUserBalances({ userAddress: useWallet.getState().wallet?.account?.address })
+          invalidateScrvUsdUserBalances({ userAddress: useWallet.getState().wallet?.address })
 
           get()[sliceKey].setStakingModuleChangeReset()
 
@@ -338,7 +338,7 @@ export const createScrvUsdSlice = (_set: StoreApi<State>['setState'], get: Store
           dismissNotificationHandler()
 
           // invalidate user balances query
-          invalidateScrvUsdUserBalances({ userAddress: useWallet.getState().wallet?.account?.address })
+          invalidateScrvUsdUserBalances({ userAddress: useWallet.getState().wallet?.address })
 
           get()[sliceKey].setStakingModuleChangeReset()
 
@@ -392,7 +392,7 @@ export const createScrvUsdSlice = (_set: StoreApi<State>['setState'], get: Store
           dismissNotificationHandler()
 
           // invalidate user balances query
-          invalidateScrvUsdUserBalances({ userAddress: useWallet.getState().wallet?.account?.address })
+          invalidateScrvUsdUserBalances({ userAddress: useWallet.getState().wallet?.address })
 
           get()[sliceKey].setStakingModuleChangeReset()
 
@@ -444,7 +444,7 @@ export const createScrvUsdSlice = (_set: StoreApi<State>['setState'], get: Store
       }
     },
     previewAction: async (flag: PreviewFlag, amount: string) => {
-      const signerAddress = useWallet.getState().wallet?.account?.address.toLowerCase()
+      const signerAddress = useWallet.getState().wallet?.address.toLowerCase()
       get()[sliceKey].setStateByKey('preview', { fetchStatus: 'loading', value: '0' })
 
       const lendApi = getLib('llamaApi')

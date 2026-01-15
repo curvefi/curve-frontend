@@ -1,7 +1,6 @@
 import { useMemo } from 'react'
 import { StyleSheetManager } from 'styled-components'
 import { WagmiProvider } from 'wagmi'
-import { useStore as useDaoStore } from '@/dao/store/useStore'
 import { useNetworksQuery } from '@/dex/entities/networks'
 import { useStore as useDexStore } from '@/dex/store/useStore'
 import { useStore as useLendStore } from '@/lend/store/useStore'
@@ -36,10 +35,9 @@ const shouldForwardProp = (propName: string, target: unknown) => typeof target !
 
 function useHydrationMethods(): HydratorMap {
   const crvusd: HydratorMap['crvusd'] = useLoanStore().hydrate
-  const dao: HydratorMap['dao'] = useDaoStore().hydrate
   const dex: HydratorMap['dex'] = useDexStore().hydrate
   const lend: HydratorMap['lend'] = useLendStore().hydrate
-  return useMemo(() => ({ crvusd, dao, dex, lend }), [crvusd, dao, dex, lend])
+  return useMemo(() => ({ crvusd, dex, lend }), [crvusd, dex, lend])
 }
 
 // Inner component that uses TanStack Query hooks
