@@ -317,7 +317,7 @@ export const createQuickSwapSlice = (
         sliceState.setStateByKey('routesAndOutput', { [activeKey]: { ...storedRoutesAndOutput, loading: true } })
       }
 
-      // get wallet balances
+      // Refetch balances
       if (curve.signerAddress) {
         if (searchedParams.fromAddress) {
           await fetchTokenBalance(config, {
@@ -448,8 +448,7 @@ export const createQuickSwapSlice = (
           // cache swapped tokens
           void state.storeCache.setStateByActiveKey('routerFormValues', chainId.toString(), { fromAddress, toAddress })
 
-          // fetch data
-          // TODO: invalidate instead?
+          // Refetch balances
           await fetchTokenBalance(config, {
             chainId: curve.chainId,
             userAddress: curve.signerAddress,
