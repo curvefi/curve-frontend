@@ -22,6 +22,7 @@ import { shortenAccount } from '@ui/utils'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { Chain } from '@ui-kit/utils'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
+import { fetchUserPools } from '../queries/user-pools'
 
 type StateKey = keyof typeof DEFAULT_STATE
 const { orderBy } = lodash
@@ -119,13 +120,10 @@ export const createDashboardSlice = (
 
       try {
         // Get user pool list
-        const { poolList, error } = await wallet.getUserPoolList(curve, walletAddress)
+        const poolList = await fetchUserPools({ chainId, userAddress: walletAddress as Address })
 
-        if (error) {
-          sliceState.setStateByKey('error', error)
-        }
         // no staked pools
-        if (poolList.length === 0) return { dashboardDataMapper: {}, error }
+        if (poolList.length === 0) return { dashboardDataMapper: {}, error: '' }
 
         // get balances and claimables
         const [userPoolBalancesResult, userClaimableResult] = await Promise.allSettled([

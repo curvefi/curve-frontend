@@ -256,7 +256,6 @@ export type Tvl = {
 }
 export type TvlMapper = { [poolId: string]: Tvl }
 export type ValueMapperCached = { [poolId: string]: { value: string } }
-export type UserPoolListMapper = { [poolId: string]: boolean }
 export type Volume = {
   poolId: string
   value: string

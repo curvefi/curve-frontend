@@ -3,10 +3,9 @@ import type { Config } from 'wagmi'
 import type { StoreApi } from 'zustand'
 import { curvejsApi } from '@/dex/lib/curvejs'
 import type { State } from '@/dex/store/useStore'
-import { Balances, CurveApi, UserPoolListMapper } from '@/dex/types/main.types'
+import { Balances, CurveApi } from '@/dex/types/main.types'
 import { fulfilledValue, isValidAddress } from '@/dex/utils'
 import { shortenAccount } from '@ui/utils'
-import { t } from '@ui-kit/lib/i18n'
 import { fetchPoolTokenBalances } from '../hooks/usePoolTokenBalances'
 import { fetchPoolGaugeTokenBalance, fetchPoolLpTokenBalance } from '../hooks/usePoolTokenDepositBalances'
 
@@ -14,9 +13,6 @@ type StateKey = keyof typeof DEFAULT_STATE
 const { cloneDeep } = lodash
 
 type SliceState = {
-  poolList: { [userActiveKey: string]: UserPoolListMapper }
-  poolListLoaded: boolean
-  poolListError: string
   userCrvApy: { [userPoolActiveKey: string]: { crvApy: number; boostApy: string } }
   userLiquidityUsd: { [userPoolActiveKey: string]: string }
   userShare: { [userPoolActiveKey: string]: Balances | null }
@@ -30,7 +26,6 @@ const sliceKey = 'user'
 
 export type UserSlice = {
   [sliceKey]: SliceState & {
-    fetchUserPoolList(curve: CurveApi): Promise<UserPoolListMapper>
     fetchUserPoolInfo(
       config: Config,
       curve: CurveApi,
@@ -46,10 +41,6 @@ export type UserSlice = {
 }
 
 const DEFAULT_STATE: SliceState = {
-  poolList: {},
-  poolListLoaded: false,
-  poolListError: '',
-
   // use pool state
   userCrvApy: {},
   userLiquidityUsd: {},
@@ -64,39 +55,6 @@ export const createUserSlice = (_set: StoreApi<State>['setState'], get: StoreApi
   [sliceKey]: {
     ...DEFAULT_STATE,
 
-    fetchUserPoolList: async (curve) => {
-      const userActiveKey = getUserActiveKey(curve)
-      const parsedUserPoolList: { [poolId: string]: boolean } = {}
-
-      try {
-        get()[sliceKey].setStateByKeys({
-          poolListLoaded: false,
-          poolListError: '',
-        })
-
-        const { poolList, error } = await curvejsApi.wallet.getUserPoolList(curve, curve.signerAddress)
-
-        // parse user pool list
-        for (const poolId of poolList) {
-          parsedUserPoolList[poolId] = true
-        }
-
-        get()[sliceKey].setStateByActiveKey('poolList', userActiveKey, parsedUserPoolList)
-        get()[sliceKey].setStateByKeys({
-          poolListLoaded: true,
-          poolListError: error,
-        })
-        return parsedUserPoolList
-      } catch (error) {
-        console.error(error)
-        get()[sliceKey].setStateByActiveKey('poolList', userActiveKey, {})
-        get()[sliceKey].setStateByKeys({
-          poolListLoaded: true,
-          poolListError: t`Unable to get pools`,
-        })
-        return parsedUserPoolList
-      }
-    },
     fetchUserPoolInfo: async (config, curve, poolId, isFetchWalletBalancesOnly) => {
       let fetchedWalletBalances: Balances = {}
 
@@ -171,9 +129,6 @@ export const createUserSlice = (_set: StoreApi<State>['setState'], get: StoreApi
   },
 })
 
-export function getUserActiveKey(curve: CurveApi | undefined | null) {
-  return curve ? `${curve.chainId}-${shortenAccount(curve.signerAddress).toLowerCase()}` : ''
-}
 export function getUserPoolActiveKey(curve: CurveApi, poolId: string) {
   return `${curve.chainId}-${shortenAccount(curve.signerAddress).toLowerCase()}-${poolId}`
 }

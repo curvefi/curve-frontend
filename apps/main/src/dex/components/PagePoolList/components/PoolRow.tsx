@@ -1,4 +1,5 @@
 import { useCallback, useMemo } from 'react'
+import { useConnection } from 'wagmi'
 import { TableRowProps, TableRow } from '@/dex/components/PagePoolList/components/TableRow'
 import { TableRowMobile } from '@/dex/components/PagePoolList/components/TableRowMobile'
 import type {
@@ -10,9 +11,9 @@ import type {
 import { ROUTE } from '@/dex/constants'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { parseSearchTermMapper } from '@/dex/hooks/useSearchTermMapper'
-import { getUserActiveKey } from '@/dex/store/createUserSlice'
+import { useUserPools } from '@/dex/queries/user-pools'
 import { useStore } from '@/dex/store/useStore'
-import { CurveApi, ChainId } from '@/dex/types/main.types'
+import { ChainId } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
 import { TrSearchedTextResult } from '@ui/Table'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
@@ -31,7 +32,6 @@ interface PoolRowProps {
   searchTermMapper: SearchTermMapper
   showDetail: string
   setShowDetail: (value: ((prevState: string) => string) | string) => void
-  curve: CurveApi | null
 }
 
 const ROUTES = {
@@ -52,10 +52,8 @@ export const PoolRow = ({
   searchTermMapper,
   showDetail,
   setShowDetail,
-  curve,
 }: PoolRowProps) => {
   const push = useNavigate()
-  const userActiveKey = getUserActiveKey(curve)
 
   const isMobile = useIsMobile()
   const poolDataCached = useStore((state) => state.storeCache.poolsMapper[rChainId]?.[poolId])
@@ -64,10 +62,13 @@ export const PoolRow = ({
   const searchedByAddresses = useStore((state) => state.poolList.searchedByAddresses[poolId])
   const tvlCached = useStore((state) => state.storeCache.tvlMapper[rChainId]?.[poolId])
   const tvl = useStore((state) => state.pools.tvlMapper[rChainId]?.[poolId])
-  const isInPool = useStore((state) => state.user.poolList[userActiveKey]?.[poolId])
   const volumeCached = useStore((state) => state.storeCache.volumeMapper[rChainId]?.[poolId])
   const volume = useStore((state) => state.pools.volumeMapper[rChainId]?.[poolId])
   const { data: network } = useNetworkByChain({ chainId: rChainId })
+
+  const { address: userAddress } = useConnection()
+  const { data: userPools } = useUserPools({ chainId: rChainId, userAddress })
+  const isInPool = !!userPools?.includes(poolId)
 
   const theme = useUserProfileStore((state) => state.theme)
 

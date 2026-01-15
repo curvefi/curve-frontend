@@ -1,5 +1,4 @@
 import lodash from 'lodash'
-import memoizee from 'memoizee'
 import type { FormValues as PoolSwapFormValues } from '@/dex/components/PagePool/Swap/types'
 import type { ExchangeRate, FormValues, Route, SearchedParams } from '@/dex/components/PageRouterSwap/types'
 import { httpFetcher } from '@/dex/lib/utils'
@@ -1176,27 +1175,7 @@ const poolWithdraw = {
   },
 }
 
-/**
- * TODO: Work around for getPoolList being called twice from UserSlice and DashboardSlice
- */
-const getUserPoolList = memoizee((curve: CurveApi, walletAddress: string) => curve.getUserPoolList(walletAddress), {
-  maxAge: 1000 * 60 * 5,
-  length: 1,
-  promise: true,
-})
-
 const wallet = {
-  getUserPoolList: async (curve: CurveApi, walletAddress: string) => {
-    log('getUserPoolList', curve.chainId, walletAddress)
-    const resp = { poolList: [] as string[], error: '' }
-    try {
-      resp.poolList = await getUserPoolList(curve, walletAddress)
-      return resp
-    } catch (error) {
-      resp.error = getErrorMessage(error, 'error-pool-list')
-      return resp
-    }
-  },
   getUserLiquidityUSD: async (curve: CurveApi, poolIds: string[], walletAddress: string) => {
     log('getUserLiquidityUSD', poolIds, walletAddress)
     return await curve.getUserLiquidityUSD(poolIds, walletAddress)

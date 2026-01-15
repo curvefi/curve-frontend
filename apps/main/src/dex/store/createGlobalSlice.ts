@@ -123,10 +123,6 @@ export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreAp
       void state.pools.fetchBasePools(curveApi)
     }
 
-    if (curveApi.signerAddress) {
-      void state.user.fetchUserPoolList(curveApi)
-    }
-
     log('Hydrating DEX - Complete')
   },
   setAppStateByActiveKey: <T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean) => {

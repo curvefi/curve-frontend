@@ -1,7 +1,8 @@
 import { isEmpty, sum } from 'lodash'
 import { useEffect, useMemo } from 'react'
+import { useConnection } from 'wagmi'
 import { CROSS_CHAIN_ADDRESSES } from '@/dex/constants'
-import { getUserActiveKey } from '@/dex/store/createUserSlice'
+import { useUserPools } from '@/dex/queries/user-pools'
 import { useStore } from '@/dex/store/useStore'
 import { NetworkConfig, PoolData, PoolDataMapper } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
@@ -29,15 +30,16 @@ const getPoolTags = (hasPosition: boolean, { pool, pool: { address, id, name, re
 
 export function usePoolListData({ id: network, chainId, isLite }: NetworkConfig) {
   const { curveApi } = useCurve()
-  const userActiveKey = getUserActiveKey(curveApi)
   const poolDataMapper = useStore((state): PoolDataMapper | undefined => state.pools.poolsMapper[chainId])
   const rewardsApyMapper = useStore((state) => state.pools.rewardsApyMapper[chainId])
   const tvlMapper = useStore((state) => state.pools.tvlMapper[chainId])
-  const userPoolList = useStore((state) => state.user.poolList[userActiveKey])
   const volumeMapper = useStore((state) => state.pools.volumeMapper[chainId])
   const fetchPoolsRewardsApy = useStore((state) => state.pools.fetchPoolsRewardsApy)
   const fetchMissingPoolsRewardsApy = useStore((state) => state.pools.fetchMissingPoolsRewardsApy)
   const poolsData = useMemo(() => poolDataMapper && recordValues(poolDataMapper), [poolDataMapper])
+
+  const { address: userAddress } = useConnection()
+  const { data: userPools } = useUserPools({ chainId, userAddress })
 
   useEffect(
     () => poolsData && void fetchMissingPoolsRewardsApy(chainId, poolsData),
@@ -56,12 +58,14 @@ export function usePoolListData({ id: network, chainId, isLite }: NetworkConfig)
       () => !isEmpty(tvlMapper) && (isLite || !isEmpty(volumeMapper)),
       [isLite, tvlMapper, volumeMapper],
     ),
-    userHasPositions: useMemo(() => userPoolList && recordValues(userPoolList).some(Boolean), [userPoolList]),
+    userHasPositions: !!userPools?.length,
     data: useMemo(
       () =>
         poolsData &&
         poolsData.map((item): PoolListItem => {
           const rewards = rewardsApyMapper?.[item.pool.id]
+          const hasPosition = userPools?.includes(item.pool.id)
+
           return {
             ...item,
             totalAPR: sum(
@@ -76,13 +80,13 @@ export function usePoolListData({ id: network, chainId, isLite }: NetworkConfig)
             rewards,
             volume: volumeMapper?.[item.pool.id],
             tvl: tvlMapper?.[item.pool.id],
-            hasPosition: userPoolList?.[item.pool.id],
+            hasPosition,
             network,
             url: getPath({ network }, `${DEX_ROUTES.PAGE_POOLS}/${item.pool.address}/deposit`),
-            tags: getPoolTags(userPoolList?.[item.pool.id], item),
+            tags: getPoolTags(!!hasPosition, item),
           }
         }),
-      [poolsData, rewardsApyMapper, tvlMapper, userPoolList, volumeMapper, network],
+      [poolsData, rewardsApyMapper, tvlMapper, userPools, volumeMapper, network],
     ),
   }
 }
