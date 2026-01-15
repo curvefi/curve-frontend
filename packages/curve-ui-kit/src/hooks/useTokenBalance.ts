@@ -196,10 +196,7 @@ export function useTokenBalances(
   })
 }
 
-/**
- * Prefetch balances for multiple tokens into the query cache.
- * Fire-and-forget during hydration, no need to await.
- */
+/** Prefetch balances for multiple tokens into the query cache. Fire-and-forget, so no need to await. */
 export const prefetchTokenBalances = (
   config: Config,
   { chainId, userAddress, tokenAddresses }: ChainQuery & UserQuery & { tokenAddresses: Address[] },
