@@ -9,7 +9,7 @@ import { AppName } from '@ui-kit/shared/routes'
 
 export type Wallet = {
   readonly provider?: Eip1193Provider
-  readonly account: { address: Address; ensName?: string }
+  readonly address: Address
 }
 
 export enum ConnectState {

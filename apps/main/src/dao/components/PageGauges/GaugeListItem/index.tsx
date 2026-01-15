@@ -1,5 +1,6 @@
 import { MouseEvent, useEffect, useState } from 'react'
 import { styled } from 'styled-components'
+import { useConnection } from 'wagmi'
 import { LineChartComponent } from '@/dao/components/Charts/LineChartComponent'
 import { ErrorMessage } from '@/dao/components/ErrorMessage'
 import { ExternalLinkIconButton } from '@/dao/components/ExternalLinkIconButton'
@@ -9,7 +10,9 @@ import { GaugeListColumns } from '@/dao/components/PageGauges/GaugeListItem/Gaug
 import { GaugeWeightVotesColumns } from '@/dao/components/PageGauges/GaugeListItem/GaugeWeightVotesColumns'
 import { TitleComp } from '@/dao/components/PageGauges/GaugeListItem/TitleComp'
 import { VoteGaugeField } from '@/dao/components/PageGauges/GaugeVoting/VoteGaugeField'
+import { useLockerVecrvUser } from '@/dao/entities/locker-vecrv-user'
 import { useUserGaugeVoteNextTimeQuery } from '@/dao/entities/user-gauge-vote-next-time'
+import { useGaugesLegacy } from '@/dao/queries/gauges-legacy.query'
 import { useStore } from '@/dao/store/useStore'
 import { GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
 import { Box } from '@ui/Box'
@@ -28,7 +31,6 @@ type Props = {
   powerUsed?: number
   userGaugeVote?: boolean
   addUserVote?: boolean
-  userAddress?: string
 }
 
 export const GaugeListItem = ({
@@ -38,9 +40,8 @@ export const GaugeListItem = ({
   powerUsed,
   userGaugeVote = false,
   addUserVote = false,
-  userAddress = '',
 }: Props) => {
-  // userGaugeWeightVoteData is only passed to component in CurrentVotes.tsx
+  const { address: userAddress } = useConnection()
   const { data: userGaugeVoteNextTime } = useUserGaugeVoteNextTimeQuery({
     chainId: Chain.Ethereum,
     gaugeAddress: userGaugeWeightVoteData?.gaugeAddress,
@@ -48,13 +49,12 @@ export const GaugeListItem = ({
   })
   const gaugeWeightHistoryMapper = useStore((state) => state.gauges.gaugeWeightHistoryMapper)
   const getHistoricGaugeWeights = useStore((state) => state.gauges.getHistoricGaugeWeights)
-  const gaugeCurveApiData = useStore(
-    (state) =>
-      state.gauges.gaugeCurveApiData.data[
-        gaugeData.effective_address?.toLowerCase() ?? gaugeData.address.toLowerCase()
-      ],
-  )
-  const userVeCrv = useStore((state) => state.user.userVeCrv)
+  const { data: gaugesLegacy } = useGaugesLegacy({})
+
+  const gaugeCurveApiData =
+    gaugesLegacy?.[gaugeData.effective_address?.toLowerCase() ?? gaugeData.address.toLowerCase()]
+
+  const { data: userVeCrv } = useLockerVecrvUser({ chainId: Chain.Ethereum, userAddress })
   const [open, setOpen] = useState(false)
   const canVote = userGaugeVoteNextTime ? Date.now() > userGaugeVoteNextTime : true
 
@@ -102,7 +102,7 @@ export const GaugeListItem = ({
               <VoteGaugeFieldWrapper>
                 <VoteGaugeField
                   powerUsed={powerUsed}
-                  userVeCrv={+userVeCrv.veCrv}
+                  userVeCrv={+(userVeCrv?.veCrv ?? 0)}
                   userGaugeVoteData={userGaugeWeightVoteData}
                 />
               </VoteGaugeFieldWrapper>

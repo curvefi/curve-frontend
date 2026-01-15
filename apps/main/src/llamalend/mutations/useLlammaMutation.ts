@@ -97,7 +97,7 @@ export function useLlammaMutation<TVariables extends object, TData extends Resul
   onReset,
 }: LlammaMutationOptions<TVariables, TData>) {
   const { llamaApi, wallet } = useCurve()
-  const userAddress = wallet?.account.address
+  const userAddress = wallet?.address
   const config = useConfig()
 
   // Track our own error state because errors thrown in onMutate don't populate React Query's error.
