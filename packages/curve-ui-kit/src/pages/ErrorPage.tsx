@@ -4,10 +4,12 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { ERROR_IMAGE_URL } from '@ui/utils'
 import { useLayoutStore } from '@ui-kit/features/layout'
+import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { persister, queryClient } from '@ui-kit/lib/api'
 import { t } from '@ui-kit/lib/i18n'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { SubmitErrorReportModal } from '@ui-kit/widgets/SubmitErrorReport'
 
 const { MinHeight, MaxWidth } = SizesAndSpaces
 
@@ -26,6 +28,7 @@ export const ErrorPage = ({
 }) => {
   const navHeight = useLayoutStore((state) => state.navHeight)
   const [resetClicked, setResetClicked] = useState(false)
+  const [isReportOpen, openReportModal, closeReportModal] = useSwitch(false)
   const onRetry = useCallback(() => {
     queryClient.clear()
     persister?.removeClient?.()
@@ -73,11 +76,15 @@ export const ErrorPage = ({
         ) : (
           <Button onClick={onRetry} variant="contained" data-testid="retry-error-button">{t`Try again`}</Button>
         )}
+        <Button onClick={openReportModal} variant="outlined" data-testid="submit-error-report-button">
+          {t`Submit error report`}
+        </Button>
         <Button component={RouterLink} href="/" variant="contained">
           {t`Go to homepage`}
         </Button>
       </Stack>
       <img src={ERROR_IMAGE_URL} alt={title} width={imageWidth} height={imageHeight} />
+      <SubmitErrorReportModal open={isReportOpen} onClose={closeReportModal} />
     </Stack>
   )
 }

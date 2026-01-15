@@ -1,0 +1,122 @@
+import type { MouseEvent } from 'react'
+import Button from '@mui/material/Button'
+import FormControl from '@mui/material/FormControl'
+import FormHelperText from '@mui/material/FormHelperText'
+import FormLabel from '@mui/material/FormLabel'
+import Stack from '@mui/material/Stack'
+import TextField from '@mui/material/TextField'
+import ToggleButton from '@mui/material/ToggleButton'
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
+import Typography from '@mui/material/Typography'
+import { t } from '@ui-kit/lib/i18n'
+import { ModalDialog } from '@ui-kit/shared/ui/ModalDialog'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { type SubmitErrorContactMethod, useSubmitErrorReportForm } from './useSubmitErrorReportForm'
+
+const { Spacing } = SizesAndSpaces
+const contactCopyByMethod = {
+  email: { label: t`Email address`, placeholder: t`0xtutti@curve.finance` },
+  telegram: { label: t`Telegram`, placeholder: '@0xtutti' },
+  discord: { label: t`Discord`, placeholder: '@0xtutti' },
+}
+
+type SubmitErrorReportModalProps = {
+  open: boolean
+  onClose: () => void
+}
+
+export const SubmitErrorReportModal = ({ open, onClose }: SubmitErrorReportModalProps) => {
+  const {
+    form,
+    values: { address, contact, contactMethod, description },
+    onSubmit,
+  } = useSubmitErrorReportForm()
+  const { label, placeholder } = contactCopyByMethod[contactMethod]
+  return (
+    <ModalDialog
+      open={open}
+      onClose={onClose}
+      title={t`Submit error report`}
+      titleColor="textSecondary"
+      compact
+      footer={
+        <Button fullWidth onClick={onSubmit} data-testid="submit-error-report-submit" variant="contained">
+          {t`Submit report`}
+        </Button>
+      }
+    >
+      <Stack data-testid="submit-error-report-modal" gap={Spacing.md} sx={{ overflowY: 'auto', height: '100%' }}>
+        <Stack gap={Spacing.xxs}>
+          <Typography variant="bodyMBold" color="text.primary">
+            {t`Seems like there's been an error T_T.`}
+          </Typography>
+          <Typography variant="bodySRegular" color="text.secondary">
+            {t`We're on it. Want to speed things up? Share what happened below.`}
+          </Typography>
+        </Stack>
+
+        <FormControl fullWidth>
+          <FormLabel>{t`Address`}</FormLabel>
+          <TextField
+            fullWidth
+            placeholder={t`0xab4ed...`}
+            value={address}
+            onChange={(event) => form.setValue('address', event.target.value)}
+            slotProps={{ htmlInput: { 'data-testid': 'submit-error-report-address' } }}
+          />
+          <FormHelperText>{t`Submit your address so we can reproduce the issue`}</FormHelperText>
+        </FormControl>
+
+        <ToggleButtonGroup
+          exclusive
+          value={contactMethod}
+          onChange={(_event: MouseEvent<HTMLElement>, nextValue: SubmitErrorContactMethod | null) => {
+            if (!nextValue) return // ToggleButtonGroup sets null when clicking the selected value; keep the current selection.
+            form.setValue('contactMethod', nextValue, { shouldDirty: true })
+          }}
+          size="small"
+          data-testid="submit-error-report-contact-method"
+          aria-label={t`Contact method`}
+        >
+          <ToggleButton value="email">{t`Email`}</ToggleButton>
+          <ToggleButton value="telegram">{t`Telegram`}</ToggleButton>
+          <ToggleButton value="discord">{t`Discord`}</ToggleButton>
+        </ToggleButtonGroup>
+
+        <FormControl fullWidth>
+          <FormLabel>{label}</FormLabel>
+          <TextField
+            fullWidth
+            placeholder={placeholder}
+            value={contact}
+            onChange={(event) => form.setValue('contact', event.target.value)}
+            slotProps={{
+              htmlInput: {
+                'data-testid': 'submit-error-report-contact',
+                'aria-label': label || t`Contact`,
+              },
+            }}
+          />
+          <FormHelperText>{t`We will only reach out if needed`}</FormHelperText>
+        </FormControl>
+
+        <FormControl fullWidth>
+          <FormLabel>{t`What happened?`}</FormLabel>
+          <TextField
+            fullWidth
+            multiline
+            minRows={8}
+            placeholder={t`I clicked on "X" and then hit "confirm"...`}
+            value={description}
+            onChange={(event) => form.setValue('description', event.target.value)}
+            slotProps={{ htmlInput: { 'data-testid': 'submit-error-report-description' } }}
+          />
+        </FormControl>
+
+        <Typography variant="bodySRegular" color="text.tertiary">
+          {t`Error reports help us improve the product for everyone.`}
+        </Typography>
+      </Stack>
+    </ModalDialog>
+  )
+}
