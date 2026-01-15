@@ -11,7 +11,7 @@ import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
 import { ModalDialog } from '@ui-kit/shared/ui/ModalDialog'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { type SubmitErrorContactMethod, useSubmitErrorReportForm } from './useSubmitErrorReportForm'
+import { type ErrorContext, type ContactMethod, useErrorReportForm } from './useErrorReportForm'
 
 const { Spacing } = SizesAndSpaces
 const contactCopyByMethod = {
@@ -20,17 +20,18 @@ const contactCopyByMethod = {
   discord: { label: t`Discord`, placeholder: '@0xtutti' },
 }
 
-type SubmitErrorReportModalProps = {
+type ErrorReportModalProps = {
   open: boolean
   onClose: () => void
+  context: ErrorContext
 }
 
-export const SubmitErrorReportModal = ({ open, onClose }: SubmitErrorReportModalProps) => {
+export const ErrorReportModal = ({ open, onClose, context }: ErrorReportModalProps) => {
   const {
     form,
     values: { address, contact, contactMethod, description },
     onSubmit,
-  } = useSubmitErrorReportForm()
+  } = useErrorReportForm(context)
   const { label, placeholder } = contactCopyByMethod[contactMethod]
   return (
     <ModalDialog
@@ -70,7 +71,7 @@ export const SubmitErrorReportModal = ({ open, onClose }: SubmitErrorReportModal
         <ToggleButtonGroup
           exclusive
           value={contactMethod}
-          onChange={(_event: MouseEvent<HTMLElement>, nextValue: SubmitErrorContactMethod | null) => {
+          onChange={(_event: MouseEvent<HTMLElement>, nextValue: ContactMethod | null) => {
             if (!nextValue) return // ToggleButtonGroup sets null when clicking the selected value; keep the current selection.
             form.setValue('contactMethod', nextValue, { shouldDirty: true })
           }}

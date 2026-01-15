@@ -4,12 +4,12 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { ERROR_IMAGE_URL } from '@ui/utils'
 import { useLayoutStore } from '@ui-kit/features/layout'
+import { ErrorReportModal } from '@ui-kit/features/report-error'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { persister, queryClient } from '@ui-kit/lib/api'
 import { t } from '@ui-kit/lib/i18n'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { SubmitErrorReportModal } from '@ui-kit/widgets/SubmitErrorReport'
 
 const { MinHeight, MaxWidth } = SizesAndSpaces
 
@@ -20,11 +20,13 @@ export const ErrorPage = ({
   subtitle,
   resetError,
   continueUrl,
+  error,
 }: {
   title: string
   subtitle: string
   resetError?: () => void
   continueUrl?: string
+  error?: unknown
 }) => {
   const navHeight = useLayoutStore((state) => state.navHeight)
   const [resetClicked, setResetClicked] = useState(false)
@@ -84,7 +86,7 @@ export const ErrorPage = ({
         </Button>
       </Stack>
       <img src={ERROR_IMAGE_URL} alt={title} width={imageWidth} height={imageHeight} />
-      <SubmitErrorReportModal open={isReportOpen} onClose={closeReportModal} />
+      <ErrorReportModal open={isReportOpen} onClose={closeReportModal} context={{ error, title, subtitle }} />
     </Stack>
   )
 }

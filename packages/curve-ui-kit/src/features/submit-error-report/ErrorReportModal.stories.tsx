@@ -5,8 +5,8 @@ import { WagmiProvider } from 'wagmi'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { ErrorReportModal } from '@ui-kit/features/report-error'
 import { t } from '@ui-kit/lib/i18n'
-import { SubmitErrorReportModal } from '@ui-kit/widgets/SubmitErrorReport'
 import { createConfig } from '@wagmi/core'
 
 const wagmiConfig = createConfig({
@@ -18,7 +18,7 @@ const wagmiConfig = createConfig({
   multiInjectedProviderDiscovery: false,
 })
 
-const SubmitErrorReportModalStory = ({ initialOpen = true }: { initialOpen?: boolean }) => {
+const ErrorReportModalStory = ({ initialOpen = true }: { initialOpen?: boolean }) => {
   const [open, setOpen] = useState(initialOpen)
 
   return (
@@ -27,15 +27,19 @@ const SubmitErrorReportModalStory = ({ initialOpen = true }: { initialOpen?: boo
         <Button variant="contained" onClick={() => setOpen(true)}>
           {t`Open modal`}
         </Button>
-        <SubmitErrorReportModal open={open} onClose={() => setOpen(false)} />
+        <ErrorReportModal
+          open={open}
+          onClose={() => setOpen(false)}
+          context={{ error: 'Story', title: 'Storybook test', subtitle: '' }}
+        />
       </Stack>
     </WagmiProvider>
   )
 }
 
-const meta: Meta<typeof SubmitErrorReportModalStory> = {
-  title: 'UI Kit/Features/SubmitErrorReportModal',
-  component: SubmitErrorReportModalStory,
+const meta: Meta<typeof ErrorReportModalStory> = {
+  title: 'UI Kit/Features/ErrorReportModal',
+  component: ErrorReportModalStory,
   args: {
     initialOpen: true,
   },
@@ -49,7 +53,7 @@ const meta: Meta<typeof SubmitErrorReportModalStory> = {
 
 export default meta
 
-type Story = StoryObj<typeof SubmitErrorReportModalStory>
+type Story = StoryObj<typeof ErrorReportModalStory>
 
 export const Default: Story = {}
 

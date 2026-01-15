@@ -41,23 +41,42 @@ describe('Error Boundary', () => {
     cy.wait('@error', LOAD_TIMEOUT) // API called again
   })
 
-  it('should open and submit the error report modal', () => {
+  it('should submit error report for a 500 page', () => {
     visitErrorBoundary()
+    cy.intercept('POST', '**/api/error-report', (req) => {
+      expect(req.body).to.include({
+        address: '0xabc123',
+        description: 'Clicked confirm and got an error',
+      })
+      expect(req.body).to.have.nested.property('context.error.message')
+      req.reply({ statusCode: 200, body: { status: 'ok' } })
+    }).as('errorReport')
+
     cy.get('[data-testid="submit-error-report-button"]').click()
     cy.get('[data-testid="submit-error-report-modal"]').should('be.visible')
-
-    cy.window().then((win) => {
-      cy.spy(win.console, 'info').as('consoleInfo')
-    })
 
     cy.get('[data-testid="submit-error-report-address"]').clear()
     cy.get('[data-testid="submit-error-report-address"]').type('0xabc123')
     cy.get('[data-testid="submit-error-report-description"]').type('Clicked confirm and got an error')
     cy.get('[data-testid="submit-error-report-submit"]').click()
 
-    cy.get('@consoleInfo').should('have.been.calledWithMatch', {
-      address: '0xabc123',
-      description: 'Clicked confirm and got an error',
-    })
+    cy.wait('@errorReport', LOAD_TIMEOUT)
+  })
+
+  it('should submit error report for a 404 page with url', () => {
+    cy.intercept('POST', '**/api/error-report', (req) => {
+      expect(req.body).to.have.nested.property('context.error.statusCode', 404)
+      expect(req.body).to.have.nested.property('context.error.url')
+      expect(req.body.context.error.url).to.include('/this-page-does-not-exist')
+      req.reply({ statusCode: 200, body: { status: 'ok' } })
+    }).as('errorReport')
+
+    cy.visit('/this-page-does-not-exist', { timeout: API_LOAD_TIMEOUT.timeout })
+    cy.get('[data-testid="error-title"]', LOAD_TIMEOUT).should('contain.text', '404')
+    cy.get('[data-testid="submit-error-report-button"]').click()
+    cy.get('[data-testid="submit-error-report-modal"]').should('be.visible')
+    cy.get('[data-testid="submit-error-report-description"]').type('Not found')
+    cy.get('[data-testid="submit-error-report-submit"]').click()
+    cy.wait('@errorReport', LOAD_TIMEOUT)
   })
 })
