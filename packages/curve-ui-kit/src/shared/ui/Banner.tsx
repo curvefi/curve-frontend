@@ -19,6 +19,8 @@ const { MaxWidth, Spacing, IconSize } = SizesAndSpaces
 type BannerSeverity = 'info' | 'highlight' | 'warning' | 'alert'
 type BannerIcons = BannerSeverity | 'llama'
 
+export const DEFAULT_SEVERITY = 'info' as const
+
 const BannerSx: Record<BannerSeverity, { title: SxProps<Theme>; subtitle: SxProps<Theme>; wrapper: SxProps<Theme> }> = {
   info: {
     title: { color: (t) => t.design.Text.TextColors.FilledFeedback.Info.Primary },
@@ -74,7 +76,7 @@ export const Banner = ({
   onClick,
   buttonText,
   children,
-  severity = 'info',
+  severity = DEFAULT_SEVERITY,
   icon = severity,
   learnMoreUrl,
   subtitle,
