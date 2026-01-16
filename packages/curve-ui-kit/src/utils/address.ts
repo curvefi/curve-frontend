@@ -8,7 +8,7 @@ type ShortenAddressOptions = {
 }
 
 /**
- * Shortens a hash (e.g., Ethereum address) by displaying the first and last few characters
+ * Shortens a hash (e.g., transaction hash or address) by displaying the first and last few characters
  */
 export const shortenHash = (hash: string, { digits = 5 }: ShortenAddressOptions = {}) =>
   `${hash.slice(0, digits + 2)}...${hash.slice(-digits)}`
