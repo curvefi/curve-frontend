@@ -54,7 +54,6 @@ export const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
   const updateSwapType = useStore((state) => state.createPool.updateSwapType)
   const updateNgAssetType = useStore((state) => state.createPool.updateNgAssetType)
   const basePools = useStore((state) => state.pools.basePools[chainId]) ?? DEFAULT_POOLS
-  const userBalances = useStore((state) => state.userBalances.userBalancesMapper)
   const { tokensMapper } = useTokensMapper(chainId)
   const nativeToken = curve.getNetworkConstants().NATIVE_TOKEN
   const {
@@ -74,7 +73,7 @@ export const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
       basePool: basePools.some((pool) => pool.token.toLowerCase() === token[0].toLowerCase()),
     }))
 
-    if (haveSigner && Object.keys(userBalances).length > 0 && Object.keys(tokensArray || {}).length > 0) {
+    if (haveSigner && Object.keys(tokensArray || {}).length > 0) {
       const volumeSortedTokensArray = tokensArray
         .filter((token) => token.symbol !== '' && token.address !== '')
         .sort((a, b) => Number(b.volume) - Number(a.volume))
@@ -87,7 +86,7 @@ export const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
       .sort((a, b) => Number(b.volume) - Number(a.volume))
 
     return lodash.uniqBy([...userAddedTokens, ...balanceSortedTokensArray], (o) => o.address)
-  }, [tokensMapper, haveSigner, userBalances, userAddedTokens, basePools])
+  }, [tokensMapper, haveSigner, userAddedTokens, basePools])
 
   const findSymbol = useCallback(
     (address: string) => {

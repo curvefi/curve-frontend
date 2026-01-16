@@ -28,7 +28,6 @@ export interface NetworkConfig extends BaseConfig<NetworkEnum> {
   isCrvRewardsEnabled: boolean
   useApi: boolean
   excludePoolsMapper: { [key: string]: boolean }
-  excludeTokensBalancesMapper: { [tokenAddress: string]: boolean }
   poolCustomTVL: { [poolAddress: string]: string }
   poolIsWrappedOnly: { [poolAddress: string]: boolean }
   poolFilters: string[]
@@ -139,7 +138,6 @@ export type Token = {
 }
 export type TokensMapper = { [tokenAddress: string]: Token | undefined }
 export type TokensNameMapper = { [tokenAddress: string]: string }
-export type UserBalancesMapper = { [tokenAddress: string]: string | undefined }
 export type GaugeStatus = { rewardsNeedNudging: boolean; areCrvRewardsStuckInBridge: boolean }
 
 export interface Gauge {

@@ -1,5 +1,4 @@
 import { styled } from 'styled-components'
-import { useConfig } from 'wagmi'
 import { InfoLinkBar } from '@/dex/components/PageCreatePool/ConfirmModal/CreateInfoLinkBar'
 import { useNetworks } from '@/dex/entities/networks'
 import { curveProps } from '@/dex/lib/utils'
@@ -26,7 +25,6 @@ export const CreatePoolButton = ({ disabled, curve }: Props) => {
   const poolId = useStore((state) => state.createPool.transactionState.poolId)
   const errorMessage = useStore((state) => state.createPool.transactionState.errorMessage)
   const { connectState, connect: connectWallet } = useWallet()
-  const config = useConfig()
 
   return !haveSigner ? (
     <StyledButton variant="filled" onClick={() => connectWallet()} loading={isLoading(connectState)}>
@@ -41,7 +39,7 @@ export const CreatePoolButton = ({ disabled, curve }: Props) => {
         </StyledAlertBox>
       )}
       {(txStatus === '' || txStatus === 'ERROR') && (
-        <StyledButton disabled={disabled} variant={'icon-filled'} onClick={() => deployPool(config, curve)}>
+        <StyledButton disabled={disabled} variant={'icon-filled'} onClick={() => deployPool(curve)}>
           {t`Create Pool`}
         </StyledButton>
       )}

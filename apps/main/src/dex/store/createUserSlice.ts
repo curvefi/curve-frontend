@@ -107,9 +107,6 @@ export const createUserSlice = (_set: StoreApi<State>['setState'], get: StoreApi
         const storedPoolData = get().pools.poolsMapper[chainId][poolId]
         fetchedWalletBalances = await fetchPoolTokenBalances(config, curve, poolId)
 
-        // set wallet balances into tokens state
-        get().userBalances.updateUserBalancesFromPool(fetchedWalletBalances)
-
         if (isFetchWalletBalancesOnly) {
           return fetchedWalletBalances
         }

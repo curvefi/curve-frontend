@@ -3,6 +3,7 @@ import { action } from 'storybook/actions'
 import { ethAddress } from 'viem'
 import { Button, Stack, Typography } from '@mui/material'
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TokenOption } from './types'
 import { TokenList, type TokenListProps } from './ui/modal/TokenList'
@@ -193,9 +194,10 @@ const TokenSelectorComponent = ({
   ...props
 }: TokenSelectorStoryProps) => {
   const [selectedToken, setSelectedToken] = useState(selectedTokenInit)
+  const [isOpen, open, close] = useSwitch()
 
   return (
-    <TokenSelector {...props} selectedToken={selectedToken}>
+    <TokenSelector {...props} selectedToken={selectedToken} isOpen={!!isOpen} onOpen={open} onClose={close}>
       <TokenList
         tokens={tokens}
         balances={balances}
@@ -206,6 +208,7 @@ const TokenSelectorComponent = ({
         disabledTokens={disabledTokens}
         disableSorting={disableSorting}
         disableMyTokens={disableMyTokens}
+        isLoading={true}
         onToken={(newToken) => {
           action('onToken')(newToken)
           setSelectedToken(newToken)
