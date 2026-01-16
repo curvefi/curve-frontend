@@ -26,7 +26,7 @@ import { useRepayForm } from '../hooks/useRepayForm'
  */
 const joinButtonText = (...texts: (string | Falsy)[]) =>
   notFalsy(...texts)
-    .map((t, i) => (i ? `${i === texts.length - 1 ? ' & ' : ', '}${t}` : t))
+    .map((t, i, all) => (i ? `${i === all.length - 1 ? ' & ' : ', '}${t}` : t))
     .join('')
 
 // todo: net borrow APR (includes the intrinsic yield + rewards, while the Borrow APR doesn't)

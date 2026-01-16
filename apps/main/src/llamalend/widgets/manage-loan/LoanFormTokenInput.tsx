@@ -125,7 +125,6 @@ export const LoanFormTokenInput = <
       maxBalance={useMemo(() => max && { balance: max.data, chips: 'max' }, [max])}
       inputBalanceUsd={decimal(usdRate && usdRate * +(value ?? 0))}
     >
-      {/* Show error message (replacing helper) or helper message, but not both */}
       {errorMessage ? <HelperMessage message={errorMessage} isError /> : message && <HelperMessage message={message} />}
     </LargeTokenInput>
   )
