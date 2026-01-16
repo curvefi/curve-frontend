@@ -127,6 +127,8 @@ export function useLlammaMutation<TVariables extends object, TData extends Resul
       const market = getLlamaMarket(marketId!)
       const data = await mutationFn(variables, { market })
       throwIfError(data)
+      // Validate that we have a valid transaction hash before waiting for receipt
+      if (!data.hash) throw new Error('Transaction did not return a valid hash')
       return { data, receipt: await waitForTransactionReceipt(config, data) }
     },
     onSuccess: async ({ data, receipt }, variables, context) => {

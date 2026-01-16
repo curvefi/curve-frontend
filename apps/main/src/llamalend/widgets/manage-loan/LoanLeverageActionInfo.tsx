@@ -10,7 +10,7 @@ import type { LoanLeverageExpectedCollateral, LoanLeverageMaxReceive } from './L
 export type LoanLeverageActionInfoProps = {
   expectedCollateral?: Query<LoanLeverageExpectedCollateral | null>
   maxReceive?: Query<LoanLeverageMaxReceive | null>
-  priceImpact: Query<number | null>
+  priceImpact?: Query<number | null>
   slippage: Decimal
   onSlippageChange: (newSlippage: Decimal) => void
   collateralSymbol: string | undefined
@@ -29,7 +29,7 @@ export const LoanLeverageActionInfo = ({
   onSlippageChange,
   collateralSymbol,
 }: LoanLeverageActionInfoProps) => {
-  const isHighImpact = priceImpact.data != null && priceImpact.data > +slippage
+  const isHighImpact = priceImpact?.data != null && priceImpact.data > +slippage
   return (
     <Stack>
       {expectedCollateral && maxReceive && (
@@ -57,14 +57,16 @@ export const LoanLeverageActionInfo = ({
           loading={maxReceive.isLoading}
         />
       )}
-      <ActionInfo
-        label={isHighImpact ? t`High price impact` : t`Price impact`}
-        value={formatPercent(priceImpact.data)}
-        {...(isHighImpact && { valueColor: 'error' })}
-        error={priceImpact.error}
-        loading={priceImpact.isLoading}
-        testId="borrow-price-impact"
-      />
+      {priceImpact && (
+        <ActionInfo
+          label={isHighImpact ? t`High price impact` : t`Price impact`}
+          value={formatPercent(priceImpact.data)}
+          {...(isHighImpact && { valueColor: 'error' })}
+          error={priceImpact.error}
+          loading={priceImpact.isLoading}
+          testId="borrow-price-impact"
+        />
+      )}
       <SlippageToleranceActionInfoPure maxSlippage={slippage} onSave={onSlippageChange} />
     </Stack>
   )

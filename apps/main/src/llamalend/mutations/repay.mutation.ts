@@ -33,7 +33,7 @@ export type RepayOptions = {
 
 const approveRepay = async (
   market: LlamaMarketTemplate,
-  { stateCollateral, userCollateral, userBorrowed, isFull }: RepayMutation,
+  { stateCollateral = '0', userCollateral = '0', userBorrowed = '0', isFull }: RepayMutation,
 ) => {
   if (isFull && !+stateCollateral && !+userCollateral) {
     return (await market.fullRepayApprove()) as Hex[]

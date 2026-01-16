@@ -25,6 +25,13 @@ const getRepayTokenOptions = ({
 }) => {
   const { borrowToken, collateralToken } = market ? getTokens(market) : {}
   return notFalsy<RepayTokenOption>(
+    borrowToken && {
+      address: borrowToken.address,
+      chain: networkId,
+      symbol: borrowToken.symbol,
+      label: formatLabel(borrowToken.address, networkName),
+      field: 'userBorrowed',
+    },
     market &&
       collateralToken &&
       canRepayFromStateCollateral(market) && {
@@ -35,13 +42,6 @@ const getRepayTokenOptions = ({
         label: shortenAddress(collateralToken.address),
         field: 'stateCollateral',
       },
-    borrowToken && {
-      address: borrowToken.address,
-      chain: networkId,
-      symbol: borrowToken.symbol,
-      label: formatLabel(borrowToken.address, networkName),
-      field: 'userBorrowed',
-    },
     market &&
       collateralToken &&
       canRepayFromUserCollateral(market) && {

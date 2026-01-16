@@ -6,10 +6,11 @@ import { useRepayTokens } from '@/llamalend/features/manage-loan/hooks/useRepayT
 import { hasLeverage } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import type { RepayOptions } from '@/llamalend/mutations/repay.mutation'
-import { LoanFormAlerts } from '@/llamalend/widgets/manage-loan/LoanFormAlerts'
+import { useRepayPriceImpact } from '@/llamalend/queries/repay/repay-price-impact.query'
+import { HighPriceImpactAlert, LoanFormAlerts } from '@/llamalend/widgets/manage-loan/LoanFormAlerts'
 import { LoanFormTokenInput } from '@/llamalend/widgets/manage-loan/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { notFalsy } from '@curvefi/prices-api/objects.util'
+import { Falsy, notFalsy } from '@curvefi/prices-api/objects.util'
 import Button from '@mui/material/Button'
 import { TokenSelector } from '@ui-kit/features/select-token'
 import { t } from '@ui-kit/lib/i18n'
@@ -22,8 +23,10 @@ import { useRepayForm } from '../hooks/useRepayForm'
  * @example ['Approve', 'Repay', 'Withdraw'] -> 'Approve, Repay & Withdraw'
  * @example ['Approve', 'Repay'] -> 'Approve & Repay'
  */
-const joinButtonText = (texts: string[]) =>
-  texts.map((t, i) => (i ? `${i === texts.length - 1 ? ' & ' : ', '}${t}` : t)).join('')
+const joinButtonText = (...texts: (string | Falsy)[]) =>
+  notFalsy(...texts)
+    .map((t, i) => (i ? `${i === texts.length - 1 ? ' & ' : ', '}${t}` : t))
+    .join('')
 
 // todo: net borrow APR (includes the intrinsic yield + rewards, while the Borrow APR doesn't)
 export const RepayForm = <ChainId extends IChainId>({
@@ -65,6 +68,8 @@ export const RepayForm = <ChainId extends IChainId>({
   const { token, onToken, tokens } = useRepayTokens({ market, network })
   const selectedField = token?.field ?? 'userBorrowed'
   const selectedToken = selectedField == 'userBorrowed' ? borrowToken : collateralToken
+  const swapRequired = selectedToken !== borrowToken
+  const priceImpact = useRepayPriceImpact(params, enabled && swapRequired)
 
   useEffect(
     // Reset field when selectedField changes
@@ -80,22 +85,16 @@ export const RepayForm = <ChainId extends IChainId>({
         <RepayLoanInfoAccordion
           params={params}
           values={values}
-          collateralToken={collateralToken}
-          borrowToken={borrowToken}
+          tokens={{ collateralToken, borrowToken }}
           networks={networks}
           onSlippageChange={(value) => form.setValue('slippage', value, setValueOptions)}
           hasLeverage={market && hasLeverage(market)}
+          swapRequired={swapRequired}
         />
       }
     >
       <LoanFormTokenInput
-        label={
-          {
-            stateCollateral: t`From collateral (position)`,
-            userCollateral: t`From collateral (wallet)`,
-            userBorrowed: t`From borrowed token (wallet)`,
-          }[selectedField]
-        }
+        label={selectedToken === borrowToken ? t`Borrowed` : t`Collateral`}
         token={selectedToken}
         blockchainId={network.id}
         name={selectedField}
@@ -132,10 +131,16 @@ export const RepayForm = <ChainId extends IChainId>({
           />
         }
       />
+      <HighPriceImpactAlert priceImpact={priceImpact.data} isLoading={priceImpact.isLoading} />
       <Button type="submit" loading={isPending || !market} disabled={isDisabled} data-testid="repay-submit-button">
         {isPending
           ? t`Processing...`
-          : joinButtonText(notFalsy(!isApproved?.data && t`Approve`, isFull.data ? t`Repay full` : t`Repay`))}
+          : joinButtonText(
+              !isApproved?.data && t`Approve`,
+              t`Repay`,
+              isFull.data && t`close position`,
+              !isFull.data && selectedField === 'stateCollateral' && t`from position`,
+            )}
       </Button>
 
       <LoanFormAlerts

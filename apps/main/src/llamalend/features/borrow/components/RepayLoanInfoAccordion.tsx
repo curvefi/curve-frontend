@@ -31,24 +31,24 @@ const remainingDebt = (debt: Decimal, repayAmount: Decimal, stateBorrowed: Decim
 export function RepayLoanInfoAccordion<ChainId extends IChainId>({
   params,
   values: { slippage, userCollateral, stateCollateral, userBorrowed, isFull },
-  collateralToken,
-  borrowToken,
+  tokens: { collateralToken, borrowToken },
   networks,
   onSlippageChange,
   hasLeverage,
+  swapRequired,
 }: {
   params: RepayParams<ChainId>
   values: RepayForm
-  collateralToken: Token | undefined
-  borrowToken: Token | undefined
+  tokens: { collateralToken: Token | undefined; borrowToken: Token | undefined }
   networks: NetworkDict<ChainId>
   onSlippageChange: (newSlippage: Decimal) => void
   hasLeverage: boolean | undefined
+  swapRequired: boolean
 }) {
   const [isOpen, , , toggle] = useSwitch(false)
   const userStateQuery = useUserState(params, isOpen)
   const userState = q(userStateQuery)
-  const swapRequired = +(stateCollateral ?? 0) > 0 || +(userCollateral ?? 0) > 0
+  const priceImpact = useRepayPriceImpact(params, isOpen && swapRequired)
   const expectedBorrowedQuery = useRepayExpectedBorrowed(params, isOpen && swapRequired)
   const borrowed = swapRequired ? expectedBorrowedQuery.data?.totalBorrowed : userBorrowed
   const debt = {
@@ -90,10 +90,10 @@ export function RepayLoanInfoAccordion<ChainId extends IChainId>({
       )}
       leverage={{
         enabled: !!hasLeverage,
-        priceImpact: useRepayPriceImpact(params, isOpen),
         slippage,
         onSlippageChange,
         collateralSymbol: collateralToken?.symbol,
+        ...(swapRequired && { priceImpact }),
       }}
     />
   )
