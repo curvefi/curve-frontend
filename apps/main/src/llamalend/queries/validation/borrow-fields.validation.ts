@@ -1,5 +1,6 @@
 import { enforce, test, skipWhen } from 'vest'
 import { PRESET_RANGES } from '@/llamalend/constants'
+import { getLlamaMarket, hasLeverage } from '@/llamalend/llama.utils'
 import { Decimal } from '@ui-kit/utils'
 
 export const validateUserBorrowed = (userBorrowed: Decimal | null | undefined) => {
@@ -62,6 +63,15 @@ export const validateLeverageEnabled = (leverageEnabled: boolean | undefined | n
   })
 }
 
+export const validateLeverageSupported = (marketId: string | null | undefined, leverageRequired: boolean) => {
+  skipWhen(!leverageRequired || !marketId, () => {
+    test('marketId', 'Market does not support leverage', () => {
+      const market = getLlamaMarket(marketId!)
+      enforce(hasLeverage(market)).isTruthy()
+    })
+  })
+}
+
 export const validateMaxCollateral = (
   userCollateral: Decimal | undefined | null,
   maxCollateral: Decimal | undefined | null,
@@ -75,7 +85,7 @@ export const validateMaxCollateral = (
 }
 
 export const validateIsFull = (value: boolean | undefined | null) => {
-  test('root', 'Form is not completely filled out', () => {
+  test('isFull', `isFull must be calculated`, () => {
     enforce(value).isBoolean()
   })
 }

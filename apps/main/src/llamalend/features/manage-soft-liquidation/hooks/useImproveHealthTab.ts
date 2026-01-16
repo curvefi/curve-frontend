@@ -3,6 +3,7 @@ import { useConnection } from 'wagmi'
 import { useRepayMutation } from '@/llamalend/mutations/repay.mutation'
 import { useUserBalances } from '@/llamalend/queries/user-balances.query'
 import type { Decimal } from '@ui-kit/utils'
+import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 import type { ImproveHealthProps } from '..'
 import type { MarketParams } from '../types'
 import { useDebtToken } from './useDebtToken'
@@ -21,6 +22,7 @@ export function useImproveHealthTab(params: MarketParams): ImproveHealthProps {
         userCollateral: '0' as Decimal,
         userBorrowed: debt,
         isFull: false, // todo: implement full repays
+        slippage: SLIPPAGE_PRESETS.STABLE,
       })
     },
     [mutate],

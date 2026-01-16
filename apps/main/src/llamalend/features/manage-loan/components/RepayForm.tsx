@@ -1,141 +1,157 @@
-import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
+import { useEffect } from 'react'
+import { RepayLoanInfoAccordion } from '@/llamalend/features/borrow/components/RepayLoanInfoAccordion'
+import { setValueOptions } from '@/llamalend/features/borrow/react-form.utils'
+import { RepayTokenList } from '@/llamalend/features/manage-loan/components/RepayTokenList'
+import { useRepayTokens } from '@/llamalend/features/manage-loan/hooks/useRepayTokens'
+import { hasLeverage } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import type { RepayOptions } from '@/llamalend/mutations/repay.mutation'
-import { useMarketRates } from '@/llamalend/queries/market-rates'
-import { LoanFormAlerts } from '@/llamalend/widgets/manage-loan/LoanFormAlerts'
+import { useRepayPriceImpact } from '@/llamalend/queries/repay/repay-price-impact.query'
+import { HighPriceImpactAlert, LoanFormAlerts } from '@/llamalend/widgets/manage-loan/LoanFormAlerts'
 import { LoanFormTokenInput } from '@/llamalend/widgets/manage-loan/LoanFormTokenInput'
-import { LoanInfoAccordion } from '@/llamalend/widgets/manage-loan/LoanInfoAccordion'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import { Falsy, notFalsy } from '@curvefi/prices-api/objects.util'
 import Button from '@mui/material/Button'
-import Stack from '@mui/material/Stack'
-import { useSwitch } from '@ui-kit/hooks/useSwitch'
+import { TokenSelector } from '@ui-kit/features/select-token'
+import { useModalState } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
+import { Balance } from '@ui-kit/shared/ui/Balance'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
-import { InputDivider } from '../../../widgets/InputDivider'
 import { useRepayForm } from '../hooks/useRepayForm'
 
+/**
+ * Join button texts with commas and ampersand
+ * @example ['Approve', 'Repay', 'Withdraw'] -> 'Approve, Repay & Withdraw'
+ * @example ['Approve', 'Repay'] -> 'Approve & Repay'
+ */
+const joinButtonText = (...texts: (string | Falsy)[]) =>
+  notFalsy(...texts)
+    .map((t, i, all) => (i ? `${i === all.length - 1 ? ' & ' : ', '}${t}` : t))
+    .join('')
+
+// todo: net borrow APR (includes the intrinsic yield + rewards, while the Borrow APR doesn't)
 export const RepayForm = <ChainId extends IChainId>({
   market,
   networks,
   chainId,
   enabled,
   onRepaid,
-  fromCollateral,
-  fromWallet,
-  fromBorrowed,
 }: {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
   chainId: ChainId
   enabled?: boolean
   onRepaid?: RepayOptions['onRepaid']
-  fromCollateral?: boolean
-  fromWallet?: boolean
-  fromBorrowed?: boolean
 }) => {
   const network = networks[chainId]
-  const [isOpen, , , toggle] = useSwitch(false)
-
   const {
     form,
+    values,
+    params,
     isPending,
     onSubmit,
-    action,
-    bands,
-    health,
-    prices,
-    gas,
     isDisabled,
-    isFull,
-    formErrors,
-    collateralToken,
     borrowToken,
-    params,
+    collateralToken,
+    isRepaid,
+    repayError,
     txHash,
-    expectedBorrowed,
-    // todo: routeImage, priceImpact
+    isApproved,
+    formErrors,
+    max,
+    isFull,
   } = useRepayForm({
     market,
     network,
-    networks,
     enabled,
     onRepaid,
   })
+  const { token, onToken, tokens } = useRepayTokens({ market, network })
 
-  const marketRates = useMarketRates(params, isOpen)
+  const selectedField = token?.field ?? 'userBorrowed'
+  const selectedToken = selectedField == 'userBorrowed' ? borrowToken : collateralToken
+  const swapRequired = selectedToken !== borrowToken
+  const priceImpact = useRepayPriceImpact(params, enabled && swapRequired)
+
+  useEffect(
+    // Reset field when selectedField changes
+    () => () => form.setValue(selectedField, undefined, setValueOptions),
+    [form, selectedField],
+  )
 
   return (
-    <Form // todo: prevHealth, prevRates, debt, prevDebt
+    <Form
       {...form}
       onSubmit={onSubmit}
       infoAccordion={
-        <LoanInfoAccordion
-          isOpen={isOpen}
-          toggle={toggle}
-          health={health}
-          bands={bands}
-          prices={prices}
-          rates={marketRates}
-          loanToValue={useLoanToValueFromUserState({
-            chainId,
-            marketId: params.marketId,
-            userAddress: params.userAddress,
-            collateralToken,
-            borrowToken,
-            enabled: isOpen,
-            expectedBorrowed: expectedBorrowed.data?.totalBorrowed,
-          })}
-          gas={gas}
+        <RepayLoanInfoAccordion
+          params={params}
+          values={values}
+          tokens={{ collateralToken, borrowToken }}
+          networks={networks}
+          onSlippageChange={(value) => form.setValue('slippage', value, setValueOptions)}
+          hasLeverage={market && hasLeverage(market)}
+          swapRequired={swapRequired}
         />
       }
     >
-      <Stack divider={<InputDivider />}>
-        {fromCollateral && (
-          <LoanFormTokenInput
-            label={t`From collateral (position)`}
-            token={collateralToken}
-            blockchainId={network.id}
-            name="stateCollateral"
-            form={form}
-            testId="repay-state-collateral-input"
-            network={network}
+      <LoanFormTokenInput
+        label={selectedToken === borrowToken ? t`Borrowed` : t`Collateral`}
+        token={selectedToken}
+        blockchainId={network.id}
+        name={selectedField}
+        form={form}
+        max={max[selectedField]}
+        {...(selectedField === 'stateCollateral' && {
+          positionBalance: { position: max.stateCollateral, tooltip: t`Current collateral in position` },
+        })}
+        testId={'repay-input-' + selectedField}
+        network={network}
+        tokenSelector={
+          <TokenSelector selectedToken={token} title={t`Select Repay Token`} {...useModalState()}>
+            <RepayTokenList
+              market={market}
+              network={network}
+              stateCollateral={max.stateCollateral}
+              onToken={onToken}
+              tokens={tokens}
+            />
+          </TokenSelector>
+        }
+        message={
+          <Balance
+            prefix={t`Max:`}
+            tooltip={t`Max available to repay`}
+            symbol={selectedToken?.symbol}
+            balance={max[selectedField].data}
+            loading={max[selectedField].isLoading}
+            onClick={() => {
+              form.setValue(selectedField, max[selectedField].data, setValueOptions)
+              void form.trigger(max[selectedField].field) // re-validate max
+            }}
+            buttonTestId="borrow-set-debt-to-max"
           />
-        )}
-        {fromWallet && (
-          <LoanFormTokenInput
-            label={t`From collateral (wallet)`}
-            token={collateralToken}
-            blockchainId={network.id}
-            name="userCollateral"
-            form={form}
-            testId="repay-user-collateral-input"
-            network={network}
-          />
-        )}
-        {fromBorrowed && (
-          <LoanFormTokenInput
-            label={t`From borrowed token`}
-            token={borrowToken}
-            blockchainId={network.id}
-            name="userBorrowed"
-            form={form}
-            testId="repay-user-borrowed-input"
-            network={network}
-          />
-        )}
-      </Stack>
-
+        }
+      />
+      <HighPriceImpactAlert priceImpact={priceImpact.data} isLoading={priceImpact.isLoading} />
       <Button type="submit" loading={isPending || !market} disabled={isDisabled} data-testid="repay-submit-button">
-        {isPending ? t`Processing...` : isFull.data ? t`Repay full` : t`Repay`}
+        {isPending
+          ? t`Processing...`
+          : joinButtonText(
+              isApproved?.data === false && t`Approve`,
+              t`Repay`,
+              isFull.data && t`Close Position`,
+              isFull.data === false && selectedField === 'stateCollateral' && t`from Position`,
+            )}
       </Button>
 
       <LoanFormAlerts
-        isSuccess={action.isSuccess}
-        error={action.error}
+        isSuccess={isRepaid}
+        error={repayError}
         txHash={txHash}
         formErrors={formErrors}
         network={network}
-        handledErrors={['stateCollateral', 'userCollateral', 'userBorrowed']}
+        handledErrors={notFalsy(selectedField)}
         successTitle={t`Loan repaid`}
       />
     </Form>

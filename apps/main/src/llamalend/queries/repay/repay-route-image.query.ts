@@ -1,8 +1,7 @@
-import { getLlamaMarket } from '@/llamalend/llama.utils'
-import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
-import { type RepayFromCollateralParams, type RepayFromCollateralQuery } from '../validation/manage-loan.types'
-import { repayFromCollateralValidationSuite } from '../validation/manage-loan.validation'
+import { type RepayParams, type RepayQuery } from '../validation/manage-loan.types'
+import { repayValidationSuite } from '../validation/manage-loan.validation'
+import { getRepayImplementation } from './repay-query.helpers'
 
 export const { useQuery: useRepayRouteImage } = queryFactory({
   queryKey: ({
@@ -12,7 +11,7 @@ export const { useQuery: useRepayRouteImage } = queryFactory({
     userCollateral = '0',
     userBorrowed = '0',
     userAddress,
-  }: RepayFromCollateralParams) =>
+  }: RepayParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
       'repayRouteImage',
@@ -20,16 +19,17 @@ export const { useQuery: useRepayRouteImage } = queryFactory({
       { userCollateral },
       { userBorrowed },
     ] as const,
-  queryFn: async ({ marketId, stateCollateral, userCollateral }: RepayFromCollateralQuery) => {
-    const market = getLlamaMarket(marketId)
-    if (market instanceof LendMarketTemplate) {
-      return await market.leverage.repayRouteImage(stateCollateral, userCollateral)
+  queryFn: async ({ marketId, stateCollateral, userCollateral, userBorrowed }: RepayQuery) => {
+    const [type, impl] = getRepayImplementation(marketId, { userCollateral, stateCollateral, userBorrowed })
+    switch (type) {
+      case 'V1':
+      case 'V2':
+        return await impl.repayRouteImage(stateCollateral, userCollateral)
+      case 'deleverage':
+      case 'unleveraged':
+        throw new Error('repayRouteImage is not supported for deleverage or unleveraged repay')
     }
-    if (market.leverageV2.hasLeverage()) {
-      return await market.leverageV2.repayRouteImage(stateCollateral, userCollateral)
-    }
-    return null
   },
   staleTime: '1m',
-  validationSuite: repayFromCollateralValidationSuite,
+  validationSuite: repayValidationSuite({ leverageRequired: true }),
 })

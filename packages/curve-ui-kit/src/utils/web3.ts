@@ -41,7 +41,10 @@ export async function waitForApproval({
   timeout?: number
 }) {
   if (await isApproved()) return
-  await Promise.all((await onApprove()).map((hash) => waitForTransactionReceipt(config, { hash })))
-  notify(message, 'success')
-  await waitFor(isApproved, { timeout })
+  const approvalHashes = await onApprove()
+  if (approvalHashes.length > 0) {
+    await Promise.all(approvalHashes.map((hash) => waitForTransactionReceipt(config, { hash })))
+    notify(message, 'success')
+    await waitFor(isApproved, { timeout })
+  }
 }

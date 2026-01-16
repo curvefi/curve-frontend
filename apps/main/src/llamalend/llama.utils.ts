@@ -24,9 +24,25 @@ export const getLlamaMarket = (id: string, lib = requireLib('llamaApi')): LlamaM
  * - Mint Market and either its `leverageZap` is not the zero address or its `leverageV2` property has leverage
  */
 export const hasLeverage = (market: LlamaMarketTemplate) =>
-  market instanceof LendMarketTemplate
-    ? market.leverage.hasLeverage()
-    : market.leverageZap !== zeroAddress || market.leverageV2.hasLeverage()
+  hasV1Leverage(market) || (market instanceof MintMarketTemplate && hasV2Leverage(market))
+
+export const hasV1Leverage = (market: LlamaMarketTemplate) =>
+  market instanceof LendMarketTemplate ? market.leverage.hasLeverage() : market?.leverageZap !== zeroAddress
+
+export const hasV2Leverage = (market: MintMarketTemplate) => !!market?.leverageV2.hasLeverage()
+
+export const hasV1Deleverage = (market: LlamaMarketTemplate) =>
+  market instanceof LendMarketTemplate ? market.leverage.hasLeverage() : market?.deleverageZap !== zeroAddress
+
+// hasV2Leverage works for deleverage as well
+export const hasDeleverage = (market: LlamaMarketTemplate) =>
+  hasV1Deleverage(market) || (market instanceof MintMarketTemplate && hasV2Leverage(market))
+
+export const canRepayFromStateCollateral = (market: LlamaMarketTemplate) =>
+  market instanceof MintMarketTemplate ? hasDeleverage(market) : hasLeverage(market)
+
+export const canRepayFromUserCollateral = (market: LlamaMarketTemplate) =>
+  market instanceof MintMarketTemplate ? hasV2Leverage(market) : hasLeverage(market)
 
 const getBorrowSymbol = (market: LlamaMarketTemplate) =>
   market instanceof MintMarketTemplate ? CRVUSD.symbol : market.borrowed_token.symbol

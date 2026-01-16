@@ -7,6 +7,7 @@ export const {
   useQuery: useLoanExists,
   refetchQuery: refetchLoanExists,
   getQueryData: getLoanExists,
+  invalidate: invalidateLoanExists,
 } = queryFactory({
   queryKey: (params: UserMarketParams) => [...rootKeys.userMarket(params), 'market-user-loan-exists'] as const,
   queryFn: async ({ marketId, userAddress }: UserMarketQuery) => {

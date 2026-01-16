@@ -4,7 +4,8 @@ import { Blues, Greens, Reds } from '@ui-kit/themes/design/0_primitives'
 export const calculateRangeToLiquidation = (upperLiquidationPrice: number, oraclePrice: number) =>
   ((oraclePrice - upperLiquidationPrice) / upperLiquidationPrice) * 100
 
-export const getHealthValueColor = (health: number, { design: { Color, Text } }: Theme) => {
+export const getHealthValueColor = (health: number, { design: { Color, Text } }: Theme, isFullRepay?: boolean) => {
+  if (isFullRepay) return Color.Secondary[600]
   if (health < 5) return Text.TextColors.Feedback.Error
   if (health < 15) return Text.TextColors.Feedback.Warning
   if (health < 50) return Color.Secondary[500]
