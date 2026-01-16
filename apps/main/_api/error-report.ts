@@ -11,7 +11,7 @@ const sendJson = (response: ServerResponse, statusCode: number, payload: unknown
  * API handler to receive error reports submitted from the UI.
  * For now, it just logs them to the console on the server-side.
  */
-export async function handler(request: IncomingMessage, response: ServerResponse) {
+export default async function handler(request: IncomingMessage, response: ServerResponse) {
   if (request.method !== 'POST') {
     return sendJson(response, 405, { error: 'Method Not Allowed' })
   }

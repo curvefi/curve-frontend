@@ -71,6 +71,17 @@ export const createComponents = (
       label: { marginLeft: SizesAndSpaces.Spacing.xs.desktop, ...typography.headingXsBold },
     },
   },
+  MuiFormHelperText: {
+    styleOverrides: {
+      root: {
+        margin: 0,
+        paddingTop: SizesAndSpaces.Spacing.xs.desktop,
+        color: design.Text.TextColors.Tertiary,
+        ...typography.bodyXsRegular,
+      },
+    },
+  },
+  MuiFormLabel: { styleOverrides: { root: { color: design.Text.TextColors.Secondary, ...typography.bodyXsRegular } } },
   MuiIconButton: defineMuiIconButton(design),
   MuiLinearProgress: {
     styleOverrides: {

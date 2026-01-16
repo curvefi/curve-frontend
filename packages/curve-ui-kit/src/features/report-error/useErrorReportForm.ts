@@ -1,5 +1,4 @@
 import { useForm } from 'react-hook-form'
-import { useConnection } from 'wagmi'
 import { fetchJson } from '@curvefi/prices-api/fetch'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model/form'
 
@@ -20,10 +19,9 @@ export type ErrorReportFormValues = {
 }
 
 export const useErrorReportForm = ({ error, ...context }: ErrorContext) => {
-  const { address: userAddress } = useConnection()
   const form = useForm<ErrorReportFormValues>({
     ...formDefaultOptions,
-    defaultValues: { address: userAddress ?? '', contactMethod: 'email', contact: '', description: '' },
+    defaultValues: { address: '', contactMethod: 'email', contact: '', description: '' },
   })
   return {
     form,

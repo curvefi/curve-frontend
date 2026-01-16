@@ -62,6 +62,9 @@ export type ModalDialogProps = {
 
   /** Custom styles for the modal dialog */
   sx?: SxProps
+
+  /** Predefined width for the modal dialog */
+  width?: keyof typeof modalWidth
 }
 
 export const ModalDialog = ({
@@ -75,6 +78,7 @@ export const ModalDialog = ({
   footer,
   compact,
   maxHeight = { mobile: modalHeight.sm, desktop: modalHeight.md },
+  width = 'md',
   sx,
 }: ModalDialogProps) => (
   <Dialog
@@ -94,7 +98,7 @@ export const ModalDialog = ({
       ...sx,
     }}
   >
-    <Card sx={{ width: { tablet: modalWidth.md, mobile: '100dvw' }, display: 'flex', flexDirection: 'column' }}>
+    <Card sx={{ width: { tablet: modalWidth[width], mobile: '100dvw' }, display: 'flex', flexDirection: 'column' }}>
       <CardHeader
         action={
           onClose && (

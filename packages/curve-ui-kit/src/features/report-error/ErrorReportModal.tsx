@@ -1,4 +1,5 @@
-import type { MouseEvent } from 'react'
+import { type MouseEvent, useEffect } from 'react'
+import { useConnection } from 'wagmi'
 import Button from '@mui/material/Button'
 import FormControl from '@mui/material/FormControl'
 import FormHelperText from '@mui/material/FormHelperText'
@@ -11,6 +12,7 @@ import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
 import { ModalDialog } from '@ui-kit/shared/ui/ModalDialog'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { setValueOptions, useFormErrors } from '@ui-kit/utils/react-form.utils'
 import { type ErrorContext, type ContactMethod, useErrorReportForm } from './useErrorReportForm'
 
 const { Spacing } = SizesAndSpaces
@@ -27,12 +29,21 @@ type ErrorReportModalProps = {
 }
 
 export const ErrorReportModal = ({ open, onClose, context }: ErrorReportModalProps) => {
+  const { address: userAddress } = useConnection()
   const {
     form,
     values: { address, contact, contactMethod, description },
     onSubmit,
   } = useErrorReportForm(context)
   const { label, placeholder } = contactCopyByMethod[contactMethod]
+  const errors = useFormErrors(form.formState)
+  useEffect(() => {
+    // reset form when modal is closed
+    if (open) return () => form.reset()
+  }, [form, open])
+  useEffect(() => {
+    if (open && userAddress) form.setValue('address', userAddress, setValueOptions)
+  }, [form, open])
   return (
     <ModalDialog
       open={open}
@@ -41,13 +52,20 @@ export const ErrorReportModal = ({ open, onClose, context }: ErrorReportModalPro
       titleColor="textSecondary"
       compact
       footer={
-        <Button fullWidth onClick={onSubmit} data-testid="submit-error-report-submit" variant="contained">
+        <Button
+          fullWidth
+          onClick={onSubmit}
+          data-testid="submit-error-report-submit"
+          variant="contained"
+          disabled={errors.length > 0}
+        >
           {t`Submit report`}
         </Button>
       }
+      width="xl"
     >
       <Stack data-testid="submit-error-report-modal" gap={Spacing.md} sx={{ overflowY: 'auto', height: '100%' }}>
-        <Stack gap={Spacing.xxs}>
+        <Stack>
           <Typography variant="bodyMBold" color="text.primary">
             {t`Seems like there's been an error T_T.`}
           </Typography>
