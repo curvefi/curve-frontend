@@ -37,7 +37,7 @@ export function parseRouterRoutes(
         try {
           pool = getPool(route.poolId)
         } catch (error) {
-          log('routerBestRouteAndOutput missing poolName', LogStatus.ERROR, route.poolId)
+          log('routerBestRouteAndOutput missing poolName', LogStatus.ERROR, route.poolId, error.message)
         }
       }
 

@@ -2,11 +2,11 @@ import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import { styled } from 'styled-components'
 import { DEFAULT_HEALTH_MODE } from '@/llamalend/constants'
 import { MarketParameters } from '@/llamalend/features/market-parameters/MarketParameters'
-import AlertFormError from '@/loan/components/AlertFormError'
-import DialogHealthWarning from '@/loan/components/DialogHealthWarning'
-import LoanFormConnect from '@/loan/components/LoanFormConnect'
-import DetailInfo from '@/loan/components/PageMintMarket/LoanFormCreate/components/DetailInfo'
-import DialogHealthLeverageWarning from '@/loan/components/PageMintMarket/LoanFormCreate/components/DialogHealthLeverageWarning'
+import { AlertFormError } from '@/loan/components/AlertFormError'
+import { DialogHealthWarning } from '@/loan/components/DialogHealthWarning'
+import { LoanFormConnect } from '@/loan/components/LoanFormConnect'
+import { DetailInfoComp as DetailInfo } from '@/loan/components/PageMintMarket/LoanFormCreate/components/DetailInfo'
+import { DialogHealthLeverageWarning } from '@/loan/components/PageMintMarket/LoanFormCreate/components/DialogHealthLeverageWarning'
 import { StyledInpChip } from '@/loan/components/PageMintMarket/styles'
 import type {
   CreateFormStatus,
@@ -17,24 +17,24 @@ import type {
 } from '@/loan/components/PageMintMarket/types'
 import { DEFAULT_FORM_EST_GAS } from '@/loan/components/PageMintMarket/utils'
 import { DEFAULT_WALLET_BALANCES } from '@/loan/constants'
-import useCollateralAlert from '@/loan/hooks/useCollateralAlert'
-import networks from '@/loan/networks'
+import { useCollateralAlert } from '@/loan/hooks/useCollateralAlert'
+import { networks } from '@/loan/networks'
 import { DEFAULT_FORM_STATUS } from '@/loan/store/createLoanCollateralIncreaseSlice'
-import useStore from '@/loan/store/useStore'
+import { useStore } from '@/loan/store/useStore'
 import { LlamaApi, Llamma } from '@/loan/types/loan.types'
 import { curveProps } from '@/loan/utils/helpers'
 import { hasDeleverage } from '@/loan/utils/leverage'
 import { getStepStatus, getTokenName } from '@/loan/utils/utilsLoan'
 import { getMintMarketPathname } from '@/loan/utils/utilsRouter'
 import type { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
-import Accordion from '@ui/Accordion'
-import AlertBox from '@ui/AlertBox'
-import Box from '@ui/Box'
-import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
-import LinkButton from '@ui/LinkButton'
-import Stepper from '@ui/Stepper/Stepper'
+import { Accordion } from '@ui/Accordion'
+import { AlertBox } from '@ui/AlertBox'
+import { Box } from '@ui/Box'
+import { InputDebounced, InputMaxBtn, InputProvider } from '@ui/InputComp'
+import { LinkButton } from '@ui/LinkButton'
+import { Stepper } from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
-import TxInfoBar from '@ui/TxInfoBar'
+import { TxInfoBar } from '@ui/TxInfoBar'
 import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify, useCurve } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
@@ -99,7 +99,7 @@ const useFetchInitial = ({
   return fetchInitial
 }
 
-const LoanCreate = ({
+export const LoanCreate = ({
   isLeverage = false,
   curve,
   isReady,
@@ -538,5 +538,3 @@ const LoanCreate = ({
 const StyledInputProvider = styled(InputProvider)`
   padding: var(--spacing-1) var(--spacing-2);
 `
-
-export default LoanCreate

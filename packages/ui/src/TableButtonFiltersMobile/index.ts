@@ -1,1 +1,1 @@
-export { default } from './TableButtonFiltersMobile'
+export { TableButtonFiltersMobile } from './TableButtonFiltersMobile'

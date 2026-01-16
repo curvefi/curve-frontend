@@ -1,6 +1,13 @@
 import { forwardRef } from 'react'
 import IconButton from '@mui/material/IconButton'
+import { keyframes } from '@mui/material/styles'
 import SvgIcon from '@mui/material/SvgIcon'
+import { Duration, Transition } from '@ui-kit/themes/design/0_primitives'
+
+const reloadSpin = keyframes`
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+`
 
 /**
  * A button for controlling the DataTable.
@@ -10,11 +17,17 @@ export const TableButton = forwardRef<
   {
     onClick: () => void
     active?: boolean
-    loading?: boolean
+    rotateIcon?: boolean
     testId?: string
     icon: typeof SvgIcon
   }
->(function TableButton({ active, icon: Icon, testId, ...rest }, ref) {
+>(function TableButton({ active, icon: Icon, rotateIcon, testId, ...rest }, ref) {
+  const iconProps = rotateIcon && {
+    sx: {
+      animation: `${reloadSpin} ${Transition} ${Duration.LoadingAnimation}ms infinite`,
+      transformOrigin: 'center',
+    },
+  }
   return (
     <IconButton
       ref={ref}
@@ -26,7 +39,7 @@ export const TableButton = forwardRef<
       })}
       {...rest}
     >
-      <Icon />
+      <Icon {...iconProps} />
     </IconButton>
   )
 })

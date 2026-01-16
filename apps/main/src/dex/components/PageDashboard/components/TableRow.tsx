@@ -1,17 +1,17 @@
 import { useRef } from 'react'
 import { styled } from 'styled-components'
-import TableCellBalances from '@/dex/components/PageDashboard/components/TableCellBalances'
-import TableCellClaimables from '@/dex/components/PageDashboard/components/TableCellClaimables'
-import TableCellProfit from '@/dex/components/PageDashboard/components/TableCellProfit'
-import TableCellRewards from '@/dex/components/PageDashboard/components/TableCellRewards'
+import { TableCellBalances } from '@/dex/components/PageDashboard/components/TableCellBalances'
+import { TableCellClaimables } from '@/dex/components/PageDashboard/components/TableCellClaimables'
+import { TableCellProfit } from '@/dex/components/PageDashboard/components/TableCellProfit'
+import { TableCellRewards } from '@/dex/components/PageDashboard/components/TableCellRewards'
 import type { DashboardTableRowProps } from '@/dex/components/PageDashboard/types'
 import { SORT_ID } from '@/dex/components/PageDashboard/utils'
-import TableCellRewardsOthers from '@/dex/components/PagePoolList/components/TableCellRewardsOthers'
-import PoolLabel from '@/dex/components/PoolLabel'
+import { TableCellRewardsOthers } from '@/dex/components/PagePoolList/components/TableCellRewardsOthers'
+import { PoolLabel } from '@/dex/components/PoolLabel'
 import { Tr, Td } from '@ui/Table'
-import useIntersectionObserver from '@ui-kit/hooks/useIntersectionObserver'
+import { useIntersectionObserver } from '@ui-kit/hooks/useIntersectionObserver'
 
-const TableRow = ({
+export const TableRow = ({
   isLite,
   blockchainId,
   formValues: { sortBy },
@@ -69,5 +69,3 @@ export const DetailText = styled.span`
 export const Info = styled.div`
   white-space: nowrap;
 `
-
-export default TableRow

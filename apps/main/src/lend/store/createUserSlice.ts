@@ -1,6 +1,6 @@
 import lodash from 'lodash'
 import type { StoreApi } from 'zustand'
-import apiLending, { helpers } from '@/lend/lib/apiLending'
+import { helpers, apiLending } from '@/lend/lib/apiLending'
 import type { State } from '@/lend/store/useStore'
 import {
   Api,
@@ -48,7 +48,7 @@ const DEFAULT_STATE: SliceState = {
   marketsBalancesMapper: {},
 }
 
-const createUserSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): UserSlice => ({
+export const createUserSlice = (_set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): UserSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 
@@ -165,5 +165,3 @@ const createUserSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>[
     },
   },
 })
-
-export default createUserSlice

@@ -1,11 +1,19 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { styled } from 'styled-components'
-import type { AlertBoxProps } from 'ui/src/AlertBox/types'
-import Box from 'ui/src/Box'
-import Icon from 'ui/src/Icon'
-import IconButton from 'ui/src/IconButton'
+import type { AlertBoxProps } from '@ui/AlertBox/types'
+import { Box } from '@ui/Box'
+import { Icon } from '@ui/Icon'
+import { IconButton } from '@ui/IconButton'
 
-const AlertBox = ({ className, alertType, children, title, limitHeight, handleBtnClose, ...props }: AlertBoxProps) => {
+export const AlertBox = ({
+  className,
+  alertType,
+  children,
+  title,
+  limitHeight,
+  handleBtnClose,
+  ...props
+}: AlertBoxProps) => {
   const [enabledHeightToggle, setEnabledHeightToggle] = useState(false)
   const [showFullHeight, setShowFullHeight] = useState(false)
   const IconComp =
@@ -21,6 +29,7 @@ const AlertBox = ({ className, alertType, children, title, limitHeight, handleBt
 
   useEffect(() => {
     if (typeof children === 'string' && children.length > 200) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setEnabledHeightToggle(true)
     }
   }, [children])
@@ -165,5 +174,3 @@ const AdjustHeightButton = styled(IconButton)`
   gap: var(--spacing-1);
   pointer-events: auto;
 `
-
-export default AlertBox

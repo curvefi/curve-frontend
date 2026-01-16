@@ -1,8 +1,8 @@
 import { Dispatch, SetStateAction } from 'react'
 import { styled } from 'styled-components'
 import type { HealthMode } from '@/llamalend/llamalend.types'
-import AlertBox from '@ui/AlertBox'
-import Checkbox from '@ui/Checkbox'
+import { AlertBox } from '@ui/AlertBox'
+import { Checkbox } from '@ui/Checkbox'
 import { t } from '@ui-kit/lib/i18n'
 
 interface Props extends HealthMode {
@@ -10,7 +10,7 @@ interface Props extends HealthMode {
   setConfirmed: Dispatch<SetStateAction<boolean>>
 }
 
-function DialogHealthWarning({ confirmed, warningTitle, warning, setConfirmed }: Props) {
+export function DialogHealthWarning({ confirmed, warningTitle, warning, setConfirmed }: Props) {
   const handleInpChange = (isConfirmed: boolean) => {
     setConfirmed(isConfirmed)
   }
@@ -33,5 +33,3 @@ function DialogHealthWarning({ confirmed, warningTitle, warning, setConfirmed }:
 const StyledCheckbox = styled(Checkbox)`
   margin-top: 1rem;
 `
-
-export default DialogHealthWarning

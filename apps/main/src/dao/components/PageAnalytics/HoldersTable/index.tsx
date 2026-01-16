@@ -1,18 +1,18 @@
 import { styled } from 'styled-components'
-import PaginatedTable, { Column } from '@/dao/components/PaginatedTable'
+import { Column, PaginatedTable } from '@/dao/components/PaginatedTable'
 import { TableRowWrapper, TableData, TableDataLink } from '@/dao/components/PaginatedTable/TableRow'
 import { TOP_HOLDERS } from '@/dao/constants'
-import useStore from '@/dao/store/useStore'
+import { useStore } from '@/dao/store/useStore'
 import type { AllHoldersSortBy } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils'
 import type { Locker } from '@curvefi/prices-api/dao'
-import Box from '@ui/Box'
+import { Box } from '@ui/Box'
 import { formatNumber, formatDate } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
 import { shortenAddress } from '@ui-kit/utils'
 
-const TopHoldersTable = () => {
+export const TopHoldersTable = () => {
   const veCrvHolders = useStore((state) => state.analytics.veCrvHolders)
   const allHoldersSortBy = useStore((state) => state.analytics.allHoldersSortBy)
   const setAllHoldersSortBy = useStore((state) => state.analytics.setAllHoldersSortBy)
@@ -87,5 +87,3 @@ const Wrapper = styled(Box)`
 const StyledTableDataLink = styled(TableDataLink)`
   text-decoration: none;
 `
-
-export default TopHoldersTable

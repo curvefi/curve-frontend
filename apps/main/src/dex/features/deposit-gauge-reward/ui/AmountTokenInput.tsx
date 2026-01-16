@@ -2,13 +2,13 @@ import { MouseEvent, useCallback, useMemo } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { Address, isAddressEqual } from 'viem'
 import { ethAddress } from 'viem'
+import { useConnection } from 'wagmi'
 import {
   useDepositRewardApproveIsMutating,
   useDepositRewardIsMutating,
   useGaugeRewardsDistributors,
 } from '@/dex/entities/gauge'
 import { useNetworkByChain } from '@/dex/entities/networks'
-import { useIsSignerConnected, useSignerAddress, useTokensBalances } from '@/dex/entities/signer'
 import { type DepositRewardFormValues, DepositRewardStep } from '@/dex/features/deposit-gauge-reward/types'
 import {
   FlexItemAmount,
@@ -16,14 +16,16 @@ import {
   FlexItemToken,
   StyledInputProvider,
 } from '@/dex/features/deposit-gauge-reward/ui/styled'
-import useTokensMapper from '@/dex/hooks/useTokensMapper'
-import useStore from '@/dex/store/useStore'
+import { useTokensMapper } from '@/dex/hooks/useTokensMapper'
+import { useStore } from '@/dex/store/useStore'
 import { ChainId, Token } from '@/dex/types/main.types'
 import { toTokenOption } from '@/dex/utils'
 import { InputDebounced, InputMaxBtn } from '@ui/InputComp'
 import { FlexContainer } from '@ui/styled-containers'
 import { formatNumber } from '@ui/utils'
-import { type TokenOption, TokenSelector } from '@ui-kit/features/select-token'
+import { TokenList, type TokenOption, TokenSelector } from '@ui-kit/features/select-token'
+import { useSwitch } from '@ui-kit/hooks/useSwitch'
+import { useTokenBalances } from '@ui-kit/hooks/useTokenBalance'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRates } from '@ui-kit/lib/model/entities/token-usd-rate'
 
@@ -33,18 +35,13 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
   const amount = watch('amount')
   const epoch = watch('epoch')
 
-  const { data: signerAddress } = useSignerAddress()
-  const { data: haveSigner } = useIsSignerConnected()
+  const [isOpen, openModal, closeModal] = useSwitch()
+
+  const { address: signerAddress } = useConnection()
   const isMaxLoading = useStore((state) => state.quickSwap.isMaxLoading)
   const {
     data: { networkId },
   } = useNetworkByChain({ chainId })
-
-  const userBalancesMapper = useStore((state) => state.userBalances.userBalancesMapper)
-  const userTokens = Object.entries(userBalancesMapper)
-    .filter(([, balance]) => parseFloat(balance ?? '0') > 0)
-    .map(([address]) => address)
-  const { data: tokenPrices } = useTokenUsdRates({ chainId, tokenAddresses: userTokens })
 
   const { tokensMapper } = useTokensMapper(chainId)
 
@@ -55,11 +52,6 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
 
   const isMutatingDepositRewardApprove = useDepositRewardApproveIsMutating({ chainId, poolId, rewardTokenId, amount })
   const isMutatingDepositReward = useDepositRewardIsMutating({ chainId, poolId, rewardTokenId, amount, epoch })
-
-  const {
-    data: [tokenBalance],
-    isLoading: isTokenBalancesLoading,
-  } = useTokensBalances([rewardTokenId])
 
   const filteredTokens = useMemo<TokenOption[]>(() => {
     if (isPendingRewardDistributors || !rewardDistributors || !signerAddress) return []
@@ -89,6 +81,19 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
   }, [isPendingRewardDistributors, rewardDistributors, signerAddress, tokensMapper, getValues, networkId, setValue])
 
   const token = filteredTokens.find((x) => x.address === rewardTokenId)
+  const tokenAddresses = filteredTokens.map((t) => t.address)
+
+  const { data: tokenPrices } = useTokenUsdRates({ chainId, tokenAddresses })
+  const { data: tokenBalances, isLoading: isTokenBalancesLoading } = useTokenBalances({
+    chainId,
+    userAddress: signerAddress,
+    tokenAddresses,
+  })
+
+  const rewardTokenBalance = useMemo(
+    () => rewardTokenId && tokenBalances && tokenBalances[rewardTokenId],
+    [rewardTokenId, tokenBalances],
+  )
 
   const onChangeAmount = useCallback(
     (amount: string) => {
@@ -109,10 +114,10 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
   const onMaxButtonClick = useCallback(
     (e?: MouseEvent<HTMLButtonElement>) => {
       e?.preventDefault()
-      if (!tokenBalance) return
-      setValue('amount', tokenBalance, { shouldValidate: true })
+      if (!rewardTokenBalance) return
+      setValue('amount', rewardTokenBalance, { shouldValidate: true })
     },
-    [tokenBalance, setValue],
+    [rewardTokenBalance, setValue],
   )
 
   const isDisabled = isMutatingDepositReward || isMutatingDepositRewardApprove
@@ -129,10 +134,10 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
             id="deposit-amount"
             type="number"
             labelProps={
-              haveSigner && {
+              signerAddress && {
                 label: t`Avail.`,
                 descriptionLoading: isTokenBalancesLoading,
-                description: formatNumber(tokenBalance, { decimals: 5 }),
+                description: formatNumber(rewardTokenBalance),
               }
             }
             testId="deposit-amount"
@@ -152,12 +157,18 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
         <FlexItemToken>
           <TokenSelector
             selectedToken={token}
-            tokens={filteredTokens}
             disabled={isDisabled}
-            balances={userBalancesMapper}
-            tokenPrices={tokenPrices}
-            onToken={onChangeToken}
-          />
+            isOpen={!!isOpen}
+            onOpen={openModal}
+            onClose={closeModal}
+          >
+            <TokenList
+              tokens={filteredTokens}
+              balances={tokenBalances}
+              tokenPrices={tokenPrices}
+              onToken={onChangeToken}
+            />
+          </TokenSelector>
         </FlexItemToken>
       </StyledInputProvider>
     </FlexContainer>

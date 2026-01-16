@@ -12,7 +12,7 @@ const { Spacing } = SizesAndSpaces
 
 const CRVUSD_OPTION = { symbol: 'crvUSD', position: 'suffix' as const, abbreviate: true }
 
-const StatsStack = () => {
+export const StatsStack = () => {
   const { data: yieldData, isFetching: yieldIsFetching } = useScrvUsdYield({ timeOption: '1Y' as TimeOption })
   const { data: revenueData, isFetching: revenueIsFetching } = useScrvUsdRevenue({})
   const { data: statisticsData, isFetching: statisticsIsFetching } = useScrvUsdStatistics({})
@@ -67,5 +67,3 @@ const StatsStack = () => {
     </Grid>
   )
 }
-
-export default StatsStack

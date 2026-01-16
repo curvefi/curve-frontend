@@ -43,7 +43,10 @@ const DEFAULT_STATE: SliceState = {
   loading: true,
 }
 
-const createTokensSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): TokensSlice => ({
+export const createTokensSlice = (
+  _set: StoreApi<State>['setState'],
+  get: StoreApi<State>['getState'],
+): TokensSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 
@@ -163,5 +166,3 @@ export function _getDefaultTokenMapper(curve: CurveApi) {
     [wrappedAddress]: { ...DEFAULT_TOKEN, symbol: wrappedSymbol, address: wrappedAddress },
   }
 }
-
-export default createTokensSlice

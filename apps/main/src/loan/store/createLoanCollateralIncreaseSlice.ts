@@ -8,7 +8,7 @@ import {
   DEFAULT_FORM_EST_GAS,
   DEFAULT_FORM_STATUS as FORM_STATUS,
 } from '@/loan/components/PageMintMarket/utils'
-import networks from '@/loan/networks'
+import { networks } from '@/loan/networks'
 import type { State } from '@/loan/store/useStore'
 import { ChainId, LlamaApi, Llamma } from '@/loan/types/loan.types'
 import { useWallet } from '@ui-kit/features/connect-wallet'
@@ -74,7 +74,7 @@ const DEFAULT_STATE: SliceState = {
   formValues: DEFAULT_FORM_VALUES,
 }
 
-const createLoanCollateralIncrease = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
+export const createLoanCollateralIncrease = (_set: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
     fetchEstGasApproval: async (activeKey: string, chainId: ChainId, llamma: Llamma, formValues: FormValues) => {
@@ -223,8 +223,6 @@ const createLoanCollateralIncrease = (set: StoreApi<State>['setState'], get: Sto
     },
   },
 })
-
-export default createLoanCollateralIncrease
 
 export function getCollateralIncreaseActiveKey(llamma: Llamma, collateral: string) {
   return `${llamma.collateralSymbol}-${collateral}`

@@ -1,12 +1,12 @@
 import { useCallback } from 'react'
-import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
+import { InputDebounced, InputMaxBtn, InputProvider } from '@ui/InputComp'
 import { formatNumber } from '@ui/utils'
 import { useLegacyTokenInput } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { decimal, type Decimal } from '@ui-kit/utils'
 
-const FieldLpToken = ({
+export const FieldLpToken = ({
   amount,
   balance,
   balanceLoading,
@@ -65,5 +65,3 @@ const FieldLpToken = ({
     />
   )
 }
-
-export default FieldLpToken

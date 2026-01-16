@@ -1,10 +1,10 @@
 import { ReactNode } from 'react'
 import { styled } from 'styled-components'
-import Box from '@ui/Box'
-import Icon from '@ui/Icon'
+import { Box } from '@ui/Box'
+import { Icon } from '@ui/Icon'
 import { breakpoints } from '@ui/utils/responsive'
 
-const ChartTooltip = ({ children }: { children: ReactNode }) => (
+export const ChartTooltip = ({ children }: { children: ReactNode }) => (
   <Wrapper grid gridRowGap={2}>
     {children}
   </Wrapper>
@@ -37,5 +37,3 @@ export const TipIcon = styled(Icon)`
   position: relative;
   left: -2px;
 `
-
-export default ChartTooltip

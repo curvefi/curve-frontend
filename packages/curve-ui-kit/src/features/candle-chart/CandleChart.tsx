@@ -94,7 +94,7 @@ type Props = {
   latestOraclePrice?: string
 }
 
-const CandleChart = ({
+export const CandleChart = ({
   hideCandleSeriesLabel,
   chartHeight,
   ohlcData,
@@ -450,7 +450,6 @@ const CandleChart = ({
       wickUpColor: memoizedColors.green,
       wickDownColor: memoizedColors.red,
       lastValueVisible: !hideCandleSeriesLabel,
-      priceFormat: getPriceFormatter(ohlcData),
       autoscaleInfoProvider: (original: () => { priceRange: { minValue: number; maxValue: number } | null } | null) => {
         const originalRange = original()
 
@@ -511,7 +510,7 @@ const CandleChart = ({
     return () => {
       candlestickSeriesRef.current = null
     }
-  }, [hideCandleSeriesLabel, memoizedColors.green, memoizedColors.red, ohlcData])
+  }, [hideCandleSeriesLabel, memoizedColors.green, memoizedColors.red])
 
   // Update candlestick colors when theme colors change
   useEffect(() => {
@@ -541,12 +540,13 @@ const CandleChart = ({
   }, [])
 
   // Update OHLC data and price formatting when it changes
-  // Update price formatting when OHLC data changes
   useEffect(() => {
     if (!chartRef.current || !candlestickSeriesRef.current || !ohlcData) return
 
+    const priceFormat = getPriceFormatter(ohlcData)
     candlestickSeriesRef.current.setData(ohlcData)
-    chartRef.current?.applyOptions({ localization: { priceFormatter: getPriceFormatter(ohlcData).formatter } })
+    candlestickSeriesRef.current.applyOptions({ priceFormat })
+    chartRef.current.applyOptions({ localization: { priceFormatter: priceFormat.formatter } })
   }, [ohlcData])
 
   // Update oracle price data when it changes
@@ -764,7 +764,7 @@ const CandleChart = ({
       setIsUnmounting(true)
       debouncedUpdate.cancel()
 
-      wrapperRef?.current && wrapperRef.current.disconnect()
+      if (wrapperRef?.current) wrapperRef.current.disconnect()
     }
   }, [wrapperRef, isUnmounting])
 
@@ -776,5 +776,3 @@ const Container = styled.div`
   width: 100%;
   font-variant-numeric: tabular-nums;
 `
-
-export default CandleChart

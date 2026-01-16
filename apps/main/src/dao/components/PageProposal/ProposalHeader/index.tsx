@@ -1,10 +1,10 @@
 import { Chain } from 'curve-ui-kit/src/utils/network'
 import { styled } from 'styled-components'
-import Countdown from '@/dao/components/Countdown'
-import MetricsComp, { MetricsColumnData } from '@/dao/components/MetricsComp'
-import SmallLabel from '@/dao/components/SmallLabel'
+import { Countdown } from '@/dao/components/Countdown'
+import { MetricsColumnData, MetricsComp } from '@/dao/components/MetricsComp'
+import { SmallLabel } from '@/dao/components/SmallLabel'
 import { ProposalData } from '@/dao/entities/proposals-mapper'
-import networks from '@/dao/networks'
+import { networks } from '@/dao/networks'
 import { ExternalLink } from '@ui/Link'
 import { formatDate, scanTxPath } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
@@ -16,7 +16,7 @@ type ProposalHeaderProps = {
   proposalType: string
 }
 
-const ProposalHeader = ({ proposal, loading, voteId, proposalType }: ProposalHeaderProps) => {
+export const ProposalHeader = ({ proposal, loading, voteId, proposalType }: ProposalHeaderProps) => {
   const { status, executed, timestamp, executionDate, executionTx } = proposal ?? {}
 
   return (
@@ -168,5 +168,3 @@ const StyledExternalLink = styled(ExternalLink)`
   color: inherit;
   text-decoration: none;
 `
-
-export default ProposalHeader

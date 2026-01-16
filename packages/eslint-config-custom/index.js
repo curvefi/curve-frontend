@@ -14,6 +14,7 @@ module.exports = {
     'react/react-in-jsx-scope': 'off', // Not needed in React 17+
     'react/prop-types': 'off', // We use TypeScript
     'unused-imports/no-unused-imports': 'warn',
+    'import/no-default-export': 'error',
 
     // rule to enforce that imports are only allowed from certain paths
     'import/no-restricted-paths': [
@@ -41,24 +42,22 @@ module.exports = {
       },
     ],
     '@typescript-eslint/no-floating-promises': 'warn',
-    '@typescript-eslint/no-unused-vars': 'off',
+    '@typescript-eslint/no-unused-vars': [
+      'error',
+      {
+        args: 'all',
+        argsIgnorePattern: '^_',
+        caughtErrors: 'all',
+        caughtErrorsIgnorePattern: '^_',
+        destructuredArrayIgnorePattern: '^_',
+        varsIgnorePattern: '^_',
+        ignoreRestSiblings: true,
+      },
+    ],
     'react-hooks/rules-of-hooks': 'error',
     'react-hooks/exhaustive-deps': 'warn',
-
-    // todo: remove the following rules
-    'no-empty-pattern': 'off',
-    '@typescript-eslint/no-empty-object-type': 'off',
-    '@typescript-eslint/no-wrapper-object-types': 'off',
-    '@typescript-eslint/no-unused-expressions': 'off',
     '@typescript-eslint/triple-slash-reference': 'off',
     'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
-    'react-hooks/purity': 'off',
-    'react-hooks/preserve-manual-memoization': 'off',
-    'react-hooks/refs': 'off',
-    'react-hooks/immutability': 'off',
-    'react-hooks/static-components': 'off',
-    'react-hooks/set-state-in-effect': 'off',
-    'react-hooks/incompatible-library': 'off',
 
     'no-console': [
       'error', // use console.log only for debugging
@@ -112,5 +111,13 @@ module.exports = {
     '**/storybook-static/**',
     'node_modules/**',
     '**/*.js',
+  ],
+  overrides: [
+    {
+      files: ['**/*.stories.tsx', '**/*.stories.ts', '**/*.d.ts'],
+      rules: {
+        'import/no-default-export': 'off',
+      },
+    },
   ],
 }

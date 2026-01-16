@@ -4,12 +4,12 @@ import type { FormType, VecrvInfo } from '@/dao/components/PageVeCrv/types'
 import { CurveApi } from '@/dao/types/dao.types'
 import { toCalendarDate } from '@/dao/utils/utilsDates'
 import type { DateValue } from '@internationalized/date'
-import Button from '@ui/Button'
-import DatePicker from '@ui/DatePicker'
+import { Button } from '@ui/Button'
+import { DatePicker } from '@ui/DatePicker'
 import { Chip } from '@ui/Typography'
 import { formatDate } from '@ui/utils'
 import { formatNumber } from '@ui/utils/utilsFormat'
-import dayjs from '@ui-kit/lib/dayjs'
+import { dayjs } from '@ui-kit/lib/dayjs'
 import { t } from '@ui-kit/lib/i18n'
 
 const QUICK_ACTIONS: { unit?: dayjs.ManipulateType; value?: number; label: string }[] = [
@@ -21,7 +21,7 @@ const QUICK_ACTIONS: { unit?: dayjs.ManipulateType; value?: number; label: strin
   { label: t`Max` },
 ]
 
-const FieldDatePicker = ({
+export const FieldDatePicker = ({
   curve,
   currUnlockUtcTime,
   calcdUtcDate,
@@ -230,5 +230,3 @@ const QuickActionsWrapper = styled.div`
   gap: var(--spacing-2);
   margin-top: 1rem;
 `
-
-export default FieldDatePicker

@@ -8,7 +8,7 @@ import {
   DEFAULT_FORM_EST_GAS,
   DEFAULT_FORM_STATUS as FORM_STATUS,
 } from '@/loan/components/PageMintMarket/utils'
-import networks from '@/loan/networks'
+import { networks } from '@/loan/networks'
 import type { State } from '@/loan/store/useStore'
 import { ChainId, LlamaApi, Llamma } from '@/loan/types/loan.types'
 import { getTokenName } from '@/loan/utils/utilsLoan'
@@ -73,7 +73,7 @@ const DEFAULT_STATE: SliceState = {
   maxRemovable: '',
 }
 
-const createLoanCollateralDecrease = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
+export const createLoanCollateralDecrease = (_set: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 
@@ -196,7 +196,7 @@ const createLoanCollateralDecrease = (set: StoreApi<State>['setState'], get: Sto
     setStateByKey: <T>(key: StateKey, value: T) => {
       get().setAppStateByKey(sliceKey, key, value)
     },
-    setStateByKeys: <T>(sliceState: Partial<SliceState>) => {
+    setStateByKeys: (sliceState: Partial<SliceState>) => {
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {
@@ -204,8 +204,6 @@ const createLoanCollateralDecrease = (set: StoreApi<State>['setState'], get: Sto
     },
   },
 })
-
-export default createLoanCollateralDecrease
 
 export function getCollateralDecreaseActiveKey(llamma: Llamma, collateral: string) {
   return `${getTokenName(llamma).collateral}-${collateral}`

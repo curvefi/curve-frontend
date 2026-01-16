@@ -1,13 +1,13 @@
 import { styled } from 'styled-components'
-import DetailInfoBorrowRate from '@/loan/components/DetailInfoBorrowRate'
-import DetailInfoEstGas from '@/loan/components/DetailInfoEstimateGas'
-import DetailInfoHealth from '@/loan/components/DetailInfoHealth'
-import DetailInfoLiqRange from '@/loan/components/DetailInfoLiqRange'
-import DetailInfoN from '@/loan/components/DetailInfoN'
+import { DetailInfoBorrowRate } from '@/loan/components/DetailInfoBorrowRate'
+import { DetailInfoEstimateGas as DetailInfoEstGas } from '@/loan/components/DetailInfoEstimateGas'
+import { DetailInfoHealth } from '@/loan/components/DetailInfoHealth'
+import { DetailInfoLiqRange } from '@/loan/components/DetailInfoLiqRange'
+import { DetailInfoN } from '@/loan/components/DetailInfoN'
 import type { CreateFormDetailInfo, FormDetailInfoSharedProps } from '@/loan/components/PageMintMarket/types'
 import { DEFAULT_DETAIL_INFO_LEVERAGE } from '@/loan/components/PageMintMarket/utils'
 import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
-import useStore from '@/loan/store/useStore'
+import { useStore } from '@/loan/store/useStore'
 import { getTokenName } from '@/loan/utils/utilsLoan'
 import { DetailInfo } from '@ui/DetailInfo'
 import { formatNumber } from '@ui/utils'
@@ -17,7 +17,7 @@ import { LiquidationRangeSlider } from '@ui-kit/shared/ui/LiquidationRangeSlider
 import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
 import { DetailInfoTradeRoutes } from './DetailInfoTradeRoutes'
 
-const DetailInfoLeverage = ({
+export const DetailInfoLeverage = ({
   activeKey,
   activeKeyLiqRange,
   activeStep,
@@ -46,47 +46,29 @@ const DetailInfoLeverage = ({
 
   const maxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
 
-  const LeverageDetail = () => (
-    <DetailInfo label={t`Leverage:`} loading={!isReady || detailInfo.loading} loadingSkeleton={[50, 20]}>
-      {isValidFormValues && detailInfo.leverage ? (
-        <strong>{formatNumber(detailInfo.leverage, { maximumFractionDigits: 2 })}x</strong>
-      ) : (
-        '-'
-      )}
-    </DetailInfo>
-  )
-
-  const LeveragePriceImpactDetail = () => (
-    <DetailInfo
-      isBold={isValidFormValues && detailInfo.isHighImpact}
-      variant={isValidFormValues && detailInfo.isHighImpact ? 'error' : undefined}
-      label={isValidFormValues && detailInfo.isHighImpact ? t`High price impact:` : t`Price impact:`}
-      loading={!isReady || detailInfo.loading}
-      loadingSkeleton={[70, 20]}
-    >
-      {isValidFormValues && detailInfo.priceImpact ? (
-        <strong>{formatNumber(detailInfo.priceImpact, { style: 'percent', maximumFractionDigits: 4 })}</strong>
-      ) : (
-        '-'
-      )}
-    </DetailInfo>
-  )
-
-  const advanceModeLeverageDetail = (
-    <DetailInfoLeverageWrapper>
-      <LeverageDetail />
-      <LeveragePriceImpactDetail />
-      <DetailInfoTradeRoutes
+  const leverageDetailInfos = (
+    <>
+      <DetailInfo label={t`Leverage:`} loading={!isReady || detailInfo.loading} loadingSkeleton={[50, 20]}>
+        {isValidFormValues && detailInfo.leverage ? (
+          <strong>{formatNumber(detailInfo.leverage, { maximumFractionDigits: 2 })}x</strong>
+        ) : (
+          '-'
+        )}
+      </DetailInfo>
+      <DetailInfo
+        isBold={isValidFormValues && detailInfo.isHighImpact}
+        variant={isValidFormValues && detailInfo.isHighImpact ? 'error' : undefined}
+        label={isValidFormValues && detailInfo.isHighImpact ? t`High price impact:` : t`Price impact:`}
         loading={!isReady || detailInfo.loading}
-        routes={detailInfo.routeName}
-        input={formValues.debt}
-        inputSymbol={getTokenName(llamma).stablecoin}
-        output={
-          !!detailInfo.collateral && !!formValues.collateral ? +detailInfo.collateral - +formValues.collateral : ''
-        }
-        outputSymbol={llamma?.collateralSymbol ?? ''}
-      />
-    </DetailInfoLeverageWrapper>
+        loadingSkeleton={[70, 20]}
+      >
+        {isValidFormValues && detailInfo.priceImpact ? (
+          <strong>{formatNumber(detailInfo.priceImpact, { style: 'percent', maximumFractionDigits: 4 })}</strong>
+        ) : (
+          '-'
+        )}
+      </DetailInfo>
+    </>
   )
 
   return (
@@ -95,7 +77,23 @@ const DetailInfoLeverage = ({
         <>
           <DetailInfoLiqRange
             {...detailInfo}
-            detailInfoLeverage={advanceModeLeverageDetail}
+            detailInfoLeverage={
+              <DetailInfoLeverageWrapper>
+                {leverageDetailInfos}
+                <DetailInfoTradeRoutes
+                  loading={!isReady || detailInfo.loading}
+                  routes={detailInfo.routeName}
+                  input={formValues.debt}
+                  inputSymbol={getTokenName(llamma).stablecoin}
+                  output={
+                    !!detailInfo.collateral && !!formValues.collateral
+                      ? +detailInfo.collateral - +formValues.collateral
+                      : ''
+                  }
+                  outputSymbol={llamma?.collateralSymbol ?? ''}
+                />
+              </DetailInfoLeverageWrapper>
+            }
             healthMode={haveSigner ? healthMode : null}
             isEditLiqRange={isEditLiqRange}
             isValidFormValues={isValidFormValues}
@@ -118,10 +116,7 @@ const DetailInfoLeverage = ({
           />
         </>
       ) : (
-        <>
-          <LeverageDetail />
-          <LeveragePriceImpactDetail />
-        </>
+        leverageDetailInfos
       )}
       {haveSigner && (
         <DetailInfoHealth
@@ -169,5 +164,3 @@ const DetailInfoLeverageWrapper = styled.div`
   padding: 0.5rem 0.75rem;
   margin-bottom: 1rem;
 `
-
-export default DetailInfoLeverage

@@ -1,10 +1,7 @@
 import { alpha } from '@mui/material'
-import { Blues, Grays, Greens, Reds, Yellows, Oranges, Violets, Transparent, TransitionFunction } from './0_primitives'
+import { Blues, Grays, Greens, Oranges, Reds, Transparent, Violets, Yellows } from './0_primitives'
 import { SurfacesAndText } from './1_surfaces_text'
 
-const { plain, inverted } = SurfacesAndText
-
-const Transition = `all ${TransitionFunction}`
 const InsetOverline = '0 0 auto' as const // Top border only
 const InsetUnderline = 'auto 0 0' as const // Bottom border only
 
@@ -19,7 +16,9 @@ const SliderBackground = {
   },
 } as const
 
-export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Light) => {
+export const createLightDesign = (
+  Light: typeof SurfacesAndText.plain.Light | typeof SurfacesAndText.inverted.Light,
+) => {
   const Color = {
     Neutral: Grays,
     Primary: Blues,
@@ -236,11 +235,9 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
     Contained: {
       Default: {
         Label: Text.TextColors.Secondary,
-        Fill: Color.Neutral[300],
       },
       Hover: {
-        Label: Color.Neutral[50],
-        Fill: Color.Neutral[900],
+        Label: Text.TextColors.Highlight,
       },
       Current: {
         Label: Text.TextColors.Primary,
@@ -255,8 +252,8 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
         Outline: Layer[2].Outline,
       },
       Hover: {
-        Label: Text.TextColors.Primary,
-        Outline: Color.Neutral[500],
+        Label: Text.TextColors.Highlight,
+        Outline: Layer.Highlight.Outline,
       },
       Current: {
         Label: Text.TextColors.Primary,
@@ -363,8 +360,6 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
     },
   } as const
 
-  const InputBaseDefaultFill = Grays[100]
-
   const Inputs = {
     Base: {
       Default: {
@@ -433,7 +428,7 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
   } as const
 }
 
-export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark) => {
+export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeof SurfacesAndText.inverted.Dark) => {
   const Color = {
     Neutral: {
       '25': Grays[975],
@@ -689,11 +684,9 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
     Contained: {
       Default: {
         Label: Text.TextColors.Secondary,
-        Fill: Color.Neutral[200],
       },
       Hover: {
-        Label: Color.Neutral[50],
-        Fill: Color.Neutral[900],
+        Label: Text.TextColors.Highlight,
       },
       Current: {
         Label: Text.TextColors.Primary,
@@ -708,8 +701,8 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
         Outline: Layer[2].Outline,
       },
       Hover: {
-        Label: Text.TextColors.Primary,
-        Outline: Color.Neutral[500],
+        Label: Text.TextColors.Highlight,
+        Outline: Layer.Highlight.Outline,
       },
       Current: {
         Label: Text.TextColors.Primary,
@@ -816,8 +809,6 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
     },
   } as const
 
-  const InputBaseDefaultFill = Grays[900]
-
   const Inputs = {
     Base: {
       Default: {
@@ -886,7 +877,7 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
   } as const
 }
 
-export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad) => {
+export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeof SurfacesAndText.inverted.Chad) => {
   const Color = {
     Neutral: Grays,
     Primary: Violets,
@@ -1102,12 +1093,10 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
     },
     Contained: {
       Default: {
-        Label: Chad.Text.FilledFeedback.Highlight.Secondary,
-        Fill: Color.Primary[950],
+        Label: Text.TextColors.Secondary,
       },
       Hover: {
-        Label: Color.Neutral[50],
-        Fill: Color.Primary[800],
+        Label: Text.TextColors.Highlight,
       },
       Current: {
         Label: Text.TextColors.Primary,
@@ -1122,8 +1111,8 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
         Outline: Layer[2].Outline,
       },
       Hover: {
-        Label: Text.TextColors.Primary,
-        Outline: Color.Neutral[500],
+        Label: Text.TextColors.Highlight,
+        Outline: Layer.Highlight.Outline,
       },
       Current: {
         Label: Text.TextColors.Primary,
@@ -1229,8 +1218,6 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
       Hover: Chad.Tables.Row.Hover,
     },
   } as const
-
-  const InputBaseDefaultFill = Grays[100]
 
   const Inputs = {
     Base: {

@@ -9,7 +9,7 @@ interface Props {
 }
 
 // TODO: consolidate with overlay-container.tsx
-const Overlay = ({ children, isOpen, ...rest }: Props) => {
+export const Overlay = ({ children, isOpen, ...rest }: Props) => {
   usePreventScroll({ isDisabled: !isOpen })
 
   return (
@@ -42,5 +42,3 @@ const StyledOverlay = styled.div<StyledOverlayProps>`
   backdrop-filter: blur(3px);
   opacity: ${({ isOpen }) => (isOpen ? 1 : 0)};
 `
-
-export default Overlay

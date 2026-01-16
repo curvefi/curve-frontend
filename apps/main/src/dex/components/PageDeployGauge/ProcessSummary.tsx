@@ -1,13 +1,13 @@
 import { styled } from 'styled-components'
-import InfoBox from '@/dex/components/PageDeployGauge/InfoBox'
+import { InfoBox } from '@/dex/components/PageDeployGauge/InfoBox'
 import { useNetworkByChain } from '@/dex/entities/networks'
-import useStore from '@/dex/store/useStore'
+import { useStore } from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
 import Button from '@mui/material/Button'
-import Box from '@ui/Box'
-import Icon from '@ui/Icon'
-import ExternalLink from '@ui/Link/ExternalLink'
-import Spinner from '@ui/Spinner'
+import { Box } from '@ui/Box'
+import { Icon } from '@ui/Icon'
+import { ExternalLink } from '@ui/Link/ExternalLink'
+import { Spinner } from '@ui/Spinner'
 import { scanTxPath } from '@ui/utils'
 import { useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
@@ -18,7 +18,7 @@ type Props = {
   isLite: boolean
 }
 
-const ProcessSummary = ({ chainId, isLite }: Props) => {
+export const ProcessSummary = ({ chainId, isLite }: Props) => {
   const deploymentStatus = useStore((state) => state.deployGauge.deploymentStatus)
   const linkPoolAddress = useStore((state) => state.deployGauge.linkPoolAddress)
   const currentSidechain = useStore((state) => state.deployGauge.currentSidechain)
@@ -205,5 +205,3 @@ const LinkContainer = styled.div`
 const StyledSpinner = styled(Spinner)`
   margin-right: var(--spacing-1);
 `
-
-export default ProcessSummary

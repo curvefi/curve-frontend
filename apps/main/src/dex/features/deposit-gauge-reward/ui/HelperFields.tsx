@@ -1,6 +1,6 @@
 import { useFormContext } from 'react-hook-form'
 import { useChainId } from 'wagmi'
-import FieldHelperUsdRate from '@/dex/components/FieldHelperUsdRate'
+import { FieldHelperUsdRate } from '@/dex/components/FieldHelperUsdRate'
 import { type DepositRewardFormValues } from '@/dex/features/deposit-gauge-reward/types'
 import { FlexContainer } from '@ui/styled-containers'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'

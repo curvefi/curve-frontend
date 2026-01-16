@@ -6,9 +6,9 @@ import { DepositRewardFormValues, DepositRewardStep } from '@/dex/features/depos
 import { StepperContainer } from '@/dex/features/deposit-gauge-reward/ui'
 import { ChainId } from '@/dex/types/main.types'
 import { getStepStatus } from '@ui/Stepper/helpers'
-import Stepper from '@ui/Stepper/Stepper'
+import { Stepper } from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
-import TxInfoBar from '@ui/TxInfoBar'
+import { TxInfoBar } from '@ui/TxInfoBar'
 import { scanTxPath } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
@@ -32,6 +32,7 @@ export const DepositStepper = ({ chainId, poolId }: { chainId: ChainId; poolId: 
   const amount = watch('amount')
   const rewardTokenId = watch('rewardTokenId')
   const step = watch('step')
+  const userBalance = watch('userBalance')
 
   const { mutate: depositRewardApprove, isPending: isPendingDepositRewardApprove } = useDepositRewardApprove({
     chainId,
@@ -59,6 +60,7 @@ export const DepositStepper = ({ chainId, poolId }: { chainId: ChainId; poolId: 
       {
         rewardTokenId: getValues('rewardTokenId'),
         amount: getValues('amount'),
+        userBalance: getValues('userBalance'),
       },
       { onSuccess: onApproveSuccess, onError: onApproveError },
     )
@@ -70,6 +72,7 @@ export const DepositStepper = ({ chainId, poolId }: { chainId: ChainId; poolId: 
         rewardTokenId: getValues('rewardTokenId'),
         amount: getValues('amount'),
         epoch: getValues('epoch'),
+        userBalance: getValues('userBalance'),
       },
       {
         onSuccess: (data: string) => {
@@ -91,6 +94,7 @@ export const DepositStepper = ({ chainId, poolId }: { chainId: ChainId; poolId: 
     poolId,
     rewardTokenId,
     amount,
+    userBalance,
   })
 
   useLayoutEffect(() => {

@@ -1,12 +1,13 @@
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import AlertFormError from '@/dex/components/AlertFormError'
-import AlertSlippage from '@/dex/components/AlertSlippage'
-import DetailInfoEstGas from '@/dex/components/DetailInfoEstGas'
-import DetailInfoEstLpTokens from '@/dex/components/PagePool/components/DetailInfoEstLpTokens'
-import DetailInfoSlippage from '@/dex/components/PagePool/components/DetailInfoSlippage'
-import TransferActions from '@/dex/components/PagePool/components/TransferActions'
-import HighSlippagePriceImpactModal from '@/dex/components/PagePool/components/WarningModal'
-import FieldsDeposit from '@/dex/components/PagePool/Deposit/components/FieldsDeposit'
+import { useConfig, type Config } from 'wagmi'
+import { AlertFormError } from '@/dex/components/AlertFormError'
+import { AlertSlippage } from '@/dex/components/AlertSlippage'
+import { DetailInfoEstGas } from '@/dex/components/DetailInfoEstGas'
+import { DetailInfoEstLpTokens } from '@/dex/components/PagePool/components/DetailInfoEstLpTokens'
+import { DetailInfoSlippage } from '@/dex/components/PagePool/components/DetailInfoSlippage'
+import { TransferActions } from '@/dex/components/PagePool/components/TransferActions'
+import { WarningModal as HighSlippagePriceImpactModal } from '@/dex/components/PagePool/components/WarningModal'
+import { FieldsDeposit } from '@/dex/components/PagePool/Deposit/components/FieldsDeposit'
 import type { FormStatus, FormValues, LoadMaxAmount, StepKey } from '@/dex/components/PagePool/Deposit/types'
 import { DEFAULT_FORM_LP_TOKEN_EXPECTED } from '@/dex/components/PagePool/Deposit/utils'
 import type { Slippage, TransferProps } from '@/dex/components/PagePool/types'
@@ -17,19 +18,19 @@ import {
   tokensDescription,
 } from '@/dex/components/PagePool/utils'
 import { useNetworks } from '@/dex/entities/networks'
-import useStore from '@/dex/store/useStore'
+import { useStore } from '@/dex/store/useStore'
 import { CurveApi, PoolData } from '@/dex/types/main.types'
-import AlertBox from '@ui/AlertBox'
+import { AlertBox } from '@ui/AlertBox'
 import { getActiveStep, getStepStatus } from '@ui/Stepper/helpers'
-import Stepper from '@ui/Stepper/Stepper'
+import { Stepper } from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
-import TxInfoBar from '@ui/TxInfoBar'
+import { TxInfoBar } from '@ui/TxInfoBar'
 import { scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
 
-const FormDeposit = ({
+export const FormDeposit = ({
   chainIdPoolId,
   curve,
   maxSlippage,
@@ -39,7 +40,6 @@ const FormDeposit = ({
   routerParams,
   seed,
   tokensMapper,
-  userPoolBalances,
 }: TransferProps) => {
   const isSubscribed = useRef(false)
 
@@ -67,6 +67,8 @@ const FormDeposit = ({
   const poolId = poolData?.pool?.id
   const haveSigner = !!signerAddress
 
+  const config = useConfig()
+
   const updateFormValues = useCallback(
     (
       updatedFormValues: Partial<FormValues>,
@@ -77,6 +79,7 @@ const FormDeposit = ({
       setSlippageConfirmed(false)
       void setFormValues(
         'DEPOSIT',
+        config,
         curve,
         poolDataCacheOrApi.pool.id,
         poolData,
@@ -86,7 +89,7 @@ const FormDeposit = ({
         updatedMaxSlippage || maxSlippage,
       )
     },
-    [curve, maxSlippage, poolData, poolDataCacheOrApi.pool.id, seed.isSeed, setFormValues],
+    [config, curve, maxSlippage, poolData, poolDataCacheOrApi.pool.id, seed.isSeed, setFormValues],
   )
 
   const handleApproveClick = useCallback(
@@ -100,11 +103,18 @@ const FormDeposit = ({
   )
 
   const handleDepositClick = useCallback(
-    async (activeKey: string, curve: CurveApi, poolData: PoolData, formValues: FormValues, maxSlippage: string) => {
+    async (
+      activeKey: string,
+      config: Config,
+      curve: CurveApi,
+      poolData: PoolData,
+      formValues: FormValues,
+      maxSlippage: string,
+    ) => {
       const tokenText = amountsDescription(formValues.amounts)
       const notifyMessage = t`Please confirm deposit of ${tokenText} at max ${maxSlippage}% slippage.`
       const { dismiss } = notify(notifyMessage, 'pending')
-      const resp = await fetchStepDeposit(activeKey, curve, poolData, formValues, maxSlippage)
+      const resp = await fetchStepDeposit(activeKey, config, curve, poolData, formValues, maxSlippage)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && network) {
         const txDescription = t`Deposited ${tokenText}.`
@@ -118,6 +128,7 @@ const FormDeposit = ({
   const getSteps = useCallback(
     (
       activeKey: string,
+      config: Config,
       curve: CurveApi,
       poolData: PoolData,
       formValues: FormValues,
@@ -164,13 +175,13 @@ const FormDeposit = ({
                     onClick: () => setSlippageConfirmed(false),
                   },
                   primaryBtnProps: {
-                    onClick: () => handleDepositClick(activeKey, curve, poolData, formValues, maxSlippage),
+                    onClick: () => handleDepositClick(activeKey, config, curve, poolData, formValues, maxSlippage),
                     disabled: !slippageConfirmed,
                   },
                   primaryBtnLabel: 'Deposit anyway',
                 },
               }
-            : { onClick: () => handleDepositClick(activeKey, curve, poolData, formValues, maxSlippage) }),
+            : { onClick: () => handleDepositClick(activeKey, config, curve, poolData, formValues, maxSlippage) }),
         },
       }
 
@@ -224,6 +235,7 @@ const FormDeposit = ({
     if (curve && poolData) {
       const updatedSteps = getSteps(
         activeKey,
+        config,
         curve,
         poolData,
         formValues,
@@ -237,6 +249,7 @@ const FormDeposit = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
+    config,
     curve?.chainId,
     poolData?.pool.id,
     signerAddress,
@@ -261,6 +274,7 @@ const FormDeposit = ({
   return (
     <>
       <FieldsDeposit
+        chainId={chainId}
         formProcessing={disableForm}
         formValues={formValues}
         haveSigner={haveSigner}
@@ -270,7 +284,6 @@ const FormDeposit = ({
         poolDataCacheOrApi={poolDataCacheOrApi}
         routerParams={routerParams}
         tokensMapper={tokensMapper}
-        userPoolBalances={userPoolBalances}
         updateFormValues={updateFormValues}
       />
 
@@ -304,7 +317,6 @@ const FormDeposit = ({
         loading={!chainId || !steps.length || !seed.loaded}
         routerParams={routerParams}
         seed={seed}
-        userPoolBalances={userPoolBalances}
       >
         <AlertSlippage maxSlippage={maxSlippage} usdAmount={estLpTokenReceivedUsdAmount} />
         {formStatus.error && (
@@ -316,5 +328,3 @@ const FormDeposit = ({
     </>
   )
 }
-
-export default FormDeposit

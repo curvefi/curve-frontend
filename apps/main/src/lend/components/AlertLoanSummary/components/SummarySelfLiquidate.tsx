@@ -1,11 +1,11 @@
 import { useMemo } from 'react'
-import Item from '@/lend/components/AlertLoanSummary/components/Item'
+import { Item } from '@/lend/components/AlertLoanSummary/components/Item'
 import type { SummaryProps } from '@/lend/components/AlertLoanSummary/types'
 import { format } from '@/lend/components/AlertLoanSummary/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { isGreaterThan, minus, getDecimalLength, formatUnits } from '@ui-kit/utils'
 
-const SummarySelfLiquidate = ({
+export const SummarySelfLiquidate = ({
   pendingMessage,
   title,
   userState,
@@ -78,5 +78,3 @@ const SummarySelfLiquidate = ({
     </>
   )
 }
-
-export default SummarySelfLiquidate

@@ -2,10 +2,10 @@ import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { assert, decimal, Decimal } from '@ui-kit/utils'
-import type { BorrowDebtParams, BorrowDebtQuery } from '../../features/borrow/types'
-import { borrowQueryValidationSuite } from '../validation/borrow.validation'
+import type { CreateLoanDebtParams, CreateLoanDebtQuery } from '../../features/borrow/types'
+import { createLoanQueryValidationSuite } from '../validation/borrow.validation'
 
-type BorrowExpectedCollateralResult = {
+type CreateLoanExpectedCollateralResult = {
   totalCollateral: Decimal
   leverage: Decimal
   userCollateral: Decimal
@@ -28,7 +28,7 @@ const convertNumbers = ({
   collateralFromUserBorrowed?: string
   collateralFromDebt?: string
   avgPrice?: string
-}): BorrowExpectedCollateralResult => ({
+}): CreateLoanExpectedCollateralResult => ({
   totalCollateral: totalCollateral as Decimal,
   leverage: leverage as Decimal,
   userCollateral: userCollateral as Decimal,
@@ -48,7 +48,7 @@ export const { useQuery: useCreateLoanExpectedCollateral, queryKey: createLoanEx
       slippage,
       leverageEnabled,
       maxDebt,
-    }: BorrowDebtParams) =>
+    }: CreateLoanDebtParams) =>
       [
         ...rootKeys.market({ chainId, marketId }),
         'createLoanExpectedCollateral',
@@ -65,7 +65,7 @@ export const { useQuery: useCreateLoanExpectedCollateral, queryKey: createLoanEx
       userCollateral = '0',
       debt,
       slippage,
-    }: BorrowDebtQuery): Promise<BorrowExpectedCollateralResult> => {
+    }: CreateLoanDebtQuery): Promise<CreateLoanExpectedCollateralResult> => {
       const market = getLlamaMarket(marketId)
       if (market instanceof LendMarketTemplate) {
         return convertNumbers(
@@ -79,9 +79,9 @@ export const { useQuery: useCreateLoanExpectedCollateral, queryKey: createLoanEx
       }
 
       assert(!+userBorrowed, `userBorrowed must be 0 for non-leverage mint markets`)
-      const { collateral, leverage, routeIdx } = await market.leverage.createLoanCollateral(userCollateral, debt)
+      const { collateral, leverage } = await market.leverage.createLoanCollateral(userCollateral, debt)
       return convertNumbers({ userCollateral, leverage, totalCollateral: collateral })
     },
     staleTime: '1m',
-    validationSuite: borrowQueryValidationSuite({ debtRequired: true, isLeverageRequired: true }),
+    validationSuite: createLoanQueryValidationSuite({ debtRequired: true, isLeverageRequired: true }),
   })

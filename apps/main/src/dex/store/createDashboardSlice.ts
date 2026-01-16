@@ -12,7 +12,7 @@ import type {
   WalletPoolData,
 } from '@/dex/components/PageDashboard/types'
 import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES, SORT_ID } from '@/dex/components/PageDashboard/utils'
-import curvejsApi from '@/dex/lib/curvejs'
+import { curvejsApi } from '@/dex/lib/curvejs'
 import type { State } from '@/dex/store/useStore'
 import { ChainId, claimButtonsKey, CurveApi, FnStepResponse, PoolDataMapper } from '@/dex/types/main.types'
 import { fulfilledValue, getErrorMessage, getStorageValue, setStorageValue, sleep } from '@/dex/utils'
@@ -76,7 +76,10 @@ const DEFAULT_STATE: SliceState = {
   vecrvInfo: {},
 }
 
-const createDashboardSlice = (_: StoreApi<State>['setState'], get: StoreApi<State>['getState']): DashboardSlice => ({
+export const createDashboardSlice = (
+  _: StoreApi<State>['setState'],
+  get: StoreApi<State>['getState'],
+): DashboardSlice => ({
   dashboard: {
     ...DEFAULT_STATE,
 
@@ -404,8 +407,6 @@ const createDashboardSlice = (_: StoreApi<State>['setState'], get: StoreApi<Stat
     },
   },
 })
-
-export default createDashboardSlice
 
 export function getActiveKey(chainId: ChainId | undefined, { walletAddress, sortBy, sortByOrder }: FormValues) {
   return `${chainId ?? ''}-${walletAddress ? shortenAccount(walletAddress) : ''}${sortBy}${sortByOrder}`

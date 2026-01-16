@@ -1106,7 +1106,7 @@ const loanRepay = {
 }
 
 const loanSelfLiquidation = {
-  detailInfo: async (api: Api, market: OneWayMarketTemplate, slippage: string) => {
+  detailInfo: async (market: OneWayMarketTemplate, slippage: string) => {
     log('detailInfo', slippage)
     const resp: { tokensToLiquidate: string; futureRates: FutureRates | null; error: string } = {
       tokensToLiquidate: '',
@@ -1729,7 +1729,7 @@ const vaultClaim = {
   },
 }
 
-const apiLending = {
+export const apiLending = {
   helpers,
 
   user,
@@ -1750,8 +1750,6 @@ const apiLending = {
   vaultUnstake,
   vaultClaim,
 }
-
-export default apiLending
 
 export async function fetchChartBandBalancesData(
   { bandsBalances, bandsBalancesArr }: { bandsBalances: BandsBalances; bandsBalancesArr: BandsBalancesArr },

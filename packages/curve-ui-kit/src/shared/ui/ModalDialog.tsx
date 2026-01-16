@@ -7,6 +7,7 @@ import CardHeader from '@mui/material/CardHeader'
 import Dialog from '@mui/material/Dialog'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
+import { Responsive } from '@ui-kit/themes/basic-theme'
 import type { SxProps } from '@ui-kit/utils'
 import { SizesAndSpaces } from '../../themes/design/1_sizes_spaces'
 
@@ -14,18 +15,6 @@ const {
   Width: { modal: modalWidth },
   Height: { modal: modalHeight },
 } = SizesAndSpaces
-
-/**
- * Creates responsive height styles for modal dialogs
- * In compact mode height grows dynamically, otherwise it's fixed to maxHeight
- * Compact mode still needs maxHeight constraint to prevent overflow
- *
- * @param compact - When true, modal grows to fit content with auto height up to maxHeight
- * @param maxHeight - Custom maximum height (e.g., '80dvh').
- * @returns CSS styles object with height configuration for mobile and tablet breakpoints
- */
-const createHeightStyles = ({ compact, maxHeight }: { compact?: boolean; maxHeight: string }) =>
-  compact ? { height: 'auto', maxHeight } : { height: maxHeight }
 
 export type ModalDialogProps = {
   /** Content of the modal dialog */
@@ -69,7 +58,7 @@ export type ModalDialogProps = {
   compact?: boolean
 
   /** When you want to set the max height of the modal to be smaller than 100dvh */
-  maxHeight?: string
+  maxHeight?: string | Partial<Responsive>
 
   /** Custom styles for the modal dialog */
   sx?: SxProps
@@ -85,7 +74,7 @@ export const ModalDialog = ({
   titleColor = 'textSecondary',
   footer,
   compact,
-  maxHeight,
+  maxHeight = { mobile: modalHeight.sm, desktop: modalHeight.md },
   sx,
 }: ModalDialogProps) => (
   <Dialog
@@ -93,14 +82,17 @@ export const ModalDialog = ({
     onClose={onClose}
     onTransitionExited={onTransitionExited}
     disableRestoreFocus
-    sx={(t) => ({
-      '& .MuiPaper-root': {
+    sx={{
+      '& .MuiDialog-paper': {
         maxWidth: '100dvw',
-        ...createHeightStyles({ compact, maxHeight: maxHeight ?? modalHeight.md }),
-        [t.breakpoints.down('tablet')]: { ...createHeightStyles({ compact, maxHeight: maxHeight ?? modalHeight.sm }) },
+        ...(compact
+          ? // In compact mode height grows dynamically, otherwise it's fixed to maxHeight
+            // Compact mode still needs maxHeight constraint to prevent overflow
+            { height: 'auto', maxHeight, '& .MuiCard-root': { height: 'auto' } }
+          : { height: maxHeight, '& .MuiCard-root': { height: '100%' } }),
       },
       ...sx,
-    })}
+    }}
   >
     <Card sx={{ width: { tablet: modalWidth.md, mobile: '100dvw' }, display: 'flex', flexDirection: 'column' }}>
       <CardHeader

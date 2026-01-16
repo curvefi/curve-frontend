@@ -1,0 +1,34 @@
+{
+  "campaignName": "Yuzu Juice",
+  "platform": "Yuzu Money ",
+  "description": "Points for providing liquidity.",
+  "platformImageId": "yuzu-juice.png",
+  "dashboardLink": "https://app.yuzu.money/points/overview",
+  "pools": [
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "null",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0xEc1Ea912C9f048D4814934e83678F86C83FdBD62",
+      "network": "plasma",
+      "multiplier": "3x",
+      "tags": ["points"],
+      "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "null",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x085BaD2C28Bdd4A40396072D3eb2636BF7Afa39c",
+      "network": "plasma",
+      "multiplier": "8x",
+      "tags": ["points"],
+      "lock": "false"
+    }
+  ]
+}
+  

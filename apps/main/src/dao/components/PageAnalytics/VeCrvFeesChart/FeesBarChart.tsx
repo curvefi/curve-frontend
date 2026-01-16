@@ -1,14 +1,14 @@
 import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
-import { formatDate, formatNumber } from 'ui/src/utils'
 import type { Distribution } from '@curvefi/prices-api/revenue'
-import FeesBarChartTooltip from './FeesBarChartTooltip'
+import { formatDate, formatNumber } from '@ui/utils'
+import { FeesBarChartTooltip } from './FeesBarChartTooltip'
 
 type FeesBarChartProps = {
   data: Distribution[]
   height?: number
 }
 
-const FeesBarChart = ({ data, height = 500 }: FeesBarChartProps) => (
+export const FeesBarChart = ({ data, height = 500 }: FeesBarChartProps) => (
   <ResponsiveContainer width="100%" height={height} debounce={200}>
     <BarChart
       width={500}
@@ -41,12 +41,10 @@ const FeesBarChart = ({ data, height = 500 }: FeesBarChartProps) => (
       />
       <Tooltip content={FeesBarChartTooltip} cursor={{ opacity: 0.3 }} />
       <Bar dataKey="feesUsd" label={false} fill={'var(--primary-300)'} isAnimationActive={false}>
-        {data.map((entry, index) => (
+        {data.map((_entry, index) => (
           <Cell key={`$cell-${index}`} fill={'var(--primary-300)'} />
         ))}
       </Bar>
     </BarChart>
   </ResponsiveContainer>
 )
-
-export default FeesBarChart

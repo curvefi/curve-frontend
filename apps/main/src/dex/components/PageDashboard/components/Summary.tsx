@@ -1,17 +1,17 @@
 import { useState } from 'react'
 import { Item, Section } from 'react-stately'
 import { styled } from 'styled-components'
-import ComboBoxAddress from '@/dex/components/PageDashboard/components/ComboBoxAddress'
-import FormClaimFees from '@/dex/components/PageDashboard/components/FormClaimFees'
-import FormVecrv from '@/dex/components/PageDashboard/components/FormVecrv'
-import SummaryClaimable from '@/dex/components/PageDashboard/components/SummaryClaimable'
-import SummaryRecurrence from '@/dex/components/PageDashboard/components/SummaryRecurrence'
-import SummaryTotal from '@/dex/components/PageDashboard/components/SummaryTotal'
+import { ComboBoxAddress } from '@/dex/components/PageDashboard/components/ComboBoxAddress'
+import { FormClaimFees } from '@/dex/components/PageDashboard/components/FormClaimFees'
+import { FormVecrv } from '@/dex/components/PageDashboard/components/FormVecrv'
+import { SummaryClaimable } from '@/dex/components/PageDashboard/components/SummaryClaimable'
+import { TotalRecurrence as SummaryRecurrence } from '@/dex/components/PageDashboard/components/SummaryRecurrence'
+import { SummaryTotal } from '@/dex/components/PageDashboard/components/SummaryTotal'
 import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
-import useStore from '@/dex/store/useStore'
-import Box from '@ui/Box'
+import { useStore } from '@/dex/store/useStore'
+import { Box } from '@ui/Box'
 import { SpinnerWrapper } from '@ui/Spinner'
-import Stats from '@ui/Stats'
+import { Stats } from '@ui/Stats'
 import { shortenAccount } from '@ui/utils'
 import { breakpoints } from '@ui/utils/responsive'
 import { useLayoutStore } from '@ui-kit/features/layout'
@@ -24,7 +24,7 @@ const tabs: TabOption<Tab>[] = [
   { value: 'CLAIMABLE_TOKENS', label: t`Claimable Tokens` },
 ]
 
-const Summary = () => {
+export const Summary = () => {
   const { rChainId, formValues, updateFormValues } = useDashboardContext()
 
   const isMdUp = useLayoutStore((state) => state.isMdUp)
@@ -81,7 +81,7 @@ const Summary = () => {
           <>
             <TabContentWrapper>
               <SummaryTitle>{t`Total Summary`}</SummaryTitle>
-              <TabsSwitcher variant="underlined" size="small" value={tab} onChange={setTab} options={tabs} />
+              <TabsSwitcher variant="underlined" value={tab} onChange={setTab} options={tabs} />
               {tab === 'DAY_PROFITS' && <SummaryRecurrence />}
               {tab === 'CLAIMABLE_TOKENS' && <SummaryClaimable />}
             </TabContentWrapper>
@@ -91,9 +91,6 @@ const Summary = () => {
     </div>
   )
 }
-
-export default Summary
-
 const AddressSearchWrapper = styled.div`
   display: flex;
   justify-content: right;

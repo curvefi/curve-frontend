@@ -1,5 +1,5 @@
 import { useFormContext } from 'react-hook-form'
-import DetailInfoEstGas from '@/dex/components/DetailInfoEstGas'
+import { DetailInfoEstGas } from '@/dex/components/DetailInfoEstGas'
 import { useEstimateGasDepositReward, useEstimateGasDepositRewardApprove } from '@/dex/entities/gauge'
 import { DepositRewardStep, type DepositRewardFormValues } from '@/dex/features/deposit-gauge-reward/types'
 import { ChainId } from '@/dex/types/main.types'
@@ -14,13 +14,14 @@ export const GasEstimation = ({ chainId, poolId }: { chainId: ChainId; poolId: s
   const amount = watch('amount')
   const epoch = watch('epoch')
   const step = watch('step')
+  const userBalance = watch('userBalance')
 
   const {
     data: estimatedGasDepositRewardApprove,
     isLoading: isLoadingGasEstimateDepositRewardApprove,
     isFetching: isFetchingGasEstimateDepositRewardApprove,
   } = useEstimateGasDepositRewardApprove(
-    { chainId, poolId, rewardTokenId, amount },
+    { chainId, poolId, rewardTokenId, amount, userBalance },
     step === DepositRewardStep.APPROVAL && isValid,
   )
 
@@ -35,6 +36,7 @@ export const GasEstimation = ({ chainId, poolId }: { chainId: ChainId; poolId: s
       rewardTokenId,
       amount,
       epoch,
+      userBalance,
     },
     step === DepositRewardStep.DEPOSIT && isValid,
   )

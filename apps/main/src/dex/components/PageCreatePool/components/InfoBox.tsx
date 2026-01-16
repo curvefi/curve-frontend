@@ -1,6 +1,6 @@
 import { styled } from 'styled-components'
-import Box from '@ui/Box'
-import Icon from '@ui/Icon'
+import { Box } from '@ui/Box'
+import { Icon } from '@ui/Icon'
 import { t } from '@ui-kit/lib/i18n'
 
 interface Props {
@@ -18,7 +18,7 @@ type StylesProps = {
   link2?: boolean
 }
 
-const InfoBox = ({ link1, link2 }: Props) => (
+export const InfoBox = ({ link1, link2 }: Props) => (
   <BoxStyles>
     {link1 && (
       <LinkStyles link2 target="_blank" rel="noopener noreferrer" href={link1.link}>
@@ -92,5 +92,3 @@ const LinkStyles = styled.a<StylesProps>`
     outline: var(--button_text--hover--color) auto 2px;
   }
 `
-
-export default InfoBox

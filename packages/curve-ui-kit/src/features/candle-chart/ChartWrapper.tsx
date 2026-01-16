@@ -1,13 +1,13 @@
 import { useMemo, useRef, useState } from 'react'
 import { styled } from 'styled-components'
-import Button from 'ui/src/Button/Button'
-import Checkbox from 'ui/src/Checkbox'
-import Icon from 'ui/src/Icon'
-import Spinner, { SpinnerWrapper } from 'ui/src/Spinner'
 import { useTheme } from '@mui/material/styles'
-import CandleChart from '@ui-kit/features/candle-chart/CandleChart'
-import DialogSelectChart from '@ui-kit/features/candle-chart/DialogSelectChart'
-import DialogSelectTimeOption from '@ui-kit/features/candle-chart/DialogSelectTimeOption'
+import { Button } from '@ui/Button/Button'
+import { Checkbox } from '@ui/Checkbox'
+import { Icon } from '@ui/Icon'
+import { SpinnerWrapper, Spinner } from '@ui/Spinner'
+import { CandleChart } from '@ui-kit/features/candle-chart/CandleChart'
+import { DialogSelect as DialogSelectChart } from '@ui-kit/features/candle-chart/DialogSelectChart'
+import { DialogSelect as DialogSelectTimeOption } from '@ui-kit/features/candle-chart/DialogSelectTimeOption'
 import { useChartPalette } from '@ui-kit/features/candle-chart/hooks/useChartPalette'
 import type {
   ChartType,
@@ -51,7 +51,7 @@ export type ChartWrapperProps = {
   latestOraclePrice?: string
 }
 
-const ChartWrapper = ({
+export const ChartWrapper = ({
   hideCandleSeriesLabel,
   chartType,
   chartStatus,
@@ -318,5 +318,3 @@ const TipText = styled.p`
   font-size: var(--font-size-1);
   font-weight: none;
 `
-
-export default ChartWrapper

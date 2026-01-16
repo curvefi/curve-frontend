@@ -3,7 +3,7 @@ import { styled } from 'styled-components'
 import { CollateralAlert } from '@/loan/types/loan.types'
 import { breakpoints } from '@ui/utils'
 
-const useCollateralAlert = (collateralAddress: string | undefined) =>
+export const useCollateralAlert = (collateralAddress: string | undefined) =>
   useMemo(() => {
     const alerts: { [collateralAddress: string]: CollateralAlert } = {
       '0x136e783846ef68c8bd00a3369f787df8d683a696': {
@@ -42,5 +42,3 @@ const MessageWrapper = styled.div`
     flex-direction: row;
   }
 `
-
-export default useCollateralAlert

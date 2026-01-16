@@ -1,6 +1,6 @@
 import { styled } from 'styled-components'
 
-const Tr = styled.tr`
+export const Tr = styled.tr`
   cursor: pointer;
 
   &.pending {
@@ -18,5 +18,3 @@ const Tr = styled.tr`
     }
   }
 `
-
-export default Tr

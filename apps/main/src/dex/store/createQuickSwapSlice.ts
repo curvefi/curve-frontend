@@ -1,5 +1,5 @@
 import lodash from 'lodash'
-import { ethAddress } from 'viem'
+import { ethAddress, type Address } from 'viem'
 import type { Config } from 'wagmi'
 import type { StoreApi } from 'zustand'
 import type {
@@ -11,13 +11,14 @@ import type {
   SearchedParams,
 } from '@/dex/components/PageRouterSwap/types'
 import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/dex/components/PageRouterSwap/utils'
-import curvejsApi from '@/dex/lib/curvejs'
+import { curvejsApi } from '@/dex/lib/curvejs'
 import type { State } from '@/dex/store/useStore'
 import { CurveApi, FnStepApproveResponse, FnStepResponse } from '@/dex/types/main.types'
 import { sleep } from '@/dex/utils'
 import { getMaxAmountMinusGas } from '@/dex/utils/utilsGasPrices'
 import { getSlippageImpact, getSwapActionModalType } from '@/dex/utils/utilsSwap'
 import { useWallet } from '@ui-kit/features/connect-wallet'
+import { fetchTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { fetchGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 import { fetchNetworks } from '../entities/networks'
@@ -38,13 +39,12 @@ const sliceKey = 'quickSwap'
 
 export type QuickSwapSlice = {
   [sliceKey]: SliceState & {
-    fetchUserBalances(
+    fetchMaxAmount(
       config: Config,
       curve: CurveApi,
-      fromAddress: string,
-      toAddress: string,
-    ): Promise<{ fromAmount: string; toAmount: string }>
-    fetchMaxAmount(curve: CurveApi, searchedParams: SearchedParams, maxSlippage: string | undefined): Promise<void>
+      searchedParams: SearchedParams,
+      maxSlippage: string | undefined,
+    ): Promise<void>
     fetchRoutesAndOutput(
       config: Config,
       curve: CurveApi,
@@ -101,25 +101,14 @@ const DEFAULT_STATE: SliceState = {
   routesAndOutput: {},
 }
 
-const createQuickSwapSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): QuickSwapSlice => ({
+export const createQuickSwapSlice = (
+  _set: StoreApi<State>['setState'],
+  get: StoreApi<State>['getState'],
+): QuickSwapSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 
-    fetchUserBalances: async (config, curve, fromAddress, toAddress) => {
-      const { userBalancesMapper, fetchUserBalancesByTokens } = get().userBalances
-
-      const fetchTokensList = []
-      if (fromAddress && typeof userBalancesMapper[fromAddress] === 'undefined') fetchTokensList.push(fromAddress)
-      if (toAddress && typeof userBalancesMapper[toAddress] === 'undefined') fetchTokensList.push(toAddress)
-
-      if (fetchTokensList.length > 0) await fetchUserBalancesByTokens(config, curve, fetchTokensList)
-
-      return {
-        fromAmount: get().userBalances.userBalancesMapper[fromAddress] ?? '0',
-        toAmount: get().userBalances.userBalancesMapper[toAddress] ?? '0',
-      }
-    },
-    fetchMaxAmount: async (curve, searchedParams, maxSlippage) => {
+    fetchMaxAmount: async (config, curve, searchedParams, maxSlippage) => {
       const state = get()
       const sliceState = state[sliceKey]
 
@@ -130,7 +119,11 @@ const createQuickSwapSlice = (set: StoreApi<State>['setState'], get: StoreApi<St
       const cFormValues = cloneDeep(sliceState.formValues)
 
       if (signerAddress) {
-        const userBalance = state.userBalances.userBalancesMapper[fromAddress] ?? '0'
+        const userBalance = await fetchTokenBalance(config, {
+          chainId,
+          userAddress: signerAddress,
+          tokenAddress: fromAddress as Address,
+        })
 
         cFormValues.fromAmount = userBalance
         activeKey = getRouterActiveKey(curve, cFormValues, searchedParams, maxSlippage)
@@ -217,12 +210,7 @@ const createQuickSwapSlice = (set: StoreApi<State>['setState'], get: StoreApi<St
               [cActiveKey]: {
                 ...resp,
                 loading: false,
-                exchangeRates: getRouterSwapsExchangeRates(
-                  exchangeRates,
-                  cFormValues,
-                  searchedParams,
-                  tokensNameMapper,
-                ),
+                exchangeRates: getRouterSwapsExchangeRates(exchangeRates, searchedParams, tokensNameMapper),
                 fetchedToAmount: '',
                 modal: getRouterWarningModal(
                   resp,
@@ -235,7 +223,11 @@ const createQuickSwapSlice = (set: StoreApi<State>['setState'], get: StoreApi<St
           })
 
           // validation
-          const { fromAmount } = await sliceState.fetchUserBalances(config, curve, searchedParams.fromAddress, '')
+          const fromAmount = await fetchTokenBalance(config, {
+            chainId: curve.chainId,
+            userAddress: curve.signerAddress,
+            tokenAddress: searchedParams.fromAddress as Address,
+          })
           cFormValues.fromError = +cFormValues.fromAmount > +fromAmount ? 'too-much' : ''
           get()[sliceKey].setStateByKey('formValues', cFormValues)
         }
@@ -294,7 +286,6 @@ const createQuickSwapSlice = (set: StoreApi<State>['setState'], get: StoreApi<St
       // stored values
       const storedFormStatus = sliceState.formStatus
       const storedFormValues = sliceState.formValues
-      const storedUserBalancesMapper = state.userBalances.userBalancesMapper
 
       // update formStatus, form values, reset errors
       const cFormValues = cloneDeep(
@@ -318,7 +309,7 @@ const createQuickSwapSlice = (set: StoreApi<State>['setState'], get: StoreApi<St
         formStatus: cloneDeep(cFormStatus),
       })
 
-      if (!curve || !storedUserBalancesMapper || !searchedParams.fromAddress || !searchedParams.toAddress) return
+      if (!curve || !searchedParams.fromAddress || !searchedParams.toAddress) return
 
       // set loading
       const storedRoutesAndOutput = sliceState.routesAndOutput[activeKey]
@@ -326,12 +317,27 @@ const createQuickSwapSlice = (set: StoreApi<State>['setState'], get: StoreApi<St
         sliceState.setStateByKey('routesAndOutput', { [activeKey]: { ...storedRoutesAndOutput, loading: true } })
       }
 
-      // get wallet balances
-      if (curve.signerAddress)
-        await sliceState.fetchUserBalances(config, curve, searchedParams.fromAddress, searchedParams.toAddress)
+      // Refetch balances
+      if (curve.signerAddress) {
+        if (searchedParams.fromAddress) {
+          await fetchTokenBalance(config, {
+            chainId: curve.chainId,
+            userAddress: curve.signerAddress,
+            tokenAddress: searchedParams.fromAddress as Address,
+          })
+        }
+
+        if (searchedParams.toAddress) {
+          await fetchTokenBalance(config, {
+            chainId: curve.chainId,
+            userAddress: curve.signerAddress,
+            tokenAddress: searchedParams.toAddress as Address,
+          })
+        }
+      }
 
       // get max if MAX button is clicked
-      if (isGetMaxFrom) await sliceState.fetchMaxAmount(curve, searchedParams, maxSlippage)
+      if (isGetMaxFrom) await sliceState.fetchMaxAmount(config, curve, searchedParams, maxSlippage)
 
       // api calls
       await sliceState.fetchRoutesAndOutput(config, curve, searchedParams, maxSlippage)
@@ -442,8 +448,18 @@ const createQuickSwapSlice = (set: StoreApi<State>['setState'], get: StoreApi<St
           // cache swapped tokens
           void state.storeCache.setStateByActiveKey('routerFormValues', chainId.toString(), { fromAddress, toAddress })
 
-          // fetch data
-          void state.userBalances.fetchUserBalancesByTokens(config, curve, [fromAddress, toAddress])
+          // Refetch balances
+          await fetchTokenBalance(config, {
+            chainId: curve.chainId,
+            userAddress: curve.signerAddress,
+            tokenAddress: fromAddress as Address,
+          })
+
+          await fetchTokenBalance(config, {
+            chainId: curve.chainId,
+            userAddress: curve.signerAddress,
+            tokenAddress: toAddress as Address,
+          })
         }
 
         return resp
@@ -494,9 +510,8 @@ function getRouterActiveKey(
 
 export function getRouterSwapsExchangeRates(
   exchangeRates: string[],
-  formValues: FormValues,
   searchedParams: SearchedParams,
-  tokensNameMapper: { [address: string]: string },
+  tokensNameMapper: { [p: string]: string },
 ) {
   const fromToken = tokensNameMapper[searchedParams.fromAddress]
   const toToken = tokensNameMapper[searchedParams.toAddress]
@@ -562,5 +577,3 @@ export function getRouterWarningModal(
   }
   return null
 }
-
-export default createQuickSwapSlice

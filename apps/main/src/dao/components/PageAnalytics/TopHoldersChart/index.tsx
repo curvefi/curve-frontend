@@ -1,18 +1,18 @@
 import { useMemo } from 'react'
 import { styled } from 'styled-components'
-import ErrorMessage from '@/dao/components/ErrorMessage'
+import { ErrorMessage } from '@/dao/components/ErrorMessage'
 import { TOP_HOLDERS_FILTERS } from '@/dao/components/PageAnalytics/constants'
-import TopHoldersBarChartComponent from '@/dao/components/PageAnalytics/TopHoldersChart/TopHoldersBarChartComponent'
+import { TopHoldersBarChart as TopHoldersBarChartComponent } from '@/dao/components/PageAnalytics/TopHoldersChart/TopHoldersBarChartComponent'
 import { useStatsVecrvQuery } from '@/dao/entities/stats-vecrv'
-import useStore from '@/dao/store/useStore'
+import { useStore } from '@/dao/store/useStore'
 import type { TopHoldersSortBy } from '@/dao/types/dao.types'
 import type { Locker } from '@curvefi/prices-api/dao'
-import Box from '@ui/Box'
-import SelectSortingMethod from '@ui/Select/SelectSortingMethod'
+import { Box } from '@ui/Box'
+import { SelectSortingMethod } from '@ui/Select/SelectSortingMethod'
 import { t } from '@ui-kit/lib/i18n'
-import Spinner from '../../Spinner'
+import { SpinnerComponent as Spinner } from '../../Spinner'
 
-const TopLockers = () => {
+export const TopLockers = () => {
   const { data: veCrvData, isSuccess: statsSuccess } = useStatsVecrvQuery({})
   const getVeCrvHolders = useStore((state) => state.analytics.getVeCrvHolders)
   const veCrvHolders = useStore((state) => state.analytics.veCrvHolders)
@@ -98,5 +98,3 @@ const BoxTitle = styled.h4`
 const Content = styled.div`
   padding: 0 var(--spacing-3) var(--spacing-3);
 `
-
-export default TopLockers

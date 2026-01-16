@@ -1,11 +1,11 @@
 import { useCallback } from 'react'
-import InpChipUsdRate from '@/lend/components/InpChipUsdRate'
+import { InpChipUsdRate } from '@/lend/components/InpChipUsdRate'
 import { FieldsTitle } from '@/lend/components/SharedFormStyles/FieldsWrapper'
 import { StyledInpChip } from '@/lend/components/styles'
 import type { NetworkConfig } from '@/lend/types/lend.types'
-import Box from '@ui/Box'
+import { Box } from '@ui/Box'
 import type { BoxProps } from '@ui/Box/types'
-import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
+import { InputDebounced, InputMaxBtn, InputProvider } from '@ui/InputComp'
 import { formatNumber } from '@ui/utils'
 import { useLegacyTokenInput } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
@@ -14,7 +14,7 @@ import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { decimal, type Decimal } from '@ui-kit/utils'
 
-const InpTokenBorrow = ({
+export const InpTokenBorrow = ({
   id,
   testId,
   maxTextId,
@@ -106,5 +106,3 @@ const InpTokenBorrow = ({
     />
   )
 }
-
-export default InpTokenBorrow

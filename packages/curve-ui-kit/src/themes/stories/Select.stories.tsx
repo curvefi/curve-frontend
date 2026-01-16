@@ -6,7 +6,7 @@ import MenuItem from '@mui/material/MenuItem'
 import Select from '@mui/material/Select'
 import Typography from '@mui/material/Typography'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import useResizeObserver from '@ui-kit/hooks/useResizeObserver'
+import { useResizeObserver } from '@ui-kit/hooks/useResizeObserver'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { InvertOnHover } from '@ui-kit/shared/ui/InvertOnHover'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
@@ -113,6 +113,7 @@ const MultiSelect = <T extends string>({
         <Menu
           open={isOpen}
           onClose={close}
+          // eslint-disable-next-line react-hooks/refs
           anchorEl={selectRef.current}
           anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
           slotProps={{ list: { sx: { minWidth: Math.round(selectWidth || 100) + 'px', paddingBlock: 0 } } }}
@@ -129,7 +130,7 @@ const MultiSelect = <T extends string>({
             </Button>
           </Box>
           {options.map((option) => (
-            <InvertOnHover hoverEl={menuRef.current} key={option}>
+            <InvertOnHover hoverRef={menuRef} key={option}>
               <MenuItem
                 ref={menuRef}
                 value={option}
@@ -174,7 +175,7 @@ const addresses = {
 } as const
 
 export const CustomRendering: Story = {
-  render: (args) => (
+  render: () => (
     <MultiSelect
       options={options.map((x) => x)}
       placeholder="Select tokens"

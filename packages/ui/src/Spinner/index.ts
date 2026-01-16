@@ -1,2 +1,2 @@
-export { default as SpinnerWrapper } from './SpinnerWrapper'
-export { default } from './Spinner'
+export { SpinnerWrapper } from './SpinnerWrapper'
+export { Spinner } from './Spinner'

@@ -15,7 +15,7 @@ import { useCreateLoanPrices } from '../../../queries/create-loan/create-loan-pr
 import { useMarketFutureRates } from '../../../queries/market-future-rates.query'
 import { LoanInfoAccordion } from '../../../widgets/manage-loan/LoanInfoAccordion'
 import { useLoanToValue } from '../hooks/useLoanToValue'
-import { type BorrowForm, type BorrowFormQueryParams, type Token } from '../types'
+import { type CreateLoanForm, type CreateLoanFormQueryParams, type Token } from '../types'
 
 /**
  * Helper to extract only the relevant fields from a UseQueryResult into the Query type.
@@ -41,8 +41,8 @@ export const CreateLoanInfoAccordion = <ChainId extends IChainId>({
   networks,
   onSlippageChange,
 }: {
-  params: BorrowFormQueryParams<ChainId>
-  values: BorrowForm
+  params: CreateLoanFormQueryParams<ChainId>
+  values: CreateLoanForm
   collateralToken: Token | undefined
   borrowToken: Token | undefined
   networks: NetworkDict<ChainId>

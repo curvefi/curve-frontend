@@ -1,7 +1,7 @@
 import { getAddress } from 'ethers'
 import { produce } from 'immer'
 import type { StoreApi } from 'zustand'
-import networks from '@/lend/networks'
+import { networks } from '@/lend/networks'
 import type { State } from '@/lend/store/useStore'
 import { ChainId } from '@/lend/types/lend.types'
 import type { Address, Chain } from '@curvefi/prices-api'
@@ -165,7 +165,7 @@ const DEFAULT_STATE: SliceState = {
   liqRangeNewVisible: true,
 }
 
-const createOhlcChart = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
+export const createOhlcChart = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
     setChartTimeOption: (timeOption: TimeOptions) => {
@@ -266,6 +266,7 @@ const createOhlcChart = (set: StoreApi<State>['setState'], get: StoreApi<State>[
           }),
         )
       } catch (error) {
+        console.warn(error)
         set(
           produce((state: State) => {
             state[sliceKey].chartLlammaOhlc = {
@@ -342,6 +343,7 @@ const createOhlcChart = (set: StoreApi<State>['setState'], get: StoreApi<State>[
           lastFetchEndTime: ohlc[0].time.getUTCTimestamp(),
         }
       } catch (error) {
+        console.warn(error)
         set(
           produce((state: State) => {
             state[sliceKey].chartLlammaOhlc.fetchStatus = 'ERROR'
@@ -448,6 +450,7 @@ const createOhlcChart = (set: StoreApi<State>['setState'], get: StoreApi<State>[
           }),
         )
       } catch (error) {
+        console.warn(error)
         set(
           produce((state: State) => {
             state[sliceKey].chartOraclePoolOhlc = {
@@ -533,6 +536,7 @@ const createOhlcChart = (set: StoreApi<State>['setState'], get: StoreApi<State>[
           },
         }
       } catch (error) {
+        console.warn(error)
         set(
           produce((state: State) => {
             state[sliceKey].chartOraclePoolOhlc.fetchStatus = 'ERROR'
@@ -687,6 +691,7 @@ const createOhlcChart = (set: StoreApi<State>['setState'], get: StoreApi<State>[
           )
         }
       } catch (error) {
+        console.warn(error)
         set(
           produce((state: State) => {
             state[sliceKey].activityFetchStatus = 'ERROR'
@@ -720,5 +725,3 @@ const createOhlcChart = (set: StoreApi<State>['setState'], get: StoreApi<State>[
     },
   },
 })
-
-export default createOhlcChart

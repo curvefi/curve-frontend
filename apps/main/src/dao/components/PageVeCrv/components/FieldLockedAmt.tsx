@@ -2,7 +2,7 @@ import { useCallback, useMemo } from 'react'
 import { styled } from 'styled-components'
 import type { FormType, VecrvInfo } from '@/dao/components/PageVeCrv/types'
 import { CurveApi } from '@/dao/types/dao.types'
-import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
+import { InputDebounced, InputMaxBtn, InputProvider } from '@ui/InputComp'
 import { Chip } from '@ui/Typography'
 import { formatNumber } from '@ui/utils'
 import { useLegacyTokenInput } from '@ui-kit/hooks/useFeatureFlags'
@@ -13,7 +13,7 @@ import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { CRV_ADDRESS, decimal, type Decimal } from '@ui-kit/utils'
 
-const FieldLockedAmt = ({
+export const FieldLockedAmt = ({
   curve,
   disabled,
   haveSigner,
@@ -119,5 +119,3 @@ const StyledInputProvider = styled(InputProvider)`
   grid-template-columns: 1fr auto;
   padding: var(--spacing-1) var(--spacing-2);
 `
-
-export default FieldLockedAmt

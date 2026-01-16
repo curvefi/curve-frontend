@@ -1,6 +1,6 @@
 import { styled } from 'styled-components'
-import DialogSelectContent from '@/dex/components/PageDeployGauge/components/DialogSelectContent'
-import Popover, { Popover2Dialog } from '@ui/Popover2'
+import { DialogSelectContent } from '@/dex/components/PageDeployGauge/components/DialogSelectContent'
+import { Popover2Dialog, Popover2Trigger as Popover } from '@ui/Popover2'
 
 type Props<T> = {
   currentData: T | null
@@ -10,7 +10,7 @@ type Props<T> = {
   setCurrentData: (data: T) => void
 }
 
-const DialogSelect = <T extends string>({ currentData, data, setCurrentData, isDisabled, label }: Props<T>) => (
+export const DialogSelect = <T extends string>({ currentData, data, setCurrentData, isDisabled, label }: Props<T>) => (
   <Popover
     buttonProps={{ isDisabled }}
     placement="bottom"
@@ -42,5 +42,3 @@ const StyledPopover2Dialog = styled(Popover2Dialog)`
     opacity: 0.7;
   }
 `
-
-export default DialogSelect

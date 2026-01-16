@@ -1,6 +1,6 @@
 import { Fragment } from 'react'
-import CampaignRewardsRow from '@/dex/components/CampaignRewardsRow'
-import PoolRewardsCrv from '@/dex/components/PoolRewardsCrv'
+import { CampaignRewardsRow } from '@/dex/components/CampaignRewardsRow'
+import { PoolRewardsCrv } from '@/dex/components/PoolRewardsCrv'
 import { RewardsApy } from '@/dex/types/main.types'
 import type { Chain } from '@curvefi/prices-api'
 import Typography from '@mui/material/Typography'
@@ -14,7 +14,7 @@ import type { PoolListItem } from '../types'
 
 type Prop = CellContext<PoolListItem, RewardsApy | undefined>
 
-export const RewardsOtherCell = ({ getValue, table, column, row: { original: poolData } }: Prop) => {
+export const RewardsOtherCell = ({ getValue, table, row: { original: poolData } }: Prop) => {
   const { data: campaigns } = useCampaignsByAddress({
     blockchainId: poolData.network as Chain,
     address: poolData?.pool?.address as Address,

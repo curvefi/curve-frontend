@@ -5,17 +5,17 @@ import { DEFAULT_BORROW_TOKEN_SYMBOL, getHealthMode } from '@/llamalend/health.u
 import type { HealthColorKey, HealthMode } from '@/llamalend/llamalend.types'
 import { LoanDetails, UserLoanDetails } from '@/loan/types/loan.types'
 import { parseHealthPercent } from '@/loan/utils/utilsLoan'
-import Box from '@ui/Box'
+import { Box } from '@ui/Box'
 import { DetailInfo } from '@ui/DetailInfo'
-import Icon from '@ui/Icon'
-import ExternalLink from '@ui/Link/ExternalLink'
-import IconTooltip from '@ui/Tooltip/TooltipIcon'
+import { Icon } from '@ui/Icon'
+import { ExternalLink } from '@ui/Link/ExternalLink'
+import { TooltipIcon as IconTooltip } from '@ui/Tooltip/TooltipIcon'
 import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 
 type FormType = 'create-loan' | 'collateral-decrease' | ''
 
-const DetailInfoHealth = ({
+export const DetailInfoHealth = ({
   amount,
   bands,
   formType,
@@ -85,6 +85,7 @@ const DetailInfoHealth = ({
   useEffect(() => {
     if (typeof oraclePriceBand !== 'undefined' && userLoanDetails) {
       const { healthFull, healthNotFull, userBands } = userLoanDetails
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setCurrentHealthMode(
         getHealthMode(
           DEFAULT_BORROW_TOKEN_SYMBOL,
@@ -155,5 +156,3 @@ const DetailInfoHealth = ({
 const HealthPercent = styled.span<{ colorKey: HealthColorKey }>`
   color: ${({ colorKey }) => `var(--health_mode_${colorKey}_darkBg--color)`};
 `
-
-export default DetailInfoHealth

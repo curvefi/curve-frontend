@@ -1,14 +1,14 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { styled } from 'styled-components'
-import PoolActivity from '@/lend/components/ChartOhlcWrapper/PoolActivity'
+import { PoolActivity } from '@/lend/components/ChartOhlcWrapper/PoolActivity'
 import { useOneWayMarket } from '@/lend/entities/chain'
 import { useUserLoanDetails } from '@/lend/hooks/useUserLoanDetails'
-import useStore from '@/lend/store/useStore'
-import AlertBox from '@ui/AlertBox'
-import Box from '@ui/Box'
-import Button from '@ui/Button'
-import TextCaption from '@ui/TextCaption'
-import ChartWrapper, { type ChartWrapperProps } from '@ui-kit/features/candle-chart/ChartWrapper'
+import { useStore } from '@/lend/store/useStore'
+import { AlertBox } from '@ui/AlertBox'
+import { Box } from '@ui/Box'
+import { Button } from '@ui/Button'
+import { TextCaption } from '@ui/TextCaption'
+import { type ChartWrapperProps, ChartWrapper } from '@ui-kit/features/candle-chart/ChartWrapper'
 import type { LiquidationRanges, LlammaLiquididationRange } from '@ui-kit/features/candle-chart/types'
 import { getThreeHundredResultsAgo, subtractTimeUnit } from '@ui-kit/features/candle-chart/utils'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
@@ -17,7 +17,7 @@ import { ChartOhlcWrapperProps, LendingMarketTokens } from './types'
 
 const CHART_HEIGHT = 300
 
-const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId, betaBackgroundColor }: ChartOhlcWrapperProps) => {
+export const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId, betaBackgroundColor }: ChartOhlcWrapperProps) => {
   const market = useOneWayMarket(rChainId, rOwmId).data
   const borrowMoreActiveKey = useStore((state) => state.loanBorrowMore.activeKey)
   const loanRepayActiveKey = useStore((state) => state.loanRepay.activeKey)
@@ -412,5 +412,3 @@ const StyledAlertBox = styled(AlertBox)`
   justify-content: center;
   margin: var(--spacing-narrow) 0;
 `
-
-export default ChartOhlcWrapper

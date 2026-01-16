@@ -3,7 +3,7 @@ import { getErrorMessage } from '@/llamalend/helpers'
 import { getIsUserCloseToLiquidation, getLiquidationStatus, reverseBands, sortBandsMint } from '@/llamalend/llama.utils'
 import type { FormDetailInfo as FormDetailInfoDeleverage } from '@/loan/components/PageMintMarket/LoanDeleverage/types'
 import type { MaxRecvLeverage as MaxRecvLeverageForm } from '@/loan/components/PageMintMarket/types'
-import networks from '@/loan/networks'
+import { networks } from '@/loan/networks'
 import type { LiqRange, MaxRecvLeverage, Provider } from '@/loan/store/types'
 import { ChainId, LlamaApi, Llamma, UserLoanDetails, type BandBalance } from '@/loan/types/loan.types'
 import { fulfilledValue, log } from '@/loan/utils/helpers'
@@ -732,7 +732,7 @@ const loanIncrease = {
       return resp
     }
   },
-  approve: async (activeKey: string, provider: Provider, llamma: Llamma, collateral: string) => {
+  approve: async (_activeKey: string, provider: Provider, llamma: Llamma, collateral: string) => {
     const parsedCollateral = collateral || '0'
     log('borrowMoreApprove', llamma.collateralSymbol, parsedCollateral)
     const resp = { hashes: [] as string[], error: '' }
@@ -1302,7 +1302,7 @@ const loanDeleverage = {
   },
 }
 
-const crvusdjsApi = {
+export const crvusdjsApi = {
   detailInfo,
 
   loanCreate,
@@ -1316,5 +1316,3 @@ const crvusdjsApi = {
 
   swap,
 }
-
-export default crvusdjsApi

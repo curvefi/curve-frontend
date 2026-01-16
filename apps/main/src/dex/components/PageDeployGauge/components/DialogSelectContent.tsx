@@ -1,5 +1,5 @@
 import { styled } from 'styled-components'
-import Button from '@ui/Button'
+import { Button } from '@ui/Button'
 
 type Props<T> = {
   data: T[]
@@ -8,7 +8,7 @@ type Props<T> = {
   close?: () => void
 }
 
-const DialogSelectContent = <T extends string>({ data, currentData, setCurrentData, ...props }: Props<T>) => {
+export const DialogSelectContent = <T extends string>({ data, currentData, setCurrentData, ...props }: Props<T>) => {
   const handleClick = (data: T) => {
     setCurrentData(data)
     if (props.close) {
@@ -57,5 +57,3 @@ const StyledSelectButton = styled(Button)`
     }
   }
 `
-
-export default DialogSelectContent

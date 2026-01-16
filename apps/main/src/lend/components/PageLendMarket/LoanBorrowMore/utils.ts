@@ -18,7 +18,7 @@ export const DEFAULT_FORM_VALUES: FormValues = {
 }
 
 export function _getStepTokensStr(
-  { userCollateral, userCollateralError, userBorrowed, userBorrowedError }: FormValues,
+  { userCollateral, userBorrowed }: FormValues,
   { collateral_token, borrowed_token }: OneWayMarketTemplate,
 ) {
   const list = []

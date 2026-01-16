@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-object-type,@typescript-eslint/no-unused-vars */
 import '@tanstack/table-core'
 import type { RowData } from '@tanstack/table-core'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'

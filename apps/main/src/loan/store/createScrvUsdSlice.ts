@@ -5,7 +5,7 @@ import type { DepositWithdrawModule, StatisticsChart } from '@/loan/components/P
 import { SCRVUSD_GAS_ESTIMATE } from '@/loan/constants'
 import type { ScrvUsdUserBalances } from '@/loan/entities/scrvusd-userBalances'
 import { invalidateScrvUsdUserBalances } from '@/loan/entities/scrvusd-userBalances'
-import networks from '@/loan/networks'
+import { networks } from '@/loan/networks'
 import type { State } from '@/loan/store/useStore'
 import { type ChainId, FetchStatus, TransactionStatus } from '@/loan/types/loan.types'
 import { scanTxPath } from '@ui/utils'
@@ -89,7 +89,7 @@ const DEFAULT_STATE: SliceState = {
   withdrawTransaction: { transactionStatus: '', transaction: null, errorMessage: '' },
 }
 
-const createScrvUsdSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
+export const createScrvUsdSlice = (_set: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
     checkApproval: {
@@ -283,7 +283,7 @@ const createScrvUsdSlice = (set: StoreApi<State>['setState'], get: StoreApi<Stat
           dismissNotificationHandler()
 
           // invalidate user balances query
-          invalidateScrvUsdUserBalances({ userAddress: useWallet.getState().wallet?.account?.address })
+          invalidateScrvUsdUserBalances({ userAddress: useWallet.getState().wallet?.address })
 
           get()[sliceKey].setStakingModuleChangeReset()
 
@@ -338,7 +338,7 @@ const createScrvUsdSlice = (set: StoreApi<State>['setState'], get: StoreApi<Stat
           dismissNotificationHandler()
 
           // invalidate user balances query
-          invalidateScrvUsdUserBalances({ userAddress: useWallet.getState().wallet?.account?.address })
+          invalidateScrvUsdUserBalances({ userAddress: useWallet.getState().wallet?.address })
 
           get()[sliceKey].setStakingModuleChangeReset()
 
@@ -392,7 +392,7 @@ const createScrvUsdSlice = (set: StoreApi<State>['setState'], get: StoreApi<Stat
           dismissNotificationHandler()
 
           // invalidate user balances query
-          invalidateScrvUsdUserBalances({ userAddress: useWallet.getState().wallet?.account?.address })
+          invalidateScrvUsdUserBalances({ userAddress: useWallet.getState().wallet?.address })
 
           get()[sliceKey].setStakingModuleChangeReset()
 
@@ -444,7 +444,7 @@ const createScrvUsdSlice = (set: StoreApi<State>['setState'], get: StoreApi<Stat
       }
     },
     previewAction: async (flag: PreviewFlag, amount: string) => {
-      const signerAddress = useWallet.getState().wallet?.account?.address.toLowerCase()
+      const signerAddress = useWallet.getState().wallet?.address.toLowerCase()
       get()[sliceKey].setStateByKey('preview', { fetchStatus: 'loading', value: '0' })
 
       const lendApi = getLib('llamaApi')
@@ -556,7 +556,7 @@ const createScrvUsdSlice = (set: StoreApi<State>['setState'], get: StoreApi<Stat
     setStateByKey: <T>(key: StateKey, value: T) => {
       get().setAppStateByKey(sliceKey, key, value)
     },
-    setStateByKeys: <T>(sliceState: Partial<SliceState>) => {
+    setStateByKeys: (sliceState: Partial<SliceState>) => {
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {
@@ -564,5 +564,3 @@ const createScrvUsdSlice = (set: StoreApi<State>['setState'], get: StoreApi<Stat
     },
   },
 })
-
-export default createScrvUsdSlice

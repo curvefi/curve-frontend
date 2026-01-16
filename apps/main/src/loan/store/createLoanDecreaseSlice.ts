@@ -8,7 +8,7 @@ import {
   DEFAULT_FORM_EST_GAS,
   DEFAULT_FORM_STATUS as FORM_STATUS,
 } from '@/loan/components/PageMintMarket/utils'
-import networks from '@/loan/networks'
+import { networks } from '@/loan/networks'
 import type { State } from '@/loan/store/useStore'
 import { ChainId, LlamaApi, Llamma } from '@/loan/types/loan.types'
 import { useWallet } from '@ui-kit/features/connect-wallet'
@@ -76,7 +76,7 @@ const DEFAULT_STATE: SliceState = {
   formValues: DEFAULT_FORM_VALUES,
 }
 
-const createLoanDecrease = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
+export const createLoanDecrease = (_set: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 
@@ -244,7 +244,7 @@ const createLoanDecrease = (set: StoreApi<State>['setState'], get: StoreApi<Stat
     setStateByKey: <T>(key: StateKey, value: T) => {
       get().setAppStateByKey(sliceKey, key, value)
     },
-    setStateByKeys: <T>(sliceState: Partial<SliceState>) => {
+    setStateByKeys: (sliceState: Partial<SliceState>) => {
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {
@@ -256,5 +256,3 @@ const createLoanDecrease = (set: StoreApi<State>['setState'], get: StoreApi<Stat
 export function getLoanDecreaseActiveKey(llamma: Llamma, debt: string, isFullRepay: boolean) {
   return `${llamma.collateralSymbol}-${debt}-${isFullRepay}`
 }
-
-export default createLoanDecrease

@@ -108,6 +108,12 @@
     "campaign": "Liquity.json"
   },
   {
-    "campaign": "Plasma.json"
+    "campaign": "Yuzu.json"
+  },
+  {
+    "campaign": "TermMax.json"
+  },
+  {
+    "campaign": "Re.json"
   }
 ]

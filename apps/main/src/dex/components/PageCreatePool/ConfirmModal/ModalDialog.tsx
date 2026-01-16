@@ -4,9 +4,9 @@ import type { AriaOverlayProps } from 'react-aria'
 import type { OverlayTriggerState } from 'react-stately'
 import { styled } from 'styled-components'
 import type { AriaDialogProps } from '@react-types/dialog'
-import Box from '@ui/Box'
-import Icon from '@ui/Icon'
-import IconButton from '@ui/IconButton'
+import { Box } from '@ui/Box'
+import { Icon } from '@ui/Icon'
+import { IconButton } from '@ui/IconButton'
 import { breakpoints } from '@ui/utils/responsive'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
@@ -14,21 +14,12 @@ import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 interface Props extends AriaOverlayProps, AriaDialogProps {
   footerContent?: ReactNode
   maxWidth?: string
-  noContentPadding?: boolean
   title: string
   state: OverlayTriggerState
   children: ReactNode
 }
 
-const ModalDialog = ({
-  children,
-  footerContent,
-  maxWidth,
-  noContentPadding = false,
-  state,
-  title,
-  ...props
-}: Props) => {
+export const ModalDialog = ({ children, footerContent, maxWidth, state, title, ...props }: Props) => {
   const closeButtonRef = useRef<HTMLButtonElement>(null)
   const modalRef = useRef<HTMLDivElement>(null)
 
@@ -162,5 +153,3 @@ const Underlay = styled.div`
     background: rgba(0, 0, 0, 0.5);
   }
 `
-
-export default ModalDialog

@@ -1,20 +1,21 @@
 import { styled } from 'styled-components'
-import PendingTx from '@/dao/components/UserBox/PendingTx'
+import type { Address } from 'viem'
+import { PendingTx } from '@/dao/components/UserBox/PendingTx'
 import { useProposalPricesApiQuery } from '@/dao/entities/proposal-prices-api'
 import { useProposalsMapperQuery, createProposalKey } from '@/dao/entities/proposals-mapper'
 import { useUserProposalVotesQuery } from '@/dao/entities/user-proposal-votes'
-import useStore from '@/dao/store/useStore'
+import { useStore } from '@/dao/store/useStore'
 import { SnapshotVotingPower, ActiveProposal } from '@/dao/types/dao.types'
 import { ProposalType } from '@curvefi/prices-api/proposal/models'
-import AlertBox from '@ui/AlertBox'
-import Box from '@ui/Box'
-import Button from '@ui/Button'
-import Icon from '@ui/Icon'
+import { AlertBox } from '@ui/AlertBox'
+import { Box } from '@ui/Box'
+import { Button } from '@ui/Button'
+import { Icon } from '@ui/Icon'
 import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 
 type Props = {
-  userAddress: string
+  userAddress?: Address
   activeProposal?: ActiveProposal
   proposalId: number
   proposalType: ProposalType
@@ -25,11 +26,18 @@ type Props = {
 
 const votePercentage = (vote: number, total: number) => `(${formatNumber((vote / total) * 100, { style: 'percent' })})`
 
-const VoteDialog = ({ userAddress, activeProposal, className, votingPower, proposalId, proposalType }: Props) => {
+export const VoteDialog = ({
+  userAddress,
+  activeProposal,
+  className,
+  votingPower,
+  proposalId,
+  proposalType,
+}: Props) => {
   const { data: proposalsMapper } = useProposalsMapperQuery({})
   const { data: pricesProposal } = useProposalPricesApiQuery({ proposalId: proposalId, proposalType: proposalType })
   const { data: userProposalVotes, isSuccess: userProposalVotesSuccess } = useUserProposalVotesQuery({
-    userAddress,
+    userAddress: userAddress ?? '',
   })
   const proposalKey = createProposalKey(proposalId, proposalType)
   const proposal = proposalsMapper?.[proposalKey] ?? null
@@ -275,5 +283,3 @@ const SuccessWrapper = styled.div`
   border: 2px solid var(--success-400);
   background-color: var(--success-600);
 `
-
-export default VoteDialog

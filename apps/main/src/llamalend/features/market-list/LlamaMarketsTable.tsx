@@ -2,13 +2,13 @@ import { useMemo, useState } from 'react'
 import { MARKET_CUTOFF_DATE } from '@/llamalend/constants'
 import { type LlamaMarketsResult } from '@/llamalend/queries/market-list/llama-markets'
 import Button from '@mui/material/Button'
-import { ExpandedState, useReactTable } from '@tanstack/react-table'
+import { ExpandedState } from '@tanstack/react-table'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
 import { useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import { t } from '@ui-kit/lib/i18n'
-import { getTableOptions } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
 import { serializeRangeFilter } from '@ui-kit/shared/ui/DataTable/filters'
@@ -16,7 +16,7 @@ import { useColumnFilters } from '@ui-kit/shared/ui/DataTable/hooks/useColumnFil
 import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
 import { TableFiltersTitles } from '@ui-kit/shared/ui/DataTable/TableFiltersTitles'
 import { EmptyStateCard } from '@ui-kit/shared/ui/EmptyStateCard'
-import { ChainFilterChip } from './chips/ChainFilterChip'
+import { LlamaChainFilterChips } from './chips/LlamaChainFilterChips'
 import { LlamaListChips } from './chips/LlamaListChips'
 import { DEFAULT_SORT } from './columns'
 import { LLAMA_MARKET_COLUMNS } from './columns'
@@ -76,7 +76,7 @@ export const LlamaMarketsTable = ({
     [markets],
   )
 
-  const table = useReactTable({
+  const table = useTable({
     columns: LLAMA_MARKET_COLUMNS,
     data,
     state: { expanded, sorting, columnVisibility, columnFilters },
@@ -116,10 +116,10 @@ export const LlamaMarketsTable = ({
         hasSearchBar
         onSearch={onSearch}
         leftChildren={<TableFiltersTitles title={t`Markets`} subtitle={t`Find your next opportunity`} />}
-        collapsible={<LendingMarketsFilters data={data} minLiquidity={minLiquidity} {...filterProps} />}
+        collapsible={<LendingMarketsFilters data={data} {...filterProps} />}
         chips={
           <>
-            <ChainFilterChip data={data} {...filterProps} />
+            <LlamaChainFilterChips data={data} {...filterProps} />
             <LlamaListChips
               hiddenMarketCount={result ? data.length - table.getFilteredRowModel().rows.length : 0}
               hasFilters={hasFilters}

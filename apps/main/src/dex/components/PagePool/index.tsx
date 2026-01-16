@@ -1,39 +1,39 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { styled } from 'styled-components'
 import { type Address, isAddressEqual } from 'viem'
-import CampaignRewardsBanner from '@/dex/components/PagePool/components/CampaignRewardsBanner'
-import Deposit from '@/dex/components/PagePool/Deposit'
-import PoolInfoData from '@/dex/components/PagePool/PoolDetails/ChartOhlcWrapper'
-import PoolParameters from '@/dex/components/PagePool/PoolDetails/PoolParameters'
-import PoolStats from '@/dex/components/PagePool/PoolDetails/PoolStats'
-import Swap from '@/dex/components/PagePool/Swap'
+import { useConfig } from 'wagmi'
+import { CampaignRewardsBanner } from '@/dex/components/PagePool/components/CampaignRewardsBanner'
+import { Deposit } from '@/dex/components/PagePool/Deposit'
+import { PoolInfoData } from '@/dex/components/PagePool/PoolDetails/ChartOhlcWrapper'
+import { PoolParameters } from '@/dex/components/PagePool/PoolDetails/PoolParameters'
+import { PoolStats } from '@/dex/components/PagePool/PoolDetails/PoolStats'
+import { Swap } from '@/dex/components/PagePool/Swap'
 import type { PageTransferProps, Seed, TransferFormType } from '@/dex/components/PagePool/types'
-import MySharesStats from '@/dex/components/PagePool/UserDetails'
-import Withdraw from '@/dex/components/PagePool/Withdraw'
+import { MySharesStats } from '@/dex/components/PagePool/UserDetails'
+import { Withdraw } from '@/dex/components/PagePool/Withdraw'
 import { ROUTE } from '@/dex/constants'
 import { useGaugeManager, useGaugeRewardsDistributors } from '@/dex/entities/gauge'
 import { useNetworkByChain } from '@/dex/entities/networks'
-import usePoolAlert from '@/dex/hooks/usePoolAlert'
+import { usePoolAlert } from '@/dex/hooks/usePoolAlert'
 import { usePoolIdByAddressOrId } from '@/dex/hooks/usePoolIdByAddressOrId'
-import useTokensMapper from '@/dex/hooks/useTokensMapper'
-import { getUserPoolActiveKey } from '@/dex/store/createUserSlice'
-import useStore from '@/dex/store/useStore'
+import { useTokensMapper } from '@/dex/hooks/useTokensMapper'
+import { useStore } from '@/dex/store/useStore'
 import { getChainPoolIdActiveKey } from '@/dex/utils'
 import { getPath } from '@/dex/utils/utilsRouter'
 import { ManageGauge } from '@/dex/widgets/manage-gauge'
 import { notFalsy } from '@curvefi/prices-api/objects.util'
 import Stack from '@mui/material/Stack'
-import AlertBox from '@ui/AlertBox'
+import { AlertBox } from '@ui/AlertBox'
 import { AppPageFormTitleWrapper, AppPageInfoContentWrapper } from '@ui/AppPage'
-import Box from '@ui/Box'
+import { Box } from '@ui/Box'
 import { ExternalLink } from '@ui/Link'
-import TextEllipsis from '@ui/TextEllipsis'
+import { TextEllipsis } from '@ui/TextEllipsis'
 import { scanAddressPath } from '@ui/utils'
 import { breakpoints } from '@ui/utils/responsive'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNavigate } from '@ui-kit/hooks/router'
-import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
+import { usePageVisibleInterval } from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { type TabOption, TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
@@ -43,7 +43,7 @@ import { PoolAlertBanner } from '../PoolAlertBanner'
 
 const DEFAULT_SEED: Seed = { isSeed: null, loaded: false }
 
-const Transfer = (pageTransferProps: PageTransferProps) => {
+export const Transfer = (pageTransferProps: PageTransferProps) => {
   const { params, curve, hasDepositAndStake, poolData, poolDataCacheOrApi, routerParams } = pageTransferProps
   const { rChainId, rFormType, rPoolIdOrAddress } = routerParams
   const poolId = usePoolIdByAddressOrId({ chainId: rChainId, poolIdOrAddress: rPoolIdOrAddress })
@@ -51,10 +51,7 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
   const push = useNavigate()
   const poolAlert = usePoolAlert(poolData)
   const { tokensMapper } = useTokensMapper(rChainId)
-  const userPoolActiveKey = curve && poolId ? getUserPoolActiveKey(curve, poolId) : ''
   const chainIdPoolId = getChainPoolIdActiveKey(rChainId, poolId)
-  const userPoolBalances = useStore((state) => state.user.walletBalances[userPoolActiveKey])
-  const userPoolBalancesLoading = useStore((state) => state.user.walletBalancesLoading)
   const currencyReserves = useStore((state) => state.pools.currencyReserves[chainIdPoolId])
   const isMdUp = useLayoutStore((state) => state.isMdUp)
   const fetchUserPoolInfo = useStore((state) => state.user.fetchUserPoolInfo)
@@ -141,11 +138,12 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
   }, [poolData?.pool?.id, currencyReserves?.total])
 
   // fetch user pool info
+  const config = useConfig()
   useEffect(() => {
     if (curve && poolId && signerAddress) {
-      void fetchUserPoolInfo(curve, poolId)
+      void fetchUserPoolInfo(config, curve, poolId)
     }
-  }, [rChainId, poolId, signerAddress, curve, fetchUserPoolInfo])
+  }, [rChainId, poolId, signerAddress, config, curve, fetchUserPoolInfo])
 
   const isRewardsDistributor = useMemo(
     () =>
@@ -212,7 +210,6 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
             {!isMdUp && <TitleComp />}
             <TabsSwitcher
               variant="contained"
-              size="medium"
               value={!rFormType ? 'deposit' : rFormType}
               onChange={(key) => toggleForm(key as TransferFormType)}
               options={tabs}
@@ -228,8 +225,6 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
                   maxSlippage={maxSlippage}
                   seed={seed}
                   tokensMapper={tokensMapper}
-                  userPoolBalances={userPoolBalances}
-                  userPoolBalancesLoading={userPoolBalancesLoading}
                 />
               )
             ) : rFormType === 'deposit' ? (
@@ -242,8 +237,6 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
                 maxSlippage={maxSlippage}
                 seed={seed}
                 tokensMapper={tokensMapper}
-                userPoolBalances={userPoolBalances}
-                userPoolBalancesLoading={userPoolBalancesLoading}
               />
             ) : rFormType === 'withdraw' ? (
               <Withdraw
@@ -254,8 +247,6 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
                 maxSlippage={maxSlippage}
                 seed={seed}
                 tokensMapper={tokensMapper}
-                userPoolBalances={userPoolBalances}
-                userPoolBalancesLoading={userPoolBalancesLoading}
               />
             ) : (
               rFormType === 'manage-gauge' && poolData && <ManageGauge poolId={poolData.pool.id} chainId={rChainId} />
@@ -271,13 +262,7 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
           </PriceAndTradesWrapper>
         )}
         <Stack>
-          <TabsSwitcher
-            variant="contained"
-            size="medium"
-            value={poolInfoTab}
-            onChange={setPoolInfoTab}
-            options={poolInfoTabs}
-          />
+          <TabsSwitcher variant="contained" value={poolInfoTab} onChange={setPoolInfoTab} options={poolInfoTabs} />
           <AppPageInfoContentWrapper variant="secondary">
             {poolInfoTab === 'user' && (
               <MySharesStats
@@ -286,7 +271,6 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
                 poolDataCacheOrApi={poolDataCacheOrApi}
                 routerParams={routerParams}
                 tokensMapper={tokensMapper}
-                userPoolBalances={userPoolBalances}
               />
             )}
             {poolInfoTab === 'pool' && (
@@ -344,5 +328,3 @@ const PriceAndTradesWrapper = styled(Box)`
     padding: 1.5rem 1.5rem;
   }
 `
-
-export default Transfer

@@ -94,7 +94,10 @@ const DEFAULT_STATE: SliceState = {
 
 const sliceKey = 'poolList'
 
-const createPoolListSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): PoolListSlice => ({
+export const createPoolListSlice = (
+  _set: StoreApi<State>['setState'],
+  get: StoreApi<State>['getState'],
+): PoolListSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 
@@ -432,5 +435,3 @@ export function getPoolListActiveKey(chainId: ChainId, searchParams: SearchParam
   }
   return `${chainId}-${filterKey}-${sortBy}-${sortByOrder}-${parsedSearchText}`
 }
-
-export default createPoolListSlice

@@ -1,18 +1,17 @@
 import type { JSX } from 'react'
 import { styled } from 'styled-components'
-import Icon from 'ui/src/Icon'
-import Chip from 'ui/src/Typography/Chip'
-import { breakpoints } from 'ui/src/utils'
+import { Icon } from '@ui/Icon'
+import { Chip } from '@ui/Typography/Chip'
+import { breakpoints } from '@ui/utils'
 
 type Props = {
   as?: keyof JSX.IntrinsicElements
   isIn?: boolean
   isMobile?: boolean
-  type: 'pool' | 'market'
   tooltip: string
 }
 
-const CellInPool = ({ isIn, isMobile, type, tooltip, ...rest }: Props) => (
+export const CellInPool = ({ isIn, isMobile, tooltip, ...rest }: Props) => (
   <Td {...rest} $isIn={isIn} $isMobile={isMobile} className={isIn ? 'active' : ''}>
     {isIn && (
       <Chip tooltip={tooltip} tooltipProps={{ placement: 'top-start' }}>
@@ -52,5 +51,3 @@ const Td = styled.td<{ $isIn?: boolean; $isMobile?: boolean }>`
 const StyledIcon = styled(Icon)`
   width: 21px;
 `
-
-export default CellInPool

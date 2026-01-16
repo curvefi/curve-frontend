@@ -2,13 +2,13 @@ import { ReactNode, useRef } from 'react'
 import type { AriaTextFieldProps } from 'react-aria'
 import { useTextField } from 'react-aria'
 import { styled } from 'styled-components'
-import Box from '@ui/Box'
+import { Box } from '@ui/Box'
 
 interface Props extends AriaTextFieldProps {
   row?: boolean
 }
 
-const TextInput = (props: Props) => {
+export const TextInput = (props: Props) => {
   const { label } = props
   const ref = useRef(null)
   const { labelProps, inputProps, descriptionProps, errorMessageProps } = useTextField(props, ref)
@@ -62,5 +62,3 @@ const ErrorMessage = styled.div`
   font-size: var(--font-size-1);
   font-weight: var(--medium);
 `
-
-export default TextInput

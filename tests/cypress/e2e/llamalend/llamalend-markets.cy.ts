@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 import lodash, { max } from 'lodash'
 import type { GetMarketsResponse } from '@curvefi/prices-api/llamalend'
 import { range, recordValues } from '@curvefi/prices-api/objects.util'

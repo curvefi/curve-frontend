@@ -4,14 +4,14 @@ import type { HealthMode } from '@/llamalend/llamalend.types'
 import { ChartLiquidationRange } from '@/llamalend/widgets/ChartLiquidationRange'
 import type { LiqRangeSliderIdx } from '@/loan/store/types'
 import { LoanDetails, UserLoanDetails } from '@/loan/types/loan.types'
-import Button from '@ui/Button'
+import { Button } from '@ui/Button'
 import { DetailInfo } from '@ui/DetailInfo'
-import Icon from '@ui/Icon'
+import { Icon } from '@ui/Icon'
 import { Chip } from '@ui/Typography'
-import { formatNumber } from '@ui/utils'
+import { formatNumberRange } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 
-const DetailInfoLiqRange = ({
+export const DetailInfoLiqRange = ({
   bands: newBands,
   detailInfoLeverage,
   healthMode,
@@ -39,6 +39,7 @@ const DetailInfoLiqRange = ({
   handleLiqRangesEdit?: () => void
 }) => {
   const { userPrices: currPrices, userBands: currBands } = userLoanDetails ?? {}
+  const selectedBands = selectedLiqRange?.bands
 
   // default to empty data to show chart
   const liqRangeData = useMemo(() => {
@@ -60,27 +61,9 @@ const DetailInfoLiqRange = ({
     ]
   }, [currPrices, newPrices, selectedLiqRange?.prices, loanDetails?.priceInfo])
 
-  const currBandsLabel = useMemo(() => {
-    const [currBand0, currBand1] = currBands ?? []
-    return typeof currBand0 !== 'undefined' && typeof currBand1 !== 'undefined' && !(currBand0 === 0 && currBand1 === 0)
-      ? `${formatNumber(currBand0)} - ${formatNumber(currBand1)}`
-      : ''
-  }, [currBands])
-
-  const newBandsLabel = useMemo(() => {
-    let newBand0
-    let newBand1
-
-    if (selectedLiqRange?.bands && +selectedLiqRange.bands > 0) {
-      ;[newBand0, newBand1] = selectedLiqRange.bands
-    } else if (newBands) {
-      ;[newBand0, newBand1] = newBands
-    }
-
-    return typeof newBand0 !== 'undefined' && typeof newBand1 !== 'undefined' && !(newBand0 === 0 && newBand1 === 0)
-      ? `${formatNumber(newBand0)} - ${formatNumber(newBand1)}`
-      : ''
-  }, [selectedLiqRange?.bands, newBands])
+  const currBandsLabel = formatNumberRange(currBands)
+  // todo: we should not use +selectedBands as that's an array!
+  const newBandsLabel = formatNumberRange(selectedBands && +selectedBands > 0 ? selectedBands : newBands)
 
   return (
     <>
@@ -134,11 +117,14 @@ const DetailInfoLiqRange = ({
           <span>
             {currBandsLabel} <Icon name="ArrowRight" size={16} className="svg-arrow" /> <strong>{newBandsLabel}</strong>
           </span>
-        ) : isValidFormValues && newBandsLabel ? (
-          <span>
-            <strong>{newBandsLabel}</strong>
-          </span>
-        ) : null}
+        ) : (
+          isValidFormValues &&
+          newBandsLabel && (
+            <span>
+              <strong>{newBandsLabel}</strong>
+            </span>
+          )
+        )}
       </DetailInfo>
     </>
   )
@@ -175,5 +161,3 @@ const LiqRangeEditButton = styled(Button)`
     cursor: initial;
   }
 `
-
-export default DetailInfoLiqRange

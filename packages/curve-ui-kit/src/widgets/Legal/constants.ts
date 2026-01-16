@@ -25,5 +25,6 @@ export const DEFAULT_DISCLAIMERS_TABS: Record<AppName, DisclaimerTab> = {
   lend: 'lend',
   llamalend: 'lend',
   dex: 'dex',
+  bridge: 'dex',
   analytics: 'dex',
 }

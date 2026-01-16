@@ -1,9 +1,9 @@
 import { styled } from 'styled-components'
-import ProgressBar from '@/dao/components/ProposalVoteStatusBox/ProgressBar'
+import { ProgressBar } from '@/dao/components/ProposalVoteStatusBox/ProgressBar'
 import { ProposalData } from '@/dao/entities/proposals-mapper'
-import Box from '@ui/Box'
-import Tooltip from '@ui/Tooltip/TooltipButton'
-import TooltipIcon from '@ui/Tooltip/TooltipIcon'
+import { Box } from '@ui/Box'
+import { TooltipButton as Tooltip } from '@ui/Tooltip/TooltipButton'
+import { TooltipIcon } from '@ui/Tooltip/TooltipIcon'
 import { breakpoints, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 
@@ -12,7 +12,7 @@ type ProposalVoteStatusBoxProps = {
   className?: string
 }
 
-const ProposalVoteStatusBox = ({ proposalData, className }: ProposalVoteStatusBoxProps) => {
+export const ProposalVoteStatusBox = ({ proposalData, className }: ProposalVoteStatusBoxProps) => {
   const { votesFor, votesAgainst, quorum, support, currentQuorumPercentage } = proposalData
   const minAcceptQuorumPercent = quorum * 100
   const minSupport = support * 100
@@ -33,7 +33,9 @@ const ProposalVoteStatusBox = ({ proposalData, className }: ProposalVoteStatusBo
             <HighlightedData>
               {formatNumber(currentQuorumPercentage, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%
             </HighlightedData>{' '}
-            <Data>of {formatNumber(minAcceptQuorumPercent, { notation: 'compact' })}%</Data>
+            <Data>
+              ({formatNumber(minAcceptQuorumPercent, { notation: 'compact' })}% {t`needed`})
+            </Data>
             <TooltipIcon>{t`The minimum share of For votes required to reach quorum is ${minAcceptQuorumPercent}% for this proposal.`}</TooltipIcon>
           </Box>
         </Box>
@@ -54,7 +56,7 @@ const ProposalVoteStatusBox = ({ proposalData, className }: ProposalVoteStatusBo
             <HighlightedData>
               {formatNumber(currentSupport * 100, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%
             </HighlightedData>
-            <Data>{t`of ${minSupport}%`}</Data>
+            <Data>({t`${minSupport}% needed`})</Data>
             <TooltipIcon>{t`The minimum support required to pass this proposal is ${minSupport}%.`}</TooltipIcon>
           </Box>
         </Box>
@@ -117,5 +119,3 @@ const HighlightedData = styled(Data)`
     padding-bottom: 0;
   }
 `
-
-export default ProposalVoteStatusBox

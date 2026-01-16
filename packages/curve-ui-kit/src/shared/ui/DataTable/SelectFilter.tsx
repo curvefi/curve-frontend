@@ -3,7 +3,7 @@ import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import Select from '@mui/material/Select'
 import Typography from '@mui/material/Typography'
-import useResizeObserver from '@ui-kit/hooks/useResizeObserver'
+import { useResizeObserver } from '@ui-kit/hooks/useResizeObserver'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { InvertOnHover } from '@ui-kit/shared/ui/InvertOnHover'
@@ -58,12 +58,13 @@ export const SelectFilter = <T extends string>({
           data-testid={`menu-${name}`}
           open={isOpen}
           onClose={close}
+          // eslint-disable-next-line react-hooks/refs
           anchorEl={selectRef.current}
           anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
           slotProps={{ list: { sx: { minWidth: Math.round(selectWidth || 100) + 'px', paddingBlock: 0 } } }}
         >
           {options.map(({ id, label }) => (
-            <InvertOnHover hoverEl={menuRef.current} key={id}>
+            <InvertOnHover hoverRef={menuRef} key={id}>
               <MenuItem
                 ref={menuRef}
                 value={id}

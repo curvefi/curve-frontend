@@ -2,7 +2,6 @@ import { BigNumber } from 'bignumber.js'
 import type { ContractTransactionResponse } from 'ethers'
 import { produce } from 'immer'
 import { zeroAddress } from 'viem'
-import type { Config } from 'wagmi'
 import type { StoreApi } from 'zustand'
 import {
   CRYPTOSWAP,
@@ -151,7 +150,7 @@ export type CreatePoolSlice = {
     updateTokensInPoolValidation: (tokensInPool: boolean) => void
     updateParametersValidation: (parameters: boolean) => void
     updatePoolInfoValidation: (poolInfo: boolean) => void
-    deployPool: (config: Config, curve: CurveApi) => void
+    deployPool: (curve: CurveApi) => void
     resetState: () => void
   }
 }
@@ -274,7 +273,7 @@ const calculateInitialPrice = (tokenA: number, tokenB: number) => {
   return initialPrice.toPrecision(4).toString()
 }
 
-const createCreatePoolSlice = (
+export const createCreatePoolSlice = (
   set: StoreApi<State>['setState'],
   get: StoreApi<State>['getState'],
 ): CreatePoolSlice => ({
@@ -695,57 +694,46 @@ const createCreatePoolSlice = (
     updateGamma: (value: number | string) =>
       set(
         produce((state) => {
-          value === typeof 'string'
-            ? (state.createPool.parameters.gamma = value)
-            : (state.createPool.parameters.gamma = new BigNumber(value).toString())
+          state.createPool.parameters.gamma = typeof value === 'string' ? value : new BigNumber(value).toString()
         }),
       ),
     updateAllowedExtraProfit: (value: number | string) =>
       set(
         produce((state) => {
-          value === typeof 'string'
-            ? (state.createPool.parameters.allowedExtraProfit = value)
-            : (state.createPool.parameters.allowedExtraProfit = new BigNumber(value).toString())
+          state.createPool.parameters.allowedExtraProfit =
+            typeof value === 'string' ? value : new BigNumber(value).toString()
         }),
       ),
     updateFeeGamma: (value: number | string) =>
       set(
         produce((state) => {
-          value === typeof 'string'
-            ? (state.createPool.parameters.feeGamma = value)
-            : (state.createPool.parameters.feeGamma = new BigNumber(value).toString())
+          state.createPool.parameters.feeGamma = typeof value === 'string' ? value : new BigNumber(value).toString()
         }),
       ),
     updateAdjustmentStep: (value: number | string) =>
       set(
         produce((state) => {
-          value === typeof 'string'
-            ? (state.createPool.parameters.adjustmentStep = value)
-            : (state.createPool.parameters.adjustmentStep = new BigNumber(value).toString())
+          state.createPool.parameters.adjustmentStep =
+            typeof value === 'string' ? value : new BigNumber(value).toString()
         }),
       ),
     updateMaHalfTime: (value: number | string) =>
       set(
         produce((state) => {
-          value === typeof 'string'
-            ? (state.createPool.parameters.maHalfTime = value)
-            : (state.createPool.parameters.maHalfTime = new BigNumber(value).toString())
+          state.createPool.parameters.maHalfTime = typeof value === 'string' ? value : new BigNumber(value).toString()
         }),
       ),
     updateMaExpTime: (value: number | string) =>
       set(
         produce((state) => {
-          value === typeof 'string'
-            ? (state.createPool.parameters.maExpTime = value)
-            : (state.createPool.parameters.maExpTime = new BigNumber(value).toString())
+          state.createPool.parameters.maExpTime = typeof value === 'string' ? value : new BigNumber(value).toString()
         }),
       ),
     updateOffpegFeeMultiplier: (value: number | string) =>
       set(
         produce((state) => {
-          value === typeof 'string'
-            ? (state.createPool.parameters.offpegFeeMultiplier = value)
-            : (state.createPool.parameters.offpegFeeMultiplier = new BigNumber(value).toString())
+          state.createPool.parameters.offpegFeeMultiplier =
+            typeof value === 'string' ? value : new BigNumber(value).toString()
         }),
       ),
     updatePoolName: (name: string) =>
@@ -791,7 +779,7 @@ const createCreatePoolSlice = (
         }),
       )
     },
-    deployPool: async (config: Config, curve: CurveApi) => {
+    deployPool: async (curve: CurveApi) => {
       const chainId = curve.chainId
       const {
         pools: { fetchNewPool, basePools },
@@ -892,7 +880,7 @@ const createCreatePoolSlice = (
             }),
           )
 
-          const poolData = await fetchNewPool(config, curve, poolId)
+          const poolData = await fetchNewPool(curve, poolId)
           if (poolData) {
             set(
               produce((state) => {
@@ -969,7 +957,7 @@ const createCreatePoolSlice = (
               }),
             )
 
-            const poolData = await fetchNewPool(config, curve, poolId)
+            const poolData = await fetchNewPool(curve, poolId)
             if (poolData) {
               set(
                 produce((state) => {
@@ -1050,7 +1038,7 @@ const createCreatePoolSlice = (
               }),
             )
 
-            const poolData = await fetchNewPool(config, curve, poolId)
+            const poolData = await fetchNewPool(curve, poolId)
             if (poolData) {
               set(
                 produce((state) => {
@@ -1148,7 +1136,7 @@ const createCreatePoolSlice = (
               }),
             )
 
-            const poolData = await fetchNewPool(config, curve, poolId)
+            const poolData = await fetchNewPool(curve, poolId)
             if (poolData) {
               set(
                 produce((state) => {
@@ -1239,7 +1227,7 @@ const createCreatePoolSlice = (
               }),
             )
 
-            const poolData = await fetchNewPool(config, curve, poolId)
+            const poolData = await fetchNewPool(curve, poolId)
             if (poolData) {
               set(
                 produce((state) => {
@@ -1271,5 +1259,3 @@ const createCreatePoolSlice = (
       ),
   },
 })
-
-export default createCreatePoolSlice

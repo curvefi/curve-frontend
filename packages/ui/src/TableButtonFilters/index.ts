@@ -1,1 +1,1 @@
-export { default } from './TableButtonFilters'
+export { TableButtonFilters } from './TableButtonFilters'

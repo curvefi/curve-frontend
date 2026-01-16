@@ -1,5 +1,4 @@
 import {
-  Balances,
   CurveApi,
   ChainId,
   RFormType,
@@ -46,7 +45,5 @@ export type TransferProps = {
   poolAlert: PoolAlert | null
   maxSlippage: string
   seed: Seed
-  userPoolBalances: Balances | undefined
-  userPoolBalancesLoading: boolean
   tokensMapper: TokensMapper
 } & PageTransferProps

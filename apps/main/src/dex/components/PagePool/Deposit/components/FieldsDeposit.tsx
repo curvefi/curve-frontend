@@ -1,16 +1,19 @@
 import { BigNumber } from 'bignumber.js'
 import lodash from 'lodash'
 import { useCallback, useMemo } from 'react'
-import FieldToken from '@/dex/components/PagePool/components/FieldToken'
+import type { Address } from 'viem'
+import { useConnection } from 'wagmi'
+import { FieldToken } from '@/dex/components/PagePool/components/FieldToken'
 import type { FormValues, LoadMaxAmount } from '@/dex/components/PagePool/Deposit/types'
 import { FieldsWrapper } from '@/dex/components/PagePool/styles'
 import type { TransferProps } from '@/dex/components/PagePool/types'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { usePoolIdByAddressOrId } from '@/dex/hooks/usePoolIdByAddressOrId'
-import useStore from '@/dex/store/useStore'
+import { useStore } from '@/dex/store/useStore'
 import type { CurrencyReserves } from '@/dex/types/main.types'
 import { getChainPoolIdActiveKey } from '@/dex/utils'
-import Checkbox from '@ui/Checkbox'
+import { Checkbox } from '@ui/Checkbox'
+import { useTokenBalances } from '@ui-kit/hooks/useTokenBalance'
 import { t } from '@ui-kit/lib/i18n'
 import { Amount } from '../../utils'
 
@@ -53,7 +56,8 @@ function calculateBalancedValues(
   })
 }
 
-const FieldsDeposit = ({
+export const FieldsDeposit = ({
+  chainId,
   formProcessing,
   formValues,
   haveSigner,
@@ -63,9 +67,9 @@ const FieldsDeposit = ({
   poolDataCacheOrApi,
   routerParams: { rChainId, rPoolIdOrAddress },
   tokensMapper,
-  userPoolBalances,
   updateFormValues,
 }: {
+  chainId: number | undefined
   blockchainId: string
   formProcessing: boolean
   formValues: FormValues
@@ -76,9 +80,8 @@ const FieldsDeposit = ({
     loadMaxAmount: LoadMaxAmount | null,
     updatedMaxSlippage: string | null,
   ) => void
-} & Pick<TransferProps, 'poolData' | 'poolDataCacheOrApi' | 'routerParams' | 'tokensMapper' | 'userPoolBalances'>) => {
+} & Pick<TransferProps, 'poolData' | 'poolDataCacheOrApi' | 'routerParams' | 'tokensMapper'>) => {
   const { data: network } = useNetworkByChain({ chainId: rChainId })
-  const balancesLoading = useStore((state) => state.user.walletBalancesLoading)
   const maxLoading = useStore((state) => state.poolDeposit.maxLoading)
   const setPoolIsWrapped = useStore((state) => state.pools.setPoolIsWrapped)
   const poolId = usePoolIdByAddressOrId({ chainId: rChainId, poolIdOrAddress: rPoolIdOrAddress })
@@ -129,6 +132,13 @@ const FieldsDeposit = ({
     },
     [poolDataCacheOrApi.tokenAddresses, updateFormValues],
   )
+
+  const { address: userAddress } = useConnection()
+  const { data: userPoolBalances, isLoading: balancesLoading } = useTokenBalances({
+    chainId,
+    userAddress,
+    tokenAddresses: poolDataCacheOrApi.tokenAddresses as Address[],
+  })
 
   return (
     <FieldsWrapper>
@@ -203,5 +213,3 @@ const FieldsDeposit = ({
     </FieldsWrapper>
   )
 }
-
-export default FieldsDeposit

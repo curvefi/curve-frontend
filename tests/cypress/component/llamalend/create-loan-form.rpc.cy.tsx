@@ -1,11 +1,11 @@
 import { useMemo } from 'react'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 import { prefetchMarkets } from '@/lend/entities/chain/chain-query'
-import { BorrowPreset } from '@/llamalend/constants'
+import { LoanPreset } from '@/llamalend/constants'
 import { CreateLoanForm } from '@/llamalend/features/borrow/components/CreateLoanForm'
-import type { OnBorrowFormUpdate } from '@/llamalend/features/borrow/types'
+import type { OnCreateLoanFormUpdate } from '@/llamalend/features/borrow/types'
 import type { CreateLoanOptions } from '@/llamalend/mutations/create-loan.mutation'
-import networks from '@/loan/networks'
+import { networks } from '@/loan/networks'
 import { oneBool, oneValueOf } from '@cy/support/generators'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import { createTenderlyWagmiConfigFromVNet, createVirtualTestnet } from '@cy/support/helpers/tenderly'
@@ -36,7 +36,7 @@ const MARKETS = {
 }
 const oneEthInWei = '0xde0b6b3a7640000' // 1 ETH=1e18 wei
 
-const onUpdate: OnBorrowFormUpdate = async (form) => console.info('form updated', form)
+const onUpdate: OnCreateLoanFormUpdate = async (form) => console.info('form updated', form)
 
 type BorrowTabTestProps = { type: LlamaMarketType } & Pick<CreateLoanOptions, 'onCreated'>
 
@@ -142,10 +142,10 @@ describe('CreateLoanForm Component Tests', () => {
     assertLoanDetailsLoaded()
 
     // click max ltv and max borrow, then back to safe, expect error. Clear it by setting max again
-    cy.get(`[data-testid="loan-preset-${BorrowPreset.MaxLtv}"]`).click()
+    cy.get(`[data-testid="loan-preset-${LoanPreset.MaxLtv}"]`).click()
     cy.get('[data-testid="borrow-set-debt-to-max"]').should('not.exist') // should only render after loaded
     cy.get('[data-testid="borrow-set-debt-to-max"]', LOAD_TIMEOUT).click()
-    cy.get(`[data-testid="loan-preset-${BorrowPreset.Safe}"]`).click()
+    cy.get(`[data-testid="loan-preset-${LoanPreset.Safe}"]`).click()
     cy.get('[data-testid="helper-message-error"]', LOAD_TIMEOUT).should('contain.text', 'Debt is too high')
     cy.get('[data-testid="borrow-set-debt-to-max"]').click() // set max again to fix error
     cy.get('[data-testid="helper-message-error"]').should('not.exist')

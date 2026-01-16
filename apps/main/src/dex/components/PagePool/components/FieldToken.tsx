@@ -2,8 +2,8 @@ import { useCallback } from 'react'
 import { ethAddress } from 'viem'
 import { shortenTokenName } from '@/dex/utils'
 import { notFalsy } from '@curvefi/prices-api/objects.util'
-import Box from '@ui/Box'
-import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
+import { Box } from '@ui/Box'
+import { InputDebounced, InputMaxBtn, InputProvider } from '@ui/InputComp'
 import { formatNumber } from '@ui/utils'
 import { useLegacyTokenInput } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
@@ -31,7 +31,7 @@ type Props = {
   afterMaxClick?: (idx: number) => void
 }
 
-const FieldToken = ({
+export const FieldToken = ({
   idx,
   amount,
   balance,
@@ -117,5 +117,3 @@ const FieldToken = ({
     />
   )
 }
-
-export default FieldToken

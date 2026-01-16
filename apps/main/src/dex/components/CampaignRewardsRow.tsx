@@ -1,5 +1,5 @@
 import { styled } from 'styled-components'
-import CampaignRewardsComp from 'ui/src/CampaignRewards/CampaignRewardsComp'
+import { RewardsCompSmall as CampaignRewardsComp } from '@ui/CampaignRewards/CampaignRewardsComp'
 import type { CampaignPoolRewards } from '@ui-kit/entities/campaigns'
 
 interface Props {
@@ -7,7 +7,7 @@ interface Props {
   mobile?: boolean
 }
 
-const CampaignRewardsRow = ({ rewardItems, mobile = false }: Props) => (
+export const CampaignRewardsRow = ({ rewardItems, mobile = false }: Props) => (
   <Container mobile={mobile}>
     {rewardItems.map((rewardItem, index) => (
       <CampaignRewardsComp
@@ -29,5 +29,3 @@ const Container = styled.div<{ mobile: boolean }>`
     justify-content: ${({ mobile }) => (mobile ? 'start' : 'end')};
   }
 `
-
-export default CampaignRewardsRow

@@ -1,12 +1,12 @@
 import { styled } from 'styled-components'
 import type { ExchangeRate } from '@/dex/components/PageRouterSwap/types'
-import Box from '@ui/Box'
+import { Box } from '@ui/Box'
 import { DetailInfo } from '@ui/DetailInfo'
-import Chip from '@ui/Typography/Chip'
+import { Chip } from '@ui/Typography/Chip'
 import { formatNumber, getFractionDigitsOptions } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 
-const DetailInfoExchangeRate = ({
+export const DetailInfoExchangeRate = ({
   exchangeRates,
   loading,
 }: {
@@ -53,5 +53,3 @@ const DetailInfoExchangeRate = ({
 const StyledDetailInfo = styled(DetailInfo)`
   align-items: flex-start;
 `
-
-export default DetailInfoExchangeRate

@@ -1,162 +1,60 @@
 import lodash from 'lodash'
 import { type ReactNode, useMemo, useState } from 'react'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import { notFalsy } from '@curvefi/prices-api/objects.util'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
-import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
-import CardHeader from '@mui/material/CardHeader'
 import Divider from '@mui/material/Divider'
-import MenuList from '@mui/material/MenuList'
 import Stack from '@mui/material/Stack'
+import { TokenSection, type TokenSectionProps } from '@ui-kit/features/select-token/ui/modal/TokenSection'
+import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { SearchField } from '@ui-kit/shared/ui/SearchField'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { searchByText } from '@ui-kit/utils/searchText'
-import { blacklist } from '../../blacklist'
 import type { TokenOption as Option } from '../../types'
 import { ErrorAlert } from './ErrorAlert'
 import { FavoriteTokens } from './FavoriteTokens'
-import { TokenOption } from './TokenOption'
 
-const { Spacing, ButtonSize } = SizesAndSpaces
+const { Spacing } = SizesAndSpaces
 
-export type TokenSectionProps = Required<
-  Pick<TokenListProps, 'tokens' | 'balances' | 'tokenPrices' | 'disabledTokens'>
-> &
-  Required<Pick<TokenListCallbacks, 'onToken'>> & {
-    title?: string
-    /** The label to show on the button that expands the section to show all */
-    showAllLabel?: string
-    /** List of tokens visible before "Show more" is clicked */
-    preview: Option[]
-    onShowAll: () => void
+export type TokenListProps = Pick<TokenSectionProps, 'tokens' | 'onToken'> &
+  Pick<TokenSectionProps, 'balances' | 'tokenPrices' | 'disabledTokens' | 'isLoading'> & {
+    /** Callback when user enters text in the search input (debounced) */
+    onSearch?: (search: string) => void
+    /** List of favorite token options to display at the top */
+    favorites?: Option[]
+    /** Custom error message to display (e.g., when tokens failed to load) */
+    error?: string
+    /** Disable automatic sorting of tokens and apply your own sorting of the tokens property */
+    disableSorting?: boolean
+    /** Disable the "My Tokens" section that shows tokens with non-zero balances */
+    disableMyTokens?: boolean
+    /** Disable the search input field */
+    disableSearch?: boolean
+    /** Custom React nodes to render below favorites section */
+    children?: ReactNode
   }
-
-const TokenSection = ({
-  title,
-  showAllLabel,
-  preview,
-  tokens,
-  balances,
-  tokenPrices,
-  disabledTokens,
-  onToken,
-  onShowAll,
-}: TokenSectionProps) => {
-  if (!tokens.length) return null
-
-  const displayTokens = preview.length === 0 ? tokens : preview
-  const hasMore = preview.length > 0 && preview.length < tokens.length
-
-  // If there's a list of preview tokens, show that with a 'Show more' button.
-  // If not, then just display all tokens from the list.
-  return (
-    <>
-      {title && (
-        <Box
-          sx={{
-            position: 'sticky',
-            top: 0,
-            zIndex: 1,
-            backgroundColor: (theme) => theme.palette.background.paper,
-          }}
-        >
-          <CardHeader title={title} size="small" />
-          <Divider />
-        </Box>
-      )}
-
-      <MenuList variant="menu" sx={{ paddingBlock: 0 }}>
-        {displayTokens.map((token) => {
-          const blacklistEntry = blacklist.find(
-            (x) => x.address.toLocaleLowerCase() === token.address.toLocaleLowerCase(),
-          )
-
-          return (
-            <TokenOption
-              key={token.address}
-              {...token}
-              balance={balances[token.address]}
-              tokenPrice={tokenPrices[token.address]}
-              disabled={disabledTokens.includes(token.address) || !!blacklistEntry}
-              disabledReason={blacklistEntry?.reason}
-              onToken={() => onToken(token)}
-            />
-          )
-        })}
-
-        {hasMore && (
-          <Button
-            fullWidth
-            variant="link"
-            color="ghost"
-            size="medium"
-            endIcon={<ExpandMoreIcon />}
-            onClick={onShowAll}
-            // Override variant button height to match menu list item height, so !important is required over '&'.
-            sx={{ height: `${ButtonSize.md} !important` }}
-          >
-            {showAllLabel || t`Show more`}
-          </Button>
-        )}
-      </MenuList>
-    </>
-  )
-}
-
-// Prevent all the token options from re-rendering if only the balance of a single one has changed.
-export type TokenListCallbacks = {
-  /** Callback when a token is selected */
-  onToken: (token: Option) => void
-  /** Callback when user enters text in the search input (debounced) */
-  onSearch: (search: string) => void
-}
-
-export type TokenListProps = {
-  /** List of token options to display */
-  tokens: Option[]
-  /** List of favorite token options to display at the top */
-  favorites: Option[]
-  /** Token balances mapped by token address */
-  balances: Record<string, string | undefined>
-  /** Token prices in USD mapped by token address */
-  tokenPrices: Record<string, number | undefined>
-  /** Whether to show the search input field */
-  showSearch: boolean
-  /** Custom error message to display (e.g., when tokens failed to load) */
-  error?: string
-  /** List of token addresses that should be disabled/unselectable */
-  disabledTokens: string[]
-  /** Disable automatic sorting of tokens and apply your own sorting of the tokens property */
-  disableSorting: boolean
-  /** Disable the "My Tokens" section that shows tokens with non-zero balances */
-  disableMyTokens: boolean
-  /** Custom React nodes to render below favorites section */
-  customOptions: ReactNode
-}
-
-export type Props = TokenListProps & TokenListCallbacks
 
 export const TokenList = ({
   tokens,
   favorites,
   balances,
   tokenPrices,
-  showSearch,
   error,
   disabledTokens,
-  disableSorting,
-  disableMyTokens,
-  customOptions,
+  isLoading = false,
+  disableSorting = false,
+  disableMyTokens = false,
+  disableSearch = false,
+  children,
   onToken,
   onSearch,
-}: Props) => {
+}: TokenListProps) => {
   const [search, setSearch] = useState('')
-  const [showPreviewMy, setShowPreviewMy] = useState(true)
-  const [showPreviewAll, setShowPreviewAll] = useState(true)
+  const [showPreviewMy, , closeShowPreviewMy] = useSwitch(true)
+  const [showPreviewAll, , closeShowPreviewAll] = useSwitch(true)
 
-  const showFavorites = favorites.length > 0 && !search
+  const showFavorites = !!favorites?.length && !search
 
   const tokensSearched = useMemo(() => {
     if (!search) return tokens
@@ -181,15 +79,15 @@ export const TokenList = ({
   const myTokens = useMemo(() => {
     if (disableMyTokens) return []
 
-    const balanceTokens = tokensSearched.filter((token) => +(balances[token.address] ?? 0) > 0)
+    const balanceTokens = tokensSearched.filter((token) => +(balances?.[token.address] ?? 0) > 0)
 
     if (!disableSorting) {
       // Sort tokens with balance by balance (USD then raw)
       balanceTokens.sort((a, b) => {
-        const aBalance = +(balances[a.address] ?? 0)
-        const bBalance = +(balances[b.address] ?? 0)
-        const aBalanceUsd = (tokenPrices[a.address] ?? 0) * aBalance
-        const bBalanceUsd = (tokenPrices[b.address] ?? 0) * bBalance
+        const aBalance = +(balances?.[a.address] ?? 0)
+        const bBalance = +(balances?.[b.address] ?? 0)
+        const aBalanceUsd = (tokenPrices?.[a.address] ?? 0) * aBalance
+        const bBalanceUsd = (tokenPrices?.[b.address] ?? 0) * bBalance
 
         return bBalanceUsd - aBalanceUsd || bBalance - aBalance
       })
@@ -208,16 +106,16 @@ export const TokenList = ({
     if (!showPreviewMy) return []
 
     const totalUsdBalance = myTokens.reduce((sum, token) => {
-      const balance = +(balances[token.address] ?? 0)
-      const price = tokenPrices[token.address] ?? 0
+      const balance = +(balances?.[token.address] ?? 0)
+      const price = tokenPrices?.[token.address] ?? 0
       return sum + balance * price
     }, 0)
 
     const threshold = totalUsdBalance * 0.01
 
     return myTokens.filter((token: Option) => {
-      const balance = +(balances[token.address] ?? 0)
-      const price = tokenPrices[token.address] ?? 0
+      const balance = +(balances?.[token.address] ?? 0)
+      const price = tokenPrices?.[token.address] ?? 0
 
       // We used to include tokens with a balance > 0, but no $ price (0),
       // but it turns out that way quite a few scam tokens show up in the preview.
@@ -234,25 +132,18 @@ export const TokenList = ({
    * This keeps the UI clean while ensuring all tokens remain accessible.
    */
   const allTokens = useMemo(() => {
-    const allTokensBase = disableMyTokens
-      ? tokensSearched
-      : tokensSearched.filter((token) => +(balances[token.address] ?? 0) === 0)
+    const allTokensBase = notFalsy(
+      disableMyTokens ? tokensSearched : tokensSearched.filter((token) => +(balances?.[token.address] ?? 0) === 0),
 
-    // Add tokens that have balance but aren't in the preview (dust tokens)
-    // Only add dust tokens if we're still showing the preview (showPreviewMy is true)
-    // When showPreviewMy is false, those dust tokens should be in the myTokens section
-    const dustTokens = showPreviewMy
-      ? myTokens.filter((token) => !previewMy.some((previewToken) => previewToken.address === token.address))
-      : []
-
-    allTokensBase.push(...dustTokens)
-
-    if (!disableSorting) {
-      // Sort all non-balance tokens by volume then symbol
-      allTokensBase.sort((a, b) => (b.volume ?? 0) - (a.volume ?? 0) || a.symbol.localeCompare(b.symbol))
-    }
-
-    return allTokensBase
+      showPreviewMy &&
+        // Add tokens that have balance but aren't in the preview (dust tokens)
+        // Only add dust tokens if we're still showing the preview (showPreviewMy is true)
+        // When showPreviewMy is false, those dust tokens should be in the myTokens section
+        myTokens.filter((token) => !previewMy.some((previewToken) => previewToken.address === token.address)),
+    ).flat()
+    return disableSorting
+      ? allTokensBase
+      : allTokensBase.sort((a, b) => (b.volume ?? 0) - (a.volume ?? 0) || a.symbol.localeCompare(b.symbol))
   }, [disableMyTokens, tokensSearched, showPreviewMy, myTokens, disableSorting, balances, previewMy])
 
   /**
@@ -262,27 +153,23 @@ export const TokenList = ({
    * This limit prevents rendering too many tokens at once, improving performance
    * while still showing users a meaningful selection of available tokens.
    */
-  const previewAll = useMemo(() => {
-    if (!showPreviewAll) return []
-
-    return allTokens.slice(0, 300)
-  }, [allTokens, showPreviewAll])
+  const previewAll = useMemo(() => (showPreviewAll ? allTokens.slice(0, 300) : []), [allTokens, showPreviewAll])
 
   return (
     <Stack gap={Spacing.sm} sx={{ overflowY: 'auto' }}>
-      {showSearch && (
+      {!disableSearch && (
         <SearchField
           name="tokenName"
           onSearch={(val) => {
             setSearch(val)
-            onSearch(val)
+            onSearch?.(val)
           }}
         />
       )}
 
       {showFavorites && <FavoriteTokens tokens={favorites} onToken={onToken} />}
-      {showFavorites && customOptions && <Divider />}
-      {customOptions}
+      {showFavorites && children && <Divider />}
+      {children}
 
       {error ? (
         <ErrorAlert error={error} />
@@ -300,7 +187,8 @@ export const TokenList = ({
             disabledTokens={disabledTokens}
             preview={previewMy}
             showAllLabel={t`Show dust`}
-            onShowAll={() => setShowPreviewMy(false)}
+            isLoading={isLoading}
+            onShowAll={closeShowPreviewMy}
             onToken={onToken}
           />
 
@@ -311,7 +199,8 @@ export const TokenList = ({
             tokenPrices={tokenPrices}
             disabledTokens={disabledTokens}
             preview={previewAll}
-            onShowAll={() => setShowPreviewAll(false)}
+            isLoading={isLoading}
+            onShowAll={closeShowPreviewAll}
             onToken={onToken}
           />
         </Stack>

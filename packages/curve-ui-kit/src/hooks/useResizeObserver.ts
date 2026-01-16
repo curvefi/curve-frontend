@@ -30,7 +30,7 @@ type ResizeObserverOptions = {
  *   }
  * }, [height]);
  */
-export default function useResizeObserver(
+export function useResizeObserver(
   elementRef: RefObject<Element | null>,
   { threshold = 10 }: ResizeObserverOptions = {},
 ) {

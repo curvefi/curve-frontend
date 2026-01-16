@@ -1,21 +1,19 @@
 import lodash from 'lodash'
 import { create, StoreApi } from 'zustand'
 import { devtools, persist, type PersistOptions } from 'zustand/middleware'
-import createCacheSlice, { CacheSlice } from '@/dex/store/createCacheSlice'
-import createCreatePoolSlice, { CreatePoolSlice } from '@/dex/store/createCreatePoolSlice'
-import createDashboardSlice, { DashboardSlice } from '@/dex/store/createDashboardSlice'
-import createDeployGaugeSlice, { DeployGaugeSlice } from '@/dex/store/createDeployGaugeSlice'
-import createGlobalSlice, { GlobalSlice } from '@/dex/store/createGlobalSlice'
-import createIntegrationsSlice, { IntegrationsSlice } from '@/dex/store/createIntegrationsSlice'
-import createPoolDepositSlice, { PoolDepositSlice } from '@/dex/store/createPoolDepositSlice'
-import createPoolListSlice, { PoolListSlice } from '@/dex/store/createPoolListSlice'
-import createPoolsSlice, { PoolsSlice } from '@/dex/store/createPoolsSlice'
-import createPoolSwapSlice, { PoolSwapSlice } from '@/dex/store/createPoolSwapSlice'
-import createPoolWithdrawSlice, { PoolWithdrawSlice } from '@/dex/store/createPoolWithdrawSlice'
-import createQuickSwapSlice, { QuickSwapSlice } from '@/dex/store/createQuickSwapSlice'
-import createTokensSlice, { TokensSlice } from '@/dex/store/createTokensSlice'
-import createUserBalancesSlice, { UserBalancesSlice } from '@/dex/store/createUserBalancesSlice'
-import createUserSlice, { UserSlice } from '@/dex/store/createUserSlice'
+import { CacheSlice, createCacheSlice } from '@/dex/store/createCacheSlice'
+import { CreatePoolSlice, createCreatePoolSlice } from '@/dex/store/createCreatePoolSlice'
+import { DashboardSlice, createDashboardSlice } from '@/dex/store/createDashboardSlice'
+import { DeployGaugeSlice, createDeployGaugeSlice } from '@/dex/store/createDeployGaugeSlice'
+import { GlobalSlice, createGlobalSlice } from '@/dex/store/createGlobalSlice'
+import { PoolDepositSlice, createPoolDepositSlice } from '@/dex/store/createPoolDepositSlice'
+import { PoolListSlice, createPoolListSlice } from '@/dex/store/createPoolListSlice'
+import { PoolsSlice, createPoolsSlice } from '@/dex/store/createPoolsSlice'
+import { PoolSwapSlice, createPoolSwapSlice } from '@/dex/store/createPoolSwapSlice'
+import { PoolWithdrawSlice, createPoolWithdrawSlice } from '@/dex/store/createPoolWithdrawSlice'
+import { QuickSwapSlice, createQuickSwapSlice } from '@/dex/store/createQuickSwapSlice'
+import { TokensSlice, createTokensSlice } from '@/dex/store/createTokensSlice'
+import { UserSlice, createUserSlice } from '@/dex/store/createUserSlice'
 
 const { debounce, merge } = lodash
 
@@ -28,11 +26,9 @@ export type State = GlobalSlice &
   UserSlice &
   PoolListSlice &
   QuickSwapSlice &
-  UserBalancesSlice &
   DashboardSlice &
   TokensSlice &
   CreatePoolSlice &
-  IntegrationsSlice &
   DeployGaugeSlice
 
 const store = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): State => ({
@@ -46,10 +42,8 @@ const store = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState'
   ...createUserSlice(set, get),
   ...createDashboardSlice(set, get),
   ...createQuickSwapSlice(set, get),
-  ...createUserBalancesSlice(set, get),
   ...createTokensSlice(set, get),
   ...createCreatePoolSlice(set, get),
-  ...createIntegrationsSlice(set, get),
   ...createDeployGaugeSlice(set, get),
 })
 
@@ -77,7 +71,5 @@ const cache: PersistOptions<State, Pick<State, 'storeCache'>> = {
   version: 19, // update version number to prevent UI from using cache
 }
 
-const useStore =
+export const useStore =
   process.env.NODE_ENV === 'development' ? create(devtools(persist(store, cache))) : create(persist(store, cache))
-
-export default useStore

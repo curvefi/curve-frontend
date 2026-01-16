@@ -94,8 +94,8 @@ const network = {
         }
       }
       return failedFetching24hOldVprice
-    } catch (error) {
-      console.warn(`Unable to fetch failedFetching24hOldVprice from ${url}`)
+    } catch (e) {
+      console.warn(`Unable to fetch failedFetching24hOldVprice from ${url}`, e.message)
       return failedFetching24hOldVprice
     }
   },
@@ -1218,26 +1218,6 @@ const wallet = {
     }
     return fetchedUserClaimable
   },
-  poolWalletBalances: async (curve: CurveApi, poolId: string) => {
-    log('poolUserPoolBalances', curve?.signerAddress, poolId)
-    const p = curve.getPool(poolId)
-    const [wrappedCoinBalances, underlyingBalances, lpTokenBalances] = await Promise.all([
-      p.wallet.wrappedCoinBalances(),
-      p.wallet.underlyingCoinBalances(),
-      p.wallet.lpTokenBalances(),
-    ])
-    const balances: { [tokenAddress: string]: string } = {}
-
-    Object.entries({
-      ...wrappedCoinBalances,
-      ...underlyingBalances,
-      ...lpTokenBalances,
-    }).forEach(([address, balance]) => {
-      balances[address] = new BN(balance as string).toString()
-    })
-
-    return balances
-  },
   userClaimableFees: async (curve: CurveApi, activeKey: string, walletAddress: string) => {
     log('userClaimableFees', activeKey, walletAddress)
     const resp = { activeKey, '3CRV': '', crvUSD: '', error: '' }
@@ -1434,7 +1414,7 @@ async function warnIncorrectEstGas(chainId: ChainId, estimatedGas: EstimatedGas)
   }
 }
 
-const curvejsApi = {
+export const curvejsApi = {
   helpers,
   network,
   router,
@@ -1445,5 +1425,3 @@ const curvejsApi = {
   wallet,
   lockCrv,
 }
-
-export default curvejsApi

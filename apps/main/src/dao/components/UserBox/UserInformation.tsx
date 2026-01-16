@@ -1,16 +1,17 @@
 import { useMemo } from 'react'
 import { styled } from 'styled-components'
-import Loader from 'ui/src/Loader/Loader'
-import useStore from '@/dao/store/useStore'
+import { useConnection, useEnsName } from 'wagmi'
+import { useLockerVecrvUser } from '@/dao/entities/locker-vecrv-user'
 import { SnapshotVotingPower, ActiveProposal } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils'
-import Box from '@ui/Box'
-import InternalLink from '@ui/Link/InternalLink'
-import TooltipIcon from '@ui/Tooltip/TooltipIcon'
+import { Box } from '@ui/Box'
+import { InternalLink } from '@ui/Link/InternalLink'
+import { Loader } from '@ui/Loader/Loader'
+import { TooltipIcon } from '@ui/Tooltip/TooltipIcon'
 import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
-import { shortenAddress } from '@ui-kit/utils'
+import { Chain, shortenAddress } from '@ui-kit/utils'
 
 type Props = {
   noLink?: boolean
@@ -19,10 +20,10 @@ type Props = {
   votingPower?: SnapshotVotingPower
 }
 
-const UserInformation = ({ noLink, snapshotVotingPower, activeProposal, votingPower }: Props) => {
-  const userAddress = useStore((state) => state.user.userAddress)
-  const userEns = useStore((state) => state.user.userEns)
-  const userVeCrv = useStore((state) => state.user.userVeCrv)
+export const UserInformation = ({ noLink, snapshotVotingPower, activeProposal, votingPower }: Props) => {
+  const { address: userAddress } = useConnection()
+  const { data: userEns } = useEnsName({ address: userAddress })
+  const { data: userVeCrv } = useLockerVecrvUser({ chainId: Chain.Ethereum, userAddress })
 
   const decayedVeCrv = useMemo(() => {
     if (activeProposal?.active && votingPower) {
@@ -90,11 +91,7 @@ const UserInformation = ({ noLink, snapshotVotingPower, activeProposal, votingPo
                 <p>{t`Voting power at snapshot block ${votingPower.blockNumber}`}</p>
               </TooltipIcon>
             </Box>
-            {votingPower.loading ? (
-              <Loader isLightBg skeleton={[80, 16.5]} />
-            ) : (
-              <h4>{formatNumber(votingPower.value)} veCRV</h4>
-            )}
+            <h4>{formatNumber(votingPower.value)} veCRV</h4>
           </Box>
         )}
         {decayedVeCrv.decaying && votingPower?.value !== 0 && (
@@ -133,5 +130,3 @@ const SubTitle = styled.h4`
   font-size: var(--font-size-1);
   opacity: 0.5;
 `
-
-export default UserInformation

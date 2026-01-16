@@ -11,6 +11,7 @@ import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { MarketRateType } from '@ui-kit/types/market'
 import { LlamaMonitorBotButton } from './LlamaMonitorBotButton'
+import { UserPositionSummary } from './UserPositionsSummary'
 import { UserPositionsTable, type UserPositionsTableProps } from './UserPositionsTable'
 
 const { Spacing, Height } = SizesAndSpaces
@@ -38,12 +39,12 @@ export const UserPositionsTabs = (props: Omit<UserPositionsTableProps, 'tab' | '
       {
         value: MarketRateType.Borrow,
         label: t`Borrowing`,
-        endAdornment: openPositionsCount[MarketRateType.Borrow],
+        suffix: openPositionsCount[MarketRateType.Borrow],
       },
       {
         value: MarketRateType.Supply,
         label: t`Lending`,
-        endAdornment: openPositionsCount[MarketRateType.Supply],
+        suffix: openPositionsCount[MarketRateType.Supply],
       },
     ],
     [openPositionsCount],
@@ -59,6 +60,7 @@ export const UserPositionsTabs = (props: Omit<UserPositionsTableProps, 'tab' | '
 
   // Update tab when defaultTab changes (e.g., when user positions data loads)
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setTab(defaultTab.value)
   }, [defaultTab.value])
 
@@ -80,6 +82,7 @@ export const UserPositionsTabs = (props: Omit<UserPositionsTableProps, 'tab' | '
       </Stack>
       {address ? (
         <>
+          <UserPositionSummary markets={markets} tab={tab} />
           <Stack
             direction="row"
             justifyContent="space-between"
@@ -89,7 +92,7 @@ export const UserPositionsTabs = (props: Omit<UserPositionsTableProps, 'tab' | '
               backgroundColor: (t) => t.design.Layer[1].Fill,
             }}
           >
-            <TabsSwitcher value={tab} onChange={setTab} variant="underlined" size="small" options={tabs} />
+            <TabsSwitcher value={tab} onChange={setTab} variant="underlined" options={tabs} />
             <Stack
               alignItems="center"
               direction="row"

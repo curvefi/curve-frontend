@@ -9,7 +9,7 @@ import {
 } from '@/loan/components/PageMintMarket/LoanDeleverage/utils'
 import type { FormEstGas } from '@/loan/components/PageMintMarket/types'
 import { DEFAULT_FORM_EST_GAS } from '@/loan/components/PageMintMarket/utils'
-import networks from '@/loan/networks'
+import { networks } from '@/loan/networks'
 import type { State } from '@/loan/store/useStore'
 import { ChainId, LlamaApi, Llamma, UserLoanDetails } from '@/loan/types/loan.types'
 import { useWallet } from '@ui-kit/features/connect-wallet'
@@ -50,8 +50,8 @@ const DEFAULT_STATE: SliceState = {
   formValues: DEFAULT_FORM_VALUES,
 }
 
-const createLoanDeleverageSlice = (
-  set: StoreApi<State>['setState'],
+export const createLoanDeleverageSlice = (
+  _set: StoreApi<State>['setState'],
   get: StoreApi<State>['getState'],
 ): LoanDeleverageSlice => ({
   [sliceKey]: {
@@ -208,5 +208,3 @@ const createLoanDeleverageSlice = (
 function getActiveKey(llammaId: string, { collateral, isFullRepay }: FormValues, maxSlippage: string) {
   return `${llammaId}-collateral-${collateral}-${isFullRepay}-${maxSlippage}`
 }
-
-export default createLoanDeleverageSlice

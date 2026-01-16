@@ -17,10 +17,14 @@ jobs:
         with:
           node-version: 24
           cache: yarn
+      - name: Restore cache
+        uses: ./.github/actions/restore-cache
       - run: yarn set version stable
       - run: yarn install --immutable
 
-      - run: yarn run cy:run:rpc --browser electron # rpc tests are expensive, stick to one browser
+      - run: |
+          set -o pipefail # fail tee if the main command fails
+          yarn run cy:run:rpc --browser electron 2>&1 | tee ../rpc-cypress.log # rpc tests are expensive, stick to one browser
         working-directory: tests
         env:
           ELECTRON_ENABLE_LOGGING: true # Electron writes console to stdout
@@ -34,3 +38,11 @@ jobs:
         with:
           name: cypress-rpc
           path: tests/cypress/screenshots
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: rpc-cypress-log
+          path: rpc-cypress.log
+          retention-days: 3
+          if-no-files-found: error

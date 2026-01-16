@@ -7,7 +7,7 @@ import { getInternalUrl } from '@ui-kit/shared/routes'
 import { InlineLink } from '@ui-kit/shared/ui/InlineLink'
 import { PoolAlertMessage } from '../components/pool-alert-messages'
 
-const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
+export const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
   const params = useParams<UrlParams>()
 
   const poolAddress = poolData?.pool.address
@@ -69,8 +69,8 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
           title: t`Deprecated Pool`,
           subtitle: (
             <Trans>
-              This pool has been deprecated. Please use the{' '}
-              <InlineLink href={prismaPoolHref}>PRISMA/yPRISMA</InlineLink> pool instead.
+              This pool has been deprecated. Please use the <InlineLink to={prismaPoolHref}>PRISMA/yPRISMA</InlineLink>{' '}
+              pool instead.
             </Trans>
           ),
         },
@@ -92,14 +92,14 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
             <Trans>
               Please note that exchanges on synthetix synths are expected to be disabled and users can either withdraw
               liquidity from the underlying token, or redeem their synths to sUSD on{' '}
-              <InlineLink href="https://staking.synthetix.io/wallet/balances/">synthetix.io</InlineLink>
+              <InlineLink to="https://staking.synthetix.io/wallet/balances/">synthetix.io</InlineLink>
             </Trans>
           </p>
           <p>
             <Trans>
               Users are encouraged to exit the pools in order to avoid getting their holdings&lsquo; value diluted with
               the discountRate For more information please refer to{' '}
-              <InlineLink href="https://gov.curve.finance/t/kill-gauges-on-all-non-susd-curve-pools-on-ethereum/10033/2">
+              <InlineLink to="https://gov.curve.finance/t/kill-gauges-on-all-non-susd-curve-pools-on-ethereum/10033/2">
                 gov.curve.finance
               </InlineLink>
             </Trans>
@@ -130,16 +130,17 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
       alertType: 'danger',
       isDisableDeposit: true,
       isDisableSwap: true,
+      isDisableWithdrawOnly: true,
       isInformationOnly: true,
       isCloseOnTooltipOnly: true,
       banner: {
         title: t`Synthetix USD Deprecated`,
-        subtitle: t`Pool is deprecated. Deposit and swap are disabled.`,
+        subtitle: t`Pool is deprecated. Deposit, swap and withdraw are disabled.`,
         learnMoreUrl: 'https://x.com/synthetix_io/status/1953054538610688198',
       },
       message: (
         <PoolAlertMessage>
-          <p>{t`This pool is in withdraw only mode.`}</p>
+          <p>{t`This pool is disabled. You can still claim your rewards.`}</p>
         </PoolAlertMessage>
       ),
     })
@@ -161,7 +162,7 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
         <PoolAlertMessage>
           <p>
             <Trans>
-              Deposit on <InlineLink href="https://yieldbasis.com">yieldbasis.com</InlineLink>
+              Deposit on <InlineLink to="https://yieldbasis.com">yieldbasis.com</InlineLink>
             </Trans>
           </p>
         </PoolAlertMessage>
@@ -194,7 +195,7 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
           <p>
             <Trans>
               Deposit and Swap with wBTC.e will return an error due to an Aave community decision to freeze this asset.{' '}
-              <InlineLink href="https://app.aave.com/governance/v3/proposal/?proposalId=2">More details</InlineLink>
+              <InlineLink to="https://app.aave.com/governance/v3/proposal/?proposalId=2">More details</InlineLink>
             </Trans>
           </p>
         </PoolAlertMessage>
@@ -255,6 +256,25 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
       ),
     })
 
+    // Pool creator configured bad price oracles, leading to users losing funds.
+    const misconfiguredPoolsAlert = (): PoolAlert => ({
+      alertType: 'danger',
+      isDisableDeposit: true,
+      isDisableSwap: true,
+      isInformationOnly: true,
+      isInformationOnlyAndShowInForm: true,
+      isCloseOnTooltipOnly: true,
+      banner: {
+        title: t`Misconfigured Pool`,
+        subtitle: t`This pool has been misconfigured. It has been set to withdraw only.`,
+      },
+      message: (
+        <PoolAlertMessage>
+          <p>{t`This pool is in withdraw only mode.`}</p>
+        </PoolAlertMessage>
+      ),
+    })
+
     // prettier-ignore
     const alerts: { [poolAddress: string]: PoolAlert } = {
       // ethereum
@@ -277,13 +297,33 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
       '0x83f24023d15d835a213df24fd309c47dab5beb32': yieldbasisAlert(),
       '0xf1f435b05d255a5dbde37333c0f61da6f69c6127': yieldbasisAlert(),
       '0xd9ff8396554a0d18b2cfbec53e1979b7ecce8373': yieldbasisAlert(),
+      '0x6e5492f8ea2370844ee098a56dd88e1717e4a9c2': yieldbasisAlert(),
       '0x06cf5f9b93e9fcfdb33d6b3791eb152567cd8d36': uspdioAlert(),
 
       // arbitrum
       '0x960ea3e3c7fb317332d990873d354e18d7645590': possibleVyperExploitedAlert(), // tricrypto
+      '0xc55be2dc490578560a030b6ba387aba0fe03cc73': misconfiguredPoolsAlert(),
+      '0xc5f069dd8112614673890aa21d8989d5d0db69d8': misconfiguredPoolsAlert(),
+      '0x2e6cfeeb00038f6a88a008e8b3c2bbd2f6c6bf9f': misconfiguredPoolsAlert(),
+      '0x2b7dcdc718e03749de0a138c56b0e18f9750134b': misconfiguredPoolsAlert(),
+      '0x533482d1d126ad8dd1ed925655b717a3425adf39': misconfiguredPoolsAlert(),
+      '0xc1005bbafa47f8aeb084646ffd83fd8dada3bb3b': misconfiguredPoolsAlert(),
+      '0x8afce00f46938db8e958fa7f8a1f4626c26242b7': misconfiguredPoolsAlert(),
+      '0xf9ae77094ae7308debf9ea25aeb3c8ab55714f32': misconfiguredPoolsAlert(),
+      '0x172cb45033b5495ca66f6866a01aa87cbad8f560': misconfiguredPoolsAlert(),
+      '0x4f4dcb8d373c26cc7db78ad1dc5ffdfcb45f4e55': misconfiguredPoolsAlert(),
+      '0x60d7ce16f815ea69e803c8146b8c32c84cc9982b': misconfiguredPoolsAlert(),
+      '0x03e9f4a7dcf587a5437f2d0332e35a73ded52d7d': misconfiguredPoolsAlert(),
+      '0x14515323e5c48e0ae75ad333e885cf050d0e3d9b': misconfiguredPoolsAlert(),
+      '0x11fd5664121e9b464b5e8434aa7d70b8e9146ca6': misconfiguredPoolsAlert(),
+      '0x2ff3ba10deb05573d2fae704a962183461d106d8': misconfiguredPoolsAlert(),
       
       // avalanche
       '0xb755b949c126c04e0348dd881a5cf55d424742b2': atricryptoAlert(),
+
+      // polygon
+      '0xbeb90d2d165d010706aca022a85a3b2d6a49eaa1': misconfiguredPoolsAlert(),
+      '0x810528a5086e997e39e12dccf02bad54a7bbe95b': misconfiguredPoolsAlert(),
 
       // monad
       '0x2fd13b49f970e8c6d89283056c1c6281214b7eb6': monadEthConverterAlert()
@@ -299,5 +339,3 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
     return null
   }, [poolAddress, params, hasVyperVulnerability])
 }
-
-export default usePoolAlert

@@ -2,19 +2,21 @@ import Fuse from 'fuse.js'
 import { useCallback, useState } from 'react'
 import { useFilter } from 'react-aria'
 import { useOverlayTriggerState } from 'react-stately'
-import ComboBox from '@/dao/components/ComboBoxSelectGauge/ComboBox'
-import ComboBoxSelectedGaugeButton from '@/dao/components/ComboBoxSelectGauge/ComboBoxSelectedGaugeButton'
+import { useConnection } from 'wagmi'
+import { ComboBox } from '@/dao/components/ComboBoxSelectGauge/ComboBox'
+import { ComboBoxSelectedGaugeButton } from '@/dao/components/ComboBoxSelectGauge/ComboBoxSelectedGaugeButton'
 import type { EndsWith } from '@/dao/components/ComboBoxSelectGauge/types'
 import { useUserGaugeWeightVotesQuery } from '@/dao/entities/user-gauge-weight-votes'
-import useStore from '@/dao/store/useStore'
+import { useGauges } from '@/dao/queries/gauges.query'
+import { useStore } from '@/dao/store/useStore'
 import { GaugeFormattedData } from '@/dao/types/dao.types'
 import { delayAction } from '@/dao/utils'
-import ModalDialog from '@ui/Dialog/ModalDialog'
+import { ModalDialog } from '@ui/Dialog/ModalDialog'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
 import { Chain } from '@ui-kit/utils/network'
 
-const ComboBoxGauges = ({
+export const ComboBoxGauges = ({
   disabled,
   listBoxHeight,
   testId,
@@ -30,18 +32,19 @@ const ComboBoxGauges = ({
   const { endsWith } = useFilter({ sensitivity: 'base' })
   const overlayTriggerState = useOverlayTriggerState({})
 
-  const userAddress = useStore((state) => state.user.userAddress)
+  const { address: userAddress } = useConnection()
   const selectedGauge = useStore((state) => state.gauges.selectedGauge)
   const setSelectedGauge = useStore((state) => state.gauges.setSelectedGauge)
   const setStateByKey = useStore((state) => state.gauges.setStateByKey)
-  const gaugeMapper = useStore((state) => state.gauges.gaugeMapper)
   const isMobile = useIsMobile()
+
+  const { data: gaugeMapper } = useGauges({})
 
   const { data: userGaugeWeightVotes } = useUserGaugeWeightVotesQuery({
     chainId: Chain.Ethereum, // DAO is only used on mainnet
     userAddress: userAddress ?? '',
   })
-  const gauges = Object.values(gaugeMapper)
+  const gauges = Object.values(gaugeMapper ?? {})
     .filter(
       (gauge) =>
         !userGaugeWeightVotes?.gauges.some(
@@ -64,8 +67,11 @@ const ComboBoxGauges = ({
   )
 
   const handleOnSelectChange = (gaugeAddress: string) => {
-    setSelectedGauge(gaugeMapper[gaugeAddress.toLowerCase()])
-    handleClose()
+    const gauge = gaugeMapper?.[gaugeAddress.toLowerCase()]
+    if (gauge) {
+      setSelectedGauge(gauge)
+      handleClose()
+    }
   }
 
   const handleOpen = () => {
@@ -133,5 +139,3 @@ function _filter(filterValue: string, endsWith: EndsWith, gauges: GaugeFormatted
     return gauges.filter((item) => endsWith(item.address, filterValue))
   }
 }
-
-export default ComboBoxGauges

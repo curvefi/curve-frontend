@@ -3,7 +3,7 @@ import Button from '@mui/material/Button'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import Stack from '@mui/material/Stack'
-import useResizeObserver from '@ui-kit/hooks/useResizeObserver'
+import { useResizeObserver } from '@ui-kit/hooks/useResizeObserver'
 import { ChevronDownIcon } from '@ui-kit/shared/icons/ChevronDownIcon'
 import { handleBreakpoints } from '@ui-kit/themes/basic-theme'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -85,6 +85,7 @@ export const ButtonMenu = <T extends string>({
 
       {options.length > 0 && (
         <Menu
+          // eslint-disable-next-line react-hooks/refs
           anchorEl={anchorEl.current}
           open={open}
           onClose={onClose}

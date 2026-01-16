@@ -1,7 +1,7 @@
 import { InputHTMLAttributes } from 'react'
 import { styled } from 'styled-components'
 import { useFocusRing } from '@react-aria/focus'
-import SearchInput from 'ui/src/SearchInput/index'
+import { SearchInput } from '@ui/SearchInput/index'
 
 interface Props extends InputHTMLAttributes<HTMLInputElement> {
   className?: string
@@ -11,7 +11,7 @@ interface Props extends InputHTMLAttributes<HTMLInputElement> {
   testId?: string
 }
 
-function SearchListInput({ className = '', searchText, handleInputChange, handleClose, ...inputProps }: Props) {
+export function SearchListInput({ className = '', searchText, handleInputChange, handleClose, ...inputProps }: Props) {
   const { isFocusVisible, focusProps } = useFocusRing()
 
   return (
@@ -30,5 +30,3 @@ function SearchListInput({ className = '', searchText, handleInputChange, handle
 const StyledSearchInput = styled(SearchInput)`
   min-height: 3.375rem; // 54px
 `
-
-export default SearchListInput

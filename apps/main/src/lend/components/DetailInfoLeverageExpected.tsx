@@ -2,7 +2,7 @@ import { DetailInfo } from '@ui/DetailInfo'
 import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 
-const DetailInfoLeverageExpected = ({
+export const DetailInfoLeverageExpected = ({
   total,
   loading,
   swapToSymbol,
@@ -17,5 +17,3 @@ const DetailInfoLeverageExpected = ({
     </strong>
   </DetailInfo>
 )
-
-export default DetailInfoLeverageExpected

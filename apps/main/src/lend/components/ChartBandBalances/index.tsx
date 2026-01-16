@@ -14,19 +14,19 @@ import {
   YAxis,
 } from 'recharts'
 import { styled } from 'styled-components'
-import ChartBandBalancesSettings from '@/lend/components/ChartBandBalances/ChartBandBalancesSettings'
+import { ChartBandBalancesSettings } from '@/lend/components/ChartBandBalances/ChartBandBalancesSettings'
 import type { BrushStartEndIndex } from '@/lend/components/ChartBandBalances/types'
-import ChartTooltip, { TipContent, TipIcon, TipTitle } from '@/lend/components/ChartTooltip'
-import useStore from '@/lend/store/useStore'
+import { TipContent, TipIcon, TipTitle, ChartTooltip } from '@/lend/components/ChartTooltip'
+import { useStore } from '@/lend/store/useStore'
 import { PageContentProps, ParsedBandsBalances } from '@/lend/types/lend.types'
-import AlertBox from '@ui/AlertBox'
-import Box from '@ui/Box'
-import Spinner, { SpinnerWrapper } from '@ui/Spinner'
-import TextCaption from '@ui/TextCaption'
+import { AlertBox } from '@ui/AlertBox'
+import { Box } from '@ui/Box'
+import { SpinnerWrapper, Spinner } from '@ui/Spinner'
+import { TextCaption } from '@ui/TextCaption'
 import { BN, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 
-const ChartBandBalances = ({
+export const ChartBandBalances = ({
   rChainId,
   rOwmId,
   brushIndex,
@@ -415,5 +415,3 @@ const StyledAlertBox = styled(AlertBox)`
   justify-content: center;
   margin: var(--spacing-narrow) 0;
 `
-
-export default ChartBandBalances

@@ -54,6 +54,7 @@ export const CurveProvider = <App extends AppName>({
     if (!network) return onChainUnavailable(walletChainId) // will redirect to the wallet's chain if supported
     if (network.chainId == walletChainId) return // all good
     if (isFocused) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setConnectState(LOADING)
       switchChainAsync({ chainId: network.chainId }).catch((e) => {
         console.error(`Error updating wallet chain from ${walletChainId} to ${network.chainId}`, e)
@@ -98,7 +99,7 @@ export const CurveProvider = <App extends AppName>({
         if (newLib) {
           console.info(
             `Initialized ${libKey} for ${network.name} (${network.chainId})`,
-            wallet ? `Wallet ${wallet?.account?.address} with chain ${walletChainId}` : 'without wallet',
+            wallet ? `Wallet ${wallet?.address} with chain ${walletChainId}` : 'without wallet',
             prevLib
               ? `Old library had ${prevLib.signerAddress ? `signer ${prevLib.signerAddress}` : 'no signer'} with chain ${prevLib.chainId}`
               : `First initialization`,

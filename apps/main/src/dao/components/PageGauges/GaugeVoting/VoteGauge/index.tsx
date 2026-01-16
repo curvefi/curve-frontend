@@ -1,14 +1,17 @@
 import { useState } from 'react'
 import { styled } from 'styled-components'
-import useStore from '@/dao/store/useStore'
+import { useConnection } from 'wagmi'
+import { useLockerVecrvUser } from '@/dao/entities/locker-vecrv-user'
+import { useStore } from '@/dao/store/useStore'
 import { GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
-import Box from '@ui/Box'
-import Icon from '@ui/Icon'
-import IconButton from '@ui/IconButton'
+import { Box } from '@ui/Box'
+import { Icon } from '@ui/Icon'
+import { IconButton } from '@ui/IconButton'
 import { t } from '@ui-kit/lib/i18n'
-import GaugeDetails from '../../GaugeListItem/GaugeDetails'
-import TitleComp from '../../GaugeListItem/TitleComp'
-import VoteGaugeField from '../VoteGaugeField'
+import { Chain } from '@ui-kit/utils'
+import { GaugeDetails } from '../../GaugeListItem/GaugeDetails'
+import { TitleComp } from '../../GaugeListItem/TitleComp'
+import { VoteGaugeField } from '../VoteGaugeField'
 
 type VoteGaugeProps = {
   gaugeData: GaugeFormattedData
@@ -16,10 +19,11 @@ type VoteGaugeProps = {
   powerUsed: number
 }
 
-const VoteGauge = ({ gaugeData, userGaugeVoteData, powerUsed }: VoteGaugeProps) => {
+export const VoteGauge = ({ gaugeData, userGaugeVoteData, powerUsed }: VoteGaugeProps) => {
+  const { address: userAddress } = useConnection()
   const [showDetails, setShowDetails] = useState(false)
   const setSelectedGauge = useStore((state) => state.gauges.setSelectedGauge)
-  const userVeCrv = useStore((state) => state.user.userVeCrv)
+  const { data: userVeCrv } = useLockerVecrvUser({ chainId: Chain.Ethereum, userAddress })
 
   return (
     <Wrapper showDetails={showDetails}>
@@ -34,7 +38,7 @@ const VoteGauge = ({ gaugeData, userGaugeVoteData, powerUsed }: VoteGaugeProps) 
         <VoteGaugeField
           newVote
           powerUsed={powerUsed}
-          userVeCrv={+userVeCrv.veCrv}
+          userVeCrv={+(userVeCrv?.veCrv ?? 0)}
           userGaugeVoteData={userGaugeVoteData}
         />
       </MainWrapper>
@@ -100,5 +104,3 @@ const StyledIconButton = styled(IconButton)<{ showDetails: boolean }>`
     margin: 0 0 0 auto;
   }
 `
-
-export default VoteGauge

@@ -7,9 +7,9 @@ import type {
   SearchedParams,
 } from '@/dex/components/PageRouterSwap/types'
 import { type RouterApiResponse, useOptimalRoute } from '@/dex/entities/router.query'
-import useTokensNameMapper from '@/dex/hooks/useTokensNameMapper'
+import { useTokensNameMapper } from '@/dex/hooks/useTokensNameMapper'
 import { getRouterWarningModal } from '@/dex/store/createQuickSwapSlice'
-import useStore from '@/dex/store/useStore'
+import { useStore } from '@/dex/store/useStore'
 import { ChainId, TokensNameMapper } from '@/dex/types/main.types'
 import { getExchangeRates } from '@/dex/utils/utilsSwap'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'

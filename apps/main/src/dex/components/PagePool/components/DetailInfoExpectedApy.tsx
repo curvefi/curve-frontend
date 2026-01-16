@@ -1,16 +1,16 @@
 import { useEffect, useState } from 'react'
 import { styled } from 'styled-components'
-import usePoolTotalStaked from '@/dex/hooks/usePoolTotalStaked'
+import { usePoolTotalStaked } from '@/dex/hooks/usePoolTotalStaked'
 import { PoolDataCacheOrApi } from '@/dex/types/main.types'
-import Box from '@ui/Box'
+import { Box } from '@ui/Box'
 import { DetailInfo } from '@ui/DetailInfo'
-import Icon from '@ui/Icon'
-import TooltipIcon from '@ui/Tooltip/TooltipIcon'
+import { Icon } from '@ui/Icon'
+import { TooltipIcon } from '@ui/Tooltip/TooltipIcon'
 import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { weiToEther } from '@ui-kit/utils'
 
-const DetailInfoExpectedApy = ({
+export const DetailInfoExpectedApy = ({
   crvApr,
   lpTokenAmount,
   poolDataCacheOrApi,
@@ -29,6 +29,7 @@ const DetailInfoExpectedApy = ({
       const gaugeTotalSupplyInEther = weiToEther(Number(gaugeTotalSupply))
       const newGaugeTotalLocked = Number(lpTokenAmount) + gaugeTotalSupplyInEther
       const newCrvApr = (gaugeTotalSupplyInEther / newGaugeTotalLocked) * crvApr
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setNewCrvApr({ ratio: crvApr / newCrvApr, apr: newCrvApr })
     } else {
       setNewCrvApr(null)
@@ -66,5 +67,3 @@ const StyledBox = styled(Box)`
     margin: 0 0.25rem;
   }
 `
-
-export default DetailInfoExpectedApy
