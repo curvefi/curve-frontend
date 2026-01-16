@@ -13,6 +13,7 @@ import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { Falsy, notFalsy } from '@curvefi/prices-api/objects.util'
 import Button from '@mui/material/Button'
 import { TokenSelector } from '@ui-kit/features/select-token'
+import { useModalState } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { Balance } from '@ui-kit/shared/ui/Balance'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
@@ -66,6 +67,7 @@ export const RepayForm = <ChainId extends IChainId>({
     onRepaid,
   })
   const { token, onToken, tokens } = useRepayTokens({ market, network })
+
   const selectedField = token?.field ?? 'userBorrowed'
   const selectedToken = selectedField == 'userBorrowed' ? borrowToken : collateralToken
   const swapRequired = selectedToken !== borrowToken
@@ -106,7 +108,7 @@ export const RepayForm = <ChainId extends IChainId>({
         testId={'repay-input-' + selectedField}
         network={network}
         tokenSelector={
-          <TokenSelector selectedToken={token} title={t`Select Repay Token`}>
+          <TokenSelector selectedToken={token} title={t`Select Repay Token`} {...useModalState()}>
             <RepayTokenList
               market={market}
               network={network}
@@ -136,10 +138,10 @@ export const RepayForm = <ChainId extends IChainId>({
         {isPending
           ? t`Processing...`
           : joinButtonText(
-              !isApproved?.data && t`Approve`,
+              isApproved?.data === false && t`Approve`,
               t`Repay`,
-              isFull.data && t`close position`,
-              !isFull.data && selectedField === 'stateCollateral' && t`from position`,
+              isFull.data && t`Close Position`,
+              isFull.data === false && selectedField === 'stateCollateral' && t`from Position`,
             )}
       </Button>
 
