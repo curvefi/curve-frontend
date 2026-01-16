@@ -3,10 +3,10 @@ import type { Config } from 'wagmi'
 import type { StoreApi } from 'zustand'
 import { curvejsApi } from '@/dex/lib/curvejs'
 import type { State } from '@/dex/store/useStore'
-import { Balances, CurveApi } from '@/dex/types/main.types'
+import { CurveApi } from '@/dex/types/main.types'
 import { fulfilledValue, isValidAddress } from '@/dex/utils'
+import type { IDict } from '@curvefi/api/lib/interfaces'
 import { shortenAccount } from '@ui/utils'
-import { fetchPoolTokenBalances } from '../hooks/usePoolTokenBalances'
 import { fetchPoolGaugeTokenBalance, fetchPoolLpTokenBalance } from '../hooks/usePoolTokenDepositBalances'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -15,7 +15,7 @@ const { cloneDeep } = lodash
 type SliceState = {
   userCrvApy: { [userPoolActiveKey: string]: { crvApy: number; boostApy: string } }
   userLiquidityUsd: { [userPoolActiveKey: string]: string }
-  userShare: { [userPoolActiveKey: string]: Balances | null }
+  userShare: { [userPoolActiveKey: string]: IDict<string> | null }
   userWithdrawAmounts: { [userPoolActiveKey: string]: string[] }
   loaded: boolean
   loading: boolean
@@ -26,12 +26,7 @@ const sliceKey = 'user'
 
 export type UserSlice = {
   [sliceKey]: SliceState & {
-    fetchUserPoolInfo(
-      config: Config,
-      curve: CurveApi,
-      poolId: string,
-      isFetchWalletBalancesOnly?: boolean,
-    ): Promise<Balances | void>
+    fetchUserPoolInfo(config: Config, curve: CurveApi, poolId: string): Promise<void>
 
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
     setStateByKey<T>(key: StateKey, value: T): void
@@ -55,19 +50,12 @@ export const createUserSlice = (_set: StoreApi<State>['setState'], get: StoreApi
   [sliceKey]: {
     ...DEFAULT_STATE,
 
-    fetchUserPoolInfo: async (config, curve, poolId, isFetchWalletBalancesOnly) => {
-      let fetchedWalletBalances: Balances = {}
-
+    fetchUserPoolInfo: async (config, curve, poolId) => {
       try {
         // stored values
         const chainId = curve.chainId
         const userPoolActiveKey = getUserPoolActiveKey(curve, poolId)
         const storedPoolData = get().pools.poolsMapper[chainId][poolId]
-        fetchedWalletBalances = await fetchPoolTokenBalances(config, curve, poolId)
-
-        if (isFetchWalletBalancesOnly) {
-          return fetchedWalletBalances
-        }
 
         // get user pool info
         let liquidityUsd = ''

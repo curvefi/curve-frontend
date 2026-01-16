@@ -14,6 +14,7 @@ import type { PageTransferProps, Seed } from '@/dex/components/PagePool/types'
 import { DetailInfoExchangeRate } from '@/dex/components/PageRouterSwap/components/DetailInfoExchangeRate'
 import { DetailInfoPriceImpact } from '@/dex/components/PageRouterSwap/components/DetailInfoPriceImpact'
 import { useNetworks } from '@/dex/entities/networks'
+import { fetchPoolTokenBalances } from '@/dex/hooks/usePoolTokenBalances'
 import { useStore } from '@/dex/store/useStore'
 import { CurveApi, PoolAlert, PoolData, TokensMapper } from '@/dex/types/main.types'
 import { toTokenOption } from '@/dex/utils'
@@ -75,7 +76,6 @@ export const Swap = ({
   const hasRouter = useStore((state) => state.hasRouter)
   const isMaxLoading = useStore((state) => state.poolSwap.isMaxLoading)
   const isPageVisible = useLayoutStore((state) => state.isPageVisible)
-  const fetchUserPoolInfo = useStore((state) => state.user.fetchUserPoolInfo)
   const fetchStepApprove = useStore((state) => state.poolSwap.fetchStepApprove)
   const fetchStepSwap = useStore((state) => state.poolSwap.fetchStepSwap)
   const resetState = useStore((state) => state.poolSwap.resetState)
@@ -301,9 +301,9 @@ export const Swap = ({
   // get user balances
   useEffect(() => {
     if (curve && poolId && haveSigner && (isUndefined(userFromBalance) || isUndefined(userToBalance))) {
-      void fetchUserPoolInfo(config, curve, poolId, true)
+      void fetchPoolTokenBalances(config, curve, poolId)
     }
-  }, [chainId, poolId, haveSigner, userFromBalance, userToBalance, config, curve, fetchUserPoolInfo])
+  }, [chainId, poolId, haveSigner, userFromBalance, userToBalance, config, curve])
 
   // curve state change
   useEffect(() => {

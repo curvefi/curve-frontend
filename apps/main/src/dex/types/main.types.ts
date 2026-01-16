@@ -1,7 +1,7 @@
 import { ethers } from 'ethers'
 import { ReactNode } from 'react'
 import type { SearchParams as PoolListSearchParams } from '@/dex/components/PagePoolList/types'
-import type { IChainId, IDict, INetworkName } from '@curvefi/api/lib/interfaces'
+import type { IChainId, INetworkName } from '@curvefi/api/lib/interfaces'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import type { TooltipProps } from '@ui/Tooltip/types'
 import type { BaseConfig } from '@ui/utils'
@@ -9,8 +9,6 @@ import { BannerProps } from '@ui-kit/shared/ui/Banner'
 
 export type { CurveApi, Wallet } from '@ui-kit/features/connect-wallet'
 
-export type Balances = IDict<string>
-export type Balance = string | IDict<string>
 export type ChainId = IChainId | number
 export type NetworkEnum = INetworkName
 export type NetworkConfigFromApi = {
