@@ -19,7 +19,7 @@ const { Spacing } = SizesAndSpaces
 
 export type TokenListProps = Pick<
   TokenSectionProps,
-  'tokens' | 'onToken' | 'balances' | 'tokenPrices' | 'disabledTokens'
+  'tokens' | 'onToken' | 'balances' | 'tokenPrices' | 'disabledTokens' | 'isLoading'
 > & {
   /** Callback when user enters text in the search input (debounced) */
   onSearch?: (search: string) => void
@@ -44,6 +44,7 @@ export const TokenList = ({
   tokenPrices,
   error,
   disabledTokens,
+  isLoading = false,
   disableSorting = false,
   disableMyTokens = false,
   disableSearch = false,
@@ -157,7 +158,7 @@ export const TokenList = ({
   const previewAll = useMemo(() => (showPreviewAll ? allTokens.slice(0, 300) : []), [allTokens, showPreviewAll])
 
   return (
-    <Stack gap={Spacing.sm} sx={{ overflowY: 'auto', backgroundColor: 'background.paper' }}>
+    <Stack gap={Spacing.sm} sx={{ overflowY: 'auto' }}>
       {!disableSearch && (
         <SearchField
           name="tokenName"
@@ -188,6 +189,7 @@ export const TokenList = ({
             disabledTokens={disabledTokens}
             preview={previewMy}
             showAllLabel={t`Show dust`}
+            isLoading={isLoading}
             onShowAll={closeShowPreviewMy}
             onToken={onToken}
           />
@@ -199,6 +201,7 @@ export const TokenList = ({
             tokenPrices={tokenPrices}
             disabledTokens={disabledTokens}
             preview={previewAll}
+            isLoading={isLoading}
             onShowAll={closeShowPreviewAll}
             onToken={onToken}
           />

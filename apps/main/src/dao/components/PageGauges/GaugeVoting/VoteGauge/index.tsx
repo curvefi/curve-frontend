@@ -1,11 +1,14 @@
 import { useState } from 'react'
 import { styled } from 'styled-components'
+import { useConnection } from 'wagmi'
+import { useLockerVecrvUser } from '@/dao/entities/locker-vecrv-user'
 import { useStore } from '@/dao/store/useStore'
 import { GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
 import { Box } from '@ui/Box'
 import { Icon } from '@ui/Icon'
 import { IconButton } from '@ui/IconButton'
 import { t } from '@ui-kit/lib/i18n'
+import { Chain } from '@ui-kit/utils'
 import { GaugeDetails } from '../../GaugeListItem/GaugeDetails'
 import { TitleComp } from '../../GaugeListItem/TitleComp'
 import { VoteGaugeField } from '../VoteGaugeField'
@@ -17,9 +20,10 @@ type VoteGaugeProps = {
 }
 
 export const VoteGauge = ({ gaugeData, userGaugeVoteData, powerUsed }: VoteGaugeProps) => {
+  const { address: userAddress } = useConnection()
   const [showDetails, setShowDetails] = useState(false)
   const setSelectedGauge = useStore((state) => state.gauges.setSelectedGauge)
-  const userVeCrv = useStore((state) => state.user.userVeCrv)
+  const { data: userVeCrv } = useLockerVecrvUser({ chainId: Chain.Ethereum, userAddress })
 
   return (
     <Wrapper showDetails={showDetails}>
@@ -34,7 +38,7 @@ export const VoteGauge = ({ gaugeData, userGaugeVoteData, powerUsed }: VoteGauge
         <VoteGaugeField
           newVote
           powerUsed={powerUsed}
-          userVeCrv={+userVeCrv.veCrv}
+          userVeCrv={+(userVeCrv?.veCrv ?? 0)}
           userGaugeVoteData={userGaugeVoteData}
         />
       </MainWrapper>

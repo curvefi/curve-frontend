@@ -4,17 +4,21 @@ import Button from '@mui/material/Button'
 import CardHeader from '@mui/material/CardHeader'
 import Divider from '@mui/material/Divider'
 import MenuList from '@mui/material/MenuList'
+import Stack from '@mui/material/Stack'
 import type { TokenOption as Option } from '@ui-kit/features/select-token'
 import { blacklist } from '@ui-kit/features/select-token/blacklist'
 import { TokenOption } from '@ui-kit/features/select-token/ui/modal/TokenOption'
 import { t } from '@ui-kit/lib/i18n'
+import { Spinner } from '@ui-kit/shared/ui/Spinner'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
-const { ButtonSize } = SizesAndSpaces
+const { Spacing, ButtonSize } = SizesAndSpaces
 
 export type TokenSectionProps<T extends Option = Option> = {
   /** List of token options to display */
   tokens: T[]
+  /** Are token balances still being fetched? Is the section 'under construction'? */
+  isLoading?: boolean
   /** Token balances mapped by token address */
   balances?: Record<string, string | undefined>
   /** Token prices in USD mapped by token address */
@@ -35,6 +39,7 @@ export type TokenSectionProps<T extends Option = Option> = {
 
 export const TokenSection = <T extends Option = Option>({
   title,
+  isLoading,
   showAllLabel,
   preview,
   tokens,
@@ -54,8 +59,20 @@ export const TokenSection = <T extends Option = Option>({
   return (
     <>
       {title && (
-        <Box sx={{ position: 'sticky', top: 0, zIndex: 1 }}>
-          <CardHeader title={title} size="small" />
+        <Box sx={{ position: 'sticky', top: 0, zIndex: 1, backgroundColor: (t) => t.design.Layer[1].Fill }}>
+          <CardHeader
+            title={
+              <Stack direction="row" justifyContent="space-between" alignItems="center">
+                {title}
+                {isLoading && (
+                  <Box sx={{ marginBlockEnd: Spacing.xs }}>
+                    <Spinner size={15} />
+                  </Box>
+                )}
+              </Stack>
+            }
+            size="small"
+          />
           <Divider />
         </Box>
       )}

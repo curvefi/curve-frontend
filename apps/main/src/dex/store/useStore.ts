@@ -13,7 +13,6 @@ import { PoolSwapSlice, createPoolSwapSlice } from '@/dex/store/createPoolSwapSl
 import { PoolWithdrawSlice, createPoolWithdrawSlice } from '@/dex/store/createPoolWithdrawSlice'
 import { QuickSwapSlice, createQuickSwapSlice } from '@/dex/store/createQuickSwapSlice'
 import { TokensSlice, createTokensSlice } from '@/dex/store/createTokensSlice'
-import { UserBalancesSlice, createUserBalancesSlice } from '@/dex/store/createUserBalancesSlice'
 import { UserSlice, createUserSlice } from '@/dex/store/createUserSlice'
 
 const { debounce, merge } = lodash
@@ -27,7 +26,6 @@ export type State = GlobalSlice &
   UserSlice &
   PoolListSlice &
   QuickSwapSlice &
-  UserBalancesSlice &
   DashboardSlice &
   TokensSlice &
   CreatePoolSlice &
@@ -44,7 +42,6 @@ const store = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState'
   ...createUserSlice(set, get),
   ...createDashboardSlice(set, get),
   ...createQuickSwapSlice(set, get),
-  ...createUserBalancesSlice(set, get),
   ...createTokensSlice(set, get),
   ...createCreatePoolSlice(set, get),
   ...createDeployGaugeSlice(set, get),

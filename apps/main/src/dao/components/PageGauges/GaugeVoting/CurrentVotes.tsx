@@ -1,5 +1,6 @@
 import { Fragment, useMemo } from 'react'
 import { styled } from 'styled-components'
+import { useConnection } from 'wagmi'
 import { GaugeListItem } from '@/dao/components/PageGauges/GaugeListItem'
 import { SmallScreenCard } from '@/dao/components/PageGauges/GaugeListItem/SmallScreenCard'
 import { GaugeVotingStats } from '@/dao/components/PageGauges/GaugeVoting/GaugeVotingStats'
@@ -9,6 +10,7 @@ import {
   invalidateUserGaugeWeightVotesQuery,
   useUserGaugeWeightVotesQuery,
 } from '@/dao/entities/user-gauge-weight-votes'
+import { useGauges } from '@/dao/queries/gauges.query'
 import { useStore } from '@/dao/store/useStore'
 import {
   GaugeFormattedData,
@@ -22,20 +24,15 @@ import { t } from '@ui-kit/lib/i18n'
 import { Chain } from '@ui-kit/utils/network'
 import { USER_VOTES_TABLE_LABELS } from './constants'
 
-type CurrentVotesProps = {
-  userAddress: string | undefined
-}
-
 const sortGauges = (gauges: UserGaugeVoteWeight[], order: SortDirection, sortBy: UserGaugeVoteWeightSortBy) =>
   [...gauges].sort((a, b) => (order === 'asc' ? a[sortBy] - b[sortBy] : b[sortBy] - a[sortBy]))
 
-export const CurrentVotes = ({ userAddress: userAddressProp }: CurrentVotesProps) => {
+export const CurrentVotes = () => {
+  const { address: userAddress } = useConnection()
   const setUserGaugeVoteWeightsSortBy = useStore((state) => state.user.setUserGaugeVoteWeightsSortBy)
   const userGaugeVoteWeightsSortBy = useStore((state) => state.user.userGaugeVoteWeightsSortBy)
-  const gaugeMapper = useStore((state) => state.gauges.gaugeMapper)
+  const { data: gaugeMapper, isLoading: gaugesIsLoading } = useGauges({})
   const selectedGauge = useStore((state) => state.gauges.selectedGauge)
-  const gaugesLoading = useStore((state) => state.gauges.gaugesLoading)
-  const userAddress = userAddressProp ?? ''
 
   const {
     data: userGaugeWeightVotes,
@@ -44,11 +41,10 @@ export const CurrentVotes = ({ userAddress: userAddressProp }: CurrentVotesProps
     isError: userGaugeWeightsError,
   } = useUserGaugeWeightVotesQuery({
     chainId: Chain.Ethereum, // DAO is only used on mainnet
-    userAddress: userAddress,
+    userAddress: userAddress ?? '',
   })
 
-  const gaugeMapperLoading = gaugesLoading === 'LOADING'
-  const tableLoading = userGaugeWeightsLoading || gaugeMapperLoading
+  const tableLoading = userGaugeWeightsLoading || gaugesIsLoading
 
   const tableMinWidth = 0
   const gridTemplateColumns = '17.5rem 1fr 1fr 1fr'
@@ -58,7 +54,7 @@ export const CurrentVotes = ({ userAddress: userAddressProp }: CurrentVotesProps
     () =>
       userGaugeWeightVotes?.gauges.map((gauge) => ({
         ...gauge,
-        rootGaugeAddress: findRootGauge(gauge.gaugeAddress, gaugeMapper),
+        rootGaugeAddress: findRootGauge(gauge.gaugeAddress, gaugeMapper ?? {}),
       })) ?? [],
     [userGaugeWeightVotes, gaugeMapper],
   )
@@ -85,16 +81,16 @@ export const CurrentVotes = ({ userAddress: userAddressProp }: CurrentVotesProps
     <Wrapper>
       <VoteStats selectedGauge={selectedGauge}>
         <h3>{t`USER GAUGE VOTES`}</h3>
-        {userAddress && <GaugeVotingStats userAddress={userAddress} />}
+        {<GaugeVotingStats />}
       </VoteStats>
-      {selectedGauge && (
+      {selectedGauge && gaugeMapper && (
         <VoteGauge
           gaugeData={gaugeMapper[formattedSelectedGauge.gaugeAddress]}
           userGaugeVoteData={formattedSelectedGauge}
           powerUsed={userGaugeWeightVotes?.powerUsed ?? 0}
         />
       )}
-      {userAddress && (
+      {userAddress && gaugeMapper && (
         <PaginatedTable<UserGaugeVoteWeight>
           data={sortGauges(userGauges, userGaugeVoteWeightsSortBy.order, userGaugeVoteWeightsSortBy.key)}
           minWidth={tableMinWidth}
@@ -116,7 +112,6 @@ export const CurrentVotes = ({ userAddress: userAddressProp }: CurrentVotesProps
                   gridTemplateColumns={gridTemplateColumns}
                   powerUsed={userGaugeWeightVotes?.powerUsed ?? 0}
                   userGaugeVote={true}
-                  userAddress={userAddress}
                 />
               </GaugeListItemWrapper>
               <SmallScreenCardWrapper>

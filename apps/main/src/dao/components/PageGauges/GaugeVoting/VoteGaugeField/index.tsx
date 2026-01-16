@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { styled } from 'styled-components'
+import { useConnection } from 'wagmi'
 import { MetricsColumnData, MetricsComp } from '@/dao/components/MetricsComp'
 import { useUserGaugeVoteNextTimeQuery } from '@/dao/entities/user-gauge-vote-next-time'
 import { useStore } from '@/dao/store/useStore'
@@ -20,7 +21,7 @@ type VoteGaugeFieldProps = {
 }
 
 export const VoteGaugeField = ({ powerUsed, userGaugeVoteData, userVeCrv, newVote = false }: VoteGaugeFieldProps) => {
-  const userAddress = useStore((state) => state.user.userAddress)
+  const { address: userAddress } = useConnection()
   const castVote = useStore((state) => state.gauges.castVote)
   const txCastVoteState = useStore((state) => state.gauges.txCastVoteState)
   const { data: userGaugeVoteNextTime, isLoading: nextVoteTimeLoading } = useUserGaugeVoteNextTimeQuery({
@@ -36,8 +37,6 @@ export const VoteGaugeField = ({ powerUsed, userGaugeVoteData, userVeCrv, newVot
   const maxPower = newVote ? availablePower / 100 : (availablePower + userPower) / 100
   const availableVeCrv = userVeCrv * (availablePower / 100)
 
-  const address = userAddress?.toLowerCase()
-
   const loading = nextVoteTimeLoading || txCastVoteState?.state === 'LOADING' || txCastVoteState?.state === 'CONFIRMING'
 
   const handleChangePower = (value: number) => {
@@ -49,8 +48,8 @@ export const VoteGaugeField = ({ powerUsed, userGaugeVoteData, userVeCrv, newVot
   }
 
   const handleCastVote = () => {
-    if (!address) return
-    void castVote(address, gaugeAddress, power)
+    if (!userAddress) return
+    void castVote(userAddress, gaugeAddress, power)
   }
 
   return (
