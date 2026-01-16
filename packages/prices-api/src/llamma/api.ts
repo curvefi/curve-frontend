@@ -25,12 +25,14 @@ export async function getEvents(
   })
 
   const resp = await fetch<Responses.GetLlammaEventsResponse>(
-    `${host}/v1/${endpoint}/llamma_events/${chain}/${llamma}??${params.toString()}`,
+    `${host}/v1/${endpoint}/llamma_events/${chain}/${llamma}?${params.toString()}`,
   )
 
   return {
     events: resp.data.map(Parsers.parseEvents),
     count: resp.count,
+    page: resp.page,
+    perPage: resp.per_page,
   }
 }
 
@@ -59,6 +61,8 @@ export async function getTrades(
   return {
     trades: resp.data.map(Parsers.parseTrades),
     count: resp.count,
+    page: resp.page,
+    perPage: resp.per_page,
   }
 }
 
