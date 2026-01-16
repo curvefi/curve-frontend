@@ -1,8 +1,10 @@
 import { MouseEvent, useEffect, useState } from 'react'
 import { styled } from 'styled-components'
+import { useConnection } from 'wagmi'
 import { LineChartComponent } from '@/dao/components/Charts/LineChartComponent'
 import { ErrorMessage } from '@/dao/components/ErrorMessage'
 import { InternalLinkButton } from '@/dao/components/InternalLinkButton'
+import { useLockerVecrvUser } from '@/dao/entities/locker-vecrv-user'
 import { useStore } from '@/dao/store/useStore'
 import { GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
 import { Box } from '@ui/Box'
@@ -11,7 +13,7 @@ import { IconButton } from '@ui/IconButton'
 import { SpinnerWrapper, Spinner } from '@ui/Spinner'
 import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
-import { formatNumber } from '@ui-kit/utils'
+import { Chain, formatNumber } from '@ui-kit/utils'
 import { VoteGaugeField } from '../GaugeVoting/VoteGaugeField'
 import { GaugeDetailsSm } from './GaugeDetailsSm'
 import { TitleComp } from './TitleComp'
@@ -31,10 +33,11 @@ export const SmallScreenCard = ({
   userGaugeVote = false,
   addUserVote = false,
 }: Props) => {
+  const { address: userAddress } = useConnection()
   const gaugeWeightHistoryMapper = useStore((state) => state.gauges.gaugeWeightHistoryMapper)
   const getHistoricGaugeWeights = useStore((state) => state.gauges.getHistoricGaugeWeights)
   const gaugeListSortBy = useStore((state) => state.gauges.gaugeListSortBy)
-  const userVeCrv = useStore((state) => state.user.userVeCrv)
+  const { data: userVeCrv } = useLockerVecrvUser({ chainId: Chain.Ethereum, userAddress })
   const [open, setOpen] = useState(false)
 
   const gaugeHistoryLoading =
@@ -104,7 +107,7 @@ export const SmallScreenCard = ({
               <VoteGaugeFieldWrapper>
                 <VoteGaugeField
                   powerUsed={powerUsed}
-                  userVeCrv={+userVeCrv}
+                  userVeCrv={+(userVeCrv?.veCrv ?? 0)}
                   userGaugeVoteData={userGaugeWeightVoteData}
                 />
               </VoteGaugeFieldWrapper>

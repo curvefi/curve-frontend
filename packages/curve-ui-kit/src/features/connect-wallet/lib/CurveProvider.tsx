@@ -99,7 +99,7 @@ export const CurveProvider = <App extends AppName>({
         if (newLib) {
           console.info(
             `Initialized ${libKey} for ${network.name} (${network.chainId})`,
-            wallet ? `Wallet ${wallet?.account?.address} with chain ${walletChainId}` : 'without wallet',
+            wallet ? `Wallet ${wallet?.address} with chain ${walletChainId}` : 'without wallet',
             prevLib
               ? `Old library had ${prevLib.signerAddress ? `signer ${prevLib.signerAddress}` : 'no signer'} with chain ${prevLib.chainId}`
               : `First initialization`,

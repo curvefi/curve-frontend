@@ -154,13 +154,10 @@ export const createProposalsSlice = (
           notify(successNotificationMessage, 'success', 15000)
 
           // get new user votes list from api
-          const userAddress = get().user.userAddress
-
+          const userAddress = curve?.signerAddress
           if (userAddress) {
             invalidateProposalPricesApi({ proposalId: voteId, proposalType: voteType, txHash: voteResponseHash })
-            invalidateUserProposalVotesQuery({
-              userAddress,
-            })
+            invalidateUserProposalVotesQuery({ userAddress })
           }
         }
       } catch (error) {

@@ -11,7 +11,7 @@ import { AppName } from '@ui-kit/shared/routes'
  * Compare the signer address of the wallet with the one in the library.
  */
 export const compareSignerAddress = (wallet: Wallet | undefined, lib: Libs[LibKey]) =>
-  wallet?.account.address?.toLowerCase() == (lib?.signerAddress?.toLowerCase() || null)
+  wallet?.address?.toLowerCase() == (lib?.signerAddress?.toLowerCase() || null)
 
 export const isWalletMatching = <TChainId extends number>(
   wallet: Wallet | undefined,

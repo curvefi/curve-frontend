@@ -20,6 +20,7 @@ import { shortenAccount } from '@ui/utils'
 import { notify, requireLib, useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
+import { invalidateLockerVecrvUser } from '../entities/locker-vecrv-user'
 
 type StateKey = keyof typeof DEFAULT_STATE
 const { cloneDeep } = lodash
@@ -210,10 +211,7 @@ export const createLockedCrvSlice = (
 
           // re-fetch user vecrv info
           invalidateLockerVecrvInfo({ chainId: curve.chainId, userAddress: curve.signerAddress })
-          const { wallet } = useWallet.getState()
-          if (wallet) {
-            get().user.updateUserData(curve, wallet)
-          }
+          invalidateLockerVecrvUser({ chainId: curve.chainId, userAddress: curve.signerAddress })
         }
       }
     },
@@ -248,10 +246,7 @@ export const createLockedCrvSlice = (
 
           // re-fetch user vecrv info
           invalidateLockerVecrvInfo({ chainId: curve.chainId, userAddress: curve.signerAddress })
-          const { wallet } = useWallet.getState()
-          if (wallet) {
-            get().user.updateUserData(curve, wallet)
-          }
+          invalidateLockerVecrvUser({ chainId: curve.chainId, userAddress: curve.signerAddress })
         }
 
         return resp
@@ -288,10 +283,7 @@ export const createLockedCrvSlice = (
 
           // re-fetch user vecrv info
           invalidateLockerVecrvInfo({ chainId: curve.chainId, userAddress: curve.signerAddress })
-          const { wallet } = useWallet.getState()
-          if (wallet) {
-            get().user.updateUserData(curve, wallet)
-          }
+          invalidateLockerVecrvUser({ chainId: curve.chainId, userAddress: curve.signerAddress })
         }
 
         return resp
