@@ -1,5 +1,5 @@
-import { getHost, type Options, type Chain } from '..'
-import { fetchJson as fetch } from '../fetch'
+import { getHost, type Options, type Chain, type Address } from '..'
+import { addQueryString, fetchJson as fetch } from '../fetch'
 import { getTimeRange } from '../timestamp'
 import * as Parsers from './parsers'
 import type * as Responses from './responses'
@@ -44,4 +44,70 @@ export async function getTvl(chain: Chain, poolAddr: string, options?: Options) 
   )
 
   return resp.data.map(Parsers.parseTvl)
+}
+
+type GetPoolTradesParams = {
+  chain: Chain
+  poolAddress: Address
+  mainToken: Address
+  referenceToken: Address
+  page?: number
+  perPage?: number
+}
+
+export async function getPoolTrades(
+  { chain, poolAddress, mainToken, referenceToken, page = 1, perPage = 100 }: GetPoolTradesParams,
+  options?: Options,
+) {
+  const host = getHost(options)
+  const query = addQueryString({
+    main_token: mainToken,
+    reference_token: referenceToken,
+    page,
+    per_page: perPage,
+  })
+
+  const resp = await fetch<Responses.GetPoolTradesResponse>(`${host}/v1/trades/${chain}/${poolAddress}${query}`)
+
+  return {
+    chain: resp.chain,
+    address: resp.address,
+    mainToken: Parsers.parseTradeToken(resp.main_token),
+    referenceToken: Parsers.parseTradeToken(resp.reference_token),
+    trades: resp.data.map(Parsers.parsePoolTrade),
+    page: resp.page,
+    perPage: resp.per_page,
+    count: resp.count,
+  }
+}
+
+type GetPoolLiquidityEventsParams = {
+  chain: Chain
+  poolAddress: Address
+  page?: number
+  perPage?: number
+}
+
+export async function getPoolLiquidityEvents(
+  { chain, poolAddress, page = 1, perPage = 100 }: GetPoolLiquidityEventsParams,
+  options?: Options,
+) {
+  const host = getHost(options)
+  const query = addQueryString({
+    page,
+    per_page: perPage,
+  })
+
+  const resp = await fetch<Responses.GetPoolLiquidityEventsResponse>(
+    `${host}/v1/liquidity/${chain}/${poolAddress}${query}`,
+  )
+
+  return {
+    chain: resp.chain,
+    address: resp.address,
+    events: resp.data.map(Parsers.parsePoolLiquidityEvent),
+    page: resp.page,
+    perPage: resp.per_page,
+    count: resp.count,
+  }
 }

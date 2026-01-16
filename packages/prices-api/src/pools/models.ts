@@ -42,3 +42,39 @@ export type Tvl = {
   balances: number[]
   tokenPrices: number[]
 }
+
+export type TradeToken = {
+  symbol: string
+  address: Address
+  poolIndex: number
+  eventIndex: number
+}
+
+export type PoolTrade = {
+  soldId: number
+  boughtId: number
+  tokenSold: Address
+  tokenBought: Address
+  tokenSoldSymbol: string
+  tokenBoughtSymbol: string
+  tokensSold: number
+  tokensSoldUsd: number
+  tokensBought: number
+  tokensBoughtUsd: number
+  blockNumber: number
+  time: Date
+  txHash: Address
+  buyer: Address
+  usdFee: number
+}
+
+export type PoolLiquidityEvent = {
+  eventType: string
+  tokenAmounts: number[]
+  fees: number[]
+  tokenSupply: number
+  blockNumber: number
+  time: Date
+  txHash: Address
+  provider: Address
+}
