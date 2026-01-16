@@ -213,6 +213,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
               value={!rFormType ? 'deposit' : rFormType}
               onChange={(key) => toggleForm(key as TransferFormType)}
               options={tabs}
+              testIdPrefix="pool-form-tab"
             />
             {rFormType === 'swap' ? (
               poolAlert?.isDisableSwap ? (
@@ -262,7 +263,13 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
           </PriceAndTradesWrapper>
         )}
         <Stack>
-          <TabsSwitcher variant="contained" value={poolInfoTab} onChange={setPoolInfoTab} options={poolInfoTabs} />
+          <TabsSwitcher
+            variant="contained"
+            value={poolInfoTab}
+            onChange={setPoolInfoTab}
+            options={poolInfoTabs}
+            testIdPrefix="pool-info-tab"
+          />
           <AppPageInfoContentWrapper variant="secondary">
             {poolInfoTab === 'user' && (
               <MySharesStats

@@ -29,6 +29,7 @@ type KebabMenuProps<T> = {
   onChange?: (value: T) => void
   tabsClassName: string
   value: T | boolean
+  testIdPrefix: string
 }
 
 export const KEBAB_TAB_VALUE = '__kebab__'
@@ -56,7 +57,7 @@ export const KebabTab = <T extends string | number>({
         <Tab
           aria-label="More tabs"
           ref={kebabTabRef}
-          data-testid={`${testIdPrefix}-kebab`}
+          data-testid={`${testIdPrefix}-kebab-button`}
           value={KEBAB_TAB_VALUE}
           onClick={openKebabMenu}
           label={
@@ -78,9 +79,11 @@ export const KebabMenu = <T extends string | number>({
   onChange,
   tabsClassName,
   value,
+  testIdPrefix,
 }: KebabMenuProps<T>) =>
   kebabTabEl && (
     <Popover
+      data-testid={`${testIdPrefix}-kebab-menu`}
       open={kebabMenuOpen}
       anchorEl={kebabTabEl}
       onClose={closeKebabMenu}
@@ -93,6 +96,7 @@ export const KebabMenu = <T extends string | number>({
       }}
     >
       <Tabs
+        data-testid={`${testIdPrefix}-kebab-tabs`}
         orientation="vertical"
         textColor="inherit"
         value={value}

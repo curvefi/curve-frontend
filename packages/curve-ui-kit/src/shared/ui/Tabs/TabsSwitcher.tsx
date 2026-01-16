@@ -102,9 +102,17 @@ export const TabsSwitcher = <T extends string | number>({
   const tabsClassName = `${TABS_VARIANT_CLASSES[variant]} ${TABS_SIZES_CLASSES[size]} ${hideInactiveBorders && HIDE_INACTIVE_BORDERS_CLASS}`
 
   return (
-    <Stack direction="row" justifyContent="space-between" gap={Spacing.xs} width={isKebabMode ? '100%' : undefined}>
+    <Stack
+      data-testid={`${testIdPrefix}-container`}
+      direction="row"
+      justifyContent="space-between"
+      gap={Spacing.xs}
+      width={isKebabMode ? '100%' : undefined}
+    >
       <Stack ref={visibleTabsRef} sx={{ flex: 1, minWidth: 0 }}>
         <Tabs
+          data-testid={`${testIdPrefix}-tabs`}
+          aria-label={String(testIdPrefix)}
           variant={overflowToMuiVariant[overflow]}
           textColor="inherit"
           value={tabsValue}
@@ -184,6 +192,7 @@ export const TabsSwitcher = <T extends string | number>({
           onChange={onChange}
           tabsClassName={tabsClassName}
           value={kebabMenuValue}
+          testIdPrefix={testIdPrefix}
         />
       )}
     </Stack>
