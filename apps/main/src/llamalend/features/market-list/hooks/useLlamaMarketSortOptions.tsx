@@ -43,8 +43,8 @@ export const useLlamaMarketSortOptions = () => {
         ]
       : []),
     {
-      id: LlamaMarketColumnId.BorrowRate,
-      label: t`Borrow Rate`,
+      id: LlamaMarketColumnId.NetBorrowRate,
+      label: t`Net borrow APR`,
     },
     {
       id: LlamaMarketColumnId.LendRate,
