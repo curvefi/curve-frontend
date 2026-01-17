@@ -1228,44 +1228,6 @@ const wallet = {
       return resp
     }
   },
-  userPoolBoost: async (p: Pool, walletAddress: string) => {
-    const boost = await p.userBoost(walletAddress)
-    if (boost && boost === 'NaN') {
-      return '0'
-    }
-    return boost
-  },
-  userPoolBalances: async (p: Pool) => {
-    log('userPoolBalances', p.name)
-    return p.userBalances()
-  },
-  userPoolLiquidityUsd: async (p: Pool, signerAddress: string) => {
-    let liquidityUsd = ''
-
-    try {
-      log('userPoolLiquidityUsd', p.name, signerAddress)
-      const fetchedLiquidityUsd = await p.userLiquidityUSD(signerAddress)
-
-      if (fetchedLiquidityUsd !== 'NaN') {
-        liquidityUsd = fetchedLiquidityUsd
-      }
-
-      return liquidityUsd
-    } catch (error) {
-      log('userPoolLiquidityUsd', error, p.name)
-    }
-  },
-  userPoolRewardCrvApy: async (p: Pool, walletAddress: string) => {
-    let userCrvApy = 0
-
-    if (isValidAddress(p.gauge.address) && !p.rewardsOnly()) {
-      const fetchedCurrentCrvApy = await p.userCrvApy(walletAddress)
-      if (String(fetchedCurrentCrvApy) !== 'NaN') {
-        userCrvApy = fetchedCurrentCrvApy
-      }
-    }
-    return userCrvApy
-  },
   userPoolRewardProfit: async (p: Pool, signerAddress: string, chainId: ChainId) => {
     const profit = {
       baseProfit: {
@@ -1315,10 +1277,6 @@ const wallet = {
     }
 
     return profit
-  },
-  userPoolShare: async (p: Pool) => {
-    log('userPoolShare', p.name)
-    return p.userShare()
   },
 }
 

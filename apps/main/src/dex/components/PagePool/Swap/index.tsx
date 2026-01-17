@@ -159,7 +159,6 @@ export const Swap = ({
   const handleSwapClick = useCallback(
     async (
       actionActiveKey: string,
-      config: Config,
       curve: CurveApi,
       poolData: PoolData,
       formValues: FormValues,
@@ -168,7 +167,7 @@ export const Swap = ({
       const { fromAmount, fromToken, toToken } = formValues
       const notifyMessage = t`Please confirm swap ${fromAmount} ${fromToken} for ${toToken} at max slippage ${maxSlippage}%.`
       const { dismiss } = notify(notifyMessage, 'pending')
-      const resp = await fetchStepSwap(actionActiveKey, config, curve, poolData, formValues, maxSlippage)
+      const resp = await fetchStepSwap(actionActiveKey, curve, poolData, formValues, maxSlippage)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && network) {
         void refetchUserFromBalance()
@@ -253,13 +252,13 @@ export const Swap = ({
                   },
                   isDismissable: false,
                   primaryBtnProps: {
-                    onClick: () => handleSwapClick(actionActiveKey, config, curve, poolData, formValues, maxSlippage),
+                    onClick: () => handleSwapClick(actionActiveKey, curve, poolData, formValues, maxSlippage),
                     disabled: !confirmedLoss,
                   },
                   primaryBtnLabel: 'Swap anyway',
                 },
               }
-            : { onClick: () => handleSwapClick(actionActiveKey, config, curve, poolData, formValues, maxSlippage) }),
+            : { onClick: () => handleSwapClick(actionActiveKey, curve, poolData, formValues, maxSlippage) }),
         },
       }
 

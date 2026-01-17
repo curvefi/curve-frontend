@@ -14,7 +14,7 @@ import { DashboardContextProvider } from '@/dex/components/PageDashboard/dashboa
 import type { DashboardTableRowProps, FormValues, TableLabel } from '@/dex/components/PageDashboard/types'
 import { ROUTE } from '@/dex/constants'
 import { useNetworkByChain } from '@/dex/entities/networks'
-import { curvejsApi } from '@/dex/lib/curvejs'
+import { userPoolBoost } from '@/dex/queries/user-pool-info'
 import { getDashboardDataActiveKey } from '@/dex/store/createDashboardSlice'
 import { useStore } from '@/dex/store/useStore'
 import { ChainId, CurveApi, type NetworkUrlParams } from '@/dex/types/main.types'
@@ -59,7 +59,6 @@ export const Dashboard = ({
   const {
     data: { isLite, networkId },
   } = useNetworkByChain({ chainId: rChainId })
-  const { userPoolBoost } = curvejsApi.wallet
 
   const isValidAddress = useMemo(() => isAddress(walletAddress as Address), [walletAddress])
 
@@ -154,7 +153,8 @@ export const Dashboard = ({
                     blockchainId: networkId,
                     tableLabel: TABLE_LABEL,
                     fetchBoost: {
-                      fetchUserPoolBoost: rChainId === 1 ? () => userPoolBoost(poolData.pool, walletAddress) : null,
+                      fetchUserPoolBoost:
+                        rChainId === 1 ? () => userPoolBoost(rChainId, poolData.pool, walletAddress as Address) : null,
                     },
                     formValues,
                     poolData,

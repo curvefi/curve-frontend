@@ -22,6 +22,7 @@ import { shortenAccount } from '@ui/utils'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { Chain } from '@ui-kit/utils'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
+import { userPoolRewardCrvApy } from '../queries/user-pool-info'
 import { fetchUserPools } from '../queries/user-pools'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -145,7 +146,7 @@ export const createDashboardSlice = (
           .withConcurrency(10)
           .process(async ({ pool }, idx) => {
             const [userCrvApyResult, profitsResults, lpTokenBalancesResult] = await Promise.allSettled([
-              wallet.userPoolRewardCrvApy(pool, walletAddress),
+              userPoolRewardCrvApy(pool, walletAddress as Address),
               wallet.userPoolRewardProfit(pool, walletAddress, chainId),
               wallet.userPoolLpTokenBalances(pool, walletAddress),
             ])

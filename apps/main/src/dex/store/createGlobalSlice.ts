@@ -84,13 +84,8 @@ export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreAp
       state.pools.resetState()
       state.quickSwap.resetState()
       state.tokens.resetState()
-      state.user.resetState()
       state.createPool.resetState()
       state.dashboard.resetState()
-    }
-
-    if (isUserSwitched) {
-      state.user.resetState()
     }
 
     // update network settings from api
