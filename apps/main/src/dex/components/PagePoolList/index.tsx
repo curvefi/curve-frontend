@@ -8,7 +8,7 @@ import { TableSettings } from '@/dex/components/PagePoolList/components/TableSet
 import type { ColumnKeys, PagePoolList, SearchParams } from '@/dex/components/PagePoolList/types'
 import { COLUMN_KEYS } from '@/dex/components/PagePoolList/utils'
 import { useNetworkByChain } from '@/dex/entities/networks'
-import { useUserPools } from '@/dex/queries/user-pools'
+import { useUserPools } from '@/dex/queries/user-pools.query'
 import { DEFAULT_FORM_STATUS, getPoolListActiveKey } from '@/dex/store/createPoolListSlice'
 import { useStore } from '@/dex/store/useStore'
 import { SpinnerWrapper, Spinner } from '@ui/Spinner'

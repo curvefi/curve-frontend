@@ -11,7 +11,7 @@ import type {
 import { ROUTE } from '@/dex/constants'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { parseSearchTermMapper } from '@/dex/hooks/useSearchTermMapper'
-import { useUserPools } from '@/dex/queries/user-pools'
+import { useUserPools } from '@/dex/queries/user-pools.query'
 import { useStore } from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'

@@ -43,7 +43,7 @@ import { setMissingProvider } from '@ui-kit/utils/store.util'
 import { fetchNetworks } from '../entities/networks'
 import { fetchPoolTokenBalances } from '../hooks/usePoolTokenBalances'
 import { fetchPoolLpTokenBalance } from '../hooks/usePoolTokenDepositBalances'
-import { invalidateUserPoolInfoQuery } from '../queries/user-pool-info'
+import { invalidateUserPoolInfoQuery } from '../queries/user-pool-info.query'
 
 type StateKey = keyof typeof DEFAULT_STATE
 const { cloneDeep } = lodash
