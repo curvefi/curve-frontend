@@ -114,7 +114,6 @@ export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreAp
     await state.pools.fetchPools(curveApi, poolIds, failedFetching24hOldVprice)
 
     if (isUserSwitched || isNetworkSwitched) {
-      void state.pools.fetchPricesApiPools(chainId)
       void state.pools.fetchBasePools(curveApi)
     }
 

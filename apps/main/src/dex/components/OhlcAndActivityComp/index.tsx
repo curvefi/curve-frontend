@@ -3,10 +3,10 @@ import { useState } from 'react'
 import { PoolActivity } from '@/dex/components/OhlcAndActivityComp/PoolActivity'
 import { useOhlcChartState } from '@/dex/hooks/useOhlcChartState'
 import { ChainId } from '@/dex/types/main.types'
+import type { Pool } from '@curvefi/prices-api/pools'
 import Stack from '@mui/material/Stack'
 import { ChartWrapper } from '@ui-kit/features/candle-chart/ChartWrapper'
 import { TIME_OPTIONS } from '@ui-kit/features/candle-chart/constants'
-import type { PricesApiPool } from '@ui-kit/features/candle-chart/types'
 import { t } from '@ui-kit/lib/i18n'
 import { ChartHeader } from '@ui-kit/shared/ui/Chart/ChartHeader'
 import { type TabOption } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
@@ -25,7 +25,7 @@ export const OhlcAndActivityComp = ({
   pricesApiPoolData,
 }: {
   rChainId: ChainId
-  pricesApiPoolData: PricesApiPool
+  pricesApiPoolData: Pool
 }) => {
   const { chartCombinations, tradesTokens, isLoading, setSelectedChart, setTimeOption, ohlcChartProps, flipChart } =
     useOhlcChartState({
