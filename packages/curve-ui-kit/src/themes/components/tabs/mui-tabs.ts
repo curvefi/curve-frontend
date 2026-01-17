@@ -5,6 +5,24 @@ import { TypographyVariantKey } from '@ui-kit/themes/typography'
 import { DesignSystem } from '../../design'
 import { SizesAndSpaces } from '../../design/1_sizes_spaces'
 
+type TabStyle = { Label?: string; Fill?: string; Outline?: string }
+type TabVariant = { Inset?: string; Default: TabStyle; Hover: TabStyle; Current: TabStyle }
+type SpacingKey = keyof typeof SizesAndSpaces.Spacing | string | number
+type TabSizeConfig = {
+  className: string
+  height: string
+  inline: SpacingKey
+}
+type TabPaddingOptions = {
+  blockEnd?: SpacingKey
+  boxSizing?: string
+}
+type TabSizeStyleOptions = {
+  horizontal?: TabPaddingOptions
+  vertical?: TabPaddingOptions
+}
+export type TabSwitcherVariants = keyof typeof TABS_VARIANT_CLASSES
+
 const { Spacing, ButtonSize } = SizesAndSpaces
 
 // css classes used by the TabSwitcher component
@@ -18,12 +36,6 @@ export const TABS_VARIANT_CLASSES = { contained, underlined, overlined }
 export const TABS_SIZES_CLASSES = { small, medium, extraExtraLarge }
 export const HIDE_INACTIVE_BORDERS_CLASS = 'hide-inactive-borders' as const
 export const TAB_SUFFIX_CLASS = 'tab-suffix' as const
-
-export type TabSwitcherVariants = keyof typeof TABS_VARIANT_CLASSES
-
-type TabStyle = { Label?: string; Fill?: string; Outline?: string }
-type TabVariant = { Inset?: string; Default: TabStyle; Hover: TabStyle; Current: TabStyle }
-type SpacingKey = keyof typeof Spacing | string | number
 
 export const TAB_TEXT_VARIANTS = {
   small: 'buttonXs',
@@ -40,12 +52,6 @@ const TAB_HEIGHT: Record<keyof typeof TABS_SIZES_CLASSES, string> = {
   small: ButtonSize.xs,
   medium: ButtonSize.sm,
   extraExtraLarge: ButtonSize.md,
-}
-
-type TabSizeConfig = {
-  className: string
-  height: string
-  inline: SpacingKey
 }
 
 const TAB_SIZE_CONFIG: Record<keyof typeof TABS_SIZES_CLASSES, TabSizeConfig> = {
@@ -111,36 +117,44 @@ export const defineMuiTab = ({ Tabs: { Transition }, Text }: DesignSystem): Comp
   },
 })
 
-const tabStyle = ({ Label, Fill, Outline }: TabStyle, inset?: string) => ({
-  color: Label,
-  backgroundColor: Fill,
+/** Build tab state styles for default, hover, and selected. */
+const tabVariant = ({ Current, Default, Hover, Inset }: TabVariant) => ({
+  color: Default.Label,
+  backgroundColor: Default.Fill,
   '::after': {
-    backgroundColor: Outline ?? 'transparent',
-    inset,
+    backgroundColor: Default.Outline ?? 'transparent',
+    inset: Inset,
+  },
+  '&:hover': {
+    color: Hover.Label,
+    backgroundColor: Hover.Fill,
+    '::after': {
+      backgroundColor: Hover.Outline ?? 'transparent',
+      inset: Inset,
+    },
+  },
+  '&.Mui-selected': {
+    color: Current.Label,
+    backgroundColor: Current.Fill,
+    '::after': {
+      backgroundColor: Current.Outline ?? 'transparent',
+      inset: Inset,
+    },
   },
 })
 
-const tabVariant = ({ Current, Default, Hover, Inset }: TabVariant) => ({
-  ...tabStyle(Default, Inset),
-  '&:hover': tabStyle(Hover, Inset),
-  '&.Mui-selected': tabStyle(Current, Inset),
+/** Build breakpoint-aware padding styles for a tab. */
+const tabPaddingStyles = (inline: SpacingKey, { blockEnd = 0, boxSizing }: TabPaddingOptions = {}) => ({
+  ...(boxSizing ? { boxSizing } : {}),
+  ...handleBreakpoints({
+    paddingBlockStart: 0,
+    paddingBlockEnd: Spacing[blockEnd as keyof typeof Spacing] ?? blockEnd,
+    paddingInlineStart: Spacing[inline as keyof typeof Spacing] ?? inline,
+    paddingInlineEnd: Spacing[inline as keyof typeof Spacing] ?? inline,
+  }),
 })
 
-const tabPadding = (blockStart: SpacingKey, blockEnd: SpacingKey, inlineStart: SpacingKey, inlineEnd: SpacingKey) =>
-  handleBreakpoints({
-    paddingBlockStart: Spacing[blockStart as keyof typeof Spacing] ?? blockStart,
-    paddingBlockEnd: Spacing[blockEnd as keyof typeof Spacing] ?? blockEnd,
-    paddingInlineStart: Spacing[inlineStart as keyof typeof Spacing] ?? inlineStart,
-    paddingInlineEnd: Spacing[inlineEnd as keyof typeof Spacing] ?? inlineEnd,
-  })
-
-/**
- * Generates CSS selector for inactive tabs (not selected and not hovered).
- *
- * @param hideInactiveBorders - If true, applies to all tabs when HIDE_INACTIVE_BORDERS_CLASS is present.
- *                             If false, applies to all tabs of the variant unconditionally.
- * @param variants - Tab variant class names
- */
+/** Build selectors that target inactive tabs per variant. */
 const inactiveTabSelector = ({ hideInactiveBorders }: { hideInactiveBorders: boolean }, ...variants: string[]) =>
   variants
     .map(
@@ -149,51 +163,41 @@ const inactiveTabSelector = ({ hideInactiveBorders }: { hideInactiveBorders: boo
     )
     .join(', ')
 
-// Generate per-size tab styles in the default horizontal orientation
-const tabSizeStyles = (styles: (config: TabSizeConfig) => Record<string, unknown>) =>
-  fromEntries(
-    recordValues(TAB_SIZE_CONFIG).map((config) => [`&.${config.className} .MuiTab-root`, styles(config)] as const),
-  )
-
-// Generate per-size tab styles scoped to vertical orientation
-const tabVerticalSizeStyles = (styles: (config: TabSizeConfig) => Record<string, unknown>) =>
+/** Build per-size tab styles for each orientation. */
+const tabSizeStyles = (
+  styles: (config: TabSizeConfig) => Record<string, unknown>,
+  orientation: 'horizontal' | 'vertical' = 'horizontal',
+) =>
   fromEntries(
     recordValues(TAB_SIZE_CONFIG).map(
-      (config) => [`&.MuiTabs-vertical.${config.className} .MuiTab-root`, styles(config)] as const,
+      (config) =>
+        [
+          `&${orientation === 'vertical' ? '.MuiTabs-vertical' : ''}.${config.className} .MuiTab-root`,
+          styles(config),
+        ] as const,
     ),
   )
 
-const containedTabPadding = (inline: SpacingKey, blockEnd: SpacingKey) => ({
-  boxSizing: TAB_BOX_SIZING,
-  ...tabPadding(0, blockEnd, inline, inline),
+/** Align tab content for the chosen layout. */
+const tabAlignment = (alignment: string) => ({
+  justifyContent: alignment,
+  alignItems: 'center',
 })
 
-const containedTabPaddingVertical = (inline: SpacingKey) => tabPadding(0, 0, inline, inline)
-
-const linedTabPadding = (inline: SpacingKey) => ({
-  boxSizing: TAB_BOX_SIZING,
-  ...tabPadding(0, 0, inline, inline),
+/** Compose padding and height styles per size. */
+const tabAdditionalStyles = ({ horizontal = {}, vertical = {} }: TabSizeStyleOptions = {}) => ({
+  ...tabSizeStyles(({ inline, height }) => ({
+    ...tabPaddingStyles(inline, horizontal),
+    height,
+  })),
+  ...tabSizeStyles(
+    ({ inline, height }) => ({
+      ...tabPaddingStyles(inline, vertical),
+      height,
+    }),
+    'vertical',
+  ),
 })
-
-const centeredTabVariant = (variant: TabVariant) => ({
-  '& .MuiTab-root': {
-    ...tabVariant(variant),
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-})
-
-const linedSizeStyles = tabSizeStyles(({ inline, height }) => ({
-  ...linedTabPadding(inline),
-  height,
-}))
-
-const containedSizeStyles = tabSizeStyles(({ inline, height }) => ({
-  ...containedTabPadding(inline, 'xxs'),
-  height,
-}))
-
-const containedVerticalSizeStyles = tabVerticalSizeStyles(({ inline }) => containedTabPaddingVertical(inline))
 
 // note: mui tabs do not support custom variants. Customize the standard variant. The custom TabSwitcher component should be used.
 export const defineMuiTabs = ({
@@ -205,37 +209,53 @@ export const defineMuiTabs = ({
       minHeight: 0, // It's 48px by default in Mui, but we want it smaller
       position: 'relative', // For absolute positioning of scroll buttons
 
-      '& .MuiButtonBase-root': {
-        justifyContent: 'flex-end',
-      },
-      '&.MuiTabs-vertical .MuiButtonBase-root': {
-        justifyContent: 'center',
-        alignItems: 'start',
-      },
-
       [`&.${contained}`]: {
-        '& .MuiTab-root': tabVariant(Contained),
-        // horizontal orientation
+        '& .MuiTab-root': {
+          ...tabVariant(Contained),
+          ...tabAlignment('flex-end'),
+        },
+        '&.MuiTabs-vertical .MuiTab-root': {
+          ...tabAlignment('center'),
+        },
         '& .MuiTab-root:not(.Mui-selected):not(:last-child)': {
           marginRight: '1px',
         },
-        // vertical orientation
         '&.MuiTabs-vertical .MuiTab-root:not(.Mui-selected):not(:last-child)': {
           marginRight: 0,
           marginBottom: '1px',
         },
-        ...containedSizeStyles,
-        ...containedVerticalSizeStyles,
+        ...tabAdditionalStyles({
+          horizontal: { blockEnd: 'xxs', boxSizing: TAB_BOX_SIZING },
+          vertical: { boxSizing: TAB_BOX_SIZING },
+        }),
       },
 
       [`&.${overlined}`]: {
-        ...centeredTabVariant(OverLined),
-        ...linedSizeStyles,
+        '& .MuiTab-root': {
+          ...tabVariant(OverLined),
+          ...tabAlignment('center'),
+        },
+        '&.MuiTabs-vertical .MuiTab-root': {
+          ...tabAlignment('center'),
+        },
+        ...tabAdditionalStyles({
+          horizontal: { boxSizing: TAB_BOX_SIZING },
+          vertical: { boxSizing: TAB_BOX_SIZING },
+        }),
       },
 
       [`&.${underlined}`]: {
-        ...centeredTabVariant(UnderLined),
-        ...linedSizeStyles,
+        '& .MuiTab-root': {
+          ...tabVariant(UnderLined),
+          ...tabAlignment('flex-end'),
+        },
+        '&.MuiTabs-vertical .MuiTab-root': {
+          ...tabAlignment('center'),
+        },
+        ...tabAdditionalStyles({
+          horizontal: { blockEnd: 'xs', boxSizing: TAB_BOX_SIZING },
+          vertical: { boxSizing: TAB_BOX_SIZING },
+        }),
       },
 
       // Inactive tabs have a smaller border size
