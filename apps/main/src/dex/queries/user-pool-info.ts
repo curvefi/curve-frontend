@@ -1,6 +1,5 @@
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import { requireLib } from '@ui-kit/features/connect-wallet'
-import { log } from '@ui-kit/lib'
 import { queryFactory, rootKeys, type UserPoolParams, type UserPoolQuery } from '@ui-kit/lib/model'
 import { userPoolValidationSuite } from '@ui-kit/lib/model/query/user-pool-validation'
 import { Chain, type Address } from '@ui-kit/utils'
@@ -8,44 +7,20 @@ import { usePoolTokenDepositBalances } from '../hooks/usePoolTokenDepositBalance
 import { fulfilledValue, isValidAddress } from '../utils'
 
 async function userPoolLiquidityUsd(pool: PoolTemplate, userAddress: Address) {
-  let liquidityUsd = ''
-
-  try {
-    log('userPoolLiquidityUsd', pool.name, userAddress)
-    const fetchedLiquidityUsd = await pool.userLiquidityUSD(userAddress)
-
-    if (fetchedLiquidityUsd !== 'NaN') {
-      liquidityUsd = fetchedLiquidityUsd
-    }
-
-    return liquidityUsd
-  } catch (error) {
-    log('userPoolLiquidityUsd', error, pool.name)
-  }
+  const result = await pool.userLiquidityUSD(userAddress).catch(() => 'NaN')
+  return result === 'NaN' ? '' : result
 }
 
 export async function userPoolRewardCrvApy(pool: PoolTemplate, userAddress: Address) {
-  let userCrvApy = 0
-
-  if (isValidAddress(pool.gauge.address) && !pool.rewardsOnly()) {
-    const fetchedCurrentCrvApy = await pool.userCrvApy(userAddress)
-    if (String(fetchedCurrentCrvApy) !== 'NaN') {
-      userCrvApy = fetchedCurrentCrvApy
-    }
-  }
-  return userCrvApy
+  if (!isValidAddress(pool.gauge.address) || pool.rewardsOnly()) return 0
+  const result = await pool.userCrvApy(userAddress)
+  return String(result) === 'NaN' ? 0 : result
 }
 
 export async function userPoolBoost(chainId: number, pool: PoolTemplate, userAddress: Address) {
-  if (chainId !== Chain.Ethereum || !isValidAddress(pool.gauge.address)) {
-    return Promise.resolve('')
-  }
-
-  const boost = await pool.userBoost(userAddress)
-  if (boost && boost === 'NaN') {
-    return '0'
-  }
-  return boost
+  if (chainId !== Chain.Ethereum || !isValidAddress(pool.gauge.address)) return ''
+  const result = await pool.userBoost(userAddress)
+  return result === 'NaN' ? '0' : result
 }
 
 const { useQuery: useUserPoolInfoQuery, invalidate: invalidateUserPoolInfoQuery } = queryFactory({
