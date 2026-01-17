@@ -43,7 +43,7 @@ export const ErrorReportModal = ({ open, onClose, context }: ErrorReportModalPro
   }, [form, open])
   useEffect(() => {
     if (open && userAddress) form.setValue('address', userAddress, setValueOptions)
-  }, [form, open])
+  }, [form, open, userAddress])
   return (
     <ModalDialog
       open={open}

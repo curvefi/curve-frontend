@@ -26,23 +26,24 @@ export const useErrorReportForm = ({ error, ...context }: ErrorContext) => {
   return {
     form,
     values: watchForm(form),
-    onSubmit: form.handleSubmit(
-      async (formData) =>
-        await fetchJson('/api/error-report', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            formData,
-            url: window.location.href,
-            context: {
-              ...context,
-              error:
-                error instanceof Error
-                  ? { ...error, name: error.name, message: error.message, stack: error.stack, cause: error.cause }
-                  : error,
-            },
-          }),
-        }),
-    ),
+    onSubmit: form.handleSubmit(async (formData) => {
+      const report = {
+        formData,
+        url: window.location.href,
+        context: {
+          ...context,
+          error:
+            error instanceof Error
+              ? { ...error, name: error.name, message: error.message, stack: error.stack, cause: error.cause }
+              : error,
+        },
+      }
+      console.info(`Submitting error report:`, report)
+      return await fetchJson('/api/error-report', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(report),
+      })
+    }),
   }
 }

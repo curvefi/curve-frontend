@@ -22,8 +22,23 @@ const visitErrorBoundary = () => {
       },
     },
   }).as('error')
-  cy.visit('/llamalend/ethereum/markets', { timeout: API_LOAD_TIMEOUT.timeout })
+  const url = '/llamalend/ethereum/markets'
+  cy.visit(url, {
+    timeout: API_LOAD_TIMEOUT.timeout,
+    onBeforeLoad(win) {
+      win.console.log(win.localStorage)
+      win.localStorage.clear() // empty react-query cache
+      win.console.log(win.localStorage)
+    },
+  })
   cy.wait('@error', LOAD_TIMEOUT)
+  return Cypress.config('baseUrl') + url
+}
+
+const visitNotFoundPage = () => {
+  const url = '/llamalend/ethereum/markets/non-existent-market'
+  cy.visit(url, { timeout: API_LOAD_TIMEOUT.timeout })
+  return Cypress.config('baseUrl') + url
 }
 
 describe('Error Boundary', () => {
@@ -32,51 +47,47 @@ describe('Error Boundary', () => {
     visitErrorBoundary()
     cy.get('[data-testid="error-title"]', LOAD_TIMEOUT).should('contain.text', 'Unexpected Error')
     cy.get('[data-testid="error-subtitle"]').should('contain.text', 'toLowerCase is not a function')
-    cy.window().then((win) => {
-      win.console.log(win.localStorage)
-      win.localStorage.clear() // empty react-query cache
-      win.console.log(win.localStorage)
-    })
     cy.get('[data-testid="retry-error-button"]').click()
     cy.wait('@error', LOAD_TIMEOUT) // API called again
   })
 
-  it('should submit error report for a 500 page', () => {
-    visitErrorBoundary()
-    cy.intercept('POST', '**/api/error-report', (req) => {
-      expect(req.body).to.include({
-        address: '0xabc123',
-        description: 'Clicked confirm and got an error',
-      })
-      expect(req.body).to.have.nested.property('context.error.message')
-      req.reply({ statusCode: 200, body: { status: 'ok' } })
+  it('should submit error report', () => {
+    const is500 = true // oneBool() // test either 404 or 500 error page
+    const url = is500 ? visitErrorBoundary() : visitNotFoundPage()
+    const address = '0xabc123'
+    const description = 'Got an error'
+    const contact = 'test@curve.fi'
+    cy.intercept('POST', '**/api/error-report', ({ body: { body }, reply }) => {
+      const bodyJson = JSON.parse(body)
+      expect(Object.keys(bodyJson)).to.have.members(['formData', 'url', 'context'])
+      expect(bodyJson.formData).to.deep.equal({ address, contactMethod: 'email', contact, description })
+      expect(bodyJson.url).to.equal(url)
+      if (is500) {
+        const name = 'TypeError'
+        const message = 'val.toLowerCase is not a function'
+        expect(Object.keys(bodyJson.context)).to.have.members(['title', 'subtitle', 'error'])
+        expect(bodyJson.context).to.deep.include({ title: 'Unexpected Error', subtitle: message })
+        expect(bodyJson.context.error).to.deep.include({ name: name, message: message })
+        expect(bodyJson.context.error.stack).to.contain(name)
+        expect(bodyJson.context.error.stack).to.contain(message)
+      } else {
+        expect(bodyJson).to.deep.equal({
+          formData: { address, contactMethod: 'email', contact, description },
+          url,
+          context: { title: '404', subtitle: 'Page Not Found' },
+        })
+      }
+      reply({ statusCode: 200, body: { status: 'ok' } })
     }).as('errorReport')
 
     cy.get('[data-testid="submit-error-report-button"]').click()
     cy.get('[data-testid="submit-error-report-modal"]').should('be.visible')
-
     cy.get('[data-testid="submit-error-report-address"]').clear()
-    cy.get('[data-testid="submit-error-report-address"]').type('0xabc123')
-    cy.get('[data-testid="submit-error-report-description"]').type('Clicked confirm and got an error')
+    cy.get('[data-testid="submit-error-report-address"]').type(address)
+    cy.get('[data-testid="submit-error-report-contact"]').type(contact)
+    cy.get('[data-testid="submit-error-report-description"]').type(description)
     cy.get('[data-testid="submit-error-report-submit"]').click()
 
-    cy.wait('@errorReport', LOAD_TIMEOUT)
-  })
-
-  it('should submit error report for a 404 page with url', () => {
-    cy.intercept('POST', '**/api/error-report', (req) => {
-      expect(req.body).to.have.nested.property('context.error.statusCode', 404)
-      expect(req.body).to.have.nested.property('context.error.url')
-      expect(req.body.context.error.url).to.include('/this-page-does-not-exist')
-      req.reply({ statusCode: 200, body: { status: 'ok' } })
-    }).as('errorReport')
-
-    cy.visit('/this-page-does-not-exist', { timeout: API_LOAD_TIMEOUT.timeout })
-    cy.get('[data-testid="error-title"]', LOAD_TIMEOUT).should('contain.text', '404')
-    cy.get('[data-testid="submit-error-report-button"]').click()
-    cy.get('[data-testid="submit-error-report-modal"]').should('be.visible')
-    cy.get('[data-testid="submit-error-report-description"]').type('Not found')
-    cy.get('[data-testid="submit-error-report-submit"]').click()
     cy.wait('@errorReport', LOAD_TIMEOUT)
   })
 })
