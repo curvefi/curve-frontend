@@ -2,11 +2,12 @@ import { styled } from 'styled-components'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { useStore } from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
+import type { PoolCoin } from '@curvefi/prices-api/pools'
 import { Box } from '@ui/Box'
 import { TooltipButton as Tooltip } from '@ui/Tooltip/TooltipButton'
 import { Chip } from '@ui/Typography'
 import { formatNumber, getFractionDigitsOptions, convertDate, convertTimeAgo, formatDate, scanTxPath } from '@ui/utils'
-import type { LpLiquidityEventsData, PricesApiCoin } from '@ui-kit/features/candle-chart/types'
+import type { LpLiquidityEventsData } from '@ui-kit/features/candle-chart/types'
 import { t } from '@ui-kit/lib/i18n'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 
@@ -17,7 +18,7 @@ export const LiquidityData = ({
 }: {
   lpEventsData: LpLiquidityEventsData[]
   chainId: ChainId
-  coins: PricesApiCoin[]
+  coins: PoolCoin[]
 }) => {
   const tokensMapper = useStore((state) => state.tokens.tokensMapper)
   const { data: network } = useNetworkByChain({ chainId })

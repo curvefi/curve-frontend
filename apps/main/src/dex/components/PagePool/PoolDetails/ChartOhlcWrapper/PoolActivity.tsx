@@ -4,9 +4,10 @@ import { LiquidityData } from '@/dex/components/PagePool/PoolDetails/ChartOhlcWr
 import { TradesData } from '@/dex/components/PagePool/PoolDetails/ChartOhlcWrapper/TradesData'
 import { useStore } from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
+import type { PoolCoin } from '@curvefi/prices-api/pools'
 import { Button } from '@ui/Button/Button'
 import { SpinnerWrapper, Spinner } from '@ui/Spinner'
-import type { LpTradeToken, PricesApiCoin } from '@ui-kit/features/candle-chart/types'
+import type { LpTradeToken } from '@ui-kit/features/candle-chart/types'
 import { t } from '@ui-kit/lib/i18n'
 
 const MIN_HEIGHT = 330
@@ -20,9 +21,9 @@ export const PoolActivity = ({
 }: {
   poolAddress: string
   chainId: ChainId
-  coins: PricesApiCoin[]
+  coins: PoolCoin[]
   tradesTokens: LpTradeToken[]
-  chartCombinations: PricesApiCoin[][]
+  chartCombinations: PoolCoin[][]
 }) => {
   const activityStatus = useStore((state) => state.pools.pricesApiState.activityStatus)
   const tradeEventsData = useStore((state) => state.pools.pricesApiState.tradeEventsData)

@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import { styled } from 'styled-components'
 import { StyledIconButton, StyledInformationSquare16 } from '@/dex/components/PagePool/PoolDetails/PoolStats/styles'
 import { useNetworkByChain } from '@/dex/entities/networks'
+import { useBasePools } from '@/dex/queries/base-pools.query'
 import { useStore } from '@/dex/store/useStore'
 import { ChainId, PoolData } from '@/dex/types/main.types'
 import { Box } from '@ui/Box'
@@ -25,13 +26,11 @@ type PoolParametersProps = {
 export const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParametersProps) => {
   const poolAddress = poolData.pool.address
   const snapshotsMapper = useStore((state) => state.pools.snapshotsMapper)
-  const isBasePoolsLoading = useStore((state) => state.pools.basePoolsLoading)
-  const basePools = useStore((state) => state.pools.basePools)
+  const { data: basePools } = useBasePools({ chainId: rChainId })
   const pricesApiPoolDataMapper = useStore((state) => state.pools.pricesApiPoolDataMapper)
   const { data: network } = useNetworkByChain({ chainId: rChainId })
   const snapshotData = snapshotsMapper[poolAddress]
   const pricesData = pricesApiPoolDataMapper[poolAddress]
-  const basePoolList = isBasePoolsLoading ? [] : (basePools[rChainId] ?? [])
 
   const convert1e8 = (number: number) => formatNumber(number / 10 ** 8, { decimals: 5 })
   const convert1e10 = (number: number) => formatNumber(number / 10 ** 10, { decimals: 5 })
@@ -92,7 +91,7 @@ export const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParameters
             <PoolParameterValue>
               {returnPoolType(pricesData.pool_type, pricesData.coins.length)}
               {pricesData.metapool && `, ${t`Metapool`}`}
-              {basePoolList.some((pool) => pool.pool === poolAddress) && `, ${t`Basepool`}`}
+              {basePools?.some((pool) => pool.pool === poolAddress) && `, ${t`Basepool`}`}
             </PoolParameterValue>
           </PoolParameter>
           {pricesData.base_pool && (

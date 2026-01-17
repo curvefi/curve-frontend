@@ -164,13 +164,6 @@ export interface PoolData {
   failedFetching24hOldVprice: boolean
 }
 
-export type BasePool = {
-  id: string
-  name: string
-  token: string
-  pool: string
-  coins: string[]
-}
 export type PoolDataMapper = { [poolAddress: string]: PoolData }
 export type PoolDataCache = {
   gauge: Gauge

@@ -3,6 +3,7 @@ import { styled } from 'styled-components'
 import { STABLESWAP } from '@/dex/components/PageCreatePool/constants'
 import { CreateToken } from '@/dex/components/PageCreatePool/types'
 import { useNetworkByChain } from '@/dex/entities/networks'
+import { useBasePools } from '@/dex/queries/base-pools.query'
 import { useStore } from '@/dex/store/useStore'
 import { ChainId, CurveApi } from '@/dex/types/main.types'
 import { delayAction } from '@/dex/utils'
@@ -54,8 +55,7 @@ export const SelectTokenButton = ({
   const userAddedTokens = useStore((state) => state.createPool.userAddedTokens)
   const updateUserAddedTokens = useStore((state) => state.createPool.updateUserAddedTokens)
 
-  const basePools = useStore((state) => state.pools.basePools)
-  const basePoolsLoading = useStore((state) => state.pools.basePoolsLoading)
+  const { data: basePools = [], isLoading: basePoolsLoading } = useBasePools({ chainId })
   const swapType = useStore((state) => state.createPool.swapType)
 
   const [error, setError] = useState<string>()
@@ -83,7 +83,7 @@ export const SelectTokenButton = ({
   const options = useMemo(() => {
     const allTokens = filterBasepools
       ? tokens.filter((item) =>
-          basePools[chainId]?.some((basepool) => basepool.token.toLowerCase() === item.address.toLowerCase()),
+          basePools.some((basepool) => basepool.token.toLowerCase() === item.address.toLowerCase()),
         )
       : tokens
 
@@ -96,7 +96,7 @@ export const SelectTokenButton = ({
       label: [token.basePool && 'Base pool', token.userAddedToken && 'User added'].filter(Boolean).join(' - '),
       volume: token.volume,
     }))
-  }, [filterBasepools, tokens, filterValue, endsWith, basePools, chainId, blockchainId])
+  }, [filterBasepools, tokens, filterValue, endsWith, basePools, blockchainId])
 
   useEffect(() => {
     async function updateUserAddedToken() {
@@ -110,9 +110,7 @@ export const SelectTokenButton = ({
       ) {
         try {
           const token = await curve.getCoinsData([filterValueLowerCase])
-          const isBasePool = !!basePools[chainId]?.some(
-            (basepool) => basepool.token.toLowerCase() === filterValueLowerCase,
-          )
+          const isBasePool = !!basePools?.some((basepool) => basepool.token.toLowerCase() === filterValueLowerCase)
 
           updateUserAddedTokens(filterValueLowerCase, token[0].symbol, false, isBasePool)
         } catch (error) {
@@ -184,7 +182,7 @@ export const SelectTokenButton = ({
             {swapType === STABLESWAP && (
               <Checkbox
                 key={'filter-basepools'}
-                isDisabled={basePools[chainId]?.length === 0}
+                isDisabled={basePools.length === 0}
                 className={filterBasepools ? 'active' : ''}
                 isSelected={filterBasepools}
                 onChange={() => setFilterBasepools(!filterBasepools)}
