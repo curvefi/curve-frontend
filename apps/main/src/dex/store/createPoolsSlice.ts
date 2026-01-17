@@ -23,6 +23,7 @@ import {
   VolumeMapper,
 } from '@/dex/types/main.types'
 import { getChainPoolIdActiveKey } from '@/dex/utils'
+import type { PoolCoin } from '@curvefi/prices-api/pools'
 import { PromisePool } from '@supercharge/promise-pool'
 import type {
   FetchingStatus,
@@ -34,9 +35,6 @@ import type {
   LpTradesApiResponse,
   LpTradesData,
   LpTradeToken,
-  PricesApiCoin,
-  PricesApiPool,
-  PricesApiPoolResponse,
   TimeOptions,
 } from '@ui-kit/features/candle-chart/types'
 import { convertToLocaleTimestamp } from '@ui-kit/features/candle-chart/utils'
@@ -63,7 +61,6 @@ type SliceState = {
   }
   tvlMapper: { [chainId: string]: TvlMapper }
   volumeMapper: { [chainId: string]: VolumeMapper }
-  pricesApiPoolsMapper: { [poolAddress: string]: PricesApiPool }
   pricesApiPoolDataMapper: { [poolAddress: string]: PricesApiPoolData }
   snapshotsMapper: SnapshotsMapper
   pricesApiState: {
@@ -99,7 +96,6 @@ export type PoolsSlice = {
     fetchPoolCurrenciesReserves(curve: CurveApi, poolData: PoolData): Promise<void>
     setPoolIsWrapped(poolData: PoolData, isWrapped: boolean): { tokens: string[]; tokenAddresses: string[] }
     updatePool: (chainId: ChainId, poolId: string, updatedPoolData: Partial<PoolData>) => void
-    fetchPricesApiPools: (chainId: ChainId) => Promise<void>
     fetchPricesPoolSnapshots: (chainId: ChainId, poolAddress: string) => Promise<void>
     fetchPricesApiCharts: (
       chainId: ChainId,
@@ -109,7 +105,7 @@ export type PoolsSlice = {
       timeUnit: string,
       start: number,
       end: number,
-      chartCombinations: PricesApiCoin[][],
+      chartCombinations: PoolCoin[][],
       isFlipped: boolean[],
     ) => void
     fetchMorePricesApiCharts: (
@@ -120,10 +116,10 @@ export type PoolsSlice = {
       timeUnit: string,
       start: number,
       end: number,
-      chartCombinations: PricesApiCoin[][],
+      chartCombinations: PoolCoin[][],
       isFlipped: boolean[],
     ) => void
-    fetchPricesApiActivity: (chainId: ChainId, poolAddress: string, chartCombinations: PricesApiCoin[][]) => void
+    fetchPricesApiActivity: (chainId: ChainId, poolAddress: string, chartCombinations: PoolCoin[][]) => void
     setChartTimeOption: (timeOption: TimeOptions) => void
     setEmptyPoolListDefault(chainId: ChainId): void
 
@@ -145,7 +141,6 @@ const DEFAULT_STATE: SliceState = {
   stakedMapper: {},
   tvlMapper: {},
   volumeMapper: {},
-  pricesApiPoolsMapper: {},
   pricesApiPoolDataMapper: {},
   snapshotsMapper: {},
   pricesApiState: {
@@ -495,28 +490,6 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
         }),
       )
     },
-    fetchPricesApiPools: async (chainId: ChainId) => {
-      const networks = await fetchNetworks()
-      if (networks[chainId].pricesApi) {
-        const networkId = networks[chainId].id
-
-        try {
-          const response = await fetch(`https://prices.curve.finance/v1/chains/${networkId}`)
-          const data: PricesApiPoolResponse = await response.json()
-
-          const pricesApiPoolsMapper: { [poolAddress: string]: PricesApiPool } = {}
-          data.data.forEach((pool) => (pricesApiPoolsMapper[pool.address.toLowerCase()] = pool))
-
-          set(
-            produce((state: State) => {
-              state.pools.pricesApiPoolsMapper = pricesApiPoolsMapper
-            }),
-          )
-        } catch (error) {
-          console.warn(error)
-        }
-      }
-    },
     fetchPricesPoolSnapshots: async (chainId: ChainId, poolAddress: string) => {
       const networks = await fetchNetworks()
       if (networks[chainId].pricesApi) {
@@ -554,7 +527,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
       timeUnit: string,
       end: number,
       start: number,
-      chartCombinations: PricesApiCoin[][],
+      chartCombinations: PoolCoin[][],
       isFlipped: boolean[],
     ) => {
       set(
@@ -610,7 +583,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
         }
       } else {
         try {
-          const pair: PricesApiCoin[] = chartCombinations[selectedChartIndex - 2]
+          const pair: PoolCoin[] = chartCombinations[selectedChartIndex - 2]
           const ifPairFlipped = isFlipped[selectedChartIndex - 2]
           const main_token = ifPairFlipped ? pair[1].address : pair[0].address
           const ref_token = ifPairFlipped ? pair[0].address : pair[1].address
@@ -661,7 +634,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
       timeUnit: string,
       start: number,
       end: number,
-      chartCombinations: PricesApiCoin[][],
+      chartCombinations: PoolCoin[][],
       isFlipped: boolean[],
     ) => {
       const networks = await fetchNetworks()
@@ -703,7 +676,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
         }
       } else {
         try {
-          const pair: PricesApiCoin[] = chartCombinations[selectedChartIndex - 2]
+          const pair: PoolCoin[] = chartCombinations[selectedChartIndex - 2]
           const ifPairFlipped = isFlipped[selectedChartIndex - 2]
           const main_token = ifPairFlipped ? pair[1].address : pair[0].address
           const ref_token = ifPairFlipped ? pair[0].address : pair[1].address
@@ -743,7 +716,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
         }
       }
     },
-    fetchPricesApiActivity: async (chainId: ChainId, poolAddress: string, chartCombinations: PricesApiCoin[][]) => {
+    fetchPricesApiActivity: async (chainId: ChainId, poolAddress: string, chartCombinations: PoolCoin[][]) => {
       set(
         produce((state: State) => {
           state.pools.pricesApiState.activityStatus = 'LOADING'
@@ -754,7 +727,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
       const network = networks[chainId].id.toLowerCase()
 
       try {
-        const promises = chartCombinations.map((coin: PricesApiCoin[]) =>
+        const promises = chartCombinations.map((coin: PoolCoin[]) =>
           fetch(
             `https://prices.curve.finance/v1/trades/${network}/${poolAddress}?main_token=${coin[0].address}&reference_token=${coin[1].address}&page=1&per_page=100`,
           ),

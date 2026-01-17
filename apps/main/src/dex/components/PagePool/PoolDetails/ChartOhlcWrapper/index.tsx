@@ -4,23 +4,18 @@ import { PoolActivity } from '@/dex/components/PagePool/PoolDetails/ChartOhlcWra
 import { combinations } from '@/dex/components/PagePool/PoolDetails/ChartOhlcWrapper/utils'
 import { useStore } from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
+import type { Pool, PoolCoin } from '@curvefi/prices-api/pools'
 import { Box } from '@ui/Box'
 import { Button } from '@ui/Button'
 import { ChartWrapper } from '@ui-kit/features/candle-chart/ChartWrapper'
-import type { LabelList, PricesApiCoin, PricesApiPool } from '@ui-kit/features/candle-chart/types'
+import type { LabelList } from '@ui-kit/features/candle-chart/types'
 import { getThreeHundredResultsAgo, subtractTimeUnit } from '@ui-kit/features/candle-chart/utils'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
 
 const CHART_HEIGHT = 300
 
-export const PoolInfoData = ({
-  rChainId,
-  pricesApiPoolData,
-}: {
-  rChainId: ChainId
-  pricesApiPoolData: PricesApiPool
-}) => {
+export const PoolInfoData = ({ rChainId, pricesApiPoolData }: { rChainId: ChainId; pricesApiPoolData: Pool }) => {
   const theme = useUserProfileStore((state) => state.theme)
   const chartOhlcData = useStore((state) => state.pools.pricesApiState.chartOhlcData)
   const chartStatus = useStore((state) => state.pools.pricesApiState.chartStatus)
@@ -38,18 +33,18 @@ export const PoolInfoData = ({
   const [selectedChartIndex, setChartSelectedIndex] = useState<number>(0)
   const [isFlipped, setIsFlipped] = useState<boolean[]>([])
 
-  const chartCombinations: PricesApiCoin[][] = useMemo(() => {
-    const coins = pricesApiPoolData.coins.slice(0, pricesApiPoolData.n_coins)
+  const chartCombinations: PoolCoin[][] = useMemo(() => {
+    const coins = pricesApiPoolData.coins.slice(0, pricesApiPoolData.numCoins)
 
     const combinationsArray = combinations(coins, 2)
     // adds combinations in case of basepool
-    const extraCombinations = pricesApiPoolData.coins.slice(pricesApiPoolData.n_coins).map((item) => [item, coins[0]])
+    const extraCombinations = pricesApiPoolData.coins.slice(pricesApiPoolData.numCoins).map((item) => [item, coins[0]])
 
     const combinedArray = [...combinationsArray]
     combinedArray.splice(0, 0, ...extraCombinations)
 
     return combinedArray
-  }, [pricesApiPoolData.coins, pricesApiPoolData.n_coins])
+  }, [pricesApiPoolData.coins, pricesApiPoolData.numCoins])
 
   const chartTimeSettings = useMemo(() => {
     const threeHundredResultsAgo = getThreeHundredResultsAgo(timeOption, Date.now() / 1000)
