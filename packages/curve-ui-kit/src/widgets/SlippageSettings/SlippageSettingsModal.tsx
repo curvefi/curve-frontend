@@ -13,6 +13,7 @@ import Radio from '@mui/material/Radio'
 import RadioGroup from '@mui/material/RadioGroup'
 import Stack from '@mui/material/Stack'
 import TextField from '@mui/material/TextField'
+import Typography from '@mui/material/Typography'
 import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { ModalDialog } from '@ui-kit/shared/ui/ModalDialog'
@@ -202,8 +203,10 @@ export const SlippageSettingsModal = ({ isOpen, maxSlippage, onSave, onClose }: 
       <Stack gap={Spacing.md}>
         <FormControl fullWidth>
           {/* Labels become blue on focus, but in this one-off we don't want that as it's the only form option */}
-          <FormLabel sx={{ color: 'text.secondary', '&.Mui-focused': { color: 'text.secondary' } }}>
-            {t`Max slippage`} {tooltip}
+          <FormLabel sx={{ '&.Mui-focused': { color: 'text.secondary' } }}>
+            <Typography variant="bodyMRegular">
+              {t`Max slippage`} {tooltip}
+            </Typography>
           </FormLabel>
 
           <Stack direction={{ mobile: 'column', tablet: 'row' }} justifyContent="space-between" gap={Spacing.sm}>

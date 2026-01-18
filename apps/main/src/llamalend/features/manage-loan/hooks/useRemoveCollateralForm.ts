@@ -19,7 +19,7 @@ import { vestResolver } from '@hookform/resolvers/vest'
 import type { BaseConfig } from '@ui/utils'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
-import { useFormErrors } from '../../borrow/react-form.utils'
+import { useFormErrors } from '@ui-kit/utils/react-form.utils'
 
 const useCallbackAfterFormUpdate = (form: UseFormReturn<CollateralForm>, callback: () => void) =>
   useEffect(() => form.subscribe({ formState: { values: true }, callback }), [form, callback])

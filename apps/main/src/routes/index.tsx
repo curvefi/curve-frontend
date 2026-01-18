@@ -52,7 +52,11 @@ export const router = createRouter({
       <head>
         <title>{t`Error` + ' - Curve'}</title>
       </head>
-      <ErrorPage title={t`Unexpected Error`} subtitle={error.message || t`An unexpected error occurred`} />
+      <ErrorPage
+        title={t`Unexpected Error`}
+        subtitle={error.message || t`An unexpected error occurred`}
+        error={error}
+      />
     </>
   ),
   defaultNotFoundComponent: () => (
