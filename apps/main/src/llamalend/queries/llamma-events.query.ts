@@ -1,17 +1,19 @@
 import { enforce, test } from 'vest'
 import type { Chain, Address } from '@curvefi/prices-api'
 import { getEvents, type Endpoint, type LlammaEvent } from '@curvefi/prices-api/llamma'
-import { createValidationSuite } from '@ui-kit/lib'
+import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { contractValidationGroup } from '@ui-kit/lib/model/query/contract-validation'
 
-export type LlammaEventsQuery = {
+type LlammaEventsQuery = {
   blockchainId: Chain
   contractAddress: Address
   endpoint: Endpoint
   page?: number
   perPage?: number
 }
+
+export type LlammaEventsParams = FieldsOf<LlammaEventsQuery>
 
 export type LlammaEventsResult = {
   events: LlammaEvent[]
@@ -21,7 +23,7 @@ export type LlammaEventsResult = {
 }
 
 export const { useQuery: useLlammaEvents } = queryFactory({
-  queryKey: ({ blockchainId, contractAddress, endpoint, page, perPage }: LlammaEventsQuery) =>
+  queryKey: ({ blockchainId, contractAddress, endpoint, page, perPage }: LlammaEventsParams) =>
     ['llamma-events', { blockchainId }, { contractAddress }, { endpoint }, { page }, { perPage }] as const,
   queryFn: async ({
     blockchainId,
@@ -38,7 +40,7 @@ export const { useQuery: useLlammaEvents } = queryFactory({
       perPage,
     }),
   staleTime: '1m',
-  validationSuite: createValidationSuite(({ blockchainId, contractAddress, endpoint }: LlammaEventsQuery) => {
+  validationSuite: createValidationSuite(({ blockchainId, contractAddress, endpoint }: LlammaEventsParams) => {
     contractValidationGroup({ blockchainId, contractAddress })
     test('endpoint', 'Invalid endpoint', () => {
       enforce(endpoint).isNotEmpty().inside(['crvusd', 'lending'])
