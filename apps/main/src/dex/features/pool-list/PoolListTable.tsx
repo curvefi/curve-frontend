@@ -4,7 +4,6 @@ import { type NetworkConfig } from '@/dex/types/main.types'
 import { notFalsy } from '@curvefi/prices-api/objects.util'
 import type { PartialRecord } from '@curvefi/prices-api/objects.util'
 import { ExpandedState, getPaginationRowModel } from '@tanstack/react-table'
-import { CurveApi } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { MIN_POOLS_DISPLAYED, SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
 import { useIsTablet } from '@ui-kit/hooks/useBreakpoints'
@@ -61,9 +60,8 @@ const useSearch = (
 const PER_PAGE = 50
 const EMPTY: never[] = []
 
-export const PoolListTable = ({ network, curve }: { network: NetworkConfig; curve: CurveApi | null }) => {
+export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
   const { isLite, poolFilters } = network
-  const { signerAddress } = curve ?? {}
 
   // todo: use isReady to show a loading spinner close to the data
   const { data, isLoading, isReady, userHasPositions } = usePoolListData(network)
@@ -100,11 +98,7 @@ export const PoolListTable = ({ network, curve }: { network: NetworkConfig; curv
       table={table}
       emptyState={
         <EmptyStateRow table={table}>
-          <PoolListEmptyState
-            columnFiltersById={columnFiltersById}
-            signerAddress={signerAddress}
-            resetFilters={resetFilters}
-          />
+          <PoolListEmptyState columnFiltersById={columnFiltersById} resetFilters={resetFilters} />
         </EmptyStateRow>
       }
       expandedPanel={PoolMobileExpandedPanel}

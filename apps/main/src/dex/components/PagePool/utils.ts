@@ -1,6 +1,6 @@
 import type { EstimatedGas, Slippage } from '@/dex/components/PagePool/types'
-import { Balances } from '@/dex/types/main.types'
 import { shortenTokenName } from '@/dex/utils'
+import type { IDict } from '@curvefi/api/lib/interfaces'
 
 export type Amount = {
   value: string
@@ -13,7 +13,7 @@ export function parseAmountsForAPI(amounts: Amount[]) {
   return amounts.map((a) => (Number(a.value) > 0 ? a.value : '0'))
 }
 
-export function getAmountsError(amounts: Amount[], balances: Balances) {
+export function getAmountsError(amounts: Amount[], balances: IDict<string>) {
   return [...amounts]
     .filter((a) => {
       const userBalance = balances?.[a.tokenAddress]

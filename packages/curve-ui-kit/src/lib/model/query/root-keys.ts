@@ -28,16 +28,22 @@ export type TokenParams = FieldsOf<TokenQuery>
 export const rootKeys = {
   chain: <T = number>({ chainId }: ChainParams<T>) => ['chain', { chainId }] as const,
   chainName: ({ blockchainId }: ChainNameParams) => ['chain', { blockchainId }] as const,
+
+  user: <T = Address>({ userAddress }: UserParams<T>) => ['user', { userAddress }] as const,
+
   pool: <T = number>({ chainId, poolId }: PoolParams<T>) =>
     [...rootKeys.chain({ chainId }), 'pool', { poolId }] as const,
   userPool: <TChain = number, TUser = Address>({ chainId, poolId, userAddress }: UserPoolParams<TChain, TUser>) =>
-    [...rootKeys.pool({ chainId, poolId }), 'user', { userAddress }] as const,
+    [...rootKeys.pool({ chainId, poolId }), ...rootKeys.user({ userAddress })] as const,
+
   contract: ({ blockchainId, contractAddress }: ContractParams) =>
     [...rootKeys.chainName({ blockchainId }), 'contract', { contractAddress }] as const,
+
   gauge: <T = number>({ chainId, poolId }: GaugeParams<T>) => [...rootKeys.pool({ chainId, poolId }), 'gauge'] as const,
   token: ({ chainId, tokenAddress }: TokenParams) =>
     [...rootKeys.chain({ chainId }), 'token', { tokenAddress }] as const,
+
   market: ({ chainId, marketId }: MarketParams) => [...rootKeys.chain({ chainId }), 'market', { marketId }] as const,
   userMarket: ({ chainId, marketId, userAddress }: UserMarketParams) =>
-    [...rootKeys.market({ chainId, marketId }), 'user', { userAddress }] as const,
+    [...rootKeys.market({ chainId, marketId }), ...rootKeys.user({ userAddress })] as const,
 } as const

@@ -1,5 +1,4 @@
 import lodash from 'lodash'
-import memoizee from 'memoizee'
 import type { FormValues as PoolSwapFormValues } from '@/dex/components/PagePool/Swap/types'
 import type { ExchangeRate, FormValues, Route, SearchedParams } from '@/dex/components/PageRouterSwap/types'
 import { httpFetcher } from '@/dex/lib/utils'
@@ -1176,27 +1175,7 @@ const poolWithdraw = {
   },
 }
 
-/**
- * TODO: Work around for getPoolList being called twice from UserSlice and DashboardSlice
- */
-const getUserPoolList = memoizee((curve: CurveApi, walletAddress: string) => curve.getUserPoolList(walletAddress), {
-  maxAge: 1000 * 60 * 5,
-  length: 1,
-  promise: true,
-})
-
 const wallet = {
-  getUserPoolList: async (curve: CurveApi, walletAddress: string) => {
-    log('getUserPoolList', curve.chainId, walletAddress)
-    const resp = { poolList: [] as string[], error: '' }
-    try {
-      resp.poolList = await getUserPoolList(curve, walletAddress)
-      return resp
-    } catch (error) {
-      resp.error = getErrorMessage(error, 'error-pool-list')
-      return resp
-    }
-  },
   getUserLiquidityUSD: async (curve: CurveApi, poolIds: string[], walletAddress: string) => {
     log('getUserLiquidityUSD', poolIds, walletAddress)
     return await curve.getUserLiquidityUSD(poolIds, walletAddress)
@@ -1249,44 +1228,6 @@ const wallet = {
       return resp
     }
   },
-  userPoolBoost: async (p: Pool, walletAddress: string) => {
-    const boost = await p.userBoost(walletAddress)
-    if (boost && boost === 'NaN') {
-      return '0'
-    }
-    return boost
-  },
-  userPoolBalances: async (p: Pool) => {
-    log('userPoolBalances', p.name)
-    return p.userBalances()
-  },
-  userPoolLiquidityUsd: async (p: Pool, signerAddress: string) => {
-    let liquidityUsd = ''
-
-    try {
-      log('userPoolLiquidityUsd', p.name, signerAddress)
-      const fetchedLiquidityUsd = await p.userLiquidityUSD(signerAddress)
-
-      if (fetchedLiquidityUsd !== 'NaN') {
-        liquidityUsd = fetchedLiquidityUsd
-      }
-
-      return liquidityUsd
-    } catch (error) {
-      log('userPoolLiquidityUsd', error, p.name)
-    }
-  },
-  userPoolRewardCrvApy: async (p: Pool, walletAddress: string) => {
-    let userCrvApy = 0
-
-    if (isValidAddress(p.gauge.address) && !p.rewardsOnly()) {
-      const fetchedCurrentCrvApy = await p.userCrvApy(walletAddress)
-      if (String(fetchedCurrentCrvApy) !== 'NaN') {
-        userCrvApy = fetchedCurrentCrvApy
-      }
-    }
-    return userCrvApy
-  },
   userPoolRewardProfit: async (p: Pool, signerAddress: string, chainId: ChainId) => {
     const profit = {
       baseProfit: {
@@ -1336,10 +1277,6 @@ const wallet = {
     }
 
     return profit
-  },
-  userPoolShare: async (p: Pool) => {
-    log('userPoolShare', p.name)
-    return p.userShare()
   },
 }
 

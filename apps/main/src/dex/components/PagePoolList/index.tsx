@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useConnection } from 'wagmi'
 import { PoolRow } from '@/dex/components/PagePoolList/components/PoolRow'
 import { TableHead } from '@/dex/components/PagePoolList/components/TableHead'
 import { TableHeadMobile } from '@/dex/components/PagePoolList/components/TableHeadMobile'
@@ -7,8 +8,8 @@ import { TableSettings } from '@/dex/components/PagePoolList/components/TableSet
 import type { ColumnKeys, PagePoolList, SearchParams } from '@/dex/components/PagePoolList/types'
 import { COLUMN_KEYS } from '@/dex/components/PagePoolList/utils'
 import { useNetworkByChain } from '@/dex/entities/networks'
+import { useUserPools } from '@/dex/queries/user-pools.query'
 import { DEFAULT_FORM_STATUS, getPoolListActiveKey } from '@/dex/store/createPoolListSlice'
-import { getUserActiveKey } from '@/dex/store/createUserSlice'
 import { useStore } from '@/dex/store/useStore'
 import { SpinnerWrapper, Spinner } from '@ui/Spinner'
 import { Tbody, Table } from '@ui/Table'
@@ -37,12 +38,14 @@ export const PoolList = ({
   const showHideSmallPools = useStore((state) => state.poolList.showHideSmallPools)
   const tvlMapperCached = useStore((state) => state.storeCache.tvlMapper[rChainId])
   const tvlMapper = useStore((state) => state.pools.tvlMapper[rChainId])
-  const userActiveKey = getUserActiveKey(curve)
-  const userPoolList = useStore((state) => state.user.poolList[userActiveKey])
   const volumeMapperCached = useStore((state) => state.storeCache.volumeMapper[rChainId])
   const volumeMapper = useStore((state) => state.pools.volumeMapper[rChainId])
   const fetchPoolsRewardsApy = useStore((state) => state.pools.fetchPoolsRewardsApy)
   const setFormValues = useStore((state) => state.poolList.setFormValues)
+
+  const { address: userAddress } = useConnection()
+  const { data: userPools } = useUserPools({ chainId: rChainId, userAddress })
+
   const hideSmallPools = useUserProfileStore((state) => state.hideSmallPools)
   const {
     data: { isCrvRewardsEnabled },
@@ -112,7 +115,7 @@ export const PoolList = ({
         volumeMapperCached ?? {},
         tvlMapper ?? {},
         tvlMapperCached ?? {},
-        userPoolList ?? {},
+        userPools,
       )
     },
     [
@@ -128,7 +131,7 @@ export const PoolList = ({
       volumeMapperCached,
       tvlMapper,
       tvlMapperCached,
-      userPoolList,
+      userPools,
     ],
   )
 
@@ -183,12 +186,7 @@ export const PoolList = ({
         )}
         <Tbody $borderBottom>
           {isReadyWithApiData && formStatus.noResult ? (
-            <TableRowNoResult
-              colSpan={colSpan}
-              searchParams={searchParams}
-              signerAddress={signerAddress}
-              updatePath={updatePath}
-            />
+            <TableRowNoResult colSpan={colSpan} searchParams={searchParams} updatePath={updatePath} />
           ) : isReady && Array.isArray(result) ? (
             <>
               {result.map((poolId: string, index: number) => (
@@ -205,7 +203,6 @@ export const PoolList = ({
                   searchTermMapper={searchTermMapper}
                   showDetail={showDetail}
                   setShowDetail={setShowDetail}
-                  curve={curve}
                 />
               ))}
             </>

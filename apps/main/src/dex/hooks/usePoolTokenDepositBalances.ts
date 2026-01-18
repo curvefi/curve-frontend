@@ -5,7 +5,6 @@ import { useCurve, type CurveApi } from '@ui-kit/features/connect-wallet'
 import { fetchTokenBalance, useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import type { FieldsOf } from '@ui-kit/lib'
 import type { ChainQuery, PoolQuery, UserQuery } from '@ui-kit/lib/model'
-import { isValidAddress } from '../utils'
 
 type Query = ChainQuery & UserQuery & PoolQuery
 type Params = FieldsOf<Query>
@@ -52,15 +51,3 @@ export const fetchPoolLpTokenBalance = (config: Config, curve: CurveApi, poolId:
     userAddress: curve.signerAddress as Address,
     tokenAddress: curve.getPool(poolId).lpToken as Address,
   })
-
-/** Temporary imperative function for some zustand slices */
-export const fetchPoolGaugeTokenBalance = async (config: Config, curve: CurveApi, poolId: string) => {
-  const { gauge, lpToken } = curve.getPool(poolId)
-  return isValidAddress(gauge.address)
-    ? await fetchTokenBalance(config, {
-        chainId: curve?.chainId,
-        userAddress: curve.signerAddress as Address,
-        tokenAddress: lpToken as Address,
-      })
-    : '0'
-}

@@ -84,13 +84,8 @@ export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreAp
       state.pools.resetState()
       state.quickSwap.resetState()
       state.tokens.resetState()
-      state.user.resetState()
       state.createPool.resetState()
       state.dashboard.resetState()
-    }
-
-    if (isUserSwitched) {
-      state.user.resetState()
     }
 
     // update network settings from api
@@ -121,10 +116,6 @@ export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreAp
     if (isUserSwitched || isNetworkSwitched) {
       void state.pools.fetchPricesApiPools(chainId)
       void state.pools.fetchBasePools(curveApi)
-    }
-
-    if (curveApi.signerAddress) {
-      void state.user.fetchUserPoolList(curveApi)
     }
 
     log('Hydrating DEX - Complete')
