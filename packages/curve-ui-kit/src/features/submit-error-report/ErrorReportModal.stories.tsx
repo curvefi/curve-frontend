@@ -28,7 +28,7 @@ const ErrorReportModalStory = ({ initialOpen = true }: { initialOpen?: boolean }
           {t`Open modal`}
         </Button>
         <ErrorReportModal
-          open={open}
+          isOpen={open}
           onClose={() => setOpen(false)}
           context={{ error: 'Story', title: 'Storybook test', subtitle: '' }}
         />

@@ -67,8 +67,10 @@ export const createComponents = (
   },
   MuiFormControlLabel: {
     styleOverrides: {
-      root: { margin: '0' }, // by default there is a negative margin 🤦
-      label: { marginLeft: SizesAndSpaces.Spacing.xs.desktop, ...typography.headingXsBold },
+      label: {
+        marginLeft: SizesAndSpaces.Spacing.xs.desktop,
+        ...typography.headingXsBold,
+      },
     },
   },
   MuiFormHelperText: {
@@ -81,7 +83,15 @@ export const createComponents = (
       },
     },
   },
-  MuiFormLabel: { styleOverrides: { root: { color: design.Text.TextColors.Secondary, ...typography.bodyXsRegular } } },
+  MuiFormLabel: {
+    styleOverrides: {
+      root: {
+        marginBottom: SizesAndSpaces.Spacing.xs.desktop,
+        color: design.Text.TextColors.Secondary,
+        ...typography.bodyXsRegular,
+      },
+    },
+  },
   MuiIconButton: defineMuiIconButton(design),
   MuiLinearProgress: {
     styleOverrides: {

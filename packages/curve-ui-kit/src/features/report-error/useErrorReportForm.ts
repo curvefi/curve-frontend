@@ -39,11 +39,7 @@ export const useErrorReportForm = ({ error, ...context }: ErrorContext) => {
         },
       }
       console.info(`Submitting error report:`, report)
-      return await fetchJson('/api/error-report', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(report),
-      })
+      return await fetchJson('/api/error-report', { body: JSON.stringify(report) })
     }),
   }
 }

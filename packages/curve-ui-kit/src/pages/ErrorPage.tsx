@@ -91,7 +91,7 @@ export const ErrorPage = ({
         </Button>
       </Stack>
       <img src={ERROR_IMAGE_URL} alt={title} width={imageWidth} height={imageHeight} />
-      <ErrorReportModal open={isReportOpen} onClose={closeReportModal} context={{ error, title, subtitle }} />
+      <ErrorReportModal isOpen={isReportOpen} onClose={closeReportModal} context={{ error, title, subtitle }} />
     </Stack>
   )
 }

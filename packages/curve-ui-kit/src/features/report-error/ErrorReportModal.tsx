@@ -23,12 +23,12 @@ const contactCopyByMethod = {
 }
 
 type ErrorReportModalProps = {
-  open: boolean
+  isOpen: boolean
   onClose: () => void
   context: ErrorContext
 }
 
-export const ErrorReportModal = ({ open, onClose, context }: ErrorReportModalProps) => {
+export const ErrorReportModal = ({ isOpen, onClose, context }: ErrorReportModalProps) => {
   const { address: userAddress } = useConnection()
   const {
     form,
@@ -38,15 +38,11 @@ export const ErrorReportModal = ({ open, onClose, context }: ErrorReportModalPro
   const { label, placeholder } = contactCopyByMethod[contactMethod]
   const errors = useFormErrors(form.formState)
   useEffect(() => {
-    // reset form when modal is closed
-    if (open) return () => form.reset()
-  }, [form, open])
-  useEffect(() => {
-    if (open && userAddress) form.setValue('address', userAddress, setValueOptions)
-  }, [form, open, userAddress])
+    if (isOpen && userAddress) form.setValue('address', userAddress, setValueOptions)
+  }, [form, isOpen, userAddress])
   return (
     <ModalDialog
-      open={open}
+      open={isOpen}
       onClose={onClose}
       title={t`Submit error report`}
       titleColor="textSecondary"

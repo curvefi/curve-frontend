@@ -63,16 +63,14 @@ describe('Error Boundary', () => {
       expect(bodyJson.formData).to.deep.equal({ address, contactMethod: 'email', contact, description })
       expect(bodyJson.url).to.equal(url)
       if (is500) {
-        const name = 'TypeError'
-        // Use regex pattern - variable names change during minification (e.g., 'val' becomes 'ea')
-        const messagePattern = /\.toLowerCase is not a function$/
+        const [name, message] = ['TypeError', 'toLowerCase is not a function']
         expect(Object.keys(bodyJson.context)).to.have.members(['title', 'subtitle', 'error'])
         expect(bodyJson.context.title).to.equal('Unexpected Error')
-        expect(bodyJson.context.subtitle).to.match(messagePattern)
+        expect(bodyJson.context.subtitle).to.contain(message)
         expect(bodyJson.context.error.name).to.equal(name)
-        expect(bodyJson.context.error.message).to.match(messagePattern)
+        expect(bodyJson.context.error.message).to.contain(message)
         expect(bodyJson.context.error.stack).to.contain(name)
-        expect(bodyJson.context.error.stack).to.match(messagePattern)
+        expect(bodyJson.context.error.stack).to.contain(message)
       } else {
         expect(bodyJson).to.deep.equal({
           formData: { address, contactMethod: 'email', contact, description },
