@@ -9,7 +9,7 @@ import Stack from '@mui/material/Stack'
 import { isLoading, useCurve } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { t } from '@ui-kit/lib/i18n'
-import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
+import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { getIsLockExpired } from '@ui-kit/utils/vecrv'
 
@@ -60,7 +60,7 @@ export const FormCrvLocker = (pageProps: PageVecrv) => {
 
   return tab === 'adjust_crv' || tab === 'adjust_date' || tab === 'withdraw' ? (
     <>
-      <TabsSwitcher variant="underlined" value={tab} onChange={setTab} options={tabs} fullWidth />
+      <TabsSwitcher variant="underlined" value={tab} onChange={setTab} options={tabs} overflow="fullWidth" />
 
       <Stack gap={Spacing.md} padding={Spacing.md} paddingBlockStart={Spacing.xs}>
         {tab === 'adjust_crv' && <FormLockCrv {...pageProps} rFormType={tab} />}

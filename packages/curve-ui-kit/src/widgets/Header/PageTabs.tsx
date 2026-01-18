@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import MuiLink from '@mui/material/Link'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
-import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
+import { TabsSwitcher } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import type { AppPage } from './types'
 
 export type PageTabsProps = {
@@ -23,7 +23,7 @@ export const PageTabs = ({ pages }: PageTabsProps) => (
       [pages],
     )}
     variant="overlined"
-    muiVariant="standard"
+    overflow="standard"
     hideInactiveBorders
     sx={{ overflow: 'visible' }}
   />

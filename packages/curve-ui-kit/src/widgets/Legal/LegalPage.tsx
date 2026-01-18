@@ -5,7 +5,7 @@ import { Grid, Box } from '@mui/material'
 import Stack from '@mui/material/Stack'
 import { useSearchParams, useParams } from '@ui-kit/hooks/router'
 import type { AppName } from '@ui-kit/shared/routes'
-import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
+import { TabsSwitcher } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { pushSearchParams } from '@ui-kit/utils/urls'
 import { CrvUsd } from './components/disclaimer-tabs/CrvUsd'
@@ -90,7 +90,7 @@ export const LegalPage = ({ currentApp }: LegalPageProps) => {
             <LastUpdated />
           </Grid>
           <Grid size={12}>
-            <TabsSwitcher variant="contained" value={tab} options={tabs} muiVariant="scrollable" />
+            <TabsSwitcher variant="contained" value={tab} options={tabs} testIdPrefix="legal-tab" />
           </Grid>
         </Grid>
 
@@ -105,7 +105,7 @@ export const LegalPage = ({ currentApp }: LegalPageProps) => {
                 variant="underlined"
                 value={disclaimerTab}
                 options={disclaimerTabs}
-                muiVariant="scrollable"
+                testIdPrefix="legal-disclaimer-tab"
               />
               {/* Box with bottom border for consistent underline of the TabsSwitcher */}
               <Box
