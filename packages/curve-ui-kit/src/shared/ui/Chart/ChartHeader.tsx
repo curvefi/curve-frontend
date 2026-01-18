@@ -60,10 +60,10 @@ export const ChartHeader = <TChartKey extends string, TTimeOption extends string
     if (key != null) chartSelections.setActiveSelection(key)
   }
   const handleChartOptionSelect = (event: SelectChangeEvent<TChartKey>) => {
-    if (event.target.value !== null) chartSelections.setActiveSelection(event.target.value as TChartKey)
+    if (event.target.value != null) chartSelections.setActiveSelection(event.target.value as TChartKey)
   }
   const handleTimeOption = (event: SelectChangeEvent<TTimeOption>) => {
-    if (event.target.value !== null && timeOption) timeOption.setActiveOption(event.target.value as TTimeOption)
+    if (event.target.value != null && timeOption) timeOption.setActiveOption(event.target.value as TTimeOption)
   }
   const foundChartOption = chartSelections.selections.find(
     (selection) => selection.key === chartSelections.activeSelection,

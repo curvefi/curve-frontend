@@ -1,5 +1,4 @@
 import _ from 'lodash'
-import 'lodash.combinations'
 import { useCallback, useMemo, useState } from 'react'
 import { t } from '@ui-kit/lib/i18n'
 import type { ChartSelections } from '@ui-kit/shared/ui/Chart/ChartHeader'
@@ -11,10 +10,33 @@ type UseDexChartListArgs = {
   hasChartData: boolean
 }
 
+const combinations = <T>(collection: T[], n: number): T[][] => {
+	const array = _.values(collection)
+	if (array.length < n) {
+		return []
+	}
+	const recur = (array: T[], n: number): T[][] => {
+		if (--n < 0) {
+			return [[]]
+		}
+		const combinations: T[][] = []
+		array = array.slice()
+		while (array.length - n) {
+			const value = array.shift()!
+			recur(array, n).forEach((combination) => {
+				combination.unshift(value)
+				combinations.push(combination)
+			})
+		}
+		return combinations
+	}
+	return recur(array, n)
+}
+
 const buildChartCombinations = (coins: PricesApiCoin[], nCoins: number): PricesApiCoin[][] => {
   const baseCoins = coins.slice(0, nCoins)
   const extraCombinations = coins.slice(nCoins).map((item) => [item, baseCoins[0]])
-  return [...extraCombinations, ..._.combinations(baseCoins, 2)]
+  return [...extraCombinations, ...combinations(baseCoins, 2)]
 }
 
 const formatPairLabel = (main: PricesApiCoin, ref: PricesApiCoin) => `${ref.symbol} / ${main.symbol}`

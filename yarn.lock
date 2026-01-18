@@ -7671,7 +7671,6 @@ __metadata:
     dayjs: "npm:^1.11.19"
     eslint: "npm:*"
     eslint-config-custom: "npm:*"
-    lodash.combinations: "npm:^18.11.0"
     storybook: "npm:10.1.11"
     type-fest: "npm:5.3.1"
     typescript: "npm:*"
@@ -11094,19 +11093,6 @@ __metadata:
   version: 4.3.0
   resolution: "lodash.camelcase@npm:4.3.0"
   checksum: 10c0/fcba15d21a458076dd309fce6b1b4bf611d84a0ec252cb92447c948c533ac250b95d2e00955801ebc367e5af5ed288b996d75d37d2035260a937008e14eaf432
-  languageName: node
-  linkType: hard
-
-"lodash.combinations@npm:^18.11.0":
-  version: 18.11.1
-  resolution: "lodash.combinations@npm:18.11.1"
-  peerDependencies:
-    "@types/lodash": ^4
-    lodash: ^4
-  peerDependenciesMeta:
-    "@types/lodash":
-      optional: true
-  checksum: 10c0/f07ec60b45959a2a02c2f1bb8e4e44a7126980856a6ec05f1044a1d6c4420f72ad6ed565e2b3a7a935f3de76ee89ef08c7936b47efa855d94b2de42041162f52
   languageName: node
   linkType: hard
 
