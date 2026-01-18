@@ -2,7 +2,10 @@ import { forwardRef } from 'react'
 import IconButton from '@mui/material/IconButton'
 import { keyframes } from '@mui/material/styles'
 import SvgIcon from '@mui/material/SvgIcon'
-import { Duration, Transition } from '@ui-kit/themes/design/0_primitives'
+import { Duration, Transition, TransitionFunction } from '@ui-kit/themes/design/0_primitives'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+
+const { IconSize } = SizesAndSpaces
 
 const reloadSpin = keyframes`
   0% { transform: rotate(0deg); }
@@ -28,14 +31,27 @@ export const TableButton = forwardRef<
       transformOrigin: 'center',
     },
   }
+  active = active || rotateIcon
   return (
     <IconButton
       ref={ref}
       size="small"
       data-testid={testId}
       sx={(t) => ({
-        border: `1px solid ${active ? t.design.Chips.Current.Outline : t.design.Button.Outlined.Default.Outline}`,
-        backgroundColor: active ? t.design.Chips.Current.Fill : 'transparent',
+        // TODO: refactor the IconButton's style from mui-icon-button.ts
+        transition: `color ${TransitionFunction}`,
+        border: `1px solid ${active ? t.design.Chips.Current.Outline : t.design.Chips.Default.Stroke}`,
+        backgroundColor: active ? t.design.Chips.Current.Fill : t.design.Chips.Default.Fill,
+        color: active ? t.design.Chips.Current.Label : t.design.Chips.Default.Label,
+        '&:hover': {
+          backgroundColor: t.design.Chips.Hover.Fill,
+          color: t.design.Chips.Hover.Label,
+          border: `none`,
+        },
+        '& svg': {
+          width: IconSize.md,
+          height: IconSize.md,
+        },
       })}
       {...rest}
     >

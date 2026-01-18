@@ -266,7 +266,7 @@ export const createLightDesign = (
   const Chips = {
     Default: {
       Label: Text.TextColors.Secondary,
-      Fill: Layer[2].Fill,
+      Fill: Layer[1].Fill,
       Stroke: Light.Badges.Border.Default,
     },
     Hover: {
@@ -715,7 +715,7 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
   const Chips = {
     Default: {
       Label: Text.TextColors.Primary,
-      Fill: Layer[2].Fill,
+      Fill: Layer[1].Fill,
       Stroke: Dark.Badges.Border.Default,
     },
     Hover: {
@@ -723,7 +723,7 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
       Fill: Color.Neutral[900],
     },
     Current: {
-      Label: Text.TextColors.Primary,
+      Label: Text.TextColors.Highlight,
       Fill: Layer[1].Fill,
       Outline: Layer.Highlight.Outline,
     },
