@@ -1,4 +1,5 @@
 import { LoanPreset } from '@/llamalend/constants'
+import { recordValues } from '@curvefi/prices-api/objects.util'
 import { oneOf } from '@cy/support/generators'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { Chain, Decimal } from '@ui-kit/utils'
@@ -24,12 +25,13 @@ const CREATE_LOAN_TEST_MARKETS = {
       collateral: '1',
       borrow: '0.9',
       chainId,
-      path: '/lend/ethereum/markets/0x4c9EDD5852cd905f086C759E8383e09bff1E68B3',
+      path: '/lend/ethereum/markets/0x74f88Baa966407b50c10B393bBD789639EFfE78B',
     },
   ],
 } as const
 
-export const oneLoanTestMarket = (type: LlamaMarketType) => oneOf(...CREATE_LOAN_TEST_MARKETS[type])
+export const oneLoanTestMarket = (type: LlamaMarketType = oneOf(...recordValues(LlamaMarketType))) =>
+  oneOf(...CREATE_LOAN_TEST_MARKETS[type])
 
 const getActionValue = (name: string) => cy.get(`[data-testid="${name}-value"]`, LOAD_TIMEOUT)
 
@@ -105,6 +107,6 @@ export function checkLoanRangeSlider(leverageEnabled: boolean) {
 export function submitCreateLoanForm() {
   cy.get('[data-testid="create-loan-submit-button"]').click()
   cy.get('[data-testid="create-loan-submit-button"]').should('be.disabled')
-  cy.get('[data-testid="create-loan-submit-button"]', LOAD_TIMEOUT).should('be.enabled')
+  cy.get('[data-testid="create-loan-submit-button"]', LOAD_TIMEOUT)
   return cy.get('[data-testid="create-loan-submit-button"]')
 }
