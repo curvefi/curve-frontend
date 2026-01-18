@@ -11,10 +11,5 @@
       "@curvefi/prices-api/*": ["../../packages/prices-api/src/*"]
     }
   },
-  "include": [
-    "src",
-    "_api",
-    "../../packages/ui/src/globals.d.ts",
-    "../../packages/curve-ui-kit/src/**/*.d.ts"
-  ]
+  "include": ["src", "_api", "../../packages/ui/src/globals.d.ts", "../../packages/curve-ui-kit/src/**/*.d.ts"]
 }

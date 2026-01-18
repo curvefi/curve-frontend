@@ -1,12 +1,12 @@
 import { TooltipProps } from 'recharts'
 import type { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent'
-import { LegendLine } from '@/loan/components/PageCrvUsdStaking/Statistics/components/LegendLine'
 import { TOOLTIP_MAX_WIDTH, TOOLTIP_MAX_WIDTH_MOBILE } from '@/loan/components/PageCrvUsdStaking/Statistics/constants'
 import type { ScrvUsdYieldWithAverages } from '@/loan/entities/scrvusd-yield'
 import { Paper, Stack, Typography } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import { formatDate } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { LegendLine } from '@ui-kit/shared/ui/Chart/LegendSet'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatNumber } from '@ui-kit/utils'
 

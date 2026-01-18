@@ -1,7 +1,7 @@
 import type { UTCTimestamp } from 'lightweight-charts'
+import { TIME_OPTIONS } from './constants'
 
-export type ChartType = 'swap' | 'crvusd' | 'poolPage'
-export type TimeOptions = '15m' | '30m' | '1h' | '4h' | '6h' | '12h' | '1d' | '7d' | '14d'
+export type TimeOption = (typeof TIME_OPTIONS)[number]
 export type FetchingStatus = 'LOADING' | 'ERROR' | 'READY'
 
 export interface PricesApiCoin {
@@ -9,6 +9,11 @@ export interface PricesApiCoin {
   symbol: string
   address: string
 }
+
+export type ChartSelection =
+  | { type: 'lp-usd' }
+  | { type: 'lp-token'; symbol: string }
+  | { type: 'pair'; mainToken: PricesApiCoin; refToken: PricesApiCoin }
 
 export interface PricesApiPool {
   name: string
