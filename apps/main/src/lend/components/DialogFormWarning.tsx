@@ -1,14 +1,14 @@
 import { Dispatch, SetStateAction, useCallback, useMemo } from 'react'
 import { styled } from 'styled-components'
-import AlertBox from '@ui/AlertBox'
-import Box from '@ui/Box'
-import Checkbox from '@ui/Checkbox'
+import { AlertBox } from '@ui/AlertBox'
+import { Box } from '@ui/Box'
+import { Checkbox } from '@ui/Checkbox'
 import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 
 type PriceImpact = { priceImpact: string; swapFrom: string; swapTo: string }
 
-function DialogFormWarning({
+export function DialogFormWarning({
   health,
   priceImpact,
   confirmed,
@@ -82,5 +82,3 @@ const WarningItem = styled.li`
   list-style-type: disc;
   margin-bottom: var(--spacing-1);
 `
-
-export default DialogFormWarning

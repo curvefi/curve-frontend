@@ -1,24 +1,24 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import { styled } from 'styled-components'
-import AlertFormError from '@/dao/components/AlertFormError'
-import DetailInfoEstGas from '@/dao/components/DetailInfoEstGas'
-import FieldLockedAmt from '@/dao/components/PageVeCrv/components/FieldLockedAmt'
-import FormActions from '@/dao/components/PageVeCrv/components/FormActions'
+import { AlertFormError } from '@/dao/components/AlertFormError'
+import { DetailInfoEstGas } from '@/dao/components/DetailInfoEstGas'
+import { FieldLockedAmt } from '@/dao/components/PageVeCrv/components/FieldLockedAmt'
+import { FormActions } from '@/dao/components/PageVeCrv/components/FormActions'
 import type { FormEstGas, FormStatus, FormValues, PageVecrv, StepKey } from '@/dao/components/PageVeCrv/types'
 import { DEFAULT_FORM_EST_GAS } from '@/dao/components/PageVeCrv/utils'
-import networks from '@/dao/networks'
-import useStore from '@/dao/store/useStore'
+import { networks } from '@/dao/networks'
+import { useStore } from '@/dao/store/useStore'
 import { getActiveStep, getStepStatus } from '@ui/Stepper/helpers'
-import Stepper from '@ui/Stepper/Stepper'
+import { Stepper } from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
-import TxInfoBar from '@ui/TxInfoBar'
+import { TxInfoBar } from '@ui/TxInfoBar'
 import { scanTxPath } from '@ui/utils'
 import { type CurveApi, isLoading, notify, useCurve } from '@ui-kit/features/connect-wallet'
-import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
+import { usePageVisibleInterval } from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 
-const FormLockCrv = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
+export const FormLockCrv = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
   const isSubscribed = useRef(false)
 
   const activeKey = useStore((state) => state.lockedCrv.activeKey)
@@ -185,5 +185,3 @@ const StyledForm = styled.form`
   display: grid;
   grid-row-gap: var(--spacing-3);
 `
-
-export default FormLockCrv

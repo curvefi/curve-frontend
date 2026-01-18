@@ -1,15 +1,15 @@
 import lodash from 'lodash'
 import { ReactNode, useEffect, useMemo, useState } from 'react'
-import ChartBandBalances from '@/lend/components/ChartBandBalances'
+import { ChartBandBalances } from '@/lend/components/ChartBandBalances'
 import type { BrushStartEndIndex } from '@/lend/components/ChartBandBalances/types'
 import { DEFAULT_BAND_CHART_DATA } from '@/lend/components/DetailsUser/utils'
 import { useUserLoanDetails } from '@/lend/hooks/useUserLoanDetails'
 import { helpers } from '@/lend/lib/apiLending'
-import useStore from '@/lend/store/useStore'
+import { useStore } from '@/lend/store/useStore'
 import { PageContentProps } from '@/lend/types/lend.types'
 import { t } from '@ui-kit/lib/i18n'
 
-const DetailsUserLoanChartBandBalances = ({
+export const DetailsUserLoanChartBandBalances = ({
   rChainId,
   rOwmId,
   api,
@@ -79,5 +79,3 @@ const DetailsUserLoanChartBandBalances = ({
     />
   )
 }
-
-export default DetailsUserLoanChartBandBalances

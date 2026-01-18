@@ -7,6 +7,10 @@ import Box from '@mui/material/Box'
 import Link from '@mui/material/Link'
 import { type BaseConfig, scanTxPath } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { formatPercent } from '@ui-kit/utils'
+
+/** Threshold above which price impact is considered high and warrants a warning */
+export const HIGH_PRICE_IMPACT_THRESHOLD = 5
 
 export type FormErrors<Field extends string> = readonly (readonly [Field, string])[]
 
@@ -62,3 +66,24 @@ export const LoanFormAlerts = <Field extends string>({
     )}
   </>
 )
+
+export type HighPriceImpactAlertProps = {
+  priceImpact: number | null | undefined
+  isLoading?: boolean
+}
+
+/**
+ * Inline alert displayed when price impact exceeds the threshold.
+ * Shows above the submit button to make high price impact visible without opening the accordion.
+ */
+export const HighPriceImpactAlert = ({ priceImpact, isLoading }: HighPriceImpactAlertProps) =>
+  !isLoading &&
+  priceImpact != null &&
+  priceImpact > HIGH_PRICE_IMPACT_THRESHOLD && (
+    <Alert severity="warning" data-testid="high-price-impact-alert">
+      <AlertTitle sx={{ color: 'warning.main' }}>
+        {t`High price impact:`} -{formatPercent(priceImpact)}
+      </AlertTitle>
+      {t`Consider reducing the amount or waiting for better market conditions.`}
+    </Alert>
+  )

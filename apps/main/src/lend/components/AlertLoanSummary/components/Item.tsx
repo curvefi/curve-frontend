@@ -7,7 +7,7 @@ type ItemCompProps = {
   $marginTop?: string
 }
 
-const Item = ({ label, value, ...props }: ItemCompProps & { label: ReactNode; value: ReactNode }) => (
+export const Item = ({ label, value, ...props }: ItemCompProps & { label: ReactNode; value: ReactNode }) => (
   <ItemComp {...props}>
     <span>{label}</span>
     <span>{value}</span>
@@ -43,5 +43,3 @@ const ItemComp = styled.div<ItemCompProps>`
     opacity: 0.8;
   }
 `
-
-export default Item

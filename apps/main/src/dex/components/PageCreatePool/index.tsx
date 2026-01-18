@@ -1,14 +1,14 @@
 import { useCallback, useEffect } from 'react'
 import { styled } from 'styled-components'
-import InfoBox from '@/dex/components/PageCreatePool/components/InfoBox'
-import Navigation from '@/dex/components/PageCreatePool/components/Navigation'
-import ConfirmModal from '@/dex/components/PageCreatePool/ConfirmModal'
+import { InfoBox } from '@/dex/components/PageCreatePool/components/InfoBox'
+import { Navigation } from '@/dex/components/PageCreatePool/components/Navigation'
+import { ConfirmModal } from '@/dex/components/PageCreatePool/ConfirmModal'
 import { STABLESWAP, CRYPTOSWAP } from '@/dex/components/PageCreatePool/constants'
-import Parameters from '@/dex/components/PageCreatePool/Parameters'
-import PoolInfo from '@/dex/components/PageCreatePool/PoolInfo'
-import PoolType from '@/dex/components/PageCreatePool/PoolType'
-import Summary from '@/dex/components/PageCreatePool/Summary'
-import TokensInPool from '@/dex/components/PageCreatePool/TokensInPool'
+import { Parameters } from '@/dex/components/PageCreatePool/Parameters'
+import { PoolInfo } from '@/dex/components/PageCreatePool/PoolInfo'
+import { PoolType } from '@/dex/components/PageCreatePool/PoolType'
+import { Summary } from '@/dex/components/PageCreatePool/Summary'
+import { TokensInPool } from '@/dex/components/PageCreatePool/TokensInPool'
 import {
   checkSwapType,
   checkTokensInPool,
@@ -19,12 +19,12 @@ import {
 } from '@/dex/components/PageCreatePool/utils'
 import { useNetworks } from '@/dex/entities/networks'
 import { curveProps } from '@/dex/lib/utils'
-import useStore from '@/dex/store/useStore'
+import { useStore } from '@/dex/store/useStore'
 import { CurveApi, ChainId } from '@/dex/types/main.types'
-import Box from '@ui/Box'
-import Button from '@ui/Button'
-import Icon from '@ui/Icon'
-import Spinner from '@ui/Spinner'
+import { Box } from '@ui/Box'
+import { Button } from '@ui/Button'
+import { Icon } from '@ui/Icon'
+import { Spinner } from '@ui/Spinner'
 import { useLayoutStore } from '@ui-kit/features/layout/store'
 import { t } from '@ui-kit/lib/i18n'
 
@@ -32,7 +32,7 @@ type Props = {
   curve: CurveApi
 }
 
-const CreatePool = ({ curve }: Props) => {
+export const CreatePool = ({ curve }: Props) => {
   const navHeight = useLayoutStore((state) => state.navHeight)
   const { data: networks } = useNetworks()
   const { chainId, haveSigner } = curveProps(curve, networks) as { chainId: ChainId; haveSigner: boolean }
@@ -445,5 +445,3 @@ const NavButtonStyles = styled(Button)`
     width: calc(50% - calc(var(--spacing-wide) / 2));
   }
 `
-
-export default CreatePool

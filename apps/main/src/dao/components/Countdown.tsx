@@ -10,7 +10,7 @@ interface CountdownProps {
   className?: string
 }
 
-const Countdown = ({ startDate, endDate, className }: CountdownProps) => {
+export const Countdown = ({ startDate, endDate, className }: CountdownProps) => {
   const [timeRemaining, setTimeRemaining] = useState('')
 
   useEffect(() => {
@@ -62,5 +62,3 @@ const CountdownContainer = styled.div`
   font-weight: var(--bold);
   font-variant-numeric: tabular-nums;
 `
-
-export default Countdown

@@ -3,13 +3,13 @@ import { useCallback, useMemo } from 'react'
 import { styled } from 'styled-components'
 import { useConnection } from 'wagmi'
 import { useScrvUsdUserBalances } from '@/loan/entities/scrvusd-userBalances'
-import useStore from '@/loan/store/useStore'
-import Button from '@ui/Button'
+import { useStore } from '@/loan/store/useStore'
+import { Button } from '@ui/Button'
 import { t } from '@ui-kit/lib/i18n'
 
 type DeployButtonProps = { className?: string }
 
-const DeployButton = ({ className }: DeployButtonProps) => {
+export const DeployButton = ({ className }: DeployButtonProps) => {
   const { address } = useConnection()
   const { data: userScrvUsdBalance } = useScrvUsdUserBalances({ userAddress: address })
   const depositApproved = useStore((state) => state.scrvusd.depositApproval.approval)
@@ -84,5 +84,3 @@ const DeployButton = ({ className }: DeployButtonProps) => {
 const StyledButton = styled(Button)`
   height: 2.5rem;
 `
-
-export default DeployButton

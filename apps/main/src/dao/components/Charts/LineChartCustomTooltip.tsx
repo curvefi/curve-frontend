@@ -1,11 +1,11 @@
 import { TooltipProps } from 'recharts'
 import type { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent'
 import { styled } from 'styled-components'
-import Box from '@ui/Box'
+import { Box } from '@ui/Box'
 import { formatDateFromTimestamp, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 
-const CustomTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) => {
+export const CustomTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) => {
   if (active && payload && payload.length) {
     const { gauge_weight, gauge_relative_weight, epoch, emissions } = payload[0].payload
 
@@ -102,5 +102,3 @@ const TooltipDataNotAvailable = styled.p`
   color: var(--page--text-color);
   font-style: italic;
 `
-
-export default CustomTooltip

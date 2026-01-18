@@ -1,6 +1,6 @@
 import { Thead } from '@ui/Table'
 
-const TableHeadMobile = () => (
+export const TableHeadMobile = () => (
   <>
     <colgroup>
       <col className="left" />
@@ -10,5 +10,3 @@ const TableHeadMobile = () => (
     </Thead>
   </>
 )
-
-export default TableHeadMobile

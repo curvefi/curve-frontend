@@ -17,7 +17,7 @@ import {
   DEFAULT_FORM_EST_GAS,
   DEFAULT_FORM_VALUES,
 } from '@/loan/components/PageMintMarket/utils'
-import networks from '@/loan/networks'
+import { networks } from '@/loan/networks'
 import type { LiqRange, LiqRangesMapper } from '@/loan/store/types'
 import type { State } from '@/loan/store/useStore'
 import { ChainId, LlamaApi, Llamma } from '@/loan/types/loan.types'
@@ -133,7 +133,7 @@ const DEFAULT_STATE: SliceState = {
   isEditLiqRange: false,
 }
 
-const createLoanCreate = (_set: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
+export const createLoanCreate = (_set: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 
@@ -499,5 +499,3 @@ export function getCreateLoanActiveKey(
     activeKeyLiqRange,
   }
 }
-
-export default createLoanCreate

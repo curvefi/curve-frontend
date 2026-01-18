@@ -1,18 +1,18 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import { styled } from 'styled-components'
-import AlertFormError from '@/lend/components/AlertFormError'
-import AlertFormWarning from '@/lend/components/AlertFormWarning'
-import AlertSummary from '@/lend/components/AlertLoanSummary'
-import DetailInfoEstimateGas from '@/lend/components/DetailInfoEstimateGas'
-import DetailInfoRate from '@/lend/components/DetailInfoRate'
-import LoanFormConnect from '@/lend/components/LoanFormConnect'
+import { AlertFormError } from '@/lend/components/AlertFormError'
+import { AlertFormWarning } from '@/lend/components/AlertFormWarning'
+import { AlertLoanSummary as AlertSummary } from '@/lend/components/AlertLoanSummary'
+import { DetailInfoEstimateGas } from '@/lend/components/DetailInfoEstimateGas'
+import { DetailInfoRate } from '@/lend/components/DetailInfoRate'
+import { LoanFormConnect } from '@/lend/components/LoanFormConnect'
 import type { FormStatus, StepKey } from '@/lend/components/PageLendMarket/LoanSelfLiquidation/types'
 import type { FormEstGas } from '@/lend/components/PageLendMarket/types'
 import { NOFITY_MESSAGE } from '@/lend/constants'
 import { useUserLoanDetails } from '@/lend/hooks/useUserLoanDetails'
 import { helpers } from '@/lend/lib/apiLending'
-import networks from '@/lend/networks'
-import useStore from '@/lend/store/useStore'
+import { networks } from '@/lend/networks'
+import { useStore } from '@/lend/store/useStore'
 import {
   Api,
   type MarketUrlParams,
@@ -21,20 +21,20 @@ import {
   UserLoanState,
 } from '@/lend/types/lend.types'
 import { getCollateralListPathname } from '@/lend/utils/utilsRouter'
-import AlertBox from '@ui/AlertBox'
-import InputReadOnly from '@ui/InputReadOnly'
-import InternalLink from '@ui/Link/InternalLink'
+import { AlertBox } from '@ui/AlertBox'
+import { InputReadyOnly as InputReadOnly } from '@ui/InputReadOnly'
+import { InternalLink } from '@ui/Link/InternalLink'
 import { getActiveStep } from '@ui/Stepper/helpers'
-import Stepper from '@ui/Stepper/Stepper'
+import { Stepper } from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
-import TxInfoBar from '@ui/TxInfoBar'
+import { TxInfoBar } from '@ui/TxInfoBar'
 import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t, Trans } from '@ui-kit/lib/i18n'
 import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
 
-const LoanSelfLiquidation = ({
+export const LoanSelfLiquidation = ({
   rChainId,
   rOwmId,
   isLoaded,
@@ -238,5 +238,3 @@ const StyledInternalLink = styled(InternalLink)`
     text-decoration-color: var(--link_light--hover--color);
   }
 `
-
-export default LoanSelfLiquidation

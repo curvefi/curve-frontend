@@ -1,13 +1,13 @@
 import lodash from 'lodash'
 import { useMemo } from 'react'
-import PaginatedTable from '@/dao/components/PaginatedTable'
+import { PaginatedTable } from '@/dao/components/PaginatedTable'
 import { TableRowWrapper, TableData, TableDataLink } from '@/dao/components/PaginatedTable/TableRow'
 import {
   type UserGaugeVoteFormatted,
   useUserGaugeVoteQuery,
   invalidateUserGaugeVoteQuery,
 } from '@/dao/entities/user-gauge-votes'
-import useStore from '@/dao/store/useStore'
+import { useStore } from '@/dao/store/useStore'
 import { SortDirection, UserGaugeVotesSortBy } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils'
 import { formatLocaleDateFromTimestamp } from '@ui/utils'
@@ -29,7 +29,7 @@ const sortUserGaugeVotes = (
   return lodash.orderBy(userGaugeVotes, [key], [order])
 }
 
-const UserGaugeVotesTable = ({ userAddress, tableMinWidth }: UserGaugeVotesTableProps) => {
+export const UserGaugeVotesTable = ({ userAddress, tableMinWidth }: UserGaugeVotesTableProps) => {
   const { data: userGaugeVotes, isLoading, isError, isSuccess } = useUserGaugeVoteQuery({ userAddress })
   const userGaugeVotesSortBy = useStore((state) => state.user.userGaugeVotesSortBy)
   const setUserGaugeVotesSortBy = useStore((state) => state.user.setUserGaugeVotesSortBy)
@@ -74,5 +74,3 @@ const UserGaugeVotesTable = ({ userAddress, tableMinWidth }: UserGaugeVotesTable
     />
   )
 }
-
-export default UserGaugeVotesTable

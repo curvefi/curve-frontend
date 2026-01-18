@@ -3,16 +3,16 @@ import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 're
 import { styled, css } from 'styled-components'
 import { useConnection, type Config } from 'wagmi'
 import { useConfig } from 'wagmi'
-import AlertFormError from '@/dex/components/AlertFormError'
-import AlertSlippage from '@/dex/components/AlertSlippage'
-import DetailInfoEstGas from '@/dex/components/DetailInfoEstGas'
-import DetailInfoSlippage from '@/dex/components/PagePool/components/DetailInfoSlippage'
-import FieldLpToken from '@/dex/components/PagePool/components/FieldLpToken'
-import FieldToken from '@/dex/components/PagePool/components/FieldToken'
-import SelectedLpTokenExpected from '@/dex/components/PagePool/components/SelectedLpTokenExpected'
-import SelectedOneCoinExpected from '@/dex/components/PagePool/components/SelectedOneCoinExpected'
-import TransferActions from '@/dex/components/PagePool/components/TransferActions'
-import WarningModal from '@/dex/components/PagePool/components/WarningModal'
+import { AlertFormError } from '@/dex/components/AlertFormError'
+import { AlertSlippage } from '@/dex/components/AlertSlippage'
+import { DetailInfoEstGas } from '@/dex/components/DetailInfoEstGas'
+import { DetailInfoSlippage } from '@/dex/components/PagePool/components/DetailInfoSlippage'
+import { FieldLpToken } from '@/dex/components/PagePool/components/FieldLpToken'
+import { FieldToken } from '@/dex/components/PagePool/components/FieldToken'
+import { SelectedLpTokenExpected } from '@/dex/components/PagePool/components/SelectedLpTokenExpected'
+import { SelectedOneCoinExpected } from '@/dex/components/PagePool/components/SelectedOneCoinExpected'
+import { TransferActions } from '@/dex/components/PagePool/components/TransferActions'
+import { WarningModal } from '@/dex/components/PagePool/components/WarningModal'
 import { FieldsWrapper } from '@/dex/components/PagePool/styles'
 import type { Slippage, TransferProps } from '@/dex/components/PagePool/types'
 import { amountsDescription, DEFAULT_ESTIMATED_GAS, DEFAULT_SLIPPAGE } from '@/dex/components/PagePool/utils'
@@ -20,15 +20,15 @@ import type { FormStatus, FormValues, StepKey } from '@/dex/components/PagePool/
 import { resetFormAmounts } from '@/dex/components/PagePool/Withdraw/utils'
 import { useNetworks } from '@/dex/entities/networks'
 import { usePoolTokenDepositBalances } from '@/dex/hooks/usePoolTokenDepositBalances'
-import useStore from '@/dex/store/useStore'
+import { useStore } from '@/dex/store/useStore'
 import { CurveApi, Pool, PoolData } from '@/dex/types/main.types'
-import Box from '@ui/Box'
-import Checkbox from '@ui/Checkbox'
+import { Box } from '@ui/Box'
+import { Checkbox } from '@ui/Checkbox'
 import { Radio, RadioGroup } from '@ui/Radio'
 import { getActiveStep, getStepStatus } from '@ui/Stepper/helpers'
-import Stepper from '@ui/Stepper/Stepper'
+import { Stepper } from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
-import TxInfoBar from '@ui/TxInfoBar'
+import { TxInfoBar } from '@ui/TxInfoBar'
 import { scanTxPath } from '@ui/utils'
 import { mediaQueries } from '@ui/utils/responsive'
 import { notify } from '@ui-kit/features/connect-wallet'
@@ -36,7 +36,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRates } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
 
-const FormWithdraw = ({
+export const FormWithdraw = ({
   chainIdPoolId,
   curve,
   blockchainId,
@@ -532,5 +532,3 @@ const TokensSelectorWrapper = styled.div`
   background-color: var(--box--primary--content--background-color);
   box-shadow: inset 0.5px 0.5px 0 0.5px var(--box--primary--content--shadow-color);
 `
-
-export default FormWithdraw

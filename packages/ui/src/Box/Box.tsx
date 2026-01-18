@@ -1,5 +1,5 @@
 import { styled } from 'styled-components'
-import { breakpoints } from 'ui/src/utils/responsive'
+import { breakpoints } from '@ui/utils/responsive'
 import type { BoxProps } from './types'
 
 function attributes({ className, fillHeight, fillWidth, ...rest }: BoxProps) {
@@ -9,7 +9,7 @@ function attributes({ className, fillHeight, fillWidth, ...rest }: BoxProps) {
   return { ...rest, className: classNames }
 }
 
-const Box = styled.div.attrs(attributes)<BoxProps>`
+export const Box = styled.div.attrs(attributes)<BoxProps>`
   /* Flexbox styles */
   ${({ flex }) => flex && 'display: flex;'}
   ${({ flexDirection }) => flexDirection && `flex-direction: ${flexDirection};`}
@@ -92,5 +92,3 @@ const Box = styled.div.attrs(attributes)<BoxProps>`
     }
   }}
 `
-
-export default Box

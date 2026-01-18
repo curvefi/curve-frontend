@@ -1,14 +1,14 @@
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 import { GaugeWeightHistoryData } from '@/dao/types/dao.types'
 import { formatDateFromTimestamp } from '@ui/utils'
-import LineChartCustomTooltip from './LineChartCustomTooltip'
+import { CustomTooltip as LineChartCustomTooltip } from './LineChartCustomTooltip'
 
 type Props = {
   data: GaugeWeightHistoryData[]
   height?: number
 }
 
-const LineChartComponent = ({ data, height = 400 }: Props) => {
+export const LineChartComponent = ({ data, height = 400 }: Props) => {
   const yAxisWidth = 24
 
   const maxValue = Math.max(...data.map((item) => item.gauge_relative_weight))
@@ -74,5 +74,3 @@ const LineChartComponent = ({ data, height = 400 }: Props) => {
     </ResponsiveContainer>
   )
 }
-
-export default LineChartComponent

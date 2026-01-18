@@ -2,11 +2,11 @@ import { useMemo } from 'react'
 import type { FormLpTokenExpected } from '@/dex/components/PagePool/Deposit/types'
 import { PoolDataCacheOrApi } from '@/dex/types/main.types'
 import { DetailInfo } from '@ui/DetailInfo'
-import IconTooltip from '@ui/Tooltip/TooltipIcon'
+import { TooltipIcon as IconTooltip } from '@ui/Tooltip/TooltipIcon'
 import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 
-const DetailInfoEstLpTokens = ({
+export const DetailInfoEstLpTokens = ({
   formLpTokenExpected,
   maxSlippage,
   poolDataCacheOrApi,
@@ -49,5 +49,3 @@ const DetailInfoEstLpTokens = ({
     </DetailInfo>
   )
 }
-
-export default DetailInfoEstLpTokens

@@ -1,13 +1,13 @@
 import { styled } from 'styled-components'
-import Box from 'ui/src/Box'
-import Spinner from 'ui/src/Spinner'
+import { Box } from '@ui/Box'
+import { Spinner } from '@ui/Spinner'
 
 type Props = {
   pendingMessage: string
   className?: string
 }
 
-const PendingTx = ({ pendingMessage, className }: Props) => (
+export const PendingTx = ({ pendingMessage, className }: Props) => (
   <Wrapper className={className}>
     <Box flex flexGap="var(--spacing-2)" flexAlignItems="center" flexJustifyContent="center">
       <PendingMessage>{pendingMessage}</PendingMessage>
@@ -32,5 +32,3 @@ const StyledPendingSpinner = styled(Spinner)`
     border-color: var(--page--text-color) transparent transparent transparent;
   }
 `
-
-export default PendingTx

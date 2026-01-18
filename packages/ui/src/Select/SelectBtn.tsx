@@ -2,12 +2,12 @@ import { ButtonHTMLAttributes, CSSProperties, RefObject } from 'react'
 import type { AriaButtonProps } from 'react-aria'
 import { useButton } from 'react-aria'
 import { styled } from 'styled-components'
-import type { ButtonProps } from 'ui/src/Button/types'
-import { StyledBtn } from 'ui/src/Select/styles'
-import Spinner from 'ui/src/Spinner'
-import SpinnerWrapper from 'ui/src/Spinner/SpinnerWrapper'
+import type { ButtonProps } from '@ui/Button/types'
+import { StyledBtn } from '@ui/Select/styles'
+import { Spinner } from '@ui/Spinner'
+import { SpinnerWrapper } from '@ui/Spinner/SpinnerWrapper'
 
-const SelectBtn = ({
+export const SelectBtn = ({
   loading,
   style,
   ...props
@@ -36,5 +36,3 @@ const StyledSpinnerWrapper = styled(SpinnerWrapper)`
   position: absolute;
   width: calc(100% - 0.75rem); // 0.75 = StyledBtn padding
 `
-
-export default SelectBtn

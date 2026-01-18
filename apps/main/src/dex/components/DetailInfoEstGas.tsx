@@ -4,7 +4,7 @@ import { styled } from 'styled-components'
 import { ethAddress } from 'viem'
 import { ChainId, EstimatedGas } from '@/dex/types/main.types'
 import { DetailInfo } from '@ui/DetailInfo'
-import IconTooltip from '@ui/Tooltip/TooltipIcon'
+import { TooltipIcon as IconTooltip } from '@ui/Tooltip/TooltipIcon'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { calculateGas, useGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
@@ -16,7 +16,7 @@ export type StepProgress = {
   total: number
 }
 
-const DetailInfoEstGas = ({
+export const DetailInfoEstGas = ({
   chainId,
   isDivider = false,
   loading,
@@ -70,5 +70,3 @@ const StepProgressWrapper = styled.span`
   font-size: var(--font-size-0);
   text-transform: uppercase;
 `
-
-export default DetailInfoEstGas

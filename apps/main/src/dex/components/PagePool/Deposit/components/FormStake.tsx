@@ -3,29 +3,29 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { useConnection, type Config } from 'wagmi'
 import { useConfig } from 'wagmi'
-import AlertFormError from '@/dex/components/AlertFormError'
-import DetailInfoEstGas from '@/dex/components/DetailInfoEstGas'
-import DetailInfoExpectedApy from '@/dex/components/PagePool/components/DetailInfoExpectedApy'
-import FieldLpToken from '@/dex/components/PagePool/components/FieldLpToken'
-import TransferActions from '@/dex/components/PagePool/components/TransferActions'
+import { AlertFormError } from '@/dex/components/AlertFormError'
+import { DetailInfoEstGas } from '@/dex/components/DetailInfoEstGas'
+import { DetailInfoExpectedApy } from '@/dex/components/PagePool/components/DetailInfoExpectedApy'
+import { FieldLpToken } from '@/dex/components/PagePool/components/FieldLpToken'
+import { TransferActions } from '@/dex/components/PagePool/components/TransferActions'
 import type { FormStatus, FormValues, StepKey } from '@/dex/components/PagePool/Deposit/types'
 import { FieldsWrapper } from '@/dex/components/PagePool/styles'
 import type { TransferProps } from '@/dex/components/PagePool/types'
 import { DEFAULT_ESTIMATED_GAS } from '@/dex/components/PagePool/utils'
 import { useNetworks } from '@/dex/entities/networks'
 import { usePoolTokenDepositBalances } from '@/dex/hooks/usePoolTokenDepositBalances'
-import useStore from '@/dex/store/useStore'
+import { useStore } from '@/dex/store/useStore'
 import { CurveApi, Pool, PoolData } from '@/dex/types/main.types'
-import AlertBox from '@ui/AlertBox'
+import { AlertBox } from '@ui/AlertBox'
 import { getActiveStep, getStepStatus } from '@ui/Stepper/helpers'
-import Stepper from '@ui/Stepper/Stepper'
+import { Stepper } from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
-import TxInfoBar from '@ui/TxInfoBar'
+import { TxInfoBar } from '@ui/TxInfoBar'
 import { scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 
-const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed }: TransferProps) => {
+export const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed }: TransferProps) => {
   const isSubscribed = useRef(false)
 
   const { chainId, signerAddress } = curve || {}
@@ -229,5 +229,3 @@ const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed }: 
     </>
   )
 }
-
-export default FormStake

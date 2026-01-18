@@ -7,7 +7,7 @@ import { getInternalUrl } from '@ui-kit/shared/routes'
 import { InlineLink } from '@ui-kit/shared/ui/InlineLink'
 import { PoolAlertMessage } from '../components/pool-alert-messages'
 
-const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
+export const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
   const params = useParams<UrlParams>()
 
   const poolAddress = poolData?.pool.address
@@ -339,5 +339,3 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
     return null
   }, [poolAddress, params, hasVyperVulnerability])
 }
-
-export default usePoolAlert

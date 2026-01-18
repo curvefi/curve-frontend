@@ -1,17 +1,17 @@
 import { useEffect, useState } from 'react'
 import { styled } from 'styled-components'
-import LiquidityData from '@/dex/components/PagePool/PoolDetails/ChartOhlcWrapper/LiquidityData'
-import TradesData from '@/dex/components/PagePool/PoolDetails/ChartOhlcWrapper/TradesData'
-import useStore from '@/dex/store/useStore'
+import { LiquidityData } from '@/dex/components/PagePool/PoolDetails/ChartOhlcWrapper/LiquidityData'
+import { TradesData } from '@/dex/components/PagePool/PoolDetails/ChartOhlcWrapper/TradesData'
+import { useStore } from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
-import Button from '@ui/Button/Button'
-import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import { Button } from '@ui/Button/Button'
+import { SpinnerWrapper, Spinner } from '@ui/Spinner'
 import type { LpTradeToken, PricesApiCoin } from '@ui-kit/features/candle-chart/types'
 import { t } from '@ui-kit/lib/i18n'
 
 const MIN_HEIGHT = 330
 
-const PoolActivity = ({
+export const PoolActivity = ({
   chainId,
   poolAddress,
   coins,
@@ -169,5 +169,3 @@ const TimestampColumnTitle = styled.span`
   text-align: right;
   padding: var(--spacing-1) var(--spacing-1);
 `
-
-export default PoolActivity

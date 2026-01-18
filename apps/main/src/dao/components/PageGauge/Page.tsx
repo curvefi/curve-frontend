@@ -1,5 +1,5 @@
 import { styled } from 'styled-components'
-import Gauge from '@/dao/components/PageGauge/index'
+import { Gauge } from '@/dao/components/PageGauge/index'
 import type { GaugeUrlParams } from '@/dao/types/dao.types'
 import { breakpoints } from '@ui/utils'
 import { useParams } from '@ui-kit/hooks/router'

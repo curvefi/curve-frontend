@@ -96,6 +96,7 @@ export const LoanFormTokenInput = <
   const relatedMaxFieldError = max?.data && maxFieldName && errors[maxFieldName]
   const error = errors[name] || max?.error || balanceError || relatedMaxFieldError
   const value = form.getValues(name)
+  const errorMessage = error?.message
   return (
     <LargeTokenInput
       name={name}
@@ -120,12 +121,11 @@ export const LoanFormTokenInput = <
         [form, maxFieldName, name],
       )}
       isError={!!error}
-      message={error?.message}
       walletBalance={walletBalance}
       maxBalance={useMemo(() => max && { balance: max.data, chips: 'max' }, [max])}
       inputBalanceUsd={decimal(usdRate && usdRate * +(value ?? 0))}
     >
-      {message && <HelperMessage message={message} />}
+      {errorMessage ? <HelperMessage message={errorMessage} isError /> : message && <HelperMessage message={message} />}
     </LargeTokenInput>
   )
 }

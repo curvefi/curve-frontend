@@ -2,14 +2,14 @@ import { Contract, ContractRunner, Interface } from 'ethers'
 import type { InterfaceAbi } from 'ethers'
 import lodash from 'lodash'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import AlertFormError from '@/dex/components/AlertFormError'
-import Compensations from '@/dex/components/PageCompensation/components/Compensations'
+import { AlertFormError } from '@/dex/components/AlertFormError'
+import { Compensations } from '@/dex/components/PageCompensation/components/Compensations'
 import type { Balances, EtherContract, VestedTotals } from '@/dex/components/PageCompensation/types'
 import { CurveApi, ChainId, Provider } from '@/dex/types/main.types'
 import { getErrorMessage } from '@/dex/utils'
-import Box from '@ui/Box'
+import { Box } from '@ui/Box'
 
-const FormCompensation = ({
+export const FormCompensation = ({
   rChainId,
   curve,
   contracts,
@@ -124,5 +124,3 @@ const FormCompensation = ({
     </Box>
   )
 }
-
-export default FormCompensation

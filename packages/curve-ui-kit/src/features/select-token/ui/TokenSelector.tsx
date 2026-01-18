@@ -1,5 +1,5 @@
+import { isEqual } from 'lodash'
 import { cloneElement, type ReactElement } from 'react'
-import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { type TokenOption } from '../types'
 import { TokenSelectorModal, type TokenSelectorModalProps } from './modal/TokenSelectorModal'
 import { TokenSelectButton } from './TokenSelectButton'
@@ -9,6 +9,12 @@ type Props<T extends TokenOption = TokenOption> = Partial<Pick<TokenSelectorModa
   selectedToken: T | undefined
   /** Disables the token selector button and modal */
   disabled?: boolean
+  /** Whether the modal is open - controlled by parent */
+  isOpen: boolean
+  /** Callback to open/close modal */
+  onOpen: () => void
+  /** Callback to close modal */
+  onClose: () => void
   /**
    * Token list to render inside the modal.
    * It may be any valid React element as long as it accepts `onToken` prop.
@@ -30,21 +36,25 @@ function checkChildProps<T extends TokenOption>({ onToken }: { onToken: (token: 
 
 export const TokenSelector = <T extends TokenOption = TokenOption>({
   selectedToken,
+  isOpen,
   disabled = false,
   compact = false,
-  title,
+  onOpen,
+  onClose,
   children,
 }: Props<T>) => {
-  const [isOpen, openModal, closeModal] = useSwitch(false)
   const { onToken } = checkChildProps(children.props)
   return (
     <>
-      <TokenSelectButton token={selectedToken} disabled={disabled} onClick={openModal} />
-      <TokenSelectorModal isOpen={isOpen} compact={compact} title={title} onClose={closeModal}>
+      <TokenSelectButton token={selectedToken} disabled={disabled} onClick={onOpen} />
+      <TokenSelectorModal isOpen={isOpen} compact={compact} onClose={onClose}>
         {cloneElement(children, {
           onToken: (token: T) => {
-            closeModal()
-            onToken(token)
+            onClose()
+            if (!isEqual(token, selectedToken)) {
+              // prevent legacy forms like quickswap from triggering form updates when nothing changed
+              onToken(token)
+            }
           },
         })}
       </TokenSelectorModal>

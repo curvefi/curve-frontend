@@ -1,3 +1,3 @@
-export { default as TableSortSelect } from './TableSortSelect'
-export { default as TableSortSelectMobile } from './TableSortSelectMobile'
-export { default as TableSortSelectOptions } from './TableSortSelectOptions'
+export { TableSortSelect } from './TableSortSelect'
+export { TableSortSelectMobile } from './TableSortSelectMobile'
+export { TableSortSelectOptions } from './TableSortSelectOptions'

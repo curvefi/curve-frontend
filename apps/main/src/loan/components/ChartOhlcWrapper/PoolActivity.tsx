@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
 import { styled } from 'styled-components'
-import LiquidityData from '@/loan/components/ChartOhlcWrapper/LiquidityData'
-import TradesData from '@/loan/components/ChartOhlcWrapper/TradesData'
-import useStore from '@/loan/store/useStore'
+import { LiquidityData } from '@/loan/components/ChartOhlcWrapper/LiquidityData'
+import { TradesData } from '@/loan/components/ChartOhlcWrapper/TradesData'
+import { useStore } from '@/loan/store/useStore'
 import { ChainId } from '@/loan/types/loan.types'
-import Button from '@ui/Button/Button'
-import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import { Button } from '@ui/Button/Button'
+import { SpinnerWrapper, Spinner } from '@ui/Spinner'
 import { t } from '@ui-kit/lib/i18n'
 import { LlammaLiquidityCoins } from './types'
 
@@ -17,7 +17,7 @@ interface Props {
 
 const MIN_HEIGHT = 330
 
-const PoolActivity = ({ chainId, poolAddress, coins }: Props) => {
+export const PoolActivity = ({ chainId, poolAddress, coins }: Props) => {
   const activityFetchStatus = useStore((state) => state.ohlcCharts.activityFetchStatus)
   const llammaTradesData = useStore((state) => state.ohlcCharts.llammaTradesData)
   const llammaControllerData = useStore((state) => state.ohlcCharts.llammaControllerData)
@@ -161,5 +161,3 @@ const TimestampColumnTitle = styled.span`
   text-align: right;
   padding: var(--spacing-1) var(--spacing-1);
 `
-
-export default PoolActivity

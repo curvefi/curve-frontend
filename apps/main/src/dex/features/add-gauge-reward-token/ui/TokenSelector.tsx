@@ -6,11 +6,12 @@ import { useGaugeRewardsDistributors } from '@/dex/entities/gauge'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import type { AddRewardFormValues } from '@/dex/features/add-gauge-reward-token/types'
 import { FlexItemToken, SubTitle } from '@/dex/features/add-gauge-reward-token/ui'
-import useTokensMapper from '@/dex/hooks/useTokensMapper'
+import { useTokensMapper } from '@/dex/hooks/useTokensMapper'
 import { ChainId, Token } from '@/dex/types/main.types'
 import { toTokenOption } from '@/dex/utils'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import { TokenList, TokenSelector as TokenSelectorUIKit } from '@ui-kit/features/select-token'
+import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 
 export const TokenSelector = ({
@@ -28,6 +29,8 @@ export const TokenSelector = ({
   const { data: network } = useNetworkByChain({ chainId })
   const rewardTokenId = watch('rewardTokenId')
   const { tokensMapper } = useTokensMapper(chainId)
+
+  const [isOpen, openModal, closeModal] = useSwitch()
 
   const { data: gaugeRewardsDistributors, isSuccess: isGaugeRewardsDistributorsSuccess } = useGaugeRewardsDistributors({
     chainId,
@@ -73,7 +76,13 @@ export const TokenSelector = ({
   return (
     <FlexItemToken>
       <SubTitle>{t`Token`}</SubTitle>
-      <TokenSelectorUIKit selectedToken={selectedToken} disabled={disabled || filteredTokens.length === 0}>
+      <TokenSelectorUIKit
+        selectedToken={selectedToken}
+        disabled={disabled || filteredTokens.length === 0}
+        isOpen={!!isOpen}
+        onOpen={openModal}
+        onClose={closeModal}
+      >
         <TokenList
           tokens={filteredTokens}
           onToken={(token) => setValue('rewardTokenId', token.address, { shouldValidate: true })}

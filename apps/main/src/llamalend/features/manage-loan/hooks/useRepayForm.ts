@@ -1,12 +1,13 @@
 import { useEffect, useMemo } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
 import { useForm } from 'react-hook-form'
+import { Address } from 'viem'
 import { useConnection } from 'wagmi'
 import { useMaxRepayTokenValues } from '@/llamalend/features/manage-loan/hooks/useMaxRepayTokenValues'
 import { getTokens } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { type RepayOptions, useRepayMutation } from '@/llamalend/mutations/repay.mutation'
-import { useCreateLoanIsApproved } from '@/llamalend/queries/create-loan/create-loan-approved.query'
+import { useRepayIsApproved } from '@/llamalend/queries/repay/repay-is-approved.query'
 import { useRepayIsAvailable } from '@/llamalend/queries/repay/repay-is-available.query'
 import type { RepayIsFullParams } from '@/llamalend/queries/validation/manage-loan.types'
 import { type RepayForm, repayFormValidationSuite } from '@/llamalend/queries/validation/manage-loan.validation'
@@ -19,6 +20,49 @@ import { useFormErrors } from '../../borrow/react-form.utils'
 
 const useCallbackAfterFormUpdate = (form: UseFormReturn<RepayForm>, callback: () => void) =>
   useEffect(() => form.subscribe({ formState: { values: true }, callback }), [form, callback])
+
+const useRepayParams = <ChainId>({
+  isFull,
+  maxCollateral,
+  slippage,
+  stateCollateral,
+  userBorrowed,
+  userCollateral,
+  chainId,
+  marketId,
+  userAddress,
+}: RepayForm & {
+  chainId: ChainId
+  marketId: string | undefined
+  userAddress: Address | undefined
+}): RepayIsFullParams<ChainId> =>
+  useDebouncedValue(
+    useMemo(
+      () => ({
+        chainId,
+        marketId,
+        userAddress,
+        stateCollateral,
+        userCollateral,
+        userBorrowed,
+        maxCollateral,
+        isFull,
+        slippage,
+      }),
+      [chainId, marketId, userAddress, stateCollateral, userCollateral, userBorrowed, maxCollateral, isFull, slippage],
+    ),
+  )
+
+const emptyRepayForm = () => ({
+  stateCollateral: undefined,
+  userCollateral: undefined,
+  userBorrowed: undefined,
+  maxStateCollateral: undefined,
+  maxCollateral: undefined,
+  maxBorrowed: undefined,
+  isFull: undefined,
+  slippage: SLIPPAGE_PRESETS.STABLE,
+})
 
 export const useRepayForm = <ChainId extends LlamaChainId>({
   market,
@@ -40,17 +84,11 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
   const form = useForm<RepayForm>({
     ...formDefaultOptions,
     resolver: vestResolver(repayFormValidationSuite),
-    defaultValues: { slippage: SLIPPAGE_PRESETS.STABLE },
+    defaultValues: emptyRepayForm(),
   })
 
   const values = watchForm(form)
-
-  const params = useDebouncedValue(
-    useMemo(
-      (): RepayIsFullParams<ChainId> => ({ chainId, marketId, userAddress, ...values }),
-      [chainId, marketId, userAddress, values],
-    ),
-  )
+  const params = useRepayParams({ chainId, marketId, userAddress, ...values })
 
   const {
     onSubmit,
@@ -71,7 +109,6 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
 
   const isAvailable = useRepayIsAvailable(params, enabled)
   const { isFull, max } = useMaxRepayTokenValues({ collateralToken, borrowToken, params, form }, enabled)
-
   const formErrors = useFormErrors(form.formState)
 
   return {
@@ -86,7 +123,7 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
     isRepaid,
     repayError,
     txHash: data?.hash,
-    isApproved: useCreateLoanIsApproved(params),
+    isApproved: useRepayIsApproved(params, enabled && typeof values.isFull === 'boolean'),
     formErrors: useFormErrors(form.formState),
     isFull,
     max,

@@ -1,8 +1,8 @@
-import ChipVolatileBaseApy from '@/dex/components/PagePoolList/components/ChipVolatileBaseApy'
-import TooltipBaseApy from '@/dex/components/PagePoolList/components/TooltipBaseApy'
+import { ChipVolatileBaseApy } from '@/dex/components/PagePoolList/components/ChipVolatileBaseApy'
+import { TooltipBaseApy } from '@/dex/components/PagePoolList/components/TooltipBaseApy'
 import { LARGE_APY } from '@/dex/constants'
 import { RewardBase, PoolData, PoolDataCache } from '@/dex/types/main.types'
-import IconTooltip from '@ui/Tooltip/TooltipIcon'
+import { TooltipIcon as IconTooltip } from '@ui/Tooltip/TooltipIcon'
 import { Chip } from '@ui/Typography'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 
@@ -12,7 +12,7 @@ type Props = {
   poolData: (PoolData | PoolDataCache) | undefined
 }
 
-const TableCellRewardsBase = ({ base, isHighlight, poolData }: Props) => {
+export const TableCellRewardsBase = ({ base, isHighlight, poolData }: Props) => {
   const failedFetching24hOldVprice =
     poolData && 'failedFetching24hOldVprice' in poolData && poolData.failedFetching24hOldVprice
 
@@ -47,5 +47,3 @@ const TableCellRewardsBase = ({ base, isHighlight, poolData }: Props) => {
     </>
   )
 }
-
-export default TableCellRewardsBase

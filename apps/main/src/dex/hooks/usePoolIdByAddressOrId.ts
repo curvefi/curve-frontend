@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { isAddress, isAddressEqual, type Address } from 'viem'
-import useStore from '../store/useStore'
+import { useStore } from '../store/useStore'
 
 /**
  * Tries to get a pool id from a value that is either an address or a pool id already.

@@ -1,8 +1,8 @@
 import { styled } from 'styled-components'
-import useStore from '@/dao/store/useStore'
+import { useStore } from '@/dao/store/useStore'
 import { UserGaugeVoteWeight } from '@/dao/types/dao.types'
-import Box from '@ui/Box'
-import Tooltip from '@ui/Tooltip/TooltipButton'
+import { Box } from '@ui/Box'
+import { TooltipButton as Tooltip } from '@ui/Tooltip/TooltipButton'
 import { formatNumber } from '@ui/utils/'
 import { t } from '@ui-kit/lib/i18n'
 import { calculateStaleVeCrvPercentage } from './utils'
@@ -11,7 +11,7 @@ type GaugeWeightVotesColumnsProps = {
   userGaugeWeightVoteData: UserGaugeVoteWeight
 }
 
-const GaugeWeightVotesColumns = ({ userGaugeWeightVoteData }: GaugeWeightVotesColumnsProps) => {
+export const GaugeWeightVotesColumns = ({ userGaugeWeightVoteData }: GaugeWeightVotesColumnsProps) => {
   const { userPower, userVeCrv, userFutureVeCrv } = userGaugeWeightVoteData
   const userGaugeVoteWeightsSortBy = useStore((state) => state.user.userGaugeVoteWeightsSortBy)
 
@@ -84,5 +84,3 @@ const GaugeData = styled.p`
     font-weight: var(--bold);
   }
 `
-
-export default GaugeWeightVotesColumns

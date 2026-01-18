@@ -41,7 +41,8 @@ export const hasDeleverage = (market: LlamaMarketTemplate) =>
 export const canRepayFromStateCollateral = (market: LlamaMarketTemplate) =>
   market instanceof MintMarketTemplate ? hasDeleverage(market) : hasLeverage(market)
 
-export const canRepayFromUserCollateral = (market: LlamaMarketTemplate) => hasLeverage(market)
+export const canRepayFromUserCollateral = (market: LlamaMarketTemplate) =>
+  market instanceof MintMarketTemplate ? hasV2Leverage(market) : hasLeverage(market)
 
 const getBorrowSymbol = (market: LlamaMarketTemplate) =>
   market instanceof MintMarketTemplate ? CRVUSD.symbol : market.borrowed_token.symbol
@@ -121,7 +122,7 @@ export const updateUserEventsApi = (
     market instanceof LendMarketTemplate
       ? [market.addresses.controller, getLendUserMarketCollateralEvents]
       : [market.controller, getMintUserMarketCollateralEvents]
-  void updateEvents(wallet.account.address, networkId as Chain, address as Address, txHash as Hex)
+  void updateEvents(wallet.address, networkId as Chain, address as Address, txHash as Hex)
 }
 
 /**
