@@ -70,7 +70,7 @@ const {
   validationSuite: userContractValidationSuite,
 })
 
-export function invalidateAllUserLendingVaults(userAddress: Address | undefined) {
+export function invalidateAllUserLendingVaults(userAddress: Address | null | undefined) {
   recordEntries(getCurrentUserLendingVaults({ userAddress }) ?? {}).forEach(([blockchainId, contracts]) => {
     invalidateUserLendingVaults({ userAddress })
     contracts.forEach((contractAddress) =>
@@ -104,7 +104,7 @@ const {
   validationSuite: userAddressValidationSuite,
 })
 
-export function invalidateAllUserLendingSupplies(userAddress: Address | undefined) {
+export function invalidateAllUserLendingSupplies(userAddress: Address | null | undefined) {
   invalidateUserLendingSupplies({ userAddress })
   recordEntries(getCurrentUserLendingSupplies({ userAddress }) ?? {}).forEach(([blockchainId, positions]) =>
     positions.forEach((contractAddress) =>
