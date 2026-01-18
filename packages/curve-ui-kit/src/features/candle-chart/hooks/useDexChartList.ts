@@ -11,26 +11,26 @@ type UseDexChartListArgs = {
 }
 
 const combinations = <T>(collection: T[], n: number): T[][] => {
-	const array = _.values(collection)
-	if (array.length < n) {
-		return []
-	}
-	const recur = (array: T[], n: number): T[][] => {
-		if (--n < 0) {
-			return [[]]
-		}
-		const combinations: T[][] = []
-		array = array.slice()
-		while (array.length - n) {
-			const value = array.shift()!
-			recur(array, n).forEach((combination) => {
-				combination.unshift(value)
-				combinations.push(combination)
-			})
-		}
-		return combinations
-	}
-	return recur(array, n)
+  const array = _.values(collection)
+  if (array.length < n) {
+    return []
+  }
+  const recur = (array: T[], n: number): T[][] => {
+    if (--n < 0) {
+      return [[]]
+    }
+    const combinations: T[][] = []
+    array = array.slice()
+    while (array.length - n) {
+      const value = array.shift()!
+      recur(array, n).forEach((combination) => {
+        combination.unshift(value)
+        combinations.push(combination)
+      })
+    }
+    return combinations
+  }
+  return recur(array, n)
 }
 
 const buildChartCombinations = (coins: PricesApiCoin[], nCoins: number): PricesApiCoin[][] => {
