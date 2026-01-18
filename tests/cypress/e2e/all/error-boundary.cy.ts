@@ -1,4 +1,5 @@
 import { API_LOAD_TIMEOUT, LOAD_TIMEOUT } from '@cy/support/ui'
+import type { ErrorContext } from '@ui-kit/features/report-error'
 
 const visitErrorBoundary = () => {
   cy.intercept(`https://prices.curve.finance/v1/crvusd/markets`, { body: { chains: { ethereum: { data: [] } } } })
@@ -41,6 +42,24 @@ const visitNotFoundPage = () => {
   return Cypress.config('baseUrl') + url
 }
 
+function check500Error({ context }: { context: object }) {
+  const [expectedName, expectedMessage] = ['TypeError', 'toLowerCase is not a function']
+  expect(Object.keys(context)).to.have.members(['title', 'subtitle', 'error'])
+  const { subtitle, error, title } = context as ErrorContext
+  expect(title).to.equal('Unexpected Error')
+  expect(subtitle).to.contain(expectedMessage)
+  const { message: actualMessage, name: actualName, stack } = error as Error
+  expect(actualName).to.equal(expectedName)
+  expect(actualMessage).to.contain(expectedMessage)
+  if (Cypress.isBrowser('firefox')) {
+    expect(stack).to.contain('getUniqueSortedStrings')
+    expect(stack).to.contain('MultiSelectFilter')
+  } else {
+    expect(stack).to.contain(expectedName)
+    expect(stack).to.contain(expectedMessage)
+  }
+}
+
 describe('Error Boundary', () => {
   // note: this must be the first in the file, as firefox might cache responses from other tests
   it('should show error page when it hits the error boundary', () => {
@@ -63,14 +82,7 @@ describe('Error Boundary', () => {
       expect(bodyJson.formData).to.deep.equal({ address, contactMethod: 'email', contact, description })
       expect(bodyJson.url).to.equal(url)
       if (is500) {
-        const [name, message] = ['TypeError', 'toLowerCase is not a function']
-        expect(Object.keys(bodyJson.context)).to.have.members(['title', 'subtitle', 'error'])
-        expect(bodyJson.context.title).to.equal('Unexpected Error')
-        expect(bodyJson.context.subtitle).to.contain(message)
-        expect(bodyJson.context.error.name).to.equal(name)
-        expect(bodyJson.context.error.message).to.contain(message)
-        expect(bodyJson.context.error.stack).to.contain(name)
-        expect(bodyJson.context.error.stack).to.contain(message)
+        check500Error(bodyJson)
       } else {
         expect(bodyJson).to.deep.equal({
           formData: { address, contactMethod: 'email', contact, description },
