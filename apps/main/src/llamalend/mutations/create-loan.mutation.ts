@@ -65,7 +65,7 @@ export const useCreateLoanMutation = ({
 }: CreateLoanOptions) => {
   const config = useConfig()
 
-  const { mutateAsync, error, data, isPending, isSuccess, reset } = useLlammaMutation<CreateLoanMutation>({
+  const { mutate, error, data, isPending, isSuccess, reset } = useLlammaMutation<CreateLoanMutation>({
     network,
     marketId,
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'create-loan'] as const,
@@ -86,7 +86,7 @@ export const useCreateLoanMutation = ({
     onReset,
   })
 
-  const onSubmit = useCallback((data: CreateLoanForm) => mutateAsync(data as CreateLoanMutation), [mutateAsync])
+  const onSubmit = useCallback((data: CreateLoanForm) => mutate(data as CreateLoanMutation), [mutate])
 
   return { onSubmit, error, data, isPending, isSuccess, reset }
 }
