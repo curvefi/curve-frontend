@@ -55,9 +55,7 @@ export function useWagmiWallet() {
   const address = client?.account?.address
   const request = client?.transport.request
   const wallet = useMemo(
-    () =>
-      // `wallet.account.ensName` is set later when detected
-      address && request ? { provider: { request }, account: { address } } : undefined,
+    () => (address && request ? { provider: { request }, address } : undefined),
     [address, request],
   )
   return {

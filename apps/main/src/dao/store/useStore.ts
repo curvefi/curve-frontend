@@ -1,11 +1,11 @@
 import { create, StoreApi } from 'zustand'
 import { devtools } from 'zustand/middleware'
-import createAnalyticsSlice, { AnalyticsSlice } from '@/dao/store/createAnalyticsSlice'
-import createAppSlice, { AppSlice } from '@/dao/store/createAppSlice'
-import createGaugesSlice, { GaugesSlice } from '@/dao/store/createGaugesSlice'
-import createProposalsSlice, { ProposalsSlice } from '@/dao/store/createProposalsSlice'
-import createUserSlice, { UserSlice } from '@/dao/store/createUserSlice'
-import createLockedCrvSlice, { LockedCrvSlice } from './createLockedCrvSlice'
+import { AnalyticsSlice, createAnalyticsSlice } from '@/dao/store/createAnalyticsSlice'
+import { AppSlice, createAppSlice } from '@/dao/store/createAppSlice'
+import { GaugesSlice, createGaugesSlice } from '@/dao/store/createGaugesSlice'
+import { ProposalsSlice, createProposalsSlice } from '@/dao/store/createProposalsSlice'
+import { UserSlice, createUserSlice } from '@/dao/store/createUserSlice'
+import { LockedCrvSlice, createLockedCrvSlice } from './createLockedCrvSlice'
 
 export type State = AppSlice & ProposalsSlice & UserSlice & GaugesSlice & AnalyticsSlice & LockedCrvSlice
 
@@ -18,6 +18,4 @@ const store = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState'
   ...createLockedCrvSlice(set, get),
 })
 
-const useStore = process.env.NODE_ENV === 'development' ? create(devtools(store)) : create(store)
-
-export default useStore
+export const useStore = process.env.NODE_ENV === 'development' ? create(devtools(store)) : create(store)

@@ -1,5 +1,5 @@
 import { styled } from 'styled-components'
-import InfoLinkBar from '@/dex/components/PageCreatePool/ConfirmModal/CreateInfoLinkBar'
+import { InfoLinkBar } from '@/dex/components/PageCreatePool/ConfirmModal/CreateInfoLinkBar'
 import {
   STABLESWAP,
   STABLESWAPOLD,
@@ -9,12 +9,12 @@ import {
 } from '@/dex/components/PageDeployGauge/constants'
 import { useNetworks } from '@/dex/entities/networks'
 import { curveProps } from '@/dex/lib/utils'
-import useStore from '@/dex/store/useStore'
+import { useStore } from '@/dex/store/useStore'
 import { ChainId, CurveApi } from '@/dex/types/main.types'
 import { getPath, useRestFullPathname } from '@/dex/utils/utilsRouter'
-import AlertBox from '@ui/AlertBox'
-import Button from '@ui/Button'
-import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import { AlertBox } from '@ui/AlertBox'
+import { Button } from '@ui/Button'
+import { SpinnerWrapper, Spinner } from '@ui/Spinner'
 import { scanTxPath } from '@ui/utils'
 import { isLoading, useWallet } from '@ui-kit/features/connect-wallet'
 import { useNavigate } from '@ui-kit/hooks/router'
@@ -28,7 +28,7 @@ interface Props {
   pageLoaded: boolean
 }
 
-const DeployGaugeButton = ({ disabled, chainId, curve, pageLoaded }: Props) => {
+export const DeployGaugeButton = ({ disabled, chainId, curve, pageLoaded }: Props) => {
   const { data: networks } = useNetworks()
   const { haveSigner } = curveProps(curve, networks)
   const isLite = networks[chainId]?.isLite ?? false
@@ -272,5 +272,3 @@ const InfoLinkBarWrapper = styled.div`
     display: none;
   }
 `
-
-export default DeployGaugeButton

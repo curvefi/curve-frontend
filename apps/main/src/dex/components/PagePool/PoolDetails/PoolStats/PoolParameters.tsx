@@ -1,29 +1,29 @@
 import { useMemo } from 'react'
 import { styled } from 'styled-components'
-import Contracts from '@/dex/components/PagePool/PoolDetails/PoolStats/Contracts'
+import { Contracts } from '@/dex/components/PagePool/PoolDetails/PoolStats/Contracts'
 import type { TransferProps } from '@/dex/components/PagePool/types'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { usePoolIdByAddressOrId } from '@/dex/hooks/usePoolIdByAddressOrId'
-import usePoolTotalStaked from '@/dex/hooks/usePoolTotalStaked'
-import useStore from '@/dex/store/useStore'
-import type { PoolParameters } from '@/dex/types/main.types'
+import { usePoolTotalStaked } from '@/dex/hooks/usePoolTotalStaked'
+import { useStore } from '@/dex/store/useStore'
+import type { PoolParameters as Parameters } from '@/dex/types/main.types'
 import Stack from '@mui/material/Stack'
 import { FORMAT_OPTIONS, formatDate, formatNumber } from '@ui/utils'
-import dayjs from '@ui-kit/lib/dayjs'
+import { dayjs } from '@ui-kit/lib/dayjs'
 import { t } from '@ui-kit/lib/i18n'
-import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
+import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { weiToEther } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
-const PoolParameters = ({
+export const PoolParameters = ({
   parameters,
   poolData,
   poolDataCacheOrApi,
   routerParams,
 }: {
-  parameters: PoolParameters
+  parameters: Parameters
 } & Pick<TransferProps, 'poolData' | 'poolDataCacheOrApi' | 'routerParams'>) => {
   const { rChainId, rPoolIdOrAddress } = routerParams
   const {
@@ -189,5 +189,3 @@ const PoolParameters = ({
 const Title = styled.h3`
   margin-bottom: var(--spacing-1);
 `
-
-export default PoolParameters

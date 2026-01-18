@@ -1,1 +1,1 @@
-export { default } from './TextEllipsis'
+export { TextEllipsis } from './TextEllipsis'

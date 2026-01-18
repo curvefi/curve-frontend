@@ -164,8 +164,7 @@ jobs:
 
       - name: Check runtime errors
         if: always()
-        # todo: add `Cannot destructure .. as it is undefined`
-        run: if grep --ignore-case --extended-regexp "update depth exceeded|many re-renders|unmounted component|non-unique keys|uncontrolled to controlled|properties of undefined" e2e-*.log; then exit 1; fi
+        run: if grep --ignore-case --extended-regexp "update depth exceeded|many re-renders|unmounted component|non-unique keys|uncontrolled to controlled|properties of undefined|cannot destructure" e2e-*.log; then exit 1; fi
 
       - uses: actions/upload-artifact@v4
         if: failure()

@@ -14,6 +14,7 @@ module.exports = {
     'react/react-in-jsx-scope': 'off', // Not needed in React 17+
     'react/prop-types': 'off', // We use TypeScript
     'unused-imports/no-unused-imports': 'warn',
+    'import/no-default-export': 'error',
 
     // rule to enforce that imports are only allowed from certain paths
     'import/no-restricted-paths': [
@@ -110,5 +111,13 @@ module.exports = {
     '**/storybook-static/**',
     'node_modules/**',
     '**/*.js',
+  ],
+  overrides: [
+    {
+      files: ['**/*.stories.tsx', '**/*.stories.ts', '**/*.d.ts', '**/_api/*.ts'],
+      rules: {
+        'import/no-default-export': 'off',
+      },
+    },
   ],
 }

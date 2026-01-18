@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import { styled } from 'styled-components'
 import { RewardCrv } from '@/dex/types/main.types'
 import { rewardsApyCrvText } from '@/dex/utils/utilsCurvejs'
-import Box from '@ui/Box'
+import { Box } from '@ui/Box'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 
 type Props = {
@@ -12,7 +12,7 @@ type Props = {
   fetchUserPoolBoost: () => Promise<string>
 }
 
-const TableCellRewardsTooltip = ({ crv = [], userCrvApy, fetchUserPoolBoost }: Props) => {
+export const TableCellRewardsTooltip = ({ crv = [], userCrvApy, fetchUserPoolBoost }: Props) => {
   const isSubscribed = useRef(false)
   const [boost, setBoost] = useState('')
 
@@ -45,5 +45,3 @@ const TableCellRewardsTooltip = ({ crv = [], userCrvApy, fetchUserPoolBoost }: P
 const Title = styled.div`
   font-weight: bold;
 `
-
-export default TableCellRewardsTooltip

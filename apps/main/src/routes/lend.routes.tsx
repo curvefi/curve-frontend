@@ -1,5 +1,5 @@
 import { LendMarketPage } from '@/lend/components/PageLendMarket/LendMarketPage'
-import PageVault from '@/lend/components/PageVault/Page'
+import { Page as PageVault } from '@/lend/components/PageVault/Page'
 import { LendLayout } from '@/lend/LendLayout'
 import type { MarketUrlParams } from '@/lend/types/lend.types'
 import { createRoute } from '@tanstack/react-router'

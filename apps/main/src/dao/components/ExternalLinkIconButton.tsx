@@ -1,8 +1,8 @@
 import { ReactNode } from 'react'
 import { styled } from 'styled-components'
-import Icon from '@ui/Icon'
+import { Icon } from '@ui/Icon'
 import { ExternalLink } from '@ui/Link'
-import TooltipButton from '@ui/Tooltip/TooltipButton'
+import { TooltipButton } from '@ui/Tooltip/TooltipButton'
 
 type ExternalLinkIconButtonProps = {
   href?: string
@@ -11,7 +11,7 @@ type ExternalLinkIconButtonProps = {
 }
 
 /** Returns null when href is undefined, allowing concise usage without conditional checks at call sites. */
-const ExternalLinkIconButton = ({ href, tooltip, children }: ExternalLinkIconButtonProps) =>
+export const ExternalLinkIconButton = ({ href, tooltip, children }: ExternalLinkIconButtonProps) =>
   href && (
     <TooltipButton
       clickable
@@ -38,5 +38,3 @@ const StyledExternalLink = styled(ExternalLink)`
     cursor: pointer;
   }
 `
-
-export default ExternalLinkIconButton

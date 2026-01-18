@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 import { styled } from 'styled-components'
-import Loader from 'ui/src/Loader'
+import { Loader } from '@ui/Loader'
 import { useInputContext } from './InputContext'
 import type { InputLabelProps } from './types'
 
-const InputLabel = ({
+export const InputLabel = ({
   className,
   label,
   description,
@@ -55,5 +55,3 @@ const StyledLabel = styled.label<{ descriptionLoading: boolean }>`
 `
 
 InputLabel.displayName = 'InputLabel'
-
-export default InputLabel

@@ -4,7 +4,7 @@ import { prefetchMarkets } from '@/lend/entities/chain/chain-query'
 import { CreateLoanForm } from '@/llamalend/features/borrow/components/CreateLoanForm'
 import type { OnCreateLoanFormUpdate } from '@/llamalend/features/borrow/types'
 import type { CreateLoanOptions } from '@/llamalend/mutations/create-loan.mutation'
-import networks from '@/loan/networks'
+import { networks } from '@/loan/networks'
 import { oneBool, oneValueOf } from '@cy/support/generators'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import {

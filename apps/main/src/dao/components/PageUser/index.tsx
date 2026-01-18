@@ -1,17 +1,18 @@
 import { useEffect, useState } from 'react'
 import { styled } from 'styled-components'
-import useStore from '@/dao/store/useStore'
+import type { Address } from 'viem'
+import { useEnsName } from 'wagmi'
+import { useStore } from '@/dao/store/useStore'
 import type { UserUrlParams } from '@/dao/types/dao.types'
 import type { Locker } from '@curvefi/prices-api/dao'
-import Box from '@ui/Box'
-import { useWallet } from '@ui-kit/features/connect-wallet'
+import { Box } from '@ui/Box'
 import { t } from '@ui-kit/lib/i18n'
 import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
-import UserGaugeVotesTable from './UserGaugeVotesTable'
-import UserHeader from './UserHeader'
-import UserLocksTable from './UserLocksTable'
-import UserProposalVotesTable from './UserProposalVotesTable'
-import UserStats from './UserStats'
+import { UserGaugeVotesTable } from './UserGaugeVotesTable'
+import { UserHeader } from './UserHeader'
+import { UserLocksTable } from './UserLocksTable'
+import { UserProposalVotesTable } from './UserProposalVotesTable'
+import { UserStats } from './UserStats'
 
 type Tab = 'proposals' | 'gauge_votes' | 'locks'
 const tabs: TabOption<Tab>[] = [
@@ -24,12 +25,9 @@ type UserPageProps = {
   routerParams: UserUrlParams
 }
 
-const UserPage = ({ routerParams: { userAddress: rUserAddress } }: UserPageProps) => {
+export const UserPage = ({ routerParams: { userAddress: rUserAddress } }: UserPageProps) => {
   const veCrvHolders = useStore((state) => state.analytics.veCrvHolders)
   const getVeCrvHolders = useStore((state) => state.analytics.getVeCrvHolders)
-  const getUserEns = useStore((state) => state.user.getUserEns)
-  const userMapper = useStore((state) => state.user.userMapper)
-  const { provider } = useWallet()
   const [tab, setTab] = useState<Tab>('proposals')
 
   const { allHolders, fetchStatus } = veCrvHolders
@@ -55,17 +53,12 @@ const UserPage = ({ routerParams: { userAddress: rUserAddress } }: UserPageProps
     }
   }, [getVeCrvHolders, allHolders, holdersLoading, holdersError])
 
-  // Get user ENS
-  useEffect(() => {
-    if (!userMapper[userAddress] && provider) {
-      void getUserEns(userAddress)
-    }
-  }, [getUserEns, userAddress, userMapper, provider])
+  const { data: userEnsName } = useEnsName({ address: userAddress as Address })
 
   return (
     <Wrapper>
       <UserPageContainer variant="secondary">
-        <UserHeader userAddress={userAddress} userMapper={userMapper} />
+        <UserHeader userAddress={userAddress} userEnsName={userEnsName} />
         <UserStats veCrvHolder={veCrvHolder} holdersLoading={holdersLoading} />
       </UserPageContainer>
       <Box>
@@ -109,5 +102,3 @@ const Container = styled(Box)`
   height: 100%;
   border: none;
 `
-
-export default UserPage

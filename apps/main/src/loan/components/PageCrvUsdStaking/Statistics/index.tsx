@@ -1,19 +1,19 @@
 import type { StatisticsChart } from '@/loan/components/PageCrvUsdStaking/types'
 import { useScrvUsdRevenue } from '@/loan/entities/scrvusd-revenue'
 import { useScrvUsdYield } from '@/loan/entities/scrvusd-yield'
-import useStore from '@/loan/store/useStore'
+import { useStore } from '@/loan/store/useStore'
 import { Stack, Card, CardHeader, Box } from '@mui/material'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { t } from '@ui-kit/lib/i18n'
 import type { TimeOption } from '@ui-kit/lib/types/scrvusd'
-import ChartHeader, { ChartOption } from '@ui-kit/shared/ui/ChartHeader'
+import { ChartOption, ChartHeader } from '@ui-kit/shared/ui/ChartHeader'
 import { Sizing } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import AdvancedDetails from './AdvancedDetails'
-import DistributionsBarChart from './DistributionsBarChart'
-import RevenueChartFooter from './RevenueChartFooter'
-import RevenueLineChart from './RevenueLineChart'
-import StatsStack from './StatsStack'
+import { AdvancedDetails } from './AdvancedDetails'
+import { RevenueDistributionsBarChart as DistributionsBarChart } from './DistributionsBarChart'
+import { RevenueChartFooter } from './RevenueChartFooter'
+import { RevenueLineChart } from './RevenueLineChart'
+import { StatsStack } from './StatsStack'
 const { Spacing, MaxWidth } = SizesAndSpaces
 
 const chartLabels: Record<StatisticsChart, string> = {
@@ -34,7 +34,7 @@ type StatisticsProps = {
   hideExpandChart: boolean
 }
 
-const Statistics = ({ isChartExpanded, toggleChartExpanded, hideExpandChart }: StatisticsProps) => {
+export const Statistics = ({ isChartExpanded, toggleChartExpanded, hideExpandChart }: StatisticsProps) => {
   const selectedStatisticsChart = useStore((state) => state.scrvusd.selectedStatisticsChart)
   const setSelectedStatisticsChart = useStore((state) => state.scrvusd.setSelectedStatisticsChart)
   const revenueChartTimeOption = useStore((state) => state.scrvusd.revenueChartTimeOption)
@@ -84,5 +84,3 @@ const Statistics = ({ isChartExpanded, toggleChartExpanded, hideExpandChart }: S
     </Stack>
   )
 }
-
-export default Statistics

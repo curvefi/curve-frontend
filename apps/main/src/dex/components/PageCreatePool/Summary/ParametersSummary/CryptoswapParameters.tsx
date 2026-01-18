@@ -7,7 +7,7 @@ import {
 } from '@/dex/components/PageCreatePool/Summary/styles'
 import { isTricrypto } from '@/dex/components/PageCreatePool/utils'
 import { useNetworkByChain } from '@/dex/entities/networks'
-import useStore from '@/dex/store/useStore'
+import { useStore } from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
 import { t } from '@ui-kit/lib/i18n'
 
@@ -15,7 +15,7 @@ type Props = {
   chainId: ChainId
 }
 
-const StableswapParameters = ({ chainId }: Props) => {
+export const CryptoswapParameters = ({ chainId }: Props) => {
   const tokensInPool = useStore((state) => state.createPool.tokensInPool)
   const initialPrice = useStore((state) => state.createPool.initialPrice)
   const advanced = useStore((state) => state.createPool.advanced)
@@ -129,5 +129,3 @@ const StableswapParameters = ({ chainId }: Props) => {
     </>
   )
 }
-
-export default StableswapParameters

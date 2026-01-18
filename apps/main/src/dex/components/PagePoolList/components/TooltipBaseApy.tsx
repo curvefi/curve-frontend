@@ -5,7 +5,7 @@ import { Chip } from '@ui/Typography'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 
-const TooltipBaseApy = ({
+export const TooltipBaseApy = ({
   baseApy,
   poolData,
 }: {
@@ -55,5 +55,3 @@ const NegativeBaseApy = styled(Chip)`
   display: block;
   margin-top: var(--spacing-2);
 `
-
-export default TooltipBaseApy

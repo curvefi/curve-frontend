@@ -5,7 +5,7 @@ import type { TopHoldersSortBy } from '@/dao/types/dao.types'
 import type { Locker } from '@curvefi/prices-api/dao'
 import { formatNumber } from '@ui/utils'
 import { shortenAddress } from '@ui-kit/utils'
-import CustomTooltip from './TopHoldersBarChartTooltip'
+import { TopHoldersBarChartTooltip as CustomTooltip } from './TopHoldersBarChartTooltip'
 
 type TopHoldersBarChartProps = {
   data: Locker[]
@@ -25,7 +25,7 @@ const COLORS = [
   '#277DA1',
 ]
 
-const TopHoldersBarChart = ({ data, filter }: TopHoldersBarChartProps) => {
+export const TopHoldersBarChart = ({ data, filter }: TopHoldersBarChartProps) => {
   const height = 300
   const labelWidth = 100
 
@@ -106,5 +106,3 @@ const ChartContainer = styled.div<{ height: number }>`
   width: 100%;
   height: ${({ height }) => height}px;
 `
-
-export default TopHoldersBarChart

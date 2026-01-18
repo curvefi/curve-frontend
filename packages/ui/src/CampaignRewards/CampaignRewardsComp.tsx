@@ -1,8 +1,8 @@
 import { styled } from 'styled-components'
+import { TooltipMessage } from '@ui/CampaignRewards/TooltipMessage'
+import { Icon } from '@ui/Icon'
+import { TooltipButton as Tooltip } from '@ui/Tooltip/TooltipButton'
 import type { CampaignPoolRewards } from '@ui-kit/entities/campaigns'
-import TooltipMessage from 'ui/src/CampaignRewards/TooltipMessage'
-import Icon from 'ui/src/Icon'
-import Tooltip from 'ui/src/Tooltip/TooltipButton'
 
 type CampaignRewardsCompProps = {
   rewardsPool: CampaignPoolRewards
@@ -11,7 +11,7 @@ type CampaignRewardsCompProps = {
   banner?: boolean
 }
 
-const RewardsCompSmall = ({ rewardsPool, highContrast, mobile, banner }: CampaignRewardsCompProps) => {
+export const RewardsCompSmall = ({ rewardsPool, highContrast, mobile, banner }: CampaignRewardsCompProps) => {
   const { platform, multiplier, platformImageId } = rewardsPool
 
   return (
@@ -61,5 +61,3 @@ const Multiplier = styled.p<{ highContrast?: boolean }>`
 const StyledIcon = styled(Icon)<{ $highContrast?: boolean }>`
   color: ${({ $highContrast }) => ($highContrast ? 'var(--white)' : 'var(--page--text-color)')};
 `
-
-export default RewardsCompSmall

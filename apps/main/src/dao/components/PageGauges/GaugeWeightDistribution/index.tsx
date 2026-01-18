@@ -1,23 +1,24 @@
 import { useMemo } from 'react'
 import { styled } from 'styled-components'
-import ErrorMessage from '@/dao/components/ErrorMessage'
+import { useConnection } from 'wagmi'
+import { ErrorMessage } from '@/dao/components/ErrorMessage'
 import { useUserGaugeWeightVotesQuery } from '@/dao/entities/user-gauge-weight-votes'
-import useStore from '@/dao/store/useStore'
+import { refetchGauges, useGauges } from '@/dao/queries/gauges.query'
 import { GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
-import Box from '@ui/Box'
-import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import { Box } from '@ui/Box'
+import { SpinnerWrapper, Spinner } from '@ui/Spinner'
 import { t } from '@ui-kit/lib/i18n'
 import { Chain } from '@ui-kit/utils/network'
-import BarChartComponent from '../../Charts/BarChartComponent'
-import GaugesCustomTooltip from '../../Charts/GaugesBarChartCustomTooltip'
-import GaugeVotingCustomTooltip from '../../Charts/GaugeVotingBarChartCustomTooltip'
+import { BarChartComponent } from '../../Charts/BarChartComponent'
+import { GaugesBarChartCustomTooltip } from '../../Charts/GaugesBarChartCustomTooltip'
+import { GaugeVotingBarChartCustomTooltip } from '../../Charts/GaugeVotingBarChartCustomTooltip'
 
 type GaugeWeightDistributionProps = {
   isUserVotes: boolean
-  userAddress?: string
 }
 
-const GaugeWeightDistribution = ({ isUserVotes, userAddress }: GaugeWeightDistributionProps) => {
+export const GaugeWeightDistribution = ({ isUserVotes }: GaugeWeightDistributionProps) => {
+  const { address: userAddress } = useConnection()
   const {
     data: userGaugeWeightVotes,
     isSuccess: userGaugeWeightsSuccess,
@@ -27,13 +28,16 @@ const GaugeWeightDistribution = ({ isUserVotes, userAddress }: GaugeWeightDistri
     chainId: Chain.Ethereum, // DAO is only used on mainnet
     userAddress: userAddress ?? '',
   })
-  const getGauges = useStore((state) => state.gauges.getGauges)
-  const gaugesLoading = useStore((state) => state.gauges.gaugesLoading)
-  const gaugeMapper = useStore((state) => state.gauges.gaugeMapper)
+  const {
+    data: gaugeMapper,
+    isSuccess: gaugesIsSuccess,
+    isLoading: gaugesIsLoading,
+    isError: gaugesIsError,
+  } = useGauges({})
 
-  const isLoading = isUserVotes ? userGaugeWeightsLoading : gaugesLoading === 'LOADING'
-  const isError = isUserVotes ? userGaugeWeightsError : gaugesLoading === 'ERROR'
-  const isSuccess = isUserVotes ? userGaugeWeightsSuccess : gaugesLoading === 'SUCCESS'
+  const isLoading = isUserVotes ? userGaugeWeightsLoading : gaugesIsLoading
+  const isError = isUserVotes ? userGaugeWeightsError : gaugesIsError
+  const isSuccess = isUserVotes ? userGaugeWeightsSuccess : gaugesIsSuccess
 
   const dataKey = isUserVotes ? 'userPower' : 'gauge_relative_weight'
   const formattedData: (UserGaugeVoteWeight | GaugeFormattedData)[] = useMemo(() => {
@@ -41,12 +45,12 @@ const GaugeWeightDistribution = ({ isUserVotes, userAddress }: GaugeWeightDistri
       return (
         userGaugeWeightVotes?.gauges.map((gauge) => ({
           ...gauge,
-          title: gaugeMapper[gauge.gaugeAddress]?.title ?? '',
+          title: gaugeMapper?.[gauge.gaugeAddress]?.title ?? '',
         })) ?? []
       )
     }
 
-    return Object.values(gaugeMapper)
+    return Object.values(gaugeMapper ?? {})
       .filter((gauge) => gauge.gauge_relative_weight > 0.5)
       .sort((a, b) => b.gauge_relative_weight - a.gauge_relative_weight)
   }, [gaugeMapper, isUserVotes, userGaugeWeightVotes?.gauges])
@@ -73,14 +77,14 @@ const GaugeWeightDistribution = ({ isUserVotes, userAddress }: GaugeWeightDistri
         )}
         {isError && (
           <ErrorMessageWrapper>
-            <ErrorMessage message={t`Error fetching gauges`} onClick={() => getGauges(true)} />
+            <ErrorMessage message={t`Error fetching gauges`} onClick={() => refetchGauges({})} />
           </ErrorMessageWrapper>
         )}
         {isSuccess && formattedData.length > 0 && (
           <BarChartComponent
             data={formattedData}
             dataKey={dataKey as keyof (typeof formattedData)[0]}
-            CustomTooltip={isUserVotes ? GaugeVotingCustomTooltip : GaugesCustomTooltip}
+            CustomTooltip={isUserVotes ? GaugeVotingBarChartCustomTooltip : GaugesBarChartCustomTooltip}
           />
         )}
         {!isLoading && !isError && formattedData.length === 0 && (
@@ -131,5 +135,3 @@ const ErrorMessageWrapper = styled.div`
   padding: var(--spacing-5);
   margin-bottom: var(--spacing-2);
 `
-
-export default GaugeWeightDistribution

@@ -1,7 +1,7 @@
 import { styled } from 'styled-components'
-import { breakpoints } from 'ui/src/utils/responsive'
+import { breakpoints } from '@ui/utils/responsive'
 
-const TextEllipsis = styled.span<{
+export const TextEllipsis = styled.span<{
   maxWidth?: string
   smMaxWidth?: string
   mdMaxWidth?: string
@@ -27,5 +27,3 @@ const TextEllipsis = styled.span<{
       lgMaxWidth || mdMaxWidth || smMaxWidth || maxWidth || '1024px'};
   }
 `
-
-export default TextEllipsis

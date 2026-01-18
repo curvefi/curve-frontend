@@ -108,30 +108,23 @@ export const IntegrationsList = ({ networkId, searchText }: { networkId?: string
           }}
         />
 
-        <Grid
-          container
-          columnSpacing={Spacing.xs}
-          rowSpacing={Spacing.md}
-          direction="row"
-          size={{ mobile: 12, desktop: 'auto' }}
-        >
+        <Stack gap={Spacing.xs} direction="row" flexWrap="wrap">
           {Object.values(tags).map((tag) => (
-            <Grid container key={tag.id} size={{ mobile: 12, tablet: 'auto' }} spacing={Spacing.xxs}>
-              <SelectableChip
-                size="small"
-                label={
-                  <Stack direction="row" alignItems="center" gap={Spacing.sm}>
-                    {tag.color && <Box sx={{ width: Sizing.xs, height: Sizing.xs, backgroundColor: tag.color }} />}
-                    {tag.displayName}
-                  </Stack>
-                }
-                selected={filterTag == tag.id}
-                toggle={() => updateFilters({ tag: tag.id })}
-                sx={{ width: { mobile: '100%', tablet: 'auto' } }}
-              />
-            </Grid>
+            <SelectableChip
+              key={tag.id}
+              size="small"
+              label={
+                <Stack direction="row" alignItems="center" gap={Spacing.sm}>
+                  {tag.color && <Box sx={{ width: Sizing.xs, height: Sizing.xs, backgroundColor: tag.color }} />}
+                  {tag.displayName}
+                </Stack>
+              }
+              selected={filterTag == tag.id}
+              toggle={() => updateFilters({ tag: tag.id })}
+              sx={{ width: { mobile: 'auto' } }}
+            />
           ))}
-        </Grid>
+        </Stack>
 
         {!integrationsFiltered.length ? (
           <Box sx={{ display: 'flex', justifyContent: 'center', padding: Spacing.xxl }}>

@@ -1,5 +1,5 @@
 import { styled } from 'styled-components'
-import Button from 'ui/src/Button/Button'
+import { Button } from '@ui/Button/Button'
 import type { TimeOptions } from './types'
 
 type Props = {
@@ -8,7 +8,7 @@ type Props = {
   close?: () => void
 }
 
-const DialogSelectChart = ({ currentTimeOption, setCurrentTimeOption, ...props }: Props) => {
+export const DialogSelectChart = ({ currentTimeOption, setCurrentTimeOption, ...props }: Props) => {
   const handleClick = (timeOption: TimeOptions) => {
     setCurrentTimeOption(timeOption)
     if (props.close) {
@@ -108,5 +108,3 @@ const StyledSelectButton = styled(Button)`
     }
   }
 `
-
-export default DialogSelectChart

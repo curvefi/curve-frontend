@@ -1,10 +1,10 @@
 import { useCallback } from 'react'
 import { styled } from 'styled-components'
-import Countdown from '@/dao/components/Countdown'
-import ProposalVoteStatusBox from '@/dao/components/ProposalVoteStatusBox'
-import SmallLabel from '@/dao/components/SmallLabel'
+import { Countdown } from '@/dao/components/Countdown'
+import { ProposalVoteStatusBox } from '@/dao/components/ProposalVoteStatusBox'
+import { SmallLabel } from '@/dao/components/SmallLabel'
 import { ProposalData } from '@/dao/entities/proposals-mapper'
-import LazyItem from '@ui/LazyItem'
+import { LazyItem } from '@ui/LazyItem'
 import { t } from '@ui-kit/lib/i18n'
 
 type Props = {
@@ -12,7 +12,7 @@ type Props = {
   handleClick: (rProposalId: string) => void
 }
 
-const Proposal = ({ proposalData, handleClick }: Props) => {
+export const Proposal = ({ proposalData, handleClick }: Props) => {
   const { id, type, timestamp, metadata, status, executed } = proposalData
 
   const truncateMetadata = useCallback((metadata: string | null, maxLength: number) => {
@@ -197,5 +197,3 @@ const ExecutedStatus = styled.h4`
 const StyledProposalVoteStatusBox = styled(ProposalVoteStatusBox)`
   margin: var(--spacing-1) 0;
 `
-
-export default Proposal

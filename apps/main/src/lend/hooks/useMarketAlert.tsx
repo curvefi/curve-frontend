@@ -11,7 +11,7 @@ export type MarketAlert = TooltipProps & {
 
 type Alerts = { [chainId: number]: { [owmId: string]: MarketAlert } }
 
-const useMarketAlert = (rChainId: ChainId, rOwmId: string | undefined) =>
+export const useMarketAlert = (rChainId: ChainId, rOwmId: string | undefined) =>
   useMemo(() => {
     if (!rChainId || !rOwmId) return null
 
@@ -29,5 +29,3 @@ const useMarketAlert = (rChainId: ChainId, rOwmId: string | undefined) =>
 
     return foundAlert || null
   }, [rChainId, rOwmId])
-
-export default useMarketAlert

@@ -1,12 +1,13 @@
-import LoanBorrowMore, { LoanBorrowMoreWrapped } from '@/lend/components/PageLendMarket/LoanBorrowMore'
-import LoanCollateralAdd, { LoanAddCollateralTab } from '@/lend/components/PageLendMarket/LoanCollateralAdd'
-import LoanCollateralRemove, { LoanRemoveCollateralTab } from '@/lend/components/PageLendMarket/LoanCollateralRemove'
-import LoanRepay, {
+import { LoanBorrowMoreWrapped, LoanBorrowMore } from '@/lend/components/PageLendMarket/LoanBorrowMore'
+import { LoanAddCollateralTab, LoanCollateralAdd } from '@/lend/components/PageLendMarket/LoanCollateralAdd'
+import { LoanRemoveCollateralTab, LoanCollateralRemove } from '@/lend/components/PageLendMarket/LoanCollateralRemove'
+import {
   LoanRepayFromCollateralTab,
   LoanRepayFromWalletTab,
+  LoanRepay,
 } from '@/lend/components/PageLendMarket/LoanRepay'
-import LoanSelfLiquidation from '@/lend/components/PageLendMarket/LoanSelfLiquidation'
-import networks from '@/lend/networks'
+import { LoanSelfLiquidation } from '@/lend/components/PageLendMarket/LoanSelfLiquidation'
+import { networks } from '@/lend/networks'
 import { type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
 import { useClosePositionTab } from '@/llamalend/features/manage-soft-liquidation/hooks/useClosePositionTab'
 import { useImproveHealthTab } from '@/llamalend/features/manage-soft-liquidation/hooks/useImproveHealthTab'

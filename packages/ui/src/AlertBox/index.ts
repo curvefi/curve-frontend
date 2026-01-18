@@ -1,2 +1,2 @@
-export { default as AlertInfoSelfLiquidation } from './AlertInfoSelfLiquidation'
-export { default } from './AlertBox'
+export { AlertInfoSelfLiquidation } from './AlertInfoSelfLiquidation'
+export { AlertBox } from './AlertBox'

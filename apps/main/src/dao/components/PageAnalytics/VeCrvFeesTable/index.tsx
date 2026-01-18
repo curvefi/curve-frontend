@@ -1,14 +1,14 @@
 import { useEffect } from 'react'
 import { styled } from 'styled-components'
-import ErrorMessage from '@/dao/components/ErrorMessage'
-import useStore from '@/dao/store/useStore'
-import Box from '@ui/Box'
+import { ErrorMessage } from '@/dao/components/ErrorMessage'
+import { useStore } from '@/dao/store/useStore'
+import { Box } from '@ui/Box'
 import { formatDate, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
-import Spinner from '../../Spinner'
-import VeCrvFeesChart from '../VeCrvFeesChart'
+import { SpinnerComponent as Spinner } from '../../Spinner'
+import { VeCrvFeesChart } from '../VeCrvFeesChart'
 
-const VeCrcFees = () => {
+export const VeCrcFees = () => {
   const getVeCrvFees = useStore((state) => state.analytics.getVeCrvFees)
   const veCrvFees = useStore((state) => state.analytics.veCrvFees)
 
@@ -138,5 +138,3 @@ const TotalFees = styled.div`
   padding: var(--spacing-3);
   margin-top: var(--spacing-3);
 `
-
-export default VeCrcFees

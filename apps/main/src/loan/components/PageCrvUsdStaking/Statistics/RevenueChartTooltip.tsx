@@ -1,6 +1,6 @@
 import { TooltipProps } from 'recharts'
 import type { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent'
-import LegendLine from '@/loan/components/PageCrvUsdStaking/Statistics/components/LegendLine'
+import { LegendLine } from '@/loan/components/PageCrvUsdStaking/Statistics/components/LegendLine'
 import { TOOLTIP_MAX_WIDTH, TOOLTIP_MAX_WIDTH_MOBILE } from '@/loan/components/PageCrvUsdStaking/Statistics/constants'
 import type { ScrvUsdYieldWithAverages } from '@/loan/entities/scrvusd-yield'
 import { Paper, Stack, Typography } from '@mui/material'
@@ -34,7 +34,7 @@ const DataSet = ({
 
 const format = (value: number) => formatNumber(value, { unit: 'percentage', abbreviate: false })
 
-const CustomTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) => {
+export const CustomTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) => {
   const {
     design: { Color, Layer },
   } = useTheme()
@@ -67,5 +67,3 @@ const CustomTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) =
     </Paper>
   )
 }
-
-export default CustomTooltip

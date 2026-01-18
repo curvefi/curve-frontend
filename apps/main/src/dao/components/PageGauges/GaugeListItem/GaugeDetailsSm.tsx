@@ -1,9 +1,9 @@
 import { styled } from 'styled-components'
 import { ETHEREUM_CHAIN_ID } from '@/dao/constants'
-import networks from '@/dao/networks'
+import { networks } from '@/dao/networks'
 import { GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
 import { getChainIdFromGaugeData } from '@/dao/utils'
-import Box from '@ui/Box'
+import { Box } from '@ui/Box'
 import { ExternalLink } from '@ui/Link'
 import { formatNumber, convertToLocaleTimestamp, formatDate, scanAddressPath } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
@@ -15,7 +15,7 @@ type GaugeDetailsSmProps = {
   className?: string
 }
 
-const GaugeDetailsSm = ({ gaugeData, userGaugeWeightVoteData, className }: GaugeDetailsSmProps) => {
+export const GaugeDetailsSm = ({ gaugeData, userGaugeWeightVoteData, className }: GaugeDetailsSmProps) => {
   const { userVeCrv, userFutureVeCrv } = userGaugeWeightVoteData || {}
   const hasFutureVeCrv = userVeCrv && userFutureVeCrv && userFutureVeCrv > userVeCrv
 
@@ -177,5 +177,3 @@ const StyledExternalLink = styled(ExternalLink)`
     cursor: pointer;
   }
 `
-
-export default GaugeDetailsSm

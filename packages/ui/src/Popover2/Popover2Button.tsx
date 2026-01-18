@@ -2,10 +2,10 @@ import { CSSProperties, ReactNode, RefObject } from 'react'
 import { useButton } from 'react-aria'
 import { styled } from 'styled-components'
 import { AriaButtonOptions } from '@react-aria/button'
-import { buttonOutlinedStyles } from 'ui/src/Button/styles'
-import DividerHorizontal from 'ui/src/DividerHorizontal'
-import SelectIconBtnDelete, { SelectIconBtnDeleteProps } from 'ui/src/Select/SelectIconBtnDelete'
-import { focusVisible } from 'ui/src/utils/sharedStyles'
+import { buttonOutlinedStyles } from '@ui/Button/styles'
+import { DividerHorizontal } from '@ui/DividerHorizontal'
+import { SelectIconBtnDeleteProps, SelectIconBtnDelete } from '@ui/Select/SelectIconBtnDelete'
+import { focusVisible } from '@ui/utils/sharedStyles'
 
 export type ButtonVariant = 'outlined'
 
@@ -17,7 +17,7 @@ export type Popover2ButtonProps = AriaButtonOptions<'button'> &
     children: ReactNode
   }
 
-function Popover2Button({ buttonVariant, ...props }: Popover2ButtonProps) {
+export function Popover2Button({ buttonVariant, ...props }: Popover2ButtonProps) {
   const { loading, onSelectionDelete, buttonRef: ref, buttonStyles, children } = props
   const { buttonProps } = useButton(props, ref)
   return (
@@ -65,5 +65,3 @@ const Button = styled.button<{ variant?: ButtonVariant }>`
     opacity: 0.7;
   }
 `
-
-export default Popover2Button

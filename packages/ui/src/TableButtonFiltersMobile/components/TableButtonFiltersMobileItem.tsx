@@ -1,8 +1,12 @@
 import { styled } from 'styled-components'
-import { Radio } from 'ui/src/Radio'
-import TableButtonFiltersMobileItemIcon from './TableButtonFiltersMobileItemIcon'
+import { Radio } from '@ui/Radio'
+import { TableButtonFiltersMobileItemIcon } from './TableButtonFiltersMobileItemIcon'
 
-const TableButtonFiltersMobileItem = ({ item }: { item: { id: string; displayName: string; color?: string } }) => {
+export const TableButtonFiltersMobileItem = ({
+  item,
+}: {
+  item: { id: string; displayName: string; color?: string }
+}) => {
   const { id, displayName, color } = item
   return (
     <StyledRadio key={id} aria-label={`filter by ${displayName}`} value={id}>
@@ -15,5 +19,3 @@ const TableButtonFiltersMobileItem = ({ item }: { item: { id: string; displayNam
 const StyledRadio = styled(Radio)`
   min-height: var(--height-medium);
 `
-
-export default TableButtonFiltersMobileItem

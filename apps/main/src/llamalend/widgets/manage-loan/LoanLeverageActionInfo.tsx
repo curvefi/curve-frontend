@@ -1,7 +1,7 @@
 import { notFalsy } from 'router-api/src/router.utils'
 import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
-import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
+import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 import type { Query } from '@ui-kit/types/util'
 import { type Amount, Decimal, formatNumber, formatPercent } from '@ui-kit/utils'
 import { SlippageToleranceActionInfoPure } from '@ui-kit/widgets/SlippageSettings'

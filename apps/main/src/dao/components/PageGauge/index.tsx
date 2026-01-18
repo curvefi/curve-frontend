@@ -1,37 +1,34 @@
 import { styled } from 'styled-components'
-import GaugeWeightHistoryChart from '@/dao/components/Charts/GaugeWeightHistoryChart'
-import useStore from '@/dao/store/useStore'
+import { GaugeWeightHistoryChart } from '@/dao/components/Charts/GaugeWeightHistoryChart'
+import { useGauges } from '@/dao/queries/gauges.query'
 import type { GaugeUrlParams } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils'
-import Box from '@ui/Box'
+import { Box } from '@ui/Box'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
-import BackButton from '../BackButton'
-import GaugeHeader from './GaugeHeader'
-import GaugeMetrics from './GaugeMetrics'
-import GaugeVotesTable from './GaugeVotesTable'
+import { BackButton } from '../BackButton'
+import { GaugeHeader } from './GaugeHeader'
+import { GaugeMetrics } from './GaugeMetrics'
+import { GaugeVotesTable } from './GaugeVotesTable'
 
 type GaugeProps = {
   routerParams: GaugeUrlParams
 }
 
-const Gauge = ({ routerParams: { gaugeAddress: rGaugeAddress } }: GaugeProps) => {
+export const Gauge = ({ routerParams: { gaugeAddress: rGaugeAddress } }: GaugeProps) => {
   const gaugeAddress = rGaugeAddress.toLowerCase()
-  const gaugeMapper = useStore((state) => state.gauges.gaugeMapper)
-  const gaugesLoading = useStore((state) => state.gauges.gaugesLoading)
+  const { data: gauges, isLoading: gaugesIsLoading } = useGauges({})
+  const gaugeData = gauges?.[gaugeAddress]
 
   const tableMinWidth = 21.875
-  const gaugeData = gaugeMapper[gaugeAddress]
-  const isLoading = gaugesLoading === 'LOADING'
-  const isSuccess = gaugesLoading === 'SUCCESS'
 
   return (
     <Wrapper>
       <BackButton path={getEthPath(DAO_ROUTES.PAGE_GAUGES)} label="Back to gauges" />
       <GaugePageContainer variant="secondary">
-        <GaugeHeader gaugeData={gaugeData} dataLoading={isLoading} />
-        <GaugeMetrics gaugeData={gaugeData} dataLoading={isLoading} />
-        <Content>{isSuccess && <GaugeWeightHistoryChart gaugeAddress={gaugeData.address} minHeight={25} />}</Content>
-        {isSuccess && <GaugeVotesTable gaugeAddress={gaugeData.address} tableMinWidth={tableMinWidth} />}
+        <GaugeHeader gaugeData={gaugeData} dataLoading={gaugesIsLoading} />
+        <GaugeMetrics gaugeData={gaugeData} dataLoading={gaugesIsLoading} />
+        <Content>{gaugeData && <GaugeWeightHistoryChart gaugeAddress={gaugeData.address} minHeight={25} />}</Content>
+        {gaugeData && <GaugeVotesTable gaugeAddress={gaugeData.address} tableMinWidth={tableMinWidth} />}
       </GaugePageContainer>
     </Wrapper>
   )
@@ -63,5 +60,3 @@ const Content = styled.div`
   padding: var(--spacing-3);
   width: 100%;
 `
-
-export default Gauge
