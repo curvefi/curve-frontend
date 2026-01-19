@@ -43,9 +43,9 @@ export type LoanInfoAccordionProps = {
   loanToValue: Query<Decimal | null>
   prevLoanToValue?: Query<Decimal | null>
   gas: Query<LoanInfoGasData | null>
-  debt?: Query<{ value: Decimal; tokenSymbol?: string | undefined } | null>
-  withdraw?: { value: Decimal; tokenSymbol?: string | undefined }
-  collateral?: Query<{ value: Decimal; tokenSymbol?: string } | null>
+  debt?: Query<{ value: Decimal; tokenSymbol: string | undefined } | null>
+  withdraw?: { value: Decimal; tokenSymbol: string | undefined }
+  collateral?: Query<{ value: Decimal; tokenSymbol: string | undefined } | null>
   // userState values are used as prev values if collateral or debt are available
   userState?: Query<UserState> & { borrowTokenSymbol?: string; collateralTokenSymbol?: string }
   leverage?: LoanLeverageActionInfoProps & { enabled: boolean }

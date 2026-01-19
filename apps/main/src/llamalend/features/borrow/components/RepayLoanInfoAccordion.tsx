@@ -19,13 +19,42 @@ import { LoanInfoAccordion } from '@/llamalend/widgets/manage-loan/LoanInfoAccor
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { combineQueriesMeta } from '@ui-kit/lib/queries/combine'
-import { q } from '@ui-kit/types/util'
+import { mapQuery, q, type Query } from '@ui-kit/types/util'
 import { Decimal, decimal } from '@ui-kit/utils'
 
 const remainingDebt = (debt: Decimal, repayAmount: Decimal, stateBorrowed: Decimal) => {
   const repayTotal = new BigNumber(repayAmount).plus(stateBorrowed)
   const remaining = new BigNumber(debt).minus(repayTotal)
   return decimal(remaining.isNegative() ? 0 : remaining)!
+}
+
+function useRepayRemainingDebt<ChainId extends IChainId>(
+  {
+    params,
+    borrowToken,
+    swapRequired,
+  }: {
+    params: RepayParams<ChainId>
+    swapRequired: boolean
+    borrowToken: Token | undefined
+  },
+  { isFull, userBorrowed }: Pick<RepayForm, 'userBorrowed' | 'isFull'>,
+  enabled: boolean,
+): Query<{ value: Decimal; tokenSymbol: string | undefined } | null> {
+  const userStateQuery = useUserState(params, enabled)
+  const expectedBorrowedQuery = useRepayExpectedBorrowed(params, enabled && swapRequired)
+  const tokenSymbol = borrowToken?.symbol
+  return isFull
+    ? { data: { value: '0', tokenSymbol }, isLoading: false, error: null }
+    : swapRequired
+      ? mapQuery(expectedBorrowedQuery, (d) => ({ value: d.totalBorrowed, tokenSymbol }))
+      : {
+          data: userStateQuery.data && {
+            value: remainingDebt(userStateQuery.data.debt, userBorrowed ?? '0', userStateQuery.data.stablecoin),
+            tokenSymbol,
+          },
+          ...combineQueriesMeta([userStateQuery, ...(swapRequired ? [expectedBorrowedQuery] : [])]),
+        }
 }
 
 export function RepayLoanInfoAccordion<ChainId extends IChainId>({
@@ -49,18 +78,7 @@ export function RepayLoanInfoAccordion<ChainId extends IChainId>({
   const userStateQuery = useUserState(params, isOpen)
   const userState = q(userStateQuery)
   const priceImpact = useRepayPriceImpact(params, isOpen && swapRequired)
-  const expectedBorrowedQuery = useRepayExpectedBorrowed(params, isOpen && swapRequired)
-  const borrowed = swapRequired ? expectedBorrowedQuery.data?.totalBorrowed : userBorrowed
-  const debt = {
-    data: isFull
-      ? { value: '0' as const, tokenSymbol: borrowToken?.symbol }
-      : userStateQuery.data &&
-        borrowed && {
-          value: remainingDebt(userStateQuery.data.debt, borrowed, userStateQuery.data.stablecoin),
-          tokenSymbol: borrowToken?.symbol,
-        },
-    ...combineQueriesMeta([userStateQuery, ...(swapRequired ? [expectedBorrowedQuery] : [])]),
-  }
+  const debt = useRepayRemainingDebt({ params, swapRequired, borrowToken }, { isFull, userBorrowed }, isOpen)
   return (
     <LoanInfoAccordion
       isOpen={isOpen}
@@ -85,6 +103,7 @@ export function RepayLoanInfoAccordion<ChainId extends IChainId>({
           collateralToken,
           borrowToken,
           collateralDelta: userCollateral && `${-+userCollateral}`,
+          expectedBorrowed: debt?.data?.value,
         },
         isOpen,
       )}
