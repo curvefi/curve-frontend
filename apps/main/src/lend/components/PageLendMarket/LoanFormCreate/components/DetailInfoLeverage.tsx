@@ -1,25 +1,25 @@
-import DetailInfoEstGas from '@/lend/components/DetailInfoEstimateGas'
-import DetailInfoHealth from '@/lend/components/DetailInfoHealth'
-import DetailInfoLeverageAvgPrice from '@/lend/components/DetailInfoLeverageAvgPrice'
-import DetailInfoLeverageExpected from '@/lend/components/DetailInfoLeverageExpected'
-import DetailInfoLeverageX from '@/lend/components/DetailInfoLeverageX'
-import DetailInfoLiqRange from '@/lend/components/DetailInfoLiqRange'
-import DetailInfoLTV from '@/lend/components/DetailInfoLTV'
-import DetailInfoN from '@/lend/components/DetailInfoN'
-import DetailInfoPriceImpact from '@/lend/components/DetailInfoPriceImpact'
-import DetailInfoRate from '@/lend/components/DetailInfoRate'
+import { DetailInfoEstimateGas as DetailInfoEstGas } from '@/lend/components/DetailInfoEstimateGas'
+import { DetailInfoHealth } from '@/lend/components/DetailInfoHealth'
+import { DetailInfoLeverageAvgPrice } from '@/lend/components/DetailInfoLeverageAvgPrice'
+import { DetailInfoLeverageExpected } from '@/lend/components/DetailInfoLeverageExpected'
+import { DetailInfoLeverageX } from '@/lend/components/DetailInfoLeverageX'
+import { DetailInfoLiqRange } from '@/lend/components/DetailInfoLiqRange'
+import { DetailInfoLTV } from '@/lend/components/DetailInfoLTV'
+import { DetailInfoN } from '@/lend/components/DetailInfoN'
+import { DetailInfoPriceImpact } from '@/lend/components/DetailInfoPriceImpact'
+import { DetailInfoRate } from '@/lend/components/DetailInfoRate'
 import type { DetailInfoCompProps, DetailInfoCompAdditionalProps } from '@/lend/components/PageLendMarket/types'
 import { _parseValue } from '@/lend/components/PageLendMarket/utils'
-import networks from '@/lend/networks'
-import useStore from '@/lend/store/useStore'
+import { networks } from '@/lend/networks'
+import { useStore } from '@/lend/store/useStore'
 import { PageContentProps } from '@/lend/types/lend.types'
-import RouteDetails from '@/llamalend/widgets/RouteDetails'
+import { RouteDetails } from '@/llamalend/widgets/RouteDetails'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
 import { LiquidationRangeSlider } from '@ui-kit/shared/ui/LiquidationRangeSlider'
 import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
 
-const DetailInfoLeverage = ({
+export const DetailInfoLeverage = ({
   activeStep,
   rChainId,
   rOwmId,
@@ -193,5 +193,3 @@ const DetailInfoLeverage = ({
     </div>
   )
 }
-
-export default DetailInfoLeverage

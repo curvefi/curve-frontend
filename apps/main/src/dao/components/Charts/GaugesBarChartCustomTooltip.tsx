@@ -1,11 +1,11 @@
 import { TooltipProps } from 'recharts'
 import type { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent'
 import { styled } from 'styled-components'
-import Box from '@ui/Box'
+import { Box } from '@ui/Box'
 import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 
-const BarChartCustomTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) => {
+export const GaugesBarChartCustomTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) => {
   if (active && payload && payload.length) {
     const sevenDayDelta = payload[0].payload.gauge_relative_weight_7d_delta
     const sixtyDayDelta = payload[0].payload.gauge_relative_weight_60d_delta
@@ -90,5 +90,3 @@ const TooltipDataNotAvailable = styled.p`
   color: var(--page--text-color);
   font-style: italic;
 `
-
-export default BarChartCustomTooltip

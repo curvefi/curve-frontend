@@ -61,6 +61,7 @@ export const useLoanToValueFromUserState = <ChainId extends IChainId>(
       debt == null ||
       collateral == null ||
       collateralUsdRate == null ||
+      !collateralUsdRate ||
       borrowUsdRate == null ||
       collateral.isZero()
         ? null

@@ -1,5 +1,5 @@
 import { styled } from 'styled-components'
-import Proposals from '@/dao/components/PageProposals/index'
+import { Proposals } from '@/dao/components/PageProposals/index'
 import { breakpoints } from '@ui/utils'
 
 export const PageDao = () => (

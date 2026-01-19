@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
 import { setValueOptions } from '@/llamalend/features/borrow/react-form.utils'
 import { getTokens } from '@/llamalend/llama.utils'
+import { useRepayExpectedBorrowed } from '@/llamalend/queries/repay/repay-expected-borrowed.query'
 import { useRepayIsFull } from '@/llamalend/queries/repay/repay-is-full.query'
 import { useUserState } from '@/llamalend/queries/user-state.query'
 import type { RepayIsFullParams } from '@/llamalend/queries/validation/manage-loan.types'
@@ -41,6 +42,7 @@ export function useMaxRepayTokenValues<ChainId extends LlamaChainId>(
     tokenAddress: borrowToken?.address,
   })
   const userState = useUserState(params, enabled)
+  useRepayExpectedBorrowed(params) // required for isFull query
   const isFull = useRepayIsFull(params, enabled)
 
   const maxBorrowed = useQueryMinimum(

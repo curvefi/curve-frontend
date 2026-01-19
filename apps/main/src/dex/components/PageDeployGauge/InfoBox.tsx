@@ -1,10 +1,10 @@
 import { styled } from 'styled-components'
-import AlertBox from '@ui/AlertBox'
-import Box from '@ui/Box'
+import { AlertBox } from '@ui/AlertBox'
+import { Box } from '@ui/Box'
 import { ExternalLink } from '@ui/Link'
 import { t } from '@ui-kit/lib/i18n'
 
-const InfoBox = () => (
+export const InfoBox = () => (
   <StyledAlertBox alertType="info">
     <Box flex flexColumn>
       <InfoText>
@@ -42,5 +42,3 @@ const StyledExternalLink = styled(ExternalLink)`
     text-decoration: none;
   }
 `
-
-export default InfoBox

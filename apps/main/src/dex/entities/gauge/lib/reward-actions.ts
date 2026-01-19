@@ -11,7 +11,7 @@ import type {
   DepositRewardMutation,
   DepositRewardParams,
 } from '@/dex/entities/gauge/types'
-import useTokensMapper from '@/dex/hooks/useTokensMapper'
+import { useTokensMapper } from '@/dex/hooks/useTokensMapper'
 import { DefaultError, Mutation, useIsMutating, useMutation, UseMutationResult } from '@tanstack/react-query'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { queryClient } from '@ui-kit/lib/api/query-client'

@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { useConnection } from 'wagmi'
-import AlertFormError from '@/dex/components/AlertFormError'
+import { AlertFormError } from '@/dex/components/AlertFormError'
 import { useGaugeRewardsDistributors } from '@/dex/entities/gauge'
 import { DepositRewardDefaultValues, depositRewardValidationSuite } from '@/dex/features/deposit-gauge-reward/model'
 import { DepositRewardFormValues } from '@/dex/features/deposit-gauge-reward/types'

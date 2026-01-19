@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 import { enforce, group, skipWhen, test } from 'vest'
 import { getRepayImplementation } from '@/llamalend/queries/repay/repay-query.helpers'
 import {
-  validateBoolean,
+  validateIsFull,
   validateLeverageSupported,
   validateSlippage,
   validateMaxCollateral,
@@ -19,7 +19,7 @@ import { chainValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
 import { llamaApiValidationGroup } from '@ui-kit/lib/model/query/curve-api-validation'
 import { marketIdValidationGroup, marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
 import { userAddressValidationGroup } from '@ui-kit/lib/model/query/user-address-validation'
-import type { Decimal } from '@ui-kit/utils'
+import { Decimal, formatNumber } from '@ui-kit/utils'
 
 export type CollateralForm = FieldsOf<{ userCollateral: Decimal; maxCollateral: Decimal }>
 
@@ -32,7 +32,6 @@ export type RepayForm = {
   maxBorrowed: Decimal | undefined
   isFull: boolean | undefined
   slippage: Decimal
-  leverageEnabled: boolean
 }
 
 const validateRepayField = (field: 'stateCollateral' | 'userCollateral', value: Decimal | null | undefined) =>
@@ -53,9 +52,13 @@ const validateMaxStateCollateral = (
 
 const validateMaxBorrowed = (userBorrowed: Decimal | null | undefined, maxBorrowed: Decimal | null | undefined) =>
   skipWhen(userBorrowed == null || maxBorrowed == null, () => {
-    test('userBorrowed', 'Borrow token amount cannot exceed your wallet balance or the current debt', () => {
-      enforce(userBorrowed).lte(maxBorrowed)
-    })
+    test(
+      'userBorrowed',
+      `Borrow token amount cannot exceed ${formatNumber(maxBorrowed ?? 0, { abbreviate: false })}`,
+      () => {
+        enforce(userBorrowed).lte(maxBorrowed)
+      },
+    )
   })
 
 const validateRepayBorrowedField = (userBorrowed: Decimal | null | undefined) =>
@@ -125,7 +128,7 @@ export const removeCollateralFormValidationSuite = createValidationSuite((params
 })
 export const collateralHealthValidationSuite = createValidationSuite(({ isFull, ...rest }: CollateralHealthParams) => {
   collateralValidationGroup(rest)
-  validateBoolean(isFull)
+  validateIsFull(isFull)
 })
 
 export const repayValidationGroup = <IChainId extends number>(
@@ -166,7 +169,7 @@ export const repayFormValidationSuite = createValidationSuite(
     validateMaxCollateral(userCollateral, maxCollateral)
     validateMaxBorrowed(userBorrowed, maxBorrowed)
     validateRepayHasValue(stateCollateral, userCollateral, userBorrowed)
-    validateBoolean(isFull)
+    validateIsFull(isFull)
     validateSlippage(slippage)
   },
 )
@@ -174,6 +177,6 @@ export const repayFormValidationSuite = createValidationSuite(
 export const repayFromCollateralIsFullValidationSuite = createValidationSuite(
   ({ isFull, ...params }: RepayIsFullParams) => {
     repayValidationGroup(params)
-    group('isFull', () => validateBoolean(isFull))
+    group('isFull', () => validateIsFull(isFull))
   },
 )

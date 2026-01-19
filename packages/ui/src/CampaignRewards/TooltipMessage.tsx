@@ -1,10 +1,10 @@
 import { styled } from 'styled-components'
+import { Box } from '@ui/Box'
+import { ExternalLink } from '@ui/Link'
 import type { CampaignPoolRewards } from '@ui-kit/entities/campaigns'
-import Box from 'ui/src/Box'
-import { ExternalLink } from 'ui/src/Link'
 import { formatDate } from '../utils'
 
-const TooltipMessage = ({ rewardsPool }: { rewardsPool: CampaignPoolRewards }) => {
+export const TooltipMessage = ({ rewardsPool }: { rewardsPool: CampaignPoolRewards }) => {
   const { campaignName, platform, description, action, dashboardLink, period, steps } = rewardsPool
 
   const title = () => {
@@ -98,5 +98,3 @@ const TooltipStep = styled.li`
   list-style: auto;
   margin: 0 0 0 2ch;
 `
-
-export default TooltipMessage

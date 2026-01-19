@@ -21,9 +21,9 @@ import {
 } from '@/dex/components/PageCreatePool/Summary/styles'
 import type { TokenState } from '@/dex/components/PageCreatePool/types'
 import { useNetworkByChain } from '@/dex/entities/networks'
-import useStore from '@/dex/store/useStore'
+import { useStore } from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
-import Icon from '@ui/Icon'
+import { Icon } from '@ui/Icon'
 import { scanAddressPath } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { shortenAddress } from '@ui-kit/utils'
@@ -38,7 +38,7 @@ type OracleTokenSummaryProps = {
   title: string
 }
 
-const OracleSummary = ({ chainId }: Props) => {
+export const OracleSummary = ({ chainId }: Props) => {
   const tokens = useStore((state) => state.createPool.tokensInPool)
 
   const oracleTokens = [
@@ -105,5 +105,3 @@ const OracleTokenWrapper = styled.div`
     margin-bottom: 0;
   }
 `
-
-export default OracleSummary

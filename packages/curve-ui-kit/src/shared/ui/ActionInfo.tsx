@@ -90,7 +90,7 @@ const valueSize = {
 
 const isSet = (v: ReactNode) => v || v === 0
 
-const ActionInfo = ({
+export const ActionInfo = ({
   label,
   labelColor,
   prevValue,
@@ -218,5 +218,3 @@ const ActionInfo = ({
     </Stack>
   )
 }
-
-export default ActionInfo

@@ -58,13 +58,15 @@ export function RepayTokenList<ChainId extends IChainId>({
             onToken={onToken}
           />
 
-          <TokenSection
-            title={t`Llamalend`}
-            tokens={[stateCollateralToken]}
-            balances={{ ...(stateCollateralToken && { [stateCollateralToken.address]: positionCollateral }) }}
-            tokenPrices={tokenPrices}
-            onToken={onToken}
-          />
+          {stateCollateralToken && (
+            <TokenSection
+              title={t`Llamalend`}
+              tokens={[stateCollateralToken]}
+              balances={{ [stateCollateralToken.address]: positionCollateral }}
+              tokenPrices={tokenPrices}
+              onToken={onToken}
+            />
+          )}
         </>
       ) : (
         <Alert variant="filled" severity="info">

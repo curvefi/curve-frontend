@@ -1,23 +1,23 @@
 import { ReactNode, useCallback, useEffect, useState } from 'react'
 import { styled } from 'styled-components'
-import AlertFormError from '@/dex/components/AlertFormError'
+import { AlertFormError } from '@/dex/components/AlertFormError'
 import type { EtherContract } from '@/dex/components/PageCompensation/types'
 import { StyledIconButton } from '@/dex/components/PagePool/PoolDetails/PoolStats/styles'
 import { useNetworkByChain } from '@/dex/entities/networks'
-import curvejsApi from '@/dex/lib/curvejs'
+import { curvejsApi } from '@/dex/lib/curvejs'
 import { ChainId, CurveApi, Provider } from '@/dex/types/main.types'
 import { getErrorMessage } from '@/dex/utils'
-import Box from '@ui/Box'
-import Button from '@ui/Button'
-import Icon from '@ui/Icon'
-import ExternalLink from '@ui/Link/ExternalLink'
-import TxInfoBar from '@ui/TxInfoBar'
+import { Box } from '@ui/Box'
+import { Button } from '@ui/Button'
+import { Icon } from '@ui/Icon'
+import { ExternalLink } from '@ui/Link/ExternalLink'
+import { TxInfoBar } from '@ui/TxInfoBar'
 import { formatNumber, scanAddressPath, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { copyToClipboard, shortenAddress } from '@ui-kit/utils'
 
-const Compensation = ({
+export const Compensation = ({
   rChainId,
   activeKey,
   curve,
@@ -144,5 +144,3 @@ const StyledExternalLink = styled(ExternalLink)`
     padding-top: 0.3125rem;
   }
 `
-
-export default Compensation

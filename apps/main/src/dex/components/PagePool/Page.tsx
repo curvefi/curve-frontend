@@ -1,11 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useConfig } from 'wagmi'
-import Transfer from '@/dex/components/PagePool/index'
+import { Transfer } from '@/dex/components/PagePool/index'
 import { ROUTE } from '@/dex/constants'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { useChainId } from '@/dex/hooks/useChainId'
 import { usePoolIdByAddressOrId } from '@/dex/hooks/usePoolIdByAddressOrId'
-import useStore from '@/dex/store/useStore'
+import { useStore } from '@/dex/store/useStore'
 import type { PoolUrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
 import { useCurve } from '@ui-kit/features/connect-wallet'
@@ -31,13 +30,12 @@ export const PagePool = () => {
 
   const poolDataCacheOrApi = useMemo(() => poolData || poolDataCache, [poolData, poolDataCache])
 
-  const config = useConfig()
   useEffect(() => {
     if (!rChainId || !poolId || curveApi?.chainId !== rChainId || !haveAllPools || poolData) return
-    fetchNewPool(config, curveApi, poolId)
+    fetchNewPool(curveApi, poolId)
       .then((found) => setPoolNotFound(!found))
       .catch(() => setPoolNotFound(true))
-  }, [config, curveApi, fetchNewPool, haveAllPools, network, poolId, poolData, push, rChainId])
+  }, [curveApi, fetchNewPool, haveAllPools, network, poolId, poolData, push, rChainId])
 
   return !rFormType || network.excludePoolsMapper[poolId ?? ''] || poolNotFound ? (
     <ErrorPage title="404" subtitle={t`Pool Not Found`} continueUrl={getPath(props, ROUTE.PAGE_POOLS)} />

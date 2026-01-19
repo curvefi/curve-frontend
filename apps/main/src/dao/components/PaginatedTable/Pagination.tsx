@@ -1,7 +1,7 @@
 import { styled } from 'styled-components'
-import Box from '@ui/Box'
-import Button from '@ui/Button'
-import Icon from '@ui/Icon'
+import { Box } from '@ui/Box'
+import { Button } from '@ui/Button'
+import { Icon } from '@ui/Icon'
 import { t } from '@ui-kit/lib/i18n'
 
 interface PaginationProps {
@@ -10,7 +10,7 @@ interface PaginationProps {
   onPageChange: (page: number) => void
 }
 
-const Pagination = ({ currentPage, totalPages, onPageChange }: PaginationProps) => {
+export const Pagination = ({ currentPage, totalPages, onPageChange }: PaginationProps) => {
   const getPageNumbers = () => {
     let start = Math.max(1, Math.min(currentPage - 2, totalPages - 4))
     const end = Math.min(start + 4, totalPages)
@@ -140,5 +140,3 @@ const PageNumber = styled(Button)<{ active: boolean }>`
     border: ${(props) => (props.active ? '1px solid var(--button_text--hover--color)' : 'none')};
   }
 `
-
-export default Pagination

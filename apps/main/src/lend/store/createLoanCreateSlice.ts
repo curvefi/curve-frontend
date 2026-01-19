@@ -15,8 +15,8 @@ import {
 } from '@/lend/components/PageLendMarket/utils'
 import { invalidateMarketDetails } from '@/lend/entities/market-details'
 import { invalidateAllUserBorrowDetails } from '@/lend/entities/user-loan-details'
-import apiLending, { helpers } from '@/lend/lib/apiLending'
-import networks from '@/lend/networks'
+import { helpers, apiLending } from '@/lend/lib/apiLending'
+import { networks } from '@/lend/networks'
 import type { LiqRange, LiqRangesMapper } from '@/lend/store/types'
 import type { State } from '@/lend/store/useStore'
 import { Api, ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
@@ -89,7 +89,10 @@ const DEFAULT_STATE: SliceState = {
 const { loanCreate } = apiLending
 const { isTooMuch } = helpers
 
-const createLoanCreate = (_set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): LoanCreateSlice => ({
+export const createLoanCreate = (
+  _set: StoreApi<State>['setState'],
+  get: StoreApi<State>['getState'],
+): LoanCreateSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 
@@ -346,7 +349,7 @@ const createLoanCreate = (_set: StoreApi<State>['setState'], get: StoreApi<State
       const loanExists = await refetchLoanExists({
         chainId,
         marketId: market.id,
-        userAddress: wallet?.account?.address,
+        userAddress: wallet?.address,
       })
       if (loanExists) {
         // api calls
@@ -396,5 +399,3 @@ export function _getActiveKey(
     activeKeyLiqRange: `${activeKey}-${userCollateral}-${userBorrowed}-${debt}`,
   }
 }
-
-export default createLoanCreate

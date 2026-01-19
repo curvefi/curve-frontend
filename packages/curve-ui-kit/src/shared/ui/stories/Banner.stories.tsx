@@ -1,7 +1,10 @@
 import { fn } from 'storybook/test'
 import Box from '@mui/material/Box'
 import { Meta, StoryObj } from '@storybook/react-vite'
-import { Banner } from '../Banner'
+import { Banner, type BannerProps } from '../Banner'
+import { StackBanners } from '../StackBanners'
+
+const SEVERITIES: NonNullable<BannerProps['severity']>[] = ['alert', 'warning', 'highlight', 'info']
 
 const meta: Meta<typeof Banner> = {
   title: 'UI Kit/Primitives/Banner',
@@ -22,7 +25,7 @@ const meta: Meta<typeof Banner> = {
   argTypes: {
     severity: {
       control: 'select',
-      options: ['error', 'warning', 'info', 'highlight'],
+      options: ['alert', 'warning', 'info', 'highlight'],
       description: 'The severity level of the banner message',
     },
     learnMoreUrl: {
@@ -116,5 +119,30 @@ export const LongErrorExample: Story = {
     severity: 'alert',
     children:
       'There is an issue connecting to the API. Please try to switch your RPC in your wallet settings. There is an issue connecting to the API. Please try to switch your RPC in your wallet settings.',
+  },
+}
+
+export const GroupedAndSorted: Story = {
+  render: () => (
+    <Box sx={{ minWidth: 600 }}>
+      <StackBanners>
+        {SEVERITIES.flatMap((severity) => [
+          <Banner key={`${severity}-non`} severity={severity} subtitle="This banner is not removable">
+            {severity} banner
+          </Banner>,
+          <Banner key={`${severity}-rem`} severity={severity} onClick={fn()} subtitle="This banner is removable">
+            {severity} banner
+          </Banner>,
+        ])}
+      </StackBanners>
+    </Box>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'This story demonstrates how the StackBanners component groups and sorts banners by removable and severity.',
+      },
+    },
   },
 }

@@ -1,7 +1,7 @@
 import { txIsConfirming, txIsSuccess, txIsLoading } from '@/loan/components/PageCrvUsdStaking/utils'
-import useStore from '@/loan/store/useStore'
-import Box from '@ui/Box'
-import Spinner from '@ui/Spinner'
+import { useStore } from '@/loan/store/useStore'
+import { Box } from '@ui/Box'
+import { Spinner } from '@ui/Spinner'
 import { t } from '@ui-kit/lib/i18n'
 import {
   Wrapper,
@@ -19,7 +19,7 @@ type WithdrawTrackingProps = {
   className?: string
 }
 
-const WithdrawTracking = ({ className }: WithdrawTrackingProps) => {
+export const WithdrawTracking = ({ className }: WithdrawTrackingProps) => {
   const withdrawTransaction = useStore((state) => state.scrvusd.withdrawTransaction)
   const setTransactionsReset = useStore((state) => state.scrvusd.setTransactionsReset)
 
@@ -64,5 +64,3 @@ const WithdrawTracking = ({ className }: WithdrawTrackingProps) => {
     </Wrapper>
   )
 }
-
-export default WithdrawTracking

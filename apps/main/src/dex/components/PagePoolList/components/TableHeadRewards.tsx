@@ -1,11 +1,11 @@
 import type { PoolListTableLabel } from '@/dex/components/PagePoolList/types'
 import type { SortKey } from '@/dex/components/PagePoolList/types'
-import Box from '@ui/Box'
-import TheadSortButton, { type TheadSortButtonProps } from '@ui/Table/TheadSortButton'
-import IconTooltip from '@ui/Tooltip/TooltipIcon'
+import { Box } from '@ui/Box'
+import { type TheadSortButtonProps, TheadSortButton } from '@ui/Table/TheadSortButton'
+import { TooltipIcon as IconTooltip } from '@ui/Tooltip/TooltipIcon'
 import { t } from '@ui-kit/lib/i18n'
 
-const TableHeadRewards = ({
+export const TableHeadRewards = ({
   isReadyRewardsApy,
   tableLabels,
   ...props
@@ -29,5 +29,3 @@ const TableHeadRewards = ({
     </Box>
   </>
 )
-
-export default TableHeadRewards

@@ -9,7 +9,7 @@ type Props = {
   children: ReactNode
 }
 
-const InputReadyOnly = ({ children, size = 'md', title }: Props) => (
+export const InputReadyOnly = ({ children, size = 'md', title }: Props) => (
   <Wrapper size={size}>
     <Title>{title}</Title>
     <Content>{children}</Content>
@@ -49,5 +49,3 @@ const Content = styled.div`
   font-size: var(--font-size-4); // 18px
   opacity: 0.7;
 `
-
-export default InputReadyOnly

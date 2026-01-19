@@ -1,13 +1,13 @@
 import { useMemo } from 'react'
 import { zeroAddress } from 'viem'
 import { useOneWayMarket } from '@/lend/entities/chain'
-import useStore from '@/lend/store/useStore'
+import { useStore } from '@/lend/store/useStore'
 import { ChainId, MarketRates, RewardOther, MarketRewards } from '@/lend/types/lend.types'
 import { getTotalApr } from '@/lend/utils/utilsRewards'
 import { useMarketRates } from '@/llamalend/queries/market-rates'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 
-function useSupplyTotalApr(rChainId: ChainId, rOwmId: string) {
+export function useSupplyTotalApr(rChainId: ChainId, rOwmId: string) {
   const market = useOneWayMarket(rChainId, rOwmId).data
   const marketRewardsResp = useStore((state) => state.markets.rewardsMapper[rChainId]?.[rOwmId])
   const marketRatesResp = useStore((state) => state.markets.ratesMapper[rChainId]?.[rOwmId])
@@ -82,5 +82,3 @@ function _getTotalAndTooltip(marketRewardsResp: MarketRewards, marketRatesResp: 
     tooltipValues: _getTooltipValue(lendApr, lendApy, crvBase, crvBoost, others),
   }
 }
-
-export default useSupplyTotalApr

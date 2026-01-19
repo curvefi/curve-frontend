@@ -5,8 +5,8 @@ import { DEFAULT_FORM_EST_GAS } from '@/lend/components/PageLendMarket/utils'
 import type { FormStatus, FormValues } from '@/lend/components/PageVault/VaultWithdrawRedeem/types'
 import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/lend/components/PageVault/VaultWithdrawRedeem/utils'
 import { invalidateAllUserBorrowDetails } from '@/lend/entities/user-loan-details'
-import apiLending, { helpers } from '@/lend/lib/apiLending'
-import networks from '@/lend/networks'
+import { helpers, apiLending } from '@/lend/lib/apiLending'
+import { networks } from '@/lend/networks'
 import { _getMaxActiveKey } from '@/lend/store/createVaultDepositMintSlice'
 import type { State } from '@/lend/store/useStore'
 import { Api, ChainId, FutureRates, OneWayMarketTemplate } from '@/lend/types/lend.types'
@@ -58,7 +58,7 @@ const DEFAULT_STATE: SliceState = {
   formValues: DEFAULT_FORM_VALUES,
 }
 
-const createVaultWithdrawRedeem = (
+export const createVaultWithdrawRedeem = (
   _set: StoreApi<State>['setState'],
   get: StoreApi<State>['getState'],
 ): VaultWithdrawRedeemSlice => ({
@@ -200,5 +200,3 @@ export function _getActiveKey(
 ) {
   return `${rChainId}-${formType}-${market?.id ?? ''}-${amount}`
 }
-
-export default createVaultWithdrawRedeem

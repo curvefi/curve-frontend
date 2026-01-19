@@ -1,15 +1,15 @@
 import type { ReactNode } from 'react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useConfig, type Config } from 'wagmi'
-import AlertFormError from '@/dex/components/AlertFormError'
-import AlertSlippage from '@/dex/components/AlertSlippage'
-import DetailInfoEstGas from '@/dex/components/DetailInfoEstGas'
-import DetailInfoEstLpTokens from '@/dex/components/PagePool/components/DetailInfoEstLpTokens'
-import DetailInfoExpectedApy from '@/dex/components/PagePool/components/DetailInfoExpectedApy'
-import DetailInfoSlippage from '@/dex/components/PagePool/components/DetailInfoSlippage'
-import TransferActions from '@/dex/components/PagePool/components/TransferActions'
-import HighSlippagePriceImpactModal from '@/dex/components/PagePool/components/WarningModal'
-import FieldsDeposit from '@/dex/components/PagePool/Deposit/components/FieldsDeposit'
+import { AlertFormError } from '@/dex/components/AlertFormError'
+import { AlertSlippage } from '@/dex/components/AlertSlippage'
+import { DetailInfoEstGas } from '@/dex/components/DetailInfoEstGas'
+import { DetailInfoEstLpTokens } from '@/dex/components/PagePool/components/DetailInfoEstLpTokens'
+import { DetailInfoExpectedApy } from '@/dex/components/PagePool/components/DetailInfoExpectedApy'
+import { DetailInfoSlippage } from '@/dex/components/PagePool/components/DetailInfoSlippage'
+import { TransferActions } from '@/dex/components/PagePool/components/TransferActions'
+import { WarningModal as HighSlippagePriceImpactModal } from '@/dex/components/PagePool/components/WarningModal'
+import { FieldsDeposit } from '@/dex/components/PagePool/Deposit/components/FieldsDeposit'
 import type { FormStatus, FormValues, LoadMaxAmount, StepKey } from '@/dex/components/PagePool/Deposit/types'
 import { DEFAULT_FORM_LP_TOKEN_EXPECTED } from '@/dex/components/PagePool/Deposit/utils'
 import type { Slippage, TransferProps } from '@/dex/components/PagePool/types'
@@ -20,19 +20,19 @@ import {
   tokensDescription,
 } from '@/dex/components/PagePool/utils'
 import { useNetworkByChain } from '@/dex/entities/networks'
-import useStore from '@/dex/store/useStore'
+import { useStore } from '@/dex/store/useStore'
 import { CurveApi, Pool, PoolData } from '@/dex/types/main.types'
-import AlertBox from '@ui/AlertBox'
+import { AlertBox } from '@ui/AlertBox'
 import { getActiveStep, getStepStatus } from '@ui/Stepper/helpers'
-import Stepper from '@ui/Stepper/Stepper'
+import { Stepper } from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
-import TxInfoBar from '@ui/TxInfoBar'
+import { TxInfoBar } from '@ui/TxInfoBar'
 import { scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
 
-const FormDepositStake = ({
+export const FormDepositStake = ({
   chainIdPoolId,
   curve,
   blockchainId,
@@ -337,5 +337,3 @@ const FormDepositStake = ({
     </>
   )
 }
-
-export default FormDepositStake

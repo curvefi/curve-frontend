@@ -2,7 +2,7 @@ import { cloneElement, ReactElement, ReactNode, useRef } from 'react'
 import type { AriaDialogProps } from 'react-aria'
 import { useDialog } from 'react-aria'
 import { styled } from 'styled-components'
-import { focusVisible } from 'ui/src/utils/sharedStyles'
+import { focusVisible } from '@ui/utils/sharedStyles'
 
 export interface DialogProps extends AriaDialogProps {
   className?: string
@@ -10,7 +10,7 @@ export interface DialogProps extends AriaDialogProps {
   children: ReactElement<AriaDialogProps>
 }
 
-function Popover2Dialog({ title, children, ...props }: DialogProps) {
+export function Popover2Dialog({ title, children, ...props }: DialogProps) {
   const ref = useRef(null)
   const { dialogProps, titleProps } = useDialog(props, ref)
 
@@ -31,5 +31,3 @@ const Wrapper = styled.div`
 
   padding: 1rem;
 `
-
-export default Popover2Dialog

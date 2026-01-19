@@ -16,14 +16,15 @@ import {
   FlexItemToken,
   StyledInputProvider,
 } from '@/dex/features/deposit-gauge-reward/ui/styled'
-import useTokensMapper from '@/dex/hooks/useTokensMapper'
-import useStore from '@/dex/store/useStore'
+import { useTokensMapper } from '@/dex/hooks/useTokensMapper'
+import { useStore } from '@/dex/store/useStore'
 import { ChainId, Token } from '@/dex/types/main.types'
 import { toTokenOption } from '@/dex/utils'
 import { InputDebounced, InputMaxBtn } from '@ui/InputComp'
 import { FlexContainer } from '@ui/styled-containers'
 import { formatNumber } from '@ui/utils'
 import { TokenList, type TokenOption, TokenSelector } from '@ui-kit/features/select-token'
+import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { useTokenBalances } from '@ui-kit/hooks/useTokenBalance'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRates } from '@ui-kit/lib/model/entities/token-usd-rate'
@@ -33,6 +34,8 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
   const rewardTokenId = watch('rewardTokenId')
   const amount = watch('amount')
   const epoch = watch('epoch')
+
+  const [isOpen, openModal, closeModal] = useSwitch()
 
   const { address: signerAddress } = useConnection()
   const isMaxLoading = useStore((state) => state.quickSwap.isMaxLoading)
@@ -152,7 +155,13 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
           />
         </FlexItemMaxBtn>
         <FlexItemToken>
-          <TokenSelector selectedToken={token} disabled={isDisabled}>
+          <TokenSelector
+            selectedToken={token}
+            disabled={isDisabled}
+            isOpen={!!isOpen}
+            onOpen={openModal}
+            onClose={closeModal}
+          >
             <TokenList
               tokens={filteredTokens}
               balances={tokenBalances}

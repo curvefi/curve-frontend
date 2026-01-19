@@ -1,11 +1,11 @@
 import { ReactNode } from 'react'
 import { styled } from 'styled-components'
-import Icon from '@ui/Icon'
+import { Icon } from '@ui/Icon'
 import type { RouteDetailsProps } from '../types'
 import type { BreakdownItem } from '../types'
 import { format } from '../utils'
 
-const ExpectedSummary = ({
+export const ExpectedSummary = ({
   label,
   swapFromAmounts,
   swapToAmounts,
@@ -86,5 +86,3 @@ const Item = styled.div<BreakdownItem>`
     opacity: 0.6;
   }
 `
-
-export default ExpectedSummary

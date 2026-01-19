@@ -1,1 +1,1 @@
-export { default } from './InputReadOnly'
+export { InputReadyOnly } from './InputReadOnly'

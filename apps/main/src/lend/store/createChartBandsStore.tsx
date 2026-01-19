@@ -23,7 +23,7 @@ const DEFAULT_STATE: SliceState = {
   xAxisDisplayType: 'price',
 }
 
-const createChartBandsSlice = (_: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
+export const createChartBandsSlice = (_: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 
@@ -41,5 +41,3 @@ const createChartBandsSlice = (_: StoreApi<State>['setState'], get: StoreApi<Sta
     },
   },
 })
-
-export default createChartBandsSlice

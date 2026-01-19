@@ -11,7 +11,7 @@ function formatNumberWithPrecision(value: number, precisionDigits: number) {
   return formatNumber(value, { abbreviate: false, decimals })
 }
 
-function useVaultShares(rChainId: ChainId, rOwmId: string, vaultShares: string | number | undefined = '0') {
+export function useVaultShares(rChainId: ChainId, rOwmId: string, vaultShares: string | number | undefined = '0') {
   const market = useOneWayMarket(rChainId, rOwmId).data
   const { data: pricePerShare, error: errorPricePerShare } = useMarketPricePerShare({
     chainId: rChainId,
@@ -45,5 +45,3 @@ function useVaultShares(rChainId: ChainId, rOwmId: string, vaultShares: string |
     borrowedAmountUsd,
   }
 }
-
-export default useVaultShares
