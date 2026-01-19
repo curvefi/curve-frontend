@@ -3,7 +3,6 @@ import Popover from '@mui/material/Popover'
 import Stack from '@mui/material/Stack'
 import Tab from '@mui/material/Tab'
 import Tabs from '@mui/material/Tabs'
-import { type TypographyProps } from '@mui/material/Typography'
 import { RouterLink as Link } from '@ui-kit/shared/ui/RouterLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { DotsVerticalIcon } from '../../icons/DotsVertical'
@@ -25,7 +24,6 @@ type KebabMenuProps<T> = {
   closeKebabMenu: () => void
   hiddenOptions: readonly TabOption<T>[]
   size: NonNullable<TabsSwitcherProps<T>['size']>
-  textVariant?: TypographyProps['variant']
   onChange?: (value: T) => void
   tabsClassName: string
   value: T | boolean
@@ -75,7 +73,6 @@ export const KebabMenu = <T extends string | number>({
   closeKebabMenu,
   hiddenOptions,
   size,
-  textVariant,
   onChange,
   tabsClassName,
   value,
@@ -128,7 +125,6 @@ export const KebabMenu = <T extends string | number>({
                   startAdornment={startAdornment}
                   endAdornment={endAdornment}
                   size={size}
-                  textVariant={textVariant}
                 />
               }
               {...(href && { href, component: Link })}

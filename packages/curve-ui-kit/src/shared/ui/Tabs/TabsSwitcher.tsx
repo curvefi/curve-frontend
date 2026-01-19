@@ -3,7 +3,6 @@ import { useMemo } from 'react'
 import Stack from '@mui/material/Stack'
 import Tab, { type TabProps } from '@mui/material/Tab'
 import Tabs, { type TabsProps } from '@mui/material/Tabs'
-import { type TypographyProps } from '@mui/material/Typography'
 import { RouterLink as Link } from '@ui-kit/shared/ui/RouterLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { useTabsOverflow } from '../../../hooks/useTabsOverflow'
@@ -35,7 +34,6 @@ export type TabsSwitcherProps<T> = Pick<TabsProps, 'sx' | 'children'> & {
   variant?: TabSwitcherVariants
   /** The overflow behavior of the tabs. This is directly mapped to the MUI's variant prop. */
   overflow?: Exclude<TabsProps['variant'], 'scrollable'> | 'kebab'
-  textVariant?: TypographyProps['variant']
   orientation?: TabsProps['orientation']
   value: T | undefined
   options: readonly TabOption<T>[]
@@ -63,7 +61,6 @@ export const TabsSwitcher = <T extends string | number>({
   options,
   onChange,
   value,
-  textVariant,
   hideInactiveBorders = false,
   testIdPrefix = 'tab',
   sx,
@@ -150,7 +147,6 @@ export const TabsSwitcher = <T extends string | number>({
                     startAdornment={startAdornment}
                     endAdornment={endAdornment}
                     size={size}
-                    textVariant={textVariant}
                   />
                 }
                 sx={{
@@ -187,7 +183,6 @@ export const TabsSwitcher = <T extends string | number>({
           closeKebabMenu={closeKebabMenu}
           hiddenOptions={hiddenOptions}
           size={size}
-          textVariant={textVariant}
           onChange={onChange}
           tabsClassName={tabsClassName}
           value={kebabMenuValue}
