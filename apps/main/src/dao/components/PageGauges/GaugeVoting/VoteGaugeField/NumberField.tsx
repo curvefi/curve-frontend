@@ -3,9 +3,9 @@ import type { AriaNumberFieldProps } from 'react-aria'
 import { useLocale, useNumberField } from 'react-aria'
 import { useNumberFieldState } from 'react-stately'
 import { styled } from 'styled-components'
-import Box from '@ui/Box'
-import Icon from '@ui/Icon'
-import IconTooltip from '@ui/Tooltip/TooltipIcon'
+import { Box } from '@ui/Box'
+import { Icon } from '@ui/Icon'
+import { TooltipIcon as IconTooltip } from '@ui/Tooltip/TooltipIcon'
 
 interface Props extends AriaNumberFieldProps {
   row?: boolean
@@ -14,7 +14,7 @@ interface Props extends AriaNumberFieldProps {
   maxValue?: number
 }
 
-const NumberField = (props: Props) => {
+export const NumberField = (props: Props) => {
   const { label, minValue = 0, maxValue } = props
   const { locale } = useLocale()
   const state = useNumberFieldState({ ...props, locale, minValue, maxValue })
@@ -79,5 +79,3 @@ const StyledIcon = styled(Icon)`
   opacity: 0.4;
   margin-top: var(--spacing-2);
 `
-
-export default NumberField

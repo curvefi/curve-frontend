@@ -1,12 +1,12 @@
 import { styled } from 'styled-components'
-import CurrencyReservesContent from '@/dex/components/PagePool/PoolDetails/CurrencyReserves/CurrencyReservesContent'
+import { CurrencyReservesContent } from '@/dex/components/PagePool/PoolDetails/CurrencyReserves/CurrencyReservesContent'
 import { StyledStats } from '@/dex/components/PagePool/PoolDetails/PoolStats/styles'
 import { useNetworkByChain } from '@/dex/entities/networks'
-import usePoolTokensLinksMapper from '@/dex/hooks/usePoolTokensLinksMapper'
-import useStore from '@/dex/store/useStore'
+import { usePoolTokensLinksMapper } from '@/dex/hooks/usePoolTokensLinksMapper'
+import { useStore } from '@/dex/store/useStore'
 import { ChainId, TokensMapper, Tvl } from '@/dex/types/main.types'
 import { getChainPoolIdActiveKey } from '@/dex/utils'
-import IconTooltip from '@ui/Tooltip/TooltipIcon'
+import { TooltipIcon as IconTooltip } from '@ui/Tooltip/TooltipIcon'
 import { Chip } from '@ui/Typography'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
@@ -19,7 +19,7 @@ interface Props {
   tvl: Tvl
 }
 
-const CurrencyReserves = ({ rChainId, rPoolId, tokensMapper, tvl }: Props) => {
+export const CurrencyReserves = ({ rChainId, rPoolId, tokensMapper, tvl }: Props) => {
   const { data: network } = useNetworkByChain({ chainId: rChainId })
   const poolDataMapperCached = useStore((state) => state.storeCache.poolsMapper[rChainId]?.[rPoolId])
   const poolData = useStore((state) => state.pools.poolsMapper[rChainId]?.[rPoolId])
@@ -67,5 +67,3 @@ const StyledTitle = styled.h3`
 const StyledChip = styled(Chip)`
   padding: var(--spacing-2) 0;
 `
-
-export default CurrencyReserves

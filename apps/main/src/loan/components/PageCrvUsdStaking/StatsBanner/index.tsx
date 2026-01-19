@@ -10,7 +10,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { MaxWidth, Spacing } = SizesAndSpaces
 
-const StatsBanner = () => {
+export const StatsBanner = () => {
   const {
     design: { Color },
   } = useTheme()
@@ -71,5 +71,3 @@ This value is an indicator based on the historical yield of the crvUSD Savings V
     </Stack>
   )
 }
-
-export default StatsBanner

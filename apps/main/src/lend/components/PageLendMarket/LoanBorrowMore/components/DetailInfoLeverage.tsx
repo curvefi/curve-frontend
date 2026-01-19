@@ -1,23 +1,23 @@
 import { Dispatch, SetStateAction } from 'react'
-import DetailInfoEstimateGas from '@/lend/components/DetailInfoEstimateGas'
-import DetailInfoHealth from '@/lend/components/DetailInfoHealth'
-import DetailInfoLeverageAvgPrice from '@/lend/components/DetailInfoLeverageAvgPrice'
-import DetailInfoLeverageExpected from '@/lend/components/DetailInfoLeverageExpected'
-import DetailInfoLiqRange from '@/lend/components/DetailInfoLiqRange'
-import DetailInfoPriceImpact from '@/lend/components/DetailInfoPriceImpact'
-import DetailInfoRate from '@/lend/components/DetailInfoRate'
+import { DetailInfoEstimateGas } from '@/lend/components/DetailInfoEstimateGas'
+import { DetailInfoHealth } from '@/lend/components/DetailInfoHealth'
+import { DetailInfoLeverageAvgPrice } from '@/lend/components/DetailInfoLeverageAvgPrice'
+import { DetailInfoLeverageExpected } from '@/lend/components/DetailInfoLeverageExpected'
+import { DetailInfoLiqRange } from '@/lend/components/DetailInfoLiqRange'
+import { DetailInfoPriceImpact } from '@/lend/components/DetailInfoPriceImpact'
+import { DetailInfoRate } from '@/lend/components/DetailInfoRate'
 import { _parseValues } from '@/lend/components/PageLendMarket/LoanBorrowMore/utils'
-import networks from '@/lend/networks'
-import useStore from '@/lend/store/useStore'
+import { networks } from '@/lend/networks'
+import { useStore } from '@/lend/store/useStore'
 import { PageContentProps } from '@/lend/types/lend.types'
 import type { HealthMode } from '@/llamalend/llamalend.types'
-import RouteDetails from '@/llamalend/widgets/RouteDetails'
+import { RouteDetails } from '@/llamalend/widgets/RouteDetails'
 import type { Step } from '@ui/Stepper/types'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
 import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
 
-const DetailInfoLeverage = ({
+export const DetailInfoLeverage = ({
   rChainId,
   rOwmId,
   api,
@@ -130,5 +130,3 @@ const DetailInfoLeverage = ({
     </>
   )
 }
-
-export default DetailInfoLeverage

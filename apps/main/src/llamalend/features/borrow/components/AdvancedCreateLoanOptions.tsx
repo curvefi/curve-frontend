@@ -1,6 +1,6 @@
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { ChartLiquidationRange } from '@/llamalend/widgets/ChartLiquidationRange'
-import RouteDetails from '@/llamalend/widgets/RouteDetails'
+import { RouteDetails } from '@/llamalend/widgets/RouteDetails'
 import type { INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'

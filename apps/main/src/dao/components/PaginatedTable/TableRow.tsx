@@ -10,7 +10,7 @@ interface TableRowProps {
   gridTemplateColumns?: string
 }
 
-const TableRow = ({ holder, sortBy, labels, gridTemplateColumns }: TableRowProps) => (
+export const TableRow = ({ holder, sortBy, labels, gridTemplateColumns }: TableRowProps) => (
   <TableRowWrapper columns={labels.length} gridTemplateColumns={gridTemplateColumns}>
     {labels.map((label, index) => (
       <TableData key={index} className={sortBy.key === label.key ? 'active left-padding' : 'left-padding'}>
@@ -81,5 +81,3 @@ export const TableDataLink = styled(InternalLink)<InternalLinkProps>`
     padding-left: var(--spacing-2);
   }
 `
-
-export default TableRow

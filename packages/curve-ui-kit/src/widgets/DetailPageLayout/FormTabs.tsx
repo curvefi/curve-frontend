@@ -101,12 +101,11 @@ export function FormTabs<T extends object>({
   const { tab, tabs, subTabs, subTab, Component, onChangeTab, onChangeSubTab } = useFormTabs(options)
   return (
     <Stack marginInline={marginInline}>
-      <TabsSwitcher variant="contained" size="medium" value={tab.value} options={tabs} onChange={onChangeTab} />
+      <TabsSwitcher variant="contained" value={tab.value} options={tabs} onChange={onChangeTab} />
 
       {subTab && subTabs.length > 1 && (
         <TabsSwitcher
           variant="underlined"
-          size="small"
           value={subTab.value}
           options={subTabs}
           fullWidth

@@ -1,15 +1,15 @@
-import DetailInfoBorrowRate from '@/loan/components/DetailInfoBorrowRate'
-import DetailInfoEstGas from '@/loan/components/DetailInfoEstimateGas'
-import DetailInfoHealth from '@/loan/components/DetailInfoHealth'
-import DetailInfoLiqRange from '@/loan/components/DetailInfoLiqRange'
-import DetailInfoN from '@/loan/components/DetailInfoN'
+import { DetailInfoBorrowRate } from '@/loan/components/DetailInfoBorrowRate'
+import { DetailInfoEstimateGas as DetailInfoEstGas } from '@/loan/components/DetailInfoEstimateGas'
+import { DetailInfoHealth } from '@/loan/components/DetailInfoHealth'
+import { DetailInfoLiqRange } from '@/loan/components/DetailInfoLiqRange'
+import { DetailInfoN } from '@/loan/components/DetailInfoN'
 import type { CreateFormDetailInfo, FormDetailInfoSharedProps } from '@/loan/components/PageMintMarket/types'
 import { DEFAULT_DETAIL_INFO } from '@/loan/components/PageMintMarket/utils'
 import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
-import useStore from '@/loan/store/useStore'
+import { useStore } from '@/loan/store/useStore'
 import { LiquidationRangeSlider } from '@ui-kit/shared/ui/LiquidationRangeSlider'
 
-const DetailInfoNonLeverage = ({
+export const DetailInfoNonLeverage = ({
   activeKey,
   activeStep,
   activeKeyLiqRange,
@@ -89,5 +89,3 @@ const DetailInfoNonLeverage = ({
     </div>
   )
 }
-
-export default DetailInfoNonLeverage

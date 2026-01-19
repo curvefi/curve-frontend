@@ -1,9 +1,9 @@
 import { BigNumber } from 'bignumber.js'
 import { useState, useEffect, useMemo } from 'react'
 import { styled } from 'styled-components'
-import NumberField from '@/dex/components/PageCreatePool/components/NumberField'
-import Switch from '@/dex/components/PageCreatePool/components/Switch'
-import TokenWarningBox from '@/dex/components/PageCreatePool/components/WarningBox'
+import { NumberField } from '@/dex/components/PageCreatePool/components/NumberField'
+import { Switch } from '@/dex/components/PageCreatePool/components/Switch'
+import { WarningBox as TokenWarningBox } from '@/dex/components/PageCreatePool/components/WarningBox'
 import {
   STABLESWAP_MIN_MAX_PARAMETERS,
   TWOCRYPTO_MIN_MAX_PARAMETERS,
@@ -11,13 +11,13 @@ import {
   STABLESWAP,
   POOL_PRESETS,
 } from '@/dex/components/PageCreatePool/constants'
-import InitialPrice from '@/dex/components/PageCreatePool/Parameters/InitialPrice'
-import SelectPreset from '@/dex/components/PageCreatePool/Parameters/SelectPreset'
+import { InitialPrice } from '@/dex/components/PageCreatePool/Parameters/InitialPrice'
+import { SelectPreset } from '@/dex/components/PageCreatePool/Parameters/SelectPreset'
 import { useNetworkByChain } from '@/dex/entities/networks'
-import useStore from '@/dex/store/useStore'
+import { useStore } from '@/dex/store/useStore'
 import { CurveApi, ChainId } from '@/dex/types/main.types'
-import Box from '@ui/Box'
-import Button from '@ui/Button'
+import { Box } from '@ui/Box'
+import { Button } from '@ui/Button'
 import { t } from '@ui-kit/lib/i18n'
 
 type Props = {
@@ -26,7 +26,7 @@ type Props = {
   haveSigner: boolean
 }
 
-const Parameters = ({ curve, chainId, haveSigner }: Props) => {
+export const Parameters = ({ curve, chainId, haveSigner }: Props) => {
   const advanced = useStore((state) => state.createPool.advanced)
   const midFee = useStore((state) => state.createPool.parameters.midFee)
   const outFee = useStore((state) => state.createPool.parameters.outFee)
@@ -460,5 +460,3 @@ const SectionTitle = styled.h4`
 const SwitchWrapper = styled.div`
   height: 30.75px;
 `
-
-export default Parameters

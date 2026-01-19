@@ -40,7 +40,11 @@ const {
 
 export const getUserMintMarketsOptions = getUserMintMarketsQueryOptions
 
-const { useQuery: useUserMintMarketStatsQuery, invalidate: invalidateUserMintMarketStats } = queryFactory({
+const {
+  getQueryOptions: getUserMintMarketStatsQueryOptions,
+  useQuery: useUserMintMarketStatsQuery,
+  invalidate: invalidateUserMintMarketStats,
+} = queryFactory({
   queryKey: ({ userAddress, blockchainId, contractAddress }: UserContractParams) =>
     ['user-mint-markets', 'stats', { blockchainId }, { contractAddress }, { userAddress }, 'v1'] as const,
   queryFn: ({ userAddress, blockchainId, contractAddress }: UserContractQuery) =>
@@ -48,7 +52,7 @@ const { useQuery: useUserMintMarketStatsQuery, invalidate: invalidateUserMintMar
   validationSuite: userContractValidationSuite,
 })
 
-export const invalidateAllUserMintMarkets = (userAddress: Address | undefined) => {
+export const invalidateAllUserMintMarkets = (userAddress: Address | null | undefined) => {
   invalidateUserMintMarkets({ userAddress })
   recordEntries(getCurrentUserMintMarkets({ userAddress }) ?? {}).forEach(([blockchainId, contracts]) =>
     contracts.forEach((contractAddress) =>
@@ -62,3 +66,4 @@ export const invalidateAllUserMintMarkets = (userAddress: Address | undefined) =
 }
 
 export const useUserMintMarketStats = useUserMintMarketStatsQuery
+export const getUserMintMarketsStatsOptions = getUserMintMarketStatsQueryOptions

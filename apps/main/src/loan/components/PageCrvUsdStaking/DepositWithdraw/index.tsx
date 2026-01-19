@@ -1,7 +1,8 @@
 import { useCallback, useEffect } from 'react'
 import { useConnection } from 'wagmi'
-import LoanFormConnect from '@/loan/components/LoanFormConnect'
-import useStore from '@/loan/store/useStore'
+import { LoanFormConnect } from '@/loan/components/LoanFormConnect'
+import { SCRVUSD_VAULT_ADDRESS } from '@/loan/constants'
+import { useStore } from '@/loan/store/useStore'
 import type { NetworkUrlParams } from '@/loan/types/loan.types'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useDebounced } from '@ui-kit/hooks/useDebounce'
@@ -12,8 +13,8 @@ import { CRVUSD_ADDRESS } from '@ui-kit/utils'
 import { FormContent } from '@ui-kit/widgets/DetailPageLayout/FormContent'
 import { type FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
 import { TransactionDetails } from '../components/TransactionDetails'
-import TransactionTracking from '../TransactionTracking'
-import DeployButton from './DeployButton'
+import { TransactionTracking } from '../TransactionTracking'
+import { DeployButton } from './DeployButton'
 import { DepositModule } from './DepositModule'
 import { WithdrawModule } from './WithdrawModule'
 
@@ -138,7 +139,8 @@ const menu = [
   {
     value: 'swap',
     label: t`Swap`,
-    href: ({ network }) => `${getInternalUrl('dex', network, DEX_ROUTES.PAGE_SWAP)}?to=${CRVUSD_ADDRESS}`,
+    href: ({ network }) =>
+      `${getInternalUrl('dex', network, DEX_ROUTES.PAGE_SWAP)}?from=${CRVUSD_ADDRESS}&to=${SCRVUSD_VAULT_ADDRESS}`,
   },
 ] satisfies FormTab<NetworkUrlParams>[]
 

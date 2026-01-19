@@ -23,7 +23,7 @@ type CallbackFunction = () => unknown
  *   REFRESH_INTERVAL['5m']
  * );
  */
-export default function usePageVisibleInterval(callback: CallbackFunction, delay: number) {
+export function usePageVisibleInterval(callback: CallbackFunction, delay: number) {
   const isPageVisible = useLayoutStore((state) => state.isPageVisible)
   const callbackEvent = useEffectEvent(callback)
   useEffect(() => (isPageVisible ? setTimeoutInterval(callbackEvent, delay) : undefined), [delay, isPageVisible])

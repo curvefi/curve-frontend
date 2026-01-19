@@ -22,23 +22,22 @@ type CreateWagmiConfigOptions<TChains extends readonly [Chain, ...Chain[]]> = {
 /**
  * Creates a Wagmi configuration based on chains, transports and connectors.
  * We use memoize here to ensure only one config instance exists, preventing issues with wagmi auto-reconnect.
- * Auto-reconnect for injected wallets is disabled to prevent unwanted reconnections on disconnect.
  * @return A Wagmi configuration object that includes chains, connectors, and transports.
  */
 export const createWagmiConfig = memoize(
   <TChains extends readonly [Chain, ...Chain[]]>({
     chains,
     transports,
-    connectors = Object.values(defaultConnectors),
+    connectors = defaultConnectors,
   }: CreateWagmiConfigOptions<TChains>) =>
     createConfig({
       chains,
       connectors,
       transports,
       /**
-       * Disabled to prevent auto-reconnect on disconnecting an injected wallet.
-       * Solves the same issue as discussed on https://github.com/wevm/wagmi/discussions/3537.
-       * We don't use wallet specific injected connectors anyway and prefer to use the single global one.
+       * As much as we'd like to enable EIP-6963, enabling this somehow causes duplicate rehydration issues.
+       * We won't be able to turn this on (and remove this memoize and custom isWagmiReconnecting logic)
+       * until hydration logic is no longer dependant on many wallet side effects and / or stores.
        */
       multiInjectedProviderDiscovery: false,
     }),

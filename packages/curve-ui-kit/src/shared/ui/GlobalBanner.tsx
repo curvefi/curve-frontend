@@ -1,5 +1,4 @@
 import { useChainId, useConnection, useSwitchChain } from 'wagmi'
-import Box from '@mui/material/Box'
 import { isFailure, useCurve, type WagmiChainId } from '@ui-kit/features/connect-wallet'
 import { usePathname } from '@ui-kit/hooks/router'
 import { useDismissBanner, useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
@@ -10,6 +9,7 @@ import { Duration } from '@ui-kit/themes/design/0_primitives'
 import { isCypress, ReleaseChannel } from '@ui-kit/utils'
 import { Chain } from '@ui-kit/utils/network'
 import { PhishingWarningBanner } from '@ui-kit/widgets/Header/PhishingWarningBanner'
+import { StackBanners } from './StackBanners'
 
 export type GlobalBannerProps = {
   networkId: string
@@ -36,7 +36,7 @@ export const GlobalBanner = ({ networkId, chainId }: GlobalBannerProps) => {
     Duration.Banner.Monthly,
   )
   return (
-    <Box>
+    <StackBanners>
       {releaseChannel !== ReleaseChannel.Stable && !isCypress && (
         <Banner
           icon="llama"
@@ -73,6 +73,6 @@ export const GlobalBanner = ({ networkId, chainId }: GlobalBannerProps) => {
           {t`Aave V2 Frozen aTokens`}
         </Banner>
       )}
-    </Box>
+    </StackBanners>
   )
 }

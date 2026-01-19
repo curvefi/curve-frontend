@@ -1,23 +1,23 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { PoolRow } from '@/dex/components/PagePoolList/components/PoolRow'
-import TableHead from '@/dex/components/PagePoolList/components/TableHead'
-import TableHeadMobile from '@/dex/components/PagePoolList/components/TableHeadMobile'
-import TableRowNoResult from '@/dex/components/PagePoolList/components/TableRowNoResult'
-import TableSettings from '@/dex/components/PagePoolList/components/TableSettings/TableSettings'
+import { TableHead } from '@/dex/components/PagePoolList/components/TableHead'
+import { TableHeadMobile } from '@/dex/components/PagePoolList/components/TableHeadMobile'
+import { TableRowNoResult } from '@/dex/components/PagePoolList/components/TableRowNoResult'
+import { TableSettings } from '@/dex/components/PagePoolList/components/TableSettings/TableSettings'
 import type { ColumnKeys, PagePoolList, SearchParams } from '@/dex/components/PagePoolList/types'
 import { COLUMN_KEYS } from '@/dex/components/PagePoolList/utils'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { DEFAULT_FORM_STATUS, getPoolListActiveKey } from '@/dex/store/createPoolListSlice'
 import { getUserActiveKey } from '@/dex/store/createUserSlice'
-import useStore from '@/dex/store/useStore'
-import Spinner, { SpinnerWrapper } from '@ui/Spinner'
-import Table, { Tbody } from '@ui/Table'
+import { useStore } from '@/dex/store/useStore'
+import { SpinnerWrapper, Spinner } from '@ui/Spinner'
+import { Tbody, Table } from '@ui/Table'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
-import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
+import { usePageVisibleInterval } from '@ui-kit/hooks/usePageVisibleInterval'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 
-const PoolList = ({
+export const PoolList = ({
   rChainId,
   curve,
   isLite,
@@ -223,5 +223,3 @@ const PoolList = ({
     </>
   )
 }
-
-export default PoolList

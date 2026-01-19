@@ -2,11 +2,11 @@ import { TooltipProps } from 'recharts'
 import type { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent'
 import { styled } from 'styled-components'
 import type { Distribution } from '@curvefi/prices-api/revenue'
-import Box from '@ui/Box'
+import { Box } from '@ui/Box'
 import { formatDate, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 
-const FeesBarChartTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) => {
+export const FeesBarChartTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) => {
   if (active && payload && payload.length) {
     const { feesUsd, timestamp } = payload[0].payload as Distribution
 
@@ -67,5 +67,3 @@ const TooltipData = styled.p`
     color: var(--chart-red);
   }
 `
-
-export default FeesBarChartTooltip

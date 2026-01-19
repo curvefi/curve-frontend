@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import { ReactNode, useCallback, useMemo } from 'react'
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
@@ -175,6 +175,9 @@ export type MetricProps = {
   /** Notional values give extra context to the metric, like underlying value */
   notional?: number | string | Notional | Notional[]
 
+  /** Optional content to display to the right of the value */
+  rightAdornment?: ReactNode
+
   size?: keyof typeof MetricSize
   alignment?: Alignment
   loading?: boolean
@@ -193,6 +196,8 @@ export const Metric = ({
   copyText = t`Value has been copied to clipboard`,
 
   notional,
+
+  rightAdornment,
 
   size = 'medium',
   alignment = 'start',
@@ -222,15 +227,18 @@ export const Metric = ({
       </Typography>
 
       <WithSkeleton loading={loading}>
-        <MetricValue
-          value={value}
-          valueOptions={valueOptions}
-          change={change}
-          size={size}
-          copyValue={value || value === 0 ? copyValue : undefined}
-          tooltip={valueTooltip}
-          testId={testId}
-        />
+        <Stack direction="row" alignItems="baseline">
+          <MetricValue
+            value={value}
+            valueOptions={valueOptions}
+            change={change}
+            size={size}
+            copyValue={value || value === 0 ? copyValue : undefined}
+            tooltip={valueTooltip}
+            testId={testId}
+          />
+          {rightAdornment}
+        </Stack>
       </WithSkeleton>
 
       {notionals && (

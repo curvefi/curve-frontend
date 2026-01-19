@@ -1,7 +1,7 @@
 import { useMarketParameters } from '@/llamalend/queries/market-parameters.query'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { t } from '@ui-kit/lib/i18n'
-import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
+import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { formatNumber, formatPercent } from '@ui-kit/utils'
 
 // In [1]: ltv = lambda x: ((x[0] - 1) / x[0])**2 * (1 - x[1])

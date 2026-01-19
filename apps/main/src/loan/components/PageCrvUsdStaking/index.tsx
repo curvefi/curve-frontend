@@ -2,12 +2,12 @@ import BigNumber from 'bignumber.js'
 import { useEffect } from 'react'
 import { useConnection } from 'wagmi'
 import { DepositWithdraw } from '@/loan/components/PageCrvUsdStaking/DepositWithdraw'
-import Statistics from '@/loan/components/PageCrvUsdStaking/Statistics'
-import StatsBanner from '@/loan/components/PageCrvUsdStaking/StatsBanner'
-import UserInformation from '@/loan/components/PageCrvUsdStaking/UserInformation'
-import UserPosition from '@/loan/components/PageCrvUsdStaking/UserPosition'
+import { Statistics } from '@/loan/components/PageCrvUsdStaking/Statistics'
+import { StatsBanner } from '@/loan/components/PageCrvUsdStaking/StatsBanner'
+import { UserInformation } from '@/loan/components/PageCrvUsdStaking/UserInformation'
+import { UserPosition } from '@/loan/components/PageCrvUsdStaking/UserPosition'
 import { useScrvUsdUserBalances } from '@/loan/entities/scrvusd-userBalances'
-import useStore from '@/loan/store/useStore'
+import { useStore } from '@/loan/store/useStore'
 import type { NetworkUrlParams } from '@/loan/types/loan.types'
 import { Stack, useMediaQuery } from '@mui/material'
 import Fade from '@mui/material/Fade'
@@ -18,7 +18,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { MaxWidth } = SizesAndSpaces
 
-const CrvUsdStaking = ({ params }: { params: NetworkUrlParams }) => {
+export const CrvUsdStaking = ({ params }: { params: NetworkUrlParams }) => {
   const [isChartExpanded = false, , minimizeChart, toggleChartExpanded] = useSwitch(false)
   const checkApproval = useStore((state) => state.scrvusd.checkApproval)
   const inputAmount = useStore((state) => state.scrvusd.inputAmount)
@@ -143,5 +143,3 @@ const CrvUsdStaking = ({ params }: { params: NetworkUrlParams }) => {
     </Stack>
   )
 }
-
-export default CrvUsdStaking

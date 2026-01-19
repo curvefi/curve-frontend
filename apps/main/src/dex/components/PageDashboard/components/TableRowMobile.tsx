@@ -1,20 +1,20 @@
 import { useRef, useState } from 'react'
 import { styled } from 'styled-components'
-import TableCellBalances from '@/dex/components/PageDashboard/components/TableCellBalances'
-import TableCellClaimables from '@/dex/components/PageDashboard/components/TableCellClaimables'
-import TableCellProfit from '@/dex/components/PageDashboard/components/TableCellProfit'
-import TableCellRewards from '@/dex/components/PageDashboard/components/TableCellRewards'
+import { TableCellBalances } from '@/dex/components/PageDashboard/components/TableCellBalances'
+import { TableCellClaimables } from '@/dex/components/PageDashboard/components/TableCellClaimables'
+import { TableCellProfit } from '@/dex/components/PageDashboard/components/TableCellProfit'
+import { TableCellRewards } from '@/dex/components/PageDashboard/components/TableCellRewards'
 import type { DashboardTableRowProps } from '@/dex/components/PageDashboard/types'
 import { SORT_ID } from '@/dex/components/PageDashboard/utils'
-import TableCellRewardsOthers from '@/dex/components/PagePoolList/components/TableCellRewardsOthers'
-import PoolLabel from '@/dex/components/PoolLabel'
-import Box from '@ui/Box'
-import Icon from '@ui/Icon'
-import IconButton from '@ui/IconButton'
+import { TableCellRewardsOthers } from '@/dex/components/PagePoolList/components/TableCellRewardsOthers'
+import { PoolLabel } from '@/dex/components/PoolLabel'
+import { Box } from '@ui/Box'
+import { Icon } from '@ui/Icon'
+import { IconButton } from '@ui/IconButton'
 import { Td, Tr } from '@ui/Table'
-import useIntersectionObserver from '@ui-kit/hooks/useIntersectionObserver'
+import { useIntersectionObserver } from '@ui-kit/hooks/useIntersectionObserver'
 
-const TableRowMobile = ({
+export const TableRowMobile = ({
   isLite,
   blockchainId,
   formValues,
@@ -139,5 +139,3 @@ const TableContent = styled.div`
     grid-column-end: 3;
   }
 `
-
-export default TableRowMobile

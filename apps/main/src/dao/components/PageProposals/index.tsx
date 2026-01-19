@@ -1,24 +1,24 @@
 import { useCallback } from 'react'
 import { styled } from 'styled-components'
-import ErrorMessage from '@/dao/components/ErrorMessage'
-import useStore from '@/dao/store/useStore'
+import { ErrorMessage } from '@/dao/components/ErrorMessage'
+import { useStore } from '@/dao/store/useStore'
 import { SortByFilterProposals, type ProposalListFilter } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils'
-import Box from '@ui/Box'
-import Icon from '@ui/Icon'
-import SearchInput from '@ui/SearchInput'
+import { Box } from '@ui/Box'
+import { Icon } from '@ui/Icon'
+import { SearchInput } from '@ui/SearchInput'
 import { SelectSortingMethod } from '@ui/Select/SelectSortingMethod'
-import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import { SpinnerWrapper, Spinner } from '@ui/Spinner'
 import { useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
 import { invalidateProposals } from '../../entities/proposals-mapper'
 import { useProposalsList } from '../../hooks/useProposalsList'
-import ProposalsFilters from './components/ProposalsFilters'
+import { ProposalsFilters } from './components/ProposalsFilters'
 import { PROPOSAL_FILTERS, PROPOSAL_SORTING_METHODS } from './constants'
-import Proposal from './Proposal'
+import { Proposal } from './Proposal'
 
-const Proposals = () => {
+export const Proposals = () => {
   const activeSortBy = useStore((state) => state.proposals.activeSortBy)
   const activeSortDirection = useStore((state) => state.proposals.activeSortDirection)
   const setActiveSortBy = useStore((state) => state.proposals.setActiveSortBy)
@@ -254,5 +254,3 @@ const ErrorMessageWrapper = styled.div`
     padding: var(--spacing-5) var(--spacing-3);
   }
 `
-
-export default Proposals

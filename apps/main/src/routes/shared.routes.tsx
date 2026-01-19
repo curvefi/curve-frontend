@@ -1,5 +1,6 @@
 import Skeleton from '@mui/material/Skeleton'
 import { createRoute } from '@tanstack/react-router'
+import { Integrations } from '@ui-kit/features/integrations'
 import type { AppName } from '@ui-kit/shared/routes'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LegalPage } from '@ui-kit/widgets/Legal'
@@ -33,6 +34,14 @@ export const createSharedRoutes = (app: AppName, layoutProps: LayoutProps) => [
     component: () => <LegalPage currentApp={app} />,
     head: () => ({
       meta: [{ title: 'Legal - Curve' }],
+    }),
+    ...layoutProps,
+  }),
+  createRoute({
+    path: '$network/integrations',
+    component: Integrations,
+    head: () => ({
+      meta: [{ title: 'Integrations - Curve' }],
     }),
     ...layoutProps,
   }),

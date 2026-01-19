@@ -3,17 +3,18 @@ import { styled } from 'styled-components'
 import { STABLESWAP } from '@/dex/components/PageCreatePool/constants'
 import { CreateToken } from '@/dex/components/PageCreatePool/types'
 import { useNetworkByChain } from '@/dex/entities/networks'
-import useStore from '@/dex/store/useStore'
+import { useStore } from '@/dex/store/useStore'
 import { ChainId, CurveApi } from '@/dex/types/main.types'
 import { delayAction } from '@/dex/utils'
 import { useButton } from '@react-aria/button'
 import { useFilter } from '@react-aria/i18n'
 import { useOverlayTriggerState } from '@react-stately/overlays'
-import Box from '@ui/Box'
-import Button from '@ui/Button'
-import Checkbox from '@ui/Checkbox'
-import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import { Box } from '@ui/Box'
+import { Button } from '@ui/Button'
+import { Checkbox } from '@ui/Checkbox'
+import { SpinnerWrapper, Spinner } from '@ui/Spinner'
 import { Chip } from '@ui/Typography'
+import { TokenList } from '@ui-kit/features/select-token/ui/modal/TokenList'
 import { TokenSelectorModal } from '@ui-kit/features/select-token/ui/modal/TokenSelectorModal'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
@@ -31,7 +32,7 @@ type Props = {
   onSelectionChange: (selectedAddress: Key) => void
 }
 
-const SelectTokenButton = ({
+export const SelectTokenButton = ({
   curve,
   disabledKeys,
   chainId,
@@ -163,21 +164,24 @@ const SelectTokenButton = ({
         )}
       </ComboBoxButton>
       {overlayTriggerState.isOpen && (
-        <TokenSelectorModal
-          tokens={options}
-          favorites={favorites}
-          balances={{}}
-          tokenPrices={{}}
-          showSearch={true}
-          showManageList={true}
-          isOpen={true}
-          error={error}
-          disabledTokens={disabledKeys ?? []}
-          disableSorting={true}
-          disableMyTokens={false}
-          compact={false}
-          customOptions={
-            swapType === STABLESWAP && (
+        <TokenSelectorModal isOpen compact={false} onClose={handleClose}>
+          <TokenList
+            tokens={options}
+            favorites={favorites}
+            error={error}
+            disabledTokens={disabledKeys}
+            disableSorting
+            onToken={({ address }) => {
+              onSelectionChange(address)
+              setFilterBasepools(false)
+              handleClose()
+            }}
+            onSearch={(val) => {
+              setFilterValue(val)
+              setError(undefined)
+            }}
+          >
+            {swapType === STABLESWAP && (
               <Checkbox
                 key={'filter-basepools'}
                 isDisabled={basePools[chainId]?.length === 0}
@@ -187,19 +191,9 @@ const SelectTokenButton = ({
               >
                 View Basepools
               </Checkbox>
-            )
-          }
-          onClose={handleClose}
-          onToken={({ address }) => {
-            onSelectionChange(address)
-            setFilterBasepools(false)
-            handleClose()
-          }}
-          onSearch={(val) => {
-            setFilterValue(val)
-            setError(undefined)
-          }}
-        />
+            )}
+          </TokenList>
+        </TokenSelectorModal>
       )}
     </>
   ) : (
@@ -296,5 +290,3 @@ const BasepoolLabel = styled(Chip)`
   letter-spacing: 0;
   height: 15px;
 `
-
-export default SelectTokenButton

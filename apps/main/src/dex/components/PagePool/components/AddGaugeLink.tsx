@@ -7,14 +7,14 @@ import {
   TWOCOINCRYPTOSWAPNG,
 } from '@/dex/components/PageDeployGauge/constants'
 import type { PageTransferProps } from '@/dex/components/PagePool/types'
-import useStore from '@/dex/store/useStore'
+import { useStore } from '@/dex/store/useStore'
 import { ChainId, type PoolUrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
 import Button from '@mui/material/Button'
 import { useParams, useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 
-const AddGaugeLink = ({
+export const AddGaugeLink = ({
   chainId,
   address,
   lpToken,
@@ -64,5 +64,3 @@ const AddGaugeWrapper = styled.div`
   flex-direction: column;
   margin-top: 1.5rem;
 `
-
-export default AddGaugeLink

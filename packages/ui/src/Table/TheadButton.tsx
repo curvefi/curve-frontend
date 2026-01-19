@@ -1,5 +1,5 @@
 import { styled } from 'styled-components'
-import { breakpoints } from 'ui/src/utils/responsive'
+import { breakpoints } from '@ui/utils/responsive'
 
 export const TheadButton = styled.button<{ nowrap?: boolean }>`
   background-color: transparent;
@@ -25,5 +25,3 @@ export const TheadButton = styled.button<{ nowrap?: boolean }>`
     font-size: var(--font-size-2);
   }
 `
-
-export default TheadButton

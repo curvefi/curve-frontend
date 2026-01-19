@@ -1,12 +1,13 @@
 import lodash from 'lodash'
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import type { Address } from 'viem'
 import { useConfig } from 'wagmi'
-import DetailInfoEstGas from '@/dex/components/DetailInfoEstGas'
-import FormConnectWallet from '@/dex/components/FormConnectWallet'
-import WarningModal, { type HighSlippagePriceImpactProps } from '@/dex/components/PagePool/components/WarningModal'
-import DetailInfoExchangeRate from '@/dex/components/PageRouterSwap/components/DetailInfoExchangeRate'
-import DetailInfoPriceImpact from '@/dex/components/PageRouterSwap/components/DetailInfoPriceImpact'
-import RouterSwapAlerts from '@/dex/components/PageRouterSwap/components/RouterSwapAlerts'
+import { DetailInfoEstGas } from '@/dex/components/DetailInfoEstGas'
+import { FormConnectWallet } from '@/dex/components/FormConnectWallet'
+import { type HighSlippagePriceImpactProps, WarningModal } from '@/dex/components/PagePool/components/WarningModal'
+import { DetailInfoExchangeRate } from '@/dex/components/PageRouterSwap/components/DetailInfoExchangeRate'
+import { DetailInfoPriceImpact } from '@/dex/components/PageRouterSwap/components/DetailInfoPriceImpact'
+import { RouterSwapAlerts } from '@/dex/components/PageRouterSwap/components/RouterSwapAlerts'
 import type {
   FormStatus,
   FormValues,
@@ -16,28 +17,30 @@ import type {
 } from '@/dex/components/PageRouterSwap/types'
 import { useNetworks } from '@/dex/entities/networks'
 import { useRouterApi } from '@/dex/hooks/useRouterApi'
-import useTokensNameMapper from '@/dex/hooks/useTokensNameMapper'
-import useStore from '@/dex/store/useStore'
+import { useTokensNameMapper } from '@/dex/hooks/useTokensNameMapper'
+import { useStore } from '@/dex/store/useStore'
 import { ChainId, CurveApi, type NetworkUrlParams, TokensMapper } from '@/dex/types/main.types'
 import { toTokenOption } from '@/dex/utils'
 import { getSlippageImpact } from '@/dex/utils/utilsSwap'
 import Stack from '@mui/material/Stack'
-import AlertBox from '@ui/AlertBox'
-import Icon from '@ui/Icon'
-import IconButton from '@ui/IconButton'
+import { AlertBox } from '@ui/AlertBox'
+import { Icon } from '@ui/Icon'
+import { IconButton } from '@ui/IconButton'
 import { getActiveStep, getStepStatus } from '@ui/Stepper/helpers'
-import Stepper from '@ui/Stepper/Stepper'
+import { Stepper } from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
-import TxInfoBar from '@ui/TxInfoBar'
+import { TxInfoBar } from '@ui/TxInfoBar'
 import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
-import { TokenSelector } from '@ui-kit/features/select-token'
+import { TokenList, TokenSelector, useTokenSelectorData } from '@ui-kit/features/select-token'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
+import { usePageVisibleInterval } from '@ui-kit/hooks/usePageVisibleInterval'
+import { useSwitch } from '@ui-kit/hooks/useSwitch'
+import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
-import { useTokenUsdRate, useTokenUsdRates } from '@ui-kit/lib/model/entities/token-usd-rate'
+import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { decimal, type Decimal } from '@ui-kit/utils'
@@ -46,7 +49,7 @@ import { DetailInfoTradeRoute } from './components/DetailInfoTradeRoute'
 
 const { Spacing } = SizesAndSpaces
 
-const QuickSwap = ({
+export const QuickSwap = ({
   pageLoaded,
   params,
   rChainId: chainId,
@@ -75,8 +78,6 @@ const QuickSwap = ({
   const isPageVisible = useLayoutStore((state) => state.isPageVisible)
   const rpcRoutesAndOutput = useStore((state) => state.quickSwap.routesAndOutput[activeKey])
   const isMaxLoading = useStore((state) => state.quickSwap.isMaxLoading)
-  const userBalancesMapper = useStore((state) => state.userBalances.userBalancesMapper)
-  const userBalancesLoading = useStore((state) => state.userBalances.loading)
   const fetchStepApprove = useStore((state) => state.quickSwap.fetchStepApprove)
   const fetchStepSwap = useStore((state) => state.quickSwap.fetchStepSwap)
   const resetFormErrors = useStore((state) => state.quickSwap.resetFormErrors)
@@ -102,18 +103,10 @@ const QuickSwap = ({
 
   const { fromAddress, toAddress } = searchedParams
 
+  const [isOpenFromToken, openModalFromToken, closeModalFromToken] = useSwitch()
+  const [isOpenToToken, openModalToToken, closeModalToToken] = useSwitch()
+
   const isReady = pageLoaded && isPageVisible
-
-  const userFromBalance = userBalancesMapper[fromAddress]
-  const userToBalance = userBalancesMapper[toAddress]
-
-  const { data: fromUsdRate } = useTokenUsdRate({ chainId, tokenAddress: fromAddress }, !!fromAddress)
-  const { data: toUsdRate } = useTokenUsdRate({ chainId, tokenAddress: toAddress }, !!toAddress)
-
-  const userTokens = Object.entries(userBalancesMapper)
-    .filter(([, balance]) => parseFloat(balance ?? '0') > 0)
-    .map(([address]) => address)
-  const { data: usdRatesMapper } = useTokenUsdRates({ chainId, tokenAddresses: userTokens })
 
   const tokens = useMemo(
     () =>
@@ -126,6 +119,46 @@ const QuickSwap = ({
 
   const fromToken = tokens.find((x) => x.address.toLocaleLowerCase() == fromAddress)
   const toToken = tokens.find((x) => x.address.toLocaleLowerCase() == toAddress)
+
+  const {
+    data: userFromBalance,
+    isLoading: userFromBalanceLoading,
+    isFetched: userFromBalanceFetched,
+    refetch: refetchUserFromBalance,
+  } = useTokenBalance(
+    {
+      chainId,
+      userAddress: signerAddress,
+      tokenAddress: fromAddress ? (fromAddress as Address) : undefined,
+    },
+    !!signerAddress && !!fromAddress,
+  )
+
+  const {
+    data: userToBalance,
+    isLoading: userToBalanceLoading,
+    isFetched: userToBalanceFetched,
+    refetch: refetchUserToBalance,
+  } = useTokenBalance(
+    {
+      chainId,
+      userAddress: signerAddress,
+      tokenAddress: toAddress ? (toAddress as Address) : undefined,
+    },
+    !!signerAddress && !!toAddress,
+  )
+
+  const { data: fromUsdRate } = useTokenUsdRate({ chainId, tokenAddress: fromAddress }, !!fromAddress)
+  const { data: toUsdRate } = useTokenUsdRate({ chainId, tokenAddress: toAddress }, !!toAddress)
+
+  const {
+    balances,
+    tokenPrices,
+    isLoading: tokenSelectorLoading,
+  } = useTokenSelectorData(
+    { chainId, userAddress: signerAddress, tokens },
+    { enabled: !!isOpenFromToken || !!isOpenToToken, prefetch: !!userFromBalanceFetched && !!userToBalanceFetched },
+  )
 
   const config = useConfig()
   const updateFormValues = useCallback(
@@ -176,6 +209,8 @@ const QuickSwap = ({
       const resp = await fetchStepSwap(actionActiveKey, config, curve, formValues, searchedParams, maxSlippage)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && !resp.error && network) {
+        void refetchUserFromBalance()
+        void refetchUserToBalance()
         const txMessage = t`Transaction complete. Received ${resp.swappedAmount} ${toSymbol}.`
         setTxInfoBar(
           <TxInfoBar
@@ -188,7 +223,7 @@ const QuickSwap = ({
       if (resp?.error) setTxInfoBar(null)
       if (typeof dismiss === 'function') dismiss()
     },
-    [activeKey, config, fetchStepSwap, updateFormValues, network],
+    [fetchStepSwap, config, activeKey, network, refetchUserFromBalance, refetchUserToBalance, updateFormValues],
   )
 
   const getSteps = useCallback(
@@ -385,7 +420,7 @@ const QuickSwap = ({
     )
     setSteps((prev) => (lodash.isEqual(prev, updatedSteps) ? prev : updatedSteps))
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isReady, confirmedLoss, routesAndOutput, formEstGas, formStatus, formValues, searchedParams, userBalancesLoading])
+  }, [isReady, confirmedLoss, routesAndOutput, formEstGas, formStatus, formValues, searchedParams])
 
   const activeStep = haveSigner ? getActiveStep(steps) : null
   const isDisable = formStatus.formProcessing
@@ -412,7 +447,7 @@ const QuickSwap = ({
         name="fromAmount"
         inputBalanceUsd={decimal(formValues.fromAmount && fromUsdRate && fromUsdRate * +formValues.fromAmount)}
         walletBalance={{
-          loading: userBalancesLoading || isMaxLoading,
+          loading: userFromBalanceLoading || isMaxLoading,
           balance: decimal(userFromBalance),
           symbol: fromToken?.symbol,
           usdRate: fromUsdRate,
@@ -427,17 +462,24 @@ const QuickSwap = ({
         tokenSelector={
           <TokenSelector
             selectedToken={fromToken}
-            tokens={tokens}
-            balances={userBalancesMapper}
             disabled={isDisable || !fromToken}
-            tokenPrices={usdRatesMapper}
-            onToken={({ address: fromAddress }) => {
-              const toAddress =
-                fromAddress === searchedParams.toAddress ? searchedParams.fromAddress : searchedParams.toAddress
-              resetFormErrors()
-              redirect(toAddress, fromAddress)
-            }}
-          />
+            isOpen={!!isOpenFromToken}
+            onOpen={openModalFromToken}
+            onClose={closeModalFromToken}
+          >
+            <TokenList
+              tokens={tokens}
+              balances={balances}
+              tokenPrices={tokenPrices}
+              isLoading={tokenSelectorLoading}
+              onToken={({ address: fromAddress }) => {
+                const toAddress =
+                  fromAddress === searchedParams.toAddress ? searchedParams.fromAddress : searchedParams.toAddress
+                resetFormErrors()
+                redirect(toAddress, fromAddress)
+              }}
+            />
+          </TokenSelector>
         }
         message={formValues.fromError && t`Amount > wallet balance ${formatNumber(userFromBalance)}`}
       />
@@ -461,7 +503,7 @@ const QuickSwap = ({
         onBalance={setToAmount}
         name="toAmount"
         walletBalance={{
-          loading: userBalancesLoading,
+          loading: userToBalanceLoading,
           balance: decimal(userToBalance),
           symbol: toToken?.symbol,
           usdRate: toUsdRate,
@@ -471,18 +513,24 @@ const QuickSwap = ({
         tokenSelector={
           <TokenSelector
             selectedToken={toToken}
-            tokens={tokens}
-            balances={userBalancesMapper}
             disabled={isDisable || !toToken}
-            tokenPrices={usdRatesMapper}
-            disableMyTokens={true}
-            onToken={({ address: toAddress }) => {
-              const fromAddress =
-                toAddress === searchedParams.fromAddress ? searchedParams.toAddress : searchedParams.fromAddress
-              resetFormErrors()
-              redirect(toAddress, fromAddress)
-            }}
-          />
+            isOpen={!!isOpenToToken}
+            onOpen={openModalToToken}
+            onClose={closeModalToToken}
+          >
+            <TokenList
+              tokens={tokens}
+              balances={balances}
+              tokenPrices={tokenPrices}
+              disableMyTokens
+              onToken={({ address: toAddress }) => {
+                const fromAddress =
+                  toAddress === searchedParams.fromAddress ? searchedParams.toAddress : searchedParams.fromAddress
+                resetFormErrors()
+                redirect(toAddress, fromAddress)
+              }}
+            />
+          </TokenSelector>
         }
       />
 
@@ -548,5 +596,3 @@ function _isRoutesAndOutputLoading(
   }
   return !error && ((isFrom && +fromAmount > 0) || (!isFrom && +toAmount > 0))
 }
-
-export default QuickSwap

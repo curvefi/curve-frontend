@@ -1,13 +1,13 @@
 import { styled } from 'styled-components'
-import DetailInfoBorrowRate from '@/loan/components/DetailInfoBorrowRate'
-import DetailInfoEstGas from '@/loan/components/DetailInfoEstimateGas'
-import DetailInfoHealth from '@/loan/components/DetailInfoHealth'
-import DetailInfoLiqRange from '@/loan/components/DetailInfoLiqRange'
-import DetailInfoN from '@/loan/components/DetailInfoN'
+import { DetailInfoBorrowRate } from '@/loan/components/DetailInfoBorrowRate'
+import { DetailInfoEstimateGas as DetailInfoEstGas } from '@/loan/components/DetailInfoEstimateGas'
+import { DetailInfoHealth } from '@/loan/components/DetailInfoHealth'
+import { DetailInfoLiqRange } from '@/loan/components/DetailInfoLiqRange'
+import { DetailInfoN } from '@/loan/components/DetailInfoN'
 import type { CreateFormDetailInfo, FormDetailInfoSharedProps } from '@/loan/components/PageMintMarket/types'
 import { DEFAULT_DETAIL_INFO_LEVERAGE } from '@/loan/components/PageMintMarket/utils'
 import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
-import useStore from '@/loan/store/useStore'
+import { useStore } from '@/loan/store/useStore'
 import { getTokenName } from '@/loan/utils/utilsLoan'
 import { DetailInfo } from '@ui/DetailInfo'
 import { formatNumber } from '@ui/utils'
@@ -17,7 +17,7 @@ import { LiquidationRangeSlider } from '@ui-kit/shared/ui/LiquidationRangeSlider
 import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
 import { DetailInfoTradeRoutes } from './DetailInfoTradeRoutes'
 
-const DetailInfoLeverage = ({
+export const DetailInfoLeverage = ({
   activeKey,
   activeKeyLiqRange,
   activeStep,
@@ -164,5 +164,3 @@ const DetailInfoLeverageWrapper = styled.div`
   padding: 0.5rem 0.75rem;
   margin-bottom: 1rem;
 `
-
-export default DetailInfoLeverage

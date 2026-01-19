@@ -7,11 +7,11 @@ import {
   SummaryCategoryTitle,
   StyledCheckmark,
 } from '@/dex/components/PageCreatePool/Summary/styles'
-import useStore from '@/dex/store/useStore'
-import Box from '@ui/Box'
+import { useStore } from '@/dex/store/useStore'
+import { Box } from '@ui/Box'
 import { t } from '@ui-kit/lib/i18n'
 
-const PoolTypeSummary = () => {
+export const PoolTypeSummary = () => {
   const swapType = useStore((state) => state.createPool.swapType)
   const validation = useStore((state) => state.createPool.validation)
   const metaPoolToken = useStore((state) => state.createPool.tokensInPool.metaPoolToken)
@@ -42,5 +42,3 @@ const StyledCategoryColumn = styled(CategoryColumn)`
 const StyledSummaryCategoryTitle = styled(SummaryCategoryTitle)`
   margin-bottom: 0;
 `
-
-export default PoolTypeSummary

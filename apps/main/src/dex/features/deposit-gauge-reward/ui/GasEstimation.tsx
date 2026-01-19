@@ -1,5 +1,5 @@
 import { useFormContext } from 'react-hook-form'
-import DetailInfoEstGas from '@/dex/components/DetailInfoEstGas'
+import { DetailInfoEstGas } from '@/dex/components/DetailInfoEstGas'
 import { useEstimateGasDepositReward, useEstimateGasDepositRewardApprove } from '@/dex/entities/gauge'
 import { DepositRewardStep, type DepositRewardFormValues } from '@/dex/features/deposit-gauge-reward/types'
 import { ChainId } from '@/dex/types/main.types'

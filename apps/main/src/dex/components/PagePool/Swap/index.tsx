@@ -2,36 +2,37 @@ import lodash from 'lodash'
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { Address } from 'viem'
 import { useConfig, useConnection, type Config } from 'wagmi'
-import AlertFormError from '@/dex/components/AlertFormError'
-import AlertFormWarning from '@/dex/components/AlertFormWarning'
-import AlertSlippage from '@/dex/components/AlertSlippage'
-import DetailInfoEstGas from '@/dex/components/DetailInfoEstGas'
-import TransferActions from '@/dex/components/PagePool/components/TransferActions'
-import WarningModal from '@/dex/components/PagePool/components/WarningModal'
+import { AlertFormError } from '@/dex/components/AlertFormError'
+import { AlertFormWarning } from '@/dex/components/AlertFormWarning'
+import { AlertSlippage } from '@/dex/components/AlertSlippage'
+import { DetailInfoEstGas } from '@/dex/components/DetailInfoEstGas'
+import { TransferActions } from '@/dex/components/PagePool/components/TransferActions'
+import { WarningModal } from '@/dex/components/PagePool/components/WarningModal'
 import type { ExchangeOutput, FormStatus, FormValues, StepKey } from '@/dex/components/PagePool/Swap/types'
 import { DEFAULT_EST_GAS, DEFAULT_EXCHANGE_OUTPUT, getSwapTokens } from '@/dex/components/PagePool/Swap/utils'
 import type { PageTransferProps, Seed } from '@/dex/components/PagePool/types'
-import DetailInfoExchangeRate from '@/dex/components/PageRouterSwap/components/DetailInfoExchangeRate'
-import DetailInfoPriceImpact from '@/dex/components/PageRouterSwap/components/DetailInfoPriceImpact'
+import { DetailInfoExchangeRate } from '@/dex/components/PageRouterSwap/components/DetailInfoExchangeRate'
+import { DetailInfoPriceImpact } from '@/dex/components/PageRouterSwap/components/DetailInfoPriceImpact'
 import { useNetworks } from '@/dex/entities/networks'
-import useStore from '@/dex/store/useStore'
+import { useStore } from '@/dex/store/useStore'
 import { CurveApi, PoolAlert, PoolData, TokensMapper } from '@/dex/types/main.types'
 import { toTokenOption } from '@/dex/utils'
 import { getSlippageImpact } from '@/dex/utils/utilsSwap'
 import Stack from '@mui/material/Stack'
-import AlertBox from '@ui/AlertBox'
-import Checkbox from '@ui/Checkbox'
-import Icon from '@ui/Icon'
-import IconButton from '@ui/IconButton'
+import { AlertBox } from '@ui/AlertBox'
+import { Checkbox } from '@ui/Checkbox'
+import { Icon } from '@ui/Icon'
+import { IconButton } from '@ui/IconButton'
 import { getActiveStep, getStepStatus } from '@ui/Stepper/helpers'
-import Stepper from '@ui/Stepper/Stepper'
+import { Stepper } from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
-import TxInfoBar from '@ui/TxInfoBar'
+import { TxInfoBar } from '@ui/TxInfoBar'
 import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
-import { TokenSelector } from '@ui-kit/features/select-token'
-import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
+import { TokenList, TokenSelector } from '@ui-kit/features/select-token'
+import { usePageVisibleInterval } from '@ui-kit/hooks/usePageVisibleInterval'
+import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
@@ -45,7 +46,7 @@ import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
 const { cloneDeep, isNaN, isUndefined } = lodash
 const { Spacing } = SizesAndSpaces
 
-const Swap = ({
+export const Swap = ({
   chainIdPoolId,
   curve,
   maxSlippage,
@@ -94,13 +95,21 @@ const Swap = ({
 
   const config = useConfig()
   const { address: userAddress } = useConnection()
-  const { data: userFromBalance, isLoading: userFromBalanceLoading } = useTokenBalance({
+  const {
+    data: userFromBalance,
+    isLoading: userFromBalanceLoading,
+    refetch: refetchUserFromBalance,
+  } = useTokenBalance({
     chainId,
     userAddress,
     tokenAddress: (formValues.fromAddress as Address) || undefined,
   })
 
-  const { data: userToBalance, isLoading: userToBalanceLoading } = useTokenBalance({
+  const {
+    data: userToBalance,
+    isLoading: userToBalanceLoading,
+    refetch: refetchUserToBalance,
+  } = useTokenBalance({
     chainId,
     userAddress,
     tokenAddress: (formValues.toAddress as Address) || undefined,
@@ -124,6 +133,9 @@ const Swap = ({
 
   const fromToken = selectList.find((x) => x.address.toLocaleLowerCase() == formValues.fromAddress)
   const toToken = selectList.find((x) => x.address.toLocaleLowerCase() == formValues.toAddress)
+
+  const [isOpenFromToken, openModalFromToken, closeModalFromToken] = useSwitch()
+  const [isOpenToToken, openModalToToken, closeModalToToken] = useSwitch()
 
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<FormValues>, isGetMaxFrom: boolean | null, updatedMaxSlippage: string | null) => {
@@ -159,6 +171,8 @@ const Swap = ({
       const resp = await fetchStepSwap(actionActiveKey, config, curve, poolData, formValues, maxSlippage)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && network) {
+        void refetchUserFromBalance()
+        void refetchUserToBalance()
         setTxInfoBar(
           <TxInfoBar
             description={`Swapped ${fromAmount} ${fromToken}.`}
@@ -171,7 +185,7 @@ const Swap = ({
       }
       if (typeof dismiss === 'function') dismiss()
     },
-    [activeKey, fetchStepSwap, updateFormValues, network],
+    [fetchStepSwap, activeKey, network, refetchUserFromBalance, refetchUserToBalance, updateFormValues],
   )
 
   const getSteps = useCallback(
@@ -371,28 +385,33 @@ const Swap = ({
           tokenSelector={
             <TokenSelector
               selectedToken={fromToken}
-              tokens={selectList}
               disabled={isDisabled || selectList.length === 0}
-              showSearch={false}
-              showManageList={false}
               compact
-              onToken={({ address, symbol }) =>
-                updateFormValues(
-                  {
-                    ...formValues,
-                    ...(address === formValues.toAddress && {
-                      toAddress: formValues.fromAddress,
-                      toToken: swapTokensMapper[formValues.fromAddress].symbol,
-                    }),
-                    fromAddress: address,
-                    fromToken: symbol,
-                    ...(formValues.isFrom === false ? { fromAmount: '' } : { toAmount: '' }),
-                  },
-                  null,
-                  '',
-                )
-              }
-            />
+              onClose={closeModalFromToken}
+              isOpen={!!isOpenFromToken}
+              onOpen={openModalFromToken}
+            >
+              <TokenList
+                tokens={selectList}
+                disableSearch
+                onToken={({ address, symbol }) =>
+                  updateFormValues(
+                    {
+                      ...formValues,
+                      ...(address === formValues.toAddress && {
+                        toAddress: formValues.fromAddress,
+                        toToken: swapTokensMapper[formValues.fromAddress].symbol,
+                      }),
+                      fromAddress: address,
+                      fromToken: symbol,
+                      ...(formValues.isFrom === false ? { fromAmount: '' } : { toAmount: '' }),
+                    },
+                    null,
+                    '',
+                  )
+                }
+              />
+            </TokenSelector>
           }
           {...(formValues.fromError && {
             isError: true,
@@ -442,28 +461,33 @@ const Swap = ({
           tokenSelector={
             <TokenSelector
               selectedToken={toToken}
-              tokens={selectList}
               disabled={isDisabled || selectList.length === 0}
-              showSearch={false}
-              showManageList={false}
               compact
-              onToken={({ address, symbol }) =>
-                updateFormValues(
-                  {
-                    ...formValues,
-                    ...(address === formValues.fromAddress && {
-                      fromAddress: formValues.toAddress,
-                      fromToken: swapTokensMapper[formValues.toAddress].symbol,
-                    }),
-                    toAddress: address,
-                    toToken: symbol,
-                    ...(formValues.isFrom === false ? { fromAmount: '' } : { toAmount: '' }),
-                  },
-                  null,
-                  '',
-                )
-              }
-            />
+              isOpen={!!isOpenToToken}
+              onOpen={openModalToToken}
+              onClose={closeModalToToken}
+            >
+              <TokenList
+                tokens={selectList}
+                disableSearch
+                onToken={({ address, symbol }) =>
+                  updateFormValues(
+                    {
+                      ...formValues,
+                      ...(address === formValues.fromAddress && {
+                        fromAddress: formValues.toAddress,
+                        fromToken: swapTokensMapper[formValues.toAddress].symbol,
+                      }),
+                      toAddress: address,
+                      toToken: symbol,
+                      ...(formValues.isFrom === false ? { fromAmount: '' } : { toAmount: '' }),
+                    },
+                    null,
+                    '',
+                  )
+                }
+              />
+            </TokenSelector>
           }
           walletBalance={{
             balance: decimal(userToBalance),
@@ -564,5 +588,3 @@ const Swap = ({
     </FormContent>
   )
 }
-
-export default Swap

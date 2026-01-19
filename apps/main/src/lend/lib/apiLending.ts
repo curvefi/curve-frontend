@@ -1729,7 +1729,7 @@ const vaultClaim = {
   },
 }
 
-const apiLending = {
+export const apiLending = {
   helpers,
 
   user,
@@ -1750,8 +1750,6 @@ const apiLending = {
   vaultUnstake,
   vaultClaim,
 }
-
-export default apiLending
 
 export async function fetchChartBandBalancesData(
   { bandsBalances, bandsBalancesArr }: { bandsBalances: BandsBalances; bandsBalancesArr: BandsBalancesArr },

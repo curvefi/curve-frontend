@@ -1,10 +1,10 @@
 import { useMemo } from 'react'
 import { styled } from 'styled-components'
 import { ethAddress } from 'viem'
-import networks from '@/loan/networks'
+import { networks } from '@/loan/networks'
 import { ChainId } from '@/loan/types/loan.types'
 import { DetailInfo } from '@ui/DetailInfo'
-import IconTooltip from '@ui/Tooltip/TooltipIcon'
+import { TooltipIcon as IconTooltip } from '@ui/Tooltip/TooltipIcon'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { calculateGas, useGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
@@ -24,7 +24,7 @@ interface Props {
   stepProgress?: StepProgress | null
 }
 
-const DetailInfoEstimateGas = ({ chainId, isDivider = false, loading, estimatedGas, stepProgress }: Props) => {
+export const DetailInfoEstimateGas = ({ chainId, isDivider = false, loading, estimatedGas, stepProgress }: Props) => {
   const { data: chainTokenUsdRate } = useTokenUsdRate({ chainId, tokenAddress: ethAddress })
   const network = networks[chainId]
   const { data: gasInfo } = useGasInfoAndUpdateLib({ chainId, networks })
@@ -74,5 +74,3 @@ const StepProgressWrapper = styled.span`
   font-size: var(--font-size-0);
   text-transform: uppercase;
 `
-
-export default DetailInfoEstimateGas

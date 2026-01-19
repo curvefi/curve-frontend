@@ -1,14 +1,14 @@
 import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine, ResponsiveContainer } from 'recharts'
-import { formatDate, formatNumber } from 'ui/src/utils'
 import { LocksDaily } from '@curvefi/prices-api/dao'
-import PositiveAndNegativeBarChartTooltip from './PositiveAndNegativeBarChartTooltip'
+import { formatDate, formatNumber } from '@ui/utils'
+import { PositiveAndNegativeBarChartTooltip } from './PositiveAndNegativeBarChartTooltip'
 
 type PositiveAndNegativeBarChartProps = {
   data: LocksDaily[]
   height?: number
 }
 
-const PositiveAndNegativeBarChart = ({ data, height = 500 }: PositiveAndNegativeBarChartProps) => (
+export const PositiveAndNegativeBarChart = ({ data, height = 500 }: PositiveAndNegativeBarChartProps) => (
   <ResponsiveContainer width="100%" height={height} debounce={200}>
     <BarChart
       width={500}
@@ -49,5 +49,3 @@ const PositiveAndNegativeBarChart = ({ data, height = 500 }: PositiveAndNegative
     </BarChart>
   </ResponsiveContainer>
 )
-
-export default PositiveAndNegativeBarChart

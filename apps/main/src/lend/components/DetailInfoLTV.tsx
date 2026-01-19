@@ -7,7 +7,7 @@ import { useTokenUsdRate, useTokenUsdRates } from '@ui-kit/lib/model/entities/to
 
 type Amount = { amount: string; address: string }
 
-const DetailInfoLTV = ({
+export const DetailInfoLTV = ({
   loading,
   debt,
   collaterals,
@@ -38,5 +38,3 @@ const DetailInfoLTV = ({
     </DetailInfo>
   )
 }
-
-export default DetailInfoLTV

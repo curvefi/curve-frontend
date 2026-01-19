@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction } from 'react'
 import { styled } from 'styled-components'
-import AlertBox from '@ui/AlertBox'
-import Checkbox from '@ui/Checkbox'
+import { AlertBox } from '@ui/AlertBox'
+import { Checkbox } from '@ui/Checkbox'
 import { formatNumber } from '@ui/utils'
 import { t, Trans } from '@ui-kit/lib/i18n'
 
@@ -45,7 +45,7 @@ export type HighSlippagePriceImpactProps =
   | PriceImpactLowExchangeRateType
 
 // TODO: refactor types
-function WarningModal({
+export function WarningModal({
   confirmed,
   setConfirmed,
   ...props
@@ -109,5 +109,3 @@ const AlertBoxImportantText = styled.div`
   font-weight: bold;
   padding-bottom: 0.25rem;
 `
-
-export default WarningModal

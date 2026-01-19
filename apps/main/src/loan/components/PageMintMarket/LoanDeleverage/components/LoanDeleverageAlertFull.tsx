@@ -2,7 +2,7 @@ import { styled } from 'styled-components'
 import type { FormValues } from '@/loan/components/PageMintMarket/LoanDeleverage/types'
 import { Llamma, UserLoanDetails } from '@/loan/types/loan.types'
 import { getTokenName } from '@/loan/utils/utilsLoan'
-import Box from '@ui/Box'
+import { Box } from '@ui/Box'
 import { DetailInfo } from '@ui/DetailInfo'
 import { formatNumber, getFractionDigitsOptions } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
@@ -10,7 +10,7 @@ import { t } from '@ui-kit/lib/i18n'
 // Deleverage full repayment will result in the following changes to user wallet:
 // 1. wallet.collateral = userState.collateral - formValues.collateral
 // 2. wallet.crvusd ~= (received stablecoin + userState.stablecoin) - debt
-const LoanDeleverageAlertFull = ({
+export const LoanDeleverageAlertFull = ({
   receivedStablecoin,
   formValues,
   llamma,
@@ -84,5 +84,3 @@ const DetailInfoStablecoinBalanceWrapper = styled(Box)`
 const DetailInfoReturnToWalletWrapper = styled(DetailInfo)`
   align-items: flex-start;
 `
-
-export default LoanDeleverageAlertFull

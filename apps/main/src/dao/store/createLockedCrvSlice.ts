@@ -5,7 +5,7 @@ import type { FormEstGas, FormStatus, FormType, FormValues, VecrvInfo } from '@/
 import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/dao/components/PageVeCrv/utils'
 import { invalidateLockerVecrvInfo } from '@/dao/entities/locker-vecrv-info'
 import { helpers } from '@/dao/lib/curvejs'
-import networks from '@/dao/networks'
+import { networks } from '@/dao/networks'
 import type { State } from '@/dao/store/useStore'
 import {
   ChainId,
@@ -20,6 +20,7 @@ import { shortenAccount } from '@ui/utils'
 import { notify, requireLib, useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
+import { invalidateLockerVecrvUser } from '../entities/locker-vecrv-user'
 
 type StateKey = keyof typeof DEFAULT_STATE
 const { cloneDeep } = lodash
@@ -74,7 +75,10 @@ export const DEFAULT_STATE: SliceState = {
   },
 }
 
-const createLockedCrvSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): LockedCrvSlice => ({
+export const createLockedCrvSlice = (
+  set: StoreApi<State>['setState'],
+  get: StoreApi<State>['getState'],
+): LockedCrvSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
     setFormValues: async (curve, isLoadingCurve, rFormType, updatedFormValues, vecrvInfo, isFullReset) => {
@@ -207,10 +211,7 @@ const createLockedCrvSlice = (set: StoreApi<State>['setState'], get: StoreApi<St
 
           // re-fetch user vecrv info
           invalidateLockerVecrvInfo({ chainId: curve.chainId, userAddress: curve.signerAddress })
-          const { wallet } = useWallet.getState()
-          if (wallet) {
-            get().user.updateUserData(curve, wallet)
-          }
+          invalidateLockerVecrvUser({ chainId: curve.chainId, userAddress: curve.signerAddress })
         }
       }
     },
@@ -245,10 +246,7 @@ const createLockedCrvSlice = (set: StoreApi<State>['setState'], get: StoreApi<St
 
           // re-fetch user vecrv info
           invalidateLockerVecrvInfo({ chainId: curve.chainId, userAddress: curve.signerAddress })
-          const { wallet } = useWallet.getState()
-          if (wallet) {
-            get().user.updateUserData(curve, wallet)
-          }
+          invalidateLockerVecrvUser({ chainId: curve.chainId, userAddress: curve.signerAddress })
         }
 
         return resp
@@ -285,10 +283,7 @@ const createLockedCrvSlice = (set: StoreApi<State>['setState'], get: StoreApi<St
 
           // re-fetch user vecrv info
           invalidateLockerVecrvInfo({ chainId: curve.chainId, userAddress: curve.signerAddress })
-          const { wallet } = useWallet.getState()
-          if (wallet) {
-            get().user.updateUserData(curve, wallet)
-          }
+          invalidateLockerVecrvUser({ chainId: curve.chainId, userAddress: curve.signerAddress })
         }
 
         return resp
@@ -372,5 +367,3 @@ const createLockedCrvSlice = (set: StoreApi<State>['setState'], get: StoreApi<St
 export function getActiveKey(formType: FormType | '', chainId: ChainId | undefined, walletAddress: string | undefined) {
   return `${formType}-${chainId ?? ''}-${walletAddress ? shortenAccount(walletAddress) : ''}`
 }
-
-export default createLockedCrvSlice

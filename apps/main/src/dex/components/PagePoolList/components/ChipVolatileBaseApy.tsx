@@ -1,10 +1,10 @@
 import { styled } from 'styled-components'
-import Icon from '@ui/Icon'
-import Chip from '@ui/Typography/Chip'
+import { Icon } from '@ui/Icon'
+import { Chip } from '@ui/Typography/Chip'
 import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 
-const ChipVolatileBaseApy = ({ isBold, showIcon }: { isBold?: boolean; showIcon?: boolean }) => (
+export const ChipVolatileBaseApy = ({ isBold, showIcon }: { isBold?: boolean; showIcon?: boolean }) => (
   <VolatileChip
     size="md"
     isBold={isBold}
@@ -18,5 +18,3 @@ const ChipVolatileBaseApy = ({ isBold, showIcon }: { isBold?: boolean; showIcon?
 const VolatileChip = styled(Chip)`
   color: var(--danger-400);
 `
-
-export default ChipVolatileBaseApy

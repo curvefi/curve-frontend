@@ -4,7 +4,7 @@ import { FormLockCrv } from '@/dao/components/PageVeCrv/components/FormLockCrv'
 import { FormLockDate } from '@/dao/components/PageVeCrv/components/FormLockDate'
 import { FormWithdraw } from '@/dao/components/PageVeCrv/components/FormWithdraw'
 import type { FormType, PageVecrv } from '@/dao/components/PageVeCrv/types'
-import useStore from '@/dao/store/useStore'
+import { useStore } from '@/dao/store/useStore'
 import Stack from '@mui/material/Stack'
 import { isLoading, useCurve } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
@@ -15,7 +15,7 @@ import { getIsLockExpired } from '@ui-kit/utils/vecrv'
 
 const { Spacing } = SizesAndSpaces
 
-const FormCrvLocker = (pageProps: PageVecrv) => {
+export const FormCrvLocker = (pageProps: PageVecrv) => {
   const { curve, rFormType, vecrvInfo } = pageProps
 
   const { connectState } = useCurve()
@@ -60,7 +60,7 @@ const FormCrvLocker = (pageProps: PageVecrv) => {
 
   return tab === 'adjust_crv' || tab === 'adjust_date' || tab === 'withdraw' ? (
     <>
-      <TabsSwitcher variant="underlined" size="small" value={tab} onChange={setTab} options={tabs} fullWidth />
+      <TabsSwitcher variant="underlined" value={tab} onChange={setTab} options={tabs} fullWidth />
 
       <Stack gap={Spacing.md} padding={Spacing.md} paddingBlockStart={Spacing.xs}>
         {tab === 'adjust_crv' && <FormLockCrv {...pageProps} rFormType={tab} />}
@@ -74,5 +74,3 @@ const FormCrvLocker = (pageProps: PageVecrv) => {
     </Stack>
   )
 }
-
-export default FormCrvLocker

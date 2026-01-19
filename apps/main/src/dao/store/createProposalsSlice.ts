@@ -3,7 +3,7 @@ import type { StoreApi } from 'zustand'
 import { invalidateProposalPricesApi } from '@/dao/entities/proposal-prices-api'
 import { invalidateUserProposalVotesQuery } from '@/dao/entities/user-proposal-votes'
 import { helpers } from '@/dao/lib/curvejs'
-import networks from '@/dao/networks'
+import { networks } from '@/dao/networks'
 import type { State } from '@/dao/store/useStore'
 import {
   ProposalListFilter,
@@ -68,7 +68,10 @@ const DEFAULT_STATE: SliceState = {
   activeSortDirection: 'desc',
 }
 
-const createProposalsSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): ProposalsSlice => ({
+export const createProposalsSlice = (
+  set: StoreApi<State>['setState'],
+  get: StoreApi<State>['getState'],
+): ProposalsSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
     setSearchValue: (filterValue) => {
@@ -151,13 +154,10 @@ const createProposalsSlice = (set: StoreApi<State>['setState'], get: StoreApi<St
           notify(successNotificationMessage, 'success', 15000)
 
           // get new user votes list from api
-          const userAddress = get().user.userAddress
-
+          const userAddress = curve?.signerAddress
           if (userAddress) {
             invalidateProposalPricesApi({ proposalId: voteId, proposalType: voteType, txHash: voteResponseHash })
-            invalidateUserProposalVotesQuery({
-              userAddress,
-            })
+            invalidateUserProposalVotesQuery({ userAddress })
           }
         }
       } catch (error) {
@@ -277,5 +277,3 @@ const createProposalsSlice = (set: StoreApi<State>['setState'], get: StoreApi<St
     },
   },
 })
-
-export default createProposalsSlice

@@ -1,16 +1,17 @@
 import { useState } from 'react'
 import { styled } from 'styled-components'
-import MetricsComp, { MetricsColumnData } from '@/dao/components/MetricsComp'
+import { useConnection } from 'wagmi'
+import { MetricsColumnData, MetricsComp } from '@/dao/components/MetricsComp'
 import { useUserGaugeVoteNextTimeQuery } from '@/dao/entities/user-gauge-vote-next-time'
-import useStore from '@/dao/store/useStore'
+import { useStore } from '@/dao/store/useStore'
 import { UserGaugeVoteWeight } from '@/dao/types/dao.types'
-import Box from '@ui/Box'
-import Button from '@ui/Button'
-import TooltipIcon from '@ui/Tooltip/TooltipIcon'
+import { Box } from '@ui/Box'
+import { Button } from '@ui/Button'
+import { TooltipIcon } from '@ui/Tooltip/TooltipIcon'
 import { convertToLocaleTimestamp, formatDate, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { Chain } from '@ui-kit/utils/network'
-import NumberField from './NumberField'
+import { NumberField } from './NumberField'
 
 type VoteGaugeFieldProps = {
   powerUsed: number
@@ -19,8 +20,8 @@ type VoteGaugeFieldProps = {
   newVote?: boolean
 }
 
-const VoteGaugeField = ({ powerUsed, userGaugeVoteData, userVeCrv, newVote = false }: VoteGaugeFieldProps) => {
-  const userAddress = useStore((state) => state.user.userAddress)
+export const VoteGaugeField = ({ powerUsed, userGaugeVoteData, userVeCrv, newVote = false }: VoteGaugeFieldProps) => {
+  const { address: userAddress } = useConnection()
   const castVote = useStore((state) => state.gauges.castVote)
   const txCastVoteState = useStore((state) => state.gauges.txCastVoteState)
   const { data: userGaugeVoteNextTime, isLoading: nextVoteTimeLoading } = useUserGaugeVoteNextTimeQuery({
@@ -36,8 +37,6 @@ const VoteGaugeField = ({ powerUsed, userGaugeVoteData, userVeCrv, newVote = fal
   const maxPower = newVote ? availablePower / 100 : (availablePower + userPower) / 100
   const availableVeCrv = userVeCrv * (availablePower / 100)
 
-  const address = userAddress?.toLowerCase()
-
   const loading = nextVoteTimeLoading || txCastVoteState?.state === 'LOADING' || txCastVoteState?.state === 'CONFIRMING'
 
   const handleChangePower = (value: number) => {
@@ -49,8 +48,8 @@ const VoteGaugeField = ({ powerUsed, userGaugeVoteData, userVeCrv, newVote = fal
   }
 
   const handleCastVote = () => {
-    if (!address) return
-    void castVote(address, gaugeAddress, power)
+    if (!userAddress) return
+    void castVote(userAddress, gaugeAddress, power)
   }
 
   return (
@@ -212,5 +211,3 @@ const LabelTitle = styled.p`
 `
 
 const LabelData = styled.p``
-
-export default VoteGaugeField

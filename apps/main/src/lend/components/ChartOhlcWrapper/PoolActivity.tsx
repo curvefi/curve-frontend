@@ -1,16 +1,16 @@
 import { useEffect, useState } from 'react'
 import { styled } from 'styled-components'
-import LiquidityData from '@/lend/components/ChartOhlcWrapper/LiquidityData'
-import TradesData from '@/lend/components/ChartOhlcWrapper/TradesData'
-import useStore from '@/lend/store/useStore'
-import Button from '@ui/Button/Button'
-import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import { LiquidityData } from '@/lend/components/ChartOhlcWrapper/LiquidityData'
+import { TradesData } from '@/lend/components/ChartOhlcWrapper/TradesData'
+import { useStore } from '@/lend/store/useStore'
+import { Button } from '@ui/Button/Button'
+import { SpinnerWrapper, Spinner } from '@ui/Spinner'
 import { t } from '@ui-kit/lib/i18n'
 import { PoolActivityProps } from './types'
 
 const MIN_HEIGHT = 330
 
-const PoolActivity = ({ chainId, poolAddress, coins }: PoolActivityProps) => {
+export const PoolActivity = ({ chainId, poolAddress, coins }: PoolActivityProps) => {
   const activityFetchStatus = useStore((state) => state.ohlcCharts.activityFetchStatus)
   const lendTradesData = useStore((state) => state.ohlcCharts.lendTradesData)
   const lendControllerData = useStore((state) => state.ohlcCharts.lendControllerData)
@@ -154,5 +154,3 @@ const TimestampColumnTitle = styled.span`
   text-align: right;
   padding: var(--spacing-1) var(--spacing-1);
 `
-
-export default PoolActivity

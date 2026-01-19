@@ -2,16 +2,16 @@ import { styled } from 'styled-components'
 import type { FormValues } from '@/loan/components/PageMintMarket/LoanDeleverage/types'
 import { Llamma, UserLoanDetails } from '@/loan/types/loan.types'
 import { getTokenName } from '@/loan/utils/utilsLoan'
-import Box from '@ui/Box'
+import { Box } from '@ui/Box'
 import { DetailInfo } from '@ui/DetailInfo'
-import Icon from '@ui/Icon'
+import { Icon } from '@ui/Icon'
 import { formatNumber, getFractionDigitsOptions } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 
 // Deleverage partial payment will only result in state change, user will not receive any tokens to wallet.
 // 1. userState.collateral = old userState.collateral - formValues.collateral
 // 2. userState.debt ~= old userState.debt - received stablecoin
-const LoanDeleverageAlertPartial = ({
+export const LoanDeleverageAlertPartial = ({
   receivedStablecoin,
   formValues,
   llamma,
@@ -70,5 +70,3 @@ const ToIcon = styled(Icon)`
   width: 10px;
   margin: 0 2px;
 `
-
-export default LoanDeleverageAlertPartial
