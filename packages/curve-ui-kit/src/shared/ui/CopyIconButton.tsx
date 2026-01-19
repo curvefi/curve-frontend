@@ -1,8 +1,8 @@
-import { useState } from 'react'
 import IconButton, { type IconButtonProps } from '@mui/material/IconButton'
+import { showToast } from '@ui-kit/features/connect-wallet/lib/notify'
+import { t } from '@ui-kit/lib/i18n'
 import { CopyIcon } from '@ui-kit/shared/icons/CopyIcon'
 import { InvertTheme } from '@ui-kit/shared/ui/ThemeProvider'
-import { Toast } from '@ui-kit/shared/ui/Toast'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 
 export function CopyIconButton({
@@ -15,7 +15,6 @@ export function CopyIconButton({
   label: string
   confirmationText: string
 } & IconButtonProps) {
-  const [alertText, setAlertText] = useState<string>()
   return (
     // Extra theme inverter so the tooltip doesn't change colors when inside an inverted block
     <InvertTheme inverted={false}>
@@ -28,23 +27,21 @@ export function CopyIconButton({
             return navigator.clipboard
               ? navigator.clipboard
                   .writeText(copyText)
-                  .then(() => setAlertText(confirmationText))
-                  .catch((e) => setAlertText(e.message))
-              : setAlertText('Clipboard not available due to unsecure origin')
+                  .then(() =>
+                    showToast({
+                      message: copyText,
+                      severity: 'info',
+                      title: confirmationText,
+                      testId: 'copy-confirmation',
+                    }),
+                  )
+                  .catch((e) => showToast({ message: e.message, severity: 'error' }))
+              : showToast({ message: t`Clipboard not available due to unsecure origin`, severity: 'warning' })
           }}
         >
           <CopyIcon />
         </IconButton>
       </Tooltip>
-
-      <Toast
-        open={!!alertText}
-        onClose={() => setAlertText(undefined)}
-        title={confirmationText}
-        data-testid="copy-confirmation"
-      >
-        {copyText}
-      </Toast>
     </InvertTheme>
   )
 }

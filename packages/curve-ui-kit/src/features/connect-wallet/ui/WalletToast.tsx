@@ -1,37 +1,25 @@
 import { useEffect, useState } from 'react'
-import { type AlertProps } from '@mui/material/Alert'
-import { t } from '@ui-kit/lib/i18n'
-import { Toast } from '@ui-kit/shared/ui/Toast'
-import { listenWalletNotifications, type WalletNotification } from '../lib/notify'
-
-const Severities = {
-  hint: 'info',
-  error: 'error',
-  pending: 'info',
-  success: 'success',
-} satisfies Record<WalletNotification['type'], AlertProps['severity']>
-
-const Titles = {
-  hint: t`Hint`,
-  error: t`Error`,
-  pending: t`Pending`,
-  success: t`Success`,
-} satisfies Record<WalletNotification['type'], string>
+import Alert from '@mui/material/Alert'
+import AlertTitle from '@mui/material/AlertTitle'
+import Container from '@mui/material/Container'
+import Snackbar from '@mui/material/Snackbar'
+import { useLayoutStore } from '@ui-kit/features/layout'
+import { Duration } from '@ui-kit/themes/design/0_primitives'
+import { listenWalletNotifications, type ToastNotification } from '../lib/notify'
 
 export const WalletToast = () => {
-  const [notifications, setNotifications] = useState<WalletNotification[]>([])
+  const [notifications, setNotifications] = useState<ToastNotification[]>([])
+  const top = useLayoutStore((state) => state.navHeight)
 
   useEffect(() => {
     const timeouts: number[] = []
-    const dismiss = (notification: WalletNotification): void => {
-      setNotifications((prevNotifications: WalletNotification[]) => prevNotifications.filter((n) => n !== notification))
+    const dismiss = (notification: ToastNotification): void => {
+      setNotifications((prevNotifications: ToastNotification[]) => prevNotifications.filter((n) => n !== notification))
     }
-    const add = (notification: WalletNotification): void => {
-      setNotifications((prevNotifications: WalletNotification[]) => [...prevNotifications, notification])
-      if (notification.autoDismiss) {
-        const timeout = window.setTimeout(() => dismiss(notification), notification.autoDismiss)
-        timeouts.push(timeout)
-      }
+    const add = (notification: ToastNotification): void => {
+      setNotifications((prevNotifications: ToastNotification[]) => [...prevNotifications, notification])
+      const timeout = window.setTimeout(() => dismiss(notification), Duration.Toast[notification.severity ?? 'info'])
+      timeouts.push(timeout)
     }
 
     const cleanupListener = listenWalletNotifications(add, dismiss)
@@ -41,16 +29,21 @@ export const WalletToast = () => {
     }
   }, [])
 
-  return notifications.map(({ id, type, message, autoDismiss }) => (
-    <Toast
-      key={id}
-      open
-      onClose={() => setNotifications((prev) => prev.filter((n) => n.id !== id))}
-      severity={Severities[type]}
-      title={Titles[type]}
-      autoHideDuration={autoDismiss}
+  return (
+    <Snackbar
+      open={notifications.length > 0}
+      onClose={() => setNotifications([])}
+      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      sx={{ top }}
     >
-      {message}
-    </Toast>
-  ))
+      <Container sx={{ justifyContent: 'end', marginTop: 4 }}>
+        {notifications.map(({ id, severity, title, message, testId }) => (
+          <Alert key={id} variant="filled" severity={severity} data-testid={testId}>
+            {title && <AlertTitle>{title}</AlertTitle>}
+            {message}
+          </Alert>
+        ))}
+      </Container>
+    </Snackbar>
+  )
 }

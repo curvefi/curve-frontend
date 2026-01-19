@@ -6,14 +6,13 @@ import IconButton from '@mui/material/IconButton'
 import Link from '@mui/material/Link'
 import Stack, { type StackProps } from '@mui/material/Stack'
 import Typography, { type TypographyProps } from '@mui/material/Typography'
-import { useSwitch } from '@ui-kit/hooks/useSwitch'
+import { showToast } from '@ui-kit/features/connect-wallet/lib/notify'
 import { t } from '@ui-kit/lib/i18n'
 import { ExclamationTriangleIcon } from '@ui-kit/shared/icons/ExclamationTriangleIcon'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
 import { copyToClipboard } from '@ui-kit/utils'
-import { Toast } from './Toast'
 import { Tooltip } from './Tooltip'
 import { WithSkeleton } from './WithSkeleton'
 
@@ -108,12 +107,10 @@ export const ActionInfo = ({
   testId = 'action-info',
   sx,
 }: ActionInfoProps) => {
-  const [isSnackbarOpen, openSnackbar, closeSnackbar] = useSwitch(false)
-
   const copyAndShowSnackbar = useCallback(() => {
     void copyToClipboard(copyValue!.trim())
-    openSnackbar()
-  }, [copyValue, openSnackbar])
+    showToast({ title: copiedTitle ?? t`Value has been copied to clipboard`, message: copyValue, severity: 'info' })
+  }, [copiedTitle, copyValue])
 
   const errorMessage = (typeof error === 'object' && error?.message) || (typeof error === 'string' && error)
   const showPrevValue = isSet(value) && isSet(prevValue)
@@ -205,10 +202,6 @@ export const ActionInfo = ({
           </IconButton>
         )}
       </Stack>
-
-      <Toast open={isSnackbarOpen} onClose={closeSnackbar} title={copiedTitle ?? t`Value has been copied to clipboard`}>
-        {copyValue}
-      </Toast>
     </Stack>
   )
 }

@@ -2,7 +2,7 @@ import { ReactNode, useCallback, useMemo } from 'react'
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
 import Stack from '@mui/material/Stack'
 import Typography, { TypographyProps } from '@mui/material/Typography'
-import { useSwitch } from '@ui-kit/hooks/useSwitch'
+import { showToast } from '@ui-kit/features/connect-wallet/lib/notify'
 import { t } from '@ui-kit/lib/i18n'
 import { Tooltip, type TooltipProps } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -15,7 +15,6 @@ import {
   type NumberFormatOptions,
   type SxProps,
 } from '@ui-kit/utils'
-import { Toast } from './Toast'
 import { WithSkeleton } from './WithSkeleton'
 
 const { Spacing, IconSize } = SizesAndSpaces
@@ -203,13 +202,12 @@ export const Metric = ({
   sx,
 }: MetricProps) => {
   const notionals = useMemo(() => notionalsToString(notional), [notional])
-  const [isCopyAlertOpen, openCopyAlert, closeCopyAlert] = useSwitch(false)
   const copyValue = useCallback(() => {
     if (value || value === 0) {
       void copyToClipboard(value.toString())
-      openCopyAlert()
+      showToast({ title: copyText, message: value, severity: 'info' })
     }
-  }, [value, openCopyAlert])
+  }, [value, copyText])
 
   return (
     <Stack alignItems={alignment} data-testid={testId} sx={sx}>
@@ -245,9 +243,6 @@ export const Metric = ({
           {notionals}
         </Typography>
       )}
-      <Toast open={isCopyAlertOpen} onClose={closeCopyAlert} title={copyText}>
-        <Typography>{value}</Typography>
-      </Toast>
     </Stack>
   )
 }
