@@ -52,7 +52,6 @@ export const ReleaseChannelToggleButtons = () => {
           open
           onClose={() => setReleaseChannelSnackbar(undefined)}
           channel={releaseChannelSnackbar}
-          anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
         />
       )}
     </>

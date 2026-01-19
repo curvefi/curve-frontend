@@ -3,7 +3,6 @@ import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import { styled } from '@mui/material/styles'
 import { LlamaImg } from '@ui/images'
-import { useLayoutStore } from '@ui-kit/features/layout'
 import { useIsTiny } from '@ui-kit/hooks/useBreakpoints'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { AppName } from '@ui-kit/shared/routes'
@@ -29,7 +28,6 @@ export const Footer = ({ appName, networkId }: FooterProps) => {
   const [isBetaModalOpen, openBetaModal, closeBetaModal] = useSwitch()
   const [releaseChannelSnackbar, setReleaseChannelSnackbar] = useState<ReleaseChannel.Beta | ReleaseChannel.Legacy>()
   const isTiny = useIsTiny()
-  const navHeight = useLayoutStore((state) => state.navHeight)
   return (
     <Box
       component="footer"
@@ -102,8 +100,6 @@ export const Footer = ({ appName, networkId }: FooterProps) => {
             open
             onClose={() => setReleaseChannelSnackbar(undefined)}
             channel={releaseChannelSnackbar}
-            anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
-            sx={{ top: navHeight, left: 'unset' }} // unset the left otherwise it will take the whole width
           />
         )}
       </Grid>

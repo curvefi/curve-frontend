@@ -4,7 +4,6 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import IconButton from '@mui/material/IconButton'
 import { NetworkMapping } from '@ui/utils'
-import { useLayoutStore } from '@ui-kit/features/layout'
 import { usePathname } from '@ui-kit/hooks/router'
 import { useShowTestNets } from '@ui-kit/hooks/useLocalStorage'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
@@ -39,7 +38,6 @@ export const ChainSwitcher = ({ networks }: ChainSwitcherProps) => {
   )
 
   const onClick = options.length > 1 ? toggle : openSnackbar
-  const top = useLayoutStore((state) => state.navHeight)
   return (
     <>
       <IconButton size="small" onClick={onClick} data-testid="btn-change-chain">
@@ -51,7 +49,6 @@ export const ChainSwitcher = ({ networks }: ChainSwitcherProps) => {
         open={isSnackbarOpen}
         onClose={hideSnackbar}
         severity="warning"
-        sx={{ top }}
         title={t`This application is only available on the Ethereum Mainnet`}
         data-testid="alert-eth-only"
       />

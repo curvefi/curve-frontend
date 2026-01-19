@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import IconButton, { type IconButtonProps } from '@mui/material/IconButton'
-import Typography from '@mui/material/Typography'
 import { CopyIcon } from '@ui-kit/shared/icons/CopyIcon'
 import { InvertTheme } from '@ui-kit/shared/ui/ThemeProvider'
 import { Toast } from '@ui-kit/shared/ui/Toast'
@@ -44,7 +43,7 @@ export function CopyIconButton({
         title={confirmationText}
         data-testid="copy-confirmation"
       >
-        <Typography>{copyText}</Typography>
+        {copyText}
       </Toast>
     </InvertTheme>
   )

@@ -8,7 +8,7 @@ export const ReleaseChannelSnackbar = ({
   ...props
 }: {
   channel: ReleaseChannel.Beta | ReleaseChannel.Legacy
-} & Omit<ToastProps, 'children'>) => {
+} & Pick<ToastProps, 'open' | 'onClose'>) => {
   const [currentChannel] = useReleaseChannel()
   return (
     <Toast

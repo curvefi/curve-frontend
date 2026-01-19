@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react'
 import { type AlertProps } from '@mui/material/Alert'
-import Typography from '@mui/material/Typography'
-import { useLayoutStore } from '@ui-kit/features/layout'
 import { t } from '@ui-kit/lib/i18n'
 import { Toast } from '@ui-kit/shared/ui/Toast'
 import { listenWalletNotifications, type WalletNotification } from '../lib/notify'
@@ -22,7 +20,6 @@ const Titles = {
 
 export const WalletToast = () => {
   const [notifications, setNotifications] = useState<WalletNotification[]>([])
-  const top = useLayoutStore((state) => state.navHeight)
 
   useEffect(() => {
     const timeouts: number[] = []
@@ -44,16 +41,16 @@ export const WalletToast = () => {
     }
   }, [])
 
-  return notifications.map(({ id, type, message }) => (
+  return notifications.map(({ id, type, message, autoDismiss }) => (
     <Toast
       key={id}
       open
       onClose={() => setNotifications((prev) => prev.filter((n) => n.id !== id))}
       severity={Severities[type]}
       title={Titles[type]}
-      sx={{ top }}
+      autoHideDuration={autoDismiss}
     >
-      <Typography>{message}</Typography>
+      {message}
     </Toast>
   ))
 }
