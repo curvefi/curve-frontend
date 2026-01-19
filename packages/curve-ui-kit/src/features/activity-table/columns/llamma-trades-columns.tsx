@@ -1,14 +1,20 @@
 import { createColumnHelper, type ColumnDef } from '@tanstack/react-table'
-import { TokenAmountCell, TimestampCell, AddressCell } from '@ui-kit/features/activity-table'
 import { t } from '@ui-kit/lib/i18n'
-import type { TradeRow } from '../hooks/useLlammaActivity'
-import { TradesColumnId } from './columns.enum'
+import { TokenAmountCell, TimestampCell, AddressCell } from '../cells'
+import type { LlammaTradeRow } from '../types'
 
-const columnHelper = createColumnHelper<TradeRow>()
+export enum LlammaTradesColumnId {
+  User = 'buyer',
+  Bought = 'amountBought',
+  Sold = 'amountSold',
+  Time = 'timestamp',
+}
 
-export const createTradesColumns = (): ColumnDef<TradeRow, unknown>[] => [
+const columnHelper = createColumnHelper<LlammaTradeRow>()
+
+export const createLlammaTradesColumns = (): ColumnDef<LlammaTradeRow, unknown>[] => [
   columnHelper.accessor('amountBought', {
-    id: TradesColumnId.Bought,
+    id: LlammaTradesColumnId.Bought,
     header: t`Bought`,
     cell: ({ row }) => (
       <TokenAmountCell
@@ -18,9 +24,9 @@ export const createTradesColumns = (): ColumnDef<TradeRow, unknown>[] => [
         chainId={row.original.network}
       />
     ),
-  }) as ColumnDef<TradeRow, unknown>,
+  }) as ColumnDef<LlammaTradeRow, unknown>,
   columnHelper.accessor('amountSold', {
-    id: TradesColumnId.Sold,
+    id: LlammaTradesColumnId.Sold,
     header: t`Sold`,
     cell: ({ row }) => (
       <TokenAmountCell
@@ -32,17 +38,17 @@ export const createTradesColumns = (): ColumnDef<TradeRow, unknown>[] => [
       />
     ),
     meta: { type: 'numeric' },
-  }) as ColumnDef<TradeRow, unknown>,
+  }) as ColumnDef<LlammaTradeRow, unknown>,
   columnHelper.accessor('buyer', {
-    id: TradesColumnId.User,
-    header: t`User`,
+    id: LlammaTradesColumnId.User,
+    header: t`Address`,
     cell: ({ getValue }) => <AddressCell address={getValue()} />,
     meta: { type: 'numeric' },
-  }) as ColumnDef<TradeRow, unknown>,
+  }) as ColumnDef<LlammaTradeRow, unknown>,
   columnHelper.accessor('timestamp', {
-    id: TradesColumnId.Time,
+    id: LlammaTradesColumnId.Time,
     header: t`Time`,
     cell: ({ row }) => <TimestampCell timestamp={row.original.timestamp} txUrl={row.original.url} />,
     meta: { type: 'numeric' },
-  }) as ColumnDef<TradeRow, unknown>,
+  }) as ColumnDef<LlammaTradeRow, unknown>,
 ]

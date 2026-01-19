@@ -87,8 +87,14 @@ export type AllPoolTrade = {
   poolState: unknown | null
 }
 
+export type PoolLiquidityEventType =
+  | 'AddLiquidity'
+  | 'RemoveLiquidity'
+  | 'RemoveLiquidityOne'
+  | 'RemoveLiquidityImbalance'
+
 export type PoolLiquidityEvent = {
-  eventType: string
+  eventType: PoolLiquidityEventType
   tokenAmounts: number[]
   fees: number[]
   tokenSupply: number

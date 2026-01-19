@@ -1,17 +1,19 @@
 import type { Chain } from '@curvefi/prices-api'
 import { getAllPoolTrades, type AllPoolTrade } from '@curvefi/prices-api/pools'
-import { createValidationSuite } from '@ui-kit/lib'
+import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { contractValidationGroup } from '@ui-kit/lib/model/query/contract-validation'
 import type { Address } from '@ui-kit/utils'
 
-export type PoolTradesQuery = {
+type PoolTradesQuery = {
   blockchainId: Chain
   poolAddress: Address
   page?: number
   perPage?: number
   includeState?: boolean
 }
+
+export type PoolTradesParams = FieldsOf<PoolTradesQuery>
 
 export type PoolTradesResult = {
   chain: string
@@ -23,7 +25,7 @@ export type PoolTradesResult = {
 }
 
 export const { useQuery: usePoolTrades } = queryFactory({
-  queryKey: ({ blockchainId, poolAddress, page, perPage }: PoolTradesQuery) =>
+  queryKey: ({ blockchainId, poolAddress, page, perPage }: PoolTradesParams) =>
     ['pool-trades', { blockchainId }, { poolAddress }, { page }, { perPage }] as const,
   queryFn: async ({
     blockchainId,
@@ -40,7 +42,7 @@ export const { useQuery: usePoolTrades } = queryFactory({
       includeState,
     }),
   staleTime: '1m',
-  validationSuite: createValidationSuite(({ blockchainId, poolAddress }: PoolTradesQuery) => {
+  validationSuite: createValidationSuite(({ blockchainId, poolAddress }: PoolTradesParams) => {
     contractValidationGroup({ blockchainId, contractAddress: poolAddress })
   }),
 })

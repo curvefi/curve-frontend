@@ -121,8 +121,8 @@ export type GetPoolLiquidityEventsResponse = {
   count: number
   data: {
     liquidity_event_type: string
-    token_amounts: number[]
-    fees: number[]
+    token_amounts: number[] | null
+    fees: number[] | null
     token_supply: number
     block_number: number
     time: string

@@ -2,37 +2,36 @@ import { useCallback, useMemo, useState } from 'react'
 import { useLlammaEvents } from '@/llamalend/queries/llamma-events.query'
 import { useLlammaTrades } from '@/llamalend/queries/llamma-trades.query'
 import type { Chain, Address } from '@curvefi/prices-api'
-import type { LlammaEvent, LlammaTrade } from '@curvefi/prices-api/llamma'
+import type { LlammaTrade, LlammaEvent } from '@curvefi/prices-api/llamma'
 import { scanTxPath, type BaseConfig } from '@ui/utils'
-import type { ActivitySelection, ActivityTableConfig } from '@ui-kit/features/activity-table'
+import {
+  type ActivitySelection,
+  type ActivityTableConfig,
+  type LlammaTradeRow,
+  type LlammaEventRow,
+  type Token,
+  type LlammaActivitySelection,
+  createLlammaTradesColumns,
+  createLlammaEventsColumns,
+  useLlammaActivityVisibility,
+} from '@ui-kit/features/activity-table'
 import { t } from '@ui-kit/lib/i18n'
-import { createTradesColumns, createEventsColumns } from '../columns'
-import { useLlammaActivityVisibility } from './useLlammaActivityVisibility'
-
-// Extended types with url property for TableItem compatibility
-export type TradeRow = LlammaTrade & { url?: string; network: Chain }
-export type EventRow = LlammaEvent & { url?: string; network: Chain; collateralToken: Token | undefined; borrowToken: Token | undefined }
-
-export type LlammaActivitySelection = 'trades' | 'events'
 
 export const LLAMMA_ACTIVITY_SELECTIONS: ActivitySelection<LlammaActivitySelection>[] = [
   { key: 'trades', label: t`AMM` },
   { key: 'events', label: t`Controller` },
 ]
 
-export type Token = {
-  symbol: string
-  address: Address
-}
-
 const PAGE_SIZE = 50
 
-type UseLlammaActivityProps = {
+export type UseLlammaActivityProps = {
   /** The chain identifier for the prices API (e.g., 'ethereum', 'arbitrum') */
   network: Chain | undefined
-  /** The AMM contract address */
+  /** The collateral token info */
   collateralToken: Token | undefined
+  /** The borrow token info */
   borrowToken: Token | undefined
+  /** The AMM contract address */
   ammAddress: Address | undefined
   /** The endpoint type ('lending' or 'crvusd') */
   endpoint: 'lending' | 'crvusd'
@@ -83,10 +82,10 @@ export const useLlammaActivity = ({
   })
 
   // Transform trades data with block explorer URLs
-  const tradesWithUrls: TradeRow[] = useMemo(
+  const tradesWithUrls: LlammaTradeRow[] = useMemo(
     () =>
       network
-        ? (tradesData?.trades.map((trade) => ({
+        ? (tradesData?.trades.map((trade: LlammaTrade) => ({
             ...trade,
             url: scanTxPath(networkConfig, trade.txHash),
             network,
@@ -96,10 +95,10 @@ export const useLlammaActivity = ({
   )
 
   // Transform events data with block explorer URLs
-  const eventsWithUrls: EventRow[] = useMemo(
+  const eventsWithUrls: LlammaEventRow[] = useMemo(
     () =>
       network
-        ? (eventsData?.events.map((event) => ({
+        ? (eventsData?.events.map((event: LlammaEvent) => ({
             ...event,
             url: scanTxPath(networkConfig, event.txHash),
             network,
@@ -111,8 +110,8 @@ export const useLlammaActivity = ({
   )
 
   // Memoize column definitions
-  const tradesColumns = useMemo(() => createTradesColumns(), [])
-  const eventsColumns = useMemo(() => createEventsColumns(), [])
+  const tradesColumns = useMemo(() => createLlammaTradesColumns(), [])
+  const eventsColumns = useMemo(() => createLlammaEventsColumns(), [])
 
   // Page change handlers
   const handleTradesPageChange = useCallback((pageIndex: number) => {
@@ -123,7 +122,7 @@ export const useLlammaActivity = ({
     setEventsPageIndex(pageIndex)
   }, [])
 
-  const tradesTableConfig: ActivityTableConfig<TradeRow> = useMemo(
+  const tradesTableConfig: ActivityTableConfig<LlammaTradeRow> = useMemo(
     () => ({
       data: tradesWithUrls,
       columns: tradesColumns,
@@ -136,10 +135,19 @@ export const useLlammaActivity = ({
       pageSize: PAGE_SIZE,
       onPageChange: handleTradesPageChange,
     }),
-    [tradesWithUrls, tradesColumns, isTradesLoading, isTradesError, tradesColumnVisibility, tradesData?.count, tradesPageIndex, handleTradesPageChange],
+    [
+      tradesWithUrls,
+      tradesColumns,
+      isTradesLoading,
+      isTradesError,
+      tradesColumnVisibility,
+      tradesData?.count,
+      tradesPageIndex,
+      handleTradesPageChange,
+    ],
   )
 
-  const eventsTableConfig: ActivityTableConfig<EventRow> = useMemo(
+  const eventsTableConfig: ActivityTableConfig<LlammaEventRow> = useMemo(
     () => ({
       data: eventsWithUrls,
       columns: eventsColumns,
@@ -152,7 +160,16 @@ export const useLlammaActivity = ({
       pageSize: PAGE_SIZE,
       onPageChange: handleEventsPageChange,
     }),
-    [eventsWithUrls, eventsColumns, isEventsLoading, isEventsError, eventsColumnVisibility, eventsData?.count, eventsPageIndex, handleEventsPageChange],
+    [
+      eventsWithUrls,
+      eventsColumns,
+      isEventsLoading,
+      isEventsError,
+      eventsColumnVisibility,
+      eventsData?.count,
+      eventsPageIndex,
+      handleEventsPageChange,
+    ],
   )
 
   return {

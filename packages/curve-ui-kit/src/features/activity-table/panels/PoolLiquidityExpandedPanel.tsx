@@ -3,33 +3,28 @@ import Button from '@mui/material/Button'
 import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { type ExpandedPanel } from '@ui-kit/features/activity-table'
 import { t } from '@ui-kit/lib/i18n'
-import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatNumber, shortenString } from '@ui-kit/utils'
-import type { TradeRow } from '../hooks/useLlammaActivity'
+import type { ExpandedPanel, PoolLiquidityRow } from '../types'
 
 const { Spacing } = SizesAndSpaces
 
-export const TradesExpandedPanel: ExpandedPanel<TradeRow> = ({ row: { original: trade } }) => {
-  const { url, amountSold, tokenSold, buyer, network } = trade
+export const PoolLiquidityExpandedPanel: ExpandedPanel<PoolLiquidityRow> = ({ row: { original: event } }) => {
+  const { url, tokenAmounts, provider } = event
 
   return (
     <Stack>
       <Stack paddingTop={Spacing.md} gap={Spacing.xs}>
         <Stack direction="row" justifyContent="space-between" alignItems="center">
-          <Typography variant="bodyMRegular" color="textSecondary">{t`Sold`}</Typography>
-          <Stack direction="row" alignItems="center" gap={Spacing.xs}>
-            <Typography variant="tableCellMBold" color="error">
-              -{formatNumber(amountSold, { abbreviate: false })} {tokenSold.symbol}
-            </Typography>
-            <TokenIcon blockchainId={network} address={tokenSold.address} size="mui-sm" />
-          </Stack>
+          <Typography variant="bodyMRegular" color="textSecondary">{t`Amounts`}</Typography>
+          <Typography variant="tableCellMBold">
+            {tokenAmounts.map((amount) => formatNumber(amount, { abbreviate: false })).join(', ')}
+          </Typography>
         </Stack>
         <Stack direction="row" justifyContent="space-between" alignItems="center">
           <Typography variant="bodyMRegular" color="textSecondary">{t`User`}</Typography>
-          <Typography variant="tableCellMBold">{shortenString(buyer, { digits: 4 })}</Typography>
+          <Typography variant="tableCellMBold">{shortenString(provider, { digits: 4 })}</Typography>
         </Stack>
       </Stack>
 

@@ -1,0 +1,134 @@
+import { useState } from 'react'
+import { BandsChart } from '@/llamalend/features/bands-chart/BandsChart'
+import type { ChartDataPoint, ParsedBandsBalances } from '@/llamalend/features/bands-chart/types'
+import { LlammaActivity, type LlammaActivityProps } from '@/llamalend/features/llamma-activity'
+import Stack from '@mui/material/Stack'
+import { useTheme } from '@mui/material/styles'
+import { type Token } from '@ui-kit/features/activity-table'
+import { ChartWrapper, type OhlcChartProps } from '@ui-kit/features/candle-chart/ChartWrapper'
+import { TIME_OPTIONS, SOFT_LIQUIDATION_DESCRIPTION } from '@ui-kit/features/candle-chart/constants'
+import { ErrorMessage } from '@ui-kit/features/candle-chart/ErrorMessage'
+import type { TimeOption } from '@ui-kit/features/candle-chart/types'
+import { useNewBandsChart } from '@ui-kit/hooks/useFeatureFlags'
+import { useSwitch } from '@ui-kit/hooks/useSwitch'
+import { t } from '@ui-kit/lib/i18n'
+import { ChartFooter } from '@ui-kit/shared/ui/Chart/ChartFooter'
+import { type ChartSelections, ChartHeader } from '@ui-kit/shared/ui/Chart/ChartHeader'
+import { type LegendItem } from '@ui-kit/shared/ui/Chart/LegendSet'
+import { ToggleBandsChartButton } from '@ui-kit/shared/ui/Chart/ToggleBandsChartButton'
+import { SubTabsSwitcher } from '@ui-kit/shared/ui/SubTabsSwitcher'
+import { type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+
+const { Spacing } = SizesAndSpaces
+
+type Tab = 'chart' | 'marketActivity'
+
+const TABS: TabOption<Tab>[] = [
+  { value: 'chart', label: t`Chart` },
+  { value: 'marketActivity', label: t`LLAMMA` },
+]
+
+const EMPTY_ARRAY: never[] = []
+
+export type ChartAndActivityLayoutProps = {
+  isMarketAvailable: boolean
+  /** Default tab to show on mount */
+  defaultTab?: Tab
+  /** Chart state */
+  chart: {
+    ohlcDataUnavailable: boolean
+    isLoading: boolean
+    selectedChartKey: string | undefined
+    setSelectedChart: (key: string) => void
+    setTimeOption: (option: TimeOption) => void
+    legendSets: LegendItem[]
+    ohlcChartProps: OhlcChartProps & { selectChartList: ChartSelections[] }
+  }
+  /** Bands chart data */
+  bands?: {
+    chartData: ChartDataPoint[]
+    userBandsBalances: ParsedBandsBalances[]
+    oraclePrice: string | undefined
+    isLoading: boolean
+    isError: boolean
+    collateralToken: Token | undefined
+    borrowToken: Token | undefined
+  }
+  /** Activity component props */
+  activity: LlammaActivityProps
+}
+
+export const ChartAndActivityLayout = ({
+  isMarketAvailable,
+  defaultTab = 'chart',
+  chart,
+  bands,
+  activity,
+}: ChartAndActivityLayoutProps) => {
+  const theme = useTheme()
+  const [isBandsVisible, , , toggleBandsVisible] = useSwitch(true)
+  const newBandsChartEnabled = useNewBandsChart()
+  const [tab, setTab] = useState<Tab>(defaultTab)
+
+  const showBands = newBandsChartEnabled && bands && isBandsVisible
+
+  return (
+    <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, gap: Spacing.sm, padding: Spacing.md }}>
+      <SubTabsSwitcher tabs={TABS} value={tab} onChange={setTab} />
+
+      {tab === 'marketActivity' && isMarketAvailable && (
+        <LlammaActivity {...activity} />
+      )}
+
+      {tab === 'chart' && (
+        <Stack sx={{ gap: Spacing.sm }}>
+          <ChartHeader
+            chartOptionVariant="select"
+            chartSelections={{
+              selections: chart.ohlcChartProps.selectChartList,
+              activeSelection: chart.selectedChartKey,
+              setActiveSelection: chart.setSelectedChart,
+            }}
+            timeOption={{
+              options: TIME_OPTIONS,
+              activeOption: chart.ohlcChartProps.timeOption,
+              setActiveOption: chart.setTimeOption,
+            }}
+            isLoading={chart.isLoading}
+            customButton={
+              newBandsChartEnabled && bands && (
+                <ToggleBandsChartButton label="Bands" isVisible={isBandsVisible} onClick={toggleBandsVisible} />
+              )
+            }
+          />
+          <Stack
+            display={{ mobile: 'block', tablet: showBands ? 'grid' : undefined }}
+            gridTemplateColumns={{ tablet: showBands ? '1fr 0.3fr' : undefined }}
+          >
+            {chart.ohlcDataUnavailable ? (
+              <ErrorMessage
+                errorMessage={t`Chart data is not available for this market.`}
+                sx={{ alignSelf: 'center' }}
+              />
+            ) : (
+              <ChartWrapper {...chart.ohlcChartProps} betaBackgroundColor={theme.design.Layer[1].Fill} />
+            )}
+            {showBands && (
+              <BandsChart
+                isLoading={bands.isLoading}
+                isError={bands.isError}
+                collateralToken={bands.collateralToken}
+                borrowToken={bands.borrowToken}
+                chartData={bands.chartData}
+                userBandsBalances={bands.userBandsBalances ?? EMPTY_ARRAY}
+                oraclePrice={bands.oraclePrice}
+              />
+            )}
+          </Stack>
+          <ChartFooter legendSets={chart.legendSets} description={SOFT_LIQUIDATION_DESCRIPTION} />
+        </Stack>
+      )}
+    </Stack>
+  )
+}

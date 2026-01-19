@@ -14,8 +14,6 @@ type TokenAmountCellProps = {
   symbol?: string
   /** Optional USD value to display below the amount */
   amountUsd?: number | null
-  /** Whether to show color coding based on positive/negative value */
-  showColorCoding?: boolean
   /** Horizontal alignment of the content */
   align?: 'left' | 'right'
   /** Token address for displaying the token icon */
@@ -30,11 +28,8 @@ type TokenAmountCellProps = {
  * - Negative amounts are shown in red (error)
  * - Zero or null amounts are shown in default text color
  */
-export const TokenAmountCell = ({ amount, symbol, amountUsd, showColorCoding = true, align = 'left', tokenAddress, chainId }: TokenAmountCellProps) => {
-  const getColor = () => {
-    if (!showColorCoding || amount === 0 || amount == null) return 'textPrimary'
-    return amount > 0 ? 'success' : 'error'
-  }
+export const TokenAmountCell = ({ amount, symbol, amountUsd, align = 'left', tokenAddress, chainId }: TokenAmountCellProps) => {
+  const isRightAligned = align === 'right'
 
   const formatAmount = () => {
     if (amount == null || amount === 0) return '-'
@@ -45,16 +40,17 @@ export const TokenAmountCell = ({ amount, symbol, amountUsd, showColorCoding = t
 
   return (
     <ActivityTableCell>
-      <Stack direction="row" justifyContent={align === 'right' ? 'flex-end' : 'flex-start'} alignItems="center" gap={Spacing.xs}>
-        <Stack alignItems={align === 'right' ? 'flex-end' : 'flex-start'}>
-          <Typography variant="tableCellMBold" color={getColor()}>
+      <Stack direction="row" justifyContent={isRightAligned ? 'flex-end' : 'flex-start'} alignItems="center" gap={Spacing.xs}>
+      {tokenAddress && !isRightAligned && <TokenIcon blockchainId={chainId} address={tokenAddress} size="mui-md" />}
+        <Stack alignItems={isRightAligned ? 'flex-end' : 'flex-start'}>
+          <Typography variant="tableCellMBold">
             {formatAmount()}
           </Typography>
           {amountUsd != null && amountUsd !== 0 && (
             <Typography variant="bodySRegular">{formatNumber(amountUsd, { unit: 'dollar', abbreviate: true })}</Typography>
           )}
         </Stack>
-        {tokenAddress && <TokenIcon blockchainId={chainId} address={tokenAddress} size="mui-sm" />}
+        {tokenAddress && isRightAligned && <TokenIcon blockchainId={chainId} address={tokenAddress} size="mui-md" />}
       </Stack>
     </ActivityTableCell>
   )

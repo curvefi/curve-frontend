@@ -1,17 +1,18 @@
 import { useMemo } from 'react'
 import type { VisibilityState } from '@tanstack/react-table'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
-import { TradesColumnId, EventsColumnId } from '../columns/columns.enum'
+import { LlammaEventsColumnId } from '../columns/llamma-events-columns'
+import { LlammaTradesColumnId } from '../columns/llamma-trades-columns'
 
 /**
  * Create mobile column visibility for trades table.
  * On mobile, shows only Bought and Time columns.
  */
 const createTradesMobileVisibility = (): VisibilityState => ({
-  [TradesColumnId.Bought]: true,
-  [TradesColumnId.Sold]: false,
-  [TradesColumnId.User]: false,
-  [TradesColumnId.Time]: true,
+  [LlammaTradesColumnId.Bought]: true,
+  [LlammaTradesColumnId.Sold]: false,
+  [LlammaTradesColumnId.User]: false,
+  [LlammaTradesColumnId.Time]: true,
 })
 
 /**
@@ -19,10 +20,10 @@ const createTradesMobileVisibility = (): VisibilityState => ({
  * On mobile, shows only Action and Time columns.
  */
 const createEventsMobileVisibility = (): VisibilityState => ({
-  [EventsColumnId.Action]: true,
-  [EventsColumnId.Change]: false,
-  [EventsColumnId.User]: false,
-  [EventsColumnId.Time]: true,
+  [LlammaEventsColumnId.Action]: true,
+  [LlammaEventsColumnId.Change]: false,
+  [LlammaEventsColumnId.User]: false,
+  [LlammaEventsColumnId.Time]: true,
 })
 
 /**
@@ -32,15 +33,9 @@ const createEventsMobileVisibility = (): VisibilityState => ({
 export const useLlammaActivityVisibility = () => {
   const isMobile = useIsMobile()
 
-  const tradesColumnVisibility = useMemo(
-    () => (isMobile ? createTradesMobileVisibility() : undefined),
-    [isMobile],
-  )
+  const tradesColumnVisibility = useMemo(() => (isMobile ? createTradesMobileVisibility() : undefined), [isMobile])
 
-  const eventsColumnVisibility = useMemo(
-    () => (isMobile ? createEventsMobileVisibility() : undefined),
-    [isMobile],
-  )
+  const eventsColumnVisibility = useMemo(() => (isMobile ? createEventsMobileVisibility() : undefined), [isMobile])
 
   return { tradesColumnVisibility, eventsColumnVisibility }
 }

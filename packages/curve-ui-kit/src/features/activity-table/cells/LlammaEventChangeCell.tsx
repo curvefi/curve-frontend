@@ -1,16 +1,16 @@
 import type { Chain } from '@curvefi/prices-api'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { ActivityTableCell } from '@ui-kit/features/activity-table'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatNumber } from '@ui-kit/utils'
-import type { EventRow, Token } from '../hooks/useLlammaActivity'
+import type { LlammaEventRow, Token } from '../types'
+import { ActivityTableCell } from './ActivityTableCell'
 
 const { Spacing } = SizesAndSpaces
 
-type EventChangeCellProps = {
-  event: EventRow
+type LlammaEventChangeCellProps = {
+  event: LlammaEventRow
   chain: Chain
   collateralToken: Token | undefined
   borrowToken: Token | undefined
@@ -26,7 +26,7 @@ type AmountRowProps = {
 const AmountRow = ({ amount, amountUsd, token, chain }: AmountRowProps) => (
   <Stack direction="row" justifyContent="right" gap={Spacing.xs}>
     <Stack gap={Spacing.sm}>
-      <Typography variant="tableCellMBold" color={amount >= 0 ? 'success' : 'error'}>
+      <Typography variant="tableCellMBold">
         {amount >= 0 ? '+' : ''}
         {formatNumber(amount, { abbreviate: false })} {token?.symbol}
       </Typography>
@@ -40,7 +40,7 @@ const AmountRow = ({ amount, amountUsd, token, chain }: AmountRowProps) => (
   </Stack>
 )
 
-export const EventChangeCell = ({ event, collateralToken, borrowToken, chain }: EventChangeCellProps) => {
+export const LlammaEventChangeCell = ({ event, collateralToken, borrowToken, chain }: LlammaEventChangeCellProps) => {
   const { deposit, withdrawal } = event
 
   if (deposit) {

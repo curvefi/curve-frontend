@@ -3,16 +3,15 @@ import Button from '@mui/material/Button'
 import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { type ExpandedPanel } from '@ui-kit/features/activity-table'
 import { t } from '@ui-kit/lib/i18n'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatNumber, shortenString } from '@ui-kit/utils'
-import type { EventRow } from '../hooks/useLlammaActivity'
+import type { ExpandedPanel, LlammaEventRow } from '../types'
 
 const { Spacing } = SizesAndSpaces
 
-export const EventsExpandedPanel: ExpandedPanel<EventRow> = ({ row: { original: event } }) => {
+export const LlammaEventsExpandedPanel: ExpandedPanel<LlammaEventRow> = ({ row: { original: event } }) => {
   const { url, deposit, withdrawal, provider, network, collateralToken, borrowToken } = event
 
   return (
@@ -25,9 +24,7 @@ export const EventsExpandedPanel: ExpandedPanel<EventRow> = ({ row: { original: 
               <Typography variant="tableCellMBold" color="success">
                 +{formatNumber(deposit.amount, { abbreviate: false })} {collateralToken?.symbol}
               </Typography>
-              {collateralToken && (
-                <TokenIcon blockchainId={network} address={collateralToken.address} size="mui-sm" />
-              )}
+              {collateralToken && <TokenIcon blockchainId={network} address={collateralToken.address} size="mui-sm" />}
             </Stack>
           </Stack>
         )}
@@ -53,9 +50,7 @@ export const EventsExpandedPanel: ExpandedPanel<EventRow> = ({ row: { original: 
                   <Typography variant="tableCellMBold" color="error">
                     -{formatNumber(withdrawal.amountBorrowed, { abbreviate: false })} {borrowToken?.symbol}
                   </Typography>
-                  {borrowToken && (
-                    <TokenIcon blockchainId={network} address={borrowToken.address} size="mui-sm" />
-                  )}
+                  {borrowToken && <TokenIcon blockchainId={network} address={borrowToken.address} size="mui-sm" />}
                 </Stack>
               </Stack>
             )}

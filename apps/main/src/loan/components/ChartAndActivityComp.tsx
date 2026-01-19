@@ -1,27 +1,27 @@
-import { useOneWayMarket } from '@/lend/entities/chain'
-import { useOhlcChartState } from '@/lend/hooks/useOhlcChartState'
-import { networks } from '@/lend/networks'
-import { Api, ChainId } from '@/lend/types/lend.types'
 import { useBandsData } from '@/llamalend/features/bands-chart/hooks/useBandsData'
 import { getBandsChartToken } from '@/llamalend/features/bands-chart/utils'
 import { ChartAndActivityLayout } from '@/llamalend/widgets/ChartAndActivityLayout'
+import { useOhlcChartState } from '@/loan/hooks/useOhlcChartState'
+import { networks } from '@/loan/networks'
+import { ChainId, Llamma } from '@/loan/types/loan.types'
 import type { Chain, Address } from '@curvefi/prices-api'
 import { type Token } from '@ui-kit/features/activity-table'
+import { useCurve } from '@ui-kit/features/connect-wallet'
 
 type ChartAndActivityCompProps = {
   rChainId: ChainId
-  rOwmId: string
-  api: Api | undefined
+  market: Llamma | null
+  llammaId: string
 }
 
-export const ChartAndActivityComp = ({ rChainId, rOwmId, api }: ChartAndActivityCompProps) => {
-  const market = useOneWayMarket(rChainId, rOwmId).data
-  const collateralTokenAddress = market?.collateral_token.address
-  const borrowedTokenAddress = market?.borrowed_token.address
+export const ChartAndActivityComp = ({ rChainId, market, llammaId }: ChartAndActivityCompProps) => {
+  const { llamaApi: api = null } = useCurve()
+  const collateralTokenAddress = market?.coinAddresses[1]
+  const borrowedTokenAddress = market?.coinAddresses[0]
 
   const networkConfig = networks[rChainId]
   const network = networkConfig?.id.toLowerCase() as Chain
-  const ammAddress = market?.addresses.amm as Address | undefined
+  const ammAddress = market?.address as Address | undefined
 
   const {
     ohlcDataUnavailable,
@@ -33,7 +33,8 @@ export const ChartAndActivityComp = ({ rChainId, rOwmId, api }: ChartAndActivity
     ohlcChartProps,
   } = useOhlcChartState({
     rChainId,
-    rOwmId,
+    market,
+    llammaId,
   })
 
   const {
@@ -44,21 +45,19 @@ export const ChartAndActivityComp = ({ rChainId, rOwmId, api }: ChartAndActivity
     isError: isBandsError,
   } = useBandsData({
     chainId: rChainId,
-    marketId: rOwmId,
+    marketId: llammaId,
     api,
     collateralTokenAddress,
     borrowedTokenAddress,
   })
 
-  const collateralToken = getBandsChartToken(collateralTokenAddress, market?.collateral_token.symbol) as
-    | Token
-    | undefined
-  const borrowToken = getBandsChartToken(borrowedTokenAddress, market?.borrowed_token.symbol) as Token | undefined
+  const collateralToken = getBandsChartToken(collateralTokenAddress, market?.collateralSymbol) as Token | undefined
+  const borrowToken = getBandsChartToken(borrowedTokenAddress, market?.coins[0]) as Token | undefined
 
   return (
     <ChartAndActivityLayout
       isMarketAvailable={!!market}
-      defaultTab="marketActivity"
+      defaultTab="chart"
       chart={{
         ohlcDataUnavailable,
         isLoading: isChartLoading,
@@ -82,7 +81,7 @@ export const ChartAndActivityComp = ({ rChainId, rOwmId, api }: ChartAndActivity
         ammAddress,
         collateralToken,
         borrowToken,
-        endpoint: 'lending',
+        endpoint: 'crvusd',
         networkConfig,
       }}
     />

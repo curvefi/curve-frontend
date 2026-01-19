@@ -91,9 +91,9 @@ export const parseAllPoolTrade = (x: Responses.GetAllPoolTradesResponse['data'][
 export const parsePoolLiquidityEvent = (
   x: Responses.GetPoolLiquidityEventsResponse['data'][number],
 ): Models.PoolLiquidityEvent => ({
-  eventType: x.liquidity_event_type,
-  tokenAmounts: [...x.token_amounts],
-  fees: [...x.fees],
+  eventType: x.liquidity_event_type as Models.PoolLiquidityEventType,
+  tokenAmounts: x.token_amounts ? [...x.token_amounts] : [],
+  fees: x.fees ? [...x.fees] : [],
   tokenSupply: x.token_supply,
   blockNumber: x.block_number,
   time: toDate(x.time),
