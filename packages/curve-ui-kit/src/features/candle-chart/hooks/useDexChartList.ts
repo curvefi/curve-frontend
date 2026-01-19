@@ -10,6 +10,11 @@ type UseDexChartListArgs = {
   hasChartData: boolean
 }
 
+/**
+ * Calculates all possible combinations without repetition of a certain size. Copied from `lodash.combinations`.
+ * @param collection A collection of distinct values to calculate the groups from.
+ * @param n A number as the size of each group.
+ */
 const combinations = <T>(collection: T[], n: number): T[][] => {
   const array = _.values(collection)
   if (array.length < n) {
