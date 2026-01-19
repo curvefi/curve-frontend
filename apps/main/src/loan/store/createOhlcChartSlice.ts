@@ -8,7 +8,6 @@ import type { Address, Chain } from '@curvefi/prices-api'
 import { getOracle } from '@curvefi/prices-api/lending'
 import { getOHLC, getTrades, type LlammaTrade, getEvents, type LlammaEvent } from '@curvefi/prices-api/llamma'
 import type {
-  TimeOptions,
   FetchingStatus,
   LpPriceOhlcDataFormatted,
   LlamaBaselinePriceData,
@@ -48,17 +47,12 @@ type SliceState = {
   llammaTradesData: LlammaTrade[]
   llammaControllerData: LlammaEvent[]
   activityFetchStatus: FetchingStatus
-  timeOption: TimeOptions
-  oraclePriceVisible: boolean
-  liqRangeCurrentVisible: boolean
-  liqRangeNewVisible: boolean
 }
 
 const sliceKey = 'ohlcCharts'
 
 export type OhlcChartSlice = {
   [sliceKey]: SliceState & {
-    setChartTimeOption(timeOption: TimeOptions): void
     fetchOracleOhlcData(
       chainId: ChainId,
       controller: string,
@@ -122,9 +116,6 @@ export type OhlcChartSlice = {
       end: number,
     ): Promise<void>
     fetchPoolActivity(chainId: ChainId, poolAddress: string): void
-    toggleOraclePriceVisible: () => void
-    toggleLiqRangeCurrentVisible: () => void
-    toggleLiqRangeNewVisible: () => void
     resetState(chainId: ChainId): void
   }
 }
@@ -159,22 +150,11 @@ const DEFAULT_STATE: SliceState = {
   llammaTradesData: [],
   llammaControllerData: [],
   activityFetchStatus: 'LOADING',
-  timeOption: '1d',
-  oraclePriceVisible: true,
-  liqRangeCurrentVisible: true,
-  liqRangeNewVisible: true,
 }
 
 export const createOhlcChart = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
-    setChartTimeOption: (timeOption: TimeOptions) => {
-      set(
-        produce((state: State) => {
-          state[sliceKey].timeOption = timeOption
-        }),
-      )
-    },
     fetchOracleOhlcData: async (
       chainId: ChainId,
       controller: string,
@@ -699,27 +679,6 @@ export const createOhlcChart = (set: StoreApi<State>['setState'], get: StoreApi<
           }),
         )
       }
-    },
-    toggleOraclePriceVisible: () => {
-      set(
-        produce((state: State) => {
-          state[sliceKey].oraclePriceVisible = !get()[sliceKey].oraclePriceVisible
-        }),
-      )
-    },
-    toggleLiqRangeCurrentVisible: () => {
-      set(
-        produce((state: State) => {
-          state[sliceKey].liqRangeCurrentVisible = !get()[sliceKey].liqRangeCurrentVisible
-        }),
-      )
-    },
-    toggleLiqRangeNewVisible: () => {
-      set(
-        produce((state: State) => {
-          state[sliceKey].liqRangeNewVisible = !get()[sliceKey].liqRangeNewVisible
-        }),
-      )
     },
     resetState: () => {
       get().resetAppState(sliceKey, DEFAULT_STATE)

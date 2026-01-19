@@ -15,17 +15,19 @@ export type TokenSelectorModalProps = {
   isOpen: boolean
   /** Controls whether the modal should use a compact layout with fixed height */
   compact: boolean
+  /** Title of the modal */
+  title?: string
   /** The content of the modal */
   children: ReactNode
 }
 
 export type Props = TokenSelectorModalCallbacks & TokenSelectorModalProps
 
-export const TokenSelectorModal = ({ isOpen, compact, onClose, children }: Props) => (
+export const TokenSelectorModal = ({ isOpen, compact, onClose, children, title = t`Select Token` }: Props) => (
   <ModalDialog
     open={isOpen}
     onClose={onClose}
-    title={t`Select Token`}
+    title={title}
     compact={compact}
     maxHeight={MaxHeight.tokenSelector}
     sx={{ '& .MuiPaper-root:not(.MuiAlert-root)': { overflowY: 'hidden' } }}
