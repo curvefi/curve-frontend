@@ -42,7 +42,14 @@ describe('CreateLoanForm Component Tests', () => {
   }))
 
   const marketType = oneValueOf(LlamaMarketType)
-  const { id, collateralAddress: tokenAddress, collateral, borrow, chainId } = oneLoanTestMarket(marketType)
+  const {
+    id,
+    collateralAddress: tokenAddress,
+    collateral,
+    borrow,
+    hasLeverage,
+    chainId,
+  } = oneLoanTestMarket(marketType)
   const leverageEnabled = oneBool() // test with and without leverage
 
   function BorrowTabTest({ onCreated }: BorrowTabTestProps) {
@@ -85,8 +92,8 @@ describe('CreateLoanForm Component Tests', () => {
     const onCreated = cy.stub()
     cy.mount(<BorrowTabTestWrapper onCreated={onCreated} />)
     writeCreateLoanForm({ collateral, borrow, leverageEnabled })
-    checkLoanDetailsLoaded({ leverageEnabled })
-    checkLoanRangeSlider(leverageEnabled)
+    checkLoanDetailsLoaded({ leverageEnabled, hasLeverage })
+    checkLoanRangeSlider({ leverageEnabled, hasLeverage })
     submitCreateLoanForm().then(() => expect(onCreated).to.be.called)
   })
 })

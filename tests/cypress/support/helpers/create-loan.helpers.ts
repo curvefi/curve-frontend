@@ -1,6 +1,5 @@
 import { LoanPreset } from '@/llamalend/constants'
-import { recordValues } from '@curvefi/prices-api/objects.util'
-import { oneOf } from '@cy/support/generators'
+import { oneOf, oneValueOf } from '@cy/support/generators'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { Chain, Decimal } from '@ui-kit/utils'
 import { LOAD_TIMEOUT } from '../ui'
@@ -18,6 +17,7 @@ const CREATE_LOAN_TEST_MARKETS = {
       borrow: '10',
       chainId,
       path: '/crvusd/ethereum/markets/wsteth',
+      hasLeverage: false,
     },
     {
       id: 'lbtc',
@@ -26,6 +26,7 @@ const CREATE_LOAN_TEST_MARKETS = {
       borrow: '100',
       chainId,
       path: '/crvusd/ethereum/markets/lbtc',
+      hasLeverage: true,
     },
   ],
   [LlamaMarketType.Lend]: [
@@ -36,6 +37,7 @@ const CREATE_LOAN_TEST_MARKETS = {
       borrow: '0.9',
       chainId,
       path: '/lend/ethereum/markets/0x74f88Baa966407b50c10B393bBD789639EFfE78B',
+      hasLeverage: true,
     },
     {
       id: 'one-way-market-7',
@@ -44,11 +46,12 @@ const CREATE_LOAN_TEST_MARKETS = {
       borrow: '90',
       chainId,
       path: '/lend/ethereum/markets/0x98Fc283d6636f6DCFf5a817A00Ac69A3ADd96907',
+      hasLeverage: false,
     },
   ],
 } as const
 
-export const oneLoanTestMarket = (type: LlamaMarketType = oneOf(...recordValues(LlamaMarketType))) =>
+export const oneLoanTestMarket = (type: LlamaMarketType = oneValueOf(LlamaMarketType)) =>
   oneOf(...CREATE_LOAN_TEST_MARKETS[type])
 
 const getActionValue = (name: string) => cy.get(`[data-testid="${name}-value"]`, LOAD_TIMEOUT)
@@ -57,13 +60,24 @@ const getActionValue = (name: string) => cy.get(`[data-testid="${name}-value"]`,
  * Check all loan detail values are loaded and valid.
  * The accordion is expected to be opened before calling this function.
  */
-export function checkLoanDetailsLoaded({ leverageEnabled }: { leverageEnabled: boolean }) {
-  getActionValue('borrow-band-range')
-    .invoke(LOAD_TIMEOUT, 'text')
-    .should('match', /(\d(\.\d+)?) to (-?\d(\.\d+)?)/)
-  getActionValue('borrow-price-range')
-    .invoke(LOAD_TIMEOUT, 'text')
-    .should('match', /(\d(\.\d+)?) - (\d(\.\d+)?)/)
+export function checkLoanDetailsLoaded({
+  leverageEnabled,
+  hasLeverage,
+}: {
+  leverageEnabled: boolean
+  hasLeverage: boolean
+}) {
+  if (hasLeverage) {
+    getActionValue('borrow-band-range')
+      .invoke(LOAD_TIMEOUT, 'text')
+      .should('match', /(\d(\.\d+)?) to (-?\d(\.\d+)?)/)
+    getActionValue('borrow-price-range')
+      .invoke(LOAD_TIMEOUT, 'text')
+      .should('match', /(\d(\.\d+)?) - (\d(\.\d+)?)/)
+  } else {
+    getActionValue('borrow-band-range').should('not.exist')
+    getActionValue('borrow-price-range').should('not.exist')
+  }
   getActionValue('borrow-apr').contains('%')
   getActionValue('borrow-apr-previous').contains('%')
   getActionValue('borrow-ltv').contains('%')
@@ -107,7 +121,13 @@ export function writeCreateLoanForm({
 /**
  * Test the loan range slider by selecting max ltv and max borrow presets, checking for errors, and clearing them.
  */
-export function checkLoanRangeSlider(leverageEnabled: boolean) {
+export function checkLoanRangeSlider({
+  leverageEnabled,
+  hasLeverage,
+}: {
+  leverageEnabled: boolean
+  hasLeverage: boolean
+}) {
   cy.get(`[data-testid="loan-preset-${LoanPreset.MaxLtv}"]`).click()
   cy.get('[data-testid="borrow-set-debt-to-max"]').should('not.exist') // should only render after loaded
   cy.get('[data-testid="borrow-set-debt-to-max"]', LOAD_TIMEOUT).click()
@@ -115,7 +135,7 @@ export function checkLoanRangeSlider(leverageEnabled: boolean) {
   cy.get('[data-testid="helper-message-error"]', LOAD_TIMEOUT).should('contain.text', 'Debt is too high')
   cy.get('[data-testid="borrow-set-debt-to-max"]').click() // set max again to fix error
   cy.get('[data-testid="helper-message-error"]').should('not.exist')
-  checkLoanDetailsLoaded({ leverageEnabled })
+  checkLoanDetailsLoaded({ leverageEnabled, hasLeverage })
 }
 
 /**

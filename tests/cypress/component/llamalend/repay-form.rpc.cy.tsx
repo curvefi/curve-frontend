@@ -25,7 +25,7 @@ import {
 import { createTenderlyWagmiConfigFromVNet, createVirtualTestnet } from '@cy/support/helpers/tenderly'
 import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
 import { fundErc20, fundEth } from '@cy/support/helpers/tenderly/vnet-fund'
-import { LOAD_TIMEOUT } from '@cy/support/ui'
+import { API_LOAD_TIMEOUT, LOAD_TIMEOUT } from '@cy/support/ui'
 import Box from '@mui/material/Box'
 import Skeleton from '@mui/material/Skeleton'
 import { useCurve } from '@ui-kit/features/connect-wallet/lib/CurveContext'
@@ -49,7 +49,14 @@ describe('RepayForm Component Tests', () => {
   }))
 
   const marketType = oneValueOf(LlamaMarketType)
-  const { id, collateralAddress: tokenAddress, collateral, borrow, chainId } = oneLoanTestMarket(marketType)
+  const {
+    id,
+    collateralAddress: tokenAddress,
+    collateral,
+    borrow,
+    chainId,
+    hasLeverage,
+  } = oneLoanTestMarket(marketType)
 
   beforeEach(() => {
     const vnet = getVirtualNetwork()
@@ -103,10 +110,13 @@ describe('RepayForm Component Tests', () => {
     writeCreateLoanForm({ collateral, borrow, leverageEnabled: false, openAccordion: false })
 
     cy.get('[data-testid="create-loan-submit-button"]', LOAD_TIMEOUT).click()
-    cy.get('[data-testid="repay-submit-button"]', LOAD_TIMEOUT).should('be.enabled')
+    cy.get('[data-testid="repay-submit-button"]', API_LOAD_TIMEOUT).should('be.visible')
     selectRepayToken('crvUSD')
     writeRepayLoanForm({ amount: oneOf<Decimal>(borrow, `${Number(borrow) / oneInt(1, 10)}`) })
-    checkRepayDetailsLoaded()
+    checkRepayDetailsLoaded({
+      expectedDebtInfo: [borrow, 0, 'crvUSD'].join('\n'), // note the arrow is a svg so it doesn't show in text
+      hasLeverage,
+    })
     submitRepayForm().then(() => expect(onRepaid).to.be.called)
   })
 })

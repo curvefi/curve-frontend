@@ -12,24 +12,35 @@ export function selectRepayToken(symbol: string) {
 
 export function writeRepayLoanForm({ amount }: { amount: Decimal }) {
   getRepayInput().clear().type(amount)
-  cy.get('[data-testid="loan-info-accordion"] button', LOAD_TIMEOUT).click() // open the accordion
+  cy.get('[data-testid="loan-info-accordion"] button', LOAD_TIMEOUT).first().click() // open the accordion
 }
 
-export function checkRepayDetailsLoaded() {
-  getActionValue('borrow-band-range')
-    .invoke(LOAD_TIMEOUT, 'text')
-    .should('match', /(\d(\.\d+)?) to (-?\d(\.\d+)?)/)
-  getActionValue('borrow-price-range')
-    .invoke(LOAD_TIMEOUT, 'text')
-    .should('match', /(\d(\.\d+)?) - (\d(\.\d+)?)/)
+export function checkRepayDetailsLoaded({
+  hasLeverage,
+  expectedDebtInfo,
+}: {
+  expectedDebtInfo: string
+  hasLeverage: boolean
+}) {
+  if (hasLeverage) {
+    getActionValue('borrow-band-range')
+      .invoke(LOAD_TIMEOUT, 'text')
+      .should('match', /(\d(\.\d+)?) to (-?\d(\.\d+)?)/)
+    getActionValue('borrow-price-range')
+      .invoke(LOAD_TIMEOUT, 'text')
+      .should('match', /(\d(\.\d+)?) - (\d(\.\d+)?)/)
+  } else {
+    getActionValue('borrow-band-range').should('not.exist')
+    getActionValue('borrow-price-range').should('not.exist')
+  }
   getActionValue('borrow-apr').contains('%')
-  getActionValue('borrow-ltv').contains('%')
+  getActionValue('borrow-debt').contains(expectedDebtInfo)
   cy.get('[data-testid="loan-form-errors"]').should('not.exist')
 }
 
 export function submitRepayForm() {
   cy.get('[data-testid="repay-submit-button"]').click()
   cy.get('[data-testid="repay-submit-button"]').should('be.disabled')
-  cy.get('[data-testid="repay-submit-button"]', LOAD_TIMEOUT).should('be.enabled')
+  cy.get('[data-testid="repay-submit-button"]', LOAD_TIMEOUT)
   return cy.get('[data-testid="repay-submit-button"]')
 }

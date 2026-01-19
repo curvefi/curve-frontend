@@ -111,6 +111,10 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
   const { isFull, max } = useMaxRepayTokenValues({ collateralToken, borrowToken, params, form }, enabled)
   const formErrors = useFormErrors(form.formState)
 
+  useEffect(() => {
+    console.log({ isAvailable: isAvailable.data, formErrors, isDisabled: !isAvailable.data || formErrors.length > 0 })
+  }, [isAvailable.data, formErrors])
+
   return {
     form,
     values,
