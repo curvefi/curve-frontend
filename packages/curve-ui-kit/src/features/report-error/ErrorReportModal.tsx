@@ -17,9 +17,9 @@ import { type ErrorContext, type ContactMethod, useErrorReportForm } from './use
 
 const { Spacing } = SizesAndSpaces
 const contactCopyByMethod = {
-  email: { label: t`Email address`, placeholder: t`0xtutti@curve.finance` },
-  telegram: { label: t`Telegram`, placeholder: '@0xtutti' },
-  discord: { label: t`Discord`, placeholder: '@0xtutti' },
+  email: { label: t`Email address`, placeholder: t`johnthellama@email.com` },
+  telegram: { label: t`Telegram`, placeholder: '@johnthellama' },
+  discord: { label: t`Discord`, placeholder: '@johnthellama' },
 }
 
 type ErrorReportModalProps = {
