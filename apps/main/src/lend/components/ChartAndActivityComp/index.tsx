@@ -17,7 +17,7 @@ import { ChartFooter } from '@ui-kit/shared/ui/Chart/ChartFooter'
 import { ChartHeader } from '@ui-kit/shared/ui/Chart/ChartHeader'
 import { ToggleBandsChartButton } from '@ui-kit/shared/ui/Chart/ToggleBandsChartButton'
 import { SubTabsSwitcher } from '@ui-kit/shared/ui/SubTabsSwitcher'
-import { type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
+import { TabOption } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { PoolActivity } from './PoolActivity'
 

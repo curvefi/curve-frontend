@@ -2,7 +2,7 @@ import { useState } from 'react'
 import Card from '@mui/material/Card'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { SubTabsSwitcher } from '../SubTabsSwitcher'
-import type { TabOption } from '../TabsSwitcher'
+import { TabOption } from '../Tabs/TabsSwitcher'
 
 type TabValue = string
 

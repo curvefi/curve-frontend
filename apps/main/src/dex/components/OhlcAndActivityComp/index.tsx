@@ -9,7 +9,7 @@ import type { PricesApiPool } from '@ui-kit/features/candle-chart/types'
 import { t } from '@ui-kit/lib/i18n'
 import { ChartHeader } from '@ui-kit/shared/ui/Chart/ChartHeader'
 import { SubTabsSwitcher } from '@ui-kit/shared/ui/SubTabsSwitcher'
-import { type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
+import { TabOption } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces

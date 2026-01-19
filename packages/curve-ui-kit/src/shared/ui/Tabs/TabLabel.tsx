@@ -1,11 +1,11 @@
+import { ReactNode } from 'react'
+import { Box } from '@mui/material'
 import Stack from '@mui/material/Stack'
 import Typography, { TypographyProps } from '@mui/material/Typography'
 import { TAB_SUFFIX_CLASS, TAB_TEXT_VARIANTS } from '@ui-kit/themes/components/tabs'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { TabOption, TabsSwitcherProps } from './TabsSwitcher'
 import { WithWrapper } from '../WithWrapper'
-import { ReactNode } from 'react'
-import { Box } from '@mui/material'
+import { TabOption, TabsSwitcherProps } from './TabsSwitcher'
 
 const { Spacing } = SizesAndSpaces
 
