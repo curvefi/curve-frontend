@@ -9,12 +9,12 @@ import { getAddCollateralHealthOptions } from '@/llamalend/queries/add-collatera
 import { useMarketRates } from '@/llamalend/queries/market-rates'
 import { getUserHealthOptions } from '@/llamalend/queries/user-health.query'
 import { useUserState } from '@/llamalend/queries/user-state.query'
-import { mapQuery } from '@/llamalend/queries/utils'
 import { CollateralParams } from '@/llamalend/queries/validation/manage-loan.types'
 import type { CollateralForm } from '@/llamalend/queries/validation/manage-loan.validation'
 import { LoanInfoAccordion } from '@/llamalend/widgets/manage-loan/LoanInfoAccordion'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
+import { mapQuery } from '@ui-kit/types/util'
 import { q } from '@ui-kit/types/util'
 import { decimal, Decimal } from '@ui-kit/utils'
 

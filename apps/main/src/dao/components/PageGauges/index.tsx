@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { styled } from 'styled-components'
-import { useConnection } from 'wagmi'
 import { Box } from '@ui/Box'
 import { t } from '@ui-kit/lib/i18n'
 import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
@@ -15,19 +14,18 @@ const tabs: TabOption<Tab>[] = [
 ]
 
 export const Gauges = () => {
-  const { address: userAddress } = useConnection()
   const [tab, setTab] = useState<Tab>('gaugeList')
 
   return (
     <Wrapper>
       <Box flex flexColumn fillWidth flexGap={'var(--spacing-3)'}>
-        <GaugeWeightDistribution isUserVotes={tab === 'gaugeVoting'} userAddress={userAddress} />
+        <GaugeWeightDistribution isUserVotes={tab === 'gaugeVoting'} />
         <Box>
           <TabsSwitcher variant="contained" value={tab} onChange={setTab} options={tabs} />
 
           <Container variant="secondary">
             {tab === 'gaugeList' && <GaugesList />}
-            {tab === 'gaugeVoting' && <GaugeVoting userAddress={userAddress} />}
+            {tab === 'gaugeVoting' && <GaugeVoting />}
           </Container>
         </Box>
       </Box>

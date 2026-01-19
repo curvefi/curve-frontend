@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import type { FormattedTransactionReceipt, Hex } from 'viem'
 import { useConfig } from 'wagmi'
 import { invalidateAllUserMarketDetails } from '@/llamalend/queries/validation/invalidation'
@@ -96,12 +97,18 @@ export function useLlammaMutation<TVariables extends object, TData extends Resul
   onReset,
 }: LlammaMutationOptions<TVariables, TData>) {
   const { llamaApi, wallet } = useCurve()
-  const userAddress = wallet?.account.address
+  const userAddress = wallet?.address
   const config = useConfig()
 
-  const { mutate, mutateAsync, error, data, isPending, isSuccess, reset } = useMutation({
+  // Track our own error state because errors thrown in onMutate don't populate React Query's error.
+  const [error, setError] = useState<Error | null>(null)
+
+  const { mutate, mutateAsync, data, isPending, isSuccess, reset } = useMutation({
     mutationKey,
     onMutate: (variables: TVariables) => {
+      // Clear local error at the start of a new mutation attempt.
+      setError(null)
+      reset() // reset mutation state on new mutation
       // Early validation - throwing here prevents mutationFn from running
       if (!wallet) throw new Error('Missing provider')
       if (!llamaApi) throw new Error('Missing llamalend api')
@@ -131,6 +138,7 @@ export function useLlammaMutation<TVariables extends object, TData extends Resul
       await onSuccess?.(data, receipt, variables, context)
     },
     onError: (error, variables, context) => {
+      setError(error)
       logError(mutationKey, { error, variables, marketId: context?.market.id })
       notify(t`Transaction failed`, 'error') // hide the actual error message, it can be too long - display it in the form
     },

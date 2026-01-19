@@ -17,23 +17,25 @@ import { FavoriteTokens } from './FavoriteTokens'
 
 const { Spacing } = SizesAndSpaces
 
-export type TokenListProps = Pick<TokenSectionProps, 'tokens' | 'onToken'> &
-  Pick<TokenSectionProps, 'balances' | 'tokenPrices' | 'disabledTokens'> & {
-    /** Callback when user enters text in the search input (debounced) */
-    onSearch?: (search: string) => void
-    /** List of favorite token options to display at the top */
-    favorites?: Option[]
-    /** Custom error message to display (e.g., when tokens failed to load) */
-    error?: string
-    /** Disable automatic sorting of tokens and apply your own sorting of the tokens property */
-    disableSorting?: boolean
-    /** Disable the "My Tokens" section that shows tokens with non-zero balances */
-    disableMyTokens?: boolean
-    /** Disable the search input field */
-    disableSearch?: boolean
-    /** Custom React nodes to render below favorites section */
-    children?: ReactNode
-  }
+export type TokenListProps = Pick<
+  TokenSectionProps,
+  'tokens' | 'onToken' | 'balances' | 'tokenPrices' | 'disabledTokens' | 'isLoading'
+> & {
+  /** Callback when user enters text in the search input (debounced) */
+  onSearch?: (search: string) => void
+  /** List of favorite token options to display at the top */
+  favorites?: Option[]
+  /** Custom error message to display (e.g., when tokens failed to load) */
+  error?: string
+  /** Disable automatic sorting of tokens and apply your own sorting of the tokens property */
+  disableSorting?: boolean
+  /** Disable the "My Tokens" section that shows tokens with non-zero balances */
+  disableMyTokens?: boolean
+  /** Disable the search input field */
+  disableSearch?: boolean
+  /** Custom React nodes to render below favorites section */
+  children?: ReactNode
+}
 
 export const TokenList = ({
   tokens,
@@ -42,6 +44,7 @@ export const TokenList = ({
   tokenPrices,
   error,
   disabledTokens,
+  isLoading = false,
   disableSorting = false,
   disableMyTokens = false,
   disableSearch = false,
@@ -177,7 +180,7 @@ export const TokenList = ({
           <AlertTitle>{t`No tokens found`}</AlertTitle>
         </Alert>
       ) : (
-        <Stack sx={{ overflowY: 'auto' }}>
+        <>
           <TokenSection
             title={t`My tokens`}
             tokens={myTokens}
@@ -186,6 +189,7 @@ export const TokenList = ({
             disabledTokens={disabledTokens}
             preview={previewMy}
             showAllLabel={t`Show dust`}
+            isLoading={isLoading}
             onShowAll={closeShowPreviewMy}
             onToken={onToken}
           />
@@ -197,10 +201,11 @@ export const TokenList = ({
             tokenPrices={tokenPrices}
             disabledTokens={disabledTokens}
             preview={previewAll}
+            isLoading={isLoading}
             onShowAll={closeShowPreviewAll}
             onToken={onToken}
           />
-        </Stack>
+        </>
       )}
     </Stack>
   )
