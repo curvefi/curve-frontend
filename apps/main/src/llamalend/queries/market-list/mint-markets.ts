@@ -52,7 +52,7 @@ const {
   validationSuite: userContractValidationSuite,
 })
 
-export const invalidateAllUserMintMarkets = (userAddress: Address | undefined) => {
+export const invalidateAllUserMintMarkets = (userAddress: Address | null | undefined) => {
   invalidateUserMintMarkets({ userAddress })
   recordEntries(getCurrentUserMintMarkets({ userAddress }) ?? {}).forEach(([blockchainId, contracts]) =>
     contracts.forEach((contractAddress) =>
