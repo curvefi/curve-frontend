@@ -15,12 +15,14 @@ export const clickTab = (testIdPrefix: string, value: string, options: Partial<C
   tab.then(($tab) => {
     // check if the tab is clickable
     if (isTabClickable($tab)) {
+      // phishing banner hides button on mobile that's why the force click
       cy.wrap($tab).click({ force: true })
       return
     }
     // if not clickable, find it in the kebab menu and click it
     cy.get(`[data-testid="${testIdPrefix}-kebab-button"]`, options).click({ force: true })
     cy.get(`[data-testid="${testIdPrefix}-kebab-menu"]`, options)
+      // phishing banner hides button on mobile that's why the force click
       .get(`[data-testid="${testIdPrefix}-${value}"]`, options)
       .click({ force: true })
   })

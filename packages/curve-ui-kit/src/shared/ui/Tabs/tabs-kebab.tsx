@@ -7,7 +7,7 @@ import { type TypographyProps } from '@mui/material/Typography'
 import { RouterLink as Link } from '@ui-kit/shared/ui/RouterLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { DotsVerticalIcon } from '../../icons/DotsVertical'
-import { TabLabel } from './TabsLabel'
+import { TabLabel } from './TabLabel'
 import { TabOption, TabsSwitcherProps } from './TabsSwitcher'
 
 type KebabTabProps<T> = {

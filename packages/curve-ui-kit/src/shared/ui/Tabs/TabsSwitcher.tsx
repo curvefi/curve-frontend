@@ -1,5 +1,5 @@
 import type { UrlObject } from 'url'
-import { useMemo, type ReactNode } from 'react'
+import { useMemo } from 'react'
 import Stack from '@mui/material/Stack'
 import Tab, { type TabProps } from '@mui/material/Tab'
 import Tabs, { type TabsProps } from '@mui/material/Tabs'
@@ -13,8 +13,8 @@ import {
   TABS_VARIANT_CLASSES,
   TabSwitcherVariants,
 } from '../../../themes/components/tabs'
+import { TabLabel } from './TabLabel'
 import { KEBAB_TAB_VALUE, KebabMenu, KebabTab } from './tabs-kebab'
-import { TabLabel } from './TabsLabel'
 
 const { Spacing } = SizesAndSpaces
 
@@ -30,7 +30,7 @@ export type TabOption<T> = Pick<TabProps, 'label' | 'disabled' | 'icon' | 'sx'> 
   alwaysInKebab?: boolean
 }
 
-export type TabsSwitcherProps<T> = Pick<TabsProps, 'sx'> & {
+export type TabsSwitcherProps<T> = Pick<TabsProps, 'sx' | 'children'> & {
   size?: keyof typeof TABS_SIZES_CLASSES
   variant?: TabSwitcherVariants
   /** The overflow behavior of the tabs. This is directly mapped to the MUI's variant prop. */
@@ -42,7 +42,6 @@ export type TabsSwitcherProps<T> = Pick<TabsProps, 'sx'> & {
   hideInactiveBorders?: boolean
   onChange?: (value: T) => void
   testIdPrefix?: string
-  children?: ReactNode
   // fullWidth: deprecated, use overflow="fullWidth" instead
 }
 
@@ -71,7 +70,7 @@ export const TabsSwitcher = <T extends string | number>({
   children,
   ...props
 }: TabsSwitcherProps<T>) => {
-  // TODO: make kebab mode only available in vertical orientation
+  // TODO: make kebab mode also available in vertical orientation
   const isKebabMode = overflow === 'kebab' && props.orientation !== 'vertical'
   const {
     renderedOptions,
