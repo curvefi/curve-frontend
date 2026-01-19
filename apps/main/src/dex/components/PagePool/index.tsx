@@ -2,9 +2,9 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { styled } from 'styled-components'
 import { type Address, isAddressEqual } from 'viem'
 import { useConfig } from 'wagmi'
+import { OhlcAndActivityComp } from '@/dex/components/OhlcAndActivityComp'
 import { CampaignRewardsBanner } from '@/dex/components/PagePool/components/CampaignRewardsBanner'
 import { Deposit } from '@/dex/components/PagePool/Deposit'
-import { PoolInfoData } from '@/dex/components/PagePool/PoolDetails/ChartOhlcWrapper'
 import { PoolParameters } from '@/dex/components/PagePool/PoolDetails/PoolParameters'
 import { PoolStats } from '@/dex/components/PagePool/PoolDetails/PoolStats'
 import { Swap } from '@/dex/components/PagePool/Swap'
@@ -258,7 +258,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
         {poolAddress && <CampaignRewardsBanner chainId={rChainId} address={poolAddress} />}
         {!isLite && pricesApiPoolData && pricesApi && (
           <PriceAndTradesWrapper variant="secondary">
-            <PoolInfoData rChainId={rChainId} pricesApiPoolData={pricesApiPoolData} />
+            <OhlcAndActivityComp rChainId={rChainId} pricesApiPoolData={pricesApiPoolData} />
           </PriceAndTradesWrapper>
         )}
         <Stack>

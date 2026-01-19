@@ -1,8 +1,7 @@
 import { formatNumber } from '@ui-kit/utils'
-import type { TimeOptions } from './types'
+import type { TimeOption } from './types'
 
-const seconds = {
-  '5m': 5 * 60,
+const seconds: Record<TimeOption, number> = {
   '15m': 15 * 60,
   '30m': 30 * 60,
   '1h': 60 * 60,
@@ -14,9 +13,9 @@ const seconds = {
   '14d': 14 * 24 * 60 * 60,
 } as const
 
-export const subtractTimeUnit = (timeOption: TimeOptions, timestamp: number) => timestamp - seconds[timeOption]
+export const subtractTimeUnit = (timeOption: TimeOption, timestamp: number) => timestamp - seconds[timeOption]
 
-export const getThreeHundredResultsAgo = (timeOption: TimeOptions, timestamp: number) =>
+export const getThreeHundredResultsAgo = (timeOption: TimeOption, timestamp: number) =>
   Math.floor(timestamp - 299 * seconds[timeOption])
 
 export const convertToLocaleTimestamp = (unixTimestamp: number) => {
