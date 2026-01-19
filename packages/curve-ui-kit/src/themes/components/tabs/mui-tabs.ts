@@ -15,8 +15,8 @@ type TabSizeConfig = {
 }
 type TabPaddingOptions = {
   blockEnd?: SpacingKey
-  boxSizing?: string
 }
+
 type TabSizeStyleOptions = {
   horizontal?: TabPaddingOptions
   vertical?: TabPaddingOptions
@@ -46,7 +46,6 @@ export const TAB_TEXT_VARIANTS = {
 const BORDER_SIZE = '2px' as const
 const BORDER_SIZE_INACTIVE = '1px' as const
 const BORDER_SIZE_LARGE = '4px' as const
-const TAB_BOX_SIZING = 'border-box' as const
 
 const TAB_HEIGHT: Record<keyof typeof TABS_SIZES_CLASSES, string> = {
   small: ButtonSize.xs,
@@ -87,7 +86,7 @@ export const defineMuiTab = ({ Tabs: { Transition }, Text }: DesignSystem): Comp
     root: {
       transition: Transition,
       position: 'relative',
-      boxSizing: 'content-box',
+      boxSizing: "border-box",
       opacity: 1,
       whiteSpace: 'nowrap',
       minHeight: 0, // It's 48px by default in Mui
@@ -117,35 +116,24 @@ export const defineMuiTab = ({ Tabs: { Transition }, Text }: DesignSystem): Comp
   },
 })
 
-/** Build tab state styles for default, hover, and selected. */
-const tabVariant = ({ Current, Default, Hover, Inset }: TabVariant) => ({
-  color: Default.Label,
-  backgroundColor: Default.Fill,
+const tabStyle = ({ Label, Fill, Outline }: TabStyle, inset?: string) => ({
+  color: Label,
+  backgroundColor: Fill,
   '::after': {
-    backgroundColor: Default.Outline ?? 'transparent',
-    inset: Inset,
-  },
-  '&:hover': {
-    color: Hover.Label,
-    backgroundColor: Hover.Fill,
-    '::after': {
-      backgroundColor: Hover.Outline ?? 'transparent',
-      inset: Inset,
-    },
-  },
-  '&.Mui-selected': {
-    color: Current.Label,
-    backgroundColor: Current.Fill,
-    '::after': {
-      backgroundColor: Current.Outline ?? 'transparent',
-      inset: Inset,
-    },
+    backgroundColor: Outline ?? 'transparent',
+    inset,
   },
 })
 
+/** Build tab state styles for default, hover, and selected. */
+const tabVariant = ({ Current, Default, Hover, Inset }: TabVariant) => ({
+  ...tabStyle(Default, Inset),
+  '&:hover': tabStyle(Hover, Inset),
+  '&.Mui-selected': tabStyle(Current, Inset),
+})
+
 /** Build breakpoint-aware padding styles for a tab. */
-const tabPaddingStyles = (inline: SpacingKey, { blockEnd = 0, boxSizing }: TabPaddingOptions = {}) => ({
-  ...(boxSizing ? { boxSizing } : {}),
+const tabPaddingStyles = (inline: SpacingKey, { blockEnd = 0 }: TabPaddingOptions = {}) => ({
   ...handleBreakpoints({
     paddingBlockStart: 0,
     paddingBlockEnd: Spacing[blockEnd as keyof typeof Spacing] ?? blockEnd,
@@ -204,72 +192,67 @@ export const defineMuiTabs = ({
   Tabs: { UnderLined, OverLined, Contained },
   Layer,
 }: DesignSystem): Components['MuiTabs'] => ({
-  styleOverrides: {
-    root: {
-      minHeight: 0, // It's 48px by default in Mui, but we want it smaller
-      position: 'relative', // For absolute positioning of scroll buttons
+    styleOverrides: {
+      root: {
+        minHeight: 0, // It's 48px by default in Mui, but we want it smaller
+        position: 'relative', // For absolute positioning of scroll buttons
 
-      [`&.${contained}`]: {
-        '& .MuiTab-root': {
-          ...tabVariant(Contained),
-          ...tabAlignment('flex-end'),
+        [`&.${contained}`]: {
+          '& .MuiTab-root': {
+            ...tabVariant(Contained),
+            ...tabAlignment('flex-end'),
+          },
+          '&.MuiTabs-vertical .MuiTab-root': {
+            ...tabAlignment('center'),
+          },
+          '& .MuiTab-root:not(.Mui-selected):not(:last-child)': {
+            marginRight: '1px',
+          },
+          '&.MuiTabs-vertical .MuiTab-root:not(.Mui-selected):not(:last-child)': {
+            marginRight: 0,
+            marginBottom: '1px',
+          },
+          ...tabAdditionalStyles({
+            horizontal: { blockEnd: 'xxs' },
+          }),
         },
-        '&.MuiTabs-vertical .MuiTab-root': {
-          ...tabAlignment('center'),
-        },
-        '& .MuiTab-root:not(.Mui-selected):not(:last-child)': {
-          marginRight: '1px',
-        },
-        '&.MuiTabs-vertical .MuiTab-root:not(.Mui-selected):not(:last-child)': {
-          marginRight: 0,
-          marginBottom: '1px',
-        },
-        ...tabAdditionalStyles({
-          horizontal: { blockEnd: 'xxs', boxSizing: TAB_BOX_SIZING },
-          vertical: { boxSizing: TAB_BOX_SIZING },
-        }),
-      },
 
-      [`&.${overlined}`]: {
-        '& .MuiTab-root': {
-          ...tabVariant(OverLined),
-          ...tabAlignment('center'),
+        [`&.${overlined}`]: {
+          '& .MuiTab-root': {
+            ...tabVariant(OverLined),
+            ...tabAlignment('center'),
+          },
+          '&.MuiTabs-vertical .MuiTab-root': {
+            ...tabAlignment('center'),
+          },
+          ...tabAdditionalStyles(),
         },
-        '&.MuiTabs-vertical .MuiTab-root': {
-          ...tabAlignment('center'),
-        },
-        ...tabAdditionalStyles({
-          horizontal: { boxSizing: TAB_BOX_SIZING },
-          vertical: { boxSizing: TAB_BOX_SIZING },
-        }),
-      },
 
-      [`&.${underlined}`]: {
-        '& .MuiTab-root': {
-          ...tabVariant(UnderLined),
-          ...tabAlignment('flex-end'),
+        [`&.${underlined}`]: {
+          '& .MuiTab-root': {
+            ...tabVariant(UnderLined),
+            ...tabAlignment('flex-end'),
+          },
+          '&.MuiTabs-vertical .MuiTab-root': {
+            ...tabAlignment('center'),
+          },
+          ...tabAdditionalStyles({
+            horizontal: { blockEnd: 'xs' },
+          }),
         },
-        '&.MuiTabs-vertical .MuiTab-root': {
-          ...tabAlignment('center'),
-        },
-        ...tabAdditionalStyles({
-          horizontal: { blockEnd: 'xs', boxSizing: TAB_BOX_SIZING },
-          vertical: { boxSizing: TAB_BOX_SIZING },
-        }),
-      },
 
-      // Inactive tabs have a smaller border size
-      [inactiveTabSelector({ hideInactiveBorders: false }, overlined, underlined)]: {
-        height: BORDER_SIZE_INACTIVE,
-        '.MuiTabs-vertical &': {
-          height: '100%',
-          width: BORDER_SIZE_INACTIVE,
+        // Inactive tabs have a smaller border size
+        [inactiveTabSelector({ hideInactiveBorders: false }, overlined, underlined)]: {
+          height: BORDER_SIZE_INACTIVE,
+          '.MuiTabs-vertical &': {
+            height: '100%',
+            width: BORDER_SIZE_INACTIVE,
+          },
         },
-      },
 
-      // ExtraExtraLarge tabs don't have a border hover for the underlined/overlined variants
-      // Also override and hide inactive borders if configured so
-      [`${inactiveTabSelector({ hideInactiveBorders: true }, overlined, underlined)}, &.${extraExtraLarge} .MuiTab-root::after`]:
+        // ExtraExtraLarge tabs don't have a border hover for the underlined/overlined variants
+        // Also override and hide inactive borders if configured so
+        [`${inactiveTabSelector({ hideInactiveBorders: true }, overlined, underlined)}, &.${extraExtraLarge} .MuiTab-root::after`]:
         {
           height: '0px !important',
           '.MuiTabs-vertical &': {
@@ -277,45 +260,46 @@ export const defineMuiTabs = ({
           },
         },
 
-      // Style scroll buttons (arrows) when tabs overflow
-      '& .MuiTabScrollButton-root': {
-        position: 'absolute',
-        top: 0,
-        bottom: 0,
-        zIndex: 1,
-        color: Contained.Current.Outline,
-        opacity: 1,
-        backgroundColor: Layer[1].Fill,
-        minWidth: 'auto',
-        width: 'auto',
-        '&:first-of-type': {
+        // Style scroll buttons (arrows) when tabs overflow
+        '& .MuiTabScrollButton-root': {
+          position: 'absolute',
+          top: 0,
+          bottom: 0,
+          zIndex: 1,
+          color: Contained.Current.Outline,
+          opacity: 1,
+          backgroundColor: Layer[1].Fill,
+          minWidth: 'auto',
+          width: 'auto',
+          '&:first-of-type': {
+            left: 0,
+          },
+          '&:last-of-type': {
+            right: 0,
+          },
+          '&.Mui-disabled': {
+            opacity: 0,
+          },
+        },
+      },
+      indicator: {
+        backgroundColor: Layer.Highlight.Outline,
+        [`.${overlined} &`]: { top: 0 },
+        [`.${contained} &`]: { top: 0 },
+
+        [`.${extraExtraLarge} &`]: {
+          height: BORDER_SIZE_LARGE,
+        },
+
+        '.MuiTabs-vertical &': {
           left: 0,
+          right: 'auto',
+          width: BORDER_SIZE,
         },
-        '&:last-of-type': {
-          right: 0,
-        },
-        '&.Mui-disabled': {
-          opacity: 0,
+        [`.MuiTabs-vertical.${extraExtraLarge} &`]: {
+          width: BORDER_SIZE_LARGE,
         },
       },
     },
-    indicator: {
-      backgroundColor: Layer.Highlight.Outline,
-      [`.${overlined} &`]: { top: 0 },
-      [`.${contained} &`]: { top: 0 },
+  })
 
-      [`.${extraExtraLarge} &`]: {
-        height: BORDER_SIZE_LARGE,
-      },
-
-      '.MuiTabs-vertical &': {
-        left: 0,
-        right: 'auto',
-        width: BORDER_SIZE,
-      },
-      [`.MuiTabs-vertical.${extraExtraLarge} &`]: {
-        width: BORDER_SIZE_LARGE,
-      },
-    },
-  },
-})
