@@ -1,12 +1,10 @@
 import { useState } from 'react'
-import Alert from '@mui/material/Alert'
-import AlertTitle from '@mui/material/AlertTitle'
 import IconButton, { type IconButtonProps } from '@mui/material/IconButton'
-import Snackbar from '@mui/material/Snackbar'
+import Typography from '@mui/material/Typography'
 import { CopyIcon } from '@ui-kit/shared/icons/CopyIcon'
 import { InvertTheme } from '@ui-kit/shared/ui/ThemeProvider'
+import { Toast } from '@ui-kit/shared/ui/Toast'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
-import { Duration } from '@ui-kit/themes/design/0_primitives'
 
 export function CopyIconButton({
   copyText,
@@ -40,12 +38,14 @@ export function CopyIconButton({
         </IconButton>
       </Tooltip>
 
-      <Snackbar open={!!alertText} onClose={() => setAlertText(undefined)} autoHideDuration={Duration.Snackbar}>
-        <Alert variant="filled" severity="success" data-testid="copy-confirmation">
-          <AlertTitle>{confirmationText}</AlertTitle>
-          {copyText}
-        </Alert>
-      </Snackbar>
+      <Toast
+        open={!!alertText}
+        onClose={() => setAlertText(undefined)}
+        title={confirmationText}
+        data-testid="copy-confirmation"
+      >
+        <Typography>{copyText}</Typography>
+      </Toast>
     </InvertTheme>
   )
 }

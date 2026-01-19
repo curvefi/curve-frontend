@@ -1,11 +1,9 @@
 import { useEffect, useState } from 'react'
-import Alert, { type AlertProps } from '@mui/material/Alert'
-import AlertTitle from '@mui/material/AlertTitle'
-import Container from '@mui/material/Container'
-import Snackbar from '@mui/material/Snackbar'
+import { type AlertProps } from '@mui/material/Alert'
 import Typography from '@mui/material/Typography'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { t } from '@ui-kit/lib/i18n'
+import { Toast } from '@ui-kit/shared/ui/Toast'
 import { listenWalletNotifications, type WalletNotification } from '../lib/notify'
 
 const Severities = {
@@ -46,21 +44,16 @@ export const WalletToast = () => {
     }
   }, [])
 
-  return (
-    <Snackbar
-      open={notifications.length > 0}
-      onClose={() => setNotifications([])}
-      anchorOrigin={{ horizontal: 'center', vertical: 'top' }}
+  return notifications.map(({ id, type, message }) => (
+    <Toast
+      key={id}
+      open
+      onClose={() => setNotifications((prev) => prev.filter((n) => n.id !== id))}
+      severity={Severities[type]}
+      title={Titles[type]}
       sx={{ top }}
     >
-      <Container sx={{ justifyContent: 'end', marginTop: 4 }}>
-        {notifications.map(({ id, type, message }) => (
-          <Alert key={id} variant="filled" severity={Severities[type]}>
-            <AlertTitle>{Titles[type]}</AlertTitle>
-            <Typography>{message}</Typography>
-          </Alert>
-        ))}
-      </Container>
-    </Snackbar>
-  )
+      <Typography>{message}</Typography>
+    </Toast>
+  ))
 }

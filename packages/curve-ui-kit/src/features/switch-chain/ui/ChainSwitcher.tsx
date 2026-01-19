@@ -2,11 +2,7 @@ import lodash from 'lodash'
 import { useEffect, useMemo } from 'react'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
-import Alert from '@mui/material/Alert'
-import AlertTitle from '@mui/material/AlertTitle'
-import Container from '@mui/material/Container'
 import IconButton from '@mui/material/IconButton'
-import Snackbar from '@mui/material/Snackbar'
 import { NetworkMapping } from '@ui/utils'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { usePathname } from '@ui-kit/hooks/router'
@@ -16,7 +12,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { getCurrentNetwork } from '@ui-kit/shared/routes'
 import { ModalDialog } from '@ui-kit/shared/ui/ModalDialog'
 import { ModalSettingsButton } from '@ui-kit/shared/ui/ModalSettingsButton'
-import { Duration } from '@ui-kit/themes/design/0_primitives'
+import { Toast } from '@ui-kit/shared/ui/Toast'
 import { ChainList } from './ChainList'
 import { ChainSettings } from './ChainSettings'
 import { ChainSwitcherIcon } from './ChainSwitcherIcon'
@@ -51,19 +47,14 @@ export const ChainSwitcher = ({ networks }: ChainSwitcherProps) => {
         {Object.values(options).length > 1 && <KeyboardArrowDownIcon />}
       </IconButton>
 
-      <Snackbar
+      <Toast
         open={isSnackbarOpen}
         onClose={hideSnackbar}
-        anchorOrigin={{ horizontal: 'center', vertical: 'top' }}
+        severity="warning"
         sx={{ top }}
-        autoHideDuration={Duration.Snackbar}
-      >
-        <Container sx={{ justifyContent: 'end', marginTop: 4 }}>
-          <Alert variant="filled" severity="warning" data-testid="alert-eth-only">
-            <AlertTitle>{t`This application is only available on the Ethereum Mainnet`}</AlertTitle>
-          </Alert>
-        </Container>
-      </Snackbar>
+        title={t`This application is only available on the Ethereum Mainnet`}
+        data-testid="alert-eth-only"
+      />
 
       {isOpen != null && (
         <ModalDialog
