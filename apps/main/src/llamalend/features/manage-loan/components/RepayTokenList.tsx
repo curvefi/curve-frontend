@@ -19,19 +19,21 @@ import type { Decimal } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
+export type RepayTokenListProps<ChainId extends IChainId> = {
+  market: LlamaMarketTemplate | undefined
+  network: NetworkDict<ChainId>[ChainId]
+  onToken: (token: RepayTokenOption) => void
+  tokens: RepayTokenOption[]
+  stateCollateral: Query<Decimal | undefined>
+}
+
 export function RepayTokenList<ChainId extends IChainId>({
   market,
   network,
   onToken,
   tokens,
   stateCollateral: { data: positionCollateral },
-}: {
-  market: LlamaMarketTemplate | undefined
-  network: NetworkDict<ChainId>[ChainId]
-  onToken: (token: RepayTokenOption) => void
-  tokens: RepayTokenOption[]
-  stateCollateral: Query<Decimal | undefined>
-}) {
+}: RepayTokenListProps<ChainId>) {
   const { address: userAddress } = useConnection()
   const { borrowToken, collateralToken } = market ? getTokens(market) : {}
   const tokenAddresses = useMemo(

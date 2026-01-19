@@ -33,7 +33,7 @@ export type LoanInfoAccordionProps = {
   isOpen: boolean
   toggle: () => void
   range?: number
-  health: Query<Decimal>
+  health: Query<Decimal | null>
   prevHealth?: Query<Decimal>
   isFullRepay?: boolean
   bands?: Query<[number, number]>
@@ -84,7 +84,13 @@ export const LoanInfoAccordion = ({
         info={
           <ActionInfo
             label=""
-            value={isFullRepay ? '∞' : health?.data && formatNumber(health.data, { abbreviate: false })}
+            value={
+              isFullRepay
+                ? '∞'
+                : health?.data === null
+                  ? '?' // old 'unleveraged' markets cannot calculate new health
+                  : health?.data && formatNumber(health.data, { abbreviate: false })
+            }
             prevValue={prevHealth?.data && formatNumber(prevHealth.data, { abbreviate: false })}
             emptyValue="∞"
             {...combineQueryState(health, prevHealth)}

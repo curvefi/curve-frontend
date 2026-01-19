@@ -1,8 +1,8 @@
 import { useEffect } from 'react'
 import { RepayLoanInfoAccordion } from '@/llamalend/features/borrow/components/RepayLoanInfoAccordion'
 import { setValueOptions } from '@/llamalend/features/borrow/react-form.utils'
-import { RepayTokenList } from '@/llamalend/features/manage-loan/components/RepayTokenList'
-import { useRepayTokens } from '@/llamalend/features/manage-loan/hooks/useRepayTokens'
+import { RepayTokenList, type RepayTokenListProps } from '@/llamalend/features/manage-loan/components/RepayTokenList'
+import { RepayTokenOption, useRepayTokens } from '@/llamalend/features/manage-loan/hooks/useRepayTokens'
 import { hasLeverage } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import type { RepayOptions } from '@/llamalend/mutations/repay.mutation'
@@ -13,9 +13,10 @@ import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { Falsy, notFalsy } from '@curvefi/prices-api/objects.util'
 import Button from '@mui/material/Button'
 import { TokenSelector } from '@ui-kit/features/select-token'
-import { useModalState } from '@ui-kit/hooks/useSwitch'
+import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { Balance } from '@ui-kit/shared/ui/Balance'
+import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { useRepayForm } from '../hooks/useRepayForm'
 
@@ -28,6 +29,32 @@ const joinButtonText = (...texts: (string | Falsy)[]) =>
   notFalsy(...texts)
     .map((t, i, all) => (i ? `${i === all.length - 1 ? ' & ' : ', '}${t}` : t))
     .join('')
+
+function RepayTokenSelector<ChainId extends IChainId>({
+  token,
+  ...props
+}: RepayTokenListProps<ChainId> & {
+  token: RepayTokenOption | undefined
+}) {
+  const [isOpen, onOpen, onClose] = useSwitch(false)
+  if (props.tokens.length === 1) {
+    const {
+      tokens: [{ address, chain, symbol }],
+    } = props
+    return <TokenLabel blockchainId={chain} address={address} label={symbol} />
+  }
+  return (
+    <TokenSelector
+      selectedToken={token}
+      title={t`Select Repay Token`}
+      isOpen={isOpen}
+      onOpen={onOpen}
+      onClose={onClose}
+    >
+      <RepayTokenList {...props} />
+    </TokenSelector>
+  )
+}
 
 // todo: net borrow APR (includes the intrinsic yield + rewards, while the Borrow APR doesn't)
 export const RepayForm = <ChainId extends IChainId>({
@@ -108,15 +135,14 @@ export const RepayForm = <ChainId extends IChainId>({
         testId={'repay-input-' + selectedField}
         network={network}
         tokenSelector={
-          <TokenSelector selectedToken={token} title={t`Select Repay Token`} {...useModalState()}>
-            <RepayTokenList
-              market={market}
-              network={network}
-              stateCollateral={max.stateCollateral}
-              onToken={onToken}
-              tokens={tokens}
-            />
-          </TokenSelector>
+          <RepayTokenSelector
+            token={token}
+            market={market}
+            network={network}
+            stateCollateral={max.stateCollateral}
+            onToken={onToken}
+            tokens={tokens}
+          />
         }
         message={
           <Balance
