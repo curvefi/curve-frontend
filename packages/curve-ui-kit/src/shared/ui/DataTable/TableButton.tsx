@@ -39,8 +39,8 @@ export const TableButton = forwardRef<
       data-testid={testId}
       sx={(t) => ({
         /** The IconButton component is being used in the codebase as a Button component (with only the icon) or as a Chip component (like here)
-        * These are represented by two different components in Figma, therefore we should properly handle both variants from mui-icon-button.ts.
-        * TODO: refactor the IconButton's style from mui-icon-button.ts */
+         * These are represented by two different components in Figma, therefore we should properly handle both variants from mui-icon-button.ts.
+         * TODO: refactor the IconButton's style from mui-icon-button.ts */
         transition: `color ${TransitionFunction}`,
         border: `1px solid ${active ? t.design.Chips.Current.Outline : t.design.Chips.Default.Stroke}`,
         backgroundColor: active ? t.design.Chips.Current.Fill : t.design.Chips.Default.Fill,
