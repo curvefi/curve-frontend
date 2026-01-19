@@ -4,4 +4,4 @@ export const TIME_OPTIONS = ['15m', '30m', '1h', '4h', '6h', '12h', '1d', '7d', 
 export const DEFAULT_TIME_OPTION = '1d' satisfies (typeof TIME_OPTIONS)[number]
 export const DEFAULT_CHART_HEIGHT = 420
 
-export const SOFT_LIQUIDATION_DESCRIPTION = t`When the price enters the liquidation zone, health will start decreasing putting your position at risk. Repay debt to improve health or close your position to avoid liquidation.`
+export const SOFT_LIQUIDATION_DESCRIPTION = t`Above the liquidation threshold, health mostly follows price (and slowly declines from interest). In the liquidation zone, health drops on any price movement as collateral is worn down inside the bands.`

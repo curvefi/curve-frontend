@@ -56,7 +56,7 @@ export const ChartFooter = <T extends string>({
           </ToggleButtonGroup>
         )}
       </Stack>
-      {description && <Typography variant="bodySRegular">{description}</Typography>}
+      {description && <Typography variant="bodySRegular" sx={{ maxWidth: '90ch' }}>{description}</Typography>}
     </Stack>
   )
 }
