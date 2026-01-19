@@ -1,6 +1,6 @@
 import { LOAD_TIMEOUT, oneAppPath, oneDesktopViewport, oneMobileViewport, oneTabletViewport } from '@cy/support/ui'
 
-const viewports = [oneDesktopViewport(), oneTabletViewport(), oneMobileViewport()].slice(0, 1)
+const viewports = [oneDesktopViewport(), oneTabletViewport(), oneMobileViewport()]
 
 describe('Footer', () => {
   viewports.forEach((viewport) => {
