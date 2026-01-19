@@ -81,6 +81,37 @@ export async function getPoolTrades(
   }
 }
 
+type GetAllPoolTradesParams = {
+  chain: Chain
+  poolAddress: Address
+  page?: number
+  perPage?: number
+  includeState?: boolean
+}
+
+export async function getAllPoolTrades(
+  { chain, poolAddress, page = 1, perPage = 100, includeState = false }: GetAllPoolTradesParams,
+  options?: Options,
+) {
+  const host = getHost(options)
+  const query = addQueryString({
+    page,
+    per_page: perPage,
+    include_state: includeState,
+  })
+
+  const resp = await fetch<Responses.GetAllPoolTradesResponse>(`${host}/v1/trades/all/${chain}/${poolAddress}${query}`)
+
+  return {
+    chain: resp.chain,
+    address: resp.address,
+    trades: resp.data.map(Parsers.parseAllPoolTrade),
+    page: resp.page,
+    perPage: resp.per_page,
+    count: resp.count,
+  }
+}
+
 type GetPoolLiquidityEventsParams = {
   chain: Chain
   poolAddress: Address

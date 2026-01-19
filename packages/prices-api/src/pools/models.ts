@@ -68,6 +68,25 @@ export type PoolTrade = {
   usdFee: number
 }
 
+export type AllPoolTrade = {
+  soldId: number
+  boughtId: number
+  tokensSold: number
+  tokensSoldUsd: number
+  tokensBought: number
+  tokensBoughtUsd: number
+  price: number
+  blockNumber: number
+  time: Date
+  txHash: Address
+  buyer: Address
+  fee: number
+  usdFee: number
+  tokenSold: TradeToken
+  tokenBought: TradeToken
+  poolState: unknown | null
+}
+
 export type PoolLiquidityEvent = {
   eventType: string
   tokenAmounts: number[]

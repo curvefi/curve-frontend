@@ -87,6 +87,32 @@ export type GetPoolTradesResponse = {
   }[]
 }
 
+export type GetAllPoolTradesResponse = {
+  chain: string
+  address: Address
+  page: number
+  per_page: number
+  count: number
+  data: {
+    sold_id: number
+    bought_id: number
+    tokens_sold: number
+    tokens_sold_usd: number
+    tokens_bought: number
+    tokens_bought_usd: number
+    price: number
+    block_number: number
+    time: string
+    transaction_hash: Address
+    buyer: Address
+    fee: number
+    usd_fee: number
+    token_sold: TradeToken
+    token_bought: TradeToken
+    pool_state: unknown | null
+  }[]
+}
+
 export type GetPoolLiquidityEventsResponse = {
   chain: string
   address: Address

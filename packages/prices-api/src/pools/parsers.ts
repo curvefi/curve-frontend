@@ -69,6 +69,25 @@ export const parsePoolTrade = (x: Responses.GetPoolTradesResponse['data'][number
   usdFee: x.usd_fee,
 })
 
+export const parseAllPoolTrade = (x: Responses.GetAllPoolTradesResponse['data'][number]): Models.AllPoolTrade => ({
+  soldId: x.sold_id,
+  boughtId: x.bought_id,
+  tokensSold: x.tokens_sold,
+  tokensSoldUsd: x.tokens_sold_usd,
+  tokensBought: x.tokens_bought,
+  tokensBoughtUsd: x.tokens_bought_usd,
+  price: x.price,
+  blockNumber: x.block_number,
+  time: toDate(x.time),
+  txHash: x.transaction_hash,
+  buyer: x.buyer,
+  fee: x.fee,
+  usdFee: x.usd_fee,
+  tokenSold: parseTradeToken(x.token_sold),
+  tokenBought: parseTradeToken(x.token_bought),
+  poolState: x.pool_state,
+})
+
 export const parsePoolLiquidityEvent = (
   x: Responses.GetPoolLiquidityEventsResponse['data'][number],
 ): Models.PoolLiquidityEvent => ({
