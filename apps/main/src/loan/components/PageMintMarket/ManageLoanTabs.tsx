@@ -5,15 +5,15 @@ import { useClosePositionTab } from '@/llamalend/features/manage-soft-liquidatio
 import { useImproveHealthTab } from '@/llamalend/features/manage-soft-liquidation/hooks/useImproveHealthTab'
 import { ClosePosition } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ClosePosition'
 import { ImproveHealth } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ImproveHealth'
+import { hasDeleverage, hasV1Leverage } from '@/llamalend/llama.utils'
 import { CollateralDecrease } from '@/loan/components/PageMintMarket/CollateralDecrease'
 import { CollateralIncrease } from '@/loan/components/PageMintMarket/CollateralIncrease'
 import { LoanDecrease } from '@/loan/components/PageMintMarket/LoanDecrease'
 import { LoanDeleverage } from '@/loan/components/PageMintMarket/LoanDeleverage'
-import { LoanIncreaseWrapped, LoanIncrease } from '@/loan/components/PageMintMarket/LoanIncrease'
+import { LoanIncrease, LoanIncreaseWrapped } from '@/loan/components/PageMintMarket/LoanIncrease'
 import { LoanLiquidate } from '@/loan/components/PageMintMarket/LoanLiquidate'
 import type { ManageLoanProps } from '@/loan/components/PageMintMarket/types'
 import { networks } from '@/loan/networks'
-import { hasDeleverage, hasV1Leverage } from '@/loan/utils/leverage'
 import { useManageLoanMuiForm, useManageSoftLiquidation } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { type FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
@@ -64,14 +64,14 @@ const MintManageLegacyMenu = [
     value: 'deleverage' as const,
     label: t`Delever`,
     component: LoanDeleverage,
-    visible: ({ market }) => hasDeleverage(market),
+    visible: ({ market }) => !market || hasDeleverage(market),
   },
 ] satisfies FormTab<ManageLoanProps>[]
 
 const MintManageNewMenu = [
   {
     value: 'borrow',
-    label: ({ market }) => (hasV1Leverage(market) ? t`Leverage` : t`Borrow`),
+    label: ({ market }) => (market && hasV1Leverage(market) ? t`Leverage` : t`Borrow`),
     component: LoanIncreaseWrapped,
   },
   {

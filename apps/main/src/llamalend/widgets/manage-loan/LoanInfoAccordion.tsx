@@ -2,6 +2,7 @@ import { UserState } from '@/llamalend/queries/user-state.query'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
+import { combineQueryState } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { FireIcon } from '@ui-kit/shared/icons/FireIcon'
 import { Accordion } from '@ui-kit/shared/ui/Accordion'
@@ -49,11 +50,6 @@ export type LoanInfoAccordionProps = {
   userState?: Query<UserState> & { borrowTokenSymbol?: string; collateralTokenSymbol?: string }
   leverage?: LoanLeverageActionInfoProps & { enabled: boolean }
 }
-
-const combineQueryState = (...queries: (Query<unknown> | undefined)[]) => ({
-  error: queries.find((x) => x?.error)?.error,
-  loading: queries.some((x) => x?.isLoading),
-})
 
 const { Spacing } = SizesAndSpaces
 
