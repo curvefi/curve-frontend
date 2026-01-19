@@ -37,13 +37,19 @@ export const useChartLegendToggles = ({
           onToggle: toggleOraclePriceVisible,
         },
         hasLiquidationRange && {
-          label: t`Conversion zone`,
+          label: t`Liquidation threshold`,
+          line: { lineStroke: theme.design.Chart.Candles.Negative, dash: '4 4' },
+          toggled: liqRangeCurrentVisible,
+          onToggle: toggleLiqRangeCurrentVisible,
+        },
+        hasLiquidationRange && {
+          label: t`Liquidation zone`,
           box: { fill: theme.design.Chart.LiquidationZone.Current },
           toggled: liqRangeCurrentVisible,
           onToggle: toggleLiqRangeCurrentVisible,
         },
         hasNewLiquidationRange && {
-          label: t`New conversion zone`,
+          label: t`New liquidation zone`,
           box: { fill: theme.design.Chart.LiquidationZone.Future },
           toggled: liqRangeNewVisible,
           onToggle: toggleLiqRangeNewVisible,
@@ -51,6 +57,7 @@ export const useChartLegendToggles = ({
       ),
     [
       theme.palette.primary.main,
+      theme.design.Chart.Candles.Negative,
       theme.design.Chart.LiquidationZone.Current,
       theme.design.Chart.LiquidationZone.Future,
       oraclePriceVisible,

@@ -403,14 +403,14 @@ export const CandleChart = ({
           price: 0,
           color: appearance.priceLineColorTop,
           lineWidth: 2,
-          lineStyle: LineStyle.LargeDashed,
+          lineStyle: LineStyle.Dashed,
           axisLabelVisible: true,
         }),
         bottom: series.createPriceLine({
           price: 0,
           color: appearance.priceLineColorBottom,
           lineWidth: 2,
-          lineStyle: LineStyle.LargeDashed,
+          lineStyle: LineStyle.Dashed,
           axisLabelVisible: true,
         }),
       }
