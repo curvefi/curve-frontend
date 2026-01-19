@@ -8,7 +8,7 @@ import { getLlamaMarket } from '@/llamalend/llama.utils'
 import type { CreateLoanOptions } from '@/llamalend/mutations/create-loan.mutation'
 import type { RepayOptions } from '@/llamalend/mutations/repay.mutation'
 import { useLoanExists } from '@/llamalend/queries/loan-exists'
-import networks from '@/loan/networks'
+import { networks } from '@/loan/networks'
 import { oneInt, oneOf, oneValueOf } from '@cy/support/generators'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import {

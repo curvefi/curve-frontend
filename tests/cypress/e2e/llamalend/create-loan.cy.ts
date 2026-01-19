@@ -6,10 +6,9 @@ import {
   submitCreateLoanForm,
   writeCreateLoanForm,
 } from '@cy/support/helpers/create-loan.helpers'
-import { LlamaMarketType } from '@ui-kit/types/market'
 
-describe(`Create Lend market loan`, () => {
-  const { collateral, borrow, path } = oneLoanTestMarket(LlamaMarketType.Lend)
+describe(`Create Mint market loan`, () => {
+  const { collateral, borrow, path } = oneLoanTestMarket()
   const leverageEnabled = oneBool()
 
   beforeEach(() => {
@@ -21,6 +20,6 @@ describe(`Create Lend market loan`, () => {
     checkLoanDetailsLoaded({ leverageEnabled })
     checkLoanRangeSlider(leverageEnabled)
     // e2e tests run with a 'fake' account so the transaction fails
-    submitCreateLoanForm().then(() => expect(cy.get('[data-testid="loan-form-error"]')).includes('unknown account'))
+    submitCreateLoanForm().then(() => cy.get('[data-testid="loan-form-error"]').contains('unknown account'))
   })
 })

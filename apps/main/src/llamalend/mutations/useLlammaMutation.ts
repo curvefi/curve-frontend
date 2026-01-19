@@ -131,13 +131,13 @@ export function useLlammaMutation<TVariables extends object, TData extends Resul
       if (!data.hash) throw new Error('Transaction did not return a valid hash')
       return { data, receipt: await waitForTransactionReceipt(config, data) }
     },
-    onSuccess: async ({ data, receipt }, variables, context) => {
-      logSuccess(mutationKey, { data, variables, marketId: context.market.id })
-      notify(successMessage(variables, context), 'success')
-      updateUserEventsApi(wallet!, { id: networkId }, context.market, receipt.transactionHash)
+    onSuccess: async ({ data, receipt }, variables, result) => {
+      logSuccess(mutationKey, { data, variables, marketId: result.market.id })
+      notify(successMessage(variables, result), 'success')
+      updateUserEventsApi(wallet!, { id: networkId }, result.market, receipt.transactionHash)
       await invalidateAllUserMarketDetails({ chainId, marketId, userAddress })
       onReset?.()
-      await onSuccess?.(data, receipt, variables, context)
+      await onSuccess?.(data, receipt, variables, result)
     },
     onError: (error, variables, context) => {
       setError(error)
