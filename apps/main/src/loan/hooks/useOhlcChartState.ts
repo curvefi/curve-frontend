@@ -84,7 +84,7 @@ export const useOhlcChartState = ({ rChainId, market, llammaId }: OhlcChartState
 
   // Select chart data based on current selection
   const currentChart = selectedChartKey === 'llamma' ? chartLlammaOhlc : chartOraclePoolOhlc
-  const noDataAvailable = !isLoading && chartOraclePoolOhlc.data.length === 0 && chartLlammaOhlc.data.length === 0
+  const noDataAvailable = !isLoading && currentChart.data.length === 0
 
   const oraclePriceData = useMemo(() => {
     if (chartOraclePoolOhlc.oraclePriceData.length > 0) return chartOraclePoolOhlc.oraclePriceData
