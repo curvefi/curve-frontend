@@ -6,7 +6,7 @@ import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { ReleaseChannel } from '@ui-kit/utils'
 import { ReleaseChannelDialog } from './ReleaseChannelDialog'
-import { showReleaseChannelSnackbar } from './ReleaseChannelSnackbar'
+import { showReleaseChannelSnackbar } from './settings.util'
 
 export const ReleaseChannelToggleButtons = () => {
   const [releaseChannel] = useReleaseChannel()

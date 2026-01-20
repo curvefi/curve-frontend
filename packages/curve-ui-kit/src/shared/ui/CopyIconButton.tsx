@@ -1,9 +1,9 @@
 import IconButton, { type IconButtonProps } from '@mui/material/IconButton'
-import { showToast } from '@ui-kit/features/connect-wallet/lib/notify'
 import { t } from '@ui-kit/lib/i18n'
 import { CopyIcon } from '@ui-kit/shared/icons/CopyIcon'
 import { InvertTheme } from '@ui-kit/shared/ui/ThemeProvider'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
+import { showToast } from '@ui-kit/widgets/Toast/toast.util'
 
 export function CopyIconButton({
   copyText,

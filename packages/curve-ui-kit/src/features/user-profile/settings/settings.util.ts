@@ -1,6 +1,6 @@
-import { showToast } from '@ui-kit/features/connect-wallet/lib/notify'
 import { t } from '@ui-kit/lib/i18n'
 import { ReleaseChannel } from '@ui-kit/utils'
+import { showToast } from '@ui-kit/widgets/Toast/toast.util'
 
 export function showReleaseChannelSnackbar(
   currentChannel: ReleaseChannel,

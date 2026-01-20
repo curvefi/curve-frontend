@@ -1,0 +1,54 @@
+import { Button, Stack } from '@mui/material'
+import type { Meta, StoryObj } from '@storybook/react-vite'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { Toast } from './Toast'
+import { showToast } from './toast.util'
+
+const { Spacing } = SizesAndSpaces
+
+const meta: Meta<typeof Toast> = {
+  title: 'UI Kit/Widgets/Toast',
+  component: Toast,
+  args: { title: 'Toast Title' },
+  argTypes: { title: { control: 'text' } },
+}
+
+export default meta
+
+type Story = StoryObj<typeof meta>
+
+export const AllSeverities: Story = {
+  render: ({ title }) => (
+    <Stack spacing={Spacing.sm} direction="row" minHeight={300} minWidth={500} alignContent="end" flexWrap="wrap">
+      <Toast />
+      <Button
+        variant="contained"
+        color="success"
+        onClick={() => showToast({ message: 'A success message', severity: 'success', title: title })}
+      >
+        Success
+      </Button>
+      <Button
+        variant="contained"
+        color="info"
+        onClick={() => showToast({ message: 'Here is your info toastr', severity: 'info', title: title })}
+      >
+        Info
+      </Button>
+      <Button
+        variant="contained"
+        color="warning"
+        onClick={() => showToast({ message: 'Warning: We are testing', severity: 'warning', title: title })}
+      >
+        Warning
+      </Button>
+      <Button
+        variant="contained"
+        color="error"
+        onClick={() => showToast({ message: 'An error has been simulated', severity: 'error', title: title })}
+      >
+        Error
+      </Button>
+    </Stack>
+  ),
+}

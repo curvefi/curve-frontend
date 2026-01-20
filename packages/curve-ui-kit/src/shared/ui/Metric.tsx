@@ -2,7 +2,6 @@ import { ReactNode, useCallback, useMemo } from 'react'
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
 import Stack from '@mui/material/Stack'
 import Typography, { TypographyProps } from '@mui/material/Typography'
-import { showToast } from '@ui-kit/features/connect-wallet/lib/notify'
 import { t } from '@ui-kit/lib/i18n'
 import { Tooltip, type TooltipProps } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -15,6 +14,7 @@ import {
   type NumberFormatOptions,
   type SxProps,
 } from '@ui-kit/utils'
+import { showToast } from '@ui-kit/widgets/Toast/toast.util'
 import { WithSkeleton } from './WithSkeleton'
 
 const { Spacing, IconSize } = SizesAndSpaces
