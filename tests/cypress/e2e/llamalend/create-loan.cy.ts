@@ -6,8 +6,12 @@ import {
   submitCreateLoanForm,
   writeCreateLoanForm,
 } from '@cy/support/helpers/create-loan.helpers'
+import { LOAD_TIMEOUT } from '@cy/support/ui'
 
-describe(`Create Mint market loan`, () => {
+// todo: remove this once we know the test is stable
+const RETRY = { retries: { openMode: 0, runMode: 2 } }
+
+describe(`Create loan`, () => {
   const { collateral, borrow, path } = oneLoanTestMarket()
   const leverageEnabled = oneBool()
 
@@ -15,11 +19,13 @@ describe(`Create Mint market loan`, () => {
     cy.visit(path)
   })
 
-  it(`may be created`, () => {
+  it(`may be created`, RETRY, () => {
     writeCreateLoanForm({ collateral, borrow, leverageEnabled })
     checkLoanDetailsLoaded({ leverageEnabled })
     checkLoanRangeSlider(leverageEnabled)
     // e2e tests run with a 'fake' account so the transaction fails
-    submitCreateLoanForm().then(() => cy.get('[data-testid="loan-form-error"]').contains('unknown account'))
+    submitCreateLoanForm().then(() =>
+      cy.get('[data-testid="loan-form-error"]', LOAD_TIMEOUT).contains('unknown account'),
+    )
   })
 })

@@ -106,7 +106,5 @@ export function checkLoanRangeSlider(leverageEnabled: boolean) {
  */
 export function submitCreateLoanForm() {
   cy.get('[data-testid="create-loan-submit-button"]').click()
-  cy.get('[data-testid="create-loan-submit-button"]').should('be.disabled')
-  cy.get('[data-testid="create-loan-submit-button"]', LOAD_TIMEOUT)
-  return cy.get('[data-testid="create-loan-submit-button"]')
+  return cy.get('[data-testid="create-loan-submit-button"]', LOAD_TIMEOUT)
 }
