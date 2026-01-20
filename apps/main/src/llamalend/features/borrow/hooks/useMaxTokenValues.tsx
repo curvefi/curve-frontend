@@ -3,9 +3,9 @@ import type { UseFormReturn } from 'react-hook-form'
 import { type Address } from 'viem'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { Decimal } from '@ui-kit/utils'
+import { setValueOptions } from '@ui-kit/utils/react-form.utils'
 import { useCreateLoanMaxReceive } from '../../../queries/create-loan/create-loan-max-receive.query'
 import { useMarketMaxLeverage } from '../../../queries/market-max-leverage.query'
-import { setValueOptions } from '../react-form.utils'
 import type { CreateLoanForm, CreateLoanFormQueryParams } from '../types'
 
 /**
