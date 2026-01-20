@@ -1,5 +1,5 @@
 import Box from '@mui/material/Box'
-import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
+import { TabsSwitcher, type TabOption } from './TabsSwitcher'
 
 export type SubTabsSwitcherProps<T extends string | number> = {
   tabs: readonly TabOption<T>[]

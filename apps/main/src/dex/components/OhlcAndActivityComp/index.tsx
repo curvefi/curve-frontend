@@ -1,3 +1,4 @@
+import { SubTabsSwitcher } from 'curve-ui-kit/src/shared/ui/Tabs/SubTabsSwitcher'
 import { useState } from 'react'
 import { PoolActivity } from '@/dex/components/OhlcAndActivityComp/PoolActivity'
 import { useOhlcChartState } from '@/dex/hooks/useOhlcChartState'
@@ -8,8 +9,7 @@ import { TIME_OPTIONS } from '@ui-kit/features/candle-chart/constants'
 import type { PricesApiPool } from '@ui-kit/features/candle-chart/types'
 import { t } from '@ui-kit/lib/i18n'
 import { ChartHeader } from '@ui-kit/shared/ui/Chart/ChartHeader'
-import { SubTabsSwitcher } from '@ui-kit/shared/ui/SubTabsSwitcher'
-import { type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
+import { type TabOption } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
