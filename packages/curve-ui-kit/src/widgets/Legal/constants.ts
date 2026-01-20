@@ -1,6 +1,6 @@
 import { t } from '@ui-kit/lib/i18n'
 import type { AppName } from '@ui-kit/shared/routes'
-import type { TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
+import type { TabOption } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import type { Tab, DisclaimerTab } from './types/tabs'
 
 export const TABS: TabOption<Tab>[] = [

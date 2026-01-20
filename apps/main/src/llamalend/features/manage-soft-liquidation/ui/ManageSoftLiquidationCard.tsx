@@ -2,7 +2,7 @@ import { useState } from 'react'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
-import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
+import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { ActionInfos, type Props as ActionInfosProps } from './ActionInfos'
 import { ClosePosition, type Props as ClosePositionProps } from './tabs/ClosePosition'
@@ -35,9 +35,15 @@ export const ManageSoftLiquidationCard = ({ actionInfos, improveHealth, closePos
       }}
     >
       <Stack>
-        <TabsSwitcher variant="contained" value="manage" options={tabs} fullWidth />
+        <TabsSwitcher variant="contained" value="manage" options={tabs} overflow="fullWidth" />
         <Box sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
-          <TabsSwitcher variant="underlined" value={subTab} options={subTabs} onChange={setSubTab} fullWidth />
+          <TabsSwitcher
+            variant="underlined"
+            value={subTab}
+            options={subTabs}
+            onChange={setSubTab}
+            overflow="fullWidth"
+          />
           {subTab === 'improve-health' && <ImproveHealth {...improveHealth} />}
           {subTab === 'close-position' && <ClosePosition {...closePosition} />}
         </Box>
