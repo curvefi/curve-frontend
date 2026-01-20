@@ -31,7 +31,7 @@ export const { useQuery: useRepayHealth } = queryFactory({
       case 'deleverage':
         return (await impl.repayHealth(userCollateral, isFull)) as Decimal
       case 'unleveraged':
-        return null // market does not support repay health
+        return (await impl.repayHealth(userBorrowed, isFull)) as Decimal
     }
   },
   validationSuite: repayFromCollateralIsFullValidationSuite,

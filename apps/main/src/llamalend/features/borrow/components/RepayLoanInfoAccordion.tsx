@@ -5,13 +5,14 @@ import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useMarketFutureRates } from '@/llamalend/queries/market-future-rates.query'
 import { useMarketRates } from '@/llamalend/queries/market-rates'
-import { useRepayBands } from '@/llamalend/queries/repay/repay-bands.query'
 import { useRepayExpectedBorrowed } from '@/llamalend/queries/repay/repay-expected-borrowed.query'
 import { useRepayEstimateGas } from '@/llamalend/queries/repay/repay-gas-estimate.query'
 import { useRepayHealth } from '@/llamalend/queries/repay/repay-health.query'
+import { useRepayIsApproved } from '@/llamalend/queries/repay/repay-is-approved.query'
 import { useRepayPriceImpact } from '@/llamalend/queries/repay/repay-price-impact.query'
 import { useRepayPrices } from '@/llamalend/queries/repay/repay-prices.query'
 import { getUserHealthOptions } from '@/llamalend/queries/user-health.query'
+import { useUserPnl } from '@/llamalend/queries/user-pnl.query'
 import { useUserState } from '@/llamalend/queries/user-state.query'
 import type { RepayParams } from '@/llamalend/queries/validation/manage-loan.types'
 import type { RepayForm } from '@/llamalend/queries/validation/manage-loan.validation'
@@ -59,7 +60,7 @@ function useRepayRemainingDebt<ChainId extends IChainId>(
 
 export function RepayLoanInfoAccordion<ChainId extends IChainId>({
   params,
-  values: { slippage, userCollateral, stateCollateral, userBorrowed, isFull },
+  values: { slippage, userCollateral, userBorrowed, isFull },
   tokens: { collateralToken, borrowToken },
   networks,
   onSlippageChange,
@@ -79,11 +80,16 @@ export function RepayLoanInfoAccordion<ChainId extends IChainId>({
   const userState = q(userStateQuery)
   const priceImpact = useRepayPriceImpact(params, isOpen && swapRequired)
   const debt = useRepayRemainingDebt({ params, swapRequired, borrowToken }, { isFull, userBorrowed }, isOpen)
+  const pnlQuery = useUserPnl(
+    { ...params, loanExists: true, hasV2Leverage: true }, // Assuming it might need these flags
+    isOpen,
+  )
+  const { data: isApproved } = useRepayIsApproved(params, isOpen && typeof isFull === 'boolean')
   return (
     <LoanInfoAccordion
       isOpen={isOpen}
       toggle={toggle}
-      bands={q(useRepayBands(params, isOpen))}
+      isApproved={isApproved}
       gas={useRepayEstimateGas(networks, params, isOpen)}
       health={q(useRepayHealth(params))}
       prevHealth={useHealthQueries((isFull) => getUserHealthOptions({ ...params, isFull }))}
@@ -91,9 +97,9 @@ export function RepayLoanInfoAccordion<ChainId extends IChainId>({
       prevRates={q(useMarketRates(params, isOpen))}
       rates={q(useMarketFutureRates(params, isOpen))}
       debt={debt}
-      withdraw={stateCollateral && { value: stateCollateral, tokenSymbol: collateralToken?.symbol }}
       userState={userState}
       prices={q(useRepayPrices(params, isOpen))}
+      pnl={mapQuery(pnlQuery, (data) => data.currentProfit)}
       // routeImage={q(useRepayRouteImage(params, isOpen))}
       loanToValue={useLoanToValueFromUserState(
         {
@@ -108,7 +114,7 @@ export function RepayLoanInfoAccordion<ChainId extends IChainId>({
         isOpen,
       )}
       leverage={{
-        enabled: !!hasLeverage,
+        enabled: !!hasLeverage && swapRequired,
         slippage,
         onSlippageChange,
         collateralSymbol: collateralToken?.symbol,

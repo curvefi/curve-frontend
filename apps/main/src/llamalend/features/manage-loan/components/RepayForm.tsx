@@ -123,7 +123,7 @@ export const RepayForm = <ChainId extends IChainId>({
       }
     >
       <LoanFormTokenInput
-        label={selectedToken === borrowToken ? t`Borrowed` : t`Collateral`}
+        label={t`Amount to Repay`}
         token={selectedToken}
         blockchainId={network.id}
         name={selectedField}
