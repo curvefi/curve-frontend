@@ -1,4 +1,4 @@
-import { oneBool } from '@cy/support/generators'
+import { recordValues } from '@curvefi/prices-api/objects.util'
 import {
   checkLoanDetailsLoaded,
   checkLoanRangeSlider,
@@ -7,25 +7,25 @@ import {
   writeCreateLoanForm,
 } from '@cy/support/helpers/create-loan.helpers'
 import { LOAD_TIMEOUT } from '@cy/support/ui'
+import { LlamaMarketType } from '@ui-kit/types/market'
 
 // todo: remove this once we know the test is stable
 const RETRY = { retries: { openMode: 0, runMode: 2 } }
 
-describe(`Create loan`, () => {
-  const { collateral, borrow, path } = oneLoanTestMarket()
-  const leverageEnabled = oneBool()
+describe('Create loan', () => {
+  recordValues(LlamaMarketType).forEach((marketType) => {
+    const { collateral, borrow, path } = oneLoanTestMarket(marketType)
+    const leverageEnabled = false // "max_borrowable" query always fails because of the 'fake' e2e account :(
 
-  beforeEach(() => {
-    cy.visit(path)
-  })
-
-  it.skip(`may be created`, RETRY, () => {
-    writeCreateLoanForm({ collateral, borrow, leverageEnabled })
-    checkLoanDetailsLoaded({ leverageEnabled })
-    checkLoanRangeSlider(leverageEnabled)
-    // e2e tests run with a 'fake' account so the transaction fails
-    submitCreateLoanForm().then(() =>
-      cy.get('[data-testid="loan-form-error"]', LOAD_TIMEOUT).contains('unknown account'),
-    )
+    it(`for ${marketType} market`, RETRY, () => {
+      cy.visit(path)
+      writeCreateLoanForm({ collateral, borrow, leverageEnabled })
+      checkLoanDetailsLoaded({ leverageEnabled })
+      checkLoanRangeSlider(leverageEnabled)
+      // e2e tests run with a 'fake' account so the transaction fails
+      submitCreateLoanForm().then(() =>
+        cy.get('[data-testid="loan-form-error"]', LOAD_TIMEOUT).contains('unknown account'),
+      )
+    })
   })
 })
