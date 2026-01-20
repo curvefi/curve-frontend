@@ -1,14 +1,14 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useConnection } from 'wagmi'
+import { Address } from '@ui-kit/utils'
+import { ListPageWrapper } from '@ui-kit/widgets/ListPageWrapper'
 import {
   invalidateAllUserLendingSupplies,
   invalidateAllUserLendingVaults,
   invalidateLendingVaults,
-} from '@/llamalend/queries/market-list/lending-vaults'
-import { useLlamaMarkets } from '@/llamalend/queries/market-list/llama-markets'
-import { invalidateAllUserMintMarkets, invalidateMintMarkets } from '@/llamalend/queries/market-list/mint-markets'
-import { Address } from '@ui-kit/utils'
-import { ListPageWrapper } from '@ui-kit/widgets/ListPageWrapper'
+} from '../../queries/market-list/lending-vaults'
+import { useLlamaMarkets } from '../../queries/market-list/llama-markets'
+import { invalidateAllUserMintMarkets, invalidateMintMarkets } from '../../queries/market-list/mint-markets'
 import { LendTableFooter } from './LendTableFooter'
 import { LlamaMarketsTable } from './LlamaMarketsTable'
 import { UserPositionsTabs } from './UserPositionTabs'
@@ -36,6 +36,7 @@ const useOnReload = ({ address: userAddress, isFetching }: { address?: Address; 
 
   useEffect(() => {
     // reset the isReloading state when the data is fetched
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (isReloading && !isFetching) setIsReloading(false)
   }, [isFetching, isReloading])
 

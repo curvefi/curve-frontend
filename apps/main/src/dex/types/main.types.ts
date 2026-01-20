@@ -5,6 +5,7 @@ import type { IChainId, IDict, INetworkName } from '@curvefi/api/lib/interfaces'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import type { TooltipProps } from '@ui/Tooltip/types'
 import type { BaseConfig } from '@ui/utils'
+import { BannerProps } from '@ui-kit/shared/ui/Banner'
 
 export type { CurveApi, Wallet } from '@ui-kit/features/connect-wallet'
 
@@ -27,7 +28,6 @@ export interface NetworkConfig extends BaseConfig<NetworkEnum> {
   isCrvRewardsEnabled: boolean
   useApi: boolean
   excludePoolsMapper: { [key: string]: boolean }
-  excludeTokensBalancesMapper: { [tokenAddress: string]: boolean }
   poolCustomTVL: { [poolAddress: string]: string }
   poolIsWrappedOnly: { [poolAddress: string]: boolean }
   poolFilters: string[]
@@ -138,7 +138,6 @@ export type Token = {
 }
 export type TokensMapper = { [tokenAddress: string]: Token | undefined }
 export type TokensNameMapper = { [tokenAddress: string]: string }
-export type UserBalancesMapper = { [tokenAddress: string]: string | undefined }
 export type GaugeStatus = { rewardsNeedNudging: boolean; areCrvRewardsStuckInBridge: boolean }
 
 export interface Gauge {
@@ -270,12 +269,17 @@ export interface PoolAlert extends TooltipProps {
   alertType: AlertType
   isDisableDeposit?: boolean
   isDisableSwap?: boolean
+  // disable only the withdraw sub tab. Unstake and Claim sub tabs still available
+  isDisableWithdrawOnly?: boolean
   isInformationOnly?: boolean
   isInformationOnlyAndShowInForm?: boolean
   isCloseOnTooltipOnly?: boolean
+  // banner message, related to the market situation
+  banner?: Omit<BannerProps, 'children'> & { title: string }
   isPoolPageOnly?: boolean // Don't show the pools overview table
   address?: string
-  message: ReactNode
+  // action card message, related to action of user
+  message?: ReactNode
 }
 
 export type EstimatedGas = number | number[] | null

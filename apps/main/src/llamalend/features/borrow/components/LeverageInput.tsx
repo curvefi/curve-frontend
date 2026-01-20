@@ -6,13 +6,13 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
-import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
+import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { Query } from '@ui-kit/types/util'
 import { Decimal } from '@ui-kit/utils'
 import { useCreateLoanExpectedCollateral } from '../../../queries/create-loan/create-loan-expected-collateral.query'
-import type { BorrowForm, BorrowFormQueryParams } from '../types'
+import type { CreateLoanForm, CreateLoanFormQueryParams } from '../types'
 
 const { Spacing } = SizesAndSpaces
 
@@ -23,8 +23,8 @@ export const LeverageInput = ({
   maxLeverage: { data: maxLeverage, error, isLoading },
 }: {
   checked: boolean
-  form: UseFormReturn<BorrowForm>
-  params: BorrowFormQueryParams
+  form: UseFormReturn<CreateLoanForm>
+  params: CreateLoanFormQueryParams
   maxLeverage: Query<Decimal>
 }) => {
   const { leverage } = useCreateLoanExpectedCollateral(params).data ?? {}
@@ -34,7 +34,7 @@ export const LeverageInput = ({
     [form],
   )
   return (
-    <Stack direction="row" justifyContent="space-between" gap={Spacing.sm} alignItems="start">
+    <Stack direction="row" justifyContent="space-between" gap={Spacing.sm} alignItems="start" flexWrap="wrap">
       <FormControlLabel
         sx={{ minWidth: 180 }}
         label={
@@ -42,7 +42,7 @@ export const LeverageInput = ({
             <Typography variant="headingXsBold">{t`Enable leverage`}</Typography>
             <WithSkeleton loading={isLoading}>
               <Typography {...(error && { color: 'error.main' })} variant="bodyXsRegular">
-                {t`up to ${formatNumber(maxLeverage, { maximumFractionDigits: 1 })}x 🔥`}
+                {`${t`up to`} ${formatNumber(maxLeverage, { maximumFractionDigits: 1 })}x 🔥`}
               </Typography>
             </WithSkeleton>
           </>

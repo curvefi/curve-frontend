@@ -7,7 +7,7 @@ import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { Chain } from '@curvefi/prices-api'
 import { getUserMarketCollateralEvents as getMintUserMarketCollateralEvents } from '@curvefi/prices-api/crvusd'
 import { getUserMarketCollateralEvents as getLendUserMarketCollateralEvents } from '@curvefi/prices-api/lending'
-import { notFalsy } from '@curvefi/prices-api/objects.util'
+import { notFalsy, objectKeys } from '@curvefi/prices-api/objects.util'
 import { requireLib, type Wallet } from '@ui-kit/features/connect-wallet'
 import { CRVUSD, type Decimal, formatNumber } from '@ui-kit/utils'
 
@@ -106,7 +106,7 @@ export const updateUserEventsApi = (
     market instanceof LendMarketTemplate
       ? [market.addresses.controller, getLendUserMarketCollateralEvents]
       : [market.controller, getMintUserMarketCollateralEvents]
-  void updateEvents(wallet.account.address, networkId as Chain, address as Address, txHash as Hex)
+  void updateEvents(wallet.address, networkId as Chain, address as Address, txHash as Hex)
 }
 
 /**
@@ -183,20 +183,19 @@ export function reverseBands(bands: [number, number] | number[]) {
 // I only want to move code, not change. At least they're neatly in the same place now.
 
 export function sortBandsLend(bandsBalances: { [index: number]: { borrowed: string; collateral: string } }) {
-  const sortedKeys = sortBy(Object.keys(bandsBalances), (k) => +k)
+  const sortedKeys = sortBy(objectKeys(bandsBalances), (k) => +k)
   const bandsBalancesArr: { borrowed: string; collateral: string; band: number }[] = []
   for (const k of sortedKeys) {
-    // @ts-ignore
     bandsBalancesArr.push({ ...bandsBalances[k], band: k })
   }
   return { bandsBalancesArr, bandsBalances }
 }
 
 export function sortBandsMint(bandBalances: { [key: string]: { stablecoin: string; collateral: string } }) {
-  const sortedKeys = sortBy(Object.keys(bandBalances), (k) => +k)
-  const bandBalancesArr = []
+  const sortedKeys = sortBy(objectKeys(bandBalances).map((k) => +k))
+  const bandBalancesArr: { stablecoin: string; collateral: string; band: string }[] = []
   for (const k of sortedKeys) {
-    bandBalancesArr.push({ ...bandBalances[k], band: k })
+    bandBalancesArr.push({ ...bandBalances[k], band: `${k}` })
   }
   return { bandBalancesArr, bandBalances }
 }

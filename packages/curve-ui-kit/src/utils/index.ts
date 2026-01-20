@@ -22,6 +22,7 @@ export const noCypressTestConnector = Boolean((window as { CypressNoTestConnecto
 
 const isDefaultBeta =
   process.env.NODE_ENV === 'development' ||
+  window.localStorage.getItem('developer') || // allow devs to test alpha features in prod by setting localStorage
   (typeof window !== 'undefined' &&
     window.location.hostname !== 'curve.finance' &&
     window.location.hostname !== 'www.curve.finance')

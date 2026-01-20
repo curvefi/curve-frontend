@@ -31,9 +31,9 @@ const bellRing = keyframes`
 `
 
 // BellRingingIcon component with hover animation
-export const BellRingingIcon = styled(BellIcon)<SvgIconProps>(({ theme }) => ({
-  '&:hover': {
+export const BellRingingIcon = styled(BellIcon)<SvgIconProps>(() => ({
+  transformOrigin: 'top center',
+  '&:hover, .group:hover &': {
     animation: `${bellRing} 0.6s ease-in-out`,
-    transformOrigin: 'top center',
   },
 }))

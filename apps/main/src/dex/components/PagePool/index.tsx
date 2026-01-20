@@ -1,56 +1,49 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { styled } from 'styled-components'
 import { type Address, isAddressEqual } from 'viem'
-import CampaignRewardsBanner from '@/dex/components/PagePool/components/CampaignRewardsBanner'
-import Deposit from '@/dex/components/PagePool/Deposit'
-import PoolInfoData from '@/dex/components/PagePool/PoolDetails/ChartOhlcWrapper'
-import PoolParameters from '@/dex/components/PagePool/PoolDetails/PoolParameters'
-import PoolStats from '@/dex/components/PagePool/PoolDetails/PoolStats'
-import Swap from '@/dex/components/PagePool/Swap'
+import { useConfig } from 'wagmi'
+import { CampaignRewardsBanner } from '@/dex/components/PagePool/components/CampaignRewardsBanner'
+import { Deposit } from '@/dex/components/PagePool/Deposit'
+import { PoolInfoData } from '@/dex/components/PagePool/PoolDetails/ChartOhlcWrapper'
+import { PoolParameters } from '@/dex/components/PagePool/PoolDetails/PoolParameters'
+import { PoolStats } from '@/dex/components/PagePool/PoolDetails/PoolStats'
+import { Swap } from '@/dex/components/PagePool/Swap'
 import type { PageTransferProps, Seed, TransferFormType } from '@/dex/components/PagePool/types'
-import MySharesStats from '@/dex/components/PagePool/UserDetails'
-import Withdraw from '@/dex/components/PagePool/Withdraw'
+import { MySharesStats } from '@/dex/components/PagePool/UserDetails'
+import { Withdraw } from '@/dex/components/PagePool/Withdraw'
 import { ROUTE } from '@/dex/constants'
 import { useGaugeManager, useGaugeRewardsDistributors } from '@/dex/entities/gauge'
 import { useNetworkByChain } from '@/dex/entities/networks'
-import usePoolAlert from '@/dex/hooks/usePoolAlert'
+import { usePoolAlert } from '@/dex/hooks/usePoolAlert'
 import { usePoolIdByAddressOrId } from '@/dex/hooks/usePoolIdByAddressOrId'
-import useTokensMapper from '@/dex/hooks/useTokensMapper'
-import { getUserPoolActiveKey } from '@/dex/store/createUserSlice'
-import useStore from '@/dex/store/useStore'
+import { useTokensMapper } from '@/dex/hooks/useTokensMapper'
+import { useStore } from '@/dex/store/useStore'
 import { getChainPoolIdActiveKey } from '@/dex/utils'
 import { getPath } from '@/dex/utils/utilsRouter'
 import { ManageGauge } from '@/dex/widgets/manage-gauge'
+import { notFalsy } from '@curvefi/prices-api/objects.util'
 import Stack from '@mui/material/Stack'
-import AlertBox from '@ui/AlertBox'
-import { AppFormContentWrapper } from '@ui/AppForm'
-import {
-  AppPageFormContainer,
-  AppPageFormsWrapper,
-  AppPageFormTitleWrapper,
-  AppPageInfoContentWrapper,
-  AppPageInfoWrapper,
-} from '@ui/AppPage'
-import Box from '@ui/Box'
+import { AlertBox } from '@ui/AlertBox'
+import { AppPageFormTitleWrapper, AppPageInfoContentWrapper } from '@ui/AppPage'
+import { Box } from '@ui/Box'
 import { ExternalLink } from '@ui/Link'
-import { BlockSkeleton } from '@ui/skeleton'
-import TextEllipsis from '@ui/TextEllipsis'
+import { TextEllipsis } from '@ui/TextEllipsis'
 import { scanAddressPath } from '@ui/utils'
 import { breakpoints } from '@ui/utils/responsive'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNavigate } from '@ui-kit/hooks/router'
-import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
+import { usePageVisibleInterval } from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
-import { type TabOption, TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import MonadBannerAlert from '../MonadBannerAlert'
+import { type TabOption, TabsSwitcher } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
+import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
+import { FormMargins } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
+import { PoolAlertBanner } from '../PoolAlertBanner'
 
 const DEFAULT_SEED: Seed = { isSeed: null, loaded: false }
-const { MaxWidth } = SizesAndSpaces
 
-const Transfer = (pageTransferProps: PageTransferProps) => {
+export const Transfer = (pageTransferProps: PageTransferProps) => {
   const { params, curve, hasDepositAndStake, poolData, poolDataCacheOrApi, routerParams } = pageTransferProps
   const { rChainId, rFormType, rPoolIdOrAddress } = routerParams
   const poolId = usePoolIdByAddressOrId({ chainId: rChainId, poolIdOrAddress: rPoolIdOrAddress })
@@ -58,10 +51,7 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
   const push = useNavigate()
   const poolAlert = usePoolAlert(poolData)
   const { tokensMapper } = useTokensMapper(rChainId)
-  const userPoolActiveKey = curve && poolId ? getUserPoolActiveKey(curve, poolId) : ''
   const chainIdPoolId = getChainPoolIdActiveKey(rChainId, poolId)
-  const userPoolBalances = useStore((state) => state.user.walletBalances[userPoolActiveKey])
-  const userPoolBalancesLoading = useStore((state) => state.user.walletBalancesLoading)
   const currencyReserves = useStore((state) => state.pools.currencyReserves[chainIdPoolId])
   const isMdUp = useLayoutStore((state) => state.isMdUp)
   const fetchUserPoolInfo = useStore((state) => state.user.fetchUserPoolInfo)
@@ -148,11 +138,12 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
   }, [poolData?.pool?.id, currencyReserves?.total])
 
   // fetch user pool info
+  const config = useConfig()
   useEffect(() => {
     if (curve && poolId && signerAddress) {
-      void fetchUserPoolInfo(curve, poolId)
+      void fetchUserPoolInfo(config, curve, poolId)
     }
-  }, [rChainId, poolId, signerAddress, curve, fetchUserPoolInfo])
+  }, [rChainId, poolId, signerAddress, config, curve, fetchUserPoolInfo])
 
   const isRewardsDistributor = useMemo(
     () =>
@@ -204,102 +195,81 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
       </StyledExternalLink>
     </AppPageFormTitleWrapper>
   )
-
   return (
     <>
-      <MonadBannerAlert chainId={rChainId} poolIdOrAddress={rPoolIdOrAddress} />
-      <AppPageFormContainer isAdvanceMode={true}>
-        <AppPageFormsWrapper className="grid-transfer">
-          <Stack
-            sx={{
-              width: { mobile: '100%', tablet: MaxWidth.actionCard },
-              marginInline: { mobile: 'auto', desktop: 0 },
-            }}
-          >
+      {poolAlert?.banner && (
+        <PoolAlertBanner
+          alertType={poolAlert.alertType}
+          banner={poolAlert.banner}
+          poolAlertBannerKey={notFalsy('pool-alert-banner-dismissed', params.network, params.poolIdOrAddress).join('-')}
+        />
+      )}
+      <DetailPageLayout
+        formTabs={
+          <FormMargins>
             {!isMdUp && <TitleComp />}
             <TabsSwitcher
               variant="contained"
-              size="medium"
               value={!rFormType ? 'deposit' : rFormType}
               onChange={(key) => toggleForm(key as TransferFormType)}
               options={tabs}
+              testIdPrefix="pool-form-tab"
             />
-            <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
-              {rFormType === 'swap' ? (
-                <AppFormContentWrapper>
-                  {poolAlert?.isDisableSwap ? (
-                    <AlertBox {...poolAlert}>{poolAlert.message}</AlertBox>
-                  ) : (
-                    <Swap
-                      {...pageTransferProps}
-                      chainIdPoolId={chainIdPoolId}
-                      poolAlert={poolAlert}
-                      maxSlippage={maxSlippage}
-                      seed={seed}
-                      tokensMapper={tokensMapper}
-                      userPoolBalances={userPoolBalances}
-                      userPoolBalancesLoading={userPoolBalancesLoading}
-                    />
-                  )}
-                </AppFormContentWrapper>
-              ) : rFormType === 'deposit' ? (
-                <Deposit
+            {rFormType === 'swap' ? (
+              poolAlert?.isDisableSwap ? (
+                <AlertBox {...poolAlert}>{poolAlert.message}</AlertBox>
+              ) : (
+                <Swap
                   {...pageTransferProps}
                   chainIdPoolId={chainIdPoolId}
-                  blockchainId={networkId}
-                  hasDepositAndStake={hasDepositAndStake}
                   poolAlert={poolAlert}
                   maxSlippage={maxSlippage}
                   seed={seed}
                   tokensMapper={tokensMapper}
-                  userPoolBalances={userPoolBalances}
-                  userPoolBalancesLoading={userPoolBalancesLoading}
                 />
-              ) : rFormType === 'withdraw' ? (
-                <Withdraw
-                  {...pageTransferProps}
-                  chainIdPoolId={chainIdPoolId}
-                  blockchainId={networkId}
-                  poolAlert={poolAlert}
-                  maxSlippage={maxSlippage}
-                  seed={seed}
-                  tokensMapper={tokensMapper}
-                  userPoolBalances={userPoolBalances}
-                  userPoolBalancesLoading={userPoolBalancesLoading}
-                />
-              ) : rFormType === 'manage-gauge' ? (
-                poolData ? (
-                  <ManageGauge poolId={poolData.pool.id} chainId={rChainId} />
-                ) : (
-                  <AppFormContentWrapper>
-                    <BlockSkeleton width={339} />
-                  </AppFormContentWrapper>
-                )
-              ) : null}
-            </Stack>
-          </Stack>
-        </AppPageFormsWrapper>
-
-        <AppPageInfoWrapper>
-          {isMdUp && <TitleComp />}
-          {poolAddress && (
-            <Box>
-              <CampaignRewardsBanner chainId={rChainId} address={poolAddress} />
-            </Box>
-          )}
-          {!isLite && pricesApiPoolData && pricesApi && (
-            <PriceAndTradesWrapper variant="secondary">
-              <PoolInfoData rChainId={rChainId} pricesApiPoolData={pricesApiPoolData} />
-            </PriceAndTradesWrapper>
-          )}
+              )
+            ) : rFormType === 'deposit' ? (
+              <Deposit
+                {...pageTransferProps}
+                chainIdPoolId={chainIdPoolId}
+                blockchainId={networkId}
+                hasDepositAndStake={hasDepositAndStake}
+                poolAlert={poolAlert}
+                maxSlippage={maxSlippage}
+                seed={seed}
+                tokensMapper={tokensMapper}
+              />
+            ) : rFormType === 'withdraw' ? (
+              <Withdraw
+                {...pageTransferProps}
+                chainIdPoolId={chainIdPoolId}
+                blockchainId={networkId}
+                poolAlert={poolAlert}
+                maxSlippage={maxSlippage}
+                seed={seed}
+                tokensMapper={tokensMapper}
+              />
+            ) : (
+              rFormType === 'manage-gauge' && poolData && <ManageGauge poolId={poolData.pool.id} chainId={rChainId} />
+            )}
+          </FormMargins>
+        }
+      >
+        {isMdUp && <TitleComp />}
+        {poolAddress && <CampaignRewardsBanner chainId={rChainId} address={poolAddress} />}
+        {!isLite && pricesApiPoolData && pricesApi && (
+          <PriceAndTradesWrapper variant="secondary">
+            <PoolInfoData rChainId={rChainId} pricesApiPoolData={pricesApiPoolData} />
+          </PriceAndTradesWrapper>
+        )}
+        <Stack>
           <TabsSwitcher
             variant="contained"
-            size="medium"
             value={poolInfoTab}
             onChange={setPoolInfoTab}
             options={poolInfoTabs}
+            testIdPrefix="pool-info-tab"
           />
-
           <AppPageInfoContentWrapper variant="secondary">
             {poolInfoTab === 'user' && (
               <MySharesStats
@@ -308,7 +278,6 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
                 poolDataCacheOrApi={poolDataCacheOrApi}
                 routerParams={routerParams}
                 tokensMapper={tokensMapper}
-                userPoolBalances={userPoolBalances}
               />
             )}
             {poolInfoTab === 'pool' && (
@@ -333,8 +302,8 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
               <PoolParameters pricesApi={pricesApi} poolData={poolData} rChainId={rChainId} />
             )}
           </AppPageInfoContentWrapper>
-        </AppPageInfoWrapper>
-      </AppPageFormContainer>
+        </Stack>
+      </DetailPageLayout>
     </>
   )
 }
@@ -359,14 +328,10 @@ const StatsWrapper = styled(Box)`
 
 const PriceAndTradesWrapper = styled(Box)`
   padding: 1.5rem 1rem;
-  margin-bottom: var(--spacing-1);
   @media (min-width: ${breakpoints.sm}rem) {
     margin-top: 0;
-    margin-bottom: var(--spacing-3);
   }
   @media (min-width: ${breakpoints.lg}rem) {
     padding: 1.5rem 1.5rem;
   }
 `
-
-export default Transfer

@@ -1,12 +1,12 @@
 import lodash from 'lodash'
 import type { StoreApi } from 'zustand'
-import type { FormEstGas } from '@/lend/components/PageLoanManage/types'
-import { DEFAULT_FORM_EST_GAS } from '@/lend/components/PageLoanManage/utils'
+import type { FormEstGas } from '@/lend/components/PageLendMarket/types'
+import { DEFAULT_FORM_EST_GAS } from '@/lend/components/PageLendMarket/utils'
 import type { FormStatus, FormValues } from '@/lend/components/PageVault/VaultWithdrawRedeem/types'
 import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/lend/components/PageVault/VaultWithdrawRedeem/utils'
 import { invalidateAllUserBorrowDetails } from '@/lend/entities/user-loan-details'
-import apiLending, { helpers } from '@/lend/lib/apiLending'
-import networks from '@/lend/networks'
+import { helpers, apiLending } from '@/lend/lib/apiLending'
+import { networks } from '@/lend/networks'
 import { _getMaxActiveKey } from '@/lend/store/createVaultDepositMintSlice'
 import type { State } from '@/lend/store/useStore'
 import { Api, ChainId, FutureRates, OneWayMarketTemplate } from '@/lend/types/lend.types'
@@ -58,8 +58,8 @@ const DEFAULT_STATE: SliceState = {
   formValues: DEFAULT_FORM_VALUES,
 }
 
-const createVaultWithdrawRedeem = (
-  set: StoreApi<State>['setState'],
+export const createVaultWithdrawRedeem = (
+  _set: StoreApi<State>['setState'],
   get: StoreApi<State>['getState'],
 ): VaultWithdrawRedeemSlice => ({
   [sliceKey]: {
@@ -83,7 +83,7 @@ const createVaultWithdrawRedeem = (
         : cFormValues.amountError
       get()[sliceKey].setStateByKey('formValues', cFormValues)
     },
-    fetchEstGas: async (activeKey, formType, api, market) => {
+    fetchEstGas: async (activeKey, _formType, api, market) => {
       const { signerAddress } = api
       const { amount, amountError, isFullWithdraw } = get()[sliceKey].formValues
 
@@ -179,7 +179,7 @@ const createVaultWithdrawRedeem = (
     setStateByKey: <T>(key: StateKey, value: T) => {
       get().setAppStateByKey(sliceKey, key, value)
     },
-    setStateByKeys: <T>(sliceState: Partial<SliceState>) => {
+    setStateByKeys: (sliceState: Partial<SliceState>) => {
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {
@@ -200,5 +200,3 @@ export function _getActiveKey(
 ) {
   return `${rChainId}-${formType}-${market?.id ?? ''}-${amount}`
 }
-
-export default createVaultWithdrawRedeem

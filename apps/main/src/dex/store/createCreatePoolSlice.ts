@@ -18,7 +18,15 @@ import {
   TOKEN_H,
   NG_ASSET_TYPE,
 } from '@/dex/components/PageCreatePool/constants'
-import { CreateToken, NgAssetType, SwapType, TokenId, TokenState } from '@/dex/components/PageCreatePool/types'
+import {
+  CreateToken,
+  NgAssetType,
+  SwapType,
+  TokenId,
+  TokenState,
+  OracleType,
+  Erc4626Type,
+} from '@/dex/components/PageCreatePool/types'
 import { isTricrypto } from '@/dex/components/PageCreatePool/utils'
 import type { State } from '@/dex/store/useStore'
 import { ChainId, CurveApi } from '@/dex/types/main.types'
@@ -117,6 +125,7 @@ export type CreatePoolSlice = {
     clearToken: (tokenId: TokenId) => void
     updateNgAssetType: (tokenId: TokenId, value: NgAssetType) => void
     updateTokenErc4626Status: (tokenId: TokenId, status: TokenState['erc4626']) => void
+    updateOracleState: (tokenId: TokenId, status: OracleType) => void
     updateOracleAddress: (tokenId: TokenId, oracleAddress: string) => void
     updateOracleFunction: (tokenId: TokenId, oracleFunction: string) => void
     updateUserAddedTokens: (address: string, symbol: string, haveSameTokenName: boolean, basePool: boolean) => void
@@ -148,11 +157,20 @@ export type CreatePoolSlice = {
 
 const ORACLE_FUNCTION_NULL_VALUE = '0x00000000'
 
-export const DEFAULT_ERC4626_STATUS: TokenState['erc4626'] = {
+export const DEFAULT_ERC4626_STATUS: Erc4626Type = {
   isErc4626: false,
   isLoading: false,
   error: null,
   isSuccess: false,
+}
+export const DEFAULT_ORACLE_STATUS: OracleType = {
+  isLoading: false,
+  error: null,
+  isSuccess: false,
+  address: '',
+  functionName: '',
+  rate: undefined,
+  decimals: undefined,
 }
 
 const DEFAULT_TOKEN_STATE: TokenState = {
@@ -160,9 +178,8 @@ const DEFAULT_TOKEN_STATE: TokenState = {
   symbol: '',
   ngAssetType: NG_ASSET_TYPE.STANDARD,
   basePool: false,
-  oracleAddress: '',
-  oracleFunction: '',
   erc4626: { ...DEFAULT_ERC4626_STATUS },
+  oracle: { ...DEFAULT_ORACLE_STATUS },
 }
 
 export const DEFAULT_CREATE_POOL_STATE = {
@@ -256,7 +273,7 @@ const calculateInitialPrice = (tokenA: number, tokenB: number) => {
   return initialPrice.toPrecision(4).toString()
 }
 
-const createCreatePoolSlice = (
+export const createCreatePoolSlice = (
   set: StoreApi<State>['setState'],
   get: StoreApi<State>['getState'],
 ): CreatePoolSlice => ({
@@ -523,17 +540,24 @@ const createCreatePoolSlice = (
         }),
       )
     },
-    updateOracleAddress: (tokenId: TokenId, oracleAddress: string) => {
+    updateOracleState: (tokenId: TokenId, status: OracleType) => {
       set(
         produce((state) => {
-          state.createPool.tokensInPool[tokenId].oracleAddress = oracleAddress
+          state.createPool.tokensInPool[tokenId].oracle = { ...status }
         }),
       )
     },
-    updateOracleFunction: (tokenId: TokenId, oracleFunction: string) => {
+    updateOracleAddress: (tokenId: TokenId, oracleAddress: string) => {
       set(
         produce((state) => {
-          state.createPool.tokensInPool[tokenId].oracleFunction = oracleFunction
+          state.createPool.tokensInPool[tokenId].oracle.address = oracleAddress
+        }),
+      )
+    },
+    updateOracleFunction: (tokenId: TokenId, functionName: string) => {
+      set(
+        produce((state) => {
+          state.createPool.tokensInPool[tokenId].oracle.functionName = functionName
         }),
       )
     },
@@ -630,9 +654,9 @@ const createCreatePoolSlice = (
         produce((state) => {
           state.createPool.initialPrice = {
             ...get().createPool.initialPrice,
-            tokenAPrice: tokenAPrice,
-            tokenBPrice: tokenBPrice,
-            tokenCPrice: tokenCPrice,
+            [TOKEN_A]: tokenAPrice,
+            [TOKEN_B]: tokenBPrice,
+            [TOKEN_C]: tokenCPrice,
           }
         }),
       )
@@ -670,57 +694,46 @@ const createCreatePoolSlice = (
     updateGamma: (value: number | string) =>
       set(
         produce((state) => {
-          value === typeof 'string'
-            ? (state.createPool.parameters.gamma = value)
-            : (state.createPool.parameters.gamma = new BigNumber(value).toString())
+          state.createPool.parameters.gamma = typeof value === 'string' ? value : new BigNumber(value).toString()
         }),
       ),
     updateAllowedExtraProfit: (value: number | string) =>
       set(
         produce((state) => {
-          value === typeof 'string'
-            ? (state.createPool.parameters.allowedExtraProfit = value)
-            : (state.createPool.parameters.allowedExtraProfit = new BigNumber(value).toString())
+          state.createPool.parameters.allowedExtraProfit =
+            typeof value === 'string' ? value : new BigNumber(value).toString()
         }),
       ),
     updateFeeGamma: (value: number | string) =>
       set(
         produce((state) => {
-          value === typeof 'string'
-            ? (state.createPool.parameters.feeGamma = value)
-            : (state.createPool.parameters.feeGamma = new BigNumber(value).toString())
+          state.createPool.parameters.feeGamma = typeof value === 'string' ? value : new BigNumber(value).toString()
         }),
       ),
     updateAdjustmentStep: (value: number | string) =>
       set(
         produce((state) => {
-          value === typeof 'string'
-            ? (state.createPool.parameters.adjustmentStep = value)
-            : (state.createPool.parameters.adjustmentStep = new BigNumber(value).toString())
+          state.createPool.parameters.adjustmentStep =
+            typeof value === 'string' ? value : new BigNumber(value).toString()
         }),
       ),
     updateMaHalfTime: (value: number | string) =>
       set(
         produce((state) => {
-          value === typeof 'string'
-            ? (state.createPool.parameters.maHalfTime = value)
-            : (state.createPool.parameters.maHalfTime = new BigNumber(value).toString())
+          state.createPool.parameters.maHalfTime = typeof value === 'string' ? value : new BigNumber(value).toString()
         }),
       ),
     updateMaExpTime: (value: number | string) =>
       set(
         produce((state) => {
-          value === typeof 'string'
-            ? (state.createPool.parameters.maExpTime = value)
-            : (state.createPool.parameters.maExpTime = new BigNumber(value).toString())
+          state.createPool.parameters.maExpTime = typeof value === 'string' ? value : new BigNumber(value).toString()
         }),
       ),
     updateOffpegFeeMultiplier: (value: number | string) =>
       set(
         produce((state) => {
-          value === typeof 'string'
-            ? (state.createPool.parameters.offpegFeeMultiplier = value)
-            : (state.createPool.parameters.offpegFeeMultiplier = new BigNumber(value).toString())
+          state.createPool.parameters.offpegFeeMultiplier =
+            typeof value === 'string' ? value : new BigNumber(value).toString()
         }),
       ),
     updatePoolName: (name: string) =>
@@ -1066,9 +1079,9 @@ const createCreatePoolSlice = (
         if (networks[chainId].stableswapFactory) {
           // STABLE NG META
           try {
-            const oracleAddress = coin.ngAssetType === NG_ASSET_TYPE.ORACLE ? coin.oracleAddress : zeroAddress
+            const oracleAddress = coin.ngAssetType === NG_ASSET_TYPE.ORACLE ? coin.oracle.address : zeroAddress
             const oracleFunction =
-              coin.ngAssetType === NG_ASSET_TYPE.ORACLE ? coin.oracleFunction : ORACLE_FUNCTION_NULL_VALUE
+              coin.ngAssetType === NG_ASSET_TYPE.ORACLE ? coin.oracle.functionName : ORACLE_FUNCTION_NULL_VALUE
             const maExpTimeFormatted = Math.round(+maExpTime / 0.693)
 
             const deployPoolTx = await curve.stableNgFactory.deployMetaPool(
@@ -1157,10 +1170,10 @@ const createCreatePoolSlice = (
             const coinAddresses = coins.map((coin) => coin.address)
             const assetTypes = coins.map((coin) => coin.ngAssetType)
             const oracleAddresses = coins.map((coin) =>
-              coin.ngAssetType === NG_ASSET_TYPE.ORACLE ? coin.oracleAddress : zeroAddress,
+              coin.ngAssetType === NG_ASSET_TYPE.ORACLE ? coin.oracle.address : zeroAddress,
             )
             const oracleFunctions = coins.map((coin) =>
-              coin.ngAssetType === NG_ASSET_TYPE.ORACLE ? coin.oracleFunction : '0x00000000',
+              coin.ngAssetType === NG_ASSET_TYPE.ORACLE ? coin.oracle.functionName : ORACLE_FUNCTION_NULL_VALUE,
             )
             const maExpTimeFormatted = Math.round(+maExpTime / 0.693)
 
@@ -1246,5 +1259,3 @@ const createCreatePoolSlice = (
       ),
   },
 })
-
-export default createCreatePoolSlice

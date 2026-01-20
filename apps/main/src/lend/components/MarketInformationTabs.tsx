@@ -1,7 +1,7 @@
 import { ReactNode, useState } from 'react'
 import { Box } from '@mui/material'
 import { t } from '@ui-kit/lib/i18n'
-import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
+import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 
 type Tab = 'borrow' | 'supply'
 
@@ -27,7 +27,7 @@ export const MarketInformationTabs = ({ currentTab, hrefs, children }: MarketInf
 
   return (
     <Box>
-      <TabsSwitcher value={tab} onChange={setTab} variant="contained" size="medium" options={tabs} />
+      <TabsSwitcher value={tab} onChange={setTab} variant="contained" options={tabs} />
       <Box sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>{children}</Box>
     </Box>
   )

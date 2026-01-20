@@ -2,12 +2,12 @@ import { useMemo } from 'react'
 import { styled } from 'styled-components'
 import { zeroAddress } from 'viem'
 import { useOneWayMarket } from '@/lend/entities/chain'
-import useAbiTotalSupply from '@/lend/hooks/useAbiTotalSupply'
-import useSupplyTotalApr from '@/lend/hooks/useSupplyTotalApr'
+import { useAbiTotalSupply } from '@/lend/hooks/useAbiTotalSupply'
+import { useSupplyTotalApr } from '@/lend/hooks/useSupplyTotalApr'
 import { ChainId } from '@/lend/types/lend.types'
-import DetailInfo from '@ui/DetailInfo'
-import Icon from '@ui/Icon'
-import TooltipIcon from '@ui/Tooltip/TooltipIcon'
+import { DetailInfo } from '@ui/DetailInfo'
+import { Icon } from '@ui/Icon'
+import { TooltipIcon } from '@ui/Tooltip/TooltipIcon'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 
@@ -20,7 +20,7 @@ type Data = {
   ratio: number
 }
 
-const DetailInfoCrvIncentives = ({
+export const DetailInfoCrvIncentives = ({
   rChainId,
   rOwmId,
   lpTokenAmount,
@@ -101,8 +101,6 @@ const StyledTooltipIcon = styled(TooltipIcon)`
 const StyledIcon = styled(Icon)`
   margin: 0 var(--spacing-1);
 `
-
-export default DetailInfoCrvIncentives
 
 function _getDataApr(
   currApr: string | number | undefined = '',

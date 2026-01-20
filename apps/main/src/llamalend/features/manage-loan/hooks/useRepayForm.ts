@@ -20,13 +20,13 @@ import { type RepayForm, repayFormValidationSuite } from '@/llamalend/queries/va
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { vestResolver } from '@hookform/resolvers/vest'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
-import { formDefaultOptions } from '@ui-kit/lib/model'
-import { useFormErrors } from '../../borrow/react-form.utils'
+import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
+import { useFormErrors } from '@ui-kit/utils/react-form.utils'
 
 const useCallbackAfterFormUpdate = (form: UseFormReturn<RepayForm>, callback: () => void) =>
   useEffect(() => form.subscribe({ formState: { values: true }, callback }), [form, callback])
 
-export const useRepayForm = <ChainId extends LlamaChainId, NetworkName extends LlamaNetworkId = LlamaNetworkId>({
+export const useRepayForm = <ChainId extends LlamaChainId>({
   market,
   network,
   networks,
@@ -37,7 +37,7 @@ export const useRepayForm = <ChainId extends LlamaChainId, NetworkName extends L
   network: { id: LlamaNetworkId; chainId: ChainId }
   networks: NetworkDict<ChainId>
   enabled?: boolean
-  onRepaid: NonNullable<RepayOptions['onRepaid']>
+  onRepaid?: RepayOptions['onRepaid']
 }) => {
   const { address: userAddress } = useConnection()
   const { chainId } = network
@@ -58,7 +58,7 @@ export const useRepayForm = <ChainId extends LlamaChainId, NetworkName extends L
     },
   })
 
-  const values = form.watch()
+  const values = watchForm(form)
 
   const params = useDebouncedValue(
     useMemo(
@@ -103,7 +103,6 @@ export const useRepayForm = <ChainId extends LlamaChainId, NetworkName extends L
 
   return {
     form,
-    values,
     params,
     isPending: form.formState.isSubmitting || action.isPending,
     onSubmit: form.handleSubmit(onSubmit),

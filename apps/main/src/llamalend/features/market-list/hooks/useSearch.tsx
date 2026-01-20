@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import type { PartialRecord } from '@curvefi/prices-api/objects.util'
-import { LlamaMarketColumnId } from '../columns.enum'
+import { LlamaMarketColumnId } from '../columns'
 
 export const useSearch = (
   columnFiltersById: PartialRecord<LlamaMarketColumnId, string>,

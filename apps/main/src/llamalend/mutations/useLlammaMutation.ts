@@ -1,11 +1,12 @@
-import type { Suite } from 'vest'
+import { useState } from 'react'
 import type { FormattedTransactionReceipt, Hex } from 'viem'
 import { useConfig } from 'wagmi'
 import { invalidateAllUserMarketDetails } from '@/llamalend/queries/validation/invalidation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useMutation } from '@tanstack/react-query'
 import { notify, useCurve } from '@ui-kit/features/connect-wallet'
-import { assertValidity, logError, logMutation, logSuccess } from '@ui-kit/lib'
+import { assertValidity, logError, logMutation, logSuccess, type ValidationSuite } from '@ui-kit/lib'
+import { t } from '@ui-kit/lib/i18n'
 import { waitForTransactionReceipt } from '@wagmi/core'
 import { getLlamaMarket, updateUserEventsApi } from '../llama.utils'
 import type { LlamaMarketTemplate } from '../llamalend.types'
@@ -61,16 +62,14 @@ export type LlammaMutationOptions<TVariables extends object, TData extends Resul
   mutationFn: (variables: TVariables, context: { market: LlamaMarketTemplate }) => Promise<TData>
   /**
    * Validation suite to validate variables before mutationFn is called.
-   * This is using `any` because `vest` will try to match every single field,
-   * and some validators don't validate everything (we pass chainId, marketId, userAddress plus variables).
    **/
-  validationSuite: Suite<any, any> | Suite<never, any>
+  validationSuite: ValidationSuite
   /** Message to display during pending state */
   pendingMessage: (variables: TVariables, context: Omit<Context, 'pendingNotification'>) => string
   /** Message to display on success */
   successMessage: (variables: TVariables, context: Context) => string
   /** Callback executed on successful mutation */
-  onSuccess: (
+  onSuccess?: (
     data: TData,
     receipt: FormattedTransactionReceipt,
     variables: TVariables,
@@ -98,18 +97,24 @@ export function useLlammaMutation<TVariables extends object, TData extends Resul
   onReset,
 }: LlammaMutationOptions<TVariables, TData>) {
   const { llamaApi, wallet } = useCurve()
-  const userAddress = wallet?.account.address
+  const userAddress = wallet?.address
   const config = useConfig()
 
-  const { mutate, mutateAsync, error, data, isPending, isSuccess, reset } = useMutation({
+  // Track our own error state because errors thrown in onMutate don't populate React Query's error.
+  const [error, setError] = useState<Error | null>(null)
+
+  const { mutate, mutateAsync, data, isPending, isSuccess, reset } = useMutation({
     mutationKey,
     onMutate: (variables: TVariables) => {
+      // Clear local error at the start of a new mutation attempt.
+      setError(null)
+      reset() // reset mutation state on new mutation
       // Early validation - throwing here prevents mutationFn from running
       if (!wallet) throw new Error('Missing provider')
       if (!llamaApi) throw new Error('Missing llamalend api')
       if (!marketId) throw new Error('Missing llamma market id')
 
-      assertValidity(validationSuite as Suite<any, any>, { chainId, marketId, userAddress, ...variables })
+      assertValidity(validationSuite, { chainId, marketId, userAddress, ...variables })
 
       const market = getLlamaMarket(marketId)
 
@@ -124,18 +129,18 @@ export function useLlammaMutation<TVariables extends object, TData extends Resul
       throwIfError(data)
       return { data, receipt: await waitForTransactionReceipt(config, data) }
     },
-    onSuccess: async ({ data, receipt }, variables, context) => {
-      logSuccess(mutationKey, { data, variables, marketId: context.market.id })
-      notify(successMessage(variables, context), 'success')
-      updateUserEventsApi(wallet!, { id: networkId }, context.market, receipt.transactionHash)
+    onSuccess: async ({ data, receipt }, variables, result) => {
+      logSuccess(mutationKey, { data, variables, marketId: result.market.id })
+      notify(successMessage(variables, result), 'success')
+      updateUserEventsApi(wallet!, { id: networkId }, result.market, receipt.transactionHash)
       await invalidateAllUserMarketDetails({ chainId, marketId, userAddress })
       onReset?.()
-      await onSuccess(data, receipt, variables, context)
+      await onSuccess?.(data, receipt, variables, result)
     },
     onError: (error, variables, context) => {
-      console.error(`Error in mutation ${mutationKey}:`, error)
+      setError(error)
       logError(mutationKey, { error, variables, marketId: context?.market.id })
-      notify(error.message, 'error')
+      notify(t`Transaction failed`, 'error') // hide the actual error message, it can be too long - display it in the form
     },
     onSettled: (_data, _error, _variables, context) => context?.pendingNotification?.dismiss(),
   })

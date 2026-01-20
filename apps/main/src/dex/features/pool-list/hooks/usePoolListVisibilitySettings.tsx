@@ -5,10 +5,10 @@ import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import type { MigrationOptions } from '@ui-kit/hooks/useStoredState'
 import { useVisibilitySettings } from '@ui-kit/shared/ui/DataTable/hooks/useVisibilitySettings'
 import type { VisibilityGroup } from '@ui-kit/shared/ui/DataTable/visibility.types'
-import { POOL_LIST_COLUMN_OPTIONS, PoolColumnVariant } from '../column-options'
+import { DEFAULT_SORT } from '../columns'
 import { POOL_LIST_COLUMNS, PoolColumnId } from '../columns'
+import { POOL_LIST_COLUMN_OPTIONS, PoolColumnVariant } from '../columns'
 
-export const DEFAULT_SORT = [{ id: PoolColumnId.Volume, desc: true }]
 const migration: MigrationOptions<Record<PoolColumnVariant, VisibilityGroup<PoolColumnId>[]>> = { version: 1 }
 
 /**

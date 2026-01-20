@@ -2,7 +2,7 @@ import { TooltipProps } from 'recharts'
 import type { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent'
 import { styled } from 'styled-components'
 import type { Locker } from '@curvefi/prices-api/dao'
-import Box from '@ui/Box'
+import { Box } from '@ui/Box'
 import { formatDate, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 
@@ -11,7 +11,7 @@ type Payload = Omit<Locker, 'weight' | 'locked'> & {
   locked: number
 }
 
-const TopHoldersBarChartTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) => {
+export const TopHoldersBarChartTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) => {
   if (active && payload && payload.length) {
     const { user, locked, weight, weightRatio, unlockTime } = payload[0].payload as Payload
 
@@ -93,5 +93,3 @@ const TooltipDataNotAvailable = styled.p`
   color: var(--page--text-color);
   font-style: italic;
 `
-
-export default TopHoldersBarChartTooltip

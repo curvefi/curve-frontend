@@ -6,7 +6,7 @@ type Props = {
   progress: number
 }
 
-const ProgressBar = ({ className = '', $height, progress = 0 }: Props) => (
+export const ProgressBar = ({ className = '', $height, progress = 0 }: Props) => (
   <Wrapper className={className ?? ''}>
     <Bar $height={$height} $width={progress}></Bar>
   </Wrapper>
@@ -21,5 +21,3 @@ const Bar = styled.div<{ $height?: string; $width: number }>`
   height: ${({ $height }) => `${$height ?? `17px`};`};
   width: ${({ $width }) => `${$width ?? 0}%;`};
 `
-
-export default ProgressBar

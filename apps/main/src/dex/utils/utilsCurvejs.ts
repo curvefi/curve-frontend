@@ -42,8 +42,7 @@ export function rewardsApyCrvText([base, boosted]: number[]) {
 
 // profits
 export function filterCrvProfit<T extends { day: string; week: string; month: string; year: string }>(crvProfit: T) {
-  // @ts-ignore
-  const haveCrvProfit = ['day', 'week', 'month', 'year'].some((t) => Number(crvProfit[t]) > 0)
+  const haveCrvProfit = (['day', 'week', 'month', 'year'] as const).some((t) => Number(crvProfit[t]) > 0)
   return haveCrvProfit ? crvProfit : null
 }
 

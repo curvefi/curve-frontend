@@ -8,9 +8,9 @@ import {
   getExpandedRowModel,
   getFilteredRowModel,
   getSortedRowModel,
-  type useReactTable,
+  useReactTable,
 } from '@tanstack/react-table'
-import type { Table } from '@tanstack/table-core'
+import { RowData, type Table, TableOptions } from '@tanstack/table-core'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
@@ -26,6 +26,15 @@ export type TableItem = { url?: string | null }
 
 export type TanstackTable<T extends TableItem> = ReturnType<typeof useReactTable<T>>
 
+/**
+ * Wrapper around useReactTable to create a table instance.
+ * We ignore the lint rule for now as Tanstack table isn't supported with the React compiler yet.
+ * Note we don't use the compiler due to this reason, we only use the lint rules.
+ */
+export const useTable = <TData extends RowData>(options: TableOptions<TData>) =>
+  // eslint-disable-next-line react-hooks/incompatible-library
+  useReactTable<TData>(options)
+
 /** Define the alignment of the data or header cell based on the column type. */
 export const getAlignment = <T extends TableItem>({ columnDef }: Column<T>) =>
   columnDef.meta?.type == 'numeric' ? 'right' : 'left'
@@ -38,7 +47,7 @@ export const getFlexAlignment = <T extends TableItem>({ columnDef }: Column<T>) 
  * In the figma design, the first and last columns seem to be aligned to the table title.
  * However, the normal padding causes them to be misaligned.
  */
-export const getExtraColumnPadding = <T>(column: Column<T, any>) => ({
+export const getExtraColumnPadding = <T>(column: Column<T, unknown>) => ({
   ...(column.getIsFirstColumn() && { paddingInlineStart: Spacing.md }),
   ...(column.getIsLastColumn() && { paddingInlineEnd: Spacing.md }),
 })

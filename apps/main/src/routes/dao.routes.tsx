@@ -1,4 +1,3 @@
-import '@/global-extensions'
 import { PageAnalytics } from '@/dao/components/PageAnalytics/Page'
 import { PageGauge } from '@/dao/components/PageGauge/Page'
 import { PageGauges } from '@/dao/components/PageGauges/Page'
@@ -7,14 +6,10 @@ import { PageDao } from '@/dao/components/PageProposals/Page'
 import { PageUser } from '@/dao/components/PageUser/Page'
 import { PageVeCrv } from '@/dao/components/PageVeCrv/Page'
 import { DaoLayout } from '@/dao/DaoLayout'
-import Skeleton from '@mui/material/Skeleton'
 import { createRoute } from '@tanstack/react-router'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { LegalPage } from '@ui-kit/widgets/Legal'
 import { rootRoute } from './root.routes'
+import { createSharedRoutes } from './shared.routes'
 import { redirectTo } from './util'
-
-const { MinHeight } = SizesAndSpaces
 
 const daoLayoutRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -25,23 +20,10 @@ const daoLayoutRoute = createRoute({
 const layoutProps = { getParentRoute: () => daoLayoutRoute }
 
 export const daoRoutes = daoLayoutRoute.addChildren([
-  createRoute({
-    path: '/',
-    /** Redirect is handled by the `RootLayout` component */
-    component: () => <Skeleton width="100%" height={MinHeight.pageContent} />,
-    head: () => ({
-      meta: [{ title: 'DAO - Curve' }],
-    }),
-    ...layoutProps,
-  }),
+  ...createSharedRoutes('dao', layoutProps),
   createRoute({
     path: '$network',
     loader: ({ params: { network } }) => redirectTo(`/dao/${network}/proposals/`),
-    ...layoutProps,
-  }),
-  createRoute({
-    path: '$network/integrations',
-    loader: ({ params: { network } }) => redirectTo(`/dex/${network}/integrations/`),
     ...layoutProps,
   }),
   createRoute({
@@ -49,19 +31,6 @@ export const daoRoutes = daoLayoutRoute.addChildren([
     component: PageAnalytics,
     head: () => ({
       meta: [{ title: 'Analytics - Curve' }],
-    }),
-    ...layoutProps,
-  }),
-  createRoute({
-    path: '$network/disclaimer',
-    loader: ({ params: { network } }) => redirectTo(`/dao/${network}/legal/?tab=disclaimers`),
-    ...layoutProps,
-  }),
-  createRoute({
-    path: '$network/legal',
-    component: () => <LegalPage currentApp="dao" />,
-    head: () => ({
-      meta: [{ title: 'Legal - Curve DAO' }],
     }),
     ...layoutProps,
   }),

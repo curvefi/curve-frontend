@@ -38,7 +38,7 @@ export const observeNode = (
  * }
  * ```
  */
-export default function useIntersectionObserver(elementRef: RefObject<Element | null>, options: Props = {}) {
+export function useIntersectionObserver(elementRef: RefObject<Element | null>, options: Props = {}) {
   const { threshold = 0, root = null, rootMargin = '0%', freezeOnceVisible = false } = options
   const [entry, setEntry] = useState<IntersectionEntry>({ isIntersecting: false })
 
@@ -50,6 +50,7 @@ export default function useIntersectionObserver(elementRef: RefObject<Element | 
   useEffect(() => {
     // show node if IO not supported
     if (typeof window === 'undefined' || !window.IntersectionObserver) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setEntry({ isIntersecting: true })
       return
     }

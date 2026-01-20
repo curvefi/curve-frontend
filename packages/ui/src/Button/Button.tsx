@@ -1,12 +1,12 @@
 import { forwardRef, ButtonHTMLAttributes, useRef } from 'react'
 import { styled } from 'styled-components'
 import { useFocusRing } from '@react-aria/focus'
-import Box from 'ui/src/Box/Box'
-import type { ButtonProps } from 'ui/src/Button/types'
-import Spinner from 'ui/src/Spinner/Spinner'
+import { Box } from '@ui/Box/Box'
+import type { ButtonProps } from '@ui/Button/types'
+import { Spinner } from '@ui/Spinner/Spinner'
 import { buttonBaseStyles } from './styles'
 
-const Button = forwardRef<
+export const Button = forwardRef<
   HTMLButtonElement,
   ButtonProps &
     ButtonHTMLAttributes<HTMLButtonElement> & {
@@ -50,5 +50,3 @@ const BoxSpinner = styled(Box)`
 `
 
 Button.displayName = 'Button'
-
-export default Button

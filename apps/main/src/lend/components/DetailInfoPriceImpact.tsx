@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
-import DetailInfo from '@ui/DetailInfo'
+import { DetailInfo } from '@ui/DetailInfo'
 import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 
-const DetailInfoPriceImpact = ({
+export const DetailInfoPriceImpact = ({
   loading,
   priceImpact = '0',
   isHighImpact,
@@ -30,5 +30,3 @@ const DetailInfoPriceImpact = ({
     </DetailInfo>
   )
 }
-
-export default DetailInfoPriceImpact

@@ -1,9 +1,9 @@
 import { ReactNode } from 'react'
 import { styled } from 'styled-components'
-import Icon from 'ui/src/Icon'
-import type { TooltipProps } from 'ui/src/Tooltip/types'
-import Chip from 'ui/src/Typography/Chip'
-import { breakpoints } from 'ui/src/utils'
+import { Icon } from '@ui/Icon'
+import type { TooltipProps } from '@ui/Tooltip/types'
+import { Chip } from '@ui/Typography/Chip'
+import { breakpoints } from '@ui/utils'
 
 type Props = TooltipProps & {
   children: ReactNode
@@ -18,7 +18,7 @@ type Props = TooltipProps & {
   tooltipProps?: TooltipProps
 }
 
-const ListInfoItem = ({
+export const ListInfoItem = ({
   children,
   className = '',
   as,
@@ -35,7 +35,6 @@ const ListInfoItem = ({
   const parsedTitleOpacity = isMain ? 1 : null
 
   return (
-    // @ts-ignore
     <Wrapper
       {...props}
       {...(as ? { as } : {})}
@@ -120,5 +119,3 @@ const TitleDescription = styled.span`
 const MainValue = styled.span`
   font-size: var(--font-size-6);
 `
-
-export default ListInfoItem

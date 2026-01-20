@@ -1,12 +1,12 @@
 import lodash from 'lodash'
 import type { StoreApi } from 'zustand'
-import type { FormStatus } from '@/lend/components/PageLoanManage/LoanSelfLiquidation/types'
-import type { FormEstGas } from '@/lend/components/PageLoanManage/types'
-import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@/lend/components/PageLoanManage/utils'
+import type { FormStatus } from '@/lend/components/PageLendMarket/LoanSelfLiquidation/types'
+import type { FormEstGas } from '@/lend/components/PageLendMarket/types'
+import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@/lend/components/PageLendMarket/utils'
 import { invalidateMarketDetails } from '@/lend/entities/market-details'
 import { invalidateAllUserBorrowDetails } from '@/lend/entities/user-loan-details'
-import apiLending from '@/lend/lib/apiLending'
-import networks from '@/lend/networks'
+import { apiLending } from '@/lend/lib/apiLending'
+import { networks } from '@/lend/networks'
 import type { State } from '@/lend/store/useStore'
 import { Api, FormWarning, FutureRates, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { updateUserEventsApi } from '@/llamalend/llama.utils'
@@ -60,8 +60,8 @@ const DEFAULT_STATE: SliceState = {
 
 const { loanSelfLiquidation } = apiLending
 
-const createLoanSelfLiquidationSlice = (
-  set: StoreApi<State>['setState'],
+export const createLoanSelfLiquidationSlice = (
+  _set: StoreApi<State>['setState'],
   get: StoreApi<State>['getState'],
 ): LoanSelfLiquidationSlice => ({
   [sliceKey]: {
@@ -85,7 +85,7 @@ const createLoanSelfLiquidationSlice = (
         const walletBorrowed = userLoanBalancesResp.borrowed
         const { borrowed: stateBorrowed = '0', debt: stateDebt = '0' } = userLoanDetailsResp.details?.state ?? {}
 
-        const resp = await loanSelfLiquidation.detailInfo(api, market, maxSlippage)
+        const resp = await loanSelfLiquidation.detailInfo(market, maxSlippage)
         const { tokensToLiquidate, futureRates } = resp
         const liquidationAmt = isGreaterThanOrEqualTo(stateBorrowed, tokensToLiquidate, borrowedTokenDecimals)
           ? '0'
@@ -156,7 +156,7 @@ const createLoanSelfLiquidationSlice = (
         return { ...resp, error }
       }
     },
-    fetchStepLiquidate: async (api, market, liquidationAmt, maxSlippage) => {
+    fetchStepLiquidate: async (api, market, _liquidationAmt, maxSlippage) => {
       const { markets, user } = get()
       const { formStatus, ...sliceState } = get()[sliceKey]
       const { chainId } = api
@@ -179,7 +179,7 @@ const createLoanSelfLiquidationSlice = (
         const loanExists = await refetchLoanExists({
           chainId,
           marketId: market.id,
-          userAddress: wallet?.account?.address,
+          userAddress: wallet?.address,
         })
 
         if (error) {
@@ -212,7 +212,7 @@ const createLoanSelfLiquidationSlice = (
     setStateByKey: <T>(key: StateKey, value: T) => {
       get().setAppStateByKey(sliceKey, key, value)
     },
-    setStateByKeys: <T>(sliceState: Partial<SliceState>) => {
+    setStateByKeys: (sliceState: Partial<SliceState>) => {
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {
@@ -220,8 +220,6 @@ const createLoanSelfLiquidationSlice = (
     },
   },
 })
-
-export default createLoanSelfLiquidationSlice
 
 export function _canSelfLiquidate(walletStablecoin: string, tokensToLiquidate: string) {
   return +(walletStablecoin ?? '0') >= +tokensToLiquidate * 1.0001

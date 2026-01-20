@@ -94,11 +94,13 @@ export const formatTime = (timestamp: number | Date | string) =>
  * Converts a Unix timestamp to a formatted date string.
  *
  * @param unixTime - The Unix timestamp in seconds (not milliseconds)
+ * @param variant - The format variant to use. Defaults to 'short'.
  * @returns A formatted date string adjusted for the local timezone.
  *
  * @see {@link formatDate} for formatting the resulting timestamp into human-readable strings
  */
-export const formatDateFromTimestamp = (unixTime: number) => formatDate(new Date(unixTime * 1000))
+export const formatDateFromTimestamp = (unixTime: number, variant: 'short' | 'long' = 'short') =>
+  formatDate(new Date(unixTime * 1000), variant)
 
 /**
  * Converts a Unix timestamp to a locale-adjusted timestamp by accounting for the local timezone offset.

@@ -31,7 +31,7 @@ const convertRates = ({
 
 const [isGetter, useAPI] = [true, true] as const
 
-export const { useQuery: useMarketRates } = queryFactory({
+export const { useQuery: useMarketRates, invalidate: invalidateMarketRates } = queryFactory({
   queryKey: ({ chainId, marketId }: MarketRateParams) =>
     [...rootKeys.market({ chainId, marketId }), 'market-rates'] as const,
   queryFn: async ({ marketId }: MarketRateQuery) => {

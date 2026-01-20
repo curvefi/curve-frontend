@@ -1,8 +1,9 @@
 import { execFileSync, type ExecFileSyncOptionsWithStringEncoding, spawnSync } from 'child_process'
-import { mkdir, readdir, unlink, rmdir } from 'fs/promises'
+import { mkdir, readdir, rmdir, unlink } from 'fs/promises'
 import { dirname, join } from 'path'
 
-const { BRANCH, WORKFLOW, DEST_DIR, REPOSITORY = 'curvefi/curve-frontend' } = process.env
+const { BRANCH, WORKFLOW, REPOSITORY = 'curvefi/curve-frontend' } = process.env
+const DEST_DIR = 'artifacts'
 
 /**
  * Execute a command and return trimmed stdout.
@@ -97,7 +98,9 @@ async function cleanupSuccessfulTestVideos(dir: string): Promise<void> {
       // For a video file like "test.cy.ts.mp4", check if "test.cy.ts/" directory has screenshots
       const videoBaseName = entry.name.slice(0, -4) // Remove .mp4 extension
       const screenshotDir = join(dirname(fullPath), videoBaseName)
-      if (!(await hasScreenshots(screenshotDir))) await unlink(fullPath)
+      if (!(await hasScreenshots(screenshotDir))) {
+        await unlink(fullPath)
+      }
     }
   }
 }
@@ -121,16 +124,17 @@ async function downloadLatestArtifacts({ cleanup }: { cleanup: boolean }): Promi
   }
 
   const safeBranch = branch.replace(/\//g, '-')
-  const destRoot = DEST_DIR?.trim() || 'artifacts'
-  const dest = [repoRoot, destRoot, safeBranch, runId].join('/')
+  const dest = [repoRoot, DEST_DIR, safeBranch, runId].join('/')
   await mkdir(dest, { recursive: true })
 
   console.info(`Downloading artifacts for branch '${branch}' (workflow: ${workflow}, run: ${runId}) into '${dest}'...`)
   downloadArtifacts(runId, dest)
 
-  console.info('Cleaning up videos from successful tests...')
-  await cleanupSuccessfulTestVideos(dest)
-  console.info('Cleanup complete.')
+  if (cleanup) {
+    console.info('Cleaning up videos from successful tests...')
+    await cleanupSuccessfulTestVideos(dest)
+    console.info('Cleanup complete.')
+  }
 }
 
 /**
@@ -138,7 +142,7 @@ async function downloadLatestArtifacts({ cleanup }: { cleanup: boolean }): Promi
  *  node --experimental-strip-types scripts/download-artifacts.ts
  *
  * Custom usage:
- *  BRANCH=feature/xyz WORKFLOW=ci.yaml DEST_DIR=tests/artifacts \
+ *  cd tests && BRANCH=main WORKFLOW=rpc-tests.yaml DEST_DIR=tests/artifacts \
  *    node --experimental-strip-types scripts/download-artifacts.ts --skip-cleanup
  */
 downloadLatestArtifacts({ cleanup: !process.argv.includes('--skip-cleanup') }).catch((error) => {

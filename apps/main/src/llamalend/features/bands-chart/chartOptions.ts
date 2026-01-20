@@ -33,7 +33,14 @@ const createCustomRectSeries = (
       opacity: 1,
     },
   },
-  renderItem: (_params: unknown, api: any) => {
+  renderItem: (
+    _params: unknown,
+    api: {
+      value: (index: number) => number
+      coord: (point: number[]) => number[]
+      style: (opts: Record<string, unknown>) => Record<string, unknown>
+    },
+  ) => {
     const startX = api.value(1)
     const widthX = api.value(2)
     // lower edge of band price range
@@ -189,7 +196,7 @@ export const getChartOptions = (
         snap: true,
         label: {
           show: true,
-          formatter: (params: any) =>
+          formatter: (params: { value: unknown }) =>
             formatNumber(Number(params.value), {
               unit: 'dollar',
               abbreviate: true,

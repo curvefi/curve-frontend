@@ -15,9 +15,12 @@ jobs:
       - name: Setup NPM registry in Yarn
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
           cache: yarn
           registry-url: 'https://registry.npmjs.org'
+
+      - name: Restore cache
+        uses: ./.github/actions/restore-cache
 
       - name: 'Build and publish'
         working-directory: packages/prices-api

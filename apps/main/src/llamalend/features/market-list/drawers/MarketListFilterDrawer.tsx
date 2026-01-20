@@ -1,5 +1,4 @@
 import React from 'react'
-import type { LlamaMarketColumnId } from '@/llamalend/features/market-list/columns.enum'
 import { LlamaMarket, LlamaMarketsResult } from '@/llamalend/queries/market-list/llama-markets'
 import { Button, Grid } from '@mui/material'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
@@ -14,6 +13,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { MarketRateType } from '@ui-kit/types/market'
 import { LlamaListMarketChips } from '../chips/LlamaListMarketChips'
 import { LlamaListUserChips } from '../chips/LlamaListUserChips'
+import type { LlamaMarketColumnId } from '../columns'
 import { LendingMarketsFilters } from '../LendingMarketsFilters'
 
 const { Spacing } = SizesAndSpaces
@@ -76,7 +76,7 @@ export const MarketListFilterDrawer = ({
           )}
         </Grid>
         <DrawerHeader title={t`Extras Filters`} />
-        <LendingMarketsFilters {...filterProps} data={data} minLiquidity={minLiquidity} />
+        <LendingMarketsFilters {...filterProps} data={data} />
       </DrawerItems>
     </SwipeableDrawer>
   )

@@ -1,13 +1,13 @@
 import lodash from 'lodash'
 import type { StoreApi } from 'zustand'
-import type { FormEstGas } from '@/lend/components/PageLoanManage/types'
-import { DEFAULT_FORM_EST_GAS } from '@/lend/components/PageLoanManage/utils'
+import type { FormEstGas } from '@/lend/components/PageLendMarket/types'
+import { DEFAULT_FORM_EST_GAS } from '@/lend/components/PageLendMarket/utils'
 import type { FormStatus, FormValues } from '@/lend/components/PageVault/VaultUnstake/types'
 import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/lend/components/PageVault/VaultUnstake/utils'
 import { invalidateMarketDetails } from '@/lend/entities/market-details'
 import { invalidateAllUserBorrowDetails } from '@/lend/entities/user-loan-details'
-import apiLending, { helpers } from '@/lend/lib/apiLending'
-import networks from '@/lend/networks'
+import { helpers, apiLending } from '@/lend/lib/apiLending'
+import { networks } from '@/lend/networks'
 import type { State } from '@/lend/store/useStore'
 import { Api, ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { updateUserEventsApi } from '@/llamalend/llama.utils'
@@ -51,11 +51,14 @@ const DEFAULT_STATE: SliceState = {
   formValues: DEFAULT_FORM_VALUES,
 }
 
-const createVaultUnstake = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): VaultUnstakeSlice => ({
+export const createVaultUnstake = (
+  _set: StoreApi<State>['setState'],
+  get: StoreApi<State>['getState'],
+): VaultUnstakeSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 
-    fetchEstGas: async (activeKey, formType, api, market) => {
+    fetchEstGas: async (activeKey, _formType, api, market) => {
       const { signerAddress } = api
       const { amount, amountError } = get()[sliceKey].formValues
 
@@ -100,7 +103,7 @@ const createVaultUnstake = (set: StoreApi<State>['setState'], get: StoreApi<Stat
     },
 
     // steps
-    fetchStepUnstake: async (activeKey, formType, api, market, formValues) => {
+    fetchStepUnstake: async (activeKey, _formType, api, market, formValues) => {
       const { provider, wallet } = useWallet.getState()
       const { chainId } = api
       if (!provider || !wallet) return setMissingProvider(get()[sliceKey])
@@ -144,7 +147,7 @@ const createVaultUnstake = (set: StoreApi<State>['setState'], get: StoreApi<Stat
     setStateByKey: <T>(key: StateKey, value: T) => {
       get().setAppStateByKey(sliceKey, key, value)
     },
-    setStateByKeys: <T>(sliceState: Partial<SliceState>) => {
+    setStateByKeys: (sliceState: Partial<SliceState>) => {
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {
@@ -161,5 +164,3 @@ export function _getActiveKey(
 ) {
   return `${rChainId}-${formType}-${market?.id ?? ''}-${amount}`
 }
-
-export default createVaultUnstake

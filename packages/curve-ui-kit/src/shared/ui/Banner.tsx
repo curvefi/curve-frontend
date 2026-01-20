@@ -19,11 +19,12 @@ const { MaxWidth, Spacing, IconSize } = SizesAndSpaces
 type BannerSeverity = 'info' | 'highlight' | 'warning' | 'alert'
 type BannerIcons = BannerSeverity | 'llama'
 
-// TODO: use Secondary color for subtitle instead of Primary
+export const DEFAULT_SEVERITY = 'info' as const
+
 const BannerSx: Record<BannerSeverity, { title: SxProps<Theme>; subtitle: SxProps<Theme>; wrapper: SxProps<Theme> }> = {
   info: {
     title: { color: (t) => t.design.Text.TextColors.FilledFeedback.Info.Primary },
-    subtitle: { color: (t) => t.design.Text.TextColors.FilledFeedback.Info.Primary },
+    subtitle: { color: (t) => t.design.Text.TextColors.FilledFeedback.Info.Secondary },
     wrapper: {
       border: (t) => `1px solid ${t.design.Layer.Highlight.Outline}`,
       backgroundColor: (t) => t.design.Layer[1].Fill,
@@ -31,17 +32,17 @@ const BannerSx: Record<BannerSeverity, { title: SxProps<Theme>; subtitle: SxProp
   },
   highlight: {
     title: { color: (t) => t.design.Text.TextColors.FilledFeedback.Highlight.Primary },
-    subtitle: { color: (t) => t.design.Text.TextColors.FilledFeedback.Highlight.Primary },
+    subtitle: { color: (t) => t.design.Text.TextColors.FilledFeedback.Highlight.Secondary },
     wrapper: { backgroundColor: (t) => t.design.Layer.Feedback.Info },
   },
   warning: {
     title: { color: (t) => t.design.Text.TextColors.FilledFeedback.Warning.Primary },
-    subtitle: { color: (t) => t.design.Text.TextColors.FilledFeedback.Warning.Primary },
+    subtitle: { color: (t) => t.design.Text.TextColors.FilledFeedback.Warning.Secondary },
     wrapper: { backgroundColor: (t) => t.design.Layer.Feedback.Warning },
   },
   alert: {
     title: { color: (t) => t.design.Text.TextColors.FilledFeedback.Alert.Primary },
-    subtitle: { color: (t) => t.design.Text.TextColors.FilledFeedback.Alert.Primary },
+    subtitle: { color: (t) => t.design.Text.TextColors.FilledFeedback.Alert.Secondary },
     wrapper: { backgroundColor: (t) => t.design.Layer.Feedback.Error },
   },
 }
@@ -75,7 +76,7 @@ export const Banner = ({
   onClick,
   buttonText,
   children,
-  severity = 'info',
+  severity = DEFAULT_SEVERITY,
   icon = severity,
   learnMoreUrl,
   subtitle,
@@ -85,7 +86,7 @@ export const Banner = ({
     sx={{
       display: 'flex',
       alignSelf: 'stretch',
-      paddingInline: Spacing.md,
+      paddingInline: Spacing.sm,
       paddingBlock: Spacing.xs,
       justifyContent: 'center',
       ...BannerSx[severity].wrapper,
@@ -124,11 +125,13 @@ export const Banner = ({
             ))}
         </Stack>
       </Stack>
-      <Stack direction="row" alignItems="center" justifyContent="start">
-        <Typography sx={{ ...BannerSx[severity].subtitle }} variant="bodySRegular">
-          {subtitle}
-        </Typography>
-      </Stack>
+      {subtitle && (
+        <Stack direction="row" alignItems="center" justifyContent="start">
+          <Typography sx={{ ...BannerSx[severity].subtitle }} variant="bodySRegular">
+            {subtitle}
+          </Typography>
+        </Stack>
+      )}
     </Stack>
   </Card>
 )

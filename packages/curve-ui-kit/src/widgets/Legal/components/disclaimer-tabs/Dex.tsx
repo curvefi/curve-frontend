@@ -4,13 +4,17 @@ import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import type { TabProps } from '../../types/tabs'
 import { Section, Header, Title, Paragraph } from '../general/Section'
+import { LegalIntro } from './LegalIntro'
 
 const { Spacing } = SizesAndSpaces
 
-export const Dex = () => (
+export const Dex = ({ currentApp, network }: TabProps) => (
   <>
     <Section>
+      <LegalIntro currentApp={currentApp} network={network} />
+
       <Paragraph>{t`Providing liquidity on Curve doesn't come without risks. Before making a deposit, it is best to research and understand the risks involved.`}</Paragraph>
     </Section>
 
@@ -57,7 +61,7 @@ export const Dex = () => (
     <Section>
       <Title>{t`Smart contract risk`}</Title>
       <Paragraph>{t`Curve relies on smart contracts, which are self-executing pieces of code. While these contracts are designed to be secure, there is a risk that they may contain vulnerabilities or bugs. Malicious actors could exploit these vulnerabilities, resulting in the loss of funds or other adverse consequences. It is essential for users to conduct due diligence and review the smart contracts and security audit reports to assess the inherent risks.`}</Paragraph>
-      <Paragraph>{t`Curve smart contracts have undergone multiple audits by reputable firms including Trail of Bits, MixBytes, QuantStamp, and ChainSecurity to enhance protocol security. While smart contract audits play an important role in good security practices to mitigate user risks, they don't eliminate all risks. Users should always exercise caution regardless of Curve's commitment to protocol security.`}</Paragraph>
+      <Paragraph>{t`Curve smart contracts have undergone multiple audits by reputable firms including Trail of Bits, MixBytes, QuantStamp, and ChainSecurity to enhance protocol security. While smart contract audits play an important role in good security practices to mitigate user risks, they don't eliminate all risks. Users should always exercise caution regardless of the steps taken to increase protocol security.`}</Paragraph>
     </Section>
 
     <Section>
@@ -65,10 +69,16 @@ export const Dex = () => (
       <Paragraph>{t`When you engage in transactions on Ethereum or EVM-compatible blockchains, it is important to understand that these transactions are immutable and irreversible. Once a transaction is confirmed and recorded on the blockchain, it cannot be modified, reversed, or deleted. This means that if a user sends funds to an incorrect address or engage in a fraudulent transaction, it may not be possible to recover the funds. It is crucial to exercise caution, verify transaction details, and use secure wallets to minimize the risk of irreversible transactions.`}</Paragraph>
     </Section>
 
+    <Section>
+      <Title>{t`Malicious Behaviour Risks`}</Title>
+      <Paragraph>{t`Activity on decentralized exchanges may be exposed to malicious or unexpected behaviour by third parties or automated actors. Such behaviour can include front-running, sandwich attacks, or rug pulls on tokens listed by external parties. These risks are inherent to permissionless systems and cannot be fully mitigated by Curve or any related entities.`}</Paragraph>
+      <Paragraph>{t`Users should exercise caution when interacting with newly listed assets or low-liquidity markets, verify contract addresses independently, and consider using trusted interfaces and security tools to reduce exposure.`}</Paragraph>
+    </Section>
+
     <Header>{t`Counterparty Risk`}</Header>
     <Section>
       <Title>{t`Access Control`}</Title>
-      <Paragraph>{t`Curve pool smart contracts are intentionally designed to be immutable and noncustodial, meaning they cannot be upgraded and liquidity providers always retain full control of their funds. While this characteristic may limit protective actions in case of emergencies, it significantly strengthens user assurances about custody of their funds.`}</Paragraph>
+      <Paragraph>{t`Curve pool smart contracts are intentionally designed to be immutable and noncustodial, meaning they cannot be upgraded and liquidity providers always retain full control of their funds. While this characteristic may limit protective actions in case of emergencies, it significantly strengthens user assurances about having control over their funds.`}</Paragraph>
       <Paragraph>{t`The Curve protocol is governed by a Decentralized Autonomous Organization (DAO) comprised of veCRV tokenholders that requires a 1-week vote period with 51% approval and a sufficient voter quorum to execute any actions. It controls critical system functions, including the implementation of new system contracts and the adjustment of system parameters.`}</Paragraph>
 
       <Paragraph>
@@ -90,8 +100,8 @@ export const Dex = () => (
     <Header>{t`Asset Risk`}</Header>
     <Section>
       <Title>{t`Permanent Loss of a Peg`}</Title>
-      <Paragraph>{t`Stablecoins and other derivative assets are designed to maintain a peg to a reference asset. If one of the pool assets drops below its peg, it effectively means that liquidity providers in the pool hold almost all their liquidity in that token. The depegged token may never recover as a result of a technical failure, insolvency, or other adverse situations.`}</Paragraph>
-      <Paragraph>{t`If the token fails to regain its peg, liquidity providers will encounter losses proportional to the severity of the depeg. The potential permanent loss highlights the importance of thorough consideration and caution when participating in activities involving stablecoins and/or derivative assets.`}</Paragraph>
+      <Paragraph>{t`Stablecoins and similar assets are designed to maintain a peg to a reference asset. If one of the pool assets drops below its peg, it effectively means that liquidity providers in the pool hold almost all their liquidity in that token. The depegged token may never recover as a result of a technical failure, insolvency, or other adverse situations.`}</Paragraph>
+      <Paragraph>{t`If the token fails to regain its peg, liquidity providers will encounter losses proportional to the severity of the depeg. The potential permanent loss highlights the importance of thorough consideration and caution when participating in activities involving stablecoins and/or similar assets.`}</Paragraph>
     </Section>
 
     <Section>

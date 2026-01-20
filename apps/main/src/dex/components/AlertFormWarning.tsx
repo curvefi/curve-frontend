@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { AlertType } from '@/dex/types/main.types'
-import AlertBox from '@ui/AlertBox'
+import { AlertBox } from '@ui/AlertBox'
 import type { AlertBoxProps } from '@ui/AlertBox/types'
 import { t } from '@ui-kit/lib/i18n'
 
@@ -14,7 +14,7 @@ interface Props extends Omit<AlertBoxProps, 'alertType'> {
   errorKey: AlertFormWarningKey | string
 }
 
-const AlertFormWarning = ({ errorKey, ...props }: Props) => {
+export const AlertFormWarning = ({ errorKey, ...props }: Props) => {
   const errorMessage = useMemo(() => {
     const messages: { [key: AlertFormWarningKey | string]: { message: string; alertType?: AlertType } } = {
       [ALERT_FORM_WARNING_KEYS['warning-exchange-rate-low']]: {
@@ -36,5 +36,3 @@ const AlertFormWarning = ({ errorKey, ...props }: Props) => {
     </AlertBox>
   ) : null
 }
-
-export default AlertFormWarning

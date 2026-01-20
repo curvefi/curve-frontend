@@ -9,7 +9,7 @@ import { sendVnetTransaction } from './vnet-transaction'
  */
 const tenderlyTransport = (account: PrivateKeyAccount, tenderly: TenderlyConfig) =>
   custom({
-    request: async ({ method, params: [param] }): Promise<any> => {
+    request: async ({ method, params: [param] }): Promise<unknown> => {
       if (method === 'eth_accounts') {
         return [account.address]
       }

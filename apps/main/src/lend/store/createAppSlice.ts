@@ -1,9 +1,11 @@
 import { produce } from 'immer'
 import lodash from 'lodash'
+import type { Config } from 'wagmi'
 import { StoreApi } from 'zustand'
 import { prefetchMarkets } from '@/lend/entities/chain/chain-query'
 import type { State } from '@/lend/store/useStore'
 import { Api, Wallet } from '@/lend/types/lend.types'
+import { recordEntries } from '@curvefi/prices-api/objects.util'
 import { log } from '@ui-kit/lib/logging'
 
 export type SliceKey = keyof State | ''
@@ -12,7 +14,7 @@ export type StateKey = string
 // prettier-ignore
 export interface AppSlice {
   /** Hydrate resets states and refreshes store data from the API */
-  hydrate(api: Api | undefined, prevApi: Api | undefined, wallet: Wallet | undefined): Promise<void>
+  hydrate(config: Config, api: Api | undefined, prevApi: Api | undefined, wallet: Wallet | undefined): Promise<void>
 
   setAppStateByActiveKey<T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean): void
   setAppStateByKey<T>(sliceKey: SliceKey, key: StateKey, value: T, showLog?: boolean): void
@@ -20,8 +22,8 @@ export interface AppSlice {
   resetAppState<T>(sliceKey: SliceKey, defaultState: T): void
 }
 
-const createAppSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): AppSlice => ({
-  hydrate: async (api, prevApi) => {
+export const createAppSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): AppSlice => ({
+  hydrate: async (_config, api, prevApi) => {
     if (!api) return
 
     const isNetworkSwitched = !!prevApi?.chainId && prevApi.chainId !== api.chainId
@@ -35,18 +37,10 @@ const createAppSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['
 
     // reset store
     if (isNetworkSwitched) {
-      Object.keys(get()).forEach((stateKey) => {
-        if (
-          stateKey.startsWith('loan') ||
-          stateKey.startsWith('user') ||
-          stateKey === 'tokens' ||
-          stateKey === 'chartBands' ||
-          stateKey === 'campaigns'
-        ) {
-          // @ts-ignore
-          if ('resetState' in get()[stateKey]) get()[stateKey].resetState()
-        }
-      })
+      recordEntries(get())
+        .filter(([stateKey]) => stateKey.startsWith('loan') || stateKey.startsWith('user') || stateKey === 'chartBands')
+        .filter(([, state]) => 'resetState' in state)
+        .forEach(([, state]) => (state as { resetState: () => void }).resetState())
     }
 
     if (isUserSwitched || !api.signerAddress) {
@@ -123,7 +117,4 @@ const createAppSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['
     )
   },
 })
-
-export default createAppSlice
-
 // HELPERS

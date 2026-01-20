@@ -1,22 +1,22 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
-import AlertFormError from '@/lend/components/AlertFormError'
-import DetailInfoCrvIncentives from '@/lend/components/DetailInfoCrvIncentives'
-import DetailInfoEstimateGas from '@/lend/components/DetailInfoEstimateGas'
-import InpChipVaultSharesUsdRate from '@/lend/components/InpChipVaultShareUsdRate'
-import LoanFormConnect from '@/lend/components/LoanFormConnect'
-import { StyledDetailInfoWrapper, StyledInpChip } from '@/lend/components/PageLoanManage/styles'
+import { AlertFormError } from '@/lend/components/AlertFormError'
+import { DetailInfoCrvIncentives } from '@/lend/components/DetailInfoCrvIncentives'
+import { DetailInfoEstimateGas } from '@/lend/components/DetailInfoEstimateGas'
+import { InpChipVaultShareUsdRate } from '@/lend/components/InpChipVaultShareUsdRate'
+import { LoanFormConnect } from '@/lend/components/LoanFormConnect'
 import type { FormStatus, FormValues, StepKey } from '@/lend/components/PageVault/VaultStake/types'
+import { StyledDetailInfoWrapper, StyledInpChip } from '@/lend/components/styles'
 import { helpers } from '@/lend/lib/apiLending'
-import networks from '@/lend/networks'
-import useStore from '@/lend/store/useStore'
+import { networks } from '@/lend/networks'
+import { useStore } from '@/lend/store/useStore'
 import { Api, OneWayMarketTemplate, PageContentProps } from '@/lend/types/lend.types'
-import AlertBox from '@ui/AlertBox'
-import Box from '@ui/Box'
-import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
+import { AlertBox } from '@ui/AlertBox'
+import { Box } from '@ui/Box'
+import { InputDebounced, InputMaxBtn, InputProvider } from '@ui/InputComp'
 import { getActiveStep } from '@ui/Stepper/helpers'
-import Stepper from '@ui/Stepper/Stepper'
+import { Stepper } from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
-import TxInfoBar from '@ui/TxInfoBar'
+import { TxInfoBar } from '@ui/TxInfoBar'
 import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useLegacyTokenInput } from '@ui-kit/hooks/useFeatureFlags'
@@ -24,7 +24,8 @@ import { t } from '@ui-kit/lib/i18n'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { decimal, type Decimal } from '@ui-kit/utils'
 
-const VaultStake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, userActiveKey }: PageContentProps) => {
+export const VaultStake = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey }: PageContentProps) => {
+  const rFormType = 'stake'
   const isSubscribed = useRef(false)
 
   const activeKey = useStore((state) => state.vaultStake.activeKey)
@@ -197,7 +198,7 @@ const VaultStake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, userAc
               />
               <InputMaxBtn onClick={() => handleInpAmountChange(userBalances?.vaultShares ?? '')} />
             </InputProvider>
-            <InpChipVaultSharesUsdRate rChainId={rChainId} rOwmId={rOwmId} amount={formValues?.amount} />
+            <InpChipVaultShareUsdRate rChainId={rChainId} rOwmId={rOwmId} amount={formValues?.amount} />
             <StyledInpChip size="xs" isDarkBg isError>
               {formValues.amountError === 'too-much-wallet' && (
                 <>
@@ -254,5 +255,3 @@ const VaultStake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, userAc
     </>
   )
 }
-
-export default VaultStake

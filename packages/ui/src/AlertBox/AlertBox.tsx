@@ -1,11 +1,19 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { styled } from 'styled-components'
-import type { AlertBoxProps } from 'ui/src/AlertBox/types'
-import Box from 'ui/src/Box'
-import Icon from 'ui/src/Icon'
-import IconButton from 'ui/src/IconButton'
+import type { AlertBoxProps } from '@ui/AlertBox/types'
+import { Box } from '@ui/Box'
+import { Icon } from '@ui/Icon'
+import { IconButton } from '@ui/IconButton'
 
-const AlertBox = ({ className, alertType, children, title, limitHeight, handleBtnClose, ...props }: AlertBoxProps) => {
+export const AlertBox = ({
+  className,
+  alertType,
+  children,
+  title,
+  limitHeight,
+  handleBtnClose,
+  ...props
+}: AlertBoxProps) => {
   const [enabledHeightToggle, setEnabledHeightToggle] = useState(false)
   const [showFullHeight, setShowFullHeight] = useState(false)
   const IconComp =
@@ -21,6 +29,7 @@ const AlertBox = ({ className, alertType, children, title, limitHeight, handleBt
 
   useEffect(() => {
     if (typeof children === 'string' && children.length > 200) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setEnabledHeightToggle(true)
     }
   }, [children])
@@ -33,45 +42,47 @@ const AlertBox = ({ className, alertType, children, title, limitHeight, handleBt
   }, [children, limitHeight])
 
   return (
-    <Wrapper className={className} alertType={alertType} enabledHeightToggle={enabledHeightToggle}>
-      {title ? (
-        <>
-          <Header>
-            {IconComp} {title}{' '}
-          </Header>
-          {showFullHeight ? children : cutAlert}
-        </>
-      ) : (
-        <ContentWrapper
-          data-tag="content"
-          grid
-          gridTemplateColumns={handleBtnClose !== undefined ? 'auto 1fr auto' : 'auto 1fr'}
-          gridColumnGap={1}
-          flexAlignItems={'flex-start'}
-          {...props}
-        >
-          {IconComp}
-          <Content flex showFullHeight={showFullHeight} limitHeight={limitHeight} ref={alertContentRef}>
+    (title || children) && (
+      <Wrapper className={className} alertType={alertType} enabledHeightToggle={enabledHeightToggle}>
+        {title ? (
+          <>
+            <Header>
+              {IconComp} {title}{' '}
+            </Header>
             {showFullHeight ? children : cutAlert}
-          </Content>
-          {handleBtnClose !== undefined && (
-            <IconButton size="small" onClick={handleBtnClose}>
-              <Icon name="Close" size={24} />
-            </IconButton>
-          )}
-        </ContentWrapper>
-      )}
-      {limitHeight && enabledHeightToggle && (
-        <AdjustHeightWrapper>
-          <ButtonContainer>
-            <AdjustHeightButton onClick={() => setShowFullHeight(!showFullHeight)}>
-              {showFullHeight ? 'Minimize' : 'Expand'}
-              {showFullHeight ? <Icon name="ChevronUp" size={16} /> : <Icon name="ChevronDown" size={16} />}
-            </AdjustHeightButton>
-          </ButtonContainer>
-        </AdjustHeightWrapper>
-      )}
-    </Wrapper>
+          </>
+        ) : (
+          <ContentWrapper
+            data-tag="content"
+            grid
+            gridTemplateColumns={handleBtnClose !== undefined ? 'auto 1fr auto' : 'auto 1fr'}
+            gridColumnGap={1}
+            flexAlignItems={'flex-start'}
+            {...props}
+          >
+            {IconComp}
+            <Content flex showFullHeight={showFullHeight} limitHeight={limitHeight} ref={alertContentRef}>
+              {showFullHeight ? children : cutAlert}
+            </Content>
+            {handleBtnClose !== undefined && (
+              <IconButton size="small" onClick={handleBtnClose}>
+                <Icon name="Close" size={24} />
+              </IconButton>
+            )}
+          </ContentWrapper>
+        )}
+        {limitHeight && enabledHeightToggle && (
+          <AdjustHeightWrapper>
+            <ButtonContainer>
+              <AdjustHeightButton onClick={() => setShowFullHeight(!showFullHeight)}>
+                {showFullHeight ? 'Minimize' : 'Expand'}
+                {showFullHeight ? <Icon name="ChevronUp" size={16} /> : <Icon name="ChevronDown" size={16} />}
+              </AdjustHeightButton>
+            </ButtonContainer>
+          </AdjustHeightWrapper>
+        )}
+      </Wrapper>
+    )
   )
 }
 
@@ -163,5 +174,3 @@ const AdjustHeightButton = styled(IconButton)`
   gap: var(--spacing-1);
   pointer-events: auto;
 `
-
-export default AlertBox

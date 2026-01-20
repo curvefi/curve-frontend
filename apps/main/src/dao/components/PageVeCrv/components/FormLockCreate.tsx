@@ -1,29 +1,29 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import { styled } from 'styled-components'
-import AlertFormError from '@/dao/components/AlertFormError'
-import DetailInfoEstGas from '@/dao/components/DetailInfoEstGas'
-import FieldDatePicker from '@/dao/components/PageVeCrv/components/FieldDatePicker'
-import FieldLockedAmt from '@/dao/components/PageVeCrv/components/FieldLockedAmt'
-import FormActions from '@/dao/components/PageVeCrv/components/FormActions'
+import { AlertFormError } from '@/dao/components/AlertFormError'
+import { DetailInfoEstGas } from '@/dao/components/DetailInfoEstGas'
+import { FieldDatePicker } from '@/dao/components/PageVeCrv/components/FieldDatePicker'
+import { FieldLockedAmt } from '@/dao/components/PageVeCrv/components/FieldLockedAmt'
+import { FormActions } from '@/dao/components/PageVeCrv/components/FormActions'
 import type { FormEstGas, FormStatus, FormValues, PageVecrv, StepKey } from '@/dao/components/PageVeCrv/types'
 import { DEFAULT_FORM_EST_GAS } from '@/dao/components/PageVeCrv/utils'
-import networks from '@/dao/networks'
-import useStore from '@/dao/store/useStore'
+import { networks } from '@/dao/networks'
+import { useStore } from '@/dao/store/useStore'
 import type { CurveApi } from '@/dao/types/dao.types'
-import { formatDisplayDate, toCalendarDate } from '@/dao/utils/utilsDates'
+import { toCalendarDate } from '@/dao/utils/utilsDates'
 import type { DateValue } from '@react-types/calendar'
 import { getActiveStep, getStepStatus } from '@ui/Stepper/helpers'
-import Stepper from '@ui/Stepper/Stepper'
+import { Stepper } from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
-import TxInfoBar from '@ui/TxInfoBar'
-import { formatNumber, scanTxPath } from '@ui/utils'
+import { TxInfoBar } from '@ui/TxInfoBar'
+import { formatDate, formatNumber, scanTxPath } from '@ui/utils'
 import { isLoading, notify, useCurve } from '@ui-kit/features/connect-wallet'
-import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
-import dayjs from '@ui-kit/lib/dayjs'
+import { usePageVisibleInterval } from '@ui-kit/hooks/usePageVisibleInterval'
+import { dayjs } from '@ui-kit/lib/dayjs'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 
-const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
+export const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
   const isSubscribed = useRef(false)
 
   const activeKey = useStore((state) => state.lockedCrv.activeKey)
@@ -71,7 +71,7 @@ const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) =>
         {
           utcDate: toCalendarDate(utcDate),
           utcDateError,
-          calcdUtcDate: haveSigner && !utcDate.isSame(calcdUtcDate) ? formatDisplayDate(calcdUtcDate) : '',
+          calcdUtcDate: haveSigner && !utcDate.isSame(calcdUtcDate) ? formatDate(calcdUtcDate.valueOf()) : '',
           days,
         },
         false,
@@ -114,7 +114,7 @@ const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) =>
   const handleBtnClickCreate = useCallback(
     async (activeKey: string, curve: CurveApi, formValues: FormValues) => {
       if (formValues.utcDate) {
-        const localUtcDate = formValues.calcdUtcDate || formatDisplayDate(formValues.utcDate.toString())
+        const localUtcDate = formValues.calcdUtcDate || formatDate(formValues.utcDate.toString())
         const notifyMessage = t`Please confirm locking ${formatNumber(formValues.lockedAmt)} CRV until ${localUtcDate}.`
         const { dismiss } = notify(notifyMessage, 'pending')
         const resp = await fetchStepCreate(activeKey, curve, formValues)
@@ -267,5 +267,3 @@ const StyledForm = styled.form`
   display: grid;
   grid-row-gap: var(--spacing-3);
 `
-
-export default FormLockCreate

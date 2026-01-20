@@ -54,3 +54,12 @@ export function minCutoffForTopK<T>(
   const count = minCount >= valuesDesc.length ? valuesDesc.length : minCount
   return valuesDesc[count - 1]
 }
+
+/** Split a list into two slices at the given index. */
+export const splitAt = <T>(items: T[], index: number) => [items.slice(0, index), items.slice(index)]
+
+/** Split a list into two slices at the first index where the predicate is true. */
+export const splitAtFirst = <T>(items: T[], predicate: (value: T, index: number, obj: T[]) => unknown) => {
+  const index = items.findIndex(predicate)
+  return index === -1 ? [items, []] : splitAt(items, index)
+}

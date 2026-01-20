@@ -32,7 +32,7 @@ export const EventTypeCell = ({
   row: {
     original: { type },
   },
-}: CellContext<ParsedUserCollateralEvent, any>) => (
+}: CellContext<ParsedUserCollateralEvent, unknown>) => (
   <HistoryTableCell>
     <Stack direction="row" alignItems="center" gap={Spacing.sm}>
       {icons[type]}

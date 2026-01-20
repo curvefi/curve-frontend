@@ -4,20 +4,20 @@
   "private": true,
   "type": "module",
   "engines": {
-    "node": "22"
+    "node": "24"
   },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint",
     "start": "vite preview",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --tsBuildInfoFile ../../.cache/typecheck/apps-main.tsbuildinfo",
     "commit": "commit",
     "prepublishOnly": "pinst --disable",
     "postpublish": "pinst --enable"
   },
   "dependencies": {
-    "@curvefi/llamalend-api": "1.0.40",
+    "@curvefi/llamalend-api": "1.1.3",
     "@ethersproject/abi": "^5.8.0",
     "@hookform/error-message": "^2.0.1",
     "@hookform/resolvers": "^5.2.2",
@@ -30,15 +30,15 @@
     "echarts-for-react": "^3.0.5",
     "external-rewards": "*",
     "fuse.js": "^7.1.0",
-    "lightweight-charts": "^5.0.9",
+    "lightweight-charts": "^5.1.0",
     "memoizee": "^0.4.17",
-    "react-hook-form": "7.68.0",
+    "react-hook-form": "7.69.0",
     "recharts": "2.15.4",
     "solid-js": "^1.9.10",
     "ui": "*",
     "vest": "^5.4.6",
     "vite-plugin-svgr": "^4.5.0",
-    "vite-plugin-vercel": "9.0.8"
+    "vite-plugin-vercel": "9.1.1"
   },
   "peerDependencies": {
     "@curvefi/api": "*",

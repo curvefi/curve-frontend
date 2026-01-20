@@ -1,14 +1,14 @@
 import lodash from 'lodash'
 import type { StoreApi } from 'zustand'
 import { updateUserEventsApi } from '@/llamalend/llama.utils'
-import type { FormStatus, FormValues } from '@/loan/components/PageLoanManage/LoanIncrease/types'
-import type { FormDetailInfo, FormEstGas } from '@/loan/components/PageLoanManage/types'
+import type { FormStatus, FormValues } from '@/loan/components/PageMintMarket/LoanIncrease/types'
+import type { FormDetailInfo, FormEstGas } from '@/loan/components/PageMintMarket/types'
 import {
   DEFAULT_DETAIL_INFO,
   DEFAULT_FORM_EST_GAS,
   DEFAULT_FORM_STATUS as FORM_STATUS,
-} from '@/loan/components/PageLoanManage/utils'
-import networks from '@/loan/networks'
+} from '@/loan/components/PageMintMarket/utils'
+import { networks } from '@/loan/networks'
 import type { State } from '@/loan/store/useStore'
 import { ChainId, LlamaApi, Llamma } from '@/loan/types/loan.types'
 import { useWallet } from '@ui-kit/features/connect-wallet'
@@ -80,7 +80,7 @@ const DEFAULT_STATE: SliceState = {
   maxRecv: {},
 }
 
-const createLoanIncrease = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
+export const createLoanIncrease = (_set: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 
@@ -254,7 +254,7 @@ const createLoanIncrease = (set: StoreApi<State>['setState'], get: StoreApi<Stat
     setStateByKey: <T>(key: StateKey, value: T) => {
       get().setAppStateByKey(sliceKey, key, value)
     },
-    setStateByKeys: <T>(sliceState: Partial<SliceState>) => {
+    setStateByKeys: (sliceState: Partial<SliceState>) => {
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {
@@ -262,8 +262,6 @@ const createLoanIncrease = (set: StoreApi<State>['setState'], get: StoreApi<Stat
     },
   },
 })
-
-export default createLoanIncrease
 
 export function getLoanIncreaseActiveKey(llamma: Llamma, { collateral, debt }: FormValues) {
   return `${llamma.id}-${collateral}-${debt}`

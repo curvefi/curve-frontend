@@ -6,7 +6,7 @@ type Props = {
   skeleton?: [number, number]
 }
 
-const Loader = ({ className, isLightBg = false, skeleton = [12, 12], ...props }: Props) => (
+export const Loader = ({ className, isLightBg = false, skeleton = [12, 12], ...props }: Props) => (
   <TextSkeleton className={className} isLightBg={isLightBg} skeleton={skeleton} {...props} />
 )
 
@@ -14,9 +14,7 @@ const AnimateShimmer = keyframes`
   100% { transform: translateX(100%); }
 `
 
-interface TextSkeletonProps extends Pick<Props, 'isLightBg' | 'skeleton'> {}
-
-const TextSkeleton = styled.span<TextSkeletonProps>`
+const TextSkeleton = styled.span<Pick<Props, 'isLightBg' | 'skeleton'>>`
   display: inline-block;
   position: relative;
   overflow: hidden;
@@ -53,5 +51,3 @@ const TextSkeleton = styled.span<TextSkeletonProps>`
         ? `background-image: var(--skeleton_light--background-image);`
         : `background-image: var(--skeleton--background-image);`}
 `
-
-export default Loader

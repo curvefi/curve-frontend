@@ -1,11 +1,7 @@
 import { ReactNode } from 'react'
-import { styled } from 'styled-components'
 import Divider from '@mui/material/Divider'
-import { useActionInfo } from '@ui-kit/hooks/useFeatureFlags'
-import ActionInfo, { ActionInfoProps } from '@ui-kit/shared/ui/ActionInfo'
+import { ActionInfoProps, ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import Box from 'ui/src/Box/Box'
-import Loader from 'ui/src/Loader/Loader'
 
 const { Spacing } = SizesAndSpaces
 
@@ -35,28 +31,7 @@ type Props = {
   testId?: string
 }
 
-const OldDetailInfo = ({ isBold, isDivider, label, loading, loadingSkeleton, tooltip, variant, children }: Props) => (
-  <Wrapper
-    className={isDivider ? 'divider' : ''}
-    grid
-    gridAutoFlow="column"
-    gridColumnGap={2}
-    isDivider={isDivider}
-    fillWidth
-  >
-    {label && <DetailLabel>{label}</DetailLabel>}
-    <DetailValue haveLabel={!!label} isBold={isBold} variant={variant}>
-      {loading && <Loader skeleton={loadingSkeleton} />}
-      {!loading && (
-        <>
-          {children || '-'} {!!tooltip && tooltip}
-        </>
-      )}
-    </DetailValue>
-  </Wrapper>
-)
-
-const NewDetailInfo = ({
+export const DetailInfo = ({
   isBold,
   isDivider,
   label,
@@ -75,7 +50,6 @@ const NewDetailInfo = ({
       value={children || '-'}
       valueColor={VariantToColorMap[variant || '']}
       valueTooltip={tooltip}
-      error={variant === 'error'}
       loading={loading && (loadingSkeleton || true)}
       testId={testId}
       {...(isBold && { sx: { '& .MuiTypography-root': { '&': { fontWeight: 'bold' } } } })}
@@ -83,80 +57,3 @@ const NewDetailInfo = ({
     />
   </>
 )
-
-export const DetailLabel = styled.span`
-  display: inline-block;
-  font-weight: bold;
-`
-
-type DetailValeProps = {
-  haveLabel: boolean
-  isBold?: boolean | null
-  variant?: Variant
-}
-
-const DetailValue = styled.div<DetailValeProps>`
-  align-items: center;
-  display: flex;
-  justify-content: flex-end;
-
-  font-weight: ${({ isBold }) => (isBold ? '700' : 'inherit')};
-  text-align: ${({ haveLabel }) => (haveLabel ? 'right' : 'left')};
-
-  color: ${({ variant }) => {
-    if (variant === 'error') {
-      return 'var(--danger-400)'
-    } else if (variant === 'warning') {
-      return 'var(--warning-text-400)'
-    } else if (variant === 'success') {
-      return 'var(--success-400)'
-    } else {
-      return 'inherit'
-    }
-  }};
-`
-
-interface WrapperProps extends Pick<Props, 'isDivider' | 'isMultiLine'> {}
-
-const Wrapper = styled(Box)<WrapperProps>`
-  align-items: center;
-  min-height: 1.7rem; // 27px
-  font-size: var(--font-size-3);
-
-  .svg-tooltip {
-    margin-top: 0.25rem;
-    top: 0.1rem;
-  }
-
-  .svg-arrow {
-    position: relative;
-    top: 0.1875rem; // 3px
-    opacity: 0.7;
-  }
-
-  ${({ isDivider }) => {
-    if (isDivider) {
-      return `
-        margin-top: var(--spacing-1);
-        padding-top: var(--spacing-1);
-        border-color: inherit;
-        border-top: 1px solid var(--border-400);
-      `
-    }
-  }}
-  ${({ isMultiLine }) => {
-    if (isMultiLine) {
-      return `
-        grid-auto-flow: row;
-      `
-    }
-  }}
-
-  .svg-tooltip {
-    top: 0.2rem;
-  }
-`
-
-const DetailInfo = (props: Props) => (useActionInfo() ? <NewDetailInfo {...props} /> : <OldDetailInfo {...props} />)
-
-export default DetailInfo

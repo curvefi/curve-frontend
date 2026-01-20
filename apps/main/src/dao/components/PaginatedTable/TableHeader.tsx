@@ -1,6 +1,6 @@
 import { styled } from 'styled-components'
-import Button from '@ui/Button'
-import Icon from '@ui/Icon'
+import { Button } from '@ui/Button'
+import { Icon } from '@ui/Icon'
 
 interface TableHeaderProps<T> {
   columns: { key: keyof T; label: string; disabled?: boolean }[]
@@ -11,7 +11,7 @@ interface TableHeaderProps<T> {
   gridTemplateColumns?: string
 }
 
-const TableHeader = <T,>({
+export const TableHeader = <T,>({
   columns,
   title,
   sortBy,
@@ -89,5 +89,3 @@ const TableTitleButton = styled(Button)`
 const StyledIcon = styled(Icon)`
   margin: auto 0 auto var(--spacing-1);
 `
-
-export default TableHeader

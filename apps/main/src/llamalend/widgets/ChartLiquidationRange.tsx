@@ -17,8 +17,8 @@ import { styled } from 'styled-components'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
-import LegacyBox from '@ui/Box'
-import Icon from '@ui/Icon'
+import { Box as LegacyBox } from '@ui/Box'
+import { Icon } from '@ui/Icon'
 import { formatNumber } from '@ui/utils'
 import { breakpoints } from '@ui/utils/responsive'
 import { t } from '@ui-kit/lib/i18n'
@@ -48,6 +48,7 @@ export interface ChartLiquidationRangeProps {
 
 export interface TooltipContentProps {
   active?: boolean
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   payload?: any[]
   oraclePrice: string
   isManage: boolean
@@ -219,21 +220,24 @@ export const ChartLiquidationRange = ({
                 barSize={30}
                 fill="#1763fd00"
                 stroke={chartAxisColor}
-                shape={({ x, y, width, height }: any) => (
-                  <path
-                    fill="url(#pattern-stripe)"
-                    stroke={chartAxisColor}
-                    strokeWidth={2}
-                    opacity={0.4}
-                    width={width}
-                    height={height}
-                    x={x}
-                    y={y}
-                    radius="0"
-                    className="recharts-rectangle"
-                    d={`M ${x},${y} h ${width} v ${height} h ${Math.abs(width)} Z`}
-                  />
-                )}
+                shape={(props: unknown) => {
+                  const { x, y, width, height } = props as { x: number; y: number; width: number; height: number }
+                  return (
+                    <path
+                      fill="url(#pattern-stripe)"
+                      stroke={chartAxisColor}
+                      strokeWidth={2}
+                      opacity={0.4}
+                      width={width}
+                      height={height}
+                      x={x}
+                      y={y}
+                      radius="0"
+                      className="recharts-rectangle"
+                      d={`M ${x},${y} h ${width} v ${height} h ${Math.abs(width)} Z`}
+                    />
+                  )
+                }}
                 strokeWidth={1}
               />
             )}

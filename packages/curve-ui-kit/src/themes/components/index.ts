@@ -29,7 +29,7 @@ export const createComponents = (
   typography: TypographyVariantsOptions,
 ): ThemeOptions['components'] => ({
   MuiAlert: defineMuiAlert(design, typography),
-  MuiAlertTitle: defineMuiAlertTitle(design, typography),
+  MuiAlertTitle: defineMuiAlertTitle(typography),
   MuiButton: defineMuiButton(design),
   MuiButtonBase: {
     defaultProps: {
@@ -67,8 +67,29 @@ export const createComponents = (
   },
   MuiFormControlLabel: {
     styleOverrides: {
-      root: { margin: '0' }, // by default there is a negative margin 🤦
-      label: { marginLeft: SizesAndSpaces.Spacing.xs.desktop, ...typography.headingXsBold },
+      label: {
+        marginLeft: SizesAndSpaces.Spacing.xs.desktop,
+        ...typography.headingXsBold,
+      },
+    },
+  },
+  MuiFormHelperText: {
+    styleOverrides: {
+      root: {
+        margin: 0,
+        paddingTop: SizesAndSpaces.Spacing.xs.desktop,
+        color: design.Text.TextColors.Tertiary,
+        ...typography.bodyXsRegular,
+      },
+    },
+  },
+  MuiFormLabel: {
+    styleOverrides: {
+      root: {
+        marginBottom: SizesAndSpaces.Spacing.xs.desktop,
+        color: design.Text.TextColors.Secondary,
+        ...typography.bodyXsRegular,
+      },
     },
   },
   MuiIconButton: defineMuiIconButton(design),
@@ -76,6 +97,17 @@ export const createComponents = (
     styleOverrides: {
       root: { backgroundColor: design.Color.Neutral[300] },
       bar: { backgroundColor: design.Color.Primary[500] },
+    },
+  },
+  MuiLink: {
+    styleOverrides: {
+      root: {
+        color: 'currentColor',
+        '&:hover': {
+          color: design.Button.Ghost.Default.Label,
+          textDecoration: 'none',
+        },
+      },
     },
   },
   MuiToggleButton: defineMuiToggleButton(design),
@@ -94,7 +126,7 @@ export const createComponents = (
     },
   },
   MuiMenuItem: defineMuiMenuItem(design),
-  MuiSelect: defineMuiSelect(design, typography),
+  MuiSelect: defineMuiSelect(design),
   MuiSlider: defineMuiSlider(design),
   MuiSkeleton: {
     styleOverrides: {

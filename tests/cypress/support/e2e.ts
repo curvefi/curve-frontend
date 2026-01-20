@@ -7,6 +7,7 @@ declare global {
 
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Cypress {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars,@typescript-eslint/no-explicit-any
     interface Chainable<Subject = any> {
       visitWithoutTestConnector(route: AppRoute, options?: Partial<Cypress.VisitOptions>): Chainable<AUTWindow>
     }

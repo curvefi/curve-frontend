@@ -1,14 +1,14 @@
 import lodash from 'lodash'
 import type { StoreApi } from 'zustand'
 import { updateUserEventsApi } from '@/llamalend/llama.utils'
-import type { FormStatus, FormValues } from '@/loan/components/PageLoanManage/CollateralIncrease/types'
-import type { FormDetailInfo, FormEstGas } from '@/loan/components/PageLoanManage/types'
+import type { FormStatus, FormValues } from '@/loan/components/PageMintMarket/CollateralIncrease/types'
+import type { FormDetailInfo, FormEstGas } from '@/loan/components/PageMintMarket/types'
 import {
   DEFAULT_DETAIL_INFO,
   DEFAULT_FORM_EST_GAS,
   DEFAULT_FORM_STATUS as FORM_STATUS,
-} from '@/loan/components/PageLoanManage/utils'
-import networks from '@/loan/networks'
+} from '@/loan/components/PageMintMarket/utils'
+import { networks } from '@/loan/networks'
 import type { State } from '@/loan/store/useStore'
 import { ChainId, LlamaApi, Llamma } from '@/loan/types/loan.types'
 import { useWallet } from '@ui-kit/features/connect-wallet'
@@ -74,7 +74,7 @@ const DEFAULT_STATE: SliceState = {
   formValues: DEFAULT_FORM_VALUES,
 }
 
-const createLoanCollateralIncrease = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
+export const createLoanCollateralIncrease = (_set: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
     fetchEstGasApproval: async (activeKey: string, chainId: ChainId, llamma: Llamma, formValues: FormValues) => {
@@ -223,8 +223,6 @@ const createLoanCollateralIncrease = (set: StoreApi<State>['setState'], get: Sto
     },
   },
 })
-
-export default createLoanCollateralIncrease
 
 export function getCollateralIncreaseActiveKey(llamma: Llamma, collateral: string) {
   return `${llamma.collateralSymbol}-${collateral}`

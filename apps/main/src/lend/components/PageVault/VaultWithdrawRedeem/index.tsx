@@ -1,25 +1,25 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
-import AlertFormError from '@/lend/components/AlertFormError'
-import DetailInfoEstimateGas from '@/lend/components/DetailInfoEstimateGas'
-import DetailInfoRate from '@/lend/components/DetailInfoRate'
-import LoanFormConnect from '@/lend/components/LoanFormConnect'
-import { StyledDetailInfoWrapper, StyledInpChip } from '@/lend/components/PageLoanManage/styles'
+import { AlertFormError } from '@/lend/components/AlertFormError'
+import { DetailInfoEstimateGas } from '@/lend/components/DetailInfoEstimateGas'
+import { DetailInfoRate } from '@/lend/components/DetailInfoRate'
+import { LoanFormConnect } from '@/lend/components/LoanFormConnect'
 import type { FormStatus, FormValues, StepKey } from '@/lend/components/PageVault/VaultWithdrawRedeem/types'
+import { StyledDetailInfoWrapper, StyledInpChip } from '@/lend/components/styles'
 import { helpers } from '@/lend/lib/apiLending'
-import networks from '@/lend/networks'
+import { networks } from '@/lend/networks'
 import { _getMaxActiveKey } from '@/lend/store/createVaultDepositMintSlice'
 import { _isWithdraw } from '@/lend/store/createVaultWithdrawRedeemSlice'
-import useStore from '@/lend/store/useStore'
+import { useStore } from '@/lend/store/useStore'
 import { Api, OneWayMarketTemplate, PageContentProps } from '@/lend/types/lend.types'
-import AlertBox from '@ui/AlertBox'
-import Box from '@ui/Box'
-import Checkbox from '@ui/Checkbox'
-import DetailInfo from '@ui/DetailInfo'
-import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
+import { AlertBox } from '@ui/AlertBox'
+import { Box } from '@ui/Box'
+import { Checkbox } from '@ui/Checkbox'
+import { DetailInfo } from '@ui/DetailInfo'
+import { InputDebounced, InputMaxBtn, InputProvider } from '@ui/InputComp'
 import { getActiveStep } from '@ui/Stepper/helpers'
-import Stepper from '@ui/Stepper/Stepper'
+import { Stepper } from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
-import TxInfoBar from '@ui/TxInfoBar'
+import { TxInfoBar } from '@ui/TxInfoBar'
 import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useLegacyTokenInput } from '@ui-kit/hooks/useFeatureFlags'
@@ -27,15 +27,8 @@ import { t } from '@ui-kit/lib/i18n'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { decimal, type Decimal } from '@ui-kit/utils'
 
-const VaultWithdrawRedeem = ({
-  rChainId,
-  rOwmId,
-  rFormType,
-  isLoaded,
-  api,
-  market,
-  userActiveKey,
-}: PageContentProps) => {
+export const VaultWithdrawRedeem = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey }: PageContentProps) => {
+  const rFormType = 'withdraw'
   const isSubscribed = useRef(false)
 
   const activeKey = useStore((state) => state.vaultWithdrawRedeem.activeKey)
@@ -314,5 +307,3 @@ const VaultWithdrawRedeem = ({
     </>
   )
 }
-
-export default VaultWithdrawRedeem

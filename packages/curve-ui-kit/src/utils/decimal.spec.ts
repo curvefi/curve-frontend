@@ -21,7 +21,7 @@ describe('decimal', () => {
   })
 
   it.each(['Infinity', '-Infinity', undefined, null, '', '?', '-', NaN])('handles edge cases', (invalidCharacter) => {
-    expect(decimal(invalidCharacter as any)).toBe(undefined)
+    expect(decimal(invalidCharacter as string | number | undefined | null)).toBe(undefined)
   })
 
   it('handles large and small numbers', () => {

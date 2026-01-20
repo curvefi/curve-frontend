@@ -19,7 +19,7 @@ export type EstimatedGas = number | number[] | null
 export type OneWayMarketTemplate = LendMarketTemplate // todo: use LendMarketTemplate consistently
 
 export type NetworkUrlParams = { network: NetworkEnum }
-export type MarketUrlParams = NetworkUrlParams & { market: string; formType?: RFormType }
+export type MarketUrlParams = NetworkUrlParams & { market: string }
 export type UrlParams = NetworkUrlParams & Partial<MarketUrlParams>
 
 export interface NetworkConfig<TId extends string = string, TChainId extends number = number> extends BaseConfig<
@@ -80,17 +80,10 @@ export type ExpectedBorrowed = {
   avgPrice: string
 }
 
-export type VaultCreateFormType = 'create' | 'leverage'
-export type VaultDepositFormType = 'deposit' | 'stake'
-export type VaultWithdrawFormType = 'withdraw' | 'unstake' | 'claim'
-export type VaultManageFormType = 'loan' | 'collateral'
-export type RFormType = VaultCreateFormType | VaultDepositFormType | VaultWithdrawFormType | VaultManageFormType | ''
-
-export type PageContentProps = {
-  params: UrlParams
+export type PageContentProps<T = UrlParams> = {
+  params: T
   rChainId: ChainId
   rOwmId: string
-  rFormType: RFormType
   userActiveKey: string
   isLoaded: boolean
   api: LlamaApi | null
@@ -112,8 +105,8 @@ export type ParsedBandsBalances = {
   isOraclePriceBand: boolean
   isNGrouped: boolean
   n: number | string
-  p_up: any
-  p_down: any
+  p_up: string
+  p_down: string
   pUpDownMedian: string
 }
 export type MarketStatBands = {
@@ -246,4 +239,13 @@ export enum FormError {
   StepApprove = 'error-step-approve',
   LiquidationMode = 'error-liquidation-mode',
   TotalSupply = 'error-total-supply',
+}
+
+export type FormStatus = {
+  isApproved: boolean
+  isApprovedCompleted: boolean
+  isComplete: boolean
+  isInProgress: boolean
+  error: string
+  stepError: string
 }

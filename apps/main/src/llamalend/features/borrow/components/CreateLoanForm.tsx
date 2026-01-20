@@ -1,23 +1,23 @@
 import { useCallback, useEffect } from 'react'
-import { BorrowPreset } from '@/llamalend/constants'
+import { LoanPreset } from '@/llamalend/constants'
+import { type CreateLoanFormExternalFields, type OnCreateLoanFormUpdate } from '@/llamalend/features/borrow/types'
 import { hasLeverage } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import type { CreateLoanOptions } from '@/llamalend/mutations/create-loan.mutation'
 import { LoanFormAlerts } from '@/llamalend/widgets/manage-loan/LoanFormAlerts'
 import { LoanFormTokenInput } from '@/llamalend/widgets/manage-loan/LoanFormTokenInput'
-import { LoanFormWrapper } from '@/llamalend/widgets/manage-loan/LoanFormWrapper'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
 import Collapse from '@mui/material/Collapse'
 import Stack from '@mui/material/Stack'
-import { useBorrowPreset } from '@ui-kit/hooks/useLocalStorage'
+import { useCreateLoanPreset } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { Balance } from '@ui-kit/shared/ui/Balance'
+import { setValueOptions } from '@ui-kit/utils/react-form.utils'
+import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { InputDivider } from '../../../widgets/InputDivider'
 import { useCreateLoanForm } from '../hooks/useCreateLoanForm'
-import { setValueOptions } from '../react-form.utils'
-import { type BorrowFormExternalFields, type OnBorrowFormUpdate } from '../types'
-import { AdvancedBorrowOptions } from './AdvancedBorrowOptions'
+import { AdvancedCreateLoanOptions } from './AdvancedCreateLoanOptions'
 import { CreateLoanInfoAccordion } from './CreateLoanInfoAccordion'
 import { LeverageInput } from './LeverageInput'
 import { LoanPresetSelector } from './LoanPresetSelector'
@@ -26,8 +26,8 @@ import { LoanPresetSelector } from './LoanPresetSelector'
  * Hook to call the parent form to keep in sync with the chart and other components
  */
 function useFormSync(
-  { userCollateral, range, debt, userBorrowed, slippage, leverageEnabled }: BorrowFormExternalFields,
-  onUpdate: OnBorrowFormUpdate,
+  { userCollateral, range, debt, userBorrowed, slippage, leverageEnabled }: CreateLoanFormExternalFields,
+  onUpdate: OnCreateLoanFormUpdate,
 ) {
   useEffect(() => {
     void onUpdate({ userCollateral, debt, range, userBorrowed, slippage, leverageEnabled })
@@ -50,11 +50,11 @@ export const CreateLoanForm = <ChainId extends IChainId>({
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
   chainId: ChainId
-  onUpdate: OnBorrowFormUpdate
+  onUpdate: OnCreateLoanFormUpdate
   onCreated: CreateLoanOptions['onCreated']
 }) => {
   const network = networks[chainId]
-  const [preset, setPreset] = useBorrowPreset<BorrowPreset>(BorrowPreset.Safe)
+  const [preset, setPreset] = useCreateLoanPreset<LoanPreset>(LoanPreset.Safe)
   const {
     values,
     onSubmit,
@@ -81,7 +81,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
   useFormSync(values, onUpdate)
 
   return (
-    <LoanFormWrapper
+    <Form
       {...form}
       onSubmit={onSubmit}
       infoAccordion={
@@ -142,8 +142,8 @@ export const CreateLoanForm = <ChainId extends IChainId>({
       )}
 
       <LoanPresetSelector preset={preset} setPreset={setPreset} setRange={setRange}>
-        <Collapse in={preset === BorrowPreset.Custom}>
-          <AdvancedBorrowOptions
+        <Collapse in={preset === LoanPreset.Custom}>
+          <AdvancedCreateLoanOptions
             market={market}
             values={values}
             params={params}
@@ -173,6 +173,6 @@ export const CreateLoanForm = <ChainId extends IChainId>({
         handledErrors={['userCollateral', 'debt', 'maxDebt']}
         successTitle={t`Loan created`}
       />
-    </LoanFormWrapper>
+    </Form>
   )
 }

@@ -8,8 +8,8 @@ function UseDebouncedTest({
   onChange,
 }: {
   debounceMs: number
-  callback: (...args: any[]) => void
-  onChange?: (...args: any[]) => void
+  callback: (...args: unknown[]) => void
+  onChange?: (...args: unknown[]) => void
 }) {
   const [debouncedFn, cancel] = useDebounced(callback, debounceMs, onChange)
 

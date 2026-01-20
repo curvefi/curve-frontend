@@ -4,12 +4,12 @@
   "private": true,
   "type": "module",
   "engines": {
-    "node": "22"
+    "node": "24"
   },
   "scripts": {
     "dev": "tsx watch src/dev.ts",
     "lint": "eslint \"src/**/*.ts\"",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --tsBuildInfoFile ../../.cache/typecheck/apps-router-api.tsbuildinfo",
     "test": "vitest run",
     "test:watch": "vitest"
   },

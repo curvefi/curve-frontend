@@ -20,7 +20,7 @@ type RepayMutation = { stateCollateral: Decimal; userCollateral: Decimal; userBo
 export type RepayOptions = {
   marketId: string | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
-  onRepaid: LlammaMutationOptions<RepayMutation>['onSuccess']
+  onRepaid?: LlammaMutationOptions<RepayMutation>['onSuccess']
   onReset?: () => void
   userAddress: Address | undefined
 }

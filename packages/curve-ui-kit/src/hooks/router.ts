@@ -12,6 +12,7 @@ import {
 export function useNavigate() {
   const navigate = useTanstackNavigate()
   return useCallback(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (to: string, options: { replace?: boolean; state?: any } = {}): void => void navigate({ to, ...options }),
     [navigate],
   )

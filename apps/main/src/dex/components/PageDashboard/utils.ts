@@ -1,10 +1,5 @@
 import type { FormStatus, FormValues } from '@/dex/components/PageDashboard/types'
-import { todayInMilliseconds } from '@/dex/utils/utilsDates'
 import type { TooltipProps } from '@ui/Tooltip/types'
-
-export function getIsLockExpired(lockedAmount: string, unlockTime: number) {
-  return unlockTime && unlockTime < todayInMilliseconds() && +lockedAmount > 0
-}
 
 export enum SORT_ID {
   'poolName' = 'poolName',

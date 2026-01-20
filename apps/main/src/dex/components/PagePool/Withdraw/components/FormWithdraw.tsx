@@ -1,39 +1,42 @@
 import lodash from 'lodash'
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { styled, css } from 'styled-components'
-import AlertFormError from '@/dex/components/AlertFormError'
-import AlertSlippage from '@/dex/components/AlertSlippage'
-import DetailInfoEstGas from '@/dex/components/DetailInfoEstGas'
-import DetailInfoSlippage from '@/dex/components/PagePool/components/DetailInfoSlippage'
-import DetailInfoSlippageTolerance from '@/dex/components/PagePool/components/DetailInfoSlippageTolerance'
-import FieldLpToken from '@/dex/components/PagePool/components/FieldLpToken'
-import FieldToken from '@/dex/components/PagePool/components/FieldToken'
-import SelectedLpTokenExpected from '@/dex/components/PagePool/components/SelectedLpTokenExpected'
-import SelectedOneCoinExpected from '@/dex/components/PagePool/components/SelectedOneCoinExpected'
-import TransferActions from '@/dex/components/PagePool/components/TransferActions'
-import WarningModal from '@/dex/components/PagePool/components/WarningModal'
+import { useConnection, type Config } from 'wagmi'
+import { useConfig } from 'wagmi'
+import { AlertFormError } from '@/dex/components/AlertFormError'
+import { AlertSlippage } from '@/dex/components/AlertSlippage'
+import { DetailInfoEstGas } from '@/dex/components/DetailInfoEstGas'
+import { DetailInfoSlippage } from '@/dex/components/PagePool/components/DetailInfoSlippage'
+import { FieldLpToken } from '@/dex/components/PagePool/components/FieldLpToken'
+import { FieldToken } from '@/dex/components/PagePool/components/FieldToken'
+import { SelectedLpTokenExpected } from '@/dex/components/PagePool/components/SelectedLpTokenExpected'
+import { SelectedOneCoinExpected } from '@/dex/components/PagePool/components/SelectedOneCoinExpected'
+import { TransferActions } from '@/dex/components/PagePool/components/TransferActions'
+import { WarningModal } from '@/dex/components/PagePool/components/WarningModal'
 import { FieldsWrapper } from '@/dex/components/PagePool/styles'
 import type { Slippage, TransferProps } from '@/dex/components/PagePool/types'
 import { amountsDescription, DEFAULT_ESTIMATED_GAS, DEFAULT_SLIPPAGE } from '@/dex/components/PagePool/utils'
 import type { FormStatus, FormValues, StepKey } from '@/dex/components/PagePool/Withdraw/types'
 import { resetFormAmounts } from '@/dex/components/PagePool/Withdraw/utils'
 import { useNetworks } from '@/dex/entities/networks'
-import useStore from '@/dex/store/useStore'
+import { usePoolTokenDepositBalances } from '@/dex/hooks/usePoolTokenDepositBalances'
+import { useStore } from '@/dex/store/useStore'
 import { CurveApi, Pool, PoolData } from '@/dex/types/main.types'
-import Box from '@ui/Box'
-import Checkbox from '@ui/Checkbox'
+import { Box } from '@ui/Box'
+import { Checkbox } from '@ui/Checkbox'
 import { Radio, RadioGroup } from '@ui/Radio'
 import { getActiveStep, getStepStatus } from '@ui/Stepper/helpers'
-import Stepper from '@ui/Stepper/Stepper'
+import { Stepper } from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
-import TxInfoBar from '@ui/TxInfoBar'
+import { TxInfoBar } from '@ui/TxInfoBar'
 import { scanTxPath } from '@ui/utils'
 import { mediaQueries } from '@ui/utils/responsive'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRates } from '@ui-kit/lib/model/entities/token-usd-rate'
+import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
 
-const FormWithdraw = ({
+export const FormWithdraw = ({
   chainIdPoolId,
   curve,
   blockchainId,
@@ -43,7 +46,6 @@ const FormWithdraw = ({
   routerParams,
   seed,
   tokensMapper,
-  userPoolBalances,
 }: TransferProps) => {
   const isSubscribed = useRef(false)
 
@@ -69,12 +71,22 @@ const FormWithdraw = ({
   const poolId = poolData?.pool?.id
   const haveSigner = !!signerAddress
 
+  const { address: userAddress } = useConnection()
+  const { lpTokenBalance, isLoading: lpTokenBalanceLoading } = usePoolTokenDepositBalances({
+    chainId,
+    userAddress,
+    poolId,
+  })
+
+  const config = useConfig()
+
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<FormValues>, updatedMaxSlippage: string | null) => {
       setTxInfoBar(null)
       setSlippageConfirmed(false)
       void setFormValues(
         'WITHDRAW',
+        config,
         curve,
         poolDataCacheOrApi.pool.id,
         poolData,
@@ -84,25 +96,32 @@ const FormWithdraw = ({
         updatedMaxSlippage || maxSlippage,
       )
     },
-    [setFormValues, curve, poolDataCacheOrApi.pool.id, poolData, seed.isSeed, maxSlippage],
+    [setFormValues, config, curve, poolDataCacheOrApi.pool.id, poolData, seed.isSeed, maxSlippage],
   )
 
   const handleApproveClick = useCallback(
-    async (activeKey: string, curve: CurveApi, pool: Pool, formValues: FormValues) => {
+    async (activeKey: string, config: Config, curve: CurveApi, pool: Pool, formValues: FormValues) => {
       const notifyMessage = t`Please approve spending your LP Tokens.`
       const { dismiss } = notify(notifyMessage, 'pending')
-      await fetchStepApprove(activeKey, curve, 'WITHDRAW', pool, formValues)
+      await fetchStepApprove(activeKey, config, curve, 'WITHDRAW', pool, formValues)
       if (typeof dismiss === 'function') dismiss()
     },
     [fetchStepApprove],
   )
 
   const handleWithdrawClick = useCallback(
-    async (activeKey: string, curve: CurveApi, poolData: PoolData, formValues: FormValues, maxSlippage: string) => {
+    async (
+      activeKey: string,
+      config: Config,
+      curve: CurveApi,
+      poolData: PoolData,
+      formValues: FormValues,
+      maxSlippage: string,
+    ) => {
       const tokenText = amountsDescription(formValues.amounts)
       const notifyMessage = t`Please confirm withdrawal of ${formValues.lpToken} LP Tokens at max ${maxSlippage}% slippage.`
       const { dismiss } = notify(notifyMessage, 'pending')
-      const resp = await fetchStepWithdraw(activeKey, curve, poolData, formValues, maxSlippage)
+      const resp = await fetchStepWithdraw(activeKey, config, curve, poolData, formValues, maxSlippage)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && network) {
         const TxDescription = t`Withdrew ${formValues.lpToken} LP Tokens for ${tokenText}`
@@ -116,6 +135,7 @@ const FormWithdraw = ({
   const getSteps = useCallback(
     (
       activeKey: string,
+      config: Config,
       curve: CurveApi,
       poolData: PoolData,
       formValues: FormValues,
@@ -127,8 +147,8 @@ const FormWithdraw = ({
       isSeed: boolean,
     ) => {
       const haveFormLpToken = +formValues.lpToken > 0
-      const haveUserLpToken = typeof userPoolBalances !== 'undefined' && +userPoolBalances.lpToken > 0
-      const isValidLpToken = haveUserLpToken && haveFormLpToken && +userPoolBalances.lpToken >= +formValues.lpToken
+      const haveUserLpToken = lpTokenBalance != null && +lpTokenBalance > 0
+      const isValidLpToken = haveUserLpToken && haveFormLpToken && +lpTokenBalance >= +formValues.lpToken
       let isValid = haveSigner && !isSeed && isValidLpToken && !!formValues.selected && !formStatus.error
 
       if (isValid && (formValues.selected === 'token' || formValues.selected === 'imbalance')) {
@@ -144,7 +164,7 @@ const FormWithdraw = ({
           status: getStepStatus(isApproved, formStatus.step === 'APPROVAL', isValid),
           type: 'action',
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
-          onClick: () => handleApproveClick(activeKey, curve, poolData.pool, formValues),
+          onClick: () => handleApproveClick(activeKey, config, curve, poolData.pool, formValues),
         },
         WITHDRAW: {
           key: 'WITHDRAW',
@@ -170,13 +190,13 @@ const FormWithdraw = ({
                     onClick: () => setSlippageConfirmed(false),
                   },
                   primaryBtnProps: {
-                    onClick: () => handleWithdrawClick(activeKey, curve, poolData, formValues, maxSlippage),
+                    onClick: () => handleWithdrawClick(activeKey, config, curve, poolData, formValues, maxSlippage),
                     disabled: !slippageConfirmed,
                   },
                   primaryBtnLabel: 'Withdraw anyway',
                 },
               }
-            : { onClick: () => handleWithdrawClick(activeKey, curve, poolData, formValues, maxSlippage) }),
+            : { onClick: () => handleWithdrawClick(activeKey, config, curve, poolData, formValues, maxSlippage) }),
         },
       }
 
@@ -190,7 +210,7 @@ const FormWithdraw = ({
 
       return stepsKey.map((key) => stepsObj[key])
     },
-    [handleApproveClick, handleWithdrawClick, haveSigner, userPoolBalances],
+    [handleApproveClick, handleWithdrawClick, haveSigner, lpTokenBalance],
   )
 
   // onMount
@@ -230,6 +250,7 @@ const FormWithdraw = ({
     if (curve && poolData && seed.isSeed !== null) {
       const updatedSteps = getSteps(
         activeKey,
+        config,
         curve,
         poolData,
         formValues,
@@ -244,6 +265,7 @@ const FormWithdraw = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
+    config,
     chainId,
     poolId,
     signerAddress,
@@ -289,7 +311,6 @@ const FormWithdraw = ({
   const haveSlippage = formValues.selected !== 'lpToken'
   const activeStep = haveSigner ? getActiveStep(steps) : null
   const isDisabled = seed.isSeed === null || seed.isSeed || formStatus.formProcessing
-  const balLpToken = (userPoolBalances?.lpToken as string) ?? '0'
 
   const handleAmountChange = useCallback(
     (val: string, idx: number) => {
@@ -305,9 +326,9 @@ const FormWithdraw = ({
     <>
       <FieldLpToken
         amount={formValues.lpToken}
-        balance={haveSigner ? balLpToken : ''}
-        balanceLoading={haveSigner ? typeof userPoolBalances === 'undefined' : false}
-        hasError={haveSigner && +formValues.lpToken > +balLpToken}
+        balance={lpTokenBalance ?? ''}
+        balanceLoading={lpTokenBalanceLoading}
+        hasError={haveSigner && +formValues.lpToken > +(lpTokenBalance ?? '')}
         haveSigner={haveSigner}
         handleAmountChange={useCallback(
           (lpToken: string) =>
@@ -460,11 +481,7 @@ const FormWithdraw = ({
             stepProgress={activeStep && steps.length > 1 ? { active: activeStep, total: steps.length } : null}
           />
         )}
-        <DetailInfoSlippageTolerance
-          customLabel={t`Additional slippage tolerance:`}
-          maxSlippage={maxSlippage}
-          stateKey={chainIdPoolId}
-        />
+        <SlippageToleranceActionInfo maxSlippage={maxSlippage} stateKey={chainIdPoolId} />
       </div>
 
       {formStatus.error && (
@@ -477,7 +494,6 @@ const FormWithdraw = ({
         loading={!chainId || !steps.length || !seed.loaded}
         routerParams={routerParams}
         seed={seed}
-        userPoolBalances={userPoolBalances}
       >
         <AlertSlippage maxSlippage={maxSlippage} usdAmount={estUsdAmountTotalReceive} />
         {txInfoBar}
@@ -516,5 +532,3 @@ const TokensSelectorWrapper = styled.div`
   background-color: var(--box--primary--content--background-color);
   box-shadow: inset 0.5px 0.5px 0 0.5px var(--box--primary--content--shadow-color);
 `
-
-export default FormWithdraw

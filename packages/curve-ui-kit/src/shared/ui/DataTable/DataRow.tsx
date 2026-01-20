@@ -50,7 +50,7 @@ export const DataRow = <T extends TableItem>({
   const visibleCells = row.getVisibleCells()
   return (
     <>
-      <InvertOnHover hoverColor={(t) => t.design.Table.Row.Hover} hoverEl={element} disabled={isMobile}>
+      <InvertOnHover hoverColor={(t) => t.design.Table.Row.Hover} hoverRef={{ current: element }} disabled={isMobile}>
         <TableRow
           sx={useMemo(
             () => ({

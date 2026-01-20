@@ -1,12 +1,11 @@
 import { useState } from 'react'
 import { styled } from 'styled-components'
-import { useConnection } from 'wagmi'
-import Box from '@ui/Box'
+import { Box } from '@ui/Box'
 import { t } from '@ui-kit/lib/i18n'
-import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
-import GaugesList from './GaugeList'
-import GaugeVoting from './GaugeVoting'
-import GaugeWeightDistribution from './GaugeWeightDistribution'
+import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
+import { GaugesList } from './GaugeList'
+import { GaugeVoting } from './GaugeVoting'
+import { GaugeWeightDistribution } from './GaugeWeightDistribution'
 
 type Tab = 'gaugeList' | 'gaugeVoting'
 const tabs: TabOption<Tab>[] = [
@@ -14,20 +13,19 @@ const tabs: TabOption<Tab>[] = [
   { value: 'gaugeVoting', label: t`Voting` },
 ]
 
-const Gauges = () => {
-  const { address: userAddress } = useConnection()
+export const Gauges = () => {
   const [tab, setTab] = useState<Tab>('gaugeList')
 
   return (
     <Wrapper>
       <Box flex flexColumn fillWidth flexGap={'var(--spacing-3)'}>
-        <GaugeWeightDistribution isUserVotes={tab === 'gaugeVoting'} userAddress={userAddress} />
+        <GaugeWeightDistribution isUserVotes={tab === 'gaugeVoting'} />
         <Box>
-          <TabsSwitcher variant="contained" size="medium" value={tab} onChange={setTab} options={tabs} />
+          <TabsSwitcher variant="contained" value={tab} onChange={setTab} options={tabs} />
 
           <Container variant="secondary">
             {tab === 'gaugeList' && <GaugesList />}
-            {tab === 'gaugeVoting' && <GaugeVoting userAddress={userAddress} />}
+            {tab === 'gaugeVoting' && <GaugeVoting />}
           </Container>
         </Box>
       </Box>
@@ -57,5 +55,3 @@ const Container = styled(Box)`
   height: 100%;
   border: none;
 `
-
-export default Gauges

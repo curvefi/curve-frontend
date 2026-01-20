@@ -8,7 +8,7 @@ type Props = Pick<WalletPoolData, 'liquidityUsd' | 'percentStaked'> & {
   isHighLight: boolean
 }
 
-const TableCellBalances = ({ isHighLight, liquidityUsd, percentStaked }: Props) => (
+export const TableCellBalances = ({ isHighLight, liquidityUsd, percentStaked }: Props) => (
   <>
     <Chip
       isNumber
@@ -24,5 +24,3 @@ const TableCellBalances = ({ isHighLight, liquidityUsd, percentStaked }: Props) 
     </div>
   </>
 )
-
-export default TableCellBalances

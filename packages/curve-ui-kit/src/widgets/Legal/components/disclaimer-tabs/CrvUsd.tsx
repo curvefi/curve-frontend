@@ -5,14 +5,18 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import type { TabProps } from '../../types/tabs'
 import { List } from '../general/List'
 import { Section, Header, Title, Paragraph } from '../general/Section'
+import { LegalIntro } from './LegalIntro'
 
 const { Spacing } = SizesAndSpaces
 
-export const CrvUsd = () => (
+export const CrvUsd = ({ currentApp, network }: TabProps) => (
   <>
     <Section>
+      <LegalIntro currentApp={currentApp} network={network} />
+
       <Paragraph>{t`Curve stablecoin infrastructure enables users to mint crvUSD using a selection of crypto-tokenized collaterals (adding new ones is subject to DAO approval). Interacting with crvUSD doesn't come without risks. Before minting or taking exposure of crvUSD, it is best to research and understand the risks involved.`}</Paragraph>
     </Section>
 
@@ -149,7 +153,7 @@ export const CrvUsd = () => (
 
     <Section>
       <Title>{t`No Loss Prevention`}</Title>
-      <Paragraph>{t`crvUSD and its underlying infrastructure are in an early stage of development, are inherently experimental, and carry a significant degree of risk. Engagement with crvUSD during this phase should be approached with the understanding that it may lead to partial or complete loss of funds. Users considering minting, redeeming, or utilizing crvUSD should be prepared for the possibility of encountering technical issues, bugs, or vulnerabilities that could impact the value of crvUSD or the safety of allocated crypto assets.`}</Paragraph>
+      <Paragraph>{t`crvUSD and its underlying infrastructure are in an early stage of development, are inherently experimental, and carry a significant degree of risk. Engagement with crvUSD during this phase should be approached with the understanding that it may lead to partial or complete loss of funds. Such losses may include the total loss of all assets, which in some cases may be permanently unrecoverable. Users considering minting, redeeming, or utilizing crvUSD should be prepared for the possibility of encountering technical issues, bugs, or vulnerabilities that could impact the value of crvUSD or the safety of allocated crypto assets.`}</Paragraph>
     </Section>
 
     <Section>

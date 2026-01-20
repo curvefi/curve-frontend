@@ -1,13 +1,13 @@
 import { produce } from 'immer'
 import lodash from 'lodash'
+import type { Config } from 'wagmi'
 import type { StoreApi } from 'zustand'
-import curvejsApi from '@/dex/lib/curvejs'
+import { curvejsApi } from '@/dex/lib/curvejs'
 import type { State } from '@/dex/store/useStore'
 import { ChainId, CurveApi, NetworkConfigFromApi, Wallet } from '@/dex/types/main.types'
 import { log } from '@ui-kit/lib/logging'
 import { fetchNetworks } from '../entities/networks'
 
-export type DefaultStateKeys = keyof typeof DEFAULT_STATE
 export type SliceKey = keyof State | ''
 export type StateKey = string
 const { isEqual } = lodash
@@ -22,9 +22,12 @@ export interface GlobalSlice extends GlobalState {
   setNetworkConfigFromApi(curve: CurveApi): void
 
   /** Hydrate resets states and refreshes store data from the API */
-  hydrate(curveApi: CurveApi | undefined, prevCurveApi: CurveApi | undefined, wallet: Wallet | undefined): Promise<void>
-
-  updateGlobalStoreByKey: <T>(key: DefaultStateKeys, value: T) => void
+  hydrate(
+    config: Config,
+    curveApi: CurveApi | undefined,
+    prevCurveApi: CurveApi | undefined,
+    wallet: Wallet | undefined,
+  ): Promise<void>
 
   setAppStateByActiveKey<T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean): void
   setAppStateByKey<T>(sliceKey: SliceKey, key: StateKey, value: T, showLog?: boolean): void
@@ -37,7 +40,7 @@ const DEFAULT_STATE = {
   hasRouter: {},
 } satisfies GlobalState
 
-const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): GlobalSlice => ({
+export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): GlobalSlice => ({
   ...DEFAULT_STATE,
 
   getNetworkConfigFromApi: (chainId: ChainId | '') => {
@@ -63,7 +66,7 @@ const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreApi<State
       }),
     )
   },
-  hydrate: async (curveApi, prevCurveApi) => {
+  hydrate: async (_config, curveApi, prevCurveApi) => {
     if (!curveApi) return
 
     const state = get()
@@ -81,17 +84,13 @@ const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreApi<State
       state.pools.resetState()
       state.quickSwap.resetState()
       state.tokens.resetState()
-      state.userBalances.resetState()
       state.user.resetState()
-      state.userBalances.resetState()
-      state.lockedCrv.resetState()
       state.createPool.resetState()
       state.dashboard.resetState()
     }
 
     if (isUserSwitched) {
       state.user.resetState()
-      state.userBalances.resetState()
     }
 
     // update network settings from api
@@ -130,14 +129,6 @@ const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreApi<State
 
     log('Hydrating DEX - Complete')
   },
-  updateGlobalStoreByKey: <T>(key: DefaultStateKeys, value: T) => {
-    set(
-      produce((state) => {
-        state[key] = value
-      }),
-    )
-  },
-
   setAppStateByActiveKey: <T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean) => {
     set(
       produce((state) => {
@@ -203,5 +194,3 @@ const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreApi<State
     )
   },
 })
-
-export default createGlobalSlice

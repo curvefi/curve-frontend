@@ -1,34 +1,36 @@
 import BigNumber from 'bignumber.js'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
-import AlertFormError from '@/dex/components/AlertFormError'
-import DetailInfoEstGas from '@/dex/components/DetailInfoEstGas'
-import DetailInfoExpectedApy from '@/dex/components/PagePool/components/DetailInfoExpectedApy'
-import FieldLpToken from '@/dex/components/PagePool/components/FieldLpToken'
-import TransferActions from '@/dex/components/PagePool/components/TransferActions'
+import { useConnection, type Config } from 'wagmi'
+import { useConfig } from 'wagmi'
+import { AlertFormError } from '@/dex/components/AlertFormError'
+import { DetailInfoEstGas } from '@/dex/components/DetailInfoEstGas'
+import { DetailInfoExpectedApy } from '@/dex/components/PagePool/components/DetailInfoExpectedApy'
+import { FieldLpToken } from '@/dex/components/PagePool/components/FieldLpToken'
+import { TransferActions } from '@/dex/components/PagePool/components/TransferActions'
 import type { FormStatus, FormValues, StepKey } from '@/dex/components/PagePool/Deposit/types'
 import { FieldsWrapper } from '@/dex/components/PagePool/styles'
 import type { TransferProps } from '@/dex/components/PagePool/types'
 import { DEFAULT_ESTIMATED_GAS } from '@/dex/components/PagePool/utils'
 import { useNetworks } from '@/dex/entities/networks'
-import useStore from '@/dex/store/useStore'
+import { usePoolTokenDepositBalances } from '@/dex/hooks/usePoolTokenDepositBalances'
+import { useStore } from '@/dex/store/useStore'
 import { CurveApi, Pool, PoolData } from '@/dex/types/main.types'
-import AlertBox from '@ui/AlertBox'
+import { AlertBox } from '@ui/AlertBox'
 import { getActiveStep, getStepStatus } from '@ui/Stepper/helpers'
-import Stepper from '@ui/Stepper/Stepper'
+import { Stepper } from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
-import TxInfoBar from '@ui/TxInfoBar'
+import { TxInfoBar } from '@ui/TxInfoBar'
 import { scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 
-const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, userPoolBalances }: TransferProps) => {
+export const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed }: TransferProps) => {
   const isSubscribed = useRef(false)
 
   const { chainId, signerAddress } = curve || {}
   const { rChainId } = routerParams
   const activeKey = useStore((state) => state.poolDeposit.activeKey)
-  const balancesLoading = useStore((state) => state.user.walletBalancesLoading)
   const formEstGas = useStore((state) => state.poolDeposit.formEstGas[activeKey] ?? DEFAULT_ESTIMATED_GAS)
   const formStatus = useStore((state) => state.poolDeposit.formStatus)
   const formValues = useStore((state) => state.poolDeposit.formValues)
@@ -46,12 +48,24 @@ const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
   const poolId = poolData?.pool?.id
   const haveSigner = !!signerAddress
 
+  const config = useConfig()
+
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<FormValues>) => {
       setTxInfoBar(null)
-      void setFormValues('STAKE', curve, poolDataCacheOrApi.pool.id, poolData, updatedFormValues, null, seed.isSeed, '')
+      void setFormValues(
+        'STAKE',
+        config,
+        curve,
+        poolDataCacheOrApi.pool.id,
+        poolData,
+        updatedFormValues,
+        null,
+        seed.isSeed,
+        '',
+      )
     },
-    [curve, poolData, poolDataCacheOrApi.pool.id, seed.isSeed, setFormValues],
+    [config, curve, poolData, poolDataCacheOrApi.pool.id, seed.isSeed, setFormValues],
   )
 
   const handleApproveClick = useCallback(
@@ -65,10 +79,10 @@ const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
   )
 
   const handleStakeClick = useCallback(
-    async (activeKey: string, curve: CurveApi, poolData: PoolData, formValues: FormValues) => {
+    async (activeKey: string, config: Config, curve: CurveApi, poolData: PoolData, formValues: FormValues) => {
       const notifyMessage = t`Please confirm staking of ${formValues.lpToken} LP Tokens`
       const { dismiss } = notify(notifyMessage, 'pending')
-      const resp = await fetchStepStake(activeKey, curve, poolData, formValues)
+      const resp = await fetchStepStake(activeKey, config, curve, poolData, formValues)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && network) {
         const TxDescription = `Staked ${formValues.lpToken} LP Tokens`
@@ -82,6 +96,7 @@ const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
   const getSteps = useCallback(
     (
       activeKey: string,
+      config: Config,
       curve: CurveApi,
       poolData: PoolData,
       formValues: FormValues,
@@ -105,7 +120,7 @@ const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
           status: getStepStatus(isComplete, formStatus.step === 'STAKE', isValid && formStatus.isApproved),
           type: 'action',
           content: isComplete ? t`Stake Complete` : t`Stake`,
-          onClick: () => handleStakeClick(activeKey, curve, poolData, formValues),
+          onClick: () => handleStakeClick(activeKey, config, curve, poolData, formValues),
         },
       }
 
@@ -149,15 +164,21 @@ const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
   // steps
   useEffect(() => {
     if (curve && poolId) {
-      const updatedSteps = getSteps(activeKey, curve, poolData, formValues, formStatus, steps)
+      const updatedSteps = getSteps(activeKey, config, curve, poolData, formValues, formStatus, steps)
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId, poolId, signerAddress, formValues, formStatus])
+  }, [config, chainId, poolId, signerAddress, formValues, formStatus])
 
   const activeStep = signerAddress ? getActiveStep(steps) : null
   const disableForm = seed.isSeed === null || formStatus.formProcessing
-  const balLpToken = (userPoolBalances?.lpToken as string) ?? '0'
+
+  const { address: userAddress } = useConnection()
+  const { lpTokenBalance, isLoading: lpTokenBalanceLoading } = usePoolTokenDepositBalances({
+    chainId,
+    userAddress,
+    poolId,
+  })
 
   return (
     <>
@@ -165,9 +186,9 @@ const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
       <FieldsWrapper>
         <FieldLpToken
           amount={formValues.lpToken}
-          balance={balLpToken}
-          balanceLoading={balancesLoading}
-          hasError={haveSigner ? new BigNumber(formValues.lpToken).isGreaterThan(balLpToken as string) : false}
+          balance={lpTokenBalance ?? ''}
+          balanceLoading={lpTokenBalanceLoading}
+          hasError={haveSigner ? new BigNumber(formValues.lpToken).isGreaterThan(lpTokenBalance ?? '0') : false}
           haveSigner={haveSigner}
           handleAmountChange={useCallback((lpToken) => updateFormValues({ lpToken }), [updateFormValues])}
           disabled={disableForm}
@@ -196,7 +217,6 @@ const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
         loading={!chainId || !steps.length || !seed.loaded}
         routerParams={routerParams}
         seed={seed}
-        userPoolBalances={userPoolBalances}
       >
         {formStatus.error === 'lpToken-too-much' ? (
           <AlertBox alertType="error">{t`Not enough LP Tokens balances.`}</AlertBox>
@@ -209,5 +229,3 @@ const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
     </>
   )
 }
-
-export default FormStake

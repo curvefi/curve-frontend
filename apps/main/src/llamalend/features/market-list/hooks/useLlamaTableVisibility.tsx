@@ -7,9 +7,10 @@ import type { MigrationOptions } from '@ui-kit/hooks/useStoredState'
 import { useVisibilitySettings } from '@ui-kit/shared/ui/DataTable/hooks/useVisibilitySettings'
 import type { VisibilityGroup } from '@ui-kit/shared/ui/DataTable/visibility.types'
 import { MarketRateType } from '@ui-kit/types/market'
-import { createLlamaMarketsMobileColumns, LLAMA_MARKETS_COLUMN_OPTIONS } from '../column-options'
-import { DEFAULT_SORT, LLAMA_MARKET_COLUMNS } from '../columns'
-import { LlamaMarketColumnId } from '../columns.enum'
+import { DEFAULT_SORT } from '../columns'
+import { LLAMA_MARKET_COLUMNS } from '../columns'
+import { createLlamaMarketsMobileColumns, LLAMA_MARKETS_COLUMN_OPTIONS } from '../columns'
+import { LlamaMarketColumnId } from '../columns'
 
 type LlamaColumnVariant = keyof typeof LLAMA_MARKETS_COLUMN_OPTIONS
 

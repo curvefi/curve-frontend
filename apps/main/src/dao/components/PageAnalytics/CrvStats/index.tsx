@@ -3,8 +3,8 @@ import { useMemo } from 'react'
 import { styled } from 'styled-components'
 import { CONTRACT_CRV } from '@/dao/constants'
 import { useStatsVecrvQuery } from '@/dao/entities/stats-vecrv'
-import useStore from '@/dao/store/useStore'
-import Box from '@ui/Box'
+import { useStore } from '@/dao/store/useStore'
+import { Box } from '@ui/Box'
 import { useCurve, useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
@@ -12,7 +12,7 @@ import { Metric } from '@ui-kit/shared/ui/Metric'
 import { formatNumber } from '@ui-kit/utils'
 import { Chain } from '@ui-kit/utils/network'
 
-const CrvStats = () => {
+export const CrvStats = () => {
   const { data: veCrvData, isLoading: statsLoading, isSuccess: statsSuccess } = useStatsVecrvQuery({})
   const { provider } = useWallet()
   const { curveApi: { chainId } = {} } = useCurve()
@@ -139,5 +139,3 @@ const MetricsContainer = styled(Box)`
     grid-template-columns: 1fr 1fr 1fr;
   }
 `
-
-export default CrvStats

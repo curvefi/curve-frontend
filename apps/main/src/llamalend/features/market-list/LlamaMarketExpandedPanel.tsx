@@ -1,5 +1,4 @@
 import { useMemo } from 'react'
-import { useUserMarketStats } from '@/llamalend/queries/market-list/llama-market-stats'
 import { ArrowRight } from '@carbon/icons-react'
 import Button from '@mui/material/Button'
 import CardHeader from '@mui/material/CardHeader'
@@ -15,13 +14,14 @@ import { Metric } from '@ui-kit/shared/ui/Metric'
 import { RouterLink as Link } from '@ui-kit/shared/ui/RouterLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
+import { useUserMarketStats } from '../../queries/market-list/llama-market-stats'
 import type { LlamaMarket } from '../../queries/market-list/llama-markets'
 import { LineGraphCell } from './cells'
 import { BorrowRateTooltip } from './cells/RateCell/BorrowRateTooltip'
 import { RewardsIcons } from './cells/RateCell/RewardsIcons'
 import { SupplyRateLendTooltip } from './cells/RateCell/SupplyRateLendTooltip'
 import { FavoriteMarketButton } from './chips/FavoriteMarketButton'
-import { LlamaMarketColumnId } from './columns.enum'
+import { LlamaMarketColumnId } from './columns'
 
 const { Spacing } = SizesAndSpaces
 
@@ -61,8 +61,8 @@ const RateItem = ({ market, title, type }: { market: LlamaMarket; title: string;
 
 export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { original: market } }) => {
   // todo: update metric component(?) to show the errors when appropriate
-  const { data: earnings, error: earningsError } = useUserMarketStats(market, LlamaMarketColumnId.UserEarnings)
-  const { data: deposited, error: depositedError } = useUserMarketStats(market, LlamaMarketColumnId.UserDeposited)
+  const { data: earnings } = useUserMarketStats(market, LlamaMarketColumnId.UserEarnings)
+  const { data: deposited } = useUserMarketStats(market, LlamaMarketColumnId.UserDeposited)
   const {
     controllerAddress,
     favoriteKey,

@@ -1,56 +1,46 @@
 import { styled } from 'styled-components'
 import { getAddress } from 'viem'
 import { TOP_HOLDERS } from '@/dao/constants'
-import networks from '@/dao/networks'
-import { UserMapper } from '@/dao/types/dao.types'
-import Box from '@ui/Box'
-import Icon from '@ui/Icon'
-import IconButton from '@ui/IconButton'
+import { networks } from '@/dao/networks'
+import { Box } from '@ui/Box'
+import { Icon } from '@ui/Icon'
+import { IconButton } from '@ui/IconButton'
 import { ExternalLink } from '@ui/Link'
 import { scanAddressPath } from '@ui/utils'
 import { copyToClipboard } from '@ui-kit/utils'
 
-interface UserHeaderProps {
-  userAddress: string
-  userMapper: UserMapper
-}
-
-const UserHeader = ({ userAddress, userMapper }: UserHeaderProps) => {
-  const user = userMapper[userAddress]
-
-  return (
-    <Wrapper variant="secondary">
-      <Box flex flexAlignItems="center">
-        <Box flex flexColumn flexJustifyContent="center">
-          <h3>{TOP_HOLDERS[userAddress]?.title || user?.ens || getAddress(userAddress)}</h3>
-          {((TOP_HOLDERS[userAddress]?.title && userAddress) || (user?.ens && userAddress)) && (
-            <Box flex flexAlignItems="center">
-              <UserAddress>{getAddress(userAddress)}</UserAddress>{' '}
-              <Box margin="0 0 0 var(--spacing-1)" flex>
-                <StyledCopyButton size="small" onClick={() => copyToClipboard(userAddress)}>
-                  <Icon name="Copy" size={16} />
-                </StyledCopyButton>
-                <StyledExternalLink size="small" href={scanAddressPath(networks[1], userAddress)}>
-                  <Icon name="Launch" size={16} />
-                </StyledExternalLink>
-              </Box>
+export const UserHeader = ({ userAddress, userEnsName }: { userAddress: string; userEnsName?: string | null }) => (
+  <Wrapper variant="secondary">
+    <Box flex flexAlignItems="center">
+      <Box flex flexColumn flexJustifyContent="center">
+        <h3>{TOP_HOLDERS[userAddress]?.title || userEnsName || getAddress(userAddress)}</h3>
+        {((TOP_HOLDERS[userAddress]?.title && userAddress) || (userEnsName && userAddress)) && (
+          <Box flex flexAlignItems="center">
+            <UserAddress>{getAddress(userAddress)}</UserAddress>{' '}
+            <Box margin="0 0 0 var(--spacing-1)" flex>
+              <StyledCopyButton size="small" onClick={() => copyToClipboard(userAddress)}>
+                <Icon name="Copy" size={16} />
+              </StyledCopyButton>
+              <StyledExternalLink size="small" href={scanAddressPath(networks[1], userAddress)}>
+                <Icon name="Launch" size={16} />
+              </StyledExternalLink>
             </Box>
-          )}
-        </Box>
-        {!userMapper[userAddress]?.ens && !TOP_HOLDERS[userAddress]?.title && (
-          <Box flex margin="0 0 0 var(--spacing-1)">
-            <StyledCopyButton size="small" onClick={() => copyToClipboard(userAddress)}>
-              <Icon name="Copy" size={16} />
-            </StyledCopyButton>
-            <StyledExternalLink size="small" href={scanAddressPath(networks[1], userAddress)}>
-              <Icon name="Launch" size={16} />
-            </StyledExternalLink>
           </Box>
         )}
       </Box>
-    </Wrapper>
-  )
-}
+      {!userEnsName && !TOP_HOLDERS[userAddress]?.title && (
+        <Box flex margin="0 0 0 var(--spacing-1)">
+          <StyledCopyButton size="small" onClick={() => copyToClipboard(userAddress)}>
+            <Icon name="Copy" size={16} />
+          </StyledCopyButton>
+          <StyledExternalLink size="small" href={scanAddressPath(networks[1], userAddress)}>
+            <Icon name="Launch" size={16} />
+          </StyledExternalLink>
+        </Box>
+      )}
+    </Box>
+  </Wrapper>
+)
 
 const Wrapper = styled(Box)`
   padding: var(--spacing-3);
@@ -91,5 +81,3 @@ const StyledExternalLink = styled(ExternalLink)`
 const UserAddress = styled.p`
   line-break: anywhere;
 `
-
-export default UserHeader

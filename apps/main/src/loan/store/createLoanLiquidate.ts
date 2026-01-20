@@ -1,10 +1,10 @@
 import lodash from 'lodash'
 import { StoreApi } from 'zustand'
 import { updateUserEventsApi } from '@/llamalend/llama.utils'
-import type { FormStatus } from '@/loan/components/PageLoanManage/LoanLiquidate/types'
-import type { FormEstGas } from '@/loan/components/PageLoanManage/types'
-import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@/loan/components/PageLoanManage/utils'
-import networks from '@/loan/networks'
+import type { FormStatus } from '@/loan/components/PageMintMarket/LoanLiquidate/types'
+import type { FormEstGas } from '@/loan/components/PageMintMarket/types'
+import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@/loan/components/PageMintMarket/utils'
+import { networks } from '@/loan/networks'
 import type { State } from '@/loan/store/useStore'
 import { ChainId, LlamaApi, Llamma, UserWalletBalances } from '@/loan/types/loan.types'
 import { useWallet } from '@ui-kit/features/connect-wallet'
@@ -65,7 +65,7 @@ const DEFAULT_STATE: SliceState = {
   liquidationAmt: '',
 }
 
-const createLoanLiquidate = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
+export const createLoanLiquidate = (_set: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
   loanLiquidate: {
     ...DEFAULT_STATE,
 
@@ -84,7 +84,7 @@ const createLoanLiquidate = (set: StoreApi<State>['setState'], get: StoreApi<Sta
     fetchTokensToLiquidate: async (
       chainId: ChainId,
       llamma: Llamma,
-      llammaId: string,
+      _llammaId: string,
       maxSlippage: string,
       userWalletBalances: UserWalletBalances,
     ) => {
@@ -126,7 +126,7 @@ const createLoanLiquidate = (set: StoreApi<State>['setState'], get: StoreApi<Sta
       void get()[sliceKey].fetchEstGasApproval(chainId, llamma, maxSlippage, updatedFormStatus)
       return resp
     },
-    fetchStepLiquidate: async (curve: LlamaApi, llamma: Llamma, liquidationAmt: string, maxSlippage: string) => {
+    fetchStepLiquidate: async (curve: LlamaApi, llamma: Llamma, _liquidationAmt: string, maxSlippage: string) => {
       const { provider, wallet } = useWallet.getState()
       if (!provider || !wallet) return setMissingProvider(get()[sliceKey])
 
@@ -164,7 +164,7 @@ const createLoanLiquidate = (set: StoreApi<State>['setState'], get: StoreApi<Sta
     setStateByKey: <T>(key: StateKey, value: T) => {
       get().setAppStateByKey(sliceKey, key, value)
     },
-    setStateByKeys: <T>(sliceState: Partial<SliceState>) => {
+    setStateByKeys: (sliceState: Partial<SliceState>) => {
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {
@@ -172,8 +172,6 @@ const createLoanLiquidate = (set: StoreApi<State>['setState'], get: StoreApi<Sta
     },
   },
 })
-
-export default createLoanLiquidate
 
 export function haveEnoughCrvusdForLiquidation(walletStablecoin: string, tokensToLiquidate: string) {
   return +(walletStablecoin ?? '0') >= +tokensToLiquidate * 1.0001

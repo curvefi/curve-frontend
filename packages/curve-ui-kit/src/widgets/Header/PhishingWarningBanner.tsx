@@ -1,25 +1,21 @@
-import { usePhishingBanner } from '@ui-kit/hooks/useFeatureFlags'
+
 import { useDismissBanner } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { Banner } from '@ui-kit/shared/ui/Banner'
+import { Duration } from '@ui-kit/themes/design/0_primitives'
 
 const URL = 'https://www.curve.finance'
-const ONE_MONTH_MS = 30 * 24 * 60 * 60 * 1000 // 30 days in milliseconds
 
 /**
  * Displays a banner warning users about phishing risks and encourages them to verify they are on the official Curve domains.
  * The banner will reappear after one month if dismissed.
  */
 export const PhishingWarningBanner = () => {
-  const shouldShowBanner = usePhishingBanner()
-  const { shouldShowBanner: isNotDismissed, dismissBanner } = useDismissBanner(
-    'phishing-warning-dismissed',
-    ONE_MONTH_MS,
-  )
+  const { shouldShowBanner, dismissBanner } = useDismissBanner('phishing-warning-dismissed', Duration.Banner.Monthly)
 
   return (
     shouldShowBanner &&
-    isNotDismissed && (
+    (
       <Banner
         subtitle={t`Always carefully check that your URL is ${URL}.`}
         severity="warning"

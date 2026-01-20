@@ -1,44 +1,36 @@
 import { useEffect, useState } from 'react'
-import CampaignRewardsBanner from '@/lend/components/CampaignRewardsBanner'
+import { CampaignRewardsBanner } from '@/lend/components/CampaignRewardsBanner'
 import { MarketInformationComp } from '@/lend/components/MarketInformationComp'
 import { MarketInformationTabs } from '@/lend/components/MarketInformationTabs'
-import Vault from '@/lend/components/PageVault/index'
+import { VaultTabs } from '@/lend/components/PageVault/VaultTabs'
 import { useOneWayMarket } from '@/lend/entities/chain'
 import { useLendPageTitle } from '@/lend/hooks/useLendPageTitle'
 import { useMarketDetails } from '@/lend/hooks/useMarketDetails'
 import { useSupplyPositionDetails } from '@/lend/hooks/useSupplyPositionDetails'
-import useTitleMapper from '@/lend/hooks/useTitleMapper'
+import { useTitleMapper } from '@/lend/hooks/useTitleMapper'
 import { helpers } from '@/lend/lib/apiLending'
-import useStore from '@/lend/store/useStore'
+import { useStore } from '@/lend/store/useStore'
 import { type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
-import {
-  getCollateralListPathname,
-  getLoanCreatePathname,
-  getLoanManagePathname,
-  parseMarketParams,
-} from '@/lend/utils/utilsRouter'
+import { getCollateralListPathname, getLoanPathname, parseMarketParams } from '@/lend/utils/utilsRouter'
 import { MarketDetails } from '@/llamalend/features/market-details'
 import { NoPosition, SupplyPositionDetails } from '@/llamalend/features/market-position-details'
 import { useLoanExists } from '@/llamalend/queries/loan-exists'
-import { DetailPageStack } from '@/llamalend/widgets/DetailPageStack'
 import Stack from '@mui/material/Stack'
-import { AppPageFormsWrapper } from '@ui/AppPage'
-import Box from '@ui/Box'
-import { ConnectWalletPrompt, isLoading, useCurve, useWallet } from '@ui-kit/features/connect-wallet'
+import { ConnectWalletPrompt, useCurve } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
 
 const { Spacing } = SizesAndSpaces
 
-const Page = () => {
+export const Page = () => {
   const params = useParams<MarketUrlParams>()
-  const { rMarket, rChainId, rFormType } = parseMarketParams(params)
-  const { connect, provider } = useWallet()
-  const { llamaApi: api = null, connectState } = useCurve()
+  const { rMarket, rChainId } = parseMarketParams(params)
+  const { llamaApi: api = null, provider } = useCurve()
   const titleMapper = useTitleMapper()
   const { data: market, isSuccess } = useOneWayMarket(rChainId, rMarket)
 
@@ -65,12 +57,13 @@ const Page = () => {
   })
   const marketDetails = useMarketDetails({
     chainId: rChainId,
-    llamma: market,
-    llammaId: rOwmId,
+    market: market,
+    marketId: rOwmId,
   })
 
   useEffect(() => {
     if (api && market && isPageVisible) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setLoaded(true)
       const timer = setTimeout(
         () =>
@@ -93,13 +86,12 @@ const Page = () => {
     market,
   ])
 
-  useLendPageTitle(market?.collateral_token?.symbol, 'Supply')
+  useLendPageTitle(market?.collateral_token?.symbol, t`Supply`)
 
   const pageProps: PageContentProps = {
     params,
     rChainId,
     rOwmId,
-    rFormType,
     isLoaded,
     api,
     market,
@@ -107,52 +99,33 @@ const Page = () => {
     titleMapper,
   }
 
-  const borrowPathnameFn = loanExists ? getLoanManagePathname : getLoanCreatePathname
-  const positionDetailsHrefs = {
-    borrow: borrowPathnameFn(params, rOwmId, ''),
-    supply: '',
-  }
+  const positionDetailsHrefs = { borrow: getLoanPathname(params, rOwmId), supply: '' }
   const hasSupplyPosition = (supplyPositionDetails.shares.value ?? 0) > 0
 
   return isSuccess && !market ? (
     <ErrorPage title="404" subtitle={t`Market Not Found`} continueUrl={getCollateralListPathname(params)} />
   ) : provider ? (
-    <>
-      <DetailPageStack>
-        <AppPageFormsWrapper>{rChainId && rOwmId && <Vault {...pageProps} params={params} />}</AppPageFormsWrapper>
-        <Stack flexDirection="column" flexGrow={1} sx={{ gap: Spacing.md }}>
-          <CampaignRewardsBanner
-            chainId={rChainId}
-            borrowAddress={market?.addresses?.controller || ''}
-            supplyAddress={market?.addresses?.vault || ''}
-          />
-          <MarketInformationTabs currentTab="supply" hrefs={positionDetailsHrefs}>
-            {hasSupplyPosition ? (
-              <SupplyPositionDetails {...supplyPositionDetails} />
-            ) : (
-              <Stack padding={Spacing.md} sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
-                <NoPosition type="supply" />
-              </Stack>
-            )}
-          </MarketInformationTabs>
-          <Stack>
-            <MarketDetails {...marketDetails} />
-            <MarketInformationComp pageProps={pageProps} userActiveKey={''} type="supply" />
-          </Stack>
-        </Stack>
-      </DetailPageStack>
-    </>
-  ) : (
-    <Box display="flex" fillWidth flexJustifyContent="center" margin="var(--spacing-3) 0">
-      <ConnectWalletPrompt
-        description={t`Connect your wallet to view market`}
-        connectText={t`Connect`}
-        loadingText={t`Connecting`}
-        connectWallet={() => connect()}
-        isLoading={isLoading(connectState)}
+    <DetailPageLayout formTabs={rChainId && rOwmId && <VaultTabs {...pageProps} params={params} />}>
+      <CampaignRewardsBanner
+        chainId={rChainId}
+        borrowAddress={market?.addresses?.controller || ''}
+        supplyAddress={market?.addresses?.vault || ''}
       />
-    </Box>
+      <MarketInformationTabs currentTab="supply" hrefs={positionDetailsHrefs}>
+        {hasSupplyPosition ? (
+          <SupplyPositionDetails {...supplyPositionDetails} />
+        ) : (
+          <Stack padding={Spacing.md} sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
+            <NoPosition type="supply" />
+          </Stack>
+        )}
+      </MarketInformationTabs>
+      <Stack>
+        <MarketDetails {...marketDetails} />
+        <MarketInformationComp loanExists={loanExists} pageProps={pageProps} userActiveKey={''} type="supply" />
+      </Stack>
+    </DetailPageLayout>
+  ) : (
+    <ConnectWalletPrompt description={t`Connect your wallet to view market`} />
   )
 }
-
-export default Page

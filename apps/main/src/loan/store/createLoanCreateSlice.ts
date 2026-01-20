@@ -2,20 +2,22 @@ import lodash from 'lodash'
 import type { StoreApi } from 'zustand'
 import { updateUserEventsApi } from '@/llamalend/llama.utils'
 import { refetchLoanExists } from '@/llamalend/queries/loan-exists'
-import type {
-  FormDetailInfoLeverage,
-  FormStatus,
-  FormValues,
-  MaxRecvLeverage,
-} from '@/loan/components/PageLoanCreate/types'
 import {
+  type CreateFormStatus,
+  type FormDetailInfo,
+  type FormDetailInfoLeverage,
+  type FormEstGas,
+  type FormValues,
+  type MaxRecvLeverage,
+} from '@/loan/components/PageMintMarket/types'
+import {
+  DEFAULT_CREATE_FORM_STATUS,
+  DEFAULT_DETAIL_INFO,
   DEFAULT_DETAIL_INFO_LEVERAGE,
-  DEFAULT_FORM_STATUS,
+  DEFAULT_FORM_EST_GAS,
   DEFAULT_FORM_VALUES,
-} from '@/loan/components/PageLoanCreate/utils'
-import type { FormDetailInfo, FormEstGas } from '@/loan/components/PageLoanManage/types'
-import { DEFAULT_DETAIL_INFO, DEFAULT_FORM_EST_GAS } from '@/loan/components/PageLoanManage/utils'
-import networks from '@/loan/networks'
+} from '@/loan/components/PageMintMarket/utils'
+import { networks } from '@/loan/networks'
 import type { LiqRange, LiqRangesMapper } from '@/loan/store/types'
 import type { State } from '@/loan/store/useStore'
 import { ChainId, LlamaApi, Llamma } from '@/loan/types/loan.types'
@@ -33,7 +35,7 @@ type SliceState = {
   detailInfo: { [activeKey: string]: FormDetailInfo }
   detailInfoLeverage: { [activeKey: string]: FormDetailInfoLeverage }
   formEstGas: { [activeKey: string]: FormEstGas }
-  formStatus: FormStatus
+  formStatus: CreateFormStatus
   formValues: FormValues
   liqRanges: { [activeKey: string]: LiqRange[] }
   liqRangesMapper: { [activeKey: string]: LiqRangesMapper }
@@ -122,7 +124,7 @@ const DEFAULT_STATE: SliceState = {
   detailInfo: {},
   detailInfoLeverage: {},
   formEstGas: {},
-  formStatus: DEFAULT_FORM_STATUS,
+  formStatus: DEFAULT_CREATE_FORM_STATUS,
   formValues: DEFAULT_FORM_VALUES,
   liqRanges: {},
   liqRangesMapper: {},
@@ -131,7 +133,7 @@ const DEFAULT_STATE: SliceState = {
   isEditLiqRange: false,
 }
 
-const createLoanCreate = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
+export const createLoanCreate = (_set: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 
@@ -476,7 +478,7 @@ const createLoanCreate = (set: StoreApi<State>['setState'], get: StoreApi<State>
     setStateByKey: <T>(key: StateKey, value: T) => {
       get().setAppStateByKey(sliceKey, key, value)
     },
-    setStateByKeys: <T>(sliceState: Partial<SliceState>) => {
+    setStateByKeys: (sliceState: Partial<SliceState>) => {
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {
@@ -497,5 +499,3 @@ export function getCreateLoanActiveKey(
     activeKeyLiqRange,
   }
 }
-
-export default createLoanCreate

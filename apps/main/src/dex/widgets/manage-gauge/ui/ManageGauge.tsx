@@ -1,17 +1,16 @@
 import { useMemo, useState } from 'react'
 import { isAddressEqual, type Address } from 'viem'
+import { useConnection } from 'wagmi'
 import { useGaugeManager, useGaugeRewardsDistributors } from '@/dex/entities/gauge'
-import { useSignerAddress } from '@/dex/entities/signer'
-import AddRewardToken from '@/dex/features/add-gauge-reward-token'
-import DepositReward from '@/dex/features/deposit-gauge-reward'
+import { AddRewardToken } from '@/dex/features/add-gauge-reward-token'
+import { DepositReward } from '@/dex/features/deposit-gauge-reward'
 import { ChainId } from '@/dex/types/main.types'
-import Stack from '@mui/material/Stack'
-import { AppFormContentWrapper } from '@ui/AppForm'
 import { t } from '@ui-kit/lib/i18n'
-import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
+import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
+import { FormContent } from '@ui-kit/widgets/DetailPageLayout/FormContent'
 
-const ManageGauge = ({ poolId, chainId }: { poolId: string; chainId: ChainId }) => {
-  const { data: signerAddress } = useSignerAddress()
+export const ManageGauge = ({ poolId, chainId }: { poolId: string; chainId: ChainId }) => {
+  const { address: signerAddress } = useConnection()
   const { data: gaugeManager } = useGaugeManager({ chainId, poolId })
   const { data: rewardDistributors } = useGaugeRewardsDistributors({ chainId, poolId })
 
@@ -42,15 +41,11 @@ const ManageGauge = ({ poolId, chainId }: { poolId: string; chainId: ChainId }) 
   const [tab, setTab] = useState<Tab>(isGaugeManager ? 'add_reward' : 'deposit_reward')
 
   return (
-    <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
-      <TabsSwitcher variant="underlined" size="small" value={tab} onChange={setTab} options={tabs} fullWidth />
-
-      <AppFormContentWrapper>
-        {tab === 'add_reward' && <AddRewardToken chainId={chainId} poolId={poolId} />}
-        {tab === 'deposit_reward' && <DepositReward chainId={chainId} poolId={poolId} />}
-      </AppFormContentWrapper>
-    </Stack>
+    <FormContent
+      header={<TabsSwitcher variant="underlined" value={tab} onChange={setTab} options={tabs} overflow="fullWidth" />}
+    >
+      {tab === 'add_reward' && <AddRewardToken chainId={chainId} poolId={poolId} />}
+      {tab === 'deposit_reward' && <DepositReward chainId={chainId} poolId={poolId} />}
+    </FormContent>
   )
 }
-
-export default ManageGauge

@@ -1,8 +1,8 @@
 import lodash from 'lodash'
 import { useMemo, useCallback } from 'react'
 import { styled } from 'styled-components'
-import SwitchTokensButton from '@/dex/components/PageCreatePool/components/SwitchTokensButton'
-import WarningBox from '@/dex/components/PageCreatePool/components/WarningBox'
+import { SwitchTokensButton } from '@/dex/components/PageCreatePool/components/SwitchTokensButton'
+import { WarningBox } from '@/dex/components/PageCreatePool/components/WarningBox'
 import {
   STABLESWAP,
   CRYPTOSWAP,
@@ -17,17 +17,21 @@ import {
   FXSWAP,
   NG_ASSET_TYPE,
 } from '@/dex/components/PageCreatePool/constants'
-import SelectToken from '@/dex/components/PageCreatePool/TokensInPool/SelectToken'
-import SetOracle from '@/dex/components/PageCreatePool/TokensInPool/SetOracle'
+import { SelectToken } from '@/dex/components/PageCreatePool/TokensInPool/SelectToken'
+import { SetOracle } from '@/dex/components/PageCreatePool/TokensInPool/SetOracle'
 import { CreateToken, TokenId, TokensInPoolState } from '@/dex/components/PageCreatePool/types'
 import { checkMetaPool, containsOracle, getBasepoolCoins } from '@/dex/components/PageCreatePool/utils'
 import { useNetworkByChain } from '@/dex/entities/networks'
-import useTokensMapper from '@/dex/hooks/useTokensMapper'
-import { DEFAULT_CREATE_POOL_STATE, DEFAULT_ERC4626_STATUS } from '@/dex/store/createCreatePoolSlice'
-import useStore from '@/dex/store/useStore'
+import { useTokensMapper } from '@/dex/hooks/useTokensMapper'
+import {
+  DEFAULT_CREATE_POOL_STATE,
+  DEFAULT_ERC4626_STATUS,
+  DEFAULT_ORACLE_STATUS,
+} from '@/dex/store/createCreatePoolSlice'
+import { useStore } from '@/dex/store/useStore'
 import { CurveApi, ChainId, BasePool } from '@/dex/types/main.types'
-import Box from '@ui/Box'
-import Button from '@ui/Button'
+import { Box } from '@ui/Box'
+import { Button } from '@ui/Button'
 import { t } from '@ui-kit/lib/i18n'
 
 type Props = {
@@ -38,7 +42,7 @@ type Props = {
 
 const DEFAULT_POOLS: BasePool[] = []
 
-const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
+export const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
   const userAddedTokens = useStore((state) => state.createPool.userAddedTokens)
   const poolPresetIndex = useStore((state) => state.createPool.poolPresetIndex)
   const resetPoolPresetIndex = useStore((state) => state.createPool.resetPoolPresetIndex)
@@ -50,7 +54,6 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
   const updateSwapType = useStore((state) => state.createPool.updateSwapType)
   const updateNgAssetType = useStore((state) => state.createPool.updateNgAssetType)
   const basePools = useStore((state) => state.pools.basePools[chainId]) ?? DEFAULT_POOLS
-  const userBalances = useStore((state) => state.userBalances.userBalancesMapper)
   const { tokensMapper } = useTokensMapper(chainId)
   const nativeToken = curve.getNetworkConstants().NATIVE_TOKEN
   const {
@@ -70,7 +73,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
       basePool: basePools.some((pool) => pool.token.toLowerCase() === token[0].toLowerCase()),
     }))
 
-    if (haveSigner && Object.keys(userBalances).length > 0 && Object.keys(tokensArray || {}).length > 0) {
+    if (haveSigner && Object.keys(tokensArray || {}).length > 0) {
       const volumeSortedTokensArray = tokensArray
         .filter((token) => token.symbol !== '' && token.address !== '')
         .sort((a, b) => Number(b.volume) - Number(a.volume))
@@ -83,7 +86,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
       .sort((a, b) => Number(b.volume) - Number(a.volume))
 
     return lodash.uniqBy([...userAddedTokens, ...balanceSortedTokensArray], (o) => o.address)
-  }, [tokensMapper, haveSigner, userBalances, userAddedTokens, basePools])
+  }, [tokensMapper, haveSigner, userAddedTokens, basePools])
 
   const findSymbol = useCallback(
     (address: string) => {
@@ -548,8 +551,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
         address: tokenId === token ? '' : tokensInPoolState[token].address,
         symbol: tokenId === token ? '' : tokensInPoolState[token].symbol,
         ngAssetType: tokenId === token ? NG_ASSET_TYPE.STANDARD : tokensInPoolState[token].ngAssetType,
-        oracleAddress: tokenId === token ? '' : tokensInPoolState[token].oracleAddress,
-        oracleFunction: tokenId === token ? '' : tokensInPoolState[token].oracleFunction,
+        oracle: tokenId === token ? { ...DEFAULT_ORACLE_STATUS } : tokensInPoolState[token].oracle,
         erc4626: tokenId === token ? { ...DEFAULT_ERC4626_STATUS } : tokensInPoolState[token].erc4626,
       })
 
@@ -569,7 +571,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
   )
 
   // check if the tokens are withing 0.95 and 1.05 threshold
-  const checkThreshold = useMemo(() => {
+  const checkStableswapThreshold = useMemo(() => {
     // Array of token IDs you want to check
     const tokenIds: TokenId[] = [TOKEN_A, TOKEN_B, TOKEN_C, TOKEN_D, TOKEN_E, TOKEN_F, TOKEN_G, TOKEN_H]
 
@@ -577,6 +579,17 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
     const validTokens = tokenIds.filter(
       (tokenId) => tokensInPool[tokenId].address !== '' && initialPrice[tokenId] !== 0,
     )
+
+    // Skip threshold check for tokens with special asset types (they have their own rate mechanisms)
+    const hasSpecialAssetType = tokenIds.some((tokenId) => {
+      const assetType = tokensInPool[tokenId].ngAssetType
+      return (
+        assetType === NG_ASSET_TYPE.ERC4626 ||
+        assetType === NG_ASSET_TYPE.ORACLE ||
+        assetType === NG_ASSET_TYPE.REBASING
+      )
+    })
+    if (hasSpecialAssetType) return false
 
     if (validTokens.length <= 1) {
       // Not enough tokens for comparison
@@ -760,7 +773,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
       {!chainId && <WarningBox message={t`Please connect a wallet to select tokens`} />}
       {swapType === STABLESWAP ? (
         <>
-          {checkThreshold && twocryptoFactory && (
+          {checkStableswapThreshold && twocryptoFactory && (
             <>
               <WarningBox
                 message={t`Tokens appear to be unpegged (above 5% deviation from 1:1).
@@ -866,5 +879,3 @@ const SwitchWrapper = styled(Box)`
     margin-top: var(--spacing-4);
   }
 `
-
-export default TokensInPool

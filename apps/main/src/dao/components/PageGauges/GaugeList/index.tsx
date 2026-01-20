@@ -1,21 +1,21 @@
 import { useEffect, useCallback, Key, Fragment } from 'react'
 import { styled } from 'styled-components'
-import ErrorMessage from '@/dao/components/ErrorMessage'
-import GaugeListItem from '@/dao/components/PageGauges/GaugeListItem'
-import SmallScreenCard from '@/dao/components/PageGauges/GaugeListItem/SmallScreenCard'
-import PaginatedTable from '@/dao/components/PaginatedTable'
-import useStore from '@/dao/store/useStore'
+import { ErrorMessage } from '@/dao/components/ErrorMessage'
+import { GaugeListItem } from '@/dao/components/PageGauges/GaugeListItem'
+import { SmallScreenCard } from '@/dao/components/PageGauges/GaugeListItem/SmallScreenCard'
+import { PaginatedTable } from '@/dao/components/PaginatedTable'
+import { refetchGauges, useGauges } from '@/dao/queries/gauges.query'
+import { useStore } from '@/dao/store/useStore'
 import { GaugeFormattedData, SortByFilterGaugesKeys } from '@/dao/types/dao.types'
-import SearchInput from '@ui/SearchInput'
-import SelectSortingMethod from '@ui/Select/SelectSortingMethod'
-import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import { SearchInput } from '@ui/SearchInput'
+import { SelectSortingMethod } from '@ui/Select/SelectSortingMethod'
+import { SpinnerWrapper, Spinner } from '@ui/Spinner'
 import { t } from '@ui-kit/lib/i18n'
 import { GAUGE_VOTES_TABLE_LABELS, GAUGE_VOTES_SORTING_METHODS } from '../constants'
 
-const GaugesList = () => {
-  const getGauges = useStore((state) => state.gauges.getGauges)
+export const GaugesList = () => {
+  const { data: gauges, isSuccess: gaugesIsSuccess, isLoading: gaugesIsLoading, isError: gaugesIsError } = useGauges({})
   const setGauges = useStore((state) => state.gauges.setGauges)
-  const gaugesLoading = useStore((state) => state.gauges.gaugesLoading)
   const gaugeListSortBy = useStore((state) => state.gauges.gaugeListSortBy)
   const setGaugeListSortBy = useStore((state) => state.gauges.setGaugeListSortBy)
   const setSearchValue = useStore((state) => state.gauges.setSearchValue)
@@ -25,15 +25,11 @@ const GaugesList = () => {
   const gridTemplateColumns = '17.5rem 1fr 1fr 1fr 0.2fr'
   const smallScreenBreakpoint = 42.3125
 
-  const isLoading = gaugesLoading === 'LOADING'
-  const isSuccess = gaugesLoading === 'SUCCESS'
-  const isError = gaugesLoading === 'ERROR'
-
   useEffect(() => {
-    if (isSuccess) {
+    if (gaugesIsSuccess) {
       setGauges(searchValue)
     }
-  }, [isSuccess, searchValue, setGauges, gaugeListSortBy])
+  }, [searchValue, setGauges, gaugeListSortBy, gaugesIsSuccess])
 
   const handleSortChange = useCallback(
     (key: Key | null) => {
@@ -72,29 +68,29 @@ const GaugesList = () => {
             {t`Showing results (${filteredGauges.length}) for`} &quot;<strong>{searchValue}</strong>&quot;:
           </SearchMessage>
         )}
-        {gaugesLoading === 'LOADING' && (
+        {gaugesIsLoading && (
           <StyledSpinnerWrapper vSpacing={5}>
             <Spinner size={24} />
           </StyledSpinnerWrapper>
         )}
-        {gaugesLoading === 'ERROR' && (
+        {gaugesIsError && (
           <ErrorMessageWrapper>
-            <ErrorMessage message={t`Error fetching gauges`} onClick={() => getGauges(true)} />
+            <ErrorMessage message={t`Error fetching gauges`} onClick={() => refetchGauges({})} />
           </ErrorMessageWrapper>
         )}
-        {gaugesLoading === 'SUCCESS' && (
+        {gauges && (
           <PaginatedTable<GaugeFormattedData>
             data={filteredGauges}
             minWidth={tableMinWidth}
-            isLoading={isLoading}
-            isError={isError}
-            isSuccess={isSuccess}
+            isLoading={gaugesIsLoading}
+            isError={gaugesIsError}
+            isSuccess={gaugesIsSuccess}
             columns={GAUGE_VOTES_TABLE_LABELS}
             sortBy={gaugeListSortBy}
             errorMessage={t`An error occurred while fetching gauges.`}
             noDataMessage={t`No gauges found`}
             setSortBy={handleSortChange}
-            getData={() => getGauges(true)}
+            getData={() => refetchGauges({})}
             renderRow={(gauge, index) => (
               <Fragment key={index}>
                 <GaugeListItemWrapper>
@@ -202,5 +198,3 @@ const StyledSelectFilter = styled(SelectSortingMethod)<{ smallScreenBreakpoint: 
     margin: auto 0;
   }
 `
-
-export default GaugesList

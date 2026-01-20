@@ -2,7 +2,7 @@ import { BrowserProvider } from 'ethers'
 import type { ReactNode } from 'react'
 import type { HealthColorKey } from '@/llamalend/llamalend.types'
 import { TITLE } from '@/loan/constants'
-import curvejsApi from '@/loan/lib/apiCrvusd'
+import { crvusdjsApi as curvejsApi } from '@/loan/lib/apiCrvusd'
 import type { INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
 import type { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import type { TooltipProps } from '@ui/Tooltip/types'
@@ -16,13 +16,12 @@ export type ChainId = 1 // note lend also has other chains, but we only use eth 
 export type NetworkEnum = Extract<INetworkName, 'ethereum'>
 
 export type NetworkUrlParams = { network: NetworkEnum }
-export type CollateralUrlParams = NetworkUrlParams & { collateralId: string; formType: RFormType }
+export type CollateralUrlParams = NetworkUrlParams & { collateralId: string }
 export type UrlParams = NetworkUrlParams & Partial<CollateralUrlParams>
 
 export type AlertType = 'info' | 'warning' | 'error' | 'danger'
 
 export type Provider = BrowserProvider
-export type RFormType = 'loan' | 'deleverage' | 'collateral' | 'leverage' | ''
 
 export interface NetworkConfig extends BaseConfig<NetworkEnum, ChainId> {
   api: typeof curvejsApi

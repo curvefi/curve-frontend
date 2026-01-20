@@ -1,21 +1,21 @@
 import { useEffect, useMemo, useRef } from 'react'
 import { styled } from 'styled-components'
-import DeployGaugeButton from '@/dex/components/PageDeployGauge/components/DeployGaugeButton'
-import DeployMainnet from '@/dex/components/PageDeployGauge/DeployMainnet'
-import DeploySidechain from '@/dex/components/PageDeployGauge/DeploySidechain'
-import ProcessSummary from '@/dex/components/PageDeployGauge/ProcessSummary'
+import { DeployGaugeButton } from '@/dex/components/PageDeployGauge/components/DeployGaugeButton'
+import { DeployMainnet } from '@/dex/components/PageDeployGauge/DeployMainnet'
+import { DeploySidechain } from '@/dex/components/PageDeployGauge/DeploySidechain'
+import { ProcessSummary } from '@/dex/components/PageDeployGauge/ProcessSummary'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { useChainId } from '@/dex/hooks/useChainId'
-import useStore from '@/dex/store/useStore'
+import { useStore } from '@/dex/store/useStore'
 import { type NetworkUrlParams } from '@/dex/types/main.types'
 import { useButton } from '@react-aria/button'
 import { useOverlayTriggerState } from '@react-stately/overlays'
-import Box, { BoxHeader } from '@ui/Box'
-import ModalDialog from '@ui/Dialog/ModalDialog'
-import Icon from '@ui/Icon/Icon'
-import IconButton from '@ui/IconButton'
-import Spinner, { SpinnerWrapper } from '@ui/Spinner'
-import Switch from '@ui/Switch/Switch'
+import { BoxHeader, Box } from '@ui/Box'
+import { ModalDialog } from '@ui/Dialog/ModalDialog'
+import { Icon } from '@ui/Icon/Icon'
+import { IconButton } from '@ui/IconButton'
+import { SpinnerWrapper, Spinner } from '@ui/Spinner'
+import { Switch } from '@ui/Switch/Switch'
 import { isLoading, useCurve } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 
@@ -247,5 +247,3 @@ const NetworkNotSupportedMessage = styled.p`
   max-width: 17.5rem;
   text-align: center;
 `
-
-export default DeployGauge

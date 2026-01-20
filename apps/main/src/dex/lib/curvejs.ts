@@ -1,6 +1,5 @@
 import lodash from 'lodash'
 import memoizee from 'memoizee'
-import type { FormType as LockFormType } from '@/dex/components/PageCrvLocker/types'
 import type { FormValues as PoolSwapFormValues } from '@/dex/components/PagePool/Swap/types'
 import type { ExchangeRate, FormValues, Route, SearchedParams } from '@/dex/components/PageRouterSwap/types'
 import { httpFetcher } from '@/dex/lib/utils'
@@ -17,7 +16,6 @@ import {
   RewardCrv,
   RewardOther,
   RewardsApy,
-  UserBalancesMapper,
 } from '@/dex/types/main.types'
 import { fulfilledValue, getErrorMessage, isValidAddress } from '@/dex/utils'
 import {
@@ -35,16 +33,13 @@ import {
   routerGetToStoredRate,
 } from '@/dex/utils/utilsSwap'
 import type { IProfit } from '@curvefi/api/lib/interfaces'
-import type { DateValue } from '@internationalized/date'
-import PromisePool from '@supercharge/promise-pool/dist'
 import { BN } from '@ui/utils'
-import dayjs from '@ui-kit/lib/dayjs'
 import { waitForTransaction, waitForTransactions } from '@ui-kit/lib/ethers'
 import { t } from '@ui-kit/lib/i18n'
 import { log } from '@ui-kit/lib/logging'
 import { fetchNetworks } from '../entities/networks'
 
-const { chunk, flatten, isUndefined } = lodash
+const { isUndefined } = lodash
 
 const helpers = { waitForTransaction, waitForTransactions }
 
@@ -99,8 +94,8 @@ const network = {
         }
       }
       return failedFetching24hOldVprice
-    } catch (error) {
-      console.warn(`Unable to fetch failedFetching24hOldVprice from ${url}`)
+    } catch (e) {
+      console.warn(`Unable to fetch failedFetching24hOldVprice from ${url}`, e.message)
       return failedFetching24hOldVprice
     }
   },
@@ -398,7 +393,6 @@ const router = {
     log('swap', fromAddress, fromAmount, toAddress, slippageTolerance)
     const resp = { activeKey, hash: '', swappedAmount: '', error: '' }
     try {
-      // @ts-ignore
       const contractTransaction = await curve.router.swap(fromAddress, toAddress, fromAmount, +slippageTolerance)
       if (contractTransaction) {
         await helpers.waitForTransaction(contractTransaction.hash, provider)
@@ -1224,26 +1218,6 @@ const wallet = {
     }
     return fetchedUserClaimable
   },
-  poolWalletBalances: async (curve: CurveApi, poolId: string) => {
-    log('poolUserPoolBalances', curve?.signerAddress, poolId)
-    const p = curve.getPool(poolId)
-    const [wrappedCoinBalances, underlyingBalances, lpTokenBalances] = await Promise.all([
-      p.wallet.wrappedCoinBalances(),
-      p.wallet.underlyingCoinBalances(),
-      p.wallet.lpTokenBalances(),
-    ])
-    const balances: { [tokenAddress: string]: string } = {}
-
-    Object.entries({
-      ...wrappedCoinBalances,
-      ...underlyingBalances,
-      ...lpTokenBalances,
-    }).forEach(([address, balance]) => {
-      balances[address] = new BN(balance as string).toString()
-    })
-
-    return balances
-  },
   userClaimableFees: async (curve: CurveApi, activeKey: string, walletAddress: string) => {
     log('userClaimableFees', activeKey, walletAddress)
     const resp = { activeKey, '3CRV': '', crvUSD: '', error: '' }
@@ -1307,8 +1281,7 @@ const wallet = {
 
     if (isValidAddress(p.gauge.address) && !p.rewardsOnly()) {
       const fetchedCurrentCrvApy = await p.userCrvApy(walletAddress)
-      // @ts-ignore
-      if (fetchedCurrentCrvApy !== 'NaN') {
+      if (String(fetchedCurrentCrvApy) !== 'NaN') {
         userCrvApy = fetchedCurrentCrvApy
       }
     }
@@ -1368,42 +1341,6 @@ const wallet = {
     log('userPoolShare', p.name)
     return p.userShare()
   },
-  fetchUserBalances: async (curve: CurveApi, tokenAddresses: string[]) => {
-    const { chainId } = curve
-    log('fetchWalletTokensBalances', chainId, tokenAddresses.length)
-
-    const results: UserBalancesMapper = {}
-    const errors: string[][] = []
-    const chunks = chunk(tokenAddresses, 20)
-    await PromisePool.for(chunks)
-      .withConcurrency(10)
-      .handleError((_, chunk) => {
-        errors.push(chunk)
-      })
-      .process(async (addresses) => {
-        const balances = (await curve.getBalances(addresses)) as string[]
-        for (const idx in balances) {
-          const balance = balances[idx]
-          const tokenAddress = addresses[idx]
-          results[tokenAddress] = balance
-        }
-      })
-
-    const fattenErrors = flatten(errors)
-
-    if (fattenErrors.length) {
-      await PromisePool.for(fattenErrors)
-        .handleError((error, tokenAddress) => {
-          console.error(`Unable to get user balance for ${tokenAddress}`, error)
-          results[tokenAddress] = 'NaN'
-        })
-        .process(async (tokenAddress) => {
-          const [balance] = (await curve.getBalances([tokenAddress])) as string[]
-          results[tokenAddress] = balance
-        })
-    }
-    return results
-  },
 }
 
 const lockCrv = {
@@ -1436,110 +1373,6 @@ const lockCrv = {
     } catch (error) {
       console.error(error)
       resp.error = getErrorMessage(error, 'error-get-locked-crv-info')
-      return resp
-    }
-  },
-  calcUnlockTime: (curve: CurveApi, formType: LockFormType, currTime: number | null, days: number | null) => {
-    log('calcUnlockTime', formType, currTime, days)
-    let unlockTime = 0
-    if (formType === 'adjust_date' && currTime && days) {
-      unlockTime = curve.boosting.calcUnlockTime(days, currTime)
-    } else if (formType === 'create' && days) {
-      unlockTime = curve.boosting.calcUnlockTime(days)
-    }
-    return dayjs.utc(unlockTime)
-  },
-  createLock: async (
-    activeKey: string,
-    curve: CurveApi,
-    provider: Provider,
-    lockedAmount: string,
-    utcDate: DateValue,
-    days: number,
-  ) => {
-    log('createLock', lockedAmount, utcDate.toString(), days)
-    const resp = { activeKey, hash: '', error: '' }
-    try {
-      resp.hash = await curve.boosting.createLock(lockedAmount, days)
-      await helpers.waitForTransaction(resp.hash, provider)
-      return resp
-    } catch (error) {
-      console.error(error)
-      resp.error = getErrorMessage(error, 'error-step-create-locked-crv')
-      return resp
-    }
-  },
-  estGasApproval: async (
-    activeKey: string,
-    curve: CurveApi,
-    formType: LockFormType,
-    lockedAmount: string,
-    days: number | null,
-  ) => {
-    log('lockCrvEstGasApproval', formType, lockedAmount, days)
-    const resp = { activeKey, isApproved: false, estimatedGas: null as EstimatedGas, error: '' }
-
-    try {
-      resp.isApproved =
-        formType === 'adjust_crv' || formType === 'create' ? await curve.boosting.isApproved(lockedAmount) : true
-
-      if (resp.isApproved) {
-        if (formType === 'create' && days) {
-          resp.estimatedGas = await curve.boosting.estimateGas.createLock(lockedAmount, days)
-        } else if (formType === 'adjust_crv') {
-          resp.estimatedGas = await curve.boosting.estimateGas.increaseAmount(lockedAmount)
-        } else if (formType === 'adjust_date' && days) {
-          resp.estimatedGas = await curve.boosting.estimateGas.increaseUnlockTime(days)
-        }
-      } else {
-        resp.estimatedGas =
-          formType === 'create' || formType === 'adjust_crv'
-            ? await curve.boosting.estimateGas.approve(lockedAmount)
-            : 0
-      }
-      return resp
-    } catch (error) {
-      console.error(error)
-      resp.error = getErrorMessage(error, 'error-est-gas-approval')
-      return resp
-    }
-  },
-  lockCrvApprove: async (activeKey: string, provider: Provider, curve: CurveApi, lockedAmount: string) => {
-    log('userLockCrvApprove', lockedAmount)
-    const resp = { activeKey, hashes: [] as string[], error: '' }
-    try {
-      resp.hashes = await curve.boosting.approve(lockedAmount)
-      await helpers.waitForTransactions(resp.hashes, provider)
-      return resp
-    } catch (error) {
-      console.error(error)
-      resp.error = getErrorMessage(error, 'error-step-approve')
-      return resp
-    }
-  },
-  increaseAmount: async (activeKey: string, curve: CurveApi, provider: Provider, lockedAmount: string) => {
-    log('increaseAmount', lockedAmount)
-    const resp = { activeKey, hash: '', error: '' }
-    try {
-      resp.hash = await curve.boosting.increaseAmount(lockedAmount)
-      await helpers.waitForTransaction(resp.hash, provider)
-      return resp
-    } catch (error) {
-      console.error(error)
-      resp.error = getErrorMessage(error, 'error-step-locked-crv')
-      return resp
-    }
-  },
-  increaseUnlockTime: async (activeKey: string, provider: Provider, curve: CurveApi, days: number) => {
-    log('increaseUnlockTime', days)
-    const resp = { activeKey, hash: '', error: '' }
-    try {
-      resp.hash = await curve.boosting.increaseUnlockTime(days)
-      await helpers.waitForTransaction(resp.hash, provider)
-      return resp
-    } catch (error) {
-      console.error(error)
-      resp.error = getErrorMessage(error, 'error-step-locked-time')
       return resp
     }
   },
@@ -1581,7 +1414,7 @@ async function warnIncorrectEstGas(chainId: ChainId, estimatedGas: EstimatedGas)
   }
 }
 
-const curvejsApi = {
+export const curvejsApi = {
   helpers,
   network,
   router,
@@ -1592,5 +1425,3 @@ const curvejsApi = {
   wallet,
   lockCrv,
 }
-
-export default curvejsApi

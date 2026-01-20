@@ -28,7 +28,8 @@ import {
   UserMarketBalances,
 } from '@/lend/types/lend.types'
 import { OneWayMarketTemplate } from '@/lend/types/lend.types'
-import { fulfilledValue, getErrorMessage, log } from '@/lend/utils/helpers'
+import { fulfilledValue, log } from '@/lend/utils/helpers'
+import { getErrorMessage } from '@/llamalend/helpers'
 import { getIsUserCloseToLiquidation, getLiquidationStatus, reverseBands, sortBandsLend } from '@/llamalend/llama.utils'
 import PromisePool from '@supercharge/promise-pool'
 import type { StepStatus } from '@ui/Stepper/types'
@@ -1105,7 +1106,7 @@ const loanRepay = {
 }
 
 const loanSelfLiquidation = {
-  detailInfo: async (api: Api, market: OneWayMarketTemplate, slippage: string) => {
+  detailInfo: async (market: OneWayMarketTemplate, slippage: string) => {
     log('detailInfo', slippage)
     const resp: { tokensToLiquidate: string; futureRates: FutureRates | null; error: string } = {
       tokensToLiquidate: '',
@@ -1728,7 +1729,7 @@ const vaultClaim = {
   },
 }
 
-const apiLending = {
+export const apiLending = {
   helpers,
 
   user,
@@ -1749,8 +1750,6 @@ const apiLending = {
   vaultUnstake,
   vaultClaim,
 }
-
-export default apiLending
 
 export async function fetchChartBandBalancesData(
   { bandsBalances, bandsBalancesArr }: { bandsBalances: BandsBalances; bandsBalancesArr: BandsBalancesArr },

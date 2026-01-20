@@ -1,5 +1,5 @@
 import { useConnection } from 'wagmi'
-import { LlamaMarketColumnId } from '@/llamalend/features/market-list/columns.enum'
+import { LlamaMarketColumnId } from '@/llamalend/features/market-list/columns'
 import { calculateLtv } from '@/llamalend/llama.utils'
 import { useUserLendingVaultEarnings, useUserLendingVaultStats } from '@/llamalend/queries/market-list/lending-vaults'
 import { type LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
@@ -82,6 +82,10 @@ export function useUserMarketStats(market: LlamaMarket, column?: LlamaMarketColu
           symbol: market?.assets?.collateral?.symbol,
           usdRate: collateralUsdRate,
         },
+        /**
+         * This is also collateral, namely when the user gets soft liq and
+         * part of the collateral gets converted into the borrow token.
+         */
         borrowToken: {
           amount: borrowedAmount,
           address: market?.assets?.borrowed?.address,

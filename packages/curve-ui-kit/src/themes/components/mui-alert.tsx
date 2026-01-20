@@ -33,6 +33,7 @@ export const defineMuiAlert = (
         paddingBlockEnd: Spacing.xs,
       }),
       '& .MuiAlert-message': {
+        flexGrow: 1,
         ...handleBreakpoints({
           paddingInlineEnd: Spacing.sm,
           paddingBlockStart: Spacing.sm,
@@ -82,10 +83,7 @@ export const defineMuiAlert = (
   },
 })
 
-export const defineMuiAlertTitle = (
-  {}: DesignSystem,
-  { bodySBold }: TypographyVariantsOptions,
-): Components['MuiAlertTitle'] => ({
+export const defineMuiAlertTitle = ({ bodySBold }: TypographyVariantsOptions): Components['MuiAlertTitle'] => ({
   styleOverrides: {
     root: handleBreakpoints({
       ...bodySBold,

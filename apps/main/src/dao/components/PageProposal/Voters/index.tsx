@@ -1,11 +1,11 @@
 import { Chain } from 'curve-ui-kit/src/utils/network'
 import { styled } from 'styled-components'
 import { useProposalPricesApiQuery } from '@/dao/entities/proposal-prices-api'
-import networks from '@/dao/networks'
+import { networks } from '@/dao/networks'
 import { getEthPath } from '@/dao/utils'
 import type { ProposalType } from '@curvefi/prices-api/proposal/models'
-import Box from '@ui/Box'
-import Icon from '@ui/Icon'
+import { Box } from '@ui/Box'
+import { Icon } from '@ui/Icon'
 import { ExternalLink, InternalLink } from '@ui/Link'
 import { formatNumber, scanTxPath } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
@@ -19,7 +19,7 @@ type Props = {
   className?: string
 }
 
-const Voters = ({ totalVotes, voteId, proposalType, className }: Props) => {
+export const Voters = ({ totalVotes, voteId, proposalType, className }: Props) => {
   const { data: pricesProposal, isSuccess: pricesProposalSuccess } = useProposalPricesApiQuery({
     proposalId: +voteId,
     proposalType: proposalType,
@@ -154,5 +154,3 @@ const AgainstIcon = styled(Icon)`
   color: var(--chart-red);
   margin-right: var(--spacing-1);
 `
-
-export default Voters

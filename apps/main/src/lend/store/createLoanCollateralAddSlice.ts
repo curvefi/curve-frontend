@@ -1,12 +1,12 @@
 import lodash from 'lodash'
 import { StoreApi } from 'zustand'
-import type { FormStatus, FormValues } from '@/lend/components/PageLoanManage/LoanCollateralAdd/types'
-import type { FormDetailInfo, FormEstGas } from '@/lend/components/PageLoanManage/types'
-import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@/lend/components/PageLoanManage/utils'
+import type { FormStatus, FormValues } from '@/lend/components/PageLendMarket/LoanCollateralAdd/types'
+import type { FormDetailInfo, FormEstGas } from '@/lend/components/PageLendMarket/types'
+import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@/lend/components/PageLendMarket/utils'
 import { invalidateMarketDetails } from '@/lend/entities/market-details'
 import { invalidateAllUserBorrowDetails } from '@/lend/entities/user-loan-details'
-import apiLending, { helpers } from '@/lend/lib/apiLending'
-import networks from '@/lend/networks'
+import { helpers, apiLending } from '@/lend/lib/apiLending'
+import { networks } from '@/lend/networks'
 import type { State } from '@/lend/store/useStore'
 import { Api, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { _parseActiveKey } from '@/lend/utils/helpers'
@@ -68,7 +68,7 @@ const DEFAULT_STATE: SliceState = {
 const { loanCollateralAdd } = apiLending
 const { isTooMuch } = helpers
 
-const createLoanCollateralAdd = (
+export const createLoanCollateralAdd = (
   _: StoreApi<State>['setState'],
   get: StoreApi<State>['getState'],
 ): LoanCollateralAddSlice => ({
@@ -188,7 +188,7 @@ const createLoanCollateralAdd = (
           const loanExists = await refetchLoanExists({
             chainId,
             marketId: market.id,
-            userAddress: wallet?.account?.address,
+            userAddress: wallet?.address,
           })
           if (loanExists) {
             void user.fetchAll(api, market, true)
@@ -215,7 +215,7 @@ const createLoanCollateralAdd = (
     setStateByKey: <T>(key: StateKey, value: T) => {
       get().setAppStateByKey(sliceKey, key, value)
     },
-    setStateByKeys: <T>(sliceState: Partial<SliceState>) => {
+    setStateByKeys: (sliceState: Partial<SliceState>) => {
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {
@@ -223,8 +223,6 @@ const createLoanCollateralAdd = (
     },
   },
 })
-
-export default createLoanCollateralAdd
 
 export function _getActiveKey(api: Api | null, market: OneWayMarketTemplate | undefined, collateral: string) {
   return `${_parseActiveKey(api, market)}-${collateral}`

@@ -1,14 +1,14 @@
 import { useMemo } from 'react'
 import { useConnection } from 'wagmi'
-import { useMarketOnChainRates } from '@/lend/entities/market-details'
 import { useUserLoanDetails } from '@/lend/entities/user-loan-details'
-import networks from '@/lend/networks'
-import useStore from '@/lend/store/useStore'
+import { networks } from '@/lend/networks'
+import { useStore } from '@/lend/store/useStore'
 import { ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import type { BorrowPositionDetailsProps } from '@/llamalend/features/market-position-details'
 import { calculateRangeToLiquidation } from '@/llamalend/features/market-position-details/utils'
 import { calculateLtv } from '@/llamalend/llama.utils'
 import { useLoanExists } from '@/llamalend/queries/loan-exists'
+import { useMarketRates } from '@/llamalend/queries/market-rates'
 import { useUserPnl } from '@/llamalend/queries/user-pnl.query'
 import type { Address, Chain } from '@curvefi/prices-api'
 import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
@@ -34,11 +34,19 @@ export const useBorrowPositionDetails = ({
 }: UseBorrowPositionDetailsProps): BorrowPositionDetailsProps => {
   const { controller } = market?.addresses ?? {}
   const { address: userAddress } = useConnection()
-  const { data: userLoanDetails, isLoading: isUserLoanDetailsLoading } = useUserLoanDetails({
+  const { data: loanExists } = useLoanExists({
     chainId,
     marketId,
     userAddress,
   })
+  const { data: userLoanDetails, isLoading: isUserLoanDetailsLoading } = useUserLoanDetails(
+    {
+      chainId,
+      marketId,
+      userAddress,
+    },
+    !!loanExists,
+  )
   const {
     bands,
     health,
@@ -49,11 +57,6 @@ export const useBorrowPositionDetails = ({
     state: { collateral, borrowed, debt } = {},
   } = userLoanDetails ?? {}
   const prices = useStore((state) => state.markets.pricesMapper[chainId]?.[marketId])
-  const { data: loanExists } = useLoanExists({
-    chainId,
-    marketId,
-    userAddress,
-  })
   const { data: userPnl, isLoading: isUserPnlLoading } = useUserPnl({
     chainId,
     marketId,
@@ -63,9 +66,9 @@ export const useBorrowPositionDetails = ({
   })
   const blockchainId = networks[chainId].id as Chain
   const { data: campaigns } = useCampaignsByAddress({ blockchainId, address: controller as Address })
-  const { data: onChainRatesData, isLoading: isOnchainRatesLoading } = useMarketOnChainRates({
-    chainId,
-    marketId,
+  const { data: marketRates, isLoading: isMarketRatesLoading } = useMarketRates({
+    chainId: chainId,
+    marketId: marketId,
   })
   const { data: collateralUsdRate, isLoading: collateralUsdRateLoading } = useTokenUsdRate({
     chainId,
@@ -91,7 +94,7 @@ export const useBorrowPositionDetails = ({
     [lendSnapshots],
   )
 
-  const borrowApy = onChainRatesData?.rates?.borrowApy ?? null
+  const borrowApr = marketRates?.borrowApr == null ? null : Number(marketRates.borrowApr)
   const collateralTotalValue = useMemo(() => {
     if (!collateralUsdRate || !collateral || !borrowed) return null
     return Number(collateral) * Number(collateralUsdRate) + Number(borrowed)
@@ -108,16 +111,16 @@ export const useBorrowPositionDetails = ({
       value: health ? Number(health) : null,
       loading: !market || isUserLoanDetailsLoading,
     },
-    borrowAPY: {
-      rate: borrowApy == null ? null : Number(borrowApy),
+    borrowRate: {
+      rate: borrowApr,
       averageRate: averageRate,
       averageRateLabel: averageMultiplierString,
       rebasingYield: rebasingYield ?? null,
       averageRebasingYield: averageRebasingYield ?? null,
-      totalBorrowRate: borrowApy == null ? null : Number(borrowApy) - (rebasingYield ?? 0),
-      totalAverageBorrowRate: averageRate == null ? null : averageRate - (averageRebasingYield ?? 0),
+      totalBorrowRate: borrowApr ? borrowApr - (rebasingYield ?? 0) : null,
+      totalAverageBorrowRate: averageRate ? averageRate - (averageRebasingYield ?? 0) : null,
       extraRewards: campaigns,
-      loading: !market || isOnchainRatesLoading || isLendSnapshotsLoading || !market?.addresses.controller,
+      loading: !market || isLendSnapshotsLoading || isMarketRatesLoading || !market?.addresses.controller,
     },
     liquidationRange: {
       value: liquidationPrices ? liquidationPrices.map(Number) : null,

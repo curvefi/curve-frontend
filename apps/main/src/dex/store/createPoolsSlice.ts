@@ -3,7 +3,7 @@ import type { UTCTimestamp } from 'lightweight-charts'
 import lodash from 'lodash'
 import { zeroAddress } from 'viem'
 import type { StoreApi } from 'zustand'
-import curvejsApi from '@/dex/lib/curvejs'
+import { curvejsApi } from '@/dex/lib/curvejs'
 import type { State } from '@/dex/store/useStore'
 import {
   BasePool,
@@ -43,6 +43,7 @@ import { convertToLocaleTimestamp } from '@ui-kit/features/candle-chart/utils'
 import { requireLib } from '@ui-kit/features/connect-wallet'
 import { log } from '@ui-kit/lib/logging'
 import { fetchTokenUsdRate, getTokenUsdRateQueryData } from '@ui-kit/lib/model/entities/token-usd-rate'
+import { TIME_FRAMES } from '@ui-kit/lib/model/time'
 import { fetchNetworks } from '../entities/networks'
 import { getPools } from '../lib/pools'
 
@@ -161,7 +162,7 @@ const DEFAULT_STATE: SliceState = {
   error: '',
 } as const
 
-const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): PoolsSlice => ({
+export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): PoolsSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 
@@ -219,7 +220,6 @@ const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>
       const {
         pools,
         storeCache,
-        userBalances,
         tokens,
         [sliceKey]: { poolsMapper: storedPoolsMapper },
       } = get()
@@ -277,11 +277,7 @@ const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>
               pools.fetchPoolsVolume(chainId, partialPoolDatas),
             ]))
 
-        const partialTokens = await tokens.setTokensMapper(curve, partialPoolDatas)
-
-        if (curve.signerAddress) {
-          void userBalances.fetchUserBalancesByTokens(curve, partialTokens)
-        }
+        await tokens.setTokensMapper(curve, partialPoolDatas)
 
         return { poolsMapper, poolDatas: partialPoolDatas }
       } catch (error) {
@@ -524,7 +520,7 @@ const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>
     fetchPricesPoolSnapshots: async (chainId: ChainId, poolAddress: string) => {
       const networks = await fetchNetworks()
       if (networks[chainId].pricesApi) {
-        const startTime = Math.floor((Date.now() - 24 * 60 * 60 * 1000) / 1000)
+        const startTime = Math.floor((Date.now() - TIME_FRAMES.DAY_MS) / 1000)
         const endTime = Math.floor(Date.now() / 1000)
         const network = networks[chainId].id.toLowerCase()
 
@@ -847,7 +843,7 @@ const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>
     setStateByKey: <T>(key: StateKey, value: T) => {
       get().setAppStateByKey(sliceKey, key, value)
     },
-    setStateByKeys: <T>(sliceState: Partial<SliceState>) => {
+    setStateByKeys: (sliceState: Partial<SliceState>) => {
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {
@@ -862,9 +858,6 @@ const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>
     },
   },
 })
-
-export default createPoolsSlice
-
 // check for duplicate token name
 export function updateHaveSameTokenNames(tokensMapper: TokensMapper) {
   const grouped = groupBy(tokensMapper, (v) => v!.symbol)

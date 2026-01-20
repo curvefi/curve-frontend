@@ -1,6 +1,16 @@
 import { styled } from 'styled-components'
 import { isAddress } from 'viem'
-import { NG_ASSET_TYPE } from '@/dex/components/PageCreatePool/constants'
+import {
+  NG_ASSET_TYPE,
+  TOKEN_A,
+  TOKEN_B,
+  TOKEN_C,
+  TOKEN_D,
+  TOKEN_E,
+  TOKEN_F,
+  TOKEN_G,
+  TOKEN_H,
+} from '@/dex/components/PageCreatePool/constants'
 import {
   CategoryDataRow,
   SummaryDataTitle,
@@ -11,9 +21,9 @@ import {
 } from '@/dex/components/PageCreatePool/Summary/styles'
 import type { TokenState } from '@/dex/components/PageCreatePool/types'
 import { useNetworkByChain } from '@/dex/entities/networks'
-import useStore from '@/dex/store/useStore'
+import { useStore } from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
-import Icon from '@ui/Icon'
+import { Icon } from '@ui/Icon'
 import { scanAddressPath } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { shortenAddress } from '@ui-kit/utils'
@@ -28,42 +38,25 @@ type OracleTokenSummaryProps = {
   title: string
 }
 
-const OracleSummary = ({ chainId }: Props) => {
-  const tokenA = useStore((state) => state.createPool.tokensInPool.tokenA)
-  const tokenB = useStore((state) => state.createPool.tokensInPool.tokenB)
-  const tokenC = useStore((state) => state.createPool.tokensInPool.tokenC)
-  const tokenD = useStore((state) => state.createPool.tokensInPool.tokenD)
-  const tokenE = useStore((state) => state.createPool.tokensInPool.tokenE)
-  const tokenF = useStore((state) => state.createPool.tokensInPool.tokenF)
-  const tokenG = useStore((state) => state.createPool.tokensInPool.tokenG)
-  const tokenH = useStore((state) => state.createPool.tokensInPool.tokenH)
+export const OracleSummary = ({ chainId }: Props) => {
+  const tokens = useStore((state) => state.createPool.tokensInPool)
+
+  const oracleTokens = [
+    { token: tokens.tokenA, title: t`Token A`, tokenId: TOKEN_A },
+    { token: tokens.tokenB, title: t`Token B`, tokenId: TOKEN_B },
+    { token: tokens.tokenC, title: t`Token C`, tokenId: TOKEN_C },
+    { token: tokens.tokenD, title: t`Token D`, tokenId: TOKEN_D },
+    { token: tokens.tokenE, title: t`Token E`, tokenId: TOKEN_E },
+    { token: tokens.tokenF, title: t`Token F`, tokenId: TOKEN_F },
+    { token: tokens.tokenG, title: t`Token G`, tokenId: TOKEN_G },
+    { token: tokens.tokenH, title: t`Token H`, tokenId: TOKEN_H },
+  ].filter(({ token }) => token.ngAssetType === NG_ASSET_TYPE.ORACLE && token.address !== '')
 
   return (
     <OraclesWrapper>
-      {tokenA.ngAssetType === NG_ASSET_TYPE.ORACLE && tokenA.address !== '' && (
-        <OracleTokenSummary chainId={chainId} token={tokenA} title={t`Token A`} />
-      )}
-      {tokenB.ngAssetType === NG_ASSET_TYPE.ORACLE && tokenB.address !== '' && (
-        <OracleTokenSummary chainId={chainId} token={tokenB} title={t`Token B`} />
-      )}
-      {tokenC.ngAssetType === NG_ASSET_TYPE.ORACLE && tokenC.address !== '' && (
-        <OracleTokenSummary chainId={chainId} token={tokenC} title={t`Token C`} />
-      )}
-      {tokenD.ngAssetType === NG_ASSET_TYPE.ORACLE && tokenD.address !== '' && (
-        <OracleTokenSummary chainId={chainId} token={tokenD} title={t`Token D`} />
-      )}
-      {tokenD.ngAssetType === NG_ASSET_TYPE.ORACLE && tokenE.address !== '' && (
-        <OracleTokenSummary chainId={chainId} token={tokenE} title={t`Token E`} />
-      )}
-      {tokenD.ngAssetType === NG_ASSET_TYPE.ORACLE && tokenF.address !== '' && (
-        <OracleTokenSummary chainId={chainId} token={tokenF} title={t`Token F`} />
-      )}
-      {tokenD.ngAssetType === NG_ASSET_TYPE.ORACLE && tokenG.address !== '' && (
-        <OracleTokenSummary chainId={chainId} token={tokenG} title={t`Token G`} />
-      )}
-      {tokenD.ngAssetType === NG_ASSET_TYPE.ORACLE && tokenH.address !== '' && (
-        <OracleTokenSummary chainId={chainId} token={tokenH} title={t`Token H`} />
-      )}
+      {oracleTokens.map(({ token, title, tokenId }) => (
+        <OracleTokenSummary key={tokenId} chainId={chainId} token={token} title={title} />
+      ))}
     </OraclesWrapper>
   )
 }
@@ -77,12 +70,12 @@ const OracleTokenSummary = ({ chainId, token, title }: OracleTokenSummaryProps) 
       </CategoryDataRow>
       <CategoryDataRow>
         <SummaryDataTitle>{t`Address:`}</SummaryDataTitle>
-        {token.oracleAddress === '' ? (
+        {token.oracle.address === '' ? (
           <SummaryDataPlaceholder>{t`No address set`}</SummaryDataPlaceholder>
-        ) : isAddress(token.oracleAddress) ? (
+        ) : isAddress(token.oracle.address) ? (
           <SummaryData>
-            <AddressLink href={scanAddressPath(network, token.oracleAddress)}>
-              {shortenAddress(token.oracleAddress)}
+            <AddressLink href={scanAddressPath(network, token.oracle.address)}>
+              {shortenAddress(token.oracle.address)}
               <Icon name={'Launch'} size={16} aria-label={t`Link to address`} />
             </AddressLink>
           </SummaryData>
@@ -92,10 +85,10 @@ const OracleTokenSummary = ({ chainId, token, title }: OracleTokenSummaryProps) 
       </CategoryDataRow>
       <CategoryDataRow>
         <SummaryDataTitle>{t`Function:`}</SummaryDataTitle>
-        {token.oracleFunction === '' ? (
+        {token.oracle.functionName === '' ? (
           <SummaryDataPlaceholder>{t`No function set`}</SummaryDataPlaceholder>
         ) : (
-          <SummaryData>{token.oracleFunction}</SummaryData>
+          <SummaryData>{token.oracle.functionName}</SummaryData>
         )}
       </CategoryDataRow>
     </OracleTokenWrapper>
@@ -112,5 +105,3 @@ const OracleTokenWrapper = styled.div`
     margin-bottom: 0;
   }
 `
-
-export default OracleSummary

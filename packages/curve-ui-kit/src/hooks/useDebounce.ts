@@ -9,7 +9,7 @@ import { Duration } from '@ui-kit/themes/design/0_primitives'
  * @param onChange - Optional callback function that is called immediately when the value changes
  * @returns A tuple containing the debounced function and a cancel function
  */
-export function useDebounced<T extends any[]>(
+export function useDebounced<T extends unknown[]>(
   callback: (...value: T) => void,
   debounceMs: number,
   onChange?: (...value: T) => void,
@@ -66,6 +66,7 @@ export function useDebounced<T extends any[]>(
  */
 export function useDebounce<T>(initialValue: T, debounceMs: number, callback: (value: T) => void) {
   const [value, setValue] = useState<T>(initialValue)
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => setValue(initialValue), [initialValue])
   return [value, ...useDebounced(callback, debounceMs, setValue)] as const
 }
@@ -108,7 +109,7 @@ export function useUniqueDebounce<T>({
   equals,
 }: {
   defaultValue: T
-  callback: (value: T) => void
+  callback: ((value: T) => void) | undefined
   debounceMs?: number
   equals?: (a: T, b: T) => boolean
 }) {
@@ -132,7 +133,7 @@ export function useUniqueDebounce<T>({
       const isEqual = equals ? equals(value, lastValue.current) : value === lastValue.current
       if (!isEqual) {
         lastValue.current = value
-        callback(value)
+        callback?.(value)
       }
     },
     [callback, equals],

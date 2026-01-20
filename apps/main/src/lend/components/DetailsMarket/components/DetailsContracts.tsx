@@ -1,21 +1,23 @@
 import { ReactNode } from 'react'
 import { zeroAddress } from 'viem'
-import ChipInactive from '@/lend/components/ChipInactive'
-import DetailInfoAddressLookup from '@/lend/components/DetailsMarket/components/DetailInfoAddressLookup'
-import TokenLabel from '@/lend/components/TokenLabel'
+import { StyledInactiveChip as ChipInactive } from '@/lend/components/ChipInactive'
+import { TokenLabel } from '@/lend/components/TokenLabel'
+import { networks } from '@/lend/networks'
 import { PageContentProps } from '@/lend/types/lend.types'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import Box from '@ui/Box'
-import Chip from '@ui/Typography/Chip'
+import { Box } from '@ui/Box'
+import { Chip } from '@ui/Typography/Chip'
 import { t } from '@ui-kit/lib/i18n'
+import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
+import { AddressActionInfo } from '@ui-kit/shared/ui/AddressActionInfo'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 
 type ContractItems = { label: ReactNode; address: string | undefined; invalidText?: string }[]
 
-const DetailsContracts = ({ rChainId, market }: Pick<PageContentProps, 'rChainId' | 'market'>) => {
+export const DetailsContracts = ({ rChainId, market }: Pick<PageContentProps, 'rChainId' | 'market'>) => {
   const { addresses, borrowed_token, collateral_token } = market ?? {}
 
   // prettier-ignore
@@ -52,11 +54,13 @@ const DetailsContracts = ({ rChainId, market }: Pick<PageContentProps, 'rChainId
                   <Chip isBold size="sm">{t`Gauge`}</Chip>
                   <ChipInactive>{invalidText}</ChipInactive>
                 </Box>
+              ) : address === 'NaN' ? (
+                <ActionInfo label={label} value={t`No gauge`} />
               ) : (
-                <DetailInfoAddressLookup
+                <AddressActionInfo
+                  network={networks[rChainId]}
                   key={key}
                   isBorderBottom={idx !== contracts.length - 1 && !contracts[idx + 1]?.invalidText}
-                  chainId={rChainId}
                   title={label}
                   address={address}
                 />
@@ -68,5 +72,3 @@ const DetailsContracts = ({ rChainId, market }: Pick<PageContentProps, 'rChainId
     </Stack>
   )
 }
-
-export default DetailsContracts

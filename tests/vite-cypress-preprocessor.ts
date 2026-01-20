@@ -54,7 +54,7 @@ export const vitePreprocessor = () => async (file: Cypress.FileObject) => {
     },
   }
 
-  const watcher = await build(viteConfig as any)
+  const watcher = await build(viteConfig as Record<string, unknown>)
 
   if (shouldWatch && 'on' in watcher) {
     watcher.on('event', (event: { code: string }) => {

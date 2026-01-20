@@ -1,4 +1,4 @@
-import curvejsApi from '@/dao/lib/curvejs'
+import { curvejsApi } from '@/dao/lib/curvejs'
 import { ChainId, NetworkConfig, NetworkEnum } from '@/dao/types/dao.types'
 import { getBaseNetworksConfig, NETWORK_BASE_CONFIG } from '@ui/utils'
 
@@ -21,5 +21,3 @@ export const { networks, networksIdMapper } = Object.entries(NETWORK_BASE_CONFIG
     networksIdMapper: {} as Record<NetworkEnum, ChainId>,
   },
 )
-
-export default networks

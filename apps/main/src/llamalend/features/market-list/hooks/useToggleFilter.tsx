@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
-import type { LlamaMarketColumnId } from '@/llamalend/features/market-list/columns.enum'
 import type { FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import type { LlamaMarketColumnId } from '../columns'
 
 /** Hook for managing a single boolean filter */
 export function useToggleFilter(

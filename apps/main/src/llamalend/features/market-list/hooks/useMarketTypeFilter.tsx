@@ -2,7 +2,7 @@ import { useCallback, useMemo } from 'react'
 import { type FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { parseListFilter, serializeListFilter } from '@ui-kit/shared/ui/DataTable/filters'
 import { LlamaMarketType } from '@ui-kit/types/market'
-import { LlamaMarketColumnId } from '../columns.enum'
+import { LlamaMarketColumnId } from '../columns'
 
 /**
  * Hook for managing market type filter (Mint/Lend) in the Llama Markets table.

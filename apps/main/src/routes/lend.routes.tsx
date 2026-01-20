@@ -1,17 +1,11 @@
-import '@/global-extensions'
-import PageIntegrations from '@/lend/components/PageIntegrations/Page'
-import PageLoanCreate from '@/lend/components/PageLoanCreate/Page'
-import PageLoanManage from '@/lend/components/PageLoanManage/Page'
-import PageVault from '@/lend/components/PageVault/Page'
-import Skeleton from '@mui/material/Skeleton'
+import { LendMarketPage } from '@/lend/components/PageLendMarket/LendMarketPage'
+import { Page as PageVault } from '@/lend/components/PageVault/Page'
+import { LendLayout } from '@/lend/LendLayout'
+import type { MarketUrlParams } from '@/lend/types/lend.types'
 import { createRoute } from '@tanstack/react-router'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { LegalPage } from '@ui-kit/widgets/Legal'
-import { LendLayout } from '../lend/LendLayout'
 import { rootRoute } from './root.routes'
+import { createSharedRoutes } from './shared.routes'
 import { redirectTo } from './util'
-
-const { MinHeight } = SizesAndSpaces
 
 const lendLayoutRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -22,88 +16,40 @@ const lendLayoutRoute = createRoute({
 const layoutProps = { getParentRoute: () => lendLayoutRoute }
 
 export const lendRoutes = lendLayoutRoute.addChildren([
-  createRoute({
-    path: '/',
-    component: () => <Skeleton width="100%" height={MinHeight.pageContent} />,
-    head: () => ({
-      meta: [{ title: 'Lend - Curve' }],
-    }),
-    ...layoutProps,
-  }),
+  ...createSharedRoutes('lend', layoutProps),
   createRoute({
     path: '$network',
-    loader: ({ params: { network } }) => redirectTo(`/lend/${network}/markets/`),
-    ...layoutProps,
-  }),
-  createRoute({
-    path: '$network/disclaimer',
-    loader: ({ params: { network } }) => redirectTo(`/lend/${network}/legal/?tab=disclaimers`),
-    ...layoutProps,
-  }),
-  createRoute({
-    path: '$network/legal',
-    component: () => <LegalPage currentApp="lend" />,
-    head: () => ({
-      meta: [{ title: 'Legal - Curve Lend' }],
-    }),
-    ...layoutProps,
-  }),
-  createRoute({
-    path: '$network/integrations',
-    component: PageIntegrations,
-    head: () => ({
-      meta: [{ title: 'Integrations - Curve Lend' }],
-    }),
+    loader: ({ params: { network } }) => redirectTo(`/lend/${network}/markets`),
     ...layoutProps,
   }),
   createRoute({
     path: '$network/markets',
-    loader: ({ params: { network } }) => redirectTo(`/llamalend/${network}/markets/`),
+    loader: ({ params: { network } }) => redirectTo(`/llamalend/${network}/markets`),
     ...layoutProps,
   }),
   createRoute({
     path: '$network/markets/$market',
-    loader: ({ params: { network, market } }) => redirectTo(`/lend/${network}/markets/${market}/manage/`),
-    ...layoutProps,
-  }),
-  createRoute({
-    path: '$network/markets/$market/create/$formType',
-    component: PageLoanCreate,
+    component: LendMarketPage,
     head: ({ params }) => ({
-      meta: [{ title: `Create - ${params.market} - Curve Llamalend` }],
+      meta: [{ title: `${params.market} - Curve Llamalend` }],
     }),
     ...layoutProps,
   }),
   createRoute({
-    path: '$network/markets/$market/create',
-    component: PageLoanCreate,
-    head: ({ params }) => ({
-      meta: [{ title: `Create - ${params.market} - Curve Llamalend` }],
-    }),
+    path: '$network/markets/$market/create/{-$formType}',
+    loader: ({ params: { network, market } }: { params: MarketUrlParams }) =>
+      redirectTo(`/lend/${network}/markets/${market}`),
     ...layoutProps,
   }),
   createRoute({
-    path: '$network/markets/$market/manage/$formType',
-    component: PageLoanManage,
-    head: ({ params }) => ({
-      meta: [{ title: `Manage - ${params.market} - Curve Llamalend` }],
-    }),
-    ...layoutProps,
-  }),
-  createRoute({
-    path: '$network/markets/$market/manage',
-    component: PageLoanManage,
-    head: ({ params }) => ({
-      meta: [{ title: `Manage - ${params.market} - Curve Llamalend` }],
-    }),
+    path: '$network/markets/$market/manage/{-$formType}',
+    loader: ({ params: { network, market } }: { params: MarketUrlParams }) =>
+      redirectTo(`/lend/${network}/markets/${market}`),
     ...layoutProps,
   }),
   createRoute({
     path: '$network/markets/$market/vault/$formType',
-    component: PageVault,
-    head: ({ params }) => ({
-      meta: [{ title: `Supply - ${params.market} - Curve Llamalend` }],
-    }),
+    loader: ({ params: { network, market } }) => redirectTo(`/lend/${network}/markets/${market}/vault`),
     ...layoutProps,
   }),
   createRoute({

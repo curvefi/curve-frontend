@@ -1,35 +1,18 @@
 import { styled } from 'styled-components'
-import { useConnection } from 'wagmi'
-import PoolCreation from '@/dex/components/PageCreatePool/index'
-import Box from '@ui/Box'
+import { CreatePool as PoolCreation } from '@/dex/components/PageCreatePool/index'
 import { breakpoints } from '@ui/utils/responsive'
-import { ConnectWalletPrompt, isLoading, useCurve, useWallet } from '@ui-kit/features/connect-wallet'
+import { ConnectWalletPrompt, useCurve } from '@ui-kit/features/connect-wallet'
 
 export const PageCreatePool = () => {
-  const { curveApi = null, connectState } = useCurve()
-  const { connect: connectWallet } = useWallet()
-  const { address } = useConnection()
-
-  if (address && curveApi) {
+  const { provider, curveApi = null } = useCurve()
+  if (provider && curveApi) {
     return (
       <Container data-testid="create-pool-page">
         <PoolCreation curve={curveApi} />
       </Container>
     )
   }
-  return (
-    <Box display="flex" fillWidth>
-      <ConnectWalletWrapper data-testid="create-pool-page">
-        <ConnectWalletPrompt
-          description="Connect wallet to access pool creation"
-          connectText="Connect Wallet"
-          loadingText="Connecting"
-          connectWallet={() => connectWallet()}
-          isLoading={isLoading(connectState)}
-        />
-      </ConnectWalletWrapper>
-    </Box>
-  )
+  return <ConnectWalletPrompt description="Connect wallet to access pool creation" testId="create-pool-page" />
 }
 
 const Container = styled.div`
@@ -44,12 +27,4 @@ const Container = styled.div`
   @media (min-width: ${breakpoints.lg}rem) {
     margin: 1.5rem;
   }
-`
-
-const ConnectWalletWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-content: center;
-  justify-content: center;
-  margin: var(--spacing-3) auto;
 `

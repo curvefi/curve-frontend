@@ -24,11 +24,11 @@ import type { ComboBoxStateOptions, ListState } from 'react-stately'
 import { useComboBoxState } from 'react-stately'
 import { styled } from 'styled-components'
 import type { Node } from '@react-types/shared'
-import Box from '@ui/Box'
-import Icon from '@ui/Icon'
-import IconButton from '@ui/IconButton'
-import InputProvider from '@ui/InputComp'
-import ShadowedBox from '@ui/ShadowedBox'
+import { Box } from '@ui/Box'
+import { Icon } from '@ui/Icon'
+import { IconButton } from '@ui/IconButton'
+import { InputProvider } from '@ui/InputComp'
+import { ShadowedBox } from '@ui/ShadowedBox'
 import { breakpoints } from '@ui/utils/responsive'
 
 const Popover = (props: AriaOverlayProps & { popoverRef: RefObject<HTMLDivElement | null>; children: ReactNode }) => {
@@ -55,7 +55,7 @@ const Popover = (props: AriaOverlayProps & { popoverRef: RefObject<HTMLDivElemen
   )
 }
 
-function Option<T extends {}>({ item, state }: AriaOptionProps & { state: ListState<T>; item: Node<T> }) {
+function Option<T extends object>({ item, state }: AriaOptionProps & { state: ListState<T>; item: Node<T> }) {
   const ref = useRef<HTMLLIElement>(null)
   const { optionProps, isFocused } = useOption({ key: item.key }, state, ref)
   const { focusProps } = useFocusRing()
@@ -67,7 +67,7 @@ function Option<T extends {}>({ item, state }: AriaOptionProps & { state: ListSt
   )
 }
 
-function ListBoxSection<T extends {}>({
+function ListBoxSection<T extends object>({
   section,
   state,
 }: AriaListBoxSectionProps & { state: ListState<T>; section: Node<T> }) {
@@ -84,7 +84,6 @@ function ListBoxSection<T extends {}>({
       <li {...itemProps}>
         {section.rendered && <StyledListSection {...headingProps}>{section.rendered}</StyledListSection>}
         <ul {...groupProps}>
-          {/* @ts-ignore */}
           {[...section.childNodes].map((node) => (
             <Option key={node.key} item={node} state={state} />
           ))}
@@ -94,7 +93,7 @@ function ListBoxSection<T extends {}>({
   )
 }
 
-function ListBox<T extends {}>(
+function ListBox<T extends object>(
   props: AriaListBoxOptions<T> & { listBoxRef: RefObject<HTMLUListElement | null>; state: ListState<T> },
 ) {
   const ref = useRef<HTMLUListElement>(null)
@@ -103,7 +102,6 @@ function ListBox<T extends {}>(
 
   return (
     <StyledList as="ul" {...listBoxProps} ref={listBoxRef}>
-      {/* @ts-ignore */}
       {[...state.collection].map((item) => (
         <ListBoxSection key={item.key} section={item} state={state} />
       ))}
@@ -112,17 +110,16 @@ function ListBox<T extends {}>(
 }
 
 function Button(props: AriaButtonProps & { buttonRef: RefObject<HTMLButtonElement | null>; style?: CSSProperties }) {
-  const ref = props.buttonRef
-  const { buttonProps } = useButton(props, ref)
-
+  const { buttonRef, children, style } = props
+  const { buttonProps } = useButton(props, buttonRef)
   return (
-    <StyledIconButton {...buttonProps} ref={ref} style={props.style ?? {}}>
-      {props.children}
+    <StyledIconButton {...buttonProps} ref={buttonRef} style={style}>
+      {children}
     </StyledIconButton>
   )
 }
 
-function ComboBoxAddress<T extends {}>(props: ComboBoxStateOptions<T>) {
+export function ComboBoxAddress<T extends object>(props: ComboBoxStateOptions<T>) {
   const buttonRef = useRef<HTMLButtonElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const listBoxRef = useRef<HTMLUListElement>(null)
@@ -232,5 +229,3 @@ const ComboBoxWrapper = styled.div`
     min-width: 492px;
   }
 `
-
-export default ComboBoxAddress

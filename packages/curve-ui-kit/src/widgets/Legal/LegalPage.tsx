@@ -5,7 +5,7 @@ import { Grid, Box } from '@mui/material'
 import Stack from '@mui/material/Stack'
 import { useSearchParams, useParams } from '@ui-kit/hooks/router'
 import type { AppName } from '@ui-kit/shared/routes'
-import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
+import { TabsSwitcher } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { pushSearchParams } from '@ui-kit/utils/urls'
 import { CrvUsd } from './components/disclaimer-tabs/CrvUsd'
@@ -28,6 +28,7 @@ export type LegalPageProps = {
 
 function useAfterHydration(result: string) {
   const [value, setValue] = useState<string>()
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => setValue(result), [result]) // only after hydration, otherwise test may click too fast
   return value
 }
@@ -81,7 +82,6 @@ export const LegalPage = ({ currentApp }: LegalPageProps) => {
         sx={{
           maxWidth: MaxWidth.disclaimer,
           width: '100%',
-          paddingInline: Spacing.md,
         }}
         data-testid={useAfterHydration('legal-page')}
       >
@@ -90,7 +90,7 @@ export const LegalPage = ({ currentApp }: LegalPageProps) => {
             <LastUpdated />
           </Grid>
           <Grid size={12}>
-            <TabsSwitcher variant="contained" value={tab} options={tabs} muiVariant="scrollable" />
+            <TabsSwitcher variant="contained" value={tab} options={tabs} testIdPrefix="legal-tab" />
           </Grid>
         </Grid>
 
@@ -105,7 +105,7 @@ export const LegalPage = ({ currentApp }: LegalPageProps) => {
                 variant="underlined"
                 value={disclaimerTab}
                 options={disclaimerTabs}
-                muiVariant="scrollable"
+                testIdPrefix="legal-disclaimer-tab"
               />
               {/* Box with bottom border for consistent underline of the TabsSwitcher */}
               <Box
@@ -118,17 +118,17 @@ export const LegalPage = ({ currentApp }: LegalPageProps) => {
               />
             </Stack>
             <TabPanel>
-              {disclaimerTab === 'dex' && <Dex />}
+              {disclaimerTab === 'dex' && <Dex currentApp={currentApp} network={network} />}
               {disclaimerTab === 'lend' && <LlamaLend currentApp={currentApp} network={network} />}
-              {disclaimerTab === 'crvusd' && <CrvUsd />}
-              {disclaimerTab === 'scrvusd' && <SCrvUsd />}
+              {disclaimerTab === 'crvusd' && <CrvUsd currentApp={currentApp} network={network} />}
+              {disclaimerTab === 'scrvusd' && <SCrvUsd currentApp={currentApp} network={network} />}
               <Footer />
             </TabPanel>
           </>
         ) : (
           <TabPanel>
             {tab === 'terms' && <Terms currentApp={currentApp} network={network} />}
-            {tab === 'privacy' && <Privacy currentApp={currentApp} network={network} />}
+            {tab === 'privacy' && <Privacy />}
           </TabPanel>
         )}
       </Stack>

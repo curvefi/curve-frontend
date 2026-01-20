@@ -1,24 +1,13 @@
 import { Chain } from 'curve-ui-kit/src/utils/network'
-import { ethers } from 'ethers'
-import { CDN_ROOT_URL, CURVE_CDN_URL } from './utilsConstants'
 
 const NETWORK_BASE_CONFIG_DEFAULT = {
-  blocknativeSupport: true,
   name: '',
   gasL2: false,
   gasPricesUnit: 'GWEI',
   gasPricesUrl: '',
   gasPricesDefault: 0,
-  integrations: {
-    listUrl: `${CURVE_CDN_URL}/curve-external-integrations/integrations-list.json`,
-    tagsUrl: `${CURVE_CDN_URL}/curve-external-integrations/integrations-tags.json`,
-  },
-  rewards: {
-    baseUrl: CDN_ROOT_URL,
-    campaignsUrl: `${CURVE_CDN_URL}/curve-external-reward@latest/campaign-list.json`,
-    tagsUrl: `${CURVE_CDN_URL}/curve-external-reward@latest/reward-tags.json`,
-  },
   orgUIPath: '',
+  isTestnet: false,
 }
 
 export const NETWORK_BASE_CONFIG = {
@@ -189,7 +178,7 @@ export type NetworkDef<TId extends string = string, TChainId extends number = nu
   symbol: string
   rpcUrl: string
   showInSelectNetwork: boolean
-  showRouterSwap: boolean
+  showRouterSwap?: boolean // only for dex
 }
 
 export type NetworkMapping<TId extends string = string, TChainId extends number = number> = Record<
@@ -199,23 +188,25 @@ export type NetworkMapping<TId extends string = string, TChainId extends number 
 
 export type BaseConfig<TId extends string = string, TChainId extends number = number> = NetworkDef<TId, TChainId> & {
   networkId: string
-  hex: string
-  blocknativeSupport: boolean
   gasL2: boolean
   gasPricesUnit: string
   gasPricesUrl: string
   gasPricesDefault: number
-  integrations: { listUrl: string; tagsUrl: string }
-  rewards: { baseUrl: string; campaignsUrl: string; tagsUrl: string }
   orgUIPath: string
 }
 
 export function getBaseNetworksConfig<TId extends string, ChainId extends number>(
   chainId: ChainId,
-  networkConfig: any,
-): BaseConfig<TId> {
-  const config = { ...NETWORK_BASE_CONFIG_DEFAULT, ...networkConfig }
-  const { name, explorerUrl, id, nativeCurrencySymbol, rpcUrl, isTestnet = false, ...rest } = config
+  networkConfig: {
+    nativeCurrencySymbol: string
+    explorerUrl: string
+    rpcUrl: string
+    id: TId
+    name?: string
+    isTestnet?: boolean
+  },
+): Omit<BaseConfig<TId>, 'showInSelectNetwork' | 'showRouterSwap'> {
+  const { name, id, nativeCurrencySymbol, ...rest } = { ...NETWORK_BASE_CONFIG_DEFAULT, ...networkConfig }
   return {
     ...rest,
     name: formatNetworkName(name || id),
@@ -223,10 +214,6 @@ export function getBaseNetworksConfig<TId extends string, ChainId extends number
     symbol: nativeCurrencySymbol,
     id, // TODO: remove id or networkId
     networkId: id,
-    hex: ethers.toQuantity(chainId),
-    rpcUrl,
-    isTestnet,
-    explorerUrl,
   }
 }
 
@@ -236,6 +223,9 @@ function formatNetworkName(id: string) {
   return formattedText.charAt(0).toUpperCase() + formattedText.slice(1)
 }
 
-export const scanAddressPath = ({ explorerUrl }: BaseConfig, hash: string) => `${explorerUrl}address/${hash}`
-export const scanTxPath = ({ explorerUrl }: BaseConfig, hash: string) => `${explorerUrl}tx/${hash}`
-export const scanTokenPath = ({ explorerUrl }: BaseConfig, hash: string) => `${explorerUrl}token/${hash}`
+// Config parameter is nullable because some networks may not be loaded (e.g., lite networks are unavailable in the DAO app)
+export const scanAddressPath = (config: BaseConfig | undefined, hash: string) =>
+  config && `${config.explorerUrl}address/${hash}`
+export const scanTxPath = (config: BaseConfig | undefined, hash: string) => config && `${config.explorerUrl}tx/${hash}`
+export const scanTokenPath = (config: BaseConfig | undefined, hash: string) =>
+  config && `${config.explorerUrl}token/${hash}`

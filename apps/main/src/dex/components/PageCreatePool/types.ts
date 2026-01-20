@@ -13,6 +13,7 @@ import {
   TOKEN_H,
 } from '@/dex/components/PageCreatePool/constants'
 import type { CreatePoolSlice } from '@/dex/store/createCreatePoolSlice'
+import type { Decimal } from '@ui-kit/utils'
 
 export type CreateToken = {
   address: string
@@ -25,19 +26,30 @@ export type CreateToken = {
   basePool?: boolean
 }
 
+export type OracleType = {
+  isLoading: boolean
+  error: ReadContractErrorType | null
+  isSuccess: boolean
+  address: string
+  functionName: string
+  rate: Decimal | undefined
+  decimals: number | undefined
+}
+
+export type Erc4626Type = {
+  isErc4626: boolean | undefined
+  isLoading: boolean
+  error: ReadContractErrorType | null
+  isSuccess: boolean
+}
+
 export type TokenState = {
   address: string
   symbol: string
   ngAssetType: NgAssetType
-  oracleAddress: string
-  oracleFunction: string
   basePool: boolean
-  erc4626: {
-    isErc4626: boolean | undefined
-    isLoading: boolean
-    error: ReadContractErrorType | null
-    isSuccess: boolean
-  }
+  erc4626: Erc4626Type
+  oracle: OracleType
 }
 
 export type TokensInPoolState = CreatePoolSlice['createPool']['tokensInPool']

@@ -1,57 +1,211 @@
-import { ComponentProps, useState } from 'react'
+import { useState } from 'react'
+import { objectKeys } from '@curvefi/prices-api/objects.util'
 import { Stack } from '@mui/material'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { TabsSwitcher, type TabOption } from '../../shared/ui/TabsSwitcher'
+import { SIZE_TO_ICON_SIZE } from '@ui-kit/shared/ui/Tabs/tabs-kebab'
+import { LlamaIcon } from '../../shared/icons/LlamaIcon'
+import { TabsSwitcher, type TabOption, type TabsSwitcherProps } from '../../shared/ui/Tabs/TabsSwitcher'
+import { TABS_SIZES_CLASSES } from '../components/tabs/mui-tabs'
 
-type Tab = `${number}`
-const tabs: TabOption<Tab>[] = [
-  { value: '1' as const, label: 'Tab One' },
-  { value: '2' as const, label: 'Tab Two' },
-  { value: '3' as const, label: 'Tab Three' },
-  { value: '4' as const, label: 'Tab Four' },
-  { value: '5' as const, label: 'Tab Five' },
-  { value: '6' as const, label: 'Tab Six' },
-  { value: '7' as const, label: 'Tab Seven' },
-  { value: '8' as const, label: 'Tab Eight' },
-]
+type TabValue = string
+const VARIANTS = ['contained', 'underlined', 'overlined'] as const
+const TABS_LABELS = ['Deposit', 'Withdraw', 'Staking', 'Unstaking'] as const
+const DEFAULT_TABS: TabOption<TabValue>[] = Array.from({ length: 8 }, (_, i) => ({
+  value: `${i}`,
+  label: TABS_LABELS[i % TABS_LABELS.length],
+}))
 
-const TabsSwitcherComponent = (props: ComponentProps<typeof TabsSwitcher> & { maxNbTabs?: number }) => {
-  const { maxNbTabs = 4, ...rest } = props
-  const [value, setValue] = useState<Tab>(tabs[0].value)
+const TAB_SIZE_KEYS = objectKeys(TABS_SIZES_CLASSES)
 
-  return <TabsSwitcher {...rest} options={tabs.slice(0, maxNbTabs)} value={value} onChange={setValue} />
+const getOptionsWithAdornments = (
+  count: number,
+  size: keyof typeof TABS_SIZES_CLASSES = 'medium',
+): TabOption<TabValue>[] => {
+  const iconSize = SIZE_TO_ICON_SIZE[size]
+
+  return DEFAULT_TABS.slice(0, count).map((tab, i) => ({
+    ...tab,
+    suffix: `${i + 1}`,
+    ...(size !== 'extraExtraLarge' && {
+      startAdornment: <LlamaIcon sx={{ width: iconSize, height: iconSize }} />,
+      endAdornment: <LlamaIcon sx={{ width: iconSize, height: iconSize }} />,
+    }),
+  }))
 }
 
-const meta: Meta<typeof TabsSwitcher> = {
+const getOptionsWithIconsOnly = (count: number, size: keyof typeof TABS_SIZES_CLASSES): TabOption<TabValue>[] => {
+  const iconSize = SIZE_TO_ICON_SIZE[size]
+
+  return DEFAULT_TABS.slice(0, count).map((tab) => ({
+    ...tab,
+    label: null,
+    startAdornment: <LlamaIcon sx={{ width: iconSize, height: iconSize }} />,
+  }))
+}
+
+const TabsSwitcherWrapper = ({
+  options,
+  ...props
+}: Omit<TabsSwitcherProps<TabValue>, 'value' | 'onChange' | 'options'> & {
+  options: TabOption<TabValue>[]
+}) => {
+  const [value, setValue] = useState<TabValue | undefined>(options[0]?.value)
+  return <TabsSwitcher {...props} options={options} value={value} onChange={setValue} />
+}
+
+/**
+ * META
+ */
+const meta: Meta<typeof TabsSwitcherWrapper> = {
   title: 'UI Kit/Primitives/Tabs',
-  component: TabsSwitcherComponent,
+  component: TabsSwitcherWrapper,
+  args: {
+    overflow: 'standard',
+  },
   argTypes: {
     variant: {
       control: 'select',
-      options: ['contained', 'underlined', 'overlined'],
-      description: 'The variant of the component',
+      options: VARIANTS,
     },
     size: {
       control: 'select',
-      options: ['small', 'medium', 'large'],
-      description: 'The size of the component',
+      options: TAB_SIZE_KEYS,
     },
-    muiVariant: {
+    orientation: {
       control: 'select',
-      options: ['standard', 'scrollable', 'fullWidth'],
-      description: 'The MUI variant of the component',
+      options: ['horizontal', 'vertical'],
     },
-  },
-  args: {
-    variant: 'contained',
-    size: 'small',
+    overflow: {
+      control: 'select',
+      options: ['standard', 'kebab', 'fullWidth'],
+    },
   },
 }
 
-type Story = StoryObj<typeof TabsSwitcher>
+export default meta
+type Story = StoryObj<typeof TabsSwitcherWrapper>
 
-export const Default: Story = {
-  render: (args) => <TabsSwitcherComponent {...args} />,
+export const Contained: Story = {
+  args: {
+    variant: 'contained',
+  },
+  render: (args) => (
+    <Stack gap={4}>
+      {TAB_SIZE_KEYS.map((size) => (
+        <TabsSwitcherWrapper key={size} {...args} size={size} options={getOptionsWithAdornments(4, size)} />
+      ))}
+    </Stack>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story: 'Contained tabs with adornments and suffix for each size',
+      },
+    },
+  },
+}
+
+export const Underlined: Story = {
+  args: {
+    variant: 'underlined',
+  },
+  render: (args) => (
+    <Stack gap={4}>
+      {TAB_SIZE_KEYS.map((size) => (
+        <TabsSwitcherWrapper key={size} {...args} size={size} options={getOptionsWithAdornments(4, size)} />
+      ))}
+    </Stack>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story: 'Underlined tabs with adornments and suffix for each size',
+      },
+    },
+  },
+}
+
+export const Overlined: Story = {
+  args: {
+    variant: 'overlined',
+  },
+  render: (args) => (
+    <Stack gap={4}>
+      {TAB_SIZE_KEYS.map((size) => (
+        <TabsSwitcherWrapper key={size} {...args} size={size} options={getOptionsWithAdornments(4, size)} />
+      ))}
+    </Stack>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story: 'Overlined tabs with adornments and suffix for each size',
+      },
+    },
+  },
+}
+
+export const VerticalContained: Story = {
+  args: {
+    variant: 'contained',
+    orientation: 'vertical',
+  },
+  render: (args) => (
+    <Stack gap={4} direction="row">
+      {TAB_SIZE_KEYS.map((size) => (
+        <TabsSwitcherWrapper key={size} {...args} size={size} options={getOptionsWithAdornments(4, size)} />
+      ))}
+    </Stack>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story: 'Vertical contained tabs with adornments and suffix for each size',
+      },
+    },
+  },
+}
+
+export const VerticalUnderlined: Story = {
+  args: {
+    variant: 'underlined',
+    orientation: 'vertical',
+  },
+  render: (args) => (
+    <Stack gap={4} direction="row">
+      {TAB_SIZE_KEYS.map((size) => (
+        <TabsSwitcherWrapper key={size} {...args} size={size} options={getOptionsWithAdornments(4, size)} />
+      ))}
+    </Stack>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story: 'Vertical underlined tabs with adornments and suffix for each size',
+      },
+    },
+  },
+}
+
+export const VerticalOverlined: Story = {
+  args: {
+    variant: 'overlined',
+    orientation: 'vertical',
+  },
+  render: (args) => (
+    <Stack gap={4} direction="row">
+      {TAB_SIZE_KEYS.map((size) => (
+        <TabsSwitcherWrapper key={size} {...args} size={size} options={getOptionsWithAdornments(4, size)} />
+      ))}
+    </Stack>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story: 'Vertical overlined tabs with adornments and suffix for each size',
+      },
+    },
+  },
 }
 
 export const NoInactiveBorders: Story = {
@@ -59,31 +213,81 @@ export const NoInactiveBorders: Story = {
     variant: 'underlined',
     hideInactiveBorders: true,
   },
-  render: (args) => <TabsSwitcherComponent {...args} />,
+  render: (args) => <TabsSwitcherWrapper {...args} options={getOptionsWithAdornments(3, args.size ?? 'small')} />,
+  parameters: {
+    docs: {
+      description: {
+        story: 'Underlined tabs with inactive borders hidden',
+      },
+    },
+  },
 }
 
-export const ContainedScrollableTabs: Story = {
+export const IconsOnly: Story = {
+  render: () => (
+    <Stack gap={4}>
+      {TAB_SIZE_KEYS.map((size) => (
+        <Stack key={size} gap={4} direction="row" alignItems="center">
+          {VARIANTS.map((variant) => (
+            <TabsSwitcherWrapper
+              key={`${variant}-${size}`}
+              variant={variant}
+              size={size}
+              overflow="standard"
+              options={getOptionsWithIconsOnly(4, size)}
+            />
+          ))}
+        </Stack>
+      ))}
+    </Stack>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story: 'Icon-only tabs for each variant and size',
+      },
+    },
+  },
+}
+
+export const OverflowFullWidth: Story = {
   args: {
     variant: 'contained',
-    muiVariant: 'scrollable',
+    overflow: 'fullWidth',
   },
   render: (args) => (
-    <Stack sx={{ maxWidth: '24rem' }}>
-      <TabsSwitcherComponent {...args} maxNbTabs={8} />
+    <Stack gap={4} width="40rem">
+      {VARIANTS.map((variant) => (
+        <TabsSwitcherWrapper key={variant} {...args} variant={variant} options={getOptionsWithAdornments(3)} />
+      ))}
     </Stack>
   ),
+  parameters: {
+    docs: {
+      description: {
+        story: 'Contained tabs with fullWidth variant for each size',
+      },
+    },
+  },
 }
 
-export const UnderlinedScrollableTabs: Story = {
+export const OverflowKebab: Story = {
   args: {
-    variant: 'underlined',
-    muiVariant: 'scrollable',
+    variant: 'contained',
+    overflow: 'kebab',
   },
   render: (args) => (
-    <Stack sx={{ maxWidth: '24rem' }}>
-      <TabsSwitcherComponent {...args} maxNbTabs={8} />
+    <Stack gap={4} width="30rem">
+      {TAB_SIZE_KEYS.map((size) => (
+        <TabsSwitcherWrapper key={size} {...args} size={size} options={getOptionsWithAdornments(8, size)} />
+      ))}
     </Stack>
   ),
+  parameters: {
+    docs: {
+      description: {
+        story: 'Contained tabs with scrollable variant for each size',
+      },
+    },
+  },
 }
-
-export default meta

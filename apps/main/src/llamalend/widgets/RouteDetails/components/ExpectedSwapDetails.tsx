@@ -1,18 +1,18 @@
 import { sum } from 'lodash'
 import { type ReactNode, useEffect, useRef, useState } from 'react'
 import { styled } from 'styled-components'
-import Box from '@ui/Box'
-import ExternalLink from '@ui/Link/ExternalLink'
-import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import { Box } from '@ui/Box'
+import { ExternalLink } from '@ui/Link/ExternalLink'
+import { SpinnerWrapper, Spinner } from '@ui/Spinner'
 import type { RouteDetailsProps, Hop } from '../types'
-import RouteLine from './RouteLine'
-import RouteToken from './RouteToken'
+import { RouteLine } from './RouteLine'
+import { RouteToken } from './RouteToken'
 
 const stateDefault = { height: '34px', data: [] as Hop[] }
 
 const _getTotal = (amounts: (string | number | undefined)[]) => sum(amounts.map((val) => +(val ?? '0')))
 
-const ExpectedSwapDetails = ({
+export const ExpectedSwapDetails = ({
   network: networkId,
   label,
   loading,
@@ -36,6 +36,7 @@ const ExpectedSwapDetails = ({
   const [{ height, data }, setData] = useState<{ height: string; data: Hop[] }>(stateDefault)
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setData((prev) => ({ ...stateDefault, height: prev.height }))
     const state = { height: '', data: [] as Hop[] }
 
@@ -133,5 +134,3 @@ const Footer = styled.footer`
   font-size: var(--font-size-2);
   opacity: 0.8;
 `
-
-export default ExpectedSwapDetails

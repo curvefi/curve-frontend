@@ -1,8 +1,8 @@
 import { Chain } from 'curve-ui-kit/src/utils/network'
 import { useEffect, useMemo } from 'react'
 import { styled } from 'styled-components'
-import DialogSelect from '@/dex/components/PageDeployGauge/components/DialogSelect'
-import TextInput from '@/dex/components/PageDeployGauge/components/TextInput'
+import { DialogSelect } from '@/dex/components/PageDeployGauge/components/DialogSelect'
+import { TextInput } from '@/dex/components/PageDeployGauge/components/TextInput'
 import {
   TWOCOINCRYPTOSWAP,
   THREECOINCRYPTOSWAP,
@@ -11,16 +11,16 @@ import {
   TWOCOINCRYPTOSWAPNG,
 } from '@/dex/components/PageDeployGauge/constants'
 import type { PoolType } from '@/dex/components/PageDeployGauge/types'
-import useStore from '@/dex/store/useStore'
+import { useStore } from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
-import Box from '@ui/Box'
+import { Box } from '@ui/Box'
 import { t } from '@ui-kit/lib/i18n'
 
 type Props = {
   chainId: ChainId
 }
 
-const DeploySidechain = ({ chainId }: Props) => {
+export const DeploySidechain = ({ chainId }: Props) => {
   const curveNetworks = useStore((state) => state.deployGauge.curveNetworks)
   const currentPoolType = useStore((state) => state.deployGauge.currentPoolType)
   const setCurrentPoolType = useStore((state) => state.deployGauge.setCurrentPoolType)
@@ -158,5 +158,3 @@ const ConnectEthMessage = styled.p`
   max-width: 17.5rem;
   text-align: center;
 `
-
-export default DeploySidechain

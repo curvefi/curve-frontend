@@ -1,3 +1,4 @@
+import '@/global-extensions'
 import { rootRoute } from '@/routes/root.routes'
 import { redirectTo } from '@/routes/util'
 import Skeleton from '@mui/material/Skeleton'
@@ -6,6 +7,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { analyticsRoutes } from './analytics.routes'
+import { bridgeRoutes } from './bridge.routes'
 import { crvusdRoutes } from './crvusd.routes'
 import { daoRoutes } from './dao.routes'
 import { dexRoutes } from './dex.routes'
@@ -40,6 +42,7 @@ export const router = createRouter({
     dexRoutes,
     lendRoutes,
     llamalendRoutes,
+    bridgeRoutes,
     integrationsRedirectRoute,
   ]),
   defaultPreload: 'intent',
@@ -49,7 +52,11 @@ export const router = createRouter({
       <head>
         <title>{t`Error` + ' - Curve'}</title>
       </head>
-      <ErrorPage title={t`Unexpected Error`} subtitle={error.message || t`An unexpected error occurred`} />
+      <ErrorPage
+        title={t`Unexpected Error`}
+        subtitle={error.message || t`An unexpected error occurred`}
+        error={error}
+      />
     </>
   ),
   defaultNotFoundComponent: () => (

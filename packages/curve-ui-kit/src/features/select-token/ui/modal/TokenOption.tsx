@@ -29,6 +29,7 @@ export type Props = Option & TokenOptionCallbacks & TokenOptionsProps
 export const TokenOption = ({
   chain,
   symbol,
+  name,
   label,
   address,
   balance,
@@ -44,7 +45,7 @@ export const TokenOption = ({
   const menuItem = useRef<HTMLLIElement>(null)
 
   return (
-    <InvertOnHover hoverEl={menuItem.current}>
+    <InvertOnHover hoverRef={menuItem}>
       <Tooltip title={disabled && 'This token is not available because of'} body={disabledReason} placement="top">
         <MenuItem
           ref={menuItem}
@@ -75,9 +76,17 @@ export const TokenOption = ({
               {symbol}
             </Typography>
 
-            <Typography variant="bodyXsRegular" color={disabled ? 'textDisabled' : 'textSecondary'}>
-              {label}
-            </Typography>
+            {name && (
+              <Typography variant="bodyXsRegular" color={disabled ? 'textDisabled' : 'textSecondary'}>
+                {name}
+              </Typography>
+            )}
+
+            {label && (
+              <Typography variant="bodyXsRegular" color={disabled ? 'textDisabled' : 'textTertiary'}>
+                {label}
+              </Typography>
+            )}
           </Stack>
 
           <Stack direction="column" alignItems="end">

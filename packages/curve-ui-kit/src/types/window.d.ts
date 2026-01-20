@@ -13,7 +13,7 @@ declare global {
   }
 
   interface Window {
-    clipboardData: any
+    clipboardData: DataTransfer | undefined
     ethereum: EIP1193Provider & { eip6963ProviderDetails: Eip6963Provider[] }
     exodus?: EIP1193Provider
     enkrypt?: { providers: { ethereum: EIP1193Provider } }

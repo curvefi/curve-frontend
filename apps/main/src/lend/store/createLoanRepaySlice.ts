@@ -1,17 +1,17 @@
 import lodash from 'lodash'
 import type { StoreApi } from 'zustand'
-import type { FormDetailInfoLeverage, FormStatus, FormValues } from '@/lend/components/PageLoanManage/LoanRepay/types'
+import type { FormDetailInfoLeverage, FormStatus, FormValues } from '@/lend/components/PageLendMarket/LoanRepay/types'
 import {
   _parseValues,
   DEFAULT_FORM_STATUS,
   DEFAULT_FORM_VALUES,
-} from '@/lend/components/PageLoanManage/LoanRepay/utils'
-import type { FormDetailInfo, FormEstGas } from '@/lend/components/PageLoanManage/types'
-import { DEFAULT_FORM_EST_GAS } from '@/lend/components/PageLoanManage/utils'
+} from '@/lend/components/PageLendMarket/LoanRepay/utils'
+import type { FormDetailInfo, FormEstGas } from '@/lend/components/PageLendMarket/types'
+import { DEFAULT_FORM_EST_GAS } from '@/lend/components/PageLendMarket/utils'
 import { invalidateMarketDetails } from '@/lend/entities/market-details'
 import { invalidateAllUserBorrowDetails } from '@/lend/entities/user-loan-details'
-import apiLending, { helpers } from '@/lend/lib/apiLending'
-import networks from '@/lend/networks'
+import { helpers, apiLending } from '@/lend/lib/apiLending'
+import { networks } from '@/lend/networks'
 import type { State } from '@/lend/store/useStore'
 import { Api, FormError, OneWayMarketTemplate, UserLoanState } from '@/lend/types/lend.types'
 import { _parseActiveKey } from '@/lend/utils/helpers'
@@ -66,7 +66,10 @@ const DEFAULT_STATE: SliceState = {
 const { getUserActiveKey, isTooMuch } = helpers
 const { loanRepay } = apiLending
 
-const createLoanRepaySlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): LoanRepaySlice => ({
+export const createLoanRepaySlice = (
+  _set: StoreApi<State>['setState'],
+  get: StoreApi<State>['getState'],
+): LoanRepaySlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 
@@ -145,7 +148,7 @@ const createLoanRepaySlice = (set: StoreApi<State>['setState'], get: StoreApi<St
         error: formStatus.error || resp.error,
       })
     },
-    setFormValues: async (api, market, partialFormValues, maxSlippage, shouldRefetch) => {
+    setFormValues: async (api, market, partialFormValues, maxSlippage, _shouldRefetch) => {
       const { user } = get()
       const { formStatus, formValues, ...sliceState } = get()[sliceKey]
 
@@ -268,7 +271,7 @@ const createLoanRepaySlice = (set: StoreApi<State>['setState'], get: StoreApi<St
         const loanExists = await refetchLoanExists({
           chainId,
           marketId: market.id,
-          userAddress: wallet?.account?.address,
+          userAddress: wallet?.address,
         })
 
         if (error) {
@@ -309,7 +312,7 @@ const createLoanRepaySlice = (set: StoreApi<State>['setState'], get: StoreApi<St
     setStateByKey: <T>(key: StateKey, value: T) => {
       get().setAppStateByKey(sliceKey, key, value)
     },
-    setStateByKeys: <T>(sliceState: Partial<SliceState>) => {
+    setStateByKeys: (sliceState: Partial<SliceState>) => {
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {
@@ -317,8 +320,6 @@ const createLoanRepaySlice = (set: StoreApi<State>['setState'], get: StoreApi<St
     },
   },
 })
-
-export default createLoanRepaySlice
 
 function _getActiveKey(
   api: Api | null,

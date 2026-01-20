@@ -14,7 +14,7 @@ export const handleTimeout = <T>(promise: Promise<T>, timeout: number, message?:
  * Waits for a callback to return a truthy value, polling at specified intervals, with a timeout.
  */
 export const waitFor = async (
-  callback: () => any,
+  callback: () => unknown,
   { timeout, step = 1000, message }: { timeout: number; message?: string; step?: number },
 ) => {
   const waitUntil = async () => {

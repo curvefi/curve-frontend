@@ -61,7 +61,7 @@ const sliderInputSizeMap: Record<SliderSize, TextFieldProps['size']> = {
 /**
  * Mapping between the layout direction and correspoding max width of the input
  */
-const sliderInputMaxWidthMap: Record<NonNullable<SliderInputProps<any>['layoutDirection']>, string> = {
+const sliderInputMaxWidthMap: Record<NonNullable<SliderInputProps<Decimal>['layoutDirection']>, string> = {
   row: MaxWidth.sliderInput.sm,
   column: MaxWidth.sliderInput.md,
 }

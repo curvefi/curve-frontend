@@ -17,14 +17,13 @@ import {
   SLIDER_RAIL_GRADIENT_STOPS_VAR,
   getGradientStopsForBackground,
   DEFAULT_SLIDER_SIZE,
-  thumbColorsMap,
 } from './utils'
 /**
  * Generates styles for a pseudo-element that creates a border around the slider
  * and extends beyond the slider's right and left edge by half the thumb width to prevent
  * the thumb from overlapping with the border when at 100% position.
  */
-const SliderExtension = (design: DesignSystem, orientation?: SliderProps['orientation'], borderColor?: string) => {
+const SliderExtension = (orientation: SliderProps['orientation'], borderColor: string | undefined) => {
   const {
     extensionOffsets: { start, end },
   } = getOrientationConfig(orientation)
@@ -45,7 +44,7 @@ const SliderExtension = (design: DesignSystem, orientation?: SliderProps['orient
   }
 }
 
-const baseRootStyle = (design: DesignSystem, orientation?: SliderProps['orientation']): Record<string, any> => {
+const baseRootStyle = (orientation: SliderProps['orientation']): Record<string, unknown> => {
   const {
     root: { size, margins },
   } = getOrientationConfig(orientation)
@@ -81,8 +80,8 @@ export const defineMuiSlider = (design: DesignSystem): Components['MuiSlider'] =
       const borderColor = railBackground === 'default' ? design.Color.Neutral[500] : undefined
 
       return {
-        ...baseRootStyle(design, orientation),
-        ...SliderExtension(design, orientation, borderColor),
+        ...baseRootStyle(orientation),
+        ...SliderExtension(orientation, borderColor),
       }
     },
 
@@ -105,7 +104,7 @@ export const defineMuiSlider = (design: DesignSystem): Components['MuiSlider'] =
         // Add 2px to the thumb width and height to compensate the border
         width: size.width,
         height: size.height,
-        background: `${thumbColorsMap[design.theme]} url(${sliderThumbImage}) center no-repeat`,
+        background: `${design.Layer.Highlight.Fill} url(${sliderThumbImage}) center no-repeat`,
         transition: `background ${TransitionFunction}, border ${TransitionFunction}`,
         border: `1px solid ${design.Color.Neutral[25]}`,
         borderRadius: 0,

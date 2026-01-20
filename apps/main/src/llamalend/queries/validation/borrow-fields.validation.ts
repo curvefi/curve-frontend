@@ -1,5 +1,5 @@
 import { enforce, test, skipWhen } from 'vest'
-import { BORROW_PRESET_RANGES } from '@/llamalend/constants'
+import { PRESET_RANGES } from '@/llamalend/constants'
 import { Decimal } from '@ui-kit/utils'
 
 export const validateUserBorrowed = (userBorrowed: Decimal | null | undefined) => {
@@ -8,9 +8,11 @@ export const validateUserBorrowed = (userBorrowed: Decimal | null | undefined) =
   })
 }
 
-export const validateUserCollateral = (userCollateral: Decimal | undefined | null) => {
+export const validateUserCollateral = (userCollateral: Decimal | undefined | null, required: boolean = true) => {
   test('userCollateral', `Collateral amount must be a positive number`, () => {
-    enforce(userCollateral).isNumeric().gt(0)
+    if (required || userCollateral != null) {
+      enforce(userCollateral).isNumeric().gt(0)
+    }
   })
 }
 
@@ -28,7 +30,7 @@ export const validateSlippage = (slippage: Decimal | null | undefined) => {
   })
 }
 
-export const validateRange = (range: number | null | undefined, { MaxLtv, Safe } = BORROW_PRESET_RANGES) => {
+export const validateRange = (range: number | null | undefined, { MaxLtv, Safe } = PRESET_RANGES) => {
   test('range', `Range must be number between ${MaxLtv} and ${Safe}`, () => {
     enforce(range).isNumeric().gte(MaxLtv).lte(Safe)
   })
@@ -63,9 +65,10 @@ export const validateLeverageEnabled = (leverageEnabled: boolean | undefined | n
 export const validateMaxCollateral = (
   userCollateral: Decimal | undefined | null,
   maxCollateral: Decimal | undefined | null,
+  errorMessage?: string,
 ) => {
   skipWhen(userCollateral == null || maxCollateral == null, () => {
-    test('userCollateral', 'Collateral must be less than or equal to your wallet balance', () => {
+    test('userCollateral', errorMessage ?? 'Collateral must be less than or equal to your wallet balance', () => {
       enforce(userCollateral).lte(maxCollateral)
     })
   })

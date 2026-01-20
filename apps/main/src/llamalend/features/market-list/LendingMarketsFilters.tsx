@@ -1,6 +1,5 @@
 import { keyBy, type Dictionary } from 'lodash'
 import { useMemo } from 'react'
-import { type AssetDetails, LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import Chip from '@mui/material/Chip'
 import Grid from '@mui/material/Grid'
 import { t } from '@ui-kit/lib/i18n'
@@ -11,7 +10,8 @@ import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatPercent, formatUsd } from '@ui-kit/utils'
-import { LlamaMarketColumnId } from './columns.enum'
+import { type AssetDetails, LlamaMarket } from '../../queries/market-list/llama-markets'
+import { LlamaMarketColumnId } from './columns'
 import { MultiSelectFilter } from './filters/MultiSelectFilter'
 import { RangeSliderFilter } from './filters/RangeSliderFilter'
 
@@ -40,12 +40,10 @@ const SelectedToken = ({ symbol, tokens }: { symbol: string; tokens: Dictionary<
  * Filters for the lending markets table. Includes filters for chain, collateral token, debt token, liquidity, and utilization.
  */
 export const LendingMarketsFilters = ({
-  minLiquidity = 0,
   data,
   ...filterProps
 }: FilterProps<LlamaMarketColumnId> & {
   data: LlamaMarket[]
-  minLiquidity?: number
 }) => {
   // Filter options are scoped to selected chains to prevent cross-chain filter data pollution.
   // Example: When viewing Ethereum markets, Arbitrum market data should not influence filter options.

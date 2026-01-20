@@ -8,7 +8,7 @@ type Props = {
   volume: Volume | undefined
 }
 
-const TableCellVolume = ({ isHighLight, volumeCached, volume }: Props) => (
+export const TableCellVolume = ({ isHighLight, volumeCached, volume }: Props) => (
   <Chip
     isBold={isHighLight}
     size="md"
@@ -21,5 +21,3 @@ const TableCellVolume = ({ isHighLight, volumeCached, volume }: Props) => (
     })}
   </Chip>
 )
-
-export default TableCellVolume

@@ -1,20 +1,20 @@
 import { Fragment, HTMLAttributes, useEffect, useRef, useState } from 'react'
-import CampaignRewardsRow from '@/dex/components/CampaignRewardsRow'
-import TCellRewards from '@/dex/components/PagePoolList/components/TableCellRewards'
-import TableCellRewardsBase from '@/dex/components/PagePoolList/components/TableCellRewardsBase'
-import TableCellRewardsCrv from '@/dex/components/PagePoolList/components/TableCellRewardsCrv'
-import TableCellRewardsOthers from '@/dex/components/PagePoolList/components/TableCellRewardsOthers'
-import TableCellTvl from '@/dex/components/PagePoolList/components/TableCellTvl'
-import TableCellVolume from '@/dex/components/PagePoolList/components/TableCellVolume'
+import { CampaignRewardsRow } from '@/dex/components/CampaignRewardsRow'
+import { TCellRewards } from '@/dex/components/PagePoolList/components/TableCellRewards'
+import { TableCellRewardsBase } from '@/dex/components/PagePoolList/components/TableCellRewardsBase'
+import { TableCellRewardsCrv } from '@/dex/components/PagePoolList/components/TableCellRewardsCrv'
+import { TableCellRewardsOthers } from '@/dex/components/PagePoolList/components/TableCellRewardsOthers'
+import { TableCellTvl } from '@/dex/components/PagePoolList/components/TableCellTvl'
+import { TableCellVolume } from '@/dex/components/PagePoolList/components/TableCellVolume'
 import type { ColumnKeys, SearchParams } from '@/dex/components/PagePoolList/types'
 import { COLUMN_KEYS } from '@/dex/components/PagePoolList/utils'
-import PoolLabel from '@/dex/components/PoolLabel'
+import { PoolLabel } from '@/dex/components/PoolLabel'
 import { PoolData, PoolDataCache, RewardsApy, Tvl, Volume } from '@/dex/types/main.types'
 import type { Chain } from '@curvefi/prices-api'
-import Box from '@ui/Box'
+import { Box } from '@ui/Box'
 import { CellInPool, Td, Tr } from '@ui/Table'
 import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
-import useIntersectionObserver from '@ui-kit/hooks/useIntersectionObserver'
+import { useIntersectionObserver } from '@ui-kit/hooks/useIntersectionObserver'
 import { t } from '@ui-kit/lib/i18n'
 import type { Address } from '@ui-kit/utils'
 
@@ -37,7 +37,7 @@ export type TableRowProps = {
   handleCellClick(target: EventTarget, formType?: 'swap' | 'withdraw'): void
 }
 
-const TableRow = ({
+export const TableRow = ({
   index,
   poolId,
   isCrvRewardsEnabled,
@@ -66,7 +66,7 @@ const TableRow = ({
       {columnKeys.map((columnKey, idx) => (
         <Fragment key={`tRow${columnKey}${idx}`}>
           {columnKey === COLUMN_KEYS.inPool && (
-            <CellInPool isIn={isInPool} type="pool" tooltip={t`You have a balance in this pool`} />
+            <CellInPool isIn={isInPool} tooltip={t`You have a balance in this pool`} />
           )}
           {columnKey === COLUMN_KEYS.poolName && (
             <Td $first={!showInPoolColumn}>
@@ -174,5 +174,3 @@ export const LazyItem = ({ children, id, style, ...props }: HTMLAttributes<HTMLT
     </Tr>
   )
 }
-
-export default TableRow

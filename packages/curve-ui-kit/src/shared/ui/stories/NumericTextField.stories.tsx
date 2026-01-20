@@ -2,9 +2,9 @@ import { useState } from 'react'
 import { fn } from 'storybook/test'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import type { Decimal } from '@ui-kit/utils'
-import { NumericTextField } from '../NumericTextField'
+import { NumericTextField, NumericTextFieldProps } from '../NumericTextField'
 
-const NumericTextFieldWrapper = (props: any) => {
+const NumericTextFieldWrapper = (props: NumericTextFieldProps) => {
   const [value, setValue] = useState<Decimal | undefined>(undefined)
   return (
     <NumericTextField

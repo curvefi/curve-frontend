@@ -1,10 +1,17 @@
 import { getAddress, zeroAddress } from 'viem'
+
 export type { Address } from 'viem'
 
 type ShortenAddressOptions = {
   /** Number of digits to show on each side of the shortened address (default: 4) */
   digits?: number
 }
+
+/**
+ * Shortens a hash (e.g., transaction hash or address) by displaying the first and last few characters
+ */
+export const shortenHash = (hash: string, { digits = 5 }: ShortenAddressOptions = {}) =>
+  `${hash.slice(0, digits + 2)}...${hash.slice(-digits)}`
 
 /**
  * Shortens an Ethereum address by displaying first and last few characters
@@ -27,12 +34,8 @@ type ShortenAddressOptions = {
  * to optimize performance when the same address is used multiple times.
  * To enforce consistency, there's no option to include the 0x prefix on the starting digits length.
  */
-export function shortenAddress(address: string | undefined, options?: ShortenAddressOptions): string {
-  const { digits = 4 } = options || {}
-  const addr = getAddress(address || zeroAddress)
-
-  return `${addr.slice(0, digits + 2)}...${addr.slice(-digits)}`
-}
+export const shortenAddress = (address: string | undefined, options?: ShortenAddressOptions): string =>
+  shortenHash(getAddress(address || zeroAddress), options)
 
 export const CRVUSD_ADDRESS = '0xf939e0a03fb07f59a73314e73794be0e57ac1b4e' as const
 export const CRV_ADDRESS = '0xd533a949740bb3306d119cc777fa900ba034cd52' as const

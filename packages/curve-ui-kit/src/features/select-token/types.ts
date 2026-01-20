@@ -4,13 +4,9 @@ export type TokenOption = {
   address: Address
   symbol: string
   chain?: string
+  /** Optional name for the token, displayed with slightly more emphasis than `label` */
+  name?: string
+  /** Optional descriptive label for the token, currently often misused to display the `name` */
   label?: string
   volume?: number
 }
-
-export function tokenOptionEquals(a?: TokenOption, b?: TokenOption) {
-  return a?.address == b?.address && a?.chain == b?.chain
-}
-
-// todo: the LargeTokenInput balance is taking 100%, so the token selector takes its minWidth
-export const LargeSxProps = { minWidth: 'unset' }

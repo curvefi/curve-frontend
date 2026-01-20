@@ -149,6 +149,7 @@ export type LargeTokenInputProps = {
    */
   tokenSelector?: ReactNode
 
+  // TODO: receive a `maxBalance` ReactNode to allow anything to be injected
   /** Optional wallet balance configuration. */
   walletBalance?: BalanceProps<Decimal>
 
@@ -188,10 +189,10 @@ export type LargeTokenInputProps = {
   disabled?: boolean
 
   /**
-   * Callback function triggered when the balance changes.
+   * Callback function triggered when the balance changes. It may be omitted when read-only.
    * @param balance The new balance value
    */
-  onBalance: (balance: Decimal | undefined) => void
+  onBalance?: (balance: Decimal | undefined) => void
 
   /** Optional props forwarded to the slider */
   sliderProps?: SliderInputProps<Decimal>['sliderProps']
@@ -270,13 +271,14 @@ export const LargeTokenInput = ({
   const chips = typeof maxBalance?.chips === 'string' ? CHIPS_PRESETS[maxBalance.chips] : maxBalance?.chips
   const showChips = !!chips?.length
 
+  const maxBalanceValue = maxBalance?.balance
   const handlePercentageChange = useCallback(
     (newPercentage: Decimal | undefined) => {
       setPercentage(newPercentage)
-      if (maxBalance?.balance == null) return
-      setBalance(newPercentage == null ? undefined : calculateNewBalance(maxBalance.balance, newPercentage))
+      if (maxBalanceValue != null)
+        setBalance(newPercentage == null ? undefined : calculateNewBalance(maxBalanceValue, newPercentage))
     },
-    [maxBalance?.balance, setBalance],
+    [maxBalanceValue, setBalance],
   )
 
   const handleBalanceChange = useCallback(
@@ -294,17 +296,15 @@ export const LargeTokenInput = ({
          * rather than being stuck displaying outdated valid data. For example, action cards can show "no change" instead of
          * remaining in a previous valid state that no longer matches the actual input, like going from "5" to empty input.
          */
-        if (!newBalance) onBalance(undefined)
+        if (!newBalance) onBalance?.(undefined)
 
         return
       }
 
       setBalance(decimalBalance)
-      setPercentage(
-        maxBalance?.balance && newBalance ? calculateNewPercentage(decimalBalance, maxBalance.balance) : undefined,
-      )
+      setPercentage(maxBalanceValue && newBalance ? calculateNewPercentage(decimalBalance, maxBalanceValue) : undefined)
     },
-    [maxBalance?.balance, setBalance, cancelSetBalance, onBalance],
+    [maxBalanceValue, setBalance, cancelSetBalance, onBalance],
   )
 
   const updatePercentageOnNewMaxBalance = useEffectEvent((newMaxBalance?: Decimal) => {
@@ -312,7 +312,7 @@ export const LargeTokenInput = ({
   })
 
   /** When maxBalance changes, adjust the percentage accordingly. This ensures the slider percentage accurately reflects the balance/maxBalance ratio */
-  useEffect(() => updatePercentageOnNewMaxBalance(maxBalance?.balance), [maxBalance?.balance])
+  useEffect(() => updatePercentageOnNewMaxBalance(maxBalanceValue), [maxBalanceValue])
 
   const resetBalance = useCallback(() => {
     setPercentage(undefined)

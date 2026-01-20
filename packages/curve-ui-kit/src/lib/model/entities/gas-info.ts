@@ -102,13 +102,8 @@ const { useQuery: useGasInfoAndUpdateLibBase, fetchQuery: fetchGasInfoAndUpdateL
       }
 
       if (l2GasPrice) {
-        curve.setCustomFeeData({
-          gasPrice: l2GasPrice, // in gwei
-          // @ts-ignore
-          maxFeePerGas: null,
-          // @ts-ignore
-          maxPriorityFeePerGas: null,
-        })
+        const maxFeePerGas = null as unknown as undefined // todo: fix `undefined` type in curvejs, it actually checks `=== null`
+        curve.setCustomFeeData({ gasPrice: l2GasPrice /*in gwei*/, maxFeePerGas, maxPriorityFeePerGas: maxFeePerGas })
       }
     } else if (chainId === Chain.Arbitrum || chainId === Chain.Mantle) {
       const { customFeeData } = await fetchCustomGasFees(curve)

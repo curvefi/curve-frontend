@@ -1,4 +1,4 @@
-import useStore from '@/lend/store/useStore'
+import { useStore } from '@/lend/store/useStore'
 import type { UserLoanDetails } from '@/lend/types/lend.types'
 
 type Details = UserLoanDetails['details'] & { error: string }

@@ -1,7 +1,6 @@
 import { sortBy } from 'lodash'
 import { SliderProps } from '@mui/material/Slider'
 import { DesignSystem } from '@ui-kit/themes/design'
-import { Blues, Violets } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type {
   GradientStopsDefinition,
@@ -202,10 +201,3 @@ export const createGradientStopsString = (stops: GradientStopsDefinition) =>
 
 export const orientationToDirection = (orientation: SliderProps['orientation']): 'to right' | 'to top' =>
   getOrientationConfig(orientation).gradientDirection
-
-// TODO: temporary fix for the "Layers.Highlight.Fill" color difference between codebase and Design
-export const thumbColorsMap: Record<DesignSystem['theme'], string> = {
-  light: Blues[500],
-  dark: Blues[50],
-  chad: Violets[700],
-}

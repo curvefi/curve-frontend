@@ -25,7 +25,7 @@
       "campaignEnd": "1770000000",
       "address": "0x2421176aea0def263805a9c87f6c9d10147b8a93",
       "network": "fraxtal",
-      "multiplier": "18.457x",
+      "multiplier": "11.865x",
       "tags": ["points"],
       "lock": "false"
     },
@@ -37,7 +37,7 @@
       "campaignEnd": "1770000000",
       "address": "0x63d64a76c2d616676cbac3068d3c6548f8485314",
       "network": "fraxtal",
-      "multiplier": "8.433x",
+      "multiplier": "",
       "tags": ["points"],
       "lock": "false"
     },
@@ -49,7 +49,7 @@
       "campaignEnd": "1770000000",
       "address": "0xbc3705b2bfd42d38e8fa2c8efdc3fdda645c3b2a",
       "network": "fraxtal",
-      "multiplier": "10.41x",
+      "multiplier": "8.433x",
       "tags": ["points"],
       "lock": "false"
     },
@@ -61,7 +61,7 @@
       "campaignEnd": "1770000000",
       "address": "0xee454138083b9b9714cac3c7cf12560248d76d6b",
       "network": "fraxtal",
-      "multiplier": "16.343x",
+      "multiplier": "14.365x",
       "tags": ["points"],
       "lock": "false"
     },
@@ -73,7 +73,7 @@
       "campaignEnd": "1770000000",
       "address": "0x4cfc391d75c43cf1bdb368e8bf680aed1228df39",
       "network": "fraxtal",
-      "multiplier": "67.759x",
+      "multiplier": "65.78x",
       "tags": ["points"],
       "lock": "false"
     },
@@ -121,7 +121,7 @@
       "campaignEnd": "1770000000",
       "address": "0xf2f426fe123de7b769b2d4f8c911512f065225d3",
       "network": "fraxtal",
-      "multiplier": "4.625x",
+      "multiplier": "4.65x",
       "tags": ["points"],
       "lock": "false"
     },
@@ -325,7 +325,7 @@
       "campaignEnd": "1770000000",
       "address": "0x15d1ed4418dA1F268bCAd5BA7c8d06BB3c3081eD",
       "network": "fraxtal",
-      "multiplier": "19.776x",
+      "multiplier": "10.41x",
       "tags": ["points"],
       "lock": "false"
     },

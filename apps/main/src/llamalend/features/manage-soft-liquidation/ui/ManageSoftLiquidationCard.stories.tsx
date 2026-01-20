@@ -40,11 +40,15 @@ const ManageSoftLiquidationWithState = (props: Props) => {
   const [updatingActionInfos, setUpdatingActionInfos] = useState(false)
   const actionInfosTimeout = useRef<ReturnType<typeof setTimeout>>(undefined)
 
-  const mockExecution = async (status: ImproveHealthStatus | ClosePositionStatus, type: 'improve-health' | 'close') => {
-    const setState = type === 'improve-health' ? setImproveHealthStatus : setWithdrawStatus
-
-    setState(status as any)
-    setTimeout(() => setState('idle'), 3000)
+  const mockExecution = async ([status, type]:
+    | [ImproveHealthStatus, 'improve-health']
+    | [ClosePositionStatus, 'close']) => {
+    if (type === 'improve-health') {
+      setImproveHealthStatus(status)
+    } else {
+      setWithdrawStatus(status)
+    }
+    setTimeout(() => setWithdrawStatus('idle'), 3000)
   }
 
   const mockActionInfoUpdating = () => {
@@ -66,7 +70,8 @@ const ManageSoftLiquidationWithState = (props: Props) => {
         },
         onRepay: async (...args) => {
           props.improveHealth.onRepay(...args)
-          await mockExecution('repay', 'improve-health')
+          await mockExecution(['repay', 'improve-health'])
+          // eslint-disable-next-line react-hooks/immutability
           props.improveHealth.userBalance = decimal(+(props.improveHealth.userBalance ?? 0) - +args[0])
           if (props.improveHealth.debtToken) {
             props.improveHealth.debtToken.amount =
@@ -75,11 +80,11 @@ const ManageSoftLiquidationWithState = (props: Props) => {
         },
         onApproveLimited: async (...args) => {
           props.improveHealth.onApproveLimited(...args)
-          await mockExecution('approve-limited', 'improve-health')
+          await mockExecution(['approve-limited', 'improve-health'])
         },
         onApproveInfinite: async (...args) => {
           props.improveHealth.onApproveInfinite(...args)
-          await mockExecution('approve-infinite', 'improve-health')
+          await mockExecution(['approve-infinite', 'improve-health'])
         },
       }}
       closePosition={{
@@ -87,7 +92,7 @@ const ManageSoftLiquidationWithState = (props: Props) => {
         status: withdrawStatus,
         onClose: async (...args) => {
           props.closePosition.onClose(...args)
-          await mockExecution('close', 'close')
+          await mockExecution(['close', 'close'])
         },
       }}
     />

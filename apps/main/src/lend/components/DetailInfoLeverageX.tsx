@@ -1,9 +1,9 @@
-import DetailInfo from '@ui/DetailInfo'
+import { DetailInfo } from '@ui/DetailInfo'
 import { formatNumber } from '@ui/utils'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
 
-const DetailInfoLeverageX = ({
+export const DetailInfoLeverageX = ({
   leverage,
   maxLeverage,
   loading,
@@ -23,5 +23,3 @@ const DetailInfoLeverageX = ({
     </DetailInfo>
   )
 }
-
-export default DetailInfoLeverageX

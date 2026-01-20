@@ -1,11 +1,15 @@
 import { useChainId, useConnection, useSwitchChain } from 'wagmi'
-import Box from '@mui/material/Box'
 import { isFailure, useCurve, type WagmiChainId } from '@ui-kit/features/connect-wallet'
-import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
+import { usePathname } from '@ui-kit/hooks/router'
+import { useDismissBanner, useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
+import { getCurrentApp } from '@ui-kit/shared/routes'
 import { Banner } from '@ui-kit/shared/ui/Banner'
+import { Duration } from '@ui-kit/themes/design/0_primitives'
 import { isCypress, ReleaseChannel } from '@ui-kit/utils'
+import { Chain } from '@ui-kit/utils/network'
 import { PhishingWarningBanner } from '@ui-kit/widgets/Header/PhishingWarningBanner'
+import { StackBanners } from './StackBanners'
 
 export type GlobalBannerProps = {
   networkId: string
@@ -21,11 +25,18 @@ export const GlobalBanner = ({ networkId, chainId }: GlobalBannerProps) => {
   const { switchChain } = useSwitchChain()
   const { connectState } = useCurve()
   const walletChainId = useChainId()
+  const pathname = usePathname()
+  const currentApp = getCurrentApp(pathname)
+
   const showSwitchNetworkMessage = isConnected && chainId && walletChainId != chainId
   const showConnectApiErrorMessage = !showSwitchNetworkMessage && isFailure(connectState)
+
+  const { shouldShowBanner: showAaveBanner, dismissBanner: dismissAaveBanner } = useDismissBanner(
+    'aave-v2-frozen-avalanche-polygon',
+    Duration.Banner.Monthly,
+  )
   return (
-    <Box>
-      <PhishingWarningBanner />
+    <StackBanners>
       {releaseChannel !== ReleaseChannel.Stable && !isCypress && (
         <Banner
           icon="llama"
@@ -35,6 +46,7 @@ export const GlobalBanner = ({ networkId, chainId }: GlobalBannerProps) => {
           {t`${releaseChannel} Mode Enabled`}
         </Banner>
       )}
+      <PhishingWarningBanner />
       {maintenanceMessage && <Banner severity="warning">{maintenanceMessage}</Banner>}
       {showSwitchNetworkMessage && (
         <Banner
@@ -51,6 +63,16 @@ export const GlobalBanner = ({ networkId, chainId }: GlobalBannerProps) => {
           {t`There is an issue connecting to the API. Please try to switch your RPC in your wallet settings.`}
         </Banner>
       )}
-    </Box>
+      {showAaveBanner && currentApp === 'dex' && [Chain.Polygon, Chain.Avalanche].includes(chainId) && (
+        <Banner
+          severity="info"
+          subtitle={t`Aave is deprecating its V2 markets on Polygon and Avalanche. Deposits and swaps are not supported`}
+          onClick={dismissAaveBanner}
+          learnMoreUrl="https://governance.aave.com/t/direct-to-aip-aave-v2-non-ethereum-pools-next-deprecation-steps/22445"
+        >
+          {t`Aave V2 Frozen aTokens`}
+        </Banner>
+      )}
+    </StackBanners>
   )
 }

@@ -1,8 +1,7 @@
-import { styled } from 'styled-components'
-import CampaignBannerComp from 'ui/src/CampaignRewards/CampaignBannerComp'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import type { ChainId } from '@/dex/types/main.types'
 import type { Chain } from '@curvefi/prices-api'
+import { CampaignBannerComp } from '@ui/CampaignRewards/CampaignBannerComp'
 import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
 import type { Address } from '@ui-kit/utils'
@@ -12,7 +11,7 @@ interface CampaignRewardsBannerProps {
   address: string
 }
 
-const CampaignRewardsBanner = ({ chainId, address }: CampaignRewardsBannerProps) => {
+export const CampaignRewardsBanner = ({ chainId, address }: CampaignRewardsBannerProps) => {
   const { data: network } = useNetworkByChain({ chainId })
   const { data: campaigns } = useCampaignsByAddress({
     blockchainId: network.networkId as Chain,
@@ -21,17 +20,5 @@ const CampaignRewardsBanner = ({ chainId, address }: CampaignRewardsBannerProps)
   const message = campaigns.some((campaign) => campaign.tags.includes('points'))
     ? t`Liquidity providers in this pool also earn points!`
     : t`Liquidity providers in this pool also earn additional tokens!`
-  return (
-    campaigns.length > 0 && (
-      <CampaignRewardsBannerWrapper>
-        <CampaignBannerComp campaignRewardsPool={campaigns} message={message} />
-      </CampaignRewardsBannerWrapper>
-    )
-  )
+  return campaigns.length > 0 && <CampaignBannerComp campaignRewardsPool={campaigns} message={message} />
 }
-
-const CampaignRewardsBannerWrapper = styled.div`
-  margin: 0 0 var(--spacing-2) 0;
-`
-
-export default CampaignRewardsBanner

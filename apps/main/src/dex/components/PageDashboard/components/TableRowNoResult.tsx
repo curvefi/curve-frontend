@@ -10,7 +10,7 @@ type Props = {
   error: string
 }
 
-const TableRowNoResult = ({ colSpan, error, noResult }: Props) => {
+export const TableRowNoResult = ({ colSpan, error, noResult }: Props) => {
   const {
     isLoading,
     formValues: { walletAddress },
@@ -50,5 +50,3 @@ const StyledSpinnerWrapper = styled(SpinnerWrapper)`
   padding: var(--spacing-5) 0;
   width: calc(100% - 1rem);
 `
-
-export default TableRowNoResult

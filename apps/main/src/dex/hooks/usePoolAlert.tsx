@@ -1,15 +1,13 @@
 import { useMemo } from 'react'
-import { styled } from 'styled-components'
 import { ROUTE } from '@/dex/constants'
 import { PoolAlert, PoolData, PoolDataCache, type UrlParams } from '@/dex/types/main.types'
-import { getPath } from '@/dex/utils/utilsRouter'
-import Box from '@ui/Box'
-import { ExternalLink, InternalLink } from '@ui/Link'
-import { breakpoints } from '@ui/utils'
 import { useParams } from '@ui-kit/hooks/router'
-import { shortenAddress } from '@ui-kit/utils'
+import { t, Trans } from '@ui-kit/lib/i18n'
+import { getInternalUrl } from '@ui-kit/shared/routes'
+import { InlineLink } from '@ui-kit/shared/ui/InlineLink'
+import { PoolAlertMessage } from '../components/pool-alert-messages'
 
-const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
+export const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
   const params = useParams<UrlParams>()
 
   const poolAddress = poolData?.pool.address
@@ -22,16 +20,16 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
       isDisableDeposit: true,
       isInformationOnly: true,
       isCloseOnTooltipOnly: true,
+      banner: {
+        title: t`zStables Attack`,
+        subtitle: t`zStables (zETH, UZD) have encountered an attack. `,
+        learnMoreUrl: 'https://twitter.com/ZunamiProtocol/status/1690863406079696896?s=20',
+      },
+      /* TODO: use Typography component instead of p tag */
       message: (
-        <MessageWrapper>
-          <div>
-            zStables (zETH, UZD) have encountered an attack. The collateral remain secure, we delve into the ongoing
-            investigation. <span style={{ whiteSpace: 'nowrap' }}>—Zunami Protocol</span>{' '}
-            <ExternalLink $noStyles href="https://twitter.com/ZunamiProtocol/status/1690863406079696896?s=20">
-              https://twitter.com/ZunamiProtocol/status/1690863406079696896?s=20
-            </ExternalLink>
-          </div>
-        </MessageWrapper>
+        <PoolAlertMessage>
+          <p>{t`Deposit disabled.`}</p>
+        </PoolAlertMessage>
       ),
     })
     const geistFinanceAlert = (): PoolAlert => ({
@@ -40,41 +38,42 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
       isDisableSwap: true,
       isInformationOnly: true,
       isCloseOnTooltipOnly: true,
+      banner: {
+        title: t`Geist Finance Disabled`,
+        subtitle: t`Deposit and swap are disabled.`,
+        learnMoreUrl: 'https://twitter.com/geistfinance',
+      },
       message: (
-        <MessageWrapper>
-          <div>
-            Deposit and swap are disabled, see{' '}
-            <ExternalLink $noStyles href="https://twitter.com/geistfinance">
-              https://twitter.com/geistfinance
-            </ExternalLink>{' '}
-            for additional information.
-          </div>
-        </MessageWrapper>
+        <PoolAlertMessage>
+          <p>{t`This pool is in withdraw only mode.`}</p>
+        </PoolAlertMessage>
       ),
     })
     const yPrismaAlert = (): PoolAlert => {
-      const redirectPathname = params && getPath(params, `${ROUTE.PAGE_POOLS}/factory-v2-372${ROUTE.PAGE_POOL_DEPOSIT}`)
-      const redirectText = `PRISMA/yPRISMA pool (${shortenAddress('0x69833361991ed76f9e8dbbcdf9ea1520febfb4a7')})`
+      const prismaPoolHref = getInternalUrl(
+        'dex',
+        params.network,
+        `${ROUTE.PAGE_POOLS}/factory-v2-372${ROUTE.PAGE_POOL_DEPOSIT}`,
+      )
       return {
         isDisableDeposit: true,
         isInformationOnly: true,
         isCloseOnTooltipOnly: true,
         alertType: 'warning',
         message: (
-          <MessageWrapper>
-            <div>
-              This pool has been deprecated. Please use the{' '}
-              {redirectPathname ? (
-                <InternalLink $noStyles href={redirectPathname}>
-                  {redirectText}
-                </InternalLink>
-              ) : (
-                <span>{redirectText}</span>
-              )}{' '}
-              instead.
-            </div>
-          </MessageWrapper>
+          <PoolAlertMessage>
+            <p>{t`Deposit disabled.`}</p>
+          </PoolAlertMessage>
         ),
+        banner: {
+          title: t`Deprecated Pool`,
+          subtitle: (
+            <Trans>
+              This pool has been deprecated. Please use the <InlineLink to={prismaPoolHref}>PRISMA/yPRISMA</InlineLink>{' '}
+              pool instead.
+            </Trans>
+          ),
+        },
       }
     }
     const synthetixAlert = (): PoolAlert => ({
@@ -82,57 +81,67 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
       isInformationOnly: true,
       isCloseOnTooltipOnly: true,
       minWidth: '350px',
+      banner: {
+        title: t`Synthetix Synths Disabled`,
+        subtitle: t`Exchanges on Synthetix synths are expected to be disabled. Users should withdraw liquidity or redeem synths to sUSD. Exit pools to avoid value dilution.`,
+        learnMoreUrl: 'https://gov.curve.finance/t/kill-gauges-on-all-non-susd-curve-pools-on-ethereum/10033/2',
+      },
       message: (
-        <MessageWrapper>
-          <Box grid gridGap={2}>
-            <p>
+        <PoolAlertMessage>
+          <p>
+            <Trans>
               Please note that exchanges on synthetix synths are expected to be disabled and users can either withdraw
               liquidity from the underlying token, or redeem their synths to sUSD on{' '}
-              <ExternalLink $noStyles href="https://staking.synthetix.io/wallet/balances/">
-                https://staking.synthetix.io/wallet/balances/
-              </ExternalLink>
-            </p>
-            <p>
+              <InlineLink to="https://staking.synthetix.io/wallet/balances/">synthetix.io</InlineLink>
+            </Trans>
+          </p>
+          <p>
+            <Trans>
               Users are encouraged to exit the pools in order to avoid getting their holdings&lsquo; value diluted with
               the discountRate For more information please refer to{' '}
-              <ExternalLink
-                $noStyles
-                href="https://gov.curve.finance/t/kill-gauges-on-all-non-susd-curve-pools-on-ethereum/10033/2"
-              >
-                https://gov.curve.finance/t/kill-gauges-on-all-non-susd-curve-pools-on-ethereum/10033/2
-              </ExternalLink>
-            </p>
-            <p>Please note that sUSD is not involved, so these would be on the other pools sETH, sBTC, sForex ...</p>
-          </Box>
-        </MessageWrapper>
+              <InlineLink to="https://gov.curve.finance/t/kill-gauges-on-all-non-susd-curve-pools-on-ethereum/10033/2">
+                gov.curve.finance
+              </InlineLink>
+            </Trans>
+          </p>
+          <p>
+            <Trans>
+              Please note that sUSD is not involved, so these would be on the other pools sETH, sBTC, sForex ...
+            </Trans>
+          </p>
+        </PoolAlertMessage>
       ),
     })
     const ironbankAlert = (): PoolAlert => ({
       alertType: 'warning',
       isInformationOnlyAndShowInForm: true,
       isDisableDeposit: true,
+      banner: {
+        title: t`Ironbank Protocol Deprecated`,
+        subtitle: t`The Ironbank protocol is deprecated. Please do not supply liquidity to this pool.`,
+      },
       message: (
-        <MessageWrapper>
-          <div>Ironbank protocol is deprecated. Please do not supply liquidity to this pool.</div>
-        </MessageWrapper>
+        <PoolAlertMessage>
+          <p>{t`Deposit disabled.`}</p>
+        </PoolAlertMessage>
       ),
     })
     const synthetixUsdAlert = (): PoolAlert => ({
       alertType: 'danger',
       isDisableDeposit: true,
       isDisableSwap: true,
+      isDisableWithdrawOnly: true,
       isInformationOnly: true,
       isCloseOnTooltipOnly: true,
+      banner: {
+        title: t`Synthetix USD Deprecated`,
+        subtitle: t`Pool is deprecated. Deposit, swap and withdraw are disabled.`,
+        learnMoreUrl: 'https://x.com/synthetix_io/status/1953054538610688198',
+      },
       message: (
-        <MessageWrapper>
-          <div>
-            Deposit and swap are disabled, see{' '}
-            <ExternalLink $noStyles href="https://x.com/synthetix_io/status/1953054538610688198">
-              https://x.com/synthetix_io/status/1953054538610688198
-            </ExternalLink>{' '}
-            for additional information.
-          </div>
-        </MessageWrapper>
+        <PoolAlertMessage>
+          <p>{t`This pool is disabled. You can still claim your rewards.`}</p>
+        </PoolAlertMessage>
       ),
     })
     const yieldbasisAlert = (): PoolAlert => ({
@@ -140,17 +149,23 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
       isDisableDeposit: true,
       isInformationOnly: true,
       isCloseOnTooltipOnly: true,
+      banner: {
+        title: t`YieldBasis Managed Pool`,
+        subtitle: (
+          <Trans>
+            This pool is managed by <b>YieldBasis</b>. Only deposits made on the YieldBasis UI earn fees and rewards.
+          </Trans>
+        ),
+        learnMoreUrl: 'https://yieldbasis.com',
+      },
       message: (
-        <MessageWrapper>
-          <div>
-            This pool is managed by <b>YieldBasis</b>. Only deposits made on the YieldBasis UI earn fees and rewards.{' '}
-            <br /> Go to{' '}
-            <ExternalLink $noStyles href="https://yieldbasis.com">
-              yieldbasis.com
-            </ExternalLink>{' '}
-            to deposit.
-          </div>
-        </MessageWrapper>
+        <PoolAlertMessage>
+          <p>
+            <Trans>
+              Deposit on <InlineLink to="https://yieldbasis.com">yieldbasis.com</InlineLink>
+            </Trans>
+          </p>
+        </PoolAlertMessage>
       ),
     })
 
@@ -159,10 +174,14 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
       isDisableDeposit: true,
       isInformationOnly: true,
       isCloseOnTooltipOnly: true,
+      banner: {
+        title: t`USPD Exploited`,
+        subtitle: t`USPD has been exploited. This pool has been disabled to prevent new users from loss of funds.`,
+      },
       message: (
-        <MessageWrapper>
-          <div>USPD has been exploited. This pool has been disabled to prevent new users from loss of funds.</div>
-        </MessageWrapper>
+        <PoolAlertMessage>
+          <p>{t`Deposit disabled. We recommend exiting this pool.`}</p>
+        </PoolAlertMessage>
       ),
     })
 
@@ -172,14 +191,14 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
       isCloseOnTooltipOnly: true,
       isInformationOnlyAndShowInForm: true,
       message: (
-        <MessageWrapper>
-          <div>
-            Deposit and Swap with wBTC.e will return an error due to an Aave community decision to freeze this asset.{' '}
-            <ExternalLink $noStyles href="https://app.aave.com/governance/v3/proposal/?proposalId=2">
-              More details
-            </ExternalLink>
-          </div>
-        </MessageWrapper>
+        <PoolAlertMessage>
+          <p>
+            <Trans>
+              Deposit and Swap with wBTC.e will return an error due to an Aave community decision to freeze this asset.{' '}
+              <InlineLink to="https://app.aave.com/governance/v3/proposal/?proposalId=2">More details</InlineLink>
+            </Trans>
+          </p>
+        </PoolAlertMessage>
       ),
     })
 
@@ -189,33 +208,32 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
       isDisableDeposit: true,
       isInformationOnly: true,
       isCloseOnTooltipOnly: true,
+      banner: {
+        title: t`Vyper Vulnerability Exploit`,
+        subtitle: t`This pool has been exploited due to a vulnerability found in Vyper versions v0.2.15, v0.2.16, or v0.3.0.`,
+        learnMoreUrl: 'https://hackmd.io/@LlamaRisk/BJzSKHNjn',
+      },
       message: (
-        <MessageWrapper>
-          <div>
-            This pool has been exploited due to a vulnerability found in Vyper versions v0.2.15, v0.2.16, or v0.3.0. For
-            additional information, please click on the post-mortem link:{' '}
-            <ExternalLink $noStyles href="https://hackmd.io/@LlamaRisk/BJzSKHNjn">
-              https://hackmd.io/@LlamaRisk/BJzSKHNjn
-            </ExternalLink>
-          </div>
-        </MessageWrapper>
+        <PoolAlertMessage>
+          <p>{t`Deposit disabled. We recommend exiting this pool.`}</p>
+        </PoolAlertMessage>
       ),
     })
+
     const possibleVyperExploitedAlert = (): PoolAlert => ({
       alertType: 'danger',
       isDisableDeposit: true,
       isInformationOnly: true,
       isCloseOnTooltipOnly: true,
+      banner: {
+        title: t`Potential Vulnerability Exploit`,
+        subtitle: t`This pool might be at risk of being exploited. We recommend exiting this pool.`,
+        learnMoreUrl: 'https://twitter.com/CurveFinance/status/1685925429041917952',
+      },
       message: (
-        <MessageWrapper>
-          <div>
-            This pool might be at risk of being exploited. While security researchers have not identified a profitable
-            exploit, we recommend exiting this pool.{' '}
-            <ExternalLink $noStyles href="https://twitter.com/CurveFinance/status/1685925429041917952">
-              https://twitter.com/CurveFinance/status/1685925429041917952
-            </ExternalLink>
-          </div>
-        </MessageWrapper>
+        <PoolAlertMessage>
+          <p>{t`Deposit disabled. We recommend exiting this pool.`}</p>
+        </PoolAlertMessage>
       ),
     })
 
@@ -227,10 +245,33 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
       isInformationOnly: true,
       isInformationOnlyAndShowInForm: true,
       isCloseOnTooltipOnly: true,
+      banner: {
+        title: t`Misconfigured Pool`,
+        subtitle: t`This pool has been misconfigured. It has been set to withdraw only. To minimize impact withdraw in balanced proportion instead of single sided.`,
+      },
       message: (
-        <MessageWrapper>
-          <div>This pool has been badly configured and is in withdraw only mode.</div>
-        </MessageWrapper>
+        <PoolAlertMessage>
+          <p>{t`This pool is in withdraw only mode.`}</p>
+        </PoolAlertMessage>
+      ),
+    })
+
+    // Pool creator configured bad price oracles, leading to users losing funds.
+    const misconfiguredPoolsAlert = (): PoolAlert => ({
+      alertType: 'danger',
+      isDisableDeposit: true,
+      isDisableSwap: true,
+      isInformationOnly: true,
+      isInformationOnlyAndShowInForm: true,
+      isCloseOnTooltipOnly: true,
+      banner: {
+        title: t`Misconfigured Pool`,
+        subtitle: t`This pool has been misconfigured. It has been set to withdraw only.`,
+      },
+      message: (
+        <PoolAlertMessage>
+          <p>{t`This pool is in withdraw only mode.`}</p>
+        </PoolAlertMessage>
       ),
     })
 
@@ -256,14 +297,33 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
       '0x83f24023d15d835a213df24fd309c47dab5beb32': yieldbasisAlert(),
       '0xf1f435b05d255a5dbde37333c0f61da6f69c6127': yieldbasisAlert(),
       '0xd9ff8396554a0d18b2cfbec53e1979b7ecce8373': yieldbasisAlert(),
+      '0x6e5492f8ea2370844ee098a56dd88e1717e4a9c2': yieldbasisAlert(),
       '0x06cf5f9b93e9fcfdb33d6b3791eb152567cd8d36': uspdioAlert(),
-
 
       // arbitrum
       '0x960ea3e3c7fb317332d990873d354e18d7645590': possibleVyperExploitedAlert(), // tricrypto
+      '0xc55be2dc490578560a030b6ba387aba0fe03cc73': misconfiguredPoolsAlert(),
+      '0xc5f069dd8112614673890aa21d8989d5d0db69d8': misconfiguredPoolsAlert(),
+      '0x2e6cfeeb00038f6a88a008e8b3c2bbd2f6c6bf9f': misconfiguredPoolsAlert(),
+      '0x2b7dcdc718e03749de0a138c56b0e18f9750134b': misconfiguredPoolsAlert(),
+      '0x533482d1d126ad8dd1ed925655b717a3425adf39': misconfiguredPoolsAlert(),
+      '0xc1005bbafa47f8aeb084646ffd83fd8dada3bb3b': misconfiguredPoolsAlert(),
+      '0x8afce00f46938db8e958fa7f8a1f4626c26242b7': misconfiguredPoolsAlert(),
+      '0xf9ae77094ae7308debf9ea25aeb3c8ab55714f32': misconfiguredPoolsAlert(),
+      '0x172cb45033b5495ca66f6866a01aa87cbad8f560': misconfiguredPoolsAlert(),
+      '0x4f4dcb8d373c26cc7db78ad1dc5ffdfcb45f4e55': misconfiguredPoolsAlert(),
+      '0x60d7ce16f815ea69e803c8146b8c32c84cc9982b': misconfiguredPoolsAlert(),
+      '0x03e9f4a7dcf587a5437f2d0332e35a73ded52d7d': misconfiguredPoolsAlert(),
+      '0x14515323e5c48e0ae75ad333e885cf050d0e3d9b': misconfiguredPoolsAlert(),
+      '0x11fd5664121e9b464b5e8434aa7d70b8e9146ca6': misconfiguredPoolsAlert(),
+      '0x2ff3ba10deb05573d2fae704a962183461d106d8': misconfiguredPoolsAlert(),
       
       // avalanche
       '0xb755b949c126c04e0348dd881a5cf55d424742b2': atricryptoAlert(),
+
+      // polygon
+      '0xbeb90d2d165d010706aca022a85a3b2d6a49eaa1': misconfiguredPoolsAlert(),
+      '0x810528a5086e997e39e12dccf02bad54a7bbe95b': misconfiguredPoolsAlert(),
 
       // monad
       '0x2fd13b49f970e8c6d89283056c1c6281214b7eb6': monadEthConverterAlert()
@@ -279,20 +339,3 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
     return null
   }, [poolAddress, params, hasVyperVulnerability])
 }
-
-const MessageWrapper = styled.div`
-  align-items: flex-start;
-  display: flex;
-  flex-direction: column;
-
-  a {
-    word-break: break-word;
-  }
-
-  @media (min-width: ${breakpoints.sm}rem) {
-    align-items: center;
-    flex-direction: row;
-  }
-`
-
-export default usePoolAlert

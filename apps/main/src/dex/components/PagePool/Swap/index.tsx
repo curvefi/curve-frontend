@@ -1,51 +1,52 @@
 import lodash from 'lodash'
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { styled } from 'styled-components'
-import { ethAddress } from 'viem'
-import AlertFormError from '@/dex/components/AlertFormError'
-import AlertFormWarning from '@/dex/components/AlertFormWarning'
-import AlertSlippage from '@/dex/components/AlertSlippage'
-import ChipInpHelper from '@/dex/components/ChipInpHelper'
-import DetailInfoEstGas from '@/dex/components/DetailInfoEstGas'
-import FieldHelperUsdRate from '@/dex/components/FieldHelperUsdRate'
-import DetailInfoSlippageTolerance from '@/dex/components/PagePool/components/DetailInfoSlippageTolerance'
-import TransferActions from '@/dex/components/PagePool/components/TransferActions'
-import WarningModal from '@/dex/components/PagePool/components/WarningModal'
+import type { Address } from 'viem'
+import { useConfig, useConnection, type Config } from 'wagmi'
+import { AlertFormError } from '@/dex/components/AlertFormError'
+import { AlertFormWarning } from '@/dex/components/AlertFormWarning'
+import { AlertSlippage } from '@/dex/components/AlertSlippage'
+import { DetailInfoEstGas } from '@/dex/components/DetailInfoEstGas'
+import { TransferActions } from '@/dex/components/PagePool/components/TransferActions'
+import { WarningModal } from '@/dex/components/PagePool/components/WarningModal'
 import type { ExchangeOutput, FormStatus, FormValues, StepKey } from '@/dex/components/PagePool/Swap/types'
 import { DEFAULT_EST_GAS, DEFAULT_EXCHANGE_OUTPUT, getSwapTokens } from '@/dex/components/PagePool/Swap/utils'
 import type { PageTransferProps, Seed } from '@/dex/components/PagePool/types'
-import DetailInfoExchangeRate from '@/dex/components/PageRouterSwap/components/DetailInfoExchangeRate'
-import DetailInfoPriceImpact from '@/dex/components/PageRouterSwap/components/DetailInfoPriceImpact'
+import { DetailInfoExchangeRate } from '@/dex/components/PageRouterSwap/components/DetailInfoExchangeRate'
+import { DetailInfoPriceImpact } from '@/dex/components/PageRouterSwap/components/DetailInfoPriceImpact'
 import { useNetworks } from '@/dex/entities/networks'
-import useStore from '@/dex/store/useStore'
-import { Balances, CurveApi, PoolAlert, PoolData, TokensMapper } from '@/dex/types/main.types'
+import { useStore } from '@/dex/store/useStore'
+import { CurveApi, PoolAlert, PoolData, TokensMapper } from '@/dex/types/main.types'
 import { toTokenOption } from '@/dex/utils'
 import { getSlippageImpact } from '@/dex/utils/utilsSwap'
-import AlertBox from '@ui/AlertBox'
-import Box from '@ui/Box'
-import Checkbox from '@ui/Checkbox'
-import Icon from '@ui/Icon'
-import IconButton from '@ui/IconButton'
-import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
+import Stack from '@mui/material/Stack'
+import { AlertBox } from '@ui/AlertBox'
+import { Checkbox } from '@ui/Checkbox'
+import { Icon } from '@ui/Icon'
+import { IconButton } from '@ui/IconButton'
 import { getActiveStep, getStepStatus } from '@ui/Stepper/helpers'
-import Stepper from '@ui/Stepper/Stepper'
+import { Stepper } from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
-import TxInfoBar from '@ui/TxInfoBar'
+import { TxInfoBar } from '@ui/TxInfoBar'
 import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
-import { LargeSxProps, TokenSelector } from '@ui-kit/features/select-token'
-import { useLegacyTokenInput } from '@ui-kit/hooks/useFeatureFlags'
-import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
+import { TokenList, TokenSelector } from '@ui-kit/features/select-token'
+import { usePageVisibleInterval } from '@ui-kit/hooks/usePageVisibleInterval'
+import { useSwitch } from '@ui-kit/hooks/useSwitch'
+import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { decimal, type Decimal } from '@ui-kit/utils'
+import { FormContent } from '@ui-kit/widgets/DetailPageLayout/FormContent'
+import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
 
 const { cloneDeep, isNaN, isUndefined } = lodash
+const { Spacing } = SizesAndSpaces
 
-const Swap = ({
+export const Swap = ({
   chainIdPoolId,
   curve,
   maxSlippage,
@@ -55,16 +56,12 @@ const Swap = ({
   routerParams,
   seed,
   tokensMapper,
-  userPoolBalances,
-  userPoolBalancesLoading,
 }: Pick<PageTransferProps, 'curve' | 'params' | 'poolData' | 'poolDataCacheOrApi' | 'routerParams'> & {
   chainIdPoolId: string
   poolAlert: PoolAlert | null
   maxSlippage: string
   seed: Seed
   tokensMapper: TokensMapper
-  userPoolBalances: Balances | undefined
-  userPoolBalancesLoading: boolean
 }) => {
   const isSubscribed = useRef(false)
 
@@ -86,7 +83,6 @@ const Swap = ({
   const setPoolIsWrapped = useStore((state) => state.pools.setPoolIsWrapped)
   const { data: networks } = useNetworks()
   const network = (chainId && networks[chainId]) || null
-  const shouldUseLegacyTokenInput = useLegacyTokenInput()
 
   const slippageImpact = exchangeOutput ? getSlippageImpact({ maxSlippage, ...exchangeOutput }) : null
 
@@ -97,8 +93,27 @@ const Swap = ({
   const poolId = poolData?.pool?.id
   const haveSigner = !!signerAddress
 
-  const userFromBalance = userPoolBalances?.[formValues.fromAddress]
-  const userToBalance = userPoolBalances?.[formValues.toAddress]
+  const config = useConfig()
+  const { address: userAddress } = useConnection()
+  const {
+    data: userFromBalance,
+    isLoading: userFromBalanceLoading,
+    refetch: refetchUserFromBalance,
+  } = useTokenBalance({
+    chainId,
+    userAddress,
+    tokenAddress: (formValues.fromAddress as Address) || undefined,
+  })
+
+  const {
+    data: userToBalance,
+    isLoading: userToBalanceLoading,
+    refetch: refetchUserToBalance,
+  } = useTokenBalance({
+    chainId,
+    userAddress,
+    tokenAddress: (formValues.toAddress as Address) || undefined,
+  })
 
   const { data: fromUsdRate } = useTokenUsdRate(
     { chainId, tokenAddress: formValues.fromAddress },
@@ -119,12 +134,16 @@ const Swap = ({
   const fromToken = selectList.find((x) => x.address.toLocaleLowerCase() == formValues.fromAddress)
   const toToken = selectList.find((x) => x.address.toLocaleLowerCase() == formValues.toAddress)
 
+  const [isOpenFromToken, openModalFromToken, closeModalFromToken] = useSwitch()
+  const [isOpenToToken, openModalToToken, closeModalToToken] = useSwitch()
+
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<FormValues>, isGetMaxFrom: boolean | null, updatedMaxSlippage: string | null) => {
       setConfirmedLoss(false)
       setTxInfoBar(null)
 
       void setFormValues(
+        config,
         curve,
         poolDataCacheOrApi.pool.id,
         poolData,
@@ -134,12 +153,13 @@ const Swap = ({
         updatedMaxSlippage || maxSlippage,
       )
     },
-    [setFormValues, curve, poolDataCacheOrApi.pool.id, poolData, seed.isSeed, maxSlippage],
+    [setFormValues, config, curve, poolDataCacheOrApi.pool.id, poolData, seed.isSeed, maxSlippage],
   )
 
   const handleSwapClick = useCallback(
     async (
       actionActiveKey: string,
+      config: Config,
       curve: CurveApi,
       poolData: PoolData,
       formValues: FormValues,
@@ -148,9 +168,11 @@ const Swap = ({
       const { fromAmount, fromToken, toToken } = formValues
       const notifyMessage = t`Please confirm swap ${fromAmount} ${fromToken} for ${toToken} at max slippage ${maxSlippage}%.`
       const { dismiss } = notify(notifyMessage, 'pending')
-      const resp = await fetchStepSwap(actionActiveKey, curve, poolData, formValues, maxSlippage)
+      const resp = await fetchStepSwap(actionActiveKey, config, curve, poolData, formValues, maxSlippage)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && network) {
+        void refetchUserFromBalance()
+        void refetchUserToBalance()
         setTxInfoBar(
           <TxInfoBar
             description={`Swapped ${fromAmount} ${fromToken}.`}
@@ -163,12 +185,13 @@ const Swap = ({
       }
       if (typeof dismiss === 'function') dismiss()
     },
-    [activeKey, fetchStepSwap, updateFormValues, network],
+    [fetchStepSwap, activeKey, network, refetchUserFromBalance, refetchUserToBalance, updateFormValues],
   )
 
   const getSteps = useCallback(
     (
       actionActiveKey: string,
+      config: Config,
       curve: CurveApi,
       poolData: PoolData,
       formValues: FormValues,
@@ -200,7 +223,7 @@ const Swap = ({
           onClick: async () => {
             const notifyMessage = t`Please approve spending your ${formValues.fromToken}.`
             const { dismiss } = notify(notifyMessage, 'pending')
-            await fetchStepApprove(actionActiveKey, curve, poolData.pool, formValues, maxSlippage)
+            await fetchStepApprove(actionActiveKey, config, curve, poolData.pool, formValues, maxSlippage)
             if (typeof dismiss === 'function') dismiss()
           },
         },
@@ -215,8 +238,12 @@ const Swap = ({
                   title: t`Warning!`,
                   content: (
                     // TODO: fix typescript error
-                    // @ts-ignore
-                    <WarningModal {...exchangeOutput.modal} confirmed={confirmedLoss} setConfirmed={setConfirmedLoss} />
+                    <WarningModal
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                      {...(exchangeOutput.modal as any)}
+                      confirmed={confirmedLoss}
+                      setConfirmed={setConfirmedLoss}
+                    />
                   ),
                   cancelBtnProps: {
                     label: t`Cancel`,
@@ -226,13 +253,13 @@ const Swap = ({
                   },
                   isDismissable: false,
                   primaryBtnProps: {
-                    onClick: () => handleSwapClick(actionActiveKey, curve, poolData, formValues, maxSlippage),
+                    onClick: () => handleSwapClick(actionActiveKey, config, curve, poolData, formValues, maxSlippage),
                     disabled: !confirmedLoss,
                   },
                   primaryBtnLabel: 'Swap anyway',
                 },
               }
-            : { onClick: () => handleSwapClick(actionActiveKey, curve, poolData, formValues, maxSlippage) }),
+            : { onClick: () => handleSwapClick(actionActiveKey, config, curve, poolData, formValues, maxSlippage) }),
         },
       }
 
@@ -274,9 +301,9 @@ const Swap = ({
   // get user balances
   useEffect(() => {
     if (curve && poolId && haveSigner && (isUndefined(userFromBalance) || isUndefined(userToBalance))) {
-      void fetchUserPoolInfo(curve, poolId, true)
+      void fetchUserPoolInfo(config, curve, poolId, true)
     }
-  }, [chainId, poolId, haveSigner, userFromBalance, userToBalance, curve, fetchUserPoolInfo])
+  }, [chainId, poolId, haveSigner, userFromBalance, userToBalance, config, curve, fetchUserPoolInfo])
 
   // curve state change
   useEffect(() => {
@@ -297,6 +324,7 @@ const Swap = ({
     if (curve && poolData && seed.isSeed !== null) {
       const updatedSteps = getSteps(
         activeKey,
+        config,
         curve,
         poolData,
         formValues,
@@ -306,12 +334,13 @@ const Swap = ({
         steps,
         seed.isSeed,
         maxSlippage,
-        userPoolBalancesLoading,
+        userFromBalanceLoading || userToBalanceLoading,
       )
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
+    config,
     chainId,
     poolId,
     confirmedLoss,
@@ -321,7 +350,8 @@ const Swap = ({
     formValues,
     maxSlippage,
     seed.isSeed,
-    userPoolBalancesLoading,
+    userFromBalanceLoading,
+    userToBalanceLoading,
   ])
 
   // pageVisible
@@ -344,223 +374,102 @@ const Swap = ({
   )
 
   return (
-    <>
-      {/* input fields */}
-      <Box grid gridRowGap="1">
-        <div>
-          {shouldUseLegacyTokenInput ? (
-            <Box grid gridGap={1}>
-              <StyledInputProvider
-                id="fromAmount"
-                grid
-                gridTemplateColumns="1fr auto 38%"
-                inputVariant={formValues.fromError ? 'error' : undefined}
-                disabled={isDisabled}
-              >
-                <InputDebounced
-                  id="inpFromAmount"
-                  type="number"
-                  labelProps={
-                    haveSigner && {
-                      label: t`Avail.`,
-                      descriptionLoading: userPoolBalancesLoading,
-                      description: formatNumber(userFromBalance),
-                    }
-                  }
-                  value={formValues.fromAmount}
-                  onChange={(fromAmount) => {
-                    updateFormValues({ isFrom: true, fromAmount, toAmount: '' }, null, null)
-                  }}
-                />
-                <InputMaxBtn
-                  disabled={isDisabled || isMaxLoading}
-                  loading={isMaxLoading}
-                  isNetworkToken={formValues.fromAddress.toLowerCase() === ethAddress}
-                  onClick={() => {
-                    updateFormValues({ isFrom: true, fromAmount: '', toAmount: '' }, true, null)
-                  }}
-                />
-                {
-                  <TokenSelector
-                    selectedToken={fromToken}
-                    tokens={selectList}
-                    disabled={isDisabled || selectList.length === 0}
-                    showSearch={false}
-                    showManageList={false}
-                    compact
-                    onToken={(token) => {
-                      const val = token.address
-                      const cFormValues = cloneDeep(formValues)
-                      if (val === formValues.toAddress) {
-                        cFormValues.toAddress = formValues.fromAddress
-                        cFormValues.toToken = swapTokensMapper[formValues.fromAddress].symbol
-                      }
-
-                      cFormValues.fromAddress = val
-                      cFormValues.fromToken = swapTokensMapper[val].symbol
-
-                      if (formValues.isFrom || formValues.isFrom === null) {
-                        cFormValues.toAmount = ''
-                      } else {
-                        cFormValues.fromAmount = ''
-                      }
-
-                      updateFormValues(cFormValues, null, '')
-                    }}
-                  />
+    <FormContent>
+      <Stack gap={Spacing.sm}>
+        <LargeTokenInput
+          label={t`Sell`}
+          name="fromAmount"
+          onBalance={setFromAmount}
+          balance={decimal(formValues.fromAmount)}
+          inputBalanceUsd={decimal(formValues.fromAmount && fromUsdRate && fromUsdRate * +formValues.fromAmount)}
+          tokenSelector={
+            <TokenSelector
+              selectedToken={fromToken}
+              disabled={isDisabled || selectList.length === 0}
+              compact
+              onClose={closeModalFromToken}
+              isOpen={!!isOpenFromToken}
+              onOpen={openModalFromToken}
+            >
+              <TokenList
+                tokens={selectList}
+                disableSearch
+                onToken={({ address, symbol }) =>
+                  updateFormValues(
+                    {
+                      ...formValues,
+                      ...(address === formValues.toAddress && {
+                        toAddress: formValues.fromAddress,
+                        toToken: swapTokensMapper[formValues.fromAddress].symbol,
+                      }),
+                      fromAddress: address,
+                      fromToken: symbol,
+                      ...(formValues.isFrom === false ? { fromAmount: '' } : { toAmount: '' }),
+                    },
+                    null,
+                    '',
+                  )
                 }
-              </StyledInputProvider>
-              <FieldHelperUsdRate amount={formValues.fromAmount} usdRate={fromUsdRate} />
-              {formValues.fromError && (
-                <ChipInpHelper size="xs" isDarkBg isError>
-                  {t`Amount > wallet balance ${formatNumber(userFromBalance)}`}
-                </ChipInpHelper>
-              )}
-            </Box>
-          ) : (
-            <LargeTokenInput
-              label={t`Sell`}
-              name="fromAmount"
-              onBalance={setFromAmount}
-              balance={decimal(formValues.fromAmount)}
-              inputBalanceUsd={decimal(formValues.fromAmount && fromUsdRate && fromUsdRate * +formValues.fromAmount)}
-              tokenSelector={
-                <TokenSelector
-                  selectedToken={fromToken}
-                  tokens={selectList}
-                  disabled={isDisabled || selectList.length === 0}
-                  showSearch={false}
-                  showManageList={false}
-                  compact
-                  onToken={({ address, symbol }) =>
-                    updateFormValues(
-                      {
-                        ...formValues,
-                        ...(address === formValues.toAddress && {
-                          toAddress: formValues.fromAddress,
-                          toToken: swapTokensMapper[formValues.fromAddress].symbol,
-                        }),
-                        fromAddress: address,
-                        fromToken: symbol,
-                        ...(formValues.isFrom === false ? { fromAmount: '' } : { toAmount: '' }),
-                      },
-                      null,
-                      '',
-                    )
-                  }
-                  sx={LargeSxProps}
-                />
-              }
-              {...(formValues.fromError && {
-                isError: true,
-                message: t`Amount > wallet balance ${formatNumber(userFromBalance)}`,
-              })}
-              disabled={isDisabled}
-              walletBalance={{
-                balance: decimal(userFromBalance),
-                loading: userPoolBalancesLoading || isMaxLoading,
-                symbol: fromToken?.symbol,
-                usdRate: fromUsdRate,
-              }}
-              maxBalance={{
-                balance: decimal(userFromBalance),
-                chips: 'range',
-              }}
-            />
-          )}
-        </div>
+              />
+            </TokenSelector>
+          }
+          {...(formValues.fromError && {
+            isError: true,
+            message: t`Amount > wallet balance ${formatNumber(userFromBalance)}`,
+          })}
+          disabled={isDisabled}
+          walletBalance={{
+            balance: decimal(userFromBalance),
+            loading: userFromBalanceLoading || isMaxLoading,
+            symbol: fromToken?.symbol,
+            usdRate: fromUsdRate,
+          }}
+          maxBalance={{
+            balance: decimal(userFromBalance),
+            chips: 'range',
+          }}
+        />
 
-        <Box flex flexJustifyContent="center">
-          <IconButton
-            disabled={isDisabled}
-            onClick={() => {
-              const cFormValues = cloneDeep(formValues)
-              cFormValues.isFrom = true
-              cFormValues.fromAmount = formValues.toAmount
-              cFormValues.fromToken = formValues.toToken
-              cFormValues.fromAddress = formValues.toAddress
-              cFormValues.toToken = formValues.fromToken
-              cFormValues.toAddress = formValues.fromAddress
-              cFormValues.toAmount = ''
+        <IconButton
+          disabled={isDisabled}
+          onClick={() => {
+            const cFormValues = cloneDeep(formValues)
+            cFormValues.isFrom = true
+            cFormValues.fromAmount = formValues.toAmount
+            cFormValues.fromToken = formValues.toToken
+            cFormValues.fromAddress = formValues.toAddress
+            cFormValues.toToken = formValues.fromToken
+            cFormValues.toAddress = formValues.fromAddress
+            cFormValues.toAmount = ''
 
-              updateFormValues(cFormValues, null, '')
-            }}
-            size="medium"
-          >
-            <Icon name="ArrowsVertical" size={24} aria-label="icon arrow vertical" />
-          </IconButton>
-        </Box>
+            updateFormValues(cFormValues, null, '')
+          }}
+          size="medium"
+        >
+          <Icon name="ArrowsVertical" size={24} aria-label="icon arrow vertical" />
+        </IconButton>
 
         {/* if hasRouter value is false, it means entering toAmount is not ready */}
-        {shouldUseLegacyTokenInput ? (
-          <div>
-            <StyledInputProvider
-              id="toAmount"
-              inputVariant={formValues.toError ? 'error' : undefined}
-              disabled={isUndefined(hasRouter) || (!isUndefined(hasRouter) && !hasRouter) || isDisabled}
-              grid
-              gridTemplateColumns="1fr 38%"
+
+        <LargeTokenInput
+          label={t`Buy`}
+          name="toAmount"
+          onBalance={setToAmount}
+          inputBalanceUsd={decimal(formValues.toAmount && toUsdRate && toUsdRate * +formValues.toAmount)}
+          balance={decimal(formValues.toAmount)}
+          disabled={isUndefined(hasRouter) || (!isUndefined(hasRouter) && !hasRouter) || isDisabled}
+          tokenSelector={
+            <TokenSelector
+              selectedToken={toToken}
+              disabled={isDisabled || selectList.length === 0}
+              compact
+              isOpen={!!isOpenToToken}
+              onOpen={openModalToToken}
+              onClose={closeModalToToken}
             >
-              <InputDebounced
-                id="inpToAmount"
-                type="number"
-                labelProps={
-                  haveSigner && {
-                    label: t`Avail.`,
-                    descriptionLoading: userPoolBalancesLoading,
-                    description: formatNumber(userToBalance),
-                  }
-                }
-                value={formValues.toAmount}
-                onChange={(toAmount) => {
-                  updateFormValues({ isFrom: false, toAmount, fromAmount: '' }, null, '')
-                }}
-              />
-              <TokenSelector
-                selectedToken={toToken}
+              <TokenList
                 tokens={selectList}
-                disabled={isDisabled || selectList.length === 0}
-                showSearch={false}
-                showManageList={false}
-                compact
-                onToken={(token) => {
-                  const address = token.address
-                  const cFormValues = cloneDeep(formValues)
-                  if (address === formValues.fromAddress) {
-                    cFormValues.fromAddress = formValues.toAddress
-                    cFormValues.fromToken = swapTokensMapper[formValues.toAddress].symbol
-                  }
-
-                  cFormValues.toAddress = address
-                  cFormValues.toToken = swapTokensMapper[address].symbol
-
-                  if (formValues.isFrom || formValues.isFrom === null) {
-                    cFormValues.toAmount = ''
-                  } else {
-                    cFormValues.fromAmount = ''
-                  }
-                  updateFormValues(cFormValues, null, '')
-                }}
-              />
-            </StyledInputProvider>
-            <FieldHelperUsdRate amount={formValues.toAmount} usdRate={toUsdRate} />
-          </div>
-        ) : (
-          <LargeTokenInput
-            label={t`Buy`}
-            name="toAmount"
-            onBalance={setToAmount}
-            inputBalanceUsd={decimal(formValues.toAmount && toUsdRate && toUsdRate * +formValues.toAmount)}
-            balance={decimal(formValues.toAmount)}
-            disabled={isUndefined(hasRouter) || (!isUndefined(hasRouter) && !hasRouter) || isDisabled}
-            tokenSelector={
-              <TokenSelector
-                selectedToken={toToken}
-                tokens={selectList}
-                disabled={isDisabled || selectList.length === 0}
-                showSearch={false}
-                showManageList={false}
-                compact
+                disableSearch
                 onToken={({ address, symbol }) =>
                   updateFormValues(
                     {
@@ -577,17 +486,16 @@ const Swap = ({
                     '',
                   )
                 }
-                sx={LargeSxProps}
               />
-            }
-            walletBalance={{
-              balance: decimal(userToBalance),
-              loading: userPoolBalancesLoading,
-              symbol: toToken?.symbol,
-              usdRate: toUsdRate,
-            }}
-          />
-        )}
+            </TokenSelector>
+          }
+          walletBalance={{
+            balance: decimal(userToBalance),
+            loading: userToBalanceLoading,
+            symbol: toToken?.symbol,
+            usdRate: toUsdRate,
+          }}
+        />
 
         {poolDataCacheOrApi.hasWrapped && formValues.isWrapped !== null && (
           <div>
@@ -620,9 +528,9 @@ const Swap = ({
             </Checkbox>
           </div>
         )}
-      </Box>
+      </Stack>
 
-      <Box>
+      <Stack>
         <DetailInfoExchangeRate exchangeRates={exchangeOutput.exchangeRates} loading={exchangeOutput.loading} />
 
         <DetailInfoPriceImpact
@@ -639,8 +547,8 @@ const Swap = ({
             stepProgress={activeStep && steps.length > 1 ? { active: activeStep, total: steps.length } : null}
           />
         )}
-        <DetailInfoSlippageTolerance maxSlippage={maxSlippage} stateKey={chainIdPoolId} />
-      </Box>
+        <SlippageToleranceActionInfo maxSlippage={maxSlippage} stateKey={chainIdPoolId} />
+      </Stack>
 
       {poolAlert && poolAlert?.isInformationOnlyAndShowInForm && (
         <AlertBox {...poolAlert}>{poolAlert.message}</AlertBox>
@@ -673,17 +581,10 @@ const Swap = ({
         loading={!chainId || !steps.length || !seed.loaded}
         routerParams={routerParams}
         seed={seed}
-        userPoolBalances={userPoolBalances}
       >
         {txInfoBar}
         <Stepper steps={steps} />
       </TransferActions>
-    </>
+    </FormContent>
   )
 }
-
-const StyledInputProvider = styled(InputProvider)`
-  padding-right: var(--spacing-1);
-`
-
-export default Swap

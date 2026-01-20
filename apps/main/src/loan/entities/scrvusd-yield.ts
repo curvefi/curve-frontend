@@ -2,6 +2,7 @@ import { getYield } from '@curvefi/prices-api/savings'
 import type { Yield } from '@curvefi/prices-api/savings/models'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { timeOptionValidationSuite } from '@ui-kit/lib/model/query/time-option-validation'
+import { TIME_FRAMES } from '@ui-kit/lib/model/time'
 import type { TimeOption } from '@ui-kit/lib/types/scrvusd'
 
 export type ScrvUsdYieldWithAverages = Yield & { proj_apy_7d_avg: number; proj_apy_total_avg: number }
@@ -9,9 +10,9 @@ export type ScrvUsdYieldWithAverages = Yield & { proj_apy_7d_avg: number; proj_a
 export const _getScrvUsdYield = async (params: { timeOption: TimeOption }) => {
   // calcs starting timestamp
   const timeOptionCalc: Record<TimeOption, number> = {
-    '1M': 30 * 24 * 60 * 60 * 1000, // 30 days
-    '6M': 180 * 24 * 60 * 60 * 1000, // 180 days
-    '1Y': 365 * 24 * 60 * 60 * 1000, // 365 days
+    '1M': 30 * TIME_FRAMES.DAY_MS, // 30 days
+    '6M': 180 * TIME_FRAMES.DAY_MS, // 180 days
+    '1Y': 365 * TIME_FRAMES.DAY_MS, // 365 days
   }
   // sets number of aggregations
   const aggNumbers: Record<TimeOption, number> = { '1M': 4, '6M': 16, '1Y': 32 }
@@ -31,7 +32,7 @@ export const _getScrvUsdYield = async (params: { timeOption: TimeOption }) => {
     const totalAverage = array.reduce((sum, curr) => sum + curr.apyProjected, 0) / array.length
 
     // Calculate 7-day moving average
-    const SEVEN_DAYS_IN_MILLISECONDS = 7 * 24 * 60 * 60 * 1000
+    const SEVEN_DAYS_IN_MILLISECONDS = 7 * TIME_FRAMES.DAY_MS
     const currentTimestamp = item.timestamp.getTime()
     const sevenDaysAgoTimestamp = currentTimestamp - SEVEN_DAYS_IN_MILLISECONDS
 

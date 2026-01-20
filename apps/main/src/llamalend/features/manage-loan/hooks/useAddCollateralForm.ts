@@ -2,25 +2,21 @@ import { useEffect, useMemo } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
 import { useForm } from 'react-hook-form'
 import { useConnection } from 'wagmi'
-import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
 import { getTokens } from '@/llamalend/llama.utils'
-import type { LlamaMarketTemplate, LlamaNetwork, NetworkDict } from '@/llamalend/llamalend.types'
+import type { LlamaMarketTemplate, LlamaNetwork } from '@/llamalend/llamalend.types'
 import { type AddCollateralOptions, useAddCollateralMutation } from '@/llamalend/mutations/add-collateral.mutation'
 import { useAddCollateralIsApproved } from '@/llamalend/queries/add-collateral/add-collateral-approved.query'
-import { useAddCollateralBands } from '@/llamalend/queries/add-collateral/add-collateral-bands.query'
-import { useAddCollateralEstimateGas } from '@/llamalend/queries/add-collateral/add-collateral-gas-estimate.query'
-import { getAddCollateralHealthOptions } from '@/llamalend/queries/add-collateral/add-collateral-health.query'
-import { useAddCollateralPrices } from '@/llamalend/queries/add-collateral/add-collateral-prices.query'
 import type { CollateralParams } from '@/llamalend/queries/validation/manage-loan.types'
 import {
-  collateralFormValidationSuite,
+  addCollateralFormValidationSuite,
   type CollateralForm,
 } from '@/llamalend/queries/validation/manage-loan.validation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { vestResolver } from '@hookform/resolvers/vest'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
-import { formDefaultOptions } from '@ui-kit/lib/model'
-import { useFormErrors } from '../../borrow/react-form.utils'
+import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
+import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
+import { useFormErrors } from '@ui-kit/utils/react-form.utils'
 
 const useCallbackAfterFormUpdate = (form: UseFormReturn<CollateralForm>, callback: () => void) =>
   useEffect(() => form.subscribe({ formState: { values: true }, callback }), [form, callback])
@@ -28,15 +24,11 @@ const useCallbackAfterFormUpdate = (form: UseFormReturn<CollateralForm>, callbac
 export const useAddCollateralForm = <ChainId extends LlamaChainId>({
   market,
   network,
-  networks,
-  enabled,
   onAdded,
 }: {
   market: LlamaMarketTemplate | undefined
   network: LlamaNetwork<ChainId>
-  networks: NetworkDict<ChainId>
-  enabled?: boolean
-  onAdded: NonNullable<AddCollateralOptions['onAdded']>
+  onAdded?: NonNullable<AddCollateralOptions['onAdded']>
 }) => {
   const { address: userAddress } = useConnection()
   const { chainId } = network
@@ -45,31 +37,31 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
   const tokens = market && getTokens(market)
   const collateralToken = tokens?.collateralToken
   const borrowToken = tokens?.borrowToken
+  const { data: maxCollateral } = useTokenBalance({ chainId, userAddress, tokenAddress: collateralToken?.address })
 
   const form = useForm<CollateralForm>({
     ...formDefaultOptions,
-    resolver: vestResolver(collateralFormValidationSuite),
+    resolver: vestResolver(addCollateralFormValidationSuite),
     defaultValues: {
       userCollateral: undefined,
+      maxCollateral: undefined,
     },
   })
 
-  const values = form.watch()
+  const values = watchForm(form)
 
   const params = useDebouncedValue(
     useMemo(
-      () =>
-        ({
-          chainId,
-          marketId,
-          userAddress,
-          userCollateral: values.userCollateral,
-        }) as CollateralParams<ChainId>,
-      [chainId, marketId, userAddress, values.userCollateral],
+      (): CollateralParams<ChainId> => ({
+        chainId,
+        marketId,
+        userAddress,
+        userCollateral: values.userCollateral,
+        maxCollateral: values.maxCollateral,
+      }),
+      [chainId, marketId, userAddress, values.userCollateral, values.maxCollateral],
     ),
   )
-
-  const isApproved = useAddCollateralIsApproved(params)
 
   const { onSubmit, ...action } = useAddCollateralMutation({
     marketId,
@@ -79,14 +71,13 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
     userAddress,
   })
 
+  const formErrors = useFormErrors(form.formState)
+
   useCallbackAfterFormUpdate(form, action.reset)
 
-  const bands = useAddCollateralBands(params, enabled)
-  const health = useHealthQueries((isFull) => getAddCollateralHealthOptions({ ...params, isFull }, enabled))
-  const prices = useAddCollateralPrices(params, enabled)
-  const gas = useAddCollateralEstimateGas(networks, params, enabled)
-
-  const formErrors = useFormErrors(form.formState)
+  useEffect(() => {
+    form.setValue('maxCollateral', maxCollateral, { shouldValidate: true })
+  }, [form, maxCollateral])
 
   return {
     form,
@@ -95,14 +86,10 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
     isPending: form.formState.isSubmitting || action.isPending,
     onSubmit: form.handleSubmit(onSubmit),
     action,
-    bands,
-    health,
-    prices,
-    gas,
-    isApproved,
-    formErrors,
     collateralToken,
     borrowToken,
     txHash: action.data?.hash,
+    isApproved: useAddCollateralIsApproved(params),
+    formErrors,
   }
 }

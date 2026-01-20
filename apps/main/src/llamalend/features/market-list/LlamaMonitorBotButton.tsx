@@ -25,6 +25,7 @@ export const LlamaMonitorBotButton = () => {
     </IconButton>
   ) : (
     <Button
+      className="group"
       color="ghost"
       size="extraSmall"
       component={Link}

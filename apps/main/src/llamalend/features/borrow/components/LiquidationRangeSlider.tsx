@@ -5,7 +5,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { SliderInput } from '@ui-kit/shared/ui/SliderInput'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { decimal } from '@ui-kit/utils'
-import { BORROW_PRESET_RANGES } from '../../../constants'
+import { PRESET_RANGES } from '../../../constants'
 
 const { Spacing } = SizesAndSpaces
 
@@ -21,8 +21,8 @@ export const LiquidationRangeSlider = ({
   const liqRanges =
     market && Array.from({ length: +market.maxBands - +market.minBands + 1 }, (_, i) => ({ n: i + market.minBands }))
 
-  const minValue = liqRanges?.[0]?.n ?? market?.minBands ?? BORROW_PRESET_RANGES.MaxLtv
-  const maxValue = liqRanges?.[liqRanges.length - 1]?.n ?? market?.maxBands ?? BORROW_PRESET_RANGES.Safe
+  const minValue = liqRanges?.[0]?.n ?? market?.minBands ?? PRESET_RANGES.MaxLtv
+  const maxValue = liqRanges?.[liqRanges.length - 1]?.n ?? market?.maxBands ?? PRESET_RANGES.Safe
   return (
     <Grid container columnSpacing={Spacing.sm}>
       <Grid container size={8}>

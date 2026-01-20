@@ -1,8 +1,8 @@
 import { useEffect } from 'react'
-import PaginatedTable from '@/dao/components/PaginatedTable'
+import { PaginatedTable } from '@/dao/components/PaginatedTable'
 import { TableData, TableDataLink, TableRowWrapper } from '@/dao/components/PaginatedTable/TableRow'
 import { TOP_HOLDERS } from '@/dao/constants'
-import useStore from '@/dao/store/useStore'
+import { useStore } from '@/dao/store/useStore'
 import { GaugeVote, GaugeVotesSortBy } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils'
 import { formatLocaleDate } from '@ui/utils/'
@@ -19,7 +19,7 @@ interface GaugeVotesTableProps {
 // weight is recieved in bps, 10000 = 100%
 const weightBpsToPercentage = (weight: number) => weight / 100
 
-const GaugeVotesTable = ({ gaugeAddress, tableMinWidth }: GaugeVotesTableProps) => {
+export const GaugeVotesTable = ({ gaugeAddress, tableMinWidth }: GaugeVotesTableProps) => {
   const getGaugeVotes = useStore((state) => state.gauges.getGaugeVotes)
   const gaugeVotesMapper = useStore((state) => state.gauges.gaugeVotesMapper)
   const gaugeVotesSortBy = useStore((state) => state.gauges.gaugeVotesSortBy)
@@ -84,5 +84,3 @@ const GaugeVotesTable = ({ gaugeAddress, tableMinWidth }: GaugeVotesTableProps) 
     />
   )
 }
-
-export default GaugeVotesTable

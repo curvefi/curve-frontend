@@ -1,9 +1,9 @@
-import { useMemo } from 'react'
+import { useEffect } from 'react'
 import { type Address } from 'viem'
 import { NG_ASSET_TYPE } from '@/dex/components/PageCreatePool/constants'
 import { useIsErc4626 } from '@/dex/components/PageCreatePool/hooks/useIsErc4626'
 import { TokenId } from '@/dex/components/PageCreatePool/types'
-import useStore from '@/dex/store/useStore'
+import { useStore } from '@/dex/store/useStore'
 
 type UseAutoDetectErc4626Params = {
   tokenId: TokenId
@@ -20,7 +20,7 @@ export const useAutoDetectErc4626 = ({ tokenId, address }: UseAutoDetectErc4626P
   const statusAlreadySet = useStore((state) => state.createPool.tokensInPool[tokenId].erc4626.isSuccess)
   const { isErc4626, isLoading, error, isSuccess } = useIsErc4626({ address })
 
-  useMemo(() => {
+  useEffect(() => {
     if (isLoading || error || isSuccess) {
       updateTokenErc4626Status(tokenId, { isErc4626, isLoading, error, isSuccess })
     }

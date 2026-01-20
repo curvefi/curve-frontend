@@ -1,19 +1,19 @@
 import { ReactNode, useMemo } from 'react'
 import { styled } from 'styled-components'
 import type { LiqRangeSliderIdx } from '@/lend/store/types'
-import useStore from '@/lend/store/useStore'
+import { useStore } from '@/lend/store/useStore'
 import { ChainId } from '@/lend/types/lend.types'
 import type { HealthMode } from '@/llamalend/llamalend.types'
 import { ChartLiquidationRange } from '@/llamalend/widgets/ChartLiquidationRange'
-import Button from '@ui/Button'
-import DetailInfo from '@ui/DetailInfo'
-import Icon from '@ui/Icon'
+import { Button } from '@ui/Button'
+import { DetailInfo } from '@ui/DetailInfo'
+import { Icon } from '@ui/Icon'
 import { Chip } from '@ui/Typography'
-import { formatNumber } from '@ui/utils'
+import { formatNumber, formatNumberRange } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { useUserLoanDetails } from '../hooks/useUserLoanDetails'
 
-const DetailInfoLiqRange = ({
+export const DetailInfoLiqRange = ({
   rChainId,
   rOwmId,
   bands: newBands,
@@ -47,6 +47,7 @@ const DetailInfoLiqRange = ({
   const { prices: currPrices, bands: currBands } = useUserLoanDetails(userActiveKey)
   const loanPricesResp = useStore((state) => state.markets.pricesMapper[rChainId]?.[rOwmId])
   const { prices: loanPrices } = loanPricesResp ?? {}
+  const selectedBands = selectedLiqRange?.bands
   const { parsedNewBands, parsedNewPrices } = useMemo(
     () =>
       isFullRepay
@@ -77,27 +78,9 @@ const DetailInfoLiqRange = ({
     [currPrices, parsedNewPrices, loanPrices?.oraclePrice, loanPrices?.oraclePriceBand],
   )
 
-  const currBandsLabel = useMemo(() => {
-    const [currBand0, currBand1] = currBands ?? []
-    return typeof currBand0 !== 'undefined' && typeof currBand1 !== 'undefined' && !(currBand0 === 0 && currBand1 === 0)
-      ? `${formatNumber(currBand0)} to ${formatNumber(currBand1)}`
-      : ''
-  }, [currBands])
-
-  const newBandsLabel = useMemo(() => {
-    let newBand0
-    let newBand1
-
-    if (selectedLiqRange?.bands && +selectedLiqRange.bands > 0) {
-      ;[newBand0, newBand1] = selectedLiqRange.bands
-    } else if (parsedNewBands) {
-      ;[newBand0, newBand1] = parsedNewBands
-    }
-
-    return typeof newBand0 !== 'undefined' && typeof newBand1 !== 'undefined' && !(newBand0 === 0 && newBand1 === 0)
-      ? `${formatNumber(newBand0)} to ${formatNumber(newBand1)}`
-      : ''
-  }, [selectedLiqRange?.bands, parsedNewBands])
+  const currBandsLabel = formatNumberRange(currBands)
+  // todo: we should not use +selectedBands as that's an array!
+  const newBandsLabel = formatNumberRange(selectedBands && +selectedBands > 0 ? selectedBands : parsedNewBands)
 
   return (
     <>
@@ -189,5 +172,3 @@ const LiqRangeEditButton = styled(Button)`
     cursor: initial;
   }
 `
-
-export default DetailInfoLiqRange

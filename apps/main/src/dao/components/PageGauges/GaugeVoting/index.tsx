@@ -1,30 +1,20 @@
 import { styled } from 'styled-components'
 import { WrongNetwork } from '@/dao/components/PageVeCrv/WrongNetwork'
-import { ConnectWalletPrompt, isLoading, useCurve, useWallet } from '@ui-kit/features/connect-wallet'
-import CurrentVotes from './CurrentVotes'
+import { ConnectWalletPrompt, useCurve } from '@ui-kit/features/connect-wallet'
+import { Chain } from '@ui-kit/utils'
+import { CurrentVotes } from './CurrentVotes'
 
-const GaugeVoting = ({ userAddress }: { userAddress: string | undefined }) => {
-  const { connectState, curveApi: { chainId } = {} } = useCurve()
-  const { provider, connect } = useWallet()
-
-  if (!provider)
-    return (
-      <ConnectWrapper>
-        <ConnectWalletPrompt
-          description="Connect your wallet to view your current votes and vote on gauges"
-          connectText="Connect Wallet"
-          loadingText="Connecting"
-          connectWallet={() => connect()}
-          isLoading={isLoading(connectState)}
-        />
-      </ConnectWrapper>
-    )
-
-  if (chainId !== 1) return <WrongNetwork />
-
+export const GaugeVoting = () => {
+  const { provider, curveApi: { chainId } = {} } = useCurve()
+  if (chainId !== Chain.Ethereum) {
+    return <WrongNetwork />
+  }
+  if (!provider) {
+    return <ConnectWalletPrompt description="Connect your wallet to view your current votes and vote on gauges" />
+  }
   return (
     <Wrapper>
-      <CurrentVotes userAddress={userAddress} />
+      <CurrentVotes />
     </Wrapper>
   )
 }
@@ -35,15 +25,3 @@ const Wrapper = styled.div`
   flex-grow: 1;
   min-height: 100%;
 `
-
-const ConnectWrapper = styled.div`
-  display: flex;
-  width: 100%;
-  flex-grow: 1;
-  min-height: 100%;
-  background-color: var(--table--background-color);
-  justify-content: center;
-  align-items: center;
-`
-
-export default GaugeVoting

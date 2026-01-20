@@ -1,13 +1,13 @@
 import lodash from 'lodash'
 import { ReactNode, useMemo, useState } from 'react'
-import ChartBandBalances from '@/lend/components/ChartBandBalances'
+import { ChartBandBalances } from '@/lend/components/ChartBandBalances'
 import type { BrushStartEndIndex } from '@/lend/components/ChartBandBalances/types'
 import { DEFAULT_BAND_CHART_DATA } from '@/lend/components/DetailsUser/utils'
-import useStore from '@/lend/store/useStore'
+import { useStore } from '@/lend/store/useStore'
 import { PageContentProps, ParsedBandsBalances } from '@/lend/types/lend.types'
 import { t } from '@ui-kit/lib/i18n'
 
-const DetailsLoanChartBalances = ({
+export const DetailsLoanChartBalances = ({
   rChainId,
   rOwmId,
   market,
@@ -88,5 +88,3 @@ function _parseData(data: ParsedBandsBalances[]) {
   const lastDataIdx = data.findLastIndex(_findDataIndex)
   return data.slice(firstDataIdx, lastDataIdx + 1)
 }
-
-export default DetailsLoanChartBalances

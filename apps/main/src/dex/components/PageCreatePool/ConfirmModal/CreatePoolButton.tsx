@@ -1,12 +1,12 @@
 import { styled } from 'styled-components'
-import InfoLinkBar from '@/dex/components/PageCreatePool/ConfirmModal/CreateInfoLinkBar'
+import { InfoLinkBar } from '@/dex/components/PageCreatePool/ConfirmModal/CreateInfoLinkBar'
 import { useNetworks } from '@/dex/entities/networks'
 import { curveProps } from '@/dex/lib/utils'
-import useStore from '@/dex/store/useStore'
+import { useStore } from '@/dex/store/useStore'
 import { CurveApi } from '@/dex/types/main.types'
-import AlertBox from '@ui/AlertBox'
-import Button from '@ui/Button'
-import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import { AlertBox } from '@ui/AlertBox'
+import { Button } from '@ui/Button'
+import { SpinnerWrapper, Spinner } from '@ui/Spinner'
 import { isLoading, useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 
@@ -15,7 +15,7 @@ interface Props {
   curve: CurveApi
 }
 
-const CreatePoolButton = ({ disabled, curve }: Props) => {
+export const CreatePoolButton = ({ disabled, curve }: Props) => {
   const { data: networks } = useNetworks()
   const { haveSigner } = curveProps(curve, networks)
   const deployPool = useStore((state) => state.createPool.deployPool)
@@ -108,5 +108,3 @@ const StyledSpinner = styled(Spinner)`
     border-color: var(--box_action--button--loading--color) transparent transparent transparent;
   }
 `
-
-export default CreatePoolButton

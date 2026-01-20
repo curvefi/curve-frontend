@@ -1,1 +1,1 @@
-export { default } from './DelayRender'
+export { DelayRender } from './DelayRender'

@@ -1,7 +1,7 @@
 import lodash from 'lodash'
 import { LoanParameter } from '@/loan/types/loan.types'
-import DetailInfo from '@ui/DetailInfo'
-import Icon from '@ui/Icon'
+import { DetailInfo } from '@ui/DetailInfo'
+import { Icon } from '@ui/Icon'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 
@@ -9,7 +9,7 @@ interface Props {
   parameters: LoanParameter | undefined
 }
 
-const DetailInfoBorrowRate = ({ parameters }: Props) => {
+export const DetailInfoBorrowRate = ({ parameters }: Props) => {
   const { rate, future_rate: futureRate } = parameters ?? {}
   const loading = lodash.isUndefined(rate) && lodash.isUndefined(futureRate)
 
@@ -23,5 +23,3 @@ const DetailInfoBorrowRate = ({ parameters }: Props) => {
     </DetailInfo>
   )
 }
-
-export default DetailInfoBorrowRate

@@ -1,7 +1,5 @@
 import { useMemo } from 'react'
 import type { Address } from 'viem'
-import { useUserCrvUsdCollateralEventsQuery } from '@/llamalend/features/user-position-history/queries/user-crvusd-collateral-events'
-import { useUserLendCollateralEventsQuery } from '@/llamalend/features/user-position-history/queries/user-lend-collateral-events'
 import { type Chain } from '@curvefi/prices-api'
 import {
   UserCollateralEvent as CrvUsdUserCollateralEvent,
@@ -12,6 +10,8 @@ import {
   UserCollateralEvents as LendingUserCollateralEvents,
 } from '@curvefi/prices-api/lending'
 import { scanTxPath, type BaseConfig } from '@ui/utils'
+import { useUserCrvUsdCollateralEventsQuery } from '../queries/user-crvusd-collateral-events'
+import { useUserLendCollateralEventsQuery } from '../queries/user-lend-collateral-events'
 
 type UserCollateralEvent = LendingUserCollateralEvent | CrvUsdUserCollateralEvent
 type UserCollateralEvents = LendingUserCollateralEvents | CrvUsdUserCollateralEvents
@@ -45,7 +45,7 @@ type CollateralEventToken = {
 
 export type ParsedUserCollateralEvent = Omit<UserCollateralEvent, 'type'> & {
   type: UserCollateralEventType
-  txUrl: string
+  txUrl?: string
   url?: string | null
   borrowToken: CollateralEventToken | undefined
   collateralToken: CollateralEventToken | undefined

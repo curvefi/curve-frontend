@@ -1,21 +1,25 @@
 import * as models from '@/dex/entities/gauge/model'
 import { gaugeKeys as keys } from '@/dex/entities/gauge/model'
 import type {
+  AddReward,
   AddRewardMutation,
   AddRewardParams,
+  DepositReward,
+  DepositRewardApprove,
   DepositRewardApproveMutation,
   DepositRewardApproveParams,
   DepositRewardMutation,
   DepositRewardParams,
 } from '@/dex/entities/gauge/types'
-import useTokensMapper from '@/dex/hooks/useTokensMapper'
+import { useTokensMapper } from '@/dex/hooks/useTokensMapper'
 import { DefaultError, Mutation, useIsMutating, useMutation, UseMutationResult } from '@tanstack/react-query'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { queryClient } from '@ui-kit/lib/api/query-client'
 import { t } from '@ui-kit/lib/i18n'
 import { GaugeParams } from '@ui-kit/lib/model/query'
 
-type QueryMutation = Mutation<unknown, DefaultError, any> // todo: type got converted from any to unknown in v5.60
+// we cannot use a proper T here because `useIsMutating` expects `unknown` for some reason
+type QueryMutation = Mutation<unknown, DefaultError, unknown>
 
 export const useAddRewardToken = ({
   chainId,
@@ -52,8 +56,10 @@ export const useAddRewardTokenIsMutating = ({
   Boolean(
     useIsMutating({
       mutationKey: keys.addRewardToken({ chainId, poolId }),
-      predicate: ({ state }: QueryMutation) =>
-        state.variables?.rewardTokenId === rewardTokenId && state.variables?.distributorId === distributorId,
+      predicate: ({ state }: QueryMutation) => {
+        const vars = state.variables as AddReward | undefined
+        return vars?.rewardTokenId === rewardTokenId && vars?.distributorId === distributorId
+      },
     }),
   )
 
@@ -90,8 +96,10 @@ export const useDepositRewardApproveIsMutating = ({
   Boolean(
     useIsMutating({
       mutationKey: keys.depositRewardIsApproved({ chainId, poolId }),
-      predicate: ({ state }: QueryMutation) =>
-        state.variables?.rewardTokenId === rewardTokenId && state.variables?.amount === amount,
+      predicate: ({ state }: QueryMutation) => {
+        const vars = state.variables as DepositRewardApprove | undefined
+        return vars?.rewardTokenId === rewardTokenId && vars?.amount === amount
+      },
     }),
   )
 
@@ -127,9 +135,9 @@ export const useDepositRewardIsMutating = ({
   Boolean(
     useIsMutating({
       mutationKey: keys.depositReward({ chainId, poolId }),
-      predicate: ({ state }: QueryMutation) =>
-        state.variables?.rewardTokenId === rewardTokenId &&
-        state.variables?.amount === amount &&
-        state.variables?.epoch === epoch,
+      predicate: ({ state }: QueryMutation) => {
+        const vars = state.variables as DepositReward | undefined
+        return vars?.rewardTokenId === rewardTokenId && vars?.amount === amount && vars?.epoch === epoch
+      },
     }),
   )

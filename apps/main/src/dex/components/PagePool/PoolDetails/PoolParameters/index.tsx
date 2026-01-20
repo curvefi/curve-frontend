@@ -2,17 +2,16 @@ import { useMemo } from 'react'
 import { styled } from 'styled-components'
 import { StyledIconButton, StyledInformationSquare16 } from '@/dex/components/PagePool/PoolDetails/PoolStats/styles'
 import { useNetworkByChain } from '@/dex/entities/networks'
-import useStore from '@/dex/store/useStore'
+import { useStore } from '@/dex/store/useStore'
 import { ChainId, PoolData } from '@/dex/types/main.types'
-import { formatDisplayDate } from '@/dex/utils/utilsDates'
-import Box from '@ui/Box'
-import Icon from '@ui/Icon'
+import { Box } from '@ui/Box'
+import { Icon } from '@ui/Icon'
 import { ExternalLink } from '@ui/Link'
-import TextEllipsis from '@ui/TextEllipsis'
+import { TextEllipsis } from '@ui/TextEllipsis'
 import { Chip } from '@ui/Typography'
 import { formatDate, formatNumber, getFractionDigitsOptions, scanTokenPath } from '@ui/utils'
 import { breakpoints } from '@ui/utils/responsive'
-import dayjs from '@ui-kit/lib/dayjs'
+import { dayjs } from '@ui-kit/lib/dayjs'
 import { t } from '@ui-kit/lib/i18n'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { copyToClipboard, shortenAddress } from '@ui-kit/utils'
@@ -23,7 +22,7 @@ type PoolParametersProps = {
   rChainId: ChainId
 }
 
-const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParametersProps) => {
+export const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParametersProps) => {
   const poolAddress = poolData.pool.address
   const snapshotsMapper = useStore((state) => state.pools.snapshotsMapper)
   const isBasePoolsLoading = useStore((state) => state.pools.basePoolsLoading)
@@ -32,7 +31,7 @@ const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParametersProps) 
   const { data: network } = useNetworkByChain({ chainId: rChainId })
   const snapshotData = snapshotsMapper[poolAddress]
   const pricesData = pricesApiPoolDataMapper[poolAddress]
-  const basePoolList = isBasePoolsLoading ? [] : basePools[rChainId]
+  const basePoolList = isBasePoolsLoading ? [] : (basePools[rChainId] ?? [])
 
   const convert1e8 = (number: number) => formatNumber(number / 10 ** 8, { decimals: 5 })
   const convert1e10 = (number: number) => formatNumber(number / 10 ** 10, { decimals: 5 })
@@ -63,7 +62,7 @@ const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParametersProps) 
     }
   }, [future_A, future_A_time, initial_A, initial_A_time])
 
-  const returnPoolType = (poolType: string, coins: number) => {
+  const returnPoolType = (_poolType: string, coins: number) => {
     const isCrypto = poolData.pool.isCrypto
     const isNg = poolData.pool.isNg
 
@@ -192,14 +191,18 @@ const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParametersProps) 
                   tooltip={
                     <>
                       {t`Amplification coefficient chosen from fluctuation of prices around 1.`}
-                      {rampADetails && rampADetails?.isFutureATimePassedToday && (
-                        <>
-                          <br />{' '}
-                          {t`Last change occurred between ${formatDisplayDate(dayjs(initial_A_time))} and ${formatDisplayDate(
-                            dayjs(future_A_time),
-                          )}, when A ramped from ${initial_A} to ${future_A}.`}
-                        </>
-                      )}
+                      {rampADetails &&
+                        rampADetails?.isFutureATimePassedToday &&
+                        initial_A_time != null &&
+                        future_A_time != null && (
+                          <>
+                            <br />{' '}
+                            {t`Last change occurred between ${formatDate(initial_A_time, 'short')} and ${formatDate(
+                              future_A_time,
+                              'short',
+                            )}, when A ramped from ${initial_A} to ${future_A}.`}
+                          </>
+                        )}
                     </>
                   }
                   tooltipProps={{ minWidth: '200px' }}
@@ -527,5 +530,3 @@ export const ExternalLinkToken = styled(TextEllipsis)`
   font-weight: bold;
   text-transform: initial;
 `
-
-export default PoolParameters

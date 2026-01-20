@@ -1,37 +1,17 @@
-import { Contract } from 'ethers'
 import { produce } from 'immer'
 import type { StoreApi } from 'zustand'
-import { ABI_VECRV } from '@/dao/abis/vecrv'
-import { CONTRACT_VECRV } from '@/dao/constants'
 import type { State } from '@/dao/store/useStore'
 import {
-  CurveApi,
-  SnapshotVotingPower,
   SortDirection,
   UserGaugeVotesSortBy,
   UserGaugeVoteWeightSortBy,
   UserLocksSortBy,
-  UserMapper,
   UserProposalVotesSortBy,
-  type Wallet,
 } from '@/dao/types/dao.types'
-import { useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
 type SliceState = {
-  userVeCrv: {
-    veCrv: string
-    veCrvPct: string
-    lockedCrv: string
-    unlockTime: number
-  }
-  snapshotVeCrvMapper: {
-    [proposalId: string]: SnapshotVotingPower
-  }
-  userAddress: string | null
-  userEns: string | null
-  userMapper: UserMapper
   userLocksSortBy: {
     key: UserLocksSortBy
     order: SortDirection
@@ -55,14 +35,10 @@ const sliceKey = 'user'
 // prettier-ignore
 export type UserSlice = {
   [sliceKey]: SliceState & {
-    updateUserData(curve: CurveApi, wallet: Wallet): void
-    getUserEns(userAddress: string): Promise<void>
-
     setUserProposalVotesSortBy(sortBy: UserProposalVotesSortBy): void
     setUserLocksSortBy: (sortBy: UserLocksSortBy) => void
     setUserGaugeVotesSortBy: (sortBy: UserGaugeVotesSortBy) => void
     setUserGaugeVoteWeightsSortBy: (sortBy: UserGaugeVoteWeightSortBy) => void
-    setSnapshotVeCrv(signer: any, userAddress: string, snapshot: number, proposalId: string): void
     // helpers
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
     setStateByKey<T>(key: StateKey, value: T): void
@@ -72,16 +48,6 @@ export type UserSlice = {
 }
 
 const DEFAULT_STATE: SliceState = {
-  userVeCrv: {
-    veCrv: '0',
-    veCrvPct: '0',
-    lockedCrv: '0',
-    unlockTime: 0,
-  },
-  snapshotVeCrvMapper: {},
-  userAddress: null,
-  userEns: null,
-  userMapper: {},
   userLocksSortBy: {
     key: 'timestamp',
     order: 'desc',
@@ -102,55 +68,9 @@ const DEFAULT_STATE: SliceState = {
 
 // key user address for user specific snapshots, votes, mappers
 
-const createUserSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): UserSlice => ({
+export const createUserSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): UserSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
-    updateUserData: async (curve: CurveApi, wallet: Wallet) => {
-      const userAddress = wallet.account.address
-
-      try {
-        const veCRV = await curve.dao.userVeCrv(userAddress)
-
-        get()[sliceKey].setStateByKey('userVeCrv', veCRV)
-      } catch (error) {
-        console.error(error)
-      }
-
-      get()[sliceKey].setStateByKeys({
-        userAddress: userAddress.toLowerCase(),
-        userEns: wallet.account?.ensName,
-        snapshotVeCrvMapper: {},
-      })
-    },
-    getUserEns: async (userAddress: string) => {
-      const { provider } = useWallet.getState()
-
-      if (!provider) {
-        console.error("Can't fetch ens, no provider available")
-        return
-      }
-
-      try {
-        const ensName = await provider.lookupAddress(userAddress)
-
-        set(
-          produce((state) => {
-            state[sliceKey].userMapper[userAddress] = {
-              ens: ensName || null,
-            }
-          }),
-        )
-      } catch (error) {
-        console.error('Error fetching ENS name:', error)
-        set(
-          produce((state) => {
-            state[sliceKey].userMapper[userAddress] = {
-              ens: null,
-            }
-          }),
-        )
-      }
-    },
     setUserLocksSortBy: (sortBy: UserLocksSortBy) => {
       const { userLocksSortBy } = get()[sliceKey]
       let order = userLocksSortBy.order
@@ -231,30 +151,6 @@ const createUserSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>[
         )
       }
     },
-    setSnapshotVeCrv: async (signer: any, userAddress: string, snapshot: number, proposalId: string) => {
-      set(
-        produce((state) => {
-          state[sliceKey].snapshotVeCrvMapper[proposalId] = {
-            loading: true,
-            value: null,
-            blockNumber: null,
-          }
-        }),
-      )
-
-      const contract = new Contract(CONTRACT_VECRV, ABI_VECRV, signer)
-      const snapshotValue = await contract.balanceOfAt(userAddress, snapshot)
-
-      set(
-        produce((state) => {
-          state[sliceKey].snapshotVeCrvMapper[proposalId] = {
-            loading: false,
-            value: Number(snapshotValue) / 1e18,
-            blockNumber: snapshot,
-          }
-        }),
-      )
-    },
     // slice helpers
     setStateByActiveKey: (key, activeKey, value) => {
       get().setAppStateByActiveKey(sliceKey, key, activeKey, value)
@@ -270,5 +166,3 @@ const createUserSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>[
     },
   },
 })
-
-export default createUserSlice

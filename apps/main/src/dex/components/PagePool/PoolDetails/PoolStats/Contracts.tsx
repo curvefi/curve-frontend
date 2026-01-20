@@ -1,47 +1,50 @@
 import { styled } from 'styled-components'
-import ChipInactive from '@/dex/components/ChipInactive'
-import AddGaugeLink from '@/dex/components/PagePool/components/AddGaugeLink'
-import ContractComp from '@/dex/components/PagePool/components/ContractComp'
+import { ChipInactive } from '@/dex/components/ChipInactive'
+import { AddGaugeLink } from '@/dex/components/PagePool/components/AddGaugeLink'
 import type { PageTransferProps } from '@/dex/components/PagePool/types'
+import { useNetworkByChain } from '@/dex/entities/networks'
 import { ChainId, PoolDataCacheOrApi } from '@/dex/types/main.types'
 import { isValidAddress } from '@/dex/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { AddressActionInfo } from '@ui-kit/shared/ui/AddressActionInfo'
 
 type ContractsProps = {
   rChainId: ChainId
   poolDataCacheOrApi: PoolDataCacheOrApi
 } & Pick<PageTransferProps, 'poolDataCacheOrApi'>
 
-const Contracts = ({ rChainId, poolDataCacheOrApi }: ContractsProps) => {
+export const Contracts = ({ rChainId, poolDataCacheOrApi }: ContractsProps) => {
   const { address = '', lpToken = '', gauge } = poolDataCacheOrApi.pool
   const isSameAddress = address === lpToken
   const gaugeAddress = isValidAddress(gauge.address) ? gauge.address : ''
+
+  const { data: network } = useNetworkByChain({ chainId: rChainId })
 
   return (
     <Article>
       <h3>{t`Contracts`}</h3>
 
       {address && (
-        <ContractComp
+        <AddressActionInfo
+          network={network}
           address={address}
-          rChainId={rChainId}
-          label={isSameAddress ? t`Pool / Token` : t`Pool`}
-          showBottomBorder={!isSameAddress || !!gaugeAddress}
+          title={isSameAddress ? t`Pool / Token` : t`Pool`}
+          isBorderBottom={!isSameAddress || !!gaugeAddress}
         />
       )}
       {!isSameAddress && lpToken && (
-        <ContractComp address={lpToken} rChainId={rChainId} label={t`Token`} showBottomBorder={!!gaugeAddress} />
+        <AddressActionInfo network={network} address={lpToken} title={t`Token`} isBorderBottom={!!gaugeAddress} />
       )}
       {gaugeAddress && (
-        <ContractComp
+        <AddressActionInfo
+          network={network}
           address={gaugeAddress}
-          rChainId={rChainId}
-          label={
+          title={
             <span>
               {t`Gauge`} {poolDataCacheOrApi.gauge.isKilled ? <ChipInactive>Inactive</ChipInactive> : null}
             </span>
           }
-          showBottomBorder={false}
+          isBorderBottom={false}
         />
       )}
       {!gaugeAddress && (
@@ -56,5 +59,3 @@ const Article = styled.article`
     border-bottom: none;
   }
 `
-
-export default Contracts

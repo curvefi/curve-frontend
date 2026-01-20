@@ -9,7 +9,7 @@ interface Props extends AriaOverlayProps {
   children: ReactNode
 }
 
-const Popover = (props: Props) => {
+export const Popover = (props: Props) => {
   const ref = useRef<HTMLDivElement>(null)
   const { popoverRef = ref, isOpen, onClose, children } = props
 
@@ -41,5 +41,3 @@ const Container = styled.div`
   position: relative;
   width: 100%;
 `
-
-export default Popover

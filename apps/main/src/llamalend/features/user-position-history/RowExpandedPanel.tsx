@@ -47,18 +47,20 @@ export const RowExpandedPanel: ExpandedPanel<ParsedUserCollateralEvent> = ({ row
         </Stack>
       </Stack>
 
-      <Button
-        component={Link}
-        href={txUrl}
-        target="_blank"
-        rel="noreferrer"
-        variant="link"
-        color="ghost"
-        size="extraSmall"
-        endIcon={<ArrowOutwardIcon />}
-      >
-        {t`View Transaction`}
-      </Button>
+      {txUrl && (
+        <Button
+          component={Link}
+          href={txUrl}
+          target="_blank"
+          rel="noreferrer"
+          variant="link"
+          color="ghost"
+          size="extraSmall"
+          endIcon={<ArrowOutwardIcon />}
+        >
+          {t`View Transaction`}
+        </Button>
+      )}
     </Stack>
   )
 }

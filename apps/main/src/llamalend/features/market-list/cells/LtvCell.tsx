@@ -8,7 +8,7 @@ import type { CellContext } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { formatPercent } from '@ui-kit/utils'
-import { LlamaMarketColumnId } from '../columns.enum'
+import { LlamaMarketColumnId } from '../columns'
 
 export const LtvCell = ({ row }: CellContext<LlamaMarket, number>) => {
   const { data, error, isLoading } = useUserMarketStats(row.original, LlamaMarketColumnId.UserLtv)

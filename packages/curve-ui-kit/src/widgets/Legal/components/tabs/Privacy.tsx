@@ -1,12 +1,10 @@
 import Link from '@mui/material/Link'
 import Typography from '@mui/material/Typography'
-import { CurveNetworkId, LlamaNetworkId } from '@ui-kit/features/connect-wallet/lib/types'
 import { t } from '@ui-kit/lib/i18n'
-import { AppName } from '@ui-kit/shared/routes'
 import { List } from '../general/List'
 import { Section, Header, Title, Paragraph, Bold } from '../general/Section'
 
-export const Privacy = ({ currentApp, network }: { currentApp: AppName; network: CurveNetworkId | LlamaNetworkId }) => (
+export const Privacy = () => (
   <>
     <Header>{t`Privacy Notice`}</Header>
     <Section>

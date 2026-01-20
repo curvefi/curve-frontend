@@ -8,7 +8,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatNumber } from '@ui-kit/utils'
-import { LlamaMarketColumnId } from '../columns.enum'
+import { LlamaMarketColumnId } from '../columns'
 import { ErrorCell } from './ErrorCell'
 
 const { Spacing } = SizesAndSpaces

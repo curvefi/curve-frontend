@@ -7,7 +7,7 @@ import { HeartIcon } from '@ui-kit/shared/icons/HeartIcon'
 import { PointsIcon } from '@ui-kit/shared/icons/PointsIcon'
 import { GridChip } from '@ui-kit/shared/ui/DataTable/chips/GridChip'
 import { type FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
-import { LlamaMarketColumnId } from '../columns.enum'
+import { LlamaMarketColumnId } from '../columns'
 import { useToggleFilter } from '../hooks/useToggleFilter'
 
 export const LlamaListUserChips = ({

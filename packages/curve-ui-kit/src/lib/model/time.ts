@@ -9,12 +9,16 @@ export const REFRESH_INTERVAL = {
   '5m': 1000 * 60 * 5,
   '10m': 1000 * 60 * 10,
   '11m': 1000 * 60 * 11,
+  '15m': 1000 * 60 * 15,
   '1h': 1000 * 60 * 60,
   '1d': 1000 * 60 * 60 * 24,
   Inf: Infinity,
 } as const
 
 export const TIME_FRAMES = {
+  DAY_MS: 24 * 60 * 60 * 1000,
   WEEK: 7 * 24 * 60 * 60,
   MONTH: 30 * 24 * 60 * 60,
+  MONTH_MS: 30 * 24 * 60 * 60 * 1000,
+  YEAR_MS: 365 * 24 * 60 * 60 * 1000,
 } as const

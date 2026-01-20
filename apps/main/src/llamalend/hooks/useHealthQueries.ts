@@ -4,7 +4,9 @@ import { combineQueriesMeta } from '@ui-kit/lib/queries/combine'
 import type { QueryResultsArray } from '@ui-kit/lib/queries/types'
 import type { Decimal } from '@ui-kit/utils'
 
-type HealthQueryOptions = UseQueryOptions<Decimal, Error, Decimal, any>
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type QueryKey = any // disable typecheck for this as we accept any query key
+type HealthQueryOptions = UseQueryOptions<Decimal, Error, Decimal, QueryKey>
 type HealthQueryResults = QueryResultsArray<readonly HealthQueryOptions[]>
 
 /**

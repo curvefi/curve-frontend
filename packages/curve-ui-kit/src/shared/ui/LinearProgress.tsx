@@ -18,6 +18,7 @@ export const LinearProgress = ({
   barColor?: string | ((t: Theme) => string)
 }) => {
   const [value, setValue] = useState(0)
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => setValue(percent), [percent]) // set value via effect so it animates on load
   return (
     <MuiLinearProgress

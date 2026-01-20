@@ -3,7 +3,7 @@
   "version": "2.1.0",
   "private": true,
   "engines": {
-    "node": "22"
+    "node": "24"
   },
   "workspaces": [
     "apps/*",
@@ -15,9 +15,9 @@
     "start": "yarn workspace main start",
     "dev": "yarn workspace main dev",
     "dev-router-api": "yarn workspace router-api dev",
-    "lint": "eslint . --ext .ts,.tsx",
-    "lint:fix": "eslint . --ext .ts,.tsx --fix",
-    "typecheck": "yarn workspaces foreach --parallel --all run typecheck",
+    "lint": "eslint --cache --cache-location .cache/eslint --cache-strategy content \"{apps,packages,tests}/**/*.{ts,tsx}\"",
+    "lint:fix": "eslint --cache --cache-location .cache/eslint --cache-strategy content \"{apps,packages,tests}/**/*.{ts,tsx}\" --fix",
+    "typecheck": "node -e \"require('fs').mkdirSync('.cache/typecheck', {recursive: true})\" && yarn workspaces foreach --parallel --all run typecheck",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,md}\"",
     "prepare": "husky",
@@ -25,9 +25,9 @@
     "storybook:build": "yarn workspace curve-ui-kit run build:storybook"
   },
   "devDependencies": {
-    "@commitlint/cli": "^20.1.0",
-    "@commitlint/config-conventional": "^20.0.0",
-    "@commitlint/load": "20.1.0",
+    "@commitlint/cli": "^20.2.0",
+    "@commitlint/config-conventional": "^20.2.0",
+    "@commitlint/load": "20.2.0",
     "@eslint/eslintrc": "*",
     "@eslint/js": "*",
     "@types/react": "*",
@@ -57,23 +57,23 @@
     ]
   },
   "resolutions": {
-    "@curvefi/api": "2.68.22",
+    "@curvefi/api": "2.68.26",
     "@eslint/eslintrc": "3.3.3",
-    "@eslint/js": "9.39.1",
-    "@types/node": "24.10.1",
+    "@eslint/js": "9.39.2",
+    "@types/node": "24.10.4",
     "@types/react": "19.2.7",
     "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react": "^5.1.1",
     "bignumber.js": "9.3.1",
-    "eslint": "9.39.1",
+    "eslint": "9.39.2",
     "ethers": "6.16.0",
-    "immer": "11.0.1",
+    "immer": "11.1.3",
     "lodash": "4.17.21",
-    "react": "19.2.1",
-    "react-dom": "19.2.1",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
     "styled-components": "6.1.19",
     "typescript": "5.9.3",
-    "vite": "7.2.6",
+    "vite": "7.3.0",
     "vitest": "^4.0.15",
     "esbuild": "0.27.1",
     "zustand": "5.0.9"

@@ -12,7 +12,7 @@ export const combineQueriesMeta = <T extends QueryOptionsArray>(results: QueryRe
 
 /** Combines the data and metadata of multiple queries into a single object. */
 export const combineQueriesToObject = <TData, K extends string[]>(
-  results: QueryResultsArray<UseQueryOptions<TData, any, any, any>[]>,
+  results: QueryResultsArray<UseQueryOptions<TData, Error, TData, unknown[]>[]>,
   keys: K,
 ) => ({
   // Using flatMap instead of map + filter(Boolean), because it's not correctly erasing | undefined from the Record value type

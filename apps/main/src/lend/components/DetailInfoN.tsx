@@ -1,4 +1,4 @@
-import DetailInfo from '@ui/DetailInfo'
+import { DetailInfo } from '@ui/DetailInfo'
 import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 
@@ -7,8 +7,6 @@ type Props = {
   n: number | null
 }
 
-const DetailInfoN = ({ isLoaded, n }: Props) => (
+export const DetailInfoN = ({ isLoaded, n }: Props) => (
   <DetailInfo label={t`N:`}>{isLoaded && <strong>{formatNumber(n, { defaultValue: '-' })}</strong>}</DetailInfo>
 )
-
-export default DetailInfoN

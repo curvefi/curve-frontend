@@ -1,11 +1,11 @@
 import { produce } from 'immer'
 import lodash from 'lodash'
+import type { Config } from 'wagmi'
 import type { StoreApi } from 'zustand'
 import { type State } from '@/loan/store/useStore'
 import { type LlamaApi, Wallet } from '@/loan/types/loan.types'
 import { log } from '@/loan/utils/helpers'
 
-export type DefaultStateKeys = keyof typeof DEFAULT_STATE
 export type SliceKey = keyof State | ''
 export type StateKey = string
 
@@ -15,10 +15,8 @@ type SliceState = {
 
 // prettier-ignore
 export interface AppSlice extends SliceState {
-  updateGlobalStoreByKey<T>(key: DefaultStateKeys, value: T): void
-
   /** Hydrate resets states and refreshes store data from the API */
-  hydrate(curve: LlamaApi | undefined, prevCurveApi: LlamaApi | undefined, wallet: Wallet | undefined): Promise<void>
+  hydrate(config: Config, curve: LlamaApi | undefined, prevCurveApi: LlamaApi | undefined, wallet: Wallet | undefined): Promise<void>
 
   setAppStateByActiveKey<T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean): void
   setAppStateByKey<T>(sliceKey: SliceKey, key: StateKey, value: T, showLog?: boolean): void
@@ -30,18 +28,10 @@ const DEFAULT_STATE: SliceState = {
   isPageVisible: true,
 }
 
-const createAppSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): AppSlice => ({
+export const createAppSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): AppSlice => ({
   ...DEFAULT_STATE,
 
-  updateGlobalStoreByKey: <T>(key: DefaultStateKeys, value: T) => {
-    set(
-      produce((state) => {
-        state[key] = value
-      }),
-    )
-  },
-
-  hydrate: async (curveApi, prevCurveApi) => {
+  hydrate: async (_config, curveApi, prevCurveApi) => {
     if (!curveApi) return
 
     const { loans } = get()
@@ -130,7 +120,4 @@ const createAppSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['
     )
   },
 })
-
-export default createAppSlice
-
 // HELPERS

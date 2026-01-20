@@ -1,13 +1,13 @@
 import { useEffect } from 'react'
 import { styled } from 'styled-components'
-import ErrorMessage from '@/dao/components/ErrorMessage'
-import useStore from '@/dao/store/useStore'
-import Box from '@ui/Box'
+import { ErrorMessage } from '@/dao/components/ErrorMessage'
+import { useStore } from '@/dao/store/useStore'
+import { Box } from '@ui/Box'
 import { t } from '@ui-kit/lib/i18n'
-import Spinner from '../../Spinner'
-import PositiveAndNegativeBarChart from './PositiveAndNegativeBarChart'
+import { SpinnerComponent as Spinner } from '../../Spinner'
+import { PositiveAndNegativeBarChart } from './PositiveAndNegativeBarChart'
 
-const DailyLocks = () => {
+export const DailyLocks = () => {
   const getVeCrvLocks = useStore((state) => state.analytics.getVeCrvLocks)
   const veCrvLocks = useStore((state) => state.analytics.veCrvLocks)
 
@@ -47,5 +47,3 @@ const BoxTitle = styled.h4`
 const Content = styled.div`
   padding: 0 var(--spacing-3) var(--spacing-3);
 `
-
-export default DailyLocks

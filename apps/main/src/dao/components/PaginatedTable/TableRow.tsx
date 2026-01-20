@@ -4,13 +4,13 @@ import type { InternalLinkProps } from '@ui/Link/InternalLink'
 import { formatNumber } from '@ui/utils'
 
 interface TableRowProps {
-  holder: any
+  holder: Record<string, string | number>
   sortBy: { key: string; label: string; order: 'asc' | 'desc' }
   labels: { key: string; label: string }[]
   gridTemplateColumns?: string
 }
 
-const TableRow = ({ holder, sortBy, labels, gridTemplateColumns }: TableRowProps) => (
+export const TableRow = ({ holder, sortBy, labels, gridTemplateColumns }: TableRowProps) => (
   <TableRowWrapper columns={labels.length} gridTemplateColumns={gridTemplateColumns}>
     {labels.map((label, index) => (
       <TableData key={index} className={sortBy.key === label.key ? 'active left-padding' : 'left-padding'}>
@@ -81,5 +81,3 @@ export const TableDataLink = styled(InternalLink)<InternalLinkProps>`
     padding-left: var(--spacing-2);
   }
 `
-
-export default TableRow

@@ -3,8 +3,7 @@ import { useBandsData } from '@/llamalend/features/bands-chart/hooks/useBandsDat
 import { getBandsChartToken } from '@/llamalend/features/bands-chart/utils'
 import { MarketParameters } from '@/llamalend/features/market-parameters/MarketParameters'
 import { BandsComp } from '@/loan/components/BandsComp'
-import ChartOhlcWrapper from '@/loan/components/ChartOhlcWrapper'
-import DetailInfoAddressLookup from '@/loan/components/LoanInfoLlamma/components/DetailInfoAddressLookup'
+import { ChartOhlcWrapper } from '@/loan/components/ChartOhlcWrapper'
 import type { ChainId, Llamma } from '@/loan/types/loan.types'
 import { useTheme } from '@mui/material'
 import Stack from '@mui/material/Stack'
@@ -13,7 +12,9 @@ import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNewBandsChart } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
+import { AddressActionInfo } from '@ui-kit/shared/ui/AddressActionInfo'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { networks } from '../networks'
 
 const { Spacing } = SizesAndSpaces
 
@@ -96,15 +97,20 @@ export const MarketInformationComp = ({ llamma, marketId, chainId, page = 'manag
           <Stack gap={Spacing.xs} sx={{ flexGrow: 1, padding: Spacing.md }}>
             <Typography variant="headingXsBold">{t`Contracts`}</Typography>
 
-            <DetailInfoAddressLookup isBorderBottom chainId={chainId} title={t`AMM`} address={llamma?.address ?? ''} />
-            <DetailInfoAddressLookup
+            <AddressActionInfo
               isBorderBottom
-              chainId={chainId}
+              network={networks[chainId]}
+              title={t`AMM`}
+              address={llamma?.address ?? ''}
+            />
+            <AddressActionInfo
+              isBorderBottom
+              network={networks[chainId]}
               title={t`Controller`}
               address={llamma?.controller ?? ''}
             />
-            <DetailInfoAddressLookup
-              chainId={chainId}
+            <AddressActionInfo
+              network={networks[chainId]}
               title={t`Monetary Policy`}
               address={llamma?.monetaryPolicy ?? ''}
             />

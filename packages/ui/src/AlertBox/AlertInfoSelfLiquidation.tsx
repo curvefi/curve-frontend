@@ -1,11 +1,11 @@
 import { styled } from 'styled-components'
-import AlertBox from 'ui/src/AlertBox'
-import Box from 'ui/src/Box'
-import DetailInfo from 'ui/src/DetailInfo'
-import TextCaption from 'ui/src/TextCaption'
-import { formatNumber } from 'ui/src/utils'
+import { AlertBox } from '@ui/AlertBox'
+import { Box } from '@ui/Box'
+import { DetailInfo } from '@ui/DetailInfo'
+import { TextCaption } from '@ui/TextCaption'
+import { formatNumber } from '@ui/utils'
 
-const AlertInfoSelfLiquidation = ({
+export const AlertInfoSelfLiquidation = ({
   errorMessage,
   titleSelfLiquidation,
   titleReceive,
@@ -73,5 +73,3 @@ const StyledDetailInfo = styled(DetailInfo)`
   min-height: 1.2rem;
   border-color: inherit;
 `
-
-export default AlertInfoSelfLiquidation

@@ -5,10 +5,10 @@ import {
   SummaryData,
   SummaryDataPlaceholder,
 } from '@/dex/components/PageCreatePool/Summary/styles'
-import useStore from '@/dex/store/useStore'
+import { useStore } from '@/dex/store/useStore'
 import { t } from '@ui-kit/lib/i18n'
 
-const PoolPresetSummary = () => {
+export const PoolPresetSummary = () => {
   const poolPresetIndex = useStore((state) => state.createPool.poolPresetIndex)
 
   return (
@@ -27,5 +27,3 @@ const PoolPresetSummary = () => {
     </>
   )
 }
-
-export default PoolPresetSummary

@@ -1,5 +1,4 @@
 import React, { useCallback } from 'react'
-import type { PoolColumnId } from '@/dex/features/pool-list/columns'
 import { Button, Grid, Stack } from '@mui/material'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
@@ -8,6 +7,7 @@ import { HiddenMarketsResetFilters } from '@ui-kit/shared/ui/DataTable/HiddenMar
 import { DrawerHeader } from '@ui-kit/shared/ui/SwipeableDrawer/DrawerHeader'
 import { SwipeableDrawer } from '@ui-kit/shared/ui/SwipeableDrawer/SwipeableDrawer'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import type { PoolColumnId } from '../columns'
 import { PoolListFilterChips, PoolListFilterChipsProps } from '../components/PoolListFilterChips'
 
 const { Spacing } = SizesAndSpaces

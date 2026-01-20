@@ -14,19 +14,19 @@ import {
   YAxis,
 } from 'recharts'
 import { styled } from 'styled-components'
-import ChartBandBalancesSettings from '@/loan/components/ChartBandBalances/ChartBandBalancesSettings'
+import { ChartBandBalancesSettings } from '@/loan/components/ChartBandBalances/ChartBandBalancesSettings'
 import type { BrushStartEndIndex } from '@/loan/components/ChartBandBalances/types'
-import ChartTooltip, { TipContent, TipIcon, TipTitle } from '@/loan/components/ChartTooltip'
-import type { PageLoanManageProps } from '@/loan/components/PageLoanManage/types'
-import useStore from '@/loan/store/useStore'
+import { TipContent, TipIcon, TipTitle, ChartTooltip } from '@/loan/components/ChartTooltip'
+import type { ManageLoanProps } from '@/loan/components/PageMintMarket/types'
+import { useStore } from '@/loan/store/useStore'
 import { BandsBalancesData } from '@/loan/types/loan.types'
 import { getTokenName } from '@/loan/utils/utilsLoan'
-import Box from '@ui/Box'
-import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import { Box } from '@ui/Box'
+import { SpinnerWrapper, Spinner } from '@ui/Spinner'
 import { BN, FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 
-interface Props extends Pick<PageLoanManageProps, 'llamma'> {
+interface Props extends Pick<ManageLoanProps, 'market'> {
   brushIndex: BrushStartEndIndex
   data: BandsBalancesData[]
   oraclePrice: string | undefined
@@ -36,9 +36,9 @@ interface Props extends Pick<PageLoanManageProps, 'llamma'> {
   setBrushIndex: Dispatch<BrushStartEndIndex>
 }
 
-const ChartBandBalances = ({
+export const ChartBandBalances = ({
   brushIndex,
-  llamma,
+  market: llamma,
   data,
   oraclePrice,
   oraclePriceBand,
@@ -216,7 +216,17 @@ const ChartBandBalances = ({
 
                 <Bar
                   dataKey="collateralStablecoinUsd"
-                  shape={(props: any) => {
+                  shape={(arg: unknown) => {
+                    const props = arg as {
+                      width: number
+                      collateralUsd: number
+                      isLiquidationBand: boolean
+                      stablecoin: number
+                      collateralStablecoinUsd: number
+                      x: number
+                      y: number
+                      height: number
+                    }
                     const { width, collateralUsd, isLiquidationBand, stablecoin, collateralStablecoinUsd } = props
 
                     if (barWidth === 0 && +width > 0) {
@@ -369,5 +379,3 @@ const Header = styled.header`
 const SubTitle = styled.h3`
   font-size: var(--font-size-3);
 `
-
-export default ChartBandBalances

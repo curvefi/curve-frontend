@@ -1,48 +1,54 @@
 import { ReactNode } from 'react'
-import FormConnectWallet from '@/dex/components/FormConnectWallet'
-import AlertSeedAmounts from '@/dex/components/PagePool/components/AlertSeedAmounts'
+import { useConnection } from 'wagmi'
+import { FormConnectWallet } from '@/dex/components/FormConnectWallet'
+import { AlertSeedAmounts } from '@/dex/components/PagePool/components/AlertSeedAmounts'
 import type { TransferProps } from '@/dex/components/PagePool/types'
-import { useSignerAddress } from '@/dex/entities/signer'
 import { usePoolIdByAddressOrId } from '@/dex/hooks/usePoolIdByAddressOrId'
-import useTokenAlert from '@/dex/hooks/useTokenAlert'
-import useStore from '@/dex/store/useStore'
+import { usePoolTokenBalances } from '@/dex/hooks/usePoolTokenBalances'
+import { useTokenAlert } from '@/dex/hooks/useTokenAlert'
+import { useStore } from '@/dex/store/useStore'
 import { getChainPoolIdActiveKey } from '@/dex/utils'
-import AlertBox from '@ui/AlertBox'
+import { AlertBox } from '@ui/AlertBox'
 import { useCurve } from '@ui-kit/features/connect-wallet'
-import { t } from '@ui-kit/lib/i18n'
 
-const TransferActions = ({
+export const TransferActions = ({
   children,
   seed,
   loading,
   poolData,
   routerParams,
-  userPoolBalances,
 }: {
   loading?: boolean
   children: ReactNode
-} & Pick<TransferProps, 'poolData' | 'poolDataCacheOrApi' | 'routerParams' | 'seed' | 'userPoolBalances'>) => {
-  const { data: signerAddress } = useSignerAddress()
+} & Pick<TransferProps, 'poolData' | 'poolDataCacheOrApi' | 'routerParams' | 'seed'>) => {
+  const { address: signerAddress } = useConnection()
   const { rChainId, rPoolIdOrAddress } = routerParams
   const poolId = usePoolIdByAddressOrId({ chainId: rChainId, poolIdOrAddress: rPoolIdOrAddress })
   const alert = useTokenAlert(poolData?.tokenAddressesAll ?? [])
   const { isHydrated } = useCurve()
   const currencyReserves = useStore((state) => state.pools.currencyReserves[getChainPoolIdActiveKey(rChainId, poolId)])
-  const walletBalancesLoading = useStore((state) => state.user.walletBalancesLoading)
+
+  const { address: userAddress } = useConnection()
+  const { isLoading: walletBalancesLoading, error: walletBalancesError } = usePoolTokenBalances({
+    chainId: rChainId,
+    userAddress,
+    poolId,
+  })
 
   const isLoading =
-    loading || typeof poolData === 'undefined' || typeof currencyReserves === 'undefined' || !isHydrated || !seed.loaded
+    loading ||
+    typeof poolData === 'undefined' ||
+    typeof currencyReserves === 'undefined' ||
+    !isHydrated ||
+    !seed.loaded ||
+    walletBalancesLoading
 
   return (
     <>
       {alert && !alert.isInformationOnly ? <AlertBox alertType={alert.alertType}>{alert.message}</AlertBox> : null}
       <AlertSeedAmounts seed={seed} poolData={poolData} />
-      {signerAddress && !isLoading && !walletBalancesLoading && typeof userPoolBalances === 'undefined' && (
-        <AlertBox alertType="error">{t`Unable to get wallet balances`}</AlertBox>
-      )}
+      {signerAddress && walletBalancesError && <AlertBox alertType="error">{walletBalancesError.message}</AlertBox>}
       <FormConnectWallet loading={isLoading}>{children}</FormConnectWallet>
     </>
   )
 }
-
-export default TransferActions

@@ -7,6 +7,7 @@ import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { decimal, type Decimal } from '@ui-kit/utils'
+import { FormContent } from '@ui-kit/widgets/DetailPageLayout/FormContent'
 import type { Token } from '../../types'
 import { AlertRepayBalanceTooHigh } from '../alerts/AlertRepayBalanceTooHigh'
 import { AlertRepayDebtToIncreaseHealth } from '../alerts/AlertRepayDebtToIncreaseHealth'
@@ -71,7 +72,7 @@ export const ImproveHealth = ({
     status !== 'idle' || !debtToken || +debtBalance === 0 || +debtBalance > +(userBalance ?? 0) || repayBalanceTooHigh
 
   return (
-    <Stack gap={Spacing.md} sx={{ padding: Spacing.md }}>
+    <FormContent>
       <LargeTokenInput
         label={t`Debt to repay`}
         name="debtBalance"
@@ -126,6 +127,6 @@ export const ImproveHealth = ({
 
         <ButtonGetCrvUsd />
       </Stack>
-    </Stack>
+    </FormContent>
   )
 }

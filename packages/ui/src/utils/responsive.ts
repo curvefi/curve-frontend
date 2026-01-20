@@ -10,5 +10,5 @@ export const breakpoints = {
 }
 
 export const mediaQueries =
-  (key: keyof typeof breakpoints) => (style: TemplateStringsArray | string | Interpolation<any>) =>
+  (key: keyof typeof breakpoints) => (style: TemplateStringsArray | string | Interpolation<object>) =>
     `@media (min-width: ${breakpoints[key]}rem) { ${style} }`
