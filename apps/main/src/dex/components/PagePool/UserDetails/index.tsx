@@ -13,6 +13,8 @@ import { Table } from '@ui/Table'
 import { Chip } from '@ui/Typography'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { ExclamationTriangleIcon } from '@ui-kit/shared/icons/ExclamationTriangleIcon'
+import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { shortenAddress, type Address } from '@ui-kit/utils'
 
 const DEFAULT_WITHDRAW_AMOUNTS: string[] = []
@@ -31,7 +33,7 @@ export const MySharesStats = ({
   const poolId = usePoolIdByAddressOrId({ chainId: rChainId, poolIdOrAddress: rPoolIdOrAddress })
   const rewardsApy = useStore((state) => state.pools.rewardsApyMapper[rChainId]?.[poolId ?? ''])
 
-  const { data: userPoolInfo } = useUserPoolInfo(
+  const { data: userPoolInfo, error: userPoolError } = useUserPoolInfo(
     { chainId: rChainId, poolId, userAddress: curve?.signerAddress as Address | undefined },
     !!curve && !!poolId,
   )
@@ -103,6 +105,11 @@ export const MySharesStats = ({
         <h3>{t`Your position`}</h3>
         <span>
           {t`Staked share:`} <strong>{userShareLabel}</strong> <Chip size={'xs'}>{t`of pool`}</Chip>
+          {userPoolError && (
+            <Tooltip title={userPoolError.message} placement="top">
+              <ExclamationTriangleIcon fontSize="small" color="error" />
+            </Tooltip>
+          )}
         </span>
       </Title>
 

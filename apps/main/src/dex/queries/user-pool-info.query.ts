@@ -4,7 +4,7 @@ import { queryFactory, rootKeys, type UserPoolParams, type UserPoolQuery } from 
 import { userPoolValidationSuite } from '@ui-kit/lib/model/query/user-pool-validation'
 import { Chain, decimal, type Address } from '@ui-kit/utils'
 import { usePoolTokenDepositBalances } from '../hooks/usePoolTokenDepositBalances'
-import { fulfilledValue, isValidAddress } from '../utils'
+import { isValidAddress } from '../utils'
 
 export async function userPoolRewardCrvApy(pool: PoolTemplate, userAddress: Address) {
   if (!isValidAddress(pool.gauge.address) || pool.rewardsOnly()) return 0
@@ -24,26 +24,22 @@ const { useQuery: useUserPoolInfoQuery, invalidate: invalidateUserPoolInfoQuery 
   queryFn: async ({ chainId, poolId, userAddress }: UserPoolQuery) => {
     const pool = requireLib('curveApi').getPool(poolId)
 
-    const [userPoolWithdrawResult, liquidityUsdResult, userShareResult, userCrvApyResult, userPoolBoostResult] =
-      await Promise.allSettled([
-        pool.userBalances(userAddress),
-        pool
-          .userLiquidityUSD(userAddress)
-          .catch(() => 'NaN')
-          .then((x) => decimal(x)),
-        pool.userShare(userAddress),
-        userPoolRewardCrvApy(pool, userAddress),
-        userPoolBoost(chainId, pool, userAddress),
-      ])
+    const [userWithdrawAmounts, userLiquidityUsd, userShare, crvApy, boostApy] = await Promise.all([
+      pool.userBalances(userAddress),
+      pool
+        .userLiquidityUSD(userAddress)
+        .catch(() => 'NaN')
+        .then((x) => decimal(x)),
+      pool.userShare(userAddress),
+      userPoolRewardCrvApy(pool, userAddress),
+      userPoolBoost(chainId, pool, userAddress),
+    ])
 
     return {
-      userCrvApy: {
-        crvApy: fulfilledValue(userCrvApyResult) ?? 0,
-        boostApy: fulfilledValue(userPoolBoostResult) ?? '',
-      },
-      userLiquidityUsd: fulfilledValue(liquidityUsdResult) ?? '',
-      userShare: fulfilledValue(userShareResult) ?? null,
-      userWithdrawAmounts: fulfilledValue(userPoolWithdrawResult) ?? [],
+      userCrvApy: { crvApy, boostApy },
+      userLiquidityUsd,
+      userShare,
+      userWithdrawAmounts,
     }
   },
   staleTime: '1m',
@@ -65,12 +61,13 @@ export const useUserPoolInfo = (params: UserPoolParams, enabled = true) => {
 
   const hasBalance = +(lpTokenBalance ?? 0) > 0 || +(gaugeTokenBalance ?? 0) > 0
 
-  const { data: details, isLoading: detailsLoading } = useUserPoolInfoQuery(params, enabled && hasBalance)
+  const { data: details, isLoading: detailsLoading, error } = useUserPoolInfoQuery(params, enabled && hasBalance)
 
   const data = details ?? DEFAULT_USER_POOL_INFO
 
   return {
     data,
     isLoading: balancesLoading || (hasBalance && detailsLoading),
+    error,
   }
 }
