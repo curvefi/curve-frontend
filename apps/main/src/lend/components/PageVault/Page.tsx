@@ -122,7 +122,7 @@ export const Page = () => {
       </MarketInformationTabs>
       <Stack>
         <MarketDetails {...marketDetails} />
-        <MarketInformationComp loanExists={loanExists} pageProps={pageProps} type="supply" />
+        <MarketInformationComp loanExists={loanExists} pageProps={pageProps} userActiveKey={''} type="supply" />
       </Stack>
     </DetailPageLayout>
   ) : (
