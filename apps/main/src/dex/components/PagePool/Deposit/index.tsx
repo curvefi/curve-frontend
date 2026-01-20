@@ -8,7 +8,7 @@ import type { TransferProps } from '@/dex/components/PagePool/types'
 import { useStore } from '@/dex/store/useStore'
 import { AlertBox } from '@ui/AlertBox'
 import { t } from '@ui-kit/lib/i18n'
-import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
+import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import { FormContent } from '@ui-kit/widgets/DetailPageLayout/FormContent'
 
 const tabs: TabOption<FormType>[] = [
@@ -46,7 +46,9 @@ export const Deposit = ({ hasDepositAndStake, ...transferProps }: TransferProps 
 
   return (
     <FormContent
-      header={<TabsSwitcher variant="underlined" value={tab} onChange={handleTabChange} options={tabs} fullWidth />}
+      header={
+        <TabsSwitcher variant="underlined" value={tab} onChange={handleTabChange} options={tabs} overflow="fullWidth" />
+      }
     >
       {poolAlert && poolAlert.isDisableDeposit ? (
         <AlertBox {...poolAlert}>{poolAlert.message}</AlertBox>

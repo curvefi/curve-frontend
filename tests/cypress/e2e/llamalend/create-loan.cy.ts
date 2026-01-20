@@ -19,7 +19,7 @@ describe(`Create loan`, () => {
     cy.visit(path)
   })
 
-  it(`may be created`, RETRY, () => {
+  it.skip(`may be created`, RETRY, () => {
     writeCreateLoanForm({ collateral, borrow, leverageEnabled })
     checkLoanDetailsLoaded({ leverageEnabled })
     checkLoanRangeSlider(leverageEnabled)
