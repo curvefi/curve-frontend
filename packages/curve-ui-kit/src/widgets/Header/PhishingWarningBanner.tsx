@@ -2,7 +2,7 @@ import { useDismissBanner } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { Banner } from '@ui-kit/shared/ui/Banner'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
-import { isDevelopmentHost } from '@ui-kit/utils'
+import { isDefaultBeta } from '@ui-kit/utils'
 
 const URL = 'https://www.curve.finance'
 
@@ -15,7 +15,7 @@ export const PhishingWarningBanner = () => {
 
   return (
     // hide banner for developement and preview URLs
-    !isDevelopmentHost &&
+    !isDefaultBeta &&
     shouldShowBanner && (
       <Banner
         subtitle={t`Always carefully check that your URL is ${URL}.`}
