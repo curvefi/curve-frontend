@@ -97,8 +97,13 @@ const ABBREVIATION_DECIMALS = 2 // Decimals to show when abbreviating (e.g., 15.
  * priceFormatter(0.00015, 0.0001, 0.0002) // "0.000150" (delta = 0.0001 → 6 decimals)
  * priceFormatter(15000.5, 14000, 16000)   // "15K"     (abbreviated when > 10,000)
  */
-export const priceFormatter = (x: number, delta: number) =>
-  formatNumber(x, {
+export const priceFormatter = (x: number, delta: number) => {
+  // Handle invalid delta values (NaN, Infinity, negative, or zero)
+  if (!Number.isFinite(delta) || delta <= 0) {
+    delta = 1 // Safe fallback
+  }
+
+  return formatNumber(x, {
     /*
      * For delta < 1 we're basically looking at the order of magnitude of the delta
      * to determine how many decimals are needed to show meaningful differences.
@@ -108,17 +113,12 @@ export const priceFormatter = (x: number, delta: number) =>
      * would all show as "0.99".
      *
      * Examples:
-     * - delta = 0     → 2 - floor(0)     = 3 decimals
      * - delta = 0.1   → 2 - floor(-1)    = 3 decimals
      * - delta = 0.013 → 2 - floor(-1.89) = 4 decimals
      * - delta = 0.001 → 2 - floor(-3)    = 5 decimals
      */
-    decimals:
-      delta >= 1
-        ? x > ABBREVIATION_CUTOFF
-          ? ABBREVIATION_DECIMALS
-          : 0
-        : 2 - Math.floor(Math.max(0, Math.log10(delta))),
+    decimals: delta >= 1 ? (x > ABBREVIATION_CUTOFF ? ABBREVIATION_DECIMALS : 0) : 2 - Math.floor(Math.log10(delta)),
     abbreviate: x > ABBREVIATION_CUTOFF,
     useGrouping: false,
   })
+}
