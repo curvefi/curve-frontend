@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { styled } from 'styled-components'
 import { type Address, isAddressEqual } from 'viem'
+import { OhlcAndActivityComp } from '@/dex/components/OhlcAndActivityComp'
 import { CampaignRewardsBanner } from '@/dex/components/PagePool/components/CampaignRewardsBanner'
 import { Deposit } from '@/dex/components/PagePool/Deposit'
-import { PoolInfoData } from '@/dex/components/PagePool/PoolDetails/ChartOhlcWrapper'
 import { PoolParameters } from '@/dex/components/PagePool/PoolDetails/PoolParameters'
 import { PoolStats } from '@/dex/components/PagePool/PoolDetails/PoolStats'
 import { Swap } from '@/dex/components/PagePool/Swap'
@@ -35,7 +35,7 @@ import { useNavigate } from '@ui-kit/hooks/router'
 import { usePageVisibleInterval } from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
-import { type TabOption, TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
+import { type TabOption, TabsSwitcher } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
 import { FormMargins } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
 import { PoolAlertBanner } from '../PoolAlertBanner'
@@ -203,6 +203,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
               value={!rFormType ? 'deposit' : rFormType}
               onChange={(key) => toggleForm(key as TransferFormType)}
               options={tabs}
+              testIdPrefix="pool-form-tab"
             />
             {rFormType === 'swap' ? (
               poolAlert?.isDisableSwap ? (
@@ -248,11 +249,17 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
         {poolAddress && <CampaignRewardsBanner chainId={rChainId} address={poolAddress} />}
         {!isLite && pricesApiPoolData && pricesApi && (
           <PriceAndTradesWrapper variant="secondary">
-            <PoolInfoData rChainId={rChainId} pricesApiPoolData={pricesApiPoolData} />
+            <OhlcAndActivityComp rChainId={rChainId} pricesApiPoolData={pricesApiPoolData} />
           </PriceAndTradesWrapper>
         )}
         <Stack>
-          <TabsSwitcher variant="contained" value={poolInfoTab} onChange={setPoolInfoTab} options={poolInfoTabs} />
+          <TabsSwitcher
+            variant="contained"
+            value={poolInfoTab}
+            onChange={setPoolInfoTab}
+            options={poolInfoTabs}
+            testIdPrefix="pool-info-tab"
+          />
           <AppPageInfoContentWrapper variant="secondary">
             {poolInfoTab === 'user' && (
               <MySharesStats

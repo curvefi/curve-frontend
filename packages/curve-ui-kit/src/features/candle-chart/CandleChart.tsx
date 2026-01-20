@@ -1,5 +1,5 @@
 import type { IChartApi, Time, ISeriesApi, LineWidth, IPriceLine, CustomSeriesWhitespaceData } from 'lightweight-charts'
-import { createChart, ColorType, CrosshairMode, LineStyle, CandlestickSeries, LineSeries } from 'lightweight-charts'
+import { createChart, ColorType, LineStyle, CandlestickSeries, LineSeries } from 'lightweight-charts'
 import lodash from 'lodash'
 import { useEffect, useRef, useState, useCallback, useMemo, type RefObject } from 'react'
 import { styled } from 'styled-components'
@@ -55,6 +55,13 @@ const normalizeLiquidationRangePoints = (range?: LlammaLiquididationRange | null
 }
 
 function getPriceFormatter(ohlcData: LpPriceOhlcDataFormatted[]) {
+  if (!ohlcData?.length) {
+    return {
+      type: 'custom' as const,
+      formatter: (price: number) => priceFormatter(price, 1), // Safe default delta
+    }
+  }
+
   const min = Math.min(...ohlcData.map((x) => x.low))
   const max = Math.max(...ohlcData.map((x) => x.high))
 
@@ -83,7 +90,6 @@ type Props = {
   timeOption: string
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   wrapperRef: any
-  magnet: boolean
   colors: ChartColors
   refetchingCapped: boolean
   fetchMoreChartData: (lastFetchEndTime: number) => void
@@ -102,7 +108,6 @@ export const CandleChart = ({
   liquidationRange,
   timeOption,
   wrapperRef,
-  magnet,
   colors,
   refetchingCapped,
   fetchMoreChartData,
@@ -336,13 +341,12 @@ export const CandleChart = ({
     })
   }, [timeOption])
 
-  // Update crosshair settings when magnet or colors change
+  // Update crosshair settings when colors change
   useEffect(() => {
     if (!chartRef.current) return
 
     chartRef.current.applyOptions({
       crosshair: {
-        mode: magnet ? CrosshairMode.Magnet : CrosshairMode.Normal,
         vertLine: {
           width: 4 as LineWidth,
           color: '#C3BCDB44',
@@ -356,7 +360,7 @@ export const CandleChart = ({
         },
       },
     })
-  }, [magnet, memoizedColors.cursorLabel, memoizedColors.cursorVertLine])
+  }, [memoizedColors.cursorLabel, memoizedColors.cursorVertLine])
 
   // Liquidation range series effect - create/destroy series based on visibility
   useEffect(() => {
@@ -406,14 +410,14 @@ export const CandleChart = ({
           price: 0,
           color: appearance.priceLineColorTop,
           lineWidth: 2,
-          lineStyle: LineStyle.LargeDashed,
+          lineStyle: LineStyle.Dashed,
           axisLabelVisible: true,
         }),
         bottom: series.createPriceLine({
           price: 0,
           color: appearance.priceLineColorBottom,
           lineWidth: 2,
-          lineStyle: LineStyle.LargeDashed,
+          lineStyle: LineStyle.Dashed,
           axisLabelVisible: true,
         }),
       }

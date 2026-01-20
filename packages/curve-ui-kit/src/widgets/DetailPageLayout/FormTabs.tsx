@@ -3,7 +3,7 @@ import { type ComponentType, type ReactNode, useState } from 'react'
 import { notFalsy } from '@curvefi/prices-api/objects.util'
 import Skeleton from '@mui/material/Skeleton'
 import Stack from '@mui/material/Stack'
-import { type TabOption, TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
+import { type TabOption, TabsSwitcher, TabsSwitcherProps } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
 import { FormContent } from './FormContent'
 
@@ -30,6 +30,8 @@ export type FormTab<Props extends object> = {
   visible?: FnOrValue<Props, boolean>
   /** Function or value to determine if the tab is disabled */
   disabled?: FnOrValue<Props, boolean>
+  /** Force the tab into the kebab menu */
+  alwaysInKebab?: FnOrValue<Props, boolean>
   /** Component to render when the tab is selected */
   component?: ComponentType<Props>
 }
@@ -40,10 +42,11 @@ const createOptions = <Props extends object>(
 ): TabOption<string>[] =>
   tabs
     ?.filter(({ visible }) => applyFnOrValue(visible, params) !== false)
-    .map(({ value, label, disabled, href }) => ({
+    .map(({ value, label, disabled, alwaysInKebab, href }) => ({
       value,
       label: applyFnOrValue(label, params),
       disabled: applyFnOrValue(disabled, params),
+      alwaysInKebab: applyFnOrValue(alwaysInKebab, params),
       href: applyFnOrValue(href, params),
     })) ?? []
 
@@ -88,27 +91,30 @@ export const FormMargins = ({ children }: { children: ReactNode }) => (
   <Stack marginInline={marginInline}>{children}</Stack>
 )
 
+type FormTabsProps<T extends object> = UseFormTabOptions<T> & {
+  shouldWrap?: boolean
+  overflow?: TabsSwitcherProps<T>['overflow']
+}
+
 /**
  * Form wrapper that displays tabs and handles tab switching. It supports sub-tabs as well.
  * @param shouldWrap Whether to wrap the form content in a `FormContent` component
  *                   DEPRECATED: for legacy forms only, use `Form` or `FormContent` for new components
+ * @param overflow - the overflow mode of the tabs switcher, default is 'kebab'
  * @param options - useFormTabs options
  */
-export function FormTabs<T extends object>({
-  shouldWrap,
-  ...options
-}: UseFormTabOptions<T> & { shouldWrap?: boolean }) {
+export function FormTabs<T extends object>({ shouldWrap, overflow = 'kebab', ...options }: FormTabsProps<T>) {
   const { tab, tabs, subTabs, subTab, Component, onChangeTab, onChangeSubTab } = useFormTabs(options)
   return (
     <Stack marginInline={marginInline}>
-      <TabsSwitcher variant="contained" value={tab.value} options={tabs} onChange={onChangeTab} />
+      <TabsSwitcher variant="contained" value={tab.value} options={tabs} onChange={onChangeTab} overflow={overflow} />
 
       {subTab && subTabs.length > 1 && (
         <TabsSwitcher
           variant="underlined"
           value={subTab.value}
           options={subTabs}
-          fullWidth
+          overflow="fullWidth"
           sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}
           onChange={onChangeSubTab}
         />

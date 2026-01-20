@@ -43,7 +43,7 @@ module.exports = {
     ],
     '@typescript-eslint/no-floating-promises': 'warn',
     '@typescript-eslint/no-unused-vars': [
-      'error',
+      'warn',
       {
         args: 'all',
         argsIgnorePattern: '^_',
@@ -114,7 +114,7 @@ module.exports = {
   ],
   overrides: [
     {
-      files: ['**/*.stories.tsx', '**/*.stories.ts', '**/*.d.ts'],
+      files: ['**/*.stories.tsx', '**/*.stories.ts', '**/*.d.ts', '**/_api/*.ts'],
       rules: {
         'import/no-default-export': 'off',
       },

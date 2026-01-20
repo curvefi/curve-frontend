@@ -5,7 +5,7 @@ import { ABI_VECRV } from '@/dao/abis/vecrv'
 import { ErrorMessage } from '@/dao/components/ErrorMessage'
 import { MetricsTitle } from '@/dao/components/MetricsComp'
 import { CONTRACT_VECRV } from '@/dao/constants'
-import { useProposalPricesApiQuery, invalidateProposalPricesApi } from '@/dao/entities/proposal-prices-api'
+import { invalidateProposalPricesApi, useProposalPricesApiQuery } from '@/dao/entities/proposal-prices-api'
 import { useProposalsMapperQuery } from '@/dao/entities/proposals-mapper'
 import type { ProposalUrlParams } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils'
@@ -13,7 +13,7 @@ import { ProposalType } from '@curvefi/prices-api/proposal/models'
 import { Box } from '@ui/Box'
 import { Icon } from '@ui/Icon'
 import { IconButton } from '@ui/IconButton'
-import { SpinnerWrapper, Spinner } from '@ui/Spinner'
+import { Spinner, SpinnerWrapper } from '@ui/Spinner'
 import { TooltipButton as Tooltip } from '@ui/Tooltip/TooltipButton'
 import { breakpoints } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
@@ -61,16 +61,15 @@ export const Proposal = ({ proposalId: rProposalId }: ProposalUrlParams) => {
     [proposal?.status, proposal?.timestamp],
   )
 
+  const block = proposal?.block ?? pricesProposal?.block
+  const enabled = !!userAddress && block != null
   const { data: votingPower, isLoading: snapshotVeCrvLoading } = useReadContract({
     chainId: Chain.Ethereum,
     abi: ABI_VECRV,
     address: CONTRACT_VECRV,
     functionName: 'balanceOfAt',
-    args: [userAddress!, BigInt(proposal!.block)],
-    query: {
-      enabled: !!userAddress && !!proposal,
-      select: (vecrv) => Number(vecrv) / 1e18,
-    },
+    args: enabled ? ([userAddress, BigInt(block)] as const) : undefined,
+    query: { enabled, select: (vecrv) => Number(vecrv) / 1e18 },
   })
 
   const snapshotVeCrv = useMemo(

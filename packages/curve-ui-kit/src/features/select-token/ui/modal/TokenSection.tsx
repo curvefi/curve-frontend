@@ -14,9 +14,9 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing, ButtonSize } = SizesAndSpaces
 
-export type TokenSectionProps = {
+export type TokenSectionProps<T extends Option = Option> = {
   /** List of token options to display */
-  tokens: Option[]
+  tokens: T[]
   /** Are token balances still being fetched? Is the section 'under construction'? */
   isLoading?: boolean
   /** Token balances mapped by token address */
@@ -26,18 +26,18 @@ export type TokenSectionProps = {
   /** List of token addresses that should be disabled/unselectable */
   disabledTokens?: string[]
   /** Callback when a token is selected */
-  onToken: (token: Option) => void
+  onToken: (token: T) => void
   /** The title of the section */
   title?: string
   /** The label to show on the button that expands the section to show all */
   showAllLabel?: string
   /** List of tokens visible before "Show more" is clicked */
-  preview: Option[]
+  preview?: T[]
   /** Callback when "Show more" is clicked */
-  onShowAll: () => void
+  onShowAll?: () => void
 }
 
-export const TokenSection = ({
+export const TokenSection = <T extends Option = Option>({
   title,
   isLoading,
   showAllLabel,
@@ -48,25 +48,18 @@ export const TokenSection = ({
   disabledTokens,
   onToken,
   onShowAll,
-}: TokenSectionProps) => {
+}: TokenSectionProps<T>) => {
   if (!tokens.length) return null
 
-  const displayTokens = preview.length === 0 ? tokens : preview
-  const hasMore = preview.length > 0 && preview.length < tokens.length
+  const displayTokens = preview?.length ? preview : tokens
+  const hasMore = !!(preview?.length && preview.length < tokens.length && onShowAll)
 
   // If there's a list of preview tokens, show that with a 'Show more' button.
   // If not, then just display all tokens from the list.
   return (
     <>
       {title && (
-        <Box
-          sx={{
-            position: 'sticky',
-            top: 0,
-            zIndex: 1,
-            backgroundColor: (theme) => theme.palette.background.paper,
-          }}
-        >
+        <Box sx={{ position: 'sticky', top: 0, zIndex: 1, backgroundColor: (t) => t.design.Layer[1].Fill }}>
           <CardHeader
             title={
               <Stack direction="row" justifyContent="space-between" alignItems="center">
@@ -89,7 +82,6 @@ export const TokenSection = ({
           const blacklistEntry = blacklist.find(
             (x) => x.address.toLocaleLowerCase() === token.address.toLocaleLowerCase(),
           )
-
           return (
             <TokenOption
               key={token.address}
