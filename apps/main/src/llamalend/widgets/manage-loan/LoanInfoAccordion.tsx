@@ -117,7 +117,12 @@ export const LoanInfoAccordion = ({
             prevValue={prevHealth?.data && formatNumber(prevHealth.data, { abbreviate: false })}
             emptyValue="∞"
             {...combineQueryState(health, prevHealth)}
-            valueColor={getHealthValueColor(Number(health.data ?? prevHealth?.data ?? 100), useTheme(), isFullRepay)}
+            valueColor={getHealthValueColor({
+              health: health.data,
+              prevHealth: prevHealth?.data,
+              theme: useTheme(),
+              isFullRepay,
+            })}
             testId="borrow-health"
           />
         }
