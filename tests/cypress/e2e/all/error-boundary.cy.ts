@@ -102,6 +102,6 @@ describe('Error Boundary', () => {
     cy.get('[data-testid="submit-error-report-submit"]').click()
 
     cy.wait('@errorReport', LOAD_TIMEOUT)
-    cy.get('[data-testid="submit-error-report-modal"]').should('not.be.visible')
+    cy.get('[data-testid="submit-error-report-modal"]').should('not.exist')
   })
 })
