@@ -1,8 +1,4 @@
-import {
-  ActivityTable,
-  LlammaTradesExpandedPanel,
-  LlammaEventsExpandedPanel,
-} from '@ui-kit/features/activity-table'
+import { ActivityTable, LlammaTradesExpandedPanel, LlammaEventsExpandedPanel } from '@ui-kit/features/activity-table'
 import { useLlammaActivity, type UseLlammaActivityProps } from './useLlammaActivity'
 
 export type LlammaActivityProps = UseLlammaActivityProps

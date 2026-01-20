@@ -28,7 +28,14 @@ type TokenAmountCellProps = {
  * - Negative amounts are shown in red (error)
  * - Zero or null amounts are shown in default text color
  */
-export const TokenAmountCell = ({ amount, symbol, amountUsd, align = 'left', tokenAddress, chainId }: TokenAmountCellProps) => {
+export const TokenAmountCell = ({
+  amount,
+  symbol,
+  amountUsd,
+  align = 'left',
+  tokenAddress,
+  chainId,
+}: TokenAmountCellProps) => {
   const isRightAligned = align === 'right'
 
   const formatAmount = () => {
@@ -40,14 +47,19 @@ export const TokenAmountCell = ({ amount, symbol, amountUsd, align = 'left', tok
 
   return (
     <ActivityTableCell>
-      <Stack direction="row" justifyContent={isRightAligned ? 'flex-end' : 'flex-start'} alignItems="center" gap={Spacing.xs}>
-      {tokenAddress && !isRightAligned && <TokenIcon blockchainId={chainId} address={tokenAddress} size="mui-md" />}
+      <Stack
+        direction="row"
+        justifyContent={isRightAligned ? 'flex-end' : 'flex-start'}
+        alignItems="center"
+        gap={Spacing.xs}
+      >
+        {tokenAddress && !isRightAligned && <TokenIcon blockchainId={chainId} address={tokenAddress} size="mui-md" />}
         <Stack alignItems={isRightAligned ? 'flex-end' : 'flex-start'}>
-          <Typography variant="tableCellMBold">
-            {formatAmount()}
-          </Typography>
+          <Typography variant="tableCellMBold">{formatAmount()}</Typography>
           {amountUsd != null && amountUsd !== 0 && (
-            <Typography variant="bodySRegular">{formatNumber(amountUsd, { unit: 'dollar', abbreviate: true })}</Typography>
+            <Typography variant="bodySRegular">
+              {formatNumber(amountUsd, { unit: 'dollar', abbreviate: true })}
+            </Typography>
           )}
         </Stack>
         {tokenAddress && isRightAligned && <TokenIcon blockchainId={chainId} address={tokenAddress} size="mui-md" />}

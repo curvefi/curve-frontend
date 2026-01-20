@@ -25,9 +25,7 @@ export const createPoolLiquidityColumns = (): ColumnDef<PoolLiquidityRow, unknow
     header: t`Amounts`,
     cell: ({ row }) => (
       <ActivityTableCell>
-        <Typography variant="tableCellMBold">
-          {row.original.tokenAmounts.length} tokens
-        </Typography>
+        <Typography variant="tableCellMBold">{row.original.tokenAmounts.length} tokens</Typography>
       </ActivityTableCell>
     ),
     meta: { type: 'numeric' },

@@ -77,9 +77,7 @@ export const ChartAndActivityLayout = ({
     <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, gap: Spacing.sm, padding: Spacing.md }}>
       <SubTabsSwitcher tabs={TABS} value={tab} onChange={setTab} />
 
-      {tab === 'marketActivity' && isMarketAvailable && (
-        <LlammaActivity {...activity} />
-      )}
+      {tab === 'marketActivity' && isMarketAvailable && <LlammaActivity {...activity} />}
 
       {tab === 'chart' && (
         <Stack sx={{ gap: Spacing.sm }}>
@@ -97,9 +95,8 @@ export const ChartAndActivityLayout = ({
             }}
             isLoading={chart.isLoading}
             customButton={
-              newBandsChartEnabled && bands && (
-                <ToggleBandsChartButton label="Bands" isVisible={isBandsVisible} onClick={toggleBandsVisible} />
-              )
+              newBandsChartEnabled &&
+              bands && <ToggleBandsChartButton label="Bands" isVisible={isBandsVisible} onClick={toggleBandsVisible} />
             }
           />
           <Stack

@@ -5,11 +5,7 @@ import { usePoolActivity } from '@/dex/hooks/usePoolActivity'
 import { ChainId } from '@/dex/types/main.types'
 import type { Address } from '@curvefi/prices-api'
 import Stack from '@mui/material/Stack'
-import {
-  ActivityTable,
-  PoolTradesExpandedPanel,
-  PoolLiquidityExpandedPanel,
-} from '@ui-kit/features/activity-table'
+import { ActivityTable, PoolTradesExpandedPanel, PoolLiquidityExpandedPanel } from '@ui-kit/features/activity-table'
 import { ChartWrapper } from '@ui-kit/features/candle-chart/ChartWrapper'
 import { TIME_OPTIONS } from '@ui-kit/features/candle-chart/constants'
 import type { PricesApiPool } from '@ui-kit/features/candle-chart/types'

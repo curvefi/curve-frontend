@@ -35,7 +35,10 @@ function useScrollToTopOnFilterChange<T extends TableItem>(table: TanstackTable<
 /**
  * Scrolls to the top of the table container whenever the page changes.
  */
-function useScrollToTopOnPageChange<T extends TableItem>(table: TanstackTable<T>, containerRef: React.RefObject<HTMLElement | null>) {
+function useScrollToTopOnPageChange<T extends TableItem>(
+  table: TanstackTable<T>,
+  containerRef: React.RefObject<HTMLElement | null>,
+) {
   const { pageIndex } = table.getState().pagination
   const isFirstRender = useRef(true)
   useEffect(() => {
@@ -150,7 +153,11 @@ export const DataTable = <T extends TableItem>({
         </TableHead>
         <TableBody>
           {loading ? (
-            <SkeletonRows table={table} shouldStickFirstColumn={shouldStickFirstColumn} usePageSize={skeletonMatchPageSize} />
+            <SkeletonRows
+              table={table}
+              shouldStickFirstColumn={shouldStickFirstColumn}
+              usePageSize={skeletonMatchPageSize}
+            />
           ) : rows.length === 0 ? (
             emptyState
           ) : (

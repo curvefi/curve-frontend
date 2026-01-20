@@ -35,7 +35,10 @@ export const usePoolActivityVisibility = () => {
 
   const tradesColumnVisibility = useMemo(() => (isMobile ? createTradesMobileVisibility() : undefined), [isMobile])
 
-  const liquidityColumnVisibility = useMemo(() => (isMobile ? createLiquidityMobileVisibility() : undefined), [isMobile])
+  const liquidityColumnVisibility = useMemo(
+    () => (isMobile ? createLiquidityMobileVisibility() : undefined),
+    [isMobile],
+  )
 
   return { tradesColumnVisibility, liquidityColumnVisibility }
 }

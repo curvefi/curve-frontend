@@ -21,14 +21,19 @@ type AddressCellProps = {
  * Cell component for displaying blockchain addresses with truncation.
  */
 export const AddressCell = ({ address, digits = 4, label, align = 'right' }: AddressCellProps) => (
-    <ActivityTableCell>
-      {label && (
-        <Typography variant="bodyXsRegular" sx={(t) => ({ color: t.design.Text.TextColors.Secondary })}>
-          {label}
-        </Typography>
-      )}
-      <Stack direction="row" alignItems="center" justifyContent={align === 'right' ? 'flex-end' : 'flex-start'} gap={Spacing.xs}>
-        <Typography variant="tableCellMBold">{shortenString(address, { digits })}</Typography>
-      </Stack>
-    </ActivityTableCell>
-  )
+  <ActivityTableCell>
+    {label && (
+      <Typography variant="bodyXsRegular" sx={(t) => ({ color: t.design.Text.TextColors.Secondary })}>
+        {label}
+      </Typography>
+    )}
+    <Stack
+      direction="row"
+      alignItems="center"
+      justifyContent={align === 'right' ? 'flex-end' : 'flex-start'}
+      gap={Spacing.xs}
+    >
+      <Typography variant="tableCellMBold">{shortenString(address, { digits })}</Typography>
+    </Stack>
+  </ActivityTableCell>
+)

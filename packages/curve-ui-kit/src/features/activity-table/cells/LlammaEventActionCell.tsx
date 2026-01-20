@@ -22,7 +22,9 @@ export const LlammaEventActionCell = ({ event }: LlammaEventActionCellProps) => 
     <ActivityTableCell>
       <Stack direction="row" alignItems="center" gap={Spacing.sm}>
         <Icon />
-        <Typography variant="tableCellMBold" color={isDeposit ? 'success' : 'error'}>{label}</Typography>
+        <Typography variant="tableCellMBold" color={isDeposit ? 'success' : 'error'}>
+          {label}
+        </Typography>
       </Stack>
     </ActivityTableCell>
   )

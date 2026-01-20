@@ -29,11 +29,9 @@ import type {
 // Mock Data Generators
 // ============================================================================
 
-const generateAddress = (seed: number): Address =>
-  `0x${seed.toString(16).padStart(40, '0')}` as Address
+const generateAddress = (seed: number): Address => `0x${seed.toString(16).padStart(40, '0')}` as Address
 
-const generateTxHash = (seed: number): Address =>
-  `0x${seed.toString(16).padStart(64, '0')}` as Address
+const generateTxHash = (seed: number): Address => `0x${seed.toString(16).padStart(64, '0')}` as Address
 
 // DEX Pool Mock Tokens (TriCrypto - USDT/WBTC/WETH)
 const USDT_TOKEN = {
@@ -137,11 +135,7 @@ const generatePoolLiquidity = (count: number): PoolLiquidityRow[] => {
 }
 
 // Llamma Trades Mock Data Generator
-const generateLlammaTrades = (
-  count: number,
-  collateralToken: Token,
-  borrowToken: Token,
-): LlammaTradeRow[] => {
+const generateLlammaTrades = (count: number, collateralToken: Token, borrowToken: Token): LlammaTradeRow[] => {
   const now = Date.now()
 
   return Array.from({ length: count }, (_, i) => {
@@ -170,11 +164,7 @@ const generateLlammaTrades = (
 }
 
 // Llamma Events Mock Data Generator
-const generateLlammaEvents = (
-  count: number,
-  collateralToken: Token,
-  borrowToken: Token,
-): LlammaEventRow[] => {
+const generateLlammaEvents = (count: number, collateralToken: Token, borrowToken: Token): LlammaEventRow[] => {
   const now = Date.now()
 
   return Array.from({ length: count }, (_, i) => {
@@ -184,16 +174,16 @@ const generateLlammaEvents = (
       provider: generateAddress(6000 + i),
       deposit: isDeposit
         ? {
-            amount: Math.random() * 10 + 0.5,
-            n1: Math.floor(Math.random() * 50),
-            n2: Math.floor(Math.random() * 50) + 50,
-          }
+          amount: Math.random() * 10 + 0.5,
+          n1: Math.floor(Math.random() * 50),
+          n2: Math.floor(Math.random() * 50) + 50,
+        }
         : null,
       withdrawal: !isDeposit
         ? {
-            amountBorrowed: Math.random() * 5000 + 100,
-            amountCollateral: Math.random() * 2 + 0.1,
-          }
+          amountBorrowed: Math.random() * 5000 + 100,
+          amountCollateral: Math.random() * 2 + 0.1,
+        }
         : null,
       blockNumber: 19000000 + i * 60,
       timestamp: new Date(now - i * 3600000), // 1 hour apart
@@ -281,14 +271,8 @@ const DexPoolActivityComponent = () => {
 const LendMarketActivityComponent = () => {
   const [activeSelection, setActiveSelection] = useState<LlammaActivitySelection>('trades')
 
-  const tradesData = useMemo(
-    () => generateLlammaTrades(20, COLLATERAL_TOKEN, BORROW_TOKEN),
-    [],
-  )
-  const eventsData = useMemo(
-    () => generateLlammaEvents(15, COLLATERAL_TOKEN, BORROW_TOKEN),
-    [],
-  )
+  const tradesData = useMemo(() => generateLlammaTrades(20, COLLATERAL_TOKEN, BORROW_TOKEN), [])
+  const eventsData = useMemo(() => generateLlammaEvents(15, COLLATERAL_TOKEN, BORROW_TOKEN), [])
   const tradesColumns = useMemo(() => createLlammaTradesColumns(), [])
   const eventsColumns = useMemo(() => createLlammaEventsColumns(), [])
 
@@ -337,14 +321,8 @@ const LendMarketActivityComponent = () => {
 const CrvusdMarketActivityComponent = () => {
   const [activeSelection, setActiveSelection] = useState<LlammaActivitySelection>('trades')
 
-  const tradesData = useMemo(
-    () => generateLlammaTrades(20, CRVUSD_COLLATERAL_TOKEN, CRVUSD_BORROW_TOKEN),
-    [],
-  )
-  const eventsData = useMemo(
-    () => generateLlammaEvents(15, CRVUSD_COLLATERAL_TOKEN, CRVUSD_BORROW_TOKEN),
-    [],
-  )
+  const tradesData = useMemo(() => generateLlammaTrades(20, CRVUSD_COLLATERAL_TOKEN, CRVUSD_BORROW_TOKEN), [])
+  const eventsData = useMemo(() => generateLlammaEvents(15, CRVUSD_COLLATERAL_TOKEN, CRVUSD_BORROW_TOKEN), [])
   const tradesColumns = useMemo(() => createLlammaTradesColumns(), [])
   const eventsColumns = useMemo(() => createLlammaEventsColumns(), [])
 
@@ -476,7 +454,7 @@ export const LoadingState: StoryObj = {
       <ActivityTable
         selections={POOL_ACTIVITY_SELECTIONS}
         activeSelection="trades"
-        onSelectionChange={() => {}}
+        onSelectionChange={() => { }}
         tableConfig={{
           data: [],
           columns: tradesColumns,
@@ -506,7 +484,7 @@ export const EmptyState: StoryObj = {
       <ActivityTable
         selections={POOL_ACTIVITY_SELECTIONS}
         activeSelection="trades"
-        onSelectionChange={() => {}}
+        onSelectionChange={() => { }}
         tableConfig={{
           data: [],
           columns: tradesColumns,
@@ -536,7 +514,7 @@ export const ErrorState: StoryObj = {
       <ActivityTable
         selections={POOL_ACTIVITY_SELECTIONS}
         activeSelection="trades"
-        onSelectionChange={() => {}}
+        onSelectionChange={() => { }}
         tableConfig={{
           data: [],
           columns: tradesColumns,
