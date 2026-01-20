@@ -11,6 +11,7 @@ import {
   type PoolTradeRow,
   type PoolLiquidityRow,
   type PoolActivitySelection,
+  type Token,
   createPoolTradesColumns,
   createPoolLiquidityColumns,
   usePoolActivityVisibility,
@@ -29,6 +30,8 @@ type UsePoolActivityProps = {
   chainId: ChainId
   /** The pool contract address */
   poolAddress: Address | undefined
+  /** Pool tokens (symbols and addresses) in order matching liquidity event amounts */
+  poolTokens?: Token[]
 }
 
 /**
@@ -36,7 +39,7 @@ type UsePoolActivityProps = {
  * Handles fetching, transforming, and providing table configurations for both pool trades
  * and liquidity events.
  */
-export const usePoolActivity = ({ chainId, poolAddress }: UsePoolActivityProps) => {
+export const usePoolActivity = ({ chainId, poolAddress, poolTokens = [] }: UsePoolActivityProps) => {
   const { data: networkConfig } = useNetworkByChain({ chainId })
   const network = networkConfig?.id.toLowerCase() as Chain
 
@@ -80,7 +83,7 @@ export const usePoolActivity = ({ chainId, poolAddress }: UsePoolActivityProps) 
     [tradesData?.trades, networkConfig, network],
   )
 
-  // Transform liquidity data with block explorer URLs
+  // Transform liquidity data with block explorer URLs and pool tokens
   const liquidityWithUrls: PoolLiquidityRow[] = useMemo(
     () =>
       network
@@ -88,9 +91,10 @@ export const usePoolActivity = ({ chainId, poolAddress }: UsePoolActivityProps) 
             ...event,
             url: scanTxPath(networkConfig, event.txHash),
             network,
+            poolTokens,
           })) ?? [])
         : [],
-    [liquidityData?.events, network, networkConfig],
+    [liquidityData?.events, network, networkConfig, poolTokens],
   )
 
   // Memoize column definitions

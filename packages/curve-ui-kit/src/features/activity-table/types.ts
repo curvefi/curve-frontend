@@ -30,7 +30,12 @@ export type LlammaActivitySelection = 'trades' | 'events'
 
 // Pool Types (for DEX pools)
 export type PoolTradeRow = AllPoolTrade & { url?: string; network: Chain }
-export type PoolLiquidityRow = PoolLiquidityEvent & { url?: string; network: Chain }
+export type PoolLiquidityRow = PoolLiquidityEvent & {
+  url?: string
+  network: Chain
+  /** Pool tokens in order matching tokenAmounts array */
+  poolTokens: Token[]
+}
 export type PoolActivitySelection = 'trades' | 'liquidity'
 
 /**

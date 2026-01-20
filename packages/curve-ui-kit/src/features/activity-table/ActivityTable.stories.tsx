@@ -115,6 +115,13 @@ const generatePoolTrades = (count: number): PoolTradeRow[] => {
   })
 }
 
+// Pool tokens for liquidity events
+const POOL_TOKENS: Token[] = [
+  { symbol: 'USDT', address: USDT_TOKEN.address },
+  { symbol: 'WBTC', address: WBTC_TOKEN.address },
+  { symbol: 'WETH', address: WETH_TOKEN.address },
+]
+
 // Pool Liquidity Mock Data Generator
 const generatePoolLiquidity = (count: number): PoolLiquidityRow[] => {
   const eventTypes = ['AddLiquidity', 'RemoveLiquidity', 'RemoveLiquidityOne', 'RemoveLiquidityImbalance'] as const
@@ -131,6 +138,7 @@ const generatePoolLiquidity = (count: number): PoolLiquidityRow[] => {
     provider: generateAddress(4000 + i),
     url: `https://etherscan.io/tx/${generateTxHash(3000 + i)}`,
     network: 'ethereum' as Chain,
+    poolTokens: POOL_TOKENS,
   }))
 }
 

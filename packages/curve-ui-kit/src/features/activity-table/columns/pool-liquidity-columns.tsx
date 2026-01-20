@@ -1,7 +1,6 @@
-import Typography from '@mui/material/Typography'
 import { createColumnHelper, type ColumnDef } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
-import { TimestampCell, AddressCell, ActivityTableCell } from '../cells'
+import { TimestampCell, AddressCell, PoolLiquidityAmountsCell } from '../cells'
 import { PoolLiquidityActionCell } from '../cells/PoolLiquidityActionCell'
 import type { PoolLiquidityRow } from '../types'
 
@@ -23,11 +22,7 @@ export const createPoolLiquidityColumns = (): ColumnDef<PoolLiquidityRow, unknow
   columnHelper.accessor('tokenAmounts', {
     id: PoolLiquidityColumnId.Amounts,
     header: t`Amounts`,
-    cell: ({ row }) => (
-      <ActivityTableCell>
-        <Typography variant="tableCellMBold">{row.original.tokenAmounts.length} tokens</Typography>
-      </ActivityTableCell>
-    ),
+    cell: ({ row }) => <PoolLiquidityAmountsCell event={row.original} />,
     meta: { type: 'numeric' },
   }) as ColumnDef<PoolLiquidityRow, unknown>,
   columnHelper.accessor('provider', {
