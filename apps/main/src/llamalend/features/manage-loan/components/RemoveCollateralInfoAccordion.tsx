@@ -80,11 +80,7 @@ export function RemoveCollateralInfoAccordion<ChainId extends IChainId>({
         },
         isOpen && !!userCollateral,
       )}
-      userState={{
-        ...userState,
-        borrowTokenSymbol: borrowToken?.symbol,
-        collateralTokenSymbol: collateralToken?.symbol,
-      }}
+      userState={userState}
       collateral={expectedCollateral}
     />
   )
