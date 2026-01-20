@@ -2,14 +2,9 @@ import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import { requireLib } from '@ui-kit/features/connect-wallet'
 import { queryFactory, rootKeys, type UserPoolParams, type UserPoolQuery } from '@ui-kit/lib/model'
 import { userPoolValidationSuite } from '@ui-kit/lib/model/query/user-pool-validation'
-import { Chain, type Address } from '@ui-kit/utils'
+import { Chain, decimal, type Address } from '@ui-kit/utils'
 import { usePoolTokenDepositBalances } from '../hooks/usePoolTokenDepositBalances'
 import { fulfilledValue, isValidAddress } from '../utils'
-
-async function userPoolLiquidityUsd(pool: PoolTemplate, userAddress: Address) {
-  const result = await pool.userLiquidityUSD(userAddress).catch(() => 'NaN')
-  return result === 'NaN' ? '' : result
-}
 
 export async function userPoolRewardCrvApy(pool: PoolTemplate, userAddress: Address) {
   if (!isValidAddress(pool.gauge.address) || pool.rewardsOnly()) return 0
@@ -32,7 +27,10 @@ const { useQuery: useUserPoolInfoQuery, invalidate: invalidateUserPoolInfoQuery 
     const [userPoolWithdrawResult, liquidityUsdResult, userShareResult, userCrvApyResult, userPoolBoostResult] =
       await Promise.allSettled([
         pool.userBalances(userAddress),
-        userPoolLiquidityUsd(pool, userAddress),
+        pool
+          .userLiquidityUSD(userAddress)
+          .catch(() => 'NaN')
+          .then((x) => decimal(x)),
         pool.userShare(userAddress),
         userPoolRewardCrvApy(pool, userAddress),
         userPoolBoost(chainId, pool, userAddress),
