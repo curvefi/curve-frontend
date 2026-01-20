@@ -4,7 +4,7 @@ import { type RepayHealthQuery, type RepayHealthParams } from '../validation/man
 import { repayFromCollateralIsFullValidationSuite } from '../validation/manage-loan.validation'
 import { getRepayImplementation } from './repay-query.helpers'
 
-export const { useQuery: useRepayHealth } = queryFactory({
+export const { getQueryOptions: getRepayHealthOptions } = queryFactory({
   queryKey: ({
     chainId,
     marketId,

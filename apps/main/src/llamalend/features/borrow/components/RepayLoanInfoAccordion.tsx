@@ -7,7 +7,7 @@ import { useMarketFutureRates } from '@/llamalend/queries/market-future-rates.qu
 import { useMarketRates } from '@/llamalend/queries/market-rates'
 import { useRepayExpectedBorrowed } from '@/llamalend/queries/repay/repay-expected-borrowed.query'
 import { useRepayEstimateGas } from '@/llamalend/queries/repay/repay-gas-estimate.query'
-import { useRepayHealth } from '@/llamalend/queries/repay/repay-health.query'
+import { getRepayHealthOptions } from '@/llamalend/queries/repay/repay-health.query'
 import { useRepayIsApproved } from '@/llamalend/queries/repay/repay-is-approved.query'
 import { useRepayPriceImpact } from '@/llamalend/queries/repay/repay-price-impact.query'
 import { useRepayPrices } from '@/llamalend/queries/repay/repay-prices.query'
@@ -91,7 +91,7 @@ export function RepayLoanInfoAccordion<ChainId extends IChainId>({
       toggle={toggle}
       isApproved={isApproved}
       gas={useRepayEstimateGas(networks, params, isOpen)}
-      health={q(useRepayHealth(params))}
+      health={useHealthQueries((isFull) => getRepayHealthOptions({ ...params, isFull }))}
       prevHealth={useHealthQueries((isFull) => getUserHealthOptions({ ...params, isFull }))}
       isFullRepay={isFull}
       prevRates={q(useMarketRates(params, isOpen))}

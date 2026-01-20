@@ -97,6 +97,7 @@ export const RepayForm = <ChainId extends IChainId>({
 
   const selectedField = token?.field ?? 'userBorrowed'
   const selectedToken = selectedField == 'userBorrowed' ? borrowToken : collateralToken
+  const fromPosition = isFull.data === false && selectedField === 'stateCollateral'
   const swapRequired = selectedToken !== borrowToken
   const priceImpact = useRepayPriceImpact(params, enabled && swapRequired)
 
@@ -165,9 +166,8 @@ export const RepayForm = <ChainId extends IChainId>({
           ? t`Processing...`
           : joinButtonText(
               isApproved?.data === false && t`Approve`,
-              t`Repay`,
+              notFalsy(t`Repay`, fromPosition && t`from Position`).join(' '),
               isFull.data && t`Close Position`,
-              isFull.data === false && selectedField === 'stateCollateral' && t`from Position`,
             )}
       </Button>
 

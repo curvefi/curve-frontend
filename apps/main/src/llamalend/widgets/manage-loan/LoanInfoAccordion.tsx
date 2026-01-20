@@ -113,13 +113,7 @@ export const LoanInfoAccordion = ({
         info={
           <ActionInfo
             label=""
-            value={
-              isFullRepay
-                ? '∞'
-                : health?.data === null
-                  ? '?' // old 'unleveraged' markets cannot calculate new health
-                  : health?.data && formatNumber(health.data, { abbreviate: false })
-            }
+            value={isFullRepay ? '∞' : health?.data && formatNumber(health.data, { abbreviate: false })}
             prevValue={prevHealth?.data && formatNumber(prevHealth.data, { abbreviate: false })}
             emptyValue="∞"
             {...combineQueryState(health, prevHealth)}
