@@ -51,15 +51,16 @@ export const TAB_TEXT_VARIANTS = {
   extraExtraLarge: 'headingMBold',
 } as const satisfies Record<keyof typeof TABS_SIZES_CLASSES, TypographyVariantKey>
 
-const BORDER_SIZE = '2px' as const
-const BORDER_SIZE_INACTIVE = '1px' as const
-const BORDER_SIZE_LARGE = '4px' as const
-
-const TAB_HEIGHT: Record<keyof typeof TABS_SIZES_CLASSES, string> = {
+export const TAB_HEIGHT: Record<keyof typeof TABS_SIZES_CLASSES, string> = {
   small: ButtonSize.xs,
   medium: ButtonSize.sm,
   extraExtraLarge: ButtonSize.md,
 }
+
+const BORDER_SIZE = '2px' as const
+const BORDER_SIZE_INACTIVE = '1px' as const
+const BORDER_SIZE_LARGE = '4px' as const
+export const CONTAINED_TABS_MARGIN_RIGHT = 1
 
 const DEFAULT_TAB_PADDING: TabPadding = { inlineStart: 0, inlineEnd: 0, blockStart: 0, blockEnd: 0 }
 
@@ -226,7 +227,7 @@ export const defineMuiTabs = ({
           root: { padding: { blockEnd: 'xxs' } },
         }),
         '& .MuiTab-root:not(.Mui-selected):not(:last-child)': {
-          marginRight: '1px',
+          marginRight: `${CONTAINED_TABS_MARGIN_RIGHT}px`,
         },
         '&.MuiTabs-vertical .MuiTab-root:not(.Mui-selected):not(:last-child)': {
           marginRight: 0,

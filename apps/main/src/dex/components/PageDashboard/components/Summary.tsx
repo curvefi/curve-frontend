@@ -16,7 +16,7 @@ import { shortenAccount } from '@ui/utils'
 import { breakpoints } from '@ui/utils/responsive'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { t } from '@ui-kit/lib/i18n'
-import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
+import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 
 type Tab = 'DAY_PROFITS' | 'CLAIMABLE_TOKENS'
 const tabs: TabOption<Tab>[] = [
