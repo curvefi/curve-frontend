@@ -10,8 +10,7 @@ type UserPoolsParams = FieldsOf<UserPoolsQuery>
 export const { useQuery: useUserPools, fetchQuery: fetchUserPools } = queryFactory({
   queryKey: ({ chainId, userAddress }: UserPoolsParams) =>
     [...rootKeys.chain({ chainId }), ...rootKeys.user({ userAddress }), 'pools'] as const,
-  queryFn: async ({ userAddress }: UserPoolsQuery) =>
-    await requireLib('curveApi').getUserPoolList(userAddress as string),
+  queryFn: async ({ userAddress }: UserPoolsQuery) => await requireLib('curveApi').getUserPoolList(userAddress),
   staleTime: '1m',
   validationSuite: createValidationSuite(({ chainId, userAddress }: UserPoolsParams) => {
     chainValidationGroup({ chainId })
