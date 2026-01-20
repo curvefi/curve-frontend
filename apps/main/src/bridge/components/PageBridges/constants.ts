@@ -1,5 +1,5 @@
 import { t } from '@ui-kit/lib/i18n'
-import type { TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
+import type { TabOption } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 
 export type Tab = 'web3' | 'native'
 

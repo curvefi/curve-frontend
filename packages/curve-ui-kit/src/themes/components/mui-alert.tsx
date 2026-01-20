@@ -33,6 +33,7 @@ export const defineMuiAlert = (
         paddingBlockEnd: Spacing.xs,
       }),
       '& .MuiAlert-message': {
+        flexGrow: 1,
         ...handleBreakpoints({
           paddingInlineEnd: Spacing.sm,
           paddingBlockStart: Spacing.sm,

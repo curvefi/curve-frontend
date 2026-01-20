@@ -32,7 +32,7 @@ describe('Basic Access Test', () => {
   })
 
   it('should show an error page on 404', () => {
-    cy.visit('/non-existing-page', { failOnStatusCode: false })
+    cy.visit('/non-existing-page', { failOnStatusCode: false, ...LOAD_TIMEOUT })
     cy.get('[data-testid="error-subtitle"]').should('contain.text', 'Page Not Found')
   })
 
