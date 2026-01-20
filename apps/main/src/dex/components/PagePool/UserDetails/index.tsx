@@ -47,7 +47,7 @@ export const MySharesStats = ({
   const { rewardsNeedNudging, areCrvRewardsStuckInBridge } = poolData?.gauge.status || {}
 
   const userShareLabel = useMemo(() => {
-    if (userLpShare && Number(userLpShare) !== 0) {
+    if (userLpShare && Number(userLpShare)) {
       if (Number(userLpShare) > 0.01) {
         return formatNumber(userLpShare, FORMAT_OPTIONS.PERCENT)
       }
