@@ -2,9 +2,8 @@ import ReactECharts, { type EChartsOption } from 'echarts-for-react'
 import { useEffect, useMemo, memo, useRef } from 'react'
 import { BandsChartToken, ChartDataPoint, ParsedBandsBalances } from '@/llamalend/features/bands-chart/types'
 import { Box } from '@mui/material'
-import { DEFAULT_CHART_HEIGHT } from '@ui-kit/features/candle-chart/constants'
+import { SpinnerWrapper, Spinner } from '@ui/Spinner'
 import { useResizeObserver } from '@ui-kit/hooks/useResizeObserver'
-import { Spinner } from '@ui-kit/shared/ui/Spinner'
 import { getChartOptions } from './chartOptions'
 import { EmptyState } from './EmptyState'
 import { useBandsChartPalette } from './hooks/useBandsChartPalette'
@@ -42,7 +41,7 @@ const BandsChartComponent = ({
   isLoading,
   userBandsBalances,
   oraclePrice,
-  height = DEFAULT_CHART_HEIGHT,
+  height = 420, // TODO: set correct default value when the combined chart header (OHLC chart + bands chart) is implemented
 }: BandsChartProps) => {
   const palette = useBandsChartPalette()
   const chartRef = useRef<ReactECharts | null>(null)
@@ -98,7 +97,14 @@ const BandsChartComponent = ({
             color: palette.textColor,
           }}
         >
-          {isLoading ? <Spinner /> : <EmptyState isError={isError} />}
+          {isLoading ? (
+            // TODO: update when re-theming the candle chart to match spinners
+            <SpinnerWrapper>
+              <Spinner size={18} />
+            </SpinnerWrapper>
+          ) : (
+            <EmptyState isError={isError} />
+          )}
         </Box>
       </Box>
     )

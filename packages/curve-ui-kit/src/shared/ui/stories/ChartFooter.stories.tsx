@@ -4,8 +4,8 @@ import Box from '@mui/material/Box'
 import { useTheme } from '@mui/material/styles'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { t } from '@ui-kit/lib/i18n'
-import { ChartFooter } from '@ui-kit/shared/ui/Chart/ChartFooter'
-import type { LegendItem } from '@ui-kit/shared/ui/Chart/LegendSet'
+import { ChartFooter } from '../ChartFooter'
+import type { LegendItem } from '../LegendSet'
 
 type TimeRange = '1D' | '1W' | '1M'
 const timeRanges: TimeRange[] = ['1D', '1W', '1M']
