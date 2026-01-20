@@ -174,16 +174,16 @@ const generateLlammaEvents = (count: number, collateralToken: Token, borrowToken
       provider: generateAddress(6000 + i),
       deposit: isDeposit
         ? {
-          amount: Math.random() * 10 + 0.5,
-          n1: Math.floor(Math.random() * 50),
-          n2: Math.floor(Math.random() * 50) + 50,
-        }
+            amount: Math.random() * 10 + 0.5,
+            n1: Math.floor(Math.random() * 50),
+            n2: Math.floor(Math.random() * 50) + 50,
+          }
         : null,
       withdrawal: !isDeposit
         ? {
-          amountBorrowed: Math.random() * 5000 + 100,
-          amountCollateral: Math.random() * 2 + 0.1,
-        }
+            amountBorrowed: Math.random() * 5000 + 100,
+            amountCollateral: Math.random() * 2 + 0.1,
+          }
         : null,
       blockNumber: 19000000 + i * 60,
       timestamp: new Date(now - i * 3600000), // 1 hour apart
@@ -454,7 +454,7 @@ export const LoadingState: StoryObj = {
       <ActivityTable
         selections={POOL_ACTIVITY_SELECTIONS}
         activeSelection="trades"
-        onSelectionChange={() => { }}
+        onSelectionChange={() => {}}
         tableConfig={{
           data: [],
           columns: tradesColumns,
@@ -484,7 +484,7 @@ export const EmptyState: StoryObj = {
       <ActivityTable
         selections={POOL_ACTIVITY_SELECTIONS}
         activeSelection="trades"
-        onSelectionChange={() => { }}
+        onSelectionChange={() => {}}
         tableConfig={{
           data: [],
           columns: tradesColumns,
@@ -514,7 +514,7 @@ export const ErrorState: StoryObj = {
       <ActivityTable
         selections={POOL_ACTIVITY_SELECTIONS}
         activeSelection="trades"
-        onSelectionChange={() => { }}
+        onSelectionChange={() => {}}
         tableConfig={{
           data: [],
           columns: tradesColumns,
