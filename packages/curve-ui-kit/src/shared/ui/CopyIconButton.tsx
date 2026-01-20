@@ -35,8 +35,8 @@ export function CopyIconButton({
                       testId: 'copy-confirmation',
                     }),
                   )
-                  .catch((e) => showToast({ message: e.message, severity: 'error' }))
-              : showToast({ message: t`Clipboard not available due to unsecure origin`, severity: 'warning' })
+                  .catch((e) => showToast({ title: e.message, severity: 'error' }))
+              : showToast({ title: t`Clipboard not available due to unsecure origin`, severity: 'warning' })
           }}
         >
           <CopyIcon />

@@ -41,7 +41,7 @@ export const ChainSwitcher = ({ networks }: ChainSwitcherProps) => {
       ? toggle
       : () =>
           showToast({
-            message: t`This application is only available on the Ethereum Mainnet`,
+            title: t`This application is only available on the Ethereum Mainnet`,
             severity: 'warning',
             testId: 'alert-eth-only',
           })

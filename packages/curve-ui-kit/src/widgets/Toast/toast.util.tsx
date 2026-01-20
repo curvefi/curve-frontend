@@ -3,35 +3,32 @@ import type { ReactNode } from 'react'
 import type { AlertProps } from '@mui/material/Alert'
 import type { MakeOptional } from '@ui-kit/types/util'
 
-const onNotified = new EventTarget()
-const addMessageKey = 'curveNotification' as const
-const removeMessageKey = 'dismissCurveNotification' as const
+const onToast = new EventTarget()
+const addMessageKey = 'curveToast' as const
+const removeMessageKey = 'dismissCurveToast' as const
 
-export type ToastNotification = {
+export type ToastItem = {
   id: string
-  message: ReactNode
-  title?: string
+  message?: ReactNode
+  title: string
   testId?: string
   severity?: AlertProps['severity']
 }
 
-export const showToast = (notification: MakeOptional<ToastNotification, 'id'>): { dismiss: () => void } => {
-  const detail: ToastNotification = { id: random(0, 1e16).toString(), ...notification }
-  onNotified.dispatchEvent(new CustomEvent<ToastNotification>(addMessageKey, { detail }))
-  const dismiss = () => onNotified.dispatchEvent(new CustomEvent(removeMessageKey, { detail }))
+export const showToast = (item: MakeOptional<ToastItem, 'id'>): { dismiss: () => void } => {
+  const detail: ToastItem = { id: random(0, 1e16).toString(), ...item }
+  onToast.dispatchEvent(new CustomEvent<ToastItem>(addMessageKey, { detail }))
+  const dismiss = () => onToast.dispatchEvent(new CustomEvent(removeMessageKey, { detail }))
   return { dismiss }
 }
 
-export const listenWalletNotifications = (
-  add: (notification: ToastNotification) => void,
-  dismiss: (notification: ToastNotification) => void,
-) => {
-  const addListener = (event: Event) => add((event as CustomEvent).detail)
-  onNotified.addEventListener(addMessageKey, addListener)
-  const removeListener = (event: Event) => dismiss((event as CustomEvent).detail)
-  onNotified.addEventListener(removeMessageKey, removeListener)
+export const watchToasts = (onAdd: (toast: ToastItem) => void, onRemove: (toast: ToastItem) => void) => {
+  const addListener = (event: Event) => onAdd((event as CustomEvent).detail)
+  const removeListener = (event: Event) => onRemove((event as CustomEvent).detail)
+  onToast.addEventListener(addMessageKey, addListener)
+  onToast.addEventListener(removeMessageKey, removeListener)
   return () => {
-    onNotified.removeEventListener(addMessageKey, addListener)
-    onNotified.removeEventListener(removeMessageKey, removeListener)
+    onToast.removeEventListener(addMessageKey, addListener)
+    onToast.removeEventListener(removeMessageKey, removeListener)
   }
 }
