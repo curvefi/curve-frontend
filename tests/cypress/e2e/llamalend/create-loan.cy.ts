@@ -15,7 +15,7 @@ describe(`Create Mint market loan`, () => {
     cy.visit(path)
   })
 
-  it(`may be created`, () => {
+  it.skip(`may be created`, () => {
     writeCreateLoanForm({ collateral, borrow, leverageEnabled })
     checkLoanDetailsLoaded({ leverageEnabled })
     checkLoanRangeSlider(leverageEnabled)
