@@ -30,7 +30,7 @@ export const AllSeverities: Story = {
       </Button>
       <Button
         variant="contained"
-        color="info"
+        color="primary"
         onClick={() => showToast({ message: 'Here is your info toastr', severity: 'info', title: title })}
       >
         Info
@@ -38,6 +38,7 @@ export const AllSeverities: Story = {
       <Button
         variant="contained"
         color="warning"
+        sx={{ color: '#000' }} // warning is not really part of the design system, only used in the story.
         onClick={() => showToast({ message: 'Warning: We are testing', severity: 'warning', title: title })}
       >
         Warning
