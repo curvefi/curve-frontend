@@ -18,7 +18,7 @@ export type ErrorReportFormValues = {
   context?: ErrorContext
 }
 
-export const useErrorReportForm = ({ error, ...context }: ErrorContext) => {
+export const useErrorReportForm = ({ error, ...context }: ErrorContext, onClose: () => void) => {
   const form = useForm<ErrorReportFormValues>({
     ...formDefaultOptions,
     defaultValues: { address: '', contactMethod: 'email', contact: '', description: '' },
@@ -39,7 +39,13 @@ export const useErrorReportForm = ({ error, ...context }: ErrorContext) => {
         },
       }
       console.info(`Submitting error report:`, report)
-      return await fetchJson('/api/error-report', { body: JSON.stringify(report) })
+      try {
+        await fetchJson('/api/error-report', { body: JSON.stringify(report) })
+        onClose()
+      } catch (e) {
+        console.warn(e)
+        form.setError('root', { type: 'server', message: e.message })
+      }
     }),
   }
 }
