@@ -61,9 +61,14 @@ export const FieldToken = ({
           balance: decimal(balance),
           symbol: token,
           loading: balanceLoading || isMaxLoading,
-          ...(!hideMaxButton && { onClick: onMax }),
         },
       })}
+      {...(showAvailableBalance &&
+        !hideMaxButton && {
+          maxBalance: {
+            chips: [{ label: t`Max`, newBalance: onMax }],
+          },
+        })}
       tokenSelector={
         <TokenLabel
           blockchainId={blockchainId}
