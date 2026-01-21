@@ -27,13 +27,11 @@ export const useEstimateGas = <ChainId extends IChainId>(
     error: gasInfoError,
   } = useGasInfoAndUpdateLib<ChainId>({ chainId, networks }, enabled)
 
-  const data = useMemo(() => {
-    if (!network || estimate == null) {
-      return undefined as GasEstimateConversionResult | undefined
-    }
-
-    return calculateGas(estimate, gasInfo, ethRate, network)
-  }, [estimate, network, gasInfo, ethRate])
+  const data = useMemo(
+    (): GasEstimateConversionResult | undefined =>
+      network && estimate ? calculateGas(estimate, gasInfo, ethRate, network) : undefined,
+    [estimate, network, gasInfo, ethRate],
+  )
 
   return { data, isLoading: ethRateLoading || gasInfoLoading, error: ethRateError ?? gasInfoError }
 }

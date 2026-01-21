@@ -5,7 +5,7 @@ import { DEFAULT_HEALTH_MODE } from '@/llamalend/constants'
 import type { BorrowPositionDetailsProps } from '@/llamalend/features/market-position-details'
 import { calculateRangeToLiquidation } from '@/llamalend/features/market-position-details/utils'
 import { DEFAULT_BORROW_TOKEN_SYMBOL, getHealthMode } from '@/llamalend/health.util'
-import { calculateLtv } from '@/llamalend/llama.utils'
+import { calculateLtv, hasV2Leverage } from '@/llamalend/llama.utils'
 import { useLoanExists } from '@/llamalend/queries/loan-exists'
 import { useMarketRates } from '@/llamalend/queries/market-rates'
 import { useUserPnl } from '@/llamalend/queries/user-pnl.query'
@@ -14,7 +14,6 @@ import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
 import { networks } from '@/loan/networks'
 import { useStore } from '@/loan/store/useStore'
 import { ChainId, Llamma } from '@/loan/types/loan.types'
-import { hasV2Leverage } from '@/loan/utils/leverage'
 import { Address } from '@curvefi/prices-api'
 import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import { useCrvUsdSnapshots } from '@ui-kit/entities/crvusd-snapshots'
@@ -54,7 +53,7 @@ export const useLoanPositionDetails = ({
   const userLoanDetailsLoading = useStore((state) => state.loans.userDetailsMapper[llammaId]?.loading)
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId ?? ''])
   const { healthFull, healthNotFull } = useUserLoanDetails(llammaId) ?? {}
-  const v2LeverageEnabled = useMemo(() => hasV2Leverage(llamma ?? null), [llamma])
+  const v2LeverageEnabled = useMemo(() => !!llamma && hasV2Leverage(llamma), [llamma])
 
   const { data: loanExists } = useLoanExists({
     chainId,
