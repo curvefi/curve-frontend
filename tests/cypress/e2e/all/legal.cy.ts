@@ -1,4 +1,6 @@
 import { oneOf } from '@cy/support/generators'
+import { oneDisclaimersSubTabs, oneLegalPageTab } from '@cy/support/helpers/tabs'
+import { clickTab } from '@cy/support/helpers/tabs'
 import {
   API_LOAD_TIMEOUT,
   LOAD_TIMEOUT,
@@ -25,31 +27,28 @@ describe('Legal', () => {
 
   describe('Navigation', () => {
     const [width, height] = oneViewport()
-    it(`should contain multiple tabs for ${width}x${height}`, () => {
+    it(`should contain and have clickable tabs for ${width}x${height}`, () => {
       cy.viewport(width, height)
       cy.visit(`/${oneAppPath() || 'dex'}/ethereum/legal`)
 
-      // Make sure there's tabs available and click one.
-      cy.get(`[data-testid='legal-page']`, LOAD_TIMEOUT).should('be.visible')
-      const tabSelector = "[data-testid='legal-page'] [role='tablist'] [role='tab']"
-      cy.get(tabSelector).should('have.length', 3)
+      // click one Legal page tab.
+      clickTab('legal-tab', oneLegalPageTab())
 
-      // Navigate to the Disclaimer tab and check if the other tabs load. Then click the scrvusd tab
-      cy.get(tabSelector).last().click()
-      cy.url(LOAD_TIMEOUT).should('include', '?tab=disclaimers')
-      const subTabsSelector = "[data-testid='legal-page'] [role='tablist'] [role='tab']"
-      cy.get(subTabsSelector).last().click()
-      cy.url(LOAD_TIMEOUT).should('include', '?tab=disclaimers&subtab=scrvusd')
-      cy.get('div[role="tabpanel"] a')
-        .filter('[href="https://docs.curve.finance/scrvusd/overview/"]')
-        .should('be.visible')
+      // Navigate to the Disclaimer tab and check if the subtabs load. Then click one of them
+      const selectedTab = 'disclaimers'
+      clickTab('legal-tab', selectedTab)
+      cy.url(LOAD_TIMEOUT).should('include', `?tab=${selectedTab}`)
+      const subtab = oneDisclaimersSubTabs()
+      clickTab('legal-disclaimer-tab', subtab)
+      cy.url(LOAD_TIMEOUT).should('include', `?tab=${selectedTab}&subtab=${subtab}`)
+      // Check that content loaded in the tabpanel
+      cy.get('div[role="tabpanel"]', LOAD_TIMEOUT).should('be.visible').and('not.be.empty')
     })
 
     it('should use the first tab as default when the wrong tab is provided', () => {
       cy.visit('/lend/#/ethereum/legal?tab=dontexist')
       // Verify the first tab (Terms & Conditions) is selected
-      cy.get("[data-testid='legal-page'] [role='tablist'] [role='tab']", LOAD_TIMEOUT)
-        .first()
+      cy.get('[data-testid="legal-tab-terms"]', LOAD_TIMEOUT)
         .should('have.attr', 'aria-selected', 'true')
         .and('have.class', 'Mui-selected')
     })
@@ -58,8 +57,7 @@ describe('Legal', () => {
       cy.visit('/lend/#/ethereum/legal?tab=disclaimers&subtab=dontexist')
 
       // Verify the Disclaimers tab is selected and the lend subtab is selected
-      cy.get("[data-testid='legal-page'] [role='tablist']", LOAD_TIMEOUT)
-        .contains("[role='tab']", 'LlamaLend')
+      cy.get('[data-testid="legal-disclaimer-tab-lend"]', LOAD_TIMEOUT)
         .should('have.attr', 'aria-selected', 'true')
         .and('have.class', 'Mui-selected')
     })

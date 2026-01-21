@@ -4,6 +4,7 @@ import { Button, Stack, Typography, useTheme } from '@mui/material'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { decimal } from '@ui-kit/utils'
 import type { Health, LiquidationAlert } from './BorrowPositionDetails'
 import { HealthBar } from './HealthBar'
 import { getHealthValueColor } from './utils'
@@ -31,7 +32,7 @@ export const HealthDetails = ({
             label={t`Health`}
             value={Number(value)}
             loading={loading}
-            valueOptions={{ unit: 'none', color: getHealthValueColor(value ?? 0, theme) }}
+            valueOptions={{ unit: 'none', color: getHealthValueColor({ health: decimal(value), theme }) }}
             size="large"
           />
           <HealthBar health={Number(value)} softLiquidation={softLiquidation} />

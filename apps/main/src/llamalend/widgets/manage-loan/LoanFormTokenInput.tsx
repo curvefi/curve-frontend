@@ -2,7 +2,6 @@ import { type ReactNode, useCallback, useMemo } from 'react'
 import type { FieldPath, FieldPathValue, FieldValues, UseFormReturn } from 'react-hook-form'
 import type { Address } from 'viem'
 import { useConnection } from 'wagmi'
-import { setValueOptions } from '@/llamalend/features/borrow/react-form.utils'
 import type { LlamaNetwork } from '@/llamalend/llamalend.types'
 import type { INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
 import type { PartialRecord } from '@curvefi/prices-api/objects.util'
@@ -14,6 +13,7 @@ import type { LargeTokenInputProps } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import type { Query } from '@ui-kit/types/util'
 import { decimal, Decimal } from '@ui-kit/utils'
+import { setValueOptions } from '@ui-kit/utils/react-form.utils'
 
 type WalletBalanceProps = NonNullable<LargeTokenInputProps['walletBalance']>
 
@@ -35,6 +35,7 @@ export const LoanFormTokenInput = <
   message,
   network,
   positionBalance,
+  tokenSelector,
 }: {
   label: string
   token: { address: Address; symbol?: string } | undefined
@@ -59,6 +60,7 @@ export const LoanFormTokenInput = <
    * The network of the token.
    */
   network: LlamaNetwork
+  tokenSelector?: ReactNode
 }) => {
   const { address: userAddress } = useConnection()
   const {
@@ -94,18 +96,21 @@ export const LoanFormTokenInput = <
   const relatedMaxFieldError = max?.data && maxFieldName && errors[maxFieldName]
   const error = errors[name] || max?.error || balanceError || relatedMaxFieldError
   const value = form.getValues(name)
+  const errorMessage = error?.message
   return (
     <LargeTokenInput
       name={name}
       label={label}
       testId={testId}
       tokenSelector={
-        <TokenLabel
-          blockchainId={blockchainId}
-          tooltip={token?.symbol}
-          address={token?.address ?? null}
-          label={token?.symbol ?? '?'}
-        />
+        tokenSelector ?? (
+          <TokenLabel
+            blockchainId={blockchainId}
+            tooltip={token?.symbol}
+            address={token?.address ?? null}
+            label={token?.symbol ?? '?'}
+          />
+        )
       }
       balance={value}
       onBalance={useCallback(
@@ -116,12 +121,11 @@ export const LoanFormTokenInput = <
         [form, maxFieldName, name],
       )}
       isError={!!error}
-      message={error?.message}
       walletBalance={walletBalance}
       maxBalance={useMemo(() => max && { balance: max.data, chips: 'max' }, [max])}
       inputBalanceUsd={decimal(usdRate && usdRate * +(value ?? 0))}
     >
-      {message && <HelperMessage message={message} />}
+      {errorMessage ? <HelperMessage message={errorMessage} isError /> : message && <HelperMessage message={message} />}
     </LargeTokenInput>
   )
 }

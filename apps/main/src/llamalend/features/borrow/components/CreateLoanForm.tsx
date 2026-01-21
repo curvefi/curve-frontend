@@ -1,5 +1,6 @@
 import { useCallback, useEffect } from 'react'
 import { LoanPreset } from '@/llamalend/constants'
+import { type CreateLoanFormExternalFields, type OnCreateLoanFormUpdate } from '@/llamalend/features/borrow/types'
 import { hasLeverage } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import type { CreateLoanOptions } from '@/llamalend/mutations/create-loan.mutation'
@@ -12,11 +13,10 @@ import Stack from '@mui/material/Stack'
 import { useCreateLoanPreset } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { Balance } from '@ui-kit/shared/ui/Balance'
+import { setValueOptions } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { InputDivider } from '../../../widgets/InputDivider'
 import { useCreateLoanForm } from '../hooks/useCreateLoanForm'
-import { setValueOptions } from '../react-form.utils'
-import { type CreateLoanFormExternalFields, type OnCreateLoanFormUpdate } from '../types'
 import { AdvancedCreateLoanOptions } from './AdvancedCreateLoanOptions'
 import { CreateLoanInfoAccordion } from './CreateLoanInfoAccordion'
 import { LeverageInput } from './LeverageInput'
@@ -56,19 +56,19 @@ export const CreateLoanForm = <ChainId extends IChainId>({
   const network = networks[chainId]
   const [preset, setPreset] = useCreateLoanPreset<LoanPreset>(LoanPreset.Safe)
   const {
-    values,
-    onSubmit,
-    isPending,
-    maxTokenValues,
-    params,
     form,
-    collateralToken,
+    values,
+    params,
+    isPending,
+    onSubmit,
+    maxTokenValues,
     borrowToken,
+    collateralToken,
     isCreated,
     creationError,
     txHash,
-    formErrors,
     isApproved,
+    formErrors,
   } = useCreateLoanForm({ market, network, preset, onCreated })
   const setRange = useCallback(
     (range: number) => {

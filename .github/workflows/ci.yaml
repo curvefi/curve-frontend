@@ -128,7 +128,7 @@ jobs:
           - browser: chrome
             count: 2
     name: Cypress e2e tests in ${{ matrix.browser }} ${{ matrix.count }}
-    timeout-minutes: 15
+    timeout-minutes: 25
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

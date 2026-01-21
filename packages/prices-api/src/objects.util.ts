@@ -1,4 +1,4 @@
-type Falsy = false | 0 | '' | null | undefined
+export type Falsy = false | 0 | '' | null | undefined
 export type PartialRecord<Key extends PropertyKey, Value> = Partial<Record<Key, Value>>
 
 /** Object.keys with better type inference */

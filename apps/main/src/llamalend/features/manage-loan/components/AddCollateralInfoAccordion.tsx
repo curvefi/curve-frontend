@@ -9,13 +9,12 @@ import { getAddCollateralHealthOptions } from '@/llamalend/queries/add-collatera
 import { useMarketRates } from '@/llamalend/queries/market-rates'
 import { getUserHealthOptions } from '@/llamalend/queries/user-health.query'
 import { useUserState } from '@/llamalend/queries/user-state.query'
-import { mapQuery } from '@/llamalend/queries/utils'
 import { CollateralParams } from '@/llamalend/queries/validation/manage-loan.types'
 import type { CollateralForm } from '@/llamalend/queries/validation/manage-loan.validation'
 import { LoanInfoAccordion } from '@/llamalend/widgets/manage-loan/LoanInfoAccordion'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
-import { q } from '@ui-kit/types/util'
+import { mapQuery, q } from '@ui-kit/types/util'
 import { decimal, Decimal } from '@ui-kit/utils'
 
 export function AddCollateralInfoAccordion<ChainId extends IChainId>({
@@ -56,30 +55,30 @@ export function AddCollateralInfoAccordion<ChainId extends IChainId>({
       health={useHealthQueries((isFull) => getAddCollateralHealthOptions({ ...params, isFull }))}
       prevHealth={useHealthQueries((isFull) => getUserHealthOptions({ ...params, isFull }))}
       rates={q(useMarketRates(params, isOpen))}
-      prevLoanToValue={useLoanToValueFromUserState({
-        chainId: params.chainId,
-        marketId: params.marketId,
-        userAddress: params.userAddress,
-        collateralToken,
-        borrowToken,
-        enabled: isOpen,
-        expectedBorrowed: userState.data?.debt,
-      })}
-      loanToValue={useLoanToValueFromUserState({
-        chainId: params.chainId,
-        marketId: params.marketId,
-        userAddress: params.userAddress,
-        collateralToken,
-        borrowToken,
-        enabled: isOpen && !!userCollateral,
-        collateralDelta: userCollateral,
-        expectedBorrowed: userState.data?.debt,
-      })}
-      userState={{
-        ...userState,
-        borrowTokenSymbol: borrowToken?.symbol,
-        collateralTokenSymbol: collateralToken?.symbol,
-      }}
+      prevLoanToValue={useLoanToValueFromUserState(
+        {
+          chainId: params.chainId,
+          marketId: params.marketId,
+          userAddress: params.userAddress,
+          collateralToken,
+          borrowToken,
+          expectedBorrowed: userState.data?.debt,
+        },
+        isOpen,
+      )}
+      loanToValue={useLoanToValueFromUserState(
+        {
+          chainId: params.chainId,
+          marketId: params.marketId,
+          userAddress: params.userAddress,
+          collateralToken,
+          borrowToken,
+          collateralDelta: userCollateral,
+          expectedBorrowed: userState.data?.debt,
+        },
+        isOpen && !!userCollateral,
+      )}
+      userState={userState}
       collateral={expectedCollateral}
     />
   )

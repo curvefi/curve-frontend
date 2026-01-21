@@ -12,25 +12,11 @@ import { useLoanInfo } from './useLoanInfo'
  */
 export function useActionInfos(params: MarketParams): ActionInfosProps {
   const { address: userAddress } = useConnection()
-  const { data: userHealth } = useHealthQueries((isFull) =>
-    getUserHealthOptions(
-      {
-        ...{ ...params, userAddress },
-        isFull,
-      },
-      undefined,
-    ),
-  )
-
-  const health = { current: Number(userHealth ?? 0) }
-
-  const loanInfo = useLoanInfo(params)
-  const collateral = useCollateralInfo(params)
-
+  const { data: userHealth } = useHealthQueries((isFull) => getUserHealthOptions({ ...params, userAddress, isFull }))
   return {
-    health,
-    loanInfo,
-    collateral,
+    health: { current: Number(userHealth ?? 0) },
+    loanInfo: useLoanInfo(params),
+    collateral: useCollateralInfo(params),
     transaction: {
       estimatedTxCost: { eth: 0.0024, gwei: 0.72, dollars: 0.48 },
     },
