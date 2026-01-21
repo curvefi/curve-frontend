@@ -84,6 +84,12 @@ const createLlamaMarketsColumnOptions = ({
         enabled: true,
       },
       {
+        label: t`Borrow APR`,
+        columns: [LlamaMarketColumnId.BorrowRate],
+        active: false,
+        enabled: true,
+      },
+      {
         label: t`Borrow Details`,
         columns: [
           LlamaMarketColumnId.UserHealth,

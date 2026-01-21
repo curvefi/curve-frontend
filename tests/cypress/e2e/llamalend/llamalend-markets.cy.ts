@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import lodash, { max } from 'lodash'
+import { LlamaMarketColumnId } from '@/llamalend/features/market-list/columns/columns.enum'
 import type { GetMarketsResponse } from '@curvefi/prices-api/llamalend'
 import { range, recordValues } from '@curvefi/prices-api/objects.util'
 import { oneOf, shuffle, type TokenType } from '@cy/support/generators'
@@ -61,6 +62,7 @@ describe(`LlamaLend Markets`, () => {
   })
 
   it('should sort', () => {
+    const utilizationColumnId = LlamaMarketColumnId.UtilizationPercent
     cy.get(`[data-testid^="data-table-row"]`)
       .first()
       .find(`[data-testid="market-link-${HighTVLAddress}"]`)
@@ -73,7 +75,7 @@ describe(`LlamaLend Markets`, () => {
       cy.get(`[data-testid="data-table-cell-tvl"]`).first().contains('$')
       openDrawer('sort')
       cy.get('[data-testid="drawer-sort-menu-lamalend-markets"]').contains('Utilization', LOAD_TIMEOUT)
-      cy.get('[data-testid="drawer-sort-menu-lamalend-markets"] li[value="utilizationPercent"]').click()
+      cy.get(`[data-testid="drawer-sort-menu-lamalend-markets"] li[value="${utilizationColumnId}"]`).click()
       cy.get('[data-testid="drawer-sort-menu-lamalend-markets"]').should('not.be.visible')
       cy.get(`[data-testid^="data-table-row"]`)
         .first()
@@ -81,13 +83,13 @@ describe(`LlamaLend Markets`, () => {
         .should('exist')
       expandFirstRowOnMobile()
       // note: not possible currently to sort ascending
-      cy.get('[data-testid="metric-utilizationPercent"]').contains('99%', LOAD_TIMEOUT)
+      cy.get(`[data-testid="metric-${utilizationColumnId}"]`).contains('99%', LOAD_TIMEOUT)
     } else {
-      cy.get(`[data-testid="data-table-cell-rates_borrow"]`).first().contains('%')
-      cy.get('[data-testid="data-table-header-utilizationPercent"]').click()
-      cy.get('[data-testid="data-table-cell-utilizationPercent"]').first().contains('99%', LOAD_TIMEOUT)
-      cy.get('[data-testid="data-table-header-utilizationPercent"]').click()
-      cy.get('[data-testid="data-table-cell-utilizationPercent"]').first().contains('0%', LOAD_TIMEOUT)
+      cy.get(`[data-testid="data-table-cell-${LlamaMarketColumnId.NetBorrowRate}"]`).first().contains('%')
+      cy.get(`[data-testid="data-table-header-${utilizationColumnId}"]`).click()
+      cy.get(`[data-testid="data-table-cell-${utilizationColumnId}"]`).first().contains('99%', LOAD_TIMEOUT)
+      cy.get(`[data-testid="data-table-header-${utilizationColumnId}"]`).click()
+      cy.get(`[data-testid="data-table-cell-${utilizationColumnId}"]`).first().contains('0%', LOAD_TIMEOUT)
     }
   })
 
@@ -142,9 +144,9 @@ describe(`LlamaLend Markets`, () => {
 
   it('should allow filtering by using a slider', () => {
     const [columnId, initialFilterText] = oneOf(
-      ['liquidityUsd', '$0 -'],
-      ['tvl', '$10k -'],
-      ['utilizationPercent', '0% -'],
+      [LlamaMarketColumnId.LiquidityUsd, '$0 -'],
+      [LlamaMarketColumnId.Tvl, '$10k -'],
+      [LlamaMarketColumnId.UtilizationPercent, '0% -'],
     )
     // Keep the viewport stable for slider width.
     cy.viewport(...((breakpoint === 'mobile' ? [500, 800] : [1200, 800]) as [number, number]))
