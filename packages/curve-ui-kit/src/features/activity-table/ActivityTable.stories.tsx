@@ -66,17 +66,6 @@ const BORROW_TOKEN: Token = {
   address: '0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E' as Address,
 }
 
-// crvUSD Mock Tokens (sfrxETH market)
-const CRVUSD_COLLATERAL_TOKEN: Token = {
-  symbol: 'sfrxETH',
-  address: '0xac3E018457B222d93114458476f3E3416Abbe38F' as Address,
-}
-
-const CRVUSD_BORROW_TOKEN: Token = {
-  symbol: 'crvUSD',
-  address: '0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E' as Address,
-}
-
 // Pool Trades Mock Data Generator
 const generatePoolTrades = (count: number): PoolTradeRow[] => {
   const tokens = [USDT_TOKEN, WBTC_TOKEN, WETH_TOKEN]
@@ -322,60 +311,6 @@ const LendMarketActivityComponent = () => {
   )
 }
 
-/**
- * crvUSD Market Activity Component
- * Market: 0xA920De414eA4Ab66b97dA1bFE9e6EcA7d4219635 (sfrxETH)
- */
-const CrvusdMarketActivityComponent = () => {
-  const [activeSelection, setActiveSelection] = useState<LlammaActivitySelection>('trades')
-
-  const tradesData = useMemo(() => generateLlammaTrades(20, CRVUSD_COLLATERAL_TOKEN, CRVUSD_BORROW_TOKEN), [])
-  const eventsData = useMemo(() => generateLlammaEvents(15, CRVUSD_COLLATERAL_TOKEN, CRVUSD_BORROW_TOKEN), [])
-  const tradesColumns = useMemo(() => createLlammaTradesColumns(), [])
-  const eventsColumns = useMemo(() => createLlammaEventsColumns(), [])
-
-  const tradesTableConfig = {
-    data: tradesData,
-    columns: tradesColumns,
-    isLoading: false,
-    emptyMessage: 'No AMM trades found.',
-  }
-
-  const eventsTableConfig = {
-    data: eventsData,
-    columns: eventsColumns,
-    isLoading: false,
-    emptyMessage: 'No controller events found.',
-  }
-
-  return (
-    <>
-      {activeSelection === 'trades' && (
-        <ActivityTable
-          selections={LLAMMA_ACTIVITY_SELECTIONS}
-          activeSelection={activeSelection}
-          onSelectionChange={setActiveSelection}
-          tableConfig={tradesTableConfig}
-          expandedPanel={LlammaTradesExpandedPanel}
-        />
-      )}
-      {activeSelection === 'events' && (
-        <ActivityTable
-          selections={LLAMMA_ACTIVITY_SELECTIONS}
-          activeSelection={activeSelection}
-          onSelectionChange={setActiveSelection}
-          tableConfig={eventsTableConfig}
-          expandedPanel={LlammaEventsExpandedPanel}
-        />
-      )}
-    </>
-  )
-}
-
-// ============================================================================
-// Storybook Meta
-// ============================================================================
-
 const meta: Meta = {
   title: 'UI Kit/Features/ActivityTable',
   parameters: {
@@ -392,13 +327,8 @@ const meta: Meta = {
 
 export default meta
 
-// ============================================================================
-// Stories
-// ============================================================================
-
 type DexStory = StoryObj<typeof DexPoolActivityComponent>
 type LendStory = StoryObj<typeof LendMarketActivityComponent>
-type CrvusdStory = StoryObj<typeof CrvusdMarketActivityComponent>
 
 /**
  * DEX Pool Activity table showing swap and liquidity events.
@@ -427,33 +357,13 @@ export const LendMarketActivity: LendStory = {
     docs: {
       description: {
         story:
-          'Activity table for Lend markets showing AMM trades (AMM tab) and Controller events (Controller tab). ' +
+          'Activity table for Lend markets (the same structure is used for crvUSD mint markets) showing AMM trades (AMM tab) and Controller events (Controller tab). ' +
           'This example uses mock data based on a WETH/crvUSD lending market.',
       },
     },
   },
 }
 
-/**
- * crvUSD Market Activity table showing AMM trades and Controller events.
- * Based on crvUSD market: 0xA920De414eA4Ab66b97dA1bFE9e6EcA7d4219635
- */
-export const CrvusdMarketActivity: CrvusdStory = {
-  render: () => <CrvusdMarketActivityComponent />,
-  parameters: {
-    docs: {
-      description: {
-        story:
-          'Activity table for crvUSD markets showing AMM trades (AMM tab) and Controller events (Controller tab). ' +
-          'This example uses mock data based on an sfrxETH/crvUSD market.',
-      },
-    },
-  },
-}
-
-/**
- * Loading state demonstration
- */
 export const LoadingState: StoryObj = {
   render: () => {
     const tradesColumns = createPoolTradesColumns()
@@ -481,9 +391,6 @@ export const LoadingState: StoryObj = {
   },
 }
 
-/**
- * Empty state demonstration
- */
 export const EmptyState: StoryObj = {
   render: () => {
     const tradesColumns = createPoolTradesColumns()
@@ -497,7 +404,7 @@ export const EmptyState: StoryObj = {
           data: [],
           columns: tradesColumns,
           isLoading: false,
-          emptyMessage: 'No activity found for this pool.',
+          emptyMessage: 'No swap data found.',
         }}
       />
     )
@@ -511,9 +418,6 @@ export const EmptyState: StoryObj = {
   },
 }
 
-/**
- * Error state demonstration
- */
 export const ErrorState: StoryObj = {
   render: () => {
     const tradesColumns = createPoolTradesColumns()
@@ -528,7 +432,7 @@ export const ErrorState: StoryObj = {
           columns: tradesColumns,
           isLoading: false,
           isError: true,
-          emptyMessage: 'Failed to load activity data. Please try again later.',
+          emptyMessage: 'Could not load data',
         }}
       />
     )

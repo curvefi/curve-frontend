@@ -91,7 +91,7 @@ export const ActivityTable = <TKey extends string, TData extends TableItem>({
       <DataTable
         table={table}
         emptyState={
-          <EmptyStateRow table={table}>
+          <EmptyStateRow table={table} size="lg">
             {isError ? (emptyMessage ?? t`Could not load data`) : (emptyMessage ?? t`No data found`)}
           </EmptyStateRow>
         }

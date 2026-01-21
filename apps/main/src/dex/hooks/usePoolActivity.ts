@@ -116,7 +116,7 @@ export const usePoolActivity = ({ chainId, poolAddress, poolTokens = [] }: UsePo
       columns: tradesColumns,
       isLoading: isTradesLoading,
       isError: isTradesError,
-      emptyMessage: t`No trades data found.`,
+      emptyMessage: t`No swap data found.`,
       columnVisibility: tradesColumnVisibility,
       totalRows: tradesData?.count ?? 0,
       pageIndex: tradesPageIndex,
