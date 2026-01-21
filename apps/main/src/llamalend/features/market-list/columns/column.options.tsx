@@ -78,8 +78,8 @@ const createLlamaMarketsColumnOptions = ({
     label: t`Borrow`,
     options: [
       {
-        label: t`Net borrow APR`,
-        columns: [LlamaMarketColumnId.NetBorrowRate],
+        label: `Borrow Rate`,
+        columns: [LlamaMarketColumnId.BorrowRate],
         active: onlyPositions != MarketRateType.Supply,
         enabled: true,
       },
