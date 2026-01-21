@@ -56,19 +56,19 @@ export const CreateLoanForm = <ChainId extends IChainId>({
   const network = networks[chainId]
   const [preset, setPreset] = useCreateLoanPreset<LoanPreset>(LoanPreset.Safe)
   const {
-    values,
-    onSubmit,
-    isPending,
-    maxTokenValues,
-    params,
     form,
-    collateralToken,
+    values,
+    params,
+    isPending,
+    onSubmit,
+    maxTokenValues,
     borrowToken,
+    collateralToken,
     isCreated,
     creationError,
     txHash,
-    formErrors,
     isApproved,
+    formErrors,
   } = useCreateLoanForm({ market, network, preset, onCreated })
   const setRange = useCallback(
     (range: number) => {

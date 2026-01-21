@@ -14,6 +14,7 @@ import type { PageTransferProps, Seed } from '@/dex/components/PagePool/types'
 import { DetailInfoExchangeRate } from '@/dex/components/PageRouterSwap/components/DetailInfoExchangeRate'
 import { DetailInfoPriceImpact } from '@/dex/components/PageRouterSwap/components/DetailInfoPriceImpact'
 import { useNetworks } from '@/dex/entities/networks'
+import { fetchPoolTokenBalances } from '@/dex/hooks/usePoolTokenBalances'
 import { useStore } from '@/dex/store/useStore'
 import { CurveApi, PoolAlert, PoolData, TokensMapper } from '@/dex/types/main.types'
 import { toTokenOption } from '@/dex/utils'
@@ -75,7 +76,6 @@ export const Swap = ({
   const hasRouter = useStore((state) => state.hasRouter)
   const isMaxLoading = useStore((state) => state.poolSwap.isMaxLoading)
   const isPageVisible = useLayoutStore((state) => state.isPageVisible)
-  const fetchUserPoolInfo = useStore((state) => state.user.fetchUserPoolInfo)
   const fetchStepApprove = useStore((state) => state.poolSwap.fetchStepApprove)
   const fetchStepSwap = useStore((state) => state.poolSwap.fetchStepSwap)
   const resetState = useStore((state) => state.poolSwap.resetState)
@@ -159,7 +159,6 @@ export const Swap = ({
   const handleSwapClick = useCallback(
     async (
       actionActiveKey: string,
-      config: Config,
       curve: CurveApi,
       poolData: PoolData,
       formValues: FormValues,
@@ -168,7 +167,7 @@ export const Swap = ({
       const { fromAmount, fromToken, toToken } = formValues
       const notifyMessage = t`Please confirm swap ${fromAmount} ${fromToken} for ${toToken} at max slippage ${maxSlippage}%.`
       const { dismiss } = notify(notifyMessage, 'pending')
-      const resp = await fetchStepSwap(actionActiveKey, config, curve, poolData, formValues, maxSlippage)
+      const resp = await fetchStepSwap(actionActiveKey, curve, poolData, formValues, maxSlippage)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && network) {
         void refetchUserFromBalance()
@@ -253,13 +252,13 @@ export const Swap = ({
                   },
                   isDismissable: false,
                   primaryBtnProps: {
-                    onClick: () => handleSwapClick(actionActiveKey, config, curve, poolData, formValues, maxSlippage),
+                    onClick: () => handleSwapClick(actionActiveKey, curve, poolData, formValues, maxSlippage),
                     disabled: !confirmedLoss,
                   },
                   primaryBtnLabel: 'Swap anyway',
                 },
               }
-            : { onClick: () => handleSwapClick(actionActiveKey, config, curve, poolData, formValues, maxSlippage) }),
+            : { onClick: () => handleSwapClick(actionActiveKey, curve, poolData, formValues, maxSlippage) }),
         },
       }
 
@@ -301,9 +300,9 @@ export const Swap = ({
   // get user balances
   useEffect(() => {
     if (curve && poolId && haveSigner && (isUndefined(userFromBalance) || isUndefined(userToBalance))) {
-      void fetchUserPoolInfo(config, curve, poolId, true)
+      void fetchPoolTokenBalances(config, curve, poolId)
     }
-  }, [chainId, poolId, haveSigner, userFromBalance, userToBalance, config, curve, fetchUserPoolInfo])
+  }, [chainId, poolId, haveSigner, userFromBalance, userToBalance, config, curve])
 
   // curve state change
   useEffect(() => {

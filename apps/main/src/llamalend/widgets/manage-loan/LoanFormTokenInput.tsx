@@ -35,6 +35,7 @@ export const LoanFormTokenInput = <
   message,
   network,
   positionBalance,
+  tokenSelector,
 }: {
   label: string
   token: { address: Address; symbol?: string } | undefined
@@ -59,6 +60,7 @@ export const LoanFormTokenInput = <
    * The network of the token.
    */
   network: LlamaNetwork
+  tokenSelector?: ReactNode
 }) => {
   const { address: userAddress } = useConnection()
   const {
@@ -94,18 +96,21 @@ export const LoanFormTokenInput = <
   const relatedMaxFieldError = max?.data && maxFieldName && errors[maxFieldName]
   const error = errors[name] || max?.error || balanceError || relatedMaxFieldError
   const value = form.getValues(name)
+  const errorMessage = error?.message
   return (
     <LargeTokenInput
       name={name}
       label={label}
       testId={testId}
       tokenSelector={
-        <TokenLabel
-          blockchainId={blockchainId}
-          tooltip={token?.symbol}
-          address={token?.address ?? null}
-          label={token?.symbol ?? '?'}
-        />
+        tokenSelector ?? (
+          <TokenLabel
+            blockchainId={blockchainId}
+            tooltip={token?.symbol}
+            address={token?.address ?? null}
+            label={token?.symbol ?? '?'}
+          />
+        )
       }
       balance={value}
       onBalance={useCallback(
@@ -116,12 +121,11 @@ export const LoanFormTokenInput = <
         [form, maxFieldName, name],
       )}
       isError={!!error}
-      message={error?.message}
       walletBalance={walletBalance}
       maxBalance={useMemo(() => max && { balance: max.data, chips: 'max' }, [max])}
       inputBalanceUsd={decimal(usdRate && usdRate * +(value ?? 0))}
     >
-      {message && <HelperMessage message={message} />}
+      {errorMessage ? <HelperMessage message={errorMessage} isError /> : message && <HelperMessage message={message} />}
     </LargeTokenInput>
   )
 }

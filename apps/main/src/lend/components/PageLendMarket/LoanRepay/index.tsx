@@ -523,10 +523,6 @@ export const LoanRepay = ({
     </Stack>
   )
 }
-export const LoanRepayFromWalletTab = ({ rChainId, market, isLoaded }: PageContentProps) => (
-  <RepayForm fromWallet networks={networks} chainId={rChainId} market={market} enabled={isLoaded} />
-)
-
-export const LoanRepayFromCollateralTab = ({ rChainId, market, isLoaded }: PageContentProps) => (
-  <RepayForm fromCollateral networks={networks} chainId={rChainId} market={market} enabled={isLoaded} />
+export const LoanRepayTab = ({ rChainId, market, isLoaded }: PageContentProps) => (
+  <RepayForm networks={networks} chainId={rChainId} market={market} enabled={isLoaded} />
 )
