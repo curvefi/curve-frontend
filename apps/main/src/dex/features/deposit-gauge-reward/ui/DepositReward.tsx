@@ -24,6 +24,7 @@ export const DepositReward = ({ chainId, poolId }: { chainId: ChainId; poolId: s
   const { isPending: isPendingRewardDistributors } = useGaugeRewardsDistributors({
     chainId,
     poolId,
+    userAddress: signerAddress,
   })
 
   const methods = useForm<DepositRewardFormValues>({

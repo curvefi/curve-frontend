@@ -35,6 +35,7 @@ export const TokenSelector = ({
   const { data: gaugeRewardsDistributors, isSuccess: isGaugeRewardsDistributorsSuccess } = useGaugeRewardsDistributors({
     chainId,
     poolId,
+    userAddress: signerAddress,
   })
 
   const filteredTokens = useMemo(
