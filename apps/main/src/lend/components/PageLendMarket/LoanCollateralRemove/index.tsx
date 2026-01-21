@@ -245,7 +245,6 @@ export const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, 
           symbol: market?.collateral_token?.symbol,
           balance: decimal(userBalances?.collateral),
           usdRate,
-          onClick: () => updateFormValues({ collateral: maxRemovable ?? '' }),
           loading: !!signerAddress && typeof userBalances?.collateral === 'undefined',
         }}
         maxBalance={{
