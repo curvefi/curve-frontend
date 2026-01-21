@@ -373,9 +373,6 @@ export const LoanRepay = ({
             tokenSymbol={collateral_token?.symbol}
             tokenBalance={userState?.collateral}
             handleInpChange={setStateCollateral}
-            handleMaxClick={() =>
-              updateFormValues({ stateCollateral: userState?.collateral ?? '', isFullRepay: false })
-            }
           />
         </Stack>
       )}
@@ -396,9 +393,6 @@ export const LoanRepay = ({
               tokenSymbol={collateral_token?.symbol}
               tokenBalance={userBalances?.collateral}
               handleInpChange={setUserCollateral}
-              handleMaxClick={() =>
-                updateFormValues({ userCollateral: userBalances?.collateral ?? '', isFullRepay: false })
-              }
             />
           )}
 

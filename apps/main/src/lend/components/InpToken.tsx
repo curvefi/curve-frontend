@@ -37,7 +37,7 @@ export const InpToken = ({
   tokenBalance: string | undefined
   debt?: string
   handleInpChange(inpValue: string): void
-  handleMaxClick(): void
+  handleMaxClick?: () => void
   network: NetworkConfig
 }) => (
   <LargeTokenInput
@@ -60,8 +60,12 @@ export const InpToken = ({
       symbol: tokenSymbol,
       usdRate: useTokenUsdRate({ chainId: network.chainId, tokenAddress }).data,
       buttonTestId: maxTestId,
-      onClick: handleMaxClick,
     }}
+    {...(handleMaxClick && {
+      maxBalance: {
+        chips: [{ label: t`Max`, newBalance: handleMaxClick }],
+      },
+    })}
     label={inpLabel}
     balance={decimal(inpValue)}
     tokenSelector={

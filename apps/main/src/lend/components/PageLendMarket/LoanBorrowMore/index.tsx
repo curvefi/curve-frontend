@@ -358,7 +358,6 @@ export const LoanBorrowMore = ({
             tokenSymbol={market?.collateral_token?.symbol}
             tokenBalance={userBalances?.collateral}
             handleInpChange={useCallback((userCollateral) => updateFormValues({ userCollateral }), [updateFormValues])}
-            handleMaxClick={() => updateFormValues({ userCollateral: userBalances?.collateral ?? '' })}
           />
 
           {isLeverage && (
@@ -373,7 +372,6 @@ export const LoanBorrowMore = ({
               tokenSymbol={market?.borrowed_token?.symbol}
               tokenBalance={userBalances?.borrowed}
               handleInpChange={setUserBorrowed}
-              handleMaxClick={() => updateFormValues({ userBorrowed: userBalances?.borrowed ?? '' })}
             />
           )}
         </Stack>

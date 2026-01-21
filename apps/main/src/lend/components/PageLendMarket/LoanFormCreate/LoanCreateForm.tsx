@@ -319,7 +319,6 @@ export const LoanCreateForm = ({
             (userCollateral: string) => updateFormValues({ userCollateral }),
             [updateFormValues],
           )}
-          handleMaxClick={() => updateFormValues({ userCollateral: userBalances?.collateral ?? '' })}
         />
 
         {isLeverage && (
@@ -334,7 +333,6 @@ export const LoanCreateForm = ({
             tokenSymbol={borrowed_token?.symbol}
             tokenBalance={userBalances?.borrowed}
             handleInpChange={setUserBorrowed}
-            handleMaxClick={() => updateFormValues({ userBorrowed: userBalances?.borrowed ?? '' })}
           />
         )}
       </FieldsWrapper>

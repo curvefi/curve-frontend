@@ -64,7 +64,7 @@ type InputChip = {
   /** The chip button label. */
   label: string
   /** The function that returns the new input amount, possibly based on the max balance. */
-  newBalance: (maxBalance?: Decimal) => Decimal | undefined
+  newBalance: (() => void) | ((maxBalance?: Decimal) => Decimal | undefined)
 }
 
 type ChipsPreset = 'max' | 'range'
@@ -381,7 +381,12 @@ export const LargeTokenInput = ({
                     color="default"
                     clickable
                     disabled={disabled}
-                    onClick={() => handleBalanceChange(chip.newBalance(maxBalance?.balance))}
+                    onClick={() => {
+                      const newBalance = chip.newBalance(maxBalance?.balance)
+                      if (newBalance !== undefined) {
+                        handleBalanceChange(newBalance)
+                      }
+                    }}
                   ></Chip>
                 ))}
               </Stack>
