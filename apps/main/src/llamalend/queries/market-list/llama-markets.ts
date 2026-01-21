@@ -57,7 +57,9 @@ export type LlamaMarket = {
     lendTotalApyMinBoosted: number | null
     lendTotalApyMaxBoosted: number | null // supply rate + rebasing yield + total extra incentives + max boosted yield
     borrowApy: number // base borrow APY %
-    borrowTotalApy: number // borrow - yield from collateral
+    borrowTotalApy: number | null // borrow APY - yield from collateral
+    borrowApr: number
+    borrowTotalApr: number | null // borrow APR - yield from collateral
     // extra lending incentives, like OP rewards (so non CRV)
     incentives: ExtraIncentive[]
   }
@@ -170,7 +172,10 @@ const convertLendingVault = (
     borrowedToken,
     borrowedBalanceUsd,
     collateralBalanceUsd,
-    apyBorrow,
+    borrowApy,
+    borrowTotalApy,
+    borrowApr,
+    borrowTotalApr,
     aprLend: lendApr,
     aprLendCrv0Boost: lendCrvAprUnboosted,
     aprLendCrvMaxBoost: lendCrvAprBoosted,
@@ -225,9 +230,10 @@ const convertLendingVault = (
         lendApr + (lendCrvAprUnboosted ?? 0) + (borrowedToken?.rebasingYield ?? 0) + totalExtraRewardApr,
       lendTotalApyMaxBoosted:
         lendApr + (borrowedToken?.rebasingYield ?? 0) + totalExtraRewardApr + (lendCrvAprBoosted ?? 0),
-      borrowApy: apyBorrow,
-      // as confusing as it may be, `borrow` is used in the table, but the total borrow is only in the tooltip
-      borrowTotalApy: apyBorrow - (collateralToken?.rebasingYield ?? 0),
+      borrowApy: borrowApy,
+      borrowTotalApy: borrowTotalApy,
+      borrowApr,
+      borrowTotalApr,
       incentives: extraRewardApr
         ? extraRewardApr.map(({ address, symbol, rate }) => ({
             title: symbol,
@@ -271,7 +277,10 @@ const convertMintMarket = (
     collateralAmountUsd,
     stablecoinToken,
     llamma,
-    rate,
+    borrowApy,
+    borrowTotalApy,
+    borrowApr,
+    borrowTotalApr,
     borrowed,
     borrowedUsd,
     borrowable,
@@ -320,13 +329,15 @@ const convertMintMarket = (
     totalDebtUsd: borrowedUsd,
     totalCollateralUsd: collateralAmountUsd,
     rates: {
-      borrowApy: rate * 100,
       lendApr: null,
       lendCrvAprBoosted: null,
       lendCrvAprUnboosted: null,
       lendTotalApyMinBoosted: null,
       lendTotalApyMaxBoosted: null,
-      borrowTotalApy: rate * 100 - (collateralToken.rebasingYield ?? 0),
+      borrowApy,
+      borrowTotalApy,
+      borrowApr,
+      borrowTotalApr,
       incentives: [],
     },
     type: LlamaMarketType.Mint,

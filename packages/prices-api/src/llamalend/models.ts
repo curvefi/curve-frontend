@@ -13,7 +13,10 @@ export type Market = {
   oracle: Address
   oraclePools: Address[]
   rate: number
-  apyBorrow: number
+  borrowApy: number
+  borrowTotalApy: number | null
+  borrowApr: number
+  borrowTotalApr: number | null
   apyLend: number
   aprLend: number
   aprLendCrv0Boost: number
