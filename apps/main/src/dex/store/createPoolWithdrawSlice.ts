@@ -23,6 +23,7 @@ import { useWallet } from '@ui-kit/features/connect-wallet'
 import { shortenAddress } from '@ui-kit/utils'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 import { fetchPoolLpTokenBalance } from '../hooks/usePoolTokenDepositBalances'
+import { invalidateUserPoolInfoQuery } from '../queries/user-pool-info.query'
 
 type StateKey = keyof typeof DEFAULT_STATE
 const { cloneDeep } = lodash
@@ -62,9 +63,9 @@ export type PoolWithdrawSlice = {
     // steps
     fetchEstGasApproval(activeKey: string, config: Config, curve: CurveApi, formType: FormType, pool: Pool, formValues: FormValues): Promise<FnStepEstGasApprovalResponse | undefined>
     fetchStepApprove(activeKey: string, config: Config, curve: CurveApi, formType: FormType, pool: Pool, formValues: FormValues): Promise<FnStepApproveResponse | undefined>
-    fetchStepWithdraw(activeKey: string, config: Config, curve: CurveApi, poolData: PoolData, formValues: FormValues, maxSlippage: string): Promise<FnStepResponse | undefined>
-    fetchStepUnstake(activeKey: string, config: Config, curve: CurveApi, poolData: PoolData, formValues: FormValues): Promise<FnStepResponse | undefined>
-    fetchStepClaim(activeKey: string, config: Config, curve: CurveApi, poolData: PoolData): Promise<FnStepResponse | undefined>
+    fetchStepWithdraw(activeKey: string, curve: CurveApi, poolData: PoolData, formValues: FormValues, maxSlippage: string): Promise<FnStepResponse | undefined>
+    fetchStepUnstake(activeKey: string, curve: CurveApi, poolData: PoolData, formValues: FormValues): Promise<FnStepResponse | undefined>
+    fetchStepClaim(activeKey: string, curve: CurveApi, poolData: PoolData): Promise<FnStepResponse | undefined>
 
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
     setStateByKey<T>(key: StateKey, value: T): void
@@ -475,7 +476,7 @@ export const createPoolWithdrawSlice = (
         return resp
       }
     },
-    fetchStepWithdraw: async (activeKey, config, curve, poolData, formValues, maxSlippage) => {
+    fetchStepWithdraw: async (activeKey, curve, poolData, formValues, maxSlippage) => {
       const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
@@ -522,16 +523,18 @@ export const createPoolWithdrawSlice = (
           })
 
           // re-fetch data
-          await Promise.all([
-            get().user.fetchUserPoolInfo(config, curve, pool.id),
-            get().pools.fetchPoolStats(curve, poolData),
-          ])
+          invalidateUserPoolInfoQuery({
+            chainId: curve.chainId,
+            poolId: pool.id,
+            userAddress: curve.signerAddress,
+          })
+          await get().pools.fetchPoolStats(curve, poolData)
         }
 
         return resp
       }
     },
-    fetchStepUnstake: async (activeKey, config, curve, poolData, formValues) => {
+    fetchStepUnstake: async (activeKey, curve, poolData, formValues) => {
       const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
@@ -559,16 +562,18 @@ export const createPoolWithdrawSlice = (
           })
 
           // re-fetch data
-          await Promise.all([
-            get().user.fetchUserPoolInfo(config, curve, pool.id),
-            get().pools.fetchPoolStats(curve, poolData),
-          ])
+          invalidateUserPoolInfoQuery({
+            chainId: curve.chainId,
+            poolId: pool.id,
+            userAddress: curve.signerAddress,
+          })
+          await get().pools.fetchPoolStats(curve, poolData)
         }
 
         return resp
       }
     },
-    fetchStepClaim: async (activeKey, config, curve, poolData) => {
+    fetchStepClaim: async (activeKey, curve, poolData) => {
       const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
@@ -602,10 +607,12 @@ export const createPoolWithdrawSlice = (
           })
 
           // re-fetch data
-          await Promise.all([
-            get().user.fetchUserPoolInfo(config, curve, pool.id),
-            get().pools.fetchPoolStats(curve, poolData),
-          ])
+          invalidateUserPoolInfoQuery({
+            chainId: curve.chainId,
+            poolId: pool.id,
+            userAddress: curve.signerAddress,
+          })
+          await get().pools.fetchPoolStats(curve, poolData)
         }
 
         return resp

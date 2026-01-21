@@ -1,11 +1,7 @@
-import { LoanBorrowMoreWrapped, LoanBorrowMore } from '@/lend/components/PageLendMarket/LoanBorrowMore'
+import { LoanBorrowMore, LoanBorrowMoreWrapped } from '@/lend/components/PageLendMarket/LoanBorrowMore'
 import { LoanAddCollateralTab, LoanCollateralAdd } from '@/lend/components/PageLendMarket/LoanCollateralAdd'
-import { LoanRemoveCollateralTab, LoanCollateralRemove } from '@/lend/components/PageLendMarket/LoanCollateralRemove'
-import {
-  LoanRepayFromCollateralTab,
-  LoanRepayFromWalletTab,
-  LoanRepay,
-} from '@/lend/components/PageLendMarket/LoanRepay'
+import { LoanCollateralRemove, LoanRemoveCollateralTab } from '@/lend/components/PageLendMarket/LoanCollateralRemove'
+import { LoanRepay, LoanRepayTab } from '@/lend/components/PageLendMarket/LoanRepay'
 import { LoanSelfLiquidation } from '@/lend/components/PageLendMarket/LoanSelfLiquidation'
 import { networks } from '@/lend/networks'
 import { type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
@@ -55,15 +51,8 @@ const LendManageLegacyMenu = [
 ] satisfies FormTab<ManageLoanProps>[]
 
 const LendManageNewMenu = [
-  { value: 'borrow', label: t`Borrow`, component: LoanBorrowMoreWrapped },
-  {
-    value: 'repay',
-    label: t`Repay`,
-    subTabs: [
-      { value: 'from-wallet', label: t`From wallet`, component: LoanRepayFromWalletTab },
-      { value: 'from-collateral', label: t`From collateral`, component: LoanRepayFromCollateralTab },
-    ],
-  },
+  { value: 'loan-increase', label: t`Borrow more`, component: LoanBorrowMoreWrapped },
+  { value: 'loan-decrease', label: t`Repay`, component: LoanRepayTab },
   {
     value: 'collateral',
     label: t`Collateral`,
