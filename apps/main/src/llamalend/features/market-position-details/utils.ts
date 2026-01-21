@@ -1,15 +1,38 @@
 import type { Theme } from '@mui/material'
 import { Blues, Greens, Reds } from '@ui-kit/themes/design/0_primitives'
+import { Decimal } from '@ui-kit/utils'
 
 export const calculateRangeToLiquidation = (upperLiquidationPrice: number, oraclePrice: number) =>
   ((oraclePrice - upperLiquidationPrice) / upperLiquidationPrice) * 100
 
-export const getHealthValueColor = (health: number, { design: { Color, Text } }: Theme) => {
-  if (health < 5) return Text.TextColors.Feedback.Error
-  if (health < 15) return Text.TextColors.Feedback.Warning
-  if (health < 50) return Color.Secondary[500]
+export const getHealthValueColor = ({
+  theme: {
+    design: { Color, Text },
+  },
+  isFullRepay,
+  health,
+  prevHealth,
+}: {
+  health: Decimal | null | undefined
+  prevHealth?: Decimal
+  isFullRepay?: boolean
+  theme: Theme
+}) => {
+  if (health != null && prevHealth != null) {
+    if (Number(health) < Number(prevHealth)) {
+      return Text.TextColors.Feedback.Error
+    }
+    if (Number(health) > Number(prevHealth)) {
+      return Text.TextColors.Feedback.Success
+    }
+  }
+  const value = Number(health ?? prevHealth ?? 0)
+  if (isFullRepay) return Color.Secondary[600]
+  if (value < 5) return Text.TextColors.Feedback.Error
+  if (value < 15) return Text.TextColors.Feedback.Warning
+  if (value < 50) return Color.Secondary[500]
   // todo: black between 50 and 100 does not make sense, it's green before & after
-  return health < 100 ? Text.TextColors.Primary : Color.Secondary[600]
+  return value < 100 ? Text.TextColors.Primary : Color.Secondary[600]
 }
 
 const Yellow = Reds[300]

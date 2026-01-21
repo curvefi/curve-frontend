@@ -1,10 +1,9 @@
-import { getLlamaMarket } from '@/llamalend/llama.utils'
-import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
-import { type RepayFromCollateralParams, type RepayFromCollateralQuery } from '../validation/manage-loan.types'
-import { repayFromCollateralValidationSuite } from '../validation/manage-loan.validation'
+import { type RepayParams, type RepayQuery } from '../validation/manage-loan.types'
+import { repayValidationSuite } from '../validation/manage-loan.validation'
+import { getRepayImplementation, getUserDebtFromQueryCache } from './repay-query.helpers'
 
-export const { useQuery: useRepayIsAvailable } = queryFactory({
+export const { useQuery: useRepayIsAvailable, getQueryOptions: getRepayIsAvailableQueryOptions } = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -12,7 +11,7 @@ export const { useQuery: useRepayIsAvailable } = queryFactory({
     userCollateral = '0',
     userBorrowed = '0',
     userAddress,
-  }: RepayFromCollateralParams) =>
+  }: RepayParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
       'repayIsAvailable',
@@ -21,19 +20,25 @@ export const { useQuery: useRepayIsAvailable } = queryFactory({
       { userBorrowed },
     ] as const,
   queryFn: async ({
+    chainId,
     marketId,
     stateCollateral,
     userCollateral,
     userBorrowed,
     userAddress,
-  }: RepayFromCollateralQuery): Promise<boolean> => {
-    const market = getLlamaMarket(marketId)
-    return market instanceof LendMarketTemplate
-      ? await market.leverage.repayIsAvailable(stateCollateral, userCollateral, userBorrowed, userAddress)
-      : market.leverageV2.hasLeverage()
-        ? await market.leverageV2.repayIsAvailable(stateCollateral, userCollateral, userBorrowed, userAddress)
-        : await market.deleverage.isAvailable(userCollateral, userAddress)
+  }: RepayQuery): Promise<boolean> => {
+    const [type, impl] = getRepayImplementation(marketId, { userCollateral, stateCollateral, userBorrowed })
+    switch (type) {
+      case 'V1':
+      case 'V2':
+        return await impl.repayIsAvailable(stateCollateral, userCollateral, userBorrowed, userAddress)
+      case 'deleverage':
+        return await impl.isAvailable(stateCollateral, userAddress)
+      case 'unleveraged':
+        // For unleveraged markets, repayment is available when user has debt
+        return !!getUserDebtFromQueryCache({ chainId, marketId, userAddress })
+    }
   },
   staleTime: '1m',
-  validationSuite: repayFromCollateralValidationSuite,
+  validationSuite: repayValidationSuite({ leverageRequired: false }),
 })
