@@ -33,7 +33,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import { decimal } from '@ui-kit/utils'
+import { decimal, type Decimal } from '@ui-kit/utils'
 
 export const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)
@@ -260,7 +260,7 @@ export const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, 
             label={market?.collateral_token?.symbol ?? '?'}
           />
         }
-        onBalance={(collateral) => updateFormValues({ collateral })}
+        onBalance={useCallback((collateral?: Decimal) => updateFormValues({ collateral }), [updateFormValues])}
       />
 
       {/* detail info */}
