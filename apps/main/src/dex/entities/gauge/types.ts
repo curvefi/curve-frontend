@@ -1,5 +1,5 @@
 import type { Address } from 'viem'
-import { GaugeQuery } from '@ui-kit/lib/model/query'
+import { GaugeQuery, type UserQuery } from '@ui-kit/lib/model/query'
 import { FieldsOf } from '@ui-kit/lib/validation'
 import type { Decimal } from '@ui-kit/utils'
 
@@ -16,9 +16,12 @@ export type DepositRewardApprove = {
   amount: number | string
   userBalance?: Decimal
 }
+export type GaugeDistributorsQuery = GaugeQuery & UserQuery
+
 export type DepositRewardApproveQuery = GaugeQuery & DepositRewardApprove
 export type DepositRewardApproveParams = FieldsOf<DepositRewardApproveQuery>
 export type DepositRewardApproveMutation = FieldsOf<DepositRewardApprove>
+export type GaugeDistributorsParams = FieldsOf<GaugeDistributorsQuery>
 
 export type DepositReward = DepositRewardApprove & {
   epoch: number | string
