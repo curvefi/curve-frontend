@@ -150,8 +150,8 @@ export type LargeTokenInputProps = {
   tokenSelector?: ReactNode
 
   // TODO: receive a `maxBalance` ReactNode to allow anything to be injected
-  /** Optional wallet balance configuration. */
-  walletBalance?: BalanceProps<Decimal>
+  /** Optional wallet balance configuration. Omits onClick as clicking the wallet balance is controlled behavior (sets the value in the input field) */
+  walletBalance?: Omit<BalanceProps<Decimal>, 'onClick'>
 
   /** Optional max balance configuration */
   maxBalance?: MaxBalanceProps
@@ -324,8 +324,7 @@ export const LargeTokenInput = ({
 
   const onWalletBalance = useCallback(() => {
     handleBalanceChange(walletBalance?.balance)
-    walletBalance?.onClick?.call(null)
-  }, [handleBalanceChange, walletBalance?.balance, walletBalance?.onClick])
+  }, [handleBalanceChange, walletBalance?.balance])
 
   const componentId = useId()
 
