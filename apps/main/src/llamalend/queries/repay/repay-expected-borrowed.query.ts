@@ -1,11 +1,10 @@
-import { getLlamaMarket } from '@/llamalend/llama.utils'
-import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
-import { type Decimal } from '@ui-kit/utils'
-import { type RepayFromCollateralParams, type RepayFromCollateralQuery } from '../validation/manage-loan.types'
-import { repayFromCollateralValidationSuite } from '../validation/manage-loan.validation'
+import { decimal, type Decimal } from '@ui-kit/utils'
+import { type RepayParams, type RepayQuery } from '../validation/manage-loan.types'
+import { repayValidationSuite } from '../validation/manage-loan.validation'
+import { getRepayImplementation, getUserDebtFromQueryCache } from './repay-query.helpers'
 
-type RepayExpectedBorrowedResult = {
+export type RepayExpectedBorrowedResult = {
   totalBorrowed: Decimal
   borrowedFromStateCollateral?: Decimal
   borrowedFromUserCollateral?: Decimal
@@ -13,7 +12,7 @@ type RepayExpectedBorrowedResult = {
   avgPrice?: Decimal
 }
 
-export const { useQuery: useRepayExpectedBorrowed } = queryFactory({
+export const { useQuery: useRepayExpectedBorrowed, queryKey: repayExpectedBorrowedQueryKey } = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -21,31 +20,40 @@ export const { useQuery: useRepayExpectedBorrowed } = queryFactory({
     userCollateral = '0',
     userBorrowed = '0',
     userAddress,
-  }: RepayFromCollateralParams) =>
+    slippage,
+  }: RepayParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
       'repayExpectedBorrowed',
       { stateCollateral },
       { userCollateral },
       { userBorrowed },
+      { slippage },
     ] as const,
-  queryFn: async ({ marketId, stateCollateral, userCollateral, userBorrowed }: RepayFromCollateralQuery) => {
-    // todo: investigate if this is OK when the user's position is not leveraged
-    const market = getLlamaMarket(marketId)
-    if (market instanceof LendMarketTemplate) {
-      const result = await market.leverage.repayExpectedBorrowed(stateCollateral, userCollateral, userBorrowed)
-      return result as RepayExpectedBorrowedResult
+  queryFn: async ({
+    chainId,
+    marketId,
+    userAddress,
+    stateCollateral,
+    userCollateral,
+    userBorrowed,
+    slippage,
+  }: RepayQuery) => {
+    const [type, impl, args] = getRepayImplementation(marketId, { userCollateral, stateCollateral, userBorrowed })
+    switch (type) {
+      case 'V1':
+      case 'V2':
+        return (await impl.repayExpectedBorrowed(...args, +slippage)) as RepayExpectedBorrowedResult
+      case 'deleverage': {
+        const { stablecoins, routeIdx } = await impl.repayStablecoins(...args)
+        return { totalBorrowed: stablecoins[routeIdx] as Decimal }
+      }
+      case 'unleveraged':
+        return {
+          totalBorrowed: decimal(getUserDebtFromQueryCache({ chainId, marketId, userAddress }) - +userBorrowed)!,
+        }
     }
-    if (market.leverageV2.hasLeverage()) {
-      const result = await market.leverageV2.repayExpectedBorrowed(stateCollateral, userCollateral, userBorrowed)
-      return result as RepayExpectedBorrowedResult
-    }
-
-    console.assert(!+stateCollateral, `Expected 0 stateCollateral for non-leverage market, got ${stateCollateral}`)
-    console.assert(!+userBorrowed, `Expected 0 userBorrowed for non-leverage market, got ${userBorrowed}`)
-    const { stablecoins, routeIdx } = await market.deleverage.repayStablecoins(userCollateral)
-    return { totalBorrowed: stablecoins[routeIdx] as Decimal }
   },
   staleTime: '1m',
-  validationSuite: repayFromCollateralValidationSuite,
+  validationSuite: repayValidationSuite({ leverageRequired: false }),
 })
