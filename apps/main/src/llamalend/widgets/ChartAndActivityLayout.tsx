@@ -16,8 +16,8 @@ import { ChartFooter } from '@ui-kit/shared/ui/Chart/ChartFooter'
 import { type ChartSelections, ChartHeader } from '@ui-kit/shared/ui/Chart/ChartHeader'
 import { type LegendItem } from '@ui-kit/shared/ui/Chart/LegendSet'
 import { ToggleBandsChartButton } from '@ui-kit/shared/ui/Chart/ToggleBandsChartButton'
-import { SubTabsSwitcher } from '@ui-kit/shared/ui/SubTabsSwitcher'
-import { type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
+import { SubTabsSwitcher } from '@ui-kit/shared/ui/Tabs/SubTabsSwitcher'
+import { type TabOption } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
