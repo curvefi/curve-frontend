@@ -20,7 +20,6 @@ import {
   PoolDataCache,
   RewardsApyMapper,
   TvlMapper,
-  UserPoolListMapper,
   type ValueMapperCached,
   VolumeMapper,
 } from '@/dex/types/main.types'
@@ -66,13 +65,13 @@ type PartialPoolData = Pick<PoolDataCache, 'gauge'> & {
 // prettier-ignore
 export type PoolListSlice = {
   poolList: SliceState & {
-    filterByKey<P extends PartialPoolData>(key: FilterKey, poolDatas: P[], userPoolList: { [p: string]: boolean } | undefined): P[]
+    filterByKey<P extends PartialPoolData>(key: FilterKey, poolDatas: P[], userPools: string[] | undefined): P[]
     filterBySearchText<P extends PartialPoolData>(searchText: string, poolDatas: P[], highlightResult?: boolean): P[]
     filterSmallTvl<P extends PartialPoolData>(poolDatas: P[], tvlMapper: TvlMapper | ValueMapperCached, chainId: ChainId): P[]
     sortFn<P extends PartialPoolData>(sortKey: SortKey, order: Order, poolDatas: P[], rewardsApyMapper: RewardsApyMapper, volumeMapper: VolumeMapper | ValueMapperCached, tvlMapper: TvlMapper | ValueMapperCached, isCrvRewardsEnabled: boolean, chainId: ChainId): P[]
-    setSortAndFilterData(rChainId: ChainId, searchParams: SearchParams, hideSmallPools: boolean, poolDatas: PoolData[], rewardsApyMapper: RewardsApyMapper, volumeMapper: VolumeMapper | ValueMapperCached, tvlMapper: TvlMapper | ValueMapperCached, userPoolList: UserPoolListMapper): Promise<void>
+    setSortAndFilterData(rChainId: ChainId, searchParams: SearchParams, hideSmallPools: boolean, poolDatas: PoolData[], rewardsApyMapper: RewardsApyMapper, volumeMapper: VolumeMapper | ValueMapperCached, tvlMapper: TvlMapper | ValueMapperCached, userPools: string[] | undefined): Promise<void>
     setSortAndFilterCachedData(rChainId: ChainId, searchParams: SearchParams, poolDatasCached: PoolDataCache[], volumeMapperCached: { [poolId:string]: { value: string } }, tvlMapperCached: { [poolId:string]: { value: string } }): void
-    setFormValues(rChainId: ChainId, isLite: boolean, searchParams: SearchParams, hideSmallPools: boolean, poolDatas: PoolData[] | undefined, poolDatasCached: PoolDataCache[] | undefined, rewardsApyMapper: RewardsApyMapper | undefined, volumeMapper: VolumeMapper | undefined, volumeMapperCached: ValueMapperCached | undefined, tvlMapper: TvlMapper | undefined, tvlMapperCached: ValueMapperCached | undefined, userPoolList: UserPoolListMapper | undefined): void
+    setFormValues(rChainId: ChainId, isLite: boolean, searchParams: SearchParams, hideSmallPools: boolean, poolDatas: PoolData[] | undefined, poolDatasCached: PoolDataCache[] | undefined, rewardsApyMapper: RewardsApyMapper | undefined, volumeMapper: VolumeMapper | undefined, volumeMapperCached: ValueMapperCached | undefined, tvlMapper: TvlMapper | undefined, tvlMapperCached: ValueMapperCached | undefined, userPools: string[] | undefined): void
 
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
     setStateByKey<T>(key: StateKey, value: T): void
@@ -101,9 +100,9 @@ export const createPoolListSlice = (
   [sliceKey]: {
     ...DEFAULT_STATE,
 
-    filterByKey: (key, poolDatas, userPoolList) => {
+    filterByKey: (key, poolDatas, userPools) => {
       if (key === 'user') {
-        return poolDatas.filter(({ pool }) => (userPoolList ?? {})[pool.id])
+        return poolDatas.filter(({ pool }) => (userPools ?? []).find((p) => p === pool.id))
       } else if (key === 'btc' || key === 'crypto' || key === 'eth' || key === 'usd' || key === 'kava') {
         return poolDatas.filter(({ pool }) => pool.referenceAsset.toLowerCase() === key)
       } else if (key === 'crvusd') {
@@ -223,7 +222,7 @@ export const createPoolListSlice = (
       rewardsApyMapper,
       volumeMapper,
       tvlMapper,
-      userPoolList,
+      userPools,
     ) => {
       const {
         pools,
@@ -251,7 +250,7 @@ export const createPoolListSlice = (
           filterKey === 'user' ||
           filterKey === 'cross-chain'
         ) {
-          tablePoolDatas = sliceState.filterByKey(filterKey, tablePoolDatas, userPoolList)
+          tablePoolDatas = sliceState.filterByKey(filterKey, tablePoolDatas, userPools)
         } else {
           tablePoolDatas = sliceState.filterBySearchText(filterKey, tablePoolDatas, false)
         }
@@ -333,7 +332,7 @@ export const createPoolListSlice = (
       volumeMapperCached = {},
       tvlMapper = {},
       tvlMapperCached = {},
-      userPoolList = {},
+      userPools = [],
     ) => {
       const state = get()
       const { formValues, result: storedResults, ...sliceState } = state[sliceKey]
@@ -385,7 +384,7 @@ export const createPoolListSlice = (
           rewardsApyMapper,
           Object.keys(volumeMapper).length ? volumeMapper : volumeMapperCached,
           Object.keys(tvlMapper).length ? tvlMapper : tvlMapperCached,
-          userPoolList,
+          userPools,
         )
         return
       }

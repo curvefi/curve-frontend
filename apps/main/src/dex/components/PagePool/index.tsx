@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { styled } from 'styled-components'
 import { type Address, isAddressEqual } from 'viem'
-import { useConfig } from 'wagmi'
 import { OhlcAndActivityComp } from '@/dex/components/OhlcAndActivityComp'
 import { CampaignRewardsBanner } from '@/dex/components/PagePool/components/CampaignRewardsBanner'
 import { Deposit } from '@/dex/components/PagePool/Deposit'
@@ -54,7 +53,6 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
   const chainIdPoolId = getChainPoolIdActiveKey(rChainId, poolId)
   const currencyReserves = useStore((state) => state.pools.currencyReserves[chainIdPoolId])
   const isMdUp = useLayoutStore((state) => state.isMdUp)
-  const fetchUserPoolInfo = useStore((state) => state.user.fetchUserPoolInfo)
   const fetchPoolStats = useStore((state) => state.pools.fetchPoolStats)
   const setPoolIsWrapped = useStore((state) => state.pools.setPoolIsWrapped)
   const pricesApiPoolsMapper = useStore((state) => state.pools.pricesApiPoolsMapper)
@@ -136,14 +134,6 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
     setSeed({ isSeed, loaded: true })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [poolData?.pool?.id, currencyReserves?.total])
-
-  // fetch user pool info
-  const config = useConfig()
-  useEffect(() => {
-    if (curve && poolId && signerAddress) {
-      void fetchUserPoolInfo(config, curve, poolId)
-    }
-  }, [rChainId, poolId, signerAddress, config, curve, fetchUserPoolInfo])
 
   const isRewardsDistributor = useMemo(
     () =>
