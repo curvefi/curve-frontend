@@ -54,7 +54,6 @@ export type ScrvUsdSlice = {
     }
     fetchExchangeRate: () => void
     fetchCrvUsdSupplies: () => void
-    setMax: (userAddress: string | undefined, stakingModule: DepositWithdrawModule) => void
     setStakingModule: (stakingModule: DepositWithdrawModule) => void
     setSelectedStatisticsChart: (chart: StatisticsChart) => void
     setRevenueChartTimeOption: (timeOption: TimeOption) => void
@@ -480,14 +479,6 @@ export const createScrvUsdSlice = (_set: StoreApi<State>['setState'], get: Store
     },
     setRevenueChartTimeOption: (timeOption: TimeOption) => {
       get()[sliceKey].setStateByKey('revenueChartTimeOption', timeOption)
-    },
-    setMax: (userAddress: string | undefined, stakingModule: DepositWithdrawModule) => {
-      const userBalance = queryClient.getQueryData<ScrvUsdUserBalances>(['useScrvUsdUserBalances', { userAddress }])
-      if (stakingModule === 'deposit') {
-        get()[sliceKey].setStateByKey('inputAmount', userBalance?.crvUSD ?? '0')
-      } else {
-        get()[sliceKey].setStateByKey('inputAmount', userBalance?.scrvUSD ?? '0')
-      }
     },
     setInputAmount: (amount: string) => {
       if (!amount) {

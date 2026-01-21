@@ -25,13 +25,10 @@ export const DepositModule = () => {
   const inputAmount = useStore((state) => state.scrvusd.inputAmount)
   const preview = useStore((state) => state.scrvusd.preview)
   const setInputAmount = useStore((state) => state.scrvusd.setInputAmount)
-  const setMax = useStore((state) => state.scrvusd.setMax)
 
   const hasWallet = !!address
 
   const { llamaApi: curve = null } = useCurve()
-
-  const onMax = useCallback(() => setMax(address, 'deposit'), [setMax, address])
 
   const validationError =
     hasWallet &&
@@ -61,9 +58,7 @@ export const DepositModule = () => {
             loading: userScrvUsdBalanceLoading,
             balance: decimal(userScrvUsdBalance?.crvUSD),
             symbol: 'crvUSD',
-            onClick: onMax,
           },
-          maxBalance: { balance: decimal(userScrvUsdBalance?.crvUSD), chips: 'max' },
         })}
         disabled={!hasWallet}
       />
