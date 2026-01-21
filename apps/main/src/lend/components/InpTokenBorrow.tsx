@@ -18,7 +18,6 @@ export const InpTokenBorrow = ({
   tokenBalance,
   maxRecv,
   handleInpChange,
-  handleMaxClick,
   network,
 }: {
   id: string
@@ -31,7 +30,6 @@ export const InpTokenBorrow = ({
   tokenBalance: string | undefined
   maxRecv: string | undefined
   handleInpChange(inpValue: string): void
-  handleMaxClick(): void
   network: NetworkConfig
 }) => {
   const { data: usdRate } = useTokenUsdRate({ chainId: network.chainId, tokenAddress })
@@ -47,8 +45,7 @@ export const InpTokenBorrow = ({
         loading: tokenBalance == null,
         balance: decimal(tokenBalance),
         symbol: tokenSymbol,
-        usdRate: usdRate,
-        onClick: handleMaxClick,
+        usdRate,
       }}
       maxBalance={{ balance: decimal(maxRecv), chips: 'max' }}
       label={t`Borrow amount:`}

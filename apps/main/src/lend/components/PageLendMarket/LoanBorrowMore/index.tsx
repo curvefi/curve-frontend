@@ -61,7 +61,6 @@ export const LoanBorrowMore = ({
   const { state: userState } = useUserLoanDetails(userActiveKey)
   const fetchStepApprove = useStore((state) => state.loanBorrowMore.fetchStepApprove)
   const fetchStepIncrease = useStore((state) => state.loanBorrowMore.fetchStepIncrease)
-  const refetchMaxRecv = useStore((state) => state.loanBorrowMore.refetchMaxRecv)
   const setFormValues = useStore((state) => state.loanBorrowMore.setFormValues)
   const resetState = useStore((state) => state.loanBorrowMore.resetState)
 
@@ -393,10 +392,6 @@ export const LoanBorrowMore = ({
           tokenBalance={userBalances?.borrowed}
           maxRecv={maxRecv}
           handleInpChange={useCallback((debt) => updateFormValues({ debt }), [updateFormValues])}
-          handleMaxClick={async () => {
-            const debt = await refetchMaxRecv(market, isLeverage)
-            updateFormValues({ debt })
-          }}
         />
       </Stack>
 

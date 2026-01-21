@@ -51,7 +51,6 @@ export const LoanCreateForm = ({
   const maxRecv = useStore((state) => state.loanCreate.maxRecv[activeKeyMax])
   const { state: userState } = useUserLoanDetails(userActiveKey)
   const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
-  const refetchMaxRecv = useStore((state) => state.loanCreate.refetchMaxRecv)
   const fetchStepApprove = useStore((state) => state.loanCreate.fetchStepApprove)
   const fetchStepCreate = useStore((state) => state.loanCreate.fetchStepCreate)
   const setFormValues = useStore((state) => state.loanCreate.setFormValues)
@@ -352,10 +351,6 @@ export const LoanCreateForm = ({
         tokenBalance={userBalances?.borrowed}
         maxRecv={maxRecv}
         handleInpChange={useCallback((debt) => updateFormValues({ debt }), [updateFormValues])}
-        handleMaxClick={async () => {
-          const debt = await refetchMaxRecv(market, isLeverage)
-          updateFormValues({ debt })
-        }}
       />
 
       {/* detail info */}
