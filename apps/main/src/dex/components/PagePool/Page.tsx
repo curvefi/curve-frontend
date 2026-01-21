@@ -14,7 +14,7 @@ import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 
 export const PagePool = () => {
   const push = useNavigate()
-  const { curveApi = null } = useCurve()
+  const { curveApi = null, isHydrated } = useCurve()
   const props = useParams<PoolUrlParams>()
   const { poolIdOrAddress: rPoolIdOrAddress, formType: rFormType, network: networkId } = props
   const rChainId = useChainId(networkId)
@@ -40,7 +40,7 @@ export const PagePool = () => {
   return !rFormType || network.excludePoolsMapper[poolId ?? ''] || poolNotFound ? (
     <ErrorPage title="404" subtitle={t`Pool Not Found`} continueUrl={getPath(props, ROUTE.PAGE_POOLS)} />
   ) : (
-    rFormType && poolDataCacheOrApi?.pool?.id === poolId && hasDepositAndStake != null && (
+    rFormType && poolDataCacheOrApi?.pool?.id === poolId && hasDepositAndStake != null && isHydrated && (
       <Transfer
         curve={curveApi}
         params={props}
