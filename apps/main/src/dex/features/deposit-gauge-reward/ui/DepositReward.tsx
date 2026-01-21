@@ -21,6 +21,7 @@ import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { formDefaultOptions } from '@ui-kit/lib/model/form'
 
 export const DepositReward = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {
+  const { address: signerAddress } = useConnection()
   const { isPending: isPendingRewardDistributors } = useGaugeRewardsDistributors({
     chainId,
     poolId,
