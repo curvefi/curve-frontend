@@ -77,14 +77,13 @@ describe('Error Boundary', () => {
     const description = 'Got an error'
     const contact = 'test@curve.fi'
     cy.intercept('POST', '**/api/error-report', ({ body: { body }, reply }) => {
-      const bodyJson = JSON.parse(body)
-      expect(Object.keys(bodyJson)).to.have.members(['formData', 'url', 'context'])
-      expect(bodyJson.formData).to.deep.equal({ address, contactMethod: 'email', contact, description })
-      expect(bodyJson.url).to.equal(url)
+      expect(Object.keys(body)).to.have.members(['formData', 'url', 'context'])
+      expect(body.formData).to.deep.equal({ address, contactMethod: 'email', contact, description })
+      expect(body.url).to.equal(url)
       if (is500) {
-        check500Error(bodyJson)
+        check500Error(body)
       } else {
-        expect(bodyJson).to.deep.equal({
+        expect(body).to.deep.equal({
           formData: { address, contactMethod: 'email', contact, description },
           url,
           context: { title: '404', subtitle: 'Page Not Found' },

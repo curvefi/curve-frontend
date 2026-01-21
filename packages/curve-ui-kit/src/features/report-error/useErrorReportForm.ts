@@ -27,7 +27,7 @@ export const useErrorReportForm = ({ error, ...context }: ErrorContext, onClose:
     form,
     values: watchForm(form),
     onSubmit: form.handleSubmit(async (formData) => {
-      const report = {
+      const body = {
         formData,
         url: window.location.href,
         context: {
@@ -38,9 +38,9 @@ export const useErrorReportForm = ({ error, ...context }: ErrorContext, onClose:
               : error,
         },
       }
-      console.info(`Submitting error report:`, report)
+      console.info(`Submitting error report:`, body)
       try {
-        await fetchJson('/api/error-report', { body: JSON.stringify(report) })
+        await fetchJson('/api/error-report', { body })
         onClose()
       } catch (e) {
         console.warn(e)
