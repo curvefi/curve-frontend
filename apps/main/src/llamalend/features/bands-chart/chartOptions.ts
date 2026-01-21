@@ -105,7 +105,7 @@ export const getChartOptions = (
   if (chartData.length === 0) return {}
 
   const dataZoomWidth = 20
-  const gridPadding = { left: 0, top: 16, bottom: 16 }
+  const gridPadding = { left: 0, top: 0, bottom: 8 }
   const gridRight = 16 + dataZoomWidth
   const labelXOffset = 16 - (gridRight - dataZoomWidth)
 

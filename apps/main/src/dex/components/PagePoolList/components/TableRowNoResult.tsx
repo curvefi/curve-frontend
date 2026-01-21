@@ -1,13 +1,17 @@
 import { useMemo } from 'react'
 import { styled } from 'styled-components'
+import { useConnection } from 'wagmi'
 import type { SearchParams } from '@/dex/components/PagePoolList/types'
-import { useStore } from '@/dex/store/useStore'
+import { useChainId } from '@/dex/hooks/useChainId'
+import { useUserPools } from '@/dex/queries/user-pools.query'
+import type { NetworkUrlParams } from '@/dex/types/main.types'
 import { AlertBox } from '@ui/AlertBox'
 import { Box } from '@ui/Box'
 import { Button } from '@ui/Button'
 import { ExternalLink } from '@ui/Link/ExternalLink'
 import { Td, Tr } from '@ui/Table'
 import { shortenAccount } from '@ui/utils'
+import { useParams } from '@ui-kit/hooks/router'
 import { Trans } from '@ui-kit/lib/i18n'
 
 enum ERROR {
@@ -19,21 +23,22 @@ enum ERROR {
 type Props = {
   colSpan: number
   searchParams: SearchParams
-  signerAddress: string
   updatePath(searchParams: Partial<SearchParams>): void
 }
 
-export const TableRowNoResult = ({ colSpan, searchParams, signerAddress, updatePath }: Props) => {
+export const TableRowNoResult = ({ colSpan, searchParams, updatePath }: Props) => {
   const { filterKey, searchText } = searchParams
 
-  const userPoolListLoaded = useStore((state) => state.user.poolListLoaded)
-  const userPoolListError = useStore((state) => state.user.poolListError)
+  const props = useParams<NetworkUrlParams>()
+  const chainId = useChainId(props.network)
+  const { address: userAddress } = useConnection()
+  const { isError: isUserPoolsError } = useUserPools({ chainId, userAddress })
 
   const errorKey = useMemo(() => {
     if (searchText) return ERROR.search
     if (filterKey) return ERROR.filter
-    if (userPoolListLoaded && userPoolListError) return ERROR.api
-  }, [filterKey, searchText, userPoolListError, userPoolListLoaded])
+    if (isUserPoolsError) return ERROR.api
+  }, [filterKey, searchText, isUserPoolsError])
 
   const errorSearchParams = useMemo<Partial<SearchParams> | undefined>(() => {
     if (errorKey === ERROR.search) return { searchText: '' }
@@ -43,11 +48,11 @@ export const TableRowNoResult = ({ colSpan, searchParams, signerAddress, updateP
   const errorSearchedValue = useMemo(() => {
     if (errorKey === ERROR.search) return searchText
     if (errorKey === ERROR.filter) {
-      if (filterKey === 'user' && !!signerAddress) return shortenAccount(signerAddress)
+      if (filterKey === 'user' && !!userAddress) return shortenAccount(userAddress)
       return filterKey
     }
     return ''
-  }, [filterKey, errorKey, searchText, signerAddress])
+  }, [filterKey, errorKey, searchText, userAddress])
 
   return (
     <Tr>

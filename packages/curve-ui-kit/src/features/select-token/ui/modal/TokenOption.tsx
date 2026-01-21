@@ -24,26 +24,22 @@ export type TokenOptionsProps = {
   disabledReason?: string
 }
 
-export type Props = Option & TokenOptionCallbacks & TokenOptionsProps
-
 export const TokenOption = ({
   chain,
   symbol,
-  name,
-  label,
   address,
   balance,
   tokenPrice,
   disabled,
   disabledReason,
   onToken,
-}: Props) => {
+}: Option & TokenOptionCallbacks & TokenOptionsProps) => {
   const hasBalance = +(balance ?? '0') > 0
   const hasBalanceUsd = hasBalance && (tokenPrice ?? 0) > 0
-  const showAddress = !hasBalanceUsd
-
   const menuItem = useRef<HTMLLIElement>(null)
-
+  const [primary, secondary, tertiary] = disabled
+    ? Array(3).fill('textDisabled')
+    : ['textPrimary', 'textSecondary', 'textTertiary']
   return (
     <InvertOnHover hoverRef={menuItem}>
       <Tooltip title={disabled && 'This token is not available because of'} body={disabledReason} placement="top">
@@ -55,55 +51,43 @@ export const TokenOption = ({
           sx={{
             minHeight: IconSize.xxl,
             '&': { transition: `background-color ${TransitionFunction}` },
-            ...(disabled && {
-              cursor: 'not-allowed',
-            }),
+            ...(disabled && { cursor: 'not-allowed' }),
           }}
         >
           <TokenIcon
             blockchainId={chain}
             address={address}
             size="xl"
-            sx={{
-              ...(disabled && {
-                filter: 'saturate(0)',
-              }),
-            }}
+            sx={{ ...(disabled && { filter: 'saturate(0)' }) }}
           />
 
           <Stack flexGrow={1}>
-            <Typography variant="bodyMBold" color={disabled ? 'textDisabled' : 'textPrimary'}>
+            <Typography variant="bodyMBold" color={primary}>
               {symbol}
             </Typography>
 
-            {name && (
-              <Typography variant="bodyXsRegular" color={disabled ? 'textDisabled' : 'textSecondary'}>
-                {name}
-              </Typography>
-            )}
-
-            {label && (
-              <Typography variant="bodyXsRegular" color={disabled ? 'textDisabled' : 'textTertiary'}>
-                {label}
+            {hasBalance && (
+              <Typography variant="bodyXsRegular" color={tertiary}>
+                {shortenAddress(address)}
               </Typography>
             )}
           </Stack>
 
           <Stack direction="column" alignItems="end">
             {hasBalance && (
-              <Typography variant="bodyMBold" color={disabled ? 'textDisabled' : 'textPrimary'}>
+              <Typography variant="bodyMBold" color={primary}>
                 {formatNumber(balance, { decimals: 5 })}
               </Typography>
             )}
 
             {hasBalanceUsd && (
-              <Typography variant="bodyXsRegular" color={disabled ? 'textDisabled' : 'textSecondary'}>
+              <Typography variant="bodyXsRegular" color={secondary}>
                 {formatNumber(tokenPrice! * +balance!, FORMAT_OPTIONS.USD)}
               </Typography>
             )}
 
-            {showAddress && (
-              <Typography variant="bodyXsRegular" color={disabled ? 'textDisabled' : 'textTertiary'}>
+            {!hasBalance && (
+              <Typography variant="bodyXsRegular" color={tertiary}>
                 {shortenAddress(address)}
               </Typography>
             )}

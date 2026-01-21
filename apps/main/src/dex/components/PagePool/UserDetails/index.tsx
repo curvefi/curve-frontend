@@ -5,7 +5,7 @@ import type { TransferProps } from '@/dex/components/PagePool/types'
 import { PoolRewardsCrv } from '@/dex/components/PoolRewardsCrv'
 import { usePoolIdByAddressOrId } from '@/dex/hooks/usePoolIdByAddressOrId'
 import { usePoolTokenDepositBalances } from '@/dex/hooks/usePoolTokenDepositBalances'
-import { getUserPoolActiveKey } from '@/dex/store/createUserSlice'
+import { useUserPoolInfo } from '@/dex/queries/user-pool-info.query'
 import { useStore } from '@/dex/store/useStore'
 import { Box } from '@ui/Box'
 import { Stats } from '@ui/Stats'
@@ -13,7 +13,9 @@ import { Table } from '@ui/Table'
 import { Chip } from '@ui/Typography'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
-import { shortenAddress } from '@ui-kit/utils'
+import { ExclamationTriangleIcon } from '@ui-kit/shared/icons/ExclamationTriangleIcon'
+import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
+import { shortenAddress, type Address } from '@ui-kit/utils'
 
 const DEFAULT_WITHDRAW_AMOUNTS: string[] = []
 
@@ -29,14 +31,17 @@ export const MySharesStats = ({
 } & Pick<TransferProps, 'curve' | 'poolData' | 'poolDataCacheOrApi' | 'routerParams' | 'tokensMapper'>) => {
   const { rChainId, rPoolIdOrAddress } = routerParams
   const poolId = usePoolIdByAddressOrId({ chainId: rChainId, poolIdOrAddress: rPoolIdOrAddress })
-  const userPoolActiveKey = curve && poolId ? getUserPoolActiveKey(curve, poolId) : ''
   const rewardsApy = useStore((state) => state.pools.rewardsApyMapper[rChainId]?.[poolId ?? ''])
-  const { boostApy: userBoostApy, crvApy: userCrvApyValue } =
-    useStore((state) => state.user.userCrvApy[userPoolActiveKey]) ?? {}
-  const userLiquidityUsd = useStore((state) => state.user.userLiquidityUsd[userPoolActiveKey])
-  const userShare = useStore((state) => state.user.userShare[userPoolActiveKey])
-  const userWithdrawAmounts =
-    useStore((state) => state.user.userWithdrawAmounts[userPoolActiveKey]) ?? DEFAULT_WITHDRAW_AMOUNTS
+
+  const { data: userPoolInfo, error: userPoolError } = useUserPoolInfo(
+    { chainId: rChainId, poolId, userAddress: curve?.signerAddress as Address | undefined },
+    !!curve && !!poolId,
+  )
+
+  const userWithdrawAmounts = userPoolInfo?.userWithdrawAmounts ?? DEFAULT_WITHDRAW_AMOUNTS
+  const userLpShare = userPoolInfo?.userShare?.lpShare
+  const userBoostApy = userPoolInfo?.userCrvApy.boostApy
+  const userCrvApyValue = userPoolInfo?.userCrvApy.crvApy
 
   const haveBoosting = rChainId === 1
   const crvRewards = rewardsApy?.crv
@@ -44,14 +49,14 @@ export const MySharesStats = ({
   const { rewardsNeedNudging, areCrvRewardsStuckInBridge } = poolData?.gauge.status || {}
 
   const userShareLabel = useMemo(() => {
-    if (userShare?.lpShare && Number(userShare.lpShare) !== 0) {
-      if (Number(userShare.lpShare) > 0.01) {
-        return formatNumber(userShare.lpShare, FORMAT_OPTIONS.PERCENT)
+    if (userLpShare && Number(userLpShare)) {
+      if (Number(userLpShare) > 0.01) {
+        return formatNumber(userLpShare, FORMAT_OPTIONS.PERCENT)
       }
       return `< ${formatNumber(0.01, FORMAT_OPTIONS.PERCENT)}`
     }
     return formatNumber(0, FORMAT_OPTIONS.PERCENT)
-  }, [userShare])
+  }, [userLpShare])
 
   const withdrawTotal = useMemo(() => {
     if (poolDataCacheOrApi && !poolDataCacheOrApi.pool.isCrypto) {
@@ -100,6 +105,11 @@ export const MySharesStats = ({
         <h3>{t`Your position`}</h3>
         <span>
           {t`Staked share:`} <strong>{userShareLabel}</strong> <Chip size={'xs'}>{t`of pool`}</Chip>
+          {userPoolError && (
+            <Tooltip title={userPoolError.message} placement="top">
+              <ExclamationTriangleIcon fontSize="small" color="error" />
+            </Tooltip>
+          )}
         </span>
       </Title>
 
@@ -178,7 +188,7 @@ export const MySharesStats = ({
           )}
           <Stats isOneLine label={t`USD balance`}>
             <Chip as="strong" size="md" fontVariantNumeric="tabular-nums">
-              {formatNumber(userLiquidityUsd, { ...FORMAT_OPTIONS.USD, defaultValue: '-' })}
+              {formatNumber(userPoolInfo?.userLiquidityUsd, { ...FORMAT_OPTIONS.USD, defaultValue: '-' })}
             </Chip>
           </Stats>
         </TokensBalanceWrapper>

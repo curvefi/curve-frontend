@@ -1,13 +1,18 @@
 import { cloneDeep } from 'lodash'
 import { getErrorMessage } from '@/llamalend/helpers'
-import { getIsUserCloseToLiquidation, getLiquidationStatus, reverseBands, sortBandsMint } from '@/llamalend/llama.utils'
+import {
+  getIsUserCloseToLiquidation,
+  getLiquidationStatus,
+  hasV2Leverage,
+  reverseBands,
+  sortBandsMint,
+} from '@/llamalend/llama.utils'
 import type { FormDetailInfo as FormDetailInfoDeleverage } from '@/loan/components/PageMintMarket/LoanDeleverage/types'
 import type { MaxRecvLeverage as MaxRecvLeverageForm } from '@/loan/components/PageMintMarket/types'
 import { networks } from '@/loan/networks'
 import type { LiqRange, MaxRecvLeverage, Provider } from '@/loan/store/types'
-import { ChainId, LlamaApi, Llamma, UserLoanDetails, type BandBalance } from '@/loan/types/loan.types'
+import { type BandBalance, ChainId, LlamaApi, Llamma, UserLoanDetails } from '@/loan/types/loan.types'
 import { fulfilledValue, log } from '@/loan/utils/helpers'
-import { hasV2Leverage } from '@/loan/utils/leverage'
 import type { TGas } from '@curvefi/llamalend-api/lib/interfaces'
 import PromisePool from '@supercharge/promise-pool'
 import { BN } from '@ui/utils'

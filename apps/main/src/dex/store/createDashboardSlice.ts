@@ -22,6 +22,8 @@ import { shortenAccount } from '@ui/utils'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { Chain } from '@ui-kit/utils'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
+import { userPoolRewardCrvApy } from '../queries/user-pool-info.query'
+import { fetchUserPools } from '../queries/user-pools.query'
 
 type StateKey = keyof typeof DEFAULT_STATE
 const { orderBy } = lodash
@@ -119,13 +121,10 @@ export const createDashboardSlice = (
 
       try {
         // Get user pool list
-        const { poolList, error } = await wallet.getUserPoolList(curve, walletAddress)
+        const poolList = await fetchUserPools({ chainId, userAddress: walletAddress as Address })
 
-        if (error) {
-          sliceState.setStateByKey('error', error)
-        }
         // no staked pools
-        if (poolList.length === 0) return { dashboardDataMapper: {}, error }
+        if (poolList.length === 0) return { dashboardDataMapper: {}, error: '' }
 
         // get balances and claimables
         const [userPoolBalancesResult, userClaimableResult] = await Promise.allSettled([
@@ -147,7 +146,7 @@ export const createDashboardSlice = (
           .withConcurrency(10)
           .process(async ({ pool }, idx) => {
             const [userCrvApyResult, profitsResults, lpTokenBalancesResult] = await Promise.allSettled([
-              wallet.userPoolRewardCrvApy(pool, walletAddress),
+              userPoolRewardCrvApy(pool, walletAddress as Address),
               wallet.userPoolRewardProfit(pool, walletAddress, chainId),
               wallet.userPoolLpTokenBalances(pool, walletAddress),
             ])
