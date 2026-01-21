@@ -361,7 +361,7 @@ export const LargeTokenInput = ({
       </Stack>
 
       {/** Fourth row containing optional helper (or error) message */}
-      {message && <HelperMessage message={message} isError={isError} />}
+      {message && <HelperMessage onNumberClick={onBalance} message={message} isError={isError} />}
       {children}
     </Stack>
   )

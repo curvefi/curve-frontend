@@ -17,7 +17,7 @@ const { Spacing, IconSize } = SizesAndSpaces
  * The bottom margin of the text ends up being larger than the top half, messing with the vertical alignment.
  * We ought to find a better solution for it one day, but for now this'll do the trick.
  */
-const VERTICAL_CENTER_TEXT = {
+export const VERTICAL_CENTER_TEXT = {
   '&': { lineHeight: 'normal' },
 }
 

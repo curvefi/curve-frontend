@@ -7,6 +7,7 @@ import {
   validateSlippage,
   validateMaxCollateral,
   validateUserCollateral,
+  validateMaxBorrowed,
 } from '@/llamalend/queries/validation/borrow-fields.validation'
 import type {
   CollateralHealthParams,
@@ -109,11 +110,7 @@ export const addCollateralFormValidationSuite = createValidationSuite((params: C
 
 export const removeCollateralFormValidationSuite = createValidationSuite((params: CollateralForm) => {
   validateUserCollateral(params.userCollateral, false)
-  validateMaxCollateral(
-    params.userCollateral,
-    params.maxCollateral,
-    'Collateral must be less than or equal to your position balance',
-  )
+  validateMaxCollateral(params.userCollateral, params.maxCollateral)
 })
 export const collateralHealthValidationSuite = createValidationSuite(({ isFull, ...rest }: CollateralHealthParams) => {
   collateralValidationGroup(rest)
@@ -146,6 +143,7 @@ export const repayFormValidationSuite = createValidationSuite(
     stateCollateral,
     maxStateCollateral,
     userCollateral,
+    maxBorrowed,
     maxCollateral,
     userBorrowed,
     slippage,
@@ -154,6 +152,7 @@ export const repayFormValidationSuite = createValidationSuite(
     validateRepayField('stateCollateral', stateCollateral)
     validateMaxStateCollateral(stateCollateral, maxStateCollateral)
     validateRepayBorrowedField(userBorrowed)
+    validateMaxBorrowed(userBorrowed, maxBorrowed)
     validateMaxCollateral(userCollateral, maxCollateral)
     validateRepayHasValue(stateCollateral, userCollateral, userBorrowed)
     validateIsFull(isFull)
