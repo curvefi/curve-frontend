@@ -17,10 +17,10 @@ export default async function handler(request: IncomingMessage, response: Server
   }
   try {
     const report = await json(request)
-    console.info({ message: 'error report received', report })
-    sendJson(response, 200, { status: 'ok' })
+    console.info(JSON.stringify({ message: 'error report received', report }))
+    sendJson(response, 201, { status: 'accepted' })
   } catch (error) {
-    console.warn({ message: 'failed to parse error report', error })
+    console.warn(JSON.stringify({ message: 'failed to parse error report', error }))
     sendJson(response, 400, { error: 'Invalid JSON payload' })
   }
 }
