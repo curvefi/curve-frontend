@@ -41,10 +41,3 @@ export const useManageSoftLiquidation = useAlphaChannel
 
 /** Entire new app containing in-depth analyses for knowledgeable users */
 export const useAnalyticsApp = useAlphaChannel
-
-/**
- * Phishing warning banner shown on localhost and production, hidden on preview,
- * but forced on in CI so automated tests keep working
- */
-export const usePhishingBanner = () =>
-  process.env.NODE_ENV === 'development' || defaultReleaseChannel === ReleaseChannel.Stable || Boolean(process.env.CI)
