@@ -156,7 +156,6 @@ export const RepayForm = <ChainId extends IChainId>({
               form.setValue(selectedField, max[selectedField].data, setValueOptions)
               void form.trigger(max[selectedField].field) // re-validate max
             }}
-            buttonTestId="borrow-set-debt-to-max"
           />
         }
       />

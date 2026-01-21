@@ -126,7 +126,6 @@ export const CreateLoanForm = <ChainId extends IChainId>({
                 form.setValue('debt', values.maxDebt, setValueOptions)
                 void form.trigger('maxDebt') // re-validate maxDebt when debt changes
               }, [form, values.maxDebt])}
-              buttonTestId="borrow-set-debt-to-max"
             />
           }
         />
