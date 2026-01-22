@@ -36,7 +36,7 @@ export const LeverageInput = ({
   return (
     <Stack direction="row" justifyContent="space-between" gap={Spacing.sm} alignItems="start" flexWrap="wrap">
       <FormControlLabel
-        sx={{ minWidth: 180 }}
+        sx={{ minWidth: 180, margin: 0 }}
         label={
           <>
             <Typography variant="headingXsBold">{t`Enable leverage`}</Typography>
