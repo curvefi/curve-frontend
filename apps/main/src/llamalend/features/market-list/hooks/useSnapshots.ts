@@ -21,12 +21,12 @@ type UseSnapshotsResult<T> = {
 }
 
 const SnapshotKeys = {
-  [MarketRateType.Borrow]: 'borrowApy',
+  [MarketRateType.Borrow]: 'borrowApr',
   [MarketRateType.Supply]: 'lendApr',
 } as const
 
 const RateKeys = {
-  [MarketRateType.Borrow]: 'borrowApy',
+  [MarketRateType.Borrow]: 'borrowApr',
   [MarketRateType.Supply]: 'lendApr',
 } as const
 

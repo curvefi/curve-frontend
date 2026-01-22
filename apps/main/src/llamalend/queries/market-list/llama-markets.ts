@@ -230,8 +230,8 @@ const convertLendingVault = (
         lendApr + (lendCrvAprUnboosted ?? 0) + (borrowedToken?.rebasingYield ?? 0) + totalExtraRewardApr,
       lendTotalApyMaxBoosted:
         lendApr + (borrowedToken?.rebasingYield ?? 0) + totalExtraRewardApr + (lendCrvAprBoosted ?? 0),
-      borrowApy: borrowApy,
-      borrowTotalApy: borrowTotalApy,
+      borrowApy,
+      borrowTotalApy,
       borrowApr,
       borrowTotalApr,
       incentives: extraRewardApr
