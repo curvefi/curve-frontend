@@ -322,7 +322,6 @@ export const FormWithdraw = ({
         balance={lpTokenBalance ?? ''}
         balanceLoading={lpTokenBalanceLoading}
         hasError={haveSigner && +formValues.lpToken > +(lpTokenBalance ?? '')}
-        haveSigner={haveSigner}
         handleAmountChange={useCallback(
           (lpToken: string) =>
             updateFormValues({ amounts: resetFormAmounts(useStore.getState().poolWithdraw.formValues), lpToken }, null),

@@ -9,7 +9,7 @@ import { DetailInfoLiqRange } from '@/loan/components/DetailInfoLiqRange'
 import { DialogHealthWarning } from '@/loan/components/DialogHealthWarning'
 import { LoanFormConnect } from '@/loan/components/LoanFormConnect'
 import type { FormStatus, FormValues, StepKey } from '@/loan/components/PageMintMarket/CollateralIncrease/types'
-import { StyledDetailInfoWrapper, StyledInpChip } from '@/loan/components/PageMintMarket/styles'
+import { StyledDetailInfoWrapper } from '@/loan/components/PageMintMarket/styles'
 import type { FormEstGas, ManageLoanProps } from '@/loan/components/PageMintMarket/types'
 import { DEFAULT_DETAIL_INFO, DEFAULT_FORM_EST_GAS } from '@/loan/components/PageMintMarket/utils'
 import { DEFAULT_WALLET_BALANCES } from '@/loan/constants'
@@ -22,7 +22,6 @@ import { curveProps } from '@/loan/utils/helpers'
 import { getStepStatus, getTokenName } from '@/loan/utils/utilsLoan'
 import { AlertBox } from '@ui/AlertBox'
 import { Box } from '@ui/Box'
-import { InputDebounced, InputMaxBtn, InputProvider } from '@ui/InputComp'
 import { getActiveStep } from '@ui/Stepper/helpers'
 import { Stepper } from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
@@ -30,7 +29,6 @@ import { TxInfoBar } from '@ui/TxInfoBar'
 import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { useLegacyTokenInput } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
@@ -99,15 +97,6 @@ export const CollateralIncrease = ({
     },
     [formStatus.isApproved, setStateByKey],
   )
-
-  const handleInpChangeCollateral = (collateral: string) => {
-    reset(!!formStatus.error, formStatus.isComplete)
-
-    const updatedFormValues = { ...formValues }
-    updatedFormValues.collateral = collateral
-    updatedFormValues.collateralError = ''
-    updateFormValues(updatedFormValues)
-  }
 
   const onCollateralChanged = useCallback(
     (val?: Decimal) => {
@@ -251,66 +240,35 @@ export const CollateralIncrease = ({
       <div>
         {/* input collateral */}
         <Box grid gridRowGap={1}>
-          {useLegacyTokenInput() ? (
-            <>
-              <InputProvider
-                grid
-                gridTemplateColumns="1fr auto"
-                padding="4px 8px"
-                inputVariant={formValues.collateralError ? 'error' : undefined}
-                disabled={disabled}
-                id="collateral"
-              >
-                <InputDebounced
-                  id="inpCollateral"
-                  type="number"
-                  labelProps={{
-                    label: t`${getTokenName(llamma).collateral} Avail.`,
-                    descriptionLoading: userWalletBalancesLoading,
-                    description: formatNumber(userWalletBalances.collateral),
-                  }}
-                  value={formValues.collateral}
-                  onChange={handleInpChangeCollateral}
-                />
-                <InputMaxBtn onClick={() => handleInpChangeCollateral(userWalletBalances.collateral)} />
-              </InputProvider>
-              <StyledInpChip size="xs" isDarkBg isError>
-                {formValues.collateralError === 'too-much' && (
-                  <>Collateral is greater than {formatNumber(userWalletBalances.collateral)}</>
-                )}
-              </StyledInpChip>
-            </>
-          ) : (
-            <LargeTokenInput
-              name="collateral"
-              label={t`Collateral to add`}
-              testId="inpCollateral"
-              isError={!!formValues.collateralError}
-              {...(formValues.collateralError === 'too-much' && {
-                message: t`Collateral is greater than ${formatNumber(userWalletBalances.collateral)}`,
-              })}
-              disabled={disabled}
-              inputBalanceUsd={decimal(
-                formValues.collateral && collateralUsdRate && collateralUsdRate * +formValues.collateral,
-              )}
-              walletBalance={{
-                loading: userWalletBalancesLoading,
-                balance: decimal(userWalletBalances.collateral),
-                symbol: getTokenName(llamma).collateral,
-                usdRate: collateralUsdRate,
-              }}
-              balance={decimal(formValues.collateral)}
-              tokenSelector={
-                <TokenLabel
-                  blockchainId={network?.id}
-                  tooltip={getTokenName(llamma).collateral}
-                  address={collateralAddress}
-                  label={getTokenName(llamma).collateral}
-                />
-              }
-              onBalance={onCollateralChanged}
-            />
-          )}
+          <LargeTokenInput
+            name="collateral"
+            label={t`Collateral to add`}
+            testId="inpCollateral"
+            isError={!!formValues.collateralError}
+            {...(formValues.collateralError === 'too-much' && {
+              message: t`Collateral is greater than ${formatNumber(userWalletBalances.collateral)}`,
+            })}
+            disabled={disabled}
+            inputBalanceUsd={decimal(
+              formValues.collateral && collateralUsdRate && collateralUsdRate * +formValues.collateral,
+            )}
+            walletBalance={{
+              loading: userWalletBalancesLoading,
+              balance: decimal(userWalletBalances.collateral),
+              symbol: getTokenName(llamma).collateral,
+              usdRate: collateralUsdRate,
+            }}
+            balance={decimal(formValues.collateral)}
+            tokenSelector={
+              <TokenLabel
+                blockchainId={network?.id}
+                tooltip={getTokenName(llamma).collateral}
+                address={collateralAddress}
+                label={getTokenName(llamma).collateral}
+              />
+            }
+            onBalance={onCollateralChanged}
+          />
         </Box>
 
         {/* detail info */}

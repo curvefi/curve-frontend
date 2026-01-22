@@ -2,14 +2,21 @@ import { enforce, group, test } from 'vest'
 import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { TIME_FRAMES } from '@ui-kit/lib/model'
+import { curveApiValidationGroup } from '@ui-kit/lib/model/query/curve-api-validation'
 import { poolValidationGroup } from '@ui-kit/lib/model/query/pool-validation'
+import { userAddressValidationGroup } from '@ui-kit/lib/model/query/user-address-validation'
 import {
   addressValidationFn,
   amountValidationFn,
   createValidationSuite,
   tokenIdValidationFn,
 } from '@ui-kit/lib/validation'
-import { AddRewardParams, DepositRewardApproveParams, DepositRewardParams } from '../types'
+import {
+  AddRewardParams,
+  DepositRewardApproveParams,
+  DepositRewardParams,
+  type GaugeDistributorsParams,
+} from '../types'
 
 export const gaugeAddRewardValidationGroup = ({ distributorId, rewardTokenId }: AddRewardParams) =>
   group('gaugeAddRewardValidationGroup', () => {
@@ -56,6 +63,13 @@ export const gaugeDepositRewardValidationSuite = createValidationSuite((data: De
   poolValidationGroup(data)
   gaugeDepositRewardValidationGroup(data)
 })
+export const gaugeDistributorsValidationSuite = createValidationSuite(
+  ({ chainId, poolId, userAddress }: GaugeDistributorsParams) => {
+    curveApiValidationGroup({ chainId })
+    poolValidationGroup({ chainId, poolId })
+    userAddressValidationGroup({ userAddress })
+  },
+)
 
 function validateAmount({ rewardTokenId, amount, userBalance }: DepositRewardApproveParams) {
   amountValidationFn(amount)

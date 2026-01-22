@@ -73,6 +73,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
     {
       chainId: rChainId,
       poolId: poolData?.pool.id,
+      userAddress: signerAddress,
     },
     !!curve,
   )
