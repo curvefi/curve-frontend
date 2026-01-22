@@ -131,7 +131,6 @@ export const LLAMA_MARKET_COLUMNS = [
     cell: RateCell,
     meta: {
       type: 'numeric',
-      tooltip: createTooltip(LlamaMarketColumnId.BorrowRate, <BorrowRateHeaderTooltipContent />),
     },
     sortUndefined: 'last',
   }),
