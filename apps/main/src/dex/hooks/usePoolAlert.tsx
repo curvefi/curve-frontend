@@ -275,6 +275,26 @@ export const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
       ),
     })
 
+    // EURT is no longer support by tether.
+    const eurtPoolsAlert = (): PoolAlert => ({
+      alertType: 'danger',
+      isDisableDeposit: true,
+      isDisableSwap: true,
+      isInformationOnly: true,
+      isInformationOnlyAndShowInForm: true,
+      isCloseOnTooltipOnly: true,
+      banner: {
+        title: t`EURT is no longer support by tether`,
+        subtitle: t`EURT is no longer support by tether. Swap to EURT or deposit liquidity at your own risks.`,
+        learnMoreUrl: 'https://tether.io/news/tether-provides-closing-update-on-eurt-wind-down-as-part-of-its-community-driven-product-strategy/',
+      },
+      message: (
+        <PoolAlertMessage>
+          <p>{t`This pool is in withdraw only mode.`}</p>
+        </PoolAlertMessage>
+      ),
+    })
+    
     // prettier-ignore
     const alerts: { [poolAddress: string]: PoolAlert } = {
       // ethereum
@@ -299,6 +319,12 @@ export const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
       '0xd9ff8396554a0d18b2cfbec53e1979b7ecce8373': yieldbasisAlert(),
       '0x6e5492f8ea2370844ee098a56dd88e1717e4a9c2': yieldbasisAlert(),
       '0x06cf5f9b93e9fcfdb33d6b3791eb152567cd8d36': uspdioAlert(),
+      '0x526afb67a479d4e9b0154d4cc1a44d47df91bf3e': eurtPoolsAlert(),
+      '0x3fb78e61784c9c637d560ede23ad57ca1294c14a': eurtPoolsAlert(),
+      '0x9838eccc42659fa8aa7daf2ad134b53984c9427b': eurtPoolsAlert(),
+      '0x3cfaa1596777cad9f5004f9a0c443d912e262243': eurtPoolsAlert(),
+      '0xfd5db7463a3ab53fd211b4af195c5bccc1a03890': eurtPoolsAlert(),
+      '0xb9446c4ef5ebe66268da6700d26f96273de3d571': eurtPoolsAlert(),
 
       // arbitrum
       '0x960ea3e3c7fb317332d990873d354e18d7645590': possibleVyperExploitedAlert(), // tricrypto
@@ -324,6 +350,12 @@ export const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
       // polygon
       '0xbeb90d2d165d010706aca022a85a3b2d6a49eaa1': misconfiguredPoolsAlert(),
       '0x810528a5086e997e39e12dccf02bad54a7bbe95b': misconfiguredPoolsAlert(),
+      '0x9073c66c88d64b77189f17dd646a3599d8bb7020': eurtPoolsAlert(),
+      '0x2c3cc8e698890271c8141be9f6fd6243d56b39f1': eurtPoolsAlert(),
+      '0xcefc3669b7af16e19579d76a2a8379b69a70141a': eurtPoolsAlert(),
+      '0xc9f80adaf35168f5cb601029e3f2e55a56a22880': eurtPoolsAlert(),
+      '0xad326c253a84e9805559b73a08724e11e49ca651': eurtPoolsAlert(),
+      '0xb446bf7b8d6d4276d0c75ec0e3ee8dd7fe15783a': eurtPoolsAlert(),
 
       // monad
       '0x2fd13b49f970e8c6d89283056c1c6281214b7eb6': monadEthConverterAlert()
