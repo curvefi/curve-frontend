@@ -230,7 +230,7 @@ export const createScrvUsdSlice = (_set: StoreApi<State>['setState'], get: Store
           void get()[sliceKey].checkApproval.depositApprove(amount)
 
           const successNotificationMessage = t`Succesfully approved ${amount} crvUSD!`
-          notify(successNotificationMessage, 'success', 15000)
+          notify(successNotificationMessage, 'success')
 
           return true
         } catch (error) {
@@ -288,7 +288,7 @@ export const createScrvUsdSlice = (_set: StoreApi<State>['setState'], get: Store
           get()[sliceKey].setStakingModuleChangeReset()
 
           const successNotificationMessage = t`Succesfully deposited ${amount} crvUSD!`
-          notify(successNotificationMessage, 'success', 15000)
+          notify(successNotificationMessage, 'success')
         } catch (error) {
           dismissNotificationHandler()
           get()[sliceKey].setStateByKey('depositTransaction', {
@@ -343,7 +343,7 @@ export const createScrvUsdSlice = (_set: StoreApi<State>['setState'], get: Store
           get()[sliceKey].setStakingModuleChangeReset()
 
           const successNotificationMessage = t`Succesfully withdrew ${amount} scrvUSD!`
-          notify(successNotificationMessage, 'success', 15000)
+          notify(successNotificationMessage, 'success')
         } catch (error) {
           dismissNotificationHandler()
           get()[sliceKey].setStateByKey('withdrawTransaction', {
@@ -397,7 +397,7 @@ export const createScrvUsdSlice = (_set: StoreApi<State>['setState'], get: Store
           get()[sliceKey].setStakingModuleChangeReset()
 
           const successNotificationMessage = t`Succesfully withdrew ${amount} scrvUSD!`
-          notify(successNotificationMessage, 'success', 15000)
+          notify(successNotificationMessage, 'success')
         } catch (error) {
           dismissNotificationHandler()
           get()[sliceKey].setStateByKey('withdrawTransaction', {
