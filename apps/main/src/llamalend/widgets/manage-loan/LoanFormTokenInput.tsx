@@ -9,7 +9,7 @@ import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LlamaIcon } from '@ui-kit/shared/icons/LlamaIcon'
 import { HelperMessage, LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
-import type { LargeTokenInputProps } from '@ui-kit/shared/ui/LargeTokenInput'
+import type { ChipsPreset, LargeTokenInputProps } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import type { Query } from '@ui-kit/types/util'
 import { decimal, Decimal } from '@ui-kit/utils'
@@ -30,6 +30,7 @@ export const LoanFormTokenInput = <
   blockchainId,
   name,
   max,
+  maxType = 'max',
   form,
   testId,
   message,
@@ -46,6 +47,7 @@ export const LoanFormTokenInput = <
    * When present, it also carries an optional related max-field name whose errors should be reflected here.
    */
   max?: Query<Decimal> & { fieldName?: TMaxFieldName }
+  maxType?: ChipsPreset
   name: TFieldName
   form: UseFormReturn<TFieldValues> // the form, used to set the value and get errors
   testId: string
@@ -124,7 +126,7 @@ export const LoanFormTokenInput = <
       )}
       isError={!!error}
       walletBalance={!hideBalance ? walletBalance : undefined}
-      maxBalance={useMemo(() => max && { balance: max.data, chips: 'max' }, [max])}
+      maxBalance={useMemo(() => max && { balance: max.data, chips: maxType }, [max, maxType])}
       inputBalanceUsd={decimal(usdRate && usdRate * +(value ?? 0))}
     >
       {errorMessage ? <HelperMessage message={errorMessage} isError /> : message && <HelperMessage message={message} />}

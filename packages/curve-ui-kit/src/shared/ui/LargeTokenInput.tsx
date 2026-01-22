@@ -67,7 +67,7 @@ type InputChip = {
   newBalance: (() => void) | ((maxBalance?: Decimal) => Decimal | undefined)
 }
 
-type ChipsPreset = 'max' | 'range'
+export type ChipsPreset = 'max' | 'range'
 const CHIPS_PRESETS: Record<ChipsPreset, InputChip[]> = {
   max: [{ label: t`Max`, newBalance: (maxBalance) => maxBalance }],
   range: [25, 50, 75, 100].map((p) => ({
