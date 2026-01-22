@@ -36,7 +36,6 @@ const getPoolData = (p: Pool, network: NetworkConfig) => {
     curvefiUrl: '',
 
     // stats
-    currenciesReserves: null,
     hasVyperVulnerability: p.hasVyperVulnerability(),
     hasWrapped: isWrappedOnly ?? !hasNoWrapped(p),
     isWrapped: isWrappedOnly ?? false,

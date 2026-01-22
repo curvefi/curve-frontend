@@ -137,7 +137,6 @@ export interface PoolData {
   hasWrapped: boolean
   hasVyperVulnerability: boolean
   isWrapped: boolean
-  currenciesReserves: CurrencyReserves | null
   tokenAddresses: string[]
   tokenAddressesAll: string[]
   tokenDecimalsAll: number[]
