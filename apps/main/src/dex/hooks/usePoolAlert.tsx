@@ -285,8 +285,9 @@ export const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
       isCloseOnTooltipOnly: true,
       banner: {
         title: t`EURT is no longer support by tether`,
-        subtitle: t`EURT is no longer support by tether. Swap to EURT or deposit liquidity at your own risks.`,
-        learnMoreUrl: 'https://tether.io/news/tether-provides-closing-update-on-eurt-wind-down-as-part-of-its-community-driven-product-strategy/',
+        subtitle: t`This pool has been set to withdraw only.`,
+        learnMoreUrl:
+          'https://tether.io/news/tether-provides-closing-update-on-eurt-wind-down-as-part-of-its-community-driven-product-strategy/',
       },
       message: (
         <PoolAlertMessage>
@@ -294,7 +295,7 @@ export const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
         </PoolAlertMessage>
       ),
     })
-    
+
     // prettier-ignore
     const alerts: { [poolAddress: string]: PoolAlert } = {
       // ethereum
