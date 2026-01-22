@@ -57,9 +57,9 @@ export type LlamaMarket = {
     lendTotalApyMinBoosted: number | null
     lendTotalApyMaxBoosted: number | null // supply rate + rebasing yield + total extra incentives + max boosted yield
     borrowApy: number // base borrow APY %
-    borrowTotalApy: number | null // borrow APY - yield from collateral
+    borrowTotalApy: number // borrow APY - yield from collateral
     borrowApr: number
-    borrowTotalApr: number | null // borrow APR - yield from collateral
+    borrowTotalApr: number // borrow APR - yield from collateral
     // extra lending incentives, like OP rewards (so non CRV)
     incentives: ExtraIncentive[]
   }

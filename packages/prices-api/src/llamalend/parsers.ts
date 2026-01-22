@@ -66,6 +66,9 @@ export const parseAllMarkets = (resp: Responses.GetAllMarketsResponse) =>
 export const parseSnapshot = (x: Responses.GetSnapshotsResponse['data'][number]): Models.Snapshot => ({
   rate: parseFloat(x.rate),
   borrowApy: x.borrow_apy / 100,
+  borrowApr: x.borrow_apr / 100,
+  borrowTotalApy: x.borrow_total_apy / 100,
+  borrowTotalApr: x.borrow_total_apr / 100,
   lendApy: x.lend_apy / 100,
   lendApr: x.lend_apr / 100,
   lendAprCrv0Boost: x.lend_apr_crv_0_boost / 100,

@@ -16,9 +16,9 @@ export type GetMarketsResponse = {
     oracle_pools: Address[]
     rate: number
     borrow_apy: number
-    borrow_total_apy: number | null
+    borrow_total_apy: number
     borrow_apr: number
-    borrow_total_apr: number | null
+    borrow_total_apr: number
     lend_apy: number
     lend_apr: number
     lend_apr_crv_0_boost: number
@@ -73,6 +73,9 @@ export type GetSnapshotsResponse = {
     {
       rate: string
       borrow_apy: number
+      borrow_apr: number
+      borrow_total_apy: number
+      borrow_total_apr: number
       lend_apy: number
       lend_apr: number
       lend_apr_crv_0_boost: number

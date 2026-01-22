@@ -14,9 +14,9 @@ export type Market = {
   oraclePools: Address[]
   rate: number
   borrowApy: number
-  borrowTotalApy: number | null
+  borrowTotalApy: number
   borrowApr: number
-  borrowTotalApr: number | null
+  borrowTotalApr: number
   apyLend: number
   aprLend: number
   aprLendCrv0Boost: number
@@ -64,6 +64,9 @@ export type Market = {
 export type Snapshot = {
   rate: number
   borrowApy: number
+  borrowApr: number
+  borrowTotalApy: number
+  borrowTotalApr: number
   lendApy: number
   lendApr: number
   lendAprCrv0Boost: number

@@ -9,9 +9,9 @@ export type Market = {
   // borrowApy = rate * 100
   borrowApy: number
   // borrowTotalApy = borrowApy - collateral_yield_apy
-  borrowTotalApy: number | null
+  borrowTotalApy: number
   borrowApr: number
-  borrowTotalApr: number | null
+  borrowTotalApr: number
   borrowed: number
   borrowedUsd: number
   borrowable: number
