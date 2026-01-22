@@ -151,7 +151,7 @@ export const createProposalsSlice = (
 
           dismissDeploying()
           const successNotificationMessage = t`Vote casted successfully!`
-          notify(successNotificationMessage, 'success', 15000)
+          notify(successNotificationMessage, 'success')
 
           // get new user votes list from api
           const userAddress = curve?.signerAddress
@@ -232,7 +232,7 @@ export const createProposalsSlice = (
 
           dismissDeploying()
           const successNotificationMessage = t`Proposal executed successfully!`
-          notify(successNotificationMessage, 'success', 15000)
+          notify(successNotificationMessage, 'success')
 
           // update proposal executed status, forcing api to update by providing a transaction hash
           invalidateProposalPricesApi({ proposalId: voteId, proposalType: voteType, txHash: transactionHash })

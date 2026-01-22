@@ -2,21 +2,17 @@ import { ReactNode, useCallback } from 'react'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import CallMade from '@mui/icons-material/CallMade'
 import ContentCopy from '@mui/icons-material/ContentCopy'
-import Alert from '@mui/material/Alert'
-import AlertTitle from '@mui/material/AlertTitle'
 import IconButton from '@mui/material/IconButton'
 import Link from '@mui/material/Link'
-import Snackbar from '@mui/material/Snackbar'
 import Stack, { type StackProps } from '@mui/material/Stack'
 import Typography, { type TypographyProps } from '@mui/material/Typography'
-import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { ExclamationTriangleIcon } from '@ui-kit/shared/icons/ExclamationTriangleIcon'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
-import { Duration } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
 import { copyToClipboard } from '@ui-kit/utils'
+import { showToast } from '@ui-kit/widgets/Toast/toast.util'
 import { Tooltip } from './Tooltip'
 import { WithSkeleton } from './WithSkeleton'
 
@@ -111,12 +107,10 @@ export const ActionInfo = ({
   testId = 'action-info',
   sx,
 }: ActionInfoProps) => {
-  const [isSnackbarOpen, openSnackbar, closeSnackbar] = useSwitch(false)
-
   const copyAndShowSnackbar = useCallback(() => {
     void copyToClipboard(copyValue!.trim())
-    openSnackbar()
-  }, [copyValue, openSnackbar])
+    showToast({ title: copiedTitle ?? t`Value has been copied to clipboard`, message: copyValue, severity: 'info' })
+  }, [copiedTitle, copyValue])
 
   const errorMessage = (typeof error === 'object' && error?.message) || (typeof error === 'string' && error)
   const showPrevValue = isSet(value) && isSet(prevValue)
@@ -208,13 +202,6 @@ export const ActionInfo = ({
           </IconButton>
         )}
       </Stack>
-
-      <Snackbar open={isSnackbarOpen} onClose={closeSnackbar} autoHideDuration={Duration.Snackbar}>
-        <Alert variant="filled" severity="success">
-          <AlertTitle>{copiedTitle ?? t`Value has been copied to clipboard`}</AlertTitle>
-          {copyValue}
-        </Alert>
-      </Snackbar>
     </Stack>
   )
 }

@@ -62,11 +62,26 @@ export const defineMuiAlert = (
       },
     },
     filled: {
-      color: TextColors.Feedback.Inverted,
-      '&.MuiAlert-colorInfo': { backgroundColor: Feedback.Info },
-      '&.MuiAlert-colorSuccess': { backgroundColor: Feedback.Success },
-      '&.MuiAlert-colorWarning': { backgroundColor: Feedback.Warning, color: TextColors.Primary },
-      '&.MuiAlert-colorError': { backgroundColor: Feedback.Error, color: TextColors.FilledFeedback.Alert.Primary },
+      '&.MuiAlert-colorInfo': {
+        backgroundColor: Feedback.Info,
+        color: TextColors.FilledFeedback.Highlight.Secondary,
+        '& .MuiAlertTitle-root': { color: TextColors.FilledFeedback.Highlight.Primary },
+      },
+      '&.MuiAlert-colorSuccess': {
+        backgroundColor: Feedback.Success,
+        color: TextColors.FilledFeedback.Success.Secondary,
+        '& .MuiAlertTitle-root': { color: TextColors.FilledFeedback.Success.Primary },
+      },
+      '&.MuiAlert-colorWarning': {
+        backgroundColor: Feedback.Warning,
+        color: TextColors.FilledFeedback.Warning.Secondary,
+        '& .MuiAlertTitle-root': { color: TextColors.FilledFeedback.Warning.Primary },
+      },
+      '&.MuiAlert-colorError': {
+        backgroundColor: Feedback.Error,
+        color: TextColors.FilledFeedback.Alert.Secondary,
+        '& .MuiAlertTitle-root': { color: TextColors.FilledFeedback.Alert.Primary },
+      },
     },
     icon: {
       ...handleBreakpoints({

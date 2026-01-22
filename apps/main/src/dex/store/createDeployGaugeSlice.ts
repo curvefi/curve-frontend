@@ -225,7 +225,7 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
             )
             dismissDeploying()
             const successNotificationMessage = t`Mainnet gauge deployment successful.`
-            notify(successNotificationMessage, 'success', 15000)
+            notify(successNotificationMessage, 'success')
           } catch (error) {
             dismissNotificationHandler()
             set(
@@ -262,7 +262,7 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
             )
             dismissDeploying()
             const successNotificationMessage = t`Mainnet gauge deployment successful.`
-            notify(successNotificationMessage, 'success', 15000)
+            notify(successNotificationMessage, 'success')
           } catch (error) {
             dismissNotificationHandler()
             set(
@@ -299,7 +299,7 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
             )
             dismissDeploying()
             const successNotificationMessage = t`Mainnet gauge deployment successful.`
-            notify(successNotificationMessage, 'success', 15000)
+            notify(successNotificationMessage, 'success')
           } catch (error) {
             dismissNotificationHandler()
             set(
@@ -336,7 +336,7 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
             )
             dismissDeploying()
             const successNotificationMessage = t`Mainnet gauge deployment successful.`
-            notify(successNotificationMessage, 'success', 15000)
+            notify(successNotificationMessage, 'success')
           } catch (error) {
             dismissNotificationHandler()
             set(
@@ -372,7 +372,7 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
             )
             dismissDeploying()
             const successNotificationMessage = t`Mainnet gauge deployment successful.`
-            notify(successNotificationMessage, 'success', 15000)
+            notify(successNotificationMessage, 'success')
           } catch (error) {
             dismissNotificationHandler()
             set(
@@ -420,7 +420,7 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
             )
             dismissDeploying()
             const successNotificationMessage = t`Sidechain gauge deployment successful.`
-            notify(successNotificationMessage, 'success', 15000)
+            notify(successNotificationMessage, 'success')
           } catch (error) {
             dismissNotificationHandler()
             set(
@@ -458,7 +458,7 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
             )
             dismissDeploying()
             const successNotificationMessage = t`Sidechain gauge deployment successful.`
-            notify(successNotificationMessage, 'success', 15000)
+            notify(successNotificationMessage, 'success')
           } catch (error) {
             dismissNotificationHandler()
             set(
@@ -496,7 +496,7 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
             )
             dismissDeploying()
             const successNotificationMessage = t`Sidechain gauge deployment successful.`
-            notify(successNotificationMessage, 'success', 15000)
+            notify(successNotificationMessage, 'success')
           } catch (error) {
             dismissNotificationHandler()
             set(
@@ -534,7 +534,7 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
             )
             dismissDeploying()
             const successNotificationMessage = t`Sidechain gauge deployment successful.`
-            notify(successNotificationMessage, 'success', 15000)
+            notify(successNotificationMessage, 'success')
           } catch (error) {
             dismissNotificationHandler()
             set(
@@ -572,7 +572,7 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
             )
             dismissDeploying()
             const successNotificationMessage = t`Sidechain gauge deployment successful.`
-            notify(successNotificationMessage, 'success', 15000)
+            notify(successNotificationMessage, 'success')
           } catch (error) {
             dismissNotificationHandler()
             set(
@@ -621,7 +621,7 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
             )
             dismissDeploying()
             const successNotificationMessage = t`Mirror gauge deployment successful.`
-            notify(successNotificationMessage, 'success', 15000)
+            notify(successNotificationMessage, 'success')
           } catch (error) {
             dismissNotificationHandler()
             set(
@@ -660,7 +660,7 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
             )
             dismissDeploying()
             const successNotificationMessage = t`Mirror gauge deployment successful.`
-            notify(successNotificationMessage, 'success', 15000)
+            notify(successNotificationMessage, 'success')
           } catch (error) {
             dismissNotificationHandler()
             set(
@@ -699,7 +699,7 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
             )
             dismissDeploying()
             const successNotificationMessage = t`Mirror gauge deployment successful.`
-            notify(successNotificationMessage, 'success', 15000)
+            notify(successNotificationMessage, 'success')
           } catch (error) {
             dismissNotificationHandler()
             set(
@@ -738,7 +738,7 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
             )
             dismissDeploying()
             const successNotificationMessage = t`Mirror gauge deployment successful.`
-            notify(successNotificationMessage, 'success', 15000)
+            notify(successNotificationMessage, 'success')
           } catch (error) {
             dismissNotificationHandler()
             set(
@@ -774,7 +774,7 @@ export const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: St
             )
             dismissDeploying()
             const successNotificationMessage = t`Mirror gauge deployment successful.`
-            notify(successNotificationMessage, 'success', 15000)
+            notify(successNotificationMessage, 'success')
           } catch (error) {
             dismissNotificationHandler()
             set(

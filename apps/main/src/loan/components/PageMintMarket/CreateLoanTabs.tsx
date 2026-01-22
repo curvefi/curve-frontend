@@ -3,7 +3,7 @@ import { CreateLoanForm } from '@/llamalend/features/borrow/components/CreateLoa
 import type { OnCreateLoanFormUpdate } from '@/llamalend/features/borrow/types'
 import { hasV1Leverage } from '@/llamalend/llama.utils'
 import type { CreateLoanMutation, CreateLoanOptions } from '@/llamalend/mutations/create-loan.mutation'
-import { LoanCreate as LoanFormCreate } from '@/loan/components/PageMintMarket/LoanFormCreate'
+import { LoanFormCreate } from '@/loan/components/PageMintMarket/LoanFormCreate'
 import type { FormValues, PageLoanCreateProps } from '@/loan/components/PageMintMarket/types'
 import { DEFAULT_FORM_VALUES } from '@/loan/components/PageMintMarket/utils'
 import { networks } from '@/loan/networks'

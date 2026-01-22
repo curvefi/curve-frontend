@@ -330,7 +330,7 @@ export const createLockedCrvSlice = (
         invalidateLockerVecrvInfo({ chainId: curve.chainId, userAddress: curve.signerAddress })
 
         dismissNotificationHandler()
-        notify(t`CRV withdrawal successful.`, 'success', 15000)
+        notify(t`CRV withdrawal successful.`, 'success')
       } catch (error) {
         dismissNotificationHandler()
         console.warn(error)

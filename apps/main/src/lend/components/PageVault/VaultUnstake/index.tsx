@@ -1,29 +1,25 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import { AlertFormError } from '@/lend/components/AlertFormError'
 import { DetailInfoEstimateGas } from '@/lend/components/DetailInfoEstimateGas'
-import { InpChipVaultShareUsdRate } from '@/lend/components/InpChipVaultShareUsdRate'
 import { LoanFormConnect } from '@/lend/components/LoanFormConnect'
 import type { FormStatus, FormValues, StepKey } from '@/lend/components/PageVault/VaultUnstake/types'
-import { StyledDetailInfoWrapper, StyledInpChip } from '@/lend/components/styles'
+import { StyledDetailInfoWrapper } from '@/lend/components/styles'
 import { helpers } from '@/lend/lib/apiLending'
 import { networks } from '@/lend/networks'
 import { useStore } from '@/lend/store/useStore'
 import { Api, OneWayMarketTemplate, PageContentProps } from '@/lend/types/lend.types'
 import { AlertBox } from '@ui/AlertBox'
-import { Box } from '@ui/Box'
-import { InputDebounced, InputMaxBtn, InputProvider } from '@ui/InputComp'
 import { getActiveStep } from '@ui/Stepper/helpers'
 import { Stepper } from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
 import { TxInfoBar } from '@ui/TxInfoBar'
 import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
-import { useLegacyTokenInput } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { decimal, type Decimal } from '@ui-kit/utils'
 
-export const VaultUnstake = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey }: PageContentProps) => {
+export const VaultUnstake = ({ rChainId, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const rFormType = 'unstake'
   const isSubscribed = useRef(false)
 
@@ -55,10 +51,6 @@ export const VaultUnstake = ({ rChainId, rOwmId, isLoaded, api, market, userActi
     },
     [updateFormValues],
   )
-
-  const handleInpAmountChange = (amount: string) => {
-    reset({ amount })
-  }
 
   const handleBtnClickUnstake = useCallback(
     async (
@@ -157,62 +149,25 @@ export const VaultUnstake = ({ rChainId, rOwmId, isLoaded, api, market, userActi
 
   return (
     <>
-      {useLegacyTokenInput() ? (
-        <div>
-          {/* input amount */}
-          <Box grid gridRowGap={1}>
-            <InputProvider
-              grid
-              gridTemplateColumns="1fr auto"
-              padding="4px 8px"
-              inputVariant={formValues.amountError ? 'error' : undefined}
-              disabled={disabled}
-              id="amount"
-            >
-              <InputDebounced
-                id="inpVaultShares"
-                type="number"
-                labelProps={{
-                  label: t`Vault shares Avail.`,
-                  descriptionLoading: !!signerAddress && typeof userBalances === 'undefined',
-                  description: formatNumber(userBalances?.gauge, { defaultValue: '-' }),
-                }}
-                value={formValues.amount}
-                onChange={handleInpAmountChange}
-              />
-              <InputMaxBtn onClick={() => handleInpAmountChange(userBalances?.gauge ?? '')} />
-            </InputProvider>
-            <InpChipVaultShareUsdRate rChainId={rChainId} rOwmId={rOwmId} amount={formValues?.amount} />
-            <StyledInpChip size="xs" isDarkBg isError>
-              {formValues.amountError === 'too-much-wallet' && (
-                <>
-                  {t`Amount > wallet balance`} {formatNumber(userBalances?.gauge ?? '')}
-                </>
-              )}
-            </StyledInpChip>
-          </Box>
-        </div>
-      ) : (
-        <LargeTokenInput
-          name="amount"
-          disabled={disabled}
-          balance={decimal(formValues.amount)}
-          isError={!!formValues.amountError}
-          message={
-            formValues.amountError === 'too-much-wallet'
-              ? t`Amount > wallet balance ${formatNumber(userBalances?.gauge ?? '')}`
-              : undefined
-          }
-          walletBalance={{
-            balance: decimal(userBalances?.gauge),
-            loading: !!signerAddress && typeof userBalances === 'undefined',
-            notionalValueUsd: decimal(formValues?.amount),
-            symbol: t`Vault shares`,
-          }}
-          onBalance={onBalance}
-          testId="inpVaultShares"
-        />
-      )}
+      <LargeTokenInput
+        name="amount"
+        disabled={disabled}
+        balance={decimal(formValues.amount)}
+        isError={!!formValues.amountError}
+        message={
+          formValues.amountError === 'too-much-wallet'
+            ? t`Amount > wallet balance ${formatNumber(userBalances?.gauge ?? '')}`
+            : undefined
+        }
+        walletBalance={{
+          balance: decimal(userBalances?.gauge),
+          loading: !!signerAddress && typeof userBalances === 'undefined',
+          notionalValueUsd: decimal(formValues?.amount),
+          symbol: t`Vault shares`,
+        }}
+        onBalance={onBalance}
+        testId="inpVaultShares"
+      />
 
       {/* detail info */}
       <StyledDetailInfoWrapper>
