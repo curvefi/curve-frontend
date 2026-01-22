@@ -15,7 +15,6 @@ export const InpTokenBorrow = ({
   inpValue,
   tokenAddress,
   tokenSymbol,
-  tokenBalance,
   maxRecv,
   handleInpChange,
   network,
@@ -27,7 +26,6 @@ export const InpTokenBorrow = ({
   inpValue: string
   tokenAddress: string | undefined
   tokenSymbol: string | undefined
-  tokenBalance: string | undefined
   maxRecv: string | undefined
   handleInpChange(inpValue: string): void
   network: NetworkConfig
@@ -41,12 +39,6 @@ export const InpTokenBorrow = ({
       message={inpError === 'too-much' ? t`Amount > max borrow ${formatNumber(maxRecv || '0')}` : undefined}
       disabled={inpDisabled}
       inputBalanceUsd={decimal(inpValue && usdRate && usdRate * +inpValue)}
-      walletBalance={{
-        loading: tokenBalance == null,
-        balance: decimal(tokenBalance),
-        symbol: tokenSymbol,
-        usdRate,
-      }}
       maxBalance={{ balance: decimal(maxRecv), chips: 'max' }}
       label={t`Borrow amount:`}
       balance={decimal(inpValue)}
