@@ -4,7 +4,7 @@ import { DetailInfoEstimateGas } from '@/lend/components/DetailInfoEstimateGas'
 import { DetailInfoRate } from '@/lend/components/DetailInfoRate'
 import { LoanFormConnect } from '@/lend/components/LoanFormConnect'
 import type { FormStatus, FormValues, StepKey } from '@/lend/components/PageVault/VaultWithdrawRedeem/types'
-import { StyledDetailInfoWrapper, StyledInpChip } from '@/lend/components/styles'
+import { StyledDetailInfoWrapper } from '@/lend/components/styles'
 import { helpers } from '@/lend/lib/apiLending'
 import { networks } from '@/lend/networks'
 import { _getMaxActiveKey } from '@/lend/store/createVaultDepositMintSlice'
@@ -12,17 +12,14 @@ import { _isWithdraw } from '@/lend/store/createVaultWithdrawRedeemSlice'
 import { useStore } from '@/lend/store/useStore'
 import { Api, OneWayMarketTemplate, PageContentProps } from '@/lend/types/lend.types'
 import { AlertBox } from '@ui/AlertBox'
-import { Box } from '@ui/Box'
 import { Checkbox } from '@ui/Checkbox'
 import { DetailInfo } from '@ui/DetailInfo'
-import { InputDebounced, InputMaxBtn, InputProvider } from '@ui/InputComp'
 import { getActiveStep } from '@ui/Stepper/helpers'
 import { Stepper } from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
 import { TxInfoBar } from '@ui/TxInfoBar'
 import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
-import { useLegacyTokenInput } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { decimal, type Decimal } from '@ui-kit/utils'
@@ -185,86 +182,30 @@ export const VaultWithdrawRedeem = ({ rChainId, rOwmId, isLoaded, api, market, u
 
   return (
     <>
-      {useLegacyTokenInput() ? (
-        <div>
-          {/* input amount */}
-          <Box grid gridRowGap={1}>
-            <InputProvider
-              grid
-              gridTemplateColumns="1fr auto"
-              padding="4px 8px"
-              inputVariant={formValues.amountError ? 'error' : undefined}
-              disabled={disabled}
-              id="amount"
-            >
-              <InputDebounced
-                id="inpCollateral"
-                type="number"
-                labelProps={{
-                  label: t`Vault balance Avail.`,
-                  descriptionLoading: !!signerAddress && typeof userBalances === 'undefined',
-                  description: formatNumber(userBalances?.vaultSharesConverted, { defaultValue: '-' }),
-                }}
-                value={formValues.amount}
-                onChange={(amount) => {
-                  handleFormChange({ amount, isFullWithdraw: false })
-                }}
-              />
-              <InputMaxBtn
-                onClick={() => {
-                  let amount = ''
-                  let isFullWithdraw = false
-
-                  if (typeof max !== 'undefined' || typeof userBalances?.vaultSharesConverted !== 'undefined') {
-                    if (+max < +userBalances.vaultSharesConverted) {
-                      amount = max
-                    } else {
-                      isFullWithdraw = true
-                    }
-                  }
-
-                  handleFormChange({ amount, isFullWithdraw })
-                }}
-              />
-            </InputProvider>
-            {formValues.amountError === 'too-much-max' ? (
-              <StyledInpChip size="xs" isDarkBg isError>
-                {t`Amount > max`} {_isWithdraw(rFormType) ? t`withdraw amount` : t`redeem amount`}{' '}
-                {formatNumber(max ?? '')}
-              </StyledInpChip>
-            ) : (
-              <StyledInpChip size="xs" isDarkBg>
-                {t`Max`} {_isWithdraw(rFormType) ? t`withdraw` : t`redeem`} {formatNumber(max, { defaultValue: '-' })}
-              </StyledInpChip>
-            )}
-          </Box>
-        </div>
-      ) : (
-        <LargeTokenInput
-          name="amount"
-          disabled={disabled}
-          balance={decimal(formValues.amount)}
-          isError={!!formValues.amountError}
-          message={
-            formValues.amountError === 'too-much-wallet'
-              ? t`Amount > wallet balance ${formatNumber(userBalances?.vaultSharesConverted ?? '')}`
-              : formValues.amountError === 'too-much-max'
-                ? t`Amount exceeds max ${_isWithdraw(rFormType) ? t`withdraw` : t`redeem`} amount ${formatNumber(max ?? '')}`
-                : undefined
-          }
-          walletBalance={{
-            balance: decimal(userBalances?.vaultSharesConverted),
-            loading: !!signerAddress && userBalances == null,
-            symbol: t`Vault shares`,
-          }}
-          maxBalance={{
-            balance: decimal(max),
-            chips: 'max',
-          }}
-          onBalance={onBalance}
-          testId="inpCollateral"
-        />
-      )}
+      <LargeTokenInput
+        name="amount"
+        disabled={disabled}
+        balance={decimal(formValues.amount)}
+        isError={!!formValues.amountError}
+        message={
+          formValues.amountError === 'too-much-wallet'
+            ? t`Amount > wallet balance ${formatNumber(userBalances?.vaultSharesConverted ?? '')}`
+            : formValues.amountError === 'too-much-max'
+              ? t`Amount exceeds max ${_isWithdraw(rFormType) ? t`withdraw` : t`redeem`} amount ${formatNumber(max ?? '')}`
+              : undefined
+        }
+        walletBalance={{
+          balance: decimal(userBalances?.vaultSharesConverted),
+          loading: !!signerAddress && userBalances == null,
+          symbol: t`Vault shares`,
+        }}
+        maxBalance={{
+          balance: decimal(max),
+          chips: 'max',
+        }}
+        onBalance={onBalance}
+        testId="inpCollateral"
+      />
 
       <Checkbox
         isDisabled={disableWithdrawInFull}

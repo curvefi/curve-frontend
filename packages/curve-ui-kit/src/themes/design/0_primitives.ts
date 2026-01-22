@@ -140,7 +140,7 @@ export const Duration = {
   Flicker: 1000,
   Focus: 50,
   FormDebounce: 250,
-  Snackbar: 6000,
+  Toast: { success: 5000, info: 5000, warning: 10000, error: 10000 },
   Tooltip: { Enter: 500, Exit: 500 },
   Transition: 256,
   LoadingAnimation: 1000,

@@ -12,7 +12,7 @@ import { FormContent } from '@ui-kit/widgets/DetailPageLayout/FormContent'
 export const ManageGauge = ({ poolId, chainId }: { poolId: string; chainId: ChainId }) => {
   const { address: signerAddress } = useConnection()
   const { data: gaugeManager } = useGaugeManager({ chainId, poolId })
-  const { data: rewardDistributors } = useGaugeRewardsDistributors({ chainId, poolId })
+  const { data: rewardDistributors } = useGaugeRewardsDistributors({ chainId, poolId, userAddress: signerAddress })
 
   const isGaugeManager = useMemo(
     () => !!gaugeManager && !!signerAddress && isAddressEqual(gaugeManager, signerAddress),
