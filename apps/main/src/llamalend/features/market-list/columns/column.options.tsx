@@ -66,12 +66,6 @@ const createLlamaMarketsColumnOptions = ({
         active: !onlyPositions,
         enabled: true,
       },
-      {
-        label: t`Chart`,
-        columns: [LlamaMarketColumnId.BorrowChart],
-        active: false,
-        enabled: true,
-      },
     ],
   },
   {
@@ -99,6 +93,12 @@ const createLlamaMarketsColumnOptions = ({
         ],
         active: onlyPositions == MarketRateType.Borrow,
         enabled: hasPositions,
+      },
+      {
+        label: t`Chart`,
+        columns: [LlamaMarketColumnId.BorrowChart],
+        active: false,
+        enabled: true,
       },
     ],
   },
