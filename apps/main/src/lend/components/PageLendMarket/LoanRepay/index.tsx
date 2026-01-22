@@ -368,15 +368,11 @@ export const LoanRepay = ({
             inpError={formValues.stateCollateralError}
             inpDisabled={disable}
             inpLabelLoading={!!signerAddress && typeof userState?.collateral === 'undefined'}
-            inpLabelDescription={formatNumber(userState?.collateral, { defaultValue: '-' })}
             inpValue={formValues.stateCollateral}
             tokenAddress={collateral_token?.address}
             tokenSymbol={collateral_token?.symbol}
             tokenBalance={userState?.collateral}
             handleInpChange={setStateCollateral}
-            handleMaxClick={() =>
-              updateFormValues({ stateCollateral: userState?.collateral ?? '', isFullRepay: false })
-            }
           />
         </Stack>
       )}
@@ -392,15 +388,11 @@ export const LoanRepay = ({
               inpError={formValues.userCollateralError}
               inpDisabled={disable}
               inpLabelLoading={!!signerAddress && typeof userBalances?.collateral === 'undefined'}
-              inpLabelDescription={formatNumber(userBalances?.collateral, { defaultValue: '-' })}
               inpValue={formValues.userCollateral}
               tokenAddress={collateral_token?.address}
               tokenSymbol={collateral_token?.symbol}
               tokenBalance={userBalances?.collateral}
               handleInpChange={setUserCollateral}
-              handleMaxClick={() =>
-                updateFormValues({ userCollateral: userBalances?.collateral ?? '', isFullRepay: false })
-              }
             />
           )}
 
@@ -410,7 +402,6 @@ export const LoanRepay = ({
             inpError={formValues.userBorrowedError}
             inpDisabled={disable || (!hasLeverage && !userState)}
             inpLabelLoading={!!signerAddress && typeof userBalances?.borrowed === 'undefined'}
-            inpLabelDescription={formatNumber(userBalances?.borrowed, { defaultValue: '-' })}
             inpValue={formValues.userBorrowed}
             tokenAddress={borrowed_token?.address}
             tokenSymbol={borrowed_token?.symbol}

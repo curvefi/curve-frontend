@@ -153,7 +153,6 @@ export const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams,
         balanceLoading={gaugeTokenLoading}
         balance={gaugeTokenBalance ?? ''}
         hasError={+formValues.stakedLpToken > +(gaugeTokenBalance ?? '')}
-        haveSigner={haveSigner}
         handleAmountChange={useCallback((stakedLpToken) => updateFormValues({ stakedLpToken }), [updateFormValues])}
         disabled={isDisabled}
       />
