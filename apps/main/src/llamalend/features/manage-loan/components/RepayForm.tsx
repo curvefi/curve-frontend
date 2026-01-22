@@ -147,7 +147,7 @@ export const RepayForm = <ChainId extends IChainId>({
         }
         message={
           <Balance
-            prefix={t`Max:`}
+            prefix={t`Max repay amount:`}
             tooltip={t`Max available to repay`}
             symbol={selectedToken?.symbol}
             balance={max[selectedField].data}
