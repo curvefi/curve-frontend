@@ -1,10 +1,9 @@
 import ReactECharts, { type EChartsOption } from 'echarts-for-react'
 import { useEffect, useMemo, memo, useRef } from 'react'
 import { BandsChartToken, ChartDataPoint, ParsedBandsBalances } from '@/llamalend/features/bands-chart/types'
-import { Box } from '@mui/material'
+import { Box, Stack, Skeleton } from '@mui/material'
 import { DEFAULT_CHART_HEIGHT } from '@ui-kit/features/candle-chart/constants'
 import { useResizeObserver } from '@ui-kit/hooks/useResizeObserver'
-import { Spinner } from '@ui-kit/shared/ui/Spinner'
 import { getChartOptions } from './chartOptions'
 import { EmptyState } from './EmptyState'
 import { useBandsChartPalette } from './hooks/useBandsChartPalette'
@@ -23,6 +22,26 @@ type BandsChartProps = {
   userBandsBalances: ParsedBandsBalances[]
   oraclePrice?: string
   height?: number
+}
+
+const SkeletonLoader = ({ height }: { height: number }) => {
+  // Calculate skeleton count to fill the container height without overflowing
+  const itemHeight = 16 // 16px skeleton + 1px gap
+  const skeletonCount = Math.max(1, Math.floor(height / itemHeight))
+
+  return (
+    <Stack
+      sx={{
+        width: '100%',
+        height: '100%',
+        overflow: 'hidden',
+      }}
+    >
+      {Array.from({ length: skeletonCount }, (_, i) => (
+        <Skeleton key={i} variant="text" sx={{ width: '100%', height: `${itemHeight}px` }} />
+      ))}
+    </Stack>
+  )
 }
 
 /**
@@ -85,7 +104,7 @@ const BandsChartComponent = ({
     instance?.resize()
   }, [containerDimensions, height])
 
-  if (!chartData?.length) {
+  if (chartData?.length) {
     return (
       <Box sx={{ width: '100%', fontVariantNumeric: 'tabular-nums', height }}>
         <Box
@@ -94,11 +113,11 @@ const BandsChartComponent = ({
             alignItems: 'center',
             justifyContent: 'center',
             height: '100%',
-            fontSize: '14px',
             color: palette.textColor,
+            overflow: 'hidden',
           }}
         >
-          {isLoading ? <Spinner /> : <EmptyState isError={isError} />}
+          {!isLoading ? <SkeletonLoader height={height} /> : <EmptyState isError={isError} />}
         </Box>
       </Box>
     )
