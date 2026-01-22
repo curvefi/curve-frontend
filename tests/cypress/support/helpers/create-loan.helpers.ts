@@ -92,8 +92,8 @@ export function writeCreateLoanForm({
  */
 export function checkLoanRangeSlider(leverageEnabled: boolean) {
   cy.get(`[data-testid="loan-preset-${LoanPreset.MaxLtv}"]`).click()
-  cy.get('[data-testid="helper-message-number-0"]').should('not.exist') // should only render after loaded
-  cy.get('[data-testid="helper-message-number-0"]', LOAD_TIMEOUT).click()
+  cy.get('[data-testid="borrow-set-debt-to-max"]').should('not.exist') // make sure we don't click the previous max
+  cy.get('[data-testid="borrow-set-debt-to-max"]', LOAD_TIMEOUT).click()
   cy.get(`[data-testid="loan-preset-${LoanPreset.Safe}"]`).click({ force: true }) // force because sometimes a tooltip covers it
   cy.get('[data-testid="helper-message-error"]', LOAD_TIMEOUT).should('contain.text', 'debt exceeds the maximum')
   cy.get('[data-testid="helper-message-number-0"]').click() // set max again to fix error
