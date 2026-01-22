@@ -121,6 +121,15 @@ export const RepayForm = <ChainId extends IChainId>({
     [borrowUsdRate, max, selectedField, selectedUsdRate],
   )
 
+  const maxAmountPrefix = useMemo(
+    () =>
+      notFalsy(
+        selectedField === 'stateCollateral' && t`Using collateral balances to repay.`,
+        t`Max repay amount:`,
+      ).join(' '),
+    [selectedField],
+  )
+
   useEffect(
     // Reset field when selectedField changes
     () => () => form.setValue(selectedField, undefined, setValueOptions),
@@ -167,7 +176,7 @@ export const RepayForm = <ChainId extends IChainId>({
         }
         message={
           <Balance
-            prefix={t`Max repay amount:`}
+            prefix={maxAmountPrefix}
             tooltip={t`Max available to repay`}
             symbol={borrowToken?.symbol}
             balance={maxAmountInBorrowToken}
