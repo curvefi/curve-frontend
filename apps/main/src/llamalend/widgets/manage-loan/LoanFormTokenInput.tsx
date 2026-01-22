@@ -36,6 +36,7 @@ export const LoanFormTokenInput = <
   network,
   positionBalance,
   tokenSelector,
+  hideBalance,
 }: {
   label: string
   token: { address: Address; symbol?: string } | undefined
@@ -61,6 +62,7 @@ export const LoanFormTokenInput = <
    */
   network: LlamaNetwork
   tokenSelector?: ReactNode
+  hideBalance?: boolean
 }) => {
   const { address: userAddress } = useConnection()
   const {
@@ -121,7 +123,7 @@ export const LoanFormTokenInput = <
         [form, maxFieldName, name],
       )}
       isError={!!error}
-      walletBalance={walletBalance}
+      walletBalance={!hideBalance ? walletBalance : undefined}
       maxBalance={useMemo(() => max && { balance: max.data, chips: 'max' }, [max])}
       inputBalanceUsd={decimal(usdRate && usdRate * +(value ?? 0))}
     >
