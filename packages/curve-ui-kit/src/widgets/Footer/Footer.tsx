@@ -1,16 +1,14 @@
-import { useState } from 'react'
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import { styled } from '@mui/material/styles'
 import { LlamaImg } from '@ui/images'
-import { useLayoutStore } from '@ui-kit/features/layout'
 import { useIsTiny } from '@ui-kit/hooks/useBreakpoints'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { AppName } from '@ui-kit/shared/routes'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { ReleaseChannel } from '@ui-kit/utils'
 import { ReleaseChannelDialog } from '../../features/user-profile/settings/ReleaseChannelDialog'
-import { ReleaseChannelSnackbar } from '../../features/user-profile/settings/ReleaseChannelSnackbar'
+import { showReleaseChannelSnackbar } from '../../features/user-profile/settings/settings.util'
 import { Description } from './Description'
 import { Section } from './Section'
 import { getSections } from './Sections'
@@ -27,9 +25,7 @@ type FooterProps = {
 
 export const Footer = ({ appName, networkId }: FooterProps) => {
   const [isBetaModalOpen, openBetaModal, closeBetaModal] = useSwitch()
-  const [releaseChannelSnackbar, setReleaseChannelSnackbar] = useState<ReleaseChannel.Beta | ReleaseChannel.Legacy>()
   const isTiny = useIsTiny()
-  const navHeight = useLayoutStore((state) => state.navHeight)
   return (
     <Box
       component="footer"
@@ -89,21 +85,13 @@ export const Footer = ({ appName, networkId }: FooterProps) => {
             onClose={closeBetaModal}
             channel={ReleaseChannel.Beta}
             onChanged={(newChannel, oldChannel) => {
-              setReleaseChannelSnackbar(
+              showReleaseChannelSnackbar(
+                ReleaseChannel.Beta,
                 (newChannel === ReleaseChannel.Stable ? oldChannel : newChannel) as
                   | ReleaseChannel.Beta
                   | ReleaseChannel.Legacy,
               )
             }}
-          />
-        )}
-        {releaseChannelSnackbar && (
-          <ReleaseChannelSnackbar
-            open
-            onClose={() => setReleaseChannelSnackbar(undefined)}
-            channel={releaseChannelSnackbar}
-            anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
-            sx={{ top: navHeight, left: 'unset' }} // unset the left otherwise it will take the whole width
           />
         )}
       </Grid>

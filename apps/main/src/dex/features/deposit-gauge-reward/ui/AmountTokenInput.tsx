@@ -48,6 +48,7 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
   const { data: rewardDistributors, isPending: isPendingRewardDistributors } = useGaugeRewardsDistributors({
     chainId,
     poolId,
+    userAddress: signerAddress,
   })
 
   const isMutatingDepositRewardApprove = useDepositRewardApproveIsMutating({ chainId, poolId, rewardTokenId, amount })

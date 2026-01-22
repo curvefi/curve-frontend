@@ -5,7 +5,6 @@ import { DetailInfoEstimateGas } from '@/lend/components/DetailInfoEstimateGas'
 import { DetailInfoHealth } from '@/lend/components/DetailInfoHealth'
 import { DetailInfoLiqRange } from '@/lend/components/DetailInfoLiqRange'
 import { DialogFormWarning } from '@/lend/components/DialogFormWarning'
-import { InpTokenRemove } from '@/lend/components/InpTokenRemove'
 import { LoanFormConnect } from '@/lend/components/LoanFormConnect'
 import type { FormStatus, FormValues, StepKey } from '@/lend/components/PageLendMarket/LoanCollateralRemove/types'
 import type { FormEstGas } from '@/lend/components/PageLendMarket/types'
@@ -26,10 +25,15 @@ import { getActiveStep } from '@ui/Stepper/helpers'
 import { Stepper } from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
 import { TxInfoBar } from '@ui/TxInfoBar'
-import { formatNumber, scanTxPath } from '@ui/utils'
+import { scanTxPath } from '@ui/utils'
+import { formatNumber } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
+import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
+import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
+import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
+import { decimal, type Decimal } from '@ui-kit/utils'
 
 export const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)
@@ -56,6 +60,11 @@ export const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, 
   const { signerAddress } = api ?? {}
 
   const network = networks[rChainId]
+
+  const { data: usdRate } = useTokenUsdRate({
+    chainId: network.chainId,
+    tokenAddress: market?.collateral_token?.address,
+  })
 
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<FormValues>, isFullReset?: boolean) => {
@@ -219,20 +228,39 @@ export const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, 
 
   return (
     <>
-      <InpTokenRemove
-        network={networks[rChainId]}
-        id="collateral"
-        inpError={formValues.collateralError}
-        inpDisabled={disabled}
-        inpLabelLoading={!!signerAddress && typeof userBalances?.collateral === 'undefined'}
-        inpLabelDescription={formatNumber(userBalances?.collateral, { defaultValue: '-' })}
-        inpValue={formValues.collateral}
-        maxRemovable={maxRemovable}
-        tokenAddress={market?.collateral_token?.address}
-        tokenSymbol={market?.collateral_token?.symbol}
-        tokenBalance={userBalances?.collateral}
-        handleInpChange={useCallback((collateral) => updateFormValues({ collateral }), [updateFormValues])}
-        handleMaxClick={() => updateFormValues({ collateral: maxRemovable ?? '' })}
+      <LargeTokenInput
+        name="collateral"
+        label={t`Collateral to remove`}
+        isError={!!formValues.collateralError}
+        message={
+          formValues.collateralError === 'too-much'
+            ? t`Amount > wallet balance ${formatNumber(userBalances?.collateral)}`
+            : formValues.collateralError === 'too-much-max'
+              ? t`Amount > max removable ${formatNumber(maxRemovable)}`
+              : undefined
+        }
+        disabled={disabled}
+        inputBalanceUsd={decimal(formValues.collateral && usdRate && usdRate * +formValues.collateral)}
+        walletBalance={{
+          symbol: market?.collateral_token?.symbol,
+          balance: decimal(userBalances?.collateral),
+          usdRate,
+          loading: !!signerAddress && typeof userBalances?.collateral === 'undefined',
+        }}
+        maxBalance={{
+          balance: decimal(maxRemovable),
+          chips: 'max',
+        }}
+        balance={decimal(formValues.collateral)}
+        tokenSelector={
+          <TokenLabel
+            blockchainId={network.id}
+            tooltip={market?.collateral_token?.symbol}
+            address={market?.collateral_token?.address}
+            label={market?.collateral_token?.symbol ?? '?'}
+          />
+        }
+        onBalance={useCallback((collateral?: Decimal) => updateFormValues({ collateral }), [updateFormValues])}
       />
 
       {/* detail info */}
@@ -282,6 +310,7 @@ export const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, 
     </>
   )
 }
+
 export const LoanRemoveCollateralTab = ({ rChainId, market, isLoaded }: PageContentProps) => (
   <RemoveCollateralForm networks={networks} chainId={rChainId} market={market} enabled={isLoaded} />
 )

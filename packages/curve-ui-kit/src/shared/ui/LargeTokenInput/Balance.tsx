@@ -71,7 +71,7 @@ export const Balance = <T extends Amount>({
             {Prefix}
           </Typography>
         ) : (
-          Prefix !== null && (
+          Prefix && (
             <Prefix
               sx={{
                 width: IconSize.sm,

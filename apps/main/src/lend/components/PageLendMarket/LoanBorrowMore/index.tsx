@@ -27,7 +27,7 @@ import { getActiveStep } from '@ui/Stepper/helpers'
 import { Stepper } from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
 import { TxInfoBar } from '@ui/TxInfoBar'
-import { formatNumber, scanTxPath } from '@ui/utils'
+import { scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { usePageVisibleInterval } from '@ui-kit/hooks/usePageVisibleInterval'
@@ -61,7 +61,6 @@ export const LoanBorrowMore = ({
   const { state: userState } = useUserLoanDetails(userActiveKey)
   const fetchStepApprove = useStore((state) => state.loanBorrowMore.fetchStepApprove)
   const fetchStepIncrease = useStore((state) => state.loanBorrowMore.fetchStepIncrease)
-  const refetchMaxRecv = useStore((state) => state.loanBorrowMore.refetchMaxRecv)
   const setFormValues = useStore((state) => state.loanBorrowMore.setFormValues)
   const resetState = useStore((state) => state.loanBorrowMore.resetState)
 
@@ -354,13 +353,11 @@ export const LoanBorrowMore = ({
             inpError={formValues.userCollateralError}
             inpDisabled={disabled}
             inpLabelLoading={!!signerAddress && typeof userBalances?.collateral === 'undefined'}
-            inpLabelDescription={formatNumber(userBalances?.collateral, { defaultValue: '-' })}
             inpValue={formValues.userCollateral}
             tokenAddress={market?.collateral_token?.address}
             tokenSymbol={market?.collateral_token?.symbol}
             tokenBalance={userBalances?.collateral}
             handleInpChange={useCallback((userCollateral) => updateFormValues({ userCollateral }), [updateFormValues])}
-            handleMaxClick={() => updateFormValues({ userCollateral: userBalances?.collateral ?? '' })}
           />
 
           {isLeverage && (
@@ -370,13 +367,11 @@ export const LoanBorrowMore = ({
               inpError={formValues.userBorrowedError}
               inpDisabled={disabled}
               inpLabelLoading={!!signerAddress && typeof userBalances?.borrowed === 'undefined'}
-              inpLabelDescription={formatNumber(userBalances?.borrowed, { defaultValue: '-' })}
               inpValue={formValues.userBorrowed}
               tokenAddress={market?.borrowed_token?.address}
               tokenSymbol={market?.borrowed_token?.symbol}
               tokenBalance={userBalances?.borrowed}
               handleInpChange={setUserBorrowed}
-              handleMaxClick={() => updateFormValues({ userBorrowed: userBalances?.borrowed ?? '' })}
             />
           )}
         </Stack>
@@ -395,10 +390,6 @@ export const LoanBorrowMore = ({
           tokenBalance={userBalances?.borrowed}
           maxRecv={maxRecv}
           handleInpChange={useCallback((debt) => updateFormValues({ debt }), [updateFormValues])}
-          handleMaxClick={async () => {
-            const debt = await refetchMaxRecv(market, isLeverage)
-            updateFormValues({ debt })
-          }}
         />
       </Stack>
 
@@ -423,6 +414,7 @@ export const LoanBorrowMore = ({
     </Stack>
   )
 }
+
 /**
  * The new implementation of LoanBorrowMore with mui isn't ready yet. For now, we wrap the old one for styling.
  */

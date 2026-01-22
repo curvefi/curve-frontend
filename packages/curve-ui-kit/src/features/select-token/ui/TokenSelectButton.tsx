@@ -1,13 +1,8 @@
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import Select from '@mui/material/Select'
-import type { Theme } from '@mui/material/styles'
-import { useLegacyTokenInput } from '@ui-kit/hooks/useFeatureFlags'
 import { Spinner } from '@ui-kit/shared/ui/Spinner'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TokenOption } from '../types'
-
-const { Spacing } = SizesAndSpaces
 
 export type TokenSelectButtonCallbacks = {
   onClick: () => void
@@ -45,31 +40,6 @@ export const TokenSelectButton = ({
       )
     }
     IconComponent={KeyboardArrowDownIcon}
-    sx={{
-      backgroundColor: (t) => t.design.Layer[1].Fill,
-      ...(useLegacyTokenInput() && {
-        marginBlock: 'auto',
-        border: 'none',
-        borderBottom: (t: Theme) => `2px solid ${t.design.Layer[1].Outline}`,
-        ...(!disabled && {
-          '&:hover': {
-            border: 'none',
-            borderBottom: (t: Theme) => `2px solid ${t.design.Layer[2].Outline}`,
-          },
-          '&:active': {
-            border: 'none',
-            borderBottom: (t: Theme) => `2px solid ${t.design.Layer[3].Outline}`,
-          },
-        }),
-        '& .MuiOutlinedInput-notchedOutline': {
-          border: 'none',
-        },
-        '& .MuiSelect-select': {
-          padding: 0,
-          paddingInlineStart: Spacing.sm,
-          paddingInlineEnd: Spacing.xs,
-        },
-      }),
-    }}
+    sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}
   />
 )

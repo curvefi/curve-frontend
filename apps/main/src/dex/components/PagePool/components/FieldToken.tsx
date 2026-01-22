@@ -1,14 +1,7 @@
 import { useCallback } from 'react'
 import { ethAddress } from 'viem'
-import { shortenTokenName } from '@/dex/utils'
-import { notFalsy } from '@curvefi/prices-api/objects.util'
-import { Box } from '@ui/Box'
-import { InputDebounced, InputMaxBtn, InputProvider } from '@ui/InputComp'
-import { formatNumber } from '@ui/utils'
-import { useLegacyTokenInput } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
-import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { decimal, type Decimal, shortenAddress } from '@ui-kit/utils'
 
@@ -58,39 +51,7 @@ export const FieldToken = ({
     afterMaxClick?.(idx)
   }, [idx, afterMaxClick, handleAmountChange, balance])
 
-  return useLegacyTokenInput() ? (
-    <InputProvider
-      grid
-      gridTemplateColumns={hideMaxButton ? '1fr auto' : '1fr auto auto'}
-      padding="var(--spacing-1) var(--spacing-2)"
-      id={token}
-      disabled={disabled}
-      inputVariant={hasError ? 'error' : undefined}
-    >
-      <InputDebounced
-        id={`input-${token}-amount`}
-        autoComplete="off"
-        type="number"
-        value={amount == null ? '' : amount}
-        labelProps={{
-          label: notFalsy(
-            shortenTokenName(token),
-            haveSameTokenName && shortenAddress(tokenAddress),
-            showAvailableBalance && t`Avail.`,
-          ).join(' '),
-          descriptionLoading: showAvailableBalance && balanceLoading,
-          description: showAvailableBalance ? formatNumber(balance) : '',
-        }}
-        onChange={(val) => handleAmountChange(val, idx)}
-      />
-      {!hideMaxButton && (
-        <InputMaxBtn isNetworkToken={isNetworkToken} loading={isMaxLoading} disabled={disabled} onClick={onMax} />
-      )}
-      <Box flex flexAlignItems="center">
-        <TokenIcon blockchainId={blockchainId} tooltip={token} address={tokenAddress} />
-      </Box>
-    </InputProvider>
-  ) : (
+  return (
     <LargeTokenInput
       name={token}
       disabled={disabled}
@@ -99,10 +60,15 @@ export const FieldToken = ({
         walletBalance: {
           balance: decimal(balance),
           symbol: token,
-          onClick: onMax,
-          loading: isMaxLoading,
+          loading: balanceLoading || isMaxLoading,
         },
       })}
+      {...(showAvailableBalance &&
+        !hideMaxButton && {
+          maxBalance: {
+            chips: [{ label: t`Max`, newBalance: onMax }],
+          },
+        })}
       tokenSelector={
         <TokenLabel
           blockchainId={blockchainId}

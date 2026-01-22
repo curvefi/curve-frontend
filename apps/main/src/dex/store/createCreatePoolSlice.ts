@@ -871,7 +871,7 @@ export const createCreatePoolSlice = (
           // set up success message
           dismissDeploying()
           const successNotificationMessage = t`Pool ${poolName} deployment successful.`
-          notify(successNotificationMessage, 'success', 15000)
+          notify(successNotificationMessage, 'success')
 
           const poolId = await curve.twocryptoFactory.fetchRecentlyDeployedPool(poolAddress)
           set(
@@ -948,7 +948,7 @@ export const createCreatePoolSlice = (
             // set up success message
             dismissDeploying()
             const successNotificationMessage = t`Pool ${poolName} deployment successful.`
-            notify(successNotificationMessage, 'success', 15000)
+            notify(successNotificationMessage, 'success')
 
             const poolId = await curve.tricryptoFactory.fetchRecentlyDeployedPool(poolAddress)
             set(
@@ -1029,7 +1029,7 @@ export const createCreatePoolSlice = (
             // set up success message
             dismissDeploying()
             const successNotificationMessage = t`Pool ${poolName} deployment successful.`
-            notify(successNotificationMessage, 'success', 15000)
+            notify(successNotificationMessage, 'success')
 
             const poolId = await curve.twocryptoFactory.fetchRecentlyDeployedPool(poolAddress)
             set(
@@ -1127,7 +1127,7 @@ export const createCreatePoolSlice = (
             // set up success message
             dismissDeploying()
             const successNotificationMessage = t`Pool ${poolName} deployment successful.`
-            notify(successNotificationMessage, 'success', 15000)
+            notify(successNotificationMessage, 'success')
 
             const poolId = await curve.stableNgFactory.fetchRecentlyDeployedPool(poolAddress)
             set(
@@ -1218,7 +1218,7 @@ export const createCreatePoolSlice = (
             // set up success message
             dismissDeploying()
             const successNotificationMessage = t`Pool ${poolName} deployment successful.`
-            notify(successNotificationMessage, 'success', 15000)
+            notify(successNotificationMessage, 'success')
 
             const poolId = await curve.stableNgFactory.fetchRecentlyDeployedPool(poolAddress)
             set(

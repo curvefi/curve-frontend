@@ -30,7 +30,7 @@ type InputChip = {
   /** The chip button label. */
   label: string
   /** The function that returns the new input amount, possibly based on the max balance. */
-  newBalance: (maxBalance?: Decimal) => Decimal | undefined
+  newBalance: (() => void) | ((maxBalance?: Decimal) => Decimal | undefined)
 }
 
 type ChipsPreset = 'max' | 'range'
@@ -74,8 +74,8 @@ export type LargeTokenInputProps = {
   tokenSelector?: ReactNode
 
   // TODO: receive a `maxBalance` ReactNode to allow anything to be injected
-  /** Optional wallet balance configuration. */
-  walletBalance?: BalanceProps<Decimal>
+  /** Optional wallet balance configuration. Omits onClick as clicking the wallet balance is controlled behavior (sets the value in the input field) */
+  walletBalance?: Omit<BalanceProps<Decimal>, 'onClick'>
 
   /** Optional configuration for max balance behavior, which for now are the slider and chips. */
   maxBalance?: {
@@ -254,8 +254,7 @@ export const LargeTokenInput = ({
 
   const onWalletBalance = useCallback(() => {
     handleBalanceChange(walletBalance?.balance)
-    walletBalance?.onClick?.call(null)
-  }, [handleBalanceChange, walletBalance?.balance, walletBalance?.onClick])
+  }, [handleBalanceChange, walletBalance?.balance])
 
   const componentId = useId()
 
@@ -311,7 +310,12 @@ export const LargeTokenInput = ({
                     color="default"
                     clickable
                     disabled={disabled}
-                    onClick={() => handleBalanceChange(chip.newBalance(maxBalance?.balance))}
+                    onClick={() => {
+                      const newBalance = chip.newBalance(maxBalance?.balance)
+                      if (newBalance !== undefined) {
+                        handleBalanceChange(newBalance)
+                      }
+                    }}
                   ></Chip>
                 ))}
               </Stack>
