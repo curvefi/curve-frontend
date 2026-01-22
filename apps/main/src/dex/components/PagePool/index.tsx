@@ -282,7 +282,6 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
                 variant="secondary"
               >
                 <PoolStats
-                  curve={curve}
                   routerParams={routerParams}
                   poolData={poolData}
                   poolDataCacheOrApi={poolDataCacheOrApi}

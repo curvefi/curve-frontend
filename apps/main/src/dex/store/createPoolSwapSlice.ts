@@ -31,6 +31,7 @@ import { fetchGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 import { fetchNetworks } from '../entities/networks'
 import { fetchPoolTokenBalances } from '../hooks/usePoolTokenBalances'
+import { invalidatePoolParameters } from '../queries/pool-parameters.query.ts'
 import { invalidateUserPoolInfoQuery } from '../queries/user-pool-info.query'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -467,6 +468,7 @@ export const createPoolSwapSlice = (
             userAddress: curve.signerAddress,
           })
           await get().pools.fetchPoolStats(curve, poolData)
+          await invalidatePoolParameters({ chainId: curve.chainId, poolId: poolData.pool.id })
         }
         return resp
       }

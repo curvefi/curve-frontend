@@ -3,6 +3,7 @@ import { styled } from 'styled-components'
 import { StyledIconButton, StyledInformationSquare16 } from '@/dex/components/PagePool/PoolDetails/PoolStats/styles'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { useBasePools } from '@/dex/queries/base-pools.query'
+import { usePoolParameters } from '@/dex/queries/pool-parameters.query.ts'
 import { useStore } from '@/dex/store/useStore'
 import { ChainId, PoolData } from '@/dex/types/main.types'
 import { Box } from '@ui/Box'
@@ -32,11 +33,12 @@ export const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParameters
   const snapshotData = snapshotsMapper[poolAddress]
   const pricesData = pricesApiPoolDataMapper[poolAddress]
 
+  const { data: poolParameters } = usePoolParameters({ chainId: rChainId, poolId: poolData.pool.id })
+  const { gamma, A, future_A, future_A_time, initial_A, initial_A_time } = poolParameters ?? {}
+
   const convert1e8 = (number: number) => formatNumber(number / 10 ** 8, { decimals: 5 })
   const convert1e10 = (number: number) => formatNumber(number / 10 ** 10, { decimals: 5 })
   const convert1e18 = (number: number) => formatNumber(number / 10 ** 18, { decimals: 5 })
-
-  const { gamma, A, future_A, future_A_time, initial_A, initial_A_time } = poolData.parameters ?? {}
 
   const haveWrappedCoins = useMemo(() => {
     if (poolData?.pool?.wrappedCoins) {
@@ -284,32 +286,28 @@ export const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParameters
         </SectionWrapper>
       </PoolParametersWrapper>
       <PoolDataWrapper>
-        {!!poolData && haveWrappedCoins && Array.isArray(poolData.parameters.priceOracle) && (
+        {!!poolData && haveWrappedCoins && Array.isArray(poolParameters?.priceOracle) && (
           <StatsSection>
             <Box grid>
-              {Array.isArray(poolData.parameters.priceOracle) && (
-                <>
-                  <StatsTitle>{t`Price Oracle:`}</StatsTitle>
-                  {poolData.parameters.priceOracle.map((p, idx) => {
-                    const wrappedCoins = poolData.pool.wrappedCoins as string[]
-                    const symbol = wrappedCoins[idx + 1]
-                    return (
-                      <StatsContainer key={p}>
-                        <StatsSymbol>{symbol}:</StatsSymbol>
-                        <StatsData>{formatNumber(p, { ...getFractionDigitsOptions(p, 10) })}</StatsData>
-                      </StatsContainer>
-                    )
-                  })}
-                </>
-              )}
+              <StatsTitle>{t`Price Oracle:`}</StatsTitle>
+              {poolParameters.priceOracle.map((p, idx) => {
+                const wrappedCoins = poolData.pool.wrappedCoins as string[]
+                const symbol = wrappedCoins[idx + 1]
+                return (
+                  <StatsContainer key={p}>
+                    <StatsSymbol>{symbol}:</StatsSymbol>
+                    <StatsData>{formatNumber(p, { ...getFractionDigitsOptions(p, 10) })}</StatsData>
+                  </StatsContainer>
+                )
+              })}
             </Box>
           </StatsSection>
         )}
 
-        {!!poolData && haveWrappedCoins && Array.isArray(poolData.parameters.priceScale) && (
+        {!!poolData && haveWrappedCoins && Array.isArray(poolParameters?.priceScale) && (
           <StatsSection>
             <StatsTitle>{t`Price Scale:`}</StatsTitle>
-            {poolData.parameters.priceScale.map((p, idx) => {
+            {poolParameters.priceScale.map((p, idx) => {
               const wrappedCoins = poolData.pool.wrappedCoins as string[]
               const symbol = wrappedCoins[idx + 1]
               return (
