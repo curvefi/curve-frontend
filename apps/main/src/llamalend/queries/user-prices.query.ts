@@ -1,15 +1,16 @@
 import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { type FieldsOf } from '@ui-kit/lib'
-import { queryFactory, rootKeys, type UserMarketQuery } from '@ui-kit/lib/model'
+import { queryFactory, rootKeys, type UserMarketParams, type UserMarketQuery } from '@ui-kit/lib/model'
 import { loanExistsValidationGroup } from '@ui-kit/lib/model/query/loan-exists-validation'
 import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
 import { createValidationSuite } from '@ui-kit/lib/validation'
+import { useLoanExists } from './loan-exists'
 
 type UserPricesQuery = UserMarketQuery & { loanExists: boolean }
 type UserPricesParams = FieldsOf<UserPricesQuery>
 
-export const { useQuery: useUserPrices, invalidate: invalidateUserPrices } = queryFactory({
+const { useQuery: useUserPricesQuery, invalidate: invalidateUserPrices } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, loanExists }: UserPricesParams) =>
     [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'userPrices', { loanExists }] as const,
   queryFn: async ({ marketId, userAddress }: UserPricesQuery): Promise<string[]> => {
@@ -26,3 +27,12 @@ export const { useQuery: useUserPrices, invalidate: invalidateUserPrices } = que
     loanExistsValidationGroup(params)
   }),
 })
+
+export { invalidateUserPrices }
+
+export const useUserPrices = (params: UserMarketParams) => {
+  const { data: loanExists } = useLoanExists(params)
+  const { data, isLoading, error } = useUserPricesQuery({ ...params, loanExists })
+
+  return { data, isLoading, error }
+}

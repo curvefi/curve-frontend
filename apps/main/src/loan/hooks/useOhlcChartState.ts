@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo } from 'react'
 import { useConnection } from 'wagmi'
 import { getTokens } from '@/llamalend/llama.utils'
-import { useLoanExists } from '@/llamalend/queries/loan-exists'
 import { useUserPrices } from '@/llamalend/queries/user-prices.query'
 import { useStore } from '@/loan/store/useStore'
 import { Llamma, ChainId } from '@/loan/types/loan.types'
@@ -25,16 +24,10 @@ type OhlcChartStateProps = {
 
 export const useOhlcChartState = ({ rChainId, market, llammaId }: OhlcChartStateProps) => {
   const { address: userAddress } = useConnection()
-  const { data: loanExists } = useLoanExists({
-    chainId: rChainId,
-    marketId: llammaId,
-    userAddress,
-  })
   const { data: userPrices } = useUserPrices({
     chainId: rChainId,
     marketId: llammaId,
     userAddress,
-    loanExists,
   })
   const poolAddress = market?.address ?? ''
   const controllerAddress = market?.controller ?? ''

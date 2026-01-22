@@ -4,7 +4,6 @@ import { useOneWayMarket } from '@/lend/entities/chain'
 import { useStore } from '@/lend/store/useStore'
 import { ChainId } from '@/lend/types/lend.types'
 import { getTokens } from '@/llamalend/llama.utils'
-import { useLoanExists } from '@/llamalend/queries/loan-exists'
 import { useUserPrices } from '@/llamalend/queries/user-prices.query'
 import {
   useLlammaChartSelections,
@@ -26,16 +25,10 @@ type UseOhlcChartStateProps = {
 
 export const useOhlcChartState = ({ rChainId, rOwmId }: UseOhlcChartStateProps) => {
   const { address: userAddress } = useConnection()
-  const { data: loanExists } = useLoanExists({
-    chainId: rChainId,
-    marketId: rOwmId,
-    userAddress,
-  })
   const { data: userPrices } = useUserPrices({
     chainId: rChainId,
     marketId: rOwmId,
     userAddress,
-    loanExists,
   })
   const market = useOneWayMarket(rChainId, rOwmId).data
   const borrowMoreActiveKey = useStore((state) => state.loanBorrowMore.activeKey)
