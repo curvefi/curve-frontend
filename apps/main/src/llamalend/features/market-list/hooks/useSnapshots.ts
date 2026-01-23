@@ -63,14 +63,8 @@ export function useSnapshots<T extends CrvUsdSnapshot | LendingSnapshot>(
   )
 
   const averageTotalBorrowRate = useMemo(
-    () =>
-      snapshots &&
-      meanBy(
-        snapshots as LendingSnapshot[],
-        (row) =>
-          (row[snapshotKey as keyof LendingSnapshot] as number) * 100 - (row.collateralToken?.rebasingYield ?? 0),
-      ),
-    [snapshots, snapshotKey],
+    () => snapshots && meanBy(snapshots as LendingSnapshot[], (row) => row.borrowTotalApr * 100),
+    [snapshots],
   )
 
   const minBoostedAprAverage = useMemo(
