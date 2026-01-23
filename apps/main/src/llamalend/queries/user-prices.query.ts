@@ -32,7 +32,5 @@ export { invalidateUserPrices }
 
 export const useUserPrices = (params: UserMarketParams) => {
   const { data: loanExists } = useLoanExists(params)
-  const { data, isLoading, error } = useUserPricesQuery({ ...params, loanExists })
-
-  return { data, isLoading, error }
+  return useUserPricesQuery({ ...params, loanExists })
 }
