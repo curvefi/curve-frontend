@@ -1,4 +1,5 @@
 import { getLlamaMarket } from '@/llamalend/llama.utils'
+import { createLoanExpectedCollateralQueryKey } from '@/llamalend/queries/create-loan/create-loan-expected-collateral.query'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import type { CreateLoanDebtQuery, CreateLoanFormQueryParams } from '../../features/borrow/types'
@@ -34,4 +35,5 @@ export const { useQuery: useCreateLoanIsApproved, fetchQuery: fetchCreateLoanIsA
   },
   staleTime: '1m',
   validationSuite: createLoanQueryValidationSuite({ debtRequired: false }),
+  dependencies: (params) => (params.leverageEnabled ? [createLoanExpectedCollateralQueryKey(params)] : []),
 })
