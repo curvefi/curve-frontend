@@ -1,15 +1,9 @@
 import type { EChartsOption } from 'echarts-for-react'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
-import { formatNumber } from '@ui-kit/utils'
+import { getPriceMin, getPriceMax, formatNumberWithOptions } from './bands-chart.utils'
 import { generateMarkLines, createLabelStyle } from './markLines'
 import { ChartDataPoint, BandsChartPalette, DerivedChartData, UserBandsPriceRange } from './types'
-import { getPriceMin, getPriceMax } from './utils'
 
-export const getFormattingOptions = (value: number) => ({
-  abbreviate: value >= 10000,
-  maximumSignificantDigits: 4,
-  useGrouping: false,
-})
 //
 // Custom series renderer to draw a rectangle spanning [p_down, p_up] with a given width and start offset.
 // Data value layout per item: [median, startX, widthX, p_down, p_up, isLiquidationNumeric, endX]
@@ -175,7 +169,7 @@ export const getChartOptions = (
         showMinLabel: true,
         showMaxLabel: false,
         margin: 8,
-        formatter: (value: number) => formatNumber(value, getFormattingOptions(value)),
+        formatter: (value: number) => formatNumberWithOptions(value),
       },
       splitLine: {
         show: true,
@@ -197,8 +191,7 @@ export const getChartOptions = (
         snap: true,
         label: {
           show: true,
-          formatter: (params: { value: unknown }) =>
-            formatNumber(Number(params.value), getFormattingOptions(Number(params.value))),
+          formatter: (params: { value: unknown }) => formatNumberWithOptions(Number(params.value)),
           padding: [2, 4],
           borderRadius: 0,
           backgroundColor: palette.oraclePriceLineColor,
@@ -210,7 +203,7 @@ export const getChartOptions = (
         overflow: 'break',
         showMinLabel: true,
         showMaxLabel: false,
-        formatter: (value: number) => formatNumber(value, getFormattingOptions(value)),
+        formatter: (value: number) => formatNumberWithOptions(value),
       },
       splitLine: {
         show: true,
@@ -320,7 +313,7 @@ export const getChartOptions = (
         handleStyle: { color: palette.zoomThumbColor, borderColor: palette.zoomThumbHandleBorderColor },
         textStyle: { color: palette.textColorInverted, fontSize: 10 },
         showDetail: false,
-        labelFormatter: (value: number | string) => formatNumber(Number(value), getFormattingOptions(Number(value))),
+        labelFormatter: (value: number | string) => formatNumberWithOptions(Number(value)),
         dataBackground: {
           lineStyle: {
             color: palette.gridColor,
