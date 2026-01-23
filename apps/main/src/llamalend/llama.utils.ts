@@ -26,6 +26,16 @@ export const getLlamaMarket = (id: string, lib = requireLib('llamaApi')): LlamaM
 export const hasLeverage = (market: LlamaMarketTemplate) =>
   hasV1Leverage(market) || (market instanceof MintMarketTemplate && hasV2Leverage(market))
 
+/**
+ * Checks if the market supports leverage values. This values are supported for:
+ * - Lend markets
+ * - New Mint markets (marketId >= 6)
+ * Leverage values are not supported for old mint markets (marketId < 6), but opening or closing leveraged positions is still possible.
+ */
+export const hasSupportedLeverage = (market: LlamaMarketTemplate) =>
+  (market instanceof LendMarketTemplate && hasV1Leverage(market)) ||
+  (market instanceof MintMarketTemplate && hasV2Leverage(market))
+
 export const hasV1Leverage = (market: LlamaMarketTemplate) =>
   market instanceof LendMarketTemplate ? market.leverage.hasLeverage() : market?.leverageZap !== zeroAddress
 
