@@ -5,6 +5,10 @@ import { generateMarkLines, createLabelStyle } from './markLines'
 import { ChartDataPoint, BandsChartPalette, DerivedChartData, UserBandsPriceRange } from './types'
 import { getPriceMin, getPriceMax } from './utils'
 
+export const FORMATTING_OPTIONS = {
+  abbreviate: true,
+  maximumSignificantDigits: 4,
+}
 //
 // Custom series renderer to draw a rectangle spanning [p_down, p_up] with a given width and start offset.
 // Data value layout per item: [median, startX, widthX, p_down, p_up, isLiquidationNumeric, endX]
@@ -170,11 +174,7 @@ export const getChartOptions = (
         showMinLabel: true,
         showMaxLabel: false,
         margin: 8,
-        formatter: (value: number) =>
-          formatNumber(value, {
-            unit: 'dollar',
-            abbreviate: true,
-          }),
+        formatter: (value: number) => formatNumber(value, FORMATTING_OPTIONS),
       },
       splitLine: {
         show: true,
@@ -196,11 +196,7 @@ export const getChartOptions = (
         snap: true,
         label: {
           show: true,
-          formatter: (params: { value: unknown }) =>
-            formatNumber(Number(params.value), {
-              unit: 'dollar',
-              abbreviate: true,
-            }),
+          formatter: (params: { value: unknown }) => formatNumber(Number(params.value), FORMATTING_OPTIONS),
           padding: [2, 4],
           borderRadius: 0,
           backgroundColor: palette.oraclePriceLineColor,
@@ -212,11 +208,7 @@ export const getChartOptions = (
         overflow: 'break',
         showMinLabel: true,
         showMaxLabel: false,
-        formatter: (value: number) =>
-          formatNumber(value, {
-            unit: 'dollar',
-            abbreviate: true,
-          }),
+        formatter: (value: number) => formatNumber(value, FORMATTING_OPTIONS),
       },
       splitLine: {
         show: true,
@@ -326,11 +318,7 @@ export const getChartOptions = (
         handleStyle: { color: palette.zoomThumbColor, borderColor: palette.zoomThumbHandleBorderColor },
         textStyle: { color: palette.textColorInverted, fontSize: 10 },
         showDetail: false,
-        labelFormatter: (value: number | string) =>
-          formatNumber(Number(value), {
-            unit: 'dollar',
-            abbreviate: true,
-          }),
+        labelFormatter: (value: number | string) => formatNumber(Number(value), FORMATTING_OPTIONS),
         dataBackground: {
           lineStyle: {
             color: palette.gridColor,
