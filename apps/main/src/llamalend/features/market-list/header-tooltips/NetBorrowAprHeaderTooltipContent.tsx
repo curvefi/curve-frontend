@@ -7,7 +7,7 @@ export const NetBorrowAprHeaderTooltipContent = () => (
       text={
         <Trans>
           <strong>
-            The borrow rate is the cost related to your borrow. Depending on the market type it is correlated to
+            The net borrow APR is the cost related to your borrow. Depending on the market type it is correlated to
             different variables.
           </strong>
         </Trans>
@@ -31,7 +31,7 @@ export const NetBorrowAprHeaderTooltipContent = () => (
       text={
         <Trans>
           Collateral does <strong>not</strong> earn this rate. Intrinsic yield of LSTs & token rewards are taken into
-          account for borrow rates.
+          account for net borrow APR.
         </Trans>
       }
     />
