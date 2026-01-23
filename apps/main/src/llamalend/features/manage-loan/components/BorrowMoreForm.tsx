@@ -78,17 +78,6 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
         max={max.userCollateral}
         testId="borrow-more-input-collateral"
         network={network}
-        message={
-          <Balance
-            prefix={t`Balance:`}
-            tooltip={t`Available in wallet`}
-            symbol={collateralToken?.symbol}
-            balance={max.userCollateral.data}
-            loading={max.userCollateral.isLoading}
-            onClick={() => form.setValue('userCollateral', max.userCollateral.data, setValueOptions)}
-            buttonTestId="borrow-more-set-collateral-to-max"
-          />
-        }
       />
 
       <LoanFormTokenInput

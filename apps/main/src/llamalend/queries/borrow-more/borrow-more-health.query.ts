@@ -1,4 +1,4 @@
-import { getBorrowMoreImplementation } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
+import { getBorrowMoreImplementationArgs } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
 import type { BorrowMoreParams, BorrowMoreQuery } from '@/llamalend/queries/validation/borrow-more.validation'
 import { borrowMoreValidationSuite } from '@/llamalend/queries/validation/borrow-more.validation'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
@@ -21,13 +21,13 @@ export const { useQuery: useBorrowMoreHealth } = queryFactory({
       { debt },
     ] as const,
   queryFn: async ({ marketId, userCollateral = '0', userBorrowed = '0', debt = '0' }: BorrowMoreQuery) => {
-    const [type, impl] = getBorrowMoreImplementation(marketId, { userCollateral, userBorrowed })
+    const [type, impl, args] = getBorrowMoreImplementationArgs(marketId, { userCollateral, userBorrowed, debt })
     switch (type) {
       case 'V1':
       case 'V2':
-        return (await impl.borrowMoreHealth(userCollateral, userBorrowed, debt)) as Decimal
+        return (await impl.borrowMoreHealth(...args)) as Decimal
       case 'unleveraged':
-        return (await impl.borrowMoreHealth(userCollateral, debt)) as Decimal
+        return (await impl.borrowMoreHealth(...args)) as Decimal
     }
   },
   staleTime: '1m',

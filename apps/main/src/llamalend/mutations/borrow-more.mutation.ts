@@ -5,7 +5,10 @@ import { formatTokenAmounts } from '@/llamalend/llama.utils'
 import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { type LlammaMutationOptions, useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
 import { fetchBorrowMoreIsApproved } from '@/llamalend/queries/borrow-more/borrow-more-is-approved.query'
-import { getBorrowMoreImplementation } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
+import {
+  getBorrowMoreImplementation,
+  getBorrowMoreImplementationArgs,
+} from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
 import {
   type BorrowMoreForm,
   borrowMoreMutationValidationSuite,
@@ -35,7 +38,7 @@ const approveBorrowMore = async (
   { userCollateral = '0', userBorrowed = '0' }: BorrowMoreMutation,
 ): Promise<Hex[]> => {
   if (!+userCollateral && !+userBorrowed) return []
-  const [type, impl] = getBorrowMoreImplementation(market.id, { userCollateral, userBorrowed })
+  const [type, impl] = getBorrowMoreImplementation(market.id)
   switch (type) {
     case 'V1':
     case 'V2':
@@ -49,14 +52,14 @@ const borrowMore = async (
   market: LlamaMarketTemplate,
   { userCollateral = '0', userBorrowed = '0', debt = '0', slippage }: BorrowMoreMutation,
 ): Promise<Hex> => {
-  const [type, impl] = getBorrowMoreImplementation(market.id, { userCollateral, userBorrowed })
+  const [type, impl, args] = getBorrowMoreImplementationArgs(market.id, { userCollateral, userBorrowed, debt })
   switch (type) {
     case 'V1':
     case 'V2':
       await impl.borrowMoreExpectedCollateral(userCollateral, userBorrowed, debt, +slippage)
-      return (await impl.borrowMore(userCollateral, userBorrowed, debt, +slippage)) as Hex
+      return (await impl.borrowMore(...args, +slippage)) as Hex
     case 'unleveraged':
-      return (await impl.borrowMore(userCollateral, debt)) as Hex
+      return (await impl.borrowMore(...args)) as Hex
   }
 }
 

@@ -1,7 +1,10 @@
 import { useEstimateGas } from '@/llamalend/hooks/useEstimateGas'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useBorrowMoreIsApproved } from '@/llamalend/queries/borrow-more/borrow-more-is-approved.query'
-import { getBorrowMoreImplementation } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
+import {
+  getBorrowMoreImplementation,
+  getBorrowMoreImplementationArgs,
+} from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
 import type { BorrowMoreParams, BorrowMoreQuery } from '@/llamalend/queries/validation/borrow-more.validation'
 import { borrowMoreValidationSuite } from '@/llamalend/queries/validation/borrow-more.validation'
 import type { IChainId, TGas } from '@curvefi/llamalend-api/lib/interfaces'
@@ -17,7 +20,7 @@ const { useQuery: useBorrowMoreApproveGasEstimate } = queryFactory({
     ] as const,
   queryFn: async ({ marketId, userCollateral = '0', userBorrowed = '0' }: BorrowMoreQuery): Promise<TGas | null> => {
     if (!+userCollateral && !+userBorrowed) return null
-    const [type, impl] = getBorrowMoreImplementation(marketId, { userCollateral, userBorrowed })
+    const [type, impl] = getBorrowMoreImplementation(marketId)
     switch (type) {
       case 'V1':
       case 'V2':
@@ -56,14 +59,14 @@ const { useQuery: useBorrowMoreGasEstimate } = queryFactory({
     slippage,
   }: BorrowMoreQuery): Promise<TGas | null> => {
     if (!+debt) return null
-    const [type, impl] = getBorrowMoreImplementation(marketId, { userCollateral, userBorrowed })
+    const [type, impl, args] = getBorrowMoreImplementationArgs(marketId, { userCollateral, userBorrowed, debt })
     switch (type) {
       case 'V1':
       case 'V2':
         await impl.borrowMoreExpectedCollateral(userCollateral, userBorrowed, debt, +slippage)
-        return await impl.estimateGas.borrowMore(userCollateral, userBorrowed, debt, +slippage)
+        return await impl.estimateGas.borrowMore(...args, +slippage)
       case 'unleveraged':
-        return await impl.estimateGas.borrowMore(userCollateral, debt)
+        return await impl.estimateGas.borrowMore(...args)
     }
   },
   staleTime: '1m',

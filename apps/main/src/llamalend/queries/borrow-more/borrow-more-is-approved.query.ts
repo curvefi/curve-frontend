@@ -12,7 +12,7 @@ export const { useQuery: useBorrowMoreIsApproved, fetchQuery: fetchBorrowMoreIsA
       { userBorrowed },
     ] as const,
   queryFn: async ({ marketId, userCollateral = '0', userBorrowed = '0' }: BorrowMoreQuery) => {
-    const [type, impl] = getBorrowMoreImplementation(marketId, { userCollateral, userBorrowed })
+    const [type, impl] = getBorrowMoreImplementation(marketId)
     switch (type) {
       case 'V1':
       case 'V2':

@@ -26,7 +26,7 @@ export const { useQuery: useBorrowMoreMaxReceive } = queryFactory({
     userCollateral = '0',
     userBorrowed = '0',
   }: BorrowMoreQuery): Promise<BorrowMoreMaxReceiveResult> => {
-    const [type, impl] = getBorrowMoreImplementation(marketId, { userCollateral, userBorrowed })
+    const [type, impl] = getBorrowMoreImplementation(marketId)
     switch (type) {
       case 'V1':
       case 'V2': {

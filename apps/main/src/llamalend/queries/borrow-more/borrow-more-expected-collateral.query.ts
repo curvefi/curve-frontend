@@ -1,4 +1,4 @@
-import { getBorrowMoreImplementation } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
+import { getBorrowMoreImplementationArgs } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
 import type { BorrowMoreParams, BorrowMoreQuery } from '@/llamalend/queries/validation/borrow-more.validation'
 import { borrowMoreLeverageValidationSuite } from '@/llamalend/queries/validation/borrow-more.validation'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
@@ -23,7 +23,7 @@ export const { useQuery: useBorrowMoreExpectedCollateral } = queryFactory({
       { slippage },
     ] as const,
   queryFn: async ({ marketId, userCollateral = '0', userBorrowed = '0', debt = '0', slippage }: BorrowMoreQuery) => {
-    const [type, impl] = getBorrowMoreImplementation(marketId, { userCollateral, userBorrowed })
+    const [type, impl, args] = getBorrowMoreImplementationArgs(marketId, { userCollateral, userBorrowed, debt })
     if (type === 'unleveraged') throw new Error('Unsupported operation for unleveraged borrow more')
     const {
       userCollateral: newUserCollateral,
@@ -31,7 +31,7 @@ export const { useQuery: useBorrowMoreExpectedCollateral } = queryFactory({
       collateralFromUserBorrowed,
       collateralFromDebt,
       avgPrice,
-    } = await impl.borrowMoreExpectedCollateral(userCollateral, userBorrowed, debt, +slippage)
+    } = await impl.borrowMoreExpectedCollateral(...args, +slippage)
     return {
       totalCollateral: totalCollateral as Decimal,
       userCollateral: newUserCollateral as Decimal,

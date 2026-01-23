@@ -1,6 +1,6 @@
 import { skipWhen } from 'vest'
 import type { Address } from 'viem'
-import { getBorrowMoreImplementation } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
+import { getBorrowMoreImplementationArgs } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
 import {
   validateDebt,
   validateLeverageSupported,
@@ -44,10 +44,12 @@ const validateBorrowMoreFieldsForMarket = (
   marketId: string | null | undefined,
   userCollateral: Decimal | null | undefined,
   userBorrowed: Decimal | null | undefined,
+  debt: Decimal | null | undefined,
 ) => {
   skipWhen(!marketId, () => {
     if (!marketId) return
-    getBorrowMoreImplementation(marketId, {
+    getBorrowMoreImplementationArgs(marketId, {
+      debt: debt ?? '0',
       userCollateral: userCollateral ?? '0',
       userBorrowed: userBorrowed ?? '0',
     })
@@ -71,7 +73,7 @@ export const borrowMoreFormValidationSuite = createValidationSuite(
 
 // Query validation suite (for API queries)
 export const borrowMoreValidationGroup = <IChainId extends number>(
-  { chainId, marketId, userCollateral, userBorrowed, debt, userAddress, slippage }: BorrowMoreParams<IChainId>,
+  { chainId, marketId, userCollateral = '0', userBorrowed, debt, userAddress, slippage }: BorrowMoreParams<IChainId>,
   { leverageRequired = false, debtRequired = false }: { leverageRequired?: boolean; debtRequired?: boolean } = {},
 ) => {
   chainValidationGroup({ chainId })
@@ -80,7 +82,7 @@ export const borrowMoreValidationGroup = <IChainId extends number>(
   userAddressValidationGroup({ userAddress })
   validateUserCollateral(userCollateral)
   validateDebt(debt, debtRequired)
-  validateBorrowMoreFieldsForMarket(marketId, userCollateral, userBorrowed)
+  validateBorrowMoreFieldsForMarket(marketId, userCollateral, userBorrowed, debt)
   validateSlippage(slippage)
   validateLeverageSupported(marketId, leverageRequired)
 }

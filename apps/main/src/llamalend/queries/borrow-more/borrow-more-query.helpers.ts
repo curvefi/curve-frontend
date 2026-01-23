@@ -7,21 +7,31 @@ import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
  * We use V2 leverage if available, then leverage V1 (lend markets only).
  * Otherwise fallback to unleveraged borrow more.
  */
-export function getBorrowMoreImplementation(
-  marketId: string,
-  { userCollateral, userBorrowed }: Pick<BorrowMoreQuery, 'userCollateral' | 'userBorrowed'>,
-) {
+export function getBorrowMoreImplementation(marketId: string) {
   const market = getLlamaMarket(marketId)
-
   if (market instanceof MintMarketTemplate) {
     if (hasV2Leverage(market)) {
-      return ['V2', market.leverageV2, [userCollateral, userBorrowed]] as const
+      return ['V2', market.leverageV2] as const
     }
   } else if (hasLeverage(market)) {
-    return ['V1', market.leverage, [userCollateral, userBorrowed]] as const
+    return ['V1', market.leverage] as const
   }
+  return ['unleveraged', market] as const
+}
 
-  // Unleveraged: userBorrowed is not valid
-  if (+userBorrowed) throw new Error(`Invalid userBorrowed for unleveraged borrow more: ${userBorrowed}`)
-  return ['unleveraged', market, [userCollateral]] as const
+/**
+ * Determines the appropriate borrow more implementation based on market type.
+ * We use V2 leverage if available, then leverage V1 (lend markets only).
+ * Otherwise fallback to unleveraged borrow more.
+ */
+export function getBorrowMoreImplementationArgs(
+  marketId: string,
+  { userCollateral, userBorrowed, debt }: Pick<BorrowMoreQuery, 'userCollateral' | 'userBorrowed' | 'debt'>,
+) {
+  const [type, impl] = getBorrowMoreImplementation(marketId)
+  if (type === 'unleveraged') {
+    if (+userBorrowed) throw new Error(`Invalid userBorrowed for unleveraged borrow more: ${userBorrowed}`)
+    return [type, impl, [userCollateral, debt]] as const
+  }
+  return [type, impl, [userCollateral, userBorrowed, debt]] as const
 }

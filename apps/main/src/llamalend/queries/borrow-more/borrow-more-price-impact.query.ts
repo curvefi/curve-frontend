@@ -11,8 +11,8 @@ export const { useQuery: useBorrowMorePriceImpact } = queryFactory({
       { userBorrowed },
       { debt },
     ] as const,
-  queryFn: async ({ marketId, userCollateral = '0', userBorrowed = '0', debt = '0' }: BorrowMoreQuery) => {
-    const [type, impl] = getBorrowMoreImplementation(marketId, { userCollateral, userBorrowed })
+  queryFn: async ({ marketId, userBorrowed = '0', debt = '0' }: BorrowMoreQuery) => {
+    const [type, impl] = getBorrowMoreImplementation(marketId)
     if (type === 'unleveraged') throw new Error('Price impact is not applicable for unleveraged borrow more')
     return +(await impl.borrowMorePriceImpact(userBorrowed, debt))
   },
