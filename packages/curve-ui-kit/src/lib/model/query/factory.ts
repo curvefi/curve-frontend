@@ -46,7 +46,6 @@ export function queryFactory<
   TData,
   TParams extends FieldsOf<TQuery> = FieldsOf<TQuery>,
   TField extends string = FieldName<TQuery>,
-  TGroup extends string = string,
   TCallback extends CB = CB<TQuery, TField[]>,
 >({
   queryFn: runQuery,
@@ -60,7 +59,7 @@ export function queryFactory<
   ...options
 }: {
   queryKey: (params: TParams) => QueryKeyTuple<TKey>
-  validationSuite: Suite<TField, TGroup, TCallback>
+  validationSuite: Suite<TField, string, TCallback>
   queryFn: (params: TQuery) => Promise<TData>
   gcTime?: keyof typeof REFRESH_INTERVAL
   staleTime?: keyof typeof REFRESH_INTERVAL
