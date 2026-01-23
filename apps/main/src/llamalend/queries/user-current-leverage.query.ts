@@ -1,10 +1,8 @@
-import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { queryFactory } from '@ui-kit/lib/model/query/factory'
 import { rootKeys, UserMarketParams, UserMarketQuery } from '@ui-kit/lib/model/query/root-keys'
 import { userMarketValidationSuite } from '@ui-kit/lib/model/query/user-market-validation'
 import { decimal } from '@ui-kit/utils/decimal'
-import { getLlamaMarket, hasLeverage, hasSupportedLeverage, hasV1Leverage, hasV2Leverage } from '../llama.utils'
-import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets/MintMarketTemplate'
+import { getLlamaMarket, hasSupportedLeverage } from '../llama.utils'
 
 /**
  * Query to get the user's current leverage value in a market.

@@ -1,5 +1,4 @@
 import { getLlamaMarket, hasSupportedLeverage } from '@/llamalend/llama.utils'
-import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { decimal } from '@ui-kit/utils/decimal'
 import { type CollateralParams, type CollateralQuery } from '../validation/manage-loan.types'
