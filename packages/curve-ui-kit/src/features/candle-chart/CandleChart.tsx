@@ -746,17 +746,16 @@ export const CandleChart = ({
     wrapperRef.current = new ResizeObserver((entries: ResizeObserverEntry[]) => {
       if (isUnmounting) return
 
-      const { width, height } = entries[0].contentRect
+      const { width } = entries[0].contentRect
       if (width <= 0) return
 
       const adjustedWidth = Math.max(1, width - 1) // Ensure width is at least 1
-      const adjustedHeight = Math.max(1, height) // Ensure height is at least 1
 
       // Update state with new dimensions (debounced)
-      setWrapperDimensions({ width: adjustedWidth, height: adjustedHeight })
+      setWrapperDimensions({ width: adjustedWidth, height: chartHeight })
 
       // Apply dimensions immediately for smooth resizing
-      chartRef.current?.applyOptions({ width: adjustedWidth, height: adjustedHeight })
+      chartRef.current?.applyOptions({ width: adjustedWidth })
       chartRef.current?.timeScale().getVisibleLogicalRange()
     })
 
@@ -770,7 +769,7 @@ export const CandleChart = ({
 
       if (wrapperRef?.current) wrapperRef.current.disconnect()
     }
-  }, [wrapperRef, isUnmounting])
+  }, [wrapperRef, isUnmounting, chartHeight])
 
   return <Container ref={chartContainerRef} />
 }
