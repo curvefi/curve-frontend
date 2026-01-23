@@ -88,7 +88,7 @@ export const validateMaxCollateral = (
   maxCollateral: Decimal | undefined | null,
 ) => {
   skipWhen(userCollateral == null || maxCollateral == null, () => {
-    test('userCollateral', 'The maximum collateral amount is ${maxCollateral}', () => {
+    test('userCollateral', `The maximum collateral amount is ${maxCollateral}`, () => {
       enforce(userCollateral).lte(maxCollateral)
     })
   })
