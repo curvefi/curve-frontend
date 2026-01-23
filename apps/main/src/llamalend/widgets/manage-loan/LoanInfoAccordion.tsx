@@ -221,9 +221,7 @@ export const LoanInfoAccordion = ({
                 <ActionInfo
                   label={t`Leverage`}
                   value={formatLeverage(leverageValue?.data ?? prevLeverageValue?.data)}
-                  prevValue={
-                    leverageValue && prevLeverageValue?.data ? formatLeverage(prevLeverageValue.data) : undefined
-                  }
+                  prevValue={leverageValue?.data && prevLeverageValue?.data && formatLeverage(prevLeverageValue.data)}
                   {...combineQueryState(leverageValue, prevLeverageValue)}
                   testId="borrow-leverage"
                 />
@@ -242,7 +240,7 @@ export const LoanInfoAccordion = ({
                   label={t`Leverage collateral`}
                   value={format(leverageCollateral?.data ?? prevLeverageCollateral?.data, collateralSymbol)}
                   prevValue={
-                    leverageCollateral &&
+                    leverageCollateral?.data &&
                     prevLeverageCollateral?.data &&
                     format(prevLeverageCollateral.data, collateralSymbol)
                   }
@@ -255,7 +253,7 @@ export const LoanInfoAccordion = ({
                   label={t`Total collateral`}
                   value={format(leverageTotalCollateral?.data ?? prevLeverageTotalCollateral?.data, collateralSymbol)}
                   prevValue={
-                    leverageTotalCollateral &&
+                    leverageTotalCollateral?.data &&
                     prevLeverageTotalCollateral?.data &&
                     format(prevLeverageTotalCollateral.data, collateralSymbol)
                   }
