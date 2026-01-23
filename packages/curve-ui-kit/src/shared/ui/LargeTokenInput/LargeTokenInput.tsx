@@ -9,55 +9,21 @@ import {
   useImperativeHandle,
   useState,
 } from 'react'
-import Box from '@mui/material/Box'
 import Chip from '@mui/material/Chip'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { useUniqueDebounce } from '@ui-kit/hooks/useDebounce'
 import { t } from '@ui-kit/lib/i18n'
+import { HelperMessage } from '@ui-kit/shared/ui/LargeTokenInput/HelperMessage'
 import { chipSizeClickable } from '@ui-kit/themes/components/chip'
 import { Duration, TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { decimal, type Decimal, formatNumber } from '@ui-kit/utils'
+import { SliderInput, SliderInputProps } from '../SliderInput'
 import { Balance, type Props as BalanceProps } from './Balance'
-import { NumericTextField } from './NumericTextField'
-import { SliderInput, SliderInputProps } from './SliderInput'
+import { BalanceTextField } from './BalanceTextField'
 
-const { Spacing, FontSize, FontWeight, Sizing } = SizesAndSpaces
-
-type HelperMessageProps = {
-  message: string | ReactNode
-  isError?: boolean
-}
-
-export const HelperMessage = ({ message, isError }: HelperMessageProps) => (
-  <Box
-    sx={{
-      display: 'flex',
-      alignItems: 'center',
-      backgroundColor: (t) => t.design.Layer[3].Fill,
-      padding: Spacing.sm,
-      minHeight: Sizing.sm,
-      ...(isError && { backgroundColor: (t) => t.design.Layer.Feedback.Error }),
-    }}
-  >
-    {typeof message === 'string' ? (
-      <Typography
-        variant="bodyXsRegular"
-        // todo: replace with alert component and add filledfeedback colors to alert component.
-        sx={{
-          color: (t) =>
-            isError ? t.design.Text.TextColors.FilledFeedback.Warning.Primary : t.design.Text.TextColors.Tertiary,
-        }}
-        data-testid={`helper-message-${isError ? 'error' : 'info'}`}
-      >
-        {message}
-      </Typography>
-    ) : (
-      message
-    )}
-  </Box>
-)
+const { Spacing } = SizesAndSpaces
 
 /** A chip can be something like 50% or 'Max', and is shown on the top right on hover on desktop or always visible on tablet and lower. */
 type InputChip = {
@@ -76,50 +42,8 @@ const CHIPS_PRESETS: Record<ChipsPreset, InputChip[]> = {
   })),
 }
 
-type BalanceTextFieldProps = {
-  balance: Decimal | undefined
-  isError: boolean
-  disabled?: boolean
-  /** Callback fired when the numeric value changes, can be a temporary non decimal value like "5." or "-" */
-  onChange: (balance: string | undefined) => void
-  name: string
-}
-
-const BalanceTextField = ({ balance, name, isError, onChange, disabled }: BalanceTextFieldProps) => (
-  <NumericTextField
-    placeholder="0.00"
-    variant="standard"
-    value={balance}
-    name={name}
-    fullWidth
-    slotProps={{
-      input: {
-        disableUnderline: true,
-        sx: {
-          backgroundColor: (t) => t.design.Inputs.Large.Default.Fill,
-          fontFamily: (t) => t.typography.highlightXl.fontFamily,
-          fontSize: FontSize.xl,
-          fontWeight: FontWeight.Bold,
-          color: (t) => (isError ? t.design.Layer.Feedback.Error : t.design.Text.TextColors.Primary),
-        },
-      },
-    }}
-    onChange={onChange}
-    disabled={disabled}
-  />
-)
-
 export interface LargeTokenInputRef {
   resetBalance: () => void
-}
-
-/** Configuration for max balance behavior, which for now are the slider and chips. */
-type MaxBalanceProps = {
-  balance?: Decimal
-  /** Whether to display the percentage slider. */
-  showSlider?: boolean
-  /** Custom or preset chips to show. */
-  chips?: ChipsPreset | InputChip[]
 }
 
 export type LargeTokenInputProps = {
@@ -153,8 +77,14 @@ export type LargeTokenInputProps = {
   /** Optional wallet balance configuration. Omits onClick as clicking the wallet balance is controlled behavior (sets the value in the input field) */
   walletBalance?: Omit<BalanceProps<Decimal>, 'onClick'>
 
-  /** Optional max balance configuration */
-  maxBalance?: MaxBalanceProps
+  /** Optional configuration for max balance behavior, which for now are the slider and chips. */
+  maxBalance?: {
+    balance?: Decimal
+    /** Whether to display the percentage slider. */
+    showSlider?: boolean
+    /** Custom or preset chips to show. */
+    chips?: ChipsPreset | InputChip[]
+  }
 
   /** Optional usd value of the balance given as input. */
   inputBalanceUsd?: Decimal
@@ -435,7 +365,7 @@ export const LargeTokenInput = ({
       </Stack>
 
       {/** Fourth row containing optional helper (or error) message */}
-      {message && <HelperMessage message={message} isError={isError} />}
+      {message && <HelperMessage onNumberClick={onBalance} message={message} isError={isError} />}
       {children}
     </Stack>
   )

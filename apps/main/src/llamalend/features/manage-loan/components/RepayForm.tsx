@@ -14,7 +14,7 @@ import Button from '@mui/material/Button'
 import { TokenSelector } from '@ui-kit/features/select-token'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
-import { Balance } from '@ui-kit/shared/ui/Balance'
+import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { setValueOptions } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
@@ -156,7 +156,6 @@ export const RepayForm = <ChainId extends IChainId>({
               form.setValue(selectedField, max[selectedField].data, setValueOptions)
               void form.trigger(max[selectedField].field) // re-validate max
             }}
-            buttonTestId="borrow-set-debt-to-max"
           />
         }
       />
