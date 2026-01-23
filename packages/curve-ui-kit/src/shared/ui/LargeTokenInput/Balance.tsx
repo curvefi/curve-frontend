@@ -1,15 +1,14 @@
-import type { ReactNode } from 'react'
 import type { SvgIcon } from '@mui/material'
-import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
+import { BalanceButton } from '@ui-kit/shared/ui/LargeTokenInput/BalanceButton'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { type Amount, formatNumber } from '@ui-kit/utils'
-import { WalletIcon } from '../icons/WalletIcon'
-import { WithWrapper } from './WithWrapper'
+import { WalletIcon } from '../../icons/WalletIcon'
+import { WithWrapper } from '../WithWrapper'
 
 const { Spacing, IconSize } = SizesAndSpaces
 
@@ -18,37 +17,9 @@ const { Spacing, IconSize } = SizesAndSpaces
  * The bottom margin of the text ends up being larger than the top half, messing with the vertical alignment.
  * We ought to find a better solution for it one day, but for now this'll do the trick.
  */
-const VERTICAL_CENTER_TEXT = {
+export const VERTICAL_CENTER_TEXT = {
   '&': { lineHeight: 'normal' },
 }
-
-/** Button wrapper for clickable balance text */
-const BalanceButton = ({
-  children,
-  onClick,
-  loading,
-  disabled,
-  testId,
-}: {
-  children: ReactNode
-  onClick?: () => void
-  loading?: boolean
-  disabled?: boolean
-  testId?: string
-}) => (
-  <Button
-    variant="inline"
-    color="ghost"
-    size="extraSmall"
-    onClick={onClick}
-    loading={loading}
-    disabled={disabled}
-    data-testid={testId}
-    sx={{ '&:hover .balance': { textDecoration: 'underline' } }}
-  >
-    {children}
-  </Button>
-)
 
 /** Props for the Balance component */
 export type Props<T> = {

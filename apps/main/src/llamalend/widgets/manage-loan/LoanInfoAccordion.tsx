@@ -1,5 +1,5 @@
-import { notFalsy } from 'router-api/src/router.utils'
 import { UserState } from '@/llamalend/queries/user-state.query'
+import { notFalsy } from '@curvefi/prices-api/objects.util'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'

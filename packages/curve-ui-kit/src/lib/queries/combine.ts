@@ -1,6 +1,6 @@
 import type { UseQueryOptions } from '@tanstack/react-query'
 import { Query } from '@ui-kit/types/util'
-import { decimal, Decimal } from '@ui-kit/utils'
+import { Decimal, decimalMin } from '@ui-kit/utils'
 import { QueryOptionsArray, QueryResultsArray } from './types'
 
 export const combineQueryState = (...queries: (Query<unknown> | undefined)[]) => ({
@@ -30,8 +30,8 @@ export const combineQueriesToObject = <TData, K extends string[]>(
 /**
  * Returns the minimum value from multiple queries returning Decimal values.
  */
-export const useQueryMinimum = (...data: Query<Decimal>[]) => ({
-  data: data.some((d) => d.data == null) ? undefined : decimal(Math.min(...data.map((d) => +d.data!))),
-  isLoading: data.some((d) => d?.isLoading),
-  error: data.map((d) => d?.error).find(Boolean),
+export const useQueryMinimum = (...queries: Query<Decimal>[]) => ({
+  data: queries.some((d) => d.data == null) ? undefined : decimalMin(...queries.map((d) => d.data!)),
+  isLoading: queries.some((d) => d?.isLoading),
+  error: queries.map((d) => d?.error).find(Boolean),
 })
