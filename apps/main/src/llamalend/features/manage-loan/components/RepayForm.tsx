@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect } from 'react'
 import { RepayLoanInfoAccordion } from '@/llamalend/features/borrow/components/RepayLoanInfoAccordion'
 import { RepayTokenList, type RepayTokenListProps } from '@/llamalend/features/manage-loan/components/RepayTokenList'
 import { RepayTokenOption, useRepayTokens } from '@/llamalend/features/manage-loan/hooks/useRepayTokens'
@@ -110,14 +110,10 @@ export const RepayForm = <ChainId extends IChainId>({
     tokenOutAddress: borrowToken?.address,
   })
 
-  const maxAmountPrefix = useMemo(
-    () =>
-      notFalsy(
-        selectedField === 'stateCollateral' && t`Using collateral balances to repay.`,
-        t`Max repay amount:`,
-      ).join(' '),
-    [selectedField],
-  )
+  const maxAmountPrefix = notFalsy(
+    selectedField === 'stateCollateral' && t`Using collateral balances to repay.`,
+    t`Max repay amount:`,
+  ).join(' ')
 
   useEffect(
     // Reset field when selectedField changes
