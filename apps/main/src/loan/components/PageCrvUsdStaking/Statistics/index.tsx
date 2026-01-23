@@ -7,7 +7,7 @@ import { Stack, Card, CardHeader, Box } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { t } from '@ui-kit/lib/i18n'
-import type { TimeOption } from '@ui-kit/lib/types/scrvusd'
+import { timeOptions } from '@ui-kit/lib/model/query/time-option-validation'
 import { ChartFooter } from '@ui-kit/shared/ui/Chart/ChartFooter'
 import { ChartHeader, type ChartSelections } from '@ui-kit/shared/ui/Chart/ChartHeader'
 import type { LegendItem } from '@ui-kit/shared/ui/Chart/LegendSet'
@@ -29,8 +29,6 @@ const chartSelections: ChartSelections<StatisticsChart>[] = [
   { activeTitle: t`Historical Rate`, label: chartLabels.savingsRate, key: 'savingsRate' },
   { activeTitle: t`Historical Distributions`, label: chartLabels.distributions, key: 'distributions' },
 ]
-
-const timeOptions: TimeOption[] = ['1M', '6M', '1Y']
 
 type StatisticsProps = {
   isChartExpanded: boolean
@@ -98,7 +96,7 @@ export const Statistics = ({ isChartExpanded, toggleChartExpanded, hideExpandCha
             <Box sx={{ paddingInline: Spacing.md, paddingBottom: Spacing.md }}>
               <ChartFooter
                 legendSets={legendSets}
-                toggleOptions={timeOptions}
+                toggleOptions={[...timeOptions]}
                 activeToggleOption={revenueChartTimeOption}
                 onToggleChange={(_, newOption) => setRevenueChartTimeOption(newOption)}
               />
