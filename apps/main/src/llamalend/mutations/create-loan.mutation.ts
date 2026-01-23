@@ -68,7 +68,7 @@ export const useCreateLoanMutation = ({
   const { mutate, error, data, isPending, isSuccess, reset } = useLlammaMutation<CreateLoanMutation>({
     network,
     marketId,
-    mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'create-loan'] as const,
+    mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'createLoan'] as const,
     mutationFn: async (mutation, { market }) => {
       const params = { ...mutation, chainId, marketId }
       await waitForApproval({
