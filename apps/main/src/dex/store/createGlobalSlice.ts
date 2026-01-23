@@ -113,11 +113,6 @@ export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreAp
 
     await state.pools.fetchPools(curveApi, poolIds, failedFetching24hOldVprice)
 
-    if (isUserSwitched || isNetworkSwitched) {
-      void state.pools.fetchPricesApiPools(chainId)
-      void state.pools.fetchBasePools(curveApi)
-    }
-
     log('Hydrating DEX - Complete')
   },
   setAppStateByActiveKey: <T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean) => {
