@@ -31,6 +31,12 @@ const { useQuery: useUserPricesQuery, invalidate: invalidateUserPrices } = query
 export { invalidateUserPrices }
 
 export const useUserPrices = (params: UserMarketParams) => {
-  const { data: loanExists } = useLoanExists(params)
-  return useUserPricesQuery({ ...params, loanExists })
+  const { data: loanExists, isLoading: isLoanExistsLoading, isError: isLoanExistsError } = useLoanExists(params)
+  const queryResult = useUserPricesQuery({ ...params, loanExists })
+  
+  return {
+    ...queryResult,
+    isLoading: isLoanExistsLoading || queryResult.isLoading,
+    isError: isLoanExistsError || queryResult.isError,
+  }
 }
