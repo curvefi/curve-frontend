@@ -10,7 +10,7 @@ type SortableProps<T extends TableItem> = {
   children: ReactNode
   isEnabled?: boolean
 }
-
+// forwardRef needed to pass ref to Tooltip for it to work
 const _Sortable = forwardRef<HTMLDivElement, SortableProps<TableItem>>(function Sortable(
   { children, column, isEnabled = true, ...props },
   ref,

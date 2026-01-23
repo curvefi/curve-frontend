@@ -1,7 +1,7 @@
 import { TooltipDescription, TooltipWrapper } from '@/llamalend/widgets/tooltips/TooltipComponents'
 import { Trans } from '@ui-kit/lib/i18n'
 
-export const BorrowRateHeaderTooltipContent = () => (
+export const NetBorrowAprHeaderTooltipContent = () => (
   <TooltipWrapper>
     <TooltipDescription
       text={

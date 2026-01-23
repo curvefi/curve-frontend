@@ -13,7 +13,9 @@ export type Market = {
   oracle: Address
   oraclePools: Address[]
   rate: number
+  // borrowApy = rate * 100
   borrowApy: number
+  // borrowTotalApy = borrowApy - collateral_yield_apy
   borrowTotalApy: number
   borrowApr: number
   borrowTotalApr: number

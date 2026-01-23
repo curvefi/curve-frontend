@@ -9,19 +9,36 @@ type BorrowRateTooltipProps = Pick<TooltipProps, 'children'> & {
   market: LlamaMarket
   columnId: LlamaMarketColumnId.BorrowRate | LlamaMarketColumnId.NetBorrowRate
 }
-const borrowRateType: Record<LlamaMarketColumnId.BorrowRate | LlamaMarketColumnId.NetBorrowRate, MarketBorrowRateType> =
-  {
-    [LlamaMarketColumnId.BorrowRate]: MarketBorrowRateType.BorrowApr,
-    [LlamaMarketColumnId.NetBorrowRate]: MarketBorrowRateType.NetBorrowApr,
-  }
 
-export const BorrowRateTooltip = ({ market, columnId, children }: BorrowRateTooltipProps) => (
-  <Tooltip
-    clickable
-    title={columnId === LlamaMarketColumnId.BorrowRate ? t`Borrow APR` : t`Net borrow APR`}
-    body={<MarketBorrowRateTooltipWrapper market={market} borrowRateType={borrowRateType[columnId]} />}
-    placement="top"
-  >
-    {children}
-  </Tooltip>
-)
+type BorrowRateTooltipConfig = {
+  title: string
+  type: MarketBorrowRateType
+}
+
+const borrowRateTooltipConfig: Record<
+  LlamaMarketColumnId.BorrowRate | LlamaMarketColumnId.NetBorrowRate,
+  BorrowRateTooltipConfig
+> = {
+  [LlamaMarketColumnId.BorrowRate]: {
+    title: t`Borrow APR`,
+    type: MarketBorrowRateType.BorrowApr,
+  },
+  [LlamaMarketColumnId.NetBorrowRate]: {
+    title: t`Net borrow APR`,
+    type: MarketBorrowRateType.NetBorrowApr,
+  },
+}
+
+export const BorrowRateTooltip = ({ market, columnId, children }: BorrowRateTooltipProps) => {
+  const { title, type } = borrowRateTooltipConfig[columnId]
+  return (
+    <Tooltip
+      clickable
+      title={title}
+      body={<MarketBorrowRateTooltipWrapper market={market} borrowRateType={type} />}
+      placement="top"
+    >
+      {children}
+    </Tooltip>
+  )
+}

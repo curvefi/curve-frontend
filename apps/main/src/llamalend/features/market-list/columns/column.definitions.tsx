@@ -24,7 +24,7 @@ import {
   UtilizationCell,
 } from '../cells'
 import {
-  BorrowRateHeaderTooltipContent,
+  NetBorrowAprHeaderTooltipContent,
   CollateralBorrowHeaderTooltipContent,
   LendRateHeaderTooltipContent,
   LiquidityUsdHeaderTooltipContent,
@@ -140,7 +140,7 @@ export const LLAMA_MARKET_COLUMNS = [
     cell: RateCell,
     meta: {
       type: 'numeric',
-      tooltip: createTooltip(LlamaMarketColumnId.NetBorrowRate, <BorrowRateHeaderTooltipContent />),
+      tooltip: createTooltip(LlamaMarketColumnId.NetBorrowRate, <NetBorrowAprHeaderTooltipContent />),
     },
     sortUndefined: 'last',
   }),
