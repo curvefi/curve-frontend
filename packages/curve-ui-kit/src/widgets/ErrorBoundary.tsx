@@ -15,7 +15,9 @@ export const ErrorBoundary = ({
   <CatchBoundary
     getResetKey={() => 'reset'}
     errorComponent={({ error, reset }: ErrorComponentProps) =>
-      customErrorComponent?.({ error, reset }) ?? <ErrorPage title={title} subtitle={error.message} resetError={reset} error={error} />
+      customErrorComponent?.({ error, reset }) ?? (
+        <ErrorPage title={title} subtitle={error.message} resetError={reset} error={error} />
+      )
     }
   >
     {children}
