@@ -96,7 +96,7 @@ export const Statistics = ({ isChartExpanded, toggleChartExpanded, hideExpandCha
             <Box sx={{ paddingInline: Spacing.md, paddingBottom: Spacing.md }}>
               <ChartFooter
                 legendSets={legendSets}
-                toggleOptions={[...timeOptions]}
+                toggleOptions={timeOptions}
                 activeToggleOption={revenueChartTimeOption}
                 onToggleChange={(_, newOption) => setRevenueChartTimeOption(newOption)}
               />
