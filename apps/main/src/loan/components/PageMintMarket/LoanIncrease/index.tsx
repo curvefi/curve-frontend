@@ -283,7 +283,7 @@ export const LoanIncrease = ({
         message={
           formValues.debtError === 'too-much'
             ? t`Borrow amount is greater than ${formatNumber(maxRecv)}, increase collateral to borrow more`
-            : isReady && t`Max borrow amount ${formatNumber(maxRecv, { defaultValue: '-' })}`
+            : undefined
         }
         disabled={disabled}
         inputBalanceUsd={decimal(formValues.debt && stablecoinUsdRate && stablecoinUsdRate * +formValues.debt)}
