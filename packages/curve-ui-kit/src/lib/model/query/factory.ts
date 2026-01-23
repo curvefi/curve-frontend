@@ -1,4 +1,3 @@
-import type { IsStringLiteral, SingleKeyObject } from 'type-fest'
 import type { Suite } from 'vest'
 import { CB } from 'vest-utils'
 import {
@@ -14,9 +13,23 @@ import { logQuery } from '@ui-kit/lib/logging'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model/time'
 import { checkValidity, FieldName, FieldsOf } from '@ui-kit/lib/validation'
 
+// Checks if T is a union type (e.g., 'a' | 'b')
+type IsUnion<T, U = T> = T extends T ? ([U] extends [T] ? false : true) : never
+
+// Checks if T is a string literal (not just `string`)
+type IsStringLiteral<T> = T extends string ? (string extends T ? false : true) : false
+
+// Checks if T is an object with exactly one key
+type IsSingleKeyObject<T> = T extends object
+  ? keyof T extends never
+    ? false // empty object
+    : IsUnion<keyof T> extends false
+      ? true // single key
+      : false // multiple keys (union)
+  : false
+
 // Checks if T is a string literal or an object with one property
-type IsLiteralOrSingleKeyObject<T> =
-  IsStringLiteral<T> extends true ? true : T extends SingleKeyObject<T> ? true : false
+type IsLiteralOrSingleKeyObject<T> = IsStringLiteral<T> extends true ? true : IsSingleKeyObject<T>
 
 // Recursively checks each element in the tuple
 type AreAllElementsLiteralOrSinglePropertyObject<T extends readonly unknown[]> = T extends readonly [
@@ -37,6 +50,16 @@ type QueryKeyTuple<T extends readonly unknown[]> = T extends readonly [...infer 
       : never // Elements fail the check
   : never // Not an array
 
+/**
+ * Reconstructs params from a query key tuple by merging all object entries.
+ *
+ * This pattern ensures we can recover named parameters from the query key for validation.
+ * Query keys must contain only string literals (ignored) or **single-key objects** (parsed).
+ *
+ * @example
+ * getParamsFromQueryKey(['pool', { chainId: 1 }, { poolId: 'abc' }])
+ * // → { chainId: 1, poolId: 'abc' }
+ */
 const getParamsFromQueryKey = <TKey extends readonly unknown[], TParams>(queryKey: TKey) =>
   Object.fromEntries(queryKey.flatMap((i) => (i && typeof i === 'object' ? Object.entries(i) : []))) as TParams
 
