@@ -10,13 +10,13 @@ import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
 import { ChartWrapper } from '@ui-kit/features/candle-chart/ChartWrapper'
 import { TIME_OPTIONS, SOFT_LIQUIDATION_DESCRIPTION } from '@ui-kit/features/candle-chart/constants'
-import { ErrorMessage } from '@ui-kit/features/candle-chart/ErrorMessage'
 import { useNewBandsChart } from '@ui-kit/hooks/useFeatureFlags'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { ChartFooter } from '@ui-kit/shared/ui/Chart/ChartFooter'
 import { ChartHeader } from '@ui-kit/shared/ui/Chart/ChartHeader'
 import { ToggleBandsChartButton } from '@ui-kit/shared/ui/Chart/ToggleBandsChartButton'
+import { ErrorMessage } from '@ui-kit/shared/ui/ErrorMessage'
 import { type TabOption } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { PoolActivity } from './PoolActivity'
@@ -108,7 +108,8 @@ export const ChartAndActivityComp = ({ rChainId, rOwmId, api }: ChartAndActivity
           >
             {ohlcDataUnavailable ? (
               <ErrorMessage
-                errorMessage={t`Chart data is not available for this market.`}
+                title="An error ocurred"
+                subtitle={t`Chart data is not yet available for this market.`}
                 sx={{ alignSelf: 'center' }}
               />
             ) : (

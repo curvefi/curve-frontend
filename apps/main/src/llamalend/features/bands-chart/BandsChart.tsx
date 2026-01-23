@@ -4,6 +4,8 @@ import { BandsChartToken, ChartDataPoint, ParsedBandsBalances } from '@/llamalen
 import { Box, Skeleton } from '@mui/material'
 import { DEFAULT_CHART_HEIGHT } from '@ui-kit/features/candle-chart/constants'
 import { useResizeObserver } from '@ui-kit/hooks/useResizeObserver'
+import { ErrorMessage } from '@ui-kit/shared/ui/ErrorMessage'
+import { ErrorBoundary } from '@ui-kit/widgets/ErrorBoundary'
 import { getChartOptions } from './chartOptions'
 import { EmptyState } from './EmptyState'
 import { useBandsChartPalette } from './hooks/useBandsChartPalette'
@@ -118,16 +120,37 @@ const BandsChartComponent = ({
         minWidth: 0,
       }}
     >
-      <ReactECharts
-        ref={chartRef}
-        option={finalOption}
-        style={{ width: '100%', height: '100%' }}
-        opts={{ renderer: 'canvas' }}
-        onEvents={{ datazoom: onDataZoom }}
-        notMerge={true}
-        lazyUpdate={true}
-        autoResize={true}
-      />
+      <ErrorBoundary
+        title="Chart Error"
+        customErrorComponent={({ error }) => (
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              height: '100%',
+              width: '100%',
+            }}
+          >
+            <ErrorMessage
+              title="An error ocurred"
+              subtitle="Something went wrong when rendering the bands chart."
+              error={error}
+            />
+          </Box>
+        )}
+      >
+        <ReactECharts
+          ref={chartRef}
+          option={finalOption}
+          style={{ width: '100%', height: '100%' }}
+          opts={{ renderer: 'canvas' }}
+          onEvents={{ datazoom: onDataZoom }}
+          notMerge={true}
+          lazyUpdate={true}
+          autoResize={true}
+        />
+      </ErrorBoundary>
     </Box>
   )
 }

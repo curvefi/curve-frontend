@@ -2,14 +2,25 @@ import { useMemo, useRef } from 'react'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import { CandleChart } from '@ui-kit/features/candle-chart/CandleChart'
-import { ErrorMessage } from '@ui-kit/features/candle-chart/ErrorMessage'
 import { useChartPalette } from '@ui-kit/features/candle-chart/hooks/useChartPalette'
 import type { ChartSelections } from '@ui-kit/shared/ui/Chart/ChartHeader'
+import { ErrorMessage } from '@ui-kit/shared/ui/ErrorMessage'
 import { Spinner } from '@ui-kit/shared/ui/Spinner'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { ErrorBoundary } from '@ui-kit/widgets/ErrorBoundary'
 import type { FetchingStatus, LiquidationRanges, LpPriceOhlcDataFormatted, OraclePriceData, TimeOption } from './types'
 
 const { Spacing } = SizesAndSpaces
+
+const BoxSx = (chartHeight: number) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
+  width: '100%',
+  minHeight: chartHeight,
+  gap: Spacing.md,
+})
 
 export type OhlcChartProps = {
   /**
@@ -65,43 +76,53 @@ export const ChartWrapper = ({
         <Box
           ref={wrapperRef}
           sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            position: 'relative',
-            width: '100%',
-            minHeight: chartHeight,
+            ...BoxSx(chartHeight),
             paddingBottom: Spacing.sm,
+            position: 'relative',
           }}
         >
-          <CandleChart
-            hideCandleSeriesLabel={hideCandleSeriesLabel}
-            chartHeight={chartHeight}
-            ohlcData={clonedOhlcData}
-            oraclePriceData={oraclePriceData}
-            liquidationRange={liquidationRange}
-            timeOption={timeOption}
-            wrapperRef={wrapperRef}
-            colors={colors}
-            refetchingCapped={refetchingCapped}
-            fetchMoreChartData={fetchMoreChartData}
-            lastFetchEndTime={lastFetchEndTime}
-            liqRangeCurrentVisible={liqRangeCurrentVisible}
-            liqRangeNewVisible={liqRangeNewVisible}
-            oraclePriceVisible={oraclePriceVisible}
-            latestOraclePrice={latestOraclePrice}
-          />
+          <ErrorBoundary
+            title="Chart Error"
+            customErrorComponent={({ error }) => (
+              <Box
+                sx={{
+                  ...BoxSx(chartHeight),
+                }}
+              >
+                <ErrorMessage
+                  title="An error ocurred"
+                  subtitle="Something went wrong when rendering the chart."
+                  refreshData={refetchPricesData}
+                  error={error}
+                  sx={{ alignSelf: 'center' }}
+                />
+              </Box>
+            )}
+          >
+            <CandleChart
+              hideCandleSeriesLabel={hideCandleSeriesLabel}
+              chartHeight={chartHeight}
+              ohlcData={clonedOhlcData}
+              oraclePriceData={oraclePriceData}
+              liquidationRange={liquidationRange}
+              timeOption={timeOption}
+              wrapperRef={wrapperRef}
+              colors={colors}
+              refetchingCapped={refetchingCapped}
+              fetchMoreChartData={fetchMoreChartData}
+              lastFetchEndTime={lastFetchEndTime}
+              liqRangeCurrentVisible={liqRangeCurrentVisible}
+              liqRangeNewVisible={liqRangeNewVisible}
+              oraclePriceVisible={oraclePriceVisible}
+              latestOraclePrice={latestOraclePrice}
+            />
+          </ErrorBoundary>
         </Box>
       )}
       {chartStatus === 'LOADING' && (
         <Box
           sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: '100%',
-            minHeight: chartHeight,
-            gap: Spacing.md,
+            ...BoxSx(chartHeight),
           }}
         >
           <Spinner />
@@ -110,17 +131,12 @@ export const ChartWrapper = ({
       {chartStatus === 'ERROR' && (
         <Box
           sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: '100%',
-            minHeight: chartHeight,
-            gap: Spacing.md,
+            ...BoxSx(chartHeight),
           }}
         >
           <ErrorMessage
-            errorMessage={`Unable to fetch ${selectChartList?.find((c) => c.key === selectedChartKey)?.label ?? ''} data.`}
+            title="An error ocurred"
+            subtitle={`Unable to fetch "${selectChartList?.find((c) => c.key === selectedChartKey)?.label ?? ''}" data.`}
             refreshData={refetchPricesData}
           />
         </Box>
