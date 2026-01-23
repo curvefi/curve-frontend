@@ -14,12 +14,12 @@ import Button from '@mui/material/Button'
 import { TokenSelector } from '@ui-kit/features/select-token'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
-import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { setValueOptions } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { useRepayForm } from '../hooks/useRepayForm'
+import { useTokenAmountConversion } from '../hooks/useTokenAmountConversion'
 
 /**
  * Join button texts with commas and ampersand
@@ -102,24 +102,13 @@ export const RepayForm = <ChainId extends IChainId>({
   const swapRequired = selectedToken !== borrowToken
   const priceImpact = useRepayPriceImpact(params, enabled && swapRequired)
 
-  const { data: selectedUsdRate, isLoading: selectedUsdRateLoading } = useTokenUsdRate({
-    chainId: network?.chainId,
-    tokenAddress: selectedToken?.address,
-  })
-
-  const { data: borrowUsdRate, isLoading: borrowUsdRateLoading } = useTokenUsdRate({
-    chainId: network?.chainId,
-    tokenAddress: borrowToken?.address,
-  })
-
   // The max repay amount in the helper message should always be denominated in terms of the borrow token.
-  const maxAmountInBorrowToken = useMemo(
-    () =>
-      selectedUsdRate && borrowUsdRate && max[selectedField].data
-        ? (+max[selectedField].data * selectedUsdRate) / borrowUsdRate
-        : undefined,
-    [borrowUsdRate, max, selectedField, selectedUsdRate],
-  )
+  const { data: maxAmountInBorrowToken, isLoading: maxAmountInBorrowTokenLoading } = useTokenAmountConversion({
+    chainId,
+    amountIn: max[selectedField].data,
+    tokenInAddress: selectedToken?.address,
+    tokenOutAddress: borrowToken?.address,
+  })
 
   const maxAmountPrefix = useMemo(
     () =>
@@ -181,7 +170,7 @@ export const RepayForm = <ChainId extends IChainId>({
             tooltip={t`Max available to repay`}
             symbol={borrowToken?.symbol}
             balance={maxAmountInBorrowToken}
-            loading={max[selectedField].isLoading || selectedUsdRateLoading || borrowUsdRateLoading}
+            loading={max[selectedField].isLoading || maxAmountInBorrowTokenLoading}
             onClick={() => {
               form.setValue(selectedField, max[selectedField].data, setValueOptions)
               void form.trigger(max[selectedField].field) // re-validate max
