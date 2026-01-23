@@ -1,15 +1,17 @@
+import BigNumber from 'bignumber.js'
+import { useMemo } from 'react'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useMarketRates } from '@/llamalend/queries/market-rates'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { UseQueryResult } from '@tanstack/react-query'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import type { Query } from '@ui-kit/types/util'
-import { Decimal } from '@ui-kit/utils'
+import { mapQuery } from '@ui-kit/types/util'
+import { decimal, Decimal } from '@ui-kit/utils'
 import { useCreateLoanEstimateGas } from '../../../queries/create-loan/create-loan-approve-estimate-gas.query'
 import { useCreateLoanBands } from '../../../queries/create-loan/create-loan-bands.query'
 import { useCreateLoanExpectedCollateral } from '../../../queries/create-loan/create-loan-expected-collateral.query'
 import { useCreateLoanHealth } from '../../../queries/create-loan/create-loan-health.query'
-import { useCreateLoanMaxReceive } from '../../../queries/create-loan/create-loan-max-receive.query'
 import { useCreateLoanPriceImpact } from '../../../queries/create-loan/create-loan-price-impact.query'
 import { useCreateLoanPrices } from '../../../queries/create-loan/create-loan-prices.query'
 import { useMarketFutureRates } from '../../../queries/market-future-rates.query'
@@ -49,6 +51,24 @@ export const CreateLoanInfoAccordion = <ChainId extends IChainId>({
   onSlippageChange: (newSlippage: Decimal) => void
 }) => {
   const [isOpen, , , toggle] = useSwitch(false)
+  const expectedCollateral = q(useCreateLoanExpectedCollateral(params, isOpen))
+  const leverageValue = useMemo(
+    () => mapQuery(expectedCollateral, (data) => data?.leverage ?? null),
+    [expectedCollateral],
+  )
+
+  const leverageCollateral = useMemo(
+    () =>
+      mapQuery(
+        leverageValue,
+        (leverage) =>
+          leverage && (decimal(new BigNumber(leverage).multipliedBy(params.userCollateral ?? 0)) as Decimal),
+      ),
+    [leverageValue, params.userCollateral],
+  )
+  const leverageTotalCollateral = mapQuery(expectedCollateral, (data) => data?.totalCollateral ?? null)
+  const priceImpact = q(useCreateLoanPriceImpact(params, isOpen))
+
   return (
     <LoanInfoAccordion
       isOpen={isOpen}
@@ -68,15 +88,15 @@ export const CreateLoanInfoAccordion = <ChainId extends IChainId>({
         isOpen,
       )}
       gas={useCreateLoanEstimateGas(networks, params, isOpen)}
-      leverage={{
-        enabled: leverageEnabled,
-        expectedCollateral: q(useCreateLoanExpectedCollateral(params, isOpen)),
-        maxReceive: q(useCreateLoanMaxReceive(params, isOpen)),
-        priceImpact: q(useCreateLoanPriceImpact(params, isOpen)),
+      {...(leverageEnabled && {
+        leverageValue,
+        leverageCollateral,
+        leverageTotalCollateral,
+        priceImpact,
         slippage,
         onSlippageChange,
         collateralSymbol: collateralToken?.symbol,
-      }}
+      })}
     />
   )
 }

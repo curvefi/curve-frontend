@@ -18,22 +18,12 @@ import { getHealthValueColor } from '../../features/market-position-details/util
 
 const format = (value: Amount | null | undefined, symbol?: string) =>
   value == null ? '-' : notFalsy(formatNumber(value, { abbreviate: true }), symbol).join(' ')
-const formatInt = (value: Amount | null | undefined) =>
-  value == null ? '-' : formatNumber(value, { abbreviate: false, decimals: 0 })
+const formatLeverage = (value: Amount | null | undefined) =>
+  value == null ? '-' : `${formatNumber(value, { abbreviate: false, decimals: 2 })}x`
 
 export type LoanInfoGasData = {
   estGasCostUsd?: number | Decimal | `${number}`
   tooltip?: string
-}
-
-export type LoanLeverageExpectedCollateral = {
-  totalCollateral: Decimal
-  leverage: Decimal
-}
-
-export type LoanLeverageMaxReceive = {
-  avgPrice?: Decimal
-  maxLeverage?: Decimal
 }
 
 export type LoanInfoAccordionProps = {
@@ -57,15 +47,16 @@ export type LoanInfoAccordionProps = {
   collateral?: Query<{ value: Decimal; tokenSymbol: string | undefined } | null>
   // userState values are used as prev values if collateral or debt are available
   userState?: Query<UserState>
-  leverage?: {
-    expectedCollateral?: Query<LoanLeverageExpectedCollateral | null>
-    maxReceive?: Query<LoanLeverageMaxReceive | null>
-    priceImpact?: Query<number | null>
-    slippage: Decimal
-    onSlippageChange: (newSlippage: Decimal) => void
-    collateralSymbol: string | undefined
-    enabled: boolean
-  }
+  prevLeverageValue?: Query<Decimal | null>
+  leverageValue?: Query<Decimal | null>
+  prevLeverageCollateral?: Query<Decimal | null>
+  leverageCollateral?: Query<Decimal | null>
+  prevLeverageTotalCollateral?: Query<Decimal | null>
+  leverageTotalCollateral?: Query<Decimal | null>
+  priceImpact?: Query<number | null>
+  slippage?: Decimal
+  onSlippageChange?: (newSlippage: Decimal) => void
+  collateralSymbol?: string
 }
 
 const { Spacing } = SizesAndSpaces
@@ -89,21 +80,28 @@ export const LoanInfoAccordion = ({
   gas,
   debt,
   collateral,
-  leverage,
   userState,
+  prevLeverageValue,
+  leverageValue,
+  prevLeverageCollateral,
+  leverageCollateral,
+  prevLeverageTotalCollateral,
+  leverageTotalCollateral,
+  priceImpact,
+  slippage,
+  onSlippageChange,
+  collateralSymbol,
 }: LoanInfoAccordionProps) => {
   const prevDebt = userState?.data?.debt
   const prevCollateral = userState?.data?.collateral
-  const {
-    priceImpact,
-    slippage,
-    expectedCollateral,
-    maxReceive,
-    enabled: leverageEnabled,
-    onSlippageChange,
-    collateralSymbol,
-  } = leverage ?? {}
-  const isHighImpact = priceImpact?.data != null && priceImpact.data > Number(slippage)
+  const hasLeverageFields =
+    prevLeverageValue ||
+    leverageValue ||
+    prevLeverageCollateral ||
+    leverageCollateral ||
+    prevLeverageTotalCollateral ||
+    leverageTotalCollateral
+  const isHighImpact = priceImpact?.data != null && slippage != null && priceImpact.data > Number(slippage)
   return (
     // error tooltip isn't displayed correctly because accordion takes the mouse focus. Use title for now.
     <Box title={(health.error ?? prevHealth?.error)?.message}>
@@ -217,15 +215,17 @@ export const LoanInfoAccordion = ({
             )}
           </Stack>
 
-          {leverageEnabled && (
+          {hasLeverageFields && (
             <Stack>
-              {expectedCollateral && maxReceive && (
+              {(prevLeverageValue || leverageValue) && (
                 <ActionInfo
                   label={t`Leverage`}
-                  value={formatInt((expectedCollateral.data ?? {}).leverage)}
-                  valueRight={maxReceive.data?.maxLeverage && ` (max ${formatInt(maxReceive.data.maxLeverage)})`}
-                  error={[expectedCollateral, maxReceive].find((q) => q.error)?.error}
-                  loading={[expectedCollateral, maxReceive].some((q) => q.isLoading)}
+                  value={formatLeverage(leverageValue?.data ?? prevLeverageValue?.data)}
+                  prevValue={
+                    leverageValue && prevLeverageValue?.data ? formatLeverage(prevLeverageValue.data) : undefined
+                  }
+                  {...combineQueryState(leverageValue, prevLeverageValue)}
+                  testId="borrow-leverage"
                 />
               )}
               {pnl && (
@@ -237,30 +237,40 @@ export const LoanInfoAccordion = ({
                   testId="borrow-pnl"
                 />
               )}
-              {expectedCollateral && (
+              {(prevLeverageCollateral || leverageCollateral) && (
                 <ActionInfo
-                  label={t`Expected`}
-                  value={format(expectedCollateral.data?.totalCollateral, collateralSymbol)}
-                  error={expectedCollateral.error}
-                  loading={expectedCollateral.isLoading}
+                  label={t`Leverage collateral`}
+                  value={format(leverageCollateral?.data ?? prevLeverageCollateral?.data, collateralSymbol)}
+                  prevValue={
+                    leverageCollateral &&
+                    prevLeverageCollateral?.data &&
+                    format(prevLeverageCollateral.data, collateralSymbol)
+                  }
+                  {...combineQueryState(leverageCollateral, prevLeverageCollateral)}
+                  testId="borrow-leverage-collateral"
                 />
               )}
-              {maxReceive && (
+              {(prevLeverageTotalCollateral || leverageTotalCollateral) && (
                 <ActionInfo
-                  label={t`Expected avg. price`}
-                  value={format(maxReceive.data?.avgPrice)}
-                  error={maxReceive.error}
-                  loading={maxReceive.isLoading}
+                  label={t`Total collateral`}
+                  value={format(leverageTotalCollateral?.data ?? prevLeverageTotalCollateral?.data, collateralSymbol)}
+                  prevValue={
+                    leverageTotalCollateral &&
+                    prevLeverageTotalCollateral?.data &&
+                    format(prevLeverageTotalCollateral.data, collateralSymbol)
+                  }
+                  {...combineQueryState(leverageTotalCollateral, prevLeverageTotalCollateral)}
+                  testId="borrow-leverage-total-collateral"
                 />
               )}
             </Stack>
           )}
 
           <Stack>
-            {leverageEnabled && slippage && onSlippageChange && (
+            {slippage && onSlippageChange && (
               <SlippageToleranceActionInfoPure maxSlippage={slippage} onSave={onSlippageChange} />
             )}
-            {leverageEnabled && priceImpact && (
+            {priceImpact && (
               <ActionInfo
                 label={isHighImpact ? t`High price impact` : t`Price impact`}
                 value={formatPercent(priceImpact.data)}
