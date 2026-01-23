@@ -37,27 +37,6 @@ type QueryKeyTuple<T extends readonly unknown[]> = T extends readonly [...infer 
       : never // Elements fail the check
   : never // Not an array
 
-type QueryFactoryInput<
-  TValidParams extends object,
-  TKey extends readonly unknown[],
-  TData,
-  TParams extends FieldsOf<TValidParams> = FieldsOf<TValidParams>,
-  TField extends string = FieldName<TValidParams>,
-  TGroup extends string = string,
-  TCallback extends CB = CB<TValidParams, TField[]>,
-> = {
-  queryKey: (params: TParams) => QueryKeyTuple<TKey>
-  validationSuite: Suite<TField, TGroup, TCallback>
-  queryFn: (params: TValidParams) => Promise<TData>
-  gcTime?: keyof typeof REFRESH_INTERVAL
-  staleTime?: keyof typeof REFRESH_INTERVAL
-  refetchInterval?: keyof typeof REFRESH_INTERVAL
-  dependencies?: (params: TParams) => QueryKey[]
-  refetchOnWindowFocus?: 'always'
-  refetchOnMount?: 'always'
-  disableLog?: true
-}
-
 const getParamsFromQueryKey = <TKey extends readonly unknown[], TParams>(queryKey: TKey) =>
   Object.fromEntries(queryKey.flatMap((i) => (i && typeof i === 'object' ? Object.entries(i) : []))) as TParams
 
@@ -66,7 +45,7 @@ export function queryFactory<
   const TKey extends readonly unknown[],
   TData,
   TParams extends FieldsOf<TQuery> = FieldsOf<TQuery>,
-  TField extends FieldName<TQuery> = FieldName<TQuery>,
+  TField extends string = FieldName<TQuery>,
   TGroup extends string = string,
   TCallback extends CB = CB<TQuery, TField[]>,
 >({
@@ -79,7 +58,18 @@ export function queryFactory<
   dependencies,
   disableLog,
   ...options
-}: QueryFactoryInput<TQuery, TKey, TData, TParams, TField, TGroup, TCallback>) {
+}: {
+  queryKey: (params: TParams) => QueryKeyTuple<TKey>
+  validationSuite: Suite<TField, TGroup, TCallback>
+  queryFn: (params: TQuery) => Promise<TData>
+  gcTime?: keyof typeof REFRESH_INTERVAL
+  staleTime?: keyof typeof REFRESH_INTERVAL
+  refetchInterval?: keyof typeof REFRESH_INTERVAL
+  dependencies?: (params: TParams) => QueryKey[]
+  refetchOnWindowFocus?: 'always'
+  refetchOnMount?: 'always'
+  disableLog?: true
+}) {
   const getQueryOptions = (params: TParams, enabled = true) =>
     queryOptions({
       queryKey: queryKey(params),
