@@ -13,5 +13,4 @@ export const showReleaseChannelSnackbar = ({
     title: t`${channel} Features ${isEnabled ? 'On' : 'Off'}`,
     message: t`You have successfully ${isEnabled ? 'enabled' : 'disabled'} ${channel.toLowerCase()} features.`,
     severity: 'info',
-    id: `release-channel-${channel}`,
   })
