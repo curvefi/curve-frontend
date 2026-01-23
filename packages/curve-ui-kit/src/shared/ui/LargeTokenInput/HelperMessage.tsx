@@ -24,14 +24,14 @@ const NUMBER_REGEX = /-?\d+(?:\.\d+)?/g
  */
 const buildClickableMessage = (message: string, onNumberClick: (balance: Decimal | undefined) => void) => {
   const matches = (message.match(NUMBER_REGEX) ?? []).map((m) => decimal(m))
-  return matches
-    ? message.split(NUMBER_REGEX).flatMap((part, index) => [
-        part,
-        <BalanceButton key={index} onClick={() => onNumberClick(matches[index])}>
-          <BalanceAmount testId={`helper-message-number-${index}`}>{matches[index]}</BalanceAmount>
-        </BalanceButton>,
-      ])
-    : [message]
+  return message.split(NUMBER_REGEX).flatMap((part, index) => [
+    part,
+    matches[index] && (
+      <BalanceButton key={index} onClick={() => onNumberClick(matches[index])}>
+        <BalanceAmount testId={`helper-message-number-${index}`}>{matches[index]}</BalanceAmount>
+      </BalanceButton>
+    ),
+  ])
 }
 
 export const HelperMessage = ({ message, isError, onNumberClick }: HelperMessageProps) => (
