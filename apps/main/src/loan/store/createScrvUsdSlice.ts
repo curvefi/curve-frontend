@@ -282,7 +282,7 @@ export const createScrvUsdSlice = (_set: StoreApi<State>['setState'], get: Store
           dismissNotificationHandler()
 
           // invalidate user balances query
-          invalidateScrvUsdUserBalances({ userAddress: useWallet.getState().wallet?.address })
+          await invalidateScrvUsdUserBalances({ userAddress: useWallet.getState().wallet?.address })
 
           get()[sliceKey].setStakingModuleChangeReset()
 
@@ -337,7 +337,7 @@ export const createScrvUsdSlice = (_set: StoreApi<State>['setState'], get: Store
           dismissNotificationHandler()
 
           // invalidate user balances query
-          invalidateScrvUsdUserBalances({ userAddress: useWallet.getState().wallet?.address })
+          await invalidateScrvUsdUserBalances({ userAddress: useWallet.getState().wallet?.address })
 
           get()[sliceKey].setStakingModuleChangeReset()
 
@@ -391,7 +391,7 @@ export const createScrvUsdSlice = (_set: StoreApi<State>['setState'], get: Store
           dismissNotificationHandler()
 
           // invalidate user balances query
-          invalidateScrvUsdUserBalances({ userAddress: useWallet.getState().wallet?.address })
+          await invalidateScrvUsdUserBalances({ userAddress: useWallet.getState().wallet?.address })
 
           get()[sliceKey].setStakingModuleChangeReset()
 

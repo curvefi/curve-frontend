@@ -471,7 +471,7 @@ export const createPoolDepositSlice = (
           })
 
           // re-fetch data
-          invalidateUserPoolInfoQuery({
+          await invalidateUserPoolInfoQuery({
             chainId: curve.chainId,
             poolId: pool.id,
             userAddress: curve.signerAddress,
@@ -518,7 +518,7 @@ export const createPoolDepositSlice = (
           })
 
           // re-fetch data
-          invalidateUserPoolInfoQuery({
+          await invalidateUserPoolInfoQuery({
             chainId: curve.chainId,
             poolId: pool.id,
             userAddress: curve.signerAddress,
@@ -591,7 +591,7 @@ export const createPoolDepositSlice = (
           })
 
           // re-fetch data
-          invalidateUserPoolInfoQuery({
+          await invalidateUserPoolInfoQuery({
             chainId: curve.chainId,
             poolId: pool.id,
             userAddress: curve.signerAddress,

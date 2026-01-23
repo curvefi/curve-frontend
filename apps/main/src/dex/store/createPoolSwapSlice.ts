@@ -461,7 +461,7 @@ export const createPoolSwapSlice = (
           })
 
           // re-fetch data
-          invalidateUserPoolInfoQuery({
+          await invalidateUserPoolInfoQuery({
             chainId: curve.chainId,
             poolId: poolData.pool.id,
             userAddress: curve.signerAddress,
