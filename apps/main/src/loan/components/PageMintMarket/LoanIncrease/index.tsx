@@ -36,7 +36,6 @@ import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { decimal, type Decimal } from '@ui-kit/utils'
-import { FormContent } from '@ui-kit/widgets/DetailPageLayout/FormContent'
 
 // Borrow more
 export const LoanIncrease = ({
@@ -387,12 +386,3 @@ export const LoanIncrease = ({
     </>
   )
 }
-
-/**
- * The new implementation of LoanBorrowMore with mui isn't ready yet. For now, we wrap the old one for styling.
- */
-export const LoanIncreaseWrapped = (props: ManageLoanProps) => (
-  <FormContent>
-    <LoanIncrease {...props} />
-  </FormContent>
-)

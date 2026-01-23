@@ -34,7 +34,6 @@ import { usePageVisibleInterval } from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { FormContent } from '@ui-kit/widgets/DetailPageLayout/FormContent'
 
 const { Spacing } = SizesAndSpaces
 
@@ -414,12 +413,3 @@ export const LoanBorrowMore = ({
     </Stack>
   )
 }
-
-/**
- * The new implementation of LoanBorrowMore with mui isn't ready yet. For now, we wrap the old one for styling.
- */
-export const LoanBorrowMoreWrapped = (props: LoanBorrowMoreProps) => (
-  <FormContent>
-    <LoanBorrowMore {...props} />
-  </FormContent>
-)

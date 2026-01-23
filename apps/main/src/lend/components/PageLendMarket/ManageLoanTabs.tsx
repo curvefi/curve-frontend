@@ -1,10 +1,14 @@
-import { LoanBorrowMore, LoanBorrowMoreWrapped } from '@/lend/components/PageLendMarket/LoanBorrowMore'
-import { LoanAddCollateralTab, LoanCollateralAdd } from '@/lend/components/PageLendMarket/LoanCollateralAdd'
-import { LoanCollateralRemove, LoanRemoveCollateralTab } from '@/lend/components/PageLendMarket/LoanCollateralRemove'
-import { LoanRepay, LoanRepayTab } from '@/lend/components/PageLendMarket/LoanRepay'
+import { LoanBorrowMore } from '@/lend/components/PageLendMarket/LoanBorrowMore'
+import { LoanCollateralAdd } from '@/lend/components/PageLendMarket/LoanCollateralAdd'
+import { LoanCollateralRemove } from '@/lend/components/PageLendMarket/LoanCollateralRemove'
+import { LoanRepay } from '@/lend/components/PageLendMarket/LoanRepay'
 import { LoanSelfLiquidation } from '@/lend/components/PageLendMarket/LoanSelfLiquidation'
 import { networks } from '@/lend/networks'
 import { type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
+import { AddCollateralForm } from '@/llamalend/features/manage-loan/components/AddCollateralForm'
+import { BorrowMoreForm } from '@/llamalend/features/manage-loan/components/BorrowMoreForm'
+import { RemoveCollateralForm } from '@/llamalend/features/manage-loan/components/RemoveCollateralForm'
+import { RepayForm } from '@/llamalend/features/manage-loan/components/RepayForm'
 import { useClosePositionTab } from '@/llamalend/features/manage-soft-liquidation/hooks/useClosePositionTab'
 import { useImproveHealthTab } from '@/llamalend/features/manage-soft-liquidation/hooks/useImproveHealthTab'
 import { ClosePosition } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ClosePosition'
@@ -51,21 +55,39 @@ const LendManageLegacyMenu = [
 ] satisfies FormTab<ManageLoanProps>[]
 
 const LendManageNewMenu = [
-  { value: 'loan-increase', label: t`Borrow more`, component: LoanBorrowMoreWrapped },
-  { value: 'loan-decrease', label: t`Repay`, component: LoanRepayTab },
+  {
+    value: 'loan-increase',
+    label: t`Borrow more`,
+    component: ({ rChainId, market, isLoaded }: PageContentProps) => (
+      <BorrowMoreForm networks={networks} chainId={rChainId} market={market} enabled={isLoaded} />
+    ),
+  },
+  {
+    value: 'loan-decrease',
+    label: t`Repay`,
+    component: ({ rChainId, market, isLoaded }: PageContentProps) => (
+      <RepayForm networks={networks} chainId={rChainId} market={market} enabled={isLoaded} />
+    ),
+  },
   {
     value: 'collateral',
     label: t`Collateral`,
     subTabs: [
-      { value: 'add', label: t`Add`, component: LoanAddCollateralTab },
-      { value: 'remove', label: t`Remove`, component: LoanRemoveCollateralTab },
+      {
+        value: 'add',
+        label: t`Add`,
+        component: ({ rChainId, market, isLoaded }: PageContentProps) => (
+          <AddCollateralForm networks={networks} chainId={rChainId} market={market} enabled={isLoaded} />
+        ),
+      },
+      {
+        value: 'remove',
+        label: t`Remove`,
+        component: ({ rChainId, market, isLoaded }: PageContentProps) => (
+          <RemoveCollateralForm networks={networks} chainId={rChainId} market={market} enabled={isLoaded} />
+        ),
+      },
     ],
-  },
-  {
-    value: 'leverage',
-    label: t`Leverage`,
-    visible: ({ market }) => market?.leverage?.hasLeverage(),
-    component: (props) => <LoanBorrowMoreWrapped {...props} isLeverage />,
   },
 ] satisfies FormTab<ManageLoanProps>[]
 
