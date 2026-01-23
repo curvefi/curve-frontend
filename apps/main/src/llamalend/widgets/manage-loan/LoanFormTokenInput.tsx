@@ -97,6 +97,13 @@ export const LoanFormTokenInput = <
   const error = errors[name] || max?.error || balanceError || relatedMaxFieldError
   const value = form.getValues(name)
   const errorMessage = error?.message
+  const onBalance = useCallback(
+    (v?: Decimal) => {
+      form.setValue(name, v as FieldPathValue<TFieldValues, TFieldName>, setValueOptions)
+      if (maxFieldName) void form.trigger(maxFieldName) // validate max field when balance changes
+    },
+    [form, maxFieldName, name],
+  )
   return (
     <LargeTokenInput
       name={name}
@@ -113,19 +120,17 @@ export const LoanFormTokenInput = <
         )
       }
       balance={value}
-      onBalance={useCallback(
-        (v?: Decimal) => {
-          form.setValue(name, v as FieldPathValue<TFieldValues, TFieldName>, setValueOptions)
-          if (maxFieldName) void form.trigger(maxFieldName) // validate max field when balance changes
-        },
-        [form, maxFieldName, name],
-      )}
+      onBalance={onBalance}
       isError={!!error}
       walletBalance={walletBalance}
       maxBalance={useMemo(() => max && { balance: max.data, chips: 'max' }, [max])}
       inputBalanceUsd={decimal(usdRate && usdRate * +(value ?? 0))}
     >
-      {errorMessage ? <HelperMessage message={errorMessage} isError /> : message && <HelperMessage message={message} />}
+      {errorMessage ? (
+        <HelperMessage message={errorMessage} onNumberClick={onBalance} isError />
+      ) : (
+        message && <HelperMessage onNumberClick={onBalance} message={message} />
+      )}
     </LargeTokenInput>
   )
 }

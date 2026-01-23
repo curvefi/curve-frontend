@@ -30,3 +30,12 @@ export const decimal = (value: number | string | undefined | null | BigNumber): 
     return value as Decimal
   }
 }
+
+/**
+ * Returns the minimum Decimal value from an array of Decimals, without losing precision.
+ */
+export const decimalMin = (...data: Decimal[]): Decimal | undefined =>
+  data.reduce<Decimal | undefined>(
+    (min, value) => (min == null ? value : new BigNumber(value).isLessThan(min) ? value : min),
+    undefined,
+  )
