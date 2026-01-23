@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
-import { VERTICAL_CENTER_TEXT } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
+import { BalanceAmount } from '@ui-kit/shared/ui/LargeTokenInput/BalanceAmount'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { decimal, type Decimal } from '@ui-kit/utils'
 import { BalanceButton } from './BalanceButton'
@@ -23,21 +23,12 @@ const NUMBER_REGEX = /-?\d+(?:\.\d+)?/g
  * Important: This only works for unformatted numbers!
  */
 const buildClickableMessage = (message: string, onNumberClick: (balance: Decimal | undefined) => void) => {
-  const matches = message.match(NUMBER_REGEX)
+  const matches = (message.match(NUMBER_REGEX) ?? []).map((m) => decimal(m))
   return matches
     ? message.split(NUMBER_REGEX).flatMap((part, index) => [
         part,
-        <BalanceButton key={index} onClick={() => onNumberClick(decimal(matches[index]))}>
-          <Typography
-            component="span"
-            variant="highlightXs"
-            color="textPrimary"
-            className="balance"
-            data-testid={`helper-message-number-${index}`}
-            sx={{ ...VERTICAL_CENTER_TEXT }}
-          >
-            {matches[index]}
-          </Typography>
+        <BalanceButton key={index} onClick={() => onNumberClick(matches[index])}>
+          <BalanceAmount testId={`helper-message-number-${index}`}>{matches[index]}</BalanceAmount>
         </BalanceButton>,
       ])
     : [message]

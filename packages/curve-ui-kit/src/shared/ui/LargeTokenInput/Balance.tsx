@@ -2,24 +2,16 @@ import type { SvgIcon } from '@mui/material'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
+import { BalanceAmount } from '@ui-kit/shared/ui/LargeTokenInput/BalanceAmount'
 import { BalanceButton } from '@ui-kit/shared/ui/LargeTokenInput/BalanceButton'
+import { VERTICAL_CENTER_TEXT } from '@ui-kit/shared/ui/LargeTokenInput/large-token-input.utils'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
-import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { type Amount, formatNumber } from '@ui-kit/utils'
 import { WalletIcon } from '../../icons/WalletIcon'
 import { WithWrapper } from '../WithWrapper'
 
 const { Spacing, IconSize } = SizesAndSpaces
-
-/**
- * The old familiar issue where Typography default line height is too big when being used in a small component.
- * The bottom margin of the text ends up being larger than the top half, messing with the vertical alignment.
- * We ought to find a better solution for it one day, but for now this'll do the trick.
- */
-export const VERTICAL_CENTER_TEXT = {
-  '&': { lineHeight: 'normal' },
-}
 
 /** Props for the Balance component */
 export type Props<T> = {
@@ -83,17 +75,9 @@ export const Balance = <T extends Amount>({
           )
         )}
 
-        <WithSkeleton loading={loading}>
-          <Typography
-            className="balance"
-            variant="highlightXs"
-            color={disabled ? 'textDisabled' : balance == null ? 'textTertiary' : 'textPrimary'}
-            data-testid="balance-value"
-            sx={{ ...VERTICAL_CENTER_TEXT }}
-          >
-            {loading ? '???' : balance == null ? '-' : formatNumber(balance, { abbreviate: true })}
-          </Typography>
-        </WithSkeleton>
+        <BalanceAmount disabled={disabled} loading={loading}>
+          {balance}
+        </BalanceAmount>
 
         <Typography
           variant="highlightXs"
