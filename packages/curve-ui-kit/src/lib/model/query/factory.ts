@@ -8,8 +8,6 @@ import {
   type DefaultError,
   type FetchQueryOptions,
   type QueryKey,
-  type UseQueryOptions,
-  type UseQueryResult,
 } from '@tanstack/react-query'
 import { queryClient } from '@ui-kit/lib/api/query-client'
 import { logQuery } from '@ui-kit/lib/logging'
@@ -60,30 +58,12 @@ type QueryFactoryInput<
   disableLog?: true
 }
 
-type QueryFactoryOutput<
-  TValidParams extends object,
-  TKey extends readonly unknown[],
-  TData,
-  TParams extends FieldsOf<TValidParams> = FieldsOf<TValidParams>,
-  TError = DefaultError,
-> = {
-  getQueryOptions: (params: TParams, enabled?: boolean) => UseQueryOptions<TData, TError, TData, TKey>
-  queryKey: (params: TParams) => QueryKeyTuple<TKey>
-  useQuery: (params: TParams, enabled?: boolean) => UseQueryResult<TData, TError>
-  getQueryData: (params: TParams) => TData | undefined
-  setQueryData: (params: TParams, data: TData) => void
-  prefetchQuery: (params: TParams, staleTime?: number) => Promise<void>
-  fetchQuery: (params: TParams, options?: Partial<FetchQueryOptions<TData, TError, TData, TKey>>) => Promise<TData>
-  refetchQuery: (params: TParams) => Promise<TData>
-  invalidate: (params: TParams) => void // todo: should be Promise<void>
-}
-
 const getParamsFromQueryKey = <TKey extends readonly unknown[], TParams>(queryKey: TKey) =>
   Object.fromEntries(queryKey.flatMap((i) => (i && typeof i === 'object' ? Object.entries(i) : []))) as TParams
 
 export function queryFactory<
   TQuery extends object,
-  TKey extends readonly unknown[],
+  const TKey extends readonly unknown[],
   TData,
   TParams extends FieldsOf<TQuery> = FieldsOf<TQuery>,
   TField extends FieldName<TQuery> = FieldName<TQuery>,
@@ -99,12 +79,7 @@ export function queryFactory<
   dependencies,
   disableLog,
   ...options
-}: QueryFactoryInput<TQuery, TKey, TData, TParams, TField, TGroup, TCallback>): QueryFactoryOutput<
-  TQuery,
-  TKey,
-  TData,
-  TParams
-> {
+}: QueryFactoryInput<TQuery, TKey, TData, TParams, TField, TGroup, TCallback>) {
   const getQueryOptions = (params: TParams, enabled = true) =>
     queryOptions({
       queryKey: queryKey(params),
@@ -129,17 +104,19 @@ export function queryFactory<
   return {
     queryKey,
     getQueryOptions,
-    getQueryData: (params) => queryClient.getQueryData(queryKey(params)),
-    setQueryData: (params, data) => queryClient.setQueryData<TData>(queryKey(params), data),
-    prefetchQuery: (params, staleTime = 0) => queryClient.prefetchQuery({ ...getQueryOptions(params), staleTime }),
-    fetchQuery: (params, options) => queryClient.fetchQuery({ ...getQueryOptions(params), ...options }),
+    getQueryData: (params: TParams): TData | undefined => queryClient.getQueryData(queryKey(params)),
+    setQueryData: (params: TParams, data: TData) => queryClient.setQueryData<TData>(queryKey(params), data),
+    prefetchQuery: (params: TParams, staleTime = 0) =>
+      queryClient.prefetchQuery({ ...getQueryOptions(params), staleTime }),
+    fetchQuery: (params: TParams, options?: Partial<FetchQueryOptions<TData, DefaultError, TData, TKey>>) =>
+      queryClient.fetchQuery({ ...getQueryOptions(params), ...options }),
     /**
      * Function that is like fetchQuery, but sets staleTime to 0 to ensure fresh data is fetched.
      * Primary use case is for Zustand stores where want to both use queries and ensure freshness.
      * I suspect this will be the only case, and once Zustand refactoring to Tanstack is complete, we may delete this.
      */
-    refetchQuery: (params) => queryClient.fetchQuery({ ...getQueryOptions(params), ...options, staleTime: 0 }),
-    useQuery: (params, condition) => useQuery(getQueryOptions(params, condition)),
-    invalidate: (params) => queryClient.invalidateQueries({ queryKey: queryKey(params) }),
-  }
+    refetchQuery: (params: TParams) => queryClient.fetchQuery({ ...getQueryOptions(params), ...options, staleTime: 0 }),
+    useQuery: (params: TParams, condition?: boolean) => useQuery(getQueryOptions(params, condition)),
+    invalidate: (params: TParams) => queryClient.invalidateQueries({ queryKey: queryKey(params) }),
+  } as const
 }
