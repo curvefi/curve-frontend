@@ -83,7 +83,7 @@ export type LlamaMarketKey = DeepKeys<LlamaMarket>
 const DEPRECATED_LLAMAS: PartialRecord<Chain, Record<Address, string>> = {
   ethereum: {
     // sfrxETH v1 mint market
-    '0x136e783846ef68C8Bd00a3369F787dF8d683a696': t`Please note this market is being phased out. We recommend migrating to the sfrxETH v2 market which uses an updated oracle.`,
+    '0x8472A9A7632b173c8Cf3a86D3afec50c35548e76': t`Please note this market is being phased out. We recommend migrating to the sfrxETH v2 market which uses an updated oracle.`,
     // swBTC-crvUSD lend market
     '0x276B8C8873079eEACCF4Dd241De14be92D733b45': t`This market is empty (it's never been used) and the oracle cannot be trusted.`,
     //wstUSR-crvUSD lend market
@@ -332,7 +332,7 @@ const convertMintMarket = (
       incentives: [],
     },
     type: LlamaMarketType.Mint,
-    deprecatedMessage: DEPRECATED_LLAMAS[chain]?.[llamma] ?? null,
+    deprecatedMessage: DEPRECATED_LLAMAS[chain]?.[address] ?? null,
     url: getInternalUrl('crvusd', chain, `${CRVUSD_ROUTES.PAGE_MARKETS}/${name}`),
     isFavorite: favoriteMarkets.has(llamma),
     rewards: [...(campaigns[address.toLowerCase()] ?? []), ...(campaigns[llamma.toLowerCase()] ?? [])],
