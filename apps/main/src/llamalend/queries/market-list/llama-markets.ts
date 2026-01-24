@@ -88,6 +88,8 @@ const DEPRECATED_LLAMAS: PartialRecord<Chain, Record<Address, string>> = {
     '0x276B8C8873079eEACCF4Dd241De14be92D733b45': t`This market is empty (it's never been used) and the oracle cannot be trusted.`,
     //wstUSR-crvUSD lend market
     '0x89707721927d7aaeeee513797A8d6cBbD0e08f41': t`This market is deprecated.`,
+    // LBTC-crvUSD v1 mint market
+    '0x8aca5A776a878Ea1F8967e70a23b8563008f58Ef': t`This market is deprecated.`,
   },
   arbitrum: {
     // iBTC-crvUSD lend market
