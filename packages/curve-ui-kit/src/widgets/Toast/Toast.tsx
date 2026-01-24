@@ -20,36 +20,42 @@ const getTotalDuration = ({ severity }: Pick<ToastItem, 'severity'>) => getDurat
 const getDurationPercent = ({ severity }: Pick<ToastItem, 'severity'>) =>
   `${(getDuration({ severity }) / getTotalDuration({ severity })) * 100}%`
 
-export const Toast = () => {
-  const [notifications, setNotifications] = useState<ToastItem[]>([])
-  const top = useLayoutStore((state) => state.navHeight)
-
+/**
+ * Hook to manage toast items received via the event handlers and connect that react state.
+ * Adds a timeout to automatically dismiss toasts after their duration.
+ * @see watchToasts for the event handler implementation
+ */
+function useToastItems() {
+  const [items, setItems] = useState<ToastItem[]>([])
   useEffect(() => {
     const timeouts: number[] = []
-    const dismiss = (notification: ToastItem): void => {
-      setNotifications((prevNotifications: ToastItem[]) => prevNotifications.filter((n) => n !== notification))
-    }
+    const dismiss = (notification: ToastItem): void =>
+      setItems((prevNotifications: ToastItem[]) => prevNotifications.filter((n) => n !== notification))
     const add = (notification: ToastItem): void => {
-      setNotifications((prevNotifications: ToastItem[]) => [...prevNotifications, notification])
+      setItems((prevNotifications: ToastItem[]) => [...prevNotifications, notification])
       const timeout = window.setTimeout(() => dismiss(notification), getTotalDuration(notification))
       timeouts.push(timeout)
     }
-
     const cleanupListener = watchToasts(add, dismiss)
     return () => {
       cleanupListener()
       timeouts.forEach(clearTimeout)
     }
   }, [])
+  return items
+}
 
+export const Toast = () => {
+  const top = useLayoutStore((state) => state.navHeight)
+  const items = useToastItems()
   return (
     <Snackbar
-      open={notifications.length > 0}
+      open={items.length > 0}
       anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-      sx={{ top, left: 'unset' }} // unset the left otherwise it will take the whole width
+      sx={{ top, left: 'unset' }} // unset left, otherwise it takes the whole width blocking clicks
     >
-      <Stack justifyContent="end" marginTop={Spacing.md} gap={Spacing.sm} flexWrap="wrap" flexDirection="row">
-        {notifications.map(({ id, severity, title, message, testId }) => (
+      <Stack justifyContent="end" marginTop={Spacing.md} gap={Spacing.sm} flexWrap="wrap" flexDirection="column">
+        {items.map(({ id, severity, title, message, testId }) => (
           <Alert
             key={id}
             variant="filled"

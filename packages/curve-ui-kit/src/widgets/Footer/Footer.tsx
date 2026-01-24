@@ -8,7 +8,6 @@ import { AppName } from '@ui-kit/shared/routes'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { ReleaseChannel } from '@ui-kit/utils'
 import { ReleaseChannelDialog } from '../../features/user-profile/settings/ReleaseChannelDialog'
-import { showReleaseChannelSnackbar } from '../../features/user-profile/settings/settings.util'
 import { Description } from './Description'
 import { Section } from './Section'
 import { getSections } from './Sections'
@@ -80,19 +79,7 @@ export const Footer = ({ appName, networkId }: FooterProps) => {
           onClick={openBetaModal}
         />
         {isBetaModalOpen != null && (
-          <ReleaseChannelDialog
-            open={isBetaModalOpen}
-            onClose={closeBetaModal}
-            channel={ReleaseChannel.Beta}
-            onChanged={(newChannel, oldChannel) => {
-              showReleaseChannelSnackbar(
-                ReleaseChannel.Beta,
-                (newChannel === ReleaseChannel.Stable ? oldChannel : newChannel) as
-                  | ReleaseChannel.Beta
-                  | ReleaseChannel.Legacy,
-              )
-            }}
-          />
+          <ReleaseChannelDialog open={isBetaModalOpen} onClose={closeBetaModal} channel={ReleaseChannel.Beta} />
         )}
       </Grid>
     </Box>
