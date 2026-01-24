@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js'
 import { useMemo } from 'react'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useMarketRates } from '@/llamalend/queries/market-rates'
@@ -7,7 +6,7 @@ import type { UseQueryResult } from '@tanstack/react-query'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import type { Query } from '@ui-kit/types/util'
 import { mapQuery } from '@ui-kit/types/util'
-import { decimal, Decimal } from '@ui-kit/utils'
+import { Decimal } from '@ui-kit/utils'
 import { useCreateLoanEstimateGas } from '../../../queries/create-loan/create-loan-approve-estimate-gas.query'
 import { useCreateLoanBands } from '../../../queries/create-loan/create-loan-bands.query'
 import { useCreateLoanExpectedCollateral } from '../../../queries/create-loan/create-loan-expected-collateral.query'
@@ -56,16 +55,6 @@ export const CreateLoanInfoAccordion = <ChainId extends IChainId>({
     () => mapQuery(expectedCollateral, (data) => data?.leverage ?? null),
     [expectedCollateral],
   )
-
-  const leverageCollateral = useMemo(
-    () =>
-      mapQuery(
-        leverageValue,
-        (leverage) =>
-          leverage && (decimal(new BigNumber(leverage).multipliedBy(params.userCollateral ?? 0)) as Decimal),
-      ),
-    [leverageValue, params.userCollateral],
-  )
   const leverageTotalCollateral = mapQuery(expectedCollateral, (data) => data?.totalCollateral ?? null)
   const priceImpact = q(useCreateLoanPriceImpact(params, isOpen))
 
@@ -90,7 +79,6 @@ export const CreateLoanInfoAccordion = <ChainId extends IChainId>({
       gas={useCreateLoanEstimateGas(networks, params, isOpen)}
       {...(leverageEnabled && {
         leverageValue,
-        leverageCollateral,
         leverageTotalCollateral,
         priceImpact,
         slippage,
