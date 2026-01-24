@@ -32,7 +32,9 @@ const Currency = ({
   <Stack direction="row" alignItems="center" justifyContent="flex-end" gap={1} component="span" display="inline-flex">
     <TokenIcon blockchainId={chain} address={address} tooltip={symbol} size="mui-sm" />
     <span>
-      {balance ? formatNumber(balance, { ...(isUsd(symbol) && { currency: 'USD' }), notation: 'compact' }) : '-'}
+      {balance != null
+        ? formatNumber(balance, { ...(isUsd(symbol) && { currency: 'USD' }), notation: 'compact' })
+        : '-'}
       {!isUsd(symbol) && ` ${symbol}`}
     </span>
   </Stack>
@@ -77,7 +79,7 @@ const UtilizationTooltipContent = ({
           <Currency {...borrowed} balance={liquidityUsd} />
         </TooltipItem>
         {debtCeiling != null && (
-          <TooltipItem title={t`Borrow cap`}>
+          <TooltipItem title={t`Debt ceiling`}>
             <Currency {...borrowed} balance={debtCeiling} />
           </TooltipItem>
         )}
