@@ -7,9 +7,9 @@ export const getPriceMin = (chartData: ChartDataPoint[], oraclePrice: string | u
   const bandDelta = chartData[0].p_down - chartData[0].p_up
   // if oraclePrice is outside of range of bands, set min to oraclePrice - bandDelta to make sure it's visible
   if (min > Number(oraclePrice)) {
-    return Number(oraclePrice) - bandDelta
+    return Number(oraclePrice) - bandDelta * 2
   }
-  return min - bandDelta
+  return min - bandDelta * 2
 }
 
 export const getPriceMax = (chartData: ChartDataPoint[], oraclePrice: string | undefined) => {
@@ -18,9 +18,9 @@ export const getPriceMax = (chartData: ChartDataPoint[], oraclePrice: string | u
   const bandDelta = chartData[0].p_down - chartData[0].p_up
   // if oraclePrice is outside of range of bands, set max to oraclePrice + bandDelta to make sure it's visible
   if (max < Number(oraclePrice)) {
-    return Number(oraclePrice) + bandDelta
+    return Number(oraclePrice) + bandDelta * 2
   }
-  return max + bandDelta
+  return max + bandDelta * 2
 }
 
 export const getBandsChartToken = (address: string | undefined, symbol?: string): BandsChartToken =>

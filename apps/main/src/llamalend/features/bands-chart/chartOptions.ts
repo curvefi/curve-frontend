@@ -112,13 +112,26 @@ export const getChartOptions = (
   const priceMin = getPriceMin(chartData, oraclePrice)
   const priceMax = getPriceMax(chartData, oraclePrice)
 
+  // Calculate x-axis extent for markLines (max endX value across all series)
+  // Data format: [median, startX, widthX, pDown, pUp, isLiq, endX]
+  // endX is at index 6, and for the full extent we need marketWidth + userWidth
+  let maxXEnd = 0
+  for (let i = 0; i < chartData.length; i++) {
+    const marketWidth = derived.marketData[i] ?? 0
+    const userWidth = derived.userData[i] ?? 0
+    const endX = marketWidth + userWidth
+    maxXEnd = Math.max(maxXEnd, endX)
+  }
+  const xStart = 0
+  const xEnd = maxXEnd
+
   // Generate mark areas using exact price edges
   const markAreas = userBandsPriceRange
     ? [[{ yAxis: userBandsPriceRange.lowerBandPriceDown }, { yAxis: userBandsPriceRange.upperBandPriceUp }]]
     : []
 
-  // Generate all mark lines (user range + oracle price)
-  const markLines = generateMarkLines(chartData, userBandsPriceRange, oraclePrice, palette)
+  // Generate all mark lines (user range + oracle price) using coord format
+  const markLines = generateMarkLines(chartData, userBandsPriceRange, oraclePrice, xStart, xEnd, palette)
 
   return {
     backgroundColor: 'transparent',
@@ -258,18 +271,30 @@ export const getChartOptions = (
               animationDurationUpdate: 0,
               silent: false,
               symbol: 'none',
-              lineStyle: { width: 2 },
-              data: markLines.map((line) => ({
-                ...line,
-                label: {
-                  ...line.label,
-                  position: 'start',
-                  align: 'left',
-                  verticalAlign: 'middle',
-                  offset: [-labelXOffset, 0],
-                  ...createLabelStyle(line.lineStyle, palette),
-                },
-              })),
+              data: markLines.map((line) => {
+                const [startPoint, endPoint] = line
+                const lineSegment: [
+                  { coord: [number, number]; label: Record<string, unknown> },
+                  { coord: [number, number]; lineStyle: Record<string, unknown> },
+                ] = [
+                  {
+                    ...startPoint,
+                    label: {
+                      ...startPoint.label,
+                      position: 'start',
+                      align: 'left',
+                      verticalAlign: 'middle',
+                      offset: [-labelXOffset, 0],
+                      ...createLabelStyle(line.lineStyle, palette),
+                    },
+                  },
+                  {
+                    ...endPoint,
+                    lineStyle: line.lineStyle,
+                  },
+                ]
+                return lineSegment
+              }),
             }
           : undefined,
       )
