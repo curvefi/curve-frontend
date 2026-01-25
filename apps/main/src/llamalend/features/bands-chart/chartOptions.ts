@@ -26,6 +26,7 @@ const createCustomRectSeries = (
   // x encodes start, width, and computed end so the axis sees full band extent
   encode: { y: 0, x: [1, 2, 6] },
   data,
+  clip: true, // Clip rectangles to grid area to prevent overflow over axis labels
   emphasis: {
     focus: 'self',
     itemStyle: {
@@ -104,7 +105,7 @@ export const getChartOptions = (
   if (chartData.length === 0) return {}
 
   const dataZoomWidth = 20
-  const gridPadding = { left: 0, top: 0, bottom: 8 }
+  const gridPadding = { left: 0, top: 0, bottom: 32 }
   const gridRight = 16 + dataZoomWidth
   const labelXOffset = 16 - (gridRight - dataZoomWidth)
 
