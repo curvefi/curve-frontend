@@ -108,10 +108,9 @@ export const getChartOptions = (
   const gridRight = 16 + dataZoomWidth
   const labelXOffset = 16 - (gridRight - dataZoomWidth)
 
-  // Secondary value y-axis will mirror category spacing using index space
-  // Price domain for value y-axis
-  const priceMin = getPriceMin(chartData)
-  const priceMax = getPriceMax(chartData)
+  const priceMin = getPriceMin(chartData, oraclePrice)
+  const priceMax = getPriceMax(chartData, oraclePrice)
+
   // Generate mark areas using exact price edges
   const markAreas = userBandsPriceRange
     ? [[{ yAxis: userBandsPriceRange.lowerBandPriceDown }, { yAxis: userBandsPriceRange.upperBandPriceUp }]]
@@ -182,9 +181,9 @@ export const getChartOptions = (
     yAxis: {
       type: 'value',
       position: 'right',
-      inverse: false,
       axisLine: { show: false },
       axisTick: { show: false },
+      overflow: 'hide',
       axisPointer: {
         show: true,
         type: 'shadow',
@@ -311,7 +310,6 @@ export const getChartOptions = (
         fillerColor: palette.zoomThumbColor,
         handleSize: '100%',
         handleStyle: { color: palette.zoomThumbColor, borderColor: palette.zoomThumbHandleBorderColor },
-        textStyle: { color: palette.textColorInverted, fontSize: 10 },
         showDetail: false,
         labelFormatter: (value: number | string) => formatNumberWithOptions(Number(value)),
         dataBackground: {
