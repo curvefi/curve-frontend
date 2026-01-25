@@ -105,7 +105,7 @@ export const getChartOptions = (
   if (chartData.length === 0) return {}
 
   const dataZoomWidth = 20
-  const gridPadding = { left: 0, top: 0, bottom: 32 }
+  const gridPadding = { left: 0, top: 0, bottom: 8 }
   const gridRight = 16 + dataZoomWidth
   const labelXOffset = 16 - (gridRight - dataZoomWidth)
 
@@ -201,7 +201,7 @@ export const getChartOptions = (
         color: palette.scaleLabelsColor,
         hideOverlap: true,
         overflow: 'break',
-        showMinLabel: true,
+        showMinLabel: false,
         showMaxLabel: false,
         formatter: (value: number) => formatNumberWithOptions(value),
       },
