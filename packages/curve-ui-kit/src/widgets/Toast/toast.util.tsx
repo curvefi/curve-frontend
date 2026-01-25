@@ -1,7 +1,6 @@
 import { random } from 'lodash'
 import type { ReactNode } from 'react'
 import type { AlertProps } from '@mui/material/Alert'
-import type { MakeOptional } from '@ui-kit/types/util'
 
 const onToast = new EventTarget()
 const addMessageKey = 'curveToast' as const
@@ -15,7 +14,7 @@ export type ToastItem = {
   severity?: AlertProps['severity']
 }
 
-export const showToast = (item: MakeOptional<ToastItem, 'id'>): { dismiss: () => void } => {
+export const showToast = (item: Omit<ToastItem, 'id'>): { dismiss: () => void } => {
   const detail: ToastItem = { id: random(0, 1e16).toString(), ...item }
   onToast.dispatchEvent(new CustomEvent<ToastItem>(addMessageKey, { detail }))
   const dismiss = () => onToast.dispatchEvent(new CustomEvent(removeMessageKey, { detail }))
