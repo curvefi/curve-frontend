@@ -114,6 +114,7 @@ export function RepayLoanInfoAccordion<ChainId extends IChainId>({
         isOpen,
       )}
       collateralSymbol={collateralToken?.symbol}
+      leverageEnabled={hasLeverage}
       {...(hasLeverage &&
         swapRequired && {
           slippage,

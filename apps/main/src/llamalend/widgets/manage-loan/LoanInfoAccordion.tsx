@@ -57,6 +57,8 @@ export type LoanInfoAccordionProps = {
   slippage?: Decimal
   onSlippageChange?: (newSlippage: Decimal) => void
   collateralSymbol?: string
+  /** Whether to show leverage-related fields (leverage value, leverage collateral...) */
+  leverageEnabled?: boolean
 }
 
 const { Spacing } = SizesAndSpaces
@@ -91,16 +93,10 @@ export const LoanInfoAccordion = ({
   slippage,
   onSlippageChange,
   collateralSymbol,
+  leverageEnabled,
 }: LoanInfoAccordionProps) => {
   const prevDebt = userState?.data?.debt
   const prevCollateral = userState?.data?.collateral
-  const hasLeverageFields =
-    prevLeverageValue ||
-    leverageValue ||
-    prevLeverageCollateral ||
-    leverageCollateral ||
-    prevLeverageTotalCollateral ||
-    leverageTotalCollateral
   const isHighImpact = priceImpact?.data != null && slippage != null && priceImpact.data > Number(slippage)
   return (
     // error tooltip isn't displayed correctly because accordion takes the mouse focus. Use title for now.
@@ -215,7 +211,7 @@ export const LoanInfoAccordion = ({
             )}
           </Stack>
 
-          {hasLeverageFields && (
+          {leverageEnabled && (
             <Stack>
               {(prevLeverageValue || leverageValue) && (
                 <ActionInfo

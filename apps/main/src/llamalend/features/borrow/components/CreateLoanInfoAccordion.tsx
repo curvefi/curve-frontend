@@ -73,6 +73,7 @@ export const CreateLoanInfoAccordion = <ChainId extends IChainId>({
         isOpen,
       )}
       gas={useCreateLoanEstimateGas(networks, params, isOpen)}
+      leverageEnabled={leverageEnabled}
       {...(leverageEnabled && {
         leverageValue,
         leverageTotalCollateral,

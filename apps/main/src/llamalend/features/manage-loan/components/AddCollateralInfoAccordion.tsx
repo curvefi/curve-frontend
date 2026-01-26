@@ -25,12 +25,14 @@ export function AddCollateralInfoAccordion<ChainId extends IChainId>({
   collateralToken,
   borrowToken,
   networks,
+  leverageEnabled,
 }: {
   params: CollateralParams<ChainId>
   values: CollateralForm
   collateralToken: Token | undefined
   borrowToken: Token | undefined
   networks: NetworkDict<ChainId>
+  leverageEnabled: boolean
 }) {
   const [isOpen, , , toggle] = useSwitch(false)
   const userState = q(useUserState(params, isOpen))
@@ -84,6 +86,7 @@ export function AddCollateralInfoAccordion<ChainId extends IChainId>({
       )}
       userState={userState}
       collateral={expectedCollateral}
+      leverageEnabled={leverageEnabled}
       prevLeverageValue={prevLeverageValue}
       leverageValue={leverageValue}
     />
