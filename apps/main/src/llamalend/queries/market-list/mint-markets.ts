@@ -52,17 +52,20 @@ const {
   validationSuite: userContractValidationSuite,
 })
 
-export const invalidateAllUserMintMarkets = (userAddress: Address | null | undefined) => {
-  invalidateUserMintMarkets({ userAddress })
-  recordEntries(getCurrentUserMintMarkets({ userAddress }) ?? {}).forEach(([blockchainId, contracts]) =>
-    contracts.forEach((contractAddress) =>
-      invalidateUserMintMarketStats({
-        userAddress,
-        blockchainId,
-        contractAddress,
-      }),
-    ),
+export const invalidateAllUserMintMarkets = async (userAddress: Address | null | undefined) => {
+  await invalidateUserMintMarkets({ userAddress })
+
+  const invalidateContracts = recordEntries(getCurrentUserMintMarkets({ userAddress }) ?? {}).flatMap(
+    ([blockchainId, contracts]) =>
+      contracts.map((contractAddress) =>
+        invalidateUserMintMarketStats({
+          userAddress,
+          blockchainId,
+          contractAddress,
+        }),
+      ),
   )
+  await Promise.all(invalidateContracts)
 }
 
 export const useUserMintMarketStats = useUserMintMarketStatsQuery

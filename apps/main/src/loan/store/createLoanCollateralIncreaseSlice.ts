@@ -1,6 +1,7 @@
 import lodash from 'lodash'
 import type { StoreApi } from 'zustand'
 import { updateUserEventsApi } from '@/llamalend/llama.utils'
+import { invalidateUserPrices } from '@/llamalend/queries/user-prices.query'
 import type { FormStatus, FormValues } from '@/loan/components/PageMintMarket/CollateralIncrease/types'
 import type { FormDetailInfo, FormEstGas } from '@/loan/components/PageMintMarket/types'
 import {
@@ -191,6 +192,9 @@ export const createLoanCollateralIncrease = (_set: StoreApi<State>['setState'], 
         if (!loanExists) {
           get().loans.resetUserDetailsState(llamma)
         }
+
+        // invalidate user prices to keep ohlc chart liquidation range in sync
+        invalidateUserPrices({ chainId, marketId: llamma.id, userAddress: wallet?.address, loanExists: loanExists })
 
         get()[sliceKey].setStateByKeys({
           detailInfo: {},

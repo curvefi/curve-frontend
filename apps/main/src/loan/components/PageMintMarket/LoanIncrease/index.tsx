@@ -282,16 +282,10 @@ export const LoanIncrease = ({
         message={
           formValues.debtError === 'too-much'
             ? t`Borrow amount is greater than ${formatNumber(maxRecv)}, increase collateral to borrow more`
-            : isReady && t`Max borrow amount ${formatNumber(maxRecv, { defaultValue: '-' })}`
+            : undefined
         }
         disabled={disabled}
         inputBalanceUsd={decimal(formValues.debt && stablecoinUsdRate && stablecoinUsdRate * +formValues.debt)}
-        walletBalance={{
-          loading: userWalletBalancesLoading,
-          balance: decimal(userWalletBalances.stablecoin),
-          symbol: getTokenName(llamma).stablecoin,
-          usdRate: stablecoinUsdRate,
-        }}
         maxBalance={{
           balance: decimal(maxRecv),
           chips: 'max',

@@ -33,7 +33,7 @@ type InputChip = {
   newBalance: (() => void) | ((maxBalance?: Decimal) => Decimal | undefined)
 }
 
-type ChipsPreset = 'max' | 'range'
+export type ChipsPreset = 'max' | 'range'
 const CHIPS_PRESETS: Record<ChipsPreset, InputChip[]> = {
   max: [{ label: t`Max`, newBalance: (maxBalance) => maxBalance }],
   range: [25, 50, 75, 100].map((p) => ({
@@ -262,14 +262,13 @@ export const LargeTokenInput = ({
     <Stack
       id={componentId}
       data-testid={testId}
-      gap={Spacing.sm}
       sx={{
         backgroundColor: (t) => t.design.Inputs.Large.Default.Fill,
         outline: (t) =>
           `1px solid ${isError ? t.design.Layer.Feedback.Error : t.design.Inputs.Base.Default.Border.Default}`,
       }}
     >
-      <Stack gap={Spacing.xs} sx={{ padding: Spacing.sm }}>
+      <Stack gap={Spacing.xxs} sx={{ padding: Spacing.sm }}>
         {/** First row is an optional label describing the input and/or chips */}
         {(label || showChips) && (
           <Stack

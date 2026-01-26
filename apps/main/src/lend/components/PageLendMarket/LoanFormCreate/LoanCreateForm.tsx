@@ -346,7 +346,6 @@ export const LoanCreateForm = ({
         inpValue={formValues.debt}
         tokenAddress={borrowed_token?.address}
         tokenSymbol={borrowed_token?.symbol}
-        tokenBalance={userBalances?.borrowed}
         maxRecv={maxRecv}
         handleInpChange={useCallback((debt) => updateFormValues({ debt }), [updateFormValues])}
       />

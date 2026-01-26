@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo } from 'react'
+import { useConnection } from 'wagmi'
 import { getTokens } from '@/llamalend/llama.utils'
-import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
+import { useUserPrices } from '@/llamalend/queries/user-prices.query'
 import { useStore } from '@/loan/store/useStore'
 import { Llamma, ChainId } from '@/loan/types/loan.types'
 import {
@@ -22,6 +23,12 @@ type OhlcChartStateProps = {
 }
 
 export const useOhlcChartState = ({ rChainId, market, llammaId }: OhlcChartStateProps) => {
+  const { address: userAddress } = useConnection()
+  const { data: userPrices } = useUserPrices({
+    chainId: rChainId,
+    marketId: llammaId,
+    userAddress,
+  })
   const poolAddress = market?.address ?? ''
   const controllerAddress = market?.controller ?? ''
   const increaseActiveKey = useStore((state) => state.loanIncrease.activeKey)
@@ -32,7 +39,6 @@ export const useOhlcChartState = ({ rChainId, market, llammaId }: OhlcChartState
   const formValues = useStore((state) => state.loanCreate.formValues)
   const activeKeyLiqRange = useStore((state) => state.loanCreate.activeKeyLiqRange)
   const liqRangesMapper = useStore((state) => state.loanCreate.liqRangesMapper[activeKeyLiqRange])
-  const userPrices = useUserLoanDetails(llammaId)?.userPrices ?? null
   const increaseLoanPrices = useStore((state) => state.loanIncrease.detailInfo[increaseActiveKey]?.prices ?? null)
   const decreaseLoanPrices = useStore((state) => state.loanDecrease.detailInfo[decreaseActiveKey]?.prices ?? null)
   const deleveragePrices = useStore((state) => state.loanDeleverage.detailInfo[deleverageActiveKey]?.prices ?? null)
