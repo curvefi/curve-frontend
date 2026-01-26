@@ -6,7 +6,6 @@ import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { ReleaseChannel } from '@ui-kit/utils'
 import { ReleaseChannelDialog } from './ReleaseChannelDialog'
-import { showReleaseChannelSnackbar } from './settings.util'
 
 export const ReleaseChannelToggleButtons = () => {
   const [releaseChannel] = useReleaseChannel()
@@ -33,19 +32,7 @@ export const ReleaseChannelToggleButtons = () => {
         ))}
       </ToggleButtonGroup>
       {releaseChannelDialog != null && (
-        <ReleaseChannelDialog
-          open
-          onClose={() => setReleaseChannelDialog(undefined)}
-          channel={releaseChannelDialog}
-          onChanged={(newChannel) =>
-            showReleaseChannelSnackbar(
-              releaseChannelDialog,
-              (newChannel === ReleaseChannel.Stable ? releaseChannel : newChannel) as
-                | ReleaseChannel.Beta
-                | ReleaseChannel.Legacy,
-            )
-          }
-        />
+        <ReleaseChannelDialog open onClose={() => setReleaseChannelDialog(undefined)} channel={releaseChannelDialog} />
       )}
     </>
   )
