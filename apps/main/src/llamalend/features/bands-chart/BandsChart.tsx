@@ -60,7 +60,6 @@ const BandsChartComponent = ({
     chartDataLength: chartData.length,
     initialZoomIndices,
     userBandsBalances,
-    chartData,
   })
 
   // Ensure the chart resizes on window resize and on initial mount (e.g., after layout/visibility changes)
