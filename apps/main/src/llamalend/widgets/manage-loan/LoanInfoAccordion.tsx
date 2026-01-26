@@ -19,7 +19,7 @@ import { getHealthValueColor } from '../../features/market-position-details/util
 const format = (value: Amount | null | undefined, symbol?: string) =>
   value == null ? '-' : notFalsy(formatNumber(value, { abbreviate: true }), symbol).join(' ')
 const formatLeverage = (value: Amount | null | undefined) =>
-  value == null ? '-' : `${formatNumber(value, { abbreviate: false, decimals: 2 })}x`
+  value == null ? '-' : formatNumber(value, { abbreviate: false, decimals: 2, unit: 'multiplier' })
 
 export type LoanInfoGasData = {
   estGasCostUsd?: number | Decimal | `${number}`

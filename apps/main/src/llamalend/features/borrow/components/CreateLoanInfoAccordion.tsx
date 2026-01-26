@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useMarketRates } from '@/llamalend/queries/market-rates'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -51,11 +50,8 @@ export const CreateLoanInfoAccordion = <ChainId extends IChainId>({
 }) => {
   const [isOpen, , , toggle] = useSwitch(false)
   const expectedCollateral = q(useCreateLoanExpectedCollateral(params, isOpen))
-  const leverageValue = useMemo(
-    () => mapQuery(expectedCollateral, (data) => data?.leverage ?? null),
-    [expectedCollateral],
-  )
-  const leverageTotalCollateral = mapQuery(expectedCollateral, (data) => data?.totalCollateral ?? null)
+  const leverageValue = mapQuery(expectedCollateral, (data) => data?.leverage)
+  const leverageTotalCollateral = mapQuery(expectedCollateral, (data) => data?.totalCollateral)
   const priceImpact = q(useCreateLoanPriceImpact(params, isOpen))
 
   return (
