@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useMemo } from 'react'
+import { useConnection } from 'wagmi'
 import { useOneWayMarket } from '@/lend/entities/chain'
-import { useUserLoanDetails } from '@/lend/hooks/useUserLoanDetails'
-import { helpers } from '@/lend/lib/apiLending'
 import { useStore } from '@/lend/store/useStore'
 import { ChainId } from '@/lend/types/lend.types'
 import { getTokens } from '@/llamalend/llama.utils'
+import { useUserPrices } from '@/llamalend/queries/user-prices.query'
 import {
   useLlammaChartSelections,
   useChartTimeSettings,
@@ -15,7 +15,6 @@ import type { OhlcChartProps } from '@ui-kit/features/candle-chart/ChartWrapper'
 import { DEFAULT_CHART_HEIGHT } from '@ui-kit/features/candle-chart/constants'
 import type { FetchingStatus } from '@ui-kit/features/candle-chart/types'
 import { subtractTimeUnit, getThreeHundredResultsAgo } from '@ui-kit/features/candle-chart/utils'
-import { useCurve } from '@ui-kit/features/connect-wallet'
 
 export type LendingMarketTokens = ReturnType<typeof getTokens> | undefined
 
@@ -25,9 +24,13 @@ type UseOhlcChartStateProps = {
 }
 
 export const useOhlcChartState = ({ rChainId, rOwmId }: UseOhlcChartStateProps) => {
-  const { llamaApi: api = null } = useCurve()
+  const { address: userAddress } = useConnection()
+  const { data: userPrices } = useUserPrices({
+    chainId: rChainId,
+    marketId: rOwmId,
+    userAddress,
+  })
   const market = useOneWayMarket(rChainId, rOwmId).data
-  const userActiveKey = helpers.getUserActiveKey(api, market!)
   const borrowMoreActiveKey = useStore((state) => state.loanBorrowMore.activeKey)
   const loanRepayActiveKey = useStore((state) => state.loanRepay.activeKey)
   const loanCollateralAddActiveKey = useStore((state) => state.loanCollateralAdd.activeKey)
@@ -36,7 +39,6 @@ export const useOhlcChartState = ({ rChainId, rOwmId }: UseOhlcChartStateProps) 
   const formValues = useStore((state) => state.loanCreate.formValues)
   const activeKeyLiqRange = useStore((state) => state.loanCreate.activeKeyLiqRange)
   const loanCreateLeverageDetailInfo = useStore((state) => state.loanCreate.detailInfoLeverage[activeKey])
-  const userPrices = useUserLoanDetails(userActiveKey)?.prices ?? null
   const liqRangesMapper = useStore((state) => state.loanCreate.liqRangesMapper[activeKeyLiqRange])
   const borrowMorePrices = useStore((state) => state.loanBorrowMore.detailInfo[borrowMoreActiveKey]?.prices ?? null)
   const repayActiveKey = useStore((state) => state.loanRepay.activeKey)

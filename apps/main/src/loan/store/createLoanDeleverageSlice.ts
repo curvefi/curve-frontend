@@ -1,6 +1,7 @@
 import lodash from 'lodash'
 import type { StoreApi } from 'zustand'
 import { updateUserEventsApi } from '@/llamalend/llama.utils'
+import { invalidateUserPrices } from '@/llamalend/queries/user-prices.query'
 import type { FormDetailInfo, FormStatus, FormValues } from '@/loan/components/PageMintMarket/LoanDeleverage/types'
 import {
   DEFAULT_DETAIL_INFO,
@@ -176,6 +177,9 @@ export const createLoanDeleverageSlice = (
           if (!loanExists) {
             get().loans.resetUserDetailsState(llamma)
           }
+
+          // invalidate user prices to keep ohlc chart liquidation range in sync
+          invalidateUserPrices({ chainId, marketId: llamma.id, userAddress: wallet?.address, loanExists: loanExists })
 
           get()[sliceKey].setStateByKeys({
             formValues: DEFAULT_FORM_VALUES,
