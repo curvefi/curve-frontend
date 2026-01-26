@@ -21,7 +21,6 @@ import { Api, OneWayMarketTemplate, PageContentProps } from '@/lend/types/lend.t
 import { DEFAULT_HEALTH_MODE } from '@/llamalend/constants'
 import type { HealthMode } from '@/llamalend/llamalend.types'
 import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
 import { AlertBox } from '@ui/AlertBox'
 import { getActiveStep } from '@ui/Stepper/helpers'
 import { Stepper } from '@ui/Stepper/Stepper'
@@ -344,41 +343,38 @@ export const LoanBorrowMore = ({
   return (
     <Stack gap={Spacing.lg}>
       <Stack gap={Spacing.sm}>
-        <Typography variant="headingXsMedium">{t`Add from wallet:`}</Typography>
+        <InpToken
+          network={network}
+          id="userCollateral"
+          inpLabel={t`Add from wallet:`}
+          inpError={formValues.userCollateralError}
+          inpDisabled={disabled}
+          inpLabelLoading={!!signerAddress && typeof userBalances?.collateral === 'undefined'}
+          inpValue={formValues.userCollateral}
+          tokenAddress={market?.collateral_token?.address}
+          tokenSymbol={market?.collateral_token?.symbol}
+          tokenBalance={userBalances?.collateral}
+          handleInpChange={useCallback((userCollateral) => updateFormValues({ userCollateral }), [updateFormValues])}
+        />
 
-        <Stack gap={Spacing.md}>
+        {isLeverage && (
           <InpToken
             network={network}
-            id="userCollateral"
-            inpError={formValues.userCollateralError}
+            id="userBorrowed"
+            inpLabel={t`Add borrowed from wallet:`}
+            inpError={formValues.userBorrowedError}
             inpDisabled={disabled}
-            inpLabelLoading={!!signerAddress && typeof userBalances?.collateral === 'undefined'}
-            inpValue={formValues.userCollateral}
-            tokenAddress={market?.collateral_token?.address}
-            tokenSymbol={market?.collateral_token?.symbol}
-            tokenBalance={userBalances?.collateral}
-            handleInpChange={useCallback((userCollateral) => updateFormValues({ userCollateral }), [updateFormValues])}
+            inpLabelLoading={!!signerAddress && typeof userBalances?.borrowed === 'undefined'}
+            inpValue={formValues.userBorrowed}
+            tokenAddress={market?.borrowed_token?.address}
+            tokenSymbol={market?.borrowed_token?.symbol}
+            tokenBalance={userBalances?.borrowed}
+            handleInpChange={setUserBorrowed}
           />
-
-          {isLeverage && (
-            <InpToken
-              network={network}
-              id="userBorrowed"
-              inpError={formValues.userBorrowedError}
-              inpDisabled={disabled}
-              inpLabelLoading={!!signerAddress && typeof userBalances?.borrowed === 'undefined'}
-              inpValue={formValues.userBorrowed}
-              tokenAddress={market?.borrowed_token?.address}
-              tokenSymbol={market?.borrowed_token?.symbol}
-              tokenBalance={userBalances?.borrowed}
-              handleInpChange={setUserBorrowed}
-            />
-          )}
-        </Stack>
+        )}
       </Stack>
 
       <Stack gap={Spacing.sm}>
-        <Typography variant="headingXsMedium">{t`Borrow amount:`}</Typography>
         <InpTokenBorrow
           network={network}
           id="debt"
@@ -387,7 +383,6 @@ export const LoanBorrowMore = ({
           inpValue={formValues.debt}
           tokenAddress={market?.borrowed_token?.address}
           tokenSymbol={market?.borrowed_token?.symbol}
-          tokenBalance={userBalances?.borrowed}
           maxRecv={maxRecv}
           handleInpChange={useCallback((debt) => updateFormValues({ debt }), [updateFormValues])}
         />

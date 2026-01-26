@@ -7,6 +7,7 @@ import CardHeader from '@mui/material/CardHeader'
 import Dialog from '@mui/material/Dialog'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
+import { showReleaseChannelSnackbar } from '@ui-kit/features/user-profile/settings/settings.util'
 import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { t, Trans } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -32,12 +33,10 @@ const Text = {
 export const ReleaseChannelDialog = ({
   channel,
   open,
-  onChanged,
   onClose,
 }: {
   channel: ReleaseChannel.Beta | ReleaseChannel.Legacy
   open: boolean
-  onChanged: (newValue: ReleaseChannel, oldValue: ReleaseChannel) => void
   onClose: () => void
 }) => {
   const [releaseChannel, setReleaseChannel] = useReleaseChannel()
@@ -70,7 +69,7 @@ export const ReleaseChannelDialog = ({
             onClick={() => {
               const newChannel = releaseChannel === channel ? ReleaseChannel.Stable : channel
               setReleaseChannel(newChannel)
-              onChanged(newChannel, releaseChannel)
+              showReleaseChannelSnackbar({ channel, isEnabled: newChannel === channel })
               onClose()
             }}
             sx={{ width: '100%' }}

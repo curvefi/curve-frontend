@@ -156,8 +156,8 @@ export const createProposalsSlice = (
           // get new user votes list from api
           const userAddress = curve?.signerAddress
           if (userAddress) {
-            invalidateProposalPricesApi({ proposalId: voteId, proposalType: voteType, txHash: voteResponseHash })
-            invalidateUserProposalVotesQuery({ userAddress })
+            await invalidateProposalPricesApi({ proposalId: voteId, proposalType: voteType, txHash: voteResponseHash })
+            await invalidateUserProposalVotesQuery({ userAddress })
           }
         }
       } catch (error) {
@@ -235,7 +235,7 @@ export const createProposalsSlice = (
           notify(successNotificationMessage, 'success')
 
           // update proposal executed status, forcing api to update by providing a transaction hash
-          invalidateProposalPricesApi({ proposalId: voteId, proposalType: voteType, txHash: transactionHash })
+          await invalidateProposalPricesApi({ proposalId: voteId, proposalType: voteType, txHash: transactionHash })
 
           set(
             produce((state: State) => {

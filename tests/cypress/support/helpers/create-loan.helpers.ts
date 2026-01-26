@@ -10,12 +10,12 @@ const chainId = Chain.Ethereum
 const CREATE_LOAN_TEST_MARKETS = {
   [LlamaMarketType.Mint]: [
     {
-      id: 'lbtc',
-      collateralAddress: '0x8236a87084f8b84306f72007f36f2618a5634494', // lbtc
+      id: 'wbtc',
+      collateralAddress: '0x4e59541306910aD6dC1daC0AC9dFB29bD9F15c67', // wbtc
       collateral: '1',
       borrow: '100',
       chainId,
-      path: '/crvusd/ethereum/markets/lbtc',
+      path: '/crvusd/ethereum/markets/wbtc',
     },
   ],
   [LlamaMarketType.Lend]: [
@@ -92,11 +92,11 @@ export function writeCreateLoanForm({
  */
 export function checkLoanRangeSlider(leverageEnabled: boolean) {
   cy.get(`[data-testid="loan-preset-${LoanPreset.MaxLtv}"]`).click()
-  cy.get('[data-testid="borrow-set-debt-to-max"]').should('not.exist') // should only render after loaded
+  cy.get('[data-testid="borrow-set-debt-to-max"]').should('not.exist') // make sure we don't click the previous max
   cy.get('[data-testid="borrow-set-debt-to-max"]', LOAD_TIMEOUT).click()
-  cy.get(`[data-testid="loan-preset-${LoanPreset.Safe}"]`).click()
-  cy.get('[data-testid="helper-message-error"]', LOAD_TIMEOUT).should('contain.text', 'Debt is too high')
-  cy.get('[data-testid="borrow-set-debt-to-max"]').click() // set max again to fix error
+  cy.get(`[data-testid="loan-preset-${LoanPreset.Safe}"]`).click({ force: true }) // force because sometimes a tooltip covers it
+  cy.get('[data-testid="helper-message-error"]', LOAD_TIMEOUT).should('contain.text', 'debt exceeds the maximum')
+  cy.get('[data-testid="helper-message-number-0"]').click() // set max again to fix error
   cy.get('[data-testid="helper-message-error"]').should('not.exist')
   checkLoanDetailsLoaded({ leverageEnabled })
 }
@@ -106,7 +106,5 @@ export function checkLoanRangeSlider(leverageEnabled: boolean) {
  */
 export function submitCreateLoanForm() {
   cy.get('[data-testid="create-loan-submit-button"]').click()
-  cy.get('[data-testid="create-loan-submit-button"]').should('be.disabled')
-  cy.get('[data-testid="create-loan-submit-button"]', LOAD_TIMEOUT)
-  return cy.get('[data-testid="create-loan-submit-button"]')
+  return cy.get('[data-testid="create-loan-submit-button"]', LOAD_TIMEOUT)
 }

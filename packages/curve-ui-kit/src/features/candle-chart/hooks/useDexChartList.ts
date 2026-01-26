@@ -1,11 +1,12 @@
 import _ from 'lodash'
 import { useCallback, useMemo, useState } from 'react'
+import type { PoolCoin } from '@curvefi/prices-api/pools'
 import { t } from '@ui-kit/lib/i18n'
 import type { ChartSelections } from '@ui-kit/shared/ui/Chart/ChartHeader'
-import type { ChartSelection, PricesApiCoin } from '../types'
+import type { ChartSelection } from '../types'
 
 type UseDexChartListArgs = {
-  coins: PricesApiCoin[]
+  coins: PoolCoin[]
   nCoins: number
   hasChartData: boolean
 }
@@ -38,13 +39,13 @@ const combinations = <T>(collection: T[], n: number): T[][] => {
   return recur(array, n)
 }
 
-const buildChartCombinations = (coins: PricesApiCoin[], nCoins: number): PricesApiCoin[][] => {
+const buildChartCombinations = (coins: PoolCoin[], nCoins: number): PoolCoin[][] => {
   const baseCoins = coins.slice(0, nCoins)
   const extraCombinations = coins.slice(nCoins).map((item) => [item, baseCoins[0]])
   return [...extraCombinations, ...combinations(baseCoins, 2)]
 }
 
-const formatPairLabel = (main: PricesApiCoin, ref: PricesApiCoin) => `${ref.symbol} / ${main.symbol}`
+const formatPairLabel = (main: PoolCoin, ref: PoolCoin) => `${ref.symbol} / ${main.symbol}`
 
 const DEFAULT_CHART_SELECTION: ChartSelection = { type: 'lp-usd' }
 

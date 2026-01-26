@@ -6,7 +6,6 @@ import type { StoreApi } from 'zustand'
 import { curvejsApi } from '@/dex/lib/curvejs'
 import type { State } from '@/dex/store/useStore'
 import {
-  BasePool,
   ChainId,
   CurrencyReserves,
   CurrencyReservesMapper,
@@ -23,6 +22,7 @@ import {
   VolumeMapper,
 } from '@/dex/types/main.types'
 import { getChainPoolIdActiveKey } from '@/dex/utils'
+import type { PoolCoin } from '@curvefi/prices-api/pools'
 import { PromisePool } from '@supercharge/promise-pool'
 import type {
   ChartSelection,
@@ -34,9 +34,6 @@ import type {
   LpTradesApiResponse,
   LpTradesData,
   LpTradeToken,
-  PricesApiCoin,
-  PricesApiPool,
-  PricesApiPoolResponse,
 } from '@ui-kit/features/candle-chart/types'
 import { convertToLocaleTimestamp } from '@ui-kit/features/candle-chart/utils'
 import { requireLib } from '@ui-kit/features/connect-wallet'
@@ -52,8 +49,6 @@ const { chunk, countBy, groupBy, isNaN } = lodash
 type SliceState = {
   poolsMapper: { [chainId: string]: PoolDataMapper }
   poolsLoading: { [chainId: string]: boolean }
-  basePools: { [chainId: string]: BasePool[] }
-  basePoolsLoading: boolean
   currencyReserves: CurrencyReservesMapper
   haveAllPools: { [chainId: string]: boolean }
   rewardsApyMapper: { [chainId: string]: RewardsApyMapper }
@@ -62,7 +57,6 @@ type SliceState = {
   }
   tvlMapper: { [chainId: string]: TvlMapper }
   volumeMapper: { [chainId: string]: VolumeMapper }
-  pricesApiPoolsMapper: { [poolAddress: string]: PricesApiPool }
   pricesApiPoolDataMapper: { [poolAddress: string]: PricesApiPoolData }
   snapshotsMapper: SnapshotsMapper
   pricesApiState: {
@@ -90,14 +84,12 @@ export type PoolsSlice = {
       failedFetching24hOldVprice: { [poolAddress: string]: boolean } | null,
     ): Promise<{ poolsMapper: PoolDataMapper; poolDatas: PoolData[] } | undefined>
     fetchNewPool(curve: CurveApi, poolId: string): Promise<PoolData | undefined>
-    fetchBasePools(curve: CurveApi): Promise<void>
     fetchPoolsRewardsApy(chainId: ChainId, poolDatas: PoolData[]): Promise<void>
     fetchMissingPoolsRewardsApy(chainId: ChainId, poolDatas: PoolData[]): Promise<void>
     fetchPoolStats: (curve: CurveApi, poolData: PoolData) => Promise<void>
     fetchPoolCurrenciesReserves(curve: CurveApi, poolData: PoolData): Promise<void>
     setPoolIsWrapped(poolData: PoolData, isWrapped: boolean): { tokens: string[]; tokenAddresses: string[] }
     updatePool: (chainId: ChainId, poolId: string, updatedPoolData: Partial<PoolData>) => void
-    fetchPricesApiPools: (chainId: ChainId) => Promise<void>
     fetchPricesPoolSnapshots: (chainId: ChainId, poolAddress: string) => Promise<void>
     fetchPricesApiCharts: (
       chainId: ChainId,
@@ -117,7 +109,7 @@ export type PoolsSlice = {
       start: number,
       end: number,
     ) => void
-    fetchPricesApiActivity: (chainId: ChainId, poolAddress: string, chartCombinations: PricesApiCoin[][]) => void
+    fetchPricesApiActivity: (chainId: ChainId, poolAddress: string, chartCombinations: PoolCoin[][]) => void
     setEmptyPoolListDefault(chainId: ChainId): void
 
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
@@ -130,15 +122,12 @@ export type PoolsSlice = {
 const DEFAULT_STATE: SliceState = {
   poolsMapper: {},
   poolsLoading: {},
-  basePools: {},
-  basePoolsLoading: true,
   haveAllPools: {},
   currencyReserves: {},
   rewardsApyMapper: {},
   stakedMapper: {},
   tvlMapper: {},
   volumeMapper: {},
-  pricesApiPoolsMapper: {},
   pricesApiPoolDataMapper: {},
   snapshotsMapper: {},
   pricesApiState: {
@@ -293,33 +282,6 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
       ])
       const resp = await get()[sliceKey].fetchPools(curve, [poolId], null)
       return resp?.poolsMapper?.[poolId]
-    },
-    fetchBasePools: async (curve: CurveApi) => {
-      const chainId = curve.chainId
-      if (curve.isNoRPC) return
-      set(
-        produce((state: State) => {
-          state.pools.basePoolsLoading = true
-        }),
-      )
-
-      try {
-        const basePools = await curve.getBasePools()
-
-        set(
-          produce((state: State) => {
-            state.pools.basePools[chainId] = basePools
-            state.pools.basePoolsLoading = false
-          }),
-        )
-      } catch (error) {
-        set(
-          produce((state: State) => {
-            state.pools.basePoolsLoading = false
-          }),
-        )
-        console.error(error)
-      }
     },
     fetchPoolCurrenciesReserves: async (curve, poolData) => {
       const { ...sliceState } = get()[sliceKey]
@@ -487,28 +449,6 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
         }),
       )
     },
-    fetchPricesApiPools: async (chainId: ChainId) => {
-      const networks = await fetchNetworks()
-      if (networks[chainId].pricesApi) {
-        const networkId = networks[chainId].id
-
-        try {
-          const response = await fetch(`https://prices.curve.finance/v1/chains/${networkId}`)
-          const data: PricesApiPoolResponse = await response.json()
-
-          const pricesApiPoolsMapper: { [poolAddress: string]: PricesApiPool } = {}
-          data.data.forEach((pool) => (pricesApiPoolsMapper[pool.address.toLowerCase()] = pool))
-
-          set(
-            produce((state: State) => {
-              state.pools.pricesApiPoolsMapper = pricesApiPoolsMapper
-            }),
-          )
-        } catch (error) {
-          console.warn(error)
-        }
-      }
-    },
     fetchPricesPoolSnapshots: async (chainId: ChainId, poolAddress: string) => {
       const networks = await fetchNetworks()
       if (networks[chainId].pricesApi) {
@@ -631,7 +571,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
         console.warn(error)
       }
     },
-    fetchPricesApiActivity: async (chainId: ChainId, poolAddress: string, chartCombinations: PricesApiCoin[][]) => {
+    fetchPricesApiActivity: async (chainId: ChainId, poolAddress: string, chartCombinations: PoolCoin[][]) => {
       set(
         produce((state: State) => {
           state.pools.pricesApiState.activityStatus = 'LOADING'
@@ -642,7 +582,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
       const network = networks[chainId].id.toLowerCase()
 
       try {
-        const promises = chartCombinations.map((coin: PricesApiCoin[]) =>
+        const promises = chartCombinations.map((coin: PoolCoin[]) =>
           fetch(
             `https://prices.curve.finance/v1/trades/${network}/${poolAddress}?main_token=${coin[0].address}&reference_token=${coin[1].address}&page=1&per_page=100`,
           ),

@@ -1,3 +1,4 @@
+import '@cy/support/helpers/eip6963-test-setup'
 import { useState } from 'react'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'

@@ -1,10 +1,9 @@
 import ReactECharts, { type EChartsOption } from 'echarts-for-react'
 import { useEffect, useMemo, memo, useRef } from 'react'
 import { BandsChartToken, ChartDataPoint, ParsedBandsBalances } from '@/llamalend/features/bands-chart/types'
-import { Box } from '@mui/material'
+import { Box, Skeleton } from '@mui/material'
 import { DEFAULT_CHART_HEIGHT } from '@ui-kit/features/candle-chart/constants'
 import { useResizeObserver } from '@ui-kit/hooks/useResizeObserver'
-import { Spinner } from '@ui-kit/shared/ui/Spinner'
 import { getChartOptions } from './chartOptions'
 import { EmptyState } from './EmptyState'
 import { useBandsChartPalette } from './hooks/useBandsChartPalette'
@@ -94,11 +93,14 @@ const BandsChartComponent = ({
             alignItems: 'center',
             justifyContent: 'center',
             height: '100%',
-            fontSize: '14px',
-            color: palette.textColor,
+            overflow: 'hidden',
           }}
         >
-          {isLoading ? <Spinner /> : <EmptyState isError={isError} />}
+          {isLoading ? (
+            <Skeleton variant="rectangular" sx={{ width: '100%', height: '100%' }} />
+          ) : (
+            <EmptyState isError={isError} />
+          )}
         </Box>
       </Box>
     )

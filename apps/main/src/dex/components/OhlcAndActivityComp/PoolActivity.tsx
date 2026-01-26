@@ -4,19 +4,20 @@ import { LiquidityData } from '@/dex/components/OhlcAndActivityComp/LiquidityDat
 import { TradesData } from '@/dex/components/OhlcAndActivityComp/TradesData'
 import { useStore } from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
+import type { PoolCoin } from '@curvefi/prices-api/pools'
 import Box from '@mui/material/Box'
 import { Button } from '@ui/Button/Button'
+import { Spinner } from '@ui/Spinner'
 import { DEFAULT_CHART_HEIGHT } from '@ui-kit/features/candle-chart/constants'
-import type { LpTradeToken, PricesApiCoin } from '@ui-kit/features/candle-chart/types'
+import type { LpTradeToken } from '@ui-kit/features/candle-chart/types'
 import { t } from '@ui-kit/lib/i18n'
-import { Spinner } from '@ui-kit/shared/ui/Spinner'
 
 type PoolActivityProps = {
   poolAddress: string
   chainId: ChainId
-  coins: PricesApiCoin[]
+  coins: PoolCoin[]
   tradesTokens: LpTradeToken[]
-  chartCombinations: PricesApiCoin[][]
+  chartCombinations: PoolCoin[][]
 }
 
 const CHART_HEIGHT = DEFAULT_CHART_HEIGHT + 48 // 48px is the height of the section header

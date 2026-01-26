@@ -14,11 +14,12 @@ import Button from '@mui/material/Button'
 import { TokenSelector } from '@ui-kit/features/select-token'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
-import { Balance } from '@ui-kit/shared/ui/Balance'
+import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { setValueOptions } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { useRepayForm } from '../hooks/useRepayForm'
+import { useTokenAmountConversion } from '../hooks/useTokenAmountConversion'
 
 /**
  * Join button texts with commas and ampersand
@@ -101,6 +102,19 @@ export const RepayForm = <ChainId extends IChainId>({
   const swapRequired = selectedToken !== borrowToken
   const priceImpact = useRepayPriceImpact(params, enabled && swapRequired)
 
+  // The max repay amount in the helper message should always be denominated in terms of the borrow token.
+  const { data: maxAmountInBorrowToken, isLoading: maxAmountInBorrowTokenLoading } = useTokenAmountConversion({
+    chainId,
+    amountIn: max[selectedField].data,
+    tokenInAddress: selectedToken?.address,
+    tokenOutAddress: borrowToken?.address,
+  })
+
+  const maxAmountPrefix = notFalsy(
+    selectedField === 'stateCollateral' && t`Using collateral balances to repay.`,
+    t`Max repay amount:`,
+  ).join(' ')
+
   useEffect(
     // Reset field when selectedField changes
     () => () => form.setValue(selectedField, undefined, setValueOptions),
@@ -124,12 +138,13 @@ export const RepayForm = <ChainId extends IChainId>({
       }
     >
       <LoanFormTokenInput
-        label={t`Amount to Repay`}
+        label={t`Amount to repay`}
         token={selectedToken}
         blockchainId={network.id}
         name={selectedField}
         form={form}
         max={max[selectedField]}
+        maxType="range"
         {...(selectedField === 'stateCollateral' && {
           positionBalance: { position: max.stateCollateral, tooltip: t`Current collateral in position` },
         })}
@@ -147,16 +162,15 @@ export const RepayForm = <ChainId extends IChainId>({
         }
         message={
           <Balance
-            prefix={t`Max:`}
+            prefix={maxAmountPrefix}
             tooltip={t`Max available to repay`}
-            symbol={selectedToken?.symbol}
-            balance={max[selectedField].data}
-            loading={max[selectedField].isLoading}
+            symbol={borrowToken?.symbol}
+            balance={maxAmountInBorrowToken}
+            loading={max[selectedField].isLoading || maxAmountInBorrowTokenLoading}
             onClick={() => {
               form.setValue(selectedField, max[selectedField].data, setValueOptions)
               void form.trigger(max[selectedField].field) // re-validate max
             }}
-            buttonTestId="borrow-set-debt-to-max"
           />
         }
       />

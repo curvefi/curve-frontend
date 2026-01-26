@@ -210,8 +210,8 @@ export const createLockedCrvSlice = (
           }
 
           // re-fetch user vecrv info
-          invalidateLockerVecrvInfo({ chainId: curve.chainId, userAddress: curve.signerAddress })
-          invalidateLockerVecrvUser({ chainId: curve.chainId, userAddress: curve.signerAddress })
+          await invalidateLockerVecrvInfo({ chainId: curve.chainId, userAddress: curve.signerAddress })
+          await invalidateLockerVecrvUser({ chainId: curve.chainId, userAddress: curve.signerAddress })
         }
       }
     },
@@ -245,8 +245,8 @@ export const createLockedCrvSlice = (
           })
 
           // re-fetch user vecrv info
-          invalidateLockerVecrvInfo({ chainId: curve.chainId, userAddress: curve.signerAddress })
-          invalidateLockerVecrvUser({ chainId: curve.chainId, userAddress: curve.signerAddress })
+          await invalidateLockerVecrvInfo({ chainId: curve.chainId, userAddress: curve.signerAddress })
+          await invalidateLockerVecrvUser({ chainId: curve.chainId, userAddress: curve.signerAddress })
         }
 
         return resp
@@ -282,8 +282,8 @@ export const createLockedCrvSlice = (
           })
 
           // re-fetch user vecrv info
-          invalidateLockerVecrvInfo({ chainId: curve.chainId, userAddress: curve.signerAddress })
-          invalidateLockerVecrvUser({ chainId: curve.chainId, userAddress: curve.signerAddress })
+          await invalidateLockerVecrvInfo({ chainId: curve.chainId, userAddress: curve.signerAddress })
+          await invalidateLockerVecrvUser({ chainId: curve.chainId, userAddress: curve.signerAddress })
         }
 
         return resp
@@ -327,7 +327,7 @@ export const createLockedCrvSlice = (
         )
 
         // re-fetch user vecrv info
-        invalidateLockerVecrvInfo({ chainId: curve.chainId, userAddress: curve.signerAddress })
+        await invalidateLockerVecrvInfo({ chainId: curve.chainId, userAddress: curve.signerAddress })
 
         dismissNotificationHandler()
         notify(t`CRV withdrawal successful.`, 'success')

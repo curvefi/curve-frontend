@@ -1,16 +1,16 @@
 import { useCallback, useEffect } from 'react'
 import { useStore } from '@/dex/store/useStore'
 import type { ChainId } from '@/dex/types/main.types'
+import type { Pool } from '@curvefi/prices-api/pools'
 import type { OhlcChartProps } from '@ui-kit/features/candle-chart/ChartWrapper'
 import { DEFAULT_CHART_HEIGHT } from '@ui-kit/features/candle-chart/constants'
 import { useChartTimeSettings } from '@ui-kit/features/candle-chart/hooks/useChartTimeSettings'
 import { useDexChartList } from '@ui-kit/features/candle-chart/hooks/useDexChartList'
-import type { PricesApiPool } from '@ui-kit/features/candle-chart/types'
 import { getThreeHundredResultsAgo, subtractTimeUnit } from '@ui-kit/features/candle-chart/utils'
 
 type UseOhlcChartStateArgs = {
   rChainId: ChainId
-  pricesApiPoolData: PricesApiPool
+  pricesApiPoolData: Pool
 }
 
 export const useOhlcChartState = ({ rChainId, pricesApiPoolData }: UseOhlcChartStateArgs) => {
@@ -26,7 +26,7 @@ export const useOhlcChartState = ({ rChainId, pricesApiPoolData }: UseOhlcChartS
   const { chartCombinations, selectChartList, selectedChart, selectedChartKey, setSelectedChart, flipChart } =
     useDexChartList({
       coins: pricesApiPoolData.coins,
-      nCoins: pricesApiPoolData.n_coins,
+      nCoins: pricesApiPoolData.numCoins,
       hasChartData: chartOhlcData.length > 0,
     })
 
