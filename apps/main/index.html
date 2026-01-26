@@ -1,46 +1,87 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <title>Curve.finance</title>
-      <meta
-        name="description"
-        content="Curve-frontend is a user interface application designed to connect to Curve's deployment of smart contracts."
-      />
-    <link rel="stylesheet" href="./src/index.css" />
+<head>
+  <title>Curve.finance</title>
+  <meta
+    name="description"
+    content="Curve-frontend is a user interface application designed to connect to Curve's deployment of smart contracts."
+  />
+  <link rel="stylesheet" href="./src/index.css" />
 
-      <!-- Open Graph -->
-      <meta property="og:type" content="website" />
-      <meta property="og:url" content="https://curve.finance" />
-      <meta property="og:title" content="Curve.finance" />
-      <meta
-        property="og:description"
-        content="Curve-frontend is a user interface application designed to connect to Curve's deployment of smart contracts."
-      />
-      <meta property="og:image" content="https://cdn.jsdelivr.net/gh/curvefi/curve-assets/branding/logo.png" />
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://curve.finance" />
+  <meta property="og:title" content="Curve.finance" />
+  <meta
+    property="og:description"
+    content="Curve-frontend is a user interface application designed to connect to Curve's deployment of smart contracts."
+  />
+  <meta property="og:image" content="https://cdn.jsdelivr.net/gh/curvefi/curve-assets/branding/logo.png" />
 
-      <!-- Twitter -->
-      <meta property="twitter:card" content="summary" />
-      <meta property="twitter:url" content="https://curve.finance" />
-      <meta property="twitter:title" content="Curve.finance" />
-      <meta
-        property="twitter:description"
-        content="Curve-frontend is a user interface application designed to connect to Curve's deployment of smart contracts."
-      />
-      <meta property="twitter:image" content="https://cdn.jsdelivr.net/gh/curvefi/curve-assets/branding/logo.png" />
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary" />
+  <meta property="twitter:url" content="https://curve.finance" />
+  <meta property="twitter:title" content="Curve.finance" />
+  <meta
+    property="twitter:description"
+    content="Curve-frontend is a user interface application designed to connect to Curve's deployment of smart contracts."
+  />
+  <meta property="twitter:image" content="https://cdn.jsdelivr.net/gh/curvefi/curve-assets/branding/logo.png" />
 
-      <!-- Favicon and Icons -->
-      <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-      <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-      <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-      <link rel="manifest" href="/manifest.json" />
-      <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#787878" />
-      <meta name="msapplication-TileColor" content="#ffffff" />
-      <meta name="theme-color" content="#ffffff" />
-      <meta name="viewport" content="initial-scale=1, minimum-scale=1, width=device-width" />
-    </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="./src/eip-6963.ts"></script>
-    <script type="module" src="./src/main.tsx"></script>
-  </body>
+  <!-- Favicon and Icons -->
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#787878" />
+  <meta name="msapplication-TileColor" content="#ffffff" />
+  <meta name="theme-color" content="#ffffff" />
+  <meta name="viewport" content="initial-scale=1, minimum-scale=1, width=device-width" />
+  <style>
+      /**
+       * Initial Load Screen, displayed in case the app takes a while to load
+       */
+      .initial-load {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 2rem;
+          height: 100vh;
+          width: 100vw;
+          background-color: hsla(24, 9%, 90%, 1);
+          font-family: "Mona Sans", "Helvetica Neue", Helvetica, sans-serif;
+          color: #1b1b1b;
+
+          opacity: 0;
+          animation: initial-load-fade 2s ease-in forwards;
+          animation-delay: 0.5s;
+
+          .title { font-weight: bold; font-size: 6rem; }
+
+          .loader {
+              width: 3.2rem;
+              height: 3.2rem;
+              border-radius: 50%;
+              border: 3px solid rgba(27, 27, 27, 0.2);
+              border-top-color: rgba(27, 27, 27, 0.9);
+              animation: ring-spin 0.9s linear infinite;
+          }
+      }
+
+      @keyframes ring-spin { to { transform: rotate(360deg); } }
+      @keyframes initial-load-fade { to { opacity: 1; } }
+  </style>
+</head>
+<body>
+<div id="root">
+  <div class="initial-load">
+    <img src="https://cdn.jsdelivr.net/gh/curvefi/curve-assets/branding/logo.png" alt="Curve" width="30%" />
+    <span class="title">Curve</span>
+    <div class="loader" aria-label="Loading"></div>
+  </div>
+</div>
+<script type="module" src="./src/eip-6963.ts"></script>
+<script type="module" src="./src/main.tsx"></script>
+</body>
 </html>
