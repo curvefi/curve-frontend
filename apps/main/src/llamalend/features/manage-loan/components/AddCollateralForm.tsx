@@ -1,4 +1,4 @@
-import { hasSupportedLeverage } from '@/llamalend/llama.utils'
+import { hasLeverageValue } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import type { AddCollateralOptions } from '@/llamalend/mutations/add-collateral.mutation'
 import { LoanFormAlerts } from '@/llamalend/widgets/manage-loan/LoanFormAlerts'
@@ -55,7 +55,7 @@ export const AddCollateralForm = <ChainId extends IChainId>({
           collateralToken={collateralToken}
           borrowToken={borrowToken}
           networks={networks}
-          leverageEnabled={!!market && hasSupportedLeverage(market)}
+          leverageEnabled={!!market && hasLeverageValue(market)}
         />
       }
     >

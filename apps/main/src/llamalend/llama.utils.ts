@@ -27,12 +27,16 @@ export const hasLeverage = (market: LlamaMarketTemplate) =>
   hasV1Leverage(market) || (market instanceof MintMarketTemplate && hasV2Leverage(market))
 
 /**
- * Checks if the market supports leverage values. This values are supported for:
- * - Lend markets
- * - New Mint markets (marketId >= 6)
- * Leverage values are not supported for old mint markets (marketId < 6), but opening or closing leveraged positions is still possible.
+ * Checks if leverage value (multiplier) can be calculated and displayed for this market.
+ *
+ * Returns true for:
+ * - Lend markets with leverage support
+ * - Mint markets with V2 leverage support (marketId >= 6)
+ *
+ * Note: Some older Mint markets (marketId < 6) support leverage operations (open/close positions)
+ * but cannot calculate the leverage multiplier value.
  */
-export const hasSupportedLeverage = (market: LlamaMarketTemplate) =>
+export const hasLeverageValue = (market: LlamaMarketTemplate) =>
   (market instanceof LendMarketTemplate && hasV1Leverage(market)) ||
   (market instanceof MintMarketTemplate && hasV2Leverage(market))
 

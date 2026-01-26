@@ -1,6 +1,6 @@
 import { enforce, test, skipWhen } from 'vest'
 import { PRESET_RANGES } from '@/llamalend/constants'
-import { getLlamaMarket, hasLeverage, hasSupportedLeverage } from '@/llamalend/llama.utils'
+import { getLlamaMarket, hasLeverage, hasLeverageValue } from '@/llamalend/llama.utils'
 import { Decimal } from '@ui-kit/utils'
 
 export const validateUserBorrowed = (userBorrowed: Decimal | null | undefined) => {
@@ -76,7 +76,7 @@ export const validateLeverageValuesSupported = (marketId: string | null | undefi
   skipWhen(!marketId, () => {
     test('marketId', 'Market does not support leverage values', () => {
       const market = getLlamaMarket(marketId!)
-      enforce(hasSupportedLeverage(market)).isTruthy()
+      enforce(hasLeverageValue(market)).isTruthy()
     })
   })
 }
