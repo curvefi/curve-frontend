@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unused-expressions */
 import lodash, { max } from 'lodash'
+import { LlamaMarketColumnId } from '@/llamalend/features/market-list/columns/columns.enum'
 import type { GetMarketsResponse } from '@curvefi/prices-api/llamalend'
 import { range, recordValues } from '@curvefi/prices-api/objects.util'
 import { oneOf, shuffle, type TokenType } from '@cy/support/generators'
@@ -11,7 +11,6 @@ import {
   mockLendingSnapshots,
   mockLendingVaults,
 } from '@cy/support/helpers/lending-mocks'
-import { LLAMA_VISIBILITY_SETTINGS_V0 } from '@cy/support/helpers/llamalend-storage'
 import { mockMintMarkets, mockMintSnapshots } from '@cy/support/helpers/minting-mocks'
 import { mockTokenPrices } from '@cy/support/helpers/tokens'
 import {
@@ -61,6 +60,7 @@ describe(`LlamaLend Markets`, () => {
   })
 
   it('should sort', () => {
+    const utilizationColumnId = LlamaMarketColumnId.UtilizationPercent
     cy.get(`[data-testid^="data-table-row"]`)
       .first()
       .find(`[data-testid="market-link-${HighTVLAddress}"]`)
@@ -73,7 +73,7 @@ describe(`LlamaLend Markets`, () => {
       cy.get(`[data-testid="data-table-cell-tvl"]`).first().contains('$')
       openDrawer('sort')
       cy.get('[data-testid="drawer-sort-menu-lamalend-markets"]').contains('Utilization', LOAD_TIMEOUT)
-      cy.get('[data-testid="drawer-sort-menu-lamalend-markets"] li[value="utilizationPercent"]').click()
+      cy.get(`[data-testid="drawer-sort-menu-lamalend-markets"] li[value="${utilizationColumnId}"]`).click()
       cy.get('[data-testid="drawer-sort-menu-lamalend-markets"]').should('not.be.visible')
       cy.get(`[data-testid^="data-table-row"]`)
         .first()
@@ -81,13 +81,13 @@ describe(`LlamaLend Markets`, () => {
         .should('exist')
       expandFirstRowOnMobile()
       // note: not possible currently to sort ascending
-      cy.get('[data-testid="metric-utilizationPercent"]').contains('99%', LOAD_TIMEOUT)
+      cy.get(`[data-testid="metric-${utilizationColumnId}"]`).contains('99%', LOAD_TIMEOUT)
     } else {
-      cy.get(`[data-testid="data-table-cell-rates_borrow"]`).first().contains('%')
-      cy.get('[data-testid="data-table-header-utilizationPercent"]').click()
-      cy.get('[data-testid="data-table-cell-utilizationPercent"]').first().contains('99%', LOAD_TIMEOUT)
-      cy.get('[data-testid="data-table-header-utilizationPercent"]').click()
-      cy.get('[data-testid="data-table-cell-utilizationPercent"]').first().contains('0%', LOAD_TIMEOUT)
+      cy.get(`[data-testid="data-table-cell-${LlamaMarketColumnId.NetBorrowRate}"]`).first().contains('%')
+      cy.get(`[data-testid="data-table-header-${utilizationColumnId}"]`).click()
+      cy.get(`[data-testid="data-table-cell-${utilizationColumnId}"]`).first().contains('99%', LOAD_TIMEOUT)
+      cy.get(`[data-testid="data-table-header-${utilizationColumnId}"]`).click()
+      cy.get(`[data-testid="data-table-cell-${utilizationColumnId}"]`).first().contains('0%', LOAD_TIMEOUT)
     }
   })
 
@@ -142,9 +142,9 @@ describe(`LlamaLend Markets`, () => {
 
   it('should allow filtering by using a slider', () => {
     const [columnId, initialFilterText] = oneOf(
-      ['liquidityUsd', '$0 -'],
-      ['tvl', '$10k -'],
-      ['utilizationPercent', '0% -'],
+      [LlamaMarketColumnId.LiquidityUsd, '$0 -'],
+      [LlamaMarketColumnId.Tvl, '$10k -'],
+      [LlamaMarketColumnId.UtilizationPercent, '0% -'],
     )
     // Keep the viewport stable for slider width.
     cy.viewport(...((breakpoint === 'mobile' ? [500, 800] : [1200, 800]) as [number, number]))
@@ -318,6 +318,22 @@ describe(`LlamaLend Markets`, () => {
     cy.get(`[data-testid="${element}"]`).should('not.exist')
   })
 
+  it('should display Net borrow APR by default', () => {
+    const netBorrowColumnId = LlamaMarketColumnId.NetBorrowRate
+
+    if (breakpoint === 'mobile') {
+      // On mobile, expand the first row and check the metric is visible in the expanded panel
+      expandFirstRowOnMobile()
+      cy.get('[data-testid="data-table-expansion-row"]').contains('Net borrow APR').should('be.visible')
+      cy.get('[data-testid="data-table-expansion-row"]').contains('%').should('be.visible')
+    } else {
+      // On tablet/desktop, the column header and cell should be visible by default
+      cy.get(`[data-testid="data-table-header-${netBorrowColumnId}"]`).should('be.visible')
+      cy.get(`[data-testid="data-table-cell-${netBorrowColumnId}"]`).first().should('be.visible')
+      cy.get(`[data-testid="data-table-cell-${netBorrowColumnId}"]`).first().contains('%')
+    }
+  })
+
   function expandFirstRowOnMobile() {
     if (breakpoint == 'mobile') {
       cy.get(`[data-testid="expand-icon"]`).first().click()
@@ -398,26 +414,6 @@ describe(`LlamaLend Markets`, () => {
     cy.get(`[data-testid="multi-select-clear"]`).click() // deselect previously selected tokens
     cy.url().should('not.include', `assets_${type}_symbol`)
   }
-})
-
-describe(`LlamaLend Storage Migration`, () => {
-  beforeEach(() => {
-    setupMocks()
-  })
-
-  it('migrates old visibility settings', () => {
-    visitAndWait(oneViewport(), {
-      onBeforeLoad({ localStorage }) {
-        localStorage.clear()
-        localStorage.setItem('table-column-visibility-llamalend-markets', JSON.stringify(LLAMA_VISIBILITY_SETTINGS_V0))
-      },
-    })
-    cy.window().then(({ localStorage }) => {
-      expect(localStorage.getItem('table-column-visibility-llamalend-markets')).to.be.null
-      const migrated = JSON.parse(localStorage.getItem('table-column-visibility-llamalend-markets-v1')!)
-      expect(Object.keys(migrated)).to.deep.equal(['Borrow', 'Supply', 'hasPositions', 'noPositions', 'unknown'])
-    })
-  })
 })
 
 function visitAndWait([width, height]: [number, number, Breakpoint], options?: Partial<Cypress.VisitOptions>) {

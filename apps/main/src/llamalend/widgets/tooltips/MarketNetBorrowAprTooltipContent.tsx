@@ -29,7 +29,7 @@ const messages: Record<LlamaMarketType, string> = {
   [LlamaMarketType.Mint]: t`The net borrow APR is the total cost related to your borrow and varies according to the mint market, borrow incentives and the crvUSD's peg.`,
 }
 
-export const MarketBorrowRateTooltipContent = ({
+export const MarketNetBorrowAprTooltipContent = ({
   marketType,
   borrowRate,
   totalBorrowRate,

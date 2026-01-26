@@ -1,4 +1,4 @@
-import { MarketBorrowRateTooltipContent } from '@/llamalend/widgets/tooltips/MarketBorrowRateTooltipContent'
+import { MarketNetBorrowAprTooltipContent } from '@/llamalend/widgets/tooltips/MarketNetBorrowAprTooltipContent'
 import { MarketSupplyRateTooltipContent } from '@/llamalend/widgets/tooltips/MarketSupplyRateTooltipContent'
 import { Box, CardHeader } from '@mui/material'
 import { formatNumber, FORMAT_OPTIONS } from '@ui/utils/utilsFormat'
@@ -152,7 +152,7 @@ export const MarketDetails = ({
           valueTooltip={{
             title: t`Net borrow APR`,
             body: (
-              <MarketBorrowRateTooltipContent
+              <MarketNetBorrowAprTooltipContent
                 marketType={marketType}
                 borrowRate={borrowRate?.rate}
                 totalBorrowRate={borrowRate?.totalBorrowRate}
