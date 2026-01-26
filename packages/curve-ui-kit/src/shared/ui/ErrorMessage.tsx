@@ -14,12 +14,14 @@ export const ErrorMessage = ({
   title,
   subtitle,
   error,
+  errorMessage,
   refreshData,
   sx,
 }: {
   title: string
-  subtitle: string
+  subtitle?: string
   error?: unknown
+  errorMessage: string
   refreshData?: () => void
   sx?: SxProps
 }) => {
@@ -31,9 +33,11 @@ export const ErrorMessage = ({
       <Typography variant="bodyMRegular" color="textPrimary" textAlign="center" component="div">
         {title}
       </Typography>
-      <Typography variant="bodySRegular" color="textPrimary" textAlign="center" component="div">
-        {subtitle}
-      </Typography>
+      {subtitle && (
+        <Typography variant="bodySRegular" color="textPrimary" textAlign="center" component="div">
+          {subtitle}
+        </Typography>
+      )}
       <Stack direction="row" flexWrap="wrap" gap={Spacing.sm} alignItems="center">
         <Button onClick={openReportModal} color="secondary" data-testid="submit-error-report-button">
           {t`Submit error report`}
@@ -49,7 +53,11 @@ export const ErrorMessage = ({
           </IconButton>
         )}
       </Stack>
-      <ErrorReportModal isOpen={isReportOpen} onClose={closeReportModal} context={{ error, title, subtitle }} />
+      <ErrorReportModal
+        isOpen={isReportOpen}
+        onClose={closeReportModal}
+        context={{ error, title, subtitle: errorMessage }}
+      />
     </Stack>
   )
 }

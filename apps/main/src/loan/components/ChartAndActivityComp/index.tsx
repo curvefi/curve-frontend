@@ -110,6 +110,7 @@ export const ChartAndActivityComp = ({ rChainId, market, llammaId }: ChartAndAct
               <ErrorMessage
                 title="An error ocurred"
                 subtitle={t`Chart data is not yet available for this market.`}
+                errorMessage={t`Chart data is not yet available for this market.`}
                 sx={{ alignSelf: 'center' }}
               />
             ) : (

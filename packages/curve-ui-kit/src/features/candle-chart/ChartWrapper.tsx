@@ -83,21 +83,9 @@ export const ChartWrapper = ({
         >
           <ErrorBoundary
             title="Chart Error"
-            customErrorComponent={({ error }) => (
-              <Box
-                sx={{
-                  ...BoxSx(chartHeight),
-                }}
-              >
-                <ErrorMessage
-                  title="An error ocurred"
-                  subtitle="Something went wrong when rendering the chart."
-                  refreshData={refetchPricesData}
-                  error={error}
-                  sx={{ alignSelf: 'center' }}
-                />
-              </Box>
-            )}
+            inline
+            subtitle="Something went wrong when rendering the chart."
+            refreshData={refetchPricesData}
           >
             <CandleChart
               hideCandleSeriesLabel={hideCandleSeriesLabel}
@@ -138,6 +126,7 @@ export const ChartWrapper = ({
             title="An error ocurred"
             subtitle={`Unable to fetch "${selectChartList?.find((c) => c.key === selectedChartKey)?.label ?? ''}" data.`}
             refreshData={refetchPricesData}
+            errorMessage={`Unable to fetch "${selectChartList?.find((c) => c.key === selectedChartKey)?.label ?? ''}" data.`}
           />
         </Box>
       )}
