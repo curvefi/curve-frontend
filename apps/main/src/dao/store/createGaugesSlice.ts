@@ -315,11 +315,11 @@ export const createGaugesSlice = (set: StoreApi<State>['setState'], get: StoreAp
         const successNotificationMessage = t`Succesfully cast vote!`
         notify(successNotificationMessage, 'success')
 
-        invalidateUserGaugeWeightVotesQuery({
+        await invalidateUserGaugeWeightVotesQuery({
           chainId: Chain.Ethereum,
           userAddress,
         })
-        invalidateUserGaugeVoteNextTimeQuery({
+        await invalidateUserGaugeVoteNextTimeQuery({
           chainId: Chain.Ethereum,
           gaugeAddress,
           userAddress,

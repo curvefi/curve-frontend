@@ -1,10 +1,10 @@
 import { enforce, group, test } from 'vest'
-import type { TimeOption } from '@ui-kit/lib/types/scrvusd'
 import { createValidationSuite } from '@ui-kit/lib/validation'
 
-type TimeOptionParams = { timeOption: TimeOption }
+export const timeOptions = ['1M', '6M', '1Y'] as const
+export type TimeOption = (typeof timeOptions)[number]
 
-const validTimeOptions: TimeOption[] = ['1M', '6M', '1Y']
+type TimeOptionParams = { timeOption: TimeOption }
 
 export const timeOptionValidationGroup = ({ timeOption }: TimeOptionParams) =>
   group('timeOptionValidation', () => {
@@ -13,7 +13,7 @@ export const timeOptionValidationGroup = ({ timeOption }: TimeOptionParams) =>
     })
 
     test('timeOption', 'Invalid time option', () => {
-      enforce(validTimeOptions.includes(timeOption)).equals(true)
+      enforce(timeOptions.includes(timeOption)).equals(true)
     })
   })
 
