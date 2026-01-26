@@ -66,7 +66,6 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
           blockchainId={network.id}
           name="userCollateral"
           form={form}
-          max={maxRemovable}
           testId="remove-collateral-input"
           network={network}
           positionBalance={{

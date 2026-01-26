@@ -10,12 +10,12 @@ const chainId = Chain.Ethereum
 const CREATE_LOAN_TEST_MARKETS = {
   [LlamaMarketType.Mint]: [
     {
-      id: 'lbtc',
-      collateralAddress: '0x8236a87084f8b84306f72007f36f2618a5634494', // lbtc
+      id: 'wbtc',
+      collateralAddress: '0x4e59541306910aD6dC1daC0AC9dFB29bD9F15c67', // wbtc
       collateral: '1',
       borrow: '100',
       chainId,
-      path: '/crvusd/ethereum/markets/lbtc',
+      path: '/crvusd/ethereum/markets/wbtc',
     },
   ],
   [LlamaMarketType.Lend]: [
