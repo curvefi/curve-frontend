@@ -2,7 +2,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { Decimal } from '@ui-kit/utils'
 import { NumericTextField } from '../NumericTextField'
 
-const { FontSize, FontWeight } = SizesAndSpaces
+const { FontSize, FontWeight, Sizing } = SizesAndSpaces
 
 type BalanceTextFieldProps = {
   balance: Decimal | undefined
@@ -24,6 +24,7 @@ export const BalanceTextField = ({ balance, name, isError, onChange, disabled }:
       input: {
         disableUnderline: true,
         sx: {
+          maxHeight: Sizing.lg,
           backgroundColor: (t) => t.design.Inputs.Large.Default.Fill,
           fontFamily: (t) => t.typography.highlightXl.fontFamily,
           fontSize: FontSize.xl,
