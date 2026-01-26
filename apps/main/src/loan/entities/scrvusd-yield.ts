@@ -1,9 +1,8 @@
 import { getYield } from '@curvefi/prices-api/savings'
 import type { Yield } from '@curvefi/prices-api/savings/models'
 import { queryFactory } from '@ui-kit/lib/model/query'
-import { timeOptionValidationSuite } from '@ui-kit/lib/model/query/time-option-validation'
+import { timeOptionValidationSuite, type TimeOption } from '@ui-kit/lib/model/query/time-option-validation'
 import { TIME_FRAMES } from '@ui-kit/lib/model/time'
-import type { TimeOption } from '@ui-kit/lib/types/scrvusd'
 
 export type ScrvUsdYieldWithAverages = Yield & { proj_apy_7d_avg: number; proj_apy_total_avg: number }
 

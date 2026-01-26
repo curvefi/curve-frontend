@@ -27,11 +27,13 @@ const useOnReload = ({ address: userAddress, isFetching }: { address?: Address; 
     if (isReloading) return
     setIsReloading(true)
 
-    invalidateLendingVaults({})
-    invalidateMintMarkets({})
-    invalidateAllUserLendingVaults(userAddress)
-    invalidateAllUserLendingSupplies(userAddress)
-    invalidateAllUserMintMarkets(userAddress)
+    void Promise.all([
+      invalidateLendingVaults({}),
+      invalidateMintMarkets({}),
+      invalidateAllUserLendingVaults(userAddress),
+      invalidateAllUserLendingSupplies(userAddress),
+      invalidateAllUserMintMarkets(userAddress),
+    ])
   }, [isReloading, userAddress])
 
   useEffect(() => {

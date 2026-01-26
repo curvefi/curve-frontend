@@ -40,6 +40,10 @@ export const TokenSelectButton = ({
       )
     }
     IconComponent={KeyboardArrowDownIcon}
-    sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}
+    // There's a Notion ticket to create a proper 'ghost' variant for MUI Select.
+    sx={{
+      '& .MuiOutlinedInput-notchedOutline': { borderColor: 'transparent' },
+      '&.Mui-disabled .MuiOutlinedInput-notchedOutline': { borderColor: 'transparent' },
+    }}
   />
 )
