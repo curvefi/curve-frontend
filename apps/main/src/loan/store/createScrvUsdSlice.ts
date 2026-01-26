@@ -12,7 +12,7 @@ import { scanTxPath } from '@ui/utils'
 import { getLib, notify, useWallet } from '@ui-kit/features/connect-wallet'
 import { queryClient } from '@ui-kit/lib/api/query-client'
 import { t } from '@ui-kit/lib/i18n'
-import type { TimeOption } from '@ui-kit/lib/types/scrvusd'
+import type { TimeOption } from '@ui-kit/lib/model/query/time-option-validation'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -54,7 +54,6 @@ export type ScrvUsdSlice = {
     }
     fetchExchangeRate: () => void
     fetchCrvUsdSupplies: () => void
-    setMax: (userAddress: string | undefined, stakingModule: DepositWithdrawModule) => void
     setStakingModule: (stakingModule: DepositWithdrawModule) => void
     setSelectedStatisticsChart: (chart: StatisticsChart) => void
     setRevenueChartTimeOption: (timeOption: TimeOption) => void
@@ -230,7 +229,7 @@ export const createScrvUsdSlice = (_set: StoreApi<State>['setState'], get: Store
           void get()[sliceKey].checkApproval.depositApprove(amount)
 
           const successNotificationMessage = t`Succesfully approved ${amount} crvUSD!`
-          notify(successNotificationMessage, 'success', 15000)
+          notify(successNotificationMessage, 'success')
 
           return true
         } catch (error) {
@@ -283,12 +282,12 @@ export const createScrvUsdSlice = (_set: StoreApi<State>['setState'], get: Store
           dismissNotificationHandler()
 
           // invalidate user balances query
-          invalidateScrvUsdUserBalances({ userAddress: useWallet.getState().wallet?.address })
+          await invalidateScrvUsdUserBalances({ userAddress: useWallet.getState().wallet?.address })
 
           get()[sliceKey].setStakingModuleChangeReset()
 
           const successNotificationMessage = t`Succesfully deposited ${amount} crvUSD!`
-          notify(successNotificationMessage, 'success', 15000)
+          notify(successNotificationMessage, 'success')
         } catch (error) {
           dismissNotificationHandler()
           get()[sliceKey].setStateByKey('depositTransaction', {
@@ -338,12 +337,12 @@ export const createScrvUsdSlice = (_set: StoreApi<State>['setState'], get: Store
           dismissNotificationHandler()
 
           // invalidate user balances query
-          invalidateScrvUsdUserBalances({ userAddress: useWallet.getState().wallet?.address })
+          await invalidateScrvUsdUserBalances({ userAddress: useWallet.getState().wallet?.address })
 
           get()[sliceKey].setStakingModuleChangeReset()
 
           const successNotificationMessage = t`Succesfully withdrew ${amount} scrvUSD!`
-          notify(successNotificationMessage, 'success', 15000)
+          notify(successNotificationMessage, 'success')
         } catch (error) {
           dismissNotificationHandler()
           get()[sliceKey].setStateByKey('withdrawTransaction', {
@@ -392,12 +391,12 @@ export const createScrvUsdSlice = (_set: StoreApi<State>['setState'], get: Store
           dismissNotificationHandler()
 
           // invalidate user balances query
-          invalidateScrvUsdUserBalances({ userAddress: useWallet.getState().wallet?.address })
+          await invalidateScrvUsdUserBalances({ userAddress: useWallet.getState().wallet?.address })
 
           get()[sliceKey].setStakingModuleChangeReset()
 
           const successNotificationMessage = t`Succesfully withdrew ${amount} scrvUSD!`
-          notify(successNotificationMessage, 'success', 15000)
+          notify(successNotificationMessage, 'success')
         } catch (error) {
           dismissNotificationHandler()
           get()[sliceKey].setStateByKey('withdrawTransaction', {
@@ -480,14 +479,6 @@ export const createScrvUsdSlice = (_set: StoreApi<State>['setState'], get: Store
     },
     setRevenueChartTimeOption: (timeOption: TimeOption) => {
       get()[sliceKey].setStateByKey('revenueChartTimeOption', timeOption)
-    },
-    setMax: (userAddress: string | undefined, stakingModule: DepositWithdrawModule) => {
-      const userBalance = queryClient.getQueryData<ScrvUsdUserBalances>(['useScrvUsdUserBalances', { userAddress }])
-      if (stakingModule === 'deposit') {
-        get()[sliceKey].setStateByKey('inputAmount', userBalance?.crvUSD ?? '0')
-      } else {
-        get()[sliceKey].setStateByKey('inputAmount', userBalance?.scrvUSD ?? '0')
-      }
     },
     setInputAmount: (amount: string) => {
       if (!amount) {

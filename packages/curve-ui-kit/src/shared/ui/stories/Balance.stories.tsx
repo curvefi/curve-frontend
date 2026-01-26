@@ -1,7 +1,7 @@
 import { fn } from 'storybook/test'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { FireIcon } from '@ui-kit/shared/icons/FireIcon'
-import { Balance } from '../Balance'
+import { Balance } from '../LargeTokenInput/Balance'
 
 const meta: Meta<typeof Balance> = {
   title: 'UI Kit/Widgets/Balance',

@@ -18,7 +18,7 @@ export function useFavoriteMarket(address: Address) {
   const isFavorite = useMemo(() => favorites.includes(address), [favorites, address])
   const toggleFavorite = useCallback(() => {
     setFavorites(isFavorite ? favorites.filter((id) => id !== address) : [...favorites, address])
-    invalidateFavoriteMarkets({}) // todo: set the query value directly
+    void invalidateFavoriteMarkets({}) // todo: set the query value directly
   }, [favorites, isFavorite, address, setFavorites])
   return [isFavorite, toggleFavorite] as const
 }

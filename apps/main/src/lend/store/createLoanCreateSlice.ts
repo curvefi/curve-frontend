@@ -51,7 +51,6 @@ export type LoanCreateSlice = {
   [sliceKey]: SliceState & {
     fetchMaxLeverage(market: OneWayMarketTemplate): Promise<void>
     fetchMaxRecv(activeKey: string, api: Api, market: OneWayMarketTemplate, isLeverage: boolean): Promise<void>
-    refetchMaxRecv(market: OneWayMarketTemplate | undefined, isLeverage: boolean): Promise<string>
     fetchDetailInfo(activeKey: string, api: Api, market: OneWayMarketTemplate, maxSlippage: string, isLeverage: boolean): Promise<void>
     fetchLiqRanges(activeKeyLiqRange: string, api: Api, market: OneWayMarketTemplate, isLeverage: boolean): Promise<void>
     fetchEstGasApproval(activeKey: string, api: Api, market: OneWayMarketTemplate, maxSlippage: string, isLeverage: boolean): Promise<void>
@@ -126,17 +125,6 @@ export const createLoanCreate = (
         const debtError = isTooMuch(formValues.debt, updatedMaxRecv) ? 'too-much' : formValues.debtError
         sliceState.setStateByKey('formValues', { ...formValues, debtError })
       }
-    },
-    refetchMaxRecv: async (market, isLeverage) => {
-      const { activeKeyMax, formValues, ...sliceState } = get()[sliceKey]
-      const { userCollateral, userBorrowed, n } = formValues
-
-      if (n === null || typeof market === 'undefined') return ''
-
-      sliceState.setStateByActiveKey('maxRecv', activeKeyMax, '')
-      const { maxRecv } = await loanCreate.maxRecv(activeKeyMax, market, userCollateral, userBorrowed, n, isLeverage)
-      sliceState.setStateByActiveKey('maxRecv', activeKeyMax, maxRecv)
-      return maxRecv
     },
     fetchDetailInfo: async (activeKey, _api, market, maxSlippage, isLeverage) => {
       const { detailInfo, detailInfoLeverage, formStatus, formValues, ...sliceState } = get()[sliceKey]

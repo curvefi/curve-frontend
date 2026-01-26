@@ -14,7 +14,7 @@ import { LoanDeleverageAlertFull } from '@/loan/components/PageMintMarket/LoanDe
 import { LoanDeleverageAlertPartial } from '@/loan/components/PageMintMarket/LoanDeleverage/components/LoanDeleverageAlertPartial'
 import type { FormDetailInfo, FormStatus, FormValues } from '@/loan/components/PageMintMarket/LoanDeleverage/types'
 import { DEFAULT_FORM_VALUES } from '@/loan/components/PageMintMarket/LoanDeleverage/utils'
-import { StyledDetailInfoWrapper, StyledInpChip } from '@/loan/components/PageMintMarket/styles'
+import { StyledDetailInfoWrapper } from '@/loan/components/PageMintMarket/styles'
 import type { ManageLoanProps } from '@/loan/components/PageMintMarket/types'
 import { DEFAULT_DETAIL_INFO, DEFAULT_FORM_EST_GAS } from '@/loan/components/PageMintMarket/utils'
 import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
@@ -27,7 +27,6 @@ import { getCollateralListPathname } from '@/loan/utils/utilsRouter'
 import { AlertBox } from '@ui/AlertBox'
 import { Box } from '@ui/Box'
 import { DetailInfo } from '@ui/DetailInfo'
-import { InputDebounced, InputMaxBtn, InputProvider } from '@ui/InputComp'
 import { getActiveStep } from '@ui/Stepper/helpers'
 import { Stepper } from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
@@ -37,7 +36,6 @@ import { notify } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNavigate } from '@ui-kit/hooks/router'
-import { useLegacyTokenInput } from '@ui-kit/hooks/useFeatureFlags'
 import { usePageVisibleInterval } from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
@@ -48,7 +46,6 @@ import { decimal, type Decimal } from '@ui-kit/utils'
 import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
 import { DetailInfoTradeRoutes } from '../LoanFormCreate/components/DetailInfoTradeRoutes'
 
-// Loan Deleverage
 export const LoanDeleverage = ({
   curve,
   market: llamma,
@@ -289,76 +286,41 @@ export const LoanDeleverage = ({
   return (
     <Box grid gridRowGap={3}>
       {/* collateral field */}
-      {useLegacyTokenInput() ? (
-        <Box grid gridRowGap={1}>
-          <InputProvider
-            grid
-            gridTemplateColumns="1fr auto"
-            padding="4px 8px"
-            inputVariant={formValues.collateralError ? 'error' : undefined}
-            disabled={disable}
-            id="collateral"
-          >
-            <InputDebounced
-              id="inpCollateral"
-              type="number"
-              labelProps={{
-                label: t`LLAMMA ${collateralName} Avail.`,
-                descriptionLoading: userWalletBalancesLoading,
-                description: formatNumber(userState?.collateral, { defaultValue: '-' }),
-              }}
-              value={formValues.collateral}
-              onChange={(collateral) => updateFormValues({ collateral }, '', false)}
-            />
-            <InputMaxBtn onClick={() => updateFormValues({ collateral: userState?.collateral }, '', false)} />
-          </InputProvider>
-          {formValues.collateralError === 'too-much' ? (
-            <StyledInpChip size="xs" isDarkBg isError>
-              {t`Amount must be <= ${formatNumber(userState?.collateral)}`}
-            </StyledInpChip>
-          ) : (
-            <StyledInpChip size="xs">
-              {t`Debt`} {userState?.debt ? `${formatNumber(userState.debt)}` : '-'}
-            </StyledInpChip>
-          )}
-        </Box>
-      ) : (
-        <LargeTokenInput
-          name="collateral"
-          testId="inpCollateral"
-          label={t`Amount to deleverage`}
-          isError={!!formValues.collateralError}
-          message={
-            formValues.collateralError === 'too-much'
-              ? t`Amount must be <= ${formatNumber(userState?.collateral)}`
-              : t`Debt ${formatNumber(userState?.debt, { defaultValue: '-' })} ${stablecoinName}`
-          }
-          disabled={disable}
-          inputBalanceUsd={decimal(
-            formValues.collateral && collateralUsdRate && collateralUsdRate * +formValues.collateral,
-          )}
-          walletBalance={{
-            loading: userWalletBalancesLoading,
-            balance: decimal(userWalletBalances?.collateral),
-            symbol: collateralName,
-            usdRate: collateralUsdRate,
-          }}
-          maxBalance={{
-            balance: decimal(userState?.collateral),
-            chips: 'max',
-          }}
-          balance={decimal(formValues.collateral)}
-          tokenSelector={
-            <TokenLabel
-              blockchainId={network.id}
-              tooltip={collateralName}
-              address={collateralAddress}
-              label={collateralName}
-            />
-          }
-          onBalance={onCollateralChanged}
-        />
-      )}
+      <LargeTokenInput
+        name="collateral"
+        testId="inpCollateral"
+        label={t`Amount to deleverage`}
+        isError={!!formValues.collateralError}
+        message={
+          formValues.collateralError === 'too-much'
+            ? t`Amount must be <= ${formatNumber(userState?.collateral)}`
+            : t`Debt ${formatNumber(userState?.debt, { defaultValue: '-' })} ${stablecoinName}`
+        }
+        disabled={disable}
+        inputBalanceUsd={decimal(
+          formValues.collateral && collateralUsdRate && collateralUsdRate * +formValues.collateral,
+        )}
+        walletBalance={{
+          loading: userWalletBalancesLoading,
+          balance: decimal(userWalletBalances?.collateral),
+          symbol: collateralName,
+          usdRate: collateralUsdRate,
+        }}
+        maxBalance={{
+          balance: decimal(userState?.collateral),
+          chips: 'max',
+        }}
+        balance={decimal(formValues.collateral)}
+        tokenSelector={
+          <TokenLabel
+            blockchainId={network.id}
+            tooltip={collateralName}
+            address={collateralAddress}
+            label={collateralName}
+          />
+        }
+        onBalance={onCollateralChanged}
+      />
 
       {/* detail info */}
       <StyledDetailInfoWrapper>

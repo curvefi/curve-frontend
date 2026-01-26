@@ -187,7 +187,6 @@ export const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
           balance={lpTokenBalance ?? ''}
           balanceLoading={lpTokenBalanceLoading}
           hasError={haveSigner ? new BigNumber(formValues.lpToken).isGreaterThan(lpTokenBalance ?? '0') : false}
-          haveSigner={haveSigner}
           handleAmountChange={useCallback((lpToken) => updateFormValues({ lpToken }), [updateFormValues])}
           disabled={disableForm}
         />

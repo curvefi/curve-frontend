@@ -9,65 +9,31 @@ import {
   useImperativeHandle,
   useState,
 } from 'react'
-import Box from '@mui/material/Box'
 import Chip from '@mui/material/Chip'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { useUniqueDebounce } from '@ui-kit/hooks/useDebounce'
 import { t } from '@ui-kit/lib/i18n'
+import { HelperMessage } from '@ui-kit/shared/ui/LargeTokenInput/HelperMessage'
 import { chipSizeClickable } from '@ui-kit/themes/components/chip'
 import { Duration, TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { decimal, type Decimal, formatNumber } from '@ui-kit/utils'
+import { SliderInput, SliderInputProps } from '../SliderInput'
 import { Balance, type Props as BalanceProps } from './Balance'
-import { NumericTextField } from './NumericTextField'
-import { SliderInput, SliderInputProps } from './SliderInput'
+import { BalanceTextField } from './BalanceTextField'
 
-const { Spacing, FontSize, FontWeight, Sizing } = SizesAndSpaces
-
-type HelperMessageProps = {
-  message: string | ReactNode
-  isError?: boolean
-}
-
-export const HelperMessage = ({ message, isError }: HelperMessageProps) => (
-  <Box
-    sx={{
-      display: 'flex',
-      alignItems: 'center',
-      backgroundColor: (t) => t.design.Layer[3].Fill,
-      padding: Spacing.sm,
-      minHeight: Sizing.sm,
-      ...(isError && { backgroundColor: (t) => t.design.Layer.Feedback.Error }),
-    }}
-  >
-    {typeof message === 'string' ? (
-      <Typography
-        variant="bodyXsRegular"
-        // todo: replace with alert component and add filledfeedback colors to alert component.
-        sx={{
-          color: (t) =>
-            isError ? t.design.Text.TextColors.FilledFeedback.Warning.Primary : t.design.Text.TextColors.Tertiary,
-        }}
-        data-testid={`helper-message-${isError ? 'error' : 'info'}`}
-      >
-        {message}
-      </Typography>
-    ) : (
-      message
-    )}
-  </Box>
-)
+const { Spacing } = SizesAndSpaces
 
 /** A chip can be something like 50% or 'Max', and is shown on the top right on hover on desktop or always visible on tablet and lower. */
 type InputChip = {
   /** The chip button label. */
   label: string
   /** The function that returns the new input amount, possibly based on the max balance. */
-  newBalance: (maxBalance?: Decimal) => Decimal | undefined
+  newBalance: (() => void) | ((maxBalance?: Decimal) => Decimal | undefined)
 }
 
-type ChipsPreset = 'max' | 'range'
+export type ChipsPreset = 'max' | 'range'
 const CHIPS_PRESETS: Record<ChipsPreset, InputChip[]> = {
   max: [{ label: t`Max`, newBalance: (maxBalance) => maxBalance }],
   range: [25, 50, 75, 100].map((p) => ({
@@ -76,50 +42,8 @@ const CHIPS_PRESETS: Record<ChipsPreset, InputChip[]> = {
   })),
 }
 
-type BalanceTextFieldProps = {
-  balance: Decimal | undefined
-  isError: boolean
-  disabled?: boolean
-  /** Callback fired when the numeric value changes, can be a temporary non decimal value like "5." or "-" */
-  onChange: (balance: string | undefined) => void
-  name: string
-}
-
-const BalanceTextField = ({ balance, name, isError, onChange, disabled }: BalanceTextFieldProps) => (
-  <NumericTextField
-    placeholder="0.00"
-    variant="standard"
-    value={balance}
-    name={name}
-    fullWidth
-    slotProps={{
-      input: {
-        disableUnderline: true,
-        sx: {
-          backgroundColor: (t) => t.design.Inputs.Large.Default.Fill,
-          fontFamily: (t) => t.typography.highlightXl.fontFamily,
-          fontSize: FontSize.xl,
-          fontWeight: FontWeight.Bold,
-          color: (t) => (isError ? t.design.Layer.Feedback.Error : t.design.Text.TextColors.Primary),
-        },
-      },
-    }}
-    onChange={onChange}
-    disabled={disabled}
-  />
-)
-
 export interface LargeTokenInputRef {
   resetBalance: () => void
-}
-
-/** Configuration for max balance behavior, which for now are the slider and chips. */
-type MaxBalanceProps = {
-  balance?: Decimal
-  /** Whether to display the percentage slider. */
-  showSlider?: boolean
-  /** Custom or preset chips to show. */
-  chips?: ChipsPreset | InputChip[]
 }
 
 export type LargeTokenInputProps = {
@@ -150,11 +74,17 @@ export type LargeTokenInputProps = {
   tokenSelector?: ReactNode
 
   // TODO: receive a `maxBalance` ReactNode to allow anything to be injected
-  /** Optional wallet balance configuration. */
-  walletBalance?: BalanceProps<Decimal>
+  /** Optional wallet balance configuration. Omits onClick as clicking the wallet balance is controlled behavior (sets the value in the input field) */
+  walletBalance?: Omit<BalanceProps<Decimal>, 'onClick'>
 
-  /** Optional max balance configuration */
-  maxBalance?: MaxBalanceProps
+  /** Optional configuration for max balance behavior, which for now are the slider and chips. */
+  maxBalance?: {
+    balance?: Decimal
+    /** Whether to display the percentage slider. */
+    showSlider?: boolean
+    /** Custom or preset chips to show. */
+    chips?: ChipsPreset | InputChip[]
+  }
 
   /** Optional usd value of the balance given as input. */
   inputBalanceUsd?: Decimal
@@ -324,8 +254,7 @@ export const LargeTokenInput = ({
 
   const onWalletBalance = useCallback(() => {
     handleBalanceChange(walletBalance?.balance)
-    walletBalance?.onClick?.call(null)
-  }, [handleBalanceChange, walletBalance?.balance, walletBalance?.onClick])
+  }, [handleBalanceChange, walletBalance?.balance])
 
   const componentId = useId()
 
@@ -333,14 +262,13 @@ export const LargeTokenInput = ({
     <Stack
       id={componentId}
       data-testid={testId}
-      gap={Spacing.sm}
       sx={{
         backgroundColor: (t) => t.design.Inputs.Large.Default.Fill,
         outline: (t) =>
           `1px solid ${isError ? t.design.Layer.Feedback.Error : t.design.Inputs.Base.Default.Border.Default}`,
       }}
     >
-      <Stack gap={Spacing.xs} sx={{ padding: Spacing.sm }}>
+      <Stack gap={Spacing.xxs} sx={{ padding: Spacing.sm }}>
         {/** First row is an optional label describing the input and/or chips */}
         {(label || showChips) && (
           <Stack
@@ -381,7 +309,12 @@ export const LargeTokenInput = ({
                     color="default"
                     clickable
                     disabled={disabled}
-                    onClick={() => handleBalanceChange(chip.newBalance(maxBalance?.balance))}
+                    onClick={() => {
+                      const newBalance = chip.newBalance(maxBalance?.balance)
+                      if (newBalance !== undefined) {
+                        handleBalanceChange(newBalance)
+                      }
+                    }}
                   ></Chip>
                 ))}
               </Stack>
@@ -431,7 +364,7 @@ export const LargeTokenInput = ({
       </Stack>
 
       {/** Fourth row containing optional helper (or error) message */}
-      {message && <HelperMessage message={message} isError={isError} />}
+      {message && <HelperMessage onNumberClick={onBalance} message={message} isError={isError} />}
       {children}
     </Stack>
   )

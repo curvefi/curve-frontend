@@ -70,17 +70,20 @@ const {
   validationSuite: userContractValidationSuite,
 })
 
-export function invalidateAllUserLendingVaults(userAddress: Address | null | undefined) {
-  recordEntries(getCurrentUserLendingVaults({ userAddress }) ?? {}).forEach(([blockchainId, contracts]) => {
-    invalidateUserLendingVaults({ userAddress })
-    contracts.forEach((contractAddress) =>
-      invalidateUserLendingVaultStats({
-        userAddress,
-        blockchainId,
-        contractAddress,
-      }),
-    )
-  })
+export async function invalidateAllUserLendingVaults(userAddress: Address | null | undefined) {
+  await invalidateUserLendingVaults({ userAddress })
+
+  const invalidateContracts = recordEntries(getCurrentUserLendingVaults({ userAddress }) ?? {}).flatMap(
+    ([blockchainId, contracts]) =>
+      contracts.map((contractAddress) =>
+        invalidateUserLendingVaultStats({
+          userAddress,
+          blockchainId,
+          contractAddress,
+        }),
+      ),
+  )
+  await Promise.all(invalidateContracts)
 }
 
 /**
@@ -104,17 +107,20 @@ const {
   validationSuite: userAddressValidationSuite,
 })
 
-export function invalidateAllUserLendingSupplies(userAddress: Address | null | undefined) {
-  invalidateUserLendingSupplies({ userAddress })
-  recordEntries(getCurrentUserLendingSupplies({ userAddress }) ?? {}).forEach(([blockchainId, positions]) =>
-    positions.forEach((contractAddress) =>
-      invalidateUserLendingVaultEarnings({
-        userAddress,
-        blockchainId,
-        contractAddress,
-      }),
-    ),
+export async function invalidateAllUserLendingSupplies(userAddress: Address | null | undefined) {
+  await invalidateUserLendingSupplies({ userAddress })
+
+  const invalidateContracts = recordEntries(getCurrentUserLendingSupplies({ userAddress }) ?? {}).flatMap(
+    ([blockchainId, positions]) =>
+      positions.map((contractAddress) =>
+        invalidateUserLendingVaultEarnings({
+          userAddress,
+          blockchainId,
+          contractAddress,
+        }),
+      ),
   )
+  await Promise.all(invalidateContracts)
 }
 
 export const getUserLendingSuppliesOptions = getUserLendingSuppliesQueryOptions

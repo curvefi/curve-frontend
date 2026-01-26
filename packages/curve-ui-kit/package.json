@@ -53,7 +53,6 @@
     "eslint": "*",
     "eslint-config-custom": "*",
     "storybook": "10.1.11",
-    "type-fest": "5.3.1",
     "typescript": "*",
     "vite": "*",
     "vitest": "*"

@@ -19,28 +19,47 @@ import {
 } from '@/dex/components/PageCreatePool/constants'
 import { SelectToken } from '@/dex/components/PageCreatePool/TokensInPool/SelectToken'
 import { SetOracle } from '@/dex/components/PageCreatePool/TokensInPool/SetOracle'
-import { CreateToken, TokenId, TokensInPoolState } from '@/dex/components/PageCreatePool/types'
-import { checkMetaPool, containsOracle, getBasepoolCoins } from '@/dex/components/PageCreatePool/utils'
+import { CreateToken, TokenId, TokensInPoolState, type TokenState } from '@/dex/components/PageCreatePool/types'
+import { containsOracle } from '@/dex/components/PageCreatePool/utils'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { useTokensMapper } from '@/dex/hooks/useTokensMapper'
+import { useBasePools } from '@/dex/queries/base-pools.query'
 import {
   DEFAULT_CREATE_POOL_STATE,
   DEFAULT_ERC4626_STATUS,
   DEFAULT_ORACLE_STATUS,
 } from '@/dex/store/createCreatePoolSlice'
 import { useStore } from '@/dex/store/useStore'
-import { CurveApi, ChainId, BasePool } from '@/dex/types/main.types'
+import { CurveApi, ChainId } from '@/dex/types/main.types'
 import { Box } from '@ui/Box'
 import { Button } from '@ui/Button'
+import type { QueryData } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
+
+type BasePool = QueryData<typeof useBasePools>[number]
+
+const checkMetaPool = (address: string, basePools: BasePool[]) =>
+  address === '' ? false : basePools.some((item) => item.token === address)
+
+const getBasepoolCoins = (value: string, basePools: BasePool[], tokenA: TokenState, tokenB: TokenState) => {
+  let basePoolCoins: string[] = []
+  if (checkMetaPool(value, basePools) || tokenA.basePool || tokenB.basePool) {
+    if (checkMetaPool(value, basePools)) {
+      basePoolCoins = basePools.find((pool) => pool.token.toLowerCase() === value.toLowerCase())?.coins || []
+    } else if (tokenA.basePool) {
+      basePoolCoins = basePools.find((pool) => pool.token.toLowerCase() === tokenA.address.toLowerCase())?.coins || []
+    } else if (tokenB.basePool) {
+      basePoolCoins = basePools.find((pool) => pool.token.toLowerCase() === tokenB.address.toLowerCase())?.coins || []
+    }
+  }
+  return basePoolCoins
+}
 
 type Props = {
   curve: CurveApi
   haveSigner: boolean
   chainId: ChainId
 }
-
-const DEFAULT_POOLS: BasePool[] = []
 
 export const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
   const userAddedTokens = useStore((state) => state.createPool.userAddedTokens)
@@ -53,7 +72,7 @@ export const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
   const updateTokenAmount = useStore((state) => state.createPool.updateTokenAmount)
   const updateSwapType = useStore((state) => state.createPool.updateSwapType)
   const updateNgAssetType = useStore((state) => state.createPool.updateNgAssetType)
-  const basePools = useStore((state) => state.pools.basePools[chainId]) ?? DEFAULT_POOLS
+  const { data: basePools = [] } = useBasePools({ chainId })
   const { tokensMapper } = useTokensMapper(chainId)
   const nativeToken = curve.getNetworkConstants().NATIVE_TOKEN
   const {

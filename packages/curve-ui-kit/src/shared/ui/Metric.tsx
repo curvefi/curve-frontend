@@ -1,11 +1,7 @@
 import { ReactNode, useCallback, useMemo } from 'react'
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
-import Alert from '@mui/material/Alert'
-import AlertTitle from '@mui/material/AlertTitle'
-import Snackbar from '@mui/material/Snackbar'
 import Stack from '@mui/material/Stack'
 import Typography, { TypographyProps } from '@mui/material/Typography'
-import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { Tooltip, type TooltipProps } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -18,7 +14,7 @@ import {
   type NumberFormatOptions,
   type SxProps,
 } from '@ui-kit/utils'
-import { Duration } from '../../themes/design/0_primitives'
+import { showToast } from '@ui-kit/widgets/Toast/toast.util'
 import { WithSkeleton } from './WithSkeleton'
 
 const { Spacing, IconSize } = SizesAndSpaces
@@ -206,11 +202,12 @@ export const Metric = ({
   sx,
 }: MetricProps) => {
   const notionals = useMemo(() => notionalsToString(notional), [notional])
-  const [isCopyAlertOpen, openCopyAlert, closeCopyAlert] = useSwitch(false)
   const copyValue = useCallback(() => {
-    void copyToClipboard(value!.toString())
-    openCopyAlert()
-  }, [value, openCopyAlert])
+    if (value || value === 0) {
+      void copyToClipboard(value.toString())
+      showToast({ title: copyText, message: value, severity: 'info' })
+    }
+  }, [value, copyText])
 
   return (
     <Stack alignItems={alignment} data-testid={testId} sx={sx}>
@@ -246,13 +243,6 @@ export const Metric = ({
           {notionals}
         </Typography>
       )}
-
-      <Snackbar open={isCopyAlertOpen} onClose={closeCopyAlert} autoHideDuration={Duration.Snackbar}>
-        <Alert variant="filled" severity="success">
-          <AlertTitle>{copyText}</AlertTitle>
-          {value}
-        </Alert>
-      </Snackbar>
     </Stack>
   )
 }
