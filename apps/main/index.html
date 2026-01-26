@@ -38,47 +38,60 @@
   <meta name="theme-color" content="#ffffff" />
   <meta name="viewport" content="initial-scale=1, minimum-scale=1, width=device-width" />
   <style>
-      /**
-       * Initial Load Screen, displayed in case the app takes a while to load
-       */
-      .initial-load {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          gap: 2rem;
-          height: 100vh;
-          width: 100vw;
-          background-color: hsla(24, 9%, 90%, 1);
-          font-family: "Mona Sans", "Helvetica Neue", Helvetica, sans-serif;
-          color: #1b1b1b;
+    /**
+     * Initial Load Screen, displayed in case the app takes a while to load
+     */
+    .initial-load {
+      height: 100dvh;
+      width: 100%;
+      background-color: #f0edeb;
+      font-family: "Mona Sans", "Helvetica Neue", Helvetica, sans-serif;
+      color: #1b1b1b;
+      .content {
+        display: flex;
+        height: 100%;
+        width: 100%;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2rem;
 
-          opacity: 0;
-          animation: initial-load-fade 2s ease-in forwards;
-          animation-delay: 0.5s;
+        opacity: 0;
+        animation: initial-load-fade 2s ease-in forwards;
+        animation-delay: 0.5s;
 
-          .title { font-weight: bold; font-size: 6rem; }
+        .title { font-weight: bold; font-size: 6rem; }
 
-          .loader {
-              width: 3.2rem;
-              height: 3.2rem;
-              border-radius: 50%;
-              border: 3px solid rgba(27, 27, 27, 0.2);
-              border-top-color: rgba(27, 27, 27, 0.9);
-              animation: ring-spin 0.9s linear infinite;
-          }
+        .loader {
+          width: 3.2rem;
+          height: 3.2rem;
+          border-radius: 50%;
+          border: 3px solid rgba(27, 27, 27, 0.2);
+          border-top-color: rgba(27, 27, 27, 0.9);
+          animation: ring-spin 0.9s linear infinite;
+        }
       }
+    }
 
-      @keyframes ring-spin { to { transform: rotate(360deg); } }
-      @keyframes initial-load-fade { to { opacity: 1; } }
+    @media (prefers-color-scheme: dark) {
+      .initial-load  {
+          background-color: #12110f; color: #f0f0f0;
+          .content .loader { border-color: rgba(240, 240, 240, 0.2); border-top-color: rgba(240, 240, 240, 0.9); }
+      }
+    }
+
+    @keyframes ring-spin { to { transform: rotate(360deg); } }
+    @keyframes initial-load-fade { to { opacity: 1; } }
   </style>
 </head>
 <body>
 <div id="root">
   <div class="initial-load">
-    <img src="https://cdn.jsdelivr.net/gh/curvefi/curve-assets/branding/logo.png" alt="Curve" width="30%" />
-    <span class="title">Curve</span>
-    <div class="loader" aria-label="Loading"></div>
+    <div class="content">
+      <img src="https://cdn.jsdelivr.net/gh/curvefi/curve-assets/branding/logo.png" alt="Curve" width="30%" class="logo" />
+      <span class="title">Curve</span>
+      <div class="loader" aria-label="Loading"></div>
+    </div>
   </div>
 </div>
 <script type="module" src="./src/eip-6963.ts"></script>
