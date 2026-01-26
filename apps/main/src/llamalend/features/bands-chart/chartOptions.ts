@@ -273,10 +273,7 @@ export const getChartOptions = (
               symbol: 'none',
               data: markLines.map((line) => {
                 const [startPoint, endPoint] = line
-                const lineSegment: [
-                  { coord: [number, number]; label: Record<string, unknown> },
-                  { coord: [number, number]; lineStyle: Record<string, unknown> },
-                ] = [
+                return [
                   {
                     ...startPoint,
                     label: {
@@ -293,7 +290,6 @@ export const getChartOptions = (
                     lineStyle: line.lineStyle,
                   },
                 ]
-                return lineSegment
               }),
             }
           : undefined,
@@ -348,6 +344,8 @@ export const getChartOptions = (
             opacity: 0.2,
           },
         },
+        // Prevent filtering of markLines when zooming
+        filterMode: 'none',
       },
       {
         type: 'inside',
@@ -355,6 +353,8 @@ export const getChartOptions = (
         orient: 'vertical',
         zoomOnMouseWheel: 'shift',
         moveOnMouseWheel: true,
+        // Prevent filtering of markLines when zooming
+        filterMode: 'none',
       },
     ],
   }

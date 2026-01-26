@@ -35,9 +35,6 @@ const createMarkLine = (
   return line
 }
 
-/**
- * Generates mark lines for user band price range
- */
 const createUserRangeMarkLines = (
   userBandsPriceRange: UserBandsPriceRange,
   xStart: number,
@@ -66,9 +63,6 @@ const createUserRangeMarkLines = (
   ]
 }
 
-/**
- * Generates mark line for oracle price
- */
 const createOraclePriceMarkLine = (
   _chartData: ChartDataPoint[],
   oraclePrice: string | undefined,
@@ -82,6 +76,18 @@ const createOraclePriceMarkLine = (
 
   return [createMarkLine(xStart, xEnd, price, formatNumberWithOptions(price), 'end', palette.oraclePriceLineColor)]
 }
+
+export const generateMarkLines = (
+  chartData: ChartDataPoint[],
+  userBandsPriceRange: UserBandsPriceRange,
+  oraclePrice: string | undefined,
+  xStart: number,
+  xEnd: number,
+  palette: BandsChartPalette,
+): MarkLine[] => [
+  ...createUserRangeMarkLines(userBandsPriceRange, xStart, xEnd, palette),
+  ...createOraclePriceMarkLine(chartData, oraclePrice, xStart, xEnd, palette),
+]
 
 /**
  * Creates label styling based on line color
@@ -100,18 +106,3 @@ export const createLabelStyle = (lineStyle: { color: string }, palette: BandsCha
       ? palette.userRangeTopLabelTextColor
       : palette.userRangeBottomLabelTextColor,
 })
-
-/**
- * Generates all mark lines for the chart
- */
-export const generateMarkLines = (
-  chartData: ChartDataPoint[],
-  userBandsPriceRange: UserBandsPriceRange,
-  oraclePrice: string | undefined,
-  xStart: number,
-  xEnd: number,
-  palette: BandsChartPalette,
-): MarkLine[] => [
-  ...createUserRangeMarkLines(userBandsPriceRange, xStart, xEnd, palette),
-  ...createOraclePriceMarkLine(chartData, oraclePrice, xStart, xEnd, palette),
-]
