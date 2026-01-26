@@ -11,7 +11,7 @@ const { Spacing } = SizesAndSpaces
 type ChartFooterProps<T extends string> = {
   legendSets: LegendItem[]
   description?: string
-  toggleOptions?: T[]
+  toggleOptions?: readonly T[]
   activeToggleOption?: T
   onToggleChange?: (event: MouseEvent<HTMLElement>, newOption: T) => void
 }

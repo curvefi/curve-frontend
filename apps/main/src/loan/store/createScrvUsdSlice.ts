@@ -12,7 +12,7 @@ import { scanTxPath } from '@ui/utils'
 import { getLib, notify, useWallet } from '@ui-kit/features/connect-wallet'
 import { queryClient } from '@ui-kit/lib/api/query-client'
 import { t } from '@ui-kit/lib/i18n'
-import type { TimeOption } from '@ui-kit/lib/types/scrvusd'
+import type { TimeOption } from '@ui-kit/lib/model/query/time-option-validation'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -282,7 +282,7 @@ export const createScrvUsdSlice = (_set: StoreApi<State>['setState'], get: Store
           dismissNotificationHandler()
 
           // invalidate user balances query
-          invalidateScrvUsdUserBalances({ userAddress: useWallet.getState().wallet?.address })
+          await invalidateScrvUsdUserBalances({ userAddress: useWallet.getState().wallet?.address })
 
           get()[sliceKey].setStakingModuleChangeReset()
 
@@ -337,7 +337,7 @@ export const createScrvUsdSlice = (_set: StoreApi<State>['setState'], get: Store
           dismissNotificationHandler()
 
           // invalidate user balances query
-          invalidateScrvUsdUserBalances({ userAddress: useWallet.getState().wallet?.address })
+          await invalidateScrvUsdUserBalances({ userAddress: useWallet.getState().wallet?.address })
 
           get()[sliceKey].setStakingModuleChangeReset()
 
@@ -391,7 +391,7 @@ export const createScrvUsdSlice = (_set: StoreApi<State>['setState'], get: Store
           dismissNotificationHandler()
 
           // invalidate user balances query
-          invalidateScrvUsdUserBalances({ userAddress: useWallet.getState().wallet?.address })
+          await invalidateScrvUsdUserBalances({ userAddress: useWallet.getState().wallet?.address })
 
           get()[sliceKey].setStakingModuleChangeReset()
 

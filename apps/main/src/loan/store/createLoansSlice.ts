@@ -93,7 +93,7 @@ export const createLoansSlice = (_: StoreApi<State>['setState'], get: StoreApi<S
       ])
 
       // invalidate market rates in case the user is using legacy action info, to keep position detail and market detail components in sync
-      invalidateMarketRates({ chainId, marketId: llamma.id })
+      await invalidateMarketRates({ chainId, marketId: llamma.id })
 
       const fetchedLoanDetails: LoanDetails = { ...loanDetails, priceInfo, loading: false }
 
