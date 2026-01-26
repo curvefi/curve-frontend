@@ -113,6 +113,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
           name="debt"
           form={form}
           max={{ ...maxTokenValues.debt, fieldName: 'maxDebt' }}
+          hideBalance
           testId="borrow-debt-input"
           network={network}
           message={

@@ -241,10 +241,6 @@ export const CollateralDecrease = ({
             symbol: getTokenName(llamma).collateral,
             usdRate: collateralUsdRate,
           }}
-          maxBalance={{
-            balance: decimal(maxRemovable),
-            chips: 'max',
-          }}
           balance={decimal(formValues.collateral)}
           tokenSelector={
             <TokenLabel
