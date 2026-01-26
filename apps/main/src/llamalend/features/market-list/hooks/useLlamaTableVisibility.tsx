@@ -26,7 +26,7 @@ const getVariant = (
 
 const migration: MigrationOptions<Record<LlamaColumnVariant, VisibilityGroup<LlamaMarketColumnId>[]>> = {
   version: 2,
-  migrate: () => null, // reset stored visibility when column ids change
+  migrate: () => null, // reset stored visibility since column ids changed
 }
 
 /**
