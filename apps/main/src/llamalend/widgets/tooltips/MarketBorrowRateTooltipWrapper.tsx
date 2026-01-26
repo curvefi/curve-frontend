@@ -38,6 +38,7 @@ export const MarketBorrowRateTooltipWrapper = ({ market, borrowRateType }: Marke
     />
   ) : (
     <MarketBorrowAprTooltipContent
+      marketType={marketType}
       borrowRate={borrowApr}
       averageRate={averageRate}
       periodLabel={period}

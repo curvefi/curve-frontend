@@ -1,5 +1,7 @@
 import { TooltipDescription, TooltipWrapper } from '@/llamalend/widgets/tooltips/TooltipComponents'
 import { Trans } from '@ui-kit/lib/i18n'
+import { LlamaMarketType } from '@ui-kit/types/market'
+import { BORROW_APR_DESCRIPTION } from './constants'
 
 export const NetBorrowAprHeaderTooltipContent = () => (
   <TooltipWrapper>
@@ -13,20 +15,8 @@ export const NetBorrowAprHeaderTooltipContent = () => (
         </Trans>
       }
     />
-    <TooltipDescription
-      text={
-        <Trans>
-          For <strong>lending markets</strong> it varies according to the market utilization.
-        </Trans>
-      }
-    />
-    <TooltipDescription
-      text={
-        <Trans>
-          For <strong>minting markets</strong> it varies according to the the peg of crvUSD.
-        </Trans>
-      }
-    />
+    <TooltipDescription text={BORROW_APR_DESCRIPTION[LlamaMarketType.Lend]} />
+    <TooltipDescription text={BORROW_APR_DESCRIPTION[LlamaMarketType.Mint]} />
     <TooltipDescription
       text={
         <Trans>
