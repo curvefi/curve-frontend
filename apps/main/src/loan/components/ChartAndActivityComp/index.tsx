@@ -104,7 +104,7 @@ export const ChartAndActivityComp = ({ rChainId, market, llammaId }: ChartAndAct
           />
           <Stack
             display={{ mobile: 'block', tablet: newBandsChartEnabled && isBandsVisible ? 'grid' : undefined }}
-            gridTemplateColumns={{ tablet: newBandsChartEnabled && isBandsVisible ? '1fr 0.3fr' : undefined }}
+            gridTemplateColumns={{ tablet: newBandsChartEnabled && isBandsVisible ? 'auto 14rem' : undefined }}
           >
             {ohlcDataUnavailable ? (
               <ErrorMessage
