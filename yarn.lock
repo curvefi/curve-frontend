@@ -4192,6 +4192,76 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@sentry-internal/browser-utils@npm:10.36.0":
+  version: 10.36.0
+  resolution: "@sentry-internal/browser-utils@npm:10.36.0"
+  dependencies:
+    "@sentry/core": "npm:10.36.0"
+  checksum: 10c0/53b66fca46bead7fdc9c78a6176dd12e86e09263dd485a05f571457351e5ca664e5e3cdf0ff2718a08d3eeda421fba147308dc3877e6f6b9626b9056304fdac4
+  languageName: node
+  linkType: hard
+
+"@sentry-internal/feedback@npm:10.36.0":
+  version: 10.36.0
+  resolution: "@sentry-internal/feedback@npm:10.36.0"
+  dependencies:
+    "@sentry/core": "npm:10.36.0"
+  checksum: 10c0/1eb6df3f776d16329aec2fda00ffdfd36bd5949c16f9a05b38d360609133055192cc69e3fb0613d994843b72e1ce227cab2a2859c9da96e0a49b40aa3210d4b7
+  languageName: node
+  linkType: hard
+
+"@sentry-internal/replay-canvas@npm:10.36.0":
+  version: 10.36.0
+  resolution: "@sentry-internal/replay-canvas@npm:10.36.0"
+  dependencies:
+    "@sentry-internal/replay": "npm:10.36.0"
+    "@sentry/core": "npm:10.36.0"
+  checksum: 10c0/c9f69b3e4439056d3b744dcf03f8905944f42e104d5a5c69b3849a3f1491ad8c8b18116ca52e514f6e79c3d3bdc45e5625ec16fad8a76b85c84ef9c330efda34
+  languageName: node
+  linkType: hard
+
+"@sentry-internal/replay@npm:10.36.0":
+  version: 10.36.0
+  resolution: "@sentry-internal/replay@npm:10.36.0"
+  dependencies:
+    "@sentry-internal/browser-utils": "npm:10.36.0"
+    "@sentry/core": "npm:10.36.0"
+  checksum: 10c0/39df50768d8a4a6589db3dc3c6744ef826563334e09b80b65af27779842cdbf9445fd4e44a491c9543ac0dcd8f60c0f30510f8394ce32c45306863f9ddc13067
+  languageName: node
+  linkType: hard
+
+"@sentry/browser@npm:10.36.0":
+  version: 10.36.0
+  resolution: "@sentry/browser@npm:10.36.0"
+  dependencies:
+    "@sentry-internal/browser-utils": "npm:10.36.0"
+    "@sentry-internal/feedback": "npm:10.36.0"
+    "@sentry-internal/replay": "npm:10.36.0"
+    "@sentry-internal/replay-canvas": "npm:10.36.0"
+    "@sentry/core": "npm:10.36.0"
+  checksum: 10c0/5a7817bebb243db83b27b5fdff3c5893a1cee9654c2602ebfb2ad815514d1b1f33e877ca7fd2ddda4d38a54141c711239ee796542ea2478cc04ec538a5cd2723
+  languageName: node
+  linkType: hard
+
+"@sentry/core@npm:10.36.0":
+  version: 10.36.0
+  resolution: "@sentry/core@npm:10.36.0"
+  checksum: 10c0/1ccd2177af7305f7dbe4ac4d6a377d71f2889f01bbc92fafb40431dba08d64c3b78ec769d94744f15abbfd3e55f25254a2ad1f5b34745abd1398c6d9b88aee78
+  languageName: node
+  linkType: hard
+
+"@sentry/react@npm:^10.36.0":
+  version: 10.36.0
+  resolution: "@sentry/react@npm:10.36.0"
+  dependencies:
+    "@sentry/browser": "npm:10.36.0"
+    "@sentry/core": "npm:10.36.0"
+  peerDependencies:
+    react: ^16.14.0 || 17.x || 18.x || 19.x
+  checksum: 10c0/1046e87bfb8aa07943be4ceb2e45c3b8fc08f94f94cefa96cd1e32b2ea850712e5ede2284898850fdd0b97eea885b6d230d506070503812ef093e02f90626561
+  languageName: node
+  linkType: hard
+
 "@sinclair/typebox@npm:^0.27.8":
   version: 0.27.8
   resolution: "@sinclair/typebox@npm:0.27.8"
@@ -4521,10 +4591,27 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tanstack/query-async-storage-persister@npm:^5.90.22":
+  version: 5.90.22
+  resolution: "@tanstack/query-async-storage-persister@npm:5.90.22"
+  dependencies:
+    "@tanstack/query-core": "npm:5.90.20"
+    "@tanstack/query-persist-client-core": "npm:5.91.19"
+  checksum: 10c0/6502db4d5fd2e0b9a2b4324804e4d98b258c30c02607e8ebc64bae4fcf268f10fb8043ff1a1eef2b1b311ea9ff6d5b0a4db807c6cdf7c9d60bbb02af011e59e4
+  languageName: node
+  linkType: hard
+
 "@tanstack/query-core@npm:5.90.16":
   version: 5.90.16
   resolution: "@tanstack/query-core@npm:5.90.16"
   checksum: 10c0/f6a4827feeed2b4118323056bbda8d5099823202d1f29b538204ae2591be4e80f2946f3311eed30fefe866643f431c04b560457f03415d40caf2f353ba1efac0
+  languageName: node
+  linkType: hard
+
+"@tanstack/query-core@npm:5.90.20":
+  version: 5.90.20
+  resolution: "@tanstack/query-core@npm:5.90.20"
+  checksum: 10c0/70637dfcecd5ed9d810629aa27f1632af8a4bcd083e75cf29408d058c32f8234704a3231ec280e2c4016ea0485b16124fdf70ab97793b5a7b670f43f7659e9fe
   languageName: node
   linkType: hard
 
@@ -4544,13 +4631,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/query-sync-storage-persister@npm:5.90.18":
-  version: 5.90.18
-  resolution: "@tanstack/query-sync-storage-persister@npm:5.90.18"
+"@tanstack/query-persist-client-core@npm:5.91.19":
+  version: 5.91.19
+  resolution: "@tanstack/query-persist-client-core@npm:5.91.19"
   dependencies:
-    "@tanstack/query-core": "npm:5.90.16"
-    "@tanstack/query-persist-client-core": "npm:5.91.15"
-  checksum: 10c0/0dda51daa3966ce36ee95d8cb9285ba656727681dd0deeacc074aded2ff24e1b33057304c90b2194af10aecc1525be85cf21f3bec79fd062919dd5e7eac98988
+    "@tanstack/query-core": "npm:5.90.20"
+  checksum: 10c0/d11b85bb86276be6e291aa184365833d4074b8fac93ec70bf86984013c6e299957a31f83e14498777c59884a4939ce893dc61ed9d84b6519694d31c47016931a
   languageName: node
   linkType: hard
 
@@ -7655,11 +7741,12 @@ __metadata:
     "@mui/utils": "npm:^7.3.6"
     "@safe-global/safe-apps-provider": "npm:~0.18.6"
     "@safe-global/safe-apps-sdk": "npm:~9.1.0"
+    "@sentry/react": "npm:^10.36.0"
     "@storybook/addon-a11y": "npm:10.1.11"
     "@storybook/addon-docs": "npm:10.1.11"
     "@storybook/addon-themes": "npm:10.1.11"
     "@storybook/react-vite": "npm:10.1.11"
-    "@tanstack/query-sync-storage-persister": "npm:5.90.18"
+    "@tanstack/query-async-storage-persister": "npm:^5.90.22"
     "@tanstack/react-query": "npm:5.90.16"
     "@tanstack/react-query-devtools": "npm:5.91.2"
     "@tanstack/react-query-persist-client": "npm:5.90.18"
@@ -11315,6 +11402,7 @@ __metadata:
     "@ethersproject/abi": "npm:^5.8.0"
     "@hookform/error-message": "npm:^2.0.1"
     "@hookform/resolvers": "npm:^5.2.2"
+    "@sentry/react": "npm:^10.36.0"
     "@supercharge/promise-pool": "npm:^3.2.0"
     "@tanstack/react-router": "npm:^1.139.14"
     "@tanstack/react-router-devtools": "npm:^1.139.14"

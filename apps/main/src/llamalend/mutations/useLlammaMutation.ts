@@ -5,6 +5,7 @@ import { invalidateAllUserMarketDetails } from '@/llamalend/queries/validation/i
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useMutation } from '@tanstack/react-query'
 import { notify, useCurve } from '@ui-kit/features/connect-wallet'
+import { addBreadcrumb, captureError } from '@ui-kit/features/sentry'
 import { assertValidity, logError, logMutation, logSuccess, type ValidationSuite } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { waitForTransactionReceipt } from '@wagmi/core'
@@ -121,6 +122,8 @@ export function useLlammaMutation<TVariables extends object, TData extends Resul
       logMutation(mutationKey, { variables })
       // Return context to make it available in all callbacks
       const context = { wallet, llamaApi, market }
+      addBreadcrumb(`Llamma mutation starting`, 'mutation', { context, variables, userAddress, mutationKey })
+
       return { ...context, pendingNotification: notify(pendingMessage(variables, context), 'pending') }
     },
     mutationFn: async (variables: TVariables) => {
@@ -142,6 +145,7 @@ export function useLlammaMutation<TVariables extends object, TData extends Resul
     onError: (error, variables, context) => {
       setError(error)
       logError(mutationKey, { error, variables, marketId: context?.market.id })
+      captureError(error, { variables, context, userAddress })
       notify(t`Transaction failed`, 'error') // hide the actual error message, it can be too long - display it in the form
     },
     onSettled: (_data, _error, _variables, context) => context?.pendingNotification?.dismiss(),

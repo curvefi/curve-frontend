@@ -1,3 +1,8 @@
+// Initialize Sentry first, before any other imports run
+// eslint-disable-next-line import/order
+import { initSentry } from '@ui-kit/features/sentry'
+initSentry()
+
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
