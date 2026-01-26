@@ -1,7 +1,6 @@
 import { isAddress } from 'viem'
 import { STABLESWAP, CRYPTOSWAP, FXSWAP, NG_ASSET_TYPE } from '@/dex/components/PageCreatePool/constants'
 import type { SwapType, TokenState } from '@/dex/components/PageCreatePool/types'
-import { BasePool } from '@/dex/types/main.types'
 export const checkSwapType = (swapType: SwapType) => swapType !== ''
 
 export const checkTokensInPoolUnset = (
@@ -104,20 +103,3 @@ export const isTricrypto = (
   tokenB: TokenState,
   tokenC: TokenState,
 ) => tricryptoEnabled && tokenAmount === 3 && tokenA.address !== '' && tokenB.address !== '' && tokenC.address !== ''
-
-export const checkMetaPool = (address: string, basePools: BasePool[]) =>
-  address === '' ? false : basePools.some((item) => item.token === address)
-
-export const getBasepoolCoins = (value: string, basePools: BasePool[], tokenA: TokenState, tokenB: TokenState) => {
-  let basePoolCoins: string[] = []
-  if (checkMetaPool(value, basePools) || tokenA.basePool || tokenB.basePool) {
-    if (checkMetaPool(value, basePools)) {
-      basePoolCoins = basePools.find((pool) => pool.token.toLowerCase() === value.toLowerCase())?.coins || []
-    } else if (tokenA.basePool) {
-      basePoolCoins = basePools.find((pool) => pool.token.toLowerCase() === tokenA.address.toLowerCase())?.coins || []
-    } else if (tokenB.basePool) {
-      basePoolCoins = basePools.find((pool) => pool.token.toLowerCase() === tokenB.address.toLowerCase())?.coins || []
-    }
-  }
-  return basePoolCoins
-}

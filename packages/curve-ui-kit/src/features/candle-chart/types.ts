@@ -1,37 +1,14 @@
 import type { UTCTimestamp } from 'lightweight-charts'
+import type { PoolCoin } from '@curvefi/prices-api/pools'
 import { TIME_OPTIONS } from './constants'
 
 export type TimeOption = (typeof TIME_OPTIONS)[number]
 export type FetchingStatus = 'LOADING' | 'ERROR' | 'READY'
 
-export interface PricesApiCoin {
-  pool_index: number
-  symbol: string
-  address: string
-}
-
 export type ChartSelection =
   | { type: 'lp-usd' }
   | { type: 'lp-token'; symbol: string }
-  | { type: 'pair'; mainToken: PricesApiCoin; refToken: PricesApiCoin }
-
-export interface PricesApiPool {
-  name: string
-  address: string
-  n_coins: number
-  tvl_usd: number
-  trading_fee_24h: number
-  liquidity_volume_24h: number
-  liquidity_fee_24h: number
-  coins: PricesApiCoin[]
-}
-
-export interface PricesApiPoolResponse {
-  chain: string
-  page: number
-  per_page: number
-  data: PricesApiPool[]
-}
+  | { type: 'pair'; mainToken: PoolCoin; refToken: PoolCoin }
 
 export interface LabelList {
   label: string

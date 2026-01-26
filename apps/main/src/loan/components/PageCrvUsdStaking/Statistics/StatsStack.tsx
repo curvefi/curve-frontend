@@ -3,7 +3,6 @@ import { useScrvUsdStatistics } from '@/loan/entities/scrvusd-statistics'
 import { useScrvUsdYield } from '@/loan/entities/scrvusd-yield'
 import Grid from '@mui/material/Grid'
 import { t } from '@ui-kit/lib/i18n'
-import type { TimeOption } from '@ui-kit/lib/types/scrvusd'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { weiToEther } from '@ui-kit/utils'
@@ -13,7 +12,7 @@ const { Spacing } = SizesAndSpaces
 const CRVUSD_OPTION = { symbol: 'crvUSD', position: 'suffix' as const, abbreviate: true }
 
 export const StatsStack = () => {
-  const { data: yieldData, isFetching: yieldIsFetching } = useScrvUsdYield({ timeOption: '1Y' as TimeOption })
+  const { data: yieldData, isFetching: yieldIsFetching } = useScrvUsdYield({ timeOption: '1Y' })
   const { data: revenueData, isFetching: revenueIsFetching } = useScrvUsdRevenue({})
   const { data: statisticsData, isFetching: statisticsIsFetching } = useScrvUsdStatistics({})
 

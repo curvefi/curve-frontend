@@ -72,13 +72,14 @@ export const { useQuery: useMarketPricePerShare, invalidate: invalidateMarketPri
   validationSuite: marketIdValidationSuite,
 })
 
-export const invalidateMarketDetails = ({ chainId, marketId }: { chainId: ChainId; marketId: string }) => {
-  invalidateMarketCapAndAvailable({ chainId, marketId })
-  invalidateMarketCollateralAmounts({ chainId, marketId })
-  invalidateMarketOnChainRewards({ chainId, marketId })
-  invalidateMarketPricePerShare({ chainId, marketId })
-  invalidateMarketRates({ chainId, marketId })
-}
+export const invalidateMarketDetails = ({ chainId, marketId }: { chainId: ChainId; marketId: string }) =>
+  Promise.all([
+    invalidateMarketCapAndAvailable({ chainId, marketId }),
+    invalidateMarketCollateralAmounts({ chainId, marketId }),
+    invalidateMarketOnChainRewards({ chainId, marketId }),
+    invalidateMarketPricePerShare({ chainId, marketId }),
+    invalidateMarketRates({ chainId, marketId }),
+  ])
 
 export const useMarketDetails = (params: MarketParams, options?: { enabled?: boolean }) => {
   const queryParams = { ...params, ...options }

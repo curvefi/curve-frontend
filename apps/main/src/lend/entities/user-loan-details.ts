@@ -92,8 +92,5 @@ export const { useQuery: useUserLoanDetails, invalidate: invalidateUserLoanDetai
   validationSuite: userMarketValidationSuite,
 })
 
-export const invalidateAllUserBorrowDetails = (params: UserLoanDetailsParams) => {
-  invalidateUserMarketBalances(params)
-  invalidateUserLoanDetails(params)
-  invalidateUserPrices(params)
-}
+export const invalidateAllUserBorrowDetails = (params: UserLoanDetailsParams) =>
+  Promise.all([invalidateUserMarketBalances(params), invalidateUserLoanDetails(params), invalidateUserPrices(params)])

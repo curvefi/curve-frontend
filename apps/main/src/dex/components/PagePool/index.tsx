@@ -16,10 +16,12 @@ import { useNetworkByChain } from '@/dex/entities/networks'
 import { usePoolAlert } from '@/dex/hooks/usePoolAlert'
 import { usePoolIdByAddressOrId } from '@/dex/hooks/usePoolIdByAddressOrId'
 import { useTokensMapper } from '@/dex/hooks/useTokensMapper'
+import { usePoolsPricesApi } from '@/dex/queries/pools-prices-api.query'
 import { useStore } from '@/dex/store/useStore'
 import { getChainPoolIdActiveKey } from '@/dex/utils'
 import { getPath } from '@/dex/utils/utilsRouter'
 import { ManageGauge } from '@/dex/widgets/manage-gauge'
+import type { Chain } from '@curvefi/prices-api'
 import { notFalsy } from '@curvefi/prices-api/objects.util'
 import Stack from '@mui/material/Stack'
 import { AlertBox } from '@ui/AlertBox'
@@ -55,7 +57,6 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
   const isMdUp = useLayoutStore((state) => state.isMdUp)
   const fetchPoolStats = useStore((state) => state.pools.fetchPoolStats)
   const setPoolIsWrapped = useStore((state) => state.pools.setPoolIsWrapped)
-  const pricesApiPoolsMapper = useStore((state) => state.pools.pricesApiPoolsMapper)
   const fetchPricesPoolSnapshots = useStore((state) => state.pools.fetchPricesPoolSnapshots)
   const snapshotsMapper = useStore((state) => state.pools.snapshotsMapper)
 
@@ -83,9 +84,10 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
   const { pool } = poolDataCacheOrApi
   const { data: network } = useNetworkByChain({ chainId: rChainId })
   const { networkId, isLite, pricesApi } = network
+  const { data: pricesApiPoolsMapper } = usePoolsPricesApi({ blockchainId: networkId as Chain })
   const poolAddress = poolData?.pool.address
 
-  const pricesApiPoolData = poolData && pricesApiPoolsMapper[poolData.pool.address]
+  const pricesApiPoolData = poolData && pricesApiPoolsMapper?.[poolData.pool.address]
 
   type DetailInfoTab = 'user' | 'pool' | 'advanced'
   const poolInfoTabs = useMemo<TabOption<DetailInfoTab>[]>(
@@ -118,7 +120,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
       curve &&
       poolAddress &&
       pricesApi &&
-      pricesApiPoolsMapper[poolAddress] !== undefined &&
+      pricesApiPoolsMapper?.[poolAddress] !== undefined &&
       !snapshotsMapper[poolAddress]
     ) {
       void fetchPricesPoolSnapshots(rChainId, poolAddress)

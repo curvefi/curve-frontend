@@ -1,3 +1,4 @@
+import '@cy/support/helpers/eip6963-test-setup'
 import { recordValues } from '@curvefi/prices-api/objects.util'
 import {
   checkLoanDetailsLoaded,
