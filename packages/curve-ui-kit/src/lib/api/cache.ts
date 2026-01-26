@@ -1,4 +1,5 @@
 import { type Mutation, MutationCache, QueryCache } from '@tanstack/react-query'
+import { addBreadcrumb, captureError } from '@ui-kit/features/sentry'
 import { logError, logMutation, logSuccess } from '@ui-kit/lib/logging'
 import { QUERY_KEY_IDENTIFIER as USD_RATE_KEY_IDENTIFER } from '../model/entities/token-usd-rate'
 
@@ -22,16 +23,18 @@ const getMutationKey = (mutation: Mutation<unknown, unknown, unknown, unknown>, 
 }
 
 export const mutationCache = new MutationCache({
-  onError: (error, variables, _context, mutation) => {
+  onError: (error, variables, context, mutation) => {
     const variablesMutationKey = getMutationKey(mutation, variables)
     logError(variablesMutationKey, error, error.message)
+    captureError(error, { variables, mutation, context })
   },
   onSuccess: (data, variables, _context, mutation) => {
     const variablesMutationKey = getMutationKey(mutation, variables)
     logSuccess(variablesMutationKey, { data })
   },
-  onMutate: (variables, mutation) => {
+  onMutate: (variables, mutation, context) => {
     const variablesMutationKey = getMutationKey(mutation, variables)
     logMutation(variablesMutationKey)
+    addBreadcrumb('onMutate', 'mutation', { context, variables, mutation })
   },
 })

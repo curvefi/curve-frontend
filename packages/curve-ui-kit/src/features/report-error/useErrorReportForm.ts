@@ -1,11 +1,11 @@
 import { useForm } from 'react-hook-form'
-import { fetchJson } from '@curvefi/prices-api/fetch'
+import { captureError, captureString } from '@ui-kit/features/sentry'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model/form'
 
 export type ContactMethod = 'email' | 'telegram' | 'discord'
 
 export type ErrorContext = {
-  error: unknown
+  error: Error | string
   title: string
   subtitle: string
 }
@@ -40,7 +40,11 @@ export const useErrorReportForm = ({ error, ...context }: ErrorContext, onClose:
       }
       console.info(`Submitting error report:`, body)
       try {
-        await fetchJson('/api/error-report', { body })
+        if (error instanceof Error) {
+          captureError(error, { body })
+        } else {
+          captureString(error, { body })
+        }
         onClose()
       } catch (e) {
         console.warn(e)
