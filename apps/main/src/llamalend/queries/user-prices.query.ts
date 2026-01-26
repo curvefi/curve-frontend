@@ -5,6 +5,7 @@ import { queryFactory, rootKeys, type UserMarketParams, type UserMarketQuery } f
 import { loanExistsValidationGroup } from '@ui-kit/lib/model/query/loan-exists-validation'
 import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
 import { createValidationSuite } from '@ui-kit/lib/validation'
+import { q } from '@ui-kit/types/util'
 import { useLoanExists } from './loan-exists'
 
 type UserPricesQuery = UserMarketQuery & { loanExists: boolean }
@@ -35,7 +36,7 @@ export const useUserPrices = (params: UserMarketParams) => {
   const queryResult = useUserPricesQuery({ ...params, loanExists })
 
   return {
-    ...queryResult,
+    ...q(queryResult),
     isLoading: isLoanExistsLoading || queryResult.isLoading,
     isError: isLoanExistsError || queryResult.isError,
   }
