@@ -102,5 +102,5 @@ export const useRepayMutation = ({
 
   const onSubmit = useCallback(async (form: RepayForm) => mutate(form as RepayMutation), [mutate])
 
-  return { onSubmit, error, data, isPending, isSuccess, reset }
+  return { onSubmit, mutate, error, data, isPending, isSuccess, reset }
 }
