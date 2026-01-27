@@ -26,7 +26,6 @@ declare global {
     ethereum: EIP1193Provider & { eip6963ProviderDetails: Eip6963Provider[] }
     exodus?: EIP1193Provider
     enkrypt?: { providers: { ethereum: EIP1193Provider } }
-    binancew3w?: { ethereum?: EIP1193Provider }
     eip6963Connectors: DetectedEip6963Connector[]
   }
 }
