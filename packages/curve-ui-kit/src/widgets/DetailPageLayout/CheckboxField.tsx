@@ -37,10 +37,13 @@ export const CheckboxField = ({
   <Stack>
     <Stack direction="row" justifyContent="space-between" gap={Spacing.sm} alignItems="start" flexWrap="wrap">
       <FormControlLabel
-        sx={{ minWidth: 180, margin: 0 }}
+        // without default margin, the checkbox overflows
+        sx={{ margin: 0 }}
         label={
           <>
-            <Typography variant="headingXsBold">{label}</Typography>
+            <Typography variant="headingXsBold" sx={{ userSelect: 'none' }}>
+              {label}
+            </Typography>
             {message && (
               <WithSkeleton loading={!!isLoading}>
                 <Typography {...(error && { color: 'error.main' })} variant="bodyXsRegular">
