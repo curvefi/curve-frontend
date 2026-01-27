@@ -194,7 +194,12 @@ export const createLoanCollateralIncrease = (_set: StoreApi<State>['setState'], 
         }
 
         // invalidate user prices to keep ohlc chart liquidation range in sync
-        invalidateUserPrices({ chainId, marketId: llamma.id, userAddress: wallet?.address, loanExists: loanExists })
+        await invalidateUserPrices({
+          chainId,
+          marketId: llamma.id,
+          userAddress: wallet?.address,
+          loanExists: loanExists,
+        })
 
         get()[sliceKey].setStateByKeys({
           detailInfo: {},

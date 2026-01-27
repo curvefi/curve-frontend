@@ -4,6 +4,7 @@ import { getRepayImplementation } from '@/llamalend/queries/repay/repay-query.he
 import {
   validateIsFull,
   validateLeverageSupported,
+  validateLeverageValuesSupported,
   validateSlippage,
   validateMaxCollateral,
   validateUserCollateral,
@@ -19,6 +20,7 @@ import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { chainValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
 import { llamaApiValidationGroup } from '@ui-kit/lib/model/query/curve-api-validation'
 import { marketIdValidationGroup, marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
+import type { UserMarketParams } from '@ui-kit/lib/model/query/root-keys'
 import { userAddressValidationGroup } from '@ui-kit/lib/model/query/user-address-validation'
 import { Decimal } from '@ui-kit/utils'
 
@@ -106,6 +108,21 @@ export const collateralValidationGroup = ({
 
 export const collateralValidationSuite = createValidationSuite((params: CollateralParams) =>
   collateralValidationGroup(params),
+)
+
+export const leverageCollateralValidationSuite = createValidationSuite((params: CollateralParams) => {
+  collateralValidationGroup(params)
+  validateLeverageValuesSupported(params.marketId)
+})
+
+export const leverageUserMarketValidationSuite = createValidationSuite(
+  ({ chainId, marketId, userAddress }: UserMarketParams) => {
+    chainValidationGroup({ chainId })
+    llamaApiValidationGroup({ chainId })
+    marketIdValidationGroup({ marketId })
+    userAddressValidationGroup({ userAddress })
+    validateLeverageValuesSupported(marketId)
+  },
 )
 
 export const addCollateralFormValidationSuite = createValidationSuite((params: CollateralForm) => {

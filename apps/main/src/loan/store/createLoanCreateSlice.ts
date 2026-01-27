@@ -451,7 +451,7 @@ export const createLoanCreate = (_set: StoreApi<State>['setState'], get: StoreAp
       if (!loanExists) {
         get().loans.resetUserDetailsState(llamma)
       }
-      invalidateLoanExists({ chainId: curve.chainId, marketId: llamma.id, userAddress: curve.signerAddress })
+      await invalidateLoanExists({ chainId: curve.chainId, marketId: llamma.id, userAddress: curve.signerAddress })
 
       // reset form values
       const updatedFormValues = DEFAULT_FORM_VALUES

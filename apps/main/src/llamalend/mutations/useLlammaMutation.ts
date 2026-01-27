@@ -64,9 +64,9 @@ export type LlammaMutationOptions<TVariables extends object, TData extends Resul
    * Validation suite to validate variables before mutationFn is called.
    **/
   validationSuite: ValidationSuite
-  /** Message to display while sending transaction */
+  /** Message to display while waiting for transaction submission */
   pendingMessage: (variables: TVariables, context: Pick<Context, 'market'>) => string
-  /** Message to display while confirming transaction */
+  /** Message to display while waiting for transaction confirmation */
   confirmingMessage?: (variables: TVariables, context: Pick<Context, 'market'>) => string
   /** Message to display on success */
   successMessage: (variables: TVariables, context: Context) => string
@@ -111,7 +111,6 @@ export function useLlammaMutation<TVariables extends object, TData extends Resul
     onMutate: (variables: TVariables) => {
       // Clear local error at the start of a new mutation attempt.
       setError(null)
-      reset() // reset mutation state on new mutation
       // Early validation - throwing here prevents mutationFn from running
       if (!wallet) throw new Error('Missing provider')
       if (!llamaApi) throw new Error('Missing llamalend api')
@@ -142,8 +141,8 @@ export function useLlammaMutation<TVariables extends object, TData extends Resul
     },
     onSuccess: async ({ data, receipt }, variables, result) => {
       const { market, wallet } = result
+      logSuccess(mutationKey, { data, variables, marketId })
       notify(successMessage(variables, result), 'success')
-      logSuccess(mutationKey, { data, variables, marketId: market.id })
       updateUserEventsApi(wallet, { id: networkId }, market, receipt.transactionHash)
       await invalidateAllUserMarketDetails({ chainId, marketId, userAddress })
       onReset?.()
