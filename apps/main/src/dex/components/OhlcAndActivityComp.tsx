@@ -4,7 +4,7 @@ import { useOhlcChartState } from '@/dex/hooks/useOhlcChartState'
 import { usePoolActivity } from '@/dex/hooks/usePoolActivity'
 import { ChainId } from '@/dex/types/main.types'
 import type { Address } from '@curvefi/prices-api'
-import type { Pool } from '@curvefi/prices-api/pools'
+import type { Pool, PoolCoin } from '@curvefi/prices-api/pools'
 import Stack from '@mui/material/Stack'
 import { ActivityTable, PoolTradesExpandedPanel, PoolLiquidityExpandedPanel } from '@ui-kit/features/activity-table'
 import { ChartWrapper } from '@ui-kit/features/candle-chart/ChartWrapper'
@@ -22,10 +22,19 @@ const tabs: TabOption<Tab>[] = [
   { value: 'poolActivity', label: t`Pool Activity` },
 ]
 
-const PoolActivity = ({ chainId, poolAddress }: { poolAddress: Address; chainId: ChainId }) => {
+const PoolActivity = ({
+  chainId,
+  poolAddress,
+  poolTokens,
+}: {
+  poolAddress: Address
+  chainId: ChainId
+  poolTokens: PoolCoin[]
+}) => {
   const { activeSelection, setActiveSelection, selections, tradesTableConfig, liquidityTableConfig } = usePoolActivity({
     chainId,
     poolAddress,
+    poolTokens,
   })
 
   return (
@@ -69,7 +78,7 @@ export const OhlcAndActivityComp = ({
     <Stack gap={Spacing.md}>
       <SubTabsSwitcher tabs={tabs} value={tab} onChange={setTab} />
       {pricesApiPoolData && tab === 'poolActivity' && (
-        <PoolActivity poolAddress={pricesApiPoolData.address} chainId={rChainId} />
+        <PoolActivity poolAddress={pricesApiPoolData.address} chainId={rChainId} poolTokens={pricesApiPoolData.coins} />
       )}
       {tab === 'chart' && (
         <Stack sx={{ gap: Spacing.md }}>

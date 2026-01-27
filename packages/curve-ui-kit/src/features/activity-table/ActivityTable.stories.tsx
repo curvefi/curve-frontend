@@ -221,7 +221,7 @@ const DexPoolActivityComponent = () => {
   const tradesData = useMemo(() => generatePoolTrades(20), [])
   const liquidityData = useMemo(() => generatePoolLiquidity(15), [])
   const tradesColumns = useMemo(() => createPoolTradesColumns(), [])
-  const liquidityColumns = useMemo(() => createPoolLiquidityColumns(), [])
+  const liquidityColumns = useMemo(() => createPoolLiquidityColumns({ poolTokens: POOL_TOKENS }), [])
 
   const tradesTableConfig = {
     data: tradesData,

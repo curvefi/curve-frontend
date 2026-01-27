@@ -4,6 +4,7 @@ import { usePoolLiquidityEvents } from '@/dex/entities/pool-liquidity.query'
 import { usePoolTrades } from '@/dex/entities/pool-trades.query'
 import { ChainId } from '@/dex/types/main.types'
 import type { Chain, Address } from '@curvefi/prices-api'
+import type { PoolCoin } from '@curvefi/prices-api/pools'
 import { scanTxPath } from '@ui/utils'
 import {
   type ActivitySelection,
@@ -11,7 +12,6 @@ import {
   type PoolTradeRow,
   type PoolLiquidityRow,
   type PoolActivitySelection,
-  type Token,
   createPoolTradesColumns,
   createPoolLiquidityColumns,
   usePoolActivityVisibility,
@@ -31,7 +31,7 @@ type UsePoolActivityProps = {
   /** The pool contract address */
   poolAddress: Address | undefined
   /** Pool tokens (symbols and addresses) in order matching liquidity event amounts */
-  poolTokens?: Token[]
+  poolTokens: PoolCoin[]
 }
 
 /**
@@ -39,14 +39,14 @@ type UsePoolActivityProps = {
  * Handles fetching, transforming, and providing table configurations for both pool trades
  * and liquidity events.
  */
-export const usePoolActivity = ({ chainId, poolAddress, poolTokens = [] }: UsePoolActivityProps) => {
+export const usePoolActivity = ({ chainId, poolAddress, poolTokens }: UsePoolActivityProps) => {
   const { data: networkConfig } = useNetworkByChain({ chainId })
   const network = networkConfig?.id.toLowerCase() as Chain
 
   const [activeSelection, setActiveSelection] = useState<PoolActivitySelection>('trades')
   const [tradesPageIndex, setTradesPageIndex] = useState(0)
   const [liquidityPageIndex, setLiquidityPageIndex] = useState(0)
-  const { tradesColumnVisibility, liquidityColumnVisibility } = usePoolActivityVisibility()
+  const { tradesColumnVisibility, liquidityColumnVisibility } = usePoolActivityVisibility({ poolTokens })
 
   const {
     data: tradesData,
@@ -99,7 +99,7 @@ export const usePoolActivity = ({ chainId, poolAddress, poolTokens = [] }: UsePo
 
   // Memoize column definitions
   const tradesColumns = useMemo(() => createPoolTradesColumns(), [])
-  const liquidityColumns = useMemo(() => createPoolLiquidityColumns(), [])
+  const liquidityColumns = useMemo(() => createPoolLiquidityColumns({ poolTokens }), [poolTokens])
 
   // Page change handlers
   const handleTradesPageChange = useCallback((pageIndex: number) => {

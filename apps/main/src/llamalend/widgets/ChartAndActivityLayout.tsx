@@ -7,7 +7,6 @@ import { useTheme } from '@mui/material/styles'
 import { type Token } from '@ui-kit/features/activity-table'
 import { ChartWrapper, type OhlcChartProps } from '@ui-kit/features/candle-chart/ChartWrapper'
 import { TIME_OPTIONS, SOFT_LIQUIDATION_DESCRIPTION } from '@ui-kit/features/candle-chart/constants'
-import { ErrorMessage } from '@ui-kit/features/candle-chart/ErrorMessage'
 import type { TimeOption } from '@ui-kit/features/candle-chart/types'
 import { useNewBandsChart } from '@ui-kit/hooks/useFeatureFlags'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
@@ -16,6 +15,7 @@ import { ChartFooter } from '@ui-kit/shared/ui/Chart/ChartFooter'
 import { type ChartSelections, ChartHeader } from '@ui-kit/shared/ui/Chart/ChartHeader'
 import { type LegendItem } from '@ui-kit/shared/ui/Chart/LegendSet'
 import { ToggleBandsChartButton } from '@ui-kit/shared/ui/Chart/ToggleBandsChartButton'
+import { ErrorMessage } from '@ui-kit/shared/ui/ErrorMessage'
 import { SubTabsSwitcher } from '@ui-kit/shared/ui/Tabs/SubTabsSwitcher'
 import { type TabOption } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -105,7 +105,9 @@ export const ChartAndActivityLayout = ({
           >
             {chart.ohlcDataUnavailable ? (
               <ErrorMessage
-                errorMessage={t`Chart data is not available for this market.`}
+                title="An error ocurred"
+                subtitle={t`Chart data is not yet available for this market.`}
+                errorMessage={t`Chart data is not yet available for this market.`}
                 sx={{ alignSelf: 'center' }}
               />
             ) : (

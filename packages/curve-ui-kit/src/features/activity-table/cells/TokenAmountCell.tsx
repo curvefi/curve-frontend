@@ -62,7 +62,9 @@ export const TokenAmountCell = ({
             </Typography>
           )}
         </Stack>
-        {tokenAddress && isRightAligned && <TokenIcon blockchainId={chainId} address={tokenAddress} size="mui-md" />}
+        {tokenAddress && isRightAligned && amount != 0 && (
+          <TokenIcon blockchainId={chainId} address={tokenAddress} size="mui-md" />
+        )}
       </Stack>
     </ActivityTableCell>
   )
