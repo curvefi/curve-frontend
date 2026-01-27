@@ -56,7 +56,6 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     onBorrowedMore,
   })
 
-  console.log({ formErrors, values })
   const swapRequired = market && hasLeverage(market) && +(values.userBorrowed ?? 0) > 0
   const priceImpact = useBorrowMorePriceImpact(params, enabled && swapRequired)
   const fromBorrowed = fromWallet && market && hasLeverage(market)
