@@ -52,21 +52,27 @@ export const Toast = () => {
   const items = useToastItems()
   return (
     <Snackbar
+      autoHideDuration={null}
       open={items.length > 0}
       anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
       sx={{ top, left: 'unset' }} // unset left, otherwise it takes the whole width blocking clicks
     >
       <Stack justifyContent="end" marginTop={Spacing.md} gap={Spacing.sm} flexWrap="wrap" flexDirection="column">
-        {items.map(({ id, severity, title, message, testId }) => (
+        {items.map(({ id, severity, title, message, testId, keepAlive }) => (
           <Alert
             key={id}
             variant="filled"
             severity={severity}
             data-testid={testId}
-            sx={{
-              animation: `toastFadeOut ${getDuration({ severity }) + Duration.Transition}ms forwards`,
-              '@keyframes toastFadeOut': { [getDurationPercent({ severity })]: { opacity: 1 }, '100%': { opacity: 0 } },
-            }}
+            {...(!keepAlive && {
+              sx: {
+                animation: `toastFadeOut ${getDuration({ severity }) + Duration.Transition}ms forwards`,
+                '@keyframes toastFadeOut': {
+                  [getDurationPercent({ severity })]: { opacity: 1 },
+                  '100%': { opacity: 0 },
+                },
+              },
+            })}
           >
             {title && <AlertTitle>{title}</AlertTitle>}
             {message}
