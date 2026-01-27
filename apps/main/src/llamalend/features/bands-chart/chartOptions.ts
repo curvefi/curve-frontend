@@ -1,8 +1,30 @@
 import type { EChartsOption } from 'echarts-for-react'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
-import { getPriceMin, getPriceMax, formatNumberWithOptions } from './bands-chart.utils'
+import { formatNumberWithOptions } from './bands-chart.utils'
 import { generateMarkLines, createLabelStyle } from './markLines'
 import { ChartDataPoint, BandsChartPalette, DerivedChartData, UserBandsPriceRange } from './types'
+
+const getPriceMin = (chartData: ChartDataPoint[], oraclePrice: string | undefined) => {
+  const min = Math.min(...chartData.map((d) => d.p_down))
+  // bandDelta ensures padding to prevent label clipping if a label is too close to the edge
+  const bandDelta = chartData[0].p_down - chartData[0].p_up
+  // if oraclePrice is outside of range of bands, set min to oraclePrice - bandDelta to make sure it's visible
+  if (min > Number(oraclePrice)) {
+    return Number(oraclePrice) - bandDelta * 2
+  }
+  return min - bandDelta * 2
+}
+
+const getPriceMax = (chartData: ChartDataPoint[], oraclePrice: string | undefined) => {
+  const max = Math.max(...chartData.map((d) => d.p_up))
+  // bandDelta ensures padding to prevent label clipping if a label is too close to the edge
+  const bandDelta = chartData[0].p_down - chartData[0].p_up
+  // if oraclePrice is outside of range of bands, set max to oraclePrice + bandDelta to make sure it's visible
+  if (max < Number(oraclePrice)) {
+    return Number(oraclePrice) + bandDelta * 2
+  }
+  return max + bandDelta * 2
+}
 
 //
 // Custom series renderer to draw a rectangle spanning [p_down, p_up] with a given width and start offset.
@@ -102,7 +124,7 @@ export const getChartOptions = (
   palette: BandsChartPalette,
   tooltipFormatter: (params: unknown) => HTMLElement,
 ): EChartsOption => {
-  if (chartData.length === 0) return {}
+  if (!chartData.length) return {}
 
   const dataZoomWidth = 20
   const gridPadding = { left: 0, top: 0, bottom: 8 }
@@ -113,17 +135,10 @@ export const getChartOptions = (
   const priceMax = getPriceMax(chartData, oraclePrice)
 
   // Calculate x-axis extent for markLines (max endX value across all series)
-  // Data format: [median, startX, widthX, pDown, pUp, isLiq, endX]
+  // data format: [median, startX, widthX, pDown, pUp, isLiq, endX]
   // endX is at index 6, and for the full extent we need marketWidth + userWidth
-  let maxXEnd = 0
-  for (let i = 0; i < chartData.length; i++) {
-    const marketWidth = derived.marketData[i] ?? 0
-    const userWidth = derived.userData[i] ?? 0
-    const endX = marketWidth + userWidth
-    maxXEnd = Math.max(maxXEnd, endX)
-  }
+  const xEnd = Math.max(...chartData.map((_, i) => (derived.marketData[i] ?? 0) + (derived.userData[i] ?? 0)))
   const xStart = 0
-  const xEnd = maxXEnd
 
   // Generate mark areas using exact price edges
   const markAreas = userBandsPriceRange
@@ -261,10 +276,10 @@ export const getChartOptions = (
         palette.liquidationBandOutlineColor,
         marketSeriesData,
         false,
-        markAreas.length > 0
+        markAreas.length
           ? { silent: true, itemStyle: { color: palette.userRangeHighlightColor }, data: markAreas }
           : undefined,
-        markLines.length > 0
+        markLines.length
           ? {
               animation: false,
               animationDuration: 0,

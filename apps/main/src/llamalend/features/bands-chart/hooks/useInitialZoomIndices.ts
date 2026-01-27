@@ -16,14 +16,12 @@ const getUserBandRange = (
   chartData: ChartDataPoint[],
   userBandsBalances: ParsedBandsBalances[],
 ): { start: ChartDataPoint; end: ChartDataPoint } | null => {
-  if (userBandsBalances.length === 0) return null
+  if (!userBandsBalances.length) return null
 
   const userBandNumbers = new Set(userBandsBalances.map((b) => b.n))
   const userBands = chartData.filter((d) => userBandNumbers.has(d.n))
 
-  if (userBands.length === 0) return null
-
-  return { start: userBands[0], end: userBands[userBands.length - 1] }
+  return userBands.length ? { start: userBands[0], end: userBands[userBands.length - 1] } : null
 }
 
 type OraclePosition = 'above' | 'below' | 'within' | 'none'
