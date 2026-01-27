@@ -9,9 +9,9 @@ type UseLiquidationRangeProps = {
   /** Fallback time series data (e.g., oracle price data) if chartData is empty */
   fallbackData?: OraclePriceData[]
   /** User's current liquidation price range [low, high] */
-  currentPrices: string[] | null
+  currentPrices: string[] | null | undefined
   /** New liquidation price range being calculated [low, high] */
-  newPrices: string[] | null
+  newPrices: string[] | null | undefined
 }
 
 /**

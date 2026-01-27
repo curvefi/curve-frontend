@@ -3,6 +3,7 @@ import { fetchChartBandBalancesData } from '@/lend/lib/apiLending'
 import { UserLoss, ParsedBandsBalances, ChainId } from '@/lend/types/lend.types'
 import { getIsUserCloseToLiquidation, getLiquidationStatus, reverseBands, sortBandsLend } from '@/llamalend/llama.utils'
 import type { HealthColorKey } from '@/llamalend/llamalend.types'
+import { invalidateUserPrices } from '@/llamalend/queries/user-prices.query'
 import { requireLib } from '@ui-kit/features/connect-wallet'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { rootKeys } from '@ui-kit/lib/model/query/root-keys'
@@ -92,4 +93,4 @@ export const { useQuery: useUserLoanDetails, invalidate: invalidateUserLoanDetai
 })
 
 export const invalidateAllUserBorrowDetails = (params: UserLoanDetailsParams) =>
-  Promise.all([invalidateUserMarketBalances(params), invalidateUserLoanDetails(params)])
+  Promise.all([invalidateUserMarketBalances(params), invalidateUserLoanDetails(params), invalidateUserPrices(params)])

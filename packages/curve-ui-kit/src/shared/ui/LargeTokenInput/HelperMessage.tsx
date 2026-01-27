@@ -39,8 +39,9 @@ export const HelperMessage = ({ message, isError, onNumberClick }: HelperMessage
     sx={{
       display: 'flex',
       alignItems: 'center',
-      backgroundColor: (t) => t.design.Layer[3].Fill,
-      padding: Spacing.sm,
+      backgroundColor: (t) => t.design.Layer[1].Fill,
+      paddingBlock: Spacing.xs,
+      paddingInline: Spacing.sm,
       minHeight: Sizing.sm,
       ...(isError && { backgroundColor: (t) => t.design.Layer.Feedback.Error }),
     }}
