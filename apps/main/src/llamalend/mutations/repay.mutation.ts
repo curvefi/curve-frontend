@@ -79,7 +79,7 @@ export const useRepayMutation = ({
   userAddress,
 }: RepayOptions) => {
   const config = useConfig()
-  const { mutate, mutateAsync, error, data, isPending, isSuccess, reset } = useLlammaMutation<RepayMutation>({
+  const { mutate, error, data, isPending, isSuccess, reset } = useLlammaMutation<RepayMutation>({
     network,
     marketId,
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'repay'] as const,
@@ -100,7 +100,7 @@ export const useRepayMutation = ({
     onReset,
   })
 
-  const onSubmit = useCallback(async (form: RepayForm) => mutateAsync(form as RepayMutation), [mutateAsync])
+  const onSubmit = useCallback(async (form: RepayForm) => mutate(form as RepayMutation), [mutate])
 
-  return { onSubmit, mutate, mutateAsync, error, data, isPending, isSuccess, reset }
+  return { onSubmit, error, data, isPending, isSuccess, reset }
 }

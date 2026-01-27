@@ -26,7 +26,7 @@ export const useRemoveCollateralMutation = ({
   onReset,
   userAddress,
 }: RemoveCollateralOptions) => {
-  const { mutateAsync, error, data, isPending, isSuccess, reset } = useLlammaMutation<RemoveCollateralMutation>({
+  const { mutate, error, data, isPending, isSuccess, reset } = useLlammaMutation<RemoveCollateralMutation>({
     network,
     marketId,
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'remove-collateral'] as const,
@@ -41,7 +41,7 @@ export const useRemoveCollateralMutation = ({
     onReset,
   })
 
-  const onSubmit = useCallback((form: CollateralForm) => mutateAsync(form as RemoveCollateralMutation), [mutateAsync])
+  const onSubmit = useCallback((form: CollateralForm) => mutate(form as RemoveCollateralMutation), [mutate])
 
-  return { onSubmit, mutateAsync, error, data, isPending, isSuccess, reset }
+  return { onSubmit, error, data, isPending, isSuccess, reset }
 }

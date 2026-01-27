@@ -64,9 +64,9 @@ export type LlammaMutationOptions<TVariables extends object, TData extends Resul
    * Validation suite to validate variables before mutationFn is called.
    **/
   validationSuite: ValidationSuite
-  /** Message to display while sending transaction */
+  /** Message to display while waiting for transaction submission */
   pendingMessage: (variables: TVariables, context: Pick<Context, 'market'>) => string
-  /** Message to display while confirming transaction */
+  /** Message to display while waiting for transaction confirmation */
   confirmingMessage?: (variables: TVariables, context: Pick<Context, 'market'>) => string
   /** Message to display on success */
   successMessage: (variables: TVariables, context: Context) => string
