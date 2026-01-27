@@ -58,7 +58,7 @@ export const PartnerCard = ({ name, description, imageId, networks, tags, appUrl
             <Typography variant="headingSBold">{name}</Typography>
 
             {networks && Object.values(networks).some((x) => x) && (
-              <Stack flexGrow={1} direction="row" gap={Spacing.xs} alignItems="center">
+              <Stack flexGrow={1} direction="row" gap={Spacing.xs} alignItems="center" flexWrap="wrap">
                 {Object.entries(networks)
                   .filter(([, enabled]) => enabled)
                   .map(([networkId]) => (
