@@ -3,19 +3,10 @@ import { PRESET_RANGES } from '@/llamalend/constants'
 import { getLlamaMarket, hasLeverage } from '@/llamalend/llama.utils'
 import { Decimal } from '@ui-kit/utils'
 
-export const validateUserBorrowed = (
-  userBorrowed: Decimal | null | undefined,
-  { allowZero }: { allowZero: boolean },
-) => {
-  if (allowZero) {
-    test('userBorrowed', 'Borrow amount must be a non-negative number', () => {
-      enforce(userBorrowed).isNumeric().gte(0)
-    })
-  } else {
-    test('userBorrowed', 'Borrow amount must be a positive number', () => {
-      enforce(userBorrowed).isNumeric().gt(0)
-    })
-  }
+export const validateUserBorrowed = (userBorrowed: Decimal | null | undefined) => {
+  test('userBorrowed', 'Borrow amount must be a non-negative number', () => {
+    enforce(userBorrowed).isNumeric().gte(0)
+  })
 }
 
 export const validateUserCollateral = (userCollateral: Decimal | undefined | null, required: boolean = true) => {

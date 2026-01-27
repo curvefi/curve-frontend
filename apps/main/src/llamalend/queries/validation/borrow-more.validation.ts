@@ -65,7 +65,7 @@ export const borrowMoreFormValidationSuite = createValidationSuite(
   ) => {
     validateUserCollateral(userCollateral)
     validateMaxCollateral(userCollateral, maxCollateral)
-    validateUserBorrowed(userBorrowed, { allowZero: true })
+    validateUserBorrowed(userBorrowed)
     validateMaxBorrowed(userBorrowed, maxBorrowed)
     validateDebt(debt)
     validateMaxDebt(debt, maxDebt, maxDebtRequired)
@@ -100,7 +100,7 @@ export const borrowMoreValidationGroup = <IChainId extends number>(
   marketIdValidationGroup({ marketId })
   userAddressValidationGroup({ userAddress })
   validateUserCollateral(userCollateral)
-  validateUserBorrowed(userBorrowed, { allowZero: true })
+  validateUserBorrowed(userBorrowed)
   validateDebt(debt, debtRequired)
   validateMaxDebt(debt, maxDebt, maxDebtRequired)
   validateBorrowMoreFieldsForMarket(marketId, userCollateral, userBorrowed, debt)
