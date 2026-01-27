@@ -4,9 +4,9 @@ import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
 import { DownloadIcon } from '@ui-kit/shared/icons/DownloadIcon'
 import { UploadIcon } from '@ui-kit/shared/icons/UploadIcon'
+import { InlineTableCell } from '@ui-kit/shared/ui/DataTable/inline-cells/InlineTableCell'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { PoolLiquidityRow } from '../types'
-import { ActivityTableCell } from './ActivityTableCell'
 
 const { Spacing } = SizesAndSpaces
 
@@ -22,13 +22,13 @@ export const PoolLiquidityActionCell = ({ event }: PoolLiquidityActionCellProps)
   const Icon = isAdd ? DownloadIcon : UploadIcon
 
   return (
-    <ActivityTableCell>
+    <InlineTableCell>
       <Stack direction="row" alignItems="center" gap={Spacing.sm}>
         <Icon />
         <Typography variant="tableCellMBold" color={isAdd ? 'success' : 'error'}>
           {label}
         </Typography>
       </Stack>
-    </ActivityTableCell>
+    </InlineTableCell>
   )
 }

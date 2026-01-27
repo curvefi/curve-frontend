@@ -1,8 +1,8 @@
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { InlineTableCell } from '@ui-kit/shared/ui/DataTable/inline-cells/InlineTableCell'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { shortenString } from '@ui-kit/utils'
-import { ActivityTableCell } from './ActivityTableCell'
 
 const { Spacing } = SizesAndSpaces
 
@@ -21,7 +21,7 @@ type AddressCellProps = {
  * Cell component for displaying blockchain addresses with truncation.
  */
 export const AddressCell = ({ address, digits = 4, label, align = 'right' }: AddressCellProps) => (
-  <ActivityTableCell>
+  <InlineTableCell>
     {label && (
       <Typography variant="bodyXsRegular" sx={(t) => ({ color: t.design.Text.TextColors.Secondary })}>
         {label}
@@ -35,5 +35,5 @@ export const AddressCell = ({ address, digits = 4, label, align = 'right' }: Add
     >
       <Typography variant="tableCellMBold">{shortenString(address, { digits })}</Typography>
     </Stack>
-  </ActivityTableCell>
+  </InlineTableCell>
 )

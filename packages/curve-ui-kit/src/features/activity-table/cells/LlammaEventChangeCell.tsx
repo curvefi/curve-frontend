@@ -1,11 +1,11 @@
 import type { Chain } from '@curvefi/prices-api'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { InlineTableCell } from '@ui-kit/shared/ui/DataTable/inline-cells/InlineTableCell'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatNumber } from '@ui-kit/utils'
 import type { LlammaEventRow, Token } from '../types'
-import { ActivityTableCell } from './ActivityTableCell'
 
 const { Spacing } = SizesAndSpaces
 
@@ -45,15 +45,15 @@ export const LlammaEventChangeCell = ({ event, collateralToken, borrowToken, cha
 
   if (deposit) {
     return (
-      <ActivityTableCell>
+      <InlineTableCell>
         <AmountRow amount={deposit.amount} token={collateralToken} chain={chain} />
-      </ActivityTableCell>
+      </InlineTableCell>
     )
   }
 
   if (withdrawal) {
     return (
-      <ActivityTableCell>
+      <InlineTableCell>
         <Stack gap={Spacing.xs}>
           {withdrawal.amountCollateral !== 0 && (
             <AmountRow amount={-withdrawal.amountCollateral} token={collateralToken} chain={chain} />
@@ -62,7 +62,7 @@ export const LlammaEventChangeCell = ({ event, collateralToken, borrowToken, cha
             <AmountRow amount={-withdrawal.amountBorrowed} token={borrowToken} chain={chain} />
           )}
         </Stack>
-      </ActivityTableCell>
+      </InlineTableCell>
     )
   }
 

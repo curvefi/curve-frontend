@@ -3,9 +3,9 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { ClickableInRowClass } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import { InlineTableCell } from '@ui-kit/shared/ui/DataTable/inline-cells/InlineTableCell'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatDate, formatTime } from '@ui-kit/utils'
-import { ActivityTableCell } from './ActivityTableCell'
 
 const { Spacing } = SizesAndSpaces
 
@@ -16,15 +16,13 @@ type TimestampCellProps = {
 
 /**
  * Cell component for displaying timestamps with optional transaction link.
- * On desktop, clicking opens the transaction in a new tab.
- * On mobile, the link is typically shown in an expanded row instead.
  */
 export const TimestampCell = ({ timestamp, txUrl }: TimestampCellProps) => {
   const isMobile = useIsMobile()
-  const clickable = !isMobile && txUrl
+  const clickable = !isMobile && txUrl // on mobile we use row expansion
 
   return (
-    <ActivityTableCell {...(clickable && { onClick: () => window.open(txUrl, '_blank') })} sx={{ gap: Spacing.xxs }}>
+    <InlineTableCell {...(clickable && { onClick: () => window.open(txUrl, '_blank') })} sx={{ gap: Spacing.xxs }}>
       <Typography variant="tableCellMBold">{formatDate(timestamp, 'short')}</Typography>
       <Stack direction="row" alignItems="center" justifyContent="end" gap={Spacing.xs}>
         <Typography variant="bodySBold" sx={(t) => ({ color: t.design.Text.TextColors.Secondary })}>
@@ -37,6 +35,6 @@ export const TimestampCell = ({ timestamp, txUrl }: TimestampCellProps) => {
           />
         )}
       </Stack>
-    </ActivityTableCell>
+    </InlineTableCell>
   )
 }

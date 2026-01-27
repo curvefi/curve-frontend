@@ -1,9 +1,9 @@
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { InlineTableCell } from '@ui-kit/shared/ui/DataTable/inline-cells/InlineTableCell'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatNumber } from '@ui-kit/utils'
-import { ActivityTableCell } from './ActivityTableCell'
 
 const { Spacing } = SizesAndSpaces
 
@@ -46,7 +46,7 @@ export const TokenAmountCell = ({
   }
 
   return (
-    <ActivityTableCell>
+    <InlineTableCell>
       <Stack
         direction="row"
         justifyContent={isRightAligned ? 'flex-end' : 'flex-start'}
@@ -66,6 +66,6 @@ export const TokenAmountCell = ({
           <TokenIcon blockchainId={chainId} address={tokenAddress} size="mui-md" />
         )}
       </Stack>
-    </ActivityTableCell>
+    </InlineTableCell>
   )
 }
