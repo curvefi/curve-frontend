@@ -3,7 +3,6 @@ import { notFalsy } from '@curvefi/prices-api/objects.util'
 import { capitalize } from '@mui/material'
 import Grid from '@mui/material/Grid'
 import { NETWORK_BASE_CONFIG } from '@ui/utils'
-import { t } from '@ui-kit/lib/i18n'
 import { ChainIcon } from '@ui-kit/shared/icons/ChainIcon'
 import { GridChip } from '@ui-kit/shared/ui/DataTable/chips/GridChip'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
@@ -29,7 +28,7 @@ const useSortedChains = ({ chains, selectedChains = [], toggleChain }: ChainFilt
     () =>
       [...notFalsy(chains.find((c) => c === ethereum)), ...chains.filter((c) => c !== ethereum)].map((chain) => ({
         chain,
-        label: [capitalize(chain), t`Network`].join(' '),
+        label: capitalize(chain),
         onClick: () => toggleChain(chain),
         isSelected: selectedChains.includes(chain),
       })),
