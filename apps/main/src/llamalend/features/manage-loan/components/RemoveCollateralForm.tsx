@@ -1,3 +1,4 @@
+import { hasLeverageValue } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import type { RemoveCollateralOptions } from '@/llamalend/mutations/remove-collateral.mutation'
 import { LoanFormAlerts } from '@/llamalend/widgets/manage-loan/LoanFormAlerts'
@@ -56,6 +57,7 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
           collateralToken={collateralToken}
           borrowToken={borrowToken}
           networks={networks}
+          leverageEnabled={!!market && hasLeverageValue(market)}
         />
       }
     >
