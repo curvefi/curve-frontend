@@ -1,15 +1,12 @@
 import { t } from '@ui-kit/lib/i18n'
 import type { Partner } from '@ui-kit/shared/ui/PartnerCard'
 
-const TAGS_RECOMMENDED = ['Recommended']
-
 export const WEB3_BRIDGES: Partner[] = [
   {
     name: 'CrossCurve',
     description: t`A decentralized and unified infrastructure for cross-chain liquidity and incentives, powered by Curve AMM.`,
     imageId: 'platforms/cross-curve.png',
     networks: { arbitrum: true, avalanche: true, bsc: true, base: true, celo: true, fantom: true, fraxtal: true, gnosis: true, optimism: true, sonic: true, taiko: true, unichain: true },
-    tags: TAGS_RECOMMENDED,
     appUrl:
       'https://app.crosscurve.fi/swap?inputChainId=7&inputToken=0x498bf2b1e120fed3ad3d42ea2165e9b73f99c1e5&outputChainId=13&utm_source=Curve+Finance&utm_medium=web&utm_campaign=Curve+Bridge+Page',
     twitterUrl: 'https://x.com/crosscurvefi',
@@ -27,7 +24,6 @@ export const WEB3_BRIDGES: Partner[] = [
     description: t`Swap and bridge across +20 networks with no fees and best price guarantees.`,
     imageId: 'platforms/jumper.jpg',
     networks: { arbitrum: true, avalanche: true, bsc: true, base: true, celo: true, corn: true, ethereum: true, etherlink: true, fraxtal: true, gnosis: true, hyperliquid: true, ink: true, monad: true, optimism: true, plasma: true, plume: true, polygon: true, sonic: true, stable: true, unichain: true, xdc: true },
-    tags: TAGS_RECOMMENDED,
     appUrl: 'https://jumper.exchange/',
     twitterUrl: 'https://x.com/JumperExchange',
   },
