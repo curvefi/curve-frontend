@@ -145,7 +145,7 @@ export const createLoanLiquidate = (_set: StoreApi<State>['setState'], get: Stor
         get().loans.resetUserDetailsState(llamma)
       }
       // invalidate user prices to keep ohlc chart liquidation range in sync
-      invalidateUserPrices({ chainId, marketId: llamma.id, userAddress: wallet?.address, loanExists: loanExists })
+      await invalidateUserPrices({ chainId, marketId: llamma.id, userAddress: wallet?.address, loanExists: loanExists })
 
       get()[sliceKey].setStateByKeys({
         formEstGas: DEFAULT_FORM_EST_GAS,
