@@ -1,4 +1,8 @@
-import { getBorrowMoreImplementationArgs } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
+import { getBorrowMoreExpectedCollateralKey } from '@/llamalend/queries/borrow-more/borrow-more-expected-collateral.query'
+import {
+  getBorrowMoreImplementationArgs,
+  isLeverageBorrowMore,
+} from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
 import type { BorrowMoreParams, BorrowMoreQuery } from '@/llamalend/queries/validation/borrow-more.validation'
 import { borrowMoreValidationSuite } from '@/llamalend/queries/validation/borrow-more.validation'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
@@ -32,4 +36,5 @@ export const { useQuery: useBorrowMoreHealth } = queryFactory({
   },
   staleTime: '1m',
   validationSuite: borrowMoreValidationSuite({ leverageRequired: false }),
+  dependencies: (params) => (isLeverageBorrowMore(params) ? [getBorrowMoreExpectedCollateralKey(params)] : []),
 })

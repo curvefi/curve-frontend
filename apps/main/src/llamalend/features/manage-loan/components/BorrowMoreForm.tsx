@@ -9,7 +9,8 @@ import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { notFalsy } from '@curvefi/prices-api/objects.util'
 import Button from '@mui/material/Button'
 import { t } from '@ui-kit/lib/i18n'
-import { Balance } from '@ui-kit/shared/ui/Balance'
+import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
+import { isDevelopment } from '@ui-kit/utils'
 import { setValueOptions } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { useBorrowMoreForm } from '../hooks/useBorrowMoreForm'
@@ -20,12 +21,14 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
   chainId,
   enabled,
   onBorrowedMore,
+  showFromWallet = isDevelopment,
 }: {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
   chainId: ChainId
   enabled?: boolean
   onBorrowedMore?: BorrowMoreOptions['onBorrowedMore']
+  showFromWallet?: boolean
 }) => {
   const network = networks[chainId]
   const {
@@ -69,16 +72,18 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
         />
       }
     >
-      <LoanFormTokenInput
-        label={t`Add from wallet`}
-        token={collateralToken}
-        blockchainId={network.id}
-        name="userCollateral"
-        form={form}
-        max={max.userCollateral}
-        testId="borrow-more-input-collateral"
-        network={network}
-      />
+      {showFromWallet && (
+        <LoanFormTokenInput
+          label={t`Add from wallet`}
+          token={collateralToken}
+          blockchainId={network.id}
+          name="userCollateral"
+          form={form}
+          max={max.userCollateral}
+          testId="borrow-more-input-collateral"
+          network={network}
+        />
+      )}
 
       <LoanFormTokenInput
         label={t`Amount to Borrow`}

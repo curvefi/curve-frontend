@@ -1,6 +1,8 @@
 import { useEffect } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
-import { getTokens } from '@/llamalend/llama.utils'
+import { getTokens, hasLeverage } from '@/llamalend/llama.utils'
+import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import { useBorrowMoreExpectedCollateral } from '@/llamalend/queries/borrow-more/borrow-more-expected-collateral.query'
 import { useBorrowMoreMaxReceive } from '@/llamalend/queries/borrow-more/borrow-more-max-receive.query'
 import { BorrowMoreForm, BorrowMoreParams } from '@/llamalend/queries/validation/borrow-more.validation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -11,17 +13,18 @@ import { setValueOptions } from '@ui-kit/utils/react-form.utils'
 
 export function useMaxBorrowMoreValues<ChainId extends LlamaChainId>(
   {
-    collateralToken,
-    borrowToken,
     params,
     form,
-  }: Partial<ReturnType<typeof getTokens>> & {
+    market,
+  }: {
     params: BorrowMoreParams<ChainId>
     form: UseFormReturn<BorrowMoreForm>
+    market: LlamaMarketTemplate | undefined
   },
   enabled?: boolean,
 ) {
   const { chainId, userAddress } = params
+  const { borrowToken, collateralToken } = market ? getTokens(market) : {}
 
   const maxUserCollateral = useTokenBalance({
     chainId,
@@ -35,6 +38,7 @@ export function useMaxBorrowMoreValues<ChainId extends LlamaChainId>(
   })
 
   const maxReceive = useBorrowMoreMaxReceive(params, enabled)
+  useBorrowMoreExpectedCollateral(params, !!(market && hasLeverage(market))) // required for other queries
   const maxDebt = maxReceive.data?.maxDebt
   const maxBorrowed = maxUserBorrowed.data
 

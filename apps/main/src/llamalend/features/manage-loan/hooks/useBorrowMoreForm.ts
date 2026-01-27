@@ -120,7 +120,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
     txHash: data?.hash,
     isApproved: useBorrowMoreIsApproved(params, enabled),
     formErrors,
-    max: useMaxBorrowMoreValues({ collateralToken, borrowToken, params, form }, enabled),
+    max: useMaxBorrowMoreValues({ params, form, market }, enabled),
     health: useBorrowMoreHealth(params, enabled && !!values.debt),
   }
 }

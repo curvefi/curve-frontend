@@ -72,7 +72,7 @@ export const useBorrowMoreMutation = ({
   userAddress,
 }: BorrowMoreOptions) => {
   const config = useConfig()
-  const { mutate, mutateAsync, error, data, isPending, isSuccess, reset } = useLlammaMutation<BorrowMoreMutation>({
+  const { mutate, error, data, isPending, isSuccess, reset } = useLlammaMutation<BorrowMoreMutation>({
     network,
     marketId,
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'borrowMore'] as const,
@@ -93,7 +93,7 @@ export const useBorrowMoreMutation = ({
     onReset,
   })
 
-  const onSubmit = useCallback(async (form: BorrowMoreForm) => mutateAsync(form as BorrowMoreMutation), [mutateAsync])
+  const onSubmit = useCallback(async (form: BorrowMoreForm) => mutate(form as BorrowMoreMutation), [mutate])
 
-  return { onSubmit, mutate, mutateAsync, error, data, isPending, isSuccess, reset }
+  return { onSubmit, mutate, error, data, isPending, isSuccess, reset }
 }

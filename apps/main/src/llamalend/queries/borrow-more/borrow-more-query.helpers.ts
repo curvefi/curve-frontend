@@ -1,6 +1,7 @@
 import { getLlamaMarket, hasLeverage, hasV2Leverage } from '@/llamalend/llama.utils'
 import type { BorrowMoreQuery } from '@/llamalend/queries/validation/borrow-more.validation'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
+import { FieldsOf } from '@ui-kit/lib'
 
 /**
  * Determines the appropriate borrow more implementation based on market type.
@@ -35,3 +36,6 @@ export function getBorrowMoreImplementationArgs(
   }
   return [type, impl, [userCollateral, userBorrowed, debt]] as const
 }
+
+export const isLeverageBorrowMore = ({ marketId }: FieldsOf<{ marketId: string }>) =>
+  !!marketId && ['V1', 'V2'].includes(getBorrowMoreImplementation(marketId)[0])
