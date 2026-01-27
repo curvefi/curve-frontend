@@ -58,12 +58,7 @@ export type ChartAndActivityLayoutProps = {
   activity: LlammaActivityProps
 }
 
-export const ChartAndActivityLayout = ({
-  isMarketAvailable,
-  chart,
-  bands,
-  activity,
-}: ChartAndActivityLayoutProps) => {
+export const ChartAndActivityLayout = ({ isMarketAvailable, chart, bands, activity }: ChartAndActivityLayoutProps) => {
   const theme = useTheme()
   const [isBandsVisible, , , toggleBandsVisible] = useSwitch(true)
   const newBandsChartEnabled = useNewBandsChart()
