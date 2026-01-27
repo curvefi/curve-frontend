@@ -10,21 +10,21 @@ import { SliderInput } from '@ui-kit/shared/ui/SliderInput'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Decimal } from '@ui-kit/utils'
 import { formatNumber } from '@ui-kit/utils/number'
-import { FormCheckbox } from '@ui-kit/widgets/DetailPageLayout/FormCheckbox'
+import { CheckboxField } from '@ui-kit/widgets/DetailPageLayout/CheckboxField'
 
 const { MaxWidth, Spacing } = SizesAndSpaces
 
-type FormCheckboxStoryProps = Omit<ComponentProps<typeof FormCheckbox>, 'checked' | 'onChange'> & {
+type CheckboxFieldStoryProps = Omit<ComponentProps<typeof CheckboxField>, 'checked' | 'onChange'> & {
   checked?: boolean
   onChange?: (event: ChangeEvent<HTMLInputElement>) => void
 }
 
-const FormCheckboxStory = ({ checked: initialChecked = false, onChange, ...props }: FormCheckboxStoryProps) => {
+const CheckboxFieldStory = ({ checked: initialChecked = false, onChange, ...props }: CheckboxFieldStoryProps) => {
   const [checked, setChecked] = useState(initialChecked)
 
   return (
     <Box sx={{ width: MaxWidth.actionCard }}>
-      <FormCheckbox
+      <CheckboxField
         {...props}
         checked={checked}
         onChange={(event) => {
@@ -57,9 +57,9 @@ const SliderContent = () => {
   )
 }
 
-const meta: Meta<typeof FormCheckboxStory> = {
-  title: 'UI Kit/Widgets/FormCheckbox',
-  component: FormCheckboxStory,
+const meta: Meta<typeof CheckboxFieldStory> = {
+  title: 'UI Kit/Widgets/CheckboxField',
+  component: CheckboxFieldStory,
   args: {
     checked: true,
     label: `Enable leverage`,
@@ -89,11 +89,11 @@ const meta: Meta<typeof FormCheckboxStory> = {
       control: 'boolean',
       description: 'Disables the checkbox input.',
     },
-    rightChildren: {
+    endContent: {
       control: { disable: true },
-      description: 'Optional content aligned to the right of the label.',
+      description: 'Supplementary content (e.g., preview value, settings) displayed at the end of the checkbox row.',
     },
-    children: {
+    collapsible: {
       control: { disable: true },
       description: 'Collapsible content rendered when the checkbox is checked.',
     },
@@ -110,13 +110,13 @@ const meta: Meta<typeof FormCheckboxStory> = {
     docs: {
       description: {
         component:
-          'FormCheckbox wraps MUI Checkbox with label, helper text, and optional right-side content plus collapsible children.',
+          'CheckboxField wraps MUI Checkbox with label, helper text, and optional right-side content plus collapsible children.',
       },
     },
   },
 }
 
-type Story = StoryObj<typeof FormCheckboxStory>
+type Story = StoryObj<typeof CheckboxFieldStory>
 
 export const Basic: Story = {
   args: {
@@ -141,9 +141,9 @@ export const WithMessage: Story = {
   },
 }
 
-export const WithRightChildren: Story = {
+export const WithEndContent: Story = {
   args: {
-    rightChildren: (
+    endContent: (
       <ActionInfo
         label={t`Leverage`}
         value={`${formatNumber(2.42, { decimals: 2, abbreviate: false })}x`}
@@ -154,7 +154,7 @@ export const WithRightChildren: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Checkbox with a right-aligned children.',
+        story: 'Checkbox with supplementary end content.',
       },
     },
   },
@@ -177,7 +177,7 @@ export const WithCollapsibleChildren: Story = {
   args: {
     label: 'Deposit and stake',
     message: 'Staking in the gauge enables CRV rewards',
-    children: <SliderContent />,
+    collapsible: <SliderContent />,
   },
   parameters: {
     docs: {

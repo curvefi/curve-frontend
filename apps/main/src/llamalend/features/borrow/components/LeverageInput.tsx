@@ -5,7 +5,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 import type { Query } from '@ui-kit/types/util'
 import { Decimal } from '@ui-kit/utils'
-import { FormCheckbox } from '@ui-kit/widgets/DetailPageLayout/FormCheckbox'
+import { CheckboxField } from '@ui-kit/widgets/DetailPageLayout/CheckboxField'
 import { useCreateLoanExpectedCollateral } from '../../../queries/create-loan/create-loan-expected-collateral.query'
 import type { CreateLoanForm, CreateLoanFormQueryParams } from '../types'
 
@@ -29,7 +29,7 @@ export const LeverageInput = ({
     [form],
   )
   return (
-    <FormCheckbox
+    <CheckboxField
       checked={checked}
       disabled={!maxLeverage}
       label={t`Enable leverage`}
@@ -38,7 +38,7 @@ export const LeverageInput = ({
       error={error}
       testIdPrefix={TEST_ID_PREFIX}
       onChange={onLeverageChanged}
-      rightChildren={
+      endContent={
         <ActionInfo
           label={t`Leverage`}
           value={leverage == null ? '–' : `${formatNumber(leverage, { maximumFractionDigits: 2 })}x`}

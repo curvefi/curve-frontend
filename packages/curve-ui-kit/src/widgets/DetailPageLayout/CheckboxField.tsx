@@ -9,7 +9,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 
-export const FormCheckbox = ({
+export const CheckboxField = ({
   checked,
   label,
   message,
@@ -17,8 +17,8 @@ export const FormCheckbox = ({
   error,
   testIdPrefix,
   onChange,
-  rightChildren,
-  children,
+  endContent,
+  collapsible,
   disabled,
 }: {
   checked: boolean
@@ -29,8 +29,10 @@ export const FormCheckbox = ({
   error?: Error | null | undefined
   testIdPrefix?: string
   onChange: (event: ChangeEvent<HTMLInputElement>) => void
-  rightChildren?: ReactNode
-  children?: ReactNode
+  /** Supplementary content (e.g., preview value, settings) displayed at the end of the checkbox row. */
+  endContent?: ReactNode
+  /** Collapsible content displayed when the checkbox is checked. */
+  collapsible?: ReactNode
 }) => (
   <Stack>
     <Stack direction="row" justifyContent="space-between" gap={Spacing.sm} alignItems="start" flexWrap="wrap">
@@ -59,8 +61,8 @@ export const FormCheckbox = ({
           />
         }
       />
-      {rightChildren}
+      {endContent}
     </Stack>
-    {children && <Collapse in={checked}>{children}</Collapse>}
+    {collapsible && <Collapse in={checked}>{collapsible}</Collapse>}
   </Stack>
 )
