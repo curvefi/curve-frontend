@@ -48,7 +48,7 @@ export const PoolParameters = ({
   )
 
   const staked = usePoolTotalStaked(poolDataCacheOrApi)
-  const { data: parameters } = usePoolParameters({ chainId: rChainId, poolId })
+  const { data: parameters, isLoading: isLoadingParameters } = usePoolParameters({ chainId: rChainId, poolId })
 
   const {
     A,
@@ -103,20 +103,26 @@ export const PoolParameters = ({
           }
         />
 
-        <ActionInfo label={t`Fee`} value={formatNumber(fee, { style: 'percent', maximumFractionDigits: 4 })} />
+        <ActionInfo
+          label={t`Fee`}
+          loading={isLoadingParameters}
+          value={formatNumber(fee, { style: 'percent', maximumFractionDigits: 4 })}
+        />
 
         <ActionInfo
           label={t`DAO fee`}
+          loading={isLoadingParameters}
           valueTooltip={t`The total fee on each trade is split in two parts: one part goes to the pool’s Liquidity Providers, another part goes to the DAO (i.e. Curve veCRV holders)`}
           value={formatNumber(isEymaPools ? +adminFee / 2 : adminFee, {
             style: 'percent',
             maximumFractionDigits: 4,
           })}
         />
-        {isEymaPools && <ActionInfo label={`EYWA fee`} value={+adminFee / 2} />}
+        {isEymaPools && <ActionInfo label={`EYWA fee`} loading={isLoadingParameters} value={+adminFee / 2} />}
 
         <ActionInfo
           label={t`Virtual price`}
+          loading={isLoadingParameters}
           value={formatNumber(parameters?.virtualPrice, { maximumFractionDigits: 8, defaultValue: '-' })}
           valueTooltip={t`Measures pool growth; this is not a dollar value`}
         />
