@@ -25,10 +25,12 @@ type BorrowMoreMutation = {
   slippage: Decimal
 }
 
+export type OnBorrowedMore = LlammaMutationOptions<BorrowMoreMutation>['onSuccess']
+
 export type BorrowMoreOptions = {
   marketId: string | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
-  onBorrowedMore?: LlammaMutationOptions<BorrowMoreMutation>['onSuccess']
+  onBorrowedMore?: OnBorrowedMore
   onReset?: () => void
   userAddress: Address | undefined
 }

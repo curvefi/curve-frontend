@@ -6,7 +6,7 @@ import { useClosePositionTab } from '@/llamalend/features/manage-soft-liquidatio
 import { useImproveHealthTab } from '@/llamalend/features/manage-soft-liquidation/hooks/useImproveHealthTab'
 import { ClosePosition } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ClosePosition'
 import { ImproveHealth } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ImproveHealth'
-import { hasDeleverage, hasV1Leverage } from '@/llamalend/llama.utils'
+import { hasDeleverage } from '@/llamalend/llama.utils'
 import { CollateralDecrease } from '@/loan/components/PageMintMarket/CollateralDecrease'
 import { CollateralIncrease } from '@/loan/components/PageMintMarket/CollateralIncrease'
 import { LoanDecrease } from '@/loan/components/PageMintMarket/LoanDecrease'
@@ -60,7 +60,7 @@ const MintManageLegacyMenu = [
 const MintManageNewMenu = [
   {
     value: 'borrow',
-    label: ({ market }) => (market && hasV1Leverage(market) ? t`Leverage` : t`Borrow`),
+    label: t`Borrow`,
     component: ({ rChainId, market, isReady }: ManageLoanProps) => (
       <BorrowMoreForm networks={networks} chainId={rChainId} market={market ?? undefined} enabled={isReady} />
     ),

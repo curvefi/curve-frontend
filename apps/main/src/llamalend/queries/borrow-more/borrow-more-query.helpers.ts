@@ -1,15 +1,15 @@
 import { getLlamaMarket, hasLeverage, hasV2Leverage } from '@/llamalend/llama.utils'
+import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import type { BorrowMoreQuery } from '@/llamalend/queries/validation/borrow-more.validation'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
-import { FieldsOf } from '@ui-kit/lib'
 
 /**
  * Determines the appropriate borrow more implementation based on market type.
  * We use V2 leverage if available, then leverage V1 (lend markets only).
  * Otherwise fallback to unleveraged borrow more.
  */
-export function getBorrowMoreImplementation(marketId: string) {
-  const market = getLlamaMarket(marketId)
+export function getBorrowMoreImplementation(marketId: string | LlamaMarketTemplate) {
+  const market = typeof marketId === 'string' ? getLlamaMarket(marketId) : marketId
   return market instanceof MintMarketTemplate
     ? hasV2Leverage(market)
       ? (['V2', market.leverageV2] as const)
@@ -25,7 +25,7 @@ export function getBorrowMoreImplementation(marketId: string) {
  * For leveraged (V1/V2) markets, returns `[type, impl, [userCollateral, userBorrowed, debt]]`.
  */
 export function getBorrowMoreImplementationArgs(
-  marketId: string,
+  marketId: string | LlamaMarketTemplate,
   { userCollateral, userBorrowed, debt }: Pick<BorrowMoreQuery, 'userCollateral' | 'userBorrowed' | 'debt'>,
 ) {
   const [type, impl] = getBorrowMoreImplementation(marketId)
@@ -36,5 +36,5 @@ export function getBorrowMoreImplementationArgs(
   return [type, impl, [userCollateral, userBorrowed, debt]] as const
 }
 
-export const isLeverageBorrowMore = ({ marketId }: FieldsOf<{ marketId: string }>) =>
+export const isLeverageBorrowMore = (marketId: string | LlamaMarketTemplate | null | undefined) =>
   !!marketId && ['V1', 'V2'].includes(getBorrowMoreImplementation(marketId)[0])

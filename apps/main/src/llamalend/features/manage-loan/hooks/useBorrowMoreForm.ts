@@ -6,7 +6,7 @@ import { useConnection } from 'wagmi'
 import { useMaxBorrowMoreValues } from '@/llamalend/features/manage-loan/hooks/useMaxBorrowMoreValues'
 import { getTokens } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
-import { type BorrowMoreOptions, useBorrowMoreMutation } from '@/llamalend/mutations/borrow-more.mutation'
+import { OnBorrowedMore, useBorrowMoreMutation } from '@/llamalend/mutations/borrow-more.mutation'
 import { useBorrowMoreHealth } from '@/llamalend/queries/borrow-more/borrow-more-health.query'
 import { useBorrowMoreIsApproved } from '@/llamalend/queries/borrow-more/borrow-more-is-approved.query'
 import {
@@ -73,7 +73,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
   market: LlamaMarketTemplate | undefined
   network: { id: LlamaNetworkId; chainId: ChainId; name: string }
   enabled?: boolean
-  onBorrowedMore?: NonNullable<BorrowMoreOptions['onBorrowedMore']>
+  onBorrowedMore?: NonNullable<OnBorrowedMore>
 }) => {
   const { address: userAddress } = useConnection()
   const { chainId } = network

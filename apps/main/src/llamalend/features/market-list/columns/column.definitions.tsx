@@ -85,6 +85,7 @@ export const LLAMA_MARKET_COLUMNS = [
       'assets.borrowed.symbol',
       'assets.collateral.address',
       'assets.collateral.symbol',
+      'type',
     ),
     meta: { tooltip: createTooltip(LlamaMarketColumnId.Assets, <CollateralBorrowHeaderTooltipContent />) },
   }),

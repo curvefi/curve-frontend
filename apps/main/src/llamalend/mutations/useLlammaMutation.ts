@@ -129,12 +129,16 @@ export function useLlammaMutation<TVariables extends object, TData extends Resul
       throwIfError(data)
       // Validate that we have a valid transaction hash before waiting for receipt
       if (!data.hash) throw new Error('Transaction did not return a valid hash')
-      return { data, receipt: await waitForTransactionReceipt(config, data) }
+      const confirmNotification = notify(t`Waiting for transaction to be confirmed...`, 'pending')
+      return { data, confirmNotification, receipt: await waitForTransactionReceipt(config, data) }
     },
-    onSuccess: async ({ data, receipt }, variables, result) => {
-      logSuccess(mutationKey, { data, variables, marketId: result.market.id })
+    onSuccess: async ({ data, receipt, confirmNotification }, variables, result) => {
+      const { market, wallet, pendingNotification } = result
+      pendingNotification.dismiss()
+      confirmNotification.dismiss()
       notify(successMessage(variables, result), 'success')
-      updateUserEventsApi(wallet!, { id: networkId }, result.market, receipt.transactionHash)
+      logSuccess(mutationKey, { data, variables, marketId: market.id })
+      updateUserEventsApi(wallet, { id: networkId }, market, receipt.transactionHash)
       await invalidateAllUserMarketDetails({ chainId, marketId, userAddress })
       onReset?.()
       await onSuccess?.(data, receipt, variables, result)

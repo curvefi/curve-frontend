@@ -1,8 +1,8 @@
 import { BorrowMoreLoanInfoAccordion } from '@/llamalend/features/borrow/components/BorrowMoreLoanInfoAccordion'
-import { hasLeverage } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
-import type { BorrowMoreOptions } from '@/llamalend/mutations/borrow-more.mutation'
+import { OnBorrowedMore } from '@/llamalend/mutations/borrow-more.mutation'
 import { useBorrowMorePriceImpact } from '@/llamalend/queries/borrow-more/borrow-more-price-impact.query'
+import { isLeverageBorrowMore } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
 import { HighPriceImpactAlert, LoanFormAlerts } from '@/llamalend/widgets/manage-loan/LoanFormAlerts'
 import { LoanFormTokenInput } from '@/llamalend/widgets/manage-loan/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -23,13 +23,13 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
   chainId,
   enabled,
   onBorrowedMore,
-  fromWallet = isDevelopment,
+  fromWallet = isDevelopment, // todo: delete this if users do not complain about it, for now dev-only feature
 }: {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
   chainId: ChainId
   enabled?: boolean
-  onBorrowedMore?: BorrowMoreOptions['onBorrowedMore']
+  onBorrowedMore?: OnBorrowedMore
   fromWallet?: boolean
 }) => {
   const network = networks[chainId]
@@ -56,9 +56,10 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     onBorrowedMore,
   })
 
-  const swapRequired = market && hasLeverage(market) && +(values.userBorrowed ?? 0) > 0
+  const isLeverage = isLeverageBorrowMore(market)
+  const swapRequired = isLeverage && +(values.userBorrowed ?? 0) > 0
   const priceImpact = useBorrowMorePriceImpact(params, enabled && swapRequired)
-  const fromBorrowed = fromWallet && market && hasLeverage(market)
+  const fromBorrowed = fromWallet && isLeverage
   return (
     <Form
       {...form}
@@ -70,7 +71,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
           tokens={{ collateralToken, borrowToken }}
           networks={networks}
           onSlippageChange={(value) => form.setValue('slippage', value, setValueOptions)}
-          hasLeverage={market && hasLeverage(market)}
+          hasLeverage={isLeverage}
           health={health}
         />
       }
