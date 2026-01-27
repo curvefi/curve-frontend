@@ -10,7 +10,6 @@ import { notFalsy } from '@curvefi/prices-api/objects.util'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
-import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
 import { isDevelopment } from '@ui-kit/utils'
 import { setValueOptions } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
@@ -103,7 +102,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
         )}
 
         <LoanFormTokenInput
-          label={t`Amount to Borrow`}
+          label={t`Amount to borrow`}
           token={borrowToken}
           blockchainId={network.id}
           name="debt"
@@ -111,17 +110,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
           max={{ ...max.debt, fieldName: max.debt.field }}
           testId="borrow-more-input-debt"
           network={network}
-          message={
-            <Balance
-              prefix={t`Max:`}
-              tooltip={t`Maximum borrowable amount`}
-              symbol={borrowToken?.symbol}
-              balance={values.maxDebt}
-              loading={max.debt.isLoading}
-              onClick={() => form.setValue('debt', max.debt.data, setValueOptions)}
-              buttonTestId="borrow-more-set-debt-to-max"
-            />
-          }
+          hideBalance
         />
       </Stack>
 
