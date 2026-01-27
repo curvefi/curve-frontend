@@ -16,6 +16,7 @@ export const { useQuery: useBorrowMoreHealth } = queryFactory({
     userCollateral = '0',
     userBorrowed = '0',
     debt = '0',
+    maxDebt,
   }: BorrowMoreParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
@@ -23,6 +24,7 @@ export const { useQuery: useBorrowMoreHealth } = queryFactory({
       { userCollateral },
       { userBorrowed },
       { debt },
+      { maxDebt },
     ] as const,
   queryFn: async ({ marketId, userCollateral = '0', userBorrowed = '0', debt = '0' }: BorrowMoreQuery) => {
     const [type, impl, args] = getBorrowMoreImplementationArgs(marketId, { userCollateral, userBorrowed, debt })

@@ -13,6 +13,7 @@ export const { useQuery: useBorrowMoreExpectedCollateral, queryKey: getBorrowMor
       userCollateral = '0',
       userBorrowed = '0',
       debt = '0',
+      maxDebt,
       slippage,
     }: BorrowMoreParams) =>
       [
@@ -21,6 +22,7 @@ export const { useQuery: useBorrowMoreExpectedCollateral, queryKey: getBorrowMor
         { userCollateral },
         { userBorrowed },
         { debt },
+        { maxDebt },
         { slippage },
       ] as const,
     queryFn: async ({ marketId, userCollateral = '0', userBorrowed = '0', debt = '0', slippage }: BorrowMoreQuery) => {

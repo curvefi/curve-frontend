@@ -28,6 +28,7 @@ const useBorrowMoreParams = <ChainId>({
   userCollateral,
   userBorrowed,
   debt,
+  maxDebt,
   slippage,
   chainId,
   marketId,
@@ -46,9 +47,10 @@ const useBorrowMoreParams = <ChainId>({
         userCollateral,
         userBorrowed,
         debt,
+        maxDebt,
         slippage,
       }),
-      [chainId, marketId, userAddress, userCollateral, userBorrowed, debt, slippage],
+      [chainId, marketId, userAddress, userCollateral, userBorrowed, debt, maxDebt, slippage],
     ),
   )
 

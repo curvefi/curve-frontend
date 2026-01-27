@@ -11,12 +11,13 @@ import type { IChainId, TGas } from '@curvefi/llamalend-api/lib/interfaces'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 
 const { useQuery: useBorrowMoreApproveGasEstimate } = queryFactory({
-  queryKey: ({ chainId, marketId, userAddress, userCollateral = '0', userBorrowed = '0' }: BorrowMoreParams) =>
+  queryKey: ({ chainId, marketId, userAddress, userCollateral = '0', userBorrowed = '0', maxDebt }: BorrowMoreParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
       'estimateGas.borrowMoreApprove',
       { userCollateral },
       { userBorrowed },
+      { maxDebt },
     ] as const,
   queryFn: async ({ marketId, userCollateral = '0', userBorrowed = '0' }: BorrowMoreQuery): Promise<TGas | null> => {
     if (!+userCollateral && !+userBorrowed) return null
@@ -41,6 +42,7 @@ const { useQuery: useBorrowMoreGasEstimate } = queryFactory({
     userCollateral = '0',
     userBorrowed = '0',
     debt = '0',
+    maxDebt,
     slippage,
   }: BorrowMoreParams) =>
     [
@@ -49,6 +51,7 @@ const { useQuery: useBorrowMoreGasEstimate } = queryFactory({
       { userCollateral },
       { userBorrowed },
       { debt },
+      { maxDebt },
       { slippage },
     ] as const,
   queryFn: async ({

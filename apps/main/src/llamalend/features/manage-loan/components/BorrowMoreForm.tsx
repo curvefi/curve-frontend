@@ -8,11 +8,13 @@ import { LoanFormTokenInput } from '@/llamalend/widgets/manage-loan/LoanFormToke
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { notFalsy } from '@curvefi/prices-api/objects.util'
 import Button from '@mui/material/Button'
+import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
 import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
 import { isDevelopment } from '@ui-kit/utils'
 import { setValueOptions } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
+import { InputDivider } from '../../../widgets/InputDivider'
 import { useBorrowMoreForm } from '../hooks/useBorrowMoreForm'
 
 export const BorrowMoreForm = <ChainId extends IChainId>({
@@ -21,14 +23,14 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
   chainId,
   enabled,
   onBorrowedMore,
-  showFromWallet = isDevelopment,
+  fromWallet = isDevelopment,
 }: {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
   chainId: ChainId
   enabled?: boolean
   onBorrowedMore?: BorrowMoreOptions['onBorrowedMore']
-  showFromWallet?: boolean
+  fromWallet?: boolean
 }) => {
   const network = networks[chainId]
   const {
@@ -54,8 +56,10 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     onBorrowedMore,
   })
 
+  console.log({ formErrors, values })
   const swapRequired = market && hasLeverage(market) && +(values.userBorrowed ?? 0) > 0
   const priceImpact = useBorrowMorePriceImpact(params, enabled && swapRequired)
+  const fromBorrowed = fromWallet && market && hasLeverage(market)
   return (
     <Form
       {...form}
@@ -72,40 +76,54 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
         />
       }
     >
-      {showFromWallet && (
-        <LoanFormTokenInput
-          label={t`Add from wallet`}
-          token={collateralToken}
-          blockchainId={network.id}
-          name="userCollateral"
-          form={form}
-          max={max.userCollateral}
-          testId="borrow-more-input-collateral"
-          network={network}
-        />
-      )}
-
-      <LoanFormTokenInput
-        label={t`Amount to Borrow`}
-        token={borrowToken}
-        blockchainId={network.id}
-        name="debt"
-        form={form}
-        max={max.debt}
-        testId="borrow-more-input-debt"
-        network={network}
-        message={
-          <Balance
-            prefix={t`Max:`}
-            tooltip={t`Maximum borrowable amount`}
-            symbol={borrowToken?.symbol}
-            balance={max.debt.data}
-            loading={max.debt.isLoading}
-            onClick={() => form.setValue('debt', max.debt.data, setValueOptions)}
-            buttonTestId="borrow-more-set-debt-to-max"
+      <Stack divider={<InputDivider />}>
+        {fromWallet && (
+          <LoanFormTokenInput
+            label={t`Add from wallet`}
+            token={collateralToken}
+            blockchainId={network.id}
+            name="userCollateral"
+            form={form}
+            max={{ ...max.userCollateral, fieldName: max.userCollateral.field }}
+            testId="borrow-more-input-collateral"
+            network={network}
           />
-        }
-      />
+        )}
+        {fromBorrowed && (
+          <LoanFormTokenInput
+            label={t`Add borrowed from wallet`}
+            token={borrowToken}
+            blockchainId={network.id}
+            name="userBorrowed"
+            form={form}
+            max={{ ...max.userBorrowed, fieldName: max.userBorrowed.field }}
+            testId="borrow-more-input-user-borrowed"
+            network={network}
+          />
+        )}
+
+        <LoanFormTokenInput
+          label={t`Amount to Borrow`}
+          token={borrowToken}
+          blockchainId={network.id}
+          name="debt"
+          form={form}
+          max={{ ...max.debt, fieldName: max.debt.field }}
+          testId="borrow-more-input-debt"
+          network={network}
+          message={
+            <Balance
+              prefix={t`Max:`}
+              tooltip={t`Maximum borrowable amount`}
+              symbol={borrowToken?.symbol}
+              balance={values.maxDebt}
+              loading={max.debt.isLoading}
+              onClick={() => form.setValue('debt', max.debt.data, setValueOptions)}
+              buttonTestId="borrow-more-set-debt-to-max"
+            />
+          }
+        />
+      </Stack>
 
       <HighPriceImpactAlert priceImpact={priceImpact.data} isLoading={priceImpact.isLoading} />
 
@@ -124,7 +142,14 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
         txHash={txHash}
         formErrors={formErrors}
         network={network}
-        handledErrors={notFalsy(showFromWallet && 'userCollateral', 'debt')}
+        handledErrors={notFalsy(
+          fromWallet && 'userCollateral',
+          fromWallet && max.userCollateral.field,
+          fromBorrowed && 'userBorrowed',
+          fromBorrowed && max.userBorrowed.field,
+          'debt',
+          max.debt.field,
+        )}
         successTitle={t`Borrowed more successfully`}
       />
     </Form>

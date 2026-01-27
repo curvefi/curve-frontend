@@ -4,12 +4,13 @@ import { borrowMoreLeverageValidationSuite } from '@/llamalend/queries/validatio
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 
 export const { useQuery: useBorrowMorePriceImpact } = queryFactory({
-  queryKey: ({ chainId, marketId, userAddress, userBorrowed = '0', debt = '0' }: BorrowMoreParams) =>
+  queryKey: ({ chainId, marketId, userAddress, userBorrowed = '0', debt = '0', maxDebt }: BorrowMoreParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
       'borrowMorePriceImpact',
       { userBorrowed },
       { debt },
+      { maxDebt },
     ] as const,
   queryFn: async ({ marketId, userBorrowed = '0', debt = '0' }: BorrowMoreQuery) => {
     const [type, impl] = getBorrowMoreImplementation(marketId)
