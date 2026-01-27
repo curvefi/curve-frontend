@@ -58,7 +58,6 @@ export const ChartAndActivityComp = ({ rChainId, rOwmId, api }: ChartAndActivity
   return (
     <ChartAndActivityLayout
       isMarketAvailable={!!market}
-      defaultTab="marketActivity"
       chart={{
         ohlcDataUnavailable,
         isLoading: isChartLoading,

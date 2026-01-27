@@ -57,7 +57,6 @@ export const ChartAndActivityComp = ({ rChainId, market, llammaId }: ChartAndAct
   return (
     <ChartAndActivityLayout
       isMarketAvailable={!!market}
-      defaultTab="chart"
       chart={{
         ohlcDataUnavailable,
         isLoading: isChartLoading,

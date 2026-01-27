@@ -23,6 +23,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 const { Spacing } = SizesAndSpaces
 
 type Tab = 'chart' | 'marketActivity'
+const DEFAULT_TAB: Tab = 'chart'
 
 const TABS: TabOption<Tab>[] = [
   { value: 'chart', label: t`Chart` },
@@ -33,8 +34,6 @@ const EMPTY_ARRAY: never[] = []
 
 export type ChartAndActivityLayoutProps = {
   isMarketAvailable: boolean
-  /** Default tab to show on mount */
-  defaultTab?: Tab
   /** Chart state */
   chart: {
     ohlcDataUnavailable: boolean
@@ -61,7 +60,6 @@ export type ChartAndActivityLayoutProps = {
 
 export const ChartAndActivityLayout = ({
   isMarketAvailable,
-  defaultTab = 'chart',
   chart,
   bands,
   activity,
@@ -69,7 +67,7 @@ export const ChartAndActivityLayout = ({
   const theme = useTheme()
   const [isBandsVisible, , , toggleBandsVisible] = useSwitch(true)
   const newBandsChartEnabled = useNewBandsChart()
-  const [tab, setTab] = useState<Tab>(defaultTab)
+  const [tab, setTab] = useState<Tab>(DEFAULT_TAB)
 
   const showBands = newBandsChartEnabled && bands && isBandsVisible
 
@@ -101,7 +99,7 @@ export const ChartAndActivityLayout = ({
           />
           <Stack
             display={{ mobile: 'block', tablet: showBands ? 'grid' : undefined }}
-            gridTemplateColumns={{ tablet: showBands ? '1fr 0.3fr' : undefined }}
+            gridTemplateColumns={{ tablet: showBands ? '1fr 14rem' : undefined }}
           >
             {chart.ohlcDataUnavailable ? (
               <ErrorMessage

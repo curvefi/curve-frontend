@@ -25,10 +25,6 @@ import type {
   Token,
 } from './types'
 
-// ============================================================================
-// Mock Data Generators
-// ============================================================================
-
 const generateAddress = (seed: number): Address => `0x${seed.toString(16).padStart(40, '0')}` as Address
 
 const generateTxHash = (seed: number): Address => `0x${seed.toString(16).padStart(64, '0')}` as Address
@@ -193,10 +189,6 @@ const generateLlammaEvents = (count: number, collateralToken: Token, borrowToken
   })
 }
 
-// ============================================================================
-// Selection Options
-// ============================================================================
-
 const POOL_ACTIVITY_SELECTIONS: ActivitySelection<PoolActivitySelection>[] = [
   { key: 'trades', label: 'Swaps' },
   { key: 'liquidity', label: 'Liquidity' },
@@ -206,10 +198,6 @@ const LLAMMA_ACTIVITY_SELECTIONS: ActivitySelection<LlammaActivitySelection>[] =
   { key: 'trades', label: 'AMM' },
   { key: 'events', label: 'Controller' },
 ]
-
-// ============================================================================
-// Story Components
-// ============================================================================
 
 /**
  * DEX Pool Activity Component
