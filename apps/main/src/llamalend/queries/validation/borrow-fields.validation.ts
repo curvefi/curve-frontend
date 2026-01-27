@@ -19,7 +19,7 @@ export const validateUserBorrowed = (
 }
 
 export const validateUserCollateral = (userCollateral: Decimal | undefined | null, required: boolean = true) => {
-  test('userCollateral', `Collateral amount must be a positive number`, () => {
+  test('userCollateral', `Collateral amount must be a non-negative number`, () => {
     if (required || userCollateral != null) {
       enforce(userCollateral).isNumeric().gte(0)
     }

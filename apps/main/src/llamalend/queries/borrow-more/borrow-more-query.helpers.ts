@@ -10,20 +10,19 @@ import { FieldsOf } from '@ui-kit/lib'
  */
 export function getBorrowMoreImplementation(marketId: string) {
   const market = getLlamaMarket(marketId)
-  if (market instanceof MintMarketTemplate) {
-    if (hasV2Leverage(market)) {
-      return ['V2', market.leverageV2] as const
-    }
-  } else if (hasLeverage(market)) {
-    return ['V1', market.leverage] as const
-  }
-  return ['unleveraged', market] as const
+  return market instanceof MintMarketTemplate
+    ? hasV2Leverage(market)
+      ? (['V2', market.leverageV2] as const)
+      : (['unleveraged', market] as const)
+    : hasLeverage(market)
+      ? (['V1', market.leverage] as const)
+      : (['unleveraged', market] as const)
 }
 
 /**
- * Determines the appropriate borrow more implementation based on market type.
- * We use V2 leverage if available, then leverage V1 (lend markets only).
- * Otherwise fallback to unleveraged borrow more.
+ * Determines the borrow more implementation and constructs its argument tuple.
+ * For unleveraged markets, returns `[type, impl, [userCollateral, debt]]`.
+ * For leveraged (V1/V2) markets, returns `[type, impl, [userCollateral, userBorrowed, debt]]`.
  */
 export function getBorrowMoreImplementationArgs(
   marketId: string,

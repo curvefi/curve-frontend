@@ -73,7 +73,15 @@ export const borrowMoreFormValidationSuite = createValidationSuite(
 
 // Query validation suite (for API queries)
 export const borrowMoreValidationGroup = <IChainId extends number>(
-  { chainId, marketId, userCollateral = '0', userBorrowed, debt, userAddress, slippage }: BorrowMoreParams<IChainId>,
+  {
+    chainId,
+    marketId,
+    userCollateral = '0',
+    userBorrowed = '0',
+    debt,
+    userAddress,
+    slippage,
+  }: BorrowMoreParams<IChainId>,
   { leverageRequired = false, debtRequired = false }: { leverageRequired?: boolean; debtRequired?: boolean } = {},
 ) => {
   chainValidationGroup({ chainId })
@@ -81,6 +89,7 @@ export const borrowMoreValidationGroup = <IChainId extends number>(
   marketIdValidationGroup({ marketId })
   userAddressValidationGroup({ userAddress })
   validateUserCollateral(userCollateral)
+  validateUserBorrowed(userBorrowed, { allowZero: true })
   validateDebt(debt, debtRequired)
   validateBorrowMoreFieldsForMarket(marketId, userCollateral, userBorrowed, debt)
   validateSlippage(slippage)

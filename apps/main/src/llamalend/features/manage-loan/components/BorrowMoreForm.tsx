@@ -124,7 +124,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
         txHash={txHash}
         formErrors={formErrors}
         network={network}
-        handledErrors={notFalsy('userCollateral', 'debt')}
+        handledErrors={notFalsy(showFromWallet && 'userCollateral', 'debt')}
         successTitle={t`Borrowed more successfully`}
       />
     </Form>
