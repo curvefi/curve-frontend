@@ -33,8 +33,10 @@ function useToastItems() {
       setItems((prevNotifications: ToastItem[]) => prevNotifications.filter((n) => n !== notification))
     const add = (notification: ToastItem): void => {
       setItems((prevNotifications: ToastItem[]) => [...prevNotifications, notification])
-      const timeout = window.setTimeout(() => dismiss(notification), getTotalDuration(notification))
-      timeouts.push(timeout)
+      if (!notification.keepAlive) {
+        const timeout = window.setTimeout(() => dismiss(notification), getTotalDuration(notification))
+        timeouts.push(timeout)
+      }
     }
     const cleanupListener = watchToasts(add, dismiss)
     return () => {
