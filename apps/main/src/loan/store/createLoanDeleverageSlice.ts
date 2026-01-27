@@ -179,7 +179,12 @@ export const createLoanDeleverageSlice = (
           }
 
           // invalidate user prices to keep ohlc chart liquidation range in sync
-          invalidateUserPrices({ chainId, marketId: llamma.id, userAddress: wallet?.address, loanExists: loanExists })
+          await invalidateUserPrices({
+            chainId,
+            marketId: llamma.id,
+            userAddress: wallet?.address,
+            loanExists: loanExists,
+          })
 
           get()[sliceKey].setStateByKeys({
             formValues: DEFAULT_FORM_VALUES,

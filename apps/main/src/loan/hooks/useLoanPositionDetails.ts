@@ -8,6 +8,7 @@ import { DEFAULT_BORROW_TOKEN_SYMBOL, getHealthMode } from '@/llamalend/health.u
 import { calculateLtv, hasV2Leverage } from '@/llamalend/llama.utils'
 import { useLoanExists } from '@/llamalend/queries/loan-exists'
 import { useMarketRates } from '@/llamalend/queries/market-rates'
+import { useUserCurrentLeverage } from '@/llamalend/queries/user-current-leverage.query'
 import { useUserPnl } from '@/llamalend/queries/user-pnl.query'
 import { CRVUSD_ADDRESS } from '@/loan/constants'
 import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
@@ -54,6 +55,7 @@ export const useLoanPositionDetails = ({
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId ?? ''])
   const { healthFull, healthNotFull } = useUserLoanDetails(llammaId) ?? {}
   const v2LeverageEnabled = useMemo(() => !!llamma && hasV2Leverage(llamma), [llamma])
+  const leverage = useUserCurrentLeverage({ chainId, marketId: llammaId, userAddress })
 
   const { data: loanExists } = useLoanExists({
     chainId,
@@ -177,15 +179,19 @@ export const useLoanPositionDetails = ({
           : null,
       loading: userLoanDetailsLoading ?? true,
     },
-    pnl: v2LeverageEnabled
-      ? {
-          currentProfit: userPnl?.currentProfit,
-          currentPositionValue: userPnl?.currentPosition,
-          depositedValue: userPnl?.deposited,
-          percentageChange: userPnl?.percentage,
-          loading: isUserPnlLoading ?? true,
-        }
-      : undefined,
+    ...(v2LeverageEnabled && {
+      pnl: {
+        currentProfit: userPnl?.currentProfit,
+        currentPositionValue: userPnl?.currentPosition,
+        depositedValue: userPnl?.deposited,
+        percentageChange: userPnl?.percentage,
+        loading: isUserPnlLoading ?? true,
+      },
+      leverage: {
+        value: leverage.data ? Number(leverage.data) : null,
+        loading: leverage.isLoading,
+      },
+    }),
     totalDebt: {
       value: debt ? Number(debt) : null,
       loading: userLoanDetailsLoading ?? true,
