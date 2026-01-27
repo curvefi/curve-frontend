@@ -221,7 +221,12 @@ export const createLoanDecrease = (_set: StoreApi<State>['setState'], get: Store
         }
 
         // invalidate user prices to keep ohlc chart liquidation range in sync
-        invalidateUserPrices({ chainId, marketId: llamma.id, userAddress: wallet?.address, loanExists: loanExists })
+        await invalidateUserPrices({
+          chainId,
+          marketId: llamma.id,
+          userAddress: wallet?.address,
+          loanExists: loanExists,
+        })
 
         get()[sliceKey].setStateByKey('formStatus', {
           ...get()[sliceKey].formStatus,

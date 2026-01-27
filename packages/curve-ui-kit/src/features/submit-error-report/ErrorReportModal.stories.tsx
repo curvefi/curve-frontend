@@ -41,7 +41,7 @@ const meta: Meta<typeof ErrorReportModalStory> = {
   title: 'UI Kit/Features/ErrorReportModal',
   component: ErrorReportModalStory,
   args: {
-    initialOpen: true,
+    initialOpen: false,
   },
   argTypes: {
     initialOpen: {
