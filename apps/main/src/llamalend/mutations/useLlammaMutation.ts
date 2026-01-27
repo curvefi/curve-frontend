@@ -111,7 +111,6 @@ export function useLlammaMutation<TVariables extends object, TData extends Resul
     onMutate: (variables: TVariables) => {
       // Clear local error at the start of a new mutation attempt.
       setError(null)
-      reset() // reset mutation state on new mutation
       // Early validation - throwing here prevents mutationFn from running
       if (!wallet) throw new Error('Missing provider')
       if (!llamaApi) throw new Error('Missing llamalend api')
