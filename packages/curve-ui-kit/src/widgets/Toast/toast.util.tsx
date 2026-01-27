@@ -12,6 +12,7 @@ export type ToastItem = {
   title: string
   testId?: string
   severity?: AlertProps['severity']
+  keepAlive?: boolean
 }
 
 export const showToast = (item: Omit<ToastItem, 'id'>): { dismiss: () => void } => {
