@@ -34,7 +34,7 @@ export const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParameters
   const pricesData = pricesApiPoolDataMapper[poolAddress]
 
   const { data: poolParameters } = usePoolParameters({ chainId: rChainId, poolId: poolData.pool.id })
-  const { gamma, A, future_A, future_A_time, initial_A, initial_A_time } = poolParameters ?? {}
+  const { gamma, A, future_A, future_A_time, initial_A, initial_A_time, priceOracle, priceScale } = poolParameters ?? {}
 
   const convert1e8 = (number: number) => formatNumber(number / 10 ** 8, { decimals: 5 })
   const convert1e10 = (number: number) => formatNumber(number / 10 ** 10, { decimals: 5 })
@@ -286,11 +286,11 @@ export const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParameters
         </SectionWrapper>
       </PoolParametersWrapper>
       <PoolDataWrapper>
-        {!!poolData && haveWrappedCoins && Array.isArray(poolParameters?.priceOracle) && (
+        {!!poolData && haveWrappedCoins && priceOracle && (
           <StatsSection>
             <Box grid>
               <StatsTitle>{t`Price Oracle:`}</StatsTitle>
-              {poolParameters.priceOracle.map((p, idx) => {
+              {priceOracle.map((p, idx) => {
                 const wrappedCoins = poolData.pool.wrappedCoins as string[]
                 const symbol = wrappedCoins[idx + 1]
                 return (
@@ -304,10 +304,10 @@ export const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParameters
           </StatsSection>
         )}
 
-        {!!poolData && haveWrappedCoins && Array.isArray(poolParameters?.priceScale) && (
+        {!!poolData && haveWrappedCoins && priceScale && (
           <StatsSection>
             <StatsTitle>{t`Price Scale:`}</StatsTitle>
-            {poolParameters.priceScale.map((p, idx) => {
+            {priceScale.map((p, idx) => {
               const wrappedCoins = poolData.pool.wrappedCoins as string[]
               const symbol = wrappedCoins[idx + 1]
               return (
