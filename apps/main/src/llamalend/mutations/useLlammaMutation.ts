@@ -106,11 +106,12 @@ export function useLlammaMutation<TVariables extends object, TData extends Resul
   // Track our own error state because errors thrown in onMutate don't populate React Query's error.
   const [error, setError] = useState<Error | null>(null)
 
-  const { mutate, mutateAsync, data, isPending, isSuccess, reset } = useMutation({
+  // we use `mutate` instead of `mutateAsync` so that `onSuccess`/`onError` can be handled here
+  const { mutate, data, isPending, isSuccess, reset } = useMutation({
     mutationKey,
     onMutate: (variables: TVariables) => {
-      // Clear local error at the start of a new mutation attempt.
-      setError(null)
+      setError(null) // Clear local error at the start of a new mutation attempt.
+
       // Early validation - throwing here prevents mutationFn from running
       if (!wallet) throw new Error('Missing provider')
       if (!llamaApi) throw new Error('Missing llamalend api')
@@ -154,5 +155,5 @@ export function useLlammaMutation<TVariables extends object, TData extends Resul
       notify(t`Transaction failed`, 'error') // hide the actual error message, it can be too long - display it in the form
     },
   })
-  return { mutate, mutateAsync, error, ...data, isPending, isSuccess, reset }
+  return { mutate, error, ...data, isPending, isSuccess, reset }
 }
