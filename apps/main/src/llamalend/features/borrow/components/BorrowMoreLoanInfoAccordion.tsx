@@ -38,39 +38,17 @@ export function BorrowMoreLoanInfoAccordion<ChainId extends IChainId>({
   health: Query<Decimal | null>
 }) {
   const [isOpen, , , toggle] = useSwitch(false)
+  const leverageEnabled = !!hasLeverage
   const userState = useUserState(params, isOpen)
-  const expectedCollateralQuery = q(useBorrowMoreExpectedCollateral(params, isOpen && !!hasLeverage))
+  const expectedCollateralQuery = q(useBorrowMoreExpectedCollateral(params, isOpen && leverageEnabled))
 
   const collateralDelta = expectedCollateralQuery.data?.totalCollateral ?? userCollateral
-  const totalDebt = useMemo(() => {
-    const currentDebt = userState.data?.debt
-    return debt && currentDebt ? decimal(new BigNumber(currentDebt).plus(debt).toString()) : undefined
-  }, [debt, userState.data])
-
-  const debtQuery = useMemo(
-    () =>
-      mapQuery(userState, (state) => {
-        if (!debt || state.debt == null) return null
-        const value = decimal(new BigNumber(state.debt).plus(debt))
-        return value && { value, tokenSymbol: borrowToken?.symbol }
-      }),
-    [borrowToken?.symbol, debt, userState],
+  const totalDebt = useMemo(
+    () => debt && userState.data && decimal(new BigNumber(userState.data.debt).plus(debt).toString()),
+    [debt, userState.data],
   )
 
-  const loanToValue = useLoanToValueFromUserState(
-    {
-      chainId: params.chainId,
-      marketId: params.marketId,
-      userAddress: params.userAddress,
-      collateralToken,
-      borrowToken,
-      collateralDelta,
-      expectedBorrowed: totalDebt,
-    },
-    isOpen && !!totalDebt,
-  )
   const prevHealth = useHealthQueries((isFull) => getUserHealthOptions({ ...params, isFull }))
-  const leverageEnabled = !!hasLeverage
 
   const { data: isApproved } = useBorrowMoreIsApproved(params, isOpen)
 
@@ -89,8 +67,27 @@ export function BorrowMoreLoanInfoAccordion<ChainId extends IChainId>({
           isOpen && !!totalDebt,
         ),
       )}
-      loanToValue={loanToValue}
-      debt={debtQuery}
+      loanToValue={useLoanToValueFromUserState(
+        {
+          chainId: params.chainId,
+          marketId: params.marketId,
+          userAddress: params.userAddress,
+          collateralToken,
+          borrowToken,
+          collateralDelta,
+          expectedBorrowed: totalDebt,
+        },
+        isOpen && !!totalDebt,
+      )}
+      debt={useMemo(
+        () =>
+          mapQuery(
+            userState,
+            ({ debt: stateDebt }) =>
+              debt && { value: decimal(new BigNumber(stateDebt).plus(debt))!, tokenSymbol: borrowToken?.symbol },
+          ),
+        [borrowToken?.symbol, debt, userState],
+      )}
       collateral={{
         data: collateralDelta &&
           userState.data && {
@@ -102,13 +99,16 @@ export function BorrowMoreLoanInfoAccordion<ChainId extends IChainId>({
       }}
       userState={q(userState)}
       leverageEnabled={leverageEnabled}
-      leverageValue={mapQuery(expectedCollateralQuery, (data) => {
-        if (!data) return null
-        const base = new BigNumber(data.userCollateral).plus(data.collateralFromUserBorrowed)
-        return decimal(base.isZero() ? 0 : new BigNumber(data.collateralFromDebt).plus(base).div(base))
-      })}
+      leverageValue={mapQuery(
+        expectedCollateralQuery,
+        // todo: this might not be correct, use the llamalend-js calculation that's being implemented
+        ({ collateralFromDebt, collateralFromUserBorrowed, userCollateral }) => {
+          const base = new BigNumber(userCollateral).plus(collateralFromUserBorrowed)
+          return decimal(base.isZero() ? 0 : new BigNumber(collateralFromDebt).plus(base).div(base))
+        },
+      )}
       prevLeverageValue={q(useUserCurrentLeverage(params, isOpen))}
-      leverageTotalCollateral={mapQuery(expectedCollateralQuery, (data) => data?.totalCollateral ?? null)}
+      leverageTotalCollateral={mapQuery(expectedCollateralQuery, (d) => d.totalCollateral)}
       slippage={slippage}
       onSlippageChange={onSlippageChange}
       collateralSymbol={collateralToken?.symbol}
