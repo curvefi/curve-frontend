@@ -2,35 +2,46 @@ import { useSnapshots } from '@/llamalend/features/market-list/hooks/useSnapshot
 import { useFilteredRewards } from '@/llamalend/hooks/useFilteredRewards'
 import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { MarketRateType } from '@ui-kit/types/market'
-import { MarketBorrowRateTooltipContent } from './MarketBorrowRateTooltipContent'
+import { MarketBorrowRateType } from './constants'
+import { MarketBorrowAprTooltipContent } from './MarketBorrowAprTooltipContent'
+import { MarketNetBorrowAprTooltipContent } from './MarketNetBorrowAprTooltipContent'
 
 type MarketBorrowRateTooltipWrapperProps = {
   market: LlamaMarket
+  borrowRateType: MarketBorrowRateType
 }
 
-export const MarketBorrowRateTooltipWrapper = ({ market }: MarketBorrowRateTooltipWrapperProps) => {
+export const MarketBorrowRateTooltipWrapper = ({ market, borrowRateType }: MarketBorrowRateTooltipWrapperProps) => {
   const { averageRate, period, averageTotalBorrowRate, isLoading } = useSnapshots(market, MarketRateType.Borrow)
   const {
     rewards,
     type: marketType,
-    rates: { borrowApy: borrowRate, borrowTotalApy },
+    rates: { borrowApr, borrowTotalApr: netBorrowApr },
     assets: {
       collateral: { rebasingYield, symbol: collateralSymbol },
     },
   } = market
   const poolRewards = useFilteredRewards(rewards, marketType, MarketRateType.Borrow)
 
-  return (
-    <MarketBorrowRateTooltipContent
+  return borrowRateType === 'netBorrowApr' ? (
+    <MarketNetBorrowAprTooltipContent
       marketType={marketType}
-      borrowRate={borrowRate}
+      borrowRate={borrowApr}
       averageRate={averageRate}
       periodLabel={period}
-      totalBorrowRate={borrowTotalApy}
+      totalBorrowRate={netBorrowApr}
       totalAverageBorrowRate={averageTotalBorrowRate}
       extraRewards={poolRewards}
       rebasingYield={rebasingYield}
       collateralSymbol={collateralSymbol}
+      isLoading={isLoading}
+    />
+  ) : (
+    <MarketBorrowAprTooltipContent
+      marketType={marketType}
+      borrowRate={borrowApr}
+      averageRate={averageRate}
+      periodLabel={period}
       isLoading={isLoading}
     />
   )

@@ -24,7 +24,7 @@ import {
   UtilizationCell,
 } from '../cells'
 import {
-  BorrowRateHeaderTooltipContent,
+  NetBorrowAprHeaderTooltipContent,
   CollateralBorrowHeaderTooltipContent,
   LendRateHeaderTooltipContent,
   LiquidityUsdHeaderTooltipContent,
@@ -44,9 +44,10 @@ const headers = {
   [LlamaMarketColumnId.UserBoostMultiplier]: t`Boost`,
   [LlamaMarketColumnId.UserEarnings]: t`My Earnings`,
   [LlamaMarketColumnId.UserDeposited]: t`Supplied Amount`,
-  [LlamaMarketColumnId.BorrowRate]: t`Borrow Rate`,
+  [LlamaMarketColumnId.BorrowRate]: t`Borrow APR`,
+  [LlamaMarketColumnId.NetBorrowRate]: t`Net borrow APR`,
   [LlamaMarketColumnId.LendRate]: t`Supply Yield`,
-  [LlamaMarketColumnId.BorrowChart]: t`7D Rate Chart`,
+  [LlamaMarketColumnId.BorrowChart]: t`7D borrow APR`,
   [LlamaMarketColumnId.MaxLtv]: t`Max LTV`,
   [LlamaMarketColumnId.UtilizationPercent]: t`Utilization`,
   [LlamaMarketColumnId.LiquidityUsd]: t`Available Liquidity`,
@@ -125,13 +126,22 @@ export const LLAMA_MARKET_COLUMNS = [
     meta: { type: 'numeric' },
     sortUndefined: 'last',
   }),
-  columnHelper.accessor('rates.borrowTotalApy', {
+  columnHelper.accessor('rates.borrowApr', {
     id: LlamaMarketColumnId.BorrowRate,
     header: headers[LlamaMarketColumnId.BorrowRate],
     cell: RateCell,
     meta: {
       type: 'numeric',
-      tooltip: createTooltip(LlamaMarketColumnId.BorrowRate, <BorrowRateHeaderTooltipContent />),
+    },
+    sortUndefined: 'last',
+  }),
+  columnHelper.accessor('rates.borrowTotalApr', {
+    id: LlamaMarketColumnId.NetBorrowRate,
+    header: headers[LlamaMarketColumnId.NetBorrowRate],
+    cell: RateCell,
+    meta: {
+      type: 'numeric',
+      tooltip: createTooltip(LlamaMarketColumnId.NetBorrowRate, <NetBorrowAprHeaderTooltipContent />),
     },
     sortUndefined: 'last',
   }),
@@ -156,7 +166,7 @@ export const LLAMA_MARKET_COLUMNS = [
     meta: { type: 'numeric', tooltip: createTooltip(LlamaMarketColumnId.LendRate, <LendRateHeaderTooltipContent />) },
     sortUndefined: 'last',
   }),
-  columnHelper.accessor('rates.borrowApy', {
+  columnHelper.accessor('rates.borrowApr', {
     id: LlamaMarketColumnId.BorrowChart,
     header: headers[LlamaMarketColumnId.BorrowChart],
     cell: (c) => <LineGraphCell market={c.row.original} type={MarketRateType.Borrow} />,

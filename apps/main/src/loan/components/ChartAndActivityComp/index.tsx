@@ -1,8 +1,8 @@
 import { SubTabsSwitcher } from 'curve-ui-kit/src/shared/ui/Tabs/SubTabsSwitcher'
 import { useState } from 'react'
+import { getBandsChartToken } from '@/llamalend/features/bands-chart/bands-chart.utils'
 import { BandsChart } from '@/llamalend/features/bands-chart/BandsChart'
 import { useBandsData } from '@/llamalend/features/bands-chart/hooks/useBandsData'
-import { getBandsChartToken } from '@/llamalend/features/bands-chart/utils'
 import { useOhlcChartState } from '@/loan/hooks/useOhlcChartState'
 import { ChainId, Llamma } from '@/loan/types/loan.types'
 import Stack from '@mui/material/Stack'
@@ -104,7 +104,7 @@ export const ChartAndActivityComp = ({ rChainId, market, llammaId }: ChartAndAct
           />
           <Stack
             display={{ mobile: 'block', tablet: newBandsChartEnabled && isBandsVisible ? 'grid' : undefined }}
-            gridTemplateColumns={{ tablet: newBandsChartEnabled && isBandsVisible ? '1fr 0.3fr' : undefined }}
+            gridTemplateColumns={{ tablet: newBandsChartEnabled && isBandsVisible ? 'auto 14rem' : undefined }}
           >
             {ohlcDataUnavailable ? (
               <ErrorMessage

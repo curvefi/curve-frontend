@@ -14,7 +14,7 @@ export const DetailInfoBorrowRate = ({ parameters }: Props) => {
   const loading = lodash.isUndefined(rate) && lodash.isUndefined(futureRate)
 
   return (
-    <DetailInfo loading={loading} loadingSkeleton={[100, 20]} label={t`Borrow rate:`}>
+    <DetailInfo loading={loading} loadingSkeleton={[100, 20]} label={t`Borrow APR:`}>
       <span>
         {formatNumber(rate, { ...FORMAT_OPTIONS.PERCENT, defaultValue: '-' })}{' '}
         <Icon name="ArrowRight" size={16} className="svg-arrow" />{' '}
