@@ -1,15 +1,15 @@
 import Typography from '@mui/material/Typography'
 import type { CellContext } from '@tanstack/react-table'
 import { formatNumber } from '@ui/utils'
+import { InlineTableCell } from '@ui-kit/shared/ui/DataTable/inline-cells/InlineTableCell'
 import type { ParsedUserCollateralEvent } from '../hooks/useUserCollateralEvents'
-import { HistoryTableCell } from './HistoryTableCell'
 
 export const CollateralChangeCell = ({
   row: {
     original: { collateralChange, collateralChangeUsd, collateralToken },
   },
 }: CellContext<ParsedUserCollateralEvent, unknown>) => (
-  <HistoryTableCell>
+  <InlineTableCell>
     <Typography
       variant="tableCellMBold"
       color={
@@ -23,5 +23,5 @@ export const CollateralChangeCell = ({
     {collateralChangeUsd !== 0 && collateralChangeUsd !== null && (
       <Typography variant="bodySRegular">{formatNumber(collateralChangeUsd, { currency: 'USD' })}</Typography>
     )}
-  </HistoryTableCell>
+  </InlineTableCell>
 )

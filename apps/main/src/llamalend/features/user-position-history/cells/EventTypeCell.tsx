@@ -9,9 +9,9 @@ import { MinusCircleIcon } from '@ui-kit/shared/icons/MinusCircleIcon'
 import { PlusCircleIcon } from '@ui-kit/shared/icons/PlusCircleIcon'
 import { RewardsIcon } from '@ui-kit/shared/icons/RewardsIcon'
 import { UploadIcon } from '@ui-kit/shared/icons/UploadIcon'
+import { InlineTableCell } from '@ui-kit/shared/ui/DataTable/inline-cells/InlineTableCell'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { ParsedUserCollateralEvent, UserCollateralEventType } from '../hooks/useUserCollateralEvents'
-import { HistoryTableCell } from './HistoryTableCell'
 
 const { Spacing } = SizesAndSpaces
 
@@ -33,10 +33,10 @@ export const EventTypeCell = ({
     original: { type },
   },
 }: CellContext<ParsedUserCollateralEvent, unknown>) => (
-  <HistoryTableCell>
+  <InlineTableCell>
     <Stack direction="row" alignItems="center" gap={Spacing.sm}>
       {icons[type]}
       <Typography variant="tableCellMBold">{type}</Typography>
     </Stack>
-  </HistoryTableCell>
+  </InlineTableCell>
 )

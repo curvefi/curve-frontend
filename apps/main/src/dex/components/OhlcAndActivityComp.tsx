@@ -1,10 +1,12 @@
 import { SubTabsSwitcher } from 'curve-ui-kit/src/shared/ui/Tabs/SubTabsSwitcher'
 import { useState } from 'react'
-import { PoolActivity } from '@/dex/components/OhlcAndActivityComp/PoolActivity'
 import { useOhlcChartState } from '@/dex/hooks/useOhlcChartState'
+import { usePoolActivity } from '@/dex/hooks/usePoolActivity'
 import { ChainId } from '@/dex/types/main.types'
-import type { Pool } from '@curvefi/prices-api/pools'
+import type { Address } from '@curvefi/prices-api'
+import type { Pool, PoolCoin } from '@curvefi/prices-api/pools'
 import Stack from '@mui/material/Stack'
+import { ActivityTable, PoolTradesExpandedPanel, PoolLiquidityExpandedPanel } from '@ui-kit/features/activity-table'
 import { ChartWrapper } from '@ui-kit/features/candle-chart/ChartWrapper'
 import { TIME_OPTIONS } from '@ui-kit/features/candle-chart/constants'
 import { t } from '@ui-kit/lib/i18n'
@@ -20,6 +22,45 @@ const tabs: TabOption<Tab>[] = [
   { value: 'poolActivity', label: t`Pool Activity` },
 ]
 
+const PoolActivity = ({
+  chainId,
+  poolAddress,
+  poolTokens,
+}: {
+  poolAddress: Address
+  chainId: ChainId
+  poolTokens: PoolCoin[]
+}) => {
+  const { activeSelection, setActiveSelection, selections, tradesTableConfig, liquidityTableConfig } = usePoolActivity({
+    chainId,
+    poolAddress,
+    poolTokens,
+  })
+
+  return (
+    <>
+      {activeSelection === 'trades' && (
+        <ActivityTable
+          selections={selections}
+          activeSelection={activeSelection}
+          onSelectionChange={setActiveSelection}
+          tableConfig={tradesTableConfig}
+          expandedPanel={PoolTradesExpandedPanel}
+        />
+      )}
+      {activeSelection === 'liquidity' && (
+        <ActivityTable
+          selections={selections}
+          activeSelection={activeSelection}
+          onSelectionChange={setActiveSelection}
+          tableConfig={liquidityTableConfig}
+          expandedPanel={PoolLiquidityExpandedPanel}
+        />
+      )}
+    </>
+  )
+}
+
 export const OhlcAndActivityComp = ({
   rChainId,
   pricesApiPoolData,
@@ -27,24 +68,17 @@ export const OhlcAndActivityComp = ({
   rChainId: ChainId
   pricesApiPoolData: Pool
 }) => {
-  const { chartCombinations, tradesTokens, isLoading, setSelectedChart, setTimeOption, ohlcChartProps, flipChart } =
-    useOhlcChartState({
-      rChainId,
-      pricesApiPoolData,
-    })
+  const { isLoading, setSelectedChart, setTimeOption, ohlcChartProps, flipChart } = useOhlcChartState({
+    rChainId,
+    pricesApiPoolData,
+  })
   const [tab, setTab] = useState<'chart' | 'poolActivity'>('chart')
 
   return (
     <Stack gap={Spacing.md}>
       <SubTabsSwitcher tabs={tabs} value={tab} onChange={setTab} />
       {pricesApiPoolData && tab === 'poolActivity' && (
-        <PoolActivity
-          coins={pricesApiPoolData.coins}
-          tradesTokens={tradesTokens}
-          poolAddress={pricesApiPoolData.address}
-          chainId={rChainId}
-          chartCombinations={chartCombinations}
-        />
+        <PoolActivity poolAddress={pricesApiPoolData.address} chainId={rChainId} poolTokens={pricesApiPoolData.coins} />
       )}
       {tab === 'chart' && (
         <Stack sx={{ gap: Spacing.md }}>

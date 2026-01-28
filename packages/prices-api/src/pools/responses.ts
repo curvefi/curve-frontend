@@ -52,3 +52,81 @@ export type GetTvlResponse = {
     token_prices: number[]
   }[]
 }
+
+type TradeToken = {
+  symbol: string
+  address: Address
+  pool_index: number
+  event_index: number
+}
+
+export type GetPoolTradesResponse = {
+  chain: string
+  address: Address
+  main_token: TradeToken
+  reference_token: TradeToken
+  page: number
+  per_page: number
+  count: number
+  data: {
+    sold_id: number
+    bought_id: number
+    token_sold: Address
+    token_bought: Address
+    token_sold_symbol: string
+    token_bought_symbol: string
+    tokens_sold: number
+    tokens_sold_usd: number
+    tokens_bought: number
+    tokens_bought_usd: number
+    block_number: number
+    time: string
+    transaction_hash: Address
+    buyer: Address
+    usd_fee: number
+  }[]
+}
+
+export type GetAllPoolTradesResponse = {
+  chain: string
+  address: Address
+  page: number
+  per_page: number
+  count: number
+  data: {
+    sold_id: number
+    bought_id: number
+    tokens_sold: number
+    tokens_sold_usd: number
+    tokens_bought: number
+    tokens_bought_usd: number
+    price: number
+    block_number: number
+    time: string
+    transaction_hash: Address
+    buyer: Address
+    fee: number
+    usd_fee: number
+    token_sold: TradeToken
+    token_bought: TradeToken
+    pool_state: unknown | null
+  }[]
+}
+
+export type GetPoolLiquidityEventsResponse = {
+  chain: string
+  address: Address
+  page: number
+  per_page: number
+  count: number
+  data: {
+    liquidity_event_type: string
+    token_amounts: number[] | null
+    fees: number[] | null
+    token_supply: number
+    block_number: number
+    time: string
+    transaction_hash: Address
+    provider: Address
+  }[]
+}

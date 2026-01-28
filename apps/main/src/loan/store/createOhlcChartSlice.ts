@@ -6,7 +6,7 @@ import type { State } from '@/loan/store/useStore'
 import { ChainId } from '@/loan/types/loan.types'
 import type { Address, Chain } from '@curvefi/prices-api'
 import { getOracle } from '@curvefi/prices-api/lending'
-import { getOHLC, getTrades, type LlammaTrade, getEvents, type LlammaEvent } from '@curvefi/prices-api/llamma'
+import { getOHLC } from '@curvefi/prices-api/llamma'
 import type {
   FetchingStatus,
   LpPriceOhlcDataFormatted,
@@ -44,9 +44,6 @@ type SliceState = {
     // flag for disabling oracle pool data if no oracle pools are found for the market on the api
     dataDisabled: boolean
   }
-  llammaTradesData: LlammaTrade[]
-  llammaControllerData: LlammaEvent[]
-  activityFetchStatus: FetchingStatus
 }
 
 const sliceKey = 'ohlcCharts'
@@ -115,7 +112,6 @@ export type OhlcChartSlice = {
       start: number,
       end: number,
     ): Promise<void>
-    fetchPoolActivity(chainId: ChainId, poolAddress: string): void
     resetState(chainId: ChainId): void
   }
 }
@@ -147,9 +143,6 @@ const DEFAULT_STATE: SliceState = {
     fetchStatus: 'LOADING',
     dataDisabled: false,
   },
-  llammaTradesData: [],
-  llammaControllerData: [],
-  activityFetchStatus: 'LOADING',
 }
 
 export const createOhlcChart = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
@@ -625,59 +618,6 @@ export const createOhlcChart = (set: StoreApi<State>['setState'], get: StoreApi<
         )
 
         return
-      }
-    },
-    fetchPoolActivity: async (chainId: ChainId, poolAddress: string) => {
-      set(
-        produce((state: State) => {
-          state[sliceKey].activityFetchStatus = 'LOADING'
-        }),
-      )
-
-      const network = networks[chainId].id.toLowerCase()
-
-      try {
-        const { trades } = await getTrades({
-          endpoint: 'crvusd',
-          chain: network as Chain,
-          llamma: poolAddress as Address,
-          page: 1,
-          perPage: 100,
-        })
-
-        const sortedData = trades.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())
-
-        if (sortedData) {
-          set(
-            produce((state: State) => {
-              state[sliceKey].llammaTradesData = sortedData
-            }),
-          )
-        }
-
-        const { events } = await getEvents({
-          endpoint: 'crvusd',
-          chain: network as Chain,
-          llamma: poolAddress as Address,
-          page: 1,
-          perPage: 100,
-        })
-
-        if (events) {
-          set(
-            produce((state: State) => {
-              state[sliceKey].llammaControllerData = events
-              state[sliceKey].activityFetchStatus = 'READY'
-            }),
-          )
-        }
-      } catch (error) {
-        console.warn(error)
-        set(
-          produce((state: State) => {
-            state[sliceKey].activityFetchStatus = 'ERROR'
-          }),
-        )
       }
     },
     resetState: () => {
