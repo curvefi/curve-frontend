@@ -5,8 +5,10 @@ import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/ho
 import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useMarketRates } from '@/llamalend/queries/market-rates'
+import { useRemoveCollateralFutureLeverage } from '@/llamalend/queries/remove-collateral/remove-collateral-future-leverage.query'
 import { useRemoveCollateralEstimateGas } from '@/llamalend/queries/remove-collateral/remove-collateral-gas-estimate.query'
 import { getRemoveCollateralHealthOptions } from '@/llamalend/queries/remove-collateral/remove-collateral-health.query'
+import { useUserCurrentLeverage } from '@/llamalend/queries/user-current-leverage.query'
 import { getUserHealthOptions } from '@/llamalend/queries/user-health.query'
 import { useUserState } from '@/llamalend/queries/user-state.query'
 import { CollateralParams } from '@/llamalend/queries/validation/manage-loan.types'
@@ -23,15 +25,20 @@ export function RemoveCollateralInfoAccordion<ChainId extends IChainId>({
   collateralToken,
   borrowToken,
   networks,
+  leverageEnabled,
 }: {
   params: CollateralParams<ChainId>
   values: CollateralForm
   collateralToken: Token | undefined
   borrowToken: Token | undefined
   networks: NetworkDict<ChainId>
+  leverageEnabled: boolean
 }) {
   const [isOpen, , , toggle] = useSwitch(false)
   const userState = q(useUserState(params, isOpen))
+  const prevLeverageValue = q(useUserCurrentLeverage(params, isOpen))
+  const leverageValue = q(useRemoveCollateralFutureLeverage(params, isOpen))
+
   const expectedCollateral = useMemo(
     () =>
       // An error will be thrown by the validation suite, the "max" is just for preventing negative collateral in the UI
@@ -80,12 +87,11 @@ export function RemoveCollateralInfoAccordion<ChainId extends IChainId>({
         },
         isOpen && !!userCollateral,
       )}
-      userState={{
-        ...userState,
-        borrowTokenSymbol: borrowToken?.symbol,
-        collateralTokenSymbol: collateralToken?.symbol,
-      }}
+      userState={userState}
       collateral={expectedCollateral}
+      leverageEnabled={leverageEnabled}
+      prevLeverageValue={prevLeverageValue}
+      leverageValue={leverageValue}
     />
   )
 }

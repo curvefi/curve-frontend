@@ -110,18 +110,11 @@ export const FormWithdraw = ({
   )
 
   const handleWithdrawClick = useCallback(
-    async (
-      activeKey: string,
-      config: Config,
-      curve: CurveApi,
-      poolData: PoolData,
-      formValues: FormValues,
-      maxSlippage: string,
-    ) => {
+    async (activeKey: string, curve: CurveApi, poolData: PoolData, formValues: FormValues, maxSlippage: string) => {
       const tokenText = amountsDescription(formValues.amounts)
       const notifyMessage = t`Please confirm withdrawal of ${formValues.lpToken} LP Tokens at max ${maxSlippage}% slippage.`
       const { dismiss } = notify(notifyMessage, 'pending')
-      const resp = await fetchStepWithdraw(activeKey, config, curve, poolData, formValues, maxSlippage)
+      const resp = await fetchStepWithdraw(activeKey, curve, poolData, formValues, maxSlippage)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && network) {
         const TxDescription = t`Withdrew ${formValues.lpToken} LP Tokens for ${tokenText}`
@@ -190,13 +183,13 @@ export const FormWithdraw = ({
                     onClick: () => setSlippageConfirmed(false),
                   },
                   primaryBtnProps: {
-                    onClick: () => handleWithdrawClick(activeKey, config, curve, poolData, formValues, maxSlippage),
+                    onClick: () => handleWithdrawClick(activeKey, curve, poolData, formValues, maxSlippage),
                     disabled: !slippageConfirmed,
                   },
                   primaryBtnLabel: 'Withdraw anyway',
                 },
               }
-            : { onClick: () => handleWithdrawClick(activeKey, config, curve, poolData, formValues, maxSlippage) }),
+            : { onClick: () => handleWithdrawClick(activeKey, curve, poolData, formValues, maxSlippage) }),
         },
       }
 
@@ -329,7 +322,6 @@ export const FormWithdraw = ({
         balance={lpTokenBalance ?? ''}
         balanceLoading={lpTokenBalanceLoading}
         hasError={haveSigner && +formValues.lpToken > +(lpTokenBalance ?? '')}
-        haveSigner={haveSigner}
         handleAmountChange={useCallback(
           (lpToken: string) =>
             updateFormValues({ amounts: resetFormAmounts(useStore.getState().poolWithdraw.formValues), lpToken }, null),

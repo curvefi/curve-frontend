@@ -13,7 +13,7 @@
       "campaignEnd": "1770000000",
       "address": "0xEc1Ea912C9f048D4814934e83678F86C83FdBD62",
       "network": "plasma",
-      "multiplier": "3x",
+      "multiplier": "6x",
       "tags": ["points"],
       "lock": "false"
     },

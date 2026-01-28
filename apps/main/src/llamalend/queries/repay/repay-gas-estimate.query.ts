@@ -123,7 +123,7 @@ export const useRepayEstimateGas = <ChainId extends IChainId>(
     data,
     isLoading: conversionLoading,
     error: estimateError,
-  } = useEstimateGas<ChainId>(networks, chainId, isApproved ? approveEstimate : repayEstimate, enabled)
+  } = useEstimateGas<ChainId>(networks, chainId, isApproved ? repayEstimate : approveEstimate, enabled)
   return {
     data,
     isLoading: [isApprovedLoading, approveLoading, repayLoading, conversionLoading].some(Boolean),

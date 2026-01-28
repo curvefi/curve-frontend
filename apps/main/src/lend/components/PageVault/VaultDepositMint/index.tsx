@@ -2,27 +2,23 @@ import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import { AlertFormError } from '@/lend/components/AlertFormError'
 import { DetailInfoEstimateGas } from '@/lend/components/DetailInfoEstimateGas'
 import { DetailInfoRate } from '@/lend/components/DetailInfoRate'
-import { InpChipUsdRate } from '@/lend/components/InpChipUsdRate'
 import { LoanFormConnect } from '@/lend/components/LoanFormConnect'
 import type { FormStatus, FormValues, StepKey } from '@/lend/components/PageVault/VaultDepositMint/types'
-import { StyledDetailInfoWrapper, StyledInpChip } from '@/lend/components/styles'
+import { StyledDetailInfoWrapper } from '@/lend/components/styles'
 import { useMarketAlert } from '@/lend/hooks/useMarketAlert'
 import { helpers } from '@/lend/lib/apiLending'
 import { networks } from '@/lend/networks'
-import { _getMaxActiveKey, _isDeposit } from '@/lend/store/createVaultDepositMintSlice'
+import { _getMaxActiveKey } from '@/lend/store/createVaultDepositMintSlice'
 import { useStore } from '@/lend/store/useStore'
 import { Api, OneWayMarketTemplate, PageContentProps } from '@/lend/types/lend.types'
 import { AlertBox } from '@ui/AlertBox'
-import { Box } from '@ui/Box'
 import { DetailInfo } from '@ui/DetailInfo'
-import { InputDebounced, InputMaxBtn, InputProvider } from '@ui/InputComp'
 import { getActiveStep } from '@ui/Stepper/helpers'
 import { Stepper } from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
 import { TxInfoBar } from '@ui/TxInfoBar'
 import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
-import { useLegacyTokenInput } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
@@ -70,10 +66,6 @@ export const VaultDepositMint = ({ rChainId, rOwmId, isLoaded, api, market, user
 
   const { data: usdRate } = useTokenUsdRate({ chainId: rChainId, tokenAddress: borrowed_token?.address })
   const onBalance = useCallback((amount?: Decimal) => reset({ amount: amount ?? '' }), [reset])
-
-  const handleInpAmountChange = (amount: string) => {
-    reset({ amount })
-  }
 
   const handleBtnClickDeposit = useCallback(
     async (
@@ -189,55 +181,7 @@ export const VaultDepositMint = ({ rChainId, rOwmId, isLoaded, api, market, user
 
   return (
     <>
-      {useLegacyTokenInput() ? (
-        <div>
-          {/* input amount */}
-          <Box grid gridRowGap={1}>
-            <InputProvider
-              grid
-              gridTemplateColumns="1fr auto"
-              padding="4px 8px"
-              inputVariant={formValues.amountError ? 'error' : undefined}
-              disabled={disabled}
-              id="amount"
-            >
-              <InputDebounced
-                id="inpCollateral"
-                type="number"
-                labelProps={{
-                  label: t`${borrowed_token?.symbol} Avail.`,
-                  descriptionLoading: !!signerAddress && typeof userBalances === 'undefined',
-                  description: formatNumber(userBalances?.borrowed, { defaultValue: '-' }),
-                }}
-                value={formValues.amount}
-                onChange={handleInpAmountChange}
-              />
-              <InputMaxBtn
-                onClick={() => {
-                  const userBorrowedBal = userBalances?.borrowed ?? ''
-                  const max = maxResp?.max ?? ''
-                  handleInpAmountChange(+userBorrowedBal < +max ? userBorrowedBal : max)
-                }}
-              />
-            </InputProvider>
-            <InpChipUsdRate address={borrowed_token?.address} amount={formValues.amount} />
-            {formValues.amountError === 'too-much-wallet' ? (
-              <StyledInpChip size="xs" isDarkBg isError>
-                {t`Amount > wallet balance`} {formatNumber(userBalances?.borrowed ?? '')}
-              </StyledInpChip>
-            ) : formValues.amountError === 'too-much-max' ? (
-              <StyledInpChip size="xs" isDarkBg isError>
-                {t`Amount > max deposit amount`} {formatNumber(maxResp?.max ?? '')}
-              </StyledInpChip>
-            ) : (
-              <StyledInpChip size="xs" isDarkBg>
-                {t`Max`} {_isDeposit(rFormType) ? t`deposit` : t`mint`}{' '}
-                {formatNumber(maxResp?.max, { defaultValue: '-' })}
-              </StyledInpChip>
-            )}
-          </Box>
-        </div>
-      ) : (
+      {
         <LargeTokenInput
           name="inpCollateral"
           isError={!!formValues.amountError}
@@ -271,7 +215,7 @@ export const VaultDepositMint = ({ rChainId, rOwmId, isLoaded, api, market, user
           }
           onBalance={onBalance}
         />
-      )}
+      }
 
       {/* detail info */}
       <StyledDetailInfoWrapper>

@@ -24,7 +24,11 @@ import { formDefaultOptions } from '@ui-kit/lib/model/form'
 export const AddRewardToken = ({ chainId, poolId }: AddRewardTokenProps) => {
   const { address: signerAddress } = useConnection()
 
-  const { isFetching: isFetchingGaugeRewardsDistributors } = useGaugeRewardsDistributors({ chainId, poolId })
+  const { isFetching: isFetchingGaugeRewardsDistributors } = useGaugeRewardsDistributors({
+    chainId,
+    poolId,
+    userAddress: signerAddress,
+  })
 
   const { data: isDepositRewardAvailable, isFetching: isFetchingIsDepositRewardAvailable } =
     useIsDepositRewardAvailable({ chainId, poolId })

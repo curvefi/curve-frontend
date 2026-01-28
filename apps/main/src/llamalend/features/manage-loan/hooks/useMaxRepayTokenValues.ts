@@ -1,6 +1,5 @@
 import { useEffect } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
-import { setValueOptions } from '@/llamalend/features/borrow/react-form.utils'
 import { getTokens } from '@/llamalend/llama.utils'
 import { useRepayExpectedBorrowed } from '@/llamalend/queries/repay/repay-expected-borrowed.query'
 import { useRepayIsFull } from '@/llamalend/queries/repay/repay-is-full.query'
@@ -9,14 +8,9 @@ import type { RepayIsFullParams } from '@/llamalend/queries/validation/manage-lo
 import type { RepayForm } from '@/llamalend/queries/validation/manage-loan.validation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
-import { mapQuery, Query } from '@ui-kit/types/util'
-import { decimal, Decimal } from '@ui-kit/utils'
-
-const useQueryMinimum = (...data: Query<Decimal>[]) => ({
-  data: data.some((d) => d.data == null) ? undefined : decimal(Math.min(...data.map((d) => +d.data!))),
-  isLoading: data.some((d) => d?.isLoading),
-  error: data.map((d) => d?.error).find(Boolean),
-})
+import { useQueryMinimum } from '@ui-kit/lib'
+import { mapQuery } from '@ui-kit/types/util'
+import { setValueOptions } from '@ui-kit/utils/react-form.utils'
 
 export function useMaxRepayTokenValues<ChainId extends LlamaChainId>(
   {

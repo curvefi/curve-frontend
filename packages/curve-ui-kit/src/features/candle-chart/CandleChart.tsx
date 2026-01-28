@@ -1,5 +1,5 @@
 import type { IChartApi, Time, ISeriesApi, LineWidth, IPriceLine, CustomSeriesWhitespaceData } from 'lightweight-charts'
-import { createChart, ColorType, CrosshairMode, LineStyle, CandlestickSeries, LineSeries } from 'lightweight-charts'
+import { createChart, ColorType, LineStyle, CandlestickSeries, LineSeries } from 'lightweight-charts'
 import lodash from 'lodash'
 import { useEffect, useRef, useState, useCallback, useMemo, type RefObject } from 'react'
 import { styled } from 'styled-components'
@@ -55,6 +55,13 @@ const normalizeLiquidationRangePoints = (range?: LlammaLiquididationRange | null
 }
 
 function getPriceFormatter(ohlcData: LpPriceOhlcDataFormatted[]) {
+  if (!ohlcData?.length) {
+    return {
+      type: 'custom' as const,
+      formatter: (price: number) => priceFormatter(price, 1), // Safe default delta
+    }
+  }
+
   const min = Math.min(...ohlcData.map((x) => x.low))
   const max = Math.max(...ohlcData.map((x) => x.high))
 
@@ -83,7 +90,6 @@ type Props = {
   timeOption: string
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   wrapperRef: any
-  magnet: boolean
   colors: ChartColors
   refetchingCapped: boolean
   fetchMoreChartData: (lastFetchEndTime: number) => void
@@ -102,7 +108,6 @@ export const CandleChart = ({
   liquidationRange,
   timeOption,
   wrapperRef,
-  magnet,
   colors,
   refetchingCapped,
   fetchMoreChartData,
@@ -135,7 +140,7 @@ export const CandleChart = ({
 
   const [isUnmounting, setIsUnmounting] = useState(false)
   const [lastTimescale, setLastTimescale] = useState<{ from: Time; to: Time } | null>(null)
-  const [wrapperDimensions, setWrapperDimensions] = useState({ width: 0, height: 0 })
+  const [wrapperWidth, setWrapperWidth] = useState(0)
   const fetchingMoreRef = useRef(false)
 
   // Memoize colors to prevent unnecessary re-renders
@@ -205,10 +210,7 @@ export const CandleChart = ({
   const debouncedUpdateDimensions = useRef(
     lodash.debounce(() => {
       if (wrapperRef.current) {
-        setWrapperDimensions({
-          width: wrapperRef.current.clientWidth,
-          height: wrapperRef.current.clientHeight,
-        })
+        setWrapperWidth(wrapperRef.current.clientWidth)
       }
     }, 16), // ~60fps
   )
@@ -315,15 +317,15 @@ export const CandleChart = ({
 
   // Update chart dimensions when they change
   useEffect(() => {
-    if (!chartRef.current || wrapperDimensions.width <= 0) return
+    if (!chartRef.current || wrapperWidth <= 0) return
 
-    const width = Math.max(1, wrapperDimensions.width)
+    const width = Math.max(1, wrapperWidth)
 
     chartRef.current.applyOptions({
       width,
       height: chartHeight,
     })
-  }, [chartHeight, wrapperDimensions.width])
+  }, [chartHeight, wrapperWidth])
 
   // Update timeScale visibility when timeOption changes
   useEffect(() => {
@@ -336,13 +338,12 @@ export const CandleChart = ({
     })
   }, [timeOption])
 
-  // Update crosshair settings when magnet or colors change
+  // Update crosshair settings when colors change
   useEffect(() => {
     if (!chartRef.current) return
 
     chartRef.current.applyOptions({
       crosshair: {
-        mode: magnet ? CrosshairMode.Magnet : CrosshairMode.Normal,
         vertLine: {
           width: 4 as LineWidth,
           color: '#C3BCDB44',
@@ -356,7 +357,7 @@ export const CandleChart = ({
         },
       },
     })
-  }, [magnet, memoizedColors.cursorLabel, memoizedColors.cursorVertLine])
+  }, [memoizedColors.cursorLabel, memoizedColors.cursorVertLine])
 
   // Liquidation range series effect - create/destroy series based on visibility
   useEffect(() => {
@@ -406,14 +407,14 @@ export const CandleChart = ({
           price: 0,
           color: appearance.priceLineColorTop,
           lineWidth: 2,
-          lineStyle: LineStyle.LargeDashed,
+          lineStyle: LineStyle.Dashed,
           axisLabelVisible: true,
         }),
         bottom: series.createPriceLine({
           price: 0,
           color: appearance.priceLineColorBottom,
           lineWidth: 2,
-          lineStyle: LineStyle.LargeDashed,
+          lineStyle: LineStyle.Dashed,
           axisLabelVisible: true,
         }),
       }
@@ -742,17 +743,16 @@ export const CandleChart = ({
     wrapperRef.current = new ResizeObserver((entries: ResizeObserverEntry[]) => {
       if (isUnmounting) return
 
-      const { width, height } = entries[0].contentRect
+      const { width } = entries[0].contentRect
       if (width <= 0) return
 
       const adjustedWidth = Math.max(1, width - 1) // Ensure width is at least 1
-      const adjustedHeight = Math.max(1, height) // Ensure height is at least 1
 
       // Update state with new dimensions (debounced)
-      setWrapperDimensions({ width: adjustedWidth, height: adjustedHeight })
+      setWrapperWidth(adjustedWidth)
 
       // Apply dimensions immediately for smooth resizing
-      chartRef.current?.applyOptions({ width: adjustedWidth, height: adjustedHeight })
+      chartRef.current?.applyOptions({ width: adjustedWidth })
       chartRef.current?.timeScale().getVisibleLogicalRange()
     })
 

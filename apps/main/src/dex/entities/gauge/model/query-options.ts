@@ -7,8 +7,8 @@ import {
   queryGaugeManager,
   queryIsDepositRewardAvailable,
 } from '../api'
-import type { DepositRewardApproveParams } from '../types'
-import { gaugeDepositRewardApproveValidationSuite } from './gauge-validation'
+import type { DepositRewardApproveParams, GaugeDistributorsParams } from '../types'
+import { gaugeDepositRewardApproveValidationSuite, gaugeDistributorsValidationSuite } from './gauge-validation'
 
 export const depositRewardAvailable = queryFactory({
   queryKey: (params: GaugeParams) => [...rootKeys.gauge(params), 'isDepositRewardAvailable'] as const,
@@ -25,10 +25,11 @@ export const gaugeManager = queryFactory({
 })
 
 export const gaugeDistributors = queryFactory({
-  queryKey: (params: GaugeParams) => [...rootKeys.gauge(params), 'distributors'] as const,
+  queryKey: ({ userAddress, ...params }: GaugeDistributorsParams) =>
+    [...rootKeys.gauge(params), ...rootKeys.user({ userAddress }), 'distributors'] as const,
   queryFn: queryGaugeDistributors,
   staleTime: '5m',
-  validationSuite: poolValidationSuite,
+  validationSuite: gaugeDistributorsValidationSuite,
 })
 
 export const depositRewardIsApproved = queryFactory({

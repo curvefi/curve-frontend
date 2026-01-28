@@ -1,5 +1,6 @@
 import { useCallback, useEffect } from 'react'
 import { LoanPreset } from '@/llamalend/constants'
+import { type CreateLoanFormExternalFields, type OnCreateLoanFormUpdate } from '@/llamalend/features/borrow/types'
 import { hasLeverage } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import type { CreateLoanOptions } from '@/llamalend/mutations/create-loan.mutation'
@@ -11,12 +12,11 @@ import Collapse from '@mui/material/Collapse'
 import Stack from '@mui/material/Stack'
 import { useCreateLoanPreset } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
-import { Balance } from '@ui-kit/shared/ui/Balance'
+import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
+import { setValueOptions } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { InputDivider } from '../../../widgets/InputDivider'
 import { useCreateLoanForm } from '../hooks/useCreateLoanForm'
-import { setValueOptions } from '../react-form.utils'
-import { type CreateLoanFormExternalFields, type OnCreateLoanFormUpdate } from '../types'
 import { AdvancedCreateLoanOptions } from './AdvancedCreateLoanOptions'
 import { CreateLoanInfoAccordion } from './CreateLoanInfoAccordion'
 import { LeverageInput } from './LeverageInput'
@@ -56,19 +56,19 @@ export const CreateLoanForm = <ChainId extends IChainId>({
   const network = networks[chainId]
   const [preset, setPreset] = useCreateLoanPreset<LoanPreset>(LoanPreset.Safe)
   const {
-    form,
-    values,
-    params,
-    isPending,
-    onSubmit,
-    maxTokenValues,
     borrowToken,
     collateralToken,
-    isCreated,
     creationError,
-    txHash,
-    isApproved,
+    form,
     formErrors,
+    isApproved,
+    isCreated,
+    isPending,
+    maxTokenValues,
+    onSubmit,
+    params,
+    txHash,
+    values,
   } = useCreateLoanForm({ market, network, preset, onCreated })
   const setRange = useCallback(
     (range: number) => {
@@ -113,6 +113,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
           name="debt"
           form={form}
           max={{ ...maxTokenValues.debt, fieldName: 'maxDebt' }}
+          hideBalance
           testId="borrow-debt-input"
           network={network}
           message={
@@ -122,10 +123,10 @@ export const CreateLoanForm = <ChainId extends IChainId>({
               symbol={borrowToken?.symbol}
               balance={values.maxDebt}
               loading={maxTokenValues.debt.isLoading}
-              onClick={() => {
+              onClick={useCallback(() => {
                 form.setValue('debt', values.maxDebt, setValueOptions)
                 void form.trigger('maxDebt') // re-validate maxDebt when debt changes
-              }}
+              }, [form, values.maxDebt])}
               buttonTestId="borrow-set-debt-to-max"
             />
           }

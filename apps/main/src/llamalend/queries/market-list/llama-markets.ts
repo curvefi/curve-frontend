@@ -83,11 +83,13 @@ export type LlamaMarketKey = DeepKeys<LlamaMarket>
 const DEPRECATED_LLAMAS: PartialRecord<Chain, Record<Address, string>> = {
   ethereum: {
     // sfrxETH v1 mint market
-    '0x136e783846ef68C8Bd00a3369F787dF8d683a696': t`Please note this market is being phased out. We recommend migrating to the sfrxETH v2 market which uses an updated oracle.`,
+    '0x8472A9A7632b173c8Cf3a86D3afec50c35548e76': t`Please note this market is being phased out. We recommend migrating to the sfrxETH v2 market which uses an updated oracle.`,
     // swBTC-crvUSD lend market
     '0x276B8C8873079eEACCF4Dd241De14be92D733b45': t`This market is empty (it's never been used) and the oracle cannot be trusted.`,
     //wstUSR-crvUSD lend market
     '0x89707721927d7aaeeee513797A8d6cBbD0e08f41': t`This market is deprecated.`,
+    // LBTC-crvUSD v1 mint market
+    '0x8aca5A776a878Ea1F8967e70a23b8563008f58Ef': t`This market is deprecated.`,
   },
   arbitrum: {
     // iBTC-crvUSD lend market
@@ -104,6 +106,18 @@ const DEPRECATED_LLAMAS: PartialRecord<Chain, Record<Address, string>> = {
     '0xbb7A0C558Fd34234Dc1608f4CD0a334E0075D73a': t`This market is deprecated.`,
     // wOS-crvUSD lend market
     '0xDC06056e208aB92bF173FF6DD662F1018ea0E483': t`This market is deprecated.`,
+  },
+  optimism: {
+    // WBTC-crvUSD lend market
+    '0x09cEd8b3392bED73B0358e39AaEC0A6e9b0e76DF': t`This market is deprecated.`,
+    // CRV-crvUSD lend market
+    '0x88aa928B906b745009B53A31034701Fc377b7C89': t`This market is deprecated.`,
+    // wstETH-crvUSD lend market
+    '0x6CE5B539367A29d48038A9F3108E6e0f226b83ed': t`This market is deprecated.`,
+    // OP-crvUSD lend market
+    '0xC5Cd9f6A1Fb88bed782f475F72fF686ED35b7e8e': t`This market is deprecated.`,
+    // WETH-crvUSD lend market
+    '0x9dba46e6a06FBf24CA11f8912B44338fe1b28Ea9': t`This market is deprecated.`,
   },
 }
 
@@ -330,7 +344,7 @@ const convertMintMarket = (
       incentives: [],
     },
     type: LlamaMarketType.Mint,
-    deprecatedMessage: DEPRECATED_LLAMAS[chain]?.[llamma] ?? null,
+    deprecatedMessage: DEPRECATED_LLAMAS[chain]?.[address] ?? null,
     url: getInternalUrl('crvusd', chain, `${CRVUSD_ROUTES.PAGE_MARKETS}/${name}`),
     isFavorite: favoriteMarkets.has(llamma),
     rewards: [...(campaigns[address.toLowerCase()] ?? []), ...(campaigns[llamma.toLowerCase()] ?? [])],

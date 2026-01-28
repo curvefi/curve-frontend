@@ -1,6 +1,6 @@
 import { enforce, test, skipWhen } from 'vest'
 import { PRESET_RANGES } from '@/llamalend/constants'
-import { getLlamaMarket, hasLeverage } from '@/llamalend/llama.utils'
+import { getLlamaMarket, hasLeverage, hasLeverageValue } from '@/llamalend/llama.utils'
 import { Decimal } from '@ui-kit/utils'
 
 export const validateUserBorrowed = (userBorrowed: Decimal | null | undefined) => {
@@ -48,7 +48,7 @@ export const validateMaxDebt = (
     })
   })
   skipWhen(maxDebt == null || debt == null, () => {
-    test('maxDebt', 'Debt is too high', () => {
+    test('maxDebt', `The given debt exceeds the maximum of ${maxDebt}`, () => {
       enforce(maxDebt).isNotNullish()
       enforce(debt).lte(maxDebt)
     })
@@ -72,13 +72,32 @@ export const validateLeverageSupported = (marketId: string | null | undefined, l
   })
 }
 
+export const validateLeverageValuesSupported = (marketId: string | null | undefined) => {
+  skipWhen(!marketId, () => {
+    test('marketId', 'Market does not support leverage values', () => {
+      const market = getLlamaMarket(marketId!)
+      enforce(hasLeverageValue(market)).isTruthy()
+    })
+  })
+}
+
+export const validateMaxBorrowed = (
+  userBorrowed: Decimal | undefined | null,
+  maxBorrowed: Decimal | undefined | null,
+) => {
+  skipWhen(userBorrowed == null || maxBorrowed == null, () => {
+    test('userBorrowed', `The maximum borrow amount is ${maxBorrowed}`, () => {
+      enforce(userBorrowed).lte(maxBorrowed)
+    })
+  })
+}
+
 export const validateMaxCollateral = (
   userCollateral: Decimal | undefined | null,
   maxCollateral: Decimal | undefined | null,
-  errorMessage?: string,
 ) => {
   skipWhen(userCollateral == null || maxCollateral == null, () => {
-    test('userCollateral', errorMessage ?? 'Collateral must be less than or equal to your wallet balance', () => {
+    test('userCollateral', `The maximum collateral amount is ${maxCollateral}`, () => {
       enforce(userCollateral).lte(maxCollateral)
     })
   })

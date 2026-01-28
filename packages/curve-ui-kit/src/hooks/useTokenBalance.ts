@@ -1,7 +1,6 @@
 import { useCallback, useMemo } from 'react'
 import { erc20Abi, ethAddress, formatUnits, isAddressEqual, type Address } from 'viem'
-import { useConfig } from 'wagmi'
-import { useBalance, useReadContracts } from 'wagmi'
+import { useConfig, useBalance, useReadContracts } from 'wagmi'
 import { useQueries, type QueriesResults, type QueryObserverOptions } from '@tanstack/react-query'
 import { combineQueriesToObject, type FieldsOf } from '@ui-kit/lib'
 import { queryClient } from '@ui-kit/lib/api'

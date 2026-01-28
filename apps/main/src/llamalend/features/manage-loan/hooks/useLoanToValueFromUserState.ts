@@ -18,7 +18,7 @@ type Params<ChainId extends IChainId> = {
    * */
   collateralDelta?: Decimal | null
   /** Expected new borrowed amount after the loan is updated. */
-  expectedBorrowed?: Decimal | null
+  expectedBorrowed: Decimal | undefined
 }
 
 /**
@@ -60,7 +60,6 @@ export const useLoanToValueFromUserState = <ChainId extends IChainId>(
       !enabled ||
       debt == null ||
       collateral == null ||
-      collateralUsdRate == null ||
       !collateralUsdRate ||
       borrowUsdRate == null ||
       collateral.isZero()

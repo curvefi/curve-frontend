@@ -1,13 +1,12 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
-import { styled } from 'styled-components'
 import { DEFAULT_HEALTH_MODE } from '@/llamalend/constants'
 import { MarketParameters } from '@/llamalend/features/market-parameters/MarketParameters'
+import { hasDeleverage } from '@/llamalend/llama.utils'
 import { AlertFormError } from '@/loan/components/AlertFormError'
 import { DialogHealthWarning } from '@/loan/components/DialogHealthWarning'
 import { LoanFormConnect } from '@/loan/components/LoanFormConnect'
 import { DetailInfoComp as DetailInfo } from '@/loan/components/PageMintMarket/LoanFormCreate/components/DetailInfo'
 import { DialogHealthLeverageWarning } from '@/loan/components/PageMintMarket/LoanFormCreate/components/DialogHealthLeverageWarning'
-import { StyledInpChip } from '@/loan/components/PageMintMarket/styles'
 import type {
   CreateFormStatus,
   FormEstGas,
@@ -23,14 +22,12 @@ import { DEFAULT_FORM_STATUS } from '@/loan/store/createLoanCollateralIncreaseSl
 import { useStore } from '@/loan/store/useStore'
 import { LlamaApi, Llamma } from '@/loan/types/loan.types'
 import { curveProps } from '@/loan/utils/helpers'
-import { hasDeleverage } from '@/loan/utils/leverage'
 import { getStepStatus, getTokenName } from '@/loan/utils/utilsLoan'
 import { getMintMarketPathname } from '@/loan/utils/utilsRouter'
 import type { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { Accordion } from '@ui/Accordion'
 import { AlertBox } from '@ui/AlertBox'
 import { Box } from '@ui/Box'
-import { InputDebounced, InputMaxBtn, InputProvider } from '@ui/InputComp'
 import { LinkButton } from '@ui/LinkButton'
 import { Stepper } from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
@@ -38,7 +35,6 @@ import { TxInfoBar } from '@ui/TxInfoBar'
 import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify, useCurve } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { useLegacyTokenInput } from '@ui-kit/hooks/useFeatureFlags'
 import { t, Trans } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
@@ -99,7 +95,7 @@ const useFetchInitial = ({
   return fetchInitial
 }
 
-export const LoanCreate = ({
+export const LoanFormCreate = ({
   isLeverage = false,
   curve,
   isReady,
@@ -142,7 +138,6 @@ export const LoanCreate = ({
   const { haveSigner } = curveProps(curve)
   const network = networks[rChainId]
 
-  const shouldUseLegacyTokenInput = useLegacyTokenInput()
   const [stablecoinAddress, collateralAddress] = market?.coinAddresses ?? []
   const { data: collateralUsdRate } = useTokenUsdRate({ chainId: network.chainId, tokenAddress: collateralAddress })
   const { data: stablecoinUsdRate } = useTokenUsdRate({ chainId: network.chainId, tokenAddress: stablecoinAddress })
@@ -353,125 +348,58 @@ export const LoanCreate = ({
     <>
       {/* field collateral */}
       <Box grid gridRowGap={1}>
-        {shouldUseLegacyTokenInput ? (
-          <>
-            <StyledInputProvider
-              grid
-              gridTemplateColumns="1fr auto"
-              inputVariant={formValues.collateralError ? 'error' : undefined}
-              disabled={disabled}
-              id="collateral"
-            >
-              <InputDebounced
-                id="inpCollateralAmt"
-                type="number"
-                labelProps={{
-                  label: t`${market?.collateralSymbol} Avail.`,
-                  ...(haveSigner
-                    ? {
-                        descriptionLoading: userWalletBalancesLoading,
-                        description: formatNumber(userWalletBalances.collateral),
-                      }
-                    : {}),
-                }}
-                value={formValues.collateral}
-                onChange={(val) => handleInpChange('collateral', val)}
-              />
-              <InputMaxBtn onClick={() => handleInpChange('collateral', userWalletBalances.collateral)} />
-            </StyledInputProvider>
-            <StyledInpChip size="xs" isDarkBg isError>
-              {formValues.collateralError === 'too-much'
-                ? t`Amount is greater than ${formatNumber(userWalletBalances.collateral)}`
-                : null}
-            </StyledInpChip>
-          </>
-        ) : (
-          <LargeTokenInput
-            name="collateral"
-            isError={!!formValues.collateralError}
-            {...(formValues.collateralError && {
-              message: t`Amount is greater than ${formatNumber(userWalletBalances.collateral)}`,
-            })}
-            disabled={disabled}
-            walletBalance={{
-              loading: haveSigner && userWalletBalancesLoading,
-              balance: decimal(userWalletBalances.collateral),
-              symbol: market?.collateralSymbol,
-              usdRate: collateralUsdRate,
-            }}
-            balance={decimal(formValues.collateral)}
-            tokenSelector={
-              <TokenLabel
-                blockchainId={network.id}
-                tooltip={market?.collateralSymbol}
-                address={collateralAddress}
-                label={market?.collateralSymbol ?? '?'}
-              />
-            }
-            onBalance={onCollateralChanged}
-          />
-        )}
+        <LargeTokenInput
+          name="collateral"
+          isError={!!formValues.collateralError}
+          {...(formValues.collateralError && {
+            message: t`Amount is greater than ${formatNumber(userWalletBalances.collateral)}`,
+          })}
+          disabled={disabled}
+          walletBalance={{
+            loading: haveSigner && userWalletBalancesLoading,
+            balance: decimal(userWalletBalances.collateral),
+            symbol: market?.collateralSymbol,
+            usdRate: collateralUsdRate,
+          }}
+          balance={decimal(formValues.collateral)}
+          tokenSelector={
+            <TokenLabel
+              blockchainId={network.id}
+              tooltip={market?.collateralSymbol}
+              address={collateralAddress}
+              label={market?.collateralSymbol ?? '?'}
+            />
+          }
+          onBalance={onCollateralChanged}
+        />
       </Box>
 
       {/* field debt */}
       <Box grid gridRowGap={1}>
-        {shouldUseLegacyTokenInput ? (
-          <>
-            <InputProvider
-              grid
-              gridTemplateColumns="1fr auto"
-              padding="4px 8px"
-              inputVariant={formValues.debtError ? 'error' : undefined}
-              disabled={disabled}
-              id="debt"
-            >
-              <InputDebounced
-                id="inpDebt"
-                type="number"
-                labelProps={{ label: market ? t`${getTokenName(market).stablecoin} borrow amount` : '' }}
-                value={formValues.debt}
-                onChange={(val) => handleInpChange('debt', val)}
-              />
-              <InputMaxBtn disabled={!maxRecv} onClick={() => handleInpChange('debt', maxRecv)} />
-            </InputProvider>
-            {formValues.debtError === 'too-much' ? (
-              <StyledInpChip size="xs" isDarkBg isError>
-                Amount is greater than {formatNumber(maxRecv)}
-              </StyledInpChip>
-            ) : (
-              <StyledInpChip size="xs">
-                {t`Max borrow amount`} {formatNumber(maxRecv || null)}
-              </StyledInpChip>
-            )}
-          </>
-        ) : (
-          <LargeTokenInput
-            name="debt"
-            isError={!!formValues.debtError}
-            message={
-              formValues.debtError === 'too-much' ? t`Amount is greater than ${formatNumber(maxRecv)}` : undefined
-            }
-            disabled={disabled}
-            walletBalance={{
-              loading: !maxRecv,
-              balance: decimal(maxRecv),
-              symbol: market ? getTokenName(market).stablecoin : undefined,
-              usdRate: stablecoinUsdRate,
-              buttonTestId: 'debtMax',
-            }}
-            label={t`Borrow amount:`}
-            balance={decimal(formValues.debt)}
-            tokenSelector={
-              <TokenLabel
-                blockchainId={network.id}
-                tooltip={market ? getTokenName(market).stablecoin : undefined}
-                address={stablecoinAddress}
-                label={market ? getTokenName(market).stablecoin : '?'}
-              />
-            }
-            onBalance={onDebtChanged}
-          />
-        )}
+        <LargeTokenInput
+          name="debt"
+          isError={!!formValues.debtError}
+          message={formValues.debtError === 'too-much' ? t`Amount is greater than ${formatNumber(maxRecv)}` : undefined}
+          disabled={disabled}
+          walletBalance={{
+            loading: !maxRecv,
+            balance: decimal(maxRecv),
+            symbol: market ? getTokenName(market).stablecoin : undefined,
+            usdRate: stablecoinUsdRate,
+            buttonTestId: 'debtMax',
+          }}
+          label={t`Borrow amount:`}
+          balance={decimal(formValues.debt)}
+          tokenSelector={
+            <TokenLabel
+              blockchainId={network.id}
+              tooltip={market ? getTokenName(market).stablecoin : undefined}
+              address={stablecoinAddress}
+              label={market ? getTokenName(market).stablecoin : '?'}
+            />
+          }
+          onBalance={onDebtChanged}
+        />
       </Box>
 
       {/* detail info */}
@@ -498,7 +426,7 @@ export const LoanCreate = ({
           <Box grid gridRowGap={2}>
             <p>{t`You can leverage your collateral up to 9x. This has the effect of repeat trading crvUSD to collateral and depositing to maximize your collateral position. Essentially, all borrowed crvUSD is utilized to purchase more collateral.`}</p>
             <p>{t`Be careful, if the collateral price dips, you would need to repay the entire amount to reclaim your initial position.`}</p>
-            {!hasDeleverage(market) && (
+            {market && !hasDeleverage(market) && (
               <p>{t`WARNING: The corresponding deleverage button is also not yet available.`}</p>
             )}
           </Box>
@@ -534,7 +462,3 @@ export const LoanCreate = ({
     </>
   )
 }
-
-const StyledInputProvider = styled(InputProvider)`
-  padding: var(--spacing-1) var(--spacing-2);
-`

@@ -21,13 +21,12 @@ import { Api, OneWayMarketTemplate, PageContentProps } from '@/lend/types/lend.t
 import { DEFAULT_HEALTH_MODE } from '@/llamalend/constants'
 import type { HealthMode } from '@/llamalend/llamalend.types'
 import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
 import { AlertBox } from '@ui/AlertBox'
 import { getActiveStep } from '@ui/Stepper/helpers'
 import { Stepper } from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
 import { TxInfoBar } from '@ui/TxInfoBar'
-import { formatNumber, scanTxPath } from '@ui/utils'
+import { scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { usePageVisibleInterval } from '@ui-kit/hooks/usePageVisibleInterval'
@@ -61,7 +60,6 @@ export const LoanBorrowMore = ({
   const { state: userState } = useUserLoanDetails(userActiveKey)
   const fetchStepApprove = useStore((state) => state.loanBorrowMore.fetchStepApprove)
   const fetchStepIncrease = useStore((state) => state.loanBorrowMore.fetchStepIncrease)
-  const refetchMaxRecv = useStore((state) => state.loanBorrowMore.refetchMaxRecv)
   const setFormValues = useStore((state) => state.loanBorrowMore.setFormValues)
   const resetState = useStore((state) => state.loanBorrowMore.resetState)
 
@@ -345,45 +343,38 @@ export const LoanBorrowMore = ({
   return (
     <Stack gap={Spacing.lg}>
       <Stack gap={Spacing.sm}>
-        <Typography variant="headingXsMedium">{t`Add from wallet:`}</Typography>
+        <InpToken
+          network={network}
+          id="userCollateral"
+          inpLabel={t`Add from wallet:`}
+          inpError={formValues.userCollateralError}
+          inpDisabled={disabled}
+          inpLabelLoading={!!signerAddress && typeof userBalances?.collateral === 'undefined'}
+          inpValue={formValues.userCollateral}
+          tokenAddress={market?.collateral_token?.address}
+          tokenSymbol={market?.collateral_token?.symbol}
+          tokenBalance={userBalances?.collateral}
+          handleInpChange={useCallback((userCollateral) => updateFormValues({ userCollateral }), [updateFormValues])}
+        />
 
-        <Stack gap={Spacing.md}>
+        {isLeverage && (
           <InpToken
             network={network}
-            id="userCollateral"
-            inpError={formValues.userCollateralError}
+            id="userBorrowed"
+            inpLabel={t`Add borrowed from wallet:`}
+            inpError={formValues.userBorrowedError}
             inpDisabled={disabled}
-            inpLabelLoading={!!signerAddress && typeof userBalances?.collateral === 'undefined'}
-            inpLabelDescription={formatNumber(userBalances?.collateral, { defaultValue: '-' })}
-            inpValue={formValues.userCollateral}
-            tokenAddress={market?.collateral_token?.address}
-            tokenSymbol={market?.collateral_token?.symbol}
-            tokenBalance={userBalances?.collateral}
-            handleInpChange={useCallback((userCollateral) => updateFormValues({ userCollateral }), [updateFormValues])}
-            handleMaxClick={() => updateFormValues({ userCollateral: userBalances?.collateral ?? '' })}
+            inpLabelLoading={!!signerAddress && typeof userBalances?.borrowed === 'undefined'}
+            inpValue={formValues.userBorrowed}
+            tokenAddress={market?.borrowed_token?.address}
+            tokenSymbol={market?.borrowed_token?.symbol}
+            tokenBalance={userBalances?.borrowed}
+            handleInpChange={setUserBorrowed}
           />
-
-          {isLeverage && (
-            <InpToken
-              network={network}
-              id="userBorrowed"
-              inpError={formValues.userBorrowedError}
-              inpDisabled={disabled}
-              inpLabelLoading={!!signerAddress && typeof userBalances?.borrowed === 'undefined'}
-              inpLabelDescription={formatNumber(userBalances?.borrowed, { defaultValue: '-' })}
-              inpValue={formValues.userBorrowed}
-              tokenAddress={market?.borrowed_token?.address}
-              tokenSymbol={market?.borrowed_token?.symbol}
-              tokenBalance={userBalances?.borrowed}
-              handleInpChange={setUserBorrowed}
-              handleMaxClick={() => updateFormValues({ userBorrowed: userBalances?.borrowed ?? '' })}
-            />
-          )}
-        </Stack>
+        )}
       </Stack>
 
       <Stack gap={Spacing.sm}>
-        <Typography variant="headingXsMedium">{t`Borrow amount:`}</Typography>
         <InpTokenBorrow
           network={network}
           id="debt"
@@ -392,13 +383,8 @@ export const LoanBorrowMore = ({
           inpValue={formValues.debt}
           tokenAddress={market?.borrowed_token?.address}
           tokenSymbol={market?.borrowed_token?.symbol}
-          tokenBalance={userBalances?.borrowed}
           maxRecv={maxRecv}
           handleInpChange={useCallback((debt) => updateFormValues({ debt }), [updateFormValues])}
-          handleMaxClick={async () => {
-            const debt = await refetchMaxRecv(market, isLeverage)
-            updateFormValues({ debt })
-          }}
         />
       </Stack>
 
@@ -423,6 +409,7 @@ export const LoanBorrowMore = ({
     </Stack>
   )
 }
+
 /**
  * The new implementation of LoanBorrowMore with mui isn't ready yet. For now, we wrap the old one for styling.
  */

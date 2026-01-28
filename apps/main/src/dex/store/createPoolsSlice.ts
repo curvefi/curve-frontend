@@ -6,7 +6,6 @@ import type { StoreApi } from 'zustand'
 import { curvejsApi } from '@/dex/lib/curvejs'
 import type { State } from '@/dex/store/useStore'
 import {
-  BasePool,
   ChainId,
   CurrencyReserves,
   CurrencyReservesMapper,
@@ -23,21 +22,18 @@ import {
   VolumeMapper,
 } from '@/dex/types/main.types'
 import { getChainPoolIdActiveKey } from '@/dex/utils'
+import type { PoolCoin } from '@curvefi/prices-api/pools'
 import { PromisePool } from '@supercharge/promise-pool'
 import type {
+  ChartSelection,
   FetchingStatus,
   LpLiquidityEventsApiResponse,
   LpLiquidityEventsData,
   LpPriceApiResponse,
-  LpPriceOhlcData,
   LpPriceOhlcDataFormatted,
   LpTradesApiResponse,
   LpTradesData,
   LpTradeToken,
-  PricesApiCoin,
-  PricesApiPool,
-  PricesApiPoolResponse,
-  TimeOptions,
 } from '@ui-kit/features/candle-chart/types'
 import { convertToLocaleTimestamp } from '@ui-kit/features/candle-chart/utils'
 import { requireLib } from '@ui-kit/features/connect-wallet'
@@ -53,8 +49,6 @@ const { chunk, countBy, groupBy, isNaN } = lodash
 type SliceState = {
   poolsMapper: { [chainId: string]: PoolDataMapper }
   poolsLoading: { [chainId: string]: boolean }
-  basePools: { [chainId: string]: BasePool[] }
-  basePoolsLoading: boolean
   currencyReserves: CurrencyReservesMapper
   haveAllPools: { [chainId: string]: boolean }
   rewardsApyMapper: { [chainId: string]: RewardsApyMapper }
@@ -63,7 +57,6 @@ type SliceState = {
   }
   tvlMapper: { [chainId: string]: TvlMapper }
   volumeMapper: { [chainId: string]: VolumeMapper }
-  pricesApiPoolsMapper: { [poolAddress: string]: PricesApiPool }
   pricesApiPoolDataMapper: { [poolAddress: string]: PricesApiPoolData }
   snapshotsMapper: SnapshotsMapper
   pricesApiState: {
@@ -71,7 +64,6 @@ type SliceState = {
     tradesTokens: LpTradeToken[]
     tradeEventsData: LpTradesData[]
     liquidityEventsData: LpLiquidityEventsData[]
-    timeOption: TimeOptions
     chartStatus: FetchingStatus
     refetchingCapped: boolean
     lastFetchEndTime: number
@@ -92,39 +84,32 @@ export type PoolsSlice = {
       failedFetching24hOldVprice: { [poolAddress: string]: boolean } | null,
     ): Promise<{ poolsMapper: PoolDataMapper; poolDatas: PoolData[] } | undefined>
     fetchNewPool(curve: CurveApi, poolId: string): Promise<PoolData | undefined>
-    fetchBasePools(curve: CurveApi): Promise<void>
     fetchPoolsRewardsApy(chainId: ChainId, poolDatas: PoolData[]): Promise<void>
     fetchMissingPoolsRewardsApy(chainId: ChainId, poolDatas: PoolData[]): Promise<void>
     fetchPoolStats: (curve: CurveApi, poolData: PoolData) => Promise<void>
     fetchPoolCurrenciesReserves(curve: CurveApi, poolData: PoolData): Promise<void>
     setPoolIsWrapped(poolData: PoolData, isWrapped: boolean): { tokens: string[]; tokenAddresses: string[] }
     updatePool: (chainId: ChainId, poolId: string, updatedPoolData: Partial<PoolData>) => void
-    fetchPricesApiPools: (chainId: ChainId) => Promise<void>
     fetchPricesPoolSnapshots: (chainId: ChainId, poolAddress: string) => Promise<void>
     fetchPricesApiCharts: (
       chainId: ChainId,
-      selectedChartIndex: number,
+      chartSelection: ChartSelection,
       poolAddress: string,
       interval: number,
       timeUnit: string,
       start: number,
       end: number,
-      chartCombinations: PricesApiCoin[][],
-      isFlipped: boolean[],
     ) => void
     fetchMorePricesApiCharts: (
       chainId: ChainId,
-      selectedChartIndex: number,
+      chartSelection: ChartSelection,
       poolAddress: string,
       interval: number,
       timeUnit: string,
       start: number,
       end: number,
-      chartCombinations: PricesApiCoin[][],
-      isFlipped: boolean[],
     ) => void
-    fetchPricesApiActivity: (chainId: ChainId, poolAddress: string, chartCombinations: PricesApiCoin[][]) => void
-    setChartTimeOption: (timeOption: TimeOptions) => void
+    fetchPricesApiActivity: (chainId: ChainId, poolAddress: string, chartCombinations: PoolCoin[][]) => void
     setEmptyPoolListDefault(chainId: ChainId): void
 
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
@@ -137,15 +122,12 @@ export type PoolsSlice = {
 const DEFAULT_STATE: SliceState = {
   poolsMapper: {},
   poolsLoading: {},
-  basePools: {},
-  basePoolsLoading: true,
   haveAllPools: {},
   currencyReserves: {},
   rewardsApyMapper: {},
   stakedMapper: {},
   tvlMapper: {},
   volumeMapper: {},
-  pricesApiPoolsMapper: {},
   pricesApiPoolDataMapper: {},
   snapshotsMapper: {},
   pricesApiState: {
@@ -153,7 +135,6 @@ const DEFAULT_STATE: SliceState = {
     tradesTokens: [],
     tradeEventsData: [],
     liquidityEventsData: [],
-    timeOption: '1d',
     chartStatus: 'LOADING',
     refetchingCapped: false,
     lastFetchEndTime: 0,
@@ -301,33 +282,6 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
       ])
       const resp = await get()[sliceKey].fetchPools(curve, [poolId], null)
       return resp?.poolsMapper?.[poolId]
-    },
-    fetchBasePools: async (curve: CurveApi) => {
-      const chainId = curve.chainId
-      if (curve.isNoRPC) return
-      set(
-        produce((state: State) => {
-          state.pools.basePoolsLoading = true
-        }),
-      )
-
-      try {
-        const basePools = await curve.getBasePools()
-
-        set(
-          produce((state: State) => {
-            state.pools.basePools[chainId] = basePools
-            state.pools.basePoolsLoading = false
-          }),
-        )
-      } catch (error) {
-        set(
-          produce((state: State) => {
-            state.pools.basePoolsLoading = false
-          }),
-        )
-        console.error(error)
-      }
     },
     fetchPoolCurrenciesReserves: async (curve, poolData) => {
       const { ...sliceState } = get()[sliceKey]
@@ -495,28 +449,6 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
         }),
       )
     },
-    fetchPricesApiPools: async (chainId: ChainId) => {
-      const networks = await fetchNetworks()
-      if (networks[chainId].pricesApi) {
-        const networkId = networks[chainId].id
-
-        try {
-          const response = await fetch(`https://prices.curve.finance/v1/chains/${networkId}`)
-          const data: PricesApiPoolResponse = await response.json()
-
-          const pricesApiPoolsMapper: { [poolAddress: string]: PricesApiPool } = {}
-          data.data.forEach((pool) => (pricesApiPoolsMapper[pool.address.toLowerCase()] = pool))
-
-          set(
-            produce((state: State) => {
-              state.pools.pricesApiPoolsMapper = pricesApiPoolsMapper
-            }),
-          )
-        } catch (error) {
-          console.warn(error)
-        }
-      }
-    },
     fetchPricesPoolSnapshots: async (chainId: ChainId, poolAddress: string) => {
       const networks = await fetchNetworks()
       if (networks[chainId].pricesApi) {
@@ -548,14 +480,12 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
     },
     fetchPricesApiCharts: async (
       chainId: ChainId,
-      selectedChartIndex: number,
+      chartSelection: ChartSelection,
       poolAddress: string,
       interval: number,
       timeUnit: string,
       end: number,
       start: number,
-      chartCombinations: PricesApiCoin[][],
-      isFlipped: boolean[],
     ) => {
       set(
         produce((state: State) => {
@@ -566,184 +496,82 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
 
       const networks = await fetchNetworks()
       const network = networks[chainId].id.toLowerCase()
+      const baseParams = `agg_number=${interval}&agg_units=${timeUnit}&start=${start}&end=${end}`
 
-      if (selectedChartIndex === 0 || selectedChartIndex === 1) {
-        try {
-          const priceUnit = selectedChartIndex === 0 ? 'usd' : 'token0'
+      // TODO: refactor getOHLC from prices-api to the extra needs of /dex pools and use it here
+      const url =
+        chartSelection.type === 'pair'
+          ? `https://prices.curve.finance/v1/ohlc/${network}/${poolAddress}?main_token=${chartSelection.mainToken.address}&reference_token=${chartSelection.refToken.address}&${baseParams}`
+          : `https://prices.curve.finance/v1/lp_ohlc/${network}/${poolAddress}?${baseParams}&price_units=${chartSelection.type === 'lp-usd' ? 'usd' : 'token0'}`
 
-          const lpPriceRes = await fetch(
-            `https://prices.curve.finance/v1/lp_ohlc/${network}/${poolAddress}?agg_number=${interval}&agg_units=${timeUnit}&start=${start}&end=${end}&price_units=${priceUnit}`,
-          )
-          const lpPriceDataResponse: LpPriceApiResponse = await lpPriceRes.json()
-          const filteredLpPriceData = {
-            ...lpPriceDataResponse,
-            data: lpPriceDataResponse.data
-              .filter((item) => {
-                if (item.open === null || item.close === null || item.high === null || item.low === null) {
-                  return
-                }
-                return item
-              })
-              .map((data: LpPriceOhlcData) => ({ ...data, time: convertToLocaleTimestamp(data.time) as UTCTimestamp })),
-          }
-          if (filteredLpPriceData) {
-            set(
-              produce((state: State) => {
-                state.pools.pricesApiState.chartOhlcData = filteredLpPriceData.data
-                state.pools.pricesApiState.refetchingCapped = filteredLpPriceData.data.length < 298
-                state.pools.pricesApiState.lastFetchEndTime = lpPriceDataResponse.data[0].time
-              }),
-            )
-          }
-          set(
-            produce((state: State) => {
-              state.pools.pricesApiState.chartStatus = 'READY'
-            }),
-          )
-        } catch (error) {
-          set(
-            produce((state: State) => {
-              state.pools.pricesApiState.chartStatus = 'ERROR'
-            }),
-          )
-          console.warn(error)
-        }
-      } else {
-        try {
-          const pair: PricesApiCoin[] = chartCombinations[selectedChartIndex - 2]
-          const ifPairFlipped = isFlipped[selectedChartIndex - 2]
-          const main_token = ifPairFlipped ? pair[1].address : pair[0].address
-          const ref_token = ifPairFlipped ? pair[0].address : pair[1].address
-          const lpPriceRes = await fetch(
-            `https://prices.curve.finance/v1/ohlc/${network}/${poolAddress}?main_token=${main_token}&reference_token=${ref_token}&agg_number=${interval}&agg_units=${timeUnit}&start=${start}&end=${end}`,
-          )
-          const lpPriceDataResponse: LpPriceApiResponse = await lpPriceRes.json()
-          const filteredLpPriceData = {
-            ...lpPriceDataResponse,
-            data: lpPriceDataResponse.data
-              .filter((item) => {
-                if (item.open === null || item.close === null || item.high === null || item.low === null) {
-                  return
-                }
-                return item
-              })
-              .map((data: LpPriceOhlcData) => ({ ...data, time: convertToLocaleTimestamp(data.time) as UTCTimestamp })),
-          }
-          if (filteredLpPriceData) {
-            set(
-              produce((state: State) => {
-                state.pools.pricesApiState.chartOhlcData = filteredLpPriceData.data
-                state.pools.pricesApiState.refetchingCapped = filteredLpPriceData.data.length < 299
-                state.pools.pricesApiState.lastFetchEndTime = lpPriceDataResponse.data[0].time
-              }),
-            )
-          }
-          set(
-            produce((state: State) => {
-              state.pools.pricesApiState.chartStatus = 'READY'
-            }),
-          )
-        } catch (error) {
-          set(
-            produce((state: State) => {
-              state.pools.pricesApiState.chartStatus = 'ERROR'
-            }),
-          )
-          console.warn(error)
-        }
+      try {
+        const response = await fetch(url)
+        const responseData: LpPriceApiResponse = await response.json()
+        const filteredData = responseData.data
+          .filter((item) => item.open !== null && item.close !== null && item.high !== null && item.low !== null)
+          .map((item) => ({ ...item, time: convertToLocaleTimestamp(item.time) as UTCTimestamp }))
+
+        set(
+          produce((state: State) => {
+            state.pools.pricesApiState.chartOhlcData = filteredData
+            state.pools.pricesApiState.refetchingCapped = filteredData.length < 298
+            state.pools.pricesApiState.lastFetchEndTime = responseData.data[0]?.time ?? 0
+            state.pools.pricesApiState.chartStatus = 'READY'
+          }),
+        )
+      } catch (error) {
+        set(
+          produce((state: State) => {
+            state.pools.pricesApiState.chartStatus = 'ERROR'
+          }),
+        )
+        console.warn(error)
       }
     },
     fetchMorePricesApiCharts: async (
       chainId: ChainId,
-      selectedChartIndex: number,
+      chartSelection: ChartSelection,
       poolAddress: string,
       interval: number,
       timeUnit: string,
       start: number,
       end: number,
-      chartCombinations: PricesApiCoin[][],
-      isFlipped: boolean[],
     ) => {
       const networks = await fetchNetworks()
       const network = networks[chainId].id.toLowerCase()
+      const baseParams = `agg_number=${interval}&agg_units=${timeUnit}&start=${start}&end=${end}`
 
-      if (selectedChartIndex === 0 || selectedChartIndex === 1) {
-        try {
-          const priceUnit = selectedChartIndex === 0 ? 'usd' : 'token0'
+      const url =
+        chartSelection.type === 'pair'
+          ? `https://prices.curve.finance/v1/ohlc/${network}/${poolAddress}?main_token=${chartSelection.mainToken.address}&reference_token=${chartSelection.refToken.address}&${baseParams}`
+          : `https://prices.curve.finance/v1/lp_ohlc/${network}/${poolAddress}?${baseParams}&price_units=${chartSelection.type === 'lp-usd' ? 'usd' : 'token0'}`
 
-          const lpPriceRes = await fetch(
-            `https://prices.curve.finance/v1/lp_ohlc/${network}/${poolAddress}?agg_number=${interval}&agg_units=${timeUnit}&start=${start}&end=${end}&price_units=${priceUnit}`,
-          )
-          const lpPriceDataResponse: LpPriceApiResponse = await lpPriceRes.json()
+      try {
+        const response = await fetch(url)
+        const responseData: LpPriceApiResponse = await response.json()
+        const filteredData = responseData.data
+          .filter((item) => item.open !== null && item.close !== null && item.high !== null && item.low !== null)
+          .map((item) => ({ ...item, time: convertToLocaleTimestamp(item.time) as UTCTimestamp }))
 
-          const filteredLpPriceData = {
-            ...lpPriceDataResponse,
-            data: lpPriceDataResponse.data
-              .filter((item) => {
-                if (item.open === null || item.close === null || item.high === null || item.low === null) {
-                  return
-                }
-                return item
-              })
-              .map((data: LpPriceOhlcData) => ({ ...data, time: convertToLocaleTimestamp(data.time) as UTCTimestamp })),
-          }
-          if (filteredLpPriceData) {
-            const updatedData = [...filteredLpPriceData.data, ...get().pools.pricesApiState.chartOhlcData]
+        const updatedData = [...filteredData, ...get().pools.pricesApiState.chartOhlcData]
 
-            set(
-              produce((state: State) => {
-                state.pools.pricesApiState.chartOhlcData = updatedData
-                state.pools.pricesApiState.refetchingCapped = filteredLpPriceData.data.length < 299
-                state.pools.pricesApiState.lastFetchEndTime = lpPriceDataResponse.data[0].time
-              }),
-            )
-          }
-        } catch (error) {
-          console.warn(error)
-        }
-      } else {
-        try {
-          const pair: PricesApiCoin[] = chartCombinations[selectedChartIndex - 2]
-          const ifPairFlipped = isFlipped[selectedChartIndex - 2]
-          const main_token = ifPairFlipped ? pair[1].address : pair[0].address
-          const ref_token = ifPairFlipped ? pair[0].address : pair[1].address
-          const lpPriceRes = await fetch(
-            `https://prices.curve.finance/v1/ohlc/${network}/${poolAddress}?main_token=${main_token}&reference_token=${ref_token}&agg_number=${interval}&agg_units=${timeUnit}&start=${start}&end=${end}`,
-          )
-          const lpPriceDataResponse: LpPriceApiResponse = await lpPriceRes.json()
-          const filteredLpPriceData = {
-            ...lpPriceDataResponse,
-            data: lpPriceDataResponse.data
-              .filter((item) => {
-                if (item.open === null || item.close === null || item.high === null || item.low === null) {
-                  return
-                }
-                return item
-              })
-              .map((data: LpPriceOhlcData) => ({ ...data, time: convertToLocaleTimestamp(data.time) as UTCTimestamp })),
-          }
-          if (filteredLpPriceData) {
-            const updatedData = [...filteredLpPriceData.data, ...get().pools.pricesApiState.chartOhlcData]
-
-            set(
-              produce((state: State) => {
-                state.pools.pricesApiState.chartOhlcData = updatedData
-                state.pools.pricesApiState.refetchingCapped = filteredLpPriceData.data.length < 299
-                state.pools.pricesApiState.lastFetchEndTime = lpPriceDataResponse.data[0].time
-              }),
-            )
-          }
-        } catch (error) {
-          set(
-            produce((state: State) => {
-              state.pools.pricesApiState.chartStatus = 'ERROR'
-            }),
-          )
-          console.warn(error)
-        }
+        set(
+          produce((state: State) => {
+            state.pools.pricesApiState.chartOhlcData = updatedData
+            state.pools.pricesApiState.refetchingCapped = filteredData.length < 299
+            state.pools.pricesApiState.lastFetchEndTime = responseData.data[0]?.time ?? 0
+          }),
+        )
+      } catch (error) {
+        set(
+          produce((state: State) => {
+            state.pools.pricesApiState.chartStatus = 'ERROR'
+          }),
+        )
+        console.warn(error)
       }
     },
-    fetchPricesApiActivity: async (chainId: ChainId, poolAddress: string, chartCombinations: PricesApiCoin[][]) => {
+    fetchPricesApiActivity: async (chainId: ChainId, poolAddress: string, chartCombinations: PoolCoin[][]) => {
       set(
         produce((state: State) => {
           state.pools.pricesApiState.activityStatus = 'LOADING'
@@ -754,7 +582,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
       const network = networks[chainId].id.toLowerCase()
 
       try {
-        const promises = chartCombinations.map((coin: PricesApiCoin[]) =>
+        const promises = chartCombinations.map((coin: PoolCoin[]) =>
           fetch(
             `https://prices.curve.finance/v1/trades/${network}/${poolAddress}?main_token=${coin[0].address}&reference_token=${coin[1].address}&page=1&per_page=100`,
           ),
@@ -819,13 +647,6 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
         )
         console.warn(error)
       }
-    },
-    setChartTimeOption: (timeOption: TimeOptions) => {
-      set(
-        produce((state: State) => {
-          state.pools.pricesApiState.timeOption = timeOption
-        }),
-      )
     },
     setEmptyPoolListDefault: (chainId: number) => {
       const sliceState = get().pools

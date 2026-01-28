@@ -31,6 +31,7 @@ import { fetchGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 import { fetchNetworks } from '../entities/networks'
 import { fetchPoolTokenBalances } from '../hooks/usePoolTokenBalances'
+import { invalidateUserPoolInfoQuery } from '../queries/user-pool-info.query'
 
 type StateKey = keyof typeof DEFAULT_STATE
 const { cloneDeep } = lodash
@@ -59,7 +60,7 @@ export type PoolSwapSlice = {
     // steps
     fetchEstGasApproval(activeKey: string, chainId: ChainId, pool: Pool, formValues: FormValues, maxSlippage: string): Promise<FnStepEstGasApprovalResponse | undefined>
     fetchStepApprove(activeKey: string, config: Config, curve: CurveApi, pool: Pool, formValues: FormValues, globalMaxSlippage: string): Promise<FnStepApproveResponse | undefined>
-    fetchStepSwap(activeKey: string, config: Config, curve: CurveApi, poolData: PoolData, formValues: FormValues, maxSlippage: string): Promise<FnStepResponse | undefined>
+    fetchStepSwap(activeKey: string, curve: CurveApi, poolData: PoolData, formValues: FormValues, maxSlippage: string): Promise<FnStepResponse | undefined>
 
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
     setStateByKey<T>(key: StateKey, value: T): void
@@ -407,7 +408,7 @@ export const createPoolSwapSlice = (
         return resp
       }
     },
-    fetchStepSwap: async (activeKey, config, curve, poolData, formValues, maxSlippage) => {
+    fetchStepSwap: async (activeKey, curve, poolData, formValues, maxSlippage) => {
       const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
@@ -460,10 +461,12 @@ export const createPoolSwapSlice = (
           })
 
           // re-fetch data
-          await Promise.all([
-            get().user.fetchUserPoolInfo(config, curve, poolData.pool.id),
-            get().pools.fetchPoolStats(curve, poolData),
-          ])
+          await invalidateUserPoolInfoQuery({
+            chainId: curve.chainId,
+            poolId: poolData.pool.id,
+            userAddress: curve.signerAddress,
+          })
+          await get().pools.fetchPoolStats(curve, poolData)
         }
         return resp
       }

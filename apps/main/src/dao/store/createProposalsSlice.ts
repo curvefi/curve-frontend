@@ -151,13 +151,13 @@ export const createProposalsSlice = (
 
           dismissDeploying()
           const successNotificationMessage = t`Vote casted successfully!`
-          notify(successNotificationMessage, 'success', 15000)
+          notify(successNotificationMessage, 'success')
 
           // get new user votes list from api
           const userAddress = curve?.signerAddress
           if (userAddress) {
-            invalidateProposalPricesApi({ proposalId: voteId, proposalType: voteType, txHash: voteResponseHash })
-            invalidateUserProposalVotesQuery({ userAddress })
+            await invalidateProposalPricesApi({ proposalId: voteId, proposalType: voteType, txHash: voteResponseHash })
+            await invalidateUserProposalVotesQuery({ userAddress })
           }
         }
       } catch (error) {
@@ -232,10 +232,10 @@ export const createProposalsSlice = (
 
           dismissDeploying()
           const successNotificationMessage = t`Proposal executed successfully!`
-          notify(successNotificationMessage, 'success', 15000)
+          notify(successNotificationMessage, 'success')
 
           // update proposal executed status, forcing api to update by providing a transaction hash
-          invalidateProposalPricesApi({ proposalId: voteId, proposalType: voteType, txHash: transactionHash })
+          await invalidateProposalPricesApi({ proposalId: voteId, proposalType: voteType, txHash: transactionHash })
 
           set(
             produce((state: State) => {

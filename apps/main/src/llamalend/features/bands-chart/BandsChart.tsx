@@ -1,9 +1,10 @@
 import ReactECharts, { type EChartsOption } from 'echarts-for-react'
 import { useEffect, useMemo, memo, useRef } from 'react'
 import { BandsChartToken, ChartDataPoint, ParsedBandsBalances } from '@/llamalend/features/bands-chart/types'
-import { Box } from '@mui/material'
-import { SpinnerWrapper, Spinner } from '@ui/Spinner'
+import { Box, Skeleton } from '@mui/material'
+import { DEFAULT_CHART_HEIGHT } from '@ui-kit/features/candle-chart/constants'
 import { useResizeObserver } from '@ui-kit/hooks/useResizeObserver'
+import { ErrorBoundary } from '@ui-kit/widgets/ErrorBoundary'
 import { getChartOptions } from './chartOptions'
 import { EmptyState } from './EmptyState'
 import { useBandsChartPalette } from './hooks/useBandsChartPalette'
@@ -41,7 +42,7 @@ const BandsChartComponent = ({
   isLoading,
   userBandsBalances,
   oraclePrice,
-  height = 420, // TODO: set correct default value when the combined chart header (OHLC chart + bands chart) is implemented
+  height = DEFAULT_CHART_HEIGHT,
 }: BandsChartProps) => {
   const palette = useBandsChartPalette()
   const chartRef = useRef<ReactECharts | null>(null)
@@ -93,15 +94,11 @@ const BandsChartComponent = ({
             alignItems: 'center',
             justifyContent: 'center',
             height: '100%',
-            fontSize: '14px',
-            color: palette.textColor,
+            overflow: 'hidden',
           }}
         >
           {isLoading ? (
-            // TODO: update when re-theming the candle chart to match spinners
-            <SpinnerWrapper>
-              <Spinner size={18} />
-            </SpinnerWrapper>
+            <Skeleton variant="rectangular" sx={{ width: '100%', height: '100%' }} />
           ) : (
             <EmptyState isError={isError} />
           )}
@@ -122,16 +119,18 @@ const BandsChartComponent = ({
         minWidth: 0,
       }}
     >
-      <ReactECharts
-        ref={chartRef}
-        option={finalOption}
-        style={{ width: '100%', height: '100%' }}
-        opts={{ renderer: 'canvas' }}
-        onEvents={{ datazoom: onDataZoom }}
-        notMerge={true}
-        lazyUpdate={true}
-        autoResize={true}
-      />
+      <ErrorBoundary title="Chart Error" inline subtitle="Something went wrong when rendering the bands chart.">
+        <ReactECharts
+          ref={chartRef}
+          option={finalOption}
+          style={{ width: '100%', height: '100%' }}
+          opts={{ renderer: 'canvas' }}
+          onEvents={{ datazoom: onDataZoom }}
+          notMerge={true}
+          lazyUpdate={true}
+          autoResize={true}
+        />
+      </ErrorBoundary>
     </Box>
   )
 }

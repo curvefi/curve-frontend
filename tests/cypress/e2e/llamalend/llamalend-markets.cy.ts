@@ -10,6 +10,7 @@ import {
   HighUtilizationAddress,
   mockLendingSnapshots,
   mockLendingVaults,
+  mockMerklCampaigns,
 } from '@cy/support/helpers/lending-mocks'
 import { LLAMA_VISIBILITY_SETTINGS_V0 } from '@cy/support/helpers/llamalend-storage'
 import { mockMintMarkets, mockMintSnapshots } from '@cy/support/helpers/minting-mocks'
@@ -440,6 +441,7 @@ function setupMocks() {
   mockLendingSnapshots().as('lend-snapshots')
   mockMintMarkets()
   mockMintSnapshots()
+  mockMerklCampaigns()
   console.info(JSON.stringify({ generatedData })) // for debugging ci failures
   return generatedData
 }

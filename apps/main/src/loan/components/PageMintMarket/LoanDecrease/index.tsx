@@ -8,7 +8,7 @@ import { DetailInfoHealth } from '@/loan/components/DetailInfoHealth'
 import { DetailInfoLiqRange } from '@/loan/components/DetailInfoLiqRange'
 import { LoanFormConnect } from '@/loan/components/LoanFormConnect'
 import type { FormStatus, FormValues, StepKey } from '@/loan/components/PageMintMarket/LoanDecrease/types'
-import { StyledDetailInfoWrapper, StyledInpChip } from '@/loan/components/PageMintMarket/styles'
+import { StyledDetailInfoWrapper } from '@/loan/components/PageMintMarket/styles'
 import type { FormEstGas, ManageLoanProps } from '@/loan/components/PageMintMarket/types'
 import { DEFAULT_DETAIL_INFO, DEFAULT_FORM_EST_GAS } from '@/loan/components/PageMintMarket/utils'
 import { DEFAULT_WALLET_BALANCES } from '@/loan/constants'
@@ -20,9 +20,7 @@ import { LlamaApi, Llamma } from '@/loan/types/loan.types'
 import { curveProps } from '@/loan/utils/helpers'
 import { getStepStatus, getTokenName } from '@/loan/utils/utilsLoan'
 import { getCollateralListPathname } from '@/loan/utils/utilsRouter'
-import { Box } from '@ui/Box'
 import { Checkbox } from '@ui/Checkbox'
-import { InputDebounced, InputMaxBtn, InputProvider } from '@ui/InputComp'
 import { getActiveStep } from '@ui/Stepper/helpers'
 import { Stepper } from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
@@ -31,14 +29,12 @@ import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNavigate } from '@ui-kit/hooks/router'
-import { useLegacyTokenInput } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { decimal, type Decimal } from '@ui-kit/utils'
 
-// Loan repay
 export const LoanDecrease = ({
   curve,
   market: llamma,
@@ -102,15 +98,6 @@ export const LoanDecrease = ({
     },
     [formStatus, setStateByKey],
   )
-
-  const handleInpChangeDebt = (debt: string) => {
-    reset(!!formStatus.error, formStatus.isComplete)
-
-    const updatedFormValues = { ...formValues }
-    updatedFormValues.debt = debt
-    updatedFormValues.debtError = ''
-    updateFormValues(updatedFormValues)
-  }
 
   const onDebtChanged = useCallback(
     (value?: Decimal) => {
@@ -244,100 +231,51 @@ export const LoanDecrease = ({
   return (
     <>
       {/* input debt */}
-      {useLegacyTokenInput() ? (
-        <Box grid gridRowGap={1}>
-          <InputProvider
-            grid
-            gridTemplateColumns="1fr auto"
-            padding="4px 8px"
-            inputVariant={formValues.debtError ? 'error' : undefined}
-            disabled={disable || formValues.isFullRepay}
-            id="debt"
-          >
-            <InputDebounced
-              id="inpDebt"
-              type="number"
-              labelProps={{
-                label: t`${getTokenName(llamma).stablecoin} Avail.`,
-                descriptionLoading: userWalletBalancesLoading,
-                description: formatNumber(userWalletBalances.stablecoin),
-              }}
-              value={formValues.debt}
-              onChange={handleInpChangeDebt}
-            />
-            <InputMaxBtn
-              onClick={() => {
-                if (+userWalletBalances?.stablecoin < +(userState?.debt ?? 0)) {
-                  handleInpChangeDebt(userWalletBalances.stablecoin)
-                } else {
-                  handleInpChangeFullRepay(true)
-                }
-              }}
-            />
-          </InputProvider>
-          {formValues.debtError ? (
-            formValues.debtError === 'too-much' ? (
-              <StyledInpChip size="xs" isDarkBg isError>
-                The specified amount exceeds your total debt. Your debt balance is {formatNumber(userState?.debt ?? 0)}.
-              </StyledInpChip>
-            ) : formValues.debtError === 'not-enough' ? (
-              <StyledInpChip size="xs" isDarkBg isError>
-                The specified amount exceeds the current balance in the wallet.
-              </StyledInpChip>
-            ) : null
-          ) : (
-            <StyledInpChip size="xs">
-              {t`Debt`} {formatNumber(userState?.debt, { defaultValue: '-' })}
-            </StyledInpChip>
-          )}
-        </Box>
-      ) : (
-        <LargeTokenInput
-          name="debt"
-          label={t`Debt to repay`}
-          isError={!!formValues.debtError}
-          message={
-            formValues.debtError === 'too-much'
-              ? t`The specified amount exceeds your total debt. Your debt balance is ${formatNumber(userState?.debt ?? 0)}.`
-              : formValues.debtError === 'not-enough'
-                ? t`The specified amount exceeds the current balance in the wallet.`
-                : t`Debt ${formatNumber(userState?.debt, { defaultValue: '-' })}`
-          }
-          disabled={disable || formValues.isFullRepay}
-          inputBalanceUsd={decimal(formValues.debt && stablecoinUsdRate && stablecoinUsdRate * +formValues.debt)}
-          walletBalance={{
-            loading: userWalletBalancesLoading,
-            balance: decimal(userWalletBalances.stablecoin),
-            symbol: getTokenName(llamma).stablecoin,
-            usdRate: stablecoinUsdRate,
-          }}
-          maxBalance={{
-            balance: decimal(userState?.debt),
-            chips:
-              userState?.debt == null
-                ? []
-                : [
-                    {
-                      label: 'Max',
-                      newBalance: () =>
-                        (+userWalletBalances?.stablecoin < +userState.debt
-                          ? userWalletBalances.stablecoin
-                          : userState.debt) as Decimal,
-                    },
-                  ],
-          }}
-          balance={decimal(formValues.debt)}
-          tokenSelector={
-            <TokenLabel
-              blockchainId={network.id}
-              tooltip={getTokenName(llamma).stablecoin}
-              address={stablecoinAddress}
-              label={getTokenName(llamma).stablecoin}
-            />
-          }
-          onBalance={onDebtChanged}
-        />
-      )}
+      <LargeTokenInput
+        name="debt"
+        label={t`Debt to repay`}
+        isError={!!formValues.debtError}
+        message={
+          formValues.debtError === 'too-much'
+            ? t`The specified amount exceeds your total debt. Your debt balance is ${formatNumber(userState?.debt ?? 0)}.`
+            : formValues.debtError === 'not-enough'
+              ? t`The specified amount exceeds the current balance in the wallet.`
+              : t`Debt ${formatNumber(userState?.debt, { defaultValue: '-' })}`
+        }
+        disabled={disable || formValues.isFullRepay}
+        inputBalanceUsd={decimal(formValues.debt && stablecoinUsdRate && stablecoinUsdRate * +formValues.debt)}
+        walletBalance={{
+          loading: userWalletBalancesLoading,
+          balance: decimal(userWalletBalances.stablecoin),
+          symbol: getTokenName(llamma).stablecoin,
+          usdRate: stablecoinUsdRate,
+        }}
+        maxBalance={{
+          balance: decimal(userState?.debt),
+          chips:
+            userState?.debt == null
+              ? []
+              : [
+                  {
+                    label: 'Max',
+                    newBalance: () =>
+                      (+userWalletBalances?.stablecoin < +userState.debt
+                        ? userWalletBalances.stablecoin
+                        : userState.debt) as Decimal,
+                  },
+                ],
+        }}
+        balance={decimal(formValues.debt)}
+        tokenSelector={
+          <TokenLabel
+            blockchainId={network.id}
+            tooltip={getTokenName(llamma).stablecoin}
+            address={stablecoinAddress}
+            label={getTokenName(llamma).stablecoin}
+          />
+        }
+        onBalance={onDebtChanged}
+      />
 
       <Checkbox
         isDisabled={

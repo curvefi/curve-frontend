@@ -7,8 +7,3 @@ export function useSwitch<T extends boolean | undefined>(defaultValue?: T) {
   const toggle = useCallback(() => setIsOpen((v) => !v), [setIsOpen])
   return [isOpen, open, close, toggle, setIsOpen] as const
 }
-
-export function useModalState() {
-  const [isOpen, onOpen, onClose] = useSwitch(false)
-  return { isOpen, onOpen, onClose }
-}

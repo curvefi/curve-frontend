@@ -1,8 +1,7 @@
 import { useEffect } from 'react'
 import { RepayLoanInfoAccordion } from '@/llamalend/features/borrow/components/RepayLoanInfoAccordion'
-import { setValueOptions } from '@/llamalend/features/borrow/react-form.utils'
-import { RepayTokenList } from '@/llamalend/features/manage-loan/components/RepayTokenList'
-import { useRepayTokens } from '@/llamalend/features/manage-loan/hooks/useRepayTokens'
+import { RepayTokenList, type RepayTokenListProps } from '@/llamalend/features/manage-loan/components/RepayTokenList'
+import { RepayTokenOption, useRepayTokens } from '@/llamalend/features/manage-loan/hooks/useRepayTokens'
 import { hasLeverage } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import type { RepayOptions } from '@/llamalend/mutations/repay.mutation'
@@ -13,11 +12,14 @@ import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { Falsy, notFalsy } from '@curvefi/prices-api/objects.util'
 import Button from '@mui/material/Button'
 import { TokenSelector } from '@ui-kit/features/select-token'
-import { useModalState } from '@ui-kit/hooks/useSwitch'
+import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
-import { Balance } from '@ui-kit/shared/ui/Balance'
+import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
+import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
+import { setValueOptions } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { useRepayForm } from '../hooks/useRepayForm'
+import { useTokenAmountConversion } from '../hooks/useTokenAmountConversion'
 
 /**
  * Join button texts with commas and ampersand
@@ -28,6 +30,32 @@ const joinButtonText = (...texts: (string | Falsy)[]) =>
   notFalsy(...texts)
     .map((t, i, all) => (i ? `${i === all.length - 1 ? ' & ' : ', '}${t}` : t))
     .join('')
+
+function RepayTokenSelector<ChainId extends IChainId>({
+  token,
+  ...props
+}: RepayTokenListProps<ChainId> & {
+  token: RepayTokenOption | undefined
+}) {
+  const [isOpen, onOpen, onClose] = useSwitch(false)
+  if (props.tokens.length === 1) {
+    const {
+      tokens: [{ address, chain, symbol }],
+    } = props
+    return <TokenLabel blockchainId={chain} address={address} label={symbol} />
+  }
+  return (
+    <TokenSelector
+      selectedToken={token}
+      title={t`Select Repay Token`}
+      isOpen={isOpen}
+      onOpen={onOpen}
+      onClose={onClose}
+    >
+      <RepayTokenList {...props} />
+    </TokenSelector>
+  )
+}
 
 // todo: net borrow APR (includes the intrinsic yield + rewards, while the Borrow APR doesn't)
 export const RepayForm = <ChainId extends IChainId>({
@@ -66,12 +94,26 @@ export const RepayForm = <ChainId extends IChainId>({
     enabled,
     onRepaid,
   })
-  const { token, onToken, tokens } = useRepayTokens({ market, network })
+  const { token, onToken, tokens } = useRepayTokens({ market, networkId: network.id })
 
   const selectedField = token?.field ?? 'userBorrowed'
   const selectedToken = selectedField == 'userBorrowed' ? borrowToken : collateralToken
+  const fromPosition = isFull.data === false && selectedField === 'stateCollateral'
   const swapRequired = selectedToken !== borrowToken
   const priceImpact = useRepayPriceImpact(params, enabled && swapRequired)
+
+  // The max repay amount in the helper message should always be denominated in terms of the borrow token.
+  const { data: maxAmountInBorrowToken, isLoading: maxAmountInBorrowTokenLoading } = useTokenAmountConversion({
+    chainId,
+    amountIn: max[selectedField].data,
+    tokenInAddress: selectedToken?.address,
+    tokenOutAddress: borrowToken?.address,
+  })
+
+  const maxAmountPrefix = notFalsy(
+    selectedField === 'stateCollateral' && t`Using collateral balances to repay.`,
+    t`Max repay amount:`,
+  ).join(' ')
 
   useEffect(
     // Reset field when selectedField changes
@@ -96,40 +138,39 @@ export const RepayForm = <ChainId extends IChainId>({
       }
     >
       <LoanFormTokenInput
-        label={selectedToken === borrowToken ? t`Borrowed` : t`Collateral`}
+        label={t`Amount to repay`}
         token={selectedToken}
         blockchainId={network.id}
         name={selectedField}
         form={form}
         max={max[selectedField]}
+        maxType="range"
         {...(selectedField === 'stateCollateral' && {
           positionBalance: { position: max.stateCollateral, tooltip: t`Current collateral in position` },
         })}
         testId={'repay-input-' + selectedField}
         network={network}
         tokenSelector={
-          <TokenSelector selectedToken={token} title={t`Select Repay Token`} {...useModalState()}>
-            <RepayTokenList
-              market={market}
-              network={network}
-              stateCollateral={max.stateCollateral}
-              onToken={onToken}
-              tokens={tokens}
-            />
-          </TokenSelector>
+          <RepayTokenSelector
+            token={token}
+            market={market}
+            network={network}
+            stateCollateral={max.stateCollateral}
+            onToken={onToken}
+            tokens={tokens}
+          />
         }
         message={
           <Balance
-            prefix={t`Max:`}
+            prefix={maxAmountPrefix}
             tooltip={t`Max available to repay`}
-            symbol={selectedToken?.symbol}
-            balance={max[selectedField].data}
-            loading={max[selectedField].isLoading}
+            symbol={borrowToken?.symbol}
+            balance={maxAmountInBorrowToken}
+            loading={max[selectedField].isLoading || maxAmountInBorrowTokenLoading}
             onClick={() => {
               form.setValue(selectedField, max[selectedField].data, setValueOptions)
               void form.trigger(max[selectedField].field) // re-validate max
             }}
-            buttonTestId="borrow-set-debt-to-max"
           />
         }
       />
@@ -139,9 +180,8 @@ export const RepayForm = <ChainId extends IChainId>({
           ? t`Processing...`
           : joinButtonText(
               isApproved?.data === false && t`Approve`,
-              t`Repay`,
+              notFalsy(t`Repay`, fromPosition && t`from Position`).join(' '),
               isFull.data && t`Close Position`,
-              isFull.data === false && selectedField === 'stateCollateral' && t`from Position`,
             )}
       </Button>
 

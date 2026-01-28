@@ -4,11 +4,7 @@ import { type RepayParams, type RepayQuery } from '../validation/manage-loan.typ
 import { repayValidationSuite } from '../validation/manage-loan.validation'
 import { getRepayImplementation, getUserDebtFromQueryCache } from './repay-query.helpers'
 
-export const {
-  useQuery: useRepayIsFull,
-  queryKey: repayIsFullQueryKey,
-  getQueryOptions: getRepayIsFullQueryOptions,
-} = queryFactory({
+export const { useQuery: useRepayIsFull } = queryFactory({
   queryKey: ({
     chainId,
     marketId,

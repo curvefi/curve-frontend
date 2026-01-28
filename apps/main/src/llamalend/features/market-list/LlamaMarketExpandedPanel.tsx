@@ -51,7 +51,7 @@ const RateItem = ({ market, title, type }: { market: LlamaMarket; title: string;
           <Stack direction="row" alignItems="center" gap={2}>
             {/* todo: omit metric component tooltip */}
             <Metric label={title} value={rate} valueOptions={{ unit: 'percentage' }} />
-            <RewardsIcons market={market} rateType={MarketRateType.Borrow} />
+            <RewardsIcons market={market} rateType={type} />
           </Stack>
         </Tooltip>
       </Grid>

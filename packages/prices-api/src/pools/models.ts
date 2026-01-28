@@ -1,6 +1,6 @@
 import type { Address } from '..'
 
-type Coin = {
+export type PoolCoin = {
   poolIndex: number
   symbol: string
   address: Address
@@ -23,7 +23,7 @@ export type Pool = {
   tradingFee24h: number
   liquidityVolume24h: number
   liquidityFee24h: number
-  coins: Coin[]
+  coins: PoolCoin[]
   baseDailyApr: number
   baseWeeklyApr: number
   virtualPrice: number

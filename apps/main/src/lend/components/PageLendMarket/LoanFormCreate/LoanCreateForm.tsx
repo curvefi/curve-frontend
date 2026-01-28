@@ -51,7 +51,6 @@ export const LoanCreateForm = ({
   const maxRecv = useStore((state) => state.loanCreate.maxRecv[activeKeyMax])
   const { state: userState } = useUserLoanDetails(userActiveKey)
   const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
-  const refetchMaxRecv = useStore((state) => state.loanCreate.refetchMaxRecv)
   const fetchStepApprove = useStore((state) => state.loanCreate.fetchStepApprove)
   const fetchStepCreate = useStore((state) => state.loanCreate.fetchStepCreate)
   const setFormValues = useStore((state) => state.loanCreate.setFormValues)
@@ -312,7 +311,6 @@ export const LoanCreateForm = ({
           inpError={formValues.userCollateralError}
           inpDisabled={disabled}
           inpLabelLoading={!!signerAddress && typeof userBalances === 'undefined'}
-          inpLabelDescription={formatNumber(userBalances?.collateral, { defaultValue: '-' })}
           inpValue={formValues.userCollateral}
           tokenAddress={collateral_token?.address}
           tokenSymbol={collateral_token?.symbol}
@@ -321,7 +319,6 @@ export const LoanCreateForm = ({
             (userCollateral: string) => updateFormValues({ userCollateral }),
             [updateFormValues],
           )}
-          handleMaxClick={() => updateFormValues({ userCollateral: userBalances?.collateral ?? '' })}
         />
 
         {isLeverage && (
@@ -331,13 +328,11 @@ export const LoanCreateForm = ({
             inpError={formValues.userBorrowedError}
             inpDisabled={disabled}
             inpLabelLoading={!!signerAddress && typeof userBalances === 'undefined'}
-            inpLabelDescription={formatNumber(userBalances?.borrowed, { defaultValue: '-' })}
             inpValue={formValues.userBorrowed}
             tokenAddress={borrowed_token?.address}
             tokenSymbol={borrowed_token?.symbol}
             tokenBalance={userBalances?.borrowed}
             handleInpChange={setUserBorrowed}
-            handleMaxClick={() => updateFormValues({ userBorrowed: userBalances?.borrowed ?? '' })}
           />
         )}
       </FieldsWrapper>
@@ -351,13 +346,8 @@ export const LoanCreateForm = ({
         inpValue={formValues.debt}
         tokenAddress={borrowed_token?.address}
         tokenSymbol={borrowed_token?.symbol}
-        tokenBalance={userBalances?.borrowed}
         maxRecv={maxRecv}
         handleInpChange={useCallback((debt) => updateFormValues({ debt }), [updateFormValues])}
-        handleMaxClick={async () => {
-          const debt = await refetchMaxRecv(market, isLeverage)
-          updateFormValues({ debt })
-        }}
       />
 
       {/* detail info */}

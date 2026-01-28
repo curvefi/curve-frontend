@@ -102,10 +102,8 @@ export const IntegrationsList = ({ networkId, searchText }: { networkId?: string
       <Stack direction="column" gap={Spacing.sm}>
         <ChainFilterChips
           chains={networks}
-          selectedChains={[filterNetwork]}
-          toggleChain={(network) => {
-            updateFilters({ network })
-          }}
+          selectedChains={useMemo(() => [filterNetwork], [filterNetwork])}
+          toggleChain={useCallback((network) => updateFilters({ network }), [updateFilters])}
         />
 
         <Stack gap={Spacing.xs} direction="row" flexWrap="wrap">

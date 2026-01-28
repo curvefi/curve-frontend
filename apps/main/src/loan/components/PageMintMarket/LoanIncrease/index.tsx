@@ -8,7 +8,7 @@ import { DetailInfoLiqRange } from '@/loan/components/DetailInfoLiqRange'
 import { DialogHealthWarning } from '@/loan/components/DialogHealthWarning'
 import { LoanFormConnect } from '@/loan/components/LoanFormConnect'
 import type { FormStatus, FormValues, StepKey } from '@/loan/components/PageMintMarket/LoanIncrease/types'
-import { StyledDetailInfoWrapper, StyledInpChip } from '@/loan/components/PageMintMarket/styles'
+import { StyledDetailInfoWrapper } from '@/loan/components/PageMintMarket/styles'
 import type { FormEstGas, ManageLoanProps } from '@/loan/components/PageMintMarket/types'
 import {
   DEFAULT_DETAIL_INFO,
@@ -24,7 +24,6 @@ import { curveProps } from '@/loan/utils/helpers'
 import { getStepStatus, getTokenName } from '@/loan/utils/utilsLoan'
 import { AlertBox } from '@ui/AlertBox'
 import { Box } from '@ui/Box'
-import { InputDebounced, InputMaxBtn, InputProvider } from '@ui/InputComp'
 import { getActiveStep } from '@ui/Stepper/helpers'
 import { Stepper } from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
@@ -32,7 +31,6 @@ import { TxInfoBar } from '@ui/TxInfoBar'
 import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { useLegacyTokenInput } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
@@ -80,7 +78,7 @@ export const LoanIncrease = ({
   const { chainId, haveSigner } = curveProps(curve)
   const resolvedChainId = (chainId ?? 1) as ChainId
   const network = networks[resolvedChainId]
-  const shouldUseLegacyTokenInput = useLegacyTokenInput()
+
   const [stablecoinAddress, collateralAddress] = llamma?.coinAddresses ?? []
   const { data: collateralUsdRate } = useTokenUsdRate({ chainId: network.chainId, tokenAddress: collateralAddress })
   const { data: stablecoinUsdRate } = useTokenUsdRate({ chainId: network.chainId, tokenAddress: stablecoinAddress })
@@ -278,137 +276,64 @@ export const LoanIncrease = ({
   return (
     <>
       {/* field debt */}
-      {shouldUseLegacyTokenInput ? (
-        <Box grid gridRowGap={1}>
-          <InputProvider
-            grid
-            gridTemplateColumns="1fr auto"
-            padding="4px 8px"
-            inputVariant={formValues.debtError ? 'error' : undefined}
-            disabled={disabled}
-            id="debt"
-          >
-            <InputDebounced
-              id="inpDebt"
-              type="number"
-              labelProps={{
-                label: t`${getTokenName(llamma).stablecoin} borrow amount`,
-              }}
-              value={formValues.debt}
-              onChange={(val) => handleInpChange('debt', val)}
-            />
-            <InputMaxBtn disabled={disabled} onClick={() => handleInpChange('debt', maxRecv)} />
-          </InputProvider>
-          {formValues.debtError === 'too-much' ? (
-            <StyledInpChip size="xs" isDarkBg isError>
-              Borrow amount is greater than ${formatNumber(maxRecv)}, increase collateral to borrow more
-            </StyledInpChip>
-          ) : (
-            <StyledInpChip size="xs">
-              Max borrow amount {isReady && maxRecv ? formatNumber(maxRecv) : '-'}
-            </StyledInpChip>
-          )}
-        </Box>
-      ) : (
-        <LargeTokenInput
-          label={t`Borrow amount:`}
-          name="debt"
-          isError={!!formValues.debtError}
-          message={
-            formValues.debtError === 'too-much'
-              ? t`Borrow amount is greater than ${formatNumber(maxRecv)}, increase collateral to borrow more`
-              : isReady && t`Max borrow amount ${formatNumber(maxRecv, { defaultValue: '-' })}`
-          }
-          disabled={disabled}
-          inputBalanceUsd={decimal(formValues.debt && stablecoinUsdRate && stablecoinUsdRate * +formValues.debt)}
-          walletBalance={{
-            loading: userWalletBalancesLoading,
-            balance: decimal(userWalletBalances.stablecoin),
-            symbol: getTokenName(llamma).stablecoin,
-            usdRate: stablecoinUsdRate,
-          }}
-          maxBalance={{
-            balance: decimal(maxRecv),
-            chips: 'max',
-          }}
-          balance={decimal(formValues.debt)}
-          tokenSelector={
-            <TokenLabel
-              blockchainId={network.id}
-              tooltip={getTokenName(llamma).stablecoin}
-              address={stablecoinAddress}
-              label={getTokenName(llamma).stablecoin}
-            />
-          }
-          onBalance={onDebtChanged}
-        />
-      )}
+      <LargeTokenInput
+        label={t`Borrow amount:`}
+        name="debt"
+        isError={!!formValues.debtError}
+        message={
+          formValues.debtError === 'too-much'
+            ? t`Borrow amount is greater than ${formatNumber(maxRecv)}, increase collateral to borrow more`
+            : undefined
+        }
+        disabled={disabled}
+        inputBalanceUsd={decimal(formValues.debt && stablecoinUsdRate && stablecoinUsdRate * +formValues.debt)}
+        maxBalance={{
+          balance: decimal(maxRecv),
+          chips: 'max',
+        }}
+        balance={decimal(formValues.debt)}
+        tokenSelector={
+          <TokenLabel
+            blockchainId={network.id}
+            tooltip={getTokenName(llamma).stablecoin}
+            address={stablecoinAddress}
+            label={getTokenName(llamma).stablecoin}
+          />
+        }
+        onBalance={onDebtChanged}
+      />
 
       {/* input collateral */}
       <Box grid gridRowGap={1}>
-        {shouldUseLegacyTokenInput ? (
-          <>
-            <InputProvider
-              grid
-              gridTemplateColumns="1fr auto"
-              padding="4px 8px"
-              inputVariant={formValues.collateralError ? 'error' : undefined}
-              disabled={disabled}
-              id="collateral"
-            >
-              <InputDebounced
-                id="inpCollateral"
-                type="number"
-                labelProps={{
-                  label: t`${getTokenName(llamma).collateral} Avail.`,
-                  descriptionLoading: userWalletBalancesLoading,
-                  description: formatNumber(userWalletBalances.collateral),
-                }}
-                value={formValues.collateral}
-                onChange={(val) => handleInpChange('collateral', val)}
-              />
-              <InputMaxBtn
-                disabled={disabled}
-                onClick={() => handleInpChange('collateral', userWalletBalances.collateral)}
-              />
-            </InputProvider>
-            <StyledInpChip size="xs" isDarkBg isError>
-              {formValues.collateralError === 'too-much' && userWalletBalances?.collateral && (
-                <>Collateral is greater than {+userWalletBalances.collateral}</>
-              )}
-            </StyledInpChip>
-          </>
-        ) : (
-          <LargeTokenInput
-            name="collateral"
-            isError={!!formValues.collateralError}
-            disabled={disabled}
-            inputBalanceUsd={decimal(
-              formValues.collateral && collateralUsdRate && collateralUsdRate * +formValues.collateral,
-            )}
-            walletBalance={{
-              loading: userWalletBalancesLoading,
-              balance: decimal(userWalletBalances.collateral),
-              symbol: getTokenName(llamma).collateral,
-              usdRate: collateralUsdRate,
-            }}
-            label={t`Collateral amount:`}
-            balance={decimal(formValues.collateral)}
-            tokenSelector={
-              <TokenLabel
-                blockchainId={network.id}
-                tooltip={getTokenName(llamma).collateral}
-                address={collateralAddress}
-                label={getTokenName(llamma).collateral}
-              />
-            }
-            onBalance={onCollateralChanged}
-            {...(formValues.collateralError === 'too-much' &&
-              userWalletBalances?.collateral && {
-                message: t`Collateral is greater than ${formatNumber(userWalletBalances.collateral)}`,
-              })}
-          />
-        )}
+        <LargeTokenInput
+          name="collateral"
+          isError={!!formValues.collateralError}
+          disabled={disabled}
+          inputBalanceUsd={decimal(
+            formValues.collateral && collateralUsdRate && collateralUsdRate * +formValues.collateral,
+          )}
+          walletBalance={{
+            loading: userWalletBalancesLoading,
+            balance: decimal(userWalletBalances.collateral),
+            symbol: getTokenName(llamma).collateral,
+            usdRate: collateralUsdRate,
+          }}
+          label={t`Collateral amount:`}
+          balance={decimal(formValues.collateral)}
+          tokenSelector={
+            <TokenLabel
+              blockchainId={network.id}
+              tooltip={getTokenName(llamma).collateral}
+              address={collateralAddress}
+              label={getTokenName(llamma).collateral}
+            />
+          }
+          onBalance={onCollateralChanged}
+          {...(formValues.collateralError === 'too-much' &&
+            userWalletBalances?.collateral && {
+              message: t`Collateral is greater than ${formatNumber(userWalletBalances.collateral)}`,
+            })}
+        />
 
         {/* detail info */}
         <StyledDetailInfoWrapper>
@@ -456,6 +381,7 @@ export const LoanIncrease = ({
     </>
   )
 }
+
 /**
  * The new implementation of LoanBorrowMore with mui isn't ready yet. For now, we wrap the old one for styling.
  */

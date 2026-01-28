@@ -74,7 +74,7 @@ export const useDepositRewardApprove = ({
     onSuccess: (resp, { rewardTokenId, amount }) => {
       if (resp) {
         const notifyMessage = t`Approve spending ${rewardTokenId ? tokensMapper[rewardTokenId]?.symbol : ''}`
-        notify(notifyMessage, 'success', 15000)
+        notify(notifyMessage, 'success')
       }
       return queryClient.invalidateQueries({
         queryKey: keys.depositRewardIsApproved({ chainId, poolId, rewardTokenId, amount }),
@@ -82,7 +82,7 @@ export const useDepositRewardApprove = ({
     },
     onError: (error) => {
       console.error('Error approving deposit reward:', error)
-      notify(t`Failed to approve deposit reward`, 'error', 15000)
+      notify(t`Failed to approve deposit reward`, 'error')
     },
   })
 }
@@ -114,13 +114,13 @@ export const useDepositReward = ({
     onSuccess: (resp, { rewardTokenId }) => {
       if (resp) {
         const txDescription = t`Deposited reward token ${rewardTokenId ? tokensMapper[rewardTokenId]?.symbol : ''}`
-        notify(txDescription, 'success', 15000)
+        notify(txDescription, 'success')
       }
       return queryClient.invalidateQueries({ queryKey: keys.isDepositRewardAvailable({ chainId, poolId }) })
     },
     onError: (error) => {
       console.error('Error depositing reward:', error)
-      notify(t`Failed to deposit reward`, 'error', 15000)
+      notify(t`Failed to deposit reward`, 'error')
     },
   })
 }

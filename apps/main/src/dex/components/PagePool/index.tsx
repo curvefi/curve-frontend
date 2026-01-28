@@ -1,10 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { styled } from 'styled-components'
 import { type Address, isAddressEqual } from 'viem'
-import { useConfig } from 'wagmi'
+import { OhlcAndActivityComp } from '@/dex/components/OhlcAndActivityComp'
 import { CampaignRewardsBanner } from '@/dex/components/PagePool/components/CampaignRewardsBanner'
 import { Deposit } from '@/dex/components/PagePool/Deposit'
-import { PoolInfoData } from '@/dex/components/PagePool/PoolDetails/ChartOhlcWrapper'
 import { PoolParameters } from '@/dex/components/PagePool/PoolDetails/PoolParameters'
 import { PoolStats } from '@/dex/components/PagePool/PoolDetails/PoolStats'
 import { Swap } from '@/dex/components/PagePool/Swap'
@@ -17,10 +16,12 @@ import { useNetworkByChain } from '@/dex/entities/networks'
 import { usePoolAlert } from '@/dex/hooks/usePoolAlert'
 import { usePoolIdByAddressOrId } from '@/dex/hooks/usePoolIdByAddressOrId'
 import { useTokensMapper } from '@/dex/hooks/useTokensMapper'
+import { usePoolsPricesApi } from '@/dex/queries/pools-prices-api.query'
 import { useStore } from '@/dex/store/useStore'
 import { getChainPoolIdActiveKey } from '@/dex/utils'
 import { getPath } from '@/dex/utils/utilsRouter'
 import { ManageGauge } from '@/dex/widgets/manage-gauge'
+import type { Chain } from '@curvefi/prices-api'
 import { notFalsy } from '@curvefi/prices-api/objects.util'
 import Stack from '@mui/material/Stack'
 import { AlertBox } from '@ui/AlertBox'
@@ -36,7 +37,7 @@ import { useNavigate } from '@ui-kit/hooks/router'
 import { usePageVisibleInterval } from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
-import { type TabOption, TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
+import { type TabOption, TabsSwitcher } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
 import { FormMargins } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
 import { PoolAlertBanner } from '../PoolAlertBanner'
@@ -54,10 +55,8 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
   const chainIdPoolId = getChainPoolIdActiveKey(rChainId, poolId)
   const currencyReserves = useStore((state) => state.pools.currencyReserves[chainIdPoolId])
   const isMdUp = useLayoutStore((state) => state.isMdUp)
-  const fetchUserPoolInfo = useStore((state) => state.user.fetchUserPoolInfo)
   const fetchPoolStats = useStore((state) => state.pools.fetchPoolStats)
   const setPoolIsWrapped = useStore((state) => state.pools.setPoolIsWrapped)
-  const pricesApiPoolsMapper = useStore((state) => state.pools.pricesApiPoolsMapper)
   const fetchPricesPoolSnapshots = useStore((state) => state.pools.fetchPricesPoolSnapshots)
   const snapshotsMapper = useStore((state) => state.pools.snapshotsMapper)
 
@@ -75,6 +74,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
     {
       chainId: rChainId,
       poolId: poolData?.pool.id,
+      userAddress: signerAddress,
     },
     !!curve,
   )
@@ -84,9 +84,10 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
   const { pool } = poolDataCacheOrApi
   const { data: network } = useNetworkByChain({ chainId: rChainId })
   const { networkId, isLite, pricesApi } = network
+  const { data: pricesApiPoolsMapper } = usePoolsPricesApi({ blockchainId: networkId as Chain })
   const poolAddress = poolData?.pool.address
 
-  const pricesApiPoolData = poolData && pricesApiPoolsMapper[poolData.pool.address]
+  const pricesApiPoolData = poolData && pricesApiPoolsMapper?.[poolData.pool.address]
 
   type DetailInfoTab = 'user' | 'pool' | 'advanced'
   const poolInfoTabs = useMemo<TabOption<DetailInfoTab>[]>(
@@ -119,7 +120,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
       curve &&
       poolAddress &&
       pricesApi &&
-      pricesApiPoolsMapper[poolAddress] !== undefined &&
+      pricesApiPoolsMapper?.[poolAddress] !== undefined &&
       !snapshotsMapper[poolAddress]
     ) {
       void fetchPricesPoolSnapshots(rChainId, poolAddress)
@@ -136,14 +137,6 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
     setSeed({ isSeed, loaded: true })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [poolData?.pool?.id, currencyReserves?.total])
-
-  // fetch user pool info
-  const config = useConfig()
-  useEffect(() => {
-    if (curve && poolId && signerAddress) {
-      void fetchUserPoolInfo(config, curve, poolId)
-    }
-  }, [rChainId, poolId, signerAddress, config, curve, fetchUserPoolInfo])
 
   const isRewardsDistributor = useMemo(
     () =>
@@ -213,6 +206,7 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
               value={!rFormType ? 'deposit' : rFormType}
               onChange={(key) => toggleForm(key as TransferFormType)}
               options={tabs}
+              testIdPrefix="pool-form-tab"
             />
             {rFormType === 'swap' ? (
               poolAlert?.isDisableSwap ? (
@@ -258,11 +252,17 @@ export const Transfer = (pageTransferProps: PageTransferProps) => {
         {poolAddress && <CampaignRewardsBanner chainId={rChainId} address={poolAddress} />}
         {!isLite && pricesApiPoolData && pricesApi && (
           <PriceAndTradesWrapper variant="secondary">
-            <PoolInfoData rChainId={rChainId} pricesApiPoolData={pricesApiPoolData} />
+            <OhlcAndActivityComp rChainId={rChainId} pricesApiPoolData={pricesApiPoolData} />
           </PriceAndTradesWrapper>
         )}
         <Stack>
-          <TabsSwitcher variant="contained" value={poolInfoTab} onChange={setPoolInfoTab} options={poolInfoTabs} />
+          <TabsSwitcher
+            variant="contained"
+            value={poolInfoTab}
+            onChange={setPoolInfoTab}
+            options={poolInfoTabs}
+            testIdPrefix="pool-info-tab"
+          />
           <AppPageInfoContentWrapper variant="secondary">
             {poolInfoTab === 'user' && (
               <MySharesStats

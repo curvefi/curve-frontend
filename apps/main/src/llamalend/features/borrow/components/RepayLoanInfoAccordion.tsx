@@ -5,13 +5,14 @@ import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useMarketFutureRates } from '@/llamalend/queries/market-future-rates.query'
 import { useMarketRates } from '@/llamalend/queries/market-rates'
-import { useRepayBands } from '@/llamalend/queries/repay/repay-bands.query'
 import { useRepayExpectedBorrowed } from '@/llamalend/queries/repay/repay-expected-borrowed.query'
 import { useRepayEstimateGas } from '@/llamalend/queries/repay/repay-gas-estimate.query'
-import { useRepayHealth } from '@/llamalend/queries/repay/repay-health.query'
+import { getRepayHealthOptions } from '@/llamalend/queries/repay/repay-health.query'
+import { useRepayIsApproved } from '@/llamalend/queries/repay/repay-is-approved.query'
 import { useRepayPriceImpact } from '@/llamalend/queries/repay/repay-price-impact.query'
 import { useRepayPrices } from '@/llamalend/queries/repay/repay-prices.query'
 import { getUserHealthOptions } from '@/llamalend/queries/user-health.query'
+import { useUserPnl } from '@/llamalend/queries/user-pnl.query'
 import { useUserState } from '@/llamalend/queries/user-state.query'
 import type { RepayParams } from '@/llamalend/queries/validation/manage-loan.types'
 import type { RepayForm } from '@/llamalend/queries/validation/manage-loan.validation'
@@ -19,7 +20,7 @@ import { LoanInfoAccordion } from '@/llamalend/widgets/manage-loan/LoanInfoAccor
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { combineQueriesMeta } from '@ui-kit/lib/queries/combine'
-import { q } from '@ui-kit/types/util'
+import { mapQuery, q, type Query } from '@ui-kit/types/util'
 import { Decimal, decimal } from '@ui-kit/utils'
 
 const remainingDebt = (debt: Decimal, repayAmount: Decimal, stateBorrowed: Decimal) => {
@@ -28,9 +29,38 @@ const remainingDebt = (debt: Decimal, repayAmount: Decimal, stateBorrowed: Decim
   return decimal(remaining.isNegative() ? 0 : remaining)!
 }
 
+function useRepayRemainingDebt<ChainId extends IChainId>(
+  {
+    params,
+    borrowToken,
+    swapRequired,
+  }: {
+    params: RepayParams<ChainId>
+    swapRequired: boolean
+    borrowToken: Token | undefined
+  },
+  { isFull, userBorrowed }: Pick<RepayForm, 'userBorrowed' | 'isFull'>,
+  enabled: boolean,
+): Query<{ value: Decimal; tokenSymbol: string | undefined } | null> {
+  const userStateQuery = useUserState(params, enabled)
+  const expectedBorrowedQuery = useRepayExpectedBorrowed(params, enabled && swapRequired)
+  const tokenSymbol = borrowToken?.symbol
+  return isFull
+    ? { data: { value: '0', tokenSymbol }, isLoading: false, error: null }
+    : swapRequired
+      ? mapQuery(expectedBorrowedQuery, (d) => ({ value: d.totalBorrowed, tokenSymbol }))
+      : {
+          data: userStateQuery.data && {
+            value: remainingDebt(userStateQuery.data.debt, userBorrowed ?? '0', userStateQuery.data.stablecoin),
+            tokenSymbol,
+          },
+          ...combineQueriesMeta([userStateQuery, ...(swapRequired ? [expectedBorrowedQuery] : [])]),
+        }
+}
+
 export function RepayLoanInfoAccordion<ChainId extends IChainId>({
   params,
-  values: { slippage, userCollateral, stateCollateral, userBorrowed, isFull },
+  values: { slippage, userCollateral, userBorrowed, isFull },
   tokens: { collateralToken, borrowToken },
   networks,
   onSlippageChange,
@@ -49,33 +79,27 @@ export function RepayLoanInfoAccordion<ChainId extends IChainId>({
   const userStateQuery = useUserState(params, isOpen)
   const userState = q(userStateQuery)
   const priceImpact = useRepayPriceImpact(params, isOpen && swapRequired)
-  const expectedBorrowedQuery = useRepayExpectedBorrowed(params, isOpen && swapRequired)
-  const borrowed = swapRequired ? expectedBorrowedQuery.data?.totalBorrowed : userBorrowed
-  const debt = {
-    data: isFull
-      ? { value: '0' as const, tokenSymbol: borrowToken?.symbol }
-      : userStateQuery.data &&
-        borrowed && {
-          value: remainingDebt(userStateQuery.data.debt, borrowed, userStateQuery.data.stablecoin),
-          tokenSymbol: borrowToken?.symbol,
-        },
-    ...combineQueriesMeta([userStateQuery, ...(swapRequired ? [expectedBorrowedQuery] : [])]),
-  }
+  const debt = useRepayRemainingDebt({ params, swapRequired, borrowToken }, { isFull, userBorrowed }, isOpen)
+  const pnlQuery = useUserPnl(
+    { ...params, loanExists: true, hasV2Leverage: true }, // Assuming it might need these flags
+    isOpen,
+  )
+  const { data: isApproved } = useRepayIsApproved(params, isOpen && typeof isFull === 'boolean')
   return (
     <LoanInfoAccordion
       isOpen={isOpen}
       toggle={toggle}
-      bands={q(useRepayBands(params, isOpen))}
+      isApproved={isApproved}
       gas={useRepayEstimateGas(networks, params, isOpen)}
-      health={q(useRepayHealth(params, isOpen))}
+      health={useHealthQueries((isFull) => getRepayHealthOptions({ ...params, isFull }))}
       prevHealth={useHealthQueries((isFull) => getUserHealthOptions({ ...params, isFull }))}
       isFullRepay={isFull}
       prevRates={q(useMarketRates(params, isOpen))}
       rates={q(useMarketFutureRates(params, isOpen))}
       debt={debt}
-      withdraw={stateCollateral && { value: stateCollateral, tokenSymbol: collateralToken?.symbol }}
       userState={userState}
       prices={q(useRepayPrices(params, isOpen))}
+      pnl={mapQuery(pnlQuery, (data) => data.currentProfit)}
       // routeImage={q(useRepayRouteImage(params, isOpen))}
       loanToValue={useLoanToValueFromUserState(
         {
@@ -85,16 +109,18 @@ export function RepayLoanInfoAccordion<ChainId extends IChainId>({
           collateralToken,
           borrowToken,
           collateralDelta: userCollateral && `${-+userCollateral}`,
+          expectedBorrowed: debt?.data?.value,
         },
         isOpen,
       )}
-      leverage={{
-        enabled: !!hasLeverage,
-        slippage,
-        onSlippageChange,
-        collateralSymbol: collateralToken?.symbol,
-        ...(swapRequired && { priceImpact }),
-      }}
+      collateralSymbol={collateralToken?.symbol}
+      leverageEnabled={hasLeverage}
+      {...(hasLeverage &&
+        swapRequired && {
+          slippage,
+          onSlippageChange,
+          priceImpact,
+        })}
     />
   )
 }

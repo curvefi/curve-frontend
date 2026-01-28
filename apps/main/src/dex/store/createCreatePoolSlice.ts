@@ -38,6 +38,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { fetchTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { INVALID_POOLS_NAME_CHARACTERS } from '../constants'
 import { fetchNetworks, getNetworks } from '../entities/networks'
+import { getBasePools } from '../queries/base-pools.query'
 
 type SliceState = {
   navigationIndex: number
@@ -782,7 +783,7 @@ export const createCreatePoolSlice = (
     deployPool: async (curve: CurveApi) => {
       const chainId = curve.chainId
       const {
-        pools: { fetchNewPool, basePools },
+        pools: { fetchNewPool },
         createPool: {
           poolSymbol,
           swapType,
@@ -871,7 +872,7 @@ export const createCreatePoolSlice = (
           // set up success message
           dismissDeploying()
           const successNotificationMessage = t`Pool ${poolName} deployment successful.`
-          notify(successNotificationMessage, 'success', 15000)
+          notify(successNotificationMessage, 'success')
 
           const poolId = await curve.twocryptoFactory.fetchRecentlyDeployedPool(poolAddress)
           set(
@@ -948,7 +949,7 @@ export const createCreatePoolSlice = (
             // set up success message
             dismissDeploying()
             const successNotificationMessage = t`Pool ${poolName} deployment successful.`
-            notify(successNotificationMessage, 'success', 15000)
+            notify(successNotificationMessage, 'success')
 
             const poolId = await curve.tricryptoFactory.fetchRecentlyDeployedPool(poolAddress)
             set(
@@ -1029,7 +1030,7 @@ export const createCreatePoolSlice = (
             // set up success message
             dismissDeploying()
             const successNotificationMessage = t`Pool ${poolName} deployment successful.`
-            notify(successNotificationMessage, 'success', 15000)
+            notify(successNotificationMessage, 'success')
 
             const poolId = await curve.twocryptoFactory.fetchRecentlyDeployedPool(poolAddress)
             set(
@@ -1062,10 +1063,12 @@ export const createCreatePoolSlice = (
 
         // ----- STABLE META POOL -----
       } else if (swapType === STABLESWAP && metaPoolToken) {
+        const basePools = getBasePools({ chainId }) ?? []
+
         // convert token address of basepool to pool address of basepool
         const convertTokenAddressToPoolAddress = (val: string) => {
           let newValue = ''
-          basePools[chainId].find((item) => {
+          basePools.find((item) => {
             if (item.token.toLowerCase() === val.toLowerCase()) newValue = item.pool
           })
           return newValue === '' ? val : newValue
@@ -1127,7 +1130,7 @@ export const createCreatePoolSlice = (
             // set up success message
             dismissDeploying()
             const successNotificationMessage = t`Pool ${poolName} deployment successful.`
-            notify(successNotificationMessage, 'success', 15000)
+            notify(successNotificationMessage, 'success')
 
             const poolId = await curve.stableNgFactory.fetchRecentlyDeployedPool(poolAddress)
             set(
@@ -1218,7 +1221,7 @@ export const createCreatePoolSlice = (
             // set up success message
             dismissDeploying()
             const successNotificationMessage = t`Pool ${poolName} deployment successful.`
-            notify(successNotificationMessage, 'success', 15000)
+            notify(successNotificationMessage, 'success')
 
             const poolId = await curve.stableNgFactory.fetchRecentlyDeployedPool(poolAddress)
             set(

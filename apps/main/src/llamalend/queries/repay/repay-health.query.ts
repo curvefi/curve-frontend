@@ -4,7 +4,7 @@ import { type RepayHealthQuery, type RepayHealthParams } from '../validation/man
 import { repayFromCollateralIsFullValidationSuite } from '../validation/manage-loan.validation'
 import { getRepayImplementation } from './repay-query.helpers'
 
-export const { useQuery: useRepayHealth } = queryFactory({
+export const { getQueryOptions: getRepayHealthOptions } = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -31,7 +31,7 @@ export const { useQuery: useRepayHealth } = queryFactory({
       case 'deleverage':
         return (await impl.repayHealth(userCollateral, isFull)) as Decimal
       case 'unleveraged':
-        return '0' satisfies Decimal // market does not support repay health. TODO: return `null`
+        return (await impl.repayHealth(userBorrowed, isFull)) as Decimal
     }
   },
   validationSuite: repayFromCollateralIsFullValidationSuite,
