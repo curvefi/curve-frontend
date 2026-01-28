@@ -10,6 +10,7 @@ import { useBorrowMoreIsApproved } from '@/llamalend/queries/borrow-more/borrow-
 import { useBorrowMorePriceImpact } from '@/llamalend/queries/borrow-more/borrow-more-price-impact.query'
 import { useMarketFutureRates } from '@/llamalend/queries/market-future-rates.query'
 import { useMarketRates } from '@/llamalend/queries/market-rates'
+import { useUserCurrentLeverage } from '@/llamalend/queries/user-current-leverage.query'
 import { getUserHealthOptions } from '@/llamalend/queries/user-health.query'
 import { useUserState } from '@/llamalend/queries/user-state.query'
 import type { BorrowMoreForm, BorrowMoreParams } from '@/llamalend/queries/validation/borrow-more.validation'
@@ -70,7 +71,7 @@ export function BorrowMoreLoanInfoAccordion<ChainId extends IChainId>({
   )
   const prevHealth = useHealthQueries((isFull) => getUserHealthOptions({ ...params, isFull }))
   const leverageEnabled = !!hasLeverage
-  const priceImpact = useBorrowMorePriceImpact(params, isOpen && leverageEnabled)
+
   const { data: isApproved } = useBorrowMoreIsApproved(params, isOpen)
 
   return (
@@ -100,19 +101,18 @@ export function BorrowMoreLoanInfoAccordion<ChainId extends IChainId>({
         error: [userState, expectedCollateralQuery].find((q) => q.error)?.error,
       }}
       userState={q(userState)}
-      {...(leverageEnabled && {
-        leverageEnabled,
-        leverageValue: mapQuery(expectedCollateralQuery, (data) => {
-          if (!data) return null
-          const base = new BigNumber(data.userCollateral).plus(data.collateralFromUserBorrowed)
-          return decimal(base.isZero() ? 0 : new BigNumber(data.collateralFromDebt).plus(base).div(base))
-        }),
-        leverageTotalCollateral: mapQuery(expectedCollateralQuery, (data) => data?.totalCollateral ?? null),
-        slippage,
-        onSlippageChange,
-        collateralSymbol: collateralToken?.symbol,
-        priceImpact,
+      leverageEnabled={leverageEnabled}
+      leverageValue={mapQuery(expectedCollateralQuery, (data) => {
+        if (!data) return null
+        const base = new BigNumber(data.userCollateral).plus(data.collateralFromUserBorrowed)
+        return decimal(base.isZero() ? 0 : new BigNumber(data.collateralFromDebt).plus(base).div(base))
       })}
+      prevLeverageValue={q(useUserCurrentLeverage(params, isOpen))}
+      leverageTotalCollateral={mapQuery(expectedCollateralQuery, (data) => data?.totalCollateral ?? null)}
+      slippage={slippage}
+      onSlippageChange={onSlippageChange}
+      collateralSymbol={collateralToken?.symbol}
+      priceImpact={useBorrowMorePriceImpact(params, isOpen && leverageEnabled)}
     />
   )
 }

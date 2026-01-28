@@ -36,8 +36,6 @@ export function RemoveCollateralInfoAccordion<ChainId extends IChainId>({
 }) {
   const [isOpen, , , toggle] = useSwitch(false)
   const userState = q(useUserState(params, isOpen))
-  const prevLeverageValue = q(useUserCurrentLeverage(params, isOpen))
-  const leverageValue = q(useRemoveCollateralFutureLeverage(params, isOpen))
 
   const expectedCollateral = useMemo(
     () =>
@@ -90,8 +88,8 @@ export function RemoveCollateralInfoAccordion<ChainId extends IChainId>({
       userState={userState}
       collateral={expectedCollateral}
       leverageEnabled={leverageEnabled}
-      prevLeverageValue={prevLeverageValue}
-      leverageValue={leverageValue}
+      prevLeverageValue={q(useUserCurrentLeverage(params, isOpen))}
+      leverageValue={q(useRemoveCollateralFutureLeverage(params, isOpen))}
     />
   )
 }
