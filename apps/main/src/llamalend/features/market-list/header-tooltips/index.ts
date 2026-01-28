@@ -1,5 +1,5 @@
 export { CollateralBorrowHeaderTooltipContent } from './CollateralBorrowHeaderTooltipContent'
-export { BorrowRateHeaderTooltipContent } from './BorrowRateHeaderTooltipContent'
+export { NetBorrowAprHeaderTooltipContent } from './NetBorrowAprHeaderTooltipContent'
 export { LendRateHeaderTooltipContent } from './LendRateHeaderTooltipContent'
 export { UtilizationHeaderTooltipContent } from './UtilizationHeaderTooltipContent'
 export { LiquidityUsdHeaderTooltipContent } from './LiquidityUsdHeaderTooltipContent'

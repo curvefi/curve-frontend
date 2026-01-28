@@ -6,6 +6,12 @@ export type Market = {
   factoryAddress: Address
   llamma: Address
   rate: number
+  // borrowApy = rate * 100
+  borrowApy: number
+  // borrowTotalApy = borrowApy - collateral_yield_apy
+  borrowTotalApy: number
+  borrowApr: number
+  borrowTotalApr: number
   borrowed: number
   borrowedUsd: number
   borrowable: number
