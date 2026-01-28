@@ -7,6 +7,7 @@ import type { State } from '@/dex/store/useStore'
 import { ChainId, CurveApi, NetworkConfigFromApi, Wallet } from '@/dex/types/main.types'
 import { log } from '@ui-kit/lib/logging'
 import { fetchNetworks } from '../entities/networks'
+import { fetchPoolsBlacklist } from '../queries/pools-blacklist.query'
 
 export type SliceKey = keyof State | ''
 export type StateKey = string
@@ -93,11 +94,11 @@ export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreAp
 
     const networks = await fetchNetworks()
     const network = networks[chainId]
-    const { excludePoolsMapper } = network
 
     // get poolList
+    const poolIdsBlacklist = await fetchPoolsBlacklist({ chainId })
     const poolIds = (await curvejsApi.network.fetchAllPoolsList(curveApi, network)).filter(
-      (poolId) => !excludePoolsMapper[poolId],
+      (poolId) => !poolIdsBlacklist.includes(poolId),
     )
 
     // if no pools found for network, set tvl, volume and pools state to empty object

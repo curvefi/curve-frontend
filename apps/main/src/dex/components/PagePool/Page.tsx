@@ -4,6 +4,7 @@ import { ROUTE } from '@/dex/constants'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { useChainId } from '@/dex/hooks/useChainId'
 import { usePoolIdByAddressOrId } from '@/dex/hooks/usePoolIdByAddressOrId'
+import { usePoolsBlacklist } from '@/dex/queries/pools-blacklist.query'
 import { useStore } from '@/dex/store/useStore'
 import type { PoolUrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
@@ -19,6 +20,7 @@ export const PagePool = () => {
   const { poolIdOrAddress: rPoolIdOrAddress, formType: rFormType, network: networkId } = props
   const rChainId = useChainId(networkId)
   const poolId = usePoolIdByAddressOrId({ chainId: rChainId, poolIdOrAddress: rPoolIdOrAddress })
+  const { data: poolsBlacklist } = usePoolsBlacklist({ chainId: rChainId })
 
   const hasDepositAndStake = useStore((state) => state.getNetworkConfigFromApi(rChainId).hasDepositAndStake)
   const haveAllPools = useStore((state) => state.pools.haveAllPools[rChainId])
@@ -37,7 +39,7 @@ export const PagePool = () => {
       .catch(() => setPoolNotFound(true))
   }, [curveApi, fetchNewPool, haveAllPools, network, poolId, poolData, push, rChainId])
 
-  return !rFormType || network.excludePoolsMapper[poolId ?? ''] || poolNotFound ? (
+  return !rFormType || poolsBlacklist?.includes(poolId ?? '') || poolNotFound ? (
     <ErrorPage title="404" subtitle={t`Pool Not Found`} continueUrl={getPath(props, ROUTE.PAGE_POOLS)} />
   ) : (
     rFormType && poolDataCacheOrApi?.pool?.id === poolId && hasDepositAndStake != null && isHydrated && (
