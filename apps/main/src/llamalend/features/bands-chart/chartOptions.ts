@@ -1,9 +1,30 @@
 import type { EChartsOption } from 'echarts-for-react'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
-import { formatNumber } from '@ui-kit/utils'
+import { formatNumberWithOptions } from './bands-chart.utils'
 import { generateMarkLines, createLabelStyle } from './markLines'
 import { ChartDataPoint, BandsChartPalette, DerivedChartData, UserBandsPriceRange } from './types'
-import { getPriceMin, getPriceMax } from './utils'
+
+const getPriceMin = (chartData: ChartDataPoint[], oraclePrice: string | undefined) => {
+  const min = Math.min(...chartData.map((d) => d.p_down))
+  // bandDelta ensures padding to prevent label clipping if a label is too close to the edge
+  const bandDelta = chartData[0].p_down - chartData[0].p_up
+  // if oraclePrice is outside of range of bands, set min to oraclePrice - bandDelta to make sure it's visible
+  if (min > Number(oraclePrice)) {
+    return Number(oraclePrice) - bandDelta * 2
+  }
+  return min - bandDelta * 2
+}
+
+const getPriceMax = (chartData: ChartDataPoint[], oraclePrice: string | undefined) => {
+  const max = Math.max(...chartData.map((d) => d.p_up))
+  // bandDelta ensures padding to prevent label clipping if a label is too close to the edge
+  const bandDelta = chartData[0].p_down - chartData[0].p_up
+  // if oraclePrice is outside of range of bands, set max to oraclePrice + bandDelta to make sure it's visible
+  if (max < Number(oraclePrice)) {
+    return Number(oraclePrice) + bandDelta * 2
+  }
+  return max + bandDelta * 2
+}
 
 //
 // Custom series renderer to draw a rectangle spanning [p_down, p_up] with a given width and start offset.
@@ -27,6 +48,7 @@ const createCustomRectSeries = (
   // x encodes start, width, and computed end so the axis sees full band extent
   encode: { y: 0, x: [1, 2, 6] },
   data,
+  clip: true, // Clip rectangles to grid area to prevent overflow over axis labels
   emphasis: {
     focus: 'self',
     itemStyle: {
@@ -102,24 +124,29 @@ export const getChartOptions = (
   palette: BandsChartPalette,
   tooltipFormatter: (params: unknown) => HTMLElement,
 ): EChartsOption => {
-  if (chartData.length === 0) return {}
+  if (!chartData.length) return {}
 
   const dataZoomWidth = 20
   const gridPadding = { left: 0, top: 0, bottom: 8 }
   const gridRight = 16 + dataZoomWidth
   const labelXOffset = 16 - (gridRight - dataZoomWidth)
 
-  // Secondary value y-axis will mirror category spacing using index space
-  // Price domain for value y-axis
-  const priceMin = getPriceMin(chartData)
-  const priceMax = getPriceMax(chartData)
+  const priceMin = getPriceMin(chartData, oraclePrice)
+  const priceMax = getPriceMax(chartData, oraclePrice)
+
+  // Calculate x-axis extent for markLines (max endX value across all series)
+  // data format: [median, startX, widthX, pDown, pUp, isLiq, endX]
+  // endX is at index 6, and for the full extent we need marketWidth + userWidth
+  const xEnd = Math.max(...chartData.map((_, i) => (derived.marketData[i] ?? 0) + (derived.userData[i] ?? 0)))
+  const xStart = 0
+
   // Generate mark areas using exact price edges
   const markAreas = userBandsPriceRange
     ? [[{ yAxis: userBandsPriceRange.lowerBandPriceDown }, { yAxis: userBandsPriceRange.upperBandPriceUp }]]
     : []
 
-  // Generate all mark lines (user range + oracle price)
-  const markLines = generateMarkLines(chartData, userBandsPriceRange, oraclePrice, palette)
+  // Generate all mark lines (user range + oracle price) using coord format
+  const markLines = generateMarkLines(chartData, userBandsPriceRange, oraclePrice, xStart, xEnd, palette)
 
   return {
     backgroundColor: 'transparent',
@@ -170,11 +197,7 @@ export const getChartOptions = (
         showMinLabel: true,
         showMaxLabel: false,
         margin: 8,
-        formatter: (value: number) =>
-          formatNumber(value, {
-            unit: 'dollar',
-            abbreviate: true,
-          }),
+        formatter: (value: number) => formatNumberWithOptions(value),
       },
       splitLine: {
         show: true,
@@ -187,20 +210,16 @@ export const getChartOptions = (
     yAxis: {
       type: 'value',
       position: 'right',
-      inverse: false,
       axisLine: { show: false },
       axisTick: { show: false },
+      overflow: 'hide',
       axisPointer: {
         show: true,
         type: 'shadow',
         snap: true,
         label: {
           show: true,
-          formatter: (params: { value: unknown }) =>
-            formatNumber(Number(params.value), {
-              unit: 'dollar',
-              abbreviate: true,
-            }),
+          formatter: (params: { value: unknown }) => formatNumberWithOptions(Number(params.value)),
           padding: [2, 4],
           borderRadius: 0,
           backgroundColor: palette.oraclePriceLineColor,
@@ -210,13 +229,9 @@ export const getChartOptions = (
         color: palette.scaleLabelsColor,
         hideOverlap: true,
         overflow: 'break',
-        showMinLabel: true,
+        showMinLabel: false,
         showMaxLabel: false,
-        formatter: (value: number) =>
-          formatNumber(value, {
-            unit: 'dollar',
-            abbreviate: true,
-          }),
+        formatter: (value: number) => formatNumberWithOptions(value),
       },
       splitLine: {
         show: true,
@@ -261,28 +276,36 @@ export const getChartOptions = (
         palette.liquidationBandOutlineColor,
         marketSeriesData,
         false,
-        markAreas.length > 0
+        markAreas.length
           ? { silent: true, itemStyle: { color: palette.userRangeHighlightColor }, data: markAreas }
           : undefined,
-        markLines.length > 0
+        markLines.length
           ? {
               animation: false,
               animationDuration: 0,
               animationDurationUpdate: 0,
               silent: false,
               symbol: 'none',
-              lineStyle: { width: 2 },
-              data: markLines.map((line) => ({
-                ...line,
-                label: {
-                  ...line.label,
-                  position: 'start',
-                  align: 'left',
-                  verticalAlign: 'middle',
-                  offset: [-labelXOffset, 0],
-                  ...createLabelStyle(line.lineStyle, palette),
-                },
-              })),
+              data: markLines.map((line) => {
+                const [startPoint, endPoint] = line
+                return [
+                  {
+                    ...startPoint,
+                    label: {
+                      ...startPoint.label,
+                      position: 'start',
+                      align: 'left',
+                      verticalAlign: 'middle',
+                      offset: [-labelXOffset, 0],
+                      ...createLabelStyle(line.lineStyle, palette),
+                    },
+                  },
+                  {
+                    ...endPoint,
+                    lineStyle: line.lineStyle,
+                  },
+                ]
+              }),
             }
           : undefined,
       )
@@ -324,13 +347,8 @@ export const getChartOptions = (
         fillerColor: palette.zoomThumbColor,
         handleSize: '100%',
         handleStyle: { color: palette.zoomThumbColor, borderColor: palette.zoomThumbHandleBorderColor },
-        textStyle: { color: palette.textColorInverted, fontSize: 10 },
         showDetail: false,
-        labelFormatter: (value: number | string) =>
-          formatNumber(Number(value), {
-            unit: 'dollar',
-            abbreviate: true,
-          }),
+        labelFormatter: (value: number | string) => formatNumberWithOptions(Number(value)),
         dataBackground: {
           lineStyle: {
             color: palette.gridColor,
@@ -341,6 +359,8 @@ export const getChartOptions = (
             opacity: 0.2,
           },
         },
+        // Prevent filtering of markLines when zooming
+        filterMode: 'none',
       },
       {
         type: 'inside',
@@ -348,6 +368,8 @@ export const getChartOptions = (
         orient: 'vertical',
         zoomOnMouseWheel: 'shift',
         moveOnMouseWheel: true,
+        // Prevent filtering of markLines when zooming
+        filterMode: 'none',
       },
     ],
   }
