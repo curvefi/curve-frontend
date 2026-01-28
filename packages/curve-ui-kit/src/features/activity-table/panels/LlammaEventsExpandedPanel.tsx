@@ -12,7 +12,7 @@ import type { ExpandedPanel, LlammaEventRow } from '../types'
 const { Spacing } = SizesAndSpaces
 
 export const LlammaEventsExpandedPanel: ExpandedPanel<LlammaEventRow> = ({ row: { original: event } }) => {
-  const { url, deposit, withdrawal, provider, network, collateralToken, borrowToken } = event
+  const { txUrl, deposit, withdrawal, provider, network, collateralToken, borrowToken } = event
 
   return (
     <Stack>
@@ -62,10 +62,10 @@ export const LlammaEventsExpandedPanel: ExpandedPanel<LlammaEventRow> = ({ row: 
         </Stack>
       </Stack>
 
-      {url && (
+      {txUrl && (
         <Button
           component={Link}
-          href={url}
+          href={txUrl}
           target="_blank"
           rel="noreferrer"
           variant="link"

@@ -20,7 +20,7 @@ type AddressCellProps = {
 /**
  * Cell component for displaying blockchain addresses with truncation.
  */
-export const AddressCell = ({ address, digits = 4, label, align = 'right' }: AddressCellProps) => (
+export const AddressCell = ({ address, digits = 4, label, align = 'left' }: AddressCellProps) => (
   <InlineTableCell>
     {label && (
       <Typography variant="bodyXsRegular" sx={(t) => ({ color: t.design.Text.TextColors.Secondary })}>

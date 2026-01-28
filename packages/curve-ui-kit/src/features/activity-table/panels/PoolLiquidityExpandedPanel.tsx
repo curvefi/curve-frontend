@@ -12,7 +12,7 @@ import type { ExpandedPanel, PoolLiquidityRow } from '../types'
 const { Spacing } = SizesAndSpaces
 
 export const PoolLiquidityExpandedPanel: ExpandedPanel<PoolLiquidityRow> = ({ row: { original: event } }) => {
-  const { url, tokenAmounts, poolTokens, provider, network, eventType } = event
+  const { txUrl, tokenAmounts, poolTokens, provider, network, eventType } = event
   const isAdd = eventType === 'AddLiquidity'
 
   // Filter out zero amounts
@@ -43,10 +43,10 @@ export const PoolLiquidityExpandedPanel: ExpandedPanel<PoolLiquidityRow> = ({ ro
         </Stack>
       </Stack>
 
-      {url && (
+      {txUrl && (
         <Button
           component={Link}
-          href={url}
+          href={txUrl}
           target="_blank"
           rel="noreferrer"
           variant="link"

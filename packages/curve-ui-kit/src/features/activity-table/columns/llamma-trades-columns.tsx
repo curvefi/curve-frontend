@@ -13,42 +13,43 @@ export enum LlammaTradesColumnId {
 const columnHelper = createColumnHelper<LlammaTradeRow>()
 
 export const createLlammaTradesColumns = (): ColumnDef<LlammaTradeRow, unknown>[] => [
+  columnHelper.accessor('buyer', {
+    id: LlammaTradesColumnId.User,
+    header: t`Address`,
+    cell: ({ getValue }) => <AddressCell address={getValue()} />,
+  }) as ColumnDef<LlammaTradeRow, unknown>,
   columnHelper.accessor('amountBought', {
     id: LlammaTradesColumnId.Bought,
-    header: t`Bought`,
+    header: t`Buy`,
     cell: ({ row }) => (
       <TokenAmountCell
         amount={row.original.amountBought}
         symbol={row.original.tokenBought.symbol}
         tokenAddress={row.original.tokenBought.address}
         chainId={row.original.network}
-      />
-    ),
-  }) as ColumnDef<LlammaTradeRow, unknown>,
-  columnHelper.accessor('amountSold', {
-    id: LlammaTradesColumnId.Sold,
-    header: t`Sold`,
-    cell: ({ row }) => (
-      <TokenAmountCell
-        amount={-row.original.amountSold}
-        symbol={row.original.tokenSold.symbol}
         align="right"
-        tokenAddress={row.original.tokenSold.address}
-        chainId={row.original.network}
       />
     ),
     meta: { type: 'numeric' },
   }) as ColumnDef<LlammaTradeRow, unknown>,
-  columnHelper.accessor('buyer', {
-    id: LlammaTradesColumnId.User,
-    header: t`Address`,
-    cell: ({ getValue }) => <AddressCell address={getValue()} />,
+  columnHelper.accessor('amountSold', {
+    id: LlammaTradesColumnId.Sold,
+    header: t`Sell`,
+    cell: ({ row }) => (
+      <TokenAmountCell
+        amount={-row.original.amountSold}
+        symbol={row.original.tokenSold.symbol}
+        tokenAddress={row.original.tokenSold.address}
+        chainId={row.original.network}
+        align="right"
+      />
+    ),
     meta: { type: 'numeric' },
   }) as ColumnDef<LlammaTradeRow, unknown>,
   columnHelper.accessor('timestamp', {
     id: LlammaTradesColumnId.Time,
     header: t`Time`,
-    cell: ({ row }) => <TimestampCell timestamp={row.original.timestamp} txUrl={row.original.url} />,
+    cell: ({ row }) => <TimestampCell timestamp={row.original.timestamp} txUrl={row.original.txUrl} />,
     meta: { type: 'numeric' },
   }) as ColumnDef<LlammaTradeRow, unknown>,
 ]

@@ -5,17 +5,17 @@ import { LlammaEventsColumnId } from '../columns/llamma-events-columns'
 import { LlammaTradesColumnId } from '../columns/llamma-trades-columns'
 
 const createTradesMobileVisibility = (): VisibilityState => ({
+  [LlammaTradesColumnId.User]: true,
   [LlammaTradesColumnId.Bought]: true,
   [LlammaTradesColumnId.Sold]: false,
-  [LlammaTradesColumnId.User]: false,
-  [LlammaTradesColumnId.Time]: true,
+  [LlammaTradesColumnId.Time]: false,
 })
 
 const createEventsMobileVisibility = (): VisibilityState => ({
+  [LlammaEventsColumnId.User]: true,
   [LlammaEventsColumnId.Action]: true,
   [LlammaEventsColumnId.Change]: false,
-  [LlammaEventsColumnId.User]: false,
-  [LlammaEventsColumnId.Time]: true,
+  [LlammaEventsColumnId.Time]: false,
 })
 
 /**

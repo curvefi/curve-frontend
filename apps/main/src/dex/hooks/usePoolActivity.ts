@@ -73,7 +73,7 @@ export const usePoolActivity = ({ chainId, poolAddress, poolTokens }: UsePoolAct
       network
         ? (tradesData?.trades.map((trade) => ({
             ...trade,
-            url: scanTxPath(networkConfig, trade.txHash),
+            txUrl: scanTxPath(networkConfig, trade.txHash),
             network,
           })) ?? [])
         : [],
@@ -86,7 +86,7 @@ export const usePoolActivity = ({ chainId, poolAddress, poolTokens }: UsePoolAct
       network
         ? (liquidityData?.events.map((event) => ({
             ...event,
-            url: scanTxPath(networkConfig, event.txHash),
+            txUrl: scanTxPath(networkConfig, event.txHash),
             network,
             poolTokens,
           })) ?? [])

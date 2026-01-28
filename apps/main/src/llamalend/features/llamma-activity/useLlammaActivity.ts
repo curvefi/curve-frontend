@@ -18,8 +18,8 @@ import {
 import { t } from '@ui-kit/lib/i18n'
 
 export const LLAMMA_ACTIVITY_SELECTIONS: ActivitySelection<LlammaActivitySelection>[] = [
-  { key: 'trades', label: t`Trades` },
-  { key: 'events', label: t`Controller` },
+  { key: 'trades', label: t`Swaps` },
+  { key: 'events', label: t`Activity` },
 ]
 
 const PAGE_SIZE = 50
@@ -35,8 +35,8 @@ export type UseLlammaActivityProps = {
 
 /**
  * Hook to manage LLAMMA activity data (trades and events) for the ActivityTable component.
- * Handles fetching, transforming, and providing table configurations for both AMM trades
- * and Controller events.
+ * Handles fetching, transforming, and providing table configurations for both AMM swaps
+ * and Controller activity.
  */
 export const useLlammaActivity = ({
   network,
@@ -81,7 +81,7 @@ export const useLlammaActivity = ({
       network
         ? (tradesData?.trades.map((trade: LlammaTrade) => ({
             ...trade,
-            url: scanTxPath(networkConfig, trade.txHash),
+            txUrl: scanTxPath(networkConfig, trade.txHash),
             network,
           })) ?? [])
         : [],
@@ -94,7 +94,7 @@ export const useLlammaActivity = ({
       network
         ? (eventsData?.events.map((event: LlammaEvent) => ({
             ...event,
-            url: scanTxPath(networkConfig, event.txHash),
+            txUrl: scanTxPath(networkConfig, event.txHash),
             network,
             collateralToken,
             borrowToken,
@@ -147,7 +147,7 @@ export const useLlammaActivity = ({
       columns: eventsColumns,
       isLoading: isEventsLoading,
       isError: isEventsError,
-      emptyMessage: t`No controller data found.`,
+      emptyMessage: t`No activity data found.`,
       columnVisibility: eventsColumnVisibility,
       totalRows: eventsData?.count ?? 0,
       pageIndex: eventsPageIndex,

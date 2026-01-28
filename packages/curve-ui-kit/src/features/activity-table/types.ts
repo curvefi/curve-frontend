@@ -19,9 +19,10 @@ export type ActivitySelection<TKey extends string = string> = {
 }
 
 // LLAMMA Types (for lending/crvusd markets)
-export type LlammaTradeRow = LlammaTrade & { url?: string; network: Chain }
+export type LlammaTradeRow = LlammaTrade & { txUrl?: string; url?: never; network: Chain }
 export type LlammaEventRow = LlammaEvent & {
-  url?: string
+  txUrl?: string
+  url?: never
   network: Chain
   collateralToken: Token | undefined
   borrowToken: Token | undefined
@@ -29,9 +30,10 @@ export type LlammaEventRow = LlammaEvent & {
 export type LlammaActivitySelection = 'trades' | 'events'
 
 // Pool Types (for DEX pools)
-export type PoolTradeRow = AllPoolTrade & { url?: string; network: Chain }
+export type PoolTradeRow = AllPoolTrade & { txUrl?: string; url?: never; network: Chain }
 export type PoolLiquidityRow = PoolLiquidityEvent & {
-  url?: string
+  txUrl?: string
+  url?: never
   network: Chain
   poolTokens: Token[]
 }

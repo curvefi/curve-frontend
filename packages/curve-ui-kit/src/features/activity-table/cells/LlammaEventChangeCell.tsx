@@ -24,19 +24,16 @@ type AmountRowProps = {
 }
 
 const AmountRow = ({ amount, amountUsd, token, chain }: AmountRowProps) => (
-  <Stack direction="row" justifyContent="right" gap={Spacing.xs}>
+  <Stack direction="row" alignItems="center" justifyContent="right" gap={Spacing.xs}>
     <Stack gap={Spacing.sm}>
-      <Typography variant="tableCellMBold">
-        {amount >= 0 ? '+' : ''}
-        {formatNumber(amount, { abbreviate: false })} {token?.symbol}
-      </Typography>
+      <Typography variant="tableCellMBold">{formatNumber(amount, { abbreviate: false })}</Typography>
       {amountUsd != null && (
         <Typography variant="bodySRegular" sx={(t) => ({ color: t.design.Text.TextColors.Secondary })}>
           {formatNumber(amountUsd, { unit: 'dollar', abbreviate: true })}
         </Typography>
       )}
     </Stack>
-    <TokenIcon blockchainId={chain} address={token?.address} size="mui-sm" />
+    <TokenIcon blockchainId={chain} address={token?.address} size="lg" />
   </Stack>
 )
 

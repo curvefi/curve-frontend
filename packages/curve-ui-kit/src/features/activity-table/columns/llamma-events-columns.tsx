@@ -13,6 +13,11 @@ export enum LlammaEventsColumnId {
 const columnHelper = createColumnHelper<LlammaEventRow>()
 
 export const createLlammaEventsColumns = (): ColumnDef<LlammaEventRow, unknown>[] => [
+  columnHelper.accessor('provider', {
+    id: LlammaEventsColumnId.User,
+    header: t`Address`,
+    cell: ({ getValue }) => <AddressCell address={getValue()} />,
+  }) as ColumnDef<LlammaEventRow, unknown>,
   columnHelper.display({
     id: LlammaEventsColumnId.Action,
     header: t`Action`,
@@ -31,16 +36,10 @@ export const createLlammaEventsColumns = (): ColumnDef<LlammaEventRow, unknown>[
     ),
     meta: { type: 'numeric' },
   }) as ColumnDef<LlammaEventRow, unknown>,
-  columnHelper.accessor('provider', {
-    id: LlammaEventsColumnId.User,
-    header: t`Address`,
-    cell: ({ getValue }) => <AddressCell address={getValue()} />,
-    meta: { type: 'numeric' },
-  }) as ColumnDef<LlammaEventRow, unknown>,
   columnHelper.accessor('timestamp', {
     id: LlammaEventsColumnId.Time,
     header: t`Time`,
-    cell: ({ row }) => <TimestampCell timestamp={row.original.timestamp} txUrl={row.original.url} />,
+    cell: ({ row }) => <TimestampCell timestamp={row.original.timestamp} txUrl={row.original.txUrl} />,
     meta: { type: 'numeric' },
   }) as ColumnDef<LlammaEventRow, unknown>,
 ]

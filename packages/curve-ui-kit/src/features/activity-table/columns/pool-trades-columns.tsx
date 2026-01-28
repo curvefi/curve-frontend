@@ -13,9 +13,14 @@ export enum PoolTradesColumnId {
 const columnHelper = createColumnHelper<PoolTradeRow>()
 
 export const createPoolTradesColumns = (): ColumnDef<PoolTradeRow, unknown>[] => [
+  columnHelper.accessor('buyer', {
+    id: PoolTradesColumnId.User,
+    header: t`Address`,
+    cell: ({ getValue }) => <AddressCell address={getValue()} />,
+  }) as ColumnDef<PoolTradeRow, unknown>,
   columnHelper.accessor('tokensBought', {
     id: PoolTradesColumnId.Bought,
-    header: t`Bought`,
+    header: t`Buy`,
     cell: ({ row }) => (
       <TokenAmountCell
         amount={row.original.tokensBought}
@@ -23,12 +28,14 @@ export const createPoolTradesColumns = (): ColumnDef<PoolTradeRow, unknown>[] =>
         amountUsd={row.original.tokensBoughtUsd}
         tokenAddress={row.original.tokenBought.address}
         chainId={row.original.network}
+        align="right"
       />
     ),
+    meta: { type: 'numeric' },
   }) as ColumnDef<PoolTradeRow, unknown>,
   columnHelper.accessor('tokensSold', {
     id: PoolTradesColumnId.Sold,
-    header: t`Sold`,
+    header: t`Sell`,
     cell: ({ row }) => (
       <TokenAmountCell
         amount={-row.original.tokensSold}
@@ -41,16 +48,10 @@ export const createPoolTradesColumns = (): ColumnDef<PoolTradeRow, unknown>[] =>
     ),
     meta: { type: 'numeric' },
   }) as ColumnDef<PoolTradeRow, unknown>,
-  columnHelper.accessor('buyer', {
-    id: PoolTradesColumnId.User,
-    header: t`Address`,
-    cell: ({ getValue }) => <AddressCell address={getValue()} />,
-    meta: { type: 'numeric' },
-  }) as ColumnDef<PoolTradeRow, unknown>,
   columnHelper.accessor('time', {
     id: PoolTradesColumnId.Time,
     header: t`Time`,
-    cell: ({ row }) => <TimestampCell timestamp={row.original.time} txUrl={row.original.url} />,
+    cell: ({ row }) => <TimestampCell timestamp={row.original.time} txUrl={row.original.txUrl} />,
     meta: { type: 'numeric' },
   }) as ColumnDef<PoolTradeRow, unknown>,
 ]

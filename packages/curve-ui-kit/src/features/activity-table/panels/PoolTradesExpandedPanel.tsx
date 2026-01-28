@@ -12,7 +12,7 @@ import type { ExpandedPanel, PoolTradeRow } from '../types'
 const { Spacing } = SizesAndSpaces
 
 export const PoolTradesExpandedPanel: ExpandedPanel<PoolTradeRow> = ({ row: { original: trade } }) => {
-  const { url, tokensSold, tokenSold, buyer, network } = trade
+  const { txUrl, tokensSold, tokenSold, buyer, network } = trade
 
   return (
     <Stack>
@@ -32,10 +32,10 @@ export const PoolTradesExpandedPanel: ExpandedPanel<PoolTradeRow> = ({ row: { or
         </Stack>
       </Stack>
 
-      {url && (
+      {txUrl && (
         <Button
           component={Link}
-          href={url}
+          href={txUrl}
           target="_blank"
           rel="noreferrer"
           variant="link"

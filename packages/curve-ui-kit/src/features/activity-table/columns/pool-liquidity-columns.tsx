@@ -22,6 +22,11 @@ export const createPoolLiquidityColumns = ({
   poolTokens,
 }: CreatePoolLiquidityColumnsParams): ColumnDef<PoolLiquidityRow, unknown>[] => {
   const baseColumns: ColumnDef<PoolLiquidityRow, unknown>[] = [
+    columnHelper.accessor('provider', {
+      id: PoolLiquidityColumnId.User,
+      header: t`Address`,
+      cell: ({ getValue }) => <AddressCell address={getValue()} />,
+    }) as ColumnDef<PoolLiquidityRow, unknown>,
     columnHelper.display({
       id: PoolLiquidityColumnId.Action,
       header: t`Action`,
@@ -56,16 +61,10 @@ export const createPoolLiquidityColumns = ({
   )
 
   const remainingColumns: ColumnDef<PoolLiquidityRow, unknown>[] = [
-    columnHelper.accessor('provider', {
-      id: PoolLiquidityColumnId.User,
-      header: t`Address`,
-      cell: ({ getValue }) => <AddressCell address={getValue()} />,
-      meta: { type: 'numeric' },
-    }) as ColumnDef<PoolLiquidityRow, unknown>,
     columnHelper.accessor('time', {
       id: PoolLiquidityColumnId.Time,
       header: t`Time`,
-      cell: ({ row }) => <TimestampCell timestamp={row.original.time} txUrl={row.original.url} />,
+      cell: ({ row }) => <TimestampCell timestamp={row.original.time} txUrl={row.original.txUrl} />,
       meta: { type: 'numeric' },
     }) as ColumnDef<PoolLiquidityRow, unknown>,
   ]

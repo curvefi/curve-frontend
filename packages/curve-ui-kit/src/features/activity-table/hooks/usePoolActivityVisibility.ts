@@ -6,17 +6,17 @@ import { PoolTradesColumnId } from '../columns/pool-trades-columns'
 import type { Token } from '../types'
 
 const createTradesMobileVisibility = (): VisibilityState => ({
+  [PoolTradesColumnId.User]: true,
   [PoolTradesColumnId.Bought]: true,
   [PoolTradesColumnId.Sold]: false,
-  [PoolTradesColumnId.User]: false,
-  [PoolTradesColumnId.Time]: true,
+  [PoolTradesColumnId.Time]: false,
 })
 
 const createLiquidityMobileVisibility = (poolTokens: Token[]): VisibilityState => {
   const visibility: VisibilityState = {
+    [PoolLiquidityColumnId.User]: true,
     [PoolLiquidityColumnId.Action]: true,
-    [PoolLiquidityColumnId.User]: false,
-    [PoolLiquidityColumnId.Time]: true,
+    [PoolLiquidityColumnId.Time]: false,
   }
 
   // Hide all token amount columns on mobile

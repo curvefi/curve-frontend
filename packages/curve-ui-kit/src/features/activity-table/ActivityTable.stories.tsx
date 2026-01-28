@@ -94,7 +94,7 @@ const generatePoolTrades = (count: number): PoolTradeRow[] => {
       tokenSold,
       tokenBought,
       poolState: null,
-      url: `https://etherscan.io/tx/${generateTxHash(1000 + i)}`,
+      txUrl: `https://etherscan.io/tx/${generateTxHash(1000 + i)}`,
       network: 'ethereum' as Chain,
     }
   })
@@ -121,7 +121,7 @@ const generatePoolLiquidity = (count: number): PoolLiquidityRow[] => {
     time: new Date(now - i * 7200000), // 2 hours apart
     txHash: generateTxHash(3000 + i),
     provider: generateAddress(4000 + i),
-    url: `https://etherscan.io/tx/${generateTxHash(3000 + i)}`,
+    txUrl: `https://etherscan.io/tx/${generateTxHash(3000 + i)}`,
     network: 'ethereum' as Chain,
     poolTokens: POOL_TOKENS,
   }))
@@ -150,7 +150,7 @@ const generateLlammaTrades = (count: number, collateralToken: Token, borrowToken
       blockNumber: 19000000 + i * 75,
       timestamp: new Date(now - i * 1800000), // 30 minutes apart
       txHash: generateTxHash(5000 + i),
-      url: `https://etherscan.io/tx/${generateTxHash(5000 + i)}`,
+      txUrl: `https://etherscan.io/tx/${generateTxHash(5000 + i)}`,
       network: 'ethereum' as Chain,
     }
   })
@@ -181,7 +181,7 @@ const generateLlammaEvents = (count: number, collateralToken: Token, borrowToken
       blockNumber: 19000000 + i * 60,
       timestamp: new Date(now - i * 3600000), // 1 hour apart
       txHash: generateTxHash(6000 + i),
-      url: `https://etherscan.io/tx/${generateTxHash(6000 + i)}`,
+      txUrl: `https://etherscan.io/tx/${generateTxHash(6000 + i)}`,
       network: 'ethereum' as Chain,
       collateralToken,
       borrowToken,

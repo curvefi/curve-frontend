@@ -28,21 +28,12 @@ type TokenAmountCellProps = {
  * - Negative amounts are shown in red (error)
  * - Zero or null amounts are shown in default text color
  */
-export const TokenAmountCell = ({
-  amount,
-  symbol,
-  amountUsd,
-  align = 'left',
-  tokenAddress,
-  chainId,
-}: TokenAmountCellProps) => {
+export const TokenAmountCell = ({ amount, amountUsd, align = 'left', tokenAddress, chainId }: TokenAmountCellProps) => {
   const isRightAligned = align === 'right'
 
   const formatAmount = () => {
     if (amount == null || amount === 0) return '-'
-    const prefix = amount > 0 ? '+' : ''
-    const formattedAmount = formatNumber(amount, { abbreviate: false })
-    return symbol ? `${prefix}${formattedAmount} ${symbol}` : `${prefix}${formattedAmount}`
+    return formatNumber(amount, { abbreviate: false })
   }
 
   return (
@@ -53,17 +44,17 @@ export const TokenAmountCell = ({
         alignItems="center"
         gap={Spacing.xs}
       >
-        {tokenAddress && !isRightAligned && <TokenIcon blockchainId={chainId} address={tokenAddress} size="mui-md" />}
+        {tokenAddress && !isRightAligned && <TokenIcon blockchainId={chainId} address={tokenAddress} size="lg" />}
         <Stack alignItems={isRightAligned ? 'flex-end' : 'flex-start'}>
           <Typography variant="tableCellMBold">{formatAmount()}</Typography>
           {amountUsd != null && amountUsd !== 0 && (
-            <Typography variant="bodySRegular">
+            <Typography variant="tableCellSRegular" sx={(t) => ({ color: t.design.Text.TextColors.Secondary })}>
               {formatNumber(amountUsd, { unit: 'dollar', abbreviate: true })}
             </Typography>
           )}
         </Stack>
         {tokenAddress && isRightAligned && amount != 0 && (
-          <TokenIcon blockchainId={chainId} address={tokenAddress} size="mui-md" />
+          <TokenIcon blockchainId={chainId} address={tokenAddress} size="lg" />
         )}
       </Stack>
     </InlineTableCell>

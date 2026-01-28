@@ -12,7 +12,7 @@ import type { ExpandedPanel, LlammaTradeRow } from '../types'
 const { Spacing } = SizesAndSpaces
 
 export const LlammaTradesExpandedPanel: ExpandedPanel<LlammaTradeRow> = ({ row: { original: trade } }) => {
-  const { url, amountSold, tokenSold, buyer, network } = trade
+  const { txUrl, amountSold, tokenSold, buyer, network } = trade
 
   return (
     <Stack>
@@ -32,10 +32,10 @@ export const LlammaTradesExpandedPanel: ExpandedPanel<LlammaTradeRow> = ({ row: 
         </Stack>
       </Stack>
 
-      {url && (
+      {txUrl && (
         <Button
           component={Link}
-          href={url}
+          href={txUrl}
           target="_blank"
           rel="noreferrer"
           variant="link"
