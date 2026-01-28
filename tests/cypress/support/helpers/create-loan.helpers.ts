@@ -8,10 +8,11 @@ const chainId = Chain.Ethereum
 
 export const CREATE_LOAN_FUND_AMOUNT = '0x3635c9adc5dea00000' // 1000 ETH=1e21 wei
 
-const CREATE_LOAN_TEST_MARKETS = {
+export const LOAN_TEST_MARKETS = {
   [LlamaMarketType.Mint]: [
     {
       id: 'wsteth',
+      label: 'wstETH-crvUSD Old Mint Market',
       collateralAddress: '0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0', // wstETH
       collateral: '0.1',
       borrow: '10',
@@ -21,6 +22,7 @@ const CREATE_LOAN_TEST_MARKETS = {
     },
     {
       id: 'wbtc',
+      label: 'WBTC-crvUSD New Mint Market',
       collateralAddress: '0x4e59541306910aD6dC1daC0AC9dFB29bD9F15c67', // wbtc
       collateral: '1',
       borrow: '100',
@@ -32,6 +34,7 @@ const CREATE_LOAN_TEST_MARKETS = {
   [LlamaMarketType.Lend]: [
     {
       id: 'one-way-market-14',
+      label: 'USDe-crvUSD New Lend Market',
       collateralAddress: '0x4c9EDD5852cd905f086C759E8383e09bff1E68B3', // USDe
       collateral: '1',
       borrow: '0.9',
@@ -41,6 +44,7 @@ const CREATE_LOAN_TEST_MARKETS = {
     },
     {
       id: 'one-way-market-7',
+      label: 'sUSDe-crvUSD Old Lend Market',
       collateralAddress: '0x9D39A5DE30e57443BfF2A8307A4256c8797A3497', // sUSDe
       collateral: '100',
       borrow: '90',
@@ -52,7 +56,7 @@ const CREATE_LOAN_TEST_MARKETS = {
 } as const
 
 export const oneLoanTestMarket = (type: LlamaMarketType = oneValueOf(LlamaMarketType)) =>
-  oneOf(...CREATE_LOAN_TEST_MARKETS[type])
+  oneOf(...LOAN_TEST_MARKETS[type])
 
 const getActionValue = (name: string) => cy.get(`[data-testid="${name}-value"]`, LOAD_TIMEOUT)
 
@@ -143,5 +147,6 @@ export function checkLoanRangeSlider({
  */
 export function submitCreateLoanForm() {
   cy.get('[data-testid="create-loan-submit-button"]').click()
+  cy.get('[data-testid="create-loan-submit-button"]').should('be.disabled')
   return cy.get('[data-testid="create-loan-submit-button"]', LOAD_TIMEOUT)
 }
