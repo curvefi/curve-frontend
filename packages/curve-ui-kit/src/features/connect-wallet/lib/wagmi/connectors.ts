@@ -26,5 +26,5 @@ export const connectors: CreateConnectorFn[] = [
   injected({
     target: { id: BINANCE_CONNECTOR_ID, name: t`Binance Wallet`, provider: () => window.binancew3w?.ethereum },
   }),
-  ...window.eip6963Connectors.map((target) => injected({ target })),
+  ...(window.eip6963Connectors ?? []).map((target) => injected({ target })),
 ]
