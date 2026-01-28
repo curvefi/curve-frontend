@@ -22,5 +22,6 @@ export const connectors: CreateConnectorFn[] = [
     },
   }),
   injected({ target: { id: 'injected', name: t`Browser Wallet`, provider: () => window.ethereum } }),
-  ...(window.eip6963Connectors ?? []).map((target) => injected({ target })),
+  // Dynamically add more injected connectors - purposefully crash if the array is not initialized
+  ...window.eip6963Connectors.map((target) => injected({ target })),
 ]

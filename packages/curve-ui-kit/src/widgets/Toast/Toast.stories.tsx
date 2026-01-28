@@ -1,5 +1,6 @@
 import { Button, Stack } from '@mui/material'
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { withPendingToast } from '@ui-kit/features/connect-wallet/lib/notify'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Toast } from './Toast'
 import { showToast } from './toast.util'
@@ -49,6 +50,15 @@ export const AllSeverities: Story = {
         onClick={() => showToast({ message: 'An error has been simulated', severity: 'error', title: title })}
       >
         Error
+      </Button>
+      <Button
+        variant="outlined"
+        color="primary"
+        onClick={() =>
+          withPendingToast(new Promise((resolve) => setTimeout(() => resolve(null), 30000)), 'This operation takes 30s')
+        }
+      >
+        Pending
       </Button>
     </Stack>
   ),

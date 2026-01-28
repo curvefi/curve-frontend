@@ -10,6 +10,7 @@ import { useMarketOraclePriceBand } from '@/llamalend/queries/market-oracle-pric
 import { useMarketOraclePrice } from '@/llamalend/queries/market-oracle-price.query'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { LlamaApi } from '@ui-kit/features/connect-wallet'
+import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 
 export const useBandsData = ({
@@ -25,6 +26,7 @@ export const useBandsData = ({
   collateralTokenAddress: string | undefined
   borrowedTokenAddress: string | undefined
 }) => {
+  const { isHydrated } = useCurve()
   const { address: userAddress } = useConnection()
   const { data: collateralUsdRate } = useTokenUsdRate({ chainId, tokenAddress: collateralTokenAddress })
   const { data: borrowedUsdRate } = useTokenUsdRate({ chainId, tokenAddress: borrowedTokenAddress })
@@ -77,6 +79,7 @@ export const useBandsData = ({
   })
 
   const isLoading =
+    !isHydrated ||
     !api ||
     isLiquidationBandLoading ||
     isMarketBandsBalancesLoading ||
