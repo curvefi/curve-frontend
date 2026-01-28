@@ -112,6 +112,20 @@ export type RewardsApy = {
   error: { [rewardType: string]: boolean }
 }
 export type RewardsApyMapper = { [poolId: string]: RewardsApy }
+export type PoolParameters = {
+  A: string
+  adminFee: string
+  fee: string
+  future_A?: string
+  future_A_time?: number
+  gamma?: string
+  initial_A?: string
+  initial_A_time?: number
+  lpTokenSupply: string
+  priceOracle?: string[]
+  priceScale?: string[]
+  virtualPrice: string
+}
 export type Token = {
   address: string
   ethAddress?: string
@@ -137,6 +151,8 @@ export interface PoolData {
   hasWrapped: boolean
   hasVyperVulnerability: boolean
   isWrapped: boolean
+  currenciesReserves: CurrencyReserves | null
+  parameters: PoolParameters
   tokenAddresses: string[]
   tokenAddressesAll: string[]
   tokenDecimalsAll: number[]

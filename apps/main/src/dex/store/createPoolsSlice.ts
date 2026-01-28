@@ -198,7 +198,12 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
       storeCache.setTvlVolumeMapper('volumeMapper', chainId, volumeMapper)
     },
     fetchPools: async (curve, poolIds, failedFetching24hOldVprice) => {
-      const { pools, storeCache, tokens } = get()
+      const {
+        pools,
+        storeCache,
+        tokens,
+        [sliceKey]: { poolsMapper: storedPoolsMapper },
+      } = get()
 
       const { chainId } = curve
       const networks = await fetchNetworks()
@@ -217,6 +222,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
           curve,
           poolIds,
           networks[chainId],
+          storedPoolsMapper[chainId] ?? {},
           failedFetching24hOldVprice,
         )
 
@@ -388,18 +394,22 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
       const networks = await fetchNetworks()
       const network = networks[chainId]
       const { isLite } = network
-      const { getVolume } = curvejsApi.pool
+      const { getVolume, poolParameters } = curvejsApi.pool
       log('fetchPoolStats', chainId, pool.id)
 
       try {
-        const [, , volume] = await Promise.all([
+        const [, , volume, { parameters }] = await Promise.all([
           pools.fetchPoolCurrenciesReserves(curve, poolData),
           pools.fetchPoolsRewardsApy(chainId, [poolData]),
           isLite ? null : getVolume(pool, network),
+          poolParameters(pool),
         ])
 
         set(
           produce((state: State) => {
+            if (parameters) {
+              state.pools.poolsMapper[chainId][pool.id].parameters = parameters
+            }
             if (volume && state.pools.volumeMapper[chainId]) {
               // volume mapper might not be initialized yet when loading the pool details page
               state.pools.volumeMapper[chainId][pool.id] = volume

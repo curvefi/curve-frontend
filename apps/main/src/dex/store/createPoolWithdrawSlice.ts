@@ -23,7 +23,6 @@ import { useWallet } from '@ui-kit/features/connect-wallet'
 import { shortenAddress } from '@ui-kit/utils'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 import { fetchPoolLpTokenBalance } from '../hooks/usePoolTokenDepositBalances'
-import { invalidatePoolParameters } from '../queries/pool-parameters.query'
 import { invalidateUserPoolInfoQuery } from '../queries/user-pool-info.query'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -530,7 +529,6 @@ export const createPoolWithdrawSlice = (
             userAddress: curve.signerAddress,
           })
           await get().pools.fetchPoolStats(curve, poolData)
-          await invalidatePoolParameters({ chainId: curve.chainId, poolId: pool.id })
         }
 
         return resp
@@ -570,7 +568,6 @@ export const createPoolWithdrawSlice = (
             userAddress: curve.signerAddress,
           })
           await get().pools.fetchPoolStats(curve, poolData)
-          await invalidatePoolParameters({ chainId: curve.chainId, poolId: pool.id })
         }
 
         return resp
@@ -616,7 +613,6 @@ export const createPoolWithdrawSlice = (
             userAddress: curve.signerAddress,
           })
           await get().pools.fetchPoolStats(curve, poolData)
-          await invalidatePoolParameters({ chainId: curve.chainId, poolId: pool.id })
         }
 
         return resp
