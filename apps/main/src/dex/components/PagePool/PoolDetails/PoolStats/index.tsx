@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import { styled } from 'styled-components'
 import { CurrencyReserves } from '@/dex/components/PagePool/PoolDetails/CurrencyReserves'
 import { PoolParameters } from '@/dex/components/PagePool/PoolDetails/PoolStats/PoolParameters'
@@ -20,30 +19,16 @@ import { t } from '@ui-kit/lib/i18n'
 type PoolStatsProps = {
   poolAlert: PoolAlert | null
   tokensMapper: TokensMapper
-} & Pick<PageTransferProps, 'curve' | 'poolData' | 'poolDataCacheOrApi' | 'routerParams'>
+} & Pick<PageTransferProps, 'poolData' | 'poolDataCacheOrApi' | 'routerParams'>
 
-export const PoolStats = ({
-  curve,
-  routerParams,
-  poolAlert,
-  poolData,
-  poolDataCacheOrApi,
-  tokensMapper,
-}: PoolStatsProps) => {
+export const PoolStats = ({ routerParams, poolAlert, poolData, poolDataCacheOrApi, tokensMapper }: PoolStatsProps) => {
   const tokenAlert = useTokenAlert(poolData?.tokenAddressesAll ?? [])
   const { rChainId, rPoolIdOrAddress } = routerParams
   const poolId = usePoolIdByAddressOrId({ chainId: rChainId, poolIdOrAddress: rPoolIdOrAddress })
   const rewardsApy = useStore((state) => state.pools.rewardsApyMapper[rChainId]?.[poolId ?? ''])
   const tvl = useStore((state) => state.pools.tvlMapper[rChainId]?.[poolId ?? ''])
-  const fetchPoolStats = useStore((state) => state.pools.fetchPoolStats)
 
   const risksPathname = getPath(useParams<UrlParams>(), `/disclaimer`)
-
-  useEffect(() => {
-    if (curve && poolData && !poolData?.parameters.virtualPrice) {
-      void fetchPoolStats(curve, poolData)
-    }
-  }, [curve, fetchPoolStats, poolData])
 
   return (
     <GridContainer>
@@ -77,14 +62,7 @@ export const PoolStats = ({
       </MainStatsContainer>
 
       <OtherStatsWrapper>
-        {poolData?.parameters && (
-          <PoolParameters
-            parameters={poolData.parameters}
-            poolData={poolData}
-            poolDataCacheOrApi={poolDataCacheOrApi}
-            routerParams={routerParams}
-          />
-        )}
+        <PoolParameters poolData={poolData} poolDataCacheOrApi={poolDataCacheOrApi} routerParams={routerParams} />
       </OtherStatsWrapper>
     </GridContainer>
   )

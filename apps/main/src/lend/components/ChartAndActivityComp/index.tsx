@@ -3,9 +3,9 @@ import { useState } from 'react'
 import { useOneWayMarket } from '@/lend/entities/chain'
 import { useOhlcChartState } from '@/lend/hooks/useOhlcChartState'
 import { Api, ChainId } from '@/lend/types/lend.types'
+import { getBandsChartToken } from '@/llamalend/features/bands-chart/bands-chart.utils'
 import { BandsChart } from '@/llamalend/features/bands-chart/BandsChart'
 import { useBandsData } from '@/llamalend/features/bands-chart/hooks/useBandsData'
-import { getBandsChartToken } from '@/llamalend/features/bands-chart/utils'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
 import { ChartWrapper } from '@ui-kit/features/candle-chart/ChartWrapper'
@@ -104,7 +104,7 @@ export const ChartAndActivityComp = ({ rChainId, rOwmId, api }: ChartAndActivity
           />
           <Stack
             display={{ mobile: 'block', tablet: newBandsChartEnabled && isBandsVisible ? 'grid' : undefined }}
-            gridTemplateColumns={{ tablet: newBandsChartEnabled && isBandsVisible ? '1fr 0.3fr' : undefined }}
+            gridTemplateColumns={{ tablet: newBandsChartEnabled && isBandsVisible ? 'auto 14rem' : undefined }}
           >
             {ohlcDataUnavailable ? (
               <ErrorMessage

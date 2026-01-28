@@ -15,6 +15,9 @@ const themes = {
   chadInverted: chadTheme({ inverted: true }),
 }
 
+// Ensure global EIP-6963 connectors array exists during Storybook runtime; usually they are injected before app start
+window.eip6963Connectors ??= []
+
 export const decorators: Decorator[] = [
   withThemeFromJSXProvider<ReactRenderer>({
     themes,

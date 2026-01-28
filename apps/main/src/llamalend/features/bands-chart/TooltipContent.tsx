@@ -33,12 +33,17 @@ export const TooltipContent = ({ data, collateralToken, borrowToken }: TooltipCo
   const userBandShare = calculateBandShare(data.userBandTotalCollateralValueUsd, data.bandTotalCollateralValueUsd)
 
   return (
-    <Box sx={{ padding: Spacing.md, backgroundColor: (t) => t.design.Layer[3].Fill }}>
+    <Box
+      sx={{ padding: Spacing.md, backgroundColor: (t) => t.design.Layer[1].Fill }}
+      onClick={(e) => e.stopPropagation()}
+    >
       <TooltipWrapper>
         <Typography variant="bodyMBold" color="textPrimary">
           {t`LLAMMA Band`}
         </Typography>
-        <Typography variant="bodySRegular">{t`Active price range where collateral and debt rebalance.`}</Typography>
+        <Typography variant="bodySRegular" color="textSecondary">
+          {t`Active price range where collateral and debt rebalance.`}
+        </Typography>
         {hasUserData && (
           <TooltipItems secondary>
             <TooltipItem title={t`Your share of band`}>{userBandShare}</TooltipItem>

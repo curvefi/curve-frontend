@@ -12,5 +12,5 @@
       "@curvefi/prices-api/*": ["../../prices-api/src/*"]
     }
   },
-  "include": ["src", "vite.config.mts", "../ui/src/globals.d.ts"]
+  "include": ["src", "vite.config.mts", "../ui/src/globals.d.ts", "./src/types/*.d.ts"]
 }

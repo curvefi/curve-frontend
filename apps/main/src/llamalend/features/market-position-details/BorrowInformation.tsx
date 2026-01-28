@@ -1,6 +1,6 @@
 import { CollateralMetricTooltipContent } from '@/llamalend/widgets/tooltips/CollateralMetricTooltipContent'
 import { CurrentLTVTooltipContent } from '@/llamalend/widgets/tooltips/CurrentLTVTooltipContent'
-import { MarketBorrowRateTooltipContent } from '@/llamalend/widgets/tooltips/MarketBorrowRateTooltipContent'
+import { MarketNetBorrowAprTooltipContent } from '@/llamalend/widgets/tooltips/MarketNetBorrowAprTooltipContent'
 import { TotalDebtTooltipContent } from '@/llamalend/widgets/tooltips/TotalDebtTooltipContent'
 import { CardHeader, Stack } from '@mui/material'
 import { t } from '@ui-kit/lib/i18n'
@@ -73,7 +73,7 @@ export const BorrowInformation = ({
     >
       <Metric
         size="medium"
-        label={t`Borrow rate`}
+        label={t`Net borrow APR`}
         value={borrowRate?.totalBorrowRate}
         loading={borrowRate?.totalBorrowRate == null && borrowRate?.loading}
         valueOptions={{ unit: 'percentage', color: 'warning' }}
@@ -86,9 +86,9 @@ export const BorrowInformation = ({
             : undefined
         }
         valueTooltip={{
-          title: t`Borrow Rate`,
+          title: t`Net borrow APR`,
           body: (
-            <MarketBorrowRateTooltipContent
+            <MarketNetBorrowAprTooltipContent
               marketType={marketType}
               borrowRate={borrowRate?.rate}
               totalBorrowRate={borrowRate?.totalBorrowRate}
