@@ -4,6 +4,8 @@ import type { RepayQuery } from '@/llamalend/queries/validation/manage-loan.type
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { type UserMarketQuery } from '@ui-kit/lib/model'
 
+type RepayFields = Pick<RepayQuery, 'stateCollateral' | 'userCollateral' | 'userBorrowed'>
+
 /**
  * Determines the appropriate repay implementation and its parameters based on the market type and leverage options.
  * We will use V2 leverage if available, then leverage V1 (lend markets only). Otherwise:
@@ -12,11 +14,7 @@ import { type UserMarketQuery } from '@ui-kit/lib/model'
  */
 export function getRepayImplementation(
   marketId: string,
-  {
-    stateCollateral,
-    userCollateral,
-    userBorrowed,
-  }: Pick<RepayQuery, 'stateCollateral' | 'userCollateral' | 'userBorrowed'>,
+  { stateCollateral, userCollateral, userBorrowed }: RepayFields,
 ) {
   const market = getLlamaMarket(marketId)
 

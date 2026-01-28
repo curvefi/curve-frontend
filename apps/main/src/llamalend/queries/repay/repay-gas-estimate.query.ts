@@ -113,12 +113,12 @@ export const useRepayEstimateGas = <ChainId extends IChainId>(
     data: approveEstimate,
     isLoading: approveLoading,
     error: approveError,
-  } = useRepayApproveGasEstimate(query, enabled && !isApproved)
+  } = useRepayApproveGasEstimate(query, enabled && isApproved === false)
   const {
     data: repayEstimate,
     isLoading: repayLoading,
     error: repayError,
-  } = useRepayLoanEstimateGas(query, enabled && !!isApproved)
+  } = useRepayLoanEstimateGas(query, enabled && isApproved === true)
   const {
     data,
     isLoading: conversionLoading,

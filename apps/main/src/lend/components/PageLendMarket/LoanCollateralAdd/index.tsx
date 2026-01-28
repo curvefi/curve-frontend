@@ -17,7 +17,6 @@ import { DEFAULT_FORM_VALUES } from '@/lend/store/createLoanCollateralAddSlice'
 import { useStore } from '@/lend/store/useStore'
 import { Api, OneWayMarketTemplate, PageContentProps } from '@/lend/types/lend.types'
 import { DEFAULT_HEALTH_MODE } from '@/llamalend/constants'
-import { AddCollateralForm } from '@/llamalend/features/manage-loan/components/AddCollateralForm'
 import { AlertBox } from '@ui/AlertBox'
 import { getActiveStep } from '@ui/Stepper/helpers'
 import { Stepper } from '@ui/Stepper/Stepper'
@@ -243,7 +242,3 @@ export const LoanCollateralAdd = ({ rChainId, rOwmId, api, isLoaded, market, use
     </>
   )
 }
-
-export const LoanAddCollateralTab = ({ rChainId, market, isLoaded }: PageContentProps) => (
-  <AddCollateralForm networks={networks} chainId={rChainId} market={market} enabled={isLoaded} />
-)

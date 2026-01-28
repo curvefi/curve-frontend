@@ -1,13 +1,12 @@
 import { Api, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { t } from '@ui-kit/lib/i18n'
+import { isDevelopment } from '@ui-kit/utils'
 
 export * from './utilsRouter'
 
 interface CustomError extends Error {
   data?: { message: string }
 }
-
-export const isDevelopment = process.env.NODE_ENV === 'development'
 
 export function log(fnName: string, ...args: unknown[]) {
   if (isDevelopment) {

@@ -18,7 +18,6 @@ import { DEFAULT_FORM_VALUES } from '@/lend/store/createLoanCollateralRemoveSlic
 import { useStore } from '@/lend/store/useStore'
 import { Api, OneWayMarketTemplate, PageContentProps } from '@/lend/types/lend.types'
 import { DEFAULT_HEALTH_MODE } from '@/llamalend/constants'
-import { RemoveCollateralForm } from '@/llamalend/features/manage-loan/components/RemoveCollateralForm'
 import type { HealthMode } from '@/llamalend/llamalend.types'
 import { AlertBox } from '@ui/AlertBox'
 import { getActiveStep } from '@ui/Stepper/helpers'
@@ -310,7 +309,3 @@ export const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, 
     </>
   )
 }
-
-export const LoanRemoveCollateralTab = ({ rChainId, market, isLoaded }: PageContentProps) => (
-  <RemoveCollateralForm networks={networks} chainId={rChainId} market={market} enabled={isLoaded} />
-)

@@ -142,9 +142,9 @@ export function useLlammaMutation<TVariables extends object, TData extends Resul
     },
     onSuccess: async ({ data, receipt }, variables, result) => {
       const { market, wallet } = result
-      logSuccess(mutationKey, { data, variables, marketId: market.id })
+      logSuccess(mutationKey, { data, variables, marketId })
       notify(successMessage(variables, result), 'success')
-      updateUserEventsApi(wallet!, { id: networkId }, market, receipt.transactionHash)
+      updateUserEventsApi(wallet, { id: networkId }, market, receipt.transactionHash)
       await invalidateAllUserMarketDetails({ chainId, marketId, userAddress })
       onReset?.()
       await onSuccess?.(data, receipt, variables, result)
