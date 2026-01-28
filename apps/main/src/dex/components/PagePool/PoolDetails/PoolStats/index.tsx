@@ -37,7 +37,7 @@ export const PoolStats = ({ routerParams, poolAlert, poolData, poolDataCacheOrAp
 
   // This loads various pool stats in the zustand store, like currency reserves.
   // If you remove this, all forms will be disabled as important data will be missing.
-  // We'll can remove this once everything inside the function has been converted to queries.
+  // We can remove this once everything inside the function has been converted to queries.
   useEffect(() => {
     if (curveApi && poolData) {
       void fetchPoolStats(curveApi, poolData)
