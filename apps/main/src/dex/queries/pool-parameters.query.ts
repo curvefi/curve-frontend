@@ -17,5 +17,4 @@ export const {
     chainValidationGroup(params)
     poolValidationGroup(params)
   }),
-  staleTime: '15m',
 })
