@@ -23,7 +23,7 @@ import { useWallet } from '@ui-kit/features/connect-wallet'
 import { shortenAddress } from '@ui-kit/utils'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 import { fetchPoolLpTokenBalance } from '../hooks/usePoolTokenDepositBalances'
-import { invalidatePoolParameters } from '../queries/pool-parameters.query.ts'
+import { invalidatePoolParameters } from '../queries/pool-parameters.query'
 import { invalidateUserPoolInfoQuery } from '../queries/user-pool-info.query'
 
 type StateKey = keyof typeof DEFAULT_STATE

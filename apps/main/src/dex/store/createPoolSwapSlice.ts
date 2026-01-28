@@ -31,7 +31,7 @@ import { fetchGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 import { fetchNetworks } from '../entities/networks'
 import { fetchPoolTokenBalances } from '../hooks/usePoolTokenBalances'
-import { invalidatePoolParameters } from '../queries/pool-parameters.query.ts'
+import { invalidatePoolParameters } from '../queries/pool-parameters.query'
 import { invalidateUserPoolInfoQuery } from '../queries/user-pool-info.query'
 
 type StateKey = keyof typeof DEFAULT_STATE
