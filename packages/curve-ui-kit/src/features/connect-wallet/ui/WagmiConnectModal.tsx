@@ -6,7 +6,6 @@ import Box from '@mui/material/Box'
 import MenuList from '@mui/material/MenuList'
 import { createSvgIcon } from '@mui/material/utils'
 import { t } from '@ui-kit/lib/i18n'
-import { BinanceWalletIcon } from '@ui-kit/shared/icons/BinanceWalletIcon'
 import { BrowserWalletIcon } from '@ui-kit/shared/icons/BrowserWalletIcon'
 import { CoinbaseWalletIcon } from '@ui-kit/shared/icons/CoinbaseWalletIcon'
 import { SafeWalletIcon } from '@ui-kit/shared/icons/SafeWalletIcon'
@@ -18,14 +17,13 @@ import { handleBreakpoints } from '@ui-kit/themes/basic-theme'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { Connector } from '@wagmi/core'
 import { useWallet } from '../lib'
-import { BINANCE_CONNECTOR_ID, INJECTED_CONNECTOR_ID } from '../lib/wagmi/connectors'
+import { INJECTED_CONNECTOR_ID } from '../lib/wagmi/connectors'
 
 const { IconSize } = SizesAndSpaces
 
 const WALLET_ICONS: Record<string, ReturnType<typeof createSvgIcon>> = {
   injected: BrowserWalletIcon,
   walletConnect: WalletConnectIcon,
-  [BINANCE_CONNECTOR_ID]: BinanceWalletIcon,
   coinbaseWalletSDK: CoinbaseWalletIcon,
   safe: SafeWalletIcon,
 }
@@ -124,8 +122,6 @@ export const WagmiConnectModal = () => {
           .filter(
             (connector) => connector.type !== 'safe' || (typeof window !== 'undefined' && window !== window.parent),
           )
-          // TODO: check if we can remove the connector at the connectors.ts level. Hard to test being a geo-blocked dev
-          .filter((connector) => connector.id !== BINANCE_CONNECTOR_ID || window.binancew3w?.ethereum)
           // Put EIP-6963 detected connectors on top (they come after the pre-defined connectors)
           .toReversed()
           // Put browser injected wallet first as it's a good fallback that's supposed to work in most cases

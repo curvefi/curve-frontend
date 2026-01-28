@@ -26,6 +26,20 @@ export const getLlamaMarket = (id: string, lib = requireLib('llamaApi')): LlamaM
 export const hasLeverage = (market: LlamaMarketTemplate) =>
   hasV1Leverage(market) || (market instanceof MintMarketTemplate && hasV2Leverage(market))
 
+/**
+ * Checks if leverage value (multiplier) can be calculated and displayed for this market.
+ *
+ * Returns true for:
+ * - Lend markets with leverage support
+ * - Mint markets with V2 leverage support (marketId >= 6)
+ *
+ * Note: Some older Mint markets (marketId < 6) support leverage operations (open/close positions)
+ * but cannot calculate the leverage multiplier value.
+ */
+export const hasLeverageValue = (market: LlamaMarketTemplate) =>
+  (market instanceof LendMarketTemplate && hasV1Leverage(market)) ||
+  (market instanceof MintMarketTemplate && hasV2Leverage(market))
+
 export const hasV1Leverage = (market: LlamaMarketTemplate) =>
   market instanceof LendMarketTemplate ? market.leverage.hasLeverage() : market?.leverageZap !== zeroAddress
 

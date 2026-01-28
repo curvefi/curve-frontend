@@ -109,6 +109,18 @@ const DEPRECATED_LLAMAS: PartialRecord<Chain, Record<Address, string>> = {
     // wOS-crvUSD lend market
     '0xDC06056e208aB92bF173FF6DD662F1018ea0E483': t`This market is deprecated.`,
   },
+  optimism: {
+    // WBTC-crvUSD lend market
+    '0x09cEd8b3392bED73B0358e39AaEC0A6e9b0e76DF': t`This market is deprecated.`,
+    // CRV-crvUSD lend market
+    '0x88aa928B906b745009B53A31034701Fc377b7C89': t`This market is deprecated.`,
+    // wstETH-crvUSD lend market
+    '0x6CE5B539367A29d48038A9F3108E6e0f226b83ed': t`This market is deprecated.`,
+    // OP-crvUSD lend market
+    '0xC5Cd9f6A1Fb88bed782f475F72fF686ED35b7e8e': t`This market is deprecated.`,
+    // WETH-crvUSD lend market
+    '0x9dba46e6a06FBf24CA11f8912B44338fe1b28Ea9': t`This market is deprecated.`,
+  },
 }
 
 /**

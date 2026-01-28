@@ -10,6 +10,7 @@ import {
   HighUtilizationAddress,
   mockLendingSnapshots,
   mockLendingVaults,
+  mockMerklCampaigns,
 } from '@cy/support/helpers/lending-mocks'
 import { mockMintMarkets, mockMintSnapshots } from '@cy/support/helpers/minting-mocks'
 import { mockTokenPrices } from '@cy/support/helpers/tokens'
@@ -436,6 +437,7 @@ function setupMocks() {
   mockLendingSnapshots().as('lend-snapshots')
   mockMintMarkets()
   mockMintSnapshots()
+  mockMerklCampaigns()
   console.info(JSON.stringify({ generatedData })) // for debugging ci failures
   return generatedData
 }
