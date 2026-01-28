@@ -43,7 +43,6 @@ import { setMissingProvider } from '@ui-kit/utils/store.util'
 import { fetchNetworks } from '../entities/networks'
 import { fetchPoolTokenBalances } from '../hooks/usePoolTokenBalances'
 import { fetchPoolLpTokenBalance } from '../hooks/usePoolTokenDepositBalances'
-import { invalidatePoolParameters } from '../queries/pool-parameters.query'
 import { invalidateUserPoolInfoQuery } from '../queries/user-pool-info.query'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -113,14 +112,14 @@ export const createPoolDepositSlice = (
 
       const [fetchedExpected, fetchedParameters] = await Promise.all([
         depositExpectedFn(activeKey, pool, isWrapped, parseAmountsForAPI(amounts)),
-        pool.stats.parameters(),
+        curvejsApi.pool.poolParameters(pool),
       ])
 
       get()[sliceKey].setStateByKey('formLpTokenExpected', {
         [activeKey]: {
           ...fetchedExpected,
           loading: false,
-          virtualPrice: fetchedParameters?.virtualPrice,
+          virtualPrice: fetchedParameters.parameters?.virtualPrice,
         },
       })
     },
@@ -478,7 +477,6 @@ export const createPoolDepositSlice = (
             userAddress: curve.signerAddress,
           })
           await get().pools.fetchPoolStats(curve, poolData)
-          await invalidatePoolParameters({ chainId: curve.chainId, poolId: pool.id })
         }
 
         return resp
@@ -526,7 +524,6 @@ export const createPoolDepositSlice = (
             userAddress: curve.signerAddress,
           })
           await get().pools.fetchPoolStats(curve, poolData)
-          await invalidatePoolParameters({ chainId: curve.chainId, poolId: pool.id })
         }
 
         return resp
@@ -600,7 +597,6 @@ export const createPoolDepositSlice = (
             userAddress: curve.signerAddress,
           })
           await get().pools.fetchPoolStats(curve, poolData)
-          await invalidatePoolParameters({ chainId: curve.chainId, poolId: pool.id })
         }
 
         return resp

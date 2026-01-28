@@ -15,7 +15,7 @@ import { shortenAddress } from '@ui-kit/utils'
 
 export const hasNoWrapped = (pool: Pool) => pool?.isPlain || pool?.isFake
 
-const getPoolData = (p: Pool, network: NetworkConfig) => {
+const getPoolData = (p: Pool, network: NetworkConfig, storedPoolData: PoolData | undefined) => {
   const isWrappedOnly = network.poolIsWrappedOnly[p.id]
   const tokensWrapped = p.wrappedCoins.map((token, idx) => token || shortenAddress(p.wrappedCoinAddresses[idx])!)
   const tokens = isWrappedOnly
@@ -36,6 +36,21 @@ const getPoolData = (p: Pool, network: NetworkConfig) => {
     curvefiUrl: '',
 
     // stats
+    currenciesReserves: null,
+    parameters: storedPoolData?.parameters
+      ? storedPoolData.parameters
+      : {
+          A: '',
+          adminFee: '',
+          fee: '',
+          future_A: undefined,
+          future_A_time: undefined,
+          gamma: undefined,
+          initial_A: undefined,
+          initial_A_time: undefined,
+          lpTokenSupply: '',
+          virtualPrice: '',
+        },
     hasVyperVulnerability: p.hasVyperVulnerability(),
     hasWrapped: isWrappedOnly ?? !hasNoWrapped(p),
     isWrapped: isWrappedOnly ?? false,
@@ -60,6 +75,7 @@ export async function getPools(
   curve: CurveApi,
   poolList: string[],
   network: NetworkConfig,
+  poolsMapper: PoolDataMapper = {},
   failedFetching24hOldVprice?: { [p: string]: boolean } | null,
 ) {
   const { getPool } = curve
@@ -68,7 +84,7 @@ export async function getPools(
   const resp = poolList.reduce(
     (prev, poolId) => {
       const pool = getPool(poolId)
-      const poolData = getPoolData(pool, network)
+      const poolData = getPoolData(pool, network, poolsMapper[poolId])
 
       poolData.failedFetching24hOldVprice = failedFetching24hOldVprice?.[pool.address] ?? false
       poolData.curvefiUrl = getCurvefiUrl(poolId, orgUIPath)
