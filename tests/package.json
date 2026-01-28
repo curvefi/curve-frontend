@@ -21,17 +21,17 @@
   },
   "devDependencies": {
     "@cypress/react": "^9.0.1",
-    "@cypress/vite-dev-server": "^7.0.1",
+    "@cypress/vite-dev-server": "^7.2.0",
     "@types/cypress": "^1.1.6",
     "@types/wait-on": "^5.3.4",
     "@vitejs/plugin-react": "*",
-    "@vitest/ui": "^4.0.15",
-    "cypress": "^15.8.1",
+    "@vitest/ui": "^4.0.18",
+    "cypress": "^15.9.0",
     "dotenv-flow": "^4.1.0",
     "ethers": "*",
     "typescript": "*",
     "vite": "*",
-    "vite-tsconfig-paths": "^5.1.4",
+    "vite-tsconfig-paths": "^6.0.5",
     "vitest": "*",
     "wait-on": "^9.0.3"
   }
