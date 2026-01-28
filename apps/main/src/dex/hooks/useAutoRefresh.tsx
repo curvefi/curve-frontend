@@ -6,7 +6,6 @@ import { usePageVisibleInterval } from '@ui-kit/hooks/usePageVisibleInterval'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { useGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
 import { useNetworks } from '../entities/networks'
-import { usePoolsBlacklist } from '../queries/pools-blacklist.query'
 
 export const useAutoRefresh = (chainId: number | undefined) => {
   const { curveApi } = useCurve()
@@ -16,7 +15,6 @@ export const useAutoRefresh = (chainId: number | undefined) => {
   const fetchPoolsVolume = useStore((state) => state.pools.fetchPoolsVolume)
   const fetchPoolsTvl = useStore((state) => state.pools.fetchPoolsTvl)
   const setTokensMapper = useStore((state) => state.tokens.setTokensMapper)
-  const { data: poolsBlacklist } = usePoolsBlacklist({ chainId })
 
   // this is similar to useNetworkByChain, but it doesn't throw if network is not set (during redirects)
   const network = useMemo(() => chainId && networks[chainId], [chainId, networks])
@@ -41,9 +39,7 @@ export const useAutoRefresh = (chainId: number | undefined) => {
 
   usePageVisibleInterval(async () => {
     if (!curveApi || !network) return console.warn('Curve API or network is not defined, cannot refetch pools')
-    const poolIds = (await curvejsApi.network.fetchAllPoolsList(curveApi, network)).filter(
-      (poolId) => !(poolsBlacklist ?? []).includes(poolId),
-    )
+    const poolIds = await curvejsApi.network.fetchAllPoolsList(curveApi, network)
     void fetchPools(curveApi, poolIds, null)
   }, REFRESH_INTERVAL['11m'])
 }

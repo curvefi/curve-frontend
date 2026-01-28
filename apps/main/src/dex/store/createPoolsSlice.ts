@@ -42,6 +42,7 @@ import { fetchTokenUsdRate, getTokenUsdRateQueryData } from '@ui-kit/lib/model/e
 import { TIME_FRAMES } from '@ui-kit/lib/model/time'
 import { fetchNetworks } from '../entities/networks'
 import { getPools } from '../lib/pools'
+import { fetchPoolsBlacklist } from '../queries/pools-blacklist.query'
 
 type StateKey = keyof typeof DEFAULT_STATE
 const { chunk, countBy, groupBy, isNaN } = lodash
@@ -213,9 +214,11 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
           }),
         )
 
+        const blacklist = await fetchPoolsBlacklist({ chainId })
         const { poolsMapper, poolsMapperCache } = await getPools(
           curve,
           poolIds,
+          blacklist,
           networks[chainId],
           failedFetching24hOldVprice,
         )

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { isAddressEqual, type Address } from 'viem'
 import { Transfer } from '@/dex/components/PagePool/index'
 import { ROUTE } from '@/dex/constants'
 import { useNetworkByChain } from '@/dex/entities/networks'
@@ -20,7 +21,6 @@ export const PagePool = () => {
   const { poolIdOrAddress: rPoolIdOrAddress, formType: rFormType, network: networkId } = props
   const rChainId = useChainId(networkId)
   const poolId = usePoolIdByAddressOrId({ chainId: rChainId, poolIdOrAddress: rPoolIdOrAddress })
-  const { data: poolsBlacklist } = usePoolsBlacklist({ chainId: rChainId })
 
   const hasDepositAndStake = useStore((state) => state.getNetworkConfigFromApi(rChainId).hasDepositAndStake)
   const haveAllPools = useStore((state) => state.pools.haveAllPools[rChainId])
@@ -32,6 +32,11 @@ export const PagePool = () => {
 
   const poolDataCacheOrApi = useMemo(() => poolData || poolDataCache, [poolData, poolDataCache])
 
+  const { data: poolsBlacklist } = usePoolsBlacklist({ chainId: rChainId })
+  const isBlacklisted =
+    poolDataCacheOrApi &&
+    poolsBlacklist?.some((badPool) => isAddressEqual(poolDataCacheOrApi.pool.id as Address, badPool))
+
   useEffect(() => {
     if (!rChainId || !poolId || curveApi?.chainId !== rChainId || !haveAllPools || poolData) return
     fetchNewPool(curveApi, poolId)
@@ -39,7 +44,7 @@ export const PagePool = () => {
       .catch(() => setPoolNotFound(true))
   }, [curveApi, fetchNewPool, haveAllPools, network, poolId, poolData, push, rChainId])
 
-  return !rFormType || poolsBlacklist?.includes(poolId ?? '') || poolNotFound ? (
+  return !rFormType || isBlacklisted || poolNotFound ? (
     <ErrorPage title="404" subtitle={t`Pool Not Found`} continueUrl={getPath(props, ROUTE.PAGE_POOLS)} />
   ) : (
     rFormType && poolDataCacheOrApi?.pool?.id === poolId && hasDepositAndStake != null && isHydrated && (
