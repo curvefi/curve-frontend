@@ -43,6 +43,9 @@ const oneLendingPool = (
     oracle_pools: oneOf([], [oneAddress()]),
     rate: oneFloat(),
     borrow_apy: oneFloat(),
+    borrow_total_apy: oneFloat(),
+    borrow_apr: oneFloat(),
+    borrow_total_apr: oneFloat(),
     lend_apy: oneFloat(),
     lend_apr: oneFloat(),
     lend_apr_crv_0_boost: oneFloat(),
@@ -132,7 +135,13 @@ export const mockLendingSnapshots = (chain = oneOf(...LendingChains)) =>
       chain,
       data: range(84).map((i) => ({
         borrow_apy: i / 2, // increasing APY, graph should be green
+        borrow_apr: i / 2, // increasing APR, graph should be green
+        borrow_total_apy: i / 2 - 1,
+        borrow_total_apr: i / 2 - 1,
         lend_apy: 2 / (i + 1), // decreasing APY, graph should be red
+        lend_apr: 2 / (i + 1),
+        lend_apr_crv_0_boost: 0,
+        lend_apr_crv_max_boost: 0,
         timestamp: new Date('2024-12-24T').getTime() - i * 4 * HOUR, // 4h intervals
         extra_rewards_apr: [],
         collateral_token: oneToken(chain),
