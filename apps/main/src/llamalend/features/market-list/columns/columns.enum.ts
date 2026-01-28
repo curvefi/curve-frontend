@@ -9,6 +9,7 @@ export enum LlamaMarketColumnId {
   UserDeposited = 'userDeposited', // only for lend markets
   UserHasPositions = 'userHasPositions',
   BorrowRate = 'rates_borrow',
+  NetBorrowRate = 'rates_net_borrow',
   BorrowChart = 'borrowChart',
   LendRate = 'rates_lend',
   MaxLtv = 'maxLtv',

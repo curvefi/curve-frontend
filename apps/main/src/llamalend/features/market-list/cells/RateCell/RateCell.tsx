@@ -1,3 +1,4 @@
+import { ReactElement } from 'react'
 import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
@@ -14,9 +15,16 @@ import { SupplyRateMintTooltip } from './SupplyRateMintTooltip'
 
 const { Spacing } = SizesAndSpaces
 
+type RateTooltipProps = {
+  market: LlamaMarket
+  columnId: LlamaMarketColumnId.BorrowRate | LlamaMarketColumnId.NetBorrowRate
+  children: ReactElement
+}
+
 const RateTypes = {
   [LlamaMarketColumnId.LendRate]: MarketRateType.Supply,
   [LlamaMarketColumnId.BorrowRate]: MarketRateType.Borrow,
+  [LlamaMarketColumnId.NetBorrowRate]: MarketRateType.Borrow,
 } as const
 
 const TooltipComponents = {
@@ -25,8 +33,16 @@ const TooltipComponents = {
     [LlamaMarketType.Mint]: SupplyRateMintTooltip,
   },
   [MarketRateType.Borrow]: {
-    [LlamaMarketType.Lend]: BorrowRateTooltip,
-    [LlamaMarketType.Mint]: BorrowRateTooltip,
+    [LlamaMarketType.Lend]: ({ market, columnId, children }: RateTooltipProps) => (
+      <BorrowRateTooltip market={market} columnId={columnId}>
+        {children}
+      </BorrowRateTooltip>
+    ),
+    [LlamaMarketType.Mint]: ({ market, columnId, children }: RateTooltipProps) => (
+      <BorrowRateTooltip market={market} columnId={columnId}>
+        {children}
+      </BorrowRateTooltip>
+    ),
   },
 } as const
 
@@ -37,13 +53,14 @@ export const RateCell = ({
 }: CellContext<LlamaMarket, number | null>) => {
   const rateType = RateTypes[id as keyof typeof RateTypes]
   if (!rateType) throw new Error(`RateCell: Unsupported column ID "${id}"`)
+  const columnId = id as LlamaMarketColumnId.BorrowRate | LlamaMarketColumnId.NetBorrowRate
   const Tooltip = TooltipComponents[rateType][market.type]
 
   const rate = getValue()
   return (
     // The box container makes sure the tooltip doesn't span the entire cell, so the tooltip arrow is placed correctly
     <Box display="flex" justifyContent="end">
-      <Tooltip market={market}>
+      <Tooltip market={market} columnId={columnId}>
         <Stack gap={Spacing.xs} alignItems="end">
           <Typography variant="tableCellMBold" color="textPrimary">
             {rate == null ? '—' : formatPercent(rate)}
