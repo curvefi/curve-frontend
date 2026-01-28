@@ -103,7 +103,7 @@ export const createMarketsSlice = (
       ] as const
 
       // invalidate and refetch onchain data
-      invalidateMarketDetails({ chainId, marketId })
+      await invalidateMarketDetails({ chainId, marketId })
       await Promise.all(keys.map((key) => sliceState.fetchDatas(key, api, [OneWayMarketTemplate], shouldRefetch)))
     },
 

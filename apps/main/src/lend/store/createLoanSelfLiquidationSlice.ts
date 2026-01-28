@@ -3,8 +3,7 @@ import type { StoreApi } from 'zustand'
 import type { FormStatus } from '@/lend/components/PageLendMarket/LoanSelfLiquidation/types'
 import type { FormEstGas } from '@/lend/components/PageLendMarket/types'
 import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@/lend/components/PageLendMarket/utils'
-import { invalidateMarketDetails } from '@/lend/entities/market-details'
-import { invalidateAllUserBorrowDetails } from '@/lend/entities/user-loan-details'
+import { refetchUserMarket } from '@/lend/entities/user-loan-details'
 import { apiLending } from '@/lend/lib/apiLending'
 import { networks } from '@/lend/networks'
 import type { State } from '@/lend/store/useStore'
@@ -190,13 +189,7 @@ export const createLoanSelfLiquidationSlice = (
           })
           return { ...resp, error, loanExists }
         } else {
-          // api calls
-          if (loanExists) {
-            void user.fetchAll(api, market, true)
-            invalidateAllUserBorrowDetails({ chainId: api.chainId, marketId: market.id })
-          }
-          invalidateMarketDetails({ chainId: api.chainId, marketId: market.id })
-          void markets.fetchAll(api, market, true)
+          await refetchUserMarket({ api, market, state: { user, markets } })
 
           // update state
           sliceState.setStateByKey('formStatus', { ...DEFAULT_FORM_STATUS, isApproved: true, isComplete: true })

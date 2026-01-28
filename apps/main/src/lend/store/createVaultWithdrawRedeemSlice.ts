@@ -5,7 +5,7 @@ import { DEFAULT_FORM_EST_GAS } from '@/lend/components/PageLendMarket/utils'
 import type { FormStatus, FormValues } from '@/lend/components/PageVault/VaultWithdrawRedeem/types'
 import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/lend/components/PageVault/VaultWithdrawRedeem/utils'
 import { invalidateAllUserBorrowDetails } from '@/lend/entities/user-loan-details'
-import { helpers, apiLending } from '@/lend/lib/apiLending'
+import { apiLending, helpers } from '@/lend/lib/apiLending'
 import { networks } from '@/lend/networks'
 import { _getMaxActiveKey } from '@/lend/store/createVaultDepositMintSlice'
 import type { State } from '@/lend/store/useStore'
@@ -155,15 +155,19 @@ export const createVaultWithdrawRedeem = (
       updateUserEventsApi(wallet, networks[chainId], market, resp.hash)
 
       if (resp.activeKey === get()[sliceKey].activeKey) {
-        // api calls
-        void get().user.fetchUserMarketBalances(api, market, true)
-        void get()[sliceKey].fetchMax(api, formType, market)
-        invalidateAllUserBorrowDetails({ chainId: api.chainId, marketId: market.id })
-
-        // update state
-        const partialFormStatus: Partial<FormStatus> = { error: resp.error, isComplete: !resp.error }
-        get()[sliceKey].setStateByKeys(merge(cloneDeep(DEFAULT_STATE), { formStatus: partialFormStatus }))
-
+        void Promise.all([
+          get().user.fetchUserMarketBalances(api, market, true),
+          get()[sliceKey].fetchMax(api, formType, market),
+          invalidateAllUserBorrowDetails({ chainId: api.chainId, marketId: market.id }),
+        ])
+        get()[sliceKey].setStateByKeys(
+          merge(cloneDeep(DEFAULT_STATE), {
+            formStatus: {
+              error: resp.error,
+              isComplete: !resp.error,
+            },
+          }),
+        )
         return resp
       }
     },
