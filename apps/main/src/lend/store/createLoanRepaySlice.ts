@@ -8,9 +8,8 @@ import {
 } from '@/lend/components/PageLendMarket/LoanRepay/utils'
 import type { FormDetailInfo, FormEstGas } from '@/lend/components/PageLendMarket/types'
 import { DEFAULT_FORM_EST_GAS } from '@/lend/components/PageLendMarket/utils'
-import { invalidateMarketDetails } from '@/lend/entities/market-details'
-import { invalidateAllUserBorrowDetails } from '@/lend/entities/user-loan-details'
-import { helpers, apiLending } from '@/lend/lib/apiLending'
+import { refetchUserMarket } from '@/lend/entities/user-loan-details'
+import { apiLending, helpers } from '@/lend/lib/apiLending'
 import { networks } from '@/lend/networks'
 import type { State } from '@/lend/store/useStore'
 import { Api, FormError, OneWayMarketTemplate, UserLoanState } from '@/lend/types/lend.types'
@@ -236,7 +235,6 @@ export const createLoanRepaySlice = (
       }
     },
     fetchStepRepay: async (activeKey, api, market, formValues, maxSlippage) => {
-      const { markets, user } = get()
       const { formStatus, ...sliceState } = get()[sliceKey]
       const { provider, wallet } = useWallet.getState()
       const { chainId } = api
@@ -268,12 +266,6 @@ export const createLoanRepaySlice = (
       updateUserEventsApi(wallet, networks[chainId], market, resp.hash)
 
       if (resp.activeKey === get()[sliceKey].activeKey) {
-        const loanExists = await refetchLoanExists({
-          chainId,
-          marketId: market.id,
-          userAddress: wallet?.address,
-        })
-
         if (error) {
           sliceState.setStateByKey('formStatus', {
             ...formStatus,
@@ -281,18 +273,22 @@ export const createLoanRepaySlice = (
             step: '',
             stepError: error,
           })
-          return { ...resp, error, loanExists }
-        } else {
-          if (loanExists) {
-            void user.fetchAll(api, market, true)
-          } else {
-            void user.fetchUserMarketBalances(api, market, true)
-            const userActiveKey = getUserActiveKey(api, market)
-            user.setStateByActiveKey('loansDetailsMapper', userActiveKey, undefined)
+          return {
+            ...resp,
+            error,
+            loanExists: await refetchLoanExists({
+              chainId,
+              marketId: market.id,
+              userAddress: wallet?.address,
+            }),
           }
-          void markets.fetchAll(api, market, true)
-          invalidateAllUserBorrowDetails({ chainId: api.chainId, marketId: market.id })
-          invalidateMarketDetails({ chainId: api.chainId, marketId: market.id })
+        } else {
+          const { loanExists } = await refetchUserMarket({ market, api })
+          if (!loanExists) {
+            const { user } = get()
+            void user.fetchUserMarketBalances(api, market, true)
+            user.setStateByActiveKey('loansDetailsMapper', getUserActiveKey(api, market), undefined)
+          }
 
           // update formStatus
           sliceState.setStateByKeys({
