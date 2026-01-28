@@ -33,7 +33,6 @@ export type PoolTradeRow = AllPoolTrade & { url?: string; network: Chain }
 export type PoolLiquidityRow = PoolLiquidityEvent & {
   url?: string
   network: Chain
-  /** Pool tokens in order matching tokenAmounts array */
   poolTokens: Token[]
 }
 export type PoolActivitySelection = 'trades' | 'liquidity'
@@ -43,13 +42,9 @@ export type PoolActivitySelection = 'trades' | 'liquidity'
  * Each selection can have its own data, columns, and loading state.
  */
 export type ActivityTableConfig<TData extends TableItem> = {
-  /** The data to display in the table */
   data: TData[]
-  /** Column definitions for the table */
   columns: ColumnDef<TData, unknown>[]
-  /** Whether the data is currently loading */
   isLoading: boolean
-  /** Whether there was an error loading the data */
   isError?: boolean
   /** Custom message to show when the table is empty */
   emptyMessage?: string
@@ -76,11 +71,9 @@ export type ExpandedPanel<TData extends TableItem> = (props: { row: Row<TData>; 
 export type ActivityTableProps<TKey extends string, TData extends TableItem> = {
   /** Available selection options for the toggle buttons */
   selections: ActivitySelection<TKey>[]
-  /** Currently active selection key */
   activeSelection: TKey
   /** Callback when the selection changes */
   onSelectionChange: (key: TKey) => void
-  /** Configuration for the currently active table view */
   tableConfig: ActivityTableConfig<TData>
   /** Maximum height of the table (enables scrolling) */
   maxHeight?: `${number}rem`

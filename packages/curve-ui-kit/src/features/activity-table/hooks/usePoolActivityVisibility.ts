@@ -5,10 +5,6 @@ import { PoolLiquidityColumnId, getTokenAmountColumnId } from '../columns/pool-l
 import { PoolTradesColumnId } from '../columns/pool-trades-columns'
 import type { Token } from '../types'
 
-/**
- * Create mobile column visibility for pool trades table.
- * On mobile, shows only Bought and Time columns.
- */
 const createTradesMobileVisibility = (): VisibilityState => ({
   [PoolTradesColumnId.Bought]: true,
   [PoolTradesColumnId.Sold]: false,
@@ -16,11 +12,6 @@ const createTradesMobileVisibility = (): VisibilityState => ({
   [PoolTradesColumnId.Time]: true,
 })
 
-/**
- * Create mobile column visibility for pool liquidity table.
- * On mobile, shows only Action and Time columns.
- * Hides all token amount columns.
- */
 const createLiquidityMobileVisibility = (poolTokens: Token[]): VisibilityState => {
   const visibility: VisibilityState = {
     [PoolLiquidityColumnId.Action]: true,
@@ -37,7 +28,6 @@ const createLiquidityMobileVisibility = (poolTokens: Token[]): VisibilityState =
 }
 
 type UsePoolActivityVisibilityParams = {
-  /** Pool tokens in order matching tokenAmounts array */
   poolTokens: Token[]
 }
 
@@ -47,9 +37,7 @@ type UsePoolActivityVisibilityParams = {
  */
 export const usePoolActivityVisibility = ({ poolTokens }: UsePoolActivityVisibilityParams) => {
   const isMobile = useIsMobile()
-
   const tradesColumnVisibility = useMemo(() => (isMobile ? createTradesMobileVisibility() : undefined), [isMobile])
-
   const liquidityColumnVisibility = useMemo(
     () => (isMobile ? createLiquidityMobileVisibility(poolTokens) : undefined),
     [isMobile, poolTokens],

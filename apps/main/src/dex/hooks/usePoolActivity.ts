@@ -26,11 +26,8 @@ export const POOL_ACTIVITY_SELECTIONS: ActivitySelection<PoolActivitySelection>[
 const PAGE_SIZE = 50
 
 type UsePoolActivityProps = {
-  /** The chain ID */
   chainId: ChainId
-  /** The pool contract address */
   poolAddress: Address | undefined
-  /** Pool tokens (symbols and addresses) in order matching liquidity event amounts */
   poolTokens: PoolCoin[]
 }
 

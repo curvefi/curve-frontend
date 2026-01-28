@@ -9,17 +9,17 @@ import { type Token } from '@ui-kit/features/activity-table'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 
 type ChartAndActivityCompProps = {
-  rChainId: ChainId
+  chainId: ChainId
   market: Llamma | null
   llammaId: string
 }
 
-export const ChartAndActivityComp = ({ rChainId, market, llammaId }: ChartAndActivityCompProps) => {
+export const ChartAndActivityComp = ({ chainId, market, llammaId }: ChartAndActivityCompProps) => {
   const { llamaApi: api = null } = useCurve()
   const collateralTokenAddress = market?.coinAddresses[1]
   const borrowedTokenAddress = market?.coinAddresses[0]
 
-  const networkConfig = networks[rChainId]
+  const networkConfig = networks[chainId]
   const network = networkConfig?.id.toLowerCase() as Chain
   const ammAddress = market?.address as Address | undefined
 
@@ -32,7 +32,7 @@ export const ChartAndActivityComp = ({ rChainId, market, llammaId }: ChartAndAct
     legendSets,
     ohlcChartProps,
   } = useOhlcChartState({
-    rChainId,
+    chainId,
     market,
     llammaId,
   })
@@ -44,7 +44,7 @@ export const ChartAndActivityComp = ({ rChainId, market, llammaId }: ChartAndAct
     isLoading: isBandsLoading,
     isError: isBandsError,
   } = useBandsData({
-    chainId: rChainId,
+    chainId,
     marketId: llammaId,
     api,
     collateralTokenAddress,

@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from 'react'
 import { useLlammaEvents } from '@/llamalend/queries/llamma-events.query'
 import { useLlammaTrades } from '@/llamalend/queries/llamma-trades.query'
 import type { Chain, Address } from '@curvefi/prices-api'
-import type { LlammaTrade, LlammaEvent } from '@curvefi/prices-api/llamma'
+import type { LlammaTrade, LlammaEvent, Endpoint } from '@curvefi/prices-api/llamma'
 import { scanTxPath, type BaseConfig } from '@ui/utils'
 import {
   type ActivitySelection,
@@ -18,24 +18,18 @@ import {
 import { t } from '@ui-kit/lib/i18n'
 
 export const LLAMMA_ACTIVITY_SELECTIONS: ActivitySelection<LlammaActivitySelection>[] = [
-  { key: 'trades', label: t`AMM` },
+  { key: 'trades', label: t`Trades` },
   { key: 'events', label: t`Controller` },
 ]
 
 const PAGE_SIZE = 50
 
 export type UseLlammaActivityProps = {
-  /** The chain identifier for the prices API (e.g., 'ethereum', 'arbitrum') */
   network: Chain | undefined
-  /** The collateral token info */
   collateralToken: Token | undefined
-  /** The borrow token info */
   borrowToken: Token | undefined
-  /** The AMM contract address */
   ammAddress: Address | undefined
-  /** The endpoint type ('lending' or 'crvusd') */
-  endpoint: 'lending' | 'crvusd'
-  /** Network config for generating block explorer URLs */
+  endpoint: Endpoint
   networkConfig: BaseConfig | undefined
 }
 

@@ -4,10 +4,6 @@ import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { LlammaEventsColumnId } from '../columns/llamma-events-columns'
 import { LlammaTradesColumnId } from '../columns/llamma-trades-columns'
 
-/**
- * Create mobile column visibility for trades table.
- * On mobile, shows only Bought and Time columns.
- */
 const createTradesMobileVisibility = (): VisibilityState => ({
   [LlammaTradesColumnId.Bought]: true,
   [LlammaTradesColumnId.Sold]: false,
@@ -15,10 +11,6 @@ const createTradesMobileVisibility = (): VisibilityState => ({
   [LlammaTradesColumnId.Time]: true,
 })
 
-/**
- * Create mobile column visibility for events table.
- * On mobile, shows only Action and Time columns.
- */
 const createEventsMobileVisibility = (): VisibilityState => ({
   [LlammaEventsColumnId.Action]: true,
   [LlammaEventsColumnId.Change]: false,
@@ -32,9 +24,7 @@ const createEventsMobileVisibility = (): VisibilityState => ({
  */
 export const useLlammaActivityVisibility = () => {
   const isMobile = useIsMobile()
-
   const tradesColumnVisibility = useMemo(() => (isMobile ? createTradesMobileVisibility() : undefined), [isMobile])
-
   const eventsColumnVisibility = useMemo(() => (isMobile ? createEventsMobileVisibility() : undefined), [isMobile])
 
   return { tradesColumnVisibility, eventsColumnVisibility }

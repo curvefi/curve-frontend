@@ -34,7 +34,6 @@ const EMPTY_ARRAY: never[] = []
 
 export type ChartAndActivityLayoutProps = {
   isMarketAvailable: boolean
-  /** Chart state */
   chart: {
     ohlcDataUnavailable: boolean
     isLoading: boolean
@@ -44,7 +43,6 @@ export type ChartAndActivityLayoutProps = {
     legendSets: LegendItem[]
     ohlcChartProps: OhlcChartProps & { selectChartList: ChartSelections[] }
   }
-  /** Bands chart data */
   bands?: {
     chartData: ChartDataPoint[]
     userBandsBalances: ParsedBandsBalances[]
@@ -54,7 +52,6 @@ export type ChartAndActivityLayoutProps = {
     collateralToken: Token | undefined
     borrowToken: Token | undefined
   }
-  /** Activity component props */
   activity: LlammaActivityProps
 }
 

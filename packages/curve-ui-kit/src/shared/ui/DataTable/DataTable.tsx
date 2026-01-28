@@ -33,7 +33,7 @@ function useScrollToTopOnFilterChange<T extends TableItem>(table: TanstackTable<
 }
 
 /**
- * Scrolls to the top of the table container whenever the page changes.
+ * Scrolls to the top of the table container whenever the page changes with manual pagination.
  */
 function useScrollToTopOnPageChange<T extends TableItem>(
   table: TanstackTable<T>,
