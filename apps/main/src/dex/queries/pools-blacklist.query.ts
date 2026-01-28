@@ -1,8 +1,10 @@
 import type { Address } from 'viem'
+import * as Api from '@curvefi/prices-api/chains'
 import { createValidationSuite } from '@ui-kit/lib'
 import { queryFactory, rootKeys, type ChainParams, type ChainQuery } from '@ui-kit/lib/model'
 import { chainValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
 import { Chain } from '@ui-kit/utils'
+import { fetchNetworks } from '../entities/networks'
 
 /**
  * A local hardcoded blacklist of pools we don't want to show in the front-end for whatever reason.
@@ -37,7 +39,16 @@ const blacklist: Partial<Record<Chain, Address[]>> = {
 /** Gets a list of all blacklisted pool addresses. */
 export const { useQuery: usePoolsBlacklist, fetchQuery: fetchPoolsBlacklist } = queryFactory({
   queryKey: ({ chainId }: ChainParams) => [...rootKeys.chain({ chainId }), 'pools-blacklist'] as const,
-  queryFn: async ({ chainId }: ChainQuery) => Promise.resolve(blacklist[chainId as Chain] ?? []),
+  queryFn: async ({ chainId }: ChainQuery) => {
+    const networks = await fetchNetworks()
+    const { id: blockchainId } = networks[chainId]
+
+    const blacklistPricesApi = (await Api.getPoolFilters())
+      .filter(({ chain }) => chain === blockchainId)
+      .map(({ address }) => address)
+
+    return [...(blacklist[chainId as Chain] ?? []), ...blacklistPricesApi]
+  },
   validationSuite: createValidationSuite((params: ChainParams) => {
     chainValidationGroup(params)
   }),
