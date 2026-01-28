@@ -6,7 +6,6 @@ import type { CreateConnectorFn } from '@wagmi/core'
 const WALLET_CONNECT_PROJECT_ID = '982ea4bdf92e49746bd040a981283b36'
 
 export const INJECTED_CONNECTOR_ID = 'injected'
-export const BINANCE_CONNECTOR_ID = 'wallet.binance.com'
 
 // Order matters for the connect wallet modal, list grows from bottom to top, so first one is shown all the way down.
 export const connectors: CreateConnectorFn[] = [
@@ -23,8 +22,5 @@ export const connectors: CreateConnectorFn[] = [
     },
   }),
   injected({ target: { id: 'injected', name: t`Browser Wallet`, provider: () => window.ethereum } }),
-  injected({
-    target: { id: BINANCE_CONNECTOR_ID, name: t`Binance Wallet`, provider: () => window.binancew3w?.ethereum },
-  }),
   ...(window.eip6963Connectors ?? []).map((target) => injected({ target })),
 ]
