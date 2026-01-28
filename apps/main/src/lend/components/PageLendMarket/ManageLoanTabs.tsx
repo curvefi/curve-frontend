@@ -57,7 +57,7 @@ const LendManageLegacyMenu = [
 const LendManageNewMenu = [
   {
     value: 'loan-increase',
-    label: t`Borrow more`,
+    label: t`Borrow`,
     component: ({ rChainId, market, isLoaded }: PageContentProps) => (
       <BorrowMoreForm networks={networks} chainId={rChainId} market={market} enabled={isLoaded} />
     ),
