@@ -34,7 +34,6 @@
     "memoizee": "^0.4.17",
     "react-hook-form": "7.71.1",
     "recharts": "2.15.4",
-    "solid-js": "^1.9.11",
     "ui": "*",
     "vest": "^5.4.6",
     "vite-plugin-svgr": "^4.5.0",
