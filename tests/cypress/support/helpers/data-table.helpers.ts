@@ -7,7 +7,7 @@ import { Breakpoint, e2eBaseUrl } from '@cy/support/ui'
  */
 export function withFilterChips(breakpoint: Breakpoint, callback: () => Cypress.Chainable) {
   if (breakpoint !== 'mobile') return callback()
-  cy.get('[data-testid="btn-drawer-filter-dex-pools"]').click()
+  cy.get('[data-testid^="btn-drawer-filter-"]').click()
   return callback().then((result) => {
     cy.get('body').click(0, 0)
     return cy.wrap(result)
