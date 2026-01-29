@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 import lodash, { max } from 'lodash'
 import { LlamaMarketColumnId } from '@/llamalend/features/market-list/columns/columns.enum'
 import type { GetMarketsResponse } from '@curvefi/prices-api/llamalend'
@@ -195,6 +196,23 @@ describe(`LlamaLend Markets`, () => {
       closeSlider()
       cy.get(`[data-testid^="data-table-row"]`).should('have.length.below', length)
       cy.url().should('include', `${columnId}=`)
+    })
+  })
+
+  it('should let the TVL filter override the default small pools cutoff', () => {
+    const getHiddenCount = () => cy.get('[data-testid="hidden-market-count"]').then(([{ innerText }]) => innerText)
+
+    getHiddenCount().then((beforeCount) => {
+      expect(isNaN(+beforeCount), `Cannot parse hidden count ${beforeCount}`).to.be.false
+      expandFilters()
+      cy.get(`[data-testid="minimum-slider-filter-tvl"]`).click({ waitForAnimations: true })
+      cy.get(`[data-testid="slider-tvl"]`).as('slider').should('be.visible')
+      cy.get(`[data-testid="slider-input-tvl-min"]`).type('0')
+      closeSlider()
+      cy.url().should('include', `tvl=0~`)
+      getHiddenCount().then((afterCount) => {
+        expect(+afterCount).to.be.lessThan(+beforeCount)
+      })
     })
   })
 

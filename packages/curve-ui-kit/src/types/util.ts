@@ -1,5 +1,7 @@
 import type { UseQueryResult } from '@tanstack/react-query'
 
+export type NumberRange = [number, number]
+
 /**
  * Creates a deep partial type that makes all properties optional recursively,
  * while preserving function types as-is

@@ -42,8 +42,8 @@ export type SliderInputProps<T extends Decimal | DecimalRangeValue> = {
     sliderMax?: number
     sliderStep?: number | null
   }
-  /** Test ID for the slider and inputs */
-  testId?: string
+  /** ID for the slider and inputs */
+  id: string
   /** Additional props forwarded to the slider */
   sliderProps?: Omit<SliderProps, 'size' | 'value' | 'onChange' | 'step' | 'disabled' | 'aria-label' | 'scale'>
   /** Additional props forwarded to the inputs */
@@ -99,7 +99,7 @@ export const SliderInput = <T extends Decimal | DecimalRangeValue>({
   sliderProps,
   inputProps,
   sliderValueTransform,
-  testId,
+  id,
   debounceMs = Duration.FormDebounce,
 }: SliderInputProps<T>) => {
   const isRange = isRangeValue(value)
@@ -234,7 +234,7 @@ export const SliderInput = <T extends Decimal | DecimalRangeValue>({
       }}
       disabled={disabled}
       sx={{ maxWidth: sliderInputMaxWidthMap[layoutDirection] }}
-      data-testid={`slider-input-${testId}-${index}`}
+      data-testid={`slider-input-${id}-${index === 0 ? 'min' : 'max'}`}
       {...restInputProps}
     />
   )
@@ -253,7 +253,7 @@ export const SliderInput = <T extends Decimal | DecimalRangeValue>({
       step={sliderStepValue}
       disabled={disabled}
       scale={mapFromSliderValue}
-      data-testid={`slider-${testId}`}
+      data-testid={`slider-${id}`}
       {...restSliderProps}
     />
   )
