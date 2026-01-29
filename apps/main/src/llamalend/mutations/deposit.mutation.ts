@@ -45,15 +45,15 @@ export const useDepositMutation = ({
     marketId,
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'deposit'] as const,
     mutationFn: async (mutation, { market }) => {
-      market = requireVault(market)
+      const lendMarket = requireVault(market)
       await waitForApproval({
         isApproved: async () => await fetchDepositIsApproved({ chainId, marketId, ...mutation }, { staleTime: 0 }),
-        onApprove: async () => await approveDeposit(market, mutation),
+        onApprove: async () => await approveDeposit(lendMarket, mutation),
         message: t`Approved deposit`,
         config,
       })
 
-      return { hash: await deposit(market, mutation) }
+      return { hash: await deposit(lendMarket, mutation) }
     },
     validationSuite: depositValidationSuite,
     pendingMessage: (mutation, { market }) =>

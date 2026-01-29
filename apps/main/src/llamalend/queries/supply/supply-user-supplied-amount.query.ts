@@ -15,10 +15,10 @@ export const { useQuery: useUserSuppliedAmount, invalidate: invalidateUserSuppli
   queryKey: ({ chainId, marketId, userAddress }: DepositParams) =>
     [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'userSuppliedAmount'] as const,
   queryFn: async ({ marketId }: DepositQuery) => {
-    const market = requireVault(marketId)
-    const { vaultShares } = await market.wallet.balances()
+    const lendMarket = requireVault(marketId)
+    const { vaultShares } = await lendMarket.wallet.balances()
     if (+vaultShares === 0) return '0' as Decimal
-    return (await market.vault.convertToAssets(vaultShares)) as Decimal
+    return (await lendMarket.vault.convertToAssets(vaultShares)) as Decimal
   },
   validationSuite: userSuppliedAmountValidationSuite,
 })
