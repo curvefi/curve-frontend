@@ -100,7 +100,7 @@ export const RangeSliderFilter = <TKey, TColumnId extends string>({
             format: (value) => formatNumber(Number(value), { abbreviate: true }),
             adornment,
           }}
-          id={id}
+          name={id}
         />
       </Stack>
     </Select>
