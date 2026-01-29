@@ -22,6 +22,7 @@ import {
   VolumeMapper,
 } from '@/dex/types/main.types'
 import { getChainPoolIdActiveKey } from '@/dex/utils'
+import type { Chain } from '@curvefi/prices-api'
 import type { PoolCoin } from '@curvefi/prices-api/pools'
 import { PromisePool } from '@supercharge/promise-pool'
 import type {
@@ -203,7 +204,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
 
       const { chainId } = curve
       const networks = await fetchNetworks()
-      const { isLite } = networks[chainId]
+      const { isLite, id } = networks[chainId]
       const nativeToken = curve.getNetworkConstants().NATIVE_TOKEN
 
       try {
@@ -214,7 +215,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
           }),
         )
 
-        const blacklist = await fetchPoolsBlacklist({ chainId })
+        const blacklist = await fetchPoolsBlacklist({ blockchainId: id as Chain })
         const { poolsMapper, poolsMapperCache } = await getPools(
           curve,
           poolIds,

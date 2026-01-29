@@ -9,6 +9,7 @@ import { usePoolsBlacklist } from '@/dex/queries/pools-blacklist.query'
 import { useStore } from '@/dex/store/useStore'
 import type { PoolUrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
+import type { Chain } from '@curvefi/prices-api'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useNavigate, useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
@@ -53,7 +54,7 @@ export const PagePool = () => {
    * the lookup will succeed or fail deterministically, and the `useEffect` above
    * will set `poolNotFound` accordingly.
    */
-  const { data: blacklist } = usePoolsBlacklist({ chainId: rChainId })
+  const { data: blacklist } = usePoolsBlacklist({ blockchainId: networkId as Chain })
   const isBlacklisted = useMemo(
     () =>
       isAddress(rPoolIdOrAddress, { strict: false }) &&
