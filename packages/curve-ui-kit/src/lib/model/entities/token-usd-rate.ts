@@ -1,19 +1,21 @@
 import { useCallback, useMemo } from 'react'
-import { enforce, group, test } from 'vest'
+import type { Address } from 'viem'
+import { FetchError } from '@curvefi/prices-api/fetch'
+import { fromEntries, recordEntries } from '@curvefi/prices-api/objects.util'
+import { getUsdPrice } from '@curvefi/prices-api/usd-price'
 import { type QueriesResults, useQueries } from '@tanstack/react-query'
 import { getLib } from '@ui-kit/features/connect-wallet'
 import { combineQueriesToObject, createValidationSuite } from '@ui-kit/lib'
 import { queryFactory, rootKeys, type ChainParams, type TokenParams, type TokenQuery } from '@ui-kit/lib/model/query'
 import { tokenValidationGroup } from '@ui-kit/lib/model/query/token-validation'
+import { chainIdToBlockchainId } from '@ui-kit/utils'
 
 export const QUERY_KEY_IDENTIFIER = 'usdRate' as const
 
 /**
  * Hook to fetch the USD rate for a specific token on a specific blockchain.
- * Note this is limited to a single chain per time, since it's implemented using Curve and Llama APIs.
- * However, the libraries will cache the HTTP requests internally, so we don't need a HTTP request per token.
- * Note llamalend-js cannot be initialized without a wallet.
- * @see `useTokenUsdPrice` For multi-chain support.
+ * First attempts to use Curve/Llama APIs when available.
+ * Falls back to the prices API if no matching library is available.
  */
 export const {
   getQueryData: getTokenUsdRateQueryData,
@@ -22,34 +24,39 @@ export const {
   getQueryOptions: getTokenUsdRateQueryOptions,
 } = queryFactory({
   queryKey: (params: TokenParams) => [...rootKeys.token(params), QUERY_KEY_IDENTIFIER] as const,
-  queryFn: async ({ chainId, tokenAddress }: TokenQuery): Promise<number> => {
+  queryFn: async ({ chainId, tokenAddress }: TokenQuery): Promise<number | null> => {
+    // First try the on-chain lib-based approach when available (uses prices API internally too)
     const curve = getLib('curveApi')
     if (curve?.chainId === chainId) return await curve.getUsdRate(tokenAddress)
     const llama = getLib('llamaApi')
     if (llama?.chainId === chainId) return await llama.getUsdRate(tokenAddress)
-    throw new Error('No matching API library found')
+
+    // Fall back to prices API (works multi-chain without wallet connection or curve library)
+    const blockchainId = chainIdToBlockchainId[chainId]
+    if (!blockchainId) {
+      throw new Error(`No blockchain ID mapping found for chain ID ${chainId}`)
+    }
+    try {
+      const { usdPrice } = await getUsdPrice(blockchainId, tokenAddress as Address)
+      return usdPrice
+    } catch (e) {
+      if (e instanceof FetchError && e.status === 404) {
+        return null // do not retry 404 errors from the prices API
+      }
+      throw e
+    }
   },
   staleTime: '5m',
   refetchInterval: '1m',
   validationSuite: createValidationSuite(({ chainId, tokenAddress }: TokenParams) => {
     tokenValidationGroup({ chainId, tokenAddress })
-    group('apiValidation', () => {
-      test('api', 'API chain ID mismatch', () => {
-        enforce(getLib('llamaApi')?.chainId === chainId || getLib('curveApi')?.chainId === chainId)
-          .isTruthy()
-          .message(`No matching API library found for chain ID ${chainId}`)
-      })
-    })
   }),
   disableLog: true, // too much noise in the logs
 })
 
 type UseTokenOptions = ReturnType<typeof getTokenUsdRateQueryOptions>
 
-/**
- * Hook to fetch USD rates for multiple tokens on a specific blockchain.
- * Note this is limited to a single chain per time, since it's implemented using Curve and Llama APIs.
- */
+/** Hook to fetch USD rates for multiple tokens on a specific blockchain. */
 export const useTokenUsdRates = (
   { chainId, tokenAddresses = [] }: ChainParams & { tokenAddresses?: string[] },
   enabled: boolean = true,
@@ -65,7 +72,15 @@ export const useTokenUsdRates = (
       [chainId, uniqueAddresses, enabled],
     ),
     combine: useCallback(
-      (results: QueriesResults<UseTokenOptions[]>) => combineQueriesToObject(results, uniqueAddresses),
+      (results: QueriesResults<UseTokenOptions[]>) => {
+        const combined = combineQueriesToObject(results, uniqueAddresses)
+        return {
+          ...combined,
+          data: fromEntries(
+            recordEntries(combined.data).filter((entry): entry is [string, number] => entry[1] != null),
+          ),
+        }
+      },
       [uniqueAddresses],
     ),
   })

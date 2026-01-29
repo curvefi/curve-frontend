@@ -4,8 +4,9 @@ import { calculateLtv } from '@/llamalend/llama.utils'
 import { useUserLendingVaultEarnings, useUserLendingVaultStats } from '@/llamalend/queries/market-list/lending-vaults'
 import { type LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { useUserMintMarketStats } from '@/llamalend/queries/market-list/mint-markets'
-import { useTokenUsdPrice } from '@ui-kit/lib/model/entities/token-usd-prices'
+import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LlamaMarketType } from '@ui-kit/types/market'
+import { getChainIdFromBlockchainId } from '@ui-kit/utils'
 import { decimal } from '@ui-kit/utils/decimal'
 
 const statsColumns = [
@@ -31,13 +32,13 @@ const earningsColumns = [
 export function useUserMarketStats(market: LlamaMarket, column?: LlamaMarketColumnId) {
   const { type, userHasPositions, controllerAddress, vaultAddress, chain } = market
   const { address: userAddress } = useConnection()
-  const { data: collateralUsdRate, isLoading: collateralUsdRateLoading } = useTokenUsdPrice({
-    blockchainId: market.chain,
-    contractAddress: market.assets.collateral.address,
+  const { data: collateralUsdRate, isLoading: collateralUsdRateLoading } = useTokenUsdRate({
+    chainId: getChainIdFromBlockchainId(market.chain),
+    tokenAddress: market.assets.collateral.address,
   })
-  const { data: borrowedUsdRate, isLoading: borrowedUsdRateLoading } = useTokenUsdPrice({
-    blockchainId: market.chain,
-    contractAddress: market.assets.borrowed.address,
+  const { data: borrowedUsdRate, isLoading: borrowedUsdRateLoading } = useTokenUsdRate({
+    chainId: getChainIdFromBlockchainId(market.chain),
+    tokenAddress: market.assets.borrowed.address,
   })
 
   const enableStats = !!userHasPositions?.Borrow && (!column || statsColumns.includes(column))
