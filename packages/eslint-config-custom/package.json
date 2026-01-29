@@ -6,9 +6,9 @@
   "private": true,
   "devDependencies": {
     "@eslint/js": "*",
-    "@tanstack/eslint-plugin-query": "5.91.2",
-    "@typescript-eslint/eslint-plugin": "^8.48.1",
-    "@typescript-eslint/parser": "^8.48.1",
+    "@tanstack/eslint-plugin-query": "5.91.3",
+    "@typescript-eslint/eslint-plugin": "^8.54.0",
+    "@typescript-eslint/parser": "^8.54.0",
     "eslint": "*",
     "eslint-config-prettier": "^10.1.8",
     "eslint-import-resolver-typescript": "4.4.4",
@@ -16,8 +16,8 @@
     "eslint-plugin-no-only-tests": "^3.3.0",
     "eslint-plugin-react": "7.37.5",
     "eslint-plugin-react-hooks": "^7.0.1",
-    "eslint-plugin-react-refresh": "^0.4.24",
-    "eslint-plugin-storybook": "10.1.11",
+    "eslint-plugin-react-refresh": "^0.4.26",
+    "eslint-plugin-storybook": "10.2.1",
     "eslint-plugin-unused-imports": "^4.3.0",
     "prettier-eslint": "^16.4.2",
     "typescript": "*"

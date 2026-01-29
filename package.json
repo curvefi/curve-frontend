@@ -25,9 +25,9 @@
     "storybook:build": "yarn workspace curve-ui-kit run build:storybook"
   },
   "devDependencies": {
-    "@commitlint/cli": "^20.2.0",
-    "@commitlint/config-conventional": "^20.2.0",
-    "@commitlint/load": "20.2.0",
+    "@commitlint/cli": "^20.3.1",
+    "@commitlint/config-conventional": "^20.3.1",
+    "@commitlint/load": "20.3.1",
     "@eslint/eslintrc": "*",
     "@eslint/js": "*",
     "@types/react": "*",
@@ -40,7 +40,7 @@
     "immer": "*",
     "lint-staged": "16.2.7",
     "lodash": "*",
-    "prettier": "^3.7.4",
+    "prettier": "^3.8.1",
     "react": "*",
     "react-dom": "*",
     "styled-components": "*",
@@ -57,13 +57,13 @@
     ]
   },
   "resolutions": {
-    "@curvefi/api": "2.68.29",
+    "@curvefi/api": "2.68.31",
     "@eslint/eslintrc": "3.3.3",
     "@eslint/js": "9.39.2",
-    "@types/node": "24.10.4",
+    "@types/node": "25.0.10",
     "@types/react": "19.2.7",
     "@types/react-dom": "19.2.3",
-    "@vitejs/plugin-react": "^5.1.1",
+    "@vitejs/plugin-react": "^5.1.2",
     "bignumber.js": "9.3.1",
     "eslint": "9.39.2",
     "ethers": "6.16.0",
@@ -75,7 +75,7 @@
     "typescript": "5.9.3",
     "vite": "7.3.0",
     "vitest": "^4.0.15",
-    "esbuild": "0.27.1",
+    "esbuild": "0.27.2",
     "zustand": "5.0.9"
   }
 }
