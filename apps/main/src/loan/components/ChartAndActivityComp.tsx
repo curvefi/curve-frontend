@@ -1,5 +1,5 @@
+import { getBandsChartToken } from '@/llamalend/features/bands-chart/bands-chart.utils'
 import { useBandsData } from '@/llamalend/features/bands-chart/hooks/useBandsData'
-import { getBandsChartToken } from '@/llamalend/features/bands-chart/utils'
 import { ChartAndActivityLayout } from '@/llamalend/widgets/ChartAndActivityLayout'
 import { useOhlcChartState } from '@/loan/hooks/useOhlcChartState'
 import { networks } from '@/loan/networks'
