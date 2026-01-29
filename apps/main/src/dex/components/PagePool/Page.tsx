@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { isAddressEqual, type Address } from 'viem'
+import { isAddress, isAddressEqual, type Address } from 'viem'
 import { Transfer } from '@/dex/components/PagePool/index'
 import { ROUTE } from '@/dex/constants'
 import { useNetworkByChain } from '@/dex/entities/networks'
@@ -32,11 +32,6 @@ export const PagePool = () => {
 
   const poolDataCacheOrApi = useMemo(() => poolData || poolDataCache, [poolData, poolDataCache])
 
-  const { data: poolsBlacklist } = usePoolsBlacklist({ chainId: rChainId })
-  const isBlacklisted =
-    poolDataCacheOrApi &&
-    poolsBlacklist?.some((badPool) => isAddressEqual(poolDataCacheOrApi.pool.id as Address, badPool))
-
   useEffect(() => {
     if (!rChainId || !poolId || curveApi?.chainId !== rChainId || !haveAllPools || poolData) return
     fetchNewPool(curveApi, poolId)
@@ -44,10 +39,32 @@ export const PagePool = () => {
       .catch(() => setPoolNotFound(true))
   }, [curveApi, fetchNewPool, haveAllPools, network, poolId, poolData, push, rChainId])
 
-  return !rFormType || isBlacklisted || poolNotFound ? (
+  /**
+   * Blacklisted pools are excluded from the pools mapper during initialization,
+   * so they cannot be resolved via `usePoolIdByAddressOrId`.
+   *
+   * Because of the way that legacy code loads pools (using stores and not queries),
+   * this creates an ambiguity when `rPoolIdOrAddress` is an address:
+   * - `poolId` being undefined could mean the data is still loading
+   * - `poolId` being undefined could mean the pool is blacklisted
+   *
+   * To handle this, we explicitly check against the blacklist when the URL
+   * parameter is an address. When `rPoolIdOrAddress` is a pool ID (not an address),
+   * the lookup will succeed or fail deterministically, and the `useEffect` above
+   * will set `poolNotFound` accordingly.
+   */
+  const { data: blacklist } = usePoolsBlacklist({ chainId: rChainId })
+  const isBlacklisted = useMemo(
+    () =>
+      isAddress(rPoolIdOrAddress, { strict: false }) &&
+      blacklist?.some((badPool) => isAddressEqual(badPool, rPoolIdOrAddress as Address)),
+    [blacklist, rPoolIdOrAddress],
+  )
+
+  return !rFormType || poolNotFound || isBlacklisted ? (
     <ErrorPage title="404" subtitle={t`Pool Not Found`} continueUrl={getPath(props, ROUTE.PAGE_POOLS)} />
   ) : (
-    rFormType && poolDataCacheOrApi?.pool?.id === poolId && hasDepositAndStake != null && isHydrated && (
+    rFormType && poolId && poolDataCacheOrApi?.pool?.id === poolId && hasDepositAndStake != null && isHydrated && (
       <Transfer
         curve={curveApi}
         params={props}

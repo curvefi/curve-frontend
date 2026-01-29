@@ -243,7 +243,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
         // update cache
         void storeCache.setStateByActiveKey('poolsMapper', chainId.toString(), poolsMapperCache)
 
-        const partialPoolDatas = poolIds.map((poolId) => poolsMapper[poolId])
+        const partialPoolDatas = Object.keys(poolsMapper).map((poolId) => poolsMapper[poolId])
 
         if (!partialPoolDatas.length) return { poolsMapper, poolDatas: partialPoolDatas }
 
