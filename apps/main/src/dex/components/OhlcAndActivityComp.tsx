@@ -1,10 +1,10 @@
 import { SubTabsSwitcher } from 'curve-ui-kit/src/shared/ui/Tabs/SubTabsSwitcher'
 import { useState } from 'react'
 import { useOhlcChartState } from '@/dex/hooks/useOhlcChartState'
-import { usePoolActivity } from '@/dex/hooks/usePoolActivity'
+import { usePoolActivityEvents } from '@/dex/hooks/usePoolActivityEvents'
+import { usePoolActivityTrades } from '@/dex/hooks/usePoolActivityTrades'
 import { ChainId } from '@/dex/types/main.types'
-import type { Address } from '@curvefi/prices-api'
-import type { Pool, PoolCoin } from '@curvefi/prices-api/pools'
+import type { Pool } from '@curvefi/prices-api/pools'
 import Stack from '@mui/material/Stack'
 import { ActivityTable, PoolTradesExpandedPanel, PoolLiquidityExpandedPanel } from '@ui-kit/features/activity-table'
 import { ChartWrapper } from '@ui-kit/features/candle-chart/ChartWrapper'
@@ -16,50 +16,12 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 
-type Tab = 'chart' | 'poolActivity'
+type Tab = 'chart' | 'events' | 'trades'
 const tabs: TabOption<Tab>[] = [
   { value: 'chart', label: t`Chart` },
-  { value: 'poolActivity', label: t`Pool Activity` },
+  { value: 'trades', label: t`Swaps` },
+  { value: 'events', label: t`Liquidity` },
 ]
-
-const PoolActivity = ({
-  chainId,
-  poolAddress,
-  poolTokens,
-}: {
-  poolAddress: Address
-  chainId: ChainId
-  poolTokens: PoolCoin[]
-}) => {
-  const { activeSelection, setActiveSelection, selections, tradesTableConfig, liquidityTableConfig } = usePoolActivity({
-    chainId,
-    poolAddress,
-    poolTokens,
-  })
-
-  return (
-    <>
-      {activeSelection === 'trades' && (
-        <ActivityTable
-          selections={selections}
-          activeSelection={activeSelection}
-          onSelectionChange={setActiveSelection}
-          tableConfig={tradesTableConfig}
-          expandedPanel={PoolTradesExpandedPanel}
-        />
-      )}
-      {activeSelection === 'liquidity' && (
-        <ActivityTable
-          selections={selections}
-          activeSelection={activeSelection}
-          onSelectionChange={setActiveSelection}
-          tableConfig={liquidityTableConfig}
-          expandedPanel={PoolLiquidityExpandedPanel}
-        />
-      )}
-    </>
-  )
-}
 
 export const OhlcAndActivityComp = ({
   rChainId,
@@ -72,13 +34,26 @@ export const OhlcAndActivityComp = ({
     rChainId,
     pricesApiPoolData,
   })
-  const [tab, setTab] = useState<'chart' | 'poolActivity'>('chart')
+  const { liquidityTableConfig } = usePoolActivityEvents({
+    chainId: rChainId,
+    poolAddress: pricesApiPoolData.address,
+    poolTokens: pricesApiPoolData.coins,
+  })
+  const { tradesTableConfig } = usePoolActivityTrades({
+    chainId: rChainId,
+    poolAddress: pricesApiPoolData.address,
+    poolTokens: pricesApiPoolData.coins,
+  })
+  const [tab, setTab] = useState<Tab>('chart')
 
   return (
     <Stack gap={Spacing.md}>
       <SubTabsSwitcher tabs={tabs} value={tab} onChange={setTab} />
-      {pricesApiPoolData && tab === 'poolActivity' && (
-        <PoolActivity poolAddress={pricesApiPoolData.address} chainId={rChainId} poolTokens={pricesApiPoolData.coins} />
+      {pricesApiPoolData && tab === 'events' && (
+        <ActivityTable tableConfig={liquidityTableConfig} expandedPanel={PoolLiquidityExpandedPanel} />
+      )}
+      {pricesApiPoolData && tab === 'trades' && (
+        <ActivityTable tableConfig={tradesTableConfig} expandedPanel={PoolTradesExpandedPanel} />
       )}
       {tab === 'chart' && (
         <Stack sx={{ gap: Spacing.md }}>

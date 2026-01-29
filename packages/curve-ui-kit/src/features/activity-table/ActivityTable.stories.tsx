@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useMemo } from 'react'
 import type { Address, Chain } from '@curvefi/prices-api'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { ActivityTable } from './ActivityTable'
@@ -19,9 +19,6 @@ import type {
   PoolLiquidityRow,
   LlammaTradeRow,
   LlammaEventRow,
-  PoolActivitySelection,
-  LlammaActivitySelection,
-  ActivitySelection,
   Token,
   ActivityTableConfig,
 } from './types'
@@ -190,23 +187,11 @@ const generateLlammaEvents = (count: number, collateralToken: Token, borrowToken
   })
 }
 
-const POOL_ACTIVITY_SELECTIONS: ActivitySelection<PoolActivitySelection>[] = [
-  { key: 'trades', label: 'Swaps' },
-  { key: 'liquidity', label: 'Liquidity' },
-]
-
-const LLAMMA_ACTIVITY_SELECTIONS: ActivitySelection<LlammaActivitySelection>[] = [
-  { key: 'trades', label: 'AMM' },
-  { key: 'events', label: 'Controller' },
-]
-
 /**
  * DEX Pool Activity Component
  * Pool: TriCrypto (0x4eBdF703948ddCEA3B11f675B4D1Fba9d2414A14)
  */
 const DexPoolActivityComponent = () => {
-  const [activeSelection, setActiveSelection] = useState<PoolActivitySelection>('trades')
-
   const tradesData = useMemo(() => generatePoolTrades(20), [])
   const liquidityData = useMemo(() => generatePoolLiquidity(15), [])
   const liquidityColumns = useMemo(() => createPoolLiquidityColumns({ poolTokens: POOL_TOKENS }), [])
@@ -229,24 +214,8 @@ const DexPoolActivityComponent = () => {
 
   return (
     <>
-      {activeSelection === 'trades' && (
-        <ActivityTable
-          selections={POOL_ACTIVITY_SELECTIONS}
-          activeSelection={activeSelection}
-          onSelectionChange={setActiveSelection}
-          tableConfig={tradesTableConfig}
-          expandedPanel={PoolTradesExpandedPanel}
-        />
-      )}
-      {activeSelection === 'liquidity' && (
-        <ActivityTable
-          selections={POOL_ACTIVITY_SELECTIONS}
-          activeSelection={activeSelection}
-          onSelectionChange={setActiveSelection}
-          tableConfig={liquidityTableConfig}
-          expandedPanel={PoolLiquidityExpandedPanel}
-        />
-      )}
+      <ActivityTable tableConfig={tradesTableConfig} expandedPanel={PoolTradesExpandedPanel} />
+      <ActivityTable tableConfig={liquidityTableConfig} expandedPanel={PoolLiquidityExpandedPanel} />
     </>
   )
 }
@@ -256,8 +225,6 @@ const DexPoolActivityComponent = () => {
  * Market: 0x4F79Fe450a2BAF833E8f50340BD230f5A3eCaFe9 (WETH/crvUSD)
  */
 const LendMarketActivityComponent = () => {
-  const [activeSelection, setActiveSelection] = useState<LlammaActivitySelection>('trades')
-
   const tradesData = useMemo(() => generateLlammaTrades(20, COLLATERAL_TOKEN, BORROW_TOKEN), [])
   const eventsData = useMemo(() => generateLlammaEvents(15, COLLATERAL_TOKEN, BORROW_TOKEN), [])
 
@@ -279,24 +246,8 @@ const LendMarketActivityComponent = () => {
 
   return (
     <>
-      {activeSelection === 'trades' && (
-        <ActivityTable
-          selections={LLAMMA_ACTIVITY_SELECTIONS}
-          activeSelection={activeSelection}
-          onSelectionChange={setActiveSelection}
-          tableConfig={tradesTableConfig}
-          expandedPanel={LlammaTradesExpandedPanel}
-        />
-      )}
-      {activeSelection === 'events' && (
-        <ActivityTable
-          selections={LLAMMA_ACTIVITY_SELECTIONS}
-          activeSelection={activeSelection}
-          onSelectionChange={setActiveSelection}
-          tableConfig={eventsTableConfig}
-          expandedPanel={LlammaEventsExpandedPanel}
-        />
-      )}
+      <ActivityTable tableConfig={tradesTableConfig} expandedPanel={LlammaTradesExpandedPanel} />
+      <ActivityTable tableConfig={eventsTableConfig} expandedPanel={LlammaEventsExpandedPanel} />
     </>
   )
 }
@@ -357,9 +308,6 @@ export const LendMarketActivity: LendStory = {
 export const LoadingState: StoryObj = {
   render: () => (
     <ActivityTable
-      selections={POOL_ACTIVITY_SELECTIONS}
-      activeSelection="trades"
-      onSelectionChange={() => {}}
       tableConfig={{
         data: [],
         columns: POOL_TRADES_COLUMNS as ActivityTableConfig<PoolTradeRow>['columns'],
@@ -381,9 +329,6 @@ export const LoadingState: StoryObj = {
 export const EmptyState: StoryObj = {
   render: () => (
     <ActivityTable
-      selections={POOL_ACTIVITY_SELECTIONS}
-      activeSelection="trades"
-      onSelectionChange={() => {}}
       tableConfig={{
         data: [],
         columns: POOL_TRADES_COLUMNS as ActivityTableConfig<PoolTradeRow>['columns'],
@@ -405,9 +350,6 @@ export const EmptyState: StoryObj = {
 export const ErrorState: StoryObj = {
   render: () => (
     <ActivityTable
-      selections={POOL_ACTIVITY_SELECTIONS}
-      activeSelection="trades"
-      onSelectionChange={() => {}}
       tableConfig={{
         data: [],
         columns: POOL_TRADES_COLUMNS as ActivityTableConfig<PoolTradeRow>['columns'],

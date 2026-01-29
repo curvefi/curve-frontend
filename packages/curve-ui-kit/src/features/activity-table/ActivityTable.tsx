@@ -1,5 +1,4 @@
 import { useCallback, useMemo, useState } from 'react'
-import Stack from '@mui/material/Stack'
 import type { Row, Table, PaginationState } from '@tanstack/react-table'
 import { SortingState } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
@@ -7,10 +6,9 @@ import { getTableOptions, useTable, type TableItem } from '@ui-kit/shared/ui/Dat
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { ActivityTableHeader } from './ActivityTableHeader'
 import type { ActivityTableProps } from './types'
 
-const { Spacing, MaxHeight } = SizesAndSpaces
+const { MaxHeight } = SizesAndSpaces
 
 const DEFAULT_PAGE_SIZE = 50
 
@@ -21,14 +19,11 @@ const DefaultExpandedPanel = <T extends TableItem>(_props: { row: Row<T>; table:
  * A generic activity table component with toggle buttons for switching between different data views.
  * Designed to work with various data sources like llamma events/trades or pool trades/liquidity.
  */
-export const ActivityTable = <TKey extends string, TData extends TableItem>({
-  selections,
-  activeSelection,
-  onSelectionChange,
+export const ActivityTable = <TData extends TableItem>({
   tableConfig,
   maxHeight = MaxHeight.userEventsTable,
   expandedPanel,
-}: ActivityTableProps<TKey, TData>) => {
+}: ActivityTableProps<TData>) => {
   const {
     data,
     columns,
@@ -81,25 +76,18 @@ export const ActivityTable = <TKey extends string, TData extends TableItem>({
   })
 
   return (
-    <Stack gap={Spacing.xs}>
-      <ActivityTableHeader
-        selections={selections}
-        activeSelection={activeSelection}
-        onSelectionChange={onSelectionChange}
-      />
-      <DataTable
-        table={table}
-        emptyState={
-          <EmptyStateRow table={table} size="lg">
-            {isError ? (emptyMessage ?? t`Could not load data`) : (emptyMessage ?? t`No data found`)}
-          </EmptyStateRow>
-        }
-        loading={isLoading}
-        maxHeight={maxHeight}
-        shouldStickFirstColumn={false}
-        expandedPanel={expandedPanel ?? DefaultExpandedPanel}
-        skeletonMatchPageSize
-      />
-    </Stack>
+    <DataTable
+      table={table}
+      emptyState={
+        <EmptyStateRow table={table} size="lg">
+          {isError ? (emptyMessage ?? t`Could not load data`) : (emptyMessage ?? t`No data found`)}
+        </EmptyStateRow>
+      }
+      loading={isLoading}
+      maxHeight={maxHeight}
+      shouldStickFirstColumn={false}
+      expandedPanel={expandedPanel ?? DefaultExpandedPanel}
+      skeletonMatchPageSize
+    />
   )
 }

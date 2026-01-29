@@ -10,14 +10,6 @@ export type Token = {
   address: Address
 }
 
-/**
- * Selection option for the activity table toggle buttons.
- */
-export type ActivitySelection<TKey extends string = string> = {
-  key: TKey
-  label: string
-}
-
 // LLAMMA Types (for lending/crvusd markets)
 export type LlammaTradeRow = LlammaTrade & { txUrl?: string; url?: never; network: Chain }
 export type LlammaEventRow = LlammaEvent & {
@@ -27,7 +19,6 @@ export type LlammaEventRow = LlammaEvent & {
   collateralToken: Token | undefined
   borrowToken: Token | undefined
 }
-export type LlammaActivitySelection = 'trades' | 'events'
 
 // Pool Types (for DEX pools)
 export type PoolTradeRow = AllPoolTrade & { txUrl?: string; url?: never; network: Chain }
@@ -37,7 +28,6 @@ export type PoolLiquidityRow = PoolLiquidityEvent & {
   network: Chain
   poolTokens: Token[]
 }
-export type PoolActivitySelection = 'trades' | 'liquidity'
 
 /**
  * Configuration for a single table view within the ActivityTable.
@@ -67,12 +57,7 @@ export type ActivityTableConfig<TData extends TableItem> = {
 /**
  * Props for the ActivityTable component.
  */
-export type ActivityTableProps<TKey extends string, TData extends TableItem> = {
-  /** Available selection options for the toggle buttons */
-  selections: ActivitySelection<TKey>[]
-  activeSelection: TKey
-  /** Callback when the selection changes */
-  onSelectionChange: (key: TKey) => void
+export type ActivityTableProps<TData extends TableItem> = {
   tableConfig: ActivityTableConfig<TData>
   /** Maximum height of the table (enables scrolling) */
   maxHeight?: `${number}rem`

@@ -1,7 +1,11 @@
 import { useState } from 'react'
 import { BandsChart } from '@/llamalend/features/bands-chart/BandsChart'
 import type { ChartDataPoint, ParsedBandsBalances } from '@/llamalend/features/bands-chart/types'
-import { LlammaActivity, type LlammaActivityProps } from '@/llamalend/features/llamma-activity'
+import {
+  LlammaActivityEvents,
+  LlammaActivityTrades,
+  type LlammaActivityProps,
+} from '@/llamalend/features/llamma-activity'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
 import { type Token } from '@ui-kit/features/activity-table'
@@ -22,12 +26,13 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 
-type Tab = 'chart' | 'marketActivity'
+type Tab = 'chart' | 'trades' | 'events'
 const DEFAULT_TAB: Tab = 'chart'
 
 const TABS: TabOption<Tab>[] = [
   { value: 'chart', label: t`Chart` },
-  { value: 'marketActivity', label: t`LLAMMA` },
+  { value: 'trades', label: t`Swaps` },
+  { value: 'events', label: t`Activity` },
 ]
 
 const EMPTY_ARRAY: never[] = []
@@ -66,9 +71,8 @@ export const ChartAndActivityLayout = ({ isMarketAvailable, chart, bands, activi
   return (
     <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, gap: Spacing.sm, padding: Spacing.md }}>
       <SubTabsSwitcher tabs={TABS} value={tab} onChange={setTab} />
-
-      {tab === 'marketActivity' && isMarketAvailable && <LlammaActivity {...activity} />}
-
+      {tab === 'events' && isMarketAvailable && <LlammaActivityEvents {...activity} />}
+      {tab === 'trades' && isMarketAvailable && <LlammaActivityTrades {...activity} />}
       {tab === 'chart' && (
         <Stack sx={{ gap: Spacing.sm }}>
           <ChartHeader

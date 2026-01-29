@@ -1,0 +1,90 @@
+import { useCallback, useMemo, useState } from 'react'
+import { useNetworkByChain } from '@/dex/entities/networks'
+import { usePoolTrades } from '@/dex/entities/pool-trades.query'
+import { ChainId } from '@/dex/types/main.types'
+import type { Chain, Address } from '@curvefi/prices-api'
+import type { PoolCoin } from '@curvefi/prices-api/pools'
+import { scanTxPath } from '@ui/utils'
+import {
+  type ActivityTableConfig,
+  type PoolTradeRow,
+  POOL_TRADES_COLUMNS,
+  usePoolActivityVisibility,
+} from '@ui-kit/features/activity-table'
+import { t } from '@ui-kit/lib/i18n'
+
+const PAGE_SIZE = 50
+
+type UsePoolActivityProps = {
+  chainId: ChainId
+  poolAddress: Address | undefined
+  poolTokens: PoolCoin[]
+}
+
+/**
+ * Hook to manage pool activity data for the ActivityTable component.
+ * Handles fetching, transforming, and providing table configurations for pool trade events.
+ */
+export const usePoolActivityTrades = ({ chainId, poolAddress, poolTokens }: UsePoolActivityProps) => {
+  const { data: networkConfig } = useNetworkByChain({ chainId })
+  const network = networkConfig?.id.toLowerCase() as Chain
+
+  const { tradesColumnVisibility } = usePoolActivityVisibility({ poolTokens })
+  const [pageIndex, setPageIndex] = useState(0)
+  const handlePageChange = useCallback((pageIndex: number) => {
+    setPageIndex(pageIndex)
+  }, [])
+
+  const {
+    data: tradesData,
+    isLoading: isTradesLoading,
+    isError: isTradesError,
+  } = usePoolTrades({
+    chain: network,
+    poolAddress,
+    page: pageIndex + 1, // API uses 1-based pages
+    perPage: PAGE_SIZE,
+  })
+
+  // Transform trades data with block explorer URLs
+  const tradesWithUrls: PoolTradeRow[] | undefined = useMemo(
+    () =>
+      network &&
+      tradesData?.trades.map((trade) => ({
+        ...trade,
+        txUrl: scanTxPath(networkConfig, trade.txHash),
+        network,
+      })),
+    [tradesData?.trades, networkConfig, network],
+  )
+
+  const tradesTableConfig: ActivityTableConfig<PoolTradeRow> = useMemo(
+    () => ({
+      data: tradesWithUrls,
+      columns: POOL_TRADES_COLUMNS as ActivityTableConfig<PoolTradeRow>['columns'],
+      isLoading: isTradesLoading,
+      isError: isTradesError,
+      emptyMessage: t`No swap data found.`,
+      columnVisibility: tradesColumnVisibility,
+      pageCount: tradesData?.count,
+      pageIndex: pageIndex,
+      pageSize: PAGE_SIZE,
+      onPageChange: handlePageChange,
+    }),
+    [
+      tradesWithUrls,
+      isTradesLoading,
+      isTradesError,
+      tradesColumnVisibility,
+      tradesData?.count,
+      pageIndex,
+      handlePageChange,
+    ],
+  )
+
+  return {
+    tradesTableConfig,
+    isTradesLoading,
+    isTradesError,
+  }
+}
