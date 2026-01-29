@@ -207,6 +207,7 @@ describe(`LlamaLend Markets`, () => {
       expandFilters()
       cy.get(`[data-testid="minimum-slider-filter-tvl"]`).click({ waitForAnimations: true })
       cy.get(`[data-testid="slider-tvl"]`).as('slider').should('be.visible')
+      cy.get(`[data-testid="slider-input-tvl-min"]`).clear()
       cy.get(`[data-testid="slider-input-tvl-min"]`).type('0')
       closeSlider()
       cy.url().should('include', `tvl=0~`)
