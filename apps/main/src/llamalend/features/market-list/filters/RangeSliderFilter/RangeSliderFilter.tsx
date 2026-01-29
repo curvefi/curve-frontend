@@ -10,7 +10,7 @@ import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { type FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { NumericTextFieldProps } from '@ui-kit/shared/ui/NumericTextField'
 import { type DecimalRangeValue, SliderInput, SliderInputProps } from '@ui-kit/shared/ui/SliderInput'
-import { NumberRange } from '@ui-kit/types/util'
+import { Range } from '@ui-kit/types/util'
 import { decimal, formatNumber } from '@ui-kit/utils'
 
 type OnSliderChange = NonNullable<SliderInputProps<DecimalRangeValue>['onChange']>
@@ -89,7 +89,7 @@ export const RangeSliderFilter = <TKey, TColumnId extends string>({
           size="medium"
           value={useMemo(() => range.map(decimal) as DecimalRangeValue, [range])}
           onChange={useCallback<OnSliderChange>(
-            (newRange) => setRange(newRange.map(Number) as NumberRange),
+            (newRange) => setRange(newRange.map(Number) as Range<number>),
             [setRange],
           )}
           min={min}

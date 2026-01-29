@@ -237,7 +237,7 @@ export const SliderInput = <T extends Decimal | DecimalRangeValue>({
       }}
       disabled={disabled}
       sx={{ maxWidth: sliderInputMaxWidthMap[layoutDirection] }}
-      data-testid={`slider-input-${name}-${index === 0 ? 'min' : 'max'}`}
+      data-testid={`slider-input-${name}-${{ 0: 'min', 1: 'max' }[index]}`}
       {...restInputProps}
     />
   )
