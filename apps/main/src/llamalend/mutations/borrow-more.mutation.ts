@@ -11,19 +11,13 @@ import {
 } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
 import {
   type BorrowMoreForm,
+  BorrowMoreMutation,
   borrowMoreMutationValidationSuite,
 } from '@/llamalend/queries/validation/borrow-more.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
-import { type Decimal, waitForApproval } from '@ui-kit/utils'
-
-type BorrowMoreMutation = {
-  userCollateral: Decimal
-  userBorrowed: Decimal
-  debt: Decimal
-  slippage: Decimal
-}
+import { waitForApproval } from '@ui-kit/utils'
 
 export type OnBorrowedMore = LlammaMutationOptions<BorrowMoreMutation>['onSuccess']
 

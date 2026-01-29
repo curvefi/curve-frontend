@@ -19,8 +19,7 @@ import { userAddressValidationGroup } from '@ui-kit/lib/model/query/user-address
 import type { MakeOptional } from '@ui-kit/types/util'
 import { Decimal } from '@ui-kit/utils'
 
-// Types
-type CompleteBorrowMoreForm = {
+export type BorrowMoreMutation = {
   userCollateral: Decimal
   userBorrowed: Decimal
   debt: Decimal
@@ -33,11 +32,11 @@ type CalculatedValues = {
   maxBorrowed: Decimal | undefined
 }
 
-export type BorrowMoreForm = MakeOptional<CompleteBorrowMoreForm, 'userCollateral' | 'userBorrowed' | 'debt'> &
+export type BorrowMoreForm = MakeOptional<BorrowMoreMutation, 'userCollateral' | 'userBorrowed' | 'debt'> &
   CalculatedValues
 
 export type BorrowMoreQuery<ChainId = number> = UserMarketQuery<ChainId> &
-  CompleteBorrowMoreForm &
+  BorrowMoreMutation &
   Pick<CalculatedValues, 'maxDebt'>
 export type BorrowMoreParams<ChainId = number> = FieldsOf<BorrowMoreQuery<ChainId>>
 
