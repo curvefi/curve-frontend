@@ -8,6 +8,7 @@ import Button from '@mui/material/Button'
 import { t } from '@ui-kit/lib/i18n'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { useDepositForm } from '../hooks/useDepositForm'
+import { DepositSupplyInfoAccordion } from './DepositSupplyInfoAccordion'
 
 export type DepositFormProps<ChainId extends IChainId> = {
   market: LlamaMarketTemplate | undefined
@@ -30,6 +31,7 @@ export const DepositForm = <ChainId extends IChainId>({
 
   const {
     form,
+    params,
     isPending,
     onSubmit,
     isDisabled,
@@ -48,7 +50,11 @@ export const DepositForm = <ChainId extends IChainId>({
   })
 
   return (
-    <Form {...form} onSubmit={onSubmit} infoAccordion={null}>
+    <Form
+      {...form}
+      onSubmit={onSubmit}
+      infoAccordion={<DepositSupplyInfoAccordion params={params} networks={networks} tokens={{ borrowToken }} />}
+    >
       <LoanFormTokenInput
         label={t`Amount to deposit`}
         token={borrowToken}

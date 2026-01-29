@@ -59,9 +59,10 @@ export const useDepositForm = <ChainId extends LlamaChainId>({
       (): DepositParams<ChainId> => ({
         chainId,
         marketId,
+        userAddress,
         depositAmount: values.depositAmount,
       }),
-      [chainId, marketId, values.depositAmount],
+      [chainId, marketId, userAddress, values.depositAmount],
     ),
   )
 

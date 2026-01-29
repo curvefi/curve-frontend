@@ -6,7 +6,7 @@ import { fetchDepositIsApproved } from '@/llamalend/queries/supply/supply-deposi
 import {
   DepositForm,
   DepositMutation,
-  depositMutationValidationSuite,
+  depositValidationSuite,
   requireVault,
 } from '@/llamalend/queries/validation/supply.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -55,7 +55,7 @@ export const useDepositMutation = ({
 
       return { hash: await deposit(market, mutation) }
     },
-    validationSuite: depositMutationValidationSuite,
+    validationSuite: depositValidationSuite,
     pendingMessage: (mutation, { market }) =>
       t`Depositing... ${formatTokenAmounts(market, { userBorrowed: mutation.depositAmount })}`,
     successMessage: (mutation, { market }) =>

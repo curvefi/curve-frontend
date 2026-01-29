@@ -3,25 +3,21 @@ import { getLlamaMarket, hasVault } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
-import { chainValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
-import { llamaApiValidationGroup } from '@ui-kit/lib/model/query/curve-api-validation'
-import { marketIdValidationGroup } from '@ui-kit/lib/model/query/market-id-validation'
-import type { MarketParams, UserMarketQuery } from '@ui-kit/lib/model/query/root-keys'
-import { userAddressValidationGroup } from '@ui-kit/lib/model/query/user-address-validation'
+import type { UserMarketQuery } from '@ui-kit/lib/model/query/root-keys'
+import { userMarketValidationSuite } from '@ui-kit/lib/model/query/user-market-validation'
 import type { MakeOptional } from '@ui-kit/types/util'
 import type { Decimal } from '@ui-kit/utils'
 
-type CompleteDepositForm = {
+export type DepositMutation = {
   depositAmount: Decimal
 }
 
 type CalculatedDepositValues = {
   maxDepositAmount: Decimal | undefined
 }
-export type DepositMutation = CompleteDepositForm
-export type DepositForm = MakeOptional<CompleteDepositForm, 'depositAmount'> & CalculatedDepositValues
+export type DepositForm = MakeOptional<DepositMutation, 'depositAmount'> & CalculatedDepositValues
 
-export type DepositQuery<ChainId = number> = UserMarketQuery<ChainId> & CompleteDepositForm
+export type DepositQuery<ChainId = number> = UserMarketQuery<ChainId> & DepositMutation
 export type DepositParams<ChainId = number> = FieldsOf<DepositQuery<ChainId>>
 
 /**
@@ -74,22 +70,20 @@ export const depositFormValidationSuite = createValidationSuite(
 )
 
 // Query validation suite (for API queries)
-export const depositValidationGroup = <IChainId extends number>({
-  chainId,
+const depositValidationGroup = <IChainId extends number>({
   marketId,
   depositAmount = '0',
-  userAddress,
 }: DepositParams<IChainId>) => {
-  chainValidationGroup({ chainId })
-  llamaApiValidationGroup({ chainId })
-  marketIdValidationGroup({ marketId })
-  userAddressValidationGroup({ userAddress })
   validateHasVault(marketId)
   validateDepositAmount(depositAmount, { depositRequired: true })
 }
 
-export const depositValidationSuite = createValidationSuite((params: DepositParams) => depositValidationGroup(params))
-
-export const depositMutationValidationSuite = createValidationSuite((params: DepositParams) => {
+export const depositValidationSuite = createValidationSuite((params: DepositParams) => {
+  userMarketValidationSuite(params)
   depositValidationGroup(params)
+})
+
+export const userSuppliedAmountValidationSuite = createValidationSuite((params: DepositParams) => {
+  userMarketValidationSuite(params)
+  validateHasVault(params.marketId)
 })
