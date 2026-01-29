@@ -37,31 +37,21 @@ const AmountRow = ({ amount, amountUsd, token, chain }: AmountRowProps) => (
   </Stack>
 )
 
-export const LlammaEventChangeCell = ({ event, collateralToken, borrowToken, chain }: LlammaEventChangeCellProps) => {
-  const { deposit, withdrawal } = event
-
-  if (deposit) {
-    return (
-      <InlineTableCell>
-        <AmountRow amount={deposit.amount} token={collateralToken} chain={chain} />
-      </InlineTableCell>
-    )
-  }
-
-  if (withdrawal) {
-    return (
-      <InlineTableCell>
-        <Stack gap={Spacing.xs}>
-          {withdrawal.amountCollateral !== 0 && (
-            <AmountRow amount={-withdrawal.amountCollateral} token={collateralToken} chain={chain} />
-          )}
-          {withdrawal.amountBorrowed !== 0 && (
-            <AmountRow amount={-withdrawal.amountBorrowed} token={borrowToken} chain={chain} />
-          )}
-        </Stack>
-      </InlineTableCell>
-    )
-  }
-
-  return null
-}
+export const LlammaEventChangeCell = ({
+  event: { deposit, withdrawal },
+  collateralToken,
+  borrowToken,
+  chain,
+}: LlammaEventChangeCellProps) => (
+  <InlineTableCell>
+    <Stack gap={Spacing.xs}>
+      {deposit && <AmountRow amount={deposit.amount} token={collateralToken} chain={chain} />}
+      {!!withdrawal?.amountCollateral && (
+        <AmountRow amount={-withdrawal.amountCollateral} token={collateralToken} chain={chain} />
+      )}
+      {!!withdrawal?.amountBorrowed && (
+        <AmountRow amount={-withdrawal.amountBorrowed} token={borrowToken} chain={chain} />
+      )}
+    </Stack>
+  </InlineTableCell>
+)

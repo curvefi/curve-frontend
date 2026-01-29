@@ -1,12 +1,12 @@
 import { getHost, type Options, type Chain, type Address } from '..'
-import { addQueryString, fetchJson as fetch } from '../fetch'
+import { addQueryString, fetchJson } from '../fetch'
 import { getTimeRange } from '../timestamp'
 import * as Parsers from './parsers'
 import type * as Responses from './responses'
 
 export async function getPools(chain: Chain, options?: Options) {
   const host = getHost(options)
-  const resp = await fetch<Responses.GetPoolsResponse>(`${host}/v1/chains/${chain}`)
+  const resp = await fetchJson<Responses.GetPoolsResponse>(`${host}/v1/chains/${chain}`)
 
   return {
     chain: resp.chain,
@@ -17,7 +17,7 @@ export async function getPools(chain: Chain, options?: Options) {
 
 export async function getPool(chain: Chain, poolAddr: string, options?: Options) {
   const host = getHost(options)
-  const resp = await fetch<Responses.GetPoolResponse>(`${host}/v1/pools/${chain}/${poolAddr}`)
+  const resp = await fetchJson<Responses.GetPoolResponse>(`${host}/v1/pools/${chain}/${poolAddr}`)
 
   return Parsers.parsePool(resp)
 }
@@ -27,7 +27,7 @@ export async function getVolume(chain: Chain, poolAddr: string, options?: Option
 
   const { start, end } = getTimeRange({ daysRange: 90 })
 
-  const resp = await fetch<Responses.GetVolumeResponse>(
+  const resp = await fetchJson<Responses.GetVolumeResponse>(
     `${host}/v1/volume/usd/${chain}/${poolAddr}?` + `interval=day&` + `start=${start}&` + `end=${end}`,
   )
 
@@ -39,7 +39,7 @@ export async function getTvl(chain: Chain, poolAddr: string, options?: Options) 
 
   const { start, end } = getTimeRange({ daysRange: 90 })
 
-  const resp = await fetch<Responses.GetTvlResponse>(
+  const resp = await fetchJson<Responses.GetTvlResponse>(
     `${host}/v1/snapshots/${chain}/${poolAddr}/tvl?` + `interval=day&` + `start=${start}&` + `end=${end}`,
   )
 
@@ -67,7 +67,7 @@ export async function getPoolTrades(
     per_page: perPage,
   })
 
-  const resp = await fetch<Responses.GetPoolTradesResponse>(`${host}/v1/trades/${chain}/${poolAddress}${query}`)
+  const resp = await fetchJson<Responses.GetPoolTradesResponse>(`${host}/v1/trades/${chain}/${poolAddress}${query}`)
 
   return {
     chain: resp.chain,
@@ -81,7 +81,7 @@ export async function getPoolTrades(
   }
 }
 
-type GetAllPoolTradesParams = {
+export type GetAllPoolTradesParams = {
   chain: Chain
   poolAddress: Address
   page?: number
@@ -100,7 +100,9 @@ export async function getAllPoolTrades(
     include_state: includeState,
   })
 
-  const resp = await fetch<Responses.GetAllPoolTradesResponse>(`${host}/v1/trades/all/${chain}/${poolAddress}${query}`)
+  const resp = await fetchJson<Responses.GetAllPoolTradesResponse>(
+    `${host}/v1/trades/all/${chain}/${poolAddress}${query}`,
+  )
 
   return {
     chain: resp.chain,
@@ -112,7 +114,7 @@ export async function getAllPoolTrades(
   }
 }
 
-type GetPoolLiquidityEventsParams = {
+export type GetPoolLiquidityEventsParams = {
   chain: Chain
   poolAddress: Address
   page?: number
@@ -129,16 +131,12 @@ export async function getPoolLiquidityEvents(
     per_page: perPage,
   })
 
-  const resp = await fetch<Responses.GetPoolLiquidityEventsResponse>(
+  const response = await fetchJson<Responses.GetPoolLiquidityEventsResponse>(
     `${host}/v1/liquidity/${chain}/${poolAddress}${query}`,
   )
 
   return {
-    chain: resp.chain,
-    address: resp.address,
-    events: resp.data.map(Parsers.parsePoolLiquidityEvent),
-    page: resp.page,
-    perPage: resp.per_page,
-    count: resp.count,
+    ...response,
+    events: response.data.map(Parsers.parsePoolLiquidityEvent),
   }
 }

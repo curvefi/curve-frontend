@@ -1,9 +1,9 @@
-import type { ReactNode } from 'react'
 import type { Chain, Address } from '@curvefi/prices-api'
 import type { LlammaEvent, LlammaTrade } from '@curvefi/prices-api/llamma'
 import type { AllPoolTrade, PoolLiquidityEvent } from '@curvefi/prices-api/pools'
-import type { ColumnDef, Row, Table, VisibilityState } from '@tanstack/react-table'
+import type { ColumnDef, VisibilityState } from '@tanstack/react-table'
 import type { TableItem } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import { ExpandedPanel } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
 
 export type Token = {
   symbol: string
@@ -44,10 +44,10 @@ export type PoolActivitySelection = 'trades' | 'liquidity'
  * Each selection can have its own data, columns, and loading state.
  */
 export type ActivityTableConfig<TData extends TableItem> = {
-  data: TData[]
+  data: TData[] | undefined
   columns: ColumnDef<TData, unknown>[]
   isLoading: boolean
-  isError?: boolean
+  isError: boolean
   /** Custom message to show when the table is empty */
   emptyMessage?: string
   /** Column visibility state for responsive hiding of columns */
@@ -58,14 +58,11 @@ export type ActivityTableConfig<TData extends TableItem> = {
   pageIndex?: number
   /** Page size for API-side pagination */
   pageSize?: number
+  /** Total available pages for API-side pagination */
+  pageCount?: number
   /** Callback when page changes for API-side pagination */
   onPageChange?: (pageIndex: number) => void
 }
-
-/**
- * Panel component rendered when a row is expanded on mobile.
- */
-export type ExpandedPanel<TData extends TableItem> = (props: { row: Row<TData>; table: Table<TData> }) => ReactNode
 
 /**
  * Props for the ActivityTable component.

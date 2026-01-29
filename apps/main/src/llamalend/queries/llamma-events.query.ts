@@ -1,47 +1,32 @@
 import { enforce, test } from 'vest'
-import type { Chain, Address } from '@curvefi/prices-api'
-import { getEvents, type Endpoint, type LlammaEvent } from '@curvefi/prices-api/llamma'
+import { getEvents, type GetEventsParams } from '@curvefi/prices-api/llamma'
+import { DEFAULT_PAGE_SIZE, DEFAULT_PAGE_START_INDEX } from '@ui-kit/features/activity-table/constants'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { contractValidationGroup } from '@ui-kit/lib/model/query/contract-validation'
 
-type LlammaEventsQuery = {
-  blockchainId: Chain
-  contractAddress: Address
-  endpoint: Endpoint
-  page?: number
-  perPage?: number
-}
-
-export type LlammaEventsParams = FieldsOf<LlammaEventsQuery>
-
-export type LlammaEventsResult = {
-  events: LlammaEvent[]
-  count: number
-  page: number
-  perPage: number
-}
+export type LlammaEventsParams = FieldsOf<GetEventsParams>
 
 export const { useQuery: useLlammaEvents } = queryFactory({
-  queryKey: ({ blockchainId, contractAddress, endpoint, page, perPage }: LlammaEventsParams) =>
-    ['llamma-events', { blockchainId }, { contractAddress }, { endpoint }, { page }, { perPage }] as const,
+  queryKey: ({ chain, llamma, endpoint, page, perPage }: LlammaEventsParams) =>
+    ['llamma-events', { chain }, { llamma }, { endpoint }, { page }, { perPage }] as const,
   queryFn: async ({
-    blockchainId,
-    contractAddress,
+    chain,
+    llamma,
     endpoint,
-    page = 1,
-    perPage = 100,
-  }: LlammaEventsQuery): Promise<LlammaEventsResult> =>
+    page = DEFAULT_PAGE_START_INDEX,
+    perPage = DEFAULT_PAGE_SIZE,
+  }: GetEventsParams) =>
     getEvents({
       endpoint,
-      chain: blockchainId,
-      llamma: contractAddress,
+      chain,
+      llamma,
       page,
       perPage,
     }),
   staleTime: '1m',
-  validationSuite: createValidationSuite(({ blockchainId, contractAddress, endpoint }: LlammaEventsParams) => {
-    contractValidationGroup({ blockchainId, contractAddress })
+  validationSuite: createValidationSuite(({ chain, llamma, endpoint }: LlammaEventsParams) => {
+    contractValidationGroup({ blockchainId: chain, contractAddress: llamma })
     test('endpoint', 'Invalid endpoint', () => {
       enforce(endpoint).isNotEmpty().inside(['crvusd', 'lending'])
     })

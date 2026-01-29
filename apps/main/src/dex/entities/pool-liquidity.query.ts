@@ -1,45 +1,28 @@
-import type { Chain } from '@curvefi/prices-api'
-import { getPoolLiquidityEvents, type PoolLiquidityEvent } from '@curvefi/prices-api/pools'
+import { getPoolLiquidityEvents, GetPoolLiquidityEventsParams } from '@curvefi/prices-api/pools'
+import { DEFAULT_PAGE_SIZE, DEFAULT_PAGE_START_INDEX } from '@ui-kit/features/activity-table/constants'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { contractValidationGroup } from '@ui-kit/lib/model/query/contract-validation'
-import type { Address } from '@ui-kit/utils'
 
-type PoolLiquidityEventsQuery = {
-  blockchainId: Chain
-  poolAddress: Address
-  page?: number
-  perPage?: number
-}
-
-export type PoolLiquidityEventsParams = FieldsOf<PoolLiquidityEventsQuery>
-
-export type PoolLiquidityEventsResult = {
-  chain: string
-  address: string
-  events: PoolLiquidityEvent[]
-  page: number
-  perPage: number
-  count: number
-}
+export type PoolLiquidityEventsParams = FieldsOf<GetPoolLiquidityEventsParams>
 
 export const { useQuery: usePoolLiquidityEvents } = queryFactory({
-  queryKey: ({ blockchainId, poolAddress, page, perPage }: PoolLiquidityEventsParams) =>
-    ['pool-liquidity-events', { blockchainId }, { poolAddress }, { page }, { perPage }] as const,
+  queryKey: ({ chain, poolAddress, page, perPage }: PoolLiquidityEventsParams) =>
+    ['pool-liquidity-events', { chain }, { poolAddress }, { page }, { perPage }] as const,
   queryFn: async ({
-    blockchainId,
+    chain,
     poolAddress,
-    page = 1,
-    perPage = 100,
-  }: PoolLiquidityEventsQuery): Promise<PoolLiquidityEventsResult> =>
+    page = DEFAULT_PAGE_START_INDEX,
+    perPage = DEFAULT_PAGE_SIZE,
+  }: GetPoolLiquidityEventsParams) =>
     getPoolLiquidityEvents({
-      chain: blockchainId,
+      chain,
       poolAddress,
       page,
       perPage,
     }),
   staleTime: '1m',
-  validationSuite: createValidationSuite(({ blockchainId, poolAddress }: PoolLiquidityEventsParams) => {
-    contractValidationGroup({ blockchainId, contractAddress: poolAddress })
+  validationSuite: createValidationSuite(({ chain, poolAddress }: PoolLiquidityEventsParams) => {
+    contractValidationGroup({ blockchainId: chain, contractAddress: poolAddress })
   }),
 })

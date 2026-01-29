@@ -23,6 +23,8 @@ export const LLAMMA_ACTIVITY_SELECTIONS: ActivitySelection<LlammaActivitySelecti
 ]
 
 const PAGE_SIZE = 50
+const tradesColumns = createLlammaTradesColumns()
+const eventsColumns = createLlammaEventsColumns()
 
 export type UseLlammaActivityProps = {
   network: Chain | undefined
@@ -56,8 +58,8 @@ export const useLlammaActivity = ({
     isLoading: isTradesLoading,
     isError: isTradesError,
   } = useLlammaTrades({
-    blockchainId: network,
-    contractAddress: ammAddress,
+    chain: network,
+    llamma: ammAddress,
     endpoint,
     page: tradesPageIndex + 1, // API uses 1-based pages
     perPage: PAGE_SIZE,
@@ -68,44 +70,38 @@ export const useLlammaActivity = ({
     isLoading: isEventsLoading,
     isError: isEventsError,
   } = useLlammaEvents({
-    blockchainId: network,
-    contractAddress: ammAddress,
+    chain: network,
+    llamma: ammAddress,
     endpoint,
     page: eventsPageIndex + 1, // API uses 1-based pages
     perPage: PAGE_SIZE,
   })
 
   // Transform trades data with block explorer URLs
-  const tradesWithUrls: LlammaTradeRow[] = useMemo(
+  const tradesWithUrls: LlammaTradeRow[] | undefined = useMemo(
     () =>
-      network
-        ? (tradesData?.trades.map((trade: LlammaTrade) => ({
-            ...trade,
-            txUrl: scanTxPath(networkConfig, trade.txHash),
-            network,
-          })) ?? [])
-        : [],
+      network &&
+      tradesData?.trades.map((trade: LlammaTrade) => ({
+        ...trade,
+        txUrl: scanTxPath(networkConfig, trade.txHash),
+        network,
+      })),
     [tradesData?.trades, networkConfig, network],
   )
 
   // Transform events data with block explorer URLs
-  const eventsWithUrls: LlammaEventRow[] = useMemo(
+  const eventsWithUrls: LlammaEventRow[] | undefined = useMemo(
     () =>
-      network
-        ? (eventsData?.events.map((event: LlammaEvent) => ({
-            ...event,
-            txUrl: scanTxPath(networkConfig, event.txHash),
-            network,
-            collateralToken,
-            borrowToken,
-          })) ?? [])
-        : [],
+      network &&
+      eventsData?.events.map((event: LlammaEvent) => ({
+        ...event,
+        txUrl: scanTxPath(networkConfig, event.txHash),
+        network,
+        collateralToken,
+        borrowToken,
+      })),
     [eventsData?.events, network, networkConfig, collateralToken, borrowToken],
   )
-
-  // Memoize column definitions
-  const tradesColumns = useMemo(() => createLlammaTradesColumns(), [])
-  const eventsColumns = useMemo(() => createLlammaEventsColumns(), [])
 
   // Page change handlers
   const handleTradesPageChange = useCallback((pageIndex: number) => {
@@ -124,14 +120,13 @@ export const useLlammaActivity = ({
       isError: isTradesError,
       emptyMessage: t`No swap data found.`,
       columnVisibility: tradesColumnVisibility,
-      totalRows: tradesData?.count ?? 0,
       pageIndex: tradesPageIndex,
       pageSize: PAGE_SIZE,
+      pageCount: tradesData?.count,
       onPageChange: handleTradesPageChange,
     }),
     [
       tradesWithUrls,
-      tradesColumns,
       isTradesLoading,
       isTradesError,
       tradesColumnVisibility,
@@ -149,14 +144,13 @@ export const useLlammaActivity = ({
       isError: isEventsError,
       emptyMessage: t`No activity data found.`,
       columnVisibility: eventsColumnVisibility,
-      totalRows: eventsData?.count ?? 0,
       pageIndex: eventsPageIndex,
       pageSize: PAGE_SIZE,
+      pageCount: eventsData?.count,
       onPageChange: handleEventsPageChange,
     }),
     [
       eventsWithUrls,
-      eventsColumns,
       isEventsLoading,
       isEventsError,
       eventsColumnVisibility,

@@ -24,6 +24,7 @@ export const POOL_ACTIVITY_SELECTIONS: ActivitySelection<PoolActivitySelection>[
 ]
 
 const PAGE_SIZE = 50
+const tradesColumns = createPoolTradesColumns()
 
 type UsePoolActivityProps = {
   chainId: ChainId
@@ -50,7 +51,7 @@ export const usePoolActivity = ({ chainId, poolAddress, poolTokens }: UsePoolAct
     isLoading: isTradesLoading,
     isError: isTradesError,
   } = usePoolTrades({
-    blockchainId: network,
+    chain: network,
     poolAddress,
     page: tradesPageIndex + 1, // API uses 1-based pages
     perPage: PAGE_SIZE,
@@ -61,41 +62,37 @@ export const usePoolActivity = ({ chainId, poolAddress, poolTokens }: UsePoolAct
     isLoading: isLiquidityLoading,
     isError: isLiquidityError,
   } = usePoolLiquidityEvents({
-    blockchainId: network,
+    chain: network,
     poolAddress,
     page: liquidityPageIndex + 1, // API uses 1-based pages
     perPage: PAGE_SIZE,
   })
 
   // Transform trades data with block explorer URLs
-  const tradesWithUrls: PoolTradeRow[] = useMemo(
+  const tradesWithUrls: PoolTradeRow[] | undefined = useMemo(
     () =>
-      network
-        ? (tradesData?.trades.map((trade) => ({
-            ...trade,
-            txUrl: scanTxPath(networkConfig, trade.txHash),
-            network,
-          })) ?? [])
-        : [],
+      network &&
+      tradesData?.trades.map((trade) => ({
+        ...trade,
+        txUrl: scanTxPath(networkConfig, trade.txHash),
+        network,
+      })),
     [tradesData?.trades, networkConfig, network],
   )
 
   // Transform liquidity data with block explorer URLs and pool tokens
-  const liquidityWithUrls: PoolLiquidityRow[] = useMemo(
+  const liquidityWithUrls: PoolLiquidityRow[] | undefined = useMemo(
     () =>
-      network
-        ? (liquidityData?.events.map((event) => ({
-            ...event,
-            txUrl: scanTxPath(networkConfig, event.txHash),
-            network,
-            poolTokens,
-          })) ?? [])
-        : [],
+      network &&
+      liquidityData?.events.map((event) => ({
+        ...event,
+        txUrl: scanTxPath(networkConfig, event.txHash),
+        network,
+        poolTokens,
+      })),
     [liquidityData?.events, network, networkConfig, poolTokens],
   )
 
-  // Memoize column definitions
-  const tradesColumns = useMemo(() => createPoolTradesColumns(), [])
   const liquidityColumns = useMemo(() => createPoolLiquidityColumns({ poolTokens }), [poolTokens])
 
   // Page change handlers
@@ -115,14 +112,13 @@ export const usePoolActivity = ({ chainId, poolAddress, poolTokens }: UsePoolAct
       isError: isTradesError,
       emptyMessage: t`No swap data found.`,
       columnVisibility: tradesColumnVisibility,
-      totalRows: tradesData?.count ?? 0,
+      pageCount: tradesData?.count,
       pageIndex: tradesPageIndex,
       pageSize: PAGE_SIZE,
       onPageChange: handleTradesPageChange,
     }),
     [
       tradesWithUrls,
-      tradesColumns,
       isTradesLoading,
       isTradesError,
       tradesColumnVisibility,
@@ -140,7 +136,7 @@ export const usePoolActivity = ({ chainId, poolAddress, poolTokens }: UsePoolAct
       isError: isLiquidityError,
       emptyMessage: t`No liquidity data found.`,
       columnVisibility: liquidityColumnVisibility,
-      totalRows: liquidityData?.count ?? 0,
+      pageCount: liquidityData?.count,
       pageIndex: liquidityPageIndex,
       pageSize: PAGE_SIZE,
       onPageChange: handleLiquidityPageChange,

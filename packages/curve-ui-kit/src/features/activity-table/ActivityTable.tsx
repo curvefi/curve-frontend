@@ -36,14 +36,13 @@ export const ActivityTable = <TKey extends string, TData extends TableItem>({
     isError,
     emptyMessage,
     columnVisibility,
-    totalRows,
     pageIndex: controlledPageIndex,
     pageSize = DEFAULT_PAGE_SIZE,
+    pageCount,
     onPageChange,
   } = tableConfig
 
   const [sorting, setSorting] = useState<SortingState>([])
-  const isApiSidePagination = totalRows !== undefined && onPageChange !== undefined
 
   const pagination: PaginationState = useMemo(
     () => ({
@@ -64,18 +63,18 @@ export const ActivityTable = <TKey extends string, TData extends TableItem>({
   )
 
   const table = useTable({
-    data,
+    data: data ?? [],
     columns,
     state: {
       sorting,
       columnVisibility,
-      ...(isApiSidePagination && { pagination }),
+      ...(onPageChange && { pagination }),
     },
     initialState: { pagination: { pageIndex: 0, pageSize } },
     onSortingChange: setSorting,
-    ...(isApiSidePagination && {
+    ...(onPageChange && {
       manualPagination: true,
-      pageCount: Math.ceil(totalRows / pageSize),
+      pageCount,
       onPaginationChange: handlePaginationChange,
     }),
     ...getTableOptions(data),

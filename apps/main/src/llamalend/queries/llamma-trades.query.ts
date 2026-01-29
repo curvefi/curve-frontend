@@ -1,47 +1,32 @@
 import { enforce, test } from 'vest'
-import type { Chain, Address } from '@curvefi/prices-api'
-import { getTrades, type Endpoint, type LlammaTrade } from '@curvefi/prices-api/llamma'
+import { getTrades, type GetTradesParams } from '@curvefi/prices-api/llamma'
+import { DEFAULT_PAGE_SIZE, DEFAULT_PAGE_START_INDEX } from '@ui-kit/features/activity-table/constants'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { contractValidationGroup } from '@ui-kit/lib/model/query/contract-validation'
 
-type LlammaTradesQuery = {
-  blockchainId: Chain
-  contractAddress: Address
-  endpoint: Endpoint
-  page?: number
-  perPage?: number
-}
-
-export type LlammaTradesParams = FieldsOf<LlammaTradesQuery>
-
-export type LlammaTradesResult = {
-  trades: LlammaTrade[]
-  count: number
-  page: number
-  perPage: number
-}
+export type LlammaTradesParams = FieldsOf<GetTradesParams>
 
 export const { useQuery: useLlammaTrades } = queryFactory({
-  queryKey: ({ blockchainId, contractAddress, endpoint, page, perPage }: LlammaTradesParams) =>
-    ['llamma-trades', { blockchainId }, { contractAddress }, { endpoint }, { page }, { perPage }] as const,
+  queryKey: ({ chain, llamma, endpoint, page, perPage }: LlammaTradesParams) =>
+    ['llamma-trades', { chain }, { llamma }, { endpoint }, { page }, { perPage }] as const,
   queryFn: async ({
-    blockchainId,
-    contractAddress,
+    chain,
+    llamma,
     endpoint,
-    page = 1,
-    perPage = 100,
-  }: LlammaTradesQuery): Promise<LlammaTradesResult> =>
+    page = DEFAULT_PAGE_START_INDEX,
+    perPage = DEFAULT_PAGE_SIZE,
+  }: GetTradesParams) =>
     getTrades({
       endpoint,
-      chain: blockchainId,
-      llamma: contractAddress,
+      chain,
+      llamma,
       page,
       perPage,
     }),
   staleTime: '1m',
-  validationSuite: createValidationSuite(({ blockchainId, contractAddress, endpoint }: LlammaTradesParams) => {
-    contractValidationGroup({ blockchainId, contractAddress })
+  validationSuite: createValidationSuite(({ chain, llamma, endpoint }: LlammaTradesParams) => {
+    contractValidationGroup({ blockchainId: chain, contractAddress: llamma })
     test('endpoint', 'Invalid endpoint', () => {
       enforce(endpoint).isNotEmpty().inside(['crvusd', 'lending'])
     })

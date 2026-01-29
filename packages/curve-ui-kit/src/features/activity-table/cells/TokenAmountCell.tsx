@@ -7,6 +7,11 @@ import { formatNumber } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
+const formatAmount = (amount: number | null | undefined) => {
+  if (amount == null || amount === 0) return '-'
+  return formatNumber(amount, { abbreviate: false })
+}
+
 type TokenAmountCellProps = {
   /** The amount to display (can be positive or negative) */
   amount: number | null | undefined
@@ -31,11 +36,6 @@ type TokenAmountCellProps = {
 export const TokenAmountCell = ({ amount, amountUsd, align = 'left', tokenAddress, chainId }: TokenAmountCellProps) => {
   const isRightAligned = align === 'right'
 
-  const formatAmount = () => {
-    if (amount == null || amount === 0) return '-'
-    return formatNumber(amount, { abbreviate: false })
-  }
-
   return (
     <InlineTableCell>
       <Stack
@@ -46,7 +46,7 @@ export const TokenAmountCell = ({ amount, amountUsd, align = 'left', tokenAddres
       >
         {tokenAddress && !isRightAligned && <TokenIcon blockchainId={chainId} address={tokenAddress} size="lg" />}
         <Stack alignItems={isRightAligned ? 'flex-end' : 'flex-start'}>
-          <Typography variant="tableCellMBold">{formatAmount()}</Typography>
+          <Typography variant="tableCellMBold">{formatAmount(amount)}</Typography>
           {amountUsd != null && amountUsd !== 0 && (
             <Typography variant="tableCellSRegular" sx={(t) => ({ color: t.design.Text.TextColors.Secondary })}>
               {formatNumber(amountUsd, { unit: 'dollar', abbreviate: true })}

@@ -215,6 +215,7 @@ const DexPoolActivityComponent = () => {
     data: tradesData,
     columns: tradesColumns,
     isLoading: false,
+    isError: false,
     emptyMessage: 'No trades data found.',
   }
 
@@ -222,6 +223,7 @@ const DexPoolActivityComponent = () => {
     data: liquidityData,
     columns: liquidityColumns,
     isLoading: false,
+    isError: false,
     emptyMessage: 'No liquidity data found.',
   }
 
@@ -265,6 +267,7 @@ const LendMarketActivityComponent = () => {
     data: tradesData,
     columns: tradesColumns,
     isLoading: false,
+    isError: false,
     emptyMessage: 'No AMM trades found.',
   }
 
@@ -272,6 +275,7 @@ const LendMarketActivityComponent = () => {
     data: eventsData,
     columns: eventsColumns,
     isLoading: false,
+    isError: false,
     emptyMessage: 'No controller events found.',
   }
 
@@ -365,6 +369,7 @@ export const LoadingState: StoryObj = {
           data: [],
           columns: tradesColumns,
           isLoading: true,
+          isError: false,
           emptyMessage: 'Loading trades...',
         }}
       />
@@ -392,6 +397,7 @@ export const EmptyState: StoryObj = {
           data: [],
           columns: tradesColumns,
           isLoading: false,
+          isError: false,
           emptyMessage: 'No swap data found.',
         }}
       />

@@ -1,48 +1,30 @@
-import type { Chain } from '@curvefi/prices-api'
-import { getAllPoolTrades, type AllPoolTrade } from '@curvefi/prices-api/pools'
+import { getAllPoolTrades, type GetAllPoolTradesParams } from '@curvefi/prices-api/pools'
+import { DEFAULT_PAGE_SIZE, DEFAULT_PAGE_START_INDEX } from '@ui-kit/features/activity-table/constants'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { contractValidationGroup } from '@ui-kit/lib/model/query/contract-validation'
-import type { Address } from '@ui-kit/utils'
 
-type PoolTradesQuery = {
-  blockchainId: Chain
-  poolAddress: Address
-  page?: number
-  perPage?: number
-  includeState?: boolean
-}
-
-export type PoolTradesParams = FieldsOf<PoolTradesQuery>
-
-export type PoolTradesResult = {
-  chain: string
-  address: string
-  trades: AllPoolTrade[]
-  page: number
-  perPage: number
-  count: number
-}
+export type PoolTradesParams = FieldsOf<GetAllPoolTradesParams>
 
 export const { useQuery: usePoolTrades } = queryFactory({
-  queryKey: ({ blockchainId, poolAddress, page, perPage }: PoolTradesParams) =>
-    ['pool-trades', { blockchainId }, { poolAddress }, { page }, { perPage }] as const,
+  queryKey: ({ chain, poolAddress, page, perPage, includeState }: PoolTradesParams) =>
+    ['pool-trades', { chain }, { poolAddress }, { page }, { perPage }, { includeState }] as const,
   queryFn: async ({
-    blockchainId,
+    chain,
     poolAddress,
-    page = 1,
-    perPage = 100,
+    page = DEFAULT_PAGE_START_INDEX,
+    perPage = DEFAULT_PAGE_SIZE,
     includeState = false,
-  }: PoolTradesQuery): Promise<PoolTradesResult> =>
+  }: GetAllPoolTradesParams) =>
     getAllPoolTrades({
-      chain: blockchainId,
+      chain,
       poolAddress,
       page,
       perPage,
       includeState,
     }),
   staleTime: '1m',
-  validationSuite: createValidationSuite(({ blockchainId, poolAddress }: PoolTradesParams) => {
-    contractValidationGroup({ blockchainId, contractAddress: poolAddress })
+  validationSuite: createValidationSuite(({ chain, poolAddress }: PoolTradesParams) => {
+    contractValidationGroup({ blockchainId: chain, contractAddress: poolAddress })
   }),
 })

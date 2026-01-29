@@ -4,10 +4,11 @@ import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
+import type { ExpandedPanel } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatNumber, shortenString } from '@ui-kit/utils'
-import type { ExpandedPanel, PoolLiquidityRow } from '../types'
+import type { PoolLiquidityRow } from '../types'
 
 const { Spacing } = SizesAndSpaces
 
