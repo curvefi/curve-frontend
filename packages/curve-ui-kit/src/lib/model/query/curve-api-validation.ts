@@ -29,7 +29,7 @@ export const curveApiValidationSuite = createValidationSuite(
   },
 )
 
-export const curveApiWithRpcValidationSuite = createValidationSuite(
+export const curveApiWithWalletValidationSuite = createValidationSuite(
   <TChainId extends number>(params: ChainParams<TChainId>) => {
     chainValidationGroup(params)
     curveApiValidationGroup(params, { requireRpc: true })
