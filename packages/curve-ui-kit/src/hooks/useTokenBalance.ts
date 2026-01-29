@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react'
 import { erc20Abi, ethAddress, formatUnits, isAddressEqual, type Address } from 'viem'
 import { useConfig, useBalance, useReadContracts } from 'wagmi'
-import { useQueries, type QueriesResults, type QueryObserverOptions } from '@tanstack/react-query'
+import { useQueries, type QueryObserverOptions, type UseQueryResult } from '@tanstack/react-query'
 import { combineQueriesToObject, type FieldsOf } from '@ui-kit/lib'
 import { queryClient } from '@ui-kit/lib/api'
 import { REFRESH_INTERVAL, type ChainQuery, type UserQuery } from '@ui-kit/lib/model'
@@ -184,12 +184,11 @@ export function useTokenBalances(
           ...getTokenBalanceQueryOptions(config, { chainId: chainId!, userAddress: userAddress!, tokenAddress }),
           ...QUERIES_FRESHNESS_OPTIONS,
           enabled: isEnabled,
-        })),
+        })) as Parameters<typeof useQueries>[0]['queries'],
       [config, chainId, userAddress, uniqueAddresses, isEnabled],
     ),
     combine: useCallback(
-      (results: QueriesResults<ReturnType<typeof getTokenBalanceQueryOptions>[]>) =>
-        combineQueriesToObject(results, uniqueAddresses),
+      (results: UseQueryResult[]) => combineQueriesToObject(results as UseQueryResult<Decimal>[], uniqueAddresses),
       [uniqueAddresses],
     ),
   })
