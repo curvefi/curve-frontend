@@ -52,11 +52,11 @@ function CreateLoanTab({ market, curve, rChainId }: PageLoanCreateProps) {
   )
 }
 
-const LendCreateTabsNewMenu = [
+const MintCreateTabsNewMenu = [
   { value: 'create', label: t`Borrow`, component: CreateLoanTab },
 ] satisfies FormTab<PageLoanCreateProps>[]
 
-const LendCreateTabsOldMenu = [
+const MintCreateTabsOldMenu = [
   { value: 'create', label: t`Create Loan`, component: LoanFormCreate },
   {
     value: 'leverage',
@@ -67,7 +67,7 @@ const LendCreateTabsOldMenu = [
 ] satisfies FormTab<PageLoanCreateProps>[]
 
 export const CreateLoanTabs = (props: PageLoanCreateProps) => {
-  const menu = useCreateLoanMuiForm() ? LendCreateTabsNewMenu : LendCreateTabsOldMenu
-  const shouldWrap = menu === LendCreateTabsOldMenu
+  const menu = useCreateLoanMuiForm() ? MintCreateTabsNewMenu : MintCreateTabsOldMenu
+  const shouldWrap = menu === MintCreateTabsOldMenu
   return <FormTabs params={props} menu={menu} shouldWrap={shouldWrap} />
 }
