@@ -142,17 +142,6 @@ const pool = {
       return { error: getErrorMessage(error, 'error-stats-balances') }
     }
   },
-  poolParameters: async (p: Pool) => {
-    if (p.curve.isNoRPC) {
-      return { error: t`Connect your wallet to see pool parameters` }
-    }
-    try {
-      return { parameters: await p.stats.parameters() }
-    } catch (error) {
-      console.error(error)
-      return { error: getErrorMessage(error, 'error-get-parameters') }
-    }
-  },
   poolAllRewardsApy: async (network: NetworkConfig, p: Pool) => {
     const resp: RewardsApy = {
       poolId: p.id,

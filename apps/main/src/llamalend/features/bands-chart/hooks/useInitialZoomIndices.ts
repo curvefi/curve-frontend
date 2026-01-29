@@ -1,58 +1,79 @@
 import { useMemo } from 'react'
 import { ChartDataPoint, ParsedBandsBalances } from '../types'
 
-/**
- * Calculates initial zoom range for the chart
- *
- * Determines which portion of the chart should be visible initially based on:
- * 1. User's band positions (if any)
- * 2. Oracle price location
- * 3. Adds padding around the region of interest
- *
- * @param chartData - All available chart data points
- * @param userBandsBalances - User's positions in specific bands
- * @param oraclePrice - Current oracle price
- * @returns Start and end indices for initial zoom, or null if no data
- */
+type ChartBandData = Pick<ChartDataPoint, 'pUpDownMedian' | 'p_up' | 'p_down'>
+
+const getBandDelta = (band: ChartBandData, multiplier = 2) => (band.p_up - band.p_down) * multiplier
+
+/** Calculate padded range from bands */
+const getPaddedRange = (startBand: ChartBandData, endBand: ChartBandData) => ({
+  startValue: startBand.pUpDownMedian - getBandDelta(startBand),
+  endValue: endBand.pUpDownMedian + getBandDelta(endBand),
+})
+
+/** Get user band range from chart data */
+const getUserBandRange = (
+  chartData: ChartDataPoint[],
+  userBandsBalances: ParsedBandsBalances[],
+): { start: ChartDataPoint; end: ChartDataPoint } | null => {
+  if (!userBandsBalances.length) return null
+
+  const userBandNumbers = new Set(userBandsBalances.map((b) => b.n))
+  const userBands = chartData.filter((d) => userBandNumbers.has(d.n))
+
+  return userBands.length ? { start: userBands[0], end: userBands[userBands.length - 1] } : null
+}
+
+type OraclePosition = 'above' | 'below' | 'within' | 'none'
+
+/** Determine oracle position relative to a range */
+const getOraclePosition = (oracleValue: number, startBand: ChartDataPoint, endBand: ChartDataPoint): OraclePosition => {
+  if (!oracleValue) return 'none'
+  if (oracleValue > endBand.p_up) return 'above'
+  if (oracleValue < startBand.p_down) return 'below'
+  return 'within'
+}
+
 export const useInitialZoomIndices = (
   chartData: ChartDataPoint[],
   userBandsBalances: ParsedBandsBalances[],
   oraclePrice: string | undefined,
-): { startIndex: number; endIndex: number } | null =>
+): { startValue: number; endValue: number } | null =>
   useMemo(() => {
     if (chartData.length === 0) return null
 
-    // If no user positions, show entire chart
-    if (userBandsBalances.length === 0) {
-      return { startIndex: 0, endIndex: chartData.length - 1 }
+    const firstBand = chartData[0]
+    const lastBand = chartData[chartData.length - 1]
+    const oracleValue = Number(oraclePrice)
+    const userRange = getUserBandRange(chartData, userBandsBalances)
+
+    // No oracle and no user position: show full chart while making sure oracle is visible even if not inside a band
+    if (!userRange) {
+      const oraclePosition = getOraclePosition(oracleValue, lastBand, firstBand)
+      const topBand =
+        oraclePosition === 'above'
+          ? { pUpDownMedian: oracleValue, p_up: firstBand.p_up, p_down: firstBand.p_down }
+          : firstBand
+      const bottomBand =
+        oraclePosition === 'below'
+          ? { pUpDownMedian: oracleValue, p_up: lastBand.p_up, p_down: lastBand.p_down }
+          : lastBand
+      return getPaddedRange(topBand, bottomBand)
     }
 
-    // Find indices of user's bands
-    const userBandNumbers = new Set(userBandsBalances.map((b) => b.n))
-    const userIndices = chartData.map((d, i) => (userBandNumbers.has(d.n) ? i : -1)).filter((i) => i !== -1)
+    const relevantStart = userRange.start
+    const relevantEnd = userRange.end
+    const oraclePosition = getOraclePosition(oracleValue, relevantStart, relevantEnd)
 
-    if (userIndices.length === 0) {
-      return { startIndex: 0, endIndex: chartData.length - 1 }
-    }
+    // Calculate range based on oracle position
+    const topBand =
+      oraclePosition === 'above'
+        ? { pUpDownMedian: oracleValue, p_up: firstBand.p_up, p_down: firstBand.p_down }
+        : relevantStart
+    const bottomBand =
+      oraclePosition === 'below'
+        ? { pUpDownMedian: oracleValue, p_up: lastBand.p_up, p_down: lastBand.p_down }
+        : relevantEnd
 
-    let [startIndex, endIndex] = [Math.min(...userIndices), Math.max(...userIndices)]
-
-    // Expand range to include oracle price if available
-    let oracleIdx = chartData.findIndex((d) => d.isOraclePriceBand)
-
-    if (oracleIdx === -1 && oraclePrice) {
-      oracleIdx = chartData.findIndex((d) => Math.abs(d.pUpDownMedian - Number(oraclePrice)) < 0.01)
-    }
-
-    if (oracleIdx !== -1) {
-      startIndex = Math.min(startIndex, oracleIdx)
-      endIndex = Math.max(endIndex, oracleIdx)
-    }
-
-    // Add padding to keep the areas of interest off the edges
-    const padding = 2
-    return {
-      startIndex: Math.max(0, startIndex - padding),
-      endIndex: Math.min(chartData.length - 1, endIndex + padding),
-    }
+    return getPaddedRange(topBand, bottomBand)
   }, [chartData, userBandsBalances, oraclePrice])

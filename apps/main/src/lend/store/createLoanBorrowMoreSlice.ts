@@ -12,15 +12,13 @@ import {
 } from '@/lend/components/PageLendMarket/LoanBorrowMore/utils'
 import type { FormDetailInfo, FormEstGas } from '@/lend/components/PageLendMarket/types'
 import { DEFAULT_FORM_EST_GAS } from '@/lend/components/PageLendMarket/utils'
-import { invalidateMarketDetails } from '@/lend/entities/market-details'
-import { invalidateAllUserBorrowDetails } from '@/lend/entities/user-loan-details'
+import { refetchUserMarket } from '@/lend/entities/user-loan-details'
 import { helpers, apiLending } from '@/lend/lib/apiLending'
 import { networks } from '@/lend/networks'
 import type { State } from '@/lend/store/useStore'
 import { Api, ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { _parseActiveKey } from '@/lend/utils/helpers'
 import { updateUserEventsApi } from '@/llamalend/llama.utils'
-import { refetchLoanExists } from '@/llamalend/queries/loan-exists'
 import { getLib, useWallet } from '@ui-kit/features/connect-wallet'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 
@@ -316,18 +314,7 @@ export const createLoanBorrowMore = (
           })
           return { ...resp, error }
         } else {
-          // api calls
-          const loanExists = await refetchLoanExists({
-            chainId,
-            marketId: market.id,
-            userAddress: wallet?.address,
-          })
-          if (loanExists) {
-            void user.fetchAll(api, market, true)
-            invalidateAllUserBorrowDetails({ chainId: api.chainId, marketId: market.id })
-          }
-          invalidateMarketDetails({ chainId: api.chainId, marketId: market.id })
-          void markets.fetchAll(api, market, true)
+          await refetchUserMarket({ api, market, state: { user, markets } })
 
           // update formStatus
           sliceState.setStateByKeys({

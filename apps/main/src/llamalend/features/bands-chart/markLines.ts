@@ -1,64 +1,93 @@
-import { formatUsd } from '@ui-kit/utils'
+import { formatNumberWithOptions } from './bands-chart.utils'
 import { ChartDataPoint, BandsChartPalette, UserBandsPriceRange } from './types'
 
-type MarkLine = {
-  yAxis: number
-  label: { formatter: string; position: string }
+/**
+ * MarkLine data structure for ECharts coord format
+ * Each markLine is an array of two coordinate points: [startPoint, endPoint]
+ * Includes lineStyle metadata for label styling
+ */
+export type MarkLine = [
+  { coord: [number, number]; label: { formatter: string; position: string } },
+  { coord: [number, number] },
+] & {
   lineStyle: { color: string; type: string; width: number }
 }
 
 /**
- * Creates a standardized mark line configuration
+ * Creates a standardized mark line configuration using coord format
+ * for proper alignment with custom series rectangles
  */
 const createMarkLine = (
-  yAxis: number,
+  xStart: number,
+  xEnd: number,
+  yValue: number,
   formatter: string,
   position: string,
   color: string,
   type: string = 'dashed',
   width: number = 2,
-): MarkLine => ({
-  yAxis,
-  label: { formatter, position },
-  lineStyle: { color, type, width },
-})
+): MarkLine => {
+  const line: MarkLine = [
+    { coord: [xStart, yValue], label: { formatter, position } },
+    { coord: [xEnd, yValue] },
+  ] as MarkLine
+  line.lineStyle = { color, type, width }
+  return line
+}
 
-/**
- * Generates mark lines for user band price range
- */
-const createUserRangeMarkLines = (userBandsPriceRange: UserBandsPriceRange, palette: BandsChartPalette): MarkLine[] => {
+const createUserRangeMarkLines = (
+  userBandsPriceRange: UserBandsPriceRange,
+  xStart: number,
+  xEnd: number,
+  palette: BandsChartPalette,
+): MarkLine[] => {
   if (!userBandsPriceRange) return []
 
   return [
     createMarkLine(
+      xStart,
+      xEnd,
       userBandsPriceRange.lowerBandPriceDown,
-      formatUsd(userBandsPriceRange.lowerBandPriceDown),
+      formatNumberWithOptions(userBandsPriceRange.lowerBandPriceDown),
       'end',
       palette.userRangeTopLabelBackgroundColor,
     ),
     createMarkLine(
+      xStart,
+      xEnd,
       userBandsPriceRange.upperBandPriceUp,
-      formatUsd(userBandsPriceRange.upperBandPriceUp),
+      formatNumberWithOptions(userBandsPriceRange.upperBandPriceUp),
       'end',
       palette.userRangeBottomLabelBackgroundColor,
     ),
   ]
 }
 
-/**
- * Generates mark line for oracle price
- */
 const createOraclePriceMarkLine = (
   _chartData: ChartDataPoint[],
   oraclePrice: string | undefined,
+  xStart: number,
+  xEnd: number,
   palette: BandsChartPalette,
 ): MarkLine[] => {
   if (!oraclePrice) return []
   const price = Number(oraclePrice)
   if (!Number.isFinite(price)) return []
 
-  return [createMarkLine(price, formatUsd(+oraclePrice), 'end', palette.oraclePriceLineColor)]
+  return [createMarkLine(xStart, xEnd, price, formatNumberWithOptions(price), 'end', palette.oraclePriceLineColor)]
 }
+
+export const generateMarkLines = (
+  chartData: ChartDataPoint[],
+  userBandsPriceRange: UserBandsPriceRange,
+  oraclePrice: string | undefined,
+  xStart: number,
+  xEnd: number,
+  palette: BandsChartPalette,
+): MarkLine[] => [
+  ...createUserRangeMarkLines(userBandsPriceRange, xStart, xEnd, palette),
+  ...createOraclePriceMarkLine(chartData, oraclePrice, xStart, xEnd, palette),
+]
 
 /**
  * Creates label styling based on line color
@@ -77,16 +106,3 @@ export const createLabelStyle = (lineStyle: { color: string }, palette: BandsCha
       ? palette.userRangeTopLabelTextColor
       : palette.userRangeBottomLabelTextColor,
 })
-
-/**
- * Generates all mark lines for the chart
- */
-export const generateMarkLines = (
-  chartData: ChartDataPoint[],
-  userBandsPriceRange: UserBandsPriceRange,
-  oraclePrice: string | undefined,
-  palette: BandsChartPalette,
-): MarkLine[] => [
-  ...createUserRangeMarkLines(userBandsPriceRange, palette),
-  ...createOraclePriceMarkLine(chartData, oraclePrice, palette),
-]
