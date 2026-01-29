@@ -25,7 +25,6 @@ export interface NetworkConfig extends BaseConfig<NetworkEnum> {
   isLite: boolean
   isCrvRewardsEnabled: boolean
   useApi: boolean
-  excludePoolsMapper: { [key: string]: boolean }
   poolCustomTVL: { [poolAddress: string]: string }
   poolIsWrappedOnly: { [poolAddress: string]: boolean }
   poolFilters: string[]
