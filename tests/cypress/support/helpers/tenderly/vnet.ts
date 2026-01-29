@@ -38,11 +38,11 @@ export function createTenderlyWagmiConfigFromVNet({
   vnet: CreateVirtualTestnetResponse | GetVirtualTestnetResponse | ForkVirtualTestnetResponse
   privateKey?: Hex
 }) {
-  const { adminRpcUrl: rpcUrl, publicRpcUrl: explorerUrl } = getRpcUrls(vnet)
+  const { publicRpcUrl, adminRpcUrl } = getRpcUrls(vnet)
   return createTenderlyWagmiConfig({
     privateKey,
-    rpcUrl,
-    explorerUrl,
+    rpcUrl: publicRpcUrl,
+    explorerUrl: publicRpcUrl,
     chainId: vnet.fork_config.network_id,
     tenderly: {
       accountSlug: tenderlyAccount.accountSlug,

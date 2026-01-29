@@ -1,5 +1,5 @@
 cd apps/main
-yarn add @curvefi/api @curvefi/llamalend-api
+yarn upgrade @curvefi/api @curvefi/llamalend-api
 cd ../..
 git add .
 git commit -m "chore: update Curve API dependencies"

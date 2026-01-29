@@ -104,6 +104,7 @@ export const LoanInfoAccordion = ({
       <Accordion
         ghost
         title={t`Health`}
+        testId="loan-info-accordion"
         info={
           <ActionInfo
             label=""

@@ -1,6 +1,6 @@
 import { MARKET_ROUTES } from '@/lend/constants'
 import { recordValues } from '@curvefi/prices-api/objects.util'
-import { oneAddress, oneOf } from '@cy/support/generators'
+import { oneAddress, oneOf, oneValueOf } from '@cy/support/generators'
 import { type AppPath, oneAppPath } from '@cy/support/ui'
 import {
   CRVUSD_ROUTES,
@@ -19,13 +19,13 @@ const SDOLA_LEND_POOL = '0xaD444663c6C92B497225c6cE65feE2E7F78BFb86'
  */
 export const oneAppRoute = () =>
   ({
-    dex: () => `dex/ethereum${oneOf(...recordValues(DEX_ROUTES))}`,
+    dex: () => `dex/ethereum${oneValueOf(DEX_ROUTES)}`,
     lend: () =>
       `lend/ethereum${oneOf(
         ...recordValues(LEND_ROUTES).map((r) =>
           r == LEND_ROUTES.PAGE_MARKETS
             ? // use market detail page, the list page redirects to the llamalend app
-              `${LEND_ROUTES.PAGE_MARKETS}/${SDOLA_LEND_POOL}${oneOf(...recordValues(MARKET_ROUTES))}`
+              `${LEND_ROUTES.PAGE_MARKETS}/${SDOLA_LEND_POOL}${oneValueOf(MARKET_ROUTES)}`
             : r,
         ),
       )}`,
@@ -36,7 +36,7 @@ export const oneAppRoute = () =>
           r == CRVUSD_ROUTES.PAGE_MARKETS ? `${CRVUSD_ROUTES.PAGE_MARKETS}/WBTC` : r,
         ),
       )}`,
-    llamalend: () => `llamalend/ethereum${oneOf(...recordValues(LLAMALEND_ROUTES))}`,
+    llamalend: () => `llamalend/ethereum${oneValueOf(LLAMALEND_ROUTES)}`,
     dao: () =>
       `dao/ethereum${oneOf(
         ...recordValues({ ...DAO_ROUTES, PAGE_USER: `${DAO_ROUTES.PAGE_USER}/${oneAddress()}` }).filter(

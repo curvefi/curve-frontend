@@ -21,8 +21,8 @@ describe('Create loan', () => {
     it(`for ${marketType} market`, RETRY, () => {
       cy.visit(path)
       writeCreateLoanForm({ collateral, borrow, leverageEnabled })
-      checkLoanDetailsLoaded({ leverageEnabled })
-      checkLoanRangeSlider(leverageEnabled)
+      checkLoanDetailsLoaded({ leverageEnabled, hasLeverage })
+      checkLoanRangeSlider({ leverageEnabled, hasLeverage })
       // e2e tests run with a 'fake' account so the transaction fails
       submitCreateLoanForm().then(() =>
         cy.get('[data-testid="loan-form-error"]', LOAD_TIMEOUT).contains('unknown account'),
