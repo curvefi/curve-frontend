@@ -1,7 +1,6 @@
 import { networks } from '@/loan/networks'
 import { type ChainId, LlamaApi } from '@/loan/types/loan.types'
-
-export const isDevelopment = process.env.NODE_ENV === 'development'
+import { isDevelopment } from '@ui-kit/utils'
 
 export function log(fnName: string, ...args: unknown[]) {
   if (isDevelopment) {
