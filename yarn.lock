@@ -566,15 +566,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@curvefi/llamalend-api@npm:1.1.5":
-  version: 1.1.5
-  resolution: "@curvefi/llamalend-api@npm:1.1.5"
+"@curvefi/llamalend-api@npm:1.1.6":
+  version: 1.1.6
+  resolution: "@curvefi/llamalend-api@npm:1.1.6"
   dependencies:
     "@curvefi/ethcall": "npm:6.0.16"
     bignumber.js: "npm:9.3.1"
     ethers: "npm:6.15.0"
     memoizee: "npm:0.4.17"
-  checksum: 10c0/e7e859990baced14711c83341ef59081fc4671ed13ca614de03cf50fb20b56acc601b6b5ba0e6620ffcae0b4fa1cb606dfee9e1f5f77e40141575dc6bfe1482a
+  checksum: 10c0/84af816a29cfe8b0bda54db79c051570ccd70433c3550159136f07e47f1aca0a89a2ab3c32dde4c476d222cd6bc6b61d33640f77ce9ee8d7f7f3c0c556757031
   languageName: node
   linkType: hard
 
@@ -11850,7 +11850,7 @@ __metadata:
   resolution: "main@workspace:apps/main"
   dependencies:
     "@curvefi/api": "npm:*"
-    "@curvefi/llamalend-api": "npm:1.1.5"
+    "@curvefi/llamalend-api": "npm:1.1.6"
     "@eslint/js": "npm:*"
     "@ethersproject/abi": "npm:^5.8.0"
     "@hookform/error-message": "npm:^2.0.1"
@@ -14534,15 +14534,15 @@ __metadata:
   linkType: hard
 
 "tar@npm:^7.4.0, tar@npm:^7.4.3":
-  version: 7.5.6
-  resolution: "tar@npm:7.5.6"
+  version: 7.5.7
+  resolution: "tar@npm:7.5.7"
   dependencies:
     "@isaacs/fs-minipass": "npm:^4.0.0"
     chownr: "npm:^3.0.0"
     minipass: "npm:^7.1.2"
     minizlib: "npm:^3.1.0"
     yallist: "npm:^5.0.0"
-  checksum: 10c0/08af3807035957650ad5f2a300c49ca4fe0566ac0ea5a23741a5b5103c6da42891a9eeaed39bc1fbcf21c5cac4dc846828a004727fb08b9d946322d3144d1fd2
+  checksum: 10c0/51f261afc437e1112c3e7919478d6176ea83f7f7727864d8c2cce10f0b03a631d1911644a567348c3063c45abdae39718ba97abb073d22aa3538b9a53ae1e31c
   languageName: node
   linkType: hard
 

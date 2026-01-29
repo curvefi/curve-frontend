@@ -18,7 +18,6 @@ import { useStore } from '@/lend/store/useStore'
 import { Api, FormError, type MarketUrlParams, OneWayMarketTemplate, PageContentProps } from '@/lend/types/lend.types'
 import { getCollateralListPathname } from '@/lend/utils/utilsRouter'
 import { DEFAULT_HEALTH_MODE } from '@/llamalend/constants'
-import { RepayForm } from '@/llamalend/features/manage-loan/components/RepayForm'
 import type { HealthMode } from '@/llamalend/llamalend.types'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
@@ -514,6 +513,3 @@ export const LoanRepay = ({
     </Stack>
   )
 }
-export const LoanRepayTab = ({ rChainId, market, isLoaded }: PageContentProps) => (
-  <RepayForm networks={networks} chainId={rChainId} market={market} enabled={isLoaded} />
-)
