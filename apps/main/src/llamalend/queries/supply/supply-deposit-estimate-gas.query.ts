@@ -6,16 +6,20 @@ import { DepositParams, DepositQuery, depositValidationSuite, requireVault } fro
 import { useDepositIsApproved } from './supply-deposit-approved.query'
 
 const { useQuery: useDepositApproveEstimateGasQuery } = queryFactory({
-  queryKey: ({ chainId, marketId, depositAmount }: DepositParams) =>
-    [...rootKeys.market({ chainId, marketId }), 'estimateGas.depositApprove', { depositAmount }] as const,
+  queryKey: ({ chainId, marketId, userAddress, depositAmount }: DepositParams) =>
+    [
+      ...rootKeys.userMarket({ chainId, marketId, userAddress }),
+      'estimateGas.depositApprove',
+      { depositAmount },
+    ] as const,
   queryFn: async ({ marketId, depositAmount }: DepositQuery) =>
     await requireVault(marketId).vault.estimateGas.depositApprove(depositAmount),
   validationSuite: depositValidationSuite,
 })
 
 const { useQuery: useDepositEstimateGasQuery } = queryFactory({
-  queryKey: ({ chainId, marketId, depositAmount }: DepositParams) =>
-    [...rootKeys.market({ chainId, marketId }), 'estimateGas.deposit', { depositAmount }] as const,
+  queryKey: ({ chainId, marketId, userAddress, depositAmount }: DepositParams) =>
+    [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'estimateGas.deposit', { depositAmount }] as const,
   queryFn: async ({ marketId, depositAmount }: DepositQuery) =>
     await requireVault(marketId).vault.estimateGas.deposit(depositAmount),
   validationSuite: depositValidationSuite,

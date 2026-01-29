@@ -5,6 +5,7 @@ import { requireVault } from '../validation/supply.validation'
 
 /**
  * Queries the maximum deposit amount for a market.
+ * This is a market-level metric, not a user-level.
  */
 export const { useQuery: useDepositMax } = queryFactory({
   queryKey: ({ chainId, marketId }: MarketParams) => [...rootKeys.market({ chainId, marketId }), 'depositMax'] as const,
