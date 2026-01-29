@@ -7,13 +7,14 @@ import {
   DepositForm,
   DepositMutation,
   depositMutationValidationSuite,
+  requireVault,
 } from '@/llamalend/queries/validation/supply.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
 import { waitForApproval } from '@ui-kit/utils'
-import { formatTokenAmounts, hasVault } from '../llama.utils'
+import { formatTokenAmounts } from '../llama.utils'
 
 export type DepositOptions = {
   marketId: string | undefined
@@ -44,9 +45,7 @@ export const useDepositMutation = ({
     marketId,
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'deposit'] as const,
     mutationFn: async (mutation, { market }) => {
-      if (!hasVault(market)) {
-        throw new Error('Market does not have a vault.')
-      }
+      market = requireVault(market)
       await waitForApproval({
         isApproved: async () => await fetchDepositIsApproved({ chainId, marketId, ...mutation }, { staleTime: 0 }),
         onApprove: async () => await approveDeposit(market, mutation),

@@ -13,13 +13,6 @@ import { FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
 
 type VaultProps = PageContentProps<MarketUrlParams>
 
-const DepositFormTab = ({ rChainId, market, isLoaded }: VaultProps) => (
-  <DepositForm networks={networks} chainId={rChainId} market={market} enabled={isLoaded} />
-)
-
-const WithdrawFormTab = ({ rChainId, market, isLoaded }: VaultProps) => (
-  <WithdrawForm networks={networks} chainId={rChainId} market={market} enabled={isLoaded} />
-)
 const LegacyVaultMenu = [
   {
     value: 'deposit',
@@ -45,8 +38,20 @@ const NewVaultMenu = [
     value: 'supply',
     label: t`Supply`,
     subTabs: [
-      { value: 'deposit', label: t`Deposit`, component: DepositFormTab },
-      { value: 'withdraw', label: t`Withdraw`, component: WithdrawFormTab },
+      {
+        value: 'deposit',
+        label: t`Deposit`,
+        component: ({ rChainId, market, isLoaded }: VaultProps) => (
+          <DepositForm networks={networks} chainId={rChainId} market={market} enabled={isLoaded} />
+        ),
+      },
+      {
+        value: 'withdraw',
+        label: t`Withdraw`,
+        component: ({ rChainId, market, isLoaded }: VaultProps) => (
+          <WithdrawForm networks={networks} chainId={rChainId} market={market} enabled={isLoaded} />
+        ),
+      },
     ],
   },
 ] satisfies FormTab<VaultProps>[]

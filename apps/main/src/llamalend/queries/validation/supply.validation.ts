@@ -1,4 +1,7 @@
 import { enforce, skipWhen, test } from 'vest'
+import { getLlamaMarket, hasVault } from '@/llamalend/llama.utils'
+import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { chainValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
 import { llamaApiValidationGroup } from '@ui-kit/lib/model/query/curve-api-validation'
@@ -21,9 +24,25 @@ export type DepositForm = MakeOptional<CompleteDepositForm, 'depositAmount'> & C
 export type DepositQuery<ChainId = number> = UserMarketQuery<ChainId> & CompleteDepositForm
 export type DepositParams<ChainId = number> = FieldsOf<DepositQuery<ChainId>>
 
-const validateDepositAmount = (amount: Decimal | undefined | null, required: boolean = true) => {
+/**
+ * Ensures the market has a vault and returns it.
+ * Accepts either a market ID string or a LlamaMarketTemplate instance.
+ * @throws Error if the market does not have a vault (only LendMarkets have vaults)
+ */
+export function requireVault(marketId: string): LendMarketTemplate
+export function requireVault(market: LlamaMarketTemplate): LendMarketTemplate
+export function requireVault(marketOrId: string | LlamaMarketTemplate): LendMarketTemplate {
+  const market = typeof marketOrId === 'string' ? getLlamaMarket(marketOrId) : marketOrId
+  if (!hasVault(market)) throw new Error('Market does not have a vault')
+  return market
+}
+
+const validateDepositAmount = (
+  amount: Decimal | undefined | null,
+  { depositRequired = false }: { depositRequired?: boolean } = {},
+) => {
   test('depositAmount', 'Deposit amount must be a positive number', () => {
-    if (required || amount != null) {
+    if (depositRequired || amount != null) {
       enforce(amount).isNumeric().gt(0)
     }
   })
@@ -40,7 +59,7 @@ const validateDepositMaxAmount = (amount: Decimal | undefined | null, maxAmount:
 // Form validation suite (for real-time form validation)
 export const depositFormValidationSuite = createValidationSuite(
   ({ depositAmount = '0', maxDepositAmount }: DepositForm) => {
-    validateDepositAmount(depositAmount, false)
+    validateDepositAmount(depositAmount)
     validateDepositMaxAmount(depositAmount, maxDepositAmount)
   },
 )
@@ -56,7 +75,7 @@ export const depositValidationGroup = <IChainId extends number>({
   llamaApiValidationGroup({ chainId })
   marketIdValidationGroup({ marketId })
   userAddressValidationGroup({ userAddress })
-  validateDepositAmount(depositAmount)
+  validateDepositAmount(depositAmount, { depositRequired: true })
 }
 
 export const depositValidationSuite = createValidationSuite((params: DepositParams) => depositValidationGroup(params))
