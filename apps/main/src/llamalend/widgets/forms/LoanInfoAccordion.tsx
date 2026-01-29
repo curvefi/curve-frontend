@@ -1,30 +1,18 @@
 import { UserState } from '@/llamalend/queries/user-state.query'
-import { notFalsy } from '@curvefi/prices-api/objects.util'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
-import Typography from '@mui/material/Typography'
 import { combineQueryState } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
-import { FireIcon } from '@ui-kit/shared/icons/FireIcon'
 import { Accordion } from '@ui-kit/shared/ui/Accordion'
 import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { Query } from '@ui-kit/types/util'
-import { type Amount, Decimal, formatNumber, formatPercent, formatUsd } from '@ui-kit/utils'
+import { type Decimal, formatNumber, formatPercent } from '@ui-kit/utils'
 import { SlippageToleranceActionInfoPure } from '@ui-kit/widgets/SlippageSettings'
 import { getHealthValueColor } from '../../features/market-position-details/utils'
-
-const format = (value: Amount | null | undefined, symbol?: string) =>
-  value == null ? '-' : notFalsy(formatNumber(value, { abbreviate: true }), symbol).join(' ')
-const formatLeverage = (value: Amount | null | undefined) =>
-  value == null ? '-' : formatNumber(value, { abbreviate: false, decimals: 2, unit: 'multiplier' })
-
-export type LoanInfoGasData = {
-  estGasCostUsd?: number | Decimal | `${number}`
-  tooltip?: string
-}
+import { AccordionContent, EstimatedTxCost, TxGasInfo } from './info-accordion.components'
+import { formatAmount, formatLeverage } from './info-accordion.helpers'
 
 export type LoanInfoAccordionProps = {
   isOpen: boolean
@@ -42,7 +30,7 @@ export type LoanInfoAccordionProps = {
   prevLoanToValue?: Query<Decimal | null>
   netBorrowApr?: Query<Decimal | null>
   pnl?: Query<Decimal | null>
-  gas: Query<LoanInfoGasData | null>
+  gas: Query<TxGasInfo | null>
   debt?: Query<{ value: Decimal; tokenSymbol: string | undefined } | null>
   collateral?: Query<{ value: Decimal; tokenSymbol: string | undefined } | null>
   // userState values are used as prev values if collateral or debt are available
@@ -60,8 +48,6 @@ export type LoanInfoAccordionProps = {
   /** Whether to show leverage-related fields (leverage value, leverage collateral...) */
   leverageEnabled?: boolean
 }
-
-const { Spacing } = SizesAndSpaces
 
 export const LoanInfoAccordion = ({
   isOpen,
@@ -123,7 +109,7 @@ export const LoanInfoAccordion = ({
         expanded={isOpen}
         toggle={toggle}
       >
-        <Stack gap={Spacing.sm}>
+        <AccordionContent>
           <Stack>
             {(collateral || prevCollateral) && (
               <ActionInfo
@@ -234,11 +220,11 @@ export const LoanInfoAccordion = ({
               {(prevLeverageCollateral || leverageCollateral) && (
                 <ActionInfo
                   label={t`Leverage collateral`}
-                  value={format(leverageCollateral?.data ?? prevLeverageCollateral?.data, collateralSymbol)}
+                  value={formatAmount(leverageCollateral?.data ?? prevLeverageCollateral?.data, collateralSymbol)}
                   prevValue={
                     leverageCollateral?.data &&
                     prevLeverageCollateral?.data &&
-                    format(prevLeverageCollateral.data, collateralSymbol)
+                    formatAmount(prevLeverageCollateral.data, collateralSymbol)
                   }
                   {...combineQueryState(leverageCollateral, prevLeverageCollateral)}
                   testId="borrow-leverage-collateral"
@@ -247,11 +233,14 @@ export const LoanInfoAccordion = ({
               {(prevLeverageTotalCollateral || leverageTotalCollateral) && (
                 <ActionInfo
                   label={t`Total collateral`}
-                  value={format(leverageTotalCollateral?.data ?? prevLeverageTotalCollateral?.data, collateralSymbol)}
+                  value={formatAmount(
+                    leverageTotalCollateral?.data ?? prevLeverageTotalCollateral?.data,
+                    collateralSymbol,
+                  )}
                   prevValue={
                     leverageTotalCollateral?.data &&
                     prevLeverageTotalCollateral?.data &&
-                    format(prevLeverageTotalCollateral.data, collateralSymbol)
+                    formatAmount(prevLeverageTotalCollateral.data, collateralSymbol)
                   }
                   {...combineQueryState(leverageTotalCollateral, prevLeverageTotalCollateral)}
                   testId="borrow-leverage-total-collateral"
@@ -274,23 +263,9 @@ export const LoanInfoAccordion = ({
                 testId="borrow-price-impact"
               />
             )}
-            <ActionInfo
-              label={
-                <>
-                  {t`Estimated tx cost`}
-                  <Typography color="textTertiary" component="span" variant="bodyXsRegular">
-                    {isApproved === true && ` ${t`step 2/2`}`}
-                    {isApproved === false && ` ${t`step 1/2`}`}
-                  </Typography>
-                </>
-              }
-              value={gas.data?.estGasCostUsd == null ? undefined : formatUsd(gas.data.estGasCostUsd)}
-              valueTooltip={gas.data?.tooltip}
-              loading={gas.isLoading}
-              valueLeft={<FireIcon fontSize="small" />}
-            />
+            <EstimatedTxCost gas={gas} isApproved={isApproved} />
           </Stack>
-        </Stack>
+        </AccordionContent>
       </Accordion>
     </Box>
   )

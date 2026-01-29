@@ -1,21 +1,13 @@
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
 import { combineQueryState } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
-import { FireIcon } from '@ui-kit/shared/icons/FireIcon'
 import { Accordion } from '@ui-kit/shared/ui/Accordion'
 import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { Query } from '@ui-kit/types/util'
-import { type Decimal, formatNumber, formatPercent, formatUsd } from '@ui-kit/utils'
-
-const { Spacing } = SizesAndSpaces
-
-export type SupplyInfoGasData = {
-  estGasCostUsd?: number | Decimal | `${number}`
-  tooltip?: string
-}
+import { type Decimal, formatNumber, formatPercent } from '@ui-kit/utils'
+import { AccordionContent, EstimatedTxCost, TxGasInfo } from './info-accordion.components'
+import { formatAmount } from './info-accordion.helpers'
 
 export type SupplyInfoAccordionProps = {
   isOpen: boolean
@@ -35,7 +27,7 @@ export type SupplyInfoAccordionProps = {
   /** Net supply APY (accounting for rewards, etc.) */
   netSupplyApy?: Query<Decimal | null>
   /** Estimated gas cost for the transaction */
-  gas: Query<SupplyInfoGasData | null>
+  gas: Query<TxGasInfo | null>
 }
 
 export const SupplyInfoAccordion = ({
@@ -59,8 +51,8 @@ export const SupplyInfoAccordion = ({
       info={
         <ActionInfo
           label=""
-          value={vaultShares?.data && formatNumber(vaultShares.data, { abbreviate: true })}
-          prevValue={prevVaultShares?.data && formatNumber(prevVaultShares.data, { abbreviate: true })}
+          value={vaultShares?.data && formatAmount(vaultShares.data)}
+          prevValue={prevVaultShares?.data && formatAmount(prevVaultShares.data)}
           {...combineQueryState(vaultShares, prevVaultShares)}
           testId="supply-vault-shares"
         />
@@ -68,7 +60,7 @@ export const SupplyInfoAccordion = ({
       expanded={isOpen}
       toggle={toggle}
     >
-      <Stack gap={Spacing.sm}>
+      <AccordionContent>
         <Stack>
           {(amountSupplied || prevAmountSupplied) && (
             <ActionInfo
@@ -100,23 +92,9 @@ export const SupplyInfoAccordion = ({
         </Stack>
 
         <Stack>
-          <ActionInfo
-            label={
-              <>
-                {t`Estimated tx cost`}
-                <Typography color="textTertiary" component="span" variant="bodyXsRegular">
-                  {isApproved === true && ` ${t`step 2/2`}`}
-                  {isApproved === false && ` ${t`step 1/2`}`}
-                </Typography>
-              </>
-            }
-            value={gas.data?.estGasCostUsd == null ? undefined : formatUsd(gas.data.estGasCostUsd)}
-            valueTooltip={gas.data?.tooltip}
-            loading={gas.isLoading}
-            valueLeft={<FireIcon fontSize="small" />}
-          />
+          <EstimatedTxCost gas={gas} isApproved={isApproved} />
         </Stack>
-      </Stack>
+      </AccordionContent>
     </Accordion>
   </Box>
 )

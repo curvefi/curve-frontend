@@ -14,7 +14,7 @@ import { useUserCurrentLeverage } from '@/llamalend/queries/user-current-leverag
 import { getUserHealthOptions } from '@/llamalend/queries/user-health.query'
 import { useUserState } from '@/llamalend/queries/user-state.query'
 import type { BorrowMoreForm, BorrowMoreParams } from '@/llamalend/queries/validation/borrow-more.validation'
-import { LoanInfoAccordion } from '@/llamalend/widgets/manage-loan/LoanInfoAccordion'
+import { LoanInfoAccordion } from '@/llamalend/widgets/forms/LoanInfoAccordion'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { mapQuery, q, type Query } from '@ui-kit/types/util'
