@@ -1,10 +1,12 @@
 import { useCallback, useMemo, useState } from 'react'
+import { Box } from '@mui/material'
 import type { Row, Table, PaginationState } from '@tanstack/react-table'
 import { SortingState } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
 import { getTableOptions, useTable, type TableItem } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
+import { ErrorMessage } from '@ui-kit/shared/ui/ErrorMessage'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { ActivityTableProps } from './types'
 
@@ -21,7 +23,7 @@ const DefaultExpandedPanel = <T extends TableItem>(_props: { row: Row<T>; table:
  */
 export const ActivityTable = <TData extends TableItem>({
   tableConfig,
-  maxHeight = MaxHeight.userEventsTable,
+  height = MaxHeight.userEventsTable,
   expandedPanel,
 }: ActivityTableProps<TData>) => {
   const {
@@ -75,19 +77,26 @@ export const ActivityTable = <TData extends TableItem>({
     ...getTableOptions(data),
   })
 
+  const errorMessage = isError ? (emptyMessage ?? t`Could not load data`) : (emptyMessage ?? t`No data found`)
+
   return (
-    <DataTable
-      table={table}
-      emptyState={
-        <EmptyStateRow table={table} size="lg">
-          {isError ? (emptyMessage ?? t`Could not load data`) : (emptyMessage ?? t`No data found`)}
-        </EmptyStateRow>
-      }
-      loading={isLoading}
-      maxHeight={maxHeight}
-      shouldStickFirstColumn={false}
-      expandedPanel={expandedPanel ?? DefaultExpandedPanel}
-      skeletonMatchPageSize
-    />
+    <Box minHeight={height}>
+      <DataTable
+        table={table}
+        emptyState={
+          <EmptyStateRow table={table} size="lg">
+            <ErrorMessage
+              title={t`Hm... Something went wrong.`}
+              subtitle={errorMessage}
+              errorMessage={t`Couldn't load activity table data`}
+            />
+          </EmptyStateRow>
+        }
+        loading={isLoading}
+        maxHeight={height}
+        shouldStickFirstColumn={false}
+        expandedPanel={expandedPanel ?? DefaultExpandedPanel}
+      />
+    </Box>
   )
 }

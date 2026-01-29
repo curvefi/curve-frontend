@@ -60,7 +60,7 @@ export type ActivityTableConfig<TData extends TableItem> = {
 export type ActivityTableProps<TData extends TableItem> = {
   tableConfig: ActivityTableConfig<TData>
   /** Maximum height of the table (enables scrolling) */
-  maxHeight?: `${number}rem`
+  height?: `${number}rem`
   /** Optional panel to show when a row is expanded on mobile */
   expandedPanel?: ExpandedPanel<TData>
 }

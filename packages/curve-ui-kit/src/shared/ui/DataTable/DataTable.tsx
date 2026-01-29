@@ -75,7 +75,6 @@ export const DataTable = <T extends TableItem>({
   maxHeight,
   rowLimit,
   viewAllLabel,
-  skeletonMatchPageSize,
   ...rowProps
 }: {
   table: TanstackTable<T>
@@ -85,7 +84,6 @@ export const DataTable = <T extends TableItem>({
   maxHeight?: `${number}rem` // also sets overflowY to 'auto'
   rowLimit?: number
   viewAllLabel?: string
-  skeletonMatchPageSize?: boolean // if true, skeleton rows match page size to prevent layout shift
 } & Omit<DataRowProps<T>, 'row' | 'isLast'>) => {
   const { table, shouldStickFirstColumn } = rowProps
   const { rows } = table.getRowModel()
@@ -147,11 +145,7 @@ export const DataTable = <T extends TableItem>({
         </TableHead>
         <TableBody>
           {loading ? (
-            <SkeletonRows
-              table={table}
-              shouldStickFirstColumn={shouldStickFirstColumn}
-              usePageSize={skeletonMatchPageSize}
-            />
+            <SkeletonRows table={table} shouldStickFirstColumn={shouldStickFirstColumn} />
           ) : rows.length === 0 ? (
             emptyState
           ) : (

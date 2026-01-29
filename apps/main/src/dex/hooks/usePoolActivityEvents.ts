@@ -1,9 +1,9 @@
 import { useCallback, useMemo, useState } from 'react'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { usePoolLiquidityEvents } from '@/dex/entities/pool-liquidity.query'
+import { usePoolsPricesApi } from '@/dex/queries/pools-prices-api.query'
 import { ChainId } from '@/dex/types/main.types'
 import type { Chain, Address } from '@curvefi/prices-api'
-import type { PoolCoin } from '@curvefi/prices-api/pools'
 import { scanTxPath } from '@ui/utils'
 import {
   type ActivityTableConfig,
@@ -11,24 +11,32 @@ import {
   createPoolLiquidityColumns,
   usePoolActivityVisibility,
 } from '@ui-kit/features/activity-table'
+import { useCurve } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 
 const PAGE_SIZE = 50
 
 type UsePoolActivityProps = {
   chainId: ChainId
-  poolAddress: Address | undefined
-  poolTokens: PoolCoin[]
+  poolAddress: Address
 }
 
 /**
  * Hook to manage pool activity events data for the ActivityTable component.
  * Handles fetching, transforming, and providing table configurations for pool liquidity events.
  */
-export const usePoolActivityEvents = ({ chainId, poolAddress, poolTokens }: UsePoolActivityProps) => {
+export const usePoolActivityEvents = ({ chainId, poolAddress }: UsePoolActivityProps) => {
+  const { isHydrated } = useCurve()
   const { data: networkConfig } = useNetworkByChain({ chainId })
   const network = networkConfig?.id.toLowerCase() as Chain
 
+  const { data: pricesApiPoolsMapper, isLoading: isPricesApiPoolsLoading } = usePoolsPricesApi({
+    blockchainId: network,
+  })
+  const poolTokens = useMemo(
+    () => pricesApiPoolsMapper?.[poolAddress]?.coins ?? [],
+    [pricesApiPoolsMapper, poolAddress],
+  )
   const { liquidityColumnVisibility } = usePoolActivityVisibility({ poolTokens })
   const [pageIndex, setPageIndex] = useState(0)
   const handlePageChange = useCallback((pageIndex: number) => {
@@ -69,7 +77,7 @@ export const usePoolActivityEvents = ({ chainId, poolAddress, poolTokens }: UseP
       isError: isLiquidityError,
       emptyMessage: t`No liquidity data found.`,
       columnVisibility: liquidityColumnVisibility,
-      pageCount: liquidityData?.count,
+      pageCount: liquidityData?.count ? Math.ceil(liquidityData?.count / PAGE_SIZE) : 0,
       pageIndex: pageIndex,
       pageSize: PAGE_SIZE,
       onPageChange: handlePageChange,
@@ -88,7 +96,7 @@ export const usePoolActivityEvents = ({ chainId, poolAddress, poolTokens }: UseP
 
   return {
     liquidityTableConfig,
-    isLiquidityLoading,
-    isLiquidityError,
+    isLiquidityLoading: isLiquidityLoading || isPricesApiPoolsLoading || !isHydrated,
+    isLiquidityError: isLiquidityError,
   }
 }

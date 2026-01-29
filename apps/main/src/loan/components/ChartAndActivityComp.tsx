@@ -56,7 +56,6 @@ export const ChartAndActivityComp = ({ chainId, market, llammaId }: ChartAndActi
 
   return (
     <ChartAndActivityLayout
-      isMarketAvailable={!!market}
       chart={{
         ohlcDataUnavailable,
         isLoading: isChartLoading,
@@ -76,6 +75,7 @@ export const ChartAndActivityComp = ({ chainId, market, llammaId }: ChartAndActi
         borrowToken,
       }}
       activity={{
+        isMarketAvailable: !!market,
         network,
         ammAddress,
         collateralToken,

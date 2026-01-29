@@ -1,9 +1,9 @@
 import { useCallback, useMemo, useState } from 'react'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { usePoolTrades } from '@/dex/entities/pool-trades.query'
+import { usePoolsPricesApi } from '@/dex/queries/pools-prices-api.query'
 import { ChainId } from '@/dex/types/main.types'
 import type { Chain, Address } from '@curvefi/prices-api'
-import type { PoolCoin } from '@curvefi/prices-api/pools'
 import { scanTxPath } from '@ui/utils'
 import {
   type ActivityTableConfig,
@@ -11,24 +11,32 @@ import {
   POOL_TRADES_COLUMNS,
   usePoolActivityVisibility,
 } from '@ui-kit/features/activity-table'
+import { useCurve } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 
 const PAGE_SIZE = 50
 
 type UsePoolActivityProps = {
   chainId: ChainId
-  poolAddress: Address | undefined
-  poolTokens: PoolCoin[]
+  poolAddress: Address
 }
 
 /**
  * Hook to manage pool activity data for the ActivityTable component.
  * Handles fetching, transforming, and providing table configurations for pool trade events.
  */
-export const usePoolActivityTrades = ({ chainId, poolAddress, poolTokens }: UsePoolActivityProps) => {
+export const usePoolActivityTrades = ({ chainId, poolAddress }: UsePoolActivityProps) => {
   const { data: networkConfig } = useNetworkByChain({ chainId })
   const network = networkConfig?.id.toLowerCase() as Chain
+  const { isHydrated } = useCurve()
 
+  const { data: pricesApiPoolsMapper, isLoading: isPricesApiPoolsLoading } = usePoolsPricesApi({
+    blockchainId: network,
+  })
+  const poolTokens = useMemo(
+    () => pricesApiPoolsMapper?.[poolAddress]?.coins ?? [],
+    [pricesApiPoolsMapper, poolAddress],
+  )
   const { tradesColumnVisibility } = usePoolActivityVisibility({ poolTokens })
   const [pageIndex, setPageIndex] = useState(0)
   const handlePageChange = useCallback((pageIndex: number) => {
@@ -66,7 +74,7 @@ export const usePoolActivityTrades = ({ chainId, poolAddress, poolTokens }: UseP
       isError: isTradesError,
       emptyMessage: t`No swap data found.`,
       columnVisibility: tradesColumnVisibility,
-      pageCount: tradesData?.count,
+      pageCount: tradesData?.count ? Math.ceil(tradesData?.count / PAGE_SIZE) : 0,
       pageIndex: pageIndex,
       pageSize: PAGE_SIZE,
       onPageChange: handlePageChange,
@@ -84,7 +92,7 @@ export const usePoolActivityTrades = ({ chainId, poolAddress, poolTokens }: UseP
 
   return {
     tradesTableConfig,
-    isTradesLoading,
-    isTradesError,
+    isTradesLoading: isTradesLoading || isPricesApiPoolsLoading || !isHydrated,
+    isTradesError: isTradesError,
   }
 }

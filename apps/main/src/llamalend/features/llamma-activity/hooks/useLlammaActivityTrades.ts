@@ -9,15 +9,18 @@ import {
   useLlammaActivityVisibility,
   DEFAULT_PAGE_SIZE,
 } from '@ui-kit/features/activity-table'
+import { useCurve } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { LlammaActivityTradesProps } from '../LlammaActivityTrades'
 
 export const useLlammaActivityTrades = ({
+  isMarketAvailable,
   network,
   ammAddress,
   endpoint,
   networkConfig,
 }: LlammaActivityTradesProps) => {
+  const { isHydrated } = useCurve()
   const { tradesColumnVisibility } = useLlammaActivityVisibility()
   const [pageIndex, setPageIndex] = useState(0)
   const handlePageChange = useCallback((pageIndex: number) => {
@@ -48,12 +51,15 @@ export const useLlammaActivityTrades = ({
     [tradesData?.trades, networkConfig, network],
   )
 
+  const isLoading = isTradesLoading || !isHydrated || !isMarketAvailable
+  const isError = isTradesError && isMarketAvailable && isHydrated
+
   const tradesTableConfig: ActivityTableConfig<LlammaTradeRow> = useMemo(
     () => ({
       data: tradesWithUrls,
       columns: LLAMMA_TRADES_COLUMNS as ActivityTableConfig<LlammaTradeRow>['columns'],
-      isLoading: isTradesLoading,
-      isError: isTradesError,
+      isLoading,
+      isError,
       emptyMessage: t`No swap data found.`,
       columnVisibility: tradesColumnVisibility,
       pageIndex,
@@ -61,20 +67,12 @@ export const useLlammaActivityTrades = ({
       pageCount: tradesData?.count ? Math.ceil(tradesData?.count / DEFAULT_PAGE_SIZE) : 0,
       onPageChange: handlePageChange,
     }),
-    [
-      tradesWithUrls,
-      isTradesLoading,
-      isTradesError,
-      tradesColumnVisibility,
-      pageIndex,
-      tradesData?.count,
-      handlePageChange,
-    ],
+    [tradesWithUrls, isLoading, isError, tradesColumnVisibility, pageIndex, tradesData?.count, handlePageChange],
   )
 
   return {
     tradesTableConfig,
-    isTradesLoading,
-    isTradesError,
+    isTradesLoading: isLoading,
+    isTradesError: isError,
   }
 }

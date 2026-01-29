@@ -27,29 +27,24 @@ export const SkeletonRows = <T extends TableItem>({
   initialLength = 3,
   increaseEveryMs = 5000,
   maxLength = 10,
-  usePageSize = false,
 }: {
   table: TanstackTable<T>
   shouldStickFirstColumn: boolean
   initialLength?: number
   increaseEveryMs?: number // after this time, the length will increase by 1
   maxLength?: number // maximum length of the skeleton rows
-  usePageSize?: boolean // if true, use page size instead of incremental rows
 }) => {
-  const { pageSize } = table.getState().pagination
   const [length, setLength] = useState(initialLength)
   useEffect(
     () => setTimeoutInterval(() => setLength((prevLength) => Math.min(maxLength, prevLength + 1)), increaseEveryMs),
     [increaseEveryMs, maxLength],
   )
 
-  const rowCount = usePageSize ? pageSize : length
-
   return (
     <>
-      {Array.from({ length: rowCount }).map((_, rowIndex) => (
+      {Array.from({ length }).map((_, rowIndex) => (
         // note: length is part of the key, so all rows are recreated and the skeleton animation is restarted
-        <TableRow key={`loading-row-${rowIndex}-${rowCount}`} data-testid={`data-table-loading-${rowIndex}`}>
+        <TableRow key={`loading-row-${rowIndex}-${length}`} data-testid={`data-table-loading-${rowIndex}`}>
           {table
             .getHeaderGroups()
             .flatMap((headerGroup) => headerGroup.headers)

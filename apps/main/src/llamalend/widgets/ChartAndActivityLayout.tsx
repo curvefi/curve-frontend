@@ -38,7 +38,6 @@ const TABS: TabOption<Tab>[] = [
 const EMPTY_ARRAY: never[] = []
 
 export type ChartAndActivityLayoutProps = {
-  isMarketAvailable: boolean
   chart: {
     ohlcDataUnavailable: boolean
     isLoading: boolean
@@ -60,7 +59,7 @@ export type ChartAndActivityLayoutProps = {
   activity: LlammaActivityProps
 }
 
-export const ChartAndActivityLayout = ({ isMarketAvailable, chart, bands, activity }: ChartAndActivityLayoutProps) => {
+export const ChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActivityLayoutProps) => {
   const theme = useTheme()
   const [isBandsVisible, , , toggleBandsVisible] = useSwitch(true)
   const newBandsChartEnabled = useNewBandsChart()
@@ -71,8 +70,8 @@ export const ChartAndActivityLayout = ({ isMarketAvailable, chart, bands, activi
   return (
     <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, gap: Spacing.sm, padding: Spacing.md }}>
       <SubTabsSwitcher tabs={TABS} value={tab} onChange={setTab} />
-      {tab === 'events' && isMarketAvailable && <LlammaActivityEvents {...activity} />}
-      {tab === 'trades' && isMarketAvailable && <LlammaActivityTrades {...activity} />}
+      {tab === 'events' && <LlammaActivityEvents {...activity} />}
+      {tab === 'trades' && <LlammaActivityTrades {...activity} />}
       {tab === 'chart' && (
         <Stack sx={{ gap: Spacing.sm }}>
           <ChartHeader

@@ -9,10 +9,12 @@ import {
   useLlammaActivityVisibility,
   DEFAULT_PAGE_SIZE,
 } from '@ui-kit/features/activity-table'
+import { useCurve } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { LlammaActivityProps } from '../'
 
 export const useLlammaActivityEvents = ({
+  isMarketAvailable,
   network,
   collateralToken,
   borrowToken,
@@ -20,6 +22,7 @@ export const useLlammaActivityEvents = ({
   endpoint,
   networkConfig,
 }: LlammaActivityProps) => {
+  const { isHydrated } = useCurve()
   const { eventsColumnVisibility } = useLlammaActivityVisibility()
   const [pageIndex, setPageIndex] = useState(0)
   const handlePageChange = useCallback((pageIndex: number) => {
@@ -52,12 +55,15 @@ export const useLlammaActivityEvents = ({
     [eventsData?.events, network, networkConfig, collateralToken, borrowToken],
   )
 
+  const isLoading = isEventsLoading || !isHydrated || !isMarketAvailable
+  const isError = isEventsError && isMarketAvailable && isHydrated
+
   const eventsTableConfig: ActivityTableConfig<LlammaEventRow> = useMemo(
     () => ({
       data: eventsWithUrls,
       columns: LLAMMA_EVENTS_COLUMNS as ActivityTableConfig<LlammaEventRow>['columns'],
-      isLoading: isEventsLoading,
-      isError: isEventsError,
+      isLoading,
+      isError,
       emptyMessage: t`No activity data found.`,
       columnVisibility: eventsColumnVisibility,
       pageIndex: pageIndex,
@@ -65,20 +71,12 @@ export const useLlammaActivityEvents = ({
       pageCount: eventsData?.count ? Math.ceil(eventsData?.count / DEFAULT_PAGE_SIZE) : 0,
       onPageChange: handlePageChange,
     }),
-    [
-      eventsWithUrls,
-      isEventsLoading,
-      isEventsError,
-      eventsColumnVisibility,
-      pageIndex,
-      eventsData?.count,
-      handlePageChange,
-    ],
+    [eventsWithUrls, isLoading, isError, eventsColumnVisibility, pageIndex, eventsData?.count, handlePageChange],
   )
 
   return {
     eventsTableConfig,
-    isEventsLoading,
-    isEventsError,
+    isEventsLoading: isLoading,
+    isEventsError: isError,
   }
 }

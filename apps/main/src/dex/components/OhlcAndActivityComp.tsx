@@ -4,6 +4,7 @@ import { useOhlcChartState } from '@/dex/hooks/useOhlcChartState'
 import { usePoolActivityEvents } from '@/dex/hooks/usePoolActivityEvents'
 import { usePoolActivityTrades } from '@/dex/hooks/usePoolActivityTrades'
 import { ChainId } from '@/dex/types/main.types'
+import type { Address } from '@curvefi/prices-api'
 import type { Pool } from '@curvefi/prices-api/pools'
 import Stack from '@mui/material/Stack'
 import { ActivityTable, PoolTradesExpandedPanel, PoolLiquidityExpandedPanel } from '@ui-kit/features/activity-table'
@@ -25,9 +26,11 @@ const tabs: TabOption<Tab>[] = [
 
 export const OhlcAndActivityComp = ({
   rChainId,
+  poolAddress,
   pricesApiPoolData,
 }: {
   rChainId: ChainId
+  poolAddress: Address
   pricesApiPoolData: Pool
 }) => {
   const { isLoading, setSelectedChart, setTimeOption, ohlcChartProps, flipChart } = useOhlcChartState({
@@ -36,25 +39,21 @@ export const OhlcAndActivityComp = ({
   })
   const { liquidityTableConfig } = usePoolActivityEvents({
     chainId: rChainId,
-    poolAddress: pricesApiPoolData.address,
-    poolTokens: pricesApiPoolData.coins,
+    poolAddress,
   })
   const { tradesTableConfig } = usePoolActivityTrades({
     chainId: rChainId,
-    poolAddress: pricesApiPoolData.address,
-    poolTokens: pricesApiPoolData.coins,
+    poolAddress,
   })
   const [tab, setTab] = useState<Tab>('chart')
 
   return (
     <Stack gap={Spacing.md}>
       <SubTabsSwitcher tabs={tabs} value={tab} onChange={setTab} />
-      {pricesApiPoolData && tab === 'events' && (
+      {tab === 'events' && (
         <ActivityTable tableConfig={liquidityTableConfig} expandedPanel={PoolLiquidityExpandedPanel} />
       )}
-      {pricesApiPoolData && tab === 'trades' && (
-        <ActivityTable tableConfig={tradesTableConfig} expandedPanel={PoolTradesExpandedPanel} />
-      )}
+      {tab === 'trades' && <ActivityTable tableConfig={tradesTableConfig} expandedPanel={PoolTradesExpandedPanel} />}
       {tab === 'chart' && (
         <Stack sx={{ gap: Spacing.md }}>
           <ChartHeader
