@@ -3,7 +3,9 @@ import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-valid
 import type { Decimal } from '@ui-kit/utils'
 import { requireVault } from '../validation/supply.validation'
 
-/** Queries the maximum deposit amount for a market. */
+/**
+ * Queries the maximum deposit amount for a market.
+ */
 export const { useQuery: useDepositMax } = queryFactory({
   queryKey: ({ chainId, marketId }: MarketParams) => [...rootKeys.market({ chainId, marketId }), 'depositMax'] as const,
   queryFn: async ({ marketId }: MarketQuery) => (await requireVault(marketId).vault.maxDeposit()) as Decimal,
