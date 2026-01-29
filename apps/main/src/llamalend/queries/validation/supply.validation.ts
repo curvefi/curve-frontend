@@ -6,7 +6,7 @@ import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { chainValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
 import { llamaApiValidationGroup } from '@ui-kit/lib/model/query/curve-api-validation'
 import { marketIdValidationGroup } from '@ui-kit/lib/model/query/market-id-validation'
-import type { UserMarketQuery } from '@ui-kit/lib/model/query/root-keys'
+import type { MarketParams, UserMarketQuery } from '@ui-kit/lib/model/query/root-keys'
 import { userAddressValidationGroup } from '@ui-kit/lib/model/query/user-address-validation'
 import type { MakeOptional } from '@ui-kit/types/util'
 import type { Decimal } from '@ui-kit/utils'
@@ -35,6 +35,15 @@ export function requireVault(marketOrId: string | LlamaMarketTemplate): LendMark
   const market = typeof marketOrId === 'string' ? getLlamaMarket(marketOrId) : marketOrId
   if (!hasVault(market)) throw new Error('Market does not have a vault')
   return market
+}
+
+export const validateHasVault = (marketId: string | null | undefined) => {
+  skipWhen(!marketId, () => {
+    test('marketId', 'Market does not have a vault', () => {
+      const market = getLlamaMarket(marketId!)
+      enforce(hasVault(market)).isTruthy()
+    })
+  })
 }
 
 const validateDepositAmount = (
@@ -75,6 +84,7 @@ export const depositValidationGroup = <IChainId extends number>({
   llamaApiValidationGroup({ chainId })
   marketIdValidationGroup({ marketId })
   userAddressValidationGroup({ userAddress })
+  validateHasVault(marketId)
   validateDepositAmount(depositAmount, { depositRequired: true })
 }
 
