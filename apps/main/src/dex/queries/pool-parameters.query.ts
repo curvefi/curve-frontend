@@ -11,13 +11,9 @@ export const {
   invalidate: invalidatePoolParameters,
 } = queryFactory({
   queryKey: ({ chainId, poolId }: PoolParams) => [...rootKeys.pool({ chainId, poolId }), 'pool-parameters'] as const,
-  queryFn: async ({ poolId }: PoolQuery) => {
-    const curve = requireLib('curveApi')
-    // Parameters can only be fetched with an RPC as it uses on chain calls
-    return curve.isNoRPC ? null : await curve.getPool(poolId).stats.parameters()
-  },
+  queryFn: async ({ poolId }: PoolQuery) => await requireLib('curveApi').getPool(poolId).stats.parameters(),
   validationSuite: createValidationSuite((params: PoolParams) => {
-    curveApiValidationGroup(params)
+    curveApiValidationGroup(params, { requireRpc: true })
     chainValidationGroup(params)
     poolValidationGroup(params)
   }),

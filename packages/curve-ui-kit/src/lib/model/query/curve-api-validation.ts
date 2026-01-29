@@ -4,17 +4,35 @@ import { createValidationSuite } from '@ui-kit/lib/validation'
 import { chainValidationGroup } from './chain-validation'
 import { ChainParams } from './root-keys'
 
-export const curveApiValidationGroup = <TChainId extends number>({ chainId }: ChainParams<TChainId>) =>
+type CurveApiOptions = { requireRpc?: boolean }
+
+export const curveApiValidationGroup = <TChainId extends number>(
+  { chainId }: ChainParams<TChainId>,
+  { requireRpc = false }: CurveApiOptions = {},
+) =>
   group('apiValidation', () => {
     test('api', 'API chain ID mismatch', () => {
       enforce(getLib('curveApi')?.chainId).message('Chain ID should be loaded').equals(chainId)
     })
+
+    if (requireRpc) {
+      test('rpc required', () => {
+        enforce(getLib('curveApi')?.isNoRPC).message('RPC is required').equals(false)
+      })
+    }
   })
 
 export const curveApiValidationSuite = createValidationSuite(
   <TChainId extends number>(params: ChainParams<TChainId>) => {
     chainValidationGroup(params)
     curveApiValidationGroup(params)
+  },
+)
+
+export const curveApiWithRpcValidationSuite = createValidationSuite(
+  <TChainId extends number>(params: ChainParams<TChainId>) => {
+    chainValidationGroup(params)
+    curveApiValidationGroup(params, { requireRpc: true })
   },
 )
 
