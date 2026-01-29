@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 import { useMemo } from 'react'
 import type { Token } from '@/llamalend/features/borrow/types'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
-import { useMarketFutureRates } from '@/llamalend/queries/market-future-rates.query'
+import { useMarketSupplyFutureRates } from '@/llamalend/queries/market-future-rates.query'
 import { useMarketRates } from '@/llamalend/queries/market-rates'
 import { useDepositIsApproved } from '@/llamalend/queries/supply/supply-deposit-approved.query'
 import { useDepositEstimateGas } from '@/llamalend/queries/supply/supply-deposit-estimate-gas.query'
@@ -34,7 +34,7 @@ export function DepositSupplyInfoAccordion<ChainId extends IChainId>({
   const userBalances = useUserBalances({ chainId, marketId, userAddress })
 
   const marketRates = useMarketRates(params, isOpen)
-  const futureRates = useMarketFutureRates({ chainId, marketId, debt: depositAmount }, isOpen)
+  const futureRates = useMarketSupplyFutureRates({ chainId, marketId, reserves: depositAmount }, isOpen)
 
   const prevAmountSupplied = useUserSuppliedAmount({ chainId, marketId, userAddress }, isOpen)
   const amountSupplied = useMemo(

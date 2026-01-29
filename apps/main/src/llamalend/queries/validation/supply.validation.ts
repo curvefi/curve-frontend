@@ -42,7 +42,7 @@ export const validateHasVault = (marketId: string | null | undefined) => {
   })
 }
 
-const validateDepositAmount = (
+export const validateDepositAmount = (
   amount: Decimal | undefined | null,
   { depositRequired = false }: { depositRequired?: boolean } = {},
 ) => {
