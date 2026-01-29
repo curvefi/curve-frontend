@@ -1,2 +1,2 @@
-npx lint-staged
+yarn run lint-staged
 git update-index --again

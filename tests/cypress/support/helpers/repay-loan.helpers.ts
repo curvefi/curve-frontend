@@ -34,11 +34,9 @@ export function writeRepayLoanFormFromDebt() {
 export function checkRepayDetailsLoaded({
   hasLeverage,
   expectedDebtInfo,
-  isFull = false,
 }: {
   expectedDebtInfo: string | RegExp
   hasLeverage: boolean
-  isFull?: boolean
 }) {
   if (hasLeverage) {
     getActionValue('borrow-band-range')
@@ -62,7 +60,5 @@ export function checkRepayDetailsLoaded({
 
 export function submitRepayForm() {
   cy.get('[data-testid="repay-submit-button"]').click()
-  cy.get('[data-testid="repay-submit-button"]').should('be.disabled')
-  cy.get('[data-testid="repay-submit-button"]', LOAD_TIMEOUT)
-  return cy.get('[data-testid="repay-submit-button"]')
+  return cy.get('[data-testid="toast-success"]', LOAD_TIMEOUT).contains('Loan repaid')
 }

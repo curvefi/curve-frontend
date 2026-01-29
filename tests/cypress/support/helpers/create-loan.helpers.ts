@@ -1,5 +1,6 @@
 import { LoanPreset } from '@/llamalend/constants'
 import { oneOf, oneValueOf } from '@cy/support/generators'
+import { type AlertColor } from '@mui/material/Alert'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { Chain, Decimal } from '@ui-kit/utils'
 import { LOAD_TIMEOUT } from '../ui'
@@ -23,7 +24,7 @@ export const LOAN_TEST_MARKETS = {
     {
       id: 'wbtc',
       label: 'WBTC-crvUSD New Mint Market',
-      collateralAddress: '0x4e59541306910aD6dC1daC0AC9dFB29bD9F15c67', // wbtc
+      collateralAddress: '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599', // wbtc
       collateral: '1',
       borrow: '100',
       chainId,
@@ -64,24 +65,13 @@ const getActionValue = (name: string) => cy.get(`[data-testid="${name}-value"]`,
  * Check all loan detail values are loaded and valid.
  * The accordion is expected to be opened before calling this function.
  */
-export function checkLoanDetailsLoaded({
-  leverageEnabled,
-  hasLeverage,
-}: {
-  leverageEnabled: boolean
-  hasLeverage: boolean
-}) {
-  if (hasLeverage) {
-    getActionValue('borrow-band-range')
-      .invoke(LOAD_TIMEOUT, 'text')
-      .should('match', /(\d(\.\d+)?) to (-?\d(\.\d+)?)/)
-    getActionValue('borrow-price-range')
-      .invoke(LOAD_TIMEOUT, 'text')
-      .should('match', /(\d(\.\d+)?) - (\d(\.\d+)?)/)
-  } else {
-    getActionValue('borrow-band-range').should('not.exist')
-    getActionValue('borrow-price-range').should('not.exist')
-  }
+export function checkLoanDetailsLoaded({ leverageEnabled }: { leverageEnabled: boolean }) {
+  getActionValue('borrow-band-range')
+    .invoke(LOAD_TIMEOUT, 'text')
+    .should('match', /(\d(\.\d+)?) to (-?\d(\.\d+)?)/)
+  getActionValue('borrow-price-range')
+    .invoke(LOAD_TIMEOUT, 'text')
+    .should('match', /(\d(\.\d+)?) - (\d(\.\d+)?)/)
   getActionValue('borrow-apr').contains('%')
   getActionValue('borrow-apr-previous').contains('%')
   getActionValue('borrow-ltv').contains('%')
@@ -125,28 +115,21 @@ export function writeCreateLoanForm({
 /**
  * Test the loan range slider by selecting max ltv and max borrow presets, checking for errors, and clearing them.
  */
-export function checkLoanRangeSlider({
-  leverageEnabled,
-  hasLeverage,
-}: {
-  leverageEnabled: boolean
-  hasLeverage: boolean
-}) {
+export function checkLoanRangeSlider({ leverageEnabled }: { leverageEnabled: boolean }) {
   cy.get(`[data-testid="loan-preset-${LoanPreset.MaxLtv}"]`).click()
   cy.get('[data-testid="borrow-set-debt-to-max"]').should('not.exist') // make sure we don't click the previous max
   cy.get('[data-testid="borrow-set-debt-to-max"]', LOAD_TIMEOUT).click()
   cy.get(`[data-testid="loan-preset-${LoanPreset.Safe}"]`).click({ force: true }) // force because sometimes a tooltip covers it
   cy.get('[data-testid="helper-message-error"]', LOAD_TIMEOUT).should('contain.text', 'debt exceeds the maximum')
-  cy.get('[data-testid="helper-message-number-0"]').click() // set max again to fix error
+  cy.get('[data-testid="helper-message-number-0"]').click() // set max again to fix the error
   cy.get('[data-testid="helper-message-error"]').should('not.exist')
-  checkLoanDetailsLoaded({ leverageEnabled, hasLeverage })
+  checkLoanDetailsLoaded({ leverageEnabled })
 }
 
 /**
  * Submit the create loan form and wait for the button to be re-enabled.
  */
-export function submitCreateLoanForm() {
+export function submitCreateLoanForm(expected: AlertColor = 'success', message = 'Loan created') {
   cy.get('[data-testid="create-loan-submit-button"]').click()
-  cy.get('[data-testid="create-loan-submit-button"]').should('be.disabled')
-  return cy.get('[data-testid="create-loan-submit-button"]', LOAD_TIMEOUT)
+  return cy.get(`[data-testid="toast-${expected}"]`, LOAD_TIMEOUT).contains(message)
 }

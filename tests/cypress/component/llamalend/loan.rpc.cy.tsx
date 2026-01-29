@@ -37,93 +37,89 @@ const onUpdate: OnCreateLoanFormUpdate = async (form) => console.info('form upda
 
 const prefetch = () => prefetchMarkets({})
 
-const testCases = recordEntries(LOAN_TEST_MARKETS).flatMap(([marketType, markets]) =>
-  markets.map((market) => ({ marketType, ...market })),
-)
+type Spy = ReturnType<typeof cy.spy>
+recordEntries(LOAN_TEST_MARKETS)
+  .flatMap(([marketType, markets]) => markets.map((market) => ({ marketType, ...market })))
+  .forEach(({ id, collateralAddress: tokenAddress, collateral, borrow, chainId, hasLeverage, label }) => {
+    describe(label, () => {
+      const privateKey = generatePrivateKey()
+      const { address } = privateKeyToAccount(privateKey)
+      const getVirtualNetwork = createVirtualTestnet((uuid) => ({
+        slug: `loan-integration-${uuid}`,
+        display_name: `LoanIntegration (${uuid})`,
+        fork_config: { block_number: 'latest' },
+      }))
 
-;[testCases[0]].forEach(({ id, collateralAddress: tokenAddress, collateral, borrow, chainId, hasLeverage, label }) => {
-  describe(label, () => {
-    const privateKey = generatePrivateKey()
-    const { address } = privateKeyToAccount(privateKey)
-    const getVirtualNetwork = createVirtualTestnet((uuid) => ({
-      slug: `repay-form-${uuid}`,
-      display_name: `RepayForm (${uuid})`,
-      fork_config: { block_number: 'latest' },
-    }))
+      const leverageEnabled = hasLeverage && oneBool()
 
-    const leverageEnabled = hasLeverage && oneBool()
+      let onCreated: Spy
+      let onRepaid: Spy
 
-    const onCreated = cy.spy().as('onCreated')
-    const onRepaid = cy.spy().as('onRepaid')
-
-    beforeEach(() => {
-      const vnet = getVirtualNetwork()
-      const { adminRpcUrl } = getRpcUrls(vnet)
-      fundEth({ adminRpcUrl, amountWei: CREATE_LOAN_FUND_AMOUNT, recipientAddresses: [address] })
-      fundErc20({ adminRpcUrl, amountWei: CREATE_LOAN_FUND_AMOUNT, tokenAddress, recipientAddresses: [address] })
-      cy.log(`Funded some eth and collateral to ${address} in vnet ${vnet.slug}`)
-    })
-
-    function RepayFlowTest() {
-      const { isHydrated } = useCurve()
-      const market = useMemo(() => isHydrated && getLlamaMarket(id), [isHydrated])
-
-      const { data: loanExists } = useLoanExists({ chainId, marketId: id, userAddress: address })
-
-      if (!market) return <Skeleton />
-      return loanExists == false ? (
-        <CreateLoanForm
-          market={market}
-          networks={networks}
-          chainId={chainId}
-          onUpdate={onUpdate}
-          onCreated={onCreated}
-        />
-      ) : (
-        <RepayForm market={market} networks={networks} chainId={chainId} enabled onRepaid={onRepaid} />
-      )
-    }
-
-    const LoanTestWrapper = () => (
-      <ComponentTestWrapper
-        config={createTenderlyWagmiConfigFromVNet({ vnet: getVirtualNetwork(), privateKey })}
-        autoConnect
-      >
-        <CurveProvider
-          app="llamalend"
-          network={networks[chainId]}
-          onChainUnavailable={console.error}
-          hydrate={{ llamalend: prefetch }}
-        >
-          <Box sx={{ maxWidth: 520 }}>
-            <RepayFlowTest />
-          </Box>
-        </CurveProvider>
-      </ComponentTestWrapper>
-    )
-
-    beforeEach(() => {
-      onCreated.resetHistory()
-      onRepaid.resetHistory()
-    })
-
-    it(`creates the loan`, () => {
-      cy.mount(<LoanTestWrapper />)
-      writeCreateLoanForm({ collateral, borrow, leverageEnabled })
-      checkLoanDetailsLoaded({ leverageEnabled, hasLeverage })
-      checkLoanRangeSlider({ leverageEnabled, hasLeverage })
-      submitCreateLoanForm().then(() => expect(onCreated).to.be.calledOnce)
-    })
-
-    it(`repays the loan`, () => {
-      cy.mount(<LoanTestWrapper />)
-      selectRepayToken('crvUSD')
-      writeRepayLoanForm({ amount: oneOf<Decimal>(borrow, `${Number(borrow) / oneInt(1, 10)}`) })
-      checkRepayDetailsLoaded({
-        expectedDebtInfo: [borrow, 0, 'crvUSD'].join('\n'), // note the arrow is a svg so it doesn't show in text
-        hasLeverage,
+      beforeEach(() => {
+        onCreated = cy.spy().as('onCreated')
+        onRepaid = cy.spy().as('onRepaid')
+        const vnet = getVirtualNetwork()
+        const { adminRpcUrl } = getRpcUrls(vnet)
+        fundEth({ adminRpcUrl, amountWei: CREATE_LOAN_FUND_AMOUNT, recipientAddresses: [address] })
+        fundErc20({ adminRpcUrl, amountWei: CREATE_LOAN_FUND_AMOUNT, tokenAddress, recipientAddresses: [address] })
+        cy.log(`Funded some eth and collateral to ${address} in vnet ${vnet.slug}`)
       })
-      submitRepayForm().then(() => expect(onRepaid).to.be.calledOnce)
+
+      function RepayFlowTest() {
+        const { isHydrated } = useCurve()
+        const market = useMemo(() => isHydrated && getLlamaMarket(id), [isHydrated])
+
+        const { data: loanExists } = useLoanExists({ chainId, marketId: id, userAddress: address })
+
+        if (!market) return <Skeleton />
+        return loanExists == false ? (
+          <CreateLoanForm
+            market={market}
+            networks={networks}
+            chainId={chainId}
+            onUpdate={onUpdate}
+            onCreated={onCreated}
+          />
+        ) : (
+          <RepayForm market={market} networks={networks} chainId={chainId} enabled onRepaid={onRepaid} />
+        )
+      }
+
+      const LoanTestWrapper = () => (
+        <ComponentTestWrapper
+          config={createTenderlyWagmiConfigFromVNet({ vnet: getVirtualNetwork(), privateKey })}
+          autoConnect
+        >
+          <CurveProvider
+            app="llamalend"
+            network={networks[chainId]}
+            onChainUnavailable={console.error}
+            hydrate={{ llamalend: prefetch }}
+          >
+            <Box sx={{ maxWidth: 520 }}>
+              <RepayFlowTest />
+            </Box>
+          </CurveProvider>
+        </ComponentTestWrapper>
+      )
+
+      it(`creates the loan`, () => {
+        cy.mount(<LoanTestWrapper />)
+        writeCreateLoanForm({ collateral, borrow, leverageEnabled })
+        checkLoanDetailsLoaded({ leverageEnabled })
+        checkLoanRangeSlider({ leverageEnabled })
+        submitCreateLoanForm().then(() => expect(onCreated).to.be.calledOnce)
+      })
+
+      it(`repays the loan`, () => {
+        cy.mount(<LoanTestWrapper />)
+        selectRepayToken('crvUSD')
+        writeRepayLoanForm({ amount: oneOf<Decimal>(borrow, `${Number(borrow) / oneInt(1, 10)}`) })
+        checkRepayDetailsLoaded({
+          expectedDebtInfo: [borrow, 0, 'crvUSD'].join('\n'), // note the arrow is a svg so it doesn't show in text
+          hasLeverage,
+        })
+        submitRepayForm().then(() => expect(onRepaid).to.be.calledOnce)
+      })
     })
   })
-})
