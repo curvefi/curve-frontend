@@ -1,4 +1,4 @@
-import { createColumnHelper, type ColumnDef } from '@tanstack/react-table'
+import { createColumnHelper } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
 import { TokenAmountCell, TimestampCell, AddressCell } from '../cells'
 import type { PoolTradeRow } from '../types'
@@ -12,12 +12,12 @@ export enum PoolTradesColumnId {
 
 const columnHelper = createColumnHelper<PoolTradeRow>()
 
-export const createPoolTradesColumns = (): ColumnDef<PoolTradeRow, unknown>[] => [
+export const POOL_TRADES_COLUMNS = [
   columnHelper.accessor('buyer', {
     id: PoolTradesColumnId.User,
     header: t`Address`,
     cell: ({ getValue }) => <AddressCell address={getValue()} />,
-  }) as ColumnDef<PoolTradeRow, unknown>,
+  }),
   columnHelper.accessor('tokensBought', {
     id: PoolTradesColumnId.Bought,
     header: t`Buy`,
@@ -32,7 +32,7 @@ export const createPoolTradesColumns = (): ColumnDef<PoolTradeRow, unknown>[] =>
       />
     ),
     meta: { type: 'numeric' },
-  }) as ColumnDef<PoolTradeRow, unknown>,
+  }),
   columnHelper.accessor('tokensSold', {
     id: PoolTradesColumnId.Sold,
     header: t`Sell`,
@@ -47,11 +47,11 @@ export const createPoolTradesColumns = (): ColumnDef<PoolTradeRow, unknown>[] =>
       />
     ),
     meta: { type: 'numeric' },
-  }) as ColumnDef<PoolTradeRow, unknown>,
+  }),
   columnHelper.accessor('time', {
     id: PoolTradesColumnId.Time,
     header: t`Time`,
     cell: ({ row }) => <TimestampCell timestamp={row.original.time} txUrl={row.original.txUrl} />,
     meta: { type: 'numeric' },
-  }) as ColumnDef<PoolTradeRow, unknown>,
+  }),
 ]

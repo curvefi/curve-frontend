@@ -11,8 +11,8 @@ import {
   type LlammaEventRow,
   type Token,
   type LlammaActivitySelection,
-  createLlammaTradesColumns,
-  createLlammaEventsColumns,
+  LLAMMA_TRADES_COLUMNS,
+  LLAMMA_EVENTS_COLUMNS,
   useLlammaActivityVisibility,
 } from '@ui-kit/features/activity-table'
 import { t } from '@ui-kit/lib/i18n'
@@ -23,8 +23,6 @@ export const LLAMMA_ACTIVITY_SELECTIONS: ActivitySelection<LlammaActivitySelecti
 ]
 
 const PAGE_SIZE = 50
-const tradesColumns = createLlammaTradesColumns()
-const eventsColumns = createLlammaEventsColumns()
 
 export type UseLlammaActivityProps = {
   network: Chain | undefined
@@ -115,7 +113,7 @@ export const useLlammaActivity = ({
   const tradesTableConfig: ActivityTableConfig<LlammaTradeRow> = useMemo(
     () => ({
       data: tradesWithUrls,
-      columns: tradesColumns,
+      columns: LLAMMA_TRADES_COLUMNS as ActivityTableConfig<LlammaTradeRow>['columns'],
       isLoading: isTradesLoading,
       isError: isTradesError,
       emptyMessage: t`No swap data found.`,
@@ -139,7 +137,7 @@ export const useLlammaActivity = ({
   const eventsTableConfig: ActivityTableConfig<LlammaEventRow> = useMemo(
     () => ({
       data: eventsWithUrls,
-      columns: eventsColumns,
+      columns: LLAMMA_EVENTS_COLUMNS as ActivityTableConfig<LlammaEventRow>['columns'],
       isLoading: isEventsLoading,
       isError: isEventsError,
       emptyMessage: t`No activity data found.`,

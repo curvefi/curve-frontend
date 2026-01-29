@@ -1,4 +1,5 @@
 import type { Address } from '..'
+import type { Chain } from '../'
 
 type Coin = {
   pool_index: number
@@ -23,7 +24,7 @@ type Pool = {
 }
 
 export type GetPoolsResponse = {
-  chain: string
+  chain: Chain
   total: {
     total_tvl: number
     trading_volume_24h: number
@@ -61,7 +62,7 @@ type TradeToken = {
 }
 
 export type GetPoolTradesResponse = {
-  chain: string
+  chain: Chain
   address: Address
   main_token: TradeToken
   reference_token: TradeToken
@@ -88,7 +89,7 @@ export type GetPoolTradesResponse = {
 }
 
 export type GetAllPoolTradesResponse = {
-  chain: string
+  chain: Chain
   address: Address
   page: number
   per_page: number
@@ -114,7 +115,7 @@ export type GetAllPoolTradesResponse = {
 }
 
 export type GetPoolLiquidityEventsResponse = {
-  chain: string
+  chain: Chain
   address: Address
   page: number
   per_page: number

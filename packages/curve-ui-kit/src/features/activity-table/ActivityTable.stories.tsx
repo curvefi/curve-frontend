@@ -3,10 +3,10 @@ import type { Address, Chain } from '@curvefi/prices-api'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { ActivityTable } from './ActivityTable'
 import {
-  createPoolTradesColumns,
+  POOL_TRADES_COLUMNS,
   createPoolLiquidityColumns,
-  createLlammaTradesColumns,
-  createLlammaEventsColumns,
+  LLAMMA_TRADES_COLUMNS,
+  LLAMMA_EVENTS_COLUMNS,
 } from './columns'
 import {
   PoolTradesExpandedPanel,
@@ -23,6 +23,7 @@ import type {
   LlammaActivitySelection,
   ActivitySelection,
   Token,
+  ActivityTableConfig,
 } from './types'
 
 const generateAddress = (seed: number): Address => `0x${seed.toString(16).padStart(40, '0')}` as Address
@@ -208,16 +209,15 @@ const DexPoolActivityComponent = () => {
 
   const tradesData = useMemo(() => generatePoolTrades(20), [])
   const liquidityData = useMemo(() => generatePoolLiquidity(15), [])
-  const tradesColumns = useMemo(() => createPoolTradesColumns(), [])
   const liquidityColumns = useMemo(() => createPoolLiquidityColumns({ poolTokens: POOL_TOKENS }), [])
 
   const tradesTableConfig = {
     data: tradesData,
-    columns: tradesColumns,
+    columns: POOL_TRADES_COLUMNS,
     isLoading: false,
     isError: false,
     emptyMessage: 'No trades data found.',
-  }
+  } as ActivityTableConfig<PoolTradeRow>
 
   const liquidityTableConfig = {
     data: liquidityData,
@@ -225,7 +225,7 @@ const DexPoolActivityComponent = () => {
     isLoading: false,
     isError: false,
     emptyMessage: 'No liquidity data found.',
-  }
+  } as ActivityTableConfig<PoolLiquidityRow>
 
   return (
     <>
@@ -260,24 +260,22 @@ const LendMarketActivityComponent = () => {
 
   const tradesData = useMemo(() => generateLlammaTrades(20, COLLATERAL_TOKEN, BORROW_TOKEN), [])
   const eventsData = useMemo(() => generateLlammaEvents(15, COLLATERAL_TOKEN, BORROW_TOKEN), [])
-  const tradesColumns = useMemo(() => createLlammaTradesColumns(), [])
-  const eventsColumns = useMemo(() => createLlammaEventsColumns(), [])
 
   const tradesTableConfig = {
     data: tradesData,
-    columns: tradesColumns,
+    columns: LLAMMA_TRADES_COLUMNS,
     isLoading: false,
     isError: false,
     emptyMessage: 'No AMM trades found.',
-  }
+  } as ActivityTableConfig<LlammaTradeRow>
 
   const eventsTableConfig = {
     data: eventsData,
-    columns: eventsColumns,
+    columns: LLAMMA_EVENTS_COLUMNS as ActivityTableConfig<LlammaEventRow>['columns'],
     isLoading: false,
     isError: false,
     emptyMessage: 'No controller events found.',
-  }
+  } as ActivityTableConfig<LlammaEventRow>
 
   return (
     <>
@@ -357,24 +355,20 @@ export const LendMarketActivity: LendStory = {
 }
 
 export const LoadingState: StoryObj = {
-  render: () => {
-    const tradesColumns = createPoolTradesColumns()
-
-    return (
-      <ActivityTable
-        selections={POOL_ACTIVITY_SELECTIONS}
-        activeSelection="trades"
-        onSelectionChange={() => {}}
-        tableConfig={{
-          data: [],
-          columns: tradesColumns,
-          isLoading: true,
-          isError: false,
-          emptyMessage: 'Loading trades...',
-        }}
-      />
-    )
-  },
+  render: () => (
+    <ActivityTable
+      selections={POOL_ACTIVITY_SELECTIONS}
+      activeSelection="trades"
+      onSelectionChange={() => {}}
+      tableConfig={{
+        data: [],
+        columns: POOL_TRADES_COLUMNS as ActivityTableConfig<PoolTradeRow>['columns'],
+        isLoading: true,
+        isError: false,
+        emptyMessage: 'Loading trades...',
+      }}
+    />
+  ),
   parameters: {
     docs: {
       description: {
@@ -385,24 +379,20 @@ export const LoadingState: StoryObj = {
 }
 
 export const EmptyState: StoryObj = {
-  render: () => {
-    const tradesColumns = createPoolTradesColumns()
-
-    return (
-      <ActivityTable
-        selections={POOL_ACTIVITY_SELECTIONS}
-        activeSelection="trades"
-        onSelectionChange={() => {}}
-        tableConfig={{
-          data: [],
-          columns: tradesColumns,
-          isLoading: false,
-          isError: false,
-          emptyMessage: 'No swap data found.',
-        }}
-      />
-    )
-  },
+  render: () => (
+    <ActivityTable
+      selections={POOL_ACTIVITY_SELECTIONS}
+      activeSelection="trades"
+      onSelectionChange={() => {}}
+      tableConfig={{
+        data: [],
+        columns: POOL_TRADES_COLUMNS as ActivityTableConfig<PoolTradeRow>['columns'],
+        isLoading: false,
+        isError: false,
+        emptyMessage: 'No swap data found.',
+      }}
+    />
+  ),
   parameters: {
     docs: {
       description: {
@@ -413,24 +403,20 @@ export const EmptyState: StoryObj = {
 }
 
 export const ErrorState: StoryObj = {
-  render: () => {
-    const tradesColumns = createPoolTradesColumns()
-
-    return (
-      <ActivityTable
-        selections={POOL_ACTIVITY_SELECTIONS}
-        activeSelection="trades"
-        onSelectionChange={() => {}}
-        tableConfig={{
-          data: [],
-          columns: tradesColumns,
-          isLoading: false,
-          isError: true,
-          emptyMessage: 'Could not load data',
-        }}
-      />
-    )
-  },
+  render: () => (
+    <ActivityTable
+      selections={POOL_ACTIVITY_SELECTIONS}
+      activeSelection="trades"
+      onSelectionChange={() => {}}
+      tableConfig={{
+        data: [],
+        columns: POOL_TRADES_COLUMNS as ActivityTableConfig<PoolTradeRow>['columns'],
+        isLoading: false,
+        isError: true,
+        emptyMessage: 'Could not load data',
+      }}
+    />
+  ),
   parameters: {
     docs: {
       description: {

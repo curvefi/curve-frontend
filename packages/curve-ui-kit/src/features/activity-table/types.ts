@@ -45,7 +45,7 @@ export type PoolActivitySelection = 'trades' | 'liquidity'
  */
 export type ActivityTableConfig<TData extends TableItem> = {
   data: TData[] | undefined
-  columns: ColumnDef<TData, unknown>[]
+  columns: ColumnDef<TData>[]
   isLoading: boolean
   isError: boolean
   /** Custom message to show when the table is empty */

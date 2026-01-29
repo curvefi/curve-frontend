@@ -12,7 +12,7 @@ import {
   type PoolTradeRow,
   type PoolLiquidityRow,
   type PoolActivitySelection,
-  createPoolTradesColumns,
+  POOL_TRADES_COLUMNS,
   createPoolLiquidityColumns,
   usePoolActivityVisibility,
 } from '@ui-kit/features/activity-table'
@@ -24,7 +24,6 @@ export const POOL_ACTIVITY_SELECTIONS: ActivitySelection<PoolActivitySelection>[
 ]
 
 const PAGE_SIZE = 50
-const tradesColumns = createPoolTradesColumns()
 
 type UsePoolActivityProps = {
   chainId: ChainId
@@ -107,7 +106,7 @@ export const usePoolActivity = ({ chainId, poolAddress, poolTokens }: UsePoolAct
   const tradesTableConfig: ActivityTableConfig<PoolTradeRow> = useMemo(
     () => ({
       data: tradesWithUrls,
-      columns: tradesColumns,
+      columns: POOL_TRADES_COLUMNS as ActivityTableConfig<PoolTradeRow>['columns'],
       isLoading: isTradesLoading,
       isError: isTradesError,
       emptyMessage: t`No swap data found.`,
@@ -131,7 +130,7 @@ export const usePoolActivity = ({ chainId, poolAddress, poolTokens }: UsePoolAct
   const liquidityTableConfig: ActivityTableConfig<PoolLiquidityRow> = useMemo(
     () => ({
       data: liquidityWithUrls,
-      columns: liquidityColumns,
+      columns: liquidityColumns as ActivityTableConfig<PoolLiquidityRow>['columns'],
       isLoading: isLiquidityLoading,
       isError: isLiquidityError,
       emptyMessage: t`No liquidity data found.`,

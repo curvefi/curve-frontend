@@ -12,41 +12,41 @@ import type { LlammaTradeRow } from '../types'
 
 const { Spacing } = SizesAndSpaces
 
-export const LlammaTradesExpandedPanel: ExpandedPanel<LlammaTradeRow> = ({ row: { original: trade } }) => {
-  const { txUrl, amountSold, tokenSold, buyer, network } = trade
-
-  return (
-    <Stack>
-      <Stack paddingTop={Spacing.md} gap={Spacing.xs}>
-        <Stack direction="row" justifyContent="space-between" alignItems="center">
-          <Typography variant="bodyMRegular" color="textSecondary">{t`Sold`}</Typography>
-          <Stack direction="row" alignItems="center" gap={Spacing.xs}>
-            <Typography variant="tableCellMBold" color="error">
-              -{formatNumber(amountSold, { abbreviate: false })} {tokenSold.symbol}
-            </Typography>
-            <TokenIcon blockchainId={network} address={tokenSold.address} size="mui-sm" />
-          </Stack>
-        </Stack>
-        <Stack direction="row" justifyContent="space-between" alignItems="center">
-          <Typography variant="bodyMRegular" color="textSecondary">{t`User`}</Typography>
-          <Typography variant="tableCellMBold">{shortenString(buyer, { digits: 4 })}</Typography>
+export const LlammaTradesExpandedPanel: ExpandedPanel<LlammaTradeRow> = ({
+  row: {
+    original: { txUrl, amountSold, tokenSold, buyer, network },
+  },
+}) => (
+  <Stack>
+    <Stack paddingTop={Spacing.md} gap={Spacing.xs}>
+      <Stack direction="row" justifyContent="space-between" alignItems="center">
+        <Typography variant="bodyMRegular" color="textSecondary">{t`Sold`}</Typography>
+        <Stack direction="row" alignItems="center" gap={Spacing.xs}>
+          <Typography variant="tableCellMBold" color="error">
+            {formatNumber(amountSold, { abbreviate: false })} {tokenSold.symbol}
+          </Typography>
+          <TokenIcon blockchainId={network} address={tokenSold.address} size="mui-sm" />
         </Stack>
       </Stack>
-
-      {txUrl && (
-        <Button
-          component={Link}
-          href={txUrl}
-          target="_blank"
-          rel="noreferrer"
-          variant="link"
-          color="ghost"
-          size="extraSmall"
-          endIcon={<ArrowOutwardIcon />}
-        >
-          {t`View Transaction`}
-        </Button>
-      )}
+      <Stack direction="row" justifyContent="space-between" alignItems="center">
+        <Typography variant="bodyMRegular" color="textSecondary">{t`User`}</Typography>
+        <Typography variant="tableCellMBold">{shortenString(buyer)}</Typography>
+      </Stack>
     </Stack>
-  )
-}
+
+    {txUrl && (
+      <Button
+        component={Link}
+        href={txUrl}
+        target="_blank"
+        rel="noreferrer"
+        variant="link"
+        color="ghost"
+        size="extraSmall"
+        endIcon={<ArrowOutwardIcon />}
+      >
+        {t`View Transaction`}
+      </Button>
+    )}
+  </Stack>
+)

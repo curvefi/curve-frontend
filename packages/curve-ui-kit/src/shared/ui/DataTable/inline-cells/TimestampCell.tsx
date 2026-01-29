@@ -1,10 +1,10 @@
 import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { formatDate, formatTime } from '@ui/utils'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { InlineTableCell } from '@ui-kit/shared/ui/DataTable/inline-cells/InlineTableCell'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { formatDate, formatTime } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 

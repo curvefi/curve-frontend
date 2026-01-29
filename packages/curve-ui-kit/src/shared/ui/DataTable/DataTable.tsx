@@ -40,13 +40,7 @@ function useScrollToTopOnPageChange<T extends TableItem>(
   containerRef: React.RefObject<HTMLElement | null>,
 ) {
   const { pageIndex } = table.getState().pagination
-  const isFirstRender = useRef(true)
   useEffect(() => {
-    // Skip the first render to avoid scrolling on initial load
-    if (isFirstRender.current) {
-      isFirstRender.current = false
-      return
-    }
     containerRef.current?.scrollTo({ top: 0, behavior: 'smooth' })
   }, [pageIndex, containerRef])
 }

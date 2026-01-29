@@ -30,7 +30,7 @@ export const PoolTradesExpandedPanel: ExpandedPanel<PoolTradeRow> = ({
       </Stack>
       <Stack direction="row" justifyContent="space-between" alignItems="center">
         <Typography variant="bodyMRegular" color="textSecondary">{t`User`}</Typography>
-        <Typography variant="tableCellMBold">{shortenString(buyer, { digits: 4 })}</Typography>
+        <Typography variant="tableCellMBold">{shortenString(buyer)}</Typography>
       </Stack>
     </Stack>
 

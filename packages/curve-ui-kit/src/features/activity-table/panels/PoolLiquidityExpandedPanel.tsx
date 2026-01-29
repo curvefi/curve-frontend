@@ -12,8 +12,11 @@ import type { PoolLiquidityRow } from '../types'
 
 const { Spacing } = SizesAndSpaces
 
-export const PoolLiquidityExpandedPanel: ExpandedPanel<PoolLiquidityRow> = ({ row: { original: event } }) => {
-  const { txUrl, tokenAmounts, poolTokens, provider, network, eventType } = event
+export const PoolLiquidityExpandedPanel: ExpandedPanel<PoolLiquidityRow> = ({
+  row: {
+    original: { txUrl, tokenAmounts, poolTokens, provider, network, eventType },
+  },
+}) => {
   const isAdd = eventType === 'AddLiquidity'
 
   // Filter out zero amounts
@@ -31,7 +34,6 @@ export const PoolLiquidityExpandedPanel: ExpandedPanel<PoolLiquidityRow> = ({ ro
             </Typography>
             <Stack direction="row" alignItems="center" gap={Spacing.xs}>
               <Typography variant="tableCellMBold" color={isAdd ? 'success' : 'error'}>
-                {isAdd ? '+' : '-'}
                 {formatNumber(amount, { abbreviate: false })}
               </Typography>
               <TokenIcon blockchainId={network} address={token?.address} size="mui-sm" />
@@ -40,7 +42,7 @@ export const PoolLiquidityExpandedPanel: ExpandedPanel<PoolLiquidityRow> = ({ ro
         ))}
         <Stack direction="row" justifyContent="space-between" alignItems="center">
           <Typography variant="bodyMRegular" color="textSecondary">{t`User`}</Typography>
-          <Typography variant="tableCellMBold">{shortenString(provider, { digits: 4 })}</Typography>
+          <Typography variant="tableCellMBold">{shortenString(provider)}</Typography>
         </Stack>
       </Stack>
 
