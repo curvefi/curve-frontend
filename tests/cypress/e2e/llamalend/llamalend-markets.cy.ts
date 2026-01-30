@@ -10,6 +10,7 @@ import {
   expandFilters,
   expandFirstRowOnMobile,
   firstRow,
+  getHiddenCount,
   openDrawer,
   withFilterChips,
 } from '@cy/support/helpers/data-table.helpers'
@@ -209,9 +210,8 @@ describe(`LlamaLend Markets`, () => {
   })
 
   it('should let the TVL filter override the default small pools cutoff', () => {
-    const getHiddenCount = () => cy.get('[data-testid="hidden-market-count"]').then(([{ innerText }]) => innerText)
-    getHiddenCount().then((beforeCount) => {
-      expect(isNaN(+beforeCount), `Cannot parse hidden count ${beforeCount}`).to.be.false
+    getHiddenCount(breakpoint).then((hiddenBefore) => {
+      expect(!!hiddenBefore, `Cannot parse hidden count ${hiddenBefore}`).to.be.true
       expandFilters(breakpoint)
       cy.get(`[data-testid="minimum-slider-filter-tvl"]`).click({ waitForAnimations: true })
       cy.get(`[data-testid="slider-tvl"]`).as('slider').should('be.visible')
@@ -219,8 +219,8 @@ describe(`LlamaLend Markets`, () => {
       cy.get(`[data-testid="slider-input-tvl-min"]`).type('0')
       closeSlider(breakpoint)
       cy.url().should('equal', `${e2eBaseUrl()}/llamalend/ethereum/markets/?${new URLSearchParams('tvl=0~')}`)
-      getHiddenCount().then((afterCount) => {
-        expect(+afterCount).to.be.lessThan(+beforeCount)
+      getHiddenCount(breakpoint).then((hiddenAfter) => {
+        expect(+hiddenAfter).to.be.lessThan(+hiddenBefore)
       })
     })
   })

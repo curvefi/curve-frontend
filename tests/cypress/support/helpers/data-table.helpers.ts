@@ -1,11 +1,10 @@
-/* eslint-disable */
-import { Breakpoint, e2eBaseUrl } from '@cy/support/ui'
+import { Breakpoint } from '@cy/support/ui'
 
 /**
  * Makes sure that the filter chips are visible during the given callback.
  * On mobile, the filters are hidden behind a drawer and need to be expanded for some actions.
  */
-export function withFilterChips(breakpoint: Breakpoint, callback: () => Cypress.Chainable) {
+export function withFilterChips<T>(breakpoint: Breakpoint, callback: () => Cypress.Chainable<T>) {
   if (breakpoint !== 'mobile') return callback()
   cy.get('[data-testid^="btn-drawer-filter-"]').click()
   return callback().then((result) => {
@@ -14,7 +13,7 @@ export function withFilterChips(breakpoint: Breakpoint, callback: () => Cypress.
   })
 }
 
-export const getHiddenCount = (breakpoint: Breakpoint) =>
+export const getHiddenCount = (breakpoint: Breakpoint): Cypress.Chainable<string> =>
   withFilterChips(breakpoint, () => cy.get('[data-testid="hidden-market-count"]').then(([{ innerText }]) => innerText))
 
 export function toggleSmallPools(breakpoint: Breakpoint) {
@@ -64,5 +63,3 @@ export function closeSlider(breakpoint: Breakpoint) {
   cy.get(`[data-testid^="slider-"]`).should('not.exist')
   closeDrawer(breakpoint)
 }
-
-export function checkTvlFilterWithSmallPool(breakpoint: Breakpoint, expectedPath: string) {}
