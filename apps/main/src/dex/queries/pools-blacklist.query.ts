@@ -1,9 +1,9 @@
 import type { Address } from 'viem'
 import type { Chain } from '@curvefi/prices-api'
 import { getPoolFilters } from '@curvefi/prices-api/chains'
-import { createValidationSuite } from '@ui-kit/lib'
-import { queryFactory, rootKeys, type ChainNameParams, type ChainNameQuery } from '@ui-kit/lib/model'
-import { chainNameValidationGroup } from '@ui-kit/lib/model/query/chain-name-validation'
+import { EmptyValidationSuite, type QueryData } from '@ui-kit/lib'
+import { queryFactory, type ChainNameParams } from '@ui-kit/lib/model'
+import { mapQuery } from '@ui-kit/types/util'
 
 /**
  * A local hardcoded blacklist of pools we don't want to show in the front-end for whatever reason.
@@ -35,18 +35,19 @@ const blacklist: Partial<Record<Chain, Address[]>> = {
   base: ['0xfFE0dcdB7085508a3c32931973bd2dC77dF30Caa', '0x98f6Fd72D68D4B550C89A7096ed28f090a1A49fC'],
 } as const
 
-/** Gets a list of all blacklisted pool addresses. */
-export const { useQuery: usePoolsBlacklist, fetchQuery: fetchPoolsBlacklist } = queryFactory({
-  queryKey: ({ blockchainId }: ChainNameParams) =>
-    [...rootKeys.chainName({ blockchainId }), 'pools-blacklist'] as const,
-  queryFn: async ({ blockchainId }: ChainNameQuery) => {
-    const blacklistPricesApi = (await getPoolFilters())
-      .filter(({ chain }) => chain === blockchainId)
-      .map(({ address }) => address)
-
-    return [...(blacklist[blockchainId] ?? []), ...blacklistPricesApi]
-  },
-  validationSuite: createValidationSuite((params: ChainNameParams) => {
-    chainNameValidationGroup(params)
-  }),
+const { useQuery: usePricesApiBlacklist, fetchQuery: fetchPricesApiBlacklist } = queryFactory({
+  queryKey: () => ['pools-blacklist'] as const,
+  queryFn: async () => await getPoolFilters(),
+  validationSuite: EmptyValidationSuite,
 })
+
+const getBlacklist = (blacklistPricesApi: QueryData<typeof usePricesApiBlacklist>, blockchainId: Chain) => [
+  ...(blacklist[blockchainId] ?? []),
+  ...blacklistPricesApi.filter(({ chain }) => chain === blockchainId).map(({ address }) => address),
+]
+
+export const usePoolsBlacklist = ({ blockchainId }: ChainNameParams) =>
+  mapQuery(usePricesApiBlacklist({}), (blacklist) => (blockchainId ? getBlacklist(blacklist, blockchainId) : undefined))
+
+export const fetchPoolsBlacklist = async ({ blockchainId }: ChainNameParams) =>
+  blockchainId ? getBlacklist(await fetchPricesApiBlacklist({}), blockchainId) : undefined
