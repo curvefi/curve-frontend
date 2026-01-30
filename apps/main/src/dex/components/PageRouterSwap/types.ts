@@ -1,5 +1,6 @@
 import { AlertFormErrorKey } from '@/dex/components/AlertFormError'
 import type { IRouteStep } from '@curvefi/api/lib/interfaces'
+import type { RouteProvider } from '@ui-kit/widgets/RouteProvider'
 
 export type StepKey = 'APPROVAL' | 'SWAP'
 
@@ -49,6 +50,7 @@ export type RoutesAndOutput = {
   fromAmount: string
   fetchedToAmount: string
   modal: RoutesAndOutputModal | null
+  provider: RouteProvider
 }
 
 export type FormEstGas = {

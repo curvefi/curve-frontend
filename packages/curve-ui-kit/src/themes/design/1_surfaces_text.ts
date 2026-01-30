@@ -90,7 +90,7 @@ function createLightSurfaces() {
       },
       Border: {
         Default: Grays[400],
-        Active: Blues[500],
+        Active: Greens[400],
         Alert: Reds[500],
         Highlight: Blues[500],
         Warning: Oranges[500],
@@ -198,7 +198,7 @@ function createDarkSurfaces() {
       },
       Border: {
         Default: Grays[600],
-        Active: Blues[400],
+        Active: Greens[400],
         Alert: Reds[500],
         Highlight: Blues[400],
         Warning: Oranges[500],
@@ -306,7 +306,7 @@ function createChadSurfaces() {
       },
       Border: {
         Default: Grays[400],
-        Active: Violets[500],
+        Active: Greens[500],
         Alert: Reds[500],
         Highlight: Violets[800],
         Warning: Oranges[500],
@@ -414,7 +414,7 @@ function createLightInvertedSurfaces() {
       },
       Border: {
         Default: Grays[600],
-        Active: Blues[400],
+        Active: Greens[500],
         Alert: Reds[500],
         Highlight: Blues[400],
         Warning: Oranges[500],
@@ -522,7 +522,7 @@ function createDarkInvertedSurfaces() {
       },
       Border: {
         Default: Grays[400],
-        Active: Blues[500],
+        Active: Greens[500],
         Alert: Reds[500],
         Highlight: Blues[500],
         Warning: Oranges[500],
@@ -630,7 +630,7 @@ function createChadInvertedSurfaces() {
       },
       Border: {
         Default: Grays[600],
-        Active: Violets[400],
+        Active: Greens[400],
         Alert: Reds[500],
         Highlight: Violets[200],
         Warning: Oranges[500],
