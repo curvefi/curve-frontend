@@ -1,5 +1,5 @@
 import lodash from 'lodash'
-import { isAddressEqual, type Address } from 'viem'
+import { type Address, getAddress } from 'viem'
 import {
   CurveApi,
   NetworkConfig,
@@ -60,7 +60,7 @@ const getPoolData = (p: Pool, network: NetworkConfig) => {
 export async function getPools(
   curve: CurveApi,
   poolList: string[],
-  blacklist: Address[],
+  blacklist: Set<Address>,
   network: NetworkConfig,
   failedFetching24hOldVprice?: { [p: string]: boolean } | null,
 ) {
@@ -71,7 +71,7 @@ export async function getPools(
     (prev, poolId) => {
       const pool = getPool(poolId)
 
-      if (blacklist.some((badPool) => isAddressEqual(pool.address as Address, badPool))) {
+      if (blacklist.has(getAddress(pool.address))) {
         return prev
       }
 

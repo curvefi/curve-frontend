@@ -219,7 +219,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
         const { poolsMapper, poolsMapperCache } = await getPools(
           curve,
           poolIds,
-          blacklist,
+          new Set(blacklist),
           networks[chainId],
           failedFetching24hOldVprice,
         )
