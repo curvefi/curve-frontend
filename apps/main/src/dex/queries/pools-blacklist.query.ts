@@ -50,4 +50,4 @@ export const usePoolsBlacklist = ({ blockchainId }: ChainNameParams) =>
   mapQuery(usePricesApiBlacklist({}), (blacklist) => (blockchainId ? getBlacklist(blacklist, blockchainId) : undefined))
 
 export const fetchPoolsBlacklist = async ({ blockchainId }: ChainNameParams) =>
-  blockchainId ? getBlacklist(await fetchPricesApiBlacklist({}), blockchainId) : undefined
+  blockchainId ? getBlacklist(await fetchPricesApiBlacklist({}), blockchainId) : []
