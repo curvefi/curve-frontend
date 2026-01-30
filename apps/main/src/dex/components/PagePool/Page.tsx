@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { isAddress, isAddressEqual, type Address } from 'viem'
+import { isAddress, isAddressEqual } from 'viem'
 import { Transfer } from '@/dex/components/PagePool/index'
 import { ROUTE } from '@/dex/constants'
 import { useNetworkByChain } from '@/dex/entities/networks'
@@ -58,7 +58,7 @@ export const PagePool = () => {
   const isBlacklisted = useMemo(
     () =>
       isAddress(rPoolIdOrAddress, { strict: false /* address comes from URL which might be lowercase */ }) &&
-      blacklist?.some((badPool) => isAddressEqual(badPool, rPoolIdOrAddress as Address)),
+      blacklist?.some((badPool) => isAddressEqual(badPool, rPoolIdOrAddress)),
     [blacklist, rPoolIdOrAddress],
   )
 
