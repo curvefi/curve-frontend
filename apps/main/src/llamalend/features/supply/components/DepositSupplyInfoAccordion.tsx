@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 import { useMemo } from 'react'
 import type { Token } from '@/llamalend/features/borrow/types'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
-import { useMarketFutureRates } from '@/llamalend/queries/market-future-rates.query'
+import { useMarketSupplyFutureRates } from '@/llamalend/queries/market-future-rates.query'
 import { useMarketRates } from '@/llamalend/queries/market-rates'
 import { useDepositIsApproved } from '@/llamalend/queries/supply/supply-deposit-approved.query'
 import { useDepositEstimateGas } from '@/llamalend/queries/supply/supply-deposit-estimate-gas.query'
@@ -14,7 +14,7 @@ import { SupplyInfoAccordion } from '@/llamalend/widgets/forms/SupplyInfoAccordi
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { mapQuery, q } from '@ui-kit/types/util'
-import { decimal, type Decimal } from '@ui-kit/utils'
+import { decimal } from '@ui-kit/utils'
 
 export type DepositSupplyInfoAccordionProps<ChainId extends IChainId> = {
   params: DepositParams<ChainId>
@@ -34,15 +34,14 @@ export function DepositSupplyInfoAccordion<ChainId extends IChainId>({
   const userBalances = useUserBalances({ chainId, marketId, userAddress })
 
   const marketRates = useMarketRates(params, isOpen)
-  const futureRates = useMarketFutureRates({ chainId, marketId, debt: depositAmount }, isOpen)
+  const futureRates = useMarketSupplyFutureRates({ chainId, marketId, reserves: depositAmount }, isOpen)
 
   const prevAmountSupplied = useUserSuppliedAmount({ chainId, marketId, userAddress }, isOpen)
   const amountSupplied = useMemo(
     () =>
       mapQuery(
         prevAmountSupplied,
-        (prevAmount) =>
-          prevAmount && depositAmount && (decimal(new BigNumber(prevAmount).plus(depositAmount ?? 0)) as Decimal),
+        (prevAmount) => depositAmount && decimal(new BigNumber(prevAmount).plus(depositAmount)),
       ),
     [prevAmountSupplied, depositAmount],
   )
