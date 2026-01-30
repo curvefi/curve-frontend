@@ -9,7 +9,7 @@ import { useUserSuppliedAmount } from '@/llamalend/queries/supply/supply-user-su
 import { useWithdrawEstimateGas } from '@/llamalend/queries/supply/supply-withdraw-estimate-gas.query'
 import { useUserBalances } from '@/llamalend/queries/user-balances.query'
 import type { WithdrawParams } from '@/llamalend/queries/validation/supply.validation'
-import { SupplyInfoAccordion } from '@/llamalend/widgets/forms/SupplyInfoAccordion'
+import { SupplyInfoAccordion } from '@/llamalend/widgets/action-card/SupplyInfoAccordion'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { mapQuery, q } from '@ui-kit/types/util'
