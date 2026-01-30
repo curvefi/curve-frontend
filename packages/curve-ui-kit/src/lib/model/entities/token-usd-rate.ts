@@ -45,6 +45,22 @@ const fetchFromPricesApi = async (chainId: number, tokenAddress: string) => {
   }
 }
 
+const sreusdAbi = [
+  {
+    inputs: [],
+    name: 'pricePerShare',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '_pricePerShare',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+] as const
+
 /** Fallback for sreusd - derives price from reusd and the sreusd price per share */
 const fetchFallbackSreUsd = async (chainId: number, tokenAddress: string): Promise<number | null> => {
   if (!isAddressEqual(tokenAddress as Address, SREUSD_ADDRESS)) return null
@@ -58,21 +74,7 @@ const fetchFallbackSreUsd = async (chainId: number, tokenAddress: string): Promi
 
   const exchangeRate = await readContract(config!, {
     address: SREUSD_ADDRESS,
-    abi: [
-      {
-        inputs: [],
-        name: 'pricePerShare',
-        outputs: [
-          {
-            internalType: 'uint256',
-            name: '_pricePerShare',
-            type: 'uint256',
-          },
-        ],
-        stateMutability: 'view',
-        type: 'function',
-      },
-    ],
+    abi: sreusdAbi,
     functionName: 'pricePerShare',
     chainId,
   })
