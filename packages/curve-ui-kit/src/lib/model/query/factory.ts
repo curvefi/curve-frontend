@@ -51,6 +51,13 @@ type QueryKeyTuple<T extends readonly unknown[]> = T extends readonly [...infer 
       : never // Elements fail the check
   : never // Not an array
 
+/** Specific class of errors thrown from inside queryFn to skip query retries on failure */
+export class NoRetryError extends Error {
+  constructor(message: string) {
+    super(message)
+  }
+}
+
 /**
  * Reconstructs params from a query key tuple by merging all object entries.
  *
@@ -113,8 +120,8 @@ export function queryFactory<
         checkValidity(validationSuite, params) &&
         !dependencies?.(params).some((key) => !queryClient.getQueryData(key)),
       retry: (failureCount, error) => {
-        // Don't retry 404s returned by the Prices API (note: FetchError is only a class thrown by fetchJson from @curve-fi/prices-api)
-        if (error instanceof FetchError && error.status === 404) return false
+        // Don't retry queries specifically marked as such, or 404s thrown by the Prices API (note: FetchError is only a class thrown by fetchJson from @curve-fi/prices-api)
+        if (error instanceof NoRetryError || (error instanceof FetchError && error.status === 404)) return false
         return failureCount < 3
       },
       ...options,

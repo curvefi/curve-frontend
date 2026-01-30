@@ -39,6 +39,8 @@ export const shortenAddress = (address: string | undefined, options?: ShortenAdd
 
 export const CRVUSD_ADDRESS = '0xf939e0a03fb07f59a73314e73794be0e57ac1b4e' as const
 export const CRV_ADDRESS = '0xd533a949740bb3306d119cc777fa900ba034cd52' as const
+export const REUSD_ADDRESS = '0x57aB1E0003F623289CD798B1824Be09a793e4Bec' as const
+export const SREUSD_ADDRESS = '0x557AB1e003951A73c12D16F0fEA8490E39C33C35' as const
 
 export const CRVUSD = {
   symbol: 'crvUSD',
