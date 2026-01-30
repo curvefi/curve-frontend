@@ -21,6 +21,9 @@ export const useDexMarketList = useBetaChannel
 /** New unified create loan form */
 export const useCreateLoanMuiForm = useStableChannel
 
+/** New unified supply/vault forms (deposit/withdraw/claim) */
+export const useLendingMuiForm = useAlphaChannel
+
 /** New manage loan forms (add/remove/repay) */
 export const useManageLoanMuiForm = useAlphaChannel
 

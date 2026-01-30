@@ -4,6 +4,7 @@ import { invalidateLoanExists } from '../loan-exists'
 import { invalidateAllUserLendingSupplies, invalidateAllUserLendingVaults } from '../market-list/lending-vaults'
 import { invalidateAllUserMintMarkets } from '../market-list/mint-markets'
 import { invalidateMarketRates } from '../market-rates'
+import { invalidateUserSuppliedAmount } from '../supply/supply-user-supplied-amount.query'
 import { invalidateUserBalances } from '../user-balances.query'
 import { invalidateUserHealth } from '../user-health.query'
 import { invalidateUserPnlForMarket } from '../user-pnl.query'
@@ -19,7 +20,8 @@ export const invalidateAllUserMarketDetails = ({ marketId, userAddress, chainId 
     invalidateUserState({ marketId, userAddress, chainId }),
     invalidateUserHealth({ marketId, userAddress, chainId, isFull: true }),
     invalidateUserHealth({ marketId, userAddress, chainId, isFull: false }),
-    invalidateUserBalances({ userAddress, chainId }),
+    invalidateUserBalances({ marketId, userAddress, chainId }),
+    invalidateUserSuppliedAmount({ marketId, userAddress, chainId }),
     invalidateUserPnlForMarket({ marketId, userAddress, chainId }),
     invalidateMarketRates({ marketId, chainId }),
     invalidateAllUserMintMarkets(userAddress),

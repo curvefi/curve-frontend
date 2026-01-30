@@ -2,7 +2,7 @@ import { leverageUserMarketValidationSuite } from '@/llamalend/queries/validatio
 import { queryFactory } from '@ui-kit/lib/model/query/factory'
 import { rootKeys, UserMarketParams, UserMarketQuery } from '@ui-kit/lib/model/query/root-keys'
 import { decimal } from '@ui-kit/utils/decimal'
-import { getLlamaMarket, hasLeverageValue } from '../llama.utils'
+import { getLlamaMarket } from '../llama.utils'
 
 /**
  * Query to get the user's current leverage value in a market.
@@ -13,9 +13,6 @@ export const { useQuery: useUserCurrentLeverage } = queryFactory({
     [...rootKeys.userMarket({ chainId, userAddress, marketId }), 'user-current-leverage'] as const,
   queryFn: async ({ marketId, userAddress }: UserMarketQuery) => {
     const market = getLlamaMarket(marketId)
-    if (!hasLeverageValue(market)) {
-      throw new Error(`Leverage values not supported for this market.`)
-    }
     return decimal(await market.currentLeverage(userAddress)) ?? null
   },
   refetchInterval: '1m',
