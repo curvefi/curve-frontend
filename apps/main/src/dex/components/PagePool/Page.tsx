@@ -57,7 +57,7 @@ export const PagePool = () => {
   const { data: blacklist } = usePoolsBlacklist({ blockchainId: networkId as Chain })
   const isBlacklisted = useMemo(
     () =>
-      isAddress(rPoolIdOrAddress, { strict: false }) &&
+      isAddress(rPoolIdOrAddress, { strict: false /* address comes from URL which might be lowercase */ }) &&
       blacklist?.some((badPool) => isAddressEqual(badPool, rPoolIdOrAddress as Address)),
     [blacklist, rPoolIdOrAddress],
   )
