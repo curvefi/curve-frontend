@@ -67,6 +67,6 @@ export const { useQuery: useMarketSupplyFutureRates } = queryFactory({
   },
   validationSuite: createValidationSuite(({ chainId, marketId, reserves }: SupplyFutureApyParams) => {
     marketIdValidationSuite({ chainId, marketId })
-    group('supplyFormValidationGroup', () => validateDepositAmount(reserves))
+    group('supplyFormValidationGroup', () => validateDepositAmount(reserves, { depositRequired: true }))
   }),
 })
