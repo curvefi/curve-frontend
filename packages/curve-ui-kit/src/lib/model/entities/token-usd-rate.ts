@@ -72,7 +72,7 @@ const fetchFallbackSreUsd = async (chainId: number, tokenAddress: string): Promi
   const config = getWagmiConfig()
   if (!config) return null
 
-  const exchangeRate = await readContract(config!, {
+  const exchangeRate = await readContract(config, {
     address: SREUSD_ADDRESS,
     abi: sreusdAbi,
     functionName: 'pricePerShare',
