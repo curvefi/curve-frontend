@@ -1,12 +1,10 @@
-import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import { combineQueryState } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
-import { Accordion } from '@ui-kit/shared/ui/Accordion'
 import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 import type { Query } from '@ui-kit/types/util'
 import { type Decimal, formatNumber, formatPercent } from '@ui-kit/utils'
-import { AccordionContent, EstimatedTxCost, TxGasInfo } from './info-accordion.components'
+import { ActionInfoAccordion, EstimatedTxCost, TxGasInfo } from './info-accordion.components'
 import { formatAmount } from './info-accordion.helpers'
 
 export type SupplyInfoAccordionProps = {
@@ -44,57 +42,53 @@ export const SupplyInfoAccordion = ({
   netSupplyApy,
   gas,
 }: SupplyInfoAccordionProps) => (
-  <Box>
-    <Accordion
-      ghost
-      title={t`Vault Shares`}
-      info={
+  <ActionInfoAccordion
+    ghost
+    title={t`Vault Shares`}
+    info={
+      <ActionInfo
+        label=""
+        value={vaultShares?.data && formatAmount(vaultShares.data)}
+        prevValue={prevVaultShares?.data && formatAmount(prevVaultShares.data)}
+        {...combineQueryState(vaultShares, prevVaultShares)}
+        testId="supply-vault-shares"
+      />
+    }
+    expanded={isOpen}
+    toggle={toggle}
+  >
+    <Stack>
+      {(amountSupplied || prevAmountSupplied) && (
         <ActionInfo
-          label=""
-          value={vaultShares?.data && formatAmount(vaultShares.data)}
-          prevValue={prevVaultShares?.data && formatAmount(prevVaultShares.data)}
-          {...combineQueryState(vaultShares, prevVaultShares)}
-          testId="supply-vault-shares"
+          label={t`Amount Supplied`}
+          value={amountSupplied?.data && formatNumber(amountSupplied.data, { abbreviate: false })}
+          prevValue={prevAmountSupplied?.data && formatNumber(prevAmountSupplied.data, { abbreviate: false })}
+          {...combineQueryState(amountSupplied, prevAmountSupplied)}
+          valueRight={suppliedSymbol}
+          testId="supply-amount"
         />
-      }
-      expanded={isOpen}
-      toggle={toggle}
-    >
-      <AccordionContent>
-        <Stack>
-          {(amountSupplied || prevAmountSupplied) && (
-            <ActionInfo
-              label={t`Amount Supplied`}
-              value={amountSupplied?.data && formatNumber(amountSupplied.data, { abbreviate: false })}
-              prevValue={prevAmountSupplied?.data && formatNumber(prevAmountSupplied.data, { abbreviate: false })}
-              {...combineQueryState(amountSupplied, prevAmountSupplied)}
-              valueRight={suppliedSymbol}
-              testId="supply-amount"
-            />
-          )}
-          {(supplyApy || prevSupplyApy) && (
-            <ActionInfo
-              label="Supply APY"
-              value={supplyApy?.data && formatPercent(supplyApy.data)}
-              prevValue={prevSupplyApy?.data && formatPercent(prevSupplyApy.data)}
-              {...combineQueryState(supplyApy, prevSupplyApy)}
-              testId="supply-apy"
-            />
-          )}
-          {netSupplyApy && (
-            <ActionInfo
-              label={t`Net Supply APY`}
-              value={netSupplyApy.data && formatPercent(netSupplyApy.data)}
-              {...combineQueryState(netSupplyApy)}
-              testId="supply-net-apy"
-            />
-          )}
-        </Stack>
+      )}
+      {(supplyApy || prevSupplyApy) && (
+        <ActionInfo
+          label="Supply APY"
+          value={supplyApy?.data && formatPercent(supplyApy.data)}
+          prevValue={prevSupplyApy?.data && formatPercent(prevSupplyApy.data)}
+          {...combineQueryState(supplyApy, prevSupplyApy)}
+          testId="supply-apy"
+        />
+      )}
+      {netSupplyApy && (
+        <ActionInfo
+          label={t`Net Supply APY`}
+          value={netSupplyApy.data && formatPercent(netSupplyApy.data)}
+          {...combineQueryState(netSupplyApy)}
+          testId="supply-net-apy"
+        />
+      )}
+    </Stack>
 
-        <Stack>
-          <EstimatedTxCost gas={gas} isApproved={isApproved} />
-        </Stack>
-      </AccordionContent>
-    </Accordion>
-  </Box>
+    <Stack>
+      <EstimatedTxCost gas={gas} isApproved={isApproved} />
+    </Stack>
+  </ActionInfoAccordion>
 )

@@ -51,7 +51,7 @@ type ControlledAccordionProps = {
   toggle: () => void
 }
 
-type AccordionProps = AccordionBaseProps & (UncontrolledAccordionProps | ControlledAccordionProps)
+export type AccordionProps = AccordionBaseProps & (UncontrolledAccordionProps | ControlledAccordionProps)
 
 /**
  * Handles the toggle logic for both controlled and uncontrolled accordion modes.
@@ -107,6 +107,7 @@ export const Accordion = ({
             content: '""',
             position: 'absolute',
             inset: 0,
+            pointerEvents: 'none',
             ...(ghost ? { borderBottom: borderStyle } : { border: borderStyle }),
           },
 
