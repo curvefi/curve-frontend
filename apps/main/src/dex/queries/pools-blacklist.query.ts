@@ -1,4 +1,4 @@
-import type { Address } from 'viem'
+import { getAddress, type Address } from 'viem'
 import type { Chain } from '@curvefi/prices-api'
 import { getPoolFilters } from '@curvefi/prices-api/chains'
 import { EmptyValidationSuite, type QueryData } from '@ui-kit/lib'
@@ -41,10 +41,11 @@ const { useQuery: usePricesApiBlacklist, fetchQuery: fetchPricesApiBlacklist } =
   validationSuite: EmptyValidationSuite,
 })
 
-const getBlacklist = (blacklistPricesApi: QueryData<typeof usePricesApiBlacklist>, blockchainId: Chain) => [
-  ...(blacklist[blockchainId] ?? []),
-  ...blacklistPricesApi.filter(({ chain }) => chain === blockchainId).map(({ address }) => address),
-]
+const getBlacklist = (blacklistPricesApi: QueryData<typeof usePricesApiBlacklist>, blockchainId: Chain) =>
+  [
+    ...(blacklist[blockchainId] ?? []),
+    ...blacklistPricesApi.filter(({ chain }) => chain === blockchainId).map(({ address }) => address),
+  ].map((address) => getAddress(address)) // just to be sure there's no missing checksums from the prices api
 
 export const usePoolsBlacklist = ({ blockchainId }: ChainNameParams) =>
   mapQuery(usePricesApiBlacklist({}), (blacklist) => (blockchainId ? getBlacklist(blacklist, blockchainId) : undefined))
