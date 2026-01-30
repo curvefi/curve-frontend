@@ -37,8 +37,8 @@ const useRepayParams = <ChainId>({
   userAddress: Address | undefined
 }): RepayIsFullParams<ChainId> =>
   useDebouncedValue(
-    useMemo(
-      () => ({
+    useMemo(() => {
+      const s = {
         chainId,
         marketId,
         userAddress,
@@ -48,9 +48,20 @@ const useRepayParams = <ChainId>({
         maxCollateral,
         isFull,
         slippage,
-      }),
-      [chainId, marketId, userAddress, stateCollateral, userCollateral, userBorrowed, maxCollateral, isFull, slippage],
-    ),
+      }
+      console.log('useRepayParams', s)
+      return s
+    }, [
+      chainId,
+      marketId,
+      userAddress,
+      stateCollateral,
+      userCollateral,
+      userBorrowed,
+      maxCollateral,
+      isFull,
+      slippage,
+    ]),
   )
 
 const emptyRepayForm = () => ({

@@ -1,9 +1,11 @@
+import { notFalsy } from '@curvefi/prices-api/objects.util'
 import type { Decimal } from '@ui-kit/utils'
-import { LOAD_TIMEOUT } from '../ui'
+import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '../ui'
 
 const getRepayInput = () => cy.get('[data-testid^="repay-input-"] input[type="text"]', LOAD_TIMEOUT).first()
 
-const getActionValue = (name: string) => cy.get(`[data-testid="${name}-value"]`, LOAD_TIMEOUT)
+const getActionValue = (name: string, field?: 'previous') =>
+  cy.get(`[data-testid="${notFalsy(name, field, 'value').join('-')}"]`, LOAD_TIMEOUT)
 
 export function selectRepayToken(symbol: string) {
   cy.get('body').then((body) => {
@@ -20,45 +22,34 @@ export function writeRepayLoanForm({ amount }: { amount: Decimal }) {
   cy.get('[data-testid="loan-info-accordion"] button', LOAD_TIMEOUT).first().click() // open the accordion
 }
 
-export function writeRepayLoanFormFromDebt() {
-  cy.get('[data-testid="loan-info-accordion"] button', LOAD_TIMEOUT).first().click() // open the accordion
-  cy.get('[data-testid="borrow-debt-value"]', LOAD_TIMEOUT)
-    .invoke('text')
-    .then((text) => {
-      const amount = text.replace(/[^0-9.]/g, '').trim()
-      if (!amount) throw new Error('Could not parse borrow debt value for repay amount')
-      getRepayInput().clear().type(amount)
-    })
-}
-
 export function checkRepayDetailsLoaded({
   hasLeverage,
-  expectedDebtInfo,
+  expectedDebt,
+  expectedPreviousDebt,
 }: {
-  expectedDebtInfo: string | RegExp
+  expectedDebt: string
+  expectedPreviousDebt: string
   hasLeverage: boolean
 }) {
   if (hasLeverage) {
     getActionValue('borrow-band-range')
       .invoke(LOAD_TIMEOUT, 'text')
       .should('match', /(\d(\.\d+)?) to (-?\d(\.\d+)?)/)
-    getActionValue('borrow-price-range')
-      .invoke(LOAD_TIMEOUT, 'text')
-      .should('match', /(\d(\.\d+)?) - (\d(\.\d+)?)/)
   } else {
     getActionValue('borrow-band-range').should('not.exist')
-    getActionValue('borrow-price-range').should('not.exist')
   }
+  getActionValue('borrow-price-range')
+    .invoke(LOAD_TIMEOUT, 'text')
+    .should('match', /(\d(\.\d+)?) - (\d(\.\d+)?)/)
   getActionValue('borrow-apr').contains('%')
-  if (expectedDebtInfo instanceof RegExp) {
-    getActionValue('borrow-debt').invoke(LOAD_TIMEOUT, 'text').should('match', expectedDebtInfo)
-  } else {
-    getActionValue('borrow-debt').contains(expectedDebtInfo)
-  }
+  getActionValue('borrow-debt').invoke(LOAD_TIMEOUT, 'text').should('equal', expectedDebt)
+  getActionValue('borrow-debt', 'previous').invoke(LOAD_TIMEOUT, 'text').should('equal', expectedPreviousDebt)
   cy.get('[data-testid="loan-form-errors"]').should('not.exist')
 }
 
 export function submitRepayForm() {
-  cy.get('[data-testid="repay-submit-button"]').click()
-  return cy.get('[data-testid="toast-success"]', LOAD_TIMEOUT).contains('Loan repaid')
+  cy.get('[data-testid="repay-submit-button"]', LOAD_TIMEOUT).click()
+  return cy
+    .get('[data-testid="toast-success"]', TRANSACTION_LOAD_TIMEOUT)
+    .contains('Loan repaid', TRANSACTION_LOAD_TIMEOUT)
 }

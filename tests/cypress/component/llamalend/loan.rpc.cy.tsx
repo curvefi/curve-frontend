@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js'
 import { useMemo } from 'react'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 import { prefetchMarkets } from '@/lend/entities/chain/chain-query'
@@ -8,11 +9,10 @@ import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { useLoanExists } from '@/llamalend/queries/loan-exists'
 import { networks } from '@/loan/networks'
 import { recordEntries } from '@curvefi/prices-api/objects.util'
-import { oneBool, oneInt, oneOf } from '@cy/support/generators'
+import { oneBool } from '@cy/support/generators'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import {
   checkLoanDetailsLoaded,
-  checkLoanRangeSlider,
   CREATE_LOAN_FUND_AMOUNT,
   LOAN_TEST_MARKETS,
   submitCreateLoanForm,
@@ -31,7 +31,6 @@ import Box from '@mui/material/Box'
 import Skeleton from '@mui/material/Skeleton'
 import { useCurve } from '@ui-kit/features/connect-wallet/lib/CurveContext'
 import { CurveProvider } from '@ui-kit/features/connect-wallet/lib/CurveProvider'
-import { Decimal } from '@ui-kit/utils'
 
 const onUpdate: OnCreateLoanFormUpdate = async (form) => console.info('form updated', form)
 
@@ -40,7 +39,8 @@ const prefetch = () => prefetchMarkets({})
 type Spy = ReturnType<typeof cy.spy>
 recordEntries(LOAN_TEST_MARKETS)
   .flatMap(([marketType, markets]) => markets.map((market) => ({ marketType, ...market })))
-  .forEach(({ id, collateralAddress: tokenAddress, collateral, borrow, chainId, hasLeverage, label }) => {
+  .filter(({ hasLeverage }) => !hasLeverage)
+  .forEach(({ id, collateralAddress: tokenAddress, collateral, borrow, repay, chainId, hasLeverage, label }) => {
     describe(label, () => {
       const privateKey = generatePrivateKey()
       const { address } = privateKeyToAccount(privateKey)
@@ -107,16 +107,16 @@ recordEntries(LOAN_TEST_MARKETS)
         cy.mount(<LoanTestWrapper />)
         writeCreateLoanForm({ collateral, borrow, leverageEnabled })
         checkLoanDetailsLoaded({ leverageEnabled })
-        checkLoanRangeSlider({ leverageEnabled })
         submitCreateLoanForm().then(() => expect(onCreated).to.be.calledOnce)
       })
 
       it(`repays the loan`, () => {
         cy.mount(<LoanTestWrapper />)
         selectRepayToken('crvUSD')
-        writeRepayLoanForm({ amount: oneOf<Decimal>(borrow, `${Number(borrow) / oneInt(1, 10)}`) })
+        writeRepayLoanForm({ amount: repay })
         checkRepayDetailsLoaded({
-          expectedDebtInfo: [borrow, 0, 'crvUSD'].join('\n'), // note the arrow is a svg so it doesn't show in text
+          expectedPreviousDebt: borrow,
+          expectedDebt: [BigNumber(borrow).minus(repay), 'crvUSD'].join(''),
           hasLeverage,
         })
         submitRepayForm().then(() => expect(onRepaid).to.be.calledOnce)

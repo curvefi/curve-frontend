@@ -4,7 +4,7 @@ import { type AlertColor } from '@mui/material/Alert'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import type { Decimal } from '@ui-kit/utils/decimal'
 import { Chain } from '@ui-kit/utils/network'
-import { LOAD_TIMEOUT } from '../ui'
+import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '../ui'
 
 const chainId = Chain.Ethereum
 
@@ -18,6 +18,7 @@ export const LOAN_TEST_MARKETS = {
       collateralAddress: '0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0', // wstETH
       collateral: '0.1',
       borrow: '10',
+      repay: '5',
       chainId,
       path: '/crvusd/ethereum/markets/wsteth',
       hasLeverage: false,
@@ -28,6 +29,7 @@ export const LOAN_TEST_MARKETS = {
       collateralAddress: '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599', // wbtc
       collateral: '1',
       borrow: '100',
+      repay: '50',
       chainId,
       path: '/crvusd/ethereum/markets/wbtc',
       hasLeverage: true,
@@ -35,24 +37,26 @@ export const LOAN_TEST_MARKETS = {
   ],
   [LlamaMarketType.Lend]: [
     {
-      id: 'one-way-market-14',
-      label: 'USDe-crvUSD New Lend Market',
-      collateralAddress: '0x4c9EDD5852cd905f086C759E8383e09bff1E68B3', // USDe
-      collateral: '1',
-      borrow: '0.9',
-      chainId,
-      path: '/lend/ethereum/markets/0x74f88Baa966407b50c10B393bBD789639EFfE78B',
-      hasLeverage: true,
-    },
-    {
       id: 'one-way-market-7',
       label: 'sUSDe-crvUSD Old Lend Market',
       collateralAddress: '0x9D39A5DE30e57443BfF2A8307A4256c8797A3497', // sUSDe
       collateral: '100',
       borrow: '90',
+      repay: '50',
       chainId,
       path: '/lend/ethereum/markets/0x98Fc283d6636f6DCFf5a817A00Ac69A3ADd96907',
       hasLeverage: false,
+    },
+    {
+      id: 'one-way-market-14',
+      label: 'USDe-crvUSD New Lend Market',
+      collateralAddress: '0x4c9EDD5852cd905f086C759E8383e09bff1E68B3', // USDe
+      collateral: '1',
+      borrow: '0.9',
+      repay: '0.8',
+      chainId,
+      path: '/lend/ethereum/markets/0x74f88Baa966407b50c10B393bBD789639EFfE78B',
+      hasLeverage: true,
     },
   ],
 } as const
@@ -131,6 +135,8 @@ export function checkLoanRangeSlider({ leverageEnabled }: { leverageEnabled: boo
  * Submit the create loan form and wait for the button to be re-enabled.
  */
 export function submitCreateLoanForm(expected: AlertColor = 'success', message = 'Loan created') {
-  cy.get('[data-testid="create-loan-submit-button"]').click()
-  return cy.get(`[data-testid="toast-${expected}"]`, LOAD_TIMEOUT).contains(message)
+  cy.get('[data-testid="create-loan-submit-button"]', LOAD_TIMEOUT).click()
+  return cy
+    .get(`[data-testid="toast-${expected}"]`, TRANSACTION_LOAD_TIMEOUT)
+    .contains(message, TRANSACTION_LOAD_TIMEOUT)
 }

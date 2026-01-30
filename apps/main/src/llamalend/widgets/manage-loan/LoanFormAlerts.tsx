@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { getErrorMessage } from '@/llamalend/helpers'
 import type { INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Hex } from '@curvefi/prices-api'
@@ -41,6 +42,12 @@ export const LoanFormAlerts = <Field extends string>({
   successTitle,
 }: LoanFormAlertProps<Field>) => {
   const [isReportOpen, openReportModal, closeReportModal] = useSwitch(false)
+  const unhandledErrors = formErrors.filter(([field]) => !handledErrors.includes(field))
+  useEffect(() => {
+    if (unhandledErrors.length > 0) {
+      console.log('LoanFormAlerts - unhandled errors:', unhandledErrors)
+    }
+  }, [unhandledErrors.length])
   return (
     <>
       {isSuccess && (
@@ -53,14 +60,12 @@ export const LoanFormAlerts = <Field extends string>({
           )}
         </Alert>
       )}
-      {formErrors.some(([field]) => !handledErrors.includes(field)) && (
+      {unhandledErrors.length > 0 && (
         <Alert severity="warning" data-testid={'loan-form-errors'}>
           <AlertTitle>{t`Please correct the errors`}</AlertTitle>
-          {formErrors
-            .filter(([field]) => !handledErrors.includes(field))
-            .map(([field, message]) => (
-              <Box key={[field, message].join(': ')}>{message}</Box>
-            ))}
+          {unhandledErrors.map(([field, message]) => (
+            <Box key={[field, message].join(': ')}>{message}</Box>
+          ))}
         </Alert>
       )}
       {error && (
