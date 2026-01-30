@@ -1,5 +1,6 @@
 import type { Suite } from 'vest'
 import { CB } from 'vest-utils'
+import { FetchError } from '@curvefi/prices-api/fetch'
 import {
   QueryFunctionContext,
   queryOptions,
@@ -7,7 +8,6 @@ import {
   type DefaultError,
   type FetchQueryOptions,
   type QueryKey,
-  type QueryObserverOptions,
 } from '@tanstack/react-query'
 import { queryClient } from '@ui-kit/lib/api/query-client'
 import { logQuery } from '@ui-kit/lib/logging'
@@ -88,7 +88,6 @@ export function queryFactory<
   gcTime?: keyof typeof REFRESH_INTERVAL
   staleTime?: keyof typeof REFRESH_INTERVAL
   dependencies?: (params: TParams) => QueryKey[]
-  retry?: QueryObserverOptions<unknown, DefaultError>['retry'] // type is not exported by Tanstack
   refetchInterval?: keyof typeof REFRESH_INTERVAL
   refetchOnWindowFocus?: 'always'
   refetchOnMount?: 'always'
@@ -113,6 +112,11 @@ export function queryFactory<
         enabled &&
         checkValidity(validationSuite, params) &&
         !dependencies?.(params).some((key) => !queryClient.getQueryData(key)),
+      retry: (failureCount, error) => {
+        // Don't retry 404s returned by the Prices API (note: FetchError is only a class thrown by fetchJson from @curve-fi/prices-api)
+        if (error instanceof FetchError && error.status === 404) return false
+        return failureCount < 3
+      },
       ...options,
     })
   return {

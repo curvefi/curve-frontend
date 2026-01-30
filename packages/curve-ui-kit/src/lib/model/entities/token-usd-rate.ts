@@ -1,6 +1,5 @@
 import { useCallback, useMemo } from 'react'
 import type { Address } from 'viem'
-import { FetchError } from '@curvefi/prices-api/fetch'
 import { getUsdPrice } from '@curvefi/prices-api/usd-price'
 import { type QueriesResults, useQueries } from '@tanstack/react-query'
 import { getLib } from '@ui-kit/features/connect-wallet'
@@ -44,11 +43,6 @@ export const {
   },
   staleTime: '5m',
   refetchInterval: '1m',
-  retry: (failureCount, error) => {
-    // Don't retry 404s - token price not found in prices API
-    if (error instanceof FetchError && error.status === 404) return false
-    return failureCount < 3
-  },
   validationSuite: createValidationSuite(({ chainId, tokenAddress }: TokenParams) => {
     tokenValidationGroup({ chainId, tokenAddress })
   }),
