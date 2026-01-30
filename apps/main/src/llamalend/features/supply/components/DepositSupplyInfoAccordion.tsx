@@ -14,7 +14,7 @@ import { SupplyInfoAccordion } from '@/llamalend/widgets/supply/SupplyInfoAccord
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { mapQuery, q } from '@ui-kit/types/util'
-import { decimal, type Decimal } from '@ui-kit/utils'
+import { decimal } from '@ui-kit/utils'
 
 export type DepositSupplyInfoAccordionProps<ChainId extends IChainId> = {
   params: DepositParams<ChainId>
@@ -41,8 +41,7 @@ export function DepositSupplyInfoAccordion<ChainId extends IChainId>({
     () =>
       mapQuery(
         prevAmountSupplied,
-        (prevAmount) =>
-          prevAmount && depositAmount && (decimal(new BigNumber(prevAmount).plus(depositAmount ?? 0)) as Decimal),
+        (prevAmount) => depositAmount && decimal(new BigNumber(prevAmount).plus(depositAmount)),
       ),
     [prevAmountSupplied, depositAmount],
   )

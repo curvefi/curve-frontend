@@ -23,6 +23,9 @@ export type BorrowFutureRatesResult = {
   lendApy?: Decimal
 }
 
+const RESERVES = '0' // Used in borrow scenarios where only debt changes, reserves stay at 0
+const DEBT = '0' // Used in supply scenarios where only reserves change, debt stays at 0
+
 const convertRates = ({
   borrowApr,
   borrowApy,
@@ -35,36 +38,29 @@ const convertRates = ({
   lendApr: decimal(lendApr),
 })
 
-const reserves = 0 as const
+const fetchFutureRates = async (marketId: string, reserves: Decimal, debt: Decimal) => {
+  const market = getLlamaMarket(marketId)
+  return market instanceof LendMarketTemplate
+    ? convertRates(await market.stats.futureRates(reserves, debt))
+    : convertRates({ borrowApr: (await market.stats.parameters()).future_rate })
+}
 
 /** Calculates future borrow/lend rates when debt changes (e.g., borrowing more or repaying) - used for borrow operations */
 export const { useQuery: useMarketFutureRates } = queryFactory({
   queryKey: ({ chainId, marketId, debt }: BorrowFutureApyParams) =>
     [...rootKeys.market({ chainId, marketId }), 'market-future-rates', { debt }] as const,
-  queryFn: async ({ marketId, debt }: BorrowApyQuery) => {
-    const market = getLlamaMarket(marketId)
-    return market instanceof LendMarketTemplate
-      ? convertRates(await market.stats.futureRates(reserves, debt))
-      : convertRates({ borrowApr: (await market.stats.parameters()).future_rate })
-  },
+  queryFn: async ({ marketId, debt }: BorrowApyQuery) => fetchFutureRates(marketId, RESERVES, debt),
   validationSuite: createValidationSuite(({ chainId, marketId, debt }: BorrowFutureApyParams) => {
     marketIdValidationSuite({ chainId, marketId })
     group('borrowFormValidationGroup', () => validateDebt(debt))
   }),
 })
 
-const debt = 0 as const
-
 /** Calculates future borrow/lend rates when reserves change (e.g., depositing or withdrawing) - used for supply operations */
 export const { useQuery: useMarketSupplyFutureRates } = queryFactory({
   queryKey: ({ chainId, marketId, reserves }: SupplyFutureApyParams) =>
     [...rootKeys.market({ chainId, marketId }), 'market-supply-future-rates', { reserves }] as const,
-  queryFn: async ({ marketId, reserves }: SupplyApyQuery) => {
-    const market = getLlamaMarket(marketId)
-    return market instanceof LendMarketTemplate
-      ? convertRates(await market.stats.futureRates(reserves, debt))
-      : convertRates({ borrowApr: (await market.stats.parameters()).future_rate })
-  },
+  queryFn: async ({ marketId, reserves }: SupplyApyQuery) => fetchFutureRates(marketId, reserves, DEBT),
   validationSuite: createValidationSuite(({ chainId, marketId, reserves }: SupplyFutureApyParams) => {
     marketIdValidationSuite({ chainId, marketId })
     group('supplyFormValidationGroup', () => validateDepositAmount(reserves, { depositRequired: true }))
