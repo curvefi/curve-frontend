@@ -1,4 +1,3 @@
-import '@cy/support/helpers/eip6963-test-setup'
 import { recordValues } from '@curvefi/prices-api/objects.util'
 import {
   checkLoanDetailsLoaded,
@@ -22,9 +21,9 @@ describe('Create loan', () => {
       cy.visit(path)
       writeCreateLoanForm({ collateral, borrow, leverageEnabled })
       checkLoanDetailsLoaded({ leverageEnabled })
-      checkLoanRangeSlider(leverageEnabled)
+      checkLoanRangeSlider({ leverageEnabled })
       // e2e tests run with a 'fake' account so the transaction fails
-      submitCreateLoanForm().then(() =>
+      submitCreateLoanForm('error', 'Transaction failed').then(() =>
         cy.get('[data-testid="loan-form-error"]', LOAD_TIMEOUT).contains('unknown account'),
       )
     })

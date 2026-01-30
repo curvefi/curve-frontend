@@ -1,4 +1,4 @@
-import '@cy/support/helpers/eip6963-test-setup'
+import '@cy/eip6963-test-setup'
 import { useState } from 'react'
 import { NumericTextField, type NumericTextFieldProps } from '@ui-kit/shared/ui/NumericTextField'
 import { formatNumber, type Decimal } from '@ui-kit/utils'

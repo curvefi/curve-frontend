@@ -31,6 +31,8 @@ type AccordionBaseProps = {
   info?: ReactNode
   /** Content to display when the accordion is expanded */
   children?: ReactNode
+  /** Optional test id for the accordion root */
+  testId?: string
 }
 
 type UncontrolledAccordionProps = {
@@ -84,13 +86,14 @@ export const Accordion = ({
   size = 'small',
   info,
   children,
+  testId,
   ...controlProps
 }: AccordionProps) => {
   const [isOpen, toggle] = useAccordionToggle(controlProps)
   const id = `accordion-${useId()}`
 
   return (
-    <Stack>
+    <Stack data-testid={testId}>
       <ButtonBase
         onClick={toggle}
         aria-expanded={isOpen}

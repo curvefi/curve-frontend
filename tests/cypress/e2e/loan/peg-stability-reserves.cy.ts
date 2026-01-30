@@ -1,4 +1,3 @@
-import '@cy/support/helpers/eip6963-test-setup'
 import { PEG_KEEPERS } from '@/loan/components/PagePegKeepers/constants'
 import { LOAD_TIMEOUT, oneViewport } from '@cy/support/ui'
 

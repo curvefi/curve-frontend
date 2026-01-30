@@ -1,5 +1,5 @@
 import { DEX_ROUTES, getInternalUrl } from '@ui-kit/shared/routes'
-import { CRVUSD_ADDRESS } from '@ui-kit/utils'
+import { CRVUSD_ADDRESS } from '@ui-kit/utils/address'
 
 export const CRVUSD_UNIT = { symbol: 'crvUSD', position: 'suffix' as const, abbreviate: true }
 

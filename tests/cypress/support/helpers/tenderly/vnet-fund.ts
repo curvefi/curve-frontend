@@ -56,5 +56,4 @@ export const fundErc20 = ({
       params: [tokenAddress, recipientAddresses, amountWei],
       id: oneInt(),
     },
-    failOnStatusCode: false,
   })
