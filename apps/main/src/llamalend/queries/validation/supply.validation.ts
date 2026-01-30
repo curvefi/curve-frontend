@@ -20,6 +20,18 @@ export type DepositForm = MakeOptional<DepositMutation, 'depositAmount'> & Calcu
 export type DepositQuery<ChainId = number> = UserMarketQuery<ChainId> & DepositMutation
 export type DepositParams<ChainId = number> = FieldsOf<DepositQuery<ChainId>>
 
+export type WithdrawMutation = {
+  withdrawAmount: Decimal
+}
+
+type CalculatedWithdrawValues = {
+  maxWithdrawAmount: Decimal | undefined
+}
+export type WithdrawForm = MakeOptional<WithdrawMutation, 'withdrawAmount'> & CalculatedWithdrawValues
+
+export type WithdrawQuery<ChainId = number> = UserMarketQuery<ChainId> & WithdrawMutation
+export type WithdrawParams<ChainId = number> = FieldsOf<WithdrawQuery<ChainId>>
+
 /**
  * Ensures the market has a vault and returns it.
  * Accepts either a market ID string or a LlamaMarketTemplate instance.
@@ -86,4 +98,44 @@ export const depositValidationSuite = createValidationSuite((params: DepositPara
 export const userSuppliedAmountValidationSuite = createValidationSuite((params: DepositParams) => {
   userMarketValidationSuite(params)
   validateHasVault(params.marketId)
+})
+
+export const validateWithdrawAmount = (
+  amount: Decimal | undefined | null,
+  { withdrawRequired = false }: { withdrawRequired?: boolean } = {},
+) => {
+  test('withdrawAmount', 'Withdraw amount must be a positive number', () => {
+    if (withdrawRequired || amount != null) {
+      enforce(amount).isNumeric().gt(0)
+    }
+  })
+}
+
+const validateWithdrawMaxAmount = (amount: Decimal | undefined | null, maxAmount: Decimal | undefined | null) => {
+  skipWhen(amount == null || maxAmount == null, () => {
+    test('withdrawAmount', `Amount exceeds maximum of ${maxAmount}`, () => {
+      enforce(amount).lte(maxAmount)
+    })
+  })
+}
+
+// Form validation suite (for real-time form validation)
+export const withdrawFormValidationSuite = createValidationSuite(
+  ({ withdrawAmount = '0', maxWithdrawAmount }: WithdrawForm) => {
+    validateWithdrawAmount(withdrawAmount)
+    validateWithdrawMaxAmount(withdrawAmount, maxWithdrawAmount)
+  },
+)
+
+const withdrawValidationGroup = <IChainId extends number>({
+  marketId,
+  withdrawAmount = '0',
+}: WithdrawParams<IChainId>) => {
+  validateHasVault(marketId)
+  validateWithdrawAmount(withdrawAmount, { withdrawRequired: true })
+}
+
+export const withdrawValidationSuite = createValidationSuite((params: WithdrawParams) => {
+  userMarketValidationSuite(params)
+  withdrawValidationGroup(params)
 })
