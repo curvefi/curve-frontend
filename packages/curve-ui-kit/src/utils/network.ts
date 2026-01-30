@@ -1,4 +1,5 @@
 import type { Chain as BlockchainId } from '@curvefi/prices-api'
+import { assert } from '@ui-kit/utils'
 
 /**
  * List of all hardcoded chains IDs. Does not include Lite chains.
@@ -60,12 +61,8 @@ export const BlockchainIds = {
  * @param chainId - The numeric chain ID from the Chain enum
  * @throws Error if the chain ID is not supported by the prices API
  */
-export function requireBlockchainId(chainId: Chain): BlockchainId {
-  const blockchainId = BlockchainIds[chainId]
-  if (!blockchainId) throw new Error(`Could not find matching blockchainId for chainId (${chainId})`)
-
-  return blockchainId
-}
+export const requireBlockchainId = (chainId: Chain) =>
+  assert(BlockchainIds[chainId], `Could not find matching blockchainId for chainId (${chainId})`)
 
 /**
  * Maps prices API blockchain identifiers to numeric chain IDs.
@@ -91,9 +88,5 @@ export const ChainIds: Partial<Record<BlockchainId, Chain>> = {
  * @param blockchainId - The blockchain ID string from the prices API
  * @throws Error if the blockchain ID is not mapped to a chain ID
  */
-export function requireChainId(blockchainId: BlockchainId): Chain {
-  const chainId = ChainIds[blockchainId]
-  if (!chainId) throw new Error(`Could not find matching chainId for blockchainId (${blockchainId})`)
-
-  return chainId
-}
+export const requireChainId = (blockchainId: BlockchainId) =>
+  assert(ChainIds[blockchainId], `Could not find matching chainId for blockchainId (${blockchainId})`)
