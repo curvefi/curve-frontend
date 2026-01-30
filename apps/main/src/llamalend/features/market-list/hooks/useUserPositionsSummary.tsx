@@ -14,7 +14,7 @@ import { getTokenUsdRateQueryOptions } from '@ui-kit/lib/model/entities/token-us
 import { combineQueriesMeta } from '@ui-kit/lib/queries/combine'
 import { type QueryOptionsData } from '@ui-kit/lib/queries/types'
 import { LlamaMarketType } from '@ui-kit/types/market'
-import { getChainIdFromBlockchainId, type Address } from '@ui-kit/utils'
+import { requireChainId, type Address } from '@ui-kit/utils'
 import { splitAt } from '@ui-kit/utils/array'
 
 export type UserPositionSummaryMetric = { label: string; data: number; isLoading: boolean; error?: unknown }
@@ -165,12 +165,12 @@ export const useUserPositionsSummary = ({
       borrow: collectTokenEntries(
         userPositionQueries.borrow,
         ({ blockchainId, debtTokenAddress, collateralTokenAddress }) => [
-          { chainId: getChainIdFromBlockchainId(blockchainId), tokenAddress: debtTokenAddress },
-          { chainId: getChainIdFromBlockchainId(blockchainId), tokenAddress: collateralTokenAddress },
+          { chainId: requireChainId(blockchainId), tokenAddress: debtTokenAddress },
+          { chainId: requireChainId(blockchainId), tokenAddress: collateralTokenAddress },
         ],
       ),
       supply: collectTokenEntries(userPositionQueries.supply, ({ blockchainId, suppliedTokenAddress }) => [
-        { chainId: getChainIdFromBlockchainId(blockchainId), tokenAddress: suppliedTokenAddress },
+        { chainId: requireChainId(blockchainId), tokenAddress: suppliedTokenAddress },
       ]),
     }),
     [userPositionQueries],
@@ -195,7 +195,7 @@ export const useUserPositionsSummary = ({
       const totalCollateralValue = sum(
         positionResults.map((stat, index) => {
           const borrowMeta = userPositionQueries.borrow[index]
-          const chainId = getChainIdFromBlockchainId(borrowMeta.blockchainId)
+          const chainId = requireChainId(borrowMeta.blockchainId)
           const collateralTokenPrice = getPrice(chainId, borrowMeta.collateralTokenAddress)
           const borrowedTokenPrice = getPrice(chainId, borrowMeta.debtTokenAddress)
 
@@ -211,7 +211,7 @@ export const useUserPositionsSummary = ({
       const totalBorrowedValue = sum(
         positionResults.map((stat, index) => {
           const borrowMeta = userPositionQueries.borrow[index]
-          const chainId = getChainIdFromBlockchainId(borrowMeta.blockchainId)
+          const chainId = requireChainId(borrowMeta.blockchainId)
           const debtPrice = getPrice(chainId, borrowMeta.debtTokenAddress)
 
           return (stat.data?.debt ?? 0) * debtPrice
@@ -245,7 +245,7 @@ export const useUserPositionsSummary = ({
       const totalSuppliedValue = sum(
         positionResults.map((stat, index) => {
           const supplyMeta = userPositionQueries.supply[index]
-          const chainId = getChainIdFromBlockchainId(supplyMeta.blockchainId)
+          const chainId = requireChainId(supplyMeta.blockchainId)
           const suppliedPrice = getPrice(chainId, supplyMeta.suppliedTokenAddress)
 
           return (stat.data?.totalCurrentAssets ?? 0) * suppliedPrice

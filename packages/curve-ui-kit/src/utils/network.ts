@@ -40,7 +40,7 @@ export enum Chain {
  * Maps numeric chain IDs to prices API blockchain identifiers.
  * Not all chains are supported by the prices API, so this is a partial mapping.
  */
-export const chainIdToBlockchainId = {
+export const BlockchainIds = {
   [Chain.Ethereum]: 'ethereum',
   [Chain.Arbitrum]: 'arbitrum',
   [Chain.Optimism]: 'optimism',
@@ -60,8 +60,8 @@ export const chainIdToBlockchainId = {
  * @param chainId - The numeric chain ID from the Chain enum
  * @throws Error if the chain ID is not supported by the prices API
  */
-export function getBlockchainIdFromChainId(chainId: Chain): BlockchainId {
-  const blockchainId = chainIdToBlockchainId[chainId]
+export function requireBlockchainId(chainId: Chain): BlockchainId {
+  const blockchainId = BlockchainIds[chainId]
   if (!blockchainId) throw new Error(`Could not find matching blockchainId for chainId (${chainId})`)
 
   return blockchainId
@@ -71,7 +71,7 @@ export function getBlockchainIdFromChainId(chainId: Chain): BlockchainId {
  * Maps prices API blockchain identifiers to numeric chain IDs.
  * Reverse mapping of chainIdToBlockchainId.
  */
-export const blockchainIdToChainId: Partial<Record<BlockchainId, Chain>> = {
+export const ChainIds: Partial<Record<BlockchainId, Chain>> = {
   ethereum: Chain.Ethereum,
   arbitrum: Chain.Arbitrum,
   optimism: Chain.Optimism,
@@ -91,8 +91,8 @@ export const blockchainIdToChainId: Partial<Record<BlockchainId, Chain>> = {
  * @param blockchainId - The blockchain ID string from the prices API
  * @throws Error if the blockchain ID is not mapped to a chain ID
  */
-export function getChainIdFromBlockchainId(blockchainId: BlockchainId): Chain {
-  const chainId = blockchainIdToChainId[blockchainId]
+export function requireChainId(blockchainId: BlockchainId): Chain {
+  const chainId = ChainIds[blockchainId]
   if (!chainId) throw new Error(`Could not find matching chainId for blockchainId (${blockchainId})`)
 
   return chainId

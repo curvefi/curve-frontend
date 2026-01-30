@@ -8,7 +8,7 @@ import { getLib } from '@ui-kit/features/connect-wallet'
 import { combineQueriesToObject, createValidationSuite } from '@ui-kit/lib'
 import { queryFactory, rootKeys, type ChainParams, type TokenParams, type TokenQuery } from '@ui-kit/lib/model/query'
 import { tokenValidationGroup } from '@ui-kit/lib/model/query/token-validation'
-import { chainIdToBlockchainId } from '@ui-kit/utils'
+import { BlockchainIds } from '@ui-kit/utils'
 
 export const QUERY_KEY_IDENTIFIER = 'usdRate' as const
 
@@ -32,7 +32,7 @@ export const {
     if (llama?.chainId === chainId) return await llama.getUsdRate(tokenAddress)
 
     // Fall back to prices API (works multi-chain without wallet connection or curve library)
-    const blockchainId = chainIdToBlockchainId[chainId]
+    const blockchainId = BlockchainIds[chainId]
     if (!blockchainId) {
       throw new Error(`No blockchain ID mapping found for chain ID ${chainId}`)
     }

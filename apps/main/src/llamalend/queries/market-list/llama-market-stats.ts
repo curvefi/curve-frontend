@@ -6,7 +6,7 @@ import { type LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { useUserMintMarketStats } from '@/llamalend/queries/market-list/mint-markets'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LlamaMarketType } from '@ui-kit/types/market'
-import { getChainIdFromBlockchainId } from '@ui-kit/utils'
+import { requireChainId } from '@ui-kit/utils'
 import { decimal } from '@ui-kit/utils/decimal'
 
 const statsColumns = [
@@ -33,11 +33,11 @@ export function useUserMarketStats(market: LlamaMarket, column?: LlamaMarketColu
   const { type, userHasPositions, controllerAddress, vaultAddress, chain } = market
   const { address: userAddress } = useConnection()
   const { data: collateralUsdRate, isLoading: collateralUsdRateLoading } = useTokenUsdRate({
-    chainId: getChainIdFromBlockchainId(market.chain),
+    chainId: requireChainId(market.chain),
     tokenAddress: market.assets.collateral.address,
   })
   const { data: borrowedUsdRate, isLoading: borrowedUsdRateLoading } = useTokenUsdRate({
-    chainId: getChainIdFromBlockchainId(market.chain),
+    chainId: requireChainId(market.chain),
     tokenAddress: market.assets.borrowed.address,
   })
 
