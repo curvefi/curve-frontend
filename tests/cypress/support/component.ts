@@ -1,4 +1,4 @@
-import '@cy/support/helpers/eip6963-test-setup'
+import '@cy/eip6963-test-setup'
 import '@/global-extensions'
 import { mount } from 'cypress/react'
 

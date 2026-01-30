@@ -38,7 +38,7 @@ export function createTenderlyWagmiConfigFromVNet({
   vnet: CreateVirtualTestnetResponse | GetVirtualTestnetResponse | ForkVirtualTestnetResponse
   privateKey?: Hex
 }) {
-  const { publicRpcUrl, adminRpcUrl } = getRpcUrls(vnet)
+  const { publicRpcUrl } = getRpcUrls(vnet)
   return createTenderlyWagmiConfig({
     privateKey,
     rpcUrl: publicRpcUrl,
