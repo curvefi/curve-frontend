@@ -5,8 +5,8 @@ type ProcessedBandsData = {
   marketBandsBalances: FetchedBandsBalances[] | undefined
   userBandsBalances: FetchedBandsBalances[] | undefined
   oraclePriceBand: number | null | undefined
-  collateralUsdRate: number | null | undefined
-  borrowedUsdRate: number | null | undefined
+  collateralUsdRate: number | undefined
+  borrowedUsdRate: number | undefined
 }
 
 export const useProcessedBandsData = ({

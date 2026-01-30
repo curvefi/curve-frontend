@@ -20,9 +20,9 @@ export type Props<T> = {
   /** The token balance amount (optional, in case of loading) */
   balance?: T
   /** The USD price of the token (optional, only used when notionalValueUsd is omitted) */
-  usdRate?: number | null
+  usdRate?: number
   /** The USD value of the balance (optional, replaces the calculated value with usdRate) */
-  notionalValueUsd?: T | number | null
+  notionalValueUsd?: T | number
   /** Prefix before balance. SvgIcon (defaults to wallet icon), string for label, or null for nothing */
   prefix?: string | typeof SvgIcon | null
   /** Custom tooltip title, defaults to 'Wallet balance' which is most this component's use cases */

@@ -338,7 +338,7 @@ const calculateOptimisticRollupGas = ([l2Gas, l1Gas]: number[], [l2GasPriceWei, 
 export function calculateGas(
   estimatedGas: number | number[] | null | undefined,
   gasInfo: GasInfo | undefined,
-  chainTokenUsdRate: number | null | undefined,
+  chainTokenUsdRate: number | undefined,
   {
     chainId,
     symbol: networkSymbol,

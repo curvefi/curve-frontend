@@ -1,7 +1,6 @@
 import { useCallback, useMemo } from 'react'
 import type { Address } from 'viem'
 import { FetchError } from '@curvefi/prices-api/fetch'
-import { fromEntries, recordEntries } from '@curvefi/prices-api/objects.util'
 import { getUsdPrice } from '@curvefi/prices-api/usd-price'
 import { type QueriesResults, useQueries } from '@tanstack/react-query'
 import { getLib } from '@ui-kit/features/connect-wallet'
@@ -24,7 +23,7 @@ export const {
   getQueryOptions: getTokenUsdRateQueryOptions,
 } = queryFactory({
   queryKey: (params: TokenParams) => [...rootKeys.token(params), QUERY_KEY_IDENTIFIER] as const,
-  queryFn: async ({ chainId, tokenAddress }: TokenQuery): Promise<number | null> => {
+  queryFn: async ({ chainId, tokenAddress }: TokenQuery) => {
     // First try the on-chain lib-based approach when available (uses prices API internally too)
     const curve = getLib('curveApi')
     if (curve?.chainId === chainId) return await curve.getUsdRate(tokenAddress)
@@ -36,18 +35,16 @@ export const {
     if (!blockchainId) {
       throw new Error(`No blockchain ID mapping found for chain ID ${chainId}`)
     }
-    try {
-      const { usdPrice } = await getUsdPrice(blockchainId, tokenAddress as Address)
-      return usdPrice
-    } catch (e) {
-      if (e instanceof FetchError && e.status === 404) {
-        return null // do not retry 404 errors from the prices API
-      }
-      throw e
-    }
+    const { usdPrice } = await getUsdPrice(blockchainId, tokenAddress as Address)
+    return usdPrice
   },
   staleTime: '5m',
   refetchInterval: '1m',
+  retry: (failureCount, error) => {
+    // Don't retry 404s - token price not found in prices API
+    if (error instanceof FetchError && error.status === 404) return false
+    return failureCount < 3
+  },
   validationSuite: createValidationSuite(({ chainId, tokenAddress }: TokenParams) => {
     tokenValidationGroup({ chainId, tokenAddress })
   }),
@@ -72,15 +69,7 @@ export const useTokenUsdRates = (
       [chainId, uniqueAddresses, enabled],
     ),
     combine: useCallback(
-      (results: QueriesResults<UseTokenOptions[]>) => {
-        const combined = combineQueriesToObject(results, uniqueAddresses)
-        return {
-          ...combined,
-          data: fromEntries(
-            recordEntries(combined.data).filter((entry): entry is [string, number] => entry[1] != null),
-          ),
-        }
-      },
+      (results: QueriesResults<UseTokenOptions[]>) => combineQueriesToObject(results, uniqueAddresses),
       [uniqueAddresses],
     ),
   })

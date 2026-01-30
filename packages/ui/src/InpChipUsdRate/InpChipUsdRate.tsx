@@ -9,13 +9,13 @@ export type InpChipUsdRateProps = ChipProps & {
   className?: string
   amount: string | undefined
   hideRate?: boolean
-  usdRate: string | number | undefined | null
+  usdRate: string | number | undefined
 }
 
 export const InpChipUsdRate = ({ className = '', amount, hideRate, usdRate, ...props }: InpChipUsdRateProps) => {
   const amountUsd = useMemo(() => {
     if (typeof usdRate === 'undefined' || typeof amount === 'undefined') return undefined
-    return +amount * Number(usdRate)
+    return +amount * +usdRate
   }, [usdRate, amount])
 
   const formattedAmountUsd = formatNumber(amountUsd, { ...FORMAT_OPTIONS.USD, defaultValue: '-' })
