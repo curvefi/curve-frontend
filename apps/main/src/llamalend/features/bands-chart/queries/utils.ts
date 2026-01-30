@@ -47,8 +47,8 @@ export async function fetchChartBandBalancesData(
 
 export const parseFetchedBandsBalances = (
   bandsBalances: FetchedBandsBalances[] | undefined,
-  collateralUsdRate: number | null | undefined,
-  borrowedUsdRate: number | null | undefined,
+  collateralUsdRate: number | undefined,
+  borrowedUsdRate: number | undefined,
 ): ParsedBandsBalances[] =>
   bandsBalances?.map((band) => {
     const collateralValueUsd = Number(band.collateral) * (collateralUsdRate ?? 0)
