@@ -7,6 +7,7 @@ import {
   type DefaultError,
   type FetchQueryOptions,
   type QueryKey,
+  type QueryObserverOptions,
 } from '@tanstack/react-query'
 import { queryClient } from '@ui-kit/lib/api/query-client'
 import { logQuery } from '@ui-kit/lib/logging'
@@ -86,8 +87,9 @@ export function queryFactory<
   queryFn: (params: TQuery) => Promise<TData>
   gcTime?: keyof typeof REFRESH_INTERVAL
   staleTime?: keyof typeof REFRESH_INTERVAL
-  refetchInterval?: keyof typeof REFRESH_INTERVAL
   dependencies?: (params: TParams) => QueryKey[]
+  retry?: QueryObserverOptions<unknown, DefaultError>['retry'] // type is not exported by Tanstack
+  refetchInterval?: keyof typeof REFRESH_INTERVAL
   refetchOnWindowFocus?: 'always'
   refetchOnMount?: 'always'
   disableLog?: true
