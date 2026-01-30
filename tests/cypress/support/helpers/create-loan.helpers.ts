@@ -2,7 +2,8 @@ import { LoanPreset } from '@/llamalend/constants'
 import { oneOf, oneValueOf } from '@cy/support/generators'
 import { type AlertColor } from '@mui/material/Alert'
 import { LlamaMarketType } from '@ui-kit/types/market'
-import { Chain, Decimal } from '@ui-kit/utils'
+import type { Decimal } from '@ui-kit/utils/decimal'
+import { Chain } from '@ui-kit/utils/network'
 import { LOAD_TIMEOUT } from '../ui'
 
 const chainId = Chain.Ethereum
