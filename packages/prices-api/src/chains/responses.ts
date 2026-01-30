@@ -1,4 +1,4 @@
-import type { Chain } from '..'
+import type { Address, Chain } from '..'
 import type { ActivityType } from './models'
 
 export type GetSupportedChainsResponse = {
@@ -34,6 +34,16 @@ export type GetUsersResponse = {
       type: ActivityType
       users: number
       timestamp: string
+    }[]
+  }[]
+}
+
+export type GetPoolFilters = {
+  data: {
+    chain: Chain
+    pools: {
+      name: string
+      address: Address
     }[]
   }[]
 }

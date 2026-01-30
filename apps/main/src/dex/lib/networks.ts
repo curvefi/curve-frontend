@@ -27,22 +27,6 @@ export const defaultNetworks = Object.entries({
       fromAddress: '0xdac17f958d2ee523a2206206994597c13d831ec7',
       toAddress: ethAddress,
     },
-    excludePoolsMapper: {
-      'weth-llamma': true,
-      'sfrxeth-llamma': true,
-      pax: true,
-      busd: true,
-      y: true,
-      'factory-v2-267': true,
-      'factory-v2-332': true, // CRVUSD/STUSDT
-      'factory-v2-348': true, // PYUSD/crvUSD
-      'factory-v2-349': true, // crvUSD/PYUSD
-      'factory-v2-350': true, // crvUSD/PYUSD
-      'factory-v2-233': true, // Adamant Dollar
-      'factory-stable-ng-13': true, // USDV-3crv
-      'factory-stable-ng-21': true, // weETH/WETH
-      'factory-v2-370': true, // PRISMA/yPRISMA
-    },
     swapCustomRouteRedirect: {
       'sfrxeth-llamma': getInternalUrl('crvusd', 'ethereum', CRVUSD_ROUTES.PAGE_MARKETS),
     },
@@ -158,14 +142,6 @@ export const defaultNetworks = Object.entries({
     hasFactory: true,
   },
   [Chain.Fantom]: {
-    excludePoolsMapper: {
-      'factory-v2-137': true, // old eywa pool
-      'factory-v2-140': true, // old eywa pool
-      'factory-stable-ng-12': true, // CrossCurve crvUSDT
-      'factory-stable-ng-13': true, // CrossCurve
-      'factory-stable-ng-14': true, // CrossCurve
-      'factory-stable-ng-15': true, // CrossCurve
-    },
     poolFilters: ['all', 'usd', 'btc', 'crypto', 'tricrypto', 'stableng', 'cross-chain', 'others', 'user'],
     swap: {
       fromAddress: '0x8d11ec38a3eb5e956b052f67da8bdc9bef8abf3e',
@@ -238,10 +214,6 @@ export const defaultNetworks = Object.entries({
   },
   [Chain.Base]: {
     poolFilters: ['all', 'usd', 'btc', 'eth', 'crypto', 'tricrypto', 'stableng', 'others', 'user'],
-    excludePoolsMapper: {
-      'factory-v2-4': true,
-      'factory-v2-5': true,
-    },
     hideSmallPoolsTvl: 5000,
     swap: {
       fromAddress: ethAddress,

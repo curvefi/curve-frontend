@@ -24,7 +24,6 @@ export const ROUTE = {
 
 export const DEFAULT_NETWORK_CONFIG = {
   useApi: true, // default to true when calling fetchPools
-  excludePoolsMapper: {}, // remove pool from pool list and pool page
   hideSmallPoolsTvl: SMALL_POOL_TVL,
   isLite: false,
   isActiveNetwork: true,
