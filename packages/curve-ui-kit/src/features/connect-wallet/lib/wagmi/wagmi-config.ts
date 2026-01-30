@@ -1,6 +1,6 @@
 import memoize from 'memoizee'
 import type { Chain } from 'viem'
-import { createConfig, type Transport, type CreateConnectorFn } from '@wagmi/core'
+import { createConfig, type Transport, type CreateConnectorFn, type Config } from '@wagmi/core'
 import { connectors as defaultConnectors } from './connectors'
 
 declare module 'wagmi' {
@@ -9,6 +9,9 @@ declare module 'wagmi' {
     config: ReturnType<typeof createWagmiConfig>
   }
 }
+
+let _config: Config | undefined
+export const getWagmiConfig = () => _config
 
 type CreateWagmiConfigOptions<TChains extends readonly [Chain, ...Chain[]]> = {
   /** An array of Chain objects to configure */
@@ -29,8 +32,8 @@ export const createWagmiConfig = memoize(
     chains,
     transports,
     connectors = defaultConnectors,
-  }: CreateWagmiConfigOptions<TChains>) =>
-    createConfig({
+  }: CreateWagmiConfigOptions<TChains>) => {
+    _config = createConfig({
       chains,
       connectors,
       transports,
@@ -40,7 +43,9 @@ export const createWagmiConfig = memoize(
        * until hydration logic is no longer dependant on many wallet side effects and / or stores.
        */
       multiInjectedProviderDiscovery: false,
-    }),
+    })
+    return _config
+  },
   {
     max: 1, // only memoize the last call
     normalizer: ([{ chains, transports }]) =>
