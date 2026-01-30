@@ -25,10 +25,14 @@ export const {
   queryKey: (params: TokenParams) => [...rootKeys.token(params), QUERY_KEY_IDENTIFIER] as const,
   queryFn: async ({ chainId, tokenAddress }: TokenQuery) => {
     // First try the on-chain lib-based approach when available (uses prices API internally too)
+    // Note that the libs return the number 0 when they fail
     const curve = getLib('curveApi')
-    if (curve?.chainId === chainId) return await curve.getUsdRate(tokenAddress)
+    const curveRate = curve?.chainId === chainId && (await curve.getUsdRate(tokenAddress))
+    if (curveRate) return curveRate
+
     const llama = getLib('llamaApi')
-    if (llama?.chainId === chainId) return await llama.getUsdRate(tokenAddress)
+    const llamaRate = llama?.chainId === chainId && (await llama.getUsdRate(tokenAddress))
+    if (llamaRate) return llamaRate
 
     // Fall back to prices API (works multi-chain without wallet connection or curve library)
     const blockchainId = BlockchainIds[chainId]
