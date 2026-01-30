@@ -10,7 +10,27 @@ declare module 'wagmi' {
   }
 }
 
+/** Singleton reference to the wagmi config instance */
 let _config: Config | undefined
+
+/**
+ * Returns the current wagmi config instance for use outside React context, like in `queryFn`.
+ *
+ * **Why this exists:**
+ * TanStack Query's `queryFn` runs outside the React component tree, so it cannot
+ * use hooks like `useConfig()` from wagmi. This singleton provides imperative access
+ * to the wagmi config for on-chain reads (e.g., `readContract`) within query functions.
+ *
+ * **Example use case:**
+ * Fetching the sreusd -> reusd exchange rate via `readContract` as part of the
+ * token USD rate query's fallback logic.
+ *
+ * Alternatives considered:
+ * - Splitting queries: doesn't scale well with our combined usage of `getQueryData`,
+ *   `useQuery`, `fetchQuery`, and `getQueryOptions` via `queryFactory`
+ * - Passing config through query params: you can't pass complex non-serializable objects from classes
+ * - Importing or creating a config inside `queryFn` is not possible due its dependencies and complex factory function
+ */
 export const getWagmiConfig = () => _config
 
 type CreateWagmiConfigOptions<TChains extends readonly [Chain, ...Chain[]]> = {
