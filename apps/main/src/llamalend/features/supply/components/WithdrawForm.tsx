@@ -48,7 +48,11 @@ export const WithdrawForm = <ChainId extends IChainId>({
   })
 
   return (
-    <Form {...form} onSubmit={onSubmit} infoAccordion={null}>
+    <Form
+      {...form}
+      onSubmit={onSubmit}
+      infoAccordion={<WithdrawSupplyInfoAccordion params={params} networks={networks} tokens={{ borrowToken }} />}
+    >
       <LoanFormTokenInput
         label={t`Amount to withdraw`}
         token={borrowToken}
