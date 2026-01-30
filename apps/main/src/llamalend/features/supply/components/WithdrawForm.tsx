@@ -64,7 +64,7 @@ export const WithdrawForm = <ChainId extends IChainId>({
         network={network}
         positionBalance={{
           position: max,
-          tooltip: t`Max Withdrawable`,
+          tooltip: t`Vault shares value`,
         }}
       />
 
