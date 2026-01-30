@@ -80,6 +80,7 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
   })
   const [expanded, onExpandedChange] = useState<ExpandedState>({})
   const [searchText, onSearch] = useSearch(columnFiltersById, setColumnFilter)
+  const filterProps = { columnFiltersById, setColumnFilter, defaultFilters }
 
   const table = useTable({
     columns: POOL_LIST_COLUMNS,
@@ -123,9 +124,8 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
             sortField={sortField}
             searchText={searchText}
             onSearch={onSearch}
-            columnFiltersById={columnFiltersById}
-            setColumnFilter={setColumnFilter}
             resultCount={data ? resultCount : undefined}
+            {...filterProps}
           />
         }
       />

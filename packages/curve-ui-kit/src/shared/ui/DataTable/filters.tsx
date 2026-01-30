@@ -1,9 +1,10 @@
 import { get } from 'lodash'
 import type { FilterFn } from '@tanstack/react-table'
 import { type DeepKeys } from '@tanstack/table-core'
+import { Range } from '@ui-kit/types/util'
 
-export const serializeRangeFilter = <T extends string | number>(range: [T | null, T | null] | null) =>
-  range?.join('~') ?? null
+export const serializeRangeFilter = <T extends string | number>(range: Range<T | null> | null) =>
+  range?.some((v) => v != null) ? range.join('~') : null
 
 export const parseRangeFilter = (serialized: string | undefined) =>
   serialized?.split('~').map((v) => (v && !isNaN(+v) ? +v : null)) as [number | null, number | null] | undefined

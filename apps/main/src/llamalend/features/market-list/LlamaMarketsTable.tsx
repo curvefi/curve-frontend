@@ -67,7 +67,7 @@ export const LlamaMarketsTable = ({
   )
   const [expanded, onExpandedChange] = useState<ExpandedState>({})
   const [searchText, onSearch] = useSearch(columnFiltersById, setColumnFilter)
-  const filterProps = { columnFiltersById, setColumnFilter }
+  const filterProps = { columnFiltersById, setColumnFilter, defaultFilters }
 
   const data = useMemo(
     // We're directly filtering the market list and not the hooks and queries, to avoid the chance of breaking

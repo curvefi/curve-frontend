@@ -1,6 +1,7 @@
 import { execFileSync, type ExecFileSyncOptionsWithStringEncoding, spawnSync } from 'child_process'
 import { mkdir, readdir, rmdir, unlink } from 'fs/promises'
 import { dirname, join } from 'path'
+import { join as joinPath } from 'path'
 
 const { BRANCH, WORKFLOW, REPOSITORY = 'curvefi/curve-frontend' } = process.env
 const DEST_DIR = 'artifacts'
@@ -124,10 +125,11 @@ async function downloadLatestArtifacts({ cleanup }: { cleanup: boolean }): Promi
   }
 
   const safeBranch = branch.replace(/\//g, '-')
-  const dest = [repoRoot, DEST_DIR, safeBranch, runId].join('/')
+  const path = joinPath(DEST_DIR, safeBranch, runId)
+  const dest = joinPath(repoRoot, path)
   await mkdir(dest, { recursive: true })
 
-  console.info(`Downloading artifacts for branch '${branch}' (workflow: ${workflow}, run: ${runId}) into '${dest}'...`)
+  console.info(`Downloading artifacts for branch '${branch}' (workflow: ${workflow}, run: ${runId}) into '${path}'...`)
   downloadArtifacts(runId, dest)
 
   if (cleanup) {
