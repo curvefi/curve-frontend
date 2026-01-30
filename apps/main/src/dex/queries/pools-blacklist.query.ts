@@ -1,6 +1,6 @@
 import type { Address } from 'viem'
 import type { Chain } from '@curvefi/prices-api'
-import * as Api from '@curvefi/prices-api/chains'
+import { getPoolFilters } from '@curvefi/prices-api/chains'
 import { createValidationSuite } from '@ui-kit/lib'
 import { queryFactory, rootKeys, type ChainNameParams, type ChainNameQuery } from '@ui-kit/lib/model'
 import { chainNameValidationGroup } from '@ui-kit/lib/model/query/chain-name-validation'
@@ -40,7 +40,7 @@ export const { useQuery: usePoolsBlacklist, fetchQuery: fetchPoolsBlacklist } = 
   queryKey: ({ blockchainId }: ChainNameParams) =>
     [...rootKeys.chainName({ blockchainId }), 'pools-blacklist'] as const,
   queryFn: async ({ blockchainId }: ChainNameQuery) => {
-    const blacklistPricesApi = (await Api.getPoolFilters())
+    const blacklistPricesApi = (await getPoolFilters())
       .filter(({ chain }) => chain === blockchainId)
       .map(({ address }) => address)
 
