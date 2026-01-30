@@ -1,4 +1,3 @@
-import lodash from 'lodash'
 import { useMemo } from 'react'
 import { styled } from 'styled-components'
 import { Chip } from '@ui/Typography/Chip'
@@ -8,7 +7,7 @@ export const FieldHelperUsdRate = ({ amount, usdRate }: { amount: string; usdRat
   const usdRateTotal = useMemo(() => {
     let total = ''
 
-    if (!lodash.isUndefined(usdRate) && !lodash.isNaN(usdRate) && +usdRate > 0 && +amount > 0) {
+    if (usdRate != null && +usdRate > 0 && +amount > 0) {
       total = BN(usdRate).multipliedBy(amount).toString()
     }
     return total

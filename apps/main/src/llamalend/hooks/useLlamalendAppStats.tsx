@@ -5,8 +5,8 @@ import { fetchJson } from '@curvefi/prices-api/fetch'
 import { EmptyValidationSuite } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { queryFactory } from '@ui-kit/lib/model'
-import { useTokenUsdPrice } from '@ui-kit/lib/model/entities/token-usd-prices'
-import { CRVUSD_ADDRESS, decimal, formatNumber, formatUsd } from '@ui-kit/utils'
+import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
+import { Chain, CRVUSD_ADDRESS, decimal, formatNumber, formatUsd } from '@ui-kit/utils'
 
 /** Query for getting the daily volume of all crvUSD AMMs */
 const { useQuery: useAppStatsDailyVolume } = queryFactory({
@@ -40,7 +40,7 @@ export function useLlamalendAppStats({ chainId }: { chainId: number | undefined 
   const tvl = useMemo(() => (marketData?.markets ?? []).reduce((acc, market) => acc + market.tvl, 0), [marketData])
 
   const { data: dailyVolume } = useAppStatsDailyVolume({}, enabled && !!chainId)
-  const { data: crvusdPrice } = useTokenUsdPrice({ blockchainId: 'ethereum', contractAddress: CRVUSD_ADDRESS }, enabled)
+  const { data: crvusdPrice } = useTokenUsdRate({ chainId: Chain.Ethereum, tokenAddress: CRVUSD_ADDRESS }, enabled)
   const { data: crvusdTotalSupply } = useCrvUsdTotalSupply({ chainId }, enabled)
 
   return [
