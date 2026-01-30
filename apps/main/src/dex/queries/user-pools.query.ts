@@ -11,14 +11,10 @@ type UserPoolsParams = FieldsOf<UserPoolsQuery>
 export const { useQuery: useUserPools, fetchQuery: fetchUserPools } = queryFactory({
   queryKey: ({ chainId, userAddress }: UserPoolsParams) =>
     [...rootKeys.chain({ chainId }), ...rootKeys.user({ userAddress }), 'pools'] as const,
-  queryFn: async ({ userAddress }: UserPoolsQuery) => {
-    const curve = requireLib('curveApi')
-    // User pool list only be fetched with an RPC as it uses on chain calls
-    return curve.isNoRPC ? [] : await curve.getUserPoolList(userAddress)
-  },
+  queryFn: async ({ userAddress }: UserPoolsQuery) => await requireLib('curveApi').getUserPoolList(userAddress),
   staleTime: '1m',
   validationSuite: createValidationSuite((params: UserPoolsParams) => {
-    curveApiValidationGroup(params)
+    curveApiValidationGroup(params, { requireRpc: true })
     chainValidationGroup(params)
     userAddressValidationGroup(params)
   }),
