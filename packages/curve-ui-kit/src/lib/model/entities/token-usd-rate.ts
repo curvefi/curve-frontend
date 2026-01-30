@@ -1,10 +1,11 @@
 import { useCallback, useMemo } from 'react'
-import type { Address } from 'viem'
+import { formatEther, isAddressEqual, type Address } from 'viem'
 import { FetchError } from '@curvefi/prices-api/fetch'
 import { getUsdPrice } from '@curvefi/prices-api/usd-price'
 import { type QueriesResults, useQueries } from '@tanstack/react-query'
 import { getLib } from '@ui-kit/features/connect-wallet'
 import type { LibKey } from '@ui-kit/features/connect-wallet/lib/types'
+import { getWagmiConfig } from '@ui-kit/features/connect-wallet/lib/wagmi/wagmi-config'
 import { combineQueriesToObject, createValidationSuite } from '@ui-kit/lib'
 import {
   NoRetryError,
@@ -44,12 +45,48 @@ const fetchFromPricesApi = async (chainId: number, tokenAddress: string) => {
   }
 }
 
+/** Fallback for sreusd - derives price from reusd and the sreusd price per share */
+const fetchFallbackSreUsd = async (chainId: number, tokenAddress: string): Promise<number | null> => {
+  if (!isAddressEqual(tokenAddress as Address, SREUSD_ADDRESS)) return null
+
+  // Fetch reusd price using the normal token rate fetcher, hopefully that won't fail too!
+  const reusdPrice = await fetchTokenUsdRate({ chainId, tokenAddress: REUSD_ADDRESS })
+
+  // Calculate sreusd price based on reusd and exchange rate
+  const config = getWagmiConfig()
+  if (!config) return null
+
+  const exchangeRate = await readContract(config!, {
+    address: SREUSD_ADDRESS,
+    abi: [
+      {
+        inputs: [],
+        name: 'pricePerShare',
+        outputs: [
+          {
+            internalType: 'uint256',
+            name: '_pricePerShare',
+            type: 'uint256',
+          },
+        ],
+        stateMutability: 'view',
+        type: 'function',
+      },
+    ],
+    functionName: 'pricePerShare',
+    chainId,
+  })
+
+  return reusdPrice * +formatEther(exchangeRate)
+}
+
 /** Main fetcher that tries all sources in order */
 const fetchUsdRate = async (chainId: number, tokenAddress: string) => {
   const rate =
     (await fetchFromCurveLib('curveApi', chainId, tokenAddress)) ??
     (await fetchFromCurveLib('llamaApi', chainId, tokenAddress)) ??
-    (await fetchFromPricesApi(chainId, tokenAddress))
+    (await fetchFromPricesApi(chainId, tokenAddress)) ??
+    (await fetchFallbackSreUsd(chainId, tokenAddress))
 
   // Don't bother with retries if we've exchausted all options (and each option didn't unexpectedly fail)
   if (rate === null) {
