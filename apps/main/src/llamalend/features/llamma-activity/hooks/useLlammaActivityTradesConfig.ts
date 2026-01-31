@@ -13,7 +13,7 @@ import { useCurve } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { LlammaActivityTradesProps } from '../LlammaActivityTrades'
 
-export const useLlammaActivityTrades = ({
+export const useLlammaActivityTradesConfig = ({
   isMarketAvailable,
   network,
   ammAddress,
@@ -40,22 +40,23 @@ export const useLlammaActivityTrades = ({
   })
 
   // Transform trades data with block explorer URLs
-  const tradesWithUrls: LlammaTradeRow[] | undefined = useMemo(
+  const tradesWithUrls: LlammaTradeRow[] = useMemo(
     () =>
-      network &&
-      tradesData?.trades.map((trade: LlammaTrade) => ({
-        ...trade,
-        txUrl: scanTxPath(networkConfig, trade.txHash),
-        network,
-      })),
+      (network &&
+        tradesData?.trades.map((trade: LlammaTrade) => ({
+          ...trade,
+          txUrl: scanTxPath(networkConfig, trade.txHash),
+          network,
+        }))) ??
+      [],
     [tradesData?.trades, networkConfig, network],
   )
 
   const isLoading = isTradesLoading || !isHydrated || !isMarketAvailable
   const isError = isTradesError && isMarketAvailable && isHydrated
 
-  const tradesTableConfig: ActivityTableConfig<LlammaTradeRow> = useMemo(
-    () => ({
+  const tradesTableConfig = useMemo(
+    (): ActivityTableConfig<LlammaTradeRow> => ({
       data: tradesWithUrls,
       columns: LLAMMA_TRADES_COLUMNS as ActivityTableConfig<LlammaTradeRow>['columns'],
       isLoading,
@@ -72,7 +73,5 @@ export const useLlammaActivityTrades = ({
 
   return {
     tradesTableConfig,
-    isTradesLoading: isLoading,
-    isTradesError: isError,
   }
 }

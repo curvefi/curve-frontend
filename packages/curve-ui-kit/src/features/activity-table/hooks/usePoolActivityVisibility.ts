@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { fromEntries } from '@curvefi/prices-api/objects.util'
 import type { VisibilityState } from '@tanstack/react-table'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { PoolLiquidityColumnId, getTokenAmountColumnId } from '../columns/pool-liquidity-columns'
@@ -12,20 +13,13 @@ const createTradesMobileVisibility = (): VisibilityState => ({
   [PoolTradesColumnId.Time]: false,
 })
 
-const createLiquidityMobileVisibility = (poolTokens: Token[]): VisibilityState => {
-  const visibility: VisibilityState = {
-    [PoolLiquidityColumnId.User]: true,
-    [PoolLiquidityColumnId.Action]: true,
-    [PoolLiquidityColumnId.Time]: false,
-  }
-
+const createLiquidityMobileVisibility = (poolTokens: Token[]): VisibilityState => ({
+  [PoolLiquidityColumnId.User]: true,
+  [PoolLiquidityColumnId.Action]: true,
+  [PoolLiquidityColumnId.Time]: false,
   // Hide all token amount columns on mobile
-  poolTokens.forEach((_, index) => {
-    visibility[getTokenAmountColumnId(index)] = false
-  })
-
-  return visibility
-}
+  ...fromEntries(poolTokens.map((_, index) => [getTokenAmountColumnId(index), false])),
+})
 
 type UsePoolActivityVisibilityParams = {
   poolTokens: Token[]

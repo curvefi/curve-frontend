@@ -11,9 +11,9 @@ import {
 } from '@ui-kit/features/activity-table'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
-import { LlammaActivityProps } from '../'
+import { LlammaActivityProps } from '..'
 
-export const useLlammaActivityEvents = ({
+export const useLlammaActivityEventsConfig = ({
   isMarketAvailable,
   network,
   collateralToken,
@@ -42,31 +42,32 @@ export const useLlammaActivityEvents = ({
   })
 
   // Transform events data with block explorer URLs
-  const eventsWithUrls: LlammaEventRow[] | undefined = useMemo(
+  const eventsWithUrls: LlammaEventRow[] = useMemo(
     () =>
-      network &&
-      eventsData?.events.map((event: LlammaEvent) => ({
-        ...event,
-        txUrl: scanTxPath(networkConfig, event.txHash),
-        network,
-        collateralToken,
-        borrowToken,
-      })),
+      (network &&
+        eventsData?.events.map((event: LlammaEvent) => ({
+          ...event,
+          txUrl: scanTxPath(networkConfig, event.txHash),
+          network,
+          collateralToken,
+          borrowToken,
+        }))) ??
+      [],
     [eventsData?.events, network, networkConfig, collateralToken, borrowToken],
   )
 
   const isLoading = isEventsLoading || !isHydrated || !isMarketAvailable
   const isError = isEventsError && isMarketAvailable && isHydrated
 
-  const eventsTableConfig: ActivityTableConfig<LlammaEventRow> = useMemo(
-    () => ({
+  const eventsTableConfig = useMemo(
+    (): ActivityTableConfig<LlammaEventRow> => ({
       data: eventsWithUrls,
       columns: LLAMMA_EVENTS_COLUMNS as ActivityTableConfig<LlammaEventRow>['columns'],
       isLoading,
       isError,
       emptyMessage: t`No activity data found.`,
       columnVisibility: eventsColumnVisibility,
-      pageIndex: pageIndex,
+      pageIndex,
       pageSize: DEFAULT_PAGE_SIZE,
       pageCount: eventsData?.count ? Math.ceil(eventsData?.count / DEFAULT_PAGE_SIZE) : 0,
       onPageChange: handlePageChange,
@@ -74,9 +75,5 @@ export const useLlammaActivityEvents = ({
     [eventsWithUrls, isLoading, isError, eventsColumnVisibility, pageIndex, eventsData?.count, handlePageChange],
   )
 
-  return {
-    eventsTableConfig,
-    isEventsLoading: isLoading,
-    isEventsError: isError,
-  }
+  return eventsTableConfig
 }

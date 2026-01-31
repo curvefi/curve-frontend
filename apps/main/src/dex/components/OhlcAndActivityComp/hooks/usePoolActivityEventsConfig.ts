@@ -25,7 +25,7 @@ type UsePoolActivityProps = {
  * Hook to manage pool activity events data for the ActivityTable component.
  * Handles fetching, transforming, and providing table configurations for pool liquidity events.
  */
-export const usePoolActivityEvents = ({ chainId, poolAddress }: UsePoolActivityProps) => {
+export const usePoolActivityEventsConfig = ({ chainId, poolAddress }: UsePoolActivityProps) => {
   const { isHydrated } = useCurve()
   const { data: networkConfig } = useNetworkByChain({ chainId })
   const network = networkConfig?.id.toLowerCase() as Chain
@@ -55,26 +55,30 @@ export const usePoolActivityEvents = ({ chainId, poolAddress }: UsePoolActivityP
   })
 
   // Transform liquidity data with block explorer URLs and pool tokens
-  const liquidityWithUrls: PoolLiquidityRow[] | undefined = useMemo(
+  const liquidityWithUrls: PoolLiquidityRow[] = useMemo(
     () =>
-      network &&
-      liquidityData?.events.map((event) => ({
-        ...event,
-        txUrl: scanTxPath(networkConfig, event.txHash),
-        network,
-        poolTokens,
-      })),
+      (network &&
+        liquidityData?.events.map((event) => ({
+          ...event,
+          txUrl: scanTxPath(networkConfig, event.txHash),
+          network,
+          poolTokens,
+        }))) ??
+      [],
     [liquidityData?.events, network, networkConfig, poolTokens],
   )
 
   const liquidityColumns = useMemo(() => createPoolLiquidityColumns({ poolTokens }), [poolTokens])
 
+  const isLoading = isLiquidityLoading || isPricesApiPoolsLoading || !isHydrated
+  const isError = isLiquidityError && !isHydrated
+
   const liquidityTableConfig: ActivityTableConfig<PoolLiquidityRow> = useMemo(
     () => ({
       data: liquidityWithUrls,
       columns: liquidityColumns as ActivityTableConfig<PoolLiquidityRow>['columns'],
-      isLoading: isLiquidityLoading,
-      isError: isLiquidityError,
+      isLoading,
+      isError,
       emptyMessage: t`No liquidity data found.`,
       columnVisibility: liquidityColumnVisibility,
       pageCount: liquidityData?.count ? Math.ceil(liquidityData?.count / PAGE_SIZE) : 0,
@@ -85,8 +89,8 @@ export const usePoolActivityEvents = ({ chainId, poolAddress }: UsePoolActivityP
     [
       liquidityWithUrls,
       liquidityColumns,
-      isLiquidityLoading,
-      isLiquidityError,
+      isLoading,
+      isError,
       liquidityColumnVisibility,
       liquidityData?.count,
       pageIndex,
@@ -94,9 +98,5 @@ export const usePoolActivityEvents = ({ chainId, poolAddress }: UsePoolActivityP
     ],
   )
 
-  return {
-    liquidityTableConfig,
-    isLiquidityLoading: isLiquidityLoading || isPricesApiPoolsLoading || !isHydrated,
-    isLiquidityError: isLiquidityError,
-  }
+  return liquidityTableConfig
 }

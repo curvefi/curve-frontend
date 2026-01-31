@@ -1,5 +1,5 @@
 import { ActivityTable, LlammaEventsExpandedPanel } from '@ui-kit/features/activity-table'
-import { useLlammaActivityEvents } from './hooks/useLlammaActivityEvents'
+import { useLlammaActivityEventsConfig } from './hooks/useLlammaActivityEventsConfig'
 import { LlammaActivityProps } from './'
 
 export const LlammaActivityEvents = ({
@@ -11,7 +11,7 @@ export const LlammaActivityEvents = ({
   endpoint,
   networkConfig,
 }: LlammaActivityProps) => {
-  const { eventsTableConfig } = useLlammaActivityEvents({
+  const eventsTableConfig = useLlammaActivityEventsConfig({
     isMarketAvailable,
     network,
     collateralToken,

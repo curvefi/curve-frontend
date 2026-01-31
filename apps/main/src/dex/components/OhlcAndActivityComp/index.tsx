@@ -1,8 +1,5 @@
 import { SubTabsSwitcher } from 'curve-ui-kit/src/shared/ui/Tabs/SubTabsSwitcher'
 import { useState } from 'react'
-import { useOhlcChartState } from '@/dex/hooks/useOhlcChartState'
-import { usePoolActivityEvents } from '@/dex/hooks/usePoolActivityEvents'
-import { usePoolActivityTrades } from '@/dex/hooks/usePoolActivityTrades'
 import { ChainId } from '@/dex/types/main.types'
 import type { Address } from '@curvefi/prices-api'
 import type { Pool } from '@curvefi/prices-api/pools'
@@ -14,6 +11,9 @@ import { t } from '@ui-kit/lib/i18n'
 import { ChartHeader } from '@ui-kit/shared/ui/Chart/ChartHeader'
 import { type TabOption } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { useOhlcChartState } from './hooks/useOhlcChartState'
+import { usePoolActivityEventsConfig } from './hooks/usePoolActivityEventsConfig'
+import { usePoolActivityTradesConfig } from './hooks/usePoolActivityTradesConfig'
 
 const { Spacing } = SizesAndSpaces
 
@@ -37,11 +37,11 @@ export const OhlcAndActivityComp = ({
     rChainId,
     pricesApiPoolData,
   })
-  const { liquidityTableConfig } = usePoolActivityEvents({
+  const liquidityTableConfig = usePoolActivityEventsConfig({
     chainId: rChainId,
     poolAddress,
   })
-  const { tradesTableConfig } = usePoolActivityTrades({
+  const tradesTableConfig = usePoolActivityTradesConfig({
     chainId: rChainId,
     poolAddress,
   })

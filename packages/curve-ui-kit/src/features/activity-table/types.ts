@@ -34,7 +34,7 @@ export type PoolLiquidityRow = PoolLiquidityEvent & {
  * Each selection can have its own data, columns, and loading state.
  */
 export type ActivityTableConfig<TData extends TableItem> = {
-  data: TData[] | undefined
+  data: TData[]
   columns: ColumnDef<TData>[]
   isLoading: boolean
   isError: boolean

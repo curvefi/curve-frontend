@@ -4,8 +4,8 @@ import { type BaseConfig } from '@ui/utils'
 import { type Token } from '@ui-kit/features/activity-table'
 export { LlammaActivityEvents } from './LlammaActivityEvents'
 export { LlammaActivityTrades } from './LlammaActivityTrades'
-export { useLlammaActivityEvents } from './hooks/useLlammaActivityEvents'
-export { useLlammaActivityTrades } from './hooks/useLlammaActivityTrades'
+export { useLlammaActivityEventsConfig } from './hooks/useLlammaActivityEventsConfig'
+export { useLlammaActivityTradesConfig } from './hooks/useLlammaActivityTradesConfig'
 
 export type LlammaActivityProps = {
   isMarketAvailable: boolean

@@ -1,5 +1,5 @@
 import { ActivityTable, LlammaTradesExpandedPanel } from '@ui-kit/features/activity-table'
-import { useLlammaActivityTrades } from './hooks/useLlammaActivityTrades'
+import { useLlammaActivityTradesConfig } from './hooks/useLlammaActivityTradesConfig'
 import { LlammaActivityProps } from './'
 
 export type LlammaActivityTradesProps = Omit<LlammaActivityProps, 'borrowToken' | 'collateralToken'>
@@ -11,7 +11,7 @@ export const LlammaActivityTrades = ({
   endpoint,
   networkConfig,
 }: LlammaActivityTradesProps) => {
-  const { tradesTableConfig } = useLlammaActivityTrades({
+  const { tradesTableConfig } = useLlammaActivityTradesConfig({
     isMarketAvailable,
     network,
     ammAddress,

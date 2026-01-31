@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { SetStateAction, useCallback, useMemo, useState } from 'react'
 import { Box } from '@mui/material'
 import type { Row, Table, PaginationState } from '@tanstack/react-table'
 import { SortingState } from '@tanstack/react-table'
@@ -50,7 +50,7 @@ export const ActivityTable = <TData extends TableItem>({
   )
 
   const handlePaginationChange = useCallback(
-    (updater: PaginationState | ((old: PaginationState) => PaginationState)) => {
+    (updater: SetStateAction<PaginationState>) => {
       if (onPageChange) {
         const newState = typeof updater === 'function' ? updater(pagination) : updater
         onPageChange(newState.pageIndex)
@@ -60,7 +60,7 @@ export const ActivityTable = <TData extends TableItem>({
   )
 
   const table = useTable({
-    data: data ?? [],
+    data,
     columns,
     state: {
       sorting,

@@ -41,7 +41,7 @@ export const createPoolLiquidityColumns = ({ poolTokens }: CreatePoolLiquidityCo
         const { tokenAmounts, network, eventType } = row.original
         const amount = tokenAmounts[index] ?? 0
         const isAdd = eventType === 'AddLiquidity'
-        const displayAmount = isAdd ? amount : amount !== 0 ? -amount : 0
+        const displayAmount = isAdd ? amount : -amount
 
         return (
           <TokenAmountCell
