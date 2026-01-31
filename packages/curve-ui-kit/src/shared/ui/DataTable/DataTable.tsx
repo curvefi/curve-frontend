@@ -33,17 +33,34 @@ function useScrollToTopOnFilterChange<T extends TableItem>(table: TanstackTable<
 }
 
 /**
+ * Scrolls to the top of the table container whenever the page changes with manual pagination.
+ */
+function useScrollToTopOnPageChange<T extends TableItem>(
+  table: TanstackTable<T>,
+  containerRef: React.RefObject<HTMLElement | null>,
+) {
+  const { pageIndex } = table.getState().pagination
+  useEffect(() => {
+    containerRef.current?.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [pageIndex, containerRef])
+}
+
+/**
  * Resets the table pagination to the first page whenever the number of filtered results changes.
+ * Skipped for manual pagination since data changes on every page change.
  */
 function useResetPageOnResultChange<T extends TableItem>(table: TanstackTable<T>) {
+  const isManualPagination = table.options.manualPagination
   const resultCount = table.getFilteredRowModel().rows.length
   const onPaginationChangeEvent = useEffectEvent(table.setPagination)
   const lastResultCount = useRef<number>(resultCount)
   useEffect(() => {
+    // Skip for manual pagination - data is expected to change on page change
+    if (isManualPagination) return
     // Reset to first page, only if we had results before (links must keep working)
     if (lastResultCount.current) onPaginationChangeEvent((prev) => ({ ...prev, pageIndex: 0 }))
     lastResultCount.current = resultCount
-  }, [resultCount])
+  }, [resultCount, isManualPagination])
 }
 
 const { Sizing } = SizesAndSpaces
@@ -81,11 +98,13 @@ export const DataTable = <T extends TableItem>({
   // eslint-disable-next-line react-hooks/preserve-manual-memoization
   const columnCount = useMemo(() => headerGroups.reduce((acc, group) => acc + group.headers.length, 0), [headerGroups])
   const top = useLayoutStore((state) => state.navHeight)
+  const containerRef = useRef<HTMLDivElement>(null)
   useScrollToTopOnFilterChange(table)
   useResetPageOnResultChange(table)
+  useScrollToTopOnPageChange(table, containerRef)
 
   return (
-    <WithWrapper Wrapper={Box} shouldWrap={maxHeight} sx={{ maxHeight, overflowY: 'auto' }}>
+    <WithWrapper Wrapper={Box} shouldWrap={maxHeight} sx={{ maxHeight, overflowY: 'auto' }} ref={containerRef}>
       <Table
         sx={useMemo(
           () => ({

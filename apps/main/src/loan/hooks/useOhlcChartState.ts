@@ -17,15 +17,15 @@ import { subtractTimeUnit, getThreeHundredResultsAgo } from '@ui-kit/features/ca
 export type LlammaLiquidityCoins = ReturnType<typeof getTokens> | undefined | null
 
 type OhlcChartStateProps = {
-  rChainId: ChainId
+  chainId: ChainId
   market: Llamma | null
   llammaId: string
 }
 
-export const useOhlcChartState = ({ rChainId, market, llammaId }: OhlcChartStateProps) => {
+export const useOhlcChartState = ({ chainId, market, llammaId }: OhlcChartStateProps) => {
   const { address: userAddress } = useConnection()
   const { data: userPrices } = useUserPrices({
-    chainId: rChainId,
+    chainId,
     marketId: llammaId,
     userAddress,
   })
@@ -137,7 +137,7 @@ export const useOhlcChartState = ({ rChainId, market, llammaId }: OhlcChartState
 
   const refetchPricesData = useCallback(() => {
     void fetchOracleOhlcData(
-      rChainId,
+      chainId,
       controllerAddress,
       chartInterval,
       timeUnit,
@@ -145,7 +145,7 @@ export const useOhlcChartState = ({ rChainId, market, llammaId }: OhlcChartState
       chartTimeSettings.end,
     )
     void fetchLlammaOhlcData(
-      rChainId,
+      chainId,
       llammaId,
       poolAddress,
       chartInterval,
@@ -161,7 +161,7 @@ export const useOhlcChartState = ({ rChainId, market, llammaId }: OhlcChartState
     fetchLlammaOhlcData,
     fetchOracleOhlcData,
     poolAddress,
-    rChainId,
+    chainId,
     llammaId,
     timeUnit,
   ])
@@ -177,9 +177,9 @@ export const useOhlcChartState = ({ rChainId, market, llammaId }: OhlcChartState
       const endTime = subtractTimeUnit(timeOption, lastFetchEndTime)
       const startTime = getThreeHundredResultsAgo(timeOption, endTime)
 
-      void fetchMoreData(rChainId, controllerAddress, poolAddress, chartInterval, timeUnit, +startTime, endTime)
+      void fetchMoreData(chainId, controllerAddress, poolAddress, chartInterval, timeUnit, +startTime, endTime)
     },
-    [timeOption, fetchMoreData, rChainId, controllerAddress, poolAddress, chartInterval, timeUnit],
+    [timeOption, fetchMoreData, chainId, controllerAddress, poolAddress, chartInterval, timeUnit],
   )
 
   // Determine chart status: loading > error (no data) > ready

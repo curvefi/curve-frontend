@@ -2,6 +2,8 @@ import type { Address } from '..'
 
 export type GetLlammaEventsResponse = {
   count: number
+  page: number
+  per_page: number
   data: {
     provider: Address
     deposit: {
@@ -21,6 +23,8 @@ export type GetLlammaEventsResponse = {
 
 export type GetLlammaTradesResponse = {
   count: number
+  page: number
+  per_page: number
   data: {
     sold_id: number
     bought_id: number
