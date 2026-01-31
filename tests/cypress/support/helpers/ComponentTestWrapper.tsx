@@ -1,5 +1,6 @@
 import { type ReactElement } from 'react'
 import { WagmiProvider, type ResolvedRegister } from 'wagmi'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { createMemoryHistory, createRootRoute, createRouter, RouterProvider } from '@tanstack/react-router'
 import { persister, queryClient, QueryProvider } from '@ui-kit/lib/api'
 import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
@@ -35,6 +36,7 @@ export function ComponentTestWrapper({ config, children, autoConnect }: Props) {
         <QueryProvider persister={persister} queryClient={queryClient}>
           <RouterProvider router={router} />
           <Toast />
+          <ReactQueryDevtools />
         </QueryProvider>
       </WithWrapper>
     </ThemeProvider>

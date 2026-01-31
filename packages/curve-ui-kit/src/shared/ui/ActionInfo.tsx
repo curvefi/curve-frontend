@@ -17,7 +17,6 @@ import { Tooltip } from './Tooltip'
 import { WithSkeleton } from './WithSkeleton'
 
 const { Spacing, IconSize } = SizesAndSpaces
-const MOCK_SKELETON = 10 // Mock value for skeleton to infer some width
 
 export type ActionInfoSize = 'small' | 'medium' | 'large'
 
@@ -163,14 +162,14 @@ export const ActionInfo = ({
             <WithSkeleton
               component="div"
               loading={!!loading}
-              {...(Array.isArray(loading) && { width: loading[0], height: loading[1] })}
+              {...(Array.isArray(loading) ? { width: loading[0], height: loading[1] } : { width: '2ch' })}
             >
               <Typography
                 variant={valueSize[size]}
                 color={error ? 'error' : (valueColor ?? 'textPrimary')}
                 component="div"
               >
-                {loading ? (typeof loading === 'string' ? loading : MOCK_SKELETON) : error ? '' : value}
+                {typeof loading === 'string' ? loading : error ? '' : value}
               </Typography>
             </WithSkeleton>
 
