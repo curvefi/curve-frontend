@@ -52,22 +52,25 @@ type Story = StoryObj<typeof PartnerCard>
 
 export const Default: Story = {
   args: {
-    name: 'CrossCurve',
-    description:
-      'A decentralized and unified infrastructure for cross-chain liquidity and incentives, powered by Curve AMM.',
-    imageId: 'platforms/cross-curve.png',
+    name: 'deBridge',
+    description: 'Messaging and cross-chain interoperability protocol enabling the building of cross-chain dapps.',
+    imageId: 'platforms/debridge.jpg',
     networks: {
-      ethereum: true,
       arbitrum: true,
+      avalanche: true,
+      bsc: true,
+      base: true,
+      ethereum: true,
+      gnosis: true,
+      hyperliquid: true,
+      monad: true,
       optimism: true,
       polygon: true,
-      avalanche: true,
-      fantom: true,
-      base: true,
+      sonic: true,
     },
     tags: ['Bridge', 'Cross-chain'],
-    appUrl: 'https://crosscurve.fi/',
-    twitterUrl: 'https://x.com/crosscurvefi',
+    appUrl: 'https://debridge.com/',
+    twitterUrl: 'https://x.com/deBridge',
   },
 }
 
