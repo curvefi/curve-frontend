@@ -35,7 +35,7 @@ export const useLlammaActivityTradesConfig = ({
     chain: network,
     llamma: ammAddress,
     endpoint,
-    page: pageIndex + 1, // API uses 1-based pages
+    page: pageIndex + 1, // API uses 1-based & DataTable uses 0-based pages
     perPage: DEFAULT_PAGE_SIZE,
   })
 

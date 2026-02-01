@@ -50,7 +50,7 @@ export const usePoolActivityEventsConfig = ({ chainId, poolAddress }: UsePoolAct
   } = usePoolLiquidityEvents({
     chain: network,
     poolAddress,
-    page: pageIndex + 1, // API uses 1-based pages
+    page: pageIndex + 1, // API uses 1-based & DataTable uses 0-based pages
     perPage: PAGE_SIZE,
   })
 
