@@ -1,4 +1,4 @@
-import type { Address } from '..'
+import type { Address, PaginationMeta } from '..'
 import type { Chain } from '../'
 
 type Coin = {
@@ -61,14 +61,11 @@ type TradeToken = {
   event_index: number
 }
 
-export type GetPoolTradesResponse = {
+export type GetPoolTradesResponse = PaginationMeta & {
   chain: Chain
   address: Address
   main_token: TradeToken
   reference_token: TradeToken
-  page: number
-  per_page: number
-  count: number
   data: {
     sold_id: number
     bought_id: number
@@ -88,12 +85,9 @@ export type GetPoolTradesResponse = {
   }[]
 }
 
-export type GetAllPoolTradesResponse = {
+export type GetAllPoolTradesResponse = PaginationMeta & {
   chain: Chain
   address: Address
-  page: number
-  per_page: number
-  count: number
   data: {
     sold_id: number
     bought_id: number
@@ -114,12 +108,9 @@ export type GetAllPoolTradesResponse = {
   }[]
 }
 
-export type GetPoolLiquidityEventsResponse = {
+export type GetPoolLiquidityEventsResponse = PaginationMeta & {
   chain: Chain
   address: Address
-  page: number
-  per_page: number
-  count: number
   data: {
     liquidity_event_type: string
     token_amounts: number[] | null

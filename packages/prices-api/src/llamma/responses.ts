@@ -1,9 +1,6 @@
-import type { Address } from '..'
+import type { Address, PaginationMeta } from '..'
 
-export type GetLlammaEventsResponse = {
-  count: number
-  page: number
-  per_page: number
+export type GetLlammaEventsResponse = PaginationMeta & {
   data: {
     provider: Address
     deposit: {
@@ -21,10 +18,7 @@ export type GetLlammaEventsResponse = {
   }[]
 }
 
-export type GetLlammaTradesResponse = {
-  count: number
-  page: number
-  per_page: number
+export type GetLlammaTradesResponse = PaginationMeta & {
   data: {
     sold_id: number
     bought_id: number
