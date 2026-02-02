@@ -61,6 +61,7 @@ const emptyRepayForm = () => ({
   maxCollateral: undefined,
   maxBorrowed: undefined,
   isFull: undefined,
+  isMaxBorrowed: false,
   slippage: SLIPPAGE_PRESETS.STABLE,
 })
 

@@ -150,6 +150,7 @@ export const RepayForm = <ChainId extends IChainId>({
         })}
         testId={'repay-input-' + selectedField}
         network={network}
+        onValueChange={(v) => form.setValue('isMaxBorrowed', v === form.getValues('maxBorrowed'), setValueOptions)}
         tokenSelector={
           <RepayTokenSelector
             token={token}
@@ -169,6 +170,7 @@ export const RepayForm = <ChainId extends IChainId>({
             loading={max[selectedField].isLoading || maxAmountInBorrowTokenLoading}
             onClick={() => {
               form.setValue(selectedField, max[selectedField].data, setValueOptions)
+              form.setValue('isMaxBorrowed', selectedField === 'userBorrowed', setValueOptions)
               void form.trigger(max[selectedField].field) // re-validate max
             }}
           />

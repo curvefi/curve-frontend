@@ -38,6 +38,7 @@ export const LoanFormTokenInput = <
   positionBalance,
   tokenSelector,
   hideBalance,
+  onValueChange,
 }: {
   label: string
   token: { address: Address; symbol?: string } | undefined
@@ -65,6 +66,11 @@ export const LoanFormTokenInput = <
   network: LlamaNetwork
   tokenSelector?: ReactNode
   hideBalance?: boolean
+  /**
+   * Optional callback when the value changes (from user typing or clicking chips).
+   * Called after the form value is set.
+   */
+  onValueChange?: (value: Decimal | undefined) => void
 }) => {
   const { address: userAddress } = useConnection()
   const {
@@ -105,8 +111,9 @@ export const LoanFormTokenInput = <
     (v?: Decimal) => {
       form.setValue(name, v as FieldPathValue<TFieldValues, TFieldName>, setValueOptions)
       if (maxFieldName) void form.trigger(maxFieldName) // validate max field when balance changes
+      onValueChange?.(v)
     },
-    [form, maxFieldName, name],
+    [form, maxFieldName, name, onValueChange],
   )
   return (
     <LargeTokenInput

@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js'
 import { useCallback } from 'react'
 import type { Address, Hex } from 'viem'
 import { useConfig } from 'wagmi'
@@ -13,7 +14,7 @@ import {
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
-import { type Decimal, waitForApproval } from '@ui-kit/utils'
+import { decimal, type Decimal, waitForApproval } from '@ui-kit/utils'
 
 type RepayMutation = {
   stateCollateral: Decimal
@@ -100,7 +101,15 @@ export const useRepayMutation = ({
     onReset,
   })
 
-  const onSubmit = useCallback(async (form: RepayForm) => mutate(form as RepayMutation), [mutate])
+  const onSubmit = useCallback(
+    async ({ userBorrowed, isMaxBorrowed, ...form }: RepayForm) =>
+      mutate({
+        ...form,
+        // Apply buffer when the user selected max to prevent dust
+        userBorrowed: isMaxBorrowed ? decimal(BigNumber(userBorrowed!).times(form.slippage))! : userBorrowed,
+      } as RepayMutation),
+    [mutate],
+  )
 
   return { onSubmit, mutate, error, data, isPending, isSuccess, reset }
 }
