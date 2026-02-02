@@ -5,8 +5,8 @@ import type { TransferProps } from '@/dex/components/PagePool/types'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { usePoolIdByAddressOrId } from '@/dex/hooks/usePoolIdByAddressOrId'
 import { usePoolTotalStaked } from '@/dex/hooks/usePoolTotalStaked'
+import { usePoolParameters } from '@/dex/queries/pool-parameters.query'
 import { useStore } from '@/dex/store/useStore'
-import type { PoolParameters as Parameters } from '@/dex/types/main.types'
 import Stack from '@mui/material/Stack'
 import { FORMAT_OPTIONS, formatDate, formatNumber } from '@ui/utils'
 import { dayjs } from '@ui-kit/lib/dayjs'
@@ -18,13 +18,10 @@ import { weiToEther } from '@ui-kit/utils'
 const { Spacing } = SizesAndSpaces
 
 export const PoolParameters = ({
-  parameters,
   poolData,
   poolDataCacheOrApi,
   routerParams,
-}: {
-  parameters: Parameters
-} & Pick<TransferProps, 'poolData' | 'poolDataCacheOrApi' | 'routerParams'>) => {
+}: Pick<TransferProps, 'poolData' | 'poolDataCacheOrApi' | 'routerParams'>) => {
   const { rChainId, rPoolIdOrAddress } = routerParams
   const {
     data: { pricesApi, isLite },
@@ -51,9 +48,22 @@ export const PoolParameters = ({
   )
 
   const staked = usePoolTotalStaked(poolDataCacheOrApi)
-  const { A, initial_A, initial_A_time, future_A, future_A_time, virtualPrice } = parameters ?? {}
+  const { data: parameters, isLoading: isLoadingParameters } = usePoolParameters({ chainId: rChainId, poolId })
 
-  const { gamma, adminFee, fee } = parameters ?? {}
+  const {
+    A,
+    initial_A,
+    initial_A_time,
+    future_A,
+    future_A_time,
+    virtualPrice,
+    gamma,
+    adminFee = '',
+    fee,
+    priceScale,
+    priceOracle,
+  } = parameters ?? {}
+
   const isEymaPools = rChainId === 250 && poolDataCacheOrApi.pool.id.startsWith('factory-eywa')
 
   return (
@@ -93,47 +103,49 @@ export const PoolParameters = ({
           }
         />
 
-        <ActionInfo label={t`Fee`} value={formatNumber(fee, { style: 'percent', maximumFractionDigits: 4 })} />
+        <ActionInfo
+          label={t`Fee`}
+          loading={isLoadingParameters}
+          value={formatNumber(fee, { style: 'percent', maximumFractionDigits: 4 })}
+        />
 
-        {adminFee != null && (
-          <>
-            <ActionInfo
-              label={t`DAO fee`}
-              valueTooltip={t`The total fee on each trade is split in two parts: one part goes to the pool’s Liquidity Providers, another part goes to the DAO (i.e. Curve veCRV holders)`}
-              value={formatNumber(isEymaPools ? +adminFee / 2 : adminFee, {
-                style: 'percent',
-                maximumFractionDigits: 4,
-              })}
-            />
-            {isEymaPools && <ActionInfo label={`EYWA fee`} value={+adminFee / 2} />}
-          </>
-        )}
+        <ActionInfo
+          label={t`DAO fee`}
+          loading={isLoadingParameters}
+          valueTooltip={t`The total fee on each trade is split in two parts: one part goes to the pool’s Liquidity Providers, another part goes to the DAO (i.e. Curve veCRV holders)`}
+          value={formatNumber(isEymaPools ? +adminFee / 2 : adminFee, {
+            style: 'percent',
+            maximumFractionDigits: 4,
+          })}
+        />
+        {isEymaPools && <ActionInfo label={`EYWA fee`} loading={isLoadingParameters} value={+adminFee / 2} />}
 
         <ActionInfo
           label={t`Virtual price`}
+          loading={isLoadingParameters}
           value={formatNumber(parameters?.virtualPrice, { maximumFractionDigits: 8, defaultValue: '-' })}
           valueTooltip={t`Measures pool growth; this is not a dollar value`}
         />
       </Stack>
 
       {/* price oracle & price scale */}
-      {poolData && haveWrappedCoins && (parameters.priceOracle || parameters.priceScale) && !pricesApi && (
+      {poolData && haveWrappedCoins && (priceOracle || priceScale) && !pricesApi && (
         <Stack spacing={Spacing.sm}>
           <Title>Price Data</Title>
-          {parameters.priceOracle && (
+          {priceOracle && (
             <ActionInfo
               label={t`Price Oracle`}
-              value={parameters.priceOracle.map((p, idx) => (
+              value={priceOracle.map((p, idx) => (
                 <strong key={p}>
                   {poolData.pool.wrappedCoins[idx + 1]}: {formatNumber(p, { maximumFractionDigits: 10 })}
                 </strong>
               ))}
             />
           )}
-          {parameters.priceScale && (
+          {priceScale && (
             <ActionInfo
               label={t`Price Scale`}
-              value={parameters.priceScale.map((p, idx) => (
+              value={priceScale.map((p, idx) => (
                 <strong key={p}>
                   {poolData.pool.wrappedCoins[idx + 1]}: {formatNumber(p, { maximumFractionDigits: 10 })}
                 </strong>

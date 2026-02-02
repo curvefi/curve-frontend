@@ -43,6 +43,9 @@ const oneLendingPool = (
     oracle_pools: oneOf([], [oneAddress()]),
     rate: oneFloat(),
     borrow_apy: oneFloat(),
+    borrow_total_apy: oneFloat(),
+    borrow_apr: oneFloat(),
+    borrow_total_apr: oneFloat(),
     lend_apy: oneFloat(),
     lend_apr: oneFloat(),
     lend_apr_crv_0_boost: oneFloat(),
@@ -78,6 +81,7 @@ const oneLendingPool = (
 
 export const HighTVLAddress = '0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' as const
 export const HighUtilizationAddress = '0xBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' as const
+export const RewardsTestAddress = '0xCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa' as const
 
 function oneLendingVaultResponse(chain: Chain): GetMarketsResponse {
   const count = oneInt(2, 20)
@@ -90,7 +94,8 @@ function oneLendingVaultResponse(chain: Chain): GetMarketsResponse {
           {
             // fixed vault address to test campaign rewards
             ...oneLendingPool(chain, { utilization: oneFloat(0.98) }),
-            vault: '0xc28c2fd809fc1795f90de1c9da2131434a77721d',
+            vault: RewardsTestAddress,
+            extra_reward_apr: [{ address: oneAddress(), symbol: 'RWD', apr: 0.5 }],
           },
           {
             // largest TVL to test the sorting
@@ -130,11 +135,48 @@ export const mockLendingSnapshots = (chain = oneOf(...LendingChains)) =>
       chain,
       data: range(84).map((i) => ({
         borrow_apy: i / 2, // increasing APY, graph should be green
+        borrow_apr: i / 2, // increasing APR, graph should be green
+        borrow_total_apy: i / 2 - 1,
+        borrow_total_apr: i / 2 - 1,
         lend_apy: 2 / (i + 1), // decreasing APY, graph should be red
+        lend_apr: 2 / (i + 1),
+        lend_apr_crv_0_boost: 0,
+        lend_apr_crv_max_boost: 0,
         timestamp: new Date('2024-12-24T').getTime() - i * 4 * HOUR, // 4h intervals
         extra_rewards_apr: [],
         collateral_token: oneToken(chain),
         borrowed_token: oneToken(chain),
       })),
     },
+  })
+
+/** Mock Merkl API to provide campaign rewards for the RewardsTestAddress vault used in tests */
+export const mockMerklCampaigns = () =>
+  cy.intercept('https://api.merkl.xyz/v4/opportunities*', {
+    body: [
+      {
+        type: 'POOL',
+        identifier: 'test-campaign',
+        name: 'Test Rewards Campaign',
+        description: 'Test campaign for Cypress',
+        howToSteps: ['Step 1'],
+        apr: 0.1,
+        explorerAddress: RewardsTestAddress,
+        tags: ['curve'],
+        chain: { id: 1, name: 'Ethereum' },
+        rewardsRecord: {
+          breakdowns: [
+            {
+              token: {
+                chainId: 1,
+                address: oneAddress(),
+                symbol: 'RWD',
+                icon: 'https://example.com/icon.png',
+              },
+              value: 100,
+            },
+          ],
+        },
+      },
+    ],
   })

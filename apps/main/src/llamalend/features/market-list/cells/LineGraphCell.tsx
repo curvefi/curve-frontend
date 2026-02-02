@@ -38,7 +38,7 @@ type RateCellProps = {
 }
 
 /**
- * Line graph cell that displays the average historical rate for a vault and a given type (borrow APY or lend APR).
+ * Line graph cell that displays the average historical rate for a vault and a given type (borrow APR or lend APR).
  */
 export const LineGraphCell = ({ market, type, graphSize = defaultGraphSize }: RateCellProps) => {
   const ref = useRef<HTMLDivElement>(null)

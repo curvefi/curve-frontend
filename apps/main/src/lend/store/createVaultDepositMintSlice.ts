@@ -4,8 +4,7 @@ import type { FormEstGas } from '@/lend/components/PageLendMarket/types'
 import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@/lend/components/PageLendMarket/utils'
 import type { FormStatus, FormValues } from '@/lend/components/PageVault/VaultDepositMint/types'
 import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/lend/components/PageVault/VaultDepositMint/utils'
-import { invalidateMarketDetails } from '@/lend/entities/market-details'
-import { invalidateAllUserBorrowDetails } from '@/lend/entities/user-loan-details'
+import { refetchUserMarket } from '@/lend/entities/user-loan-details'
 import { helpers, apiLending } from '@/lend/lib/apiLending'
 import { networks } from '@/lend/networks'
 import type { State } from '@/lend/store/useStore'
@@ -180,11 +179,9 @@ export const createVaultMint = (
       updateUserEventsApi(wallet, networks[chainId], market, resp.hash)
 
       if (resp.activeKey === get()[sliceKey].activeKey) {
-        // re-fetch api
+        await refetchUserMarket({ api, market })
         void get().user.fetchUserMarketBalances(api, market, true)
-        void get().markets.fetchAll(api, market, true)
-        invalidateAllUserBorrowDetails({ chainId: api.chainId, marketId: market.id })
-        invalidateMarketDetails({ chainId: api.chainId, marketId: market.id })
+
         // update state
         const partialFormStatus: Partial<FormStatus> = {
           error: resp.error,

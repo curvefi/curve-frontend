@@ -1,4 +1,3 @@
-import { isEqual } from 'lodash'
 import { useMemo } from 'react'
 import type { LlamaMarketsResult } from '@/llamalend/queries/market-list/llama-markets'
 import { SortingState } from '@tanstack/react-table'
@@ -26,16 +25,8 @@ const getVariant = (
         : 'hasPositions' // show the general market table, for users with positions
 
 const migration: MigrationOptions<Record<LlamaColumnVariant, VisibilityGroup<LlamaMarketColumnId>[]>> = {
-  version: 1,
-  migrate: (oldValue) =>
-    // when we initially created v1 we didn't have migrations. Use the stored value if users already had the right keys
-    isEqual(
-      Object.keys(LLAMA_MARKETS_COLUMN_OPTIONS),
-      // double check if we have the TVL column, as that was added later (in that case no migration needed)
-      oldValue && oldValue.noPositions?.[0].options.find((o) => o.columns.includes(LlamaMarketColumnId.Tvl)),
-    )
-      ? oldValue
-      : null, // use default value
+  version: 2,
+  migrate: () => null, // reset stored visibility since column ids changed
 }
 
 /**

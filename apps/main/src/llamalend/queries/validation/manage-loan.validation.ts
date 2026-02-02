@@ -4,6 +4,7 @@ import { getRepayImplementation } from '@/llamalend/queries/repay/repay-query.he
 import {
   validateIsFull,
   validateLeverageSupported,
+  validateLeverageValuesSupported,
   validateSlippage,
   validateMaxCollateral,
   validateUserCollateral,
@@ -19,6 +20,7 @@ import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { chainValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
 import { llamaApiValidationGroup } from '@ui-kit/lib/model/query/curve-api-validation'
 import { marketIdValidationGroup, marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
+import type { UserMarketParams } from '@ui-kit/lib/model/query/root-keys'
 import { userAddressValidationGroup } from '@ui-kit/lib/model/query/user-address-validation'
 import { Decimal } from '@ui-kit/utils'
 
@@ -35,11 +37,15 @@ export type RepayForm = {
   slippage: Decimal
 }
 
-const validateRepayField = (field: 'stateCollateral' | 'userCollateral', value: Decimal | null | undefined) =>
+export const validateRepayCollateralField = (
+  field: 'stateCollateral' | 'userCollateral',
+  value: Decimal | null | undefined,
+): void => {
   test(field, `Collateral amount must be a non-negative number`, () => {
     if (value == null) return
     enforce(value).isNumeric().gte(0)
   })
+}
 
 const validateMaxStateCollateral = (
   stateCollateral: Decimal | null | undefined,
@@ -51,11 +57,12 @@ const validateMaxStateCollateral = (
     })
   })
 
-const validateRepayBorrowedField = (userBorrowed: Decimal | null | undefined) =>
+export const validateRepayBorrowedField = (userBorrowed: Decimal | null | undefined): void => {
   test('userBorrowed', 'Borrow amount must be a non-negative number', () => {
     if (userBorrowed == null) return
     enforce(userBorrowed).isNumeric().gte(0)
   })
+}
 
 const validateRepayHasValue = (
   stateCollateral: Decimal | null | undefined,
@@ -103,6 +110,21 @@ export const collateralValidationSuite = createValidationSuite((params: Collater
   collateralValidationGroup(params),
 )
 
+export const leverageCollateralValidationSuite = createValidationSuite((params: CollateralParams) => {
+  collateralValidationGroup(params)
+  validateLeverageValuesSupported(params.marketId)
+})
+
+export const leverageUserMarketValidationSuite = createValidationSuite(
+  ({ chainId, marketId, userAddress }: UserMarketParams) => {
+    chainValidationGroup({ chainId })
+    llamaApiValidationGroup({ chainId })
+    marketIdValidationGroup({ marketId })
+    userAddressValidationGroup({ userAddress })
+    validateLeverageValuesSupported(marketId)
+  },
+)
+
 export const addCollateralFormValidationSuite = createValidationSuite((params: CollateralForm) => {
   validateUserCollateral(params.userCollateral, false)
   validateMaxCollateral(params.userCollateral, params.maxCollateral)
@@ -125,8 +147,8 @@ export const repayValidationGroup = <IChainId extends number>(
   llamaApiValidationGroup({ chainId })
   marketIdValidationGroup({ marketId })
   userAddressValidationGroup({ userAddress })
-  validateRepayField('userCollateral', userCollateral)
-  validateRepayField('stateCollateral', stateCollateral)
+  validateRepayCollateralField('userCollateral', userCollateral)
+  validateRepayCollateralField('stateCollateral', stateCollateral)
   validateRepayBorrowedField(userBorrowed)
   validateRepayHasValue(stateCollateral, userCollateral, userBorrowed)
   validateRepayFieldsForMarket(marketId, stateCollateral, userCollateral, userBorrowed)
@@ -139,17 +161,17 @@ export const repayValidationSuite = ({ leverageRequired }: { leverageRequired: b
 
 export const repayFormValidationSuite = createValidationSuite(
   ({
-    isFull,
     stateCollateral,
-    maxStateCollateral,
     userCollateral,
+    userBorrowed,
+    maxStateCollateral,
     maxBorrowed,
     maxCollateral,
-    userBorrowed,
+    isFull,
     slippage,
   }: RepayForm) => {
-    validateRepayField('userCollateral', userCollateral)
-    validateRepayField('stateCollateral', stateCollateral)
+    validateRepayCollateralField('userCollateral', userCollateral)
+    validateRepayCollateralField('stateCollateral', stateCollateral)
     validateMaxStateCollateral(stateCollateral, maxStateCollateral)
     validateRepayBorrowedField(userBorrowed)
     validateMaxBorrowed(userBorrowed, maxBorrowed)

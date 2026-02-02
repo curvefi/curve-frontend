@@ -28,42 +28,6 @@
       "multiplier": "3x",
       "tags": ["points"],
       "lock": "false"
-    },
-    {
-      "id": "null",
-      "action": "borrow",
-      "description": "null",
-      "campaignStart": "0",
-      "campaignEnd": "1770000000",
-      "address": "0xc28c2fd809fc1795f90de1c9da2131434a77721d",
-      "network": "ethereum",
-      "multiplier": "3x",
-      "tags": ["points"],
-      "lock": "false"
-    },
-    {
-      "id": "null",
-      "action": "supply",
-      "description": "null",
-      "campaignStart": "0",
-      "campaignEnd": "1770000000",
-      "address": "0x88bddb9293f3efa2cea349e184c656ae0817ac87",
-      "network": "ethereum",
-      "multiplier": "2x",
-      "tags": ["points"],
-      "lock": "false"
-    },
-    {
-      "id": "null",
-      "action": "loan",
-      "description": "null",
-      "campaignStart": "0",
-      "campaignEnd": "1770000000",
-      "address": "0x8aca5A776a878Ea1F8967e70a23b8563008f58Ef",
-      "network": "ethereum",
-      "multiplier": "3x",
-      "tags": ["points"],
-      "lock": "false"
     }
   ]
 }

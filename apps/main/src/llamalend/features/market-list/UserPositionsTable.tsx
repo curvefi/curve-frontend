@@ -72,7 +72,7 @@ export const UserPositionsTable = ({ onReload, result, loading, isError, tab }: 
   const { columnSettings, columnVisibility, sortField, toggleVisibility } = useLlamaTableVisibility(title, sorting, tab)
   const [expanded, onExpandedChange] = useState<ExpandedState>({})
   const [searchText, onSearch] = useSearch(columnFiltersById, setColumnFilter)
-  const filterProps = { columnFiltersById, setColumnFilter }
+  const filterProps = { columnFiltersById, setColumnFilter, defaultFilters }
 
   const table = useTable({
     columns: LLAMA_MARKET_COLUMNS,
@@ -111,13 +111,7 @@ export const UserPositionsTable = ({ onReload, result, loading, isError, tab }: 
         toggleVisibility={toggleVisibility}
         searchText={searchText}
         onSearch={onSearch}
-        collapsible={
-          <LendingMarketsFilters
-            data={userData}
-            columnFiltersById={columnFiltersById}
-            setColumnFilter={setColumnFilter}
-          />
-        }
+        collapsible={<LendingMarketsFilters data={userData} {...filterProps} />}
         chips={
           <>
             <LlamaChainFilterChips data={userData} {...filterProps} />

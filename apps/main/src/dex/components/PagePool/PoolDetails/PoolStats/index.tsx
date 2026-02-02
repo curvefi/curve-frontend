@@ -14,36 +14,35 @@ import { Box } from '@ui/Box'
 import { InternalLink } from '@ui/Link'
 import { ExternalLink } from '@ui/Link/ExternalLink'
 import { breakpoints } from '@ui/utils/responsive'
+import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 
 type PoolStatsProps = {
   poolAlert: PoolAlert | null
   tokensMapper: TokensMapper
-} & Pick<PageTransferProps, 'curve' | 'poolData' | 'poolDataCacheOrApi' | 'routerParams'>
+} & Pick<PageTransferProps, 'poolData' | 'poolDataCacheOrApi' | 'routerParams'>
 
-export const PoolStats = ({
-  curve,
-  routerParams,
-  poolAlert,
-  poolData,
-  poolDataCacheOrApi,
-  tokensMapper,
-}: PoolStatsProps) => {
+export const PoolStats = ({ routerParams, poolAlert, poolData, poolDataCacheOrApi, tokensMapper }: PoolStatsProps) => {
   const tokenAlert = useTokenAlert(poolData?.tokenAddressesAll ?? [])
   const { rChainId, rPoolIdOrAddress } = routerParams
   const poolId = usePoolIdByAddressOrId({ chainId: rChainId, poolIdOrAddress: rPoolIdOrAddress })
   const rewardsApy = useStore((state) => state.pools.rewardsApyMapper[rChainId]?.[poolId ?? ''])
   const tvl = useStore((state) => state.pools.tvlMapper[rChainId]?.[poolId ?? ''])
+
+  const { curveApi } = useCurve()
   const fetchPoolStats = useStore((state) => state.pools.fetchPoolStats)
 
   const risksPathname = getPath(useParams<UrlParams>(), `/disclaimer`)
 
+  // This loads various pool stats in the zustand store, like currency reserves.
+  // If you remove this, all forms will be disabled as important data will be missing.
+  // We can remove this once everything inside the function has been converted to queries.
   useEffect(() => {
-    if (curve && poolData && !poolData?.parameters.virtualPrice) {
-      void fetchPoolStats(curve, poolData)
+    if (curveApi && poolData) {
+      void fetchPoolStats(curveApi, poolData)
     }
-  }, [curve, fetchPoolStats, poolData])
+  }, [curveApi, fetchPoolStats, poolData])
 
   return (
     <GridContainer>
@@ -77,14 +76,7 @@ export const PoolStats = ({
       </MainStatsContainer>
 
       <OtherStatsWrapper>
-        {poolData?.parameters && (
-          <PoolParameters
-            parameters={poolData.parameters}
-            poolData={poolData}
-            poolDataCacheOrApi={poolDataCacheOrApi}
-            routerParams={routerParams}
-          />
-        )}
+        <PoolParameters poolData={poolData} poolDataCacheOrApi={poolDataCacheOrApi} routerParams={routerParams} />
       </OtherStatsWrapper>
     </GridContainer>
   )

@@ -1,3 +1,4 @@
+import '@cy/eip6963-test-setup'
 import { CssBaseline, ThemeProvider } from '@mui/material'
 import Box from '@mui/material/Box'
 import { withThemeFromJSXProvider } from '@storybook/addon-themes'

@@ -4,9 +4,11 @@ import type { Token } from '@/llamalend/features/borrow/types'
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
 import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
+import { useAddCollateralFutureLeverage } from '@/llamalend/queries/add-collateral/add-collateral-future-leverage.query'
 import { useAddCollateralEstimateGas } from '@/llamalend/queries/add-collateral/add-collateral-gas-estimate.query'
 import { getAddCollateralHealthOptions } from '@/llamalend/queries/add-collateral/add-collateral-health.query'
 import { useMarketRates } from '@/llamalend/queries/market-rates'
+import { useUserCurrentLeverage } from '@/llamalend/queries/user-current-leverage.query'
 import { getUserHealthOptions } from '@/llamalend/queries/user-health.query'
 import { useUserState } from '@/llamalend/queries/user-state.query'
 import { CollateralParams } from '@/llamalend/queries/validation/manage-loan.types'
@@ -23,12 +25,14 @@ export function AddCollateralInfoAccordion<ChainId extends IChainId>({
   collateralToken,
   borrowToken,
   networks,
+  leverageEnabled,
 }: {
   params: CollateralParams<ChainId>
   values: CollateralForm
   collateralToken: Token | undefined
   borrowToken: Token | undefined
   networks: NetworkDict<ChainId>
+  leverageEnabled: boolean
 }) {
   const [isOpen, , , toggle] = useSwitch(false)
   const userState = q(useUserState(params, isOpen))
@@ -80,6 +84,9 @@ export function AddCollateralInfoAccordion<ChainId extends IChainId>({
       )}
       userState={userState}
       collateral={expectedCollateral}
+      leverageEnabled={leverageEnabled}
+      prevLeverageValue={q(useUserCurrentLeverage(params, isOpen))}
+      leverageValue={q(useAddCollateralFutureLeverage(params, isOpen))}
     />
   )
 }

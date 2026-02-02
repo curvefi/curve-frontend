@@ -6,6 +6,7 @@ import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@
 import { useMutation } from '@tanstack/react-query'
 import { notify, useCurve } from '@ui-kit/features/connect-wallet'
 import { addBreadcrumb, captureError } from '@ui-kit/features/sentry'
+import { withPendingToast } from '@ui-kit/features/connect-wallet/lib/notify'
 import { assertValidity, logError, logMutation, logSuccess, type ValidationSuite } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { waitForTransactionReceipt } from '@wagmi/core'
@@ -44,7 +45,6 @@ function throwIfError(data: unknown) {
 /** Context created in onMutate to all callbacks other than mutationFn that also validates */
 type Context = Pick<NonNullable<ReturnType<typeof useCurve>>, 'wallet' | 'llamaApi'> & {
   market: LlamaMarketTemplate
-  pendingNotification: ReturnType<typeof notify>
 }
 
 type Result = { hash: Hex }
@@ -65,8 +65,10 @@ export type LlammaMutationOptions<TVariables extends object, TData extends Resul
    * Validation suite to validate variables before mutationFn is called.
    **/
   validationSuite: ValidationSuite
-  /** Message to display during pending state */
-  pendingMessage: (variables: TVariables, context: Omit<Context, 'pendingNotification'>) => string
+  /** Message to display while waiting for transaction submission */
+  pendingMessage: (variables: TVariables, context: Pick<Context, 'market'>) => string
+  /** Message to display while waiting for transaction confirmation */
+  confirmingMessage?: (variables: TVariables, context: Pick<Context, 'market'>) => string
   /** Message to display on success */
   successMessage: (variables: TVariables, context: Context) => string
   /** Callback executed on successful mutation */
@@ -94,6 +96,7 @@ export function useLlammaMutation<TVariables extends object, TData extends Resul
   validationSuite,
   pendingMessage,
   successMessage,
+  confirmingMessage,
   onSuccess,
   onReset,
 }: LlammaMutationOptions<TVariables, TData>) {
@@ -104,12 +107,12 @@ export function useLlammaMutation<TVariables extends object, TData extends Resul
   // Track our own error state because errors thrown in onMutate don't populate React Query's error.
   const [error, setError] = useState<Error | null>(null)
 
-  const { mutate, mutateAsync, data, isPending, isSuccess, reset } = useMutation({
+  // we use `mutate` instead of `mutateAsync` so that `onSuccess`/`onError` can be handled here
+  const { mutate, data, isPending, isSuccess, reset } = useMutation({
     mutationKey,
     onMutate: (variables: TVariables) => {
-      // Clear local error at the start of a new mutation attempt.
-      setError(null)
-      reset() // reset mutation state on new mutation
+      setError(null) // Clear local error at the start of a new mutation attempt.
+
       // Early validation - throwing here prevents mutationFn from running
       if (!wallet) throw new Error('Missing provider')
       if (!llamaApi) throw new Error('Missing llamalend api')
@@ -122,25 +125,32 @@ export function useLlammaMutation<TVariables extends object, TData extends Resul
       logMutation(mutationKey, { variables })
       // Return context to make it available in all callbacks
       const context = { wallet, llamaApi, market }
-      addBreadcrumb(`Llamma mutation starting`, 'mutation', { context, variables, userAddress, mutationKey })
-
-      return { ...context, pendingNotification: notify(pendingMessage(variables, context), 'pending') }
+      addBreadcrumb(`Llamma mutation starting`, 'mutation', { marketId, variables, userAddress, mutationKey })
+      return context
     },
     mutationFn: async (variables: TVariables) => {
       const market = getLlamaMarket(marketId!)
-      const data = await mutationFn(variables, { market })
+      const data = await withPendingToast(mutationFn(variables, { market }), pendingMessage(variables, { market }))
       throwIfError(data)
+
       // Validate that we have a valid transaction hash before waiting for receipt
       if (!data.hash) throw new Error('Transaction did not return a valid hash')
-      return { data, receipt: await waitForTransactionReceipt(config, data) }
+      return {
+        data,
+        receipt: await withPendingToast(
+          waitForTransactionReceipt(config, data),
+          confirmingMessage?.(variables, { market }) || t`Waiting for transaction confirmation...`,
+        ),
+      }
     },
     onSuccess: async ({ data, receipt }, variables, result) => {
-      logSuccess(mutationKey, { data, variables, marketId: result.market.id })
+      const { market, wallet } = result
+      logSuccess(mutationKey, { data, variables, marketId })
+      await onSuccess?.(data, receipt, variables, result)
       notify(successMessage(variables, result), 'success')
-      updateUserEventsApi(wallet!, { id: networkId }, result.market, receipt.transactionHash)
+      updateUserEventsApi(wallet, { id: networkId }, market, receipt.transactionHash)
       await invalidateAllUserMarketDetails({ chainId, marketId, userAddress })
       onReset?.()
-      await onSuccess?.(data, receipt, variables, result)
     },
     onError: (error, variables, context) => {
       setError(error)
@@ -148,7 +158,6 @@ export function useLlammaMutation<TVariables extends object, TData extends Resul
       captureError(error, { variables, context, userAddress })
       notify(t`Transaction failed`, 'error') // hide the actual error message, it can be too long - display it in the form
     },
-    onSettled: (_data, _error, _variables, context) => context?.pendingNotification?.dismiss(),
   })
-  return { mutate, mutateAsync, error, ...data, isPending, isSuccess, reset }
+  return { mutate, error, ...data, isPending, isSuccess, reset }
 }

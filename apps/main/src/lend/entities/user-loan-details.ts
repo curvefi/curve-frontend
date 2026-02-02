@@ -1,12 +1,17 @@
+import { invalidateMarketDetails } from '@/lend/entities/market-details'
 import { invalidateUserMarketBalances } from '@/lend/entities/user-market-balances'
 import { fetchChartBandBalancesData } from '@/lend/lib/apiLending'
-import { UserLoss, ParsedBandsBalances, ChainId } from '@/lend/types/lend.types'
+import { type State, useStore } from '@/lend/store/useStore'
+import { Api, ChainId, ParsedBandsBalances, UserLoss } from '@/lend/types/lend.types'
 import { getIsUserCloseToLiquidation, getLiquidationStatus, reverseBands, sortBandsLend } from '@/llamalend/llama.utils'
 import type { HealthColorKey } from '@/llamalend/llamalend.types'
+import { refetchLoanExists } from '@/llamalend/queries/loan-exists'
+import { invalidateUserPrices } from '@/llamalend/queries/user-prices.query'
+import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { requireLib } from '@ui-kit/features/connect-wallet'
 import { queryFactory } from '@ui-kit/lib/model/query'
+import type { UserMarketParams, UserMarketQuery } from '@ui-kit/lib/model/query/root-keys'
 import { rootKeys } from '@ui-kit/lib/model/query/root-keys'
-import type { UserMarketQuery, UserMarketParams } from '@ui-kit/lib/model/query/root-keys'
 import { userMarketValidationSuite } from '@ui-kit/lib/model/query/user-market-validation'
 
 type UserLoanDetailsQuery = UserMarketQuery<ChainId>
@@ -92,4 +97,27 @@ export const { useQuery: useUserLoanDetails, invalidate: invalidateUserLoanDetai
 })
 
 export const invalidateAllUserBorrowDetails = (params: UserLoanDetailsParams) =>
-  Promise.all([invalidateUserMarketBalances(params), invalidateUserLoanDetails(params)])
+  Promise.all([invalidateUserMarketBalances(params), invalidateUserLoanDetails(params), invalidateUserPrices(params)])
+
+export const refetchUserMarket = async ({
+  market,
+  api,
+  state: { user, markets } = useStore.getState(),
+}: {
+  api: Api
+  market: LendMarketTemplate
+  state?: Pick<State, 'user' | 'markets'>
+}) => {
+  const loanExists = await refetchLoanExists({
+    chainId: api.chainId,
+    marketId: market.id,
+    userAddress: api.signerAddress,
+  })
+  void Promise.all([
+    loanExists && user.fetchAll(api, market, true),
+    loanExists && invalidateAllUserBorrowDetails({ chainId: api.chainId, marketId: market.id }),
+    invalidateMarketDetails({ chainId: api.chainId, marketId: market.id }),
+    markets.fetchAll(api, market, true),
+  ])
+  return { loanExists }
+}

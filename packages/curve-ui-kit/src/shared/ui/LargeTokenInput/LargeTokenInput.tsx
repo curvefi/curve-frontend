@@ -262,14 +262,13 @@ export const LargeTokenInput = ({
     <Stack
       id={componentId}
       data-testid={testId}
-      gap={Spacing.sm}
       sx={{
         backgroundColor: (t) => t.design.Inputs.Large.Default.Fill,
         outline: (t) =>
           `1px solid ${isError ? t.design.Layer.Feedback.Error : t.design.Inputs.Base.Default.Border.Default}`,
       }}
     >
-      <Stack gap={Spacing.xs} sx={{ padding: Spacing.sm }}>
+      <Stack gap={Spacing.xxs} sx={{ padding: Spacing.sm }}>
         {/** First row is an optional label describing the input and/or chips */}
         {(label || showChips) && (
           <Stack
@@ -352,6 +351,7 @@ export const LargeTokenInput = ({
         {showSlider && (
           <Stack sx={{ zIndex: 1 /* let slider background and border show up */ }}>
             <SliderInput
+              name={name}
               disabled={disabled}
               value={percentage ?? `${MIN_PERCENTAGE}`}
               onChange={(value) => handlePercentageChange(value as Decimal)}

@@ -21,7 +21,7 @@ const getDurationPercent = ({ severity }: Pick<ToastItem, 'severity'>) =>
   `${(getDuration({ severity }) / getTotalDuration({ severity })) * 100}%`
 
 /**
- * Hook to manage toast items received via the event handlers and connect that react state.
+ * Hook to manage toast items received via the event handlers and connect them to the react render loop.
  * Adds a timeout to automatically dismiss toasts after their duration.
  * @see watchToasts for the event handler implementation
  */
@@ -33,8 +33,10 @@ function useToastItems() {
       setItems((prevNotifications: ToastItem[]) => prevNotifications.filter((n) => n !== notification))
     const add = (notification: ToastItem): void => {
       setItems((prevNotifications: ToastItem[]) => [...prevNotifications, notification])
-      const timeout = window.setTimeout(() => dismiss(notification), getTotalDuration(notification))
-      timeouts.push(timeout)
+      if (!notification.keepAlive) {
+        const timeout = window.setTimeout(() => dismiss(notification), getTotalDuration(notification))
+        timeouts.push(timeout)
+      }
     }
     const cleanupListener = watchToasts(add, dismiss)
     return () => {
@@ -50,21 +52,27 @@ export const Toast = () => {
   const items = useToastItems()
   return (
     <Snackbar
+      autoHideDuration={null}
       open={items.length > 0}
       anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
       sx={{ top, left: 'unset' }} // unset left, otherwise it takes the whole width blocking clicks
     >
       <Stack justifyContent="end" marginTop={Spacing.md} gap={Spacing.sm} flexWrap="wrap" flexDirection="column">
-        {items.map(({ id, severity, title, message, testId }) => (
+        {items.map(({ id, severity, title, message, testId = `toast-${severity}`, keepAlive }) => (
           <Alert
             key={id}
             variant="filled"
             severity={severity}
             data-testid={testId}
-            sx={{
-              animation: `toastFadeOut ${getDuration({ severity }) + Duration.Transition}ms forwards`,
-              '@keyframes toastFadeOut': { [getDurationPercent({ severity })]: { opacity: 1 }, '100%': { opacity: 0 } },
-            }}
+            {...(!keepAlive && {
+              sx: {
+                animation: `toastFadeOut ${getDuration({ severity }) + Duration.Transition}ms forwards`,
+                '@keyframes toastFadeOut': {
+                  [getDurationPercent({ severity })]: { opacity: 1 },
+                  '100%': { opacity: 0 },
+                },
+              },
+            })}
           >
             {title && <AlertTitle>{title}</AlertTitle>}
             {message}

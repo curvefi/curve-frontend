@@ -1,5 +1,7 @@
 import type { UseQueryResult } from '@tanstack/react-query'
 
+export type Range<T> = [T, T]
+
 /**
  * Creates a deep partial type that makes all properties optional recursively,
  * while preserving function types as-is
@@ -45,12 +47,12 @@ export type Query<T> = { data: T | undefined; isLoading: boolean; error: Error |
  * Maps a Query type to extract partial data from it.
  * Preserves error and loading states while transforming the data.
  */
-export const mapQuery = <TSource extends object, TResult>(
+export const mapQuery = <TSource, TResult>(
   { data, isLoading, error }: Query<TSource>,
   selector: (data: TSource) => TResult | null | undefined,
 ): Query<TResult> => ({
   isLoading,
-  data: (data && selector(data)) ?? undefined,
+  data: data == null ? undefined : (selector(data) ?? undefined),
   error,
 })
 
