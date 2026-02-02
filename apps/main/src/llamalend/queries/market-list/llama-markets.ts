@@ -96,6 +96,8 @@ const DEPRECATED_LLAMAS: PartialRecord<Chain, Record<Address, string>> = {
   arbitrum: {
     // iBTC-crvUSD lend market
     '0x3e293dB65c81742e32b74E21A0787d2936beeDf7': t`iBTC is undergoing systematic unwinding`,
+    // EYWA-crvUSD lend market
+    '0x7a5A1c91dAF5A41942F90b3f8a9c4d3526294c16': t`This market is deprecated.`,
   },
   sonic: {
     // sTS-crvUSD lend market
