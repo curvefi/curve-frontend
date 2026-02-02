@@ -5,7 +5,7 @@ import { formDefaultOptions, watchForm } from '@ui-kit/lib/model/form'
 export type ContactMethod = 'email' | 'telegram' | 'discord'
 
 export type ErrorContext = {
-  error: Error | string
+  error: Error | string | null | undefined
   title: string
   subtitle: string
 }
@@ -43,7 +43,7 @@ export const useErrorReportForm = ({ error, ...context }: ErrorContext, onClose:
         if (error instanceof Error) {
           captureError(error, { body })
         } else {
-          captureString(error, { body })
+          captureString(error ?? 'Error Report', { body })
         }
         onClose()
       } catch (e) {

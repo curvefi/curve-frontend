@@ -9,12 +9,10 @@ import {
 } from '@sentry/react'
 import { isDevelopment } from '@ui-kit/utils'
 
-const SENTRY_DSN = import.meta.env.VITE_SENTRY_DSN as string | undefined
+const { SENTRY_DSN } = process.env
 
 /**
- * Initialize Sentry error reporting.
- * Only active in production when VITE_SENTRY_DSN is set.
- * No configuration needed for local development.
+ * Initialize Sentry error reporting. Only active in production when SENTRY_DSN is set.
  */
 export function initSentry() {
   if (isDevelopment) return console.warn(`Sentry disabled in DEV mode`)
