@@ -6,6 +6,7 @@ import Typography from '@mui/material/Typography'
 import { CURVE_LOGO_URL } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { EnsoIcon } from '@ui-kit/shared/icons/EnsoIcon'
+import { OdosIcon } from '@ui-kit/shared/icons/OdosIcon'
 import { ReloadIcon } from '@ui-kit/shared/icons/ReloadIcon'
 import { Accordion } from '@ui-kit/shared/ui/Accordion'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
@@ -24,23 +25,12 @@ const providerLabels = {
   odos: t`Odos`,
 }
 
-const CurveIcon = () => (
-  <Box component="img" src={CURVE_LOGO_URL} alt="Curve" sx={{ width: IconSize.md, height: IconSize.md }} />
-)
-const OdosIcon = () => (
-  <Box
-    component="img"
-    src="https://assets.odos.xyz/odos-logo-orange-symbol-only.png"
-    alt="Odos"
-    sx={{ width: IconSize.md, height: IconSize.md }}
-  />
-)
-
-const Enso = () => <EnsoIcon />
 const providerIcons: Record<RouteProvider, () => ReactNode> = {
-  curve: CurveIcon,
-  enso: Enso,
-  odos: OdosIcon,
+  curve: () => (
+    <Box component="img" src={CURVE_LOGO_URL} alt="Curve" sx={{ width: IconSize.md, height: IconSize.md }} />
+  ),
+  enso: () => <EnsoIcon />,
+  odos: () => <OdosIcon />,
 }
 
 export type RouteOption = {
