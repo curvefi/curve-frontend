@@ -1,12 +1,11 @@
-import { useEstimateGas } from '@/llamalend/hooks/useEstimateGas'
 import { getLlamaMarket } from '@/llamalend/llama.utils'
-import { type NetworkDict } from '@/llamalend/llamalend.types'
 import type { IChainId, TGas } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { type FieldsOf } from '@ui-kit/lib'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import type { CreateLoanFormQuery } from '../../features/borrow/types'
 import { createLoanQueryValidationSuite } from '../validation/borrow.validation'
+import { createApprovedEstimateGasHook } from '../estimate-gas-hook.factory'
 import { useCreateLoanIsApproved } from './create-loan-approved.query'
 import { createLoanMaxReceiveKey } from './create-loan-max-receive.query'
 
@@ -86,35 +85,8 @@ const { useQuery: useCreateLoanEstimateGasQuery } = queryFactory({
   dependencies: (params) => [createLoanMaxReceiveKey(params)],
 })
 
-export const useCreateLoanEstimateGas = <ChainId extends IChainId>(
-  networks: NetworkDict<ChainId>,
-  query: GasEstimateParams<ChainId>,
-  enabled?: boolean,
-) => {
-  const { chainId } = query
-  const {
-    data: isApproved,
-    isLoading: isApprovedLoading,
-    error: isApprovedError,
-  } = useCreateLoanIsApproved(query, enabled)
-  const {
-    data: approveEstimate,
-    isLoading: approveLoading,
-    error: approveError,
-  } = useCreateLoanApproveEstimateGas(query, enabled && isApproved === false)
-  const {
-    data: createEstimate,
-    isLoading: createLoading,
-    error: createError,
-  } = useCreateLoanEstimateGasQuery(query, enabled && isApproved === true)
-  const {
-    data,
-    isLoading: conversionLoading,
-    error: estimateError,
-  } = useEstimateGas<ChainId>(networks, chainId, isApproved ? createEstimate : approveEstimate, enabled)
-  return {
-    data,
-    isLoading: [isApprovedLoading, approveLoading, createLoading, conversionLoading].some(Boolean),
-    error: [isApprovedError, approveError, createError, estimateError].find(Boolean),
-  }
-}
+export const useCreateLoanEstimateGas = createApprovedEstimateGasHook({
+  useIsApproved: useCreateLoanIsApproved,
+  useApproveEstimate: useCreateLoanApproveEstimateGas,
+  useActionEstimate: useCreateLoanEstimateGasQuery,
+})
