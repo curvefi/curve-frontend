@@ -1,9 +1,8 @@
 import type { Suite } from 'vest'
 import { useEstimateGas } from '@/llamalend/hooks/useEstimateGas'
-import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { type NetworkDict } from '@/llamalend/llamalend.types'
+import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/create-loan-query.helpers'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { type FieldsOf } from '@ui-kit/lib'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import type { CreateLoanFormQuery } from '../../features/borrow/types'
@@ -28,14 +27,16 @@ const { useQuery: useCreateLoanApproveEstimateGas } = queryFactory({
     userCollateral = '0',
     leverageEnabled,
   }: CreateLoanApproveEstimateGasQuery) => {
-    const market = getLlamaMarket(marketId)
-    return !leverageEnabled
-      ? await market.estimateGas.createLoanApprove(userCollateral)
-      : market instanceof LendMarketTemplate
-        ? await market.leverage.estimateGas.createLoanApprove(userCollateral, userBorrowed)
-        : market.leverageV2.hasLeverage()
-          ? await market.leverageV2.estimateGas.createLoanApprove(userCollateral, userBorrowed)
-          : await market.leverage.estimateGas.createLoanApprove(userCollateral)
+    const [type, impl] = getCreateLoanImplementation(marketId, leverageEnabled)
+    switch (type) {
+      case 'V1':
+      case 'V2':
+        return await impl.estimateGas.createLoanApprove(userCollateral, userBorrowed)
+      case 'V0':
+        return await impl.estimateGas.createLoanApprove(userCollateral)
+      case 'unleveraged':
+        return await impl.estimateGas.createLoanApprove(userCollateral)
+    }
   },
   validationSuite: createLoanQueryValidationSuite({ debtRequired: false }) as Suite<
     keyof CreateLoanApproveEstimateGasQuery,
