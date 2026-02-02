@@ -31,6 +31,8 @@ type AccordionBaseProps = {
   info?: ReactNode
   /** Content to display when the accordion is expanded */
   children?: ReactNode
+  /** Optional test id for the accordion root */
+  testId?: string
 }
 
 type UncontrolledAccordionProps = {
@@ -84,13 +86,14 @@ export const Accordion = ({
   size = 'small',
   info,
   children,
+  testId,
   ...controlProps
 }: AccordionProps) => {
   const [isOpen, toggle] = useAccordionToggle(controlProps)
   const id = `accordion-${useId()}`
 
   return (
-    <Stack>
+    <Stack data-testid={testId}>
       <ButtonBase
         onClick={toggle}
         aria-expanded={isOpen}
@@ -101,13 +104,13 @@ export const Accordion = ({
           ...(isOpen && !ghost && { backgroundColor: layer1Fill }),
           transition: `background-color ${TransitionFunction}`,
 
-          // Render border insize without layout shift on hover
+          // Render border inside without layout shift on hover using a pseudo-element overlay
           position: 'relative',
           '&::after': {
             content: '""',
             position: 'absolute',
             inset: 0,
-            pointerEvents: 'none',
+            pointerEvents: 'none', // Prevents the overlay from intercepting mouse events (e.g., tooltip hover on the `info` slot)
             ...(ghost ? { borderBottom: borderStyle } : { border: borderStyle }),
           },
 

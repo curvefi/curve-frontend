@@ -1,4 +1,4 @@
-import { API_LOAD_TIMEOUT, LOAD_TIMEOUT } from '@cy/support/ui'
+import { API_LOAD_TIMEOUT, e2eBaseUrl, LOAD_TIMEOUT } from '@cy/support/ui'
 import type { ErrorContext } from '@ui-kit/features/report-error'
 
 const visitErrorBoundary = () => {
@@ -33,13 +33,13 @@ const visitErrorBoundary = () => {
     },
   })
   cy.wait('@error', LOAD_TIMEOUT)
-  return Cypress.config('baseUrl') + url
+  return e2eBaseUrl() + url
 }
 
 const visitNotFoundPage = () => {
   const url = '/llamalend/ethereum/markets/non-existent-market'
   cy.visit(url, { timeout: API_LOAD_TIMEOUT.timeout })
-  return Cypress.config('baseUrl') + url
+  return e2eBaseUrl() + url
 }
 
 function check500Error({ context }: { context: object }) {

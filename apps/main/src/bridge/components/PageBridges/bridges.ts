@@ -3,28 +3,6 @@ import type { Partner } from '@ui-kit/shared/ui/PartnerCard'
 
 export const WEB3_BRIDGES: Partner[] = [
   {
-    name: 'CrossCurve',
-    description: t`A decentralized and unified infrastructure for cross-chain liquidity and incentives, powered by Curve AMM.`,
-    imageId: 'platforms/cross-curve.png',
-    networks: {
-      arbitrum: true,
-      avalanche: true,
-      bsc: true,
-      base: true,
-      celo: true,
-      fantom: true,
-      fraxtal: true,
-      gnosis: true,
-      optimism: true,
-      sonic: true,
-      taiko: true,
-      unichain: true,
-    },
-    appUrl:
-      'https://app.crosscurve.fi/swap?inputChainId=7&inputToken=0x498bf2b1e120fed3ad3d42ea2165e9b73f99c1e5&outputChainId=13&utm_source=Curve+Finance&utm_medium=web&utm_campaign=Curve+Bridge+Page',
-    twitterUrl: 'https://x.com/crosscurvefi',
-  },
-  {
     name: 'deBridge',
     description: t`Messaging and cross-chain interoperability protocol enabling the building of cross-chain dapps.`,
     imageId: 'platforms/debridge.jpg',

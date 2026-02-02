@@ -43,6 +43,7 @@ const SliderContent = () => {
     <Stack sx={{ paddingBlock: Spacing.sm }}>
       <Typography variant="bodySBold">{t`Stake`}</Typography>
       <SliderInput
+        name="stake-slider"
         value={value}
         min={0}
         max={100}

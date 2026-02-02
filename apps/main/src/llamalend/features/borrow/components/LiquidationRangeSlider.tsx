@@ -37,19 +37,14 @@ export const LiquidationRangeSlider = ({
       </Grid>
       <Grid size={12}>
         <SliderInput
+          name="range"
           onChange={(val) => setRange(parseInt(val))}
           aria-label={t`Bands`}
           value={decimal(range) ?? `${minValue}`}
           min={minValue}
           max={maxValue}
-          sliderProps={{
-            'data-rail-background': 'safe',
-          }}
-          inputProps={{
-            variant: 'standard',
-            name: 'range',
-            adornment: 'bands',
-          }}
+          sliderProps={{ 'data-rail-background': 'safe' }}
+          inputProps={{ variant: 'standard', adornment: 'bands' }}
         />
       </Grid>
     </Grid>

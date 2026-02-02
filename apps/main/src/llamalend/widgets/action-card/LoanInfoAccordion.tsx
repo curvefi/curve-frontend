@@ -84,7 +84,6 @@ export const LoanInfoAccordion = ({
   const isHighImpact = priceImpact?.data != null && slippage != null && priceImpact.data > Number(slippage)
   return (
     <ActionInfoAccordion
-      ghost
       title={t`Health`}
       info={
         <ActionInfo

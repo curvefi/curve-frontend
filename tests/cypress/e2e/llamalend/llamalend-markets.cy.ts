@@ -1,8 +1,19 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 import lodash, { max } from 'lodash'
 import { LlamaMarketColumnId } from '@/llamalend/features/market-list/columns/columns.enum'
 import type { GetMarketsResponse } from '@curvefi/prices-api/llamalend'
 import { range, recordValues } from '@curvefi/prices-api/objects.util'
 import { oneOf, shuffle, type TokenType } from '@cy/support/generators'
+import {
+  closeDrawer,
+  closeSlider,
+  expandFilters,
+  expandFirstRowOnMobile,
+  firstRow,
+  getHiddenCount,
+  openDrawer,
+  withFilterChips,
+} from '@cy/support/helpers/data-table.helpers'
 import {
   Chain,
   createLendingVaultChainsResponse,
@@ -18,6 +29,7 @@ import {
   assertInViewport,
   assertNotInViewport,
   type Breakpoint,
+  e2eBaseUrl,
   LOAD_TIMEOUT,
   oneDesktopViewport,
   oneViewport,
@@ -40,7 +52,6 @@ describe(`LlamaLend Markets`, () => {
     visitAndWait([width, height, breakpoint])
   })
 
-  const firstRow = () => cy.get(`[data-testid^="data-table-row-"]`).first()
   it('should have sticky headers', () => {
     cy.get('[data-testid^="data-table-row"]').last().then(assertNotInViewport)
     cy.get('[data-testid^="data-table-row"]').eq(10).scrollIntoView()
@@ -66,13 +77,13 @@ describe(`LlamaLend Markets`, () => {
       .first()
       .find(`[data-testid="market-link-${HighTVLAddress}"]`)
       .should('exist')
-    withFilterChips(() => {
+    withFilterChips(breakpoint, () => {
       cy.get(`[data-testid="chip-lend"]`).click()
-      cy.get(`[data-testid="pool-type-mint"]`).should('not.exist')
+      return cy.get(`[data-testid="pool-type-mint"]`).should('not.exist')
     })
     if (breakpoint == 'mobile') {
       cy.get(`[data-testid="data-table-cell-tvl"]`).first().contains('$')
-      openDrawer('sort')
+      openDrawer(breakpoint, 'sort')
       cy.get('[data-testid="drawer-sort-menu-lamalend-markets"]').contains('Utilization', LOAD_TIMEOUT)
       cy.get(`[data-testid="drawer-sort-menu-lamalend-markets"] li[value="${utilizationColumnId}"]`).click()
       cy.get('[data-testid="drawer-sort-menu-lamalend-markets"]').should('not.be.visible')
@@ -80,9 +91,9 @@ describe(`LlamaLend Markets`, () => {
         .first()
         .find(`[data-testid="market-link-${HighUtilizationAddress}"]`)
         .should('exist')
-      expandFirstRowOnMobile()
+      expandFirstRowOnMobile(breakpoint)
       // note: not possible currently to sort ascending
-      cy.get(`[data-testid="metric-${utilizationColumnId}"]`).contains('99%', LOAD_TIMEOUT)
+      return cy.get(`[data-testid="metric-${utilizationColumnId}"]`).contains('99%', LOAD_TIMEOUT)
     } else {
       cy.get(`[data-testid="data-table-cell-${LlamaMarketColumnId.NetBorrowRate}"]`).first().contains('%')
       cy.get(`[data-testid="data-table-header-${utilizationColumnId}"]`).click()
@@ -94,11 +105,11 @@ describe(`LlamaLend Markets`, () => {
 
   // todo: retry cause this fails in large screens with small data set (laziness not triggered, everything is shown)
   it('should show charts', RETRY_IN_CI, () => {
-    withFilterChips(() => {
+    withFilterChips(breakpoint, () => {
       cy.get(`[data-testid="chip-lend"]`).click()
-      cy.get(`[data-testid="pool-type-mint"]`).should('not.exist')
+      return cy.get(`[data-testid="pool-type-mint"]`).should('not.exist')
     })
-    expandFirstRowOnMobile()
+    expandFirstRowOnMobile(breakpoint)
     if (breakpoint != 'mobile') {
       enableGraphColumn()
     }
@@ -151,7 +162,7 @@ describe(`LlamaLend Markets`, () => {
     cy.viewport(...((breakpoint === 'mobile' ? [500, 800] : [1200, 800]) as [number, number]))
     cy.get(`[data-testid^="data-table-row"]`).then(({ length }) => {
       cy.get(`[data-testid="minimum-slider-filter-${columnId}"]`).should('not.be.visible')
-      expandFilters()
+      expandFilters(breakpoint)
       cy.get(`[data-testid="minimum-slider-filter-${columnId}"]`).should('contain', initialFilterText)
       cy.get(`[data-testid="slider-${columnId}"]`).should('not.exist')
 
@@ -164,7 +175,7 @@ describe(`LlamaLend Markets`, () => {
           [($el.width() ?? 80) - 20, ($el.height() ?? 24) / 2],
         )
         .then(([x, y]) => cy.get(`@slider`).click(x, y, { waitForAnimations: true }))
-      closeSlider()
+      closeSlider(breakpoint)
       cy.get(`[data-testid^="data-table-row"]`, LOAD_TIMEOUT).should('have.length.below', length)
     })
   })
@@ -178,7 +189,7 @@ describe(`LlamaLend Markets`, () => {
 
     cy.get(`[data-testid^="data-table-row"]`).then(({ length }) => {
       cy.get(`[data-testid="minimum-slider-filter-${columnId}"]`).should('not.be.visible')
-      expandFilters()
+      expandFilters(breakpoint)
 
       //  open the chosen filter
       cy.get(`[data-testid="minimum-slider-filter-${columnId}"]`).click({ waitForAnimations: true })
@@ -192,9 +203,25 @@ describe(`LlamaLend Markets`, () => {
       cy.get('@inputs').type(`${getFilterValue()}`)
       cy.get('@inputs').blur()
 
-      closeSlider()
+      closeSlider(breakpoint)
       cy.get(`[data-testid^="data-table-row"]`).should('have.length.below', length)
       cy.url().should('include', `${columnId}=`)
+    })
+  })
+
+  it('should let the TVL filter override the default small pools cutoff', () => {
+    getHiddenCount(breakpoint).then((hiddenBefore) => {
+      expect(!!hiddenBefore, `Cannot parse hidden count ${hiddenBefore}`).to.be.true
+      expandFilters(breakpoint)
+      cy.get(`[data-testid="minimum-slider-filter-tvl"]`).click({ waitForAnimations: true })
+      cy.get(`[data-testid="slider-tvl"]`).as('slider').should('be.visible')
+      cy.get(`[data-testid="slider-input-tvl-min"]`).clear()
+      cy.get(`[data-testid="slider-input-tvl-min"]`).type('0')
+      closeSlider(breakpoint)
+      cy.url().should('equal', `${e2eBaseUrl()}/llamalend/ethereum/markets/?${new URLSearchParams('tvl=0~')}`)
+      getHiddenCount(breakpoint).then((hiddenAfter) => {
+        expect(+hiddenAfter).to.be.lessThan(+hiddenBefore)
+      })
     })
   })
 
@@ -215,7 +242,7 @@ describe(`LlamaLend Markets`, () => {
 
   it(`should allow filtering by token`, () => {
     if (breakpoint == 'mobile') {
-      openDrawer('filter')
+      openDrawer(breakpoint, 'filter')
     } else {
       cy.get(`[data-testid="btn-expand-filters"]`).click()
     }
@@ -224,26 +251,24 @@ describe(`LlamaLend Markets`, () => {
   })
 
   it('should allow filtering favorites', { scrollBehavior: false }, () => {
-    if (breakpoint == 'mobile') {
-      openDrawer('filter')
-    }
+    openDrawer(breakpoint, 'filter')
     // on desktop, the favorite icon is not visible until hovered - but cypress doesn't support that so use force
     cy.get(`[data-testid="favorite-icon"]`).first().click({ force: true })
 
-    closeDrawer()
-    withFilterChips(() => cy.get(`[data-testid="chip-favorites"]`).click())
+    closeDrawer(breakpoint)
+    withFilterChips(breakpoint, () => cy.get(`[data-testid="chip-favorites"]`).click())
     cy.url().should('include', 'isFavorite=yes')
     cy.get(`[data-testid^="data-table-row"]`).should('have.length', 1)
     cy.get(`[data-testid="favorite-icon"]:visible`).should('not.exist')
     cy.get(`[data-testid="favorite-icon-filled"]:visible`).click()
     cy.get(`[data-testid="table-empty-row"]`).should('exist')
-    withFilterChips(() => cy.get(`[data-testid="reset-filter"]`).click())
+    withFilterChips(breakpoint, () => cy.get(`[data-testid="reset-filter"]`).click())
     cy.url().should('not.include', 'isFavorite=')
     cy.get(`[data-testid^="data-table-row"]`).should('have.length.above', 1)
   })
 
   it(`should allow filtering by market type`, () =>
-    withFilterChips(() =>
+    withFilterChips(breakpoint, () =>
       cy.get(`[data-testid^="data-table-row"]`).then(({ length }) => {
         const [type, otherType] = shuffle('Mint', 'Lend')
         cy.get(`[data-testid="chip-${type.toLowerCase()}"]`).click()
@@ -259,9 +284,7 @@ describe(`LlamaLend Markets`, () => {
     ))
 
   it(`should copy the market address`, RETRY_IN_CI, () => {
-    if (breakpoint === 'mobile') {
-      expandFirstRowOnMobile()
-    }
+    expandFirstRowOnMobile(breakpoint)
     // unfortunately we need to click twice on Chromium, the first one doesn't work (maybe due to the tooltip)
     range(2).forEach(() =>
       breakpoint === 'desktop'
@@ -277,9 +300,9 @@ describe(`LlamaLend Markets`, () => {
       ['mint', /\/crvusd\/\w+\/markets\/[\w-]+\/?$/],
       ['lend', /\/lend\/\w+\/markets\/.+\/?$/],
     )
-    withFilterChips(() => {
+    withFilterChips(breakpoint, () => {
       cy.get(`[data-testid="chip-${type}"]`).click()
-      firstRow().contains(lodash.capitalize(type))
+      return firstRow().contains(lodash.capitalize(type))
     })
     cy.get(`[data-testid^="market-link-"]`).first().click()
     if (breakpoint === 'mobile') {
@@ -290,15 +313,15 @@ describe(`LlamaLend Markets`, () => {
 
   it(`should allow filtering by rewards`, { scrollBehavior: false }, () => {
     cy.get(`[data-testid^="data-table-row"]`).should('have.length.at.least', 1)
-    withFilterChips(() => {
+    withFilterChips(breakpoint, () => {
       cy.get(`[data-testid="chip-rewards"]`).click()
-      cy.get(`[data-testid^="data-table-row"]`).should('have.length', 1)
+      return cy.get(`[data-testid^="data-table-row"]`).should('have.length', 1)
     })
-    expandFirstRowOnMobile()
+    expandFirstRowOnMobile(breakpoint)
     cy.get(`[data-testid="rewards-icons"]`).should('be.visible')
-    withFilterChips(() => {
+    withFilterChips(breakpoint, () => {
       cy.get(`[data-testid="chip-rewards"]`).click()
-      cy.get(`[data-testid^="data-table-row"]`).should('have.length.above', 1)
+      return cy.get(`[data-testid^="data-table-row"]`).should('have.length.above', 1)
     })
   })
 
@@ -324,7 +347,7 @@ describe(`LlamaLend Markets`, () => {
 
     if (breakpoint === 'mobile') {
       // On mobile, expand the first row and check the metric is visible in the expanded panel
-      expandFirstRowOnMobile()
+      expandFirstRowOnMobile(breakpoint)
       cy.get('[data-testid="data-table-expansion-row"]').contains('Net borrow APR').should('be.visible')
       cy.get('[data-testid="data-table-expansion-row"]').contains('%').should('be.visible')
     } else {
@@ -334,56 +357,6 @@ describe(`LlamaLend Markets`, () => {
       cy.get(`[data-testid="data-table-cell-${netBorrowColumnId}"]`).first().contains('%')
     }
   })
-
-  function expandFirstRowOnMobile() {
-    if (breakpoint == 'mobile') {
-      cy.get(`[data-testid="expand-icon"]`).first().click()
-      cy.get(`[data-testid="data-table-expansion-row"]`).should('be.visible')
-    }
-  }
-
-  function openDrawer(type: 'filter' | 'sort') {
-    cy.get(`[data-testid="btn-drawer-${type}-lamalend-markets"]`).click({ waitForAnimations: true })
-  }
-
-  function closeDrawer() {
-    if (breakpoint == 'mobile') {
-      cy.get('body').click(0, 0)
-    }
-  }
-
-  function expandFilters() {
-    if (breakpoint == 'mobile') {
-      openDrawer('filter')
-    } else {
-      cy.get(`[data-testid="btn-expand-filters"]`).click({ waitForAnimations: true })
-    }
-  }
-
-  function closeSlider() {
-    cy.get('body').click(0, 0, { waitForAnimations: true })
-    cy.get(`@slider`).should('not.exist')
-    closeDrawer()
-  }
-
-  /**
-   * Makes sure that the filter chips are visible during the given callback.
-   * On mobile, the filters are hidden behind a button and need to be expanded for some actions.
-   */
-  function withFilterChips(callback: () => void) {
-    if (breakpoint != 'mobile') {
-      return callback()
-    }
-    cy.scrollTo(0, 0)
-    cy.get(`[data-testid="chip-lend"]`).should('not.be.visible')
-    cy.get(`[data-testid="btn-drawer-filter-lamalend-markets"]`).click({ waitForAnimations: true })
-    cy.get(`[data-testid="chip-lend"]`).should('be.visible')
-    callback()
-    cy.scrollTo(0, 0)
-    cy.get(`[data-testid="chip-lend"]`).should('be.visible')
-    cy.get('body').click(0, 0)
-    cy.get(`[data-testid="chip-lend"]`).should('not.be.visible')
-  }
 
   function checkLineGraphColor(type: MarketRateType, color: string) {
     // the graphs are lazy loaded, so we need to scroll to them first before checking the color
