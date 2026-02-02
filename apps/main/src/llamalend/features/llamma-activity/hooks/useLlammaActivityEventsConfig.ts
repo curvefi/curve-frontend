@@ -1,16 +1,18 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { useLlammaEvents } from '@/llamalend/queries/llamma-events.query'
 import type { LlammaEvent } from '@curvefi/prices-api/llamma'
 import { scanTxPath } from '@ui/utils'
 import {
-  type ActivityTableConfig,
   type LlammaEventRow,
   LLAMMA_EVENTS_COLUMNS,
   useLlammaActivityVisibility,
+  useManualPagination,
+  getPageCount,
   DEFAULT_PAGE_SIZE,
 } from '@ui-kit/features/activity-table'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
+import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { LlammaActivityProps } from '..'
 
 export const useLlammaActivityEventsConfig = ({
@@ -24,10 +26,7 @@ export const useLlammaActivityEventsConfig = ({
 }: LlammaActivityProps) => {
   const { isHydrated } = useCurve()
   const { eventsColumnVisibility } = useLlammaActivityVisibility()
-  const [pageIndex, setPageIndex] = useState(0)
-  const handlePageChange = useCallback((pageIndex: number) => {
-    setPageIndex(pageIndex)
-  }, [])
+  const { pagination, onPaginationChange, apiPage } = useManualPagination()
 
   const {
     data: eventsData,
@@ -37,9 +36,11 @@ export const useLlammaActivityEventsConfig = ({
     chain: network,
     llamma: ammAddress,
     endpoint,
-    page: pageIndex + 1, // API uses 1-based & DataTable uses 0-based pages
+    page: apiPage,
     perPage: DEFAULT_PAGE_SIZE,
   })
+
+  const pageCount = getPageCount(eventsData?.count, DEFAULT_PAGE_SIZE)
 
   // Transform events data with block explorer URLs
   const eventsWithUrls: LlammaEventRow[] = useMemo(
@@ -59,19 +60,15 @@ export const useLlammaActivityEventsConfig = ({
   const isLoading = isEventsLoading || !isHydrated || !isMarketAvailable
   const isError = isEventsError && isMarketAvailable && isHydrated
 
-  return useMemo(
-    (): ActivityTableConfig<LlammaEventRow> => ({
-      data: eventsWithUrls,
-      columns: LLAMMA_EVENTS_COLUMNS as ActivityTableConfig<LlammaEventRow>['columns'],
-      isLoading,
-      isError,
-      emptyMessage: t`No activity data found.`,
-      columnVisibility: eventsColumnVisibility,
-      pageIndex,
-      pageSize: DEFAULT_PAGE_SIZE,
-      pageCount: eventsData?.count ? Math.ceil(eventsData?.count / DEFAULT_PAGE_SIZE) : 0,
-      onPageChange: handlePageChange,
-    }),
-    [eventsWithUrls, isLoading, isError, eventsColumnVisibility, pageIndex, eventsData?.count, handlePageChange],
-  )
+  const table = useTable({
+    data: eventsWithUrls,
+    columns: LLAMMA_EVENTS_COLUMNS,
+    state: { columnVisibility: eventsColumnVisibility, pagination },
+    manualPagination: true,
+    pageCount,
+    onPaginationChange,
+    ...getTableOptions(eventsWithUrls),
+  })
+
+  return { table, isLoading, isError, emptyMessage: t`No activity data found.` }
 }

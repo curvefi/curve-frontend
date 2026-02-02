@@ -37,11 +37,11 @@ export const OhlcAndActivityComp = ({
     rChainId,
     pricesApiPoolData,
   })
-  const liquidityTableConfig = usePoolActivityEventsConfig({
+  const liquidityTable = usePoolActivityEventsConfig({
     chainId: rChainId,
     poolAddress,
   })
-  const tradesTableConfig = usePoolActivityTradesConfig({
+  const tradesTable = usePoolActivityTradesConfig({
     chainId: rChainId,
     poolAddress,
   })
@@ -51,9 +51,23 @@ export const OhlcAndActivityComp = ({
     <Stack gap={Spacing.md}>
       <SubTabsSwitcher tabs={tabs} value={tab} onChange={setTab} />
       {tab === 'events' && (
-        <ActivityTable tableConfig={liquidityTableConfig} expandedPanel={PoolLiquidityExpandedPanel} />
+        <ActivityTable
+          table={liquidityTable.table}
+          isLoading={liquidityTable.isLoading}
+          isError={liquidityTable.isError}
+          emptyMessage={liquidityTable.emptyMessage}
+          expandedPanel={PoolLiquidityExpandedPanel}
+        />
       )}
-      {tab === 'trades' && <ActivityTable tableConfig={tradesTableConfig} expandedPanel={PoolTradesExpandedPanel} />}
+      {tab === 'trades' && (
+        <ActivityTable
+          table={tradesTable.table}
+          isLoading={tradesTable.isLoading}
+          isError={tradesTable.isError}
+          emptyMessage={tradesTable.emptyMessage}
+          expandedPanel={PoolTradesExpandedPanel}
+        />
+      )}
       {tab === 'chart' && (
         <Stack sx={{ gap: Spacing.md }}>
           <ChartHeader

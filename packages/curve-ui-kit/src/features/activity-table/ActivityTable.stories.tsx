@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import type { Address, Chain } from '@curvefi/prices-api'
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { ActivityTable } from './ActivityTable'
 import {
   POOL_TRADES_COLUMNS,
@@ -14,14 +15,7 @@ import {
   LlammaTradesExpandedPanel,
   LlammaEventsExpandedPanel,
 } from './panels'
-import type {
-  PoolTradeRow,
-  PoolLiquidityRow,
-  LlammaTradeRow,
-  LlammaEventRow,
-  Token,
-  ActivityTableConfig,
-} from './types'
+import type { PoolTradeRow, PoolLiquidityRow, LlammaTradeRow, LlammaEventRow, Token } from './types'
 
 const generateAddress = (seed: number): Address => `0x${seed.toString(16).padStart(40, '0')}` as Address
 
@@ -196,26 +190,34 @@ const DexPoolActivityComponent = () => {
   const liquidityData = useMemo(() => generatePoolLiquidity(15), [])
   const liquidityColumns = useMemo(() => createPoolLiquidityColumns({ poolTokens: POOL_TOKENS }), [])
 
-  const tradesTableConfig = {
+  const tradesTable = useTable({
     data: tradesData,
     columns: POOL_TRADES_COLUMNS,
-    isLoading: false,
-    isError: false,
-    emptyMessage: 'No trades data found.',
-  } as ActivityTableConfig<PoolTradeRow>
+    ...getTableOptions(tradesData),
+  })
 
-  const liquidityTableConfig = {
+  const liquidityTable = useTable({
     data: liquidityData,
     columns: liquidityColumns,
-    isLoading: false,
-    isError: false,
-    emptyMessage: 'No liquidity data found.',
-  } as ActivityTableConfig<PoolLiquidityRow>
+    ...getTableOptions(liquidityData),
+  })
 
   return (
     <>
-      <ActivityTable tableConfig={tradesTableConfig} expandedPanel={PoolTradesExpandedPanel} />
-      <ActivityTable tableConfig={liquidityTableConfig} expandedPanel={PoolLiquidityExpandedPanel} />
+      <ActivityTable
+        table={tradesTable}
+        isLoading={false}
+        isError={false}
+        emptyMessage="No trades data found."
+        expandedPanel={PoolTradesExpandedPanel}
+      />
+      <ActivityTable
+        table={liquidityTable}
+        isLoading={false}
+        isError={false}
+        emptyMessage="No liquidity data found."
+        expandedPanel={PoolLiquidityExpandedPanel}
+      />
     </>
   )
 }
@@ -228,26 +230,34 @@ const LendMarketActivityComponent = () => {
   const tradesData = useMemo(() => generateLlammaTrades(20, COLLATERAL_TOKEN, BORROW_TOKEN), [])
   const eventsData = useMemo(() => generateLlammaEvents(15, COLLATERAL_TOKEN, BORROW_TOKEN), [])
 
-  const tradesTableConfig = {
+  const tradesTable = useTable({
     data: tradesData,
     columns: LLAMMA_TRADES_COLUMNS,
-    isLoading: false,
-    isError: false,
-    emptyMessage: 'No AMM trades found.',
-  } as ActivityTableConfig<LlammaTradeRow>
+    ...getTableOptions(tradesData),
+  })
 
-  const eventsTableConfig = {
+  const eventsTable = useTable({
     data: eventsData,
-    columns: LLAMMA_EVENTS_COLUMNS as ActivityTableConfig<LlammaEventRow>['columns'],
-    isLoading: false,
-    isError: false,
-    emptyMessage: 'No controller events found.',
-  } as ActivityTableConfig<LlammaEventRow>
+    columns: LLAMMA_EVENTS_COLUMNS,
+    ...getTableOptions(eventsData),
+  })
 
   return (
     <>
-      <ActivityTable tableConfig={tradesTableConfig} expandedPanel={LlammaTradesExpandedPanel} />
-      <ActivityTable tableConfig={eventsTableConfig} expandedPanel={LlammaEventsExpandedPanel} />
+      <ActivityTable
+        table={tradesTable}
+        isLoading={false}
+        isError={false}
+        emptyMessage="No AMM trades found."
+        expandedPanel={LlammaTradesExpandedPanel}
+      />
+      <ActivityTable
+        table={eventsTable}
+        isLoading={false}
+        isError={false}
+        emptyMessage="No controller events found."
+        expandedPanel={LlammaEventsExpandedPanel}
+      />
     </>
   )
 }
@@ -305,18 +315,17 @@ export const LendMarketActivity: LendStory = {
   },
 }
 
+const LoadingStateComponent = () => {
+  const table = useTable({
+    data: [] as PoolTradeRow[],
+    columns: POOL_TRADES_COLUMNS,
+    ...getTableOptions([]),
+  })
+  return <ActivityTable table={table} isLoading={true} isError={false} emptyMessage="Loading trades..." />
+}
+
 export const LoadingState: StoryObj = {
-  render: () => (
-    <ActivityTable
-      tableConfig={{
-        data: [],
-        columns: POOL_TRADES_COLUMNS as ActivityTableConfig<PoolTradeRow>['columns'],
-        isLoading: true,
-        isError: false,
-        emptyMessage: 'Loading trades...',
-      }}
-    />
-  ),
+  render: () => <LoadingStateComponent />,
   parameters: {
     docs: {
       description: {
@@ -326,18 +335,17 @@ export const LoadingState: StoryObj = {
   },
 }
 
+const EmptyStateComponent = () => {
+  const table = useTable({
+    data: [] as PoolTradeRow[],
+    columns: POOL_TRADES_COLUMNS,
+    ...getTableOptions([]),
+  })
+  return <ActivityTable table={table} isLoading={false} isError={false} emptyMessage="No swap data found." />
+}
+
 export const EmptyState: StoryObj = {
-  render: () => (
-    <ActivityTable
-      tableConfig={{
-        data: [],
-        columns: POOL_TRADES_COLUMNS as ActivityTableConfig<PoolTradeRow>['columns'],
-        isLoading: false,
-        isError: false,
-        emptyMessage: 'No swap data found.',
-      }}
-    />
-  ),
+  render: () => <EmptyStateComponent />,
   parameters: {
     docs: {
       description: {
@@ -347,18 +355,17 @@ export const EmptyState: StoryObj = {
   },
 }
 
+const ErrorStateComponent = () => {
+  const table = useTable({
+    data: [] as PoolTradeRow[],
+    columns: POOL_TRADES_COLUMNS,
+    ...getTableOptions([]),
+  })
+  return <ActivityTable table={table} isLoading={false} isError={true} emptyMessage="Could not load data" />
+}
+
 export const ErrorState: StoryObj = {
-  render: () => (
-    <ActivityTable
-      tableConfig={{
-        data: [],
-        columns: POOL_TRADES_COLUMNS as ActivityTableConfig<PoolTradeRow>['columns'],
-        isLoading: false,
-        isError: true,
-        emptyMessage: 'Could not load data',
-      }}
-    />
-  ),
+  render: () => <ErrorStateComponent />,
   parameters: {
     docs: {
       description: {

@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { usePoolTrades } from '@/dex/entities/pool-trades.query'
 import { usePoolsPricesApi } from '@/dex/queries/pools-prices-api.query'
@@ -6,15 +6,16 @@ import { ChainId } from '@/dex/types/main.types'
 import type { Chain, Address } from '@curvefi/prices-api'
 import { scanTxPath } from '@ui/utils'
 import {
-  type ActivityTableConfig,
   type PoolTradeRow,
   POOL_TRADES_COLUMNS,
   usePoolActivityVisibility,
+  useManualPagination,
+  getPageCount,
+  DEFAULT_PAGE_SIZE,
 } from '@ui-kit/features/activity-table'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
-
-const PAGE_SIZE = 50
+import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 
 type UsePoolActivityProps = {
   chainId: ChainId
@@ -29,6 +30,7 @@ export const usePoolActivityTradesConfig = ({ chainId, poolAddress }: UsePoolAct
   const { data: networkConfig } = useNetworkByChain({ chainId })
   const network = networkConfig?.id.toLowerCase() as Chain
   const { isHydrated } = useCurve()
+  const { pagination, onPaginationChange, apiPage } = useManualPagination()
 
   const { data: pricesApiPoolsMapper, isLoading: isPricesApiPoolsLoading } = usePoolsPricesApi({
     blockchainId: network,
@@ -38,10 +40,6 @@ export const usePoolActivityTradesConfig = ({ chainId, poolAddress }: UsePoolAct
     [pricesApiPoolsMapper, poolAddress],
   )
   const { tradesColumnVisibility } = usePoolActivityVisibility({ poolTokens })
-  const [pageIndex, setPageIndex] = useState(0)
-  const handlePageChange = useCallback((pageIndex: number) => {
-    setPageIndex(pageIndex)
-  }, [])
 
   const {
     data: tradesData,
@@ -50,9 +48,11 @@ export const usePoolActivityTradesConfig = ({ chainId, poolAddress }: UsePoolAct
   } = usePoolTrades({
     chain: network,
     poolAddress,
-    page: pageIndex + 1, // API uses 1-based & DataTable uses 0-based pages
-    perPage: PAGE_SIZE,
+    page: apiPage,
+    perPage: DEFAULT_PAGE_SIZE,
   })
+
+  const pageCount = getPageCount(tradesData?.count, DEFAULT_PAGE_SIZE)
 
   // Transform trades data with block explorer URLs
   const tradesWithUrls: PoolTradeRow[] = useMemo(
@@ -70,19 +70,15 @@ export const usePoolActivityTradesConfig = ({ chainId, poolAddress }: UsePoolAct
   const isLoading = isTradesLoading || isPricesApiPoolsLoading || !isHydrated
   const isError = isTradesError && !isHydrated
 
-  return useMemo(
-    (): ActivityTableConfig<PoolTradeRow> => ({
-      data: tradesWithUrls,
-      columns: POOL_TRADES_COLUMNS as ActivityTableConfig<PoolTradeRow>['columns'],
-      isLoading,
-      isError,
-      emptyMessage: t`No swap data found.`,
-      columnVisibility: tradesColumnVisibility,
-      pageCount: tradesData?.count ? Math.ceil(tradesData?.count / PAGE_SIZE) : 0,
-      pageIndex: pageIndex,
-      pageSize: PAGE_SIZE,
-      onPageChange: handlePageChange,
-    }),
-    [tradesWithUrls, isLoading, isError, tradesColumnVisibility, tradesData?.count, pageIndex, handlePageChange],
-  )
+  const table = useTable({
+    data: tradesWithUrls,
+    columns: POOL_TRADES_COLUMNS,
+    state: { columnVisibility: tradesColumnVisibility, pagination },
+    manualPagination: true,
+    pageCount,
+    onPaginationChange,
+    ...getTableOptions(tradesWithUrls),
+  })
+
+  return { table, isLoading, isError, emptyMessage: t`No swap data found.` }
 }
