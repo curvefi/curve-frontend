@@ -30,3 +30,10 @@ export async function getUsers(options?: Options) {
 
   return Parsers.parseUsers(resp)
 }
+
+export async function getPoolFilters(options?: Options) {
+  const host = getHost(options)
+  const resp = await fetch<Responses.GetPoolFilters>(`${host}/v1/chains/pool_filters`)
+
+  return Parsers.parsePoolFilters(resp)
+}
