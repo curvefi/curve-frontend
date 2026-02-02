@@ -80,10 +80,7 @@ export function RepayLoanInfoAccordion<ChainId extends IChainId>({
   const userState = q(userStateQuery)
   const priceImpact = useRepayPriceImpact(params, isOpen && swapRequired)
   const debt = useRepayRemainingDebt({ params, swapRequired, borrowToken }, { isFull, userBorrowed }, isOpen)
-  const pnlQuery = useUserPnl(
-    { ...params, loanExists: true, hasV2Leverage: true }, // Assuming it might need these flags
-    isOpen,
-  )
+  const pnlQuery = useUserPnl({ ...params, loanExists: true, hasV2Leverage: swapRequired }, isOpen)
   const { data: isApproved } = useRepayIsApproved(params, isOpen && typeof isFull === 'boolean')
   return (
     <LoanInfoAccordion

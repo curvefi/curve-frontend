@@ -1,5 +1,7 @@
 import { oneInt, oneOf } from '@cy/support/generators'
 
+export const e2eBaseUrl = () => Cypress.config('baseUrl')
+
 export const [MIN_WIDTH, TABLET_BREAKPOINT, DESKTOP_BREAKPOINT, MAX_WIDTH] = [320, 820, 1200, 2000]
 const [MIN_HEIGHT, MAX_HEIGHT] = [600, 1000]
 
@@ -36,6 +38,7 @@ export const oneAppPath = () => oneOf(...([oneDexPath(), 'lend', 'dao', 'crvusd'
 export type AppPath = ReturnType<typeof oneAppPath>
 
 export const LOAD_TIMEOUT = { timeout: 30000 }
+export const TRANSACTION_LOAD_TIMEOUT = { timeout: 60000 } // higher timeout in case confirmations are slow
 export const API_LOAD_TIMEOUT = { timeout: 120000 } // unfortunately the prices API can be REAL SLOW 😭
 
 // scrollbar in px for the test browser. Firefox behaves when headless.
