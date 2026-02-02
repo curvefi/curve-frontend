@@ -59,9 +59,13 @@ export function useWithdrawExpectedVaultShares<ChainId extends number>(
 
   const prevVaultShares = mapQuery(userBalances, (d) => d.vaultShares)
 
-  return mapQuery(
-    prevVaultShares,
-    (prevVaultShares) =>
-      removableVaultShares.data && decimal(new BigNumber(prevVaultShares).minus(removableVaultShares.data)),
-  )
+  return {
+    data:
+      prevVaultShares.data &&
+      removableVaultShares.data &&
+      decimal(new BigNumber(prevVaultShares.data).minus(removableVaultShares.data)),
+    // TODO: use combineQueryState, after refactoring `loading` to `isLoading`
+    error: prevVaultShares.error ?? removableVaultShares.error,
+    isLoading: prevVaultShares.isLoading || removableVaultShares.isLoading,
+  }
 }
