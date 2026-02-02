@@ -43,7 +43,7 @@ export const maxReceiveValidation = createValidationSuite(
     chainId,
     marketId,
     userBorrowed,
-    userCollateral,
+    userCollateral = '0',
     range,
     slippage,
     leverageEnabled,
