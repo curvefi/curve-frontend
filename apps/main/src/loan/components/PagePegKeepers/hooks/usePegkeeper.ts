@@ -19,7 +19,8 @@ export function usePegkeeper({ address, pool: { address: poolAddress } }: PegKee
   const {
     data: estCallerProfit,
     refetch: refetchEstCallerProfit,
-    isError: estCallerProfitError,
+    error: estCallerProfitError,
+    isEnabled: estCallerProfitEnabled,
   } = useSimulateContract({
     abi: pegkeeperAbi,
     address,
@@ -34,7 +35,7 @@ export function usePegkeeper({ address, pool: { address: poolAddress } }: PegKee
     address,
     functionName: 'estimate_caller_profit',
     query: {
-      enabled: estCallerProfitError,
+      enabled: !estCallerProfitEnabled || !!estCallerProfitError,
     },
   })
 
@@ -100,13 +101,14 @@ export function usePegkeeper({ address, pool: { address: poolAddress } }: PegKee
   return {
     rate,
     debt: debt == null ? undefined : (formatEther(debt) as Decimal),
-    estCallerProfit: estCallerProfitError
-      ? estCallerProfitFallback == null
-        ? undefined
-        : (formatEther(estCallerProfitFallback) as Decimal)
-      : estCallerProfit?.result == null
-        ? undefined
-        : (formatEther(estCallerProfit.result) as Decimal),
+    estCallerProfit:
+      !estCallerProfitEnabled || estCallerProfitError
+        ? estCallerProfitFallback == null
+          ? undefined
+          : (formatEther(estCallerProfitFallback) as Decimal)
+        : estCallerProfit?.result == null
+          ? undefined
+          : (formatEther(estCallerProfit.result) as Decimal),
     debtCeiling: debtCeiling == null ? undefined : (formatEther(debtCeiling) as Decimal),
     rebalance,
     isRebalancing,

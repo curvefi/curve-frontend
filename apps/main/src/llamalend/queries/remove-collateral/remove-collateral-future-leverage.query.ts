@@ -1,4 +1,4 @@
-import { getLlamaMarket, hasLeverageValue } from '@/llamalend/llama.utils'
+import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { decimal } from '@ui-kit/utils/decimal'
 import { type CollateralParams, type CollateralQuery } from '../validation/manage-loan.types'
@@ -17,9 +17,6 @@ export const { useQuery: useRemoveCollateralFutureLeverage } = queryFactory({
     ] as const,
   queryFn: async ({ marketId, userCollateral }: CollateralQuery) => {
     const market = getLlamaMarket(marketId)
-    if (!hasLeverageValue(market)) {
-      throw new Error(`Leverage values not supported for this market.`)
-    }
     return decimal(await market.removeCollateralFutureLeverage(userCollateral)) ?? null
   },
   validationSuite: leverageCollateralValidationSuite,
