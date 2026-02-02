@@ -36,6 +36,7 @@ const meta: Meta<typeof SliderInputComponent> = {
   component: SliderInputComponent,
   render: (args) => <SliderInputComponent {...(args as SliderInputStoryProps)} />,
   args: {
+    name: 'slider-story',
     layoutDirection: 'row',
     size: 'medium',
     value: '40',

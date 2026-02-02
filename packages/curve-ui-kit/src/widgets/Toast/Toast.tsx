@@ -21,7 +21,7 @@ const getDurationPercent = ({ severity }: Pick<ToastItem, 'severity'>) =>
   `${(getDuration({ severity }) / getTotalDuration({ severity })) * 100}%`
 
 /**
- * Hook to manage toast items received via the event handlers and connect that react state.
+ * Hook to manage toast items received via the event handlers and connect them to the react render loop.
  * Adds a timeout to automatically dismiss toasts after their duration.
  * @see watchToasts for the event handler implementation
  */
@@ -58,7 +58,7 @@ export const Toast = () => {
       sx={{ top, left: 'unset' }} // unset left, otherwise it takes the whole width blocking clicks
     >
       <Stack justifyContent="end" marginTop={Spacing.md} gap={Spacing.sm} flexWrap="wrap" flexDirection="column">
-        {items.map(({ id, severity, title, message, testId, keepAlive }) => (
+        {items.map(({ id, severity, title, message, testId = `toast-${severity}`, keepAlive }) => (
           <Alert
             key={id}
             variant="filled"

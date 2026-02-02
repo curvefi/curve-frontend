@@ -22,6 +22,7 @@ import {
   VolumeMapper,
 } from '@/dex/types/main.types'
 import { getChainPoolIdActiveKey } from '@/dex/utils'
+import type { Chain } from '@curvefi/prices-api'
 import { PromisePool } from '@supercharge/promise-pool'
 import type {
   ChartSelection,
@@ -36,6 +37,7 @@ import { fetchTokenUsdRate, getTokenUsdRateQueryData } from '@ui-kit/lib/model/e
 import { TIME_FRAMES } from '@ui-kit/lib/model/time'
 import { fetchNetworks } from '../entities/networks'
 import { getPools } from '../lib/pools'
+import { fetchPoolsBlacklist } from '../queries/pools-blacklist.query'
 
 type StateKey = keyof typeof DEFAULT_STATE
 const { chunk, countBy, groupBy, isNaN } = lodash
@@ -187,7 +189,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
 
       const { chainId } = curve
       const networks = await fetchNetworks()
-      const { isLite } = networks[chainId]
+      const { isLite, id } = networks[chainId]
       const nativeToken = curve.getNetworkConstants().NATIVE_TOKEN
 
       try {
@@ -198,9 +200,11 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
           }),
         )
 
+        const blacklist = await fetchPoolsBlacklist({ blockchainId: id as Chain })
         const { poolsMapper, poolsMapperCache } = await getPools(
           curve,
           poolIds,
+          new Set(blacklist),
           networks[chainId],
           failedFetching24hOldVprice,
         )
@@ -225,7 +229,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
         // update cache
         void storeCache.setStateByActiveKey('poolsMapper', chainId.toString(), poolsMapperCache)
 
-        const partialPoolDatas = poolIds.map((poolId) => poolsMapper[poolId])
+        const partialPoolDatas = Object.keys(poolsMapper).map((poolId) => poolsMapper[poolId])
 
         if (!partialPoolDatas.length) return { poolsMapper, poolDatas: partialPoolDatas }
 

@@ -93,12 +93,9 @@ export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreAp
 
     const networks = await fetchNetworks()
     const network = networks[chainId]
-    const { excludePoolsMapper } = network
 
     // get poolList
-    const poolIds = (await curvejsApi.network.fetchAllPoolsList(curveApi, network)).filter(
-      (poolId) => !excludePoolsMapper[poolId],
-    )
+    const poolIds = await curvejsApi.network.fetchAllPoolsList(curveApi, network)
 
     // if no pools found for network, set tvl, volume and pools state to empty object
     if (!poolIds.length) {

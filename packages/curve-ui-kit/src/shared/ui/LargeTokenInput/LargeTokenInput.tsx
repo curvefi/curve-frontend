@@ -351,6 +351,7 @@ export const LargeTokenInput = ({
         {showSlider && (
           <Stack sx={{ zIndex: 1 /* let slider background and border show up */ }}>
             <SliderInput
+              name={name}
               disabled={disabled}
               value={percentage ?? `${MIN_PERCENTAGE}`}
               onChange={(value) => handlePercentageChange(value as Decimal)}
