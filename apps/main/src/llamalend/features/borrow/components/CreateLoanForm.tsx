@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react'
+import { type ChangeEvent, useCallback, useEffect } from 'react'
 import { LoanPreset } from '@/llamalend/constants'
 import { type CreateLoanFormExternalFields, type OnCreateLoanFormUpdate } from '@/llamalend/features/borrow/types'
 import { hasLeverage } from '@/llamalend/llama.utils'
@@ -69,7 +69,9 @@ export const CreateLoanForm = <ChainId extends IChainId>({
     params,
     txHash,
     values,
+    leverage,
   } = useCreateLoanForm({ market, network, preset, onCreated })
+
   const setRange = useCallback(
     (range: number) => {
       // maxDebt is reset when query restarts, clear now to disable queries until recalculated
@@ -79,6 +81,11 @@ export const CreateLoanForm = <ChainId extends IChainId>({
     [form],
   )
   useFormSync(values, onUpdate)
+
+  const toggleLeverage = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => form.setValue('leverageEnabled', event.target.checked),
+    [form],
+  )
 
   return (
     <Form
@@ -133,11 +140,11 @@ export const CreateLoanForm = <ChainId extends IChainId>({
         />
       </Stack>
 
-      {market && hasLeverage(market) && (
+      {!!market && hasLeverage(market) && (
         <LeverageInput
           checked={values.leverageEnabled}
-          form={form}
-          params={params}
+          leverage={leverage}
+          onToggle={toggleLeverage}
           maxLeverage={maxTokenValues.maxLeverage}
         />
       )}

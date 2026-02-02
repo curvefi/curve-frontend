@@ -18,7 +18,7 @@ import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@
 import { vestResolver } from '@hookform/resolvers/vest'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
-import { useFormErrors } from '@ui-kit/utils/react-form.utils'
+import { setValueOptions, useFormErrors } from '@ui-kit/utils/react-form.utils'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 
 const useCallbackAfterFormUpdate = (form: UseFormReturn<BorrowMoreForm>, callback: () => void) =>
@@ -30,6 +30,7 @@ const useBorrowMoreParams = <ChainId>({
   debt,
   maxDebt,
   slippage,
+  leverageEnabled,
   chainId,
   marketId,
   userAddress,
@@ -49,8 +50,9 @@ const useBorrowMoreParams = <ChainId>({
         debt,
         maxDebt,
         slippage,
+        leverageEnabled,
       }),
-      [chainId, marketId, userAddress, userCollateral, userBorrowed, debt, maxDebt, slippage],
+      [chainId, marketId, userAddress, userCollateral, userBorrowed, debt, maxDebt, slippage, leverageEnabled],
     ),
   )
 
@@ -61,6 +63,7 @@ const emptyBorrowMoreForm = (): BorrowMoreForm => ({
   maxCollateral: undefined,
   maxBorrowed: undefined,
   maxDebt: undefined,
+  leverageEnabled: false,
   slippage: SLIPPAGE_PRESETS.STABLE,
 })
 
@@ -89,6 +92,18 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
 
   const values = watchForm(form)
   const params = useBorrowMoreParams({ chainId, marketId, userAddress, ...values })
+
+  useEffect(
+    () =>
+      values.leverageEnabled
+        ? /** Clear leverage fields when leverage is disabled */
+          () => {
+            form.setValue('userCollateral', undefined, setValueOptions)
+            form.setValue('userBorrowed', undefined, setValueOptions)
+          }
+        : undefined,
+    [form, values.leverageEnabled],
+  )
 
   const {
     onSubmit,
@@ -124,5 +139,10 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
     formErrors,
     max: useMaxBorrowMoreValues({ params, form, market }, enabled),
     health: useBorrowMoreHealth(params, enabled && !!values.debt),
+    /** Current leverage calculated for now, but it's probably incorrect. It's in development in llamalend-js. */
+    leverage: mapQuery(expectedCollateral, ({ collateralFromDebt, collateralFromUserBorrowed, userCollateral }) => {
+      const base = new BigNumber(userCollateral).plus(collateralFromUserBorrowed)
+      return base.isZero() ? null : decimal(new BigNumber(collateralFromDebt).plus(base).div(base).toString())
+    }),
   }
 }

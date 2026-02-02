@@ -1,4 +1,6 @@
+import { type ChangeEvent, useCallback } from 'react'
 import { BorrowMoreLoanInfoAccordion } from '@/llamalend/features/borrow/components/BorrowMoreLoanInfoAccordion'
+import { LeverageInput } from '@/llamalend/features/borrow/components/LeverageInput'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { OnBorrowedMore } from '@/llamalend/mutations/borrow-more.mutation'
 import { useBorrowMorePriceImpact } from '@/llamalend/queries/borrow-more/borrow-more-price-impact.query'
@@ -48,6 +50,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     formErrors,
     max,
     health,
+    leverage,
   } = useBorrowMoreForm({
     market,
     network,
@@ -55,10 +58,16 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     onBorrowedMore,
   })
 
-  const isLeverage = isLeverageBorrowMore(market)
-  const swapRequired = isLeverage && +(values.userBorrowed ?? 0) > 0
+  const isLeverageSupported = market && isLeverageBorrowMore(market)
+  const isLeverageEnabled = isLeverageBorrowMore(market, values.leverageEnabled)
+  const swapRequired = isLeverageEnabled && +(values.userBorrowed ?? 0) > 0
   const priceImpact = useBorrowMorePriceImpact(params, enabled && swapRequired)
-  const fromBorrowed = fromWallet && isLeverage
+  const fromBorrowed = fromWallet && isLeverageEnabled
+  const onLeverageToggle = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => form.setValue('leverageEnabled', event.target.checked),
+    [form],
+  )
+
   return (
     <Form
       {...form}
@@ -70,7 +79,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
           tokens={{ collateralToken, borrowToken }}
           networks={networks}
           onSlippageChange={(value) => form.setValue('slippage', value, setValueOptions)}
-          hasLeverage={isLeverage}
+          leverageEnabled={values.leverageEnabled}
           health={health}
         />
       }
@@ -113,6 +122,15 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
           hideBalance
         />
       </Stack>
+
+      {isLeverageSupported && (
+        <LeverageInput
+          checked={values.leverageEnabled}
+          leverage={leverage}
+          onToggle={onLeverageToggle}
+          maxLeverage={max.maxLeverage}
+        />
+      )}
 
       <HighPriceImpactAlert priceImpact={priceImpact.data} isLoading={priceImpact.isLoading} />
 

@@ -15,6 +15,7 @@ export const { useQuery: useBorrowMoreExpectedCollateral, queryKey: getBorrowMor
       debt = '0',
       maxDebt,
       slippage,
+      leverageEnabled,
     }: BorrowMoreParams) =>
       [
         ...rootKeys.userMarket({ chainId, marketId, userAddress }),
@@ -24,9 +25,22 @@ export const { useQuery: useBorrowMoreExpectedCollateral, queryKey: getBorrowMor
         { debt },
         { maxDebt },
         { slippage },
+        { leverageEnabled },
       ] as const,
-    queryFn: async ({ marketId, userCollateral = '0', userBorrowed = '0', debt = '0', slippage }: BorrowMoreQuery) => {
-      const [type, impl, args] = getBorrowMoreImplementationArgs(marketId, { userCollateral, userBorrowed, debt })
+    queryFn: async ({
+      marketId,
+      userCollateral = '0',
+      userBorrowed = '0',
+      debt = '0',
+      slippage,
+      leverageEnabled,
+    }: BorrowMoreQuery) => {
+      const [type, impl, args] = getBorrowMoreImplementationArgs(marketId, {
+        userCollateral,
+        userBorrowed,
+        debt,
+        leverageEnabled,
+      })
       if (type === 'unleveraged') throw new Error('Unsupported operation for unleveraged borrow more')
       const {
         userCollateral: newUserCollateral,

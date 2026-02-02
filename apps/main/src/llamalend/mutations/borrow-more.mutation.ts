@@ -31,10 +31,10 @@ export type BorrowMoreOptions = {
 
 const approveBorrowMore = async (
   market: LlamaMarketTemplate,
-  { userCollateral = '0', userBorrowed = '0' }: BorrowMoreMutation,
+  { userCollateral = '0', userBorrowed = '0', leverageEnabled }: BorrowMoreMutation,
 ): Promise<Hex[]> => {
   if (!+userCollateral && !+userBorrowed) return []
-  const [type, impl] = getBorrowMoreImplementation(market.id)
+  const [type, impl] = getBorrowMoreImplementation(market.id, leverageEnabled)
   switch (type) {
     case 'V1':
     case 'V2':
@@ -46,9 +46,14 @@ const approveBorrowMore = async (
 
 const borrowMore = async (
   market: LlamaMarketTemplate,
-  { userCollateral = '0', userBorrowed = '0', debt = '0', slippage }: BorrowMoreMutation,
+  { userCollateral = '0', userBorrowed = '0', debt = '0', slippage, leverageEnabled }: BorrowMoreMutation,
 ): Promise<Hex> => {
-  const [type, impl, args] = getBorrowMoreImplementationArgs(market.id, { userCollateral, userBorrowed, debt })
+  const [type, impl, args] = getBorrowMoreImplementationArgs(market.id, {
+    userCollateral,
+    userBorrowed,
+    debt,
+    leverageEnabled,
+  })
   switch (type) {
     case 'V1':
     case 'V2':

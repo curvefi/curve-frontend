@@ -4,16 +4,25 @@ import { borrowMoreLeverageValidationSuite } from '@/llamalend/queries/validatio
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 
 export const { useQuery: useBorrowMorePriceImpact } = queryFactory({
-  queryKey: ({ chainId, marketId, userAddress, userBorrowed = '0', debt = '0', maxDebt }: BorrowMoreParams) =>
+  queryKey: ({
+    chainId,
+    marketId,
+    userAddress,
+    userBorrowed = '0',
+    debt = '0',
+    maxDebt,
+    leverageEnabled,
+  }: BorrowMoreParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
       'borrowMorePriceImpact',
       { userBorrowed },
       { debt },
       { maxDebt },
+      { leverageEnabled },
     ] as const,
-  queryFn: async ({ marketId, userBorrowed = '0', debt = '0' }: BorrowMoreQuery) => {
-    const [type, impl] = getBorrowMoreImplementation(marketId)
+  queryFn: async ({ marketId, userBorrowed = '0', debt = '0', leverageEnabled }: BorrowMoreQuery) => {
+    const [type, impl] = getBorrowMoreImplementation(marketId, leverageEnabled)
     if (type === 'unleveraged') throw new Error('Price impact is not applicable for unleveraged borrow more')
     return +(await impl.borrowMorePriceImpact(userBorrowed, debt))
   },

@@ -1,13 +1,16 @@
 import { useEffect } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
-import { getTokens, hasLeverage } from '@/llamalend/llama.utils'
+import { PRESET_RANGES } from '@/llamalend/constants'
+import { getTokens } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { useBorrowMoreExpectedCollateral } from '@/llamalend/queries/borrow-more/borrow-more-expected-collateral.query'
 import { useBorrowMoreMaxReceive } from '@/llamalend/queries/borrow-more/borrow-more-max-receive.query'
+import { isLeverageBorrowMore } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
+import { useMarketMaxLeverage } from '@/llamalend/queries/market-max-leverage.query'
 import { BorrowMoreForm, BorrowMoreParams } from '@/llamalend/queries/validation/borrow-more.validation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
-import { mapQuery } from '@ui-kit/types/util'
+import { mapQuery, q } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
 import { setValueOptions } from '@ui-kit/utils/react-form.utils'
 
@@ -23,7 +26,7 @@ export function useMaxBorrowMoreValues<ChainId extends LlamaChainId>(
   },
   enabled?: boolean,
 ) {
-  const { chainId, userAddress } = params
+  const { chainId, userAddress, marketId } = params
   const { borrowToken, collateralToken } = market ? getTokens(market) : {}
 
   const maxUserCollateral = useTokenBalance({
@@ -38,9 +41,11 @@ export function useMaxBorrowMoreValues<ChainId extends LlamaChainId>(
   })
 
   const maxReceive = useBorrowMoreMaxReceive(params, enabled)
-  useBorrowMoreExpectedCollateral(params, !!(market && hasLeverage(market))) // required for other queries
+  const isLeverage = enabled && isLeverageBorrowMore(market, params.leverageEnabled)
+  useBorrowMoreExpectedCollateral(params, isLeverage) // required for other queries
   const maxDebt = maxReceive.data?.maxDebt
   const maxBorrowed = maxUserBorrowed.data
+  const maxLeverage = q(useMarketMaxLeverage({ chainId, marketId, range: PRESET_RANGES.MaxLtv }, enabled))
 
   useEffect(
     () => form.setValue('maxCollateral', maxUserCollateral.data, setValueOptions),
@@ -53,5 +58,6 @@ export function useMaxBorrowMoreValues<ChainId extends LlamaChainId>(
     userCollateral: { ...maxUserCollateral, field: 'maxCollateral' as const },
     userBorrowed: { ...maxUserBorrowed, field: 'maxBorrowed' as const },
     debt: { ...mapQuery(maxReceive, (d) => decimal(d.maxDebt)), field: 'maxDebt' as const },
+    maxLeverage,
   }
 }
