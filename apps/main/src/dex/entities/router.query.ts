@@ -30,7 +30,7 @@ export type RouterApiResponse = {
   isStableswapRoute: boolean
   warnings: ('high-slippage' | 'low-exchange-rate')[]
   route: RouterApiRouteStep[]
-  provider: RouteProvider
+  router: RouteProvider
 }[]
 
 export const { useQuery: useOptimalRoute } = queryFactory({

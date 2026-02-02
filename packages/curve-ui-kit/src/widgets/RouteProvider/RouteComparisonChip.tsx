@@ -26,7 +26,6 @@ export const RouteComparisonChip = ({
               color: 'alert',
             }))}
       size="extraSmall"
-      // sx={{ border: 0 }} // this is displayed inside an accordion, so the
     />
   </WithSkeleton>
 )

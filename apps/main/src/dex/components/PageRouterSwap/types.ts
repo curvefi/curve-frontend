@@ -50,7 +50,7 @@ export type RoutesAndOutput = {
   fromAmount: string
   fetchedToAmount: string
   modal: RoutesAndOutputModal | null
-  provider: RouteProvider
+  router: RouteProvider
 }
 
 export type FormEstGas = {

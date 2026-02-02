@@ -79,6 +79,6 @@ export const SingleRoute: Story = {
 }
 
 export const Loading: Story = {
-  args: { routes: mockRoutes.map((route) => ({ ...route, loading: true })) },
+  args: { routes: mockRoutes.map((route) => ({ ...route, isLoading: true })) },
   render: (args) => <RouteProviderStory {...args} />,
 }

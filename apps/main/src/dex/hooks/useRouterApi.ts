@@ -37,7 +37,7 @@ const getMaxSlippage = (isStableswapRoute: boolean) =>
 
 /** Convert the API response to the format used in the app */
 const convertRoute = (
-  { amountIn, amountOut, priceImpact, route, warnings = [], isStableswapRoute, provider }: RouterApiResponse[0],
+  { amountIn, amountOut, priceImpact, route, warnings = [], isStableswapRoute, router }: RouterApiResponse[0],
   { fromAddress, toAddress }: SearchedParams,
   tokensNameMapper: TokensNameMapper,
   isPending: boolean,
@@ -53,7 +53,7 @@ const convertRoute = (
   }
 
   return {
-    provider,
+    router,
     loading: isPending,
     exchangeRates: calculateExchangeRates(
       amountOut,
