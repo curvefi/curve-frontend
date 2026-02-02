@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js'
-import { useMemo } from 'react'
 import type { Token } from '@/llamalend/features/borrow/types'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useMarketSupplyFutureRates } from '@/llamalend/queries/market-future-rates.query'
@@ -37,13 +36,9 @@ export function DepositSupplyInfoAccordion<ChainId extends IChainId>({
   const futureRates = useMarketSupplyFutureRates({ chainId, marketId, reserves: depositAmount }, isOpen)
 
   const prevAmountSupplied = useUserSuppliedAmount({ chainId, marketId, userAddress }, isOpen)
-  const amountSupplied = useMemo(
-    () =>
-      mapQuery(
-        prevAmountSupplied,
-        (prevAmount) => depositAmount && decimal(new BigNumber(prevAmount).plus(depositAmount)),
-      ),
-    [prevAmountSupplied, depositAmount],
+  const amountSupplied = mapQuery(
+    prevAmountSupplied,
+    (prevAmount) => depositAmount && decimal(new BigNumber(prevAmount).plus(depositAmount)),
   )
 
   return (

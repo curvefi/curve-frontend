@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js'
-import { useMemo } from 'react'
 import type { Token } from '@/llamalend/features/borrow/types'
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
 import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
@@ -37,21 +36,17 @@ export function RemoveCollateralInfoAccordion<ChainId extends IChainId>({
   const [isOpen, , , toggle] = useSwitch(false)
   const userState = q(useUserState(params, isOpen))
 
-  const expectedCollateral = useMemo(
-    () =>
-      // An error will be thrown by the validation suite, the "max" is just for preventing negative collateral in the UI
-      mapQuery(
-        userState,
-        (state) =>
-          state.collateral &&
-          userCollateral && {
-            value: decimal(
-              BigNumber.max(0, new BigNumber(state.collateral).minus(new BigNumber(userCollateral))),
-            ) as Decimal,
-            tokenSymbol: collateralToken?.symbol,
-          },
-      ),
-    [collateralToken?.symbol, userState, userCollateral],
+  const expectedCollateral = mapQuery(
+    userState,
+    (state) =>
+      state.collateral &&
+      userCollateral && {
+        value: decimal(
+          // An error will be thrown by the validation suite, the "max" is just for preventing negative collateral in the UI
+          BigNumber.max(0, new BigNumber(state.collateral).minus(new BigNumber(userCollateral))),
+        ) as Decimal,
+        tokenSymbol: collateralToken?.symbol,
+      },
   )
 
   return (

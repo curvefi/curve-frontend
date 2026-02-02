@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js'
-import { useMemo } from 'react'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import type { Query } from '@ui-kit/types/util'
 import { mapQuery } from '@ui-kit/types/util'
@@ -60,13 +59,9 @@ export function useWithdrawExpectedVaultShares<ChainId extends number>(
 
   const prevVaultShares = mapQuery(userBalances, (d) => d.vaultShares)
 
-  return useMemo(
-    () =>
-      mapQuery(
-        prevVaultShares,
-        (prevVaultShares) =>
-          removableVaultShares.data && decimal(new BigNumber(prevVaultShares).minus(removableVaultShares.data)),
-      ),
-    [prevVaultShares, removableVaultShares.data],
+  return mapQuery(
+    prevVaultShares,
+    (prevVaultShares) =>
+      removableVaultShares.data && decimal(new BigNumber(prevVaultShares).minus(removableVaultShares.data)),
   )
 }
