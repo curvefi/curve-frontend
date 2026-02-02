@@ -1,6 +1,7 @@
-import { styled } from 'styled-components'
+import type { ComponentPropsWithRef } from 'react'
+import { styled, type IStyledComponent } from 'styled-components'
 
-export const Tr = styled.tr`
+export const Tr: IStyledComponent<'web', ComponentPropsWithRef<'tr'>> = styled.tr`
   cursor: pointer;
 
   &.pending {

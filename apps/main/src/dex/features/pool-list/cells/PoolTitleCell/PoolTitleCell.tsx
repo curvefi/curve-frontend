@@ -1,6 +1,6 @@
 import lodash from 'lodash'
 import { useMemo } from 'react'
-import { styled } from 'styled-components'
+import { styled, type IStyledComponent } from 'styled-components'
 import { usePoolAlert } from '@/dex/hooks/usePoolAlert'
 import { useTokenAlert } from '@/dex/hooks/useTokenAlert'
 import Stack from '@mui/material/Stack'
@@ -54,7 +54,9 @@ export const PoolTitleCell = ({
   )
 }
 
-export const StyledIcon = styled(Icon)`
+import type { IconProps } from '@ui/Icon/Icon'
+
+export const StyledIcon: IStyledComponent<'web', IconProps> = styled(Icon)`
   margin: var(--spacing-3) auto 0;
   color: var(--white);
 `
