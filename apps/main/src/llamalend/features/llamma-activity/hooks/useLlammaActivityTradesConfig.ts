@@ -55,7 +55,7 @@ export const useLlammaActivityTradesConfig = ({
   const isLoading = isTradesLoading || !isHydrated || !isMarketAvailable
   const isError = isTradesError && isMarketAvailable && isHydrated
 
-  const tradesTableConfig = useMemo(
+  return useMemo(
     (): ActivityTableConfig<LlammaTradeRow> => ({
       data: tradesWithUrls,
       columns: LLAMMA_TRADES_COLUMNS as ActivityTableConfig<LlammaTradeRow>['columns'],
@@ -70,8 +70,4 @@ export const useLlammaActivityTradesConfig = ({
     }),
     [tradesWithUrls, isLoading, isError, tradesColumnVisibility, pageIndex, tradesData?.count, handlePageChange],
   )
-
-  return {
-    tradesTableConfig,
-  }
 }

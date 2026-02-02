@@ -50,12 +50,8 @@ export const ActivityTable = <TData extends TableItem>({
   )
 
   const handlePaginationChange = useCallback(
-    (updater: SetStateAction<PaginationState>) => {
-      if (onPageChange) {
-        const newState = typeof updater === 'function' ? updater(pagination) : updater
-        onPageChange(newState.pageIndex)
-      }
-    },
+    (updater: SetStateAction<PaginationState>) =>
+      onPageChange?.((typeof updater === 'function' ? updater(pagination) : updater).pageIndex),
     [onPageChange, pagination],
   )
 

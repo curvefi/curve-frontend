@@ -1,14 +1,12 @@
-import type { Chain, Address } from '@curvefi/prices-api'
+import type { Chain } from '@curvefi/prices-api'
 import type { LlammaEvent, LlammaTrade } from '@curvefi/prices-api/llamma'
 import type { AllPoolTrade, PoolLiquidityEvent } from '@curvefi/prices-api/pools'
 import type { ColumnDef, VisibilityState } from '@tanstack/react-table'
 import type { TableItem } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { ExpandedPanel } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
+import type { Token } from '@ui-kit/types/common'
 
-export type Token = {
-  symbol: string
-  address: Address
-}
+export type { Token }
 
 // LLAMMA Types (for lending/crvusd markets)
 export type LlammaTradeRow = LlammaTrade & { txUrl?: string; url?: never; network: Chain }

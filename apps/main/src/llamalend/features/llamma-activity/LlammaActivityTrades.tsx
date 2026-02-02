@@ -11,7 +11,7 @@ export const LlammaActivityTrades = ({
   endpoint,
   networkConfig,
 }: LlammaActivityTradesProps) => {
-  const { tradesTableConfig } = useLlammaActivityTradesConfig({
+  const tradesTableConfig = useLlammaActivityTradesConfig({
     isMarketAvailable,
     network,
     ammAddress,

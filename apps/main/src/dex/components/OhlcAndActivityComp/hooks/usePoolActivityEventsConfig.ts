@@ -73,7 +73,7 @@ export const usePoolActivityEventsConfig = ({ chainId, poolAddress }: UsePoolAct
   const isLoading = isLiquidityLoading || isPricesApiPoolsLoading || !isHydrated
   const isError = isLiquidityError && !isHydrated
 
-  const liquidityTableConfig: ActivityTableConfig<PoolLiquidityRow> = useMemo(
+  return useMemo(
     () => ({
       data: liquidityWithUrls,
       columns: liquidityColumns as ActivityTableConfig<PoolLiquidityRow>['columns'],
@@ -97,6 +97,4 @@ export const usePoolActivityEventsConfig = ({ chainId, poolAddress }: UsePoolAct
       handlePageChange,
     ],
   )
-
-  return liquidityTableConfig
 }

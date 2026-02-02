@@ -70,7 +70,7 @@ export const usePoolActivityTradesConfig = ({ chainId, poolAddress }: UsePoolAct
   const isLoading = isTradesLoading || isPricesApiPoolsLoading || !isHydrated
   const isError = isTradesError && !isHydrated
 
-  const tradesTableConfig = useMemo(
+  return useMemo(
     (): ActivityTableConfig<PoolTradeRow> => ({
       data: tradesWithUrls,
       columns: POOL_TRADES_COLUMNS as ActivityTableConfig<PoolTradeRow>['columns'],
@@ -85,6 +85,4 @@ export const usePoolActivityTradesConfig = ({ chainId, poolAddress }: UsePoolAct
     }),
     [tradesWithUrls, isLoading, isError, tradesColumnVisibility, tradesData?.count, pageIndex, handlePageChange],
   )
-
-  return tradesTableConfig
 }

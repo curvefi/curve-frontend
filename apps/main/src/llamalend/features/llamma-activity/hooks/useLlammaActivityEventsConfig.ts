@@ -59,7 +59,7 @@ export const useLlammaActivityEventsConfig = ({
   const isLoading = isEventsLoading || !isHydrated || !isMarketAvailable
   const isError = isEventsError && isMarketAvailable && isHydrated
 
-  const eventsTableConfig = useMemo(
+  return useMemo(
     (): ActivityTableConfig<LlammaEventRow> => ({
       data: eventsWithUrls,
       columns: LLAMMA_EVENTS_COLUMNS as ActivityTableConfig<LlammaEventRow>['columns'],
@@ -74,6 +74,4 @@ export const useLlammaActivityEventsConfig = ({
     }),
     [eventsWithUrls, isLoading, isError, eventsColumnVisibility, pageIndex, eventsData?.count, handlePageChange],
   )
-
-  return eventsTableConfig
 }
