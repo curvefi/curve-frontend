@@ -43,7 +43,6 @@ export const SupplyInfoAccordion = ({
   gas,
 }: SupplyInfoAccordionProps) => (
   <ActionInfoAccordion
-    ghost
     title={t`Vault Shares`}
     info={
       <ActionInfo

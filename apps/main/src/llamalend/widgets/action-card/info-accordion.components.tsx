@@ -21,7 +21,7 @@ export type EstimatedTxCostProps = {
 }
 
 export const ActionInfoAccordion = ({ children, ...props }: { children: React.ReactNode } & AccordionProps) => (
-  <Accordion {...props}>
+  <Accordion ghost {...props}>
     <Stack gap={Spacing.sm}>{children}</Stack>
   </Accordion>
 )
