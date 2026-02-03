@@ -5,7 +5,7 @@ import { useConnection } from 'wagmi'
 import { getTokens } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, LlamaNetwork } from '@/llamalend/llamalend.types'
 import { type WithdrawOptions, useWithdrawMutation } from '@/llamalend/mutations/withdraw.mutation'
-import { useUserSuppliedAmount } from '@/llamalend/queries/supply/supply-user-supplied-amount.query'
+import { useUserVaultAssetsAmount } from '@/llamalend/queries/supply/supply-user-vault-amounts'
 import {
   withdrawFormValidationSuite,
   WithdrawParams,
@@ -41,7 +41,7 @@ export const useWithdrawForm = <ChainId extends LlamaChainId>({
 
   const { borrowToken } = market ? getTokens(market) : {}
 
-  const maxUserWithdraw = useUserSuppliedAmount({ chainId, marketId, userAddress })
+  const maxUserWithdraw = useUserVaultAssetsAmount({ chainId, marketId, userAddress })
 
   const form = useForm<WithdrawForm>({
     ...formDefaultOptions,
