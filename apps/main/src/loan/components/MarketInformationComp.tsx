@@ -29,7 +29,7 @@ export const MarketInformationComp = ({ llamma, marketId, chainId, page = 'manag
 
   return (
     <>
-      <ChartAndActivityComp rChainId={chainId} llammaId={marketId} market={llamma} />
+      <ChartAndActivityComp chainId={chainId} llammaId={marketId} market={llamma} />
       {isAdvancedMode && !newBandsChartEnabled && (
         <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, gap: Spacing.md, padding: Spacing.md }}>
           <BandsComp llamma={llamma} llammaId={marketId} page={page} />
