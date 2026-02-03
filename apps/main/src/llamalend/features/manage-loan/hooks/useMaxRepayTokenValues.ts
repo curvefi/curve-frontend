@@ -49,7 +49,10 @@ export function useMaxRepayTokenValues<ChainId extends LlamaChainId>(
     [form, maxUserCollateral.data],
   )
   useEffect(() => form.setValue('maxBorrowed', maxBorrowed.data, setValueOptions), [form, maxBorrowed.data])
-  useEffect(() => form.setValue('isFull', isFull.data, setValueOptions), [form, isFull.data])
+  useEffect(
+    () => (isFull.data ? form.setValue('isFull', isFull.data, setValueOptions) : undefined),
+    [form, isFull.data],
+  )
   useEffect(
     () => form.setValue('maxStateCollateral', userState.data?.collateral, setValueOptions),
     [form, userState.data?.collateral],
