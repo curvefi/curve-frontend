@@ -79,14 +79,10 @@ export function BorrowMoreLoanInfoAccordion<ChainId extends IChainId>({
         },
         isOpen && !!totalDebt,
       )}
-      debt={useMemo(
-        () =>
-          mapQuery(
-            userState,
-            ({ debt: stateDebt }) =>
-              debt && { value: decimal(new BigNumber(stateDebt).plus(debt))!, tokenSymbol: borrowToken?.symbol },
-          ),
-        [borrowToken?.symbol, debt, userState],
+      debt={mapQuery(
+        userState,
+        ({ debt: stateDebt }) =>
+          debt && { value: decimal(new BigNumber(stateDebt).plus(debt))!, tokenSymbol: borrowToken?.symbol },
       )}
       collateral={{
         data: collateralDelta &&
