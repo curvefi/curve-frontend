@@ -274,6 +274,14 @@ const calculateInitialPrice = (tokenA: number, tokenB: number) => {
   return initialPrice.toPrecision(4).toString()
 }
 
+/**
+ * The token usd rate query may fail by design when no token price could be fetched.
+ * However, that shouldn't break this function (a shortcoming of fetchQuery).
+ * On failure we should default to a price of 0.
+ */
+const tryFetchTokenUsdRate = async (params: { chainId: number; tokenAddress: string }) =>
+  params.tokenAddress == '' ? 0 : fetchTokenUsdRate(params).catch(() => 0)
+
 export const createCreatePoolSlice = (
   set: StoreApi<State>['setState'],
   get: StoreApi<State>['getState'],
@@ -469,39 +477,15 @@ export const createCreatePoolSlice = (
 
       const { chainId } = curve
 
-      // set token prices
-      if (tokenA.address !== '') {
-        const tokenAPriceRaw = await fetchTokenUsdRate({ chainId, tokenAddress: tokenA.address })
-        initialPriceUpdates.tokenA = Number(tokenAPriceRaw)
-      }
-      if (tokenB.address !== '') {
-        const tokenBPriceRaw = await fetchTokenUsdRate({ chainId, tokenAddress: tokenB.address })
-        initialPriceUpdates.tokenB = Number(tokenBPriceRaw)
-      }
-      if (tokenC.address !== '') {
-        const tokenCPriceRaw = await fetchTokenUsdRate({ chainId, tokenAddress: tokenC.address })
-        initialPriceUpdates.tokenC = Number(tokenCPriceRaw)
-      }
-      if (tokenD.address !== '') {
-        const tokenDPriceRaw = await fetchTokenUsdRate({ chainId, tokenAddress: tokenD.address })
-        initialPriceUpdates.tokenD = Number(tokenDPriceRaw)
-      }
-      if (tokenE.address !== '') {
-        const tokenEPriceRaw = await fetchTokenUsdRate({ chainId, tokenAddress: tokenE.address })
-        initialPriceUpdates.tokenE = Number(tokenEPriceRaw)
-      }
-      if (tokenF.address !== '') {
-        const tokenFPriceRaw = await fetchTokenUsdRate({ chainId, tokenAddress: tokenF.address })
-        initialPriceUpdates.tokenF = Number(tokenFPriceRaw)
-      }
-      if (tokenG.address !== '') {
-        const tokenGPriceRaw = await fetchTokenUsdRate({ chainId, tokenAddress: tokenG.address })
-        initialPriceUpdates.tokenG = Number(tokenGPriceRaw)
-      }
-      if (tokenH.address !== '') {
-        const tokenHPriceRaw = await fetchTokenUsdRate({ chainId, tokenAddress: tokenH.address })
-        initialPriceUpdates.tokenH = Number(tokenHPriceRaw)
-      }
+      // set token prices (only really used by cryptoswap, not stableswap)
+      initialPriceUpdates.tokenA = await tryFetchTokenUsdRate({ chainId, tokenAddress: tokenA.address })
+      initialPriceUpdates.tokenB = await tryFetchTokenUsdRate({ chainId, tokenAddress: tokenB.address })
+      initialPriceUpdates.tokenC = await tryFetchTokenUsdRate({ chainId, tokenAddress: tokenC.address })
+      initialPriceUpdates.tokenD = await tryFetchTokenUsdRate({ chainId, tokenAddress: tokenD.address })
+      initialPriceUpdates.tokenE = await tryFetchTokenUsdRate({ chainId, tokenAddress: tokenE.address })
+      initialPriceUpdates.tokenF = await tryFetchTokenUsdRate({ chainId, tokenAddress: tokenF.address })
+      initialPriceUpdates.tokenG = await tryFetchTokenUsdRate({ chainId, tokenAddress: tokenG.address })
+      initialPriceUpdates.tokenH = await tryFetchTokenUsdRate({ chainId, tokenAddress: tokenH.address })
 
       initialPriceUpdates.initialPrice = [
         calculateInitialPrice(initialPriceUpdates.tokenA, initialPriceUpdates.tokenB),
@@ -633,21 +617,18 @@ export const createCreatePoolSlice = (
     refreshInitialPrice: async (curve: CurveApi) => {
       const { chainId } = curve
 
-      const tokenAPriceRaw = await fetchTokenUsdRate({
+      const tokenAPrice = await tryFetchTokenUsdRate({
         chainId,
         tokenAddress: get().createPool.tokensInPool[TOKEN_A].address,
       })
-      const tokenBPriceRaw = await fetchTokenUsdRate({
+      const tokenBPrice = await tryFetchTokenUsdRate({
         chainId,
         tokenAddress: get().createPool.tokensInPool[TOKEN_B].address,
       })
-      const tokenCPriceRaw = await fetchTokenUsdRate({
+      const tokenCPrice = await tryFetchTokenUsdRate({
         chainId,
         tokenAddress: get().createPool.tokensInPool[TOKEN_C].address,
       })
-      const tokenAPrice = Number(tokenAPriceRaw)
-      const tokenBPrice = Number(tokenBPriceRaw)
-      const tokenCPrice = Number(tokenCPriceRaw)
 
       get().createPool.updateInitialPrice(tokenAPrice, tokenBPrice, tokenCPrice)
 

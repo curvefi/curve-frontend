@@ -1,5 +1,6 @@
+import type { ComponentPropsWithRef } from 'react'
 import { useRef } from 'react'
-import { styled } from 'styled-components'
+import { styled, type IStyledComponent } from 'styled-components'
 import { TableCellBalances } from '@/dex/components/PageDashboard/components/TableCellBalances'
 import { TableCellClaimables } from '@/dex/components/PageDashboard/components/TableCellClaimables'
 import { TableCellProfit } from '@/dex/components/PageDashboard/components/TableCellProfit'
@@ -61,11 +62,15 @@ export const TableRow = ({
   )
 }
 
-export const DetailText = styled.span`
+type SpanProps = ComponentPropsWithRef<'span'>
+
+export const DetailText: IStyledComponent<'web', SpanProps> = styled.span`
   font-size: var(--font-size-1);
   opacity: 0.8;
 `
 
-export const Info = styled.div`
+type DivProps = ComponentPropsWithRef<'div'>
+
+export const Info: IStyledComponent<'web', DivProps> = styled.div`
   white-space: nowrap;
 `

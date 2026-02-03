@@ -274,7 +274,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
       const [balancesResp] = await Promise.all([
         curvejsApi.pool.poolBalances(pool, isWrapped),
         // Fetching the token prices now, used later with getTokenUsdRateQueryData
-        ...tokenAddresses.map((tokenAddress) => fetchTokenUsdRate({ chainId, tokenAddress })),
+        ...tokenAddresses.map((tokenAddress) => fetchTokenUsdRate({ chainId, tokenAddress }).catch(() => 0)),
       ])
 
       const { balances } = balancesResp

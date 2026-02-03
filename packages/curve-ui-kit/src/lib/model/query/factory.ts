@@ -1,5 +1,6 @@
 import type { Suite } from 'vest'
 import { CB } from 'vest-utils'
+import { FetchError } from '@curvefi/prices-api/fetch'
 import {
   QueryFunctionContext,
   queryOptions,
@@ -50,6 +51,13 @@ type QueryKeyTuple<T extends readonly unknown[]> = T extends readonly [...infer 
       : never // Elements fail the check
   : never // Not an array
 
+/** Specific class of errors thrown from inside queryFn to skip query retries on failure */
+export class NoRetryError extends Error {
+  constructor(message: string) {
+    super(message)
+  }
+}
+
 /**
  * Reconstructs params from a query key tuple by merging all object entries.
  *
@@ -86,8 +94,8 @@ export function queryFactory<
   queryFn: (params: TQuery) => Promise<TData>
   gcTime?: keyof typeof REFRESH_INTERVAL
   staleTime?: keyof typeof REFRESH_INTERVAL
-  refetchInterval?: keyof typeof REFRESH_INTERVAL
   dependencies?: (params: TParams) => QueryKey[]
+  refetchInterval?: keyof typeof REFRESH_INTERVAL
   refetchOnWindowFocus?: 'always'
   refetchOnMount?: 'always'
   disableLog?: true
@@ -111,6 +119,11 @@ export function queryFactory<
         enabled &&
         checkValidity(validationSuite, params) &&
         !dependencies?.(params).some((key) => !queryClient.getQueryData(key)),
+      retry: (failureCount, error) => {
+        // Don't retry queries specifically marked as such, or 404s thrown by the Prices API (note: FetchError is only a class thrown by fetchJson from @curve-fi/prices-api)
+        if (error instanceof NoRetryError || (error instanceof FetchError && error.status === 404)) return false
+        return failureCount < 3
+      },
       ...options,
     })
   return {
