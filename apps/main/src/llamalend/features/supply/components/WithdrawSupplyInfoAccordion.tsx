@@ -4,7 +4,7 @@ import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useMarketSupplyFutureRates } from '@/llamalend/queries/market-future-rates.query'
 import { useMarketRates } from '@/llamalend/queries/market-rates'
 import { useWithdrawExpectedVaultShares } from '@/llamalend/queries/supply/supply-expected-vault-shares.query'
-import { useUserVaultAssetsAmount } from '@/llamalend/queries/supply/supply-user-vault-amounts'
+import { useUserVaultSharesToAssetsAmount } from '@/llamalend/queries/supply/supply-user-vault-amounts'
 import { useWithdrawEstimateGas } from '@/llamalend/queries/supply/supply-withdraw-estimate-gas.query'
 import { useUserBalances } from '@/llamalend/queries/user-balances.query'
 import type { WithdrawParams } from '@/llamalend/queries/validation/supply.validation'
@@ -35,7 +35,7 @@ export function WithdrawSupplyInfoAccordion<ChainId extends IChainId>({
   const marketRates = useMarketRates(params, isOpen)
   const futureRates = useMarketSupplyFutureRates({ chainId, marketId, reserves: withdrawAmount }, isOpen)
 
-  const prevAmountSupplied = useUserVaultAssetsAmount({ chainId, marketId, userAddress }, isOpen)
+  const prevAmountSupplied = useUserVaultSharesToAssetsAmount({ chainId, marketId, userAddress }, isOpen)
   const amountSupplied = mapQuery(
     prevAmountSupplied,
     (prevAmount) => withdrawAmount && decimal(new BigNumber(prevAmount).minus(withdrawAmount)),

@@ -6,7 +6,7 @@ import { useMarketRates } from '@/llamalend/queries/market-rates'
 import { useDepositIsApproved } from '@/llamalend/queries/supply/supply-deposit-approved.query'
 import { useDepositEstimateGas } from '@/llamalend/queries/supply/supply-deposit-estimate-gas.query'
 import { useDepositExpectedVaultShares } from '@/llamalend/queries/supply/supply-expected-vault-shares.query'
-import { useUserVaultAssetsAmount } from '@/llamalend/queries/supply/supply-user-vault-amounts'
+import { useUserVaultSharesToAssetsAmount } from '@/llamalend/queries/supply/supply-user-vault-amounts'
 import { useUserBalances } from '@/llamalend/queries/user-balances.query'
 import type { DepositParams } from '@/llamalend/queries/validation/supply.validation'
 import { SupplyInfoAccordion } from '@/llamalend/widgets/action-card/SupplyInfoAccordion'
@@ -34,7 +34,7 @@ export function DepositSupplyInfoAccordion<ChainId extends IChainId>({
 
   const marketRates = useMarketRates(params, isOpen)
   const futureRates = useMarketSupplyFutureRates({ chainId, marketId, reserves: depositAmount }, isOpen)
-  const prevAmountSupplied = useUserVaultAssetsAmount({ chainId, marketId, userAddress }, isOpen)
+  const prevAmountSupplied = useUserVaultSharesToAssetsAmount({ chainId, marketId, userAddress }, isOpen)
   const amountSupplied = mapQuery(
     prevAmountSupplied,
     (prevAmount) => depositAmount && decimal(new BigNumber(prevAmount).plus(depositAmount)),

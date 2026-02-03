@@ -17,8 +17,7 @@ import { vestResolver } from '@hookform/resolvers/vest'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { t } from '@ui-kit/lib/i18n'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
-import { type Query, mapQuery } from '@ui-kit/types/util'
-import type { Decimal } from '@ui-kit/utils'
+import { mapQuery } from '@ui-kit/types/util'
 import { useFormErrors } from '@ui-kit/utils/react-form.utils'
 
 const useCallbackAfterFormUpdate = (form: UseFormReturn<UnstakeForm>, callback: () => void) =>
@@ -55,7 +54,7 @@ export const useUnstakeForm = <ChainId extends LlamaChainId>({
   const { borrowToken } = market ? getTokens(market) : {}
 
   const userBalances = useUserBalances({ chainId, marketId, userAddress })
-  const maxUserUnstake = mapQuery(userBalances, (d) => d.gauge) as Query<Decimal>
+  const maxUserUnstake = mapQuery(userBalances, (d) => d.gauge)
 
   const form = useForm<UnstakeForm>({
     ...formDefaultOptions,

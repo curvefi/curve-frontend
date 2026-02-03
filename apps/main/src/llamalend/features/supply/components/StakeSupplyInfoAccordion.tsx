@@ -6,7 +6,7 @@ import { useStakeIsApproved } from '@/llamalend/queries/supply/supply-stake-appr
 import { useStakeEstimateGas } from '@/llamalend/queries/supply/supply-stake-estimate-gas.query'
 import {
   useSharesToAssetsAmount,
-  useUserStakedVaultAssetsAmount,
+  useUserStakedVaultSharesToAssetsAmount,
 } from '@/llamalend/queries/supply/supply-user-vault-amounts'
 import { useUserBalances } from '@/llamalend/queries/user-balances.query'
 import type { StakeParams } from '@/llamalend/queries/validation/supply.validation'
@@ -42,7 +42,7 @@ export function StakeSupplyInfoAccordion<ChainId extends IChainId>({
     (prevAmount) => stakeAmount && decimal(new BigNumber(prevAmount).plus(stakeAmount)),
   )
 
-  const prevAmountStaked = useUserStakedVaultAssetsAmount({ chainId, marketId, userAddress }, isOpen)
+  const prevAmountStaked = useUserStakedVaultSharesToAssetsAmount({ chainId, marketId, userAddress }, isOpen)
   const amountStakedAssets = useSharesToAssetsAmount({ ...params, shares: stakeAmount }, isOpen)
 
   const amountStaked = mapQuery(

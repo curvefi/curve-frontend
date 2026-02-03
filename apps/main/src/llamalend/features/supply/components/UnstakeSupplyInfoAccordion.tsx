@@ -5,7 +5,7 @@ import { useMarketRates } from '@/llamalend/queries/market-rates'
 import { useUnstakeEstimateGas } from '@/llamalend/queries/supply/supply-unstake-estimate-gas.query'
 import {
   useSharesToAssetsAmount,
-  useUserStakedVaultAssetsAmount,
+  useUserStakedVaultSharesToAssetsAmount,
 } from '@/llamalend/queries/supply/supply-user-vault-amounts'
 import { useUserBalances } from '@/llamalend/queries/user-balances.query'
 import type { UnstakeParams } from '@/llamalend/queries/validation/supply.validation'
@@ -40,7 +40,7 @@ export function UnstakeSupplyInfoAccordion<ChainId extends IChainId>({
     (prevAmount) => unstakeAmount && decimal(new BigNumber(prevAmount).minus(unstakeAmount)),
   )
 
-  const prevAmountStaked = useUserStakedVaultAssetsAmount({ chainId, marketId, userAddress }, isOpen)
+  const prevAmountStaked = useUserStakedVaultSharesToAssetsAmount({ chainId, marketId, userAddress }, isOpen)
   const amountUnstakedAssets = useSharesToAssetsAmount({ ...params, shares: unstakeAmount }, isOpen)
 
   const amountStaked = mapQuery(
