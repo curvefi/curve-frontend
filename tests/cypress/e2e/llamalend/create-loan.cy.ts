@@ -10,7 +10,7 @@ import { LOAD_TIMEOUT } from '@cy/support/ui'
 import { LlamaMarketType } from '@ui-kit/types/market'
 
 // todo: remove this once we know the test is stable
-const RETRY = { retries: { openMode: 0, runMode: 2 } }
+const RETRY = { retries: { openMode: 1, runMode: 2 } }
 
 describe('Create loan', () => {
   recordValues(LlamaMarketType).forEach((marketType) => {

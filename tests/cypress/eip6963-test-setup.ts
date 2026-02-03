@@ -8,6 +8,4 @@
  */
 window.eip6963Connectors ??= []
 
-Cypress.on('window:before:load', (win) => {
-  win.eip6963Connectors ??= []
-})
+if (typeof Cypress !== 'undefined') Cypress.on('window:before:load', (win) => (win.eip6963Connectors ??= []))
