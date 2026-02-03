@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
 import { type Address } from 'viem'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
@@ -36,7 +36,7 @@ export function useMaxTokenValues(
   } = useMarketMaxLeverage(params)
 
   const { maxDebt, maxLeverage: maxBorrowLeverage, maxTotalCollateral } = maxBorrow ?? {}
-  const [pendingDebtRatio, setPendingDebtRatio] = useState<Decimal | undefined>()
+  const pendingRatioRef = useRef<Decimal>(null) // keep this in a ref so it doesn't trigger re-renders, used when maxDebt changes
   const maxCollateral =
     userBalance && maxTotalCollateral
       ? (`${Math.min(+userBalance, +maxTotalCollateral)}` satisfies Decimal)
@@ -45,12 +45,14 @@ export function useMaxTokenValues(
   const maxLeverage = maxBorrowLeverage ?? maxTotalLeverage
 
   useEffect(() => {
+    const pendingDebtRatio = pendingRatioRef.current
     if (pendingDebtRatio && maxDebt) {
       const value = decimal(BigNumber(maxDebt).times(pendingDebtRatio))
       form.setValue('debt', value, setValueOptions)
+      pendingRatioRef.current = null
     }
     form.setValue('maxDebt', maxDebt, setValueOptions) // this needs to validate after setting the debt
-  }, [form, maxDebt, pendingDebtRatio])
+  }, [form, maxDebt])
 
   useEffect(() => form.setValue('maxCollateral', maxCollateral, setValueOptions), [form, maxCollateral])
 
@@ -61,10 +63,9 @@ export function useMaxTokenValues(
       form.setValue('maxDebt', undefined, setValueOptions)
       form.setValue('range', range, setValueOptions)
       // maxDebt is now reset - when the new value arrives, set debt to the same ratio as before
-      const ratio = decimal(debt && maxDebt && BigNumber(debt).div(maxDebt))
-      setPendingDebtRatio(ratio)
+      pendingRatioRef.current = decimal(debt && maxDebt && BigNumber(debt).div(maxDebt))!
     },
-    [form, setPendingDebtRatio],
+    [form],
   )
 
   return {
