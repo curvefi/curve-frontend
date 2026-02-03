@@ -31,7 +31,6 @@ export const { useQuery: useCreateLoanIsApproved, fetchQuery: fetchCreateLoanIsA
       case 'V2':
         return await impl.createLoanIsApproved(userCollateral, userBorrowed)
       case 'V0':
-        return await impl.createLoanIsApproved(userCollateral)
       case 'unleveraged':
         return await impl.createLoanIsApproved(userCollateral)
     }

@@ -42,7 +42,6 @@ export const { useQuery: useCreateLoanBands } = queryFactory({
       case 'V2':
         return impl.createLoanBands(userCollateral, userBorrowed, debt, range)
       case 'V0':
-        return impl.createLoanBands(userCollateral, debt, range)
       case 'unleveraged':
         return impl.createLoanBands(userCollateral, debt, range)
     }

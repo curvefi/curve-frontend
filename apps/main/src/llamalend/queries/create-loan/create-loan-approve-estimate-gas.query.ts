@@ -33,7 +33,6 @@ const { useQuery: useCreateLoanApproveEstimateGas } = queryFactory({
       case 'V2':
         return await impl.estimateGas.createLoanApprove(userCollateral, userBorrowed)
       case 'V0':
-        return await impl.estimateGas.createLoanApprove(userCollateral)
       case 'unleveraged':
         return await impl.estimateGas.createLoanApprove(userCollateral)
     }

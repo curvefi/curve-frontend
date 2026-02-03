@@ -48,7 +48,6 @@ export const { useQuery: useCreateLoanPrices } = queryFactory({
       case 'V2':
         return convertNumbers(await impl.createLoanPrices(userCollateral, userBorrowed, debt, range))
       case 'V0':
-        return convertNumbers(await impl.createLoanPrices(userCollateral, debt, range))
       case 'unleveraged':
         return convertNumbers(await impl.createLoanPrices(userCollateral, debt, range))
     }

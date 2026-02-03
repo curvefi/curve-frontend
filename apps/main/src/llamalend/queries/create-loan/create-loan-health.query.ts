@@ -42,7 +42,6 @@ export const { useQuery: useCreateLoanHealth } = queryFactory({
       case 'V2':
         return decimal(await impl.createLoanHealth(userCollateral, userBorrowed, debt, range))!
       case 'V0':
-        return decimal(await impl.createLoanHealth(userCollateral, debt, range))!
       case 'unleveraged':
         return decimal(await impl.createLoanHealth(userCollateral, debt, range))!
     }
