@@ -78,7 +78,6 @@ export const RepayForm = <ChainId extends IChainId>({
     params,
     isPending,
     onSubmit,
-    isDisabled,
     borrowToken,
     collateralToken,
     isRepaid,
@@ -150,7 +149,7 @@ export const RepayForm = <ChainId extends IChainId>({
         })}
         testId={'repay-input-' + selectedField}
         network={network}
-        onValueChange={(v) => form.setValue('isMaxBorrowed', v === form.getValues('maxBorrowed'), setValueOptions)}
+        onValueChange={(v) => form.setValue('isFull', v === form.getValues('maxBorrowed'), setValueOptions)}
         tokenSelector={
           <RepayTokenSelector
             token={token}
@@ -170,14 +169,19 @@ export const RepayForm = <ChainId extends IChainId>({
             loading={max[selectedField].isLoading || maxAmountInBorrowTokenLoading}
             onClick={() => {
               form.setValue(selectedField, max[selectedField].data, setValueOptions)
-              form.setValue('isMaxBorrowed', selectedField === 'userBorrowed', setValueOptions)
+              form.setValue('isFull', selectedField === 'userBorrowed', setValueOptions)
               void form.trigger(max[selectedField].field) // re-validate max
             }}
           />
         }
       />
       <HighPriceImpactAlert priceImpact={priceImpact.data} isLoading={priceImpact.isLoading} />
-      <Button type="submit" loading={isPending || !market} disabled={isDisabled} data-testid="repay-submit-button">
+      <Button
+        type="submit"
+        loading={isPending || !market}
+        disabled={formErrors.length > 0}
+        data-testid="repay-submit-button"
+      >
         {isPending
           ? t`Processing...`
           : joinButtonText(

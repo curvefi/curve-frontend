@@ -102,11 +102,12 @@ export const useRepayMutation = ({
   })
 
   const onSubmit = useCallback(
-    async ({ userBorrowed, isMaxBorrowed, ...form }: RepayForm) =>
+    async ({ userBorrowed = '0', isFull, ...form }: RepayForm) =>
       mutate({
         ...form,
+        isFull,
         // Apply buffer when the user selected max to prevent dust
-        userBorrowed: isMaxBorrowed ? decimal(BigNumber(userBorrowed!).times(form.slippage))! : userBorrowed,
+        userBorrowed: isFull ? decimal(BigNumber(1).plus(form.slippage).times(userBorrowed)) : userBorrowed,
       } as RepayMutation),
     [mutate],
   )

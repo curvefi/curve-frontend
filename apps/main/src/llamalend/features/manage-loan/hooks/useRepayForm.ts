@@ -12,11 +12,15 @@ import { useRepayIsAvailable } from '@/llamalend/queries/repay/repay-is-availabl
 import type { RepayIsFullParams } from '@/llamalend/queries/validation/manage-loan.types'
 import { type RepayForm, repayFormValidationSuite } from '@/llamalend/queries/validation/manage-loan.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
+import { isEmpty, notFalsy } from '@curvefi/prices-api/objects.util'
 import { vestResolver } from '@hookform/resolvers/vest'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
+import { t } from '@ui-kit/lib/i18n'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
-import { useFormErrors } from '@ui-kit/utils/react-form.utils'
+import { filterFormErrors } from '@ui-kit/utils/react-form.utils'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
+
+const NOT_AVAILABLE = ['root', t`Repay is not available with the current parameters.`] as const
 
 const useCallbackAfterFormUpdate = (form: UseFormReturn<RepayForm>, callback: () => void) =>
   useEffect(() => form.subscribe({ formState: { values: true }, callback }), [form, callback])
@@ -60,8 +64,7 @@ const emptyRepayForm = () => ({
   maxStateCollateral: undefined,
   maxCollateral: undefined,
   maxBorrowed: undefined,
-  isFull: undefined,
-  isMaxBorrowed: false,
+  isFull: false,
   slippage: SLIPPAGE_PRESETS.STABLE,
 })
 
@@ -108,24 +111,28 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
 
   useCallbackAfterFormUpdate(form, resetRepay) // reset mutation state on form change
 
-  const isAvailable = useRepayIsAvailable(params, enabled)
+  const { data: isAvailable } = useRepayIsAvailable(params, enabled)
   const { isFull, max } = useMaxRepayTokenValues({ collateralToken, borrowToken, params, form }, enabled)
-  const formErrors = useFormErrors(form.formState)
 
+  const { formState } = form
   return {
     form,
     values,
     params,
-    isPending: form.formState.isSubmitting || isRepaying,
+    isPending: formState.isSubmitting || isRepaying,
     onSubmit: form.handleSubmit(onSubmit),
-    isDisabled: !isAvailable.data || formErrors.length > 0,
     borrowToken,
     collateralToken,
     isRepaid,
     repayError,
     txHash: data?.hash,
-    isApproved: useRepayIsApproved(params, enabled && typeof values.isFull === 'boolean'),
-    formErrors: useFormErrors(form.formState),
+    isApproved: useRepayIsApproved(params, enabled),
+    formErrors: useMemo(
+      // only show the 'not available' warn when there are no other form errors
+      () =>
+        isEmpty(formState.errors) ? notFalsy(isAvailable === false && NOT_AVAILABLE) : filterFormErrors(formState),
+      [formState, isAvailable],
+    ),
     isFull,
     max,
   }

@@ -38,3 +38,5 @@ export const range = (lengthOrStart: number, length?: number) =>
   length === undefined
     ? Array.from({ length: lengthOrStart }, (_, i) => i)
     : Array.from({ length }, (_, i) => i + lengthOrStart)
+
+export const isEmpty = (obj: object) => Object.keys(obj).length === 0
