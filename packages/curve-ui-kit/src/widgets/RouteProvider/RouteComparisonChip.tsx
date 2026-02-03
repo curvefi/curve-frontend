@@ -4,8 +4,8 @@ import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import type { Decimal } from '@ui-kit/utils/decimal'
 import { formatPercent } from '@ui-kit/utils/number'
 
-const showPercentage = (toAmountOutput: Decimal, bestPrice: Decimal) =>
-  formatPercent(((parseFloat(toAmountOutput) - Number(bestPrice)) / Number(bestPrice)) * 100)
+const showPercentage = (toAmountOutput: Decimal, bestOutputAmount: Decimal) =>
+  formatPercent(((parseFloat(toAmountOutput) - Number(bestOutputAmount)) / Number(bestOutputAmount)) * 100)
 
 export const RouteComparisonChip = ({
   bestOutputAmount,

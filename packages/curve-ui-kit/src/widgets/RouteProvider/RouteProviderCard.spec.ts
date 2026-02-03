@@ -1,13 +1,24 @@
 // @vitest-environment jsdom
-import { createElement } from 'react'
+import { act, createElement } from 'react'
 import { createRoot } from 'react-dom/client'
-import { act } from 'react-dom/test-utils'
 import { describe, expect, it } from 'vitest'
 import { ThemeProvider } from '@mui/material/styles'
 import { lightTheme } from '@ui-kit/themes'
 import { RouteProviderCard } from './RouteProviderCard'
 
 const theme = lightTheme()
+const rootFontSize = () => parseFloat(getComputedStyle(document.documentElement).fontSize) || 16
+
+const toPixels = (value: string) => {
+  const parsed = parseFloat(value)
+  if (Number.isNaN(parsed)) {
+    return 0
+  }
+  if (value.endsWith('rem')) {
+    return parsed * rootFontSize()
+  }
+  return parsed
+}
 
 const renderRouteProviderCard = () => {
   const container = document.createElement('div')
@@ -36,17 +47,17 @@ const renderRouteProviderCard = () => {
     )
   })
 
-  const button = container.querySelector('button')
-  if (!button) {
-    throw new Error('RouteProviderCard did not render a button element.')
+  const card = container.querySelector('[data-testid="route-provider-card"]')
+  if (!card) {
+    throw new Error('RouteProviderCard did not render a card element.')
   }
 
-  return { container, root, button }
+  return { container, root, card }
 }
 
 describe('RouteProviderCard', () => {
   it('renders with the expected card height', () => {
-    const { root, container, button } = renderRouteProviderCard()
+    const { root, container, card } = renderRouteProviderCard()
     const rows = container.querySelector('[data-testid="route-provider-rows"]')
     const amount = container.querySelector('[data-testid="route-provider-amount"]')
     const usd = container.querySelector('[data-testid="route-provider-usd"]')
@@ -57,13 +68,8 @@ describe('RouteProviderCard', () => {
       throw new Error('RouteProviderCard test nodes are missing.')
     }
 
-    const toPixels = (value: string) => {
-      const parsed = parseFloat(value)
-      return Number.isNaN(parsed) ? 0 : parsed
-    }
-
     const rowsStyle = getComputedStyle(rows)
-    const buttonStyle = getComputedStyle(button)
+    const cardStyle = getComputedStyle(card)
     const topRowHeight = Math.max(
       toPixels(getComputedStyle(amount).lineHeight),
       toPixels(getComputedStyle(chip).height),
@@ -73,8 +79,8 @@ describe('RouteProviderCard', () => {
       toPixels(getComputedStyle(icon).height),
     )
     const totalHeight =
-      toPixels(buttonStyle.paddingTop) +
-      toPixels(buttonStyle.paddingBottom) +
+      toPixels(cardStyle.paddingTop) +
+      toPixels(cardStyle.paddingBottom) +
       toPixels(rowsStyle.rowGap) +
       topRowHeight +
       bottomRowHeight
@@ -85,14 +91,15 @@ describe('RouteProviderCard', () => {
   })
 
   it('renders a hover background style for the card', () => {
-    const { root, container, button } = renderRouteProviderCard()
-    const cssClass = button.className.split(' ').find((name) => name.startsWith('css-'))
+    const { root, container, card } = renderRouteProviderCard()
+    const cssClass = card.className.split(' ').find((name) => name.startsWith('css-'))
     const styleText = Array.from(document.querySelectorAll('style'))
       .map((style) => style.textContent ?? '')
       .join('\n')
+    const escapedClass = cssClass ? cssClass.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') : ''
 
     expect(cssClass).toBeTruthy()
-    expect(styleText).toMatch(new RegExp(`\\\\.${cssClass}:hover\\\\{[^}]*background-color:[^;]+;`))
+    expect(styleText).toMatch(new RegExp(`\\.${escapedClass}:hover\\{[^}]*background-color:[^;]+;`))
 
     act(() => {
       root.unmount()

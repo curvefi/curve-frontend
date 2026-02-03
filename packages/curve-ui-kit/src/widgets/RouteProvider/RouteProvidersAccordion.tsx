@@ -95,11 +95,9 @@ export const RouteProvidersAccordion = ({
             <Typography variant="headingXsBold" color="textSecondary">
               {t`Select a route`}
             </Typography>
-            {onRefresh && (
-              <IconButton size="extraExtraSmall" onClick={onRefresh} aria-label={t`Refresh routes`}>
-                <ReloadIcon sx={{ ...(isLoading && LoadingAnimation) }} />
-              </IconButton>
-            )}
+            <IconButton size="extraExtraSmall" onClick={onRefresh} aria-label={t`Refresh routes`}>
+              <ReloadIcon sx={{ ...(isLoading && LoadingAnimation) }} />
+            </IconButton>
           </Stack>
           <Typography variant="bodyXsRegular" color="textTertiary">
             {t`Best route is selected based on net output after gas fees (only when possible to calculate).`}
