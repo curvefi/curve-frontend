@@ -100,7 +100,7 @@ const validateDepositMaxAmount = (amount: Decimal | undefined | null, maxAmount:
   })
 }
 
-export const validateSharesToAssets = (shares: Decimal | undefined | null) => {
+const validateSharesToAssets = (shares: Decimal | undefined | null) => {
   test('shares', 'Shares must be a positive number', () => {
     enforce(shares).isNumeric().gt(0)
   })
@@ -124,23 +124,19 @@ export const depositValidationSuite = createValidationSuite((params: DepositPara
   validateDepositAmount(params.depositAmount, { depositRequired: true })
 })
 
-export const userSupplyVaultValidationSuite = createValidationSuite((params: UserMarketParams) => {
-  supplyUserValidationGroup(params)
-})
-
 export const userSupplyVaultSharesValidationSuite = createValidationSuite((params: SharesToAssetsParams) => {
   supplyUserValidationGroup(params)
   validateSharesToAssets(params.shares)
 })
 
-export const validateWithdrawAmount = (
+const validateWithdrawAmount = (
   amount: Decimal | undefined | null,
   { withdrawRequired = false }: { withdrawRequired?: boolean } = {},
 ) => {
-  test('withdrawAmount', 'Withdraw amount must be a positive number', () => {
-    if (withdrawRequired || amount != null) {
+  skipWhen(!withdrawRequired && !amount, () => {
+    test('withdrawAmount', 'Withdraw amount must be a positive number', () => {
       enforce(amount).isNumeric().gt(0)
-    }
+    })
   })
 }
 
@@ -173,14 +169,14 @@ export const withdrawValidationSuite = createValidationSuite((params: WithdrawPa
   withdrawValidationGroup(params)
 })
 
-export const validateStakeAmount = (
+const validateStakeAmount = (
   amount: Decimal | undefined | null,
   { stakeRequired = false }: { stakeRequired?: boolean } = {},
 ) => {
-  test('stakeAmount', 'Stake amount must be a positive number', () => {
-    if (stakeRequired || amount != null) {
+  skipWhen(!stakeRequired && !amount, () => {
+    test('stakeAmount', 'Stake amount must be a positive number', () => {
       enforce(amount).isNumeric().gt(0)
-    }
+    })
   })
 }
 
@@ -207,14 +203,14 @@ export const stakeValidationSuite = createValidationSuite((params: StakeParams) 
   stakeValidationGroup(params)
 })
 
-export const validateUnstakeAmount = (
+const validateUnstakeAmount = (
   amount: Decimal | undefined | null,
   { unstakeRequired = false }: { unstakeRequired?: boolean } = {},
 ) => {
-  test('unstakeAmount', 'Unstake amount must be a positive number', () => {
-    if (unstakeRequired || amount != null) {
+  skipWhen(!unstakeRequired && !amount, () => {
+    test('unstakeAmount', 'Unstake amount must be a positive number', () => {
       enforce(amount).isNumeric().gt(0)
-    }
+    })
   })
 }
 
