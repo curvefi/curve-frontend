@@ -279,14 +279,8 @@ const calculateInitialPrice = (tokenA: number, tokenB: number) => {
  * However, that shouldn't break this function (a shortcoming of fetchQuery).
  * On failure we should default to a price of 0.
  */
-async function tryFetchTokenUsdRate(params: { chainId: number; tokenAddress: string }) {
-  if (params.tokenAddress == '') return 0
-  try {
-    return await fetchTokenUsdRate(params)
-  } catch {
-    return 0
-  }
-}
+const tryFetchTokenUsdRate = async (params: { chainId: number; tokenAddress: string }) =>
+  params.tokenAddress == '' ? 0 : fetchTokenUsdRate(params).catch(() => 0)
 
 export const createCreatePoolSlice = (
   set: StoreApi<State>['setState'],
