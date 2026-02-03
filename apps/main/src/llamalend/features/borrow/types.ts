@@ -1,10 +1,10 @@
-import type { Address } from 'viem'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { FieldsOf } from '@ui-kit/lib'
 import type { MarketQuery } from '@ui-kit/lib/model'
 import type { MakeOptional } from '@ui-kit/types/util'
 import { Decimal } from '@ui-kit/utils'
 
+export { type Token } from '@ui-kit/types/common'
 /** Complete create loan form with all fields already filled in (after validation) */
 type CompleteCreateLoanForm = {
   userCollateral: Decimal
@@ -35,6 +35,3 @@ export type CreateLoanFormQueryParams<T = IChainId> = FieldsOf<CreateLoanFormQue
 export type CreateLoanDebtQuery<T = IChainId> = CreateLoanFormQuery<T> & Pick<CreateLoanForm, 'maxDebt'>
 /** Fields of the create loan debt query before validation */
 export type CreateLoanDebtParams<T = IChainId> = FieldsOf<CreateLoanDebtQuery<T>>
-
-/** A simple token representation */
-export type Token = { symbol: string; address: Address }

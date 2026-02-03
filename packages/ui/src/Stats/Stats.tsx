@@ -1,5 +1,5 @@
-import { ReactNode } from 'react'
-import { styled } from 'styled-components'
+import type { ComponentPropsWithRef, ReactNode } from 'react'
+import { styled, type IStyledComponent } from 'styled-components'
 
 type Props = {
   className?: string
@@ -29,7 +29,7 @@ export const Stats = ({ className, description, isAlignRight, isBorderBottom, is
   )
 }
 
-export const Description = styled.p`
+export const Description: IStyledComponent<'web', ComponentPropsWithRef<'p'>> = styled.p`
   font-size: var(--font-size-2);
   font-weight: 500;
 `

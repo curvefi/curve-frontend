@@ -1,4 +1,4 @@
-import type { Address, Chain } from '..'
+import type { Address, Chain, PaginationMeta } from '..'
 
 export type GetMarketsResponse = {
   data: {
@@ -102,11 +102,8 @@ export type GetSupplyResponse = {
   }[]
 }
 
-export type GetUserMarketsResponse = {
+export type GetUserMarketsResponse = PaginationMeta & {
   user: string
-  page: number
-  per_page: number
-  count: number
   markets: {
     collateral: string
     controller: Address
@@ -141,11 +138,8 @@ type UserMarketStats = {
 
 export type GetUserMarketStatsResponse = UserMarketStats
 
-export type GetUserMarketSnapshotsResponse = {
+export type GetUserMarketSnapshotsResponse = PaginationMeta & {
   user: string
-  page: number
-  per_page: number
-  count: number
   data: UserMarketStats[]
 }
 
