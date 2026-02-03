@@ -9,15 +9,12 @@ import {
 import { LOAD_TIMEOUT } from '@cy/support/ui'
 import { LlamaMarketType } from '@ui-kit/types/market'
 
-// todo: remove this once we know the test is stable
-const RETRY = { retries: { openMode: 1, runMode: 2 } }
-
 describe('Create loan', () => {
   recordValues(LlamaMarketType).forEach((marketType) => {
     const { collateral, borrow, path } = oneLoanTestMarket(marketType)
     const leverageEnabled = false // "max_borrowable" query always fails because of the 'fake' e2e account :(
 
-    it(`for ${marketType} market`, RETRY, () => {
+    it(`for ${marketType} market`, () => {
       cy.visit(path)
       writeCreateLoanForm({ collateral, borrow, leverageEnabled })
       checkLoanDetailsLoaded({ leverageEnabled })
