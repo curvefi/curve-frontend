@@ -4,7 +4,10 @@ import { LeverageInput } from '@/llamalend/features/borrow/components/LeverageIn
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { OnBorrowedMore } from '@/llamalend/mutations/borrow-more.mutation'
 import { useBorrowMorePriceImpact } from '@/llamalend/queries/borrow-more/borrow-more-price-impact.query'
-import { isLeverageBorrowMore } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
+import {
+  isLeverageBorrowMore,
+  isLeverageBorrowMoreSupported,
+} from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
 import { HighPriceImpactAlert, LoanFormAlerts } from '@/llamalend/widgets/manage-loan/LoanFormAlerts'
 import { LoanFormTokenInput } from '@/llamalend/widgets/manage-loan/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -58,7 +61,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     onBorrowedMore,
   })
 
-  const isLeverageSupported = market && isLeverageBorrowMore(market)
+  const isLeverageSupported = isLeverageBorrowMoreSupported(market)
   const isLeverageEnabled = isLeverageBorrowMore(market, values.leverageEnabled)
   const swapRequired = isLeverageEnabled && +(values.userBorrowed ?? 0) > 0
   const priceImpact = useBorrowMorePriceImpact(params, enabled && swapRequired)

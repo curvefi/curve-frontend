@@ -3,7 +3,6 @@ import type { UseFormReturn } from 'react-hook-form'
 import { PRESET_RANGES } from '@/llamalend/constants'
 import { getTokens } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
-import { useBorrowMoreExpectedCollateral } from '@/llamalend/queries/borrow-more/borrow-more-expected-collateral.query'
 import { useBorrowMoreMaxReceive } from '@/llamalend/queries/borrow-more/borrow-more-max-receive.query'
 import { isLeverageBorrowMore } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
 import { useMarketMaxLeverage } from '@/llamalend/queries/market-max-leverage.query'
@@ -42,7 +41,6 @@ export function useMaxBorrowMoreValues<ChainId extends LlamaChainId>(
 
   const maxReceive = useBorrowMoreMaxReceive(params, enabled)
   const isLeverage = enabled && isLeverageBorrowMore(market, params.leverageEnabled)
-  useBorrowMoreExpectedCollateral(params, isLeverage) // required for other queries
   const maxDebt = maxReceive.data?.maxDebt
   const maxBorrowed = maxUserBorrowed.data
   const maxLeverage = q(useMarketMaxLeverage({ chainId, marketId, range: PRESET_RANGES.MaxLtv }, enabled))

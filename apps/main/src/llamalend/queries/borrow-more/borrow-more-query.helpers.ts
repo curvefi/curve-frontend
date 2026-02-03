@@ -51,3 +51,6 @@ export const isLeverageBorrowMore = (
   marketId: string | LlamaMarketTemplate | null | undefined,
   leverageEnabled: boolean | null = true,
 ) => !!marketId && ['V1', 'V2'].includes(getBorrowMoreImplementation(marketId, leverageEnabled)[0])
+
+export const isLeverageBorrowMoreSupported = (market?: LlamaMarketTemplate) =>
+  !!market && isLeverageBorrowMore(market, true)
