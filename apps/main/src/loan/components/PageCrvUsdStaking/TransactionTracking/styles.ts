@@ -1,15 +1,23 @@
-import { styled } from 'styled-components'
+import type { ComponentProps, ComponentPropsWithRef } from 'react'
+import { styled, type IStyledComponent } from 'styled-components'
 import { Button } from '@ui/Button'
 import { Icon } from '@ui/Icon'
 import { RCPinBottom } from '@ui/images'
 import { ExternalLink } from '@ui/Link'
 
-export const Wrapper = styled.div`
+type DivProps = ComponentPropsWithRef<'div'>
+type PProps = ComponentPropsWithRef<'p'>
+type ButtonComponentProps = ComponentProps<typeof Button>
+type IconComponentProps = ComponentProps<typeof Icon>
+type ExternalLinkComponentProps = ComponentProps<typeof ExternalLink>
+type RCPinBottomComponentProps = ComponentProps<typeof RCPinBottom>
+
+export const Wrapper: IStyledComponent<'web', DivProps> = styled.div`
   display: flex;
   flex-direction: column;
 `
 
-export const Step = styled.div`
+export const Step: IStyledComponent<'web', DivProps> = styled.div`
   padding: var(--spacing-2);
   display: flex;
   flex-direction: row;
@@ -17,19 +25,25 @@ export const Step = styled.div`
   gap: var(--spacing-1);
 `
 
-export const ApprovalStep = styled(Step)``
+type StepComponentProps = ComponentProps<typeof Step>
 
-export const MainTransactionStep = styled(Step)<{ approvalReady: boolean }>`
+export const ApprovalStep: IStyledComponent<'web', StepComponentProps> = styled(Step)``
+
+type MainTransactionStepProps = { approvalReady: boolean } & StepComponentProps
+
+export const MainTransactionStep: IStyledComponent<'web', MainTransactionStepProps> = styled(
+  Step,
+)<MainTransactionStepProps>`
   opacity: ${({ approvalReady }) => (approvalReady ? 1 : 0.3)};
 `
 
-export const StepTitle = styled.p`
+export const StepTitle: IStyledComponent<'web', PProps> = styled.p`
   font-size: var(--font-size-2);
   color: var(--box--primary--color);
   font-weight: var(--bold);
 `
 
-export const TransactionLink = styled(ExternalLink)`
+export const TransactionLink: IStyledComponent<'web', ExternalLinkComponentProps> = styled(ExternalLink)`
   font-size: var(--font-size-1);
   color: var(--link-400);
   text-decoration: none;
@@ -39,17 +53,17 @@ export const TransactionLink = styled(ExternalLink)`
   }
 `
 
-export const IconWrapper = styled.div`
+export const IconWrapper: IStyledComponent<'web', DivProps> = styled.div`
   margin: auto 0 auto auto;
   align-items: center;
   display: flex;
 `
 
-export const SuccessIcon = styled(Icon)`
+export const SuccessIcon: IStyledComponent<'web', IconComponentProps> = styled(Icon)`
   color: var(--chart-green);
 `
 
-export const StyledRCPinBottom = styled(RCPinBottom)`
+export const StyledRCPinBottom: IStyledComponent<'web', RCPinBottomComponentProps> = styled(RCPinBottom)`
   color: var(--box--primary--color);
   min-width: 1.25rem;
   min-height: 1.25rem;
@@ -57,11 +71,11 @@ export const StyledRCPinBottom = styled(RCPinBottom)`
   min-width: 1.25rem;
 `
 
-export const WalletIcon = styled(Icon)`
+export const WalletIcon: IStyledComponent<'web', IconComponentProps> = styled(Icon)`
   color: var(--box--primary--color);
 `
 
-export const DividerWrapper = styled.div`
+export const DividerWrapper: IStyledComponent<'web', DivProps> = styled.div`
   display: flex;
   align-items: center;
   width: 1.25rem;
@@ -70,14 +84,14 @@ export const DividerWrapper = styled.div`
   opacity: 0.3;
 `
 
-export const DividerLine = styled.div`
+export const DividerLine: IStyledComponent<'web', DivProps> = styled.div`
   height: 100%;
   width: 0.09375rem;
   margin: 0 auto;
   background-color: var(--box--primary--color);
 `
 
-export const ResetButton = styled(Button)`
+export const ResetButton: IStyledComponent<'web', ButtonComponentProps> = styled(Button)`
   margin: var(--spacing-2) auto 0;
   color: var(--link-400);
   &:hover:not(:disabled),

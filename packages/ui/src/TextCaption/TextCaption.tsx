@@ -1,21 +1,25 @@
-import { styled } from 'styled-components'
+import type { ComponentPropsWithRef } from 'react'
+import { styled, type IStyledComponent } from 'styled-components'
 
-export const TextCaption = styled.span<{ isBold?: boolean; isBlock?: boolean; isCaps?: boolean }>`
-  font-size: var(--font-size-1);
-  text-transform: ${({ isCaps }) => (isCaps ? 'uppercase' : 'initial')};
+type TextCaptionProps = { isBold?: boolean; isBlock?: boolean; isCaps?: boolean }
 
-  ${({ isBold }) => {
-    if (isBold) {
-      return `font-weight: bold;`
-    }
-  }};
+export const TextCaption: IStyledComponent<'web', TextCaptionProps & ComponentPropsWithRef<'span'>> =
+  styled.span<TextCaptionProps>`
+    font-size: var(--font-size-1);
+    text-transform: ${({ isCaps }) => (isCaps ? 'uppercase' : 'initial')};
 
-  ${({ isBlock }) => {
-    if (isBlock) {
-      return `
+    ${({ isBold }) => {
+      if (isBold) {
+        return `font-weight: bold;`
+      }
+    }};
+
+    ${({ isBlock }) => {
+      if (isBlock) {
+        return `
         display: block;
         margin-bottom: 2px;
       `
-    }
-  }};
-`
+      }
+    }};
+  `
