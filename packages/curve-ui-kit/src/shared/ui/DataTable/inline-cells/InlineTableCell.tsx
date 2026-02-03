@@ -5,18 +5,24 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Sizing, Spacing } = SizesAndSpaces
 
-interface HistoryTableCellProps {
+type InlineTableCellProps = {
   children: ReactNode
   onClick?: () => void
   sx?: SxProps<Theme>
+  className?: string
 }
 
-export const HistoryTableCell = ({ children, onClick, sx }: HistoryTableCellProps) => (
+/**
+ * Base cell wrapper component for inline tables.
+ * Provides consistent height, padding, and optional click handling.
+ */
+export const InlineTableCell = ({ children, onClick, sx, className }: InlineTableCellProps) => (
   <Stack
     height={Sizing.xl}
     paddingY={Spacing.xxs}
     onClick={onClick}
     sx={onClick ? { cursor: 'pointer', ...sx } : sx}
+    className={className}
     justifyContent="center"
   >
     {children}

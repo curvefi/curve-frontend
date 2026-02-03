@@ -57,6 +57,7 @@ export const SupplyInfoAccordion = ({
         testId="supply-info-accordion"
       />
     }
+    testId="supply-info-accordion"
     expanded={isOpen}
     toggle={toggle}
   >
