@@ -1,4 +1,5 @@
 import lodash from 'lodash'
+import { type Address, getAddress } from 'viem'
 import {
   CurveApi,
   NetworkConfig,
@@ -59,6 +60,7 @@ const getPoolData = (p: Pool, network: NetworkConfig) => {
 export async function getPools(
   curve: CurveApi,
   poolList: string[],
+  blacklist: Set<Address>,
   network: NetworkConfig,
   failedFetching24hOldVprice?: { [p: string]: boolean } | null,
 ) {
@@ -68,6 +70,11 @@ export async function getPools(
   const resp = poolList.reduce(
     (prev, poolId) => {
       const pool = getPool(poolId)
+
+      if (blacklist.has(getAddress(pool.address))) {
+        return prev
+      }
+
       const poolData = getPoolData(pool, network)
 
       poolData.failedFetching24hOldVprice = failedFetching24hOldVprice?.[pool.address] ?? false
