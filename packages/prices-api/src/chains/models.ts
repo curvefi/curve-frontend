@@ -1,4 +1,4 @@
-import type { Chain } from '..'
+import type { Address, Chain } from '..'
 
 export type ChainInfo = {
   chain: string
@@ -26,4 +26,9 @@ export type Transactions = Activity & {
 
 export type Users = Activity & {
   users: number
+}
+
+export type PoolFilter = {
+  chain: Chain
+  address: Address
 }
