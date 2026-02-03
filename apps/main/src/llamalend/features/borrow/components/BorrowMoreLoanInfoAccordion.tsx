@@ -14,7 +14,7 @@ import { useUserCurrentLeverage } from '@/llamalend/queries/user-current-leverag
 import { getUserHealthOptions } from '@/llamalend/queries/user-health.query'
 import { useUserState } from '@/llamalend/queries/user-state.query'
 import type { BorrowMoreForm, BorrowMoreParams } from '@/llamalend/queries/validation/borrow-more.validation'
-import { LoanInfoAccordion } from '@/llamalend/widgets/manage-loan/LoanInfoAccordion'
+import { LoanInfoAccordion } from '@/llamalend/widgets/action-card/LoanInfoAccordion'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { mapQuery, q, type Query } from '@ui-kit/types/util'
@@ -79,14 +79,10 @@ export function BorrowMoreLoanInfoAccordion<ChainId extends IChainId>({
         },
         isOpen && !!totalDebt,
       )}
-      debt={useMemo(
-        () =>
-          mapQuery(
-            userState,
-            ({ debt: stateDebt }) =>
-              debt && { value: decimal(new BigNumber(stateDebt).plus(debt))!, tokenSymbol: borrowToken?.symbol },
-          ),
-        [borrowToken?.symbol, debt, userState],
+      debt={mapQuery(
+        userState,
+        ({ debt: stateDebt }) =>
+          debt && { value: decimal(new BigNumber(stateDebt).plus(debt))!, tokenSymbol: borrowToken?.symbol },
       )}
       collateral={{
         data: collateralDelta &&
