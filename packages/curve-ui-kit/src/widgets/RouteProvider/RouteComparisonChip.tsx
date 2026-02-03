@@ -1,7 +1,8 @@
 import Chip from '@mui/material/Chip'
 import { t } from '@ui-kit/lib/i18n'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
-import { type Decimal, formatPercent } from '@ui-kit/utils'
+import type { Decimal } from '@ui-kit/utils/decimal'
+import { formatPercent } from '@ui-kit/utils/number'
 
 const showPercentage = (toAmountOutput: Decimal, bestPrice: Decimal) =>
   formatPercent(((parseFloat(toAmountOutput) - Number(bestPrice)) / Number(bestPrice)) * 100)

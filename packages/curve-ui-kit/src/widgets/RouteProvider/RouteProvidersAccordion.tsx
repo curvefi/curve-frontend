@@ -25,12 +25,12 @@ const providerLabels = {
   odos: t`Odos`,
 }
 
+const iconSx = { width: IconSize.sm, height: IconSize.sm }
+
 const providerIcons: Record<RouteProvider, () => ReactNode> = {
-  curve: () => (
-    <Box component="img" src={CURVE_LOGO_URL} alt="Curve" sx={{ width: IconSize.md, height: IconSize.md }} />
-  ),
-  enso: () => <EnsoIcon />,
-  odos: () => <OdosIcon />,
+  curve: () => <Box component="img" src={CURVE_LOGO_URL} alt="Curve" sx={iconSx} />,
+  enso: () => <EnsoIcon sx={iconSx} />,
+  odos: () => <OdosIcon sx={iconSx} />,
 }
 
 export type RouteOption = {
@@ -90,19 +90,21 @@ export const RouteProvidersAccordion = ({
       toggle={onToggle}
     >
       <Stack padding={Spacing.sm} gap={Spacing.sm}>
-        <Stack direction="row" justifyContent="space-between" alignItems="center">
-          <Typography variant="headingXsBold" color="textSecondary">
-            {t`Select a route`}
+        <Stack gap={Spacing.xs}>
+          <Stack direction="row" justifyContent="space-between" alignItems="center">
+            <Typography variant="headingXsBold" color="textSecondary">
+              {t`Select a route`}
+            </Typography>
+            {onRefresh && (
+              <IconButton size="extraExtraSmall" onClick={onRefresh} aria-label={t`Refresh routes`}>
+                <ReloadIcon sx={{ ...(isLoading && LoadingAnimation) }} />
+              </IconButton>
+            )}
+          </Stack>
+          <Typography variant="bodyXsRegular" color="textTertiary">
+            {t`Best route is selected based on net output after gas fees (only when possible to calculate).`}
           </Typography>
-          {onRefresh && (
-            <IconButton size="extraExtraSmall" onClick={onRefresh} aria-label={t`Refresh routes`}>
-              <ReloadIcon sx={{ ...(isLoading && LoadingAnimation) }} />
-            </IconButton>
-          )}
         </Stack>
-        <Typography variant="bodyXsRegular" color="textTertiary">
-          {t`Best route is selected based on net output after gas fees (only when possible to calculate).`}
-        </Typography>
         <Stack gap={Spacing.xs}>
           {routes.map((route, index) => (
             <RouteProviderCard
