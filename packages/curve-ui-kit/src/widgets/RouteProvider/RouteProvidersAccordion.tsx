@@ -88,6 +88,7 @@ export const RouteProvidersAccordion = ({
       }
       expanded={isExpanded}
       toggle={onToggle}
+      sx={{ '&': { paddingBlock: 0 } }} // remove the default padding from the curve accordion
     >
       <Stack padding={Spacing.sm} gap={Spacing.sm}>
         <Stack gap={Spacing.xs}>
