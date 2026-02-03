@@ -1,5 +1,4 @@
-import { getLlamaMarket } from '@/llamalend/llama.utils'
-import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
+import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/create-loan-query.helpers'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import type { CreateLoanDebtParams, CreateLoanDebtQuery } from '../../features/borrow/types'
 import { createLoanQueryValidationSuite } from '../validation/borrow.validation'
@@ -37,14 +36,15 @@ export const { useQuery: useCreateLoanBands } = queryFactory({
     leverageEnabled,
     range,
   }: CreateLoanDebtQuery): Promise<CreateLoanBandsResult> => {
-    const market = getLlamaMarket(marketId)
-    return leverageEnabled
-      ? market instanceof LendMarketTemplate
-        ? market.leverage.createLoanBands(userCollateral, userBorrowed, debt, range)
-        : market.leverageV2.hasLeverage()
-          ? market.leverageV2.createLoanBands(userCollateral, userBorrowed, debt, range)
-          : market.leverage.createLoanBands(userCollateral, debt, range)
-      : market.createLoanBands(userCollateral, debt, range)
+    const [type, impl] = getCreateLoanImplementation(marketId, leverageEnabled)
+    switch (type) {
+      case 'V1':
+      case 'V2':
+        return impl.createLoanBands(userCollateral, userBorrowed, debt, range)
+      case 'V0':
+      case 'unleveraged':
+        return impl.createLoanBands(userCollateral, debt, range)
+    }
   },
   staleTime: '1m',
   validationSuite: createLoanQueryValidationSuite({ debtRequired: true }),
