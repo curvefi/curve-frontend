@@ -15,7 +15,7 @@ import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { t } from '@ui-kit/lib/i18n'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { mapQuery } from '@ui-kit/types/util'
-import { useFormErrors } from '@ui-kit/utils/react-form.utils'
+import { setValueOptions, useFormErrors } from '@ui-kit/utils/react-form.utils'
 
 const useCallbackAfterFormUpdate = (form: UseFormReturn<StakeForm>, callback: () => void) =>
   useEffect(() => form.subscribe({ formState: { values: true }, callback }), [form, callback])
@@ -94,7 +94,7 @@ export const useStakeForm = <ChainId extends LlamaChainId>({
   useCallbackAfterFormUpdate(form, resetStake)
 
   useEffect(() => {
-    form.setValue('maxStakeAmount', maxUserStake.data, { shouldValidate: true })
+    form.setValue('maxStakeAmount', maxUserStake.data, setValueOptions)
   }, [form, maxUserStake.data])
 
   return {
