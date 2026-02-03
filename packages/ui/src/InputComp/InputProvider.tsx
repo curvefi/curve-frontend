@@ -1,5 +1,6 @@
+import type { ComponentPropsWithRef } from 'react'
 import { useState } from 'react'
-import { styled } from 'styled-components'
+import { styled, type IStyledComponent } from 'styled-components'
 import { Box } from '@ui/Box/Box'
 import { focusVisible } from '@ui/utils/sharedStyles'
 import { type InputProviderProps, InputContext } from './InputContext'
@@ -32,7 +33,9 @@ interface InputWrapperProps {
   minHeight?: InputMinHeight
 }
 
-export const InputWrapper = styled(Box)<InputWrapperProps>`
+export const InputWrapper: IStyledComponent<'web', InputWrapperProps & ComponentPropsWithRef<'div'>> = styled(
+  Box,
+)<InputWrapperProps>`
   ${focusVisible};
 
   min-height: ${({ minHeight }) => `var(--height-${minHeight || 'x-large'})`};

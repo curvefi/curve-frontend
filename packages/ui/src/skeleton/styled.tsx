@@ -1,6 +1,7 @@
-import { styled } from 'styled-components'
+import type { ComponentPropsWithRef } from 'react'
+import { styled, type IStyledComponent } from 'styled-components'
 
-export const LoaderWrapper = styled.div`
+export const LoaderWrapper: IStyledComponent<'web', ComponentPropsWithRef<'div'>> = styled.div`
   display: flex;
   flex-direction: column;
   gap: 16px;

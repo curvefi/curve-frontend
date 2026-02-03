@@ -10,11 +10,11 @@ import { getUserMintMarketsStatsOptions } from '@/llamalend/queries/market-list/
 import { notFalsy } from '@curvefi/prices-api/objects.util'
 import { useQueries, type UseQueryResult } from '@tanstack/react-query'
 import { t } from '@ui-kit/lib/i18n'
-import { getTokenUsdPriceQueryOptions } from '@ui-kit/lib/model/entities/token-usd-prices'
+import { getTokenUsdRateQueryOptions } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { combineQueriesMeta } from '@ui-kit/lib/queries/combine'
 import { type QueryOptionsData } from '@ui-kit/lib/queries/types'
 import { LlamaMarketType } from '@ui-kit/types/market'
-import { type Address } from '@ui-kit/utils'
+import { requireChainId, type Address } from '@ui-kit/utils'
 import { splitAt } from '@ui-kit/utils/array'
 
 export type UserPositionSummaryMetric = { label: string; data: number; isLoading: boolean; error?: unknown }
@@ -28,11 +28,11 @@ type LendBorrowStatsData = QueryOptionsData<ReturnType<typeof getUserLendingVaul
 type MintBorrowStatsData = QueryOptionsData<ReturnType<typeof getUserMintMarketsStatsOptions>>
 type BorrowStatsData = LendBorrowStatsData | MintBorrowStatsData
 type SupplyStatsData = QueryOptionsData<EarningsQueryOptions>
-type TokenPriceData = QueryOptionsData<ReturnType<typeof getTokenUsdPriceQueryOptions>>
+type TokenPriceData = QueryOptionsData<ReturnType<typeof getTokenUsdRateQueryOptions>>
 
 type BorrowPositionQuery = {
   query: StatsQueryOptions
-  chainId: LlamaMarket['chain']
+  blockchainId: LlamaMarket['chain']
   debtTokenAddress: Address
   collateralTokenAddress: Address
   marketType: LlamaMarketType
@@ -40,11 +40,11 @@ type BorrowPositionQuery = {
 
 type SupplyPositionQuery = {
   query: EarningsQueryOptions
-  chainId: LlamaMarket['chain']
+  blockchainId: LlamaMarket['chain']
   suppliedTokenAddress: Address
 }
 
-type TokenPriceEntry = { chainId: LlamaMarket['chain']; contractAddress: Address }
+type TokenPriceEntry = { chainId: number; tokenAddress: Address }
 
 type PositionQueryEntry =
   | { kind: 'borrow'; value: BorrowPositionQuery }
@@ -70,7 +70,7 @@ const getSupplyEntry = (market: LlamaMarket, userAddress: Address | undefined): 
         userAddress,
         blockchainId: market.chain,
       }),
-      chainId: market.chain,
+      blockchainId: market.chain,
       suppliedTokenAddress: market.assets.borrowed.address,
     },
   }
@@ -94,7 +94,7 @@ const getBorrowEntry = (market: LlamaMarket, userAddress: Address | undefined): 
               userAddress,
               blockchainId: market.chain,
             }),
-      chainId: market.chain,
+      blockchainId: market.chain,
       debtTokenAddress: market.assets.borrowed.address,
       collateralTokenAddress: market.assets.collateral.address,
       marketType: market.type,
@@ -104,21 +104,19 @@ const getBorrowEntry = (market: LlamaMarket, userAddress: Address | undefined): 
 
 /** Deduplicate token price lookup entries by chain and address. */
 const collectTokenEntries = <T,>(items: T[], getEntries: (item: T) => TokenPriceEntry[]) =>
-  uniqBy(items.flatMap(getEntries), (entry) => `${entry.chainId}:${entry.contractAddress.toLowerCase()}`)
+  uniqBy(items.flatMap(getEntries), (entry) => `${entry.chainId}:${entry.tokenAddress.toLowerCase()}`)
 
 const createTokenPriceQueries = (entries: TokenPriceEntry[]) =>
-  entries.map(({ chainId, contractAddress }) =>
-    getTokenUsdPriceQueryOptions({ blockchainId: chainId, contractAddress }),
-  )
+  entries.map(({ chainId, tokenAddress }) => getTokenUsdRateQueryOptions({ chainId, tokenAddress }))
 
 /** Build a token price lookup that hides key formatting. */
 const buildGetPrice = (entries: TokenPriceEntry[], priceResults: UseQueryResult<TokenPriceData>[]) => {
-  const getKey = (chainId: LlamaMarket['chain'], address: Address) => `${chainId}:${address.toLowerCase()}`
+  const getKey = (chainId: number, address: Address) => `${chainId}:${address.toLowerCase()}`
   const tokenMap = Object.fromEntries(
-    entries.map(({ chainId, contractAddress }, index) => [getKey(chainId, contractAddress), priceResults[index]?.data]),
+    entries.map(({ chainId, tokenAddress }, index) => [getKey(chainId, tokenAddress), priceResults[index]?.data]),
   ) as Record<string, TokenPriceData | undefined>
 
-  return (chainId: LlamaMarket['chain'], address: Address) => tokenMap[getKey(chainId, address)] ?? MISSING_PRICE_RESULT
+  return (chainId: number, address: Address) => tokenMap[getKey(chainId, address)] ?? MISSING_PRICE_RESULT
 }
 
 const isMintMarketStats = (stats: BorrowStatsData | undefined) => stats && 'stablecoin' in stats
@@ -166,13 +164,13 @@ export const useUserPositionsSummary = ({
     () => ({
       borrow: collectTokenEntries(
         userPositionQueries.borrow,
-        ({ chainId, debtTokenAddress, collateralTokenAddress }) => [
-          { chainId, contractAddress: debtTokenAddress },
-          { chainId, contractAddress: collateralTokenAddress },
+        ({ blockchainId, debtTokenAddress, collateralTokenAddress }) => [
+          { chainId: requireChainId(blockchainId), tokenAddress: debtTokenAddress },
+          { chainId: requireChainId(blockchainId), tokenAddress: collateralTokenAddress },
         ],
       ),
-      supply: collectTokenEntries(userPositionQueries.supply, ({ chainId, suppliedTokenAddress }) => [
-        { chainId, contractAddress: suppliedTokenAddress },
+      supply: collectTokenEntries(userPositionQueries.supply, ({ blockchainId, suppliedTokenAddress }) => [
+        { chainId: requireChainId(blockchainId), tokenAddress: suppliedTokenAddress },
       ]),
     }),
     [userPositionQueries],
@@ -197,8 +195,9 @@ export const useUserPositionsSummary = ({
       const totalCollateralValue = sum(
         positionResults.map((stat, index) => {
           const borrowMeta = userPositionQueries.borrow[index]
-          const collateralTokenPrice = getPrice(borrowMeta.chainId, borrowMeta.collateralTokenAddress)
-          const borrowedTokenPrice = getPrice(borrowMeta.chainId, borrowMeta.debtTokenAddress)
+          const chainId = requireChainId(borrowMeta.blockchainId)
+          const collateralTokenPrice = getPrice(chainId, borrowMeta.collateralTokenAddress)
+          const borrowedTokenPrice = getPrice(chainId, borrowMeta.debtTokenAddress)
 
           const collateralValue = (stat.data?.collateral ?? 0) * collateralTokenPrice
           // part of the collateral is converted in the borrowed token when in soft liquidation
@@ -212,7 +211,8 @@ export const useUserPositionsSummary = ({
       const totalBorrowedValue = sum(
         positionResults.map((stat, index) => {
           const borrowMeta = userPositionQueries.borrow[index]
-          const debtPrice = getPrice(borrowMeta.chainId, borrowMeta.debtTokenAddress)
+          const chainId = requireChainId(borrowMeta.blockchainId)
+          const debtPrice = getPrice(chainId, borrowMeta.debtTokenAddress)
 
           return (stat.data?.debt ?? 0) * debtPrice
         }),
@@ -245,7 +245,8 @@ export const useUserPositionsSummary = ({
       const totalSuppliedValue = sum(
         positionResults.map((stat, index) => {
           const supplyMeta = userPositionQueries.supply[index]
-          const suppliedPrice = getPrice(supplyMeta.chainId, supplyMeta.suppliedTokenAddress)
+          const chainId = requireChainId(supplyMeta.blockchainId)
+          const suppliedPrice = getPrice(chainId, supplyMeta.suppliedTokenAddress)
 
           return (stat.data?.totalCurrentAssets ?? 0) * suppliedPrice
         }),
