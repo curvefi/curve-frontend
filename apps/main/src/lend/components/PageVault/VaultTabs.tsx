@@ -6,6 +6,8 @@ import { VaultWithdrawRedeem } from '@/lend/components/PageVault/VaultWithdrawRe
 import { networks } from '@/lend/networks'
 import { type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
 import { DepositForm } from '@/llamalend/features/supply/components/DepositForm'
+import { StakeForm } from '@/llamalend/features/supply/components/StakeForm'
+import { UnstakeForm } from '@/llamalend/features/supply/components/UnstakeForm'
 import { WithdrawForm } from '@/llamalend/features/supply/components/WithdrawForm'
 import { useLendingMuiForm } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
@@ -50,6 +52,26 @@ const NewVaultMenu = [
         label: t`Withdraw`,
         component: ({ rChainId, market, isLoaded }: VaultProps) => (
           <WithdrawForm networks={networks} chainId={rChainId} market={market} enabled={isLoaded} />
+        ),
+      },
+    ],
+  },
+  {
+    value: 'stake',
+    label: t`Stake`,
+    subTabs: [
+      {
+        value: 'stake',
+        label: t`Stake`,
+        component: ({ rChainId, market, isLoaded }: VaultProps) => (
+          <StakeForm networks={networks} chainId={rChainId} market={market} enabled={isLoaded} />
+        ),
+      },
+      {
+        value: 'unstake',
+        label: t`Unstake`,
+        component: ({ rChainId, market, isLoaded }: VaultProps) => (
+          <UnstakeForm networks={networks} chainId={rChainId} market={market} enabled={isLoaded} />
         ),
       },
     ],

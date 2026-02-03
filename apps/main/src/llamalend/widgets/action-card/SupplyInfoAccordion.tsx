@@ -8,6 +8,7 @@ import { ActionInfoAccordion, EstimatedTxCost, TxGasInfo } from './info-accordio
 import { formatAmount } from './info-accordion.helpers'
 
 export type SupplyInfoAccordionProps = {
+  title?: string
   isOpen: boolean
   toggle: () => void
   isApproved?: boolean
@@ -17,6 +18,7 @@ export type SupplyInfoAccordionProps = {
   /** Amount supplied in underlying asset with optional previous value */
   amountSupplied?: Query<Decimal | null>
   prevAmountSupplied?: Query<Decimal | null>
+  amountLabel?: string
   /** Symbol of the supplied asset */
   suppliedSymbol?: string
   /** Supply APY with optional previous value */
@@ -29,6 +31,7 @@ export type SupplyInfoAccordionProps = {
 }
 
 export const SupplyInfoAccordion = ({
+  title = t`Vault Shares`,
   isOpen,
   toggle,
   isApproved,
@@ -36,6 +39,7 @@ export const SupplyInfoAccordion = ({
   prevVaultShares,
   amountSupplied,
   prevAmountSupplied,
+  amountLabel = t`Amount Supplied`,
   suppliedSymbol,
   supplyApy,
   prevSupplyApy,
@@ -43,14 +47,14 @@ export const SupplyInfoAccordion = ({
   gas,
 }: SupplyInfoAccordionProps) => (
   <ActionInfoAccordion
-    title={t`Vault Shares`}
+    title={title}
     info={
       <ActionInfo
         label=""
         value={vaultShares?.data && formatAmount(vaultShares.data)}
         prevValue={prevVaultShares?.data && formatAmount(prevVaultShares.data)}
         {...combineQueryState(vaultShares, prevVaultShares)}
-        testId="supply-vault-shares"
+        testId="supply-info-accordion"
       />
     }
     testId="supply-info-accordion"
@@ -60,7 +64,7 @@ export const SupplyInfoAccordion = ({
     <Stack>
       {(amountSupplied || prevAmountSupplied) && (
         <ActionInfo
-          label={t`Amount Supplied`}
+          label={amountLabel}
           value={amountSupplied?.data && formatNumber(amountSupplied.data, { abbreviate: false })}
           prevValue={prevAmountSupplied?.data && formatNumber(prevAmountSupplied.data, { abbreviate: false })}
           {...combineQueryState(amountSupplied, prevAmountSupplied)}
