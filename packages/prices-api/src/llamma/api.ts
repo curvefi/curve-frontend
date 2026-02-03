@@ -1,12 +1,12 @@
 import { getHost, type Address, type Options, type Chain } from '..'
-import { fetchJson as fetch } from '../fetch'
+import { fetchJson } from '../fetch'
 import { getTimeRange } from '../timestamp'
 import * as Parsers from './parsers'
 import type * as Responses from './responses'
 
 export type Endpoint = 'crvusd' | 'lending'
 
-type GetEventsParams = {
+export type GetEventsParams = {
   endpoint: Endpoint
   chain: Chain
   llamma: Address
@@ -24,17 +24,19 @@ export async function getEvents(
     per_page: perPage.toString(),
   })
 
-  const resp = await fetch<Responses.GetLlammaEventsResponse>(
-    `${host}/v1/${endpoint}/llamma_events/${chain}/${llamma}??${params.toString()}`,
+  const resp = await fetchJson<Responses.GetLlammaEventsResponse>(
+    `${host}/v1/${endpoint}/llamma_events/${chain}/${llamma}?${params.toString()}`,
   )
 
   return {
     events: resp.data.map(Parsers.parseEvents),
     count: resp.count,
+    page: resp.page,
+    perPage: resp.per_page,
   }
 }
 
-type GetTradesParams = {
+export type GetTradesParams = {
   endpoint: Endpoint
   chain: Chain
   llamma: Address
@@ -52,13 +54,15 @@ export async function getTrades(
     per_page: perPage.toString(),
   })
 
-  const resp = await fetch<Responses.GetLlammaTradesResponse>(
+  const resp = await fetchJson<Responses.GetLlammaTradesResponse>(
     `${host}/v1/${endpoint}/llamma_trades/${chain}/${llamma}?${params.toString()}`,
   )
 
   return {
     trades: resp.data.map(Parsers.parseTrades),
     count: resp.count,
+    page: resp.page,
+    perPage: resp.per_page,
   }
 }
 
@@ -87,7 +91,7 @@ export async function getOHLC(
     end: range.end.toString(),
   })
 
-  const resp = await fetch<Responses.GetLlammaOHLCResponse>(
+  const resp = await fetchJson<Responses.GetLlammaOHLCResponse>(
     `${host}/v1/${endpoint}/llamma_ohlc/${chain}/${llamma}?${params.toString()}`,
   )
 

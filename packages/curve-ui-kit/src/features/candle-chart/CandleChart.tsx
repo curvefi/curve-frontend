@@ -54,20 +54,14 @@ const normalizeLiquidationRangePoints = (range?: LlammaLiquididationRange | null
   })
 }
 
-function getPriceFormatter(ohlcData: LpPriceOhlcDataFormatted[]) {
-  if (!ohlcData?.length) {
-    return {
-      type: 'custom' as const,
-      formatter: (price: number) => priceFormatter(price, 1), // Safe default delta
-    }
-  }
-
-  const min = Math.min(...ohlcData.map((x) => x.low))
-  const max = Math.max(...ohlcData.map((x) => x.high))
+function getPriceFormat(ohlcData: LpPriceOhlcDataFormatted[] | undefined) {
+  const delta = ohlcData?.length
+    ? Math.max(...ohlcData.map((x) => x.high)) - Math.min(...ohlcData.map((x) => x.low))
+    : 1
 
   return {
     type: 'custom' as const,
-    formatter: (price: number) => priceFormatter(price, max - min),
+    formatter: (price: number) => priceFormatter(price, delta),
   }
 }
 
@@ -544,7 +538,7 @@ export const CandleChart = ({
   useEffect(() => {
     if (!chartRef.current || !candlestickSeriesRef.current || !ohlcData) return
 
-    const priceFormat = getPriceFormatter(ohlcData)
+    const priceFormat = getPriceFormat(ohlcData)
     candlestickSeriesRef.current.setData(ohlcData)
     candlestickSeriesRef.current.applyOptions({ priceFormat })
     chartRef.current.applyOptions({ localization: { priceFormatter: priceFormat.formatter } })
