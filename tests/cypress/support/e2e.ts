@@ -1,3 +1,4 @@
+import '@cy/eip6963-test-setup'
 import type { AppRoute } from './routes'
 
 /** Global Cypress exception handler to ignore specific known errors. */
