@@ -60,8 +60,7 @@ const EMPTY: never[] = []
 export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
   const { isLite, poolFilters } = network
 
-  // todo: use isReady to show a loading spinner close to the data
-  const { data, isLoading, isReady, userHasPositions } = usePoolListData(network)
+  const { data, isLoading, userHasPositions } = usePoolListData(network)
 
   const defaultFilters = useDefaultPoolsFilter(data)
   const { globalFilter, setGlobalFilter, columnFilters, columnFiltersById, setColumnFilter, hasFilters, resetFilters } =
@@ -107,7 +106,7 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
       <TableFilters<PoolColumnId>
         filterExpandedKey={LOCAL_STORAGE_KEY}
         leftChildren={<TableFiltersTitles title={t`Pools`} subtitle={t`Find your next opportunity`} />}
-        loading={!isReady}
+        loading={isLoading}
         visibilityGroups={columnSettings}
         searchText={globalFilter}
         onSearch={setGlobalFilter}

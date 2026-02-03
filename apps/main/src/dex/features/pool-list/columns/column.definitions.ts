@@ -64,7 +64,7 @@ export const POOL_LIST_COLUMNS = [
     enableMultiSort: false, // that's done in the separate columns RewardsCrv and RewardsIncentives
     meta: { type: 'numeric', tooltip: { title: t`Token APR based on current prices of tokens and reward rates` } },
   }),
-  columnHelper.accessor((row) => (row.volume ? +row.volume?.value : null), {
+  columnHelper.accessor((row) => (row.volume ? +row.volume : null), {
     id: PoolColumnId.Volume,
     header: headers[PoolColumnId.Volume],
     cell: UsdCell,

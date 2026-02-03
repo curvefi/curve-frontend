@@ -2,9 +2,10 @@ import { type Mutation, MutationCache, QueryCache } from '@tanstack/react-query'
 import { addBreadcrumb, captureError } from '@ui-kit/features/sentry'
 import { logError, logMutation, logSuccess } from '@ui-kit/lib/logging'
 import { QUERY_KEY_IDENTIFIER as USD_RATE_KEY_IDENTIFER } from '../model/entities/token-usd-rate'
+import { QUERY_KEY_IDENTIFIER as POOL_VOLUME_KEY_IDENTIFER } from '../model/entities/token-usd-rate'
 
 // disable logging for queries that are too verbose
-const disableCacheQueryKeys = new Set<unknown>(['readContracts', USD_RATE_KEY_IDENTIFER])
+const disableCacheQueryKeys = new Set<unknown>(['readContracts', USD_RATE_KEY_IDENTIFER, POOL_VOLUME_KEY_IDENTIFER])
 
 export const queryCache = new QueryCache({
   onError: (error: Error, query) => logError(query.queryKey, error, error.message),
