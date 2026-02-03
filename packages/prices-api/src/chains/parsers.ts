@@ -36,3 +36,11 @@ export const parseUsers = (x: Responses.GetUsersResponse): Models.Users[] =>
       users: tx.users,
     })),
   )
+
+export const parsePoolFilters = (x: Responses.GetPoolFilters): Models.PoolFilter[] =>
+  x.data.flatMap((data) =>
+    data.pools.map((pool) => ({
+      chain: data.chain,
+      address: pool.address,
+    })),
+  )

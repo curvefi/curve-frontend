@@ -53,6 +53,7 @@ export const SupplyInfoAccordion = ({
         testId="supply-vault-shares"
       />
     }
+    testId="supply-info-accordion"
     expanded={isOpen}
     toggle={toggle}
   >

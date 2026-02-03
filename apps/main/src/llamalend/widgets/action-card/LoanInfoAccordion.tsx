@@ -101,6 +101,7 @@ export const LoanInfoAccordion = ({
           testId="borrow-health"
         />
       }
+      testId="loan-info-accordion"
       expanded={isOpen}
       toggle={toggle}
     >
