@@ -19,7 +19,7 @@ export const SelectableCard = forwardRef<HTMLDivElement, SelectableCardProps>(({
         outlineColor: isSelected ? t.design.Layer.Highlight.Outline : t.design.Layer[1].Outline,
         outlineOffset: `-${Sizing[10]}`,
         transition: `background-color ${TransitionFunction}, outline-color ${TransitionFunction}`,
-        '&:hover': {
+        '&:hover, &.cypress-hover': {
           backgroundColor: t.design.Layer.TypeAction.Hover,
         },
       }),
