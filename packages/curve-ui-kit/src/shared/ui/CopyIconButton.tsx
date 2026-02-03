@@ -1,3 +1,4 @@
+import { type ReactNode } from 'react'
 import IconButton, { type IconButtonProps } from '@mui/material/IconButton'
 import { t } from '@ui-kit/lib/i18n'
 import { CopyIcon } from '@ui-kit/shared/icons/CopyIcon'
@@ -7,9 +8,20 @@ import { showToast } from '@ui-kit/widgets/Toast/toast.util'
 
 const testId = 'copy-confirmation' as const
 
-type CopyIconBUttonProps = { copyText: string; label: string; confirmationText: string } & IconButtonProps
+type CopyIconBUttonProps = {
+  copyText: string
+  label: string
+  confirmationText: string
+  children?: ReactNode
+} & IconButtonProps
 
-export const CopyIconButton = ({ copyText, label, confirmationText, ...iconProps }: CopyIconBUttonProps) => (
+export const CopyIconButton = ({
+  copyText,
+  label,
+  confirmationText,
+  children = <CopyIcon />,
+  ...iconProps
+}: CopyIconBUttonProps) => (
   // Extra theme inverter so the tooltip doesn't change colors when inside an inverted block
   <InvertTheme inverted={false}>
     <Tooltip title={label} placement="top">
@@ -26,7 +38,7 @@ export const CopyIconButton = ({ copyText, label, confirmationText, ...iconProps
           )
         }}
       >
-        <CopyIcon />
+        {children}
       </IconButton>
     </Tooltip>
   </InvertTheme>
