@@ -50,13 +50,11 @@ export function BorrowMoreLoanInfoAccordion<ChainId extends IChainId>({
 
   const prevHealth = useHealthQueries((isFull) => getUserHealthOptions({ ...params, isFull }))
 
-  const { data: isApproved } = useBorrowMoreIsApproved(params, isOpen)
-
   return (
     <LoanInfoAccordion
       isOpen={isOpen}
       toggle={toggle}
-      isApproved={isApproved}
+      isApproved={q(useBorrowMoreIsApproved(params, isOpen))}
       gas={useBorrowMoreEstimateGas(networks, params, isOpen)}
       health={health}
       prevHealth={prevHealth}

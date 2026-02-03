@@ -30,7 +30,7 @@ export type LoanInfoAccordionProps = {
   isOpen: boolean
   toggle: () => void
   range?: number
-  isApproved?: boolean
+  isApproved?: Query<boolean>
   health: Query<Decimal | null>
   prevHealth?: Query<Decimal>
   isFullRepay?: boolean
@@ -280,8 +280,8 @@ export const LoanInfoAccordion = ({
                 <>
                   {t`Estimated tx cost`}
                   <Typography color="textTertiary" component="span" variant="bodyXsRegular">
-                    {isApproved === true && ` ${t`step 2/2`}`}
-                    {isApproved === false && ` ${t`step 1/2`}`}
+                    {isApproved?.data === true && ` ${t`step 2/2`}`}
+                    {isApproved?.data === false && ` ${t`step 1/2`}`}
                   </Typography>
                 </>
               }

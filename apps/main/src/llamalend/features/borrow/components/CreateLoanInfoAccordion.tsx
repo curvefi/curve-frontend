@@ -1,4 +1,5 @@
 import type { NetworkDict } from '@/llamalend/llamalend.types'
+import { useCreateLoanIsApproved } from '@/llamalend/queries/create-loan/create-loan-approved.query'
 import { useMarketRates } from '@/llamalend/queries/market-rates'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
@@ -47,6 +48,7 @@ export const CreateLoanInfoAccordion = <ChainId extends IChainId>({
       isOpen={isOpen}
       toggle={toggle}
       range={range}
+      isApproved={q(useCreateLoanIsApproved(params))}
       health={q(useCreateLoanHealth(params))}
       bands={q(useCreateLoanBands(params, isOpen))}
       prices={q(useCreateLoanPrices(params, isOpen))}
