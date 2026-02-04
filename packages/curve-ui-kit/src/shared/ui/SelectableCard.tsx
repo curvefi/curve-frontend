@@ -13,7 +13,7 @@ export const SelectableCard = forwardRef<HTMLDivElement, SelectableCardProps>(({
     component={Card}
     sx={[
       (t) => ({
-        backgroundColor: t.design.Layer[1].Fill,
+        backgroundColor: isSelected ? t.design.Layer.TypeAction.Selected : t.design.Layer[1].Fill,
         outlineStyle: 'solid',
         outlineWidth: Sizing[10],
         outlineColor: isSelected ? t.design.Layer.Highlight.Outline : t.design.Layer[1].Outline,

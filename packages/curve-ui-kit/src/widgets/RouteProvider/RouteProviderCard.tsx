@@ -40,7 +40,7 @@ export const RouteProviderCard = ({
     data-testid="route-provider-card"
     sx={{ padding: Spacing.sm.desktop }}
   >
-    <Stack sx={{ width: '100%' }} data-testid="route-provider-rows">
+    <Stack sx={{ width: '100%' }} gap={Spacing.xxs} data-testid="route-provider-rows">
       <Stack direction="row" justifyContent="space-between" alignItems="center">
         <WithSkeleton loading={route.isLoading}>
           <Box sx={{ display: 'flex', alignItems: 'baseline' }}>
