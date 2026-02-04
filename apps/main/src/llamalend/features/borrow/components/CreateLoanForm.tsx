@@ -4,8 +4,8 @@ import { type CreateLoanFormExternalFields, type OnCreateLoanFormUpdate } from '
 import { hasLeverage } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import type { CreateLoanOptions } from '@/llamalend/mutations/create-loan.mutation'
-import { LoanFormAlerts } from '@/llamalend/widgets/manage-loan/LoanFormAlerts'
-import { LoanFormTokenInput } from '@/llamalend/widgets/manage-loan/LoanFormTokenInput'
+import { LoanFormAlerts } from '@/llamalend/widgets/action-card/LoanFormAlerts'
+import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
 import Collapse from '@mui/material/Collapse'
@@ -64,7 +64,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
     isApproved,
     isCreated,
     isPending,
-    maxTokenValues,
+    maxTokenValues: { collateral: maxCollateral, debt: maxDebt, maxLeverage, setRange },
     onSubmit,
     params,
     txHash,
@@ -72,14 +72,6 @@ export const CreateLoanForm = <ChainId extends IChainId>({
     leverage,
   } = useCreateLoanForm({ market, network, preset, onCreated })
 
-  const setRange = useCallback(
-    (range: number) => {
-      // maxDebt is reset when query restarts, clear now to disable queries until recalculated
-      form.setValue('maxDebt', undefined, setValueOptions)
-      form.setValue('range', range, setValueOptions)
-    },
-    [form],
-  )
   useFormSync(values, onUpdate)
 
   const toggleLeverage = useCallback(
@@ -109,7 +101,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
           blockchainId={network.id}
           name="userCollateral"
           form={form}
-          max={{ ...maxTokenValues.collateral, fieldName: 'maxCollateral' }}
+          max={{ ...maxCollateral, fieldName: 'maxCollateral' }}
           testId="borrow-collateral-input"
           network={network}
         />
@@ -119,7 +111,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
           blockchainId={network.id}
           name="debt"
           form={form}
-          max={{ ...maxTokenValues.debt, fieldName: 'maxDebt' }}
+          max={{ ...maxDebt, fieldName: 'maxDebt' }}
           hideBalance
           testId="borrow-debt-input"
           network={network}
@@ -129,7 +121,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
               tooltip={t`Max borrow`}
               symbol={borrowToken?.symbol}
               balance={values.maxDebt}
-              loading={maxTokenValues.debt.isLoading}
+              loading={maxDebt.isLoading}
               onClick={useCallback(() => {
                 form.setValue('debt', values.maxDebt, setValueOptions)
                 void form.trigger('maxDebt') // re-validate maxDebt when debt changes
@@ -145,7 +137,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
           checked={values.leverageEnabled}
           leverage={leverage}
           onToggle={toggleLeverage}
-          maxLeverage={maxTokenValues.maxLeverage}
+          maxLeverage={maxLeverage}
         />
       )}
 

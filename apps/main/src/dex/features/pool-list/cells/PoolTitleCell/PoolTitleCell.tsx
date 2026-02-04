@@ -6,6 +6,7 @@ import { useTokenAlert } from '@/dex/hooks/useTokenAlert'
 import Stack from '@mui/material/Stack'
 import type { CellContext } from '@tanstack/react-table'
 import { Icon } from '@ui/Icon'
+import type { IconProps } from '@ui/Icon/Icon'
 import { Chip } from '@ui/Typography/Chip'
 import { t } from '@ui-kit/lib/i18n'
 import { TokenIcons } from '@ui-kit/shared/ui/TokenIcons'
@@ -53,8 +54,6 @@ export const PoolTitleCell = ({
     </Stack>
   )
 }
-
-import type { IconProps } from '@ui/Icon/Icon'
 
 export const StyledIcon: IStyledComponent<'web', IconProps> = styled(Icon)`
   margin: var(--spacing-3) auto 0;

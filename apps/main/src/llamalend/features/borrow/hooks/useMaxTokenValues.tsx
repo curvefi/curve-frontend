@@ -1,8 +1,9 @@
-import { useEffect } from 'react'
+import BigNumber from 'bignumber.js'
+import { useCallback, useEffect, useRef } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
 import { type Address } from 'viem'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
-import { Decimal } from '@ui-kit/utils'
+import { decimal, Decimal } from '@ui-kit/utils'
 import { setValueOptions } from '@ui-kit/utils/react-form.utils'
 import { useCreateLoanMaxReceive } from '../../../queries/create-loan/create-loan-max-receive.query'
 import { useMarketMaxLeverage } from '../../../queries/market-max-leverage.query'
@@ -35,6 +36,7 @@ export function useMaxTokenValues(
   } = useMarketMaxLeverage(params)
 
   const { maxDebt, maxLeverage: maxBorrowLeverage, maxTotalCollateral } = maxBorrow ?? {}
+  const pendingRatioRef = useRef<Decimal>(null) // keep this in a ref so it doesn't trigger re-renders, used when maxDebt changes
   const maxCollateral =
     userBalance && maxTotalCollateral
       ? (`${Math.min(+userBalance, +maxTotalCollateral)}` satisfies Decimal)
@@ -42,10 +44,32 @@ export function useMaxTokenValues(
 
   const maxLeverage = maxBorrowLeverage ?? maxTotalLeverage
 
-  useEffect(() => form.setValue('maxDebt', maxDebt, setValueOptions), [form, maxDebt])
+  useEffect(() => {
+    const pendingDebtRatio = pendingRatioRef.current
+    if (pendingDebtRatio && maxDebt) {
+      const value = decimal(BigNumber(maxDebt).times(pendingDebtRatio))
+      form.setValue('debt', value, setValueOptions)
+      pendingRatioRef.current = null
+    }
+    form.setValue('maxDebt', maxDebt, setValueOptions) // this needs to validate after setting the debt
+  }, [form, maxDebt])
+
   useEffect(() => form.setValue('maxCollateral', maxCollateral, setValueOptions), [form, maxCollateral])
 
+  // set range is not necessarily tied to maxTokenValues. However, it manipulates them, so we expose it here
+  const setRange = useCallback(
+    (range: number) => {
+      const { debt, maxDebt } = form.getValues()
+      form.setValue('maxDebt', undefined, setValueOptions)
+      form.setValue('range', range, setValueOptions)
+      // maxDebt is now reset - when the new value arrives, set debt to the same ratio as before
+      pendingRatioRef.current = decimal(debt && maxDebt && BigNumber(debt).div(maxDebt))!
+    },
+    [form],
+  )
+
   return {
+    setRange,
     collateral: {
       data: maxCollateral,
       isLoading: !collateralToken || isLoadingMaxBorrow || isBalanceLoading,

@@ -1,31 +1,31 @@
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
-import type { WithdrawOptions } from '@/llamalend/mutations/withdraw.mutation'
+import type { UnstakeOptions } from '@/llamalend/mutations/unstake.mutation'
 import { LoanFormAlerts } from '@/llamalend/widgets/action-card/LoanFormAlerts'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
 import { t } from '@ui-kit/lib/i18n'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
-import { useWithdrawForm } from '../hooks/useWithdrawForm'
-import { WithdrawSupplyInfoAccordion } from './WithdrawSupplyInfoAccordion'
+import { useUnstakeForm } from '../hooks/useUnstakeForm'
+import { UnstakeSupplyInfoAccordion } from './UnstakeSupplyInfoAccordion'
 
-export type WithdrawFormProps<ChainId extends IChainId> = {
+export type UnstakeFormProps<ChainId extends IChainId> = {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
   chainId: ChainId
   enabled?: boolean
-  onWithdrawn?: NonNullable<WithdrawOptions['onWithdrawn']>
+  onUnstaked?: NonNullable<UnstakeOptions['onUnstaked']>
 }
 
-const TEST_ID_PREFIX = 'supply-withdraw'
+const TEST_ID_PREFIX = 'supply-unstake'
 
-export const WithdrawForm = <ChainId extends IChainId>({
+export const UnstakeForm = <ChainId extends IChainId>({
   market,
   networks,
   chainId,
   enabled,
-  onWithdrawn,
-}: WithdrawFormProps<ChainId>) => {
+  onUnstaked,
+}: UnstakeFormProps<ChainId>) => {
   const network = networks[chainId]
 
   const {
@@ -34,37 +34,38 @@ export const WithdrawForm = <ChainId extends IChainId>({
     isPending,
     onSubmit,
     isDisabled,
+    vaultToken,
     borrowToken,
-    isWithdrawn,
-    withdrawError,
+    isUnstaked,
+    unstakeError,
     txHash,
     formErrors,
     max,
-  } = useWithdrawForm({
+  } = useUnstakeForm({
     market,
     network,
     enabled,
-    onWithdrawn,
+    onUnstaked,
   })
 
   return (
     <Form
       {...form}
       onSubmit={onSubmit}
-      infoAccordion={<WithdrawSupplyInfoAccordion params={params} networks={networks} tokens={{ borrowToken }} />}
+      infoAccordion={<UnstakeSupplyInfoAccordion params={params} networks={networks} tokens={{ borrowToken }} />}
     >
       <LoanFormTokenInput
-        label={t`Amount to withdraw`}
-        token={borrowToken}
+        label={t`Amount to unstake`}
+        token={vaultToken}
         blockchainId={network.id}
-        name="withdrawAmount"
+        name="unstakeAmount"
         form={form}
         max={max}
         testId={`${TEST_ID_PREFIX}-input`}
         network={network}
         positionBalance={{
           position: max,
-          tooltip: t`Vault shares value`,
+          tooltip: t`Staked vault shares`,
         }}
       />
 
@@ -74,17 +75,17 @@ export const WithdrawForm = <ChainId extends IChainId>({
         disabled={isDisabled}
         data-testid={`${TEST_ID_PREFIX}-submit-button`}
       >
-        {isPending ? t`Processing...` : t`Withdraw`}
+        {isPending ? t`Processing...` : t`Unstake`}
       </Button>
 
       <LoanFormAlerts
-        isSuccess={isWithdrawn}
-        error={withdrawError}
+        isSuccess={isUnstaked}
+        error={unstakeError}
         txHash={txHash}
         formErrors={formErrors}
         network={network}
-        handledErrors={['withdrawAmount']}
-        successTitle={t`Withdrawn successfully`}
+        handledErrors={['unstakeAmount']}
+        successTitle={t`Unstaked successfully`}
       />
     </Form>
   )

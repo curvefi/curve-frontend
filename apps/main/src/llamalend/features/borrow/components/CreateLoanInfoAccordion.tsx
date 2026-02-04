@@ -12,7 +12,7 @@ import { useCreateLoanHealth } from '../../../queries/create-loan/create-loan-he
 import { useCreateLoanPriceImpact } from '../../../queries/create-loan/create-loan-price-impact.query'
 import { useCreateLoanPrices } from '../../../queries/create-loan/create-loan-prices.query'
 import { useMarketFutureRates } from '../../../queries/market-future-rates.query'
-import { LoanInfoAccordion } from '../../../widgets/manage-loan/LoanInfoAccordion'
+import { LoanInfoAccordion } from '../../../widgets/action-card/LoanInfoAccordion'
 import { useLoanToValue } from '../hooks/useLoanToValue'
 import { type CreateLoanForm, type CreateLoanFormQueryParams, type Token } from '../types'
 

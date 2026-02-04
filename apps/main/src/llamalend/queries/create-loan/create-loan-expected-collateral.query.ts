@@ -1,5 +1,4 @@
-import { getLlamaMarket } from '@/llamalend/llama.utils'
-import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
+import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/create-loan-query.helpers'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { assert, decimal, Decimal } from '@ui-kit/utils'
 import type { CreateLoanDebtParams, CreateLoanDebtQuery } from '../../features/borrow/types'
@@ -65,22 +64,21 @@ export const { useQuery: useCreateLoanExpectedCollateral, queryKey: createLoanEx
       userCollateral = '0',
       debt,
       slippage,
+      leverageEnabled,
     }: CreateLoanDebtQuery): Promise<CreateLoanExpectedCollateralResult> => {
-      const market = getLlamaMarket(marketId)
-      if (market instanceof LendMarketTemplate) {
-        return convertNumbers(
-          await market.leverage.createLoanExpectedCollateral(userCollateral, userBorrowed, debt, +slippage),
-        )
+      const [type, impl] = getCreateLoanImplementation(marketId, leverageEnabled)
+      switch (type) {
+        case 'V1':
+        case 'V2':
+          return convertNumbers(await impl.createLoanExpectedCollateral(userCollateral, userBorrowed, debt, +slippage))
+        case 'V0': {
+          assert(!+userBorrowed, `userBorrowed must be 0 for non-leverage mint markets`)
+          const { collateral, leverage } = await impl.createLoanCollateral(userCollateral, debt)
+          return convertNumbers({ userCollateral, leverage, totalCollateral: collateral })
+        }
+        case 'unleveraged':
+          throw new Error('Expected collateral is only available for leveraged create loan')
       }
-      if (market.leverageV2.hasLeverage()) {
-        return convertNumbers(
-          await market.leverageV2.createLoanExpectedCollateral(userCollateral, userBorrowed, debt, +slippage),
-        )
-      }
-
-      assert(!+userBorrowed, `userBorrowed must be 0 for non-leverage mint markets`)
-      const { collateral, leverage } = await market.leverage.createLoanCollateral(userCollateral, debt)
-      return convertNumbers({ userCollateral, leverage, totalCollateral: collateral })
     },
     staleTime: '1m',
     validationSuite: createLoanQueryValidationSuite({ debtRequired: true, isLeverageRequired: true }),

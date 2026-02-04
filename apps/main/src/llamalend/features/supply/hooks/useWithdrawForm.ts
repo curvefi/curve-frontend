@@ -4,38 +4,36 @@ import { useForm } from 'react-hook-form'
 import { useConnection } from 'wagmi'
 import { getTokens } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, LlamaNetwork } from '@/llamalend/llamalend.types'
-import { type DepositOptions, useDepositMutation } from '@/llamalend/mutations/deposit.mutation'
-import { useDepositIsApproved } from '@/llamalend/queries/supply/supply-deposit-approved.query'
+import { type WithdrawOptions, useWithdrawMutation } from '@/llamalend/mutations/withdraw.mutation'
+import { useUserVaultSharesToAssetsAmount } from '@/llamalend/queries/supply/supply-user-vault-amounts'
 import {
-  depositFormValidationSuite,
-  DepositParams,
-  type DepositForm,
+  withdrawFormValidationSuite,
+  WithdrawParams,
+  type WithdrawForm,
 } from '@/llamalend/queries/validation/supply.validation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { vestResolver } from '@hookform/resolvers/vest'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
-import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { setValueOptions, useFormErrors } from '@ui-kit/utils/react-form.utils'
 
-const useCallbackAfterFormUpdate = (form: UseFormReturn<DepositForm>, callback: () => void) =>
+const useCallbackAfterFormUpdate = (form: UseFormReturn<WithdrawForm>, callback: () => void) =>
   useEffect(() => form.subscribe({ formState: { values: true }, callback }), [form, callback])
 
-const emptyDepositForm = (): DepositForm => ({
-  depositAmount: undefined,
-  maxDepositAmount: undefined,
+const emptyWithdrawForm = (): WithdrawForm => ({
+  withdrawAmount: undefined,
+  maxWithdrawAmount: undefined,
 })
 
-export const useDepositForm = <ChainId extends LlamaChainId>({
+export const useWithdrawForm = <ChainId extends LlamaChainId>({
   market,
   network,
-  enabled,
-  onDeposited,
+  onWithdrawn,
 }: {
   market: LlamaMarketTemplate | undefined
   network: LlamaNetwork<ChainId>
   enabled?: boolean
-  onDeposited?: NonNullable<DepositOptions['onDeposited']>
+  onWithdrawn?: NonNullable<WithdrawOptions['onWithdrawn']>
 }) => {
   const { address: userAddress } = useConnection()
   const { chainId } = network
@@ -43,68 +41,63 @@ export const useDepositForm = <ChainId extends LlamaChainId>({
 
   const { borrowToken } = market ? getTokens(market) : {}
 
-  const maxUserDeposit = useTokenBalance({
-    chainId,
-    userAddress,
-    tokenAddress: borrowToken?.address,
-  })
+  const maxUserWithdraw = useUserVaultSharesToAssetsAmount({ chainId, marketId, userAddress })
 
-  const form = useForm<DepositForm>({
+  const form = useForm<WithdrawForm>({
     ...formDefaultOptions,
-    resolver: vestResolver(depositFormValidationSuite),
-    defaultValues: emptyDepositForm(),
+    resolver: vestResolver(withdrawFormValidationSuite),
+    defaultValues: emptyWithdrawForm(),
   })
 
   const values = watchForm(form)
 
   const params = useDebouncedValue(
     useMemo(
-      (): DepositParams<ChainId> => ({
+      (): WithdrawParams<ChainId> => ({
         chainId,
         marketId,
         userAddress,
-        depositAmount: values.depositAmount,
+        withdrawAmount: values.withdrawAmount,
       }),
-      [chainId, marketId, userAddress, values.depositAmount],
+      [chainId, marketId, userAddress, values.withdrawAmount],
     ),
   )
 
   const {
     onSubmit,
-    isPending: isDepositing,
-    isSuccess: isDeposited,
-    error: depositError,
+    isPending: isWithdrawing,
+    isSuccess: isWithdrawn,
+    error: withdrawError,
     data,
-    reset: resetDeposit,
-  } = useDepositMutation({
+    reset: resetWithdraw,
+  } = useWithdrawMutation({
     marketId,
     network,
-    onDeposited,
+    onWithdrawn,
     onReset: form.reset,
     userAddress,
   })
 
   const formErrors = useFormErrors(form.formState)
 
-  useCallbackAfterFormUpdate(form, resetDeposit)
+  useCallbackAfterFormUpdate(form, resetWithdraw)
 
   useEffect(() => {
-    form.setValue('maxDepositAmount', maxUserDeposit.data, setValueOptions)
-  }, [form, maxUserDeposit.data])
+    form.setValue('maxWithdrawAmount', maxUserWithdraw.data, setValueOptions)
+  }, [form, maxUserWithdraw.data])
 
   return {
     form,
     values,
     params,
-    isPending: form.formState.isSubmitting || isDepositing,
+    isPending: form.formState.isSubmitting || isWithdrawing,
     onSubmit: form.handleSubmit(onSubmit),
     isDisabled: formErrors.length > 0,
     borrowToken,
-    isDeposited,
-    depositError,
+    isWithdrawn,
+    withdrawError,
     txHash: data?.hash,
-    max: maxUserDeposit,
-    isApproved: useDepositIsApproved(params, enabled),
+    max: maxUserWithdraw,
     formErrors,
   }
 }
