@@ -143,10 +143,14 @@ export const createPoolSwapSlice = (
 
       if (resp.error) {
         get()[sliceKey].setStateByKey('formStatus', { ...cFormStatus, error: resp.error })
-      } else {
+      } else if (resp.activeKey === get()[sliceKey].activeKey) {
         const cFormValues = cloneDeep(formValues)
-        cFormValues.toAmount = resp.toAmount
-        cFormValues.fromAmount = resp.fromAmount
+        // Only update the calculated field to avoid overwriting user input during race conditions
+        if (cFormValues.isFrom) {
+          cFormValues.toAmount = resp.toAmount // User typed fromAmount, only update toAmount
+        } else {
+          cFormValues.fromAmount = resp.fromAmount // User typed toAmount, only update fromAmount
+        }
         const activeKey = getActiveKey(cFormValues, maxSlippage)
 
         sliceState.setStateByKeys({
@@ -171,10 +175,10 @@ export const createPoolSwapSlice = (
           const userFromBalance = userPoolBalances[cFormValues.fromAddress]
           cFormValues.fromError = +userFromBalance >= +cFormValues.fromAmount ? '' : 'too-much'
 
-          // update formValues
-          get()[sliceKey].setStateByKey('formValues', cloneDeep(cFormValues))
+          // update formValues only if activeKey hasn't changed during the async operation
+          if (get()[sliceKey].activeKey !== activeKey) return
 
-          // get est gas, approval
+          get()[sliceKey].setStateByKey('formValues', cloneDeep(cFormValues))
           if (!cFormValues.fromError) {
             get()[sliceKey].setStateByActiveKey('formEstGas', activeKey, {
               ...(get()[sliceKey].formEstGas[storedActiveKey] ?? DEFAULT_EST_GAS),
