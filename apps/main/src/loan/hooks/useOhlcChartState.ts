@@ -113,6 +113,7 @@ export const useOhlcChartState = ({ chainId, market, llammaId }: OhlcChartStateP
   const { oraclePriceVisible, liqRangeCurrentVisible, liqRangeNewVisible, legendSets } = useChartLegendToggles({
     hasNewLiquidationRange: !!newLiqPrices,
     hasLiquidationRange: !!userPrices,
+    llammaEndpoint: selectedChartKey === 'llamma',
   })
 
   const selectedLiqRange = useLiquidationRange({
