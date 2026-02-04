@@ -31,14 +31,13 @@ type UserLoanDetails = {
   state: { collateral: string; borrowed: string; debt: string; N: string }
   status: { label: string; colorKey: HealthColorKey; tooltip: string }
   leverage: string
-  pnl: Record<string, string> // todo: pnl data is unused for now
 }
 
 const _getUserLoanDetails = async ({ marketId, userAddress }: UserLoanDetailsQuery): Promise<UserLoanDetails> => {
   const api = requireLib('llamaApi')
   const market = api.getLendMarket(marketId)
 
-  const [state, healthFull, healthNotFull, range, bands, prices, bandsBalances, oraclePriceBand, leverage, pnl] =
+  const [state, healthFull, healthNotFull, range, bands, prices, bandsBalances, oraclePriceBand, leverage] =
     await Promise.all([
       market.userState(),
       market.userHealth(),
@@ -49,7 +48,6 @@ const _getUserLoanDetails = async ({ marketId, userAddress }: UserLoanDetailsQue
       market.userBandsBalances(),
       market.oraclePriceBand(),
       market.currentLeverage(userAddress),
-      market.currentPnL(userAddress),
     ])
 
   let loss: UserLoss | undefined
@@ -85,7 +83,6 @@ const _getUserLoanDetails = async ({ marketId, userAddress }: UserLoanDetailsQue
     loss,
     leverage,
     status: getLiquidationStatus(healthNotFull, isCloseToLiquidation, state.borrowed),
-    pnl,
   }
 }
 

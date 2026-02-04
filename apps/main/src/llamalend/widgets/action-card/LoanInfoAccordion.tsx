@@ -27,7 +27,6 @@ export type LoanInfoAccordionProps = {
   loanToValue: Query<Decimal | null>
   prevLoanToValue?: Query<Decimal | null>
   netBorrowApr?: Query<Decimal | null>
-  pnl?: Query<Decimal | null>
   gas: Query<TxGasInfo | null>
   debt?: Query<{ value: Decimal; tokenSymbol: string | undefined } | null>
   collateral?: Query<{ value: Decimal; tokenSymbol: string | undefined } | null>
@@ -62,7 +61,6 @@ export const LoanInfoAccordion = ({
   loanToValue,
   prevLoanToValue,
   netBorrowApr,
-  pnl,
   gas,
   debt,
   collateral,
@@ -196,15 +194,6 @@ export const LoanInfoAccordion = ({
               prevValue={leverageValue?.data && prevLeverageValue?.data && formatLeverage(prevLeverageValue.data)}
               {...combineQueryState(leverageValue, prevLeverageValue)}
               testId="borrow-leverage"
-            />
-          )}
-          {pnl && (
-            <ActionInfo
-              label={t`PNL`}
-              value={pnl.data && formatNumber(pnl.data, { abbreviate: false })}
-              valueRight={collateralSymbol}
-              {...combineQueryState(pnl)}
-              testId="borrow-pnl"
             />
           )}
           {(prevLeverageCollateral || leverageCollateral) && (
