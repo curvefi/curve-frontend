@@ -79,8 +79,8 @@ export const useOhlcChartState = ({ rChainId, rOwmId }: UseOhlcChartStateProps) 
 
   // Select chart data based on current selection
   const currentChart = selectedChartKey === 'llamma' ? chartLlammaOhlc : chartOraclePoolOhlc
+  // we no longer want to use the llamma endpoint for it's ohlc data as it's deemed too spotty, pass empty array for ohlc data when llamma is selected
   const ohlcData = selectedChartKey === 'llamma' ? [] : chartOraclePoolOhlc.data
-  // we no longer want to use the llamma endpoint for it's ohlc data as it's deemed too spotty
   const noDataAvailable = !isLoading && currentChart.oraclePriceData.length === 0
 
   const oraclePriceData = useMemo(() => {
