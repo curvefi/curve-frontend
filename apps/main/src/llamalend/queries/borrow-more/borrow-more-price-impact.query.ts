@@ -1,3 +1,4 @@
+import { getBorrowMoreExpectedCollateralKey } from '@/llamalend/queries/borrow-more/borrow-more-expected-collateral.query'
 import { getBorrowMoreImplementation } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
 import type { BorrowMoreParams, BorrowMoreQuery } from '@/llamalend/queries/validation/borrow-more.validation'
 import { borrowMoreLeverageValidationSuite } from '@/llamalend/queries/validation/borrow-more.validation'
@@ -28,4 +29,5 @@ export const { useQuery: useBorrowMorePriceImpact } = queryFactory({
   },
   staleTime: '1m',
   validationSuite: borrowMoreLeverageValidationSuite,
+  dependencies: (params) => [getBorrowMoreExpectedCollateralKey(params)],
 })

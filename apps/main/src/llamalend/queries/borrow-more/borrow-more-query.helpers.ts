@@ -49,7 +49,7 @@ export function getBorrowMoreImplementationArgs(
 
 export const isLeverageBorrowMore = (
   marketId: string | LlamaMarketTemplate | null | undefined,
-  leverageEnabled: boolean | null = true,
+  leverageEnabled: boolean | null | undefined,
 ) => !!marketId && ['V1', 'V2'].includes(getBorrowMoreImplementation(marketId, leverageEnabled)[0])
 
 export const isLeverageBorrowMoreSupported = (market?: LlamaMarketTemplate) =>
