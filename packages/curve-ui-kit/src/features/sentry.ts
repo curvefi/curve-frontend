@@ -1,46 +1,46 @@
 import {
-  init,
-  withScope,
+  addBreadcrumb as addSentryBreadcrumb,
   captureException,
   captureMessage,
-  setUser as setSentryUser,
+  init,
   setTag,
-  addBreadcrumb as addSentryBreadcrumb,
+  setUser as setSentryUser,
+  withScope,
 } from '@sentry/react'
-import { isDevelopment } from '@ui-kit/utils'
 
-const { SENTRY_DSN } = process.env
+const { SENTRY_DSN, NODE_ENV } = process.env
+const dsn = SENTRY_DSN ?? window.SENTRY_DSN
 
 /**
- * Initialize Sentry error reporting. Only active in production when SENTRY_DSN is set.
+ * Initialize Sentry error reporting. Only active when SENTRY_DSN is set or in E2E tests.
  */
-export function initSentry() {
-  if (isDevelopment) return console.warn(`Sentry disabled in DEV mode`)
-  init({
-    dsn: SENTRY_DSN,
-    environment: process.env.NODE_ENV,
+export const initSentry = () =>
+  dsn
+    ? init({
+        dsn,
+        environment: NODE_ENV,
 
-    // Performance monitoring sample rate (adjust based on traffic)
-    tracesSampleRate: 0.1,
+        // Performance monitoring sample rate (adjust based on traffic)
+        tracesSampleRate: 0.1,
 
-    // Session replay for debugging (only on errors)
-    replaysSessionSampleRate: 0,
-    replaysOnErrorSampleRate: 1.0,
+        // Session replay for debugging (only on errors)
+        replaysSessionSampleRate: 0,
+        replaysOnErrorSampleRate: 1.0,
 
-    // Filter out noise
-    ignoreErrors: [
-      // Network errors that are expected
-      'Network request failed',
-      'Failed to fetch',
-      'Load failed',
-      // User-initiated navigation
-      'AbortError',
-      // Wallet connection issues (often user-initiated)
-      'User rejected',
-      'User denied',
-    ],
-  })
-}
+        // Filter out noise
+        ignoreErrors: [
+          // Network errors that are expected
+          'Network request failed',
+          'Failed to fetch',
+          'Load failed',
+          // User-initiated navigation
+          'AbortError',
+          // Wallet connection issues (often user-initiated)
+          'User rejected',
+          'User denied',
+        ],
+      })
+    : console.warn(`Sentry disabled: no DSN configured`)
 
 /**
  * Capture an error manually with optional context.
@@ -77,7 +77,7 @@ export function setUser(user: { address?: string; chainId?: number }) {
 /**
  * Add breadcrumb for debugging.
  */
-export function addBreadcrumb(message: string, category: 'mutation' | 'navigation', data?: Record<string, unknown>) {
+export const addBreadcrumb = (message: string, category: 'mutation' | 'navigation', data?: Record<string, unknown>) => {
   addSentryBreadcrumb({
     message,
     category,

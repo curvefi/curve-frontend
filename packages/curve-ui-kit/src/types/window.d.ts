@@ -27,5 +27,6 @@ declare global {
     exodus?: EIP1193Provider
     enkrypt?: { providers: { ethereum: EIP1193Provider } }
     eip6963Connectors: DetectedEip6963Connector[]
+    SENTRY_DSN?: string
   }
 }

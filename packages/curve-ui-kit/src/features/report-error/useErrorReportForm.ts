@@ -32,10 +32,13 @@ export const useErrorReportForm = ({ error, ...context }: ErrorContext, onClose:
         url: window.location.href,
         context: {
           ...context,
+          // stringify error because sentry will simply call .toString() on non-Error objects
           error:
-            error instanceof Error
-              ? { ...error, name: error.name, message: error.message, stack: error.stack, cause: error.cause }
-              : error,
+            typeof error == 'string'
+              ? error
+              : JSON.stringify(
+                  error instanceof Error ? { name: error.name, message: error.message, stack: error.stack } : error,
+                ),
         },
       }
       console.info(`Submitting error report:`, body)
