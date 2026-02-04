@@ -1,4 +1,5 @@
-import { styled } from 'styled-components'
+import type { ComponentPropsWithRef } from 'react'
+import { styled, type IStyledComponent } from 'styled-components'
 import { breakpoints } from '@ui/utils/responsive'
 import type { BoxProps } from './types'
 
@@ -9,7 +10,9 @@ function attributes({ className, fillHeight, fillWidth, ...rest }: BoxProps) {
   return { ...rest, className: classNames }
 }
 
-export const Box = styled.div.attrs(attributes)<BoxProps>`
+export const Box: IStyledComponent<'web', BoxProps & ComponentPropsWithRef<'div'>> = styled.div.attrs(
+  attributes,
+)<BoxProps>`
   /* Flexbox styles */
   ${({ flex }) => flex && 'display: flex;'}
   ${({ flexDirection }) => flexDirection && `flex-direction: ${flexDirection};`}

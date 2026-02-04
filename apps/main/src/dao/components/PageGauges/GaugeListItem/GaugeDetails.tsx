@@ -1,4 +1,4 @@
-import { styled } from 'styled-components'
+import { styled, type IStyledComponent } from 'styled-components'
 import { CopyIconButton } from '@/dao/components/CopyIconButton'
 import { ExternalLinkIconButton } from '@/dao/components/ExternalLinkIconButton'
 import { ETHEREUM_CHAIN_ID } from '@/dao/constants'
@@ -7,13 +7,14 @@ import { GaugeFormattedData } from '@/dao/types/dao.types'
 import { getChainIdFromGaugeData } from '@/dao/utils'
 import { Box } from '@ui/Box'
 import { Icon } from '@ui/Icon'
+import type { IconProps } from '@ui/Icon/Icon'
 import { ExternalLink } from '@ui/Link'
 import { Chip } from '@ui/Typography'
 import { convertToLocaleTimestamp, formatDate, formatNumber, scanAddressPath } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { Chain, shortenAddress } from '@ui-kit/utils'
 
-export const StyledInformationSquare16 = styled(Icon)`
+export const StyledInformationSquare16: IStyledComponent<'web', IconProps> = styled(Icon)`
   opacity: 0.4;
 
   &:hover {
