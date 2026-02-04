@@ -15,9 +15,9 @@ const labels = {
 } satisfies Record<Address, string>
 
 const mockRoutes: RouteOption[] = [
-  { provider: 'curve', toAmountOutput: '69.4241', isLoading: false },
-  { provider: 'enso', toAmountOutput: '67.7432', isLoading: false },
-  { provider: 'odos', toAmountOutput: '67.0142', isLoading: false },
+  { provider: 'curve', toAmountOutput: '69.4241' },
+  { provider: 'enso', toAmountOutput: '67.7432' },
+  { provider: 'odos', toAmountOutput: '67.0142' },
 ]
 
 const meta: Meta<typeof RouteProvidersAccordion> = {
@@ -25,10 +25,12 @@ const meta: Meta<typeof RouteProvidersAccordion> = {
   component: RouteProvidersAccordion,
   args: {
     routes: mockRoutes,
+    selectedRoute: mockRoutes[0],
     outputTokenAddress,
     tokenSymbols: labels,
     usdPrice: 1.0,
     isExpanded: false,
+    isLoading: false,
     onRefresh: () => undefined,
   },
 }
@@ -37,28 +39,41 @@ export default meta
 
 type Story = StoryObj<typeof meta>
 
-const RouteProviderStory = ({ isExpanded: givenExpanded, routes: givenRoutes, ...args }: RouteProviderProps) => {
+const RouteProviderStory = ({
+  isExpanded: givenExpanded,
+  isLoading: givenIsLoading,
+  routes: givenRoutes,
+  selectedRoute: givenSelectedRoute,
+  ...args
+}: RouteProviderProps) => {
   const [routes, setRoutes] = useState(givenRoutes)
+  const [selectedRoute, setSelectedRoute] = useState(givenSelectedRoute)
+  const [isLoading, setIsLoading] = useState(givenIsLoading)
   const [isExpanded, , , toggle, setIsExpanded] = useSwitch(givenExpanded)
-  // eslint-disable-next-line react-hooks/set-state-in-effect
+  /* eslint-disable react-hooks/set-state-in-effect -- Syncing Storybook controls with local state */
   useEffect(() => setRoutes(givenRoutes), [givenRoutes])
+  useEffect(() => setSelectedRoute(givenSelectedRoute), [givenSelectedRoute])
   useEffect(() => setIsExpanded(givenExpanded), [givenExpanded, setIsExpanded])
+  useEffect(() => setIsLoading(givenIsLoading), [givenIsLoading])
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   return (
     <Box sx={{ maxWidth: MaxWidth.actionCard }}>
       <RouteProvidersAccordion
         {...args}
         routes={routes}
-        onChange={useCallback((route) => setRoutes((rs) => [route, ...rs.filter((r) => r !== route)]), [])}
+        selectedRoute={selectedRoute}
+        isLoading={isLoading}
+        onChange={useCallback((route) => setSelectedRoute(route), [])}
         isExpanded={isExpanded}
         onToggle={toggle}
         onRefresh={useCallback(() => {
-          setRoutes(givenRoutes.map((route) => ({ ...route, isLoading: true })))
+          setIsLoading(true)
           const timeout = setTimeout(() => {
-            setRoutes(givenRoutes)
+            setIsLoading(false)
           }, 1000)
           return () => clearTimeout(timeout)
-        }, [givenRoutes])}
+        }, [])}
       />
     </Box>
   )
@@ -79,6 +94,6 @@ export const SingleRoute: Story = {
 }
 
 export const Loading: Story = {
-  args: { routes: mockRoutes.map((route) => ({ ...route, isLoading: true })) },
+  args: { isLoading: true },
   render: (args) => <RouteProviderStory {...args} />,
 }

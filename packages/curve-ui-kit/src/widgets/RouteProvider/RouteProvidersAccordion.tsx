@@ -12,9 +12,9 @@ import { Accordion } from '@ui-kit/shared/ui/Accordion'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { LoadingAnimation } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { type Address, type Decimal, decimalMax } from '@ui-kit/utils'
+import { type Address, decimalMax } from '@ui-kit/utils'
 import { RouteComparisonChip } from '@ui-kit/widgets/RouteProvider/RouteComparisonChip'
-import { type RouteProvider } from './route-provider.types'
+import { type RouteOption, type RouteProvider } from './route-provider.types'
 import { RouteProviderCard } from './RouteProviderCard'
 
 const { Spacing, IconSize } = SizesAndSpaces
@@ -33,36 +33,34 @@ const providerIcons: Record<RouteProvider, () => ReactNode> = {
   odos: () => <OdosIcon sx={iconSx} />,
 }
 
-export type RouteOption = {
-  provider: RouteProvider
-  toAmountOutput: Decimal
-  isLoading: boolean
-}
+export type { RouteOption }
 
 export type RouteProviderProps = {
   routes: RouteOption[]
-  onChange: (provider: RouteOption) => void
+  selectedRoute: RouteOption
+  onChange: (route: RouteOption) => void
   outputTokenAddress: Address
   tokenSymbols: Record<Address, string>
   usdPrice: number | null
   isExpanded: boolean
+  isLoading: boolean
   onToggle: () => void
   onRefresh: () => void
 }
 
 export const RouteProvidersAccordion = ({
   routes,
+  selectedRoute,
   onChange,
   outputTokenAddress,
   tokenSymbols,
   usdPrice,
   isExpanded,
+  isLoading,
   onToggle,
   onRefresh,
 }: RouteProviderProps) => {
   const bestOutputAmount = useMemo(() => decimalMax(...routes.map((route) => route.toAmountOutput)), [routes])
-  const isLoading = useMemo(() => routes.some((route) => route.isLoading), [routes])
-  const selectedRoute = routes[0]
   const Icon = selectedRoute ? providerIcons[selectedRoute.provider] : null
   return (
     <Accordion
@@ -73,16 +71,12 @@ export const RouteProvidersAccordion = ({
         selectedRoute && (
           <Stack direction="row" alignItems="center" gap={Spacing.xs}>
             {Icon && <Icon />}
-            <WithSkeleton loading={selectedRoute.isLoading}>
+            <WithSkeleton loading={isLoading}>
               <Typography variant="bodySRegular" color="textPrimary">
                 {providerLabels[selectedRoute.provider]}
               </Typography>
             </WithSkeleton>
-            <RouteComparisonChip
-              bestOutputAmount={bestOutputAmount}
-              toAmountOutput={selectedRoute.toAmountOutput}
-              isLoading={selectedRoute.isLoading}
-            />
+            <RouteComparisonChip bestOutputAmount={bestOutputAmount} toAmountOutput={selectedRoute.toAmountOutput} />
           </Stack>
         )
       }
@@ -105,11 +99,11 @@ export const RouteProvidersAccordion = ({
           </Typography>
         </Stack>
         <Stack gap={Spacing.xs}>
-          {routes.map((route, index) => (
+          {routes.map((route) => (
             <RouteProviderCard
               key={route.provider}
               tokenSymbol={tokenSymbols[outputTokenAddress]}
-              isSelected={!index}
+              isSelected={route === selectedRoute}
               providerLabel={providerLabels[route.provider]}
               route={route}
               usdPrice={usdPrice}
