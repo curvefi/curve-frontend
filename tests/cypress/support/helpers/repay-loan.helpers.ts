@@ -24,11 +24,11 @@ export function writeRepayLoanForm({ amount }: { amount: Decimal }) {
 
 export function checkRepayDetailsLoaded({
   hasLeverage,
-  expectedDebt,
-  expectedPreviousDebt,
+  expectedFutureDebt,
+  expectedCurrentDebt,
 }: {
-  expectedDebt: string
-  expectedPreviousDebt: string
+  expectedFutureDebt: string
+  expectedCurrentDebt: string
   hasLeverage: boolean
 }) {
   if (hasLeverage) {
@@ -42,8 +42,8 @@ export function checkRepayDetailsLoaded({
     .invoke(LOAD_TIMEOUT, 'text')
     .should('match', /(\d(\.\d+)?) - (\d(\.\d+)?)/)
   getActionValue('borrow-apr').contains('%')
-  getActionValue('borrow-debt').invoke(LOAD_TIMEOUT, 'text').should('equal', expectedDebt)
-  getActionValue('borrow-debt', 'previous').invoke(LOAD_TIMEOUT, 'text').should('equal', expectedPreviousDebt)
+  getActionValue('borrow-debt').invoke(LOAD_TIMEOUT, 'text').should('equal', expectedFutureDebt)
+  getActionValue('borrow-debt', 'previous').invoke(LOAD_TIMEOUT, 'text').should('equal', expectedCurrentDebt)
   cy.get('[data-testid="loan-form-errors"]').should('not.exist')
 }
 
