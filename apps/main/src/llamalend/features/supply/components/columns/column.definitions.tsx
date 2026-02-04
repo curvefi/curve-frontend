@@ -1,11 +1,9 @@
 import { ClaimableReward } from '@/llamalend/queries/supply/supply-claimable-rewards.query'
-import Typography from '@mui/material/Typography'
 import { createColumnHelper } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
 import { type TableItem } from '@ui-kit/shared/ui/DataTable/data-table.utils'
-import { InlineTableCell } from '@ui-kit/shared/ui/DataTable/inline-cells/InlineTableCell'
-import { formatUsd } from '@ui-kit/utils'
 import { ClaimTokenCell } from '../cells/ClaimTokenCell'
+import { NotionalCell } from '../cells/NotionalCell'
 import { ClaimTabColumnId } from './columns.enum'
 
 export type ClaimableToken = TableItem &
@@ -20,9 +18,7 @@ const headers = {
   [ClaimTabColumnId.Notional]: t`Notional`,
 } as const
 
-const formatNotional = (notional: number | undefined) => (notional == null ? '-' : formatUsd(notional))
-
-export const getClaimTabColumns = (blockchainId: string) => [
+export const getClaimTabColumns = (blockchainId: string, isNotionalLoading: boolean) => [
   columnHelper.accessor('amount', {
     id: ClaimTabColumnId.Token,
     header: headers[ClaimTabColumnId.Token],
@@ -39,11 +35,7 @@ export const getClaimTabColumns = (blockchainId: string) => [
   columnHelper.accessor('notional', {
     id: ClaimTabColumnId.Notional,
     header: headers[ClaimTabColumnId.Notional],
-    cell: ({ row }) => (
-      <InlineTableCell>
-        <Typography variant="tableCellMBold">{formatNotional(row.original.notional)}</Typography>
-      </InlineTableCell>
-    ),
+    cell: ({ row }) => <NotionalCell notional={row.original.notional} isLoading={isNotionalLoading} />,
     meta: { type: 'numeric' },
     enableSorting: false,
   }),
