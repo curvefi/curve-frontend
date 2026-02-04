@@ -22,10 +22,10 @@ export const useDexMarketList = useBetaChannel
 export const useCreateLoanMuiForm = useStableChannel
 
 /** New unified supply/vault forms (deposit/withdraw/claim) */
-export const useLendingMuiForm = useAlphaChannel
+export const useLendingMuiForm = useBetaChannel
 
 /** New manage loan forms (add/remove/repay) */
-export const useManageLoanMuiForm = useAlphaChannel
+export const useManageLoanMuiForm = useBetaChannel
 
 /** New bands chart (BandsChart) */
 export const useNewBandsChart = useBetaChannel
