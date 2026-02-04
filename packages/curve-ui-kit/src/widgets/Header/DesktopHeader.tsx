@@ -34,7 +34,7 @@ export const DesktopHeader = ({
       data-testid="main-nav"
     >
       <Container sx={{ paddingX: Spacing.md }}>
-        <HeaderLogo />
+        <HeaderLogo sx={{ paddingLeft: Spacing.md }} />
         <AppButtonLinks networkId={networkId} currentMenu={currentMenu} />
 
         <Box sx={{ flexGrow: 1 }} />
