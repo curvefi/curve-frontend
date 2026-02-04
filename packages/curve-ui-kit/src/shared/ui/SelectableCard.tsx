@@ -1,17 +1,18 @@
-import { forwardRef } from 'react'
 import ButtonBase, { type ButtonBaseProps } from '@mui/material/ButtonBase'
 import Card from '@mui/material/Card'
 import { Sizing, TransitionFunction } from '@ui-kit/themes/design/0_primitives'
+import { applySxProps } from '@ui-kit/utils'
 
-export type SelectableCardProps = Omit<ButtonBaseProps<typeof Card>, 'component'> & {
+export const SelectableCard = ({
+  isSelected,
+  sx,
+  ...props
+}: Omit<ButtonBaseProps<typeof Card>, 'component'> & {
   isSelected: boolean
-}
-
-export const SelectableCard = forwardRef<HTMLDivElement, SelectableCardProps>(({ isSelected, sx, ...props }, ref) => (
+}) => (
   <ButtonBase
-    ref={ref}
     component={Card}
-    sx={[
+    sx={applySxProps(
       (t) => ({
         backgroundColor: isSelected ? t.design.Layer.TypeAction.Selected : t.design.Layer[1].Fill,
         outlineStyle: 'solid',
@@ -23,10 +24,8 @@ export const SelectableCard = forwardRef<HTMLDivElement, SelectableCardProps>(({
           backgroundColor: t.design.Layer.TypeAction.Hover,
         },
       }),
-      ...(Array.isArray(sx) ? sx : [sx]),
-    ]}
+      sx,
+    )}
     {...props}
   />
-))
-
-SelectableCard.displayName = 'SelectableCard'
+)

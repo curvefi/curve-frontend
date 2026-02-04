@@ -10,7 +10,7 @@ import { Icon } from '@ui/Icon'
 import { t } from '@ui-kit/lib/i18n'
 import { ArrowsHorizontalIcon } from '@ui-kit/shared/icons/ArrowsHorizontalIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import type { SxProps } from '@ui-kit/utils/mui'
+import { applySxProps, type SxProps } from '@ui-kit/utils/mui'
 
 const { Spacing } = SizesAndSpaces
 
@@ -42,7 +42,7 @@ type ChartHeaderProps<TChartKey extends string = string, TTimeOption extends str
   customButton?: React.ReactNode
   /** When true, displays "Loading" in the chart selection area and disables interaction */
   isLoading?: boolean
-  sx?: SxProps[]
+  sx?: SxProps
 }
 
 export const ChartHeader = <TChartKey extends string, TTimeOption extends string = string>({
@@ -53,7 +53,7 @@ export const ChartHeader = <TChartKey extends string, TTimeOption extends string
   flipChart,
   customButton,
   isLoading = false,
-  sx = [],
+  sx,
 }: ChartHeaderProps<TChartKey, TTimeOption>) => {
   const handleChartOptionToggle = (_: MouseEvent<HTMLElement>, key: TChartKey) => {
     // ensure that one option is always selected by checking null
@@ -75,13 +75,7 @@ export const ChartHeader = <TChartKey extends string, TTimeOption extends string
       alignItems="center"
       justifyContent="space-between"
       flexWrap="wrap"
-      sx={[
-        {
-          rowGap: Spacing.md,
-          columnGap: Spacing.sm,
-        },
-        ...sx,
-      ]}
+      sx={applySxProps({ rowGap: Spacing.md, columnGap: Spacing.sm }, sx)}
     >
       {/* Show the active selection title or Select dropdown menu based on the chartOptionVariant */}
       {chartOptionVariant === 'buttons-group' ? (

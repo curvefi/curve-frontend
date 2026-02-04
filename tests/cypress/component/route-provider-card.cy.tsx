@@ -1,8 +1,6 @@
-import { ThemeProvider } from '@mui/material/styles'
+import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import { lightTheme } from '@ui-kit/themes'
 import { RouteProviderCard } from '@ui-kit/widgets/RouteProvider/RouteProviderCard'
-
-const theme = lightTheme()
 
 const hexToRgb = (value: string) => {
   const parsed = Number.parseInt(value.replace('#', ''), 16)
@@ -11,7 +9,7 @@ const hexToRgb = (value: string) => {
 
 const mountRouteProviderCard = () => {
   cy.mount(
-    <ThemeProvider theme={theme}>
+    <ComponentTestWrapper>
       <RouteProviderCard
         route={{ provider: 'curve', toAmountOutput: '69.4241', isLoading: false }}
         tokenSymbol="crvUSD"
@@ -22,7 +20,7 @@ const mountRouteProviderCard = () => {
         onSelect={() => undefined}
         icon={<span data-testid="route-icon" style={{ width: '16px', height: '16px', display: 'inline-block' }} />}
       />
-    </ThemeProvider>,
+    </ComponentTestWrapper>,
   )
 }
 
@@ -39,16 +37,17 @@ describe('RouteProviderCard', () => {
   it('updates background color on hover', () => {
     mountRouteProviderCard()
 
+    const { design } = lightTheme()
     cy.get('[data-testid="route-provider-card"]').should(
       'have.css',
       'background-color',
-      hexToRgb(theme.design.Layer['1'].Fill),
+      hexToRgb(design.Layer['1'].Fill),
     )
     cy.get('[data-testid="route-provider-card"]').invoke('addClass', 'cypress-hover')
     cy.get('[data-testid="route-provider-card"]').should(
       'have.css',
       'background-color',
-      hexToRgb(theme.design.Layer.TypeAction.Hover),
+      hexToRgb(design.Layer.TypeAction.Hover),
     )
   })
 })

@@ -155,9 +155,6 @@ export const Transition = `ease-out`
 export const TransitionFunction = `${Transition} ${Duration.Transition}ms`
 
 export const LoadingAnimation = {
-  animation: `${keyframes`
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-`} ${Transition} ${Duration.LoadingAnimation}ms infinite`,
+  animation: `${keyframes` 100% { transform: rotate(360deg); }`} ${Transition} ${Duration.LoadingAnimation}ms infinite`,
   transformOrigin: 'center',
 }

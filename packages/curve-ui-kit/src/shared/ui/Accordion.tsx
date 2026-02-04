@@ -1,11 +1,12 @@
 import { type ReactNode, useId } from 'react'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { Box, ButtonBase, Collapse, Stack, type Theme, Typography } from '@mui/material'
-import { SxProps } from '@mui/system'
+import {} from '@mui/system'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
+import { applySxProps, SxProps } from '@ui-kit/utils'
 
 const { Spacing, IconSize } = SizesAndSpaces
 
@@ -35,7 +36,7 @@ type AccordionBaseProps = {
   /** Optional test id for the accordion root */
   testId?: string
   /** Optional sx prop for custom styling */
-  sx?: SxProps<Theme>
+  sx?: SxProps
 }
 
 type UncontrolledAccordionProps = {
@@ -194,18 +195,16 @@ export const Accordion = ({
              were placed on the Collapse element, two borders would briefly stack when opening
         */}
         <Box
-          sx={[
-            {
-              paddingBlock: Spacing.sm,
-              ...(!ghost && {
-                paddingInline: Spacing.sm,
-                borderLeft: borderStyle,
-                borderRight: borderStyle,
-                borderBottom: borderStyle,
-              }),
+          sx={applySxProps(
+            { paddingBlock: Spacing.sm },
+            !ghost && {
+              paddingInline: Spacing.sm,
+              borderLeft: borderStyle,
+              borderRight: borderStyle,
+              borderBottom: borderStyle,
             },
-            ...(Array.isArray(sx) ? sx : [sx]),
-          ]}
+            sx,
+          )}
         >
           {children}
         </Box>
