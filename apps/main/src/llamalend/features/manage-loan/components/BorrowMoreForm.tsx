@@ -10,6 +10,7 @@ import { notFalsy } from '@curvefi/prices-api/objects.util'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
+import { q } from '@ui-kit/types/util'
 import { isDevelopment } from '@ui-kit/utils'
 import { setValueOptions } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
@@ -57,7 +58,6 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
 
   const isLeverage = isLeverageBorrowMore(market)
   const swapRequired = isLeverage && +(values.userBorrowed ?? 0) > 0
-  const priceImpact = useBorrowMorePriceImpact(params, enabled && swapRequired)
   const fromBorrowed = fromWallet && isLeverage
   return (
     <Form
@@ -114,7 +114,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
         />
       </Stack>
 
-      <HighPriceImpactAlert priceImpact={priceImpact.data} isLoading={priceImpact.isLoading} />
+      <HighPriceImpactAlert {...q(useBorrowMorePriceImpact(params, enabled && swapRequired))} />
 
       <Button
         type="submit"
