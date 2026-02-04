@@ -6,10 +6,8 @@ import type { BorrowPositionDetailsProps } from '@/llamalend/features/market-pos
 import { calculateRangeToLiquidation } from '@/llamalend/features/market-position-details/utils'
 import { DEFAULT_BORROW_TOKEN_SYMBOL, getHealthMode } from '@/llamalend/health.util'
 import { calculateLtv, hasV2Leverage } from '@/llamalend/llama.utils'
-import { useLoanExists } from '@/llamalend/queries/loan-exists'
 import { useMarketRates } from '@/llamalend/queries/market-rates'
 import { useUserCurrentLeverage } from '@/llamalend/queries/user-current-leverage.query'
-import { useUserPnl } from '@/llamalend/queries/user-pnl.query'
 import { CRVUSD_ADDRESS } from '@/loan/constants'
 import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
 import { networks } from '@/loan/networks'
@@ -57,18 +55,6 @@ export const useLoanPositionDetails = ({
   const v2LeverageEnabled = useMemo(() => !!llamma && hasV2Leverage(llamma), [llamma])
   const leverage = useUserCurrentLeverage({ chainId, marketId: llammaId, userAddress })
 
-  const { data: loanExists } = useLoanExists({
-    chainId,
-    marketId: llammaId,
-    userAddress,
-  })
-  const { data: userPnl, isLoading: isUserPnlLoading } = useUserPnl({
-    chainId,
-    marketId: llammaId,
-    userAddress,
-    loanExists,
-    hasV2Leverage: v2LeverageEnabled,
-  })
   const { oraclePriceBand } = loanDetails ?? {}
 
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)
@@ -180,13 +166,6 @@ export const useLoanPositionDetails = ({
       loading: userLoanDetailsLoading ?? true,
     },
     ...(v2LeverageEnabled && {
-      pnl: {
-        currentProfit: userPnl?.currentProfit,
-        currentPositionValue: userPnl?.currentPosition,
-        depositedValue: userPnl?.deposited,
-        percentageChange: userPnl?.percentage,
-        loading: isUserPnlLoading ?? true,
-      },
       leverage: {
         value: leverage.data ? Number(leverage.data) : null,
         loading: leverage.isLoading,
