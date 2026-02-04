@@ -14,6 +14,6 @@ export type HeaderLogoProps = {
 
 export const HeaderLogo = ({ sx }: HeaderLogoProps) => (
   <RouterLink href="/" sx={{ display: 'flex', alignItems: 'center', textDecoration: 'none', ...sx }}>
-    <Image src={CURVE_LOGO_URL} alt="Curve" width={26} height={26} />
+    <Image src={CURVE_LOGO_URL} alt="Curve" />
   </RouterLink>
 )

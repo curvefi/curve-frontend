@@ -24,7 +24,6 @@ export const DesktopHeader = ({
   pages,
   appStats,
   networkId,
-  isLite = false,
 }: HeaderImplementationProps) => (
   <AppBar color="transparent" ref={useMainNavRef()} data-testid="desktop-main-nav" sx={{ position: 'sticky', top: 0 }}>
     <GlobalBanner networkId={networkId} chainId={chainId} />
@@ -33,8 +32,8 @@ export const DesktopHeader = ({
       sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, justifyContent: 'space-around', paddingY: 0 }}
       data-testid="main-nav"
     >
-      <Container sx={{ paddingX: Spacing.md }}>
-        <HeaderLogo sx={{ paddingLeft: Spacing.md }} />
+      <Container sx={{ paddingInline: Spacing.md }}>
+        <HeaderLogo sx={{ paddingInlineStart: Spacing.md }} />
         <AppButtonLinks networkId={networkId} currentMenu={currentMenu} />
 
         <Box sx={{ flexGrow: 1 }} />
@@ -58,7 +57,7 @@ export const DesktopHeader = ({
       }}
       data-testid="subnav"
     >
-      <Container sx={{ paddingX: Spacing.md }}>
+      <Container sx={{ paddingInline: Spacing.md }}>
         <PageTabs pages={pages} />
         <Box flexGrow={1} />
         <Box display="flex" gap={3} alignItems="center" sx={{ textOverflow: 'ellipsis', overflow: 'hidden' }}>
