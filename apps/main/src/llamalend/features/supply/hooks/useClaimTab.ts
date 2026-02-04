@@ -52,7 +52,9 @@ export const useClaimTab = <ChainId extends LlamaChainId>({
 
   const claimableTokens = useMemo(() => {
     const tokens = [
-      { amount: claimableCrv.data, token: CRV.address as Address, symbol: CRV.symbol as string },
+      ...(claimableCrv.data
+        ? [{ amount: claimableCrv.data, token: CRV.address as Address, symbol: CRV.symbol as string }]
+        : []),
       ...(claimableRewards.data ?? []),
     ]
     return tokens.map((item) => {
