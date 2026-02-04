@@ -1,6 +1,7 @@
 /// <reference types="./DataTable.d.ts" />
 import { ReactNode, useEffect, useEffectEvent, useMemo, useRef } from 'react'
 import Box from '@mui/material/Box'
+import { Theme } from '@mui/material/styles'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
@@ -75,6 +76,8 @@ export const DataTable = <T extends TableItem>({
   maxHeight,
   rowLimit,
   viewAllLabel,
+  shouldStickFirstColumn = false,
+  showHeader = true,
   ...rowProps
 }: {
   table: TanstackTable<T>
@@ -84,8 +87,9 @@ export const DataTable = <T extends TableItem>({
   maxHeight?: `${number}rem` // also sets overflowY to 'auto'
   rowLimit?: number
   viewAllLabel?: string
+  showHeader?: boolean
 } & Omit<DataRowProps<T>, 'row' | 'isLast'>) => {
-  const { table, shouldStickFirstColumn } = rowProps
+  const { table } = rowProps
   const { rows } = table.getRowModel()
   const { isLimited, isLoading: isLoadingViewAll, handleShowAll } = useTableRowLimit(rowLimit)
   // When number of rows are limited, show only rowLimit rows
@@ -102,6 +106,16 @@ export const DataTable = <T extends TableItem>({
   useScrollToTopOnFilterChange(table)
   useResetPageOnResultChange(table)
   useScrollToTopOnPageChange(table, containerRef)
+  const tableHeaderSx = useMemo(
+    () => (t: Theme) => ({
+      position: 'sticky',
+      top: maxHeight ? 0 : top,
+      zIndex: t.zIndex.tableHeader,
+      backgroundColor: t.design.Table.Header.Fill,
+      marginBlock: Sizing['sm'],
+    }),
+    [maxHeight, top],
+  )
 
   return (
     <WithWrapper Wrapper={Box} shouldWrap={maxHeight} sx={{ maxHeight, overflowY: 'auto' }} ref={containerRef}>
@@ -115,34 +129,24 @@ export const DataTable = <T extends TableItem>({
         )}
         data-testid={!loading && 'data-table'}
       >
-        <TableHead
-          sx={useMemo(
-            () => (t) => ({
-              position: 'sticky',
-              top: maxHeight ? 0 : top,
-              zIndex: t.zIndex.tableHeader,
-              backgroundColor: t.design.Table.Header.Fill,
-              marginBlock: Sizing['sm'],
-            }),
-            [maxHeight, top],
-          )}
-          data-testid="data-table-head"
-        >
-          {children && <FilterRow table={table}>{children}</FilterRow>}
+        {showHeader && (
+          <TableHead sx={tableHeaderSx} data-testid="data-table-head">
+            {children && <FilterRow table={table}>{children}</FilterRow>}
 
-          {headerGroups.map((headerGroup) => (
-            <TableRow key={headerGroup.id} sx={{ height: Sizing['xxl'] }}>
-              {headerGroup.headers.map((header, index) => (
-                <HeaderCell
-                  key={header.id}
-                  header={header}
-                  isSticky={!index && shouldStickFirstColumn}
-                  width={`calc(100% / ${columnCount})`}
-                />
-              ))}
-            </TableRow>
-          ))}
-        </TableHead>
+            {headerGroups.map((headerGroup) => (
+              <TableRow key={headerGroup.id} sx={{ height: Sizing['xxl'] }}>
+                {headerGroup.headers.map((header, index) => (
+                  <HeaderCell
+                    key={header.id}
+                    header={header}
+                    isSticky={!index && shouldStickFirstColumn}
+                    width={`calc(100% / ${columnCount})`}
+                  />
+                ))}
+              </TableRow>
+            ))}
+          </TableHead>
+        )}
         <TableBody>
           {loading ? (
             <SkeletonRows table={table} shouldStickFirstColumn={shouldStickFirstColumn} />
@@ -150,7 +154,13 @@ export const DataTable = <T extends TableItem>({
             emptyState
           ) : (
             visibleRows.map((row, index) => (
-              <DataRow<T> key={row.id} row={row} isLast={index === visibleRows.length - 1} {...rowProps} />
+              <DataRow<T>
+                key={row.id}
+                row={row}
+                isLast={index === visibleRows.length - 1}
+                shouldStickFirstColumn={shouldStickFirstColumn}
+                {...rowProps}
+              />
             ))
           )}
         </TableBody>
