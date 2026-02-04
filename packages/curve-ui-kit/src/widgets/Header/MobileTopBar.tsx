@@ -16,7 +16,7 @@ export type MobileTopBarProps = {
 export const MobileTopBar = ({ networks, currentMenu, isSidebarOpen, toggleSidebar, isLite }: MobileTopBarProps) => (
   <Stack direction="row" width="100%" paddingX={2}>
     <MenuToggleButton isOpen={isSidebarOpen} toggle={toggleSidebar} />
-    <HeaderLogo isLite={isLite} currentMenu={currentMenu} />
+    <HeaderLogo />
     <Stack flexGrow={1} />
     <ChainSwitcher networks={networks} />
   </Stack>

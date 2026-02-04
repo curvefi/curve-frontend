@@ -7,12 +7,15 @@ import { ChainSwitcher } from '@ui-kit/features/switch-chain'
 import { UserProfile } from '@ui-kit/features/user-profile'
 import { GlobalBanner } from '@ui-kit/shared/ui/GlobalBanner'
 import { DEFAULT_BAR_SIZE } from '@ui-kit/themes/components'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { AppButtonLinks } from './AppButtonLinks'
 import { HeaderLogo } from './HeaderLogo'
 import { HeaderStats } from './HeaderStats'
 import { PageTabs } from './PageTabs'
 import { HeaderImplementationProps } from './types'
 import { useMainNavRef } from './useMainNavRef'
+
+const { Spacing } = SizesAndSpaces
 
 export const DesktopHeader = ({
   currentMenu,
@@ -27,11 +30,11 @@ export const DesktopHeader = ({
     <GlobalBanner networkId={networkId} chainId={chainId} />
 
     <Toolbar
-      sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, justifyContent: 'space-around', paddingY: 3 }}
+      sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, justifyContent: 'space-around', paddingY: 0 }}
       data-testid="main-nav"
     >
-      <Container>
-        <HeaderLogo isLite={isLite} currentMenu={currentMenu} />
+      <Container sx={{ paddingX: Spacing.md }}>
+        <HeaderLogo />
         <AppButtonLinks networkId={networkId} currentMenu={currentMenu} />
 
         <Box sx={{ flexGrow: 1 }} />
