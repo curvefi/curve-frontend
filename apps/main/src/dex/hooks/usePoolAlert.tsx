@@ -14,7 +14,7 @@ export const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
   const hasVyperVulnerability = poolData?.hasVyperVulnerability
 
   return useMemo(
-    () => (hasVyperVulnerability ? vyperExploitedAlert() : Alerts[network]?.[poolAddress ?? '']),
+    () => (Alerts[network]?.[poolAddress ?? ''] || hasVyperVulnerability ? vyperExploitedAlert() : null),
     [poolAddress, network, hasVyperVulnerability],
   )
 }
