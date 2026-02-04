@@ -27,7 +27,7 @@ const providerLabels = {
 
 const iconSx = { width: IconSize.sm, height: IconSize.sm }
 
-const providerIcons: Record<RouteProvider, () => ReactNode> = {
+export const providerIcons: Record<RouteProvider, () => ReactNode> = {
   curve: () => <Box component="img" src={CURVE_LOGO_URL} alt="Curve" sx={iconSx} />,
   enso: () => <EnsoIcon sx={iconSx} />,
   odos: () => <OdosIcon sx={iconSx} />,

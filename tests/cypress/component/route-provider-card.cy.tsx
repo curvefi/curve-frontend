@@ -1,6 +1,7 @@
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import { oneViewport } from '@cy/support/ui'
 import { lightTheme } from '@ui-kit/themes'
+import { providerIcons } from '@ui-kit/widgets/RouteProvider'
 import { RouteProviderCard } from '@ui-kit/widgets/RouteProvider/RouteProviderCard'
 
 const { design } = lightTheme()
@@ -11,6 +12,7 @@ const hexToRgb = (value: string) => {
 }
 
 const mountRouteProviderCard = ({ isSelected = true }: { isSelected?: boolean } = {}) => {
+  const { curve: Curve } = providerIcons
   cy.mount(
     <ComponentTestWrapper>
       <RouteProviderCard
@@ -21,7 +23,7 @@ const mountRouteProviderCard = ({ isSelected = true }: { isSelected?: boolean } 
         bestOutputAmount="69.4241"
         providerLabel="Curve"
         onSelect={() => undefined}
-        icon={<span data-testid="route-icon" style={{ width: '16px', height: '16px', display: 'inline-block' }} />}
+        icon={<Curve />}
       />
     </ComponentTestWrapper>,
   )
