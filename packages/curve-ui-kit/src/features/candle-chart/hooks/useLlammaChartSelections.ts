@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { t } from '@ui-kit/lib/i18n'
 import type { ChartSelections } from '@ui-kit/shared/ui/Chart/ChartHeader'
 import type { FetchingStatus } from '../types'
@@ -33,22 +33,16 @@ export const useLlammaChartSelections = ({ oracleChart, llammaChart, oracleToken
 
   const isLoading = oracleChart.fetchStatus === 'LOADING' || llammaChart.fetchStatus === 'LOADING'
 
+  // Returns a single chart option: oracle (preferred) or llamma (fallback)
   const selectChartList = useMemo((): ChartSelections[] => {
-    const options: ChartSelections[] = []
-
     if (oracleChart.hasData) {
       const label = oracleTokens ? t`${oracleTokens.collateralSymbol} / ${oracleTokens.borrowedSymbol}` : t`Oracle`
-      options.push({ activeTitle: label, label, key: 'oracle' })
+      return [{ activeTitle: label, label, key: 'oracle' }]
     }
 
-    // Only show llamma chart option as fallback when oracle data is unavailable
-    if (llammaChart.hasData && !oracleChart.hasData) {
-      const label = t`Oracle price`
-      options.push({ activeTitle: label, label, key: 'llamma' })
-    }
-
-    return options
-  }, [oracleChart.hasData, llammaChart.hasData, oracleTokens])
+    const label = t`Oracle price`
+    return [{ activeTitle: label, label, key: 'llamma' }]
+  }, [oracleChart.hasData, oracleTokens])
 
   // Auto-switch to available chart when current selection has no data
   useEffect(() => {
@@ -60,16 +54,9 @@ export const useLlammaChartSelections = ({ oracleChart, llammaChart, oracleToken
     }
   }, [isLoading, selectedChartKey, oracleChart.hasData, llammaChart.hasData, selectChartList])
 
-  const setSelectedChart = useCallback((key: string) => {
-    if (key === 'oracle' || key === 'llamma') {
-      setSelectedChartKey(key)
-    }
-  }, [])
-
   return {
     selectChartList,
     selectedChartKey: isLoading ? undefined : selectedChartKey,
-    setSelectedChart,
     isLoading,
   }
 }

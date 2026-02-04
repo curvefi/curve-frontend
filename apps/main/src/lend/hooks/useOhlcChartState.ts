@@ -71,7 +71,7 @@ export const useOhlcChartState = ({ rChainId, rOwmId }: UseOhlcChartStateProps) 
     [chartOraclePoolOhlc.collateralToken.symbol, chartOraclePoolOhlc.borrowedToken.symbol],
   )
 
-  const { selectChartList, selectedChartKey, setSelectedChart, isLoading } = useLlammaChartSelections({
+  const { selectChartList, selectedChartKey, isLoading } = useLlammaChartSelections({
     oracleChart: { fetchStatus: chartOraclePoolOhlc.fetchStatus, hasData: chartOraclePoolOhlc.data.length > 0 },
     llammaChart: { fetchStatus: chartLlammaOhlc.fetchStatus, hasData: chartLlammaOhlc.oraclePriceData.length > 0 },
     oracleTokens,
@@ -216,7 +216,6 @@ export const useOhlcChartState = ({ rChainId, rOwmId }: UseOhlcChartStateProps) 
     ohlcDataUnavailable: noDataAvailable,
     isLoading,
     selectedChartKey,
-    setSelectedChart,
     setTimeOption,
     legendSets,
     ohlcChartProps,
