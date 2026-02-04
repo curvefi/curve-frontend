@@ -537,15 +537,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@curvefi/api@npm:2.68.31":
-  version: 2.68.31
-  resolution: "@curvefi/api@npm:2.68.31"
+"@curvefi/api@npm:2.68.32":
+  version: 2.68.32
+  resolution: "@curvefi/api@npm:2.68.32"
   dependencies:
     "@curvefi/ethcall": "npm:^6.0.16"
     bignumber.js: "npm:^9.3.1"
     ethers: "npm:^6.15.0"
     memoizee: "npm:^0.4.17"
-  checksum: 10c0/ad26e656a79628adb81c29208235f28992cbdc155cdbf564a58eea29af158e394a3002c2dee0fa6546717ff0f51e71ee053abed251c3f3810cfbef28edcfd5cc
+  checksum: 10c0/46e62a2391e86edf8a58989d4e4bfe12a66321a79ff33b9c18060da8df7c0a857f327f11d7306450ae90e95aa723b836b5fc776e12ae70a3e29c21bd2ef69e38
   languageName: node
   linkType: hard
 
@@ -1572,11 +1572,11 @@ __metadata:
   linkType: hard
 
 "@isaacs/brace-expansion@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "@isaacs/brace-expansion@npm:5.0.0"
+  version: 5.0.1
+  resolution: "@isaacs/brace-expansion@npm:5.0.1"
   dependencies:
     "@isaacs/balanced-match": "npm:^4.0.1"
-  checksum: 10c0/b4d4812f4be53afc2c5b6c545001ff7a4659af68d4484804e9d514e183d20269bb81def8682c01a22b17c4d6aed14292c8494f7d2ac664e547101c1a905aa977
+  checksum: 10c0/e5d67c7bbf1f17b88132a35bc638af306d48acbb72810d48fa6e6edd8ab375854773108e8bf70f021f7ef6a8273455a6d1f0c3b5aa2aff06ce7894049ab77fb8
   languageName: node
   linkType: hard
 
