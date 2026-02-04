@@ -153,6 +153,7 @@ export const NumericTextField = ({
       type="text"
       value={inputValue}
       inputMode="decimal"
+      autoComplete="off"
       onFocus={(e) => {
         setIsFocused(true)
         /**

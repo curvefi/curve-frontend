@@ -153,6 +153,7 @@ export function useLlammaMutation<TVariables extends object, TData extends Resul
       notify(successMessage(variables, result), 'success')
     },
     onError: (error, variables, context) => {
+      console.error(`Error in mutation ${JSON.stringify({ mutationKey, variables })}:`, error)
       setError(error)
       logError(mutationKey, { error, variables, marketId: context?.market.id })
       captureError(error, { variables, context, userAddress })

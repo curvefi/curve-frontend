@@ -52,16 +52,3 @@ export async function copyToClipboard(text: string) {
     return false
   }
 }
-
-type Falsey = null | undefined | 0 | false | ''
-
-/**
- * Asserts that a value is truthy, and returns the value if so.
- * Throws an error with the provided message if the value is falsy.
- */
-export function assert<T>(value: T | Falsey, message: string) {
-  if (!value) {
-    throw new Error(message)
-  }
-  return value
-}

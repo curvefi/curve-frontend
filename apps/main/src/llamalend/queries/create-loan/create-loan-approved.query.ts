@@ -1,6 +1,5 @@
-import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { createLoanExpectedCollateralQueryKey } from '@/llamalend/queries/create-loan/create-loan-expected-collateral.query'
-import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
+import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/create-loan-query.helpers'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import type { CreateLoanDebtQuery, CreateLoanFormQueryParams } from '../../features/borrow/types'
 import { createLoanQueryValidationSuite } from '../validation/borrow.validation'
@@ -26,12 +25,15 @@ export const { useQuery: useCreateLoanIsApproved, fetchQuery: fetchCreateLoanIsA
     userCollateral = '0',
     leverageEnabled,
   }: CreateLoanDebtQuery): Promise<boolean> => {
-    const market = getLlamaMarket(marketId)
-    return leverageEnabled
-      ? market instanceof MintMarketTemplate && market.leverageV2.hasLeverage()
-        ? await market.leverageV2.createLoanIsApproved(userCollateral, userBorrowed)
-        : await market.leverage.createLoanIsApproved(userCollateral, userBorrowed)
-      : await market.createLoanIsApproved(userCollateral)
+    const [type, impl] = getCreateLoanImplementation(marketId, leverageEnabled)
+    switch (type) {
+      case 'V1':
+      case 'V2':
+        return await impl.createLoanIsApproved(userCollateral, userBorrowed)
+      case 'V0':
+      case 'unleveraged':
+        return await impl.createLoanIsApproved(userCollateral)
+    }
   },
   staleTime: '1m',
   validationSuite: createLoanQueryValidationSuite({ debtRequired: false }),
