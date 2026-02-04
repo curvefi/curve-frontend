@@ -1,7 +1,6 @@
 import { type ReactNode, useId } from 'react'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import { Box, ButtonBase, Collapse, Stack, type Theme, Typography } from '@mui/material'
-import {} from '@mui/system'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'

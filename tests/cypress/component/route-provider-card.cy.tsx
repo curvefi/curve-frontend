@@ -1,4 +1,5 @@
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
+import { oneViewport } from '@cy/support/ui'
 import { lightTheme } from '@ui-kit/themes'
 import { RouteProviderCard } from '@ui-kit/widgets/RouteProvider/RouteProviderCard'
 
@@ -25,12 +26,17 @@ const mountRouteProviderCard = () => {
 }
 
 describe('RouteProviderCard', () => {
+  const [width, height, breakpoint] = oneViewport()
+  beforeEach(() => {
+    cy.viewport(width, height)
+  })
+
   it('renders with the expected card height', () => {
     mountRouteProviderCard()
 
     cy.get('[data-testid="route-provider-card"]').then(([$card]) => {
       const { height } = $card.getBoundingClientRect()
-      expect(height).to.equal(48)
+      expect(height).to.equal(breakpoint === 'mobile' ? 48 : 50)
     })
   })
 
