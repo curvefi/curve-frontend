@@ -1,5 +1,4 @@
 import { getErrorMessage } from '@/llamalend/helpers'
-import type { INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Hex } from '@curvefi/prices-api'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
@@ -20,7 +19,7 @@ export const HIGH_PRICE_IMPACT_THRESHOLD = 5
 export type FormErrors<Field extends string> = readonly (readonly [Field, string])[]
 
 export type LoanFormAlertProps<Field extends string> = {
-  network: BaseConfig<INetworkName>
+  network: BaseConfig<string>
   isSuccess: boolean
   error: Error | null
   txHash?: Hex

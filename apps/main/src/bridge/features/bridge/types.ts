@@ -1,0 +1,7 @@
+import type { FieldsOf } from '@ui-kit/lib'
+import type { ChainQuery, UserQuery } from '@ui-kit/lib/model'
+import type { Decimal } from '@ui-kit/utils'
+
+// Work for approves too
+export type BridgeQuery = ChainQuery & UserQuery & { amount: Decimal }
+export type BridgeParams = FieldsOf<BridgeQuery>

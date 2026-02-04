@@ -91,7 +91,7 @@ export const APP_LINK: Record<AppMenuOption, AppRoutes> = {
   },
   bridge: {
     label: t`Bridge`,
-    routes: [{ app: 'bridge', route: BRIDGE_ROUTES.PAGE_BRIDGES, label: () => t`Bridges` }],
+    routes: [{ app: 'bridge', route: BRIDGE_ROUTES.PAGE_BRIDGES, label: () => t`Bridge` }],
   },
   analytics: {
     label: 'Analytics',
