@@ -47,10 +47,19 @@ export function getBorrowMoreImplementationArgs(
   return [type, impl, [userCollateral, userBorrowed, debt]] as const
 }
 
+/**
+ * Checks whether we should use the leverage methods to borrow more for a given market,
+ * based on the implementation available and whether leverage is enabled.
+ * This is used to determine if leverage queries should be enabled and whether to show that information in the UI.
+ */
 export const isLeverageBorrowMore = (
   marketId: string | LlamaMarketTemplate | null | undefined,
   leverageEnabled: boolean | null | undefined,
 ) => !!marketId && ['V1', 'V2'].includes(getBorrowMoreImplementation(marketId, leverageEnabled)[0])
 
+/**
+ * Checks whether leverage may be enabled for a given market.
+ * This is used to determine whether to show the leverage toggle in the UI.
+ */
 export const isLeverageBorrowMoreSupported = (market?: LlamaMarketTemplate) =>
   !!market && isLeverageBorrowMore(market, true)

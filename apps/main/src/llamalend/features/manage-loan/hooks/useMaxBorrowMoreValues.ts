@@ -4,7 +4,6 @@ import { PRESET_RANGES } from '@/llamalend/constants'
 import { getTokens } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { useBorrowMoreMaxReceive } from '@/llamalend/queries/borrow-more/borrow-more-max-receive.query'
-import { isLeverageBorrowMore } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
 import { useMarketMaxLeverage } from '@/llamalend/queries/market-max-leverage.query'
 import { BorrowMoreForm, BorrowMoreParams } from '@/llamalend/queries/validation/borrow-more.validation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -40,7 +39,6 @@ export function useMaxBorrowMoreValues<ChainId extends LlamaChainId>(
   })
 
   const maxReceive = useBorrowMoreMaxReceive(params, enabled)
-  const isLeverage = enabled && isLeverageBorrowMore(market, params.leverageEnabled)
   const maxDebt = maxReceive.data?.maxDebt
   const maxBorrowed = maxUserBorrowed.data
   const maxLeverage = q(useMarketMaxLeverage({ chainId, marketId, range: PRESET_RANGES.MaxLtv }, enabled))
