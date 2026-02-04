@@ -6,7 +6,6 @@ import { invalidateAllUserMintMarkets } from '../market-list/mint-markets'
 import { invalidateMarketRates } from '../market-rates'
 import { invalidateUserBalances } from '../user-balances.query'
 import { invalidateUserHealth } from '../user-health.query'
-import { invalidateUserPnlForMarket } from '../user-pnl.query'
 import { invalidateUserState } from '../user-state.query'
 
 /**
@@ -20,7 +19,6 @@ export const invalidateAllUserMarketDetails = ({ marketId, userAddress, chainId 
     invalidateUserHealth({ marketId, userAddress, chainId, isFull: true }),
     invalidateUserHealth({ marketId, userAddress, chainId, isFull: false }),
     invalidateUserBalances({ marketId, userAddress, chainId }),
-    invalidateUserPnlForMarket({ marketId, userAddress, chainId }),
     invalidateMarketRates({ marketId, chainId }),
     invalidateAllUserMintMarkets(userAddress),
     invalidateAllUserLendingVaults(userAddress),

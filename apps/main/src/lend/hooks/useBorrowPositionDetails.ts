@@ -9,7 +9,6 @@ import { calculateRangeToLiquidation } from '@/llamalend/features/market-positio
 import { calculateLtv } from '@/llamalend/llama.utils'
 import { useLoanExists } from '@/llamalend/queries/loan-exists'
 import { useMarketRates } from '@/llamalend/queries/market-rates'
-import { useUserPnl } from '@/llamalend/queries/user-pnl.query'
 import type { Address, Chain } from '@curvefi/prices-api'
 import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import { useLendingSnapshots } from '@ui-kit/entities/lending-snapshots'
@@ -57,13 +56,6 @@ export const useBorrowPositionDetails = ({
     state: { collateral, borrowed, debt } = {},
   } = userLoanDetails ?? {}
   const prices = useStore((state) => state.markets.pricesMapper[chainId]?.[marketId])
-  const { data: userPnl, isLoading: isUserPnlLoading } = useUserPnl({
-    chainId,
-    marketId,
-    userAddress,
-    loanExists,
-    hasV2Leverage: true,
-  })
   const blockchainId = networks[chainId].id as Chain
   const { data: campaigns } = useCampaignsByAddress({ blockchainId, address: controller as Address })
   const { data: marketRates, isLoading: isMarketRatesLoading } = useMarketRates({
@@ -154,13 +146,6 @@ export const useBorrowPositionDetails = ({
           ? calculateLtv(Number(debt), Number(collateral), Number(borrowed), borrowedUsdRate, collateralUsdRate)
           : null,
       loading: !market || isUserLoanDetailsLoading,
-    },
-    pnl: {
-      currentProfit: userPnl?.currentProfit,
-      currentPositionValue: userPnl?.currentPosition,
-      depositedValue: userPnl?.deposited,
-      percentageChange: userPnl?.percentage,
-      loading: !market || isUserPnlLoading,
     },
     leverage: {
       value: leverage ? Number(leverage) : null,
