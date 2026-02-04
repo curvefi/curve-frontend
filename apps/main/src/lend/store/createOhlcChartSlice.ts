@@ -18,7 +18,6 @@ type OHLCTimeUnit = Parameters<typeof getOHLC>[0]['units']
 
 type SliceState = {
   chartLlammaOhlc: {
-    data: LpPriceOhlcDataFormatted[]
     oraclePriceData: OraclePriceData[]
     baselinePriceData: LlamaBaselinePriceData[]
     refetchingCapped: boolean
@@ -67,7 +66,6 @@ export type OhlcChartSlice = {
       start: number,
       end: number,
     ): Promise<{
-      ohlcData: LpPriceOhlcDataFormatted[]
       oracleData: OraclePriceData[]
       baselineData: LlamaBaselinePriceData[]
       refetchingCapped: boolean
@@ -118,7 +116,6 @@ export type OhlcChartSlice = {
 
 const DEFAULT_STATE: SliceState = {
   chartLlammaOhlc: {
-    data: [],
     oraclePriceData: [],
     baselinePriceData: [],
     refetchingCapped: false,
@@ -161,7 +158,6 @@ export const createOhlcChart = (set: StoreApi<State>['setState'], get: StoreApi<
         produce((state: State) => {
           state[sliceKey].chartLlammaOhlc = {
             fetchStatus: 'LOADING',
-            data: DEFAULT_STATE.chartLlammaOhlc.data,
             oraclePriceData: DEFAULT_STATE.chartLlammaOhlc.oraclePriceData,
             baselinePriceData: DEFAULT_STATE.chartLlammaOhlc.baselinePriceData,
             refetchingCapped: DEFAULT_STATE.chartLlammaOhlc.refetchingCapped,
@@ -189,7 +185,6 @@ export const createOhlcChart = (set: StoreApi<State>['setState'], get: StoreApi<
 
         const baselinePriceArray: LlamaBaselinePriceData[] = []
         const oraclePriceArray: OraclePriceData[] = []
-        const ohlcDataArray: LpPriceOhlcDataFormatted[] = []
 
         for (const item of ohlc) {
           const time = item.time.getLocalTimestamp()
@@ -207,16 +202,6 @@ export const createOhlcChart = (set: StoreApi<State>['setState'], get: StoreApi<
               value: item.oraclePrice,
             })
           }
-
-          if (item.open && item.close && item.high && item.low) {
-            ohlcDataArray.push({
-              time,
-              open: item.open,
-              close: item.close,
-              high: item.high,
-              low: item.low,
-            })
-          }
         }
 
         const arrLength = oraclePriceArray.length - 1
@@ -229,8 +214,7 @@ export const createOhlcChart = (set: StoreApi<State>['setState'], get: StoreApi<
 
         set(
           produce((state: State) => {
-            state[sliceKey].chartLlammaOhlc.data = ohlcDataArray
-            state[sliceKey].chartLlammaOhlc.refetchingCapped = ohlcDataArray.length < 298
+            state[sliceKey].chartLlammaOhlc.refetchingCapped = oraclePriceArray.length < 299
             state[sliceKey].chartLlammaOhlc.lastFetchEndTime = ohlc[0].time.getUTCTimestamp()
             state[sliceKey].chartLlammaOhlc.fetchStatus = 'READY'
             state[sliceKey].chartLlammaOhlc.oraclePriceData = oraclePriceArray
@@ -244,7 +228,6 @@ export const createOhlcChart = (set: StoreApi<State>['setState'], get: StoreApi<
           produce((state: State) => {
             state[sliceKey].chartLlammaOhlc = {
               fetchStatus: 'ERROR',
-              data: DEFAULT_STATE.chartLlammaOhlc.data,
               oraclePriceData: DEFAULT_STATE.chartLlammaOhlc.oraclePriceData,
               baselinePriceData: DEFAULT_STATE.chartLlammaOhlc.baselinePriceData,
               refetchingCapped: DEFAULT_STATE.chartLlammaOhlc.refetchingCapped,
@@ -278,7 +261,6 @@ export const createOhlcChart = (set: StoreApi<State>['setState'], get: StoreApi<
 
         const baselinePriceArray: LlamaBaselinePriceData[] = []
         const oraclePriceArray: OraclePriceData[] = []
-        const ohlcDataArray: LpPriceOhlcDataFormatted[] = []
 
         for (const item of ohlc) {
           const time = item.time.getLocalTimestamp()
@@ -296,23 +278,12 @@ export const createOhlcChart = (set: StoreApi<State>['setState'], get: StoreApi<
               value: item.oraclePrice,
             })
           }
-
-          if (item.open && item.close && item.high && item.low) {
-            ohlcDataArray.push({
-              time,
-              open: item.open,
-              close: item.close,
-              high: item.high,
-              low: item.low,
-            })
-          }
         }
 
         return {
-          ohlcData: ohlcDataArray,
           oracleData: oraclePriceArray,
           baselineData: baselinePriceArray,
-          refetchingCapped: ohlcDataArray.length < 299,
+          refetchingCapped: oraclePriceArray.length < 299,
           lastFetchEndTime: ohlc[0].time.getUTCTimestamp(),
         }
       } catch (error) {
@@ -323,7 +294,6 @@ export const createOhlcChart = (set: StoreApi<State>['setState'], get: StoreApi<
           }),
         )
         return {
-          ohlcData: [],
           oracleData: [],
           baselineData: [],
           refetchingCapped: false,
@@ -564,7 +534,6 @@ export const createOhlcChart = (set: StoreApi<State>['setState'], get: StoreApi<
 
             state[sliceKey].chartLlammaOhlc = {
               fetchStatus: 'READY',
-              data: [...llammaData.ohlcData, ...state[sliceKey].chartLlammaOhlc.data],
               oraclePriceData: [...llammaData.oracleData, ...state[sliceKey].chartLlammaOhlc.oraclePriceData],
               baselinePriceData: [...llammaData.baselineData, ...state[sliceKey].chartLlammaOhlc.baselinePriceData],
               refetchingCapped: llammaData.refetchingCapped,
@@ -606,7 +575,6 @@ export const createOhlcChart = (set: StoreApi<State>['setState'], get: StoreApi<
           produce((state: State) => {
             state[sliceKey].chartLlammaOhlc = {
               fetchStatus: 'READY',
-              data: [...llammaData.ohlcData, ...state[sliceKey].chartLlammaOhlc.data],
               oraclePriceData: [...llammaData.oracleData, ...state[sliceKey].chartLlammaOhlc.oraclePriceData],
               baselinePriceData: [...llammaData.baselineData, ...state[sliceKey].chartLlammaOhlc.baselinePriceData],
               refetchingCapped: llammaData.refetchingCapped,

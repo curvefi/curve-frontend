@@ -22,19 +22,13 @@ type UseLlammaChartSelectionsProps = {
   oracleChart: ChartAvailability
   llammaChart: ChartAvailability
   oracleTokens: TokenLabels
-  marketTokens: TokenLabels
 }
 
 /**
  * Manages chart selection between Oracle and LLAMMA price data sources.
  * Automatically selects an available chart if the current selection has no data.
  */
-export const useLlammaChartSelections = ({
-  oracleChart,
-  llammaChart,
-  oracleTokens,
-  marketTokens,
-}: UseLlammaChartSelectionsProps) => {
+export const useLlammaChartSelections = ({ oracleChart, llammaChart, oracleTokens }: UseLlammaChartSelectionsProps) => {
   const [selectedChartKey, setSelectedChartKey] = useState<ChartKey>('oracle')
 
   const isLoading = oracleChart.fetchStatus === 'LOADING' || llammaChart.fetchStatus === 'LOADING'
@@ -47,15 +41,14 @@ export const useLlammaChartSelections = ({
       options.push({ activeTitle: label, label, key: 'oracle' })
     }
 
-    if (llammaChart.hasData) {
-      const label = marketTokens
-        ? t`${marketTokens.collateralSymbol} / ${marketTokens.borrowedSymbol} (LLAMMA)`
-        : t`LLAMMA`
+    // Only show llamma chart option as fallback when oracle data is unavailable
+    if (llammaChart.hasData && !oracleChart.hasData) {
+      const label = t`Oracle price`
       options.push({ activeTitle: label, label, key: 'llamma' })
     }
 
     return options
-  }, [oracleChart.hasData, llammaChart.hasData, oracleTokens, marketTokens])
+  }, [oracleChart.hasData, llammaChart.hasData, oracleTokens])
 
   // Auto-switch to available chart when current selection has no data
   useEffect(() => {

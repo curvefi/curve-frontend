@@ -69,31 +69,21 @@ export const useOhlcChartState = ({ chainId, market, llammaId }: OhlcChartStateP
     [chartOraclePoolOhlc.collateralToken.symbol, chartOraclePoolOhlc.borrowedToken.symbol],
   )
 
-  // Market tokens from llamma data
-  const marketTokens = useMemo(
-    () =>
-      market
-        ? {
-            collateralSymbol: market.coins[1],
-            borrowedSymbol: 'crvUSD',
-          }
-        : null,
-    [market],
-  )
-
   const { selectChartList, selectedChartKey, setSelectedChart, isLoading } = useLlammaChartSelections({
     oracleChart: { fetchStatus: chartOraclePoolOhlc.fetchStatus, hasData: chartOraclePoolOhlc.data.length > 0 },
-    llammaChart: { fetchStatus: chartLlammaOhlc.fetchStatus, hasData: chartLlammaOhlc.data.length > 0 },
+    llammaChart: { fetchStatus: chartLlammaOhlc.fetchStatus, hasData: chartLlammaOhlc.oraclePriceData.length > 0 },
     oracleTokens,
-    marketTokens,
   })
 
   // Select chart data based on current selection
   const currentChart = selectedChartKey === 'llamma' ? chartLlammaOhlc : chartOraclePoolOhlc
-  const noDataAvailable = !isLoading && currentChart.data.length === 0
+  // we no longer want to use the llamma endpoint for it's ohlc data as it's deemed too spotty
+  const ohlcData = selectedChartKey === 'llamma' ? [] : chartOraclePoolOhlc.data
+  const noDataAvailable = !isLoading && currentChart.oraclePriceData.length === 0
 
   const oraclePriceData = useMemo(() => {
     if (chartOraclePoolOhlc.oraclePriceData.length > 0) return chartOraclePoolOhlc.oraclePriceData
+    // if the oracle data endpoint doesn't have oracle price data, there's a higher chance that it still exists in the llamma endpoint
     if (chartLlammaOhlc.oraclePriceData.length > 0) return chartLlammaOhlc.oraclePriceData
     return undefined
   }, [chartOraclePoolOhlc.oraclePriceData, chartLlammaOhlc.oraclePriceData])
@@ -126,7 +116,8 @@ export const useOhlcChartState = ({ chainId, market, llammaId }: OhlcChartStateP
   })
 
   const selectedLiqRange = useLiquidationRange({
-    chartData: currentChart.data,
+    chartData: ohlcData,
+    fallbackData: currentChart.oraclePriceData,
     currentPrices: userPrices,
     newPrices: newLiqPrices,
   })
@@ -189,7 +180,7 @@ export const useOhlcChartState = ({ chainId, market, llammaId }: OhlcChartStateP
     hideCandleSeriesLabel: true,
     chartHeight: DEFAULT_CHART_HEIGHT,
     chartStatus,
-    ohlcData: currentChart.data,
+    ohlcData,
     oraclePriceData,
     liquidationRange: selectedLiqRange,
     timeOption,
