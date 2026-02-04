@@ -11790,7 +11790,6 @@ __metadata:
     "@ethersproject/abi": "npm:^5.8.0"
     "@hookform/error-message": "npm:^2.0.1"
     "@hookform/resolvers": "npm:^5.2.2"
-    "@sentry/react": "npm:^10.36.0"
     "@supercharge/promise-pool": "npm:^3.2.0"
     "@tanstack/react-router": "npm:^1.157.18"
     "@tanstack/react-router-devtools": "npm:^1.157.18"
