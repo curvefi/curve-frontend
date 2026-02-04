@@ -1,5 +1,5 @@
 import { enforce, skipWhen, test } from 'vest'
-import { getLlamaMarket, hasVault } from '@/llamalend/llama.utils'
+import { getLlamaMarket, hasGauge, hasVault } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
@@ -56,6 +56,15 @@ export type UnstakeForm = MakeOptional<UnstakeMutation, 'unstakeAmount'> & Calcu
 export type UnstakeQuery<ChainId = number> = UserMarketQuery<ChainId> & UnstakeMutation
 export type UnstakeParams<ChainId = number> = FieldsOf<UnstakeQuery<ChainId>>
 
+export type ClaimType = 'crv' | 'rewards'
+
+export type ClaimMutation = {
+  claimType: ClaimType
+}
+
+export type ClaimQuery<ChainId = number> = UserMarketQuery<ChainId> & ClaimMutation
+export type ClaimParams<ChainId = number> = FieldsOf<ClaimQuery<ChainId>>
+
 export type SharesToAssetsQuery<ChainId = number> = UserMarketQuery<ChainId> & { shares: Decimal }
 export type SharesToAssetsParams<ChainId = number> = FieldsOf<SharesToAssetsQuery<ChainId>>
 
@@ -72,11 +81,26 @@ export function requireVault(marketOrId: string | LlamaMarketTemplate): LendMark
   return market
 }
 
+export function requireGauge(marketId: string): LendMarketTemplate {
+  const lendMarket = requireVault(marketId)
+  if (!hasGauge(lendMarket)) throw new Error('Market does not have a gauge')
+  return lendMarket
+}
+
 export const validateHasVault = (marketId: string | null | undefined) => {
   skipWhen(!marketId, () => {
     test('marketId', 'Market does not have a vault', () => {
       const market = getLlamaMarket(marketId!)
       enforce(hasVault(market)).isTruthy()
+    })
+  })
+}
+
+const validateHasGauge = (marketId: string | null | undefined) => {
+  skipWhen(!marketId, () => {
+    test('marketId', 'Market does not have a gauge', () => {
+      const market = getLlamaMarket(marketId!)
+      enforce(hasGauge(market)).isTruthy()
     })
   })
 }
@@ -122,6 +146,18 @@ const supplyUserValidationGroup = <IChainId extends number>(params: UserMarketPa
 export const depositValidationSuite = createValidationSuite((params: DepositParams) => {
   supplyUserValidationGroup(params)
   validateDepositAmount(params.depositAmount, { depositRequired: true })
+})
+
+export const claimableRewardsValidationSuite = createValidationSuite((params: UserMarketParams) => {
+  supplyUserValidationGroup(params)
+  validateHasGauge(params.marketId)
+})
+
+export const claimValidationSuite = createValidationSuite((params: ClaimParams) => {
+  supplyUserValidationGroup(params)
+  test('claimType', 'Claim type is required', () => {
+    enforce(params.claimType).isNotEmpty()
+  })
 })
 
 export const userSupplyVaultSharesValidationSuite = createValidationSuite((params: SharesToAssetsParams) => {
