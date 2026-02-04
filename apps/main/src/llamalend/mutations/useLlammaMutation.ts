@@ -5,8 +5,8 @@ import { invalidateAllUserMarketDetails } from '@/llamalend/queries/validation/i
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useMutation } from '@tanstack/react-query'
 import { notify, useCurve } from '@ui-kit/features/connect-wallet'
-import { addBreadcrumb, captureError } from '@ui-kit/features/sentry'
 import { withPendingToast } from '@ui-kit/features/connect-wallet/lib/notify'
+import { addBreadcrumb, captureError } from '@ui-kit/features/sentry'
 import { assertValidity, logError, logMutation, logSuccess, type ValidationSuite } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { waitForTransactionReceipt } from '@wagmi/core'
@@ -156,7 +156,7 @@ export function useLlammaMutation<TVariables extends object, TData extends Resul
       console.error(`Error in mutation ${JSON.stringify({ mutationKey, variables })}:`, error)
       setError(error)
       logError(mutationKey, { error, variables, marketId: context?.market.id })
-      captureError(error, { variables, context, userAddress })
+      captureError(error, { variables, userAddress })
       notify(t`Transaction failed`, 'error') // hide the actual error message, it can be too long - display it in the form
     },
   })

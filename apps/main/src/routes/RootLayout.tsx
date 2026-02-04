@@ -41,10 +41,10 @@ function useHydrationMethods(): HydratorMap {
   return useMemo(() => ({ crvusd, dex, lend }), [crvusd, dex, lend])
 }
 
-const useBreadcrumbs = (pathname: string) =>
+const useBreadcrumbs = (pathname: string, { origin, search } = window.location) =>
   useEffect(
-    () => addBreadcrumb(`Navigated to ${pathname}`, 'navigation', { location: window.location, pathname }),
-    [pathname],
+    () => addBreadcrumb(`Navigated to ${pathname}`, 'navigation', { origin, pathname, search }),
+    [origin, pathname, search],
   )
 
 // Inner component that uses TanStack Query hooks

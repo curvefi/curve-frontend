@@ -1,3 +1,4 @@
+import { type Extras } from '@sentry/core'
 import {
   addBreadcrumb as addSentryBreadcrumb,
   captureException,
@@ -19,14 +20,7 @@ export const initSentry = () =>
     ? init({
         dsn,
         environment: NODE_ENV,
-
-        // Performance monitoring sample rate (adjust based on traffic)
-        tracesSampleRate: 0.1,
-
-        // Session replay for debugging (only on errors)
-        replaysSessionSampleRate: 0,
-        replaysOnErrorSampleRate: 1.0,
-
+        tracesSampleRate: 0.01, // Performance monitoring sample rate (adjust based on traffic)
         // Filter out noise
         ignoreErrors: [
           // Network errors that are expected
@@ -45,7 +39,7 @@ export const initSentry = () =>
 /**
  * Capture an error manually with optional context.
  */
-export const captureError = (error: Error, context?: Record<string, unknown>) =>
+export const captureError = (error: Error, context?: Extras) =>
   context
     ? withScope((scope) => {
         scope.setExtras(context)
@@ -56,7 +50,7 @@ export const captureError = (error: Error, context?: Record<string, unknown>) =>
 /**
  * Capture an error manually with optional context.
  */
-export const captureString = (message: string, context?: Record<string, unknown>) =>
+export const captureString = (message: string, context?: Extras) =>
   context
     ? withScope((scope) => {
         scope.setExtras(context)

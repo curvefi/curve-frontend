@@ -23,18 +23,17 @@ const getMutationKey = (mutation: Mutation<unknown, unknown, unknown, unknown>, 
 }
 
 export const mutationCache = new MutationCache({
-  onError: (error, variables, context, mutation) => {
-    const variablesMutationKey = getMutationKey(mutation, variables)
-    logError(variablesMutationKey, error, error.message)
-    captureError(error, { variables, mutation, context })
+  onError: (error, variables, _context, mutation) => {
+    const mutationKey = getMutationKey(mutation, variables)
+    logError(mutationKey, error, error.message)
+    captureError(error, { mutationKey, variables, mutation })
   },
   onSuccess: (data, variables, _context, mutation) => {
-    const variablesMutationKey = getMutationKey(mutation, variables)
-    logSuccess(variablesMutationKey, { data })
+    logSuccess(getMutationKey(mutation, variables), { data })
   },
-  onMutate: (variables, mutation, context) => {
-    const variablesMutationKey = getMutationKey(mutation, variables)
-    logMutation(variablesMutationKey)
-    addBreadcrumb('onMutate', 'mutation', { context, variables, mutation })
+  onMutate: (variables, mutation) => {
+    const mutationKey = getMutationKey(mutation, variables)
+    logMutation(mutationKey)
+    addBreadcrumb('onMutate', 'mutation', { mutationKey, variables, mutation })
   },
 })
