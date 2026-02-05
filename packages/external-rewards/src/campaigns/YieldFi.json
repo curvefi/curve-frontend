@@ -3,7 +3,7 @@
   "platform": "YieldFi",
   "description": "Points for providing liquidity.",
   "platformImageId": "yieldfi.png",
-  "dashboardLink": "https://yield.fi/portfolio/",
+  "dashboardLink": "https://v2.yield.fi/defi/",
   "pools": [
     {
       "id": "null",
