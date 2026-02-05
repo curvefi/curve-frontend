@@ -1,5 +1,3 @@
-import { useEstimateGas } from '@/llamalend/hooks/useEstimateGas'
-import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useBorrowMoreIsApproved } from '@/llamalend/queries/borrow-more/borrow-more-is-approved.query'
 import {
   getBorrowMoreImplementation,
@@ -7,8 +5,9 @@ import {
 } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
 import type { BorrowMoreParams, BorrowMoreQuery } from '@/llamalend/queries/validation/borrow-more.validation'
 import { borrowMoreValidationSuite } from '@/llamalend/queries/validation/borrow-more.validation'
-import type { IChainId, TGas } from '@curvefi/llamalend-api/lib/interfaces'
+import type { TGas } from '@curvefi/llamalend-api/lib/interfaces'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
+import { createApprovedEstimateGasHook } from '../estimate-gas-hook.factory'
 
 const { useQuery: useBorrowMoreApproveGasEstimate } = queryFactory({
   queryKey: ({
@@ -98,34 +97,8 @@ const { useQuery: useBorrowMoreGasEstimate } = queryFactory({
   validationSuite: borrowMoreValidationSuite({ leverageRequired: false }),
 })
 
-export const useBorrowMoreEstimateGas = <ChainId extends IChainId>(
-  networks: NetworkDict<ChainId>,
-  query: BorrowMoreParams<ChainId>,
-  enabled?: boolean,
-) => {
-  const {
-    data: isApproved,
-    isLoading: isApprovedLoading,
-    error: isApprovedError,
-  } = useBorrowMoreIsApproved(query, enabled)
-  const {
-    data: approveEstimate,
-    isLoading: approveLoading,
-    error: approveError,
-  } = useBorrowMoreApproveGasEstimate(query, enabled && isApproved === false)
-  const {
-    data: borrowEstimate,
-    isLoading: borrowLoading,
-    error: borrowError,
-  } = useBorrowMoreGasEstimate(query, enabled && isApproved === true)
-  const {
-    data,
-    isLoading: conversionLoading,
-    error: estimateError,
-  } = useEstimateGas<ChainId>(networks, query.chainId, isApproved ? borrowEstimate : approveEstimate, enabled)
-  return {
-    data,
-    isLoading: [isApprovedLoading, approveLoading, borrowLoading, conversionLoading].some(Boolean),
-    error: [isApprovedError, approveError, borrowError, estimateError].find(Boolean),
-  }
-}
+export const useBorrowMoreEstimateGas = createApprovedEstimateGasHook({
+  useIsApproved: useBorrowMoreIsApproved,
+  useApproveEstimate: useBorrowMoreApproveGasEstimate,
+  useActionEstimate: useBorrowMoreGasEstimate,
+})
