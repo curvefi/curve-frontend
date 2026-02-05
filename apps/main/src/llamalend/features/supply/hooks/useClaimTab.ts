@@ -3,7 +3,8 @@ import { useMemo } from 'react'
 import type { Address } from 'viem'
 import { useConnection } from 'wagmi'
 import type { LlamaMarketTemplate, LlamaNetwork } from '@/llamalend/llamalend.types'
-// import type { ClaimOptions } from '@/llamalend/mutations/claim.mutation'
+import type { ClaimOptions } from '@/llamalend/mutations/claim.mutation'
+import { useClaimMutation } from '@/llamalend/mutations/claim.mutation'
 import { useClaimableCrv, useClaimableRewards } from '@/llamalend/queries/supply/supply-claimable-rewards.query'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { notFalsy } from '@curvefi/prices-api/objects.util'
@@ -18,12 +19,12 @@ export const useClaimTab = <ChainId extends LlamaChainId>({
   market,
   network,
   enabled,
-  // onClaimed,
+  onClaimed,
 }: {
   market: LlamaMarketTemplate | undefined
   network: LlamaNetwork<ChainId>
   enabled?: boolean
-  // onClaimed?: ClaimOptions['onClaimed']
+  onClaimed?: ClaimOptions['onClaimed']
 }) => {
   const { address: userAddress } = useConnection()
   const { chainId } = network
@@ -81,40 +82,35 @@ export const useClaimTab = <ChainId extends LlamaChainId>({
     ...getTableOptions(claimableTokens),
   })
 
-  // const {
-  //   onSubmit: submitClaim,
-  //   isPending: isClaiming,
-  //   isSuccess: isClaimed,
-  //   error: claimError,
-  //   data,
-  // } = useClaimMutation({
-  //   marketId,
-  //   network,
-  //   onClaimed,
-  //   userAddress,
-  // })
-
-  const onSubmit = () => {
-    // if (!claimType) return
-    // submitClaim({ claimType })
-  }
+  const {
+    onSubmit: submitClaim,
+    isPending: isClaiming,
+    isSuccess: isClaimed,
+    error: claimError,
+    data,
+  } = useClaimMutation({
+    marketId,
+    network,
+    onClaimed,
+    onReset: () => {},
+    userAddress,
+  })
 
   return {
     params,
-    claimablesError,
+    claimablesError: claimablesError ?? null,
     claimableTokens,
     totalNotionals,
     usdRateLoading,
-    usdRateError,
-    isError: !!usdRateError || !!claimablesError,
+    usdRateError: usdRateError ?? null,
+    isDisabled: !!claimablesError,
     isLoading: isClaimablesLoading,
+    isError: !!claimablesError,
     table,
-    // isPending: isClaiming,
-    // TODO: remove
-    isPending: false,
-    onSubmit,
-    isDisabled: !!claimableRewards.error || !!claimableCrv.error,
-    // isClaimed,
-    // txHash: data?.hash,
+    onSubmit: submitClaim,
+    isClaimed,
+    isPending: isClaiming,
+    claimError,
+    txHash: data?.hash,
   }
 }

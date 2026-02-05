@@ -1,4 +1,5 @@
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
+import { LoanFormAlerts } from '@/llamalend/widgets/action-card/LoanFormAlerts'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
 import { t } from '@ui-kit/lib/i18n'
@@ -7,6 +8,7 @@ import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
 import { FormContent } from '@ui-kit/widgets/DetailPageLayout/FormContent'
 import { useClaimTab } from '../hooks/useClaimTab'
 import { TotalNotionalRow } from './cells/notional-cells'
+import { ClaimInfoAccordion } from './ClaimInfoAccordion'
 import { type ClaimableToken } from './columns'
 
 export type ClaimTabProps<ChainId extends IChainId> = {
@@ -22,17 +24,21 @@ export const ClaimTab = <ChainId extends IChainId>({ market, networks, chainId, 
   const network = networks[chainId]
 
   const {
+    params,
     isPending,
     isDisabled,
     isLoading,
     isError,
+    isClaimed,
     claimableTokens,
     totalNotionals,
     usdRateLoading: isNotionalLoading,
     table,
-    // isClaimed,
-    // claimError,
-    // txHash,
+    txHash,
+    claimError,
+    claimablesError,
+    usdRateError,
+    onSubmit,
   } = useClaimTab({
     market,
     network,
@@ -40,43 +46,47 @@ export const ClaimTab = <ChainId extends IChainId>({ market, networks, chainId, 
   })
 
   return (
-    <FormContent>
-      <DataTable<ClaimableToken>
-        table={table}
-        emptyState={
-          <EmptyStateRow table={table}>{isError ? t`Could not load rewards` : t`No claimable rewards`}</EmptyStateRow>
-        }
-        loading={isLoading}
-        showHeader={false}
-        footerCell={
-          claimableTokens.length > 1 &&
-          !isLoading && (
-            <TotalNotionalRow
-              sx={{ backgroundColor: (t) => t.design.Table.Row.Hover }}
-              totalNotionals={totalNotionals}
-              isNotionalLoading={isNotionalLoading}
-            />
-          )
-        }
-      />
-      <Button
-        type="submit"
-        loading={isPending || !market}
-        disabled={isDisabled}
-        data-testid={`${TEST_ID_PREFIX}-submit-button`}
-      >
-        {isPending ? t`Processing...` : t`Claim`}
-      </Button>
+    <>
+      <FormContent>
+        <DataTable<ClaimableToken>
+          table={table}
+          emptyState={
+            <EmptyStateRow table={table}>{isError ? t`Could not load rewards` : t`No claimable rewards`}</EmptyStateRow>
+          }
+          loading={isLoading}
+          showHeader={false}
+          footerCell={
+            claimableTokens.length > 1 &&
+            !isLoading && (
+              <TotalNotionalRow
+                sx={{ backgroundColor: (t) => t.design.Table.Row.Hover }}
+                totalNotionals={totalNotionals}
+                isNotionalLoading={isNotionalLoading}
+              />
+            )
+          }
+        />
+        <Button
+          type="submit"
+          loading={isPending || !market}
+          disabled={isDisabled}
+          data-testid={`${TEST_ID_PREFIX}-submit-button`}
+          onClick={onSubmit}
+        >
+          {isPending ? t`Processing...` : t`Claim`}
+        </Button>
 
-      {/* <LoanFormAlerts
-        isSuccess={isClaimed}
-        error={claimError}
-        txHash={txHash}
-        formErrors={formErrors}
-        network={network}
-        handledErrors={[]}
-        successTitle={t`Claimed successfully`}
-      /> */}
-    </FormContent>
+        <LoanFormAlerts
+          isSuccess={isClaimed}
+          error={claimablesError ?? claimError ?? usdRateError}
+          txHash={txHash}
+          formErrors={[]}
+          network={network}
+          handledErrors={[]}
+          successTitle={t`Claimed successfully`}
+        />
+      </FormContent>
+      <ClaimInfoAccordion params={params} networks={networks} />
+    </>
   )
 }
