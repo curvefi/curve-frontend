@@ -155,7 +155,9 @@ export const ActionInfo = ({
             <WithSkeleton
               component="div"
               loading={!!loading}
-              {...(Array.isArray(loading) ? { width: loading[0], height: loading[1] } : { width: '2ch' })}
+              {...(Array.isArray(loading)
+                ? { width: loading[0], height: loading[1] }
+                : { width: '2ch', height: '1rem' })}
             >
               <Typography
                 variant={valueSize[size]}

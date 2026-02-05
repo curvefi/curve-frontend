@@ -16,7 +16,7 @@ export type LoanInfoAccordionProps = {
   isOpen: boolean
   toggle: () => void
   range?: number
-  isApproved?: boolean
+  isApproved?: Query<boolean>
   health: Query<Decimal | null>
   prevHealth?: Query<Decimal>
   isFullRepay?: boolean
@@ -27,7 +27,6 @@ export type LoanInfoAccordionProps = {
   loanToValue: Query<Decimal | null>
   prevLoanToValue?: Query<Decimal | null>
   netBorrowApr?: Query<Decimal | null>
-  pnl?: Query<Decimal | null>
   gas: Query<TxGasInfo | null>
   debt?: Query<{ value: Decimal; tokenSymbol: string | undefined } | null>
   collateral?: Query<{ value: Decimal; tokenSymbol: string | undefined } | null>
@@ -62,7 +61,6 @@ export const LoanInfoAccordion = ({
   loanToValue,
   prevLoanToValue,
   netBorrowApr,
-  pnl,
   gas,
   debt,
   collateral,
@@ -198,15 +196,6 @@ export const LoanInfoAccordion = ({
               testId="borrow-leverage"
             />
           )}
-          {pnl && (
-            <ActionInfo
-              label={t`PNL`}
-              value={pnl.data && formatNumber(pnl.data, { abbreviate: false })}
-              valueRight={collateralSymbol}
-              {...combineQueryState(pnl)}
-              testId="borrow-pnl"
-            />
-          )}
           {(prevLeverageCollateral || leverageCollateral) && (
             <ActionInfo
               label={t`Leverage collateral`}
@@ -250,7 +239,7 @@ export const LoanInfoAccordion = ({
             testId="borrow-price-impact"
           />
         )}
-        <EstimatedTxCost gas={gas} isApproved={isApproved} />
+        <EstimatedTxCost gas={gas} isApproved={isApproved?.data} />
       </Stack>
     </ActionInfoAccordion>
   )

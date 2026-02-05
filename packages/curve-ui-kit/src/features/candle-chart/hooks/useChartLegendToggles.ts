@@ -7,6 +7,8 @@ import type { LegendItem } from '@ui-kit/shared/ui/Chart/LegendSet'
 type UseChartLegendTogglesOptions = {
   hasNewLiquidationRange?: boolean
   hasLiquidationRange?: boolean
+  /** if the llamma endpoint is used we only display oracle price in the chart and cancel option to toggle it on/off */
+  llammaEndpoint: boolean
 }
 
 /**
@@ -16,7 +18,8 @@ type UseChartLegendTogglesOptions = {
 export const useChartLegendToggles = ({
   hasNewLiquidationRange = false,
   hasLiquidationRange = false,
-}: UseChartLegendTogglesOptions = {}) => {
+  llammaEndpoint,
+}: UseChartLegendTogglesOptions) => {
   const theme = useTheme()
 
   const [oraclePriceVisible, setOraclePriceVisible] = useState(true)
@@ -34,7 +37,7 @@ export const useChartLegendToggles = ({
           label: t`Oracle Price`,
           line: { lineStroke: theme.palette.primary.main, dash: 'none' },
           toggled: oraclePriceVisible,
-          onToggle: toggleOraclePriceVisible,
+          onToggle: llammaEndpoint ? undefined : toggleOraclePriceVisible,
         },
         hasLiquidationRange && {
           label: t`Liquidation threshold`,
@@ -61,11 +64,12 @@ export const useChartLegendToggles = ({
       theme.design.Chart.LiquidationZone.Current,
       theme.design.Chart.LiquidationZone.Future,
       oraclePriceVisible,
+      llammaEndpoint,
       toggleOraclePriceVisible,
       hasLiquidationRange,
-      hasNewLiquidationRange,
       liqRangeCurrentVisible,
       toggleLiqRangeCurrentVisible,
+      hasNewLiquidationRange,
       liqRangeNewVisible,
       toggleLiqRangeNewVisible,
     ],

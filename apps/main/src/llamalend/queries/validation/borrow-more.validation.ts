@@ -2,6 +2,7 @@ import { skipWhen } from 'vest'
 import { getBorrowMoreImplementationArgs } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
 import {
   validateDebt,
+  validateLeverageEnabled,
   validateLeverageSupported,
   validateMaxBorrowed,
   validateMaxCollateral,
@@ -24,6 +25,7 @@ export type BorrowMoreMutation = {
   userBorrowed: Decimal
   debt: Decimal
   slippage: Decimal
+  leverageEnabled: boolean
 }
 
 type CalculatedValues = {
@@ -42,6 +44,7 @@ export type BorrowMoreParams<ChainId = number> = FieldsOf<BorrowMoreQuery<ChainI
 
 const validateBorrowMoreFieldsForMarket = (
   marketId: string | null | undefined,
+  leverageEnabled: boolean | null | undefined,
   userCollateral: Decimal | null | undefined,
   userBorrowed: Decimal | null | undefined,
   debt: Decimal | null | undefined,
@@ -49,6 +52,7 @@ const validateBorrowMoreFieldsForMarket = (
   skipWhen(!marketId, () => {
     if (!marketId) return
     getBorrowMoreImplementationArgs(marketId, {
+      leverageEnabled,
       debt: debt ?? '0',
       userCollateral: userCollateral ?? '0',
       userBorrowed: userBorrowed ?? '0',
@@ -59,7 +63,16 @@ const validateBorrowMoreFieldsForMarket = (
 // Form validation suite (for real-time form validation)
 export const borrowMoreFormValidationSuite = createValidationSuite(
   (
-    { userCollateral = '0', userBorrowed = '0', debt, maxBorrowed, maxCollateral, maxDebt, slippage }: BorrowMoreForm,
+    {
+      userCollateral = '0',
+      userBorrowed = '0',
+      debt,
+      maxBorrowed,
+      maxCollateral,
+      maxDebt,
+      slippage,
+      leverageEnabled,
+    }: BorrowMoreForm,
     { maxDebtRequired = true }: { maxDebtRequired?: boolean } = {},
   ) => {
     validateUserCollateral(userCollateral)
@@ -69,6 +82,7 @@ export const borrowMoreFormValidationSuite = createValidationSuite(
     validateDebt(debt)
     validateMaxDebt(debt, maxDebt, maxDebtRequired)
     validateSlippage(slippage)
+    validateLeverageEnabled(leverageEnabled, false)
   },
 )
 
@@ -83,6 +97,7 @@ export const borrowMoreValidationGroup = <IChainId extends number>(
     maxDebt,
     userAddress,
     slippage,
+    leverageEnabled,
   }: BorrowMoreParams<IChainId>,
   {
     leverageRequired = false,
@@ -102,8 +117,9 @@ export const borrowMoreValidationGroup = <IChainId extends number>(
   validateUserBorrowed(userBorrowed)
   validateDebt(debt, debtRequired)
   validateMaxDebt(debt, maxDebt, maxDebtRequired)
-  validateBorrowMoreFieldsForMarket(marketId, userCollateral, userBorrowed, debt)
+  validateBorrowMoreFieldsForMarket(marketId, leverageEnabled, userCollateral, userBorrowed, debt)
   validateSlippage(slippage)
+  validateLeverageEnabled(leverageEnabled, leverageRequired)
   validateLeverageSupported(marketId, leverageRequired)
 }
 
