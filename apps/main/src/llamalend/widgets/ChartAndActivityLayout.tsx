@@ -42,7 +42,6 @@ export type ChartAndActivityLayoutProps = {
     ohlcDataUnavailable: boolean
     isLoading: boolean
     selectedChartKey: string | undefined
-    setSelectedChart: (key: string) => void
     setTimeOption: (option: TimeOption) => void
     legendSets: LegendItem[]
     ohlcChartProps: OhlcChartProps & { selectChartList: ChartSelections[] }
@@ -79,7 +78,6 @@ export const ChartAndActivityLayout = ({ chart, bands, activity }: ChartAndActiv
             chartSelections={{
               selections: chart.ohlcChartProps.selectChartList,
               activeSelection: chart.selectedChartKey,
-              setActiveSelection: chart.setSelectedChart,
             }}
             timeOption={{
               options: TIME_OPTIONS,

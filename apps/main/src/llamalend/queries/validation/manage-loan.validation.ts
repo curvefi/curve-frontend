@@ -33,7 +33,7 @@ export type RepayForm = {
   maxStateCollateral: Decimal | undefined
   maxCollateral: Decimal | undefined
   maxBorrowed: Decimal | undefined
-  isFull: boolean | undefined
+  isFull: boolean
   slippage: Decimal
 }
 

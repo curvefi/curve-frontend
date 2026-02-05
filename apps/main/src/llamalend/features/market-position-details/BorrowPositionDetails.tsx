@@ -13,13 +13,6 @@ export type LiquidationAlert = {
   softLiquidation: boolean
   hardLiquidation: boolean
 }
-export type Pnl = {
-  currentProfit: Decimal | undefined
-  currentPositionValue: Decimal | undefined
-  depositedValue: Decimal | undefined
-  percentageChange: Decimal | undefined
-  loading: boolean
-}
 export type Health = { value: number | undefined | null; loading: boolean }
 export type BorrowRate = {
   rate: number | undefined | null
@@ -69,7 +62,6 @@ export type BorrowPositionDetailsProps = {
   liquidationAlert: LiquidationAlert
   health: Health
   borrowRate: BorrowRate
-  pnl?: Pnl // not all mint markets has PNL data (requires v2 leverage support)
   liquidationRange: LiquidationRange
   bandRange: BandRange
   leverage?: Leverage // doesn't exist yet for crvusd
@@ -116,7 +108,6 @@ export const BorrowPositionDetails = ({
   liquidationAlert,
   health,
   borrowRate,
-  pnl,
   liquidationRange,
   bandRange,
   leverage,
@@ -132,7 +123,6 @@ export const BorrowPositionDetails = ({
     <BorrowInformation
       marketType={marketType}
       borrowRate={borrowRate}
-      pnl={pnl}
       collateralValue={collateralValue}
       ltv={ltv}
       leverage={leverage}

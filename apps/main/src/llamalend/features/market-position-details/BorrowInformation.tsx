@@ -8,7 +8,6 @@ import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { LlamaMarketType } from '@ui-kit/types/market'
 import type {
-  Pnl,
   BorrowRate,
   Leverage,
   CollateralValue,
@@ -19,7 +18,6 @@ import type {
   CollateralLoss,
 } from './BorrowPositionDetails'
 import { LiquidationThresholdTooltipContent } from './tooltips/LiquidationThresholdMetricTooltipContent'
-import { PnlMetricTooltipContent } from './tooltips/PnlMetricTooltipContent'
 
 const { Spacing } = SizesAndSpaces
 
@@ -35,7 +33,6 @@ const dollarUnitOptions = {
 type BorrowInformationProps = {
   marketType: LlamaMarketType
   borrowRate: BorrowRate | undefined | null
-  pnl: Pnl | undefined | null
   collateralValue: CollateralValue | undefined | null
   ltv: Ltv | undefined | null
   leverage: Leverage | undefined | null
@@ -48,7 +45,6 @@ type BorrowInformationProps = {
 export const BorrowInformation = ({
   marketType,
   borrowRate,
-  pnl,
   collateralValue,
   ltv,
   leverage,
@@ -157,32 +153,6 @@ export const BorrowInformation = ({
             valueOptions={{ unit: 'multiplier' }}
           />
         )}
-      {pnl && ( // PNL is only available on lend for now
-        // Checking if currentPositionValue exists, otherwise pnl will return currentProfit as depositedValue
-        <Metric
-          size="small"
-          label={t`PNL`}
-          valueOptions={{ unit: 'dollar' }}
-          value={
-            pnl?.currentPositionValue && pnl?.currentProfit && pnl?.depositedValue
-              ? Number(pnl?.currentProfit)
-              : undefined
-          }
-          change={
-            pnl?.currentPositionValue && pnl?.percentageChange && pnl?.depositedValue
-              ? Number(pnl?.percentageChange)
-              : undefined
-          }
-          loading={pnl?.currentProfit == null && pnl?.loading}
-          valueTooltip={{
-            title: t`Position PNL`,
-            body: <PnlMetricTooltipContent pnl={pnl} />,
-            placement: 'top',
-            arrow: false,
-            clickable: true,
-          }}
-        />
-      )}
       <Metric
         size="small"
         label={t`Liquidation threshold`}

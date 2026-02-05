@@ -15,7 +15,6 @@ import Hourglass from './Hourglass.json'
 import Hyperwave from './Hyperwave.json'
 import Infinifi from './Infinifi.json'
 import Kelpdao from './Kelpdao.json'
-import LevelMoney from './LevelMoney.json'
 import Liquity from './Liquity.json'
 import Lombard from './Lombard.json'
 import Loop from './Loop.json'
@@ -24,7 +23,6 @@ import Noon from './Noon.json'
 import Pumpbtc from './Pumpbtc.json'
 import Re from './Re.json'
 import Resolv from './Resolv.json'
-import SolvProtocol from './SolvProtocol.json'
 import StableLabs from './StableLabs.json'
 import Symbiotic from './Symbiotic.json'
 import TermMax from './TermMax.json'
@@ -42,9 +40,7 @@ export {
   Fraxtal,
   Resolv,
   Lombard,
-  SolvProtocol,
   Hinkal,
-  LevelMoney,
   DTrinity,
   YieldFi,
   Babylon,

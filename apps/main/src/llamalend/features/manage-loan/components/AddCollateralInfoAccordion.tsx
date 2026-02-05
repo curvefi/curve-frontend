@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js'
-import { useMemo } from 'react'
 import type { Token } from '@/llamalend/features/borrow/types'
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
 import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
@@ -13,7 +12,7 @@ import { getUserHealthOptions } from '@/llamalend/queries/user-health.query'
 import { useUserState } from '@/llamalend/queries/user-state.query'
 import { CollateralParams } from '@/llamalend/queries/validation/manage-loan.types'
 import type { CollateralForm } from '@/llamalend/queries/validation/manage-loan.validation'
-import { LoanInfoAccordion } from '@/llamalend/widgets/manage-loan/LoanInfoAccordion'
+import { LoanInfoAccordion } from '@/llamalend/widgets/action-card/LoanInfoAccordion'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { mapQuery, q } from '@ui-kit/types/util'
@@ -37,18 +36,14 @@ export function AddCollateralInfoAccordion<ChainId extends IChainId>({
   const [isOpen, , , toggle] = useSwitch(false)
   const userState = q(useUserState(params, isOpen))
 
-  const expectedCollateral = useMemo(
-    () =>
-      mapQuery(
-        userState,
-        (state) =>
-          userCollateral &&
-          state.collateral && {
-            value: decimal(new BigNumber(userCollateral).plus(state.collateral)) as Decimal,
-            tokenSymbol: collateralToken?.symbol,
-          },
-      ),
-    [collateralToken?.symbol, userState, userCollateral],
+  const expectedCollateral = mapQuery(
+    userState,
+    (state) =>
+      userCollateral &&
+      state.collateral && {
+        value: decimal(new BigNumber(userCollateral).plus(state.collateral)) as Decimal,
+        tokenSymbol: collateralToken?.symbol,
+      },
   )
 
   return (

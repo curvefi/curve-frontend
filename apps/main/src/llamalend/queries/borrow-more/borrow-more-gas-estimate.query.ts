@@ -10,17 +10,31 @@ import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { createApprovedEstimateGasHook } from '../estimate-gas-hook.factory'
 
 const { useQuery: useBorrowMoreApproveGasEstimate } = queryFactory({
-  queryKey: ({ chainId, marketId, userAddress, userCollateral = '0', userBorrowed = '0', maxDebt }: BorrowMoreParams) =>
+  queryKey: ({
+    chainId,
+    marketId,
+    userAddress,
+    userCollateral = '0',
+    userBorrowed = '0',
+    maxDebt,
+    leverageEnabled,
+  }: BorrowMoreParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
       'estimateGas.borrowMoreApprove',
       { userCollateral },
       { userBorrowed },
       { maxDebt },
+      { leverageEnabled },
     ] as const,
-  queryFn: async ({ marketId, userCollateral = '0', userBorrowed = '0' }: BorrowMoreQuery): Promise<TGas | null> => {
+  queryFn: async ({
+    marketId,
+    userCollateral = '0',
+    userBorrowed = '0',
+    leverageEnabled,
+  }: BorrowMoreQuery): Promise<TGas | null> => {
     if (!+userCollateral && !+userBorrowed) return null
-    const [type, impl] = getBorrowMoreImplementation(marketId)
+    const [type, impl] = getBorrowMoreImplementation(marketId, leverageEnabled)
     switch (type) {
       case 'V1':
       case 'V2':
@@ -43,6 +57,7 @@ const { useQuery: useBorrowMoreGasEstimate } = queryFactory({
     debt = '0',
     maxDebt,
     slippage,
+    leverageEnabled,
   }: BorrowMoreParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
@@ -52,6 +67,7 @@ const { useQuery: useBorrowMoreGasEstimate } = queryFactory({
       { debt },
       { maxDebt },
       { slippage },
+      { leverageEnabled },
     ] as const,
   queryFn: async ({
     marketId,
@@ -59,9 +75,15 @@ const { useQuery: useBorrowMoreGasEstimate } = queryFactory({
     userBorrowed = '0',
     debt = '0',
     slippage,
+    leverageEnabled,
   }: BorrowMoreQuery): Promise<TGas | null> => {
     if (!+debt) return null
-    const [type, impl, args] = getBorrowMoreImplementationArgs(marketId, { userCollateral, userBorrowed, debt })
+    const [type, impl, args] = getBorrowMoreImplementationArgs(marketId, {
+      userCollateral,
+      userBorrowed,
+      debt,
+      leverageEnabled,
+    })
     switch (type) {
       case 'V1':
       case 'V2':

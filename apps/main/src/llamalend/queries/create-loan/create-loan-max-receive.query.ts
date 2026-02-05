@@ -1,5 +1,4 @@
-import { getLlamaMarket } from '@/llamalend/llama.utils'
-import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
+import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/create-loan-query.helpers'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
@@ -80,21 +79,20 @@ export const { useQuery: useCreateLoanMaxReceive, queryKey: createLoanMaxReceive
     range,
     leverageEnabled,
   }: CreateLoanMaxReceiveQuery): Promise<CreateLoanMaxReceiveResult> => {
-    const market = getLlamaMarket(marketId)
-    if (!leverageEnabled) {
-      return convertNumbers({ maxDebt: await market.createLoanMaxRecv(userCollateral, range) })
+    const [type, impl] = getCreateLoanImplementation(marketId, leverageEnabled)
+    switch (type) {
+      case 'V1':
+      case 'V2':
+        return convertNumbers(await impl.createLoanMaxRecv(userCollateral, userBorrowed, range))
+      case 'V0': {
+        assert(!+userBorrowed, `userBorrowed must be 0 for non-leverage mint markets`)
+        const result = await impl.createLoanMaxRecv(userCollateral, range)
+        const { maxBorrowable, maxCollateral } = result // leverage and routeIdx fields are unused
+        return convertNumbers({ maxDebt: maxBorrowable, maxTotalCollateral: maxCollateral })
+      }
+      case 'unleveraged':
+        return convertNumbers({ maxDebt: await impl.createLoanMaxRecv(userCollateral, range) })
     }
-    if (market instanceof LendMarketTemplate) {
-      return convertNumbers(await market.leverage.createLoanMaxRecv(userCollateral, userBorrowed, range))
-    }
-    if (market.leverageV2.hasLeverage()) {
-      return convertNumbers(await market.leverageV2.createLoanMaxRecv(userCollateral, userBorrowed, range))
-    }
-
-    assert(!+userBorrowed, `userBorrowed must be 0 for non-leverage mint markets`)
-    const result = await market.leverage.createLoanMaxRecv(userCollateral, range)
-    const { maxBorrowable, maxCollateral } = result // leverage and routeIdx fields are unused
-    return convertNumbers({ maxDebt: maxBorrowable, maxTotalCollateral: maxCollateral })
   },
   staleTime: '1m',
   validationSuite: maxReceiveValidation,

@@ -15,19 +15,28 @@ export type BorrowMoreMaxReceiveResult = {
 }
 
 export const { useQuery: useBorrowMoreMaxReceive } = queryFactory({
-  queryKey: ({ chainId, marketId, userAddress, userCollateral = '0', userBorrowed = '0' }: BorrowMoreParams) =>
+  queryKey: ({
+    chainId,
+    marketId,
+    userAddress,
+    userCollateral = '0',
+    userBorrowed = '0',
+    leverageEnabled,
+  }: BorrowMoreParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
       'borrowMoreMaxRecv',
       { userCollateral },
       { userBorrowed },
+      { leverageEnabled },
     ] as const,
   queryFn: async ({
     marketId,
     userCollateral = '0',
     userBorrowed = '0',
+    leverageEnabled,
   }: BorrowMoreQuery): Promise<BorrowMoreMaxReceiveResult> => {
-    const [type, impl] = getBorrowMoreImplementation(marketId)
+    const [type, impl] = getBorrowMoreImplementation(marketId, leverageEnabled)
     switch (type) {
       case 'V1':
       case 'V2': {

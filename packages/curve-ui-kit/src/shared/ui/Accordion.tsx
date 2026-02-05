@@ -53,7 +53,7 @@ type ControlledAccordionProps = {
   toggle: () => void
 }
 
-type AccordionProps = AccordionBaseProps & (UncontrolledAccordionProps | ControlledAccordionProps)
+export type AccordionProps = AccordionBaseProps & (UncontrolledAccordionProps | ControlledAccordionProps)
 
 /**
  * Handles the toggle logic for both controlled and uncontrolled accordion modes.
@@ -104,12 +104,13 @@ export const Accordion = ({
           ...(isOpen && !ghost && { backgroundColor: layer1Fill }),
           transition: `background-color ${TransitionFunction}`,
 
-          // Render border insize without layout shift on hover
+          // Render border inside without layout shift on hover using a pseudo-element overlay
           position: 'relative',
           '&::after': {
             content: '""',
             position: 'absolute',
             inset: 0,
+            pointerEvents: 'none', // Prevents the overlay from intercepting mouse events (e.g., tooltip hover on the `info` slot)
             ...(ghost ? { borderBottom: borderStyle } : { border: borderStyle }),
           },
 

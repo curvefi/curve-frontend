@@ -25,6 +25,7 @@ export const BalanceAmount = <T extends Amount>({
       variant="highlightXs"
       color={disabled ? 'textDisabled' : children == null ? 'textTertiary' : 'textPrimary'}
       data-testid={testId}
+      data-value={children ?? ''}
       sx={{ ...VERTICAL_CENTER_TEXT }}
     >
       {loading ? '???' : children == null ? '-' : formatNumber(children, { abbreviate: true })}
