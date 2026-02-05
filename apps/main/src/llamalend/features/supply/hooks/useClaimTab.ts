@@ -10,7 +10,9 @@ import { notFalsy } from '@curvefi/prices-api/objects.util'
 import { combineQueryState } from '@ui-kit/lib'
 import { UserMarketParams } from '@ui-kit/lib/model'
 import { useTokenUsdRates } from '@ui-kit/lib/model/entities/token-usd-rate'
+import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { CRV } from '@ui-kit/utils/address'
+import { ClaimableToken, getClaimTabColumns } from '../components/columns'
 
 export const useClaimTab = <ChainId extends LlamaChainId>({
   market,
@@ -38,7 +40,7 @@ export const useClaimTab = <ChainId extends LlamaChainId>({
 
   const claimableRewards = useClaimableRewards(params, enabled)
   const claimableCrv = useClaimableCrv(params, enabled)
-  const claimablesQueryState = combineQueryState(claimableCrv, claimableRewards)
+  const { loading: isClaimablesLoading, error: claimablesError } = combineQueryState(claimableCrv, claimableRewards)
 
   const tokenAddresses = useMemo(
     () => [CRV.address, ...(claimableRewards.data?.map((r) => r.token) ?? [])],
@@ -71,6 +73,14 @@ export const useClaimTab = <ChainId extends LlamaChainId>({
     return notionals.length > 0 ? sum(notionals) : undefined
   }, [claimableTokens])
 
+  const columns = useMemo(() => getClaimTabColumns(network.id, usdRateLoading), [network.id, usdRateLoading])
+
+  const table = useTable<ClaimableToken>({
+    columns,
+    data: claimableTokens,
+    ...getTableOptions(claimableTokens),
+  })
+
   // const {
   //   onSubmit: submitClaim,
   //   isPending: isClaiming,
@@ -91,11 +101,14 @@ export const useClaimTab = <ChainId extends LlamaChainId>({
 
   return {
     params,
-    claimablesQueryState,
+    claimablesError,
     claimableTokens,
     totalNotionals,
     usdRateLoading,
     usdRateError,
+    isError: !!usdRateError || !!claimablesError,
+    isLoading: isClaimablesLoading,
+    table,
     // isPending: isClaiming,
     // TODO: remove
     isPending: false,
