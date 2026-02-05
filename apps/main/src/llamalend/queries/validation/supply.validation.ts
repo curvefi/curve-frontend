@@ -56,15 +56,6 @@ export type UnstakeForm = MakeOptional<UnstakeMutation, 'unstakeAmount'> & Calcu
 export type UnstakeQuery<ChainId = number> = UserMarketQuery<ChainId> & UnstakeMutation
 export type UnstakeParams<ChainId = number> = FieldsOf<UnstakeQuery<ChainId>>
 
-export type ClaimType = 'crv' | 'rewards'
-
-export type ClaimMutation = {
-  claimType: ClaimType
-}
-
-export type ClaimQuery<ChainId = number> = UserMarketQuery<ChainId> & ClaimMutation
-export type ClaimParams<ChainId = number> = FieldsOf<ClaimQuery<ChainId>>
-
 export type SharesToAssetsQuery<ChainId = number> = UserMarketQuery<ChainId> & { shares: Decimal }
 export type SharesToAssetsParams<ChainId = number> = FieldsOf<SharesToAssetsQuery<ChainId>>
 
@@ -153,11 +144,8 @@ export const claimableRewardsValidationSuite = createValidationSuite((params: Us
   validateHasGauge(params.marketId)
 })
 
-export const claimValidationSuite = createValidationSuite((params: ClaimParams) => {
+export const claimValidationSuite = createValidationSuite((params: UserMarketParams) => {
   supplyUserValidationGroup(params)
-  test('claimType', 'Claim type is required', () => {
-    enforce(params.claimType).isNotEmpty()
-  })
 })
 
 export const userSupplyVaultSharesValidationSuite = createValidationSuite((params: SharesToAssetsParams) => {
