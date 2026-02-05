@@ -26,7 +26,7 @@ export function BorrowMoreLoanInfoAccordion<ChainId extends IChainId>({
   tokens: { collateralToken, borrowToken },
   networks,
   onSlippageChange,
-  hasLeverage,
+  leverageEnabled,
   health,
 }: {
   params: BorrowMoreParams<ChainId>
@@ -34,11 +34,10 @@ export function BorrowMoreLoanInfoAccordion<ChainId extends IChainId>({
   tokens: { collateralToken: Token | undefined; borrowToken: Token | undefined }
   networks: NetworkDict<ChainId>
   onSlippageChange: (newSlippage: Decimal) => void
-  hasLeverage: boolean | undefined
+  leverageEnabled: boolean
   health: Query<Decimal | null>
 }) {
   const [isOpen, , , toggle] = useSwitch(false)
-  const leverageEnabled = !!hasLeverage
   const userState = useUserState(params, isOpen)
   const expectedCollateralQuery = q(useBorrowMoreExpectedCollateral(params, isOpen && leverageEnabled))
 
@@ -50,13 +49,11 @@ export function BorrowMoreLoanInfoAccordion<ChainId extends IChainId>({
 
   const prevHealth = useHealthQueries((isFull) => getUserHealthOptions({ ...params, isFull }))
 
-  const { data: isApproved } = useBorrowMoreIsApproved(params, isOpen)
-
   return (
     <LoanInfoAccordion
       isOpen={isOpen}
       toggle={toggle}
-      isApproved={isApproved}
+      isApproved={q(useBorrowMoreIsApproved(params, isOpen))}
       gas={useBorrowMoreEstimateGas(networks, params, isOpen)}
       health={health}
       prevHealth={prevHealth}

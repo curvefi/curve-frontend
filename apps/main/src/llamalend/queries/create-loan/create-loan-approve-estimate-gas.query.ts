@@ -1,12 +1,13 @@
-import type { Suite } from 'vest'
-import { useEstimateGas } from '@/llamalend/hooks/useEstimateGas'
-import { type NetworkDict } from '@/llamalend/llamalend.types'
 import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/create-loan-query.helpers'
-import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import type { IChainId, TGas } from '@curvefi/llamalend-api/lib/interfaces'
+import { getLlamaMarket } from '@/llamalend/llama.utils'
+import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { type FieldsOf } from '@ui-kit/lib'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import type { CreateLoanFormQuery } from '../../features/borrow/types'
 import { createLoanQueryValidationSuite } from '../validation/borrow.validation'
+import { createApprovedEstimateGasHook } from '../estimate-gas-hook.factory'
+import { useCreateLoanIsApproved } from './create-loan-approved.query'
 import { createLoanMaxReceiveKey } from './create-loan-max-receive.query'
 
 type CreateLoanApproveEstimateGasQuery<T = IChainId> = CreateLoanFormQuery<T>
@@ -37,25 +38,57 @@ const { useQuery: useCreateLoanApproveEstimateGas } = queryFactory({
         return await impl.estimateGas.createLoanApprove(userCollateral)
     }
   },
-  validationSuite: createLoanQueryValidationSuite({ debtRequired: false }) as Suite<
-    keyof CreateLoanApproveEstimateGasQuery,
-    string
-  >,
+  validationSuite: createLoanQueryValidationSuite({ debtRequired: false }),
   dependencies: (params) => [createLoanMaxReceiveKey(params)],
 })
 
-// todo: expand this to consider estimation after approval, see `useRepayEstimateGas`
-export const useCreateLoanEstimateGas = <ChainId extends IChainId>(
-  networks: NetworkDict<ChainId>,
-  query: GasEstimateParams<ChainId>,
-  enabled?: boolean,
-) => {
-  const { chainId } = query
-  const { data: estimate, isLoading: estimateLoading, error } = useCreateLoanApproveEstimateGas(query, enabled)
-  const {
-    data,
-    isLoading: conversionLoading,
-    error: estimateError,
-  } = useEstimateGas<ChainId>(networks, chainId, estimate, enabled)
-  return { data, isLoading: estimateLoading || conversionLoading, error: error ?? estimateError }
-}
+const { useQuery: useCreateLoanEstimateGasQuery } = queryFactory({
+  queryKey: ({
+    chainId,
+    marketId,
+    userBorrowed = '0',
+    userCollateral = '0',
+    debt = '0',
+    leverageEnabled,
+    range,
+    slippage,
+  }: GasEstimateParams) =>
+    [
+      ...rootKeys.market({ chainId, marketId }),
+      'estimateGas.createLoan',
+      { userBorrowed },
+      { userCollateral },
+      { debt },
+      { leverageEnabled },
+      { range },
+      { slippage },
+    ] as const,
+  queryFn: async ({
+    marketId,
+    userBorrowed = '0',
+    userCollateral = '0',
+    debt = '0',
+    leverageEnabled,
+    range,
+    slippage,
+  }: CreateLoanApproveEstimateGasQuery): Promise<TGas> => {
+    const market = getLlamaMarket(marketId)
+    if (!leverageEnabled) {
+      return await market.estimateGas.createLoan(userCollateral, debt, range)
+    }
+    if (market instanceof LendMarketTemplate) {
+      return await market.leverage.estimateGas.createLoan(userCollateral, userBorrowed, debt, range, +slippage)
+    }
+    return market.leverageV2.hasLeverage()
+      ? await market.leverageV2.estimateGas.createLoan(userCollateral, userBorrowed, debt, range, +slippage)
+      : await market.leverage.estimateGas.createLoan(userCollateral, debt, range, +slippage)
+  },
+  validationSuite: createLoanQueryValidationSuite({ debtRequired: true }),
+  dependencies: (params) => [createLoanMaxReceiveKey(params)],
+})
+
+export const useCreateLoanEstimateGas = createApprovedEstimateGasHook({
+  useIsApproved: useCreateLoanIsApproved,
+  useApproveEstimate: useCreateLoanApproveEstimateGas,
+  useActionEstimate: useCreateLoanEstimateGasQuery,
+})
