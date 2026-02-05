@@ -16,7 +16,7 @@ export type LoanInfoAccordionProps = {
   isOpen: boolean
   toggle: () => void
   range?: number
-  isApproved?: boolean
+  isApproved?: Query<boolean>
   health: Query<Decimal | null>
   prevHealth?: Query<Decimal>
   isFullRepay?: boolean
@@ -239,7 +239,7 @@ export const LoanInfoAccordion = ({
             testId="borrow-price-impact"
           />
         )}
-        <EstimatedTxCost gas={gas} isApproved={isApproved} />
+        <EstimatedTxCost gas={gas} isApproved={isApproved?.data} />
       </Stack>
     </ActionInfoAccordion>
   )
