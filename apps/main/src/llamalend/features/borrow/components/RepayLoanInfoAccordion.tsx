@@ -12,7 +12,6 @@ import { useRepayIsApproved } from '@/llamalend/queries/repay/repay-is-approved.
 import { useRepayPriceImpact } from '@/llamalend/queries/repay/repay-price-impact.query'
 import { useRepayPrices } from '@/llamalend/queries/repay/repay-prices.query'
 import { getUserHealthOptions } from '@/llamalend/queries/user-health.query'
-import { useUserPnl } from '@/llamalend/queries/user-pnl.query'
 import { useUserState } from '@/llamalend/queries/user-state.query'
 import type { RepayParams } from '@/llamalend/queries/validation/manage-loan.types'
 import type { RepayForm } from '@/llamalend/queries/validation/manage-loan.validation'
@@ -80,7 +79,6 @@ export function RepayLoanInfoAccordion<ChainId extends IChainId>({
   const userState = q(userStateQuery)
   const priceImpact = useRepayPriceImpact(params, isOpen && swapRequired)
   const debt = useRepayRemainingDebt({ params, swapRequired, borrowToken }, { isFull, userBorrowed }, isOpen)
-  const pnlQuery = useUserPnl({ ...params, loanExists: true, hasV2Leverage: swapRequired }, isOpen)
   const { data: isApproved } = useRepayIsApproved(params, isOpen && typeof isFull === 'boolean')
   return (
     <LoanInfoAccordion
@@ -96,7 +94,6 @@ export function RepayLoanInfoAccordion<ChainId extends IChainId>({
       debt={debt}
       userState={userState}
       prices={q(useRepayPrices(params, isOpen))}
-      pnl={mapQuery(pnlQuery, (data) => data.currentProfit)}
       // routeImage={q(useRepayRouteImage(params, isOpen))}
       loanToValue={useLoanToValueFromUserState(
         {
