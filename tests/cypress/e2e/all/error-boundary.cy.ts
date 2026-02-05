@@ -2,7 +2,7 @@ import { oneBool } from '@cy/support/generators'
 import { API_LOAD_TIMEOUT, e2eBaseUrl, LOAD_TIMEOUT } from '@cy/support/ui'
 import type { ErrorContext } from '@ui-kit/features/report-error'
 
-const visitErrorBoundary = (onBeforeLoad?: (win: Window) => void) => {
+const visitErrorBoundary = () => {
   cy.intercept(`https://prices.curve.finance/v1/crvusd/markets`, { body: { chains: { ethereum: { data: [] } } } })
   cy.intercept(`https://prices.curve.finance/v1/lending/markets`, {
     body: {
@@ -25,14 +25,14 @@ const visitErrorBoundary = (onBeforeLoad?: (win: Window) => void) => {
     },
   }).as('error')
   const url = '/llamalend/ethereum/markets'
-  cy.visit(url, { timeout: API_LOAD_TIMEOUT.timeout, onBeforeLoad })
+  cy.visit(url, { timeout: API_LOAD_TIMEOUT.timeout })
   cy.wait('@error', LOAD_TIMEOUT)
   return e2eBaseUrl() + url
 }
 
-const visitNotFoundPage = (onBeforeLoad: ((win: Window) => void) | undefined) => {
+const visitNotFoundPage = () => {
   const url = '/llamalend/ethereum/markets/non-existent-market'
-  cy.visit(url, { timeout: API_LOAD_TIMEOUT.timeout, onBeforeLoad })
+  cy.visit(url, { timeout: API_LOAD_TIMEOUT.timeout })
   return e2eBaseUrl() + url
 }
 
@@ -66,8 +66,7 @@ describe('Error Boundary', () => {
 
   const is500 = oneBool() // test either 404 or 500 error page
   it('should submit error report for ' + (is500 ? 500 : 404), () => {
-    const onBeforeLoad = (win: Window) => (win.SENTRY_DSN = 'https://public:secret@app.getsentry.com/1')
-    const url = is500 ? visitErrorBoundary(onBeforeLoad) : visitNotFoundPage(onBeforeLoad)
+    const url = is500 ? visitErrorBoundary() : visitNotFoundPage()
     const address = '0xabc123'
     const description = 'Got an error'
     const contact = 'test@curve.fi'

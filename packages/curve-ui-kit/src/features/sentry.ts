@@ -9,32 +9,27 @@ import {
   withScope,
 } from '@sentry/react'
 
-const { SENTRY_DSN, NODE_ENV } = process.env
-const dsn = SENTRY_DSN ?? window.SENTRY_DSN
+const { NODE_ENV } = process.env
 
-/**
- * Initialize Sentry error reporting. Only active when SENTRY_DSN is set or in E2E tests.
- */
+/** Initialize Sentry error reporting */
 export const initSentry = () =>
-  dsn
-    ? init({
-        dsn,
-        environment: NODE_ENV,
-        tracesSampleRate: 0.01, // Performance monitoring sample rate (adjust based on traffic)
-        // Filter out noise
-        ignoreErrors: [
-          // Network errors that are expected
-          'Network request failed',
-          'Failed to fetch',
-          'Load failed',
-          // User-initiated navigation
-          'AbortError',
-          // Wallet connection issues (often user-initiated)
-          'User rejected',
-          'User denied',
-        ],
-      })
-    : console.warn(`Sentry disabled: no DSN configured`)
+  init({
+    dsn: 'https://946ac1b5b974fb993626876dd310b0d2@o4510753779220480.ingest.de.sentry.io/4510753786101840',
+    environment: NODE_ENV,
+    tracesSampleRate: 0.01, // Performance monitoring sample rate (adjust based on traffic)
+    // Filter out noise
+    ignoreErrors: [
+      // Network errors that are expected
+      'Network request failed',
+      'Failed to fetch',
+      'Load failed',
+      // User-initiated navigation
+      'AbortError',
+      // Wallet connection issues (often user-initiated)
+      'User rejected',
+      'User denied',
+    ],
+  })
 
 /**
  * Capture an error manually with optional context.

@@ -26,7 +26,6 @@ export default defineConfig(({ command, mode }) => ({
   },
   define: {
     'process.env.NODE_ENV': JSON.stringify(command === 'serve' ? 'development' : 'production'),
-    'process.env.SENTRY_DSN': JSON.stringify(process.env.SENTRY_DSN),
     'process.env.PUBLIC_MAINTENANCE_MESSAGE': JSON.stringify(process.env.PUBLIC_MAINTENANCE_MESSAGE),
   },
   vercel: {
