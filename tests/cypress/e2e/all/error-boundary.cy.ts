@@ -1,7 +1,8 @@
+import { oneBool } from '@cy/support/generators'
 import { API_LOAD_TIMEOUT, e2eBaseUrl, LOAD_TIMEOUT } from '@cy/support/ui'
 import type { ErrorContext } from '@ui-kit/features/report-error'
 
-const visitErrorBoundary = () => {
+const visitErrorBoundary = (onBeforeLoad?: (win: Window) => void) => {
   cy.intercept(`https://prices.curve.finance/v1/crvusd/markets`, { body: { chains: { ethereum: { data: [] } } } })
   cy.intercept(`https://prices.curve.finance/v1/lending/markets`, {
     body: {
@@ -24,31 +25,24 @@ const visitErrorBoundary = () => {
     },
   }).as('error')
   const url = '/llamalend/ethereum/markets'
-  cy.visit(url, {
-    timeout: API_LOAD_TIMEOUT.timeout,
-    onBeforeLoad(win) {
-      win.console.log(win.localStorage)
-      win.localStorage.clear() // empty react-query cache
-      win.console.log(win.localStorage)
-    },
-  })
+  cy.visit(url, { timeout: API_LOAD_TIMEOUT.timeout, onBeforeLoad })
   cy.wait('@error', LOAD_TIMEOUT)
   return e2eBaseUrl() + url
 }
 
-const visitNotFoundPage = () => {
+const visitNotFoundPage = (onBeforeLoad: ((win: Window) => void) | undefined) => {
   const url = '/llamalend/ethereum/markets/non-existent-market'
-  cy.visit(url, { timeout: API_LOAD_TIMEOUT.timeout })
+  cy.visit(url, { timeout: API_LOAD_TIMEOUT.timeout, onBeforeLoad })
   return e2eBaseUrl() + url
 }
 
 function check500Error({ context }: { context: object }) {
   const [expectedName, expectedMessage] = ['TypeError', 'toLowerCase is not a function']
   expect(Object.keys(context)).to.have.members(['title', 'subtitle', 'error'])
-  const { subtitle, error, title } = context as ErrorContext
+  const { subtitle, error, title } = context as Record<keyof ErrorContext, string>
   expect(title).to.equal('Unexpected Error')
   expect(subtitle).to.contain(expectedMessage)
-  const { message: actualMessage, name: actualName, stack } = error as Error
+  const { message: actualMessage, name: actualName, stack } = JSON.parse(error)
   expect(actualName).to.equal(expectedName)
   expect(actualMessage).to.contain(expectedMessage)
   if (Cypress.isBrowser('firefox')) {
@@ -70,13 +64,18 @@ describe('Error Boundary', () => {
     cy.wait('@error', LOAD_TIMEOUT) // API called again
   })
 
-  it('should submit error report', () => {
-    const is500 = true // oneBool() // test either 404 or 500 error page
-    const url = is500 ? visitErrorBoundary() : visitNotFoundPage()
+  const is500 = oneBool() // test either 404 or 500 error page
+  it('should submit error report for ' + (is500 ? 500 : 404), () => {
+    const onBeforeLoad = (win: Window) => (win.SENTRY_DSN = 'https://public:secret@app.getsentry.com/1')
+    const url = is500 ? visitErrorBoundary(onBeforeLoad) : visitNotFoundPage(onBeforeLoad)
     const address = '0xabc123'
     const description = 'Got an error'
     const contact = 'test@curve.fi'
-    cy.intercept('POST', '**/api/error-report', ({ body: { body }, reply }) => {
+    // Sentry sends envelope format: newline-delimited JSON with body in extra.body
+    cy.intercept('POST', 'https://app.getsentry.com/api/1/envelope/?**', ({ body: envelope, reply }) => {
+      const lines = envelope.split('\n').filter(Boolean)
+      const event = JSON.parse(lines[2]) // event payload is the third line
+      const body = event.extra.body
       expect(Object.keys(body)).to.have.members(['formData', 'url', 'context'])
       expect(body.formData).to.deep.equal({ address, contactMethod: 'email', contact, description })
       expect(body.url).to.equal(url)
@@ -89,8 +88,16 @@ describe('Error Boundary', () => {
           context: { title: '404', subtitle: 'Page Not Found' },
         })
       }
-      reply({ statusCode: 200, body: { status: 'ok' } })
-    }).as('errorReport')
+
+      reply({
+        statusCode: 200,
+        body: {},
+        headers: {
+          'access-control-allow-origin': '*',
+          'access-control-allow-credentials': 'true',
+        },
+      })
+    }).as('sentryReport')
 
     cy.get('[data-testid="submit-error-report-button"]').click()
     cy.get('[data-testid="submit-error-report-modal"]').should('be.visible')
@@ -100,7 +107,7 @@ describe('Error Boundary', () => {
     cy.get('[data-testid="submit-error-report-description"]').type(description)
     cy.get('[data-testid="submit-error-report-submit"]').click()
 
-    cy.wait('@errorReport', LOAD_TIMEOUT)
+    cy.wait('@sentryReport', LOAD_TIMEOUT)
     cy.get('[data-testid="submit-error-report-modal"]').should('not.exist')
   })
 })

@@ -20,7 +20,7 @@ export const ErrorMessage = ({
 }: {
   title: string
   subtitle?: string
-  error?: unknown
+  error?: Error | string
   errorMessage: string
   refreshData?: () => void
   sx?: SxProps

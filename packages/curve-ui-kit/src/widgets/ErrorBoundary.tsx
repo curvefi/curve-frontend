@@ -1,9 +1,21 @@
-import { ReactNode } from 'react'
+import { ReactNode, useEffect } from 'react'
+import { captureException } from '@sentry/react'
 import { Box } from '@mui/material'
 import { CatchBoundary } from '@tanstack/react-router'
 import type { ErrorComponentProps } from '@tanstack/router-core'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { ErrorMessage } from '@ui-kit/shared/ui/ErrorMessage'
+
+const ErrorComponent = ({ error, reset, title }: ErrorComponentProps & { title: string }) => {
+  useEffect(() => {
+    captureException(error, {
+      tags: { boundary: title },
+      extra: { message: error.message, stack: error.stack },
+    })
+  }, [error, title])
+
+  return <ErrorPage title={title} subtitle={error.message} resetError={reset} error={error} />
+}
 
 export const ErrorBoundary = ({
   children,
@@ -41,7 +53,7 @@ export const ErrorBoundary = ({
           />
         </Box>
       ) : (
-        <ErrorPage title={title} subtitle={error.message} resetError={reset} error={error} />
+        <ErrorComponent error={error} reset={reset} title={title} />
       )
     }
   >
