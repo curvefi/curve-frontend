@@ -73,12 +73,22 @@ export type BorrowPositionDetailsProps = {
 
 const alerts = {
   soft: {
-    title: t`Soft-Liquidation active`,
-    description: t`Price has entered the liquidation zone and your collateral is at risk. Manage your position to avoid full liquidation.`,
+    title: t`Liquidation protection active`,
+    description: (
+      <>
+        <Typography variant="bodyXsRegular">
+          {t`Price has entered the liquidation zone and your collateral is at risk. Either close position or add collateral to improve health.`}
+        </Typography>
+        <Typography variant="bodyXsRegular" sx={{ marginTop: Spacing.xs }}>
+          {t`While soft liquidation is active, health steadily declines based on market volatility and liquidity available in the liquidation zone.`}{' '}
+          <strong>{t`If health reaches 0 all collateral lost.`}</strong>
+        </Typography>
+      </>
+    ),
   },
   hard: {
-    title: t`Your position health is below 0`,
-    description: t`It can now be liquidated at any time. To recover remaining collateral (minus fees), repay your debt and withdraw promptly.`,
+    title: t`Liquidation protection inactive`,
+    description: t`Health has reached 0 and your position can now be liquidated at any time and all collateral lost. To recover remaining collateral (minus fees), repay your debt and withdraw promptly.`,
   },
 }
 
@@ -96,7 +106,11 @@ const LiquidationAlert = ({ type }: { type: 'soft' | 'hard' }) => {
       <Alert variant="filled" severity="error">
         <Stack display="flex" flexDirection="column">
           <Typography variant="bodySBold">{title}</Typography>
-          <Typography variant="bodyXsRegular">{description}</Typography>
+          {typeof description === 'string' ? (
+            <Typography variant="bodyXsRegular">{description}</Typography>
+          ) : (
+            description
+          )}
         </Stack>
       </Alert>
     </Stack>
