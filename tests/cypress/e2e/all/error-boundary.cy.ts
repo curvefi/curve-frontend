@@ -1,6 +1,7 @@
 import { oneBool } from '@cy/support/generators'
 import { API_LOAD_TIMEOUT, e2eBaseUrl, LOAD_TIMEOUT } from '@cy/support/ui'
 import type { ErrorContext } from '@ui-kit/features/report-error'
+import { SENTRY_DSN } from '@ui-kit/features/sentry'
 
 const visitErrorBoundary = () => {
   cy.intercept(`https://prices.curve.finance/v1/crvusd/markets`, { body: { chains: { ethereum: { data: [] } } } })
@@ -71,7 +72,8 @@ describe('Error Boundary', () => {
     const description = 'Got an error'
     const contact = 'test@curve.fi'
     // Sentry sends envelope format: newline-delimited JSON with body in extra.body
-    cy.intercept('POST', 'https://app.getsentry.com/api/1/envelope/?**', ({ body: envelope, reply }) => {
+    const { origin, pathname } = new URL(SENTRY_DSN)
+    cy.intercept('POST', `${origin}/api/${pathname}/envelope/?**`, ({ body: envelope, reply }) => {
       const lines = envelope.split('\n').filter(Boolean)
       const event = JSON.parse(lines[2]) // event payload is the third line
       const body = event.extra.body
