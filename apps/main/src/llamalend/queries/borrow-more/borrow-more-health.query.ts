@@ -17,6 +17,7 @@ export const { useQuery: useBorrowMoreHealth } = queryFactory({
     userBorrowed = '0',
     debt = '0',
     maxDebt,
+    leverageEnabled,
   }: BorrowMoreParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
@@ -25,9 +26,21 @@ export const { useQuery: useBorrowMoreHealth } = queryFactory({
       { userBorrowed },
       { debt },
       { maxDebt },
+      { leverageEnabled },
     ] as const,
-  queryFn: async ({ marketId, userCollateral = '0', userBorrowed = '0', debt = '0' }: BorrowMoreQuery) => {
-    const [type, impl, args] = getBorrowMoreImplementationArgs(marketId, { userCollateral, userBorrowed, debt })
+  queryFn: async ({
+    marketId,
+    userCollateral = '0',
+    userBorrowed = '0',
+    debt = '0',
+    leverageEnabled,
+  }: BorrowMoreQuery) => {
+    const [type, impl, args] = getBorrowMoreImplementationArgs(marketId, {
+      userCollateral,
+      userBorrowed,
+      debt,
+      leverageEnabled,
+    })
     switch (type) {
       case 'V1':
       case 'V2':
@@ -38,5 +51,6 @@ export const { useQuery: useBorrowMoreHealth } = queryFactory({
   },
   staleTime: '1m',
   validationSuite: borrowMoreValidationSuite({ leverageRequired: false }),
-  dependencies: (params) => (isLeverageBorrowMore(params.marketId) ? [getBorrowMoreExpectedCollateralKey(params)] : []),
+  dependencies: (params) =>
+    isLeverageBorrowMore(params.marketId, params.leverageEnabled) ? [getBorrowMoreExpectedCollateralKey(params)] : [],
 })

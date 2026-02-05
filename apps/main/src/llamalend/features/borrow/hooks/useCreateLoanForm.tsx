@@ -4,10 +4,13 @@ import { useForm } from 'react-hook-form'
 import { useConnection } from 'wagmi'
 import { getTokens } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import { isLeverageBorrowMoreSupported } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
+import { useCreateLoanExpectedCollateral } from '@/llamalend/queries/create-loan/create-loan-expected-collateral.query'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { vestResolver } from '@hookform/resolvers/vest'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
+import { mapQuery } from '@ui-kit/types/util'
 import { Decimal } from '@ui-kit/utils'
 import { useFormErrors } from '@ui-kit/utils/react-form.utils'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
@@ -109,6 +112,10 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     isCreated,
     creationError,
     txHash: data?.hash,
+    leverage: mapQuery(
+      useCreateLoanExpectedCollateral(params, isLeverageBorrowMoreSupported(market)),
+      (d) => d.leverage,
+    ),
     isApproved: useCreateLoanIsApproved(params),
     formErrors: useFormErrors(form.formState),
   }
