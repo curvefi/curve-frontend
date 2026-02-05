@@ -78,6 +78,7 @@ export const DataTable = <T extends TableItem>({
   viewAllLabel,
   shouldStickFirstColumn = false,
   showHeader = true,
+  footerCell,
   ...rowProps
 }: {
   table: TanstackTable<T>
@@ -88,6 +89,7 @@ export const DataTable = <T extends TableItem>({
   rowLimit?: number
   viewAllLabel?: string
   showHeader?: boolean
+  footerCell?: ReactNode
 } & Omit<DataRowProps<T>, 'row' | 'isLast'>) => {
   const { table } = rowProps
   const { rows } = table.getRowModel()
@@ -116,6 +118,7 @@ export const DataTable = <T extends TableItem>({
     }),
     [maxHeight, top],
   )
+  const showFooter = showPagination || showViewAllButton || footerCell
 
   return (
     <WithWrapper Wrapper={Box} shouldWrap={maxHeight} sx={{ maxHeight, overflowY: 'auto' }} ref={containerRef}>
@@ -164,9 +167,10 @@ export const DataTable = <T extends TableItem>({
             ))
           )}
         </TableBody>
-        {(showPagination || showViewAllButton) && (
+        {showFooter && (
           <TableFooter>
             <TableRow>
+              {footerCell}
               {showViewAllButton && (
                 <TableViewAllCell colSpan={columnCount} onClick={handleShowAll} isLoading={isLoadingViewAll}>
                   {viewAllLabel || t`View all`}

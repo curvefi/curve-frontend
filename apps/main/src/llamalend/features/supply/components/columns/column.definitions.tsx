@@ -3,7 +3,7 @@ import { createColumnHelper } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
 import { type TableItem } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { ClaimTokenCell } from '../cells/ClaimTokenCell'
-import { NotionalCell } from '../cells/NotionalCell'
+import { NotionalCell } from '../cells/notional-cells'
 import { ClaimTabColumnId } from './columns.enum'
 
 export type ClaimableToken = TableItem &
