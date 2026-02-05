@@ -25,7 +25,12 @@ export const DesktopHeader = ({
   appStats,
   networkId,
 }: HeaderImplementationProps) => (
-  <AppBar color="transparent" ref={useMainNavRef()} data-testid="desktop-main-nav" sx={{ position: 'sticky', top: 0 }}>
+  <AppBar
+    color="transparent"
+    ref={useMainNavRef()}
+    data-testid="desktop-main-nav"
+    sx={{ position: 'sticky', top: 0, boxShadow: 'none' }}
+  >
     <GlobalBanner networkId={networkId} chainId={chainId} />
 
     <Toolbar
@@ -52,7 +57,7 @@ export const DesktopHeader = ({
         borderWidth: '1px 0',
         borderColor: (t) => t.design.Layer[2].Outline,
         borderStyle: 'solid',
-        boxSizing: 'content-box',
+        boxSizing: 'border-box',
         height: DEFAULT_BAR_SIZE,
       }}
       data-testid="subnav"

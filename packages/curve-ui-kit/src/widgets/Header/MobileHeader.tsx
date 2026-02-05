@@ -60,7 +60,7 @@ export const MobileHeader = ({
     <AppBar
       color="transparent"
       ref={useMainNavRef()}
-      sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, position: 'sticky', top: 0 }}
+      sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, position: 'sticky', top: 0, boxShadow: 'none' }}
       data-testid="mobile-main-bar"
     >
       <GlobalBanner networkId={networkId} chainId={chainId} />
