@@ -16,13 +16,14 @@ import {
   LOAN_TEST_MARKETS,
   submitCreateLoanForm,
   writeCreateLoanForm,
-} from '@cy/support/helpers/create-loan.helpers'
+} from '@cy/support/helpers/llamalend/create-loan.helpers'
 import {
+  checkDebt,
   checkRepayDetailsLoaded,
   selectRepayToken,
   submitRepayForm,
   writeRepayLoanForm,
-} from '@cy/support/helpers/repay-loan.helpers'
+} from '@cy/support/helpers/llamalend/repay-loan.helpers'
 import { createTenderlyWagmiConfigFromVNet, createVirtualTestnet } from '@cy/support/helpers/tenderly'
 import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
 import { fundErc20, fundEth } from '@cy/support/helpers/tenderly/vnet-fund'
@@ -30,6 +31,7 @@ import Box from '@mui/material/Box'
 import Skeleton from '@mui/material/Skeleton'
 import { useCurve } from '@ui-kit/features/connect-wallet/lib/CurveContext'
 import { CurveProvider } from '@ui-kit/features/connect-wallet/lib/CurveProvider'
+import { Decimal } from '@ui-kit/utils'
 
 const onUpdate: OnCreateLoanFormUpdate = async (form) => console.info('form updated', form)
 
@@ -40,6 +42,8 @@ recordEntries(LOAN_TEST_MARKETS)
   .flatMap(([marketType, markets]) => markets.map((market) => ({ marketType, ...market })))
   .forEach(({ id, collateralAddress: tokenAddress, collateral, borrow, repay, chainId, hasLeverage, label }) => {
     describe(label, () => {
+      const debtAfterRepay = new BigNumber(borrow).minus(repay).toString() as Decimal
+
       const privateKey = generatePrivateKey()
       const { address } = privateKeyToAccount(privateKey)
       const getVirtualNetwork = createVirtualTestnet((uuid) => ({
@@ -52,7 +56,7 @@ recordEntries(LOAN_TEST_MARKETS)
        * Leverage disabled in the tests for now because it depends on Odos routes.
        * It will soon be migrated to our own router API, so it will be easier to mock.
        */
-      const leverageEnabled = false
+      const leverageEnabled = hasLeverage && false
 
       let onCreated: Spy
       let onRepaid: Spy
@@ -67,7 +71,7 @@ recordEntries(LOAN_TEST_MARKETS)
         cy.log(`Funded some eth and collateral to ${address} in vnet ${vnet.slug}`)
       })
 
-      function RepayFlowTest() {
+      function LoanFlowTest() {
         const { isHydrated } = useCurve()
         const market = useMemo(() => isHydrated && getLlamaMarket(id), [isHydrated])
 
@@ -99,7 +103,7 @@ recordEntries(LOAN_TEST_MARKETS)
             hydrate={{ llamalend: prefetch }}
           >
             <Box sx={{ maxWidth: 520 }}>
-              <RepayFlowTest />
+              <LoanFlowTest />
             </Box>
           </CurveProvider>
         </ComponentTestWrapper>
@@ -117,11 +121,11 @@ recordEntries(LOAN_TEST_MARKETS)
         selectRepayToken('crvUSD')
         writeRepayLoanForm({ amount: repay })
         checkRepayDetailsLoaded({
-          expectedPreviousDebt: borrow,
-          expectedDebt: [BigNumber(borrow).minus(repay), 'crvUSD'].join(''),
-          hasLeverage,
+          debt: [borrow, debtAfterRepay, 'crvUSD'],
+          leverageEnabled,
         })
         submitRepayForm().then(() => expect(onRepaid).to.be.calledOnce)
+        checkDebt(debtAfterRepay, debtAfterRepay, 'crvUSD')
       })
     })
   })

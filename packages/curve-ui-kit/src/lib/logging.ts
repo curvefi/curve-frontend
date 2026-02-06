@@ -1,5 +1,5 @@
 import type { MutationKey, QueryKey } from '@tanstack/react-query'
-import { enableLogging, isCypress } from '@ui-kit/utils'
+import { enableLogging, isCypress } from '@ui-kit/utils/env'
 
 export enum LogStatus {
   ERROR = 'error',
@@ -16,6 +16,10 @@ export enum LogStatus {
   PAUSED = 'paused',
   CANCELLED = 'cancelled',
 }
+
+const isCypressOpenMode = (window as unknown as { Cypress?: { config?: (key: string) => unknown } }).Cypress?.config?.(
+  'isInteractive',
+)
 
 const getStatusStyle = (status: LogStatus) => {
   const style = 'font-weight: bold; padding: 2px 4px; border-radius: 3px;'
@@ -100,7 +104,7 @@ export function log(key: LogKey, status?: LogStatus | unknown, ...args: unknown[
         return console.info
     }
   }
-  if (isCypress) {
+  if (isCypress && !isCypressOpenMode) {
     // disable formatting when on cypress or server side. Electron prints logs to the output, but formatting breaks.
     return logMethod(status)(stringify({ status, keyArray, args }).slice(0, 300))
   }

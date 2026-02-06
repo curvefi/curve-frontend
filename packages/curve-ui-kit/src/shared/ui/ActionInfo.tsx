@@ -126,6 +126,7 @@ export const ActionInfo = ({
             variant={prevValueSize[size]}
             color={prevValueColor ?? 'textTertiary'}
             data-testid={`${testId}-previous-value`}
+            data-value={`${prevValue}`}
           >
             {prevValue}
           </Typography>
@@ -148,6 +149,7 @@ export const ActionInfo = ({
             alignItems={alignItems}
             gap={Spacing.xxs}
             data-testid={`${testId}-value`}
+            data-value={`${value}`}
             className="ActionInfo-value"
           >
             {valueLeft}

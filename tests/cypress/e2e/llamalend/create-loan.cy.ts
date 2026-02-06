@@ -5,7 +5,7 @@ import {
   oneLoanTestMarket,
   submitCreateLoanForm,
   writeCreateLoanForm,
-} from '@cy/support/helpers/create-loan.helpers'
+} from '@cy/support/helpers/llamalend/create-loan.helpers'
 import { LOAD_TIMEOUT } from '@cy/support/ui'
 import { LlamaMarketType } from '@ui-kit/types/market'
 

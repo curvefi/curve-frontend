@@ -77,4 +77,15 @@ export const createWagmiConfig = memoize(
   },
 )
 
+/**
+ * When running tests, we need to reset the wagmi config between tests to prevent issues with auto-reconnect and memoization.
+ * This function clears the memoized config and resets the singleton reference.
+ * This function is put here so we don't need to expose the _config variable.
+ */
+export const resetWagmiConfigForTests = () => {
+  createWagmiConfig.clear()
+  // otherwise wagmi config is memoized and breaks reconnect on tests
+  _config = undefined
+}
+
 export type WagmiChainId = ReturnType<typeof createWagmiConfig>['chains'][number]['id']
