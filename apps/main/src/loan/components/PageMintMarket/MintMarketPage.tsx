@@ -6,7 +6,7 @@ import { BorrowPositionDetails, NoPosition } from '@/llamalend/features/market-p
 import { UserPositionHistory } from '@/llamalend/features/user-position-history'
 import { useUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { useLoanExists } from '@/llamalend/queries/loan-exists'
-import { PageHeader, generateMarketTitle, generateSubtitle } from '@/llamalend/widgets/page-header'
+import { PageHeader } from '@/llamalend/widgets/page-header'
 import { MarketInformationComp } from '@/loan/components/MarketInformationComp'
 import { CreateLoanTabs } from '@/loan/components/PageMintMarket/CreateLoanTabs'
 import { ManageLoanTabs } from '@/loan/components/PageMintMarket/ManageLoanTabs'
@@ -104,12 +104,9 @@ export const MintMarketPage = () => {
     <>
       <PageHeader
         isLoading={!market || !isHydrated}
-        title={market && generateMarketTitle(market.coins[0], market.coins[1])}
-        subtitle={market && generateSubtitle(market.coins[0], market.coins[1], 'mint')}
+        market={market}
         pageType={LlamaMarketType.Mint}
         chain={network.id}
-        collateral={market && { symbol: market.coins[0], address: market.coinAddresses[0] }}
-        borrowed={market && { symbol: market.coins[1], address: market.coinAddresses[1] }}
       />
       <DetailPageLayout
         formTabs={
