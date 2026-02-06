@@ -16,14 +16,14 @@ import {
   LOAN_TEST_MARKETS,
   submitCreateLoanForm,
   writeCreateLoanForm,
-} from '@cy/support/helpers/create-loan.helpers'
+} from '@cy/support/helpers/llamalend/create-loan.helpers'
 import {
   checkDebt,
   checkRepayDetailsLoaded,
   selectRepayToken,
   submitRepayForm,
   writeRepayLoanForm,
-} from '@cy/support/helpers/repay-loan.helpers'
+} from '@cy/support/helpers/llamalend/repay-loan.helpers'
 import { createTenderlyWagmiConfigFromVNet, createVirtualTestnet } from '@cy/support/helpers/tenderly'
 import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
 import { fundErc20, fundEth } from '@cy/support/helpers/tenderly/vnet-fund'
