@@ -9,7 +9,8 @@ import {
   withScope,
 } from '@sentry/react'
 
-const { NODE_ENV } = process.env
+// 'process' is not guaranteed to be available, like in Storybook for example
+const { NODE_ENV } = typeof process === 'undefined' ? {} : process.env
 
 export const SENTRY_DSN =
   'https://946ac1b5b974fb993626876dd310b0d2@o4510753779220480.ingest.de.sentry.io/4510753786101840'
