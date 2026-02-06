@@ -8,16 +8,27 @@ import {
   setUser as setSentryUser,
   withScope,
 } from '@sentry/react'
-import { envName } from '@ui-kit/utils'
+import { isCypress, isPreviewHost } from '@ui-kit/utils'
 
 export const SENTRY_DSN =
   'https://946ac1b5b974fb993626876dd310b0d2@o4510753779220480.ingest.de.sentry.io/4510753786101840'
+
+const TLD = 'curve.finance'
+const environment = isCypress
+  ? 'cypress'
+  : isPreviewHost
+    ? 'preview'
+    : window.location.hostname === TLD
+      ? 'production'
+      : window.location.hostname.includes(`.${TLD}`)
+        ? window.location.hostname.replace(`.${TLD}`, '')
+        : window.location.hostname // e.g. localhost
 
 /** Initialize Sentry error reporting */
 export const initSentry = () =>
   init({
     dsn: SENTRY_DSN,
-    environment: envName,
+    environment,
     tracesSampleRate: 0.01, // Performance monitoring sample rate (adjust based on traffic)
     // Filter out noise
     ignoreErrors: [

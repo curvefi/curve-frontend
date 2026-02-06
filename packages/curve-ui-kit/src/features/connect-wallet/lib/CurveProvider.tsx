@@ -95,14 +95,15 @@ export const CurveProvider = <App extends AppName>({
         if (signal.aborted) return
         setConnectState(LOADING)
         const newLib = await globalLibs.init(libKey, network, wallet?.provider)
-        if (!newLib) return
-        console.info(
-          `Initialized ${libKey} for ${network.name} (${network.chainId})`,
-          wallet ? `Wallet ${wallet?.address} with chain ${walletChainId}` : 'without wallet',
-          prevLib
-            ? `Old library had ${prevLib.signerAddress ? `signer ${prevLib.signerAddress}` : 'no signer'} with chain ${prevLib.chainId}`
-            : `First initialization`,
-        )
+        if (newLib) {
+          console.info(
+            `Initialized ${libKey} for ${network.name} (${network.chainId})`,
+            wallet ? `Wallet ${wallet?.address} with chain ${walletChainId}` : 'without wallet',
+            prevLib
+              ? `Old library had ${prevLib.signerAddress ? `signer ${prevLib.signerAddress}` : 'no signer'} with chain ${prevLib.chainId}`
+              : `First initialization`,
+          )
+        }
 
         if (signal.aborted) return
         globalLibs.set(libKey, newLib)
