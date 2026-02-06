@@ -2,9 +2,9 @@ import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { type RepayIsApprovedParams, useRepayIsApproved } from '@/llamalend/queries/repay/repay-is-approved.query'
 import type { TGas } from '@curvefi/llamalend-api/lib/interfaces'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
+import { createApprovedEstimateGasHook } from '../estimate-gas-hook.factory'
 import { type RepayIsFullQuery } from '../validation/manage-loan.types'
 import { repayFromCollateralIsFullValidationSuite } from '../validation/manage-loan.validation'
-import { createApprovedEstimateGasHook } from '../estimate-gas-hook.factory'
 import { getRepayImplementation } from './repay-query.helpers'
 
 const { useQuery: useRepayLoanEstimateGas } = queryFactory({
