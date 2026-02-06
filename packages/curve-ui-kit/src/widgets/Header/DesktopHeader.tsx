@@ -7,12 +7,15 @@ import { ChainSwitcher } from '@ui-kit/features/switch-chain'
 import { UserProfile } from '@ui-kit/features/user-profile'
 import { GlobalBanner } from '@ui-kit/shared/ui/GlobalBanner'
 import { DEFAULT_BAR_SIZE } from '@ui-kit/themes/components'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { AppButtonLinks } from './AppButtonLinks'
 import { HeaderLogo } from './HeaderLogo'
 import { HeaderStats } from './HeaderStats'
 import { PageTabs } from './PageTabs'
 import { HeaderImplementationProps } from './types'
 import { useMainNavRef } from './useMainNavRef'
+
+const { Spacing } = SizesAndSpaces
 
 export const DesktopHeader = ({
   currentMenu,
@@ -21,17 +24,21 @@ export const DesktopHeader = ({
   pages,
   appStats,
   networkId,
-  isLite = false,
 }: HeaderImplementationProps) => (
-  <AppBar color="transparent" ref={useMainNavRef()} data-testid="desktop-main-nav" sx={{ position: 'sticky', top: 0 }}>
+  <AppBar
+    color="transparent"
+    ref={useMainNavRef()}
+    data-testid="desktop-main-nav"
+    sx={{ position: 'sticky', top: 0, boxShadow: 'none' }}
+  >
     <GlobalBanner networkId={networkId} chainId={chainId} />
 
     <Toolbar
-      sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, justifyContent: 'space-around', paddingY: 3 }}
+      sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, justifyContent: 'space-around', paddingY: 0 }}
       data-testid="main-nav"
     >
-      <Container>
-        <HeaderLogo isLite={isLite} currentMenu={currentMenu} />
+      <Container sx={{ paddingInline: Spacing.md }}>
+        <HeaderLogo sx={{ paddingInlineStart: Spacing.md }} />
         <AppButtonLinks networkId={networkId} currentMenu={currentMenu} />
 
         <Box sx={{ flexGrow: 1 }} />
@@ -50,12 +57,12 @@ export const DesktopHeader = ({
         borderWidth: '1px 0',
         borderColor: (t) => t.design.Layer[2].Outline,
         borderStyle: 'solid',
-        boxSizing: 'content-box',
+        boxSizing: 'border-box',
         height: DEFAULT_BAR_SIZE,
       }}
       data-testid="subnav"
     >
-      <Container sx={{ alignItems: 'baseline' }}>
+      <Container sx={{ alignItems: 'baseline', paddingInline: Spacing.md }}>
         <PageTabs pages={pages} />
         <Box flexGrow={1} />
         <Box display="flex" gap={3} alignItems="baseline" sx={{ textOverflow: 'ellipsis', overflow: 'hidden' }}>
