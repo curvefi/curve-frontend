@@ -1,56 +1,133 @@
+import type { ComponentProps } from 'react'
+import { ethAddress, zeroAddress } from 'viem'
+import type { BorrowRate, SupplyRate, AvailableLiquidity } from '@/llamalend/features/market-details'
+import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
+import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import type { Chain } from '@curvefi/prices-api'
+import Box from '@mui/material/Box'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { generateMarketTitle } from './page-header.utils'
 import { PageHeader } from './PageHeader'
 
+type PageHeaderProps = ComponentProps<typeof PageHeader>
+
+const chain: Chain = 'ethereum'
+
+const mintMarket: MintMarketTemplate = Object.assign(Object.create(MintMarketTemplate.prototype), {
+  coins: ['crvUSD', 'ETH'],
+  coinAddresses: [zeroAddress, ethAddress],
+})
+
+const lendMarket = {
+  collateral_token: { symbol: 'wstETH', address: ethAddress },
+  borrowed_token: { symbol: 'crvUSD', address: zeroAddress },
+} as LendMarketTemplate
+
+const borrowRate: BorrowRate = {
+  rate: 2.082,
+  averageRate: 2.075,
+  averageRateLabel: '30d',
+  rebasingYield: 1.002,
+  averageRebasingYield: 1.0018,
+  totalBorrowRate: 1.08,
+  totalAverageBorrowRate: 1.073,
+  extraRewards: [],
+  loading: false,
+}
+
+const supplyRate: SupplyRate = {
+  rate: 2.032,
+  averageRate: 2.028,
+  averageRateLabel: '30d',
+  supplyAprCrvMinBoost: 2.004,
+  supplyAprCrvMaxBoost: 3.012,
+  averageSupplyAprCrvMinBoost: 2.0035,
+  averageSupplyAprCrvMaxBoost: 3.0105,
+  rebasingYield: 1.001,
+  averageRebasingYield: 1.0008,
+  totalSupplyRateMinBoost: 4.037,
+  totalSupplyRateMaxBoost: 4.045,
+  totalAverageSupplyRateMinBoost: 4.034,
+  totalAverageSupplyRateMaxBoost: 4.041,
+  extraIncentives: [],
+  averageTotalExtraIncentivesApr: 4.002,
+  extraRewards: [],
+  loading: false,
+}
+
+const availableLiquidity: AvailableLiquidity = {
+  value: 12_500_000,
+  max: 30_000_000,
+  loading: false,
+}
+
 const meta: Meta<typeof PageHeader> = {
-  title: 'UI Kit/Widgets/PageHeader',
+  title: 'Llamalend/Widgets/PageHeader',
   component: PageHeader,
-  args: {
-    title: generateMarketTitle('wstETH', 'crvUSD'),
-    subtitle: 'Collateralized debt position',
-    pageType: 'Mint',
-    chain: 'ethereum' as Chain,
-    assets: {
-      collateral: {
-        symbol: 'wstETH',
-        address: '0x0000000000000000000000000000000000000001',
-      },
-      borrowed: {
-        symbol: 'crvUSD',
-        address: '0x0000000000000000000000000000000000000002',
+  parameters: {
+    layout: 'fullscreen',
+    docs: {
+      description: {
+        component: 'Page header for Llamalend markets with token pair, market type, and key metrics.',
       },
     },
   },
-  argTypes: {
-    title: { control: 'text' },
-    subtitle: { control: 'text' },
-    pageType: { control: 'radio', options: ['Lend', 'Mint'] },
-    chain: { control: 'text' },
-    assets: { control: 'object' },
-  },
+  tags: ['autodocs'],
 }
 
 export default meta
-
 type Story = StoryObj<typeof PageHeader>
 
-export const Default: Story = {}
+const withWidth = (maxWidth: number | undefined, displayName: string) => {
+  const WithWidth = (args: PageHeaderProps) => (
+    <Box
+      sx={{
+        width: '100%',
+        padding: '4rem 2rem',
+        maxWidth: '100%',
+        ...(maxWidth && { maxWidth }),
+      }}
+    >
+      <PageHeader {...args} />
+    </Box>
+  )
 
-export const Lend: Story = {
+  WithWidth.displayName = displayName
+  return WithWidth
+}
+
+const baseArgs: Omit<PageHeaderProps, 'market' | 'supplyRate'> = {
+  isLoading: false,
+  chain,
+  borrowRate,
+  availableLiquidity,
+}
+
+export const MintMarketDesktop: Story = {
+  render: withWidth(1000, 'MintMarketDesktopWidth'),
   args: {
-    pageType: 'Lend',
-    title: generateMarketTitle('USDC', 'USDT'),
-    subtitle: 'Supply collateral and borrow assets',
-    chain: 'arbitrum' as Chain,
-    assets: {
-      collateral: {
-        symbol: 'USDC',
-        address: '0x0000000000000000000000000000000000000003',
+    ...baseArgs,
+    market: mintMarket,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Mint market header in a 1000px container (desktop width).',
       },
-      borrowed: {
-        symbol: 'USDT',
-        address: '0x0000000000000000000000000000000000000004',
+    },
+  },
+}
+
+export const LendMarketDesktop: Story = {
+  render: withWidth(1000, 'LendMarketDesktopWidth'),
+  args: {
+    ...baseArgs,
+    market: lendMarket,
+    supplyRate,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Lend market header in a 1000px container (desktop width).',
       },
     },
   },

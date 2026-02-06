@@ -1,3 +1,4 @@
+import { BorrowRate, SupplyRate, AvailableLiquidity } from '@/llamalend/features/market-details'
 import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { type Chain } from '@curvefi/prices-api'
@@ -13,7 +14,7 @@ import { TokenPair } from '@ui-kit/shared/ui/TokenPair'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
-import { generateMarketTitle, generateSubtitle, extractPropsFromMarket } from './page-header.utils'
+import { generateMarketTitle, generateSubtitle, extractPropsFromMarket, MetricsRow } from './'
 
 const { Spacing } = SizesAndSpaces
 
@@ -21,10 +22,19 @@ type PageHeaderProps = {
   isLoading: boolean
   market: LlamaMarketTemplate | undefined
   chain: Chain
-  metrics?: React.ReactNode[]
+  borrowRate: BorrowRate
+  supplyRate?: SupplyRate
+  availableLiquidity: AvailableLiquidity
 }
 
-export const PageHeader = ({ isLoading, market, chain, metrics }: PageHeaderProps) => {
+export const PageHeader = ({
+  isLoading,
+  market,
+  chain,
+  borrowRate,
+  supplyRate,
+  availableLiquidity,
+}: PageHeaderProps) => {
   const push = useNavigate()
 
   const marketType = market instanceof MintMarketTemplate ? LlamaMarketType.Mint : LlamaMarketType.Lend
@@ -34,9 +44,10 @@ export const PageHeader = ({ isLoading, market, chain, metrics }: PageHeaderProp
 
   return (
     <Stack
-      direction="row"
-      alignItems="center"
-      justifyContent="space-between"
+      direction={{ mobile: 'column', tablet: 'row' }}
+      alignItems={{ tablet: 'center' }}
+      justifyContent={{ tablet: 'space-between' }}
+      gap={Spacing.md}
       paddingBlock={Spacing.sm}
       paddingInline={Spacing.md}
       sx={{ borderBottom: (t) => `1px solid ${t.design.Layer[1].Outline}` }}
@@ -70,12 +81,13 @@ export const PageHeader = ({ isLoading, market, chain, metrics }: PageHeaderProp
           </Stack>
         </Stack>
       </Stack>
-      {metrics &&
-        metrics.map((metric, index) => (
-          <Stack direction="row" key={index} gap={Spacing.sm}>
-            {metric}
-          </Stack>
-        ))}
+      <MetricsRow
+        borrowRate={borrowRate}
+        supplyRate={supplyRate}
+        availableLiquidity={availableLiquidity}
+        marketType={marketType}
+        collateral={collateral}
+      />
     </Stack>
   )
 }
