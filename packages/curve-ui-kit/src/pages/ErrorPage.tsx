@@ -26,7 +26,7 @@ export const ErrorPage = ({
   subtitle: string
   resetError?: () => void
   continueUrl?: string
-  error?: unknown
+  error?: Error | string
 }) => {
   const navHeight = useLayoutStore((state) => state.navHeight)
   const [resetClicked, setResetClicked] = useState(false)

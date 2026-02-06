@@ -71,31 +71,21 @@ export const useOhlcChartState = ({ rChainId, rOwmId }: UseOhlcChartStateProps) 
     [chartOraclePoolOhlc.collateralToken.symbol, chartOraclePoolOhlc.borrowedToken.symbol],
   )
 
-  // LLAMMA tokens come from market data
-  const marketTokens = useMemo(
-    () =>
-      market
-        ? {
-            collateralSymbol: market.collateral_token.symbol,
-            borrowedSymbol: market.borrowed_token.symbol,
-          }
-        : null,
-    [market],
-  )
-
-  const { selectChartList, selectedChartKey, setSelectedChart, isLoading } = useLlammaChartSelections({
+  const { selectChartList, selectedChartKey, isLoading } = useLlammaChartSelections({
     oracleChart: { fetchStatus: chartOraclePoolOhlc.fetchStatus, hasData: chartOraclePoolOhlc.data.length > 0 },
-    llammaChart: { fetchStatus: chartLlammaOhlc.fetchStatus, hasData: chartLlammaOhlc.data.length > 0 },
+    llammaChart: { fetchStatus: chartLlammaOhlc.fetchStatus, hasData: chartLlammaOhlc.oraclePriceData.length > 0 },
     oracleTokens,
-    marketTokens,
   })
 
   // Select chart data based on current selection
   const currentChart = selectedChartKey === 'llamma' ? chartLlammaOhlc : chartOraclePoolOhlc
-  const noDataAvailable = !isLoading && currentChart.data.length === 0
+  // we no longer want to use the llamma endpoint for it's ohlc data as it's deemed too spotty, pass empty array for ohlc data when llamma is selected
+  const ohlcData = selectedChartKey === 'llamma' ? [] : chartOraclePoolOhlc.data
+  const noDataAvailable = !isLoading && currentChart.oraclePriceData.length === 0
 
   const oraclePriceData = useMemo(() => {
     if (chartOraclePoolOhlc.oraclePriceData.length > 0) return chartOraclePoolOhlc.oraclePriceData
+    // if the oracle data endpoint doesn't have oracle price data, there's a higher chance that it still exists in the llamma endpoint
     if (chartLlammaOhlc.oraclePriceData.length > 0) return chartLlammaOhlc.oraclePriceData
     return undefined
   }, [chartOraclePoolOhlc.oraclePriceData, chartLlammaOhlc.oraclePriceData])
@@ -126,10 +116,11 @@ export const useOhlcChartState = ({ rChainId, rOwmId }: UseOhlcChartStateProps) 
   const { oraclePriceVisible, liqRangeCurrentVisible, liqRangeNewVisible, legendSets } = useChartLegendToggles({
     hasNewLiquidationRange: !!newLiqPrices,
     hasLiquidationRange: !!userPrices,
+    llammaEndpoint: selectedChartKey === 'llamma',
   })
 
   const selectedLiqRange = useLiquidationRange({
-    chartData: currentChart.data,
+    chartData: ohlcData,
     fallbackData: currentChart.oraclePriceData,
     currentPrices: userPrices,
     newPrices: newLiqPrices,
@@ -205,7 +196,7 @@ export const useOhlcChartState = ({ rChainId, rOwmId }: UseOhlcChartStateProps) 
     hideCandleSeriesLabel: true,
     chartHeight: DEFAULT_CHART_HEIGHT,
     chartStatus,
-    ohlcData: currentChart.data,
+    ohlcData,
     oraclePriceData,
     liquidationRange: selectedLiqRange,
     timeOption,
@@ -226,7 +217,6 @@ export const useOhlcChartState = ({ rChainId, rOwmId }: UseOhlcChartStateProps) 
     ohlcDataUnavailable: noDataAvailable,
     isLoading,
     selectedChartKey,
-    setSelectedChart,
     setTimeOption,
     legendSets,
     ohlcChartProps,

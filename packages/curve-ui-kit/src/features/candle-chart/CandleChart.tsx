@@ -128,6 +128,7 @@ export const CandleChart = ({
   const candlestickSeriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null)
   const oraclePriceSeriesRef = useRef<ISeriesApi<'Line'> | null>(null)
   const lastFetchEndTimeRef = useRef(lastFetchEndTime)
+  const hasAppliedInitialOffset = useRef(false)
   const ohlcDataRef = useRef(ohlcData)
 
   const isMounted = useRef(true)
@@ -543,6 +544,27 @@ export const CandleChart = ({
     candlestickSeriesRef.current.applyOptions({ priceFormat })
     chartRef.current.applyOptions({ localization: { priceFormatter: priceFormat.formatter } })
   }, [ohlcData])
+
+  // Apply initial right-side spacing (10% of chart width) only on first data load between chart data and y-axis price scale
+  // This effect runs when wrapperWidth changes to ensure chart is rendered with proper dimensions
+  useEffect(() => {
+    if (!chartRef.current || !ohlcData?.length || hasAppliedInitialOffset.current || wrapperWidth <= 0) return
+
+    // Use requestAnimationFrame to ensure the chart has finished rendering
+    requestAnimationFrame(() => {
+      if (!chartRef.current || hasAppliedInitialOffset.current) return
+
+      const timeScale = chartRef.current.timeScale()
+      const chartWidth = timeScale.width()
+      const barSpacing = timeScale.options().barSpacing
+
+      if (chartWidth > 0 && barSpacing > 0) {
+        const paddingBars = (chartWidth * 0.1) / barSpacing // 10% spacing
+        timeScale.scrollToPosition(+paddingBars, false)
+        hasAppliedInitialOffset.current = true
+      }
+    })
+  }, [ohlcData, wrapperWidth])
 
   // Update oracle price data when it changes
   useEffect(() => {

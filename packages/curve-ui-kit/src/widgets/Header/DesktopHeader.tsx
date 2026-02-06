@@ -62,10 +62,10 @@ export const DesktopHeader = ({
       }}
       data-testid="subnav"
     >
-      <Container sx={{ paddingInline: Spacing.md }}>
+      <Container sx={{ alignItems: 'baseline', paddingInline: Spacing.md }}>
         <PageTabs pages={pages} />
         <Box flexGrow={1} />
-        <Box display="flex" gap={3} alignItems="center" sx={{ textOverflow: 'ellipsis', overflow: 'hidden' }}>
+        <Box display="flex" gap={3} alignItems="baseline" sx={{ textOverflow: 'ellipsis', overflow: 'hidden' }}>
           <HeaderStats appStats={appStats} />
         </Box>
       </Container>

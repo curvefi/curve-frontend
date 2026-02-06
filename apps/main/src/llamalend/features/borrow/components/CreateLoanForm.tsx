@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react'
+import { type ChangeEvent, useCallback, useEffect } from 'react'
 import { LoanPreset } from '@/llamalend/constants'
 import { type CreateLoanFormExternalFields, type OnCreateLoanFormUpdate } from '@/llamalend/features/borrow/types'
 import { hasLeverage } from '@/llamalend/llama.utils'
@@ -69,9 +69,15 @@ export const CreateLoanForm = <ChainId extends IChainId>({
     params,
     txHash,
     values,
+    leverage,
   } = useCreateLoanForm({ market, network, preset, onCreated })
 
   useFormSync(values, onUpdate)
+
+  const toggleLeverage = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => form.setValue('leverageEnabled', event.target.checked),
+    [form],
+  )
 
   return (
     <Form
@@ -126,8 +132,13 @@ export const CreateLoanForm = <ChainId extends IChainId>({
         />
       </Stack>
 
-      {market && hasLeverage(market) && (
-        <LeverageInput checked={values.leverageEnabled} form={form} params={params} maxLeverage={maxLeverage} />
+      {!!market && hasLeverage(market) && (
+        <LeverageInput
+          checked={values.leverageEnabled}
+          leverage={leverage}
+          onToggle={toggleLeverage}
+          maxLeverage={maxLeverage}
+        />
       )}
 
       <LoanPresetSelector preset={preset} setPreset={setPreset} setRange={setRange}>
