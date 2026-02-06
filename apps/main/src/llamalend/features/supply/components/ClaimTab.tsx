@@ -1,10 +1,11 @@
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { LoanFormAlerts } from '@/llamalend/widgets/action-card/LoanFormAlerts'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import Alert from '@mui/material/Alert'
+import AlertTitle from '@mui/material/AlertTitle'
 import Button from '@mui/material/Button'
 import { t } from '@ui-kit/lib/i18n'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
-import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
 import { FormContent } from '@ui-kit/widgets/DetailPageLayout/FormContent'
 import { useClaimTab } from '../hooks/useClaimTab'
 import { TotalNotionalRow } from './cells/notional-cells'
@@ -44,14 +45,18 @@ export const ClaimTab = <ChainId extends IChainId>({ market, networks, chainId, 
     network,
     enabled,
   })
-
   return (
     <>
       <FormContent>
         <DataTable<ClaimableToken>
           table={table}
           emptyState={
-            <EmptyStateRow table={table}>{isError ? t`Could not load rewards` : t`No claimable rewards`}</EmptyStateRow>
+            !isError && (
+              <Alert severity="warning">
+                <AlertTitle>{t`No rewards`}</AlertTitle>
+                {t`There are currently no rewards to claim. Only markets with active gauge have rewards.`}
+              </Alert>
+            )
           }
           loading={isLoading}
           showHeader={false}

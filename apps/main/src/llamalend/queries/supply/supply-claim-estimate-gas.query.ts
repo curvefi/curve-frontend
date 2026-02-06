@@ -1,3 +1,4 @@
+import { sum } from 'lodash'
 import { useMemo } from 'react'
 import { useEstimateGas } from '@/llamalend/hooks/useEstimateGas'
 import { type NetworkDict } from '@/llamalend/llamalend.types'
@@ -5,9 +6,13 @@ import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import type { UserMarketParams, UserMarketQuery } from '@ui-kit/lib/model/query/root-keys'
 import { claimableRewardsValidationSuite, requireGauge, requireVault } from '../validation/supply.validation'
+import { ClaimableReward, useClaimableCrv, useClaimableRewards } from './supply-claimable-rewards.query'
 
 type ClaimEstimateParams<ChainId = number> = UserMarketParams<ChainId>
 type ClaimEstimateQuery = UserMarketQuery
+
+const hasClaimableRewards = (claimableRewards: ClaimableReward[] | undefined) =>
+  sum(claimableRewards?.map((r) => Number(r.amount))) > 0
 
 export const { useQuery: useClaimCrvEstimateGasQuery } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress }: ClaimEstimateParams) =>
@@ -29,12 +34,18 @@ export const useClaimEstimateGas = <ChainId extends IChainId>(
   enabled?: boolean,
 ) => {
   const { chainId } = query
-  const { data: crvEstimate, isLoading: crvLoading, error: crvError } = useClaimCrvEstimateGasQuery(query, enabled)
+  const claimableCrv = useClaimableCrv(query, enabled)
+  const claimableRewards = useClaimableRewards(query, enabled)
+  const {
+    data: crvEstimate,
+    isLoading: crvLoading,
+    error: crvError,
+  } = useClaimCrvEstimateGasQuery(query, enabled && Number(claimableCrv.data) > 0)
   const {
     data: rewardsEstimate,
     isLoading: rewardsLoading,
     error: rewardsError,
-  } = useClaimRewardsEstimateQuery(query, enabled)
+  } = useClaimRewardsEstimateQuery(query, enabled && hasClaimableRewards(claimableRewards.data))
 
   const totalEstimate = useMemo(
     () => (crvEstimate || rewardsEstimate ? Number(crvEstimate ?? 0) + Number(rewardsEstimate ?? 0) : undefined),

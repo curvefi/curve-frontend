@@ -60,13 +60,15 @@ export const useClaimTab = <ChainId extends LlamaChainId>({
         : []),
       ...(claimableRewards.data ?? []),
     ]
-    return tokens.map((item) => {
-      const usdRate = usdRates?.[item.token]
-      return {
-        ...item,
-        notional: item.amount && usdRate != null ? Number(item.amount) * usdRate : undefined,
-      }
-    })
+    return tokens
+      .filter(({ amount }) => Number(amount) > 0)
+      .map((item) => {
+        const usdRate = usdRates?.[item.token]
+        return {
+          ...item,
+          notional: item.amount && usdRate != null ? Number(item.amount) * usdRate : undefined,
+        }
+      })
   }, [claimableCrv.data, claimableRewards.data, usdRates])
 
   const totalNotionals = useMemo(() => {
@@ -103,7 +105,7 @@ export const useClaimTab = <ChainId extends LlamaChainId>({
     totalNotionals,
     usdRateLoading,
     usdRateError: usdRateError ?? null,
-    isDisabled: !!claimablesError,
+    isDisabled: !!claimablesError || claimableTokens.length === 0,
     isLoading: isClaimablesLoading,
     isError: !!claimablesError,
     table,
