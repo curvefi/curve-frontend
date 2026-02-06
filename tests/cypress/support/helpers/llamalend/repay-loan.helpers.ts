@@ -1,5 +1,5 @@
 import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
-import type { Decimal } from '@ui-kit/utils'
+import { formatNumber, type Decimal } from '@ui-kit/utils'
 import { getActionValue } from './action-info.helpers'
 
 const getRepayInput = () => cy.get('[data-testid^="repay-input-"] input[type="text"]', LOAD_TIMEOUT).first()
@@ -20,9 +20,9 @@ export function writeRepayLoanForm({ amount }: { amount: Decimal }) {
 }
 
 export const checkDebt = (current: Decimal, future: Decimal, symbol: string) => {
-  getActionValue('borrow-debt').should('eq', future)
+  getActionValue('borrow-debt').should('equal', formatNumber(future, { abbreviate: false }))
   cy.get('[data-testid="borrow-debt-value"]', LOAD_TIMEOUT).contains(symbol)
-  getActionValue('borrow-debt', 'previous').should('eq', current)
+  getActionValue('borrow-debt', 'previous').should('equal', formatNumber(current, { abbreviate: false }))
 }
 
 export function checkRepayDetailsLoaded({
@@ -35,7 +35,7 @@ export function checkRepayDetailsLoaded({
   if (leverageEnabled) {
     getActionValue('borrow-band-range').should('match', /(\d(\.\d+)?) to (-?\d(\.\d+)?)/)
   } else {
-    getActionValue('borrow-band-range').should('not.exist')
+    cy.get('body').find('[data-testid="borrow-band-range-value"]').should('not.exist')
   }
   getActionValue('borrow-price-range').should('match', /(\d(\.\d+)?) - (\d(\.\d+)?)/)
   getActionValue('borrow-apr').should('include', '%')
