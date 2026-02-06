@@ -1,6 +1,6 @@
 import { ReactNode, useEffect } from 'react'
-import { captureException } from '@sentry/react'
 import { Box } from '@mui/material'
+import { captureException } from '@sentry/react'
 import { CatchBoundary } from '@tanstack/react-router'
 import type { ErrorComponentProps } from '@tanstack/router-core'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
