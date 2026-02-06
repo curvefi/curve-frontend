@@ -12,11 +12,10 @@ import { useRepayIsApproved } from '@/llamalend/queries/repay/repay-is-approved.
 import { useRepayPriceImpact } from '@/llamalend/queries/repay/repay-price-impact.query'
 import { useRepayPrices } from '@/llamalend/queries/repay/repay-prices.query'
 import { getUserHealthOptions } from '@/llamalend/queries/user-health.query'
-import { useUserPnl } from '@/llamalend/queries/user-pnl.query'
 import { useUserState } from '@/llamalend/queries/user-state.query'
 import type { RepayParams } from '@/llamalend/queries/validation/manage-loan.types'
 import type { RepayForm } from '@/llamalend/queries/validation/manage-loan.validation'
-import { LoanInfoAccordion } from '@/llamalend/widgets/manage-loan/LoanInfoAccordion'
+import { LoanInfoAccordion } from '@/llamalend/widgets/action-card/LoanInfoAccordion'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { combineQueriesMeta } from '@ui-kit/lib/queries/combine'
@@ -80,13 +79,11 @@ export function RepayLoanInfoAccordion<ChainId extends IChainId>({
   const userState = q(userStateQuery)
   const priceImpact = useRepayPriceImpact(params, isOpen && swapRequired)
   const debt = useRepayRemainingDebt({ params, swapRequired, borrowToken }, { isFull, userBorrowed }, isOpen)
-  const pnlQuery = useUserPnl({ ...params, loanExists: true, hasV2Leverage: swapRequired }, isOpen)
-  const { data: isApproved } = useRepayIsApproved(params, isOpen && typeof isFull === 'boolean')
   return (
     <LoanInfoAccordion
       isOpen={isOpen}
       toggle={toggle}
-      isApproved={isApproved}
+      isApproved={q(useRepayIsApproved(params, isOpen))}
       gas={useRepayEstimateGas(networks, params, isOpen)}
       health={useHealthQueries((isFull) => getRepayHealthOptions({ ...params, isFull }))}
       prevHealth={useHealthQueries((isFull) => getUserHealthOptions({ ...params, isFull }))}
@@ -96,7 +93,6 @@ export function RepayLoanInfoAccordion<ChainId extends IChainId>({
       debt={debt}
       userState={userState}
       prices={q(useRepayPrices(params, isOpen))}
-      pnl={mapQuery(pnlQuery, (data) => data.currentProfit)}
       // routeImage={q(useRepayRouteImage(params, isOpen))}
       loanToValue={useLoanToValueFromUserState(
         {

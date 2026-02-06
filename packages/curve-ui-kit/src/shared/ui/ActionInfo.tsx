@@ -1,18 +1,16 @@
-import { ReactNode, useCallback } from 'react'
+import { ReactNode } from 'react'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import CallMade from '@mui/icons-material/CallMade'
-import ContentCopy from '@mui/icons-material/ContentCopy'
 import IconButton from '@mui/material/IconButton'
 import Link from '@mui/material/Link'
 import Stack, { type StackProps } from '@mui/material/Stack'
 import Typography, { type TypographyProps } from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
 import { ExclamationTriangleIcon } from '@ui-kit/shared/icons/ExclamationTriangleIcon'
+import { CopyIconButton } from '@ui-kit/shared/ui/CopyIconButton'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
-import { copyToClipboard } from '@ui-kit/utils'
-import { showToast } from '@ui-kit/widgets/Toast/toast.util'
 import { Tooltip } from './Tooltip'
 import { WithSkeleton } from './WithSkeleton'
 
@@ -106,11 +104,6 @@ export const ActionInfo = ({
   testId = 'action-info',
   sx,
 }: ActionInfoProps) => {
-  const copyAndShowSnackbar = useCallback(() => {
-    void copyToClipboard(copyValue!.trim())
-    showToast({ title: copiedTitle ?? t`Value has been copied to clipboard`, message: copyValue, severity: 'info' })
-  }, [copiedTitle, copyValue])
-
   const errorMessage = (typeof error === 'object' && error?.message) || (typeof error === 'string' && error)
   const showPrevValue = isSet(value) && isSet(prevValue)
   value ??= prevValue ?? emptyValue
@@ -162,7 +155,9 @@ export const ActionInfo = ({
             <WithSkeleton
               component="div"
               loading={!!loading}
-              {...(Array.isArray(loading) ? { width: loading[0], height: loading[1] } : { width: '2ch' })}
+              {...(Array.isArray(loading)
+                ? { width: loading[0], height: loading[1] }
+                : { width: '2ch', height: '1rem' })}
             >
               <Typography
                 variant={valueSize[size]}
@@ -178,15 +173,20 @@ export const ActionInfo = ({
         </Tooltip>
 
         {error && !loading && (
-          <Tooltip title={errorMessage} placement="top">
+          <CopyIconButton
+            copyText={errorMessage || error.toString()}
+            label={t`Copy error to clipboard`}
+            confirmationText={t`Error copied to clipboard`}
+          >
             <ExclamationTriangleIcon fontSize="small" color="error" />
-          </Tooltip>
+          </CopyIconButton>
         )}
-
         {copyValue && (
-          <IconButton size="extraSmall" title={copyValue} onClick={copyAndShowSnackbar}>
-            <ContentCopy />
-          </IconButton>
+          <CopyIconButton
+            copyText={copyValue}
+            label={`${t`Copy `}${copyValue}${t` to clipboard`}`}
+            confirmationText={copiedTitle ?? t`Value has been copied to clipboard`}
+          />
         )}
 
         {link && (

@@ -24,7 +24,10 @@ export default defineConfig(({ command, mode }) => ({
       { find: '@curvefi/prices-api', replacement: resolve(__dirname, '../../packages/prices-api/src') },
     ],
   },
-  define: { 'process.env.NODE_ENV': command === 'serve' ? '"development"' : '"production"' },
+  define: {
+    'process.env.NODE_ENV': JSON.stringify(command === 'serve' ? 'development' : 'production'),
+    'process.env.PUBLIC_MAINTENANCE_MESSAGE': JSON.stringify(process.env.PUBLIC_MAINTENANCE_MESSAGE),
+  },
   vercel: {
     buildCommand: 'yarn build',
     rewrites: [

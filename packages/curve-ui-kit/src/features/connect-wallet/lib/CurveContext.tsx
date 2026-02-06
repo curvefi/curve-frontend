@@ -1,7 +1,8 @@
 import { BrowserProvider } from 'ethers'
-import { createContext, useContext, useMemo } from 'react'
+import { createContext, useContext, useEffect, useMemo } from 'react'
 import { useConnection, useConnectorClient } from 'wagmi'
 import type { NetworkDef } from '@ui/utils'
+import { setUser } from '@ui-kit/features/sentry'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { type Address } from '@ui-kit/utils'
 import { ConnectState, type CurveApi, type LlamaApi, type Wallet } from './types'
@@ -54,10 +55,12 @@ export function useWagmiWallet() {
   const { data: client } = useConnectorClient()
   const address = client?.account?.address
   const request = client?.transport.request
+  const chainId = client?.chain.id
   const wallet = useMemo(
     () => (address && request ? { provider: { request }, address } : undefined),
     [address, request],
   )
+  useEffect(() => setUser({ address, chainId }), [address, chainId])
   return {
     isReconnecting: useWagmiIsReconnecting(address),
     wallet,

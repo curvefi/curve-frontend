@@ -1,15 +1,21 @@
+import { type ChangeEvent, useCallback } from 'react'
 import { BorrowMoreLoanInfoAccordion } from '@/llamalend/features/borrow/components/BorrowMoreLoanInfoAccordion'
+import { LeverageInput } from '@/llamalend/features/borrow/components/LeverageInput'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { OnBorrowedMore } from '@/llamalend/mutations/borrow-more.mutation'
 import { useBorrowMorePriceImpact } from '@/llamalend/queries/borrow-more/borrow-more-price-impact.query'
-import { isLeverageBorrowMore } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
-import { HighPriceImpactAlert, LoanFormAlerts } from '@/llamalend/widgets/manage-loan/LoanFormAlerts'
-import { LoanFormTokenInput } from '@/llamalend/widgets/manage-loan/LoanFormTokenInput'
+import {
+  isLeverageBorrowMore,
+  isLeverageBorrowMoreSupported,
+} from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
+import { HighPriceImpactAlert, LoanFormAlerts } from '@/llamalend/widgets/action-card/LoanFormAlerts'
+import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { notFalsy } from '@curvefi/prices-api/objects.util'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
+import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
 import { isDevelopment } from '@ui-kit/utils'
 import { setValueOptions } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
@@ -48,6 +54,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     formErrors,
     max,
     health,
+    leverage,
   } = useBorrowMoreForm({
     market,
     network,
@@ -55,10 +62,15 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     onBorrowedMore,
   })
 
-  const isLeverage = isLeverageBorrowMore(market)
-  const swapRequired = isLeverage && +(values.userBorrowed ?? 0) > 0
+  const isLeverageEnabled = isLeverageBorrowMore(market, values.leverageEnabled)
+  const swapRequired = isLeverageEnabled && Number(values.userBorrowed) > 0
   const priceImpact = useBorrowMorePriceImpact(params, enabled && swapRequired)
-  const fromBorrowed = fromWallet && isLeverage
+  const fromBorrowed = fromWallet && isLeverageEnabled
+  const onLeverageToggle = useCallback(
+    (event: ChangeEvent<HTMLInputElement>) => form.setValue('leverageEnabled', event.target.checked),
+    [form],
+  )
+
   return (
     <Form
       {...form}
@@ -70,7 +82,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
           tokens={{ collateralToken, borrowToken }}
           networks={networks}
           onSlippageChange={(value) => form.setValue('slippage', value, setValueOptions)}
-          hasLeverage={isLeverage}
+          leverageEnabled={values.leverageEnabled}
           health={health}
         />
       }
@@ -111,8 +123,30 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
           testId="borrow-more-input-debt"
           network={network}
           hideBalance
+          message={
+            <Balance
+              prefix={t`Max borrow amount:`}
+              tooltip={t`Max available to borrow`}
+              symbol={borrowToken?.symbol}
+              balance={max.debt.data}
+              loading={max.debt.isLoading}
+              onClick={() => {
+                form.setValue('debt', max.debt.data, setValueOptions)
+                void form.trigger('maxDebt') // re-validate max
+              }}
+            />
+          }
         />
       </Stack>
+
+      {isLeverageBorrowMoreSupported(market) && (
+        <LeverageInput
+          checked={values.leverageEnabled}
+          leverage={leverage}
+          onToggle={onLeverageToggle}
+          maxLeverage={max.maxLeverage}
+        />
+      )}
 
       <HighPriceImpactAlert priceImpact={priceImpact.data} isLoading={priceImpact.isLoading} />
 

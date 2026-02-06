@@ -128,9 +128,14 @@ export function checkLoanRangeSlider({ leverageEnabled }: { leverageEnabled: boo
   cy.get(`[data-testid="loan-preset-${LoanPreset.MaxLtv}"]`).click()
   cy.get('[data-testid="borrow-set-debt-to-max"]').should('not.exist') // make sure we don't click the previous max
   cy.get('[data-testid="borrow-set-debt-to-max"]', LOAD_TIMEOUT).click()
-  cy.get(`[data-testid="loan-preset-${LoanPreset.Safe}"]`).click({ force: true }) // force because sometimes a tooltip covers it
-  cy.get('[data-testid="helper-message-error"]', LOAD_TIMEOUT).should('contain.text', 'debt exceeds the maximum')
-  cy.get('[data-testid="helper-message-number-0"]').click() // set max again to fix the error
+  cy.get(`[data-testid="loan-preset-${LoanPreset.Safe}"]`).click({ force: true }) // force, tooltip sometimes covers part of it
+  cy.get('[data-testid="borrow-set-debt-to-max"]').should('not.exist') // new max is being calculated
+  // wait for max borrow to load and verify the input value matches (using data-value for precision)
+  cy.get('[data-testid="borrow-set-debt-to-max"] [data-testid="balance-value"]', LOAD_TIMEOUT)
+    .invoke('attr', 'data-value')
+    .then((maxValue) =>
+      cy.get('[data-testid="borrow-debt-input"] input[type="text"]').first().should('have.value', maxValue),
+    )
   cy.get('[data-testid="helper-message-error"]').should('not.exist')
   checkLoanDetailsLoaded({ leverageEnabled })
 }

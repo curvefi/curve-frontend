@@ -6,6 +6,7 @@ import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@
 import { useMutation } from '@tanstack/react-query'
 import { notify, useCurve } from '@ui-kit/features/connect-wallet'
 import { withPendingToast } from '@ui-kit/features/connect-wallet/lib/notify'
+import { addBreadcrumb, captureError } from '@ui-kit/features/sentry'
 import { assertValidity, logError, logMutation, logSuccess, type ValidationSuite } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { waitForTransactionReceipt } from '@wagmi/core'
@@ -122,8 +123,10 @@ export function useLlammaMutation<TVariables extends object, TData extends Resul
       const market = getLlamaMarket(marketId)
 
       logMutation(mutationKey, { variables })
-      // Return context to make it available in other callbacks
-      return { wallet, llamaApi, market }
+      // Return context to make it available in all callbacks
+      const context = { wallet, llamaApi, market }
+      addBreadcrumb(`Llamma mutation starting`, 'mutation', { marketId, variables, userAddress, mutationKey })
+      return context
     },
     mutationFn: async (variables: TVariables) => {
       const market = getLlamaMarket(marketId!)
@@ -150,8 +153,10 @@ export function useLlammaMutation<TVariables extends object, TData extends Resul
       notify(successMessage(variables, result), 'success')
     },
     onError: (error, variables, context) => {
+      console.error(`Error in mutation ${JSON.stringify({ mutationKey, variables })}:`, error)
       setError(error)
       logError(mutationKey, { error, variables, marketId: context?.market.id })
+      captureError(error, { variables, userAddress })
       notify(t`Transaction failed`, 'error') // hide the actual error message, it can be too long - display it in the form
     },
   })

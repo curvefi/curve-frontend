@@ -68,6 +68,7 @@ export const ImproveHealth = ({
   }
 
   const repayBalanceTooHigh = debtToken && +debtBalance > +(maxBalance.balance ?? 0)
+  // todo: add useRepayIsAvailable() to disable repay when not available
   const cantRepay =
     status !== 'idle' || !debtToken || +debtBalance === 0 || +debtBalance > +(userBalance ?? 0) || repayBalanceTooHigh
 

@@ -1,11 +1,11 @@
 import { useForm } from 'react-hook-form'
-import { fetchJson } from '@curvefi/prices-api/fetch'
+import { captureError, captureString } from '@ui-kit/features/sentry'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model/form'
 
 export type ContactMethod = 'email' | 'telegram' | 'discord'
 
 export type ErrorContext = {
-  error: unknown
+  error: Error | string | null | undefined
   title: string
   subtitle: string
 }
@@ -32,15 +32,22 @@ export const useErrorReportForm = ({ error, ...context }: ErrorContext, onClose:
         url: window.location.href,
         context: {
           ...context,
+          // stringify error because sentry will simply call .toString() on non-Error objects
           error:
-            error instanceof Error
-              ? { ...error, name: error.name, message: error.message, stack: error.stack, cause: error.cause }
-              : error,
+            typeof error == 'string'
+              ? error
+              : JSON.stringify(
+                  error instanceof Error ? { name: error.name, message: error.message, stack: error.stack } : error,
+                ),
         },
       }
       console.info(`Submitting error report:`, body)
       try {
-        await fetchJson('/api/error-report', { body })
+        if (error instanceof Error) {
+          captureError(error, { body })
+        } else {
+          captureString(error ?? 'Error Report', { body })
+        }
         onClose()
       } catch (e) {
         console.warn(e)

@@ -13,13 +13,13 @@ export function useDebtToken(params: MarketParams): ClosePositionProps['debtToke
   const market = getLlamaMarket(params.marketId)
   const { borrowToken } = (market && getTokens(market)) || {}
 
-  if (!borrowToken || !borrowToken.address || debt == null) {
-    return undefined
-  }
-
-  return {
-    symbol: borrowToken.symbol,
-    address: borrowToken.address,
-    amount: debt,
-  }
+  return (
+    borrowToken?.address &&
+    debt && {
+      chain: params.network.id,
+      symbol: borrowToken.symbol,
+      address: borrowToken.address,
+      amount: debt,
+    }
+  )
 }

@@ -10,7 +10,6 @@ import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { useLoanExists } from '@/llamalend/queries/loan-exists'
 import { networks } from '@/loan/networks'
 import { recordEntries } from '@curvefi/prices-api/objects.util'
-import { oneBool } from '@cy/support/generators'
 import {
   checkBorrowMoreDetailsLoaded,
   checkCurrentDebt,
@@ -47,7 +46,6 @@ const prefetch = () => prefetchMarkets({})
 type Spy = ReturnType<typeof cy.spy>
 recordEntries(LOAN_TEST_MARKETS)
   .flatMap(([marketType, markets]) => markets.map((market) => ({ marketType, ...market })))
-  .filter(({ hasLeverage }) => !hasLeverage)
   .forEach(
     ({ id, collateralAddress: tokenAddress, collateral, borrow, borrowMore, repay, chainId, hasLeverage, label }) => {
       describe(label, () => {
@@ -63,7 +61,11 @@ recordEntries(LOAN_TEST_MARKETS)
           fork_config: { block_number: 'latest' },
         }))
 
-        const leverageEnabled = hasLeverage && oneBool()
+        /**
+         * Leverage disabled in the tests for now because it depends on Odos routes.
+         * It will soon be migrated to our own router API, so it will be easier to mock.
+         */
+        const leverageEnabled = false
 
         let onCreated: Spy
         let onBorrowedMore: Spy

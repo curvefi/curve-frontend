@@ -1,4 +1,5 @@
 import type { NetworkDict } from '@/llamalend/llamalend.types'
+import { useCreateLoanIsApproved } from '@/llamalend/queries/create-loan/create-loan-approved.query'
 import { useMarketRates } from '@/llamalend/queries/market-rates'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
@@ -12,7 +13,7 @@ import { useCreateLoanHealth } from '../../../queries/create-loan/create-loan-he
 import { useCreateLoanPriceImpact } from '../../../queries/create-loan/create-loan-price-impact.query'
 import { useCreateLoanPrices } from '../../../queries/create-loan/create-loan-prices.query'
 import { useMarketFutureRates } from '../../../queries/market-future-rates.query'
-import { LoanInfoAccordion } from '../../../widgets/manage-loan/LoanInfoAccordion'
+import { LoanInfoAccordion } from '../../../widgets/action-card/LoanInfoAccordion'
 import { useLoanToValue } from '../hooks/useLoanToValue'
 import { type CreateLoanForm, type CreateLoanFormQueryParams, type Token } from '../types'
 
@@ -47,6 +48,7 @@ export const CreateLoanInfoAccordion = <ChainId extends IChainId>({
       isOpen={isOpen}
       toggle={toggle}
       range={range}
+      isApproved={q(useCreateLoanIsApproved(params))}
       health={q(useCreateLoanHealth(params))}
       bands={q(useCreateLoanBands(params, isOpen))}
       prices={q(useCreateLoanPrices(params, isOpen))}

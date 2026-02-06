@@ -6,8 +6,8 @@ import { hasLeverage } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import type { RepayOptions } from '@/llamalend/mutations/repay.mutation'
 import { useRepayPriceImpact } from '@/llamalend/queries/repay/repay-price-impact.query'
-import { HighPriceImpactAlert, LoanFormAlerts } from '@/llamalend/widgets/manage-loan/LoanFormAlerts'
-import { LoanFormTokenInput } from '@/llamalend/widgets/manage-loan/LoanFormTokenInput'
+import { HighPriceImpactAlert, LoanFormAlerts } from '@/llamalend/widgets/action-card/LoanFormAlerts'
+import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { Falsy, notFalsy } from '@curvefi/prices-api/objects.util'
 import Button from '@mui/material/Button'
@@ -78,7 +78,6 @@ export const RepayForm = <ChainId extends IChainId>({
     params,
     isPending,
     onSubmit,
-    isDisabled,
     borrowToken,
     collateralToken,
     isRepaid,
@@ -150,6 +149,7 @@ export const RepayForm = <ChainId extends IChainId>({
         })}
         testId={'repay-input-' + selectedField}
         network={network}
+        onValueChange={(v) => form.setValue('isFull', v === form.getValues('maxBorrowed'), setValueOptions)}
         tokenSelector={
           <RepayTokenSelector
             token={token}
@@ -169,13 +169,19 @@ export const RepayForm = <ChainId extends IChainId>({
             loading={max[selectedField].isLoading || maxAmountInBorrowTokenLoading}
             onClick={() => {
               form.setValue(selectedField, max[selectedField].data, setValueOptions)
+              form.setValue('isFull', selectedField === 'userBorrowed', setValueOptions)
               void form.trigger(max[selectedField].field) // re-validate max
             }}
           />
         }
       />
       <HighPriceImpactAlert priceImpact={priceImpact.data} isLoading={priceImpact.isLoading} />
-      <Button type="submit" loading={isPending || !market} disabled={isDisabled} data-testid="repay-submit-button">
+      <Button
+        type="submit"
+        loading={isPending || !market}
+        disabled={formErrors.length > 0}
+        data-testid="repay-submit-button"
+      >
         {isPending
           ? t`Processing...`
           : joinButtonText(
