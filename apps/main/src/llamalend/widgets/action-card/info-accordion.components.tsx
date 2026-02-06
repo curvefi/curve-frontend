@@ -41,5 +41,6 @@ export const EstimatedTxCost = ({ gas, isApproved }: EstimatedTxCostProps) => (
     valueTooltip={gas.data?.tooltip}
     loading={gas.isLoading}
     valueLeft={<FireIcon fontSize="small" />}
+    error={gas.error}
   />
 )
