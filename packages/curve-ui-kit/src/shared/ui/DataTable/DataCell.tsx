@@ -8,16 +8,16 @@ import { RotatableIcon } from './RotatableIcon'
 
 export const DataCell = <T extends TableItem>({
   cell,
-  isMobile,
+  enableCollapse,
   isSticky,
 }: {
   cell: Cell<T, unknown>
-  isMobile: boolean
+  enableCollapse: boolean
   isSticky: boolean
 }) => {
   const { column, row } = cell
   const children = flexRender(column.columnDef.cell, cell.getContext())
-  const showCollapseIcon = isMobile && column.getIsLastColumn()
+  const showCollapseIcon = enableCollapse && column.getIsLastColumn()
   const [sx, wrapperSx] = useCellSx({ column, showCollapseIcon, isSticky })
   return (
     <Typography

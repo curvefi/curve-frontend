@@ -5,6 +5,7 @@ import { VaultUnstake } from '@/lend/components/PageVault/VaultUnstake'
 import { VaultWithdrawRedeem } from '@/lend/components/PageVault/VaultWithdrawRedeem'
 import { networks } from '@/lend/networks'
 import { type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
+import { ClaimTab } from '@/llamalend/features/supply/components/ClaimTab'
 import { DepositForm } from '@/llamalend/features/supply/components/DepositForm'
 import { StakeForm } from '@/llamalend/features/supply/components/StakeForm'
 import { UnstakeForm } from '@/llamalend/features/supply/components/UnstakeForm'
@@ -75,6 +76,13 @@ const NewVaultMenu = [
         ),
       },
     ],
+  },
+  {
+    value: 'claim',
+    label: t`Claim`,
+    component: ({ rChainId, market, isLoaded }: VaultProps) => (
+      <ClaimTab networks={networks} chainId={rChainId} market={market} enabled={isLoaded} />
+    ),
   },
 ] satisfies FormTab<VaultProps>[]
 

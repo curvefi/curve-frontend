@@ -60,6 +60,9 @@ export const canRepayFromUserCollateral = (market: LlamaMarketTemplate) =>
 
 export const hasVault = (market: LlamaMarketTemplate) => market instanceof LendMarketTemplate && 'vault' in market
 
+export const hasGauge = (market: LlamaMarketTemplate) =>
+  market instanceof LendMarketTemplate && market.addresses.gauge !== zeroAddress
+
 const getBorrowSymbol = (market: LlamaMarketTemplate) =>
   market instanceof MintMarketTemplate ? CRVUSD.symbol : market.borrowed_token.symbol
 
