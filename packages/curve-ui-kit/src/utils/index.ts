@@ -20,10 +20,21 @@ export enum ReleaseChannel {
 export const isCypress = Boolean((window as { Cypress?: unknown }).Cypress)
 export const noCypressTestConnector = Boolean((window as { CypressNoTestConnector?: unknown }).CypressNoTestConnector)
 
-export const isDevelopment = process.env.NODE_ENV === 'development' || !!window.localStorage.getItem('developer')
+const isDeveloper = !!window.localStorage.getItem('developer')
+export const isDevelopment = process?.env.NODE_ENV === 'development' || isDeveloper // allow devs to test alpha features in prod by setting localStorage
 export const isPreviewHost = window.location.hostname.includes('vercel.app')
 
 const isDefaultBeta = isDevelopment || isPreviewHost || isCypress
+
+export const envName = isCypress
+  ? 'cypress'
+  : isDevelopment
+    ? 'development'
+    : isPreviewHost
+      ? 'preview'
+      : window.location.host === 'curve.finance'
+        ? 'production'
+        : 'unknown'
 
 export const defaultReleaseChannel = isDefaultBeta ? ReleaseChannel.Beta : ReleaseChannel.Stable
 export const enableLogging = isDefaultBeta
