@@ -23,15 +23,13 @@ export function writeRepayLoanForm({ amount }: { amount: Decimal }) {
 }
 
 export function checkRepayDetailsLoaded({
-  hasLeverage,
-  expectedDebt,
-  expectedPreviousDebt,
+  leverageEnabled,
+  debt: [expectedFutureDebt, expectedCurrentDebt, expectedSymbol],
 }: {
-  expectedDebt: string
-  expectedPreviousDebt: string
-  hasLeverage: boolean
+  debt: [Decimal, Decimal, string]
+  leverageEnabled: boolean
 }) {
-  if (hasLeverage) {
+  if (leverageEnabled) {
     getActionValue('borrow-band-range')
       .invoke(LOAD_TIMEOUT, 'text')
       .should('match', /(\d(\.\d+)?) to (-?\d(\.\d+)?)/)
@@ -42,9 +40,18 @@ export function checkRepayDetailsLoaded({
     .invoke(LOAD_TIMEOUT, 'text')
     .should('match', /(\d(\.\d+)?) - (\d(\.\d+)?)/)
   getActionValue('borrow-apr').contains('%')
-  getActionValue('borrow-debt').invoke(LOAD_TIMEOUT, 'text').should('equal', expectedDebt)
-  getActionValue('borrow-debt', 'previous').invoke(LOAD_TIMEOUT, 'text').should('equal', expectedPreviousDebt)
+  getActionValue('borrow-debt')
+    .invoke(LOAD_TIMEOUT, 'text')
+    .should('equal', expectedFutureDebt + expectedSymbol)
+  getActionValue('borrow-debt', 'previous').invoke(LOAD_TIMEOUT, 'text').should('equal', expectedCurrentDebt)
   cy.get('[data-testid="loan-form-errors"]').should('not.exist')
+}
+
+export const checkDebt = (expectedPreviousDebt: Decimal, expectedCurrentDebt: Decimal, expectedSymbol: string) => {
+  getActionValue('borrow-debt')
+    .invoke(LOAD_TIMEOUT, 'text')
+    .should('equal', expectedCurrentDebt + expectedSymbol)
+  getActionValue('borrow-debt', 'previous').should('equal', expectedPreviousDebt)
 }
 
 export function submitRepayForm() {
