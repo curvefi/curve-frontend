@@ -18,6 +18,7 @@ export const LOAN_TEST_MARKETS = {
       collateralAddress: '0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0', // wstETH
       collateral: '0.1',
       borrow: '10',
+      borrowMore: '2',
       repay: '5',
       chainId,
       path: '/crvusd/ethereum/markets/wsteth',
@@ -29,6 +30,7 @@ export const LOAN_TEST_MARKETS = {
       collateralAddress: '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599', // wbtc
       collateral: '1',
       borrow: '100',
+      borrowMore: '10',
       repay: '50',
       chainId,
       path: '/crvusd/ethereum/markets/wbtc',
@@ -42,6 +44,7 @@ export const LOAN_TEST_MARKETS = {
       collateralAddress: '0x9D39A5DE30e57443BfF2A8307A4256c8797A3497', // sUSDe
       collateral: '100',
       borrow: '90',
+      borrowMore: '5',
       repay: '50',
       chainId,
       path: '/lend/ethereum/markets/0x98Fc283d6636f6DCFf5a817A00Ac69A3ADd96907',
@@ -53,6 +56,7 @@ export const LOAN_TEST_MARKETS = {
       collateralAddress: '0x4c9EDD5852cd905f086C759E8383e09bff1E68B3', // USDe
       collateral: '1',
       borrow: '0.9',
+      borrowMore: '0.1',
       repay: '0.8',
       chainId,
       path: '/lend/ethereum/markets/0x74f88Baa966407b50c10B393bBD789639EFfE78B',
