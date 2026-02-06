@@ -1,5 +1,5 @@
 import type { MutationKey, QueryKey } from '@tanstack/react-query'
-import { enableLogging, isCypress } from '@ui-kit/utils'
+import { enableLogging, isCypress } from '@ui-kit/utils/env'
 
 export enum LogStatus {
   ERROR = 'error',
@@ -17,7 +17,7 @@ export enum LogStatus {
   CANCELLED = 'cancelled',
 }
 
-const isCypressOpenMode = (window as unknown as { Cypress: { config: (key: string) => unknown } })?.Cypress.config(
+const isCypressOpenMode = (window as unknown as { Cypress?: { config?: (key: string) => unknown } }).Cypress?.config?.(
   'isInteractive',
 )
 

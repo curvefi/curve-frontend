@@ -3,6 +3,7 @@ import { getAddress, isAddress } from 'viem'
 export * from './array'
 export * from './address'
 export * from './bigNumber'
+export * from './env'
 export * from './shortenString'
 export * from './web3'
 export * from './network'
@@ -10,23 +11,6 @@ export * from './number'
 export * from './decimal'
 export * from './searchText'
 export * from './mui'
-
-export enum ReleaseChannel {
-  Beta = 'Beta',
-  Stable = 'Stable',
-  Legacy = 'Legacy',
-}
-
-export const isCypress = Boolean((window as { Cypress?: unknown }).Cypress)
-export const noCypressTestConnector = Boolean((window as { CypressNoTestConnector?: unknown }).CypressNoTestConnector)
-
-export const isDevelopment = process?.env.NODE_ENV === 'development' || !!window.localStorage.getItem('developer')
-export const isPreviewHost = window.location.hostname.includes('vercel.app')
-
-const isDefaultBeta = isDevelopment || isPreviewHost || isCypress
-
-export const defaultReleaseChannel = isDefaultBeta ? ReleaseChannel.Beta : ReleaseChannel.Stable
-export const enableLogging = isDefaultBeta
 
 /**
  * Copies text to clipboard with Ethereum address checksumming

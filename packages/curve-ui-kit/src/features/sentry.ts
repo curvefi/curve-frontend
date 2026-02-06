@@ -8,7 +8,7 @@ import {
   setUser as setSentryUser,
   withScope,
 } from '@sentry/react'
-import { isCypress, isPreviewHost } from '@ui-kit/utils'
+import { isCypress, isPreviewHost } from '@ui-kit/utils/env'
 
 export const SENTRY_DSN =
   'https://946ac1b5b974fb993626876dd310b0d2@o4510753779220480.ingest.de.sentry.io/4510753786101840'
@@ -18,7 +18,7 @@ const environment = isCypress
   ? 'cypress'
   : isPreviewHost
     ? 'preview'
-    : window.location.hostname === TLD
+    : window.location.hostname === `www.${TLD}`
       ? 'production'
       : window.location.hostname.includes(`.${TLD}`)
         ? window.location.hostname.replace(`.${TLD}`, '')
