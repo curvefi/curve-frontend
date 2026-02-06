@@ -1,6 +1,5 @@
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { ChainIcon } from '@ui-kit/shared/icons/ChainIcon'
 import { InlineTableCell } from '@ui-kit/shared/ui/DataTable/inline-cells/InlineTableCell'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -24,15 +23,12 @@ export const ClaimTokenCell = ({
 }) => (
   <InlineTableCell>
     <Stack direction="row" gap={Spacing.xs} alignItems="center">
-      <TokenIcon blockchainId={blockchainId} address={token} tooltip={symbol} size="lg" />
+      <TokenIcon blockchainId={blockchainId} address={token} tooltip={symbol} size="lg" showChainIcon />
       <Stack gap={Spacing.xxs} alignItems="flex-start">
         <Typography variant="tableCellL">{formatAmount(amount)}</Typography>
-        <Stack direction="row" gap={Spacing.xs} alignItems="center">
-          <ChainIcon blockchainId={blockchainId} size="sm" />
-          <Typography variant="tableCellSRegular" color="textSecondary">
-            {symbol}
-          </Typography>
-        </Stack>
+        <Typography variant="tableCellSRegular" color="textSecondary">
+          {symbol}
+        </Typography>
       </Stack>
     </Stack>
   </InlineTableCell>
