@@ -34,7 +34,7 @@ type BorrowToken = {
   usdRate: number | undefined | null
   loading: boolean
 }
-type BorrowRate = {
+export type BorrowRate = {
   rate: number | undefined | null
   averageRate: number | undefined | null
   averageRateLabel: string
@@ -46,7 +46,7 @@ type BorrowRate = {
   extraRewards: CampaignPoolRewards[]
   loading: boolean
 }
-type SupplyRate = {
+export type SupplyRate = {
   rate: number | undefined | null
   averageRate: number | undefined | null
   averageRateLabel: string
@@ -66,7 +66,7 @@ type SupplyRate = {
   extraRewards: CampaignPoolRewards[]
   loading: boolean
 }
-type AvailableLiquidity = {
+export type AvailableLiquidity = {
   value: number | undefined | null
   max: number | undefined | null
   loading: boolean
