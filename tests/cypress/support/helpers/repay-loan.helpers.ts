@@ -22,11 +22,18 @@ export function writeRepayLoanForm({ amount }: { amount: Decimal }) {
   cy.get('[data-testid="loan-info-accordion"] button', LOAD_TIMEOUT).first().click() // open the accordion
 }
 
+export const checkDebt = (current: Decimal, future: Decimal, symbol: string) => {
+  getActionValue('borrow-debt')
+    .invoke(LOAD_TIMEOUT, 'text')
+    .should('equal', future + symbol)
+  getActionValue('borrow-debt', 'previous').should('equal', current)
+}
+
 export function checkRepayDetailsLoaded({
   leverageEnabled,
-  debt: [expectedFutureDebt, expectedCurrentDebt, expectedSymbol],
+  debt,
 }: {
-  debt: [Decimal, Decimal, string]
+  debt: Parameters<typeof checkDebt>
   leverageEnabled: boolean
 }) {
   if (leverageEnabled) {
@@ -40,18 +47,8 @@ export function checkRepayDetailsLoaded({
     .invoke(LOAD_TIMEOUT, 'text')
     .should('match', /(\d(\.\d+)?) - (\d(\.\d+)?)/)
   getActionValue('borrow-apr').contains('%')
-  getActionValue('borrow-debt')
-    .invoke(LOAD_TIMEOUT, 'text')
-    .should('equal', expectedFutureDebt + expectedSymbol)
-  getActionValue('borrow-debt', 'previous').invoke(LOAD_TIMEOUT, 'text').should('equal', expectedCurrentDebt)
+  checkDebt(...debt)
   cy.get('[data-testid="loan-form-errors"]').should('not.exist')
-}
-
-export const checkDebt = (expectedPreviousDebt: Decimal, expectedCurrentDebt: Decimal, expectedSymbol: string) => {
-  getActionValue('borrow-debt')
-    .invoke(LOAD_TIMEOUT, 'text')
-    .should('equal', expectedCurrentDebt + expectedSymbol)
-  getActionValue('borrow-debt', 'previous').should('equal', expectedPreviousDebt)
 }
 
 export function submitRepayForm() {
