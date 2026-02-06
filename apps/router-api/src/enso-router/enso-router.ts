@@ -66,7 +66,8 @@ export const buildEnsoRouteResponse = async (
   })
   const { ok, status, statusText } = response
   if (!ok) {
-    log.error({ message: 'enso route request failed', status, statusText, url })
+    const [message, body] = ['Enso route request failed', await response.text()]
+    log.error({ message, status, statusText, url, body })
     return []
   }
 

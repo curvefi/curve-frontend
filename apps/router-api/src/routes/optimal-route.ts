@@ -18,11 +18,11 @@ export const getOptimalRoute = async (request: FastifyRequest<{ Querystring: Opt
   const { router = ['curve'] } = query
 
   const results = await Promise.allSettled(
-    router.map((provider) =>
+    router.map((router) =>
       handleTimeout(
-        routers[provider](query, request.log),
+        routers[router](query, request.log),
         ROUTE_TIMEOUT,
-        `Route calculation for provider ${provider} timed out`,
+        `Route calculation for provider ${router} timed out`,
       ),
     ),
   )

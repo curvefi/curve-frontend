@@ -39,3 +39,12 @@ export const decimalMin = (...data: Decimal[]): Decimal | undefined =>
     (min, value) => (min == null ? value : new BigNumber(value).isLessThan(min) ? value : min),
     undefined,
   )
+
+/**
+ * Returns the maximum Decimal value from an array of Decimals, without losing precision.
+ */
+export const decimalMax = (...data: Decimal[]): Decimal | undefined =>
+  data.reduce<Decimal | undefined>(
+    (max, value) => (max == null ? value : new BigNumber(value).isGreaterThan(max) ? value : max),
+    undefined,
+  )
