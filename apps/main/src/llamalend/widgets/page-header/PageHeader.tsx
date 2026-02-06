@@ -1,4 +1,5 @@
 import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { type Chain } from '@curvefi/prices-api'
 import { Typography } from '@mui/material'
 import { IconButton } from '@mui/material'
@@ -19,17 +20,17 @@ const { Spacing } = SizesAndSpaces
 type PageHeaderProps = {
   isLoading: boolean
   market: LlamaMarketTemplate | undefined
-  pageType: LlamaMarketType
   chain: Chain
   metrics?: React.ReactNode[]
 }
 
-export const PageHeader = ({ isLoading, market, pageType, chain, metrics }: PageHeaderProps) => {
+export const PageHeader = ({ isLoading, market, chain, metrics }: PageHeaderProps) => {
   const push = useNavigate()
 
+  const marketType = market instanceof MintMarketTemplate ? LlamaMarketType.Mint : LlamaMarketType.Lend
   const { collateral, borrowed } = extractPropsFromMarket(market)
   const title = generateMarketTitle(collateral?.symbol, borrowed?.symbol)
-  const subtitle = generateSubtitle(collateral?.symbol, borrowed?.symbol, pageType)
+  const subtitle = generateSubtitle(collateral?.symbol, borrowed?.symbol, marketType)
 
   return (
     <Stack
@@ -43,7 +44,6 @@ export const PageHeader = ({ isLoading, market, pageType, chain, metrics }: Page
       <Stack direction="row">
         <IconButton
           size="small"
-          sx={{ backgroundColor: 'transparent', '&:hover': { backgroundColor: 'transparent' } }}
           onClick={() => push(getInternalUrl('llamalend', chain, LLAMALEND_ROUTES.PAGE_MARKETS))}
         >
           <ArrowLeft />
@@ -60,7 +60,7 @@ export const PageHeader = ({ isLoading, market, pageType, chain, metrics }: Page
                 <Typography variant="headingSBold">{title}</Typography>
               </WithSkeleton>
               <WithSkeleton loading={isLoading} variant="text" width={24} height={24}>
-                <Chip size="extraSmall" color="default" label={pageType} />
+                <Chip size="extraSmall" color="default" label={marketType} />
                 <ChainIcon size="sm" blockchainId={chain} />
               </WithSkeleton>
             </Stack>

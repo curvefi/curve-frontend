@@ -27,7 +27,6 @@ import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { LlamaMarketType } from '@ui-kit/types/market'
 import { CRVUSD } from '@ui-kit/utils/address'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
 
@@ -102,12 +101,7 @@ export const MintMarketPage = () => {
     <ErrorPage title="404" subtitle={t`Market Not Found`} continueUrl={getCollateralListPathname(params)} />
   ) : provider ? (
     <>
-      <PageHeader
-        isLoading={!market || !isHydrated}
-        market={market}
-        pageType={LlamaMarketType.Mint}
-        chain={network.id}
-      />
+      <PageHeader isLoading={!isHydrated} market={market} chain={network.id} />
       <DetailPageLayout
         formTabs={
           loaded &&
