@@ -35,3 +35,6 @@ export const useManageSoftLiquidation = useAlphaChannel
 
 /** Entire new app containing in-depth analyses for knowledgeable users */
 export const useAnalyticsApp = useAlphaChannel
+
+/** New header subnav and market page title for llamalend markets */
+export const useLlamalendPageTitle = useAlphaChannel
