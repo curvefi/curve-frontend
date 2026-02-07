@@ -3,12 +3,13 @@ import { type Address, Hex } from 'viem'
 import { useConfig } from 'wagmi'
 import { formatTokenAmounts } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
-import { type LlammaMutationOptions, useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
+import { useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
 import { fetchAddCollateralIsApproved } from '@/llamalend/queries/add-collateral/add-collateral-approved.query'
 import { type CollateralForm, collateralValidationSuite } from '@/llamalend/queries/validation/manage-loan.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
+import type { OnTransactionSuccess } from '@ui-kit/lib/model/mutation/useTransactionMutation'
 import { type Decimal, waitForApproval } from '@ui-kit/utils'
 
 type AddCollateralMutation = { userCollateral: Decimal }
@@ -16,7 +17,7 @@ type AddCollateralMutation = { userCollateral: Decimal }
 export type AddCollateralOptions = {
   marketId: string | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
-  onAdded: LlammaMutationOptions<AddCollateralMutation>['onSuccess']
+  onAdded?: OnTransactionSuccess<AddCollateralMutation>
   onReset: () => void
   userAddress: Address | undefined
 }
@@ -41,15 +42,15 @@ export const useAddCollateralMutation = ({
     network,
     marketId,
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'add-collateral'] as const,
-    mutationFn: async (mutation, { market }) => {
+    mutationFn: async (variables, { market }) => {
       await waitForApproval({
         isApproved: () =>
-          fetchAddCollateralIsApproved({ chainId, marketId, userAddress, ...mutation }, { staleTime: 0 }),
-        onApprove: () => approve(market, mutation),
+          fetchAddCollateralIsApproved({ chainId, marketId, userAddress, ...variables }, { staleTime: 0 }),
+        onApprove: () => approve(market, variables),
         message: t`Approved collateral addition`,
         config,
       })
-      return { hash: await addCollateral(market, mutation) }
+      return { hash: await addCollateral(market, variables) }
     },
     validationSuite: collateralValidationSuite,
     pendingMessage: (mutation, { market }) => t`Adding collateral... ${formatTokenAmounts(market, mutation)}`,

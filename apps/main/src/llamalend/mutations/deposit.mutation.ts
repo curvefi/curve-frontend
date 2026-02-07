@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import type { Address, Hex } from 'viem'
 import { useConfig } from 'wagmi'
-import { type LlammaMutationOptions, useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
+import { useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
 import { fetchDepositIsApproved } from '@/llamalend/queries/supply/supply-deposit-approved.query'
 import {
   DepositForm,
@@ -13,13 +13,14 @@ import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@
 import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
+import type { OnTransactionSuccess } from '@ui-kit/lib/model/mutation/useTransactionMutation'
 import { waitForApproval } from '@ui-kit/utils'
 import { formatTokenAmounts } from '../llama.utils'
 
 export type DepositOptions = {
   marketId: string | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
-  onDeposited?: LlammaMutationOptions<DepositMutation>['onSuccess']
+  onDeposited?: OnTransactionSuccess<DepositMutation>
   onReset: () => void
   userAddress: Address | undefined
 }
@@ -44,16 +45,16 @@ export const useDepositMutation = ({
     network,
     marketId,
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'deposit'] as const,
-    mutationFn: async (mutation, { market }) => {
+    mutationFn: async (variables, { market }) => {
       const lendMarket = requireVault(market)
       await waitForApproval({
-        isApproved: async () => await fetchDepositIsApproved({ chainId, marketId, ...mutation }, { staleTime: 0 }),
-        onApprove: async () => await approveDeposit(lendMarket, mutation),
+        isApproved: async () => await fetchDepositIsApproved({ chainId, marketId, ...variables }, { staleTime: 0 }),
+        onApprove: async () => await approveDeposit(lendMarket, variables),
         message: t`Approved deposit`,
         config,
       })
 
-      return { hash: await deposit(lendMarket, mutation) }
+      return { hash: await deposit(lendMarket, variables) }
     },
     validationSuite: depositValidationSuite,
     pendingMessage: (mutation, { market }) =>

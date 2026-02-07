@@ -3,7 +3,7 @@ import type { Address, Hex } from 'viem'
 import { useConfig } from 'wagmi'
 import { formatTokenAmounts } from '@/llamalend/llama.utils'
 import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
-import { type LlammaMutationOptions, useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
+import { useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
 import { fetchBorrowMoreIsApproved } from '@/llamalend/queries/borrow-more/borrow-more-is-approved.query'
 import {
   getBorrowMoreImplementation,
@@ -17,9 +17,10 @@ import {
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
+import type { OnTransactionSuccess } from '@ui-kit/lib/model/mutation/useTransactionMutation'
 import { waitForApproval } from '@ui-kit/utils'
 
-export type OnBorrowedMore = LlammaMutationOptions<BorrowMoreMutation>['onSuccess']
+export type OnBorrowedMore = OnTransactionSuccess<BorrowMoreMutation>
 
 export type BorrowMoreOptions = {
   marketId: string | undefined
@@ -77,15 +78,15 @@ export const useBorrowMoreMutation = ({
     network,
     marketId,
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'borrowMore'] as const,
-    mutationFn: async (mutation, { market }) => {
+    mutationFn: async (variables, { market }) => {
       await waitForApproval({
         isApproved: async () =>
-          await fetchBorrowMoreIsApproved({ marketId, chainId, userAddress, ...mutation }, { staleTime: 0 }),
-        onApprove: async () => await approveBorrowMore(market, mutation),
+          await fetchBorrowMoreIsApproved({ marketId, chainId, userAddress, ...variables }, { staleTime: 0 }),
+        onApprove: async () => await approveBorrowMore(market, variables),
         message: t`Approved borrow more`,
         config,
       })
-      return { hash: await borrowMore(market, mutation) }
+      return { hash: await borrowMore(market, variables) }
     },
     validationSuite: borrowMoreMutationValidationSuite,
     pendingMessage: (mutation, { market }) => t`Borrowing more... ${formatTokenAmounts(market, mutation)}`,
