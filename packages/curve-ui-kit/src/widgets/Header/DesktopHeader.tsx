@@ -6,12 +6,12 @@ import { ConnectWalletIndicator } from '@ui-kit/features/connect-wallet'
 import { ChainSwitcher } from '@ui-kit/features/switch-chain'
 import { UserProfile } from '@ui-kit/features/user-profile'
 import { GlobalBanner } from '@ui-kit/shared/ui/GlobalBanner'
-import { DEFAULT_BAR_SIZE } from '@ui-kit/themes/components'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { AppButtonLinks } from './AppButtonLinks'
 import { HeaderLogo } from './HeaderLogo'
 import { HeaderStats } from './HeaderStats'
 import { PageTabs } from './PageTabs'
+import { SubNav } from './SubNav'
 import { HeaderImplementationProps } from './types'
 import { useMainNavRef } from './useMainNavRef'
 
@@ -50,25 +50,12 @@ export const DesktopHeader = ({
         </Box>
       </Container>
     </Toolbar>
-    <Toolbar
-      sx={{
-        backgroundColor: (t) => t.design.Layer[2].Fill,
-        justifyContent: 'space-around',
-        borderWidth: '1px 0',
-        borderColor: (t) => t.design.Layer[2].Outline,
-        borderStyle: 'solid',
-        boxSizing: 'border-box',
-        height: DEFAULT_BAR_SIZE,
-      }}
-      data-testid="subnav"
-    >
-      <Container sx={{ alignItems: 'baseline', paddingInline: Spacing.md }}>
-        <PageTabs pages={pages} />
-        <Box flexGrow={1} />
-        <Box display="flex" gap={3} alignItems="baseline" sx={{ textOverflow: 'ellipsis', overflow: 'hidden' }}>
-          <HeaderStats appStats={appStats} />
-        </Box>
-      </Container>
-    </Toolbar>
+    <SubNav testId="subnav">
+      <PageTabs pages={pages} />
+      <Box flexGrow={1} />
+      <Box display="flex" gap={3} alignItems="baseline" sx={{ textOverflow: 'ellipsis', overflow: 'hidden' }}>
+        <HeaderStats appStats={appStats} />
+      </Box>
+    </SubNav>
   </AppBar>
 )
