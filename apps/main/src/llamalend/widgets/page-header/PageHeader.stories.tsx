@@ -132,3 +132,38 @@ export const LendMarketDesktop: Story = {
     },
   },
 }
+
+export const LendMarketLoading: Story = {
+  render: withWidth(1000, 'LendMarketLoadingWidth'),
+  args: {
+    ...baseArgs,
+    isLoading: true,
+    market: lendMarket,
+    borrowRate: {
+      ...borrowRate,
+      rate: null,
+      averageRate: null,
+      totalBorrowRate: null,
+      totalAverageBorrowRate: null,
+      loading: true,
+    },
+    supplyRate: {
+      ...supplyRate,
+      rate: null,
+      averageRate: null,
+      totalSupplyRateMinBoost: null,
+      totalSupplyRateMaxBoost: null,
+      totalAverageSupplyRateMinBoost: null,
+      totalAverageSupplyRateMaxBoost: null,
+      loading: true,
+    },
+    availableLiquidity: { ...availableLiquidity, value: null, max: null, loading: true },
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Lend market header loading state with borrow, supply, and liquidity metrics.',
+      },
+    },
+  },
+}
