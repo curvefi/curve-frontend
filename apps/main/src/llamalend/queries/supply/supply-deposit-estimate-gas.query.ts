@@ -1,5 +1,5 @@
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
-import { createApprovedEstimateGasHook } from '../estimate-gas-hook.factory'
+import { createApprovedEstimateGasHook } from '@ui-kit/lib/model/entities/gas-info'
 import { DepositParams, DepositQuery, depositValidationSuite, requireVault } from '../validation/supply.validation'
 import { useDepositIsApproved } from './supply-deposit-approved.query'
 

@@ -1,7 +1,7 @@
-import { useEstimateGas } from '@/llamalend/hooks/useEstimateGas'
 import { type NetworkDict } from '@/llamalend/llamalend.types'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
+import { useEstimateGas } from '@ui-kit/lib/model/entities/gas-info'
 import { StakeParams, StakeQuery, stakeValidationSuite, requireVault } from '../validation/supply.validation'
 import { useStakeIsApproved } from './supply-stake-approved.query'
 
@@ -42,7 +42,7 @@ export const useStakeEstimateGas = <ChainId extends IChainId>(
     data,
     isLoading: conversionLoading,
     error: estimateError,
-  } = useEstimateGas<ChainId>(networks, chainId, isApproved ? stakeEstimate : approveEstimate, enabled)
+  } = useEstimateGas(networks, chainId, isApproved ? stakeEstimate : approveEstimate, enabled)
 
   return {
     data,

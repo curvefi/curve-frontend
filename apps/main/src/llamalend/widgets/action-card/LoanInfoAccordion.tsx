@@ -3,13 +3,13 @@ import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
 import { combineQueryState } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
-import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
+import { ActionInfo, ActionInfoGasEstimate, type TxGasInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import type { Query } from '@ui-kit/types/util'
 import { type Decimal, formatNumber, formatPercent } from '@ui-kit/utils'
 import { SlippageToleranceActionInfoPure } from '@ui-kit/widgets/SlippageSettings'
 import { getHealthValueColor } from '../../features/market-position-details/utils'
-import { ActionInfoAccordion, EstimatedTxCost, TxGasInfo } from './info-accordion.components'
+import { ActionInfoAccordion } from './info-accordion.components'
 import { formatAmount, formatLeverage } from './info-accordion.helpers'
 
 export type LoanInfoAccordionProps = {
@@ -239,7 +239,7 @@ export const LoanInfoAccordion = ({
             testId="borrow-price-impact"
           />
         )}
-        <EstimatedTxCost gas={gas} isApproved={isApproved?.data} />
+        <ActionInfoGasEstimate gas={gas} isApproved={isApproved?.data} />
       </Stack>
     </ActionInfoAccordion>
   )

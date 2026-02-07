@@ -1,9 +1,9 @@
-import { useEstimateGas } from '@/llamalend/hooks/useEstimateGas'
 import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { type NetworkDict } from '@/llamalend/llamalend.types'
 import type { IChainId, TGas } from '@curvefi/llamalend-api/lib/interfaces'
 import { type FieldsOf } from '@ui-kit/lib'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
+import { useEstimateGas } from '@ui-kit/lib/model/entities/gas-info'
 import type { CollateralQuery } from '../validation/manage-loan.types'
 import { collateralValidationSuite } from '../validation/manage-loan.validation'
 
@@ -49,6 +49,6 @@ export const useAddCollateralEstimateGas = <ChainId extends IChainId>(
     data,
     isLoading: conversionLoading,
     error: conversionError,
-  } = useEstimateGas<ChainId>(networks, chainId, estimate, enabled)
+  } = useEstimateGas(networks, chainId, estimate, enabled)
   return { data, isLoading: estimateLoading || conversionLoading, error: estimateError ?? conversionError }
 }
