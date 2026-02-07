@@ -148,6 +148,6 @@ export const getCurrentNetwork = (path: string): string | undefined => {
  */
 export const getCurrentLendMarket = (path: string) => {
   const [, , , page, , market] = path.split('/')
-  assert(page !== LLAMALEND_ROUTES.PAGE_MARKETS.split('/')[1], 'Market page segment is required')
+  assert(page === LLAMALEND_ROUTES.PAGE_MARKETS.split('/')[1], 'Market page segment is required')
   return market ?? ''
 }
