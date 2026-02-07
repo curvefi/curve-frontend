@@ -11,8 +11,8 @@ import { CopyIconButton } from '@ui-kit/shared/ui/CopyIconButton'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
-import { Tooltip } from './Tooltip'
-import { WithSkeleton } from './WithSkeleton'
+import { Tooltip } from '../Tooltip'
+import { WithSkeleton } from '../WithSkeleton'
 
 const { Spacing, IconSize } = SizesAndSpaces
 

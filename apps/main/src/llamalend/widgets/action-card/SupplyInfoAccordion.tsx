@@ -1,10 +1,10 @@
 import Stack from '@mui/material/Stack'
 import { combineQueryState } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
-import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
+import { ActionInfo, ActionInfoGasEstimate, type TxGasInfo } from '@ui-kit/shared/ui/ActionInfo'
 import type { Query } from '@ui-kit/types/util'
 import { type Decimal, formatNumber, formatPercent } from '@ui-kit/utils'
-import { ActionInfoAccordion, EstimatedTxCost, TxGasInfo } from './info-accordion.components'
+import { ActionInfoAccordion } from './info-accordion.components'
 import { formatAmount } from './info-accordion.helpers'
 
 export type SupplyInfoAccordionProps = {
@@ -92,7 +92,7 @@ export const SupplyInfoAccordion = ({
     </Stack>
 
     <Stack>
-      <EstimatedTxCost gas={gas} isApproved={isApproved} />
+      <ActionInfoGasEstimate gas={gas} isApproved={isApproved} />
     </Stack>
   </ActionInfoAccordion>
 )
