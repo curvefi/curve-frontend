@@ -1,16 +1,11 @@
-import { LEND_ROUTES } from '@ui-kit/shared/routes'
+import { LEND_MARKET_ROUTES, LEND_ROUTES } from '@ui-kit/shared/routes'
 
-export const MARKET_ROUTES = {
-  PAGE_LOAN: '',
-  PAGE_VAULT: '/vault',
-} as const
-
-export type LendMarketRoute = (typeof MARKET_ROUTES)[keyof typeof MARKET_ROUTES]
+export type LendMarketRoute = (typeof LEND_MARKET_ROUTES)[keyof typeof LEND_MARKET_ROUTES]
 
 export const ROUTE = {
   ...LEND_ROUTES,
   PAGE_INTEGRATIONS: '/integrations',
-  ...MARKET_ROUTES,
+  ...LEND_MARKET_ROUTES,
   PAGE_404: '/404',
 } as const
 

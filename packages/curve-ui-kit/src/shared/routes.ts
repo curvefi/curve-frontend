@@ -1,4 +1,5 @@
 import { t } from '@ui-kit/lib/i18n'
+import { assert } from '@ui-kit/utils'
 import { AppPage, AppRoute, AppRoutes } from '@ui-kit/widgets/Header/types'
 
 export const PAGE_INTEGRATIONS = '/integrations' as const
@@ -19,6 +20,11 @@ export const LEND_ROUTES = {
   PAGE_MARKETS: '/markets',
   PAGE_LEGAL,
   PAGE_INTEGRATIONS,
+} as const
+
+export const LEND_MARKET_ROUTES = {
+  PAGE_LOAN: '',
+  PAGE_VAULT: '/vault',
 } as const
 
 export const CRVUSD_ROUTES = {
@@ -135,4 +141,13 @@ export const getCurrentApp = (path: string | null): AppName => {
 export const getCurrentNetwork = (path: string): string | undefined => {
   const [, , networkId] = path?.split('/') ?? []
   return networkId
+}
+/**
+ * Gets the current lend market segment from the given URL path.
+ * @example "/vault" for supply market or "" for borrow market
+ */
+export const getCurrentLendMarket = (path: string) => {
+  const [, , , page, , market] = path.split('/')
+  assert(page !== LLAMALEND_ROUTES.PAGE_MARKETS.split('/')[1], 'Market page segment is required')
+  return market ?? ''
 }
