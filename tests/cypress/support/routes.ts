@@ -1,7 +1,7 @@
-import { MARKET_ROUTES } from '@/lend/constants'
 import { recordValues } from '@curvefi/prices-api/objects.util'
 import { oneAddress, oneOf, oneValueOf } from '@cy/support/generators'
 import { type AppPath, oneAppPath } from '@cy/support/ui'
+import { LEND_MARKET_ROUTES } from '@ui-kit/shared/routes'
 import {
   CRVUSD_ROUTES,
   DAO_ROUTES,
@@ -25,7 +25,7 @@ export const oneAppRoute = () =>
         ...recordValues(LEND_ROUTES).map((r) =>
           r == LEND_ROUTES.PAGE_MARKETS
             ? // use market detail page, the list page redirects to the llamalend app
-              `${LEND_ROUTES.PAGE_MARKETS}/${SDOLA_LEND_POOL}${oneValueOf(MARKET_ROUTES)}`
+              `${LEND_ROUTES.PAGE_MARKETS}/${SDOLA_LEND_POOL}${oneValueOf(LEND_MARKET_ROUTES)}`
             : r,
         ),
       )}`,
