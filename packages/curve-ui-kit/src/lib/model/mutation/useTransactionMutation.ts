@@ -174,16 +174,18 @@ export function useTransactionMutation<
       }
     },
     onSuccess: async ({ data, receipt }, variables, context) => {
-      logSuccess(mutationKey, { data, variables, context })
+      logSuccess(mutationKey, { data, variables })
       onReset?.()
       await onSuccess?.(data, receipt, variables, context)
       notify(successMessage(variables, context), 'success')
     },
-    onError: (error, variables, context) => {
-      // Be aware that context may be undefined if onMutate threw before returning
+    onError: (error, variables, _context) => {
+      // Be aware that context may be undefined if onMutate threw before returning.
+      // Context also isn't always serializable and may contain class instances, so don't just log it.
+      // But usually all info you need for debugging resides in the mutation key and variables anyway.
       console.error(`Error in mutation ${JSON.stringify({ mutationKey, variables })}:`, error)
       setError(error)
-      logError(mutationKey, { error, variables, context })
+      logError(mutationKey, { error, variables })
       captureError(error, { variables, userAddress })
       notify(t`Transaction failed`, 'error') // hide the actual error message, it can be too long - display it in the form
     },
