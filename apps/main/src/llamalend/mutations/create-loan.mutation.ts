@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 import { useConfig } from 'wagmi'
 import { formatTokenAmounts } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
-import { type LlammaMutationOptions, useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
+import { useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
 import { fetchCreateLoanIsApproved } from '@/llamalend/queries/create-loan/create-loan-approved.query'
 import { createLoanQueryValidationSuite } from '@/llamalend/queries/validation/borrow.validation'
 import type {
@@ -14,6 +14,7 @@ import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
+import type { OnTransactionSuccess } from '@ui-kit/lib/model/mutation/useTransactionMutation'
 import { Address, waitForApproval } from '@ui-kit/utils'
 import type { CreateLoanForm, CreateLoanFormQuery } from '../features/borrow/types'
 
@@ -27,7 +28,7 @@ export type CreateLoanMutation = Omit<CreateLoanFormQuery, keyof CreateLoanMutat
 export type CreateLoanOptions = {
   marketId: string | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
-  onCreated: LlammaMutationOptions<CreateLoanMutation>['onSuccess']
+  onCreated: OnTransactionSuccess<CreateLoanMutation>
   onReset: () => void
   userAddress: Address | undefined
 }
@@ -69,15 +70,15 @@ export const useCreateLoanMutation = ({
     network,
     marketId,
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'createLoan'] as const,
-    mutationFn: async (mutation, { market }) => {
-      const params = { ...mutation, chainId, marketId }
+    mutationFn: async (variables, { market }) => {
+      const params = { ...variables, chainId, marketId }
       await waitForApproval({
         isApproved: async () => await fetchCreateLoanIsApproved(params, { staleTime: 0 }),
-        onApprove: () => approve(market, mutation),
+        onApprove: () => approve(market, variables),
         message: t`Approved loan creation`,
         config,
       })
-      return { hash: await create(market, mutation) }
+      return { hash: await create(market, variables) }
     },
     validationSuite: createLoanQueryValidationSuite({ debtRequired: true }),
     pendingMessage: (mutation, { market }) => t`Creating loan... ${formatTokenAmounts(market, mutation)}`,
