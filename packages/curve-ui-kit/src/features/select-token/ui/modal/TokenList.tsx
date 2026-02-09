@@ -16,7 +16,7 @@ import { ErrorAlert } from './ErrorAlert'
 import { FavoriteTokens } from './FavoriteTokens'
 
 const { Spacing } = SizesAndSpaces
-const MY_TOKENS_PREVIEW_LIMIT = 7
+const MY_TOKENS_PREVIEW_LIMIT = 5
 
 export type TokenListProps = Pick<
   TokenSectionProps,
@@ -96,7 +96,7 @@ export const TokenList = ({
 
   /**
    * Preview of held tokens before expanding the dust list.
-   * Always capped to seven highest-priority tokens.
+   * Always capped to five highest-priority tokens.
    */
   const previewMy = useMemo(() => myTokens.slice(0, MY_TOKENS_PREVIEW_LIMIT), [myTokens])
 
