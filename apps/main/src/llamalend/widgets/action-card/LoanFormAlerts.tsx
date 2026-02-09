@@ -103,7 +103,7 @@ export const HighPriceImpactAlert = ({ data: priceImpact, isLoading, error }: Hi
   ) : (
     priceImpact != null &&
     priceImpact > HIGH_PRICE_IMPACT_THRESHOLD && (
-      <Alert severity="warning" data-testid="high-price-impact-alert">
+      <Alert severity="warning" data-testid="high-price-impact-alert" variant="outlined">
         <AlertTitle sx={{ color: 'warning.main' }}>
           {t`High price impact:`} -{formatPercent(priceImpact)}
         </AlertTitle>
