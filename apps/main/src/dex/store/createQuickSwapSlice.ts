@@ -12,6 +12,7 @@ import type {
 } from '@/dex/components/PageRouterSwap/types'
 import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/dex/components/PageRouterSwap/utils'
 import { curvejsApi } from '@/dex/lib/curvejs'
+import { scheduleSwapRequest } from '@/dex/lib/swapRequestScheduler'
 import type { State } from '@/dex/store/useStore'
 import { CurveApi, FnStepApproveResponse, FnStepResponse } from '@/dex/types/main.types'
 import { sleep } from '@/dex/utils'
@@ -147,9 +148,13 @@ export const createQuickSwapSlice = (
             sliceState.setStateByKey('isMaxLoading', true)
             // must call routesAndOutput first before estGas
             const poolsMapper = state.pools.poolsMapper[chainId]
-            await curvejsApi.router.routesAndOutput(activeKey, curve, poolsMapper, cFormValues, searchedParams)
+            await scheduleSwapRequest('high', () =>
+              curvejsApi.router.routesAndOutput(activeKey, curve, poolsMapper, cFormValues, searchedParams),
+            )
 
-            const resp = await curvejsApi.router.estGasApproval(activeKey, curve, fromAddress, toAddress, userBalance)
+            const resp = await scheduleSwapRequest('default', () =>
+              curvejsApi.router.estGasApproval(activeKey, curve, fromAddress, toAddress, userBalance),
+            )
 
             if (resp.estimatedGas) {
               cFormValues.fromAmount = getMaxAmountMinusGas(resp.estimatedGas, firstBasePlusPriority, userBalance)
@@ -185,13 +190,9 @@ export const createQuickSwapSlice = (
 
       const poolsMapper = state.pools.poolsMapper[chainId]
       // allow UI to paint first
-      await sleep(100)
-      const { exchangeRates, ...resp } = await fetchRoutesAndOutputDeduped(
-        activeKey,
-        curve,
-        poolsMapper,
-        cFormValues,
-        searchedParams,
+      await sleep(80)
+      const { exchangeRates, ...resp } = await scheduleSwapRequest('high', () =>
+        fetchRoutesAndOutputDeduped(activeKey, curve, poolsMapper, cFormValues, searchedParams),
       )
 
       // Cancel stale result application when a newer route request has started.
@@ -255,7 +256,9 @@ export const createQuickSwapSlice = (
       if (+fromAmount <= 0 || !signerAddress) return
 
       // api call
-      const resp = await curvejsApi.router.estGasApproval(activeKey, curve, fromAddress, toAddress, fromAmount)
+      const resp = await scheduleSwapRequest('default', () =>
+        curvejsApi.router.estGasApproval(activeKey, curve, fromAddress, toAddress, fromAmount),
+      )
 
       // set estimate gas state
       sliceState.setStateByKey('formEstGas', { [activeKey]: { estimatedGas: resp.estimatedGas, loading: false } })
