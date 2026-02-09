@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react'
 import { erc20Abi, ethAddress, formatUnits, isAddressEqual, type Address } from 'viem'
-import { useConfig, useBalance, useReadContracts } from 'wagmi'
+import { useConfig, useBalance, useBlockNumber, useReadContracts } from 'wagmi'
 import { useQueries, type QueryObserverOptions, type UseQueryResult } from '@tanstack/react-query'
 import { type FieldsOf } from '@ui-kit/lib'
 import { queryClient } from '@ui-kit/lib/api'
@@ -98,6 +98,7 @@ const QUERIES_FRESHNESS_OPTIONS = {
   staleTime: REFRESH_INTERVAL['15m'],
 } satisfies Pick<QueryObserverOptions, 'staleTime'>
 const ERC20_BALANCE_BATCH_SIZE = 120
+const PINNED_BLOCK_STALE_TIME_MS = REFRESH_INTERVAL['10s']
 
 /**
  * Fetch the balance of a single token (native or ERC-20).
@@ -165,6 +166,10 @@ export function useTokenBalances(
   const config = useConfig()
 
   const isEnabled = enabled && chainId != null && userAddress != null
+  const { data: pinnedBlockNumber } = useBlockNumber({
+    chainId,
+    query: { enabled: isEnabled, staleTime: PINNED_BLOCK_STALE_TIME_MS, refetchOnWindowFocus: false },
+  })
   const uniqueAddresses = useMemo(() => Array.from(new Set(tokenAddresses)), [tokenAddresses])
   const nativeAddress = useMemo(
     () => uniqueAddresses.find((tokenAddress) => isNative({ tokenAddress })),
@@ -186,6 +191,7 @@ export function useTokenBalances(
                   ...getNativeBalanceQueryOptions(config, {
                     chainId: chainId!,
                     userAddress: userAddress!,
+                    ...(pinnedBlockNumber ? { blockNumber: pinnedBlockNumber } : {}),
                   }),
                   ...QUERIES_FRESHNESS_OPTIONS,
                   enabled: isEnabled,
@@ -202,7 +208,11 @@ export function useTokenBalances(
               }),
             )
             return {
-              ...readContractsQueryOptions(config, { allowFailure: true, contracts }),
+              ...readContractsQueryOptions(config, {
+                allowFailure: true,
+                contracts,
+                ...(pinnedBlockNumber ? { blockNumber: pinnedBlockNumber } : {}),
+              }),
               ...QUERIES_FRESHNESS_OPTIONS,
               enabled: isEnabled,
               select: (results: ReadContractsReturnType<typeof contracts, true>) =>
@@ -210,7 +220,7 @@ export function useTokenBalances(
             }
           }),
         ] as Parameters<typeof useQueries>[0]['queries'],
-      [config, chainId, erc20AddressChunks, isEnabled, nativeAddress, userAddress],
+      [config, chainId, erc20AddressChunks, isEnabled, nativeAddress, pinnedBlockNumber, userAddress],
     ),
     combine: useCallback((results: UseQueryResult[]) => {
       const typedResults = results as UseQueryResult<Record<string, Decimal>>[]
