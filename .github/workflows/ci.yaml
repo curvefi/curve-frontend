@@ -1,5 +1,5 @@
 name: CI
-on: [push]
+on: [ push ]
 env:
   DO_NOT_TRACK: 1
   VERCEL_ALLOW_NODEJS_24: 1
@@ -44,8 +44,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        browser: [chrome, firefox, electron]
-        count: [1]
+        browser: [ chrome, firefox, electron ]
+        count: [ 1 ]
     name: Cypress component tests in ${{ matrix.browser }} ${{ matrix.count }}
     timeout-minutes: 15
     runs-on: ubuntu-latest
@@ -122,8 +122,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        browser: [chrome, firefox, electron]
-        count: [1]
+        browser: [ chrome, firefox, electron ]
+        count: [ 1 ]
         include:
           - browser: chrome
             count: 2
@@ -180,3 +180,19 @@ jobs:
           name: dev-server-log-${{ matrix.browser }}-${{ matrix.count }}
           if-no-files-found: error
           path: e2e-*.log
+
+  notify:
+    if: (failure() && github.ref_name == 'main') || github.ref_name == 'feat/slack-notify'
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+    needs: [ lint, test, cypress-e2e, cypress-component, cypress-component-rpc ]
+    steps:
+      - name: Send Slack alert
+        run: |
+          SHORT_SHA="${GITHUB_SHA:0:7}"
+          curl --request POST \
+               --header 'Content-type: application/json' \
+               --data-binary "{
+                 \"text\": \"❌ CI failed on \`${GITHUB_REF_NAME}\` at <${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/commit/${GITHUB_SHA}|${SHORT_SHA}> by <${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/commits?author=${GITHUB_ACTOR}|${GITHUB_ACTOR}>\"
+               }" \
+               --url "${{ secrets.SLACK_FRONTEND_TEAM_WEBHOOK }}"
