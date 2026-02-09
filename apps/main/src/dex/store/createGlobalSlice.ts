@@ -109,6 +109,7 @@ export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreAp
     if (isSwapRouteHydration) {
       seedSwapTokenMapper(get(), curveApi, network)
       state.pools.setEmptyPoolListDefault(chainId)
+      void hydrateSwapRouteInBackground(get, curveApi, chainId, network)
       log('Hydrating DEX - Swap path seeded with minimal token set')
       return
     }
@@ -207,6 +208,7 @@ const DEFAULT_TOKEN: Token = {
 
 const ADDRESS_FALLBACK_PREFIX = 6
 const ADDRESS_FALLBACK_SUFFIX = 4
+const swapBackgroundHydrationInFlight = new Set<number>()
 
 function seedSwapTokenMapper(state: State, curveApi: CurveApi, network: NetworkConfig) {
   const curveApiWithConstants = curveApi as CurveApi & {
@@ -278,4 +280,39 @@ function seedSwapTokenMapper(state: State, curveApi: CurveApi, network: NetworkC
 
   state.tokens.setStateByActiveKey('tokensMapper', chainIdStr, nextTokensMapper)
   state.tokens.setStateByActiveKey('tokensNameMapper', chainIdStr, nextTokensNameMapper)
+}
+
+async function hydrateSwapRouteInBackground(
+  get: StoreApi<State>['getState'],
+  curveApi: CurveApi,
+  chainId: number,
+  network: NetworkConfig,
+) {
+  const state = get()
+  if (
+    state.pools.haveAllPools[chainId] ||
+    state.pools.poolsLoading[chainId] ||
+    swapBackgroundHydrationInFlight.has(chainId)
+  ) {
+    return
+  }
+
+  swapBackgroundHydrationInFlight.add(chainId)
+  try {
+    const poolIds = await curvejsApi.network.fetchAllPoolsList(curveApi, network)
+    if (!poolIds.length) {
+      state.tokens.setEmptyPoolListDefault(curveApi)
+      return
+    }
+
+    const failedFetching24hOldVprice: { [poolAddress: string]: boolean } =
+      chainId === 2222 ? await curvejsApi.network.getFailedFetching24hOldVprice() : {}
+
+    await state.pools.fetchPools(curveApi, poolIds, failedFetching24hOldVprice)
+    log('Hydrating DEX - Swap path full pool hydration complete', chainId, { pools: poolIds.length })
+  } catch (error) {
+    console.warn('Swap background hydration failed', chainId, error)
+  } finally {
+    swapBackgroundHydrationInFlight.delete(chainId)
+  }
 }

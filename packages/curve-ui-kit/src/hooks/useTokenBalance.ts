@@ -2,7 +2,7 @@ import { useCallback, useMemo } from 'react'
 import { erc20Abi, ethAddress, formatUnits, isAddressEqual, type Address } from 'viem'
 import { useConfig, useBalance, useReadContracts } from 'wagmi'
 import { useQueries, type QueryObserverOptions, type UseQueryResult } from '@tanstack/react-query'
-import { combineQueriesToObject, type FieldsOf } from '@ui-kit/lib'
+import { type FieldsOf } from '@ui-kit/lib'
 import { queryClient } from '@ui-kit/lib/api'
 import { REFRESH_INTERVAL, type ChainQuery, type UserQuery } from '@ui-kit/lib/model'
 import { Decimal } from '@ui-kit/utils'
@@ -97,6 +97,7 @@ const QUERY_FRESHNESS_OPTIONS = {
 const QUERIES_FRESHNESS_OPTIONS = {
   staleTime: REFRESH_INTERVAL['15m'],
 } satisfies Pick<QueryObserverOptions, 'staleTime'>
+const ERC20_BALANCE_BATCH_SIZE = 120
 
 /**
  * Fetch the balance of a single token (native or ERC-20).
@@ -150,18 +151,6 @@ export function useTokenBalance(
   }
 }
 
-/** Get query options for a token balance (handles both native and ERC-20) */
-const getTokenBalanceQueryOptions = (config: Config, query: TokenBalanceQuery) =>
-  isNative(query)
-    ? {
-        ...getNativeBalanceQueryOptions(config, query),
-        select: (data: GetBalanceReturnType) => convertBalance(data),
-      }
-    : {
-        ...readContractsQueryOptions(config, { contracts: getERC20QueryContracts(query) }),
-        select: (data: ERC20ReadResult) => convertBalance(parseERC20Results(data)),
-      }
-
 /**
  * Hook to fetch balances for multiple tokens (native and ERC-20).
  * @remark
@@ -176,21 +165,63 @@ export function useTokenBalances(
 
   const isEnabled = enabled && chainId != null && userAddress != null
   const uniqueAddresses = useMemo(() => Array.from(new Set(tokenAddresses)), [tokenAddresses])
+  const nativeAddress = useMemo(
+    () => uniqueAddresses.find((tokenAddress) => isNative({ tokenAddress })),
+    [uniqueAddresses],
+  )
+  const erc20Addresses = useMemo(
+    () => uniqueAddresses.filter((tokenAddress) => !isNative({ tokenAddress })),
+    [uniqueAddresses],
+  )
+  const erc20AddressChunks = useMemo(() => chunkAddresses(erc20Addresses, ERC20_BALANCE_BATCH_SIZE), [erc20Addresses])
 
   return useQueries({
     queries: useMemo(
       () =>
-        uniqueAddresses.map((tokenAddress) => ({
-          ...getTokenBalanceQueryOptions(config, { chainId: chainId!, userAddress: userAddress!, tokenAddress }),
-          ...QUERIES_FRESHNESS_OPTIONS,
-          enabled: isEnabled,
-        })) as Parameters<typeof useQueries>[0]['queries'],
-      [config, chainId, userAddress, uniqueAddresses, isEnabled],
+        [
+          ...(nativeAddress
+            ? [
+                {
+                  ...getNativeBalanceQueryOptions(config, {
+                    chainId: chainId!,
+                    userAddress: userAddress!,
+                  }),
+                  ...QUERIES_FRESHNESS_OPTIONS,
+                  enabled: isEnabled,
+                  select: (data: GetBalanceReturnType) => ({ [nativeAddress]: convertBalance(data) }),
+                },
+              ]
+            : []),
+          ...erc20AddressChunks.map((addresses) => {
+            const contracts = addresses.flatMap((tokenAddress) =>
+              getERC20QueryContracts({
+                chainId: chainId!,
+                userAddress: userAddress!,
+                tokenAddress,
+              }),
+            )
+            return {
+              ...readContractsQueryOptions(config, { contracts }),
+              ...QUERIES_FRESHNESS_OPTIONS,
+              enabled: isEnabled,
+              select: (results: ReadContractsReturnType<typeof contracts, true>) =>
+                parseERC20BatchResults(addresses, results as ReadContractResult[]),
+            }
+          }),
+        ] as Parameters<typeof useQueries>[0]['queries'],
+      [config, chainId, erc20AddressChunks, isEnabled, nativeAddress, userAddress],
     ),
-    combine: useCallback(
-      (results: UseQueryResult[]) => combineQueriesToObject(results as UseQueryResult<Decimal>[], uniqueAddresses),
-      [uniqueAddresses],
-    ),
+    combine: useCallback((results: UseQueryResult[]) => {
+      const typedResults = results as UseQueryResult<Record<string, Decimal>>[]
+      return {
+        data: Object.assign({}, ...typedResults.map(({ data }) => data ?? {})) as Record<string, Decimal>,
+        isLoading: typedResults.some((result) => result.isLoading),
+        isPending: typedResults.some((result) => result.isPending),
+        isError: typedResults.some((result) => result.isError),
+        isFetching: typedResults.some((result) => result.isFetching),
+        error: typedResults.find((result) => result.error)?.error,
+      }
+    }, []),
   })
 }
 
@@ -217,3 +248,28 @@ export const prefetchTokenBalances = (
     }
   })
 }
+
+function chunkAddresses(addresses: Address[], size: number) {
+  const chunks: Address[][] = []
+  for (let i = 0; i < addresses.length; i += size) {
+    chunks.push(addresses.slice(i, i + size))
+  }
+  return chunks
+}
+
+function parseERC20BatchResults(tokenAddresses: Address[], results: ReadContractResult[]) {
+  const balances: Record<string, Decimal> = {}
+  for (let i = 0; i < tokenAddresses.length; i++) {
+    const balanceResult = results[i * 2]
+    const decimalsResult = results[i * 2 + 1]
+    if (balanceResult?.status !== 'success') continue
+
+    balances[tokenAddresses[i]] = convertBalance({
+      value: balanceResult.result as bigint,
+      decimals: decimalsResult?.status === 'success' ? (decimalsResult.result as number) : DEFAULT_DECIMALS,
+    })
+  }
+  return balances
+}
+
+type ReadContractResult = { status: 'success'; result: unknown } | { status: 'failure'; error: Error }
