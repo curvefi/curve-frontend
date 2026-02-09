@@ -9,8 +9,7 @@ import {
   TooltipOptions,
 } from '@/llamalend/features/market-details'
 import Stack from '@mui/material/Stack'
-import { useTheme } from '@mui/material/styles'
-import useMediaQuery from '@mui/material/useMediaQuery'
+import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -27,15 +26,13 @@ type MetricRowProps = {
 }
 
 export const MetricsRow = ({ borrowRate, supplyRate, availableLiquidity, marketType, collateral }: MetricRowProps) => {
-  const theme = useTheme()
-  const isMobile = useMediaQuery(theme.breakpoints.down('tablet'))
+  const isMobile = useIsMobile()
   const metricAlignment = isMobile ? 'start' : 'end'
 
   return (
     <Stack
-      display="flex"
+      direction={{ mobile: 'column', tablet: 'row' }}
       sx={{
-        flexDirection: { mobile: 'column', tablet: 'row' },
         gap: { mobile: Spacing.md.mobile, tablet: Spacing.xxl.tablet },
       }}
     >

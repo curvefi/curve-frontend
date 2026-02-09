@@ -21,7 +21,7 @@ const { Spacing } = SizesAndSpaces
 type PageHeaderProps = {
   isLoading: boolean
   market: LlamaMarketTemplate | undefined
-  chain: Chain
+  blockchainId: Chain
   borrowRate: BorrowRate
   supplyRate?: SupplyRate
   availableLiquidity: AvailableLiquidity
@@ -30,7 +30,7 @@ type PageHeaderProps = {
 export const PageHeader = ({
   isLoading,
   market,
-  chain,
+  blockchainId,
   borrowRate,
   supplyRate,
   availableLiquidity,
@@ -55,24 +55,24 @@ export const PageHeader = ({
       <Stack direction="row">
         <IconButton
           size="small"
-          onClick={() => push(getInternalUrl('llamalend', chain, LLAMALEND_ROUTES.PAGE_MARKETS))}
+          onClick={() => push(getInternalUrl('llamalend', blockchainId, LLAMALEND_ROUTES.PAGE_MARKETS))}
         >
           <ArrowLeft />
         </IconButton>
         <Stack direction="row" gap={Spacing.sm}>
           <WithSkeleton loading={isLoading} variant="rectangular" width={40} height={40}>
             {collateral && borrowed && (
-              <TokenPair chain={chain} assets={{ primary: collateral, secondary: borrowed }} hideChainIcon />
+              <TokenPair chain={blockchainId} assets={{ primary: collateral, secondary: borrowed }} hideChainIcon />
             )}
           </WithSkeleton>
           <Stack>
             <Stack direction="row" gap={Spacing.xs} alignItems="top">
-              <WithSkeleton loading={isLoading} variant="text" width={120} height={24}>
+              <WithSkeleton loading={isLoading} width={120} height={24}>
                 <Typography variant="headingSBold">{title}</Typography>
               </WithSkeleton>
-              <WithSkeleton loading={isLoading} variant="text" width={24} height={24}>
+              <WithSkeleton loading={isLoading} width={24} height={24}>
                 <Chip size="extraSmall" color="default" label={marketType} />
-                <ChainIcon size="sm" blockchainId={chain} />
+                <ChainIcon size="sm" blockchainId={blockchainId} />
               </WithSkeleton>
             </Stack>
             <WithSkeleton loading={isLoading} width={100} height={14}>
