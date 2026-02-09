@@ -5,6 +5,7 @@ import { notFalsy } from '@curvefi/prices-api/objects.util'
 import { createValidationSuite } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { Address, Decimal } from '@ui-kit/utils'
+import type { RouteProvider } from '@ui-kit/widgets/RouteProvider'
 
 export type OptimalRouteQuery = {
   chainId: number
@@ -29,6 +30,7 @@ export type RouterApiResponse = {
   isStableswapRoute: boolean
   warnings: ('high-slippage' | 'low-exchange-rate')[]
   route: RouterApiRouteStep[]
+  router: RouteProvider
 }[]
 
 export const { useQuery: useOptimalRoute } = queryFactory({

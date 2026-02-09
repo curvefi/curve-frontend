@@ -1,5 +1,6 @@
 import type { Hex } from 'viem'
 import { generatePrivateKey } from 'viem/accounts'
+import { resetWagmiConfigForTests } from '@ui-kit/features/connect-wallet/lib/wagmi/wagmi-config'
 import { DeepPartial } from '@ui-kit/types/util'
 import { tenderlyAccount } from './account'
 import {
@@ -39,6 +40,7 @@ export function createTenderlyWagmiConfigFromVNet({
   privateKey?: Hex
 }) {
   const { publicRpcUrl } = getRpcUrls(vnet)
+  resetWagmiConfigForTests() // fixes issues with wagmi reconnect in tests
   return createTenderlyWagmiConfig({
     privateKey,
     rpcUrl: publicRpcUrl,
