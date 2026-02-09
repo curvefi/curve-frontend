@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import type { Theme } from '@mui/material'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import { BalanceAmount } from '@ui-kit/shared/ui/LargeTokenInput/BalanceAmount'
@@ -18,17 +19,29 @@ type HelperMessageProps = {
 /** Matches decimal numbers with optional minus sign and optional fractional part. */
 const NUMBER_REGEX = /-?\d+(?:\.\d+)?/g
 
+const getTextColor = (t: Theme, isError?: boolean) =>
+  isError ? t.design.Text.TextColors.FilledFeedback.Alert.Primary : t.design.Text.TextColors.Tertiary
+
 /**
  * Injects clickable BalanceButton components around numbers in the message.
  * Important: This only works for unformatted numbers!
  */
-const buildClickableMessage = (message: string, onNumberClick: (balance: Decimal | undefined) => void) => {
+const buildClickableMessage = (
+  message: string,
+  isError: boolean | undefined,
+  onNumberClick: (balance: Decimal | undefined) => void,
+) => {
   const matches = (message.match(NUMBER_REGEX) ?? []).map((m) => decimal(m))
   return message.split(NUMBER_REGEX).flatMap((part, index) => [
     part,
     matches[index] && (
       <BalanceButton key={index} onClick={() => onNumberClick(matches[index])}>
-        <BalanceAmount testId={`helper-message-number-${index}`}>{matches[index]}</BalanceAmount>
+        <BalanceAmount
+          testId={`helper-message-number-${index}`}
+          sx={{ ...(isError && { color: (t) => t.design.Text.TextColors.FilledFeedback.Alert.Primary }) }}
+        >
+          {matches[index]}
+        </BalanceAmount>
       </BalanceButton>
     ),
   ])
@@ -52,12 +65,11 @@ export const HelperMessage = ({ message, isError, onNumberClick }: HelperMessage
         component="div"
         // todo: replace with alert component and add filledfeedback colors to alert component.
         sx={{
-          color: (t) =>
-            isError ? t.design.Text.TextColors.FilledFeedback.Warning.Primary : t.design.Text.TextColors.Tertiary,
+          color: (t) => getTextColor(t, isError),
         }}
         data-testid={`helper-message-${isError ? 'error' : 'info'}`}
       >
-        {onNumberClick ? buildClickableMessage(message, onNumberClick) : message}
+        {onNumberClick ? buildClickableMessage(message, isError, onNumberClick) : message}
       </Typography>
     ) : (
       message
