@@ -46,14 +46,23 @@ export const useTokenSelectorData = (
     () => getCachedHeldTokenAddresses({ chainId, userAddress }),
     [chainId, userAddress],
   )
-  const phaseOneTokenAddresses = useMemo(
-    () =>
-      dedupeAddresses([...priorityTokenAddresses, ...cachedHeldTokenAddresses])
-        .map((address) => address.toLowerCase())
-        .filter((address) => tokenAddressSet.has(address))
-        .slice(0, MAX_PHASE_ONE_TOKEN_BALANCES) as Address[],
-    [priorityTokenAddresses, cachedHeldTokenAddresses, tokenAddressSet],
-  )
+  const phaseOneTokenAddresses = useMemo(() => {
+    const priorityAddresses = dedupeAddresses(priorityTokenAddresses)
+      .slice(0, MAX_PHASE_ONE_PRIORITY_TOKENS)
+      .map((address) => address.toLowerCase())
+    const heldAddresses = dedupeAddresses(cachedHeldTokenAddresses)
+      .slice(0, MAX_PHASE_ONE_CACHED_HELD_TOKENS)
+      .map((address) => address.toLowerCase())
+    const phaseOneCandidates = dedupeAddresses([...priorityAddresses, ...heldAddresses]).filter((address) =>
+      tokenAddressSet.has(address),
+    )
+
+    // First-time users may not have cached held tokens yet.
+    if (phaseOneCandidates.length === 0) {
+      return tokenAddresses.slice(0, MAX_PHASE_ONE_FALLBACK_TOKENS).map((address) => address.toLowerCase()) as Address[]
+    }
+    return phaseOneCandidates.slice(0, MAX_PHASE_ONE_TOKEN_BALANCES) as Address[]
+  }, [priorityTokenAddresses, cachedHeldTokenAddresses, tokenAddressSet, tokenAddresses])
   const shouldSplitBalanceLoading =
     phasedBalanceLoading &&
     enabled &&
@@ -236,8 +245,11 @@ export const useTokenSelectorData = (
 
 const ADDRESS_LABEL_SYMBOL_REGEX = /^0x[a-f0-9]{4}\.\.\.[a-f0-9]{4}$/i
 const MAX_SYMBOL_LOOKUP = 300
-const MAX_PHASE_ONE_TOKEN_BALANCES = 220
-const MAX_CACHED_HELD_TOKENS = 220
+const MAX_PHASE_ONE_PRIORITY_TOKENS = 36
+const MAX_PHASE_ONE_CACHED_HELD_TOKENS = 60
+const MAX_PHASE_ONE_FALLBACK_TOKENS = 64
+const MAX_PHASE_ONE_TOKEN_BALANCES = 96
+const MAX_CACHED_HELD_TOKENS = 160
 const BALANCE_PHASE_TWO_DELAY_MS = 350
 const HELD_TOKEN_CACHE_KEY = 'curve.select-token.held-token-addresses.v1'
 const ERC20_SYMBOL_BYTES32_ABI = [
