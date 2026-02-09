@@ -7,31 +7,7 @@ type BorrowMoreField = 'collateral' | 'user-borrowed' | 'debt'
 const getBorrowMoreInput = (field: BorrowMoreField) =>
   cy.get(`[data-testid="borrow-more-input-${field}"] input[type="text"]`, LOAD_TIMEOUT).first()
 
-const writeOptionalBorrowMoreInput = (field: BorrowMoreField, value: Decimal | undefined) => {
-  if (value == null) return
-  cy.get('body').then((body) => {
-    const selector = `[data-testid="borrow-more-input-${field}"] input[type="text"]`
-    if (body.find(selector).length) {
-      cy.get(selector, LOAD_TIMEOUT).first().as('borrowMoreInput')
-      cy.get('@borrowMoreInput').clear()
-      cy.get('@borrowMoreInput').type(value)
-    }
-  })
-}
-
-export function writeBorrowMoreForm({
-  debt,
-  userCollateral,
-  userBorrowed,
-  openAccordion = true,
-}: {
-  debt: Decimal
-  userCollateral?: Decimal
-  userBorrowed?: Decimal
-  openAccordion?: boolean
-}) {
-  writeOptionalBorrowMoreInput('collateral', userCollateral)
-  writeOptionalBorrowMoreInput('user-borrowed', userBorrowed)
+export function writeBorrowMoreForm({ debt, openAccordion = true }: { debt: Decimal; openAccordion?: boolean }) {
   getBorrowMoreInput('debt').as('borrowMoreDebt')
   cy.get('@borrowMoreDebt').clear()
   cy.get('@borrowMoreDebt').type(debt)

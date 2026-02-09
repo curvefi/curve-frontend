@@ -21,5 +21,5 @@ export const checkDebt = (current: Decimal, future: Decimal, symbol: string) => 
  */
 export const checkCurrentDebt = (expectedCurrentDebt: Decimal) => {
   getActionValue('borrow-debt', undefined).should('equal', formatNumber(expectedCurrentDebt, { abbreviate: false }))
-  cy.get('body').find('[data-testid="borrow-debt-previous-value"]').should('not.exist')
+  cy.get('[data-testid="borrow-debt-previous-value"]').should('not.exist')
 }

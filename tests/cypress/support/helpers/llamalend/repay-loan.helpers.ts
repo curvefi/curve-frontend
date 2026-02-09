@@ -5,13 +5,8 @@ import { checkDebt, getActionValue } from './action-info.helpers'
 const getRepayInput = () => cy.get('[data-testid^="repay-input-"] input[type="text"]', LOAD_TIMEOUT).first()
 
 export function selectRepayToken(symbol: string) {
-  cy.get('body').then((body) => {
-    const selector = '[data-testid^="repay-input-"] [role="button"][aria-haspopup="listbox"]'
-    if (body.find(selector).length) {
-      cy.get(selector, LOAD_TIMEOUT).click()
-      cy.get(`[data-testid="token-option-${symbol}"]`, LOAD_TIMEOUT).click()
-    }
-  })
+  cy.get('[data-testid^="repay-input-"] [role="button"][aria-haspopup="listbox"]', LOAD_TIMEOUT).click()
+  cy.get(`[data-testid="token-option-${symbol}"]`, LOAD_TIMEOUT).click()
 }
 
 export function writeRepayLoanForm({ amount }: { amount: Decimal }) {
@@ -29,7 +24,7 @@ export function checkRepayDetailsLoaded({
   if (leverageEnabled) {
     getActionValue('borrow-band-range').should('match', /(\d(\.\d+)?) to (-?\d(\.\d+)?)/)
   } else {
-    cy.get('body').find('[data-testid="borrow-band-range-value"]').should('not.exist')
+    cy.get('[data-testid="borrow-band-range-value"]').should('not.exist')
   }
   getActionValue('borrow-price-range').should('match', /(\d(\.\d+)?) - (\d(\.\d+)?)/)
   getActionValue('borrow-apr').should('include', '%')
