@@ -1,3 +1,4 @@
+import { keyframes } from '@mui/material/styles'
 import { TIME_FRAMES } from '@ui-kit/lib/model/time'
 
 export const Grays = {
@@ -152,3 +153,8 @@ export const Duration = {
 
 export const Transition = `ease-out`
 export const TransitionFunction = `${Transition} ${Duration.Transition}ms`
+
+export const LoadingAnimation = {
+  animation: `${keyframes` 100% { transform: rotate(360deg); }`} ${Transition} ${Duration.LoadingAnimation}ms infinite`,
+  transformOrigin: 'center',
+}
