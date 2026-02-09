@@ -105,6 +105,7 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
       expandedPanel={PoolMobileExpandedPanel}
       shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
       loading={isLoading}
+      skeletonRowCount={10}
     >
       <TableFilters<PoolColumnId>
         filterExpandedKey={LOCAL_STORAGE_KEY}

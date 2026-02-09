@@ -72,6 +72,7 @@ export const DataTable = <T extends TableItem>({
   emptyState,
   children,
   loading,
+  skeletonRowCount = 3,
   maxHeight,
   rowLimit,
   viewAllLabel,
@@ -81,6 +82,7 @@ export const DataTable = <T extends TableItem>({
   emptyState: ReactNode
   children?: ReactNode // passed to <FilterRow />
   loading: boolean
+  skeletonRowCount?: number
   maxHeight?: `${number}rem` // also sets overflowY to 'auto'
   rowLimit?: number
   viewAllLabel?: string
@@ -145,7 +147,12 @@ export const DataTable = <T extends TableItem>({
         </TableHead>
         <TableBody>
           {loading ? (
-            <SkeletonRows table={table} shouldStickFirstColumn={shouldStickFirstColumn} />
+            <SkeletonRows
+              table={table}
+              shouldStickFirstColumn={shouldStickFirstColumn}
+              initialLength={skeletonRowCount}
+              maxLength={skeletonRowCount}
+            />
           ) : rows.length === 0 ? (
             emptyState
           ) : (

@@ -16,10 +16,11 @@ type ExtractRouteFnComponent<TValue> = TValue extends (props: infer TProps) => R
 export const lazyRouteComponent = <TProps extends object>(
   importer: () => Promise<LazyModule<TProps>>,
   fallbackHeight: SkeletonHeight = MinHeight.pageContent,
+  fallback?: ReactNode,
 ): RouteFnComponent<TProps> => {
   const LazyComponent = lazy(importer)
   const LazyRouteComponent = (props: TProps) => (
-    <Suspense fallback={<Skeleton width="100%" height={fallbackHeight} />}>
+    <Suspense fallback={fallback ?? <Skeleton width="100%" height={fallbackHeight} />}>
       <LazyComponent {...props} />
     </Suspense>
   )
@@ -31,10 +32,12 @@ export const lazyNamedRouteComponent = <TModule extends Record<string, unknown>,
   importer: () => Promise<TModule>,
   exportName: TExportName,
   fallbackHeight?: SkeletonHeight,
+  fallback?: ReactNode,
 ): ExtractRouteFnComponent<TModule[TExportName]> =>
   lazyRouteComponent<object>(
     async () => ({
       default: (await importer())[exportName] as RouteFnComponent<object>,
     }),
     fallbackHeight,
+    fallback,
   ) as ExtractRouteFnComponent<TModule[TExportName]>
