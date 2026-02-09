@@ -1,5 +1,5 @@
 import lodash from 'lodash'
-import { type ReactNode, useMemo, useState } from 'react'
+import { type ReactNode, useEffect, useMemo, useRef, useState } from 'react'
 import { notFalsy } from '@curvefi/prices-api/objects.util'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
@@ -56,6 +56,9 @@ export const TokenList = ({
   const [search, setSearch] = useState('')
   const [isMyTokensCollapsed, , , toggleMyTokensCollapsed] = useSwitch(true)
   const [showPreviewAll, , closeShowPreviewAll] = useSwitch(true)
+  const scrollContainerRef = useRef<HTMLDivElement | null>(null)
+  const [scrollTop, setScrollTop] = useState(0)
+  const [viewportHeight, setViewportHeight] = useState(0)
 
   const showFavorites = !!favorites?.length && !search
 
@@ -124,9 +127,31 @@ export const TokenList = ({
    * while still showing users a meaningful selection of available tokens.
    */
   const previewAll = useMemo(() => (showPreviewAll ? allTokens.slice(0, 300) : []), [allTokens, showPreviewAll])
+  const sharedVirtualization = useMemo(
+    () => ({ scrollTop, viewportHeight, scrollContainerRef }),
+    [scrollTop, viewportHeight],
+  )
+
+  useEffect(() => {
+    const element = scrollContainerRef.current
+    if (!element) return
+    const updateViewportHeight = () => setViewportHeight(element.clientHeight)
+
+    updateViewportHeight()
+    if (typeof ResizeObserver === 'undefined') return
+
+    const resizeObserver = new ResizeObserver(updateViewportHeight)
+    resizeObserver.observe(element)
+    return () => resizeObserver.disconnect()
+  }, [])
 
   return (
-    <Stack gap={Spacing.sm} sx={{ overflowY: 'auto' }}>
+    <Stack
+      gap={Spacing.sm}
+      ref={scrollContainerRef}
+      onScroll={(event) => setScrollTop(event.currentTarget.scrollTop)}
+      sx={{ overflowY: 'auto' }}
+    >
       {!disableSearch && (
         <SearchField
           name="tokenName"
@@ -173,6 +198,7 @@ export const TokenList = ({
             preview={previewAll}
             isLoading={isLoading}
             onShowAll={closeShowPreviewAll}
+            virtualization={!showPreviewAll ? sharedVirtualization : undefined}
             onToken={onToken}
           />
         </>
