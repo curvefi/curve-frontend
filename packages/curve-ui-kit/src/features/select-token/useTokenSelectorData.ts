@@ -323,8 +323,8 @@ function scheduleIdleTask(callback: () => void, timeoutMs: number) {
     const id = window.requestIdleCallback(callback, { timeout: timeoutMs })
     return () => window.cancelIdleCallback(id)
   }
-  const id = window.setTimeout(callback, timeoutMs)
-  return () => window.clearTimeout(id)
+  const id = globalThis.setTimeout(callback, timeoutMs)
+  return () => globalThis.clearTimeout(id)
 }
 
 function isMissingSymbol(symbol: string | undefined) {

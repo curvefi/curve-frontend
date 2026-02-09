@@ -1,9 +1,9 @@
 type RequestPriority = 'high' | 'default' | 'low'
 
-type QueuedRequest<T> = {
+type QueuedRequest = {
   priority: RequestPriority
-  task: () => Promise<T>
-  resolve: (value: T) => void
+  task: () => Promise<unknown>
+  resolve: (value: unknown) => void
   reject: (reason?: unknown) => void
 }
 
@@ -14,14 +14,19 @@ const PRIORITY_ORDER: Record<RequestPriority, number> = {
 }
 
 class SwapRequestScheduler {
-  private queue: QueuedRequest<unknown>[] = []
+  private queue: QueuedRequest[] = []
   private activeCount = 0
 
   constructor(private readonly maxConcurrency: number) {}
 
   schedule<T>(priority: RequestPriority, task: () => Promise<T>) {
     return new Promise<T>((resolve, reject) => {
-      this.queue.push({ priority, task, resolve, reject })
+      this.queue.push({
+        priority,
+        task: task as () => Promise<unknown>,
+        resolve: resolve as (value: unknown) => void,
+        reject,
+      })
       this.queue.sort((a, b) => PRIORITY_ORDER[a.priority] - PRIORITY_ORDER[b.priority])
       this.flush()
     })

@@ -7,7 +7,6 @@ type HeldTokenEntry = {
 
 type TokenMetadataEntry = {
   symbol?: string
-  decimals?: number
   updatedAt: number
 }
 
@@ -87,7 +86,7 @@ export function setCachedTokenMetadata({
 
   for (const [address, nextEntry] of Object.entries(metadata)) {
     const normalized = address.toLowerCase()
-    if (!nextEntry.symbol && typeof nextEntry.decimals === 'undefined') continue
+    if (!nextEntry.symbol) continue
     nextChainCache[normalized] = {
       ...nextChainCache[normalized],
       ...nextEntry,
