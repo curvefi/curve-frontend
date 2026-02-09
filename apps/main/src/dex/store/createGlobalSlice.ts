@@ -10,6 +10,7 @@ import {
   CurveApi,
   NetworkConfig,
   NetworkConfigFromApi,
+  type PoolData,
   Token,
   TokensMapper,
   TokensNameMapper,
@@ -213,6 +214,8 @@ const DEFAULT_TOKEN: Token = {
 const ADDRESS_FALLBACK_PREFIX = 6
 const ADDRESS_FALLBACK_SUFFIX = 4
 const swapBackgroundHydrationInFlight = new Set<string>()
+const swapVolumeHydrationInFlight = new Set<string>()
+const SWAP_VOLUME_HYDRATION_DELAY_MS = 1200
 
 function seedSwapTokenMapper(state: State, curveApi: CurveApi, network: NetworkConfig) {
   const curveApiWithConstants = curveApi as CurveApi & {
@@ -313,16 +316,49 @@ async function hydrateSwapRouteInBackground(
       return
     }
 
-    await state.pools.fetchPools(curveApi, poolIds, null, {
+    const poolsResponse = await state.pools.fetchPools(curveApi, poolIds, null, {
       includeBlacklist: false,
       includeGaugeData: false,
       includeMetrics: false,
     })
+
+    if (network.isLite || !poolsResponse?.poolDatas.length) {
+      log('Hydrating DEX - Swap path light pool hydration complete', chainId, { pools: poolIds.length })
+      return
+    }
+
+    scheduleIdleTask(() => {
+      void hydrateSwapVolumeRankingInBackground(get, curveApi, chainId, poolsResponse.poolDatas)
+    }, SWAP_VOLUME_HYDRATION_DELAY_MS)
     log('Hydrating DEX - Swap path light pool hydration complete', chainId, { pools: poolIds.length })
   } catch (error) {
     console.warn('Swap background hydration failed', chainId, error)
   } finally {
     swapBackgroundHydrationInFlight.delete(hydrationKey)
+  }
+}
+
+async function hydrateSwapVolumeRankingInBackground(
+  get: StoreApi<State>['getState'],
+  curveApi: CurveApi,
+  chainId: number,
+  poolDatas: PoolData[],
+) {
+  const state = get()
+  const volumeHydrationKey = chainId.toString()
+  if (state.pools.poolsLoading[chainId]) return
+  if (Object.keys(state.pools.volumeMapper[chainId] ?? {}).length > 0) return
+  if (swapVolumeHydrationInFlight.has(volumeHydrationKey)) return
+
+  swapVolumeHydrationInFlight.add(volumeHydrationKey)
+  try {
+    await state.pools.fetchPoolsVolume(chainId, poolDatas)
+    await state.tokens.setTokensMapper(curveApi, poolDatas)
+    log('Hydrating DEX - Swap volume hydration complete', chainId, { pools: poolDatas.length })
+  } catch (error) {
+    console.warn('Swap volume hydration failed', chainId, error)
+  } finally {
+    swapVolumeHydrationInFlight.delete(volumeHydrationKey)
   }
 }
 
