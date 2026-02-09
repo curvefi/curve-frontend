@@ -16,7 +16,7 @@ import { ErrorAlert } from './ErrorAlert'
 import { FavoriteTokens } from './FavoriteTokens'
 
 const { Spacing } = SizesAndSpaces
-const DUST_HIDE_THRESHOLD_SHARE = 0.1
+const MY_TOKENS_PREVIEW_LIMIT = 7
 
 export type TokenListProps = Pick<
   TokenSectionProps,
@@ -54,7 +54,7 @@ export const TokenList = ({
   onSearch,
 }: TokenListProps) => {
   const [search, setSearch] = useState('')
-  const [showPreviewMy, , closeShowPreviewMy] = useSwitch(true)
+  const [isMyTokensCollapsed, , , toggleMyTokensCollapsed] = useSwitch(true)
   const [showPreviewAll, , closeShowPreviewAll] = useSwitch(true)
 
   const showFavorites = !!favorites?.length && !search
@@ -75,7 +75,7 @@ export const TokenList = ({
    *
    * When disableSorting is false, tokens are sorted by:
    * 1. USD value of balance (highest first)
-   * 2. Raw token balance (highest first) as a tiebreaker
+   * 2. Raw token balance (highest first) when USD value is unavailable, and as a tiebreaker
    *
    * This prioritizes showing the most valuable tokens at the top of the list.
    */
@@ -85,69 +85,47 @@ export const TokenList = ({
     const balanceTokens = tokensSearched.filter((token) => +(balances?.[token.address] ?? 0) > 0)
 
     if (!disableSorting) {
-      // Sort tokens with balance by balance (USD then raw)
+      // Sort tokens with balance by USD value when available, otherwise by raw balance.
       balanceTokens.sort((a, b) => {
         const aBalance = +(balances?.[a.address] ?? 0)
         const bBalance = +(balances?.[b.address] ?? 0)
-        const aBalanceUsd = (tokenPrices?.[a.address] ?? 0) * aBalance
-        const bBalanceUsd = (tokenPrices?.[b.address] ?? 0) * bBalance
+        const aUsdPrice = tokenPrices?.[a.address] ?? 0
+        const bUsdPrice = tokenPrices?.[b.address] ?? 0
+        const aHasUsdPrice = aUsdPrice > 0
+        const bHasUsdPrice = bUsdPrice > 0
+        const aSortValue = aHasUsdPrice ? aUsdPrice * aBalance : aBalance
+        const bSortValue = bHasUsdPrice ? bUsdPrice * bBalance : bBalance
 
-        return bBalanceUsd - aBalanceUsd || bBalance - aBalance
+        return bSortValue - aSortValue || bBalance - aBalance
       })
     }
 
     return balanceTokens
   }, [disableMyTokens, tokensSearched, disableSorting, balances, tokenPrices])
 
+  const hasDustTokens = myTokens.length > MY_TOKENS_PREVIEW_LIMIT
+
   /**
-   * Filters tokens to show only those with significant value.
-   *
-   * When showPreviewMy is true, returns tokens whose USD value exceeds 10% of total portfolio value.
-   * This filtering helps prevent dust and potential scam tokens from cluttering the interface.
+   * Preview of held tokens before expanding the dust list.
+   * Always capped to seven highest-priority tokens.
    */
-  const previewMy = useMemo(() => {
-    if (!showPreviewMy) return []
-
-    const totalUsdBalance = myTokens.reduce((sum, token) => {
-      const balance = +(balances?.[token.address] ?? 0)
-      const price = tokenPrices?.[token.address] ?? 0
-      return sum + balance * price
-    }, 0)
-
-    const threshold = totalUsdBalance * DUST_HIDE_THRESHOLD_SHARE
-
-    return myTokens.filter((token: Option) => {
-      const balance = +(balances?.[token.address] ?? 0)
-      const price = tokenPrices?.[token.address] ?? 0
-
-      // We used to include tokens with a balance > 0, but no $ price (0),
-      // but it turns out that way quite a few scam tokens show up in the preview.
-      return balance * price > threshold
-    })
-  }, [myTokens, balances, tokenPrices, showPreviewMy])
+  const previewMy = useMemo(() => myTokens.slice(0, MY_TOKENS_PREVIEW_LIMIT), [myTokens])
 
   /**
    * Builds the "All tokens" list from:
    * - All tokens when disableMyTokens is true
    * - Zero-balance tokens when disableMyTokens is false
-   * - "Dust tokens" (low-value tokens below 10% portfolio threshold) when hidden from 'my tokens'
    *
    * This keeps the UI clean while ensuring all tokens remain accessible.
    */
   const allTokens = useMemo(() => {
     const allTokensBase = notFalsy(
       disableMyTokens ? tokensSearched : tokensSearched.filter((token) => +(balances?.[token.address] ?? 0) === 0),
-
-      showPreviewMy &&
-        // Add tokens that have balance but aren't in the preview (dust tokens)
-        // Only add dust tokens if we're still showing the preview (showPreviewMy is true)
-        // When showPreviewMy is false, those dust tokens should be in the myTokens section
-        myTokens.filter((token) => !previewMy.some((previewToken) => previewToken.address === token.address)),
     ).flat()
     return disableSorting
       ? allTokensBase
       : allTokensBase.sort((a, b) => (b.volume ?? 0) - (a.volume ?? 0) || a.symbol.localeCompare(b.symbol))
-  }, [disableMyTokens, tokensSearched, showPreviewMy, myTokens, disableSorting, balances, previewMy])
+  }, [disableMyTokens, tokensSearched, disableSorting, balances])
 
   /**
    * Filters tokens to show in the preview of "All tokens" section.
@@ -188,10 +166,12 @@ export const TokenList = ({
             balances={balances}
             tokenPrices={tokenPrices}
             disabledTokens={disabledTokens}
-            preview={previewMy}
+            preview={hasDustTokens ? previewMy : undefined}
             showAllLabel={t`Show dust`}
+            hideAllLabel={t`Hide dust`}
+            isExpanded={!isMyTokensCollapsed}
             isLoading={isLoading}
-            onShowAll={closeShowPreviewMy}
+            onTogglePreview={hasDustTokens ? toggleMyTokensCollapsed : undefined}
             onToken={onToken}
           />
 
