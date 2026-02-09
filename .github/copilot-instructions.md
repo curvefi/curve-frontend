@@ -21,6 +21,8 @@ yarn cy:open:e2e        # Open Cypress E2E tests interactively
 yarn cy:run:e2e         # Run Cypress E2E tests headless (requires yarn dev first)
 yarn cy:open:component  # Open Cypress component tests interactively
 yarn cy:run:component   # Run Cypress component tests headless
+yarn cy run --e2e --spec cypress/e2e/<path>/<test>.cy.ts
+yarn cy run --component --spec cypress/component/<path>/<test>.cy.tsx
 
 # UI Kit Development
 yarn storybook          # Run Storybook for UI components on port 6006
