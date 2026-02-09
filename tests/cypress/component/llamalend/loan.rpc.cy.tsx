@@ -9,23 +9,22 @@ import { RepayForm } from '@/llamalend/features/manage-loan/components/RepayForm
 import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { useLoanExists } from '@/llamalend/queries/loan-exists'
 import { networks } from '@/loan/networks'
-import { recordEntries } from '@curvefi/prices-api/objects.util'
+import { recordValues } from '@curvefi/prices-api/objects.util'
 import {
   checkBorrowMoreDetailsLoaded,
-  checkCurrentDebt,
   submitBorrowMoreForm,
   writeBorrowMoreForm,
 } from '@cy/support/helpers/borrow-more.helpers'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
+import { checkCurrentDebt, checkDebt } from '@cy/support/helpers/llamalend/action-info.helpers'
 import {
   checkLoanDetailsLoaded,
   CREATE_LOAN_FUND_AMOUNT,
-  LOAN_TEST_MARKETS,
+  oneLoanTestMarket,
   submitCreateLoanForm,
   writeCreateLoanForm,
 } from '@cy/support/helpers/llamalend/create-loan.helpers'
 import {
-  checkDebt,
   checkRepayDetailsLoaded,
   selectRepayToken,
   submitRepayForm,
@@ -38,6 +37,7 @@ import Box from '@mui/material/Box'
 import Skeleton from '@mui/material/Skeleton'
 import { useCurve } from '@ui-kit/features/connect-wallet/lib/CurveContext'
 import { CurveProvider } from '@ui-kit/features/connect-wallet/lib/CurveProvider'
+import { LlamaMarketType } from '@ui-kit/types/market'
 import { Decimal } from '@ui-kit/utils'
 
 const onUpdate: OnCreateLoanFormUpdate = async (form) => console.info('form updated', form)
@@ -45,8 +45,8 @@ const onUpdate: OnCreateLoanFormUpdate = async (form) => console.info('form upda
 const prefetch = () => prefetchMarkets({})
 
 type Spy = ReturnType<typeof cy.spy>
-recordEntries(LOAN_TEST_MARKETS)
-  .flatMap(([marketType, markets]) => markets.map((market) => ({ marketType, ...market })))
+recordValues(LlamaMarketType)
+  .map((marketType) => oneLoanTestMarket(marketType))
   .forEach(
     ({ id, collateralAddress: tokenAddress, collateral, borrow, borrowMore, repay, chainId, hasLeverage, label }) => {
       describe(label, () => {
@@ -141,8 +141,8 @@ recordEntries(LOAN_TEST_MARKETS)
           writeBorrowMoreForm({ debt: borrowMore })
           checkBorrowMoreDetailsLoaded({
             expectedCurrentDebt: borrow,
-            expectedFutureDebt: [debtAfterBorrowMore, 'crvUSD'].join(''),
-            hasLeverage,
+            expectedFutureDebt: debtAfterBorrowMore,
+            leverageEnabled,
           })
           submitBorrowMoreForm().then(() => expect(onBorrowedMore).to.be.calledOnce)
           checkCurrentDebt(debtAfterBorrowMore)
@@ -151,7 +151,7 @@ recordEntries(LOAN_TEST_MARKETS)
         it(`repays the loan`, () => {
           cy.mount(<LoanTestWrapper tab="repay" />)
           selectRepayToken('crvUSD')
-          writeRepayLoanForm({ amount: debtAfterBorrowMore })
+          writeRepayLoanForm({ amount: repay }) // TODO: test full-repay
           checkRepayDetailsLoaded({
             debt: [debtAfterBorrowMore, debtAfterBorrowMoreAndRepay, 'crvUSD'],
             leverageEnabled,

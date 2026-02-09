@@ -1,6 +1,6 @@
 import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
-import { formatNumber, type Decimal } from '@ui-kit/utils'
-import { getActionValue } from './action-info.helpers'
+import { type Decimal } from '@ui-kit/utils'
+import { checkDebt, getActionValue } from './action-info.helpers'
 
 const getRepayInput = () => cy.get('[data-testid^="repay-input-"] input[type="text"]', LOAD_TIMEOUT).first()
 
@@ -17,12 +17,6 @@ export function selectRepayToken(symbol: string) {
 export function writeRepayLoanForm({ amount }: { amount: Decimal }) {
   getRepayInput().clear().type(amount)
   cy.get('[data-testid="loan-info-accordion"] button', LOAD_TIMEOUT).first().click() // open the accordion
-}
-
-export const checkDebt = (current: Decimal, future: Decimal, symbol: string) => {
-  getActionValue('borrow-debt').should('equal', formatNumber(future, { abbreviate: false }))
-  cy.get('[data-testid="borrow-debt-value"]', LOAD_TIMEOUT).contains(symbol)
-  getActionValue('borrow-debt', 'previous').should('equal', formatNumber(current, { abbreviate: false }))
 }
 
 export function checkRepayDetailsLoaded({
@@ -44,9 +38,7 @@ export function checkRepayDetailsLoaded({
 }
 
 export function submitRepayForm() {
-  cy.get('[data-testid="repay-submit-button"]', LOAD_TIMEOUT).as('repaySubmit')
-  cy.get('@repaySubmit').should('not.be.disabled')
-  cy.get('@repaySubmit').click()
+  cy.get('[data-testid="repay-submit-button"]', LOAD_TIMEOUT).click()
   return cy
     .get('[data-testid="toast-success"]', TRANSACTION_LOAD_TIMEOUT)
     .contains('Loan repaid', TRANSACTION_LOAD_TIMEOUT)

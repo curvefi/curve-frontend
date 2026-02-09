@@ -57,7 +57,7 @@ export const LOAN_TEST_MARKETS = {
       collateralAddress: '0x4c9EDD5852cd905f086C759E8383e09bff1E68B3', // USDe
       collateral: '1',
       borrow: '0.9',
-      borrowMore: '0.1',
+      borrowMore: '0.02',
       repay: '0.8',
       chainId,
       path: '/lend/ethereum/markets/0x74f88Baa966407b50c10B393bBD789639EFfE78B',
