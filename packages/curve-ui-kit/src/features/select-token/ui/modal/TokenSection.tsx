@@ -31,8 +31,14 @@ export type TokenSectionProps<T extends Option = Option> = {
   title?: string
   /** The label to show on the button that expands the section to show all */
   showAllLabel?: string
+  /** The label to show on the button when section is expanded */
+  hideAllLabel?: string
   /** List of tokens visible before "Show more" is clicked */
   preview?: T[]
+  /** Is the preview currently expanded */
+  isExpanded?: boolean
+  /** Callback when preview toggle button is clicked */
+  onTogglePreview?: () => void
   /** Callback when "Show more" is clicked */
   onShowAll?: () => void
 }
@@ -41,18 +47,23 @@ export const TokenSection = <T extends Option = Option>({
   title,
   isLoading,
   showAllLabel,
+  hideAllLabel,
   preview,
+  isExpanded = false,
   tokens,
   balances,
   tokenPrices,
   disabledTokens,
   onToken,
+  onTogglePreview,
   onShowAll,
 }: TokenSectionProps<T>) => {
   if (!tokens.length) return null
 
-  const displayTokens = preview?.length ? preview : tokens
-  const hasMore = !!(preview?.length && preview.length < tokens.length && onShowAll)
+  const collapsedPreview = preview?.length ? preview : tokens
+  const togglePreview = onTogglePreview ?? onShowAll
+  const displayTokens = isExpanded ? tokens : collapsedPreview
+  const hasToggle = !!(preview?.length && preview.length < tokens.length && togglePreview)
 
   // If there's a list of preview tokens, show that with a 'Show more' button.
   // If not, then just display all tokens from the list.
@@ -95,18 +106,18 @@ export const TokenSection = <T extends Option = Option>({
           )
         })}
 
-        {hasMore && (
+        {hasToggle && (
           <Button
             fullWidth
             variant="link"
             color="ghost"
             size="medium"
             endIcon={<ExpandMoreIcon />}
-            onClick={onShowAll}
+            onClick={togglePreview}
             // Override variant button height to match menu list item height, so !important is required over '&'.
             sx={{ height: `${ButtonSize.md} !important` }}
           >
-            {showAllLabel || t`Show more`}
+            {isExpanded ? hideAllLabel || t`Hide` : showAllLabel || t`Show more`}
           </Button>
         )}
       </MenuList>
