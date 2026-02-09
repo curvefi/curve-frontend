@@ -94,7 +94,6 @@ export const useClaimTab = <ChainId extends LlamaChainId>({
     marketId,
     network,
     onClaimed,
-    onReset: () => {},
     userAddress,
   })
 

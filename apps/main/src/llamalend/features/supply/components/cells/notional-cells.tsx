@@ -1,10 +1,9 @@
-import type { SxProps, Theme } from '@mui/material/styles'
 import TableCell from '@mui/material/TableCell'
 import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
 import { InlineTableCell } from '@ui-kit/shared/ui/DataTable/inline-cells/InlineTableCell'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
-import { formatUsd } from '@ui-kit/utils'
+import { formatUsd, type SxProps } from '@ui-kit/utils'
 
 const formatNotional = (notional: number | undefined) => (notional == null ? '-' : formatUsd(notional))
 
@@ -35,7 +34,7 @@ export const TotalNotionalRow = ({
 }: {
   totalNotionals: number | undefined
   isNotionalLoading: boolean
-  sx?: SxProps<Theme>
+  sx?: SxProps
 }) => (
   <>
     <TableCell sx={sx}>

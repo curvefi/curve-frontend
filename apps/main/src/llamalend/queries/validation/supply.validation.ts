@@ -6,6 +6,7 @@ import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import type { UserMarketParams, UserMarketQuery } from '@ui-kit/lib/model/query/root-keys'
 import { userMarketValidationSuite } from '@ui-kit/lib/model/query/user-market-validation'
 import type { MakeOptional } from '@ui-kit/types/util'
+import { assert } from '@ui-kit/utils'
 import type { Decimal } from '@ui-kit/utils'
 
 export type DepositMutation = {
@@ -68,13 +69,13 @@ export function requireVault(marketId: string): LendMarketTemplate
 export function requireVault(market: LlamaMarketTemplate): LendMarketTemplate
 export function requireVault(marketOrId: string | LlamaMarketTemplate): LendMarketTemplate {
   const market = typeof marketOrId === 'string' ? getLlamaMarket(marketOrId) : marketOrId
-  if (!hasVault(market)) throw new Error('Market does not have a vault')
-  return market
+  assert(hasVault(market), 'Market does not have a vault')
+  return market as LendMarketTemplate
 }
 
 export function requireGauge(marketId: string): LendMarketTemplate {
   const lendMarket = requireVault(marketId)
-  if (!hasGauge(lendMarket)) throw new Error('Market does not have a gauge')
+  assert(hasGauge(lendMarket), 'Market does not have a gauge')
   return lendMarket
 }
 

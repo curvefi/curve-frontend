@@ -4,9 +4,9 @@ import { useConfig } from 'wagmi'
 import { type LlammaMutationOptions, useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
 import { claimValidationSuite, requireVault } from '@/llamalend/queries/validation/supply.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
-import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
+import { Duration } from '@ui-kit/themes/design/0_primitives'
 import { waitFor } from '@ui-kit/utils/time.utils'
 import { type Config, waitForTransactionReceipt } from '@wagmi/core'
 import { fetchClaimableCrv, fetchClaimableRewards } from '../queries/supply/supply-claimable-rewards.query'
@@ -17,7 +17,6 @@ export type ClaimOptions = {
   marketId: string | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
   onClaimed: LlammaMutationOptions<ClaimMutation>['onSuccess'] | undefined
-  onReset: () => void
   userAddress: Address | undefined
 }
 
@@ -25,11 +24,9 @@ const waitForCrvClaim = async ({
   onClaim,
   config,
   isClaimable,
-  message,
-  timeout = 2 * 60 * 1000,
+  timeout = Duration.PollTimeout,
 }: {
   onClaim: () => Promise<Hex>
-  message: string
   isClaimable: () => Promise<boolean>
   config: Config
   timeout?: number
@@ -37,7 +34,6 @@ const waitForCrvClaim = async ({
   if (!(await isClaimable())) return null
   const hash = await onClaim()
   await waitForTransactionReceipt(config, { hash })
-  notify(message, 'success')
   await waitFor(async () => !(await isClaimable()), { timeout })
   return hash
 }
@@ -47,7 +43,6 @@ export const useClaimMutation = ({
   network: { chainId },
   marketId,
   onClaimed,
-  onReset,
   userAddress,
 }: ClaimOptions) => {
   const config = useConfig()
@@ -64,7 +59,6 @@ export const useClaimMutation = ({
           return claimableCrv != null && +claimableCrv > 0
         },
         onClaim: async () => (await lendMarket.vault.claimCrv()) as Hex,
-        message: t`Claimed CRV successfully`,
         config,
       })
 
@@ -77,7 +71,6 @@ export const useClaimMutation = ({
     pendingMessage: () => t`Claiming rewards...`,
     successMessage: () => t`Claimed rewards!`,
     onSuccess: onClaimed,
-    onReset,
   })
 
   const onSubmit = useCallback(() => mutate({}), [mutate])

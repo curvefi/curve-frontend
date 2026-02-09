@@ -1,5 +1,6 @@
 import { Hex } from 'viem'
 import { notify } from '@ui-kit/features/connect-wallet'
+import { Duration } from '@ui-kit/themes/design/0_primitives'
 import { waitFor } from '@ui-kit/utils/time.utils'
 import { type Config, waitForTransactionReceipt } from '@wagmi/core'
 
@@ -32,7 +33,7 @@ export async function waitForApproval({
   config,
   isApproved,
   message,
-  timeout = 2 * 60 * 1000, // 2 minutes
+  timeout = Duration.PollTimeout,
 }: {
   onApprove: () => Promise<Hex[]>
   message: string

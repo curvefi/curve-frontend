@@ -60,7 +60,7 @@ export const ClaimTab = <ChainId extends IChainId>({ market, networks, chainId, 
           }
           loading={isLoading}
           showHeader={false}
-          footerCell={
+          footerRow={
             claimableTokens.length > 1 &&
             !isLoading && (
               <TotalNotionalRow

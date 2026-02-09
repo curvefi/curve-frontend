@@ -78,7 +78,7 @@ export const DataTable = <T extends TableItem>({
   viewAllLabel,
   shouldStickFirstColumn = false,
   showHeader = true,
-  footerCell,
+  footerRow,
   ...rowProps
 }: {
   table: TanstackTable<T>
@@ -89,7 +89,7 @@ export const DataTable = <T extends TableItem>({
   rowLimit?: number
   viewAllLabel?: string
   showHeader?: boolean
-  footerCell?: ReactNode
+  footerRow?: ReactNode
 } & Omit<DataRowProps<T>, 'row' | 'isLast'>) => {
   const { table } = rowProps
   const { rows } = table.getRowModel()
@@ -108,28 +108,22 @@ export const DataTable = <T extends TableItem>({
   useScrollToTopOnFilterChange(table)
   useResetPageOnResultChange(table)
   useScrollToTopOnPageChange(table, containerRef)
-  const tableHeaderSx = useMemo(
-    () => (t: Theme) => ({
-      position: 'sticky',
-      top: maxHeight ? 0 : top,
-      zIndex: t.zIndex.tableHeader,
-      backgroundColor: t.design.Table.Header.Fill,
-      marginBlock: Sizing['sm'],
-    }),
-    [maxHeight, top],
-  )
-  const showFooter = showPagination || showViewAllButton || footerCell
+  const tableHeaderSx = (t: Theme) => ({
+    position: 'sticky',
+    top: maxHeight ? 0 : top,
+    zIndex: t.zIndex.tableHeader,
+    backgroundColor: t.design.Table.Header.Fill,
+    marginBlock: Sizing['sm'],
+  })
+  const showFooter = showPagination || showViewAllButton || footerRow
 
   return (
     <WithWrapper Wrapper={Box} shouldWrap={maxHeight} sx={{ maxHeight, overflowY: 'auto' }} ref={containerRef}>
       <Table
-        sx={useMemo(
-          () => ({
-            backgroundColor: (t) => t.design.Layer[1].Fill,
-            borderCollapse: 'separate' /* Don't collapse to avoid funky stuff with the sticky header */,
-          }),
-          [],
-        )}
+        sx={{
+          backgroundColor: (t) => t.design.Layer[1].Fill,
+          borderCollapse: 'separate' /* Don't collapse to avoid funky stuff with the sticky header */,
+        }}
         data-testid={!loading && 'data-table'}
       >
         {showHeader && (
@@ -169,8 +163,8 @@ export const DataTable = <T extends TableItem>({
         </TableBody>
         {showFooter && (
           <TableFooter>
+            {footerRow && <TableRow>{footerRow}</TableRow>}
             <TableRow>
-              {footerCell}
               {showViewAllButton && (
                 <TableViewAllCell colSpan={columnCount} onClick={handleShowAll} isLoading={isLoadingViewAll}>
                   {viewAllLabel || t`View all`}
