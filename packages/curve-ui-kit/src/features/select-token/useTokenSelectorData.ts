@@ -6,6 +6,12 @@ import type { TokenOption } from '@ui-kit/features/select-token'
 import { prefetchTokenBalances, useTokenBalances } from '@ui-kit/hooks/useTokenBalance'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { useTokenUsdRates } from '@ui-kit/lib/model/entities/token-usd-rate'
+import {
+  getCachedHeldTokenAddresses,
+  getCachedTokenMetadata,
+  setCachedHeldTokenAddresses,
+  setCachedTokenMetadata,
+} from './tokenSelectorCache'
 import type { TokenListProps } from './ui/modal/TokenList'
 
 /**
@@ -36,15 +42,44 @@ export const useTokenSelectorData = (
   },
 ): Pick<TokenListProps, 'balances' | 'tokenPrices' | 'isLoading'> & { tokenSymbols: Record<string, string> } => {
   const config = useConfig()
-  const [fullBalancePhaseKey, setFullBalancePhaseKey] = useState('')
+  const [fullBalancePhaseState, setFullBalancePhaseState] = useState<{ key: string; enabled: boolean }>({
+    key: '',
+    enabled: false,
+  })
   const tokenAddresses = useMemo(() => tokens.map((token) => token.address), [tokens])
   const tokenAddressSet = useMemo(
     () => new Set(tokenAddresses.map((address) => address.toLowerCase())),
     [tokenAddresses],
   )
+  const fallbackPhaseOneTokenAddresses = useMemo(
+    () =>
+      [...tokens]
+        .sort((a, b) => (b.volume ?? 0) - (a.volume ?? 0) || a.symbol.localeCompare(b.symbol))
+        .slice(0, MAX_PHASE_ONE_FALLBACK_TOKENS)
+        .map((token) => token.address.toLowerCase()) as Address[],
+    [tokens],
+  )
   const cachedHeldTokenAddresses = useMemo(
     () => getCachedHeldTokenAddresses({ chainId, userAddress }),
     [chainId, userAddress],
+  )
+  const cachedTokenMetadata = useMemo(
+    () => getCachedTokenMetadata({ chainId, tokenAddresses }),
+    [chainId, tokenAddresses],
+  )
+  const cachedTokenSymbols = useMemo(
+    () =>
+      Object.entries(cachedTokenMetadata).reduce(
+        (acc, [address, metadata]) => {
+          const symbol = metadata.symbol?.trim()
+          if (symbol && !isMissingSymbol(symbol)) {
+            acc[address] = symbol
+          }
+          return acc
+        },
+        {} as Record<string, string>,
+      ),
+    [cachedTokenMetadata],
   )
   const phaseOneTokenAddresses = useMemo(() => {
     const priorityAddresses = dedupeAddresses(priorityTokenAddresses)
@@ -53,45 +88,64 @@ export const useTokenSelectorData = (
     const heldAddresses = dedupeAddresses(cachedHeldTokenAddresses)
       .slice(0, MAX_PHASE_ONE_CACHED_HELD_TOKENS)
       .map((address) => address.toLowerCase())
-    const phaseOneCandidates = dedupeAddresses([...priorityAddresses, ...heldAddresses]).filter((address) =>
-      tokenAddressSet.has(address),
-    )
-
-    // First-time users may not have cached held tokens yet.
-    if (phaseOneCandidates.length === 0) {
-      return tokenAddresses.slice(0, MAX_PHASE_ONE_FALLBACK_TOKENS).map((address) => address.toLowerCase()) as Address[]
-    }
-    return phaseOneCandidates.slice(0, MAX_PHASE_ONE_TOKEN_BALANCES) as Address[]
-  }, [priorityTokenAddresses, cachedHeldTokenAddresses, tokenAddressSet, tokenAddresses])
+    const phaseOneCandidates = dedupeAddresses([
+      ...priorityAddresses,
+      ...heldAddresses,
+      ...fallbackPhaseOneTokenAddresses,
+    ])
+      .filter((address) => tokenAddressSet.has(address))
+      .slice(0, MAX_PHASE_ONE_TOKEN_BALANCES)
+    return phaseOneCandidates as Address[]
+  }, [priorityTokenAddresses, cachedHeldTokenAddresses, fallbackPhaseOneTokenAddresses, tokenAddressSet])
   const shouldSplitBalanceLoading =
     phasedBalanceLoading &&
     enabled &&
+    !!userAddress &&
     phaseOneTokenAddresses.length > 0 &&
     phaseOneTokenAddresses.length < tokenAddresses.length
-  const splitBalancePhaseKey =
-    shouldSplitBalanceLoading && userAddress ? `${chainId}:${userAddress.toLowerCase()}:${tokenAddresses.length}` : ''
-  const isFullBalancePhaseEnabled = splitBalancePhaseKey !== '' && fullBalancePhaseKey === splitBalancePhaseKey
-  const balanceLookupTokenAddresses = useMemo(() => {
-    if (!enabled) return []
-    if (!shouldSplitBalanceLoading || isFullBalancePhaseEnabled) return tokenAddresses
-    return phaseOneTokenAddresses
-  }, [enabled, shouldSplitBalanceLoading, isFullBalancePhaseEnabled, tokenAddresses, phaseOneTokenAddresses])
+  const splitBalancePhaseKey = shouldSplitBalanceLoading
+    ? `${chainId}:${userAddress!.toLowerCase()}:${tokenAddresses.length}:${phaseOneTokenAddresses.join(',')}`
+    : ''
+  const isFullBalancePhaseEnabled = fullBalancePhaseState.enabled && fullBalancePhaseState.key === splitBalancePhaseKey
+
+  const phaseOneQueryEnabled = !!userAddress && shouldSplitBalanceLoading && !isFullBalancePhaseEnabled
+  const fullBalanceQueryEnabled = !!userAddress && enabled && (!shouldSplitBalanceLoading || isFullBalancePhaseEnabled)
+
+  const phaseOneBalances = useTokenBalances(
+    { chainId, userAddress, tokenAddresses: phaseOneTokenAddresses },
+    phaseOneQueryEnabled,
+  )
+  const fullBalances = useTokenBalances({ chainId, userAddress, tokenAddresses }, fullBalanceQueryEnabled)
+  const phaseOneReady = !phaseOneQueryEnabled || !phaseOneBalances.isLoading
+  const balances = useMemo(
+    () =>
+      shouldSplitBalanceLoading
+        ? { ...(phaseOneBalances.data ?? {}), ...(fullBalances.data ?? {}) }
+        : (fullBalances.data ?? phaseOneBalances.data ?? {}),
+    [fullBalances.data, phaseOneBalances.data, shouldSplitBalanceLoading],
+  )
+
+  useEffect(() => {
+    if (!splitBalancePhaseKey || !shouldSplitBalanceLoading || isFullBalancePhaseEnabled || !enabled || !phaseOneReady)
+      return
+    return scheduleIdleTask(
+      () => setFullBalancePhaseState({ key: splitBalancePhaseKey, enabled: true }),
+      BALANCE_PHASE_TWO_DELAY_MS,
+    )
+  }, [enabled, isFullBalancePhaseEnabled, phaseOneReady, shouldSplitBalanceLoading, splitBalancePhaseKey])
+
   const symbolFallbackAddresses = useMemo(
     () =>
       tokens
-        .filter((token) => isMissingSymbol(token.symbol))
+        .filter((token) => isMissingSymbol(token.symbol) && !cachedTokenSymbols[token.address.toLowerCase()])
         .map((token) => token.address)
         .filter(
           (address): address is Address =>
             isAddress(address, { strict: false }) && address.toLowerCase() !== ethAddress,
         ),
-    [tokens],
+    [tokens, cachedTokenSymbols],
   )
 
-  useEffect(() => {
-    if (!splitBalancePhaseKey) return
-    return scheduleIdleTask(() => setFullBalancePhaseKey(splitBalancePhaseKey), BALANCE_PHASE_TWO_DELAY_MS)
-  }, [splitBalancePhaseKey])
   const symbolLookupAddresses = useMemo(
     () => symbolFallbackAddresses.slice(0, MAX_SYMBOL_LOOKUP),
     [symbolFallbackAddresses],
@@ -180,21 +234,29 @@ export const useTokenSelectorData = (
   )
 
   const tokenSymbols = useMemo(
-    () => ({ ...tokenSymbolsFromString, ...tokenSymbolsFromBytes32 }),
-    [tokenSymbolsFromBytes32, tokenSymbolsFromString],
+    () => ({ ...cachedTokenSymbols, ...tokenSymbolsFromString, ...tokenSymbolsFromBytes32 }),
+    [cachedTokenSymbols, tokenSymbolsFromBytes32, tokenSymbolsFromString],
   )
+
+  useEffect(() => {
+    if (!chainId) return
+    const metadataToCache = Object.entries({ ...tokenSymbolsFromString, ...tokenSymbolsFromBytes32 }).reduce(
+      (acc, [address, symbol]) => {
+        if (symbol) {
+          acc[address] = { symbol }
+        }
+        return acc
+      },
+      {} as Record<string, { symbol: string }>,
+    )
+    if (Object.keys(metadataToCache).length === 0) return
+    setCachedTokenMetadata({ chainId, metadata: metadataToCache })
+  }, [chainId, tokenSymbolsFromBytes32, tokenSymbolsFromString])
 
   /*
    * Prefetch balances eagerly so they're cached before the modal opens.
    * This reduces the visible "trickle-in" effect of balances loading one by one,
    * minimizing re-renders and providing a smoother user experience.
-   * It also means balances are being loaded without creating TanStack subscriptions.
-   *
-   * Prefetch can be done conditionally such that important data can be loaded first,
-   * so that the HTTP request pipeline won't get clogged up with less important requests.
-   *
-   * At the moment of writing the array of token addresses can contain more than 1000 items.
-   * It's up to a future refactor to reduce the amount of token balances fetched.
    */
   useEffect(() => {
     if (prefetch && chainId && userAddress && phaseOneTokenAddresses.length > 0) {
@@ -202,20 +264,14 @@ export const useTokenSelectorData = (
     }
   }, [prefetch, config, chainId, userAddress, phaseOneTokenAddresses])
 
-  const { data: balances, isLoading: isBalancesLoading } = useTokenBalances(
-    { chainId, userAddress, tokenAddresses: balanceLookupTokenAddresses },
-    enabled,
-  )
-
   useEffect(() => {
-    if (!chainId || !userAddress) return
-    if (shouldSplitBalanceLoading && !isFullBalancePhaseEnabled) return
+    if (!chainId || !userAddress || !isFullBalancePhaseEnabled) return
 
     const heldTokenAddresses = dedupeAddresses(
       recordEntries(balances ?? {})
         .filter(([, balance]) => +balance > 0)
         .map(([address]) => address),
-    ).slice(0, MAX_CACHED_HELD_TOKENS)
+    )
     if (heldTokenAddresses.length === 0) return
 
     setCachedHeldTokenAddresses({
@@ -223,7 +279,7 @@ export const useTokenSelectorData = (
       userAddress,
       tokenAddresses: heldTokenAddresses,
     })
-  }, [balances, chainId, userAddress, shouldSplitBalanceLoading, isFullBalancePhaseEnabled])
+  }, [balances, chainId, isFullBalancePhaseEnabled, userAddress])
 
   // Only fetch prices for tokens the user has a balance of
   const tokenAddressesWithBalance = useMemo(
@@ -239,19 +295,18 @@ export const useTokenSelectorData = (
   )
 
   const { data: tokenPrices } = useTokenUsdRates({ chainId, tokenAddresses: tokenAddressesWithBalance }, enabled)
+  const isBalancesLoading = shouldSplitBalanceLoading ? phaseOneBalances.isLoading : fullBalances.isLoading
 
   return { balances, tokenPrices, isLoading: isBalancesLoading, tokenSymbols }
 }
 
 const ADDRESS_LABEL_SYMBOL_REGEX = /^0x[a-f0-9]{4}\.\.\.[a-f0-9]{4}$/i
 const MAX_SYMBOL_LOOKUP = 300
-const MAX_PHASE_ONE_PRIORITY_TOKENS = 36
-const MAX_PHASE_ONE_CACHED_HELD_TOKENS = 60
-const MAX_PHASE_ONE_FALLBACK_TOKENS = 64
-const MAX_PHASE_ONE_TOKEN_BALANCES = 96
-const MAX_CACHED_HELD_TOKENS = 160
-const BALANCE_PHASE_TWO_DELAY_MS = 350
-const HELD_TOKEN_CACHE_KEY = 'curve.select-token.held-token-addresses.v1'
+const MAX_PHASE_ONE_PRIORITY_TOKENS = 28
+const MAX_PHASE_ONE_CACHED_HELD_TOKENS = 44
+const MAX_PHASE_ONE_FALLBACK_TOKENS = 56
+const MAX_PHASE_ONE_TOKEN_BALANCES = 72
+const BALANCE_PHASE_TWO_DELAY_MS = 300
 const ERC20_SYMBOL_BYTES32_ABI = [
   {
     type: 'function',
@@ -270,43 +325,6 @@ function scheduleIdleTask(callback: () => void, timeoutMs: number) {
   }
   const id = window.setTimeout(callback, timeoutMs)
   return () => window.clearTimeout(id)
-}
-
-function getHeldTokenCacheEntryKey(chainId: number, userAddress: Address) {
-  return `${chainId}:${userAddress.toLowerCase()}`
-}
-
-function getCachedHeldTokenAddresses({ chainId, userAddress }: { chainId: number; userAddress?: Address }) {
-  if (!chainId || !userAddress || typeof window === 'undefined') return []
-
-  const entryKey = getHeldTokenCacheEntryKey(chainId, userAddress)
-  try {
-    const parsed = JSON.parse(window.localStorage.getItem(HELD_TOKEN_CACHE_KEY) ?? '{}') as Record<string, string[]>
-    return dedupeAddresses(parsed[entryKey] ?? [])
-  } catch {
-    return []
-  }
-}
-
-function setCachedHeldTokenAddresses({
-  chainId,
-  userAddress,
-  tokenAddresses,
-}: {
-  chainId: number
-  userAddress: Address
-  tokenAddresses: string[]
-}) {
-  if (!chainId || !userAddress || typeof window === 'undefined') return
-
-  const entryKey = getHeldTokenCacheEntryKey(chainId, userAddress)
-  try {
-    const parsed = JSON.parse(window.localStorage.getItem(HELD_TOKEN_CACHE_KEY) ?? '{}') as Record<string, string[]>
-    parsed[entryKey] = dedupeAddresses(tokenAddresses).slice(0, MAX_CACHED_HELD_TOKENS)
-    window.localStorage.setItem(HELD_TOKEN_CACHE_KEY, JSON.stringify(parsed))
-  } catch {
-    // noop on storage parsing/quota errors
-  }
 }
 
 function isMissingSymbol(symbol: string | undefined) {
