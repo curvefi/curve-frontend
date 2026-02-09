@@ -1,25 +1,55 @@
 import { useEffect, useState } from 'react'
+import Box from '@mui/material/Box'
 import Skeleton from '@mui/material/Skeleton'
+import Stack from '@mui/material/Stack'
 import TableCell from '@mui/material/TableCell'
 import TableRow from '@mui/material/TableRow'
-import Typography from '@mui/material/Typography'
 import type { Column } from '@tanstack/react-table'
 import { setTimeoutInterval } from '@ui-kit/utils/timers'
-import { useCellSx, getCellVariant, type TableItem, type TanstackTable } from './data-table.utils'
+import { useCellSx, type TableItem, type TanstackTable } from './data-table.utils'
 
-const SkeletonCell = <T extends TableItem>({ column, isSticky }: { isSticky: boolean; column: Column<T> }) => (
-  <TableCell sx={useCellSx({ isSticky, column })}>
-    <Skeleton variant="rectangular" sx={{ maxWidth: 'none' }}>
-      <Typography
-        variant={getCellVariant(column)}
-        data-testid={`data-table-cell-${column.id}`}
-        sx={{ paddingBlock: '9px' }} // hardcoded to match the correct height of the cells
-      >
-        0
-      </Typography>
-    </Skeleton>
-  </TableCell>
-)
+const SKELETON_WIDTHS = ['82%', '64%', '72%', '58%', '68%', '76%', '62%'] as const
+
+function getSkeletonWidth(columnIndex: number, rowIndex: number) {
+  // Alternate widths slightly per row so loading looks more natural.
+  return SKELETON_WIDTHS[(columnIndex + rowIndex) % SKELETON_WIDTHS.length]
+}
+
+const SkeletonCell = <T extends TableItem>({
+  column,
+  isSticky,
+  columnIndex,
+  rowIndex,
+}: {
+  isSticky: boolean
+  column: Column<T>
+  columnIndex: number
+  rowIndex: number
+}) => {
+  const width = getSkeletonWidth(columnIndex, rowIndex)
+
+  return (
+    <TableCell sx={useCellSx({ isSticky, column })}>
+      {columnIndex === 0 ? (
+        <Stack direction="row" alignItems="center" spacing={1.25}>
+          <Skeleton animation="wave" variant="circular" width={28} height={28} />
+          <Box sx={{ width: '100%' }}>
+            <Skeleton animation="wave" variant="text" width={width} height={20} sx={{ transform: 'none' }} />
+            <Skeleton
+              animation="wave"
+              variant="text"
+              width="42%"
+              height={16}
+              sx={{ transform: 'none', opacity: 0.75 }}
+            />
+          </Box>
+        </Stack>
+      ) : (
+        <Skeleton animation="wave" variant="text" width={width} height={20} sx={{ transform: 'none' }} />
+      )}
+    </TableCell>
+  )
+}
 
 export const SkeletonRows = <T extends TableItem>({
   table,
@@ -49,7 +79,13 @@ export const SkeletonRows = <T extends TableItem>({
             .getHeaderGroups()
             .flatMap((headerGroup) => headerGroup.headers)
             .map(({ column }, columnIndex) => (
-              <SkeletonCell key={column.id} isSticky={shouldStickFirstColumn && !columnIndex} column={column} />
+              <SkeletonCell
+                key={column.id}
+                isSticky={shouldStickFirstColumn && !columnIndex}
+                column={column}
+                columnIndex={columnIndex}
+                rowIndex={rowIndex}
+              />
             ))}
         </TableRow>
       ))}
