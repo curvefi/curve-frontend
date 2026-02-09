@@ -1,6 +1,6 @@
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
-import { DepositParams, DepositQuery, depositValidationSuite, requireVault } from '../validation/supply.validation'
 import { createApprovedEstimateGasHook } from '../estimate-gas-hook.factory'
+import { DepositParams, DepositQuery, depositValidationSuite, requireVault } from '../validation/supply.validation'
 import { useDepositIsApproved } from './supply-deposit-approved.query'
 
 const { useQuery: useDepositApproveEstimateGasQuery } = queryFactory({

@@ -16,6 +16,7 @@ import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
 import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
+import { q } from '@ui-kit/types/util'
 import { isDevelopment } from '@ui-kit/utils'
 import { setValueOptions } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
@@ -64,13 +65,11 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
 
   const isLeverageEnabled = isLeverageBorrowMore(market, values.leverageEnabled)
   const swapRequired = isLeverageEnabled && Number(values.userBorrowed) > 0
-  const priceImpact = useBorrowMorePriceImpact(params, enabled && swapRequired)
   const fromBorrowed = fromWallet && isLeverageEnabled
   const onLeverageToggle = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => form.setValue('leverageEnabled', event.target.checked),
     [form],
   )
-
   return (
     <Form
       {...form}
@@ -148,7 +147,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
         />
       )}
 
-      <HighPriceImpactAlert priceImpact={priceImpact.data} isLoading={priceImpact.isLoading} />
+      <HighPriceImpactAlert {...q(useBorrowMorePriceImpact(params, enabled && swapRequired))} />
 
       <Button
         type="submit"

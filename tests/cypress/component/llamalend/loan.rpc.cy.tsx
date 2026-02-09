@@ -23,13 +23,14 @@ import {
   LOAN_TEST_MARKETS,
   submitCreateLoanForm,
   writeCreateLoanForm,
-} from '@cy/support/helpers/create-loan.helpers'
+} from '@cy/support/helpers/llamalend/create-loan.helpers'
 import {
+  checkDebt,
   checkRepayDetailsLoaded,
   selectRepayToken,
   submitRepayForm,
   writeRepayLoanForm,
-} from '@cy/support/helpers/repay-loan.helpers'
+} from '@cy/support/helpers/llamalend/repay-loan.helpers'
 import { createTenderlyWagmiConfigFromVNet, createVirtualTestnet } from '@cy/support/helpers/tenderly'
 import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
 import { fundErc20, fundEth } from '@cy/support/helpers/tenderly/vnet-fund'
@@ -65,7 +66,7 @@ recordEntries(LOAN_TEST_MARKETS)
          * Leverage disabled in the tests for now because it depends on Odos routes.
          * It will soon be migrated to our own router API, so it will be easier to mock.
          */
-        const leverageEnabled = false
+        const leverageEnabled = hasLeverage && false
 
         let onCreated: Spy
         let onBorrowedMore: Spy
@@ -150,14 +151,13 @@ recordEntries(LOAN_TEST_MARKETS)
         it(`repays the loan`, () => {
           cy.mount(<LoanTestWrapper tab="repay" />)
           selectRepayToken('crvUSD')
-          writeRepayLoanForm({ amount: repay })
+          writeRepayLoanForm({ amount: debtAfterBorrowMore })
           checkRepayDetailsLoaded({
-            expectedCurrentDebt: debtAfterBorrowMore,
-            expectedFutureDebt: [debtAfterBorrowMoreAndRepay, 'crvUSD'].join(''),
-            hasLeverage,
+            debt: [debtAfterBorrowMore, debtAfterBorrowMoreAndRepay, 'crvUSD'],
+            leverageEnabled,
           })
           submitRepayForm().then(() => expect(onRepaid).to.be.calledOnce)
-          checkCurrentDebt(debtAfterBorrowMoreAndRepay)
+          checkDebt(debtAfterBorrowMoreAndRepay, debtAfterBorrowMoreAndRepay, 'crvUSD')
         })
       })
     },
