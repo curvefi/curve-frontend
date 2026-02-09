@@ -54,7 +54,6 @@ export const PageHeader = ({
       gap={Spacing.md}
       paddingBlock={Spacing.sm}
       paddingInline={Spacing.md}
-      sx={{ borderBottom: (t) => `1px solid ${t.design.Layer[1].Outline}` }}
     >
       <Stack direction="row">
         <IconButton

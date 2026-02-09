@@ -4,6 +4,7 @@ import { useDexAppStats, useDexRoutes } from '@/dex/hooks/useDexAppStats'
 import { networks as lendNetworks } from '@/lend/networks'
 import { useLlamalendAppStats } from '@/llamalend/hooks/useLlamalendAppStats'
 import { networks as crvusdNetworks } from '@/loan/networks'
+import { MarketSubHeader } from '@/routes/MarketSubHeader'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import type { NetworkDef, NetworkMapping } from '@ui/utils'
@@ -83,6 +84,7 @@ export const GlobalLayout = <TId extends string, TChainId extends number>({
       appStats={useAppStats(currentApp, network)}
       routes={useAppRoutes(network)}
     />
+    <MarketSubHeader />
     <Box
       component="main"
       sx={{ margin: `0 auto`, maxWidth: `var(--width)`, minHeight: MinHeight.pageContent, width: '100%' }}
