@@ -1,7 +1,10 @@
 import { useMemo } from 'react'
+import { usePathname } from '@ui-kit/hooks/router'
+import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
 import { getCurrentLendMarket, LEND_MARKET_ROUTES } from '@ui-kit/shared/routes'
-import { PageTabs } from './PageTabs'
+import { PageTabsSwitcher } from './PageTabsSwitcher'
+import { SubNav } from './SubNav'
 import type { AppPage } from './types'
 
 const getMarketPathname = (pathname: string, marketSegment: string) => {
@@ -11,7 +14,9 @@ const getMarketPathname = (pathname: string, marketSegment: string) => {
   return pathname
 }
 
-export const LendMarketTabs = ({ pathname }: { pathname: string }) => {
+export const LendMarketSubNav = () => {
+  const pathname = usePathname()
+
   const pages: AppPage[] = useMemo(() => {
     const marketSegment = getCurrentLendMarket(pathname)
     return [
@@ -28,5 +33,9 @@ export const LendMarketTabs = ({ pathname }: { pathname: string }) => {
     ]
   }, [pathname])
 
-  return <PageTabs pages={pages} />
+  return (
+    <SubNav testId="lend-subnav">
+      <PageTabsSwitcher pages={pages} overflow={useIsMobile() ? 'fullWidth' : 'standard'} />
+    </SubNav>
+  )
 }
