@@ -10,7 +10,7 @@ import { PageHeader } from './PageHeader'
 
 type PageHeaderProps = ComponentProps<typeof PageHeader>
 
-const chain: Chain = 'ethereum'
+const blockchainId: Chain = 'ethereum'
 
 const mintMarket: MintMarketTemplate = Object.assign(Object.create(MintMarketTemplate.prototype), {
   coins: ['crvUSD', 'ETH'],
@@ -97,7 +97,7 @@ const withWidth = (maxWidth: number | undefined, displayName: string) => {
 
 const baseArgs: Omit<PageHeaderProps, 'market' | 'supplyRate'> = {
   isLoading: false,
-  chain,
+  blockchainId,
   borrowRate,
   availableLiquidity,
 }
