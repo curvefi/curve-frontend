@@ -12,7 +12,7 @@ import { TIME_FRAMES } from '@ui-kit/lib/model/time'
 
 const expectedMainNavHeight = 40
 const expectedSubNavHeight = expectedMainNavHeight
-const expectedMobileNavHeight = 56
+const expectedMobileNavHeight = 56 + 1 // 1px for the border
 const expectedConnectHeight = 40
 
 const expectedFooterXMargin = { mobile: 32, tablet: 48, desktop: 48 }
