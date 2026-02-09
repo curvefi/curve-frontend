@@ -362,6 +362,12 @@ async function hydrateSwapVolumeRankingInBackground(
   }
 }
 
+function scheduleIdleTask(callback: () => void, timeoutMs: number) {
+  if (typeof window === 'undefined') return
+  const id = window.setTimeout(callback, timeoutMs)
+  return () => window.clearTimeout(id)
+}
+
 function hasPoolsForChain(state: State, chainId: number) {
   return Object.keys(state.pools.poolsMapper[chainId] ?? {}).length > 0
 }
