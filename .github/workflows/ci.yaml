@@ -8,6 +8,7 @@ permissions:
   contents: read
 jobs:
   lint:
+    name: Lint, format & typecheck
     timeout-minutes: 6
     runs-on: ubuntu-latest
     steps:
@@ -25,6 +26,7 @@ jobs:
       - run: yarn typecheck
 
   test:
+    name: Unit tests
     timeout-minutes: 5
     runs-on: ubuntu-latest
     steps:
@@ -182,7 +184,8 @@ jobs:
           path: e2e-*.log
 
   notify:
-    if: (failure() && github.ref_name == 'main') || github.ref_name == 'feat/slack-notify'
+    name: Notify Slack
+    if: failure() && github.ref_name == 'main'
     runs-on: ubuntu-latest
     timeout-minutes: 1
     needs: [ lint, test, cypress-e2e, cypress-component, cypress-component-rpc ]
