@@ -85,7 +85,7 @@ export const TokenList = ({
     const balanceTokens = tokensSearched.filter((token) => +(balances?.[token.address] ?? 0) > 0)
 
     if (!disableSorting) {
-      // Sort tokens with balance by USD value when available, otherwise by raw balance.
+      // Sort tokens with known USD prices first. Tokens without USD prices always stay at the bottom.
       balanceTokens.sort((a, b) => {
         const aBalance = +(balances?.[a.address] ?? 0)
         const bBalance = +(balances?.[b.address] ?? 0)
@@ -93,10 +93,17 @@ export const TokenList = ({
         const bUsdPrice = tokenPrices?.[b.address] ?? 0
         const aHasUsdPrice = aUsdPrice > 0
         const bHasUsdPrice = bUsdPrice > 0
-        const aSortValue = aHasUsdPrice ? aUsdPrice * aBalance : aBalance
-        const bSortValue = bHasUsdPrice ? bUsdPrice * bBalance : bBalance
+        const hasUsdDelta = Number(bHasUsdPrice) - Number(aHasUsdPrice)
+        if (hasUsdDelta !== 0) return hasUsdDelta
 
-        return bSortValue - aSortValue || bBalance - aBalance
+        if (aHasUsdPrice && bHasUsdPrice) {
+          const aUsdValue = aUsdPrice * aBalance
+          const bUsdValue = bUsdPrice * bBalance
+          return bUsdValue - aUsdValue || bBalance - aBalance
+        }
+
+        // Both tokens have no USD price: rank by raw balance.
+        return bBalance - aBalance
       })
     }
 
