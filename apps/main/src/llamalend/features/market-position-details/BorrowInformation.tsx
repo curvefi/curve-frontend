@@ -71,7 +71,7 @@ export const BorrowInformation = ({
         size="medium"
         label={t`Net borrow APR`}
         value={borrowRate?.totalBorrowRate}
-        loading={borrowRate?.totalBorrowRate == null && borrowRate?.loading}
+        loading={borrowRate?.loading}
         valueOptions={{ unit: 'percentage', color: 'warning' }}
         notional={
           borrowRate?.totalAverageBorrowRate
@@ -105,7 +105,7 @@ export const BorrowInformation = ({
         size="medium"
         label={t`Total debt`}
         value={totalDebt?.value}
-        loading={totalDebt?.value == null && totalDebt?.loading}
+        loading={totalDebt?.loading}
         valueOptions={{ unit: { symbol: 'crvUSD', position: 'suffix' } }}
         valueTooltip={{
           title: t`Total Debt`,
@@ -119,7 +119,7 @@ export const BorrowInformation = ({
         size="medium"
         label={t`Collateral value`}
         value={collateralValue?.totalValue}
-        loading={collateralValue?.totalValue == null && collateralValue?.loading}
+        loading={collateralValue?.loading}
         valueOptions={{ unit: 'dollar' }}
         valueTooltip={{
           title: t`Collateral value`,
@@ -133,7 +133,7 @@ export const BorrowInformation = ({
         size="medium"
         label={t`Current LTV`}
         value={ltv?.value}
-        loading={ltv?.value == null && ltv?.loading}
+        loading={ltv?.loading}
         valueOptions={{ unit: 'percentage' }}
         valueTooltip={{
           title: t`Current LTV (Loan To Value ratio)`,
@@ -149,7 +149,7 @@ export const BorrowInformation = ({
             size="small"
             label={t`Leverage`}
             value={leverage?.value}
-            loading={leverage?.value == null && leverage?.loading}
+            loading={leverage?.loading}
             valueOptions={{ unit: 'multiplier' }}
           />
         )}
@@ -157,7 +157,7 @@ export const BorrowInformation = ({
         size="small"
         label={t`Liquidation threshold`}
         value={liquidationRange?.value?.[1]}
-        loading={liquidationRange?.value == null && liquidationRange?.loading}
+        loading={liquidationRange?.loading}
         valueOptions={dollarUnitOptions}
         valueTooltip={{
           title: t`Liquidation Threshold (LT)`,

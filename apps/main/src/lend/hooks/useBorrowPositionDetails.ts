@@ -93,6 +93,16 @@ export const useBorrowPositionDetails = ({
   }, [collateral, borrowed, collateralUsdRate])
 
   const rebasingYield = lendSnapshots?.[lendSnapshots.length - 1]?.collateralToken?.rebasingYield // take most recent rebasing yield
+  const totalBorrowRate = borrowApr ? borrowApr - (rebasingYield ?? 0) : null
+  const healthValue = health ? Number(health) : null
+  const liquidationRangeValue = liquidationPrices ? liquidationPrices.map(Number) : null
+  const ltvValue =
+    collateralTotalValue && debt
+      ? calculateLtv(Number(debt), Number(collateral), Number(borrowed), borrowedUsdRate, collateralUsdRate)
+      : null
+  const leverageValue = leverage ? Number(leverage) : null
+  const totalDebtValue = debt ? Number(debt) : null
+
   return {
     marketType: LlamaMarketType.Lend,
     liquidationAlert: {
@@ -100,8 +110,8 @@ export const useBorrowPositionDetails = ({
       hardLiquidation: status?.colorKey === 'hard_liquidation',
     },
     health: {
-      value: health ? Number(health) : null,
-      loading: !market || isUserLoanDetailsLoading,
+      value: healthValue,
+      loading: healthValue == null && (!market || isUserLoanDetailsLoading),
     },
     borrowRate: {
       rate: borrowApr,
@@ -109,18 +119,20 @@ export const useBorrowPositionDetails = ({
       averageRateLabel: averageMultiplierString,
       rebasingYield: rebasingYield ?? null,
       averageRebasingYield: averageRebasingYield ?? null,
-      totalBorrowRate: borrowApr ? borrowApr - (rebasingYield ?? 0) : null,
+      totalBorrowRate,
       totalAverageBorrowRate: averageRate ? averageRate - (averageRebasingYield ?? 0) : null,
       extraRewards: campaigns,
-      loading: !market || isLendSnapshotsLoading || isMarketRatesLoading || !market?.addresses.controller,
+      loading:
+        totalBorrowRate == null &&
+        (!market || isLendSnapshotsLoading || isMarketRatesLoading || !market?.addresses.controller),
     },
     liquidationRange: {
-      value: liquidationPrices ? liquidationPrices.map(Number) : null,
+      value: liquidationRangeValue,
       rangeToLiquidation:
         prices?.prices?.oraclePrice && liquidationPrices
           ? calculateRangeToLiquidation(Number(liquidationPrices?.[1]), Number(prices.prices.oraclePrice))
           : null,
-      loading: !market || isUserLoanDetailsLoading,
+      loading: liquidationRangeValue == null && (!market || isUserLoanDetailsLoading),
     },
     bandRange: {
       value: bands,
@@ -138,22 +150,21 @@ export const useBorrowPositionDetails = ({
         usdRate: borrowedUsdRate ?? null,
         symbol: market?.borrowed_token?.symbol,
       },
-      loading: !market || isUserLoanDetailsLoading || collateralUsdRateLoading || borrowedUsdRateLoading,
+      loading:
+        collateralTotalValue == null &&
+        (!market || isUserLoanDetailsLoading || collateralUsdRateLoading || borrowedUsdRateLoading),
     },
     ltv: {
-      value:
-        collateralTotalValue && debt
-          ? calculateLtv(Number(debt), Number(collateral), Number(borrowed), borrowedUsdRate, collateralUsdRate)
-          : null,
-      loading: !market || isUserLoanDetailsLoading,
+      value: ltvValue,
+      loading: ltvValue == null && (!market || isUserLoanDetailsLoading),
     },
     leverage: {
-      value: leverage ? Number(leverage) : null,
-      loading: !market || isUserLoanDetailsLoading,
+      value: leverageValue,
+      loading: leverageValue == null && (!market || isUserLoanDetailsLoading),
     },
     totalDebt: {
-      value: debt ? Number(debt) : null,
-      loading: !market || isUserLoanDetailsLoading,
+      value: totalDebtValue,
+      loading: totalDebtValue == null && (!market || isUserLoanDetailsLoading),
     },
     collateralLoss: {
       depositedCollateral: decimal(loss?.deposited_collateral),

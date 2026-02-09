@@ -120,6 +120,7 @@ export const useMarketDetails = ({
       (averageSupplyRebasingYield ?? 0) +
       (averageTotalExtraIncentivesApr ?? 0) +
       (averageSupplyAprCrvMaxBoost ?? 0)
+  const totalBorrowRate = borrowApr == null ? null : borrowApr - (collateralRebasingYield ?? 0)
 
   return {
     marketType: LlamaMarketType.Lend,
@@ -146,7 +147,7 @@ export const useMarketDetails = ({
       averageRateLabel: averageMultiplierString,
       rebasingYield: collateralRebasingYield ?? null,
       averageRebasingYield: averageBorrowRebasingYield ?? null,
-      totalBorrowRate: borrowApr == null ? null : borrowApr - (collateralRebasingYield ?? 0),
+      totalBorrowRate,
       totalAverageBorrowRate,
       extraRewards: campaigns,
       loading: isSnapshotsLoading || isMarketDetailsLoading.marketRates || !isHydrated,
@@ -189,7 +190,7 @@ export const useMarketDetails = ({
     maxLeverage: maxLeverage
       ? {
           value: Number(maxLeverage),
-          loading: isMarketDetailsLoading.marketMaxLeverage || !isHydrated,
+          loading: false,
         }
       : undefined,
   }

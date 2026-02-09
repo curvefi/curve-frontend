@@ -132,7 +132,7 @@ export const MarketDetails = ({
           size={'medium'}
           label={t`Net borrow APR`}
           value={borrowRate?.totalBorrowRate}
-          loading={borrowRate?.totalBorrowRate == null && borrowRate?.loading}
+          loading={borrowRate?.loading}
           valueOptions={{ unit: 'percentage' }}
           notional={
             borrowRate?.totalAverageBorrowRate
@@ -166,7 +166,7 @@ export const MarketDetails = ({
             size={'medium'}
             label={t`Supply rate`}
             value={supplyRate?.totalSupplyRateMinBoost}
-            loading={supplyRate?.totalSupplyRateMinBoost == null && supplyRate?.loading}
+            loading={supplyRate?.loading}
             valueOptions={{ unit: 'percentage' }}
             notional={
               supplyRate?.averageRate
@@ -204,7 +204,7 @@ export const MarketDetails = ({
           label={t`Collateral`}
           symbol={collateral?.symbol}
           tokenAddress={collateral?.tokenAddress}
-          loading={collateral?.total == null && collateral?.loading}
+          loading={collateral?.loading}
           blockchainId={blockchainId}
           valueTooltip={{
             title: t`Collateral Token`,
@@ -217,7 +217,7 @@ export const MarketDetails = ({
           label={t`Debt`}
           symbol={borrowToken?.symbol}
           tokenAddress={borrowToken?.tokenAddress}
-          loading={borrowToken?.symbol == null && borrowToken?.loading}
+          loading={borrowToken?.loading}
           blockchainId={blockchainId}
           valueTooltip={{
             title: t`Debt Token ${MarketTypeSuffix[marketType]}`,
@@ -231,7 +231,7 @@ export const MarketDetails = ({
           size="small"
           label={t`Available liquidity`}
           value={availableLiquidity?.value}
-          loading={availableLiquidity?.value == null && availableLiquidity?.loading}
+          loading={availableLiquidity?.loading}
           valueOptions={{ unit: 'dollar' }}
           valueTooltip={{
             title: t`Available Liquidity ${MarketTypeSuffix[marketType]}`,
@@ -243,7 +243,7 @@ export const MarketDetails = ({
           size="small"
           label={t`Utilization`}
           value={utilization}
-          loading={utilization == null && availableLiquidity?.loading}
+          loading={availableLiquidity?.loading}
           valueOptions={{ unit: 'percentage' }}
           notional={utilization ? utilizationBreakdown : undefined}
           valueTooltip={{
@@ -256,7 +256,7 @@ export const MarketDetails = ({
           size="small"
           label={t`Total collateral`}
           value={collateral?.total}
-          loading={collateral?.total == null && collateral?.loading}
+          loading={collateral?.loading}
           valueOptions={{ unit: { symbol: collateral?.symbol ?? '', position: 'suffix' } }}
           notional={
             collateral?.totalUsdValue
@@ -277,7 +277,7 @@ export const MarketDetails = ({
             size="small"
             label={t`Max leverage`}
             value={maxLeverage?.value}
-            loading={maxLeverage?.value == null && maxLeverage?.loading}
+            loading={maxLeverage?.loading}
             valueOptions={{ unit: 'multiplier' }}
             valueTooltip={{
               title: t`Maximum Leverage`,

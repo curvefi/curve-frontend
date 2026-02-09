@@ -99,7 +99,7 @@ export const SupplyPositionDetails = ({ supplyRate, shares, supplyAsset, boost }
           size="medium"
           label={t`Supply rate`}
           value={userTotalCurrentSupplyApr ?? totalSupplyRateMinBoost}
-          loading={totalSupplyRateMinBoost == null && supplyRateLoading}
+          loading={supplyRateLoading}
           valueOptions={{ unit: 'percentage', color: 'warning' }}
           notional={
             totalSupplyRateMaxBoost
@@ -137,7 +137,7 @@ export const SupplyPositionDetails = ({ supplyRate, shares, supplyAsset, boost }
           size="medium"
           label={t`Amount supplied`}
           value={depositedAmount}
-          loading={depositedAmount == null && supplyAssetLoading}
+          loading={supplyAssetLoading}
           valueOptions={{ unit: 'dollar' }}
           notional={
             depositedAmount
@@ -159,7 +159,7 @@ export const SupplyPositionDetails = ({ supplyRate, shares, supplyAsset, boost }
           size="medium"
           label={t`Vault shares`}
           value={sharesValue}
-          loading={sharesValue == null && sharesLoading}
+          loading={sharesLoading}
           valueOptions={{}}
           notional={
             sharesStaked && sharesValue
@@ -181,7 +181,7 @@ export const SupplyPositionDetails = ({ supplyRate, shares, supplyAsset, boost }
           size="medium"
           label={t`veCRV Boost`}
           value={boostValue}
-          loading={boostValue == null && boostLoading}
+          loading={boostLoading}
           valueOptions={{ unit: 'multiplier' }}
           valueTooltip={{
             title: t`veCRV Boost`,

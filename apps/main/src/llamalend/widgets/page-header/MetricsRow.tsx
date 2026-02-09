@@ -40,7 +40,7 @@ export const MetricsRow = ({ borrowRate, supplyRate, availableLiquidity, marketT
         alignment={metricAlignment}
         label={t`Net borrow APR`}
         value={borrowRate?.totalBorrowRate}
-        loading={borrowRate?.totalBorrowRate == null && borrowRate?.loading}
+        loading={borrowRate?.loading}
         valueOptions={{ unit: 'percentage' }}
         notional={
           borrowRate?.totalAverageBorrowRate
@@ -74,7 +74,7 @@ export const MetricsRow = ({ borrowRate, supplyRate, availableLiquidity, marketT
           alignment={metricAlignment}
           label={t`Supply rate`}
           value={supplyRate?.totalSupplyRateMinBoost}
-          loading={supplyRate?.totalSupplyRateMinBoost == null && supplyRate?.loading}
+          loading={supplyRate?.loading}
           valueOptions={{ unit: 'percentage' }}
           notional={
             supplyRate?.averageRate
@@ -111,7 +111,7 @@ export const MetricsRow = ({ borrowRate, supplyRate, availableLiquidity, marketT
         alignment={metricAlignment}
         label={t`Available liquidity`}
         value={availableLiquidity?.value}
-        loading={availableLiquidity?.value == null && availableLiquidity?.loading}
+        loading={availableLiquidity?.loading}
         valueOptions={{ unit: 'dollar' }}
         valueTooltip={{
           title: t`Available Liquidity ${MarketTypeSuffix[marketType]}`,
