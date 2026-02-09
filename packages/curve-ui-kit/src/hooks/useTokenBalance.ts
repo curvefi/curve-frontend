@@ -167,7 +167,7 @@ export function useTokenBalances(
 
   const isEnabled = enabled && chainId != null && userAddress != null
   const { data: pinnedBlockNumber } = useBlockNumber({
-    chainId,
+    chainId: chainId ?? undefined,
     query: { enabled: isEnabled, staleTime: PINNED_BLOCK_STALE_TIME_MS, refetchOnWindowFocus: false },
   })
   const uniqueAddresses = useMemo(() => Array.from(new Set(tokenAddresses)), [tokenAddresses])
