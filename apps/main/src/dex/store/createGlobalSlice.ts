@@ -108,8 +108,7 @@ export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreAp
 
     if (isSwapRouteHydration) {
       seedSwapTokenMapper(get(), curveApi, network)
-      const existingPoolsMapper = state.pools.poolsMapper[chainId] ?? {}
-      if (Object.keys(existingPoolsMapper).length === 0) {
+      if (!hasPoolsForChain(state, chainId)) {
         state.pools.setEmptyPoolListDefault(chainId)
       }
       void hydrateSwapRouteInBackground(get, curveApi, chainId, network, {
@@ -295,9 +294,9 @@ async function hydrateSwapRouteInBackground(
   options?: { forceReloadCurveData?: boolean },
 ) {
   const state = get()
-  const hydrationKey = `${chainId}:${curveApi.signerAddress || 'readonly'}:${curveApi.isNoRPC ? 'norpc' : 'rpc'}`
+  const hydrationKey = getSwapHydrationKey(curveApi, chainId)
   const shouldForceReloadCurveData = options?.forceReloadCurveData ?? false
-  const hasPoolsInStore = Object.keys(state.pools.poolsMapper[chainId] ?? {}).length > 0
+  const hasPoolsInStore = hasPoolsForChain(state, chainId)
   if (
     (!shouldForceReloadCurveData && state.pools.haveAllPools[chainId] && hasPoolsInStore) ||
     state.pools.poolsLoading[chainId] ||
@@ -325,4 +324,12 @@ async function hydrateSwapRouteInBackground(
   } finally {
     swapBackgroundHydrationInFlight.delete(hydrationKey)
   }
+}
+
+function hasPoolsForChain(state: State, chainId: number) {
+  return Object.keys(state.pools.poolsMapper[chainId] ?? {}).length > 0
+}
+
+function getSwapHydrationKey(curveApi: CurveApi, chainId: number) {
+  return `${chainId}:${curveApi.signerAddress || 'readonly'}:${curveApi.isNoRPC ? 'norpc' : 'rpc'}`
 }

@@ -90,9 +90,7 @@ export const TokenSection = <T extends Option = Option>({
 
       <MenuList variant="menu" sx={{ paddingBlock: 0 }}>
         {displayTokens.map((token) => {
-          const blacklistEntry = blacklist.find(
-            (x) => x.address.toLocaleLowerCase() === token.address.toLocaleLowerCase(),
-          )
+          const blacklistEntry = blacklist.find((x) => x.address.toLowerCase() === token.address.toLowerCase())
           return (
             <TokenOption
               key={token.address}
