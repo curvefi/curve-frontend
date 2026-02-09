@@ -18,6 +18,7 @@ import type {
 import { useNetworks } from '@/dex/entities/networks'
 import { useRouterApi } from '@/dex/hooks/useRouterApi'
 import { useTokensNameMapper } from '@/dex/hooks/useTokensNameMapper'
+import { markSwapFirstQuoteReady } from '@/dex/lib/swapPerformance'
 import { useStore } from '@/dex/store/useStore'
 import { ChainId, CurveApi, type NetworkUrlParams, TokensMapper } from '@/dex/types/main.types'
 import { toTokenOption } from '@/dex/utils'
@@ -421,6 +422,15 @@ export const QuickSwap = ({
     setSteps((prev) => (lodash.isEqual(prev, updatedSteps) ? prev : updatedSteps))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isReady, confirmedLoss, routesAndOutput, formEstGas, formStatus, formValues, searchedParams])
+
+  useEffect(() => {
+    const hasAmount =
+      (formValues.isFrom && +formValues.fromAmount > 0) || (!formValues.isFrom && +formValues.toAmount > 0)
+    const hasQuote = !!routesAndOutput && !routesAndOutput.loading && routesAndOutput.routes.length > 0
+    if (hasAmount && hasQuote) {
+      markSwapFirstQuoteReady()
+    }
+  }, [formValues.isFrom, formValues.fromAmount, formValues.toAmount, routesAndOutput])
 
   const activeStep = haveSigner ? getActiveStep(steps) : null
   const isDisable = formStatus.formProcessing
