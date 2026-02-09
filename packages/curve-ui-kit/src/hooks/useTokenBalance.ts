@@ -63,7 +63,7 @@ export const fetchTokenBalance = async (config: Config, query: TokenBalanceQuery
         .then((balance) => convertBalance({ value: balance.value, decimals: balance.decimals }))
     : await queryClient
         .fetchQuery({
-          ...readContractsQueryOptions(config, { contracts: getERC20QueryContracts(query) }),
+          ...readContractsQueryOptions(config, { allowFailure: true, contracts: getERC20QueryContracts(query) }),
           staleTime: 0,
         })
         .then((results) => convertBalance(parseERC20Results(results)))
@@ -122,6 +122,7 @@ export function useTokenBalance(
   // Spreading with ...readContractsQueryOptions() breaks Typescript's type inference, so we have to settle with the
   // least common denominator that does *not* cause type  inference issues, which is getERC20QueryContracts.
   const erc20Balance = useReadContracts({
+    allowFailure: true,
     contracts: isEnabled ? getERC20QueryContracts({ chainId, userAddress, tokenAddress }) : undefined,
     query: { enabled: isEnabled && !isNativeToken, ...QUERY_FRESHNESS_OPTIONS },
   })
@@ -201,7 +202,7 @@ export function useTokenBalances(
               }),
             )
             return {
-              ...readContractsQueryOptions(config, { contracts }),
+              ...readContractsQueryOptions(config, { allowFailure: true, contracts }),
               ...QUERIES_FRESHNESS_OPTIONS,
               enabled: isEnabled,
               select: (results: ReadContractsReturnType<typeof contracts, true>) =>
@@ -231,21 +232,30 @@ export const prefetchTokenBalances = (
   { chainId, userAddress, tokenAddresses }: ChainQuery & UserQuery & { tokenAddresses: Address[] },
 ) => {
   const uniqueAddresses = Array.from(new Set(tokenAddresses))
+  const nativeAddress = uniqueAddresses.find((tokenAddress) => isNative({ tokenAddress }))
+  const erc20Addresses = uniqueAddresses.filter((tokenAddress) => !isNative({ tokenAddress }))
 
-  uniqueAddresses.forEach((tokenAddress) => {
-    const query = { chainId, userAddress, tokenAddress }
+  if (nativeAddress) {
+    void queryClient.prefetchQuery({
+      ...getNativeBalanceQueryOptions(config, { chainId, userAddress }),
+      ...QUERIES_FRESHNESS_OPTIONS,
+    })
+  }
 
-    if (isNative(query)) {
-      void queryClient.prefetchQuery({
-        ...getNativeBalanceQueryOptions(config, query),
-        ...QUERIES_FRESHNESS_OPTIONS,
-      })
-    } else {
-      void queryClient.prefetchQuery({
-        ...readContractsQueryOptions(config, { contracts: getERC20QueryContracts(query) }),
-        ...QUERIES_FRESHNESS_OPTIONS,
-      })
-    }
+  const erc20AddressChunks = chunkAddresses(erc20Addresses, ERC20_BALANCE_BATCH_SIZE)
+  erc20AddressChunks.forEach((addresses) => {
+    const contracts = addresses.flatMap((tokenAddress) =>
+      getERC20QueryContracts({
+        chainId,
+        userAddress,
+        tokenAddress,
+      }),
+    )
+
+    void queryClient.prefetchQuery({
+      ...readContractsQueryOptions(config, { allowFailure: true, contracts }),
+      ...QUERIES_FRESHNESS_OPTIONS,
+    })
   })
 }
 

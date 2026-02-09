@@ -299,7 +299,7 @@ async function hydrateSwapRouteInBackground(
 
   swapBackgroundHydrationInFlight.add(chainId)
   try {
-    const poolIds = await curvejsApi.network.fetchAllPoolsList(curveApi, network, { useApi: false })
+    const poolIds = await curvejsApi.network.fetchAllPoolsList(curveApi, network)
     if (!poolIds.length) {
       state.tokens.setEmptyPoolListDefault(curveApi)
       return
