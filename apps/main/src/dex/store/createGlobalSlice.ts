@@ -4,7 +4,16 @@ import type { Config } from 'wagmi'
 import type { StoreApi } from 'zustand'
 import { curvejsApi } from '@/dex/lib/curvejs'
 import type { State } from '@/dex/store/useStore'
-import { ChainId, CurveApi, NetworkConfigFromApi, Wallet } from '@/dex/types/main.types'
+import {
+  ChainId,
+  CurveApi,
+  NetworkConfig,
+  NetworkConfigFromApi,
+  Token,
+  TokensMapper,
+  TokensNameMapper,
+  Wallet,
+} from '@/dex/types/main.types'
 import { log } from '@ui-kit/lib/logging'
 import { fetchNetworks } from '../entities/networks'
 
@@ -93,6 +102,15 @@ export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreAp
 
     const networks = await fetchNetworks()
     const network = networks[chainId]
+    const isSwapRouteHydration =
+      typeof window !== 'undefined' && /^\/dex\/[^/]+\/swap\/?$/.test(window.location.pathname)
+
+    if (isSwapRouteHydration) {
+      seedSwapTokenMapper(get(), curveApi, network)
+      state.pools.setEmptyPoolListDefault(chainId)
+      log('Hydrating DEX - Swap path seeded with minimal token set')
+      return
+    }
 
     // get poolList
     const poolIds = await curvejsApi.network.fetchAllPoolsList(curveApi, network)
@@ -177,3 +195,83 @@ export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreAp
     )
   },
 })
+
+const DEFAULT_TOKEN: Token = {
+  address: '',
+  symbol: '',
+  decimals: 0,
+  haveSameTokenName: false,
+  volume: 0,
+}
+
+const ADDRESS_FALLBACK_PREFIX = 6
+const ADDRESS_FALLBACK_SUFFIX = 4
+
+function seedSwapTokenMapper(state: State, curveApi: CurveApi, network: NetworkConfig) {
+  const curveApiWithConstants = curveApi as CurveApi & {
+    constants?: {
+      COINS?: Record<string, string>
+      DECIMALS?: Record<string, number>
+    }
+  }
+  const { chainId } = curveApi
+  const chainIdStr = chainId.toString()
+  const nativeToken = curveApi.getNetworkConstants().NATIVE_TOKEN
+
+  const cachedRouterValues = state.storeCache.routerFormValues[chainId] ?? {}
+  const suggestionSymbolByAddress = Object.fromEntries(
+    (network.createQuickList ?? []).map(({ address, symbol }) => [address.toLowerCase(), symbol]),
+  )
+  const symbolByAddress = Object.entries(curveApiWithConstants.constants?.COINS ?? {}).reduce(
+    (acc, [symbol, address]) => {
+      if (address) acc[String(address).toLowerCase()] = symbol
+      return acc
+    },
+    {} as Record<string, string>,
+  )
+
+  const existingTokensMapper = state.tokens.tokensMapper[chainId] ?? {}
+  const existingTokensNameMapper = state.tokens.tokensNameMapper[chainId] ?? {}
+
+  const addresses = [
+    nativeToken.address,
+    nativeToken.wrappedAddress,
+    network.swap.fromAddress,
+    network.swap.toAddress,
+    cachedRouterValues.fromAddress,
+    cachedRouterValues.toAddress,
+    ...(network.createQuickList ?? []).map(({ address }) => address),
+  ]
+    .filter((address): address is string => !!address)
+    .map((address) => address.toLowerCase())
+
+  const nextTokensMapper: TokensMapper = { ...existingTokensMapper }
+  const nextTokensNameMapper: TokensNameMapper = { ...existingTokensNameMapper }
+
+  for (const address of new Set(addresses)) {
+    const tokenSymbol =
+      nextTokensNameMapper[address] ||
+      nextTokensMapper[address]?.symbol ||
+      (address === nativeToken.address ? nativeToken.symbol : '') ||
+      (address === nativeToken.wrappedAddress ? nativeToken.wrappedSymbol : '') ||
+      suggestionSymbolByAddress[address] ||
+      symbolByAddress[address] ||
+      `${address.slice(0, ADDRESS_FALLBACK_PREFIX)}...${address.slice(-ADDRESS_FALLBACK_SUFFIX)}`
+
+    const tokenDecimals =
+      nextTokensMapper[address]?.decimals ?? (curveApiWithConstants.constants?.DECIMALS?.[address] || 18)
+
+    nextTokensMapper[address] = {
+      ...(nextTokensMapper[address] ?? DEFAULT_TOKEN),
+      address,
+      symbol: tokenSymbol,
+      decimals: tokenDecimals,
+      haveSameTokenName: false,
+      volume: nextTokensMapper[address]?.volume ?? 0,
+    }
+    nextTokensNameMapper[address] = tokenSymbol
+  }
+
+  state.tokens.setStateByActiveKey('tokensMapper', chainIdStr, nextTokensMapper)
+  state.tokens.setStateByActiveKey('tokensNameMapper', chainIdStr, nextTokensNameMapper)
+}
