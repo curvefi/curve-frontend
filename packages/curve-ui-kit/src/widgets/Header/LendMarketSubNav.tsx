@@ -16,26 +16,34 @@ const getMarketPathname = (pathname: string, marketSegment: string) => {
 
 export const LendMarketSubNav = () => {
   const pathname = usePathname()
+  const isMobile = useIsMobile()
 
   const pages: AppPage[] = useMemo(() => {
     const marketSegment = getCurrentLendMarket(pathname)
-    return [
-      {
-        label: t`Borrow`,
-        href: getMarketPathname(pathname, marketSegment) + LEND_MARKET_ROUTES.PAGE_LOAN,
-        isActive: marketSegment === LEND_MARKET_ROUTES.PAGE_LOAN,
-      },
-      {
-        label: t`Supply`,
-        href: getMarketPathname(pathname, marketSegment) + LEND_MARKET_ROUTES.PAGE_VAULT,
-        isActive: marketSegment === LEND_MARKET_ROUTES.PAGE_VAULT.split('/')[1],
-      },
-    ]
+    return marketSegment
+      ? [
+          {
+            label: t`Borrow`,
+            href: getMarketPathname(pathname, marketSegment) + LEND_MARKET_ROUTES.PAGE_LOAN,
+            isActive: marketSegment === LEND_MARKET_ROUTES.PAGE_LOAN,
+          },
+          {
+            label: t`Supply`,
+            href: getMarketPathname(pathname, marketSegment) + LEND_MARKET_ROUTES.PAGE_VAULT,
+            isActive: marketSegment === LEND_MARKET_ROUTES.PAGE_VAULT.split('/')[1],
+          },
+        ]
+      : []
   }, [pathname])
+
+  // Don't render the subnav if not on a market page (ex: lend/.../legal, lend/.../integrations, etc.)
+  if (pages.length === 0) {
+    return null
+  }
 
   return (
     <SubNav testId="lend-subnav">
-      <PageTabsSwitcher pages={pages} overflow={useIsMobile() ? 'fullWidth' : 'standard'} />
+      <PageTabsSwitcher pages={pages} overflow={isMobile ? 'fullWidth' : 'standard'} />
     </SubNav>
   )
 }

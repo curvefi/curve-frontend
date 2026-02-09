@@ -44,6 +44,7 @@ export const MobileHeader = ({
   const pathname = usePathname()
   const top = useLayoutStore((state) => state.navHeight)
   const appLinks = useVisibleAppLinks()
+  const showLendMarketSubNav = useLendMarketSubNav()
 
   useEffect(() => () => closeSidebar(), [pathname, closeSidebar]) // close when URL changes due to clicking a link
 
@@ -109,7 +110,7 @@ export const MobileHeader = ({
           <SideBarFooter onConnect={closeSidebar} />
         </Drawer>
       </Toolbar>
-      {useLendMarketSubNav() && <LendMarketSubNav />}
+      {showLendMarketSubNav && <LendMarketSubNav />}
     </AppBar>
   )
 }

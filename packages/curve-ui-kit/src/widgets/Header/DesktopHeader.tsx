@@ -26,43 +26,46 @@ export const DesktopHeader = ({
   pages,
   appStats,
   networkId,
-}: HeaderImplementationProps) => (
-  <AppBar
-    color="transparent"
-    ref={useMainNavRef()}
-    data-testid="desktop-main-nav"
-    sx={{ position: 'sticky', top: 0, boxShadow: 'none' }}
-  >
-    <GlobalBanner networkId={networkId} chainId={chainId} />
-
-    <Toolbar
-      sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, justifyContent: 'space-around', paddingY: 0 }}
-      data-testid="main-nav"
+}: HeaderImplementationProps) => {
+  const showLendMarketSubNav = useLendMarketSubNav()
+  return (
+    <AppBar
+      color="transparent"
+      ref={useMainNavRef()}
+      data-testid="desktop-main-nav"
+      sx={{ position: 'sticky', top: 0, boxShadow: 'none' }}
     >
-      <Container sx={{ paddingInline: Spacing.md }}>
-        <HeaderLogo sx={{ paddingInlineStart: Spacing.md }} />
-        <AppButtonLinks networkId={networkId} currentMenu={currentMenu} />
+      <GlobalBanner networkId={networkId} chainId={chainId} />
 
-        <Box sx={{ flexGrow: 1 }} />
+      <Toolbar
+        sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, justifyContent: 'space-around', paddingY: 0 }}
+        data-testid="main-nav"
+      >
+        <Container sx={{ paddingInline: Spacing.md }}>
+          <HeaderLogo sx={{ paddingInlineStart: Spacing.md }} />
+          <AppButtonLinks networkId={networkId} currentMenu={currentMenu} />
 
-        <Box display="flex" marginLeft={2} justifyContent="flex-end" gap={3} alignItems="center">
-          <UserProfile />
-          <ChainSwitcher networks={supportedNetworks} />
-          <ConnectWalletIndicator />
-        </Box>
-      </Container>
-    </Toolbar>
+          <Box sx={{ flexGrow: 1 }} />
 
-    {useLendMarketSubNav() ? (
-      <LendMarketSubNav />
-    ) : (
-      <SubNav testId="subnav">
-        <PageTabsSwitcher pages={pages} />
-        <Box flexGrow={1} />
-        <Box display="flex" gap={3} alignItems="baseline" sx={{ textOverflow: 'ellipsis', overflow: 'hidden' }}>
-          <HeaderStats appStats={appStats} />
-        </Box>
-      </SubNav>
-    )}
-  </AppBar>
-)
+          <Box display="flex" marginLeft={2} justifyContent="flex-end" gap={3} alignItems="center">
+            <UserProfile />
+            <ChainSwitcher networks={supportedNetworks} />
+            <ConnectWalletIndicator />
+          </Box>
+        </Container>
+      </Toolbar>
+
+      {showLendMarketSubNav ? (
+        <LendMarketSubNav />
+      ) : (
+        <SubNav testId="subnav">
+          <PageTabsSwitcher pages={pages} />
+          <Box flexGrow={1} />
+          <Box display="flex" gap={3} alignItems="baseline" sx={{ textOverflow: 'ellipsis', overflow: 'hidden' }}>
+            <HeaderStats appStats={appStats} />
+          </Box>
+        </SubNav>
+      )}
+    </AppBar>
+  )
+}
