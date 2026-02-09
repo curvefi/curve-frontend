@@ -120,6 +120,17 @@ export const QuickSwap = ({
     [chainId, nativeToken, network],
   )
   const suggestionRankMap = useMemo(() => toSuggestionRankMap(suggestedTokenAddresses), [suggestedTokenAddresses])
+  const priorityTokenAddresses = useMemo(
+    () =>
+      Array.from(
+        new Set(
+          [searchedParams.fromAddress, searchedParams.toAddress, ...suggestedTokenAddresses]
+            .filter((address): address is string => !!address)
+            .map((address) => address.toLowerCase()),
+        ),
+      ) as Address[],
+    [searchedParams.fromAddress, searchedParams.toAddress, suggestedTokenAddresses],
+  )
 
   const tokens = useMemo(
     () =>
@@ -183,7 +194,12 @@ export const QuickSwap = ({
     tokenSymbols,
   } = useTokenSelectorData(
     { chainId, userAddress: signerAddress, tokens },
-    { enabled: !!isOpenFromToken || !!isOpenToToken, prefetch: false },
+    {
+      enabled: !!isOpenFromToken || !!isOpenToToken,
+      prefetch: true,
+      phasedBalanceLoading: true,
+      priorityTokenAddresses,
+    },
   )
   const tokensWithResolvedSymbols = useMemo(
     () =>

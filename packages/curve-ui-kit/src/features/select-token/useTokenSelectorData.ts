@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { erc20Abi, ethAddress, hexToString, isAddress, type Address, type Hex } from 'viem'
 import { useConfig, useReadContracts } from 'wagmi'
 import { recordEntries } from '@curvefi/prices-api/objects.util'
@@ -23,10 +23,50 @@ export const useTokenSelectorData = (
     chainId: number
     userAddress?: Address
   },
-  { enabled, prefetch }: { enabled: boolean; prefetch: boolean },
+  {
+    enabled,
+    prefetch,
+    phasedBalanceLoading = false,
+    priorityTokenAddresses = [],
+  }: {
+    enabled: boolean
+    prefetch: boolean
+    phasedBalanceLoading?: boolean
+    priorityTokenAddresses?: Address[]
+  },
 ): Pick<TokenListProps, 'balances' | 'tokenPrices' | 'isLoading'> & { tokenSymbols: Record<string, string> } => {
   const config = useConfig()
+  const [fullBalancePhaseKey, setFullBalancePhaseKey] = useState('')
   const tokenAddresses = useMemo(() => tokens.map((token) => token.address), [tokens])
+  const tokenAddressSet = useMemo(
+    () => new Set(tokenAddresses.map((address) => address.toLowerCase())),
+    [tokenAddresses],
+  )
+  const cachedHeldTokenAddresses = useMemo(
+    () => getCachedHeldTokenAddresses({ chainId, userAddress }),
+    [chainId, userAddress],
+  )
+  const phaseOneTokenAddresses = useMemo(
+    () =>
+      dedupeAddresses([...priorityTokenAddresses, ...cachedHeldTokenAddresses])
+        .map((address) => address.toLowerCase())
+        .filter((address) => tokenAddressSet.has(address))
+        .slice(0, MAX_PHASE_ONE_TOKEN_BALANCES) as Address[],
+    [priorityTokenAddresses, cachedHeldTokenAddresses, tokenAddressSet],
+  )
+  const shouldSplitBalanceLoading =
+    phasedBalanceLoading &&
+    enabled &&
+    phaseOneTokenAddresses.length > 0 &&
+    phaseOneTokenAddresses.length < tokenAddresses.length
+  const splitBalancePhaseKey =
+    shouldSplitBalanceLoading && userAddress ? `${chainId}:${userAddress.toLowerCase()}:${tokenAddresses.length}` : ''
+  const isFullBalancePhaseEnabled = splitBalancePhaseKey !== '' && fullBalancePhaseKey === splitBalancePhaseKey
+  const balanceLookupTokenAddresses = useMemo(() => {
+    if (!enabled) return []
+    if (!shouldSplitBalanceLoading || isFullBalancePhaseEnabled) return tokenAddresses
+    return phaseOneTokenAddresses
+  }, [enabled, shouldSplitBalanceLoading, isFullBalancePhaseEnabled, tokenAddresses, phaseOneTokenAddresses])
   const symbolFallbackAddresses = useMemo(
     () =>
       tokens
@@ -38,6 +78,11 @@ export const useTokenSelectorData = (
         ),
     [tokens],
   )
+
+  useEffect(() => {
+    if (!splitBalancePhaseKey) return
+    return scheduleIdleTask(() => setFullBalancePhaseKey(splitBalancePhaseKey), BALANCE_PHASE_TWO_DELAY_MS)
+  }, [splitBalancePhaseKey])
   const symbolLookupAddresses = useMemo(
     () => symbolFallbackAddresses.slice(0, MAX_SYMBOL_LOOKUP),
     [symbolFallbackAddresses],
@@ -143,15 +188,33 @@ export const useTokenSelectorData = (
    * It's up to a future refactor to reduce the amount of token balances fetched.
    */
   useEffect(() => {
-    if (prefetch && chainId && userAddress && tokenAddresses.length > 0) {
-      prefetchTokenBalances(config, { chainId, userAddress, tokenAddresses })
+    if (prefetch && chainId && userAddress && phaseOneTokenAddresses.length > 0) {
+      prefetchTokenBalances(config, { chainId, userAddress, tokenAddresses: phaseOneTokenAddresses })
     }
-  }, [prefetch, config, chainId, userAddress, tokenAddresses])
+  }, [prefetch, config, chainId, userAddress, phaseOneTokenAddresses])
 
-  const { data: balances, isLoading } = useTokenBalances(
-    { chainId, userAddress, tokenAddresses: enabled ? tokenAddresses : [] },
+  const { data: balances, isLoading: isBalancesLoading } = useTokenBalances(
+    { chainId, userAddress, tokenAddresses: balanceLookupTokenAddresses },
     enabled,
   )
+
+  useEffect(() => {
+    if (!chainId || !userAddress) return
+    if (shouldSplitBalanceLoading && !isFullBalancePhaseEnabled) return
+
+    const heldTokenAddresses = dedupeAddresses(
+      recordEntries(balances ?? {})
+        .filter(([, balance]) => +balance > 0)
+        .map(([address]) => address),
+    ).slice(0, MAX_CACHED_HELD_TOKENS)
+    if (heldTokenAddresses.length === 0) return
+
+    setCachedHeldTokenAddresses({
+      chainId,
+      userAddress,
+      tokenAddresses: heldTokenAddresses,
+    })
+  }, [balances, chainId, userAddress, shouldSplitBalanceLoading, isFullBalancePhaseEnabled])
 
   // Only fetch prices for tokens the user has a balance of
   const tokenAddressesWithBalance = useMemo(
@@ -168,11 +231,15 @@ export const useTokenSelectorData = (
 
   const { data: tokenPrices } = useTokenUsdRates({ chainId, tokenAddresses: tokenAddressesWithBalance }, enabled)
 
-  return { balances, tokenPrices, isLoading, tokenSymbols }
+  return { balances, tokenPrices, isLoading: isBalancesLoading, tokenSymbols }
 }
 
 const ADDRESS_LABEL_SYMBOL_REGEX = /^0x[a-f0-9]{4}\.\.\.[a-f0-9]{4}$/i
 const MAX_SYMBOL_LOOKUP = 300
+const MAX_PHASE_ONE_TOKEN_BALANCES = 220
+const MAX_CACHED_HELD_TOKENS = 220
+const BALANCE_PHASE_TWO_DELAY_MS = 350
+const HELD_TOKEN_CACHE_KEY = 'curve.select-token.held-token-addresses.v1'
 const ERC20_SYMBOL_BYTES32_ABI = [
   {
     type: 'function',
@@ -182,6 +249,53 @@ const ERC20_SYMBOL_BYTES32_ABI = [
     outputs: [{ type: 'bytes32' }],
   },
 ] as const
+
+function scheduleIdleTask(callback: () => void, timeoutMs: number) {
+  if (typeof window === 'undefined') return undefined
+  if ('requestIdleCallback' in window) {
+    const id = window.requestIdleCallback(callback, { timeout: timeoutMs })
+    return () => window.cancelIdleCallback(id)
+  }
+  const id = window.setTimeout(callback, timeoutMs)
+  return () => window.clearTimeout(id)
+}
+
+function getHeldTokenCacheEntryKey(chainId: number, userAddress: Address) {
+  return `${chainId}:${userAddress.toLowerCase()}`
+}
+
+function getCachedHeldTokenAddresses({ chainId, userAddress }: { chainId: number; userAddress?: Address }) {
+  if (!chainId || !userAddress || typeof window === 'undefined') return []
+
+  const entryKey = getHeldTokenCacheEntryKey(chainId, userAddress)
+  try {
+    const parsed = JSON.parse(window.localStorage.getItem(HELD_TOKEN_CACHE_KEY) ?? '{}') as Record<string, string[]>
+    return dedupeAddresses(parsed[entryKey] ?? [])
+  } catch {
+    return []
+  }
+}
+
+function setCachedHeldTokenAddresses({
+  chainId,
+  userAddress,
+  tokenAddresses,
+}: {
+  chainId: number
+  userAddress: Address
+  tokenAddresses: string[]
+}) {
+  if (!chainId || !userAddress || typeof window === 'undefined') return
+
+  const entryKey = getHeldTokenCacheEntryKey(chainId, userAddress)
+  try {
+    const parsed = JSON.parse(window.localStorage.getItem(HELD_TOKEN_CACHE_KEY) ?? '{}') as Record<string, string[]>
+    parsed[entryKey] = dedupeAddresses(tokenAddresses).slice(0, MAX_CACHED_HELD_TOKENS)
+    window.localStorage.setItem(HELD_TOKEN_CACHE_KEY, JSON.stringify(parsed))
+  } catch {
+    // noop on storage parsing/quota errors
+  }
+}
 
 function isMissingSymbol(symbol: string | undefined) {
   return !symbol || ADDRESS_LABEL_SYMBOL_REGEX.test(symbol)
