@@ -138,10 +138,9 @@ export const QuickSwap = ({
         .filter((token): token is Token => !!token)
         .map((token) => {
           const address = token.address.toLowerCase()
-          const boostedVolume = suggestionRankMap[address]
-            ? Number.MAX_SAFE_INTEGER - suggestionRankMap[address]
-            : token.volume
-          return toTokenOption(network?.networkId)({ ...token, volume: boostedVolume })
+          const fallbackVolumeRank = suggestionRankMap[address] ?? 0
+          const volume = typeof token.volume === 'number' && token.volume > 0 ? token.volume : fallbackVolumeRank
+          return toTokenOption(network?.networkId)({ ...token, volume })
         }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [tokensMapperStr, network?.networkId, suggestionRankMap],

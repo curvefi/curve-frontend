@@ -51,13 +51,16 @@ export const createTokensSlice = (
     ...DEFAULT_STATE,
 
     setTokensMapper: async (curve, poolDatas) => {
-      const { pools } = get()
+      const { pools, storeCache } = get()
       const { tokensMapper, ...sliceState } = get()[sliceKey]
 
       sliceState.setStateByKey('loading', true)
 
       const chainId = curve.chainId
-      const volumeMapper = pools.volumeMapper[chainId] ?? {}
+      const liveVolumeMapper = pools.volumeMapper[chainId] ?? {}
+      const volumeMapper = Object.keys(liveVolumeMapper).length
+        ? liveVolumeMapper
+        : (storeCache.volumeMapper[chainId] ?? {})
       const DEFAULT_TOKEN_MAPPER = _getDefaultTokenMapper(curve)
       let cTokensMapper: TokensMapper = { ...(tokensMapper[chainId] ?? DEFAULT_TOKEN_MAPPER) }
       const partialTokensMapper: TokensMapper = {}
