@@ -1,3 +1,4 @@
+import { useLayoutEffect, useMemo, useRef, useState, type RefObject } from 'react'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
@@ -13,6 +14,15 @@ import { Spinner } from '@ui-kit/shared/ui/Spinner'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing, ButtonSize } = SizesAndSpaces
+const TOKEN_ROW_HEIGHT_PX = 56
+const TOKEN_LIST_OVERSCAN_ROWS = 8
+const TOKEN_LIST_VIRTUALIZE_THRESHOLD = 220
+
+type VirtualizationState = {
+  scrollTop: number
+  viewportHeight: number
+  scrollContainerRef: RefObject<HTMLElement | null>
+}
 
 export type TokenSectionProps<T extends Option = Option> = {
   /** List of token options to display */
@@ -41,6 +51,8 @@ export type TokenSectionProps<T extends Option = Option> = {
   onTogglePreview?: () => void
   /** Callback when "Show more" is clicked */
   onShowAll?: () => void
+  /** Shared scroll-root virtualization state */
+  virtualization?: VirtualizationState
 }
 
 export const TokenSection = <T extends Option = Option>({
@@ -57,13 +69,66 @@ export const TokenSection = <T extends Option = Option>({
   onToken,
   onTogglePreview,
   onShowAll,
+  virtualization,
 }: TokenSectionProps<T>) => {
-  if (!tokens.length) return null
+  const listRef = useRef<HTMLUListElement | null>(null)
+  const [sectionTopOffset, setSectionTopOffset] = useState(0)
+  const hasTokens = tokens.length > 0
 
   const collapsedPreview = preview?.length ? preview : tokens
   const togglePreview = onTogglePreview ?? onShowAll
   const displayTokens = isExpanded ? tokens : collapsedPreview
   const hasToggle = !!(preview?.length && preview.length < tokens.length && togglePreview)
+  const shouldVirtualize =
+    !!virtualization && displayTokens.length >= TOKEN_LIST_VIRTUALIZE_THRESHOLD && virtualization.viewportHeight > 0
+
+  useLayoutEffect(() => {
+    if (!virtualization) return
+
+    const measureSectionTop = () => {
+      const listElement = listRef.current
+      const containerElement = virtualization.scrollContainerRef.current
+      if (!listElement || !containerElement) return
+      const topOffset =
+        listElement.getBoundingClientRect().top -
+        containerElement.getBoundingClientRect().top +
+        containerElement.scrollTop
+      setSectionTopOffset(topOffset)
+    }
+
+    measureSectionTop()
+    if (typeof ResizeObserver === 'undefined') return
+
+    const resizeObserver = new ResizeObserver(measureSectionTop)
+    const listElement = listRef.current
+    const containerElement = virtualization.scrollContainerRef.current
+    if (listElement) resizeObserver.observe(listElement)
+    if (containerElement) resizeObserver.observe(containerElement)
+    window.addEventListener('resize', measureSectionTop)
+    return () => {
+      window.removeEventListener('resize', measureSectionTop)
+      resizeObserver.disconnect()
+    }
+  }, [displayTokens.length, hasToggle, title, virtualization])
+
+  const virtualRows = useMemo(() => {
+    if (!shouldVirtualize || !virtualization) return null
+
+    const relativeTop = virtualization.scrollTop - sectionTopOffset
+    const visibleCount = Math.ceil(virtualization.viewportHeight / TOKEN_ROW_HEIGHT_PX) + TOKEN_LIST_OVERSCAN_ROWS * 2
+    const startIndex = Math.max(0, Math.floor(relativeTop / TOKEN_ROW_HEIGHT_PX) - TOKEN_LIST_OVERSCAN_ROWS)
+    const endIndex = Math.min(displayTokens.length, startIndex + visibleCount)
+
+    return {
+      startIndex,
+      endIndex,
+      topSpacer: startIndex * TOKEN_ROW_HEIGHT_PX,
+      bottomSpacer: (displayTokens.length - endIndex) * TOKEN_ROW_HEIGHT_PX,
+    }
+  }, [displayTokens.length, sectionTopOffset, shouldVirtualize, virtualization])
+
+  const visibleTokens = virtualRows ? displayTokens.slice(virtualRows.startIndex, virtualRows.endIndex) : displayTokens
+  if (!hasTokens) return null
 
   // If there's a list of preview tokens, show that with a 'Show more' button.
   // If not, then just display all tokens from the list.
@@ -88,8 +153,16 @@ export const TokenSection = <T extends Option = Option>({
         </Box>
       )}
 
-      <MenuList variant="menu" sx={{ paddingBlock: 0 }}>
-        {displayTokens.map((token) => {
+      <MenuList variant="menu" sx={{ paddingBlock: 0 }} ref={listRef}>
+        {virtualRows && (
+          <Box
+            component="li"
+            role="presentation"
+            sx={{ height: `${virtualRows.topSpacer}px`, listStyle: 'none', padding: 0, margin: 0 }}
+          />
+        )}
+
+        {visibleTokens.map((token) => {
           const blacklistEntry = blacklist.find((x) => x.address.toLowerCase() === token.address.toLowerCase())
           return (
             <TokenOption
@@ -103,6 +176,14 @@ export const TokenSection = <T extends Option = Option>({
             />
           )
         })}
+
+        {virtualRows && (
+          <Box
+            component="li"
+            role="presentation"
+            sx={{ height: `${virtualRows.bottomSpacer}px`, listStyle: 'none', padding: 0, margin: 0 }}
+          />
+        )}
 
         {hasToggle && (
           <Button
