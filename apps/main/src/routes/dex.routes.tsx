@@ -1,4 +1,5 @@
 import { createRoute } from '@tanstack/react-router'
+import { PoolListRouteFallback } from './components/PoolListRouteFallback'
 import { lazyNamedRouteComponent } from './lazy-route'
 import { rootRoute } from './root.routes'
 import { createSharedRoutes } from './shared.routes'
@@ -15,7 +16,12 @@ const PageDeployGauge = lazyNamedRouteComponent(
   () => import('@/dex/components/PageDeployGauge/Page'),
   'PageDeployGauge',
 )
-const PagePoolList = lazyNamedRouteComponent(() => import('@/dex/components/PagePoolList/Page'), 'PagePoolList')
+const PagePoolList = lazyNamedRouteComponent(
+  () => import('@/dex/components/PagePoolList/Page'),
+  'PagePoolList',
+  undefined,
+  <PoolListRouteFallback />,
+)
 const PagePool = lazyNamedRouteComponent(() => import('@/dex/components/PagePool/Page'), 'PagePool')
 const PageRouterSwap = lazyNamedRouteComponent(() => import('@/dex/components/PageRouterSwap/Page'), 'PageRouterSwap')
 
