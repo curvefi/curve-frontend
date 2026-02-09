@@ -44,10 +44,16 @@ const helpers = { waitForTransaction, waitForTransactions }
 
 // curve
 const network = {
-  fetchAllPoolsList: async (curve: CurveApi, network: NetworkConfig) => {
+  fetchAllPoolsList: async (
+    curve: CurveApi,
+    network: NetworkConfig,
+    options?: {
+      useApi?: boolean
+    },
+  ) => {
     log('fetchAllPoolsList', curve.chainId)
     // must call api in this order, must use api to get non-cached version of gaugeStatus
-    const useApi = network.useApi
+    const useApi = options?.useApi ?? network.useApi
     await Promise.allSettled([
       curve.factory.fetchPools(useApi),
       curve.cryptoFactory.fetchPools(useApi),

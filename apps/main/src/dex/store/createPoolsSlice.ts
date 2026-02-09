@@ -64,6 +64,12 @@ type SliceState = {
   error: string
 }
 
+type FetchPoolsOptions = {
+  includeBlacklist?: boolean
+  includeGaugeData?: boolean
+  includeMetrics?: boolean
+}
+
 const sliceKey = 'pools'
 
 export type PoolsSlice = {
@@ -74,6 +80,7 @@ export type PoolsSlice = {
       curve: CurveApi,
       poolIds: string[],
       failedFetching24hOldVprice: { [poolAddress: string]: boolean } | null,
+      options?: FetchPoolsOptions,
     ): Promise<{ poolsMapper: PoolDataMapper; poolDatas: PoolData[] } | undefined>
     fetchNewPool(curve: CurveApi, poolId: string): Promise<PoolData | undefined>
     fetchPoolsRewardsApy(chainId: ChainId, poolDatas: PoolData[]): Promise<void>
@@ -184,13 +191,14 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
       //  update cache
       storeCache.setTvlVolumeMapper('volumeMapper', chainId, volumeMapper)
     },
-    fetchPools: async (curve, poolIds, failedFetching24hOldVprice) => {
+    fetchPools: async (curve, poolIds, failedFetching24hOldVprice, options) => {
       const { pools, storeCache, tokens } = get()
 
       const { chainId } = curve
       const networks = await fetchNetworks()
       const { isLite, id } = networks[chainId]
       const nativeToken = curve.getNetworkConstants().NATIVE_TOKEN
+      const { includeBlacklist = true, includeGaugeData = true, includeMetrics = true } = options ?? {}
 
       try {
         set(
@@ -200,13 +208,14 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
           }),
         )
 
-        const blacklist = await fetchPoolsBlacklist({ blockchainId: id as Chain })
+        const blacklist = includeBlacklist ? await fetchPoolsBlacklist({ blockchainId: id as Chain }) : []
         const { poolsMapper, poolsMapperCache } = await getPools(
           curve,
           poolIds,
           new Set(blacklist),
           networks[chainId],
           failedFetching24hOldVprice,
+          { includeGaugeData },
         )
 
         const poolDatas = Object.entries(poolsMapper).map(([_, v]) => v)
@@ -234,12 +243,14 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
         if (!partialPoolDatas.length) return { poolsMapper, poolDatas: partialPoolDatas }
 
         // fetch tvls and volumes
-        await (isLite
-          ? pools.fetchPoolsTvl(curve, partialPoolDatas)
-          : Promise.all([
-              pools.fetchPoolsTvl(curve, partialPoolDatas),
-              pools.fetchPoolsVolume(chainId, partialPoolDatas),
-            ]))
+        if (includeMetrics) {
+          await (isLite
+            ? pools.fetchPoolsTvl(curve, partialPoolDatas)
+            : Promise.all([
+                pools.fetchPoolsTvl(curve, partialPoolDatas),
+                pools.fetchPoolsVolume(chainId, partialPoolDatas),
+              ]))
+        }
 
         await tokens.setTokensMapper(curve, partialPoolDatas)
 

@@ -299,17 +299,18 @@ async function hydrateSwapRouteInBackground(
 
   swapBackgroundHydrationInFlight.add(chainId)
   try {
-    const poolIds = await curvejsApi.network.fetchAllPoolsList(curveApi, network)
+    const poolIds = await curvejsApi.network.fetchAllPoolsList(curveApi, network, { useApi: false })
     if (!poolIds.length) {
       state.tokens.setEmptyPoolListDefault(curveApi)
       return
     }
 
-    const failedFetching24hOldVprice: { [poolAddress: string]: boolean } =
-      chainId === 2222 ? await curvejsApi.network.getFailedFetching24hOldVprice() : {}
-
-    await state.pools.fetchPools(curveApi, poolIds, failedFetching24hOldVprice)
-    log('Hydrating DEX - Swap path full pool hydration complete', chainId, { pools: poolIds.length })
+    await state.pools.fetchPools(curveApi, poolIds, null, {
+      includeBlacklist: false,
+      includeGaugeData: false,
+      includeMetrics: false,
+    })
+    log('Hydrating DEX - Swap path light pool hydration complete', chainId, { pools: poolIds.length })
   } catch (error) {
     console.warn('Swap background hydration failed', chainId, error)
   } finally {
