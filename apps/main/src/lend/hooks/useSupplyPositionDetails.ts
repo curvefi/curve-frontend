@@ -117,7 +117,7 @@ export const useSupplyPositionDetails = ({
       : null
 
   return {
-    supplyRate: {
+    userSupplyRate: {
       rate: supplyApy,
       averageRate: averageRate,
       averageRateLabel: averageMultiplierString,
