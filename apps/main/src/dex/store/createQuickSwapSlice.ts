@@ -101,6 +101,12 @@ const DEFAULT_STATE: SliceState = {
   routesAndOutput: {},
 }
 
+const ROUTES_CACHE_TTL_MS = 1500
+const MAX_ROUTES_CACHE_ENTRIES = 40
+const inFlightRoutesByActiveKey = new Map<string, Promise<RoutesAndOutputQueryResponse>>()
+const cachedRoutesByActiveKey = new Map<string, { at: number; value: RoutesAndOutputQueryResponse }>()
+let latestRoutesRequestNonce = 0
+
 export const createQuickSwapSlice = (
   _set: StoreApi<State>['setState'],
   get: StoreApi<State>['getState'],
@@ -163,6 +169,7 @@ export const createQuickSwapSlice = (
     fetchRoutesAndOutput: async (config, curve, searchedParams, maxSlippage) => {
       const state = get()
       const sliceState = state[sliceKey]
+      const requestNonce = ++latestRoutesRequestNonce
 
       const activeKey = sliceState.activeKey
       const { chainId, signerAddress } = curve
@@ -179,13 +186,16 @@ export const createQuickSwapSlice = (
       const poolsMapper = state.pools.poolsMapper[chainId]
       // allow UI to paint first
       await sleep(100)
-      const { exchangeRates, ...resp } = await curvejsApi.router.routesAndOutput(
+      const { exchangeRates, ...resp } = await fetchRoutesAndOutputDeduped(
         activeKey,
         curve,
         poolsMapper,
         cFormValues,
         searchedParams,
       )
+
+      // Cancel stale result application when a newer route request has started.
+      if (requestNonce !== latestRoutesRequestNonce) return
 
       if (resp.activeKey === get()[sliceKey].activeKey) {
         if (resp.error) {
@@ -506,6 +516,50 @@ function getRouterActiveKey(
   const parsedToAddress = toAddress ? toAddress.slice(toAddress.length - 4) : ''
 
   return `${chainId}-${parsedSignerAddress}-${parsedFromAddress}-${parsedToAddress}-${fromAmount}-${maxSlippage}`
+}
+
+type RoutesAndOutputQueryResponse = Awaited<ReturnType<typeof curvejsApi.router.routesAndOutput>>
+type RoutesAndOutputPoolsMapper = Parameters<typeof curvejsApi.router.routesAndOutput>[2]
+
+async function fetchRoutesAndOutputDeduped(
+  activeKey: string,
+  curve: CurveApi,
+  poolsMapper: RoutesAndOutputPoolsMapper,
+  formValues: FormValues,
+  searchedParams: SearchedParams,
+) {
+  const now = Date.now()
+  const cached = cachedRoutesByActiveKey.get(activeKey)
+  if (cached && now - cached.at <= ROUTES_CACHE_TTL_MS) {
+    return cached.value
+  }
+
+  const inFlight = inFlightRoutesByActiveKey.get(activeKey)
+  if (inFlight) {
+    return inFlight
+  }
+
+  const request = curvejsApi.router
+    .routesAndOutput(activeKey, curve, poolsMapper, formValues, searchedParams)
+    .then((value) => {
+      cachedRoutesByActiveKey.set(activeKey, { at: Date.now(), value })
+      trimRoutesCache()
+      return value
+    })
+    .finally(() => {
+      inFlightRoutesByActiveKey.delete(activeKey)
+    })
+
+  inFlightRoutesByActiveKey.set(activeKey, request)
+  return request
+}
+
+function trimRoutesCache() {
+  while (cachedRoutesByActiveKey.size > MAX_ROUTES_CACHE_ENTRIES) {
+    const oldestKey = cachedRoutesByActiveKey.keys().next().value
+    if (!oldestKey) break
+    cachedRoutesByActiveKey.delete(oldestKey)
+  }
 }
 
 export function getRouterSwapsExchangeRates(
