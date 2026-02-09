@@ -66,13 +66,13 @@ export const PageHeader = ({
             )}
           </WithSkeleton>
           <Stack>
-            <Stack direction="row" gap={Spacing.xs} alignItems="top">
+            <Stack direction="row" gap={Spacing.xs} alignItems="flex-end">
               <WithSkeleton loading={isLoading} width={120} height={24}>
                 <Typography variant="headingSBold">{title}</Typography>
               </WithSkeleton>
               <WithSkeleton loading={isLoading} width={24} height={24}>
-                <Chip size="extraSmall" color="default" label={marketType} />
                 <ChainIcon size="sm" blockchainId={blockchainId} />
+                <Chip size="extraSmall" color="default" label={marketType} />
               </WithSkeleton>
             </Stack>
             <WithSkeleton loading={isLoading} width={100} height={14}>
