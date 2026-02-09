@@ -1,3 +1,5 @@
+export { type RouteProvider } from 'curve-ui-kit/src/widgets/RouteProvider/route-provider.types'
+import { type RouteProvider, RouteProviders } from 'curve-ui-kit/src/widgets/RouteProvider/route-provider.types'
 import { Address, Hex } from 'viem'
 import type { IRouteStep } from '@curvefi/api/lib/interfaces'
 
@@ -12,9 +14,6 @@ const AddressSchema = { type: 'string', pattern: ADDRESS_HEX_PATTERN } as const
 const AddressArraySchema = { type: 'array', items: AddressSchema, minItems: 1, maxItems: 1 } as const
 const DecimalSchema = { type: 'string', pattern: DECIMAL_PATTERN }
 const AmountArraySchema = { type: 'array', items: DecimalSchema, minItems: 1, maxItems: 1 } as const
-const RouteProviders = ['curve', 'enso', 'odos'] as const
-
-export type RouteProvider = (typeof RouteProviders)[number]
 
 const optimalRouteQuerySchema = {
   type: 'object',
