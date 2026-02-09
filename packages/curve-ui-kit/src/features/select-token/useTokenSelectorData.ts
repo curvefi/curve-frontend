@@ -1,9 +1,10 @@
 import { useEffect, useMemo } from 'react'
-import type { Address } from 'viem'
-import { useConfig } from 'wagmi'
+import { erc20Abi, ethAddress, isAddress, type Address } from 'viem'
+import { useConfig, useReadContracts } from 'wagmi'
 import { recordEntries } from '@curvefi/prices-api/objects.util'
 import type { TokenOption } from '@ui-kit/features/select-token'
 import { prefetchTokenBalances, useTokenBalances } from '@ui-kit/hooks/useTokenBalance'
+import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { useTokenUsdRates } from '@ui-kit/lib/model/entities/token-usd-rate'
 import type { TokenListProps } from './ui/modal/TokenList'
 
@@ -23,9 +24,58 @@ export const useTokenSelectorData = (
     userAddress?: Address
   },
   { enabled, prefetch }: { enabled: boolean; prefetch: boolean },
-): Pick<TokenListProps, 'balances' | 'tokenPrices' | 'isLoading'> => {
+): Pick<TokenListProps, 'balances' | 'tokenPrices' | 'isLoading'> & { tokenSymbols: Record<string, string> } => {
   const config = useConfig()
   const tokenAddresses = useMemo(() => tokens.map((token) => token.address), [tokens])
+  const symbolFallbackAddresses = useMemo(
+    () =>
+      tokens
+        .filter((token) => isMissingSymbol(token.symbol))
+        .map((token) => token.address)
+        .filter(
+          (address): address is Address =>
+            isAddress(address, { strict: false }) && address.toLowerCase() !== ethAddress,
+        ),
+    [tokens],
+  )
+  const symbolContracts = useMemo(
+    () =>
+      symbolFallbackAddresses.slice(0, MAX_SYMBOL_LOOKUP).map((address) => ({
+        chainId,
+        address,
+        abi: erc20Abi,
+        functionName: 'symbol',
+      })),
+    [chainId, symbolFallbackAddresses],
+  )
+  const shouldFetchSymbols = enabled && chainId > 0 && symbolContracts.length > 0
+
+  const { data: symbolResults } = useReadContracts({
+    contracts: shouldFetchSymbols ? symbolContracts : undefined,
+    allowFailure: true,
+    query: {
+      enabled: shouldFetchSymbols,
+      staleTime: REFRESH_INTERVAL['1d'],
+      refetchOnWindowFocus: false,
+    },
+  })
+
+  const tokenSymbols = useMemo(
+    () =>
+      symbolResults?.reduce(
+        (acc, result, idx) => {
+          if (result.status === 'success' && typeof result.result === 'string') {
+            const symbol = sanitizeSymbol(result.result)
+            if (symbol) {
+              acc[symbolContracts[idx].address.toLowerCase()] = symbol
+            }
+          }
+          return acc
+        },
+        {} as Record<string, string>,
+      ) ?? {},
+    [symbolContracts, symbolResults],
+  )
 
   /*
    * Prefetch balances eagerly so they're cached before the modal opens.
@@ -63,5 +113,16 @@ export const useTokenSelectorData = (
 
   const { data: tokenPrices } = useTokenUsdRates({ chainId, tokenAddresses: tokenAddressesWithBalance }, enabled)
 
-  return { balances, tokenPrices, isLoading }
+  return { balances, tokenPrices, isLoading, tokenSymbols }
+}
+
+const MAX_SYMBOL_LOOKUP = 300
+const ADDRESS_LABEL_SYMBOL_REGEX = /^0x[a-f0-9]{4}\.\.\.[a-f0-9]{4}$/i
+
+function isMissingSymbol(symbol: string | undefined) {
+  return !symbol || ADDRESS_LABEL_SYMBOL_REGEX.test(symbol)
+}
+
+function sanitizeSymbol(symbol: string) {
+  return symbol.replaceAll('\0', '').trim()
 }
