@@ -86,25 +86,7 @@ export const TokenList = ({
 
     if (!disableSorting) {
       // Sort tokens with known USD prices first. Tokens without USD prices always stay at the bottom.
-      balanceTokens.sort((a, b) => {
-        const aBalance = +(balances?.[a.address] ?? 0)
-        const bBalance = +(balances?.[b.address] ?? 0)
-        const aUsdPrice = tokenPrices?.[a.address] ?? 0
-        const bUsdPrice = tokenPrices?.[b.address] ?? 0
-        const aHasUsdPrice = aUsdPrice > 0
-        const bHasUsdPrice = bUsdPrice > 0
-        const hasUsdDelta = Number(bHasUsdPrice) - Number(aHasUsdPrice)
-        if (hasUsdDelta !== 0) return hasUsdDelta
-
-        if (aHasUsdPrice && bHasUsdPrice) {
-          const aUsdValue = aUsdPrice * aBalance
-          const bUsdValue = bUsdPrice * bBalance
-          return bUsdValue - aUsdValue || bBalance - aBalance
-        }
-
-        // Both tokens have no USD price: rank by raw balance.
-        return bBalance - aBalance
-      })
+      balanceTokens.sort((a, b) => compareByHoldingsValue(a, b, balances, tokenPrices))
     }
 
     return balanceTokens
@@ -197,4 +179,26 @@ export const TokenList = ({
       )}
     </Stack>
   )
+}
+
+function compareByHoldingsValue(
+  a: Option,
+  b: Option,
+  balances?: Record<string, string | undefined>,
+  tokenPrices?: Record<string, number>,
+) {
+  const aBalance = +(balances?.[a.address] ?? 0)
+  const bBalance = +(balances?.[b.address] ?? 0)
+  const aUsdPrice = tokenPrices?.[a.address] ?? 0
+  const bUsdPrice = tokenPrices?.[b.address] ?? 0
+  const aHasUsdPrice = aUsdPrice > 0
+  const bHasUsdPrice = bUsdPrice > 0
+  const hasUsdDelta = Number(bHasUsdPrice) - Number(aHasUsdPrice)
+
+  if (hasUsdDelta !== 0) return hasUsdDelta
+  if (!aHasUsdPrice || !bHasUsdPrice) return bBalance - aBalance
+
+  const aUsdValue = aUsdPrice * aBalance
+  const bUsdValue = bUsdPrice * bBalance
+  return bUsdValue - aUsdValue || bBalance - aBalance
 }

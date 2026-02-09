@@ -38,15 +38,19 @@ export const useTokenSelectorData = (
         ),
     [tokens],
   )
+  const symbolLookupAddresses = useMemo(
+    () => symbolFallbackAddresses.slice(0, MAX_SYMBOL_LOOKUP),
+    [symbolFallbackAddresses],
+  )
   const symbolContracts = useMemo(
     () =>
-      symbolFallbackAddresses.slice(0, MAX_SYMBOL_LOOKUP).map((address) => ({
+      symbolLookupAddresses.map((address) => ({
         chainId,
         address,
         abi: erc20Abi,
         functionName: 'symbol',
       })),
-    [chainId, symbolFallbackAddresses],
+    [chainId, symbolLookupAddresses],
   )
   const shouldFetchSymbols = enabled && chainId > 0 && symbolContracts.length > 0
 
@@ -79,8 +83,8 @@ export const useTokenSelectorData = (
 
   const unresolvedSymbolAddresses = useMemo(
     () =>
-      symbolFallbackAddresses.filter((address) => typeof tokenSymbolsFromString[address.toLowerCase()] === 'undefined'),
-    [symbolFallbackAddresses, tokenSymbolsFromString],
+      symbolLookupAddresses.filter((address) => typeof tokenSymbolsFromString[address.toLowerCase()] === 'undefined'),
+    [symbolLookupAddresses, tokenSymbolsFromString],
   )
   const bytes32SymbolContracts = useMemo(
     () =>
