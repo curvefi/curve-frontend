@@ -13,6 +13,7 @@ import { useStore } from '@/dex/store/useStore'
 import { ChainId, TokensNameMapper } from '@/dex/types/main.types'
 import { getExchangeRates } from '@/dex/utils/utilsSwap'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { Address, type Decimal, decimal } from '@ui-kit/utils'
 
 /** Calculate exchange rates for display */
@@ -106,6 +107,9 @@ export function useRouterApi(
 } {
   const formValues = useStore((state) => state.quickSwap.formValues) as FormValues
   const { tokensNameMapper } = useTokensNameMapper(chainId)
+  const debouncedFromAmount = useDebouncedValue(formValues.fromAmount, { debounceMs: 180 })
+  const debouncedToAmount = useDebouncedValue(formValues.toAmount, { debounceMs: 180 })
+  const queryAmount = formValues.isFrom ? debouncedFromAmount : debouncedToAmount
 
   const {
     data: response,
@@ -117,9 +121,7 @@ export function useRouterApi(
       chainId: chainId,
       tokenIn: fromAddress as Address,
       tokenOut: toAddress as Address,
-      ...(formValues.isFrom
-        ? { amountIn: decimal(formValues.fromAmount) }
-        : { amountOut: decimal(formValues.toAmount) }),
+      ...(formValues.isFrom ? { amountIn: decimal(queryAmount) } : { amountOut: decimal(queryAmount) }),
     },
     enabled,
   )
@@ -127,6 +129,10 @@ export function useRouterApi(
   /** Update the store with the fetched amounts and error status */
   useEffect(() => {
     if (!response) return
+    const latestFormValues = useStore.getState().quickSwap.formValues
+    const latestAmount = latestFormValues.isFrom ? latestFormValues.fromAmount : latestFormValues.toAmount
+    if (latestAmount !== queryAmount) return
+
     const { amountIn, amountOut } = response[0] ?? {}
     const {
       setAppStateByKeys,
@@ -143,7 +149,7 @@ export function useRouterApi(
         ...(response.length && (formValues.isFrom ? { toAmount: amountOut } : { fromAmount: amountIn })),
       },
     })
-  }, [error, response])
+  }, [error, queryAmount, response])
 
   return {
     data: useMemo(
