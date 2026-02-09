@@ -1,12 +1,13 @@
 import Skeleton from '@mui/material/Skeleton'
 import { createRoute } from '@tanstack/react-router'
-import { Integrations } from '@ui-kit/features/integrations'
 import type { AppName } from '@ui-kit/shared/routes'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { LegalPage } from '@ui-kit/widgets/Legal'
+import { lazyNamedRouteComponent } from './lazy-route'
 import { redirectTo } from './util'
 
 const { MinHeight } = SizesAndSpaces
+const Integrations = lazyNamedRouteComponent(() => import('@ui-kit/features/integrations'), 'Integrations')
+const LegalPage = lazyNamedRouteComponent(() => import('@ui-kit/widgets/Legal'), 'LegalPage')
 
 type LayoutProps = Pick<Parameters<typeof createRoute>[0], 'getParentRoute'>
 
