@@ -108,8 +108,13 @@ export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreAp
 
     if (isSwapRouteHydration) {
       seedSwapTokenMapper(get(), curveApi, network)
-      state.pools.setEmptyPoolListDefault(chainId)
-      void hydrateSwapRouteInBackground(get, curveApi, chainId, network)
+      const existingPoolsMapper = state.pools.poolsMapper[chainId] ?? {}
+      if (Object.keys(existingPoolsMapper).length === 0) {
+        state.pools.setEmptyPoolListDefault(chainId)
+      }
+      void hydrateSwapRouteInBackground(get, curveApi, chainId, network, {
+        forceReloadCurveData: isNetworkSwitched || isUserSwitched,
+      })
       log('Hydrating DEX - Swap path seeded with minimal token set')
       return
     }
@@ -208,7 +213,7 @@ const DEFAULT_TOKEN: Token = {
 
 const ADDRESS_FALLBACK_PREFIX = 6
 const ADDRESS_FALLBACK_SUFFIX = 4
-const swapBackgroundHydrationInFlight = new Set<number>()
+const swapBackgroundHydrationInFlight = new Set<string>()
 
 function seedSwapTokenMapper(state: State, curveApi: CurveApi, network: NetworkConfig) {
   const curveApiWithConstants = curveApi as CurveApi & {
@@ -287,17 +292,21 @@ async function hydrateSwapRouteInBackground(
   curveApi: CurveApi,
   chainId: number,
   network: NetworkConfig,
+  options?: { forceReloadCurveData?: boolean },
 ) {
   const state = get()
+  const hydrationKey = `${chainId}:${curveApi.signerAddress || 'readonly'}:${curveApi.isNoRPC ? 'norpc' : 'rpc'}`
+  const shouldForceReloadCurveData = options?.forceReloadCurveData ?? false
+  const hasPoolsInStore = Object.keys(state.pools.poolsMapper[chainId] ?? {}).length > 0
   if (
-    state.pools.haveAllPools[chainId] ||
+    (!shouldForceReloadCurveData && state.pools.haveAllPools[chainId] && hasPoolsInStore) ||
     state.pools.poolsLoading[chainId] ||
-    swapBackgroundHydrationInFlight.has(chainId)
+    swapBackgroundHydrationInFlight.has(hydrationKey)
   ) {
     return
   }
 
-  swapBackgroundHydrationInFlight.add(chainId)
+  swapBackgroundHydrationInFlight.add(hydrationKey)
   try {
     const poolIds = await curvejsApi.network.fetchAllPoolsList(curveApi, network)
     if (!poolIds.length) {
@@ -314,6 +323,6 @@ async function hydrateSwapRouteInBackground(
   } catch (error) {
     console.warn('Swap background hydration failed', chainId, error)
   } finally {
-    swapBackgroundHydrationInFlight.delete(chainId)
+    swapBackgroundHydrationInFlight.delete(hydrationKey)
   }
 }
