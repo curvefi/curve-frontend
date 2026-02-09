@@ -1,4 +1,5 @@
 import { BorrowRate, SupplyRate, AvailableLiquidity } from '@/llamalend/features/market-details'
+import { getTokens } from '@/llamalend/llama.utils'
 import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { type Chain } from '@curvefi/prices-api'
@@ -7,6 +8,7 @@ import { IconButton } from '@mui/material'
 import Chip from '@mui/material/Chip'
 import Stack from '@mui/material/Stack'
 import { useNavigate } from '@ui-kit/hooks/router'
+import { t } from '@ui-kit/lib/i18n'
 import { ArrowLeft } from '@ui-kit/shared/icons/ArrowLeft'
 import { ChainIcon } from '@ui-kit/shared/icons/ChainIcon'
 import { getInternalUrl, LLAMALEND_ROUTES } from '@ui-kit/shared/routes'
@@ -14,7 +16,7 @@ import { TokenPair } from '@ui-kit/shared/ui/TokenPair'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
-import { generateMarketTitle, generateSubtitle, extractPropsFromMarket, MetricsRow } from './'
+import { generateMarketTitle, generateSubtitle, MetricsRow } from './'
 
 const { Spacing } = SizesAndSpaces
 
@@ -38,9 +40,11 @@ export const PageHeader = ({
   const push = useNavigate()
 
   const marketType = market instanceof MintMarketTemplate ? LlamaMarketType.Mint : LlamaMarketType.Lend
-  const { collateral, borrowed } = extractPropsFromMarket(market)
-  const title = generateMarketTitle(collateral?.symbol, borrowed?.symbol)
-  const subtitle = generateSubtitle(collateral?.symbol, borrowed?.symbol, marketType)
+  const { collateralToken, borrowToken } = market
+    ? getTokens(market)
+    : { collateralToken: undefined, borrowToken: undefined }
+  const title = generateMarketTitle(collateralToken?.symbol, borrowToken?.symbol)
+  const subtitle = generateSubtitle(collateralToken?.symbol, borrowToken?.symbol, marketType)
 
   return (
     <Stack
@@ -61,8 +65,12 @@ export const PageHeader = ({
         </IconButton>
         <Stack direction="row" gap={Spacing.sm}>
           <WithSkeleton loading={isLoading} variant="rectangular" width={40} height={40}>
-            {collateral && borrowed && (
-              <TokenPair chain={blockchainId} assets={{ primary: collateral, secondary: borrowed }} hideChainIcon />
+            {collateralToken && borrowToken && (
+              <TokenPair
+                chain={blockchainId}
+                assets={{ primary: collateralToken, secondary: borrowToken }}
+                hideChainIcon
+              />
             )}
           </WithSkeleton>
           <Stack>
@@ -72,7 +80,7 @@ export const PageHeader = ({
               </WithSkeleton>
               <WithSkeleton loading={isLoading} width={24} height={24}>
                 <ChainIcon size="sm" blockchainId={blockchainId} />
-                <Chip size="extraSmall" color="default" label={marketType} />
+                <Chip size="extraSmall" color="default" label={t`${marketType}`} />
               </WithSkeleton>
             </Stack>
             <WithSkeleton loading={isLoading} width={100} height={14}>
@@ -86,7 +94,7 @@ export const PageHeader = ({
         supplyRate={supplyRate}
         availableLiquidity={availableLiquidity}
         marketType={marketType}
-        collateral={collateral}
+        collateral={collateralToken}
       />
     </Stack>
   )
