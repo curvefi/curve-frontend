@@ -30,7 +30,7 @@ export const useMarketDetails = ({
 }: UseMarketDetailsProps): Omit<MarketDetailsProps, 'marketPage'> => {
   const { isHydrated } = useCurve()
   const blockchainId = networks[chainId]?.id as Chain
-  const { collateral_token, borrowed_token } = market ?? {}
+  const { collateral_token } = market ?? {}
   const { controller, vault } = market?.addresses ?? {}
 
   const {
@@ -38,7 +38,6 @@ export const useMarketDetails = ({
       borrowApr: marketBorrowApr,
       lendApy: marketLendApy,
       collateralAmount,
-      borrowedAmount,
       cap,
       available,
       maxLeverage,
@@ -56,10 +55,6 @@ export const useMarketDetails = ({
   const { data: collateralUsdRate, isLoading: collateralUsdRateLoading } = useTokenUsdRate({
     chainId,
     tokenAddress: collateral_token?.address,
-  })
-  const { data: borrowedUsdRate, isLoading: borrowedUsdRateLoading } = useTokenUsdRate({
-    chainId,
-    tokenAddress: borrowed_token?.address,
   })
 
   const { data: campaignsVault } = useCampaignsByAddress({ blockchainId, address: vault as Address })
@@ -132,14 +127,6 @@ export const useMarketDetails = ({
       totalUsdValue: collateralAmount && collateralUsdRate ? collateralAmount * collateralUsdRate : null,
       usdRate: collateralUsdRate ?? null,
       loading: isMarketDetailsLoading.marketCollateralAmounts || collateralUsdRateLoading || !isHydrated,
-    },
-    borrowToken: {
-      symbol: borrowed_token?.symbol ?? null,
-      tokenAddress: borrowed_token?.address,
-      total: borrowedAmount ?? null,
-      totalUsdValue: borrowedAmount && borrowedUsdRate ? borrowedAmount * borrowedUsdRate : null,
-      usdRate: borrowedUsdRate ?? null,
-      loading: isMarketDetailsLoading.marketCollateralAmounts || borrowedUsdRateLoading || !isHydrated,
     },
     borrowRate: {
       rate: borrowApr,

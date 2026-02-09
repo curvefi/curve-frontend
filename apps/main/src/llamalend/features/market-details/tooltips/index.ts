@@ -1,6 +1,4 @@
 export { AvailableLiquidityTooltip } from './AvailableLiquidityTooltip'
-export { CollateralTokenTooltip } from './CollateralTokenTooltip'
-export { DebtTokenTooltip } from './DebtTokenTooltip'
 export { MaxLeverageTooltip } from './MaxLeverageTooltip'
 export { TotalCollateralTooltip } from './TotalCollateralTooltip'
 export { UtilizationTooltip } from './UtilizationTooltip'
