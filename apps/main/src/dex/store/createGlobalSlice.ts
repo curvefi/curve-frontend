@@ -3,6 +3,7 @@ import lodash from 'lodash'
 import type { Config } from 'wagmi'
 import type { StoreApi } from 'zustand'
 import { curvejsApi } from '@/dex/lib/curvejs'
+import { getSwapSuggestedTokenAddresses } from '@/dex/lib/swapTokenSuggestions'
 import type { State } from '@/dex/store/useStore'
 import {
   ChainId,
@@ -233,17 +234,13 @@ function seedSwapTokenMapper(state: State, curveApi: CurveApi, network: NetworkC
   const existingTokensMapper = state.tokens.tokensMapper[chainId] ?? {}
   const existingTokensNameMapper = state.tokens.tokensNameMapper[chainId] ?? {}
 
-  const addresses = [
-    nativeToken.address,
-    nativeToken.wrappedAddress,
-    network.swap.fromAddress,
-    network.swap.toAddress,
-    cachedRouterValues.fromAddress,
-    cachedRouterValues.toAddress,
-    ...(network.createQuickList ?? []).map(({ address }) => address),
-  ]
-    .filter((address): address is string => !!address)
-    .map((address) => address.toLowerCase())
+  const addresses = getSwapSuggestedTokenAddresses({
+    chainId,
+    network,
+    nativeToken,
+    cachedFromAddress: cachedRouterValues.fromAddress,
+    cachedToAddress: cachedRouterValues.toAddress,
+  })
 
   const nextTokensMapper: TokensMapper = { ...existingTokensMapper }
   const nextTokensNameMapper: TokensNameMapper = { ...existingTokensNameMapper }

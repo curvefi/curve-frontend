@@ -19,8 +19,9 @@ import { useNetworks } from '@/dex/entities/networks'
 import { useRouterApi } from '@/dex/hooks/useRouterApi'
 import { useTokensNameMapper } from '@/dex/hooks/useTokensNameMapper'
 import { markSwapFirstQuoteReady } from '@/dex/lib/swapPerformance'
+import { getSwapSuggestedTokenAddresses, toSuggestionRankMap } from '@/dex/lib/swapTokenSuggestions'
 import { useStore } from '@/dex/store/useStore'
-import { ChainId, CurveApi, type NetworkUrlParams, TokensMapper } from '@/dex/types/main.types'
+import { ChainId, CurveApi, type NetworkUrlParams, Token, TokensMapper } from '@/dex/types/main.types'
 import { toTokenOption } from '@/dex/utils'
 import { getSlippageImpact } from '@/dex/utils/utilsSwap'
 import Stack from '@mui/material/Stack'
@@ -108,14 +109,42 @@ export const QuickSwap = ({
   const [isOpenToToken, openModalToToken, closeModalToToken] = useSwitch()
 
   const isReady = pageLoaded && isPageVisible
+  const nativeToken = curve?.getNetworkConstants().NATIVE_TOKEN
+  const suggestedTokenAddresses = useMemo(
+    () =>
+      getSwapSuggestedTokenAddresses({
+        chainId,
+        network,
+        nativeToken,
+      }),
+    [chainId, nativeToken, network],
+  )
+  const suggestionRankMap = useMemo(() => toSuggestionRankMap(suggestedTokenAddresses), [suggestedTokenAddresses])
 
   const tokens = useMemo(
     () =>
       Object.values(tokensMapper ?? {})
-        .filter((token) => !!token)
-        .map(toTokenOption(network?.networkId)),
+        .filter((token): token is Token => !!token)
+        .map((token) => {
+          const address = token.address.toLowerCase()
+          const boostedVolume = suggestionRankMap[address]
+            ? Number.MAX_SAFE_INTEGER - suggestionRankMap[address]
+            : token.volume
+          return toTokenOption(network?.networkId)({ ...token, volume: boostedVolume })
+        }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [tokensMapperStr, network?.networkId],
+    [tokensMapperStr, network?.networkId, suggestionRankMap],
+  )
+  const tokensByAddress = useMemo(
+    () => Object.fromEntries(tokens.map((token) => [token.address.toLowerCase(), token])),
+    [tokens],
+  )
+  const suggestedTokens = useMemo(
+    () =>
+      suggestedTokenAddresses
+        .map((address) => tokensByAddress[address])
+        .filter((token): token is (typeof tokens)[number] => !!token),
+    [suggestedTokenAddresses, tokensByAddress],
   )
 
   const fromToken = tokens.find((x) => x.address.toLocaleLowerCase() == fromAddress)
@@ -124,7 +153,6 @@ export const QuickSwap = ({
   const {
     data: userFromBalance,
     isLoading: userFromBalanceLoading,
-    isFetched: userFromBalanceFetched,
     refetch: refetchUserFromBalance,
   } = useTokenBalance(
     {
@@ -138,7 +166,6 @@ export const QuickSwap = ({
   const {
     data: userToBalance,
     isLoading: userToBalanceLoading,
-    isFetched: userToBalanceFetched,
     refetch: refetchUserToBalance,
   } = useTokenBalance(
     {
@@ -158,7 +185,7 @@ export const QuickSwap = ({
     isLoading: tokenSelectorLoading,
   } = useTokenSelectorData(
     { chainId, userAddress: signerAddress, tokens },
-    { enabled: !!isOpenFromToken || !!isOpenToToken, prefetch: !!userFromBalanceFetched && !!userToBalanceFetched },
+    { enabled: !!isOpenFromToken || !!isOpenToToken, prefetch: false },
   )
 
   const config = useConfig()
@@ -479,6 +506,7 @@ export const QuickSwap = ({
           >
             <TokenList
               tokens={tokens}
+              favorites={suggestedTokens}
               balances={balances}
               tokenPrices={tokenPrices}
               isLoading={tokenSelectorLoading}
@@ -530,6 +558,7 @@ export const QuickSwap = ({
           >
             <TokenList
               tokens={tokens}
+              favorites={suggestedTokens}
               balances={balances}
               tokenPrices={tokenPrices}
               disableMyTokens
