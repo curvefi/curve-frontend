@@ -3,6 +3,7 @@ import lodash from 'lodash'
 import type { Config } from 'wagmi'
 import type { StoreApi } from 'zustand'
 import { curvejsApi } from '@/dex/lib/curvejs'
+import { scheduleSwapRequest } from '@/dex/lib/swapRequestScheduler'
 import { getSwapSuggestedTokenAddresses, getSwapSuggestedTokenSymbols } from '@/dex/lib/swapTokenSuggestions'
 import type { State } from '@/dex/store/useStore'
 import {
@@ -310,17 +311,19 @@ async function hydrateSwapRouteInBackground(
 
   swapBackgroundHydrationInFlight.add(hydrationKey)
   try {
-    const poolIds = await curvejsApi.network.fetchAllPoolsList(curveApi, network)
+    const poolIds = await scheduleSwapRequest('low', () => curvejsApi.network.fetchAllPoolsList(curveApi, network))
     if (!poolIds.length) {
       state.tokens.setEmptyPoolListDefault(curveApi)
       return
     }
 
-    const poolsResponse = await state.pools.fetchPools(curveApi, poolIds, null, {
-      includeBlacklist: false,
-      includeGaugeData: false,
-      includeMetrics: false,
-    })
+    const poolsResponse = await scheduleSwapRequest('low', () =>
+      state.pools.fetchPools(curveApi, poolIds, null, {
+        includeBlacklist: false,
+        includeGaugeData: false,
+        includeMetrics: false,
+      }),
+    )
 
     if (network.isLite || !poolsResponse?.poolDatas.length) {
       log('Hydrating DEX - Swap path light pool hydration complete', chainId, { pools: poolIds.length })
@@ -328,7 +331,9 @@ async function hydrateSwapRouteInBackground(
     }
 
     scheduleIdleTask(() => {
-      void hydrateSwapVolumeRankingInBackground(get, curveApi, chainId, poolsResponse.poolDatas)
+      void scheduleSwapRequest('low', () =>
+        hydrateSwapVolumeRankingInBackground(get, curveApi, chainId, poolsResponse.poolDatas),
+      )
     }, SWAP_VOLUME_HYDRATION_DELAY_MS)
     log('Hydrating DEX - Swap path light pool hydration complete', chainId, { pools: poolIds.length })
   } catch (error) {
