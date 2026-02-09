@@ -147,9 +147,6 @@ export const QuickSwap = ({
     [suggestedTokenAddresses, tokensByAddress],
   )
 
-  const fromToken = tokens.find((x) => x.address.toLocaleLowerCase() == fromAddress)
-  const toToken = tokens.find((x) => x.address.toLocaleLowerCase() == toAddress)
-
   const {
     data: userFromBalance,
     isLoading: userFromBalanceLoading,
@@ -183,10 +180,31 @@ export const QuickSwap = ({
     balances,
     tokenPrices,
     isLoading: tokenSelectorLoading,
+    tokenSymbols,
   } = useTokenSelectorData(
     { chainId, userAddress: signerAddress, tokens },
     { enabled: !!isOpenFromToken || !!isOpenToToken, prefetch: false },
   )
+  const tokensWithResolvedSymbols = useMemo(
+    () =>
+      tokens.map((token) => {
+        const resolvedSymbol = tokenSymbols[token.address.toLowerCase()]
+        return resolvedSymbol ? { ...token, symbol: resolvedSymbol } : token
+      }),
+    [tokens, tokenSymbols],
+  )
+  const suggestedTokensWithResolvedSymbols = useMemo(() => {
+    const symbolByAddress = Object.fromEntries(
+      tokensWithResolvedSymbols.map((token) => [token.address.toLowerCase(), token.symbol]),
+    )
+    return suggestedTokens.map((token) => {
+      const resolvedSymbol = symbolByAddress[token.address.toLowerCase()]
+      return resolvedSymbol ? { ...token, symbol: resolvedSymbol } : token
+    })
+  }, [suggestedTokens, tokensWithResolvedSymbols])
+
+  const fromToken = tokensWithResolvedSymbols.find((x) => x.address.toLocaleLowerCase() == fromAddress)
+  const toToken = tokensWithResolvedSymbols.find((x) => x.address.toLocaleLowerCase() == toAddress)
 
   const config = useConfig()
   const updateFormValues = useCallback(
@@ -505,8 +523,8 @@ export const QuickSwap = ({
             onClose={closeModalFromToken}
           >
             <TokenList
-              tokens={tokens}
-              favorites={suggestedTokens}
+              tokens={tokensWithResolvedSymbols}
+              favorites={suggestedTokensWithResolvedSymbols}
               balances={balances}
               tokenPrices={tokenPrices}
               isLoading={tokenSelectorLoading}
@@ -557,8 +575,8 @@ export const QuickSwap = ({
             onClose={closeModalToToken}
           >
             <TokenList
-              tokens={tokens}
-              favorites={suggestedTokens}
+              tokens={tokensWithResolvedSymbols}
+              favorites={suggestedTokensWithResolvedSymbols}
               balances={balances}
               tokenPrices={tokenPrices}
               disableMyTokens

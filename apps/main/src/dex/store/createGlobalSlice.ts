@@ -3,7 +3,7 @@ import lodash from 'lodash'
 import type { Config } from 'wagmi'
 import type { StoreApi } from 'zustand'
 import { curvejsApi } from '@/dex/lib/curvejs'
-import { getSwapSuggestedTokenAddresses } from '@/dex/lib/swapTokenSuggestions'
+import { getSwapSuggestedTokenAddresses, getSwapSuggestedTokenSymbols } from '@/dex/lib/swapTokenSuggestions'
 import type { State } from '@/dex/store/useStore'
 import {
   ChainId,
@@ -220,6 +220,7 @@ function seedSwapTokenMapper(state: State, curveApi: CurveApi, network: NetworkC
   const nativeToken = curveApi.getNetworkConstants().NATIVE_TOKEN
 
   const cachedRouterValues = state.storeCache.routerFormValues[chainId] ?? {}
+  const predefinedSuggestionSymbolByAddress = getSwapSuggestedTokenSymbols(chainId)
   const suggestionSymbolByAddress = Object.fromEntries(
     (network.createQuickList ?? []).map(({ address, symbol }) => [address.toLowerCase(), symbol]),
   )
@@ -246,27 +247,33 @@ function seedSwapTokenMapper(state: State, curveApi: CurveApi, network: NetworkC
   const nextTokensNameMapper: TokensNameMapper = { ...existingTokensNameMapper }
 
   for (const address of new Set(addresses)) {
+    const addressKey = address.toLowerCase()
+    const existingSymbol = nextTokensNameMapper[addressKey] || nextTokensMapper[addressKey]?.symbol
+    const isFallbackAddressLabel = !!existingSymbol && existingSymbol.startsWith('0x') && existingSymbol.includes('...')
+    const suggestedSymbol =
+      suggestionSymbolByAddress[addressKey] ||
+      predefinedSuggestionSymbolByAddress[addressKey] ||
+      symbolByAddress[addressKey]
     const tokenSymbol =
-      nextTokensNameMapper[address] ||
-      nextTokensMapper[address]?.symbol ||
-      (address === nativeToken.address ? nativeToken.symbol : '') ||
-      (address === nativeToken.wrappedAddress ? nativeToken.wrappedSymbol : '') ||
-      suggestionSymbolByAddress[address] ||
-      symbolByAddress[address] ||
-      `${address.slice(0, ADDRESS_FALLBACK_PREFIX)}...${address.slice(-ADDRESS_FALLBACK_SUFFIX)}`
+      (isFallbackAddressLabel ? '' : existingSymbol) ||
+      (addressKey === nativeToken.address.toLowerCase() ? nativeToken.symbol : '') ||
+      (addressKey === nativeToken.wrappedAddress.toLowerCase() ? nativeToken.wrappedSymbol : '') ||
+      suggestedSymbol ||
+      existingSymbol ||
+      `${addressKey.slice(0, ADDRESS_FALLBACK_PREFIX)}...${addressKey.slice(-ADDRESS_FALLBACK_SUFFIX)}`
 
     const tokenDecimals =
-      nextTokensMapper[address]?.decimals ?? (curveApiWithConstants.constants?.DECIMALS?.[address] || 18)
+      nextTokensMapper[addressKey]?.decimals ?? (curveApiWithConstants.constants?.DECIMALS?.[addressKey] || 18)
 
-    nextTokensMapper[address] = {
-      ...(nextTokensMapper[address] ?? DEFAULT_TOKEN),
-      address,
+    nextTokensMapper[addressKey] = {
+      ...(nextTokensMapper[addressKey] ?? DEFAULT_TOKEN),
+      address: addressKey,
       symbol: tokenSymbol,
       decimals: tokenDecimals,
       haveSameTokenName: false,
-      volume: nextTokensMapper[address]?.volume ?? 0,
+      volume: nextTokensMapper[addressKey]?.volume ?? 0,
     }
-    nextTokensNameMapper[address] = tokenSymbol
+    nextTokensNameMapper[addressKey] = tokenSymbol
   }
 
   state.tokens.setStateByActiveKey('tokensMapper', chainIdStr, nextTokensMapper)
