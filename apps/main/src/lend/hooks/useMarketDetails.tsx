@@ -187,7 +187,7 @@ export const useMarketDetails = ({
     maxLeverage: maxLeverage
       ? {
           value: Number(maxLeverage),
-          loading: false,
+          loading: isMarketDetailsLoading.marketMaxLeverage || !isHydrated,
         }
       : undefined,
   }
