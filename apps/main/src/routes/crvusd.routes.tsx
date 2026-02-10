@@ -1,16 +1,11 @@
+import { Page as CrvStaking } from '@/loan/components/PageCrvUsdStaking/Page'
+import { MintMarketPage } from '@/loan/components/PageMintMarket/MintMarketPage'
+import { Page as PegKeepersPage } from '@/loan/components/PagePegKeepers'
+import { CrvUsdClientLayout } from '@/loan/CrvUsdClientLayout'
 import { createRoute } from '@tanstack/react-router'
-import { lazyNamedRouteComponent } from './lazy-route'
 import { rootRoute } from './root.routes'
 import { createSharedRoutes } from './shared.routes'
 import { redirectTo } from './util'
-
-const CrvStaking = lazyNamedRouteComponent(() => import('@/loan/components/PageCrvUsdStaking/Page'), 'Page')
-const MintMarketPage = lazyNamedRouteComponent(
-  () => import('@/loan/components/PageMintMarket/MintMarketPage'),
-  'MintMarketPage',
-)
-const PegKeepersPage = lazyNamedRouteComponent(() => import('@/loan/components/PagePegKeepers'), 'Page')
-const CrvUsdClientLayout = lazyNamedRouteComponent(() => import('@/loan/CrvUsdClientLayout'), 'CrvUsdClientLayout')
 
 const crvusdLayoutRoute = createRoute({
   getParentRoute: () => rootRoute,

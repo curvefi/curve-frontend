@@ -1,10 +1,8 @@
+import { PageHome } from '@/analytics/components/PageHome'
 import { createRoute } from '@tanstack/react-router'
-import { lazyNamedRouteComponent } from './lazy-route'
 import { rootRoute } from './root.routes'
 import { createSharedRoutes } from './shared.routes'
 import { redirectTo } from './util'
-
-const PageHome = lazyNamedRouteComponent(() => import('@/analytics/components/PageHome'), 'PageHome')
 
 const analyticsLayoutRoute = createRoute({
   getParentRoute: () => rootRoute,

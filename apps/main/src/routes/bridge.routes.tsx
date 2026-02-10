@@ -1,10 +1,8 @@
+import { PageBridges } from '@/bridge/components/PageBridges'
 import { createRoute } from '@tanstack/react-router'
-import { lazyNamedRouteComponent } from './lazy-route'
 import { rootRoute } from './root.routes'
 import { createSharedRoutes } from './shared.routes'
 import { redirectTo } from './util'
-
-const PageBridges = lazyNamedRouteComponent(() => import('@/bridge/components/PageBridges'), 'PageBridges')
 
 const bridgeLayoutRoute = createRoute({
   getParentRoute: () => rootRoute,

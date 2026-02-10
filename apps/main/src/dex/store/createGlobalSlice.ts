@@ -3,18 +3,8 @@ import lodash from 'lodash'
 import type { Config } from 'wagmi'
 import type { StoreApi } from 'zustand'
 import { curvejsApi } from '@/dex/lib/curvejs'
-import { getSwapSuggestedTokenAddresses, getSwapSuggestedTokenSymbols } from '@/dex/lib/swapTokenSuggestions'
 import type { State } from '@/dex/store/useStore'
-import {
-  ChainId,
-  CurveApi,
-  NetworkConfig,
-  NetworkConfigFromApi,
-  Token,
-  TokensMapper,
-  TokensNameMapper,
-  Wallet,
-} from '@/dex/types/main.types'
+import { ChainId, CurveApi, NetworkConfigFromApi, Wallet } from '@/dex/types/main.types'
 import { log } from '@ui-kit/lib/logging'
 import { fetchNetworks } from '../entities/networks'
 
@@ -103,16 +93,6 @@ export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreAp
 
     const networks = await fetchNetworks()
     const network = networks[chainId]
-    const isSwapRouteHydration =
-      typeof window !== 'undefined' && /^\/dex\/[^/]+\/swap\/?$/.test(window.location.pathname)
-
-    if (isSwapRouteHydration) {
-      seedSwapTokenMapper(get(), curveApi, network)
-      state.pools.setEmptyPoolListDefault(chainId)
-      void hydrateSwapRouteInBackground(get, curveApi, chainId, network)
-      log('Hydrating DEX - Swap path seeded with minimal token set')
-      return
-    }
 
     // get poolList
     const poolIds = await curvejsApi.network.fetchAllPoolsList(curveApi, network)
@@ -197,123 +177,3 @@ export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreAp
     )
   },
 })
-
-const DEFAULT_TOKEN: Token = {
-  address: '',
-  symbol: '',
-  decimals: 0,
-  haveSameTokenName: false,
-  volume: 0,
-}
-
-const ADDRESS_FALLBACK_PREFIX = 6
-const ADDRESS_FALLBACK_SUFFIX = 4
-const swapBackgroundHydrationInFlight = new Set<number>()
-
-function seedSwapTokenMapper(state: State, curveApi: CurveApi, network: NetworkConfig) {
-  const curveApiWithConstants = curveApi as CurveApi & {
-    constants?: {
-      COINS?: Record<string, string>
-      DECIMALS?: Record<string, number>
-    }
-  }
-  const { chainId } = curveApi
-  const chainIdStr = chainId.toString()
-  const nativeToken = curveApi.getNetworkConstants().NATIVE_TOKEN
-
-  const cachedRouterValues = state.storeCache.routerFormValues[chainId] ?? {}
-  const predefinedSuggestionSymbolByAddress = getSwapSuggestedTokenSymbols(chainId)
-  const suggestionSymbolByAddress = Object.fromEntries(
-    (network.createQuickList ?? []).map(({ address, symbol }) => [address.toLowerCase(), symbol]),
-  )
-  const symbolByAddress = Object.entries(curveApiWithConstants.constants?.COINS ?? {}).reduce(
-    (acc, [symbol, address]) => {
-      if (address) acc[String(address).toLowerCase()] = symbol
-      return acc
-    },
-    {} as Record<string, string>,
-  )
-
-  const existingTokensMapper = state.tokens.tokensMapper[chainId] ?? {}
-  const existingTokensNameMapper = state.tokens.tokensNameMapper[chainId] ?? {}
-
-  const addresses = getSwapSuggestedTokenAddresses({
-    chainId,
-    network,
-    nativeToken,
-    cachedFromAddress: cachedRouterValues.fromAddress,
-    cachedToAddress: cachedRouterValues.toAddress,
-  })
-
-  const nextTokensMapper: TokensMapper = { ...existingTokensMapper }
-  const nextTokensNameMapper: TokensNameMapper = { ...existingTokensNameMapper }
-
-  for (const address of new Set(addresses)) {
-    const addressKey = address.toLowerCase()
-    const existingSymbol = nextTokensNameMapper[addressKey] || nextTokensMapper[addressKey]?.symbol
-    const isFallbackAddressLabel = !!existingSymbol && existingSymbol.startsWith('0x') && existingSymbol.includes('...')
-    const suggestedSymbol =
-      suggestionSymbolByAddress[addressKey] ||
-      predefinedSuggestionSymbolByAddress[addressKey] ||
-      symbolByAddress[addressKey]
-    const tokenSymbol =
-      (isFallbackAddressLabel ? '' : existingSymbol) ||
-      (addressKey === nativeToken.address.toLowerCase() ? nativeToken.symbol : '') ||
-      (addressKey === nativeToken.wrappedAddress.toLowerCase() ? nativeToken.wrappedSymbol : '') ||
-      suggestedSymbol ||
-      existingSymbol ||
-      `${addressKey.slice(0, ADDRESS_FALLBACK_PREFIX)}...${addressKey.slice(-ADDRESS_FALLBACK_SUFFIX)}`
-
-    const tokenDecimals =
-      nextTokensMapper[addressKey]?.decimals ?? (curveApiWithConstants.constants?.DECIMALS?.[addressKey] || 18)
-
-    nextTokensMapper[addressKey] = {
-      ...(nextTokensMapper[addressKey] ?? DEFAULT_TOKEN),
-      address: addressKey,
-      symbol: tokenSymbol,
-      decimals: tokenDecimals,
-      haveSameTokenName: false,
-      volume: nextTokensMapper[addressKey]?.volume ?? 0,
-    }
-    nextTokensNameMapper[addressKey] = tokenSymbol
-  }
-
-  state.tokens.setStateByActiveKey('tokensMapper', chainIdStr, nextTokensMapper)
-  state.tokens.setStateByActiveKey('tokensNameMapper', chainIdStr, nextTokensNameMapper)
-}
-
-async function hydrateSwapRouteInBackground(
-  get: StoreApi<State>['getState'],
-  curveApi: CurveApi,
-  chainId: number,
-  network: NetworkConfig,
-) {
-  const state = get()
-  if (
-    state.pools.haveAllPools[chainId] ||
-    state.pools.poolsLoading[chainId] ||
-    swapBackgroundHydrationInFlight.has(chainId)
-  ) {
-    return
-  }
-
-  swapBackgroundHydrationInFlight.add(chainId)
-  try {
-    const poolIds = await curvejsApi.network.fetchAllPoolsList(curveApi, network)
-    if (!poolIds.length) {
-      state.tokens.setEmptyPoolListDefault(curveApi)
-      return
-    }
-
-    await state.pools.fetchPools(curveApi, poolIds, null, {
-      includeBlacklist: false,
-      includeGaugeData: false,
-      includeMetrics: false,
-    })
-    log('Hydrating DEX - Swap path light pool hydration complete', chainId, { pools: poolIds.length })
-  } catch (error) {
-    console.warn('Swap background hydration failed', chainId, error)
-  } finally {
-    swapBackgroundHydrationInFlight.delete(chainId)
-  }
-}

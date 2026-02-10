@@ -5,7 +5,6 @@ import { ROUTE } from '@/dex/constants'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { useChainId } from '@/dex/hooks/useChainId'
 import { useTokensMapper } from '@/dex/hooks/useTokensMapper'
-import { markSwapFirstInteractive, startSwapPerfTracking } from '@/dex/lib/swapPerformance'
 import { useStore } from '@/dex/store/useStore'
 import type { NetworkUrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
@@ -58,10 +57,6 @@ export const PageRouterSwap = () => {
     [searchParamsString, push],
   )
 
-  useEffect(() => {
-    startSwapPerfTracking(window.location.pathname)
-  }, [])
-
   // redirect to poolList if Swap is excluded from route
   useEffect(() => {
     setLoaded(false)
@@ -106,10 +101,6 @@ export const PageRouterSwap = () => {
     routerCachedFromAddress,
     routerCachedToAddress,
   ])
-
-  useEffect(() => {
-    if (loaded) markSwapFirstInteractive()
-  }, [loaded])
   return (
     <StyledQuickSwapWrapper variant="primary" shadowed data-testid="swap-page">
       <BoxHeader className="title-text">

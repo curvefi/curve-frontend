@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { minCutoffForTopK, takeTopWithMin } from './array'
+import { chunk, minCutoffForTopK, takeTopWithMin } from './array'
 
 describe('takeTopWithMin and minCutoffForTopK', () => {
   const id = (x: number) => x
@@ -76,5 +76,19 @@ describe('takeTopWithMin and minCutoffForTopK', () => {
       expect(top).toEqual(expectedTop)
       expect(cutoff).toBe(expectedCutoff)
     })
+  })
+})
+
+describe('chunk', () => {
+  it('splits into chunks of given size', () => {
+    expect(chunk([1, 2, 3, 4, 5], 2)).toEqual([[1, 2], [3, 4], [5]])
+  })
+
+  it('returns empty array for empty input', () => {
+    expect(chunk([], 3)).toEqual([])
+  })
+
+  it('throws for non-positive chunk size', () => {
+    expect(() => chunk([1, 2], 0)).toThrow('Chunk size must be greater than 0')
   })
 })

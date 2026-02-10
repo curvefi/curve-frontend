@@ -16,7 +16,6 @@ import { ErrorAlert } from './ErrorAlert'
 import { FavoriteTokens } from './FavoriteTokens'
 
 const { Spacing } = SizesAndSpaces
-const DUST_HIDE_THRESHOLD_SHARE = 0.1
 
 export type TokenListProps = Pick<
   TokenSectionProps,
@@ -102,7 +101,7 @@ export const TokenList = ({
   /**
    * Filters tokens to show only those with significant value.
    *
-   * When showPreviewMy is true, returns tokens whose USD value exceeds 10% of total portfolio value.
+   * When showPreviewMy is true, returns tokens whose USD value exceeds 1% of total portfolio value.
    * This filtering helps prevent dust and potential scam tokens from cluttering the interface.
    */
   const previewMy = useMemo(() => {
@@ -114,7 +113,7 @@ export const TokenList = ({
       return sum + balance * price
     }, 0)
 
-    const threshold = totalUsdBalance * DUST_HIDE_THRESHOLD_SHARE
+    const threshold = totalUsdBalance * 0.01
 
     return myTokens.filter((token: Option) => {
       const balance = +(balances?.[token.address] ?? 0)
@@ -130,7 +129,7 @@ export const TokenList = ({
    * Builds the "All tokens" list from:
    * - All tokens when disableMyTokens is true
    * - Zero-balance tokens when disableMyTokens is false
-   * - "Dust tokens" (low-value tokens below 10% portfolio threshold) when hidden from 'my tokens'
+   * - "Dust tokens" (low-value tokens below 1% portfolio threshold) when hidden from 'my tokens'
    *
    * This keeps the UI clean while ensuring all tokens remain accessible.
    */

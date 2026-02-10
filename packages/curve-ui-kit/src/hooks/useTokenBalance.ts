@@ -5,7 +5,7 @@ import { useQueries, type QueryObserverOptions, type UseQueryResult } from '@tan
 import { type FieldsOf } from '@ui-kit/lib'
 import { queryClient } from '@ui-kit/lib/api'
 import { REFRESH_INTERVAL, type ChainQuery, type UserQuery } from '@ui-kit/lib/model'
-import { Decimal } from '@ui-kit/utils'
+import { chunk, Decimal } from '@ui-kit/utils'
 import type { Config, ReadContractsReturnType } from '@wagmi/core'
 import type { GetBalanceReturnType } from '@wagmi/core'
 import { getBalanceQueryOptions, readContractsQueryOptions } from '@wagmi/core/query'
@@ -35,6 +35,7 @@ const getERC20QueryContracts = ({ chainId, userAddress, tokenAddress }: TokenBal
   ] as const
 
 type ERC20ReadResult = ReadContractsReturnType<ReturnType<typeof getERC20QueryContracts>, true>
+type TokenBalancesByAddress = Partial<Record<Address, Decimal>>
 
 /**
  * Parse ERC-20 multicall results, throwing if balanceOf fails but defaulting decimals to 18.
@@ -174,7 +175,7 @@ export function useTokenBalances(
     () => uniqueAddresses.filter((tokenAddress) => !isNative({ tokenAddress })),
     [uniqueAddresses],
   )
-  const erc20AddressChunks = useMemo(() => chunkAddresses(erc20Addresses, ERC20_BALANCE_BATCH_SIZE), [erc20Addresses])
+  const erc20AddressChunks = useMemo(() => chunk(erc20Addresses, ERC20_BALANCE_BATCH_SIZE), [erc20Addresses])
 
   return useQueries({
     queries: useMemo(
@@ -189,7 +190,7 @@ export function useTokenBalances(
                   }),
                   ...QUERIES_FRESHNESS_OPTIONS,
                   enabled: isEnabled,
-                  select: (data: GetBalanceReturnType) => ({ [nativeAddress]: convertBalance(data) }),
+                  select: (data: GetBalanceReturnType) => makeTokenBalanceEntry(nativeAddress, convertBalance(data)),
                 },
               ]
             : []),
@@ -206,16 +207,22 @@ export function useTokenBalances(
               ...QUERIES_FRESHNESS_OPTIONS,
               enabled: isEnabled,
               select: (results: ReadContractsReturnType<typeof contracts, true>) =>
-                parseERC20BatchResults(addresses, results as ReadContractResult[]),
+                parseERC20BatchResults(addresses, results),
             }
           }),
         ] as Parameters<typeof useQueries>[0]['queries'],
       [config, chainId, erc20AddressChunks, isEnabled, nativeAddress, userAddress],
     ),
     combine: useCallback((results: UseQueryResult[]) => {
-      const typedResults = results as UseQueryResult<Record<string, Decimal>>[]
+      const typedResults = results as UseQueryResult<TokenBalancesByAddress>[]
+      const data = typedResults.reduce<TokenBalancesByAddress>((acc, result) => {
+        if (!result.data) return acc
+        Object.assign(acc, result.data)
+        return acc
+      }, {})
+
       return {
-        data: Object.assign({}, ...typedResults.map(({ data }) => data ?? {})) as Record<string, Decimal>,
+        data,
         isLoading: typedResults.some((result) => result.isLoading),
         isPending: typedResults.some((result) => result.isPending),
         isError: typedResults.some((result) => result.isError),
@@ -242,7 +249,7 @@ export const prefetchTokenBalances = (
     })
   }
 
-  const erc20AddressChunks = chunkAddresses(erc20Addresses, ERC20_BALANCE_BATCH_SIZE)
+  const erc20AddressChunks = chunk(erc20Addresses, ERC20_BALANCE_BATCH_SIZE)
   erc20AddressChunks.forEach((addresses) => {
     const contracts = addresses.flatMap((tokenAddress) =>
       getERC20QueryContracts({
@@ -259,27 +266,16 @@ export const prefetchTokenBalances = (
   })
 }
 
-function chunkAddresses(addresses: Address[], size: number) {
-  const chunks: Address[][] = []
-  for (let i = 0; i < addresses.length; i += size) {
-    chunks.push(addresses.slice(i, i + size))
-  }
-  return chunks
+function makeTokenBalanceEntry(tokenAddress: Address, balance: Decimal): TokenBalancesByAddress {
+  return { [tokenAddress]: balance }
 }
 
-function parseERC20BatchResults(tokenAddresses: Address[], results: ReadContractResult[]) {
-  const balances: Record<string, Decimal> = {}
+function parseERC20BatchResults(tokenAddresses: Address[], results: readonly ERC20ReadResult[number][]) {
+  const balances: TokenBalancesByAddress = {}
   for (let i = 0; i < tokenAddresses.length; i++) {
-    const balanceResult = results[i * 2]
-    const decimalsResult = results[i * 2 + 1]
-    if (balanceResult?.status !== 'success') continue
-
-    balances[tokenAddresses[i]] = convertBalance({
-      value: balanceResult.result as bigint,
-      decimals: decimalsResult?.status === 'success' ? (decimalsResult.result as number) : DEFAULT_DECIMALS,
-    })
+    const pair = [results[i * 2], results[i * 2 + 1]] as ERC20ReadResult
+    if (!pair[0] || pair[0].status !== 'success') continue
+    balances[tokenAddresses[i]] = convertBalance(parseERC20Results(pair))
   }
   return balances
 }
-
-type ReadContractResult = { status: 'success'; result: unknown } | { status: 'failure'; error: Error }

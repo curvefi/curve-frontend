@@ -1,13 +1,8 @@
+import { LlamaMarketsList } from '@/llamalend/features/market-list/LlamaMarketsList'
 import { createRoute } from '@tanstack/react-router'
-import { lazyNamedRouteComponent } from './lazy-route'
 import { rootRoute } from './root.routes'
 import { createSharedRoutes } from './shared.routes'
 import { redirectTo } from './util'
-
-const LlamaMarketsList = lazyNamedRouteComponent(
-  () => import('@/llamalend/features/market-list/LlamaMarketsList'),
-  'LlamaMarketsList',
-)
 
 const llamalendLayoutRoute = createRoute({
   getParentRoute: () => rootRoute,

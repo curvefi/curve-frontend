@@ -18,10 +18,8 @@ import type {
 import { useNetworks } from '@/dex/entities/networks'
 import { useRouterApi } from '@/dex/hooks/useRouterApi'
 import { useTokensNameMapper } from '@/dex/hooks/useTokensNameMapper'
-import { markSwapFirstQuoteReady } from '@/dex/lib/swapPerformance'
-import { getSwapSuggestedTokenAddresses, toSuggestionRankMap } from '@/dex/lib/swapTokenSuggestions'
 import { useStore } from '@/dex/store/useStore'
-import { ChainId, CurveApi, type NetworkUrlParams, Token, TokensMapper } from '@/dex/types/main.types'
+import { ChainId, CurveApi, type NetworkUrlParams, TokensMapper } from '@/dex/types/main.types'
 import { toTokenOption } from '@/dex/utils'
 import { getSlippageImpact } from '@/dex/utils/utilsSwap'
 import Stack from '@mui/material/Stack'
@@ -109,47 +107,23 @@ export const QuickSwap = ({
   const [isOpenToToken, openModalToToken, closeModalToToken] = useSwitch()
 
   const isReady = pageLoaded && isPageVisible
-  const nativeToken = curve?.getNetworkConstants().NATIVE_TOKEN
-  const suggestedTokenAddresses = useMemo(
-    () =>
-      getSwapSuggestedTokenAddresses({
-        chainId,
-        network,
-        nativeToken,
-      }),
-    [chainId, nativeToken, network],
-  )
-  const suggestionRankMap = useMemo(() => toSuggestionRankMap(suggestedTokenAddresses), [suggestedTokenAddresses])
 
   const tokens = useMemo(
     () =>
       Object.values(tokensMapper ?? {})
-        .filter((token): token is Token => !!token)
-        .map((token) => {
-          const address = token.address.toLowerCase()
-          const boostedVolume = suggestionRankMap[address]
-            ? Number.MAX_SAFE_INTEGER - suggestionRankMap[address]
-            : token.volume
-          return toTokenOption(network?.networkId)({ ...token, volume: boostedVolume })
-        }),
+        .filter((token) => !!token)
+        .map(toTokenOption(network?.networkId)),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [tokensMapperStr, network?.networkId, suggestionRankMap],
+    [tokensMapperStr, network?.networkId],
   )
-  const tokensByAddress = useMemo(
-    () => Object.fromEntries(tokens.map((token) => [token.address.toLowerCase(), token])),
-    [tokens],
-  )
-  const suggestedTokens = useMemo(
-    () =>
-      suggestedTokenAddresses
-        .map((address) => tokensByAddress[address])
-        .filter((token): token is (typeof tokens)[number] => !!token),
-    [suggestedTokenAddresses, tokensByAddress],
-  )
+
+  const fromToken = tokens.find((x) => x.address.toLocaleLowerCase() == fromAddress)
+  const toToken = tokens.find((x) => x.address.toLocaleLowerCase() == toAddress)
 
   const {
     data: userFromBalance,
     isLoading: userFromBalanceLoading,
+    isFetched: userFromBalanceFetched,
     refetch: refetchUserFromBalance,
   } = useTokenBalance(
     {
@@ -163,6 +137,7 @@ export const QuickSwap = ({
   const {
     data: userToBalance,
     isLoading: userToBalanceLoading,
+    isFetched: userToBalanceFetched,
     refetch: refetchUserToBalance,
   } = useTokenBalance(
     {
@@ -180,31 +155,10 @@ export const QuickSwap = ({
     balances,
     tokenPrices,
     isLoading: tokenSelectorLoading,
-    tokenSymbols,
   } = useTokenSelectorData(
     { chainId, userAddress: signerAddress, tokens },
-    { enabled: !!isOpenFromToken || !!isOpenToToken, prefetch: false },
+    { enabled: !!isOpenFromToken || !!isOpenToToken, prefetch: !!userFromBalanceFetched && !!userToBalanceFetched },
   )
-  const tokensWithResolvedSymbols = useMemo(
-    () =>
-      tokens.map((token) => {
-        const resolvedSymbol = tokenSymbols[token.address.toLowerCase()]
-        return resolvedSymbol ? { ...token, symbol: resolvedSymbol } : token
-      }),
-    [tokens, tokenSymbols],
-  )
-  const suggestedTokensWithResolvedSymbols = useMemo(() => {
-    const symbolByAddress = Object.fromEntries(
-      tokensWithResolvedSymbols.map((token) => [token.address.toLowerCase(), token.symbol]),
-    )
-    return suggestedTokens.map((token) => {
-      const resolvedSymbol = symbolByAddress[token.address.toLowerCase()]
-      return resolvedSymbol ? { ...token, symbol: resolvedSymbol } : token
-    })
-  }, [suggestedTokens, tokensWithResolvedSymbols])
-
-  const fromToken = tokensWithResolvedSymbols.find((x) => x.address.toLocaleLowerCase() == fromAddress)
-  const toToken = tokensWithResolvedSymbols.find((x) => x.address.toLocaleLowerCase() == toAddress)
 
   const config = useConfig()
   const updateFormValues = useCallback(
@@ -468,15 +422,6 @@ export const QuickSwap = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isReady, confirmedLoss, routesAndOutput, formEstGas, formStatus, formValues, searchedParams])
 
-  useEffect(() => {
-    const hasAmount =
-      (formValues.isFrom && +formValues.fromAmount > 0) || (!formValues.isFrom && +formValues.toAmount > 0)
-    const hasQuote = !!routesAndOutput && !routesAndOutput.loading && routesAndOutput.routes.length > 0
-    if (hasAmount && hasQuote) {
-      markSwapFirstQuoteReady()
-    }
-  }, [formValues.isFrom, formValues.fromAmount, formValues.toAmount, routesAndOutput])
-
   const activeStep = haveSigner ? getActiveStep(steps) : null
   const isDisable = formStatus.formProcessing
   const routesAndOutputLoading =
@@ -523,8 +468,7 @@ export const QuickSwap = ({
             onClose={closeModalFromToken}
           >
             <TokenList
-              tokens={tokensWithResolvedSymbols}
-              favorites={suggestedTokensWithResolvedSymbols}
+              tokens={tokens}
               balances={balances}
               tokenPrices={tokenPrices}
               isLoading={tokenSelectorLoading}
@@ -575,8 +519,7 @@ export const QuickSwap = ({
             onClose={closeModalToToken}
           >
             <TokenList
-              tokens={tokensWithResolvedSymbols}
-              favorites={suggestedTokensWithResolvedSymbols}
+              tokens={tokens}
               balances={balances}
               tokenPrices={tokenPrices}
               disableMyTokens
