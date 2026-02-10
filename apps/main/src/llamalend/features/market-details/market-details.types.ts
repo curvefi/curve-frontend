@@ -41,6 +41,14 @@ export type SupplyRate = {
   extraRewards: CampaignPoolRewards[]
   loading: boolean
 }
+export type BorrowToken = {
+  total?: number | undefined | null
+  totalUsdValue?: number | undefined | null
+  symbol: string | undefined | null
+  tokenAddress: string | undefined | null
+  usdRate: number | undefined | null
+  loading: boolean
+}
 export type AvailableLiquidity = {
   value: number | undefined | null
   max: number | undefined | null
@@ -53,6 +61,7 @@ export type MaxLeverage = {
 
 export type MarketDetailsProps = {
   collateral: Collateral
+  borrowToken?: BorrowToken
   borrowRate: BorrowRate
   supplyRate?: SupplyRate
   availableLiquidity: AvailableLiquidity

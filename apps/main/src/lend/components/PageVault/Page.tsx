@@ -22,6 +22,7 @@ import Stack from '@mui/material/Stack'
 import { ConnectWalletPrompt, useCurve } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useParams } from '@ui-kit/hooks/router'
+import { useMarketPageHeader } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
@@ -105,19 +106,22 @@ export const Page = () => {
 
   const positionDetailsHrefs = { borrow: getLoanPathname(params, rOwmId), supply: '' }
   const hasSupplyPosition = (supplyPositionDetails.shares.value ?? 0) > 0
+  const showPageHeader = useMarketPageHeader()
 
   return isSuccess && !market ? (
     <ErrorPage title="404" subtitle={t`Market Not Found`} continueUrl={getCollateralListPathname(params)} />
   ) : provider ? (
     <>
-      <PageHeader
-        isLoading={!isHydrated}
-        market={market}
-        blockchainId={network.id as Chain}
-        availableLiquidity={marketDetails.availableLiquidity}
-        borrowRate={marketDetails.borrowRate}
-        supplyRate={marketDetails.supplyRate}
-      />
+      {showPageHeader && (
+        <PageHeader
+          isLoading={!isHydrated}
+          market={market}
+          blockchainId={network.id as Chain}
+          availableLiquidity={marketDetails.availableLiquidity}
+          borrowRate={marketDetails.borrowRate}
+          supplyRate={marketDetails.supplyRate}
+        />
+      )}
       <DetailPageLayout formTabs={rChainId && rOwmId && <VaultTabs {...pageProps} params={params} />}>
         <CampaignRewardsBanner
           chainId={rChainId}

@@ -110,8 +110,10 @@ const LiquidationAlert = ({ type }: { type: 'soft' | 'hard' }) => {
 }
 
 export const BorrowPositionDetails = ({
+  marketType,
   liquidationAlert,
   health,
+  borrowRate,
   liquidationRange,
   bandRange,
   leverage,
@@ -125,6 +127,8 @@ export const BorrowPositionDetails = ({
     {liquidationAlert.hardLiquidation && <LiquidationAlert type="hard" />}
     <HealthDetails health={health} liquidationAlert={liquidationAlert} />
     <BorrowInformation
+      marketType={marketType}
+      borrowRate={borrowRate}
       collateralValue={collateralValue}
       ltv={ltv}
       leverage={leverage}
