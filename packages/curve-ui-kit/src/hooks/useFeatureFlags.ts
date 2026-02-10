@@ -3,9 +3,7 @@
  * These return booleans indicating whether a new experience is enabled.
  */
 
-import { getCurrentApp } from '@ui-kit/shared/routes'
 import { defaultReleaseChannel, ReleaseChannel } from '@ui-kit/utils'
-import { usePathname } from './router'
 import { useReleaseChannel } from './useLocalStorage'
 
 const useBetaChannel = () => useReleaseChannel()[0] === ReleaseChannel.Beta
@@ -39,7 +37,4 @@ export const useManageSoftLiquidation = useAlphaChannel
 export const useAnalyticsApp = useAlphaChannel
 
 /** New lend market header subnav */
-export const useLendMarketSubNav = () => {
-  const pathname = usePathname()
-  return useAlphaChannel() && getCurrentApp(pathname) === 'lend'
-}
+export const useLendMarketSubNav = useBetaChannel

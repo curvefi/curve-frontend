@@ -5,13 +5,11 @@ import Stack from '@mui/material/Stack'
 import Toolbar from '@mui/material/Toolbar'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { usePathname } from '@ui-kit/hooks/router'
-import { useLendMarketSubNav } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { APP_LINK, routeToPage } from '@ui-kit/shared/routes'
 import { GlobalBanner } from '@ui-kit/shared/ui/GlobalBanner'
 import { MOBILE_SIDEBAR_WIDTH } from '@ui-kit/themes/components'
 import { HeaderStats } from './HeaderStats'
-import { LendMarketSubNav } from './LendMarketSubNav'
 import { MobileTopBar } from './MobileTopBar'
 import { SideBarFooter } from './SideBarFooter'
 import { SidebarSection } from './SidebarSection'
@@ -44,7 +42,6 @@ export const MobileHeader = ({
   const pathname = usePathname()
   const top = useLayoutStore((state) => state.navHeight)
   const appLinks = useVisibleAppLinks()
-  const showLendMarketSubNav = useLendMarketSubNav()
 
   useEffect(() => () => closeSidebar(), [pathname, closeSidebar]) // close when URL changes due to clicking a link
 
@@ -110,7 +107,6 @@ export const MobileHeader = ({
           <SideBarFooter onConnect={closeSidebar} />
         </Drawer>
       </Toolbar>
-      {showLendMarketSubNav && <LendMarketSubNav />}
     </AppBar>
   )
 }

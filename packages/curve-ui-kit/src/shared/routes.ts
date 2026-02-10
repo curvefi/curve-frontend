@@ -26,6 +26,8 @@ export const LEND_MARKET_ROUTES = {
   PAGE_VAULT: '/vault',
 } as const
 
+export type LendMarketRoute = (typeof LEND_MARKET_ROUTES)[keyof typeof LEND_MARKET_ROUTES]
+
 export const CRVUSD_ROUTES = {
   PAGE_MARKETS: '/markets',
   PAGE_CRVUSD_STAKING: '/scrvUSD',
@@ -109,15 +111,15 @@ export const getInternalUrl = (app: AppName, networkId: string, route: string = 
 
 /** Converts a route to a page object, adding href and isActive properties */
 export const routeToPage = (
-  { route, target, label, app }: AppRoute,
-  { networkId, pathname }: { networkId: string; pathname: string | null },
+  { route, target, label, app, matchMode }: AppRoute,
+  { networkId, pathname }: { networkId: string; pathname: string },
 ): AppPage => {
   const href = route.startsWith('http') ? route : getInternalUrl(app, networkId, route)
   return {
     href,
     target,
     label: label(),
-    isActive: pathname?.startsWith(href.split('?')[0]),
+    isActive: matchMode === 'exact' ? pathname === href : pathname.startsWith(href),
   }
 }
 
@@ -140,13 +142,4 @@ export const getCurrentApp = (path: string | null): AppName => {
 export const getCurrentNetwork = (path: string): string | undefined => {
   const [, , networkId] = path?.split('/') ?? []
   return networkId
-}
-/**
- * Gets the current lend market segment from the given URL path.
- * @example "/vault" for supply market or "" for borrow market
- * @returns The market segment if it's a lend market page, otherwise null
- */
-export const getCurrentLendMarket = (path: string) => {
-  const [, , , page, , market] = path.split('/')
-  return page === LLAMALEND_ROUTES.PAGE_MARKETS.split('/')[1] ? (market ?? '') : null
 }

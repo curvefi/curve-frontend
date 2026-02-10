@@ -1,7 +1,5 @@
 import { LEND_MARKET_ROUTES, LEND_ROUTES } from '@ui-kit/shared/routes'
 
-export type LendMarketRoute = (typeof LEND_MARKET_ROUTES)[keyof typeof LEND_MARKET_ROUTES]
-
 export const ROUTE = {
   ...LEND_ROUTES,
   PAGE_INTEGRATIONS: '/integrations',

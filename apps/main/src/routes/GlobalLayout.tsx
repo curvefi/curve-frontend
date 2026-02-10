@@ -3,6 +3,7 @@ import { networks as daoNetworks } from '@/dao/networks'
 import { useDexAppStats, useDexRoutes } from '@/dex/hooks/useDexAppStats'
 import { networks as lendNetworks } from '@/lend/networks'
 import { useLlamalendAppStats } from '@/llamalend/hooks/useLlamalendAppStats'
+import { useLlamalendRoutes } from '@/llamalend/hooks/useLlamalendRoutes'
 import { networks as crvusdNetworks } from '@/loan/networks'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
@@ -14,7 +15,7 @@ import { ScrollUpButton } from '@ui-kit/shared/ui/ScrollUpButton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { ErrorBoundary } from '@ui-kit/widgets/ErrorBoundary'
 import { Footer } from '@ui-kit/widgets/Footer'
-import { Header as Header } from '@ui-kit/widgets/Header'
+import { Header } from '@ui-kit/widgets/Header'
 
 const { MinHeight } = SizesAndSpaces
 
@@ -28,9 +29,9 @@ const useAppStats = (currentApp: AppName, network: NetworkDef) => {
   return isLlamalend ? llamalendStats : currentApp === 'dex' ? dexStats : []
 }
 
-const useAppRoutes = (network: NetworkDef) => ({
+const useAppRoutes = (currentApp: AppName, network: NetworkDef) => ({
   dao: APP_LINK.dao.routes,
-  llamalend: APP_LINK.llamalend.routes,
+  llamalend: useLlamalendRoutes(currentApp),
   dex: useDexRoutes(network),
   bridge: APP_LINK.bridge.routes,
   analytics: APP_LINK.analytics.routes,
@@ -81,7 +82,7 @@ export const GlobalLayout = <TId extends string, TChainId extends number>({
       supportedNetworks={useAppSupportedNetworks(networks, currentApp)}
       isLite={network.isLite}
       appStats={useAppStats(currentApp, network)}
-      routes={useAppRoutes(network)}
+      routes={useAppRoutes(currentApp, network)}
     />
     <Box
       component="main"
