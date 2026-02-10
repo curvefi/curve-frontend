@@ -33,7 +33,7 @@ export async function waitForApproval({
   config,
   isApproved,
   message,
-  timeout = Duration.PollTimeout,
+  timeout = Duration.TransactionPollTimeout,
 }: {
   onApprove: () => Promise<Hex[]>
   message: string

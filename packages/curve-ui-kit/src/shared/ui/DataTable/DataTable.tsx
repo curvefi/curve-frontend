@@ -164,18 +164,20 @@ export const DataTable = <T extends TableItem>({
         {showFooter && (
           <TableFooter>
             {footerRow && <TableRow>{footerRow}</TableRow>}
-            <TableRow>
-              {showViewAllButton && (
+            {showViewAllButton && (
+              <TableRow>
                 <TableViewAllCell colSpan={columnCount} onClick={handleShowAll} isLoading={isLoadingViewAll}>
                   {viewAllLabel || t`View all`}
                 </TableViewAllCell>
-              )}
-              {showPagination && (
+              </TableRow>
+            )}
+            {showPagination && (
+              <TableRow>
                 <TableCell colSpan={columnCount}>
                   <TablePagination table={table} />
                 </TableCell>
-              )}
-            </TableRow>
+              </TableRow>
+            )}
           </TableFooter>
         )}
       </Table>

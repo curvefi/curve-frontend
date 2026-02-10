@@ -7,25 +7,25 @@ import { formatNumber, type Amount } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
-const formatAmount = (amount: Amount | undefined) =>
-  amount == null ? '-' : formatNumber(amount, { abbreviate: false })
+const formatBalance = (balance: Amount | undefined) =>
+  balance == null ? '-' : formatNumber(balance, { abbreviate: false })
 
-export const ClaimTokenCell = ({
-  amount,
+export const TokenBalanceCell = ({
+  balance,
   symbol,
   token,
   blockchainId,
 }: {
-  amount: Amount | undefined
+  balance: Amount | undefined
   symbol?: string
   token: string
-  blockchainId: string
+  blockchainId: string | undefined
 }) => (
   <InlineTableCell>
     <Stack direction="row" gap={Spacing.xs} alignItems="center">
       <TokenIcon blockchainId={blockchainId} address={token} tooltip={symbol} size="lg" showChainIcon />
       <Stack gap={Spacing.xxs} alignItems="flex-start">
-        <Typography variant="tableCellL">{formatAmount(amount)}</Typography>
+        <Typography variant="tableCellL">{formatBalance(balance)}</Typography>
         <Typography variant="tableCellSRegular" color="textSecondary">
           {symbol}
         </Typography>

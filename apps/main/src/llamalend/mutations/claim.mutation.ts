@@ -24,7 +24,7 @@ const waitForCrvClaim = async ({
   onClaim,
   config,
   isClaimable,
-  timeout = Duration.PollTimeout,
+  timeout = Duration.TransactionPollTimeout,
 }: {
   onClaim: () => Promise<Hex>
   isClaimable: () => Promise<boolean>
@@ -63,7 +63,7 @@ export const useClaimMutation = ({
       })
 
       const claimableRewards = await fetchClaimableRewards({ marketId: market.id, userAddress }, { staleTime: 0 })
-      if (claimableRewards.length !== 0) return { hash: crvHash! }
+      if (claimableRewards.length === 0) return { hash: crvHash! }
       const rewardsHash = (await lendMarket.vault.claimRewards()) as Hex
       return { hash: crvHash ?? rewardsHash }
     },

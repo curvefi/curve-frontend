@@ -14,7 +14,7 @@ const NotionalTypographyWithSkeleton = ({
   notional: number | undefined
   isLoading: boolean
 }) => (
-  <WithSkeleton loading={isLoading} sx={{ width: '3rem', height: '1lh', display: 'inline-block' }}>
+  <WithSkeleton loading={isLoading} sx={{ maxWidth: 'none', width: '3rem', height: '1lh', display: 'inline-block' }}>
     <Typography variant="tableCellMBold" color="textPrimary" textAlign="right">
       {formatNotional(notional)}
     </Typography>

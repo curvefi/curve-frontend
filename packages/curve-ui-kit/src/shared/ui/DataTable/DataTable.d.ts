@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-empty-object-type,@typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import '@tanstack/table-core'
 import type { RowData } from '@tanstack/table-core'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
@@ -15,5 +15,8 @@ declare module '@tanstack/react-table' {
     tooltip?: Omit<TooltipProps, 'children'>
   }
 
-  interface TableMeta<TData extends RowData> {}
+  interface TableMeta<TData extends RowData> {
+    chainId?: string
+    isLoading?: boolean // used for additinal loading states, like notional rates
+  }
 }
