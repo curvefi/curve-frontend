@@ -1,12 +1,14 @@
 import { BandsComp } from '@/lend/components/BandsComp'
 import { ChartAndActivityComp } from '@/lend/components/ChartAndActivityComp'
 import { DetailsContracts } from '@/lend/components/DetailsMarket/components/DetailsContracts'
+import { useMarketDetails } from '@/lend/hooks/useMarketDetails'
 import { PageContentProps } from '@/lend/types/lend.types'
+import { AdvancedDetails } from '@/llamalend/features/market-details'
 import { MarketParameters } from '@/llamalend/features/market-parameters/MarketParameters'
 import Stack from '@mui/material/Stack'
 import { getLib } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { useNewBandsChart } from '@ui-kit/hooks/useFeatureFlags'
+import { useNewBandsChart, useMarketPageHeader } from '@ui-kit/hooks/useFeatureFlags'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
@@ -25,6 +27,8 @@ export const MarketInformationComp = ({ pageProps, loanExists, type }: MarketInf
   const api = getLib('llamaApi')
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
   const newBandsChartEnabled = useNewBandsChart()
+  const showPageHeader = useMarketPageHeader()
+  const marketDetails = useMarketDetails({ chainId: rChainId, market, marketId: rOwmId })
 
   return (
     <>
@@ -35,21 +39,23 @@ export const MarketInformationComp = ({ pageProps, loanExists, type }: MarketInf
         </Stack>
       )}
       {market && isAdvancedMode && (
-        <Stack
-          sx={{
-            backgroundColor: (t) => t.design.Layer[1].Fill,
-            flexDirection: 'column',
-            // 1100px
-            '@media (min-width: 68.75rem)': {
-              flexDirection: 'row',
-            },
-          }}
-        >
-          <Stack sx={{ flexGrow: 1, padding: Spacing.md }}>
-            <DetailsContracts rChainId={rChainId} market={market} />
-          </Stack>
+        <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, ...(showPageHeader && { marginTop: Spacing.md }) }}>
+          {showPageHeader && <AdvancedDetails {...marketDetails} />}
+          <Stack
+            sx={{
+              flexDirection: 'column',
+              // 1100px
+              '@media (min-width: 68.75rem)': {
+                flexDirection: 'row',
+              },
+            }}
+          >
+            <Stack sx={{ flexGrow: 1, padding: Spacing.md }}>
+              <DetailsContracts rChainId={rChainId} market={market} />
+            </Stack>
 
-          <MarketParameters chainId={rChainId} marketId={rOwmId} marketType="lend" action={type} />
+            <MarketParameters chainId={rChainId} marketId={rOwmId} marketType="lend" action={type} />
+          </Stack>
         </Stack>
       )}
     </>

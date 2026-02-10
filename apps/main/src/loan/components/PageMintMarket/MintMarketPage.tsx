@@ -147,7 +147,7 @@ export const MintMarketPage = () => {
           )}
         </Stack>
         <Stack>
-          <MarketDetails {...marketDetails} />
+          {!showPageHeader && <MarketDetails {...marketDetails} />}
           <MarketInformationComp llamma={market ?? null} marketId={marketId} chainId={rChainId} page="manage" />
         </Stack>
       </DetailPageLayout>

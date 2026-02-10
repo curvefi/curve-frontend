@@ -67,7 +67,7 @@ export const BorrowInformation = ({
           gridTemplateColumns: '1fr 1fr',
           // 550px
           [theme.breakpoints.up(550)]: {
-            gridTemplateColumns: '1fr 1fr 1fr 1fr',
+            gridTemplateColumns: showPageHeader ? '1fr 1fr 1fr' : `1fr 1fr 1fr 1fr`,
           },
         })}
       >

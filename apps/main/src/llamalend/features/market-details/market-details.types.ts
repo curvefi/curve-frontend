@@ -69,3 +69,10 @@ export type MarketDetailsProps = {
   blockchainId: string
   marketType: LlamaMarketType
 }
+
+export type AdvancedDetailsProps = {
+  collateral: Collateral
+  availableLiquidity: AvailableLiquidity
+  maxLeverage?: MaxLeverage
+  marketType: LlamaMarketType
+}

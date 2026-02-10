@@ -138,7 +138,7 @@ export const Page = () => {
           )}
         </MarketInformationTabs>
         <Stack>
-          <MarketDetails {...marketDetails} />
+          {!showPageHeader && <MarketDetails {...marketDetails} />}
           <MarketInformationComp loanExists={loanExists} pageProps={pageProps} type="supply" />
         </Stack>
       </DetailPageLayout>

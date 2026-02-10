@@ -171,7 +171,7 @@ export const LendMarketPage = () => {
           )}
         </MarketInformationTabs>
         <Stack>
-          <MarketDetails {...marketDetails} />
+          {!showPageHeader && <MarketDetails {...marketDetails} />}
           <MarketInformationComp pageProps={pageProps} type="borrow" loanExists={loanExists} />
         </Stack>
       </DetailPageLayout>
