@@ -150,7 +150,7 @@ recordValues(LlamaMarketType)
 
         it(`repays the loan`, () => {
           cy.mount(<LoanTestWrapper tab="repay" />)
-          selectRepayToken('crvUSD')
+          selectRepayToken({ symbol: 'crvUSD', hasLeverage })
           writeRepayLoanForm({ amount: repay }) // TODO: test full-repay
           checkRepayDetailsLoaded({
             debt: [debtAfterBorrowMore, debtAfterBorrowMoreAndRepay, 'crvUSD'],
