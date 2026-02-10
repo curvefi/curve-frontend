@@ -1,5 +1,3 @@
-import { MarketNetBorrowAprTooltipContent } from '@/llamalend/widgets/tooltips/MarketNetBorrowAprTooltipContent'
-import { MarketSupplyRateTooltipContent } from '@/llamalend/widgets/tooltips/MarketSupplyRateTooltipContent'
 import { Box, CardHeader } from '@mui/material'
 import { formatNumber, FORMAT_OPTIONS } from '@ui/utils/utilsFormat'
 import type { CampaignPoolRewards } from '@ui-kit/entities/campaigns'
@@ -9,13 +7,18 @@ import { SymbolCell } from '@ui-kit/shared/ui/SymbolCell'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType, type ExtraIncentive } from '@ui-kit/types/market'
 import { abbreviateNumber, scaleSuffix } from '@ui-kit/utils/number'
-import { MarketTypeSuffix, TooltipOptions } from './constants'
-import { AvailableLiquidityTooltip } from './tooltips/AvailableLiquidityTooltip'
-import { CollateralTokenTooltip } from './tooltips/CollateralTokenTooltip'
-import { DebtTokenTooltip } from './tooltips/DebtTokenTooltip'
-import { MaxLeverageTooltip } from './tooltips/MaxLeverageTooltip'
-import { TotalCollateralTooltip } from './tooltips/TotalCollateralTooltip'
-import { UtilizationTooltip } from './tooltips/UtilizationTooltip'
+import {
+  MarketTypeSuffix,
+  AvailableLiquidityTooltip,
+  CollateralTokenTooltip,
+  DebtTokenTooltip,
+  MaxLeverageTooltip,
+  TotalCollateralTooltip,
+  UtilizationTooltip,
+  MarketNetBorrowAprTooltipContent,
+  MarketSupplyRateTooltipContent,
+  TooltipOptions,
+} from './'
 
 const { Spacing } = SizesAndSpaces
 
