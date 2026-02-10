@@ -6,7 +6,7 @@ import { combineQueriesToObject, type FieldsOf } from '@ui-kit/lib'
 import { queryClient } from '@ui-kit/lib/api'
 import { REFRESH_INTERVAL, type ChainQuery, type UserQuery } from '@ui-kit/lib/model'
 import { Decimal } from '@ui-kit/utils'
-import type { Config, ReadContractsReturnType } from '@wagmi/core'
+import { multicall, type Config, type ReadContractsReturnType } from '@wagmi/core'
 import type { GetBalanceReturnType } from '@wagmi/core'
 import { getBalanceQueryOptions, readContractsQueryOptions } from '@wagmi/core/query'
 
@@ -194,26 +194,53 @@ export function useTokenBalances(
   })
 }
 
-/** Prefetch balances for multiple tokens into the query cache. Fire-and-forget, so no need to await. */
-export const prefetchTokenBalances = (
+/**
+ * Prefetch balances for multiple tokens into the query cache via a single multicall.
+ *
+ * We call Wagmi's `multicall` directly instead of `prefetchQuery` per token because
+ * Wagmi only batches calls within a single `readContracts` invocation into one `eth_call`.
+ * Separate `prefetchQuery` calls each produce their own multicall, even when fired in rapid
+ * succession within Viem's batch window. In other words, it batches with multicall, but not
+ * efficiently to the extent that we need. By flattening all token contracts (balanceOf + decimals)
+ * into one `multicall`, we guarantee minimal RPC round-trips — which matters for 1000+ tokens
+ * on rate-limited public RPCs.
+ */
+export const prefetchTokenBalances = async (
   config: Config,
   { chainId, userAddress, tokenAddresses }: ChainQuery & UserQuery & { tokenAddresses: Address[] },
 ) => {
   const uniqueAddresses = Array.from(new Set(tokenAddresses))
 
-  uniqueAddresses.forEach((tokenAddress) => {
-    const query = { chainId, userAddress, tokenAddress }
+  const nativeToken = tokenAddresses.find((tokenAddress) => isNative({ tokenAddress }))
+  const erc20Addresses = uniqueAddresses.filter((tokenAddress) => !isNative({ tokenAddress }))
 
-    if (isNative(query)) {
-      void queryClient.prefetchQuery({
-        ...getNativeBalanceQueryOptions(config, query),
-        ...QUERIES_FRESHNESS_OPTIONS,
-      })
-    } else {
-      void queryClient.prefetchQuery({
-        ...readContractsQueryOptions(config, { contracts: getERC20QueryContracts(query) }),
-        ...QUERIES_FRESHNESS_OPTIONS,
-      })
-    }
-  })
+  // Prefetch native balance individually (can't be multicalled as it uses wagmi's useBalance, and it's one address anyway)
+  if (nativeToken) {
+    const query = { chainId, userAddress, tokenAddress: nativeToken }
+    await queryClient.prefetchQuery({
+      ...getNativeBalanceQueryOptions(config, query),
+      ...QUERIES_FRESHNESS_OPTIONS,
+    })
+  }
+
+  // Batch all ERC-20 tokens into a single multicall, then seed individual cache entries.
+  // Wagmi config handles multicall batching by batchSize under the hood (defaults to 1_024 bytes)
+  if (!erc20Addresses.length) return
+
+  const tokenContracts = erc20Addresses.map((tokenAddress) =>
+    getERC20QueryContracts({ chainId, userAddress, tokenAddress }),
+  )
+  const results = await multicall(config, { chainId, contracts: tokenContracts.flat() })
+  const updatedAt = Date.now()
+
+  // Each token uses 2 contracts (balanceOf + decimals), so chunk results by 2
+  for (let i = 0; i < erc20Addresses.length; i++) {
+    // Failures are fine — allowFailure defaults to true, so failed calls are seeded as
+    // { status: 'failure' } entries. Downstream consumers (useTokenBalance, fetchTokenBalance)
+    // already handle per-token failures gracefully.
+    const { queryKey } = readContractsQueryOptions(config, { contracts: tokenContracts[i] })
+    const tokenResults = [results[i * 2], results[i * 2 + 1]]
+
+    queryClient.setQueryData(queryKey, tokenResults, { updatedAt })
+  }
 }

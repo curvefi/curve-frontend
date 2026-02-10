@@ -155,6 +155,7 @@ export const QuickSwap = ({
     balances,
     tokenPrices,
     isLoading: tokenSelectorLoading,
+    isPrefetched,
   } = useTokenSelectorData(
     { chainId, userAddress: signerAddress, tokens },
     { enabled: !!isOpenFromToken || !!isOpenToToken, prefetch: !!userFromBalanceFetched && !!userToBalanceFetched },
@@ -462,7 +463,7 @@ export const QuickSwap = ({
         tokenSelector={
           <TokenSelector
             selectedToken={fromToken}
-            disabled={isDisable || !fromToken}
+            disabled={isDisable || !fromToken || !isPrefetched}
             isOpen={!!isOpenFromToken}
             onOpen={openModalFromToken}
             onClose={closeModalFromToken}
@@ -513,7 +514,7 @@ export const QuickSwap = ({
         tokenSelector={
           <TokenSelector
             selectedToken={toToken}
-            disabled={isDisable || !toToken}
+            disabled={isDisable || !toToken || !isPrefetched}
             isOpen={!!isOpenToToken}
             onOpen={openModalToToken}
             onClose={closeModalToToken}

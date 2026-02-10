@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import type { Address } from 'viem'
 import { useConfig } from 'wagmi'
 import { recordEntries } from '@curvefi/prices-api/objects.util'
@@ -23,9 +23,21 @@ export const useTokenSelectorData = (
     userAddress?: Address
   },
   { enabled, prefetch }: { enabled: boolean; prefetch: boolean },
-): Pick<TokenListProps, 'balances' | 'tokenPrices' | 'isLoading'> => {
+): Pick<TokenListProps, 'balances' | 'tokenPrices' | 'isLoading'> & { isPrefetched: boolean } => {
   const config = useConfig()
   const tokenAddresses = useMemo(() => tokens.map((token) => token.address), [tokens])
+
+  /**
+   * Tracks whether prefetching has completed so the token selector can be disabled until
+   * cached data is available. Without this, opening the modal before prefetch finishes
+   * causes `useTokenBalances` to fire individual queries per token (1000+), bypassing
+   * the batched multicall. A future refactor should replace `useTokenBalances` entirely
+   * with direct cache reads after prefetch, avoiding the overhead of creating a TanStack
+   * Query observer per token — which causes excessive re-renders when the user switches
+   * address or when staleTime expires while the modal is open. In other words, we shouldn't
+   * use query hooks for the giant list.
+   */
+  const [isPrefetched, setIsPrefetched] = useState(false)
 
   /*
    * Prefetch balances eagerly so they're cached before the modal opens.
@@ -41,7 +53,9 @@ export const useTokenSelectorData = (
    */
   useEffect(() => {
     if (prefetch && chainId && userAddress && tokenAddresses.length > 0) {
-      prefetchTokenBalances(config, { chainId, userAddress, tokenAddresses })
+      void prefetchTokenBalances(config, { chainId, userAddress, tokenAddresses }).then(() => {
+        setIsPrefetched(true)
+      })
     }
   }, [prefetch, config, chainId, userAddress, tokenAddresses])
 
@@ -63,5 +77,5 @@ export const useTokenSelectorData = (
 
   const { data: tokenPrices } = useTokenUsdRates({ chainId, tokenAddresses: tokenAddressesWithBalance }, enabled)
 
-  return { balances, tokenPrices, isLoading }
+  return { balances, tokenPrices, isLoading, isPrefetched }
 }
