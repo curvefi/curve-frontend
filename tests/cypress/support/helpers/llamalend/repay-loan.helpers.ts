@@ -9,7 +9,7 @@ export function selectRepayToken({ symbol, hasLeverage }: { symbol: string; hasL
   if (!hasLeverage) {
     return cy.get(`[data-testid="${selectedTokenTestId}"]`, LOAD_TIMEOUT).should('be.visible')
   }
-  cy.get('[data-testid^="repay-input-"] [role="button"][aria-haspopup="listbox"]', LOAD_TIMEOUT).click()
+  cy.get('[data-testid^="repay-input-"] [aria-haspopup="listbox"]', LOAD_TIMEOUT).click()
   cy.get(`[data-testid="token-option-${symbol}"]`, LOAD_TIMEOUT).click()
   cy.get(`[data-testid="${selectedTokenTestId}"]`, LOAD_TIMEOUT).should('be.visible')
 }

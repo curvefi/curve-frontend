@@ -5,4 +5,5 @@ export type TokenOption = {
   symbol: string
   chain?: string
   volume?: number
+  testId?: string
 }

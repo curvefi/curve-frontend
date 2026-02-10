@@ -41,9 +41,9 @@ function RepayTokenSelector<ChainId extends IChainId>({
   const [isOpen, onOpen, onClose] = useSwitch(false)
   if (props.tokens.length === 1) {
     const {
-      tokens: [{ address, chain, symbol }],
+      tokens: [{ address, chain, symbol, testId }],
     } = props
-    return <TokenLabel blockchainId={chain} address={address} label={symbol} />
+    return <TokenLabel blockchainId={chain} address={address} label={symbol} testId={testId} />
   }
   return (
     <TokenSelector

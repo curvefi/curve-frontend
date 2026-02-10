@@ -23,6 +23,7 @@ const getRepayTokenOptions = ({
       chain: networkId,
       symbol: borrowToken.symbol,
       field: 'userBorrowed',
+      testId: `repay-selected-token-${borrowToken.symbol}`,
     },
     market &&
       collateralToken &&
@@ -31,6 +32,7 @@ const getRepayTokenOptions = ({
         chain: networkId,
         symbol: collateralToken.symbol,
         field: 'stateCollateral',
+        testId: `repay-selected-token-${collateralToken.symbol}`,
       },
     market &&
       collateralToken &&
@@ -39,6 +41,7 @@ const getRepayTokenOptions = ({
         chain: networkId,
         symbol: collateralToken.symbol,
         field: 'userCollateral',
+        testId: `repay-selected-token-${collateralToken.symbol}`,
       },
   )
 }

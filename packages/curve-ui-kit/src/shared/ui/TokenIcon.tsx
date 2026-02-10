@@ -29,6 +29,8 @@ export type TokenIconProps = {
   address?: string | null
   /** Whether the icon should appear disabled (greyed out) */
   disabled?: boolean
+  /** Optional test id for deterministic e2e/component selectors */
+  testId?: string
   sx?: SxProps
 }
 
@@ -39,12 +41,13 @@ export const TokenIcon = ({
   size = DEFAULT_SIZE,
   address,
   disabled,
+  testId,
   sx,
 }: TokenIconProps) => (
   <Tooltip title={tooltip} placement="top">
     <Box
       component="img"
-      data-testid={`token-icon-${tooltip || address}`}
+      data-testid={testId}
       className={`${className}`}
       alt={tooltip}
       onError={({ currentTarget }) => {
