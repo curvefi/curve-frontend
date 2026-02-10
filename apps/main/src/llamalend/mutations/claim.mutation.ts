@@ -33,15 +33,12 @@ export const useClaimMutation = ({
     mutationFn: async (_, { market }) => {
       const lendMarket = requireVault(market)
 
-      const txHashes = await waitForTransaction({
-        isSatisfied: async () => {
-          const claimableCrv = await fetchClaimableCrv({ marketId: market.id, userAddress }, { staleTime: 0 })
-          return claimableCrv == null || Number(claimableCrv) === 0
-        },
-        onExecute: async () => (await lendMarket.vault.claimCrv()) as Hex,
-        config,
-      })
-      const crvHash = txHashes?.[0]
+      const [crvHash] =
+        (await waitForTransaction({
+          isSatisfied: async () => !Number(await fetchClaimableCrv({ marketId, userAddress }, { staleTime: 0 })),
+          onExecute: async () => (await lendMarket.vault.claimCrv()) as Hex,
+          config,
+        })) ?? []
 
       const claimableRewards = await fetchClaimableRewards({ marketId: market.id, userAddress }, { staleTime: 0 })
       if (claimableRewards.length === 0) return { hash: crvHash! }

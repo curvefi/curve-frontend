@@ -53,7 +53,7 @@ export async function waitForTransaction({
   }
 }
 
-export async function waitForApproval({
+export const waitForApproval = async ({
   onApprove,
   config,
   isApproved,
@@ -65,12 +65,11 @@ export async function waitForApproval({
   isApproved: () => Promise<boolean>
   config: Config
   timeout?: number
-}) {
-  return await waitForTransaction({
+}) =>
+  await waitForTransaction({
     onExecute: onApprove,
     config,
     isSatisfied: isApproved,
     message,
     timeout,
   })
-}
