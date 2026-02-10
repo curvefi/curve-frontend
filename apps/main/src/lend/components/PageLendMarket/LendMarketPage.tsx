@@ -21,7 +21,9 @@ import { BorrowPositionDetails, NoPosition } from '@/llamalend/features/market-p
 import { UserPositionHistory } from '@/llamalend/features/user-position-history'
 import { useUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { useLoanExists } from '@/llamalend/queries/loan-exists'
+import { PageHeader } from '@/llamalend/widgets/page-header'
 import { isChain } from '@curvefi/prices-api'
+import type { Chain } from '@curvefi/prices-api'
 import Stack from '@mui/material/Stack'
 import { ConnectWalletPrompt, useCurve } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
@@ -35,6 +37,7 @@ import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLay
 const { Spacing } = SizesAndSpaces
 
 export const LendMarketPage = () => {
+  const { isHydrated } = useCurve()
   const params = useParams<MarketUrlParams>()
   const { rMarket, rChainId: chainId } = parseMarketParams(params)
 
@@ -115,6 +118,14 @@ export const LendMarketPage = () => {
     <ErrorPage title="404" subtitle={t`Market Not Found`} continueUrl={getCollateralListPathname(params)} />
   ) : provider ? (
     <>
+      <PageHeader
+        isLoading={!isHydrated}
+        market={market}
+        blockchainId={network.id as Chain}
+        availableLiquidity={marketDetails.availableLiquidity}
+        borrowRate={marketDetails.borrowRate}
+        supplyRate={marketDetails.supplyRate}
+      />
       <DetailPageLayout
         formTabs={
           chainId &&
