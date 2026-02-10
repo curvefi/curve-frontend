@@ -1,7 +1,7 @@
-import { useEstimateGas } from '@/llamalend/hooks/useEstimateGas'
 import { type NetworkDict } from '@/llamalend/llamalend.types'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
+import { useEstimateGas } from '@ui-kit/lib/model/entities/gas-info'
 import { requireVault, UnstakeParams, UnstakeQuery, unstakeValidationSuite } from '../validation/supply.validation'
 
 const { useQuery: useUnstakeEstimateGasQuery } = queryFactory({
@@ -27,7 +27,7 @@ export const useUnstakeEstimateGas = <ChainId extends IChainId>(
     data,
     isLoading: conversionLoading,
     error: estimateError,
-  } = useEstimateGas<ChainId>(networks, chainId, unstakeEstimate, enabled)
+  } = useEstimateGas(networks, chainId, unstakeEstimate, enabled)
 
   return {
     data,

@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import type { Address, Hex } from 'viem'
-import { type LlammaMutationOptions, useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
+import { useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
 import {
   UnstakeForm,
   UnstakeMutation,
@@ -10,12 +10,13 @@ import {
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
+import type { OnTransactionSuccess } from '@ui-kit/lib/model/mutation/useTransactionMutation'
 import { formatTokenAmounts } from '../llama.utils'
 
 export type UnstakeOptions = {
   marketId: string | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
-  onUnstaked: LlammaMutationOptions<UnstakeMutation>['onSuccess'] | undefined
+  onUnstaked?: OnTransactionSuccess<UnstakeMutation>
   onReset: () => void
   userAddress: Address | undefined
 }
@@ -32,9 +33,9 @@ export const useUnstakeMutation = ({
     network,
     marketId,
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'unstake'] as const,
-    mutationFn: async (mutation, { market }) => {
+    mutationFn: async (variables, { market }) => {
       const lendMarket = requireVault(market)
-      return { hash: (await lendMarket.vault.unstake(mutation.unstakeAmount)) as Hex }
+      return { hash: (await lendMarket.vault.unstake(variables.unstakeAmount)) as Hex }
     },
     validationSuite: unstakeValidationSuite,
     pendingMessage: (mutation, { market }) =>
