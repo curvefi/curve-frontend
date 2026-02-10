@@ -12,6 +12,7 @@
     "test": "vitest run",
     "test:ui": "vitest --ui",
     "vitest:watch": "vitest --watch",
+    "cy": "cypress",
     "cy:open:e2e": "cypress open --e2e",
     "cy:run:e2e": "wait-on http://localhost:3000 --timeout 1m && cypress run --e2e",
     "cy:open:component": "cypress open --component",
