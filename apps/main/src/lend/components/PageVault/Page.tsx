@@ -9,12 +9,15 @@ import { useMarketDetails } from '@/lend/hooks/useMarketDetails'
 import { useSupplyPositionDetails } from '@/lend/hooks/useSupplyPositionDetails'
 import { useTitleMapper } from '@/lend/hooks/useTitleMapper'
 import { helpers } from '@/lend/lib/apiLending'
+import { networks } from '@/lend/networks'
 import { useStore } from '@/lend/store/useStore'
 import { type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
 import { getCollateralListPathname, getLoanPathname, parseMarketParams } from '@/lend/utils/utilsRouter'
 import { MarketDetails } from '@/llamalend/features/market-details'
 import { NoPosition, SupplyPositionDetails } from '@/llamalend/features/market-position-details'
 import { useLoanExists } from '@/llamalend/queries/loan-exists'
+import { PageHeader } from '@/llamalend/widgets/page-header/PageHeader'
+import type { Chain } from '@curvefi/prices-api'
 import Stack from '@mui/material/Stack'
 import { ConnectWalletPrompt, useCurve } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
@@ -30,9 +33,10 @@ const { Spacing } = SizesAndSpaces
 export const Page = () => {
   const params = useParams<MarketUrlParams>()
   const { rMarket, rChainId } = parseMarketParams(params)
-  const { llamaApi: api = null, provider } = useCurve()
+  const { llamaApi: api = null, provider, isHydrated } = useCurve()
   const titleMapper = useTitleMapper()
   const { data: market, isSuccess } = useOneWayMarket(rChainId, rMarket)
+  const network = networks[rChainId]
 
   const isPageVisible = useLayoutStore((state) => state.isPageVisible)
   const fetchAllMarketDetails = useStore((state) => state.markets.fetchAll)
@@ -105,26 +109,36 @@ export const Page = () => {
   return isSuccess && !market ? (
     <ErrorPage title="404" subtitle={t`Market Not Found`} continueUrl={getCollateralListPathname(params)} />
   ) : provider ? (
-    <DetailPageLayout formTabs={rChainId && rOwmId && <VaultTabs {...pageProps} params={params} />}>
-      <CampaignRewardsBanner
-        chainId={rChainId}
-        borrowAddress={market?.addresses?.controller || ''}
-        supplyAddress={market?.addresses?.vault || ''}
+    <>
+      <PageHeader
+        isLoading={!isHydrated}
+        market={market}
+        blockchainId={network.id as Chain}
+        availableLiquidity={marketDetails.availableLiquidity}
+        borrowRate={marketDetails.borrowRate}
+        supplyRate={marketDetails.supplyRate}
       />
-      <MarketInformationTabs currentTab="supply" hrefs={positionDetailsHrefs}>
-        {hasSupplyPosition ? (
-          <SupplyPositionDetails {...supplyPositionDetails} />
-        ) : (
-          <Stack padding={Spacing.md} sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
-            <NoPosition type="supply" />
-          </Stack>
-        )}
-      </MarketInformationTabs>
-      <Stack>
-        <MarketDetails {...marketDetails} />
-        <MarketInformationComp loanExists={loanExists} pageProps={pageProps} type="supply" />
-      </Stack>
-    </DetailPageLayout>
+      <DetailPageLayout formTabs={rChainId && rOwmId && <VaultTabs {...pageProps} params={params} />}>
+        <CampaignRewardsBanner
+          chainId={rChainId}
+          borrowAddress={market?.addresses?.controller || ''}
+          supplyAddress={market?.addresses?.vault || ''}
+        />
+        <MarketInformationTabs currentTab="supply" hrefs={positionDetailsHrefs}>
+          {hasSupplyPosition ? (
+            <SupplyPositionDetails {...supplyPositionDetails} />
+          ) : (
+            <Stack padding={Spacing.md} sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
+              <NoPosition type="supply" />
+            </Stack>
+          )}
+        </MarketInformationTabs>
+        <Stack>
+          <MarketDetails {...marketDetails} />
+          <MarketInformationComp loanExists={loanExists} pageProps={pageProps} type="supply" />
+        </Stack>
+      </DetailPageLayout>
+    </>
   ) : (
     <ConnectWalletPrompt description={t`Connect your wallet to view market`} />
   )
