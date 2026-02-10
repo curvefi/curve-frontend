@@ -85,7 +85,6 @@ export const useDepositForm = <ChainId extends LlamaChainId>({
   })
 
   const { formState } = form
-  const formErrors = useFormErrors(formState)
 
   useCallbackAfterFormUpdate(form, resetDeposit)
 
@@ -106,6 +105,6 @@ export const useDepositForm = <ChainId extends LlamaChainId>({
     txHash: data?.hash,
     max: maxUserDeposit,
     isApproved: useDepositIsApproved(params, enabled),
-    formErrors,
+    formErrors: useFormErrors(formState),
   }
 }

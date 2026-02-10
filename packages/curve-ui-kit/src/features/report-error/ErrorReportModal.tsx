@@ -12,7 +12,7 @@ import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
 import { ModalDialog } from '@ui-kit/shared/ui/ModalDialog'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { setValueOptions, useFormErrors } from '@ui-kit/utils/react-form.utils'
+import { setValueOptions } from '@ui-kit/utils/react-form.utils'
 import { type ErrorContext, type ContactMethod, useErrorReportForm } from './useErrorReportForm'
 
 const { Spacing } = SizesAndSpaces
@@ -36,7 +36,6 @@ export const ErrorReportModal = ({ isOpen, onClose, context }: ErrorReportModalP
     onSubmit,
   } = useErrorReportForm(context, onClose)
   const { label, placeholder } = contactCopyByMethod[contactMethod]
-  const errors = useFormErrors(form.formState)
   useEffect(() => {
     if (isOpen && userAddress) form.setValue('address', userAddress, setValueOptions)
   }, [form, isOpen, userAddress])
@@ -53,7 +52,7 @@ export const ErrorReportModal = ({ isOpen, onClose, context }: ErrorReportModalP
           onClick={onSubmit}
           data-testid="submit-error-report-submit"
           variant="contained"
-          disabled={errors.length > 0}
+          disabled={!form.formState.isValid}
         >
           {t`Submit report`}
         </Button>

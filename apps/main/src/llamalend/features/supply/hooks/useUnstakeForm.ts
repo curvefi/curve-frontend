@@ -92,7 +92,6 @@ export const useUnstakeForm = <ChainId extends LlamaChainId>({
   })
 
   const { formState } = form
-  const formErrors = useFormErrors(formState)
 
   useCallbackAfterFormUpdate(form, resetUnstake)
 
@@ -113,6 +112,6 @@ export const useUnstakeForm = <ChainId extends LlamaChainId>({
     unstakeError,
     txHash: data?.hash,
     max: maxUserUnstake,
-    formErrors,
+    formErrors: useFormErrors(formState),
   }
 }

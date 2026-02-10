@@ -79,7 +79,6 @@ export const useRemoveCollateralForm = <
   })
   const { formState } = form
   const maxRemovable = useMaxRemovableCollateral(params, enabled)
-  const formErrors = useFormErrors(formState)
 
   useCallbackAfterFormUpdate(form, action.reset)
 
@@ -99,6 +98,6 @@ export const useRemoveCollateralForm = <
     collateralToken,
     borrowToken,
     txHash: action.data?.hash,
-    formErrors,
+    formErrors: useFormErrors(formState),
   }
 }

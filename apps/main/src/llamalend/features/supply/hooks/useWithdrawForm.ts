@@ -79,7 +79,6 @@ export const useWithdrawForm = <ChainId extends LlamaChainId>({
   })
 
   const { formState } = form
-  const formErrors = useFormErrors(formState)
 
   useCallbackAfterFormUpdate(form, resetWithdraw)
 
@@ -99,6 +98,6 @@ export const useWithdrawForm = <ChainId extends LlamaChainId>({
     withdrawError,
     txHash: data?.hash,
     max: maxUserWithdraw,
-    formErrors,
+    formErrors: useFormErrors(formState),
   }
 }

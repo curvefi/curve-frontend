@@ -163,7 +163,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
       <Button
         type="submit"
         loading={isPending || !market}
-        disabled={idDisabled}
+        disabled={isDisabled}
         data-testid="create-loan-submit-button"
       >
         {isPending ? t`Processing...` : isApproved?.data ? t`Borrow` : t`Approve & Borrow`}

@@ -1,11 +1,11 @@
 import { notFalsy } from '@curvefi/prices-api/objects.util'
-import { LOAD_TIMEOUT } from '@cy/support/ui'
+import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
 import { type Decimal, formatNumber } from '@ui-kit/utils'
 
 export const getActionValue = (name: string, field?: 'previous') =>
   cy
-    .get(`[data-testid="${notFalsy(name, field, 'value').join('-')}"]`, LOAD_TIMEOUT)
-    .invoke(LOAD_TIMEOUT, 'attr', 'data-value')
+    .get(`[data-testid="${notFalsy(name, field, 'value').join('-')}"]`, TRANSACTION_LOAD_TIMEOUT)
+    .invoke(TRANSACTION_LOAD_TIMEOUT, 'attr', 'data-value')
 
 /**
  * Checks the current and future debt values, and that the symbol is displayed correctly.
