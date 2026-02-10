@@ -8,18 +8,27 @@ import {
   setUser as setSentryUser,
   withScope,
 } from '@sentry/react'
-
-// 'process' is not guaranteed to be available, like in Storybook for example
-const { NODE_ENV } = typeof process === 'undefined' ? {} : process.env
+import { isCypress, isPreviewHost } from '@ui-kit/utils/env'
 
 export const SENTRY_DSN =
   'https://946ac1b5b974fb993626876dd310b0d2@o4510753779220480.ingest.de.sentry.io/4510753786101840'
+
+const TLD = 'curve.finance'
+const environment = isCypress
+  ? 'cypress'
+  : isPreviewHost
+    ? 'preview'
+    : window.location.hostname === `www.${TLD}`
+      ? 'production'
+      : window.location.hostname.includes(`.${TLD}`)
+        ? window.location.hostname.replace(`.${TLD}`, '')
+        : window.location.hostname // e.g. localhost
 
 /** Initialize Sentry error reporting */
 export const initSentry = () =>
   init({
     dsn: SENTRY_DSN,
-    environment: NODE_ENV,
+    environment,
     tracesSampleRate: 0.01, // Performance monitoring sample rate (adjust based on traffic)
     // Filter out noise
     ignoreErrors: [

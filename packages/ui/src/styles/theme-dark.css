@@ -42,7 +42,7 @@ body.theme-dark {
 
   /* ------ Global ------ */
   --page--text-color: var(--text-400);
-  --page--background-color: hsla(47, 9%, 6%, 1);
+  --page--background-color: #12110f;
   --page--header--background-color: var(--black);
 
   --layout--home--background-color: var(--page--background-color);
@@ -171,7 +171,6 @@ body.theme-dark {
   --table_box_loader--background-color: var(--black-300);
   --table_row--hover--color: var(--whitea10);
   --table_head--background-color: var(--gray-300);
-
 
   /* Tooltip */
   --tooltip--background-color: var(--black-100);
