@@ -5,6 +5,7 @@ import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
+import { applySxProps, SxProps } from '@ui-kit/utils'
 
 const { Spacing, IconSize } = SizesAndSpaces
 
@@ -33,6 +34,8 @@ type AccordionBaseProps = {
   children?: ReactNode
   /** Optional test id for the accordion root */
   testId?: string
+  /** Optional sx prop for custom styling */
+  sx?: SxProps
 }
 
 type UncontrolledAccordionProps = {
@@ -87,6 +90,7 @@ export const Accordion = ({
   info,
   children,
   testId,
+  sx,
   ...controlProps
 }: AccordionProps) => {
   const [isOpen, toggle] = useAccordionToggle(controlProps)
@@ -190,15 +194,16 @@ export const Accordion = ({
              were placed on the Collapse element, two borders would briefly stack when opening
         */}
         <Box
-          sx={{
-            paddingBlock: Spacing.sm,
-            ...(!ghost && {
+          sx={applySxProps(
+            { paddingBlock: Spacing.sm },
+            !ghost && {
               paddingInline: Spacing.sm,
               borderLeft: borderStyle,
               borderRight: borderStyle,
               borderBottom: borderStyle,
-            }),
-          }}
+            },
+            sx,
+          )}
         >
           {children}
         </Box>

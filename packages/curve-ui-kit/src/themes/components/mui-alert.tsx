@@ -34,6 +34,8 @@ export const defineMuiAlert = (
       }),
       '& .MuiAlert-message': {
         flexGrow: 1,
+        maxWidth: '90ch',
+        textWrapStyle: 'pretty',
         ...handleBreakpoints({
           paddingInlineEnd: Spacing.sm,
           paddingBlockStart: Spacing.sm,

@@ -119,11 +119,10 @@ export function queryFactory<
         enabled &&
         checkValidity(validationSuite, params) &&
         !dependencies?.(params).some((key) => !queryClient.getQueryData(key)),
-      retry: (failureCount, error) => {
-        // Don't retry queries specifically marked as such, or 404s thrown by the Prices API (note: FetchError is only a class thrown by fetchJson from @curve-fi/prices-api)
-        if (error instanceof NoRetryError || (error instanceof FetchError && error.status === 404)) return false
-        return failureCount < 3
-      },
+      retry: (failureCount, error) =>
+        !(error instanceof NoRetryError) && // Don't retry queries specifically marked as such
+        !(error instanceof FetchError && error.status === 404) && // Or 404 FetchErrors (from @curve-fi/prices-api)
+        failureCount < 3,
       ...options,
     })
   return {

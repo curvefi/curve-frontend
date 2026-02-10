@@ -1,10 +1,11 @@
 import { LoanPreset } from '@/llamalend/constants'
 import { oneOf, oneValueOf } from '@cy/support/generators'
+import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
 import { type AlertColor } from '@mui/material/Alert'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import type { Decimal } from '@ui-kit/utils/decimal'
 import { Chain } from '@ui-kit/utils/network'
-import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '../ui'
+import { getActionValue } from './action-info.helpers'
 
 const chainId = Chain.Ethereum
 
@@ -18,6 +19,7 @@ export const LOAN_TEST_MARKETS = {
       collateralAddress: '0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0', // wstETH
       collateral: '0.1',
       borrow: '10',
+      borrowMore: '2',
       repay: '5',
       chainId,
       path: '/crvusd/ethereum/markets/wsteth',
@@ -29,6 +31,7 @@ export const LOAN_TEST_MARKETS = {
       collateralAddress: '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599', // wbtc
       collateral: '1',
       borrow: '100',
+      borrowMore: '10',
       repay: '50',
       chainId,
       path: '/crvusd/ethereum/markets/wbtc',
@@ -42,6 +45,7 @@ export const LOAN_TEST_MARKETS = {
       collateralAddress: '0x9D39A5DE30e57443BfF2A8307A4256c8797A3497', // sUSDe
       collateral: '100',
       borrow: '90',
+      borrowMore: '5',
       repay: '50',
       chainId,
       path: '/lend/ethereum/markets/0x98Fc283d6636f6DCFf5a817A00Ac69A3ADd96907',
@@ -53,6 +57,7 @@ export const LOAN_TEST_MARKETS = {
       collateralAddress: '0x4c9EDD5852cd905f086C759E8383e09bff1E68B3', // USDe
       collateral: '1',
       borrow: '0.9',
+      borrowMore: '0.02',
       repay: '0.8',
       chainId,
       path: '/lend/ethereum/markets/0x74f88Baa966407b50c10B393bBD789639EFfE78B',
@@ -64,30 +69,24 @@ export const LOAN_TEST_MARKETS = {
 export const oneLoanTestMarket = (type: LlamaMarketType = oneValueOf(LlamaMarketType)) =>
   oneOf(...LOAN_TEST_MARKETS[type])
 
-const getActionValue = (name: string) => cy.get(`[data-testid="${name}-value"]`, LOAD_TIMEOUT)
-
 /**
  * Check all loan detail values are loaded and valid.
  * The accordion is expected to be opened before calling this function.
  */
 export function checkLoanDetailsLoaded({ leverageEnabled }: { leverageEnabled: boolean }) {
-  getActionValue('borrow-band-range')
-    .invoke(LOAD_TIMEOUT, 'text')
-    .should('match', /(\d(\.\d+)?) to (-?\d(\.\d+)?)/)
-  getActionValue('borrow-price-range')
-    .invoke(LOAD_TIMEOUT, 'text')
-    .should('match', /(\d(\.\d+)?) - (\d(\.\d+)?)/)
-  getActionValue('borrow-apr').contains('%')
-  getActionValue('borrow-apr-previous').contains('%')
-  getActionValue('borrow-ltv').contains('%')
-  getActionValue('borrow-n').contains('50')
+  getActionValue('borrow-band-range').should('match', /(\d(\.\d+)?) to (-?\d(\.\d+)?)/)
+  getActionValue('borrow-price-range').should('match', /(\d(\.\d+)?) - (\d(\.\d+)?)/)
+  getActionValue('borrow-apr').should('include', '%')
+  getActionValue('borrow-apr', 'previous').should('include', '%')
+  getActionValue('borrow-ltv').should('include', '%')
+  getActionValue('borrow-n').should('eq', '50')
 
   if (leverageEnabled) {
-    getActionValue('borrow-price-impact').contains('%')
-    getActionValue('borrow-slippage').contains('%')
+    getActionValue('borrow-price-impact').should('include', '%')
+    getActionValue('borrow-slippage').should('include', '%')
   } else {
-    getActionValue('borrow-price-impact').should('not.exist')
-    getActionValue('borrow-slippage').should('not.exist')
+    cy.get('[data-testid="borrow-price-impact-value"]', LOAD_TIMEOUT).should('not.exist')
+    cy.get('[data-testid="borrow-slippage-value"]', LOAD_TIMEOUT).should('not.exist')
   }
 
   cy.get('[data-testid="loan-form-errors"]').should('not.exist')
@@ -110,9 +109,9 @@ export function writeCreateLoanForm({
   cy.get('[data-testid="borrow-debt-input"] [data-testid="balance-value"]', LOAD_TIMEOUT).should('exist')
   cy.get('[data-testid="borrow-collateral-input"] input[type="text"]').first().type(collateral)
   cy.get('[data-testid="borrow-debt-input"] [data-testid="balance-value"]').should('not.contain.text', '?')
-  getActionValue('borrow-health').should('have.text', '∞')
+  getActionValue('borrow-health').should('equal', '∞')
   cy.get('[data-testid="borrow-debt-input"] input[type="text"]').first().type(borrow)
-  getActionValue('borrow-health').should('not.contain.text', '∞')
+  getActionValue('borrow-health').should('not.equal', '∞')
   if (openAccordion) cy.get('[data-testid="loan-info-accordion"] button', LOAD_TIMEOUT).click() // open the accordion
   if (leverageEnabled) cy.get('[data-testid="leverage-checkbox"]').click()
 }
@@ -128,7 +127,7 @@ export function checkLoanRangeSlider({ leverageEnabled }: { leverageEnabled: boo
   cy.get('[data-testid="borrow-set-debt-to-max"]').should('not.exist') // new max is being calculated
   // wait for max borrow to load and verify the input value matches (using data-value for precision)
   cy.get('[data-testid="borrow-set-debt-to-max"] [data-testid="balance-value"]', LOAD_TIMEOUT)
-    .invoke('attr', 'data-value')
+    .invoke(LOAD_TIMEOUT, 'attr', 'data-value')
     .then((maxValue) =>
       cy.get('[data-testid="borrow-debt-input"] input[type="text"]').first().should('have.value', maxValue),
     )
