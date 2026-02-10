@@ -1,5 +1,4 @@
-import { useEffect, useMemo } from 'react'
-import type { UseFormReturn } from 'react-hook-form'
+import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { useConnection } from 'wagmi'
 import { getTokens } from '@/llamalend/llama.utils'
@@ -12,7 +11,7 @@ import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { mapQuery } from '@ui-kit/types/util'
 import { Decimal } from '@ui-kit/utils'
-import { useFormErrors } from '@ui-kit/utils/react-form.utils'
+import { useCallbackAfterFormUpdate, useFormErrors } from '@ui-kit/utils/react-form.utils'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 import { PRESET_RANGES, LoanPreset } from '../../../constants'
 import { type CreateLoanOptions, useCreateLoanMutation } from '../../../mutations/create-loan.mutation'
@@ -20,9 +19,6 @@ import { useCreateLoanIsApproved } from '../../../queries/create-loan/create-loa
 import { createLoanQueryValidationSuite } from '../../../queries/validation/borrow.validation'
 import { type CreateLoanForm } from '../types'
 import { useMaxTokenValues } from './useMaxTokenValues'
-
-const useCallbackAfterFormUpdate = (form: UseFormReturn<CreateLoanForm>, callback: () => void) =>
-  useEffect(() => form.subscribe({ formState: { values: true }, callback }), [form, callback])
 
 // to crete a loan we need the debt/maxDebt, but we skip the market validation as that's given separately to the mutation
 const resolver = vestResolver(createLoanQueryValidationSuite({ debtRequired: false, skipMarketValidation: true }))

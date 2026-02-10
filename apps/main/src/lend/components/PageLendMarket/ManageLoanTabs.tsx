@@ -3,30 +3,21 @@ import { LoanCollateralAdd } from '@/lend/components/PageLendMarket/LoanCollater
 import { LoanCollateralRemove } from '@/lend/components/PageLendMarket/LoanCollateralRemove'
 import { LoanRepay } from '@/lend/components/PageLendMarket/LoanRepay'
 import { LoanSelfLiquidation } from '@/lend/components/PageLendMarket/LoanSelfLiquidation'
+import { invalidateAllUserBorrowDetails } from '@/lend/entities/user-loan-details'
 import { networks } from '@/lend/networks'
 import { type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
 import { AddCollateralForm } from '@/llamalend/features/manage-loan/components/AddCollateralForm'
 import { BorrowMoreForm } from '@/llamalend/features/manage-loan/components/BorrowMoreForm'
 import { RemoveCollateralForm } from '@/llamalend/features/manage-loan/components/RemoveCollateralForm'
 import { RepayForm } from '@/llamalend/features/manage-loan/components/RepayForm'
-import { useClosePositionTab } from '@/llamalend/features/manage-soft-liquidation/hooks/useClosePositionTab'
-import { useImproveHealthTab } from '@/llamalend/features/manage-soft-liquidation/hooks/useImproveHealthTab'
-import { ClosePosition } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ClosePosition'
-import { ImproveHealth } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ImproveHealth'
+import { ClosePositionForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ClosePositionForm'
+import { ImproveHealthForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ImproveHealthForm'
 import type { BorrowPositionDetailsProps } from '@/llamalend/features/market-position-details'
 import { useManageLoanMuiForm, useManageSoftLiquidation } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { type FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
 
 type ManageLoanProps = PageContentProps<MarketUrlParams>
-
-const ImproveHealthTab = ({ rChainId, rOwmId }: ManageLoanProps) => (
-  <ImproveHealth {...useImproveHealthTab({ chainId: rChainId, network: networks[rChainId], marketId: rOwmId })} />
-)
-
-const ClosePositionTab = ({ rChainId, rOwmId }: ManageLoanProps) => (
-  <ClosePosition {...useClosePositionTab({ chainId: rChainId, network: networks[rChainId], marketId: rOwmId })} />
-)
 
 const LendManageLegacyMenu = [
   {
@@ -96,8 +87,32 @@ const LendManageSoftLiquidationMenu = [
     value: 'soft-liquidation',
     label: t`Manage soft liquidation`,
     subTabs: [
-      { value: 'improve-health', label: t`Improve health`, component: ImproveHealthTab },
-      { value: 'close-position', label: t`Close position`, component: ClosePositionTab },
+      {
+        value: 'improve-health',
+        label: t`Improve health`,
+        component: ({ rChainId, market, isLoaded }: PageContentProps<MarketUrlParams>) => (
+          <ImproveHealthForm chainId={rChainId} market={market} networks={networks} enabled={isLoaded} />
+        ),
+      },
+      {
+        value: 'close-position',
+        label: t`Close position`,
+        component: ({
+          rChainId: chainId,
+          rOwmId: marketId,
+          market,
+          isLoaded,
+          userAddress,
+        }: PageContentProps<MarketUrlParams>) => (
+          <ClosePositionForm
+            chainId={chainId}
+            networks={networks}
+            market={market}
+            enabled={isLoaded}
+            onClosed={() => invalidateAllUserBorrowDetails({ chainId, marketId, userAddress })}
+          />
+        ),
+      },
     ],
   },
 ] satisfies FormTab<ManageLoanProps>[]

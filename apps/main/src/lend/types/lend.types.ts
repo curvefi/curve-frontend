@@ -4,6 +4,7 @@ import { TITLE } from '@/lend/constants'
 import type { HealthColorKey } from '@/llamalend/llamalend.types'
 import type { IChainId, INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
+import type { Address } from '@curvefi/prices-api'
 import type { TooltipProps } from '@ui/Tooltip/types'
 import type { BaseConfig } from '@ui/utils'
 import type { LlamaApi } from '@ui-kit/features/connect-wallet'
@@ -84,6 +85,7 @@ export type PageContentProps<T = UrlParams> = {
   params: T
   rChainId: ChainId
   rOwmId: string
+  userAddress: Address
   userActiveKey: string
   isLoaded: boolean
   api: LlamaApi | null

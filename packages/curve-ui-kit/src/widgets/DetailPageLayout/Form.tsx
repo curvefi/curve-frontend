@@ -1,4 +1,4 @@
-import type { FormEventHandler, ReactNode } from 'react'
+import type { SubmitEventHandler, ReactNode } from 'react'
 import { FormProvider } from 'react-hook-form'
 import type { FieldValues, FormProviderProps } from 'react-hook-form'
 import { FormContent } from './FormContent'
@@ -15,7 +15,7 @@ export const Form = <TFieldValues extends FieldValues>({
   infoAccordion,
   ...form
 }: {
-  onSubmit: FormEventHandler<HTMLFormElement>
+  onSubmit: SubmitEventHandler<HTMLFormElement>
   children: ReactNode
   infoAccordion: ReactNode
 } & FormProviderProps<TFieldValues, TContext, TFieldValues>) => (

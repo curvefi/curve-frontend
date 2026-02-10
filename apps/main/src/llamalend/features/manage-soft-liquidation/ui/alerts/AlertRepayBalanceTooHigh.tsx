@@ -31,9 +31,9 @@ export const AlertRepayBalanceTooHigh = ({ symbol, input, userBalance, debt }: P
         {showBalanceMessage && (
           <Typography variant="bodySRegular" color="textSecondary">
             {t`You're trying to repay `}
-            <strong>{formatTokens({ symbol, amount: +input })}</strong>
+            <strong>{formatTokens({ symbol, amount: input })}</strong>
             {t`, but your wallet merely contains `}
-            <strong>{formatTokens({ symbol, amount: +userBalance })}</strong>
+            <strong>{userBalance && formatTokens({ symbol, amount: userBalance })}</strong>
             {t`. Please enter a smaller amount.`}
           </Typography>
         )}
@@ -41,9 +41,9 @@ export const AlertRepayBalanceTooHigh = ({ symbol, input, userBalance, debt }: P
         {showDebtMessage && !showBalanceMessage && (
           <Typography variant="bodySRegular" color="textSecondary">
             {t`You're trying to repay `}
-            <strong>{formatTokens({ symbol, amount: +input })}</strong>
+            <strong>{formatTokens({ symbol, amount: input })}</strong>
             {t`, but you only owe `}
-            <strong>{formatTokens({ symbol, amount: +debt })}</strong>
+            <strong>{debt && formatTokens({ symbol, amount: debt })}</strong>
           </Typography>
         )}
       </Stack>

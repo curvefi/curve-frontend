@@ -92,6 +92,7 @@ export const Page = () => {
     params,
     rChainId,
     rOwmId,
+    userAddress: signerAddress!,
     isLoaded,
     api,
     market,

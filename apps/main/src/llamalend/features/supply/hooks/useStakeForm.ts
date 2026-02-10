@@ -1,5 +1,4 @@
 import { useEffect, useMemo } from 'react'
-import type { UseFormReturn } from 'react-hook-form'
 import { useForm } from 'react-hook-form'
 import type { Address } from 'viem'
 import { useConnection } from 'wagmi'
@@ -15,10 +14,7 @@ import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { t } from '@ui-kit/lib/i18n'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { mapQuery } from '@ui-kit/types/util'
-import { setValueOptions, useFormErrors } from '@ui-kit/utils/react-form.utils'
-
-const useCallbackAfterFormUpdate = (form: UseFormReturn<StakeForm>, callback: () => void) =>
-  useEffect(() => form.subscribe({ formState: { values: true }, callback }), [form, callback])
+import { setValueOptions, useCallbackAfterFormUpdate, useFormErrors } from '@ui-kit/utils/react-form.utils'
 
 const emptyStakeForm = (): StakeForm => ({
   stakeAmount: undefined,

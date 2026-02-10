@@ -1,5 +1,4 @@
 import { useEffect, useMemo } from 'react'
-import type { UseFormReturn } from 'react-hook-form'
 import { useForm } from 'react-hook-form'
 import { useConnection } from 'wagmi'
 import { getTokens } from '@/llamalend/llama.utils'
@@ -15,10 +14,7 @@ import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interf
 import { vestResolver } from '@hookform/resolvers/vest'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
-import { setValueOptions, useFormErrors } from '@ui-kit/utils/react-form.utils'
-
-const useCallbackAfterFormUpdate = (form: UseFormReturn<WithdrawForm>, callback: () => void) =>
-  useEffect(() => form.subscribe({ formState: { values: true }, callback }), [form, callback])
+import { setValueOptions, useCallbackAfterFormUpdate, useFormErrors } from '@ui-kit/utils/react-form.utils'
 
 const emptyWithdrawForm = (): WithdrawForm => ({
   withdrawAmount: undefined,

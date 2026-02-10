@@ -109,7 +109,17 @@ export const LendMarketPage = () => {
     }
   }, [api, isPageVisible, loanExists, market, setMarketsStateKey])
 
-  const pageProps = { params, rChainId: chainId, rOwmId: marketId, isLoaded, api, market, userActiveKey, titleMapper }
+  const pageProps = {
+    params,
+    rChainId: chainId,
+    rOwmId: marketId,
+    userAddress: signerAddress!,
+    isLoaded,
+    api,
+    market,
+    userActiveKey,
+    titleMapper,
+  }
 
   return isSuccess && !market ? (
     <ErrorPage title="404" subtitle={t`Market Not Found`} continueUrl={getCollateralListPathname(params)} />

@@ -1,5 +1,5 @@
-import { useMemo } from 'react'
-import type { FieldValues, SetValueConfig } from 'react-hook-form'
+import { useEffect, useMemo } from 'react'
+import type { FieldValues, SetValueConfig, UseFormReturn } from 'react-hook-form'
 import type { FormState } from 'react-hook-form'
 import { notFalsy, recordEntries } from '@curvefi/prices-api/objects.util'
 
@@ -15,3 +15,8 @@ export const filterFormErrors = <TFieldValues extends FieldValues>(formState: Fo
 
 export const useFormErrors = <TFieldValues extends FieldValues>(formState: FormState<TFieldValues>) =>
   useMemo(() => filterFormErrors(formState), [formState])
+
+export const useCallbackAfterFormUpdate = <TFieldValues extends FieldValues>(
+  form: UseFormReturn<TFieldValues>,
+  callback: () => void,
+) => useEffect(() => form.subscribe({ formState: { values: true }, callback }), [form, callback])

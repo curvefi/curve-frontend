@@ -17,7 +17,7 @@ export type LoanInfoAccordionProps = {
   toggle: () => void
   range?: number
   isApproved?: Query<boolean>
-  health: Query<Decimal | null>
+  health?: Query<Decimal | null>
   prevHealth?: Query<Decimal>
   isFullRepay?: boolean
   bands?: Query<[number, number]>
@@ -91,7 +91,7 @@ export const LoanInfoAccordion = ({
           emptyValue="∞"
           {...combineQueryState(health, prevHealth)}
           valueColor={getHealthValueColor({
-            health: health.data,
+            health: health?.data,
             prevHealth: prevHealth?.data,
             theme: useTheme(),
             isFullRepay,

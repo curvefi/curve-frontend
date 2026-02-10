@@ -11,6 +11,7 @@ import {
   validateMaxBorrowed,
 } from '@/llamalend/queries/validation/borrow-fields.validation'
 import type {
+  CloseLoanParams,
   CollateralHealthParams,
   CollateralParams,
   RepayIsFullParams,
@@ -186,5 +187,15 @@ export const repayFromCollateralIsFullValidationSuite = createValidationSuite(
   ({ isFull, ...params }: RepayIsFullParams) => {
     repayValidationGroup(params)
     group('isFull', () => validateIsFull(isFull))
+  },
+)
+
+export const closeLoanValidationSuite = createValidationSuite(
+  ({ chainId, marketId, userAddress, slippage }: CloseLoanParams) => {
+    chainValidationGroup({ chainId })
+    llamaApiValidationGroup({ chainId })
+    marketIdValidationGroup({ marketId })
+    userAddressValidationGroup({ userAddress })
+    validateSlippage(slippage)
   },
 )
