@@ -4,14 +4,17 @@ import { useUserLoanDetails } from '@/lend/entities/user-loan-details'
 import { networks } from '@/lend/networks'
 import { useStore } from '@/lend/store/useStore'
 import { ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
-import type { BorrowPositionDetailsProps } from '@/llamalend/features/market-position-details'
-import { calculateRangeToLiquidation } from '@/llamalend/features/market-position-details/utils'
+import {
+  calculateRangeToLiquidation,
+  type BorrowPositionDetailsProps,
+} from '@/llamalend/features/market-position-details'
 import { calculateLtv } from '@/llamalend/llama.utils'
 import { useLoanExists } from '@/llamalend/queries/loan-exists'
 import { useMarketRates } from '@/llamalend/queries/market-rates'
 import type { Address, Chain } from '@curvefi/prices-api'
 import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import { useLendingSnapshots } from '@ui-kit/entities/lending-snapshots'
+import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { calculateAverageRates } from '@ui-kit/utils/averageRates'
@@ -31,6 +34,7 @@ export const useBorrowPositionDetails = ({
   market,
   marketId,
 }: UseBorrowPositionDetailsProps): BorrowPositionDetailsProps => {
+  const { isHydrated } = useCurve()
   const { controller } = market?.addresses ?? {}
   const { address: userAddress } = useConnection()
   const { data: loanExists } = useLoanExists({
@@ -111,7 +115,7 @@ export const useBorrowPositionDetails = ({
     },
     health: {
       value: healthValue,
-      loading: healthValue == null && (!market || isUserLoanDetailsLoading),
+      loading: isUserLoanDetailsLoading || !isHydrated,
     },
     borrowRate: {
       rate: borrowApr,
@@ -122,9 +126,7 @@ export const useBorrowPositionDetails = ({
       totalBorrowRate,
       totalAverageBorrowRate: averageRate ? averageRate - (averageRebasingYield ?? 0) : null,
       extraRewards: campaigns,
-      loading:
-        totalBorrowRate == null &&
-        (!market || isLendSnapshotsLoading || isMarketRatesLoading || !market?.addresses.controller),
+      loading: isLendSnapshotsLoading || isMarketRatesLoading || !isHydrated,
     },
     liquidationRange: {
       value: liquidationRangeValue,
@@ -132,11 +134,11 @@ export const useBorrowPositionDetails = ({
         prices?.prices?.oraclePrice && liquidationPrices
           ? calculateRangeToLiquidation(Number(liquidationPrices?.[1]), Number(prices.prices.oraclePrice))
           : null,
-      loading: liquidationRangeValue == null && (!market || isUserLoanDetailsLoading),
+      loading: isUserLoanDetailsLoading || !isHydrated,
     },
     bandRange: {
       value: bands,
-      loading: !market || isUserLoanDetailsLoading,
+      loading: isUserLoanDetailsLoading || !isHydrated,
     },
     collateralValue: {
       totalValue: collateralTotalValue,
@@ -150,28 +152,26 @@ export const useBorrowPositionDetails = ({
         usdRate: borrowedUsdRate ?? null,
         symbol: market?.borrowed_token?.symbol,
       },
-      loading:
-        collateralTotalValue == null &&
-        (!market || isUserLoanDetailsLoading || collateralUsdRateLoading || borrowedUsdRateLoading),
+      loading: isUserLoanDetailsLoading || collateralUsdRateLoading || borrowedUsdRateLoading || !isHydrated,
     },
     ltv: {
       value: ltvValue,
-      loading: ltvValue == null && (!market || isUserLoanDetailsLoading),
+      loading: isUserLoanDetailsLoading || !isHydrated,
     },
     leverage: {
       value: leverageValue,
-      loading: leverageValue == null && (!market || isUserLoanDetailsLoading),
+      loading: isUserLoanDetailsLoading || !isHydrated,
     },
     totalDebt: {
       value: totalDebtValue,
-      loading: totalDebtValue == null && (!market || isUserLoanDetailsLoading),
+      loading: isUserLoanDetailsLoading || !isHydrated,
     },
     collateralLoss: {
       depositedCollateral: decimal(loss?.deposited_collateral),
       currentCollateralEstimation: decimal(loss?.current_collateral_estimation),
       percentage: decimal(loss?.loss_pct),
       amount: decimal(loss?.loss),
-      loading: !market || isUserLoanDetailsLoading,
+      loading: isUserLoanDetailsLoading || !isHydrated,
     },
   }
 }

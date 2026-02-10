@@ -1,4 +1,4 @@
-import { type SupplyRate } from '@/llamalend/features/market-details/MarketDetails'
+import { type SupplyRate } from '@/llamalend/features/market-details'
 import { BoostTooltipContent } from '@/llamalend/widgets/tooltips/BoostTooltipContent'
 import { MarketSupplyRateTooltipContent } from '@/llamalend/widgets/tooltips/MarketSupplyRateTooltipContent'
 import { CardHeader, Box } from '@mui/material'
@@ -6,8 +6,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatNumber } from '@ui-kit/utils'
-import { AmountSuppliedTooltipContent } from './tooltips/AmountSuppliedTooltipContent'
-import { VaultSharesTooltipContent } from './tooltips/VaultSharesTooltipContent'
+import { VaultSharesTooltipContent, AmountSuppliedTooltipContent } from './'
 
 const { Spacing } = SizesAndSpaces
 

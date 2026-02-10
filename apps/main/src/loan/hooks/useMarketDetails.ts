@@ -1,7 +1,6 @@
 import { useMemo } from 'react'
 import type { MarketDetailsProps } from '@/llamalend/features/market-details'
 import { useMarketRates } from '@/llamalend/queries/market-rates'
-import { CRVUSD_ADDRESS } from '@/loan/constants'
 import { useMintMarketMaxLeverage } from '@/loan/entities/mint-market-max-leverage'
 import { networks } from '@/loan/networks'
 import { useStore } from '@/loan/store/useStore'
@@ -35,10 +34,6 @@ export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetails
   const { data: collateralUsdRate, isLoading: collateralUsdRateLoading } = useTokenUsdRate({
     chainId,
     tokenAddress: llamma?.collateral,
-  })
-  const { data: borrowedUsdRate } = useTokenUsdRate({
-    chainId,
-    tokenAddress: CRVUSD_ADDRESS,
   })
   const { data: crvUsdSnapshots, isLoading: isSnapshotsLoading } = useCrvUsdSnapshots({
     blockchainId,
@@ -79,13 +74,7 @@ export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetails
         ? Number(loanDetails.totalCollateral) * Number(collateralUsdRate)
         : null,
       usdRate: collateralUsdRate ? Number(collateralUsdRate) : null,
-      loading: collateralUsdRateLoading || (loanDetails?.loading ?? true) || !isHydrated,
-    },
-    borrowToken: {
-      symbol: 'crvUSD',
-      tokenAddress: CRVUSD_ADDRESS,
-      usdRate: borrowedUsdRate ? Number(borrowedUsdRate) : null,
-      loading: false,
+      loading: collateralUsdRateLoading || loanDetails?.loading || !isHydrated,
     },
     borrowRate: {
       rate: borrowApr,
@@ -105,7 +94,7 @@ export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetails
     availableLiquidity: {
       value: availableLiquidityValue,
       max: loanDetails?.capAndAvailable?.cap ? Number(loanDetails.capAndAvailable.cap) : null,
-      loading: (loanDetails?.loading ?? true) || !isHydrated,
+      loading: loanDetails?.loading || !isHydrated,
     },
   }
 }

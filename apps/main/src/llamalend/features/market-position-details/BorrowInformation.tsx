@@ -5,16 +5,16 @@ import { CardHeader, Stack } from '@mui/material'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import type {
-  Leverage,
-  CollateralValue,
-  Ltv,
-  TotalDebt,
-  LiquidationRange,
-  BandRange,
-  CollateralLoss,
-} from './BorrowPositionDetails'
-import { LiquidationThresholdTooltipContent } from './tooltips/LiquidationThresholdMetricTooltipContent'
+import {
+  LiquidationThresholdTooltipContent,
+  type Leverage,
+  type CollateralValue,
+  type Ltv,
+  type TotalDebt,
+  type LiquidationRange,
+  type BandRange,
+  type CollateralLoss,
+} from './'
 
 const { Spacing } = SizesAndSpaces
 

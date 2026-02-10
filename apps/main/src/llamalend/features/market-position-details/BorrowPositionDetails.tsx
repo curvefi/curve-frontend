@@ -4,8 +4,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { LlamaMarketType } from '@ui-kit/types/market'
 import type { Decimal } from '@ui-kit/utils/decimal'
-import { BorrowInformation } from './BorrowInformation'
-import { HealthDetails } from './HealthDetails'
+import { HealthDetails, BorrowInformation } from './'
 
 const { Spacing } = SizesAndSpaces
 
