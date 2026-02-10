@@ -12,6 +12,7 @@ import { ErrorReportModal } from '@ui-kit/features/report-error'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { Query } from '@ui-kit/types/util'
 import { formatPercent } from '@ui-kit/utils'
 
 /** Threshold above which price impact is considered high and warrants a warning */
@@ -86,23 +87,27 @@ export const LoanFormAlerts = <Field extends string>({
   )
 }
 
-export type HighPriceImpactAlertProps = {
-  priceImpact: number | null | undefined
-  isLoading?: boolean
-}
+export type HighPriceImpactAlertProps = Query<number>
 
 /**
  * Inline alert displayed when price impact exceeds the threshold.
  * Shows above the submit button to make high price impact visible without opening the accordion.
  */
-export const HighPriceImpactAlert = ({ priceImpact, isLoading }: HighPriceImpactAlertProps) =>
+export const HighPriceImpactAlert = ({ data: priceImpact, isLoading, error }: HighPriceImpactAlertProps) =>
   !isLoading &&
-  priceImpact != null &&
-  priceImpact > HIGH_PRICE_IMPACT_THRESHOLD && (
-    <Alert severity="warning" data-testid="high-price-impact-alert">
-      <AlertTitle sx={{ color: 'warning.main' }}>
-        {t`High price impact:`} -{formatPercent(priceImpact)}
-      </AlertTitle>
-      {t`Consider reducing the amount or waiting for better market conditions.`}
+  (error ? (
+    <Alert severity="error" data-testid="high-price-impact-error">
+      <AlertTitle>{t`Cannot determine price impact`}</AlertTitle>
+      {error.message}
     </Alert>
-  )
+  ) : (
+    priceImpact != null &&
+    priceImpact > HIGH_PRICE_IMPACT_THRESHOLD && (
+      <Alert severity="warning" data-testid="high-price-impact-alert" variant="outlined">
+        <AlertTitle sx={{ color: 'warning.main' }}>
+          {t`High price impact:`} -{formatPercent(priceImpact)}
+        </AlertTitle>
+        {t`Consider reducing the amount or waiting for better market conditions.`}
+      </Alert>
+    )
+  ))

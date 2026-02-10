@@ -209,6 +209,7 @@ export const createQuickSwapSlice = (
             routesAndOutput: {
               [cActiveKey]: {
                 ...resp,
+                router: 'curve',
                 loading: false,
                 exchangeRates: getRouterSwapsExchangeRates(exchangeRates, searchedParams, tokensNameMapper),
                 fetchedToAmount: '',

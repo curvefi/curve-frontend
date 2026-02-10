@@ -10,9 +10,9 @@ import {
 } from '@cy/support/ui'
 import { TIME_FRAMES } from '@ui-kit/lib/model/time'
 
-const expectedMainNavHeight = 56
-const expectedSubNavHeight = 42 // 40 + 2px border
-const expectedMobileNavHeight = 56
+const expectedMainNavHeight = 40
+const expectedSubNavHeight = expectedMainNavHeight
+const expectedMobileNavHeight = 56 + 1 // 1px for the border
 const expectedConnectHeight = 40
 
 const expectedFooterXMargin = { mobile: 32, tablet: 48, desktop: 48 }

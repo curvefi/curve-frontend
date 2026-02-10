@@ -69,28 +69,30 @@ export const TokenIcon = ({
         }}
         src={address ? `${getImageBaseUrl(blockchainId ?? '')}${address.toLowerCase()}.png` : DEFAULT_IMAGE}
         loading="lazy"
-        sx={(theme) => ({
-          borderRadius: '50%',
-          // The original 'sm' size with a 400 breakpoint is a remainder from legacy code.
-          // I didn't want to break the existing interface as it's used everywhere.
-          ...(size === 'sm' && {
-            width: '1.75rem',
-            height: '1.75rem',
-            [theme.breakpoints.down(400)]: {
-              width: '1.5rem',
-              height: '1.5rem',
-            },
+        sx={applySxProps(
+          (theme) => ({
+            borderRadius: '50%',
+            // The original 'sm' size with a 400 breakpoint is a remainder from legacy code.
+            // I didn't want to break the existing interface as it's used everywhere.
+            ...(size === 'sm' && {
+              width: '1.75rem',
+              height: '1.75rem',
+              [theme.breakpoints.down(400)]: {
+                width: '1.5rem',
+                height: '1.5rem',
+              },
+            }),
+            ...(size === 'mui-sm' && handleBreakpoints({ width: IconSize['sm'], height: IconSize['sm'] })),
+            ...(size === 'mui-md' && handleBreakpoints({ width: IconSize['md'], height: IconSize['md'] })),
+            ...(size === 'lg' && handleBreakpoints({ width: IconSize['lg'], height: IconSize['lg'] })),
+            ...(size === 'xl' && handleBreakpoints({ width: IconSize['xl'], height: IconSize['xl'] })),
           }),
-          ...(size === 'mui-sm' && handleBreakpoints({ width: IconSize['sm'], height: IconSize['sm'] })),
-          ...(size === 'mui-md' && handleBreakpoints({ width: IconSize['md'], height: IconSize['md'] })),
-          ...(size === 'lg' && handleBreakpoints({ width: IconSize['lg'], height: IconSize['lg'] })),
-          ...(size === 'xl' && handleBreakpoints({ width: IconSize['xl'], height: IconSize['xl'] })),
-          ...applySxProps(sx, theme),
-          ...(disabled && {
+          sx,
+          disabled && {
             opacity: 0.5,
             filter: 'saturate(0)',
-          }),
-        })}
+          },
+        )}
       />
     </Tooltip>
     {showChainIcon && <TokenChainIcon chain={blockchainId} />}
