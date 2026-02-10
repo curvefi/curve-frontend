@@ -34,7 +34,6 @@ export const MobileHeader = ({
   sections,
   chainId,
   supportedNetworks,
-  isLite = false,
   networkId,
 }: HeaderImplementationProps) => {
   const [isSidebarOpen, setSidebarOpen] = useState(false)
@@ -61,18 +60,18 @@ export const MobileHeader = ({
     <AppBar
       color="transparent"
       ref={useMainNavRef()}
-      sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, position: 'sticky', top: 0 }}
+      sx={{
+        backgroundColor: (t) => t.design.Layer[1].Fill,
+        position: 'sticky',
+        top: 0,
+        boxShadow: 'none',
+        borderBottom: (t) => `1px solid ${t.design.Layer[1].Outline}`,
+      }}
       data-testid="mobile-main-bar"
     >
       <GlobalBanner networkId={networkId} chainId={chainId} />
       <Toolbar sx={(t) => ({ paddingBlock, zIndex: t.zIndex.drawer + 1 })}>
-        <MobileTopBar
-          isLite={isLite}
-          networks={supportedNetworks}
-          currentMenu={currentMenu}
-          isSidebarOpen={isSidebarOpen}
-          toggleSidebar={toggleSidebar}
-        />
+        <MobileTopBar networks={supportedNetworks} isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
 
         <Drawer
           anchor="left"

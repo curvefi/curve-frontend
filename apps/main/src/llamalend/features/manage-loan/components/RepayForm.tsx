@@ -16,6 +16,7 @@ import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
+import { q } from '@ui-kit/types/util'
 import { setValueOptions } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { useRepayForm } from '../hooks/useRepayForm'
@@ -99,7 +100,6 @@ export const RepayForm = <ChainId extends IChainId>({
   const selectedToken = selectedField == 'userBorrowed' ? borrowToken : collateralToken
   const fromPosition = isFull.data === false && selectedField === 'stateCollateral'
   const swapRequired = selectedToken !== borrowToken
-  const priceImpact = useRepayPriceImpact(params, enabled && swapRequired)
 
   // The max repay amount in the helper message should always be denominated in terms of the borrow token.
   const { data: maxAmountInBorrowToken, isLoading: maxAmountInBorrowTokenLoading } = useTokenAmountConversion({
@@ -175,7 +175,7 @@ export const RepayForm = <ChainId extends IChainId>({
           />
         }
       />
-      <HighPriceImpactAlert priceImpact={priceImpact.data} isLoading={priceImpact.isLoading} />
+      <HighPriceImpactAlert {...q(useRepayPriceImpact(params, enabled && swapRequired))} />
       <Button
         type="submit"
         loading={isPending || !market}

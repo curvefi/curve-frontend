@@ -5,7 +5,7 @@ import type { Table } from '@tanstack/table-core'
 import { useNavigate } from '@ui-kit/hooks/router'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
-import { CypressHoverClass, hasParentWithClass } from '@ui-kit/utils/dom'
+import { hasParentWithClass } from '@ui-kit/utils/dom'
 import { InvertOnHover } from '../InvertOnHover'
 import { ClickableInRowClass, DesktopOnlyHoverClass, type TableItem } from './data-table.utils'
 import { DataCell } from './DataCell'
@@ -67,7 +67,6 @@ export const DataRow = <T extends TableItem>({
                   backgroundColor: (t) => t.design.Table.Row.Hover,
                 },
               },
-              [`&.${CypressHoverClass}`]: { [`& .${DesktopOnlyHoverClass}`]: { opacity: { desktop: 1 } } },
               ...(isLast && {
                 // to avoid the sticky header showing without any rows, show the last row on top of it
                 position: 'sticky',

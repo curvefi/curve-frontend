@@ -62,3 +62,4 @@ storybook-static
 *storybook.log
 
 *.tsbuildinfo
+.opencode.json
