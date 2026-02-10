@@ -23,7 +23,6 @@ export const LeverageInput = ({
     checked={checked}
     disabled={!maxLeverage}
     label={t`Enable leverage`}
-    message={maxLeverage ? `${t`up to`} ${formatNumber(maxLeverage, { maximumFractionDigits: 1 })}x 🔥` : undefined}
     isLoading={maxLeverageLoading}
     error={maxLeverageError}
     testIdPrefix={TEST_ID_PREFIX}
