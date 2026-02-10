@@ -1,11 +1,12 @@
 import { useCallback } from 'react'
 import type { Address, Hex } from 'viem'
 import { useConfig } from 'wagmi'
-import { type LlammaMutationOptions, useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
+import { useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
 import { claimValidationSuite, requireVault } from '@/llamalend/queries/validation/supply.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
+import type { OnTransactionSuccess } from '@ui-kit/lib/model/mutation/useTransactionMutation'
 import { waitForTransaction } from '@ui-kit/utils'
 import { fetchClaimableCrv, fetchClaimableRewards } from '../queries/supply/supply-claimable-rewards.query'
 
@@ -14,7 +15,7 @@ type ClaimMutation = Record<string, never>
 export type ClaimOptions = {
   marketId: string | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
-  onClaimed: LlammaMutationOptions<ClaimMutation>['onSuccess'] | undefined
+  onClaimed?: OnTransactionSuccess<ClaimMutation>
   userAddress: Address | undefined
 }
 

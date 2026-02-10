@@ -9,6 +9,7 @@ import { SymbolCell } from '@ui-kit/shared/ui/SymbolCell'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType, type ExtraIncentive } from '@ui-kit/types/market'
 import { abbreviateNumber, scaleSuffix } from '@ui-kit/utils/number'
+import { MarketTypeSuffix, TooltipOptions } from './constants'
 import { AvailableLiquidityTooltip } from './tooltips/AvailableLiquidityTooltip'
 import { CollateralTokenTooltip } from './tooltips/CollateralTokenTooltip'
 import { DebtTokenTooltip } from './tooltips/DebtTokenTooltip'
@@ -34,7 +35,7 @@ type BorrowToken = {
   usdRate: number | undefined | null
   loading: boolean
 }
-type BorrowRate = {
+export type BorrowRate = {
   rate: number | undefined | null
   averageRate: number | undefined | null
   averageRateLabel: string
@@ -46,7 +47,7 @@ type BorrowRate = {
   extraRewards: CampaignPoolRewards[]
   loading: boolean
 }
-type SupplyRate = {
+export type SupplyRate = {
   rate: number | undefined | null
   averageRate: number | undefined | null
   averageRateLabel: string
@@ -66,7 +67,7 @@ type SupplyRate = {
   extraRewards: CampaignPoolRewards[]
   loading: boolean
 }
-type AvailableLiquidity = {
+export type AvailableLiquidity = {
   value: number | undefined | null
   max: number | undefined | null
   loading: boolean
@@ -89,17 +90,6 @@ export type MarketDetailsProps = {
 
 const formatLiquidity = (value: number) =>
   `${formatNumber(abbreviateNumber(value), { ...FORMAT_OPTIONS.USD })}${scaleSuffix(value).toUpperCase()}`
-
-const TooltipOptions = {
-  placement: 'top',
-  arrow: false,
-  clickable: true,
-} as const
-
-const MarketTypeSuffix: Record<LlamaMarketType, string> = {
-  [LlamaMarketType.Lend]: t`(Lending Markets)`,
-  [LlamaMarketType.Mint]: t`(Mint Markets)`,
-}
 
 export const MarketDetails = ({
   collateral,

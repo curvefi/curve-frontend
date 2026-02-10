@@ -1,9 +1,9 @@
 import { sum } from 'lodash'
 import { useMemo } from 'react'
-import { useEstimateGas } from '@/llamalend/hooks/useEstimateGas'
 import { type NetworkDict } from '@/llamalend/llamalend.types'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
+import { useEstimateGas } from '@ui-kit/lib/model/entities/gas-info'
 import type { UserMarketParams, UserMarketQuery } from '@ui-kit/lib/model/query/root-keys'
 import { claimableRewardsValidationSuite, requireGauge, requireVault } from '../validation/supply.validation'
 import { ClaimableReward, useClaimableCrv, useClaimableRewards } from './supply-claimable-rewards.query'
@@ -64,7 +64,7 @@ export const useClaimEstimateGas = <ChainId extends IChainId>(
     data,
     isLoading: conversionLoading,
     error: estimateError,
-  } = useEstimateGas<ChainId>(networks, chainId, totalEstimate, enabled && totalEstimate != null)
+  } = useEstimateGas(networks, chainId, totalEstimate, enabled && totalEstimate != null)
 
   return {
     data,
