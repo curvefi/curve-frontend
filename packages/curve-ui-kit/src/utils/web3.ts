@@ -25,9 +25,34 @@ export function getDecimalLength(val: string) {
 }
 
 /**
- * Waits for approval by checking isApproved, and if not approved, calls onApprove,
- * waits for the transactions to be mined and then waits until isApproved returns true.
+ * Waits for transaction execution by checking isSatisfied, and if not satisfied,
+ * calls onExecute, waits for the transactions to be mined and then waits until
+ * isSatisfied returns true.
  */
+export async function waitForTransaction({
+  onExecute,
+  config,
+  isSatisfied,
+  message,
+  timeout = Duration.TransactionPollTimeout,
+}: {
+  onExecute: () => Promise<Hex[] | Hex>
+  message?: string
+  isSatisfied: () => Promise<boolean>
+  config: Config
+  timeout?: number
+}) {
+  if (await isSatisfied()) return
+  const results = await onExecute()
+  const txHashes = Array.isArray(results) ? results : [results]
+  if (txHashes.length > 0) {
+    await Promise.all(txHashes.map((hash) => waitForTransactionReceipt(config, { hash })))
+    if (message) notify(message, 'success')
+    await waitFor(isSatisfied, { timeout })
+    return txHashes
+  }
+}
+
 export async function waitForApproval({
   onApprove,
   config,
@@ -41,11 +66,11 @@ export async function waitForApproval({
   config: Config
   timeout?: number
 }) {
-  if (await isApproved()) return
-  const approvalHashes = await onApprove()
-  if (approvalHashes.length > 0) {
-    await Promise.all(approvalHashes.map((hash) => waitForTransactionReceipt(config, { hash })))
-    notify(message, 'success')
-    await waitFor(isApproved, { timeout })
-  }
+  return await waitForTransaction({
+    onExecute: onApprove,
+    config,
+    isSatisfied: isApproved,
+    message,
+    timeout,
+  })
 }

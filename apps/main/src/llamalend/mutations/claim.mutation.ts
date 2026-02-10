@@ -6,9 +6,7 @@ import { claimValidationSuite, requireVault } from '@/llamalend/queries/validati
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
-import { Duration } from '@ui-kit/themes/design/0_primitives'
-import { waitFor } from '@ui-kit/utils/time.utils'
-import { type Config, waitForTransactionReceipt } from '@wagmi/core'
+import { waitForTransaction } from '@ui-kit/utils'
 import { fetchClaimableCrv, fetchClaimableRewards } from '../queries/supply/supply-claimable-rewards.query'
 
 type ClaimMutation = Record<string, never>
@@ -18,24 +16,6 @@ export type ClaimOptions = {
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
   onClaimed: LlammaMutationOptions<ClaimMutation>['onSuccess'] | undefined
   userAddress: Address | undefined
-}
-
-const waitForCrvClaim = async ({
-  onClaim,
-  config,
-  isClaimable,
-  timeout = Duration.TransactionPollTimeout,
-}: {
-  onClaim: () => Promise<Hex>
-  isClaimable: () => Promise<boolean>
-  config: Config
-  timeout?: number
-}): Promise<Hex | null> => {
-  if (!(await isClaimable())) return null
-  const hash = await onClaim()
-  await waitForTransactionReceipt(config, { hash })
-  await waitFor(async () => !(await isClaimable()), { timeout })
-  return hash
 }
 
 export const useClaimMutation = ({
@@ -53,14 +33,15 @@ export const useClaimMutation = ({
     mutationFn: async (_, { market }) => {
       const lendMarket = requireVault(market)
 
-      const crvHash = await waitForCrvClaim({
-        isClaimable: async () => {
+      const txHashes = await waitForTransaction({
+        isSatisfied: async () => {
           const claimableCrv = await fetchClaimableCrv({ marketId: market.id, userAddress }, { staleTime: 0 })
-          return claimableCrv != null && +claimableCrv > 0
+          return claimableCrv == null || Number(claimableCrv) === 0
         },
-        onClaim: async () => (await lendMarket.vault.claimCrv()) as Hex,
+        onExecute: async () => (await lendMarket.vault.claimCrv()) as Hex,
         config,
       })
+      const crvHash = txHashes?.[0]
 
       const claimableRewards = await fetchClaimableRewards({ marketId: market.id, userAddress }, { staleTime: 0 })
       if (claimableRewards.length === 0) return { hash: crvHash! }
