@@ -1,11 +1,10 @@
-import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward'
-import NotificationsIcon from '@mui/icons-material/Notifications'
-import { Button, Stack, Typography, useTheme } from '@mui/material'
+import { Stack, Typography, useTheme } from '@mui/material'
+import { useMarketPageHeader } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { decimal } from '@ui-kit/utils'
-import { HealthBar, getHealthValueColor, Health, LiquidationAlert } from './'
+import { HealthBar, getHealthValueColor, Health, LiquidationAlert, LlamaMonitorBotLinkButton } from './'
 
 const { Spacing } = SizesAndSpaces
 
@@ -17,6 +16,7 @@ export const HealthDetails = ({
   liquidationAlert: LiquidationAlert
 }) => {
   const theme = useTheme()
+  const showPageHeader = useMarketPageHeader()
   return (
     <Stack sx={{ padding: Spacing.md }}>
       <Stack gap={2}>
@@ -49,18 +49,7 @@ export const HealthDetails = ({
               {t`Liquidation may occur when health reaches 0.`}
             </Typography>
           </Stack>
-          <Button
-            variant="link"
-            color="ghost"
-            href="https://t.me/LlamalendMonitorBot?ref=news.curve.finance"
-            target="_blank"
-            rel="noreferrer"
-            sx={{ flexShrink: 0 }}
-            startIcon={<NotificationsIcon sx={(t) => ({ fontSize: t.typography.fontSize })} />}
-            endIcon={<ArrowOutwardIcon sx={(t) => ({ fontSize: t.typography.fontSize })} />}
-          >
-            {t`Get alerts`}
-          </Button>
+          {!showPageHeader && <LlamaMonitorBotLinkButton />}
         </Stack>
       </Stack>
     </Stack>

@@ -1,5 +1,6 @@
 import { Alert, Stack, Typography } from '@mui/material'
 import { CampaignPoolRewards } from '@ui-kit/entities/campaigns'
+import { useMarketPageHeader } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { LlamaMarketType } from '@ui-kit/types/market'
@@ -121,21 +122,30 @@ export const BorrowPositionDetails = ({
   ltv,
   totalDebt,
   collateralLoss,
-}: BorrowPositionDetailsProps) => (
-  <Stack>
-    {liquidationAlert.softLiquidation && <LiquidationAlert type="soft" />}
-    {liquidationAlert.hardLiquidation && <LiquidationAlert type="hard" />}
-    <HealthDetails health={health} liquidationAlert={liquidationAlert} />
-    <BorrowInformation
-      marketType={marketType}
-      borrowRate={borrowRate}
-      collateralValue={collateralValue}
-      ltv={ltv}
-      leverage={leverage}
-      liquidationRange={liquidationRange}
-      bandRange={bandRange}
-      totalDebt={totalDebt}
-      collateralLoss={collateralLoss}
-    />
-  </Stack>
-)
+}: BorrowPositionDetailsProps) => {
+  const showPageHeader = useMarketPageHeader()
+  return (
+    <Stack>
+      {liquidationAlert.softLiquidation && <LiquidationAlert type="soft" />}
+      {liquidationAlert.hardLiquidation && <LiquidationAlert type="hard" />}
+      <Stack
+        direction={'column'}
+        display={showPageHeader ? { tablet: 'flex', desktop: 'grid' } : 'flex'}
+        gridTemplateColumns={'1fr 1fr'}
+      >
+        <HealthDetails health={health} liquidationAlert={liquidationAlert} />
+        <BorrowInformation
+          marketType={marketType}
+          borrowRate={borrowRate}
+          collateralValue={collateralValue}
+          ltv={ltv}
+          leverage={leverage}
+          liquidationRange={liquidationRange}
+          bandRange={bandRange}
+          totalDebt={totalDebt}
+          collateralLoss={collateralLoss}
+        />
+      </Stack>
+    </Stack>
+  )
+}
