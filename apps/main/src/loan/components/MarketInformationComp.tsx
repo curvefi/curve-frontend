@@ -40,7 +40,9 @@ export const MarketInformationComp = ({ llamma, marketId, chainId, page = 'manag
         </Stack>
       )}
       {llamma && isAdvancedMode && (
-        <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, ...(showPageHeader && { marginTop: Spacing.md }) }}>
+        <Stack
+          sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, ...(showPageHeader && { marginTop: Spacing.md }) }}
+        >
           {showPageHeader && <AdvancedDetails {...marketDetails} />}
           <Stack
             sx={{

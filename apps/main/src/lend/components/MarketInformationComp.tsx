@@ -39,7 +39,9 @@ export const MarketInformationComp = ({ pageProps, loanExists, type }: MarketInf
         </Stack>
       )}
       {market && isAdvancedMode && (
-        <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, ...(showPageHeader && { marginTop: Spacing.md }) }}>
+        <Stack
+          sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, ...(showPageHeader && { marginTop: Spacing.md }) }}
+        >
           {showPageHeader && <AdvancedDetails {...marketDetails} />}
           <Stack
             sx={{
