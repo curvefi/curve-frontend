@@ -66,6 +66,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
     isApproved,
     isCreated,
     isPending,
+    isDisabled,
     maxTokenValues: { collateral: maxCollateral, debt: maxDebt, maxLeverage, setRange },
     onSubmit,
     params,
@@ -162,7 +163,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
       <Button
         type="submit"
         loading={isPending || !market}
-        disabled={formErrors.length > 0}
+        disabled={idDisabled}
         data-testid="create-loan-submit-button"
       >
         {isPending ? t`Processing...` : isApproved?.data ? t`Borrow` : t`Approve & Borrow`}

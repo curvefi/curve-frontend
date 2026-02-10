@@ -84,7 +84,8 @@ export const useDepositForm = <ChainId extends LlamaChainId>({
     userAddress,
   })
 
-  const formErrors = useFormErrors(form.formState)
+  const { formState } = form
+  const formErrors = useFormErrors(formState)
 
   useCallbackAfterFormUpdate(form, resetDeposit)
 
@@ -96,9 +97,9 @@ export const useDepositForm = <ChainId extends LlamaChainId>({
     form,
     values,
     params,
-    isPending: form.formState.isSubmitting || isDepositing,
+    isPending: formState.isSubmitting || isDepositing,
     onSubmit: form.handleSubmit(onSubmit),
-    isDisabled: formErrors.length > 0,
+    isDisabled: !formState.isValid,
     borrowToken,
     isDeposited,
     depositError,

@@ -38,7 +38,7 @@ import Skeleton from '@mui/material/Skeleton'
 import { useCurve } from '@ui-kit/features/connect-wallet/lib/CurveContext'
 import { CurveProvider } from '@ui-kit/features/connect-wallet/lib/CurveProvider'
 import { LlamaMarketType } from '@ui-kit/types/market'
-import { Decimal } from '@ui-kit/utils'
+import { CRVUSD_ADDRESS, Decimal } from '@ui-kit/utils'
 
 const onUpdate: OnCreateLoanFormUpdate = async (form) => console.info('form updated', form)
 
@@ -153,7 +153,7 @@ testCases.forEach(
 
       it(`repays the loan`, () => {
         cy.mount(<LoanTestWrapper tab="repay" />)
-        selectRepayToken({ symbol: 'crvUSD', hasLeverage })
+        selectRepayToken({ symbol: 'crvUSD', tokenAddress: CRVUSD_ADDRESS, hasLeverage })
         writeRepayLoanForm({ amount: repay }) // TODO: test full-repay
         checkRepayDetailsLoaded({
           debt: [debtAfterBorrowMore, debtAfterBorrowMoreAndRepay, 'crvUSD'],

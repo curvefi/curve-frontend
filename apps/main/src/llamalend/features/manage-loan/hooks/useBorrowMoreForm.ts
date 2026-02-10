@@ -122,21 +122,21 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
 
   useCallbackAfterFormUpdate(form, resetBorrow)
 
-  const formErrors = useFormErrors(form.formState)
+  const { formState } = form
   return {
     form,
     values,
     params,
-    isPending: form.formState.isSubmitting || isBorrowing,
+    isPending: formState.isSubmitting || isBorrowing,
     onSubmit: form.handleSubmit(onSubmit),
-    isDisabled: formErrors.length > 0,
+    isDisabled: !formState.isValid,
     borrowToken,
     collateralToken,
     isBorrowed,
     borrowError,
     txHash: data?.hash,
     isApproved: useBorrowMoreIsApproved(params, enabled),
-    formErrors,
+    formErrors: useFormErrors(formState),
     max: useMaxBorrowMoreValues({ params, form, market }, enabled),
     health: useBorrowMoreHealth(params, enabled && !!values.debt),
     /** Current leverage calculated for now, but it's probably incorrect. It's in development in llamalend-js. */

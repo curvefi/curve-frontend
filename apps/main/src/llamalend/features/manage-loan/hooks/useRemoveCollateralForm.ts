@@ -77,9 +77,9 @@ export const useRemoveCollateralForm = <
     onReset: form.reset,
     userAddress,
   })
-
+  const { formState } = form
   const maxRemovable = useMaxRemovableCollateral(params, enabled)
-  const formErrors = useFormErrors(form.formState)
+  const formErrors = useFormErrors(formState)
 
   useCallbackAfterFormUpdate(form, action.reset)
 
@@ -91,7 +91,8 @@ export const useRemoveCollateralForm = <
     form,
     values,
     params,
-    isPending: form.formState.isSubmitting || action.isPending,
+    isPending: formState.isSubmitting || action.isPending,
+    isDisabled: !formState.isValid,
     onSubmit: form.handleSubmit(onSubmit),
     action,
     maxRemovable,

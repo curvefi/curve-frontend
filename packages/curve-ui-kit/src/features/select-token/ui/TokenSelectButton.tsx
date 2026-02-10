@@ -34,7 +34,6 @@ export const TokenSelectButton = ({
           size="mui-md"
           label={token.symbol}
           disabled={disabled}
-          testId={token.testId}
         />
       ) : (
         <Spinner useTheme={true} />

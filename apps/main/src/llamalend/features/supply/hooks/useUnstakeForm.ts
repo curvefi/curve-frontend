@@ -91,7 +91,8 @@ export const useUnstakeForm = <ChainId extends LlamaChainId>({
     userAddress,
   })
 
-  const formErrors = useFormErrors(form.formState)
+  const { formState } = form
+  const formErrors = useFormErrors(formState)
 
   useCallbackAfterFormUpdate(form, resetUnstake)
 
@@ -103,9 +104,9 @@ export const useUnstakeForm = <ChainId extends LlamaChainId>({
     form,
     values,
     params,
-    isPending: form.formState.isSubmitting || isUnstaking,
+    isPending: formState.isSubmitting || isUnstaking,
     onSubmit: form.handleSubmit(onSubmit),
-    isDisabled: formErrors.length > 0,
+    isDisabled: !formState.isValid,
     vaultToken,
     borrowToken,
     isUnstaked,

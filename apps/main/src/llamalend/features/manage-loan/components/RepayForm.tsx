@@ -41,9 +41,9 @@ function RepayTokenSelector<ChainId extends IChainId>({
   const [isOpen, onOpen, onClose] = useSwitch(false)
   if (props.tokens.length === 1) {
     const {
-      tokens: [{ address, chain, symbol, testId }],
+      tokens: [{ address, chain, symbol }],
     } = props
-    return <TokenLabel blockchainId={chain} address={address} label={symbol} testId={testId} />
+    return <TokenLabel blockchainId={chain} address={address} label={symbol} />
   }
   return (
     <TokenSelector
@@ -78,6 +78,7 @@ export const RepayForm = <ChainId extends IChainId>({
     values,
     params,
     isPending,
+    isDisabled,
     onSubmit,
     borrowToken,
     collateralToken,
@@ -176,12 +177,7 @@ export const RepayForm = <ChainId extends IChainId>({
         }
       />
       <HighPriceImpactAlert {...q(useRepayPriceImpact(params, enabled && swapRequired))} />
-      <Button
-        type="submit"
-        loading={isPending || !market}
-        disabled={formErrors.length > 0}
-        data-testid="repay-submit-button"
-      >
+      <Button type="submit" loading={isPending || !market} disabled={isDisabled} data-testid="repay-submit-button">
         {isPending
           ? t`Processing...`
           : joinButtonText(

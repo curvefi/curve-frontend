@@ -78,7 +78,8 @@ export const useWithdrawForm = <ChainId extends LlamaChainId>({
     userAddress,
   })
 
-  const formErrors = useFormErrors(form.formState)
+  const { formState } = form
+  const formErrors = useFormErrors(formState)
 
   useCallbackAfterFormUpdate(form, resetWithdraw)
 
@@ -90,9 +91,9 @@ export const useWithdrawForm = <ChainId extends LlamaChainId>({
     form,
     values,
     params,
-    isPending: form.formState.isSubmitting || isWithdrawing,
+    isPending: formState.isSubmitting || isWithdrawing,
     onSubmit: form.handleSubmit(onSubmit),
-    isDisabled: formErrors.length > 0,
+    isDisabled: !formState.isValid,
     borrowToken,
     isWithdrawn,
     withdrawError,

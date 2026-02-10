@@ -71,8 +71,7 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
     userAddress,
   })
 
-  const formErrors = useFormErrors(form.formState)
-
+  const { formState } = form
   useCallbackAfterFormUpdate(form, action.reset)
 
   useEffect(() => {
@@ -83,13 +82,14 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
     form,
     values,
     params,
-    isPending: form.formState.isSubmitting || action.isPending,
+    isPending: formState.isSubmitting || action.isPending,
+    isDisabled: !formState.isValid,
     onSubmit: form.handleSubmit(onSubmit),
     action,
     collateralToken,
     borrowToken,
     txHash: action.data?.hash,
     isApproved: useAddCollateralIsApproved(params),
-    formErrors,
+    formErrors: useFormErrors(formState),
   }
 }
