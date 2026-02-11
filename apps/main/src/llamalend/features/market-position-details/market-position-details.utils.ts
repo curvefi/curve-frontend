@@ -16,11 +16,12 @@ export const getHealthValueColor = ({
   prevHealth?: Decimal
   isFullRepay?: boolean
   theme: Theme
+  colorBackground?: boolean
 }) => {
   const red = Text.TextColors.Feedback.Error
   const orange = Text.TextColors.Feedback.Danger
   const green = Text.TextColors.Feedback.Success
-  const neutral = Text.TextColors.FilledFeedback.Warning.Primary
+  const neutral = Text.TextColors.Primary
 
   if (health != null && prevHealth != null) {
     if (Number(health) < Number(prevHealth)) {
