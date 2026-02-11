@@ -9,13 +9,14 @@ type HealthBarProps = {
   softLiquidation: boolean | undefined | null
 }
 
-type HealthLevel = 'liquidation' | 'risky' | 'good' | 'pristine'
+type HealthLevel = 'hardLiquidation' | 'liquidation' | 'risky' | 'good' | 'pristine'
 
 const BAR_HEIGHT = '2rem' // 36px
 /** padding necesarry to mimic Metric components inherent line-height padding */
 const TRACK_BOTTOM_PADDING = '0.1875rem' // 3px
 
 const insetLabelText = {
+  hardLiquidation: t`Liquidation protection disabled`,
   liquidation: t`Liquidation`,
   risky: t`Risky`,
   good: t`Good`,
@@ -25,7 +26,8 @@ const insetLabelText = {
 const clampPercentage = (health: number | undefined | null): number => Math.max(0, Math.min(health ?? 0, 100))
 
 const getHealthLevel = (health: number | undefined | null): HealthLevel => {
-  if (health == null || health <= 0) return 'liquidation'
+  if (health == null || health <= 0) return 'hardLiquidation'
+  if (health <= 5) return 'liquidation'
   if (health <= 15) return 'risky'
   if (health <= 50) return 'good'
   return 'pristine'
@@ -53,24 +55,23 @@ export const HealthBar = ({ health, softLiquidation, small }: HealthBarProps) =>
           transition: 'background-color 0.3s ease-in-out',
         }}
       >
+        {/* Bar fills 100% when health <= 0 (hard liquidation) to indicate critical state */}
         <Stack
           sx={{
-            width: `${clampPercentage(health)}%`,
+            width: `${health != null && health <= 0 ? 100 : clampPercentage(health)}%`,
             height: '100%',
             backgroundColor: getHealthTrackColor({ health, softLiquidation, theme }),
             transition: 'width 0.3s ease-in-out, background-color 0.3s ease-in-out',
           }}
         />
         {/**
-         * Split-color text effect for critical health (< 5%):
+         * Text color logic for health bar label:
          *
-         * When health drops below 5%, the bar is red and needs white text for contrast.
-         * To handle text that spans beyond the red bar onto the gray background, we stack
-         * two identical labels: a black base layer and a white overlay. The overlay is
-         * wrapped in a container with overflow:hidden matching the bar width, so white
-         * text shows over red and black text shows over gray.
-         *
-         * For non-critical health (>= 5%), only the base label renders in warning color.
+         * - health <= 0: Bar is 100% red (hard liquidation), text is fully white
+         * - 0 < health < 5: Split-color effect - black base with white overlay clipped to bar width.
+         *   Two identical labels are stacked; the overlay uses overflow:hidden to show white
+         *   text over the red bar and black text over the gray background.
+         * - health >= 5: Single label in warning color
          */}
         <Typography
           variant="bodyXsRegular"
@@ -79,14 +80,16 @@ export const HealthBar = ({ health, softLiquidation, small }: HealthBarProps) =>
             bottom: '2px',
             left: '2px',
             color: (t) =>
-              health != null && health < 5
-                ? t.design.Text.TextColors.Primary
-                : t.design.Text.TextColors.FilledFeedback.Warning.Primary,
+              health != null && health <= 0
+                ? t.design.Text.TextColors.FilledFeedback.Alert.Primary // Full white when bar is 100% red
+                : health != null && health < 5
+                  ? t.design.Text.TextColors.Primary // Black base for split effect
+                  : t.design.Text.TextColors.FilledFeedback.Warning.Primary,
           }}
         >
           {insetLabelText[getHealthLevel(health)]}
         </Typography>
-        {health != null && health < 5 && (
+        {health != null && health < 5 && health > 0 && (
           <Stack
             sx={{
               position: 'absolute',
