@@ -52,3 +52,11 @@ export const CRVUSD = {
   name: 'crvUSD',
   chain: 'ethereum',
 } as const
+
+export const CRV = {
+  symbol: 'CRV',
+  address: CRV_ADDRESS,
+  decimals: 18,
+  name: 'CRV',
+  chain: 'ethereum',
+} as const
