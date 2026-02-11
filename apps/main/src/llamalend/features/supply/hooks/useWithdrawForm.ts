@@ -82,13 +82,14 @@ export const useWithdrawForm = <ChainId extends LlamaChainId>({
     updateForm(form, { maxWithdrawAmount: maxUserWithdraw.data })
   }, [form, maxUserWithdraw.data])
 
+  const isPending = formState.isSubmitting || isWithdrawing
   return {
     form,
     values,
     params,
-    isPending: formState.isSubmitting || isWithdrawing,
+    isPending,
     onSubmit: form.handleSubmit(onSubmit),
-    isDisabled: !formState.isValid,
+    isDisabled: !formState.isValid || isPending,
     borrowToken,
     isWithdrawn,
     withdrawError,

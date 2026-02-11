@@ -82,12 +82,13 @@ export const useRemoveCollateralForm = <
     updateForm(form, { maxCollateral: maxRemovable.data })
   }, [form, maxRemovable.data])
 
+  const isPending = formState.isSubmitting || action.isPending
   return {
     form,
     values,
     params,
-    isPending: formState.isSubmitting || action.isPending,
-    isDisabled: !formState.isValid,
+    isPending,
+    isDisabled: !formState.isValid || isPending,
     onSubmit: form.handleSubmit(onSubmit),
     action,
     maxRemovable,

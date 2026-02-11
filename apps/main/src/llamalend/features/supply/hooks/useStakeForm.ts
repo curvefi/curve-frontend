@@ -92,13 +92,14 @@ export const useStakeForm = <ChainId extends LlamaChainId>({
   }, [form, maxUserStake.data])
 
   const { formState } = form
+  const isPending = formState.isSubmitting || isStaking
   return {
     form,
     values,
     params,
-    isPending: formState.isSubmitting || isStaking,
+    isPending,
     onSubmit: form.handleSubmit(onSubmit),
-    isDisabled: !formState.isValid,
+    isDisabled: !formState.isValid || isPending,
     vaultToken,
     borrowToken,
     isStaked,

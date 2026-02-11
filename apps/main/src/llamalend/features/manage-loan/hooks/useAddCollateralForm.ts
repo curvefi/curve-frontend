@@ -74,12 +74,13 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
     updateForm(form, { maxCollateral: maxCollateral })
   }, [form, maxCollateral])
 
+  const isPending = formState.isSubmitting || action.isPending
   return {
     form,
     values,
     params,
-    isPending: formState.isSubmitting || action.isPending,
-    isDisabled: !formState.isValid,
+    isPending,
+    isDisabled: !formState.isValid || isPending,
     onSubmit: form.handleSubmit(onSubmit),
     action,
     collateralToken,

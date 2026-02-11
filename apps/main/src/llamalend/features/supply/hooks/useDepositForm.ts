@@ -14,7 +14,7 @@ import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interf
 import { vestResolver } from '@hookform/resolvers/vest'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
-import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
+import { formDefaultOptions } from '@ui-kit/lib/model'
 import { updateForm, useCallbackAfterFormUpdate, useFormErrors } from '@ui-kit/utils/react-form.utils'
 
 const emptyDepositForm = (): DepositForm => ({
@@ -51,7 +51,8 @@ export const useDepositForm = <ChainId extends LlamaChainId>({
     defaultValues: emptyDepositForm(),
   })
 
-  const values = watchForm(form)
+  // eslint-disable-next-line react-hooks/incompatible-library
+  const depositAmount = form.watch('depositAmount')
 
   const params = useDebouncedValue(
     useMemo(
@@ -59,9 +60,9 @@ export const useDepositForm = <ChainId extends LlamaChainId>({
         chainId,
         marketId,
         userAddress,
-        depositAmount: values.depositAmount,
+        depositAmount: depositAmount,
       }),
-      [chainId, marketId, userAddress, values.depositAmount],
+      [chainId, marketId, userAddress, depositAmount],
     ),
   )
 
@@ -88,13 +89,13 @@ export const useDepositForm = <ChainId extends LlamaChainId>({
     updateForm(form, { maxDepositAmount: maxUserDeposit.data })
   }, [form, maxUserDeposit.data])
 
+  const isPending = formState.isSubmitting || isDepositing
   return {
     form,
-    values,
     params,
-    isPending: formState.isSubmitting || isDepositing,
+    isPending,
     onSubmit: form.handleSubmit(onSubmit),
-    isDisabled: !formState.isValid,
+    isDisabled: !formState.isValid || isPending,
     borrowToken,
     isDeposited,
     depositError,

@@ -118,13 +118,14 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
   useCallbackAfterFormUpdate(form, resetBorrow)
 
   const { formState } = form
+  const isPending = formState.isSubmitting || isBorrowing
   return {
     form,
     values,
     params,
-    isPending: formState.isSubmitting || isBorrowing,
+    isPending,
     onSubmit: form.handleSubmit(onSubmit),
-    isDisabled: !formState.isValid,
+    isDisabled: !formState.isValid || isPending,
     borrowToken,
     collateralToken,
     isBorrowed,

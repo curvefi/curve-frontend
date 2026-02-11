@@ -97,12 +97,13 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
 
   useCallbackAfterFormUpdate(form, resetCreation) // reset creation state on form change
 
+  const isPending = formState.isSubmitting || isCreating
   return {
     form,
     values,
     params,
-    isPending: formState.isSubmitting || isCreating,
-    isDisabled: !formState.isValid,
+    isPending,
+    isDisabled: !formState.isValid || isPending,
     onSubmit: form.handleSubmit(onSubmit),
     maxTokenValues: useMaxTokenValues(collateralToken?.address, params, form),
     borrowToken,

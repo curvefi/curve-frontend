@@ -95,13 +95,14 @@ export const useUnstakeForm = <ChainId extends LlamaChainId>({
     updateForm(form, { maxUnstakeAmount: maxUserUnstake.data })
   }, [form, maxUserUnstake.data])
 
+  const isPending = formState.isSubmitting || isUnstaking
   return {
     form,
     values,
     params,
-    isPending: formState.isSubmitting || isUnstaking,
+    isPending,
     onSubmit: form.handleSubmit(onSubmit),
-    isDisabled: !formState.isValid,
+    isDisabled: !formState.isValid || isPending,
     vaultToken,
     borrowToken,
     isUnstaked,

@@ -111,12 +111,13 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
   const { isFull, max } = useMaxRepayTokenValues({ collateralToken, borrowToken, params, form }, enabled)
 
   const { formState } = form
+  const isPending = formState.isSubmitting || isRepaying
   return {
     form,
     values,
     params,
-    isPending: formState.isSubmitting || isRepaying,
-    isDisabled: !formState.isValid,
+    isPending,
+    isDisabled: !formState.isValid || isPending,
     onSubmit: form.handleSubmit(onSubmit),
     borrowToken,
     collateralToken,
