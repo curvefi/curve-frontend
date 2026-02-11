@@ -8,7 +8,7 @@ import { MarketParameters } from '@/llamalend/features/market-parameters/MarketP
 import Stack from '@mui/material/Stack'
 import { getLib } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { useNewBandsChart, useMarketPageHeader } from '@ui-kit/hooks/useFeatureFlags'
+import { useNewBandsChart, useIntegratedLlamaHeader } from '@ui-kit/hooks/useFeatureFlags'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
@@ -27,7 +27,7 @@ export const MarketInformationComp = ({ pageProps, loanExists, type }: MarketInf
   const api = getLib('llamaApi')
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
   const newBandsChartEnabled = useNewBandsChart()
-  const showPageHeader = useMarketPageHeader()
+  const showPageHeader = useIntegratedLlamaHeader()
   const marketDetails = useMarketDetails({ chainId: rChainId, market, marketId: rOwmId })
 
   return (

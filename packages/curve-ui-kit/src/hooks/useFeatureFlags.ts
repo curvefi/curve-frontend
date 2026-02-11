@@ -37,4 +37,4 @@ export const useManageSoftLiquidation = useAlphaChannel
 export const useAnalyticsApp = useAlphaChannel
 
 /** New page header with market metrics on market detail pages */
-export const useMarketPageHeader = useBetaChannel
+export const useIntegratedLlamaHeader = useBetaChannel

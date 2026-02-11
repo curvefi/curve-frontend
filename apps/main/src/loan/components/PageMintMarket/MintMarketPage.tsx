@@ -23,7 +23,7 @@ import type { Chain } from '@curvefi/prices-api'
 import Stack from '@mui/material/Stack'
 import { ConnectWalletPrompt, useCurve } from '@ui-kit/features/connect-wallet'
 import { useParams } from '@ui-kit/hooks/router'
-import { useMarketPageHeader } from '@ui-kit/hooks/useFeatureFlags'
+import { useIntegratedLlamaHeader } from '@ui-kit/hooks/useFeatureFlags'
 import { usePageVisibleInterval } from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
@@ -98,7 +98,7 @@ export const MintMarketPage = () => {
     rChainId,
     params,
   }
-  const showPageHeader = useMarketPageHeader()
+  const showPageHeader = useIntegratedLlamaHeader()
 
   return isHydrated && !market ? (
     <ErrorPage title="404" subtitle={t`Market Not Found`} continueUrl={getCollateralListPathname(params)} />

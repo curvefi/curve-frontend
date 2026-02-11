@@ -1,6 +1,6 @@
 import { Box, CardHeader } from '@mui/material'
 import { formatNumber, FORMAT_OPTIONS } from '@ui/utils/utilsFormat'
-import { useMarketPageHeader } from '@ui-kit/hooks/useFeatureFlags'
+import { useIntegratedLlamaHeader } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SymbolCell } from '@ui-kit/shared/ui/SymbolCell'
@@ -35,7 +35,7 @@ export const MarketDetails = ({
   blockchainId,
   marketType,
 }: MarketDetailsProps) => {
-  const showPageHeader = useMarketPageHeader()
+  const showPageHeader = useIntegratedLlamaHeader()
   const utilization =
     availableLiquidity?.value && availableLiquidity.max
       ? ((availableLiquidity.max - availableLiquidity.value) / availableLiquidity.max) * 100

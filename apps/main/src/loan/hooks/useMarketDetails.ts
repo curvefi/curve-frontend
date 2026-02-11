@@ -61,9 +61,7 @@ export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetails
 
   const totalAverageBorrowRate = averageRate == null ? null : averageRate - (averageRebasingYield ?? 0)
   const borrowApr = marketRates?.borrowApr && Number(marketRates.borrowApr)
-  const totalBorrowRate = borrowApr
-    ? borrowApr - (crvUsdSnapshots?.[crvUsdSnapshots.length - 1]?.collateralToken.rebasingYield ?? 0)
-    : null
+  const totalBorrowRate = borrowApr ? borrowApr - (crvUsdSnapshots?.at(-1)?.collateralToken.rebasingYield ?? 0) : null
   const availableLiquidityValue = loanDetails?.capAndAvailable?.available
     ? Number(loanDetails.capAndAvailable.available)
     : null

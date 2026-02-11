@@ -7,7 +7,7 @@ import type { ChainId, Llamma } from '@/loan/types/loan.types'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { useNewBandsChart, useMarketPageHeader } from '@ui-kit/hooks/useFeatureFlags'
+import { useNewBandsChart, useIntegratedLlamaHeader } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { AddressActionInfo } from '@ui-kit/shared/ui/AddressActionInfo'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -27,7 +27,7 @@ type MarketInformationCompProps = {
  */
 export const MarketInformationComp = ({ llamma, marketId, chainId, page = 'manage' }: MarketInformationCompProps) => {
   const newBandsChartEnabled = useNewBandsChart()
-  const showPageHeader = useMarketPageHeader()
+  const showPageHeader = useIntegratedLlamaHeader()
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
   const marketDetails = useMarketDetails({ chainId, llamma, llammaId: marketId })
 

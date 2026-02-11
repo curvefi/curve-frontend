@@ -3,7 +3,7 @@ import { CurrentLTVTooltipContent } from '@/llamalend/widgets/tooltips/CurrentLT
 import { MarketNetBorrowAprTooltipContent } from '@/llamalend/widgets/tooltips/MarketNetBorrowAprTooltipContent'
 import { TotalDebtTooltipContent } from '@/llamalend/widgets/tooltips/TotalDebtTooltipContent'
 import { CardHeader, Stack } from '@mui/material'
-import { useMarketPageHeader } from '@ui-kit/hooks/useFeatureFlags'
+import { useIntegratedLlamaHeader } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -54,7 +54,7 @@ export const BorrowInformation = ({
   totalDebt,
   collateralLoss,
 }: BorrowInformationProps) => {
-  const showPageHeader = useMarketPageHeader()
+  const showPageHeader = useIntegratedLlamaHeader()
 
   return (
     <Stack>
