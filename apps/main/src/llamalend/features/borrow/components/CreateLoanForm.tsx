@@ -15,6 +15,7 @@ import { useCreateLoanPreset } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
 import { q } from '@ui-kit/types/util'
+import { joinButtonText } from '@ui-kit/utils'
 import { setValueOptions } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { InputDivider } from '../../../widgets/InputDivider'
@@ -165,7 +166,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
         disabled={formErrors.length > 0}
         data-testid="create-loan-submit-button"
       >
-        {isPending ? t`Processing...` : isApproved?.data ? t`Borrow` : t`Approve & Borrow`}
+        {isPending ? t`Processing...` : joinButtonText(isApproved?.data === false && t`Approve`, t`Borrow`)}
       </Button>
 
       <LoanFormAlerts

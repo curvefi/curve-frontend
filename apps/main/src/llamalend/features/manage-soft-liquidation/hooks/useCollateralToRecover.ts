@@ -1,4 +1,6 @@
 import { BigNumber } from 'bignumber.js'
+import { sumBy } from 'lodash'
+import { useMemo } from 'react'
 import { useConnection } from 'wagmi'
 import { getTokens } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
@@ -7,7 +9,7 @@ import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interf
 import { notFalsy } from '@curvefi/prices-api/objects.util'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { type Query } from '@ui-kit/types/util'
-import { decimal, type Decimal, sum } from '@ui-kit/utils'
+import { decimal, type Decimal } from '@ui-kit/utils'
 import type { Token } from '../types'
 
 type TokenWithPrice = Token & { amount: Decimal; usd: Decimal | undefined }
@@ -27,7 +29,7 @@ export function useCollateralToRecover({
 }: {
   chainId: LlamaChainId
   market: LlamaMarketTemplate | undefined
-}): Query<TokenWithPrice[]> & { totalUsd: Decimal | undefined } {
+}): Query<TokenWithPrice[]> & { totalUsd: number | undefined } {
   const { address: userAddress } = useConnection()
   const { data: userState, error, isLoading } = useUserState({ chainId, marketId: market?.id, userAddress })
   const { collateral, debt, stablecoin } = userState ?? {}
@@ -63,6 +65,6 @@ export function useCollateralToRecover({
     data,
     isLoading: isLoading,
     error: error,
-    totalUsd: decimal(sum(data.map((token) => token.usd ?? '0'))),
+    totalUsd: useMemo(() => sumBy(data, ({ usd }) => Number(usd) || 0), [data]),
   }
 }

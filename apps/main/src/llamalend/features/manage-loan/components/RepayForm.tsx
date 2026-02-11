@@ -9,7 +9,7 @@ import { useRepayPriceImpact } from '@/llamalend/queries/repay/repay-price-impac
 import { HighPriceImpactAlert, LoanFormAlerts } from '@/llamalend/widgets/action-card/LoanFormAlerts'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { Falsy, notFalsy } from '@curvefi/prices-api/objects.util'
+import { notFalsy } from '@curvefi/prices-api/objects.util'
 import Button from '@mui/material/Button'
 import { TokenSelector } from '@ui-kit/features/select-token'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
@@ -17,20 +17,11 @@ import { t } from '@ui-kit/lib/i18n'
 import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { q } from '@ui-kit/types/util'
+import { joinButtonText } from '@ui-kit/utils'
 import { setValueOptions } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { useRepayForm } from '../hooks/useRepayForm'
 import { useTokenAmountConversion } from '../hooks/useTokenAmountConversion'
-
-/**
- * Join button texts with commas and ampersand
- * @example ['Approve', 'Repay', 'Withdraw'] -> 'Approve, Repay & Withdraw'
- * @example ['Approve', 'Repay'] -> 'Approve & Repay'
- */
-const joinButtonText = (...texts: (string | Falsy)[]) =>
-  notFalsy(...texts)
-    .map((t, i, all) => (i ? `${i === all.length - 1 ? ' & ' : ', '}${t}` : t))
-    .join('')
 
 function RepayTokenSelector<ChainId extends IChainId>({
   token,

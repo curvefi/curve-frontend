@@ -12,6 +12,7 @@ import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
 import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { joinButtonText } from '@ui-kit/utils'
 import { setValueOptions } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { AlertRepayDebtToIncreaseHealth } from '../alerts/AlertRepayDebtToIncreaseHealth'
@@ -105,10 +106,11 @@ export const ImproveHealthForm = ({
         <Button type="submit" loading={isPending} disabled={formErrors.length > 0} data-testid="improve-health-submit">
           {isPending
             ? t`Processing...`
-            : notFalsy(
+            : joinButtonText(
                 isApproved?.data === false && t`Approve`,
-                t`Repay debt & ${isFull ? 'close position' : 'increase health'}`,
-              ).join(' & ')}
+                t`Repay debt`,
+                isFull ? 'Close Position' : 'Increase Health',
+              )}
         </Button>
 
         <ButtonGetCrvUsd />

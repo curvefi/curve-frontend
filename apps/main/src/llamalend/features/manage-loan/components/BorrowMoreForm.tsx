@@ -17,7 +17,7 @@ import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
 import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
 import { q } from '@ui-kit/types/util'
-import { isDevelopment } from '@ui-kit/utils'
+import { isDevelopment, joinButtonText } from '@ui-kit/utils'
 import { setValueOptions } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { InputDivider } from '../../../widgets/InputDivider'
@@ -155,7 +155,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
         disabled={isDisabled}
         data-testid="borrow-more-submit-button"
       >
-        {isPending ? t`Processing...` : notFalsy(isApproved?.data === false && t`Approve`, t`Borrow More`).join(' & ')}
+        {isPending ? t`Processing...` : joinButtonText(isApproved?.data === false && t`Approve`, t`Borrow More`)}
       </Button>
 
       <LoanFormAlerts

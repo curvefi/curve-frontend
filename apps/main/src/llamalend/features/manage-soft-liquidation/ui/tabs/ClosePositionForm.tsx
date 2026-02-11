@@ -8,6 +8,7 @@ import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { joinButtonText } from '@ui-kit/utils'
 import { setValueOptions } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { AlertAdditionalCrvUsd } from '../alerts/AlertAdditionalCrvUsd'
@@ -101,7 +102,7 @@ export const ClosePositionForm = ({
 
       <Stack gap={Spacing.xs}>
         <Button type="submit" loading={isPending} disabled={isDisabled}>
-          {isPending ? t`Processing...` : t`Repay debt & close position`}
+          {isPending ? t`Processing...` : joinButtonText(t`Repay debt`, t`close position`)}
         </Button>
 
         <ButtonGetCrvUsd />
