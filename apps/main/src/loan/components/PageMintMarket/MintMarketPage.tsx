@@ -103,8 +103,9 @@ export const MintMarketPage = () => {
       <DetailPageLayout
         formTabs={
           loaded &&
+          loanStatus &&
           (loanExists ? (
-            <ManageLoanTabs {...formProps} isInSoftLiquidation={!!loanStatus && loanStatus !== 'healthy'} />
+            <ManageLoanTabs {...formProps} isInSoftLiquidation={loanStatus !== 'healthy'} />
           ) : (
             <CreateLoanTabs {...formProps} />
           ))

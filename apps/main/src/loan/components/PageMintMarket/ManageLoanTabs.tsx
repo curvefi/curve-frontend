@@ -121,7 +121,7 @@ const MintManageSoftLiquidationMenu = [
 export const ManageLoanTabs = ({
   isInSoftLiquidation,
   ...pageProps
-}: ManageLoanProps & { isInSoftLiquidation: boolean | undefined }) => {
+}: ManageLoanProps & { isInSoftLiquidation: boolean }) => {
   const shouldUseSoftLiquidation = useManageSoftLiquidation() && isInSoftLiquidation
   const shouldUseManageLoanMuiForm = useManageLoanMuiForm()
   const menu = shouldUseSoftLiquidation
