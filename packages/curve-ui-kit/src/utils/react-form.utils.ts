@@ -7,9 +7,10 @@ export type FormUpdates<TFieldValues extends FieldValues> = Partial<{
 }>
 
 /**
- * Required RHF update helper in this codebase.
- * Always uses a fixed update policy (`shouldValidate: false`, `shouldDirty: true`, `shouldTouch: true`)
- * and then runs a full `form.trigger()` once per call.
+ * react-hook-form update helper that uses a fixed update policy and then runs a full `form.trigger()` once per call.
+ * This is necessary because form.setValue() doesn't revalidate all fields.
+ * Any validation in the form root or in other fields can leave the form in an invalid state.
+ * We prefer to have this helper to force full revalidation to avoid silly mistakes that are hard to debug.
  * Direct `form.setValue()` / `form.trigger()` calls are lint-restricted.
  */
 export function updateForm<TFieldValues extends FieldValues>(
