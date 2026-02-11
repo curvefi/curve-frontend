@@ -14,7 +14,7 @@ import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interf
 import { vestResolver } from '@hookform/resolvers/vest'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
-import { formDefaultOptions } from '@ui-kit/lib/model'
+import { formDefaultOptions, watchField } from '@ui-kit/lib/model'
 import { updateForm, useCallbackAfterFormUpdate, useFormErrors } from '@ui-kit/utils/react-form.utils'
 
 const emptyDepositForm = (): DepositForm => ({
@@ -51,8 +51,7 @@ export const useDepositForm = <ChainId extends LlamaChainId>({
     defaultValues: emptyDepositForm(),
   })
 
-  // eslint-disable-next-line react-hooks/incompatible-library
-  const depositAmount = form.watch('depositAmount')
+  const depositAmount = watchField(form, 'depositAmount')
 
   const params = useDebouncedValue(
     useMemo(
