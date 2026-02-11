@@ -5,7 +5,7 @@ import { useQueries, type QueryObserverOptions, type UseQueryResult } from '@tan
 import { combineQueriesToObject, type FieldsOf } from '@ui-kit/lib'
 import { queryClient } from '@ui-kit/lib/api'
 import { REFRESH_INTERVAL, type ChainQuery, type UserQuery } from '@ui-kit/lib/model'
-import { Decimal } from '@ui-kit/utils'
+import { Decimal, uniqAddresses } from '@ui-kit/utils'
 import { multicall, type Config, type ReadContractsReturnType } from '@wagmi/core'
 import type { GetBalanceReturnType } from '@wagmi/core'
 import { getBalanceQueryOptions, readContractsQueryOptions } from '@wagmi/core/query'
@@ -175,7 +175,7 @@ export function useTokenBalances(
   const config = useConfig()
 
   const isEnabled = enabled && chainId != null && userAddress != null
-  const uniqueAddresses = useMemo(() => Array.from(new Set(tokenAddresses)), [tokenAddresses])
+  const uniqueAddresses = useMemo(() => uniqAddresses(tokenAddresses), [tokenAddresses])
 
   return useQueries({
     queries: useMemo(
@@ -209,7 +209,7 @@ export const prefetchTokenBalances = async (
   config: Config,
   { chainId, userAddress, tokenAddresses }: ChainQuery & UserQuery & { tokenAddresses: Address[] },
 ) => {
-  const uniqueAddresses = Array.from(new Set(tokenAddresses))
+  const uniqueAddresses = uniqAddresses(tokenAddresses)
 
   const nativeToken = uniqueAddresses.find((tokenAddress) => isNative({ tokenAddress }))
   const erc20Addresses = uniqueAddresses.filter((tokenAddress) => !isNative({ tokenAddress }))
