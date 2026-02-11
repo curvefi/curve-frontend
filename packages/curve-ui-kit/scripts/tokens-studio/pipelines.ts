@@ -8,6 +8,7 @@ import {
   hasAnyPath,
   setDeep,
   sortObjectDeep,
+  syncObjectFromPathValues,
   toSurfacePrimitiveReference,
   toThemePrimitiveReference,
   withSizePrimitiveReferences,
@@ -15,9 +16,9 @@ import {
   buildTsAccessExpression,
   normalizeKeyForMatch,
 } from './reference-renderer.ts'
-import { isColorLikeValue, isLeafValue, normalizeDimension, normalizeFontWeight } from './sd-runtime.ts'
+import { cloneJson, isColorLikeValue, isLeafValue, normalizeDimension, normalizeFontWeight } from './sd-runtime.ts'
 import { OPTIONAL_THEME_TOKEN_PATHS, REQUIRED_THEME_TOKEN_PATHS, markExpr } from './types.ts'
-import type { JsonObject, ResolvedPathInfo, ThemeName, TokenLeafValue, TokenNode } from './types.ts'
+import type { JsonObject, ResolvedPathInfo, ThemeName, TokenLeafValue, TokenNode, WarningCollector } from './types.ts'
 
 const coerceLeaf = (expected: TokenLeafValue, resolvedRaw: unknown, tokenPath: string): TokenLeafValue => {
   if (typeof expected === 'string') {
@@ -120,11 +121,13 @@ export const buildPrimitives = (
     pathValues.set(tokenPath, resolveLeafValue(resolver, tokenPath))
   }
 
-  const result = buildStyledTreeFromPathValues(pathValues, template, (sourceSegments) => {
-    if (sourceSegments.length === 0) return sourceSegments
-    const [first, ...rest] = sourceSegments
-    const mappedFirst = pluralMap[first] ?? first
-    return [mappedFirst, ...rest]
+  const result = syncObjectFromPathValues(pathValues, template, {
+    transformPathSegments: (sourceSegments) => {
+      if (sourceSegments.length === 0) return sourceSegments
+      const [first, ...rest] = sourceSegments
+      const mappedFirst = pluralMap[first] ?? first
+      return [mappedFirst, ...rest]
+    },
   })
 
   // Keep known legacy primitive keys still consumed in UI-kit when absent in export.
@@ -186,7 +189,7 @@ const buildScalarGroup = (
     pathValues.set(suffix, coerceLeafForTemplate(expectedValue, resolveLeafValue(resolver, tokenPath), tokenPath))
   }
 
-  return buildStyledTreeFromPathValues(pathValues, templateNode)
+  return syncObjectFromPathValues(pathValues, templateNode)
 }
 
 export const buildSizesAndSpaces = (
@@ -204,7 +207,7 @@ export const buildSizesAndSpaces = (
   const lgResolver = createResolver(new Map([...base, ...lg]))
 
   const mappedSources = [toValueMap(sm), toValueMap(md), toValueMap(lg)]
-  const out = JSON.parse(JSON.stringify(template)) as JsonObject
+  const out = cloneJson(template)
 
   out.Spacing = buildResponsiveGroup('Spacing', out.Spacing, mappedSources, smResolver, mdResolver, lgResolver)
   out.Sizing = buildResponsiveGroup('Sizing', out.Sizing, mappedSources, smResolver, mdResolver, lgResolver)
@@ -248,13 +251,13 @@ export const buildSizesAndSpaces = (
   out.ButtonSize = buildStyledTreeFromPathValues(buttonSizeValues, out.ButtonSize)
 
   if (isObject(out.Width)) {
-    const width = JSON.parse(JSON.stringify(out.Width)) as JsonObject
+    const width = cloneJson(out.Width as JsonObject)
     width.modal = buildScalarGroup('ModalWidth', width.modal, mappedSources, mdResolver)
     out.Width = width
   }
 
   const gridTemplate = isObject(out.Grid) ? (out.Grid as JsonObject) : {}
-  const grid = JSON.parse(JSON.stringify(gridTemplate)) as JsonObject
+  const grid = cloneJson(gridTemplate)
   for (const existingKey of Object.keys(gridTemplate)) {
     const normalized = normalizeKeyForMatch(existingKey)
     if (normalized === normalizeKeyForMatch('Column Spacing') || normalized === normalizeKeyForMatch('Row Spacing')) {
@@ -282,6 +285,7 @@ export const buildSurfacesPlain = (
   template: Record<'Light' | 'Dark' | 'Chad', unknown>,
   setMaps: Map<string, Map<string, TokenNode>>,
   resolvedThemes: Record<ThemeName, Map<string, TokenNode>>,
+  warnings?: WarningCollector,
 ): Record<'Light' | 'Dark' | 'Chad', unknown> => {
   const defaultSurfacesSet = getSet(setMaps, '01_Surfaces&Text/Default')
 
@@ -298,19 +302,29 @@ export const buildSurfacesPlain = (
       if (!isLeafValue(resolvedInfo.value)) {
         throw new Error(`Token '${sourcePath}' must resolve to a string, number, or boolean`)
       }
-      pathValues.set(localPath, toSurfacePrimitiveReference(resolvedInfo.value, resolvedInfo.terminalPath))
+      pathValues.set(
+        localPath,
+        toSurfacePrimitiveReference(
+          resolvedInfo.value,
+          resolvedInfo.terminalPath,
+          warnings,
+          `surfaces.${themeLabel}.${localPath}`,
+        ),
+      )
     }
 
-    return buildStyledTreeFromPathValues(pathValues, templateNode, (segments) => {
-      if (
-        segments.length >= 4 &&
-        segments[0] === 'Tables' &&
-        segments[1] === 'Header' &&
-        segments[2] === 'Label & Icon'
-      ) {
-        return ['Tables', 'Header', 'Label', ...segments.slice(3)]
-      }
-      return segments
+    return syncObjectFromPathValues(pathValues, templateNode, {
+      transformPathSegments: (segments) => {
+        if (
+          segments.length >= 4 &&
+          segments[0] === 'Tables' &&
+          segments[1] === 'Header' &&
+          segments[2] === 'Label & Icon'
+        ) {
+          return ['Tables', 'Header', 'Label', ...segments.slice(3)]
+        }
+        return segments
+      },
     })
   }
 
@@ -391,7 +405,7 @@ const removeColorLeaves = (value: unknown): unknown => {
 }
 
 const mergeDeepObjects = (base: JsonObject, updates: JsonObject): JsonObject => {
-  const out = JSON.parse(JSON.stringify(base)) as JsonObject
+  const out = cloneJson(base)
 
   for (const [key, value] of Object.entries(updates)) {
     if (isObject(value) && isObject(out[key])) {
@@ -399,7 +413,7 @@ const mergeDeepObjects = (base: JsonObject, updates: JsonObject): JsonObject => 
       continue
     }
 
-    out[key] = JSON.parse(JSON.stringify(value))
+    out[key] = cloneJson(value)
   }
 
   return out
@@ -409,6 +423,7 @@ export const buildThemeTokens = (
   template: Record<ThemeName, unknown>,
   resolvedThemes: Record<ThemeName, Map<string, TokenNode>>,
   colorOnly: boolean,
+  warnings?: WarningCollector,
 ): Record<ThemeName, JsonObject> => {
   const out = {
     light: {},
@@ -440,13 +455,22 @@ export const buildThemeTokens = (
       if (!resolvedToken) {
         if (!OPTIONAL_THEME_TOKEN_PATHS.has(key)) {
           missingRequired.push(key)
+        } else if (warnings) {
+          warnings.warn({
+            code: 'optional-missing',
+            context: `theme.${theme}.${key}`,
+            message: `Optional token path '${key}' is missing for theme '${theme}'.`,
+          })
         }
         continue
       }
 
       if (resolvedInfo && isLeafValue(resolvedInfo.value)) {
         if (colorOnly && (typeof resolvedInfo.value !== 'string' || !isColorLikeValue(resolvedInfo.value))) continue
-        pathValues.set(key, toThemePrimitiveReference(resolvedInfo.value, resolvedInfo.terminalPath))
+        pathValues.set(
+          key,
+          toThemePrimitiveReference(resolvedInfo.value, resolvedInfo.terminalPath, warnings, `theme.${theme}.${key}`),
+        )
       }
     }
 
@@ -457,14 +481,22 @@ export const buildThemeTokens = (
       const resolvedInfo = resolveLeafInfo(resolver, sourcePath)
       if (!isLeafValue(resolvedInfo.value)) continue
       if (colorOnly && (typeof resolvedInfo.value !== 'string' || !isColorLikeValue(resolvedInfo.value))) continue
-      pathValues.set(localPath, toThemePrimitiveReference(resolvedInfo.value, resolvedInfo.terminalPath))
+      pathValues.set(
+        localPath,
+        toThemePrimitiveReference(
+          resolvedInfo.value,
+          resolvedInfo.terminalPath,
+          warnings,
+          `theme.${theme}.${localPath}`,
+        ),
+      )
     }
 
     if (missingRequired.length > 0) {
       throw new Error(`Missing required runtime token(s) for theme '${theme}': ${missingRequired.join(', ')}`)
     }
 
-    out[theme] = buildStyledTreeFromPathValues(pathValues, templateNode)
+    out[theme] = syncObjectFromPathValues(pathValues, templateNode)
   }
 
   return out
@@ -495,10 +527,19 @@ const tryResolveOptional = (
   tokenPath: string,
   fallback: unknown,
   expected: TokenLeafValue,
+  warnings?: WarningCollector,
+  warningContext?: string,
 ): TokenLeafValue => {
   try {
     return coerceLeaf(expected, resolveLeafValue(resolver, tokenPath), tokenPath)
   } catch {
+    if (warnings) {
+      warnings.warn({
+        code: 'coerce-fallback',
+        context: warningContext ?? tokenPath,
+        message: `Using fallback value for '${tokenPath}' because source token could not be resolved/coerced.`,
+      })
+    }
     return fallback as TokenLeafValue
   }
 }
@@ -507,8 +548,9 @@ export const buildThemeConstants = (
   template: Record<ThemeName, unknown>,
   resolvedThemes: Record<ThemeName, Map<string, TokenNode>>,
   colorOnly: boolean,
+  warnings?: WarningCollector,
 ): Record<ThemeName, unknown> => {
-  const out = JSON.parse(JSON.stringify(template)) as Record<ThemeName, JsonObject>
+  const out = cloneJson(template) as Record<ThemeName, JsonObject>
 
   for (const theme of ['light', 'dark', 'chad'] as const) {
     const resolver = createResolver(resolvedThemes[theme])
@@ -533,24 +575,32 @@ export const buildThemeConstants = (
       'Sliders.default.SliderThumbImage',
       defaults.SliderThumbImage,
       defaults.SliderThumbImage as TokenLeafValue,
+      warnings,
+      `theme-constants.${theme}.slider.default.SliderThumbImage`,
     )
     defaults.SliderThumbImageVertical = tryResolveOptional(
       resolver,
       'Sliders.default.SliderThumbImageVertical',
       defaults.SliderThumbImageVertical,
       defaults.SliderThumbImageVertical as TokenLeafValue,
+      warnings,
+      `theme-constants.${theme}.slider.default.SliderThumbImageVertical`,
     )
     hover.SliderThumbImage = tryResolveOptional(
       resolver,
       'Sliders.hover.SliderThumbImage',
       hover.SliderThumbImage,
       hover.SliderThumbImage as TokenLeafValue,
+      warnings,
+      `theme-constants.${theme}.slider.hover.SliderThumbImage`,
     )
     hover.SliderThumbImageVertical = tryResolveOptional(
       resolver,
       'Sliders.hover.SliderThumbImageVertical',
       hover.SliderThumbImageVertical,
       hover.SliderThumbImageVertical as TokenLeafValue,
+      warnings,
+      `theme-constants.${theme}.slider.hover.SliderThumbImageVertical`,
     )
   }
 
@@ -676,7 +726,7 @@ export const buildTypographyVariants = (
   const resolver = createResolver(light)
   const weightMap = weightKeyByValue(sizesAndSpaces.FontWeight)
 
-  const variants: Record<string, unknown> = JSON.parse(JSON.stringify(template))
+  const variants: Record<string, unknown> = {}
 
   const typographyTokens = [...light.entries()]
     .filter(([, token]) => token.type?.toLowerCase() === 'typography')
@@ -686,11 +736,6 @@ export const buildTypographyVariants = (
     if (!isObject(token.value)) continue
 
     const key = normalizeTypographyKey(path)
-    const hasTemplateMatch = Object.keys(template).some(
-      (existingKey) => normalizeKeyForMatch(existingKey) === normalizeKeyForMatch(key),
-    )
-    if (!hasTemplateMatch) continue
-
     const fontWeightField = resolveTypographyField(token.value.fontWeight, resolver)
     const fontSizeField = resolveTypographyField(token.value.fontSize, resolver)
     const lineHeightField = resolveTypographyField(token.value.lineHeight, resolver)
@@ -760,8 +805,9 @@ export const buildThemeTokensWithReferences = (
   resolvedThemes: Record<ThemeName, Map<string, TokenNode>>,
   colorOnly: boolean,
   surfacesPlain: Record<'Light' | 'Dark' | 'Chad', unknown>,
+  warnings?: WarningCollector,
 ): Record<ThemeName, JsonObject> => {
-  const computedThemeTokens = buildThemeTokens(template, resolvedThemes, colorOnly)
+  const computedThemeTokens = buildThemeTokens(template, resolvedThemes, colorOnly, warnings)
   const mergedThemeTokens = colorOnly ? mergeColorOnlyThemeTokens(template, computedThemeTokens) : computedThemeTokens
   return withThemeSurfaceReferences(mergedThemeTokens, surfacesPlain)
 }

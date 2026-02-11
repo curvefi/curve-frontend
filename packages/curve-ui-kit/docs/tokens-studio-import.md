@@ -180,10 +180,22 @@ The importer fails when:
 - Source-of-truth inputs:
   - typography tokens from `02_Theme/Light`
   - font size / line height / weight resolution through existing token maps
+- Sync behavior:
+  - source-driven add/update/remove inside marker block
+  - existing key style is preserved when a case-insensitive key match exists
+  - stale variants missing from source are removed
 - Field mapping:
   - `textTransform` tokens -> `textCase`
   - numeric/semantic weight tokens -> Curve weight keys
   - dimension aliases mapped to `Sizing[...]` / existing keys where possible
+
+## Warning Output
+
+Importer warnings are non-fatal and are printed at the end of `tokens:import` and `tokens:check`.
+
+- `reference-fallback`: alias could not be represented as a TS reference, so literal value was written.
+- `coerce-fallback`: optional token could not be resolved/coerced, so existing fallback value was kept.
+- `optional-missing`: optional token path is missing from source theme composition.
 
 ## Troubleshooting
 

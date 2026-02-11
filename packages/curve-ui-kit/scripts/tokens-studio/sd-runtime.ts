@@ -1,4 +1,4 @@
-import type { TokenLeafValue } from './types.ts'
+import type { ImporterWarning, TokenLeafValue, WarningCollector } from './types.ts'
 
 export const normalizeDimension = (value: unknown): string | number => {
   if (typeof value === 'number') return `${value}px`
@@ -55,4 +55,29 @@ export const isColorLikeValue = (value: string) => {
   if (/^(rgb|rgba|hsl|hsla|hwb|lab|lch|oklab|oklch|color)\(/.test(normalized)) return true
   if (normalized === 'transparent') return true
   return /^var\(--/.test(normalized)
+}
+
+export const cloneJson = <T>(value: T): T => {
+  if (typeof structuredClone === 'function') return structuredClone(value)
+  return JSON.parse(JSON.stringify(value)) as T
+}
+
+export const createWarningCollector = (): WarningCollector => {
+  const deduped = new Map<string, ImporterWarning>()
+
+  const keyFor = (warning: ImporterWarning) => `${warning.code}|${warning.context ?? ''}|${warning.message}`
+
+  return {
+    warn: (warning: ImporterWarning) => {
+      deduped.set(keyFor(warning), warning)
+    },
+    list: () =>
+      [...deduped.values()].sort((a, b) => {
+        const byCode = a.code.localeCompare(b.code)
+        if (byCode !== 0) return byCode
+        const byContext = (a.context ?? '').localeCompare(b.context ?? '')
+        if (byContext !== 0) return byContext
+        return a.message.localeCompare(b.message)
+      }),
+  }
 }

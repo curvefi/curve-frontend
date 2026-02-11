@@ -39,6 +39,19 @@ export type ResolvedPathInfo = {
   terminalPath: string
 }
 
+export type ImporterWarningCode = 'reference-fallback' | 'coerce-fallback' | 'optional-missing'
+
+export type ImporterWarning = {
+  code: ImporterWarningCode
+  message: string
+  context?: string
+}
+
+export type WarningCollector = {
+  warn: (warning: ImporterWarning) => void
+  list: () => ImporterWarning[]
+}
+
 export const REQUIRED_THEMES = ['light', 'dark', 'chad'] as const
 export type ThemeName = (typeof REQUIRED_THEMES)[number]
 

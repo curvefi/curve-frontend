@@ -1,7 +1,7 @@
-import { isLeafValue } from './sd-runtime.ts'
+import { cloneJson, isLeafValue } from './sd-runtime.ts'
 import { markExpr, SURFACE_PRIMITIVE_ROOTS, THEME_PRIMITIVE_ROOTS } from './types.ts'
 import { getExprFromMarker, isExprMarker } from './types.ts'
-import type { JsonObject, ThemeName, TokenLeafValue } from './types.ts'
+import type { JsonObject, ThemeName, TokenLeafValue, WarningCollector } from './types.ts'
 
 export const normalizeKeyForMatch = (value: string) => value.toLowerCase().replace(/[^a-z0-9]/g, '')
 
@@ -90,10 +90,16 @@ export const collectSuffixes = (maps: Array<Map<string, unknown>>, prefix: strin
 export const hasAnyPath = (maps: Array<Map<string, unknown>>, tokenPath: string) =>
   maps.some((map) => map.has(tokenPath))
 
-export const buildStyledTreeFromPathValues = (
+type SyncOptions = {
+  transformPathSegments?: (pathSegments: string[]) => string[]
+  transformValue?: (value: TokenLeafValue, sourcePath: string, sourceSegments: string[]) => TokenLeafValue
+  includePath?: (sourcePath: string, sourceSegments: string[]) => boolean
+}
+
+export const syncObjectFromPathValues = (
   pathValues: Map<string, TokenLeafValue>,
   templateNode: unknown,
-  transformPathSegments?: (pathSegments: string[]) => string[],
+  options: SyncOptions = {},
 ) => {
   const out: JsonObject = {}
   const sortedPaths = [...pathValues.keys()].sort((a, b) => a.localeCompare(b))
@@ -103,22 +109,39 @@ export const buildStyledTreeFromPathValues = (
     if (!isLeafValue(sourceValue)) continue
 
     const sourceSegments = sourcePath.split('.').filter(Boolean)
-    const transformedSegments = transformPathSegments ? transformPathSegments(sourceSegments) : sourceSegments
+    if (options.includePath && !options.includePath(sourcePath, sourceSegments)) continue
+
+    const transformedSegments = options.transformPathSegments
+      ? options.transformPathSegments(sourceSegments)
+      : sourceSegments
     if (transformedSegments.length === 0) continue
 
+    const transformedValue = options.transformValue
+      ? options.transformValue(sourceValue, sourcePath, sourceSegments)
+      : sourceValue
+
     const styledSegments = getStyledPathSegments(templateNode, transformedSegments)
-    setDeep(out, styledSegments, sourceValue)
+    setDeep(out, styledSegments, transformedValue)
   }
 
   return sortObjectDeep(out) as JsonObject
 }
 
+export const buildStyledTreeFromPathValues = (
+  pathValues: Map<string, TokenLeafValue>,
+  templateNode: unknown,
+  transformPathSegments?: (pathSegments: string[]) => string[],
+) => syncObjectFromPathValues(pathValues, templateNode, { transformPathSegments })
+
 export const buildTsAccessExpression = (root: string, segments: string[]): string =>
   segments.reduce((acc, segment) => `${acc}[${JSON.stringify(segment)}]`, root)
 
-export const toPrimitiveReferenceExpression = (terminalPath: string, allowedRoots: Set<string>): string | null => {
+const toPrimitiveReferenceCandidate = (
+  terminalPath: string,
+  allowedRoots: Set<string>,
+): { expression: string | null; isPrimitiveRoot: boolean } => {
   const segments = terminalPath.split('.').filter(Boolean)
-  if (segments.length === 0) return null
+  if (segments.length === 0) return { expression: null, isPrimitiveRoot: false }
 
   const [rawRoot, ...rest] = segments
   const pluralMap: Record<string, string> = {
@@ -131,23 +154,33 @@ export const toPrimitiveReferenceExpression = (terminalPath: string, allowedRoot
   }
 
   const root = pluralMap[rawRoot] ?? rawRoot
-  if (!allowedRoots.has(root)) return null
+  if (!allowedRoots.has(root)) return { expression: null, isPrimitiveRoot: false }
 
   if (root === 'Transparent' && rest.length === 0) {
-    return 'Transparent'
+    return { expression: 'Transparent', isPrimitiveRoot: true }
   }
 
-  if (rest.length === 0) return root
-  return buildTsAccessExpression(root, rest)
+  if (rest.length === 0) return { expression: root, isPrimitiveRoot: true }
+  return { expression: buildTsAccessExpression(root, rest), isPrimitiveRoot: true }
 }
 
 export const asPrimitiveExpressionLeaf = (
   leaf: TokenLeafValue,
   terminalPath: string,
   allowedRoots: Set<string>,
+  warnings?: WarningCollector,
+  warningContext?: string,
 ): TokenLeafValue => {
   if (typeof leaf !== 'string') return leaf
-  const expression = toPrimitiveReferenceExpression(terminalPath, allowedRoots)
+  const candidate = toPrimitiveReferenceCandidate(terminalPath, allowedRoots)
+  const expression = candidate.expression
+  if (!expression && candidate.isPrimitiveRoot && warnings) {
+    warnings.warn({
+      code: 'reference-fallback',
+      context: warningContext,
+      message: `Unable to map primitive alias '${terminalPath}' to a TypeScript reference. Falling back to literal value.`,
+    })
+  }
   return expression ? markExpr(expression) : leaf
 }
 
@@ -168,7 +201,7 @@ const buildValueToPrimitiveReferenceMap = (
 }
 
 export const withSizePrimitiveReferences = (sizesAndSpaces: JsonObject, primitives: JsonObject): JsonObject => {
-  const out = JSON.parse(JSON.stringify(sizesAndSpaces)) as JsonObject
+  const out = cloneJson(sizesAndSpaces)
   const spacingRefs = buildValueToPrimitiveReferenceMap(primitives.Spacing, 'Spacing')
   const sizingRefs = buildValueToPrimitiveReferenceMap(primitives.Sizing, 'Sizing')
 
@@ -196,7 +229,7 @@ export const withThemeSurfaceReferences = (
   themeTokens: Record<ThemeName, JsonObject>,
   surfacesPlain: Record<'Light' | 'Dark' | 'Chad', unknown>,
 ): Record<ThemeName, JsonObject> => {
-  const out = JSON.parse(JSON.stringify(themeTokens)) as Record<ThemeName, JsonObject>
+  const out = cloneJson(themeTokens)
 
   const themeCase: Record<ThemeName, 'Light' | 'Dark' | 'Chad'> = {
     light: 'Light',
@@ -223,8 +256,16 @@ export const withThemeSurfaceReferences = (
   return out
 }
 
-export const toThemePrimitiveReference = (leaf: TokenLeafValue, terminalPath: string): TokenLeafValue =>
-  asPrimitiveExpressionLeaf(leaf, terminalPath, THEME_PRIMITIVE_ROOTS)
+export const toThemePrimitiveReference = (
+  leaf: TokenLeafValue,
+  terminalPath: string,
+  warnings?: WarningCollector,
+  warningContext?: string,
+): TokenLeafValue => asPrimitiveExpressionLeaf(leaf, terminalPath, THEME_PRIMITIVE_ROOTS, warnings, warningContext)
 
-export const toSurfacePrimitiveReference = (leaf: TokenLeafValue, terminalPath: string): TokenLeafValue =>
-  asPrimitiveExpressionLeaf(leaf, terminalPath, SURFACE_PRIMITIVE_ROOTS)
+export const toSurfacePrimitiveReference = (
+  leaf: TokenLeafValue,
+  terminalPath: string,
+  warnings?: WarningCollector,
+  warningContext?: string,
+): TokenLeafValue => asPrimitiveExpressionLeaf(leaf, terminalPath, SURFACE_PRIMITIVE_ROOTS, warnings, warningContext)

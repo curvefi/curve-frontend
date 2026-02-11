@@ -3,6 +3,12 @@ import ts from 'typescript'
 import { getExprFromMarker, isExprMarker, markExpr } from './types.ts'
 import type { JsonObject } from './types.ts'
 
+const IDENTIFIER_PATTERN = /^[$A-Z_][0-9A-Z_$]*$/i
+
+const renderKey = (key: string): string => (IDENTIFIER_PATTERN.test(key) ? key : JSON.stringify(key))
+
+const renderString = (value: string): string => `'${value.replace(/\\/g, '\\\\').replace(/'/g, "\\'")}'`
+
 const unwrapExpression = (expr: ts.Expression): ts.Expression => {
   if (ts.isAsExpression(expr) || ts.isSatisfiesExpression(expr) || ts.isParenthesizedExpression(expr)) {
     return unwrapExpression(expr.expression)
@@ -88,13 +94,13 @@ const extractMarkedSection = (source: string, beginMarker: string, endMarker: st
   }
 }
 
-export const readMarkerObject = async (
+export const readMarkerObjectFromSource = (
+  source: string,
   filePath: string,
   constName: string,
   beginMarker: string,
   endMarker: string,
-): Promise<unknown> => {
-  const source = await readFile(filePath, 'utf8')
+): unknown => {
   const section = extractMarkedSection(source, beginMarker, endMarker, filePath)
   const sourceFile = ts.createSourceFile(filePath, section.content, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS)
 
@@ -116,10 +122,33 @@ export const readMarkerObject = async (
   return parseTsValue(initializer, sourceFile)
 }
 
+export const readMarkerObject = async (
+  filePath: string,
+  constName: string,
+  beginMarker: string,
+  endMarker: string,
+): Promise<unknown> => {
+  const source = await readFile(filePath, 'utf8')
+  return readMarkerObjectFromSource(source, filePath, constName, beginMarker, endMarker)
+}
+
 export const renderTsLiteral = (value: unknown, indent = 0): string => {
   if (isExprMarker(value)) return getExprFromMarker(value)
-  if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean' || value === null) {
-    return JSON.stringify(value)
+  if (typeof value === 'string') return renderString(value)
+  if (typeof value === 'number' || typeof value === 'boolean') return String(value)
+  if (value === null) return 'null'
+  if (value === undefined) return 'undefined'
+  if (typeof value === 'bigint') return `${value.toString()}n`
+  if (typeof value === 'symbol') return markExpr(String(value))
+  if (typeof value === 'function') return markExpr(String(value))
+
+  if (
+    typeof value === 'object' &&
+    value !== null &&
+    !Array.isArray(value) &&
+    Object.getPrototypeOf(value) !== Object.prototype
+  ) {
+    return markExpr(String(value))
   }
 
   if (Array.isArray(value)) {
@@ -131,7 +160,7 @@ export const renderTsLiteral = (value: unknown, indent = 0): string => {
   }
 
   if (!value || typeof value !== 'object') {
-    return JSON.stringify(value)
+    return String(value)
   }
 
   const entries = Object.entries(value as JsonObject)
@@ -139,9 +168,7 @@ export const renderTsLiteral = (value: unknown, indent = 0): string => {
 
   const currentIndent = ' '.repeat(indent)
   const nextIndent = ' '.repeat(indent + 2)
-  const rows = entries.map(
-    ([key, child]) => `${nextIndent}${JSON.stringify(key)}: ${renderTsLiteral(child, indent + 2)}`,
-  )
+  const rows = entries.map(([key, child]) => `${nextIndent}${renderKey(key)}: ${renderTsLiteral(child, indent + 2)}`)
   return `{\n${rows.join(',\n')}\n${currentIndent}}`
 }
 
@@ -161,17 +188,25 @@ export const replaceMarkedSection = (
   return `${before}\n${sectionContent}\n${after}`
 }
 
+export const applySectionUpdates = (
+  source: string,
+  filePath: string,
+  updates: Array<{ beginMarker: string; endMarker: string; content: string }>,
+): string => {
+  let next = source
+  for (const update of updates) {
+    next = replaceMarkedSection(next, update.beginMarker, update.endMarker, update.content, filePath)
+  }
+  return next
+}
+
 export const rewriteDesignFile = async (
   filePath: string,
   updates: Array<{ beginMarker: string; endMarker: string; content: string }>,
   write: boolean,
 ): Promise<boolean> => {
   const existing = await readFile(filePath, 'utf8')
-  let next = existing
-
-  for (const update of updates) {
-    next = replaceMarkedSection(next, update.beginMarker, update.endMarker, update.content, filePath)
-  }
+  const next = applySectionUpdates(existing, filePath, updates)
 
   if (existing === next) return false
 

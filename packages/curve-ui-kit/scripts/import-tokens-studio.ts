@@ -1,6 +1,11 @@
+import { readFile, writeFile } from 'node:fs/promises'
 import process from 'node:process'
 import { createResolver, getSet, loadTokensStudioExport, resolveThemeTokens } from './tokens-studio/extractors.ts'
-import { readMarkerObject, renderConstDeclaration, rewriteDesignFile } from './tokens-studio/marker-writer.ts'
+import {
+  applySectionUpdates,
+  readMarkerObjectFromSource,
+  renderConstDeclaration,
+} from './tokens-studio/marker-writer.ts'
 import {
   buildPrimitives,
   buildSizesAndSpaces,
@@ -9,6 +14,7 @@ import {
   buildThemeTokensWithReferences,
   buildTypographyVariants,
 } from './tokens-studio/pipelines.ts'
+import { createWarningCollector } from './tokens-studio/sd-runtime.ts'
 import { DESIGN_FILES, DESIGN_FILE_KEYS } from './tokens-studio/types.ts'
 import type { CliOptions, DesignFileKey, JsonObject, ThemeName } from './tokens-studio/types.ts'
 
@@ -69,65 +75,53 @@ const parseArgs = (argv: string[]): CliOptions => {
   return { inputDir, write, check, colorOnly }
 }
 
+const readTemplate = (sourceByFilePath: Map<string, string>, key: DesignFileKey): unknown => {
+  const filePath = DESIGN_FILES[key].filePath
+  const source = sourceByFilePath.get(filePath)
+  if (source === undefined) {
+    throw new Error(`Could not load source file '${filePath}'`)
+  }
+
+  return readMarkerObjectFromSource(
+    source,
+    filePath,
+    DESIGN_FILES[key].constName,
+    DESIGN_FILES[key].beginMarker,
+    DESIGN_FILES[key].endMarker,
+  )
+}
+
 const run = async () => {
   const options = parseArgs(process.argv.slice(2))
   const loaded = await loadTokensStudioExport(options.inputDir)
   const resolvedThemes = resolveThemeTokens(loaded.setMaps, loaded.themePayload)
+  const warnings = createWarningCollector()
 
-  const primitivesTemplate = (await readMarkerObject(
-    DESIGN_FILES.primitives.filePath,
-    DESIGN_FILES.primitives.constName,
-    DESIGN_FILES.primitives.beginMarker,
-    DESIGN_FILES.primitives.endMarker,
-  )) as JsonObject
+  const targetFiles = [...new Set(DESIGN_FILE_KEYS.map((key) => DESIGN_FILES[key].filePath))]
+  const sourceByFilePath = new Map(
+    await Promise.all(targetFiles.map(async (filePath) => [filePath, await readFile(filePath, 'utf8')])),
+  )
 
-  const sizesTemplate = (await readMarkerObject(
-    DESIGN_FILES.sizesAndSpaces.filePath,
-    DESIGN_FILES.sizesAndSpaces.constName,
-    DESIGN_FILES.sizesAndSpaces.beginMarker,
-    DESIGN_FILES.sizesAndSpaces.endMarker,
-  )) as JsonObject
-
-  const surfacesTemplate = (await readMarkerObject(
-    DESIGN_FILES.surfacesPlain.filePath,
-    DESIGN_FILES.surfacesPlain.constName,
-    DESIGN_FILES.surfacesPlain.beginMarker,
-    DESIGN_FILES.surfacesPlain.endMarker,
-  )) as Record<'Light' | 'Dark' | 'Chad', unknown>
-
-  const constantsTemplate = (await readMarkerObject(
-    DESIGN_FILES.themeConstants.filePath,
-    DESIGN_FILES.themeConstants.constName,
-    DESIGN_FILES.themeConstants.beginMarker,
-    DESIGN_FILES.themeConstants.endMarker,
-  )) as Record<ThemeName, unknown>
-
-  const themeTokensTemplate = (await readMarkerObject(
-    DESIGN_FILES.themeTokens.filePath,
-    DESIGN_FILES.themeTokens.constName,
-    DESIGN_FILES.themeTokens.beginMarker,
-    DESIGN_FILES.themeTokens.endMarker,
-  )) as Record<ThemeName, unknown>
-
-  const typographyVariantsTemplate = (await readMarkerObject(
-    DESIGN_FILES.typographyVariants.filePath,
-    DESIGN_FILES.typographyVariants.constName,
-    DESIGN_FILES.typographyVariants.beginMarker,
-    DESIGN_FILES.typographyVariants.endMarker,
-  )) as Record<string, unknown>
+  const primitivesTemplate = readTemplate(sourceByFilePath, 'primitives') as JsonObject
+  const sizesTemplate = readTemplate(sourceByFilePath, 'sizesAndSpaces') as JsonObject
+  const surfacesTemplate = readTemplate(sourceByFilePath, 'surfacesPlain') as Record<'Light' | 'Dark' | 'Chad', unknown>
+  const constantsTemplate = readTemplate(sourceByFilePath, 'themeConstants') as Record<ThemeName, unknown>
+  const themeTokensTemplate = readTemplate(sourceByFilePath, 'themeTokens') as Record<ThemeName, unknown>
+  const typographyVariantsTemplate = readTemplate(sourceByFilePath, 'typographyVariants') as Record<string, unknown>
 
   const primitivesBase = getSet(loaded.setMaps, '00_Primitives/Base')
   const primitivesResolver = createResolver(primitivesBase)
 
   const primitives = buildPrimitives(primitivesTemplate, primitivesBase, primitivesResolver)
   const sizesAndSpaces = buildSizesAndSpaces(sizesTemplate, loaded.setMaps, primitives)
-  const surfacesPlain = buildSurfacesPlain(surfacesTemplate, loaded.setMaps, resolvedThemes)
-  const themeConstants = buildThemeConstants(constantsTemplate, resolvedThemes, options.colorOnly)
+  const surfacesPlain = buildSurfacesPlain(surfacesTemplate, loaded.setMaps, resolvedThemes, warnings)
+  const themeConstants = buildThemeConstants(constantsTemplate, resolvedThemes, options.colorOnly, warnings)
   const themeTokens = buildThemeTokensWithReferences(
     themeTokensTemplate,
     resolvedThemes,
     options.colorOnly,
     surfacesPlain,
+    warnings,
   )
   const typographyVariants = buildTypographyVariants(typographyVariantsTemplate, resolvedThemes, sizesAndSpaces)
 
@@ -173,18 +167,33 @@ const run = async () => {
     ),
   } satisfies Record<DesignFileKey, string>
 
-  const sourceFiles = new Set(DESIGN_FILE_KEYS.map((key) => DESIGN_FILES[key].filePath))
   const changed: string[] = []
 
-  for (const filePath of sourceFiles) {
+  for (const filePath of targetFiles) {
+    const existing = sourceByFilePath.get(filePath)
+    if (existing === undefined) throw new Error(`Could not load source file '${filePath}'`)
+
     const updates = DESIGN_FILE_KEYS.filter((key) => DESIGN_FILES[key].filePath === filePath).map((key) => ({
       beginMarker: DESIGN_FILES[key].beginMarker,
       endMarker: DESIGN_FILES[key].endMarker,
       content: sectionReplacements[key],
     }))
 
-    const didChange = await rewriteDesignFile(filePath, updates, options.write)
-    if (didChange) changed.push(filePath)
+    const next = applySectionUpdates(existing, filePath, updates)
+    if (next === existing) continue
+
+    changed.push(filePath)
+    if (options.write) {
+      await writeFile(filePath, next, 'utf8')
+    }
+  }
+
+  const warningList = warnings.list()
+  if (warningList.length > 0) {
+    console.warn(`Importer warnings (${warningList.length}):`)
+    for (const warning of warningList) {
+      console.warn(`- [${warning.code}] ${warning.context ? `${warning.context}: ` : ''}${warning.message}`)
+    }
   }
 
   if (options.check) {
