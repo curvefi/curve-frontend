@@ -113,6 +113,9 @@ export const useLoanPositionDetails = ({
   const collateralRebasingYield = crvUsdSnapshots?.[crvUsdSnapshots.length - 1]?.collateralToken.rebasingYield // take only most recent rebasing yield
   const borrowApr = marketRates?.borrowApr == null ? null : Number(marketRates.borrowApr)
 
+  /** loan app loading checks include a check for null check on value to prevent a moment
+   * in initalisation where there is no loading state and no value, this will be resolved
+   * in a future refactor to use direct llamalend-js queries, not using the legecy stores like now */
   return {
     marketType: LlamaMarketType.Mint,
     liquidationAlert: {
@@ -121,7 +124,7 @@ export const useLoanPositionDetails = ({
     },
     health: {
       value: Number(healthMode.percent),
-      loading: userLoanDetailsLoading || !isHydrated,
+      loading: healthMode.percent == null || userLoanDetailsLoading || !isHydrated,
     },
     borrowRate: {
       rate: borrowApr,
@@ -132,7 +135,7 @@ export const useLoanPositionDetails = ({
       totalBorrowRate: borrowApr ? borrowApr - (collateralRebasingYield ?? 0) : null,
       totalAverageBorrowRate: averageRate == null ? null : averageRate - (averageRebasingYield ?? 0),
       extraRewards: campaigns,
-      loading: isSnapshotsLoading || isMarketRatesLoading || !isHydrated,
+      loading: borrowApr == null || isSnapshotsLoading || isMarketRatesLoading || !isHydrated,
     },
     liquidationRange: {
       value: userPrices ? userPrices.map(Number) : null,
@@ -140,11 +143,11 @@ export const useLoanPositionDetails = ({
         loanDetails?.priceInfo?.oraclePrice && userPrices
           ? calculateRangeToLiquidation(Number(userPrices?.[1]), Number(loanDetails.priceInfo.oraclePrice))
           : null,
-      loading: userLoanDetailsLoading || !isHydrated,
+      loading: userPrices == null || userLoanDetailsLoading || !isHydrated,
     },
     bandRange: {
       value: userBands ? userBands : null,
-      loading: userLoanDetailsLoading || !isHydrated,
+      loading: userBands == null || userLoanDetailsLoading || !isHydrated,
     },
     collateralValue: {
       totalValue: collateralTotalValue,
@@ -158,14 +161,19 @@ export const useLoanPositionDetails = ({
         usdRate: borrowedUsdRate ? Number(borrowedUsdRate) : null,
         symbol: 'crvUSD',
       },
-      loading: userLoanDetailsLoading || collateralUsdRateLoading || borrowedUsdRateLoading || !isHydrated,
+      loading:
+        collateral == null ||
+        userLoanDetailsLoading ||
+        collateralUsdRateLoading ||
+        borrowedUsdRateLoading ||
+        !isHydrated,
     },
     ltv: {
       value:
         collateralTotalValue && debt
           ? calculateLtv(Number(debt), Number(collateral), Number(stablecoin), borrowedUsdRate, collateralUsdRate)
           : null,
-      loading: userLoanDetailsLoading || !isHydrated,
+      loading: debt == null || userLoanDetailsLoading || !isHydrated,
     },
     ...(v2LeverageEnabled && {
       leverage: {
@@ -175,14 +183,14 @@ export const useLoanPositionDetails = ({
     }),
     totalDebt: {
       value: debt ? Number(debt) : null,
-      loading: userLoanDetailsLoading || !isHydrated,
+      loading: debt == null || userLoanDetailsLoading || !isHydrated,
     },
     collateralLoss: {
       depositedCollateral: decimal(userLoss?.deposited_collateral),
       currentCollateralEstimation: decimal(userLoss?.current_collateral_estimation),
       percentage: decimal(userLoss?.loss_pct),
       amount: decimal(userLoss?.loss),
-      loading: userLoanDetailsLoading || !isHydrated,
+      loading: userLoss == null || userLoanDetailsLoading || !isHydrated,
     },
   }
 }
