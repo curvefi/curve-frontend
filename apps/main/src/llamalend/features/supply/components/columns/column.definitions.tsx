@@ -1,10 +1,11 @@
 import { ClaimableReward } from '@/llamalend/queries/supply/supply-claimable-rewards.query'
-import { createColumnHelper } from '@tanstack/react-table'
+import { ColumnDef, createColumnHelper } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
 import { type TableItem } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { NotionalCell } from '@ui-kit/shared/ui/DataTable/inline-cells/notional-cells'
 import { TokenBalanceCell } from '@ui-kit/shared/ui/DataTable/inline-cells/TokenBalanceCell'
 import { ClaimTabColumnId } from './columns.enum'
+import { Amount } from '@ui-kit/utils'
 
 export type ClaimableToken = TableItem &
   ClaimableReward & {
@@ -22,22 +23,13 @@ export const CLAIM_TAB_COLUMNS = [
   columnHelper.accessor('amount', {
     id: ClaimTabColumnId.Token,
     header: headers[ClaimTabColumnId.Token],
-    cell: ({ row, table }) => (
-      <TokenBalanceCell
-        blockchainId={table.options.meta?.chainId}
-        token={row.original.token}
-        symbol={row.original.symbol}
-        balance={row.original.amount}
-      />
-    ),
+    cell: TokenBalanceCell<ClaimableToken>,
     enableSorting: false,
   }),
   columnHelper.accessor('notional', {
     id: ClaimTabColumnId.Notional,
     header: headers[ClaimTabColumnId.Notional],
-    cell: ({ row, table }) => (
-      <NotionalCell notional={row.original.notional} isLoading={!!table.options.meta?.isLoading} />
-    ),
+    cell: NotionalCell,
     meta: { type: 'numeric' },
     enableSorting: false,
   }),

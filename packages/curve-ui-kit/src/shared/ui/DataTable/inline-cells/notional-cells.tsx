@@ -1,6 +1,8 @@
 import TableCell from '@mui/material/TableCell'
 import Typography from '@mui/material/Typography'
+import { CellContext } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
+import { type TableItem } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { InlineTableCell } from '@ui-kit/shared/ui/DataTable/inline-cells/InlineTableCell'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { formatUsd, type SxProps } from '@ui-kit/utils'
@@ -21,9 +23,9 @@ const NotionalTypographyWithSkeleton = ({
   </WithSkeleton>
 )
 
-export const NotionalCell = ({ notional, isLoading }: { notional: number | undefined; isLoading: boolean }) => (
+export const NotionalCell = <TRow extends TableItem>({ getValue, table }: CellContext<TRow, number | undefined>) => (
   <InlineTableCell sx={{ alignItems: 'end' }}>
-    <NotionalTypographyWithSkeleton notional={notional} isLoading={isLoading} />
+    <NotionalTypographyWithSkeleton notional={getValue()} isLoading={!!table.options.meta?.isLoading} />
   </InlineTableCell>
 )
 
