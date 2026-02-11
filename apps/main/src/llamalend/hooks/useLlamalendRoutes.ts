@@ -12,23 +12,15 @@ const LEND_APP: AppName = 'lend'
 /** Trim the leading slash from a string. "/vault" -> "vault" */
 const tr = (value: string) => value.replace(/^\//, '')
 
-/** Get the market ID of a lend market page. */
-export const getLendMarketId = (path: string) => {
-  const [, app, , lendPage, marketId, marketType] = path.split('/')
+export const useLendMarketSubNavRoutes = (): AppRoute[] => {
+  const pathname = usePathname()
+
+  const [, app, , lendPage, marketId, marketType] = pathname.split('/')
   const lendRoutes = recordValues(LEND_MARKET_ROUTES).map(tr)
 
+  const marketPath = `${LEND_ROUTES.PAGE_MARKETS}/${marketId}`
+
   return app === LEND_APP && lendPage === tr(LEND_ROUTES.PAGE_MARKETS) && lendRoutes.includes(marketType ?? '')
-    ? marketId
-    : null
-}
-
-export const useLendMarketSubNavRoutes = (): AppRoute[] => {
-  const isLendMarketSubNav = useLendMarketSubNav()
-  const pathname = usePathname()
-  const lendMarketId = getLendMarketId(pathname)
-  const marketPath = `${LEND_ROUTES.PAGE_MARKETS}/${lendMarketId}`
-
-  return isLendMarketSubNav && lendMarketId
     ? [
         {
           app: LEND_APP,
@@ -49,6 +41,7 @@ export const useLendMarketSubNavRoutes = (): AppRoute[] => {
 export const useLlamalendRoutes = (): AppRoute[] => {
   const isMobile = useIsMobile()
   const lendRoutes = useLendMarketSubNavRoutes()
+  const isLendMarketSubNav = useLendMarketSubNav()
 
-  return !isMobile && lendRoutes.length > 0 ? lendRoutes : APP_LINK.llamalend.routes
+  return !isMobile && isLendMarketSubNav ? lendRoutes : APP_LINK.llamalend.routes
 }
