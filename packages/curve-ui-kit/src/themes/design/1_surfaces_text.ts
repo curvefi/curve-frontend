@@ -1,316 +1,615 @@
-import { Blues, Grays, Greens, Reds, Violets, Yellows, Oranges } from './0_primitives'
+import { Blues, Grays, Greens, Reds, Transparent, Violets, Yellows, Oranges } from './0_primitives'
 
 /* TOKENS-STUDIO:BEGIN_SURFACES_PLAIN */
 const PlainSurfaces = {
-  "Light": {
-    "Text": {
-      "Primary": "#1f1e1b",
-      "Secondary": "#5a554f",
-      "Tertiary": "#968e84",
-      "Disabled": "#968e84",
-      "Highlight": "#3162f4",
-      "Feedback": {
-        "Success": "#167d4a",
-        "Warning": "#f77f00",
-        "Error": "#ed242f",
-        "Inverted": "#1f1e1b"
-      },
-      "FilledFeedback": {
-        "Info": {
-          "Primary": "#3162f4",
-          "Secondary": "#5a554f"
-        },
-        "Highlight": {
-          "Primary": "#f8f7f7",
-          "Secondary": "#d4d0cc"
-        },
-        "Warning": {
-          "Primary": "#1f1e1b",
-          "Secondary": "#5a554f"
-        },
-        "Alert": {
-          "Primary": "#f8f7f7",
-          "Secondary": "#d4d0cc"
-        },
-        "Success": {
-          "Primary": "#f8f7f7",
-          "Secondary": "#d4d0cc"
-        }
-      }
+  Light: {
+    App: {
+      Background: '#f0edeb',
     },
-    "Layer": {
-      "1": {
-        "Fill": "#f8f7f7",
-        "Outline": "#d4d0cc"
+    Badges: {
+      Border: {
+        Accent: Blues['500'],
+        Active: Blues['500'],
+        Alert: Reds['500'],
+        Default: Grays['400'],
+        Highlight: Blues['500'],
+        Warning: Oranges['500'],
       },
-      "2": {
-        "Fill": "#eeeceb",
-        "Outline": "#dedbd8"
+      Fill: {
+        Accent: Blues['500'],
+        Active: Greens['400'],
+        Alert: Reds['500'],
+        Default: Grays['50'],
+        Highlight: Grays['50'],
+        Warning: Yellows['500'],
       },
-      "3": {
-        "Fill": "#f8f7f7",
-        "Outline": "#d4d0cc"
+      Label: {
+        Accent: Grays['10'],
+        Active: Grays['10'],
+        Alert: Grays['10'],
+        Default: Grays['950'],
+        Highlight: Blues['500'],
+        Warning: Grays['975'],
       },
-      "Feedback": {
-        "Info": "#3162f4",
-        "Success": "#167d4a",
-        "Warning": "#ffc300",
-        "Error": "#ed242f"
-      },
-      "Highlight": "#3162f4",
-      "TypeAction": {
-        "Selected": "#d5dbf0",
-        "Hover": "#fdfcfc"
-      }
     },
-    "Tables": {
-      "Row": {
-        "Default": "#f8f7f7",
-        "Selected": "#d5dbf0",
-        "Hover": "#fdfcfc"
+    Button: {
+      Error: {
+        Default: {
+          Fill: Reds['500'],
+          'Label & Icon': Grays['10'],
+        },
+        Disabled: {
+          Fill: Reds['800'],
+          'Label & Icon': Grays['500'],
+        },
+        Hover: {
+          Fill: Grays['10'],
+          'Label & Icon': Reds['500'],
+        },
       },
-      "Header": {
-        "Fill": "#dedbd8",
-        "Label": {
-          "Default": "#5a554f",
-          "Hover": "#3162f4",
-          "Active": "#1f1e1b"
-        }
-      }
+      Ghost: {
+        Default: {
+          'Label & Icon': Blues['500'],
+        },
+        Disabled: {
+          'Label & Icon': Grays['500'],
+        },
+        Hover: {
+          Fill: Transparent,
+          'Label & Icon': Grays['975'],
+        },
+      },
+      Navigation: {
+        Current: {
+          Fill: Blues['500'],
+          'Label & Icon': Grays['10'],
+        },
+        Default: {
+          'Label & Icon': Grays['700'],
+        },
+        Hover: {
+          Fill: Grays['50'],
+          'Label & Icon': Grays['950'],
+        },
+      },
+      Outline: {
+        Default: {
+          'Label & Icon': Grays['950'],
+          Outline: Grays['950'],
+        },
+        Disabled: {
+          'Label & Icon': Grays['500'],
+          Outline: Grays['500'],
+        },
+        Hover: {
+          'Label & Icon': Blues['500'],
+          Outline: Blues['500'],
+        },
+      },
+      Primary: {
+        Default: {
+          Fill: Blues['500'],
+          'Label & Icon': Grays['50'],
+        },
+        Disabled: {
+          Fill: Blues['100'],
+          'Label & Icon': Grays['500'],
+        },
+        Hover: {
+          Fill: Grays['950'],
+          'Label & Icon': Grays['50'],
+        },
+      },
+      Secondary: {
+        Default: {
+          Fill: Grays['950'],
+          'Label & Icon': Grays['50'],
+        },
+        Disabled: {
+          Fill: Grays['400'],
+          'Label & Icon': Grays['500'],
+        },
+        Hover: {
+          Fill: Blues['500'],
+          'Label & Icon': Grays['50'],
+        },
+      },
+      Success: {
+        Default: {
+          Fill: Greens['400'],
+          'Label & Icon': Grays['900'],
+        },
+        Disabled: {
+          Fill: Greens['600'],
+          'Label & Icon': Grays['500'],
+        },
+        Hover: {
+          Fill: Grays['900'],
+          'Label & Icon': Greens['400'],
+        },
+      },
     },
-    "Badges": {
-      "Label": {
-        "Default": "#1f1e1b",
-        "Active": "#fdfcfc",
-        "Alert": "#fdfcfc",
-        "Highlight": "#3162f4",
-        "Warning": "#191815",
-        "Accent": "#fdfcfc"
+    Layer: {
+      '1': {
+        Fill: Grays['50'],
+        Outline: Grays['300'],
       },
-      "Border": {
-        "Default": "#bbb6af",
-        "Active": "#3162f4",
-        "Alert": "#ed242f",
-        "Highlight": "#3162f4",
-        "Warning": "#f77f00",
-        "Accent": "#3162f4"
+      '2': {
+        Fill: Grays['100'],
+        Outline: Grays['200'],
       },
-      "Fill": {
-        "Default": "#f8f7f7",
-        "Active": "#27b86c",
-        "Alert": "#ed242f",
-        "Highlight": "#f8f7f7",
-        "Warning": "#ffc300",
-        "Accent": "#3162f4"
-      }
-    }
+      '3': {
+        Fill: Grays['50'],
+        Outline: Grays['300'],
+      },
+      Feedback: {
+        Error: Reds['500'],
+        Info: Blues['500'],
+        Success: Greens['600'],
+        Warning: Yellows['500'],
+      },
+      Highlight: Blues['500'],
+      TypeAction: {
+        Hover: Grays['10'],
+        Selected: Blues['100'],
+      },
+    },
+    Tables: {
+      Header: {
+        Fill: Grays['200'],
+        Label: {
+          Active: Grays['950'],
+          Default: Grays['700'],
+          Hover: Blues['500'],
+        },
+      },
+      Row: {
+        Default: Grays['50'],
+        Hover: Grays['10'],
+        Selected: Blues['100'],
+      },
+    },
+    Text: {
+      Disabled: Grays['500'],
+      Feedback: {
+        Error: Reds['500'],
+        Success: Greens['600'],
+        Warning: Oranges['500'],
+      },
+      FilledFeedback: {
+        Alert: {
+          Primary: Grays['50'],
+          Secondary: Grays['300'],
+        },
+        Highlight: {
+          Primary: Grays['50'],
+          Secondary: Grays['300'],
+        },
+        Info: {
+          Primary: Blues['500'],
+          Secondary: Grays['700'],
+        },
+        Success: {
+          Primary: Grays['50'],
+          Secondary: Grays['300'],
+        },
+        Warning: {
+          Primary: Grays['950'],
+          Secondary: Grays['700'],
+        },
+      },
+      Highlight: Blues['500'],
+      Primary: Grays['950'],
+      Secondary: Grays['700'],
+      Tertiary: Grays['500'],
+    },
   },
-  "Dark": {
-    "Text": {
-      "Primary": "#f8f7f7",
-      "Secondary": "#d4d0cc",
-      "Tertiary": "#bbb6af",
-      "Disabled": "#968e84",
-      "Highlight": "#5a81f3",
-      "FilledFeedback": {
-        "Info": {
-          "Primary": "#839ff2",
-          "Secondary": "#d4d0cc"
-        },
-        "Highlight": {
-          "Primary": "#3162f4",
-          "Secondary": "#5a554f"
-        },
-        "Warning": {
-          "Primary": "#191815",
-          "Secondary": "#5a554f"
-        },
-        "Alert": {
-          "Primary": "#f8f7f7",
-          "Secondary": "#d4d0cc"
-        },
-        "Success": {
-          "Primary": "#1f1e1b",
-          "Secondary": "#5a554f"
-        }
-      },
-      "Feedback": {
-        "Success": "#27b86c",
-        "Warning": "#ffc300",
-        "Error": "#ed242f",
-        "Inverted": "#f8f7f7"
-      }
+  Dark: {
+    App: {
+      Background: '#12110f',
     },
-    "Layer": {
-      "1": {
-        "Fill": "#1f1e1b",
-        "Outline": "#252420"
+    Badges: {
+      Border: {
+        Accent: Blues['400'],
+        Active: Blues['400'],
+        Alert: Reds['500'],
+        Default: Grays['600'],
+        Highlight: Blues['400'],
+        Warning: Oranges['500'],
       },
-      "2": {
-        "Fill": "#252420",
-        "Outline": "#3b3834"
+      Fill: {
+        Accent: Blues['400'],
+        Active: Greens['500'],
+        Alert: Reds['500'],
+        Default: Grays['950'],
+        Highlight: Grays['950'],
+        Warning: Yellows['500'],
       },
-      "3": {
-        "Fill": "#3b3834",
-        "Outline": "#5a554f"
+      Label: {
+        Accent: Grays['10'],
+        Active: Grays['10'],
+        Alert: Grays['10'],
+        Default: Grays['10'],
+        Highlight: Blues['400'],
+        Warning: Grays['975'],
       },
-      "Feedback": {
-        "Info": "#fefaef",
-        "Success": "#32ce79",
-        "Warning": "#ffc300",
-        "Error": "#ed242f"
-      },
-      "Highlight": "#fefaef",
-      "TypeAction": {
-        "Selected": "#302e2a",
-        "Hover": "#494540"
-      }
     },
-    "Tables": {
-      "Row": {
-        "Default": "#1f1e1b",
-        "Selected": "#302e2a",
-        "Hover": "#494540"
+    Button: {
+      Error: {
+        Default: {
+          Fill: Reds['500'],
+          'Label & Icon': Grays['10'],
+        },
+        Disabled: {
+          Fill: Reds['800'],
+          'Label & Icon': Grays['500'],
+        },
+        Hover: {
+          Fill: Grays['10'],
+          'Label & Icon': Reds['500'],
+        },
       },
-      "Header": {
-        "Fill": "#3b3834",
-        "Label": {
-          "Default": "#d4d0cc",
-          "Hover": "#5a81f3",
-          "Active": "#f8f7f7"
-        }
-      }
+      'Focus Outline': Blues['500'],
+      Ghost: {
+        Default: {
+          'Label & Icon': Blues['400'],
+        },
+        Disabled: {
+          'Label & Icon': Blues['700'],
+        },
+        Hover: {
+          Fill: Transparent,
+          'Label & Icon': Grays['50'],
+        },
+      },
+      Navigation: {
+        Current: {
+          Fill: Blues['50'],
+          'Label & Icon': Grays['975'],
+        },
+        Default: {
+          'Label & Icon': Grays['400'],
+        },
+        Hover: {
+          Fill: Grays['950'],
+          'Label & Icon': Grays['50'],
+        },
+      },
+      Outline: {
+        Default: {
+          'Label & Icon': Grays['50'],
+          Outline: Grays['50'],
+        },
+        Disabled: {
+          'Label & Icon': Grays['500'],
+          Outline: Grays['500'],
+        },
+        Hover: {
+          'Label & Icon': Blues['400'],
+          Outline: Blues['400'],
+        },
+      },
+      Primary: {
+        Default: {
+          Fill: Blues['500'],
+          'Label & Icon': Grays['50'],
+        },
+        Disabled: {
+          Fill: Blues['200'],
+          'Label & Icon': Grays['500'],
+        },
+        Hover: {
+          Fill: Grays['50'],
+          'Label & Icon': Grays['900'],
+        },
+      },
+      Secondary: {
+        Default: {
+          Fill: Grays['50'],
+          'Label & Icon': Grays['900'],
+        },
+        Disabled: {
+          Fill: Grays['750'],
+          'Label & Icon': Grays['500'],
+        },
+        Hover: {
+          Fill: Blues['500'],
+          'Label & Icon': Grays['50'],
+        },
+      },
+      Success: {
+        Default: {
+          Fill: Greens['400'],
+          'Label & Icon': Grays['900'],
+        },
+        Disabled: {
+          Fill: Greens['600'],
+          'Label & Icon': Grays['500'],
+        },
+        Hover: {
+          Fill: Grays['900'],
+          'Label & Icon': Greens['400'],
+        },
+      },
     },
-    "Badges": {
-      "Label": {
-        "Default": "#fdfcfc",
-        "Active": "#fdfcfc",
-        "Alert": "#fdfcfc",
-        "Highlight": "#5a81f3",
-        "Warning": "#191815",
-        "Accent": "#fdfcfc"
+    Layer: {
+      '1': {
+        Fill: Grays['950'],
+        Outline: Grays['900'],
       },
-      "Border": {
-        "Default": "#746e66",
-        "Active": "#5a81f3",
-        "Alert": "#ed242f",
-        "Highlight": "#5a81f3",
-        "Warning": "#f77f00",
-        "Accent": "#5a81f3"
+      '2': {
+        Fill: Grays['900'],
+        Outline: Grays['800'],
       },
-      "Fill": {
-        "Default": "#1f1e1b",
-        "Active": "#1fa25e",
-        "Alert": "#ed242f",
-        "Highlight": "#1f1e1b",
-        "Warning": "#ffc300",
-        "Accent": "#5a81f3"
-      }
-    }
+      '3': {
+        Fill: Grays['800'],
+        Outline: Grays['700'],
+      },
+      Feedback: {
+        Error: Reds['500'],
+        Info: Blues['50'],
+        Success: Greens['300'],
+        Warning: Yellows['500'],
+      },
+      Highlight: Blues['50'],
+      TypeAction: {
+        Hover: Grays['750'],
+        Selected: Grays['850'],
+      },
+    },
+    Tables: {
+      Header: {
+        Fill: Grays['800'],
+        Label: {
+          Active: Grays['50'],
+          Default: Grays['300'],
+          Hover: Blues['400'],
+        },
+      },
+      Row: {
+        Default: Grays['950'],
+        Hover: Grays['750'],
+        Selected: Grays['850'],
+      },
+    },
+    Text: {
+      Disabled: Grays['500'],
+      Feedback: {
+        Error: Reds['500'],
+        Success: Greens['400'],
+        Warning: Yellows['500'],
+      },
+      FilledFeedback: {
+        Alert: {
+          Primary: Grays['50'],
+          Secondary: Grays['300'],
+        },
+        Highlight: {
+          Primary: Blues['500'],
+          Secondary: Grays['700'],
+        },
+        Info: {
+          Primary: Blues['300'],
+          Secondary: Grays['300'],
+        },
+        Success: {
+          Primary: Grays['950'],
+          Secondary: Grays['700'],
+        },
+        Warning: {
+          Primary: Grays['975'],
+          Secondary: Grays['700'],
+        },
+      },
+      Highlight: Blues['400'],
+      Primary: Grays['50'],
+      Secondary: Grays['300'],
+      Tertiary: Grays['400'],
+    },
   },
-  "Chad": {
-    "Text": {
-      "Feedback": {
-        "Warning": "#f77f00",
-        "Success": "#167d4a",
-        "Error": "#ed242f",
-        "Inverted": "#1f1e1b"
-      },
-      "FilledFeedback": {
-        "Info": {
-          "Primary": "#6a68b7",
-          "Secondary": "#5a554f"
-        },
-        "Highlight": {
-          "Primary": "#f8f7f7",
-          "Secondary": "#d4d0cc"
-        },
-        "Warning": {
-          "Primary": "#1f1e1b",
-          "Secondary": "#5a554f"
-        },
-        "Alert": {
-          "Primary": "#f8f7f7",
-          "Secondary": "#d4d0cc"
-        },
-        "Success": {
-          "Primary": "#f8f7f7",
-          "Secondary": "#d4d0cc"
-        }
-      },
-      "Primary": "#1f1e1b",
-      "Secondary": "#494540",
-      "Tertiary": "#5a554f",
-      "Disabled": "#968e84",
-      "Highlight": "#5f5cae"
+  Chad: {
+    App: {
+      Background: '#bdbbec',
     },
-    "Layer": {
-      "1": {
-        "Fill": "#e7e4e2",
-        "Outline": "#bbb6af"
+    Badges: {
+      Border: {
+        Accent: Violets['800'],
+        Active: Violets['500'],
+        Alert: Reds['500'],
+        Default: Grays['400'],
+        Highlight: Violets['800'],
+        Warning: Oranges['500'],
       },
-      "2": {
-        "Fill": "#dedbd8",
-        "Outline": "#968e84"
+      Fill: {
+        Accent: Violets['800'],
+        Active: Greens['500'],
+        Alert: Reds['500'],
+        Default: Grays['150'],
+        Highlight: Grays['150'],
+        Warning: Yellows['500'],
       },
-      "3": {
-        "Fill": "#d4d0cc",
-        "Outline": "#746e66"
+      Label: {
+        Accent: Grays['10'],
+        Active: Grays['10'],
+        Alert: Grays['10'],
+        Default: Grays['950'],
+        Highlight: Violets['800'],
+        Warning: Grays['975'],
       },
-      "Feedback": {
-        "Info": "#554fa5",
-        "Success": "#167d4a",
-        "Warning": "#ffc300",
-        "Error": "#ed242f"
-      },
-      "TypeAction": {
-        "Selected": "#efedfc",
-        "Hover": "#f6f4f4"
-      },
-      "Highlight": "#4a4395"
     },
-    "Tables": {
-      "Row": {
-        "Default": "#e7e4e2",
-        "Selected": "#efedfc",
-        "Hover": "#f6f4f4"
+    Button: {
+      Error: {
+        Default: {
+          Fill: Reds['500'],
+          'Label & Icon': Grays['10'],
+        },
+        Disabled: {
+          Fill: Reds['800'],
+          'Label & Icon': Grays['500'],
+        },
+        Hover: {
+          Fill: Grays['10'],
+          'Label & Icon': Reds['500'],
+        },
       },
-      "Header": {
-        "Fill": "#d4d0cc",
-        "Label": {
-          "Default": "#494540",
-          "Hover": "#5f5cae",
-          "Active": "#1f1e1b"
-        }
-      }
+      'Focus Outline': Violets['500'],
+      Ghost: {
+        Default: {
+          'Label & Icon': Violets['600'],
+        },
+        Disabled: {
+          'Label & Icon': Grays['500'],
+        },
+        Hover: {
+          Fill: Transparent,
+          'Label & Icon': Violets['800'],
+        },
+      },
+      Navigation: {
+        Current: {
+          Fill: Violets['800'],
+          'Label & Icon': Grays['10'],
+        },
+        Default: {
+          'Label & Icon': Grays['700'],
+        },
+        Hover: {
+          Fill: Grays['150'],
+          'Label & Icon': Grays['950'],
+        },
+      },
+      Outline: {
+        Default: {
+          'Label & Icon': Grays['950'],
+          Outline: Grays['950'],
+        },
+        Disabled: {
+          'Label & Icon': Grays['500'],
+          Outline: Grays['500'],
+        },
+        Hover: {
+          'Label & Icon': Violets['500'],
+          Outline: Violets['500'],
+        },
+      },
+      Primary: {
+        Default: {
+          Fill: Violets['950'],
+          'Label & Icon': Grays['50'],
+        },
+        Disabled: {
+          Fill: Violets['200'],
+          'Label & Icon': Grays['500'],
+        },
+        Hover: {
+          Fill: Grays['900'],
+          'Label & Icon': Grays['50'],
+        },
+      },
+      Secondary: {
+        Default: {
+          Fill: Grays['900'],
+          'Label & Icon': Grays['50'],
+        },
+        Disabled: {
+          Fill: Grays['600'],
+          'Label & Icon': Grays['500'],
+        },
+        Hover: {
+          Fill: Violets['500'],
+          'Label & Icon': Grays['50'],
+        },
+      },
+      Success: {
+        Default: {
+          Fill: Greens['400'],
+          'Label & Icon': Grays['900'],
+        },
+        Disabled: {
+          Fill: Greens['600'],
+          'Label & Icon': Grays['500'],
+        },
+        Hover: {
+          Fill: Grays['900'],
+          'Label & Icon': Greens['400'],
+        },
+      },
     },
-    "Badges": {
-      "Label": {
-        "Default": "#1f1e1b",
-        "Active": "#fdfcfc",
-        "Alert": "#fdfcfc",
-        "Highlight": "#4a4395",
-        "Warning": "#191815",
-        "Accent": "#fdfcfc"
+    Layer: {
+      '1': {
+        Fill: Grays['150'],
+        Outline: Grays['400'],
       },
-      "Border": {
-        "Default": "#bbb6af",
-        "Active": "#6a68b7",
-        "Alert": "#ed242f",
-        "Highlight": "#4a4395",
-        "Warning": "#f77f00",
-        "Accent": "#4a4395"
+      '2': {
+        Fill: Grays['200'],
+        Outline: Grays['500'],
       },
-      "Fill": {
-        "Default": "#e7e4e2",
-        "Active": "#1fa25e",
-        "Alert": "#ed242f",
-        "Highlight": "#e7e4e2",
-        "Warning": "#ffc300",
-        "Accent": "#4a4395"
-      }
-    }
-  }
+      '3': {
+        Fill: Grays['300'],
+        Outline: Grays['600'],
+      },
+      Feedback: {
+        Error: Reds['500'],
+        Info: Violets['700'],
+        Success: Greens['600'],
+        Warning: Yellows['500'],
+      },
+      Highlight: Violets['800'],
+      TypeAction: {
+        Hover: Grays['75'],
+        Selected: Violets['50'],
+      },
+    },
+    Tables: {
+      Header: {
+        Fill: Grays['300'],
+        Label: {
+          Active: Grays['950'],
+          Default: Grays['750'],
+          Hover: Violets['600'],
+        },
+      },
+      Row: {
+        Default: Grays['150'],
+        Hover: Grays['75'],
+        Selected: Violets['50'],
+      },
+    },
+    Text: {
+      Disabled: Grays['500'],
+      Feedback: {
+        Error: Reds['500'],
+        Success: Greens['600'],
+        Warning: Oranges['500'],
+      },
+      FilledFeedback: {
+        Alert: {
+          Primary: Grays['50'],
+          Secondary: Grays['300'],
+        },
+        Highlight: {
+          Primary: Grays['50'],
+          Secondary: Grays['300'],
+        },
+        Info: {
+          Primary: Violets['500'],
+          Secondary: Grays['700'],
+        },
+        Success: {
+          Primary: Grays['50'],
+          Secondary: Grays['300'],
+        },
+        Warning: {
+          Primary: Grays['950'],
+          Secondary: Grays['700'],
+        },
+      },
+      Highlight: Violets['600'],
+      Primary: Grays['950'],
+      Secondary: Grays['750'],
+      Tertiary: Grays['700'],
+    },
+  },
 } as const
 /* TOKENS-STUDIO:END_SURFACES_PLAIN */
 

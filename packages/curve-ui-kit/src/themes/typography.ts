@@ -70,41 +70,231 @@ const variant = ({
 })
 
 // prettier-ignore
+/* TOKENS-STUDIO:BEGIN_TYPOGRAPHY_VARIANTS */
 export const TYPOGRAPHY_VARIANTS = {
-  headingXxl: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'xxl', letterSpacing: '-2.56px' },
-  headingMBold: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'xl', lineHeight: Sizing[400], letterSpacing: '-1.28px', textCase: 'uppercase' },
-  headingMLight: { fontFamily: 'Heading', fontWeight: 'Normal', fontSize: 'xl', lineHeight: Sizing[450], letterSpacing: '-1.28px', textCase: 'uppercase' },
-  headingSBold: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'lg', lineHeight: 'md', letterSpacing: '-0.48px', textCase: 'uppercase' },
-  headingXsBold: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'sm', textCase: 'uppercase' },
-  headingXsMedium: { fontFamily: 'Heading', fontSize: 'sm', textCase: 'capitalize' },
-
-  bodyMRegular: { fontFamily: 'Body', fontSize: 'md' },
-  bodyMBold: { fontFamily: 'Body', fontWeight: 'Bold', fontSize: 'md' },
-  bodySRegular: { fontFamily: 'Body', fontSize: 'sm', fontWeight: 'Normal', lineHeight: 'sm' },
-  bodySBold: { fontFamily: 'Body', fontWeight: 'Bold', fontSize: 'sm' },
-  bodyXsRegular: { fontFamily: 'Body', fontSize: 'xs' },
-  bodyXsBold: { fontFamily: 'Body', fontWeight: 'Bold', fontSize: 'xs' },
-
-  buttonXs: { fontFamily: 'Button', fontWeight: 'Bold', fontSize: 'sm' },
-  buttonS: { fontFamily: 'Button', fontWeight: 'Bold', fontSize: 'sm', lineHeight: 'md', textCase: 'uppercase' },
-  buttonM: { fontFamily: 'Button', fontWeight: 'Bold', fontSize: 'md', lineHeight: 'xl', textCase: 'uppercase' },
-
-  tableHeaderM: { fontFamily: 'Body', fontWeight: 'Medium', fontSize: 'md', lineHeight: 'sm' },
-  tableHeaderS: { fontFamily: 'Body', fontWeight: 'Medium', fontSize: 'sm', lineHeight: 'xs' },
-  tableCellL: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: Sizing[250], lineHeight: Sizing[250] },
-  tableCellMRegular: { fontFamily: 'Mono', fontWeight: 'Medium', fontSize: 'md', lineHeight: 'sm' },
-  tableCellMBold: { fontFamily: 'Mono', fontWeight: 'Semi_Bold', fontSize: 'md', lineHeight: 'sm' },
-  tableCellSRegular: { fontFamily: 'Mono', fontWeight: 'Medium', fontSize: 'sm', lineHeight: 'xs' },
-  tableCellSBold: { fontFamily: 'Mono', fontWeight: 'Semi_Bold', fontSize: 'sm', lineHeight: 'xs' },
-
-  highlightXsNotional: { fontFamily: 'Mono', fontSize: 'xs' },
-  highlightXs: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'xs' },
-  highlightS: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'sm' },
-  highlightM: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'md', lineHeight: 'sm' },
-  highlightL: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'lg', lineHeight: 'md' },
-  highlightXl: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'xl', lineHeight: Sizing[400], letterSpacing: '-1.28px' },
-  highlightXxl: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'xxl', letterSpacing: '-2.56px' },
-} as const satisfies Record<string, TypographyVariantDefinition>
+  "bodyMBold": {
+    "fontFamily": "Heading",
+    "fontWeight": "Semi_Bold",
+    "fontSize": "16px",
+    "lineHeight": "md",
+    "letterSpacing": "0px"
+  },
+  "bodyMRegular": {
+    "fontFamily": "Heading",
+    "fontWeight": "Medium",
+    "fontSize": "16px",
+    "lineHeight": "md",
+    "letterSpacing": "0px"
+  },
+  "bodySBold": {
+    "fontFamily": "Heading",
+    "fontWeight": "Semi_Bold",
+    "fontSize": "14px",
+    "lineHeight": "sm",
+    "letterSpacing": "0px"
+  },
+  "bodySRegular": {
+    "fontFamily": "Heading",
+    "fontWeight": "Medium",
+    "fontSize": "14px",
+    "lineHeight": "sm",
+    "letterSpacing": "0px"
+  },
+  "bodyXsBold": {
+    "fontFamily": "Heading",
+    "fontWeight": "Semi_Bold",
+    "fontSize": "12px",
+    "lineHeight": "xs",
+    "letterSpacing": "0px"
+  },
+  "bodyXsRegular": {
+    "fontFamily": "Heading",
+    "fontWeight": "Medium",
+    "fontSize": "12px",
+    "lineHeight": "xs",
+    "letterSpacing": "0px"
+  },
+  "buttonlabelTabsL": {
+    "fontFamily": "Heading",
+    "fontWeight": "Bold",
+    "fontSize": "32px",
+    "lineHeight": "lg",
+    "textCase": "uppercase"
+  },
+  "buttonlabelTabsM": {
+    "fontFamily": "Heading",
+    "fontWeight": "Bold",
+    "fontSize": "14px",
+    "lineHeight": Sizing["150"],
+    "textCase": "uppercase"
+  },
+  "buttonlabelTabsS": {
+    "fontFamily": "Heading",
+    "fontWeight": "Semi_Bold",
+    "fontSize": "16px",
+    "lineHeight": "md"
+  },
+  "buttonlabelXXS": {
+    "fontFamily": "Heading",
+    "fontWeight": "Bold",
+    "fontSize": "12px",
+    "lineHeight": "xs"
+  },
+  "buttonM": {
+    "fontFamily": "Heading",
+    "fontWeight": "Bold",
+    "fontSize": "16px",
+    "lineHeight": "xl",
+    "textCase": "uppercase"
+  },
+  "buttonS": {
+    "fontFamily": "Heading",
+    "fontWeight": "Bold",
+    "fontSize": "14px",
+    "lineHeight": "md",
+    "textCase": "uppercase"
+  },
+  "buttonXs": {
+    "fontFamily": "Heading",
+    "fontWeight": "Bold",
+    "fontSize": "14px",
+    "lineHeight": "xs"
+  },
+  "headingMBold": {
+    "fontFamily": "Heading",
+    "fontWeight": "Bold",
+    "fontSize": "32px",
+    "lineHeight": "lg",
+    "letterSpacing": "-4%",
+    "textCase": "uppercase"
+  },
+  "headingMLight": {
+    "fontFamily": "Heading",
+    "fontWeight": "Medium",
+    "fontSize": "32px",
+    "lineHeight": "lg",
+    "letterSpacing": "-4%",
+    "textCase": "uppercase"
+  },
+  "headingSBold": {
+    "fontFamily": "Heading",
+    "fontWeight": "Bold",
+    "fontSize": "24px",
+    "lineHeight": "md",
+    "letterSpacing": "-2%",
+    "textCase": "uppercase"
+  },
+  "headingXsBold": {
+    "fontFamily": "Heading",
+    "fontWeight": "Bold",
+    "fontSize": "14px",
+    "lineHeight": "sm",
+    "textCase": "uppercase"
+  },
+  "headingXsMedium": {
+    "fontFamily": "Heading",
+    "fontWeight": "Medium",
+    "fontSize": "14px",
+    "lineHeight": "sm",
+    "textCase": "capitalize"
+  },
+  "headingXxl": {
+    "fontFamily": "Heading",
+    "fontWeight": "Bold",
+    "fontSize": "64px",
+    "lineHeight": "xxl",
+    "letterSpacing": "-4%"
+  },
+  "highlightL": {
+    "fontFamily": "Heading",
+    "fontWeight": "Bold",
+    "fontSize": "24px",
+    "lineHeight": "md"
+  },
+  "highlightM": {
+    "fontFamily": "Heading",
+    "fontWeight": "Bold",
+    "fontSize": "16px",
+    "lineHeight": "sm"
+  },
+  "highlightS": {
+    "fontFamily": "Heading",
+    "fontWeight": "Bold",
+    "fontSize": "14px",
+    "lineHeight": "sm"
+  },
+  "highlightXl": {
+    "fontFamily": "Heading",
+    "fontWeight": "Bold",
+    "fontSize": "32px",
+    "lineHeight": "lg",
+    "letterSpacing": "-4%"
+  },
+  "highlightXs": {
+    "fontFamily": "Heading",
+    "fontWeight": "Bold",
+    "fontSize": "12px",
+    "lineHeight": "xs"
+  },
+  "highlightXsNotional": {
+    "fontFamily": "Heading",
+    "fontWeight": "Medium",
+    "fontSize": "12px",
+    "lineHeight": "xs"
+  },
+  "highlightXxl": {
+    "fontFamily": "Heading",
+    "fontWeight": "Bold",
+    "fontSize": "64px",
+    "lineHeight": "xxl",
+    "letterSpacing": "-4%"
+  },
+  "tableCellL": {
+    "fontFamily": "Heading",
+    "fontWeight": "Bold",
+    "fontSize": "20px",
+    "lineHeight": Sizing["250"]
+  },
+  "tableCellMBold": {
+    "fontFamily": "Heading",
+    "fontWeight": "Semi_Bold",
+    "fontSize": "16px",
+    "lineHeight": "sm"
+  },
+  "tableCellMRegular": {
+    "fontFamily": "Heading",
+    "fontWeight": "Medium",
+    "fontSize": "16px",
+    "lineHeight": "sm"
+  },
+  "tableCellSBold": {
+    "fontFamily": "Heading",
+    "fontWeight": "Semi_Bold",
+    "fontSize": "14px",
+    "lineHeight": "xs"
+  },
+  "tableCellSRegular": {
+    "fontFamily": "Heading",
+    "fontWeight": "Medium",
+    "fontSize": "14px",
+    "lineHeight": "xs"
+  },
+  "tableHeaderM": {
+    "fontFamily": "Heading",
+    "fontWeight": "Medium",
+    "fontSize": "16px",
+    "lineHeight": "sm",
+    "letterSpacing": "0px"
+  },
+  "tableHeaderS": {
+    "fontFamily": "Heading",
+    "fontWeight": "Medium",
+    "fontSize": "14px",
+    "lineHeight": "xs",
+    "letterSpacing": "0px"
+  }
+} as const
+/* TOKENS-STUDIO:END_TYPOGRAPHY_VARIANTS */
 
 export const createTypography = ({ Text }: DesignSystem) =>
   ({
