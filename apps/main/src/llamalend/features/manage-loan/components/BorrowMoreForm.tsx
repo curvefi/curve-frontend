@@ -18,7 +18,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
 import { q } from '@ui-kit/types/util'
 import { isDevelopment } from '@ui-kit/utils'
-import { setValueOptions } from '@ui-kit/utils/react-form.utils'
+import { updateForm } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { InputDivider } from '../../../widgets/InputDivider'
 import { useBorrowMoreForm } from '../hooks/useBorrowMoreForm'
@@ -67,7 +67,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
   const swapRequired = isLeverageEnabled && Number(values.userBorrowed) > 0
   const fromBorrowed = fromWallet && isLeverageEnabled
   const onLeverageToggle = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) => form.setValue('leverageEnabled', event.target.checked),
+    (event: ChangeEvent<HTMLInputElement>) => updateForm(form, { leverageEnabled: event.target.checked }),
     [form],
   )
   return (
@@ -80,7 +80,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
           values={values}
           tokens={{ collateralToken, borrowToken }}
           networks={networks}
-          onSlippageChange={(value) => form.setValue('slippage', value, setValueOptions)}
+          onSlippageChange={(value) => updateForm(form, { slippage: value })}
           leverageEnabled={values.leverageEnabled}
           health={health}
         />
@@ -129,10 +129,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
               symbol={borrowToken?.symbol}
               balance={max.debt.data}
               loading={max.debt.isLoading}
-              onClick={() => {
-                form.setValue('debt', max.debt.data, setValueOptions)
-                void form.trigger('maxDebt') // re-validate max
-              }}
+              onClick={() => updateForm(form, { debt: max.debt.data })}
             />
           }
         />

@@ -38,9 +38,9 @@ import Skeleton from '@mui/material/Skeleton'
 import { useCurve } from '@ui-kit/features/connect-wallet/lib/CurveContext'
 import { CurveProvider } from '@ui-kit/features/connect-wallet/lib/CurveProvider'
 import { LlamaMarketType } from '@ui-kit/types/market'
-import { Decimal } from '@ui-kit/utils'
+import { CRVUSD_ADDRESS, Decimal } from '@ui-kit/utils'
 
-const onUpdate: OnCreateLoanFormUpdate = async (form) => console.info('form updated', form)
+const onUpdate: OnCreateLoanFormUpdate = async (form) => console.info('form updated', JSON.stringify(form))
 
 const prefetch = () => prefetchMarkets({})
 
@@ -150,7 +150,7 @@ recordValues(LlamaMarketType)
 
         it(`repays the loan`, () => {
           cy.mount(<LoanTestWrapper tab="repay" />)
-          selectRepayToken('crvUSD')
+          selectRepayToken({ symbol: 'crvUSD', tokenAddress: CRVUSD_ADDRESS, hasLeverage })
           writeRepayLoanForm({ amount: repay }) // TODO: test full-repay
           checkRepayDetailsLoaded({
             debt: [debtAfterBorrowMore, debtAfterBorrowMoreAndRepay, 'crvUSD'],

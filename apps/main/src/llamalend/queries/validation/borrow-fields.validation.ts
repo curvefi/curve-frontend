@@ -44,12 +44,11 @@ export const validateMaxDebt = (
 ) => {
   skipWhen(!isMaxDebtRequired, () => {
     test('maxDebt', 'Maximum debt must be calculated before debt can be validated', () => {
-      enforce(maxDebt).isNotNullish()
+      enforce(maxDebt).isNumeric()
     })
   })
   skipWhen(maxDebt == null || debt == null, () => {
-    test('maxDebt', `The given debt ${debt} exceeds the maximum of ${maxDebt}`, () => {
-      enforce(maxDebt).isNotNullish()
+    test('maxDebt', `The given debt exceeds the maximum of ${maxDebt}`, () => {
       enforce(debt).lte(maxDebt)
     })
   })

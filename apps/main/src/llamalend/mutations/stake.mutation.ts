@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import type { Address, Hex } from 'viem'
 import { useConfig } from 'wagmi'
-import { type LlammaMutationOptions, useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
+import { useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
 import { fetchStakeIsApproved } from '@/llamalend/queries/supply/supply-stake-approved.query'
 import {
   StakeForm,
@@ -13,13 +13,14 @@ import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@
 import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
+import type { OnTransactionSuccess } from '@ui-kit/lib/model/mutation/useTransactionMutation'
 import { waitForApproval } from '@ui-kit/utils'
 import { formatTokenAmounts } from '../llama.utils'
 
 export type StakeOptions = {
   marketId: string | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
-  onStaked?: LlammaMutationOptions<StakeMutation>['onSuccess']
+  onStaked?: OnTransactionSuccess<StakeMutation>
   onReset: () => void
   userAddress: Address | undefined
 }
@@ -44,16 +45,16 @@ export const useStakeMutation = ({
     network,
     marketId,
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'stake'] as const,
-    mutationFn: async (mutation, { market }) => {
+    mutationFn: async (variables, { market }) => {
       const lendMarket = requireVault(market)
       await waitForApproval({
-        isApproved: async () => await fetchStakeIsApproved({ chainId, marketId, ...mutation }, { staleTime: 0 }),
-        onApprove: async () => await approveStake(lendMarket, mutation),
+        isApproved: async () => await fetchStakeIsApproved({ chainId, marketId, ...variables }, { staleTime: 0 }),
+        onApprove: async () => await approveStake(lendMarket, variables),
         message: t`Approved stake`,
         config,
       })
 
-      return { hash: await stake(lendMarket, mutation) }
+      return { hash: await stake(lendMarket, variables) }
     },
     validationSuite: stakeValidationSuite,
     pendingMessage: (mutation, { market }) =>

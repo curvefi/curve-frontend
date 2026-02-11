@@ -33,7 +33,7 @@ export const AddRewardToken = ({ chainId, poolId }: AddRewardTokenProps) => {
   const { data: isDepositRewardAvailable, isFetching: isFetchingIsDepositRewardAvailable } =
     useIsDepositRewardAvailable({ chainId, poolId })
 
-  const methods = useForm<AddRewardFormValues>({
+  const form = useForm<AddRewardFormValues>({
     ...formDefaultOptions,
     resolver: vestResolver(addGaugeRewardTokenValidationSuite),
     defaultValues: {
@@ -45,7 +45,7 @@ export const AddRewardToken = ({ chainId, poolId }: AddRewardTokenProps) => {
     setError,
     formState: { isSubmitting },
     handleSubmit,
-  } = methods
+  } = form
 
   const {
     mutate: addRewardToken,
@@ -76,7 +76,7 @@ export const AddRewardToken = ({ chainId, poolId }: AddRewardTokenProps) => {
     isSubmitting || isFetchingGaugeRewardsDistributors || isFetchingIsDepositRewardAvailable || isPendingAddRewardToken
 
   return (
-    <FormProvider {...methods}>
+    <FormProvider {...form}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <FormContainer>
           <FormFieldsContainer>

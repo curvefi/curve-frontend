@@ -1,10 +1,33 @@
 import { useMemo } from 'react'
-import type { FieldValues, SetValueConfig } from 'react-hook-form'
-import type { FormState } from 'react-hook-form'
+import type { FieldPath, FieldPathValue, FieldValues, FormState, UseFormReturn } from 'react-hook-form'
 import { notFalsy, recordEntries } from '@curvefi/prices-api/objects.util'
 
-/** Options to pass to react-hook-form's setValue to trigger validation, dirty and touch states. */
-export const setValueOptions: SetValueConfig = { shouldValidate: true, shouldDirty: true, shouldTouch: true }
+export type FormUpdates<TFieldValues extends FieldValues> = Partial<{
+  [K in FieldPath<TFieldValues>]: FieldPathValue<TFieldValues, K>
+}>
+
+/**
+ * react-hook-form update helper that uses a fixed update policy and then runs a full `form.trigger()` once per call.
+ * This is necessary because form.setValue() doesn't revalidate all fields.
+ * Any validation in the form root or in other fields can leave the form in an invalid state.
+ * We prefer to have this helper to force full revalidation to avoid silly mistakes that are hard to debug.
+ * Direct `form.setValue()` / `form.trigger()` calls are lint-restricted.
+ */
+export function updateForm<TFieldValues extends FieldValues>(
+  form: UseFormReturn<TFieldValues>,
+  updates: FormUpdates<TFieldValues>,
+): void {
+  recordEntries(updates).forEach(([field, value]) =>
+    // eslint-disable-next-line no-restricted-syntax
+    form.setValue(field, value, {
+      shouldValidate: false, // we revalidate just below.
+      shouldDirty: true,
+      shouldTouch: true,
+    }),
+  )
+  // eslint-disable-next-line no-restricted-syntax
+  form.trigger().catch((error: unknown) => console.error('updateForm(): form.trigger() failed', error))
+}
 
 export const filterFormErrors = <TFieldValues extends FieldValues>(formState: FormState<TFieldValues>) =>
   notFalsy(

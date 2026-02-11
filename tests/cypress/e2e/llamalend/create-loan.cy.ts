@@ -11,10 +11,10 @@ import { LlamaMarketType } from '@ui-kit/types/market'
 
 describe('Create loan', () => {
   recordValues(LlamaMarketType).forEach((marketType) => {
-    const { collateral, borrow, path } = oneLoanTestMarket(marketType)
-    const leverageEnabled = false // "max_borrowable" query always fails because of the 'fake' e2e account :(
+    const { collateral, borrow, path, label, hasLeverage } = oneLoanTestMarket(marketType)
+    const leverageEnabled = hasLeverage && false // "max_borrowable" query always fails because of the 'fake' e2e account :(
 
-    it(`for ${marketType} market`, () => {
+    it(label, () => {
       cy.visit(path)
       writeCreateLoanForm({ collateral, borrow, leverageEnabled })
       checkLoanDetailsLoaded({ leverageEnabled })

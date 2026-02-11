@@ -1,11 +1,12 @@
 import { useCallback } from 'react'
 import { type Address, Hex } from 'viem'
 import { formatTokenAmounts } from '@/llamalend/llama.utils'
-import { type LlammaMutationOptions, useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
+import { useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
 import { type CollateralForm, collateralValidationSuite } from '@/llamalend/queries/validation/manage-loan.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
+import type { OnTransactionSuccess } from '@ui-kit/lib/model/mutation/useTransactionMutation'
 import type { Decimal } from '@ui-kit/utils'
 
 type RemoveCollateralMutation = { userCollateral: Decimal }
@@ -13,7 +14,7 @@ type RemoveCollateralMutation = { userCollateral: Decimal }
 export type RemoveCollateralOptions = {
   marketId: string | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
-  onRemoved: LlammaMutationOptions<RemoveCollateralMutation>['onSuccess']
+  onRemoved?: OnTransactionSuccess<RemoveCollateralMutation>
   onReset: () => void
   userAddress: Address | undefined
 }
