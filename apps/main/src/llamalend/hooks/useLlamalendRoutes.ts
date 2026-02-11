@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { recordValues } from '@curvefi/prices-api/objects.util'
 import { usePathname } from '@ui-kit/hooks/router'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
@@ -14,22 +13,23 @@ const LEND_APP: AppName = 'lend'
 const tr = (value: string) => value.replace(/^\//, '')
 
 /** Get the market ID of a lend market page. */
-const getLendMarketId = (path: string) => {
-  const [, , , lendPage, marketId, marketType] = path.split('/')
+export const getLendMarketId = (path: string) => {
+  const [, app, , lendPage, marketId, marketType] = path.split('/')
   const lendRoutes = recordValues(LEND_MARKET_ROUTES).map(tr)
-  return lendPage === tr(LEND_ROUTES.PAGE_MARKETS) && lendRoutes.includes(marketType ?? '') ? marketId : null
+
+  return app === LEND_APP && lendPage === tr(LEND_ROUTES.PAGE_MARKETS) && lendRoutes.includes(marketType ?? '')
+    ? marketId
+    : null
 }
 
-export const useLlamalendRoutes = (currentApp: AppName): AppRoute[] => {
+export const useLendMarketSubNavRoutes = (): AppRoute[] => {
   const isLendMarketSubNav = useLendMarketSubNav()
   const pathname = usePathname()
-  const isMobile = useIsMobile()
   const lendMarketId = getLendMarketId(pathname)
+  const marketPath = `${LEND_ROUTES.PAGE_MARKETS}/${lendMarketId}`
 
-  return useMemo(() => {
-    if (currentApp === LEND_APP && isLendMarketSubNav && !isMobile && lendMarketId) {
-      const marketPath = `${LEND_ROUTES.PAGE_MARKETS}/${lendMarketId}`
-      return [
+  return isLendMarketSubNav && lendMarketId
+    ? [
         {
           app: LEND_APP,
           route: `${marketPath}${LEND_MARKET_ROUTES.PAGE_LOAN}`,
@@ -43,7 +43,12 @@ export const useLlamalendRoutes = (currentApp: AppName): AppRoute[] => {
           matchMode: 'exact',
         },
       ]
-    }
-    return APP_LINK.llamalend.routes
-  }, [currentApp, isLendMarketSubNav, lendMarketId, isMobile])
+    : []
+}
+
+export const useLlamalendRoutes = (): AppRoute[] => {
+  const isMobile = useIsMobile()
+  const lendRoutes = useLendMarketSubNavRoutes()
+
+  return !isMobile && lendRoutes.length > 0 ? lendRoutes : APP_LINK.llamalend.routes
 }

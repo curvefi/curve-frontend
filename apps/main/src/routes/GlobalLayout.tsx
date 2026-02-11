@@ -29,9 +29,9 @@ const useAppStats = (currentApp: AppName, network: NetworkDef) => {
   return isLlamalend ? llamalendStats : currentApp === 'dex' ? dexStats : []
 }
 
-const useAppRoutes = (currentApp: AppName, network: NetworkDef) => ({
+const useAppRoutes = (network: NetworkDef) => ({
   dao: APP_LINK.dao.routes,
-  llamalend: useLlamalendRoutes(currentApp),
+  llamalend: useLlamalendRoutes(),
   dex: useDexRoutes(network),
   bridge: APP_LINK.bridge.routes,
   analytics: APP_LINK.analytics.routes,
@@ -82,7 +82,7 @@ export const GlobalLayout = <TId extends string, TChainId extends number>({
       supportedNetworks={useAppSupportedNetworks(networks, currentApp)}
       isLite={network.isLite}
       appStats={useAppStats(currentApp, network)}
-      routes={useAppRoutes(currentApp, network)}
+      routes={useAppRoutes(network)}
     />
     <Box
       component="main"
