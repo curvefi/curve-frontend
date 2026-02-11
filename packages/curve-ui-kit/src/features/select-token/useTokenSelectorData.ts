@@ -27,6 +27,18 @@ export const useTokenSelectorData = (
   const config = useConfig()
   const tokenAddresses = useMemo(() => tokens.map((token) => token.address), [tokens])
 
+  /*
+   * Prefetch balances eagerly so they're cached before the modal opens.
+   * This reduces the visible "trickle-in" effect of balances loading one by one,
+   * minimizing re-renders and providing a smoother user experience.
+   * It also means balances are being loaded without creating TanStack subscriptions.
+   *
+   * Prefetch can be done conditionally such that important data can be loaded first,
+   * so that the HTTP request pipeline won't get clogged up with less important requests.
+   *
+   * At the moment of writing the array of token addresses can contain more than 1000 items.
+   * It's up to a future refactor to reduce the amount of token balances fetched.
+   */
   useEffect(() => {
     if (prefetch && chainId && userAddress && tokenAddresses.length > 0) {
       void prefetchTokenBalances(config, { chainId, userAddress, tokenAddresses })
