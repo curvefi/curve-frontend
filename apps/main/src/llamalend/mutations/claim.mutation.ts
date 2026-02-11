@@ -42,6 +42,7 @@ export const useClaimMutation = ({
           config,
         })) ?? []
 
+      // Fetch rewards on submit to avoid stale data and keep behavior aligned with CRV claiming.
       const claimableRewards = await fetchClaimableRewards({ marketId: market.id, userAddress }, { staleTime: 0 })
       if (claimableRewards.length === 0) return { hash: crvHash! }
       const rewardsHash = (await lendMarket.vault.claimRewards()) as Hex
