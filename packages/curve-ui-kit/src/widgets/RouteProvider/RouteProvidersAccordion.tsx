@@ -1,12 +1,8 @@
-import { type ReactNode, useMemo } from 'react'
-import Box from '@mui/material/Box'
+import { useMemo } from 'react'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { CURVE_LOGO_URL } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
-import { EnsoIcon } from '@ui-kit/shared/icons/EnsoIcon'
-import { OdosIcon } from '@ui-kit/shared/icons/OdosIcon'
 import { ReloadIcon } from '@ui-kit/shared/icons/ReloadIcon'
 import { Accordion } from '@ui-kit/shared/ui/Accordion'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
@@ -14,23 +10,16 @@ import { LoadingAnimation } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { type Address, decimalMax } from '@ui-kit/utils'
 import { RouteComparisonChip } from '@ui-kit/widgets/RouteProvider/RouteComparisonChip'
-import { type RouteOption, type RouteProvider } from './route-provider.types'
+import type { RouteOption } from './route-provider.types'
 import { RouteProviderCard } from './RouteProviderCard'
+import { RouteProviderIcons } from './RouteProviderIcons'
 
-const { Spacing, IconSize } = SizesAndSpaces
+const { Spacing } = SizesAndSpaces
 
 const providerLabels = {
   curve: t`Curve`,
   enso: t`Enso`,
   odos: t`Odos`,
-}
-
-const iconSx = { width: IconSize.sm, height: IconSize.sm }
-
-export const providerIcons: Record<RouteProvider, () => ReactNode> = {
-  curve: () => <Box component="img" src={CURVE_LOGO_URL} alt="Curve" sx={iconSx} />,
-  enso: () => <EnsoIcon sx={iconSx} />,
-  odos: () => <OdosIcon sx={iconSx} />,
 }
 
 export type { RouteOption }
@@ -61,7 +50,7 @@ export const RouteProvidersAccordion = ({
   onRefresh,
 }: RouteProviderProps) => {
   const bestOutputAmount = useMemo(() => decimalMax(...routes.map((route) => route.toAmountOutput)), [routes])
-  const Icon = selectedRoute ? providerIcons[selectedRoute.provider] : null
+  const Icon = selectedRoute ? RouteProviderIcons[selectedRoute.provider] : null
   return (
     <Accordion
       ghost
@@ -109,7 +98,7 @@ export const RouteProvidersAccordion = ({
               usdPrice={usdPrice}
               bestOutputAmount={bestOutputAmount}
               onSelect={onChange}
-              icon={providerIcons[route.provider]()}
+              icon={RouteProviderIcons[route.provider]()}
             />
           ))}
         </Stack>
