@@ -49,15 +49,27 @@ const LendManageNewMenu = [
   {
     value: 'loan-increase',
     label: t`Borrow`,
-    component: ({ rChainId, market, isLoaded }: PageContentProps) => (
-      <BorrowMoreForm networks={networks} chainId={rChainId} market={market} enabled={isLoaded} />
+    component: ({ rChainId: chainId, market, rOwmId: marketId, userAddress, isLoaded }: PageContentProps) => (
+      <BorrowMoreForm
+        networks={networks}
+        chainId={chainId}
+        market={market}
+        enabled={isLoaded}
+        onBorrowedMore={() => invalidateAllUserBorrowDetails({ chainId, marketId, userAddress })}
+      />
     ),
   },
   {
     value: 'loan-decrease',
     label: t`Repay`,
-    component: ({ rChainId, market, isLoaded }: PageContentProps) => (
-      <RepayForm networks={networks} chainId={rChainId} market={market} enabled={isLoaded} />
+    component: ({ rChainId: chainId, market, rOwmId: marketId, userAddress, isLoaded }: PageContentProps) => (
+      <RepayForm
+        networks={networks}
+        chainId={chainId}
+        market={market}
+        enabled={isLoaded}
+        onRepaid={() => invalidateAllUserBorrowDetails({ chainId, marketId, userAddress })}
+      />
     ),
   },
   {
@@ -67,15 +79,27 @@ const LendManageNewMenu = [
       {
         value: 'add',
         label: t`Add`,
-        component: ({ rChainId, market, isLoaded }: PageContentProps) => (
-          <AddCollateralForm networks={networks} chainId={rChainId} market={market} enabled={isLoaded} />
+        component: ({ rChainId: chainId, market, userAddress, rOwmId: marketId, isLoaded }: PageContentProps) => (
+          <AddCollateralForm
+            networks={networks}
+            chainId={chainId}
+            market={market}
+            enabled={isLoaded}
+            onAdded={() => invalidateAllUserBorrowDetails({ chainId, marketId, userAddress })}
+          />
         ),
       },
       {
         value: 'remove',
         label: t`Remove`,
-        component: ({ rChainId, market, isLoaded }: PageContentProps) => (
-          <RemoveCollateralForm networks={networks} chainId={rChainId} market={market} enabled={isLoaded} />
+        component: ({ rChainId: chainId, market, userAddress, rOwmId: marketId, isLoaded }: PageContentProps) => (
+          <RemoveCollateralForm
+            networks={networks}
+            chainId={chainId}
+            market={market}
+            enabled={isLoaded}
+            onRemoved={() => invalidateAllUserBorrowDetails({ chainId, marketId, userAddress })}
+          />
         ),
       },
     ],
@@ -90,8 +114,20 @@ const LendManageSoftLiquidationMenu = [
       {
         value: 'improve-health',
         label: t`Improve health`,
-        component: ({ rChainId, market, isLoaded }: PageContentProps<MarketUrlParams>) => (
-          <ImproveHealthForm chainId={rChainId} market={market} networks={networks} enabled={isLoaded} />
+        component: ({
+          rChainId: chainId,
+          market,
+          rOwmId: marketId,
+          isLoaded,
+          userAddress,
+        }: PageContentProps<MarketUrlParams>) => (
+          <ImproveHealthForm
+            chainId={chainId}
+            market={market}
+            networks={networks}
+            enabled={isLoaded}
+            onRepaid={() => invalidateAllUserBorrowDetails({ chainId, marketId, userAddress })}
+          />
         ),
       },
       {

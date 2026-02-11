@@ -85,7 +85,7 @@ export type PageContentProps<T = UrlParams> = {
   params: T
   rChainId: ChainId
   rOwmId: string
-  userAddress: Address
+  userAddress: Address | undefined
   userActiveKey: string
   isLoaded: boolean
   api: LlamaApi | null

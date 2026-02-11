@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import type { Address } from 'viem'
+import { useConnection } from 'wagmi'
 import { CampaignRewardsBanner } from '@/lend/components/CampaignRewardsBanner'
 import { MarketInformationComp } from '@/lend/components/MarketInformationComp'
 import { MarketInformationTabs } from '@/lend/components/MarketInformationTabs'
@@ -50,7 +51,7 @@ export const LendMarketPage = () => {
 
   const marketId = market?.id ?? '' // todo: use market?.id directly everywhere since we pass the market too!
   const userActiveKey = helpers.getUserActiveKey(api, market!)
-  const { signerAddress } = api ?? {}
+  const { address: userAddress } = useConnection()
   useLendPageTitle(market?.collateral_token?.symbol ?? rMarket, t`Lend`)
 
   const marketDetails = useMarketDetails({ chainId, market, marketId })
@@ -63,7 +64,7 @@ export const LendMarketPage = () => {
     app: 'lend',
     chain: isChain(network.id) ? network.id : undefined,
     controllerAddress: market?.addresses?.controller as Address,
-    userAddress: signerAddress,
+    userAddress,
     collateralToken: market?.collateral_token,
     borrowToken: market?.borrowed_token,
     network,
@@ -71,7 +72,7 @@ export const LendMarketPage = () => {
   const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists({
     chainId,
     marketId: marketId,
-    userAddress: signerAddress,
+    userAddress: userAddress,
   })
 
   const [isLoaded, setLoaded] = useState(false)
@@ -113,7 +114,7 @@ export const LendMarketPage = () => {
     params,
     rChainId: chainId,
     rOwmId: marketId,
-    userAddress: signerAddress!,
+    userAddress,
     isLoaded,
     api,
     market,
