@@ -15,7 +15,7 @@ import { useCreateLoanPreset } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
 import { q } from '@ui-kit/types/util'
-import { setFormValue } from '@ui-kit/utils/react-form.utils'
+import { updateForm } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { InputDivider } from '../../../widgets/InputDivider'
 import { useCreateLoanForm } from '../hooks/useCreateLoanForm'
@@ -78,7 +78,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
   useFormSync(values, onUpdate)
 
   const toggleLeverage = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) => setFormValue(form, 'leverageEnabled', event.target.checked),
+    (event: ChangeEvent<HTMLInputElement>) => updateForm(form, { leverageEnabled: event.target.checked }),
     [form],
   )
 
@@ -93,7 +93,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
           collateralToken={collateralToken}
           borrowToken={borrowToken}
           networks={networks}
-          onSlippageChange={(value) => setFormValue(form, 'slippage', value)}
+          onSlippageChange={(value) => updateForm(form, { slippage: value })}
         />
       }
     >
@@ -125,7 +125,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
               symbol={borrowToken?.symbol}
               balance={values.maxDebt}
               loading={maxDebt.isLoading}
-              onClick={useCallback(() => setFormValue(form, 'debt', values.maxDebt), [form, values.maxDebt])}
+              onClick={useCallback(() => updateForm(form, { debt: values.maxDebt }), [form, values.maxDebt])}
               buttonTestId="borrow-set-debt-to-max"
             />
           }

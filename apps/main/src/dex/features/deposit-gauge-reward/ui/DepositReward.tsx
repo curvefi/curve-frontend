@@ -19,7 +19,7 @@ import { BlockSkeleton } from '@ui/skeleton'
 import { FormContainer, FormFieldsContainer, GroupedFieldsContainer } from '@ui/styled-containers'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { formDefaultOptions } from '@ui-kit/lib/model/form'
-import { setFormValue } from '@ui-kit/utils/react-form.utils'
+import { updateForm } from '@ui-kit/utils/react-form.utils'
 
 export const DepositReward = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {
   const { address: signerAddress } = useConnection()
@@ -41,7 +41,7 @@ export const DepositReward = ({ chainId, poolId }: { chainId: ChainId; poolId: s
   const { data: userBalance } = useTokenBalance({ chainId, userAddress, tokenAddress: rewardTokenId })
 
   // Sync userBalance from query into form for validation
-  useEffect(() => setFormValue(form, 'userBalance', userBalance, { shouldValidate: true }), [userBalance, form])
+  useEffect(() => updateForm(form, { userBalance }), [userBalance, form])
 
   if (isPendingRewardDistributors) {
     return <BlockSkeleton height={440} />

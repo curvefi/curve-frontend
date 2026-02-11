@@ -4,7 +4,7 @@ import type { UseFormReturn } from 'react-hook-form'
 import { type Address } from 'viem'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { decimal, Decimal } from '@ui-kit/utils'
-import { setFormValue } from '@ui-kit/utils/react-form.utils'
+import { updateForm } from '@ui-kit/utils/react-form.utils'
 import { useCreateLoanMaxReceive } from '../../../queries/create-loan/create-loan-max-receive.query'
 import { useMarketMaxLeverage } from '../../../queries/market-max-leverage.query'
 import type { CreateLoanForm, CreateLoanFormQueryParams } from '../types'
@@ -47,20 +47,22 @@ export function useMaxTokenValues(
   useEffect(() => {
     const pendingDebtRatio = pendingRatioRef.current
     if (pendingDebtRatio && maxDebt) {
-      const value = decimal(BigNumber(maxDebt).times(pendingDebtRatio))
-      setFormValue(form, 'debt', value)
+      const debt = decimal(BigNumber(maxDebt).times(pendingDebtRatio))
+      updateForm(form, { debt, maxDebt })
       pendingRatioRef.current = null
+    } else {
+      updateForm(form, { maxDebt })
     }
   }, [form, maxDebt])
 
-  useEffect(() => setFormValue(form, 'maxCollateral', maxCollateral), [form, maxCollateral])
+  useEffect(() => updateForm(form, { maxDebt }), [form, maxDebt])
+  useEffect(() => updateForm(form, { maxCollateral }), [form, maxCollateral])
 
   // set range is not necessarily tied to maxTokenValues. However, it manipulates them, so we expose it here
   const setRange = useCallback(
     (range: number) => {
       const { debt, maxDebt } = form.getValues()
-      setFormValue(form, 'maxDebt', undefined)
-      setFormValue(form, 'range', range)
+      updateForm(form, { maxDebt: undefined, range })
       // maxDebt is now reset - when the new value arrives, set debt to the same ratio as before
       pendingRatioRef.current = decimal(debt && maxDebt && BigNumber(debt).div(maxDebt))!
     },

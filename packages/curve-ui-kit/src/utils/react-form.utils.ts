@@ -1,25 +1,31 @@
 import { useMemo } from 'react'
-import type { FieldPath, FieldPathValue, FieldValues, SetValueConfig, UseFormReturn } from 'react-hook-form'
-import type { FormState } from 'react-hook-form'
+import type { FieldPath, FieldPathValue, FieldValues, FormState, UseFormReturn } from 'react-hook-form'
 import { notFalsy, recordEntries } from '@curvefi/prices-api/objects.util'
 
-/** Options to pass to react-hook-form's setValue to trigger validation, dirty and touch states. */
-const DEFAULT_SET_FORM_VALUE_OPTIONS: SetValueConfig = { shouldValidate: true, shouldDirty: true, shouldTouch: true }
+export type FormUpdates<TFieldValues extends FieldValues> = Partial<{
+  [K in FieldPath<TFieldValues>]: FieldPathValue<TFieldValues, K>
+}>
 
 /**
- * Set a field value and force a full form revalidation.
- * Use this when resolver rules depend on multiple fields and `formState.isValid` must be refreshed immediately.
+ * Required RHF update helper in this codebase.
+ * Always uses a fixed update policy (`shouldValidate: false`, `shouldDirty: true`, `shouldTouch: true`)
+ * and then runs a full `form.trigger()` once per call.
+ * Direct `form.setValue()` / `form.trigger()` calls are lint-restricted.
  */
-export const setFormValue = <TFieldValues extends FieldValues, TFieldName extends FieldPath<TFieldValues>>(
+export function updateForm<TFieldValues extends FieldValues>(
   form: UseFormReturn<TFieldValues>,
-  field: TFieldName,
-  value: FieldPathValue<TFieldValues, TFieldName>,
-  options: SetValueConfig = DEFAULT_SET_FORM_VALUE_OPTIONS,
-): void => {
+  updates: FormUpdates<TFieldValues>,
+): void {
+  recordEntries(updates).forEach(([field, value]) =>
+    // eslint-disable-next-line no-restricted-syntax
+    form.setValue(field, value, {
+      shouldValidate: false, // we revalidate just below.
+      shouldDirty: true,
+      shouldTouch: true,
+    }),
+  )
   // eslint-disable-next-line no-restricted-syntax
-  form.setValue(field, value, options)
-  // eslint-disable-next-line no-restricted-syntax
-  form.trigger().catch((error: unknown) => console.error('setFormValue(): form.trigger() failed', error))
+  form.trigger().catch((error: unknown) => console.error('updateForm(): form.trigger() failed', error))
 }
 
 export const filterFormErrors = <TFieldValues extends FieldValues>(formState: FormState<TFieldValues>) =>

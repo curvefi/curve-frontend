@@ -136,9 +136,7 @@ export function createVirtualTestnet(
   return () => vnet
 }
 
-/**`<button class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-colorPrimary Mui-disabled MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-colorPrimary css-hzp3ai-MuiButtonBase-root-MuiButton-root" tabindex="-1" type="submit" disabled="" data-testid="repay-submit-button">...</button>`
-600
-
+/**
  * Creates a Cypress test helper that forks and manages a Tenderly virtual testnet lifecycle
  *
  * @param opts - Function that returns fork configuration options based on UUID

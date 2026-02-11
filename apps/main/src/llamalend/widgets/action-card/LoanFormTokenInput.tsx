@@ -1,5 +1,5 @@
 import { type ReactNode, useCallback, useMemo } from 'react'
-import type { FieldPath, FieldPathValue, FieldValues, UseFormReturn } from 'react-hook-form'
+import type { FieldPath, FieldValues, UseFormReturn } from 'react-hook-form'
 import type { Address } from 'viem'
 import { useConnection } from 'wagmi'
 import type { LlamaNetwork } from '@/llamalend/llamalend.types'
@@ -8,12 +8,12 @@ import type { PartialRecord } from '@curvefi/prices-api/objects.util'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LlamaIcon } from '@ui-kit/shared/icons/LlamaIcon'
-import { HelperMessage, LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import type { ChipsPreset, LargeTokenInputProps } from '@ui-kit/shared/ui/LargeTokenInput'
+import { HelperMessage, LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import type { Query } from '@ui-kit/types/util'
 import { decimal, Decimal } from '@ui-kit/utils'
-import { setFormValue } from '@ui-kit/utils/react-form.utils'
+import { type FormUpdates, updateForm } from '@ui-kit/utils/react-form.utils'
 
 type WalletBalanceProps = NonNullable<LargeTokenInputProps['walletBalance']>
 
@@ -109,7 +109,7 @@ export const LoanFormTokenInput = <
   const errorMessage = error?.message
   const onBalance = useCallback(
     (v?: Decimal) => {
-      setFormValue(form, name, v as FieldPathValue<TFieldValues, TFieldName>)
+      updateForm(form, { [name]: v } as FormUpdates<TFieldValues>)
       onValueChange?.(v)
     },
     [form, name, onValueChange],

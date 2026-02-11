@@ -17,7 +17,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { q } from '@ui-kit/types/util'
-import { setFormValue } from '@ui-kit/utils/react-form.utils'
+import { updateForm } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { useRepayForm } from '../hooks/useRepayForm'
 import { useTokenAmountConversion } from '../hooks/useTokenAmountConversion'
@@ -118,7 +118,7 @@ export const RepayForm = <ChainId extends IChainId>({
 
   useEffect(
     // Reset field when selectedField changes
-    () => () => setFormValue(form, selectedField, undefined),
+    () => () => updateForm(form, { [selectedField]: undefined }),
     [form, selectedField],
   )
 
@@ -132,7 +132,7 @@ export const RepayForm = <ChainId extends IChainId>({
           values={values}
           tokens={{ collateralToken, borrowToken }}
           networks={networks}
-          onSlippageChange={(value) => setFormValue(form, 'slippage', value)}
+          onSlippageChange={(value) => updateForm(form, { slippage: value })}
           hasLeverage={market && hasLeverage(market)}
           swapRequired={swapRequired}
         />
@@ -151,7 +151,7 @@ export const RepayForm = <ChainId extends IChainId>({
         })}
         testId={'repay-input-' + selectedField}
         network={network}
-        onValueChange={(v) => setFormValue(form, 'isFull', v === form.getValues('maxBorrowed'))}
+        onValueChange={(v) => updateForm(form, { isFull: v === form.getValues('maxBorrowed') })}
         tokenSelector={
           <RepayTokenSelector
             token={token}
@@ -169,10 +169,12 @@ export const RepayForm = <ChainId extends IChainId>({
             symbol={borrowToken?.symbol}
             balance={maxAmountInBorrowToken}
             loading={max[selectedField].isLoading || maxAmountInBorrowTokenLoading}
-            onClick={() => {
-              setFormValue(form, selectedField, max[selectedField].data)
-              setFormValue(form, 'isFull', selectedField === 'userBorrowed')
-            }}
+            onClick={() =>
+              updateForm(form, {
+                [selectedField]: max[selectedField].data,
+                isFull: selectedField === 'userBorrowed',
+              })
+            }
           />
         }
       />
