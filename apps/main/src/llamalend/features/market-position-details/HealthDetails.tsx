@@ -46,7 +46,7 @@ export const HealthDetails = ({
             <Typography
               variant="bodyXsRegular"
               component="span"
-              color="warning"
+              color="danger"
               sx={{ fontWeight: (t) => t.typography.fontWeightBold }}
             >
               {t`Liquidation may occur when health reaches 0.`}
