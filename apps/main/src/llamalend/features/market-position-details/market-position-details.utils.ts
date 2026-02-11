@@ -6,7 +6,7 @@ export const calculateRangeToLiquidation = (upperLiquidationPrice: number, oracl
 
 export const getHealthValueColor = ({
   theme: {
-    design: { Color, Text },
+    design: { Text },
   },
   isFullRepay,
   health,
@@ -20,7 +20,7 @@ export const getHealthValueColor = ({
   const red = Text.TextColors.Feedback.Error
   const orange = Text.TextColors.Feedback.Danger
   const green = Text.TextColors.Feedback.Success
-  const neutral = Text.TextColors.Primary
+  const neutral = Text.TextColors.FilledFeedback.Warning.Primary
 
   if (health != null && prevHealth != null) {
     if (Number(health) < Number(prevHealth)) {

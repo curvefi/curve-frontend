@@ -61,17 +61,49 @@ export const HealthBar = ({ health, softLiquidation, small }: HealthBarProps) =>
             transition: 'width 0.3s ease-in-out, background-color 0.3s ease-in-out',
           }}
         />
+        {/**
+         * Split-color text effect for critical health (< 5%):
+         *
+         * When health drops below 5%, the bar is red and needs white text for contrast.
+         * To handle text that spans beyond the red bar onto the gray background, we stack
+         * two identical labels: a black base layer and a white overlay. The overlay is
+         * wrapped in a container with overflow:hidden matching the bar width, so white
+         * text shows over red and black text shows over gray.
+         *
+         * For non-critical health (>= 5%), only the base label renders in warning color.
+         */}
         <Typography
           variant="bodyXsRegular"
           sx={{
             position: 'absolute',
             bottom: '2px',
             left: '2px',
-            color: (t) => t.design.Text.TextColors.FilledFeedback.Warning.Primary,
+            color: (t) =>
+              health != null && health < 5
+                ? t.design.Text.TextColors.Primary
+                : t.design.Text.TextColors.FilledFeedback.Warning.Primary,
           }}
         >
           {insetLabelText[getHealthLevel(health)]}
         </Typography>
+        {health != null && health < 5 && (
+          <Stack
+            sx={{
+              position: 'absolute',
+              bottom: '2px',
+              left: '2px',
+              width: `calc(${clampPercentage(health)}% - 2px)`,
+              overflow: 'hidden',
+            }}
+          >
+            <Typography
+              variant="bodyXsRegular"
+              sx={{ color: (t) => t.design.Text.TextColors.FilledFeedback.Alert.Primary, whiteSpace: 'nowrap' }}
+            >
+              {insetLabelText[getHealthLevel(health)]}
+            </Typography>
+          </Stack>
+        )}
       </Stack>
     </Stack>
   )
