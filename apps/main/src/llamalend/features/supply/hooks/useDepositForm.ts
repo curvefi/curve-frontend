@@ -15,7 +15,7 @@ import { vestResolver } from '@hookform/resolvers/vest'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
-import { setValueOptions, useCallbackAfterFormUpdate, useFormErrors } from '@ui-kit/utils/react-form.utils'
+import { updateForm, useCallbackAfterFormUpdate, useFormErrors } from '@ui-kit/utils/react-form.utils'
 
 const emptyDepositForm = (): DepositForm => ({
   depositAmount: undefined,
@@ -80,27 +80,27 @@ export const useDepositForm = <ChainId extends LlamaChainId>({
     userAddress,
   })
 
-  const formErrors = useFormErrors(form.formState)
+  const { formState } = form
 
   useCallbackAfterFormUpdate(form, resetDeposit)
 
   useEffect(() => {
-    form.setValue('maxDepositAmount', maxUserDeposit.data, setValueOptions)
+    updateForm(form, { maxDepositAmount: maxUserDeposit.data })
   }, [form, maxUserDeposit.data])
 
   return {
     form,
     values,
     params,
-    isPending: form.formState.isSubmitting || isDepositing,
+    isPending: formState.isSubmitting || isDepositing,
     onSubmit: form.handleSubmit(onSubmit),
-    isDisabled: formErrors.length > 0,
+    isDisabled: !formState.isValid,
     borrowToken,
     isDeposited,
     depositError,
     txHash: data?.hash,
     max: maxUserDeposit,
     isApproved: useDepositIsApproved(params, enabled),
-    formErrors,
+    formErrors: useFormErrors(formState),
   }
 }

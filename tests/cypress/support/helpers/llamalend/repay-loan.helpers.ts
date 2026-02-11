@@ -4,9 +4,21 @@ import { checkDebt, getActionValue } from './action-info.helpers'
 
 const getRepayInput = () => cy.get('[data-testid^="repay-input-"] input[type="text"]', LOAD_TIMEOUT).first()
 
-export function selectRepayToken(symbol: string) {
-  cy.get('[data-testid^="repay-input-"] [role="button"][aria-haspopup="listbox"]', LOAD_TIMEOUT).click()
+export function selectRepayToken({
+  symbol,
+  tokenAddress,
+  hasLeverage,
+}: {
+  symbol: string
+  tokenAddress: string
+  hasLeverage: boolean
+}) {
+  if (!hasLeverage) {
+    return cy.get(`[data-testid="token-icon-${tokenAddress.toLowerCase()}"]`, LOAD_TIMEOUT).should('be.visible')
+  }
+  cy.get('[data-testid^="repay-input-"] [aria-haspopup="listbox"]', LOAD_TIMEOUT).click()
   cy.get(`[data-testid="token-option-${symbol}"]`, LOAD_TIMEOUT).click()
+  cy.get(`[data-testid="token-icon-${tokenAddress.toLowerCase()}"]`, LOAD_TIMEOUT).should('be.visible')
 }
 
 export function writeRepayLoanForm({ amount }: { amount: Decimal }) {

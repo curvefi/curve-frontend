@@ -22,7 +22,7 @@ import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { mapQuery } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
-import { setValueOptions, useCallbackAfterFormUpdate, useFormErrors } from '@ui-kit/utils/react-form.utils'
+import { updateForm, useCallbackAfterFormUpdate, useFormErrors } from '@ui-kit/utils/react-form.utils'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 
 const useBorrowMoreParams = <ChainId>({
@@ -96,8 +96,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
 
   useEffect(() => {
     if (!values.leverageEnabled) {
-      form.setValue('userCollateral', undefined, setValueOptions)
-      form.setValue('userBorrowed', undefined, setValueOptions)
+      updateForm(form, { userCollateral: undefined, userBorrowed: undefined })
     }
   }, [form, values.leverageEnabled])
 
@@ -118,21 +117,21 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
 
   useCallbackAfterFormUpdate(form, resetBorrow)
 
-  const formErrors = useFormErrors(form.formState)
+  const { formState } = form
   return {
     form,
     values,
     params,
-    isPending: form.formState.isSubmitting || isBorrowing,
+    isPending: formState.isSubmitting || isBorrowing,
     onSubmit: form.handleSubmit(onSubmit),
-    isDisabled: formErrors.length > 0,
+    isDisabled: !formState.isValid,
     borrowToken,
     collateralToken,
     isBorrowed,
     borrowError,
     txHash: data?.hash,
     isApproved: useBorrowMoreIsApproved(params, enabled),
-    formErrors,
+    formErrors: useFormErrors(formState),
     max: useMaxBorrowMoreValues({ params, form, market }, enabled),
     health: useBorrowMoreHealth(params, enabled && !!values.debt),
     /** Current leverage calculated for now, but it's probably incorrect. It's in development in llamalend-js. */

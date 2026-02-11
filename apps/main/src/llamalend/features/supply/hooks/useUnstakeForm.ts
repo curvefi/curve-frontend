@@ -17,7 +17,7 @@ import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { t } from '@ui-kit/lib/i18n'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { mapQuery } from '@ui-kit/types/util'
-import { setValueOptions, useCallbackAfterFormUpdate, useFormErrors } from '@ui-kit/utils/react-form.utils'
+import { updateForm, useCallbackAfterFormUpdate, useFormErrors } from '@ui-kit/utils/react-form.utils'
 
 const emptyUnstakeForm = (): UnstakeForm => ({
   unstakeAmount: undefined,
@@ -87,27 +87,27 @@ export const useUnstakeForm = <ChainId extends LlamaChainId>({
     userAddress,
   })
 
-  const formErrors = useFormErrors(form.formState)
+  const { formState } = form
 
   useCallbackAfterFormUpdate(form, resetUnstake)
 
   useEffect(() => {
-    form.setValue('maxUnstakeAmount', maxUserUnstake.data, setValueOptions)
+    updateForm(form, { maxUnstakeAmount: maxUserUnstake.data })
   }, [form, maxUserUnstake.data])
 
   return {
     form,
     values,
     params,
-    isPending: form.formState.isSubmitting || isUnstaking,
+    isPending: formState.isSubmitting || isUnstaking,
     onSubmit: form.handleSubmit(onSubmit),
-    isDisabled: formErrors.length > 0,
+    isDisabled: !formState.isValid,
     vaultToken,
     borrowToken,
     isUnstaked,
     unstakeError,
     txHash: data?.hash,
     max: maxUserUnstake,
-    formErrors,
+    formErrors: useFormErrors(formState),
   }
 }

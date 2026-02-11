@@ -14,7 +14,7 @@ import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interf
 import { vestResolver } from '@hookform/resolvers/vest'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
-import { setValueOptions, useCallbackAfterFormUpdate, useFormErrors } from '@ui-kit/utils/react-form.utils'
+import { updateForm, useCallbackAfterFormUpdate, useFormErrors } from '@ui-kit/utils/react-form.utils'
 
 const emptyWithdrawForm = (): WithdrawForm => ({
   withdrawAmount: undefined,
@@ -74,26 +74,26 @@ export const useWithdrawForm = <ChainId extends LlamaChainId>({
     userAddress,
   })
 
-  const formErrors = useFormErrors(form.formState)
+  const { formState } = form
 
   useCallbackAfterFormUpdate(form, resetWithdraw)
 
   useEffect(() => {
-    form.setValue('maxWithdrawAmount', maxUserWithdraw.data, setValueOptions)
+    updateForm(form, { maxWithdrawAmount: maxUserWithdraw.data })
   }, [form, maxUserWithdraw.data])
 
   return {
     form,
     values,
     params,
-    isPending: form.formState.isSubmitting || isWithdrawing,
+    isPending: formState.isSubmitting || isWithdrawing,
     onSubmit: form.handleSubmit(onSubmit),
-    isDisabled: formErrors.length > 0,
+    isDisabled: !formState.isValid,
     borrowToken,
     isWithdrawn,
     withdrawError,
     txHash: data?.hash,
     max: maxUserWithdraw,
-    formErrors,
+    formErrors: useFormErrors(formState),
   }
 }

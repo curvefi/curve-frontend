@@ -18,7 +18,7 @@ import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { q } from '@ui-kit/types/util'
 import { joinButtonText } from '@ui-kit/utils'
-import { setValueOptions } from '@ui-kit/utils/react-form.utils'
+import { updateForm } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { useRepayForm } from '../hooks/useRepayForm'
 import { useTokenAmountConversion } from '../hooks/useTokenAmountConversion'
@@ -69,6 +69,7 @@ export const RepayForm = <ChainId extends IChainId>({
     values,
     params,
     isPending,
+    isDisabled,
     onSubmit,
     borrowToken,
     collateralToken,
@@ -104,10 +105,11 @@ export const RepayForm = <ChainId extends IChainId>({
     selectedField === 'stateCollateral' && t`Using collateral balances to repay.`,
     t`Max repay amount:`,
   ).join(' ')
+  const rawFormErrors = Object.entries(form.formState.errors)
 
   useEffect(
     // Reset field when selectedField changes
-    () => () => form.setValue(selectedField, undefined, setValueOptions),
+    () => () => updateForm(form, { [selectedField]: undefined }),
     [form, selectedField],
   )
 
@@ -121,7 +123,7 @@ export const RepayForm = <ChainId extends IChainId>({
           values={values}
           tokens={{ collateralToken, borrowToken }}
           networks={networks}
-          onSlippageChange={(value) => form.setValue('slippage', value, setValueOptions)}
+          onSlippageChange={(value) => updateForm(form, { slippage: value })}
           hasLeverage={market && hasLeverage(market)}
           swapRequired={swapRequired}
         />
@@ -140,7 +142,7 @@ export const RepayForm = <ChainId extends IChainId>({
         })}
         testId={'repay-input-' + selectedField}
         network={network}
-        onValueChange={(v) => form.setValue('isFull', v === form.getValues('maxBorrowed'), setValueOptions)}
+        onValueChange={(v) => updateForm(form, { isFull: v === form.getValues('maxBorrowed') })}
         tokenSelector={
           <RepayTokenSelector
             token={token}
@@ -158,11 +160,12 @@ export const RepayForm = <ChainId extends IChainId>({
             symbol={borrowToken?.symbol}
             balance={maxAmountInBorrowToken}
             loading={max[selectedField].isLoading || maxAmountInBorrowTokenLoading}
-            onClick={() => {
-              form.setValue(selectedField, max[selectedField].data, setValueOptions)
-              form.setValue('isFull', selectedField === 'userBorrowed', setValueOptions)
-              void form.trigger(max[selectedField].field) // re-validate max
-            }}
+            onClick={() =>
+              updateForm(form, {
+                [selectedField]: max[selectedField].data,
+                isFull: selectedField === 'userBorrowed',
+              })
+            }
           />
         }
       />
@@ -170,13 +173,28 @@ export const RepayForm = <ChainId extends IChainId>({
       <Button
         type="submit"
         loading={isPending || !market}
-        disabled={formErrors.length > 0}
+        disabled={isDisabled}
         data-testid="repay-submit-button"
+        data-validation={JSON.stringify({
+          hasMarket: !!market,
+          selectedField,
+          selectedToken,
+          swapRequired,
+          isPending,
+          isDisabled,
+          isValid: form.formState.isValid,
+          isSubmitting: form.formState.isSubmitting,
+          isApproved: q(isApproved),
+          isFull: q(isFull),
+          maxSelectedField: max[selectedField],
+          formErrors,
+          rawFormErrors,
+        })}
       >
         {isPending
           ? t`Processing...`
           : joinButtonText(
-              isApproved?.data === false && t`Approve`,
+              isApproved.data === false && t`Approve`,
               notFalsy(t`Repay`, fromPosition && t`from Position`).join(' '),
               isFull.data && t`Close Position`,
             )}
@@ -188,7 +206,7 @@ export const RepayForm = <ChainId extends IChainId>({
         txHash={txHash}
         formErrors={formErrors}
         network={network}
-        handledErrors={notFalsy(selectedField)}
+        handledErrors={notFalsy(selectedField, max[selectedField]?.field)}
         successTitle={t`Loan repaid`}
       />
     </Form>

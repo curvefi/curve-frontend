@@ -92,6 +92,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     reset: resetCreation,
   } = useCreateLoanMutation({ network, marketId: market?.id, onReset: form.reset, onCreated, userAddress })
 
+  const { formState } = form
   const { borrowToken, collateralToken } = market ? getTokens(market) : {}
 
   useCallbackAfterFormUpdate(form, resetCreation) // reset creation state on form change
@@ -100,7 +101,8 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     form,
     values,
     params,
-    isPending: form.formState.isSubmitting || isCreating,
+    isPending: formState.isSubmitting || isCreating,
+    isDisabled: !formState.isValid,
     onSubmit: form.handleSubmit(onSubmit),
     maxTokenValues: useMaxTokenValues(collateralToken?.address, params, form),
     borrowToken,
@@ -113,6 +115,6 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
       (d) => d.leverage,
     ),
     isApproved: useCreateLoanIsApproved(params),
-    formErrors: useFormErrors(form.formState),
+    formErrors: useFormErrors(formState),
   }
 }
