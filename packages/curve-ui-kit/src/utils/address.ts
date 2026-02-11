@@ -1,5 +1,7 @@
 import { getAddress, zeroAddress, type Address } from 'viem'
 
+export type { Address }
+
 type ShortenAddressOptions = {
   /** Number of digits to show on each side of the shortened address (default: 4) */
   digits?: number
