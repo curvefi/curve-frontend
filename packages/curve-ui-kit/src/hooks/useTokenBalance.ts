@@ -211,7 +211,7 @@ export const prefetchTokenBalances = async (
 ) => {
   const uniqueAddresses = Array.from(new Set(tokenAddresses))
 
-  const nativeToken = tokenAddresses.find((tokenAddress) => isNative({ tokenAddress }))
+  const nativeToken = uniqueAddresses.find((tokenAddress) => isNative({ tokenAddress }))
   const erc20Addresses = uniqueAddresses.filter((tokenAddress) => !isNative({ tokenAddress }))
 
   // Prefetch native balance individually (can't be multicalled as it uses wagmi's useBalance, and it's one address anyway)
