@@ -97,7 +97,7 @@ export const useBorrowPositionDetails = ({
   }, [collateral, borrowed, collateralUsdRate])
 
   const rebasingYield = lendSnapshots?.[lendSnapshots.length - 1]?.collateralToken?.rebasingYield // take most recent rebasing yield
-  const totalBorrowRate = borrowApr ? borrowApr - (rebasingYield ?? 0) : null
+  const totalBorrowRate = borrowApr != null ? borrowApr - (rebasingYield ?? 0) : null
   const healthValue = health ? Number(health) : null
   const liquidationRangeValue = liquidationPrices ? liquidationPrices.map(Number) : null
   const ltvValue =

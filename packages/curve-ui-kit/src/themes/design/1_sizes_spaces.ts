@@ -147,7 +147,8 @@ export const SizesAndSpaces = {
     footer: '96rem', // 1536px
     connectWallet: '50rem', // 800px
     actionCard: '28rem', // 448px
-    legacyActionCard: '29rem', // 464px // only used in the scrvusd action card which isn't refactored to use the new token inputs yet
+    legacyActionCard: '29rem', // 464px, only used in the scrvusd action card which isn't refactored to use the new token inputs yet
+    candleAndBandChart: '68.75rem', // 1100px, switches to column from row when charts start to become to small next to eachother
     emptyStateCard: '27.5rem', // 440px
     section: '59.5rem', // 952px
     tooltip: '27.5rem', // 440px

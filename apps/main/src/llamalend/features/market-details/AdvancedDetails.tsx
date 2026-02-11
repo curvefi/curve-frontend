@@ -20,11 +20,11 @@ const formatLiquidity = (value: number) =>
 
 export const AdvancedDetails = ({ collateral, availableLiquidity, maxLeverage, marketType }: AdvancedDetailsProps) => {
   const utilization =
-    availableLiquidity?.value && availableLiquidity.max
+    availableLiquidity?.value != null && availableLiquidity.max
       ? ((availableLiquidity.max - availableLiquidity.value) / availableLiquidity.max) * 100
       : undefined
   const utilizationBreakdown =
-    availableLiquidity?.value && availableLiquidity.max
+    availableLiquidity?.value != null && availableLiquidity.max
       ? `${formatLiquidity(availableLiquidity.max - availableLiquidity.value)}/${formatLiquidity(availableLiquidity.max)}`
       : undefined
 

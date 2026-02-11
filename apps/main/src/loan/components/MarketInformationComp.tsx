@@ -47,8 +47,7 @@ export const MarketInformationComp = ({ llamma, marketId, chainId, page = 'manag
           <Stack
             sx={{
               flexDirection: 'column',
-              // 1100px
-              '@media (min-width: 68.75rem)': {
+              [`@media (min-width: ${SizesAndSpaces.MaxWidth.candleAndBandChart})`]: {
                 flexDirection: 'row',
               },
             }}
