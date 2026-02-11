@@ -17,7 +17,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { q } from '@ui-kit/types/util'
-import { setValueOptions } from '@ui-kit/utils/react-form.utils'
+import { setFormValue } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { useRepayForm } from '../hooks/useRepayForm'
 import { useTokenAmountConversion } from '../hooks/useTokenAmountConversion'
@@ -118,7 +118,7 @@ export const RepayForm = <ChainId extends IChainId>({
 
   useEffect(
     // Reset field when selectedField changes
-    () => () => form.setValue(selectedField, undefined, setValueOptions),
+    () => () => setFormValue(form, selectedField, undefined),
     [form, selectedField],
   )
 
@@ -132,7 +132,7 @@ export const RepayForm = <ChainId extends IChainId>({
           values={values}
           tokens={{ collateralToken, borrowToken }}
           networks={networks}
-          onSlippageChange={(value) => form.setValue('slippage', value, setValueOptions)}
+          onSlippageChange={(value) => setFormValue(form, 'slippage', value)}
           hasLeverage={market && hasLeverage(market)}
           swapRequired={swapRequired}
         />
@@ -151,7 +151,7 @@ export const RepayForm = <ChainId extends IChainId>({
         })}
         testId={'repay-input-' + selectedField}
         network={network}
-        onValueChange={(v) => form.setValue('isFull', v === form.getValues('maxBorrowed'), setValueOptions)}
+        onValueChange={(v) => setFormValue(form, 'isFull', v === form.getValues('maxBorrowed'))}
         tokenSelector={
           <RepayTokenSelector
             token={token}
@@ -170,9 +170,8 @@ export const RepayForm = <ChainId extends IChainId>({
             balance={maxAmountInBorrowToken}
             loading={max[selectedField].isLoading || maxAmountInBorrowTokenLoading}
             onClick={() => {
-              form.setValue(selectedField, max[selectedField].data, setValueOptions)
-              form.setValue('isFull', selectedField === 'userBorrowed', setValueOptions)
-              void form.trigger(max[selectedField].field) // re-validate max
+              setFormValue(form, selectedField, max[selectedField].data)
+              setFormValue(form, 'isFull', selectedField === 'userBorrowed')
             }}
           />
         }
@@ -192,8 +191,8 @@ export const RepayForm = <ChainId extends IChainId>({
           isDisabled,
           isValid: form.formState.isValid,
           isSubmitting: form.formState.isSubmitting,
-          isApproved,
-          isFull,
+          isApproved: q(isApproved),
+          isFull: q(isFull),
           maxSelectedField: max[selectedField],
           formErrors,
           rawFormErrors,

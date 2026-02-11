@@ -13,7 +13,7 @@ import type { ChipsPreset, LargeTokenInputProps } from '@ui-kit/shared/ui/LargeT
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import type { Query } from '@ui-kit/types/util'
 import { decimal, Decimal } from '@ui-kit/utils'
-import { setValueOptions } from '@ui-kit/utils/react-form.utils'
+import { setFormValue } from '@ui-kit/utils/react-form.utils'
 
 type WalletBalanceProps = NonNullable<LargeTokenInputProps['walletBalance']>
 
@@ -109,11 +109,10 @@ export const LoanFormTokenInput = <
   const errorMessage = error?.message
   const onBalance = useCallback(
     (v?: Decimal) => {
-      form.setValue(name, v as FieldPathValue<TFieldValues, TFieldName>, setValueOptions)
-      if (maxFieldName) void form.trigger(maxFieldName) // validate max field when balance changes
+      setFormValue(form, name, v as FieldPathValue<TFieldValues, TFieldName>)
       onValueChange?.(v)
     },
-    [form, maxFieldName, name, onValueChange],
+    [form, name, onValueChange],
   )
   return (
     <LargeTokenInput

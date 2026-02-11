@@ -19,7 +19,7 @@ import { vestResolver } from '@hookform/resolvers/vest'
 import type { BaseConfig } from '@ui/utils'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
-import { useFormErrors } from '@ui-kit/utils/react-form.utils'
+import { setFormValue, useFormErrors } from '@ui-kit/utils/react-form.utils'
 
 const useCallbackAfterFormUpdate = (form: UseFormReturn<CollateralForm>, callback: () => void) =>
   useEffect(() => form.subscribe({ formState: { values: true }, callback }), [form, callback])
@@ -83,7 +83,7 @@ export const useRemoveCollateralForm = <
   useCallbackAfterFormUpdate(form, action.reset)
 
   useEffect(() => {
-    form.setValue('maxCollateral', maxRemovable.data, { shouldValidate: true })
+    setFormValue(form, 'maxCollateral', maxRemovable.data)
   }, [form, maxRemovable.data])
 
   return {

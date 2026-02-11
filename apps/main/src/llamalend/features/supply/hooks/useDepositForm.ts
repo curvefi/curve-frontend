@@ -16,7 +16,7 @@ import { vestResolver } from '@hookform/resolvers/vest'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
-import { setValueOptions, useFormErrors } from '@ui-kit/utils/react-form.utils'
+import { setFormValue, useFormErrors } from '@ui-kit/utils/react-form.utils'
 
 const useCallbackAfterFormUpdate = (form: UseFormReturn<DepositForm>, callback: () => void) =>
   useEffect(() => form.subscribe({ formState: { values: true }, callback }), [form, callback])
@@ -89,7 +89,7 @@ export const useDepositForm = <ChainId extends LlamaChainId>({
   useCallbackAfterFormUpdate(form, resetDeposit)
 
   useEffect(() => {
-    form.setValue('maxDepositAmount', maxUserDeposit.data, setValueOptions)
+    setFormValue(form, 'maxDepositAmount', maxUserDeposit.data)
   }, [form, maxUserDeposit.data])
 
   return {

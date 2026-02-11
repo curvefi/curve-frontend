@@ -19,6 +19,7 @@ import { BlockSkeleton } from '@ui/skeleton'
 import { FormContainer, FormFieldsContainer, GroupedFieldsContainer } from '@ui/styled-containers'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { formDefaultOptions } from '@ui-kit/lib/model/form'
+import { setFormValue } from '@ui-kit/utils/react-form.utils'
 
 export const DepositReward = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {
   const { address: signerAddress } = useConnection()
@@ -28,28 +29,26 @@ export const DepositReward = ({ chainId, poolId }: { chainId: ChainId; poolId: s
     userAddress: signerAddress,
   })
 
-  const methods = useForm<DepositRewardFormValues>({
+  const form = useForm<DepositRewardFormValues>({
     ...formDefaultOptions,
     resolver: vestResolver(depositRewardValidationSuite),
     defaultValues: DepositRewardDefaultValues,
   })
 
   // eslint-disable-next-line react-hooks/incompatible-library
-  const rewardTokenId = methods.watch('rewardTokenId')
+  const rewardTokenId = form.watch('rewardTokenId')
   const { address: userAddress } = useConnection()
   const { data: userBalance } = useTokenBalance({ chainId, userAddress, tokenAddress: rewardTokenId })
 
   // Sync userBalance from query into form for validation
-  useEffect(() => {
-    methods.setValue('userBalance', userBalance, { shouldValidate: true })
-  }, [userBalance, methods])
+  useEffect(() => setFormValue(form, 'userBalance', userBalance, { shouldValidate: true }), [userBalance, form])
 
   if (isPendingRewardDistributors) {
     return <BlockSkeleton height={440} />
   }
 
   return (
-    <FormProvider {...methods}>
+    <FormProvider {...form}>
       <form>
         <FormContainer>
           <FormFieldsContainer>

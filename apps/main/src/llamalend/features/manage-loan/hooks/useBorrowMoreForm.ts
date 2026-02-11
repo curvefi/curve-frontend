@@ -23,7 +23,7 @@ import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { mapQuery } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
-import { setValueOptions, useFormErrors } from '@ui-kit/utils/react-form.utils'
+import { setFormValue, useFormErrors } from '@ui-kit/utils/react-form.utils'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 
 const useCallbackAfterFormUpdate = (form: UseFormReturn<BorrowMoreForm>, callback: () => void) =>
@@ -100,8 +100,8 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
 
   useEffect(() => {
     if (!values.leverageEnabled) {
-      form.setValue('userCollateral', undefined, setValueOptions)
-      form.setValue('userBorrowed', undefined, setValueOptions)
+      setFormValue(form, 'userCollateral', undefined)
+      setFormValue(form, 'userBorrowed', undefined)
     }
   }, [form, values.leverageEnabled])
 

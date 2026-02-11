@@ -10,7 +10,7 @@ import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interf
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { useQueryMinimum } from '@ui-kit/lib'
 import { mapQuery } from '@ui-kit/types/util'
-import { setValueOptions } from '@ui-kit/utils/react-form.utils'
+import { setFormValue } from '@ui-kit/utils/react-form.utils'
 
 export function useMaxRepayTokenValues<ChainId extends LlamaChainId>(
   {
@@ -44,17 +44,11 @@ export function useMaxRepayTokenValues<ChainId extends LlamaChainId>(
     mapQuery(userState, (d) => d.debt),
   )
 
+  useEffect(() => setFormValue(form, 'maxCollateral', maxUserCollateral.data), [form, maxUserCollateral.data])
+  useEffect(() => setFormValue(form, 'maxBorrowed', maxBorrowed.data), [form, maxBorrowed.data])
+  useEffect(() => (isFull.data == null ? undefined : setFormValue(form, 'isFull', isFull.data)), [form, isFull.data])
   useEffect(
-    () => form.setValue('maxCollateral', maxUserCollateral.data, setValueOptions),
-    [form, maxUserCollateral.data],
-  )
-  useEffect(() => form.setValue('maxBorrowed', maxBorrowed.data, setValueOptions), [form, maxBorrowed.data])
-  useEffect(
-    () => (isFull.data == null ? undefined : form.setValue('isFull', isFull.data, setValueOptions)),
-    [form, isFull.data],
-  )
-  useEffect(
-    () => form.setValue('maxStateCollateral', userState.data?.collateral, setValueOptions),
+    () => setFormValue(form, 'maxStateCollateral', userState.data?.collateral),
     [form, userState.data?.collateral],
   )
 
