@@ -50,7 +50,7 @@ export function useMaxRepayTokenValues<ChainId extends LlamaChainId>(
   )
   useEffect(() => form.setValue('maxBorrowed', maxBorrowed.data, setValueOptions), [form, maxBorrowed.data])
   useEffect(
-    () => (isFull.data ? form.setValue('isFull', isFull.data, setValueOptions) : undefined),
+    () => (isFull.data == null ? undefined : form.setValue('isFull', isFull.data, setValueOptions)),
     [form, isFull.data],
   )
   useEffect(

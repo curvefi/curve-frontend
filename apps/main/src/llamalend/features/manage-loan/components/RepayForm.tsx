@@ -193,7 +193,7 @@ export const RepayForm = <ChainId extends IChainId>({
         txHash={txHash}
         formErrors={formErrors}
         network={network}
-        handledErrors={notFalsy(selectedField)}
+        handledErrors={notFalsy(selectedField, max[selectedField]?.field)}
         successTitle={t`Loan repaid`}
       />
     </Form>
