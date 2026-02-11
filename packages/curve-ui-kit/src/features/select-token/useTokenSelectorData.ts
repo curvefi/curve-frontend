@@ -41,13 +41,14 @@ export const useTokenSelectorData = (
    */
   useEffect(() => {
     if (prefetch && chainId && userAddress && tokenAddresses.length > 0) {
-      prefetchTokenBalances(config, { chainId, userAddress, tokenAddresses })
+      void prefetchTokenBalances(config, { chainId, userAddress, tokenAddresses })
     }
   }, [prefetch, config, chainId, userAddress, tokenAddresses])
 
   const { data: balances, isLoading } = useTokenBalances(
     { chainId, userAddress, tokenAddresses: enabled ? tokenAddresses : [] },
-    enabled,
+    // We only care for query observers and don't want to invoke queryFn for each token balance separately, so we disable the query and rely on prefetchTokenBalances.
+    false,
   )
 
   // Only fetch prices for tokens the user has a balance of

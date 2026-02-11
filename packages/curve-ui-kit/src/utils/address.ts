@@ -1,6 +1,6 @@
-import { getAddress, zeroAddress } from 'viem'
+import { getAddress, zeroAddress, type Address } from 'viem'
 
-export type { Address } from 'viem'
+export type { Address }
 
 type ShortenAddressOptions = {
   /** Number of digits to show on each side of the shortened address (default: 4) */
@@ -36,6 +36,9 @@ export const shortenHash = (hash: string, { digits = 5 }: ShortenAddressOptions 
  */
 export const shortenAddress = (address: string | undefined, options?: ShortenAddressOptions): string =>
   shortenHash(getAddress(address || zeroAddress), options)
+
+/** Makes sure a list of addresses doesn't contain duplicates. */
+export const uniqAddresses = (addresses: Address[]) => Array.from(new Set(addresses))
 
 export const CRVUSD_ADDRESS = '0xf939e0a03fb07f59a73314e73794be0e57ac1b4e' as const
 export const CRV_ADDRESS = '0xd533a949740bb3306d119cc777fa900ba034cd52' as const
