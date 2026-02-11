@@ -1,7 +1,7 @@
 import { ReactNode, useState } from 'react'
 import { LlamaMonitorBotLinkButton } from '@/llamalend/features/market-position-details'
 import { Box, Stack } from '@mui/material'
-import { useMarketPageHeader } from '@ui-kit/hooks/useFeatureFlags'
+import { useIntegratedLlamaHeader } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 
@@ -26,7 +26,7 @@ export const MarketInformationTabs = ({ currentTab, hrefs, children }: MarketInf
     { value: 'supply', label: t`Supply`, href: hrefs.supply },
   ]
   const [tab, setTab] = useState<Tab>(currentTab)
-  const showPageHeader = useMarketPageHeader()
+  const showPageHeader = useIntegratedLlamaHeader()
 
   return (
     <Box>

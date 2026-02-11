@@ -1,6 +1,6 @@
 import { Alert, Stack, Typography } from '@mui/material'
 import { CampaignPoolRewards } from '@ui-kit/entities/campaigns'
-import { useMarketPageHeader } from '@ui-kit/hooks/useFeatureFlags'
+import { useIntegratedLlamaHeader } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { LlamaMarketType } from '@ui-kit/types/market'
@@ -123,7 +123,7 @@ export const BorrowPositionDetails = ({
   totalDebt,
   collateralLoss,
 }: BorrowPositionDetailsProps) => {
-  const showPageHeader = useMarketPageHeader()
+  const showPageHeader = useIntegratedLlamaHeader()
   return (
     <Stack>
       {liquidationAlert.softLiquidation && <LiquidationAlert type="soft" />}

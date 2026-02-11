@@ -1,5 +1,5 @@
 import { Stack, Typography, useTheme } from '@mui/material'
-import { useMarketPageHeader } from '@ui-kit/hooks/useFeatureFlags'
+import { useIntegratedLlamaHeader } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -16,7 +16,7 @@ export const HealthDetails = ({
   liquidationAlert: LiquidationAlert
 }) => {
   const theme = useTheme()
-  const showPageHeader = useMarketPageHeader()
+  const showPageHeader = useIntegratedLlamaHeader()
   return (
     <Stack sx={{ padding: Spacing.md }}>
       <Stack gap={2}>
