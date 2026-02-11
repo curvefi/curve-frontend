@@ -52,7 +52,7 @@ export const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, s
   const updateFormValues = useCallback(() => {
     setTxInfoBar(null)
     setSlippageConfirmed(false)
-    void setFormValues('CLAIM', config, curve, poolDataCacheOrApi.pool.id, poolData, {}, null, seed.isSeed, '')
+    setFormValues('CLAIM', config, curve, poolDataCacheOrApi.pool.id, poolData, {}, null, seed.isSeed, '')
   }, [config, curve, poolData, poolDataCacheOrApi.pool.id, seed.isSeed, setFormValues])
 
   const handleClaimClick = useCallback(

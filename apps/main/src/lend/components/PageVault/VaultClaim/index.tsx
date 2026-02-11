@@ -39,7 +39,7 @@ export const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContent
   const haveClaimableRewards = rewards.some((r) => +r.amount > 0)
 
   const updateFormValues = useCallback(() => {
-    void setFormValues(userActiveKey, isLoaded ? api : null, market)
+    setFormValues(userActiveKey, isLoaded ? api : null, market)
   }, [api, isLoaded, market, setFormValues, userActiveKey])
 
   const reset = useCallback(() => {

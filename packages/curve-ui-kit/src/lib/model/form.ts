@@ -1,11 +1,10 @@
 import { type FieldValues, type UseFormReturn } from 'react-hook-form'
 
+/** Shared defaults for action forms. */
 export const formDefaultOptions = {
   mode: 'onChange',
   reValidateMode: 'onBlur',
-  resetOptions: {
-    keepErrors: false,
-  },
+  resetOptions: { keepErrors: false },
   delayError: 150,
   criteriaMode: 'all',
 } as const

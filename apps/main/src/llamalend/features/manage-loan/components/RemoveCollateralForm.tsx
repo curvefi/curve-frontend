@@ -31,6 +31,7 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
     form,
     params,
     isPending,
+    isDisabled,
     onSubmit,
     action,
     values,
@@ -90,7 +91,7 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
       <Button
         type="submit"
         loading={isPending || !market}
-        disabled={formErrors.length > 0}
+        disabled={isDisabled}
         data-testid="remove-collateral-submit-button"
       >
         {isPending ? t`Processing...` : t`Remove collateral`}
