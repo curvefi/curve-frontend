@@ -31,7 +31,7 @@ export const HealthDetails = ({
             value={Number(value)}
             loading={loading}
             valueOptions={{ unit: 'none', color: getHealthValueColor({ health: decimal(value), theme }) }}
-            size="large"
+            size="medium"
           />
           <HealthBar health={Number(value)} softLiquidation={softLiquidation} />
         </Stack>
@@ -41,14 +41,17 @@ export const HealthDetails = ({
           alignItems={{ mobile: 'flex-start', tablet: 'center' }}
           justifyContent="space-between"
         >
-          <Stack display="flex" flexDirection="column">
-            <Typography variant="bodyXsRegular">
-              {t`Health determines a position liquidation. It is not directly correlated to the price of the collateral. `}
-            </Typography>
-            <Typography variant="bodyXsRegular" sx={{ fontWeight: (t) => t.typography.fontWeightBold }}>
+          <Typography variant="bodyXsRegular" component="p">
+            {t`Health determines a position liquidation. It is not directly correlated to the price of the collateral. `}
+            <Typography
+              variant="bodyXsRegular"
+              component="span"
+              color="warning"
+              sx={{ fontWeight: (t) => t.typography.fontWeightBold }}
+            >
               {t`Liquidation may occur when health reaches 0.`}
             </Typography>
-          </Stack>
+          </Typography>
           {!showPageHeader && <LlamaMonitorBotLinkButton />}
         </Stack>
       </Stack>

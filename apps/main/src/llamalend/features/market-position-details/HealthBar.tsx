@@ -20,10 +20,9 @@ type LabelProps = {
 type LineColor = 'red' | 'orange' | 'green' | 'dark-green'
 type HealthLevel = 'liquidation' | 'risky' | 'good' | 'pristine'
 
-const BAR_HEIGHT = '1.4375rem' // 23px
+const BAR_HEIGHT = '1rem' // 16px
 const LINE_WIDTH = '0.25rem' // 4px
-const LABEL_GAP = '0.125rem' // 2px
-const TRACK_BOTTOM_PADDING = '0.3125rem' // 5px
+const TRACK_BOTTOM_PADDING = '0.21875rem' // 3.5px
 
 const LinePositions = {
   liquidation: '0%',
@@ -130,7 +129,7 @@ export const HealthBar = ({ health, softLiquidation, small }: HealthBarProps) =>
       />
     )
   ) : (
-    <Stack sx={{ gap: LABEL_GAP }} paddingBottom={TRACK_BOTTOM_PADDING}>
+    <Stack paddingBottom={TRACK_BOTTOM_PADDING}>
       <Stack flexDirection="row" sx={{ position: 'relative', width: '100%', height: '1rem' }}>
         {labels.map((label, index) => (
           <Label
