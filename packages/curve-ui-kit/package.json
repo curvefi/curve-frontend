@@ -11,7 +11,9 @@
     "lint:fix": "eslint . --ext .ts,.tsx --fix",
     "storybook": "storybook dev -p 6006 --no-open",
     "typecheck": "tsc --tsBuildInfoFile ../../.cache/typecheck/packages-curve-ui-kit.tsbuildinfo",
-    "build:storybook": "storybook build"
+    "build:storybook": "storybook build",
+    "tokens:import": "node --experimental-strip-types scripts/import-tokens-studio.ts --write",
+    "tokens:check": "node --experimental-strip-types scripts/import-tokens-studio.ts --check"
   },
   "dependencies": {
     "@coinbase/wallet-sdk": "~4.3.7",
