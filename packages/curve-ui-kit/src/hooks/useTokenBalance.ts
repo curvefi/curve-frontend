@@ -1,3 +1,4 @@
+import { chunk, zip } from 'lodash'
 import { useCallback, useMemo } from 'react'
 import { erc20Abi, ethAddress, formatUnits, isAddressEqual, type Address } from 'viem'
 import { useConfig, useBalance, useReadContracts } from 'wagmi'
@@ -234,13 +235,10 @@ export const prefetchTokenBalances = async (
   const updatedAt = Date.now()
 
   // Each token uses 2 contracts (balanceOf + decimals), so chunk results by 2
-  for (let i = 0; i < erc20Addresses.length; i++) {
-    // Failures are fine — allowFailure defaults to true, so failed calls are seeded as
-    // { status: 'failure' } entries. Downstream consumers (useTokenBalance, fetchTokenBalance)
-    // already handle per-token failures gracefully.
-    const { queryKey } = readContractsQueryOptions(config, { contracts: tokenContracts[i] })
-    const tokenResults = [results[i * 2], results[i * 2 + 1]]
-
-    queryClient.setQueryData(queryKey, tokenResults, { updatedAt })
-  }
+  // Failures are fine — allowFailure defaults to true, so failed calls are seeded as
+  // { status: 'failure' } entries. Downstream consumers (useTokenBalance, fetchTokenBalance)
+  // already handle per-token failures gracefully.
+  zip(tokenContracts, chunk(results, 2))
+    .map(([contracts, tokenResults]) => [readContractsQueryOptions(config, { contracts }), tokenResults] as const)
+    .forEach(([{ queryKey }, tokenResults]) => queryClient.setQueryData(queryKey, tokenResults, { updatedAt }))
 }
