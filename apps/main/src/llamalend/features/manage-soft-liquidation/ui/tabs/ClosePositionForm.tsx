@@ -9,7 +9,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { joinButtonText } from '@ui-kit/utils'
-import { setValueOptions } from '@ui-kit/utils/react-form.utils'
+import { updateForm } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { AlertAdditionalCrvUsd } from '../alerts/AlertAdditionalCrvUsd'
 import { AlertClosePosition } from '../alerts/AlertClosePosition'
@@ -63,7 +63,7 @@ export const ClosePositionForm = ({
           chainId={network.chainId}
           networks={networks}
           values={values}
-          onSlippageChange={(value) => form.setValue('slippage', value, setValueOptions)}
+          onSlippageChange={(slippage) => updateForm(form, { slippage })}
         />
       }
     >

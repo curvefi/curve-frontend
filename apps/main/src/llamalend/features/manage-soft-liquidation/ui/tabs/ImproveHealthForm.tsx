@@ -13,7 +13,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { joinButtonText } from '@ui-kit/utils'
-import { setValueOptions } from '@ui-kit/utils/react-form.utils'
+import { updateForm } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { AlertRepayDebtToIncreaseHealth } from '../alerts/AlertRepayDebtToIncreaseHealth'
 import { ButtonGetCrvUsd } from '../ButtonGetCrvUsd'
@@ -66,7 +66,7 @@ export const ImproveHealthForm = ({
           values={values}
           tokens={{ collateralToken, borrowToken }}
           networks={networks}
-          onSlippageChange={(value) => form.setValue('slippage', value, setValueOptions)}
+          onSlippageChange={(slippage) => updateForm(form, { slippage })}
           hasLeverage={market && hasLeverage(market)}
           swapRequired={false}
         />
@@ -81,9 +81,7 @@ export const ImproveHealthForm = ({
         max={{ ...maxRepay, fieldName: maxRepay.field }}
         testId="improve-health-input-debt"
         network={network}
-        onValueChange={(v) => {
-          form.setValue('isFull', v === form.getValues('maxBorrowed'), setValueOptions)
-        }}
+        onValueChange={(v) => updateForm(form, { isFull: v === form.getValues('maxBorrowed') })}
         message={
           <Balance
             prefix={t`Max repay amount:`}
@@ -91,11 +89,7 @@ export const ImproveHealthForm = ({
             symbol={borrowToken?.symbol}
             balance={maxRepay.data}
             loading={maxRepay.isLoading}
-            onClick={() => {
-              form.setValue('userBorrowed', maxRepay.data, setValueOptions)
-              form.setValue('isFull', true, setValueOptions)
-              void form.trigger(maxRepay.field)
-            }}
+            onClick={() => updateForm(form, { userBorrowed: maxRepay.data, isFull: true })}
           />
         }
       />
