@@ -17,6 +17,7 @@ Default mode updates color-linked theme tokens plus `1_sizes_spaces.ts`.
 1. Export a **folder** from Tokens Studio (JSON files).
 2. Use **W3C/DTCG** token format (`$value` / `$type`).
 3. Include a `$themes` payload with required themes: `light`, `dark`, `chad`.
+   - If `$themes` is missing/empty, the importer can infer themes from `02_Theme/Light|Dark|Chad` sets.
 4. Theme set statuses:
 - Included: `enabled`, `source`
 - Excluded: `disabled`
@@ -59,7 +60,7 @@ For each theme (`light`, `dark`, `chad`) after Tokens Studio set resolution:
 
 - `surfaces.*` -> `PlainSurfaces.<Theme>` block in `1_surfaces_text.ts`
 - `themeConstants.*` -> `ImportedThemeConstants.<theme>` block in `2_theme.ts`
-- Full resolved theme paths -> `ImportedThemeFlat.<theme>` block in `2_theme.ts`
+- Required runtime token paths used by `2_theme.ts` button/focus/text overrides -> `ImportedThemeFlat.<theme>` block in `2_theme.ts`
 
 Examples:
 
@@ -74,7 +75,7 @@ Examples:
 The importer fails when:
 
 1. Legacy tokens are detected (`value`/`type` instead of `$value`/`$type`).
-2. `$themes` is missing.
+2. `$themes` is missing and the fallback `02_Theme/Light|Dark|Chad` pattern is unavailable.
 3. Required theme (`light`, `dark`, `chad`) is missing.
 4. A required mapped token path is missing.
 5. A theme references a missing token set.

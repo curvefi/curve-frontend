@@ -35,29 +35,6 @@ const ENABLED_STATUSES = new Set(['enabled', 'source'])
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url))
 const WORKSPACE_ROOT = resolve(SCRIPT_DIR, '..')
 
-const LEGACY_GENERATED_FILES = {
-  primitives: {
-    constName: 'GeneratedPrimitives',
-    filePath: resolve(WORKSPACE_ROOT, 'src/themes/design/generated/primitives.generated.ts'),
-  },
-  sizesAndSpaces: {
-    constName: 'GeneratedSizesAndSpaces',
-    filePath: resolve(WORKSPACE_ROOT, 'src/themes/design/generated/sizes-spaces.generated.ts'),
-  },
-  surfacesPlain: {
-    constName: 'GeneratedSurfacesPlain',
-    filePath: resolve(WORKSPACE_ROOT, 'src/themes/design/generated/surfaces-plain.generated.ts'),
-  },
-  themeConstants: {
-    constName: 'GeneratedThemeConstants',
-    filePath: resolve(WORKSPACE_ROOT, 'src/themes/design/generated/theme-constants.generated.ts'),
-  },
-  themeFlat: {
-    constName: 'GeneratedThemeFlat',
-    filePath: resolve(WORKSPACE_ROOT, 'src/themes/design/generated/theme-flat.generated.ts'),
-  },
-} as const
-
 const DESIGN_FILES = {
   primitives: {
     constName: 'Primitives',
@@ -95,6 +72,70 @@ const DESIGN_FILES = {
     exported: false,
   },
 } as const
+
+const REQUIRED_THEME_FLAT_PATHS = (() => {
+  const buttonShape: Record<string, Record<string, string[]>> = {
+    Primary: {
+      Default: ['Label & Icon', 'Fill'],
+      Hover: ['Label & Icon', 'Fill'],
+      Disabled: ['Label & Icon', 'Fill'],
+    },
+    Secondary: {
+      Default: ['Label & Icon', 'Fill'],
+      Hover: ['Label & Icon', 'Fill'],
+      Disabled: ['Label & Icon', 'Fill'],
+    },
+    Outlined: {
+      Default: ['Label & Icon', 'Outline'],
+      Hover: ['Label & Icon', 'Outline'],
+      Disabled: ['Label & Icon', 'Outline'],
+    },
+    Ghost: {
+      Default: ['Label & Icon'],
+      Hover: ['Label & Icon', 'Fill'],
+      Disabled: ['Label & Icon', 'Fill'],
+    },
+    Success: {
+      Default: ['Label & Icon', 'Fill'],
+      Hover: ['Label & Icon', 'Fill'],
+      Disabled: ['Label & Icon', 'Fill'],
+    },
+    Error: {
+      Default: ['Label & Icon', 'Fill'],
+      Hover: ['Label & Icon', 'Fill'],
+      Disabled: ['Label & Icon', 'Fill'],
+    },
+    Navigation: {
+      Default: ['Label & Icon'],
+      Hover: ['Label & Icon', 'Fill'],
+      Current: ['Label & Icon', 'Fill'],
+    },
+  }
+
+  const paths = [
+    'Text.Feedback.Inverted',
+    'Button.Focus Outline Width',
+    'Button.Focus Outline',
+    'Button.Radius.xs',
+    'Button.Radius.sm',
+    'Button.Radius.md',
+    'Button.Radius.lg',
+  ]
+
+  for (const [variant, states] of Object.entries(buttonShape)) {
+    for (const [state, fields] of Object.entries(states)) {
+      for (const field of fields) {
+        paths.push(`Button.${variant}.${state}.${field}`)
+      }
+    }
+  }
+
+  return paths
+})()
+const OPTIONAL_THEME_FLAT_PATHS = new Set(['Text.Feedback.Inverted'])
+
+type DesignFileKey = keyof typeof DESIGN_FILES
+const DESIGN_FILE_KEYS = Object.keys(DESIGN_FILES) as DesignFileKey[]
 
 const usage = () => {
   console.info(
@@ -401,10 +442,10 @@ const resolveThemeTokens = (
 
 const loadConstObject = async (filePath: string, constName: string): Promise<unknown> => {
   const source = await readFile(filePath, 'utf8')
-  const marker = `export const ${constName} =`
-  const markerIndex = source.indexOf(marker)
+  const markers = [`export const ${constName} =`, `const ${constName} =`]
+  const markerIndex = markers.map((marker) => source.indexOf(marker)).find((index) => index >= 0) ?? -1
   if (markerIndex < 0) {
-    throw new Error(`Could not find '${marker}' in ${filePath}`)
+    throw new Error(`Could not find const declaration for '${constName}' in ${filePath}`)
   }
 
   const objectStart = source.indexOf('{', markerIndex)
@@ -514,29 +555,6 @@ const coerceLeaf = (expected: TokenLeafValue, resolvedRaw: unknown, tokenPath: s
   }
 
   throw new Error(`Unsupported expected type at '${tokenPath}'`)
-}
-
-const walkTemplate = (
-  template: unknown,
-  makeTokenPath: (path: string[]) => string,
-  resolver: ReturnType<typeof createResolver>,
-  path: string[] = [],
-): unknown => {
-  if (isLeafValue(template)) {
-    const tokenPath = makeTokenPath(path)
-    const resolved = resolver.resolvePath(tokenPath)
-    return coerceLeaf(template, resolved, tokenPath)
-  }
-
-  if (!isObject(template)) {
-    throw new Error(`Unsupported template node at '${path.join('.')}'`)
-  }
-
-  const out: JsonObject = {}
-  for (const [key, value] of Object.entries(template)) {
-    out[key] = walkTemplate(value, makeTokenPath, resolver, [...path, key])
-  }
-  return out
 }
 
 const buildPrimitives = (
@@ -887,10 +905,30 @@ const buildThemeFlat = (
 
   for (const theme of REQUIRED_THEMES) {
     const resolver = createResolver(resolvedThemes[theme])
-    const keys = [...resolvedThemes[theme].keys()].sort((a, b) => a.localeCompare(b))
+    const missingRequired: string[] = []
+    const themePrefix = `${theme[0].toUpperCase()}${theme.slice(1)}`
 
-    for (const key of keys) {
-      const resolved = resolver.resolvePath(key)
+    for (const key of REQUIRED_THEME_FLAT_PATHS) {
+      let resolved: unknown
+      let resolvedToken = false
+
+      for (const candidate of [key, `${themePrefix}.${key}`]) {
+        try {
+          resolved = resolver.resolvePath(candidate)
+          resolvedToken = true
+          break
+        } catch {
+          // try next candidate
+        }
+      }
+
+      if (!resolvedToken) {
+        if (!OPTIONAL_THEME_FLAT_PATHS.has(key)) {
+          missingRequired.push(key)
+        }
+        continue
+      }
+
       if (isLeafValue(resolved)) {
         if (colorOnly) {
           if (typeof resolved !== 'string' || !isColorLikeValue(resolved)) continue
@@ -898,6 +936,12 @@ const buildThemeFlat = (
         out[theme][key] = resolved
       }
     }
+
+    if (missingRequired.length > 0) {
+      throw new Error(`Missing required runtime token(s) for theme '${theme}': ${missingRequired.join(', ')}`)
+    }
+
+    out[theme] = Object.fromEntries(Object.entries(out[theme]).sort(([a], [b]) => a.localeCompare(b)))
   }
 
   return out
@@ -913,14 +957,14 @@ const mergeColorOnlyThemeFlat = (
     chad: {},
   }
 
-  for (const theme of REQUIRED_THEMES) {
-    const base = isObject(template[theme]) ? ({ ...(template[theme] as Record<string, TokenLeafValue>) } as Record<string, TokenLeafValue>) : {}
+  const requiredSet = new Set(REQUIRED_THEME_FLAT_PATHS)
 
-    for (const [key, value] of Object.entries(base)) {
-      if (typeof value === 'string' && isColorLikeValue(value) && !(key in colorUpdates[theme])) {
-        delete base[key]
-      }
-    }
+  for (const theme of REQUIRED_THEMES) {
+    const base = isObject(template[theme])
+      ? (Object.fromEntries(
+          Object.entries(template[theme] as Record<string, TokenLeafValue>).filter(([key]) => requiredSet.has(key)),
+        ) as Record<string, TokenLeafValue>)
+      : {}
 
     for (const [key, value] of Object.entries(colorUpdates[theme])) {
       base[key] = value
@@ -1017,50 +1061,24 @@ const replaceMarkedSection = (
   return `${before}\n${sectionContent}\n${after}`
 }
 
-const loadTemplateWithFallback = async (primaryPath: string, primaryConst: string, fallbackPath: string, fallbackConst: string): Promise<unknown> => {
-  try {
-    const primary = await loadConstObject(primaryPath, primaryConst)
-    if (isObject(primary) && Object.keys(primary).length > 0) return primary
-  } catch {
-    // fallback to legacy generated template
-  }
-  return loadConstObject(fallbackPath, fallbackConst)
-}
-
 const run = async () => {
   const options = parseArgs(process.argv.slice(2))
   const loaded = await loadTokensStudioExport(options.inputDir)
   const resolvedThemes = resolveThemeTokens(loaded.setMaps, loaded.themePayload)
 
-  const primitivesTemplate = (await loadTemplateWithFallback(
-    DESIGN_FILES.primitives.filePath,
-    DESIGN_FILES.primitives.constName,
-    LEGACY_GENERATED_FILES.primitives.filePath,
-    LEGACY_GENERATED_FILES.primitives.constName,
-  )) as JsonObject
-  const sizesTemplate = (await loadTemplateWithFallback(
-    DESIGN_FILES.sizesAndSpaces.filePath,
-    DESIGN_FILES.sizesAndSpaces.constName,
-    LEGACY_GENERATED_FILES.sizesAndSpaces.filePath,
-    LEGACY_GENERATED_FILES.sizesAndSpaces.constName,
-  )) as JsonObject
-  const surfacesTemplate = (await loadTemplateWithFallback(
+  const primitivesTemplate = (await loadConstObject(DESIGN_FILES.primitives.filePath, DESIGN_FILES.primitives.constName)) as JsonObject
+  const sizesTemplate = (await loadConstObject(DESIGN_FILES.sizesAndSpaces.filePath, DESIGN_FILES.sizesAndSpaces.constName)) as JsonObject
+  const surfacesTemplate = (await loadConstObject(
     DESIGN_FILES.surfacesPlain.filePath,
     DESIGN_FILES.surfacesPlain.constName,
-    LEGACY_GENERATED_FILES.surfacesPlain.filePath,
-    LEGACY_GENERATED_FILES.surfacesPlain.constName,
   )) as Record<'Light' | 'Dark' | 'Chad', unknown>
-  const constantsTemplate = (await loadTemplateWithFallback(
+  const constantsTemplate = (await loadConstObject(
     DESIGN_FILES.themeConstants.filePath,
     DESIGN_FILES.themeConstants.constName,
-    LEGACY_GENERATED_FILES.themeConstants.filePath,
-    LEGACY_GENERATED_FILES.themeConstants.constName,
   )) as Record<'light' | 'dark' | 'chad', unknown>
-  const themeFlatTemplate = (await loadTemplateWithFallback(
+  const themeFlatTemplate = (await loadConstObject(
     DESIGN_FILES.themeFlat.filePath,
     DESIGN_FILES.themeFlat.constName,
-    LEGACY_GENERATED_FILES.themeFlat.filePath,
-    LEGACY_GENERATED_FILES.themeFlat.constName,
   )) as Record<'light' | 'dark' | 'chad', unknown>
 
   const lightResolver = createResolver(resolvedThemes.light)
@@ -1071,7 +1089,7 @@ const run = async () => {
     surfacesPlain: buildSurfacesPlain(surfacesTemplate, resolvedThemes),
     themeConstants: buildThemeConstants(constantsTemplate, resolvedThemes, options.colorOnly),
     themeFlat: options.colorOnly ? mergeColorOnlyThemeFlat(themeFlatTemplate, computedThemeFlat) : computedThemeFlat,
-  } as const
+  } satisfies Record<DesignFileKey, unknown>
 
   const sectionReplacements = {
     primitives: renderConstDeclaration(DESIGN_FILES.primitives.constName, computedValues.primitives, DESIGN_FILES.primitives.exported),
@@ -1087,85 +1105,25 @@ const run = async () => {
       DESIGN_FILES.themeConstants.exported,
     ),
     themeFlat: renderConstDeclaration(DESIGN_FILES.themeFlat.constName, computedValues.themeFlat, DESIGN_FILES.themeFlat.exported),
-  } as const
+  } satisfies Record<DesignFileKey, string>
 
-  const nextValues: Record<string, string> = {}
-
-  const sourceFiles = new Set([
-    DESIGN_FILES.primitives.filePath,
-    DESIGN_FILES.sizesAndSpaces.filePath,
-    DESIGN_FILES.surfacesPlain.filePath,
-    DESIGN_FILES.themeConstants.filePath,
-    DESIGN_FILES.themeFlat.filePath,
-  ])
+  const sourceFiles = new Set(DESIGN_FILE_KEYS.map((key) => DESIGN_FILES[key].filePath))
+  const changed: string[] = []
 
   for (const filePath of sourceFiles) {
     const existing = await readFile(filePath, 'utf8')
     let next = existing
 
-    if (filePath === DESIGN_FILES.primitives.filePath) {
-      next = replaceMarkedSection(
-        next,
-        DESIGN_FILES.primitives.beginMarker,
-        DESIGN_FILES.primitives.endMarker,
-        sectionReplacements.primitives,
-        filePath,
-      )
-    }
-    if (filePath === DESIGN_FILES.sizesAndSpaces.filePath) {
-      next = replaceMarkedSection(
-        next,
-        DESIGN_FILES.sizesAndSpaces.beginMarker,
-        DESIGN_FILES.sizesAndSpaces.endMarker,
-        sectionReplacements.sizesAndSpaces,
-        filePath,
-      )
-    }
-    if (filePath === DESIGN_FILES.surfacesPlain.filePath) {
-      next = replaceMarkedSection(
-        next,
-        DESIGN_FILES.surfacesPlain.beginMarker,
-        DESIGN_FILES.surfacesPlain.endMarker,
-        sectionReplacements.surfacesPlain,
-        filePath,
-      )
-    }
-    if (filePath === DESIGN_FILES.themeConstants.filePath) {
-      next = replaceMarkedSection(
-        next,
-        DESIGN_FILES.themeConstants.beginMarker,
-        DESIGN_FILES.themeConstants.endMarker,
-        sectionReplacements.themeConstants,
-        filePath,
-      )
-    }
-    if (filePath === DESIGN_FILES.themeFlat.filePath) {
-      next = replaceMarkedSection(
-        next,
-        DESIGN_FILES.themeFlat.beginMarker,
-        DESIGN_FILES.themeFlat.endMarker,
-        sectionReplacements.themeFlat,
-        filePath,
-      )
+    for (const key of DESIGN_FILE_KEYS) {
+      const config = DESIGN_FILES[key]
+      if (config.filePath !== filePath) continue
+      next = replaceMarkedSection(next, config.beginMarker, config.endMarker, sectionReplacements[key], filePath)
     }
 
-    nextValues[filePath] = next
-  }
-
-  const changed: string[] = []
-
-  for (const [filePath, content] of Object.entries(nextValues)) {
-    let existing = ''
-    try {
-      existing = await readFile(filePath, 'utf8')
-    } catch {
-      existing = ''
-    }
-
-    if (existing !== content) {
+    if (existing !== next) {
       changed.push(filePath)
       if (options.write) {
-        await writeFile(filePath, content, 'utf8')
+        await writeFile(filePath, next, 'utf8')
       }
     }
   }
