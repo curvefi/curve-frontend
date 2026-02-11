@@ -30,6 +30,7 @@ export const AddCollateralForm = <ChainId extends IChainId>({
     form,
     params,
     isPending,
+    isDisabled,
     onSubmit,
     action,
     values,
@@ -84,7 +85,7 @@ export const AddCollateralForm = <ChainId extends IChainId>({
       <Button
         type="submit"
         loading={isPending || !market}
-        disabled={formErrors.length > 0}
+        disabled={isDisabled}
         data-testid="add-collateral-submit-button"
       >
         {isPending

@@ -16,7 +16,7 @@ import { vestResolver } from '@hookform/resolvers/vest'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
-import { useFormErrors } from '@ui-kit/utils/react-form.utils'
+import { updateForm, useFormErrors } from '@ui-kit/utils/react-form.utils'
 
 const useCallbackAfterFormUpdate = (form: UseFormReturn<CollateralForm>, callback: () => void) =>
   useEffect(() => form.subscribe({ formState: { values: true }, callback }), [form, callback])
@@ -71,25 +71,25 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
     userAddress,
   })
 
-  const formErrors = useFormErrors(form.formState)
-
+  const { formState } = form
   useCallbackAfterFormUpdate(form, action.reset)
 
   useEffect(() => {
-    form.setValue('maxCollateral', maxCollateral, { shouldValidate: true })
+    updateForm(form, { maxCollateral: maxCollateral })
   }, [form, maxCollateral])
 
   return {
     form,
     values,
     params,
-    isPending: form.formState.isSubmitting || action.isPending,
+    isPending: formState.isSubmitting || action.isPending,
+    isDisabled: !formState.isValid,
     onSubmit: form.handleSubmit(onSubmit),
     action,
     collateralToken,
     borrowToken,
     txHash: action.data?.hash,
     isApproved: useAddCollateralIsApproved(params),
-    formErrors,
+    formErrors: useFormErrors(formState),
   }
 }
