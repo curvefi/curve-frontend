@@ -23,9 +23,17 @@ Importer entrypoint:
 Internal modules:
 - `packages/curve-ui-kit/scripts/tokens-studio/types.ts`
 - `packages/curve-ui-kit/scripts/tokens-studio/extractors.ts`
+- `packages/curve-ui-kit/scripts/tokens-studio/core.ts`
+- `packages/curve-ui-kit/scripts/tokens-studio/mappings.ts`
 - `packages/curve-ui-kit/scripts/tokens-studio/sd-runtime.ts`
 - `packages/curve-ui-kit/scripts/tokens-studio/reference-renderer.ts`
-- `packages/curve-ui-kit/scripts/tokens-studio/pipelines.ts`
+- `packages/curve-ui-kit/scripts/tokens-studio/pipelines/index.ts`
+- `packages/curve-ui-kit/scripts/tokens-studio/pipelines/primitives.ts`
+- `packages/curve-ui-kit/scripts/tokens-studio/pipelines/sizes-spaces.ts`
+- `packages/curve-ui-kit/scripts/tokens-studio/pipelines/surfaces.ts`
+- `packages/curve-ui-kit/scripts/tokens-studio/pipelines/theme-tokens.ts`
+- `packages/curve-ui-kit/scripts/tokens-studio/pipelines/theme-constants.ts`
+- `packages/curve-ui-kit/scripts/tokens-studio/pipelines/typography.ts`
 - `packages/curve-ui-kit/scripts/tokens-studio/marker-writer.ts`
 
 Processing stages:
@@ -196,6 +204,14 @@ Importer warnings are non-fatal and are printed at the end of `tokens:import` an
 - `reference-fallback`: alias could not be represented as a TS reference, so literal value was written.
 - `coerce-fallback`: optional token could not be resolved/coerced, so existing fallback value was kept.
 - `optional-missing`: optional token path is missing from source theme composition.
+
+## Script Tests
+
+Run importer unit tests (semantic parsing, context/resolver behavior, and pipeline helpers):
+
+```bash
+node --test --experimental-strip-types packages/curve-ui-kit/scripts/tokens-studio/__tests__/*.test.ts
+```
 
 ## Troubleshooting
 

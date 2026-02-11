@@ -1,4 +1,3 @@
-import { readFile, writeFile } from 'node:fs/promises'
 import ts from 'typescript'
 import { getExprFromMarker, isExprMarker, markExpr } from './types.ts'
 import type { JsonObject } from './types.ts'
@@ -122,34 +121,11 @@ export const readMarkerObjectFromSource = (
   return parseTsValue(initializer, sourceFile)
 }
 
-export const readMarkerObject = async (
-  filePath: string,
-  constName: string,
-  beginMarker: string,
-  endMarker: string,
-): Promise<unknown> => {
-  const source = await readFile(filePath, 'utf8')
-  return readMarkerObjectFromSource(source, filePath, constName, beginMarker, endMarker)
-}
-
 export const renderTsLiteral = (value: unknown, indent = 0): string => {
   if (isExprMarker(value)) return getExprFromMarker(value)
   if (typeof value === 'string') return renderString(value)
   if (typeof value === 'number' || typeof value === 'boolean') return String(value)
   if (value === null) return 'null'
-  if (value === undefined) return 'undefined'
-  if (typeof value === 'bigint') return `${value.toString()}n`
-  if (typeof value === 'symbol') return markExpr(String(value))
-  if (typeof value === 'function') return markExpr(String(value))
-
-  if (
-    typeof value === 'object' &&
-    value !== null &&
-    !Array.isArray(value) &&
-    Object.getPrototypeOf(value) !== Object.prototype
-  ) {
-    return markExpr(String(value))
-  }
 
   if (Array.isArray(value)) {
     if (value.length === 0) return '[]'
@@ -198,21 +174,4 @@ export const applySectionUpdates = (
     next = replaceMarkedSection(next, update.beginMarker, update.endMarker, update.content, filePath)
   }
   return next
-}
-
-export const rewriteDesignFile = async (
-  filePath: string,
-  updates: Array<{ beginMarker: string; endMarker: string; content: string }>,
-  write: boolean,
-): Promise<boolean> => {
-  const existing = await readFile(filePath, 'utf8')
-  const next = applySectionUpdates(existing, filePath, updates)
-
-  if (existing === next) return false
-
-  if (write) {
-    await writeFile(filePath, next, 'utf8')
-  }
-
-  return true
 }

@@ -1,5 +1,6 @@
 import { readFile, writeFile } from 'node:fs/promises'
 import process from 'node:process'
+import { createBuildContext } from './tokens-studio/core.ts'
 import { createResolver, getSet, loadTokensStudioExport, resolveThemeTokens } from './tokens-studio/extractors.ts'
 import {
   applySectionUpdates,
@@ -13,10 +14,19 @@ import {
   buildThemeConstants,
   buildThemeTokensWithReferences,
   buildTypographyVariants,
-} from './tokens-studio/pipelines.ts'
+} from './tokens-studio/pipelines/index.ts'
 import { createWarningCollector } from './tokens-studio/sd-runtime.ts'
-import { DESIGN_FILES, DESIGN_FILE_KEYS } from './tokens-studio/types.ts'
+import { DESIGN_FILES } from './tokens-studio/types.ts'
 import type { CliOptions, DesignFileKey, JsonObject, ThemeName } from './tokens-studio/types.ts'
+
+const SECTION_ORDER: DesignFileKey[] = [
+  'primitives',
+  'sizesAndSpaces',
+  'surfacesPlain',
+  'themeConstants',
+  'themeTokens',
+  'typographyVariants',
+]
 
 const usage = () => {
   console.info(
@@ -78,9 +88,7 @@ const parseArgs = (argv: string[]): CliOptions => {
 const readTemplate = (sourceByFilePath: Map<string, string>, key: DesignFileKey): unknown => {
   const filePath = DESIGN_FILES[key].filePath
   const source = sourceByFilePath.get(filePath)
-  if (source === undefined) {
-    throw new Error(`Could not load source file '${filePath}'`)
-  }
+  if (source === undefined) throw new Error(`Could not load source file '${filePath}'`)
 
   return readMarkerObjectFromSource(
     source,
@@ -91,89 +99,92 @@ const readTemplate = (sourceByFilePath: Map<string, string>, key: DesignFileKey)
   )
 }
 
+const getBuilt = <T>(built: Partial<Record<DesignFileKey, unknown>>, key: DesignFileKey): T => {
+  if (!(key in built)) throw new Error(`Internal builder error: missing section '${key}'`)
+  return built[key] as T
+}
+
 const run = async () => {
   const options = parseArgs(process.argv.slice(2))
   const loaded = await loadTokensStudioExport(options.inputDir)
   const resolvedThemes = resolveThemeTokens(loaded.setMaps, loaded.themePayload)
+  const context = createBuildContext(loaded.setMaps, resolvedThemes)
   const warnings = createWarningCollector()
 
-  const targetFiles = [...new Set(DESIGN_FILE_KEYS.map((key) => DESIGN_FILES[key].filePath))]
+  const targetFiles = [...new Set(SECTION_ORDER.map((key) => DESIGN_FILES[key].filePath))]
   const sourceByFilePath = new Map(
     await Promise.all(targetFiles.map(async (filePath) => [filePath, await readFile(filePath, 'utf8')])),
   )
 
-  const primitivesTemplate = readTemplate(sourceByFilePath, 'primitives') as JsonObject
-  const sizesTemplate = readTemplate(sourceByFilePath, 'sizesAndSpaces') as JsonObject
-  const surfacesTemplate = readTemplate(sourceByFilePath, 'surfacesPlain') as Record<'Light' | 'Dark' | 'Chad', unknown>
-  const constantsTemplate = readTemplate(sourceByFilePath, 'themeConstants') as Record<ThemeName, unknown>
-  const themeTokensTemplate = readTemplate(sourceByFilePath, 'themeTokens') as Record<ThemeName, unknown>
-  const typographyVariantsTemplate = readTemplate(sourceByFilePath, 'typographyVariants') as Record<string, unknown>
+  const templates = Object.fromEntries(
+    SECTION_ORDER.map((key) => [key, readTemplate(sourceByFilePath, key)]),
+  ) as Record<DesignFileKey, unknown>
 
   const primitivesBase = getSet(loaded.setMaps, '00_Primitives/Base')
   const primitivesResolver = createResolver(primitivesBase)
 
-  const primitives = buildPrimitives(primitivesTemplate, primitivesBase, primitivesResolver)
-  const sizesAndSpaces = buildSizesAndSpaces(sizesTemplate, loaded.setMaps, primitives)
-  const surfacesPlain = buildSurfacesPlain(surfacesTemplate, loaded.setMaps, resolvedThemes, warnings)
-  const themeConstants = buildThemeConstants(constantsTemplate, resolvedThemes, options.colorOnly, warnings)
-  const themeTokens = buildThemeTokensWithReferences(
-    themeTokensTemplate,
-    resolvedThemes,
-    options.colorOnly,
-    surfacesPlain,
-    warnings,
-  )
-  const typographyVariants = buildTypographyVariants(typographyVariantsTemplate, resolvedThemes, sizesAndSpaces)
+  const built: Partial<Record<DesignFileKey, unknown>> = {}
+  for (const key of SECTION_ORDER) {
+    switch (key) {
+      case 'primitives':
+        built[key] = buildPrimitives(templates.primitives as JsonObject, primitivesBase, primitivesResolver)
+        break
+      case 'sizesAndSpaces':
+        built[key] = buildSizesAndSpaces(
+          templates.sizesAndSpaces as JsonObject,
+          loaded.setMaps,
+          getBuilt<JsonObject>(built, 'primitives'),
+        )
+        break
+      case 'surfacesPlain':
+        built[key] = buildSurfacesPlain(
+          templates.surfacesPlain as Record<'Light' | 'Dark' | 'Chad', unknown>,
+          context,
+          warnings,
+        )
+        break
+      case 'themeConstants':
+        built[key] = buildThemeConstants(
+          templates.themeConstants as Record<ThemeName, unknown>,
+          context,
+          options.colorOnly,
+          warnings,
+        )
+        break
+      case 'themeTokens':
+        built[key] = buildThemeTokensWithReferences(
+          templates.themeTokens as Record<ThemeName, unknown>,
+          context,
+          options.colorOnly,
+          getBuilt<Record<'Light' | 'Dark' | 'Chad', unknown>>(built, 'surfacesPlain'),
+          warnings,
+        )
+        break
+      case 'typographyVariants':
+        built[key] = buildTypographyVariants(
+          templates.typographyVariants as Record<string, unknown>,
+          context,
+          getBuilt<JsonObject>(built, 'sizesAndSpaces'),
+        )
+        break
+      default:
+        throw new Error(`Unhandled section '${key}'`)
+    }
+  }
 
-  const computedValues = {
-    primitives,
-    sizesAndSpaces,
-    surfacesPlain,
-    themeConstants,
-    themeTokens,
-    typographyVariants,
-  } satisfies Record<DesignFileKey, unknown>
-
-  const sectionReplacements = {
-    primitives: renderConstDeclaration(
-      DESIGN_FILES.primitives.constName,
-      computedValues.primitives,
-      DESIGN_FILES.primitives.exported,
-    ),
-    sizesAndSpaces: renderConstDeclaration(
-      DESIGN_FILES.sizesAndSpaces.constName,
-      computedValues.sizesAndSpaces,
-      DESIGN_FILES.sizesAndSpaces.exported,
-    ),
-    surfacesPlain: renderConstDeclaration(
-      DESIGN_FILES.surfacesPlain.constName,
-      computedValues.surfacesPlain,
-      DESIGN_FILES.surfacesPlain.exported,
-    ),
-    themeConstants: renderConstDeclaration(
-      DESIGN_FILES.themeConstants.constName,
-      computedValues.themeConstants,
-      DESIGN_FILES.themeConstants.exported,
-    ),
-    themeTokens: renderConstDeclaration(
-      DESIGN_FILES.themeTokens.constName,
-      computedValues.themeTokens,
-      DESIGN_FILES.themeTokens.exported,
-    ),
-    typographyVariants: renderConstDeclaration(
-      DESIGN_FILES.typographyVariants.constName,
-      computedValues.typographyVariants,
-      DESIGN_FILES.typographyVariants.exported,
-    ),
-  } satisfies Record<DesignFileKey, string>
+  const sectionReplacements = Object.fromEntries(
+    SECTION_ORDER.map((key) => [
+      key,
+      renderConstDeclaration(DESIGN_FILES[key].constName, getBuilt(built, key), DESIGN_FILES[key].exported),
+    ]),
+  ) as Record<DesignFileKey, string>
 
   const changed: string[] = []
-
   for (const filePath of targetFiles) {
     const existing = sourceByFilePath.get(filePath)
     if (existing === undefined) throw new Error(`Could not load source file '${filePath}'`)
 
-    const updates = DESIGN_FILE_KEYS.filter((key) => DESIGN_FILES[key].filePath === filePath).map((key) => ({
+    const updates = SECTION_ORDER.filter((key) => DESIGN_FILES[key].filePath === filePath).map((key) => ({
       beginMarker: DESIGN_FILES[key].beginMarker,
       endMarker: DESIGN_FILES[key].endMarker,
       content: sectionReplacements[key],
@@ -183,9 +194,7 @@ const run = async () => {
     if (next === existing) continue
 
     changed.push(filePath)
-    if (options.write) {
-      await writeFile(filePath, next, 'utf8')
-    }
+    if (options.write) await writeFile(filePath, next, 'utf8')
   }
 
   const warningList = warnings.list()
@@ -199,12 +208,11 @@ const run = async () => {
   if (options.check) {
     if (changed.length > 0) {
       console.error('Design token files are out of date:')
-      for (const file of changed) {
-        console.error(`- ${file}`)
-      }
+      for (const file of changed) console.error(`- ${file}`)
       process.exitCode = 1
       return
     }
+
     console.info('Design token files are up to date.')
     return
   }

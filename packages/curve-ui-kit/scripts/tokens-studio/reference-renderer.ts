@@ -1,7 +1,9 @@
+import { PRIMITIVE_ROOT_ALIASES } from './mappings.ts'
 import { cloneJson, isLeafValue } from './sd-runtime.ts'
+import type { JsonObject, ThemeName, TokenLeafValue, WarningCollector } from './types.ts'
 import { markExpr, SURFACE_PRIMITIVE_ROOTS, THEME_PRIMITIVE_ROOTS } from './types.ts'
 import { getExprFromMarker, isExprMarker } from './types.ts'
-import type { JsonObject, ThemeName, TokenLeafValue, WarningCollector } from './types.ts'
+import { THEME_LABEL_BY_NAME } from './types.ts'
 
 export const normalizeKeyForMatch = (value: string) => value.toLowerCase().replace(/[^a-z0-9]/g, '')
 
@@ -92,8 +94,6 @@ export const hasAnyPath = (maps: Array<Map<string, unknown>>, tokenPath: string)
 
 type SyncOptions = {
   transformPathSegments?: (pathSegments: string[]) => string[]
-  transformValue?: (value: TokenLeafValue, sourcePath: string, sourceSegments: string[]) => TokenLeafValue
-  includePath?: (sourcePath: string, sourceSegments: string[]) => boolean
 }
 
 export const syncObjectFromPathValues = (
@@ -109,29 +109,18 @@ export const syncObjectFromPathValues = (
     if (!isLeafValue(sourceValue)) continue
 
     const sourceSegments = sourcePath.split('.').filter(Boolean)
-    if (options.includePath && !options.includePath(sourcePath, sourceSegments)) continue
 
     const transformedSegments = options.transformPathSegments
       ? options.transformPathSegments(sourceSegments)
       : sourceSegments
     if (transformedSegments.length === 0) continue
 
-    const transformedValue = options.transformValue
-      ? options.transformValue(sourceValue, sourcePath, sourceSegments)
-      : sourceValue
-
     const styledSegments = getStyledPathSegments(templateNode, transformedSegments)
-    setDeep(out, styledSegments, transformedValue)
+    setDeep(out, styledSegments, sourceValue)
   }
 
   return sortObjectDeep(out) as JsonObject
 }
-
-export const buildStyledTreeFromPathValues = (
-  pathValues: Map<string, TokenLeafValue>,
-  templateNode: unknown,
-  transformPathSegments?: (pathSegments: string[]) => string[],
-) => syncObjectFromPathValues(pathValues, templateNode, { transformPathSegments })
 
 export const buildTsAccessExpression = (root: string, segments: string[]): string =>
   segments.reduce((acc, segment) => `${acc}[${JSON.stringify(segment)}]`, root)
@@ -144,16 +133,7 @@ const toPrimitiveReferenceCandidate = (
   if (segments.length === 0) return { expression: null, isPrimitiveRoot: false }
 
   const [rawRoot, ...rest] = segments
-  const pluralMap: Record<string, string> = {
-    Orange: 'Oranges',
-    Oranges: 'Oranges',
-    Violet: 'Violets',
-    Violets: 'Violets',
-    Yellow: 'Yellows',
-    Yellows: 'Yellows',
-  }
-
-  const root = pluralMap[rawRoot] ?? rawRoot
+  const root = PRIMITIVE_ROOT_ALIASES[rawRoot] ?? rawRoot
   if (!allowedRoots.has(root)) return { expression: null, isPrimitiveRoot: false }
 
   if (root === 'Transparent' && rest.length === 0) {
@@ -204,9 +184,9 @@ export const withSizePrimitiveReferences = (sizesAndSpaces: JsonObject, primitiv
   const out = cloneJson(sizesAndSpaces)
   const spacingRefs = buildValueToPrimitiveReferenceMap(primitives.Spacing, 'Spacing')
   const sizingRefs = buildValueToPrimitiveReferenceMap(primitives.Sizing, 'Sizing')
+  const preferSpacingRoots = new Set(['Spacing', 'Grid'])
 
   const chooseExpression = (root: string, value: string): string | null => {
-    const preferSpacingRoots = new Set(['Spacing', 'Grid'])
     const preferred = preferSpacingRoots.has(root) ? spacingRefs : sizingRefs
     const secondary = preferSpacingRoots.has(root) ? sizingRefs : spacingRefs
     return preferred.get(value) ?? secondary.get(value) ?? null
@@ -231,24 +211,19 @@ export const withThemeSurfaceReferences = (
 ): Record<ThemeName, JsonObject> => {
   const out = cloneJson(themeTokens)
 
-  const themeCase: Record<ThemeName, 'Light' | 'Dark' | 'Chad'> = {
-    light: 'Light',
-    dark: 'Dark',
-    chad: 'Chad',
-  }
-
   for (const theme of ['light', 'dark', 'chad'] as const) {
     const leaves = collectLeafPaths(out[theme])
     for (const leaf of leaves) {
       if (typeof leaf.value !== 'string') continue
-      const surfaceValue = getDeep(surfacesPlain[themeCase[theme]], leaf.path)
+      const surfaceLabel = THEME_LABEL_BY_NAME[theme]
+      const surfaceValue = getDeep(surfacesPlain[surfaceLabel], leaf.path)
       const valuesMatch =
         surfaceValue === leaf.value ||
         (isExprMarker(surfaceValue) &&
           isExprMarker(leaf.value) &&
           getExprFromMarker(surfaceValue) === getExprFromMarker(leaf.value))
       if (!valuesMatch) continue
-      const surfaceRef = buildTsAccessExpression(`SurfacesAndText.plain.${themeCase[theme]}`, leaf.path)
+      const surfaceRef = buildTsAccessExpression(`SurfacesAndText.plain.${surfaceLabel}`, leaf.path)
       setDeep(out[theme], leaf.path, markExpr(surfaceRef))
     }
   }

@@ -54,6 +54,11 @@ export type WarningCollector = {
 
 export const REQUIRED_THEMES = ['light', 'dark', 'chad'] as const
 export type ThemeName = (typeof REQUIRED_THEMES)[number]
+export const THEME_LABEL_BY_NAME: Record<ThemeName, 'Light' | 'Dark' | 'Chad'> = {
+  light: 'Light',
+  dark: 'Dark',
+  chad: 'Chad',
+}
 
 export const ENABLED_STATUSES = new Set(['enabled', 'source'])
 
