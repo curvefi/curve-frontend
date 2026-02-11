@@ -9,7 +9,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { joinButtonText } from '@ui-kit/utils'
-import { setValueOptions } from '@ui-kit/utils/react-form.utils'
+import { updateForm } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { AlertAdditionalCrvUsd } from '../alerts/AlertAdditionalCrvUsd'
 import { AlertClosePosition } from '../alerts/AlertClosePosition'
@@ -63,14 +63,15 @@ export const ClosePositionForm = ({
           chainId={network.chainId}
           networks={networks}
           values={values}
-          onSlippageChange={(value) => form.setValue('slippage', value, setValueOptions)}
+          onSlippageChange={(slippage) => updateForm(form, { slippage })}
         />
       }
     >
       <Stack direction="row" gap={Spacing.xs} justifyContent="space-around">
         <Metric
+          testId="debt-to-close-position"
           label={t`Debt to repay`}
-          value={debtToRepay == null ? undefined : +debtToRepay}
+          value={debtToRepay == null ? undefined : Number(debtToRepay)}
           valueOptions={{ abbreviate: true }}
           notional={debtTokenData?.symbol ?? ''}
           alignment="center"
@@ -101,7 +102,7 @@ export const ClosePositionForm = ({
       )}
 
       <Stack gap={Spacing.xs}>
-        <Button type="submit" loading={isPending} disabled={isDisabled}>
+        <Button type="submit" loading={isPending} disabled={isDisabled} data-testid="close-position-submit">
           {isPending ? t`Processing...` : joinButtonText(t`Repay debt`, t`close position`)}
         </Button>
 

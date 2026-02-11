@@ -47,7 +47,7 @@ function CreateLoanTab({ market, curve, rChainId }: PageLoanCreateProps) {
       chainId={rChainId}
       market={market ?? undefined}
       onUpdate={onUpdate}
-      onCreated={onCreated}
+      onMutated={onCreated}
     />
   )
 }

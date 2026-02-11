@@ -55,7 +55,7 @@ const LendManageNewMenu = [
         chainId={chainId}
         market={market}
         enabled={isLoaded}
-        onBorrowedMore={() => invalidateAllUserBorrowDetails({ chainId, marketId, userAddress })}
+        onMutated={() => invalidateAllUserBorrowDetails({ chainId, marketId, userAddress })}
       />
     ),
   },

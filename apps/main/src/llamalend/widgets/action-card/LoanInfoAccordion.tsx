@@ -131,6 +131,7 @@ export const LoanInfoAccordion = ({
               userState.data && `${formatNumber(userState.data.collateral, { abbreviate: true })} ${collateralSymbol}`
             }
             {...combineQueryState(userState)}
+            testId="withdraw-amount"
           />
         )}
         <ActionInfo
