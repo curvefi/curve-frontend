@@ -40,7 +40,7 @@ import { CurveProvider } from '@ui-kit/features/connect-wallet/lib/CurveProvider
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { CRVUSD_ADDRESS, Decimal } from '@ui-kit/utils'
 
-const onUpdate: OnCreateLoanFormUpdate = async (form) => console.info('form updated', form)
+const onUpdate: OnCreateLoanFormUpdate = async (form) => console.info('form updated', JSON.stringify(form))
 
 const prefetch = () => prefetchMarkets({})
 

@@ -114,6 +114,7 @@ export const RepayForm = <ChainId extends IChainId>({
     selectedField === 'stateCollateral' && t`Using collateral balances to repay.`,
     t`Max repay amount:`,
   ).join(' ')
+  const rawFormErrors = Object.entries(form.formState.errors)
 
   useEffect(
     // Reset field when selectedField changes
@@ -177,11 +178,31 @@ export const RepayForm = <ChainId extends IChainId>({
         }
       />
       <HighPriceImpactAlert {...q(useRepayPriceImpact(params, enabled && swapRequired))} />
-      <Button type="submit" loading={isPending || !market} disabled={isDisabled} data-testid="repay-submit-button">
+      <Button
+        type="submit"
+        loading={isPending || !market}
+        disabled={isDisabled}
+        data-testid="repay-submit-button"
+        data-validation={JSON.stringify({
+          hasMarket: !!market,
+          selectedField,
+          selectedToken,
+          swapRequired,
+          isPending,
+          isDisabled,
+          isValid: form.formState.isValid,
+          isSubmitting: form.formState.isSubmitting,
+          isApproved,
+          isFull,
+          maxSelectedField: max[selectedField],
+          formErrors,
+          rawFormErrors,
+        })}
+      >
         {isPending
           ? t`Processing...`
           : joinButtonText(
-              isApproved?.data === false && t`Approve`,
+              isApproved.data === false && t`Approve`,
               notFalsy(t`Repay`, fromPosition && t`from Position`).join(' '),
               isFull.data && t`Close Position`,
             )}

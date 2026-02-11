@@ -104,6 +104,7 @@ export function createVirtualTestnet(
   opts: (uuid: number) => DeepPartial<CreateVirtualTestnetOptions> & { chain_id?: number },
 ) {
   let vnet: CreateVirtualTestnetResponse
+  let shouldDeleteVnet = true
 
   before(() => {
     const uuid = Cypress._.random(0, 1e6)
@@ -121,15 +122,23 @@ export function createVirtualTestnet(
     createVirtualTestnetRequest(options).then((created) => (vnet = created))
   })
 
+  afterEach(function (this: Mocha.Context) {
+    // delete vnet only if all tests in the current suite passed
+    shouldDeleteVnet &&= this.currentTest?.state === 'passed'
+  })
+
   after(() => {
     if (!vnet) return
+    if (!shouldDeleteVnet) return console.warn(`Keeping vnet '${vnet.id}' alive because of test failures.`)
     deleteVirtualTestnetRequest({ ...tenderlyAccount, vnetId: vnet.id })
   })
 
   return () => vnet
 }
 
-/**
+/**`<button class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-colorPrimary Mui-disabled MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeMedium MuiButton-textSizeMedium MuiButton-colorPrimary css-hzp3ai-MuiButtonBase-root-MuiButton-root" tabindex="-1" type="submit" disabled="" data-testid="repay-submit-button">...</button>`
+600
+
  * Creates a Cypress test helper that forks and manages a Tenderly virtual testnet lifecycle
  *
  * @param opts - Function that returns fork configuration options based on UUID
