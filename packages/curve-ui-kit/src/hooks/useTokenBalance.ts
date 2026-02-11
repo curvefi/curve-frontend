@@ -185,6 +185,13 @@ export function useTokenBalances(
           ...getTokenBalanceQueryOptions(config, { chainId: chainId!, userAddress: userAddress!, tokenAddress }),
           ...QUERIES_FRESHNESS_OPTIONS,
           enabled: isEnabled,
+          /**
+           * Only re-render when data or error changes, not on metadata updates (e.g., fetchStatus, dataUpdatedAt).
+           * This prevents 1000+ re-renders when many queries resolve in quick succession, like on userAddress or
+           * chainId change with a new call to prefetchTokenBalances. If a 1000 tokens update, they all get a new
+           * `updatedAt` despite the balance still being zero. We only want re-renders when balances actually change.
+           */
+          notifyOnChangeProps: ['data', 'error'] as const,
         })) as Parameters<typeof useQueries>[0]['queries'],
       [config, chainId, userAddress, uniqueAddresses, isEnabled],
     ),

@@ -35,7 +35,8 @@ export const useTokenSelectorData = (
 
   const { data: balances, isLoading: isLoading } = useTokenBalances(
     { chainId, userAddress, tokenAddresses: enabled ? tokenAddresses : [] },
-    enabled,
+    // We only care for query observers and don't want to invoke queryFn for each token balance separately, so we disable the query and rely on prefetchTokenBalances.
+    false,
   )
 
   // Only fetch prices for tokens the user has a balance of
