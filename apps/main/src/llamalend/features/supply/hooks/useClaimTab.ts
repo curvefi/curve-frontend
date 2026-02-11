@@ -36,15 +36,19 @@ export const useClaimTab = <ChainId extends LlamaChainId>({
   const { claimableTokens, totalNotionals, isClaimablesLoading, claimablesError, usdRateLoading, usdRateError } =
     useClaimableTokens(params, enabled)
 
+  const tableData = useMemo(
+    () => claimableTokens.map((token) => ({ ...token, networkId: network.id, isLoading: usdRateLoading })),
+    [claimableTokens, network.id, usdRateLoading],
+  )
+
   const table = useTable({
     columns: CLAIM_TAB_COLUMNS,
-    data: claimableTokens,
-    meta: { chainId: network.id, isLoading: usdRateLoading },
-    ...getTableOptions(claimableTokens),
+    data: tableData,
+    ...getTableOptions(tableData),
   })
 
   const {
-    onSubmit: submitClaim,
+    onSubmit,
     isPending: isClaiming,
     isSuccess: isClaimed,
     error: claimError,
@@ -67,7 +71,7 @@ export const useClaimTab = <ChainId extends LlamaChainId>({
     isLoading: isClaimablesLoading,
     isError: !!claimablesError,
     table,
-    onSubmit: submitClaim,
+    onSubmit,
     isClaimed,
     isPending: isClaiming,
     claimError,

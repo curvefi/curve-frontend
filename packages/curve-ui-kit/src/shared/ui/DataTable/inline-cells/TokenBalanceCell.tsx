@@ -12,23 +12,18 @@ const { Spacing } = SizesAndSpaces
 const formatBalance = (balance: Amount | undefined) =>
   balance == null ? '-' : formatNumber(balance, { abbreviate: false })
 
-type TokenBalanceCellData = {
+type TokenBalanceCellData = TableItem & {
+  networkId: string
   symbol?: string
   token: string
 }
 
-export const TokenBalanceCell = <TRow extends TableItem>({ row, getValue, table }: CellContext<TRow, Amount>) => {
-  const { symbol, token } = row.original as TRow & TokenBalanceCellData
+export const TokenBalanceCell = <TRow extends TokenBalanceCellData>({ row, getValue }: CellContext<TRow, Amount>) => {
+  const { symbol, token, networkId } = row.original
   return (
     <InlineTableCell>
       <Stack direction="row" gap={Spacing.xs} alignItems="center">
-        <TokenIcon
-          blockchainId={table.options.meta?.chainId}
-          address={token}
-          tooltip={symbol}
-          size="lg"
-          showChainIcon
-        />
+        <TokenIcon blockchainId={networkId} address={token} tooltip={symbol} size="lg" showChainIcon />
         <Stack gap={Spacing.xxs} alignItems="flex-start">
           <Typography variant="tableCellL">{formatBalance(getValue())}</Typography>
           <Typography variant="tableCellSRegular" color="textSecondary">

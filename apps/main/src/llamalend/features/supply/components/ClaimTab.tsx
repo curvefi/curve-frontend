@@ -47,7 +47,7 @@ export const ClaimTab = <ChainId extends IChainId>({ market, networks, chainId, 
   })
   return (
     <>
-      <FormContent>
+      <FormContent footer={<ClaimInfoAccordion params={params} networks={networks} />}>
         <DataTable<ClaimableToken>
           table={table}
           emptyState={
@@ -59,7 +59,7 @@ export const ClaimTab = <ChainId extends IChainId>({ market, networks, chainId, 
             )
           }
           loading={isLoading}
-          showHeader={false}
+          hideHeader
           footerRow={
             claimableTokens.length > 1 &&
             !isLoading && (
@@ -91,7 +91,6 @@ export const ClaimTab = <ChainId extends IChainId>({ market, networks, chainId, 
           successTitle={t`Claimed successfully`}
         />
       </FormContent>
-      <ClaimInfoAccordion params={params} networks={networks} />
     </>
   )
 }

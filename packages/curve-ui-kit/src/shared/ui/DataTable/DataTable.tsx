@@ -77,7 +77,7 @@ export const DataTable = <T extends TableItem>({
   rowLimit,
   viewAllLabel,
   shouldStickFirstColumn = false,
-  showHeader = true,
+  hideHeader = false,
   footerRow,
   ...rowProps
 }: {
@@ -88,7 +88,7 @@ export const DataTable = <T extends TableItem>({
   maxHeight?: `${number}rem` // also sets overflowY to 'auto'
   rowLimit?: number
   viewAllLabel?: string
-  showHeader?: boolean
+  hideHeader?: boolean
   footerRow?: ReactNode
 } & Omit<DataRowProps<T>, 'row' | 'isLast'>) => {
   const { table } = rowProps
@@ -126,7 +126,7 @@ export const DataTable = <T extends TableItem>({
         }}
         data-testid={!loading && 'data-table'}
       >
-        {showHeader && (
+        {!hideHeader && (
           <TableHead sx={tableHeaderSx} data-testid="data-table-head">
             {children && <FilterRow table={table}>{children}</FilterRow>}
 

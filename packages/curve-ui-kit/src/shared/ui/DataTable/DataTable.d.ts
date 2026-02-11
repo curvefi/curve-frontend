@@ -14,9 +14,4 @@ declare module '@tanstack/react-table' {
     variant?: TypographyVariantKey
     tooltip?: Omit<TooltipProps, 'children'>
   }
-
-  interface TableMeta<TData extends RowData> {
-    chainId?: string
-    isLoading?: boolean // used for additinal loading states, like notional rates
-  }
 }

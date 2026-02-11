@@ -7,6 +7,10 @@ import { InlineTableCell } from '@ui-kit/shared/ui/DataTable/inline-cells/Inline
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { formatUsd, type SxProps } from '@ui-kit/utils'
 
+export type NotionalCellData = TableItem & {
+  isLoading?: boolean // used for partial loading states e.g. notional rates
+}
+
 const formatNotional = (notional: number | undefined) => (notional == null ? '-' : formatUsd(notional))
 
 const NotionalTypographyWithSkeleton = ({
@@ -23,9 +27,12 @@ const NotionalTypographyWithSkeleton = ({
   </WithSkeleton>
 )
 
-export const NotionalCell = <TRow extends TableItem>({ getValue, table }: CellContext<TRow, number | undefined>) => (
+export const NotionalCell = <TRow extends NotionalCellData>({
+  row,
+  getValue,
+}: CellContext<TRow, number | undefined>) => (
   <InlineTableCell sx={{ alignItems: 'end' }}>
-    <NotionalTypographyWithSkeleton notional={getValue()} isLoading={!!table.options.meta?.isLoading} />
+    <NotionalTypographyWithSkeleton notional={getValue()} isLoading={!!row.original.isLoading} />
   </InlineTableCell>
 )
 

@@ -35,6 +35,7 @@ export const useClaimMutation = ({
       const lendMarket = requireVault(market)
 
       const [crvHash] =
+        // wait for CRV to be claimed, before claiming rewards
         (await waitForTransaction({
           isSatisfied: async () => !Number(await fetchClaimableCrv({ marketId, userAddress }, { staleTime: 0 })),
           onExecute: async () => (await lendMarket.vault.claimCrv()) as Hex,

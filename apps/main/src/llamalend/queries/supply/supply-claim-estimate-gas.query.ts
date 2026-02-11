@@ -28,6 +28,9 @@ export const { useQuery: useClaimRewardsEstimateQuery } = queryFactory({
   validationSuite: claimableRewardsValidationSuite,
 })
 
+// `createApprovedEstimateGasHook` does not fit here because claim has no approval step and can include
+// two independent action transactions in one flow (`claimCrv` and `claimRewards`). We need to fetch each
+// estimate conditionally and sum both when applicable before converting to gas cost.
 export const useClaimEstimateGas = <ChainId extends IChainId>(
   networks: NetworkDict<ChainId>,
   query: ClaimEstimateParams<ChainId>,

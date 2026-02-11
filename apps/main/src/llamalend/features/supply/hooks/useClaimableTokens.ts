@@ -41,12 +41,10 @@ export const useClaimableTokens = <ChainId extends LlamaChainId>(params: UserMar
   } = useTokenUsdRates({ chainId, tokenAddresses })
 
   const claimableTokens = useMemo(() => {
-    const tokens = [
-      ...notFalsy(
-        claimableCrv && { amount: claimableCrv, token: CRV.address as Address, symbol: CRV.symbol as string },
-      ),
+    const tokens = notFalsy(
+      claimableCrv && { amount: claimableCrv, token: CRV.address as Address, symbol: CRV.symbol as string },
       ...(claimableRewards ?? []),
-    ]
+    )
     return tokens
       .filter(({ amount }) => Number(amount) > 0)
       .map((item) => ({

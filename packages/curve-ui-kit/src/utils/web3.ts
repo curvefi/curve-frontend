@@ -33,11 +33,11 @@ export async function waitForTransaction({
   onExecute,
   config,
   isSatisfied,
-  message,
+  onSatisfiedMessage,
   timeout = Duration.TransactionPollTimeout,
 }: {
   onExecute: () => Promise<Hex[] | Hex>
-  message?: string
+  onSatisfiedMessage?: string
   isSatisfied: () => Promise<boolean>
   config: Config
   timeout?: number
@@ -47,7 +47,7 @@ export async function waitForTransaction({
   const txHashes = Array.isArray(results) ? results : [results]
   if (txHashes.length > 0) {
     await Promise.all(txHashes.map((hash) => waitForTransactionReceipt(config, { hash })))
-    if (message) notify(message, 'success')
+    if (onSatisfiedMessage) notify(onSatisfiedMessage, 'success')
     await waitFor(isSatisfied, { timeout })
     return txHashes
   }
@@ -70,6 +70,6 @@ export const waitForApproval = async ({
     onExecute: onApprove,
     config,
     isSatisfied: isApproved,
-    message,
+    onSatisfiedMessage: message,
     timeout,
   })
