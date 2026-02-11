@@ -18,14 +18,9 @@ export const HealthDetails = ({
   const theme = useTheme()
   const showPageHeader = useIntegratedLlamaHeader()
   return (
-    <Stack sx={{ padding: Spacing.md }}>
-      <Stack gap={2}>
-        <Stack
-          display="grid"
-          gridTemplateColumns={{ mobile: '1fr', tablet: 'auto 1fr' }}
-          alignItems="end"
-          gap={{ mobile: 0, tablet: 5 }}
-        >
+    <Stack>
+      <Stack gap={Spacing.xs}>
+        <Stack direction="row" alignItems="flex-end" gap={Spacing.md.mobile}>
           <Metric
             label={t`Health`}
             value={Number(value)}
@@ -33,11 +28,11 @@ export const HealthDetails = ({
             valueOptions={{ unit: 'none', color: getHealthValueColor({ health: decimal(value), theme }) }}
             size="medium"
           />
-          <HealthBar health={Number(value)} softLiquidation={softLiquidation} />
+          <HealthBar health={Number(value)} softLiquidation={softLiquidation} sx={{ flex: 1 }} />
         </Stack>
         <Stack
           flexDirection={{ mobile: 'column', tablet: 'row' }}
-          gap={1}
+          gap={Spacing.md.mobile}
           alignItems={{ mobile: 'flex-start', tablet: 'center' }}
           justifyContent="space-between"
         >

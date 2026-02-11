@@ -1,4 +1,4 @@
-import { Stack, Typography, useTheme } from '@mui/material'
+import { Stack, type SxProps, Typography, useTheme } from '@mui/material'
 import { t } from '@ui-kit/lib/i18n'
 import { LinearProgress } from '@ui-kit/shared/ui/LinearProgress'
 import { getHealthTrackColor } from './'
@@ -7,6 +7,7 @@ type HealthBarProps = {
   health: number | undefined | null
   small?: boolean
   softLiquidation: boolean | undefined | null
+  sx?: SxProps
 }
 
 type HealthLevel = 'hardLiquidation' | 'liquidation' | 'risky' | 'good' | 'pristine'
@@ -33,7 +34,7 @@ const getHealthLevel = (health: number | undefined | null): HealthLevel => {
   return 'pristine'
 }
 
-export const HealthBar = ({ health, softLiquidation, small }: HealthBarProps) => {
+export const HealthBar = ({ health, softLiquidation, small, sx }: HealthBarProps) => {
   const theme = useTheme()
   // Clamps health percentage between 0 and 100
   return small ? (
@@ -45,7 +46,7 @@ export const HealthBar = ({ health, softLiquidation, small }: HealthBarProps) =>
       />
     )
   ) : (
-    <Stack paddingBottom={TRACK_BOTTOM_PADDING}>
+    <Stack paddingBottom={TRACK_BOTTOM_PADDING} sx={sx}>
       <Stack
         sx={{
           position: 'relative',

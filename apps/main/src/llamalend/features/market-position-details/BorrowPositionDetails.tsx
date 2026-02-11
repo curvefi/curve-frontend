@@ -125,13 +125,14 @@ export const BorrowPositionDetails = ({
 }: BorrowPositionDetailsProps) => {
   const showPageHeader = useIntegratedLlamaHeader()
   return (
-    <Stack>
+    <Stack padding={Spacing.md}>
       {liquidationAlert.softLiquidation && <LiquidationAlert type="soft" />}
       {liquidationAlert.hardLiquidation && <LiquidationAlert type="hard" />}
       <Stack
         direction={'column'}
         display={showPageHeader ? { tablet: 'flex', desktop: 'grid' } : 'flex'}
         gridTemplateColumns={'1fr 1fr'}
+        gap={Spacing.md}
       >
         <HealthDetails health={health} liquidationAlert={liquidationAlert} />
         <BorrowInformation
