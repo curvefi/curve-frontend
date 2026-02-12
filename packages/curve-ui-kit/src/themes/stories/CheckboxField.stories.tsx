@@ -64,8 +64,6 @@ const meta: Meta<typeof CheckboxFieldStory> = {
   args: {
     checked: true,
     label: `Enable leverage`,
-    message: `${t`up to`} ${formatNumber(7.5, { decimals: 1, abbreviate: false })}x 🔥`,
-    isLoading: false,
     disabled: false,
     onChange: fn(),
   },
@@ -78,14 +76,6 @@ const meta: Meta<typeof CheckboxFieldStory> = {
       control: 'text',
       description: 'Primary label shown next to the checkbox.',
     },
-    message: {
-      control: 'text',
-      description: 'Helper text rendered under the label.',
-    },
-    isLoading: {
-      control: 'boolean',
-      description: 'Shows a skeleton placeholder for the message text.',
-    },
     disabled: {
       control: 'boolean',
       description: 'Disables the checkbox input.',
@@ -97,10 +87,6 @@ const meta: Meta<typeof CheckboxFieldStory> = {
     collapsible: {
       control: { disable: true },
       description: 'Collapsible content rendered when the checkbox is checked.',
-    },
-    error: {
-      control: { disable: true },
-      description: 'Error state that changes the helper message color.',
     },
     onChange: {
       control: { disable: true },
@@ -120,23 +106,10 @@ const meta: Meta<typeof CheckboxFieldStory> = {
 type Story = StoryObj<typeof CheckboxFieldStory>
 
 export const Basic: Story = {
-  args: {
-    message: undefined,
-  },
   parameters: {
     docs: {
       description: {
         story: 'Simple checkbox with label.',
-      },
-    },
-  },
-}
-
-export const WithMessage: Story = {
-  parameters: {
-    docs: {
-      description: {
-        story: 'Simple checkbox with label and helper message.',
       },
     },
   },
@@ -161,23 +134,9 @@ export const WithEndContent: Story = {
   },
 }
 
-export const WithError: Story = {
-  args: {
-    error: new Error(),
-  },
-  parameters: {
-    docs: {
-      description: {
-        story: 'Checkbox with an error.',
-      },
-    },
-  },
-}
-
 export const WithCollapsibleChildren: Story = {
   args: {
     label: 'Deposit and stake',
-    message: 'Staking in the gauge enables CRV rewards',
     collapsible: <SliderContent />,
   },
   parameters: {

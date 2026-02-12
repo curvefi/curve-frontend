@@ -140,7 +140,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
           checked={values.leverageEnabled}
           leverage={leverage}
           onToggle={onLeverageToggle}
-          maxLeverage={max.maxLeverage}
+          maxLeverage={max.maxLeverage.data}
         />
       )}
 

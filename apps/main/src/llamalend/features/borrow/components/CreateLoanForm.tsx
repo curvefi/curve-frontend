@@ -137,7 +137,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
           checked={values.leverageEnabled}
           leverage={leverage}
           onToggle={toggleLeverage}
-          maxLeverage={maxLeverage}
+          maxLeverage={maxLeverage.data}
         />
       )}
 
