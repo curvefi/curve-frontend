@@ -51,8 +51,8 @@ export function AddCollateralInfoAccordion<ChainId extends IChainId>({
       isOpen={isOpen}
       toggle={toggle}
       gas={useAddCollateralEstimateGas(networks, params, isOpen)}
-      health={useHealthQueries((isFull) => getAddCollateralHealthOptions({ ...params, isFull }))}
-      prevHealth={useHealthQueries((isFull) => getUserHealthOptions({ ...params, isFull }))}
+      health={useHealthQueries((isFull) => getAddCollateralHealthOptions({ ...params, isFull }), isOpen)}
+      prevHealth={useHealthQueries((isFull) => getUserHealthOptions({ ...params, isFull }), isOpen)}
       rates={q(useMarketRates(params, isOpen))}
       prevLoanToValue={useLoanToValueFromUserState(
         {

@@ -85,8 +85,8 @@ export function RepayLoanInfoAccordion<ChainId extends IChainId>({
       toggle={toggle}
       isApproved={q(useRepayIsApproved(params, isOpen))}
       gas={useRepayEstimateGas(networks, params, isOpen)}
-      health={useHealthQueries((isFull) => getRepayHealthOptions({ ...params, isFull }))}
-      prevHealth={useHealthQueries((isFull) => getUserHealthOptions({ ...params, isFull }))}
+      health={useHealthQueries((isFull) => getRepayHealthOptions({ ...params, isFull }), isOpen)}
+      prevHealth={useHealthQueries((isFull) => getUserHealthOptions({ ...params, isFull }), isOpen)}
       isFullRepay={isFull}
       prevRates={q(useMarketRates(params, isOpen))}
       rates={q(useMarketFutureRates(params, isOpen))}

@@ -50,8 +50,11 @@ const combineHealth = ([healthFull, healthNotFull]: HealthQueryResults) => ({
  * @param getOptions - Function that returns the query options for a given isFull boolean.
  * @returns Combined health query result.
  */
-export const useHealthQueries = (getOptions: (isFull: boolean) => HealthQueryOptions) =>
+export const useHealthQueries = (getOptions: (isFull: boolean) => HealthQueryOptions, enabled = true) =>
   useQueries({
-    queries: [true, false].map((isFull) => getOptions(isFull)),
+    queries: [true, false].map((isFull) => {
+      const options = getOptions(isFull)
+      return { ...options, enabled: enabled && (options.enabled ?? true) }
+    }),
     combine: combineHealth,
   })

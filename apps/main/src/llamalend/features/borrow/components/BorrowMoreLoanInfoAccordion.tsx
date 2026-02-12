@@ -6,6 +6,7 @@ import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useBorrowMoreExpectedCollateral } from '@/llamalend/queries/borrow-more/borrow-more-expected-collateral.query'
 import { useBorrowMoreEstimateGas } from '@/llamalend/queries/borrow-more/borrow-more-gas-estimate.query'
+import { useBorrowMoreHealth } from '@/llamalend/queries/borrow-more/borrow-more-health.query'
 import { useBorrowMoreIsApproved } from '@/llamalend/queries/borrow-more/borrow-more-is-approved.query'
 import { useBorrowMorePriceImpact } from '@/llamalend/queries/borrow-more/borrow-more-price-impact.query'
 import { useMarketFutureRates } from '@/llamalend/queries/market-future-rates.query'
@@ -17,7 +18,7 @@ import type { BorrowMoreForm, BorrowMoreParams } from '@/llamalend/queries/valid
 import { LoanInfoAccordion } from '@/llamalend/widgets/action-card/LoanInfoAccordion'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
-import { mapQuery, q, type Query } from '@ui-kit/types/util'
+import { mapQuery, q } from '@ui-kit/types/util'
 import { decimal, Decimal } from '@ui-kit/utils'
 
 export function BorrowMoreLoanInfoAccordion<ChainId extends IChainId>({
@@ -27,7 +28,6 @@ export function BorrowMoreLoanInfoAccordion<ChainId extends IChainId>({
   networks,
   onSlippageChange,
   leverageEnabled,
-  health,
 }: {
   params: BorrowMoreParams<ChainId>
   values: BorrowMoreForm
@@ -35,7 +35,6 @@ export function BorrowMoreLoanInfoAccordion<ChainId extends IChainId>({
   networks: NetworkDict<ChainId>
   onSlippageChange: (newSlippage: Decimal) => void
   leverageEnabled: boolean
-  health: Query<Decimal | null>
 }) {
   const [isOpen, , , toggle] = useSwitch(false)
   const userState = useUserState(params, isOpen)
@@ -47,7 +46,7 @@ export function BorrowMoreLoanInfoAccordion<ChainId extends IChainId>({
     [debt, userState.data],
   )
 
-  const prevHealth = useHealthQueries((isFull) => getUserHealthOptions({ ...params, isFull }))
+  const prevHealth = useHealthQueries((isFull) => getUserHealthOptions({ ...params, isFull }), isOpen)
 
   return (
     <LoanInfoAccordion
@@ -55,7 +54,7 @@ export function BorrowMoreLoanInfoAccordion<ChainId extends IChainId>({
       toggle={toggle}
       isApproved={q(useBorrowMoreIsApproved(params, isOpen))}
       gas={useBorrowMoreEstimateGas(networks, params, isOpen)}
-      health={health}
+      health={q(useBorrowMoreHealth(params, isOpen && !!debt))}
       prevHealth={prevHealth}
       prevRates={q(useMarketRates(params, isOpen))}
       rates={q(

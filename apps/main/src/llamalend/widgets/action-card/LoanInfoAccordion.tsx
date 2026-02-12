@@ -80,12 +80,12 @@ export const LoanInfoAccordion = ({
   const prevDebt = userState?.data?.debt
   const prevCollateral = userState?.data?.collateral
   const isHighImpact = priceImpact?.data != null && slippage != null && priceImpact.data > Number(slippage)
+  const theme = useTheme()
   return (
-    <ActionInfoAccordion
-      title={t`Health`}
-      info={
+    <ActionInfoAccordion title={t`Details`} testId="loan-info-accordion" expanded={isOpen} toggle={toggle}>
+      <Stack>
         <ActionInfo
-          label=""
+          label={t`Health`}
           value={isFullRepay ? '∞' : health?.data && formatNumber(health.data, { abbreviate: false })}
           prevValue={prevHealth?.data && formatNumber(prevHealth.data, { abbreviate: false })}
           emptyValue="∞"
@@ -93,17 +93,11 @@ export const LoanInfoAccordion = ({
           valueColor={getHealthValueColor({
             health: health.data,
             prevHealth: prevHealth?.data,
-            theme: useTheme(),
+            theme,
             isFullRepay,
           })}
           testId="borrow-health"
         />
-      }
-      testId="loan-info-accordion"
-      expanded={isOpen}
-      toggle={toggle}
-    >
-      <Stack>
         {(collateral || prevCollateral) && (
           <ActionInfo
             label={t`Collateral`}

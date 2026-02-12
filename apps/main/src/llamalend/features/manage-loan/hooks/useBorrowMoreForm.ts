@@ -9,7 +9,6 @@ import { getTokens } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { OnBorrowedMore, useBorrowMoreMutation } from '@/llamalend/mutations/borrow-more.mutation'
 import { useBorrowMoreExpectedCollateral } from '@/llamalend/queries/borrow-more/borrow-more-expected-collateral.query'
-import { useBorrowMoreHealth } from '@/llamalend/queries/borrow-more/borrow-more-health.query'
 import { useBorrowMoreIsApproved } from '@/llamalend/queries/borrow-more/borrow-more-is-approved.query'
 import { isLeverageBorrowMore } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
 import {
@@ -137,7 +136,6 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
     isApproved: useBorrowMoreIsApproved(params, enabled),
     formErrors: useFormErrors(formState),
     max: useMaxBorrowMoreValues({ params, form, market }, enabled),
-    health: useBorrowMoreHealth(params, enabled && !!values.debt),
     /** Current leverage calculated for now, but it's probably incorrect. It's in development in llamalend-js. */
     leverage: mapQuery(
       useBorrowMoreExpectedCollateral(params, isLeverageBorrowMore(market, values.leverageEnabled)),
