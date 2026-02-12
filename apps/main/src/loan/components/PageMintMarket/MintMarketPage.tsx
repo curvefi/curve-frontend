@@ -96,14 +96,14 @@ export const MintMarketPage = () => {
     params,
   }
 
+  const isLoading = !loaded || (loanExists && !loanStatus)
   return isHydrated && !market ? (
     <ErrorPage title="404" subtitle={t`Market Not Found`} continueUrl={getCollateralListPathname(params)} />
   ) : provider ? (
     <>
       <DetailPageLayout
         formTabs={
-          loaded &&
-          loanStatus &&
+          !isLoading &&
           (loanExists ? (
             <ManageLoanTabs {...formProps} isInSoftLiquidation={loanStatus !== 'healthy'} />
           ) : (
