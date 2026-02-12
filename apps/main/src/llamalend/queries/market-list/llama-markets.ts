@@ -32,6 +32,7 @@ export type Assets = {
 export type AssetDetails = {
   symbol: string
   address: Address
+  decimals: number
   chain: Chain
   balance: number | null
   balanceUsd: number | null
@@ -74,8 +75,6 @@ export type LlamaMarket = {
   createdAt: number
   favoriteKey: Address // this differs per market type; for lend markets the vault address, for mint markets the amm address
   onchainUserStats?: OnchainUserMarketStats
-  onchainError?: string
-  onchainDataReady?: boolean
 }
 
 export type LlamaMarketsResult = {
@@ -222,12 +221,14 @@ const convertLendingVault = (
     assets: {
       borrowed: {
         ...borrowedToken,
+        decimals: Number((borrowedToken as { decimals?: number }).decimals ?? 18),
         chain,
         balance: totalDebt,
         balanceUsd: totalDebtUsd,
       },
       collateral: {
         ...collateralToken,
+        decimals: Number((collateralToken as { decimals?: number }).decimals ?? 18),
         chain,
         balance: totalAssets,
         balanceUsd: totalAssetsUsd,
@@ -329,6 +330,7 @@ const convertMintMarket = (
       borrowed: {
         symbol: stablecoinToken.symbol,
         address: stablecoinToken.address,
+        decimals: Number((stablecoinToken as { decimals?: number }).decimals ?? 18),
         chain,
         balance: borrowed,
         balanceUsd: borrowedUsd,
@@ -337,6 +339,7 @@ const convertMintMarket = (
       collateral: {
         symbol: collateralSymbol,
         address: collateralAddress,
+        decimals: Number((collateralToken as { decimals?: number }).decimals ?? 18),
         chain,
         balance: collateralAmount,
         balanceUsd: collateralAmountUsd,

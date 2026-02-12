@@ -1,7 +1,10 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useConnection } from 'wagmi'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { type Address } from '@ui-kit/utils'
+import { useQuery } from '@tanstack/react-query'
+import { queryClient } from '@ui-kit/lib/api'
+import { REFRESH_INTERVAL } from '@ui-kit/lib/model/time'
 import { ListPageWrapper } from '@ui-kit/widgets/ListPageWrapper'
 import {
   invalidateAllUserLendingSupplies,
@@ -10,33 +13,15 @@ import {
 } from '../../queries/market-list/lending-vaults'
 import { useLlamaMarkets } from '../../queries/market-list/llama-markets'
 import { invalidateAllUserMintMarkets, invalidateMintMarkets } from '../../queries/market-list/mint-markets'
-import { createOnchainMarketKey } from '../../queries/market-list/onchain/overlay-fetch'
 import {
-  invalidateOnchainLlamaMarketsTableData,
-  useOnchainLlamaMarketsTableData,
-} from '../../queries/market-list/onchain/useOnchainLlamaMarketsTableData'
+  createOnchainMarketKey,
+  fetchOnchainLlamaMarketsTableData,
+} from '../../queries/market-list/onchain/overlay-fetch'
 import { LendTableFooter } from './LendTableFooter'
 import { LlamaMarketsTable } from './LlamaMarketsTable'
 import { UserPositionsTabs } from './UserPositionTabs'
 
 const isFiniteNumber = (value: unknown): value is number => typeof value === 'number' && Number.isFinite(value)
-const resolveOnchainFirstField = <T,>({
-  onchainValue,
-  apiValue,
-  onchainDataReady,
-}: {
-  onchainValue: T | null | undefined
-  apiValue: T | null | undefined
-  onchainDataReady: boolean
-}): {
-  value: T | undefined
-  source: 'onchain' | 'api' | undefined
-} => {
-  if (onchainValue != null) return { value: onchainValue, source: 'onchain' }
-  if (!onchainDataReady) return { value: undefined, source: undefined }
-  if (apiValue != null) return { value: apiValue, source: 'api' }
-  return { value: undefined, source: undefined }
-}
 const resolveNetBorrowFromOnchainBase = ({
   onchainBase,
   apiBase,
@@ -50,6 +35,19 @@ const resolveNetBorrowFromOnchainBase = ({
   const spread = isFiniteNumber(apiBase) && isFiniteNumber(apiNet) ? apiNet - apiBase : undefined
   return isFiniteNumber(spread) ? onchainBase + spread : onchainBase
 }
+
+const ONCHAIN_TABLE_QUERY_KEY = ['llama-markets', 'onchain-table-data'] as const
+const getOnchainTableSignature = (markets: NonNullable<ReturnType<typeof useLlamaMarkets>['data']>['markets']) =>
+  markets
+    .map(
+      ({ chain, controllerAddress, ammAddress, vaultAddress, type, userHasPositions }) =>
+        `${chain}:${controllerAddress.toLowerCase()}:${ammAddress.toLowerCase()}:${(vaultAddress ?? '').toLowerCase()}:${type}:${userHasPositions?.Borrow ? 1 : 0}`,
+    )
+    .join('|')
+const getOnchainRefetchInterval = () =>
+  typeof document === 'undefined' || document.visibilityState === 'visible' ? REFRESH_INTERVAL['15s'] : false
+const invalidateOnchainLlamaMarketsTableData = (userAddress: Address | null | undefined) =>
+  queryClient.invalidateQueries({ queryKey: [...ONCHAIN_TABLE_QUERY_KEY, userAddress ?? ''] })
 
 /**
  * Creates a callback to reload the markets and user data.
@@ -90,9 +88,18 @@ const useOnReload = ({ address: userAddress, isFetching }: { address?: Address; 
 export const LlamaMarketsList = () => {
   const { address } = useConnection()
   const { data: apiData, isError, isLoading, isFetching } = useLlamaMarkets(address)
-  const onchainDataQuery = useOnchainLlamaMarketsTableData(apiData?.markets, address)
-  const onchainData = onchainDataQuery.data
-  const onchainDataReady = onchainDataQuery.isFetched || onchainDataQuery.isError
+  const safeMarkets = apiData?.markets ?? []
+  const onchainSignature = useMemo(
+    () => (safeMarkets.length ? getOnchainTableSignature(safeMarkets) : ''),
+    [safeMarkets],
+  )
+  const { data: onchainData } = useQuery({
+    queryKey: [...ONCHAIN_TABLE_QUERY_KEY, address ?? '', onchainSignature],
+    queryFn: async () => fetchOnchainLlamaMarketsTableData(safeMarkets, address),
+    enabled: safeMarkets.length > 0,
+    staleTime: REFRESH_INTERVAL['10s'],
+    refetchInterval: getOnchainRefetchInterval,
+  })
 
   const data = !apiData
     ? apiData
@@ -110,41 +117,20 @@ export const LlamaMarketsList = () => {
                 : rates.borrowApr
           const onchainBorrowApy = rates == null ? undefined : (rates.borrowApy ?? rates.borrowApr)
 
-          const borrowAprField = resolveOnchainFirstField({
-            onchainValue: onchainBorrowApr,
-            apiValue: market.rates.borrowApr,
-            onchainDataReady,
-          })
-          const borrowApyField = resolveOnchainFirstField({
-            onchainValue: onchainBorrowApy,
-            apiValue: market.rates.borrowApy,
-            onchainDataReady,
-          })
-          const lendAprField = resolveOnchainFirstField({
-            onchainValue: rates?.lendApr,
-            apiValue: market.rates.lendApr,
-            onchainDataReady,
-          })
-          const lendApyField = resolveOnchainFirstField({
-            onchainValue: rates?.lendApy,
-            apiValue: market.rates.lendTotalApyMinBoosted,
-            onchainDataReady,
-          })
-
-          const borrowApr = borrowAprField.value ?? market.rates.borrowApr
-          const borrowApy = borrowApyField.value ?? market.rates.borrowApy
+          const borrowApr = onchainBorrowApr ?? market.rates.borrowApr
+          const borrowApy = onchainBorrowApy ?? market.rates.borrowApy
           const borrowTotalApr =
-            borrowAprField.source === 'onchain'
+            onchainBorrowApr != null
               ? (resolveNetBorrowFromOnchainBase({
-                  onchainBase: borrowAprField.value,
+                  onchainBase: onchainBorrowApr,
                   apiBase: market.rates.borrowApr,
                   apiNet: market.rates.borrowTotalApr,
                 }) ?? borrowApr)
               : market.rates.borrowTotalApr
           const borrowTotalApy =
-            borrowApyField.source === 'onchain'
+            onchainBorrowApy != null
               ? (resolveNetBorrowFromOnchainBase({
-                  onchainBase: borrowApyField.value,
+                  onchainBase: onchainBorrowApy,
                   apiBase: market.rates.borrowApy,
                   apiNet: market.rates.borrowTotalApy,
                 }) ?? borrowApy)
@@ -158,12 +144,10 @@ export const LlamaMarketsList = () => {
               borrowApy,
               borrowTotalApr,
               borrowTotalApy,
-              lendApr: lendAprField.value ?? market.rates.lendApr,
-              lendTotalApyMinBoosted: lendApyField.value ?? market.rates.lendTotalApyMinBoosted,
+              lendApr: rates?.lendApr ?? market.rates.lendApr,
+              lendTotalApyMinBoosted: rates?.lendApy ?? market.rates.lendTotalApyMinBoosted,
             },
             ...(userStats && { onchainUserStats: userStats }),
-            ...(onchainData?.errorsByKey[key] && { onchainError: onchainData.errorsByKey[key] }),
-            onchainDataReady,
           }
         }),
       }
