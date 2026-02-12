@@ -1,4 +1,4 @@
-import { LendMarketSubNav } from '@/lend/components/LendMarketSubNav'
+import { LendMarketSubNavMobile } from '@/lend/components/LendMarketSubNavMobile'
 import { networksIdMapper, networks } from '@/lend/networks'
 import type { UrlParams } from '@/lend/types/lend.types'
 import { Outlet } from '@tanstack/react-router'
@@ -15,7 +15,7 @@ export function LendLayout() {
 
   return (
     <>
-      <LendMarketSubNav />
+      <LendMarketSubNavMobile />
       <Outlet />
     </>
   )

@@ -3,14 +3,14 @@ import { useLlamalendMarketSubNavRoutes } from '@/llamalend/hooks/useLlamalendRo
 import Box from '@mui/material/Box'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { usePathname, useParams } from '@ui-kit/hooks/router'
-import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
+import { useIsDesktop } from '@ui-kit/hooks/useBreakpoints'
 import { useLendMarketSubNav } from '@ui-kit/hooks/useFeatureFlags'
 import { routeToPage } from '@ui-kit/shared/routes'
 import { PageTabsSwitcher } from '@ui-kit/widgets/Header/PageTabsSwitcher'
 import { SubNav } from '@ui-kit/widgets/Header/SubNav'
 
-export const LendMarketSubNav = () => {
-  const isMobile = useIsMobile()
+export const LendMarketSubNavMobile = () => {
+  const isDesktop = useIsDesktop()
   const isLendMarketSubNav = useLendMarketSubNav()
   const { network: networkId } = useParams<UrlParams>()
   const pathname = usePathname()
@@ -20,7 +20,7 @@ export const LendMarketSubNav = () => {
   const pages = routes?.map((route) => routeToPage(route, { networkId, pathname }))
 
   return (
-    isMobile &&
+    !isDesktop &&
     isLendMarketSubNav &&
     pages &&
     pages?.length > 0 && (

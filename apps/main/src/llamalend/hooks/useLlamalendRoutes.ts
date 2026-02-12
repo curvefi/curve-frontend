@@ -1,6 +1,6 @@
 import { recordValues } from '@curvefi/prices-api/objects.util'
 import { usePathname } from '@ui-kit/hooks/router'
-import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
+import { useIsDesktop } from '@ui-kit/hooks/useBreakpoints'
 import { useLendMarketSubNav } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { LEND_MARKET_ROUTES } from '@ui-kit/shared/routes'
@@ -47,11 +47,11 @@ export const useLlamalendMarketSubNavRoutes = (): AppRoute[] | null => {
 }
 
 export const useLlamalendRoutes = (): AppRoute[] => {
-  const isMobile = useIsMobile()
+  const isDesktop = useIsDesktop()
   const llamalendMarketRoutes = useLlamalendMarketSubNavRoutes()
   const isLendMarketSubNav = useLendMarketSubNav()
 
-  return !isMobile && isLendMarketSubNav && llamalendMarketRoutes !== null
+  return isDesktop && isLendMarketSubNav && llamalendMarketRoutes !== null
     ? llamalendMarketRoutes
     : APP_LINK.llamalend.routes
 }
