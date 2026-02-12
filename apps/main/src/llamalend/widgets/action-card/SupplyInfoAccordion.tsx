@@ -8,16 +8,18 @@ import { ActionInfoAccordion } from './info-accordion.components'
 import { formatAmount } from './info-accordion.helpers'
 
 export type SupplyInfoAccordionProps = {
-  title?: string
   isOpen: boolean
   toggle: () => void
   isApproved?: boolean
   /** Vault shares with optional previous value for comparison */
   vaultShares: Query<Decimal | null>
   prevVaultShares?: Query<Decimal | null>
+  /** Label for the shares ActionInfo */
+  sharesLabel?: string
   /** Amount supplied in underlying asset with optional previous value */
   amountSupplied?: Query<Decimal | null>
   prevAmountSupplied?: Query<Decimal | null>
+  /** Label for the amount ActionInfo */
   amountLabel?: string
   /** Symbol of the supplied asset */
   suppliedSymbol?: string
@@ -31,7 +33,6 @@ export type SupplyInfoAccordionProps = {
 }
 
 export const SupplyInfoAccordion = ({
-  title = t`Vault Shares`,
   isOpen,
   toggle,
   isApproved,
@@ -39,6 +40,7 @@ export const SupplyInfoAccordion = ({
   prevVaultShares,
   amountSupplied,
   prevAmountSupplied,
+  sharesLabel = t`Vault Shares`,
   amountLabel = t`Amount Supplied`,
   suppliedSymbol,
   supplyApy,
@@ -46,22 +48,15 @@ export const SupplyInfoAccordion = ({
   netSupplyApy,
   gas,
 }: SupplyInfoAccordionProps) => (
-  <ActionInfoAccordion
-    title={title}
-    info={
+  <ActionInfoAccordion title={t`Details`} testId="supply-info-accordion" expanded={isOpen} toggle={toggle}>
+    <Stack>
       <ActionInfo
-        label=""
+        label={sharesLabel}
         value={vaultShares?.data && formatAmount(vaultShares.data)}
         prevValue={prevVaultShares?.data && formatAmount(prevVaultShares.data)}
         {...combineQueryState(vaultShares, prevVaultShares)}
         testId="supply-info-accordion"
       />
-    }
-    testId="supply-info-accordion"
-    expanded={isOpen}
-    toggle={toggle}
-  >
-    <Stack>
       {(amountSupplied || prevAmountSupplied) && (
         <ActionInfo
           label={amountLabel}

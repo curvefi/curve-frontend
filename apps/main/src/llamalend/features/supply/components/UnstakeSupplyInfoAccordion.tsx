@@ -30,7 +30,7 @@ export function UnstakeSupplyInfoAccordion<ChainId extends IChainId>({
   const [isOpen, , , toggle] = useSwitch(false)
   const { chainId, marketId, userAddress, unstakeAmount } = params
 
-  const userBalances = useUserBalances({ chainId, marketId, userAddress })
+  const userBalances = useUserBalances({ chainId, marketId, userAddress }, isOpen)
 
   const marketRates = useMarketRates(params, isOpen)
 
@@ -50,7 +50,7 @@ export function UnstakeSupplyInfoAccordion<ChainId extends IChainId>({
 
   return (
     <SupplyInfoAccordion
-      title={t`Staked shares`}
+      sharesLabel={t`Staked shares`}
       amountLabel={t`Amount staked`}
       isOpen={isOpen}
       toggle={toggle}

@@ -30,7 +30,7 @@ export function DepositSupplyInfoAccordion<ChainId extends IChainId>({
   const { chainId, marketId, userAddress, depositAmount } = params
 
   const { data: isApproved } = useDepositIsApproved(params, isOpen)
-  const userBalances = useUserBalances({ chainId, marketId, userAddress })
+  const userBalances = useUserBalances({ chainId, marketId, userAddress }, isOpen)
 
   const marketRates = useMarketRates(params, isOpen)
   const futureRates = useMarketSupplyFutureRates({ chainId, marketId, reserves: depositAmount }, isOpen)

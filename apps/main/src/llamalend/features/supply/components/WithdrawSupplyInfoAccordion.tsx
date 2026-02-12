@@ -28,7 +28,7 @@ export function WithdrawSupplyInfoAccordion<ChainId extends IChainId>({
   const [isOpen, , , toggle] = useSwitch(false)
   const { chainId, marketId, userAddress, withdrawAmount } = params
 
-  const userBalances = useUserBalances({ chainId, marketId, userAddress })
+  const userBalances = useUserBalances({ chainId, marketId, userAddress }, isOpen)
   const prevVaultShares = mapQuery(userBalances, (d) => d.vaultShares)
   const vaultShares = useWithdrawExpectedVaultShares(params, isOpen)
 
