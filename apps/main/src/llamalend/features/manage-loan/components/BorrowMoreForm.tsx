@@ -8,7 +8,6 @@ import {
   isLeverageBorrowMore,
   isLeverageBorrowMoreSupported,
 } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
-import { HighPriceImpactAlert, LoanFormAlerts } from '@/llamalend/widgets/action-card/LoanFormAlerts'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { notFalsy } from '@curvefi/prices-api/objects.util'
@@ -20,6 +19,7 @@ import { q } from '@ui-kit/types/util'
 import { isDevelopment } from '@ui-kit/utils'
 import { updateForm } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
+import { FormAlerts, HighPriceImpactAlert } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import { InputDivider } from '../../../widgets/InputDivider'
 import { useBorrowMoreForm } from '../hooks/useBorrowMoreForm'
 
@@ -155,7 +155,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
         {isPending ? t`Processing...` : notFalsy(isApproved?.data === false && t`Approve`, t`Borrow More`).join(' & ')}
       </Button>
 
-      <LoanFormAlerts
+      <FormAlerts
         isSuccess={isBorrowed}
         error={borrowError}
         txHash={txHash}

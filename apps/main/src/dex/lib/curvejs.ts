@@ -16,7 +16,7 @@ import {
   RewardOther,
   RewardsApy,
 } from '@/dex/types/main.types'
-import { fulfilledValue, getErrorMessage, isValidAddress } from '@/dex/utils'
+import { fulfilledValue, isValidAddress } from '@/dex/utils'
 import {
   filterCrvProfit,
   filterRewardsApy,
@@ -36,6 +36,7 @@ import { BN } from '@ui/utils'
 import { waitForTransaction, waitForTransactions } from '@ui-kit/lib/ethers'
 import { t } from '@ui-kit/lib/i18n'
 import { log } from '@ui-kit/lib/logging'
+import { getErrorMessage } from '@ui-kit/utils'
 import { fetchNetworks } from '../entities/networks'
 
 const { isUndefined } = lodash
