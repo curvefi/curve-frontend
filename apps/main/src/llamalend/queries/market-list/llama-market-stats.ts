@@ -30,22 +30,43 @@ const earningsColumns = [
  * @returns The stats data and an error if any
  */
 export function useUserMarketStats(market: LlamaMarket, column?: LlamaMarketColumnId) {
-  const { type, userHasPositions, controllerAddress, vaultAddress, chain } = market
-  const { address: userAddress } = useConnection()
-  const { data: collateralUsdRate, isLoading: collateralUsdRateLoading } = useTokenUsdRate({
-    chainId: requireChainId(market.chain),
-    tokenAddress: market.assets.collateral.address,
-  })
-  const { data: borrowedUsdRate, isLoading: borrowedUsdRateLoading } = useTokenUsdRate({
-    chainId: requireChainId(market.chain),
-    tokenAddress: market.assets.borrowed.address,
-  })
-
+  const { type, userHasPositions, controllerAddress, vaultAddress, chain, onchainUserStats } = market
   const enableStats = !!userHasPositions?.Borrow && (!column || statsColumns.includes(column))
   const enableEarnings = !!userHasPositions?.Supply && column != null && earningsColumns.includes(column)
+  const isDepositedColumn = column === LlamaMarketColumnId.UserDeposited
+  const isBoostColumn = column === LlamaMarketColumnId.UserBoostMultiplier
+  const isSupplyColumn = isDepositedColumn || isBoostColumn
+  const { address: userAddress } = useConnection()
+  const { data: collateralUsdRate, isLoading: collateralUsdRateLoading } = useTokenUsdRate(
+    {
+      chainId: requireChainId(market.chain),
+      tokenAddress: market.assets.collateral.address,
+    },
+    enableStats,
+  )
+  const { data: borrowedUsdRate, isLoading: borrowedUsdRateLoading } = useTokenUsdRate(
+    {
+      chainId: requireChainId(market.chain),
+      tokenAddress: market.assets.borrowed.address,
+    },
+    enableStats,
+  )
+  const overlaySettled = market.onchainOverlaySettled ?? false
+  const hasOnchainBorrowStats =
+    enableStats &&
+    onchainUserStats?.health != null &&
+    onchainUserStats?.debt != null &&
+    onchainUserStats?.collateral != null &&
+    onchainUserStats?.borrowed != null
+  const hasOnchainDeposited = enableEarnings && isDepositedColumn && onchainUserStats?.totalCurrentAssets != null
+  const hasOnchainBoost = enableEarnings && isBoostColumn && onchainUserStats?.boostMultiplier != null
+  const hasOnchainSupplyStats = hasOnchainDeposited || hasOnchainBoost
+  // Keep onchain as source-of-truth for user fields and fallback to API only after overlay settles.
+  const waitForOnchainBorrow = enableStats && !overlaySettled && !hasOnchainBorrowStats
+  const waitForOnchainSupply = enableEarnings && isSupplyColumn && !overlaySettled && !hasOnchainSupplyStats
 
-  const enableLendingStats = enableStats && type === LlamaMarketType.Lend
-  const enableMintStats = enableStats && type === LlamaMarketType.Mint
+  const enableLendingStats = enableStats && overlaySettled && !hasOnchainBorrowStats && type === LlamaMarketType.Lend
+  const enableMintStats = enableStats && overlaySettled && !hasOnchainBorrowStats && type === LlamaMarketType.Mint
 
   const params = { userAddress, contractAddress: controllerAddress, blockchainId: chain }
 
@@ -60,15 +81,54 @@ export function useUserMarketStats(market: LlamaMarket, column?: LlamaMarketColu
     data: earnData,
     error: earnError,
     isLoading: loadingEarn,
-  } = useUserLendingVaultEarnings({ ...params, contractAddress: vaultAddress }, enableEarnings)
+  } = useUserLendingVaultEarnings(
+    { ...params, contractAddress: vaultAddress },
+    enableEarnings && (!isSupplyColumn || overlaySettled) && !waitForOnchainSupply && !hasOnchainSupplyStats,
+  )
 
   const { data: mintData, error: mintError, isLoading: loadingMint } = useUserMintMarketStats(params, enableMintStats)
 
-  const stats = (enableLendingStats && lendData) || (enableMintStats && mintData)
-  const error = (enableLendingStats && lendError) || (enableMintStats && mintError) || (enableEarnings && earnError)
-  const isLoading = loadingLend || loadingEarn || loadingMint || collateralUsdRateLoading || borrowedUsdRateLoading
+  const onchainStats = hasOnchainBorrowStats
+    ? {
+        softLiquidation: !!onchainUserStats.softLiquidation,
+        healthFull: onchainUserStats.health ?? 0,
+        debt: onchainUserStats.debt ?? 0,
+        collateral: onchainUserStats.collateral ?? 0,
+        borrowed: onchainUserStats.borrowed ?? 0,
+        totalDeposited: 0,
+        lossPct: 0,
+        loss: 0,
+      }
+    : undefined
 
-  const borrowedAmount = stats ? ('borrowed' in stats ? stats.borrowed : stats.stablecoin) : 0
+  const stats = onchainStats ?? ((enableLendingStats && lendData) || (enableMintStats && mintData))
+  const onchainEarnings = hasOnchainSupplyStats
+    ? {
+        earnings: 0,
+        ...(hasOnchainDeposited && onchainUserStats?.totalCurrentAssets != null
+          ? { totalCurrentAssets: onchainUserStats.totalCurrentAssets }
+          : {}),
+        ...(hasOnchainBoost ? { boostMultiplier: onchainUserStats?.boostMultiplier ?? null } : {}),
+      }
+    : undefined
+  const earnings = onchainEarnings ?? (enableEarnings && earnData)
+  const error = (enableLendingStats && lendError) || (enableMintStats && mintError) || (enableEarnings && earnError)
+  const isLoading =
+    (enableLendingStats && loadingLend) ||
+    (enableMintStats && loadingMint) ||
+    (enableEarnings && !hasOnchainSupplyStats && loadingEarn) ||
+    waitForOnchainBorrow ||
+    waitForOnchainSupply ||
+    collateralUsdRateLoading ||
+    borrowedUsdRateLoading
+
+  const borrowedAmount = stats
+    ? 'borrowed' in stats
+      ? stats.borrowed
+      : 'stablecoin' in stats
+        ? stats.stablecoin
+        : 0
+    : 0
 
   return {
     ...(stats && {
@@ -95,14 +155,14 @@ export function useUserMarketStats(market: LlamaMarket, column?: LlamaMarketColu
         },
         ltv: calculateLtv(stats.debt, stats.collateral, borrowedAmount, borrowedUsdRate, collateralUsdRate),
         collateralLoss: {
-          depositedCollateral: decimal(stats.totalDeposited),
+          depositedCollateral: decimal(stats.totalDeposited ?? 0),
           currentCollateralEstimation: decimal(stats.collateral),
-          percentage: decimal(stats.lossPct),
-          amount: decimal(stats.loss),
+          percentage: decimal(stats.lossPct ?? 0),
+          amount: decimal(stats.loss ?? 0),
         },
       },
     }),
-    ...(enableEarnings && { data: { earnings: earnData } }),
+    ...(enableEarnings && { data: { earnings } }),
     ...(error && { error }),
     isLoading,
   }
