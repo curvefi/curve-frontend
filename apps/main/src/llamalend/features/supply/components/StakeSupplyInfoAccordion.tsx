@@ -12,7 +12,6 @@ import { useUserBalances } from '@/llamalend/queries/user-balances.query'
 import type { StakeParams } from '@/llamalend/queries/validation/supply.validation'
 import { SupplyInfoAccordion } from '@/llamalend/widgets/action-card/SupplyInfoAccordion'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { mapQuery } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
@@ -28,8 +27,8 @@ export function StakeSupplyInfoAccordion<ChainId extends IChainId>({
   networks,
   tokens,
 }: StakeSupplyInfoAccordionProps<ChainId>) {
-  const [isOpen, , , toggle] = useSwitch(false)
   const { chainId, marketId, userAddress, stakeAmount } = params
+  const isOpen = !!stakeAmount
 
   const { data: isApproved } = useStakeIsApproved(params, isOpen)
   const userBalances = useUserBalances({ chainId, marketId, userAddress }, isOpen)
@@ -55,7 +54,6 @@ export function StakeSupplyInfoAccordion<ChainId extends IChainId>({
       sharesLabel={t`Staked shares`}
       amountLabel={t`Amount staked`}
       isOpen={isOpen}
-      toggle={toggle}
       isApproved={isApproved}
       suppliedSymbol={tokens.borrowToken?.symbol}
       prevVaultShares={prevStakedShares}

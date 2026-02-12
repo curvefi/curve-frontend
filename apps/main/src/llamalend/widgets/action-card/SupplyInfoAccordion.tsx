@@ -9,7 +9,6 @@ import { formatAmount } from './info-accordion.helpers'
 
 export type SupplyInfoAccordionProps = {
   isOpen: boolean
-  toggle: () => void
   isApproved?: boolean
   /** Vault shares with optional previous value for comparison */
   vaultShares: Query<Decimal | null>
@@ -34,7 +33,6 @@ export type SupplyInfoAccordionProps = {
 
 export const SupplyInfoAccordion = ({
   isOpen,
-  toggle,
   isApproved,
   vaultShares,
   prevVaultShares,
@@ -48,7 +46,7 @@ export const SupplyInfoAccordion = ({
   netSupplyApy,
   gas,
 }: SupplyInfoAccordionProps) => (
-  <ActionInfoAccordion title={t`Details`} testId="supply-info-accordion" expanded={isOpen} toggle={toggle}>
+  <ActionInfoAccordion isOpen={isOpen} testId="supply-info-accordion">
     <Stack>
       <ActionInfo
         label={sharesLabel}

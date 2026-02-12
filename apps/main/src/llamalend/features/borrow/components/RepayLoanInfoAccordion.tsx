@@ -17,7 +17,6 @@ import type { RepayParams } from '@/llamalend/queries/validation/manage-loan.typ
 import type { RepayForm } from '@/llamalend/queries/validation/manage-loan.validation'
 import { LoanInfoAccordion } from '@/llamalend/widgets/action-card/LoanInfoAccordion'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { combineQueriesMeta } from '@ui-kit/lib/queries/combine'
 import { mapQuery, q, type Query } from '@ui-kit/types/util'
 import { Decimal, decimal } from '@ui-kit/utils'
@@ -59,7 +58,7 @@ function useRepayRemainingDebt<ChainId extends IChainId>(
 
 export function RepayLoanInfoAccordion<ChainId extends IChainId>({
   params,
-  values: { slippage, userCollateral, userBorrowed, isFull },
+  values: { slippage, stateCollateral, userCollateral, userBorrowed, isFull },
   tokens: { collateralToken, borrowToken },
   networks,
   onSlippageChange,
@@ -74,7 +73,7 @@ export function RepayLoanInfoAccordion<ChainId extends IChainId>({
   hasLeverage: boolean | undefined
   swapRequired: boolean
 }) {
-  const [isOpen, , , toggle] = useSwitch(false)
+  const isOpen = !!(stateCollateral || userCollateral || userBorrowed)
   const userStateQuery = useUserState(params, isOpen)
   const userState = q(userStateQuery)
   const priceImpact = useRepayPriceImpact(params, isOpen && swapRequired)
@@ -82,7 +81,6 @@ export function RepayLoanInfoAccordion<ChainId extends IChainId>({
   return (
     <LoanInfoAccordion
       isOpen={isOpen}
-      toggle={toggle}
       isApproved={q(useRepayIsApproved(params, isOpen))}
       gas={useRepayEstimateGas(networks, params, isOpen)}
       health={useHealthQueries((isFull) => getRepayHealthOptions({ ...params, isFull }), isOpen)}

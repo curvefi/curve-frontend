@@ -14,7 +14,6 @@ import { formatAmount, formatLeverage } from './info-accordion.helpers'
 
 export type LoanInfoAccordionProps = {
   isOpen: boolean
-  toggle: () => void
   range?: number
   isApproved?: Query<boolean>
   health: Query<Decimal | null>
@@ -48,7 +47,6 @@ export type LoanInfoAccordionProps = {
 
 export const LoanInfoAccordion = ({
   isOpen,
-  toggle,
   range,
   isApproved,
   health,
@@ -82,7 +80,7 @@ export const LoanInfoAccordion = ({
   const isHighImpact = priceImpact?.data != null && slippage != null && priceImpact.data > Number(slippage)
   const theme = useTheme()
   return (
-    <ActionInfoAccordion title={t`Details`} testId="loan-info-accordion" expanded={isOpen} toggle={toggle}>
+    <ActionInfoAccordion isOpen={isOpen} testId="loan-info-accordion">
       <Stack>
         <ActionInfo
           label={t`Health`}

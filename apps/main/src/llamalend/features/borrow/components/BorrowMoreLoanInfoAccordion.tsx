@@ -17,13 +17,12 @@ import { useUserState } from '@/llamalend/queries/user-state.query'
 import type { BorrowMoreForm, BorrowMoreParams } from '@/llamalend/queries/validation/borrow-more.validation'
 import { LoanInfoAccordion } from '@/llamalend/widgets/action-card/LoanInfoAccordion'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { mapQuery, q } from '@ui-kit/types/util'
 import { decimal, Decimal } from '@ui-kit/utils'
 
 export function BorrowMoreLoanInfoAccordion<ChainId extends IChainId>({
   params,
-  values: { slippage, userCollateral, debt },
+  values: { slippage, userCollateral, userBorrowed, debt },
   tokens: { collateralToken, borrowToken },
   networks,
   onSlippageChange,
@@ -36,7 +35,7 @@ export function BorrowMoreLoanInfoAccordion<ChainId extends IChainId>({
   onSlippageChange: (newSlippage: Decimal) => void
   leverageEnabled: boolean
 }) {
-  const [isOpen, , , toggle] = useSwitch(false)
+  const isOpen = !!(userCollateral || userBorrowed || debt)
   const userState = useUserState(params, isOpen)
   const expectedCollateralQuery = q(useBorrowMoreExpectedCollateral(params, isOpen && leverageEnabled))
 
@@ -51,7 +50,6 @@ export function BorrowMoreLoanInfoAccordion<ChainId extends IChainId>({
   return (
     <LoanInfoAccordion
       isOpen={isOpen}
-      toggle={toggle}
       isApproved={q(useBorrowMoreIsApproved(params, isOpen))}
       gas={useBorrowMoreEstimateGas(networks, params, isOpen)}
       health={q(useBorrowMoreHealth(params, isOpen && !!debt))}

@@ -2,7 +2,6 @@ import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useCreateLoanIsApproved } from '@/llamalend/queries/create-loan/create-loan-approved.query'
 import { useMarketRates } from '@/llamalend/queries/market-rates'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { q } from '@ui-kit/types/util'
 import { mapQuery } from '@ui-kit/types/util'
 import { Decimal } from '@ui-kit/utils'
@@ -24,7 +23,7 @@ import { type CreateLoanForm, type CreateLoanFormQueryParams, type Token } from 
  */
 export const CreateLoanInfoAccordion = <ChainId extends IChainId>({
   params,
-  values: { range, slippage, leverageEnabled },
+  values: { range, slippage, leverageEnabled, userCollateral, debt },
   collateralToken,
   borrowToken,
   networks,
@@ -37,7 +36,7 @@ export const CreateLoanInfoAccordion = <ChainId extends IChainId>({
   networks: NetworkDict<ChainId>
   onSlippageChange: (newSlippage: Decimal) => void
 }) => {
-  const [isOpen, , , toggle] = useSwitch(false)
+  const isOpen = !!(userCollateral || debt)
   const expectedCollateral = q(useCreateLoanExpectedCollateral(params, isOpen))
   const leverageValue = mapQuery(expectedCollateral, (data) => data?.leverage)
   const leverageTotalCollateral = mapQuery(expectedCollateral, (data) => data?.totalCollateral)
@@ -46,7 +45,6 @@ export const CreateLoanInfoAccordion = <ChainId extends IChainId>({
   return (
     <LoanInfoAccordion
       isOpen={isOpen}
-      toggle={toggle}
       range={range}
       isApproved={q(useCreateLoanIsApproved(params))}
       health={q(useCreateLoanHealth(params, isOpen))}

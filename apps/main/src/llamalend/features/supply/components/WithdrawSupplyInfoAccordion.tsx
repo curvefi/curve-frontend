@@ -10,7 +10,6 @@ import { useUserBalances } from '@/llamalend/queries/user-balances.query'
 import type { WithdrawParams } from '@/llamalend/queries/validation/supply.validation'
 import { SupplyInfoAccordion } from '@/llamalend/widgets/action-card/SupplyInfoAccordion'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { mapQuery } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
 
@@ -25,8 +24,8 @@ export function WithdrawSupplyInfoAccordion<ChainId extends IChainId>({
   networks,
   tokens,
 }: WithdrawSupplyInfoAccordionProps<ChainId>) {
-  const [isOpen, , , toggle] = useSwitch(false)
   const { chainId, marketId, userAddress, withdrawAmount } = params
+  const isOpen = !!withdrawAmount
 
   const userBalances = useUserBalances({ chainId, marketId, userAddress }, isOpen)
   const prevVaultShares = mapQuery(userBalances, (d) => d.vaultShares)
@@ -44,7 +43,6 @@ export function WithdrawSupplyInfoAccordion<ChainId extends IChainId>({
   return (
     <SupplyInfoAccordion
       isOpen={isOpen}
-      toggle={toggle}
       suppliedSymbol={tokens.borrowToken?.symbol}
       prevVaultShares={prevVaultShares}
       vaultShares={vaultShares}

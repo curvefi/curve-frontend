@@ -14,7 +14,6 @@ import { CollateralParams } from '@/llamalend/queries/validation/manage-loan.typ
 import type { CollateralForm } from '@/llamalend/queries/validation/manage-loan.validation'
 import { LoanInfoAccordion } from '@/llamalend/widgets/action-card/LoanInfoAccordion'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { mapQuery, q } from '@ui-kit/types/util'
 import { decimal, Decimal } from '@ui-kit/utils'
 
@@ -33,7 +32,7 @@ export function RemoveCollateralInfoAccordion<ChainId extends IChainId>({
   networks: NetworkDict<ChainId>
   leverageEnabled: boolean
 }) {
-  const [isOpen, , , toggle] = useSwitch(false)
+  const isOpen = !!userCollateral
   const userState = q(useUserState(params, isOpen))
 
   const expectedCollateral = mapQuery(
@@ -52,7 +51,6 @@ export function RemoveCollateralInfoAccordion<ChainId extends IChainId>({
   return (
     <LoanInfoAccordion
       isOpen={isOpen}
-      toggle={toggle}
       gas={useRemoveCollateralEstimateGas(networks, params, isOpen)}
       health={useHealthQueries((isFull) => getRemoveCollateralHealthOptions({ ...params, isFull }), isOpen)}
       prevHealth={useHealthQueries((isFull) => getUserHealthOptions({ ...params, isFull }), isOpen)}

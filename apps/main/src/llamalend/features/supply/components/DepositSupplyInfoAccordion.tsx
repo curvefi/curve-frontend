@@ -11,7 +11,6 @@ import { useUserBalances } from '@/llamalend/queries/user-balances.query'
 import type { DepositParams } from '@/llamalend/queries/validation/supply.validation'
 import { SupplyInfoAccordion } from '@/llamalend/widgets/action-card/SupplyInfoAccordion'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { mapQuery, q } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
 
@@ -26,8 +25,8 @@ export function DepositSupplyInfoAccordion<ChainId extends IChainId>({
   networks,
   tokens,
 }: DepositSupplyInfoAccordionProps<ChainId>) {
-  const [isOpen, , , toggle] = useSwitch(false)
   const { chainId, marketId, userAddress, depositAmount } = params
+  const isOpen = !!depositAmount
 
   const { data: isApproved } = useDepositIsApproved(params, isOpen)
   const userBalances = useUserBalances({ chainId, marketId, userAddress }, isOpen)
@@ -43,7 +42,6 @@ export function DepositSupplyInfoAccordion<ChainId extends IChainId>({
   return (
     <SupplyInfoAccordion
       isOpen={isOpen}
-      toggle={toggle}
       isApproved={isApproved}
       suppliedSymbol={tokens.borrowToken?.symbol}
       prevVaultShares={mapQuery(userBalances, (d) => d.vaultShares)}
