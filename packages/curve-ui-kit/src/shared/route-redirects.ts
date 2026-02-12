@@ -7,7 +7,7 @@ const defaultPages = {
   crvusd: 'markets',
   dao: 'proposals',
   llamalend: 'markets',
-  bridge: 'bridges',
+  bridge: '',
   analytics: 'home',
 } satisfies Record<AppName, string>
 const oldOrigins = ['lend', 'crvusd', 'dao'] as const

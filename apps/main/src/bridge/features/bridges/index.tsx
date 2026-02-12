@@ -29,7 +29,7 @@ export const Bridges = () => {
   )
 
   return (
-    <Stack>
+    <Stack data-testid="bridges">
       <TabsSwitcher variant="contained" value={tab} options={tabs} />
       <TabPanel sx={{ paddingBlock: Spacing.sm, paddingInline: Spacing.md }}>
         {tab === 'web3' && <BridgeOverview bridges={WEB3_BRIDGES} title={t`Aggregators for the best routes`} />}

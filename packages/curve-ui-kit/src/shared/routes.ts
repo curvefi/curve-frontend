@@ -52,7 +52,7 @@ export const ANALYTICS_ROUTES = {
 }
 
 export const BRIDGE_ROUTES = {
-  PAGE_BRIDGES: '/bridges',
+  PAGE_BRIDGES: '/bridge',
 }
 
 export const AppNames = ['dex', 'lend', 'crvusd', 'dao', 'llamalend', 'bridge', 'analytics'] as const
