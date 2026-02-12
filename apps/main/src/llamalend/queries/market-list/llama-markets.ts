@@ -22,6 +22,7 @@ import {
   LendingVault,
 } from './lending-vaults'
 import { getMintMarketOptions, getUserMintMarketsOptions, MintMarket } from './mint-markets'
+import { type OnchainUserMarketStats } from './onchain/overlay-fetch'
 
 export type Assets = {
   borrowed: AssetDetails
@@ -72,6 +73,9 @@ export type LlamaMarket = {
   userHasPositions: Record<MarketRateType, boolean> | null // null means no positions in either market and makes easy to filter
   createdAt: number
   favoriteKey: Address // this differs per market type; for lend markets the vault address, for mint markets the amm address
+  onchainUserStats?: OnchainUserMarketStats
+  onchainError?: string
+  onchainOverlaySettled?: boolean
 }
 
 export type LlamaMarketsResult = {
