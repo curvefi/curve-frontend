@@ -113,9 +113,8 @@ export const useLoanPositionDetails = ({
   const collateralRebasingYield = crvUsdSnapshots?.[crvUsdSnapshots.length - 1]?.collateralToken.rebasingYield // take only most recent rebasing yield
   const borrowApr = marketRates?.borrowApr == null ? null : Number(marketRates.borrowApr)
 
-  /** loan app loading checks include a check for null check on value to prevent a moment
-   * in initalisation where there is no loading state and no value, this will be resolved
-   * in a future refactor to use direct llamalend-js queries, not using the legecy stores like now */
+  /** Loading checks include a null check on value to cover the gap where legacy stores have no loading state yet.
+   * TODO: remove once migrated to direct llamalend-js queries */
   return {
     marketType: LlamaMarketType.Mint,
     liquidationAlert: {
