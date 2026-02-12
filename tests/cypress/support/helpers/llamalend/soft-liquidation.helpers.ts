@@ -12,12 +12,14 @@ export function writeImproveHealthForm({ amount }: { amount: Decimal }) {
 export function checkClosePositionDetailsLoaded({ debt }: { debt: Decimal }) {
   getActionValue('withdraw-amount').should('match', /(\d(\.\d+)?)/)
   getActionValue('borrow-apr').should('include', '%')
-  cy.get('[data-testid="debt-to-close-position"]').invoke('attr', 'data-value').should('be.closeTo', Number(debt))
+  cy.get('[data-testid="debt-to-close-position-value"]')
+    .invoke('attr', 'data-value')
+    .should((value) => expect(Number(value)).to.be.closeTo(Number(debt), 0.001))
   cy.get('[data-testid="loan-form-errors"]').should('not.exist')
 }
 
 export function submitImproveHealthForm() {
-  cy.get('[data-testid="improve-submit-button"]', LOAD_TIMEOUT).click()
+  cy.get('[data-testid="improve-health-submit"]', LOAD_TIMEOUT).click()
   return cy
     .get('[data-testid="toast-success"]', TRANSACTION_LOAD_TIMEOUT)
     .contains('Loan repaid', TRANSACTION_LOAD_TIMEOUT)
