@@ -1,4 +1,11 @@
-import { AppRoute, DEFAULT_PAGES, getRouteApp, getRouteTestId, oneAppRoute } from '@cy/support/routes'
+import {
+  AppRoute,
+  CRVUSD_PAGE_MARKETS_ROUTE,
+  DEFAULT_PAGES,
+  getRouteApp,
+  getRouteTestId,
+  oneAppRoute,
+} from '@cy/support/routes'
 import {
   API_LOAD_TIMEOUT,
   LOAD_TIMEOUT,
@@ -35,21 +42,36 @@ describe('Header', () => {
     })
 
     it('should have the right size', () => {
+      const isCrvusdMarketRoute = route.startsWith(CRVUSD_PAGE_MARKETS_ROUTE)
+      // crvusd market page route has no subnav
+      const expectedHeaderHeight = isCrvusdMarketRoute
+        ? expectedMainNavHeight
+        : expectedSubNavHeight + expectedMainNavHeight
+
       cy.get("[data-testid='main-nav']").invoke('outerHeight').should('equal', expectedMainNavHeight)
-      cy.get("[data-testid='subnav']").invoke('outerHeight').should('equal', expectedSubNavHeight)
-      cy.get(`header`)
-        .invoke('outerHeight')
-        .should('equal', expectedSubNavHeight + expectedMainNavHeight)
-      cy.get(`header`)
-        .invoke('outerWidth')
-        .should('equal', viewport[0] - SCROLL_WIDTH)
+
+      if (isCrvusdMarketRoute) {
+        cy.get("[data-testid='subnav']").should('not.exist')
+      } else {
+        cy.get("[data-testid='subnav']").invoke('outerHeight').should('equal', expectedSubNavHeight)
+      }
+
+      cy.get(`header`).invoke('outerHeight').should('equal', expectedHeaderHeight)
       cy.get("[data-testid='navigation-connect-wallet']").invoke('outerHeight').should('equal', expectedConnectHeight)
 
-      const expectedFooterWidth = Math.min(
-        expectedFooterMaxWidth,
-        viewport[0] - expectedFooterXMargin.desktop - SCROLL_WIDTH,
-      )
-      cy.get("[data-testid='footer-content']").invoke('outerWidth').should('equal', expectedFooterWidth)
+      cy.window().then((win) => {
+        // get the scroll width dynamically because of the crvusd page with small header don't render the scrollbar
+        const scrollWidth = win.innerWidth - win.document.documentElement.clientWidth
+        const expectedFooterWidth = Math.min(
+          expectedFooterMaxWidth,
+          viewport[0] - expectedFooterXMargin.desktop - scrollWidth,
+        )
+
+        cy.get(`header`)
+          .invoke('outerWidth')
+          .should('equal', viewport[0] - scrollWidth)
+        cy.get("[data-testid='footer-content']").invoke('outerWidth').should('equal', expectedFooterWidth)
+      })
     })
 
     it('should switch themes', () => {

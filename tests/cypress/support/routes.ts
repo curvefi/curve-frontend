@@ -13,15 +13,18 @@ import {
 } from '@ui-kit/shared/routes'
 
 const SDOLA_LEND_POOL = '0xaD444663c6C92B497225c6cE65feE2E7F78BFb86'
+const NETWORK = 'ethereum'
+
+export const CRVUSD_PAGE_MARKETS_ROUTE = `crvusd/${NETWORK}${CRVUSD_ROUTES.PAGE_MARKETS}/`
 
 /**
  * Returns a random app route for testing. Excludes redirect routes.
  */
 export const oneAppRoute = () =>
   ({
-    dex: () => `dex/ethereum${oneValueOf(DEX_ROUTES)}`,
+    dex: () => `dex/${NETWORK}${oneValueOf(DEX_ROUTES)}`,
     lend: () =>
-      `lend/ethereum${oneOf(
+      `lend/${NETWORK}${oneOf(
         ...recordValues(LEND_ROUTES).map((r) =>
           r == LEND_ROUTES.PAGE_MARKETS
             ? // use market detail page, the list page redirects to the llamalend app
@@ -30,15 +33,15 @@ export const oneAppRoute = () =>
         ),
       )}`,
     crvusd: () =>
-      `crvusd/ethereum${oneOf(
+      `crvusd/${NETWORK}${oneOf(
         ...recordValues(CRVUSD_ROUTES).map((r) =>
           // use market detail page, the list page redirects to the llamalend app
           r == CRVUSD_ROUTES.PAGE_MARKETS ? `${CRVUSD_ROUTES.PAGE_MARKETS}/WBTC` : r,
         ),
       )}`,
-    llamalend: () => `llamalend/ethereum${oneValueOf(LLAMALEND_ROUTES)}`,
+    llamalend: () => `llamalend/${NETWORK}${oneValueOf(LLAMALEND_ROUTES)}`,
     dao: () =>
-      `dao/ethereum${oneOf(
+      `dao/${NETWORK}${oneOf(
         ...recordValues({ ...DAO_ROUTES, PAGE_USER: `${DAO_ROUTES.PAGE_USER}/${oneAddress()}` }).filter(
           // exclude external links, hide the integrations page which redirects to the dex app
           (route) => !route.startsWith('https://') && !route.includes(DAO_ROUTES.PAGE_INTEGRATIONS),
