@@ -5,6 +5,7 @@ import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { type Chain } from '@curvefi/prices-api'
 import { Typography } from '@mui/material'
 import { IconButton } from '@mui/material'
+import Box from '@mui/material/Box'
 import Chip from '@mui/material/Chip'
 import Stack from '@mui/material/Stack'
 import { useNavigate } from '@ui-kit/hooks/router'
@@ -49,7 +50,6 @@ export const PageHeader = ({
   return (
     <Stack
       direction={{ mobile: 'column', tablet: 'row' }}
-      alignItems={{ tablet: 'center' }}
       justifyContent={{ tablet: 'space-between' }}
       gap={Spacing.md}
       paddingBlock={Spacing.sm}
@@ -59,35 +59,38 @@ export const PageHeader = ({
         <IconButton
           size="small"
           onClick={() => push(getInternalUrl('llamalend', blockchainId, LLAMALEND_ROUTES.PAGE_MARKETS))}
+          sx={{ alignSelf: 'center' }}
         >
           <ArrowLeft />
         </IconButton>
-        <Stack direction="row" alignItems="center" gap={Spacing.sm}>
-          <WithSkeleton loading={isLoading} variant="rectangular" width={40} height={40}>
-            {collateralToken && borrowToken && (
-              <TokenPair
-                chain={blockchainId}
-                assets={{ primary: collateralToken, secondary: borrowToken }}
-                hideChainIcon
-              />
-            )}
-          </WithSkeleton>
-          <Stack>
-            <Stack direction="row" gap={Spacing.xs} alignItems="flex-end">
-              <WithSkeleton loading={isLoading} width={120} height={24}>
+        <Stack direction="row" gap={Spacing.sm}>
+          <Box alignSelf="center">
+            <WithSkeleton loading={isLoading} variant="rectangular" width={40} height={40}>
+              {collateralToken && borrowToken && (
+                <TokenPair
+                  chain={blockchainId}
+                  assets={{ primary: collateralToken, secondary: borrowToken }}
+                  hideChainIcon
+                />
+              )}
+            </WithSkeleton>
+          </Box>
+          <Stack justifyContent={{ mobile: 'center', tablet: 'flex-start' }}>
+            <WithSkeleton loading={isLoading} width={80}>
+              <Typography variant="bodyXsRegular">{subtitle}</Typography>
+            </WithSkeleton>
+            <Stack direction="row" gap={Spacing.xs} alignItems="flex-end" flexWrap="wrap">
+              <WithSkeleton loading={isLoading} width={120}>
                 <Typography variant="headingSBold">{title}</Typography>
               </WithSkeleton>
-              <WithSkeleton loading={isLoading} width={24} height={24}>
-                <Stack direction="row" gap={Spacing.xs} paddingBottom="0.1875rem">
-                  {/* 3px custom padding bottom to align with text baseline */}
+              <WithSkeleton loading={isLoading} width={24}>
+                {/* 3px custom padding bottom to align with text baseline */}
+                <Stack direction="row" gap={Spacing.xs} paddingBottom="0.1875rem" alignItems="flex-end">
                   <ChainIcon size="sm" blockchainId={blockchainId} />
                   <Chip size="extraSmall" color="default" label={t`${marketType}`} />
                 </Stack>
               </WithSkeleton>
             </Stack>
-            <WithSkeleton loading={isLoading} width={100} height={14}>
-              <Typography variant="bodySRegular">{subtitle}</Typography>
-            </WithSkeleton>
           </Stack>
         </Stack>
       </Stack>

@@ -31,7 +31,9 @@ export const MetricsRow = ({ borrowRate, supplyRate, availableLiquidity, marketT
 
   return (
     <Stack
-      direction={{ mobile: 'column', tablet: 'row' }}
+      display={{ mobile: 'grid', tablet: 'flex' }}
+      gridTemplateColumns="1fr 1fr"
+      direction="row"
       sx={{
         gap: { mobile: Spacing.md.mobile, tablet: Spacing.xxl.tablet },
       }}
