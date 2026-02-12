@@ -1,5 +1,4 @@
 import { multicall } from '@wagmi/core'
-import { groupBy } from 'lodash'
 import { type ContractFunctionParameters } from 'viem'
 import { type LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { getWagmiConfig } from '@ui-kit/features/connect-wallet/lib/wagmi/wagmi-config'
@@ -83,7 +82,7 @@ const fetchChainTableData = async (
   })
 
   tableData.userStatsByKey = parsedUser.userStatsByKey
-  tableData.errorsByKey = { ...tableData.errorsByKey, ...parsedUser.errorsByKey }
+  Object.assign(tableData.errorsByKey, parsedUser.errorsByKey)
 
   return tableData
 }
@@ -92,18 +91,19 @@ export const fetchOnchainLlamaMarketsTableData = async (
   markets: LlamaMarket[],
   userAddress: UiAddress | undefined,
 ): Promise<OnchainLlamaMarketsTableData> => {
-  const grouped = groupBy(markets, (market) => {
+  const grouped: Record<number, LlamaMarket[]> = {}
+  for (const market of markets) {
     try {
-      return requireChainId(market.chain)
+      const chainId = requireChainId(market.chain)
+      if (!grouped[chainId]) grouped[chainId] = []
+      grouped[chainId].push(market)
     } catch {
-      return -1
+      // Ignore markets with unsupported chain mapping.
     }
-  })
-
-  const chainEntries = Object.entries(grouped).filter(([chainId]) => Number(chainId) > 0)
+  }
 
   const chainData = await Promise.all(
-    chainEntries.map(async ([chainId, chainMarkets]) => {
+    Object.entries(grouped).map(async ([chainId, chainMarkets]) => {
       try {
         // Slow RPC on one chain should not block onchain updates from healthy chains.
         return await handleTimeout(
@@ -124,12 +124,12 @@ export const fetchOnchainLlamaMarketsTableData = async (
     }),
   )
 
-  return chainData.reduce(
-    (acc, next) => ({
-      ratesByKey: { ...acc.ratesByKey, ...next.ratesByKey },
-      userStatsByKey: { ...acc.userStatsByKey, ...next.userStatsByKey },
-      errorsByKey: { ...acc.errorsByKey, ...next.errorsByKey },
-    }),
-    createEmptyOnchainTableData(),
-  )
+  const combined = createEmptyOnchainTableData()
+  chainData.forEach((next) => {
+    Object.assign(combined.ratesByKey, next.ratesByKey)
+    Object.assign(combined.userStatsByKey, next.userStatsByKey)
+    Object.assign(combined.errorsByKey, next.errorsByKey)
+  })
+
+  return combined
 }

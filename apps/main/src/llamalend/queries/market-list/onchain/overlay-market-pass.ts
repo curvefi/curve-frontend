@@ -68,6 +68,15 @@ const getFailureError = (value: unknown): Error | undefined => {
 const toFloat = (value: bigint, decimals: number) => Number(formatUnits(value, decimals))
 const sanitizeNumber = (value: number | null | undefined) =>
   value != null && Number.isFinite(value) ? value : undefined
+const getUniqueTokenAddresses = (markets: LlamaMarket[]) =>
+  Array.from(
+    new Set(
+      markets.flatMap((market) => [
+        market.assets.borrowed.address.toLowerCase(),
+        market.assets.collateral.address.toLowerCase(),
+      ]),
+    ),
+  ) as Address[]
 
 export const createOnchainMarketKey = (chain: LlamaMarket['chain'], controllerAddress: string) =>
   `${chain}:${controllerAddress.toLowerCase()}`
@@ -76,16 +85,7 @@ export const buildChainMarketBatch = (chainId: number, chainMarkets: LlamaMarket
   const contracts: ContractFunctionParameters[] = []
   const meta: MarketBatchMeta[] = []
 
-  const uniqueTokenAddresses = Array.from(
-    new Set(
-      chainMarkets.flatMap((market) => [
-        market.assets.borrowed.address.toLowerCase(),
-        market.assets.collateral.address.toLowerCase(),
-      ]),
-    ),
-  ) as Address[]
-
-  uniqueTokenAddresses.forEach((tokenAddress) => {
+  getUniqueTokenAddresses(chainMarkets).forEach((tokenAddress) => {
     if (getTokenDecimals(chainId, tokenAddress) != null) return
     contracts.push({ address: tokenAddress, abi: erc20Abi, functionName: 'decimals' })
     meta.push({ kind: 'tokenDecimals', tokenAddress })
@@ -130,15 +130,7 @@ export const parseChainMarketBatch = ({
   const tokenDecimalsByAddress: Record<string, number> = {}
   const rawRatesByKey: Record<string, RawRateState> = {}
 
-  Array.from(
-    new Set(
-      chainMarkets.flatMap((market) => [
-        market.assets.borrowed.address.toLowerCase(),
-        market.assets.collateral.address.toLowerCase(),
-      ]),
-    ),
-  ).forEach((address) => {
-    const tokenAddress = address as Address
+  getUniqueTokenAddresses(chainMarkets).forEach((tokenAddress) => {
     const decimals = getTokenDecimals(chainId, tokenAddress)
     if (decimals != null) tokenDecimalsByAddress[tokenAddress.toLowerCase()] = decimals
   })

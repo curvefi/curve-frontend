@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useConnection } from 'wagmi'
 import { LlamaMarketType } from '@ui-kit/types/market'
-import { Address } from '@ui-kit/utils'
+import { type Address } from '@ui-kit/utils'
 import { ListPageWrapper } from '@ui-kit/widgets/ListPageWrapper'
 import {
   invalidateAllUserLendingSupplies,
@@ -102,21 +102,21 @@ export const LlamaMarketsList = () => {
           const key = createOnchainMarketKey(market.chain, market.controllerAddress)
           const rates = onchainData?.ratesByKey[key]
           const userStats = onchainData?.userStatsByKey[key]
-          const overlayBorrowApr =
+          const onchainBorrowApr =
             rates == null
               ? undefined
               : market.type === LlamaMarketType.Mint
                 ? (rates.borrowApy ?? rates.borrowApr)
                 : rates.borrowApr
-          const overlayBorrowApy = rates == null ? undefined : (rates.borrowApy ?? rates.borrowApr)
+          const onchainBorrowApy = rates == null ? undefined : (rates.borrowApy ?? rates.borrowApr)
 
           const borrowAprField = resolveOnchainFirstField({
-            onchainValue: overlayBorrowApr,
+            onchainValue: onchainBorrowApr,
             apiValue: market.rates.borrowApr,
             onchainDataReady,
           })
           const borrowApyField = resolveOnchainFirstField({
-            onchainValue: overlayBorrowApy,
+            onchainValue: onchainBorrowApy,
             apiValue: market.rates.borrowApy,
             onchainDataReady,
           })
@@ -169,8 +169,7 @@ export const LlamaMarketsList = () => {
       }
 
   const [isReloading, onReload] = useOnReload({ address, isFetching })
-  const waitForInitialOnchainData = !!apiData?.markets.length && !onchainDataReady
-  const loading = isReloading || waitForInitialOnchainData || (!data && (!isError || isLoading))
+  const loading = isReloading || (!data && (!isError || isLoading))
   return (
     <ListPageWrapper footer={<LendTableFooter />}>
       {(data?.userHasPositions || !address) && (
