@@ -6,7 +6,12 @@ const { IconSize } = SizesAndSpaces
 
 const Icon = styled('img')({})
 
-export const ChainIcon = ({ blockchainId, size }: { blockchainId: string; size: keyof typeof IconSize }) => {
+export type ChainIconProps = {
+  blockchainId: string
+  size: keyof typeof IconSize
+}
+
+export const ChainIcon = ({ blockchainId, size }: ChainIconProps) => {
   // width and height are required, but overridden by responsive design tokens
   const defaultSize = parseFloat(IconSize[size].mobile) * 16 // convert rem to px
   return (
