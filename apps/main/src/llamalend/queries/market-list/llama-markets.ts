@@ -75,7 +75,7 @@ export type LlamaMarket = {
   favoriteKey: Address // this differs per market type; for lend markets the vault address, for mint markets the amm address
   onchainUserStats?: OnchainUserMarketStats
   onchainError?: string
-  onchainOverlaySettled?: boolean
+  onchainDataReady?: boolean
 }
 
 export type LlamaMarketsResult = {

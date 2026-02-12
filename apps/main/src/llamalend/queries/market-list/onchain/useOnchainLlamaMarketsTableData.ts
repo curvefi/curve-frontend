@@ -4,13 +4,13 @@ import { useQuery } from '@tanstack/react-query'
 import { queryClient } from '@ui-kit/lib/api'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model/time'
 import { type Address as UiAddress } from '@ui-kit/utils'
-import { fetchOnchainLlamaMarketsOverlay } from './overlay-fetch'
+import { fetchOnchainLlamaMarketsTableData } from './overlay-fetch'
 
-type OverlayQueryOptions = {
+type OnchainTableDataQueryOptions = {
   enabled?: boolean
 }
 
-const QUERY_KEY = ['llama-markets', 'onchain-overlay'] as const
+const QUERY_KEY = ['llama-markets', 'onchain-table-data'] as const
 
 const getSignature = (markets: LlamaMarket[]) =>
   markets
@@ -33,20 +33,20 @@ const getSignature = (markets: LlamaMarket[]) =>
 const getRefetchInterval = () =>
   typeof document === 'undefined' || document.visibilityState === 'visible' ? REFRESH_INTERVAL['15s'] : false
 
-export const invalidateOnchainLlamaMarketsOverlay = (userAddress: UiAddress | null | undefined) =>
+export const invalidateOnchainLlamaMarketsTableData = (userAddress: UiAddress | null | undefined) =>
   queryClient.invalidateQueries({ queryKey: [...QUERY_KEY, userAddress ?? ''] })
 
-export const useOnchainLlamaMarketsOverlay = (
+export const useOnchainLlamaMarketsTableData = (
   markets: LlamaMarket[] | undefined,
   userAddress: UiAddress | undefined,
-  options?: OverlayQueryOptions,
+  options?: OnchainTableDataQueryOptions,
 ) => {
   const safeMarkets = markets ?? []
   const signature = useMemo(() => (safeMarkets.length ? getSignature(safeMarkets) : ''), [safeMarkets])
 
   return useQuery({
     queryKey: [...QUERY_KEY, userAddress ?? '', signature],
-    queryFn: async () => fetchOnchainLlamaMarketsOverlay(safeMarkets, userAddress),
+    queryFn: async () => fetchOnchainLlamaMarketsTableData(safeMarkets, userAddress),
     enabled: (options?.enabled ?? true) && safeMarkets.length > 0,
     staleTime: REFRESH_INTERVAL['10s'],
     refetchInterval: getRefetchInterval,

@@ -48,18 +48,18 @@ export function useUserMarketStats(market: LlamaMarket, column?: LlamaMarketColu
     },
     enableStats,
   )
-  const overlaySettled = market.onchainOverlaySettled ?? false
+  const onchainDataReady = market.onchainDataReady ?? false
   const hasOnchainBorrowStats =
     enableStats &&
     onchainUserStats?.health != null &&
     onchainUserStats?.debt != null &&
     onchainUserStats?.collateral != null &&
     onchainUserStats?.borrowed != null
-  // Keep onchain as source-of-truth for user fields and fallback to API only after overlay settles.
-  const waitForOnchainBorrow = enableStats && !overlaySettled && !hasOnchainBorrowStats
+  // Keep onchain as source-of-truth for user fields and fallback to API only after onchain fetch settles.
+  const waitForOnchainBorrow = enableStats && !onchainDataReady && !hasOnchainBorrowStats
 
-  const enableLendingStats = enableStats && overlaySettled && !hasOnchainBorrowStats && type === LlamaMarketType.Lend
-  const enableMintStats = enableStats && overlaySettled && !hasOnchainBorrowStats && type === LlamaMarketType.Mint
+  const enableLendingStats = enableStats && onchainDataReady && !hasOnchainBorrowStats && type === LlamaMarketType.Lend
+  const enableMintStats = enableStats && onchainDataReady && !hasOnchainBorrowStats && type === LlamaMarketType.Mint
 
   const params = { userAddress, contractAddress: controllerAddress, blockchainId: chain }
 

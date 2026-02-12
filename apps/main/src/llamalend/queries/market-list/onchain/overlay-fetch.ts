@@ -23,7 +23,7 @@ export type OnchainUserMarketStats = {
   softLiquidation?: boolean
 }
 
-export type OnchainLlamaMarketsOverlay = {
+export type OnchainLlamaMarketsTableData = {
   ratesByKey: Record<string, OnchainMarketRates>
   userStatsByKey: Record<string, OnchainUserMarketStats>
   errorsByKey: Record<string, string>
@@ -45,13 +45,17 @@ const runMulticall = async (chainId: number, contracts: ContractFunctionParamete
   })
 }
 
-const emptyOverlay = (): OnchainLlamaMarketsOverlay => ({ ratesByKey: {}, userStatsByKey: {}, errorsByKey: {} })
+const createEmptyOnchainTableData = (): OnchainLlamaMarketsTableData => ({
+  ratesByKey: {},
+  userStatsByKey: {},
+  errorsByKey: {},
+})
 
-const fetchChainOverlay = async (
+const fetchChainTableData = async (
   chainId: number,
   chainMarkets: LlamaMarket[],
   userAddress: UiAddress | undefined,
-): Promise<OnchainLlamaMarketsOverlay> => {
+): Promise<OnchainLlamaMarketsTableData> => {
   const marketBatch = buildChainMarketBatch(chainId, chainMarkets)
   const marketResults = await runMulticall(chainId, marketBatch.contracts)
   const parsedMarket = parseChainMarketBatch({
@@ -61,13 +65,13 @@ const fetchChainOverlay = async (
     results: marketResults,
   })
 
-  const overlay: OnchainLlamaMarketsOverlay = {
+  const tableData: OnchainLlamaMarketsTableData = {
     ratesByKey: parsedMarket.ratesByKey,
     userStatsByKey: {},
     errorsByKey: parsedMarket.errorsByKey,
   }
 
-  if (!userAddress) return overlay
+  if (!userAddress) return tableData
 
   const userBatch = buildChainUserBatch({ chainMarkets, userAddress })
   const userResults = await runMulticall(chainId, userBatch.contracts)
@@ -78,16 +82,16 @@ const fetchChainOverlay = async (
     tokenDecimalsByAddress: parsedMarket.tokenDecimalsByAddress,
   })
 
-  overlay.userStatsByKey = parsedUser.userStatsByKey
-  overlay.errorsByKey = { ...overlay.errorsByKey, ...parsedUser.errorsByKey }
+  tableData.userStatsByKey = parsedUser.userStatsByKey
+  tableData.errorsByKey = { ...tableData.errorsByKey, ...parsedUser.errorsByKey }
 
-  return overlay
+  return tableData
 }
 
-export const fetchOnchainLlamaMarketsOverlay = async (
+export const fetchOnchainLlamaMarketsTableData = async (
   markets: LlamaMarket[],
   userAddress: UiAddress | undefined,
-): Promise<OnchainLlamaMarketsOverlay> => {
+): Promise<OnchainLlamaMarketsTableData> => {
   const grouped = groupBy(markets, (market) => {
     try {
       return requireChainId(market.chain)
@@ -98,14 +102,14 @@ export const fetchOnchainLlamaMarketsOverlay = async (
 
   const chainEntries = Object.entries(grouped).filter(([chainId]) => Number(chainId) > 0)
 
-  const chainOverlays = await Promise.all(
+  const chainData = await Promise.all(
     chainEntries.map(async ([chainId, chainMarkets]) => {
       try {
         // Slow RPC on one chain should not block onchain updates from healthy chains.
         return await handleTimeout(
-          fetchChainOverlay(Number(chainId), chainMarkets, userAddress),
+          fetchChainTableData(Number(chainId), chainMarkets, userAddress),
           CHAIN_READ_TIMEOUT_MS,
-          `Onchain overlay timed out on chain ${chainId}`,
+          `Onchain table data timed out on chain ${chainId}`,
         )
       } catch (error) {
         const chainError = error instanceof Error ? error.message : 'Unknown chain read error'
@@ -120,12 +124,12 @@ export const fetchOnchainLlamaMarketsOverlay = async (
     }),
   )
 
-  return chainOverlays.reduce(
+  return chainData.reduce(
     (acc, next) => ({
       ratesByKey: { ...acc.ratesByKey, ...next.ratesByKey },
       userStatsByKey: { ...acc.userStatsByKey, ...next.userStatsByKey },
       errorsByKey: { ...acc.errorsByKey, ...next.errorsByKey },
     }),
-    emptyOverlay(),
+    createEmptyOnchainTableData(),
   )
 }

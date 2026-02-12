@@ -12,9 +12,9 @@ import { useLlamaMarkets } from '../../queries/market-list/llama-markets'
 import { invalidateAllUserMintMarkets, invalidateMintMarkets } from '../../queries/market-list/mint-markets'
 import { createOnchainMarketKey } from '../../queries/market-list/onchain/overlay-fetch'
 import {
-  invalidateOnchainLlamaMarketsOverlay,
-  useOnchainLlamaMarketsOverlay,
-} from '../../queries/market-list/onchain/useOnchainLlamaMarketsOverlay'
+  invalidateOnchainLlamaMarketsTableData,
+  useOnchainLlamaMarketsTableData,
+} from '../../queries/market-list/onchain/useOnchainLlamaMarketsTableData'
 import { LendTableFooter } from './LendTableFooter'
 import { LlamaMarketsTable } from './LlamaMarketsTable'
 import { UserPositionsTabs } from './UserPositionTabs'
@@ -23,17 +23,17 @@ const isFiniteNumber = (value: unknown): value is number => typeof value === 'nu
 const resolveOnchainFirstField = <T,>({
   onchainValue,
   apiValue,
-  overlaySettled,
+  onchainDataReady,
 }: {
   onchainValue: T | null | undefined
   apiValue: T | null | undefined
-  overlaySettled: boolean
+  onchainDataReady: boolean
 }): {
   value: T | undefined
   source: 'onchain' | 'api' | undefined
 } => {
   if (onchainValue != null) return { value: onchainValue, source: 'onchain' }
-  if (!overlaySettled) return { value: undefined, source: undefined }
+  if (!onchainDataReady) return { value: undefined, source: undefined }
   if (apiValue != null) return { value: apiValue, source: 'api' }
   return { value: undefined, source: undefined }
 }
@@ -71,7 +71,7 @@ const useOnReload = ({ address: userAddress, isFetching }: { address?: Address; 
       invalidateAllUserLendingVaults(userAddress),
       invalidateAllUserLendingSupplies(userAddress),
       invalidateAllUserMintMarkets(userAddress),
-      invalidateOnchainLlamaMarketsOverlay(userAddress),
+      invalidateOnchainLlamaMarketsTableData(userAddress),
     ])
   }, [isReloading, userAddress])
 
@@ -90,9 +90,9 @@ const useOnReload = ({ address: userAddress, isFetching }: { address?: Address; 
 export const LlamaMarketsList = () => {
   const { address } = useConnection()
   const { data: apiData, isError, isLoading, isFetching } = useLlamaMarkets(address)
-  const overlayQuery = useOnchainLlamaMarketsOverlay(apiData?.markets, address)
-  const activeOverlay = overlayQuery.data
-  const overlaySettled = overlayQuery.isFetched || overlayQuery.isError
+  const onchainDataQuery = useOnchainLlamaMarketsTableData(apiData?.markets, address)
+  const onchainData = onchainDataQuery.data
+  const onchainDataReady = onchainDataQuery.isFetched || onchainDataQuery.isError
 
   const data = !apiData
     ? apiData
@@ -100,8 +100,8 @@ export const LlamaMarketsList = () => {
         ...apiData,
         markets: apiData.markets.map((market) => {
           const key = createOnchainMarketKey(market.chain, market.controllerAddress)
-          const rates = activeOverlay?.ratesByKey[key]
-          const userStats = activeOverlay?.userStatsByKey[key]
+          const rates = onchainData?.ratesByKey[key]
+          const userStats = onchainData?.userStatsByKey[key]
           const overlayBorrowApr =
             rates == null
               ? undefined
@@ -113,22 +113,22 @@ export const LlamaMarketsList = () => {
           const borrowAprField = resolveOnchainFirstField({
             onchainValue: overlayBorrowApr,
             apiValue: market.rates.borrowApr,
-            overlaySettled,
+            onchainDataReady,
           })
           const borrowApyField = resolveOnchainFirstField({
             onchainValue: overlayBorrowApy,
             apiValue: market.rates.borrowApy,
-            overlaySettled,
+            onchainDataReady,
           })
           const lendAprField = resolveOnchainFirstField({
             onchainValue: rates?.lendApr,
             apiValue: market.rates.lendApr,
-            overlaySettled,
+            onchainDataReady,
           })
           const lendApyField = resolveOnchainFirstField({
             onchainValue: rates?.lendApy,
             apiValue: market.rates.lendTotalApyMinBoosted,
-            overlaySettled,
+            onchainDataReady,
           })
 
           const borrowApr = borrowAprField.value ?? market.rates.borrowApr
@@ -162,15 +162,15 @@ export const LlamaMarketsList = () => {
               lendTotalApyMinBoosted: lendApyField.value ?? market.rates.lendTotalApyMinBoosted,
             },
             ...(userStats && { onchainUserStats: userStats }),
-            ...(activeOverlay?.errorsByKey[key] && { onchainError: activeOverlay.errorsByKey[key] }),
-            onchainOverlaySettled: overlaySettled,
+            ...(onchainData?.errorsByKey[key] && { onchainError: onchainData.errorsByKey[key] }),
+            onchainDataReady,
           }
         }),
       }
 
   const [isReloading, onReload] = useOnReload({ address, isFetching })
-  const waitForInitialOverlay = !!apiData?.markets.length && !overlaySettled
-  const loading = isReloading || waitForInitialOverlay || (!data && (!isError || isLoading))
+  const waitForInitialOnchainData = !!apiData?.markets.length && !onchainDataReady
+  const loading = isReloading || waitForInitialOnchainData || (!data && (!isError || isLoading))
   return (
     <ListPageWrapper footer={<LendTableFooter />}>
       {(data?.userHasPositions || !address) && (
