@@ -5,7 +5,7 @@ import { type LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { getWagmiConfig } from '@ui-kit/features/connect-wallet/lib/wagmi/wagmi-config'
 import { handleTimeout } from '@ui-kit/utils/time.utils'
 import { requireChainId, type Address as UiAddress } from '@ui-kit/utils'
-import { buildChainMarketBatch, parseChainMarketBatch } from './overlay-market-pass'
+import { buildChainMarketBatch, createOnchainMarketKey, parseChainMarketBatch } from './overlay-market-pass'
 import { buildChainUserBatch, parseChainUserBatch, resolveConvertFallback } from './overlay-user-pass'
 
 export type OnchainMarketRates = {
@@ -32,9 +32,7 @@ export type OnchainLlamaMarketsOverlay = {
 }
 
 const CHAIN_READ_TIMEOUT_MS = 8_000
-
-export const createOnchainMarketKey = (chain: LlamaMarket['chain'], controllerAddress: string) =>
-  `${chain}:${controllerAddress.toLowerCase()}`
+export { createOnchainMarketKey }
 
 const runMulticall = async (chainId: number, contracts: ContractFunctionParameters[]): Promise<readonly unknown[]> => {
   if (contracts.length === 0) return []

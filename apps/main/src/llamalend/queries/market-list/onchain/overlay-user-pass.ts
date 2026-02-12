@@ -3,6 +3,7 @@ import { type LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { type Address as UiAddress } from '@ui-kit/utils'
 import { gaugeAbi, lendControllerAbi, mintControllerAbi, vaultAbi } from './overlay-abi'
+import { createOnchainMarketKey } from './overlay-market-pass'
 
 type UserBatchMeta =
   | { kind: 'userStateLend'; key: string }
@@ -52,9 +53,6 @@ export type ParsedChainUserBatch = {
   errorsByKey: Record<string, string>
   convertFallbackRequests: ConvertFallbackRequest[]
 }
-
-const createOnchainMarketKey = (chain: LlamaMarket['chain'], controllerAddress: string) =>
-  `${chain}:${controllerAddress.toLowerCase()}`
 
 const getSuccessResult = <T>(value: unknown): T | undefined => {
   const item = value as { status: 'success'; result: unknown } | { status: 'failure'; error: Error }

@@ -82,7 +82,7 @@ const toFloat = (value: bigint, decimals: number) => Number(formatUnits(value, d
 const sanitizeNumber = (value: number | null | undefined) =>
   value != null && Number.isFinite(value) ? value : undefined
 
-const createOnchainMarketKey = (chain: LlamaMarket['chain'], controllerAddress: string) =>
+export const createOnchainMarketKey = (chain: LlamaMarket['chain'], controllerAddress: string) =>
   `${chain}:${controllerAddress.toLowerCase()}`
 
 export const buildChainMarketBatch = (
