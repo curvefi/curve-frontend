@@ -1,8 +1,7 @@
-import { NETWORK_CONSTANTS } from '@curvefi/llamalend-api/lib/llamalend'
-import { erc20Abi, formatUnits, type Address, type ContractFunctionParameters, zeroAddress } from 'viem'
+import { erc20Abi, formatUnits, type Address, type ContractFunctionParameters } from 'viem'
 import { type LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { LlamaMarketType } from '@ui-kit/types/market'
-import { ammAbi, lendControllerAbi, oneWayFactoryAbi, vaultAbi } from './overlay-abi'
+import { ammAbi, lendControllerAbi, vaultAbi } from './overlay-abi'
 
 type CacheEntry<T> = { value: T; expiresAt: number }
 
@@ -11,7 +10,6 @@ type MarketBatchMeta =
   | { kind: 'rate'; key: string }
   | { kind: 'totalDebt'; key: string }
   | { kind: 'cap'; key: string }
-  | { kind: 'gaugeForVault'; key: string; vaultAddress: Address }
 
 type ChainMulticallBatch = {
   contracts: ContractFunctionParameters[]
@@ -31,15 +29,11 @@ export type ParsedChainMarketBatch = {
   ratesByKey: Record<string, OverlayRate>
   errorsByKey: Record<string, string>
   tokenDecimalsByAddress: Record<string, number>
-  gaugesByMarketKey: Record<string, Address>
-  gaugeLookupFailedByKey: Record<string, true>
 }
 
 const YEAR_SECONDS = 365 * 86400
 const TOKEN_DECIMALS_CACHE_TTL_MS = 24 * 60 * 60 * 1000
-const GAUGE_CACHE_TTL_MS = 5 * 60 * 1000
 const tokenDecimalsCache = new Map<string, CacheEntry<number>>()
-const gaugeAddressCache = new Map<string, CacheEntry<Address>>()
 
 const now = () => Date.now()
 const cacheKey = (chainId: number, address: Address) => `${chainId}:${address.toLowerCase()}`
@@ -60,13 +54,6 @@ const getTokenDecimals = (chainId: number, tokenAddress: Address) =>
   readCache(tokenDecimalsCache, cacheKey(chainId, tokenAddress))
 const setTokenDecimals = (chainId: number, tokenAddress: Address, decimals: number) =>
   writeCache(tokenDecimalsCache, cacheKey(chainId, tokenAddress), decimals, TOKEN_DECIMALS_CACHE_TTL_MS)
-const getGaugeAddress = (chainId: number, vaultAddress: Address) =>
-  readCache(gaugeAddressCache, cacheKey(chainId, vaultAddress))
-const setGaugeAddress = (chainId: number, vaultAddress: Address, gaugeAddress: Address) =>
-  writeCache(gaugeAddressCache, cacheKey(chainId, vaultAddress), gaugeAddress, GAUGE_CACHE_TTL_MS)
-
-const getFactoryAddress = (chainId: number) =>
-  NETWORK_CONSTANTS[chainId as keyof typeof NETWORK_CONSTANTS]?.ALIASES?.one_way_factory as Address | undefined
 
 const getSuccessResult = <T>(value: unknown): T | undefined => {
   const item = value as { status: 'success'; result: unknown } | { status: 'failure'; error: Error }
@@ -85,11 +72,7 @@ const sanitizeNumber = (value: number | null | undefined) =>
 export const createOnchainMarketKey = (chain: LlamaMarket['chain'], controllerAddress: string) =>
   `${chain}:${controllerAddress.toLowerCase()}`
 
-export const buildChainMarketBatch = (
-  chainId: number,
-  chainMarkets: LlamaMarket[],
-  includeGaugeCalls: boolean,
-): ChainMulticallBatch => {
+export const buildChainMarketBatch = (chainId: number, chainMarkets: LlamaMarket[]): ChainMulticallBatch => {
   const contracts: ContractFunctionParameters[] = []
   const meta: MarketBatchMeta[] = []
 
@@ -104,12 +87,9 @@ export const buildChainMarketBatch = (
 
   uniqueTokenAddresses.forEach((tokenAddress) => {
     if (getTokenDecimals(chainId, tokenAddress) != null) return
-
     contracts.push({ address: tokenAddress, abi: erc20Abi, functionName: 'decimals' })
     meta.push({ kind: 'tokenDecimals', tokenAddress })
   })
-
-  const factoryAddress = includeGaugeCalls ? getFactoryAddress(chainId) : undefined
 
   chainMarkets.forEach((market) => {
     const key = createOnchainMarketKey(market.chain, market.controllerAddress)
@@ -117,30 +97,18 @@ export const buildChainMarketBatch = (
     contracts.push({ address: market.ammAddress, abi: ammAbi, functionName: 'rate' })
     meta.push({ kind: 'rate', key })
 
-    if (market.type === LlamaMarketType.Lend && market.vaultAddress) {
-      contracts.push({ address: market.controllerAddress, abi: lendControllerAbi, functionName: 'total_debt' })
-      meta.push({ kind: 'totalDebt', key })
+    if (market.type !== LlamaMarketType.Lend || !market.vaultAddress) return
 
-      contracts.push({
-        address: market.vaultAddress,
-        abi: vaultAbi,
-        functionName: 'totalAssets',
-        args: [market.controllerAddress],
-      })
-      meta.push({ kind: 'cap', key })
-    }
-
-    if (!factoryAddress || !market.vaultAddress || !market.userHasPositions?.Supply) return
-
-    if (getGaugeAddress(chainId, market.vaultAddress as Address) != null) return
+    contracts.push({ address: market.controllerAddress, abi: lendControllerAbi, functionName: 'total_debt' })
+    meta.push({ kind: 'totalDebt', key })
 
     contracts.push({
-      address: factoryAddress,
-      abi: oneWayFactoryAbi,
-      functionName: 'gauge_for_vault',
-      args: [market.vaultAddress as Address],
+      address: market.vaultAddress,
+      abi: vaultAbi,
+      functionName: 'totalAssets',
+      args: [market.controllerAddress],
     })
-    meta.push({ kind: 'gaugeForVault', key, vaultAddress: market.vaultAddress as Address })
+    meta.push({ kind: 'cap', key })
   })
 
   return { contracts, meta }
@@ -160,8 +128,6 @@ export const parseChainMarketBatch = ({
   const ratesByKey: Record<string, OverlayRate> = {}
   const errorsByKey: Record<string, string> = {}
   const tokenDecimalsByAddress: Record<string, number> = {}
-  const gaugesByMarketKey: Record<string, Address> = {}
-  const gaugeLookupFailedByKey: Record<string, true> = {}
   const rawRatesByKey: Record<string, RawRateState> = {}
 
   Array.from(
@@ -177,14 +143,6 @@ export const parseChainMarketBatch = ({
     if (decimals != null) tokenDecimalsByAddress[tokenAddress.toLowerCase()] = decimals
   })
 
-  chainMarkets.forEach((market) => {
-    if (!market.vaultAddress || !market.userHasPositions?.Supply) return
-    const cachedGauge = getGaugeAddress(chainId, market.vaultAddress as Address)
-    if (!cachedGauge || cachedGauge === zeroAddress) return
-
-    gaugesByMarketKey[createOnchainMarketKey(market.chain, market.controllerAddress)] = cachedGauge
-  })
-
   results.forEach((result, index) => {
     const callMeta = meta[index]
     if (!callMeta) return
@@ -194,19 +152,6 @@ export const parseChainMarketBatch = ({
       if (decimals != null) {
         tokenDecimalsByAddress[callMeta.tokenAddress.toLowerCase()] = Number(decimals)
         setTokenDecimals(chainId, callMeta.tokenAddress, Number(decimals))
-      }
-      return
-    }
-
-    if (callMeta.kind === 'gaugeForVault') {
-      const gaugeAddress = getSuccessResult<Address>(result)
-      if (gaugeAddress != null) {
-        setGaugeAddress(chainId, callMeta.vaultAddress, gaugeAddress)
-        if (gaugeAddress !== zeroAddress) gaugesByMarketKey[callMeta.key] = gaugeAddress
-      } else {
-        gaugeLookupFailedByKey[callMeta.key] = true
-        const error = getFailureError(result)
-        if (error) errorsByKey[callMeta.key] = error.message
       }
       return
     }
@@ -231,8 +176,7 @@ export const parseChainMarketBatch = ({
     if (!raw?.rate) return
 
     const borrowedDecimals = tokenDecimalsByAddress[market.assets.borrowed.address.toLowerCase()] ?? 18
-    const ratePerSecond = toFloat(raw.rate, 18)
-    const annualizedRate = ratePerSecond * YEAR_SECONDS
+    const annualizedRate = toFloat(raw.rate, 18) * YEAR_SECONDS
     const borrowApr = sanitizeNumber(annualizedRate * 100)
     const borrowApy = sanitizeNumber(Math.expm1(annualizedRate) * 100)
 
@@ -251,11 +195,5 @@ export const parseChainMarketBatch = ({
     }
   })
 
-  return {
-    ratesByKey,
-    errorsByKey,
-    tokenDecimalsByAddress,
-    gaugesByMarketKey,
-    gaugeLookupFailedByKey,
-  }
+  return { ratesByKey, errorsByKey, tokenDecimalsByAddress }
 }

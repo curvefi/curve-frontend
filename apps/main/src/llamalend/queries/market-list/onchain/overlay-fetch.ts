@@ -6,7 +6,7 @@ import { getWagmiConfig } from '@ui-kit/features/connect-wallet/lib/wagmi/wagmi-
 import { handleTimeout } from '@ui-kit/utils/time.utils'
 import { requireChainId, type Address as UiAddress } from '@ui-kit/utils'
 import { buildChainMarketBatch, createOnchainMarketKey, parseChainMarketBatch } from './overlay-market-pass'
-import { buildChainUserBatch, parseChainUserBatch, resolveConvertFallback } from './overlay-user-pass'
+import { buildChainUserBatch, parseChainUserBatch } from './overlay-user-pass'
 
 export type OnchainMarketRates = {
   borrowApr?: number
@@ -21,8 +21,6 @@ export type OnchainUserMarketStats = {
   collateral?: number
   borrowed?: number
   softLiquidation?: boolean
-  totalCurrentAssets?: number
-  boostMultiplier?: number
 }
 
 export type OnchainLlamaMarketsOverlay = {
@@ -54,7 +52,7 @@ const fetchChainOverlay = async (
   chainMarkets: LlamaMarket[],
   userAddress: UiAddress | undefined,
 ): Promise<OnchainLlamaMarketsOverlay> => {
-  const marketBatch = buildChainMarketBatch(chainId, chainMarkets, !!userAddress)
+  const marketBatch = buildChainMarketBatch(chainId, chainMarkets)
   const marketResults = await runMulticall(chainId, marketBatch.contracts)
   const parsedMarket = parseChainMarketBatch({
     chainId,
@@ -71,32 +69,17 @@ const fetchChainOverlay = async (
 
   if (!userAddress) return overlay
 
-  const userBatch = buildChainUserBatch({
-    chainMarkets,
-    userAddress,
-    gaugesByMarketKey: parsedMarket.gaugesByMarketKey,
-  })
+  const userBatch = buildChainUserBatch({ chainMarkets, userAddress })
   const userResults = await runMulticall(chainId, userBatch.contracts)
-
   const parsedUser = parseChainUserBatch({
     chainMarkets,
     meta: userBatch.meta,
     results: userResults,
     tokenDecimalsByAddress: parsedMarket.tokenDecimalsByAddress,
-    gaugeLookupFailedByKey: parsedMarket.gaugeLookupFailedByKey,
   })
 
   overlay.userStatsByKey = parsedUser.userStatsByKey
   overlay.errorsByKey = { ...overlay.errorsByKey, ...parsedUser.errorsByKey }
-
-  await resolveConvertFallback({
-    chainId,
-    requests: parsedUser.convertFallbackRequests,
-    userStatsByKey: overlay.userStatsByKey,
-    errorsByKey: overlay.errorsByKey,
-    tokenDecimalsByAddress: parsedMarket.tokenDecimalsByAddress,
-    runMulticall,
-  })
 
   return overlay
 }

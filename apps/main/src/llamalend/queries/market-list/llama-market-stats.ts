@@ -33,9 +33,6 @@ export function useUserMarketStats(market: LlamaMarket, column?: LlamaMarketColu
   const { type, userHasPositions, controllerAddress, vaultAddress, chain, onchainUserStats } = market
   const enableStats = !!userHasPositions?.Borrow && (!column || statsColumns.includes(column))
   const enableEarnings = !!userHasPositions?.Supply && column != null && earningsColumns.includes(column)
-  const isDepositedColumn = column === LlamaMarketColumnId.UserDeposited
-  const isBoostColumn = column === LlamaMarketColumnId.UserBoostMultiplier
-  const isSupplyColumn = isDepositedColumn || isBoostColumn
   const { address: userAddress } = useConnection()
   const { data: collateralUsdRate, isLoading: collateralUsdRateLoading } = useTokenUsdRate(
     {
@@ -58,12 +55,8 @@ export function useUserMarketStats(market: LlamaMarket, column?: LlamaMarketColu
     onchainUserStats?.debt != null &&
     onchainUserStats?.collateral != null &&
     onchainUserStats?.borrowed != null
-  const hasOnchainDeposited = enableEarnings && isDepositedColumn && onchainUserStats?.totalCurrentAssets != null
-  const hasOnchainBoost = enableEarnings && isBoostColumn && onchainUserStats?.boostMultiplier != null
-  const hasOnchainSupplyStats = hasOnchainDeposited || hasOnchainBoost
   // Keep onchain as source-of-truth for user fields and fallback to API only after overlay settles.
   const waitForOnchainBorrow = enableStats && !overlaySettled && !hasOnchainBorrowStats
-  const waitForOnchainSupply = enableEarnings && isSupplyColumn && !overlaySettled && !hasOnchainSupplyStats
 
   const enableLendingStats = enableStats && overlaySettled && !hasOnchainBorrowStats && type === LlamaMarketType.Lend
   const enableMintStats = enableStats && overlaySettled && !hasOnchainBorrowStats && type === LlamaMarketType.Mint
@@ -81,10 +74,7 @@ export function useUserMarketStats(market: LlamaMarket, column?: LlamaMarketColu
     data: earnData,
     error: earnError,
     isLoading: loadingEarn,
-  } = useUserLendingVaultEarnings(
-    { ...params, contractAddress: vaultAddress },
-    enableEarnings && (!isSupplyColumn || overlaySettled) && !waitForOnchainSupply && !hasOnchainSupplyStats,
-  )
+  } = useUserLendingVaultEarnings({ ...params, contractAddress: vaultAddress }, enableEarnings)
 
   const { data: mintData, error: mintError, isLoading: loadingMint } = useUserMintMarketStats(params, enableMintStats)
 
@@ -102,23 +92,13 @@ export function useUserMarketStats(market: LlamaMarket, column?: LlamaMarketColu
     : undefined
 
   const stats = onchainStats ?? ((enableLendingStats && lendData) || (enableMintStats && mintData))
-  const onchainEarnings = hasOnchainSupplyStats
-    ? {
-        earnings: 0,
-        ...(hasOnchainDeposited && onchainUserStats?.totalCurrentAssets != null
-          ? { totalCurrentAssets: onchainUserStats.totalCurrentAssets }
-          : {}),
-        ...(hasOnchainBoost ? { boostMultiplier: onchainUserStats?.boostMultiplier ?? null } : {}),
-      }
-    : undefined
-  const earnings = onchainEarnings ?? (enableEarnings && earnData)
+  const earnings = enableEarnings && earnData
   const error = (enableLendingStats && lendError) || (enableMintStats && mintError) || (enableEarnings && earnError)
   const isLoading =
     (enableLendingStats && loadingLend) ||
     (enableMintStats && loadingMint) ||
-    (enableEarnings && !hasOnchainSupplyStats && loadingEarn) ||
+    (enableEarnings && loadingEarn) ||
     waitForOnchainBorrow ||
-    waitForOnchainSupply ||
     collateralUsdRateLoading ||
     borrowedUsdRateLoading
 
