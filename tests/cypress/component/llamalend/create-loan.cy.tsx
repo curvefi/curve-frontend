@@ -2,67 +2,58 @@ import { CreateLoanForm } from '@/llamalend/features/borrow/components/CreateLoa
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { networks as loanNetworks } from '@/loan/networks'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { createCreateLoanScenario } from '@cy/support/helpers/llamalend/create-loan-mocks'
 import {
   checkLoanDetailsLoaded,
   submitCreateLoanForm,
   writeCreateLoanForm,
 } from '@cy/support/helpers/llamalend/create-loan.helpers'
-import { createMockLlamaApi } from '@cy/support/helpers/llamalend/mock-loan-test-data'
 import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
-import { globalLibs } from '@ui-kit/features/connect-wallet/lib/utils'
-import { queryClient } from '@ui-kit/lib/api'
+import { resetLlamaTestContext, setLlamaApi } from '@cy/support/helpers/llamalend/test-context.helpers'
+import { createCreateLoanScenario } from '@cy/support/helpers/llamalend/test-scenarios.helpers'
 
 const networks = loanNetworks as unknown as NetworkDict<LlamaChainId>
-const onUpdate = async () => undefined
+const chainId = 1
 
 describe('CreateLoanForm (mocked)', () => {
-  const onMutated = cy.spy().as('onMutated')
-  const {
-    market,
-    form,
-    stubs: {
-      createLoan,
-      createLoanBands,
-      createLoanHealth,
-      createLoanIsApproved,
-      createLoanMaxRecv,
-      createLoanPrices,
-      estimateGasCreateLoan,
-    },
-    expected,
-  } = createCreateLoanScenario()
+  const createScenario = () => createCreateLoanScenario({ chainId, presetRange: 50 })
 
   afterEach(() => {
-    queryClient.clear()
-    globalLibs.current = {} as never
-    globalLibs.hydrated = {}
+    resetLlamaTestContext()
   })
 
   it('fills and submits the form with randomized rules', () => {
-    const llamaApi = createMockLlamaApi(1, market)
-    globalLibs.current.llamaApi = llamaApi as never
+    const scenario = createScenario()
+    const onMutated = cy.spy().as('onMutated')
+    const { llamaApi, expected, market, borrow, stubs, collateral } = scenario
+
+    setLlamaApi(llamaApi)
 
     cy.mount(
-      <MockLoanTestWrapper chainId={1} mockMarket={market} llamaApi={llamaApi}>
-        <CreateLoanForm market={market} networks={networks} chainId={1} onUpdate={onUpdate} onMutated={onMutated} />
+      <MockLoanTestWrapper llamaApi={llamaApi}>
+        <CreateLoanForm
+          market={market}
+          networks={networks}
+          chainId={chainId}
+          onUpdate={async () => undefined}
+          onMutated={onMutated}
+        />
       </MockLoanTestWrapper>,
     )
 
-    writeCreateLoanForm(form)
+    writeCreateLoanForm({ collateral, borrow, leverageEnabled: false })
     checkLoanDetailsLoaded({ leverageEnabled: false })
 
     cy.then(() => {
-      ;[createLoanHealth, createLoanBands, createLoanPrices, estimateGasCreateLoan].forEach((stubFn) =>
-        expect(stubFn).to.have.been.calledWith(...expected.queryDebtArgs),
-      )
-      expect(createLoanMaxRecv).to.have.been.calledWith(...expected.maxRecvArgs)
-      expect(createLoanIsApproved).to.have.been.calledWith(...expected.approvedArgs)
+      expect(stubs.createLoanHealth).to.have.been.calledWithExactly(...expected.query)
+      expect(stubs.createLoanBands).to.have.been.calledWithExactly(...expected.query)
+      expect(stubs.createLoanPrices).to.have.been.calledWithExactly(...expected.query)
+      expect(stubs.estimateGasCreateLoan).to.have.been.calledWithExactly(...expected.query)
+      expect(stubs.createLoanMaxRecv).to.have.been.calledWithExactly(...expected.maxRecv)
+      expect(stubs.createLoanIsApproved).to.have.been.calledWithExactly(...expected.approved)
     })
 
     submitCreateLoanForm().then(() => {
-      expect(onMutated.callCount).to.eq(1)
-      expect(createLoan).to.have.been.calledOnceWithExactly(...expected.submitArgs)
+      expect(stubs.createLoan).to.have.been.calledWithExactly(...expected.submit)
     })
   })
 })
