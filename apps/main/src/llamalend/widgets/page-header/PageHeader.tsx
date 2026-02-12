@@ -62,7 +62,7 @@ export const PageHeader = ({
         >
           <ArrowLeft />
         </IconButton>
-        <Stack direction="row" gap={Spacing.sm}>
+        <Stack direction="row" alignItems="center" gap={Spacing.sm}>
           <WithSkeleton loading={isLoading} variant="rectangular" width={40} height={40}>
             {collateralToken && borrowToken && (
               <TokenPair
@@ -78,8 +78,11 @@ export const PageHeader = ({
                 <Typography variant="headingSBold">{title}</Typography>
               </WithSkeleton>
               <WithSkeleton loading={isLoading} width={24} height={24}>
-                <ChainIcon size="sm" blockchainId={blockchainId} />
-                <Chip size="extraSmall" color="default" label={t`${marketType}`} />
+                <Stack direction="row" gap={Spacing.xs} paddingBottom="0.1875rem">
+                  {/* 3px custom padding bottom to align with text baseline */}
+                  <ChainIcon size="sm" blockchainId={blockchainId} />
+                  <Chip size="extraSmall" color="default" label={t`${marketType}`} />
+                </Stack>
               </WithSkeleton>
             </Stack>
             <WithSkeleton loading={isLoading} width={100} height={14}>
