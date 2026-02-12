@@ -1,5 +1,5 @@
 import type { UrlParams } from '@/lend/types/lend.types'
-import { useLendMarketSubNavRoutes } from '@/llamalend/hooks/useLlamalendRoutes'
+import { useLlamalendMarketSubNavRoutes } from '@/llamalend/hooks/useLlamalendRoutes'
 import Box from '@mui/material/Box'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { usePathname, useParams } from '@ui-kit/hooks/router'
@@ -15,14 +15,15 @@ export const LendMarketSubNav = () => {
   const { network: networkId } = useParams<UrlParams>()
   const pathname = usePathname()
   const top = useLayoutStore((state) => state.navHeight)
-  const routes = useLendMarketSubNavRoutes()
+  const routes = useLlamalendMarketSubNavRoutes()
 
-  const pages = routes.map((route) => routeToPage(route, { networkId, pathname }))
+  const pages = routes?.map((route) => routeToPage(route, { networkId, pathname }))
 
   return (
     isMobile &&
     isLendMarketSubNav &&
-    pages.length > 0 && (
+    pages &&
+    pages?.length > 0 && (
       <Box sx={{ position: 'sticky', top, zIndex: (t) => t.zIndex.appBar }}>
         <SubNav testId="lend-market-subnav">
           <PageTabsSwitcher pages={pages} overflow="fullWidth" />
