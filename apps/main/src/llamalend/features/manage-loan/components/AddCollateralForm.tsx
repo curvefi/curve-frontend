@@ -1,13 +1,13 @@
 import { hasLeverageValue } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import type { AddCollateralOptions } from '@/llamalend/mutations/add-collateral.mutation'
-import { LoanFormAlerts } from '@/llamalend/widgets/action-card/LoanFormAlerts'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
+import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import { InputDivider } from '../../../widgets/InputDivider'
 import { useAddCollateralForm } from '../hooks/useAddCollateralForm'
 import { AddCollateralInfoAccordion } from './AddCollateralInfoAccordion'
@@ -72,7 +72,7 @@ export const AddCollateralForm = <ChainId extends IChainId>({
         />
       </Stack>
 
-      <LoanFormAlerts
+      <FormAlerts
         isSuccess={action.isSuccess}
         error={action.error}
         txHash={txHash}
