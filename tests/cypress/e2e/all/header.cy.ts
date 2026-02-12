@@ -16,6 +16,7 @@ import {
   TABLET_BREAKPOINT,
 } from '@cy/support/ui'
 import { TIME_FRAMES } from '@ui-kit/lib/model/time'
+import { LEND_ROUTES } from '@ui-kit/shared/routes'
 
 const expectedMainNavHeight = 40
 const expectedSubNavHeight = expectedMainNavHeight
@@ -137,6 +138,14 @@ describe('Header', () => {
         .should('equal', expectedConnectHeight, 'Connect height')
     })
 
+    it('should show lend subnav only on lend market pages', () => {
+      if (isLendMarketDetailRoute(route)) {
+        cy.get("[data-testid='lend-market-subnav']").should('be.visible')
+      } else {
+        cy.get("[data-testid='lend-market-subnav']").should('not.exist')
+      }
+    })
+
     it('should open the menu and navigate', () => {
       cy.get(`[data-testid='mobile-drawer']`).should('not.exist')
       cy.get(`[data-testid='menu-toggle']`).click()
@@ -241,5 +250,10 @@ describe('Header', () => {
     cy.get(`[data-testid='menu-item-chain-arbitrum']`).click()
     cy.get(`[data-testid^='menu-item-chain-']`, API_LOAD_TIMEOUT).should('not.exist')
     cy.get(`[data-testid='chain-icon-arbitrum']`).should('be.visible')
+  }
+
+  function isLendMarketDetailRoute(route: AppRoute) {
+    const [app, , page, marketId] = route.split('/')
+    return app === 'lend' && page === LEND_ROUTES.PAGE_MARKETS.replace(/^\//, '') && !!marketId
   }
 })
