@@ -44,7 +44,7 @@ export const FormAlerts = <Field extends string>({
   return (
     <>
       {isSuccess && (
-        <Alert severity="success" data-testid={'loan-form-success-alert'}>
+        <Alert variant="outlined" severity="success" data-testid={'loan-form-success-alert'}>
           <AlertTitle>{successTitle}</AlertTitle>
           {txHash && (
             <Link rel="noreferrer" target="_blank" href={scanTxPath(network, txHash)}>
@@ -54,7 +54,7 @@ export const FormAlerts = <Field extends string>({
         </Alert>
       )}
       {unhandledErrors.length > 0 && (
-        <Alert severity="warning" data-testid={'loan-form-errors'}>
+        <Alert variant="outlined" severity="warning" data-testid={'loan-form-errors'}>
           <AlertTitle>{t`Please correct the errors`}</AlertTitle>
           {unhandledErrors.map(([field, message]) => (
             <Box key={[field, message].join(': ')}>{message}</Box>
@@ -63,6 +63,7 @@ export const FormAlerts = <Field extends string>({
       )}
       {error && (
         <Alert
+          variant="outlined"
           severity="error"
           sx={{ overflowWrap: 'anywhere' /* break anywhere as there is often JSON in the error breaking the design */ }}
           data-testid={'loan-form-error'}
