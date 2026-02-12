@@ -22,7 +22,7 @@ import {
   LendingVault,
 } from './lending-vaults'
 import { getMintMarketOptions, getUserMintMarketsOptions, MintMarket } from './mint-markets'
-import { type OnchainUserMarketStats } from './onchain/overlay-fetch'
+import { type OnchainUserMarketStats } from './onchain/llama-markets-onchain'
 
 export type Assets = {
   borrowed: AssetDetails

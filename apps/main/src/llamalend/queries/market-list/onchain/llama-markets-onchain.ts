@@ -21,7 +21,7 @@ export type OnchainUserMarketStats = {
   softLiquidation?: boolean
 }
 
-type OnchainLlamaMarketsTableData = {
+export type LlamaMarketsOnchainData = {
   ratesByKey: Record<string, OnchainMarketRates>
   userStatsByKey: Record<string, OnchainUserMarketStats>
 }
@@ -70,7 +70,7 @@ const runMulticall = async (chainId: number, contracts: ContractFunctionParamete
   })
 }
 
-const createEmptyOnchainTableData = (): OnchainLlamaMarketsTableData => ({
+const createEmptyOnchainTableData = (): LlamaMarketsOnchainData => ({
   ratesByKey: {},
   userStatsByKey: {},
 })
@@ -78,7 +78,7 @@ const createEmptyOnchainTableData = (): OnchainLlamaMarketsTableData => ({
 const fetchChainMarketTableData = async (
   chainId: number,
   chainMarkets: LlamaMarket[],
-): Promise<Pick<OnchainLlamaMarketsTableData, 'ratesByKey'>> => {
+): Promise<Pick<LlamaMarketsOnchainData, 'ratesByKey'>> => {
   const contracts: ContractFunctionParameters[] = []
   const rateKeys: string[] = []
   const debtKeys: string[] = []
@@ -153,7 +153,7 @@ const fetchChainUserTableData = async ({
   chainId: number
   chainMarkets: LlamaMarket[]
   userAddress: UiAddress
-}): Promise<Pick<OnchainLlamaMarketsTableData, 'userStatsByKey'>> => {
+}): Promise<Pick<LlamaMarketsOnchainData, 'userStatsByKey'>> => {
   const contracts: ContractFunctionParameters[] = []
   const borrowMarkets: LlamaMarket[] = []
 
@@ -218,10 +218,10 @@ const fetchChainTableData = async (
   chainId: number,
   chainMarkets: LlamaMarket[],
   userAddress: UiAddress | undefined,
-): Promise<OnchainLlamaMarketsTableData> => {
+): Promise<LlamaMarketsOnchainData> => {
   const parsedMarket = await fetchChainMarketTableData(chainId, chainMarkets)
 
-  const tableData: OnchainLlamaMarketsTableData = {
+  const tableData: LlamaMarketsOnchainData = {
     ratesByKey: parsedMarket.ratesByKey,
     userStatsByKey: {},
   }
@@ -239,10 +239,10 @@ const fetchChainTableData = async (
   return tableData
 }
 
-export const fetchOnchainLlamaMarketsTableData = async (
+export const fetchLlamaMarketsOnchainData = async (
   markets: LlamaMarket[],
   userAddress: UiAddress | undefined,
-): Promise<OnchainLlamaMarketsTableData> => {
+): Promise<LlamaMarketsOnchainData> => {
   const grouped: Record<number, LlamaMarket[]> = {}
   for (const market of markets) {
     try {
