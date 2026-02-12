@@ -65,7 +65,7 @@ export const PageHeader = ({
         </IconButton>
         <Stack direction="row" gap={Spacing.sm}>
           <Box alignSelf="center">
-            <WithSkeleton loading={isLoading} variant="rectangular" width={40} height={40}>
+            <WithSkeleton loading={isLoading} variant="rectangular" width={35} height={35}>
               {collateralToken && borrowToken && (
                 <TokenPair
                   chain={blockchainId}
@@ -76,14 +76,14 @@ export const PageHeader = ({
             </WithSkeleton>
           </Box>
           <Stack justifyContent={{ mobile: 'center', tablet: 'flex-start' }}>
-            <WithSkeleton loading={isLoading} width={80}>
+            <WithSkeleton loading={isLoading} width={80} height={12}>
               <Typography variant="bodyXsRegular">{subtitle}</Typography>
             </WithSkeleton>
             <Stack direction="row" gap={Spacing.xs} alignItems="flex-end" flexWrap="wrap">
-              <WithSkeleton loading={isLoading} width={120}>
+              <WithSkeleton loading={isLoading} width={140} height={24}>
                 <Typography variant="headingSBold">{title}</Typography>
               </WithSkeleton>
-              <WithSkeleton loading={isLoading} width={24}>
+              <WithSkeleton loading={isLoading} width={24} height={24}>
                 {/* 3px custom padding bottom to align with text baseline */}
                 <Stack direction="row" gap={Spacing.xs} paddingBottom="0.1875rem" alignItems="flex-end">
                   <ChainIcon size="sm" blockchainId={blockchainId} />
