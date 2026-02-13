@@ -1,14 +1,17 @@
+import BigNumber from 'bignumber.js'
 import { useEffect, useMemo } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
 import { useForm } from 'react-hook-form'
 import { Address } from 'viem'
 import { useConnection } from 'wagmi'
 import { useMaxRepayTokenValues } from '@/llamalend/features/manage-loan/hooks/useMaxRepayTokenValues'
-import { getTokens } from '@/llamalend/llama.utils'
+import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
+import { getTokens, isRouterMetaRequired } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { type RepayOptions, useRepayMutation } from '@/llamalend/mutations/repay.mutation'
 import { useRepayIsApproved } from '@/llamalend/queries/repay/repay-is-approved.query'
 import { useRepayIsAvailable } from '@/llamalend/queries/repay/repay-is-available.query'
+import { getRepayImplementationType } from '@/llamalend/queries/repay/repay-query.helpers'
 import type { RepayIsFullParams } from '@/llamalend/queries/validation/manage-loan.types'
 import { type RepayForm, repayFormValidationSuite } from '@/llamalend/queries/validation/manage-loan.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -17,7 +20,9 @@ import { vestResolver } from '@hookform/resolvers/vest'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { t } from '@ui-kit/lib/i18n'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
-import { filterFormErrors } from '@ui-kit/utils/react-form.utils'
+import { decimal } from '@ui-kit/utils'
+import { filterFormErrors, setValueOptions } from '@ui-kit/utils/react-form.utils'
+import { type RouteOption } from '@ui-kit/widgets/RouteProvider'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 
 const NOT_AVAILABLE = ['root', t`Repay is not available with the current parameters.`] as const
@@ -96,6 +101,16 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
 
   const values = watchForm(form)
   const params = useRepayParams({ chainId, marketId, userAddress, ...values })
+  const implementation = marketId
+    ? getRepayImplementationType(marketId, {
+        stateCollateral: values.stateCollateral ?? '0',
+        userCollateral: values.userCollateral ?? '0',
+        userBorrowed: values.userBorrowed ?? '0',
+      })
+    : undefined
+  const swapAmountIn = decimal(new BigNumber(values.stateCollateral ?? 0).plus(values.userCollateral ?? 0).toString())
+  const routeRequired = !!implementation && isRouterMetaRequired(implementation) && Number(swapAmountIn) > 0
+  const onChangeRoute = (route: RouteOption) => form.setValue('route', route, setValueOptions)
 
   const {
     onSubmit,
@@ -130,6 +145,17 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
     repayError,
     txHash: data?.hash,
     isApproved: useRepayIsApproved(params, enabled),
+    routes: useMarketRoutes({
+      chainId,
+      tokenIn: collateralToken?.address,
+      tokenOut: borrowToken?.address,
+      amountIn: swapAmountIn,
+      slippage: values.slippage,
+      route: values.route,
+      outputTokenSymbol: borrowToken?.symbol,
+      enabled: routeRequired,
+      onChangeRoute,
+    }),
     formErrors: useMemo(
       // only show the 'not available' warn when there are no other form errors
       () =>

@@ -205,14 +205,13 @@ export const LoanInfoAccordion = ({
 
       {leverageEnabled && (
         <Stack>
-          {routes && (
+          {routes && selectedRoute && allRoutes.length > 0 && (
             <RouteProvidersAccordion
               routes={allRoutes}
               selectedRoute={selectedRoute}
               onChange={routes.onChange}
               outputTokenAddress={outputTokenAddress}
               tokenSymbols={tokenSymbols}
-              usdPrice={null}
               isExpanded={isRoutesOpen}
               isLoading={routes.isLoading}
               onToggle={toggleRoutes}

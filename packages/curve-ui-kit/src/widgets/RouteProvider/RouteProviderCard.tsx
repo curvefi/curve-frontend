@@ -14,7 +14,6 @@ const { Spacing } = SizesAndSpaces
 export type RouteProviderCardProps = {
   route: RouteOption
   tokenSymbol: string
-  usdPrice: number | null
   isSelected: boolean
   bestOutputAmount: Decimal | undefined
   providerLabel: string
@@ -25,7 +24,6 @@ export type RouteProviderCardProps = {
 export const RouteProviderCard = ({
   route,
   tokenSymbol,
-  usdPrice,
   isSelected,
   bestOutputAmount,
   providerLabel,
@@ -54,7 +52,7 @@ export const RouteProviderCard = ({
       </Stack>
       <Stack direction="row" justifyContent="space-between" alignItems="center">
         <Typography variant="bodyXsRegular" color="textTertiary" data-testid="route-provider-usd">
-          {usdPrice == null ? '-' : `~${formatUsd(parseFloat(route.toAmountOutput) * usdPrice)}`}
+          {route.usdPrice == null ? '-' : `~${formatUsd(parseFloat(route.toAmountOutput) * route.usdPrice)}`}
         </Typography>
         <Stack direction="row" alignItems="center" gap={Spacing.xxs}>
           {Icon}

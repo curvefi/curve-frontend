@@ -16,9 +16,15 @@ const mountRouteProviderCard = ({ isSelected = true }: { isSelected?: boolean } 
   cy.mount(
     <ComponentTestWrapper>
       <RouteProviderCard
-        route={{ provider: 'curve', toAmountOutput: '69.4241' }}
+        route={{
+          provider: 'curve',
+          toAmountOutput: '69.4241',
+          usdPrice: 1.0,
+          priceImpact: 0.01,
+          routerAddress: '0x0000000000000000000000000000000000000000',
+          calldata: '0x',
+        }}
         tokenSymbol="crvUSD"
-        usdPrice={1.0}
         isSelected={isSelected}
         bestOutputAmount="69.4241"
         providerLabel="Curve"

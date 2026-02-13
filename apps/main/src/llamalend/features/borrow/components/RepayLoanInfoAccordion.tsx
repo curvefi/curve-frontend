@@ -2,6 +2,7 @@ import { BigNumber } from 'bignumber.js'
 import type { Token } from '@/llamalend/features/borrow/types'
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
 import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
+import type { MarketRoutesQuery } from '@/llamalend/hooks/useMarketRoutes'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useMarketFutureRates } from '@/llamalend/queries/market-future-rates.query'
 import { useMarketRates } from '@/llamalend/queries/market-rates'
@@ -65,6 +66,7 @@ export function RepayLoanInfoAccordion<ChainId extends IChainId>({
   onSlippageChange,
   hasLeverage,
   swapRequired,
+  routes,
 }: {
   params: RepayParams<ChainId>
   values: RepayForm
@@ -73,6 +75,7 @@ export function RepayLoanInfoAccordion<ChainId extends IChainId>({
   onSlippageChange: (newSlippage: Decimal) => void
   hasLeverage: boolean | undefined
   swapRequired: boolean
+  routes: MarketRoutesQuery | undefined
 }) {
   const [isOpen, , , toggle] = useSwitch(false)
   const userStateQuery = useUserState(params, isOpen)
@@ -108,6 +111,7 @@ export function RepayLoanInfoAccordion<ChainId extends IChainId>({
       )}
       collateralSymbol={collateralToken?.symbol}
       leverageEnabled={hasLeverage}
+      routes={routes}
       {...(hasLeverage &&
         swapRequired && {
           slippage,

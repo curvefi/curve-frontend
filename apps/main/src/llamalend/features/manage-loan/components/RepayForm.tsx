@@ -85,6 +85,7 @@ export const RepayForm = <ChainId extends IChainId>({
     repayError,
     txHash,
     isApproved,
+    routes,
     formErrors,
     max,
     isFull,
@@ -133,6 +134,7 @@ export const RepayForm = <ChainId extends IChainId>({
           onSlippageChange={(value) => form.setValue('slippage', value, setValueOptions)}
           hasLeverage={market && hasLeverage(market)}
           swapRequired={swapRequired}
+          routes={routes}
         />
       }
     >

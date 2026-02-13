@@ -1,7 +1,7 @@
 import { skipWhen } from 'vest'
 import { isRouterMetaRequired } from '@/llamalend/llama.utils'
 import type { RouterMeta } from '@/llamalend/llamalend.types'
-import { getBorrowMoreImplementationArgs } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
+import { getBorrowMoreImplementation } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
 import {
   validateDebt,
   validateLeverageEnabled,
@@ -48,21 +48,15 @@ export type BorrowMoreParams<ChainId = number> = FieldsOf<BorrowMoreQuery<ChainI
 const validateBorrowMoreFieldsForMarket = (
   marketId: string | null | undefined,
   leverageEnabled: boolean | null | undefined,
-  userCollateral: Decimal | null | undefined,
-  userBorrowed: Decimal | null | undefined,
-  debt: Decimal | null | undefined,
+  _userCollateral: Decimal | null | undefined,
+  _userBorrowed: Decimal | null | undefined,
+  _debt: Decimal | null | undefined,
   route: RouterMeta['route'],
 ) => {
   skipWhen(!marketId, () => {
     if (!marketId) return
-    const [type] = getBorrowMoreImplementationArgs(marketId, {
-      leverageEnabled,
-      debt: debt ?? '0',
-      userCollateral: userCollateral ?? '0',
-      userBorrowed: userBorrowed ?? '0',
-      route,
-    })
-    validateRoute(route, !!debt && isRouterMetaRequired(type))
+    const [type] = getBorrowMoreImplementation(marketId, leverageEnabled)
+    validateRoute(route, !!leverageEnabled && isRouterMetaRequired(type))
   })
 }
 

@@ -41,7 +41,6 @@ export type RouteProviderProps = {
   onChange: (route: RouteOption) => void
   outputTokenAddress: Address
   tokenSymbols: Record<Address, string>
-  usdPrice: number | null
   isExpanded: boolean
   isLoading: boolean
   onToggle: () => void
@@ -54,7 +53,6 @@ export const RouteProvidersAccordion = ({
   onChange,
   outputTokenAddress,
   tokenSymbols,
-  usdPrice,
   isExpanded,
   isLoading,
   onToggle,
@@ -106,7 +104,6 @@ export const RouteProvidersAccordion = ({
               isSelected={route === selectedRoute}
               providerLabel={providerLabels[route.provider]}
               route={route}
-              usdPrice={usdPrice}
               bestOutputAmount={bestOutputAmount}
               onSelect={onChange}
               icon={providerIcons[route.provider]()}

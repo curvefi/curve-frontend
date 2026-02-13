@@ -1,4 +1,4 @@
-import type { UseCreateLoanFormRoutes } from '@/llamalend/features/borrow/hooks/useCreateLoanForm'
+import type { MarketRoutesQuery } from '@/llamalend/hooks/useMarketRoutes'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useCreateLoanIsApproved } from '@/llamalend/queries/create-loan/create-loan-approved.query'
 import { useMarketRates } from '@/llamalend/queries/market-rates'
@@ -37,7 +37,7 @@ export const CreateLoanInfoAccordion = <ChainId extends IChainId>({
   collateralToken: Token | undefined
   borrowToken: Token | undefined
   networks: NetworkDict<ChainId>
-  routes: UseCreateLoanFormRoutes
+  routes: MarketRoutesQuery | undefined
   onSlippageChange: (newSlippage: Decimal) => void
 }) => {
   const [isOpen, , , toggle] = useSwitch(false)

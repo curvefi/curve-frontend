@@ -6,6 +6,31 @@ import { type UserMarketQuery } from '@ui-kit/lib/model'
 import { parseRoute } from '@ui-kit/widgets/RouteProvider'
 
 type RepayFields = Pick<RepayQuery, 'stateCollateral' | 'userCollateral' | 'userBorrowed' | 'route'>
+type RepayFieldsWithoutRoute = Pick<RepayQuery, 'stateCollateral' | 'userCollateral' | 'userBorrowed'>
+
+export function getRepayImplementationType(
+  marketId: string,
+  { stateCollateral, userCollateral, userBorrowed }: RepayFieldsWithoutRoute,
+) {
+  const market = getLlamaMarket(marketId)
+
+  if (market instanceof MintMarketTemplate) {
+    if (hasV2Leverage(market)) return 'V2' as const
+    if (+stateCollateral && hasDeleverage(market)) {
+      if (+userBorrowed) throw new Error(`Invalid userBorrowed for deleverage: ${userBorrowed}`)
+      if (+userCollateral) throw new Error(`Invalid userCollateral for deleverage: ${userCollateral}`)
+      return 'deleverage' as const
+    }
+  } else if (market.leverageZapV2.hasLeverage()) {
+    return 'zapV2' as const
+  } else {
+    return 'V1' as const
+  }
+
+  if (+userCollateral) throw new Error(`Invalid userCollateral for repay: ${userCollateral}`)
+  if (+stateCollateral) throw new Error(`Invalid stateCollateral for repay: ${stateCollateral}`)
+  return 'unleveraged' as const
+}
 
 /**
  * Determines the appropriate repay implementation and its parameters based on the market type and leverage options.
@@ -18,27 +43,20 @@ export function getRepayImplementation(
   { stateCollateral, userCollateral, userBorrowed, route }: RepayFields,
 ) {
   const market = getLlamaMarket(marketId)
-
-  if (market instanceof MintMarketTemplate) {
-    if (hasV2Leverage(market)) {
+  switch (getRepayImplementationType(marketId, { stateCollateral, userCollateral, userBorrowed })) {
+    case 'V2':
       return ['V2', market.leverageV2, [stateCollateral, userCollateral, userBorrowed]] as const
-    }
-    if (+stateCollateral && hasDeleverage(market)) {
-      // use deleverage only if stateCollateral > 0 & supported, otherwise fall back to unleveraged
-      if (+userBorrowed) throw new Error(`Invalid userBorrowed for deleverage: ${userBorrowed}`)
-      if (+userCollateral) throw new Error(`Invalid userCollateral for deleverage: ${userCollateral}`)
+    case 'deleverage':
       return ['deleverage', market.deleverage, [stateCollateral]] as const
+    case 'zapV2': {
+      const routerArgs = { stateCollateral, userCollateral, userBorrowed, ...parseRoute(route) }
+      return ['zapV2', market.leverageZapV2, [routerArgs]] as const
     }
-  } else if (market.leverageZapV2.hasLeverage()) {
-    const routerArgs = { stateCollateral, userCollateral, userBorrowed, ...parseRoute(route) }
-    return ['zapV2', market.leverageZapV2, [routerArgs]] as const
-  } else {
-    return ['V1', market.leverage, [stateCollateral, userCollateral, userBorrowed]] as const
+    case 'V1':
+      return ['V1', market.leverage, [stateCollateral, userCollateral, userBorrowed]] as const
+    case 'unleveraged':
+      return ['unleveraged', market, [userBorrowed]] as const
   }
-
-  if (+userCollateral) throw new Error(`Invalid userCollateral for repay: ${userCollateral}`)
-  if (+stateCollateral) throw new Error(`Invalid stateCollateral for repay: ${stateCollateral}`)
-  return ['unleveraged', market, [userBorrowed]] as const
 }
 
 /**

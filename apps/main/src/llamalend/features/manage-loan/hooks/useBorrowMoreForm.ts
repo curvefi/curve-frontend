@@ -5,13 +5,17 @@ import { useForm } from 'react-hook-form'
 import { Address } from 'viem'
 import { useConnection } from 'wagmi'
 import { useMaxBorrowMoreValues } from '@/llamalend/features/manage-loan/hooks/useMaxBorrowMoreValues'
-import { getTokens } from '@/llamalend/llama.utils'
+import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
+import { getTokens, isRouterMetaRequired } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { OnBorrowedMore, useBorrowMoreMutation } from '@/llamalend/mutations/borrow-more.mutation'
 import { useBorrowMoreExpectedCollateral } from '@/llamalend/queries/borrow-more/borrow-more-expected-collateral.query'
 import { useBorrowMoreHealth } from '@/llamalend/queries/borrow-more/borrow-more-health.query'
 import { useBorrowMoreIsApproved } from '@/llamalend/queries/borrow-more/borrow-more-is-approved.query'
-import { isLeverageBorrowMore } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
+import {
+  getBorrowMoreImplementation,
+  isLeverageBorrowMore,
+} from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
 import {
   type BorrowMoreParams,
   type BorrowMoreForm,
@@ -24,6 +28,7 @@ import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { mapQuery } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
 import { setValueOptions, useFormErrors } from '@ui-kit/utils/react-form.utils'
+import { type RouteOption } from '@ui-kit/widgets/RouteProvider'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 
 const useCallbackAfterFormUpdate = (form: UseFormReturn<BorrowMoreForm>, callback: () => void) =>
@@ -100,6 +105,10 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
 
   const values = watchForm(form)
   const params = useBorrowMoreParams({ chainId, marketId, userAddress, ...values })
+  const [implementation] = market ? getBorrowMoreImplementation(market, values.leverageEnabled) : []
+  const routeRequired = !!implementation && isRouterMetaRequired(implementation)
+  const routeAmountIn = decimal(new BigNumber(values.debt ?? 0).plus(values.userBorrowed ?? 0).toString())
+  const onChangeRoute = (route: RouteOption) => form.setValue('route', route, setValueOptions)
 
   useEffect(() => {
     if (!values.leverageEnabled) {
@@ -141,6 +150,17 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
     txHash: data?.hash,
     isApproved: useBorrowMoreIsApproved(params, enabled),
     formErrors,
+    routes: useMarketRoutes({
+      chainId,
+      tokenIn: borrowToken?.address,
+      tokenOut: collateralToken?.address,
+      amountIn: routeAmountIn,
+      slippage: values.slippage,
+      route: values.route,
+      outputTokenSymbol: collateralToken?.symbol,
+      enabled: routeRequired,
+      onChangeRoute,
+    }),
     max: useMaxBorrowMoreValues({ params, form, market }, enabled),
     health: useBorrowMoreHealth(params, enabled && !!values.debt),
     /** Current leverage calculated for now, but it's probably incorrect. It's in development in llamalend-js. */

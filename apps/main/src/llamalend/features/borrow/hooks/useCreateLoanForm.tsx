@@ -1,8 +1,9 @@
+import BigNumber from 'bignumber.js'
 import { useEffect, useMemo } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
 import { useForm } from 'react-hook-form'
-import { zeroAddress } from 'viem'
 import { useConnection } from 'wagmi'
+import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import { getTokens, isRouterMetaRequired } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { isLeverageBorrowMoreSupported } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
@@ -10,13 +11,12 @@ import { useCreateLoanExpectedCollateral } from '@/llamalend/queries/create-loan
 import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/create-loan-query.helpers'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { vestResolver } from '@hookform/resolvers/vest'
-import { useOptimalRoute } from '@ui-kit/entities/router.query'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
-import { mapQuery, q, type Query } from '@ui-kit/types/util'
-import { Address, Decimal } from '@ui-kit/utils'
+import { mapQuery } from '@ui-kit/types/util'
+import { decimal, Decimal } from '@ui-kit/utils'
 import { setValueOptions, useFormErrors } from '@ui-kit/utils/react-form.utils'
-import { type RouteOption, type RouteProvider } from '@ui-kit/widgets/RouteProvider'
+import { type RouteOption } from '@ui-kit/widgets/RouteProvider'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 import { LoanPreset, PRESET_RANGES } from '../../../constants'
 import { type CreateLoanOptions, useCreateLoanMutation } from '../../../mutations/create-loan.mutation'
@@ -28,84 +28,8 @@ import { useMaxTokenValues } from './useMaxTokenValues'
 const useCallbackAfterFormUpdate = (form: UseFormReturn<CreateLoanForm>, callback: () => void) =>
   useEffect(() => form.subscribe({ formState: { values: true }, callback }), [form, callback])
 
-type SelectedRoutes = Query<RouteOption[]> & {
-  selected: RouteOption | undefined
-  onChange: (route: RouteOption) => void
-  onRefresh: () => void
-  outputTokenAddress: Address
-  outputTokenSymbol: string
-}
-export type UseCreateLoanFormRoutes = SelectedRoutes | undefined
-
 // to crete a loan we need the debt/maxDebt, but we skip the market validation as that's given separately to the mutation
 const resolver = vestResolver(createLoanQueryValidationSuite({ debtRequired: false, skipMarketValidation: true }))
-
-function useMarketRoutes({
-  market,
-  route,
-  slippage,
-  leverageEnabled,
-  userBorrowed,
-  chainId,
-  onChangeRoute,
-}: {
-  market: LlamaMarketTemplate | undefined
-  chainId: LlamaChainId
-  route: RouteOption | undefined | null
-  slippage: Decimal | undefined
-  leverageEnabled: boolean
-  userBorrowed: Decimal | undefined
-  onChangeRoute: (route: RouteOption) => void
-}): SelectedRoutes | undefined {
-  const allRouters: RouteProvider[] = ['curve', 'odos', 'enso']
-  const { borrowToken, collateralToken } = market ? getTokens(market) : {}
-  const [impl] = market ? getCreateLoanImplementation(market, leverageEnabled) : []
-  const routeRequired = !!impl && isRouterMetaRequired(impl)
-  const { address: userAddress } = useConnection()
-  const routesQuery = useOptimalRoute(
-    {
-      chainId,
-      tokenIn: collateralToken?.address,
-      tokenOut: borrowToken?.address,
-      amountIn: userBorrowed,
-      router: allRouters,
-      fromAddress: userAddress as Address | undefined,
-      slippage,
-    },
-    routeRequired,
-  )
-  const routes = useMemo(
-    () =>
-      routesQuery.data?.map((item) => ({
-        provider: item.router,
-        toAmountOutput: item.amountOut,
-        priceImpact: item.priceImpact ?? 0,
-        routerAddress: item.tx?.to ?? zeroAddress,
-        calldata: item.tx?.data ?? '0x',
-      })),
-    [routesQuery.data],
-  )
-  const selected = routes?.find((next) => next.provider === route?.provider) ?? route ?? routes?.[0]
-
-  useEffect(() => {
-    if (!routeRequired || !selected || route?.provider === selected.provider) return
-    onChangeRoute(selected)
-  }, [onChangeRoute, route?.provider, routeRequired, selected])
-
-  if (!routeRequired || !borrowToken?.address || !borrowToken?.symbol) return undefined
-
-  return {
-    ...q(routesQuery),
-    data: routes,
-    selected,
-    onChange: onChangeRoute,
-    onRefresh: () => {
-      void routesQuery.refetch()
-    },
-    outputTokenAddress: borrowToken.address,
-    outputTokenSymbol: borrowToken.symbol,
-  }
-}
 
 export function useCreateLoanForm<ChainId extends LlamaChainId>({
   market,
@@ -180,6 +104,10 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
   } = useCreateLoanMutation({ network, marketId: market?.id, onReset: form.reset, onCreated, userAddress })
 
   const { borrowToken, collateralToken } = market ? getTokens(market) : {}
+  const [implementation] = market ? getCreateLoanImplementation(market, values.leverageEnabled) : []
+  const routeRequired = !!implementation && isRouterMetaRequired(implementation)
+  const routeAmountIn = decimal(new BigNumber(values.debt ?? 0).plus(values.userBorrowed ?? 0).toString())
+  console.log(implementation, values)
 
   useCallbackAfterFormUpdate(form, resetCreation) // reset creation state on form change
   const onChangeRoute = (route: RouteOption) => form.setValue('route', route, setValueOptions)
@@ -202,6 +130,16 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     ),
     isApproved: useCreateLoanIsApproved(params),
     formErrors: useFormErrors(form.formState),
-    routes: useMarketRoutes({ market, chainId, ...values, onChangeRoute }),
+    routes: useMarketRoutes({
+      chainId,
+      tokenIn: borrowToken?.address,
+      tokenOut: collateralToken?.address,
+      amountIn: routeAmountIn,
+      slippage: values.slippage,
+      route: values.route,
+      outputTokenSymbol: collateralToken?.symbol,
+      enabled: routeRequired,
+      onChangeRoute,
+    }),
   }
 }

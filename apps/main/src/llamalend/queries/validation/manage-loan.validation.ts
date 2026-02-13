@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 import { enforce, group, skipWhen, test } from 'vest'
 import { isRouterMetaRequired } from '@/llamalend/llama.utils'
 import type { RouterMeta } from '@/llamalend/llamalend.types'
-import { getRepayImplementation } from '@/llamalend/queries/repay/repay-query.helpers'
+import { getRepayImplementationType } from '@/llamalend/queries/repay/repay-query.helpers'
 import {
   validateIsFull,
   validateLeverageSupported,
@@ -88,11 +88,10 @@ const validateRepayFieldsForMarket = (
   skipWhen(!marketId, () => {
     if (!marketId) return // somehow, skipWhen doesn't stop execution of the inner function
     // Get the implementation to validate fields according to market capabilities. Default to 0 just like the queries
-    const [type] = getRepayImplementation(marketId, {
+    const type = getRepayImplementationType(marketId, {
       stateCollateral: stateCollateral ?? '0',
       userCollateral: userCollateral ?? '0',
       userBorrowed: userBorrowed ?? '0',
-      route,
     })
     const swapRequired = !!stateCollateral || !!userCollateral || !!route
     validateRoute(route, swapRequired && isRouterMetaRequired(type))

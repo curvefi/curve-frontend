@@ -9,6 +9,7 @@ export type RouteProvider = (typeof RouteProviders)[number]
 export type RouteOption = {
   provider: RouteProvider
   toAmountOutput: Decimal
+  usdPrice: number | null
   priceImpact: number
   routerAddress: Address
   calldata: Hex

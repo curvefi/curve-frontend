@@ -53,6 +53,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     txHash,
     isApproved,
     formErrors,
+    routes,
     max,
     health,
     leverage,
@@ -80,6 +81,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
           values={values}
           tokens={{ collateralToken, borrowToken }}
           networks={networks}
+          routes={routes}
           onSlippageChange={(value) => form.setValue('slippage', value, setValueOptions)}
           leverageEnabled={values.leverageEnabled}
           health={health}
