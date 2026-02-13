@@ -46,6 +46,8 @@ export type GetAllMarketsResponse = {
 export type GetSnapshotsResponse = {
   data: {
     rate: number
+    borrow_apy: number
+    borrow_apr: number
     minted: number
     redeemed: number
     total_collateral: number
