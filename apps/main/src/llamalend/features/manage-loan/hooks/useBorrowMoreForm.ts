@@ -136,7 +136,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
     max: useMaxBorrowMoreValues({ params, form, market }, enabled),
     health: useBorrowMoreHealth(params, enabled && !!values.debt),
     /** Current leverage calculated for now, but it's probably incorrect. It's in development in llamalend-js. */
-    leverage: mapQuery(
+    leverageValue: mapQuery(
       useBorrowMoreExpectedCollateral(params, isLeverageBorrowMore(market, values.leverageEnabled)),
       ({ collateralFromDebt, collateralFromUserBorrowed, userCollateral }) => {
         const base = new BigNumber(userCollateral).plus(collateralFromUserBorrowed)

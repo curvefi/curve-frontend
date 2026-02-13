@@ -28,6 +28,7 @@ export function BorrowMoreLoanInfoAccordion<ChainId extends IChainId>({
   onSlippageChange,
   leverageEnabled,
   health,
+  leverageValue,
 }: {
   params: BorrowMoreParams<ChainId>
   values: BorrowMoreForm
@@ -36,6 +37,7 @@ export function BorrowMoreLoanInfoAccordion<ChainId extends IChainId>({
   onSlippageChange: (newSlippage: Decimal) => void
   leverageEnabled: boolean
   health: Query<Decimal | null>
+  leverageValue: Query<Decimal | null>
 }) {
   const [isOpen, , , toggle] = useSwitch(false)
   const userState = useUserState(params, isOpen)
@@ -92,14 +94,7 @@ export function BorrowMoreLoanInfoAccordion<ChainId extends IChainId>({
       }}
       userState={q(userState)}
       leverageEnabled={leverageEnabled}
-      leverageValue={mapQuery(
-        expectedCollateralQuery,
-        // todo: this might not be correct, use the llamalend-js calculation that's being implemented
-        ({ collateralFromDebt, collateralFromUserBorrowed, userCollateral }) => {
-          const base = new BigNumber(userCollateral).plus(collateralFromUserBorrowed)
-          return decimal(base.isZero() ? 0 : new BigNumber(collateralFromDebt).plus(base).div(base))
-        },
-      )}
+      leverageValue={leverageValue}
       prevLeverageValue={q(useUserCurrentLeverage(params, isOpen))}
       leverageTotalCollateral={mapQuery(expectedCollateralQuery, (d) => d.totalCollateral)}
       slippage={slippage}

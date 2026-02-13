@@ -55,7 +55,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     formErrors,
     max,
     health,
-    leverage,
+    leverageValue,
   } = useBorrowMoreForm({
     market,
     network,
@@ -83,6 +83,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
           onSlippageChange={(value) => updateForm(form, { slippage: value })}
           leverageEnabled={values.leverageEnabled}
           health={health}
+          leverageValue={leverageValue}
         />
       }
     >
@@ -138,7 +139,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
       {isLeverageBorrowMoreSupported(market) && (
         <LeverageInput
           checked={values.leverageEnabled}
-          leverage={leverage}
+          leverageValue={leverageValue}
           onToggle={onLeverageToggle}
           maxLeverage={max.maxLeverage.data}
         />
