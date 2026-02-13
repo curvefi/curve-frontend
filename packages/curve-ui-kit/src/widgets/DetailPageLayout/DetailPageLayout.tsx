@@ -16,7 +16,7 @@ export const DetailPageLayout = ({ formTabs, children }: { formTabs: ReactNode; 
     container
     data-testid="detail-page-layout"
     spacing={Spacing.lg}
-    sx={{ marginInline: Spacing.md, marginBlockStart: Spacing.xl, marginBlockEnd: Spacing.xxl }}
+    sx={{ marginInline: Spacing.md, marginBlockStart: Spacing.md, marginBlockEnd: Spacing.xxl }}
   >
     {/* In Figma, columns are 12/4/3, but too small around breakpoints. I've added one extra column.
         Ultrawide isn't a breakpoint yet, use maxWidth so it's not too large. */}

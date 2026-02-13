@@ -1,7 +1,7 @@
 import { Box, Stack, type Theme, Typography } from '@mui/material'
 import { t } from '@ui-kit/lib/i18n'
 import { LinearProgress } from '@ui-kit/shared/ui/LinearProgress'
-import { getHealthTrackColor } from './utils'
+import { getHealthTrackColor } from './'
 
 type HealthBarProps = {
   health: number | undefined | null

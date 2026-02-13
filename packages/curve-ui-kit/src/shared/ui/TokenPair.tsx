@@ -25,14 +25,25 @@ export const TokenPair = ({ chain, assets: { primary, secondary }, hideChainIcon
       blockchainId={chain}
       address={secondary.address}
       tooltip={secondary.symbol}
-      sx={{ position: 'absolute', top: '33%', left: '33%' }}
+      sx={{
+        position: 'absolute',
+        top: '33%',
+        left: '33%',
+        width: { mobile: '65%', tablet: '67%' },
+        height: { mobile: '65%', tablet: '67%' },
+      }}
     />
-
     <TokenIcon
       blockchainId={chain}
       address={primary.address}
       tooltip={primary.symbol}
-      sx={{ position: 'absolute', bottom: '33%', right: '33%' }}
+      sx={{
+        position: 'absolute',
+        bottom: '33%',
+        right: '33%',
+        width: { mobile: '65%', tablet: '67%' },
+        height: { mobile: '65%', tablet: '67%' },
+      }}
     />
 
     {!hideChainIcon && <TokenChainIcon chain={chain} />}
