@@ -15,6 +15,8 @@ type HealthLevel = 'hardLiquidation' | 'liquidation' | 'risky' | 'good' | 'prist
 const BAR_HEIGHT = '2rem' // 36px
 /** padding necesarry to mimic Metric components inherent line-height padding */
 const TRACK_BOTTOM_PADDING = '0.1875rem' // 3px
+/** Inset from the container border so labels sit inside the filled portion of the bar */
+const LABEL_INSET = '0.125rem' // 2px
 
 const insetLabelText = {
   hardLiquidation: t`Liquidation protection disabled`,
@@ -79,8 +81,8 @@ export const HealthBar = ({ health, softLiquidation, small, sx }: HealthBarProps
             variant="bodyXsRegular"
             sx={{
               position: 'absolute',
-              bottom: '2px',
-              left: '2px',
+              bottom: LABEL_INSET,
+              left: LABEL_INSET,
               color: (t) =>
                 health <= 0
                   ? t.design.Text.TextColors.FilledFeedback.Alert.Primary // Full white when bar is 100% red
@@ -96,9 +98,9 @@ export const HealthBar = ({ health, softLiquidation, small, sx }: HealthBarProps
           <Stack
             sx={{
               position: 'absolute',
-              bottom: '2px',
-              left: '2px',
-              width: `calc(${clampPercentage(health)}% - 2px)`,
+              bottom: LABEL_INSET,
+              left: LABEL_INSET,
+              width: `calc(${clampPercentage(health)}% - ${LABEL_INSET})`,
               overflow: 'hidden',
             }}
           >

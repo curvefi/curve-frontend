@@ -26,13 +26,12 @@ export const MarketInformationTabs = ({ currentTab, hrefs, children }: MarketInf
     { value: 'supply', label: t`Supply`, href: hrefs.supply },
   ]
   const [tab, setTab] = useState<Tab>(currentTab)
-  const showPageHeader = useIntegratedLlamaHeader()
 
   return (
     <Box>
       <Stack alignItems="baseline" direction="row" justifyContent="space-between">
         <TabsSwitcher value={tab} onChange={setTab} variant="contained" options={tabs} />
-        {showPageHeader && <LlamaMonitorBotLinkButton size="extraSmall" />}
+        {useIntegratedLlamaHeader() && <LlamaMonitorBotLinkButton size="extraSmall" />}
       </Stack>
       <Box sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>{children}</Box>
     </Box>

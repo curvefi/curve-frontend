@@ -122,31 +122,28 @@ export const BorrowPositionDetails = ({
   ltv,
   totalDebt,
   collateralLoss,
-}: BorrowPositionDetailsProps) => {
-  const showPageHeader = useIntegratedLlamaHeader()
-  return (
-    <Stack padding={Spacing.md}>
-      {liquidationAlert.softLiquidation && <LiquidationAlert type="soft" />}
-      {liquidationAlert.hardLiquidation && <LiquidationAlert type="hard" />}
-      <Stack
-        direction={'column'}
-        display={showPageHeader ? { tablet: 'flex', desktop: 'grid' } : 'flex'}
-        gridTemplateColumns={'1fr 1fr'}
-        gap={Spacing.md}
-      >
-        <HealthDetails health={health} liquidationAlert={liquidationAlert} />
-        <BorrowInformation
-          marketType={marketType}
-          borrowRate={borrowRate}
-          collateralValue={collateralValue}
-          ltv={ltv}
-          leverage={leverage}
-          liquidationRange={liquidationRange}
-          bandRange={bandRange}
-          totalDebt={totalDebt}
-          collateralLoss={collateralLoss}
-        />
-      </Stack>
+}: BorrowPositionDetailsProps) => (
+  <Stack padding={Spacing.md}>
+    {liquidationAlert.softLiquidation && <LiquidationAlert type="soft" />}
+    {liquidationAlert.hardLiquidation && <LiquidationAlert type="hard" />}
+    <Stack
+      direction={'column'}
+      display={useIntegratedLlamaHeader() ? { tablet: 'flex', desktop: 'grid' } : 'flex'}
+      gridTemplateColumns={'1fr 1fr'}
+      gap={Spacing.md}
+    >
+      <HealthDetails health={health} liquidationAlert={liquidationAlert} />
+      <BorrowInformation
+        marketType={marketType}
+        borrowRate={borrowRate}
+        collateralValue={collateralValue}
+        ltv={ltv}
+        leverage={leverage}
+        liquidationRange={liquidationRange}
+        bandRange={bandRange}
+        totalDebt={totalDebt}
+        collateralLoss={collateralLoss}
+      />
     </Stack>
-  )
-}
+  </Stack>
+)
