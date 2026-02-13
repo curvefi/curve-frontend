@@ -1,4 +1,6 @@
 import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/create-loan-query.helpers'
+import type { Address } from '@curvefi/prices-api'
+import { getExpectedFn } from '@ui-kit/entities/router.query'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
@@ -6,7 +8,10 @@ import { assert, decimal, Decimal } from '@ui-kit/utils'
 import type { CreateLoanFormQuery } from '../../features/borrow/types'
 import { createLoanFormValidationGroup } from '../validation/borrow.validation'
 
-type CreateLoanMaxReceiveQuery = Omit<CreateLoanFormQuery, 'userCollateral' | 'debt'> & { userCollateral: Decimal }
+type CreateLoanMaxReceiveQuery = Omit<CreateLoanFormQuery, 'userCollateral' | 'debt'> & {
+  userCollateral: Decimal
+  userAddress: Address
+}
 type CreateLoanMaxReceiveParams = FieldsOf<CreateLoanMaxReceiveQuery>
 
 type CreateLoanMaxReceiveResult = {
@@ -49,7 +54,7 @@ export const maxReceiveValidation = createValidationSuite(
   }: CreateLoanMaxReceiveParams) => {
     marketIdValidationSuite({ chainId, marketId })
     createLoanFormValidationGroup(
-      { userBorrowed, userCollateral, debt: undefined, range, slippage, leverageEnabled },
+      { userBorrowed, userCollateral, debt: undefined, range, slippage, leverageEnabled, maxDebt: undefined },
       { debtRequired: false, isMaxDebtRequired: false, isLeverageRequired: false },
     )
   },
@@ -59,28 +64,52 @@ export const { useQuery: useCreateLoanMaxReceive, queryKey: createLoanMaxReceive
   queryKey: ({
     chainId,
     marketId,
+    userAddress,
     userBorrowed = `0`,
     userCollateral = `0`,
     range,
     leverageEnabled,
+    slippage,
+    route,
   }: CreateLoanMaxReceiveParams) =>
     [
-      ...rootKeys.market({ chainId, marketId }),
+      ...rootKeys.userMarket({ chainId, marketId, userAddress }),
       'createLoanMaxRecv',
       { userBorrowed },
       { userCollateral },
       { range },
       { leverageEnabled },
+      { slippage },
+      { route },
     ] as const,
   queryFn: async ({
+    chainId,
     marketId,
+    userAddress,
     userBorrowed = `0`,
     userCollateral = `0`,
     range,
     leverageEnabled,
+    slippage,
+    route,
   }: CreateLoanMaxReceiveQuery): Promise<CreateLoanMaxReceiveResult> => {
     const [type, impl] = getCreateLoanImplementation(marketId, leverageEnabled)
     switch (type) {
+      case 'zapV2': {
+        return convertNumbers(
+          await impl.createLoanMaxRecv({
+            userCollateral,
+            userBorrowed,
+            range,
+            getExpected: getExpectedFn({
+              chainId,
+              router: route!.provider,
+              fromAddress: userAddress,
+              slippage,
+            }),
+          }),
+        )
+      }
       case 'V1':
       case 'V2':
         return convertNumbers(await impl.createLoanMaxRecv(userCollateral, userBorrowed, range))

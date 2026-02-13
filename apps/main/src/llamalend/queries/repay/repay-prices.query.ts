@@ -1,6 +1,7 @@
 import { repayExpectedBorrowedQueryKey } from '@/llamalend/queries/repay/repay-expected-borrowed.query'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import type { Decimal } from '@ui-kit/utils'
+import { parseRoute } from '@ui-kit/widgets/RouteProvider'
 import { type RepayParams, type RepayQuery } from '../validation/manage-loan.types'
 import { repayValidationSuite } from '../validation/manage-loan.validation'
 import { getRepayImplementation } from './repay-query.helpers'
@@ -13,6 +14,7 @@ export const { useQuery: useRepayPrices } = queryFactory({
     userCollateral = '0',
     userBorrowed = '0',
     userAddress,
+    route,
   }: RepayParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
@@ -20,11 +22,28 @@ export const { useQuery: useRepayPrices } = queryFactory({
       { stateCollateral },
       { userCollateral },
       { userBorrowed },
+      { route },
     ] as const,
-  queryFn: async ({ marketId, stateCollateral, userCollateral, userBorrowed }: RepayQuery) => {
-    const [type, impl, args] = getRepayImplementation(marketId, { userCollateral, stateCollateral, userBorrowed })
+  queryFn: async ({ marketId, stateCollateral, userCollateral, userBorrowed, route, userAddress }: RepayQuery) => {
+    const [type, impl, args] = getRepayImplementation(marketId, {
+      userCollateral,
+      stateCollateral,
+      userBorrowed,
+      route,
+    })
     // it looks like all implementations have the same signature, but `args` is typed differently for each
     switch (type) {
+      case 'zapV2':
+        return (
+          await impl.repayExpectedMetrics({
+            stateCollateral,
+            userCollateral,
+            userBorrowed,
+            healthIsFull: true,
+            address: userAddress,
+            ...parseRoute(route),
+          })
+        ).prices as Decimal[]
       case 'V1':
       case 'V2':
         return (await impl.repayPrices(...args)) as Decimal[]

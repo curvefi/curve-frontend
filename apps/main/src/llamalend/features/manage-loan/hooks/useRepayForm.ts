@@ -32,6 +32,7 @@ const useRepayParams = <ChainId>({
   stateCollateral,
   userBorrowed,
   userCollateral,
+  route,
   chainId,
   marketId,
   userAddress,
@@ -52,8 +53,9 @@ const useRepayParams = <ChainId>({
         maxCollateral,
         isFull,
         slippage,
+        route,
       }),
-      [chainId, marketId, userAddress, stateCollateral, userCollateral, userBorrowed, maxCollateral, isFull, slippage],
+      [chainId, marketId, userAddress, stateCollateral, userCollateral, userBorrowed, maxCollateral, isFull, slippage, route],
     ),
   )
 
@@ -64,6 +66,7 @@ const emptyRepayForm = () => ({
   maxStateCollateral: undefined,
   maxCollateral: undefined,
   maxBorrowed: undefined,
+  route: undefined,
   isFull: false,
   slippage: SLIPPAGE_PRESETS.STABLE,
 })

@@ -4,6 +4,26 @@ import { borrowMoreLeverageValidationSuite } from '@/llamalend/queries/validatio
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { Decimal } from '@ui-kit/utils'
 
+const castFieldsToDecimal = ({
+  userCollateral: newUserCollateral,
+  totalCollateral,
+  collateralFromUserBorrowed,
+  collateralFromDebt,
+  avgPrice,
+}: {
+  totalCollateral: string
+  userCollateral: string
+  collateralFromUserBorrowed: string
+  collateralFromDebt: string
+  avgPrice: string
+}) => ({
+  totalCollateral: totalCollateral as Decimal,
+  userCollateral: newUserCollateral as Decimal,
+  collateralFromUserBorrowed: collateralFromUserBorrowed as Decimal,
+  collateralFromDebt: collateralFromDebt as Decimal,
+  avgPrice: avgPrice as Decimal,
+})
+
 export const { useQuery: useBorrowMoreExpectedCollateral, queryKey: getBorrowMoreExpectedCollateralKey } = queryFactory(
   {
     queryKey: ({
@@ -16,6 +36,7 @@ export const { useQuery: useBorrowMoreExpectedCollateral, queryKey: getBorrowMor
       maxDebt,
       slippage,
       leverageEnabled,
+      route,
     }: BorrowMoreParams) =>
       [
         ...rootKeys.userMarket({ chainId, marketId, userAddress }),
@@ -26,6 +47,7 @@ export const { useQuery: useBorrowMoreExpectedCollateral, queryKey: getBorrowMor
         { maxDebt },
         { slippage },
         { leverageEnabled },
+        { route },
       ] as const,
     queryFn: async ({
       marketId,
@@ -34,28 +56,19 @@ export const { useQuery: useBorrowMoreExpectedCollateral, queryKey: getBorrowMor
       debt = '0',
       slippage,
       leverageEnabled,
+      route,
     }: BorrowMoreQuery) => {
       const [type, impl, args] = getBorrowMoreImplementationArgs(marketId, {
         userCollateral,
         userBorrowed,
         debt,
         leverageEnabled,
+        route,
       })
       if (type === 'unleveraged') throw new Error('Unsupported operation for unleveraged borrow more')
-      const {
-        userCollateral: newUserCollateral,
-        totalCollateral,
-        collateralFromUserBorrowed,
-        collateralFromDebt,
-        avgPrice,
-      } = await impl.borrowMoreExpectedCollateral(...args, +slippage)
-      return {
-        totalCollateral: totalCollateral as Decimal,
-        userCollateral: newUserCollateral as Decimal,
-        collateralFromUserBorrowed: collateralFromUserBorrowed as Decimal,
-        collateralFromDebt: collateralFromDebt as Decimal,
-        avgPrice: avgPrice as Decimal,
-      }
+      return type == 'zapV2'
+        ? castFieldsToDecimal(await impl.borrowMoreExpectedCollateral(...args))
+        : castFieldsToDecimal(await impl.borrowMoreExpectedCollateral(...args, +slippage))
     },
     staleTime: '1m',
     validationSuite: borrowMoreLeverageValidationSuite,

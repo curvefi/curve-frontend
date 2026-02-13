@@ -1,7 +1,7 @@
 import { sortBy } from 'lodash'
 import { type Address, Hex, zeroAddress } from 'viem'
 import type { HealthColorKey, LlamaMarketTemplate } from '@/llamalend/llamalend.types'
-import type { INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
+import type { INetworkName as LlamaNetworkId, IQuote } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { Chain } from '@curvefi/prices-api'
@@ -10,6 +10,7 @@ import { getUserMarketCollateralEvents as getLendUserMarketCollateralEvents } fr
 import { notFalsy, objectKeys } from '@curvefi/prices-api/objects.util'
 import { requireLib, type Wallet } from '@ui-kit/features/connect-wallet'
 import { CRVUSD, type Decimal, formatNumber } from '@ui-kit/utils'
+import type { RouteOption } from '@ui-kit/widgets/RouteProvider'
 
 /**
  * Gets a Llama market (either a mint or lend market) by its ID.
@@ -59,6 +60,14 @@ export const canRepayFromUserCollateral = (market: LlamaMarketTemplate) =>
   market instanceof MintMarketTemplate ? hasV2Leverage(market) : hasLeverage(market)
 
 export const hasVault = (market: LlamaMarketTemplate) => market instanceof LendMarketTemplate && 'vault' in market
+
+export const isRouterMetaRequired = (type: 'zapV2' | 'V0' | 'V1' | 'V2' | 'deleverage' | 'unleveraged') =>
+  type == 'zapV2'
+
+export const toQuote = (route: RouteOption): IQuote => ({
+  outAmount: `${route.toAmountOutput}`,
+  priceImpact: route.priceImpact ?? 0,
+})
 
 const getBorrowSymbol = (market: LlamaMarketTemplate) =>
   market instanceof MintMarketTemplate ? CRVUSD.symbol : market.borrowed_token.symbol

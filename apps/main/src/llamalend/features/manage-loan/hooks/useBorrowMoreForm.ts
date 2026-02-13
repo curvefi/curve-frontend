@@ -36,6 +36,7 @@ const useBorrowMoreParams = <ChainId>({
   maxDebt,
   slippage,
   leverageEnabled,
+  route,
   chainId,
   marketId,
   userAddress,
@@ -56,8 +57,9 @@ const useBorrowMoreParams = <ChainId>({
         maxDebt,
         slippage,
         leverageEnabled,
+        route,
       }),
-      [chainId, marketId, userAddress, userCollateral, userBorrowed, debt, maxDebt, slippage, leverageEnabled],
+      [chainId, marketId, userAddress, userCollateral, userBorrowed, debt, maxDebt, slippage, leverageEnabled, route],
     ),
   )
 
@@ -68,6 +70,7 @@ const emptyBorrowMoreForm = (): BorrowMoreForm => ({
   maxCollateral: undefined,
   maxBorrowed: undefined,
   maxDebt: undefined,
+  route: undefined,
   leverageEnabled: false,
   slippage: SLIPPAGE_PRESETS.STABLE,
 })
@@ -102,6 +105,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
     if (!values.leverageEnabled) {
       form.setValue('userCollateral', undefined, setValueOptions)
       form.setValue('userBorrowed', undefined, setValueOptions)
+      form.setValue('route', undefined, setValueOptions)
     }
   }, [form, values.leverageEnabled])
 

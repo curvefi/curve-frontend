@@ -15,9 +15,9 @@ const labels = {
 } satisfies Record<Address, string>
 
 const mockRoutes: RouteOption[] = [
-  { provider: 'curve', toAmountOutput: '69.4241' },
-  { provider: 'enso', toAmountOutput: '67.7432' },
-  { provider: 'odos', toAmountOutput: '67.0142' },
+  { provider: 'curve', toAmountOutput: '69.4241', priceImpact: 0.01, routerAddress: '0x1', calldata: '0x2' },
+  { provider: 'enso', toAmountOutput: '67.7432', priceImpact: 0.1, routerAddress: '0x3', calldata: '0x4' },
+  { provider: 'odos', toAmountOutput: '67.0142', priceImpact: 0.001, routerAddress: '0x5', calldata: '0x6' },
 ]
 
 const meta: Meta<typeof RouteProvidersAccordion> = {

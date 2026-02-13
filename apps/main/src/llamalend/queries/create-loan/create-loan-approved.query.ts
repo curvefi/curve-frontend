@@ -11,6 +11,7 @@ export const { useQuery: useCreateLoanIsApproved, fetchQuery: fetchCreateLoanIsA
     userCollateral = '0',
     userBorrowed = '0',
     leverageEnabled,
+    route,
   }: CreateLoanFormQueryParams) =>
     [
       ...rootKeys.market({ chainId, marketId }),
@@ -18,6 +19,7 @@ export const { useQuery: useCreateLoanIsApproved, fetchQuery: fetchCreateLoanIsA
       { userCollateral },
       { userBorrowed },
       { leverageEnabled },
+      { route },
     ] as const,
   queryFn: async ({
     marketId,
@@ -27,6 +29,8 @@ export const { useQuery: useCreateLoanIsApproved, fetchQuery: fetchCreateLoanIsA
   }: CreateLoanDebtQuery): Promise<boolean> => {
     const [type, impl] = getCreateLoanImplementation(marketId, leverageEnabled)
     switch (type) {
+      case 'zapV2':
+        return await impl.createLoanIsApproved({ userCollateral, userBorrowed })
       case 'V1':
       case 'V2':
         return await impl.createLoanIsApproved(userCollateral, userBorrowed)

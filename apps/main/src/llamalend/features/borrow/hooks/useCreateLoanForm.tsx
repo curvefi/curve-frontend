@@ -47,6 +47,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
       userCollateral: undefined,
       userBorrowed: `0` satisfies Decimal,
       debt: undefined,
+      route: undefined,
       leverageEnabled: false,
       slippage: SLIPPAGE_PRESETS.STABLE,
       range: PRESET_RANGES[preset],
@@ -70,6 +71,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
         leverageEnabled: values.leverageEnabled,
         userCollateral: values.userCollateral,
         userBorrowed: values.userBorrowed,
+        route: values.route,
       }),
       [
         chainId,
@@ -83,6 +85,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
         values.leverageEnabled,
         values.userCollateral,
         values.userBorrowed,
+        values.route,
       ],
     ),
   )

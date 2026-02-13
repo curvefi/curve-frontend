@@ -1,10 +1,12 @@
 import { group, skipWhen } from 'vest'
+import { isRouterMetaRequired } from '@/llamalend/llama.utils'
 import {
   validateDebt,
   validateLeverageEnabled,
   validateMaxCollateral,
   validateMaxDebt,
   validateRange,
+  validateRoute,
   validateSlippage,
   validateUserBorrowed,
   validateUserCollateral,
@@ -12,6 +14,7 @@ import {
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
 import { type CreateLoanDebtParams, type CreateLoanForm } from '../../features/borrow/types'
+import { getCreateLoanImplementation } from '../create-loan/create-loan-query.helpers'
 
 export const createLoanFormValidationGroup = (
   {
@@ -61,4 +64,9 @@ export const createLoanQueryValidationSuite = ({
       { userBorrowed, userCollateral, debt, range, slippage, leverageEnabled, maxDebt },
       { debtRequired, isMaxDebtRequired, isLeverageRequired },
     )
+    skipWhen(skipMarketValidation || !marketId, () => {
+      if (!marketId) return
+      const [type] = getCreateLoanImplementation(marketId, !!leverageEnabled)
+      validateRoute(params.route, !!debt && isRouterMetaRequired(type))
+    })
   })

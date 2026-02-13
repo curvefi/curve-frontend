@@ -1,10 +1,11 @@
-import { getLlamaMarket, hasDeleverage, hasLeverage, hasV2Leverage } from '@/llamalend/llama.utils'
+import { getLlamaMarket, hasDeleverage, hasV2Leverage } from '@/llamalend/llama.utils'
 import { getUserState } from '@/llamalend/queries/user-state.query'
 import type { RepayQuery } from '@/llamalend/queries/validation/manage-loan.types'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { type UserMarketQuery } from '@ui-kit/lib/model'
+import { parseRoute } from '@ui-kit/widgets/RouteProvider'
 
-type RepayFields = Pick<RepayQuery, 'stateCollateral' | 'userCollateral' | 'userBorrowed'>
+type RepayFields = Pick<RepayQuery, 'stateCollateral' | 'userCollateral' | 'userBorrowed' | 'route'>
 
 /**
  * Determines the appropriate repay implementation and its parameters based on the market type and leverage options.
@@ -14,7 +15,7 @@ type RepayFields = Pick<RepayQuery, 'stateCollateral' | 'userCollateral' | 'user
  */
 export function getRepayImplementation(
   marketId: string,
-  { stateCollateral, userCollateral, userBorrowed }: RepayFields,
+  { stateCollateral, userCollateral, userBorrowed, route }: RepayFields,
 ) {
   const market = getLlamaMarket(marketId)
 
@@ -28,7 +29,10 @@ export function getRepayImplementation(
       if (+userCollateral) throw new Error(`Invalid userCollateral for deleverage: ${userCollateral}`)
       return ['deleverage', market.deleverage, [stateCollateral]] as const
     }
-  } else if (hasLeverage(market)) {
+  } else if (market.leverageZapV2.hasLeverage()) {
+    const routerArgs = { stateCollateral, userCollateral, userBorrowed, ...parseRoute(route) }
+    return ['zapV2', market.leverageZapV2, [routerArgs]] as const
+  } else {
     return ['V1', market.leverage, [stateCollateral, userCollateral, userBorrowed]] as const
   }
 

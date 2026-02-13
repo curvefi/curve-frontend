@@ -6,12 +6,12 @@ import type {
   RoutesAndOutputModal,
   SearchedParams,
 } from '@/dex/components/PageRouterSwap/types'
-import { type RouterApiResponse, useOptimalRoute } from '@/dex/entities/router.query'
 import { useTokensNameMapper } from '@/dex/hooks/useTokensNameMapper'
 import { getRouterWarningModal } from '@/dex/store/createQuickSwapSlice'
 import { useStore } from '@/dex/store/useStore'
 import { ChainId, TokensNameMapper } from '@/dex/types/main.types'
 import { getExchangeRates } from '@/dex/utils/utilsSwap'
+import { type RouterApiResponse, useOptimalRoute } from '@ui-kit/entities/router.query'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { Address, type Decimal, decimal } from '@ui-kit/utils'
 

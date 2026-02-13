@@ -1,4 +1,6 @@
 import { skipWhen } from 'vest'
+import { isRouterMetaRequired } from '@/llamalend/llama.utils'
+import type { RouterMeta } from '@/llamalend/llamalend.types'
 import { getBorrowMoreImplementationArgs } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
 import {
   validateDebt,
@@ -7,6 +9,7 @@ import {
   validateMaxBorrowed,
   validateMaxCollateral,
   validateMaxDebt,
+  validateRoute,
   validateSlippage,
   validateUserBorrowed,
   validateUserCollateral,
@@ -26,7 +29,7 @@ export type BorrowMoreMutation = {
   debt: Decimal
   slippage: Decimal
   leverageEnabled: boolean
-}
+} & RouterMeta
 
 type CalculatedValues = {
   maxDebt: Decimal | undefined
@@ -48,15 +51,18 @@ const validateBorrowMoreFieldsForMarket = (
   userCollateral: Decimal | null | undefined,
   userBorrowed: Decimal | null | undefined,
   debt: Decimal | null | undefined,
+  route: RouterMeta['route'],
 ) => {
   skipWhen(!marketId, () => {
     if (!marketId) return
-    getBorrowMoreImplementationArgs(marketId, {
+    const [type] = getBorrowMoreImplementationArgs(marketId, {
       leverageEnabled,
       debt: debt ?? '0',
       userCollateral: userCollateral ?? '0',
       userBorrowed: userBorrowed ?? '0',
+      route,
     })
+    validateRoute(route, !!debt && isRouterMetaRequired(type))
   })
 }
 
@@ -98,6 +104,7 @@ export const borrowMoreValidationGroup = <IChainId extends number>(
     userAddress,
     slippage,
     leverageEnabled,
+    route,
   }: BorrowMoreParams<IChainId>,
   {
     leverageRequired = false,
@@ -117,7 +124,7 @@ export const borrowMoreValidationGroup = <IChainId extends number>(
   validateUserBorrowed(userBorrowed)
   validateDebt(debt, debtRequired)
   validateMaxDebt(debt, maxDebt, maxDebtRequired)
-  validateBorrowMoreFieldsForMarket(marketId, leverageEnabled, userCollateral, userBorrowed, debt)
+  validateBorrowMoreFieldsForMarket(marketId, leverageEnabled, userCollateral, userBorrowed, debt, route)
   validateSlippage(slippage)
   validateLeverageEnabled(leverageEnabled, leverageRequired)
   validateLeverageSupported(marketId, leverageRequired)

@@ -1,3 +1,4 @@
+import type { RouterMeta } from '@/llamalend/llamalend.types'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type FieldsOf } from '@ui-kit/lib'
 import type { UserMarketQuery } from '@ui-kit/lib/model'
@@ -16,7 +17,7 @@ export type RepayQuery<T = IChainId> = CollateralQuery<T> & {
   stateCollateral: Decimal
   userBorrowed: Decimal
   slippage: Decimal
-}
+} & RouterMeta
 
 export type RepayHealthQuery<T = IChainId> = RepayQuery<T> & HealthQuery
 export type RepayIsFullQuery<T = IChainId> = RepayQuery<T> & HealthQuery

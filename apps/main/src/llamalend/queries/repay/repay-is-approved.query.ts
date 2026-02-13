@@ -16,6 +16,7 @@ export const { useQuery: useRepayIsApproved, fetchQuery: fetchRepayIsApproved } 
     userBorrowed = '0',
     userAddress,
     isFull,
+    route,
   }: RepayIsApprovedParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
@@ -24,6 +25,7 @@ export const { useQuery: useRepayIsApproved, fetchQuery: fetchRepayIsApproved } 
       { userCollateral },
       { userBorrowed },
       { isFull },
+      { route },
     ] as const,
   queryFn: async ({
     marketId,
@@ -32,11 +34,14 @@ export const { useQuery: useRepayIsApproved, fetchQuery: fetchRepayIsApproved } 
     userBorrowed,
     isFull,
     userAddress,
+    route,
   }: RepayIsFullQuery): Promise<boolean> => {
     const useFullRepay = isFull && !+stateCollateral && !+userCollateral
     if (useFullRepay) return await getLlamaMarket(marketId).fullRepayIsApproved(userAddress)
-    const [type, impl] = getRepayImplementation(marketId, { userCollateral, stateCollateral, userBorrowed })
+    const [type, impl] = getRepayImplementation(marketId, { userCollateral, stateCollateral, userBorrowed, route })
     switch (type) {
+      case 'zapV2':
+        return await impl.repayIsApproved({ userCollateral, userBorrowed })
       case 'V1':
       case 'V2':
         return await impl.repayIsApproved(userCollateral, userBorrowed)

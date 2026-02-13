@@ -11,6 +11,7 @@ export const { useQuery: useRepayIsAvailable } = queryFactory({
     userCollateral = '0',
     userBorrowed = '0',
     userAddress,
+    route,
   }: RepayParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
@@ -18,6 +19,7 @@ export const { useQuery: useRepayIsAvailable } = queryFactory({
       { stateCollateral },
       { userCollateral },
       { userBorrowed },
+      { route },
     ] as const,
   queryFn: async ({
     chainId,
@@ -26,14 +28,22 @@ export const { useQuery: useRepayIsAvailable } = queryFactory({
     userCollateral,
     userBorrowed,
     userAddress,
+    route,
   }: RepayQuery): Promise<boolean> => {
-    const [type, impl] = getRepayImplementation(marketId, { userCollateral, stateCollateral, userBorrowed })
+    const [type, impl, args] = getRepayImplementation(marketId, {
+      userCollateral,
+      stateCollateral,
+      userBorrowed,
+      route,
+    })
     switch (type) {
+      case 'zapV2':
+        return await impl.repayIsAvailable(...args)
       case 'V1':
       case 'V2':
-        return await impl.repayIsAvailable(stateCollateral, userCollateral, userBorrowed, userAddress)
+        return await impl.repayIsAvailable(...args, userAddress)
       case 'deleverage':
-        return await impl.isAvailable(stateCollateral, userAddress)
+        return await impl.isAvailable(...args, userAddress)
       case 'unleveraged':
         // For unleveraged markets, repayment is available when user has debt
         return !!getUserDebtFromQueryCache({ chainId, marketId, userAddress })

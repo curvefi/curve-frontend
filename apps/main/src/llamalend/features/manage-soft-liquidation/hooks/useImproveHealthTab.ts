@@ -23,6 +23,7 @@ export function useImproveHealthTab(params: MarketParams): ImproveHealthProps {
         userBorrowed: debt,
         isFull: false, // todo: implement full repays
         slippage: SLIPPAGE_PRESETS.STABLE,
+        route: undefined,
       })
     },
     [mutate],

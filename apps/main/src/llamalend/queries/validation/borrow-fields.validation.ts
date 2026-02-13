@@ -1,7 +1,9 @@
-import { enforce, test, skipWhen } from 'vest'
+import { enforce, skipWhen, test } from 'vest'
+import { isAddress, isHex } from 'viem'
 import { PRESET_RANGES } from '@/llamalend/constants'
 import { getLlamaMarket, hasLeverage, hasLeverageValue } from '@/llamalend/llama.utils'
 import { Decimal } from '@ui-kit/utils'
+import type { RouteOption } from '@ui-kit/widgets/RouteProvider'
 
 export const validateUserBorrowed = (userBorrowed: Decimal | null | undefined) => {
   test('userBorrowed', 'Borrow amount must be a non-negative number', () => {
@@ -77,6 +79,25 @@ export const validateLeverageValuesSupported = (marketId: string | null | undefi
     test('marketId', 'Market does not support leverage values', () => {
       const market = getLlamaMarket(marketId!)
       enforce(hasLeverageValue(market)).isTruthy()
+    })
+  })
+}
+
+export const validateRoute = (route: RouteOption | null | undefined, isRequired: boolean) => {
+  skipWhen(!isRequired && !route, () => {
+    test('route', 'Route is required', () => {
+      enforce(route).isTruthy()
+    })
+    skipWhen(!route, () => {
+      test('route.routerAddress', 'Router address must be a valid address', () => {
+        enforce(isAddress(route!.routerAddress)).isTruthy()
+      })
+      test('route.calldata', 'Calldata must be valid hex', () => {
+        enforce(isHex(route!.calldata)).isTruthy()
+      })
+      test('route.toAmountOutput', 'Route output amount is required', () => {
+        enforce(route!.toAmountOutput).isTruthy()
+      })
     })
   })
 }

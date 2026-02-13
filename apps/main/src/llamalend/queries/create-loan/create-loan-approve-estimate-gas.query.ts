@@ -30,6 +30,8 @@ const { useQuery: useCreateLoanApproveEstimateGas } = queryFactory({
   }: CreateLoanApproveEstimateGasQuery) => {
     const [type, impl] = getCreateLoanImplementation(marketId, leverageEnabled)
     switch (type) {
+      case 'zapV2':
+        return await impl.estimateGas.createLoanApprove({ userCollateral, userBorrowed })
       case 'V1':
       case 'V2':
         return await impl.estimateGas.createLoanApprove(userCollateral, userBorrowed)

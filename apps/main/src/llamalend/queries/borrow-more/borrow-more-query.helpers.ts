@@ -2,6 +2,7 @@ import { getLlamaMarket, hasLeverage, hasV2Leverage } from '@/llamalend/llama.ut
 import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import type { BorrowMoreQuery } from '@/llamalend/queries/validation/borrow-more.validation'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
+import { parseRoute } from '@ui-kit/widgets/RouteProvider'
 
 /**
  * Determines the appropriate borrow more implementation based on market type.
@@ -19,7 +20,9 @@ export function getBorrowMoreImplementation(
       ? (['V2', market.leverageV2] as const)
       : (['unleveraged', market] as const)
     : leverageEnabled && hasLeverage(market)
-      ? (['V1', market.leverage] as const)
+      ? market.leverageZapV2.hasLeverage()
+        ? (['zapV2', market.leverageZapV2] as const)
+        : (['V1', market.leverage] as const)
       : (['unleveraged', market] as const)
 }
 
@@ -35,7 +38,8 @@ export function getBorrowMoreImplementationArgs(
     userBorrowed,
     debt,
     leverageEnabled,
-  }: Pick<BorrowMoreQuery, 'userCollateral' | 'userBorrowed' | 'debt'> & {
+    route,
+  }: Pick<BorrowMoreQuery, 'userCollateral' | 'userBorrowed' | 'debt' | 'route'> & {
     leverageEnabled?: boolean | null
   },
 ) {
@@ -43,6 +47,10 @@ export function getBorrowMoreImplementationArgs(
   if (type === 'unleveraged') {
     if (+userBorrowed) throw new Error(`Invalid userBorrowed for unleveraged borrow more: ${userBorrowed}`)
     return [type, impl, [userCollateral, debt]] as const
+  }
+  if (type === 'zapV2') {
+    const routerArgs = { userCollateral, userBorrowed, dDebt: debt, debt, ...parseRoute(route) }
+    return [type, impl, [routerArgs]] as const
   }
   return [type, impl, [userCollateral, userBorrowed, debt]] as const
 }
@@ -55,7 +63,7 @@ export function getBorrowMoreImplementationArgs(
 export const isLeverageBorrowMore = (
   marketId: string | LlamaMarketTemplate | null | undefined,
   leverageEnabled: boolean | null | undefined,
-) => !!marketId && ['V1', 'V2'].includes(getBorrowMoreImplementation(marketId, leverageEnabled)[0])
+) => !!marketId && ['V1', 'V2', 'zapV2'].includes(getBorrowMoreImplementation(marketId, leverageEnabled)[0])
 
 /**
  * Checks whether leverage may be enabled for a given market.

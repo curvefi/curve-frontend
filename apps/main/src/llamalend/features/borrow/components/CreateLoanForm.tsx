@@ -28,12 +28,20 @@ import { LoanPresetSelector } from './LoanPresetSelector'
  * Hook to call the parent form to keep in sync with the chart and other components
  */
 function useFormSync(
-  { userCollateral, range, debt, userBorrowed, slippage, leverageEnabled }: CreateLoanFormExternalFields,
+  {
+    userCollateral,
+    range,
+    debt,
+    userBorrowed,
+    slippage,
+    leverageEnabled,
+    route,
+  }: CreateLoanFormExternalFields,
   onUpdate: OnCreateLoanFormUpdate,
 ) {
   useEffect(() => {
-    void onUpdate({ userCollateral, debt, range, userBorrowed, slippage, leverageEnabled })
-  }, [onUpdate, userCollateral, debt, range, userBorrowed, slippage, leverageEnabled])
+    void onUpdate({ userCollateral, debt, range, userBorrowed, slippage, leverageEnabled, route })
+  }, [onUpdate, userCollateral, debt, range, userBorrowed, slippage, leverageEnabled, route])
 }
 
 /**

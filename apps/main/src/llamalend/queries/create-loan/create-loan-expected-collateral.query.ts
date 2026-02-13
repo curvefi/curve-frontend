@@ -1,6 +1,7 @@
 import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/create-loan-query.helpers'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { assert, decimal, Decimal } from '@ui-kit/utils'
+import { parseRoute } from '@ui-kit/widgets/RouteProvider'
 import type { CreateLoanDebtParams, CreateLoanDebtQuery } from '../../features/borrow/types'
 import { createLoanQueryValidationSuite } from '../validation/borrow.validation'
 
@@ -47,6 +48,7 @@ export const { useQuery: useCreateLoanExpectedCollateral, queryKey: createLoanEx
       slippage,
       leverageEnabled,
       maxDebt,
+      route,
     }: CreateLoanDebtParams) =>
       [
         ...rootKeys.market({ chainId, marketId }),
@@ -57,6 +59,7 @@ export const { useQuery: useCreateLoanExpectedCollateral, queryKey: createLoanEx
         { slippage },
         { leverageEnabled },
         { maxDebt },
+        { route },
       ] as const,
     queryFn: async ({
       marketId,
@@ -65,9 +68,14 @@ export const { useQuery: useCreateLoanExpectedCollateral, queryKey: createLoanEx
       debt,
       slippage,
       leverageEnabled,
+      route,
     }: CreateLoanDebtQuery): Promise<CreateLoanExpectedCollateralResult> => {
       const [type, impl] = getCreateLoanImplementation(marketId, leverageEnabled)
       switch (type) {
+        case 'zapV2':
+          return convertNumbers(
+            await impl.createLoanExpectedCollateral({ userCollateral, userBorrowed, debt, ...parseRoute(route) }),
+          )
         case 'V1':
         case 'V2':
           return convertNumbers(await impl.createLoanExpectedCollateral(userCollateral, userBorrowed, debt, +slippage))
