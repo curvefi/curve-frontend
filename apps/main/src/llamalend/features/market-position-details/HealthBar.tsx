@@ -1,6 +1,7 @@
 import { Stack, type SxProps, Typography, useTheme } from '@mui/material'
 import { t } from '@ui-kit/lib/i18n'
 import { LinearProgress } from '@ui-kit/shared/ui/LinearProgress'
+import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { getHealthTrackColor } from './'
 
 type HealthBarProps = {
@@ -55,22 +56,21 @@ export const HealthBar = ({ health, softLiquidation, small, sx }: HealthBarProps
           width: '100%',
           height: BAR_HEIGHT,
           backgroundColor: (t) => t.design.Color.Neutral[300],
-          transition: 'background-color 0.3s ease-in-out',
+          transition: `background-color ${TransitionFunction}`,
         }}
       >
-        {/* Bar fills 100% when health <= 0 (hard liquidation) to indicate critical state. Always rendered for CSS transition. */}
         <Stack
           sx={{
             width: health != null ? `${health <= 0 ? 100 : clampPercentage(health)}%` : '0%',
             height: '100%',
             backgroundColor: health != null ? getHealthTrackColor({ health, softLiquidation, theme }) : 'transparent',
-            transition: 'width 0.3s ease-in-out, background-color 0.3s ease-in-out',
+            transition: `width ${TransitionFunction}, background-color ${TransitionFunction}`,
           }}
         />
         {/**
          * Text color logic for health bar label:
          *
-         * - health <= 0: Bar is 100% red (hard liquidation), text is fully white
+         * - health <= 0: Bar is 100% red (hard liquidation risk), text is fully white
          * - 0 < health < 5: Split-color effect - black base with white overlay clipped to bar width.
          *   Two identical labels are stacked; the overlay uses overflow:hidden to show white
          *   text over the red bar and black text over the gray background.

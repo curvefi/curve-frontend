@@ -17,6 +17,7 @@ export const HealthDetails = ({
 }) => {
   const theme = useTheme()
   const showPageHeader = useIntegratedLlamaHeader()
+
   return (
     <Stack>
       <Stack gap={Spacing.xs}>
@@ -38,12 +39,7 @@ export const HealthDetails = ({
         >
           <Typography variant="bodyXsRegular" component="p">
             {t`Health determines a position liquidation. It is not directly correlated to the price of the collateral. `}
-            <Typography
-              variant="bodyXsRegular"
-              component="span"
-              color="danger"
-              sx={{ fontWeight: (t) => t.typography.fontWeightBold }}
-            >
+            <Typography variant="bodyXsRegular" component="span" color="danger" fontWeight="bold">
               {t`Liquidation may occur when health reaches 0.`}
             </Typography>
           </Typography>
