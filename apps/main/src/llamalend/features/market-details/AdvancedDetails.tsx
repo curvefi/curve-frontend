@@ -36,11 +36,7 @@ export const AdvancedDetails = ({ collateral, availableLiquidity, maxLeverage, m
         gap={3}
         sx={{
           padding: Spacing.md,
-          gridTemplateColumns: '1fr 1fr',
-          // 550px
-          '@media (min-width: 33.125rem)': {
-            gridTemplateColumns: '1fr 1fr 1fr 1fr',
-          },
+          gridTemplateColumns: { mobile: 'repeat(2, 1fr)', tablet: 'repeat(4, 1fr)' },
         }}
       >
         <Metric

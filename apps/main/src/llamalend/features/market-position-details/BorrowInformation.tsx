@@ -20,7 +20,7 @@ import {
   type CollateralLoss,
 } from './'
 
-const { Spacing } = SizesAndSpaces
+const { Spacing, MaxWidth } = SizesAndSpaces
 
 const dollarUnitOptions = {
   abbreviate: false,
@@ -62,14 +62,13 @@ export const BorrowInformation = ({
       <Stack
         display="grid"
         gap={3}
-        sx={(theme) => ({
+        sx={{
           padding: Spacing.md,
           gridTemplateColumns: '1fr 1fr',
-          // 550px
-          [theme.breakpoints.up(550)]: {
-            gridTemplateColumns: showPageHeader ? '1fr 1fr 1fr' : `1fr 1fr 1fr 1fr`,
+          [`@media (min-width: ${MaxWidth.legacyMarketAndBorrowDetails})`]: {
+            gridTemplateColumns: showPageHeader ? '1fr 1fr 1fr' : '1fr 1fr 1fr 1fr',
           },
-        })}
+        }}
       >
         {!showPageHeader && (
           <Metric

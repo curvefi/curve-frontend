@@ -20,7 +20,7 @@ import {
   type MarketDetailsProps,
 } from './'
 
-const { Spacing } = SizesAndSpaces
+const { Spacing, MaxWidth } = SizesAndSpaces
 
 const formatLiquidity = (value: number) =>
   `${formatNumber(abbreviateNumber(value), { ...FORMAT_OPTIONS.USD })}${scaleSuffix(value).toUpperCase()}`
@@ -54,8 +54,7 @@ export const MarketDetails = ({
         sx={{
           padding: Spacing.md,
           gridTemplateColumns: '1fr 1fr',
-          // 550px
-          '@media (min-width: 33.125rem)': {
+          [`@media (min-width: ${MaxWidth.legacyMarketAndBorrowDetails})`]: {
             gridTemplateColumns: '1fr 1fr 1fr 1fr',
           },
         }}
