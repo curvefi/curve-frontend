@@ -79,7 +79,7 @@ export const BorrowInformation = ({
               valueOptions={{ unit: 'dollar' }}
               notional={
                 collateralValue?.collateral?.value != null
-                  ? `${formatNumber(collateralValue.collateral.value, { abbreviate: true })} ${collateralValue.collateral.symbol}${collateralValue.borrow?.value && collateralValue.borrow.value > 0 ? ` + ${formatNumber(collateralValue.borrow.value, { abbreviate: true })} ${collateralValue.borrow.symbol}` : ''}`
+                  ? `${formatNumber(collateralValue.collateral.value, { abbreviate: true })} ${collateralValue.collateral.symbol}${collateralValue.borrow?.value != null && collateralValue.borrow.value > 0 ? ` + ${formatNumber(collateralValue.borrow.value, { abbreviate: true })} ${collateralValue.borrow.symbol}` : ''}`
                   : undefined
               }
               valueTooltip={{
@@ -206,7 +206,7 @@ export const BorrowInformation = ({
               valueOptions={{ unit: 'dollar' }}
               notional={
                 collateralValue?.collateral?.value != null
-                  ? `${formatNumber(collateralValue.collateral.value, { abbreviate: true })} ${collateralValue.collateral.symbol}${collateralValue.borrow?.value && collateralValue.borrow.value > 0 ? ` + ${formatNumber(collateralValue.borrow.value, { abbreviate: true })} ${collateralValue.borrow.symbol}` : ''}`
+                  ? `${formatNumber(collateralValue.collateral.value, { abbreviate: true })} ${collateralValue.collateral.symbol}${collateralValue.borrow?.value != null && collateralValue.borrow.value > 0 ? ` + ${formatNumber(collateralValue.borrow.value, { abbreviate: true })} ${collateralValue.borrow.symbol}` : ''}`
                   : undefined
               }
               valueTooltip={{
