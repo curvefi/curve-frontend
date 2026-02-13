@@ -23,12 +23,12 @@ export const HealthDetails = ({
         <Stack direction="row" alignItems="flex-end" gap={Spacing.md.mobile}>
           <Metric
             label={t`Health`}
-            value={Number(value)}
+            value={value != null ? Number(value) : null}
             loading={loading}
             valueOptions={{ unit: 'none', color: getHealthValueColor({ health: decimal(value), theme }) }}
             size="medium"
           />
-          <HealthBar health={Number(value)} softLiquidation={softLiquidation} sx={{ flex: 1 }} />
+          <HealthBar health={value != null ? Number(value) : null} softLiquidation={softLiquidation} sx={{ flex: 1 }} />
         </Stack>
         <Stack
           flexDirection={{ mobile: 'column', tablet: 'row' }}

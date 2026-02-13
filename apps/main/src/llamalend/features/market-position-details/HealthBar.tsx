@@ -56,12 +56,12 @@ export const HealthBar = ({ health, softLiquidation, small, sx }: HealthBarProps
           transition: 'background-color 0.3s ease-in-out',
         }}
       >
-        {/* Bar fills 100% when health <= 0 (hard liquidation) to indicate critical state */}
+        {/* Bar fills 100% when health <= 0 (hard liquidation) to indicate critical state. Always rendered for CSS transition. */}
         <Stack
           sx={{
-            width: `${health != null && health <= 0 ? 100 : clampPercentage(health)}%`,
+            width: health != null ? `${health <= 0 ? 100 : clampPercentage(health)}%` : '0%',
             height: '100%',
-            backgroundColor: getHealthTrackColor({ health, softLiquidation, theme }),
+            backgroundColor: health != null ? getHealthTrackColor({ health, softLiquidation, theme }) : 'transparent',
             transition: 'width 0.3s ease-in-out, background-color 0.3s ease-in-out',
           }}
         />
@@ -74,22 +74,24 @@ export const HealthBar = ({ health, softLiquidation, small, sx }: HealthBarProps
          *   text over the red bar and black text over the gray background.
          * - health >= 5: Single label in warning color
          */}
-        <Typography
-          variant="bodyXsRegular"
-          sx={{
-            position: 'absolute',
-            bottom: '2px',
-            left: '2px',
-            color: (t) =>
-              health != null && health <= 0
-                ? t.design.Text.TextColors.FilledFeedback.Alert.Primary // Full white when bar is 100% red
-                : health != null && health < 5
-                  ? t.design.Text.TextColors.Primary // Black base for split effect
-                  : t.design.Text.TextColors.FilledFeedback.Warning.Primary,
-          }}
-        >
-          {insetLabelText[getHealthLevel(health)]}
-        </Typography>
+        {health != null && (
+          <Typography
+            variant="bodyXsRegular"
+            sx={{
+              position: 'absolute',
+              bottom: '2px',
+              left: '2px',
+              color: (t) =>
+                health <= 0
+                  ? t.design.Text.TextColors.FilledFeedback.Alert.Primary // Full white when bar is 100% red
+                  : health < 5
+                    ? t.design.Text.TextColors.Primary // Black base for split effect
+                    : t.design.Text.TextColors.FilledFeedback.Warning.Primary,
+            }}
+          >
+            {insetLabelText[getHealthLevel(health)]}
+          </Typography>
+        )}
         {health != null && health < 5 && health > 0 && (
           <Stack
             sx={{
