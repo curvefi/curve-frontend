@@ -25,11 +25,13 @@ export const parseMarket = (x: Responses.GetMarketsResponse['data'][number]): Mo
     symbol: x.collateral_token.symbol,
     address: x.collateral_token.address,
     rebasingYield: x.collateral_token.rebasing_yield,
+    rebasingYieldApr: x.collateral_token.rebasing_yield_apr,
   },
   stablecoinToken: {
     symbol: x.stablecoin_token.symbol,
     address: x.stablecoin_token.address,
     rebasingYield: x.stablecoin_token.rebasing_yield,
+    rebasingYieldApr: x.stablecoin_token.rebasing_yield_apr,
   },
   fees: {
     pending: x.pending_fees,
@@ -68,11 +70,13 @@ export const parseSnapshot = (x: Responses.GetSnapshotsResponse['data'][number])
     symbol: x.collateral_token.symbol,
     address: x.collateral_token.address,
     rebasingYield: x.collateral_token.rebasing_yield,
+    rebasingYieldApr: x.collateral_token.rebasing_yield_apr,
   },
   stablecoinToken: {
     symbol: x.stablecoin_token.symbol,
     address: x.stablecoin_token.address,
     rebasingYield: x.stablecoin_token.rebasing_yield,
+    rebasingYieldApr: x.stablecoin_token.rebasing_yield_apr,
   },
   maxLtv: x.max_ltv,
 })

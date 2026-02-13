@@ -25,11 +25,13 @@ export type GetMarketsResponse = {
       symbol: string
       address: Address
       rebasing_yield: number | null
+      rebasing_yield_apr: number | null
     }
     stablecoin_token: {
       symbol: string
       address: Address
       rebasing_yield: number | null
+      rebasing_yield_apr: number | null
     }
     created_at: string
     max_ltv: number
@@ -68,11 +70,13 @@ export type GetSnapshotsResponse = {
       symbol: string
       address: string
       rebasing_yield: number
+      rebasing_yield_apr: number
     }
     stablecoin_token: {
       symbol: string
       address: string
       rebasing_yield: number
+      rebasing_yield_apr: number
     }
     max_ltv: number
   }[]

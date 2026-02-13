@@ -44,11 +44,13 @@ export const parseMarket = (x: Responses.GetMarketsResponse['data'][number]): Mo
     symbol: x.collateral_token.symbol,
     address: x.collateral_token.address,
     rebasingYield: x.collateral_token.rebasing_yield,
+    rebasingYieldApr: x.collateral_token.rebasing_yield_apr,
   },
   borrowedToken: {
     symbol: x.borrowed_token.symbol,
     address: x.borrowed_token.address,
     rebasingYield: x.borrowed_token.rebasing_yield,
+    rebasingYieldApr: x.borrowed_token.rebasing_yield_apr,
   },
   leverage: x.leverage,
   extraRewardApr: x.extra_reward_apr.map((y) => ({
@@ -105,11 +107,13 @@ export const parseSnapshot = (x: Responses.GetSnapshotsResponse['data'][number])
     symbol: x.collateral_token.symbol,
     address: x.collateral_token.address,
     rebasingYield: x.collateral_token.rebasing_yield,
+    rebasingYieldApr: x.collateral_token.rebasing_yield_apr,
   },
   borrowedToken: {
     symbol: x.borrowed_token.symbol,
     address: x.borrowed_token.address,
     rebasingYield: x.borrowed_token.rebasing_yield,
+    rebasingYieldApr: x.borrowed_token.rebasing_yield_apr,
   },
   maxLtv: x.max_ltv,
 })

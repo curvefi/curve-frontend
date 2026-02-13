@@ -15,9 +15,10 @@ export type Market = {
   rate: number
   // borrowApy = rate * 100
   borrowApy: number
-  // borrowTotalApy = borrowApy - collateral_yield_apy
+  // @deprecated compute this using borrowApy and collateralToken.rebasingYield
   borrowTotalApy: number
   borrowApr: number
+  // @deprecated compute this using borrowApr and collateralToken.rebasingYieldApr
   borrowTotalApr: number
   apyLend: number
   aprLend: number
@@ -47,11 +48,13 @@ export type Market = {
     symbol: string
     address: Address
     rebasingYield: number | null
+    rebasingYieldApr: number | null
   }
   borrowedToken: {
     symbol: string
     address: Address
     rebasingYield: number | null
+    rebasingYieldApr: number | null
   }
   leverage: number
   extraRewardApr: {
@@ -104,11 +107,13 @@ export type Snapshot = {
     symbol: string
     address: Address
     rebasingYield: number | null
+    rebasingYieldApr: number | null
   }
   borrowedToken: {
     symbol: string
     address: Address
     rebasingYield: number | null
+    rebasingYieldApr: number | null
   }
   timestamp: Date
   maxLtv: number
