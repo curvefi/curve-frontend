@@ -93,20 +93,12 @@ const LiquidationAlert = ({ type }: { type: 'soft' | 'hard' }) => {
   const { title, description } = alerts[type]
 
   return (
-    <Stack
-      sx={{
-        paddingTop: Spacing.md,
-        paddingRight: Spacing.md,
-        paddingLeft: Spacing.md,
-      }}
-    >
-      <Alert variant="filled" severity="error">
-        <Stack display="flex" flexDirection="column">
-          <Typography variant="bodySBold">{title}</Typography>
-          <Typography variant="bodyXsRegular">{description}</Typography>
-        </Stack>
-      </Alert>
-    </Stack>
+    <Alert variant="outlined" severity="error">
+      <Stack display="flex" flexDirection="column">
+        <Typography variant="bodySBold">{title}</Typography>
+        <Typography variant="bodyXsRegular">{description}</Typography>
+      </Stack>
+    </Alert>
   )
 }
 
@@ -123,7 +115,7 @@ export const BorrowPositionDetails = ({
   totalDebt,
   collateralLoss,
 }: BorrowPositionDetailsProps) => (
-  <Stack padding={Spacing.md}>
+  <Stack padding={Spacing.md} gap={Spacing.md}>
     {liquidationAlert.softLiquidation && <LiquidationAlert type="soft" />}
     {liquidationAlert.hardLiquidation && <LiquidationAlert type="hard" />}
     <Stack
