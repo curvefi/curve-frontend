@@ -122,8 +122,8 @@ export const useLoanPositionDetails = ({
       hardLiquidation: userStatus?.colorKey === 'hard_liquidation',
     },
     health: {
-      value: Number(healthMode.percent),
-      loading: healthMode.percent == null || userLoanDetailsLoading || !isHydrated,
+      value: healthMode.percent !== '' ? Number(healthMode.percent) : null,
+      loading: healthMode.percent === '' || userLoanDetailsLoading || !isHydrated,
     },
     borrowRate: {
       rate: borrowApr,
