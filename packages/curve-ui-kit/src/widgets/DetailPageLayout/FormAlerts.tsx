@@ -1,5 +1,3 @@
-import { getErrorMessage } from '@/llamalend/helpers'
-import type { INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Hex } from '@curvefi/prices-api'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
@@ -13,15 +11,15 @@ import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Query } from '@ui-kit/types/util'
-import { formatPercent } from '@ui-kit/utils'
+import { formatPercent, getErrorMessage } from '@ui-kit/utils'
 
 /** Threshold above which price impact is considered high and warrants a warning */
 export const HIGH_PRICE_IMPACT_THRESHOLD = 5
 
 export type FormErrors<Field extends string> = readonly (readonly [Field, string])[]
 
-export type LoanFormAlertProps<Field extends string> = {
-  network: BaseConfig<INetworkName>
+export type FormAlertProps<Field extends string> = {
+  network: BaseConfig<string>
   isSuccess: boolean
   error: Error | null
   txHash?: Hex
@@ -32,7 +30,7 @@ export type LoanFormAlertProps<Field extends string> = {
 
 const { Spacing } = SizesAndSpaces
 
-export const LoanFormAlerts = <Field extends string>({
+export const FormAlerts = <Field extends string>({
   network,
   isSuccess,
   error,
@@ -40,13 +38,13 @@ export const LoanFormAlerts = <Field extends string>({
   formErrors,
   handledErrors,
   successTitle,
-}: LoanFormAlertProps<Field>) => {
+}: FormAlertProps<Field>) => {
   const [isReportOpen, openReportModal, closeReportModal] = useSwitch(false)
   const unhandledErrors = formErrors.filter(([field]) => !handledErrors.includes(field))
   return (
     <>
       {isSuccess && (
-        <Alert severity="success" data-testid={'loan-form-success-alert'}>
+        <Alert variant="outlined" severity="success" data-testid={'loan-form-success-alert'}>
           <AlertTitle>{successTitle}</AlertTitle>
           {txHash && (
             <Link rel="noreferrer" target="_blank" href={scanTxPath(network, txHash)}>
@@ -56,7 +54,7 @@ export const LoanFormAlerts = <Field extends string>({
         </Alert>
       )}
       {unhandledErrors.length > 0 && (
-        <Alert severity="warning" data-testid={'loan-form-errors'}>
+        <Alert variant="outlined" severity="warning" data-testid={'loan-form-errors'}>
           <AlertTitle>{t`Please correct the errors`}</AlertTitle>
           {unhandledErrors.map(([field, message]) => (
             <Box key={[field, message].join(': ')}>{message}</Box>
@@ -65,6 +63,7 @@ export const LoanFormAlerts = <Field extends string>({
       )}
       {error && (
         <Alert
+          variant="outlined"
           severity="error"
           sx={{ overflowWrap: 'anywhere' /* break anywhere as there is often JSON in the error breaking the design */ }}
           data-testid={'loan-form-error'}

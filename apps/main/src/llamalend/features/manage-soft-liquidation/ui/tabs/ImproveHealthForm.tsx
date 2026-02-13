@@ -3,7 +3,6 @@ import { useRepayForm } from '@/llamalend/features/manage-loan/hooks/useRepayFor
 import { hasLeverage } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import type { RepayOptions } from '@/llamalend/mutations/repay.mutation'
-import { LoanFormAlerts } from '@/llamalend/widgets/action-card/LoanFormAlerts'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { notFalsy } from '@curvefi/prices-api/objects.util'
@@ -15,6 +14,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { joinButtonText } from '@ui-kit/utils'
 import { updateForm } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
+import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import { AlertRepayDebtToIncreaseHealth } from '../alerts/AlertRepayDebtToIncreaseHealth'
 import { ButtonGetCrvUsd } from '../ButtonGetCrvUsd'
 
@@ -110,7 +110,7 @@ export const ImproveHealthForm = ({
         <ButtonGetCrvUsd />
       </Stack>
 
-      <LoanFormAlerts
+      <FormAlerts
         isSuccess={isRepaid}
         error={repayError}
         txHash={txHash}

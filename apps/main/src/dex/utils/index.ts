@@ -1,5 +1,4 @@
 import { zeroAddress } from 'viem'
-import type { AlertFormErrorKey } from '@/dex/components/AlertFormError'
 import type { ChainId, Token } from '@/dex/types/main.types'
 import type { TokenOption } from '@ui-kit/features/select-token'
 import type { Address } from '@ui-kit/utils'
@@ -22,21 +21,6 @@ export function isHighSlippage(slippage: number, maxSlippage: string) {
 
 export function isBonus(slippage: number) {
   return Number(slippage) > 0
-}
-
-export function getErrorMessage(error: Error, errorMessage: AlertFormErrorKey | string) {
-  if (error?.message) {
-    const message = error.message.toString()
-    if (message.includes('Bad swap type')) {
-      return 'error-swap-not-available'
-    } else if (message.includes('user rejected action')) {
-      return 'error-user-rejected-action'
-    } else {
-      return error.message
-    }
-  } else {
-    return errorMessage
-  }
 }
 
 export function fulfilledValue<T>(result: PromiseSettledResult<T>) {

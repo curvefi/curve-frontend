@@ -4,6 +4,8 @@ import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { handleBreakpoints } from '@ui-kit/themes/basic-theme'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { applySxProps, type SxProps } from '@ui-kit/utils'
+import { TokenChainIcon } from './TokenChainIcon'
+import { WithWrapper } from './WithWrapper'
 
 const DEFAULT_IMAGE = '/images/default-crypto.png'
 
@@ -29,9 +31,16 @@ export type TokenIconProps = {
   address?: string | null
   /** Whether the icon should appear disabled (greyed out) */
   disabled?: boolean
+  /** Whether the chain icon should be displayed */
+  showChainIcon?: boolean
   sx?: SxProps
 }
 
+/**
+ * Displays a token icon with optional blockchain chain badge overlay.
+ * Uses WithWrapper to conditionally wrap the icon in a relative-positioned Box only when
+ * the chain icon is shown, preventing absolute positioning conflicts with other components.
+ */
 export const TokenIcon = ({
   className = '',
   blockchainId = '',
@@ -39,43 +48,53 @@ export const TokenIcon = ({
   size = DEFAULT_SIZE,
   address,
   disabled,
+  showChainIcon = false,
   sx,
 }: TokenIconProps) => (
-  <Tooltip title={tooltip} placement="top">
-    <Box
-      component="img"
-      data-testid={`token-icon-${tooltip || address}`}
-      className={`${className}`}
-      alt={tooltip}
-      onError={({ currentTarget }) => {
-        currentTarget.src = DEFAULT_IMAGE
-      }}
-      src={address ? `${getImageBaseUrl(blockchainId ?? '')}${address.toLowerCase()}.png` : DEFAULT_IMAGE}
-      loading="lazy"
-      sx={applySxProps(
-        (theme) => ({
-          borderRadius: '50%',
-          // The original 'sm' size with a 400 breakpoint is a remainder from legacy code.
-          // I didn't want to break the existing interface as it's used everywhere.
-          ...(size === 'sm' && {
-            width: '1.75rem',
-            height: '1.75rem',
-            [theme.breakpoints.down(400)]: {
-              width: '1.5rem',
-              height: '1.5rem',
-            },
+  <WithWrapper
+    shouldWrap={showChainIcon}
+    Wrapper={Box}
+    sx={{
+      position: 'relative', // to position the chain icon on top of the token icon
+    }}
+  >
+    <Tooltip title={tooltip} placement="top">
+      <Box
+        component="img"
+        data-testid={`token-icon-${tooltip || address}`}
+        className={`${className}`}
+        alt={tooltip}
+        onError={({ currentTarget }) => {
+          currentTarget.src = DEFAULT_IMAGE
+        }}
+        src={address ? `${getImageBaseUrl(blockchainId ?? '')}${address.toLowerCase()}.png` : DEFAULT_IMAGE}
+        loading="lazy"
+        sx={applySxProps(
+          (theme) => ({
+            borderRadius: '50%',
+            // The original 'sm' size with a 400 breakpoint is a remainder from legacy code.
+            // I didn't want to break the existing interface as it's used everywhere.
+            ...(size === 'sm' && {
+              width: '1.75rem',
+              height: '1.75rem',
+              [theme.breakpoints.down(400)]: {
+                width: '1.5rem',
+                height: '1.5rem',
+              },
+            }),
+            ...(size === 'mui-sm' && handleBreakpoints({ width: IconSize['sm'], height: IconSize['sm'] })),
+            ...(size === 'mui-md' && handleBreakpoints({ width: IconSize['md'], height: IconSize['md'] })),
+            ...(size === 'lg' && handleBreakpoints({ width: IconSize['lg'], height: IconSize['lg'] })),
+            ...(size === 'xl' && handleBreakpoints({ width: IconSize['xl'], height: IconSize['xl'] })),
           }),
-          ...(size === 'mui-sm' && handleBreakpoints({ width: IconSize['sm'], height: IconSize['sm'] })),
-          ...(size === 'mui-md' && handleBreakpoints({ width: IconSize['md'], height: IconSize['md'] })),
-          ...(size === 'lg' && handleBreakpoints({ width: IconSize['lg'], height: IconSize['lg'] })),
-          ...(size === 'xl' && handleBreakpoints({ width: IconSize['xl'], height: IconSize['xl'] })),
-        }),
-        sx,
-        disabled && {
-          opacity: 0.5,
-          filter: 'saturate(0)',
-        },
-      )}
-    />
-  </Tooltip>
+          sx,
+          disabled && {
+            opacity: 0.5,
+            filter: 'saturate(0)',
+          },
+        )}
+      />
+    </Tooltip>
+    {showChainIcon && <TokenChainIcon chain={blockchainId} />}
+  </WithWrapper>
 )

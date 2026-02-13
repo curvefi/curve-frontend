@@ -15,10 +15,10 @@ import {
   FnStepResponse,
   TransactionState,
 } from '@/dao/types/dao.types'
-import { getErrorMessage } from '@/dao/utils'
 import { shortenAccount } from '@ui/utils'
 import { notify, requireLib, useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
+import { getErrorMessage } from '@ui-kit/utils'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 import { invalidateLockerVecrvUser } from '../entities/locker-vecrv-user'
 

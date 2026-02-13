@@ -1,5 +1,4 @@
 import { cloneDeep } from 'lodash'
-import { getErrorMessage } from '@/llamalend/helpers'
 import {
   getIsUserCloseToLiquidation,
   getLiquidationStatus,
@@ -17,6 +16,7 @@ import type { TGas } from '@curvefi/llamalend-api/lib/interfaces'
 import PromisePool from '@supercharge/promise-pool'
 import { BN } from '@ui/utils'
 import { waitForTransaction, waitForTransactions } from '@ui-kit/lib/ethers'
+import { getErrorMessage } from '@ui-kit/utils'
 import { ROUTE_AGGREGATOR_LABELS, RouteAggregator } from '../constants'
 import { getLeverageV2RepayArgs, isHigherThanMaxSlippage } from '../utils/utilsLoan'
 
