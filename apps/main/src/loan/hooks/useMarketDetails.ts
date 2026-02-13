@@ -83,7 +83,7 @@ export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetails
       symbol: 'crvUSD',
       tokenAddress: CRVUSD_ADDRESS,
       usdRate: borrowedUsdRate ? Number(borrowedUsdRate) : null,
-      loading: borrowedUsdRateLoading || !isHydrated,
+      loading: borrowedUsdRateLoading || loanDetails?.loading || !isHydrated,
     },
     borrowRate: {
       rate: borrowApr,
@@ -98,7 +98,7 @@ export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetails
     },
     maxLeverage: {
       value: maxLeverage,
-      loading: isMarketMaxLeverageLoading || !isHydrated,
+      loading: !llamma || isMarketMaxLeverageLoading || !isHydrated,
     },
     availableLiquidity: {
       value: availableLiquidityValue,
