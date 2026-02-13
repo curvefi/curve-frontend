@@ -71,8 +71,18 @@ const oneLendingPool = (
     borrowed_balance: borrowedBalance,
     collateral_balance_usd: collateralBalanceUsd,
     borrowed_balance_usd: borrowedBalanceUsd,
-    collateral_token: { symbol: collateral.symbol, address: collateral.address, rebasing_yield: null },
-    borrowed_token: { symbol: borrowed.symbol, address: borrowed.address, rebasing_yield: null },
+    collateral_token: {
+      symbol: collateral.symbol,
+      address: collateral.address,
+      rebasing_yield: null,
+      rebasing_yield_apr: null,
+    },
+    borrowed_token: {
+      symbol: borrowed.symbol,
+      address: borrowed.address,
+      rebasing_yield: null,
+      rebasing_yield_apr: null,
+    },
     extra_reward_apr: [],
     created_at: oneDate({ maxDate: MARKET_CUTOFF_DATE }).toISOString(),
     max_ltv: oneFloat(60, 110), // between 60% and 110%

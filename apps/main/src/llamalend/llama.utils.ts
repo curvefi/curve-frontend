@@ -103,6 +103,8 @@ export const getTokens = (market: LlamaMarketTemplate) =>
         },
       }
 
+export const computeTotalRate = (rate: number, rebasingYield: number) => rate - rebasingYield
+
 /**
  * Calculates the loan-to-value ratio of a market.
  * @param debtAmount - The amount of debt in the market.

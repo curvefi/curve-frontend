@@ -5,6 +5,7 @@ import { DEFAULT_HEALTH_MODE } from '@/llamalend/constants'
 import type { BorrowPositionDetailsProps } from '@/llamalend/features/market-position-details'
 import { calculateRangeToLiquidation } from '@/llamalend/features/market-position-details/utils'
 import { DEFAULT_BORROW_TOKEN_SYMBOL, getHealthMode } from '@/llamalend/health.util'
+import { DAYS_BACK, useRateMetrics } from '@/llamalend/hooks/useRateMetrics'
 import { calculateLtv, hasV2Leverage } from '@/llamalend/llama.utils'
 import { useMarketRates } from '@/llamalend/queries/market-rates'
 import { useUserCurrentLeverage } from '@/llamalend/queries/user-current-leverage.query'
@@ -19,7 +20,6 @@ import { useCrvUsdSnapshots } from '@ui-kit/entities/crvusd-snapshots'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LlamaMarketType } from '@ui-kit/types/market'
-import { calculateAverageRates } from '@ui-kit/utils/averageRates'
 import { decimal } from '@ui-kit/utils/decimal'
 
 type UseLoanPositionDetailsProps = {
@@ -27,9 +27,6 @@ type UseLoanPositionDetailsProps = {
   llamma: Llamma | null | undefined
   llammaId: string
 }
-
-const averageMultiplier = 30
-const averageMultiplierString = `${averageMultiplier}D`
 
 export const useLoanPositionDetails = ({
   chainId,
@@ -91,25 +88,31 @@ export const useLoanPositionDetails = ({
     blockchainId,
     contractAddress: llamma?.controller as Address,
     agg: 'day',
-    limit: 30, // fetch last 30 days for 30 day average calcs
+    limit: DAYS_BACK, // fetch last 30 days for 30 day average calcs
   })
-
-  const { rate: averageRate, rebasingYield: averageRebasingYield } = useMemo(
-    () =>
-      calculateAverageRates(crvUsdSnapshots, averageMultiplier, {
-        rate: ({ rate }) => rate * 100,
-        rebasingYield: ({ collateralToken }) => collateralToken.rebasingYield,
-      }) ?? { rate: null, rebasingYield: null },
-    [crvUsdSnapshots],
-  )
 
   const collateralTotalValue = useMemo(() => {
     if (!collateralUsdRate || !collateral) return null
     return Number(collateral) * Number(collateralUsdRate) + Number(stablecoin)
   }, [collateral, stablecoin, collateralUsdRate])
 
-  const collateralRebasingYield = crvUsdSnapshots?.[crvUsdSnapshots.length - 1]?.collateralToken.rebasingYield // take only most recent rebasing yield
+  const collateralRebasingYieldApr = crvUsdSnapshots?.[crvUsdSnapshots.length - 1]?.collateralToken.rebasingYieldApr // take only most recent rebasing yield APR
   const borrowApr = marketRates?.borrowApr == null ? null : Number(marketRates.borrowApr)
+  const {
+    averageRate: averageBorrowApr,
+    averageRebasingYield: averageRebasingYieldApr,
+    totalRate: totalBorrowApr,
+    averageTotalRate: totalAverageBorrowApr,
+  } = useRateMetrics({
+    rate: borrowApr,
+    rebasingYield: collateralRebasingYieldApr ?? null,
+    average: {
+      snapshots: crvUsdSnapshots,
+      daysBack: DAYS_BACK,
+      getRate: ({ borrowApr }) => borrowApr,
+      getRebasingYield: ({ collateralToken }) => collateralToken.rebasingYieldApr,
+    },
+  })
 
   return {
     marketType: LlamaMarketType.Mint,
@@ -123,12 +126,12 @@ export const useLoanPositionDetails = ({
     },
     borrowRate: {
       rate: borrowApr,
-      rebasingYield: collateralRebasingYield ?? null,
-      averageRate: averageRate,
-      averageRebasingYield: averageRebasingYield ?? null,
-      averageRateLabel: averageMultiplierString,
-      totalBorrowRate: borrowApr ? borrowApr - (collateralRebasingYield ?? 0) : null,
-      totalAverageBorrowRate: averageRate == null ? null : averageRate - (averageRebasingYield ?? 0),
+      rebasingYield: collateralRebasingYieldApr ?? null,
+      averageRate: averageBorrowApr,
+      averageRebasingYield: averageRebasingYieldApr ?? null,
+      averageRateLabel: `${DAYS_BACK}D`,
+      totalBorrowRate: totalBorrowApr,
+      totalAverageBorrowRate: totalAverageBorrowApr,
       extraRewards: campaigns,
       loading: isSnapshotsLoading || isMarketRatesLoading || !isHydrated,
     },

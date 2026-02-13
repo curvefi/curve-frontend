@@ -1,5 +1,5 @@
-import { useMemo } from 'react'
 import type { MarketDetailsProps } from '@/llamalend/features/market-details'
+import { DAYS_BACK, useRateMetrics } from '@/llamalend/hooks/useRateMetrics'
 import { useMarketRates } from '@/llamalend/queries/market-rates'
 import { CRVUSD_ADDRESS } from '@/loan/constants'
 import { useMintMarketMaxLeverage } from '@/loan/entities/mint-market-max-leverage'
@@ -12,16 +12,12 @@ import { useCrvUsdSnapshots } from '@ui-kit/entities/crvusd-snapshots'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LlamaMarketType } from '@ui-kit/types/market'
-import { calculateAverageRates } from '@ui-kit/utils/averageRates'
 
 type UseMarketDetailsProps = {
   chainId: ChainId
   llamma: Llamma | null | undefined
   llammaId: string
 }
-
-const averageMultiplier = 30
-const averageMultiplierString = `${averageMultiplier}D`
 
 export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetailsProps): MarketDetailsProps => {
   const { isHydrated } = useCurve()
@@ -44,23 +40,29 @@ export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetails
     blockchainId,
     contractAddress: llamma?.controller as Address,
     agg: 'day',
-    limit: 30, // fetch last 30 days for 30 day average calcs
+    limit: DAYS_BACK, // fetch last 30 days for 30 day average calcs
   })
   const { data: maxLeverage, isLoading: isMarketMaxLeverageLoading } = useMintMarketMaxLeverage({
     chainId,
     marketId: llammaId,
   })
-  const { rate: averageRate, rebasingYield: averageRebasingYield } = useMemo(
-    () =>
-      calculateAverageRates(crvUsdSnapshots, averageMultiplier, {
-        rate: ({ rate }) => rate * 100,
-        rebasingYield: ({ collateralToken }) => collateralToken.rebasingYield,
-      }) ?? { rate: null, rebasingYield: null },
-    [crvUsdSnapshots],
-  )
-
-  const totalAverageBorrowRate = averageRate == null ? null : averageRate - (averageRebasingYield ?? 0)
-  const borrowApr = marketRates?.borrowApr && Number(marketRates.borrowApr)
+  const collateralRebasingYieldApr = crvUsdSnapshots?.[crvUsdSnapshots.length - 1]?.collateralToken.rebasingYieldApr
+  const borrowApr = marketRates?.borrowApr == null ? null : Number(marketRates.borrowApr)
+  const {
+    averageRate,
+    averageRebasingYield,
+    totalRate: totalBorrowRate,
+    averageTotalRate: totalAverageBorrowRate,
+  } = useRateMetrics({
+    rate: borrowApr,
+    rebasingYield: collateralRebasingYieldApr ?? null,
+    average: {
+      snapshots: crvUsdSnapshots,
+      daysBack: DAYS_BACK,
+      getRate: ({ borrowApr }) => borrowApr,
+      getRebasingYield: ({ collateralToken }) => collateralToken.rebasingYieldApr,
+    },
+  })
 
   return {
     marketType: LlamaMarketType.Mint,
@@ -84,14 +86,12 @@ export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetails
     borrowRate: {
       rate: borrowApr,
       averageRate: averageRate,
-      averageRateLabel: averageMultiplierString,
-      rebasingYield: crvUsdSnapshots?.[crvUsdSnapshots.length - 1]?.collateralToken.rebasingYield ?? null,
+      averageRateLabel: `${DAYS_BACK}D`,
+      rebasingYield: collateralRebasingYieldApr ?? null,
       averageRebasingYield: averageRebasingYield ?? null,
       totalAverageBorrowRate,
       extraRewards: campaigns,
-      totalBorrowRate: borrowApr
-        ? borrowApr - (crvUsdSnapshots?.[crvUsdSnapshots.length - 1]?.collateralToken.rebasingYield ?? 0)
-        : null,
+      totalBorrowRate,
       loading: isSnapshotsLoading || isMarketRatesLoading || !isHydrated,
     },
     maxLeverage: {
