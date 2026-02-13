@@ -11,6 +11,7 @@ export * from './number'
 export * from './decimal'
 export * from './searchText'
 export * from './mui'
+export * from './errors'
 
 /**
  * Copies text to clipboard with Ethereum address checksumming

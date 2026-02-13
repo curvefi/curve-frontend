@@ -27,8 +27,8 @@ export type DataRowProps<T extends TableItem> = {
   table: Table<T>
   row: Row<T>
   isLast: boolean
-  expandedPanel: ExpandedPanel<T>
-  shouldStickFirstColumn: boolean
+  expandedPanel?: ExpandedPanel<T>
+  shouldStickFirstColumn?: boolean
 }
 
 export const DataRow = <T extends TableItem>({
@@ -82,12 +82,17 @@ export const DataRow = <T extends TableItem>({
           onClick={isMobile ? () => row.toggleExpanded() : hasUrl ? onClickDesktop : undefined}
         >
           {visibleCells.map((cell, index) => (
-            <DataCell key={cell.id} cell={cell} isMobile={isMobile} isSticky={shouldStickFirstColumn && !index} />
+            <DataCell
+              key={cell.id}
+              cell={cell}
+              enableCollapse={isMobile && !!expandedPanel}
+              isSticky={!!shouldStickFirstColumn && !index}
+            />
           ))}
         </TableRow>
       </InvertOnHover>
 
-      {isMobile && (
+      {isMobile && expandedPanel && (
         <ExpansionRow<T> colSpan={visibleCells.length} row={row} expandedPanel={expandedPanel} table={table} />
       )}
     </>
