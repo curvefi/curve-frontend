@@ -1,3 +1,4 @@
+import type { UseCreateLoanFormRoutes } from '@/llamalend/features/borrow/hooks/useCreateLoanForm'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useCreateLoanIsApproved } from '@/llamalend/queries/create-loan/create-loan-approved.query'
 import { useMarketRates } from '@/llamalend/queries/market-rates'
@@ -28,6 +29,7 @@ export const CreateLoanInfoAccordion = <ChainId extends IChainId>({
   collateralToken,
   borrowToken,
   networks,
+  routes,
   onSlippageChange,
 }: {
   params: CreateLoanFormQueryParams<ChainId>
@@ -35,6 +37,7 @@ export const CreateLoanInfoAccordion = <ChainId extends IChainId>({
   collateralToken: Token | undefined
   borrowToken: Token | undefined
   networks: NetworkDict<ChainId>
+  routes: UseCreateLoanFormRoutes
   onSlippageChange: (newSlippage: Decimal) => void
 }) => {
   const [isOpen, , , toggle] = useSwitch(false)
@@ -64,6 +67,7 @@ export const CreateLoanInfoAccordion = <ChainId extends IChainId>({
       )}
       gas={useCreateLoanEstimateGas(networks, params, isOpen)}
       leverageEnabled={leverageEnabled}
+      routes={routes}
       {...(leverageEnabled && {
         leverageValue,
         leverageTotalCollateral,

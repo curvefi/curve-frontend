@@ -16,7 +16,7 @@ export type OptimalRouteQuery = {
   tokenOut: Address
   amountIn?: Decimal
   amountOut?: Decimal
-  router?: RouteProvider
+  router?: RouteProvider | RouteProvider[]
   fromAddress?: Address
   slippage?: Decimal
 }
@@ -65,21 +65,25 @@ export const { useQuery: useOptimalRoute, fetchQuery: fetchOptimalRoute } = quer
     router,
     fromAddress,
     slippage,
-  }: OptimalRouteQuery): Promise<RouterApiResponse> =>
-    httpFetcher(
-      `/api/router/optimal-route?${new URLSearchParams(
-        notFalsy(
-          ['chainId', `${chainId}`],
-          ['tokenIn', tokenIn],
-          ['tokenOut', tokenOut],
-          amountIn && ['amountIn', `${amountIn}`],
-          amountOut && ['amountOut', `${amountOut}`],
-          router && ['router', router],
-          fromAddress && ['fromAddress', fromAddress],
-          slippage && ['slippage', `${slippage}`],
-        ),
-      )}`,
-    ),
+  }: OptimalRouteQuery): Promise<RouterApiResponse> => {
+    const query = new URLSearchParams(
+      notFalsy(
+        ['chainId', `${chainId}`],
+        ['tokenIn', tokenIn],
+        ['tokenOut', tokenOut],
+        amountIn && ['amountIn', `${amountIn}`],
+        amountOut && ['amountOut', `${amountOut}`],
+        fromAddress && ['fromAddress', fromAddress],
+        slippage && ['slippage', `${slippage}`],
+      ),
+    )
+
+    for (const provider of Array.isArray(router) ? router : router ? [router] : []) {
+      query.append('router', provider)
+    }
+
+    return httpFetcher(`/api/router/optimal-route?${query}`)
+  },
   staleTime: '1m',
   refetchInterval: '15s',
   validationSuite: createValidationSuite(({ chainId, tokenIn, tokenOut, amountIn, amountOut }: OptimalRouteQuery) => {

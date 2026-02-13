@@ -1,12 +1,15 @@
+import { zeroAddress } from 'viem'
 import { UserState } from '@/llamalend/queries/user-state.query'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
+import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { combineQueryState } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import type { Query } from '@ui-kit/types/util'
-import { type Decimal, formatNumber, formatPercent } from '@ui-kit/utils'
+import { type Address, type Decimal, formatNumber, formatPercent } from '@ui-kit/utils'
+import { RouteOption, RouteProvidersAccordion } from '@ui-kit/widgets/RouteProvider'
 import { SlippageToleranceActionInfoPure } from '@ui-kit/widgets/SlippageSettings'
 import { getHealthValueColor } from '../../features/market-position-details/utils'
 import { ActionInfoAccordion, EstimatedTxCost, TxGasInfo } from './info-accordion.components'
@@ -39,6 +42,13 @@ export type LoanInfoAccordionProps = {
   prevLeverageTotalCollateral?: Query<Decimal | null>
   leverageTotalCollateral?: Query<Decimal | null>
   priceImpact?: Query<number | null>
+  routes?: Query<RouteOption[]> & {
+    selected: RouteOption | undefined
+    onChange: (route: RouteOption) => void
+    onRefresh: () => void
+    outputTokenAddress: Address
+    outputTokenSymbol: string
+  }
   slippage?: Decimal
   onSlippageChange?: (newSlippage: Decimal) => void
   collateralSymbol?: string
@@ -72,14 +82,22 @@ export const LoanInfoAccordion = ({
   prevLeverageTotalCollateral,
   leverageTotalCollateral,
   priceImpact,
+  routes,
   slippage,
   onSlippageChange,
   collateralSymbol,
   leverageEnabled,
 }: LoanInfoAccordionProps) => {
+  const [isRoutesOpen, , , toggleRoutes] = useSwitch(false)
   const prevDebt = userState?.data?.debt
   const prevCollateral = userState?.data?.collateral
   const isHighImpact = priceImpact?.data != null && slippage != null && priceImpact.data > Number(slippage)
+  const allRoutes = routes?.data ?? []
+  const selectedRoute =
+    allRoutes.find((route) => route.provider === routes?.selected?.provider) ?? routes?.selected ?? allRoutes[0]
+  const outputTokenAddress = routes?.outputTokenAddress ?? zeroAddress
+  const tokenSymbols = { [outputTokenAddress]: routes?.outputTokenSymbol ?? '' }
+
   return (
     <ActionInfoAccordion
       title={t`Health`}
@@ -187,6 +205,20 @@ export const LoanInfoAccordion = ({
 
       {leverageEnabled && (
         <Stack>
+          {routes && (
+            <RouteProvidersAccordion
+              routes={allRoutes}
+              selectedRoute={selectedRoute}
+              onChange={routes.onChange}
+              outputTokenAddress={outputTokenAddress}
+              tokenSymbols={tokenSymbols}
+              usdPrice={null}
+              isExpanded={isRoutesOpen}
+              isLoading={routes.isLoading}
+              onToggle={toggleRoutes}
+              onRefresh={routes.onRefresh}
+            />
+          )}
           {(prevLeverageValue || leverageValue) && (
             <ActionInfo
               label={t`Leverage`}

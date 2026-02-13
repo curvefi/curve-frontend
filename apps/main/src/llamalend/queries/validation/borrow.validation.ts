@@ -67,6 +67,6 @@ export const createLoanQueryValidationSuite = ({
     skipWhen(skipMarketValidation || !marketId, () => {
       if (!marketId) return
       const [type] = getCreateLoanImplementation(marketId, !!leverageEnabled)
-      validateRoute(params.route, !!debt && isRouterMetaRequired(type))
+      validateRoute(params.route, !!leverageEnabled && isRouterMetaRequired(type))
     })
   })
