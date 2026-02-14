@@ -25,8 +25,8 @@ export type MarketBorrowRateTooltipContentProps = {
 }
 
 const messages: Record<LlamaMarketType, string> = {
-  [LlamaMarketType.Lend]: t`The net borrow APR is the total cost related to your borrow and varies according to the monetary policy of the market.`,
-  [LlamaMarketType.Mint]: t`The net borrow APR is the total cost related to your borrow and varies according to the mint market, borrow incentives and the crvUSD's peg.`,
+  [LlamaMarketType.Lend]: t`The borrow rate is the cost related to your borrow and varies according to the monetary policy of the market.`,
+  [LlamaMarketType.Mint]: t`The borrow rate is the cost related to your borrow and varies according to the market, borrow incentives and crvUSD's peg.`,
 }
 
 export const MarketNetBorrowAprTooltipContent = ({
@@ -45,7 +45,9 @@ export const MarketNetBorrowAprTooltipContent = ({
     <TooltipDescription text={messages[marketType]} />
 
     {!!rebasingYield && (
-      <TooltipDescription text={t`The collateral of this market is yield bearing and offers extra yield.`} />
+      <TooltipDescription
+        text={t`Net borrow APR represents your effective borrowing cost after yields and incentives.`}
+      />
     )}
 
     <Stack>
