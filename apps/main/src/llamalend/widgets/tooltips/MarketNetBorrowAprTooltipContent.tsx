@@ -80,7 +80,7 @@ export const MarketNetBorrowAprTooltipContent = ({
         </TooltipItems>
       )}
 
-      {totalBorrowRate != null && (
+      {totalBorrowRate != null && (extraRewards.length || !!rebasingYield) && (
         <TooltipItems>
           <TooltipItem variant="primary" title={t`Net borrow APR`}>
             {formatPercent(totalBorrowRate)}
