@@ -62,20 +62,20 @@ export const MarketDetails = ({
         {!showPageHeader && (
           <Metric
             size={'medium'}
-            label={t`Net borrow APR`}
-            value={borrowRate?.totalBorrowRate}
+            label={t`Borrow APR`}
+            value={borrowRate?.rate}
             loading={borrowRate?.loading}
             valueOptions={{ unit: 'percentage' }}
             notional={
-              borrowRate?.totalAverageBorrowRate
+              borrowRate?.averageRate
                 ? {
-                    value: borrowRate.totalAverageBorrowRate,
+                    value: borrowRate.averageRate,
                     unit: { symbol: `% ${borrowRate.averageRateLabel} Avg`, position: 'suffix' },
                   }
                 : undefined
             }
             valueTooltip={{
-              title: t`Net borrow APR`,
+              title: t`Borrow APR`,
               body: (
                 <MarketNetBorrowAprTooltipContent
                   marketType={marketType}
