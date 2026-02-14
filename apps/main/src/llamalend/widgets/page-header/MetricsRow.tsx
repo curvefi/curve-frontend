@@ -53,7 +53,7 @@ export const MetricsRow = ({ borrowRate, supplyRate, availableLiquidity, marketT
             : undefined
         }
         valueTooltip={{
-          title: t`Net borrow APR`,
+          title: t`Borrow APR`,
           body: (
             <MarketNetBorrowAprTooltipContent
               marketType={marketType}

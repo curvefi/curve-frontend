@@ -8,12 +8,7 @@ type BorrowRateTooltipProps = Pick<TooltipProps, 'children'> & {
 }
 
 export const BorrowRateTooltip = ({ market, children }: BorrowRateTooltipProps) => (
-  <Tooltip
-    clickable
-    title={t`Net borrow APR`}
-    body={<MarketBorrowRateTooltipWrapper market={market} />}
-    placement="top"
-  >
+  <Tooltip clickable title={t`Borrow APR`} body={<MarketBorrowRateTooltipWrapper market={market} />} placement="top">
     {children}
   </Tooltip>
 )

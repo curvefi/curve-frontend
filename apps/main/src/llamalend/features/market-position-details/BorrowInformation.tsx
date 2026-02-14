@@ -73,7 +73,7 @@ export const BorrowInformation = ({
         {!showPageHeader && (
           <Metric
             size="medium"
-            label={t`Net borrow APR`}
+            label={t`Borrow APR`}
             value={borrowRate?.totalBorrowRate}
             loading={borrowRate?.loading}
             valueOptions={{ unit: 'percentage', color: 'warning' }}
@@ -86,7 +86,7 @@ export const BorrowInformation = ({
                 : undefined
             }
             valueTooltip={{
-              title: t`Net borrow APR`,
+              title: t`Borrow APR`,
               body: (
                 <MarketNetBorrowAprTooltipContent
                   marketType={marketType}
