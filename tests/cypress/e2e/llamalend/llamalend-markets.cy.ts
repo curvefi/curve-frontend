@@ -95,7 +95,7 @@ describe(`LlamaLend Markets`, () => {
       // note: not possible currently to sort ascending
       return cy.get(`[data-testid="metric-${utilizationColumnId}"]`).contains('99%', LOAD_TIMEOUT)
     } else {
-      cy.get(`[data-testid="data-table-cell-${LlamaMarketColumnId.NetBorrowRate}"]`).first().contains('%')
+      cy.get(`[data-testid="data-table-cell-${LlamaMarketColumnId.BorrowRate}"]`).first().contains('%')
       cy.get(`[data-testid="data-table-header-${utilizationColumnId}"]`).click()
       cy.get(`[data-testid="data-table-cell-${utilizationColumnId}"]`).first().contains('99%', LOAD_TIMEOUT)
       cy.get(`[data-testid="data-table-header-${utilizationColumnId}"]`).click()
