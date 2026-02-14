@@ -2,16 +2,13 @@ import { useSnapshots } from '@/llamalend/features/market-list/hooks/useSnapshot
 import { useFilteredRewards } from '@/llamalend/hooks/useFilteredRewards'
 import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { MarketRateType } from '@ui-kit/types/market'
-import { MarketBorrowRateType } from './constants'
-import { MarketBorrowAprTooltipContent } from './MarketBorrowAprTooltipContent'
 import { MarketNetBorrowAprTooltipContent } from './MarketNetBorrowAprTooltipContent'
 
 type MarketBorrowRateTooltipWrapperProps = {
   market: LlamaMarket
-  borrowRateType: MarketBorrowRateType
 }
 
-export const MarketBorrowRateTooltipWrapper = ({ market, borrowRateType }: MarketBorrowRateTooltipWrapperProps) => {
+export const MarketBorrowRateTooltipWrapper = ({ market }: MarketBorrowRateTooltipWrapperProps) => {
   const { averageRate, period, averageTotalBorrowRate, isLoading } = useSnapshots(market, MarketRateType.Borrow)
   const {
     rewards,
@@ -23,7 +20,7 @@ export const MarketBorrowRateTooltipWrapper = ({ market, borrowRateType }: Marke
   } = market
   const poolRewards = useFilteredRewards(rewards, marketType, MarketRateType.Borrow)
 
-  return borrowRateType === 'netBorrowApr' ? (
+  return (
     <MarketNetBorrowAprTooltipContent
       marketType={marketType}
       borrowRate={borrowApr}
@@ -34,14 +31,6 @@ export const MarketBorrowRateTooltipWrapper = ({ market, borrowRateType }: Marke
       extraRewards={poolRewards}
       rebasingYield={rebasingYield}
       collateralSymbol={collateralSymbol}
-      isLoading={isLoading}
-    />
-  ) : (
-    <MarketBorrowAprTooltipContent
-      marketType={marketType}
-      borrowRate={borrowApr}
-      averageRate={averageRate}
-      periodLabel={period}
       isLoading={isLoading}
     />
   )
