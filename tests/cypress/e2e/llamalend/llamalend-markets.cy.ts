@@ -342,19 +342,19 @@ describe(`LlamaLend Markets`, () => {
     cy.get(`[data-testid="${element}"]`).should('not.exist')
   })
 
-  it('should display Net borrow APR by default', () => {
-    const netBorrowColumnId = LlamaMarketColumnId.NetBorrowRate
+  it('should display Borrow APR by default', () => {
+    const borrowColumnId = LlamaMarketColumnId.BorrowRate
 
     if (breakpoint === 'mobile') {
       // On mobile, expand the first row and check the metric is visible in the expanded panel
       expandFirstRowOnMobile(breakpoint)
-      cy.get('[data-testid="data-table-expansion-row"]').contains('Net borrow APR').should('be.visible')
+      cy.get('[data-testid="data-table-expansion-row"]').contains('Borrow APR').should('be.visible')
       cy.get('[data-testid="data-table-expansion-row"]').contains('%').should('be.visible')
     } else {
       // On tablet/desktop, the column header and cell should be visible by default
-      cy.get(`[data-testid="data-table-header-${netBorrowColumnId}"]`).should('be.visible')
-      cy.get(`[data-testid="data-table-cell-${netBorrowColumnId}"]`).first().should('be.visible')
-      cy.get(`[data-testid="data-table-cell-${netBorrowColumnId}"]`).first().contains('%')
+      cy.get(`[data-testid="data-table-header-${borrowColumnId}"]`).should('be.visible')
+      cy.get(`[data-testid="data-table-cell-${borrowColumnId}"]`).first().should('be.visible')
+      cy.get(`[data-testid="data-table-cell-${borrowColumnId}"]`).first().contains('%')
     }
   })
 
