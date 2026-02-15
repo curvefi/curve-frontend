@@ -61,7 +61,7 @@ describe('Header', () => {
       cy.get("[data-testid='navigation-connect-wallet']").invoke('outerHeight').should('equal', expectedConnectHeight)
 
       cy.window().then((win) => {
-        // get the scroll width dynamically because of the crvusd page with small header don't render the scrollbar
+        // get scroll width dynamically, crvusd page with small header doesn't render a scrollbar
         const scrollWidth = win.innerWidth - win.document.documentElement.clientWidth
         const expectedFooterWidth = Math.min(
           expectedFooterMaxWidth,

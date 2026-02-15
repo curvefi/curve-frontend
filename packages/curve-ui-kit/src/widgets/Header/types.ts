@@ -13,7 +13,7 @@ export type AppRoute = {
   route: string // this is a route inside the app, with leading slash, does not include the app name and the network
   label: () => string // lazy evaluation for translations
   target?: '_self' | '_blank'
-  matchMode?: 'prefix' | 'exact' // whether the route should be matched exactly or just a prefix
+  matchMode?: 'prefix' | 'exact' // some pages have "../marketId" and "../marketId/vault" as routes, so we need to match the exact route
 }
 
 export type AppRoutes = {

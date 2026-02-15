@@ -17,16 +17,16 @@ export const LendMarketSubNavMobile = () => {
   const top = useLayoutStore((state) => state.navHeight)
   const routes = useLlamalendMarketSubNavRoutes()
 
-  const pages = routes?.map((route) => routeToPage(route, { networkId, pathname }))
-
   return (
     !isDesktop &&
     isLendMarketSubNav &&
-    pages &&
-    pages?.length > 0 && (
+    routes.length > 0 && (
       <Box sx={{ position: 'sticky', top, zIndex: (t) => t.zIndex.appBar }}>
         <SubNav testId="lend-market-subnav">
-          <PageTabsSwitcher pages={pages} overflow="fullWidth" />
+          <PageTabsSwitcher
+            pages={routes.map((route) => routeToPage(route, { networkId, pathname }))}
+            overflow="fullWidth"
+          />
         </SubNav>
       </Box>
     )
