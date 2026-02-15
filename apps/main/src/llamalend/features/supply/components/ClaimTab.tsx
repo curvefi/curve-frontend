@@ -1,5 +1,4 @@
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
-import { LoanFormAlerts } from '@/llamalend/widgets/action-card/LoanFormAlerts'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
@@ -7,6 +6,7 @@ import Button from '@mui/material/Button'
 import { t } from '@ui-kit/lib/i18n'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { TotalNotionalRow } from '@ui-kit/shared/ui/DataTable/inline-cells/notional-cells'
+import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import { FormContent } from '@ui-kit/widgets/DetailPageLayout/FormContent'
 import { useClaimTab } from '../hooks/useClaimTab'
 import { ClaimInfoAccordion } from './ClaimInfoAccordion'
@@ -81,7 +81,7 @@ export const ClaimTab = <ChainId extends IChainId>({ market, networks, chainId, 
           {isPending ? t`Processing...` : t`Claim`}
         </Button>
 
-        <LoanFormAlerts
+        <FormAlerts
           isSuccess={isClaimed}
           error={claimablesError ?? claimError ?? usdRateError}
           txHash={txHash}

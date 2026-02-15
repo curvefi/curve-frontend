@@ -12,20 +12,17 @@ export const LeverageInput = ({
   checked,
   leverage: { data: leverage, error: leverageError, isLoading: isLeverageLoading },
   onToggle,
-  maxLeverage: { data: maxLeverage, error: maxLeverageError, isLoading: maxLeverageLoading },
+  maxLeverage,
 }: {
   checked: boolean
   leverage: Query<Decimal>
   onToggle: (event: ChangeEvent<HTMLInputElement>) => void
-  maxLeverage: Query<Decimal>
+  maxLeverage: Decimal | undefined
 }) => (
   <CheckboxField
     checked={checked}
     disabled={!maxLeverage}
     label={t`Enable leverage`}
-    message={maxLeverage ? `${t`up to`} ${formatNumber(maxLeverage, { maximumFractionDigits: 1 })}x 🔥` : undefined}
-    isLoading={maxLeverageLoading}
-    error={maxLeverageError}
     testIdPrefix={TEST_ID_PREFIX}
     onChange={onToggle}
     endContent={

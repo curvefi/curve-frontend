@@ -12,7 +12,10 @@ type WithSkeletonProps = {
 /**
  * A component that wraps children with a Skeleton when loading.
  * Useful for when you want to use the same child for dimension inference.
+ *
+ * Uses `component="div"` instead of MUI Skeleton's default `span` to avoid
+ * invalid HTML nesting when children render as block-level elements (e.g. h4, p).
  */
-export const WithSkeleton = ({ loading, ...skeletonProps }: WithSkeletonProps) => (
-  <WithWrapper Wrapper={Skeleton} shouldWrap={loading} {...skeletonProps} />
+export const WithSkeleton = ({ loading, component = 'div', ...skeletonProps }: WithSkeletonProps) => (
+  <WithWrapper Wrapper={Skeleton} shouldWrap={loading} component={component} {...skeletonProps} />
 )

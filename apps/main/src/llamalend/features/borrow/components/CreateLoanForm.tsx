@@ -5,7 +5,6 @@ import { hasLeverage } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import type { CreateLoanOptions } from '@/llamalend/mutations/create-loan.mutation'
 import { useCreateLoanPriceImpact } from '@/llamalend/queries/create-loan/create-loan-price-impact.query'
-import { HighPriceImpactAlert, LoanFormAlerts } from '@/llamalend/widgets/action-card/LoanFormAlerts'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
@@ -17,6 +16,7 @@ import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
 import { q } from '@ui-kit/types/util'
 import { updateForm } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
+import { FormAlerts, HighPriceImpactAlert } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import { InputDivider } from '../../../widgets/InputDivider'
 import { useCreateLoanForm } from '../hooks/useCreateLoanForm'
 import { AdvancedCreateLoanOptions } from './AdvancedCreateLoanOptions'
@@ -137,7 +137,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
           checked={values.leverageEnabled}
           leverage={leverage}
           onToggle={toggleLeverage}
-          maxLeverage={maxLeverage}
+          maxLeverage={maxLeverage.data}
         />
       )}
 
@@ -166,7 +166,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
         {isPending ? t`Processing...` : isApproved?.data ? t`Borrow` : t`Approve & Borrow`}
       </Button>
 
-      <LoanFormAlerts
+      <FormAlerts
         isSuccess={isCreated}
         error={creationError}
         formErrors={formErrors}

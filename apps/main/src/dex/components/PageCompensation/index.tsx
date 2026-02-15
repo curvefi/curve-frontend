@@ -6,8 +6,8 @@ import { AlertFormError } from '@/dex/components/AlertFormError'
 import { Compensations } from '@/dex/components/PageCompensation/components/Compensations'
 import type { Balances, EtherContract, VestedTotals } from '@/dex/components/PageCompensation/types'
 import { CurveApi, ChainId, Provider } from '@/dex/types/main.types'
-import { getErrorMessage } from '@/dex/utils'
 import { Box } from '@ui/Box'
+import { getErrorMessage } from '@ui-kit/utils'
 
 export const FormCompensation = ({
   rChainId,
