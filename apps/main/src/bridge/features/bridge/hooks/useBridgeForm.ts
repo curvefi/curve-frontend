@@ -104,7 +104,7 @@ export const useBridgeForm = ({ chainId, networks }: { chainId: number; networks
     updateForm(form, { min: capacity?.min, max: capacity?.max })
   }, [form, capacity?.max, capacity?.min])
 
-  // Approve mutation (big chance approvals will get merged into the bridge mutation in the future)
+  // Approve mutation (High chane it'll get merged into the bridge mutation later on as it deviates from the usual approve/execute flow with a single button click)
   const isApproved = useBridgeIsApproved(params)
   const {
     onSubmit: onSubmitApprove,
