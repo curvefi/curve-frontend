@@ -1,6 +1,7 @@
 /// <reference types="./DataTable.d.ts" />
 import { ReactNode, useEffect, useEffectEvent, useMemo, useRef } from 'react'
 import Box from '@mui/material/Box'
+import { Theme } from '@mui/material/styles'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
@@ -75,6 +76,9 @@ export const DataTable = <T extends TableItem>({
   maxHeight,
   rowLimit,
   viewAllLabel,
+  shouldStickFirstColumn = false,
+  hideHeader = false,
+  footerRow,
   ...rowProps
 }: {
   table: TanstackTable<T>
@@ -84,8 +88,10 @@ export const DataTable = <T extends TableItem>({
   maxHeight?: `${number}rem` // also sets overflowY to 'auto'
   rowLimit?: number
   viewAllLabel?: string
+  hideHeader?: boolean
+  footerRow?: ReactNode
 } & Omit<DataRowProps<T>, 'row' | 'isLast'>) => {
-  const { table, shouldStickFirstColumn } = rowProps
+  const { table } = rowProps
   const { rows } = table.getRowModel()
   const { isLimited, isLoading: isLoadingViewAll, handleShowAll } = useTableRowLimit(rowLimit)
   // When number of rows are limited, show only rowLimit rows
@@ -102,47 +108,42 @@ export const DataTable = <T extends TableItem>({
   useScrollToTopOnFilterChange(table)
   useResetPageOnResultChange(table)
   useScrollToTopOnPageChange(table, containerRef)
+  const tableHeaderSx = (t: Theme) => ({
+    position: 'sticky',
+    top: maxHeight ? 0 : top,
+    zIndex: t.zIndex.tableHeader,
+    backgroundColor: t.design.Table.Header.Fill,
+    marginBlock: Sizing['sm'],
+  })
+  const showFooter = showPagination || showViewAllButton || footerRow
 
   return (
     <WithWrapper Wrapper={Box} shouldWrap={maxHeight} sx={{ maxHeight, overflowY: 'auto' }} ref={containerRef}>
       <Table
-        sx={useMemo(
-          () => ({
-            backgroundColor: (t) => t.design.Layer[1].Fill,
-            borderCollapse: 'separate' /* Don't collapse to avoid funky stuff with the sticky header */,
-          }),
-          [],
-        )}
+        sx={{
+          backgroundColor: (t) => t.design.Layer[1].Fill,
+          borderCollapse: 'separate' /* Don't collapse to avoid funky stuff with the sticky header */,
+        }}
         data-testid={!loading && 'data-table'}
       >
-        <TableHead
-          sx={useMemo(
-            () => (t) => ({
-              position: 'sticky',
-              top: maxHeight ? 0 : top,
-              zIndex: t.zIndex.tableHeader,
-              backgroundColor: t.design.Table.Header.Fill,
-              marginBlock: Sizing['sm'],
-            }),
-            [maxHeight, top],
-          )}
-          data-testid="data-table-head"
-        >
-          {children && <FilterRow table={table}>{children}</FilterRow>}
+        {!hideHeader && (
+          <TableHead sx={tableHeaderSx} data-testid="data-table-head">
+            {children && <FilterRow table={table}>{children}</FilterRow>}
 
-          {headerGroups.map((headerGroup) => (
-            <TableRow key={headerGroup.id} sx={{ height: Sizing['xxl'] }}>
-              {headerGroup.headers.map((header, index) => (
-                <HeaderCell
-                  key={header.id}
-                  header={header}
-                  isSticky={!index && shouldStickFirstColumn}
-                  width={`calc(100% / ${columnCount})`}
-                />
-              ))}
-            </TableRow>
-          ))}
-        </TableHead>
+            {headerGroups.map((headerGroup) => (
+              <TableRow key={headerGroup.id} sx={{ height: Sizing['xxl'] }}>
+                {headerGroup.headers.map((header, index) => (
+                  <HeaderCell
+                    key={header.id}
+                    header={header}
+                    isSticky={!index && shouldStickFirstColumn}
+                    width={`calc(100% / ${columnCount})`}
+                  />
+                ))}
+              </TableRow>
+            ))}
+          </TableHead>
+        )}
         <TableBody>
           {loading ? (
             <SkeletonRows table={table} shouldStickFirstColumn={shouldStickFirstColumn} />
@@ -150,24 +151,33 @@ export const DataTable = <T extends TableItem>({
             emptyState
           ) : (
             visibleRows.map((row, index) => (
-              <DataRow<T> key={row.id} row={row} isLast={index === visibleRows.length - 1} {...rowProps} />
+              <DataRow<T>
+                key={row.id}
+                row={row}
+                isLast={index === visibleRows.length - 1}
+                shouldStickFirstColumn={shouldStickFirstColumn}
+                {...rowProps}
+              />
             ))
           )}
         </TableBody>
-        {(showPagination || showViewAllButton) && (
+        {showFooter && (
           <TableFooter>
-            <TableRow>
-              {showViewAllButton && (
+            {footerRow && <TableRow>{footerRow}</TableRow>}
+            {showViewAllButton && (
+              <TableRow>
                 <TableViewAllCell colSpan={columnCount} onClick={handleShowAll} isLoading={isLoadingViewAll}>
                   {viewAllLabel || t`View all`}
                 </TableViewAllCell>
-              )}
-              {showPagination && (
+              </TableRow>
+            )}
+            {showPagination && (
+              <TableRow>
                 <TableCell colSpan={columnCount}>
                   <TablePagination table={table} />
                 </TableCell>
-              )}
-            </TableRow>
+              </TableRow>
+            )}
           </TableFooter>
         )}
       </Table>

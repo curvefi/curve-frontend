@@ -19,7 +19,7 @@ import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { filterFormErrors, useCallbackAfterFormUpdate } from '@ui-kit/utils/react-form.utils'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 
-const NOT_AVAILABLE = ['root', t`Repay is not available with the current parameters.`] as const
+const NOT_AVAILABLE = ['root', t`Repay is not available, increase the repayment amount or repay fully.`] as const
 
 const useRepayParams = <ChainId>({
   isFull,

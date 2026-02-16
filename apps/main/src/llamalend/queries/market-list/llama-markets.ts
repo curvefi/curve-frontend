@@ -92,6 +92,8 @@ const DEPRECATED_LLAMAS: PartialRecord<Chain, Record<Address, string>> = {
     '0x89707721927d7aaeeee513797A8d6cBbD0e08f41': t`This market is deprecated.`,
     // LBTC-crvUSD v1 mint market
     '0x8aca5A776a878Ea1F8967e70a23b8563008f58Ef': t`This market is deprecated.`,
+    // sDOLA-crvUSD 2024-07-17 lend market
+    '0xCf3DF6C1B4A6b38496661B31170de9508b867C8E': t`This market is deprecated.`,
   },
   arbitrum: {
     // iBTC-crvUSD lend market

@@ -6,7 +6,6 @@ import { StyledIconButton } from '@/dex/components/PagePool/PoolDetails/PoolStat
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { curvejsApi } from '@/dex/lib/curvejs'
 import { ChainId, CurveApi, Provider } from '@/dex/types/main.types'
-import { getErrorMessage } from '@/dex/utils'
 import { Box } from '@ui/Box'
 import { Button } from '@ui/Button'
 import { Icon } from '@ui/Icon'
@@ -15,7 +14,7 @@ import { TxInfoBar } from '@ui/TxInfoBar'
 import { formatNumber, scanAddressPath, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
-import { copyToClipboard, shortenAddress } from '@ui-kit/utils'
+import { copyToClipboard, getErrorMessage, shortenAddress } from '@ui-kit/utils'
 
 export const Compensation = ({
   rChainId,

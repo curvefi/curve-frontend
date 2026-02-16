@@ -1,3 +1,4 @@
+import { getHealthValueColor } from '@/llamalend/features/market-position-details'
 import { UserState } from '@/llamalend/queries/user-state.query'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
@@ -8,7 +9,6 @@ import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import type { Query } from '@ui-kit/types/util'
 import { type Decimal, formatNumber, formatPercent } from '@ui-kit/utils'
 import { SlippageToleranceActionInfoPure } from '@ui-kit/widgets/SlippageSettings'
-import { getHealthValueColor } from '../../features/market-position-details/utils'
 import { ActionInfoAccordion } from './info-accordion.components'
 import { formatAmount, formatLeverage } from './info-accordion.helpers'
 
@@ -22,9 +22,9 @@ export type LoanInfoAccordionProps = {
   isFullRepay?: boolean
   bands?: Query<[number, number]>
   prices?: Query<readonly Decimal[]>
-  rates: Query<{ borrowApr?: Decimal } | null>
+  rates?: Query<{ borrowApr?: Decimal } | null>
   prevRates?: Query<{ borrowApr?: Decimal } | null>
-  loanToValue: Query<Decimal | null>
+  loanToValue?: Query<Decimal | null>
   prevLoanToValue?: Query<Decimal | null>
   netBorrowApr?: Query<Decimal | null>
   gas: Query<TxGasInfo | null>
@@ -134,13 +134,15 @@ export const LoanInfoAccordion = ({
             testId="withdraw-amount"
           />
         )}
-        <ActionInfo
-          label={t`Borrow APR`}
-          value={rates.data?.borrowApr && formatPercent(rates.data.borrowApr)}
-          prevValue={prevRates?.data?.borrowApr && formatPercent(prevRates.data.borrowApr)}
-          {...combineQueryState(rates, prevRates)}
-          testId="borrow-apr"
-        />
+        {rates && (
+          <ActionInfo
+            label={t`Borrow APR`}
+            value={rates.data?.borrowApr && formatPercent(rates.data.borrowApr)}
+            prevValue={prevRates?.data?.borrowApr && formatPercent(prevRates.data.borrowApr)}
+            {...combineQueryState(rates, prevRates)}
+            testId="borrow-apr"
+          />
+        )}
         {netBorrowApr && (
           <ActionInfo
             label={t`Net borrow APR`}

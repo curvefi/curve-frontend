@@ -4,6 +4,7 @@ import { useConnection } from 'wagmi'
 import { getTokens } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { type CloseLoanMutation, useClosePositionMutation } from '@/llamalend/mutations/close-position.mutation'
+import { useCloseLoanIsApproved } from '@/llamalend/queries/close-loan/close-loan-is-approved.query'
 import { useUserState } from '@/llamalend/queries/user-state.query'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
@@ -61,10 +62,11 @@ export function useClosePositionForm({
   const canClose = useCanClose({ chainId, marketId, userAddress })
 
   const formState = form.formState
+  const isPending = formState.isSubmitting || isClosing
   return {
     form,
     values,
-    isPending: formState.isSubmitting || isClosing,
+    isPending,
     debtToken: mapQuery(userState, ({ debt }) => ({
       chain: network?.id,
       symbol: borrowToken?.symbol,
@@ -72,12 +74,16 @@ export function useClosePositionForm({
       amount: debt,
     })),
     collateralToRecover,
-    missing: canClose.data?.missing,
-    isDisabled: [userState, collateralToRecover, canClose].some((q) => q.isLoading || q.error),
+    canClose,
+    isDisabled:
+      isPending ||
+      [userState, collateralToRecover, canClose].some((q) => q.isLoading || q.error) ||
+      canClose.data?.canClose === false,
     isClosed,
     closeError,
     formErrors: useMemo(() => filterFormErrors(formState), [formState]),
     txHash: data?.hash,
+    isApproved: useCloseLoanIsApproved({ chainId, marketId, userAddress }, enabled),
     onSubmit: form.handleSubmit(onSubmit),
   }
 }
