@@ -15,7 +15,7 @@ export const LendMarketSubNavMobile = () => {
   const { network: networkId } = useParams<UrlParams>()
   const pathname = usePathname()
   const top = useLayoutStore((state) => state.navHeight)
-  const routes = useLlamalendMarketSubNavRoutes()
+  const routes = useLlamalendMarketSubNavRoutes({ isMobile: true })
 
   return (
     !isDesktop &&
