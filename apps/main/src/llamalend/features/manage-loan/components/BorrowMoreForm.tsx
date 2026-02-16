@@ -151,6 +151,18 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
         loading={isPending || !market}
         disabled={isDisabled}
         data-testid="borrow-more-submit-button"
+        data-validation={JSON.stringify({
+          hasMarket: !!market,
+          swapRequired,
+          isPending,
+          isDisabled,
+          isValid: form.formState.isValid,
+          isSubmitting: form.formState.isSubmitting,
+          isApproved: q(isApproved),
+          formErrors,
+          rawFormErrors: Object.entries(form.formState.errors),
+          dirtyFields: form.formState.dirtyFields,
+        })}
       >
         {isPending ? t`Processing...` : joinButtonText(isApproved?.data === false && t`Approve`, t`Borrow More`)}
       </Button>
