@@ -6,6 +6,7 @@ import {
   BorrowPositionDetails,
   LlamaMonitorBotLinkButton,
   NoPosition,
+  useBorrowPositionDetails,
 } from '@/llamalend/features/market-position-details'
 import { UserPositionHistory } from '@/llamalend/features/user-position-history'
 import { useUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
@@ -15,7 +16,6 @@ import { MarketInformationComp } from '@/loan/components/MarketInformationComp'
 import { CreateLoanTabs } from '@/loan/components/PageMintMarket/CreateLoanTabs'
 import { ManageLoanTabs } from '@/loan/components/PageMintMarket/ManageLoanTabs'
 import { useMintMarket } from '@/loan/entities/mint-markets'
-import { useLoanPositionDetails } from '@/loan/hooks/useLoanPositionDetails'
 import { useMarketDetails } from '@/loan/hooks/useMarketDetails'
 import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
 import { networks } from '@/loan/networks'
@@ -33,6 +33,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { LlamaMarketType } from '@ui-kit/types/market'
 import { CRVUSD } from '@ui-kit/utils/address'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
 
@@ -54,13 +55,14 @@ export const MintMarketPage = () => {
 
   const loanStatus = useUserLoanDetails(market?.id ?? '')?.userStatus?.colorKey ?? ''
   const marketDetails = useMarketDetails({ chainId: rChainId, market, marketId })
-  const positionDetails = useLoanPositionDetails({
-    chainId: rChainId,
-    market,
-    marketId,
-  })
-
   const network = networks[rChainId]
+  const borrowPositionDetails = useBorrowPositionDetails({
+    marketType: LlamaMarketType.Mint,
+    chainId: rChainId,
+    marketId,
+    blockchainId: network.id as Chain,
+    market: market ?? null,
+  })
   const {
     data: userCollateralEvents,
     isLoading: collateralEventsIsLoading,
@@ -134,7 +136,7 @@ export const MintMarketPage = () => {
             </Stack>
           )}
           <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
-            {loanExists ? <BorrowPositionDetails {...positionDetails} /> : <NoPosition type="borrow" />}
+            {loanExists ? <BorrowPositionDetails {...borrowPositionDetails} /> : <NoPosition type="borrow" />}
             {userCollateralEvents?.events && userCollateralEvents.events.length > 0 && (
               <Stack
                 paddingLeft={Spacing.md}
