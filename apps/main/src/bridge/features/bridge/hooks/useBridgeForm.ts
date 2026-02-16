@@ -64,7 +64,6 @@ const emptyBridgeForm = () =>
   }) satisfies BridgeForm
 
 export const useBridgeForm = ({ chainId, networks }: { chainId: number; networks: Record<number, BaseConfig> }) => {
-  // Form
   const form = useForm<BridgeForm>({
     ...formDefaultOptions,
     resolver: vestResolver(bridgeFormValidationSuite),
