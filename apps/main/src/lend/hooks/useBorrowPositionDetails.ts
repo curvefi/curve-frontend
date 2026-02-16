@@ -115,7 +115,7 @@ export const useBorrowPositionDetails = ({
     },
     health: {
       value: healthValue,
-      loading: isUserLoanDetailsLoading || !isHydrated,
+      loading: !market || isUserLoanDetailsLoading || !isHydrated,
     },
     borrowRate: {
       rate: borrowApr,
@@ -126,7 +126,7 @@ export const useBorrowPositionDetails = ({
       totalBorrowRate,
       totalAverageBorrowRate: averageRate ? averageRate - (averageRebasingYield ?? 0) : null,
       extraRewards: campaigns,
-      loading: isLendSnapshotsLoading || isMarketRatesLoading || !isHydrated,
+      loading: !market || isLendSnapshotsLoading || isMarketRatesLoading || !isHydrated,
     },
     liquidationRange: {
       value: liquidationRangeValue,
@@ -134,11 +134,11 @@ export const useBorrowPositionDetails = ({
         prices?.prices?.oraclePrice && liquidationPrices
           ? calculateRangeToLiquidation(Number(liquidationPrices?.[1]), Number(prices.prices.oraclePrice))
           : null,
-      loading: isUserLoanDetailsLoading || !isHydrated,
+      loading: !market || isUserLoanDetailsLoading || !isHydrated,
     },
     bandRange: {
       value: bands,
-      loading: isUserLoanDetailsLoading || !isHydrated,
+      loading: !market || isUserLoanDetailsLoading || !isHydrated,
     },
     collateralValue: {
       totalValue: collateralTotalValue,
@@ -152,26 +152,26 @@ export const useBorrowPositionDetails = ({
         usdRate: borrowedUsdRate ?? null,
         symbol: market?.borrowed_token?.symbol,
       },
-      loading: isUserLoanDetailsLoading || collateralUsdRateLoading || borrowedUsdRateLoading || !isHydrated,
+      loading: !market || isUserLoanDetailsLoading || collateralUsdRateLoading || borrowedUsdRateLoading || !isHydrated,
     },
     ltv: {
       value: ltvValue,
-      loading: isUserLoanDetailsLoading || !isHydrated,
+      loading: !market || isUserLoanDetailsLoading || !isHydrated,
     },
     leverage: {
       value: leverageValue,
-      loading: isUserLoanDetailsLoading || !isHydrated,
+      loading: !market || isUserLoanDetailsLoading || !isHydrated,
     },
     totalDebt: {
       value: totalDebtValue,
-      loading: isUserLoanDetailsLoading || !isHydrated,
+      loading: !market || isUserLoanDetailsLoading || !isHydrated,
     },
     collateralLoss: {
       depositedCollateral: decimal(loss?.deposited_collateral),
       currentCollateralEstimation: decimal(loss?.current_collateral_estimation),
       percentage: decimal(loss?.loss_pct),
       amount: decimal(loss?.loss),
-      loading: isUserLoanDetailsLoading || !isHydrated,
+      loading: !market || isUserLoanDetailsLoading || !isHydrated,
     },
   }
 }
