@@ -22,9 +22,9 @@ export type LoanInfoAccordionProps = {
   isFullRepay?: boolean
   bands?: Query<[number, number]>
   prices?: Query<readonly Decimal[]>
-  rates: Query<{ borrowApr?: Decimal } | null>
+  rates?: Query<{ borrowApr?: Decimal } | null>
   prevRates?: Query<{ borrowApr?: Decimal } | null>
-  loanToValue: Query<Decimal | null>
+  loanToValue?: Query<Decimal | null>
   prevLoanToValue?: Query<Decimal | null>
   netBorrowApr?: Query<Decimal | null>
   gas: Query<TxGasInfo | null>
@@ -133,13 +133,15 @@ export const LoanInfoAccordion = ({
             {...combineQueryState(userState)}
           />
         )}
-        <ActionInfo
-          label={t`Borrow APR`}
-          value={rates.data?.borrowApr && formatPercent(rates.data.borrowApr)}
-          prevValue={prevRates?.data?.borrowApr && formatPercent(prevRates.data.borrowApr)}
-          {...combineQueryState(rates, prevRates)}
-          testId="borrow-apr"
-        />
+        {rates && (
+          <ActionInfo
+            label={t`Borrow APR`}
+            value={rates.data?.borrowApr && formatPercent(rates.data.borrowApr)}
+            prevValue={prevRates?.data?.borrowApr && formatPercent(prevRates.data.borrowApr)}
+            {...combineQueryState(rates, prevRates)}
+            testId="borrow-apr"
+          />
+        )}
         {netBorrowApr && (
           <ActionInfo
             label={t`Net borrow APR`}

@@ -59,7 +59,6 @@ export const ClosePositionForm = ({
       infoAccordion={
         <ClosePositionInfoAccordion
           market={market}
-          enabled={enabled}
           chainId={network.chainId}
           networks={networks}
           values={values}

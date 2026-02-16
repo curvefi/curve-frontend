@@ -75,8 +75,8 @@ export const LendMarketPage = () => {
   })
   const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists({
     chainId,
-    marketId: marketId,
-    userAddress: userAddress,
+    marketId,
+    userAddress,
   })
 
   const [isLoaded, setLoaded] = useState(false)

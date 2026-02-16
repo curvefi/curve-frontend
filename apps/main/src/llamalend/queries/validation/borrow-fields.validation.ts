@@ -85,7 +85,7 @@ export const validateMaxBorrowed = (
   maxBorrowed: Decimal | undefined | null,
 ) => {
   skipWhen(userBorrowed == null || maxBorrowed == null, () => {
-    test('userBorrowed', `The maximum borrow amount is ${maxBorrowed}`, () => {
+    test('userBorrowed', `The maximum debt amount is ${maxBorrowed}`, () => {
       enforce(userBorrowed).lte(maxBorrowed)
     })
   })
