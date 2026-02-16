@@ -14,5 +14,5 @@ export const generateSubtitle = (
 
 export const generateMarketTitle = (collateralSymbol: string | undefined, borrowedSymbol: string | undefined) => {
   if (!collateralSymbol || !borrowedSymbol) return t`Market`
-  return `${collateralSymbol.toUpperCase()}•${borrowedSymbol.toUpperCase()}`
+  return `${collateralSymbol.toUpperCase()} • ${borrowedSymbol.toUpperCase()}`
 }

@@ -1,3 +1,4 @@
+import { getHealthValueColor } from '@/llamalend/features/market-position-details'
 import { UserState } from '@/llamalend/queries/user-state.query'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
@@ -8,7 +9,6 @@ import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import type { Query } from '@ui-kit/types/util'
 import { type Decimal, formatNumber, formatPercent } from '@ui-kit/utils'
 import { SlippageToleranceActionInfoPure } from '@ui-kit/widgets/SlippageSettings'
-import { getHealthValueColor } from '../../features/market-position-details/utils'
 import { ActionInfoAccordion } from './info-accordion.components'
 import { formatAmount, formatLeverage } from './info-accordion.helpers'
 

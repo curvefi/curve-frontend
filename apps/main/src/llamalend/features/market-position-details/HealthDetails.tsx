@@ -5,9 +5,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { decimal } from '@ui-kit/utils'
-import type { Health, LiquidationAlert } from './BorrowPositionDetails'
-import { HealthBar } from './HealthBar'
-import { getHealthValueColor } from './utils'
+import { HealthBar, getHealthValueColor, Health, LiquidationAlert } from './'
 
 const { Spacing } = SizesAndSpaces
 

@@ -6,6 +6,7 @@ import { BorrowPositionDetails, NoPosition } from '@/llamalend/features/market-p
 import { UserPositionHistory } from '@/llamalend/features/user-position-history'
 import { useUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { useLoanExists } from '@/llamalend/queries/loan-exists'
+import { PageHeader } from '@/llamalend/widgets/page-header'
 import { MarketInformationComp } from '@/loan/components/MarketInformationComp'
 import { CreateLoanTabs } from '@/loan/components/PageMintMarket/CreateLoanTabs'
 import { ManageLoanTabs } from '@/loan/components/PageMintMarket/ManageLoanTabs'
@@ -18,9 +19,11 @@ import { useStore } from '@/loan/store/useStore'
 import { type CollateralUrlParams } from '@/loan/types/loan.types'
 import { getCollateralListPathname, useChainId } from '@/loan/utils/utilsRouter'
 import { isChain } from '@curvefi/prices-api'
+import type { Chain } from '@curvefi/prices-api'
 import Stack from '@mui/material/Stack'
 import { ConnectWalletPrompt, useCurve } from '@ui-kit/features/connect-wallet'
 import { useParams } from '@ui-kit/hooks/router'
+import { useIntegratedLlamaHeader } from '@ui-kit/hooks/useFeatureFlags'
 import { usePageVisibleInterval } from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
@@ -95,12 +98,22 @@ export const MintMarketPage = () => {
     rChainId,
     params,
   }
+  const showPageHeader = useIntegratedLlamaHeader()
 
   const isLoading = !loaded || (loanExists && !loanStatus)
   return isHydrated && !market ? (
     <ErrorPage title="404" subtitle={t`Market Not Found`} continueUrl={getCollateralListPathname(params)} />
   ) : provider ? (
     <>
+      {showPageHeader && (
+        <PageHeader
+          isLoading={!isHydrated}
+          market={market}
+          blockchainId={network.id as Chain}
+          availableLiquidity={marketDetails.availableLiquidity}
+          borrowRate={marketDetails.borrowRate}
+        />
+      )}
       <DetailPageLayout
         formTabs={
           !isLoading &&
@@ -135,7 +148,7 @@ export const MintMarketPage = () => {
           )}
         </Stack>
         <Stack>
-          <MarketDetails {...marketDetails} />
+          {!showPageHeader && <MarketDetails {...marketDetails} />}
           <MarketInformationComp llamma={market ?? null} marketId={marketId} chainId={rChainId} page="manage" />
         </Stack>
       </DetailPageLayout>
