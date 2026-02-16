@@ -1,5 +1,6 @@
 import { Alert, Stack, Typography } from '@mui/material'
 import { CampaignPoolRewards } from '@ui-kit/entities/campaigns'
+import { useIntegratedLlamaHeader } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { LlamaMarketType } from '@ui-kit/types/market'
@@ -92,20 +93,12 @@ const LiquidationAlert = ({ type }: { type: 'soft' | 'hard' }) => {
   const { title, description } = alerts[type]
 
   return (
-    <Stack
-      sx={{
-        paddingTop: Spacing.md,
-        paddingRight: Spacing.md,
-        paddingLeft: Spacing.md,
-      }}
-    >
-      <Alert variant="filled" severity="error">
-        <Stack display="flex" flexDirection="column">
-          <Typography variant="bodySBold">{title}</Typography>
-          <Typography variant="bodyXsRegular">{description}</Typography>
-        </Stack>
-      </Alert>
-    </Stack>
+    <Alert variant="outlined" severity="error">
+      <Stack display="flex" flexDirection="column">
+        <Typography variant="bodySBold">{title}</Typography>
+        <Typography variant="bodyXsRegular">{description}</Typography>
+      </Stack>
+    </Alert>
   )
 }
 
@@ -122,20 +115,27 @@ export const BorrowPositionDetails = ({
   totalDebt,
   collateralLoss,
 }: BorrowPositionDetailsProps) => (
-  <Stack>
+  <Stack padding={Spacing.md} gap={Spacing.md}>
     {liquidationAlert.softLiquidation && <LiquidationAlert type="soft" />}
     {liquidationAlert.hardLiquidation && <LiquidationAlert type="hard" />}
-    <HealthDetails health={health} liquidationAlert={liquidationAlert} />
-    <BorrowInformation
-      marketType={marketType}
-      borrowRate={borrowRate}
-      collateralValue={collateralValue}
-      ltv={ltv}
-      leverage={leverage}
-      liquidationRange={liquidationRange}
-      bandRange={bandRange}
-      totalDebt={totalDebt}
-      collateralLoss={collateralLoss}
-    />
+    <Stack
+      direction={'column'}
+      display={useIntegratedLlamaHeader() ? { tablet: 'flex', desktop: 'grid' } : 'flex'}
+      gridTemplateColumns={'1fr 1fr'}
+      gap={Spacing.md}
+    >
+      <HealthDetails health={health} liquidationAlert={liquidationAlert} />
+      <BorrowInformation
+        marketType={marketType}
+        borrowRate={borrowRate}
+        collateralValue={collateralValue}
+        ltv={ltv}
+        leverage={leverage}
+        liquidationRange={liquidationRange}
+        bandRange={bandRange}
+        totalDebt={totalDebt}
+        collateralLoss={collateralLoss}
+      />
+    </Stack>
   </Stack>
 )

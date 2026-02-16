@@ -148,13 +148,7 @@ export const LendMarketPage = () => {
           supplyAddress={market?.addresses?.vault || ''}
         />
         <MarketInformationTabs currentTab={'borrow'} hrefs={{ borrow: '', supply: getVaultPathname(params, marketId) }}>
-          {loanExists ? (
-            <BorrowPositionDetails {...borrowPositionDetails} />
-          ) : (
-            <Stack padding={Spacing.md} sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
-              <NoPosition type="borrow" />
-            </Stack>
-          )}
+          {loanExists ? <BorrowPositionDetails {...borrowPositionDetails} /> : <NoPosition type="borrow" />}
           {userCollateralEvents?.events && userCollateralEvents.events.length > 0 && (
             <Stack
               paddingLeft={Spacing.md}

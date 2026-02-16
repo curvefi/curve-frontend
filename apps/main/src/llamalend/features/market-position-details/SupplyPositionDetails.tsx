@@ -142,7 +142,7 @@ export const SupplyPositionDetails = ({ userSupplyRate, shares, supplyAsset, boo
           loading={sharesLoading}
           valueOptions={{}}
           notional={
-            sharesStaked && sharesValue
+            sharesStaked != null && sharesValue != null
               ? {
                   value: (sharesStaked / sharesValue) * 100,
                   unit: { symbol: t`% staked`, position: 'suffix' },

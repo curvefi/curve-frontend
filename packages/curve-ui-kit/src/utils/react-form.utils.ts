@@ -32,7 +32,10 @@ export function updateForm<TFieldValues extends FieldValues>(
 export const filterFormErrors = <TFieldValues extends FieldValues>(formState: FormState<TFieldValues>) =>
   notFalsy(
     ...(recordEntries(formState.errors) as [keyof TFieldValues | 'root', Error | undefined][])
-      .filter(([field, error]) => field in formState.dirtyFields && error?.message)
+      .filter(
+        ([field, error]) =>
+          (field in formState.touchedFields || (field === 'root' && formState.isDirty)) && error?.message,
+      )
       .map(([field, error]) => [field, error!.message!] as const),
   )
 
