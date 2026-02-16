@@ -180,7 +180,7 @@ export const useBridgeForm = ({ chainId, networks }: { chainId: number; networks
     })(networks, params),
 
     // Errors
-    amountError: amountError ? new Error(amountError) : null,
+    amountError,
     approveError,
     bridgeError,
     formErrors,

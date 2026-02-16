@@ -91,7 +91,7 @@ const BridgeForm = (props: BridgeFormContentParams) => {
         inputBalanceUsd={amount && decimal(1.02 * +amount)} // Faking 1 crvUSD = $1.02
         amountError={
           amount && +amount > +walletBalance.balance
-            ? new Error(`The amount ${amount} exceeds you wallet balance ${walletBalance.balance}`)
+            ? `The amount ${amount} exceeds you wallet balance ${walletBalance.balance}`
             : undefined
         }
         isPending={isPending}

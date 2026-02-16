@@ -15,7 +15,7 @@ export type BridgeAmountProps = {
   /** USD equivalent of the entered amount, displayed as helper text. */
   inputBalanceUsd: LargeTokenInputProps['inputBalanceUsd']
   /** Optional error to display below the input. */
-  error?: Error | null
+  error?: string | null
 }
 
 /** Token amount input for the FastBridge. Currently hardcoded to crvUSD as the only supported bridging token. */
@@ -42,6 +42,6 @@ export const BridgeAmount = ({
     isError={!!error}
     onBalance={onAmount}
   >
-    {error?.message && <HelperMessage message={error.message} isError />}
+    {error && <HelperMessage message={error} isError />}
   </LargeTokenInput>
 )
