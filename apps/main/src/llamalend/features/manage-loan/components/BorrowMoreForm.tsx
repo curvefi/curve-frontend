@@ -1,5 +1,5 @@
 import { type ChangeEvent, useCallback } from 'react'
-import { BorrowMoreLoanInfoAccordion } from '@/llamalend/features/borrow/components/BorrowMoreLoanInfoAccordion'
+import { BorrowMoreLoanInfoList } from '@/llamalend/features/borrow/components/BorrowMoreLoanInfoList'
 import { LeverageInput } from '@/llamalend/features/borrow/components/LeverageInput'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { OnBorrowedMore } from '@/llamalend/mutations/borrow-more.mutation'
@@ -73,8 +73,8 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     <Form
       {...form}
       onSubmit={onSubmit}
-      infoAccordion={
-        <BorrowMoreLoanInfoAccordion
+      footer={
+        <BorrowMoreLoanInfoList
           params={params}
           values={values}
           tokens={{ collateralToken, borrowToken }}

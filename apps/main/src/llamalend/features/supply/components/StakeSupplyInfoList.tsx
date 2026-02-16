@@ -2,33 +2,35 @@ import BigNumber from 'bignumber.js'
 import type { Token } from '@/llamalend/features/borrow/types'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useMarketRates } from '@/llamalend/queries/market-rates'
-import { useUnstakeEstimateGas } from '@/llamalend/queries/supply/supply-unstake-estimate-gas.query'
+import { useStakeIsApproved } from '@/llamalend/queries/supply/supply-stake-approved.query'
+import { useStakeEstimateGas } from '@/llamalend/queries/supply/supply-stake-estimate-gas.query'
 import {
   useSharesToAssetsAmount,
   useUserStakedVaultSharesToAssetsAmount,
 } from '@/llamalend/queries/supply/supply-user-vault-amounts'
 import { useUserBalances } from '@/llamalend/queries/user-balances.query'
-import type { UnstakeParams } from '@/llamalend/queries/validation/supply.validation'
-import { SupplyActionInfoList } from '@/llamalend/widgets/action-card/SupplyInfoAccordion'
+import type { StakeParams } from '@/llamalend/queries/validation/supply.validation'
+import { SupplyActionInfoList } from '@/llamalend/widgets/action-card/SupplyActionInfoList'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { t } from '@ui-kit/lib/i18n'
 import { mapQuery } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
 
-export type UnstakeSupplyInfoAccordionProps<ChainId extends IChainId> = {
-  params: UnstakeParams<ChainId>
+export type StakeSupplyInfoListProps<ChainId extends IChainId> = {
+  params: StakeParams<ChainId>
   networks: NetworkDict<ChainId>
   tokens: { borrowToken: Token | undefined }
 }
 
-export function UnstakeSupplyInfoAccordion<ChainId extends IChainId>({
+export function StakeSupplyInfoList<ChainId extends IChainId>({
   params,
   networks,
   tokens,
-}: UnstakeSupplyInfoAccordionProps<ChainId>) {
-  const { chainId, marketId, userAddress, unstakeAmount } = params
-  const isOpen = !!unstakeAmount
+}: StakeSupplyInfoListProps<ChainId>) {
+  const { chainId, marketId, userAddress, stakeAmount } = params
+  const isOpen = !!stakeAmount
 
+  const { data: isApproved } = useStakeIsApproved(params, isOpen)
   const userBalances = useUserBalances({ chainId, marketId, userAddress }, isOpen)
 
   const marketRates = useMarketRates(params, isOpen)
@@ -36,15 +38,15 @@ export function UnstakeSupplyInfoAccordion<ChainId extends IChainId>({
   const prevStakedShares = mapQuery(userBalances, (d) => d.gauge)
   const stakedShares = mapQuery(
     prevStakedShares,
-    (prevAmount) => unstakeAmount && decimal(new BigNumber(prevAmount).minus(unstakeAmount)),
+    (prevAmount) => stakeAmount && decimal(new BigNumber(prevAmount).plus(stakeAmount)),
   )
 
   const prevAmountStaked = useUserStakedVaultSharesToAssetsAmount({ chainId, marketId, userAddress }, isOpen)
-  const amountUnstakedAssets = useSharesToAssetsAmount({ ...params, shares: unstakeAmount }, isOpen)
+  const amountStakedAssets = useSharesToAssetsAmount({ ...params, shares: stakeAmount }, isOpen)
 
   const amountStaked = mapQuery(
     prevAmountStaked,
-    (prevAmount) => amountUnstakedAssets.data && decimal(new BigNumber(prevAmount).minus(amountUnstakedAssets.data)),
+    (prevAmount) => amountStakedAssets.data && decimal(new BigNumber(prevAmount).plus(amountStakedAssets.data)),
   )
 
   return (
@@ -52,13 +54,14 @@ export function UnstakeSupplyInfoAccordion<ChainId extends IChainId>({
       sharesLabel={t`Staked shares`}
       amountLabel={t`Amount staked`}
       isOpen={isOpen}
+      isApproved={isApproved}
       suppliedSymbol={tokens.borrowToken?.symbol}
       prevVaultShares={prevStakedShares}
       vaultShares={stakedShares}
       prevAmountSupplied={prevAmountStaked}
       amountSupplied={amountStaked}
       supplyApy={mapQuery(marketRates, (d) => d.lendApy)}
-      gas={useUnstakeEstimateGas(networks, params, isOpen)}
+      gas={useStakeEstimateGas(networks, params, isOpen)}
     />
   )
 }

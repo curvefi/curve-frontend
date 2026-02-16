@@ -43,6 +43,11 @@ export type LoanActionInfoListProps = {
   leverageEnabled?: boolean
 }
 
+/**
+ * List with action infos about the loan (like health, borrow APR, LTV, net borrow APR, estimated gas, slippage)
+ * By default, the action info are hidden. They are visible when the isOpen prop is true.
+ * When leverage is enabled, leverage-specific infos and slippage settings are also included.
+ */
 export const LoanActionInfoList = ({
   isOpen,
   isApproved,

@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { RepayLoanInfoAccordion } from '@/llamalend/features/borrow/components/RepayLoanInfoAccordion'
+import { RepayLoanInfoList } from '@/llamalend/features/borrow/components/RepayLoanInfoList'
 import { RepayTokenList, type RepayTokenListProps } from '@/llamalend/features/manage-loan/components/RepayTokenList'
 import { RepayTokenOption, useRepayTokens } from '@/llamalend/features/manage-loan/hooks/useRepayTokens'
 import { hasLeverage } from '@/llamalend/llama.utils'
@@ -126,8 +126,8 @@ export const RepayForm = <ChainId extends IChainId>({
     <Form
       {...form}
       onSubmit={onSubmit}
-      infoAccordion={
-        <RepayLoanInfoAccordion
+      footer={
+        <RepayLoanInfoList
           params={params}
           values={values}
           tokens={{ collateralToken, borrowToken }}

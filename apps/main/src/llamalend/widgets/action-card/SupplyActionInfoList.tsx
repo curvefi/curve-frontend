@@ -31,6 +31,10 @@ export type SupplyActionInfoListProps = {
   gas: Query<TxGasInfo | null>
 }
 
+/**
+ * List with action infos about the supply (like vault shares, amount supplied, supply APY, net supply APY, estimated gas)
+ * By default, the action info are hidden. They are visible when the isOpen prop is true.
+ */
 export const SupplyActionInfoList = ({
   isOpen,
   isApproved,

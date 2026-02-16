@@ -20,7 +20,7 @@ import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { InputDivider } from '../../../widgets/InputDivider'
 import { useCreateLoanForm } from '../hooks/useCreateLoanForm'
 import { AdvancedCreateLoanOptions } from './AdvancedCreateLoanOptions'
-import { CreateLoanInfoAccordion } from './CreateLoanInfoAccordion'
+import { CreateLoanInfoList } from './CreateLoanInfoList'
 import { LeverageInput } from './LeverageInput'
 import { LoanPresetSelector } from './LoanPresetSelector'
 
@@ -86,8 +86,8 @@ export const CreateLoanForm = <ChainId extends IChainId>({
     <Form
       {...form}
       onSubmit={onSubmit}
-      infoAccordion={
-        <CreateLoanInfoAccordion
+      footer={
+        <CreateLoanInfoList
           params={params}
           values={values}
           collateralToken={collateralToken}

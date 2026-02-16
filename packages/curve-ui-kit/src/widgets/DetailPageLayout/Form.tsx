@@ -7,21 +7,21 @@ type TContext = null // not used yet, we can make this generic later if needed
 
 /**
  * A form element that includes a provider, a form tag, and a content wrapper.
- * Supports a child info accordion below the form (outside the background area).
+ * Supports a footer below the form (outside the background area).
  */
 export const Form = <TFieldValues extends FieldValues>({
   onSubmit,
   children,
-  infoAccordion,
+  footer,
   ...form
 }: {
   onSubmit: FormEventHandler<HTMLFormElement>
   children: ReactNode
-  infoAccordion: ReactNode
+  footer: ReactNode
 } & FormProviderProps<TFieldValues, TContext, TFieldValues>) => (
   <FormProvider {...form}>
     <form onSubmit={onSubmit} style={{ overflowWrap: 'break-word' }}>
-      <FormContent footer={infoAccordion}>{children}</FormContent>
+      <FormContent footer={footer}>{children}</FormContent>
     </form>
   </FormProvider>
 )

@@ -17,7 +17,7 @@ import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { mapQuery, q } from '@ui-kit/types/util'
 import { decimal, Decimal } from '@ui-kit/utils'
 
-export function RemoveCollateralInfoAccordion<ChainId extends IChainId>({
+export function RemoveCollateralInfoList<ChainId extends IChainId>({
   params,
   values: { userCollateral },
   collateralToken,

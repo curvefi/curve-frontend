@@ -56,7 +56,7 @@ function useRepayRemainingDebt<ChainId extends IChainId>(
         }
 }
 
-export function RepayLoanInfoAccordion<ChainId extends IChainId>({
+export function RepayLoanInfoList<ChainId extends IChainId>({
   params,
   values: { slippage, stateCollateral, userCollateral, userBorrowed, isFull },
   tokens: { collateralToken, borrowToken },

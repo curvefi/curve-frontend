@@ -15,12 +15,7 @@ import { LoanActionInfoList } from '../../../widgets/action-card/LoanActionInfoL
 import { useLoanToValue } from '../hooks/useLoanToValue'
 import { type CreateLoanForm, type CreateLoanFormQueryParams, type Token } from '../types'
 
-/**
- * Accordion with action infos about the loan (like health, band range, price range, N, borrow APR, LTV, estimated gas, slippage)
- * By default, only the health info is visible. The rest is visible when the accordion is expanded.
- * When leverage is enabled, leverage-specific infos and slippage settings are also included.
- */
-export const CreateLoanInfoAccordion = <ChainId extends IChainId>({
+export const CreateLoanInfoList = <ChainId extends IChainId>({
   params,
   values: { slippage, leverageEnabled, userCollateral, debt },
   collateralToken,

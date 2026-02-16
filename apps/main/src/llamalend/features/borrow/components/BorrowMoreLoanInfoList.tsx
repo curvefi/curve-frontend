@@ -20,7 +20,7 @@ import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { mapQuery, q } from '@ui-kit/types/util'
 import { decimal, Decimal } from '@ui-kit/utils'
 
-export function BorrowMoreLoanInfoAccordion<ChainId extends IChainId>({
+export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
   params,
   values: { slippage, userCollateral, userBorrowed, debt },
   tokens: { collateralToken, borrowToken },

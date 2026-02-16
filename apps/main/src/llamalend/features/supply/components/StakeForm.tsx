@@ -8,7 +8,7 @@ import Button from '@mui/material/Button'
 import { t } from '@ui-kit/lib/i18n'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { useStakeForm } from '../hooks/useStakeForm'
-import { StakeSupplyInfoAccordion } from './StakeSupplyInfoAccordion'
+import { StakeSupplyInfoList } from './StakeSupplyInfoList'
 
 export type StakeFormProps<ChainId extends IChainId> = {
   market: LlamaMarketTemplate | undefined
@@ -54,7 +54,7 @@ export const StakeForm = <ChainId extends IChainId>({
     <Form
       {...form}
       onSubmit={onSubmit}
-      infoAccordion={<StakeSupplyInfoAccordion params={params} networks={networks} tokens={{ borrowToken }} />}
+      footer={<StakeSupplyInfoList params={params} networks={networks} tokens={{ borrowToken }} />}
     >
       <LoanFormTokenInput
         label={t`Amount to stake`}

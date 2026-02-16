@@ -10,7 +10,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { InputDivider } from '../../../widgets/InputDivider'
 import { useAddCollateralForm } from '../hooks/useAddCollateralForm'
-import { AddCollateralInfoAccordion } from './AddCollateralInfoAccordion'
+import { AddCollateralInfoList } from './AddCollateralInfoList'
 
 export const AddCollateralForm = <ChainId extends IChainId>({
   market,
@@ -49,8 +49,8 @@ export const AddCollateralForm = <ChainId extends IChainId>({
     <Form
       {...form}
       onSubmit={onSubmit}
-      infoAccordion={
-        <AddCollateralInfoAccordion
+      footer={
+        <AddCollateralInfoList
           params={params}
           values={values}
           collateralToken={collateralToken}
