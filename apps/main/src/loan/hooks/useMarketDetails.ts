@@ -1,6 +1,11 @@
 import type { MarketDetailsProps } from '@/llamalend/features/market-details'
-import { DAYS_BACK, useRateMetrics } from '@/llamalend/hooks/useRateMetrics'
 import { useMarketRates } from '@/llamalend/queries/market-rates'
+import {
+  getBorrowRateMetrics,
+  getCrvUsdSnapshotBorrowRate,
+  getSnapshotCollateralRebasingYieldRate,
+  LAST_MONTH,
+} from '@/llamalend/rates.utils'
 import { CRVUSD_ADDRESS } from '@/loan/constants'
 import { useMintMarketMaxLeverage } from '@/loan/entities/mint-market-max-leverage'
 import { networks } from '@/loan/networks'
@@ -40,28 +45,24 @@ export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetails
     blockchainId,
     contractAddress: llamma?.controller as Address,
     agg: 'day',
-    limit: DAYS_BACK, // fetch last 30 days for 30 day average calcs
+    limit: LAST_MONTH, // fetch last 30 days for 30 day average calcs
   })
   const { data: maxLeverage, isLoading: isMarketMaxLeverageLoading } = useMintMarketMaxLeverage({
     chainId,
     marketId: llammaId,
   })
-  const collateralRebasingYieldApr = crvUsdSnapshots?.[crvUsdSnapshots.length - 1]?.collateralToken.rebasingYieldApr
   const borrowApr = marketRates?.borrowApr == null ? null : Number(marketRates.borrowApr)
   const {
     averageRate,
     averageRebasingYield,
     totalRate: totalBorrowRate,
     averageTotalRate: totalAverageBorrowRate,
-  } = useRateMetrics({
-    rate: borrowApr,
-    rebasingYield: collateralRebasingYieldApr ?? null,
-    average: {
-      snapshots: crvUsdSnapshots,
-      daysBack: DAYS_BACK,
-      getRate: ({ borrowApr }) => borrowApr,
-      getRebasingYield: ({ collateralToken }) => collateralToken.rebasingYieldApr,
-    },
+    rebasingYield: collateralRebasingYieldApr,
+  } = getBorrowRateMetrics({
+    borrowRate: borrowApr,
+    snapshots: crvUsdSnapshots,
+    getBorrowRate: getCrvUsdSnapshotBorrowRate,
+    getRebasingYield: getSnapshotCollateralRebasingYieldRate,
   })
 
   return {
@@ -86,7 +87,7 @@ export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetails
     borrowRate: {
       rate: borrowApr,
       averageRate: averageRate,
-      averageRateLabel: `${DAYS_BACK}D`,
+      averageRateLabel: `${LAST_MONTH}D`,
       rebasingYield: collateralRebasingYieldApr ?? null,
       averageRebasingYield: averageRebasingYield ?? null,
       totalAverageBorrowRate,

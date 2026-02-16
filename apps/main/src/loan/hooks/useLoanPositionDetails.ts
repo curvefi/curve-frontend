@@ -5,10 +5,15 @@ import { DEFAULT_HEALTH_MODE } from '@/llamalend/constants'
 import type { BorrowPositionDetailsProps } from '@/llamalend/features/market-position-details'
 import { calculateRangeToLiquidation } from '@/llamalend/features/market-position-details/utils'
 import { DEFAULT_BORROW_TOKEN_SYMBOL, getHealthMode } from '@/llamalend/health.util'
-import { DAYS_BACK, useRateMetrics } from '@/llamalend/hooks/useRateMetrics'
 import { calculateLtv, hasV2Leverage } from '@/llamalend/llama.utils'
 import { useMarketRates } from '@/llamalend/queries/market-rates'
 import { useUserCurrentLeverage } from '@/llamalend/queries/user-current-leverage.query'
+import {
+  LAST_MONTH,
+  getBorrowRateMetrics,
+  getCrvUsdSnapshotBorrowRate,
+  getSnapshotCollateralRebasingYieldRate,
+} from '@/llamalend/rates.utils'
 import { CRVUSD_ADDRESS } from '@/loan/constants'
 import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
 import { networks } from '@/loan/networks'
@@ -88,7 +93,7 @@ export const useLoanPositionDetails = ({
     blockchainId,
     contractAddress: llamma?.controller as Address,
     agg: 'day',
-    limit: DAYS_BACK, // fetch last 30 days for 30 day average calcs
+    limit: LAST_MONTH, // fetch last 30 days for 30 day average calcs
   })
 
   const collateralTotalValue = useMemo(() => {
@@ -96,22 +101,18 @@ export const useLoanPositionDetails = ({
     return Number(collateral) * Number(collateralUsdRate) + Number(stablecoin)
   }, [collateral, stablecoin, collateralUsdRate])
 
-  const collateralRebasingYieldApr = crvUsdSnapshots?.[crvUsdSnapshots.length - 1]?.collateralToken.rebasingYieldApr // take only most recent rebasing yield APR
   const borrowApr = marketRates?.borrowApr == null ? null : Number(marketRates.borrowApr)
   const {
     averageRate: averageBorrowApr,
     averageRebasingYield: averageRebasingYieldApr,
     totalRate: totalBorrowApr,
     averageTotalRate: totalAverageBorrowApr,
-  } = useRateMetrics({
-    rate: borrowApr,
-    rebasingYield: collateralRebasingYieldApr ?? null,
-    average: {
-      snapshots: crvUsdSnapshots,
-      daysBack: DAYS_BACK,
-      getRate: ({ borrowApr }) => borrowApr,
-      getRebasingYield: ({ collateralToken }) => collateralToken.rebasingYieldApr,
-    },
+    rebasingYield: collateralRebasingYieldApr,
+  } = getBorrowRateMetrics({
+    borrowRate: borrowApr,
+    snapshots: crvUsdSnapshots,
+    getBorrowRate: getCrvUsdSnapshotBorrowRate,
+    getRebasingYield: getSnapshotCollateralRebasingYieldRate,
   })
 
   return {
@@ -129,7 +130,7 @@ export const useLoanPositionDetails = ({
       rebasingYield: collateralRebasingYieldApr ?? null,
       averageRate: averageBorrowApr,
       averageRebasingYield: averageRebasingYieldApr ?? null,
-      averageRateLabel: `${DAYS_BACK}D`,
+      averageRateLabel: `${LAST_MONTH}D`,
       totalBorrowRate: totalBorrowApr,
       totalAverageBorrowRate: totalAverageBorrowApr,
       extraRewards: campaigns,

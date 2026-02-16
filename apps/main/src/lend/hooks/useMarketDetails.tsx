@@ -4,7 +4,12 @@ import { useMarketDetails as useLendMarketDetails } from '@/lend/entities/market
 import { networks } from '@/lend/networks'
 import type { ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import type { MarketDetailsProps } from '@/llamalend/features/market-details'
-import { DAYS_BACK, useRateMetrics } from '@/llamalend/hooks/useRateMetrics'
+import {
+  LAST_MONTH,
+  getBorrowRateMetrics,
+  getLendingSnapshotBorrowRate,
+  getSnapshotCollateralRebasingYieldRate,
+} from '@/llamalend/rates.utils'
 import type { Chain, Address } from '@curvefi/prices-api'
 import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import { useLendingSnapshots } from '@ui-kit/entities/lending-snapshots'
@@ -20,7 +25,6 @@ type UseMarketDetailsProps = {
   market: OneWayMarketTemplate | null | undefined
   marketId: string
 }
-const DAYS_BACK_LABEL = `${DAYS_BACK}D`
 
 export const useMarketDetails = ({
   chainId,
@@ -50,7 +54,7 @@ export const useMarketDetails = ({
     blockchainId,
     contractAddress: controller as Address,
     agg: 'day',
-    limit: 30, // fetch last 30 days for 30 day average calcs
+    limit: LAST_MONTH, // fetch last 30 days for 30 day average calcs
   })
   const { data: collateralUsdRate, isLoading: collateralUsdRateLoading } = useTokenUsdRate({
     chainId,
@@ -73,7 +77,7 @@ export const useMarketDetails = ({
     averageTotalExtraIncentivesApr: averageTotalExtraIncentivesApr,
   } = useMemo(
     () =>
-      calculateAverageRates(lendingSnapshots, DAYS_BACK, {
+      calculateAverageRates(lendingSnapshots, LAST_MONTH, {
         lendApy: ({ lendApy }) => Number(lendApy) * 100,
         supplyRebasingYield: ({ borrowedToken }) => borrowedToken.rebasingYield,
         averageSupplyAprCrvMinBoost: ({ lendAprCrv0Boost }) => lendAprCrv0Boost,
@@ -93,7 +97,6 @@ export const useMarketDetails = ({
   const supplyApy = marketLendApy && Number(marketLendApy)
   const supplyAprCrvMinBoost = crvRates?.[0] ?? lendingSnapshots?.[0]?.lendAprCrv0Boost ?? 0
   const supplyAprCrvMaxBoost = crvRates?.[1] ?? lendingSnapshots?.[0]?.lendAprCrvMaxBoost ?? 0
-  const collateralRebasingYieldApr = lendingSnapshots?.[lendingSnapshots.length - 1]?.collateralToken?.rebasingYieldApr // take only most recent rebasing yield
   const borrowRebasingYield = lendingSnapshots?.[lendingSnapshots.length - 1]?.borrowedToken?.rebasingYield // take only most recent rebasing yield
   const extraIncentivesTotalApr = sum(rewardsApr?.map((r) => r.apy) ?? [])
   const {
@@ -101,15 +104,12 @@ export const useMarketDetails = ({
     averageRebasingYield: averageBorrowRebasingYieldApr,
     totalRate: totalBorrowApr,
     averageTotalRate: totalAverageBorrowApr,
-  } = useRateMetrics({
-    rate: borrowApr,
-    rebasingYield: collateralRebasingYieldApr ?? null,
-    average: {
-      snapshots: lendingSnapshots,
-      daysBack: DAYS_BACK,
-      getRate: ({ borrowApr }) => borrowApr,
-      getRebasingYield: ({ collateralToken }) => collateralToken.rebasingYieldApr,
-    },
+    rebasingYield: collateralRebasingYieldApr,
+  } = getBorrowRateMetrics({
+    borrowRate: borrowApr,
+    snapshots: lendingSnapshots,
+    getBorrowRate: getLendingSnapshotBorrowRate,
+    getRebasingYield: getSnapshotCollateralRebasingYieldRate,
   })
 
   const totalSupplyRateMinBoost =
@@ -151,7 +151,7 @@ export const useMarketDetails = ({
     borrowRate: {
       rate: borrowApr,
       averageRate: averageBorrowApr ?? null,
-      averageRateLabel: DAYS_BACK_LABEL,
+      averageRateLabel: `${LAST_MONTH}D`,
       rebasingYield: collateralRebasingYieldApr ?? null,
       averageRebasingYield: averageBorrowRebasingYieldApr ?? null,
       totalBorrowRate: totalBorrowApr,
@@ -162,7 +162,7 @@ export const useMarketDetails = ({
     supplyRate: {
       rate: supplyApy,
       averageRate: averageLendApy ?? null,
-      averageRateLabel: DAYS_BACK_LABEL,
+      averageRateLabel: `${LAST_MONTH}D`,
       supplyAprCrvMinBoost,
       supplyAprCrvMaxBoost,
       averageSupplyAprCrvMinBoost: averageSupplyAprCrvMinBoost ?? null,

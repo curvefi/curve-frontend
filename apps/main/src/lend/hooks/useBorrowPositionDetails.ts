@@ -6,10 +6,15 @@ import { useStore } from '@/lend/store/useStore'
 import { ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import type { BorrowPositionDetailsProps } from '@/llamalend/features/market-position-details'
 import { calculateRangeToLiquidation } from '@/llamalend/features/market-position-details/utils'
-import { DAYS_BACK, useRateMetrics } from '@/llamalend/hooks/useRateMetrics'
 import { calculateLtv } from '@/llamalend/llama.utils'
 import { useLoanExists } from '@/llamalend/queries/loan-exists'
 import { useMarketRates } from '@/llamalend/queries/market-rates'
+import {
+  getBorrowRateMetrics,
+  getLendingSnapshotBorrowRate,
+  getSnapshotCollateralRebasingYieldRate,
+  LAST_MONTH,
+} from '@/llamalend/rates.utils'
 import type { Address, Chain } from '@curvefi/prices-api'
 import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import { useLendingSnapshots } from '@ui-kit/entities/lending-snapshots'
@@ -71,11 +76,10 @@ export const useBorrowPositionDetails = ({
     blockchainId,
     contractAddress: market?.addresses?.controller as Address,
     agg: 'day',
-    limit: DAYS_BACK,
+    limit: LAST_MONTH,
   })
 
   const borrowApr = marketRates?.borrowApr == null ? null : Number(marketRates.borrowApr)
-  const rebasingYieldApr = lendSnapshots?.[lendSnapshots.length - 1]?.collateralToken?.rebasingYieldApr // take most recent rebasing yield APR
 
   const collateralTotalValue = useMemo(() => {
     if (!collateralUsdRate || !collateral || !borrowed) return null
@@ -87,15 +91,12 @@ export const useBorrowPositionDetails = ({
     averageRebasingYield: averageRebasingYieldApr,
     totalRate: totalBorrowRate,
     averageTotalRate: totalAverageBorrowRate,
-  } = useRateMetrics({
-    rate: borrowApr,
     rebasingYield: rebasingYieldApr,
-    average: {
-      snapshots: lendSnapshots,
-      daysBack: DAYS_BACK,
-      getRate: ({ borrowApr }) => borrowApr,
-      getRebasingYield: ({ collateralToken }) => collateralToken.rebasingYieldApr,
-    },
+  } = getBorrowRateMetrics({
+    borrowRate: borrowApr,
+    snapshots: lendSnapshots,
+    getBorrowRate: getLendingSnapshotBorrowRate,
+    getRebasingYield: getSnapshotCollateralRebasingYieldRate,
   })
 
   return {
@@ -111,7 +112,7 @@ export const useBorrowPositionDetails = ({
     borrowRate: {
       rate: borrowApr,
       averageRate: averageBorrowApr,
-      averageRateLabel: `${DAYS_BACK}D`,
+      averageRateLabel: `${LAST_MONTH}D`,
       rebasingYield: rebasingYieldApr ?? null,
       averageRebasingYield: averageRebasingYieldApr ?? null,
       totalBorrowRate,

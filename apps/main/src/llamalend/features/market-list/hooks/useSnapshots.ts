@@ -1,6 +1,13 @@
 import lodash from 'lodash'
 import { useMemo } from 'react'
 import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
+import {
+  LAST_WEEK,
+  getBorrowRateMetrics,
+  getCrvUsdSnapshotBorrowRate,
+  getLendingSnapshotBorrowRate,
+  getSnapshotCollateralRebasingYieldRate,
+} from '@/llamalend/rates.utils'
 import { CrvUsdSnapshot, useCrvUsdSnapshots } from '@ui-kit/entities/crvusd-snapshots'
 import { LendingSnapshot, useLendingSnapshots } from '@ui-kit/entities/lending-snapshots'
 import { MarketRateType, LlamaMarketType } from '@ui-kit/types/market'
@@ -17,7 +24,7 @@ type UseSnapshotsResult<T> = {
   minBoostedAprAverage: number | null
   maxBoostedAprAverage: number | null
   error: unknown
-  period: '7D' // this will be extended in the future
+  period: string
 }
 
 const SnapshotKeys = {
@@ -39,7 +46,7 @@ export function useSnapshots<T extends CrvUsdSnapshot | LendingSnapshot>(
   const showLendGraph = isLend && enabled
   const showMintGraph = !isLend && type === MarketRateType.Borrow && enabled
   const contractAddress = controllerAddress
-  const params = { blockchainId: chain, contractAddress, limit: 7 } // fetch last 7 days for 7 day average calcs
+  const params = { blockchainId: chain, contractAddress, limit: LAST_WEEK } // fetch last 7 days for 7 day average calcs
   const { data: poolSnapshots, isLoading: lendIsLoading, error: poolError } = useLendingSnapshots(params, showLendGraph)
   const { data: mintSnapshots, isLoading: mintIsLoading, error: mintError } = useCrvUsdSnapshots(params, showMintGraph)
 
@@ -57,15 +64,27 @@ export function useSnapshots<T extends CrvUsdSnapshot | LendingSnapshot>(
         error: mintError,
       }
 
+  const borrowRateMetrics = useMemo(() => {
+    if (type !== MarketRateType.Borrow) return null
+
+    return getBorrowRateMetrics({
+      borrowRate: rates.borrowApr,
+      snapshots: snapshots ?? undefined,
+      getBorrowRate: isLend ? getLendingSnapshotBorrowRate : getCrvUsdSnapshotBorrowRate,
+      getRebasingYield: getSnapshotCollateralRebasingYieldRate,
+      daysBack: LAST_WEEK,
+    } as Parameters<typeof getBorrowRateMetrics>[0])
+  }, [isLend, rates.borrowApr, snapshots, type])
+
   const averageRate = useMemo(
-    () => snapshots && meanBy(snapshots as T[], (row) => row[snapshotKey as keyof T]) * 100,
-    [snapshots, snapshotKey],
+    () =>
+      type === MarketRateType.Borrow
+        ? (borrowRateMetrics?.averageRate ?? null)
+        : snapshots && meanBy(snapshots as T[], (row) => row[snapshotKey as keyof T]) * 100,
+    [borrowRateMetrics, snapshots, snapshotKey, type],
   )
 
-  const averageTotalBorrowRate = useMemo(
-    () => snapshots && meanBy(snapshots as LendingSnapshot[], (row) => row.borrowTotalApr * 100),
-    [snapshots],
-  )
+  const averageTotalBorrowRate = borrowRateMetrics?.averageTotalRate ?? null
 
   const minBoostedAprAverage = useMemo(
     () =>
@@ -109,6 +128,6 @@ export function useSnapshots<T extends CrvUsdSnapshot | LendingSnapshot>(
     minBoostedAprAverage,
     maxBoostedAprAverage,
     error,
-    period: '7D',
+    period: `${LAST_WEEK}D`,
   } as UseSnapshotsResult<T>
 }
