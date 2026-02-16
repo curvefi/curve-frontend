@@ -63,12 +63,14 @@ const emptyBridgeForm = () =>
     walletBalance: undefined,
   }) satisfies BridgeForm
 
+const formProps = {
+  ...formDefaultOptions,
+  resolver: vestResolver(bridgeFormValidationSuite),
+  defaultValues: emptyBridgeForm(),
+}
+
 export const useBridgeForm = ({ chainId, networks }: { chainId: number; networks: Record<number, BaseConfig> }) => {
-  const form = useForm<BridgeForm>({
-    ...formDefaultOptions,
-    resolver: vestResolver(bridgeFormValidationSuite),
-    defaultValues: emptyBridgeForm(),
-  })
+  const form = useForm<BridgeForm>(formProps)
 
   const values = watchForm(form)
 
