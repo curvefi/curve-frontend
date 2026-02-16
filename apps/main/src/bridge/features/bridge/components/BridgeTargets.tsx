@@ -105,7 +105,7 @@ export type BridgeTargetsProps = {
  * we can support bridging to different networks.
  */
 export const BridgeTargets = ({ networks, fromChainId, disabled, loading, onNetworkSelected }: BridgeTargetsProps) => {
-  const [isFromOpen, openFrom, closeFrom] = useSwitch()
+  const [isFromOpen, openFrom, closeFrom] = useSwitch(false)
 
   return (
     <Box
@@ -128,7 +128,7 @@ export const BridgeTargets = ({ networks, fromChainId, disabled, loading, onNetw
         sx={{ gridArea: GRID_AREAS.from.input }}
       />
 
-      <ModalDialog open={!!isFromOpen} onClose={closeFrom} title={t`Select Network`}>
+      <ModalDialog open={isFromOpen} onClose={closeFrom} title={t`Select Network`}>
         {/** At the moment of writing, when selecting a network from the chain list feature it updates the URL */}
         <ChainList
           showTestnets={false}
