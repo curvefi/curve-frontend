@@ -9,6 +9,7 @@ import type { AppRoute } from '@ui-kit/widgets/Header/types'
 const LEND_APP: AppName = 'lend'
 const CRVUSD_APP: AppName = 'crvusd'
 
+// TODO: duplicate of getVaultPathname and getLoanPathname in @/lend/utils/utilsRouter.ts. First they need to be refactored outside the lend app.
 const buildLendMarketPath = ({ marketId, marketType }: { marketId: string; marketType: string }) =>
   `${LEND_ROUTES.PAGE_MARKETS}/${marketId}${marketType}`
 
