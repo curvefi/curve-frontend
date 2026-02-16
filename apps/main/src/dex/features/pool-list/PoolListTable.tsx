@@ -71,7 +71,7 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
     sorting,
   })
   const [expanded, onExpandedChange] = useState<ExpandedState>({})
-  const { globalFilter, onGlobalFilterChange } = useGlobalFilter()
+  const { globalFilter, setGlobalFilter } = useGlobalFilter()
   const filterProps = { columnFiltersById, setColumnFilter, defaultFilters }
 
   const table = useTable({
@@ -105,7 +105,7 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
         loading={!isReady}
         visibilityGroups={columnSettings}
         searchText={globalFilter}
-        onSearch={onGlobalFilterChange}
+        onSearch={setGlobalFilter}
         hasSearchBar
         chips={
           <PoolListChips
@@ -116,7 +116,7 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
             onSortingChange={onSortingChange}
             sortField={sortField}
             searchText={globalFilter}
-            onSearch={onGlobalFilterChange}
+            onSearch={setGlobalFilter}
             resultCount={data ? resultCount : undefined}
             {...filterProps}
           />

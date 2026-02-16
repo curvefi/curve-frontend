@@ -67,7 +67,7 @@ export const LlamaMarketsTable = ({
     userHasPositions,
   )
   const [expanded, onExpandedChange] = useState<ExpandedState>({})
-  const { globalFilter, onGlobalFilterChange } = useGlobalFilter()
+  const { globalFilter, setGlobalFilter } = useGlobalFilter()
   const filterProps = { columnFiltersById, setColumnFilter, defaultFilters }
 
   const data = useMemo(
@@ -116,7 +116,7 @@ export const LlamaMarketsTable = ({
         toggleVisibility={toggleVisibility}
         searchText={globalFilter}
         hasSearchBar
-        onSearch={onGlobalFilterChange}
+        onSearch={setGlobalFilter}
         leftChildren={<TableFiltersTitles title={t`Markets`} subtitle={t`Find your next opportunity`} />}
         collapsible={<LendingMarketsFilters data={data} {...filterProps} />}
         chips={

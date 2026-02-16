@@ -14,7 +14,7 @@ export function useGlobalFilter(key = DEFAULT_SEARCH_KEY) {
   const searchParams = useSearchParams()
   const globalFilter = useMemo(() => searchParams.get(key) ?? '', [searchParams, key])
 
-  const onGlobalFilterChange = useCallback(
+  const setGlobalFilter = useCallback(
     (value: string) => {
       const { history, location } = window
       const params = new URLSearchParams(location.search)
@@ -29,5 +29,5 @@ export function useGlobalFilter(key = DEFAULT_SEARCH_KEY) {
     [key],
   )
 
-  return { globalFilter, onGlobalFilterChange }
+  return { globalFilter, setGlobalFilter }
 }

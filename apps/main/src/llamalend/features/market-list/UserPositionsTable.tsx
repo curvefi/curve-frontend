@@ -73,7 +73,7 @@ export const UserPositionsTable = ({ onReload, result, loading, isError, tab }: 
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT[tab], SORT_QUERY_FIELD[tab])
   const { columnSettings, columnVisibility, sortField, toggleVisibility } = useLlamaTableVisibility(title, sorting, tab)
   const [expanded, onExpandedChange] = useState<ExpandedState>({})
-  const { globalFilter, onGlobalFilterChange } = useGlobalFilter('search-user-positions')
+  const { globalFilter, setGlobalFilter } = useGlobalFilter('search-user-positions')
   const filterProps = { columnFiltersById, setColumnFilter, defaultFilters }
 
   const table = useTable({
@@ -110,7 +110,7 @@ export const UserPositionsTable = ({ onReload, result, loading, isError, tab }: 
         leftChildren={
           <TableSearchField
             value={globalFilter}
-            onChange={onGlobalFilterChange}
+            onChange={setGlobalFilter}
             testId={`${title}-search`}
             isExpanded
           />
@@ -120,7 +120,7 @@ export const UserPositionsTable = ({ onReload, result, loading, isError, tab }: 
         visibilityGroups={columnSettings}
         toggleVisibility={toggleVisibility}
         searchText={globalFilter}
-        onSearch={onGlobalFilterChange}
+        onSearch={setGlobalFilter}
         collapsible={<LendingMarketsFilters data={userData} {...filterProps} />}
         chips={
           <>
