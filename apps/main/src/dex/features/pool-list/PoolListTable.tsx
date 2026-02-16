@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { useNetworkFromUrl } from '@/dex/hooks/useChainId'
 import { type NetworkConfig } from '@/dex/types/main.types'
 import { notFalsy } from '@curvefi/prices-api/objects.util'
@@ -59,11 +59,22 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
   const { data, isLoading, isReady, userHasPositions } = usePoolListData(network)
 
   const defaultFilters = useDefaultPoolsFilter(data)
-  const { columnFilters, columnFiltersById, setColumnFilter, resetFilters, hasFilters } = useColumnFilters({
+  const { globalFilter, setGlobalFilter, resetGlobalFilter } = useGlobalFilter()
+  const {
+    columnFilters,
+    columnFiltersById,
+    setColumnFilter,
+    resetFilters: resetColumnFilters,
+    hasFilters,
+  } = useColumnFilters({
     title: LOCAL_STORAGE_KEY,
     columns: PoolColumnId,
     defaultFilters,
   })
+  const resetFilters = useCallback(() => {
+    resetColumnFilters()
+    resetGlobalFilter()
+  }, [resetColumnFilters, resetGlobalFilter])
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT)
   const [pagination, onPaginationChange] = usePageFromQueryString(PER_PAGE)
   const { columnSettings, columnVisibility, sortField } = usePoolListVisibilitySettings(LOCAL_STORAGE_KEY, {
@@ -71,7 +82,6 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
     sorting,
   })
   const [expanded, onExpandedChange] = useState<ExpandedState>({})
-  const { globalFilter, setGlobalFilter } = useGlobalFilter()
   const filterProps = { columnFiltersById, setColumnFilter, defaultFilters }
 
   const table = useTable({

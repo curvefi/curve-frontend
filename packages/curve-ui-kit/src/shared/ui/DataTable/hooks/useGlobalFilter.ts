@@ -29,5 +29,12 @@ export function useGlobalFilter(key = DEFAULT_SEARCH_KEY) {
     [key],
   )
 
-  return { globalFilter, setGlobalFilter }
+  const resetGlobalFilter = useCallback(() => {
+    const { history, location } = window
+    const params = new URLSearchParams(location.search)
+    params.delete(key)
+    history.pushState(null, '', params.size ? `?${params.toString()}` : location.pathname)
+  }, [key])
+
+  return { globalFilter, setGlobalFilter, resetGlobalFilter }
 }

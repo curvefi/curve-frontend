@@ -1,5 +1,5 @@
 import lodash from 'lodash'
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { PositionsEmptyState } from '@/llamalend/constants'
 import { ExpandedState } from '@tanstack/react-table'
 import { useIsTablet } from '@ui-kit/hooks/useBreakpoints'
@@ -64,16 +64,25 @@ export const UserPositionsTable = ({ onReload, result, loading, isError, tab }: 
 
   const defaultFilters = useDefaultUserFilter(tab)
   const title = LOCAL_STORAGE_KEYS[tab]
-  const { columnFilters, columnFiltersById, setColumnFilter, resetFilters } = useColumnFilters({
+  const { globalFilter, setGlobalFilter, resetGlobalFilter } = useGlobalFilter('search-user-positions')
+  const {
+    columnFilters,
+    columnFiltersById,
+    setColumnFilter,
+    resetFilters: resetColumnFilters,
+  } = useColumnFilters({
     title,
     columns: LlamaMarketColumnId,
     defaultFilters,
     scope: tab.toLowerCase(),
   })
+  const resetFilters = useCallback(() => {
+    resetColumnFilters()
+    resetGlobalFilter()
+  }, [resetColumnFilters, resetGlobalFilter])
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT[tab], SORT_QUERY_FIELD[tab])
   const { columnSettings, columnVisibility, sortField, toggleVisibility } = useLlamaTableVisibility(title, sorting, tab)
   const [expanded, onExpandedChange] = useState<ExpandedState>({})
-  const { globalFilter, setGlobalFilter } = useGlobalFilter('search-user-positions')
   const filterProps = { columnFiltersById, setColumnFilter, defaultFilters }
 
   const table = useTable({
@@ -108,12 +117,7 @@ export const UserPositionsTable = ({ onReload, result, loading, isError, tab }: 
       <TableFilters<LlamaMarketColumnId>
         filterExpandedKey={title}
         leftChildren={
-          <TableSearchField
-            value={globalFilter}
-            onChange={setGlobalFilter}
-            testId={`${title}-search`}
-            isExpanded
-          />
+          <TableSearchField value={globalFilter} onChange={setGlobalFilter} testId={`${title}-search`} isExpanded />
         }
         loading={loading}
         onReload={onReload}

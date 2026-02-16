@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { MARKET_CUTOFF_DATE } from '@/llamalend/constants'
 import type { LlamaMarketsResult } from '@/llamalend/queries/market-list/llama-markets'
 import Button from '@mui/material/Button'
@@ -55,11 +55,22 @@ export const LlamaMarketsTable = ({
 
   const minLiquidity = useUserProfileStore((s) => s.hideSmallPools) ? SMALL_POOL_TVL : 0
   const defaultFilters = useDefaultLlamaFilter(minLiquidity)
-  const { columnFilters, columnFiltersById, setColumnFilter, resetFilters, hasFilters } = useColumnFilters({
+  const { globalFilter, setGlobalFilter, resetGlobalFilter } = useGlobalFilter()
+  const {
+    columnFilters,
+    columnFiltersById,
+    setColumnFilter,
+    resetFilters: resetColumnFilters,
+    hasFilters,
+  } = useColumnFilters({
     title: LOCAL_STORAGE_KEY,
     columns: LlamaMarketColumnId,
     defaultFilters,
   })
+  const resetFilters = useCallback(() => {
+    resetColumnFilters()
+    resetGlobalFilter()
+  }, [resetColumnFilters, resetGlobalFilter])
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT)
   const { columnSettings, columnVisibility, toggleVisibility, sortField } = useLlamaTableVisibility(
     LOCAL_STORAGE_KEY,
@@ -67,7 +78,6 @@ export const LlamaMarketsTable = ({
     userHasPositions,
   )
   const [expanded, onExpandedChange] = useState<ExpandedState>({})
-  const { globalFilter, setGlobalFilter } = useGlobalFilter()
   const filterProps = { columnFiltersById, setColumnFilter, defaultFilters }
 
   const data = useMemo(
