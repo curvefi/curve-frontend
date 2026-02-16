@@ -1,6 +1,6 @@
+import { NetBorrowAprMetric } from '@/llamalend/widgets/NetBorrowAprMetric'
 import { CollateralMetricTooltipContent } from '@/llamalend/widgets/tooltips/CollateralMetricTooltipContent'
 import { CurrentLTVTooltipContent } from '@/llamalend/widgets/tooltips/CurrentLTVTooltipContent'
-import { MarketNetBorrowAprTooltipContent } from '@/llamalend/widgets/tooltips/MarketNetBorrowAprTooltipContent'
 import { TotalDebtTooltipContent } from '@/llamalend/widgets/tooltips/TotalDebtTooltipContent'
 import { CardHeader, Stack } from '@mui/material'
 import { t } from '@ui-kit/lib/i18n'
@@ -67,35 +67,12 @@ export const BorrowInformation = ({
         },
       })}
     >
-      <Metric
-        size="medium"
-        label={t`Net borrow APR`}
-        value={borrowRate?.totalBorrowRate}
-        loading={borrowRate?.totalBorrowRate == null && borrowRate?.loading}
-        valueOptions={{ unit: 'percentage', color: 'warning' }}
-        notional={
-          borrowRate?.totalAverageBorrowRate
-            ? {
-                value: borrowRate.totalAverageBorrowRate,
-                unit: { symbol: '% 30D Avg', position: 'suffix' },
-              }
-            : undefined
-        }
-        valueTooltip={{
-          title: t`Net borrow APR`,
-          body: (
-            <MarketNetBorrowAprTooltipContent
-              marketType={marketType}
-              borrowRate={borrowRate?.rate}
-              totalBorrowRate={borrowRate?.totalBorrowRate}
-              totalAverageBorrowRate={borrowRate?.totalAverageBorrowRate}
-              averageRate={borrowRate?.averageRate}
-              rebasingYield={borrowRate?.rebasingYield}
-              collateralSymbol={collateralValue?.collateral?.symbol}
-              periodLabel={borrowRate?.averageRateLabel ?? ''}
-              extraRewards={borrowRate?.extraRewards ?? []}
-            />
-          ),
+      <NetBorrowAprMetric
+        marketType={marketType}
+        borrowRate={borrowRate}
+        collateralSymbol={collateralValue?.collateral?.symbol}
+        warning
+        tooltipOptions={{
           placement: 'top',
           arrow: false,
           clickable: true,
