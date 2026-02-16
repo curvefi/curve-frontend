@@ -7,7 +7,30 @@ type BorrowMoreField = 'collateral' | 'user-borrowed' | 'debt'
 const getBorrowMoreInput = (field: BorrowMoreField) =>
   cy.get(`[data-testid="borrow-more-input-${field}"] input[type="text"]`, LOAD_TIMEOUT).first()
 
-export function writeBorrowMoreForm({ debt, openAccordion = true }: { debt: Decimal; openAccordion?: boolean }) {
+export function writeBorrowMoreForm({
+  debt,
+  collateral,
+  userBorrowed,
+  leverageEnabled = false,
+  openAccordion = true,
+}: {
+  debt: Decimal
+  collateral?: Decimal
+  userBorrowed?: Decimal
+  leverageEnabled?: boolean
+  openAccordion?: boolean
+}) {
+  if (leverageEnabled) cy.get('[data-testid="leverage-checkbox"]').click()
+  if (collateral != null) {
+    getBorrowMoreInput('collateral').as('borrowMoreCollateral')
+    cy.get('@borrowMoreCollateral').clear()
+    cy.get('@borrowMoreCollateral').type(collateral)
+  }
+  if (userBorrowed != null) {
+    getBorrowMoreInput('user-borrowed').as('borrowMoreUserBorrowed')
+    cy.get('@borrowMoreUserBorrowed').clear()
+    cy.get('@borrowMoreUserBorrowed').type(userBorrowed)
+  }
   getBorrowMoreInput('debt').as('borrowMoreDebt')
   cy.get('@borrowMoreDebt').clear()
   cy.get('@borrowMoreDebt').type(debt)
@@ -26,7 +49,10 @@ export function checkBorrowMoreDetailsLoaded({
   getActionValue('borrow-apr').should('include', '%')
   checkDebt(expectedCurrentDebt, expectedFutureDebt, 'crvUSD')
   cy.get('[data-testid="loan-form-errors"]').should('not.exist')
-  if (leverageEnabled) throw new Error('Leverage not supported in borrow more tests yet')
+  if (leverageEnabled) {
+    getActionValue('borrow-price-impact').should('include', '%')
+    getActionValue('borrow-slippage').should('include', '%')
+  }
 }
 
 export function submitBorrowMoreForm() {

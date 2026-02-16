@@ -15,48 +15,53 @@ const networks = loanNetworks as unknown as NetworkDict<LlamaChainId>
 const chainId = 1
 
 describe('BorrowMoreForm (mocked)', () => {
-  const createScenario = () => createBorrowMoreScenario({ chainId })
+  const createScenario = ({ approved }: { approved: boolean }) => createBorrowMoreScenario({ chainId, approved })
 
   afterEach(() => {
     resetLlamaTestContext()
   })
 
-  it('fills and submits the borrow more form with randomized data', () => {
-    const scenario = createScenario()
-    const onBorrowedMore = cy.spy().as('onBorrowedMore')
-    const { llamaApi, expected, market, borrow, stubs, collateral } = scenario
+  const runCase = ({ approved, title }: { approved: boolean; title: string }) =>
+    it(title, () => {
+      const scenario = createScenario({ approved })
+      const onBorrowedMore = cy.spy().as('onBorrowedMore')
+      const { llamaApi, expected, market, borrow, stubs, collateral } = scenario
 
-    void collateral
-    setLlamaApi(llamaApi)
+      void collateral
+      setLlamaApi(llamaApi)
 
-    cy.mount(
-      <MockLoanTestWrapper llamaApi={llamaApi}>
-        <BorrowMoreForm
-          market={market}
-          networks={networks}
-          chainId={chainId}
-          onMutated={onBorrowedMore}
-          fromWallet={false}
-        />
-      </MockLoanTestWrapper>,
-    )
+      cy.mount(
+        <MockLoanTestWrapper llamaApi={llamaApi}>
+          <BorrowMoreForm
+            market={market}
+            networks={networks}
+            chainId={chainId}
+            onMutated={onBorrowedMore}
+            fromWallet={false}
+          />
+        </MockLoanTestWrapper>,
+      )
 
-    writeBorrowMoreForm({ debt: borrow })
-    checkBorrowMoreDetailsLoaded({
-      expectedCurrentDebt: scenario.expectedCurrentDebt,
-      expectedFutureDebt: scenario.expectedFutureDebt,
-      leverageEnabled: false,
+      writeBorrowMoreForm({ debt: borrow })
+      checkBorrowMoreDetailsLoaded({
+        expectedCurrentDebt: scenario.expectedCurrentDebt,
+        expectedFutureDebt: scenario.expectedFutureDebt,
+        leverageEnabled: false,
+      })
+
+      cy.then(() => {
+        expect(stubs.parameters).to.have.been.calledWithExactly()
+        expect(stubs.borrowMoreHealth).to.have.been.calledWithExactly(...expected.health)
+        expect(stubs.borrowMoreMaxRecv).to.have.been.calledWithExactly(...expected.maxRecv)
+        expect(stubs.borrowMoreIsApproved).to.have.been.calledWithExactly(...expected.isApproved)
+      })
+
+      submitBorrowMoreForm().then(() => {
+        expect(stubs.estimateGasBorrowMore).to.have.been.calledWithExactly(...expected.estimateGas)
+        expect(stubs.borrowMore).to.have.been.calledWithExactly(...expected.submit)
+      })
     })
 
-    cy.then(() => {
-      expect(stubs.parameters).to.have.been.calledWithExactly()
-      expect(stubs.borrowMoreHealth).to.have.been.calledWithExactly(...expected.health)
-      expect(stubs.borrowMoreMaxRecv).to.have.been.calledWithExactly(...expected.maxRecv)
-      expect(stubs.borrowMoreIsApproved).to.have.been.calledWithExactly(...expected.isApproved)
-    })
-
-    submitBorrowMoreForm().then(() => {
-      expect(stubs.borrowMore).to.have.been.calledWithExactly(...expected.submit)
-    })
-  })
+  runCase({ approved: true, title: 'fills and submits with randomized data (already approved)' })
+  runCase({ approved: false, title: 'fills, approves, and submits with randomized data' })
 })

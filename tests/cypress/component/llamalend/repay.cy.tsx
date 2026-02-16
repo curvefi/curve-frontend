@@ -21,14 +21,15 @@ const networks = loanNetworks as unknown as NetworkDict<LlamaChainId>
 const chainId = 1
 
 describe('RepayForm (mocked)', () => {
-  const createScenario = () => createRepayScenario({ chainId })
+  const createScenario = ({ approved }: { approved: boolean }) => createRepayScenario({ chainId, approved })
 
   afterEach(() => {
     resetLlamaTestContext()
   })
 
-  it('fills and submits the repay form with randomized data', () => {
-    const scenario = createScenario()
+  const runCase = ({ approved, title }: { approved: boolean; title: string }) =>
+    it(title, () => {
+      const scenario = createScenario({ approved })
     const onRepaid = cy.spy().as('onRepaid')
     const { llamaApi, expected, market, borrow, stubs, collateral } = scenario
 
@@ -50,16 +51,27 @@ describe('RepayForm (mocked)', () => {
     writeRepayLoanForm({ amount: borrow })
     checkRepayDetailsLoaded({ debt: [scenario.currentDebt, scenario.futureDebt, 'crvUSD'], leverageEnabled: false })
 
-    cy.then(() => {
-      expect(stubs.parameters).to.have.been.calledWithExactly()
-      expect(stubs.repayHealth).to.have.been.calledWithExactly(...expected.health)
-      expect(stubs.repayPrices).to.have.been.calledWithExactly(...expected.prices)
-      expect(stubs.repayIsApproved).to.have.been.calledWithExactly(...expected.isApproved)
-      expect(stubs.estimateGasRepay).to.have.been.calledWithExactly(...expected.estimateGas)
+      cy.then(() => {
+        expect(stubs.parameters).to.have.been.calledWithExactly()
+        expect(stubs.repayHealth).to.have.been.calledWithExactly(...expected.health)
+        expect(stubs.repayPrices).to.have.been.calledWithExactly(...expected.prices)
+        expect(stubs.repayIsApproved).to.have.been.calledWithExactly(...expected.isApproved)
+        if ('estimateGasRepayApprove' in stubs) {
+          expect(stubs.estimateGasRepayApprove).to.have.been.calledWithExactly(...expected.estimateGasApprove)
+        } else {
+          expect(stubs.estimateGasRepay).to.have.been.calledWithExactly(...expected.estimateGas)
+        }
+      })
+
+      submitRepayForm().then(() => {
+        expect(stubs.estimateGasRepay).to.have.been.calledWithExactly(...expected.estimateGas)
+        if ('repayApprove' in stubs) {
+          expect(stubs.repayApprove).to.have.been.calledWithExactly(...expected.approve)
+        }
+        expect(stubs.repay).to.have.been.calledWithExactly(...expected.submit)
+      })
     })
 
-    submitRepayForm().then(() => {
-      expect(stubs.repay).to.have.been.calledWithExactly(...expected.submit)
-    })
-  })
+  runCase({ approved: true, title: 'fills and submits with randomized data (already approved)' })
+  runCase({ approved: false, title: 'fills, approves, and submits with randomized data' })
 })
