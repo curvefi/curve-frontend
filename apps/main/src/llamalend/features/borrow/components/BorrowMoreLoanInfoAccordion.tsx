@@ -15,7 +15,7 @@ import { useUserCurrentLeverage } from '@/llamalend/queries/user-current-leverag
 import { getUserHealthOptions } from '@/llamalend/queries/user-health.query'
 import { useUserState } from '@/llamalend/queries/user-state.query'
 import type { BorrowMoreForm, BorrowMoreParams } from '@/llamalend/queries/validation/borrow-more.validation'
-import { LoanInfoAccordion } from '@/llamalend/widgets/action-card/LoanInfoAccordion'
+import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { mapQuery, q } from '@ui-kit/types/util'
 import { decimal, Decimal } from '@ui-kit/utils'
@@ -48,7 +48,7 @@ export function BorrowMoreLoanInfoAccordion<ChainId extends IChainId>({
   const prevHealth = useHealthQueries((isFull) => getUserHealthOptions({ ...params, isFull }), isOpen)
 
   return (
-    <LoanInfoAccordion
+    <LoanActionInfoList
       isOpen={isOpen}
       isApproved={q(useBorrowMoreIsApproved(params, isOpen))}
       gas={useBorrowMoreEstimateGas(networks, params, isOpen)}

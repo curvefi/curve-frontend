@@ -6,3 +6,5 @@ export const formatAmount = (value: Amount | null | undefined, symbol?: string) 
 
 export const formatLeverage = (value: Amount | null | undefined) =>
   value == null ? '-' : formatNumber(value, { abbreviate: false, decimals: 2, unit: 'multiplier' })
+
+export const INHERIT_GAP = { gap: 'inherit' }

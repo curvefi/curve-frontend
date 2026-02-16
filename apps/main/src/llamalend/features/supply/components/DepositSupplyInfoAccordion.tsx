@@ -9,7 +9,7 @@ import { useDepositExpectedVaultShares } from '@/llamalend/queries/supply/supply
 import { useUserVaultSharesToAssetsAmount } from '@/llamalend/queries/supply/supply-user-vault-amounts'
 import { useUserBalances } from '@/llamalend/queries/user-balances.query'
 import type { DepositParams } from '@/llamalend/queries/validation/supply.validation'
-import { SupplyInfoAccordion } from '@/llamalend/widgets/action-card/SupplyInfoAccordion'
+import { SupplyActionInfoList } from '@/llamalend/widgets/action-card/SupplyInfoAccordion'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { mapQuery, q } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
@@ -40,7 +40,7 @@ export function DepositSupplyInfoAccordion<ChainId extends IChainId>({
   )
 
   return (
-    <SupplyInfoAccordion
+    <SupplyActionInfoList
       isOpen={isOpen}
       isApproved={isApproved}
       suppliedSymbol={tokens.borrowToken?.symbol}

@@ -9,7 +9,7 @@ import {
 } from '@/llamalend/queries/supply/supply-user-vault-amounts'
 import { useUserBalances } from '@/llamalend/queries/user-balances.query'
 import type { UnstakeParams } from '@/llamalend/queries/validation/supply.validation'
-import { SupplyInfoAccordion } from '@/llamalend/widgets/action-card/SupplyInfoAccordion'
+import { SupplyActionInfoList } from '@/llamalend/widgets/action-card/SupplyInfoAccordion'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { t } from '@ui-kit/lib/i18n'
 import { mapQuery } from '@ui-kit/types/util'
@@ -48,7 +48,7 @@ export function UnstakeSupplyInfoAccordion<ChainId extends IChainId>({
   )
 
   return (
-    <SupplyInfoAccordion
+    <SupplyActionInfoList
       sharesLabel={t`Staked shares`}
       amountLabel={t`Amount staked`}
       isOpen={isOpen}

@@ -8,7 +8,7 @@ import { useUserVaultSharesToAssetsAmount } from '@/llamalend/queries/supply/sup
 import { useWithdrawEstimateGas } from '@/llamalend/queries/supply/supply-withdraw-estimate-gas.query'
 import { useUserBalances } from '@/llamalend/queries/user-balances.query'
 import type { WithdrawParams } from '@/llamalend/queries/validation/supply.validation'
-import { SupplyInfoAccordion } from '@/llamalend/widgets/action-card/SupplyInfoAccordion'
+import { SupplyActionInfoList } from '@/llamalend/widgets/action-card/SupplyInfoAccordion'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { mapQuery } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
@@ -41,7 +41,7 @@ export function WithdrawSupplyInfoAccordion<ChainId extends IChainId>({
   )
 
   return (
-    <SupplyInfoAccordion
+    <SupplyActionInfoList
       isOpen={isOpen}
       suppliedSymbol={tokens.borrowToken?.symbol}
       prevVaultShares={prevVaultShares}

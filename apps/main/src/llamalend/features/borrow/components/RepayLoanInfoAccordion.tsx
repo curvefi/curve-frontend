@@ -15,7 +15,7 @@ import { getUserHealthOptions } from '@/llamalend/queries/user-health.query'
 import { useUserState } from '@/llamalend/queries/user-state.query'
 import type { RepayParams } from '@/llamalend/queries/validation/manage-loan.types'
 import type { RepayForm } from '@/llamalend/queries/validation/manage-loan.validation'
-import { LoanInfoAccordion } from '@/llamalend/widgets/action-card/LoanInfoAccordion'
+import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { combineQueriesMeta } from '@ui-kit/lib/queries/combine'
 import { mapQuery, q, type Query } from '@ui-kit/types/util'
@@ -79,7 +79,7 @@ export function RepayLoanInfoAccordion<ChainId extends IChainId>({
   const priceImpact = useRepayPriceImpact(params, isOpen && swapRequired)
   const debt = useRepayRemainingDebt({ params, swapRequired, borrowToken }, { isFull, userBorrowed }, isOpen)
   return (
-    <LoanInfoAccordion
+    <LoanActionInfoList
       isOpen={isOpen}
       isApproved={q(useRepayIsApproved(params, isOpen))}
       gas={useRepayEstimateGas(networks, params, isOpen)}

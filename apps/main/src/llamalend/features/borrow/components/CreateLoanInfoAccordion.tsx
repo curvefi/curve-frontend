@@ -6,13 +6,12 @@ import { q } from '@ui-kit/types/util'
 import { mapQuery } from '@ui-kit/types/util'
 import { Decimal } from '@ui-kit/utils'
 import { useCreateLoanEstimateGas } from '../../../queries/create-loan/create-loan-approve-estimate-gas.query'
-import { useCreateLoanBands } from '../../../queries/create-loan/create-loan-bands.query'
 import { useCreateLoanExpectedCollateral } from '../../../queries/create-loan/create-loan-expected-collateral.query'
 import { useCreateLoanHealth } from '../../../queries/create-loan/create-loan-health.query'
 import { useCreateLoanPriceImpact } from '../../../queries/create-loan/create-loan-price-impact.query'
 import { useCreateLoanPrices } from '../../../queries/create-loan/create-loan-prices.query'
 import { useMarketFutureRates } from '../../../queries/market-future-rates.query'
-import { LoanInfoAccordion } from '../../../widgets/action-card/LoanInfoAccordion'
+import { LoanActionInfoList } from '../../../widgets/action-card/LoanActionInfoList'
 import { useLoanToValue } from '../hooks/useLoanToValue'
 import { type CreateLoanForm, type CreateLoanFormQueryParams, type Token } from '../types'
 
@@ -23,7 +22,7 @@ import { type CreateLoanForm, type CreateLoanFormQueryParams, type Token } from 
  */
 export const CreateLoanInfoAccordion = <ChainId extends IChainId>({
   params,
-  values: { range, slippage, leverageEnabled, userCollateral, debt },
+  values: { slippage, leverageEnabled, userCollateral, debt },
   collateralToken,
   borrowToken,
   networks,
@@ -43,12 +42,10 @@ export const CreateLoanInfoAccordion = <ChainId extends IChainId>({
   const priceImpact = q(useCreateLoanPriceImpact(params, isOpen))
 
   return (
-    <LoanInfoAccordion
+    <LoanActionInfoList
       isOpen={isOpen}
-      range={range}
       isApproved={q(useCreateLoanIsApproved(params))}
       health={q(useCreateLoanHealth(params, isOpen))}
-      bands={q(useCreateLoanBands(params, isOpen))}
       prices={q(useCreateLoanPrices(params, isOpen))}
       prevRates={q(useMarketRates(params, isOpen))}
       rates={q(useMarketFutureRates(params, isOpen))}

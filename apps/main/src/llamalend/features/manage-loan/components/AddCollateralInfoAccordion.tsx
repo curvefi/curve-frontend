@@ -12,7 +12,7 @@ import { getUserHealthOptions } from '@/llamalend/queries/user-health.query'
 import { useUserState } from '@/llamalend/queries/user-state.query'
 import { CollateralParams } from '@/llamalend/queries/validation/manage-loan.types'
 import type { CollateralForm } from '@/llamalend/queries/validation/manage-loan.validation'
-import { LoanInfoAccordion } from '@/llamalend/widgets/action-card/LoanInfoAccordion'
+import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { mapQuery, q } from '@ui-kit/types/util'
 import { decimal, Decimal } from '@ui-kit/utils'
@@ -46,7 +46,7 @@ export function AddCollateralInfoAccordion<ChainId extends IChainId>({
   )
 
   return (
-    <LoanInfoAccordion
+    <LoanActionInfoList
       isOpen={isOpen}
       gas={useAddCollateralEstimateGas(networks, params, isOpen)}
       health={useHealthQueries((isFull) => getAddCollateralHealthOptions({ ...params, isFull }), isOpen)}

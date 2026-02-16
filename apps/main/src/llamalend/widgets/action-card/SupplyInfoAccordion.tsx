@@ -4,10 +4,10 @@ import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo, ActionInfoGasEstimate, type TxGasInfo } from '@ui-kit/shared/ui/ActionInfo'
 import type { Query } from '@ui-kit/types/util'
 import { type Decimal, formatNumber, formatPercent } from '@ui-kit/utils'
-import { ActionInfoAccordion } from './info-accordion.components'
-import { formatAmount } from './info-accordion.helpers'
+import { ActionInfoCollapse } from './ActionInfoCollapse'
+import { formatAmount, INHERIT_GAP } from './info-actions.helpers'
 
-export type SupplyInfoAccordionProps = {
+export type SupplyActionInfoListProps = {
   isOpen: boolean
   isApproved?: boolean
   /** Vault shares with optional previous value for comparison */
@@ -31,7 +31,7 @@ export type SupplyInfoAccordionProps = {
   gas: Query<TxGasInfo | null>
 }
 
-export const SupplyInfoAccordion = ({
+export const SupplyActionInfoList = ({
   isOpen,
   isApproved,
   vaultShares,
@@ -45,47 +45,50 @@ export const SupplyInfoAccordion = ({
   prevSupplyApy,
   netSupplyApy,
   gas,
-}: SupplyInfoAccordionProps) => (
-  <ActionInfoAccordion isOpen={isOpen} testId="supply-info-accordion">
-    <Stack>
-      <ActionInfo
-        label={sharesLabel}
-        value={vaultShares?.data && formatAmount(vaultShares.data)}
-        prevValue={prevVaultShares?.data && formatAmount(prevVaultShares.data)}
-        {...combineQueryState(vaultShares, prevVaultShares)}
-        testId="supply-info-accordion"
-      />
-      {(amountSupplied || prevAmountSupplied) && (
+}: SupplyActionInfoListProps) => (
+  <ActionInfoCollapse isOpen={isOpen} testId="supply-info-accordion">
+    <Stack sx={{ ...INHERIT_GAP }}>
+      <Stack>
+        {(supplyApy || prevSupplyApy) && (
+          <ActionInfo
+            label="Supply APY"
+            value={supplyApy?.data && formatPercent(supplyApy.data)}
+            prevValue={prevSupplyApy?.data && formatPercent(prevSupplyApy.data)}
+            {...combineQueryState(supplyApy, prevSupplyApy)}
+            testId="supply-apy"
+          />
+        )}
+        {netSupplyApy && (
+          <ActionInfo
+            label={t`Net Supply APY`}
+            value={netSupplyApy.data && formatPercent(netSupplyApy.data)}
+            {...combineQueryState(netSupplyApy)}
+            testId="supply-net-apy"
+          />
+        )}
+      </Stack>
+      <Stack>
         <ActionInfo
-          label={amountLabel}
-          value={amountSupplied?.data && formatNumber(amountSupplied.data, { abbreviate: false })}
-          prevValue={prevAmountSupplied?.data && formatNumber(prevAmountSupplied.data, { abbreviate: false })}
-          {...combineQueryState(amountSupplied, prevAmountSupplied)}
-          valueRight={suppliedSymbol}
-          testId="supply-amount"
+          label={sharesLabel}
+          value={vaultShares?.data && formatAmount(vaultShares.data)}
+          prevValue={prevVaultShares?.data && formatAmount(prevVaultShares.data)}
+          {...combineQueryState(vaultShares, prevVaultShares)}
+          testId="supply-info-accordion"
         />
-      )}
-      {(supplyApy || prevSupplyApy) && (
-        <ActionInfo
-          label="Supply APY"
-          value={supplyApy?.data && formatPercent(supplyApy.data)}
-          prevValue={prevSupplyApy?.data && formatPercent(prevSupplyApy.data)}
-          {...combineQueryState(supplyApy, prevSupplyApy)}
-          testId="supply-apy"
-        />
-      )}
-      {netSupplyApy && (
-        <ActionInfo
-          label={t`Net Supply APY`}
-          value={netSupplyApy.data && formatPercent(netSupplyApy.data)}
-          {...combineQueryState(netSupplyApy)}
-          testId="supply-net-apy"
-        />
-      )}
+        {(amountSupplied || prevAmountSupplied) && (
+          <ActionInfo
+            label={amountLabel}
+            value={amountSupplied?.data && formatNumber(amountSupplied.data, { abbreviate: false })}
+            prevValue={prevAmountSupplied?.data && formatNumber(prevAmountSupplied.data, { abbreviate: false })}
+            {...combineQueryState(amountSupplied, prevAmountSupplied)}
+            valueRight={suppliedSymbol}
+            testId="supply-amount"
+          />
+        )}
+      </Stack>
     </Stack>
-
     <Stack>
       <ActionInfoGasEstimate gas={gas} isApproved={isApproved} />
     </Stack>
-  </ActionInfoAccordion>
+  </ActionInfoCollapse>
 )
