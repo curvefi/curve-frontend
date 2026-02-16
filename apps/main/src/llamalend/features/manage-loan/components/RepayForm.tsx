@@ -114,11 +114,14 @@ export const RepayForm = <ChainId extends IChainId>({
     selectedField === 'stateCollateral' && t`Using collateral balances to repay.`,
     t`Max repay amount:`,
   ).join(' ')
-  const rawFormErrors = Object.entries(form.formState.errors)
 
   useEffect(
-    // Reset field when selectedField changes
-    () => () => updateForm(form, { [selectedField]: undefined }),
+    () => () => {
+      // Reset when selectedField changes and the field is dirty (unmounting the field)
+      if (selectedField in form.formState.dirtyFields) {
+        updateForm(form, { [selectedField]: undefined })
+      }
+    },
     [form, selectedField],
   )
 
@@ -197,7 +200,9 @@ export const RepayForm = <ChainId extends IChainId>({
           isFull: q(isFull),
           maxSelectedField: max[selectedField],
           formErrors,
-          rawFormErrors,
+          rawFormErrors: Object.entries(form.formState.errors),
+          dirtyFields: form.formState.dirtyFields,
+          touchedFields: form.formState.touchedFields,
         })}
       >
         {isPending
