@@ -18,13 +18,15 @@ export const BridgeInfoAlert = () => (
   <Alert variant="outlined" severity="info">
     <AlertTitle>{t`crvUSD to mainnet in minutes`}</AlertTitle>
     <Stack gap={Spacing.xs}>
-      <Typography variant="bodyXsRegular" color="textSecondary">
+      <Typography component="p" variant="bodyXsRegular">
         {t`Fastbridge lets you use Curve’s decentralised infrastructure to bridge back crvUSD from selected L2s to Ethereum mainnet bypassing the 7 days challenge period.`}
-        <br />
-        <br />
+      </Typography>
+
+      <Typography component="p" variant="bodyXsRegular">
         {t`Use native bridges or bridge aggregators to move funds to and from other networks.`}
-        <br />
-        <br />
+      </Typography>
+
+      <Typography component="p" variant="bodyXsRegular">
         {t`Bridges are not instant, and funds may take up to 15 minutes or more before arriving.`}
       </Typography>
 
