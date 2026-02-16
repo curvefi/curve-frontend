@@ -1,19 +1,24 @@
-import lodash from 'lodash'
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { useConnection } from 'wagmi'
-import { DEFAULT_HEALTH_MODE } from '@/llamalend/constants'
 import {
   calculateRangeToLiquidation,
   type BorrowPositionDetailsProps,
 } from '@/llamalend/features/market-position-details'
-import { DEFAULT_BORROW_TOKEN_SYMBOL, getHealthMode } from '@/llamalend/health.util'
-import { calculateLtv, hasV2Leverage } from '@/llamalend/llama.utils'
+import { calculateLtv, getIsUserCloseToLiquidation, getLiquidationStatus, hasV2Leverage } from '@/llamalend/llama.utils'
+import { useMarketLiquidationBand } from '@/llamalend/queries/market-liquidation-band.query'
+import { useMarketOraclePriceBand } from '@/llamalend/queries/market-oracle-price-band.query'
+import { useMarketOraclePrice } from '@/llamalend/queries/market-oracle-price.query'
 import { useMarketRates } from '@/llamalend/queries/market-rates'
-import { useUserCurrentLeverage } from '@/llamalend/queries/user-current-leverage.query'
+import {
+  useUserBands,
+  useUserCurrentLeverage,
+  useUserHealth,
+  useUserLoss,
+  useUserPrices,
+  useUserState,
+} from '@/llamalend/queries/user'
 import { CRVUSD_ADDRESS } from '@/loan/constants'
-import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
 import { networks } from '@/loan/networks'
-import { useStore } from '@/loan/store/useStore'
 import { ChainId, Llamma } from '@/loan/types/loan.types'
 import { Address } from '@curvefi/prices-api'
 import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
@@ -26,8 +31,8 @@ import { decimal } from '@ui-kit/utils/decimal'
 
 type UseLoanPositionDetailsProps = {
   chainId: ChainId
-  llamma: Llamma | null | undefined
-  llammaId: string
+  market: Llamma | null | undefined
+  marketId: string
 }
 
 const averageMultiplier = 30
@@ -35,55 +40,41 @@ const averageMultiplierString = `${averageMultiplier}D`
 
 export const useLoanPositionDetails = ({
   chainId,
-  llamma,
-  llammaId,
+  market,
+  marketId,
 }: UseLoanPositionDetailsProps): BorrowPositionDetailsProps => {
   const { isHydrated } = useCurve()
-  const { data: marketRates, isLoading: isMarketRatesLoading } = useMarketRates({ chainId, marketId: llammaId })
   const blockchainId = networks[chainId]?.id
   const { address: userAddress } = useConnection()
+
+  const userMarketParams = { chainId, marketId, userAddress }
+  const marketParams = { chainId, marketId }
+
+  // User queries (fire in parallel)
+  const { data: userState, isLoading: isUserStateLoading } = useUserState(userMarketParams)
+  const { data: healthFull, isLoading: isHealthFullLoading } = useUserHealth({ ...userMarketParams, isFull: true })
+  const { data: healthNotFull, isLoading: isHealthNotFullLoading } = useUserHealth({
+    ...userMarketParams,
+    isFull: false,
+  })
+  const { data: userBands, isLoading: isUserBandsLoading } = useUserBands(userMarketParams)
+  const { data: userPrices, isLoading: isUserPricesLoading } = useUserPrices(userMarketParams)
+  const leverage = useUserCurrentLeverage(userMarketParams)
+  const { data: userLoss, isLoading: isUserLossLoading } = useUserLoss(userMarketParams)
+
+  // Market queries (fire in parallel)
+  const { data: oraclePriceBand } = useMarketOraclePriceBand(marketParams)
+  const { data: oraclePrice } = useMarketOraclePrice(marketParams)
+  const { data: liquidationBand } = useMarketLiquidationBand(marketParams)
+  const { data: marketRates, isLoading: isMarketRatesLoading } = useMarketRates(marketParams)
+
   const { data: campaigns } = useCampaignsByAddress({
     blockchainId,
-    address: llamma?.controller?.toLocaleLowerCase() as Address,
+    address: market?.controller?.toLocaleLowerCase() as Address,
   })
-  const { collateral, stablecoin, debt } = useStore((state) => state.loans.userDetailsMapper[llammaId]?.userState) ?? {}
-  const userPrices = useStore((state) => state.loans.userDetailsMapper[llammaId]?.userPrices)
-  const userBands = useStore((state) => state.loans.userDetailsMapper[llammaId]?.userBands)
-  const userStatus = useStore((state) => state.loans.userDetailsMapper[llammaId]?.userStatus)
-  const userLoss = useStore((state) => state.loans.userDetailsMapper[llammaId]?.userLoss)
-  const userLoanDetailsLoading = useStore((state) => state.loans.userDetailsMapper[llammaId]?.loading)
-  const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId ?? ''])
-  const { healthFull, healthNotFull } = useUserLoanDetails(llammaId) ?? {}
-  const v2LeverageEnabled = useMemo(() => !!llamma && hasV2Leverage(llamma), [llamma])
-  const leverage = useUserCurrentLeverage({ chainId, marketId: llammaId, userAddress })
-
-  const { oraclePriceBand } = loanDetails ?? {}
-
-  const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)
-
-  useEffect(() => {
-    if (!lodash.isUndefined(oraclePriceBand) && healthFull && healthNotFull && userBands) {
-      const fetchedHealthMode = getHealthMode(
-        DEFAULT_BORROW_TOKEN_SYMBOL,
-        oraclePriceBand,
-        '',
-        userBands,
-        '',
-        healthFull,
-        healthNotFull,
-        '',
-        '',
-      )
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setHealthMode(fetchedHealthMode)
-    } else {
-      setHealthMode(DEFAULT_HEALTH_MODE)
-    }
-  }, [oraclePriceBand, healthFull, healthNotFull, userBands])
-
   const { data: collateralUsdRate, isLoading: collateralUsdRateLoading } = useTokenUsdRate({
     chainId,
-    tokenAddress: llamma?.collateral,
+    tokenAddress: market?.collateral,
   })
   const { data: borrowedUsdRate, isLoading: borrowedUsdRateLoading } = useTokenUsdRate({
     chainId,
@@ -91,10 +82,30 @@ export const useLoanPositionDetails = ({
   })
   const { data: crvUsdSnapshots, isLoading: isSnapshotsLoading } = useCrvUsdSnapshots({
     blockchainId,
-    contractAddress: llamma?.controller as Address,
+    contractAddress: market?.controller as Address,
     agg: 'day',
     limit: 30, // fetch last 30 days for 30 day average calcs
   })
+
+  const v2LeverageEnabled = useMemo(() => !!market && hasV2Leverage(market), [market])
+
+  // Derived values
+  const { collateral, stablecoin, debt } = userState ?? {}
+  const isUserDataLoading = isUserStateLoading || isHealthFullLoading || isHealthNotFullLoading
+  // Query validation only checks param presence (chain/market/user). We still need `!market`
+  // because this hook runs before market metadata is available, and the UI reads market fields.
+  const isPositionDetailsLoading = !market || !isHydrated
+
+  const healthValue = useMemo(() => {
+    if (!healthFull || !healthNotFull) return null
+    return Number(+healthNotFull < 0 ? healthNotFull : healthFull)
+  }, [healthFull, healthNotFull])
+
+  const status = useMemo(() => {
+    if (!healthNotFull || !userBands) return null
+    const isClose = getIsUserCloseToLiquidation(userBands[0], liquidationBand ?? null, oraclePriceBand)
+    return getLiquidationStatus(healthNotFull, isClose, stablecoin ?? '0')
+  }, [healthNotFull, userBands, liquidationBand, oraclePriceBand, stablecoin])
 
   const { rate: averageRate, rebasingYield: averageRebasingYield } = useMemo(
     () =>
@@ -113,17 +124,16 @@ export const useLoanPositionDetails = ({
   const collateralRebasingYield = crvUsdSnapshots?.[crvUsdSnapshots.length - 1]?.collateralToken.rebasingYield // take only most recent rebasing yield
   const borrowApr = marketRates?.borrowApr == null ? null : Number(marketRates.borrowApr)
 
-  /** Loading checks include a null check on value to cover the gap where legacy stores have no loading state yet.
-   * TODO: remove once migrated to direct llamalend-js queries */
+  // Loading checks include hydration + query loading states for consistent UI behavior.
   return {
     marketType: LlamaMarketType.Mint,
     liquidationAlert: {
-      softLiquidation: userStatus?.colorKey === 'soft_liquidation',
-      hardLiquidation: userStatus?.colorKey === 'hard_liquidation',
+      softLiquidation: status?.colorKey === 'soft_liquidation',
+      hardLiquidation: status?.colorKey === 'hard_liquidation',
     },
     health: {
-      value: healthMode.percent !== '' ? Number(healthMode.percent) : null,
-      loading: healthMode.percent === '' || userLoanDetailsLoading || !isHydrated,
+      value: healthValue,
+      loading: isUserDataLoading || isPositionDetailsLoading,
     },
     borrowRate: {
       rate: borrowApr,
@@ -134,62 +144,57 @@ export const useLoanPositionDetails = ({
       totalBorrowRate: borrowApr ? borrowApr - (collateralRebasingYield ?? 0) : null,
       totalAverageBorrowRate: averageRate == null ? null : averageRate - (averageRebasingYield ?? 0),
       extraRewards: campaigns,
-      loading: borrowApr == null || isSnapshotsLoading || isMarketRatesLoading || !isHydrated,
+      loading: borrowApr == null || isSnapshotsLoading || isMarketRatesLoading || isPositionDetailsLoading,
     },
     liquidationRange: {
       value: userPrices ? userPrices.map(Number) : null,
       rangeToLiquidation:
-        loanDetails?.priceInfo?.oraclePrice && userPrices
-          ? calculateRangeToLiquidation(Number(userPrices?.[1]), Number(loanDetails.priceInfo.oraclePrice))
+        oraclePrice && userPrices
+          ? calculateRangeToLiquidation(Number(userPrices?.[1]), Number(oraclePrice))
           : null,
-      loading: userPrices == null || userLoanDetailsLoading || !isHydrated,
+      loading: isUserPricesLoading || isPositionDetailsLoading,
     },
     bandRange: {
-      value: userBands ? userBands : null,
-      loading: userBands == null || userLoanDetailsLoading || !isHydrated,
+      value: userBands ?? null,
+      loading: isUserBandsLoading || isPositionDetailsLoading,
     },
     collateralValue: {
       totalValue: collateralTotalValue,
       collateral: {
         value: collateral ? Number(collateral) : null,
         usdRate: collateralUsdRate ? Number(collateralUsdRate) : null,
-        symbol: llamma?.collateralSymbol,
+        symbol: market?.collateralSymbol,
       },
       borrow: {
         value: stablecoin ? Number(stablecoin) : null,
         usdRate: borrowedUsdRate ? Number(borrowedUsdRate) : null,
         symbol: 'crvUSD',
       },
-      loading:
-        collateral == null ||
-        userLoanDetailsLoading ||
-        collateralUsdRateLoading ||
-        borrowedUsdRateLoading ||
-        !isHydrated,
+      loading: isUserStateLoading || collateralUsdRateLoading || borrowedUsdRateLoading || isPositionDetailsLoading,
     },
     ltv: {
       value:
         collateralTotalValue && debt
           ? calculateLtv(Number(debt), Number(collateral), Number(stablecoin), borrowedUsdRate, collateralUsdRate)
           : null,
-      loading: debt == null || userLoanDetailsLoading || !isHydrated,
+      loading: isUserStateLoading || isPositionDetailsLoading,
     },
     ...(v2LeverageEnabled && {
       leverage: {
         value: leverage.data ? Number(leverage.data) : null,
-        loading: leverage.isLoading || !isHydrated,
+        loading: leverage.isLoading || isPositionDetailsLoading,
       },
     }),
     totalDebt: {
       value: debt ? Number(debt) : null,
-      loading: debt == null || userLoanDetailsLoading || !isHydrated,
+      loading: isUserStateLoading || isPositionDetailsLoading,
     },
     collateralLoss: {
       depositedCollateral: decimal(userLoss?.deposited_collateral),
       currentCollateralEstimation: decimal(userLoss?.current_collateral_estimation),
       percentage: decimal(userLoss?.loss_pct),
       amount: decimal(userLoss?.loss),
-      loading: userLoss == null || userLoanDetailsLoading || !isHydrated,
+      loading: isUserLossLoading || isPositionDetailsLoading,
     },
   }
 }

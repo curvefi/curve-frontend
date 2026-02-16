@@ -4,9 +4,9 @@ import { invalidateLoanExists } from '../loan-exists'
 import { invalidateAllUserLendingSupplies, invalidateAllUserLendingVaults } from '../market-list/lending-vaults'
 import { invalidateAllUserMintMarkets } from '../market-list/mint-markets'
 import { invalidateMarketRates } from '../market-rates'
-import { invalidateUserBalances } from '../user-balances.query'
-import { invalidateUserHealth } from '../user-health.query'
-import { invalidateUserState } from '../user-state.query'
+import { invalidateUserBalances } from '../user/user-balances.query'
+import { invalidateUserHealth } from '../user/user-health.query'
+import { invalidateUserState } from '../user/user-state.query'
 
 /**
  * Helper function to easily invalidate the entire user state of a market.

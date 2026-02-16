@@ -158,7 +158,11 @@ export const createVaultWithdrawRedeem = (
         void Promise.all([
           get().user.fetchUserMarketBalances(api, market, true),
           get()[sliceKey].fetchMax(api, formType, market),
-          invalidateAllUserBorrowDetails({ chainId: api.chainId, marketId: market.id }),
+          invalidateAllUserBorrowDetails({
+            chainId: api.chainId,
+            marketId: market.id,
+            userAddress: api.signerAddress,
+          }),
         ])
         get()[sliceKey].setStateByKeys(
           merge(cloneDeep(DEFAULT_STATE), {

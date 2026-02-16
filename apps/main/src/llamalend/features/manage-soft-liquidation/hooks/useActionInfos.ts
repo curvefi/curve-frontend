@@ -1,6 +1,6 @@
 import { useConnection } from 'wagmi'
 import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
-import { getUserHealthOptions } from '@/llamalend/queries/user-health.query'
+import { getUserHealthOptions } from '@/llamalend/queries/user'
 import type { ActionInfosProps } from '..'
 import type { MarketParams } from '../types'
 import { useCollateralInfo } from './useCollateralInfo'

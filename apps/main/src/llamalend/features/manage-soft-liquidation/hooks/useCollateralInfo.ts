@@ -1,6 +1,6 @@
 import { useConnection } from 'wagmi'
 import { getLlamaMarket, getTokens } from '@/llamalend/llama.utils'
-import { useUserState } from '@/llamalend/queries/user-state.query'
+import { useUserState } from '@/llamalend/queries/user'
 import type { ActionInfosProps } from '..'
 import type { MarketParams } from '../types'
 

@@ -1,7 +1,7 @@
 import lodash from 'lodash'
 import { StoreApi } from 'zustand'
 import { updateUserEventsApi } from '@/llamalend/llama.utils'
-import { invalidateUserPrices } from '@/llamalend/queries/user-prices.query'
+import { invalidateUserPrices } from '@/llamalend/queries/user'
 import type { FormStatus } from '@/loan/components/PageMintMarket/LoanLiquidate/types'
 import type { FormEstGas } from '@/loan/components/PageMintMarket/types'
 import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@/loan/components/PageMintMarket/utils'

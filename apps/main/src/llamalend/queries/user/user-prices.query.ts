@@ -6,7 +6,7 @@ import { loanExistsValidationGroup } from '@ui-kit/lib/model/query/loan-exists-v
 import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
 import { createValidationSuite } from '@ui-kit/lib/validation'
 import { q } from '@ui-kit/types/util'
-import { useLoanExists } from './loan-exists'
+import { useLoanExists } from '../loan-exists'
 
 type UserPricesQuery = UserMarketQuery & { loanExists: boolean }
 type UserPricesParams = FieldsOf<UserPricesQuery>
@@ -31,13 +31,18 @@ const { useQuery: useUserPricesQuery, invalidate: invalidateUserPrices } = query
 
 export { invalidateUserPrices }
 
-export const useUserPrices = (params: UserMarketParams) => {
-  const { data: loanExists, isLoading: isLoanExistsLoading, isError: isLoanExistsError } = useLoanExists(params)
+export const useUserPrices = (params: UserMarketParams, options?: { loanExists?: boolean }) => {
+  const hasLoanExistsOverride = options?.loanExists != null
+  const { data: loanExistsData, isLoading: isLoanExistsLoading, isError: isLoanExistsError } = useLoanExists(
+    params,
+    !hasLoanExistsOverride,
+  )
+  const loanExists = hasLoanExistsOverride ? options.loanExists : loanExistsData
   const queryResult = useUserPricesQuery({ ...params, loanExists })
 
   return {
     ...q(queryResult),
-    isLoading: isLoanExistsLoading || queryResult.isLoading,
-    isError: isLoanExistsError || queryResult.isError,
+    isLoading: (hasLoanExistsOverride ? false : isLoanExistsLoading) || queryResult.isLoading,
+    isError: (hasLoanExistsOverride ? false : isLoanExistsError) || queryResult.isError,
   }
 }

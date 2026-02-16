@@ -53,11 +53,11 @@ export const MintMarketPage = () => {
   const fetchLoanDetails = useStore((state) => state.loans.fetchLoanDetails)
 
   const loanStatus = useUserLoanDetails(market?.id ?? '')?.userStatus?.colorKey ?? ''
-  const marketDetails = useMarketDetails({ chainId: rChainId, llamma: market, llammaId: marketId })
+  const marketDetails = useMarketDetails({ chainId: rChainId, market, marketId })
   const positionDetails = useLoanPositionDetails({
     chainId: rChainId,
-    llamma: market,
-    llammaId: marketId,
+    market,
+    marketId,
   })
 
   const network = networks[rChainId]
@@ -153,7 +153,7 @@ export const MintMarketPage = () => {
         </Stack>
         <Stack>
           {!showPageHeader && <MarketDetails {...marketDetails} />}
-          <MarketInformationComp llamma={market ?? null} marketId={marketId} chainId={rChainId} page="manage" />
+          <MarketInformationComp market={market ?? null} marketId={marketId} chainId={rChainId} page="manage" />
         </Stack>
       </DetailPageLayout>
     </>

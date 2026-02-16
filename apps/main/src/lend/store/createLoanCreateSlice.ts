@@ -344,7 +344,11 @@ export const createLoanCreate = (
         await user.fetchAll(api, market, true)
         void markets.fetchAll(api, market, true)
         markets.setStateByKey('marketDetailsView', 'user')
-        await invalidateAllUserBorrowDetails({ chainId: api.chainId, marketId: market.id })
+        await invalidateAllUserBorrowDetails({
+          chainId: api.chainId,
+          marketId: market.id,
+          userAddress: api.signerAddress,
+        })
         // update formStatus
         sliceState.setStateByKeys({
           ...DEFAULT_STATE,

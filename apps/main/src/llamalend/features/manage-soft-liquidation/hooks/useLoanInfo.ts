@@ -1,7 +1,7 @@
 import { useConnection } from 'wagmi'
 import { getLlamaMarket, getTokens } from '@/llamalend/llama.utils'
 import { useMarketRates } from '@/llamalend/queries/market-rates.query'
-import { useUserState } from '@/llamalend/queries/user-state.query'
+import { useUserState } from '@/llamalend/queries/user'
 import type { ActionInfosProps } from '..'
 import type { MarketParams } from '../types'
 import { useCollateralToRecover } from './useCollateralToRecover'

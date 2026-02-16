@@ -1,6 +1,6 @@
 import { useConnection } from 'wagmi'
 import { getLlamaMarket, getTokens } from '@/llamalend/llama.utils'
-import { useUserState } from '@/llamalend/queries/user-state.query'
+import { useUserState } from '@/llamalend/queries/user'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { decimal } from '@ui-kit/utils'
 import type { ClosePositionProps } from '..'

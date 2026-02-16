@@ -4,7 +4,7 @@ import type { Query } from '@ui-kit/types/util'
 import { mapQuery } from '@ui-kit/types/util'
 import type { Decimal } from '@ui-kit/utils'
 import { decimal } from '@ui-kit/utils'
-import { useUserBalances } from '../user-balances.query'
+import { useUserBalances } from '../user/user-balances.query'
 import {
   DepositParams,
   DepositQuery,
