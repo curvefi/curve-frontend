@@ -177,7 +177,7 @@ export const useBridgeForm = ({ chainId, networks }: { chainId: number; networks
       useIsApproved: useBridgeIsApproved,
       useApproveEstimate: useBridgeApproveGasEstimate,
       useActionEstimate: useBridgeGasEstimate,
-    })(networks, params, !formErrors.length),
+    })(networks, params),
 
     // Errors
     amountError: amountError ? new Error(amountError) : null,
