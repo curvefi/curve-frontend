@@ -17,7 +17,7 @@ export const DetailPageLayout = ({
   children,
   footer,
 }: {
-  formTabs: ReactNode | null
+  formTabs: ReactNode
   children?: ReactNode
   footer?: ReactNode
 }) => (
@@ -29,7 +29,7 @@ export const DetailPageLayout = ({
   >
     {/* In Figma, columns are 12/4/3, but too small around breakpoints. I've added one extra column.
         Ultrawide isn't a breakpoint yet, use maxWidth so it's not too large. */}
-    {formTabs !== null && (
+    {formTabs && (
       <>
         <Grid size={{ mobile: 12, tablet: 5, desktop: 4 }} maxWidth={{ desktop: MaxWidth.actionCard }}>
           {formTabs || <FormSkeleton />}
