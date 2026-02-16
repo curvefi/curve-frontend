@@ -2,13 +2,7 @@ import { ReactNode } from 'react'
 import { ColumnDef, type ColumnMeta, createColumnHelper, FilterFnOption } from '@tanstack/react-table'
 import { type DeepKeys } from '@tanstack/table-core'
 import { t } from '@ui-kit/lib/i18n'
-import {
-  boolFilterFn,
-  filterByText,
-  listNotEmptyFilterFn,
-  multiFilterFn,
-  rangeFilterFn,
-} from '@ui-kit/shared/ui/DataTable/filters'
+import { boolFilterFn, listNotEmptyFilterFn, multiFilterFn, rangeFilterFn } from '@ui-kit/shared/ui/DataTable/filters'
 import { MarketRateType } from '@ui-kit/types/market'
 import { LlamaMarket } from '../../../queries/market-list/llama-markets'
 import {
@@ -78,16 +72,6 @@ export const LLAMA_MARKET_COLUMNS = [
   columnHelper.accessor(LlamaMarketColumnId.Assets, {
     header: headers[LlamaMarketColumnId.Assets],
     cell: MarketTitleCell,
-    filterFn: filterByText(
-      'controllerAddress',
-      'ammAddress',
-      'vaultAddress',
-      'assets.borrowed.address',
-      'assets.borrowed.symbol',
-      'assets.collateral.address',
-      'assets.collateral.symbol',
-      'type',
-    ),
     meta: { tooltip: createTooltip(LlamaMarketColumnId.Assets, <CollateralBorrowHeaderTooltipContent />) },
   }),
   columnHelper.display({

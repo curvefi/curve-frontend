@@ -12,7 +12,7 @@ import { usePageVisibleInterval } from '@ui-kit/hooks/usePageVisibleInterval'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { DEX_ROUTES } from '@ui-kit/shared/routes'
 import { matchText } from '@ui-kit/shared/ui/DataTable/filters'
-import { POOL_TEXT_FIELDS } from '../columns'
+import { POOL_TEXT_FIELDS } from '../poolsGlobalFilter'
 import type { PoolListItem, PoolTag } from '../types'
 
 const getPoolTags = (hasPosition: boolean, { pool, pool: { address, id, name, referenceAsset } }: PoolData) =>
