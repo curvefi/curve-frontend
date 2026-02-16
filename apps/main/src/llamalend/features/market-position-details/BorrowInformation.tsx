@@ -2,24 +2,26 @@ import { CollateralMetricTooltipContent } from '@/llamalend/widgets/tooltips/Col
 import { CurrentLTVTooltipContent } from '@/llamalend/widgets/tooltips/CurrentLTVTooltipContent'
 import { MarketNetBorrowAprTooltipContent } from '@/llamalend/widgets/tooltips/MarketNetBorrowAprTooltipContent'
 import { TotalDebtTooltipContent } from '@/llamalend/widgets/tooltips/TotalDebtTooltipContent'
-import { CardHeader, Stack } from '@mui/material'
+import { Stack } from '@mui/material'
+import { useIntegratedLlamaHeader } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { LlamaMarketType } from '@ui-kit/types/market'
-import type {
-  BorrowRate,
-  Leverage,
-  CollateralValue,
-  Ltv,
-  TotalDebt,
-  LiquidationRange,
-  BandRange,
-  CollateralLoss,
-} from './BorrowPositionDetails'
-import { LiquidationThresholdTooltipContent } from './tooltips/LiquidationThresholdMetricTooltipContent'
+import { formatNumber } from '@ui-kit/utils'
+import {
+  LiquidationThresholdTooltipContent,
+  type BorrowRate,
+  type Leverage,
+  type CollateralValue,
+  type Ltv,
+  type TotalDebt,
+  type LiquidationRange,
+  type BandRange,
+  type CollateralLoss,
+} from './'
 
-const { Spacing } = SizesAndSpaces
+const { MaxWidth } = SizesAndSpaces
 
 const dollarUnitOptions = {
   abbreviate: false,
@@ -52,138 +54,229 @@ export const BorrowInformation = ({
   bandRange,
   totalDebt,
   collateralLoss,
-}: BorrowInformationProps) => (
-  <Stack>
-    <CardHeader title={t`Borrow Information`} size="small" />
-    <Stack
-      display="grid"
-      gap={3}
-      sx={(theme) => ({
-        padding: Spacing.md,
-        gridTemplateColumns: '1fr 1fr',
-        // 550px
-        [theme.breakpoints.up(550)]: {
-          gridTemplateColumns: '1fr 1fr 1fr 1fr',
-        },
-      })}
-    >
-      <Metric
-        size="medium"
-        label={t`Net borrow APR`}
-        value={borrowRate?.totalBorrowRate}
-        loading={borrowRate?.totalBorrowRate == null && borrowRate?.loading}
-        valueOptions={{ unit: 'percentage', color: 'warning' }}
-        notional={
-          borrowRate?.totalAverageBorrowRate
-            ? {
-                value: borrowRate.totalAverageBorrowRate,
-                unit: { symbol: '% 30D Avg', position: 'suffix' },
+}: BorrowInformationProps) => {
+  const showPageHeader = useIntegratedLlamaHeader()
+
+  return (
+    <Stack>
+      <Stack
+        display="grid"
+        gap={3}
+        sx={{
+          gridTemplateColumns: '1fr 1fr',
+          [`@media (min-width: ${MaxWidth.legacyMarketAndBorrowDetails})`]: {
+            gridTemplateColumns: showPageHeader ? '1fr 1fr' : '1fr 1fr 1fr 1fr',
+          },
+        }}
+      >
+        {showPageHeader ? (
+          <>
+            <Metric
+              size="small"
+              label={t`Collateral value`}
+              value={collateralValue?.totalValue}
+              loading={collateralValue?.loading}
+              valueOptions={{ unit: 'dollar' }}
+              notional={
+                collateralValue?.collateral?.value != null
+                  ? `${formatNumber(collateralValue.collateral.value, { abbreviate: true })} ${collateralValue.collateral.symbol}${collateralValue.borrow?.value != null && collateralValue.borrow.value > 0 ? ` + ${formatNumber(collateralValue.borrow.value, { abbreviate: true })} ${collateralValue.borrow.symbol}` : ''}`
+                  : undefined
               }
-            : undefined
-        }
-        valueTooltip={{
-          title: t`Net borrow APR`,
-          body: (
-            <MarketNetBorrowAprTooltipContent
-              marketType={marketType}
-              borrowRate={borrowRate?.rate}
-              totalBorrowRate={borrowRate?.totalBorrowRate}
-              totalAverageBorrowRate={borrowRate?.totalAverageBorrowRate}
-              averageRate={borrowRate?.averageRate}
-              rebasingYield={borrowRate?.rebasingYield}
-              collateralSymbol={collateralValue?.collateral?.symbol}
-              periodLabel={borrowRate?.averageRateLabel ?? ''}
-              extraRewards={borrowRate?.extraRewards ?? []}
+              valueTooltip={{
+                title: t`Collateral value`,
+                body: (
+                  <CollateralMetricTooltipContent collateralValue={collateralValue} collateralLoss={collateralLoss} />
+                ),
+                placement: 'top',
+                arrow: false,
+                clickable: true,
+              }}
             />
-          ),
-          placement: 'top',
-          arrow: false,
-          clickable: true,
-        }}
-      />
-      <Metric
-        size="medium"
-        label={t`Total debt`}
-        value={totalDebt?.value}
-        loading={totalDebt?.value == null && totalDebt?.loading}
-        valueOptions={{ unit: { symbol: 'crvUSD', position: 'suffix' } }}
-        valueTooltip={{
-          title: t`Total Debt`,
-          body: <TotalDebtTooltipContent />,
-          placement: 'top',
-          arrow: false,
-          clickable: true,
-        }}
-      />
-      <Metric
-        size="medium"
-        label={t`Collateral value`}
-        value={collateralValue?.totalValue}
-        loading={collateralValue?.totalValue == null && collateralValue?.loading}
-        valueOptions={{ unit: 'dollar' }}
-        valueTooltip={{
-          title: t`Collateral value`,
-          body: <CollateralMetricTooltipContent collateralValue={collateralValue} collateralLoss={collateralLoss} />,
-          placement: 'top',
-          arrow: false,
-          clickable: true,
-        }}
-      />
-      <Metric
-        size="medium"
-        label={t`Current LTV`}
-        value={ltv?.value}
-        loading={ltv?.value == null && ltv?.loading}
-        valueOptions={{ unit: 'percentage' }}
-        valueTooltip={{
-          title: t`Current LTV (Loan To Value ratio)`,
-          body: <CurrentLTVTooltipContent />,
-          placement: 'top',
-          arrow: false,
-          clickable: true,
-        }}
-      />
-      {leverage?.value != null &&
-        leverage?.value > 1 && ( // Leverage is only available on lend for now
-          <Metric
-            size="small"
-            label={t`Leverage`}
-            value={leverage?.value}
-            loading={leverage?.value == null && leverage?.loading}
-            valueOptions={{ unit: 'multiplier' }}
-          />
+            <Metric
+              size="small"
+              label={t`Liquidation threshold`}
+              value={liquidationRange?.value?.[1]}
+              loading={liquidationRange?.loading}
+              valueOptions={dollarUnitOptions}
+              valueTooltip={{
+                title: t`Liquidation Threshold (LT)`,
+                body: (
+                  <LiquidationThresholdTooltipContent
+                    liquidationRange={liquidationRange}
+                    rangeToLiquidation={liquidationRange?.rangeToLiquidation}
+                    bandRange={bandRange}
+                  />
+                ),
+                placement: 'top',
+                arrow: false,
+                clickable: true,
+              }}
+              notional={
+                liquidationRange?.rangeToLiquidation
+                  ? {
+                      value: liquidationRange.rangeToLiquidation,
+                      unit: {
+                        symbol: `% distance to LT`,
+                        position: 'suffix',
+                      },
+                    }
+                  : undefined
+              }
+            />
+            <Metric
+              size="small"
+              label={t`Total debt`}
+              value={totalDebt?.value}
+              loading={totalDebt?.loading}
+              valueOptions={{ unit: { symbol: 'crvUSD', position: 'suffix' } }}
+              valueTooltip={{
+                title: t`Total Debt`,
+                body: <TotalDebtTooltipContent />,
+                placement: 'top',
+                arrow: false,
+                clickable: true,
+              }}
+            />
+            {leverage?.value != null &&
+              leverage?.value > 1 && ( // Leverage is only available on lend for now
+                <Metric
+                  size="small"
+                  label={t`Leverage`}
+                  value={leverage?.value}
+                  loading={leverage?.loading}
+                  valueOptions={{ unit: 'multiplier' }}
+                />
+              )}
+          </>
+        ) : (
+          <>
+            <Metric
+              size="medium"
+              label={t`Net borrow APR`}
+              value={borrowRate?.totalBorrowRate}
+              loading={borrowRate?.loading}
+              valueOptions={{ unit: 'percentage', color: 'warning' }}
+              notional={
+                borrowRate?.totalAverageBorrowRate
+                  ? {
+                      value: borrowRate.totalAverageBorrowRate,
+                      unit: { symbol: '% 30D Avg', position: 'suffix' },
+                    }
+                  : undefined
+              }
+              valueTooltip={{
+                title: t`Net borrow APR`,
+                body: (
+                  <MarketNetBorrowAprTooltipContent
+                    marketType={marketType}
+                    borrowRate={borrowRate?.rate}
+                    totalBorrowRate={borrowRate?.totalBorrowRate}
+                    totalAverageBorrowRate={borrowRate?.totalAverageBorrowRate}
+                    averageRate={borrowRate?.averageRate}
+                    rebasingYield={borrowRate?.rebasingYield}
+                    collateralSymbol={collateralValue?.collateral?.symbol}
+                    periodLabel={borrowRate?.averageRateLabel ?? ''}
+                    extraRewards={borrowRate?.extraRewards ?? []}
+                  />
+                ),
+                placement: 'top',
+                arrow: false,
+                clickable: true,
+              }}
+            />
+            <Metric
+              size="medium"
+              label={t`Total debt`}
+              value={totalDebt?.value}
+              loading={totalDebt?.loading}
+              valueOptions={{ unit: { symbol: 'crvUSD', position: 'suffix' } }}
+              valueTooltip={{
+                title: t`Total Debt`,
+                body: <TotalDebtTooltipContent />,
+                placement: 'top',
+                arrow: false,
+                clickable: true,
+              }}
+            />
+            <Metric
+              size="medium"
+              label={t`Collateral value`}
+              value={collateralValue?.totalValue}
+              loading={collateralValue?.loading}
+              valueOptions={{ unit: 'dollar' }}
+              notional={
+                collateralValue?.collateral?.value != null
+                  ? `${formatNumber(collateralValue.collateral.value, { abbreviate: true })} ${collateralValue.collateral.symbol}${collateralValue.borrow?.value != null && collateralValue.borrow.value > 0 ? ` + ${formatNumber(collateralValue.borrow.value, { abbreviate: true })} ${collateralValue.borrow.symbol}` : ''}`
+                  : undefined
+              }
+              valueTooltip={{
+                title: t`Collateral value`,
+                body: (
+                  <CollateralMetricTooltipContent collateralValue={collateralValue} collateralLoss={collateralLoss} />
+                ),
+                placement: 'top',
+                arrow: false,
+                clickable: true,
+              }}
+            />
+            <Metric
+              size="medium"
+              label={t`Current LTV`}
+              value={ltv?.value}
+              loading={ltv?.loading}
+              valueOptions={{ unit: 'percentage' }}
+              valueTooltip={{
+                title: t`Current LTV (Loan To Value ratio)`,
+                body: <CurrentLTVTooltipContent />,
+                placement: 'top',
+                arrow: false,
+                clickable: true,
+              }}
+            />
+            {leverage?.value != null &&
+              leverage?.value > 1 && ( // Leverage is only available on lend for now
+                <Metric
+                  size="small"
+                  label={t`Leverage`}
+                  value={leverage?.value}
+                  loading={leverage?.loading}
+                  valueOptions={{ unit: 'multiplier' }}
+                />
+              )}
+            <Metric
+              size="small"
+              label={t`Liquidation threshold`}
+              value={liquidationRange?.value?.[1]}
+              loading={liquidationRange?.loading}
+              valueOptions={dollarUnitOptions}
+              valueTooltip={{
+                title: t`Liquidation Threshold (LT)`,
+                body: (
+                  <LiquidationThresholdTooltipContent
+                    liquidationRange={liquidationRange}
+                    rangeToLiquidation={liquidationRange?.rangeToLiquidation}
+                    bandRange={bandRange}
+                  />
+                ),
+                placement: 'top',
+                arrow: false,
+                clickable: true,
+              }}
+              notional={
+                liquidationRange?.rangeToLiquidation
+                  ? {
+                      value: liquidationRange.rangeToLiquidation,
+                      unit: {
+                        symbol: `% distance to LT`,
+                        position: 'suffix',
+                      },
+                    }
+                  : undefined
+              }
+            />
+          </>
         )}
-      <Metric
-        size="small"
-        label={t`Liquidation threshold`}
-        value={liquidationRange?.value?.[1]}
-        loading={liquidationRange?.value == null && liquidationRange?.loading}
-        valueOptions={dollarUnitOptions}
-        valueTooltip={{
-          title: t`Liquidation Threshold (LT)`,
-          body: (
-            <LiquidationThresholdTooltipContent
-              liquidationRange={liquidationRange}
-              rangeToLiquidation={liquidationRange?.rangeToLiquidation}
-              bandRange={bandRange}
-            />
-          ),
-          placement: 'top',
-          arrow: false,
-          clickable: true,
-        }}
-        notional={
-          liquidationRange?.rangeToLiquidation
-            ? {
-                value: liquidationRange.rangeToLiquidation,
-                unit: {
-                  symbol: `% distance to LT`,
-                  position: 'suffix',
-                },
-              }
-            : undefined
-        }
-      />
+      </Stack>
     </Stack>
-  </Stack>
-)
+  )
+}

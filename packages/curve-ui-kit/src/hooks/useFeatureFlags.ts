@@ -38,3 +38,6 @@ export const useAnalyticsApp = useAlphaChannel
 
 /** The new fastbridge bridge (which only works from L2 -> Mainnet at the time of writing) */
 export const useFastbridge = useBetaChannel
+
+/** New page header with market metrics on market detail pages */
+export const useIntegratedLlamaHeader = useBetaChannel

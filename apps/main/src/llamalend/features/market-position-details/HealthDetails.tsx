@@ -1,13 +1,10 @@
-import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward'
-import NotificationsIcon from '@mui/icons-material/Notifications'
-import { Button, Stack, Typography, useTheme } from '@mui/material'
+import { Stack, Typography, useTheme } from '@mui/material'
+import { useIntegratedLlamaHeader } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { decimal } from '@ui-kit/utils'
-import type { Health, LiquidationAlert } from './BorrowPositionDetails'
-import { HealthBar } from './HealthBar'
-import { getHealthValueColor } from './utils'
+import { HealthBar, getHealthValueColor, Health, LiquidationAlert, LlamaMonitorBotLinkButton } from './'
 
 const { Spacing } = SizesAndSpaces
 
@@ -19,50 +16,34 @@ export const HealthDetails = ({
   liquidationAlert: LiquidationAlert
 }) => {
   const theme = useTheme()
+  const showPageHeader = useIntegratedLlamaHeader()
+
   return (
-    <Stack sx={{ padding: Spacing.md }}>
-      <Stack gap={2}>
-        <Stack
-          display="grid"
-          gridTemplateColumns={{ mobile: '1fr', tablet: 'auto 1fr' }}
-          alignItems="end"
-          gap={{ mobile: 0, tablet: 5 }}
-        >
+    <Stack>
+      <Stack gap={Spacing.xs}>
+        <Stack direction="row" alignItems="flex-end" gap={Spacing.md.mobile}>
           <Metric
             label={t`Health`}
-            value={Number(value)}
+            value={value != null ? Number(value) : null}
             loading={loading}
             valueOptions={{ unit: 'none', color: getHealthValueColor({ health: decimal(value), theme }) }}
-            size="large"
+            size="medium"
           />
-          <HealthBar health={Number(value)} softLiquidation={softLiquidation} />
+          <HealthBar health={value != null ? Number(value) : null} softLiquidation={softLiquidation} sx={{ flex: 1 }} />
         </Stack>
         <Stack
           flexDirection={{ mobile: 'column', tablet: 'row' }}
-          gap={1}
+          gap={Spacing.md.mobile}
           alignItems={{ mobile: 'flex-start', tablet: 'center' }}
           justifyContent="space-between"
         >
-          <Stack display="flex" flexDirection="column">
-            <Typography variant="bodyXsRegular">
-              {t`Health determines a position liquidation. It is not directly correlated to the price of the collateral. `}
-            </Typography>
-            <Typography variant="bodyXsRegular" sx={{ fontWeight: (t) => t.typography.fontWeightBold }}>
+          <Typography variant="bodyXsRegular" component="p">
+            {t`Health determines a position liquidation. It is not directly correlated to the price of the collateral. `}
+            <Typography variant="bodyXsRegular" component="span" color="danger" fontWeight="bold">
               {t`Liquidation may occur when health reaches 0.`}
             </Typography>
-          </Stack>
-          <Button
-            variant="link"
-            color="ghost"
-            href="https://t.me/LlamalendMonitorBot?ref=news.curve.finance"
-            target="_blank"
-            rel="noreferrer"
-            sx={{ flexShrink: 0 }}
-            startIcon={<NotificationsIcon sx={(t) => ({ fontSize: t.typography.fontSize })} />}
-            endIcon={<ArrowOutwardIcon sx={(t) => ({ fontSize: t.typography.fontSize })} />}
-          >
-            {t`Get alerts`}
-          </Button>
+          </Typography>
+          {!showPageHeader && <LlamaMonitorBotLinkButton />}
         </Stack>
       </Stack>
     </Stack>

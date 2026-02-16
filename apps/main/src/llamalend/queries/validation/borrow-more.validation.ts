@@ -72,14 +72,14 @@ export const borrowMoreFormValidationSuite = createValidationSuite(
     slippage,
     leverageEnabled,
   }: BorrowMoreForm) => {
-    const maxDebtRequired = true
+    const debtRequired = true
     const leverageRequired = false
     validateUserCollateral(userCollateral)
     validateMaxCollateral(userCollateral, maxCollateral)
     validateUserBorrowed(userBorrowed)
     validateMaxBorrowed(userBorrowed, maxBorrowed)
-    validateDebt(debt)
-    validateMaxDebt(debt, maxDebt, maxDebtRequired)
+    validateDebt(debt, debtRequired)
+    validateMaxDebt(debt, maxDebt, debtRequired)
     validateSlippage(slippage)
     validateLeverageEnabled(leverageEnabled, leverageRequired)
   },
