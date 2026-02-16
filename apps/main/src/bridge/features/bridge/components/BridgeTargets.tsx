@@ -38,21 +38,15 @@ const SelectNetworkLabel = ({ label, sx }: { label: string; sx?: SxProps }) => (
   </Typography>
 )
 
-/** Displays a chain icon and its human-readable name for the given {@link chainId}. */
-const SelectNetworkValue = ({ chainId, sx }: { chainId: number | undefined; sx?: SxProps }) => {
-  if (chainId == null) return null
-
-  const networkId = requireBlockchainId(chainId)
-
-  return (
-    <Stack direction="row" alignItems="center" gap={Spacing.sm} sx={sx}>
-      <ChainSwitcherIcon networkId={networkId} size={20} />
-      <Typography variant="bodyMBold" textTransform="capitalize">
-        {networkId}
-      </Typography>
-    </Stack>
-  )
-}
+/** Displays a chain icon and its human-readable name for the given {@link blockchainId}. */
+const SelectNetworkValue = ({ blockchainId, sx }: { blockchainId: string; sx?: SxProps }) => (
+  <Stack direction="row" alignItems="center" gap={Spacing.sm} sx={sx}>
+    <ChainSwitcherIcon networkId={blockchainId} size={20} />
+    <Typography variant="bodyMBold" textTransform="capitalize">
+      {blockchainId}
+    </Typography>
+  </Stack>
+)
 
 /**
  * Dropdown-style button that shows the currently selected network.
@@ -80,7 +74,13 @@ const SelectNetworkButton = ({
     disabled={disabled || loading}
     displayEmpty
     size="medium"
-    renderValue={() => (loading ? <Spinner useTheme={true} /> : <SelectNetworkValue chainId={chainId} />)}
+    renderValue={() =>
+      loading || !chainId ? (
+        <Spinner useTheme={true} />
+      ) : (
+        <SelectNetworkValue blockchainId={requireBlockchainId(chainId)} />
+      )
+    }
     IconComponent={KeyboardArrowDownIcon}
     sx={sx}
   />
@@ -146,7 +146,7 @@ export const BridgeTargets = ({ networks, fromChainId, disabled, loading, onNetw
       </Box>
 
       <SelectNetworkLabel label={t`To`} sx={{ gridArea: GRID_AREAS.to.label }} />
-      <SelectNetworkValue chainId={Chain.Ethereum} sx={{ gridArea: GRID_AREAS.to.input }} />
+      <SelectNetworkValue blockchainId={requireBlockchainId(Chain.Ethereum)} sx={{ gridArea: GRID_AREAS.to.input }} />
     </Box>
   )
 }
