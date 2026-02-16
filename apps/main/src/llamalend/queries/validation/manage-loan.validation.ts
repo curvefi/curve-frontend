@@ -179,7 +179,7 @@ export const repayFormValidationSuite = createValidationSuite(
     validateRepayCollateralField('stateCollateral', stateCollateral)
     validateMaxStateCollateral(stateCollateral, maxStateCollateral)
     validateRepayBorrowedField(userBorrowed)
-    validateMaxBorrowed(userBorrowed, maxBorrowed)
+    validateMaxBorrowed(userBorrowed, { label: `repay amount`, maxBorrowed })
     validateMaxCollateral(userCollateral, maxCollateral)
     validateRepayHasValue(stateCollateral, userCollateral, userBorrowed)
     validateIsFull(isFull)

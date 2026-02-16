@@ -82,11 +82,17 @@ export const validateLeverageValuesSupported = (marketId: string | null | undefi
 
 export const validateMaxBorrowed = (
   userBorrowed: Decimal | undefined | null,
-  maxBorrowed: Decimal | undefined | null,
+  {
+    maxBorrowed,
+    label,
+  }: {
+    label: string
+    maxBorrowed: Decimal | undefined | null
+  },
 ) => {
   skipWhen(userBorrowed == null || maxBorrowed == null, () => {
-    test('userBorrowed', `The maximum debt amount is ${maxBorrowed}`, () => {
-      enforce(userBorrowed).lte(maxBorrowed)
+    test('userBorrowed', `The maximum ${label} is ${maxBorrowed}`, () => {
+      enforce(userBorrowed).lessThanOrEquals(maxBorrowed)
     })
   })
 }
@@ -97,7 +103,7 @@ export const validateMaxCollateral = (
 ) => {
   skipWhen(userCollateral == null || maxCollateral == null, () => {
     test('userCollateral', `The maximum collateral amount is ${maxCollateral}`, () => {
-      enforce(userCollateral).lte(maxCollateral)
+      enforce(userCollateral).lessThanOrEquals(maxCollateral)
     })
   })
 }
