@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from 'react'
-import { useForm, type UseFormReturn } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import type { Address } from 'viem'
 import { useConnection } from 'wagmi'
 import { vestResolver } from '@hookform/resolvers/vest'
@@ -10,7 +10,7 @@ import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { createApprovedEstimateGasHook } from '@ui-kit/lib/model/entities/gas-info'
 import type { Decimal } from '@ui-kit/utils'
-import { updateForm, useFormErrors } from '@ui-kit/utils/react-form.utils'
+import { updateForm, useCallbackAfterFormUpdate, useFormErrors } from '@ui-kit/utils/react-form.utils'
 import { useBridgeApproveMutation } from '../mutations/approve.mutation'
 import { useBridgeMutation } from '../mutations/bridge.mutation'
 import { useBridgeApproveGasEstimate } from '../queries/bridge-approve-gas-estimate'
@@ -29,9 +29,6 @@ export type BridgeForm = {
   max: number | undefined
   walletBalance: Decimal | undefined
 }
-
-const useCallbackAfterFormUpdate = (form: UseFormReturn<BridgeForm>, callback: () => void) =>
-  useEffect(() => form.subscribe({ formState: { values: true }, callback }), [form, callback])
 
 /** Debounce for form values such that we're not spamming queries (for validation) */
 const useBridgeParams = ({
