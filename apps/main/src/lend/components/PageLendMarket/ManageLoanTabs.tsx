@@ -3,7 +3,6 @@ import { LoanCollateralAdd } from '@/lend/components/PageLendMarket/LoanCollater
 import { LoanCollateralRemove } from '@/lend/components/PageLendMarket/LoanCollateralRemove'
 import { LoanRepay } from '@/lend/components/PageLendMarket/LoanRepay'
 import { LoanSelfLiquidation } from '@/lend/components/PageLendMarket/LoanSelfLiquidation'
-import { invalidateAllUserBorrowDetails } from '@/lend/entities/user-loan-details'
 import { networks } from '@/lend/networks'
 import { type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
 import { AddCollateralForm } from '@/llamalend/features/manage-loan/components/AddCollateralForm'
@@ -13,6 +12,7 @@ import { RepayForm } from '@/llamalend/features/manage-loan/components/RepayForm
 import { ClosePositionForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ClosePositionForm'
 import { ImproveHealthForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ImproveHealthForm'
 import type { BorrowPositionDetailsProps } from '@/llamalend/features/market-position-details'
+import { invalidateAllUserMarketDetails } from '@/llamalend/queries/validation/invalidation'
 import { useManageLoanMuiForm, useManageSoftLiquidation } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { type FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
@@ -55,7 +55,7 @@ const LendManageNewMenu = [
         chainId={chainId}
         market={market}
         enabled={isLoaded}
-        onBorrowedMore={() => invalidateAllUserBorrowDetails({ chainId, marketId, userAddress })}
+        onBorrowedMore={() => invalidateAllUserMarketDetails({ chainId, marketId, userAddress })}
       />
     ),
   },
@@ -68,7 +68,7 @@ const LendManageNewMenu = [
         chainId={chainId}
         market={market}
         enabled={isLoaded}
-        onRepaid={() => invalidateAllUserBorrowDetails({ chainId, marketId, userAddress })}
+        onRepaid={() => invalidateAllUserMarketDetails({ chainId, marketId, userAddress })}
       />
     ),
   },
@@ -85,7 +85,7 @@ const LendManageNewMenu = [
             chainId={chainId}
             market={market}
             enabled={isLoaded}
-            onAdded={() => invalidateAllUserBorrowDetails({ chainId, marketId, userAddress })}
+            onAdded={() => invalidateAllUserMarketDetails({ chainId, marketId, userAddress })}
           />
         ),
       },
@@ -98,7 +98,7 @@ const LendManageNewMenu = [
             chainId={chainId}
             market={market}
             enabled={isLoaded}
-            onRemoved={() => invalidateAllUserBorrowDetails({ chainId, marketId, userAddress })}
+            onRemoved={() => invalidateAllUserMarketDetails({ chainId, marketId, userAddress })}
           />
         ),
       },
@@ -126,7 +126,7 @@ const LendManageSoftLiquidationMenu = [
             market={market}
             networks={networks}
             enabled={isLoaded}
-            onRepaid={() => invalidateAllUserBorrowDetails({ chainId, marketId, userAddress })}
+            onRepaid={() => invalidateAllUserMarketDetails({ chainId, marketId, userAddress })}
           />
         ),
       },
@@ -145,7 +145,7 @@ const LendManageSoftLiquidationMenu = [
             networks={networks}
             market={market}
             enabled={isLoaded}
-            onClosed={() => invalidateAllUserBorrowDetails({ chainId, marketId, userAddress })}
+            onClosed={() => invalidateAllUserMarketDetails({ chainId, marketId, userAddress })}
           />
         ),
       },
