@@ -1,7 +1,7 @@
-import { type LendMarketRoute, ROUTE } from '@/lend/constants'
+import { ROUTE } from '@/lend/constants'
 import { networksIdMapper } from '@/lend/networks'
 import { type MarketUrlParams, NetworkUrlParams, type UrlParams } from '@/lend/types/lend.types'
-import { getInternalUrl, LLAMALEND_ROUTES } from '@ui-kit/shared/routes'
+import { getInternalUrl, LendMarketRoute, LLAMALEND_ROUTES } from '@ui-kit/shared/routes'
 
 /** Get the path for the given route in this app */
 export const getPath = ({ network }: UrlParams, route: string) => getInternalUrl('lend', network, route)

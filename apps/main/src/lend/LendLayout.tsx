@@ -1,3 +1,4 @@
+import { LendMarketSubNavMobile } from '@/lend/components/LendMarketSubNavMobile'
 import { networksIdMapper, networks } from '@/lend/networks'
 import type { UrlParams } from '@/lend/types/lend.types'
 import { Outlet } from '@tanstack/react-router'
@@ -12,5 +13,10 @@ export function LendLayout() {
   useRedirectToEth(networks[chainId], networkId)
   useGasInfoAndUpdateLib({ chainId, networks })
 
-  return <Outlet />
+  return (
+    <>
+      <LendMarketSubNavMobile />
+      <Outlet />
+    </>
+  )
 }
