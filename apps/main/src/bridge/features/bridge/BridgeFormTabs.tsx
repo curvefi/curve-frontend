@@ -14,6 +14,6 @@ const BridgeMenu = [
     label: t`Bridge crvUSD`,
     component: (params: BridgeFormParams) => <BridgeForm {...params} />,
   },
-] satisfies FormTab<never>[]
+] satisfies FormTab<BridgeFormParams>[]
 
 export const BridgeFormTabs = ({ ...params }: BridgeFormParams) => <FormTabs params={params} menu={BridgeMenu} />
