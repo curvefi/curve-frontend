@@ -10,7 +10,7 @@ import type { Query } from '@ui-kit/types/util'
 import { type Decimal, formatNumber, formatPercent } from '@ui-kit/utils'
 import { SlippageToleranceActionInfoPure } from '@ui-kit/widgets/SlippageSettings'
 import { ActionInfoCollapse } from './ActionInfoCollapse'
-import { formatAmount, formatLeverage, INHERIT_GAP } from './info-actions.helpers'
+import { formatAmount, formatLeverage, ACTION_INFO_GROUP_SX } from './info-actions.helpers'
 
 export type LoanActionInfoListProps = {
   isOpen: boolean
@@ -93,7 +93,7 @@ export const LoanActionInfoList = ({
     )
   return (
     <ActionInfoCollapse isOpen={isOpen} testId="loan-info-accordion">
-      <Stack sx={{ ...INHERIT_GAP }}>
+      <Stack sx={{ ...ACTION_INFO_GROUP_SX }}>
         <Stack>
           {rates && (
             <ActionInfo
@@ -168,7 +168,7 @@ export const LoanActionInfoList = ({
       </Stack>
 
       {leverageEnabled && (
-        <Stack sx={{ ...INHERIT_GAP }}>
+        <Stack sx={{ ...ACTION_INFO_GROUP_SX }}>
           {(prevLeverageValue || leverageValue) && (
             <ActionInfo
               label={t`Leverage`}

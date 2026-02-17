@@ -5,7 +5,7 @@ import { ActionInfo, ActionInfoGasEstimate, type TxGasInfo } from '@ui-kit/share
 import type { Query } from '@ui-kit/types/util'
 import { type Decimal, formatNumber, formatPercent } from '@ui-kit/utils'
 import { ActionInfoCollapse } from './ActionInfoCollapse'
-import { formatAmount, INHERIT_GAP } from './info-actions.helpers'
+import { formatAmount, ACTION_INFO_GROUP_SX } from './info-actions.helpers'
 
 export type SupplyActionInfoListProps = {
   isOpen: boolean
@@ -51,7 +51,7 @@ export const SupplyActionInfoList = ({
   gas,
 }: SupplyActionInfoListProps) => (
   <ActionInfoCollapse isOpen={isOpen} testId="supply-info-accordion">
-    <Stack sx={{ ...INHERIT_GAP }}>
+    <Stack sx={{ ...ACTION_INFO_GROUP_SX }}>
       <Stack>
         {(supplyApy || prevSupplyApy) && (
           <ActionInfo

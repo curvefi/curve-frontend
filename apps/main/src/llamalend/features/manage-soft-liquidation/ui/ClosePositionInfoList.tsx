@@ -18,6 +18,8 @@ type ClosePositionInfoListProps = {
   onSlippageChange: (newSlippage: Decimal) => void
 }
 
+const ALWAYS_OPEN = true
+
 export function ClosePositionInfoList({
   chainId,
   market,
@@ -26,17 +28,16 @@ export function ClosePositionInfoList({
   onSlippageChange,
 }: ClosePositionInfoListProps) {
   const { address: userAddress } = useConnection()
-  const isOpen = true
   const { borrowToken } = market ? getTokens(market) : {}
   const marketId = market?.id
-  const userState = q(useUserState({ chainId, marketId, userAddress }, isOpen))
+  const userState = q(useUserState({ chainId, marketId, userAddress }, ALWAYS_OPEN))
 
   return (
     <LoanActionInfoList
-      isOpen={isOpen}
+      isOpen={ALWAYS_OPEN}
       slippage={slippage}
       onSlippageChange={onSlippageChange}
-      gas={useCloseEstimateGas(networks, { chainId, marketId, userAddress, slippage }, isOpen)}
+      gas={useCloseEstimateGas(networks, { chainId, marketId, userAddress, slippage }, ALWAYS_OPEN)}
       debt={mapQuery(userState, () => ({ value: '0', tokenSymbol: borrowToken?.symbol }))}
       userState={userState}
       isApproved={q(
