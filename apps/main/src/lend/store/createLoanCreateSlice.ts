@@ -14,7 +14,6 @@ import {
   DEFAULT_FORM_VALUES,
 } from '@/lend/components/PageLendMarket/utils'
 import { invalidateMarketDetails } from '@/lend/entities/market-details'
-import { invalidateAllUserBorrowDetails } from '@/lend/entities/user-loan-details'
 import { helpers, apiLending } from '@/lend/lib/apiLending'
 import { networks } from '@/lend/networks'
 import type { LiqRange, LiqRangesMapper } from '@/lend/store/types'
@@ -23,6 +22,7 @@ import { Api, ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { _parseActiveKey } from '@/lend/utils/helpers'
 import { updateUserEventsApi } from '@/llamalend/llama.utils'
 import { refetchLoanExists } from '@/llamalend/queries/loan-exists'
+import { invalidateBorrowPositionQueries } from '@/llamalend/queries/validation/invalidation'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 
@@ -344,7 +344,7 @@ export const createLoanCreate = (
         await user.fetchAll(api, market, true)
         void markets.fetchAll(api, market, true)
         markets.setStateByKey('marketDetailsView', 'user')
-        await invalidateAllUserBorrowDetails({
+        await invalidateBorrowPositionQueries({
           chainId: api.chainId,
           marketId: market.id,
           userAddress: api.signerAddress,

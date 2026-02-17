@@ -2,7 +2,7 @@ import lodash from 'lodash'
 import type { StoreApi } from 'zustand'
 import { updateUserEventsApi } from '@/llamalend/llama.utils'
 import { refetchLoanExists } from '@/llamalend/queries/loan-exists'
-import { invalidateLoanExists } from '@/llamalend/queries/loan-exists'
+import { invalidateBorrowPositionQueries } from '@/llamalend/queries/validation/invalidation'
 import {
   type CreateFormStatus,
   type FormDetailInfo,
@@ -451,7 +451,11 @@ export const createLoanCreate = (_set: StoreApi<State>['setState'], get: StoreAp
       if (!loanExists) {
         get().loans.resetUserDetailsState(llamma)
       }
-      await invalidateLoanExists({ chainId: curve.chainId, marketId: llamma.id, userAddress: curve.signerAddress })
+      await invalidateBorrowPositionQueries({
+        chainId: curve.chainId,
+        marketId: llamma.id,
+        userAddress: curve.signerAddress,
+      })
 
       // reset form values
       const updatedFormValues = DEFAULT_FORM_VALUES

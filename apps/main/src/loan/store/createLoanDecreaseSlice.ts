@@ -1,7 +1,7 @@
 import lodash from 'lodash'
 import type { StoreApi } from 'zustand'
 import { updateUserEventsApi } from '@/llamalend/llama.utils'
-import { invalidateUserPrices } from '@/llamalend/queries/user'
+import { invalidateBorrowPositionQueries } from '@/llamalend/queries/validation/invalidation'
 import type { FormStatus, FormValues } from '@/loan/components/PageMintMarket/LoanDecrease/types'
 import type { FormDetailInfo, FormEstGas } from '@/loan/components/PageMintMarket/types'
 import {
@@ -220,12 +220,10 @@ export const createLoanDecrease = (_set: StoreApi<State>['setState'], get: Store
           get().loans.resetUserDetailsState(llamma)
         }
 
-        // invalidate user prices to keep ohlc chart liquidation range in sync
-        await invalidateUserPrices({
+        await invalidateBorrowPositionQueries({
           chainId,
           marketId: llamma.id,
           userAddress: wallet?.address,
-          loanExists: loanExists,
         })
 
         get()[sliceKey].setStateByKey('formStatus', {

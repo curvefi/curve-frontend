@@ -1,10 +1,6 @@
 import type { Address, Hex } from 'viem'
-// We need to invalidate all user loan details for lend when repaying.
-// Ideally in the future the user-loan-details query will be split up
-// and the lend app uses those split up queries from llamalend app.
-// eslint-disable-next-line import/no-restricted-paths
-import { invalidateAllUserBorrowDetails } from '@/lend/entities/user-loan-details'
 import { useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
+import { invalidateBorrowPositionQueries } from '@/llamalend/queries/validation/invalidation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
@@ -41,7 +37,7 @@ export const useClosePositionMutation = ({
     }),
     pendingMessage: () => t`Closing position...`,
     successMessage: () => t`Position closed successfully!`,
-    onSuccess: () => invalidateAllUserBorrowDetails({ chainId, marketId, userAddress }),
+    onSuccess: () => invalidateBorrowPositionQueries({ chainId, marketId, userAddress }),
     onReset,
     validationSuite: userMarketValidationSuite,
   })

@@ -33,10 +33,11 @@ export { invalidateUserPrices }
 
 export const useUserPrices = (params: UserMarketParams, options?: { loanExists?: boolean }) => {
   const hasLoanExistsOverride = options?.loanExists != null
-  const { data: loanExistsData, isLoading: isLoanExistsLoading, isError: isLoanExistsError } = useLoanExists(
-    params,
-    !hasLoanExistsOverride,
-  )
+  const {
+    data: loanExistsData,
+    isLoading: isLoanExistsLoading,
+    isError: isLoanExistsError,
+  } = useLoanExists(params, !hasLoanExistsOverride)
   const loanExists = hasLoanExistsOverride ? options.loanExists : loanExistsData
   const queryResult = useUserPricesQuery({ ...params, loanExists })
 
