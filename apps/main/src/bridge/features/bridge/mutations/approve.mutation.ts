@@ -23,7 +23,7 @@ export const useBridgeApproveMutation = ({ chainId, onApproved }: BridgeApproveO
     mutationFn: async ({ amount }) =>
       await requireLib('curveApi')
         .fastBridge.approve(amount)
-        .then((hashes) => ({ hash: hashes[0] as Hex })),
+        .then(([hash]) => ({ hash: hash as Hex })),
     validationSuite: bridgeFormValidationSuite,
     validationParams: { chainId },
     pendingMessage: (mutation) => t`Approving... ${formatNumber(mutation.amount, { abbreviate: false })} crvUSD`,
