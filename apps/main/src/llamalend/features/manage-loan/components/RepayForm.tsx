@@ -55,13 +55,13 @@ export const RepayForm = <ChainId extends IChainId>({
   networks,
   chainId,
   enabled,
-  onRepaid,
+  onSuccess,
 }: {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
   chainId: ChainId
   enabled?: boolean
-  onRepaid?: RepayOptions['onRepaid']
+  onSuccess?: RepayOptions['onSuccess']
 }) => {
   const network = networks[chainId]
   const {
@@ -84,7 +84,7 @@ export const RepayForm = <ChainId extends IChainId>({
     market,
     network,
     enabled,
-    onRepaid,
+    onSuccess,
   })
   const { token, onToken, tokens } = useRepayTokens({ market, networkId: network.id })
 
@@ -94,9 +94,13 @@ export const RepayForm = <ChainId extends IChainId>({
   const swapRequired = selectedToken !== borrowToken
 
   // The max repay amount in the helper message should always be denominated in terms of the borrow token.
-  const { data: maxAmountInBorrowToken, isLoading: maxAmountInBorrowTokenLoading } = useTokenAmountConversion({
+  const {
+    data: maxAmountInBorrowToken,
+    isLoading: maxAmountInBorrowTokenLoading,
+    error: maxAmountInBorrowTokenError,
+  } = useTokenAmountConversion({
     chainId,
-    amountIn: max[selectedField].data,
+    amountIn: max[selectedField],
     tokenInAddress: selectedToken?.address,
     tokenOutAddress: borrowToken?.address,
   })
@@ -105,11 +109,14 @@ export const RepayForm = <ChainId extends IChainId>({
     selectedField === 'stateCollateral' && t`Using collateral balances to repay.`,
     t`Max repay amount:`,
   ).join(' ')
-  const rawFormErrors = Object.entries(form.formState.errors)
 
   useEffect(
-    // Reset field when selectedField changes
-    () => () => updateForm(form, { [selectedField]: undefined }),
+    () => () => {
+      // Reset when selectedField changes and the field is dirty (unmounting the field)
+      if (selectedField in form.formState.dirtyFields) {
+        updateForm(form, { [selectedField]: undefined })
+      }
+    },
     [form, selectedField],
   )
 
@@ -154,43 +161,25 @@ export const RepayForm = <ChainId extends IChainId>({
           />
         }
         message={
-          <Balance
-            prefix={maxAmountPrefix}
-            tooltip={t`Max available to repay`}
-            symbol={borrowToken?.symbol}
-            balance={maxAmountInBorrowToken}
-            loading={max[selectedField].isLoading || maxAmountInBorrowTokenLoading}
-            onClick={() =>
-              updateForm(form, {
-                [selectedField]: max[selectedField].data,
-                isFull: selectedField === 'userBorrowed',
-              })
-            }
-          />
+          maxAmountInBorrowTokenError?.message ?? (
+            <Balance
+              prefix={maxAmountPrefix}
+              tooltip={t`Max available to repay`}
+              symbol={borrowToken?.symbol}
+              balance={maxAmountInBorrowToken}
+              loading={max[selectedField].isLoading || maxAmountInBorrowTokenLoading}
+              onClick={() =>
+                updateForm(form, {
+                  [selectedField]: max[selectedField].data,
+                  isFull: selectedField === 'userBorrowed',
+                })
+              }
+            />
+          )
         }
       />
       <HighPriceImpactAlert {...q(useRepayPriceImpact(params, enabled && swapRequired))} />
-      <Button
-        type="submit"
-        loading={isPending || !market}
-        disabled={isDisabled}
-        data-testid="repay-submit-button"
-        data-validation={JSON.stringify({
-          hasMarket: !!market,
-          selectedField,
-          selectedToken,
-          swapRequired,
-          isPending,
-          isDisabled,
-          isValid: form.formState.isValid,
-          isSubmitting: form.formState.isSubmitting,
-          isApproved: q(isApproved),
-          isFull: q(isFull),
-          maxSelectedField: max[selectedField],
-          formErrors,
-          rawFormErrors,
-        })}
-      >
+      <Button type="submit" loading={isPending || !market} disabled={isDisabled} data-testid="repay-submit-button">
         {isPending
           ? t`Processing...`
           : joinButtonText(

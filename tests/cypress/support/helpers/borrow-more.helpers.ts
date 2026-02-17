@@ -1,6 +1,7 @@
+import BigNumber from 'bignumber.js'
 import type { Decimal } from '@ui-kit/utils'
 import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '../ui'
-import { checkDebt, getActionValue } from './llamalend/action-info.helpers'
+import { checkCurrentDebt, checkDebt, getActionValue } from './llamalend/action-info.helpers'
 
 type BorrowMoreField = 'collateral' | 'user-borrowed' | 'debt'
 
@@ -47,7 +48,7 @@ export function checkBorrowMoreDetailsLoaded({
   leverageEnabled: boolean
 }) {
   getActionValue('borrow-apr').should('include', '%')
-  checkDebt(expectedCurrentDebt, expectedFutureDebt, 'crvUSD')
+  checkDebt({ current: expectedCurrentDebt, future: expectedFutureDebt, symbol: 'crvUSD' })
   cy.get('[data-testid="loan-form-errors"]').should('not.exist')
   if (leverageEnabled) {
     getActionValue('borrow-price-impact').should('include', '%')
@@ -60,4 +61,22 @@ export function submitBorrowMoreForm() {
   return cy
     .get('[data-testid="toast-success"]', TRANSACTION_LOAD_TIMEOUT)
     .contains('Borrowed more!', TRANSACTION_LOAD_TIMEOUT)
+}
+
+export function testBorrowMoreForm(
+  debt: Decimal,
+  before: Decimal,
+  leverageEnabled: boolean,
+  onSuccess: ReturnType<typeof cy.stub>,
+) {
+  const after = new BigNumber(before).plus(debt).toString() as Decimal
+  writeBorrowMoreForm({ debt: debt })
+  checkBorrowMoreDetailsLoaded({
+    expectedCurrentDebt: before,
+    expectedFutureDebt: after,
+    leverageEnabled,
+  })
+  submitBorrowMoreForm().then(() => expect(onSuccess).to.be.calledOnce)
+  checkCurrentDebt(after)
+  return after
 }

@@ -26,12 +26,12 @@ export const useDepositForm = <ChainId extends LlamaChainId>({
   market,
   network,
   enabled,
-  onDeposited,
+  onSuccess,
 }: {
   market: LlamaMarketTemplate | undefined
   network: LlamaNetwork<ChainId>
   enabled?: boolean
-  onDeposited?: NonNullable<DepositOptions['onDeposited']>
+  onSuccess?: NonNullable<DepositOptions['onSuccess']>
 }) => {
   const { address: userAddress } = useConnection()
   const { chainId } = network
@@ -59,7 +59,7 @@ export const useDepositForm = <ChainId extends LlamaChainId>({
         chainId,
         marketId,
         userAddress,
-        depositAmount: depositAmount,
+        depositAmount,
       }),
       [chainId, marketId, userAddress, depositAmount],
     ),
@@ -72,13 +72,7 @@ export const useDepositForm = <ChainId extends LlamaChainId>({
     error: depositError,
     data,
     reset: resetDeposit,
-  } = useDepositMutation({
-    marketId,
-    network,
-    onDeposited,
-    onReset: form.reset,
-    userAddress,
-  })
+  } = useDepositMutation({ marketId, network, onSuccess, onReset: form.reset, userAddress })
 
   const { formState } = form
 

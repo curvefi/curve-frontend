@@ -104,7 +104,8 @@ export const LoanFormTokenInput = <
   const errors = form.formState.errors as PartialRecord<FieldPath<TFieldValues>, Error>
   const maxFieldName = max?.fieldName
   const relatedMaxFieldError = max?.data && maxFieldName && errors[maxFieldName]
-  const error = errors[name] || max?.error || balanceError || relatedMaxFieldError
+  const error =
+    (name in form.formState.touchedFields && errors[name]) || max?.error || balanceError || relatedMaxFieldError
   const value = form.getValues(name)
   const errorMessage = error?.message
   const onBalance = useCallback(
@@ -133,7 +134,7 @@ export const LoanFormTokenInput = <
       onBalance={onBalance}
       isError={!!error}
       {...(!hideBalance && { walletBalance })}
-      maxBalance={useMemo(() => max && { balance: max.data, chips: maxType }, [max, maxType])}
+      maxBalance={max && { balance: max.data, chips: maxType, isLoading: max.isLoading }}
       inputBalanceUsd={decimal(usdRate && usdRate * +(value ?? 0))}
     >
       {errorMessage ? (

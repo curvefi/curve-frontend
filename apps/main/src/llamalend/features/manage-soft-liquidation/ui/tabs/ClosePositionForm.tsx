@@ -22,13 +22,13 @@ export const ClosePositionForm = ({
   networks,
   chainId,
   enabled,
-  onClosed,
+  onSuccess,
 }: {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<LlamaChainId>
   chainId: LlamaChainId
   enabled?: boolean
-  onClosed?: () => void
+  onSuccess?: () => void
 }) => {
   const network = networks[chainId]
   const {
@@ -50,7 +50,7 @@ export const ClosePositionForm = ({
     isApproved,
     onSubmit,
     formErrors,
-  } = useClosePositionForm({ market, network, onClosed, enabled })
+  } = useClosePositionForm({ market, network, onSuccess, enabled })
   const { amount: debtToRepay } = debtTokenData ?? {}
   return (
     <Form
@@ -59,7 +59,6 @@ export const ClosePositionForm = ({
       infoAccordion={
         <ClosePositionInfoAccordion
           market={market}
-          enabled={enabled}
           chainId={network.chainId}
           networks={networks}
           values={values}
@@ -81,6 +80,7 @@ export const ClosePositionForm = ({
 
         <Metric
           label={t`Collateral to recover`}
+          testId="withdraw-amount"
           value={totalCollateralToRecoverUsd && Number(totalCollateralToRecoverUsd)}
           valueOptions={{ unit: 'dollar' }}
           notional={(collateralToRecoverData ?? [])
@@ -98,7 +98,11 @@ export const ClosePositionForm = ({
 
       <AlertClosePosition />
       {canClose?.canClose === false && debtTokenData?.symbol && (
-        <AlertAdditionalCrvUsd debtTokenSymbol={debtTokenData.symbol} missing={canClose.missing} />
+        <AlertAdditionalCrvUsd
+          debtTokenSymbol={debtTokenData.symbol}
+          missing={canClose.missing}
+          balance={canClose.balance}
+        />
       )}
 
       <Stack gap={Spacing.xs}>

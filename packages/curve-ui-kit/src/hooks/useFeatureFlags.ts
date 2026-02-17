@@ -35,3 +35,9 @@ export const useManageSoftLiquidation = useBetaChannel
 
 /** Entire new app containing in-depth analyses for knowledgeable users */
 export const useAnalyticsApp = useAlphaChannel
+
+/** New page header with market metrics on market detail pages */
+export const useIntegratedLlamaHeader = useBetaChannel
+
+/** New lend market header subnav */
+export const useLendMarketSubNav = useIntegratedLlamaHeader
