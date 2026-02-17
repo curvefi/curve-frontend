@@ -25,13 +25,13 @@ export const ImproveHealthForm = ({
   networks,
   chainId,
   enabled,
-  onRepaid,
+  onSuccess,
 }: {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<LlamaChainId>
   chainId: LlamaChainId
   enabled?: boolean
-  onRepaid?: RepayOptions['onRepaid']
+  onSuccess?: RepayOptions['onSuccess']
 }) => {
   const network = networks[chainId]
   const {
@@ -39,6 +39,7 @@ export const ImproveHealthForm = ({
     values,
     params,
     isPending,
+    isDisabled,
     onSubmit,
     borrowToken,
     collateralToken,
@@ -53,7 +54,7 @@ export const ImproveHealthForm = ({
     market,
     network,
     enabled,
-    onRepaid,
+    onSuccess,
   })
 
   return (
@@ -97,7 +98,7 @@ export const ImproveHealthForm = ({
       <AlertRepayDebtToIncreaseHealth />
 
       <Stack gap={Spacing.xs}>
-        <Button type="submit" loading={isPending} disabled={formErrors.length > 0} data-testid="improve-health-submit">
+        <Button type="submit" loading={isPending} disabled={isDisabled} data-testid="improve-health-submit-button">
           {isPending
             ? t`Processing...`
             : joinButtonText(

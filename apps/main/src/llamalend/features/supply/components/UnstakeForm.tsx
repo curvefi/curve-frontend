@@ -14,7 +14,7 @@ export type UnstakeFormProps<ChainId extends IChainId> = {
   networks: NetworkDict<ChainId>
   chainId: ChainId
   enabled?: boolean
-  onUnstaked?: NonNullable<UnstakeOptions['onUnstaked']>
+  onSuccess?: NonNullable<UnstakeOptions['onSuccess']>
 }
 
 const TEST_ID_PREFIX = 'supply-unstake'
@@ -24,7 +24,7 @@ export const UnstakeForm = <ChainId extends IChainId>({
   networks,
   chainId,
   enabled,
-  onUnstaked,
+  onSuccess,
 }: UnstakeFormProps<ChainId>) => {
   const network = networks[chainId]
 
@@ -41,12 +41,7 @@ export const UnstakeForm = <ChainId extends IChainId>({
     txHash,
     formErrors,
     max,
-  } = useUnstakeForm({
-    market,
-    network,
-    enabled,
-    onUnstaked,
-  })
+  } = useUnstakeForm({ market, network, enabled, onSuccess })
 
   return (
     <Form

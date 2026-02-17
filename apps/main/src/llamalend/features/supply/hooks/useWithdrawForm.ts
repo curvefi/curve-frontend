@@ -24,12 +24,12 @@ const emptyWithdrawForm = (): WithdrawForm => ({
 export const useWithdrawForm = <ChainId extends LlamaChainId>({
   market,
   network,
-  onWithdrawn,
+  onSuccess,
 }: {
   market: LlamaMarketTemplate | undefined
   network: LlamaNetwork<ChainId>
   enabled?: boolean
-  onWithdrawn?: NonNullable<WithdrawOptions['onWithdrawn']>
+  onSuccess?: NonNullable<WithdrawOptions['onSuccess']>
 }) => {
   const { address: userAddress } = useConnection()
   const { chainId } = network
@@ -66,13 +66,7 @@ export const useWithdrawForm = <ChainId extends LlamaChainId>({
     error: withdrawError,
     data,
     reset: resetWithdraw,
-  } = useWithdrawMutation({
-    marketId,
-    network,
-    onWithdrawn,
-    onReset: form.reset,
-    userAddress,
-  })
+  } = useWithdrawMutation({ marketId, network, onSuccess, onReset: form.reset, userAddress })
 
   const { formState } = form
 

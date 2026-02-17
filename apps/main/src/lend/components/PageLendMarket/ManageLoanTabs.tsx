@@ -55,7 +55,7 @@ const LendManageNewMenu = [
         chainId={chainId}
         market={market}
         enabled={isLoaded}
-        onMutated={() => invalidateAllUserBorrowDetails({ chainId, marketId, userAddress })}
+        onSuccess={() => invalidateAllUserBorrowDetails({ chainId, marketId, userAddress })}
       />
     ),
   },
@@ -68,7 +68,7 @@ const LendManageNewMenu = [
         chainId={chainId}
         market={market}
         enabled={isLoaded}
-        onRepaid={() => invalidateAllUserBorrowDetails({ chainId, marketId, userAddress })}
+        onSuccess={() => invalidateAllUserBorrowDetails({ chainId, marketId, userAddress })}
       />
     ),
   },
@@ -85,7 +85,7 @@ const LendManageNewMenu = [
             chainId={chainId}
             market={market}
             enabled={isLoaded}
-            onAdded={() => invalidateAllUserBorrowDetails({ chainId, marketId, userAddress })}
+            onSuccess={() => invalidateAllUserBorrowDetails({ chainId, marketId, userAddress })}
           />
         ),
       },
@@ -98,7 +98,7 @@ const LendManageNewMenu = [
             chainId={chainId}
             market={market}
             enabled={isLoaded}
-            onRemoved={() => invalidateAllUserBorrowDetails({ chainId, marketId, userAddress })}
+            onSuccess={() => invalidateAllUserBorrowDetails({ chainId, marketId, userAddress })}
           />
         ),
       },
@@ -126,7 +126,7 @@ const LendManageSoftLiquidationMenu = [
             market={market}
             networks={networks}
             enabled={isLoaded}
-            onRepaid={() => invalidateAllUserBorrowDetails({ chainId, marketId, userAddress })}
+            onSuccess={() => invalidateAllUserBorrowDetails({ chainId, marketId, userAddress })}
           />
         ),
       },
@@ -145,7 +145,7 @@ const LendManageSoftLiquidationMenu = [
             networks={networks}
             market={market}
             enabled={isLoaded}
-            onClosed={() => invalidateAllUserBorrowDetails({ chainId, marketId, userAddress })}
+            onSuccess={() => invalidateAllUserBorrowDetails({ chainId, marketId, userAddress })}
           />
         ),
       },

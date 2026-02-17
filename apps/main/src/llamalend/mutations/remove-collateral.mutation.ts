@@ -14,7 +14,7 @@ type RemoveCollateralMutation = { userCollateral: Decimal }
 export type RemoveCollateralOptions = {
   marketId: string | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
-  onRemoved?: OnTransactionSuccess<RemoveCollateralMutation>
+  onSuccess?: OnTransactionSuccess<RemoveCollateralMutation>
   onReset: () => void
   userAddress: Address | undefined
 }
@@ -23,7 +23,7 @@ export const useRemoveCollateralMutation = ({
   network,
   network: { chainId },
   marketId,
-  onRemoved,
+  onSuccess,
   onReset,
   userAddress,
 }: RemoveCollateralOptions) => {
@@ -38,7 +38,7 @@ export const useRemoveCollateralMutation = ({
     pendingMessage: (mutation, { market }) => t`Removing collateral... ${formatTokenAmounts(market, mutation)}`,
     successMessage: (mutation, { market }) =>
       t`Collateral removed successfully! ${formatTokenAmounts(market, mutation)}`,
-    onSuccess: onRemoved,
+    onSuccess,
     onReset,
   })
 

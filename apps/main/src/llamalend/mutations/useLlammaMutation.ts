@@ -47,6 +47,7 @@ export function useLlammaMutation<TVariables extends object>({
     onSuccess: async (data, receipt, variables, context) => {
       updateUserEventsApi(context.wallet, { id: networkId }, context.market, receipt.transactionHash)
       await invalidateAllUserMarketDetails({ chainId, marketId, userAddress })
+      console.log('onSuccess', { onSuccess, data, receipt, variables, context })
       await onSuccess?.(data, receipt, variables, context)
     },
   })

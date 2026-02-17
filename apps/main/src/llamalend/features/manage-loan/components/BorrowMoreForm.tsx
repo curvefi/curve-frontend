@@ -28,14 +28,14 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
   networks,
   chainId,
   enabled,
-  onMutated,
+  onSuccess,
   fromWallet = isDevelopment, // todo: delete this if users do not complain about it, for now dev-only feature
 }: {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
   chainId: ChainId
   enabled?: boolean
-  onMutated?: OnBorrowedMore
+  onSuccess?: OnBorrowedMore
   fromWallet?: boolean
 }) => {
   const network = networks[chainId]
@@ -60,7 +60,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     market,
     network,
     enabled,
-    onBorrowedMore: onMutated,
+    onSuccess,
   })
 
   const isLeverageEnabled = isLeverageBorrowMore(market, values.leverageEnabled)

@@ -20,11 +20,11 @@ import { updateForm, useCallbackAfterFormUpdate, useFormErrors } from '@ui-kit/u
 export const useAddCollateralForm = <ChainId extends LlamaChainId>({
   market,
   network,
-  onAdded,
+  onSuccess,
 }: {
   market: LlamaMarketTemplate | undefined
   network: LlamaNetwork<ChainId>
-  onAdded?: NonNullable<AddCollateralOptions['onAdded']>
+  onSuccess?: NonNullable<AddCollateralOptions['onSuccess']>
 }) => {
   const { address: userAddress } = useConnection()
   const { chainId } = network
@@ -62,7 +62,7 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
   const { onSubmit, ...action } = useAddCollateralMutation({
     marketId,
     network,
-    onAdded,
+    onSuccess,
     onReset: form.reset,
     userAddress,
   })

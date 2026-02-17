@@ -16,7 +16,7 @@ import { formatTokenAmounts } from '../llama.utils'
 export type UnstakeOptions = {
   marketId: string | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
-  onUnstaked?: OnTransactionSuccess<UnstakeMutation>
+  onSuccess?: OnTransactionSuccess<UnstakeMutation>
   onReset: () => void
   userAddress: Address | undefined
 }
@@ -25,7 +25,7 @@ export const useUnstakeMutation = ({
   network,
   network: { chainId },
   marketId,
-  onUnstaked,
+  onSuccess,
   onReset,
   userAddress,
 }: UnstakeOptions) => {
@@ -42,7 +42,7 @@ export const useUnstakeMutation = ({
       t`Unstaking... ${formatTokenAmounts(market, { userBorrowed: mutation.unstakeAmount })}`,
     successMessage: (mutation, { market }) =>
       t`Unstake successful! ${formatTokenAmounts(market, { userBorrowed: mutation.unstakeAmount })}`,
-    onSuccess: onUnstaked,
+    onSuccess,
     onReset,
   })
 

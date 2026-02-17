@@ -100,10 +100,15 @@ testCases.forEach(
       const leverageEnabled = hasLeverage && false
       const debtTokenSymbol = 'crvUSD'
 
-      let onMutated: ReturnType<typeof cy.spy>
+      let onSuccess: ReturnType<typeof cy.stub>
+      let failed = false
 
-      beforeEach(() => {
-        onMutated = cy.spy().as('onMutated')
+      beforeEach(function () {
+        if (failed) return this.skip() // skip when any test failed since they are interdependent
+        onSuccess = cy
+          .stub()
+          .callsFake((...args) => console.log('onSuccess', args))
+          .as('onSuccess')
         const vnet = getVirtualNetwork()
         const { adminRpcUrl } = getRpcUrls(vnet)
         fundEth({ adminRpcUrl, amountWei: CREATE_LOAN_FUND_AMOUNT, recipientAddresses: [address] })
@@ -111,15 +116,19 @@ testCases.forEach(
         cy.log(`Funded some eth and collateral to ${address} in vnet ${vnet.slug}`)
       })
 
+      afterEach(function () {
+        failed ||= this.currentTest?.state === 'failed'
+      })
+
       function LoanFlowTest({ tab }: { tab?: LoanTab }) {
         const { isHydrated } = useCurve()
         const market = useMemo(() => isHydrated && getLlamaMarket(id), [isHydrated])
 
         const { data: loanExists } = useLoanExists({ chainId, marketId: id, userAddress: address })
+        if (!market || (loanExists && !tab)) return <Skeleton width="100%" height={400} />
 
-        if (!market) return <Skeleton />
-        const props = { market, networks, chainId, onUpdate, onMutated }
-        const Component = loanExists ? CreateLoanForm : Components[tab!]
+        const props = { market, networks, chainId, onUpdate, onSuccess }
+        const Component = loanExists ? Components[tab!] : CreateLoanForm
         return <Component {...props} />
       }
 
@@ -145,7 +154,7 @@ testCases.forEach(
         cy.mount(<LoanTestWrapper />)
         writeCreateLoanForm({ collateral, borrow, leverageEnabled })
         checkLoanDetailsLoaded({ leverageEnabled })
-        submitCreateLoanForm().then(() => expect(onMutated).to.be.calledOnce)
+        submitCreateLoanForm().then(() => expect(onSuccess).to.be.calledOnce)
       })
 
       it(`borrows more`, () => {
@@ -156,7 +165,7 @@ testCases.forEach(
           expectedFutureDebt: debtAfterBorrowMore,
           leverageEnabled,
         })
-        submitBorrowMoreForm().then(() => expect(onMutated).to.be.calledOnce)
+        submitBorrowMoreForm().then(() => expect(onSuccess).to.be.calledOnce)
         checkCurrentDebt(debtAfterBorrowMore)
       })
 
@@ -168,7 +177,10 @@ testCases.forEach(
           debt: [debtAfterBorrowMore, debtAfterRepay, debtTokenSymbol],
           leverageEnabled,
         })
-        submitRepayForm().then(() => expect(onMutated).to.be.calledOnce)
+        submitRepayForm().then(() => {
+          console.log('submitRepayForm', onSuccess)
+          return expect(onSuccess).to.be.calledOnce
+        })
         checkDebt(debtAfterRepay, debtAfterRepay, debtTokenSymbol)
       })
 
@@ -176,14 +188,14 @@ testCases.forEach(
         cy.mount(<LoanTestWrapper tab="improve-health" />)
         writeImproveHealthForm({ amount: repay })
         checkRepayDetailsLoaded({ debt: [debtAfterRepay, debtAfterImproveHealth, debtTokenSymbol] })
-        submitImproveHealthForm().then(() => expect(onMutated).to.be.calledOnce)
+        submitImproveHealthForm().then(() => expect(onSuccess).to.be.calledOnce)
         checkDebt(debtAfterImproveHealth, debtAfterImproveHealth, debtTokenSymbol)
       })
 
       it(`closes the loan`, () => {
         cy.mount(<LoanTestWrapper tab="close" />)
         checkClosePositionDetailsLoaded({ debt: debtAfterImproveHealth })
-        submitClosePositionForm().then(() => expect(onMutated).to.be.calledOnce)
+        submitClosePositionForm().then(() => expect(onSuccess).to.be.calledOnce)
         cy.get('[data-testid="create-loan-form"]').should('be.visible')
       })
     })

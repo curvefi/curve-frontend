@@ -35,12 +35,12 @@ const getVaultToken = (market: LlamaMarketTemplate | undefined): { address: Addr
 export const useUnstakeForm = <ChainId extends LlamaChainId>({
   market,
   network,
-  onUnstaked,
+  onSuccess,
 }: {
   market: LlamaMarketTemplate | undefined
   network: LlamaNetwork<ChainId>
   enabled?: boolean
-  onUnstaked?: NonNullable<UnstakeOptions['onUnstaked']>
+  onSuccess?: NonNullable<UnstakeOptions['onSuccess']>
 }) => {
   const { address: userAddress } = useConnection()
   const { chainId } = network
@@ -79,13 +79,7 @@ export const useUnstakeForm = <ChainId extends LlamaChainId>({
     error: unstakeError,
     data,
     reset: resetUnstake,
-  } = useUnstakeMutation({
-    marketId,
-    network,
-    onUnstaked,
-    onReset: form.reset,
-    userAddress,
-  })
+  } = useUnstakeMutation({ marketId, network, onSuccess, onReset: form.reset, userAddress })
 
   const { formState } = form
 
