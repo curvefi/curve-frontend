@@ -9,9 +9,10 @@ import type { AppRoute } from '@ui-kit/widgets/Header/types'
 const LEND_APP: AppName = 'lend'
 const CRVUSD_APP: AppName = 'crvusd'
 
-// TODO: duplicate of getVaultPathname and getLoanPathname in @/lend/utils/utilsRouter.ts. First they need to be refactored outside the lend app.
-const buildLendMarketPath = ({ marketId, marketType }: { marketId: string; marketType: string }) =>
-  `${LEND_ROUTES.PAGE_MARKETS}/${marketId}${marketType}`
+// TODO: duplicate of getVaultPathname and getLoanPathname in @/lend/utils/utilsRouter.ts and in llamalend/queries/market-list/llama-markets.ts.
+// First they need to be refactored outside the lend app.
+const buildLendMarketPath = ({ marketId, action }: { marketId: string; action: string }) =>
+  `${LEND_ROUTES.PAGE_MARKETS}/${marketId}${action}`
 
 /** Returns the routes for the Llamalend market subnav.
  * For the llamalend app it's the "Markets", "Savings crvUSD" and "Peg Stability Reserves" routes
@@ -34,7 +35,7 @@ export const useLlamalendMarketSubNavRoutes = ({ isMobile }: { isMobile: boolean
           app: LEND_APP,
           route: buildLendMarketPath({
             marketId: (params as Record<string, string>).marketId,
-            marketType: LEND_MARKET_ROUTES.PAGE_LOAN,
+            action: LEND_MARKET_ROUTES.PAGE_LOAN,
           }),
           label: () => t`Borrow`,
           matchMode: 'exact',
@@ -43,7 +44,7 @@ export const useLlamalendMarketSubNavRoutes = ({ isMobile }: { isMobile: boolean
           app: LEND_APP,
           route: buildLendMarketPath({
             marketId: (params as Record<string, string>).marketId,
-            marketType: LEND_MARKET_ROUTES.PAGE_VAULT,
+            action: LEND_MARKET_ROUTES.PAGE_VAULT,
           }),
           label: () => t`Supply`,
           matchMode: 'exact',
