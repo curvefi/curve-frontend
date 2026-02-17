@@ -1,11 +1,11 @@
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import type { UnstakeOptions } from '@/llamalend/mutations/unstake.mutation'
-import { LoanFormAlerts } from '@/llamalend/widgets/action-card/LoanFormAlerts'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
 import { t } from '@ui-kit/lib/i18n'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
+import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import { useUnstakeForm } from '../hooks/useUnstakeForm'
 import { UnstakeSupplyInfoList } from './UnstakeSupplyInfoList'
 
@@ -78,7 +78,7 @@ export const UnstakeForm = <ChainId extends IChainId>({
         {isPending ? t`Processing...` : t`Unstake`}
       </Button>
 
-      <LoanFormAlerts
+      <FormAlerts
         isSuccess={isUnstaked}
         error={unstakeError}
         txHash={txHash}

@@ -1,3 +1,4 @@
+import { getHealthValueColor } from '@/llamalend/features/market-position-details'
 import { UserState } from '@/llamalend/queries/user-state.query'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
@@ -8,20 +9,19 @@ import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import type { Query } from '@ui-kit/types/util'
 import { type Decimal, formatNumber, formatPercent } from '@ui-kit/utils'
 import { SlippageToleranceActionInfoPure } from '@ui-kit/widgets/SlippageSettings'
-import { getHealthValueColor } from '../../features/market-position-details/utils'
 import { ActionInfoCollapse } from './ActionInfoCollapse'
 import { formatAmount, formatLeverage, INHERIT_GAP } from './info-actions.helpers'
 
 export type LoanActionInfoListProps = {
   isOpen: boolean
   isApproved?: Query<boolean>
-  health: Query<Decimal | null>
+  health?: Query<Decimal | null>
   prevHealth?: Query<Decimal>
   isFullRepay?: boolean
   prices?: Query<readonly Decimal[]>
-  rates: Query<{ borrowApr?: Decimal } | null>
+  rates?: Query<{ borrowApr?: Decimal } | null>
   prevRates?: Query<{ borrowApr?: Decimal } | null>
-  loanToValue: Query<Decimal | null>
+  loanToValue?: Query<Decimal | null>
   prevLoanToValue?: Query<Decimal | null>
   netBorrowApr?: Query<Decimal | null>
   gas: Query<TxGasInfo | null>
@@ -79,7 +79,6 @@ export const LoanActionInfoList = ({
   const prevDebt = userState?.data?.debt
   const prevCollateral = userState?.data?.collateral
   const isHighImpact = priceImpact?.data != null && slippage != null && priceImpact.data > Number(slippage)
-  const theme = useTheme()
 
   const renderDebtActionInfo = () =>
     (debt || prevDebt) && (
@@ -96,13 +95,15 @@ export const LoanActionInfoList = ({
     <ActionInfoCollapse isOpen={isOpen} testId="loan-info-accordion">
       <Stack sx={{ ...INHERIT_GAP }}>
         <Stack>
-          <ActionInfo
-            label={t`Borrow APR`}
-            value={rates.data?.borrowApr && formatPercent(rates.data.borrowApr)}
-            prevValue={prevRates?.data?.borrowApr && formatPercent(prevRates.data.borrowApr)}
-            {...combineQueryState(rates, prevRates)}
-            testId="borrow-apr"
-          />
+          {rates && (
+            <ActionInfo
+              label={t`Borrow APR`}
+              value={rates.data?.borrowApr && formatPercent(rates.data.borrowApr)}
+              prevValue={prevRates?.data?.borrowApr && formatPercent(prevRates.data.borrowApr)}
+              {...combineQueryState(rates, prevRates)}
+              testId="borrow-apr"
+            />
+          )}
           {netBorrowApr && (
             <ActionInfo
               label={t`Net borrow APR`}
@@ -120,9 +121,9 @@ export const LoanActionInfoList = ({
             emptyValue="∞"
             {...combineQueryState(health, prevHealth)}
             valueColor={getHealthValueColor({
-              health: health.data,
+              health: health?.data,
               prevHealth: prevHealth?.data,
-              theme,
+              theme: useTheme(),
               isFullRepay,
             })}
             testId="borrow-health"

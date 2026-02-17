@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import type { FieldPath, FieldPathValue, FieldValues, FormState, Path, UseFormReturn } from 'react-hook-form'
 import { notFalsy, recordEntries } from '@curvefi/prices-api/objects.util'
 
@@ -32,12 +32,20 @@ export function updateForm<TFieldValues extends FieldValues>(
 export const filterFormErrors = <TFieldValues extends FieldValues>(formState: FormState<TFieldValues>) =>
   notFalsy(
     ...(recordEntries(formState.errors) as [keyof TFieldValues | 'root', Error | undefined][])
-      .filter(([field, error]) => field in formState.dirtyFields && error?.message)
+      .filter(
+        ([field, error]) =>
+          (field in formState.touchedFields || (field === 'root' && formState.isDirty)) && error?.message,
+      )
       .map(([field, error]) => [field, error!.message!] as const),
   )
 
 export const useFormErrors = <TFieldValues extends FieldValues>(formState: FormState<TFieldValues>) =>
   useMemo(() => filterFormErrors(formState), [formState])
+
+export const useCallbackAfterFormUpdate = <TFieldValues extends FieldValues>(
+  form: UseFormReturn<TFieldValues>,
+  callback: () => void,
+) => useEffect(() => form.subscribe({ formState: { values: true }, callback }), [form, callback])
 
 /** Checks if any of the given fields are touched in the form. */
 export const isFormTouched = <T extends FieldValues>(form: UseFormReturn<T>, fields: Path<T>[]) =>

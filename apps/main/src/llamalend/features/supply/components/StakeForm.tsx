@@ -1,12 +1,12 @@
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import type { StakeOptions } from '@/llamalend/mutations/stake.mutation'
-import { LoanFormAlerts } from '@/llamalend/widgets/action-card/LoanFormAlerts'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { notFalsy } from '@curvefi/prices-api/objects.util'
 import Button from '@mui/material/Button'
 import { t } from '@ui-kit/lib/i18n'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
+import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import { useStakeForm } from '../hooks/useStakeForm'
 import { StakeSupplyInfoList } from './StakeSupplyInfoList'
 
@@ -76,7 +76,7 @@ export const StakeForm = <ChainId extends IChainId>({
         {isPending ? t`Processing...` : notFalsy(isApproved.data === false && t`Approve`, t`Stake`).join(' & ')}
       </Button>
 
-      <LoanFormAlerts
+      <FormAlerts
         isSuccess={isStaked}
         error={stakeError}
         txHash={txHash}

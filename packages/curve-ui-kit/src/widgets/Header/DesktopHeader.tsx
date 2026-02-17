@@ -5,13 +5,14 @@ import Toolbar from '@mui/material/Toolbar'
 import { ConnectWalletIndicator } from '@ui-kit/features/connect-wallet'
 import { ChainSwitcher } from '@ui-kit/features/switch-chain'
 import { UserProfile } from '@ui-kit/features/user-profile'
+import { useLendMarketSubNav } from '@ui-kit/hooks/useFeatureFlags'
 import { GlobalBanner } from '@ui-kit/shared/ui/GlobalBanner'
-import { DEFAULT_BAR_SIZE } from '@ui-kit/themes/components'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { AppButtonLinks } from './AppButtonLinks'
 import { HeaderLogo } from './HeaderLogo'
 import { HeaderStats } from './HeaderStats'
-import { PageTabs } from './PageTabs'
+import { PageTabsSwitcher } from './PageTabsSwitcher'
+import { SubNav } from './SubNav'
 import { HeaderImplementationProps } from './types'
 import { useMainNavRef } from './useMainNavRef'
 
@@ -24,51 +25,48 @@ export const DesktopHeader = ({
   pages,
   appStats,
   networkId,
-}: HeaderImplementationProps) => (
-  <AppBar
-    color="transparent"
-    ref={useMainNavRef()}
-    data-testid="desktop-main-nav"
-    sx={{ position: 'sticky', top: 0, boxShadow: 'none' }}
-  >
-    <GlobalBanner networkId={networkId} chainId={chainId} />
-
-    <Toolbar
-      sx={{ backgroundColor: (t) => t.design.Layer[2].Fill, justifyContent: 'space-around', paddingY: 0 }}
-      data-testid="main-nav"
+}: HeaderImplementationProps) => {
+  const isLendMarketSubNav = useLendMarketSubNav()
+  return (
+    <AppBar
+      color="transparent"
+      ref={useMainNavRef()}
+      data-testid="desktop-main-nav"
+      sx={{ position: 'sticky', top: 0, boxShadow: 'none' }}
     >
-      <Container sx={{ paddingInline: Spacing.md }}>
-        <HeaderLogo sx={{ paddingInlineStart: Spacing.md }} />
-        <AppButtonLinks networkId={networkId} currentMenu={currentMenu} />
+      <GlobalBanner networkId={networkId} chainId={chainId} />
 
-        <Box sx={{ flexGrow: 1 }} />
+      <Toolbar
+        sx={{ backgroundColor: (t) => t.design.Layer[2].Fill, justifyContent: 'space-around', paddingY: 0 }}
+        data-testid="main-nav"
+      >
+        <Container sx={{ paddingInline: Spacing.md }}>
+          <HeaderLogo sx={{ paddingInlineStart: Spacing.md }} />
+          <AppButtonLinks networkId={networkId} currentMenu={currentMenu} />
 
-        <Box display="flex" marginLeft={2} justifyContent="flex-end" gap={3} alignItems="center">
-          <UserProfile />
-          <ChainSwitcher networks={supportedNetworks} />
-          <ConnectWalletIndicator />
-        </Box>
-      </Container>
-    </Toolbar>
-    <Toolbar
-      sx={{
-        backgroundColor: (t) => t.design.Layer[1].Fill,
-        justifyContent: 'space-around',
-        borderWidth: '1px 0',
-        borderColor: (t) => t.design.Layer[2].Outline,
-        borderStyle: 'solid',
-        boxSizing: 'border-box',
-        height: DEFAULT_BAR_SIZE,
-      }}
-      data-testid="subnav"
-    >
-      <Container sx={{ alignItems: 'baseline', paddingInline: Spacing.md }}>
-        <PageTabs pages={pages} />
-        <Box flexGrow={1} />
-        <Box display="flex" gap={3} alignItems="baseline" sx={{ textOverflow: 'ellipsis', overflow: 'hidden' }}>
-          <HeaderStats appStats={appStats} />
-        </Box>
-      </Container>
-    </Toolbar>
-  </AppBar>
-)
+          <Box sx={{ flexGrow: 1 }} />
+
+          <Box display="flex" marginLeft={2} justifyContent="flex-end" gap={3} alignItems="center">
+            <UserProfile />
+            <ChainSwitcher networks={supportedNetworks} />
+            <ConnectWalletIndicator />
+          </Box>
+        </Container>
+      </Toolbar>
+
+      {pages.length > 0 && (
+        <SubNav testId="subnav">
+          <PageTabsSwitcher pages={pages} />
+          {!isLendMarketSubNav && (
+            <>
+              <Box flexGrow={1} />
+              <Box display="flex" gap={3} alignItems="baseline" sx={{ textOverflow: 'ellipsis', overflow: 'hidden' }}>
+                <HeaderStats appStats={appStats} />
+              </Box>
+            </>
+          )}
+        </SubNav>
+      )}
+    </AppBar>
+  )
+}

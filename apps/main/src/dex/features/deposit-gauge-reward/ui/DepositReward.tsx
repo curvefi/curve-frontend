@@ -18,7 +18,7 @@ import { FormErrorsDisplay } from '@ui/FormErrorsDisplay'
 import { BlockSkeleton } from '@ui/skeleton'
 import { FormContainer, FormFieldsContainer, GroupedFieldsContainer } from '@ui/styled-containers'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
-import { formDefaultOptions } from '@ui-kit/lib/model/form'
+import { formDefaultOptions, watchField } from '@ui-kit/lib/model/form'
 import { updateForm } from '@ui-kit/utils/react-form.utils'
 
 export const DepositReward = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {
@@ -35,8 +35,7 @@ export const DepositReward = ({ chainId, poolId }: { chainId: ChainId; poolId: s
     defaultValues: DepositRewardDefaultValues,
   })
 
-  // eslint-disable-next-line react-hooks/incompatible-library
-  const rewardTokenId = form.watch('rewardTokenId')
+  const rewardTokenId = watchField(form, 'rewardTokenId')
   const { address: userAddress } = useConnection()
   const { data: userBalance } = useTokenBalance({ chainId, userAddress, tokenAddress: rewardTokenId })
 

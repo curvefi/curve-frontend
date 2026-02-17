@@ -1,24 +1,9 @@
 import lodash from 'lodash'
-import { AlertFormErrorKey, GaugeFormattedData, GaugeMapper } from '@/dao/types/dao.types'
+import { GaugeFormattedData, GaugeMapper } from '@/dao/types/dao.types'
 import { Chain } from '@ui-kit/utils'
 
 export * from './utilsRouter'
 export * from './utilsDates'
-
-export function getErrorMessage(error: Error, errorMessage: AlertFormErrorKey | string) {
-  if (error?.message) {
-    const message = error.message.toString()
-    if (message.includes('Bad swap type')) {
-      return 'error-swap-not-available'
-    } else if (message.includes('user rejected action')) {
-      return 'error-user-rejected-action'
-    } else {
-      return error.message
-    }
-  } else {
-    return errorMessage
-  }
-}
 
 export function delayAction<T>(cb: T) {
   if (typeof cb === 'function') {

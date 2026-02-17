@@ -4,13 +4,14 @@ export * from './array'
 export * from './address'
 export * from './bigNumber'
 export * from './env'
-export * from './shortenString'
+export * from './string'
 export * from './web3'
 export * from './network'
 export * from './number'
 export * from './decimal'
 export * from './searchText'
 export * from './mui'
+export * from './errors'
 
 /**
  * Copies text to clipboard with Ethereum address checksumming

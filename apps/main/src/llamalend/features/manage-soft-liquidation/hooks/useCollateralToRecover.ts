@@ -1,10 +1,18 @@
+import { BigNumber } from 'bignumber.js'
+import { sumBy } from 'lodash'
+import { useMemo } from 'react'
 import { useConnection } from 'wagmi'
-import { getLlamaMarket, getTokens } from '@/llamalend/llama.utils'
+import { getTokens } from '@/llamalend/llama.utils'
+import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { useUserState } from '@/llamalend/queries/user-state.query'
+import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import { notFalsy } from '@curvefi/prices-api/objects.util'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
-import { decimal } from '@ui-kit/utils'
-import type { ClosePositionProps } from '..'
-import type { MarketParams } from '../types'
+import { type Query } from '@ui-kit/types/util'
+import { decimal, type Decimal } from '@ui-kit/utils'
+import type { Token } from '../types'
+
+type TokenWithPrice = Token & { amount: Decimal; usd: Decimal | undefined }
 
 /**
  * Calculates the recoverable collateral and stablecoin when closing a position in soft liquidation
@@ -15,53 +23,48 @@ import type { MarketParams } from '../types'
  *
  * @returns Array of recoverable token objects with symbol, address, amount, and USD value
  */
-export function useCollateralToRecover({ chainId, marketId }: MarketParams): ClosePositionProps['collateralToRecover'] {
+export function useCollateralToRecover({
+  chainId,
+  market,
+}: {
+  chainId: LlamaChainId
+  market: LlamaMarketTemplate | undefined
+}): Query<TokenWithPrice[]> & { totalUsd: number | undefined } {
   const { address: userAddress } = useConnection()
-  const { data: userState } = useUserState({ chainId, marketId, userAddress })
+  const { data: userState, error, isLoading } = useUserState({ chainId, marketId: market?.id, userAddress })
   const { collateral, debt, stablecoin } = userState ?? {}
 
   // Get market tokens
-  const market = getLlamaMarket(marketId)
-  const tokens = market && getTokens(market)
+  const { borrowToken, collateralToken } = market ? getTokens(market) : {}
 
   // Fetch USD rates for tokens
-  const { data: stablecoinUsdRate } = useTokenUsdRate(
-    { chainId, tokenAddress: tokens?.borrowToken?.address },
-    !!tokens?.borrowToken?.address,
+  const { data: borrowTokenUsdRate } = useTokenUsdRate({ chainId, tokenAddress: borrowToken?.address })
+
+  const { data: collateralTokenUsdRate } = useTokenUsdRate({ chainId, tokenAddress: collateralToken?.address })
+
+  const excessStablecoin = decimal(stablecoin && debt && BigNumber(stablecoin).minus(debt))
+  const data = notFalsy(
+    Number(collateral) > 0 &&
+      collateralToken && {
+        // Add collateral tokens if user has any remaining after position closure
+        symbol: collateralToken.symbol,
+        address: collateralToken.address,
+        amount: collateral!,
+        usd: decimal(collateralTokenUsdRate && BigNumber(collateral!).times(collateralTokenUsdRate)),
+      },
+    Number(excessStablecoin) > 0 &&
+      borrowToken && {
+        // Add excess stablecoin (stablecoin balance minus outstanding debt) if positive
+        symbol: borrowToken.symbol,
+        address: borrowToken.address,
+        amount: excessStablecoin!,
+        usd: decimal(borrowTokenUsdRate && BigNumber(excessStablecoin!).times(borrowTokenUsdRate)),
+      },
   )
-
-  const { data: collateralTokenUsdRate } = useTokenUsdRate(
-    { chainId, tokenAddress: tokens?.collateralToken?.address },
-    !!tokens?.collateralToken?.address,
-  )
-
-  const stablecoinToken = { ...tokens.borrowToken, usdRate: stablecoinUsdRate }
-  const collateralToken = { ...tokens.collateralToken, usdRate: collateralTokenUsdRate }
-
-  const excessStablecoin = (stablecoin && debt && +stablecoin - +debt) || 0
-
-  return [
-    // Add collateral tokens if user has any remaining after position closure
-    ...(collateral && +collateral > 0
-      ? [
-          {
-            symbol: collateralToken.symbol,
-            address: collateralToken.address,
-            amount: collateral,
-            usd: +collateral * (collateralToken.usdRate ?? 0),
-          },
-        ]
-      : []),
-    // Add excess stablecoin (stablecoin balance minus outstanding debt) if positive
-    ...(excessStablecoin > 0
-      ? [
-          {
-            symbol: stablecoinToken.symbol,
-            address: stablecoinToken.address,
-            amount: decimal(excessStablecoin),
-            usd: excessStablecoin * (stablecoinToken.usdRate ?? 0),
-          },
-        ]
-      : []),
-  ]
+  return {
+    data,
+    isLoading: isLoading,
+    error: error,
+    totalUsd: useMemo(() => sumBy(data, ({ usd }) => Number(usd) || 0), [data]),
+  }
 }

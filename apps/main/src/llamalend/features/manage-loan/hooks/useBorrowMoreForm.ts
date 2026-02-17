@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js'
 import { useEffect, useMemo } from 'react'
-import type { UseFormReturn } from 'react-hook-form'
 import { useForm } from 'react-hook-form'
 import { Address } from 'viem'
 import { useConnection } from 'wagmi'
@@ -22,11 +21,8 @@ import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { mapQuery } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
-import { updateForm, useFormErrors } from '@ui-kit/utils/react-form.utils'
+import { updateForm, useCallbackAfterFormUpdate, useFormErrors } from '@ui-kit/utils/react-form.utils'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
-
-const useCallbackAfterFormUpdate = (form: UseFormReturn<BorrowMoreForm>, callback: () => void) =>
-  useEffect(() => form.subscribe({ formState: { values: true }, callback }), [form, callback])
 
 const useBorrowMoreParams = <ChainId>({
   userCollateral,
@@ -121,13 +117,14 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
   useCallbackAfterFormUpdate(form, resetBorrow)
 
   const { formState } = form
+  const isPending = formState.isSubmitting || isBorrowing
   return {
     form,
     values,
     params,
-    isPending: formState.isSubmitting || isBorrowing,
+    isPending,
     onSubmit: form.handleSubmit(onSubmit),
-    isDisabled: !formState.isValid,
+    isDisabled: !formState.isValid || isPending,
     borrowToken,
     collateralToken,
     isBorrowed,

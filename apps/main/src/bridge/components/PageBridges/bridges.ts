@@ -187,7 +187,7 @@ export const WEB3_BRIDGES: Partner[] = [
     appUrl: 'https://www.brid.gg',
   },
   {
-    name: 'USDT',
+    name: 'USDT0',
     description:
       'USDT0 ensures fast, secure, and cost-efficient cross-chain transfers all while maintaining a strict 1:1 backing with USDT.',
     imageId: 'platforms/usdt0.jpg',
