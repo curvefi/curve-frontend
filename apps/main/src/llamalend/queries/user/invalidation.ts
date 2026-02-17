@@ -1,5 +1,6 @@
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { UserMarketParams } from '@ui-kit/lib/model'
+import { invalidateLoanExists } from '../loan-exists'
 import { invalidateUserBalances } from './user-balances.query'
 import { invalidateUserBands } from './user-bands.query'
 import { invalidateUserCurrentLeverage } from './user-current-leverage.query'
@@ -15,6 +16,7 @@ import { invalidateUserState } from './user-state.query'
  */
 export const invalidateAllUserPositionQueries = ({ marketId, userAddress, chainId }: UserMarketParams<IChainId>) =>
   Promise.all([
+    invalidateLoanExists({ marketId, userAddress, chainId }),
     invalidateUserState({ marketId, userAddress, chainId }),
     invalidateUserHealth({ marketId, userAddress, chainId, isFull: true }),
     invalidateUserHealth({ marketId, userAddress, chainId, isFull: false }),
@@ -23,5 +25,5 @@ export const invalidateAllUserPositionQueries = ({ marketId, userAddress, chainI
     invalidateUserLoss({ marketId, userAddress, chainId }),
     invalidateUserCurrentLeverage({ marketId, userAddress, chainId }),
     invalidateUserMarketBalances({ marketId, chainId }),
-    invalidateUserPrices({ marketId, userAddress, chainId }),
+    invalidateUserPrices({ marketId, userAddress, chainId, loanExists: true }),
   ])

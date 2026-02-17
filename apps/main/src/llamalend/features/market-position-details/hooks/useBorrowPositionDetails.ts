@@ -118,7 +118,7 @@ export const useBorrowPositionDetails = ({
 
   const { data: campaigns } = useCampaignsByAddress({
     blockchainId,
-    address: controllerAddress,
+    address: controllerAddress?.toLowerCase() as Address | undefined,
   })
   const { data: collateralUsdRate, isLoading: collateralUsdRateLoading } = useTokenUsdRate({
     chainId,
@@ -164,10 +164,10 @@ export const useBorrowPositionDetails = ({
   const isUserDataLoading =
     isLoanExistsLoading || (hasLoan && (isUserStateLoading || isHealthFullLoading || isHealthNotFullLoading))
 
-  const borrowApr = marketRates?.borrowApr == null ? null : Number(marketRates.borrowApr)
+  const borrowApr = marketRates?.borrowApr == null ? null : +marketRates.borrowApr
   const collateralTotalValue = useMemo(() => {
     if (!collateralUsdRate || !collateral || !borrowed) return null
-    return Number(collateral) * Number(collateralUsdRate) + Number(borrowed)
+    return +collateral * +collateralUsdRate + +borrowed
   }, [collateral, borrowed, collateralUsdRate])
 
   const rebasingYield = activeSnapshots?.at?.(-1)?.collateralToken?.rebasingYield // take most recent rebasing yield
@@ -175,7 +175,7 @@ export const useBorrowPositionDetails = ({
 
   const healthValue = useMemo(() => {
     if (!hasLoan || !healthFullValue || !healthNotFullValue) return null
-    return Number(+healthNotFullValue < 0 ? healthNotFullValue : healthFullValue)
+    return +(+healthNotFullValue < 0 ? healthNotFullValue : healthFullValue)
   }, [hasLoan, healthFullValue, healthNotFullValue])
 
   const status = useMemo(() => {
@@ -209,7 +209,7 @@ export const useBorrowPositionDetails = ({
       value: hasLoan && userPricesValue ? userPricesValue.map(Number) : null,
       rangeToLiquidation:
         hasLoan && oraclePrice && userPricesValue
-          ? calculateRangeToLiquidation(Number(userPricesValue[1]), Number(oraclePrice))
+          ? calculateRangeToLiquidation(+userPricesValue[1], +oraclePrice)
           : null,
       loading: isPositionDetailsLoading || isLoanExistsLoading || (hasLoan && isUserPricesLoading),
     },
@@ -220,12 +220,12 @@ export const useBorrowPositionDetails = ({
     collateralValue: {
       totalValue: collateralTotalValue,
       collateral: {
-        value: collateral ? Number(collateral) : null,
+        value: collateral ? +collateral : null,
         usdRate: collateralUsdRate ?? null,
         symbol: collateralSymbol,
       },
       borrow: {
-        value: borrowed ? Number(borrowed) : null,
+        value: borrowed ? +borrowed : null,
         usdRate: borrowedUsdRate ?? null,
         symbol: borrowSymbol,
       },
@@ -239,18 +239,18 @@ export const useBorrowPositionDetails = ({
     ltv: {
       value:
         collateralTotalValue && debt
-          ? calculateLtv(Number(debt), Number(collateral), Number(borrowed), borrowedUsdRate, collateralUsdRate)
+          ? calculateLtv(+debt, +(collateral ?? 0), +(borrowed ?? 0), borrowedUsdRate, collateralUsdRate)
           : null,
       loading: isPositionDetailsLoading || isLoanExistsLoading || (hasLoan && isUserStateLoading),
     },
     ...(leverageEnabled && {
       leverage: {
-        value: hasLoan && leverage ? Number(leverage) : null,
+        value: hasLoan && leverage ? +leverage : null,
         loading: isPositionDetailsLoading || isLoanExistsLoading || (hasLoan && isLeverageLoading),
       },
     }),
     totalDebt: {
-      value: hasLoan && debt ? Number(debt) : null,
+      value: debt ? +debt : null,
       loading: isPositionDetailsLoading || isLoanExistsLoading || (hasLoan && isUserStateLoading),
     },
     collateralLoss: {
