@@ -103,7 +103,7 @@ export const TabsSwitcher = <T extends string | number>({
       direction="row"
       justifyContent="space-between"
       gap={Spacing.xs}
-      width={isKebabMode ? '100%' : undefined}
+      width={isKebabMode || overflow === 'fullWidth' ? '100%' : undefined}
     >
       <Stack ref={visibleTabsRef} sx={{ flex: 1, minWidth: 0 }}>
         <Tabs

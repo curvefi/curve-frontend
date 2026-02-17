@@ -53,9 +53,6 @@ const TabsSwitcherWrapper = ({
   return <TabsSwitcher {...props} options={options} value={value} onChange={setValue} />
 }
 
-/**
- * META
- */
 const meta: Meta<typeof TabsSwitcherWrapper> = {
   title: 'UI Kit/Primitives/Tabs',
   component: TabsSwitcherWrapper,

@@ -21,6 +21,13 @@ export const LEND_ROUTES = {
   PAGE_INTEGRATIONS,
 } as const
 
+export const LEND_MARKET_ROUTES = {
+  PAGE_LOAN: '',
+  PAGE_VAULT: '/vault',
+} as const
+
+export type LendMarketRoute = (typeof LEND_MARKET_ROUTES)[keyof typeof LEND_MARKET_ROUTES]
+
 export const CRVUSD_ROUTES = {
   PAGE_MARKETS: '/markets',
   PAGE_CRVUSD_STAKING: '/scrvUSD',
@@ -104,15 +111,15 @@ export const getInternalUrl = (app: AppName, networkId: string, route: string = 
 
 /** Converts a route to a page object, adding href and isActive properties */
 export const routeToPage = (
-  { route, target, label, app }: AppRoute,
-  { networkId, pathname }: { networkId: string; pathname: string | null },
+  { route, target, label, app, matchMode }: AppRoute,
+  { networkId, pathname }: { networkId: string; pathname: string },
 ): AppPage => {
   const href = route.startsWith('http') ? route : getInternalUrl(app, networkId, route)
   return {
     href,
     target,
     label: label(),
-    isActive: pathname?.startsWith(href.split('?')[0]),
+    isActive: matchMode === 'exact' ? pathname === href : pathname.startsWith(href),
   }
 }
 

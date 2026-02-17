@@ -1,7 +1,7 @@
-import { MARKET_ROUTES } from '@/lend/constants'
 import { recordValues } from '@curvefi/prices-api/objects.util'
 import { oneAddress, oneOf, oneValueOf } from '@cy/support/generators'
 import { type AppPath, oneAppPath } from '@cy/support/ui'
+import { LEND_MARKET_ROUTES } from '@ui-kit/shared/routes'
 import {
   CRVUSD_ROUTES,
   DAO_ROUTES,
@@ -13,32 +13,35 @@ import {
 } from '@ui-kit/shared/routes'
 
 const SDOLA_LEND_POOL = '0xaD444663c6C92B497225c6cE65feE2E7F78BFb86'
+const DEFAULT_NETWORK = 'ethereum'
+
+export const CRVUSD_PAGE_MARKETS_ROUTE = `crvusd/${DEFAULT_NETWORK}${CRVUSD_ROUTES.PAGE_MARKETS}/`
 
 /**
  * Returns a random app route for testing. Excludes redirect routes.
  */
 export const oneAppRoute = () =>
   ({
-    dex: () => `dex/ethereum${oneValueOf(DEX_ROUTES)}`,
+    dex: () => `dex/${DEFAULT_NETWORK}${oneValueOf(DEX_ROUTES)}`,
     lend: () =>
-      `lend/ethereum${oneOf(
+      `lend/${DEFAULT_NETWORK}${oneOf(
         ...recordValues(LEND_ROUTES).map((r) =>
           r == LEND_ROUTES.PAGE_MARKETS
             ? // use market detail page, the list page redirects to the llamalend app
-              `${LEND_ROUTES.PAGE_MARKETS}/${SDOLA_LEND_POOL}${oneValueOf(MARKET_ROUTES)}`
+              `${LEND_ROUTES.PAGE_MARKETS}/${SDOLA_LEND_POOL}${oneValueOf(LEND_MARKET_ROUTES)}`
             : r,
         ),
       )}`,
     crvusd: () =>
-      `crvusd/ethereum${oneOf(
+      `crvusd/${DEFAULT_NETWORK}${oneOf(
         ...recordValues(CRVUSD_ROUTES).map((r) =>
           // use market detail page, the list page redirects to the llamalend app
           r == CRVUSD_ROUTES.PAGE_MARKETS ? `${CRVUSD_ROUTES.PAGE_MARKETS}/WBTC` : r,
         ),
       )}`,
-    llamalend: () => `llamalend/ethereum${oneValueOf(LLAMALEND_ROUTES)}`,
+    llamalend: () => `llamalend/${DEFAULT_NETWORK}${oneValueOf(LLAMALEND_ROUTES)}`,
     dao: () =>
-      `dao/ethereum${oneOf(
+      `dao/${DEFAULT_NETWORK}${oneOf(
         ...recordValues({ ...DAO_ROUTES, PAGE_USER: `${DAO_ROUTES.PAGE_USER}/${oneAddress()}` }).filter(
           // exclude external links, hide the integrations page which redirects to the dex app
           (route) => !route.startsWith('https://') && !route.includes(DAO_ROUTES.PAGE_INTEGRATIONS),

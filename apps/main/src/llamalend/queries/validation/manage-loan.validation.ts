@@ -1,16 +1,16 @@
-import BigNumber from 'bignumber.js'
 import { enforce, group, skipWhen, test } from 'vest'
 import { getRepayImplementation } from '@/llamalend/queries/repay/repay-query.helpers'
 import {
   validateIsFull,
   validateLeverageSupported,
   validateLeverageValuesSupported,
-  validateSlippage,
-  validateMaxCollateral,
-  validateUserCollateral,
   validateMaxBorrowed,
+  validateMaxCollateral,
+  validateSlippage,
+  validateUserCollateral,
 } from '@/llamalend/queries/validation/borrow-fields.validation'
 import type {
+  CloseLoanParams,
   CollateralHealthParams,
   CollateralParams,
   RepayIsFullParams,
@@ -58,10 +58,11 @@ const validateMaxStateCollateral = (
   })
 
 export const validateRepayBorrowedField = (userBorrowed: Decimal | null | undefined): void => {
-  test('userBorrowed', 'Borrow amount must be a non-negative number', () => {
-    if (userBorrowed == null) return
-    enforce(userBorrowed).isNumeric().gte(0)
-  })
+  skipWhen(userBorrowed == null, () =>
+    test('userBorrowed', 'Borrow amount must be a non-negative number', () => {
+      enforce(userBorrowed).isNumeric().gte(0)
+    }),
+  )
 }
 
 const validateRepayHasValue = (
@@ -69,11 +70,15 @@ const validateRepayHasValue = (
   userCollateral: Decimal | null | undefined,
   userBorrowed: Decimal | null | undefined,
 ) =>
-  test('root', 'Enter an amount to repay', () => {
-    const total = new BigNumber(stateCollateral ?? 0).plus(userCollateral ?? 0).plus(userBorrowed ?? 0)
-
-    enforce(total.gt(0)).isTruthy()
-  })
+  test(
+    stateCollateral ? 'stateCollateral' : userCollateral ? 'userCollateral' : 'userBorrowed',
+    'Enter an amount to repay',
+    () => {
+      enforce(stateCollateral ?? userCollateral ?? userBorrowed)
+        .isNumeric()
+        .greaterThan(0)
+    },
+  )
 
 const validateRepayFieldsForMarket = (
   marketId: string | null | undefined,
@@ -126,12 +131,12 @@ export const leverageUserMarketValidationSuite = createValidationSuite(
 )
 
 export const addCollateralFormValidationSuite = createValidationSuite((params: CollateralForm) => {
-  validateUserCollateral(params.userCollateral, false)
+  validateUserCollateral(params.userCollateral)
   validateMaxCollateral(params.userCollateral, params.maxCollateral)
 })
 
 export const removeCollateralFormValidationSuite = createValidationSuite((params: CollateralForm) => {
-  validateUserCollateral(params.userCollateral, false)
+  validateUserCollateral(params.userCollateral)
   validateMaxCollateral(params.userCollateral, params.maxCollateral)
 })
 export const collateralHealthValidationSuite = createValidationSuite(({ isFull, ...rest }: CollateralHealthParams) => {
@@ -174,7 +179,7 @@ export const repayFormValidationSuite = createValidationSuite(
     validateRepayCollateralField('stateCollateral', stateCollateral)
     validateMaxStateCollateral(stateCollateral, maxStateCollateral)
     validateRepayBorrowedField(userBorrowed)
-    validateMaxBorrowed(userBorrowed, maxBorrowed)
+    validateMaxBorrowed(userBorrowed, { label: `repay amount`, maxBorrowed })
     validateMaxCollateral(userCollateral, maxCollateral)
     validateRepayHasValue(stateCollateral, userCollateral, userBorrowed)
     validateIsFull(isFull)
@@ -186,5 +191,15 @@ export const repayFromCollateralIsFullValidationSuite = createValidationSuite(
   ({ isFull, ...params }: RepayIsFullParams) => {
     repayValidationGroup(params)
     group('isFull', () => validateIsFull(isFull))
+  },
+)
+
+export const closeLoanValidationSuite = createValidationSuite(
+  ({ chainId, marketId, userAddress, slippage }: CloseLoanParams) => {
+    chainValidationGroup({ chainId })
+    llamaApiValidationGroup({ chainId })
+    marketIdValidationGroup({ marketId })
+    userAddressValidationGroup({ userAddress })
+    validateSlippage(slippage)
   },
 )

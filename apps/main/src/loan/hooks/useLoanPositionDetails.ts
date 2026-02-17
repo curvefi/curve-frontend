@@ -2,8 +2,10 @@ import lodash from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
 import { useConnection } from 'wagmi'
 import { DEFAULT_HEALTH_MODE } from '@/llamalend/constants'
-import type { BorrowPositionDetailsProps } from '@/llamalend/features/market-position-details'
-import { calculateRangeToLiquidation } from '@/llamalend/features/market-position-details/utils'
+import {
+  calculateRangeToLiquidation,
+  type BorrowPositionDetailsProps,
+} from '@/llamalend/features/market-position-details'
 import { DEFAULT_BORROW_TOKEN_SYMBOL, getHealthMode } from '@/llamalend/health.util'
 import { calculateLtv, hasV2Leverage } from '@/llamalend/llama.utils'
 import { useMarketRates } from '@/llamalend/queries/market-rates'
@@ -115,6 +117,8 @@ export const useLoanPositionDetails = ({
     getRebasingYield: getSnapshotCollateralRebasingYieldRate,
   })
 
+  /** Loading checks include a null check on value to cover the gap where legacy stores have no loading state yet.
+   * TODO: remove once migrated to direct llamalend-js queries */
   return {
     marketType: LlamaMarketType.Mint,
     liquidationAlert: {
@@ -122,8 +126,8 @@ export const useLoanPositionDetails = ({
       hardLiquidation: userStatus?.colorKey === 'hard_liquidation',
     },
     health: {
-      value: Number(healthMode.percent),
-      loading: userLoanDetailsLoading ?? true,
+      value: healthMode.percent !== '' ? Number(healthMode.percent) : null,
+      loading: healthMode.percent === '' || userLoanDetailsLoading || !isHydrated,
     },
     borrowRate: {
       rate: borrowApr,
@@ -134,7 +138,7 @@ export const useLoanPositionDetails = ({
       totalBorrowRate: totalBorrowApr,
       totalAverageBorrowRate: totalAverageBorrowApr,
       extraRewards: campaigns,
-      loading: isSnapshotsLoading || isMarketRatesLoading || !isHydrated,
+      loading: borrowApr == null || isSnapshotsLoading || isMarketRatesLoading || !isHydrated,
     },
     liquidationRange: {
       value: userPrices ? userPrices.map(Number) : null,
@@ -142,11 +146,11 @@ export const useLoanPositionDetails = ({
         loanDetails?.priceInfo?.oraclePrice && userPrices
           ? calculateRangeToLiquidation(Number(userPrices?.[1]), Number(loanDetails.priceInfo.oraclePrice))
           : null,
-      loading: userLoanDetailsLoading ?? true,
+      loading: userPrices == null || userLoanDetailsLoading || !isHydrated,
     },
     bandRange: {
       value: userBands ? userBands : null,
-      loading: userLoanDetailsLoading ?? true,
+      loading: userBands == null || userLoanDetailsLoading || !isHydrated,
     },
     collateralValue: {
       totalValue: collateralTotalValue,
@@ -160,31 +164,36 @@ export const useLoanPositionDetails = ({
         usdRate: borrowedUsdRate ? Number(borrowedUsdRate) : null,
         symbol: 'crvUSD',
       },
-      loading: (userLoanDetailsLoading ?? true) || collateralUsdRateLoading || borrowedUsdRateLoading,
+      loading:
+        collateral == null ||
+        userLoanDetailsLoading ||
+        collateralUsdRateLoading ||
+        borrowedUsdRateLoading ||
+        !isHydrated,
     },
     ltv: {
       value:
         collateralTotalValue && debt
           ? calculateLtv(Number(debt), Number(collateral), Number(stablecoin), borrowedUsdRate, collateralUsdRate)
           : null,
-      loading: userLoanDetailsLoading ?? true,
+      loading: debt == null || userLoanDetailsLoading || !isHydrated,
     },
     ...(v2LeverageEnabled && {
       leverage: {
         value: leverage.data ? Number(leverage.data) : null,
-        loading: leverage.isLoading,
+        loading: leverage.isLoading || !isHydrated,
       },
     }),
     totalDebt: {
       value: debt ? Number(debt) : null,
-      loading: userLoanDetailsLoading ?? true,
+      loading: debt == null || userLoanDetailsLoading || !isHydrated,
     },
     collateralLoss: {
       depositedCollateral: decimal(userLoss?.deposited_collateral),
       currentCollateralEstimation: decimal(userLoss?.current_collateral_estimation),
       percentage: decimal(userLoss?.loss_pct),
       amount: decimal(userLoss?.loss),
-      loading: userLoanDetailsLoading ?? true,
+      loading: userLoss == null || userLoanDetailsLoading || !isHydrated,
     },
   }
 }

@@ -45,13 +45,13 @@ export const formatValue = (x?: number, decimals: number = 2) =>
  */
 export const formatTokens = (tokens: TokenAmount | TokenAmount[], decimals: number = 2) =>
   (Array.isArray(tokens) ? tokens : [tokens])
-    .map((x) => {
-      const amountAbbreviated = abbreviateNumber(x.amount)
+    .map(({ amount, symbol }) => {
+      const value = Number(amount)
+      const amountAbbreviated = abbreviateNumber(value)
       const amountRounded = amountAbbreviated.toLocaleString(undefined, {
         minimumFractionDigits: 0,
         maximumFractionDigits: decimals,
       })
-
-      return `${amountRounded}${scaleSuffix(x.amount)} ${x.symbol}`
+      return `${amountRounded}${scaleSuffix(value)} ${symbol}`
     })
     .join(' + ')

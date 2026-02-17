@@ -1,5 +1,4 @@
 import { useEffect, useMemo } from 'react'
-import type { UseFormReturn } from 'react-hook-form'
 import { useForm } from 'react-hook-form'
 import { useConnection } from 'wagmi'
 import { getTokens } from '@/llamalend/llama.utils'
@@ -16,10 +15,7 @@ import { vestResolver } from '@hookform/resolvers/vest'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
-import { updateForm, useFormErrors } from '@ui-kit/utils/react-form.utils'
-
-const useCallbackAfterFormUpdate = (form: UseFormReturn<CollateralForm>, callback: () => void) =>
-  useEffect(() => form.subscribe({ formState: { values: true }, callback }), [form, callback])
+import { updateForm, useCallbackAfterFormUpdate, useFormErrors } from '@ui-kit/utils/react-form.utils'
 
 export const useAddCollateralForm = <ChainId extends LlamaChainId>({
   market,
@@ -78,12 +74,13 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
     updateForm(form, { maxCollateral: maxCollateral })
   }, [form, maxCollateral])
 
+  const isPending = formState.isSubmitting || action.isPending
   return {
     form,
     values,
     params,
-    isPending: formState.isSubmitting || action.isPending,
-    isDisabled: !formState.isValid,
+    isPending,
+    isDisabled: !formState.isValid || isPending,
     onSubmit: form.handleSubmit(onSubmit),
     action,
     collateralToken,

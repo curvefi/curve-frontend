@@ -140,7 +140,7 @@ export const Duration = {
   Delay: 100,
   Flicker: 1000,
   Focus: 50,
-  FormDebounce: 250,
+  FormDebounce: 350,
   TransactionPollTimeout: 2 * 60 * 1000, // 2 minutes
   Toast: { success: 5000, info: 5000, warning: 10000, error: 10000 },
   Tooltip: { Enter: 500, Exit: 500 },

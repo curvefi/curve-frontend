@@ -41,7 +41,6 @@ export const useMarketDetails = ({
       borrowApr: marketBorrowApr,
       lendApy: marketLendApy,
       collateralAmount,
-      borrowedAmount,
       cap,
       available,
       maxLeverage,
@@ -143,8 +142,6 @@ export const useMarketDetails = ({
     borrowToken: {
       symbol: borrowed_token?.symbol ?? null,
       tokenAddress: borrowed_token?.address,
-      total: borrowedAmount ?? null,
-      totalUsdValue: borrowedAmount && borrowedUsdRate ? borrowedAmount * borrowedUsdRate : null,
       usdRate: borrowedUsdRate ?? null,
       loading: isMarketDetailsLoading.marketCollateralAmounts || borrowedUsdRateLoading || !isHydrated,
     },
