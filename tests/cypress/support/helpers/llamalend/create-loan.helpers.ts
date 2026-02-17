@@ -99,12 +99,10 @@ export function writeCreateLoanForm({
   collateral,
   borrow,
   leverageEnabled,
-  openAccordion = true,
 }: {
   collateral: Decimal
   borrow: Decimal
   leverageEnabled: boolean
-  openAccordion?: boolean
 }) {
   cy.get('[data-testid="borrow-debt-input"] [data-testid="balance-value"]', LOAD_TIMEOUT).should('exist')
   cy.get('[data-testid="borrow-collateral-input"] input[type="text"]').first().type(collateral)
@@ -112,7 +110,6 @@ export function writeCreateLoanForm({
   getActionValue('borrow-health').should('equal', '∞')
   cy.get('[data-testid="borrow-debt-input"] input[type="text"]').first().type(borrow)
   getActionValue('borrow-health').should('not.equal', '∞')
-  if (openAccordion) cy.get('[data-testid="loan-info-accordion"] button', LOAD_TIMEOUT).click() // open the accordion
   if (leverageEnabled) cy.get('[data-testid="leverage-checkbox"]').click()
 }
 
