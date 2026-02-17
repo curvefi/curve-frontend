@@ -1,5 +1,5 @@
 import { group } from 'vest'
-import { getLlamaMarket } from '@/llamalend/llama.utils'
+import { getLlamaMarket, getMintBorrowRates } from '@/llamalend/llama.utils'
 import { validateDebt } from '@/llamalend/queries/validation/borrow-fields.validation'
 import { validateDepositAmount } from '@/llamalend/queries/validation/supply.validation'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -42,7 +42,7 @@ const fetchFutureRates = async (marketId: string, reserves: Decimal, debt: Decim
   const market = getLlamaMarket(marketId)
   return market instanceof LendMarketTemplate
     ? convertRates(await market.stats.futureRates(reserves, debt))
-    : convertRates({ borrowApr: (await market.stats.parameters()).future_rate })
+    : convertRates(getMintBorrowRates((await market.stats.parameters()).future_rate))
 }
 
 /** Calculates future borrow/lend rates when debt changes (e.g., borrowing more or repaying) - used for borrow operations */

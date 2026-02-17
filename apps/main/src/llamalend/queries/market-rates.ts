@@ -1,4 +1,4 @@
-import { getLlamaMarket } from '@/llamalend/llama.utils'
+import { getLlamaMarket, getMintBorrowRates } from '@/llamalend/llama.utils'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { type FieldsOf } from '@ui-kit/lib'
@@ -39,7 +39,7 @@ export const { useQuery: useMarketRates, invalidate: invalidateMarketRates } = q
     return convertRates(
       market instanceof LendMarketTemplate
         ? await market.stats.rates(isGetter, useAPI)
-        : { borrowApr: (await market.stats.parameters()).rate },
+        : getMintBorrowRates((await market.stats.parameters()).rate),
     )
   },
   validationSuite: llamaApiValidationSuite,
