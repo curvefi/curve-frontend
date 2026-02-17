@@ -1,10 +1,9 @@
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { UserMarketParams } from '@ui-kit/lib/model'
-import { invalidateLoanExists } from '../loan-exists'
 import { invalidateAllUserLendingSupplies, invalidateAllUserLendingVaults } from '../market-list/lending-vaults'
 import { invalidateAllUserMintMarkets } from '../market-list/mint-markets'
 import { invalidateMarketRates } from '../market-rates'
-import { invalidateAllUserPositionQueries } from '../user/invalidation'
+import { invalidateAllUserPositionQueries } from '../user'
 
 /**
  * Helper function to easily invalidate the entire user state of a market.
@@ -12,7 +11,6 @@ import { invalidateAllUserPositionQueries } from '../user/invalidation'
  */
 export const invalidateAllUserMarketDetails = ({ marketId, userAddress, chainId }: UserMarketParams<IChainId>) =>
   Promise.all([
-    invalidateLoanExists({ marketId, userAddress, chainId }),
     invalidateAllUserPositionQueries({ marketId, userAddress, chainId }),
     invalidateMarketRates({ marketId, chainId }),
     invalidateAllUserMintMarkets(userAddress),

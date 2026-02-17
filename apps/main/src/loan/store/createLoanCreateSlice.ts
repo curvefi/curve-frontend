@@ -1,7 +1,7 @@
 import lodash from 'lodash'
 import type { StoreApi } from 'zustand'
 import { updateUserEventsApi } from '@/llamalend/llama.utils'
-import { refetchLoanExists } from '@/llamalend/queries/loan-exists'
+import { refetchLoanExists } from '@/llamalend/queries/user'
 import { invalidateAllUserMarketDetails } from '@/llamalend/queries/validation/invalidation'
 import {
   type CreateFormStatus,

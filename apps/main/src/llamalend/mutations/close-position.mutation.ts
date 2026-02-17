@@ -51,6 +51,7 @@ export const useClosePositionMutation = ({
     },
     pendingMessage: () => t`Closing position...`,
     successMessage: () => t`Position closed successfully!`,
+    onSuccess: onClosed,
     onReset,
     validationSuite: closeLoanValidationSuite,
   })

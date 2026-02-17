@@ -7,7 +7,7 @@ import type { OnCreateLoanFormUpdate } from '@/llamalend/features/borrow/types'
 import { BorrowMoreForm } from '@/llamalend/features/manage-loan/components/BorrowMoreForm'
 import { RepayForm } from '@/llamalend/features/manage-loan/components/RepayForm'
 import { getLlamaMarket } from '@/llamalend/llama.utils'
-import { useLoanExists } from '@/llamalend/queries/loan-exists'
+import { useLoanExists } from '@/llamalend/queries/user'
 import { networks } from '@/loan/networks'
 import { recordValues } from '@curvefi/prices-api/objects.util'
 import {

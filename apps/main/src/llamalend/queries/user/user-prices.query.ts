@@ -6,7 +6,7 @@ import { loanExistsValidationGroup } from '@ui-kit/lib/model/query/loan-exists-v
 import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
 import { createValidationSuite } from '@ui-kit/lib/validation'
 import { q } from '@ui-kit/types/util'
-import { useLoanExists } from '../loan-exists'
+import { useLoanExists } from './user-loan-exists.query'
 
 type UserPricesQuery = UserMarketQuery & { loanExists: boolean }
 type UserPricesParams = FieldsOf<UserPricesQuery>

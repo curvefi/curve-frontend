@@ -10,7 +10,7 @@ import {
   UsersLoansDetailsMapper,
   UsersMarketsBalancesMapper,
 } from '@/lend/types/lend.types'
-import { getLoanExists } from '@/llamalend/queries/loan-exists'
+import { getLoanExists } from '@/llamalend/queries/user'
 import { log } from '@ui-kit/lib/logging'
 
 type StateKey = keyof typeof DEFAULT_STATE

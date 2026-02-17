@@ -4,7 +4,7 @@ import { useProcessedBandsData } from '@/llamalend/features/bands-chart/hooks/us
 import { useMarketBandsBalances } from '@/llamalend/features/bands-chart/queries/market-bands-balances.query'
 import { useMarketUserBandsBalances } from '@/llamalend/features/bands-chart/queries/market-user-bands-balances.query'
 import { parseFetchedBandsBalances } from '@/llamalend/features/bands-chart/queries/utils'
-import { useLoanExists } from '@/llamalend/queries/loan-exists'
+import { useLoanExists } from '@/llamalend/queries/user'
 import { useMarketLiquidationBand } from '@/llamalend/queries/market-liquidation-band.query'
 import { useMarketOraclePriceBand } from '@/llamalend/queries/market-oracle-price-band.query'
 import { useMarketOraclePrice } from '@/llamalend/queries/market-oracle-price.query'
