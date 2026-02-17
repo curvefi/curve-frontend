@@ -10,7 +10,7 @@ export const { useQuery: useBridgeGasEstimate } = queryFactory({
       ...rootKeys.user({ userAddress }),
       'amount',
       { amount },
-      'bridge-gas-estimate',
+      'fastBridge.estimateGas.bridge',
     ] as const,
   queryFn: async ({ amount }: BridgeQuery) => await requireLib('curveApi').fastBridge.estimateGas.bridge(amount),
   validationSuite: bridgeValidationSuite,

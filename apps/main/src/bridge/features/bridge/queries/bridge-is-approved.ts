@@ -10,7 +10,7 @@ export const { useQuery: useBridgeIsApproved, invalidate: invalidateBridgeIsAppr
       ...rootKeys.user({ userAddress }),
       'amount',
       { amount },
-      'bridge-is-approved',
+      'fastBridge.isApproved',
     ] as const,
   queryFn: async ({ amount }: BridgeQuery) => await requireLib('curveApi').fastBridge.isApproved(amount),
   validationSuite: bridgeValidationSuite,
