@@ -71,7 +71,7 @@ export const oneLoanTestMarket = (type: LlamaMarketType = oneValueOf(LlamaMarket
 
 /**
  * Check all loan detail values are loaded and valid.
- * The accordion is expected to be opened before calling this function.
+ * The action info list is expected to be opened before calling this function.
  */
 export function checkLoanDetailsLoaded({ leverageEnabled }: { leverageEnabled: boolean }) {
   getActionValue('borrow-band-range').should('match', /(\d(\.\d+)?) to (-?\d(\.\d+)?)/)

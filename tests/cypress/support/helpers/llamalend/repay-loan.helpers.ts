@@ -23,7 +23,6 @@ export function selectRepayToken({
 
 export function writeRepayLoanForm({ amount }: { amount: Decimal }) {
   getRepayInput().clear().type(amount)
-  cy.get('[data-testid="loan-info-accordion"] button', LOAD_TIMEOUT).first().click() // open the accordion
 }
 
 export function checkRepayDetailsLoaded({
