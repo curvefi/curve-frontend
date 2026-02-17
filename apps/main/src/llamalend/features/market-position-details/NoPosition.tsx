@@ -10,6 +10,8 @@ type NoPositionProps = {
   type: AppType
 }
 
+const TYPOGRAPHY_MAX_WIDTH = '27.5rem' // 440px
+
 const title: Record<AppType, string> = {
   borrow: t`No active position`,
   supply: t`You're not earning yet`,
@@ -21,15 +23,15 @@ const description: Record<AppType, string> = {
 }
 
 export const NoPosition = ({ type }: NoPositionProps) => (
-  <Stack flexDirection="column" alignItems="center" gap={4} padding={Spacing.md}>
+  <Stack flexDirection="column" alignItems="center" gap={Spacing.sm} padding={Spacing.md}>
     <LlamaIcon sx={{ width: IconSize.xxl, height: IconSize.xxl }} />
     <Stack alignItems="center">
-      <Typography variant="headingSBold" sx={{ maxWidth: '27.5rem', textAlign: 'center' }}>
+      <Typography variant="headingXsBold" sx={{ maxWidth: TYPOGRAPHY_MAX_WIDTH, textAlign: 'center' }}>
         {title[type]}
       </Typography>
       <Typography
-        variant="bodyMRegular"
-        sx={{ maxWidth: '27.5rem', textAlign: 'center', color: (t) => t.design.Text.TextColors.Secondary }}
+        variant="bodySRegular"
+        sx={{ maxWidth: TYPOGRAPHY_MAX_WIDTH, textAlign: 'center', color: (t) => t.design.Text.TextColors.Secondary }}
       >
         {description[type]}
       </Typography>

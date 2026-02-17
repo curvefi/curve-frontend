@@ -1,5 +1,4 @@
 import type { Theme } from '@mui/material'
-import { Blues, Greens, Reds } from '@ui-kit/themes/design/0_primitives'
 import { Decimal } from '@ui-kit/utils'
 
 export const calculateRangeToLiquidation = (upperLiquidationPrice: number, oraclePrice: number) =>
@@ -7,7 +6,7 @@ export const calculateRangeToLiquidation = (upperLiquidationPrice: number, oracl
 
 export const getHealthValueColor = ({
   theme: {
-    design: { Color, Text },
+    design: { Text },
   },
   isFullRepay,
   health,
@@ -17,41 +16,55 @@ export const getHealthValueColor = ({
   prevHealth?: Decimal
   isFullRepay?: boolean
   theme: Theme
+  colorBackground?: boolean
 }) => {
+  const red = Text.TextColors.Feedback.Error
+  const orange = Text.TextColors.Feedback.Danger
+  const green = Text.TextColors.Feedback.Success
+  const neutral = Text.TextColors.Primary
+
   if (health != null && prevHealth != null) {
     if (Number(health) < Number(prevHealth)) {
-      return Text.TextColors.Feedback.Error
+      return red
     }
     if (Number(health) > Number(prevHealth)) {
-      return Text.TextColors.Feedback.Success
+      return green
     }
   }
   const value = Number(health ?? prevHealth ?? 0)
-  if (isFullRepay) return Color.Secondary[600]
-  if (value < 5) return Text.TextColors.Feedback.Error
-  if (value < 15) return Text.TextColors.Feedback.Warning
-  if (value < 50) return Color.Secondary[500]
-  // todo: black between 50 and 100 does not make sense, it's green before & after
-  return value < 100 ? Text.TextColors.Primary : Color.Secondary[600]
+  if (isFullRepay) return neutral
+  if (value < 5) return red
+  if (value < 15) return orange
+  if (value < 50) return neutral
+  return neutral
 }
 
-const Yellow = Reds[300]
-const Orange = Reds[400]
-const Red = Reds[600]
-const Blue = Blues[500]
-const Green = Greens[400]
+export const getHealthTrackColor = ({
+  health,
+  softLiquidation,
+  theme: {
+    design: { Layer },
+  },
+}: {
+  health: number | undefined | null
+  softLiquidation: boolean | undefined | null
+  theme: Theme
+}) => {
+  const red = Layer.Feedback.Error
+  const yellow = Layer.Feedback.Warning
+  const orange = Layer.Feedback.Danger
+  const green = Layer.Feedback.Success
 
-export const getHealthTrackColor = (health: number | undefined | null, softLiquidation: boolean | undefined | null) => {
   if (health == null) {
-    return softLiquidation ? Orange : Blue
+    return softLiquidation ? Layer.Feedback.Warning : green
   }
   if (softLiquidation) {
-    if (health < 5) return Red
-    if (health < 40) return Orange
-    return Yellow
+    if (health < 5) return red
+    if (health < 40) return orange
+    return yellow
   }
-  if (health < 3) return Orange
-  if (health < 10) return Yellow
-  if (health < 50) return Blue
-  return Green
+  if (health < 5) return red
+  if (health < 15) return orange
+  if (health < 50) return yellow
+  return green
 }

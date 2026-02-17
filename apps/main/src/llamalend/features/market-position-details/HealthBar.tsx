@@ -1,166 +1,118 @@
-import { Box, Stack, type Theme, Typography } from '@mui/material'
+import { Stack, type SxProps, Typography, useTheme } from '@mui/material'
 import { t } from '@ui-kit/lib/i18n'
 import { LinearProgress } from '@ui-kit/shared/ui/LinearProgress'
+import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { getHealthTrackColor } from './'
 
 type HealthBarProps = {
   health: number | undefined | null
   small?: boolean
   softLiquidation: boolean | undefined | null
+  sx?: SxProps
 }
-type LineProps = {
-  position: LinePosition
-  color: LineColor
-}
-type LabelProps = {
-  position: LinePosition
-  text: string
-  mobileText?: string
-}
-type LineColor = 'red' | 'orange' | 'green' | 'dark-green'
-type HealthLevel = 'liquidation' | 'risky' | 'good' | 'pristine'
 
-const BAR_HEIGHT = '1.4375rem' // 23px
-const LINE_WIDTH = '0.25rem' // 4px
-const LABEL_GAP = '0.125rem' // 2px
-const TRACK_BOTTOM_PADDING = '0.3125rem' // 5px
+type HealthLevel = 'hardLiquidation' | 'liquidation' | 'risky' | 'good' | 'pristine'
 
-const LinePositions = {
-  liquidation: '0%',
-  risky: '15%',
-  good: '50%',
-  pristine: '100%',
+const BAR_HEIGHT = '2rem' // 36px
+/** padding necesarry to mimic Metric components inherent line-height padding */
+const TRACK_BOTTOM_PADDING = '0.1875rem' // 3px
+/** Inset from the container border so labels sit inside the filled portion of the bar */
+const LABEL_INSET = '0.125rem' // 2px
+
+const insetLabelText = {
+  hardLiquidation: t`Liquidation protection disabled`,
+  liquidation: t`Liquidation`,
+  risky: t`Risky`,
+  good: t`Good`,
+  pristine: t`Pristine`,
 } as const satisfies Record<HealthLevel, string>
-
-type LinePosition = (typeof LinePositions)[HealthLevel]
-
-const labelTexts = {
-  liquidation: t`liquidation`,
-  risky: t`risky`,
-  good: t`good`,
-  pristine: t`pristine`,
-} as const satisfies Record<HealthLevel, string>
-
-const mobileTexts = {
-  liquidation: t`liq`,
-  risky: undefined,
-  good: undefined,
-  pristine: undefined,
-} as const satisfies Partial<Record<HealthLevel, string>>
-
-const labels: Array<{
-  position: LinePosition
-  text: string
-  mobileText?: string
-}> = (Object.keys(LinePositions) as HealthLevel[]).map((level) => ({
-  position: LinePositions[level],
-  text: labelTexts[level],
-  mobileText: mobileTexts[level],
-}))
-
-const lines: Array<{ position: LinePosition; color: LineColor }> = [
-  { position: LinePositions.liquidation, color: 'red' },
-  { position: LinePositions.risky, color: 'orange' },
-  { position: LinePositions.good, color: 'green' },
-  { position: LinePositions.pristine, color: 'dark-green' },
-]
-
-const getLineColor = (color: LineColor) => (t: Theme) =>
-  ({
-    red: t.design.Color.Tertiary[600],
-    orange: t.design.Color.Tertiary[400],
-    ['dark-green']: t.design.Color.Secondary[600],
-    green: t.design.Color.Secondary[500],
-  })[color]
-
-const Line = ({ position, color }: LineProps) => (
-  <Stack
-    sx={{
-      position: 'absolute',
-      top: 0,
-      left: `calc(${position} - (${LINE_WIDTH} / 2))`,
-      width: LINE_WIDTH,
-      height: '100%',
-      backgroundColor: getLineColor(color),
-      '&:first-child': {
-        left: '0',
-      },
-    }}
-  />
-)
-
-const Label = ({ position, text, mobileText }: LabelProps) => (
-  <Stack
-    sx={{
-      position: 'absolute',
-      left: `calc(${position} - (${LINE_WIDTH} / 2))`,
-      top: 0,
-      '&:first-child': {
-        left: position,
-      },
-      '&:last-child': {
-        left: position,
-        transform: 'translateX(-100%)',
-      },
-    }}
-  >
-    <Typography variant="bodyXsRegular" color="textTertiary" sx={{ whiteSpace: 'nowrap' }}>
-      <Box component="span" sx={mobileText ? { display: { mobile: 'none', tablet: 'inline' } } : undefined}>
-        {text}
-      </Box>
-      {mobileText && (
-        <Box component="span" sx={{ display: { mobile: 'inline', tablet: 'none' } }}>
-          {mobileText}
-        </Box>
-      )}
-    </Typography>
-  </Stack>
-)
 
 const clampPercentage = (health: number | undefined | null): number => Math.max(0, Math.min(health ?? 0, 100))
 
-export const HealthBar = ({ health, softLiquidation, small }: HealthBarProps) =>
+const getHealthLevel = (health: number | undefined | null): HealthLevel => {
+  if (health == null || health <= 0) return 'hardLiquidation'
+  if (health <= 5) return 'liquidation'
+  if (health <= 15) return 'risky'
+  if (health <= 50) return 'good'
+  return 'pristine'
+}
+
+export const HealthBar = ({ health, softLiquidation, small, sx }: HealthBarProps) => {
+  const theme = useTheme()
   // Clamps health percentage between 0 and 100
-  small ? (
+  return small ? (
     health != null && (
       <LinearProgress
         percent={clampPercentage(health)}
         size="medium"
-        barColor={getHealthTrackColor(health, softLiquidation)}
+        barColor={getHealthTrackColor({ health, softLiquidation, theme })}
       />
     )
   ) : (
-    <Stack sx={{ gap: LABEL_GAP }} paddingBottom={TRACK_BOTTOM_PADDING}>
-      <Stack flexDirection="row" sx={{ position: 'relative', width: '100%', height: '1rem' }}>
-        {labels.map((label, index) => (
-          <Label
-            key={`${label.position}-${index}`}
-            position={label.position}
-            text={label.text}
-            mobileText={label.mobileText}
-          />
-        ))}
-      </Stack>
+    <Stack paddingBottom={TRACK_BOTTOM_PADDING} sx={sx}>
       <Stack
         sx={{
           position: 'relative',
           width: '100%',
           height: BAR_HEIGHT,
           backgroundColor: (t) => t.design.Color.Neutral[300],
-          transition: 'background-color 0.3s ease-in-out',
+          transition: `background-color ${TransitionFunction}`,
         }}
       >
         <Stack
           sx={{
-            width: `${clampPercentage(health)}%`,
+            width: health != null ? `${health <= 0 ? 100 : clampPercentage(health)}%` : '0%',
             height: '100%',
-            backgroundColor: getHealthTrackColor(health, softLiquidation),
-            transition: 'width 0.3s ease-in-out, background-color 0.3s ease-in-out',
+            backgroundColor: health != null ? getHealthTrackColor({ health, softLiquidation, theme }) : 'transparent',
+            transition: `width ${TransitionFunction}, background-color ${TransitionFunction}`,
           }}
         />
-        {lines.map((line) => (
-          <Line key={line.position} position={line.position} color={line.color} />
-        ))}
+        {/**
+         * Text color logic for health bar label:
+         *
+         * - health <= 0: Bar is 100% red (hard liquidation risk), text is fully white
+         * - 0 < health < 5: Split-color effect - black base with white overlay clipped to bar width.
+         *   Two identical labels are stacked; the overlay uses overflow:hidden to show white
+         *   text over the red bar and black text over the gray background.
+         * - health >= 5: Single label in warning color
+         */}
+        {health != null && (
+          <Typography
+            variant="bodyXsRegular"
+            sx={{
+              position: 'absolute',
+              bottom: LABEL_INSET,
+              left: LABEL_INSET,
+              color: (t) =>
+                health <= 0
+                  ? t.design.Text.TextColors.FilledFeedback.Alert.Primary // Full white when bar is 100% red
+                  : health < 5
+                    ? t.design.Text.TextColors.Primary // Black base for split effect
+                    : t.design.Text.TextColors.FilledFeedback.Warning.Primary,
+            }}
+          >
+            {insetLabelText[getHealthLevel(health)]}
+          </Typography>
+        )}
+        {health != null && health < 5 && health > 0 && (
+          <Stack
+            sx={{
+              position: 'absolute',
+              bottom: LABEL_INSET,
+              left: LABEL_INSET,
+              width: `calc(${clampPercentage(health)}% - ${LABEL_INSET})`,
+              overflow: 'hidden',
+            }}
+          >
+            <Typography
+              variant="bodyXsRegular"
+              sx={{ color: (t) => t.design.Text.TextColors.FilledFeedback.Alert.Primary, whiteSpace: 'nowrap' }}
+            >
+              {insetLabelText[getHealthLevel(health)]}
+            </Typography>
+          </Stack>
+        )}
       </Stack>
     </Stack>
   )
+}

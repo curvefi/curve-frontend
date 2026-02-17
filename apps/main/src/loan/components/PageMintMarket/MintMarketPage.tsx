@@ -2,7 +2,11 @@ import { useEffect, useState } from 'react'
 import { Address } from 'viem'
 import { useConnection } from 'wagmi'
 import { MarketDetails } from '@/llamalend/features/market-details'
-import { BorrowPositionDetails, NoPosition } from '@/llamalend/features/market-position-details'
+import {
+  BorrowPositionDetails,
+  LlamaMonitorBotLinkButton,
+  NoPosition,
+} from '@/llamalend/features/market-position-details'
 import { UserPositionHistory } from '@/llamalend/features/user-position-history'
 import { useUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { useLoanExists } from '@/llamalend/queries/loan-exists'
@@ -124,28 +128,29 @@ export const MintMarketPage = () => {
           ))
         }
       >
-        <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
-          {loanExists ? (
-            <BorrowPositionDetails {...positionDetails} />
-          ) : (
-            <Stack padding={Spacing.md} sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
-              <NoPosition type="borrow" />
+        <Stack>
+          {showPageHeader && (
+            <Stack alignItems="center" direction="row" justifyContent="flex-end">
+              <LlamaMonitorBotLinkButton />
             </Stack>
           )}
-          {userCollateralEvents?.events && userCollateralEvents.events.length > 0 && (
-            <Stack
-              paddingLeft={Spacing.md}
-              paddingRight={Spacing.md}
-              paddingBottom={Spacing.md}
-              sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}
-            >
-              <UserPositionHistory
-                events={userCollateralEvents.events}
-                isLoading={collateralEventsIsLoading}
-                isError={collateralEventsIsError}
-              />
-            </Stack>
-          )}
+          <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
+            {loanExists ? <BorrowPositionDetails {...positionDetails} /> : <NoPosition type="borrow" />}
+            {userCollateralEvents?.events && userCollateralEvents.events.length > 0 && (
+              <Stack
+                paddingLeft={Spacing.md}
+                paddingRight={Spacing.md}
+                paddingBottom={Spacing.md}
+                sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}
+              >
+                <UserPositionHistory
+                  events={userCollateralEvents.events}
+                  isLoading={collateralEventsIsLoading}
+                  isError={collateralEventsIsError}
+                />
+              </Stack>
+            )}
+          </Stack>
         </Stack>
         <Stack>
           {!showPageHeader && <MarketDetails {...marketDetails} />}
