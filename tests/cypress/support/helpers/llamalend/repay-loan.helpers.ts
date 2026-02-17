@@ -1,6 +1,6 @@
 import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
 import { type Decimal } from '@ui-kit/utils'
-import { checkDebt, getActionValue } from './action-info.helpers'
+import { checkDebt, type DebtCheck, getActionValue } from './action-info.helpers'
 
 const getRepayInput = () => cy.get('[data-testid^="repay-input-"] input[type="text"]', LOAD_TIMEOUT).first()
 
@@ -27,13 +27,7 @@ export function writeRepayLoanForm({ amount }: { amount: Decimal }) {
   cy.get('[data-testid="loan-info-accordion"] button', LOAD_TIMEOUT).first().click() // open the accordion
 }
 
-export function checkRepayDetailsLoaded({
-  leverageEnabled,
-  debt,
-}: {
-  debt: Parameters<typeof checkDebt>
-  leverageEnabled?: boolean
-}) {
+export function checkRepayDetailsLoaded({ leverageEnabled, debt }: { debt: DebtCheck; leverageEnabled?: boolean }) {
   if (leverageEnabled) {
     getActionValue('borrow-band-range').should('match', /(\d(\.\d+)?) to (-?\d(\.\d+)?)/)
   } else {
@@ -41,7 +35,7 @@ export function checkRepayDetailsLoaded({
   }
   getActionValue('borrow-price-range').should('match', /(\d(\.\d+)?) - (\d(\.\d+)?)/)
   getActionValue('borrow-apr').should('include', '%')
-  checkDebt(...debt)
+  checkDebt(debt)
   cy.get('[data-testid="loan-form-errors"]').should('not.exist')
 }
 

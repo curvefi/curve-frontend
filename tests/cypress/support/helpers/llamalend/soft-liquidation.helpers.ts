@@ -1,4 +1,5 @@
 import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
+import type { AlertColor } from '@mui/material/Alert'
 import type { Decimal } from '@ui-kit/utils'
 import { getActionValue } from './action-info.helpers'
 
@@ -26,9 +27,9 @@ export function submitImproveHealthForm() {
     .contains('Loan repaid', TRANSACTION_LOAD_TIMEOUT)
 }
 
-export function submitClosePositionForm() {
+export function submitClosePositionForm(expected: AlertColor = 'success', message = 'Position closed') {
   cy.get('[data-testid="close-position-submit-button"]', LOAD_TIMEOUT).click()
   return cy
-    .get('[data-testid="toast-success"]', TRANSACTION_LOAD_TIMEOUT)
-    .contains('Position closed', TRANSACTION_LOAD_TIMEOUT)
+    .get(`[data-testid="toast-${expected}"]`, TRANSACTION_LOAD_TIMEOUT)
+    .contains(message, TRANSACTION_LOAD_TIMEOUT)
 }
