@@ -1,7 +1,7 @@
 import lodash from 'lodash'
 import { StoreApi } from 'zustand'
 import { updateUserEventsApi } from '@/llamalend/llama.utils'
-import { invalidateBorrowPositionQueries } from '@/llamalend/queries/validation/invalidation'
+import { invalidateAllUserMarketDetails } from '@/llamalend/queries/validation/invalidation'
 import type { FormStatus } from '@/loan/components/PageMintMarket/LoanLiquidate/types'
 import type { FormEstGas } from '@/loan/components/PageMintMarket/types'
 import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@/loan/components/PageMintMarket/utils'
@@ -144,7 +144,7 @@ export const createLoanLiquidate = (_set: StoreApi<State>['setState'], get: Stor
       if (!loanExists) {
         get().loans.resetUserDetailsState(llamma)
       }
-      await invalidateBorrowPositionQueries({
+      await invalidateAllUserMarketDetails({
         chainId,
         marketId: llamma.id,
         userAddress: wallet?.address,

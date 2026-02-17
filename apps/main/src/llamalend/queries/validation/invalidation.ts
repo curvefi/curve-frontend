@@ -10,7 +10,7 @@ import { invalidateAllUserPositionQueries } from '../user/invalidation'
  * Helper function to easily invalidate the entire user state of a market.
  * Useful when their loan states has changed and the entire UI needs an update.
  */
-export const invalidateBorrowPositionQueries = ({ marketId, userAddress, chainId }: UserMarketParams<IChainId>) =>
+export const invalidateAllUserMarketDetails = ({ marketId, userAddress, chainId }: UserMarketParams<IChainId>) =>
   Promise.all([
     invalidateLoanExists({ marketId, userAddress, chainId }),
     invalidateAllUserPositionQueries({ marketId, userAddress, chainId }),
@@ -19,5 +19,3 @@ export const invalidateBorrowPositionQueries = ({ marketId, userAddress, chainId
     invalidateAllUserLendingVaults(userAddress),
     invalidateAllUserLendingSupplies(userAddress),
   ])
-
-export const invalidateAllUserMarketDetails = invalidateBorrowPositionQueries

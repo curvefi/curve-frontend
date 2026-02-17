@@ -1,7 +1,7 @@
 import lodash from 'lodash'
 import type { StoreApi } from 'zustand'
 import { updateUserEventsApi } from '@/llamalend/llama.utils'
-import { invalidateBorrowPositionQueries } from '@/llamalend/queries/validation/invalidation'
+import { invalidateAllUserMarketDetails } from '@/llamalend/queries/validation/invalidation'
 import type { FormDetailInfo, FormStatus, FormValues } from '@/loan/components/PageMintMarket/LoanDeleverage/types'
 import {
   DEFAULT_DETAIL_INFO,
@@ -178,7 +178,7 @@ export const createLoanDeleverageSlice = (
             get().loans.resetUserDetailsState(llamma)
           }
 
-          await invalidateBorrowPositionQueries({
+          await invalidateAllUserMarketDetails({
             chainId,
             marketId: llamma.id,
             userAddress: wallet?.address,

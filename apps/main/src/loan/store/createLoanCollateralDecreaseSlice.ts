@@ -1,7 +1,7 @@
 import lodash from 'lodash'
 import type { StoreApi } from 'zustand'
 import { updateUserEventsApi } from '@/llamalend/llama.utils'
-import { invalidateBorrowPositionQueries } from '@/llamalend/queries/validation/invalidation'
+import { invalidateAllUserMarketDetails } from '@/llamalend/queries/validation/invalidation'
 import type { FormStatus, FormValues } from '@/loan/components/PageMintMarket/CollateralDecrease/types'
 import type { FormDetailInfo, FormEstGas } from '@/loan/components/PageMintMarket/types'
 import {
@@ -173,7 +173,7 @@ export const createLoanCollateralDecrease = (_set: StoreApi<State>['setState'], 
       if (!loanExists) {
         get().loans.resetUserDetailsState(llamma)
       }
-      await invalidateBorrowPositionQueries({
+      await invalidateAllUserMarketDetails({
         chainId,
         marketId: llamma.id,
         userAddress: wallet?.address,

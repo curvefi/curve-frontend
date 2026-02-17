@@ -23,6 +23,7 @@ const { useQuery: useUserPricesQuery, invalidate: invalidateUserPrices } = query
       return await market.userPrices(userAddress)
     }
   },
+  refetchInterval: '1m',
   validationSuite: createValidationSuite((params: UserPricesParams) => {
     marketIdValidationSuite(params)
     loanExistsValidationGroup(params)

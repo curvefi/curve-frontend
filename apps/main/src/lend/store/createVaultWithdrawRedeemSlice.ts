@@ -10,7 +10,7 @@ import { _getMaxActiveKey } from '@/lend/store/createVaultDepositMintSlice'
 import type { State } from '@/lend/store/useStore'
 import { Api, ChainId, FutureRates, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { updateUserEventsApi } from '@/llamalend/llama.utils'
-import { invalidateBorrowPositionQueries } from '@/llamalend/queries/validation/invalidation'
+import { invalidateAllUserMarketDetails } from '@/llamalend/queries/validation/invalidation'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 
@@ -158,7 +158,7 @@ export const createVaultWithdrawRedeem = (
         void Promise.all([
           get().user.fetchUserMarketBalances(api, market, true),
           get()[sliceKey].fetchMax(api, formType, market),
-          invalidateBorrowPositionQueries({
+          invalidateAllUserMarketDetails({
             chainId: api.chainId,
             marketId: market.id,
             userAddress: api.signerAddress,

@@ -1,6 +1,5 @@
 import type { Address, Hex } from 'viem'
 import { useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
-import { invalidateBorrowPositionQueries } from '@/llamalend/queries/validation/invalidation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
@@ -37,7 +36,6 @@ export const useClosePositionMutation = ({
     }),
     pendingMessage: () => t`Closing position...`,
     successMessage: () => t`Position closed successfully!`,
-    onSuccess: () => invalidateBorrowPositionQueries({ chainId, marketId, userAddress }),
     onReset,
     validationSuite: userMarketValidationSuite,
   })
