@@ -13,7 +13,7 @@ export type BridgeButtonProps = {
   isWrongNetwork: boolean | undefined
   onSubmit?: () => void
   onConnect: () => void
-  onChangeNetwork: () => void
+  onChangeNetwork?: () => void
 }
 
 export const BridgeButton = ({
