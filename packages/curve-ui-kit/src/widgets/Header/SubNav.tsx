@@ -10,9 +10,7 @@ export const SubNav = ({ testId, children }: { testId: string; children: React.R
     sx={{
       backgroundColor: (t) => t.design.Layer[1].Fill,
       justifyContent: 'space-around',
-      borderWidth: '1px 0',
-      borderColor: (t) => t.design.Layer[2].Outline,
-      borderStyle: 'solid',
+      borderBottom: (t) => `1px solid ${t.design.Layer[2].Outline}`,
       boxSizing: 'border-box',
       height: DEFAULT_BAR_SIZE,
     }}

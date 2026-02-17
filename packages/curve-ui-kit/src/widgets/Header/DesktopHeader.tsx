@@ -37,7 +37,12 @@ export const DesktopHeader = ({
       <GlobalBanner networkId={networkId} chainId={chainId} />
 
       <Toolbar
-        sx={{ backgroundColor: (t) => t.design.Layer[2].Fill, justifyContent: 'space-around', paddingY: 0 }}
+        sx={{
+          backgroundColor: (t) => t.design.Layer[2].Fill,
+          justifyContent: 'space-around',
+          paddingY: 0,
+          borderBottom: (t) => `1px solid ${t.design.Layer[2].Outline}`,
+        }}
         data-testid="main-nav"
       >
         <Container sx={{ paddingInline: Spacing.md }}>
