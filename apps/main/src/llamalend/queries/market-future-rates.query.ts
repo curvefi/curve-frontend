@@ -1,5 +1,5 @@
 import { group } from 'vest'
-import { getLlamaMarket, getMintBorrowRates } from '@/llamalend/llama.utils'
+import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { validateDebt } from '@/llamalend/queries/validation/borrow-fields.validation'
 import { validateDepositAmount } from '@/llamalend/queries/validation/supply.validation'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -9,6 +9,7 @@ import { type MarketQuery } from '@ui-kit/lib/model'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
 import { decimal, type Decimal } from '@ui-kit/utils'
+import { getMintBorrowRates } from '../rates.utils'
 
 type BorrowApyQuery = MarketQuery<IChainId> & { debt: Decimal }
 type BorrowFutureApyParams = FieldsOf<BorrowApyQuery>

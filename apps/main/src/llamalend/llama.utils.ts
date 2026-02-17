@@ -236,20 +236,3 @@ export function sortBandsMint(bandBalances: { [key: string]: { stablecoin: strin
   }
   return { bandBalancesArr, bandBalances }
 }
-
-const DAYS_PER_YEAR = 365.25
-
-/**
- * Temporary function to convert borrow APY to APR for mint markets.
- * A proper solution is being worked on llamalend-api.
- * TODO: Remove this function when the llamalend-api is updated to return APR for mint markets.
- */
-export const getMintBorrowRates = (borrowApy: string) => {
-  const apyAsFraction = Number(borrowApy) / 100
-  const borrowApr = ((1 + apyAsFraction) ** (1 / DAYS_PER_YEAR) - 1) * DAYS_PER_YEAR * 100
-
-  return {
-    borrowApy,
-    borrowApr: borrowApr.toString(),
-  }
-}

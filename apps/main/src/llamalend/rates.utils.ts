@@ -17,6 +17,8 @@ const { AverageRates } = Duration
 export const LAST_MONTH = AverageRates.Monthly
 export const LAST_WEEK = AverageRates.Weekly
 
+const DAYS_PER_YEAR = 365.25
+
 export const getCrvUsdSnapshotBorrowRate = ({ borrowApr }: CrvUsdSnapshot) => borrowApr
 export const getLendingSnapshotBorrowRate = ({ borrowApr }: LendingSnapshot) => borrowApr * 100
 export const getSnapshotCollateralRebasingYieldRate = <
@@ -56,5 +58,20 @@ export const getBorrowRateMetrics = <TSnapshot extends WithTimestamp = WithTimes
     averageRate,
     averageRebasingYield,
     averageTotalRate: averageRate == null ? null : computeTotalRate(averageRate, averageRebasingYield ?? 0),
+  }
+}
+
+/**
+ * Temporary function to convert borrow APY to APR for mint markets.
+ * A proper solution is being worked on llamalend-api.
+ * TODO: Remove this function when the llamalend-api is updated to return APR for mint markets.
+ */
+export const getMintBorrowRates = (borrowApy: string) => {
+  const apyAsFraction = Number(borrowApy) / 100
+  const borrowApr = ((1 + apyAsFraction) ** (1 / DAYS_PER_YEAR) - 1) * DAYS_PER_YEAR * 100
+
+  return {
+    borrowApy,
+    borrowApr: borrowApr.toString(),
   }
 }
