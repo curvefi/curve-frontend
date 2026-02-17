@@ -18,8 +18,8 @@ import {
 import { TIME_FRAMES } from '@ui-kit/lib/model/time'
 import { LEND_ROUTES } from '@ui-kit/shared/routes'
 
-const expectedMainNavHeight = 40
-const expectedSubNavHeight = expectedMainNavHeight
+const expectedSubNavHeight = 40
+const expectedMainNavHeight = expectedSubNavHeight + 1 // 1px for the border
 const expectedMobileNavHeight = 56 + 1 // 1px for the border
 const expectedConnectHeight = 40
 
