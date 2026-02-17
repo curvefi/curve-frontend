@@ -1,6 +1,6 @@
 import type { Pool } from '@/dex/types/main.types'
 import type { DeepKeys } from '@tanstack/table-core'
-import { filterByText } from '@ui-kit/shared/ui/DataTable/filters'
+import { useFuzzyFilterFn } from '@ui-kit/shared/ui/DataTable/hooks/useFuzzyFilterFn'
 import type { PoolListItem } from './types'
 
 export const POOL_TEXT_FIELDS = [
@@ -14,4 +14,15 @@ export const POOL_TEXT_FIELDS = [
   'pool.lpToken',
 ] satisfies DeepKeys<{ pool: Pool }>[]
 
-export const poolsGlobalFilterFn = filterByText<PoolListItem>(...POOL_TEXT_FIELDS)
+const TEXT_KEYS: DeepKeys<PoolListItem>[] = ['pool.name', 'pool.wrappedCoins', 'pool.underlyingCoins']
+const ADDRESS_KEYS: DeepKeys<PoolListItem>[] = [
+  'pool.wrappedCoinAddresses',
+  'pool.underlyingCoinAddresses',
+  'pool.address',
+  'pool.gauge.address',
+  'pool.lpToken',
+]
+
+/** Search filter for pools lists */
+export const usePoolsGlobalFilterFn = (data: readonly PoolListItem[], filterValue: string) =>
+  useFuzzyFilterFn(data, filterValue, TEXT_KEYS, ADDRESS_KEYS)
