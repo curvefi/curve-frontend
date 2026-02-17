@@ -4,13 +4,14 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import type { Decimal } from '@ui-kit/utils'
 import { formatTokens } from '../action-infos/util'
 
 const { Spacing } = SizesAndSpaces
 
 type Props = {
   debtTokenSymbol: string
-  missing: number
+  missing: Decimal
 }
 
 export const AlertAdditionalCrvUsd = ({ missing, debtTokenSymbol }: Props) => (

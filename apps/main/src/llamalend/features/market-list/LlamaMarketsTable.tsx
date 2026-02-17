@@ -1,6 +1,6 @@
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { MARKET_CUTOFF_DATE } from '@/llamalend/constants'
-import { type LlamaMarketsResult } from '@/llamalend/queries/market-list/llama-markets'
+import type { LlamaMarketsResult } from '@/llamalend/queries/market-list/llama-markets'
 import Button from '@mui/material/Button'
 import { ExpandedState } from '@tanstack/react-table'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
@@ -13,6 +13,7 @@ import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
 import { serializeRangeFilter } from '@ui-kit/shared/ui/DataTable/filters'
 import { useColumnFilters } from '@ui-kit/shared/ui/DataTable/hooks/useColumnFilters'
+import { useGlobalFilter } from '@ui-kit/shared/ui/DataTable/hooks/useGlobalFilter'
 import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
 import { TableFiltersTitles } from '@ui-kit/shared/ui/DataTable/TableFiltersTitles'
 import { EmptyStateCard } from '@ui-kit/shared/ui/EmptyStateCard'
@@ -21,8 +22,8 @@ import { LlamaListChips } from './chips/LlamaListChips'
 import { DEFAULT_SORT } from './columns'
 import { LLAMA_MARKET_COLUMNS } from './columns'
 import { LlamaMarketColumnId } from './columns'
+import { llamaGlobalFilterFn } from './filters/llamaGlobalFilter'
 import { useLlamaTableVisibility } from './hooks/useLlamaTableVisibility'
-import { useSearch } from './hooks/useSearch'
 import { LendingMarketsFilters } from './LendingMarketsFilters'
 import { LlamaMarketExpandedPanel } from './LlamaMarketExpandedPanel'
 
@@ -54,11 +55,22 @@ export const LlamaMarketsTable = ({
 
   const minLiquidity = useUserProfileStore((s) => s.hideSmallPools) ? SMALL_POOL_TVL : 0
   const defaultFilters = useDefaultLlamaFilter(minLiquidity)
-  const { columnFilters, columnFiltersById, setColumnFilter, resetFilters, hasFilters } = useColumnFilters({
+  const { globalFilter, setGlobalFilter, resetGlobalFilter } = useGlobalFilter()
+  const {
+    columnFilters,
+    columnFiltersById,
+    setColumnFilter,
+    resetFilters: resetColumnFilters,
+    hasFilters,
+  } = useColumnFilters({
     title: LOCAL_STORAGE_KEY,
     columns: LlamaMarketColumnId,
     defaultFilters,
   })
+  const resetFilters = useCallback(() => {
+    resetColumnFilters()
+    resetGlobalFilter()
+  }, [resetColumnFilters, resetGlobalFilter])
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT)
   const { columnSettings, columnVisibility, toggleVisibility, sortField } = useLlamaTableVisibility(
     LOCAL_STORAGE_KEY,
@@ -66,7 +78,6 @@ export const LlamaMarketsTable = ({
     userHasPositions,
   )
   const [expanded, onExpandedChange] = useState<ExpandedState>({})
-  const [searchText, onSearch] = useSearch(columnFiltersById, setColumnFilter)
   const filterProps = { columnFiltersById, setColumnFilter, defaultFilters }
 
   const data = useMemo(
@@ -79,10 +90,11 @@ export const LlamaMarketsTable = ({
   const table = useTable({
     columns: LLAMA_MARKET_COLUMNS,
     data,
-    state: { expanded, sorting, columnVisibility, columnFilters },
+    state: { expanded, sorting, columnVisibility, columnFilters, globalFilter },
     initialState: { pagination },
     onSortingChange,
     onExpandedChange,
+    globalFilterFn: llamaGlobalFilterFn,
     ...getTableOptions(result),
   })
 
@@ -112,9 +124,9 @@ export const LlamaMarketsTable = ({
         onReload={onReload}
         visibilityGroups={columnSettings}
         toggleVisibility={toggleVisibility}
-        searchText={searchText}
+        searchText={globalFilter}
         hasSearchBar
-        onSearch={onSearch}
+        onSearch={setGlobalFilter}
         leftChildren={<TableFiltersTitles title={t`Markets`} subtitle={t`Find your next opportunity`} />}
         collapsible={<LendingMarketsFilters data={data} {...filterProps} />}
         chips={

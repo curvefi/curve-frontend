@@ -31,7 +31,7 @@ export const useManageLoanMuiForm = useBetaChannel
 export const useNewBandsChart = useBetaChannel
 
 /** New card for managing soft liquidations */
-export const useManageSoftLiquidation = useAlphaChannel
+export const useManageSoftLiquidation = useBetaChannel
 
 /** Entire new app containing in-depth analyses for knowledgeable users */
 export const useAnalyticsApp = useAlphaChannel
@@ -41,3 +41,6 @@ export const useFastbridge = useBetaChannel
 
 /** New page header with market metrics on market detail pages */
 export const useIntegratedLlamaHeader = useBetaChannel
+
+/** New lend market header subnav */
+export const useLendMarketSubNav = useIntegratedLlamaHeader

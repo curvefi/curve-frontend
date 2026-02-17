@@ -104,6 +104,7 @@ export const MintMarketPage = () => {
   }
   const showPageHeader = useIntegratedLlamaHeader()
 
+  const isLoading = !loaded || (loanExists && !loanStatus)
   return isHydrated && !market ? (
     <ErrorPage title="404" subtitle={t`Market Not Found`} continueUrl={getCollateralListPathname(params)} />
   ) : provider ? (
@@ -119,9 +120,9 @@ export const MintMarketPage = () => {
       )}
       <DetailPageLayout
         formTabs={
-          loaded &&
+          !isLoading &&
           (loanExists ? (
-            <ManageLoanTabs {...formProps} isInSoftLiquidation={!!loanStatus && loanStatus !== 'healthy'} />
+            <ManageLoanTabs {...formProps} isInSoftLiquidation={loanStatus !== 'healthy'} />
           ) : (
             <CreateLoanTabs {...formProps} />
           ))

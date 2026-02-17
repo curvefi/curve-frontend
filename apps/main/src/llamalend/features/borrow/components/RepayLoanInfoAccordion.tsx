@@ -22,9 +22,8 @@ import { combineQueriesMeta } from '@ui-kit/lib/queries/combine'
 import { mapQuery, q, type Query } from '@ui-kit/types/util'
 import { Decimal, decimal } from '@ui-kit/utils'
 
-const remainingDebt = (debt: Decimal, repayAmount: Decimal, stateBorrowed: Decimal) => {
-  const repayTotal = new BigNumber(repayAmount).plus(stateBorrowed)
-  const remaining = new BigNumber(debt).minus(repayTotal)
+const remainingDebt = (debt: Decimal, repayAmount: Decimal) => {
+  const remaining = new BigNumber(debt).minus(repayAmount)
   return decimal(remaining.isNegative() ? 0 : remaining)!
 }
 
@@ -50,7 +49,7 @@ function useRepayRemainingDebt<ChainId extends IChainId>(
       ? mapQuery(expectedBorrowedQuery, (d) => ({ value: d.totalBorrowed, tokenSymbol }))
       : {
           data: userStateQuery.data && {
-            value: remainingDebt(userStateQuery.data.debt, userBorrowed ?? '0', userStateQuery.data.stablecoin),
+            value: remainingDebt(userStateQuery.data.debt, userBorrowed ?? '0'),
             tokenSymbol,
           },
           ...combineQueriesMeta([userStateQuery, ...(swapRequired ? [expectedBorrowedQuery] : [])]),

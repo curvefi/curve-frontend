@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useConnection } from 'wagmi'
 import { CampaignRewardsBanner } from '@/lend/components/CampaignRewardsBanner'
 import { MarketInformationComp } from '@/lend/components/MarketInformationComp'
 import { MarketInformationTabs } from '@/lend/components/MarketInformationTabs'
@@ -46,13 +47,13 @@ export const Page = () => {
 
   const rOwmId = market?.id ?? ''
   const userActiveKey = helpers.getUserActiveKey(api, market!)
-  const { signerAddress } = api ?? {}
+  const { address: userAddress } = useConnection()
   const [isLoaded, setLoaded] = useState(false)
 
   const { data: loanExists } = useLoanExists({
     chainId: rChainId,
     marketId: market?.id,
-    userAddress: signerAddress,
+    userAddress,
   })
 
   const supplyPositionDetails = useSupplyPositionDetails({
@@ -97,6 +98,7 @@ export const Page = () => {
     params,
     rChainId,
     rOwmId,
+    userAddress,
     isLoaded,
     api,
     market,

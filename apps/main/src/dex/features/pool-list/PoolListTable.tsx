@@ -2,7 +2,6 @@ import { useCallback, useMemo, useState } from 'react'
 import { useNetworkFromUrl } from '@/dex/hooks/useChainId'
 import { type NetworkConfig } from '@/dex/types/main.types'
 import { notFalsy } from '@curvefi/prices-api/objects.util'
-import type { PartialRecord } from '@curvefi/prices-api/objects.util'
 import { ExpandedState, getPaginationRowModel } from '@tanstack/react-table'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { MIN_POOLS_DISPLAYED, SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
@@ -15,6 +14,7 @@ import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
 import { serializeRangeFilter } from '@ui-kit/shared/ui/DataTable/filters'
 import { useColumnFilters } from '@ui-kit/shared/ui/DataTable/hooks/useColumnFilters'
+import { useGlobalFilter } from '@ui-kit/shared/ui/DataTable/hooks/useGlobalFilter'
 import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
 import { TableFiltersTitles } from '@ui-kit/shared/ui/DataTable/TableFiltersTitles'
 import { minCutoffForTopK } from '@ui-kit/utils'
@@ -25,6 +25,7 @@ import { PoolListEmptyState } from './components/PoolListEmptyState'
 import { PoolMobileExpandedPanel } from './components/PoolMobileExpandedPanel'
 import { usePoolListData } from './hooks/usePoolListData'
 import { usePoolListVisibilitySettings } from './hooks/usePoolListVisibilitySettings'
+import { poolsGlobalFilterFn } from './poolsGlobalFilter'
 import { type PoolListItem } from './types'
 
 const LOCAL_STORAGE_KEY = 'dex-pool-list'
@@ -48,15 +49,6 @@ const useDefaultPoolsFilter = (data: PoolListItem[] | undefined) => {
   )
 }
 
-const useSearch = (
-  columnFiltersById: PartialRecord<PoolColumnId, string>,
-  setColumnFilter: (id: PoolColumnId, value: string | null) => void,
-) =>
-  [
-    (columnFiltersById[PoolColumnId.PoolName] as string) ?? '',
-    useCallback((search: string) => setColumnFilter(PoolColumnId.PoolName, search || null), [setColumnFilter]),
-  ] as const
-
 const PER_PAGE = 50
 const EMPTY: never[] = []
 
@@ -67,11 +59,22 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
   const { data, isLoading, isReady, userHasPositions } = usePoolListData(network)
 
   const defaultFilters = useDefaultPoolsFilter(data)
-  const { columnFilters, columnFiltersById, setColumnFilter, resetFilters, hasFilters } = useColumnFilters({
+  const { globalFilter, setGlobalFilter, resetGlobalFilter } = useGlobalFilter()
+  const {
+    columnFilters,
+    columnFiltersById,
+    setColumnFilter,
+    resetFilters: resetColumnFilters,
+    hasFilters,
+  } = useColumnFilters({
     title: LOCAL_STORAGE_KEY,
     columns: PoolColumnId,
     defaultFilters,
   })
+  const resetFilters = useCallback(() => {
+    resetColumnFilters()
+    resetGlobalFilter()
+  }, [resetColumnFilters, resetGlobalFilter])
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT)
   const [pagination, onPaginationChange] = usePageFromQueryString(PER_PAGE)
   const { columnSettings, columnVisibility, sortField } = usePoolListVisibilitySettings(LOCAL_STORAGE_KEY, {
@@ -79,16 +82,16 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
     sorting,
   })
   const [expanded, onExpandedChange] = useState<ExpandedState>({})
-  const [searchText, onSearch] = useSearch(columnFiltersById, setColumnFilter)
   const filterProps = { columnFiltersById, setColumnFilter, defaultFilters }
 
   const table = useTable({
     columns: POOL_LIST_COLUMNS,
     data: data ?? EMPTY,
-    state: { expanded, sorting, columnVisibility, columnFilters, pagination },
+    state: { expanded, sorting, columnVisibility, columnFilters, pagination, globalFilter },
     onSortingChange,
     onExpandedChange,
     onPaginationChange,
+    globalFilterFn: poolsGlobalFilterFn,
     ...getTableOptions(data),
     getPaginationRowModel: getPaginationRowModel(),
   })
@@ -111,8 +114,8 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
         leftChildren={<TableFiltersTitles title={t`Markets`} subtitle={t`Find your next opportunity`} />}
         loading={!isReady}
         visibilityGroups={columnSettings}
-        searchText={searchText}
-        onSearch={onSearch}
+        searchText={globalFilter}
+        onSearch={setGlobalFilter}
         hasSearchBar
         chips={
           <PoolListChips
@@ -122,8 +125,8 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
             resetFilters={resetFilters}
             onSortingChange={onSortingChange}
             sortField={sortField}
-            searchText={searchText}
-            onSearch={onSearch}
+            searchText={globalFilter}
+            onSearch={setGlobalFilter}
             resultCount={data ? resultCount : undefined}
             {...filterProps}
           />

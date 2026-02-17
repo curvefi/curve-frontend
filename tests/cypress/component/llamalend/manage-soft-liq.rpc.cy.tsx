@@ -1,7 +1,10 @@
-import { useMemo } from 'react'
+import { useMemo, type ReactNode } from 'react'
 import { prefetchMarkets } from '@/lend/entities/chain/chain-query'
-import { ManageSoftLiquidation } from '@/llamalend/features/manage-soft-liquidation'
+import { ClosePositionForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ClosePositionForm'
+import { ImproveHealthForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ImproveHealthForm'
+import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { networks } from '@/loan/networks'
+import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import { createTenderlyWagmiConfigFromVNet, forkVirtualTestnet } from '@cy/support/helpers/tenderly'
 import Skeleton from '@mui/material/Skeleton'
@@ -11,6 +14,7 @@ import { Chain } from '@ui-kit/utils'
 describe('Manage soft liquidation', () => {
   const privateKey = '0xc9dc976b6701eb9d79c8358317c565cfc6d238a6ecbb0839b352d4f5d71953c9' // 0xDD84Be02F834295ebE3328e0fE03C015492e2A51
   const network = networks[Chain.Ethereum]
+  const softLiqNetworks = networks as unknown as NetworkDict<LlamaChainId>
   const MARKET_ID = 'wsteth' // https://www.curve.finance/crvusd/ethereum/markets/wstETH/create
 
   const getVirtualNetwork = forkVirtualTestnet((uuid) => ({
@@ -18,17 +22,18 @@ describe('Manage soft liquidation', () => {
     display_name: `crvUSD wstETH Soft Liquidation Fork ${uuid}`,
   }))
 
-  const TestComponent = () => {
+  const TestComponent = ({ tab }: { tab: 'improve-health' | 'close-position' }) => {
     const { isHydrated, llamaApi } = useCurve()
     const market = useMemo(() => isHydrated && llamaApi?.getMintMarket(MARKET_ID), [isHydrated, llamaApi])
-    return market ? (
-      <ManageSoftLiquidation marketId={MARKET_ID} chainId={Chain.Ethereum} network={network} />
+    if (!market) return <Skeleton />
+    return tab === 'improve-health' ? (
+      <ImproveHealthForm market={market} networks={softLiqNetworks} chainId={Chain.Ethereum} enabled={isHydrated} />
     ) : (
-      <Skeleton />
+      <ClosePositionForm market={market} networks={softLiqNetworks} chainId={Chain.Ethereum} enabled={isHydrated} />
     )
   }
 
-  const TestComponentWrapper = () => (
+  const TestComponentWrapper = ({ children }: { children: ReactNode }) => (
     <ComponentTestWrapper
       config={createTenderlyWagmiConfigFromVNet({ vnet: getVirtualNetwork(), privateKey })}
       autoConnect
@@ -39,7 +44,7 @@ describe('Manage soft liquidation', () => {
         onChainUnavailable={console.error}
         hydrate={{ llamalend: () => prefetchMarkets({}) }}
       >
-        <TestComponent />
+        {children}
       </CurveProvider>
     </ComponentTestWrapper>
   )
@@ -49,9 +54,24 @@ describe('Manage soft liquidation', () => {
     cy.viewport(450, 720)
   })
 
-  describe('should be able to improve health and close position a mint market position', () => {
+  describe('improve health form', () => {
     it.skip(`manual test`, () => {
-      cy.mount(<TestComponentWrapper />)
+      cy.mount(
+        <TestComponentWrapper>
+          <TestComponent tab="improve-health" />
+        </TestComponentWrapper>,
+      )
+      cy.pause()
+    })
+  })
+
+  describe('close position form', () => {
+    it.skip(`manual test`, () => {
+      cy.mount(
+        <TestComponentWrapper>
+          <TestComponent tab="close-position" />
+        </TestComponentWrapper>,
+      )
       cy.pause()
     })
   })
