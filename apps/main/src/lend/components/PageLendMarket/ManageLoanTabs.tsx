@@ -12,7 +12,6 @@ import { RepayForm } from '@/llamalend/features/manage-loan/components/RepayForm
 import { ClosePositionForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ClosePositionForm'
 import { ImproveHealthForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ImproveHealthForm'
 import type { BorrowPositionDetailsProps } from '@/llamalend/features/market-position-details'
-import { invalidateAllUserMarketDetails } from '@/llamalend/queries/validation/invalidation'
 import { useManageLoanMuiForm, useManageSoftLiquidation } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { type FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
@@ -49,27 +48,15 @@ const LendManageNewMenu = [
   {
     value: 'loan-increase',
     label: t`Borrow`,
-    component: ({ rChainId: chainId, market, rOwmId: marketId, userAddress, isLoaded }: PageContentProps) => (
-      <BorrowMoreForm
-        networks={networks}
-        chainId={chainId}
-        market={market}
-        enabled={isLoaded}
-        onBorrowedMore={() => invalidateAllUserMarketDetails({ chainId, marketId, userAddress })}
-      />
+    component: ({ rChainId: chainId, market, isLoaded }: PageContentProps) => (
+      <BorrowMoreForm networks={networks} chainId={chainId} market={market} enabled={isLoaded} />
     ),
   },
   {
     value: 'loan-decrease',
     label: t`Repay`,
-    component: ({ rChainId: chainId, market, rOwmId: marketId, userAddress, isLoaded }: PageContentProps) => (
-      <RepayForm
-        networks={networks}
-        chainId={chainId}
-        market={market}
-        enabled={isLoaded}
-        onRepaid={() => invalidateAllUserMarketDetails({ chainId, marketId, userAddress })}
-      />
+    component: ({ rChainId: chainId, market, isLoaded }: PageContentProps) => (
+      <RepayForm networks={networks} chainId={chainId} market={market} enabled={isLoaded} />
     ),
   },
   {
@@ -79,27 +66,15 @@ const LendManageNewMenu = [
       {
         value: 'add',
         label: t`Add`,
-        component: ({ rChainId: chainId, market, userAddress, rOwmId: marketId, isLoaded }: PageContentProps) => (
-          <AddCollateralForm
-            networks={networks}
-            chainId={chainId}
-            market={market}
-            enabled={isLoaded}
-            onAdded={() => invalidateAllUserMarketDetails({ chainId, marketId, userAddress })}
-          />
+        component: ({ rChainId: chainId, market, isLoaded }: PageContentProps) => (
+          <AddCollateralForm networks={networks} chainId={chainId} market={market} enabled={isLoaded} />
         ),
       },
       {
         value: 'remove',
         label: t`Remove`,
-        component: ({ rChainId: chainId, market, userAddress, rOwmId: marketId, isLoaded }: PageContentProps) => (
-          <RemoveCollateralForm
-            networks={networks}
-            chainId={chainId}
-            market={market}
-            enabled={isLoaded}
-            onRemoved={() => invalidateAllUserMarketDetails({ chainId, marketId, userAddress })}
-          />
+        component: ({ rChainId: chainId, market, isLoaded }: PageContentProps) => (
+          <RemoveCollateralForm networks={networks} chainId={chainId} market={market} enabled={isLoaded} />
         ),
       },
     ],
@@ -114,39 +89,15 @@ const LendManageSoftLiquidationMenu = [
       {
         value: 'improve-health',
         label: t`Improve health`,
-        component: ({
-          rChainId: chainId,
-          market,
-          rOwmId: marketId,
-          isLoaded,
-          userAddress,
-        }: PageContentProps<MarketUrlParams>) => (
-          <ImproveHealthForm
-            chainId={chainId}
-            market={market}
-            networks={networks}
-            enabled={isLoaded}
-            onRepaid={() => invalidateAllUserMarketDetails({ chainId, marketId, userAddress })}
-          />
+        component: ({ rChainId: chainId, market, isLoaded }: PageContentProps<MarketUrlParams>) => (
+          <ImproveHealthForm chainId={chainId} market={market} networks={networks} enabled={isLoaded} />
         ),
       },
       {
         value: 'close-position',
         label: t`Close position`,
-        component: ({
-          rChainId: chainId,
-          rOwmId: marketId,
-          market,
-          isLoaded,
-          userAddress,
-        }: PageContentProps<MarketUrlParams>) => (
-          <ClosePositionForm
-            chainId={chainId}
-            networks={networks}
-            market={market}
-            enabled={isLoaded}
-            onClosed={() => invalidateAllUserMarketDetails({ chainId, marketId, userAddress })}
-          />
+        component: ({ rChainId: chainId, market, isLoaded }: PageContentProps<MarketUrlParams>) => (
+          <ClosePositionForm chainId={chainId} networks={networks} market={market} enabled={isLoaded} />
         ),
       },
     ],
