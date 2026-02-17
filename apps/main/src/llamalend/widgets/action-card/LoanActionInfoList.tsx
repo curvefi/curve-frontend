@@ -92,7 +92,7 @@ export const LoanActionInfoList = ({
       />
     )
   return (
-    <ActionInfoCollapse isOpen={isOpen} testId="loan-info-accordion">
+    <ActionInfoCollapse isOpen={isOpen} testId="loan-action-info-list">
       <Stack sx={{ ...ACTION_INFO_GROUP_SX }}>
         <Stack>
           {rates && (

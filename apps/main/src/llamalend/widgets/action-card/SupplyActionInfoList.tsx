@@ -50,7 +50,7 @@ export const SupplyActionInfoList = ({
   netSupplyApy,
   gas,
 }: SupplyActionInfoListProps) => (
-  <ActionInfoCollapse isOpen={isOpen} testId="supply-info-accordion">
+  <ActionInfoCollapse isOpen={isOpen} testId="supply-action-info-list">
     <Stack sx={{ ...ACTION_INFO_GROUP_SX }}>
       <Stack>
         {(supplyApy || prevSupplyApy) && (
@@ -77,7 +77,7 @@ export const SupplyActionInfoList = ({
           value={vaultShares?.data && formatAmount(vaultShares.data)}
           prevValue={prevVaultShares?.data && formatAmount(prevVaultShares.data)}
           {...combineQueryState(vaultShares, prevVaultShares)}
-          testId="supply-info-accordion"
+          testId="supply-vault-shares"
         />
         {(amountSupplied || prevAmountSupplied) && (
           <ActionInfo

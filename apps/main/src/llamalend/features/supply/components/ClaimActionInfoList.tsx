@@ -16,7 +16,7 @@ export const ClaimActionInfoList = <ChainId extends IChainId>({
   params,
   networks,
 }: ClaimActionInfoListProps<ChainId>) => (
-  <ActionInfoCollapse isOpen={ALWAYS_OPEN} testId="claim-info-accordion">
+  <ActionInfoCollapse isOpen={ALWAYS_OPEN} testId="claim-action-info-list">
     <ActionInfoGasEstimate gas={useClaimEstimateGas(networks, params, ALWAYS_OPEN)} />
   </ActionInfoCollapse>
 )
