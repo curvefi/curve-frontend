@@ -77,7 +77,7 @@ export const borrowMoreFormValidationSuite = createValidationSuite(
     validateUserCollateral(userCollateral)
     validateMaxCollateral(userCollateral, maxCollateral)
     validateUserBorrowed(userBorrowed)
-    validateMaxBorrowed(userBorrowed, maxBorrowed)
+    validateMaxBorrowed(userBorrowed, { label: `debt amount`, maxBorrowed })
     validateDebt(debt, debtRequired)
     validateMaxDebt(debt, maxDebt, debtRequired)
     validateSlippage(slippage)
