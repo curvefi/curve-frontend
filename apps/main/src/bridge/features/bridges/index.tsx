@@ -12,7 +12,7 @@ import { TABS, VALID_TABS, type Tab } from './constants'
 
 const { Spacing } = SizesAndSpaces
 
-export const PageBridges = () => {
+export const Bridges = () => {
   const tabParam = useSearchParams()?.get('tab')
   const tab: Tab = tabParam !== null && VALID_TABS.has(tabParam as Tab) ? (tabParam as Tab) : 'web3'
 
@@ -29,14 +29,7 @@ export const PageBridges = () => {
   )
 
   return (
-    <Stack
-      data-testid="bridge-page"
-      sx={{
-        marginInline: 'auto',
-        marginBlockStart: Spacing.xl,
-        marginBlockEnd: Spacing.xxl,
-      }}
-    >
+    <Stack data-testid="bridges">
       <TabsSwitcher variant="contained" value={tab} options={tabs} />
       <TabPanel sx={{ paddingBlock: Spacing.sm, paddingInline: Spacing.md }}>
         {tab === 'web3' && <BridgeOverview bridges={WEB3_BRIDGES} title={t`Aggregators for the best routes`} />}
