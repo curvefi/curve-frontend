@@ -9,6 +9,7 @@ import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { LlamaMarketType } from '@ui-kit/types/market'
 import { formatNumber } from '@ui-kit/utils'
+import { TooltipOptions } from '../market-details/tooltips'
 import {
   LiquidationThresholdTooltipContent,
   type BorrowRate,
@@ -20,7 +21,6 @@ import {
   type BandRange,
   type CollateralLoss,
 } from './'
-import { TooltipOptions } from '../market-details/tooltips'
 
 const { MaxWidth } = SizesAndSpaces
 
