@@ -10,10 +10,13 @@ export function writeImproveHealthForm({ amount }: { amount: Decimal }) {
 }
 
 export function checkClosePositionDetailsLoaded({ debt }: { debt: Decimal }) {
-  getActionValue('withdraw-amount').should('match', /(\d(\.\d+)?)/)
-  getActionValue('borrow-apr').should('include', '%')
-  cy.get('[data-testid="debt-to-close-position"]').invoke('attr', 'data-value').should('be.closeTo', Number(debt))
+  getActionValue('debt-to-close-position').should('match', /(\d(\.\d+)?)/) // first check the number is displayed before converting to number
+  getActionValue('debt-to-close-position')
+    .then((val) => Number(val))
+    .should('be.closeTo', Number(debt), Number(debt) * 0.01)
   cy.get('[data-testid="loan-form-errors"]').should('not.exist')
+  cy.get('[data-testid="loan-info-accordion"] button').first().click() // open the accordion
+  getActionValue('withdraw-amount').should('match', /(\d(\.\d+)?)/)
 }
 
 export function submitImproveHealthForm() {

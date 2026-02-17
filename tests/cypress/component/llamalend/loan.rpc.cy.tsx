@@ -42,6 +42,7 @@ import {
 import { createTenderlyWagmiConfigFromVNet, createVirtualTestnet } from '@cy/support/helpers/tenderly'
 import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
 import { fundErc20, fundEth } from '@cy/support/helpers/tenderly/vnet-fund'
+import { skipTestsAfterFailure } from '@cy/support/ui'
 import Box from '@mui/material/Box'
 import Skeleton from '@mui/material/Skeleton'
 import { useCurve } from '@ui-kit/features/connect-wallet/lib/CurveContext'
@@ -56,14 +57,14 @@ const prefetch = () => prefetchMarkets({})
 // const testCases = recordValues(LlamaMarketType).map((marketType) => oneLoanTestMarket(marketType))
 
 // todo: soft liquidation should be detected not forced by passing a tab. However, that detection is in the separate apps for now.
-type LoanTab = 'borrow-more' | 'repay' | 'close' | 'improve-health'
-
 const Components = {
   'borrow-more': BorrowMoreForm,
   repay: RepayForm,
   'improve-health': ImproveHealthForm,
   close: ClosePositionForm,
 }
+
+type LoanTab = keyof typeof Components
 
 const testCases = [LOAN_TEST_MARKETS.Mint[0]]
 
@@ -81,6 +82,8 @@ testCases.forEach(
     label,
   }) => {
     describe(label, () => {
+      skipTestsAfterFailure()
+
       const debtAfterBorrowMore = new BigNumber(borrow).plus(borrowMore).toString() as Decimal
       const debtAfterRepay = new BigNumber(debtAfterBorrowMore).minus(repay).toString() as Decimal
       const debtAfterImproveHealth = new BigNumber(debtAfterRepay).minus(improveHealth).toString() as Decimal
@@ -99,25 +102,17 @@ testCases.forEach(
        */
       const leverageEnabled = hasLeverage && false
       const debtTokenSymbol = 'crvUSD'
+      let adminRpcUrl: string
 
       let onSuccess: ReturnType<typeof cy.stub>
-      let failed = false
 
-      beforeEach(function () {
-        if (failed) return this.skip() // skip when any test failed since they are interdependent
-        onSuccess = cy
-          .stub()
-          .callsFake((...args) => console.log('onSuccess', args))
-          .as('onSuccess')
+      beforeEach(() => {
+        onSuccess = cy.stub().as('onSuccess')
         const vnet = getVirtualNetwork()
-        const { adminRpcUrl } = getRpcUrls(vnet)
+        adminRpcUrl = getRpcUrls(vnet).adminRpcUrl
         fundEth({ adminRpcUrl, amountWei: CREATE_LOAN_FUND_AMOUNT, recipientAddresses: [address] })
         fundErc20({ adminRpcUrl, amountWei: CREATE_LOAN_FUND_AMOUNT, tokenAddress, recipientAddresses: [address] })
         cy.log(`Funded some eth and collateral to ${address} in vnet ${vnet.slug}`)
-      })
-
-      afterEach(function () {
-        failed ||= this.currentTest?.state === 'failed'
       })
 
       function LoanFlowTest({ tab }: { tab?: LoanTab }) {
@@ -157,6 +152,21 @@ testCases.forEach(
         submitCreateLoanForm().then(() => expect(onSuccess).to.be.calledOnce)
       })
 
+      it(`closes the loan (TEMPORARY)`, () => {
+        // extra crvUSD to close the loan due to the safety buffer
+        fundErc20({
+          adminRpcUrl,
+          amountWei: CREATE_LOAN_FUND_AMOUNT,
+          tokenAddress: CRVUSD_ADDRESS,
+          recipientAddresses: [address],
+        })
+        cy.mount(<LoanTestWrapper tab="close" />)
+        checkClosePositionDetailsLoaded({ debt: borrow })
+        checkDebt(borrow, '0', debtTokenSymbol)
+        submitClosePositionForm().then(() => expect(onSuccess).to.be.calledOnce)
+        cy.get('[data-testid="create-loan-form"]').should('be.visible')
+      })
+
       it(`borrows more`, () => {
         cy.mount(<LoanTestWrapper tab="borrow-more" />)
         writeBorrowMoreForm({ debt: borrowMore })
@@ -177,10 +187,7 @@ testCases.forEach(
           debt: [debtAfterBorrowMore, debtAfterRepay, debtTokenSymbol],
           leverageEnabled,
         })
-        submitRepayForm().then(() => {
-          console.log('submitRepayForm', onSuccess)
-          return expect(onSuccess).to.be.calledOnce
-        })
+        submitRepayForm().then(() => expect(onSuccess).to.be.calledOnce)
         checkDebt(debtAfterRepay, debtAfterRepay, debtTokenSymbol)
       })
 
@@ -193,8 +200,16 @@ testCases.forEach(
       })
 
       it(`closes the loan`, () => {
+        // extra crvUSD to close the loan due to the safety buffer
+        fundErc20({
+          adminRpcUrl,
+          amountWei: CREATE_LOAN_FUND_AMOUNT,
+          tokenAddress: CRVUSD_ADDRESS,
+          recipientAddresses: [address],
+        })
         cy.mount(<LoanTestWrapper tab="close" />)
         checkClosePositionDetailsLoaded({ debt: debtAfterImproveHealth })
+        checkDebt(debtAfterImproveHealth, '0', debtTokenSymbol)
         submitClosePositionForm().then(() => expect(onSuccess).to.be.calledOnce)
         cy.get('[data-testid="create-loan-form"]').should('be.visible')
       })

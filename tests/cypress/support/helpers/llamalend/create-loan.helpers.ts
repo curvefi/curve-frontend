@@ -83,7 +83,7 @@ export function checkLoanDetailsLoaded({ leverageEnabled }: { leverageEnabled: b
   getActionValue('borrow-apr').should('include', '%')
   getActionValue('borrow-apr', 'previous').should('include', '%')
   getActionValue('borrow-ltv').should('include', '%')
-  getActionValue('borrow-n').should('eq', '50')
+  getActionValue('borrow-n').should('equal', '50')
 
   if (leverageEnabled) {
     getActionValue('borrow-price-impact').should('include', '%')

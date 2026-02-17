@@ -80,6 +80,7 @@ export const ClosePositionForm = ({
 
         <Metric
           label={t`Collateral to recover`}
+          testId="withdraw-amount"
           value={totalCollateralToRecoverUsd && Number(totalCollateralToRecoverUsd)}
           valueOptions={{ unit: 'dollar' }}
           notional={(collateralToRecoverData ?? [])
@@ -97,7 +98,11 @@ export const ClosePositionForm = ({
 
       <AlertClosePosition />
       {canClose?.canClose === false && debtTokenData?.symbol && (
-        <AlertAdditionalCrvUsd debtTokenSymbol={debtTokenData.symbol} missing={canClose.missing} />
+        <AlertAdditionalCrvUsd
+          debtTokenSymbol={debtTokenData.symbol}
+          missing={canClose.missing}
+          balance={canClose.balance}
+        />
       )}
 
       <Stack gap={Spacing.xs}>
