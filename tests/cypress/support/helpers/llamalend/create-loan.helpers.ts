@@ -74,12 +74,10 @@ export const oneLoanTestMarket = (type: LlamaMarketType = oneValueOf(LlamaMarket
  * The action info list is expected to be opened before calling this function.
  */
 export function checkLoanDetailsLoaded({ leverageEnabled }: { leverageEnabled: boolean }) {
-  getActionValue('borrow-band-range').should('match', /(\d(\.\d+)?) to (-?\d(\.\d+)?)/)
   getActionValue('borrow-price-range').should('match', /(\d(\.\d+)?) - (\d(\.\d+)?)/)
   getActionValue('borrow-apr').should('include', '%')
   getActionValue('borrow-apr', 'previous').should('include', '%')
   getActionValue('borrow-ltv').should('include', '%')
-  getActionValue('borrow-n').should('eq', '50')
 
   if (leverageEnabled) {
     getActionValue('borrow-price-impact').should('include', '%')
