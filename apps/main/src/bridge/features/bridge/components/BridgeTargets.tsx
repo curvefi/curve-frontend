@@ -1,3 +1,4 @@
+import { useCallback } from 'react'
 import { ArrowRight } from '@mui/icons-material'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import Box from '@mui/material/Box'
@@ -134,10 +135,13 @@ export const BridgeTargets = ({ networks, fromChainId, disabled, loading, onNetw
           showTestnets={false}
           options={networks}
           selectedNetworkId={getCurrentNetwork(usePathname())}
-          onNetwork={(network) => {
-            closeFrom()
-            onNetworkSelected?.(network)
-          }}
+          onNetwork={useCallback(
+            (network: NetworkDef) => {
+              closeFrom()
+              onNetworkSelected?.(network)
+            },
+            [closeFrom, onNetworkSelected],
+          )}
         />
       </ModalDialog>
 
