@@ -17,14 +17,14 @@ export type LoanInfoAccordionProps = {
   toggle: () => void
   range?: number
   isApproved?: Query<boolean>
-  health: Query<Decimal | null>
+  health?: Query<Decimal | null>
   prevHealth?: Query<Decimal>
   isFullRepay?: boolean
   bands?: Query<[number, number]>
   prices?: Query<readonly Decimal[]>
-  rates: Query<{ borrowApr?: Decimal } | null>
+  rates?: Query<{ borrowApr?: Decimal } | null>
   prevRates?: Query<{ borrowApr?: Decimal } | null>
-  loanToValue: Query<Decimal | null>
+  loanToValue?: Query<Decimal | null>
   prevLoanToValue?: Query<Decimal | null>
   netBorrowApr?: Query<Decimal | null>
   gas: Query<TxGasInfo | null>
@@ -91,7 +91,7 @@ export const LoanInfoAccordion = ({
           emptyValue="∞"
           {...combineQueryState(health, prevHealth)}
           valueColor={getHealthValueColor({
-            health: health.data,
+            health: health?.data,
             prevHealth: prevHealth?.data,
             theme: useTheme(),
             isFullRepay,
@@ -133,13 +133,15 @@ export const LoanInfoAccordion = ({
             {...combineQueryState(userState)}
           />
         )}
-        <ActionInfo
-          label={t`Borrow APR`}
-          value={rates.data?.borrowApr && formatPercent(rates.data.borrowApr)}
-          prevValue={prevRates?.data?.borrowApr && formatPercent(prevRates.data.borrowApr)}
-          {...combineQueryState(rates, prevRates)}
-          testId="borrow-apr"
-        />
+        {rates && (
+          <ActionInfo
+            label={t`Borrow APR`}
+            value={rates.data?.borrowApr && formatPercent(rates.data.borrowApr)}
+            prevValue={prevRates?.data?.borrowApr && formatPercent(prevRates.data.borrowApr)}
+            {...combineQueryState(rates, prevRates)}
+            testId="borrow-apr"
+          />
+        )}
         {netBorrowApr && (
           <ActionInfo
             label={t`Net borrow APR`}

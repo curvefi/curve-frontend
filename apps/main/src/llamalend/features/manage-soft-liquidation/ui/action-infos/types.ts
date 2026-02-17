@@ -1,4 +1,5 @@
 import type { TypographyProps } from '@mui/material/Typography'
+import type { Decimal } from '@ui-kit/utils'
 
 /**
  * Describes a change in value for a certain action info. The `next` value is optional as we await input.
@@ -9,7 +10,7 @@ import type { TypographyProps } from '@mui/material/Typography'
 export type Delta = { current: number; next?: number }
 
 /** Simple combination of a token symbol with a certain amount */
-export type TokenAmount = { symbol: string; amount: number }
+export type TokenAmount = { symbol: string; amount: Decimal }
 
 /** Short-hand type for MUI Typography color */
 export type TextColor = TypographyProps['color']

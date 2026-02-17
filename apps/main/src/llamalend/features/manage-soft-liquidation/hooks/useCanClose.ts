@@ -1,10 +1,13 @@
-import { useConnection } from 'wagmi'
+import BigNumber from 'bignumber.js'
 import { useUserBalances, useUserState } from '@/llamalend/queries/user'
-import { decimal } from '@ui-kit/utils'
-import type { ClosePositionProps } from '..'
-import type { MarketParams } from '../types'
+import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import type { UserMarketParams } from '@ui-kit/lib/model'
+import type { Query } from '@ui-kit/types/util'
+import { decimal, type Decimal } from '@ui-kit/utils'
 
 const CLOSE_POSITION_SAFETY_BUFFER = 1.0001 // 0.01% safety margin
+
+export type CanCloseData = { canClose: boolean; missing: Decimal }
 
 /**
  * Determines if a user can close their position and calculates how much
@@ -19,24 +22,25 @@ const CLOSE_POSITION_SAFETY_BUFFER = 1.0001 // 0.01% safety margin
  * - stablecoin: User's stablecoin balance already present in the AMM
  * - borrowed: User's borrowed token balance
  *
- * @returns Object containing missing amount of borrowed tokens needed to close
- * @example
- * ```typescript
- * const { missing } = useCanClose({ chainId: 1, marketId: 'market-1' })
- * // With debt=100, stablecoin=50, borrowed=40:
- * // missing: '10.005' (50.005 required - 40 borrowed)
- * ```
+ * @returns Query whose `data` contains both:
+ * - `canClose`: whether current balances are sufficient to close
+ * - `missing`: additional borrowed amount required to close
  */
-export function useCanClose(params: MarketParams): ClosePositionProps['canClose'] {
-  const { address: userAddress } = useConnection()
-  const { data: userBalances } = useUserBalances({ ...params, userAddress })
-  const { data: userState } = useUserState({ ...params, userAddress })
+export function useCanClose(params: UserMarketParams<LlamaChainId>): Query<CanCloseData> {
+  const { data: userBalancesData, error: userBalancesError, isLoading: userBalancesLoading } = useUserBalances(params)
+  const { data: userStateData, error: userStateError, isLoading: userStateLoading } = useUserState(params)
+  const { debt, stablecoin } = userStateData ?? {}
+  const { borrowed } = userBalancesData ?? {}
 
-  const { debt = '0', stablecoin = '0' } = userState ?? {}
-  const { borrowed = '0' } = userBalances ?? {}
+  const missing =
+    debt &&
+    stablecoin &&
+    borrowed &&
+    decimal(BigNumber.max(0, new BigNumber(debt).minus(stablecoin).times(CLOSE_POSITION_SAFETY_BUFFER).minus(borrowed)))
 
-  const requiredToClose = (+debt - +stablecoin) * CLOSE_POSITION_SAFETY_BUFFER
-  const missing = Math.max(0, requiredToClose - +borrowed)
-
-  return { missing: decimal(missing) }
+  return {
+    data: missing && { canClose: +missing === 0, missing },
+    isLoading: userBalancesLoading || userStateLoading,
+    error: userBalancesError || userStateError,
+  }
 }

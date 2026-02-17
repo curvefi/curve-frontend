@@ -14,6 +14,7 @@ import { useCreateLoanPreset } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
 import { q } from '@ui-kit/types/util'
+import { joinButtonText } from '@ui-kit/utils'
 import { updateForm } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts, HighPriceImpactAlert } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
@@ -163,7 +164,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
         disabled={isDisabled}
         data-testid="create-loan-submit-button"
       >
-        {isPending ? t`Processing...` : isApproved?.data ? t`Borrow` : t`Approve & Borrow`}
+        {isPending ? t`Processing...` : joinButtonText(isApproved?.data === false && t`Approve`, t`Borrow`)}
       </Button>
 
       <FormAlerts

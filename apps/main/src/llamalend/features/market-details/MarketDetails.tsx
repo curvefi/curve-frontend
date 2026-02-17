@@ -37,11 +37,11 @@ export const MarketDetails = ({
 }: MarketDetailsProps) => {
   const showPageHeader = useIntegratedLlamaHeader()
   const utilization =
-    availableLiquidity?.value != null && availableLiquidity.max != null
+    availableLiquidity?.value != null && availableLiquidity.max
       ? ((availableLiquidity.max - availableLiquidity.value) / availableLiquidity.max) * 100
       : undefined
   const utilizationBreakdown =
-    availableLiquidity?.value != null && availableLiquidity.max != null
+    availableLiquidity?.value != null && availableLiquidity.max
       ? `${formatLiquidity(availableLiquidity.max - availableLiquidity.value)}/${formatLiquidity(availableLiquidity.max)}`
       : undefined
 
