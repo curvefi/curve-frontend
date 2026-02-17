@@ -1,4 +1,6 @@
+// eslint-disable-next-line import/no-restricted-paths
 import { useNetworks } from '@/dex/entities/networks'
+// eslint-disable-next-line import/no-restricted-paths
 import { useChainId } from '@/dex/hooks/useChainId'
 import type { INetworkName } from '@curvefi/api/lib/interfaces'
 import { useParams } from '@ui-kit/hooks/router'
