@@ -52,7 +52,7 @@ export const UnstakeForm = <ChainId extends IChainId>({
     <Form
       {...form}
       onSubmit={onSubmit}
-      footer={<UnstakeSupplyInfoList params={params} networks={networks} tokens={{ borrowToken }} />}
+      footer={<UnstakeSupplyInfoList form={form} params={params} networks={networks} tokens={{ borrowToken }} />}
     >
       <LoanFormTokenInput
         label={t`Amount to unstake`}

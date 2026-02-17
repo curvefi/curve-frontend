@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import type { UseFormReturn } from 'react-hook-form'
 import type { Token } from '@/llamalend/features/borrow/types'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useMarketSupplyFutureRates } from '@/llamalend/queries/market-future-rates.query'
@@ -8,25 +9,28 @@ import { useDepositEstimateGas } from '@/llamalend/queries/supply/supply-deposit
 import { useDepositExpectedVaultShares } from '@/llamalend/queries/supply/supply-expected-vault-shares.query'
 import { useUserVaultSharesToAssetsAmount } from '@/llamalend/queries/supply/supply-user-vault-amounts'
 import { useUserBalances } from '@/llamalend/queries/user-balances.query'
-import type { DepositParams } from '@/llamalend/queries/validation/supply.validation'
+import type { DepositForm, DepositParams } from '@/llamalend/queries/validation/supply.validation'
 import { SupplyActionInfoList } from '@/llamalend/widgets/action-card/SupplyActionInfoList'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { mapQuery, q } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
+import { isFormTouched } from '@ui-kit/utils/react-form.utils'
 
 export type DepositSupplyInfoListProps<ChainId extends IChainId> = {
   params: DepositParams<ChainId>
   networks: NetworkDict<ChainId>
   tokens: { borrowToken: Token | undefined }
+  form: UseFormReturn<DepositForm>
 }
 
 export function DepositSupplyInfoList<ChainId extends IChainId>({
   params,
   networks,
   tokens,
+  form,
 }: DepositSupplyInfoListProps<ChainId>) {
   const { chainId, marketId, userAddress, depositAmount } = params
-  const isOpen = !!depositAmount
+  const isOpen = isFormTouched(form, ['depositAmount'])
 
   const { data: isApproved } = useDepositIsApproved(params, isOpen)
   const userBalances = useUserBalances({ chainId, marketId, userAddress }, isOpen)

@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import type { UseFormReturn } from 'react-hook-form'
 import type { Token } from '@/llamalend/features/borrow/types'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useMarketRates } from '@/llamalend/queries/market-rates'
@@ -9,26 +10,29 @@ import {
   useUserStakedVaultSharesToAssetsAmount,
 } from '@/llamalend/queries/supply/supply-user-vault-amounts'
 import { useUserBalances } from '@/llamalend/queries/user-balances.query'
-import type { StakeParams } from '@/llamalend/queries/validation/supply.validation'
+import type { StakeForm, StakeParams } from '@/llamalend/queries/validation/supply.validation'
 import { SupplyActionInfoList } from '@/llamalend/widgets/action-card/SupplyActionInfoList'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { t } from '@ui-kit/lib/i18n'
 import { mapQuery } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
+import { isFormTouched } from '@ui-kit/utils/react-form.utils'
 
 export type StakeSupplyInfoListProps<ChainId extends IChainId> = {
   params: StakeParams<ChainId>
   networks: NetworkDict<ChainId>
   tokens: { borrowToken: Token | undefined }
+  form: UseFormReturn<StakeForm>
 }
 
 export function StakeSupplyInfoList<ChainId extends IChainId>({
   params,
   networks,
   tokens,
+  form,
 }: StakeSupplyInfoListProps<ChainId>) {
   const { chainId, marketId, userAddress, stakeAmount } = params
-  const isOpen = !!stakeAmount
+  const isOpen = isFormTouched(form, ['stakeAmount'])
 
   const { data: isApproved } = useStakeIsApproved(params, isOpen)
   const userBalances = useUserBalances({ chainId, marketId, userAddress }, isOpen)

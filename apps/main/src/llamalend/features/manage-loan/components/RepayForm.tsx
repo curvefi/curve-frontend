@@ -128,6 +128,7 @@ export const RepayForm = <ChainId extends IChainId>({
       onSubmit={onSubmit}
       footer={
         <RepayLoanInfoList
+          form={form}
           params={params}
           values={values}
           tokens={{ collateralToken, borrowToken }}

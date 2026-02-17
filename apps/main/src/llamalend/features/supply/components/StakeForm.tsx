@@ -54,7 +54,7 @@ export const StakeForm = <ChainId extends IChainId>({
     <Form
       {...form}
       onSubmit={onSubmit}
-      footer={<StakeSupplyInfoList params={params} networks={networks} tokens={{ borrowToken }} />}
+      footer={<StakeSupplyInfoList form={form} params={params} networks={networks} tokens={{ borrowToken }} />}
     >
       <LoanFormTokenInput
         label={t`Amount to stake`}

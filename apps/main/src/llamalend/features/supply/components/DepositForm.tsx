@@ -53,7 +53,7 @@ export const DepositForm = <ChainId extends IChainId>({
     <Form
       {...form}
       onSubmit={onSubmit}
-      footer={<DepositSupplyInfoList params={params} networks={networks} tokens={{ borrowToken }} />}
+      footer={<DepositSupplyInfoList form={form} params={params} networks={networks} tokens={{ borrowToken }} />}
     >
       <LoanFormTokenInput
         label={t`Amount to deposit`}

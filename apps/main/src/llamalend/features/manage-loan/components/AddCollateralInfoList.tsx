@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import type { UseFormReturn } from 'react-hook-form'
 import type { Token } from '@/llamalend/features/borrow/types'
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
 import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
@@ -16,6 +17,7 @@ import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionIn
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { mapQuery, q } from '@ui-kit/types/util'
 import { decimal, Decimal } from '@ui-kit/utils'
+import { isFormTouched } from '@ui-kit/utils/react-form.utils'
 
 export function AddCollateralInfoList<ChainId extends IChainId>({
   params,
@@ -24,6 +26,7 @@ export function AddCollateralInfoList<ChainId extends IChainId>({
   borrowToken,
   networks,
   leverageEnabled,
+  form,
 }: {
   params: CollateralParams<ChainId>
   values: CollateralForm
@@ -31,8 +34,9 @@ export function AddCollateralInfoList<ChainId extends IChainId>({
   borrowToken: Token | undefined
   networks: NetworkDict<ChainId>
   leverageEnabled: boolean
+  form: UseFormReturn<CollateralForm>
 }) {
-  const isOpen = !!userCollateral
+  const isOpen = isFormTouched(form, ['userCollateral'])
   const userState = q(useUserState(params, isOpen))
 
   const expectedCollateral = mapQuery(

@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { useMemo } from 'react'
+import type { UseFormReturn } from 'react-hook-form'
 import type { Token } from '@/llamalend/features/borrow/types'
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
 import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
@@ -19,14 +20,16 @@ import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionIn
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { mapQuery, q } from '@ui-kit/types/util'
 import { decimal, Decimal } from '@ui-kit/utils'
+import { isFormTouched } from '@ui-kit/utils/react-form.utils'
 
 export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
   params,
-  values: { slippage, userCollateral, userBorrowed, debt },
+  values: { slippage, userCollateral, debt },
   tokens: { collateralToken, borrowToken },
   networks,
   onSlippageChange,
   leverageEnabled,
+  form,
 }: {
   params: BorrowMoreParams<ChainId>
   values: BorrowMoreForm
@@ -34,8 +37,9 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
   networks: NetworkDict<ChainId>
   onSlippageChange: (newSlippage: Decimal) => void
   leverageEnabled: boolean
+  form: UseFormReturn<BorrowMoreForm>
 }) {
-  const isOpen = !!(userCollateral || userBorrowed || debt)
+  const isOpen = isFormTouched(form, ['userCollateral', 'userBorrowed', 'debt'])
   const userState = useUserState(params, isOpen)
   const expectedCollateralQuery = q(useBorrowMoreExpectedCollateral(params, isOpen && leverageEnabled))
 

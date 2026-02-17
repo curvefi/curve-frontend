@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import type { FieldPath, FieldPathValue, FieldValues, FormState, UseFormReturn } from 'react-hook-form'
+import type { FieldPath, FieldPathValue, FieldValues, FormState, Path, UseFormReturn } from 'react-hook-form'
 import { notFalsy, recordEntries } from '@curvefi/prices-api/objects.util'
 
 export type FormUpdates<TFieldValues extends FieldValues> = Partial<{
@@ -38,3 +38,7 @@ export const filterFormErrors = <TFieldValues extends FieldValues>(formState: Fo
 
 export const useFormErrors = <TFieldValues extends FieldValues>(formState: FormState<TFieldValues>) =>
   useMemo(() => filterFormErrors(formState), [formState])
+
+/** Checks if any of the given fields are touched in the form. */
+export const isFormTouched = <T extends FieldValues>(form: UseFormReturn<T>, fields: Path<T>[]) =>
+  fields.some((field) => form.getFieldState(field).isTouched)

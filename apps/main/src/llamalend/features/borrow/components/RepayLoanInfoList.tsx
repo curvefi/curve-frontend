@@ -1,4 +1,5 @@
 import { BigNumber } from 'bignumber.js'
+import type { UseFormReturn } from 'react-hook-form'
 import type { Token } from '@/llamalend/features/borrow/types'
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
 import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
@@ -20,6 +21,7 @@ import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { combineQueriesMeta } from '@ui-kit/lib/queries/combine'
 import { mapQuery, q, type Query } from '@ui-kit/types/util'
 import { Decimal, decimal } from '@ui-kit/utils'
+import { isFormTouched } from '@ui-kit/utils/react-form.utils'
 
 const remainingDebt = (debt: Decimal, repayAmount: Decimal, stateBorrowed: Decimal) => {
   const repayTotal = new BigNumber(repayAmount).plus(stateBorrowed)
@@ -58,12 +60,13 @@ function useRepayRemainingDebt<ChainId extends IChainId>(
 
 export function RepayLoanInfoList<ChainId extends IChainId>({
   params,
-  values: { slippage, stateCollateral, userCollateral, userBorrowed, isFull },
+  values: { slippage, userCollateral, userBorrowed, isFull },
   tokens: { collateralToken, borrowToken },
   networks,
   onSlippageChange,
   hasLeverage,
   swapRequired,
+  form,
 }: {
   params: RepayParams<ChainId>
   values: RepayForm
@@ -72,8 +75,9 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
   onSlippageChange: (newSlippage: Decimal) => void
   hasLeverage: boolean | undefined
   swapRequired: boolean
+  form: UseFormReturn<RepayForm>
 }) {
-  const isOpen = !!(stateCollateral || userCollateral || userBorrowed)
+  const isOpen = isFormTouched(form, ['stateCollateral', 'userCollateral', 'userBorrowed'])
   const userStateQuery = useUserState(params, isOpen)
   const userState = q(userStateQuery)
   const priceImpact = useRepayPriceImpact(params, isOpen && swapRequired)

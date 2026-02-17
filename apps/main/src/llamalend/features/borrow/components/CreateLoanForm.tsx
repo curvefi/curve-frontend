@@ -88,6 +88,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
       onSubmit={onSubmit}
       footer={
         <CreateLoanInfoList
+          form={form}
           params={params}
           values={values}
           collateralToken={collateralToken}
