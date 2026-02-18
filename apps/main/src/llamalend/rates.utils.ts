@@ -68,9 +68,7 @@ export const getBorrowRateMetrics = <TSnapshot extends WithTimestamp = WithTimes
  * TODO: Remove this function when the llamalend-api is updated to return APR for mint markets.
  */
 export const getMintBorrowRates = (borrowApy: string) => {
-  const apyAsFraction = Number(borrowApy) / 100
-  const borrowApr = ((1 + apyAsFraction) ** (1 / DAYS_PER_YEAR) - 1) * DAYS_PER_YEAR * 100
-
+  const borrowApr = ((1 + Number(borrowApy) / 100) ** (1 / DAYS_PER_YEAR) - 1) * DAYS_PER_YEAR * 100
   return {
     borrowApy,
     borrowApr: borrowApr.toString(),
