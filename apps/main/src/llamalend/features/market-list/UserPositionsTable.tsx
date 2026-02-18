@@ -1,5 +1,5 @@
 import lodash from 'lodash'
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { PositionsEmptyState } from '@/llamalend/constants'
 import { ExpandedState } from '@tanstack/react-table'
 import { useIsTablet } from '@ui-kit/hooks/useBreakpoints'
@@ -7,20 +7,22 @@ import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { useColumnFilters } from '@ui-kit/shared/ui/DataTable/hooks/useColumnFilters'
+import { useGlobalFilter } from '@ui-kit/shared/ui/DataTable/hooks/useGlobalFilter'
 import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
 import { TableSearchField } from '@ui-kit/shared/ui/DataTable/TableSearchField'
 import { MarketRateType } from '@ui-kit/types/market'
-import { type LlamaMarketsResult } from '../../queries/market-list/llama-markets'
+import type { LlamaMarketsResult } from '../../queries/market-list/llama-markets'
 import { LlamaChainFilterChips } from './chips/LlamaChainFilterChips'
 import { LlamaListChips } from './chips/LlamaListChips'
 import { DEFAULT_SORT_BORROW, DEFAULT_SORT_SUPPLY } from './columns'
 import { LLAMA_MARKET_COLUMNS } from './columns'
 import { LlamaMarketColumnId } from './columns'
+import { llamaGlobalFilterFn } from './filters/llamaGlobalFilter'
 import { useLlamaTableVisibility } from './hooks/useLlamaTableVisibility'
-import { useSearch } from './hooks/useSearch'
 import { LendingMarketsFilters } from './LendingMarketsFilters'
 import { LlamaMarketExpandedPanel } from './LlamaMarketExpandedPanel'
 import { UserPositionsEmptyState } from './UserPositionsEmptyState'
+
 const { isEqual } = lodash
 
 const LOCAL_STORAGE_KEYS = {
@@ -62,25 +64,35 @@ export const UserPositionsTable = ({ onReload, result, loading, isError, tab }: 
 
   const defaultFilters = useDefaultUserFilter(tab)
   const title = LOCAL_STORAGE_KEYS[tab]
-  const { columnFilters, columnFiltersById, setColumnFilter, resetFilters } = useColumnFilters({
+  const { globalFilter, setGlobalFilter, resetGlobalFilter } = useGlobalFilter('search-user-positions')
+  const {
+    columnFilters,
+    columnFiltersById,
+    setColumnFilter,
+    resetFilters: resetColumnFilters,
+  } = useColumnFilters({
     title,
     columns: LlamaMarketColumnId,
     defaultFilters,
     scope: tab.toLowerCase(),
   })
+  const resetFilters = useCallback(() => {
+    resetColumnFilters()
+    resetGlobalFilter()
+  }, [resetColumnFilters, resetGlobalFilter])
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT[tab], SORT_QUERY_FIELD[tab])
   const { columnSettings, columnVisibility, sortField, toggleVisibility } = useLlamaTableVisibility(title, sorting, tab)
   const [expanded, onExpandedChange] = useState<ExpandedState>({})
-  const [searchText, onSearch] = useSearch(columnFiltersById, setColumnFilter)
   const filterProps = { columnFiltersById, setColumnFilter, defaultFilters }
 
   const table = useTable({
     columns: LLAMA_MARKET_COLUMNS,
     data: userData,
-    state: { expanded, sorting, columnVisibility, columnFilters },
+    state: { expanded, sorting, columnVisibility, columnFilters, globalFilter },
     initialState: { pagination },
     onSortingChange,
     onExpandedChange,
+    globalFilterFn: llamaGlobalFilterFn,
     ...getTableOptions(result),
   })
 
@@ -104,13 +116,15 @@ export const UserPositionsTable = ({ onReload, result, loading, isError, tab }: 
     >
       <TableFilters<LlamaMarketColumnId>
         filterExpandedKey={title}
-        leftChildren={<TableSearchField value={searchText} onChange={onSearch} testId={`${title}-search`} isExpanded />}
+        leftChildren={
+          <TableSearchField value={globalFilter} onChange={setGlobalFilter} testId={`${title}-search`} isExpanded />
+        }
         loading={loading}
         onReload={onReload}
         visibilityGroups={columnSettings}
         toggleVisibility={toggleVisibility}
-        searchText={searchText}
-        onSearch={onSearch}
+        searchText={globalFilter}
+        onSearch={setGlobalFilter}
         collapsible={<LendingMarketsFilters data={userData} {...filterProps} />}
         chips={
           <>
