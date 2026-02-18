@@ -13,7 +13,7 @@ export const SlippageToleranceActionInfoPure = ({
   onSave: (newSlippage: Decimal) => void
 }) => (
   <ActionInfo
-    label={t`Slippage tolerance`}
+    label={t`Slippage`}
     value={formatPercent(maxSlippage)}
     valueRight={
       <SlippageSettings

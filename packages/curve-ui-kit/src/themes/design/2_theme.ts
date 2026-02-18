@@ -207,7 +207,6 @@ export const createLightDesign = (
       },
       Hover: {
         Label: Text.TextColors.Primary,
-        Fill: Layer[1].Fill,
       },
       Current: {
         Label: Grays[10],
@@ -658,7 +657,6 @@ export const createDarkDesign = (Dark: typeof SurfacesAndText.plain.Dark | typeo
       },
       Hover: {
         Label: Text.TextColors.Primary,
-        Fill: Layer[1].Fill,
       },
       Current: {
         Label: Grays[975],
@@ -1070,7 +1068,6 @@ export const createChadDesign = (Chad: typeof SurfacesAndText.plain.Chad | typeo
       },
       Hover: {
         Label: Text.TextColors.Primary,
-        Fill: Layer[1].Fill,
       },
       Current: {
         Label: Grays[10],
