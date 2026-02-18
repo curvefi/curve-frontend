@@ -6,16 +6,15 @@ import {
 } from '@/llamalend/features/market-position-details'
 import { calculateLtv, getIsUserCloseToLiquidation, getLiquidationStatus, hasV2Leverage } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
-import { useLoanExists } from '@/llamalend/queries/user'
 import { useMarketLiquidationBand } from '@/llamalend/queries/market-liquidation-band.query'
 import { useMarketOraclePriceBand } from '@/llamalend/queries/market-oracle-price-band.query'
 import { useMarketOraclePrice } from '@/llamalend/queries/market-oracle-price.query'
 import { useMarketRates } from '@/llamalend/queries/market-rates'
+import { useLoanExists } from '@/llamalend/queries/user'
 import {
   useUserBands,
   useUserCurrentLeverage,
   useUserHealth,
-  useUserLoss,
   useUserPrices,
   useUserState,
 } from '@/llamalend/queries/user'
@@ -31,7 +30,6 @@ import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { CRVUSD } from '@ui-kit/utils/address'
 import { calculateAverageRates } from '@ui-kit/utils/averageRates'
-import { decimal } from '@ui-kit/utils/decimal'
 
 const averageMultiplier = 30
 const averageMultiplierString = `${averageMultiplier}D`
@@ -108,7 +106,6 @@ export const useBorrowPositionDetails = ({
     loanExists: hasLoan,
   })
   const { data: leverage, isLoading: isLeverageLoading } = useUserCurrentLeverage(userMarketParams, hasLoan)
-  const { data: userLossValue, isLoading: isUserLossLoading } = useUserLoss(userMarketParams, hasLoan)
 
   const marketParams = { chainId: chainId as IChainId, marketId }
   const { data: oraclePrice } = useMarketOraclePrice(marketParams)
@@ -252,13 +249,6 @@ export const useBorrowPositionDetails = ({
     totalDebt: {
       value: debt ? +debt : null,
       loading: isPositionDetailsLoading || isLoanExistsLoading || (hasLoan && isUserStateLoading),
-    },
-    collateralLoss: {
-      depositedCollateral: hasLoan ? decimal(userLossValue?.deposited_collateral) : undefined,
-      currentCollateralEstimation: hasLoan ? decimal(userLossValue?.current_collateral_estimation) : undefined,
-      percentage: hasLoan ? decimal(userLossValue?.loss_pct) : undefined,
-      amount: hasLoan ? decimal(userLossValue?.loss) : undefined,
-      loading: isPositionDetailsLoading || isLoanExistsLoading || (hasLoan && isUserLossLoading),
     },
   }
 }

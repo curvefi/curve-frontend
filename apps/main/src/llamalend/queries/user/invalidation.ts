@@ -5,7 +5,6 @@ import { invalidateUserBands } from './user-bands.query'
 import { invalidateUserCurrentLeverage } from './user-current-leverage.query'
 import { invalidateUserHealth } from './user-health.query'
 import { invalidateLoanExists } from './user-loan-exists.query'
-import { invalidateUserLoss } from './user-loss.query'
 import { invalidateUserMarketBalances } from './user-market-balances.query'
 import { invalidateUserPrices } from './user-prices.query'
 import { invalidateUserState } from './user-state.query'
@@ -22,7 +21,6 @@ export const invalidateAllUserPositionQueries = ({ marketId, userAddress, chainI
     invalidateUserHealth({ marketId, userAddress, chainId, isFull: false }),
     invalidateUserBalances({ marketId, userAddress, chainId }),
     invalidateUserBands({ marketId, userAddress, chainId }),
-    invalidateUserLoss({ marketId, userAddress, chainId }),
     invalidateUserCurrentLeverage({ marketId, userAddress, chainId }),
     invalidateUserMarketBalances({ marketId, chainId }),
     invalidateUserPrices({ marketId, userAddress, chainId, loanExists: true }),
