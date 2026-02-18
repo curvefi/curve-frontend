@@ -18,18 +18,25 @@ type MarketInformationCompProps = {
   marketId: string
   chainId: ChainId
   page?: 'create' | 'manage'
+  previewPrices: string[] | null | undefined
 }
 
 /**
  * Reusable component for OHLC charts, Bands, and market parameters. For /create and /manage pages.
  */
-export const MarketInformationComp = ({ llamma, marketId, chainId, page = 'manage' }: MarketInformationCompProps) => {
+export const MarketInformationComp = ({
+  llamma,
+  marketId,
+  chainId,
+  page = 'manage',
+  previewPrices,
+}: MarketInformationCompProps) => {
   const newBandsChartEnabled = useNewBandsChart()
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
 
   return (
     <>
-      <ChartAndActivityComp chainId={chainId} llammaId={marketId} market={llamma} />
+      <ChartAndActivityComp chainId={chainId} llammaId={marketId} market={llamma} previewPrices={previewPrices} />
       {isAdvancedMode && !newBandsChartEnabled && (
         <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, gap: Spacing.md, padding: Spacing.md }}>
           <BandsComp llamma={llamma} llammaId={marketId} page={page} />

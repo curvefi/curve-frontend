@@ -6,6 +6,8 @@ import { hasLeverage } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import type { RepayOptions } from '@/llamalend/mutations/repay.mutation'
 import { useRepayPriceImpact } from '@/llamalend/queries/repay/repay-price-impact.query'
+import { useRepayPrices } from '@/llamalend/queries/repay/repay-prices.query'
+import type { RepayParams } from '@/llamalend/queries/validation/manage-loan.types'
 import { HighPriceImpactAlert, LoanFormAlerts } from '@/llamalend/widgets/action-card/LoanFormAlerts'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -16,11 +18,20 @@ import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import { q } from '@ui-kit/types/util'
+import { q, type Query } from '@ui-kit/types/util'
 import { setValueOptions } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { useRepayForm } from '../hooks/useRepayForm'
 import { useTokenAmountConversion } from '../hooks/useTokenAmountConversion'
+
+type OnRepayFormUpdate = (prices: Query<string[]>) => void
+
+const useFormSync = (params: RepayParams, enabled: boolean | undefined, onUpdate: OnRepayFormUpdate) => {
+  const { data, isLoading, error } = useRepayPrices(params, enabled)
+  useEffect(() => {
+    onUpdate({ data, isLoading, error })
+  }, [onUpdate, data, isLoading, error])
+}
 
 /**
  * Join button texts with commas and ampersand
@@ -65,12 +76,14 @@ export const RepayForm = <ChainId extends IChainId>({
   chainId,
   enabled,
   onRepaid,
+  onUpdate,
 }: {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
   chainId: ChainId
   enabled?: boolean
   onRepaid?: RepayOptions['onRepaid']
+  onUpdate: OnRepayFormUpdate
 }) => {
   const network = networks[chainId]
   const {
@@ -114,6 +127,8 @@ export const RepayForm = <ChainId extends IChainId>({
     selectedField === 'stateCollateral' && t`Using collateral balances to repay.`,
     t`Max repay amount:`,
   ).join(' ')
+
+  useFormSync(params, enabled, onUpdate)
 
   useEffect(
     // Reset field when selectedField changes

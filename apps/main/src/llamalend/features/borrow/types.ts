@@ -2,7 +2,7 @@ import type { RouterMeta } from '@/llamalend/llamalend.types'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { FieldsOf } from '@ui-kit/lib'
 import type { MarketQuery } from '@ui-kit/lib/model'
-import type { MakeOptional } from '@ui-kit/types/util'
+import type { MakeOptional, Query } from '@ui-kit/types/util'
 import { Decimal } from '@ui-kit/utils'
 
 export { type Token } from '@ui-kit/types/common'
@@ -25,7 +25,7 @@ export type CreateLoanForm = MakeOptional<CompleteCreateLoanForm, 'debt' | 'user
   RouterMeta
 
 /** Callback type to pass on the external fields of the create loan form */
-export type OnCreateLoanFormUpdate = (form: CreateLoanForm, data: { isApproved: boolean | undefined }) => Promise<void>
+export type OnCreateLoanFormUpdate = (prices: Query<string[]>) => void
 
 /** Full query type for create loan queries, including pool identification and all form fields */
 export type CreateLoanFormQuery<T = IChainId> = MarketQuery<T> & CompleteCreateLoanForm & RouterMeta

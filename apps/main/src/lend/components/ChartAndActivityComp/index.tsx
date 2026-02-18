@@ -5,16 +5,17 @@ import { Api, ChainId } from '@/lend/types/lend.types'
 import { getBandsChartToken } from '@/llamalend/features/bands-chart/bands-chart.utils'
 import { useBandsData } from '@/llamalend/features/bands-chart/hooks/useBandsData'
 import { ChartAndActivityLayout } from '@/llamalend/widgets/ChartAndActivityLayout'
-import type { Chain, Address } from '@curvefi/prices-api'
+import type { Address, Chain } from '@curvefi/prices-api'
 import { type Token } from '@ui-kit/features/activity-table'
 
 type ChartAndActivityCompProps = {
   rChainId: ChainId
   rOwmId: string
   api: Api | undefined
+  previewPrices: string[] | null | undefined
 }
 
-export const ChartAndActivityComp = ({ rChainId, rOwmId, api }: ChartAndActivityCompProps) => {
+export const ChartAndActivityComp = ({ rChainId, rOwmId, api, previewPrices }: ChartAndActivityCompProps) => {
   const market = useOneWayMarket(rChainId, rOwmId).data
   const collateralTokenAddress = market?.collateral_token.address
   const borrowedTokenAddress = market?.borrowed_token.address
@@ -33,6 +34,7 @@ export const ChartAndActivityComp = ({ rChainId, rOwmId, api }: ChartAndActivity
   } = useOhlcChartState({
     rChainId,
     rOwmId,
+    previewPrices,
   })
 
   const {

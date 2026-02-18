@@ -38,6 +38,7 @@ export const MintMarketPage = () => {
   const rChainId = useChainId(params)
   const { address } = useConnection()
   const [loaded, setLoaded] = useState(false)
+  const [previewPrices, setPreviewPrices] = useState<string[] | null>(null)
 
   const market = useMintMarket({ chainId: rChainId, marketId: rCollateralId })
   const marketId = market?.id ?? ''
@@ -99,46 +100,54 @@ export const MintMarketPage = () => {
   return isHydrated && !market ? (
     <ErrorPage title="404" subtitle={t`Market Not Found`} continueUrl={getCollateralListPathname(params)} />
   ) : provider ? (
-    <>
-      <DetailPageLayout
-        formTabs={
-          loaded &&
-          (loanExists ? (
-            <ManageLoanTabs {...formProps} isInSoftLiquidation={!!loanStatus && loanStatus !== 'healthy'} />
-          ) : (
-            <CreateLoanTabs {...formProps} />
-          ))
-        }
-      >
-        <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
-          {loanExists ? (
-            <BorrowPositionDetails {...positionDetails} />
-          ) : (
-            <Stack padding={Spacing.md} sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
-              <NoPosition type="borrow" />
-            </Stack>
-          )}
-          {userCollateralEvents?.events && userCollateralEvents.events.length > 0 && (
-            <Stack
-              paddingLeft={Spacing.md}
-              paddingRight={Spacing.md}
-              paddingBottom={Spacing.md}
-              sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}
-            >
-              <UserPositionHistory
-                events={userCollateralEvents.events}
-                isLoading={collateralEventsIsLoading}
-                isError={collateralEventsIsError}
-              />
-            </Stack>
-          )}
-        </Stack>
-        <Stack>
-          <MarketDetails {...marketDetails} />
-          <MarketInformationComp llamma={market ?? null} marketId={marketId} chainId={rChainId} page="manage" />
-        </Stack>
-      </DetailPageLayout>
-    </>
+    <DetailPageLayout
+      formTabs={
+        loaded &&
+        (loanExists ? (
+          <ManageLoanTabs
+            {...formProps}
+            isInSoftLiquidation={!!loanStatus && loanStatus !== 'healthy'}
+            onChartPreviewPricesUpdate={setPreviewPrices}
+          />
+        ) : (
+          <CreateLoanTabs {...formProps} onChartPreviewPricesUpdate={setPreviewPrices} />
+        ))
+      }
+    >
+      <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
+        {loanExists ? (
+          <BorrowPositionDetails {...positionDetails} />
+        ) : (
+          <Stack padding={Spacing.md} sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
+            <NoPosition type="borrow" />
+          </Stack>
+        )}
+        {userCollateralEvents?.events && userCollateralEvents.events.length > 0 && (
+          <Stack
+            paddingLeft={Spacing.md}
+            paddingRight={Spacing.md}
+            paddingBottom={Spacing.md}
+            sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}
+          >
+            <UserPositionHistory
+              events={userCollateralEvents.events}
+              isLoading={collateralEventsIsLoading}
+              isError={collateralEventsIsError}
+            />
+          </Stack>
+        )}
+      </Stack>
+      <Stack>
+        <MarketDetails {...marketDetails} />
+        <MarketInformationComp
+          llamma={market ?? null}
+          marketId={marketId}
+          chainId={rChainId}
+          page="manage"
+          previewPrices={previewPrices}
+        />
+      </Stack>
+    </DetailPageLayout>
   ) : (
     <ConnectWalletPrompt description={t`Connect your wallet to view market`} />
   )

@@ -1,13 +1,15 @@
-import { type ChangeEvent, useCallback } from 'react'
+import { type ChangeEvent, useCallback, useEffect } from 'react'
 import { BorrowMoreLoanInfoAccordion } from '@/llamalend/features/borrow/components/BorrowMoreLoanInfoAccordion'
 import { LeverageInput } from '@/llamalend/features/borrow/components/LeverageInput'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { OnBorrowedMore } from '@/llamalend/mutations/borrow-more.mutation'
 import { useBorrowMorePriceImpact } from '@/llamalend/queries/borrow-more/borrow-more-price-impact.query'
+import { useBorrowMorePrices } from '@/llamalend/queries/borrow-more/borrow-more-prices.query'
 import {
   isLeverageBorrowMore,
   isLeverageBorrowMoreSupported,
 } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
+import type { BorrowMoreParams } from '@/llamalend/queries/validation/borrow-more.validation'
 import { HighPriceImpactAlert, LoanFormAlerts } from '@/llamalend/widgets/action-card/LoanFormAlerts'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -16,12 +18,21 @@ import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
 import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
-import { q } from '@ui-kit/types/util'
+import { q, type Query } from '@ui-kit/types/util'
 import { isDevelopment } from '@ui-kit/utils'
 import { setValueOptions } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { InputDivider } from '../../../widgets/InputDivider'
 import { useBorrowMoreForm } from '../hooks/useBorrowMoreForm'
+
+type OnBorrowMoreFormUpdate = (prices: Query<string[]>) => void
+
+const useFormSync = (params: BorrowMoreParams, enabled: boolean | undefined, onUpdate: OnBorrowMoreFormUpdate) => {
+  const { data, isLoading, error } = useBorrowMorePrices(params, enabled)
+  useEffect(() => {
+    onUpdate({ data, isLoading, error })
+  }, [onUpdate, data, isLoading, error])
+}
 
 export const BorrowMoreForm = <ChainId extends IChainId>({
   market,
@@ -30,6 +41,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
   enabled,
   onBorrowedMore,
   fromWallet = isDevelopment, // todo: delete this if users do not complain about it, for now dev-only feature
+  onUpdate,
 }: {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
@@ -37,6 +49,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
   enabled?: boolean
   onBorrowedMore?: OnBorrowedMore
   fromWallet?: boolean
+  onUpdate: OnBorrowMoreFormUpdate
 }) => {
   const network = networks[chainId]
   const {
@@ -71,6 +84,9 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     (event: ChangeEvent<HTMLInputElement>) => form.setValue('leverageEnabled', event.target.checked),
     [form],
   )
+
+  useFormSync(params, enabled, onUpdate)
+
   return (
     <Form
       {...form}

@@ -75,6 +75,7 @@ export const LendMarketPage = () => {
   })
 
   const [isLoaded, setLoaded] = useState(false)
+  const [previewPrices, setPreviewPrices] = useState<string[] | null>(null)
 
   const borrowPositionDetails = useBorrowPositionDetails({ chainId, market: market, marketId })
 
@@ -121,9 +122,13 @@ export const LendMarketPage = () => {
           marketId &&
           !isLoanExistsLoading &&
           (loanExists ? (
-            <ManageLoanTabs position={borrowPositionDetails} {...pageProps} />
+            <ManageLoanTabs
+              position={borrowPositionDetails}
+              {...pageProps}
+              onChartPreviewPricesUpdate={setPreviewPrices}
+            />
           ) : (
-            <LoanCreateTabs {...pageProps} params={params} />
+            <LoanCreateTabs {...pageProps} params={params} onChartPreviewPricesUpdate={setPreviewPrices} />
           ))
         }
       >
@@ -157,7 +162,12 @@ export const LendMarketPage = () => {
         </MarketInformationTabs>
         <Stack>
           <MarketDetails {...marketDetails} />
-          <MarketInformationComp pageProps={pageProps} type="borrow" loanExists={loanExists} />
+          <MarketInformationComp
+            pageProps={pageProps}
+            type="borrow"
+            loanExists={loanExists}
+            previewPrices={previewPrices}
+          />
         </Stack>
       </DetailPageLayout>
     </>

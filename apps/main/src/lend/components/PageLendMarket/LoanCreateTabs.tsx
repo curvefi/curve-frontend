@@ -1,77 +1,29 @@
 import { useCallback } from 'react'
 import { LoanCreateForm } from '@/lend/components/PageLendMarket/LoanFormCreate/LoanCreateForm'
-import type { FormValues } from '@/lend/components/PageLendMarket/types'
-import { DEFAULT_CREATE_FORM_STATUS } from '@/lend/components/PageLendMarket/utils'
 import { networks } from '@/lend/networks'
-import { _getActiveKey } from '@/lend/store/createLoanCreateSlice'
 import { useStore } from '@/lend/store/useStore'
 import { type MarketUrlParams, type PageContentProps } from '@/lend/types/lend.types'
 import { CreateLoanForm } from '@/llamalend/features/borrow/components/CreateLoanForm'
 import type { OnCreateLoanFormUpdate } from '@/llamalend/features/borrow/types'
 import { hasLeverage } from '@/llamalend/llama.utils'
-import { useDebounced } from '@ui-kit/hooks/useDebounce'
 import { useCreateLoanMuiForm } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
-import { Duration } from '@ui-kit/themes/design/0_primitives'
 import { type FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
 
-type CreateLoanProps = PageContentProps<MarketUrlParams>
-
-/**
- * Callback that synchronizes the `ChartOhlc` component with the `RangeSlider` component in the new `CreateLoanForm`.
- */
-const useOnFormUpdate = ({ api, market }: Pick<CreateLoanProps, 'api' | 'market'>): OnCreateLoanFormUpdate => {
-  const [setStateByKeys] = useDebounced(
-    useStore((store) => store.loanCreate.setStateByKeys),
-    Duration.FormDebounce,
-  )
-  return useCallback(
-    async (
-      { debt, userCollateral, range, slippage, leverageEnabled, userBorrowed, maxDebt, maxCollateral },
-      { isApproved = false }, // maxLeverage, estimatedGas },
-    ) => {
-      const formValues: FormValues = {
-        n: range,
-        debt: `${debt ?? ''}`,
-        userBorrowed: `${userBorrowed ?? ''}`,
-        userCollateral: `${userCollateral ?? ''}`,
-        userCollateralError: '',
-        userBorrowedError: '',
-        debtError: '',
-      }
-
-      const activeKeys = _getActiveKey(api, market, formValues, slippage)
-      setStateByKeys({
-        ...activeKeys,
-        formValues,
-        formStatus: {
-          ...DEFAULT_CREATE_FORM_STATUS,
-          isApproved,
-          isApprovedCompleted: isApproved,
-        },
-        isEditLiqRange: true,
-        // maxLeverage: { [range]: maxLeverage ?? '' },
-        // maxRecv: { [activeKeys.activeKey]: maxCollateral ?? '' },
-        maxLeverage: {},
-        maxRecv: {},
-        detailInfoLeverage: {},
-        detailInfo: {},
-        formEstGas: {},
-        liqRanges: {},
-        liqRangesMapper: {},
-      })
-    },
-    [api, market, setStateByKeys],
-  )
+type CreateLoanProps = PageContentProps<MarketUrlParams> & {
+  onChartPreviewPricesUpdate?: (prices: string[] | null) => void
 }
 
-function CreateLoanTab({ market, api, rChainId }: CreateLoanProps) {
+function CreateLoanTab({ market, api, rChainId, onChartPreviewPricesUpdate }: CreateLoanProps) {
   const onLoanCreated = useStore((state) => state.loanCreate.onLoanCreated)
   const onCreated = useCallback(
     async () => api && market && (await onLoanCreated(api, market)),
     [api, market, onLoanCreated],
   )
-  const onUpdate = useOnFormUpdate({ market, api })
+  const onUpdate: OnCreateLoanFormUpdate = useCallback(
+    (prices) => onChartPreviewPricesUpdate?.(prices.data ?? null),
+    [onChartPreviewPricesUpdate],
+  )
   return (
     <CreateLoanForm networks={networks} chainId={rChainId} market={market} onUpdate={onUpdate} onCreated={onCreated} />
   )

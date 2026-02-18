@@ -43,20 +43,30 @@ export function getRepayImplementation(
   { stateCollateral, userCollateral, userBorrowed, route }: RepayFields,
 ) {
   const market = getLlamaMarket(marketId)
-  switch (getRepayImplementationType(marketId, { stateCollateral, userCollateral, userBorrowed })) {
-    case 'V2':
-      return ['V2', market.leverageV2, [stateCollateral, userCollateral, userBorrowed]] as const
-    case 'deleverage':
-      return ['deleverage', market.deleverage, [stateCollateral]] as const
-    case 'zapV2': {
-      const routerArgs = { stateCollateral, userCollateral, userBorrowed, ...parseRoute(route) }
-      return ['zapV2', market.leverageZapV2, [routerArgs]] as const
+  const type = getRepayImplementationType(marketId, { stateCollateral, userCollateral, userBorrowed })
+  if (market instanceof MintMarketTemplate) {
+    switch (type) {
+      case 'V2':
+        return ['V2', market.leverageV2, [stateCollateral, userCollateral, userBorrowed]] as const
+      case 'deleverage':
+        return ['deleverage', market.deleverage, [stateCollateral]] as const
+      case 'unleveraged':
+        return ['unleveraged', market, [userBorrowed]] as const
     }
-    case 'V1':
-      return ['V1', market.leverage, [stateCollateral, userCollateral, userBorrowed]] as const
-    case 'unleveraged':
-      return ['unleveraged', market, [userBorrowed]] as const
-  }
+  } else
+    switch (type) {
+      case 'zapV2':
+        return [
+          'zapV2',
+          market.leverageZapV2,
+          [{ stateCollateral, userCollateral, userBorrowed, ...parseRoute(route) }],
+        ] as const
+      case 'V1':
+        return ['V1', market.leverage, [stateCollateral, userCollateral, userBorrowed]] as const
+      case 'unleveraged':
+        return ['unleveraged', market, [userBorrowed]] as const
+    }
+  throw new Error(`Invalid repay implementation type: ${type}`)
 }
 
 /**

@@ -158,8 +158,8 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
     isApproved: useRepayIsApproved(params, enabled),
     routes: useMarketRoutes({
       chainId,
-      tokenIn: collateralToken?.address,
-      tokenOut: borrowToken?.address,
+      tokenIn: collateralToken,
+      tokenOut: borrowToken,
       amountIn: swapAmountIn,
       slippage: values.slippage,
       selectedRoute: values.route ?? undefined,

@@ -1,13 +1,14 @@
 import { type ChangeEvent, useCallback, useEffect } from 'react'
 import { LoanPreset } from '@/llamalend/constants'
-import {
-  type CreateLoanForm as CreateLoanFormData,
-  type OnCreateLoanFormUpdate,
-} from '@/llamalend/features/borrow/types'
+import { type OnCreateLoanFormUpdate } from '@/llamalend/features/borrow/types'
 import { hasLeverage } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import type { CreateLoanOptions } from '@/llamalend/mutations/create-loan.mutation'
 import { useCreateLoanPriceImpact } from '@/llamalend/queries/create-loan/create-loan-price-impact.query'
+import {
+  type CreateLoanPricesReceiveParams,
+  useCreateLoanPrices,
+} from '@/llamalend/queries/create-loan/create-loan-prices.query'
 import { HighPriceImpactAlert, LoanFormAlerts } from '@/llamalend/widgets/action-card/LoanFormAlerts'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -17,7 +18,7 @@ import Stack from '@mui/material/Stack'
 import { useCreateLoanPreset } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
-import { q, type Query } from '@ui-kit/types/util'
+import { q } from '@ui-kit/types/util'
 import { setValueOptions } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { InputDivider } from '../../../widgets/InputDivider'
@@ -30,26 +31,11 @@ import { LoanPresetSelector } from './LoanPresetSelector'
 /**
  * Hook to call the parent form to keep in sync with the chart and other components
  */
-function useFormSync(params: CreateLoanFormData, isApproved: Query<boolean>, onUpdate: OnCreateLoanFormUpdate) {
-  const { userCollateral, debt, range, userBorrowed, slippage, leverageEnabled, route, maxDebt, maxCollateral } = params
+function useFormSync(params: CreateLoanPricesReceiveParams, onUpdate: OnCreateLoanFormUpdate) {
+  const { data, isLoading, error } = useCreateLoanPrices(params)
   useEffect(() => {
-    void onUpdate(
-      { userCollateral, debt, range, userBorrowed, slippage, leverageEnabled, route, maxDebt, maxCollateral },
-      { isApproved: isApproved.data },
-    )
-  }, [
-    onUpdate,
-    userCollateral,
-    debt,
-    range,
-    userBorrowed,
-    slippage,
-    leverageEnabled,
-    route,
-    maxDebt,
-    maxCollateral,
-    isApproved.data,
-  ])
+    onUpdate({ data, isLoading, error })
+  }, [onUpdate, data, isLoading, error])
 }
 
 /**
@@ -91,7 +77,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
     leverage,
   } = useCreateLoanForm({ market, network, preset, onCreated })
 
-  useFormSync(values, isApproved, onUpdate)
+  useFormSync(params, onUpdate)
 
   const toggleLeverage = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => form.setValue('leverageEnabled', event.target.checked),

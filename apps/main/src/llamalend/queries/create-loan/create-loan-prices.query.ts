@@ -9,7 +9,7 @@ import { createLoanExpectedCollateralQueryKey } from './create-loan-expected-col
 import { createLoanMaxReceiveKey } from './create-loan-max-receive.query'
 
 type CreateLoanPricesReceiveQuery = CreateLoanFormQuery & Pick<CreateLoanForm, 'maxDebt'>
-type CreateLoanPricesReceiveParams = FieldsOf<CreateLoanPricesReceiveQuery>
+export type CreateLoanPricesReceiveParams = FieldsOf<CreateLoanPricesReceiveQuery>
 
 type CreateLoanPricesResult = [Decimal, Decimal]
 const convertNumbers = (prices: string[]) => [prices[0], prices[1]] as CreateLoanPricesResult

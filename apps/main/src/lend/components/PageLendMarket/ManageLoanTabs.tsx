@@ -1,3 +1,4 @@
+import { useCallback } from 'react'
 import { LoanBorrowMore } from '@/lend/components/PageLendMarket/LoanBorrowMore'
 import { LoanCollateralAdd } from '@/lend/components/PageLendMarket/LoanCollateralAdd'
 import { LoanCollateralRemove } from '@/lend/components/PageLendMarket/LoanCollateralRemove'
@@ -16,9 +17,12 @@ import { ImproveHealth } from '@/llamalend/features/manage-soft-liquidation/ui/t
 import type { BorrowPositionDetailsProps } from '@/llamalend/features/market-position-details'
 import { useManageLoanMuiForm, useManageSoftLiquidation } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
+import { Query } from '@ui-kit/types/util'
 import { type FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
 
-type ManageLoanProps = PageContentProps<MarketUrlParams>
+type ManageLoanProps = PageContentProps<MarketUrlParams> & {
+  onChartPreviewPricesUpdate?: (prices: string[] | null) => void
+}
 
 const ImproveHealthTab = ({ rChainId, rOwmId }: ManageLoanProps) => (
   <ImproveHealth {...useImproveHealthTab({ chainId: rChainId, network: networks[rChainId], marketId: rOwmId })} />
@@ -27,6 +31,24 @@ const ImproveHealthTab = ({ rChainId, rOwmId }: ManageLoanProps) => (
 const ClosePositionTab = ({ rChainId, rOwmId }: ManageLoanProps) => (
   <ClosePosition {...useClosePositionTab({ chainId: rChainId, network: networks[rChainId], marketId: rOwmId })} />
 )
+
+const BorrowMoreTab = ({ rChainId, market, isLoaded, onChartPreviewPricesUpdate }: ManageLoanProps) => {
+  const onUpdate = useCallback(
+    (prices: Query<string[]>) => onChartPreviewPricesUpdate?.(prices.data ?? null),
+    [onChartPreviewPricesUpdate],
+  )
+  return (
+    <BorrowMoreForm networks={networks} chainId={rChainId} market={market} enabled={isLoaded} onUpdate={onUpdate} />
+  )
+}
+
+const RepayTab = ({ rChainId, market, isLoaded, onChartPreviewPricesUpdate }: ManageLoanProps) => {
+  const onUpdate = useCallback(
+    (prices: Query<string[]>) => onChartPreviewPricesUpdate?.(prices.data ?? null),
+    [onChartPreviewPricesUpdate],
+  )
+  return <RepayForm networks={networks} chainId={rChainId} market={market} enabled={isLoaded} onUpdate={onUpdate} />
+}
 
 const LendManageLegacyMenu = [
   {
@@ -58,16 +80,12 @@ const LendManageNewMenu = [
   {
     value: 'loan-increase',
     label: t`Borrow`,
-    component: ({ rChainId, market, isLoaded }: PageContentProps) => (
-      <BorrowMoreForm networks={networks} chainId={rChainId} market={market} enabled={isLoaded} />
-    ),
+    component: BorrowMoreTab,
   },
   {
     value: 'loan-decrease',
     label: t`Repay`,
-    component: ({ rChainId, market, isLoaded }: PageContentProps) => (
-      <RepayForm networks={networks} chainId={rChainId} market={market} enabled={isLoaded} />
-    ),
+    component: RepayTab,
   },
   {
     value: 'collateral',
