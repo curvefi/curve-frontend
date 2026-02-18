@@ -1,4 +1,3 @@
-import { computeTotalRate } from '@/llamalend/llama.utils'
 import type { CrvUsdSnapshot } from '@ui-kit/entities/crvusd-snapshots'
 import type { LendingSnapshot } from '@ui-kit/entities/lending-snapshots'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
@@ -14,13 +13,13 @@ type BorrowRateMetricsParams<TSnapshot extends WithTimestamp = WithTimestamp> = 
 
 const { AverageRates } = Duration
 
+const DAYS_PER_YEAR = 365.25
 export const LAST_MONTH = AverageRates.Monthly
 export const LAST_WEEK = AverageRates.Weekly
 
-const DAYS_PER_YEAR = 365.25
+export const computeTotalRate = (rate: number, rebasingYield: number) => rate - rebasingYield
 
-export const getCrvUsdSnapshotBorrowRate = ({ borrowApr }: CrvUsdSnapshot) => borrowApr
-export const getLendingSnapshotBorrowRate = ({ borrowApr }: LendingSnapshot) => borrowApr * 100
+export const getSnapshotBorrowRate = ({ borrowApr }: LendingSnapshot | CrvUsdSnapshot) => borrowApr
 export const getSnapshotCollateralRebasingYieldRate = <
   TSnapshot extends { collateralToken: { rebasingYieldApr: number | null | undefined } },
 >(
@@ -34,7 +33,9 @@ const getLatestSnapshotValue = <TSnapshot extends WithTimestamp, TValue>(
   const latest = snapshots?.at(-1)
   return latest ? (getValue(latest) ?? null) : null
 }
-
+/**
+ * Get the borrow rate metrics for a given borrow rate and snapshots, like average rate, total net rate.
+ */
 export const getBorrowRateMetrics = <TSnapshot extends WithTimestamp = WithTimestamp>({
   borrowRate,
   snapshots,

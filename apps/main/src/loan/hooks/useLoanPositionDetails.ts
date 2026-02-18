@@ -13,7 +13,7 @@ import { useUserCurrentLeverage } from '@/llamalend/queries/user-current-leverag
 import {
   LAST_MONTH,
   getBorrowRateMetrics,
-  getCrvUsdSnapshotBorrowRate,
+  getSnapshotBorrowRate,
   getSnapshotCollateralRebasingYieldRate,
 } from '@/llamalend/rates.utils'
 import { CRVUSD_ADDRESS } from '@/loan/constants'
@@ -113,7 +113,7 @@ export const useLoanPositionDetails = ({
   } = getBorrowRateMetrics({
     borrowRate: borrowApr,
     snapshots: crvUsdSnapshots,
-    getBorrowRate: getCrvUsdSnapshotBorrowRate,
+    getBorrowRate: getSnapshotBorrowRate,
     getRebasingYield: getSnapshotCollateralRebasingYieldRate,
   })
 

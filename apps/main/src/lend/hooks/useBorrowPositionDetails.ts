@@ -13,7 +13,7 @@ import { useLoanExists } from '@/llamalend/queries/loan-exists'
 import { useMarketRates } from '@/llamalend/queries/market-rates'
 import {
   getBorrowRateMetrics,
-  getLendingSnapshotBorrowRate,
+  getSnapshotBorrowRate,
   getSnapshotCollateralRebasingYieldRate,
   LAST_MONTH,
 } from '@/llamalend/rates.utils'
@@ -99,7 +99,7 @@ export const useBorrowPositionDetails = ({
   } = getBorrowRateMetrics({
     borrowRate: borrowApr,
     snapshots: lendSnapshots,
-    getBorrowRate: getLendingSnapshotBorrowRate,
+    getBorrowRate: getSnapshotBorrowRate,
     getRebasingYield: getSnapshotCollateralRebasingYieldRate,
   })
 
@@ -126,8 +126,8 @@ export const useBorrowPositionDetails = ({
       rate: borrowApr,
       averageRate: averageBorrowApr,
       averageRateLabel: `${LAST_MONTH}D`,
-      rebasingYield: rebasingYieldApr ?? null,
-      averageRebasingYield: averageRebasingYieldApr ?? null,
+      rebasingYield: rebasingYieldApr,
+      averageRebasingYield: averageRebasingYieldApr,
       totalBorrowRate,
       totalAverageBorrowRate,
       extraRewards: campaigns,

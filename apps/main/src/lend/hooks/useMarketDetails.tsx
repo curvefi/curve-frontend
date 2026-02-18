@@ -7,7 +7,7 @@ import type { MarketDetailsProps } from '@/llamalend/features/market-details'
 import {
   LAST_MONTH,
   getBorrowRateMetrics,
-  getLendingSnapshotBorrowRate,
+  getSnapshotBorrowRate,
   getSnapshotCollateralRebasingYieldRate,
 } from '@/llamalend/rates.utils'
 import type { Chain, Address } from '@curvefi/prices-api'
@@ -25,6 +25,8 @@ type UseMarketDetailsProps = {
   market: OneWayMarketTemplate | null | undefined
   marketId: string
 }
+
+const AVERAGE_RATE_LABEL = `${LAST_MONTH}D`
 
 export const useMarketDetails = ({
   chainId,
@@ -107,7 +109,7 @@ export const useMarketDetails = ({
   } = getBorrowRateMetrics({
     borrowRate: borrowApr,
     snapshots: lendingSnapshots,
-    getBorrowRate: getLendingSnapshotBorrowRate,
+    getBorrowRate: getSnapshotBorrowRate,
     getRebasingYield: getSnapshotCollateralRebasingYieldRate,
   })
 
@@ -147,10 +149,10 @@ export const useMarketDetails = ({
     },
     borrowRate: {
       rate: borrowApr,
-      averageRate: averageBorrowApr ?? null,
-      averageRateLabel: `${LAST_MONTH}D`,
-      rebasingYield: collateralRebasingYieldApr ?? null,
-      averageRebasingYield: averageBorrowRebasingYieldApr ?? null,
+      averageRate: averageBorrowApr,
+      averageRateLabel: AVERAGE_RATE_LABEL,
+      rebasingYield: collateralRebasingYieldApr,
+      averageRebasingYield: averageBorrowRebasingYieldApr,
       totalBorrowRate: totalBorrowApr,
       totalAverageBorrowRate: totalAverageBorrowApr,
       extraRewards: campaigns,
@@ -159,7 +161,7 @@ export const useMarketDetails = ({
     supplyRate: {
       rate: supplyApy,
       averageRate: averageLendApy ?? null,
-      averageRateLabel: `${LAST_MONTH}D`,
+      averageRateLabel: AVERAGE_RATE_LABEL,
       supplyAprCrvMinBoost,
       supplyAprCrvMaxBoost,
       averageSupplyAprCrvMinBoost: averageSupplyAprCrvMinBoost ?? null,

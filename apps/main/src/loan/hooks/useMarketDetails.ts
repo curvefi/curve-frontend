@@ -2,7 +2,7 @@ import type { MarketDetailsProps } from '@/llamalend/features/market-details'
 import { useMarketRates } from '@/llamalend/queries/market-rates'
 import {
   getBorrowRateMetrics,
-  getCrvUsdSnapshotBorrowRate,
+  getSnapshotBorrowRate,
   getSnapshotCollateralRebasingYieldRate,
   LAST_MONTH,
 } from '@/llamalend/rates.utils'
@@ -61,7 +61,7 @@ export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetails
   } = getBorrowRateMetrics({
     borrowRate: borrowApr,
     snapshots: crvUsdSnapshots,
-    getBorrowRate: getCrvUsdSnapshotBorrowRate,
+    getBorrowRate: getSnapshotBorrowRate,
     getRebasingYield: getSnapshotCollateralRebasingYieldRate,
   })
 
@@ -92,8 +92,8 @@ export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetails
       rate: borrowApr,
       averageRate: averageRate,
       averageRateLabel: `${LAST_MONTH}D`,
-      rebasingYield: collateralRebasingYieldApr ?? null,
-      averageRebasingYield: averageRebasingYield ?? null,
+      rebasingYield: collateralRebasingYieldApr,
+      averageRebasingYield: averageRebasingYield,
       totalAverageBorrowRate,
       extraRewards: campaigns,
       totalBorrowRate,

@@ -1,7 +1,7 @@
 import { countBy } from 'lodash'
 import { useCallback, useMemo } from 'react'
 import { ethAddress } from 'viem'
-import { computeTotalRate } from '@/llamalend/llama.utils'
+import { computeTotalRate } from '@/llamalend/rates.utils'
 import { type Chain } from '@curvefi/prices-api'
 import { type PartialRecord, recordValues } from '@curvefi/prices-api/objects.util'
 import { useQueries } from '@tanstack/react-query'
@@ -328,8 +328,8 @@ const convertMintMarket = (
         chain,
         balance: borrowed,
         balanceUsd: borrowedUsd,
-        rebasingYield: stablecoinToken.rebasingYield ? Number(stablecoinToken.rebasingYield) : null,
-        rebasingYieldApr: stablecoinToken.rebasingYieldApr ? Number(stablecoinToken.rebasingYieldApr) : null,
+        rebasingYield: stablecoinToken.rebasingYield,
+        rebasingYieldApr: stablecoinToken.rebasingYieldApr,
       },
       collateral: {
         symbol: collateralSymbol,
@@ -337,8 +337,8 @@ const convertMintMarket = (
         chain,
         balance: collateralAmount,
         balanceUsd: collateralAmountUsd,
-        rebasingYield: collateralToken.rebasingYield ? Number(collateralToken.rebasingYield) : null,
-        rebasingYieldApr: collateralToken.rebasingYieldApr ? Number(collateralToken.rebasingYieldApr) : null,
+        rebasingYield: collateralToken.rebasingYield,
+        rebasingYieldApr: collateralToken.rebasingYieldApr,
       },
     },
     maxLtv,
