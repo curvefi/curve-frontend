@@ -23,10 +23,12 @@ export function ChainList({
   options,
   showTestnets,
   selectedNetworkId,
+  onNetwork,
 }: {
   options: NetworkDef[]
   showTestnets: boolean
   selectedNetworkId: string | undefined
+  onNetwork?: (network: NetworkDef) => void
 }) {
   const pathname = usePathname()
   const [searchValue, setSearchValue] = useState('')
@@ -72,6 +74,7 @@ export function ChainList({
                       isSelected={network.id == selectedNetworkId}
                       icon={<ChainSwitcherIcon networkId={network.id} size={36} />}
                       label={network.name}
+                      onMouseDown={() => onNetwork?.(network)} // onClick somehow doesn't work ???
                     />
                   ))}
                 </MenuList>

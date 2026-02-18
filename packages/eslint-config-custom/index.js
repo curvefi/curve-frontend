@@ -24,7 +24,7 @@ module.exports = {
         // this syntax is confusing: 'target' is importing, 'from' is imported
         zones: [
           { from: 'apps', target: 'packages' }, // packages cannot import apps
-          ...['dex', 'dao', 'lend', 'loan', 'llamalend'].map((importedApp, index, importingApp) => ({
+          ...['dex', 'dao', 'lend', 'loan', 'llamalend', 'bridge'].map((importedApp, index, importingApp) => ({
             target: importingApp
               .filter(
                 // target ==> forbid import all apps except itself. Allow lend/loan apps to import llamalend

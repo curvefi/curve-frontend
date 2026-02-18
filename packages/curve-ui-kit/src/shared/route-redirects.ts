@@ -1,15 +1,15 @@
+import type { PartialRecord } from '@curvefi/prices-api/objects.util'
 import { type ParsedLocation } from '@tanstack/router-core'
 import { type AppName, AppNames, CRVUSD_ROUTES, DAO_ROUTES, DEX_ROUTES, LEND_ROUTES, LLAMALEND_ROUTES } from './routes'
 
-const defaultPages = {
+const defaultPages: PartialRecord<AppName, string> = {
   dex: 'swap',
   lend: 'markets',
   crvusd: 'markets',
   dao: 'proposals',
   llamalend: 'markets',
-  bridge: 'bridges',
   analytics: 'home',
-} satisfies Record<AppName, string>
+}
 const oldOrigins = ['lend', 'crvusd', 'dao'] as const
 
 // old redirects that were hardcoded in the react-router routes. The network name gets added in the redirect.
@@ -64,6 +64,6 @@ export function getHashRedirectUrl({ pathname: path, search: query, hash }: Pars
     // handle old routes without network (this code should only be called when network is not found)
     return `/${appName}/${networkId}/${network}/${rest.join('/')}${search}`
   }
-  const restPath = rest.filter(Boolean).length ? rest.join('/') : defaultPages[appName]
+  const restPath = rest.filter(Boolean).length ? rest.join('/') : (defaultPages?.[appName] ?? '')
   return `/${app || 'dex'}/${network || networkId}/${restPath}${search}`
 }
