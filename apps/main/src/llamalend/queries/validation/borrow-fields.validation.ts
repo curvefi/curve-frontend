@@ -46,12 +46,11 @@ export const validateMaxDebt = (
 ) => {
   skipWhen(!isMaxDebtRequired, () => {
     test('maxDebt', 'Maximum debt must be calculated before debt can be validated', () => {
-      enforce(maxDebt).isNotNullish()
+      enforce(maxDebt).isNumeric()
     })
   })
   skipWhen(maxDebt == null || debt == null, () => {
-    test('maxDebt', `The given debt ${debt} exceeds the maximum of ${maxDebt}`, () => {
-      enforce(maxDebt).isNotNullish()
+    test('maxDebt', `The given debt exceeds the maximum of ${maxDebt}`, () => {
       enforce(debt).lte(maxDebt)
     })
   })
@@ -104,11 +103,17 @@ export const validateRoute = (route: RouteOption | null | undefined, isRequired:
 
 export const validateMaxBorrowed = (
   userBorrowed: Decimal | undefined | null,
-  maxBorrowed: Decimal | undefined | null,
+  {
+    maxBorrowed,
+    label,
+  }: {
+    label: string
+    maxBorrowed: Decimal | undefined | null
+  },
 ) => {
   skipWhen(userBorrowed == null || maxBorrowed == null, () => {
-    test('userBorrowed', `The maximum borrow amount is ${maxBorrowed}`, () => {
-      enforce(userBorrowed).lte(maxBorrowed)
+    test('userBorrowed', `The maximum ${label} is ${maxBorrowed}`, () => {
+      enforce(userBorrowed).lessThanOrEquals(maxBorrowed)
     })
   })
 }
@@ -119,7 +124,7 @@ export const validateMaxCollateral = (
 ) => {
   skipWhen(userCollateral == null || maxCollateral == null, () => {
     test('userCollateral', `The maximum collateral amount is ${maxCollateral}`, () => {
-      enforce(userCollateral).lte(maxCollateral)
+      enforce(userCollateral).lessThanOrEquals(maxCollateral)
     })
   })
 }

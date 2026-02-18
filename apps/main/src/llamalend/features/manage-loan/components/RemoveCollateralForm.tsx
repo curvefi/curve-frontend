@@ -1,16 +1,16 @@
 import { hasLeverageValue } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import type { RemoveCollateralOptions } from '@/llamalend/mutations/remove-collateral.mutation'
-import { LoanFormAlerts } from '@/llamalend/widgets/action-card/LoanFormAlerts'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
+import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import { InputDivider } from '../../../widgets/InputDivider'
 import { useRemoveCollateralForm } from '../hooks/useRemoveCollateralForm'
-import { RemoveCollateralInfoAccordion } from './RemoveCollateralInfoAccordion'
+import { RemoveCollateralInfoList } from './RemoveCollateralInfoList'
 
 export const RemoveCollateralForm = <ChainId extends IChainId>({
   market,
@@ -31,6 +31,7 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
     form,
     params,
     isPending,
+    isDisabled,
     onSubmit,
     action,
     values,
@@ -50,8 +51,9 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
     <Form
       {...form}
       onSubmit={onSubmit}
-      infoAccordion={
-        <RemoveCollateralInfoAccordion
+      footer={
+        <RemoveCollateralInfoList
+          form={form}
           params={params}
           values={values}
           collateralToken={collateralToken}
@@ -77,7 +79,7 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
         />
       </Stack>
 
-      <LoanFormAlerts
+      <FormAlerts
         isSuccess={action.isSuccess}
         error={action.error}
         txHash={txHash}
@@ -90,7 +92,7 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
       <Button
         type="submit"
         loading={isPending || !market}
-        disabled={formErrors.length > 0}
+        disabled={isDisabled}
         data-testid="remove-collateral-submit-button"
       >
         {isPending ? t`Processing...` : t`Remove collateral`}

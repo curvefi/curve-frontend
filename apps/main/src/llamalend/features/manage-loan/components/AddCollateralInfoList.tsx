@@ -1,0 +1,89 @@
+import BigNumber from 'bignumber.js'
+import type { UseFormReturn } from 'react-hook-form'
+import type { Token } from '@/llamalend/features/borrow/types'
+import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
+import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
+import type { NetworkDict } from '@/llamalend/llamalend.types'
+import { useAddCollateralFutureLeverage } from '@/llamalend/queries/add-collateral/add-collateral-future-leverage.query'
+import { useAddCollateralEstimateGas } from '@/llamalend/queries/add-collateral/add-collateral-gas-estimate.query'
+import { getAddCollateralHealthOptions } from '@/llamalend/queries/add-collateral/add-collateral-health.query'
+import { useMarketRates } from '@/llamalend/queries/market-rates'
+import { useUserCurrentLeverage } from '@/llamalend/queries/user-current-leverage.query'
+import { getUserHealthOptions } from '@/llamalend/queries/user-health.query'
+import { useUserState } from '@/llamalend/queries/user-state.query'
+import { CollateralParams } from '@/llamalend/queries/validation/manage-loan.types'
+import type { CollateralForm } from '@/llamalend/queries/validation/manage-loan.validation'
+import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
+import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import { mapQuery, q } from '@ui-kit/types/util'
+import { decimal, Decimal } from '@ui-kit/utils'
+import { isFormTouched } from '@ui-kit/utils/react-form.utils'
+
+export function AddCollateralInfoList<ChainId extends IChainId>({
+  params,
+  values: { userCollateral },
+  collateralToken,
+  borrowToken,
+  networks,
+  leverageEnabled,
+  form,
+}: {
+  params: CollateralParams<ChainId>
+  values: CollateralForm
+  collateralToken: Token | undefined
+  borrowToken: Token | undefined
+  networks: NetworkDict<ChainId>
+  leverageEnabled: boolean
+  form: UseFormReturn<CollateralForm>
+}) {
+  const isOpen = isFormTouched(form, 'userCollateral')
+  const userState = q(useUserState(params, isOpen))
+
+  const expectedCollateral = mapQuery(
+    userState,
+    (state) =>
+      userCollateral &&
+      state.collateral && {
+        value: decimal(new BigNumber(userCollateral).plus(state.collateral)) as Decimal,
+        tokenSymbol: collateralToken?.symbol,
+      },
+  )
+
+  return (
+    <LoanActionInfoList
+      isOpen={isOpen}
+      gas={useAddCollateralEstimateGas(networks, params, isOpen)}
+      health={useHealthQueries((isFull) => getAddCollateralHealthOptions({ ...params, isFull }, isOpen))}
+      prevHealth={useHealthQueries((isFull) => getUserHealthOptions({ ...params, isFull }, isOpen))}
+      rates={q(useMarketRates(params, isOpen))}
+      prevLoanToValue={useLoanToValueFromUserState(
+        {
+          chainId: params.chainId,
+          marketId: params.marketId,
+          userAddress: params.userAddress,
+          collateralToken,
+          borrowToken,
+          expectedBorrowed: userState.data?.debt,
+        },
+        isOpen,
+      )}
+      loanToValue={useLoanToValueFromUserState(
+        {
+          chainId: params.chainId,
+          marketId: params.marketId,
+          userAddress: params.userAddress,
+          collateralToken,
+          borrowToken,
+          collateralDelta: userCollateral,
+          expectedBorrowed: userState.data?.debt,
+        },
+        isOpen && !!userCollateral,
+      )}
+      userState={userState}
+      collateral={expectedCollateral}
+      leverageEnabled={leverageEnabled}
+      prevLeverageValue={q(useUserCurrentLeverage(params, isOpen))}
+      leverageValue={q(useAddCollateralFutureLeverage(params, isOpen))}
+    />
+  )
+}

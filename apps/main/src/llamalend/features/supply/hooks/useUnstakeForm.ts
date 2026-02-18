@@ -1,5 +1,4 @@
 import { useEffect, useMemo } from 'react'
-import type { UseFormReturn } from 'react-hook-form'
 import { useForm } from 'react-hook-form'
 import type { Address } from 'viem'
 import { useConnection } from 'wagmi'
@@ -18,10 +17,7 @@ import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { t } from '@ui-kit/lib/i18n'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { mapQuery } from '@ui-kit/types/util'
-import { setValueOptions, useFormErrors } from '@ui-kit/utils/react-form.utils'
-
-const useCallbackAfterFormUpdate = (form: UseFormReturn<UnstakeForm>, callback: () => void) =>
-  useEffect(() => form.subscribe({ formState: { values: true }, callback }), [form, callback])
+import { updateForm, useCallbackAfterFormUpdate, useFormErrors } from '@ui-kit/utils/react-form.utils'
 
 const emptyUnstakeForm = (): UnstakeForm => ({
   unstakeAmount: undefined,
@@ -91,27 +87,28 @@ export const useUnstakeForm = <ChainId extends LlamaChainId>({
     userAddress,
   })
 
-  const formErrors = useFormErrors(form.formState)
+  const { formState } = form
 
   useCallbackAfterFormUpdate(form, resetUnstake)
 
   useEffect(() => {
-    form.setValue('maxUnstakeAmount', maxUserUnstake.data, setValueOptions)
+    updateForm(form, { maxUnstakeAmount: maxUserUnstake.data })
   }, [form, maxUserUnstake.data])
 
+  const isPending = formState.isSubmitting || isUnstaking
   return {
     form,
     values,
     params,
-    isPending: form.formState.isSubmitting || isUnstaking,
+    isPending,
     onSubmit: form.handleSubmit(onSubmit),
-    isDisabled: formErrors.length > 0,
+    isDisabled: !formState.isValid || isPending,
     vaultToken,
     borrowToken,
     isUnstaked,
     unstakeError,
     txHash: data?.hash,
     max: maxUserUnstake,
-    formErrors,
+    formErrors: useFormErrors(formState),
   }
 }

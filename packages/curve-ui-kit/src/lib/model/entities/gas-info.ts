@@ -1,12 +1,16 @@
+import { useMemo } from 'react'
 import { enforce, group, test } from 'vest'
-import { formatNumber } from '@ui/utils'
+import { ethAddress } from 'viem'
+import { formatNumber, type BaseConfig } from '@ui/utils'
 import { getLib, useWallet } from '@ui-kit/features/connect-wallet'
 import { AnyCurveApi } from '@ui-kit/features/connect-wallet/lib/types'
 import { type ChainQuery, queryFactory, rootKeys } from '@ui-kit/lib/model/query'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib/validation'
+import type { Query as QueryResult } from '@ui-kit/types/util'
 import { Chain, gweiToEther, gweiToWai, weiToGwei } from '@ui-kit/utils'
 import { chainValidationGroup } from '../query/chain-validation'
 import { providerValidationGroup } from '../query/provider-validation'
+import { useTokenUsdRate } from './token-usd-rate'
 
 export type GasInfoQuery<T = number> = ChainQuery<T> & {
   /** Network dependent url for fetching the latest gas prices */
@@ -379,3 +383,77 @@ export function calculateGas(
     `${formatNumber(weiToGwei(basePlusPriority), { maximumFractionDigits: 2 })} ${gasPricesUnit}`
   return { estGasCost, tooltip, ...(chainTokenUsdRate != null && { estGasCostUsd: estGasCost * chainTokenUsdRate }) }
 }
+
+export type GasEstimateConversionResult = ReturnType<typeof calculateGas>
+
+export const useEstimateGas = (
+  networks: Record<number, BaseConfig<string, number>>,
+  chainId: number | null | undefined,
+  estimate: number | number[] | null | undefined,
+  enabled?: boolean,
+) => {
+  const network = chainId && networks[chainId]
+  const {
+    data: ethRate,
+    isLoading: ethRateLoading,
+    error: ethRateError,
+  } = useTokenUsdRate({ chainId, tokenAddress: ethAddress }, enabled)
+  const {
+    data: gasInfo,
+    isLoading: gasInfoLoading,
+    error: gasInfoError,
+  } = useGasInfoAndUpdateLib({ chainId, networks }, enabled)
+
+  const data = useMemo(
+    (): GasEstimateConversionResult | undefined =>
+      network && estimate ? calculateGas(estimate, gasInfo, ethRate, network) : undefined,
+    [estimate, network, gasInfo, ethRate],
+  )
+
+  return { data, isLoading: ethRateLoading || gasInfoLoading, error: ethRateError ?? gasInfoError }
+}
+
+type NetworkDict = Record<number, BaseConfig<string, number>>
+
+type EstimateValue = number | number[] | null | undefined
+
+type WithOptionalChainId = {
+  chainId?: number | null | undefined
+}
+
+type ApprovedEstimateGasHookConfig<Query, Estimate extends EstimateValue> = {
+  useIsApproved: (query: Query, enabled?: boolean) => QueryResult<boolean>
+  useApproveEstimate: (query: Query, enabled?: boolean) => QueryResult<Estimate>
+  useActionEstimate: (query: Query, enabled?: boolean) => QueryResult<Estimate>
+}
+
+export const createApprovedEstimateGasHook =
+  <Query extends WithOptionalChainId, Estimate extends EstimateValue>({
+    useIsApproved,
+    useApproveEstimate,
+    useActionEstimate,
+  }: ApprovedEstimateGasHookConfig<Query, Estimate>) =>
+  (networks: NetworkDict, query: Query & { chainId?: number | null | undefined }, enabled?: boolean) => {
+    const { data: isApproved, isLoading: isApprovedLoading, error: isApprovedError } = useIsApproved(query, enabled)
+    const {
+      data: approveEstimate,
+      isLoading: approveLoading,
+      error: approveError,
+    } = useApproveEstimate(query, enabled && isApproved === false)
+    const {
+      data: actionEstimate,
+      isLoading: actionLoading,
+      error: actionError,
+    } = useActionEstimate(query, enabled && isApproved === true)
+    const {
+      data,
+      isLoading: conversionLoading,
+      error: estimateError,
+    } = useEstimateGas(networks, query.chainId, isApproved ? actionEstimate : approveEstimate, enabled)
+
+    return {
+      data,
+      isLoading: [isApprovedLoading, approveLoading, actionLoading, conversionLoading].some(Boolean),
+      error: [isApprovedError, approveError, actionError, estimateError].find(Boolean) as Error | null | undefined,
+    }
+  }

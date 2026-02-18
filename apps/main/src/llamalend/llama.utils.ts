@@ -72,6 +72,9 @@ export const toQuote = (route: RouteOption): IQuote => ({
   priceImpact: route.priceImpact ?? 0,
 })
 
+export const hasGauge = (market: LlamaMarketTemplate) =>
+  market instanceof LendMarketTemplate && market.addresses.gauge !== zeroAddress
+
 const getBorrowSymbol = (market: LlamaMarketTemplate) =>
   market instanceof MintMarketTemplate ? CRVUSD.symbol : market.borrowed_token.symbol
 

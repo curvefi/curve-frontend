@@ -1,5 +1,5 @@
 import { type ChangeEvent, useCallback, useEffect } from 'react'
-import { BorrowMoreLoanInfoAccordion } from '@/llamalend/features/borrow/components/BorrowMoreLoanInfoAccordion'
+import { BorrowMoreLoanInfoList } from '@/llamalend/features/borrow/components/BorrowMoreLoanInfoList'
 import { LeverageInput } from '@/llamalend/features/borrow/components/LeverageInput'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { OnBorrowedMore } from '@/llamalend/mutations/borrow-more.mutation'
@@ -10,7 +10,6 @@ import {
   isLeverageBorrowMoreSupported,
 } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
 import type { BorrowMoreParams } from '@/llamalend/queries/validation/borrow-more.validation'
-import { HighPriceImpactAlert, LoanFormAlerts } from '@/llamalend/widgets/action-card/LoanFormAlerts'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { notFalsy } from '@curvefi/prices-api/objects.util'
@@ -19,9 +18,10 @@ import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
 import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
 import { q, type Query } from '@ui-kit/types/util'
-import { isDevelopment } from '@ui-kit/utils'
-import { setValueOptions } from '@ui-kit/utils/react-form.utils'
+import { isDevelopment, joinButtonText } from '@ui-kit/utils'
+import { updateForm } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
+import { FormAlerts, HighPriceImpactAlert } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import { InputDivider } from '../../../widgets/InputDivider'
 import { useBorrowMoreForm } from '../hooks/useBorrowMoreForm'
 
@@ -68,7 +68,6 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     formErrors,
     routes,
     max,
-    health,
     leverage,
   } = useBorrowMoreForm({
     market,
@@ -81,7 +80,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
   const swapRequired = isLeverageEnabled && Number(values.userBorrowed) > 0
   const fromBorrowed = fromWallet && isLeverageEnabled
   const onLeverageToggle = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) => form.setValue('leverageEnabled', event.target.checked),
+    (event: ChangeEvent<HTMLInputElement>) => updateForm(form, { leverageEnabled: event.target.checked }),
     [form],
   )
 
@@ -91,16 +90,16 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     <Form
       {...form}
       onSubmit={onSubmit}
-      infoAccordion={
-        <BorrowMoreLoanInfoAccordion
+      footer={
+        <BorrowMoreLoanInfoList
+          form={form}
           params={params}
           values={values}
           tokens={{ collateralToken, borrowToken }}
           networks={networks}
           routes={routes}
-          onSlippageChange={(value) => form.setValue('slippage', value, setValueOptions)}
+          onSlippageChange={(value) => updateForm(form, { slippage: value })}
           leverageEnabled={values.leverageEnabled}
-          health={health}
         />
       }
     >
@@ -147,10 +146,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
               symbol={borrowToken?.symbol}
               balance={max.debt.data}
               loading={max.debt.isLoading}
-              onClick={() => {
-                form.setValue('debt', max.debt.data, setValueOptions)
-                void form.trigger('maxDebt') // re-validate max
-              }}
+              onClick={() => updateForm(form, { debt: max.debt.data })}
             />
           }
         />
@@ -161,7 +157,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
           checked={values.leverageEnabled}
           leverage={leverage}
           onToggle={onLeverageToggle}
-          maxLeverage={max.maxLeverage}
+          maxLeverage={max.maxLeverage.data}
         />
       )}
 
@@ -172,11 +168,23 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
         loading={isPending || !market}
         disabled={isDisabled}
         data-testid="borrow-more-submit-button"
+        data-validation={JSON.stringify({
+          hasMarket: !!market,
+          swapRequired,
+          isPending,
+          isDisabled,
+          isValid: form.formState.isValid,
+          isSubmitting: form.formState.isSubmitting,
+          isApproved: q(isApproved),
+          formErrors,
+          rawFormErrors: Object.entries(form.formState.errors),
+          dirtyFields: form.formState.dirtyFields,
+        })}
       >
-        {isPending ? t`Processing...` : notFalsy(isApproved?.data === false && t`Approve`, t`Borrow More`).join(' & ')}
+        {isPending ? t`Processing...` : joinButtonText(isApproved?.data === false && t`Approve`, t`Borrow More`)}
       </Button>
 
-      <LoanFormAlerts
+      <FormAlerts
         isSuccess={isBorrowed}
         error={borrowError}
         txHash={txHash}

@@ -61,6 +61,10 @@ export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetails
 
   const totalAverageBorrowRate = averageRate == null ? null : averageRate - (averageRebasingYield ?? 0)
   const borrowApr = marketRates?.borrowApr && Number(marketRates.borrowApr)
+  const totalBorrowRate = borrowApr ? borrowApr - (crvUsdSnapshots?.at(-1)?.collateralToken.rebasingYield ?? 0) : null
+  const availableLiquidityValue = loanDetails?.capAndAvailable?.available
+    ? Number(loanDetails.capAndAvailable.available)
+    : null
 
   return {
     marketType: LlamaMarketType.Mint,
@@ -73,13 +77,13 @@ export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetails
         ? Number(loanDetails.totalCollateral) * Number(collateralUsdRate)
         : null,
       usdRate: collateralUsdRate ? Number(collateralUsdRate) : null,
-      loading: collateralUsdRateLoading || (loanDetails?.loading ?? true),
+      loading: collateralUsdRateLoading || loanDetails?.loading || !isHydrated,
     },
     borrowToken: {
       symbol: 'crvUSD',
       tokenAddress: CRVUSD_ADDRESS,
       usdRate: borrowedUsdRate ? Number(borrowedUsdRate) : null,
-      loading: borrowedUsdRateLoading || (loanDetails?.loading ?? true),
+      loading: borrowedUsdRateLoading || loanDetails?.loading || !isHydrated,
     },
     borrowRate: {
       rate: borrowApr,
@@ -89,19 +93,17 @@ export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetails
       averageRebasingYield: averageRebasingYield ?? null,
       totalAverageBorrowRate,
       extraRewards: campaigns,
-      totalBorrowRate: borrowApr
-        ? borrowApr - (crvUsdSnapshots?.[crvUsdSnapshots.length - 1]?.collateralToken.rebasingYield ?? 0)
-        : null,
+      totalBorrowRate,
       loading: isSnapshotsLoading || isMarketRatesLoading || !isHydrated,
     },
     maxLeverage: {
       value: maxLeverage,
-      loading: !llamma || isMarketMaxLeverageLoading,
+      loading: !llamma || isMarketMaxLeverageLoading || !isHydrated,
     },
     availableLiquidity: {
-      value: loanDetails?.capAndAvailable?.available ? Number(loanDetails.capAndAvailable.available) : null,
+      value: availableLiquidityValue,
       max: loanDetails?.capAndAvailable?.cap ? Number(loanDetails.capAndAvailable.cap) : null,
-      loading: loanDetails?.loading ?? true,
+      loading: loanDetails?.loading || !isHydrated,
     },
   }
 }

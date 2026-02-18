@@ -1,13 +1,13 @@
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import type { WithdrawOptions } from '@/llamalend/mutations/withdraw.mutation'
-import { LoanFormAlerts } from '@/llamalend/widgets/action-card/LoanFormAlerts'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
 import { t } from '@ui-kit/lib/i18n'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
+import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import { useWithdrawForm } from '../hooks/useWithdrawForm'
-import { WithdrawSupplyInfoAccordion } from './WithdrawSupplyInfoAccordion'
+import { WithdrawSupplyInfoList } from './WithdrawSupplyInfoList'
 
 export type WithdrawFormProps<ChainId extends IChainId> = {
   market: LlamaMarketTemplate | undefined
@@ -51,7 +51,7 @@ export const WithdrawForm = <ChainId extends IChainId>({
     <Form
       {...form}
       onSubmit={onSubmit}
-      infoAccordion={<WithdrawSupplyInfoAccordion params={params} networks={networks} tokens={{ borrowToken }} />}
+      footer={<WithdrawSupplyInfoList form={form} params={params} networks={networks} tokens={{ borrowToken }} />}
     >
       <LoanFormTokenInput
         label={t`Amount to withdraw`}
@@ -77,7 +77,7 @@ export const WithdrawForm = <ChainId extends IChainId>({
         {isPending ? t`Processing...` : t`Withdraw`}
       </Button>
 
-      <LoanFormAlerts
+      <FormAlerts
         isSuccess={isWithdrawn}
         error={withdrawError}
         txHash={txHash}

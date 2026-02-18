@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { RepayLoanInfoAccordion } from '@/llamalend/features/borrow/components/RepayLoanInfoAccordion'
+import { RepayLoanInfoList } from '@/llamalend/features/borrow/components/RepayLoanInfoList'
 import { RepayTokenList, type RepayTokenListProps } from '@/llamalend/features/manage-loan/components/RepayTokenList'
 import { RepayTokenOption, useRepayTokens } from '@/llamalend/features/manage-loan/hooks/useRepayTokens'
 import { hasLeverage } from '@/llamalend/llama.utils'
@@ -8,10 +8,9 @@ import type { RepayOptions } from '@/llamalend/mutations/repay.mutation'
 import { useRepayPriceImpact } from '@/llamalend/queries/repay/repay-price-impact.query'
 import { useRepayPrices } from '@/llamalend/queries/repay/repay-prices.query'
 import type { RepayParams } from '@/llamalend/queries/validation/manage-loan.types'
-import { HighPriceImpactAlert, LoanFormAlerts } from '@/llamalend/widgets/action-card/LoanFormAlerts'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { Falsy, notFalsy } from '@curvefi/prices-api/objects.util'
+import { notFalsy } from '@curvefi/prices-api/objects.util'
 import Button from '@mui/material/Button'
 import { TokenSelector } from '@ui-kit/features/select-token'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
@@ -19,8 +18,10 @@ import { t } from '@ui-kit/lib/i18n'
 import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { q, type Query } from '@ui-kit/types/util'
-import { setValueOptions } from '@ui-kit/utils/react-form.utils'
+import { joinButtonText } from '@ui-kit/utils'
+import { updateForm } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
+import { FormAlerts, HighPriceImpactAlert } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import { useRepayForm } from '../hooks/useRepayForm'
 import { useTokenAmountConversion } from '../hooks/useTokenAmountConversion'
 
@@ -32,16 +33,6 @@ const useFormSync = (params: RepayParams, enabled: boolean | undefined, onUpdate
     onUpdate({ data, isLoading, error })
   }, [onUpdate, data, isLoading, error])
 }
-
-/**
- * Join button texts with commas and ampersand
- * @example ['Approve', 'Repay', 'Withdraw'] -> 'Approve, Repay & Withdraw'
- * @example ['Approve', 'Repay'] -> 'Approve & Repay'
- */
-const joinButtonText = (...texts: (string | Falsy)[]) =>
-  notFalsy(...texts)
-    .map((t, i, all) => (i ? `${i === all.length - 1 ? ' & ' : ', '}${t}` : t))
-    .join('')
 
 function RepayTokenSelector<ChainId extends IChainId>({
   token,
@@ -91,6 +82,7 @@ export const RepayForm = <ChainId extends IChainId>({
     values,
     params,
     isPending,
+    isDisabled,
     onSubmit,
     borrowToken,
     collateralToken,
@@ -116,9 +108,13 @@ export const RepayForm = <ChainId extends IChainId>({
   const swapRequired = selectedToken !== borrowToken
 
   // The max repay amount in the helper message should always be denominated in terms of the borrow token.
-  const { data: maxAmountInBorrowToken, isLoading: maxAmountInBorrowTokenLoading } = useTokenAmountConversion({
+  const {
+    data: maxAmountInBorrowToken,
+    isLoading: maxAmountInBorrowTokenLoading,
+    error: maxAmountInBorrowTokenError,
+  } = useTokenAmountConversion({
     chainId,
-    amountIn: max[selectedField].data,
+    amountIn: max[selectedField],
     tokenInAddress: selectedToken?.address,
     tokenOutAddress: borrowToken?.address,
   })
@@ -131,8 +127,12 @@ export const RepayForm = <ChainId extends IChainId>({
   useFormSync(params, enabled, onUpdate)
 
   useEffect(
-    // Reset field when selectedField changes
-    () => () => form.setValue(selectedField, undefined, setValueOptions),
+    () => () => {
+      // Reset when selectedField changes and the field is dirty (unmounting the field)
+      if (selectedField in form.formState.dirtyFields) {
+        updateForm(form, { [selectedField]: undefined })
+      }
+    },
     [form, selectedField],
   )
 
@@ -140,13 +140,14 @@ export const RepayForm = <ChainId extends IChainId>({
     <Form
       {...form}
       onSubmit={onSubmit}
-      infoAccordion={
-        <RepayLoanInfoAccordion
+      footer={
+        <RepayLoanInfoList
+          form={form}
           params={params}
           values={values}
           tokens={{ collateralToken, borrowToken }}
           networks={networks}
-          onSlippageChange={(value) => form.setValue('slippage', value, setValueOptions)}
+          onSlippageChange={(value) => updateForm(form, { slippage: value })}
           hasLeverage={market && hasLeverage(market)}
           swapRequired={swapRequired}
           routes={routes}
@@ -166,7 +167,7 @@ export const RepayForm = <ChainId extends IChainId>({
         })}
         testId={'repay-input-' + selectedField}
         network={network}
-        onValueChange={(v) => form.setValue('isFull', v === form.getValues('maxBorrowed'), setValueOptions)}
+        onValueChange={(v) => updateForm(form, { isFull: v === form.getValues('maxBorrowed') })}
         tokenSelector={
           <RepayTokenSelector
             token={token}
@@ -178,43 +179,41 @@ export const RepayForm = <ChainId extends IChainId>({
           />
         }
         message={
-          <Balance
-            prefix={maxAmountPrefix}
-            tooltip={t`Max available to repay`}
-            symbol={borrowToken?.symbol}
-            balance={maxAmountInBorrowToken}
-            loading={max[selectedField].isLoading || maxAmountInBorrowTokenLoading}
-            onClick={() => {
-              form.setValue(selectedField, max[selectedField].data, setValueOptions)
-              form.setValue('isFull', selectedField === 'userBorrowed', setValueOptions)
-              void form.trigger(max[selectedField].field) // re-validate max
-            }}
-          />
+          maxAmountInBorrowTokenError?.message ?? (
+            <Balance
+              prefix={maxAmountPrefix}
+              tooltip={t`Max available to repay`}
+              symbol={borrowToken?.symbol}
+              balance={maxAmountInBorrowToken}
+              loading={max[selectedField].isLoading || maxAmountInBorrowTokenLoading}
+              onClick={() =>
+                updateForm(form, {
+                  [selectedField]: max[selectedField].data,
+                  isFull: selectedField === 'userBorrowed',
+                })
+              }
+            />
+          )
         }
       />
       <HighPriceImpactAlert {...q(useRepayPriceImpact(params, enabled && swapRequired))} />
-      <Button
-        type="submit"
-        loading={isPending || !market}
-        disabled={formErrors.length > 0}
-        data-testid="repay-submit-button"
-      >
+      <Button type="submit" loading={isPending || !market} disabled={isDisabled} data-testid="repay-submit-button">
         {isPending
           ? t`Processing...`
           : joinButtonText(
-              isApproved?.data === false && t`Approve`,
+              isApproved.data === false && t`Approve`,
               notFalsy(t`Repay`, fromPosition && t`from Position`).join(' '),
               isFull.data && t`Close Position`,
             )}
       </Button>
 
-      <LoanFormAlerts
+      <FormAlerts
         isSuccess={isRepaid}
         error={repayError}
         txHash={txHash}
         formErrors={formErrors}
         network={network}
-        handledErrors={notFalsy(selectedField)}
+        handledErrors={notFalsy(selectedField, max[selectedField]?.field)}
         successTitle={t`Loan repaid`}
       />
     </Form>

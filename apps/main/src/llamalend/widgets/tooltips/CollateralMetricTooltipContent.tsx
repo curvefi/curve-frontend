@@ -1,7 +1,4 @@
-import type {
-  CollateralValue,
-  CollateralLoss,
-} from '@/llamalend/features/market-position-details/BorrowPositionDetails'
+import type { CollateralValue } from '@/llamalend/features/market-position-details/BorrowPositionDetails'
 import {
   TooltipItem,
   TooltipItems,
@@ -15,7 +12,6 @@ import { Decimal } from '@ui-kit/utils/decimal'
 
 type CollateralMetricTooltipContentProps = {
   collateralValue: CollateralValue | undefined | null
-  collateralLoss: CollateralLoss | undefined | null
 }
 
 const UnavailableNotation = '-'
@@ -38,13 +34,8 @@ const formatPercentage = (
   return null
 }
 
-export const CollateralMetricTooltipContent = ({
-  collateralValue,
-  collateralLoss,
-}: CollateralMetricTooltipContentProps) => {
+export const CollateralMetricTooltipContent = ({ collateralValue }: CollateralMetricTooltipContentProps) => {
   const collateralValueFormatted = formatMetricValue(collateralValue?.collateral?.value)
-  const depositedCollateralFormatted = formatMetricValue(collateralLoss?.depositedCollateral)
-  const collateralLossFormatted = formatMetricValue(collateralLoss?.amount)
   const collateralPercentage = formatPercentage(
     collateralValue?.collateral?.value,
     collateralValue?.totalValue,
@@ -70,11 +61,6 @@ export const CollateralMetricTooltipContent = ({
 
       <Stack>
         <TooltipItems secondary>
-          <TooltipItem title={t`Initial collateral`} variant="independent">
-            {`${depositedCollateralFormatted} ${collateralValue?.collateral?.symbol}`}
-          </TooltipItem>
-        </TooltipItems>
-        <TooltipItems secondary>
           <TooltipItem title={t`Deposit token`} variant="independent">
             {`${collateralValueFormatted} ${collateralValue?.collateral?.symbol ?? UnavailableNotation}`}
             {collateralPercentage && ` (${collateralPercentage})`}
@@ -82,14 +68,6 @@ export const CollateralMetricTooltipContent = ({
           <TooltipItem title={t`Borrow token`} variant="independent">
             {`${crvUSDValueFormatted} ${collateralValue?.borrow?.symbol ?? UnavailableNotation}`}
             {crvUSDPercentage && ` (${crvUSDPercentage})`}
-          </TooltipItem>
-        </TooltipItems>
-        <TooltipItems secondary>
-          <TooltipItem title={t`Eroded collateral`} variant="independent">
-            {`${collateralLossFormatted} ${collateralValue?.collateral?.symbol}`}
-            {collateralLoss?.percentage &&
-              Number(collateralLoss.percentage) != 0 &&
-              ` (${formatPercent(collateralLoss.percentage)})`}
           </TooltipItem>
         </TooltipItems>
       </Stack>

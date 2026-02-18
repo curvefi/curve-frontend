@@ -19,6 +19,7 @@ export const LOAN_TEST_MARKETS = {
       collateralAddress: '0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0', // wstETH
       collateral: '0.1',
       borrow: '10',
+      borrowMore: '2',
       repay: '5',
       chainId,
       path: '/crvusd/ethereum/markets/wsteth',
@@ -30,6 +31,7 @@ export const LOAN_TEST_MARKETS = {
       collateralAddress: '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599', // wbtc
       collateral: '1',
       borrow: '100',
+      borrowMore: '10',
       repay: '50',
       chainId,
       path: '/crvusd/ethereum/markets/wbtc',
@@ -43,6 +45,7 @@ export const LOAN_TEST_MARKETS = {
       collateralAddress: '0x9D39A5DE30e57443BfF2A8307A4256c8797A3497', // sUSDe
       collateral: '100',
       borrow: '90',
+      borrowMore: '5',
       repay: '50',
       chainId,
       path: '/lend/ethereum/markets/0x98Fc283d6636f6DCFf5a817A00Ac69A3ADd96907',
@@ -54,6 +57,7 @@ export const LOAN_TEST_MARKETS = {
       collateralAddress: '0x4c9EDD5852cd905f086C759E8383e09bff1E68B3', // USDe
       collateral: '1',
       borrow: '0.9',
+      borrowMore: '0.02',
       repay: '0.8',
       chainId,
       path: '/lend/ethereum/markets/0x74f88Baa966407b50c10B393bBD789639EFfE78B',
@@ -67,15 +71,13 @@ export const oneLoanTestMarket = (type: LlamaMarketType = oneValueOf(LlamaMarket
 
 /**
  * Check all loan detail values are loaded and valid.
- * The accordion is expected to be opened before calling this function.
+ * The action info list is expected to be opened before calling this function.
  */
 export function checkLoanDetailsLoaded({ leverageEnabled }: { leverageEnabled: boolean }) {
-  getActionValue('borrow-band-range').should('match', /(\d(\.\d+)?) to (-?\d(\.\d+)?)/)
   getActionValue('borrow-price-range').should('match', /(\d(\.\d+)?) - (\d(\.\d+)?)/)
   getActionValue('borrow-apr').should('include', '%')
   getActionValue('borrow-apr', 'previous').should('include', '%')
   getActionValue('borrow-ltv').should('include', '%')
-  getActionValue('borrow-n').should('eq', '50')
 
   if (leverageEnabled) {
     getActionValue('borrow-price-impact').should('include', '%')
@@ -95,12 +97,10 @@ export function writeCreateLoanForm({
   collateral,
   borrow,
   leverageEnabled,
-  openAccordion = true,
 }: {
   collateral: Decimal
   borrow: Decimal
   leverageEnabled: boolean
-  openAccordion?: boolean
 }) {
   cy.get('[data-testid="borrow-debt-input"] [data-testid="balance-value"]', LOAD_TIMEOUT).should('exist')
   cy.get('[data-testid="borrow-collateral-input"] input[type="text"]').first().type(collateral)
@@ -108,7 +108,6 @@ export function writeCreateLoanForm({
   getActionValue('borrow-health').should('equal', '∞')
   cy.get('[data-testid="borrow-debt-input"] input[type="text"]').first().type(borrow)
   getActionValue('borrow-health').should('not.equal', '∞')
-  if (openAccordion) cy.get('[data-testid="loan-info-accordion"] button', LOAD_TIMEOUT).click() // open the accordion
   if (leverageEnabled) cy.get('[data-testid="leverage-checkbox"]').click()
 }
 

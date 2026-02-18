@@ -137,7 +137,7 @@ describe(`LlamaLend Markets`, () => {
     cy.get('[data-testid="btn-expand-search-Llamalend Markets"]').click({ waitForAnimations: true })
     cy.get("[data-testid^='table-text-search-'] input").should('be.focused') // element is focused when animation completes
     cy.get("[data-testid='table-text-search-Llamalend Markets'] input").type('wstETH crvUSD')
-    cy.url().should('include', 'assets=wstETH+crvUSD') // todo: this should be called `search`!
+    cy.url().should('include', 'search=wstETH+crvUSD')
     cy.scrollTo(0, 0)
     cy.get(`[data-testid='market-link-${sfrxEthMarket}']`).should('not.exist')
     cy.get(`[data-testid="market-link-${wstEthMarket}"]`).should('exist')
@@ -145,7 +145,7 @@ describe(`LlamaLend Markets`, () => {
 
   it('persists search filter across reload', () => {
     cy.viewport(width, height)
-    cy.visit(`/llamalend/ethereum/markets/?assets=wstETH+crvUSD`)
+    cy.visit(`/llamalend/ethereum/markets/?search=wstETH+crvUSD`)
     cy.get('[data-testid="data-table"]', LOAD_TIMEOUT).should('be.visible')
     cy.get("[data-testid='table-text-search-Llamalend Markets'] input").should('have.value', 'wstETH crvUSD')
     cy.get(`[data-testid="market-link-${wstEthMarket}"]`).should('exist')

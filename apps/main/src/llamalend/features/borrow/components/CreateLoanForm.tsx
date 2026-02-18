@@ -9,7 +9,6 @@ import {
   type CreateLoanPricesReceiveParams,
   useCreateLoanPrices,
 } from '@/llamalend/queries/create-loan/create-loan-prices.query'
-import { HighPriceImpactAlert, LoanFormAlerts } from '@/llamalend/widgets/action-card/LoanFormAlerts'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
@@ -19,12 +18,14 @@ import { useCreateLoanPreset } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
 import { q } from '@ui-kit/types/util'
-import { setValueOptions } from '@ui-kit/utils/react-form.utils'
+import { joinButtonText } from '@ui-kit/utils'
+import { updateForm } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
+import { FormAlerts, HighPriceImpactAlert } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import { InputDivider } from '../../../widgets/InputDivider'
 import { useCreateLoanForm } from '../hooks/useCreateLoanForm'
 import { AdvancedCreateLoanOptions } from './AdvancedCreateLoanOptions'
-import { CreateLoanInfoAccordion } from './CreateLoanInfoAccordion'
+import { CreateLoanInfoList } from './CreateLoanInfoList'
 import { LeverageInput } from './LeverageInput'
 import { LoanPresetSelector } from './LoanPresetSelector'
 
@@ -68,6 +69,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
     isApproved,
     isCreated,
     isPending,
+    isDisabled,
     maxTokenValues: { collateral: maxCollateral, debt: maxDebt, maxLeverage, setRange },
     onSubmit,
     params,
@@ -80,7 +82,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
   useFormSync(params, onUpdate)
 
   const toggleLeverage = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) => form.setValue('leverageEnabled', event.target.checked),
+    (event: ChangeEvent<HTMLInputElement>) => updateForm(form, { leverageEnabled: event.target.checked }),
     [form],
   )
 
@@ -88,15 +90,16 @@ export const CreateLoanForm = <ChainId extends IChainId>({
     <Form
       {...form}
       onSubmit={onSubmit}
-      infoAccordion={
-        <CreateLoanInfoAccordion
+      footer={
+        <CreateLoanInfoList
+          form={form}
           params={params}
           values={values}
           collateralToken={collateralToken}
           borrowToken={borrowToken}
           networks={networks}
           routes={routes}
-          onSlippageChange={(value) => form.setValue('slippage', value, setValueOptions)}
+          onSlippageChange={(value) => updateForm(form, { slippage: value })}
         />
       }
     >
@@ -128,10 +131,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
               symbol={borrowToken?.symbol}
               balance={values.maxDebt}
               loading={maxDebt.isLoading}
-              onClick={useCallback(() => {
-                form.setValue('debt', values.maxDebt, setValueOptions)
-                void form.trigger('maxDebt') // re-validate maxDebt when debt changes
-              }, [form, values.maxDebt])}
+              onClick={useCallback(() => updateForm(form, { debt: values.maxDebt }), [form, values.maxDebt])}
               buttonTestId="borrow-set-debt-to-max"
             />
           }
@@ -143,7 +143,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
           checked={values.leverageEnabled}
           leverage={leverage}
           onToggle={toggleLeverage}
-          maxLeverage={maxLeverage}
+          maxLeverage={maxLeverage.data}
         />
       )}
 
@@ -166,13 +166,13 @@ export const CreateLoanForm = <ChainId extends IChainId>({
       <Button
         type="submit"
         loading={isPending || !market}
-        disabled={formErrors.length > 0}
+        disabled={isDisabled}
         data-testid="create-loan-submit-button"
       >
-        {isPending ? t`Processing...` : isApproved?.data ? t`Borrow` : t`Approve & Borrow`}
+        {isPending ? t`Processing...` : joinButtonText(isApproved?.data === false && t`Approve`, t`Borrow`)}
       </Button>
 
-      <LoanFormAlerts
+      <FormAlerts
         isSuccess={isCreated}
         error={creationError}
         formErrors={formErrors}

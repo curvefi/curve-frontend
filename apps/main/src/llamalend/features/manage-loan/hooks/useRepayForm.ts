@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { useEffect, useMemo } from 'react'
-import type { UseFormReturn } from 'react-hook-form'
+import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { Address } from 'viem'
 import { useConnection } from 'wagmi'
@@ -21,14 +20,11 @@ import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { t } from '@ui-kit/lib/i18n'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { decimal } from '@ui-kit/utils'
-import { filterFormErrors, setValueOptions } from '@ui-kit/utils/react-form.utils'
+import { filterFormErrors, updateForm, useCallbackAfterFormUpdate } from '@ui-kit/utils/react-form.utils'
 import { type RouteOption } from '@ui-kit/widgets/RouteProvider'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 
-const NOT_AVAILABLE = ['root', t`Repay is not available with the current parameters.`] as const
-
-const useCallbackAfterFormUpdate = (form: UseFormReturn<RepayForm>, callback: () => void) =>
-  useEffect(() => form.subscribe({ formState: { values: true }, callback }), [form, callback])
+const NOT_AVAILABLE = ['root', t`Repay is not available, increase the repayment amount or repay fully.`] as const
 
 const useRepayParams = <ChainId>({
   isFull,
@@ -75,17 +71,21 @@ const useRepayParams = <ChainId>({
     ),
   )
 
-const emptyRepayForm = () => ({
-  stateCollateral: undefined,
-  userCollateral: undefined,
-  userBorrowed: undefined,
-  maxStateCollateral: undefined,
-  maxCollateral: undefined,
-  maxBorrowed: undefined,
-  route: undefined,
-  isFull: false,
-  slippage: SLIPPAGE_PRESETS.STABLE,
-})
+const formOptions = {
+  ...formDefaultOptions,
+  resolver: vestResolver(repayFormValidationSuite),
+  defaultValues: {
+    stateCollateral: undefined,
+    userCollateral: undefined,
+    userBorrowed: undefined,
+    maxStateCollateral: undefined,
+    maxCollateral: undefined,
+    maxBorrowed: undefined,
+    route: undefined,
+    isFull: false,
+    slippage: SLIPPAGE_PRESETS.STABLE,
+  },
+} as const
 
 export const useRepayForm = <ChainId extends LlamaChainId>({
   market,
@@ -104,11 +104,7 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
 
   const { borrowToken, collateralToken } = market ? getTokens(market) : {}
 
-  const form = useForm<RepayForm>({
-    ...formDefaultOptions,
-    resolver: vestResolver(repayFormValidationSuite),
-    defaultValues: emptyRepayForm(),
-  })
+  const form = useForm<RepayForm>(formOptions)
 
   const values = watchForm(form)
   const params = useRepayParams({ chainId, marketId, userAddress, ...values })
@@ -121,7 +117,7 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
     : undefined
   const swapAmountIn = decimal(new BigNumber(values.stateCollateral ?? 0).plus(values.userCollateral ?? 0).toString())
   const routeRequired = !!implementation && isRouterMetaRequired(implementation) && Number(swapAmountIn) > 0
-  const onChangeRoute = (route: RouteOption) => form.setValue('route', route, setValueOptions)
+  const onChangeRoute = (route: RouteOption) => updateForm(form, { route })
 
   const {
     onSubmit,
@@ -144,11 +140,13 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
   const { isFull, max } = useMaxRepayTokenValues({ collateralToken, borrowToken, params, form }, enabled)
 
   const { formState } = form
+  const isPending = formState.isSubmitting || isRepaying
   return {
     form,
     values,
     params,
-    isPending: formState.isSubmitting || isRepaying,
+    isPending,
+    isDisabled: !formState.isValid || isPending,
     onSubmit: form.handleSubmit(onSubmit),
     borrowToken,
     collateralToken,

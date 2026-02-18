@@ -1,5 +1,4 @@
-import { useEffect, useMemo } from 'react'
-import type { UseFormReturn } from 'react-hook-form'
+import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { useConnection } from 'wagmi'
 import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
@@ -13,7 +12,7 @@ import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { mapQuery } from '@ui-kit/types/util'
 import { Decimal } from '@ui-kit/utils'
-import { setValueOptions, useFormErrors } from '@ui-kit/utils/react-form.utils'
+import { updateForm, useCallbackAfterFormUpdate, useFormErrors } from '@ui-kit/utils/react-form.utils'
 import { type RouteOption } from '@ui-kit/widgets/RouteProvider'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 import { LoanPreset, PRESET_RANGES } from '../../../constants'
@@ -22,9 +21,6 @@ import { useCreateLoanIsApproved } from '../../../queries/create-loan/create-loa
 import { createLoanQueryValidationSuite } from '../../../queries/validation/borrow.validation'
 import { type CreateLoanForm } from '../types'
 import { useMaxTokenValues } from './useMaxTokenValues'
-
-const useCallbackAfterFormUpdate = (form: UseFormReturn<CreateLoanForm>, callback: () => void) =>
-  useEffect(() => form.subscribe({ formState: { values: true }, callback }), [form, callback])
 
 // to crete a loan we need the debt/maxDebt, but we skip the market validation as that's given separately to the mutation
 const resolver = vestResolver(createLoanQueryValidationSuite({ debtRequired: false, skipMarketValidation: true }))
@@ -101,16 +97,19 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     reset: resetCreation,
   } = useCreateLoanMutation({ network, marketId: market?.id, onReset: form.reset, onCreated, userAddress })
 
+  const { formState } = form
   const { borrowToken, collateralToken } = market ? getTokens(market) : {}
 
   useCallbackAfterFormUpdate(form, resetCreation) // reset creation state on form change
-  const onChangeRoute = (route: RouteOption) => form.setValue('route', route, setValueOptions)
+  const onChangeRoute = (route: RouteOption) => updateForm(form, { route })
 
+  const isPending = formState.isSubmitting || isCreating
   return {
     form,
     values,
     params,
-    isPending: form.formState.isSubmitting || isCreating,
+    isPending,
+    isDisabled: !formState.isValid || isPending,
     onSubmit: form.handleSubmit(onSubmit),
     maxTokenValues: useMaxTokenValues(collateralToken?.address, params, form),
     borrowToken,
@@ -123,7 +122,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
       (d) => d.leverage,
     ),
     isApproved: useCreateLoanIsApproved(params),
-    formErrors: useFormErrors(form.formState),
+    formErrors: useFormErrors(formState),
     routes: useMarketRoutes({
       chainId,
       tokenIn: collateralToken,

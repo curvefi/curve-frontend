@@ -1,28 +1,28 @@
 import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
-import { formatNumber, type Decimal } from '@ui-kit/utils'
-import { getActionValue } from './action-info.helpers'
+import { type Decimal } from '@ui-kit/utils'
+import { checkDebt, getActionValue } from './action-info.helpers'
 
 const getRepayInput = () => cy.get('[data-testid^="repay-input-"] input[type="text"]', LOAD_TIMEOUT).first()
 
-export function selectRepayToken(symbol: string) {
-  cy.get('body').then((body) => {
-    const selector = '[data-testid^="repay-input-"] [role="button"][aria-haspopup="listbox"]'
-    if (body.find(selector).length) {
-      cy.get(selector, LOAD_TIMEOUT).click()
-      cy.get(`[data-testid="token-option-${symbol}"]`, LOAD_TIMEOUT).click()
-    }
-  })
+export function selectRepayToken({
+  symbol,
+  tokenAddress,
+  hasLeverage,
+}: {
+  symbol: string
+  tokenAddress: string
+  hasLeverage: boolean
+}) {
+  if (!hasLeverage) {
+    return cy.get(`[data-testid="token-icon-${tokenAddress.toLowerCase()}"]`, LOAD_TIMEOUT).should('be.visible')
+  }
+  cy.get('[data-testid^="repay-input-"] [aria-haspopup="listbox"]', LOAD_TIMEOUT).click()
+  cy.get(`[data-testid="token-option-${symbol}"]`, LOAD_TIMEOUT).click()
+  cy.get(`[data-testid="token-icon-${tokenAddress.toLowerCase()}"]`, LOAD_TIMEOUT).should('be.visible')
 }
 
 export function writeRepayLoanForm({ amount }: { amount: Decimal }) {
   getRepayInput().clear().type(amount)
-  cy.get('[data-testid="loan-info-accordion"] button', LOAD_TIMEOUT).first().click() // open the accordion
-}
-
-export const checkDebt = (current: Decimal, future: Decimal, symbol: string) => {
-  getActionValue('borrow-debt').should('equal', formatNumber(future, { abbreviate: false }))
-  cy.get('[data-testid="borrow-debt-value"]', LOAD_TIMEOUT).contains(symbol)
-  getActionValue('borrow-debt', 'previous').should('equal', formatNumber(current, { abbreviate: false }))
 }
 
 export function checkRepayDetailsLoaded({
@@ -33,9 +33,9 @@ export function checkRepayDetailsLoaded({
   leverageEnabled: boolean
 }) {
   if (leverageEnabled) {
-    getActionValue('borrow-band-range').should('match', /(\d(\.\d+)?) to (-?\d(\.\d+)?)/)
+    cy.get('[data-testid="borrow-leverage-info-list"]', LOAD_TIMEOUT).should('exist')
   } else {
-    cy.get('body').find('[data-testid="borrow-band-range-value"]').should('not.exist')
+    cy.get('[data-testid="borrow-leverage-info-list"]', LOAD_TIMEOUT).should('not.exist')
   }
   getActionValue('borrow-price-range').should('match', /(\d(\.\d+)?) - (\d(\.\d+)?)/)
   getActionValue('borrow-apr').should('include', '%')
@@ -44,9 +44,7 @@ export function checkRepayDetailsLoaded({
 }
 
 export function submitRepayForm() {
-  cy.get('[data-testid="repay-submit-button"]', LOAD_TIMEOUT).as('repaySubmit')
-  cy.get('@repaySubmit').should('not.be.disabled')
-  cy.get('@repaySubmit').click()
+  cy.get('[data-testid="repay-submit-button"]', LOAD_TIMEOUT).click()
   return cy
     .get('[data-testid="toast-success"]', TRANSACTION_LOAD_TIMEOUT)
     .contains('Loan repaid', TRANSACTION_LOAD_TIMEOUT)

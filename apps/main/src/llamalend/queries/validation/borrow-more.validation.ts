@@ -62,27 +62,26 @@ const validateBorrowMoreFieldsForMarket = (
 
 // Form validation suite (for real-time form validation)
 export const borrowMoreFormValidationSuite = createValidationSuite(
-  (
-    {
-      userCollateral = '0',
-      userBorrowed = '0',
-      debt,
-      maxBorrowed,
-      maxCollateral,
-      maxDebt,
-      slippage,
-      leverageEnabled,
-    }: BorrowMoreForm,
-    { maxDebtRequired = true }: { maxDebtRequired?: boolean } = {},
-  ) => {
+  ({
+    userCollateral = '0',
+    userBorrowed = '0',
+    debt,
+    maxBorrowed,
+    maxCollateral,
+    maxDebt,
+    slippage,
+    leverageEnabled,
+  }: BorrowMoreForm) => {
+    const debtRequired = true
+    const leverageRequired = false
     validateUserCollateral(userCollateral)
     validateMaxCollateral(userCollateral, maxCollateral)
     validateUserBorrowed(userBorrowed)
-    validateMaxBorrowed(userBorrowed, maxBorrowed)
-    validateDebt(debt)
-    validateMaxDebt(debt, maxDebt, maxDebtRequired)
+    validateMaxBorrowed(userBorrowed, { label: `debt amount`, maxBorrowed })
+    validateDebt(debt, debtRequired)
+    validateMaxDebt(debt, maxDebt, debtRequired)
     validateSlippage(slippage)
-    validateLeverageEnabled(leverageEnabled, false)
+    validateLeverageEnabled(leverageEnabled, leverageRequired)
   },
 )
 

@@ -1,5 +1,7 @@
 import { ReactNode, useState } from 'react'
-import { Box } from '@mui/material'
+import { LlamaMonitorBotLinkButton } from '@/llamalend/features/market-position-details'
+import { Box, Stack } from '@mui/material'
+import { useIntegratedLlamaHeader, useLendMarketSubNav } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 
@@ -24,10 +26,16 @@ export const MarketInformationTabs = ({ currentTab, hrefs, children }: MarketInf
     { value: 'supply', label: t`Supply`, href: hrefs.supply },
   ]
   const [tab, setTab] = useState<Tab>(currentTab)
-
+  const showSubNav = useLendMarketSubNav()
+  const showPageHeader = useIntegratedLlamaHeader()
   return (
     <Box>
-      <TabsSwitcher value={tab} onChange={setTab} variant="contained" options={tabs} />
+      {!showSubNav && (
+        <Stack alignItems="baseline" direction="row" justifyContent="space-between">
+          <TabsSwitcher value={tab} onChange={setTab} variant="contained" options={tabs} />
+          {showPageHeader && <LlamaMonitorBotLinkButton size="extraSmall" />}
+        </Stack>
+      )}
       <Box sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>{children}</Box>
     </Box>
   )

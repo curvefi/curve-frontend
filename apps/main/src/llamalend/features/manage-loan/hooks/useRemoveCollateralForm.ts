@@ -1,5 +1,4 @@
 import { useEffect, useMemo } from 'react'
-import type { UseFormReturn } from 'react-hook-form'
 import { useForm } from 'react-hook-form'
 import { useConnection } from 'wagmi'
 import { getTokens } from '@/llamalend/llama.utils'
@@ -11,18 +10,15 @@ import {
 import { useMaxRemovableCollateral } from '@/llamalend/queries/remove-collateral/remove-collateral-max-removable.query'
 import type { CollateralParams } from '@/llamalend/queries/validation/manage-loan.types'
 import {
-  removeCollateralFormValidationSuite,
   type CollateralForm,
+  removeCollateralFormValidationSuite,
 } from '@/llamalend/queries/validation/manage-loan.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { vestResolver } from '@hookform/resolvers/vest'
 import type { BaseConfig } from '@ui/utils'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
-import { useFormErrors } from '@ui-kit/utils/react-form.utils'
-
-const useCallbackAfterFormUpdate = (form: UseFormReturn<CollateralForm>, callback: () => void) =>
-  useEffect(() => form.subscribe({ formState: { values: true }, callback }), [form, callback])
+import { updateForm, useCallbackAfterFormUpdate, useFormErrors } from '@ui-kit/utils/react-form.utils'
 
 export const useRemoveCollateralForm = <
   ChainId extends LlamaChainId,
@@ -77,27 +73,28 @@ export const useRemoveCollateralForm = <
     onReset: form.reset,
     userAddress,
   })
-
+  const { formState } = form
   const maxRemovable = useMaxRemovableCollateral(params, enabled)
-  const formErrors = useFormErrors(form.formState)
 
   useCallbackAfterFormUpdate(form, action.reset)
 
   useEffect(() => {
-    form.setValue('maxCollateral', maxRemovable.data, { shouldValidate: true })
+    updateForm(form, { maxCollateral: maxRemovable.data })
   }, [form, maxRemovable.data])
 
+  const isPending = formState.isSubmitting || action.isPending
   return {
     form,
     values,
     params,
-    isPending: form.formState.isSubmitting || action.isPending,
+    isPending,
+    isDisabled: !formState.isValid || isPending,
     onSubmit: form.handleSubmit(onSubmit),
     action,
     maxRemovable,
     collateralToken,
     borrowToken,
     txHash: action.data?.hash,
-    formErrors,
+    formErrors: useFormErrors(formState),
   }
 }

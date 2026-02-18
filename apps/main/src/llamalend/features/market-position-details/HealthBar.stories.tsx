@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { HealthBar } from './HealthBar'
+import { HealthBar } from './'
 
 // Helper component to show both versions
 const HealthBarStory = ({

@@ -4,7 +4,7 @@ import type { Address, Hex } from 'viem'
 import { useConfig } from 'wagmi'
 import { formatTokenAmounts } from '@/llamalend/llama.utils'
 import { LlamaMarketTemplate, RouterMeta } from '@/llamalend/llamalend.types'
-import { type LlammaMutationOptions, useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
+import { useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
 import { fetchRepayIsApproved } from '@/llamalend/queries/repay/repay-is-approved.query'
 import { getRepayImplementation } from '@/llamalend/queries/repay/repay-query.helpers'
 import {
@@ -14,6 +14,7 @@ import {
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
+import type { OnTransactionSuccess } from '@ui-kit/lib/model/mutation/useTransactionMutation'
 import { decimal, type Decimal, waitForApproval } from '@ui-kit/utils'
 
 type RepayMutation = {
@@ -27,7 +28,7 @@ type RepayMutation = {
 export type RepayOptions = {
   marketId: string | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
-  onRepaid?: LlammaMutationOptions<RepayMutation>['onSuccess']
+  onRepaid?: OnTransactionSuccess<RepayMutation>
   onReset?: () => void
   userAddress: Address | undefined
 }
@@ -94,15 +95,15 @@ export const useRepayMutation = ({
     network,
     marketId,
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'repay'] as const,
-    mutationFn: async (mutation, { market }) => {
+    mutationFn: async (variables, { market }) => {
       await waitForApproval({
         isApproved: async () =>
-          await fetchRepayIsApproved({ marketId, chainId, userAddress, ...mutation }, { staleTime: 0 }),
-        onApprove: async () => await approveRepay(market, mutation),
+          await fetchRepayIsApproved({ marketId, chainId, userAddress, ...variables }, { staleTime: 0 }),
+        onApprove: async () => await approveRepay(market, variables),
         message: t`Approved repayment`,
         config,
       })
-      return { hash: await repay(market, mutation) }
+      return { hash: await repay(market, variables) }
     },
     validationSuite: repayFromCollateralIsFullValidationSuite,
     pendingMessage: (mutation, { market }) => t`Repaying loan... ${formatTokenAmounts(market, mutation)}`,
