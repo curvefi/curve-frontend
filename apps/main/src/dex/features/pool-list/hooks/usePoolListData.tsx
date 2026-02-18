@@ -5,6 +5,7 @@ import { CROSS_CHAIN_ADDRESSES } from '@/dex/constants'
 import { useUserPools } from '@/dex/queries/user-pools.query'
 import { useStore } from '@/dex/store/useStore'
 import { NetworkConfig, PoolData, PoolDataMapper } from '@/dex/types/main.types'
+import type { Pool } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
 import { notFalsy, recordValues } from '@curvefi/prices-api/objects.util'
 import type { DeepKeys } from '@tanstack/table-core'
@@ -12,8 +13,18 @@ import { useCurve } from '@ui-kit/features/connect-wallet'
 import { usePageVisibleInterval } from '@ui-kit/hooks/usePageVisibleInterval'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { DEX_ROUTES } from '@ui-kit/shared/routes'
-import { POOL_TEXT_FIELDS } from '../poolsGlobalFilter'
 import type { PoolListItem, PoolTag } from '../types'
+
+export const POOL_TEXT_FIELDS = [
+  'pool.wrappedCoins',
+  'pool.wrappedCoinAddresses',
+  'pool.underlyingCoins',
+  'pool.underlyingCoinAddresses',
+  'pool.name',
+  'pool.address',
+  'pool.gauge.address',
+  'pool.lpToken',
+] satisfies DeepKeys<{ pool: Pool }>[]
 
 const matchText = <T,>(data: T, fields: readonly DeepKeys<T>[], filter: string) =>
   filter
