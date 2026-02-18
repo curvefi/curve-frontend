@@ -18,22 +18,12 @@ const MIN_ADDRESS_LENGTH = 4
  * - Short address terms (fewer than {@link MIN_ADDRESS_LENGTH} characters) are discarded
  *   because they would match too broadly (e.g. every address starts with "0x").
  */
-const splitSearchTerms = (input: string) =>
-  input
-    .trim()
-    .split(/[, ]+/)
-    .filter(Boolean)
-    .reduce<{ text: string[]; addresses: string[] }>(
-      (acc, term) => {
-        if (/^0x/i.test(term)) {
-          if (term.length >= MIN_ADDRESS_LENGTH) acc.addresses.push(term)
-        } else {
-          acc.text.push(term)
-        }
-        return acc
-      },
-      { text: [], addresses: [] },
-    )
+const splitSearchTerms = (input: string) => {
+  const terms = input.trim().split(/[, ]+/).filter(Boolean)
+  const text = terms.filter((t) => !/^0x/i.test(t))
+  const addresses = terms.filter((t) => /^0x/i.test(t) && t.length >= MIN_ADDRESS_LENGTH)
+  return { text, addresses }
+}
 
 /**
  * Internal hook that builds a Fuse.js index over `data` and computes a `Set` of matching items
