@@ -1,5 +1,5 @@
 import Fuse from 'fuse.js'
-import { get } from 'lodash'
+import { get, partition } from 'lodash'
 import { useMemo } from 'react'
 import type { FilterFn, Row } from '@tanstack/react-table'
 
@@ -20,8 +20,7 @@ const MIN_ADDRESS_LENGTH = 4
  */
 const splitSearchTerms = (input: string) => {
   const terms = input.trim().split(/[, ]+/).filter(Boolean)
-  const text = terms.filter((t) => !/^0x/i.test(t))
-  const addresses = terms.filter((t) => /^0x/i.test(t) && t.length >= MIN_ADDRESS_LENGTH)
+  const [addresses, text] = partition(terms, (t) => /^0x/i.test(t) && t.length >= MIN_ADDRESS_LENGTH)
   return { text, addresses }
 }
 
