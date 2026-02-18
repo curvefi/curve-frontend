@@ -36,12 +36,12 @@ const ratesConfig: Record<
   }
 > = {
   [MarketRateType.Supply]: {
-    tooltipComponent: ({ children, ...rest }) => <SupplyRateLendTooltip {...rest}>{children}</SupplyRateLendTooltip>,
+    tooltipComponent: SupplyRateLendTooltip,
     title: t`Supply yield`,
     rateKey: 'lendTotalApyMinBoosted',
   },
   [MarketRateType.Borrow]: {
-    tooltipComponent: ({ children, ...rest }) => <BorrowRateTooltip {...rest}>{children}</BorrowRateTooltip>,
+    tooltipComponent: BorrowRateTooltip,
     title: t`Borrow APR`,
     rateKey: 'borrowApr',
   },
