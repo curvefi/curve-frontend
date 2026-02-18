@@ -26,7 +26,6 @@ export type ColorState = keyof typeof ColorStates
 
 export type UserPositionIndicatorProps = {
   colorState?: ColorState
-} & {
   tooltipTitle: TooltipProps['title']
   tooltipBody?: TooltipProps['body']
 }
