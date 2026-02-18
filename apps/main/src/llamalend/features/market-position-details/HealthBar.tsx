@@ -11,7 +11,7 @@ type HealthBarProps = {
   sx?: SxProps
 }
 
-type HealthLevel = 'hardLiquidation' | 'liquidation' | 'risky' | 'good' | 'pristine'
+type HealthLevel = 'hardLiquidation' | 'liquidationProtection' | 'risky' | 'good' | 'pristine'
 
 const BAR_HEIGHT = '2rem' // 36px
 /** padding necesarry to mimic Metric components inherent line-height padding */
@@ -21,7 +21,7 @@ const LABEL_INSET = '0.125rem' // 2px
 
 const insetLabelText = {
   hardLiquidation: t`Liquidation protection disabled`,
-  liquidation: t`Liquidation`,
+  liquidationProtection: t`Liquidation protection`,
   risky: t`Risky`,
   good: t`Good`,
   pristine: t`Pristine`,
@@ -29,9 +29,9 @@ const insetLabelText = {
 
 const clampPercentage = (health: number | undefined | null): number => Math.max(0, Math.min(health ?? 0, 100))
 
-const getHealthLevel = (health: number | undefined | null): HealthLevel => {
+const getHealthLevel = (health: number | undefined | null, softLiquidation: boolean): HealthLevel => {
+  if (softLiquidation) return 'liquidationProtection'
   if (health == null || health <= 0) return 'hardLiquidation'
-  if (health <= 5) return 'liquidation'
   if (health <= 15) return 'risky'
   if (health <= 50) return 'good'
   return 'pristine'
@@ -91,7 +91,7 @@ export const HealthBar = ({ health, softLiquidation, small, sx }: HealthBarProps
                     : t.design.Text.TextColors.FilledFeedback.Warning.Primary,
             }}
           >
-            {insetLabelText[getHealthLevel(health)]}
+            {insetLabelText[getHealthLevel(health, !!softLiquidation)]}
           </Typography>
         )}
         {health != null && health < 5 && health > 0 && (
@@ -108,7 +108,7 @@ export const HealthBar = ({ health, softLiquidation, small, sx }: HealthBarProps
               variant="bodyXsRegular"
               sx={{ color: (t) => t.design.Text.TextColors.FilledFeedback.Alert.Primary, whiteSpace: 'nowrap' }}
             >
-              {insetLabelText[getHealthLevel(health)]}
+              {insetLabelText[getHealthLevel(health, !!softLiquidation)]}
             </Typography>
           </Stack>
         )}

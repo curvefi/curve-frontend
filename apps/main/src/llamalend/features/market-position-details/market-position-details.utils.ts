@@ -33,7 +33,7 @@ export const getHealthValueColor = ({
   }
   const value = Number(health ?? prevHealth ?? 0)
   if (isFullRepay) return neutral
-  if (value < 5) return red
+  if (value < 2.5) return red
   if (value < 15) return orange
   if (value < 50) return neutral
   return neutral
@@ -59,11 +59,11 @@ export const getHealthTrackColor = ({
     return softLiquidation ? Layer.Feedback.Warning : green
   }
   if (softLiquidation) {
-    if (health < 5) return red
+    if (health < 2.5) return red
     if (health < 40) return orange
     return yellow
   }
-  if (health < 5) return red
+  if (health < 2.5) return red
   if (health < 15) return orange
   if (health < 50) return yellow
   return green
