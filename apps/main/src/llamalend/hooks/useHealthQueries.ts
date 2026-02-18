@@ -52,6 +52,6 @@ const combineHealth = ([healthFull, healthNotFull]: HealthQueryResults) => ({
  */
 export const useHealthQueries = (getOptions: (isFull: boolean) => HealthQueryOptions) =>
   useQueries({
-    queries: [true, false].map((isFull) => getOptions(isFull)),
+    queries: [true, false].map(getOptions),
     combine: combineHealth,
   })

@@ -1,5 +1,5 @@
 import { useClosePositionForm } from '@/llamalend/features/manage-soft-liquidation/hooks/useClosePositionForm'
-import { ClosePositionInfoAccordion } from '@/llamalend/features/manage-soft-liquidation/ui/ClosePositionInfoAccordion'
+import { ClosePositionInfoList } from '@/llamalend/features/manage-soft-liquidation/ui/ClosePositionInfoList'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
@@ -56,8 +56,8 @@ export const ClosePositionForm = ({
     <Form
       {...form}
       onSubmit={onSubmit}
-      infoAccordion={
-        <ClosePositionInfoAccordion
+      footer={
+        <ClosePositionInfoList
           market={market}
           chainId={network.chainId}
           networks={networks}
