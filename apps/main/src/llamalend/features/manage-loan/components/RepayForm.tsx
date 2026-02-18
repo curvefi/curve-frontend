@@ -6,6 +6,8 @@ import { hasLeverage } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import type { RepayOptions } from '@/llamalend/mutations/repay.mutation'
 import { useRepayPriceImpact } from '@/llamalend/queries/repay/repay-price-impact.query'
+import { useRepayPrices } from '@/llamalend/queries/repay/repay-prices.query'
+import type { RepayParams } from '@/llamalend/queries/validation/manage-loan.types'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { notFalsy } from '@curvefi/prices-api/objects.util'
@@ -22,6 +24,17 @@ import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts, HighPriceImpactAlert } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import { useRepayForm } from '../hooks/useRepayForm'
 import { useTokenAmountConversion } from '../hooks/useTokenAmountConversion'
+
+const useFormSync = (
+  params: RepayParams,
+  enabled: boolean | undefined,
+  onPricesUpdated: (prices: string[] | undefined) => void,
+) => {
+  const { data } = useRepayPrices(params, enabled)
+  useEffect(() => {
+    onPricesUpdated(data)
+  }, [onPricesUpdated, data])
+}
 
 function RepayTokenSelector<ChainId extends IChainId>({
   token,
@@ -56,12 +69,14 @@ export const RepayForm = <ChainId extends IChainId>({
   chainId,
   enabled,
   onRepaid,
+  onPricesUpdated,
 }: {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
   chainId: ChainId
   enabled?: boolean
   onRepaid?: RepayOptions['onRepaid']
+  onPricesUpdated: (prices: string[] | undefined) => void
 }) => {
   const network = networks[chainId]
   const {
@@ -109,6 +124,8 @@ export const RepayForm = <ChainId extends IChainId>({
     selectedField === 'stateCollateral' && t`Using collateral balances to repay.`,
     t`Max repay amount:`,
   ).join(' ')
+
+  useFormSync(params, enabled, onPricesUpdated)
 
   useEffect(
     () => () => {

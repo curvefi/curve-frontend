@@ -1,13 +1,15 @@
-import { type ChangeEvent, useCallback } from 'react'
+import { type ChangeEvent, useCallback, useEffect } from 'react'
 import { BorrowMoreLoanInfoList } from '@/llamalend/features/borrow/components/BorrowMoreLoanInfoList'
 import { LeverageInput } from '@/llamalend/features/borrow/components/LeverageInput'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { OnBorrowedMore } from '@/llamalend/mutations/borrow-more.mutation'
 import { useBorrowMorePriceImpact } from '@/llamalend/queries/borrow-more/borrow-more-price-impact.query'
+import { useBorrowMorePrices } from '@/llamalend/queries/borrow-more/borrow-more-prices.query'
 import {
   isLeverageBorrowMore,
   isLeverageBorrowMoreSupported,
 } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
+import type { BorrowMoreParams } from '@/llamalend/queries/validation/borrow-more.validation'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { notFalsy } from '@curvefi/prices-api/objects.util'
@@ -23,6 +25,17 @@ import { FormAlerts, HighPriceImpactAlert } from '@ui-kit/widgets/DetailPageLayo
 import { InputDivider } from '../../../widgets/InputDivider'
 import { useBorrowMoreForm } from '../hooks/useBorrowMoreForm'
 
+const useFormSync = (
+  params: BorrowMoreParams,
+  enabled: boolean | undefined,
+  onPricesUpdated: (prices: string[] | undefined) => void,
+) => {
+  const { data } = useBorrowMorePrices(params, enabled)
+  useEffect(() => {
+    onPricesUpdated(data)
+  }, [onPricesUpdated, data])
+}
+
 export const BorrowMoreForm = <ChainId extends IChainId>({
   market,
   networks,
@@ -30,6 +43,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
   enabled,
   onBorrowedMore,
   fromWallet = isDevelopment, // todo: delete this if users do not complain about it, for now dev-only feature
+  onPricesUpdated,
 }: {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
@@ -37,6 +51,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
   enabled?: boolean
   onBorrowedMore?: OnBorrowedMore
   fromWallet?: boolean
+  onPricesUpdated: (prices: string[] | undefined) => void
 }) => {
   const network = networks[chainId]
   const {
@@ -69,6 +84,9 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     (event: ChangeEvent<HTMLInputElement>) => updateForm(form, { leverageEnabled: event.target.checked }),
     [form],
   )
+
+  useFormSync(params, enabled, onPricesUpdated)
+
   return (
     <Form
       {...form}

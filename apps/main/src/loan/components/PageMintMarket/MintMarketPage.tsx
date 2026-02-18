@@ -45,6 +45,7 @@ export const MintMarketPage = () => {
   const rChainId = useChainId(params)
   const { address } = useConnection()
   const [loaded, setLoaded] = useState(false)
+  const [previewPrices, setPreviewPrices] = useState<string[] | undefined>(undefined)
 
   const market = useMintMarket({ chainId: rChainId, marketId: rCollateralId })
   const marketId = market?.id ?? ''
@@ -101,6 +102,7 @@ export const MintMarketPage = () => {
     market: market ?? null,
     rChainId,
     params,
+    onChartPreviewPricesUpdate: setPreviewPrices,
   }
   const showPageHeader = useIntegratedLlamaHeader()
 
@@ -154,7 +156,13 @@ export const MintMarketPage = () => {
         </Stack>
         <Stack>
           {!showPageHeader && <MarketDetails {...marketDetails} />}
-          <MarketInformationComp llamma={market ?? null} marketId={marketId} chainId={rChainId} page="manage" />
+          <MarketInformationComp
+            llamma={market ?? null}
+            marketId={marketId}
+            chainId={rChainId}
+            page="manage"
+            previewPrices={previewPrices}
+          />
         </Stack>
       </DetailPageLayout>
     </>

@@ -17,7 +17,29 @@ import { useManageLoanMuiForm, useManageSoftLiquidation } from '@ui-kit/hooks/us
 import { t } from '@ui-kit/lib/i18n'
 import { type FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
 
-type ManageLoanProps = PageContentProps<MarketUrlParams>
+type ManageLoanProps = PageContentProps<MarketUrlParams> & {
+  onChartPreviewPricesUpdate: (prices: string[] | undefined) => void
+}
+
+const BorrowMoreTab = ({ rChainId, market, isLoaded, onChartPreviewPricesUpdate }: ManageLoanProps) => (
+  <BorrowMoreForm
+    networks={networks}
+    chainId={rChainId}
+    market={market}
+    enabled={isLoaded}
+    onPricesUpdated={onChartPreviewPricesUpdate}
+  />
+)
+
+const RepayTab = ({ rChainId, market, isLoaded, onChartPreviewPricesUpdate }: ManageLoanProps) => (
+  <RepayForm
+    networks={networks}
+    chainId={rChainId}
+    market={market}
+    enabled={isLoaded}
+    onPricesUpdated={onChartPreviewPricesUpdate}
+  />
+)
 
 const LendManageLegacyMenu = [
   {
@@ -49,28 +71,12 @@ const LendManageNewMenu = [
   {
     value: 'loan-increase',
     label: t`Borrow`,
-    component: ({ rChainId: chainId, market, rOwmId: marketId, userAddress, isLoaded }: PageContentProps) => (
-      <BorrowMoreForm
-        networks={networks}
-        chainId={chainId}
-        market={market}
-        enabled={isLoaded}
-        onBorrowedMore={() => invalidateAllUserBorrowDetails({ chainId, marketId, userAddress })}
-      />
-    ),
+    component: BorrowMoreTab,
   },
   {
     value: 'loan-decrease',
     label: t`Repay`,
-    component: ({ rChainId: chainId, market, rOwmId: marketId, userAddress, isLoaded }: PageContentProps) => (
-      <RepayForm
-        networks={networks}
-        chainId={chainId}
-        market={market}
-        enabled={isLoaded}
-        onRepaid={() => invalidateAllUserBorrowDetails({ chainId, marketId, userAddress })}
-      />
-    ),
+    component: RepayTab,
   },
   {
     value: 'collateral',

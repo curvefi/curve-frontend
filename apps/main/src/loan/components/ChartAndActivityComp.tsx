@@ -4,7 +4,7 @@ import { ChartAndActivityLayout } from '@/llamalend/widgets/ChartAndActivityLayo
 import { useOhlcChartState } from '@/loan/hooks/useOhlcChartState'
 import { networks } from '@/loan/networks'
 import { ChainId, Llamma } from '@/loan/types/loan.types'
-import type { Chain, Address } from '@curvefi/prices-api'
+import type { Address, Chain } from '@curvefi/prices-api'
 import { type Token } from '@ui-kit/features/activity-table'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 
@@ -12,9 +12,10 @@ type ChartAndActivityCompProps = {
   chainId: ChainId
   market: Llamma | null
   llammaId: string
+  previewPrices: string[] | undefined
 }
 
-export const ChartAndActivityComp = ({ chainId, market, llammaId }: ChartAndActivityCompProps) => {
+export const ChartAndActivityComp = ({ chainId, market, llammaId, previewPrices }: ChartAndActivityCompProps) => {
   const { llamaApi: api = null } = useCurve()
   const collateralTokenAddress = market?.coinAddresses[1]
   const borrowedTokenAddress = market?.coinAddresses[0]
@@ -34,6 +35,7 @@ export const ChartAndActivityComp = ({ chainId, market, llammaId }: ChartAndActi
     chainId,
     market,
     llammaId,
+    previewPrices,
   })
 
   const {
