@@ -8,7 +8,7 @@ import {
 } from '@/llamalend/features/market-position-details'
 import { DEFAULT_BORROW_TOKEN_SYMBOL, getHealthMode } from '@/llamalend/health.util'
 import { calculateLtv, hasV2Leverage } from '@/llamalend/llama.utils'
-import { useMarketRates } from '@/llamalend/queries/market-rates'
+import { useMarketRates } from '@/llamalend/queries/market-rates.query'
 import { useUserCurrentLeverage } from '@/llamalend/queries/user-current-leverage.query'
 import {
   LAST_MONTH,

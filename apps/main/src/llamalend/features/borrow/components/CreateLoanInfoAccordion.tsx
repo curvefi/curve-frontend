@@ -1,6 +1,6 @@
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useCreateLoanIsApproved } from '@/llamalend/queries/create-loan/create-loan-approved.query'
-import { useMarketRates } from '@/llamalend/queries/market-rates'
+import { useMarketRates } from '@/llamalend/queries/market-rates.query'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { q } from '@ui-kit/types/util'

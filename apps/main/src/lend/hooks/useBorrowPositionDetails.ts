@@ -10,7 +10,7 @@ import {
 } from '@/llamalend/features/market-position-details'
 import { calculateLtv } from '@/llamalend/llama.utils'
 import { useLoanExists } from '@/llamalend/queries/loan-exists'
-import { useMarketRates } from '@/llamalend/queries/market-rates'
+import { useMarketRates } from '@/llamalend/queries/market-rates.query'
 import {
   getBorrowRateMetrics,
   getSnapshotBorrowRate,

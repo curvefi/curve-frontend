@@ -1,5 +1,5 @@
 import type { MarketDetailsProps } from '@/llamalend/features/market-details'
-import { useMarketRates } from '@/llamalend/queries/market-rates'
+import { useMarketRates } from '@/llamalend/queries/market-rates.query'
 import {
   getBorrowRateMetrics,
   getSnapshotBorrowRate,

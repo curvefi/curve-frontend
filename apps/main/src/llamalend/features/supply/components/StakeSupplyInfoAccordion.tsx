@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import type { Token } from '@/llamalend/features/borrow/types'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
-import { useMarketRates } from '@/llamalend/queries/market-rates'
+import { useMarketRates } from '@/llamalend/queries/market-rates.query'
 import { useStakeIsApproved } from '@/llamalend/queries/supply/supply-stake-approved.query'
 import { useStakeEstimateGas } from '@/llamalend/queries/supply/supply-stake-estimate-gas.query'
 import {

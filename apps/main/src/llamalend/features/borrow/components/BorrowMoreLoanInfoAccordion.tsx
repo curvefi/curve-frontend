@@ -9,7 +9,7 @@ import { useBorrowMoreEstimateGas } from '@/llamalend/queries/borrow-more/borrow
 import { useBorrowMoreIsApproved } from '@/llamalend/queries/borrow-more/borrow-more-is-approved.query'
 import { useBorrowMorePriceImpact } from '@/llamalend/queries/borrow-more/borrow-more-price-impact.query'
 import { useMarketFutureRates } from '@/llamalend/queries/market-future-rates.query'
-import { useMarketRates } from '@/llamalend/queries/market-rates'
+import { useMarketRates } from '@/llamalend/queries/market-rates.query'
 import { useUserCurrentLeverage } from '@/llamalend/queries/user-current-leverage.query'
 import { getUserHealthOptions } from '@/llamalend/queries/user-health.query'
 import { useUserState } from '@/llamalend/queries/user-state.query'
