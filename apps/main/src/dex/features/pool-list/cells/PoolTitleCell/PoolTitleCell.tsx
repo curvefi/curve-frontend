@@ -1,14 +1,15 @@
 import lodash from 'lodash'
-import { useMemo } from 'react'
+import { useMemo, type ReactElement } from 'react'
 import { styled, type IStyledComponent } from 'styled-components'
 import { usePoolAlert } from '@/dex/hooks/usePoolAlert'
 import { useTokenAlert } from '@/dex/hooks/useTokenAlert'
 import Stack from '@mui/material/Stack'
+import Tooltip from '@mui/material/Tooltip'
 import type { CellContext } from '@tanstack/react-table'
 import { Icon } from '@ui/Icon'
 import type { IconProps } from '@ui/Icon/Icon'
-import { Chip } from '@ui/Typography/Chip'
 import { t } from '@ui-kit/lib/i18n'
+import { UserPositionIndicator } from '@ui-kit/shared/ui/DataTable/UserPositionIndicator'
 import { TokenIcons } from '@ui-kit/shared/ui/TokenIcons'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { Address } from '@ui-kit/utils'
@@ -19,6 +20,10 @@ import { PoolAlertIcons } from './PoolAlertIcons'
 import { PoolTokens } from './PoolTokens'
 
 const { Spacing, Height } = SizesAndSpaces
+
+const UserPositionTooltip = ({ children }: { children: ReactElement }) => (
+  <Tooltip title={t`You have a balance in this pool`}>{children}</Tooltip>
+)
 
 export const PoolTitleCell = ({
   row: { original: poolData },
@@ -34,11 +39,7 @@ export const PoolTitleCell = ({
 
   return (
     <Stack direction="row" sx={{ height: Height.row }}>
-      {poolData.hasPosition && (
-        <Chip tooltip={t`You have a balance in this pool`} tooltipProps={{ placement: 'top-start' }}>
-          <StyledIcon name="CurrencyDollar" size={16} />
-        </Chip>
-      )}
+      {poolData.hasPosition && <UserPositionIndicator Tooltip={UserPositionTooltip} sx={{ alignSelf: 'stretch' }} />}
       <Stack direction="row" alignItems="center" gap={Spacing.sm}>
         <TokenIcons blockchainId={network} tokens={tokenList} />
         <Stack direction="column">
