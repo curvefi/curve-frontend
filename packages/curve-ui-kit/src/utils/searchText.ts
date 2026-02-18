@@ -99,6 +99,7 @@ function searchByAddresses<T>(searchTerms: string[], datas: T[], keys: { tokens:
   return uniqueResults
 }
 
+// TODO: The only place this is being used is inside createPoolListSlice. Remove when legacy pool list is being deleted
 export function searchByText<T>(
   searchText: string,
   datas: T[],
