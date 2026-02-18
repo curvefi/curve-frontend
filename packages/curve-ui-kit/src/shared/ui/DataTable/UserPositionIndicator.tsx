@@ -40,8 +40,13 @@ export const UserPositionIndicator = ({
    * Frustratingly, there's a known issue with MUI where tooltips don't render when
    * this component only exports a Box and is wrapped with a Tooltip by the parent.
    *
-   * It's also not straightforward to make the Tooltip optional via `WithWrapper`
-   * due to complex type inference issues that arise.
+   * At first I tried to add `Tooltip: typeof MuiTooltip` as a prop and wrap the Box with it,
+   * but that causes a lot of typing issues with how a `title` prop is required. Believe me,
+   * I've tried, but simply passing two separate props for `title` and `body` is much easier
+   * to type and use.
+   *
+   * It's also not straightforward to make the Tooltip optional via `WithWrapper`, due to
+   * additional complex type inference issues that arise.
    */
   <Tooltip title={tooltipTitle} body={tooltipBody}>
     <Box
