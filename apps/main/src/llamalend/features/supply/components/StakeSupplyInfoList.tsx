@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import type { UseFormReturn } from 'react-hook-form'
 import type { Token } from '@/llamalend/features/borrow/types'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useMarketRates } from '@/llamalend/queries/market-rates'
@@ -9,30 +10,32 @@ import {
   useUserStakedVaultSharesToAssetsAmount,
 } from '@/llamalend/queries/supply/supply-user-vault-amounts'
 import { useUserBalances } from '@/llamalend/queries/user-balances.query'
-import type { StakeParams } from '@/llamalend/queries/validation/supply.validation'
-import { SupplyInfoAccordion } from '@/llamalend/widgets/action-card/SupplyInfoAccordion'
+import type { StakeForm, StakeParams } from '@/llamalend/queries/validation/supply.validation'
+import { SupplyActionInfoList } from '@/llamalend/widgets/action-card/SupplyActionInfoList'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { mapQuery } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
+import { isFormTouched } from '@ui-kit/utils/react-form.utils'
 
-export type StakeSupplyInfoAccordionProps<ChainId extends IChainId> = {
+export type StakeSupplyInfoListProps<ChainId extends IChainId> = {
   params: StakeParams<ChainId>
   networks: NetworkDict<ChainId>
   tokens: { borrowToken: Token | undefined }
+  form: UseFormReturn<StakeForm>
 }
 
-export function StakeSupplyInfoAccordion<ChainId extends IChainId>({
+export function StakeSupplyInfoList<ChainId extends IChainId>({
   params,
   networks,
   tokens,
-}: StakeSupplyInfoAccordionProps<ChainId>) {
-  const [isOpen, , , toggle] = useSwitch(false)
+  form,
+}: StakeSupplyInfoListProps<ChainId>) {
   const { chainId, marketId, userAddress, stakeAmount } = params
+  const isOpen = isFormTouched(form, 'stakeAmount')
 
   const { data: isApproved } = useStakeIsApproved(params, isOpen)
-  const userBalances = useUserBalances({ chainId, marketId, userAddress })
+  const userBalances = useUserBalances({ chainId, marketId, userAddress }, isOpen)
 
   const marketRates = useMarketRates(params, isOpen)
 
@@ -51,11 +54,10 @@ export function StakeSupplyInfoAccordion<ChainId extends IChainId>({
   )
 
   return (
-    <SupplyInfoAccordion
-      title={t`Staked shares`}
+    <SupplyActionInfoList
+      sharesLabel={t`Staked shares`}
       amountLabel={t`Amount staked`}
       isOpen={isOpen}
-      toggle={toggle}
       isApproved={isApproved}
       suppliedSymbol={tokens.borrowToken?.symbol}
       prevVaultShares={prevStakedShares}

@@ -1,4 +1,5 @@
 import { BigNumber } from 'bignumber.js'
+import type { UseFormReturn } from 'react-hook-form'
 import type { Token } from '@/llamalend/features/borrow/types'
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
 import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
@@ -15,12 +16,12 @@ import { getUserHealthOptions } from '@/llamalend/queries/user-health.query'
 import { useUserState } from '@/llamalend/queries/user-state.query'
 import type { RepayParams } from '@/llamalend/queries/validation/manage-loan.types'
 import type { RepayForm } from '@/llamalend/queries/validation/manage-loan.validation'
-import { LoanInfoAccordion } from '@/llamalend/widgets/action-card/LoanInfoAccordion'
+import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { combineQueriesMeta } from '@ui-kit/lib/queries/combine'
 import { mapQuery, q, type Query } from '@ui-kit/types/util'
 import { Decimal, decimal } from '@ui-kit/utils'
+import { isFormTouched } from '@ui-kit/utils/react-form.utils'
 
 const remainingDebt = (debt: Decimal, repayAmount: Decimal) => {
   const remaining = new BigNumber(debt).minus(repayAmount)
@@ -56,7 +57,7 @@ function useRepayRemainingDebt<ChainId extends IChainId>(
         }
 }
 
-export function RepayLoanInfoAccordion<ChainId extends IChainId>({
+export function RepayLoanInfoList<ChainId extends IChainId>({
   params,
   values: { slippage, userCollateral, userBorrowed, isFull },
   tokens: { collateralToken, borrowToken },
@@ -64,6 +65,7 @@ export function RepayLoanInfoAccordion<ChainId extends IChainId>({
   onSlippageChange,
   hasLeverage,
   swapRequired,
+  form,
 }: {
   params: RepayParams<ChainId>
   values: RepayForm
@@ -72,20 +74,20 @@ export function RepayLoanInfoAccordion<ChainId extends IChainId>({
   onSlippageChange: (newSlippage: Decimal) => void
   hasLeverage: boolean | undefined
   swapRequired: boolean
+  form: UseFormReturn<RepayForm>
 }) {
-  const [isOpen, , , toggle] = useSwitch(false)
+  const isOpen = isFormTouched(form, 'stateCollateral', 'userCollateral', 'userBorrowed')
   const userStateQuery = useUserState(params, isOpen)
   const userState = q(userStateQuery)
   const priceImpact = useRepayPriceImpact(params, isOpen && swapRequired)
   const debt = useRepayRemainingDebt({ params, swapRequired, borrowToken }, { isFull, userBorrowed }, isOpen)
   return (
-    <LoanInfoAccordion
+    <LoanActionInfoList
       isOpen={isOpen}
-      toggle={toggle}
       isApproved={q(useRepayIsApproved(params, isOpen))}
       gas={useRepayEstimateGas(networks, params, isOpen)}
-      health={useHealthQueries((isFull) => getRepayHealthOptions({ ...params, isFull }))}
-      prevHealth={useHealthQueries((isFull) => getUserHealthOptions({ ...params, isFull }))}
+      health={useHealthQueries((isFull) => getRepayHealthOptions({ ...params, isFull }, isOpen))}
+      prevHealth={useHealthQueries((isFull) => getUserHealthOptions({ ...params, isFull }, isOpen))}
       isFullRepay={isFull}
       prevRates={q(useMarketRates(params, isOpen))}
       rates={q(useMarketFutureRates(params, isOpen))}

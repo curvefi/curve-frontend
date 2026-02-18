@@ -1,4 +1,4 @@
-import { RepayLoanInfoAccordion } from '@/llamalend/features/borrow/components/RepayLoanInfoAccordion'
+import { RepayLoanInfoList } from '@/llamalend/features/borrow/components/RepayLoanInfoList'
 import { useRepayForm } from '@/llamalend/features/manage-loan/hooks/useRepayForm'
 import { hasLeverage } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
@@ -61,8 +61,9 @@ export const ImproveHealthForm = ({
     <Form
       {...form}
       onSubmit={onSubmit}
-      infoAccordion={
-        <RepayLoanInfoAccordion
+      footer={
+        <RepayLoanInfoList
+          form={form}
           params={params}
           values={values}
           tokens={{ collateralToken, borrowToken }}
