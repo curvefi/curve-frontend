@@ -48,7 +48,7 @@ export const BridgeForm = ({ chainId, networks }: BridgeFormParams) => {
     <Form
       {...form}
       onSubmit={onSubmit}
-      infoAccordion={
+      footer={
         <>
           <BridgeActionInfos bridgeCost={bridgeCost} gas={gas} isApproved={isApproved.data} />
           <BridgeInfoAlert />

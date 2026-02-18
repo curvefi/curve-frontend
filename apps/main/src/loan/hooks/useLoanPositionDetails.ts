@@ -22,7 +22,6 @@ import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { calculateAverageRates } from '@ui-kit/utils/averageRates'
-import { decimal } from '@ui-kit/utils/decimal'
 
 type UseLoanPositionDetailsProps = {
   chainId: ChainId
@@ -50,7 +49,6 @@ export const useLoanPositionDetails = ({
   const userPrices = useStore((state) => state.loans.userDetailsMapper[llammaId]?.userPrices)
   const userBands = useStore((state) => state.loans.userDetailsMapper[llammaId]?.userBands)
   const userStatus = useStore((state) => state.loans.userDetailsMapper[llammaId]?.userStatus)
-  const userLoss = useStore((state) => state.loans.userDetailsMapper[llammaId]?.userLoss)
   const userLoanDetailsLoading = useStore((state) => state.loans.userDetailsMapper[llammaId]?.loading)
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId ?? ''])
   const { healthFull, healthNotFull } = useUserLoanDetails(llammaId) ?? {}
@@ -183,13 +181,6 @@ export const useLoanPositionDetails = ({
     totalDebt: {
       value: debt ? Number(debt) : null,
       loading: debt == null || userLoanDetailsLoading || !isHydrated,
-    },
-    collateralLoss: {
-      depositedCollateral: decimal(userLoss?.deposited_collateral),
-      currentCollateralEstimation: decimal(userLoss?.current_collateral_estimation),
-      percentage: decimal(userLoss?.loss_pct),
-      amount: decimal(userLoss?.loss),
-      loading: userLoss == null || userLoanDetailsLoading || !isHydrated,
     },
   }
 }
