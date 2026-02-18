@@ -13,7 +13,7 @@ import { ActionInfoCollapse } from './ActionInfoCollapse'
 import { formatAmount, formatLeverage, ACTION_INFO_GROUP_SX } from './info-actions.helpers'
 
 export type LoanActionInfoListProps = {
-  isOpen: boolean
+  isOpen?: boolean
   isApproved?: Query<boolean>
   health?: Query<Decimal | null>
   prevHealth?: Query<Decimal>

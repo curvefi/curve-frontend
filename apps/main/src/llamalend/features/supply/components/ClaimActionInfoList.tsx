@@ -8,15 +8,15 @@ import { ActionInfoGasEstimate } from '@ui-kit/shared/ui/ActionInfo'
 export type ClaimActionInfoListProps<ChainId extends IChainId> = {
   params: UserMarketParams<ChainId>
   networks: NetworkDict<ChainId>
+  isOpen?: boolean
 }
-
-const ALWAYS_OPEN = true
 
 export const ClaimActionInfoList = <ChainId extends IChainId>({
   params,
   networks,
+  isOpen,
 }: ClaimActionInfoListProps<ChainId>) => (
-  <ActionInfoCollapse isOpen={ALWAYS_OPEN} testId="claim-action-info-list">
-    <ActionInfoGasEstimate gas={useClaimEstimateGas(networks, params, ALWAYS_OPEN)} />
+  <ActionInfoCollapse isOpen={isOpen} testId="claim-action-info-list">
+    <ActionInfoGasEstimate gas={useClaimEstimateGas(networks, params)} />
   </ActionInfoCollapse>
 )
