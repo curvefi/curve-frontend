@@ -23,7 +23,6 @@ export function selectRepayToken({
 
 export function writeRepayLoanForm({ amount }: { amount: Decimal }) {
   getRepayInput().clear().type(amount)
-  cy.get('[data-testid="loan-info-accordion"] button', LOAD_TIMEOUT).first().click() // open the accordion
 }
 
 export function checkRepayDetailsLoaded({
@@ -34,9 +33,9 @@ export function checkRepayDetailsLoaded({
   leverageEnabled: boolean
 }) {
   if (leverageEnabled) {
-    getActionValue('borrow-band-range').should('match', /(\d(\.\d+)?) to (-?\d(\.\d+)?)/)
+    cy.get('[data-testid="borrow-leverage-info-list"]', LOAD_TIMEOUT).should('exist')
   } else {
-    cy.get('[data-testid="borrow-band-range-value"]').should('not.exist')
+    cy.get('[data-testid="borrow-leverage-info-list"]', LOAD_TIMEOUT).should('not.exist')
   }
   getActionValue('borrow-price-range').should('match', /(\d(\.\d+)?) - (\d(\.\d+)?)/)
   getActionValue('borrow-apr').should('include', '%')

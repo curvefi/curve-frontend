@@ -7,7 +7,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import { useUnstakeForm } from '../hooks/useUnstakeForm'
-import { UnstakeSupplyInfoAccordion } from './UnstakeSupplyInfoAccordion'
+import { UnstakeSupplyInfoList } from './UnstakeSupplyInfoList'
 
 export type UnstakeFormProps<ChainId extends IChainId> = {
   market: LlamaMarketTemplate | undefined
@@ -52,7 +52,7 @@ export const UnstakeForm = <ChainId extends IChainId>({
     <Form
       {...form}
       onSubmit={onSubmit}
-      infoAccordion={<UnstakeSupplyInfoAccordion params={params} networks={networks} tokens={{ borrowToken }} />}
+      footer={<UnstakeSupplyInfoList form={form} params={params} networks={networks} tokens={{ borrowToken }} />}
     >
       <LoanFormTokenInput
         label={t`Amount to unstake`}
