@@ -28,7 +28,9 @@ const meta: Meta<typeof HealthBarStory> = {
       description: {
         component:
           'HealthBar component displays the health status of a market position with visual indicators for liquidation risk levels. ' +
-          'Available in two sizes: large (with labels) and small (compact for tables).',
+          'Available in two sizes: large (with labels) and small (compact for tables). ' +
+          'Health levels: Pristine (>50), Good (15-50), Risky (0-15), Liquidation protection (soft liquidation active), ' +
+          'Liquidation protection disabled (health <= 0).',
       },
     },
   },
@@ -41,7 +43,8 @@ const meta: Meta<typeof HealthBarStory> = {
     softLiquidation: {
       control: { type: 'boolean' },
       description:
-        'Indicates if the position has soft liquidation enabled. When true, the health bar border changes to orange to signify partial protection against liquidation.',
+        'When true, label becomes "Liquidation protection" and color thresholds shift: <2.5 red, <40 orange, >=40 yellow (never green). ' +
+        'When false, standard thresholds apply: <2.5 red, <15 orange, <50 yellow, >=50 green.',
       defaultValue: false,
     },
   },
@@ -50,62 +53,92 @@ const meta: Meta<typeof HealthBarStory> = {
 export default meta
 type Story = StoryObj<typeof HealthBarStory>
 
-export const Default: Story = {
-  args: { health: 75, softLiquidation: false },
-  parameters: { docs: { description: { story: 'Default health bar showing a healthy position at 75%.' } } },
-}
+// --- Health Level Stories (one per label) ---
 
 export const Pristine: Story = {
-  args: { health: 100, softLiquidation: false },
-  parameters: { docs: { description: { story: 'Position at pristine health (100%) - safest possible state.' } } },
+  args: { health: 75, softLiquidation: false },
+  parameters: {
+    docs: { description: { story: 'Label: "Pristine" (health > 50). Green bar.' } },
+  },
 }
 
 export const Good: Story = {
-  args: { health: 60, softLiquidation: false },
-  parameters: { docs: { description: { story: 'Position in good health (60%) - comfortable safety margin.' } } },
-}
-
-export const Moderate: Story = {
   args: { health: 35, softLiquidation: false },
-  parameters: { docs: { description: { story: 'Position at moderate health (35%) - should be monitored.' } } },
+  parameters: {
+    docs: { description: { story: 'Label: "Good" (15 < health <= 50). Yellow bar.' } },
+  },
 }
 
 export const Risky: Story = {
-  args: { health: 12, softLiquidation: true },
-  parameters: { docs: { description: { story: 'Position at risky health (12%) - approaching danger zone.' } } },
+  args: { health: 10, softLiquidation: false },
+  parameters: {
+    docs: { description: { story: 'Label: "Risky" (0 < health <= 15). Orange bar.' } },
+  },
 }
 
-export const Critical: Story = {
-  args: { health: 4, softLiquidation: true },
-  parameters: { docs: { description: { story: 'Position at critical health (4%) - very close to liquidation.' } } },
+export const LiquidationProtection: Story = {
+  args: { health: 45, softLiquidation: true },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Label: "Liquidation protection" (softLiquidation is true). Orange bar (health < 40 threshold shifts with soft liquidation).',
+      },
+    },
+  },
 }
+
+export const HardLiquidation: Story = {
+  args: { health: 0, softLiquidation: false },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Label: "Liquidation protection disabled" (health <= 0, no soft liquidation). Red bar at 100% width.',
+      },
+    },
+  },
+}
+
+// --- Edge Case Stories ---
 
 export const NearLiquidation: Story = {
   args: { health: 1, softLiquidation: true },
-  parameters: { docs: { description: { story: 'Position extremely close to liquidation (1%) - action required.' } } },
-}
-
-export const Liquidated: Story = {
-  args: { health: 0, softLiquidation: true },
-  parameters: { docs: { description: { story: 'Position has been liquidated (0% health).' } } },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Health at 1% with soft liquidation. Red bar (< 2.5 threshold). Label: "Liquidation protection". Split-color text effect visible.',
+      },
+    },
+  },
 }
 
 export const NoData: Story = {
   args: { health: null, softLiquidation: null },
-  parameters: { docs: { description: { story: 'Health bar when data is not available (null/undefined)' } } },
+  parameters: { docs: { description: { story: 'Health bar when data is not available (null). No label rendered.' } } },
 }
 
 export const UndefinedHealth: Story = {
   args: { health: undefined, softLiquidation: null },
-  parameters: { docs: { description: { story: 'Health bar with undefined health value. Displays empty bar at 0%.' } } },
+  parameters: {
+    docs: { description: { story: 'Health bar with undefined health value. No label rendered, empty bar.' } },
+  },
 }
 
 export const OutOfBoundsHigh: Story = {
   args: { health: 150, softLiquidation: false },
-  parameters: { docs: { description: { story: 'Health bar with value exceeding 100%.' } } },
+  parameters: {
+    docs: { description: { story: 'Health value exceeding 100%. Clamped to 100% width. Label: "Pristine".' } },
+  },
 }
 
 export const OutOfBoundsLow: Story = {
   args: { health: -20, softLiquidation: true },
-  parameters: { docs: { description: { story: 'Health bar with negative value.' } } },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Negative health value with soft liquidation. Clamped to 0%. Label: "Liquidation protection".',
+      },
+    },
+  },
 }

@@ -94,7 +94,7 @@ export const HealthBar = ({ health, softLiquidation, small, sx }: HealthBarProps
             {insetLabelText[getHealthLevel(health, !!softLiquidation)]}
           </Typography>
         )}
-        {health != null && health < 5 && health > 0 && (
+        {health != null && health < 2.5 && health > 0 && (
           <Stack
             sx={{
               position: 'absolute',
