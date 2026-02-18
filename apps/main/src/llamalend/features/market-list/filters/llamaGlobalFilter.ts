@@ -2,10 +2,12 @@ import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import type { DeepKeys } from '@tanstack/table-core'
 import { useFuzzyFilterFn } from '@ui-kit/hooks/useFuzzySearch'
 
-const TEXT_KEYS: DeepKeys<LlamaMarket>[] = ['assets.borrowed.symbol', 'assets.collateral.symbol', 'type']
-const ADDRESS_KEYS: DeepKeys<LlamaMarket>[] = [
+const MARKET_KEYS: DeepKeys<LlamaMarket>[] = [
+  'assets.borrowed.symbol',
+  'assets.collateral.symbol',
   'assets.borrowed.address',
   'assets.collateral.address',
+  'type',
   'controllerAddress',
   'ammAddress',
   'vaultAddress',
@@ -13,4 +15,4 @@ const ADDRESS_KEYS: DeepKeys<LlamaMarket>[] = [
 
 /** Search filter for market lists */
 export const useLlamaGlobalFilterFn = (data: readonly LlamaMarket[], filterValue: string) =>
-  useFuzzyFilterFn(data, filterValue, TEXT_KEYS, ADDRESS_KEYS)
+  useFuzzyFilterFn(data, filterValue, MARKET_KEYS)

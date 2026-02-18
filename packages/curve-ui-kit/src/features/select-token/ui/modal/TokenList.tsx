@@ -57,7 +57,7 @@ export const TokenList = ({
 
   const showFavorites = !!favorites?.length && !search
 
-  const tokensSearched = useFuzzySearch(tokens, search, ['symbol'], ['address'])
+  const tokensSearched = useFuzzySearch(tokens, search, ['symbol', 'address'])
 
   /**
    * Filters and sorts tokens that the user owns (has a balance > 0).

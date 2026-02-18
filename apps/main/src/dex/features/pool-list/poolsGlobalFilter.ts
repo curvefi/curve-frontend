@@ -14,8 +14,10 @@ export const POOL_TEXT_FIELDS = [
   'pool.lpToken',
 ] satisfies DeepKeys<{ pool: Pool }>[]
 
-const TEXT_KEYS: DeepKeys<PoolListItem>[] = ['pool.name', 'pool.wrappedCoins', 'pool.underlyingCoins']
-const ADDRESS_KEYS: DeepKeys<PoolListItem>[] = [
+const POOL_KEYS: DeepKeys<PoolListItem>[] = [
+  'pool.name',
+  'pool.wrappedCoins',
+  'pool.underlyingCoins',
   'pool.wrappedCoinAddresses',
   'pool.underlyingCoinAddresses',
   'pool.address',
@@ -25,4 +27,4 @@ const ADDRESS_KEYS: DeepKeys<PoolListItem>[] = [
 
 /** Search filter for pools lists */
 export const usePoolsGlobalFilterFn = (data: readonly PoolListItem[], filterValue: string) =>
-  useFuzzyFilterFn(data, filterValue, TEXT_KEYS, ADDRESS_KEYS)
+  useFuzzyFilterFn(data, filterValue, POOL_KEYS)

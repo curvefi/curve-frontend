@@ -89,7 +89,7 @@ export const SelectTokenButton = ({
     [basePools, filterBasepools, tokens],
   )
 
-  const filteredResults = useFuzzySearch(allTokens, filterValue, ['symbol'], ['address'])
+  const filteredResults = useFuzzySearch(allTokens, filterValue, ['symbol', 'address'])
 
   const options = useMemo(
     () =>
