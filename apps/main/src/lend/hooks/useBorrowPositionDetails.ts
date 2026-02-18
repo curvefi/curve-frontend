@@ -18,7 +18,6 @@ import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { calculateAverageRates } from '@ui-kit/utils/averageRates'
-import { decimal } from '@ui-kit/utils/decimal'
 
 type UseBorrowPositionDetailsProps = {
   chainId: ChainId
@@ -54,7 +53,6 @@ export const useBorrowPositionDetails = ({
     bands,
     health,
     leverage,
-    loss,
     prices: liquidationPrices,
     status,
     state: { collateral, borrowed, debt } = {},
@@ -164,13 +162,6 @@ export const useBorrowPositionDetails = ({
     },
     totalDebt: {
       value: totalDebtValue,
-      loading: !market || isUserLoanDetailsLoading || !isHydrated,
-    },
-    collateralLoss: {
-      depositedCollateral: decimal(loss?.deposited_collateral),
-      currentCollateralEstimation: decimal(loss?.current_collateral_estimation),
-      percentage: decimal(loss?.loss_pct),
-      amount: decimal(loss?.loss),
       loading: !market || isUserLoanDetailsLoading || !isHydrated,
     },
   }
