@@ -1,11 +1,14 @@
-import { useEffect, useState, type ReactElement, type ReactNode } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import { useUserMarketStats } from '@/llamalend/queries/market-list/llama-market-stats'
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
-import { UserPositionIndicator, type ColorState } from '@ui-kit/shared/ui/DataTable/UserPositionIndicator'
-import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
+import {
+  UserPositionIndicator,
+  type ColorState,
+  type UserPositionIndicatorProps,
+} from '@ui-kit/shared/ui/DataTable/UserPositionIndicator'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketColumnId } from '../../columns'
@@ -35,47 +38,38 @@ const Paragraph = ({ children }: { children?: ReactNode }) => (
   </Typography>
 )
 
-const TooltipHealthy = ({ children }: { children: ReactElement }) => (
-  <Tooltip
-    title={t`Position is healthy`}
-    body={
+const tooltips: Record<
+  'healthy' | 'inLiqRange' | 'belowLiqRange',
+  Pick<UserPositionIndicatorProps, 'tooltipTitle' | 'tooltipBody'>
+> = {
+  healthy: {
+    tooltipTitle: t`Position is healthy`,
+    tooltipBody: (
       <Paragraph>{t`The oracle price is above your liquidation range. No soft-liquidation conversions are occurring.`}</Paragraph>
-    }
-  >
-    {children}
-  </Tooltip>
-)
-
-const TooltipInLiqRange = ({ children }: { children: ReactElement }) => (
-  <Tooltip
-    title={t`Liquidation protection active`}
-    body={
+    ),
+  },
+  inLiqRange: {
+    tooltipTitle: t`Liquidation protection active`,
+    tooltipBody: (
       <Stack gap={Spacing.sm}>
         <Paragraph>{t`The oracle price is inside your liquidation range. LLAMMA is gradually converting collateral while price moves inside the range. Volatility inside the range can erode health over time.`}</Paragraph>
         <Paragraph>{t`Positions get fully liquidated if health reaches 0.`}</Paragraph>
         <Paragraph>{t`You may reduce risk by repaying debt, waiting for price recovery or closing the position and reopening it.`}</Paragraph>
       </Stack>
-    }
-  >
-    {children}
-  </Tooltip>
-)
-
-const TooltipBelowLiqRange = ({ children }: { children: ReactElement }) => (
-  <Tooltip
-    title={t`Below liquidation range`}
-    body={
+    ),
+  },
+  belowLiqRange: {
+    tooltipTitle: t`Below liquidation range`,
+    tooltipBody: (
       <Stack gap={Spacing.sm}>
         <Paragraph>{t`The oracle price is below your liquidation range. Collateral is fully converted and no further soft-liquidation trades occur while price stays below the range.`}</Paragraph>
         <Paragraph>{t`No further conversion trades occur while price stays below the range. Health is not being eroded anymore but will be if price re-enters the liquidation zone.`}</Paragraph>
         <Paragraph>{t`Positions get fully liquidated if health reaches 0.`}</Paragraph>
         <Paragraph>{t`You may reduce risk by repaying debt, waiting for price recovery or closing the position and reopening it.`}</Paragraph>
       </Stack>
-    }
-  >
-    {children}
-  </Tooltip>
-)
+    ),
+  },
+}
 
 export const UserMarketPositionIndicator = ({ market }: { market: LlamaMarket }) => {
   const { softLiquidation, liquidated } = useUserMarketStats(market, LlamaMarketColumnId.UserHealth)?.data ?? {}
@@ -87,7 +81,7 @@ export const UserMarketPositionIndicator = ({ market }: { market: LlamaMarket })
     [softLiquidation, liquidated],
   )
 
-  const Tooltip = softLiquidation ? TooltipInLiqRange : liquidated ? TooltipBelowLiqRange : TooltipHealthy
+  const tooltip = softLiquidation ? tooltips.inLiqRange : liquidated ? tooltips.belowLiqRange : tooltips.healthy
 
-  return <UserPositionIndicator colorState={colorState} Tooltip={Tooltip} />
+  return <UserPositionIndicator colorState={colorState} {...tooltip} />
 }

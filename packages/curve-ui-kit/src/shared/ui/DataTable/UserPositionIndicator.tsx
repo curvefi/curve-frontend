@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box'
 import type { Theme } from '@mui/material/styles'
 import { LlamaIcon } from '@ui-kit/shared/icons/LlamaIcon'
-import { Tooltip as TooltipComponent } from '@ui-kit/shared/ui/Tooltip'
+import { Tooltip, type TooltipProps } from '@ui-kit/shared/ui/Tooltip'
 import { mapBreakpoints } from '@ui-kit/themes/basic-theme'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
@@ -24,13 +24,18 @@ const ColorStates = {
 
 export type ColorState = keyof typeof ColorStates
 
+export type UserPositionIndicatorProps = {
+  colorState?: ColorState
+} & {
+  tooltipTitle: TooltipProps['title']
+  tooltipBody?: TooltipProps['body']
+}
+
 export const UserPositionIndicator = ({
   colorState = 'info',
-  Tooltip,
-}: {
-  colorState?: ColorState
-  Tooltip: React.ComponentType<Omit<React.ComponentProps<typeof TooltipComponent>, 'title'>>
-}) => (
+  tooltipTitle,
+  tooltipBody,
+}: UserPositionIndicatorProps) => (
   /**
    * Frustratingly, there's a known issue with MUI where tooltips don't render when
    * this component only exports a Box and is wrapped with a Tooltip by the parent.
@@ -38,7 +43,7 @@ export const UserPositionIndicator = ({
    * It's also not straightforward to make the Tooltip optional via `WithWrapper`
    * due to complex type inference issues that arise.
    */
-  <Tooltip>
+  <Tooltip title={tooltipTitle} body={tooltipBody}>
     <Box
       sx={{
         display: 'flex',

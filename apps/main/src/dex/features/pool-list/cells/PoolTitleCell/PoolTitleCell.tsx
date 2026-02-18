@@ -1,10 +1,9 @@
 import lodash from 'lodash'
-import { useMemo, type ReactElement } from 'react'
+import { useMemo } from 'react'
 import { styled, type IStyledComponent } from 'styled-components'
 import { usePoolAlert } from '@/dex/hooks/usePoolAlert'
 import { useTokenAlert } from '@/dex/hooks/useTokenAlert'
 import Stack from '@mui/material/Stack'
-import Tooltip from '@mui/material/Tooltip'
 import type { CellContext } from '@tanstack/react-table'
 import { Icon } from '@ui/Icon'
 import type { IconProps } from '@ui/Icon/Icon'
@@ -21,10 +20,6 @@ import { PoolTokens } from './PoolTokens'
 
 const { Spacing, Height } = SizesAndSpaces
 
-const UserPositionTooltip = ({ children }: { children: ReactElement }) => (
-  <Tooltip title={t`You have a balance in this pool`}>{children}</Tooltip>
-)
-
 export const PoolTitleCell = ({
   row: { original: poolData },
   column: { getFilterValue },
@@ -39,7 +34,7 @@ export const PoolTitleCell = ({
 
   return (
     <Stack direction="row" sx={{ height: Height.row }}>
-      {poolData.hasPosition && <UserPositionIndicator Tooltip={UserPositionTooltip} />}
+      {poolData.hasPosition && <UserPositionIndicator tooltipTitle={t`You have a balance in this pool`} />}
       <Stack direction="row" alignItems="center" gap={Spacing.sm}>
         <TokenIcons blockchainId={network} tokens={tokenList} />
         <Stack direction="column">
