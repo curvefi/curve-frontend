@@ -56,8 +56,8 @@ export function RemoveCollateralInfoList<ChainId extends IChainId>({
     <LoanActionInfoList
       isOpen={isOpen}
       gas={useRemoveCollateralEstimateGas(networks, params, isOpen)}
-      health={useHealthQueries((isFull) => getRemoveCollateralHealthOptions({ ...params, isFull }), isOpen)}
-      prevHealth={useHealthQueries((isFull) => getUserHealthOptions({ ...params, isFull }), isOpen)}
+      health={useHealthQueries((isFull) => getRemoveCollateralHealthOptions({ ...params, isFull }, isOpen))}
+      prevHealth={useHealthQueries((isFull) => getUserHealthOptions({ ...params, isFull }, isOpen))}
       rates={q(useMarketRates(params, isOpen))}
       prevLoanToValue={useLoanToValueFromUserState(
         {

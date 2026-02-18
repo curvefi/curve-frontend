@@ -49,7 +49,7 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
     [debt, userState.data],
   )
 
-  const prevHealth = useHealthQueries((isFull) => getUserHealthOptions({ ...params, isFull }), isOpen)
+  const prevHealth = useHealthQueries((isFull) => getUserHealthOptions({ ...params, isFull }, isOpen))
 
   return (
     <LoanActionInfoList

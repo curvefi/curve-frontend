@@ -53,8 +53,8 @@ export function AddCollateralInfoList<ChainId extends IChainId>({
     <LoanActionInfoList
       isOpen={isOpen}
       gas={useAddCollateralEstimateGas(networks, params, isOpen)}
-      health={useHealthQueries((isFull) => getAddCollateralHealthOptions({ ...params, isFull }), isOpen)}
-      prevHealth={useHealthQueries((isFull) => getUserHealthOptions({ ...params, isFull }), isOpen)}
+      health={useHealthQueries((isFull) => getAddCollateralHealthOptions({ ...params, isFull }, isOpen))}
+      prevHealth={useHealthQueries((isFull) => getUserHealthOptions({ ...params, isFull }, isOpen))}
       rates={q(useMarketRates(params, isOpen))}
       prevLoanToValue={useLoanToValueFromUserState(
         {

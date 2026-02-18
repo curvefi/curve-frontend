@@ -86,8 +86,8 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
       isOpen={isOpen}
       isApproved={q(useRepayIsApproved(params, isOpen))}
       gas={useRepayEstimateGas(networks, params, isOpen)}
-      health={useHealthQueries((isFull) => getRepayHealthOptions({ ...params, isFull }), isOpen)}
-      prevHealth={useHealthQueries((isFull) => getUserHealthOptions({ ...params, isFull }), isOpen)}
+      health={useHealthQueries((isFull) => getRepayHealthOptions({ ...params, isFull }, isOpen))}
+      prevHealth={useHealthQueries((isFull) => getUserHealthOptions({ ...params, isFull }, isOpen))}
       isFullRepay={isFull}
       prevRates={q(useMarketRates(params, isOpen))}
       rates={q(useMarketFutureRates(params, isOpen))}
