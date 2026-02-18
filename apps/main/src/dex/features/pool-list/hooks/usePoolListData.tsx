@@ -15,7 +15,7 @@ import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { DEX_ROUTES } from '@ui-kit/shared/routes'
 import type { PoolListItem, PoolTag } from '../types'
 
-export const POOL_TEXT_FIELDS = [
+const POOL_TEXT_FIELDS = [
   'pool.wrappedCoins',
   'pool.wrappedCoinAddresses',
   'pool.underlyingCoins',
