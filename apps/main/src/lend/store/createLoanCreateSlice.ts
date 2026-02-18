@@ -22,7 +22,7 @@ import { Api, ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { _parseActiveKey } from '@/lend/utils/helpers'
 import { updateUserEventsApi } from '@/llamalend/llama.utils'
 import { refetchLoanExists } from '@/llamalend/queries/user'
-import { invalidateAllUserMarketDetails } from '@/llamalend/queries/validation/invalidation'
+import { invalidateAllUserMarketDetails } from '@/llamalend/queries/user/invalidation'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 

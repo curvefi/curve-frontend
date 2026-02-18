@@ -10,7 +10,7 @@ import { _getMaxActiveKey } from '@/lend/store/createVaultDepositMintSlice'
 import type { State } from '@/lend/store/useStore'
 import { Api, ChainId, FutureRates, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { updateUserEventsApi } from '@/llamalend/llama.utils'
-import { invalidateAllUserMarketDetails } from '@/llamalend/queries/validation/invalidation'
+import { invalidateAllUserMarketDetails } from '@/llamalend/queries/user/invalidation'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 
