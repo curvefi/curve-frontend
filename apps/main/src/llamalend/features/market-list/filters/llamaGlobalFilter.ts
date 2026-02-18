@@ -1,6 +1,6 @@
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import type { DeepKeys } from '@tanstack/table-core'
-import { useFuzzyFilterFn } from '@ui-kit/shared/ui/DataTable/hooks/useFuzzyFilterFn'
+import { useFuzzyFilterFn } from '@ui-kit/hooks/useFuzzySearch'
 
 const TEXT_KEYS: DeepKeys<LlamaMarket>[] = ['assets.borrowed.symbol', 'assets.collateral.symbol', 'type']
 const ADDRESS_KEYS: DeepKeys<LlamaMarket>[] = [

@@ -8,7 +8,6 @@ import { useStore } from '@/dex/store/useStore'
 import { ChainId, CurveApi } from '@/dex/types/main.types'
 import { delayAction } from '@/dex/utils'
 import { useButton } from '@react-aria/button'
-import { useFilter } from '@react-aria/i18n'
 import { useOverlayTriggerState } from '@react-stately/overlays'
 import { Box } from '@ui/Box'
 import { Button } from '@ui/Button'
@@ -18,9 +17,10 @@ import { Chip } from '@ui/Typography'
 import { TokenList } from '@ui-kit/features/select-token/ui/modal/TokenList'
 import { TokenSelectorModal } from '@ui-kit/features/select-token/ui/modal/TokenSelectorModal'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
+import { useFuzzySearch } from '@ui-kit/hooks/useFuzzySearch'
 import { t } from '@ui-kit/lib/i18n'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
-import { type Address, filterTokens, shortenAddress } from '@ui-kit/utils'
+import { type Address, shortenAddress } from '@ui-kit/utils'
 
 type Props = {
   curve: CurveApi
@@ -47,7 +47,6 @@ export const SelectTokenButton = ({
   const overlayTriggerState = useOverlayTriggerState({})
   const openButtonRef = useRef<HTMLButtonElement>(null)
   const { buttonProps: openButtonProps } = useButton({ onPress: () => overlayTriggerState.open() }, openButtonRef)
-  const { endsWith } = useFilter({ sensitivity: 'base' })
 
   const isMobile = useIsMobile()
   const nativeToken = curve.getNetworkConstants().NATIVE_TOKEN
@@ -80,23 +79,29 @@ export const SelectTokenButton = ({
   }
 
   // handles search/filtering
-  const options = useMemo(() => {
-    const allTokens = filterBasepools
-      ? tokens.filter((item) =>
-          basePools.some((basepool) => basepool.token.toLowerCase() === item.address.toLowerCase()),
-        )
-      : tokens
+  const allTokens = useMemo(
+    () =>
+      filterBasepools
+        ? tokens.filter((item) =>
+            basePools.some((basepool) => basepool.token.toLowerCase() === item.address.toLowerCase()),
+          )
+        : tokens,
+    [basePools, filterBasepools, tokens],
+  )
 
-    const filteredResults = filterTokens(filterValue, allTokens, endsWith)
+  const filteredResults = useFuzzySearch(allTokens, filterValue, ['symbol'], ['address'])
 
-    return filteredResults.map((token) => ({
-      chain: blockchainId,
-      address: token.address as Address,
-      symbol: token.symbol,
-      label: [token.basePool && 'Base pool', token.userAddedToken && 'User added'].filter(Boolean).join(' - '),
-      volume: token.volume,
-    }))
-  }, [filterBasepools, tokens, filterValue, endsWith, basePools, blockchainId])
+  const options = useMemo(
+    () =>
+      filteredResults.map((token) => ({
+        chain: blockchainId,
+        address: token.address as Address,
+        symbol: token.symbol,
+        label: [token.basePool && 'Base pool', token.userAddedToken && 'User added'].filter(Boolean).join(' - '),
+        volume: token.volume,
+      })),
+    [filteredResults, blockchainId],
+  )
 
   useEffect(() => {
     async function updateUserAddedToken() {

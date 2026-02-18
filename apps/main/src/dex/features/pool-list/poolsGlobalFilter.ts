@@ -1,6 +1,6 @@
 import type { Pool } from '@/dex/types/main.types'
 import type { DeepKeys } from '@tanstack/table-core'
-import { useFuzzyFilterFn } from '@ui-kit/shared/ui/DataTable/hooks/useFuzzyFilterFn'
+import { useFuzzyFilterFn } from '@ui-kit/hooks/useFuzzySearch'
 import type { PoolListItem } from './types'
 
 export const POOL_TEXT_FIELDS = [

@@ -21,21 +21,7 @@ const splitSearchTerms = (input: string) =>
       { text: [], addresses: [] },
     )
 
-/**
- * Returns a stable `FilterFn<T>` backed by Fuse.js.
- *
- * - Fuse indices are rebuilt only when `data` changes by reference.
- * - The result set is recomputed when `data` or `filterValue` changes.
- * - The returned `FilterFn` is a trivial `Set.has()` lookup per row.
- * - Text terms use AND semantics (all terms must match).
- * - Address terms use OR semantics (any address match is enough).
- */
-export function useFuzzyFilterFn<T>(
-  data: readonly T[],
-  filterValue: string,
-  textKeys: string[],
-  addressKeys: string[],
-): FilterFn<T> {
+function useFuseResultSet<T>(data: readonly T[], filterValue: string, textKeys: string[], addressKeys: string[]) {
   const textFuse = useMemo(
     () =>
       new Fuse(data, {
@@ -44,7 +30,7 @@ export function useFuzzyFilterFn<T>(
         isCaseSensitive: false,
         minMatchCharLength: 2,
         threshold: 0.01,
-        getFn: (obj: T, path: string | string[]) => cleanValue(get(obj, path)),
+        getFn: (obj, path) => cleanValue(get(obj, path)),
         keys: textKeys,
       }),
     [data, textKeys],
@@ -62,15 +48,12 @@ export function useFuzzyFilterFn<T>(
     [data, addressKeys],
   )
 
-  // We memoize the result set to avoid doing multiple Fuse searches per row in the filter function.
-  // This is especially important for large datasets, as it can be expensive to run Fuse searches.
-  const resultSet = useMemo(() => {
+  return useMemo(() => {
     if (!filterValue) return null
 
     const { text, addresses } = splitSearchTerms(filterValue)
     const matched = new Set<T>()
 
-    // AND: intersect results across all text terms
     if (text.length > 0) {
       const [first, ...rest] = text
       const items = rest.reduce(
@@ -80,16 +63,42 @@ export function useFuzzyFilterFn<T>(
         },
         textFuse.search(first).map((r) => r.item),
       )
-
       items.forEach((item) => matched.add(item))
     }
 
-    // OR: union results across all address terms
     addresses.flatMap((addr) => addressFuse.search(addr)).forEach((r) => matched.add(r.item))
 
     return matched
   }, [textFuse, addressFuse, filterValue])
+}
 
-  // The filter function simply checks if the row's original data is in the result set.
+/**
+ * Returns a stable `FilterFn<T>` backed by Fuse.js for use with TanStack Table's `globalFilterFn`.
+ *
+ * - Fuse indices are rebuilt only when `data` changes by reference.
+ * - The result set is recomputed when `data` or `filterValue` changes.
+ * - The returned `FilterFn` is a trivial `Set.has()` lookup per row.
+ * - Text terms use AND semantics (all terms must match).
+ * - Address terms use OR semantics (any address match is enough).
+ */
+export function useFuzzyFilterFn<T>(
+  data: readonly T[],
+  filterValue: string,
+  textKeys: string[],
+  addressKeys: string[],
+): FilterFn<T> {
+  const resultSet = useFuseResultSet(data, filterValue, textKeys, addressKeys)
   return useMemo(() => (row: Row<T>) => !resultSet || resultSet.has(row.original), [resultSet])
+}
+
+/**
+ * Returns a filtered copy of `data` using Fuse.js fuzzy search.
+ * Use this outside of TanStack Table (e.g. token selectors, dropdowns).
+ *
+ * - Returns the original `data` array when `filterValue` is empty.
+ * - Preserves original array order (items are filtered, not re-sorted).
+ */
+export function useFuzzySearch<T>(data: readonly T[], filterValue: string, textKeys: string[], addressKeys: string[]) {
+  const resultSet = useFuseResultSet(data, filterValue, textKeys, addressKeys)
+  return useMemo(() => (resultSet ? data.filter((item) => resultSet.has(item)) : data), [data, resultSet])
 }
