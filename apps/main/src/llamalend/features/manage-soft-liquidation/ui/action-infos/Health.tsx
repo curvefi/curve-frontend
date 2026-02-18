@@ -1,5 +1,5 @@
-import { type ActionInfoProps, ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { HEALTH_THRESHOLDS } from '@/llamalend/features/market-position-details'
+import { type ActionInfoProps, ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 import type { Delta, TextColor } from './types'
 import { formatValue } from './util'
 
@@ -17,7 +17,7 @@ const newHealthColor = ({ current, next }: Props): TextColor =>
 
 /** Health color when not changing it */
 const healthColor = (current: number): TextColor =>
-  current <= HEALTH_THRESHOLDS.TEXT_SPLIT ? 'error' : current <= HEALTH_THRESHOLDS.RISKY ? 'warning' : 'success'
+  current <= HEALTH_THRESHOLDS.CRITICAL ? 'error' : current <= HEALTH_THRESHOLDS.RISKY ? 'warning' : 'success'
 
 export type Props = Delta & Partial<ActionInfoProps>
 
