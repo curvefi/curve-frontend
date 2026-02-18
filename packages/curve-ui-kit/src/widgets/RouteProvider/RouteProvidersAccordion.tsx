@@ -1,6 +1,9 @@
 import { type ReactNode, useMemo } from 'react'
+import Alert from '@mui/material/Alert'
+import AlertTitle from '@mui/material/AlertTitle'
 import Box from '@mui/material/Box'
 import IconButton from '@mui/material/IconButton'
+import Skeleton from '@mui/material/Skeleton'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { CURVE_LOGO_URL } from '@ui/utils'
@@ -9,15 +12,16 @@ import { EnsoIcon } from '@ui-kit/shared/icons/EnsoIcon'
 import { OdosIcon } from '@ui-kit/shared/icons/OdosIcon'
 import { ReloadIcon } from '@ui-kit/shared/icons/ReloadIcon'
 import { Accordion } from '@ui-kit/shared/ui/Accordion'
+import { ErrorIconButton } from '@ui-kit/shared/ui/ErrorIconButton'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { LoadingAnimation } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { type Address, decimalMax } from '@ui-kit/utils'
+import { decimalMax } from '@ui-kit/utils'
 import { RouteComparisonChip } from '@ui-kit/widgets/RouteProvider/RouteComparisonChip'
 import { type RouteOption, type RouteProvider } from './route-provider.types'
 import { RouteProviderCard } from './RouteProviderCard'
 
-const { Spacing, IconSize } = SizesAndSpaces
+const { Spacing, IconSize, ButtonSize } = SizesAndSpaces
 
 const providerLabels = {
   curve: t`Curve`,
@@ -36,13 +40,13 @@ export const providerIcons: Record<RouteProvider, () => ReactNode> = {
 export type { RouteOption }
 
 export type RouteProviderProps = {
-  routes: RouteOption[]
-  selectedRoute: RouteOption
+  routes: RouteOption[] | undefined
+  selectedRoute: RouteOption | undefined
   onChange: (route: RouteOption) => void
-  outputTokenAddress: Address
-  tokenSymbols: Record<Address, string>
+  toTokenSymbol: string | undefined
   isExpanded: boolean
   isLoading: boolean
+  error: Error | null | undefined
   onToggle: () => void
   onRefresh: () => void
 }
@@ -51,31 +55,37 @@ export const RouteProvidersAccordion = ({
   routes,
   selectedRoute,
   onChange,
-  outputTokenAddress,
-  tokenSymbols,
-  isExpanded,
+  toTokenSymbol,
   isLoading,
+  error,
+  isExpanded,
   onToggle,
   onRefresh,
 }: RouteProviderProps) => {
-  const bestOutputAmount = useMemo(() => decimalMax(...routes.map((route) => route.toAmountOutput)), [routes])
+  const bestOutputAmount = useMemo(() => routes && decimalMax(...routes.map((route) => route.toAmountOutput)), [routes])
   const Icon = selectedRoute ? providerIcons[selectedRoute.provider] : null
   return (
     <Accordion
       ghost
       title={t`Route provider`}
       info={
-        !isExpanded &&
-        selectedRoute && (
-          <Stack direction="row" alignItems="center" gap={Spacing.xs}>
-            {Icon && <Icon />}
-            <WithSkeleton loading={isLoading}>
-              <Typography variant="bodySRegular" color="textPrimary">
-                {providerLabels[selectedRoute.provider]}
-              </Typography>
-            </WithSkeleton>
-            <RouteComparisonChip bestOutputAmount={bestOutputAmount} toAmountOutput={selectedRoute.toAmountOutput} />
-          </Stack>
+        error ? (
+          <ErrorIconButton error={error} />
+        ) : (
+          !isExpanded &&
+          (selectedRoute ? (
+            <Stack direction="row" alignItems="center" gap={Spacing.xs}>
+              {Icon && <Icon />}
+              <WithSkeleton loading={isLoading}>
+                <Typography variant="bodySRegular" color="textPrimary">
+                  {providerLabels[selectedRoute.provider]}
+                </Typography>
+              </WithSkeleton>
+              <RouteComparisonChip bestOutputAmount={bestOutputAmount} toAmountOutput={selectedRoute.toAmountOutput} />
+            </Stack>
+          ) : (
+            '-'
+          ))
         )
       }
       expanded={isExpanded}
@@ -97,11 +107,11 @@ export const RouteProvidersAccordion = ({
           </Typography>
         </Stack>
         <Stack gap={Spacing.xs}>
-          {routes.map((route) => (
+          {routes?.map((route) => (
             <RouteProviderCard
-              key={route.provider}
-              tokenSymbol={tokenSymbols[outputTokenAddress]}
-              isSelected={route === selectedRoute}
+              key={route.id}
+              toTokenSymbol={toTokenSymbol}
+              isSelected={route.id === selectedRoute?.id}
               providerLabel={providerLabels[route.provider]}
               route={route}
               bestOutputAmount={bestOutputAmount}
@@ -109,6 +119,12 @@ export const RouteProvidersAccordion = ({
               icon={providerIcons[route.provider]()}
             />
           ))}
+          {isLoading && <Skeleton width="100%" height={ButtonSize.lg} />}
+          {error?.message && (
+            <Alert severity="error">
+              <AlertTitle>{error.message}</AlertTitle>
+            </Alert>
+          )}
         </Stack>
       </Stack>
     </Accordion>

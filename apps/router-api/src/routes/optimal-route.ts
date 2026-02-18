@@ -38,7 +38,10 @@ export const getOptimalRoute = async (request: FastifyRequest<{ Querystring: Opt
     throw new Error(`Failed to calculate optimal route for ${router.join(', ')}: ${reasons.join('; ')}`)
   }
 
-  const result = successes.flatMap((res) => res.value)
+  const result = lodash.sortBy(
+    successes.flatMap((res) => res.value),
+    (route) => -route.amountOut,
+  )
   request.log.info({ message: 'route calculated', query, result })
   return result
 }

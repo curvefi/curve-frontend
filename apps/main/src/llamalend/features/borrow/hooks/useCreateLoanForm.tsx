@@ -1,20 +1,18 @@
-import BigNumber from 'bignumber.js'
 import { useEffect, useMemo } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
 import { useForm } from 'react-hook-form'
 import { useConnection } from 'wagmi'
 import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
-import { getTokens, isRouterMetaRequired } from '@/llamalend/llama.utils'
+import { getTokens, hasZapV2 } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { isLeverageBorrowMoreSupported } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
 import { useCreateLoanExpectedCollateral } from '@/llamalend/queries/create-loan/create-loan-expected-collateral.query'
-import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/create-loan-query.helpers'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { vestResolver } from '@hookform/resolvers/vest'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { mapQuery } from '@ui-kit/types/util'
-import { decimal, Decimal } from '@ui-kit/utils'
+import { Decimal } from '@ui-kit/utils'
 import { setValueOptions, useFormErrors } from '@ui-kit/utils/react-form.utils'
 import { type RouteOption } from '@ui-kit/widgets/RouteProvider'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
@@ -104,10 +102,6 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
   } = useCreateLoanMutation({ network, marketId: market?.id, onReset: form.reset, onCreated, userAddress })
 
   const { borrowToken, collateralToken } = market ? getTokens(market) : {}
-  const [implementation] = market ? getCreateLoanImplementation(market, values.leverageEnabled) : []
-  const routeRequired = !!implementation && isRouterMetaRequired(implementation)
-  const routeAmountIn = decimal(new BigNumber(values.debt ?? 0).plus(values.userBorrowed ?? 0).toString())
-  console.log(implementation, values)
 
   useCallbackAfterFormUpdate(form, resetCreation) // reset creation state on form change
   const onChangeRoute = (route: RouteOption) => form.setValue('route', route, setValueOptions)
@@ -132,14 +126,13 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     formErrors: useFormErrors(form.formState),
     routes: useMarketRoutes({
       chainId,
-      tokenIn: borrowToken?.address,
-      tokenOut: collateralToken?.address,
-      amountIn: routeAmountIn,
+      tokenIn: collateralToken,
+      tokenOut: borrowToken,
+      amountIn: values.userCollateral,
       slippage: values.slippage,
-      route: values.route,
-      outputTokenSymbol: collateralToken?.symbol,
-      enabled: routeRequired,
-      onChangeRoute,
+      selectedRoute: values.route ?? undefined,
+      enabled: params.leverageEnabled && !!market && hasZapV2(market),
+      onChange: onChangeRoute,
     }),
   }
 }

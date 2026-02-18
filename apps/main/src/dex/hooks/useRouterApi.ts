@@ -11,9 +11,9 @@ import { getRouterWarningModal } from '@/dex/store/createQuickSwapSlice'
 import { useStore } from '@/dex/store/useStore'
 import { ChainId, TokensNameMapper } from '@/dex/types/main.types'
 import { getExchangeRates } from '@/dex/utils/utilsSwap'
-import { type RouterApiResponse, useOptimalRoute } from '@ui-kit/entities/router.query'
+import { type Route as RouteApiResponse, useRouterApi as useRouterApiQuery } from '@ui-kit/entities/router-api.query'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { Address, type Decimal, decimal } from '@ui-kit/utils'
+import { Address, type Decimal, fromWei, toWei } from '@ui-kit/utils'
 
 /** Calculate exchange rates for display */
 const calculateExchangeRates = (
@@ -37,7 +37,7 @@ const getMaxSlippage = (isStableswapRoute: boolean) =>
 
 /** Convert the API response to the format used in the app */
 const convertRoute = (
-  { amountIn, amountOut, priceImpact, route, warnings = [], isStableswapRoute, router }: RouterApiResponse[0],
+  { amountIn, amountOut, priceImpact, route, warnings = [], isStableswapRoute, router }: RouteApiResponse,
   { fromAddress, toAddress }: SearchedParams,
   tokensNameMapper: TokensNameMapper,
   isPending: boolean,
@@ -107,20 +107,24 @@ export function useRouterApi(
 } {
   const formValues = useStore((state) => state.quickSwap.formValues) as FormValues
   const { tokensNameMapper } = useTokensNameMapper(chainId)
+  const tokensMapper = useStore((state) => state.tokens.tokensMapper[chainId])
+  const fromDecimals = tokensMapper?.[fromAddress]?.decimals
+  const toDecimals = tokensMapper?.[toAddress]?.decimals
 
   const {
     data: response,
     isLoading,
     isPending,
     error,
-  } = useOptimalRoute(
+  } = useRouterApiQuery(
     {
       chainId: chainId,
       tokenIn: fromAddress as Address,
       tokenOut: toAddress as Address,
       ...(formValues.isFrom
-        ? { amountIn: decimal(formValues.fromAmount) }
-        : { amountOut: decimal(formValues.toAmount) }),
+        ? { amountIn: toWei(formValues.fromAmount, fromDecimals) }
+        : { amountOut: toWei(formValues.toAmount, toDecimals) }),
+      router: 'curve',
     },
     enabled,
   )
@@ -141,10 +145,13 @@ export function useRouterApi(
       },
       formValues: {
         ...formValues,
-        ...(response.length && (formValues.isFrom ? { toAmount: amountOut } : { fromAmount: amountIn })),
+        ...(response.length &&
+          (formValues.isFrom
+            ? { toAmount: fromWei(amountOut, fromDecimals) }
+            : { fromAmount: fromWei(amountIn, toDecimals) })),
       },
     })
-  }, [error, response])
+  }, [error, fromDecimals, response, toDecimals])
 
   return {
     data: useMemo(

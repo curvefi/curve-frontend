@@ -150,14 +150,13 @@ export const QuickSwap = ({
 
   const { data: fromUsdRate } = useTokenUsdRate({ chainId, tokenAddress: fromAddress }, !!fromAddress)
   const { data: toUsdRate } = useTokenUsdRate({ chainId, tokenAddress: toAddress }, !!toAddress)
-
   const {
     balances,
     tokenPrices,
     isLoading: tokenSelectorLoading,
   } = useTokenSelectorData(
     { chainId, userAddress: signerAddress, tokens },
-    { enabled: !!isOpenFromToken || !!isOpenToToken, prefetch: !!userFromBalanceFetched && !!userToBalanceFetched },
+    { enabled: !!isOpenFromToken || !!isOpenToToken, prefetch: userFromBalanceFetched && userToBalanceFetched },
   )
 
   const config = useConfig()

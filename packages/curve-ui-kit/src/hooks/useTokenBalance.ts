@@ -1,20 +1,17 @@
 import { useCallback, useMemo } from 'react'
-import { erc20Abi, ethAddress, formatUnits, isAddressEqual, type Address } from 'viem'
-import { useConfig, useBalance, useReadContracts } from 'wagmi'
-import { useQueries, type QueryObserverOptions, type UseQueryResult } from '@tanstack/react-query'
+import { type Address, erc20Abi, ethAddress, formatUnits, isAddressEqual } from 'viem'
+import { useBalance, useConfig, useReadContracts } from 'wagmi'
+import { type QueryObserverOptions, useQueries, type UseQueryResult } from '@tanstack/react-query'
 import { combineQueriesToObject, type FieldsOf } from '@ui-kit/lib'
 import { queryClient } from '@ui-kit/lib/api'
-import { REFRESH_INTERVAL, type ChainQuery, type UserQuery } from '@ui-kit/lib/model'
+import { type ChainQuery, REFRESH_INTERVAL, type UserQuery } from '@ui-kit/lib/model'
 import { Decimal } from '@ui-kit/utils'
-import type { Config, ReadContractsReturnType } from '@wagmi/core'
-import type { GetBalanceReturnType } from '@wagmi/core'
+import { DEFAULT_DECIMALS } from '@ui-kit/utils/units'
+import type { Config, GetBalanceReturnType, ReadContractsReturnType } from '@wagmi/core'
 import { getBalanceQueryOptions, readContractsQueryOptions } from '@wagmi/core/query'
 
 type TokenQuery = { tokenAddress: Address }
 type TokenBalanceQuery = ChainQuery & UserQuery & TokenQuery
-
-/** Best case guess if for some reason we don't know the actual amount of decimals */
-const DEFAULT_DECIMALS = 18
 
 /** Convert user collateral from GetBalanceReturnType to number */
 const convertBalance = ({ value, decimals }: Partial<GetBalanceReturnType>) =>

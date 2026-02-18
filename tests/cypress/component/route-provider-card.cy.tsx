@@ -24,7 +24,7 @@ const mountRouteProviderCard = ({ isSelected = true }: { isSelected?: boolean } 
           routerAddress: '0x0000000000000000000000000000000000000000',
           calldata: '0x',
         }}
-        tokenSymbol="crvUSD"
+        toTokenSymbol="crvUSD"
         isSelected={isSelected}
         bestOutputAmount="69.4241"
         providerLabel="Curve"

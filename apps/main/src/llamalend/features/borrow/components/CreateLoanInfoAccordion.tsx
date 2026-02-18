@@ -1,4 +1,4 @@
-import type { MarketRoutesQuery } from '@/llamalend/hooks/useMarketRoutes'
+import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useCreateLoanIsApproved } from '@/llamalend/queries/create-loan/create-loan-approved.query'
 import { useMarketRates } from '@/llamalend/queries/market-rates'
@@ -37,7 +37,7 @@ export const CreateLoanInfoAccordion = <ChainId extends IChainId>({
   collateralToken: Token | undefined
   borrowToken: Token | undefined
   networks: NetworkDict<ChainId>
-  routes: MarketRoutesQuery | undefined
+  routes: MarketRoutes | undefined
   onSlippageChange: (newSlippage: Decimal) => void
 }) => {
   const [isOpen, , , toggle] = useSwitch(false)
@@ -67,8 +67,8 @@ export const CreateLoanInfoAccordion = <ChainId extends IChainId>({
       )}
       gas={useCreateLoanEstimateGas(networks, params, isOpen)}
       leverageEnabled={leverageEnabled}
-      routes={routes}
       {...(leverageEnabled && {
+        routes,
         leverageValue,
         leverageTotalCollateral,
         priceImpact,

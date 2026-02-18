@@ -1,12 +1,11 @@
 import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/create-loan-query.helpers'
 import type { Address } from '@curvefi/prices-api'
-import { getExpectedFn } from '@ui-kit/entities/router.query'
-import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
+import { getExpectedFn } from '@ui-kit/entities/router-api.query'
+import { type FieldsOf } from '@ui-kit/lib'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
-import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
 import { assert, decimal, Decimal } from '@ui-kit/utils'
 import type { CreateLoanFormQuery } from '../../features/borrow/types'
-import { createLoanFormValidationGroup } from '../validation/borrow.validation'
+import { createLoanQueryValidationSuite } from '../validation/borrow.validation'
 
 type CreateLoanMaxReceiveQuery = Omit<CreateLoanFormQuery, 'userCollateral' | 'debt'> & {
   userCollateral: Decimal
@@ -41,24 +40,6 @@ const convertNumbers = ({
   collateralFromUserBorrowed: decimal(collateralFromUserBorrowed),
   collateralFromMaxDebt: decimal(collateralFromMaxDebt),
 })
-
-export const maxReceiveValidation = createValidationSuite(
-  ({
-    chainId,
-    marketId,
-    userBorrowed,
-    userCollateral,
-    range,
-    slippage,
-    leverageEnabled,
-  }: CreateLoanMaxReceiveParams) => {
-    marketIdValidationSuite({ chainId, marketId })
-    createLoanFormValidationGroup(
-      { userBorrowed, userCollateral, debt: undefined, range, slippage, leverageEnabled, maxDebt: undefined },
-      { debtRequired: false, isMaxDebtRequired: false, isLeverageRequired: false },
-    )
-  },
-)
 
 export const { useQuery: useCreateLoanMaxReceive, queryKey: createLoanMaxReceiveKey } = queryFactory({
   queryKey: ({
@@ -95,7 +76,8 @@ export const { useQuery: useCreateLoanMaxReceive, queryKey: createLoanMaxReceive
   }: CreateLoanMaxReceiveQuery): Promise<CreateLoanMaxReceiveResult> => {
     const [type, impl] = getCreateLoanImplementation(marketId, leverageEnabled)
     switch (type) {
-      case 'zapV2': {
+      case 'zapV2':
+        if (!route) throw new Error(`route is required for zapV2`)
         return convertNumbers(
           await impl.createLoanMaxRecv({
             userCollateral,
@@ -103,13 +85,12 @@ export const { useQuery: useCreateLoanMaxReceive, queryKey: createLoanMaxReceive
             range,
             getExpected: getExpectedFn({
               chainId,
-              router: route!.provider,
+              router: route.provider,
               fromAddress: userAddress,
               slippage,
             }),
           }),
         )
-      }
       case 'V1':
       case 'V2':
         return convertNumbers(await impl.createLoanMaxRecv(userCollateral, userBorrowed, range))
@@ -124,5 +105,10 @@ export const { useQuery: useCreateLoanMaxReceive, queryKey: createLoanMaxReceive
     }
   },
   staleTime: '1m',
-  validationSuite: maxReceiveValidation,
+  validationSuite: createLoanQueryValidationSuite({
+    debtRequired: false,
+    isMaxDebtRequired: false,
+    isLeverageRequired: false,
+    isRouteRequired: true, // todo remove, always true
+  }),
 })

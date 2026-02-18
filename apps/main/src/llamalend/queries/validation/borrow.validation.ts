@@ -26,6 +26,7 @@ export const createLoanFormValidationGroup = (
     maxDebt,
     maxCollateral,
     leverageEnabled,
+    route: _, // todo: we can't validate the route without the marketId
   }: FieldsOf<CreateLoanForm>,
   {
     debtRequired,
@@ -49,24 +50,38 @@ export const createLoanQueryValidationSuite = ({
   isMaxDebtRequired = debtRequired,
   isLeverageRequired = false,
   skipMarketValidation = false,
+  isRouteRequired = true,
 }: {
   debtRequired: boolean
   isMaxDebtRequired?: boolean
   isLeverageRequired?: boolean
   skipMarketValidation?: boolean
+  isRouteRequired?: boolean
 }) =>
-  createValidationSuite((params: CreateLoanDebtParams) => {
-    const { chainId, leverageEnabled, marketId, userBorrowed, userCollateral, debt, range, slippage, maxDebt } = params
-    skipWhen(skipMarketValidation, () => {
-      marketIdValidationSuite({ chainId, marketId })
-    })
-    createLoanFormValidationGroup(
-      { userBorrowed, userCollateral, debt, range, slippage, leverageEnabled, maxDebt },
-      { debtRequired, isMaxDebtRequired, isLeverageRequired },
-    )
-    skipWhen(skipMarketValidation || !marketId, () => {
-      if (!marketId) return
-      const [type] = getCreateLoanImplementation(marketId, !!leverageEnabled)
-      validateRoute(params.route, !!leverageEnabled && isRouterMetaRequired(type))
-    })
-  })
+  createValidationSuite(
+    ({
+      chainId,
+      leverageEnabled,
+      marketId,
+      userBorrowed,
+      userCollateral,
+      debt,
+      range,
+      slippage,
+      maxDebt,
+      route,
+    }: CreateLoanDebtParams) => {
+      skipWhen(skipMarketValidation, () => {
+        marketIdValidationSuite({ chainId, marketId })
+      })
+      createLoanFormValidationGroup(
+        { userBorrowed, userCollateral, debt, range, slippage, leverageEnabled, maxDebt },
+        { debtRequired, isMaxDebtRequired, isLeverageRequired },
+      )
+      skipWhen(!marketId, () => {
+        if (!marketId) return
+        const [type] = getCreateLoanImplementation(marketId, !!leverageEnabled)
+        validateRoute(route, isRouteRequired && !!leverageEnabled && isRouterMetaRequired(type))
+      })
+    },
+  )

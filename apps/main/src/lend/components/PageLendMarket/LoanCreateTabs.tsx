@@ -1,8 +1,9 @@
 import { useCallback } from 'react'
 import { LoanCreateForm } from '@/lend/components/PageLendMarket/LoanFormCreate/LoanCreateForm'
 import type { FormValues } from '@/lend/components/PageLendMarket/types'
-import { DEFAULT_FORM_VALUES } from '@/lend/components/PageLendMarket/utils'
+import { DEFAULT_CREATE_FORM_STATUS } from '@/lend/components/PageLendMarket/utils'
 import { networks } from '@/lend/networks'
+import { _getActiveKey } from '@/lend/store/createLoanCreateSlice'
 import { useStore } from '@/lend/store/useStore'
 import { type MarketUrlParams, type PageContentProps } from '@/lend/types/lend.types'
 import { CreateLoanForm } from '@/llamalend/features/borrow/components/CreateLoanForm'
@@ -20,26 +21,47 @@ type CreateLoanProps = PageContentProps<MarketUrlParams>
  * Callback that synchronizes the `ChartOhlc` component with the `RangeSlider` component in the new `CreateLoanForm`.
  */
 const useOnFormUpdate = ({ api, market }: Pick<CreateLoanProps, 'api' | 'market'>): OnCreateLoanFormUpdate => {
-  const [setFormValues] = useDebounced(
-    useStore((store) => store.loanCreate.setFormValues),
-    Duration.FormDebounce,
-  )
   const [setStateByKeys] = useDebounced(
     useStore((store) => store.loanCreate.setStateByKeys),
     Duration.FormDebounce,
   )
   return useCallback(
-    async ({ debt, userCollateral, range, slippage, leverageEnabled }) => {
+    async (
+      { debt, userCollateral, range, slippage, leverageEnabled, userBorrowed, maxDebt, maxCollateral },
+      { isApproved = false }, // maxLeverage, estimatedGas },
+    ) => {
       const formValues: FormValues = {
-        ...DEFAULT_FORM_VALUES,
         n: range,
         debt: `${debt ?? ''}`,
+        userBorrowed: `${userBorrowed ?? ''}`,
         userCollateral: `${userCollateral ?? ''}`,
+        userCollateralError: '',
+        userBorrowedError: '',
+        debtError: '',
       }
-      await setFormValues(api, market, formValues, `${slippage}`, leverageEnabled)
-      setStateByKeys({ isEditLiqRange: true })
+
+      const activeKeys = _getActiveKey(api, market, formValues, slippage)
+      setStateByKeys({
+        ...activeKeys,
+        formValues,
+        formStatus: {
+          ...DEFAULT_CREATE_FORM_STATUS,
+          isApproved,
+          isApprovedCompleted: isApproved,
+        },
+        isEditLiqRange: true,
+        // maxLeverage: { [range]: maxLeverage ?? '' },
+        // maxRecv: { [activeKeys.activeKey]: maxCollateral ?? '' },
+        maxLeverage: {},
+        maxRecv: {},
+        detailInfoLeverage: {},
+        detailInfo: {},
+        formEstGas: {},
+        liqRanges: {},
+        liqRangesMapper: {},
+      })
     },
-    [api, market, setFormValues, setStateByKeys],
+    [api, market, setStateByKeys],
   )
 }
 

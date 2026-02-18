@@ -1,17 +1,15 @@
-import { useMemo } from 'react'
+import { useEffect, useEffectEvent, useMemo } from 'react'
 import { zeroAddress } from 'viem'
 import { useConnection } from 'wagmi'
-import { useOptimalRoute } from '@ui-kit/entities/router.query'
+import { useRouterApi } from '@ui-kit/entities/router-api.query'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { type Query } from '@ui-kit/types/util'
-import type { Address, Decimal } from '@ui-kit/utils'
-import type { RouteOption, RouteProvider } from '@ui-kit/widgets/RouteProvider'
+import { type Address, type Decimal, fromWei, toWei } from '@ui-kit/utils'
+import { type RouteOption, RouteProviders } from '@ui-kit/widgets/RouteProvider'
 
-const ALL_ROUTE_PROVIDERS: RouteProvider[] = ['curve', 'odos', 'enso']
-
-export type MarketRoutesQuery = Query<RouteOption[]> & {
-  selected: RouteOption | undefined
-  onChange: (route: RouteOption) => void
+export type MarketRoutes = Query<RouteOption[]> & {
+  selectedRoute: RouteOption | undefined
+  onChange: (option: RouteOption) => void
   onRefresh: () => void
 }
 
@@ -21,65 +19,53 @@ export function useMarketRoutes({
   tokenOut,
   amountIn,
   slippage,
-  route,
-  outputTokenSymbol,
+  selectedRoute,
   enabled,
-  onChangeRoute,
+  onChange,
 }: {
   chainId: number
-  tokenIn: Address | undefined
-  tokenOut: Address | undefined
+  tokenIn: { symbol: string; address: Address; decimals: number } | undefined
+  tokenOut: { symbol: string; address: Address; decimals: number } | undefined
   amountIn: Decimal | undefined
   slippage: Decimal | undefined
-  route: RouteOption | undefined | null
-  outputTokenSymbol: string | undefined
+  selectedRoute: RouteOption | undefined
   enabled: boolean
-  onChangeRoute: (route: RouteOption) => void
-}): MarketRoutesQuery | undefined {
+} & Pick<MarketRoutes, 'onChange'>): MarketRoutes | undefined {
   const { address: userAddress } = useConnection()
-  const { data, refetch, isLoading, error } = useOptimalRoute(
-    {
-      chainId,
-      tokenIn,
-      tokenOut,
-      amountIn,
-      router: ALL_ROUTE_PROVIDERS,
-      fromAddress: userAddress,
-      slippage,
-    },
-    enabled,
-  )
+  const params = {
+    chainId,
+    tokenIn: tokenIn?.address,
+    tokenOut: tokenOut?.address,
+    amountIn: amountIn && toWei(amountIn, tokenIn?.decimals),
+    router: RouteProviders,
+    fromAddress: userAddress,
+    slippage,
+  }
+  const { data, refetch, isLoading, error } = useRouterApi(params, enabled)
   const { data: outputTokenUsdRate } = useTokenUsdRate(
-    {
-      chainId,
-      tokenAddress: tokenOut,
-    },
+    { chainId, tokenAddress: tokenOut?.address },
     enabled && !!tokenOut,
   )
 
   const routes = useMemo(
     () =>
       data?.map((item) => ({
+        id: item.id,
         provider: item.router,
-        toAmountOutput: item.amountOut,
+        toAmountOutput: fromWei(item.amountOut, tokenOut?.decimals),
         priceImpact: item.priceImpact ?? 0,
         routerAddress: item.tx?.to ?? zeroAddress,
         calldata: item.tx?.data ?? '0x',
         usdPrice: outputTokenUsdRate ?? null,
       })),
-    [outputTokenUsdRate, data],
+    [data, tokenOut?.decimals, outputTokenUsdRate],
   )
-  const selected = routes?.find((next) => next.provider === route?.provider) ?? route ?? routes?.[0]
+  const firstRoute = routes?.[0]
+  const onChangeRoute = useEffectEvent(onChange)
+  useEffect(() => {
+    // todo: we really need a better way to add callbacks to queries that doesn't introduce extra renders
+    if (firstRoute) onChangeRoute(firstRoute)
+  }, [firstRoute])
 
-  console.log('useMarketRoutes', { routes, selected, enabled, tokenOut, outputTokenSymbol })
-  return enabled
-    ? {
-        data: routes,
-        isLoading,
-        error,
-        selected,
-        onChange: onChangeRoute,
-        onRefresh: () => refetch(),
-      }
-    : undefined
+  return enabled ? { data: routes, isLoading, error, selectedRoute, onChange, onRefresh: refetch } : undefined
 }

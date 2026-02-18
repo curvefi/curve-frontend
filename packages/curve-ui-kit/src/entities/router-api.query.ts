@@ -2,13 +2,15 @@ import { enforce, test } from 'vest'
 import type { Hex } from 'viem'
 import type { IRouteStep } from '@curvefi/api/lib/interfaces'
 import type { GetExpectedFn } from '@curvefi/llamalend-api/src/interfaces'
+import { fetchJson } from '@curvefi/prices-api/fetch'
 import { notFalsy } from '@curvefi/prices-api/objects.util'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
-import { Address, assert, Decimal } from '@ui-kit/utils'
+import { Address, assert, Decimal, toArray } from '@ui-kit/utils'
 import type { RouteProvider } from '@ui-kit/widgets/RouteProvider'
 
-const httpFetcher = (uri: string) => fetch(uri).then((res) => res.json())
+// todo: move this to api?
+const generateRandomSecureId = () => crypto.getRandomValues(new Uint32Array(4)).join('')
 
 export type OptimalRouteQuery = {
   chainId: number
@@ -16,21 +18,21 @@ export type OptimalRouteQuery = {
   tokenOut: Address
   amountIn?: Decimal
   amountOut?: Decimal
-  router?: RouteProvider | RouteProvider[]
+  router?: RouteProvider | readonly RouteProvider[]
   fromAddress?: Address
   slippage?: Decimal
 }
 
 export type OptimalRouteParams = FieldsOf<OptimalRouteQuery>
 
-export type RouterApiRouteStep = {
+type RouterApiRouteStep = {
   name: string
   args: Omit<IRouteStep, 'inputCoinAddress' | 'outputCoinAddress' | 'poolId'> & { poolId?: string }
   tokenIn: [Address]
   tokenOut: [Address]
 }
 
-export type RouterApiResponse = {
+type RouterApiResponse = {
   amountIn: Decimal
   amountOut: Decimal
   priceImpact: number | null
@@ -40,9 +42,11 @@ export type RouterApiResponse = {
   route: RouterApiRouteStep[]
   router: RouteProvider
   tx?: { to: Address; data: Hex }
-}[]
+}
 
-export const { useQuery: useOptimalRoute, fetchQuery: fetchOptimalRoute } = queryFactory({
+export type Route = RouterApiResponse & { id: string }
+
+export const { useQuery: useRouterApi, fetchQuery: fetchApiRoutes } = queryFactory({
   queryKey: ({ chainId, tokenIn, tokenOut, amountIn, amountOut, router, fromAddress, slippage }: OptimalRouteParams) =>
     [
       'router-api',
@@ -56,7 +60,7 @@ export const { useQuery: useOptimalRoute, fetchQuery: fetchOptimalRoute } = quer
       { fromAddress },
       { slippage },
     ] as const,
-  queryFn: ({
+  queryFn: async ({
     chainId,
     tokenIn,
     tokenOut,
@@ -65,7 +69,7 @@ export const { useQuery: useOptimalRoute, fetchQuery: fetchOptimalRoute } = quer
     router,
     fromAddress,
     slippage,
-  }: OptimalRouteQuery): Promise<RouterApiResponse> => {
+  }: OptimalRouteQuery): Promise<Route[]> => {
     const query = new URLSearchParams(
       notFalsy(
         ['chainId', `${chainId}`],
@@ -78,11 +82,9 @@ export const { useQuery: useOptimalRoute, fetchQuery: fetchOptimalRoute } = quer
       ),
     )
 
-    for (const provider of Array.isArray(router) ? router : router ? [router] : []) {
-      query.append('router', provider)
-    }
-
-    return httpFetcher(`/api/router/optimal-route?${query}`)
+    toArray(router).forEach((router) => query.append('router', router))
+    const routes = await fetchJson<RouterApiResponse[]>(`/api/router/optimal-route?${query}`)
+    return routes.map((route) => ({ ...route, id: generateRandomSecureId() }))
   },
   staleTime: '1m',
   refetchInterval: '15s',
@@ -96,9 +98,14 @@ export const { useQuery: useOptimalRoute, fetchQuery: fetchOptimalRoute } = quer
     test('tokenOut', 'Invalid tokenOut address', () => {
       enforce(tokenOut).isAddress()
     })
-    test('amount', 'Provide either amountIn or amountOut (not both)', () => {
-      enforce(!!amountIn !== !!amountOut).isTruthy()
-    })
+    test(
+      'amount',
+      'Provide either amountIn or amountOut (not both)' +
+        `${amountIn} ${amountOut} ${!!Number(amountIn)} ${!!Number(amountOut)}`,
+      () => {
+        enforce(!!Number(amountIn) !== !!Number(amountOut)).isTruthy()
+      },
+    )
   }),
 })
 
@@ -110,7 +117,7 @@ export const getExpectedFn =
     slippage,
   }: Pick<OptimalRouteQuery, 'chainId' | 'router' | 'fromAddress' | 'slippage'>): GetExpectedFn =>
   async (fromToken, toToken, amountIn) => {
-    const routes = await fetchOptimalRoute({
+    const routes = await fetchApiRoutes({
       chainId,
       tokenIn: fromToken as `0x${string}`,
       tokenOut: toToken as `0x${string}`,

@@ -4,7 +4,11 @@ import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import type { CreateLoanDebtQuery, CreateLoanFormQueryParams } from '../../features/borrow/types'
 import { createLoanQueryValidationSuite } from '../validation/borrow.validation'
 
-export const { useQuery: useCreateLoanIsApproved, fetchQuery: fetchCreateLoanIsApproved } = queryFactory({
+export const {
+  useQuery: useCreateLoanIsApproved,
+  fetchQuery: fetchCreateLoanIsApproved,
+  getQueryData: getCreateLoanIsApprovedData,
+} = queryFactory({
   queryKey: ({
     chainId,
     marketId,

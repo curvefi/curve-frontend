@@ -60,7 +60,18 @@ const useRepayParams = <ChainId>({
         slippage,
         route,
       }),
-      [chainId, marketId, userAddress, stateCollateral, userCollateral, userBorrowed, maxCollateral, isFull, slippage, route],
+      [
+        chainId,
+        marketId,
+        userAddress,
+        stateCollateral,
+        userCollateral,
+        userBorrowed,
+        maxCollateral,
+        isFull,
+        slippage,
+        route,
+      ],
     ),
   )
 
@@ -151,10 +162,9 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
       tokenOut: borrowToken?.address,
       amountIn: swapAmountIn,
       slippage: values.slippage,
-      route: values.route,
-      outputTokenSymbol: borrowToken?.symbol,
+      selectedRoute: values.route ?? undefined,
       enabled: routeRequired,
-      onChangeRoute,
+      onChange: onChangeRoute,
     }),
     formErrors: useMemo(
       // only show the 'not available' warn when there are no other form errors
