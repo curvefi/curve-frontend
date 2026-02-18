@@ -1,6 +1,20 @@
 import type { Theme } from '@mui/material'
 import { Decimal } from '@ui-kit/utils'
 
+/** Health percentage thresholds used for color coding and label display */
+export const HEALTH_THRESHOLDS = {
+  /** Below this value, the position is in hard liquidation */
+  HARD_LIQUIDATION: 0,
+  /** Below this value, the position is critically at risk */
+  CRITICAL: 2.5,
+  /** Below this value, the position is considered risky */
+  RISKY: 15,
+  /** Below this value during soft liquidation, the track color is orange */
+  SOFT_LIQUIDATION_DANGER: 40,
+  /** Below this value, the position is in good standing; above is pristine */
+  GOOD: 50,
+} as const
+
 export const calculateRangeToLiquidation = (upperLiquidationPrice: number, oraclePrice: number) =>
   ((oraclePrice - upperLiquidationPrice) / upperLiquidationPrice) * 100
 
@@ -33,9 +47,9 @@ export const getHealthValueColor = ({
   }
   const value = Number(health ?? prevHealth ?? 0)
   if (isFullRepay) return neutral
-  if (value < 2.5) return red
-  if (value < 15) return orange
-  if (value < 50) return neutral
+  if (value < HEALTH_THRESHOLDS.CRITICAL) return red
+  if (value < HEALTH_THRESHOLDS.RISKY) return orange
+  if (value < HEALTH_THRESHOLDS.GOOD) return neutral
   return neutral
 }
 
@@ -59,12 +73,12 @@ export const getHealthTrackColor = ({
     return softLiquidation ? Layer.Feedback.Warning : green
   }
   if (softLiquidation) {
-    if (health < 2.5) return red
-    if (health < 40) return orange
+    if (health < HEALTH_THRESHOLDS.CRITICAL) return red
+    if (health < HEALTH_THRESHOLDS.SOFT_LIQUIDATION_DANGER) return orange
     return yellow
   }
-  if (health < 2.5) return red
-  if (health < 15) return orange
-  if (health < 50) return yellow
+  if (health < HEALTH_THRESHOLDS.CRITICAL) return red
+  if (health < HEALTH_THRESHOLDS.RISKY) return orange
+  if (health < HEALTH_THRESHOLDS.GOOD) return yellow
   return green
 }

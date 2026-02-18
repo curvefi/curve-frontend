@@ -2,7 +2,7 @@ import { Stack, type SxProps, Typography, useTheme } from '@mui/material'
 import { t } from '@ui-kit/lib/i18n'
 import { LinearProgress } from '@ui-kit/shared/ui/LinearProgress'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
-import { getHealthTrackColor } from './'
+import { HEALTH_THRESHOLDS, getHealthTrackColor } from './'
 
 type HealthBarProps = {
   health: number | undefined | null
@@ -31,9 +31,9 @@ const clampPercentage = (health: number | undefined | null): number => Math.max(
 
 const getHealthLevel = (health: number | undefined | null, softLiquidation: boolean): HealthLevel => {
   if (softLiquidation) return 'liquidationProtection'
-  if (health == null || health <= 0) return 'hardLiquidation'
-  if (health <= 15) return 'risky'
-  if (health <= 50) return 'good'
+  if (health == null || health <= HEALTH_THRESHOLDS.HARD_LIQUIDATION) return 'hardLiquidation'
+  if (health <= HEALTH_THRESHOLDS.RISKY) return 'risky'
+  if (health <= HEALTH_THRESHOLDS.GOOD) return 'good'
   return 'pristine'
 }
 
@@ -61,7 +61,10 @@ export const HealthBar = ({ health, softLiquidation, small, sx }: HealthBarProps
       >
         <Stack
           sx={{
-            width: health != null ? `${health <= 0 ? 100 : clampPercentage(health)}%` : '0%',
+            width:
+              health != null
+                ? `${health <= HEALTH_THRESHOLDS.HARD_LIQUIDATION ? 100 : clampPercentage(health)}%`
+                : '0%',
             height: '100%',
             backgroundColor: health != null ? getHealthTrackColor({ health, softLiquidation, theme }) : 'transparent',
             transition: `width ${TransitionFunction}, background-color ${TransitionFunction}`,
@@ -70,11 +73,11 @@ export const HealthBar = ({ health, softLiquidation, small, sx }: HealthBarProps
         {/**
          * Text color logic for health bar label:
          *
-         * - health <= 0: Bar is 100% red (hard liquidation risk), text is fully white
-         * - 0 < health < 5: Split-color effect - black base with white overlay clipped to bar width.
-         *   Two identical labels are stacked; the overlay uses overflow:hidden to show white
-         *   text over the red bar and black text over the gray background.
-         * - health >= 5: Single label in warning color
+         * - health <= HARD_LIQUIDATION: Bar is 100% red, text is fully white
+         * - HARD_LIQUIDATION < health < CRITICAL: Split-color effect - black base with white
+         *   overlay clipped to bar width. Two identical labels are stacked; the overlay uses
+         *   overflow:hidden to show white text over the red bar and black text over the gray background.
+         * - health >= CRITICAL: Single label in warning color
          */}
         {health != null && (
           <Typography
@@ -84,9 +87,9 @@ export const HealthBar = ({ health, softLiquidation, small, sx }: HealthBarProps
               bottom: LABEL_INSET,
               left: LABEL_INSET,
               color: (t) =>
-                health <= 0
+                health <= HEALTH_THRESHOLDS.HARD_LIQUIDATION
                   ? t.design.Text.TextColors.FilledFeedback.Alert.Primary // Full white when bar is 100% red
-                  : health < 5
+                  : health < HEALTH_THRESHOLDS.CRITICAL
                     ? t.design.Text.TextColors.Primary // Black base for split effect
                     : t.design.Text.TextColors.FilledFeedback.Warning.Primary,
             }}
@@ -94,7 +97,7 @@ export const HealthBar = ({ health, softLiquidation, small, sx }: HealthBarProps
             {insetLabelText[getHealthLevel(health, !!softLiquidation)]}
           </Typography>
         )}
-        {health != null && health < 2.5 && health > 0 && (
+        {health != null && health < HEALTH_THRESHOLDS.CRITICAL && health > HEALTH_THRESHOLDS.HARD_LIQUIDATION && (
           <Stack
             sx={{
               position: 'absolute',
