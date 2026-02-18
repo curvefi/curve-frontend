@@ -25,7 +25,18 @@ export function writeRepayLoanForm({ amount }: { amount: Decimal }) {
   getRepayInput().clear().type(amount)
 }
 
-export function checkRepayDetailsLoaded({ debt }: { debt: Parameters<typeof checkDebt> }) {
+export function checkRepayDetailsLoaded({
+  leverageEnabled,
+  debt,
+}: {
+  debt: Parameters<typeof checkDebt>
+  leverageEnabled: boolean
+}) {
+  if (leverageEnabled) {
+    cy.get('[data-testid="borrow-leverage-info-list"]', LOAD_TIMEOUT).should('exist')
+  } else {
+    cy.get('[data-testid="borrow-leverage-info-list"]', LOAD_TIMEOUT).should('not.exist')
+  }
   getActionValue('borrow-price-range').should('match', /(\d(\.\d+)?) - (\d(\.\d+)?)/)
   getActionValue('borrow-apr').should('include', '%')
   checkDebt(...debt)

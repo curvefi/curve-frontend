@@ -168,7 +168,7 @@ export const LoanActionInfoList = ({
       </Stack>
 
       {leverageEnabled && (
-        <Stack sx={{ ...ACTION_INFO_GROUP_SX }}>
+        <Stack sx={{ ...ACTION_INFO_GROUP_SX }} data-testid="borrow-leverage-info-list">
           {(prevLeverageValue || leverageValue) && (
             <ActionInfo
               label={t`Leverage`}

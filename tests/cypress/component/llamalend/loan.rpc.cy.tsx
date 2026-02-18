@@ -154,6 +154,7 @@ recordValues(LlamaMarketType)
           writeRepayLoanForm({ amount: repay }) // TODO: test full-repay
           checkRepayDetailsLoaded({
             debt: [debtAfterBorrowMore, debtAfterBorrowMoreAndRepay, 'crvUSD'],
+            leverageEnabled,
           })
           submitRepayForm().then(() => expect(onRepaid).to.be.calledOnce)
           checkDebt(debtAfterBorrowMoreAndRepay, debtAfterBorrowMoreAndRepay, 'crvUSD')
