@@ -47,8 +47,8 @@ export const parseAllMarkets = (resp: Responses.GetAllMarketsResponse) =>
 export const parseSnapshot = (x: Responses.GetSnapshotsResponse['data'][number]): Models.Snapshot => ({
   timestamp: toDate(x.dt),
   rate: x.rate,
-  borrowApy: x.borrow_apy,
-  borrowApr: x.borrow_apr,
+  borrowApy: x.borrow_apy, // value already in percentage: 0.12 => 0.12%
+  borrowApr: x.borrow_apr, // value already in percentage: 0.12 => 0.12%
   nLoans: x.n_loans,
   minted: x.minted,
   redeemed: x.redeemed,

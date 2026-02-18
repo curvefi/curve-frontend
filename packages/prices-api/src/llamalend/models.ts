@@ -70,8 +70,6 @@ export type Snapshot = {
   rate: number
   borrowApy: number
   borrowApr: number
-  borrowTotalApy: number
-  borrowTotalApr: number
   lendApy: number
   lendApr: number
   lendAprCrv0Boost: number
