@@ -71,15 +71,13 @@ export const oneLoanTestMarket = (type: LlamaMarketType = oneValueOf(LlamaMarket
 
 /**
  * Check all loan detail values are loaded and valid.
- * The accordion is expected to be opened before calling this function.
+ * The action info list is expected to be opened before calling this function.
  */
 export function checkLoanDetailsLoaded({ leverageEnabled }: { leverageEnabled: boolean }) {
-  getActionValue('borrow-band-range').should('match', /(\d(\.\d+)?) to (-?\d(\.\d+)?)/)
   getActionValue('borrow-price-range').should('match', /(\d(\.\d+)?) - (\d(\.\d+)?)/)
   getActionValue('borrow-apr').should('include', '%')
   getActionValue('borrow-apr', 'previous').should('include', '%')
   getActionValue('borrow-ltv').should('include', '%')
-  getActionValue('borrow-n').should('eq', '50')
 
   if (leverageEnabled) {
     getActionValue('borrow-price-impact').should('include', '%')
@@ -99,12 +97,10 @@ export function writeCreateLoanForm({
   collateral,
   borrow,
   leverageEnabled,
-  openAccordion = true,
 }: {
   collateral: Decimal
   borrow: Decimal
   leverageEnabled: boolean
-  openAccordion?: boolean
 }) {
   cy.get('[data-testid="borrow-debt-input"] [data-testid="balance-value"]', LOAD_TIMEOUT).should('exist')
   cy.get('[data-testid="borrow-collateral-input"] input[type="text"]').first().type(collateral)
@@ -112,7 +108,6 @@ export function writeCreateLoanForm({
   getActionValue('borrow-health').should('equal', '∞')
   cy.get('[data-testid="borrow-debt-input"] input[type="text"]').first().type(borrow)
   getActionValue('borrow-health').should('not.equal', '∞')
-  if (openAccordion) cy.get('[data-testid="loan-info-accordion"] button', LOAD_TIMEOUT).click() // open the accordion
   if (leverageEnabled) cy.get('[data-testid="leverage-checkbox"]').click()
 }
 

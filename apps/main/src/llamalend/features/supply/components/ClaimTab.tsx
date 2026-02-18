@@ -9,7 +9,7 @@ import { TotalNotionalRow } from '@ui-kit/shared/ui/DataTable/inline-cells/notio
 import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import { FormContent } from '@ui-kit/widgets/DetailPageLayout/FormContent'
 import { useClaimTab } from '../hooks/useClaimTab'
-import { ClaimInfoAccordion } from './ClaimInfoAccordion'
+import { ClaimActionInfoList } from './ClaimActionInfoList'
 import { type ClaimableToken } from './columns'
 
 export type ClaimTabProps<ChainId extends IChainId> = {
@@ -47,7 +47,7 @@ export const ClaimTab = <ChainId extends IChainId>({ market, networks, chainId, 
   })
   return (
     <>
-      <FormContent footer={<ClaimInfoAccordion params={params} networks={networks} />}>
+      <FormContent footer={<ClaimActionInfoList params={params} networks={networks} />}>
         <DataTable<ClaimableToken>
           table={table}
           emptyState={

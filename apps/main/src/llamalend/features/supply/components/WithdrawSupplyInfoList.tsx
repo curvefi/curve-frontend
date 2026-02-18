@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import type { UseFormReturn } from 'react-hook-form'
 import type { Token } from '@/llamalend/features/borrow/types'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useMarketSupplyFutureRates } from '@/llamalend/queries/market-future-rates.query'
@@ -7,28 +8,30 @@ import { useWithdrawExpectedVaultShares } from '@/llamalend/queries/supply/suppl
 import { useUserVaultSharesToAssetsAmount } from '@/llamalend/queries/supply/supply-user-vault-amounts'
 import { useWithdrawEstimateGas } from '@/llamalend/queries/supply/supply-withdraw-estimate-gas.query'
 import { useUserBalances } from '@/llamalend/queries/user'
-import type { WithdrawParams } from '@/llamalend/queries/validation/supply.validation'
-import { SupplyInfoAccordion } from '@/llamalend/widgets/action-card/SupplyInfoAccordion'
+import type { WithdrawForm, WithdrawParams } from '@/llamalend/queries/validation/supply.validation'
+import { SupplyActionInfoList } from '@/llamalend/widgets/action-card/SupplyActionInfoList'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { mapQuery } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
+import { isFormTouched } from '@ui-kit/utils/react-form.utils'
 
-export type WithdrawSupplyInfoAccordionProps<ChainId extends IChainId> = {
+export type WithdrawSupplyInfoListProps<ChainId extends IChainId> = {
   params: WithdrawParams<ChainId>
   networks: NetworkDict<ChainId>
   tokens: { borrowToken: Token | undefined }
+  form: UseFormReturn<WithdrawForm>
 }
 
-export function WithdrawSupplyInfoAccordion<ChainId extends IChainId>({
+export function WithdrawSupplyInfoList<ChainId extends IChainId>({
   params,
   networks,
   tokens,
-}: WithdrawSupplyInfoAccordionProps<ChainId>) {
-  const [isOpen, , , toggle] = useSwitch(false)
+  form,
+}: WithdrawSupplyInfoListProps<ChainId>) {
   const { chainId, marketId, userAddress, withdrawAmount } = params
+  const isOpen = isFormTouched(form, 'withdrawAmount')
 
-  const userBalances = useUserBalances({ chainId, marketId, userAddress })
+  const userBalances = useUserBalances({ chainId, marketId, userAddress }, isOpen)
   const prevVaultShares = mapQuery(userBalances, (d) => d.vaultShares)
   const vaultShares = useWithdrawExpectedVaultShares(params, isOpen)
 
@@ -42,9 +45,8 @@ export function WithdrawSupplyInfoAccordion<ChainId extends IChainId>({
   )
 
   return (
-    <SupplyInfoAccordion
+    <SupplyActionInfoList
       isOpen={isOpen}
-      toggle={toggle}
       suppliedSymbol={tokens.borrowToken?.symbol}
       prevVaultShares={prevVaultShares}
       vaultShares={vaultShares}

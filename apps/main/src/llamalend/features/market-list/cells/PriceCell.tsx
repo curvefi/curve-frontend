@@ -97,12 +97,6 @@ const getTooltipBody = (
             (stats?.borrowToken?.amount ?? 0) * (stats?.borrowToken?.usdRate ?? 0),
           loading: isLoading,
         }}
-        collateralLoss={
-          stats?.collateralLoss && {
-            ...stats.collateralLoss,
-            loading: isLoading,
-          }
-        }
       />
     )
   }

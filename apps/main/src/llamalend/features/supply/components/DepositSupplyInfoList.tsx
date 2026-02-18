@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import type { UseFormReturn } from 'react-hook-form'
 import type { Token } from '@/llamalend/features/borrow/types'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useMarketSupplyFutureRates } from '@/llamalend/queries/market-future-rates.query'
@@ -8,29 +9,31 @@ import { useDepositEstimateGas } from '@/llamalend/queries/supply/supply-deposit
 import { useDepositExpectedVaultShares } from '@/llamalend/queries/supply/supply-expected-vault-shares.query'
 import { useUserVaultSharesToAssetsAmount } from '@/llamalend/queries/supply/supply-user-vault-amounts'
 import { useUserBalances } from '@/llamalend/queries/user'
-import type { DepositParams } from '@/llamalend/queries/validation/supply.validation'
-import { SupplyInfoAccordion } from '@/llamalend/widgets/action-card/SupplyInfoAccordion'
+import type { DepositForm, DepositParams } from '@/llamalend/queries/validation/supply.validation'
+import { SupplyActionInfoList } from '@/llamalend/widgets/action-card/SupplyActionInfoList'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { mapQuery, q } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
+import { isFormTouched } from '@ui-kit/utils/react-form.utils'
 
-export type DepositSupplyInfoAccordionProps<ChainId extends IChainId> = {
+export type DepositSupplyInfoListProps<ChainId extends IChainId> = {
   params: DepositParams<ChainId>
   networks: NetworkDict<ChainId>
   tokens: { borrowToken: Token | undefined }
+  form: UseFormReturn<DepositForm>
 }
 
-export function DepositSupplyInfoAccordion<ChainId extends IChainId>({
+export function DepositSupplyInfoList<ChainId extends IChainId>({
   params,
   networks,
   tokens,
-}: DepositSupplyInfoAccordionProps<ChainId>) {
-  const [isOpen, , , toggle] = useSwitch(false)
+  form,
+}: DepositSupplyInfoListProps<ChainId>) {
   const { chainId, marketId, userAddress, depositAmount } = params
+  const isOpen = isFormTouched(form, 'depositAmount')
 
   const { data: isApproved } = useDepositIsApproved(params, isOpen)
-  const userBalances = useUserBalances({ chainId, marketId, userAddress })
+  const userBalances = useUserBalances({ chainId, marketId, userAddress }, isOpen)
 
   const marketRates = useMarketRates(params, isOpen)
   const futureRates = useMarketSupplyFutureRates({ chainId, marketId, reserves: depositAmount }, isOpen)
@@ -41,9 +44,8 @@ export function DepositSupplyInfoAccordion<ChainId extends IChainId>({
   )
 
   return (
-    <SupplyInfoAccordion
+    <SupplyActionInfoList
       isOpen={isOpen}
-      toggle={toggle}
       isApproved={isApproved}
       suppliedSymbol={tokens.borrowToken?.symbol}
       prevVaultShares={mapQuery(userBalances, (d) => d.vaultShares)}
