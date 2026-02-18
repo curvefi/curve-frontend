@@ -102,9 +102,7 @@ export const useBorrowPositionDetails = ({
     hasLoan,
   )
   const { data: userBandsValue, isLoading: isUserBandsLoading } = useUserBands(userMarketParams, hasLoan)
-  const { data: userPricesValue, isLoading: isUserPricesLoading } = useUserPrices(userMarketParams, {
-    loanExists: hasLoan,
-  })
+  const { data: userPricesValue, isLoading: isUserPricesLoading } = useUserPrices(userMarketParams)
   const { data: leverage, isLoading: isLeverageLoading } = useUserCurrentLeverage(userMarketParams, hasLoan)
 
   const marketParams = { chainId: chainId as IChainId, marketId }

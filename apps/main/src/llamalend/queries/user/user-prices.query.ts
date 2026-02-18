@@ -32,19 +32,13 @@ const { useQuery: useUserPricesQuery, invalidate: invalidateUserPrices } = query
 
 export { invalidateUserPrices }
 
-export const useUserPrices = (params: UserMarketParams, options?: { loanExists?: boolean }) => {
-  const hasLoanExistsOverride = options?.loanExists != null
-  const {
-    data: loanExistsData,
-    isLoading: isLoanExistsLoading,
-    isError: isLoanExistsError,
-  } = useLoanExists(params, !hasLoanExistsOverride)
-  const loanExists = hasLoanExistsOverride ? options.loanExists : loanExistsData
+export const useUserPrices = (params: UserMarketParams) => {
+  const { data: loanExists, isLoading: isLoanExistsLoading, error: loanExistsError } = useLoanExists(params)
   const queryResult = useUserPricesQuery({ ...params, loanExists })
 
   return {
     ...q(queryResult),
-    isLoading: (hasLoanExistsOverride ? false : isLoanExistsLoading) || queryResult.isLoading,
-    isError: (hasLoanExistsOverride ? false : isLoanExistsError) || queryResult.isError,
+    isLoading: isLoanExistsLoading || queryResult.isLoading,
+    error: loanExistsError || queryResult.error,
   }
 }
