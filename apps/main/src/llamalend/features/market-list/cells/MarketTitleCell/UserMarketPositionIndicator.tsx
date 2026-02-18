@@ -8,7 +8,6 @@ import { UserPositionIndicator, type ColorState } from '@ui-kit/shared/ui/DataTa
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import type { SxProps } from '@ui-kit/utils'
 import { LlamaMarketColumnId } from '../../columns'
 
 const { Spacing, FontWeight } = SizesAndSpaces
@@ -78,7 +77,7 @@ const TooltipBelowLiqRange = ({ children }: { children: ReactElement }) => (
   </Tooltip>
 )
 
-export const UserMarketPositionIndicator = ({ market, sx }: { market: LlamaMarket; sx?: SxProps }) => {
+export const UserMarketPositionIndicator = ({ market }: { market: LlamaMarket }) => {
   const { softLiquidation, liquidated } = useUserMarketStats(market, LlamaMarketColumnId.UserHealth)?.data ?? {}
   const [colorState, setColorState] = useState<ColorState>('info')
 
@@ -90,5 +89,5 @@ export const UserMarketPositionIndicator = ({ market, sx }: { market: LlamaMarke
 
   const Tooltip = softLiquidation ? TooltipInLiqRange : liquidated ? TooltipBelowLiqRange : TooltipHealthy
 
-  return <UserPositionIndicator colorState={colorState} Tooltip={Tooltip} sx={sx} />
+  return <UserPositionIndicator colorState={colorState} Tooltip={Tooltip} />
 }

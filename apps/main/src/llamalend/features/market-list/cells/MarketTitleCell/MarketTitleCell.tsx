@@ -14,16 +14,18 @@ export const MarketTitleCell = ({ row: { original: market } }: CellContext<Llama
   const isMobile = useIsMobile()
   const { collateral, borrowed } = market.assets
   return (
-    <Stack direction="row" gap={Spacing.sm} alignItems="center" sx={{ height: Height.row }}>
-      {market.userHasPositions && <UserMarketPositionIndicator market={market} sx={{ alignSelf: 'stretch' }} />}
-      <TokenPair chain={market.chain} assets={{ primary: collateral, secondary: borrowed }} hideChainIcon />
-      <Stack direction="column" justifyContent="center" gap={Spacing.xxs}>
-        <MarketTitle
-          title={[collateral.symbol, borrowed.symbol].join(' • ')}
-          address={market.controllerAddress}
-          url={market.url}
-        />
-        <MarketBadges market={market} isMobile={isMobile} />
+    <Stack direction="row" sx={{ height: Height.row }}>
+      {market.userHasPositions && <UserMarketPositionIndicator market={market} />}
+      <Stack direction="row" gap={Spacing.sm} alignItems="center">
+        <TokenPair chain={market.chain} assets={{ primary: collateral, secondary: borrowed }} hideChainIcon />
+        <Stack direction="column" justifyContent="center" gap={Spacing.xxs}>
+          <MarketTitle
+            title={[collateral.symbol, borrowed.symbol].join(' • ')}
+            address={market.controllerAddress}
+            url={market.url}
+          />
+          <MarketBadges market={market} isMobile={isMobile} />
+        </Stack>
       </Stack>
     </Stack>
   )

@@ -4,7 +4,6 @@ import { LlamaIcon } from '@ui-kit/shared/icons/LlamaIcon'
 import { Tooltip as TooltipComponent } from '@ui-kit/shared/ui/Tooltip'
 import { mapBreakpoints } from '@ui-kit/themes/basic-theme'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { applySxProps, type SxProps } from '@ui-kit/utils'
 
 const { IconSize, Spacing } = SizesAndSpaces
 
@@ -28,11 +27,9 @@ export type ColorState = keyof typeof ColorStates
 export const UserPositionIndicator = ({
   colorState = 'info',
   Tooltip,
-  sx,
 }: {
   colorState?: ColorState
   Tooltip: React.ComponentType<Omit<React.ComponentProps<typeof TooltipComponent>, 'title'>>
-  sx?: SxProps
 }) => (
   /**
    * Frustratingly, there's a known issue with MUI where tooltips don't render when
@@ -43,17 +40,14 @@ export const UserPositionIndicator = ({
    */
   <Tooltip>
     <Box
-      sx={applySxProps(
-        {
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          backgroundColor: ColorStates[colorState].bg,
-          marginInlineStart: mapBreakpoints(Spacing.md, (v) => `-${v}`), // negative padding to offset the padding of the cell
-          marginInlineEnd: Spacing.sm,
-        },
-        sx,
-      )}
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: ColorStates[colorState].bg,
+        marginInlineStart: mapBreakpoints(Spacing.md, (v) => `-${v}`), // negative padding to offset the padding of the cell
+        marginInlineEnd: Spacing.sm,
+      }}
     >
       <LlamaIcon sx={{ color: ColorStates[colorState].fg, width: IconSize.md, height: IconSize.md }} />
     </Box>

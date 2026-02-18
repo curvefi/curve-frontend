@@ -39,7 +39,7 @@ export const PoolTitleCell = ({
 
   return (
     <Stack direction="row" sx={{ height: Height.row }}>
-      {poolData.hasPosition && <UserPositionIndicator Tooltip={UserPositionTooltip} sx={{ alignSelf: 'stretch' }} />}
+      {poolData.hasPosition && <UserPositionIndicator Tooltip={UserPositionTooltip} />}
       <Stack direction="row" alignItems="center" gap={Spacing.sm}>
         <TokenIcons blockchainId={network} tokens={tokenList} />
         <Stack direction="column">
