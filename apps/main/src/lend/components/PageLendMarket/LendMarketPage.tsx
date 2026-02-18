@@ -80,7 +80,7 @@ export const LendMarketPage = () => {
   })
 
   const [isLoaded, setLoaded] = useState(false)
-  const [previewPrices, onChartPreviewPricesUpdate] = useState<string[] | undefined>(undefined)
+  const [previewPrices, onPricesUpdated] = useState<string[] | undefined>(undefined)
 
   const borrowPositionDetails = useBorrowPositionDetails({ chainId, market: market, marketId })
 
@@ -125,7 +125,7 @@ export const LendMarketPage = () => {
     market,
     userActiveKey,
     titleMapper,
-    onChartPreviewPricesUpdate,
+    onPricesUpdated,
   }
   const showPageHeader = useIntegratedLlamaHeader()
 

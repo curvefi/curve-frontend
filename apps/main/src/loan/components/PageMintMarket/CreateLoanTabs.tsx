@@ -11,10 +11,10 @@ import { t } from '@ui-kit/lib/i18n'
 import { FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
 
 type MintCreateTabsProps = PageLoanCreateProps & {
-  onChartPreviewPricesUpdate: (prices: string[] | undefined) => void
+  onPricesUpdated: (prices: string[] | undefined) => void
 }
 
-function CreateLoanTab({ market, curve, rChainId, onChartPreviewPricesUpdate }: MintCreateTabsProps) {
+function CreateLoanTab({ market, curve, rChainId, onPricesUpdated }: MintCreateTabsProps) {
   const onLoanCreated = useStore((state) => state.loanCreate.onLoanCreated)
   const onCreated: NonNullable<CreateLoanOptions['onCreated']> = useCallback(
     async (_data, _receipt, { slippage, leverageEnabled }: CreateLoanMutation) =>
@@ -27,7 +27,7 @@ function CreateLoanTab({ market, curve, rChainId, onChartPreviewPricesUpdate }: 
       networks={networks}
       chainId={rChainId}
       market={market ?? undefined}
-      onPricesUpdated={onChartPreviewPricesUpdate}
+      onPricesUpdated={onPricesUpdated}
       onCreated={onCreated}
     />
   )

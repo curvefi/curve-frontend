@@ -34,6 +34,7 @@ const useFormSync = (
   useEffect(() => {
     onPricesUpdated(data)
   }, [onPricesUpdated, data])
+  useEffect(() => () => onPricesUpdated(undefined), [onPricesUpdated])
 }
 
 export const BorrowMoreForm = <ChainId extends IChainId>({

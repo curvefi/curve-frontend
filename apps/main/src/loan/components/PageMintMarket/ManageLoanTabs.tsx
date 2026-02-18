@@ -22,26 +22,26 @@ import { type FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTab
 // casting the networks for the loan app so we don't need to make the whole form generic
 const softLiqNetworks = networks as unknown as NetworkDict<LlamaChainId>
 type MintManageLoanProps = ManageLoanProps & {
-  onChartPreviewPricesUpdate: (prices: string[] | undefined) => void
+  onPricesUpdated: (prices: string[] | undefined) => void
 }
 
-const BorrowTab = ({ rChainId, market, isReady, onChartPreviewPricesUpdate }: MintManageLoanProps) => (
+const BorrowTab = ({ rChainId, market, isReady, onPricesUpdated }: MintManageLoanProps) => (
   <BorrowMoreForm
     networks={networks}
     chainId={rChainId}
     market={market ?? undefined}
     enabled={isReady}
-    onPricesUpdated={onChartPreviewPricesUpdate}
+    onPricesUpdated={onPricesUpdated}
   />
 )
 
-const RepayTab = ({ rChainId, market, isReady, onChartPreviewPricesUpdate }: MintManageLoanProps) => (
+const RepayTab = ({ rChainId, market, isReady, onPricesUpdated }: MintManageLoanProps) => (
   <RepayForm
     networks={networks}
     chainId={rChainId}
     market={market ?? undefined}
     enabled={isReady}
-    onPricesUpdated={onChartPreviewPricesUpdate}
+    onPricesUpdated={onPricesUpdated}
   />
 )
 

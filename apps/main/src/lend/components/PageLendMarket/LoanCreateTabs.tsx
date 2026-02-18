@@ -10,10 +10,10 @@ import { t } from '@ui-kit/lib/i18n'
 import { type FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
 
 type CreateLoanProps = PageContentProps<MarketUrlParams> & {
-  onChartPreviewPricesUpdate: (prices: string[] | undefined) => void
+  onPricesUpdated: (prices: string[] | undefined) => void
 }
 
-function CreateLoanTab({ market, api, rChainId, onChartPreviewPricesUpdate }: CreateLoanProps) {
+function CreateLoanTab({ market, api, rChainId, onPricesUpdated }: CreateLoanProps) {
   const onLoanCreated = useStore((state) => state.loanCreate.onLoanCreated)
   const onCreated = useCallback(
     async () => api && market && (await onLoanCreated(api, market)),
@@ -24,7 +24,7 @@ function CreateLoanTab({ market, api, rChainId, onChartPreviewPricesUpdate }: Cr
       networks={networks}
       chainId={rChainId}
       market={market}
-      onPricesUpdated={onChartPreviewPricesUpdate}
+      onPricesUpdated={onPricesUpdated}
       onCreated={onCreated}
     />
   )

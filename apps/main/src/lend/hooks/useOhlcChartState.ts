@@ -24,7 +24,7 @@ type UseOhlcChartStateProps = {
   previewPrices: string[] | undefined
 }
 
-const useOhlcChartStoreState = (): string[] | null => {
+const useLegacyChartPrices = (): string[] | null => {
   const borrowMoreActiveKey = useStore((state) => state.loanBorrowMore.activeKey)
   const loanRepayActiveKey = useStore((state) => state.loanRepay.activeKey)
   const loanCollateralAddActiveKey = useStore((state) => state.loanCollateralAdd.activeKey)
@@ -69,7 +69,7 @@ const useOhlcChartStoreState = (): string[] | null => {
 
 export const useOhlcChartState = ({ rChainId, rOwmId, previewPrices }: UseOhlcChartStateProps) => {
   const { address: userAddress } = useConnection()
-  const storePreviewPrices = useOhlcChartStoreState()
+  const storePreviewPrices = useLegacyChartPrices()
   const { data: userPrices } = useUserPrices({
     chainId: rChainId,
     marketId: rOwmId,

@@ -34,6 +34,7 @@ const useFormSync = (
   useEffect(() => {
     onPricesUpdated(data)
   }, [onPricesUpdated, data])
+  useEffect(() => () => onPricesUpdated(undefined), [onPricesUpdated])
 }
 
 function RepayTokenSelector<ChainId extends IChainId>({

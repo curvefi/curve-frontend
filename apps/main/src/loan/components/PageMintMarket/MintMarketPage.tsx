@@ -102,7 +102,7 @@ export const MintMarketPage = () => {
     market: market ?? null,
     rChainId,
     params,
-    onChartPreviewPricesUpdate: setPreviewPrices,
+    onPricesUpdated: setPreviewPrices,
   }
   const showPageHeader = useIntegratedLlamaHeader()
 
