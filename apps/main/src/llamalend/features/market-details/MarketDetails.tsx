@@ -1,4 +1,4 @@
-import { NetBorrowAprMetric } from '@/llamalend/widgets/NetBorrowAprMetric'
+import { BorrowAprMetric } from '@/llamalend/widgets/BorrowAprMetric'
 import { Box, CardHeader } from '@mui/material'
 import { formatNumber, FORMAT_OPTIONS } from '@ui/utils/utilsFormat'
 import { useIntegratedLlamaHeader } from '@ui-kit/hooks/useFeatureFlags'
@@ -60,7 +60,7 @@ export const MarketDetails = ({
         }}
       >
         {!showPageHeader && (
-          <NetBorrowAprMetric
+          <BorrowAprMetric
             marketType={marketType}
             borrowRate={borrowRate}
             collateralSymbol={collateral?.symbol}

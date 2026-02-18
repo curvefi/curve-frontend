@@ -41,13 +41,9 @@ const ratesConfig: Record<
     rateKey: 'lendTotalApyMinBoosted',
   },
   [MarketRateType.Borrow]: {
-    tooltipComponent: ({ children, ...rest }) => (
-      <BorrowRateTooltip columnId={LlamaMarketColumnId.NetBorrowRate} {...rest}>
-        {children}
-      </BorrowRateTooltip>
-    ),
-    title: t`Net borrow APR`,
-    rateKey: 'borrowTotalApr',
+    tooltipComponent: ({ children, ...rest }) => <BorrowRateTooltip {...rest}>{children}</BorrowRateTooltip>,
+    title: t`Borrow APR`,
+    rateKey: 'borrowApr',
   },
 }
 

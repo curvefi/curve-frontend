@@ -1,4 +1,4 @@
-import { NetBorrowAprMetric } from '@/llamalend/widgets/NetBorrowAprMetric'
+import { BorrowAprMetric } from '@/llamalend/widgets/BorrowAprMetric'
 import { CollateralMetricTooltipContent } from '@/llamalend/widgets/tooltips/CollateralMetricTooltipContent'
 import { CurrentLTVTooltipContent } from '@/llamalend/widgets/tooltips/CurrentLTVTooltipContent'
 import { TotalDebtTooltipContent } from '@/llamalend/widgets/tooltips/TotalDebtTooltipContent'
@@ -151,12 +151,10 @@ export const BorrowInformation = ({
           </>
         ) : (
           <>
-            <NetBorrowAprMetric
+            <BorrowAprMetric
               marketType={marketType}
               borrowRate={borrowRate}
               collateralSymbol={collateralValue?.collateral?.symbol}
-              size="medium"
-              tooltipOptions={TooltipOptions}
             />
             <Metric
               size="medium"
