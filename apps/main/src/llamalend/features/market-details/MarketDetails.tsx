@@ -60,13 +60,7 @@ export const MarketDetails = ({
         }}
       >
         {!showPageHeader && (
-          <BorrowAprMetric
-            marketType={marketType}
-            borrowRate={borrowRate}
-            collateralSymbol={collateral?.symbol}
-            size="medium"
-            tooltipOptions={TooltipOptions}
-          />
+          <BorrowAprMetric marketType={marketType} borrowRate={borrowRate} collateralSymbol={collateral?.symbol} />
         )}
         {!showPageHeader && supplyRate && (
           <Metric

@@ -2,7 +2,6 @@ import { MarketNetBorrowAprTooltipContent } from '@/llamalend/widgets/tooltips/M
 import type { CampaignPoolRewards } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric, type MetricProps } from '@ui-kit/shared/ui/Metric'
-import type { TooltipProps } from '@ui-kit/shared/ui/Tooltip'
 import type { LlamaMarketType } from '@ui-kit/types/market'
 import { TooltipOptions as defaultTooltipOptions } from '../features/market-details/tooltips'
 
@@ -21,30 +20,19 @@ type BorrowAprMetricProps = {
   marketType: LlamaMarketType
   borrowRate: BorrowRateMetric | null | undefined
   collateralSymbol: string | null | undefined
-  size?: MetricProps['size']
   alignment?: MetricProps['alignment']
-  warning?: boolean
-  tooltipOptions?: Pick<TooltipProps, 'placement' | 'arrow' | 'clickable'>
 }
 
-export const BorrowAprMetric = ({
-  marketType,
-  borrowRate,
-  collateralSymbol,
-  size = 'medium',
-  alignment,
-  warning,
-  tooltipOptions,
-}: BorrowAprMetricProps) => {
+export const BorrowAprMetric = ({ marketType, borrowRate, collateralSymbol, alignment }: BorrowAprMetricProps) => {
   const title = t`Borrow APR`
   return (
     <Metric
-      size={size}
+      size="medium"
       alignment={alignment}
       label={title}
       value={borrowRate?.rate}
       loading={borrowRate?.rate == null && borrowRate?.loading}
-      valueOptions={{ unit: 'percentage', ...(warning ? { color: 'warning' } : {}) }}
+      valueOptions={{ unit: 'percentage' }}
       notional={
         borrowRate?.averageRate == null
           ? undefined
@@ -70,7 +58,6 @@ export const BorrowAprMetric = ({
           />
         ),
         ...defaultTooltipOptions,
-        ...tooltipOptions,
       }}
     />
   )
