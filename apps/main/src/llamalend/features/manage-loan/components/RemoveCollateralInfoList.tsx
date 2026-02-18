@@ -36,7 +36,7 @@ export function RemoveCollateralInfoList<ChainId extends IChainId>({
   leverageEnabled: boolean
   form: UseFormReturn<CollateralForm>
 }) {
-  const isOpen = isFormTouched(form, ['userCollateral'])
+  const isOpen = isFormTouched(form, 'userCollateral')
   const userState = q(useUserState(params, isOpen))
 
   const expectedCollateral = mapQuery(

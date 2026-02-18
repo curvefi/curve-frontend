@@ -29,7 +29,7 @@ export function WithdrawSupplyInfoList<ChainId extends IChainId>({
   form,
 }: WithdrawSupplyInfoListProps<ChainId>) {
   const { chainId, marketId, userAddress, withdrawAmount } = params
-  const isOpen = isFormTouched(form, ['withdrawAmount'])
+  const isOpen = isFormTouched(form, 'withdrawAmount')
 
   const userBalances = useUserBalances({ chainId, marketId, userAddress }, isOpen)
   const prevVaultShares = mapQuery(userBalances, (d) => d.vaultShares)

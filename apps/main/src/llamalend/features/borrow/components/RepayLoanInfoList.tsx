@@ -76,7 +76,7 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
   swapRequired: boolean
   form: UseFormReturn<RepayForm>
 }) {
-  const isOpen = isFormTouched(form, ['stateCollateral', 'userCollateral', 'userBorrowed'])
+  const isOpen = isFormTouched(form, 'stateCollateral', 'userCollateral', 'userBorrowed')
   const userStateQuery = useUserState(params, isOpen)
   const userState = q(userStateQuery)
   const priceImpact = useRepayPriceImpact(params, isOpen && swapRequired)

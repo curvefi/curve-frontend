@@ -39,7 +39,7 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
   leverageEnabled: boolean
   form: UseFormReturn<BorrowMoreForm>
 }) {
-  const isOpen = isFormTouched(form, ['userCollateral', 'userBorrowed', 'debt'])
+  const isOpen = isFormTouched(form, 'userCollateral', 'userBorrowed', 'debt')
   const userState = useUserState(params, isOpen)
   const expectedCollateralQuery = q(useBorrowMoreExpectedCollateral(params, isOpen && leverageEnabled))
 

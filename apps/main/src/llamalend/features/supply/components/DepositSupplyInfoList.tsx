@@ -30,7 +30,7 @@ export function DepositSupplyInfoList<ChainId extends IChainId>({
   form,
 }: DepositSupplyInfoListProps<ChainId>) {
   const { chainId, marketId, userAddress, depositAmount } = params
-  const isOpen = isFormTouched(form, ['depositAmount'])
+  const isOpen = isFormTouched(form, 'depositAmount')
 
   const { data: isApproved } = useDepositIsApproved(params, isOpen)
   const userBalances = useUserBalances({ chainId, marketId, userAddress }, isOpen)

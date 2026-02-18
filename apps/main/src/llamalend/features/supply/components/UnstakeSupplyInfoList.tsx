@@ -31,7 +31,7 @@ export function UnstakeSupplyInfoList<ChainId extends IChainId>({
   form,
 }: UnstakeSupplyInfoListProps<ChainId>) {
   const { chainId, marketId, userAddress, unstakeAmount } = params
-  const isOpen = isFormTouched(form, ['unstakeAmount'])
+  const isOpen = isFormTouched(form, 'unstakeAmount')
 
   const userBalances = useUserBalances({ chainId, marketId, userAddress }, isOpen)
 

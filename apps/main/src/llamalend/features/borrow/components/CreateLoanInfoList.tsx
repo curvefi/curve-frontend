@@ -34,7 +34,7 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
   onSlippageChange: (newSlippage: Decimal) => void
   form: UseFormReturn<CreateLoanForm>
 }) => {
-  const isOpen = isFormTouched(form, ['userCollateral', 'debt'])
+  const isOpen = isFormTouched(form, 'userCollateral', 'debt')
   const expectedCollateral = q(useCreateLoanExpectedCollateral(params, isOpen))
   const leverageValue = mapQuery(expectedCollateral, (data) => data?.leverage)
   const leverageTotalCollateral = mapQuery(expectedCollateral, (data) => data?.totalCollateral)

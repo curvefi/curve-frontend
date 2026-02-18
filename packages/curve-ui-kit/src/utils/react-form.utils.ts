@@ -48,5 +48,5 @@ export const useCallbackAfterFormUpdate = <TFieldValues extends FieldValues>(
 ) => useEffect(() => form.subscribe({ formState: { values: true }, callback }), [form, callback])
 
 /** Checks if any of the given fields are touched in the form. */
-export const isFormTouched = <T extends FieldValues>(form: UseFormReturn<T>, fields: Path<T>[]) =>
-  fields.some((field) => form.getFieldState(field).isTouched)
+export const isFormTouched = <T extends FieldValues>(form: UseFormReturn<T>, ...fields: Path<T>[]) =>
+  fields.some((field) => field in form.formState.touchedFields)

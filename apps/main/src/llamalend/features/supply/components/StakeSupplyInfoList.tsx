@@ -32,7 +32,7 @@ export function StakeSupplyInfoList<ChainId extends IChainId>({
   form,
 }: StakeSupplyInfoListProps<ChainId>) {
   const { chainId, marketId, userAddress, stakeAmount } = params
-  const isOpen = isFormTouched(form, ['stakeAmount'])
+  const isOpen = isFormTouched(form, 'stakeAmount')
 
   const { data: isApproved } = useStakeIsApproved(params, isOpen)
   const userBalances = useUserBalances({ chainId, marketId, userAddress }, isOpen)
