@@ -25,7 +25,7 @@ export const useLlamalendMarketSubNavRoutes = ({ isMobile }: { isMobile: boolean
     fuzzy: true,
   })
 
-  if (params !== false && params.app === LEND_APP) {
+  if (params && params.app === LEND_APP) {
     return [
       {
         app: LEND_APP,
@@ -48,7 +48,7 @@ export const useLlamalendMarketSubNavRoutes = ({ isMobile }: { isMobile: boolean
     ]
   }
 
-  if (params !== false && params.app === CRVUSD_APP) {
+  if (params && params.app === CRVUSD_APP) {
     return []
   }
 
