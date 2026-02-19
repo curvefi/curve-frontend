@@ -1,30 +1,32 @@
 import BigNumber from 'bignumber.js'
+import type { UseFormReturn } from 'react-hook-form'
 import type { Token } from '@/llamalend/features/borrow/types'
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
 import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
-import { useAddCollateralFutureLeverage } from '@/llamalend/queries/add-collateral/add-collateral-future-leverage.query'
-import { useAddCollateralEstimateGas } from '@/llamalend/queries/add-collateral/add-collateral-gas-estimate.query'
-import { getAddCollateralHealthOptions } from '@/llamalend/queries/add-collateral/add-collateral-health.query'
 import { useMarketRates } from '@/llamalend/queries/market-rates.query'
+import { useRemoveCollateralFutureLeverage } from '@/llamalend/queries/remove-collateral/remove-collateral-future-leverage.query'
+import { useRemoveCollateralEstimateGas } from '@/llamalend/queries/remove-collateral/remove-collateral-gas-estimate.query'
+import { getRemoveCollateralHealthOptions } from '@/llamalend/queries/remove-collateral/remove-collateral-health.query'
 import { useUserCurrentLeverage } from '@/llamalend/queries/user-current-leverage.query'
 import { getUserHealthOptions } from '@/llamalend/queries/user-health.query'
 import { useUserState } from '@/llamalend/queries/user-state.query'
 import { CollateralParams } from '@/llamalend/queries/validation/manage-loan.types'
 import type { CollateralForm } from '@/llamalend/queries/validation/manage-loan.validation'
-import { LoanInfoAccordion } from '@/llamalend/widgets/action-card/LoanInfoAccordion'
+import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { mapQuery, q } from '@ui-kit/types/util'
 import { decimal, Decimal } from '@ui-kit/utils'
+import { isFormTouched } from '@ui-kit/utils/react-form.utils'
 
-export function AddCollateralInfoAccordion<ChainId extends IChainId>({
+export function RemoveCollateralInfoList<ChainId extends IChainId>({
   params,
   values: { userCollateral },
   collateralToken,
   borrowToken,
   networks,
   leverageEnabled,
+  form,
 }: {
   params: CollateralParams<ChainId>
   values: CollateralForm
@@ -32,27 +34,30 @@ export function AddCollateralInfoAccordion<ChainId extends IChainId>({
   borrowToken: Token | undefined
   networks: NetworkDict<ChainId>
   leverageEnabled: boolean
+  form: UseFormReturn<CollateralForm>
 }) {
-  const [isOpen, , , toggle] = useSwitch(false)
+  const isOpen = isFormTouched(form, 'userCollateral')
   const userState = q(useUserState(params, isOpen))
 
   const expectedCollateral = mapQuery(
     userState,
     (state) =>
-      userCollateral &&
-      state.collateral && {
-        value: decimal(new BigNumber(userCollateral).plus(state.collateral)) as Decimal,
+      state.collateral &&
+      userCollateral && {
+        value: decimal(
+          // An error will be thrown by the validation suite, the "max" is just for preventing negative collateral in the UI
+          BigNumber.max(0, new BigNumber(state.collateral).minus(new BigNumber(userCollateral))),
+        ) as Decimal,
         tokenSymbol: collateralToken?.symbol,
       },
   )
 
   return (
-    <LoanInfoAccordion
+    <LoanActionInfoList
       isOpen={isOpen}
-      toggle={toggle}
-      gas={useAddCollateralEstimateGas(networks, params, isOpen)}
-      health={useHealthQueries((isFull) => getAddCollateralHealthOptions({ ...params, isFull }))}
-      prevHealth={useHealthQueries((isFull) => getUserHealthOptions({ ...params, isFull }))}
+      gas={useRemoveCollateralEstimateGas(networks, params, isOpen)}
+      health={useHealthQueries((isFull) => getRemoveCollateralHealthOptions({ ...params, isFull }, isOpen))}
+      prevHealth={useHealthQueries((isFull) => getUserHealthOptions({ ...params, isFull }, isOpen))}
       rates={q(useMarketRates(params, isOpen))}
       prevLoanToValue={useLoanToValueFromUserState(
         {
@@ -72,7 +77,7 @@ export function AddCollateralInfoAccordion<ChainId extends IChainId>({
           userAddress: params.userAddress,
           collateralToken,
           borrowToken,
-          collateralDelta: userCollateral,
+          collateralDelta: userCollateral && (`-${userCollateral}` as Decimal),
           expectedBorrowed: userState.data?.debt,
         },
         isOpen && !!userCollateral,
@@ -81,7 +86,7 @@ export function AddCollateralInfoAccordion<ChainId extends IChainId>({
       collateral={expectedCollateral}
       leverageEnabled={leverageEnabled}
       prevLeverageValue={q(useUserCurrentLeverage(params, isOpen))}
-      leverageValue={q(useAddCollateralFutureLeverage(params, isOpen))}
+      leverageValue={q(useRemoveCollateralFutureLeverage(params, isOpen))}
     />
   )
 }

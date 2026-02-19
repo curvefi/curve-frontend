@@ -106,12 +106,16 @@ export const useMarketDetails = ({
     totalRate: totalBorrowApr,
     averageTotalRate: totalAverageBorrowApr,
     rebasingYield: collateralRebasingYieldApr,
-  } = getBorrowRateMetrics({
-    borrowRate: borrowApr,
-    snapshots: lendingSnapshots,
-    getBorrowRate: getSnapshotBorrowRate,
-    getRebasingYield: getSnapshotCollateralRebasingYieldRate,
-  })
+  } = useMemo(
+    () =>
+      getBorrowRateMetrics({
+        borrowRate: borrowApr,
+        snapshots: lendingSnapshots,
+        getBorrowRate: getSnapshotBorrowRate,
+        getRebasingYield: getSnapshotCollateralRebasingYieldRate,
+      }),
+    [borrowApr, lendingSnapshots],
+  )
 
   const totalSupplyRateMinBoost =
     supplyApy && Number(supplyApy) + (borrowRebasingYield ?? 0) + extraIncentivesTotalApr + (supplyAprCrvMinBoost ?? 0)

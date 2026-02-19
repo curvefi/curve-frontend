@@ -29,7 +29,7 @@ type UseSnapshotsResult<T> = {
 const RateKeys = {
   [MarketRateType.Borrow]: 'borrowApr',
   [MarketRateType.Supply]: 'lendApr',
-} as const
+} as const satisfies Record<MarketRateType, 'borrowApr' | 'lendApr'>
 
 const DAYS_BACK = LAST_WEEK
 
@@ -62,25 +62,32 @@ export function useSnapshots<T extends CrvUsdSnapshot | LendingSnapshot>(
 
   const borrowRateMetrics = useMemo(
     () =>
-      type === MarketRateType.Borrow
-        ? getBorrowRateMetrics({
-            borrowRate: rates.borrowApr,
-            snapshots: snapshots ?? undefined,
-            getBorrowRate: getSnapshotBorrowRate,
-            getRebasingYield: getSnapshotCollateralRebasingYieldRate,
-            daysBack: DAYS_BACK,
-          } as Parameters<typeof getBorrowRateMetrics>[0])
-        : null,
+      (
+        ({
+          [MarketRateType.Borrow]: () =>
+            getBorrowRateMetrics({
+              borrowRate: rates.borrowApr,
+              snapshots: snapshots ?? undefined,
+              getBorrowRate: getSnapshotBorrowRate,
+              getRebasingYield: getSnapshotCollateralRebasingYieldRate,
+              daysBack: DAYS_BACK,
+            } as Parameters<typeof getBorrowRateMetrics>[0]),
+          [MarketRateType.Supply]: () => null,
+        }) satisfies Record<MarketRateType, () => ReturnType<typeof getBorrowRateMetrics> | null>
+      )[type](),
     [rates.borrowApr, snapshots, type],
   )
 
   const averageRate = useMemo(
     () =>
-      type === MarketRateType.Borrow
-        ? (borrowRateMetrics?.averageRate ?? null)
-        : isLend
-          ? snapshots && meanBy(snapshots as LendingSnapshot[], (row) => row.lendApr) * 100
-          : null,
+      (
+        ({
+          [MarketRateType.Borrow]: borrowRateMetrics?.averageRate ?? null,
+          [MarketRateType.Supply]: isLend
+            ? snapshots && meanBy(snapshots as LendingSnapshot[], (row) => row.lendApr) * 100
+            : null,
+        }) satisfies Record<MarketRateType, number | null>
+      )[type],
     [borrowRateMetrics, isLend, snapshots, type],
   )
 

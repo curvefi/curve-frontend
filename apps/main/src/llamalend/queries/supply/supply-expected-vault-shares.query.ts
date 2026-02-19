@@ -54,7 +54,7 @@ export function useWithdrawExpectedVaultShares<ChainId extends number>(
   enabled: boolean,
 ): Query<Decimal> {
   const { chainId, marketId, userAddress } = params
-  const userBalances = useUserBalances({ chainId, marketId, userAddress })
+  const userBalances = useUserBalances({ chainId, marketId, userAddress }, enabled)
   const removableVaultShares = useWithdrawRemovableVaultShares(params, enabled)
 
   const prevVaultShares = mapQuery(userBalances, (d) => d.vaultShares)

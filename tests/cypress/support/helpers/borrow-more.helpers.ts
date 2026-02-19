@@ -7,11 +7,10 @@ type BorrowMoreField = 'collateral' | 'user-borrowed' | 'debt'
 const getBorrowMoreInput = (field: BorrowMoreField) =>
   cy.get(`[data-testid="borrow-more-input-${field}"] input[type="text"]`, LOAD_TIMEOUT).first()
 
-export function writeBorrowMoreForm({ debt, openAccordion = true }: { debt: Decimal; openAccordion?: boolean }) {
+export function writeBorrowMoreForm({ debt }: { debt: Decimal }) {
   getBorrowMoreInput('debt').as('borrowMoreDebt')
   cy.get('@borrowMoreDebt').clear()
   cy.get('@borrowMoreDebt').type(debt)
-  if (openAccordion) cy.get('[data-testid="loan-info-accordion"] button', LOAD_TIMEOUT).first().click()
 }
 
 export function checkBorrowMoreDetailsLoaded({
