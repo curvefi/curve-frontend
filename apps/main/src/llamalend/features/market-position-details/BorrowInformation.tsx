@@ -1,6 +1,6 @@
+import { NetBorrowAprMetric } from '@/llamalend/widgets/NetBorrowAprMetric'
 import { CollateralMetricTooltipContent } from '@/llamalend/widgets/tooltips/CollateralMetricTooltipContent'
 import { CurrentLTVTooltipContent } from '@/llamalend/widgets/tooltips/CurrentLTVTooltipContent'
-import { MarketNetBorrowAprTooltipContent } from '@/llamalend/widgets/tooltips/MarketNetBorrowAprTooltipContent'
 import { TotalDebtTooltipContent } from '@/llamalend/widgets/tooltips/TotalDebtTooltipContent'
 import { Stack } from '@mui/material'
 import { useIntegratedLlamaHeader } from '@ui-kit/hooks/useFeatureFlags'
@@ -9,6 +9,7 @@ import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { LlamaMarketType } from '@ui-kit/types/market'
 import { formatNumber } from '@ui-kit/utils'
+import { TooltipOptions } from '../market-details/tooltips'
 import {
   LiquidationThresholdTooltipContent,
   type BorrowRate,
@@ -145,39 +146,12 @@ export const BorrowInformation = ({
           </>
         ) : (
           <>
-            <Metric
+            <NetBorrowAprMetric
+              marketType={marketType}
+              borrowRate={borrowRate}
+              collateralSymbol={collateralValue?.collateral?.symbol}
               size="medium"
-              label={t`Net borrow APR`}
-              value={borrowRate?.totalBorrowRate}
-              loading={borrowRate?.loading}
-              valueOptions={{ unit: 'percentage', color: 'warning' }}
-              notional={
-                borrowRate?.totalAverageBorrowRate
-                  ? {
-                      value: borrowRate.totalAverageBorrowRate,
-                      unit: { symbol: '% 30D Avg', position: 'suffix' },
-                    }
-                  : undefined
-              }
-              valueTooltip={{
-                title: t`Net borrow APR`,
-                body: (
-                  <MarketNetBorrowAprTooltipContent
-                    marketType={marketType}
-                    borrowRate={borrowRate?.rate}
-                    totalBorrowRate={borrowRate?.totalBorrowRate}
-                    totalAverageBorrowRate={borrowRate?.totalAverageBorrowRate}
-                    averageRate={borrowRate?.averageRate}
-                    rebasingYield={borrowRate?.rebasingYield}
-                    collateralSymbol={collateralValue?.collateral?.symbol}
-                    periodLabel={borrowRate?.averageRateLabel ?? ''}
-                    extraRewards={borrowRate?.extraRewards ?? []}
-                  />
-                ),
-                placement: 'top',
-                arrow: false,
-                clickable: true,
-              }}
+              tooltipOptions={TooltipOptions}
             />
             <Metric
               size="medium"

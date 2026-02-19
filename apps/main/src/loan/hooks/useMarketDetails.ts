@@ -1,6 +1,12 @@
 import { useMemo } from 'react'
 import type { MarketDetailsProps } from '@/llamalend/features/market-details'
 import { useMarketRates } from '@/llamalend/queries/market-rates'
+import {
+  getBorrowRateMetrics,
+  getSnapshotBorrowRate,
+  getSnapshotCollateralRebasingYieldRate,
+  LAST_MONTH,
+} from '@/llamalend/rates.utils'
 import { CRVUSD_ADDRESS } from '@/loan/constants'
 import { useMintMarketMaxLeverage } from '@/loan/entities/mint-market-max-leverage'
 import { networks } from '@/loan/networks'
@@ -11,16 +17,12 @@ import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import { useCrvUsdSnapshots } from '@ui-kit/entities/crvusd-snapshots'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LlamaMarketType } from '@ui-kit/types/market'
-import { calculateAverageRates } from '@ui-kit/utils/averageRates'
 
 type UseMarketDetailsProps = {
   chainId: ChainId
   market: Llamma | null | undefined
   marketId: string
 }
-
-const averageMultiplier = 30
-const averageMultiplierString = `${averageMultiplier}D`
 
 export const useMarketDetails = ({ chainId, market, marketId }: UseMarketDetailsProps): MarketDetailsProps => {
   const { data: marketRates, isLoading: isMarketRatesLoading } = useMarketRates({ chainId, marketId })
@@ -42,27 +44,34 @@ export const useMarketDetails = ({ chainId, market, marketId }: UseMarketDetails
     blockchainId,
     contractAddress: market?.controller as Address,
     agg: 'day',
-    limit: 30, // fetch last 30 days for 30 day average calcs
+    limit: LAST_MONTH, // fetch last 30 days for 30 day average calcs
   })
   const { data: maxLeverage, isLoading: isMarketMaxLeverageLoading } = useMintMarketMaxLeverage({
     chainId,
     marketId,
   })
+  const borrowApr = marketRates?.borrowApr == null ? null : Number(marketRates.borrowApr)
+  const {
+    averageRate,
+    averageRebasingYield,
+    totalRate: totalBorrowRate,
+    averageTotalRate: totalAverageBorrowRate,
+    rebasingYield: collateralRebasingYieldApr,
+  } = useMemo(
+    () =>
+      getBorrowRateMetrics({
+        borrowRate: borrowApr,
+        snapshots: crvUsdSnapshots,
+        getBorrowRate: getSnapshotBorrowRate,
+        getRebasingYield: getSnapshotCollateralRebasingYieldRate,
+      }),
+    [borrowApr, crvUsdSnapshots],
+  )
+
   // Query validation only checks param presence (chain/market/user). We still need `!market`
   // because this hook runs before market metadata is available, and the UI reads market fields.
   const isMarketMetadataLoading = !market
-  const { rate: averageRate, rebasingYield: averageRebasingYield } = useMemo(
-    () =>
-      calculateAverageRates(crvUsdSnapshots, averageMultiplier, {
-        rate: ({ rate }) => rate * 100,
-        rebasingYield: ({ collateralToken }) => collateralToken.rebasingYield,
-      }) ?? { rate: null, rebasingYield: null },
-    [crvUsdSnapshots],
-  )
 
-  const totalAverageBorrowRate = averageRate == null ? null : averageRate - (averageRebasingYield ?? 0)
-  const borrowApr = marketRates?.borrowApr && Number(marketRates.borrowApr)
-  const totalBorrowRate = borrowApr ? borrowApr - (crvUsdSnapshots?.at(-1)?.collateralToken.rebasingYield ?? 0) : null
   const availableLiquidityValue = loanDetails?.capAndAvailable?.available
     ? Number(loanDetails.capAndAvailable.available)
     : null
@@ -89,9 +98,9 @@ export const useMarketDetails = ({ chainId, market, marketId }: UseMarketDetails
     borrowRate: {
       rate: borrowApr,
       averageRate: averageRate,
-      averageRateLabel: averageMultiplierString,
-      rebasingYield: crvUsdSnapshots?.[crvUsdSnapshots.length - 1]?.collateralToken.rebasingYield ?? null,
-      averageRebasingYield: averageRebasingYield ?? null,
+      averageRateLabel: `${LAST_MONTH}D`,
+      rebasingYield: collateralRebasingYieldApr,
+      averageRebasingYield: averageRebasingYield,
       totalAverageBorrowRate,
       extraRewards: campaigns,
       totalBorrowRate,
