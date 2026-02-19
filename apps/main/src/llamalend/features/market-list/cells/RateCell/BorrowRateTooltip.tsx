@@ -1,9 +1,9 @@
 import { useSnapshots } from '@/llamalend/features/market-list/hooks/useSnapshots'
 import { useFilteredRewards } from '@/llamalend/hooks/useFilteredRewards'
+import { getBorrowRateTooltipTitle } from '@/llamalend/llama.utils'
 import { MarketNetBorrowAprTooltipContent } from '@/llamalend/widgets/tooltips/MarketNetBorrowAprTooltipContent'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { MarketRateType } from '@ui-kit/types/market'
-import { useBorrowRateTooltipTitle } from '../../hooks/useBorrowRateTooltipTitle'
 import { RateTooltipProps } from './RateCell'
 
 export const BorrowRateTooltip = ({ market, children }: RateTooltipProps) => {
@@ -22,7 +22,7 @@ export const BorrowRateTooltip = ({ market, children }: RateTooltipProps) => {
     },
   } = market
   const poolRewards = useFilteredRewards(rewards, marketType, MarketRateType.Borrow)
-  const title = useBorrowRateTooltipTitle({ totalBorrowApr, rebasingYieldApr, extraRewards: poolRewards })
+  const title = getBorrowRateTooltipTitle({ totalBorrowApr, rebasingYieldApr, extraRewards: poolRewards })
 
   return (
     <Tooltip

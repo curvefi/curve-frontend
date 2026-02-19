@@ -9,7 +9,9 @@ import { getUserMarketCollateralEvents as getMintUserMarketCollateralEvents } fr
 import { getUserMarketCollateralEvents as getLendUserMarketCollateralEvents } from '@curvefi/prices-api/lending'
 import { notFalsy, objectKeys } from '@curvefi/prices-api/objects.util'
 import { requireLib, type Wallet } from '@ui-kit/features/connect-wallet'
+import { t } from '@ui-kit/lib/i18n'
 import { CRVUSD, type Decimal, formatNumber } from '@ui-kit/utils'
+import { MarketNetBorrowAprTooltipContentProps } from './widgets/tooltips/MarketNetBorrowAprTooltipContent'
 
 /**
  * Gets a Llama market (either a mint or lend market) by its ID.
@@ -234,3 +236,11 @@ export function sortBandsMint(bandBalances: { [key: string]: { stablecoin: strin
   }
   return { bandBalancesArr, bandBalances }
 }
+
+/** Tooltip title for borrow APR. The title should be "Net borrow APR" if there are extra rewards or rebasing yield, otherwise "Borrow APR". */
+export const getBorrowRateTooltipTitle = ({
+  totalBorrowApr,
+  extraRewards,
+  rebasingYieldApr,
+}: Pick<MarketNetBorrowAprTooltipContentProps, 'totalBorrowApr' | 'extraRewards' | 'rebasingYieldApr'>) =>
+  totalBorrowApr != null && (extraRewards.length || rebasingYieldApr != null) ? t`Net borrow APR` : t`Borrow APR`

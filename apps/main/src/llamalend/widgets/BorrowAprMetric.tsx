@@ -4,7 +4,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { Metric, type MetricProps } from '@ui-kit/shared/ui/Metric'
 import type { LlamaMarketType } from '@ui-kit/types/market'
 import { TooltipOptions as defaultTooltipOptions } from '../features/market-details/tooltips'
-import { useBorrowRateTooltipTitle } from '../features/market-list/hooks/useBorrowRateTooltipTitle'
+import { getBorrowRateTooltipTitle } from '../llama.utils'
 
 type BorrowRateMetric = {
   rate: number | null | undefined
@@ -25,7 +25,7 @@ type BorrowAprMetricProps = {
 }
 
 export const BorrowAprMetric = ({ marketType, borrowRate, collateralSymbol, alignment }: BorrowAprMetricProps) => {
-  const title = useBorrowRateTooltipTitle({
+  const title = getBorrowRateTooltipTitle({
     totalBorrowApr: borrowRate?.totalBorrowRate,
     extraRewards: borrowRate?.extraRewards ?? [],
     rebasingYieldApr: borrowRate?.rebasingYield,
