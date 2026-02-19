@@ -40,7 +40,7 @@ const ratesConfig: Record<
   },
   [MarketRateType.Borrow]: {
     tooltipComponent: BorrowRateTooltip,
-    title: t`Net borrow APR`,
+    title: t`Borrow APR`,
     rateKey: 'borrowApr',
   },
 }
