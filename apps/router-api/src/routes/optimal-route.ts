@@ -40,7 +40,7 @@ export const getOptimalRoute = async (request: FastifyRequest<{ Querystring: Opt
 
   const result = lodash.sortBy(
     successes.flatMap((res) => res.value),
-    (route) => -route.amountOut,
+    (route) => -route.amountOut, // descending order (best route first)
   )
   request.log.info({ message: 'route calculated', query, result })
   return result

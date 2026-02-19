@@ -17,9 +17,10 @@ const mountRouteProviderCard = ({ isSelected = true }: { isSelected?: boolean } 
     <ComponentTestWrapper>
       <RouteProviderCard
         route={{
+          id: 'curve',
           provider: 'curve',
           toAmountOutput: '69.4241',
-          usdPrice: 1.0,
+          usdPrice: 1,
           priceImpact: 0.01,
           routerAddress: '0x0000000000000000000000000000000000000000',
           calldata: '0x',

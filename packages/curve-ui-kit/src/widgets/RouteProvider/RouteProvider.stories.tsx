@@ -9,28 +9,31 @@ const { MaxWidth } = SizesAndSpaces
 
 const mockRoutes: RouteOption[] = [
   {
+    id: 'curve',
     provider: 'curve',
     toAmountOutput: '69.4241',
-    usdPrice: 1.0,
+    usdPrice: 1,
     priceImpact: 0.01,
-    routerAddress: '0x1',
-    calldata: '0x2',
+    routerAddress: '0x0000000000000000000000000000000000000001',
+    calldata: '0x',
   },
   {
+    id: 'enso',
     provider: 'enso',
     toAmountOutput: '67.7432',
-    usdPrice: 1.0,
+    usdPrice: 1,
     priceImpact: 0.1,
-    routerAddress: '0x3',
-    calldata: '0x4',
+    routerAddress: '0x0000000000000000000000000000000000000002',
+    calldata: '0x',
   },
   {
+    id: 'odos',
     provider: 'odos',
     toAmountOutput: '67.0142',
-    usdPrice: 1.0,
+    usdPrice: 1,
     priceImpact: 0.001,
-    routerAddress: '0x5',
-    calldata: '0x6',
+    routerAddress: '0x0000000000000000000000000000000000000003',
+    calldata: '0x',
   },
 ]
 
@@ -43,6 +46,7 @@ const meta: Meta<typeof RouteProvidersAccordion> = {
     toTokenSymbol: 'crvUSD',
     isExpanded: false,
     isLoading: false,
+    error: null,
     onRefresh: () => undefined,
   },
 }
