@@ -205,18 +205,6 @@ export const LLAMA_MARKET_COLUMNS = [
   hidden('assets.collateral.symbol', LlamaMarketColumnId.CollateralSymbol, multiFilterFn),
   hidden('assets.borrowed.symbol', LlamaMarketColumnId.BorrowedSymbol, multiFilterFn),
   hidden(LlamaMarketColumnId.IsFavorite, LlamaMarketColumnId.IsFavorite, boolFilterFn),
-  hidden(
-    LlamaMarketColumnId.UserHasPositions,
-    LlamaMarketColumnId.UserHasPositions,
-    (row, columnId, filterValue?: MarketRateType | boolean) => {
-      const data = row.getValue<LlamaMarket[LlamaMarketColumnId.UserHasPositions]>(columnId)
-      return (
-        filterValue === undefined ||
-        (typeof filterValue === 'boolean' && Boolean(data) === Boolean(filterValue)) ||
-        (typeof filterValue === 'string' && Boolean(data?.[filterValue]))
-      )
-    },
-  ),
   hidden(LlamaMarketColumnId.Rewards, LlamaMarketColumnId.Rewards, listNotEmptyFilterFn),
   hidden(LlamaMarketColumnId.DeprecatedMessage, LlamaMarketColumnId.DeprecatedMessage, boolFilterFn),
   hidden(LlamaMarketColumnId.Type, LlamaMarketColumnId.Type, multiFilterFn),
