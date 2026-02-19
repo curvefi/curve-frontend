@@ -2,8 +2,11 @@ import { useCallback, useMemo, useState } from 'react'
 import { useNetworkFromUrl } from '@/dex/hooks/useChainId'
 import { type NetworkConfig } from '@/dex/types/main.types'
 import { notFalsy } from '@curvefi/prices-api/objects.util'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
 import { ExpandedState, getPaginationRowModel } from '@tanstack/react-table'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { HideSmallPoolsSwitch } from '@ui-kit/features/user-profile/settings/HideSmallPoolsSwitch'
 import { MIN_POOLS_DISPLAYED, SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
 import { useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { usePageFromQueryString } from '@ui-kit/hooks/usePageFromQueryString'
@@ -17,6 +20,7 @@ import { useColumnFilters } from '@ui-kit/shared/ui/DataTable/hooks/useColumnFil
 import { useGlobalFilter } from '@ui-kit/shared/ui/DataTable/hooks/useGlobalFilter'
 import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
 import { TableFiltersTitles } from '@ui-kit/shared/ui/DataTable/TableFiltersTitles'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { minCutoffForTopK } from '@ui-kit/utils'
 import { PoolListChips } from './chips/PoolListChips'
 import { DEFAULT_SORT } from './columns'
@@ -27,6 +31,8 @@ import { usePoolListData } from './hooks/usePoolListData'
 import { usePoolListVisibilitySettings } from './hooks/usePoolListVisibilitySettings'
 import { poolsGlobalFilterFn } from './poolsGlobalFilter'
 import { type PoolListItem } from './types'
+
+const { Spacing } = SizesAndSpaces
 
 const LOCAL_STORAGE_KEY = 'dex-pool-list'
 
@@ -111,25 +117,34 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
     >
       <TableFilters<PoolColumnId>
         filterExpandedKey={LOCAL_STORAGE_KEY}
-        leftChildren={<TableFiltersTitles title={t`Markets`} subtitle={t`Find your next opportunity`} />}
+        leftChildren={<TableFiltersTitles title={t`Pools`} subtitle={t`Find your next opportunity`} />}
         loading={!isReady}
         visibilityGroups={columnSettings}
         searchText={globalFilter}
         onSearch={setGlobalFilter}
         hasSearchBar
         chips={
-          <PoolListChips
-            poolFilters={poolFilters}
-            hiddenMarketCount={data ? data.length - resultCount : 0}
-            hasFilters={hasFilters}
-            resetFilters={resetFilters}
-            onSortingChange={onSortingChange}
-            sortField={sortField}
-            searchText={globalFilter}
-            onSearch={setGlobalFilter}
-            resultCount={data ? resultCount : undefined}
-            {...filterProps}
-          />
+          <>
+            <PoolListChips
+              poolFilters={poolFilters}
+              hiddenMarketCount={data ? data.length - resultCount : 0}
+              hasFilters={hasFilters}
+              resetFilters={resetFilters}
+              onSortingChange={onSortingChange}
+              sortField={sortField}
+              searchText={globalFilter}
+              onSearch={setGlobalFilter}
+              resultCount={data ? resultCount : undefined}
+              {...filterProps}
+            />
+            {/** Temporary switch just for feature parity with the old pools list, should be a proper range filter later. */}
+            <Stack direction="row" spacing={Spacing.sm} alignItems="center">
+              <HideSmallPoolsSwitch />
+              <Typography variant="bodyMBold" color="text.secondary">
+                {t`Hide Small Pools`}
+              </Typography>
+            </Stack>
+          </>
         }
       />
     </DataTable>
