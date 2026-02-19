@@ -26,8 +26,7 @@ export const checkCurrentDebt = (expectedCurrentDebt: Decimal) => {
 }
 
 export function touchInput(getInputFn: () => Cypress.Chainable) {
-  // todo: make sure the LargeTokenInput properly sets `0` values
-  getInputFn().type('0.00001') // use a very small value to make sure repay.isFull isn't set before the blur.
+  getInputFn().type('1')
   getInputFn().blur()
   getInputFn().clear()
   getInputFn().blur()

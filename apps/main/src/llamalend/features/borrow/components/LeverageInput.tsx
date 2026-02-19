@@ -10,12 +10,12 @@ const TEST_ID_PREFIX = 'leverage'
 
 export const LeverageInput = ({
   checked,
-  leverage: { data: leverage, error: leverageError, isLoading: isLeverageLoading },
+  leverageValue: { data: leverage, error: leverageError, isLoading: isLeverageLoading },
   onToggle,
   maxLeverage,
 }: {
   checked: boolean
-  leverage: Query<Decimal>
+  leverageValue: Query<Decimal>
   onToggle: (event: ChangeEvent<HTMLInputElement>) => void
   maxLeverage: Decimal | undefined
 }) => (

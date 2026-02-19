@@ -29,7 +29,10 @@ export function checkBorrowMoreDetailsLoaded({
   getActionValue('borrow-apr').should('include', '%')
   checkDebt({ current: expectedCurrentDebt, future: expectedFutureDebt, symbol: 'crvUSD' })
   cy.get('[data-testid="loan-form-errors"]').should('not.exist')
-  if (leverageEnabled) throw new Error('Leverage not supported in borrow more tests yet')
+  if (leverageEnabled) {
+    getActionValue('borrow-price-impact').should('include', '%')
+    getActionValue('borrow-slippage').should('include', '%')
+  }
 }
 
 export function submitBorrowMoreForm() {
