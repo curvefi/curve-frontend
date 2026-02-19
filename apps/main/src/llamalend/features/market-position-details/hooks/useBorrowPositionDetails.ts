@@ -18,6 +18,12 @@ import {
   useUserPrices,
   useUserState,
 } from '@/llamalend/queries/user'
+import {
+  getBorrowRateMetrics,
+  getSnapshotBorrowRate,
+  getSnapshotCollateralRebasingYieldRate,
+  LAST_MONTH,
+} from '@/llamalend/rates.utils'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
@@ -29,10 +35,6 @@ import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { CRVUSD } from '@ui-kit/utils/address'
-import { calculateAverageRates } from '@ui-kit/utils/averageRates'
-
-const averageMultiplier = 30
-const averageMultiplierString = `${averageMultiplier}D`
 
 const fromLend = (market?: LendMarketTemplate | null) => ({
   isLendMarket: true,
@@ -128,31 +130,12 @@ export const useBorrowPositionDetails = ({
     blockchainId,
     contractAddress: controllerAddress,
     agg: 'day' as const,
-    limit: 30, // fetch last 30 days for 30 day average calcs
+    limit: LAST_MONTH,
   }
   const { data: lendSnapshots, isLoading: isLendSnapshotsLoading } = useLendingSnapshots(snapshotParams, isLendMarket)
   const { data: mintSnapshots, isLoading: isMintSnapshotsLoading } = useCrvUsdSnapshots(snapshotParams, !isLendMarket)
   const activeSnapshots = isLendMarket ? lendSnapshots : mintSnapshots
   const isSnapshotsLoading = isLendMarket ? isLendSnapshotsLoading : isMintSnapshotsLoading
-
-  const averageRateInputs = useMemo(
-    () =>
-      activeSnapshots?.map((snapshot) => ({
-        timestamp: snapshot.timestamp,
-        rate: ('borrowApy' in snapshot ? snapshot.borrowApy : snapshot.rate) * 100,
-        rebasingYield: snapshot.collateralToken.rebasingYield,
-      })),
-    [activeSnapshots],
-  )
-
-  const { rate: averageRate, rebasingYield: averageRebasingYield } = useMemo(
-    () =>
-      calculateAverageRates(averageRateInputs, averageMultiplier, {
-        rate: ({ rate }) => rate,
-        rebasingYield: ({ rebasingYield }) => rebasingYield,
-      }) ?? { rate: null, rebasingYield: null },
-    [averageRateInputs],
-  )
 
   const { collateral, stablecoin: borrowed, debt } = hasLoan ? (userStateValue ?? {}) : {}
   const isPositionDetailsLoading = !market || !isHydrated
@@ -165,8 +148,22 @@ export const useBorrowPositionDetails = ({
     return +collateral * +collateralUsdRate + +borrowed
   }, [collateral, borrowed, collateralUsdRate])
 
-  const rebasingYield = activeSnapshots?.at?.(-1)?.collateralToken?.rebasingYield // take most recent rebasing yield
-  const totalBorrowRate = borrowApr == null ? null : borrowApr - (rebasingYield ?? 0)
+  const {
+    averageRate: averageBorrowApr,
+    averageRebasingYield: averageRebasingYieldApr,
+    totalRate: totalBorrowRate,
+    averageTotalRate: totalAverageBorrowRate,
+    rebasingYield: rebasingYieldApr,
+  } = useMemo(
+    () =>
+      getBorrowRateMetrics({
+        borrowRate: borrowApr,
+        snapshots: activeSnapshots,
+        getBorrowRate: getSnapshotBorrowRate,
+        getRebasingYield: getSnapshotCollateralRebasingYieldRate,
+      }),
+    [borrowApr, activeSnapshots],
+  )
 
   const healthValue = useMemo(() => {
     if (!hasLoan || !healthFullValue || !healthNotFullValue) return null
@@ -191,12 +188,12 @@ export const useBorrowPositionDetails = ({
     },
     borrowRate: {
       rate: borrowApr,
-      averageRate: averageRate,
-      averageRateLabel: averageMultiplierString,
-      rebasingYield: rebasingYield ?? null,
-      averageRebasingYield: averageRebasingYield ?? null,
+      averageRate: averageBorrowApr,
+      averageRateLabel: `${LAST_MONTH}D`,
+      rebasingYield: rebasingYieldApr,
+      averageRebasingYield: averageRebasingYieldApr,
       totalBorrowRate,
-      totalAverageBorrowRate: averageRate ? averageRate - (averageRebasingYield ?? 0) : null,
+      totalAverageBorrowRate,
       extraRewards: campaigns ?? [],
       loading: isPositionDetailsLoading || isSnapshotsLoading || isMarketRatesLoading,
     },
