@@ -1,18 +1,21 @@
 import BigNumber from 'bignumber.js'
 import type { Decimal } from '@ui-kit/utils'
 import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '../ui'
-import { checkCurrentDebt, checkDebt, getActionValue } from './llamalend/action-info.helpers'
+import { checkCurrentDebt, checkDebt, getActionValue, touchInput } from './llamalend/action-info.helpers'
 
 type BorrowMoreField = 'collateral' | 'user-borrowed' | 'debt'
 
 const getBorrowMoreInput = (field: BorrowMoreField) =>
   cy.get(`[data-testid="borrow-more-input-${field}"] input[type="text"]`, LOAD_TIMEOUT).first()
 
+const getDebtInput = () => getBorrowMoreInput('debt')
+
 export function writeBorrowMoreForm({ debt }: { debt: Decimal }) {
-  getBorrowMoreInput('debt').as('borrowMoreDebt')
-  cy.get('@borrowMoreDebt').clear()
-  cy.get('@borrowMoreDebt').type(debt)
+  getDebtInput().clear()
+  getDebtInput().type(debt)
 }
+
+export const touchBorrowMoreForm = () => touchInput(getDebtInput)
 
 export function checkBorrowMoreDetailsLoaded({
   leverageEnabled,

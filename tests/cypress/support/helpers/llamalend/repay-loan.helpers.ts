@@ -1,6 +1,6 @@
 import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
 import { type Decimal } from '@ui-kit/utils'
-import { checkDebt, type DebtCheck, getActionValue } from './action-info.helpers'
+import { checkDebt, type DebtCheck, getActionValue, touchInput } from './action-info.helpers'
 
 const getRepayInput = () => cy.get('[data-testid^="repay-input-"] input[type="text"]', LOAD_TIMEOUT).first()
 
@@ -26,6 +26,8 @@ export function writeRepayLoanForm({ amount }: { amount: Decimal }) {
   getRepayInput().type(amount)
   getRepayInput().blur() // make sure field is touched to open the action info list
 }
+
+export const touchRepayLoanForm = () => touchInput(getRepayInput)
 
 export function checkRepayDetailsLoaded({ leverageEnabled, debt }: { debt: DebtCheck; leverageEnabled?: boolean }) {
   cy.get('[data-testid="borrow-leverage-info-list"]', LOAD_TIMEOUT).should(leverageEnabled ? 'be.visible' : 'not.exist')
