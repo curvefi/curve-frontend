@@ -24,14 +24,11 @@ export function selectRepayToken({
 export function writeRepayLoanForm({ amount }: { amount: Decimal }) {
   getRepayInput().clear()
   getRepayInput().type(amount)
+  getRepayInput().blur() // make sure field is touched to open the action info list
 }
 
 export function checkRepayDetailsLoaded({ leverageEnabled, debt }: { debt: DebtCheck; leverageEnabled?: boolean }) {
-  if (leverageEnabled) {
-    cy.get('[data-testid="borrow-leverage-info-list"]', LOAD_TIMEOUT).should('exist')
-  } else {
-    cy.get('[data-testid="borrow-leverage-info-list"]', LOAD_TIMEOUT).should('not.exist')
-  }
+  cy.get('[data-testid="borrow-leverage-info-list"]', LOAD_TIMEOUT).should(leverageEnabled ? 'be.visible' : 'not.exist')
   getActionValue('borrow-price-range').should('match', /(\d(\.\d+)?) - (\d(\.\d+)?)/)
   getActionValue('borrow-apr').should('include', '%')
   checkDebt(debt)
