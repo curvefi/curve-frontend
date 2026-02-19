@@ -30,12 +30,12 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
   network,
   network: { chainId },
   preset,
-  onCreated,
+  onSuccess,
 }: {
   market: LlamaMarketTemplate | undefined
   network: { id: LlamaNetworkId; chainId: ChainId }
   preset: LoanPreset
-  onCreated: CreateLoanOptions['onCreated']
+  onSuccess: CreateLoanOptions['onSuccess']
 }) {
   const { address: userAddress } = useConnection()
   const form = useForm<CreateLoanForm>({
@@ -95,7 +95,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     error: creationError,
     data,
     reset: resetCreation,
-  } = useCreateLoanMutation({ network, marketId: market?.id, onReset: form.reset, onCreated, userAddress })
+  } = useCreateLoanMutation({ network, marketId: market?.id, onReset: form.reset, onSuccess, userAddress })
 
   const { formState } = form
   const { borrowToken, collateralToken } = market ? getTokens(market) : {}

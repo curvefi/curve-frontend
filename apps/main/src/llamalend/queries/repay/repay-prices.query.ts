@@ -1,5 +1,6 @@
 import { repayExpectedBorrowedQueryKey } from '@/llamalend/queries/repay/repay-expected-borrowed.query'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
+import { type Range } from '@ui-kit/types/util'
 import type { Decimal } from '@ui-kit/utils'
 import { parseRoute } from '@ui-kit/widgets/RouteProvider'
 import { type RepayParams, type RepayQuery } from '../validation/manage-loan.types'
@@ -46,11 +47,11 @@ export const { useQuery: useRepayPrices } = queryFactory({
         ).prices as Decimal[]
       case 'V1':
       case 'V2':
-        return (await impl.repayPrices(...args)) as Decimal[]
+        return (await impl.repayPrices(...args)) as Range<Decimal>
       case 'deleverage':
-        return (await impl.repayPrices(...args)) as Decimal[]
+        return (await impl.repayPrices(...args)) as Range<Decimal>
       case 'unleveraged':
-        return (await impl.repayPrices(...args)) as Decimal[]
+        return (await impl.repayPrices(...args)) as Range<Decimal>
     }
   },
   validationSuite: repayValidationSuite({ leverageRequired: false }),

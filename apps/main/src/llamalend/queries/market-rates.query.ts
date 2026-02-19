@@ -1,23 +1,47 @@
 import { getLlamaMarket } from '@/llamalend/llama.utils'
+import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
-import { type MarketQuery, queryFactory, rootKeys, MarketParams } from '@ui-kit/lib/model'
-import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
-import type { Decimal } from '@ui-kit/utils'
+import { type FieldsOf } from '@ui-kit/lib'
+import type { MarketQuery } from '@ui-kit/lib/model'
+import { queryFactory, rootKeys } from '@ui-kit/lib/model'
+import { llamaApiValidationSuite } from '@ui-kit/lib/model/query/curve-api-validation'
+import { decimal, Decimal } from '@ui-kit/utils'
+import { getMintBorrowRates } from '../rates.utils'
 
-export const { useQuery: useMarketRates } = queryFactory({
-  queryKey: (params: MarketParams) => [...rootKeys.market(params), 'market-rates'] as const,
-  queryFn: async ({ marketId }: MarketQuery) => {
+type MarketRateQuery = MarketQuery<IChainId>
+type MarketRateParams = FieldsOf<MarketRateQuery>
+
+export type BorrowRatesResult = {
+  borrowApr: Decimal
+  borrowApy?: Decimal
+  lendApr?: Decimal
+  lendApy?: Decimal
+}
+
+const convertRates = ({
+  borrowApr,
+  borrowApy,
+  lendApr,
+  lendApy,
+}: { [K in keyof BorrowRatesResult]: string }): BorrowRatesResult => ({
+  borrowApr: decimal(borrowApr)!,
+  borrowApy: decimal(borrowApy),
+  lendApy: decimal(lendApy),
+  lendApr: decimal(lendApr),
+})
+
+const [isGetter, useAPI] = [true, true] as const
+
+export const { useQuery: useMarketRates, invalidate: invalidateMarketRates } = queryFactory({
+  queryKey: ({ chainId, marketId }: MarketRateParams) =>
+    [...rootKeys.market({ chainId, marketId }), 'market-rates'] as const,
+  queryFn: async ({ marketId }: MarketRateQuery) => {
     const market = getLlamaMarket(marketId)
-    return market instanceof LendMarketTemplate
-      ? {
-          ...(await market.stats.rates().then((x) => ({
-            borrowApr: x.borrowApr as Decimal,
-            borrowApy: x.borrowApy as Decimal,
-            lendApr: x.lendApr as Decimal,
-            lendApy: x.lendApy as Decimal,
-          }))),
-        }
-      : { borrowApr: (await market.stats.parameters()).rate as Decimal }
+    return convertRates(
+      market instanceof LendMarketTemplate
+        ? await market.stats.rates(isGetter, useAPI)
+        : getMintBorrowRates((await market.stats.parameters()).rate),
+    )
   },
-  validationSuite: marketIdValidationSuite,
+  validationSuite: llamaApiValidationSuite,
 })

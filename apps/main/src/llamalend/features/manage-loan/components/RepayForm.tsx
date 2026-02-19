@@ -17,8 +17,9 @@ import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import { q } from '@ui-kit/types/util'
+import { q, type Range } from '@ui-kit/types/util'
 import { joinButtonText } from '@ui-kit/utils'
+import type { Decimal } from '@ui-kit/utils'
 import { updateForm } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts, HighPriceImpactAlert } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
@@ -27,13 +28,14 @@ import { useTokenAmountConversion } from '../hooks/useTokenAmountConversion'
 
 const useFormSync = (
   params: RepayParams,
+  onPricesUpdated: (prices: Range<Decimal> | undefined) => void,
   enabled: boolean | undefined,
-  onPricesUpdated: (prices: string[] | undefined) => void,
 ) => {
   const { data } = useRepayPrices(params, enabled)
   useEffect(() => {
     onPricesUpdated(data)
   }, [onPricesUpdated, data])
+  useEffect(() => () => onPricesUpdated(undefined), [onPricesUpdated]) // clear prices on unmount to avoid stale chart
 }
 
 function RepayTokenSelector<ChainId extends IChainId>({
@@ -68,15 +70,15 @@ export const RepayForm = <ChainId extends IChainId>({
   networks,
   chainId,
   enabled,
-  onRepaid,
+  onSuccess,
   onPricesUpdated,
 }: {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
   chainId: ChainId
   enabled?: boolean
-  onRepaid?: RepayOptions['onRepaid']
-  onPricesUpdated: (prices: string[] | undefined) => void
+  onSuccess?: RepayOptions['onSuccess']
+  onPricesUpdated: (prices: Range<Decimal> | undefined) => void
 }) => {
   const network = networks[chainId]
   const {
@@ -100,7 +102,7 @@ export const RepayForm = <ChainId extends IChainId>({
     market,
     network,
     enabled,
-    onRepaid,
+    onSuccess,
   })
   const { token, onToken, tokens } = useRepayTokens({ market, networkId: network.id })
 
@@ -126,7 +128,7 @@ export const RepayForm = <ChainId extends IChainId>({
     t`Max repay amount:`,
   ).join(' ')
 
-  useFormSync(params, enabled, onPricesUpdated)
+  useFormSync(params, onPricesUpdated, enabled)
 
   useEffect(
     () => () => {

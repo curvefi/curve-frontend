@@ -17,7 +17,7 @@ type AddCollateralMutation = { userCollateral: Decimal }
 export type AddCollateralOptions = {
   marketId: string | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
-  onAdded?: OnTransactionSuccess<AddCollateralMutation>
+  onSuccess?: OnTransactionSuccess<AddCollateralMutation>
   onReset: () => void
   userAddress: Address | undefined
 }
@@ -32,7 +32,7 @@ export const useAddCollateralMutation = ({
   network,
   network: { chainId },
   marketId,
-  onAdded,
+  onSuccess,
   onReset,
   userAddress,
 }: AddCollateralOptions) => {
@@ -55,7 +55,7 @@ export const useAddCollateralMutation = ({
     validationSuite: collateralValidationSuite,
     pendingMessage: (mutation, { market }) => t`Adding collateral... ${formatTokenAmounts(market, mutation)}`,
     successMessage: (mutation, { market }) => t`Collateral added successfully! ${formatTokenAmounts(market, mutation)}`,
-    onSuccess: onAdded,
+    onSuccess,
     onReset,
   })
 

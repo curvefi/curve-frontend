@@ -13,8 +13,9 @@ import Stack from '@mui/material/Stack'
 import { useCreateLoanPreset } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
-import { q } from '@ui-kit/types/util'
+import { q, type Range } from '@ui-kit/types/util'
 import { joinButtonText } from '@ui-kit/utils'
+import type { Decimal } from '@ui-kit/utils'
 import { updateForm } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts, HighPriceImpactAlert } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
@@ -30,12 +31,13 @@ import { LoanPresetSelector } from './LoanPresetSelector'
  */
 function useFormSync(
   params: Parameters<typeof useCreateLoanPrices>[0],
-  onPricesUpdated: (prices: string[] | undefined) => void,
+  onPricesUpdated: (prices: Range<Decimal> | undefined) => void,
 ) {
   const { data } = useCreateLoanPrices(params)
   useEffect(() => {
     onPricesUpdated(data)
   }, [onPricesUpdated, data])
+  useEffect(() => () => onPricesUpdated(undefined), [onPricesUpdated]) // clear prices on unmount to avoid stale chart
 }
 
 /**
@@ -49,13 +51,13 @@ export const CreateLoanForm = <ChainId extends IChainId>({
   networks,
   chainId,
   onPricesUpdated,
-  onCreated,
+  onSuccess,
 }: {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
   chainId: ChainId
-  onPricesUpdated: (prices: string[] | undefined) => void
-  onCreated: CreateLoanOptions['onCreated']
+  onPricesUpdated: (prices: Range<Decimal> | undefined) => void
+  onSuccess: CreateLoanOptions['onSuccess']
 }) => {
   const network = networks[chainId]
   const [preset, setPreset] = useCreateLoanPreset<LoanPreset>(LoanPreset.Safe)
@@ -76,7 +78,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
     txHash,
     values,
     leverage,
-  } = useCreateLoanForm({ market, network, preset, onCreated })
+  } = useCreateLoanForm({ market, network, preset, onSuccess })
 
   useFormSync(params, onPricesUpdated)
 
@@ -101,6 +103,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
           onSlippageChange={(value) => updateForm(form, { slippage: value })}
         />
       }
+      data-testid="create-loan-form"
     >
       <Stack divider={<InputDivider />}>
         <LoanFormTokenInput

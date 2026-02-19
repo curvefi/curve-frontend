@@ -18,7 +18,7 @@ export const MarketBorrowRateTooltipWrapper = ({ market, borrowRateType }: Marke
     type: marketType,
     rates: { borrowApr, borrowTotalApr: netBorrowApr },
     assets: {
-      collateral: { rebasingYield, symbol: collateralSymbol },
+      collateral: { rebasingYieldApr, symbol: collateralSymbol },
     },
   } = market
   const poolRewards = useFilteredRewards(rewards, marketType, MarketRateType.Borrow)
@@ -32,7 +32,7 @@ export const MarketBorrowRateTooltipWrapper = ({ market, borrowRateType }: Marke
       totalBorrowRate={netBorrowApr}
       totalAverageBorrowRate={averageTotalBorrowRate}
       extraRewards={poolRewards}
-      rebasingYield={rebasingYield}
+      rebasingYield={rebasingYieldApr}
       collateralSymbol={collateralSymbol}
       isLoading={isLoading}
     />

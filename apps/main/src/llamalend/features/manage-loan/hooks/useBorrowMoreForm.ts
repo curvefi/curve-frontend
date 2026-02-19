@@ -79,12 +79,12 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
   market,
   network,
   enabled,
-  onBorrowedMore,
+  onSuccess,
 }: {
   market: LlamaMarketTemplate | undefined
   network: { id: LlamaNetworkId; chainId: ChainId; name: string }
   enabled?: boolean
-  onBorrowedMore?: NonNullable<OnBorrowedMore>
+  onSuccess?: NonNullable<OnBorrowedMore>
 }) => {
   const { address: userAddress } = useConnection()
   const { chainId } = network
@@ -121,7 +121,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
   } = useBorrowMoreMutation({
     network,
     marketId,
-    onBorrowedMore,
+    onSuccess,
     onReset: form.reset,
     userAddress,
   })

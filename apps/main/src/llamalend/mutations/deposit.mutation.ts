@@ -20,7 +20,7 @@ import { formatTokenAmounts } from '../llama.utils'
 export type DepositOptions = {
   marketId: string | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
-  onDeposited?: OnTransactionSuccess<DepositMutation>
+  onSuccess?: OnTransactionSuccess<DepositMutation>
   onReset: () => void
   userAddress: Address | undefined
 }
@@ -35,7 +35,7 @@ export const useDepositMutation = ({
   network,
   network: { chainId },
   marketId,
-  onDeposited,
+  onSuccess,
   onReset,
   userAddress,
 }: DepositOptions) => {
@@ -61,7 +61,7 @@ export const useDepositMutation = ({
       t`Depositing... ${formatTokenAmounts(market, { userBorrowed: mutation.depositAmount })}`,
     successMessage: (mutation, { market }) =>
       t`Deposit successful! ${formatTokenAmounts(market, { userBorrowed: mutation.depositAmount })}`,
-    onSuccess: onDeposited,
+    onSuccess,
     onReset,
   })
 

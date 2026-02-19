@@ -3,6 +3,7 @@ import { getBorrowMoreImplementationArgs } from '@/llamalend/queries/borrow-more
 import type { BorrowMoreParams, BorrowMoreQuery } from '@/llamalend/queries/validation/borrow-more.validation'
 import { borrowMoreValidationSuite } from '@/llamalend/queries/validation/borrow-more.validation'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
+import type { Range } from '@ui-kit/types/util'
 import type { Decimal } from '@ui-kit/utils'
 
 export const { useQuery: useBorrowMorePrices } = queryFactory({
@@ -47,12 +48,12 @@ export const { useQuery: useBorrowMorePrices } = queryFactory({
         return (await impl.borrowMoreExpectedMetrics(...args)).prices as Decimal[]
       case 'V1':
       case 'V2':
-        return (await impl.borrowMorePrices(...args)) as Decimal[]
+        return (await impl.borrowMorePrices(...args)) as Range<Decimal>
       case 'unleveraged':
-        return (await impl.borrowMorePrices(...args)) as Decimal[]
+        return (await impl.borrowMorePrices(...args)) as Range<Decimal>
     }
   },
   staleTime: '1m',
   validationSuite: borrowMoreValidationSuite({ leverageRequired: false, debtRequired: true }),
-  dependencies: (params) => [getBorrowMoreExpectedCollateralKey(params)],
+  dependencies: (params) => (params.leverageEnabled ? [getBorrowMoreExpectedCollateralKey(params)] : []),
 })

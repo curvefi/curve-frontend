@@ -7,13 +7,15 @@ import { CreateLoanForm } from '@/llamalend/features/borrow/components/CreateLoa
 import { hasLeverage } from '@/llamalend/llama.utils'
 import { useCreateLoanMuiForm } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
+import type { Range } from '@ui-kit/types/util'
+import type { Decimal } from '@ui-kit/utils'
 import { type FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
 
 type CreateLoanProps = PageContentProps<MarketUrlParams> & {
-  onChartPreviewPricesUpdate: (prices: string[] | undefined) => void
+  onPricesUpdated: (prices: Range<Decimal> | undefined) => void
 }
 
-function CreateLoanTab({ market, api, rChainId, onChartPreviewPricesUpdate }: CreateLoanProps) {
+function CreateLoanTab({ market, api, rChainId, onPricesUpdated }: CreateLoanProps) {
   const onLoanCreated = useStore((state) => state.loanCreate.onLoanCreated)
   const onCreated = useCallback(
     async () => api && market && (await onLoanCreated(api, market)),
@@ -24,8 +26,8 @@ function CreateLoanTab({ market, api, rChainId, onChartPreviewPricesUpdate }: Cr
       networks={networks}
       chainId={rChainId}
       market={market}
-      onPricesUpdated={onChartPreviewPricesUpdate}
-      onCreated={onCreated}
+      onPricesUpdated={onPricesUpdated}
+      onSuccess={onCreated}
     />
   )
 }

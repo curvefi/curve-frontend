@@ -47,11 +47,13 @@ export type GetMarketsResponse = {
       symbol: string
       address: Address
       rebasing_yield: number | null
+      rebasing_yield_apr: number | null
     }
     borrowed_token: {
       symbol: string
       address: Address
       rebasing_yield: number | null
+      rebasing_yield_apr: number | null
     }
     leverage: number
     extra_reward_apr: {
@@ -111,11 +113,13 @@ export type GetSnapshotsResponse = {
         symbol: string
         address: Address
         rebasing_yield: number | null
+        rebasing_yield_apr: number | null
       }
       borrowed_token: {
         symbol: string
         address: Address
         rebasing_yield: number | null
+        rebasing_yield_apr: number | null
       }
       timestamp: string
       max_ltv: number

@@ -1,7 +1,7 @@
 import lodash from 'lodash'
 import { StoreApi } from 'zustand'
-import { refetchLoanExists } from '@/llamalend/queries/loan-exists'
-import { invalidateMarketRates } from '@/llamalend/queries/market-rates'
+import { invalidateMarketRates } from '@/llamalend/queries/market-rates.query'
+import { refetchLoanExists } from '@/llamalend/queries/user'
 import { networks } from '@/loan/networks'
 import type { State } from '@/loan/store/useStore'
 import {

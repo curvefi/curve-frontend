@@ -17,31 +17,33 @@ import { networks } from '@/loan/networks'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useManageLoanMuiForm, useManageSoftLiquidation } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
+import type { Range } from '@ui-kit/types/util'
+import type { Decimal } from '@ui-kit/utils'
 import { type FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
 
 // casting the networks for the loan app so we don't need to make the whole form generic
 const softLiqNetworks = networks as unknown as NetworkDict<LlamaChainId>
 type MintManageLoanProps = ManageLoanProps & {
-  onChartPreviewPricesUpdate: (prices: string[] | undefined) => void
+  onPricesUpdated: (prices: Range<Decimal> | undefined) => void
 }
 
-const BorrowTab = ({ rChainId, market, isReady, onChartPreviewPricesUpdate }: MintManageLoanProps) => (
+const BorrowTab = ({ rChainId, market, isReady, onPricesUpdated }: MintManageLoanProps) => (
   <BorrowMoreForm
     networks={networks}
     chainId={rChainId}
     market={market ?? undefined}
     enabled={isReady}
-    onPricesUpdated={onChartPreviewPricesUpdate}
+    onPricesUpdated={onPricesUpdated}
   />
 )
 
-const RepayTab = ({ rChainId, market, isReady, onChartPreviewPricesUpdate }: MintManageLoanProps) => (
+const RepayTab = ({ rChainId, market, isReady, onPricesUpdated }: MintManageLoanProps) => (
   <RepayForm
     networks={networks}
     chainId={rChainId}
     market={market ?? undefined}
     enabled={isReady}
-    onPricesUpdated={onChartPreviewPricesUpdate}
+    onPricesUpdated={onPricesUpdated}
   />
 )
 

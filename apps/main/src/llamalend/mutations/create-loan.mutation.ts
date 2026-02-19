@@ -23,7 +23,7 @@ export type CreateLoanMutation = Omit<CreateLoanFormQuery, keyof CreateLoanMutat
 export type CreateLoanOptions = {
   marketId: string | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
-  onCreated: OnTransactionSuccess<CreateLoanMutation>
+  onSuccess: OnTransactionSuccess<CreateLoanMutation>
   onReset: () => void
   userAddress: Address | undefined
 }
@@ -73,7 +73,7 @@ export const useCreateLoanMutation = ({
   network,
   network: { chainId },
   marketId,
-  onCreated,
+  onSuccess,
   onReset,
   userAddress,
 }: CreateLoanOptions) => {
@@ -96,7 +96,7 @@ export const useCreateLoanMutation = ({
     validationSuite: createLoanQueryValidationSuite({ debtRequired: true }),
     pendingMessage: (mutation, { market }) => t`Creating loan... ${formatTokenAmounts(market, mutation)}`,
     successMessage: (mutation, { market }) => t`Loan created! ${formatTokenAmounts(market, mutation)}`,
-    onSuccess: onCreated,
+    onSuccess,
     onReset,
   })
 

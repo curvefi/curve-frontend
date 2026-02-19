@@ -91,12 +91,12 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
   market,
   network,
   enabled,
-  onRepaid,
+  onSuccess,
 }: {
   market: LlamaMarketTemplate | undefined
   network: { id: LlamaNetworkId; chainId: ChainId; name: string }
   enabled?: boolean
-  onRepaid?: NonNullable<RepayOptions['onRepaid']>
+  onSuccess?: NonNullable<RepayOptions['onSuccess']>
 }) => {
   const { address: userAddress } = useConnection()
   const { chainId } = network
@@ -129,7 +129,7 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
   } = useRepayMutation({
     network,
     marketId,
-    onRepaid,
+    onSuccess,
     onReset: form.reset,
     userAddress,
   })

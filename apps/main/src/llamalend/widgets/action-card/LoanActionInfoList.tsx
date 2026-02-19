@@ -1,6 +1,6 @@
 import { getHealthValueColor } from '@/llamalend/features/market-position-details'
 import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
-import { UserState } from '@/llamalend/queries/user-state.query'
+import { UserState } from '@/llamalend/queries/user'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
