@@ -80,7 +80,7 @@ export const LendMarketPage = () => {
   })
 
   const [isLoaded, setLoaded] = useState(false)
-  const [previewPrices, setPreviewPrices] = useState<string[] | null>(null)
+  const [previewPrices, onChartPreviewPricesUpdate] = useState<string[] | undefined>(undefined)
 
   const borrowPositionDetails = useBorrowPositionDetails({ chainId, market: market, marketId })
 
@@ -125,6 +125,7 @@ export const LendMarketPage = () => {
     market,
     userActiveKey,
     titleMapper,
+    onChartPreviewPricesUpdate,
   }
   const showPageHeader = useIntegratedLlamaHeader()
 
@@ -148,13 +149,9 @@ export const LendMarketPage = () => {
           marketId &&
           !isLoanExistsLoading &&
           (loanExists ? (
-            <ManageLoanTabs
-              position={borrowPositionDetails}
-              {...pageProps}
-              onChartPreviewPricesUpdate={setPreviewPrices}
-            />
+            <ManageLoanTabs position={borrowPositionDetails} {...pageProps} />
           ) : (
-            <LoanCreateTabs {...pageProps} params={params} onChartPreviewPricesUpdate={setPreviewPrices} />
+            <LoanCreateTabs {...pageProps} params={params} />
           ))
         }
       >

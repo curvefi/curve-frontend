@@ -17,7 +17,7 @@ import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
 import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
-import { q, type Query } from '@ui-kit/types/util'
+import { q } from '@ui-kit/types/util'
 import { isDevelopment, joinButtonText } from '@ui-kit/utils'
 import { updateForm } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
@@ -25,13 +25,15 @@ import { FormAlerts, HighPriceImpactAlert } from '@ui-kit/widgets/DetailPageLayo
 import { InputDivider } from '../../../widgets/InputDivider'
 import { useBorrowMoreForm } from '../hooks/useBorrowMoreForm'
 
-type OnBorrowMoreFormUpdate = (prices: Query<string[]>) => void
-
-const useFormSync = (params: BorrowMoreParams, enabled: boolean | undefined, onUpdate: OnBorrowMoreFormUpdate) => {
-  const { data, isLoading, error } = useBorrowMorePrices(params, enabled)
+const useFormSync = (
+  params: BorrowMoreParams,
+  enabled: boolean | undefined,
+  onPricesUpdated: (prices: string[] | undefined) => void,
+) => {
+  const { data } = useBorrowMorePrices(params, enabled)
   useEffect(() => {
-    onUpdate({ data, isLoading, error })
-  }, [onUpdate, data, isLoading, error])
+    onPricesUpdated(data)
+  }, [onPricesUpdated, data])
 }
 
 export const BorrowMoreForm = <ChainId extends IChainId>({
@@ -41,7 +43,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
   enabled,
   onBorrowedMore,
   fromWallet = isDevelopment, // todo: delete this if users do not complain about it, for now dev-only feature
-  onUpdate,
+  onPricesUpdated,
 }: {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
@@ -49,7 +51,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
   enabled?: boolean
   onBorrowedMore?: OnBorrowedMore
   fromWallet?: boolean
-  onUpdate: OnBorrowMoreFormUpdate
+  onPricesUpdated: (prices: string[] | undefined) => void
 }) => {
   const network = networks[chainId]
   const {
@@ -84,7 +86,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     [form],
   )
 
-  useFormSync(params, enabled, onUpdate)
+  useFormSync(params, enabled, onPricesUpdated)
 
   return (
     <Form

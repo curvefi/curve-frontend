@@ -17,7 +17,7 @@ type MarketInformationCompProps = {
   pageProps: PageContentProps
   loanExists: boolean | undefined
   type: 'borrow' | 'supply'
-  previewPrices?: string[] | null
+  previewPrices?: string[] | undefined
 }
 
 /**

@@ -4,14 +4,13 @@ import { networks } from '@/lend/networks'
 import { useStore } from '@/lend/store/useStore'
 import { type MarketUrlParams, type PageContentProps } from '@/lend/types/lend.types'
 import { CreateLoanForm } from '@/llamalend/features/borrow/components/CreateLoanForm'
-import type { OnCreateLoanFormUpdate } from '@/llamalend/features/borrow/types'
 import { hasLeverage } from '@/llamalend/llama.utils'
 import { useCreateLoanMuiForm } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { type FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
 
 type CreateLoanProps = PageContentProps<MarketUrlParams> & {
-  onChartPreviewPricesUpdate?: (prices: string[] | null) => void
+  onChartPreviewPricesUpdate: (prices: string[] | undefined) => void
 }
 
 function CreateLoanTab({ market, api, rChainId, onChartPreviewPricesUpdate }: CreateLoanProps) {
@@ -20,12 +19,14 @@ function CreateLoanTab({ market, api, rChainId, onChartPreviewPricesUpdate }: Cr
     async () => api && market && (await onLoanCreated(api, market)),
     [api, market, onLoanCreated],
   )
-  const onUpdate: OnCreateLoanFormUpdate = useCallback(
-    (prices) => onChartPreviewPricesUpdate?.(prices.data ?? null),
-    [onChartPreviewPricesUpdate],
-  )
   return (
-    <CreateLoanForm networks={networks} chainId={rChainId} market={market} onUpdate={onUpdate} onCreated={onCreated} />
+    <CreateLoanForm
+      networks={networks}
+      chainId={rChainId}
+      market={market}
+      onPricesUpdated={onChartPreviewPricesUpdate}
+      onCreated={onCreated}
+    />
   )
 }
 

@@ -1,4 +1,3 @@
-import { useCallback } from 'react'
 import { AddCollateralForm } from '@/llamalend/features/manage-loan/components/AddCollateralForm'
 import { BorrowMoreForm } from '@/llamalend/features/manage-loan/components/BorrowMoreForm'
 import { RemoveCollateralForm } from '@/llamalend/features/manage-loan/components/RemoveCollateralForm'
@@ -18,46 +17,33 @@ import { networks } from '@/loan/networks'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useManageLoanMuiForm, useManageSoftLiquidation } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
-import { Query } from '@ui-kit/types/util'
 import { type FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
 
 // casting the networks for the loan app so we don't need to make the whole form generic
 const softLiqNetworks = networks as unknown as NetworkDict<LlamaChainId>
 type MintManageLoanProps = ManageLoanProps & {
-  onChartPreviewPricesUpdate?: (prices: string[] | null) => void
+  onChartPreviewPricesUpdate: (prices: string[] | undefined) => void
 }
 
-const BorrowTab = ({ rChainId, market, isReady, onChartPreviewPricesUpdate }: MintManageLoanProps) => {
-  const onUpdate = useCallback(
-    (prices: Query<string[]>) => onChartPreviewPricesUpdate?.(prices.data ?? null),
-    [onChartPreviewPricesUpdate],
-  )
-  return (
-    <BorrowMoreForm
-      networks={networks}
-      chainId={rChainId}
-      market={market ?? undefined}
-      enabled={isReady}
-      onUpdate={onUpdate}
-    />
-  )
-}
+const BorrowTab = ({ rChainId, market, isReady, onChartPreviewPricesUpdate }: MintManageLoanProps) => (
+  <BorrowMoreForm
+    networks={networks}
+    chainId={rChainId}
+    market={market ?? undefined}
+    enabled={isReady}
+    onPricesUpdated={onChartPreviewPricesUpdate}
+  />
+)
 
-const RepayTab = ({ rChainId, market, isReady, onChartPreviewPricesUpdate }: MintManageLoanProps) => {
-  const onUpdate = useCallback(
-    (prices: Query<string[]>) => onChartPreviewPricesUpdate?.(prices.data ?? null),
-    [onChartPreviewPricesUpdate],
-  )
-  return (
-    <RepayForm
-      networks={networks}
-      chainId={rChainId}
-      market={market ?? undefined}
-      enabled={isReady}
-      onUpdate={onUpdate}
-    />
-  )
-}
+const RepayTab = ({ rChainId, market, isReady, onChartPreviewPricesUpdate }: MintManageLoanProps) => (
+  <RepayForm
+    networks={networks}
+    chainId={rChainId}
+    market={market ?? undefined}
+    enabled={isReady}
+    onPricesUpdated={onChartPreviewPricesUpdate}
+  />
+)
 
 const MintManageLegacyMenu = [
   {

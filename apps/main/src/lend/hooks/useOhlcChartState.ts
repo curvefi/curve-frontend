@@ -21,7 +21,7 @@ export type LendingMarketTokens = ReturnType<typeof getTokens> | undefined
 type UseOhlcChartStateProps = {
   rChainId: ChainId
   rOwmId: string
-  previewPrices: string[] | null | undefined
+  previewPrices: string[] | undefined
 }
 
 const useOhlcChartStoreState = (): string[] | null => {

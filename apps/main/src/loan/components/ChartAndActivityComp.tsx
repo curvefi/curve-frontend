@@ -12,7 +12,7 @@ type ChartAndActivityCompProps = {
   chainId: ChainId
   market: Llamma | null
   llammaId: string
-  previewPrices: string[] | null | undefined
+  previewPrices: string[] | undefined
 }
 
 export const ChartAndActivityComp = ({ chainId, market, llammaId, previewPrices }: ChartAndActivityCompProps) => {

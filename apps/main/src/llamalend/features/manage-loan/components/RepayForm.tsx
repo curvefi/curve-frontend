@@ -17,7 +17,7 @@ import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import { q, type Query } from '@ui-kit/types/util'
+import { q } from '@ui-kit/types/util'
 import { joinButtonText } from '@ui-kit/utils'
 import { updateForm } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
@@ -25,13 +25,15 @@ import { FormAlerts, HighPriceImpactAlert } from '@ui-kit/widgets/DetailPageLayo
 import { useRepayForm } from '../hooks/useRepayForm'
 import { useTokenAmountConversion } from '../hooks/useTokenAmountConversion'
 
-type OnRepayFormUpdate = (prices: Query<string[]>) => void
-
-const useFormSync = (params: RepayParams, enabled: boolean | undefined, onUpdate: OnRepayFormUpdate) => {
-  const { data, isLoading, error } = useRepayPrices(params, enabled)
+const useFormSync = (
+  params: RepayParams,
+  enabled: boolean | undefined,
+  onPricesUpdated: (prices: string[] | undefined) => void,
+) => {
+  const { data } = useRepayPrices(params, enabled)
   useEffect(() => {
-    onUpdate({ data, isLoading, error })
-  }, [onUpdate, data, isLoading, error])
+    onPricesUpdated(data)
+  }, [onPricesUpdated, data])
 }
 
 function RepayTokenSelector<ChainId extends IChainId>({
@@ -67,14 +69,14 @@ export const RepayForm = <ChainId extends IChainId>({
   chainId,
   enabled,
   onRepaid,
-  onUpdate,
+  onPricesUpdated,
 }: {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
   chainId: ChainId
   enabled?: boolean
   onRepaid?: RepayOptions['onRepaid']
-  onUpdate: OnRepayFormUpdate
+  onPricesUpdated: (prices: string[] | undefined) => void
 }) => {
   const network = networks[chainId]
   const {
@@ -124,7 +126,7 @@ export const RepayForm = <ChainId extends IChainId>({
     t`Max repay amount:`,
   ).join(' ')
 
-  useFormSync(params, enabled, onUpdate)
+  useFormSync(params, enabled, onPricesUpdated)
 
   useEffect(
     () => () => {

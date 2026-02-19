@@ -1,14 +1,10 @@
 import { type ChangeEvent, useCallback, useEffect } from 'react'
 import { LoanPreset } from '@/llamalend/constants'
-import { type OnCreateLoanFormUpdate } from '@/llamalend/features/borrow/types'
 import { hasLeverage } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import type { CreateLoanOptions } from '@/llamalend/mutations/create-loan.mutation'
 import { useCreateLoanPriceImpact } from '@/llamalend/queries/create-loan/create-loan-price-impact.query'
-import {
-  type CreateLoanPricesReceiveParams,
-  useCreateLoanPrices,
-} from '@/llamalend/queries/create-loan/create-loan-prices.query'
+import { useCreateLoanPrices } from '@/llamalend/queries/create-loan/create-loan-prices.query'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
@@ -32,30 +28,33 @@ import { LoanPresetSelector } from './LoanPresetSelector'
 /**
  * Hook to call the parent form to keep in sync with the chart and other components
  */
-function useFormSync(params: CreateLoanPricesReceiveParams, onUpdate: OnCreateLoanFormUpdate) {
-  const { data, isLoading, error } = useCreateLoanPrices(params)
+function useFormSync(
+  params: Parameters<typeof useCreateLoanPrices>[0],
+  onPricesUpdated: (prices: string[] | undefined) => void,
+) {
+  const { data } = useCreateLoanPrices(params)
   useEffect(() => {
-    onUpdate({ data, isLoading, error })
-  }, [onUpdate, data, isLoading, error])
+    onPricesUpdated(data)
+  }, [onPricesUpdated, data])
 }
 
 /**
  * The form contents for the create loan tab.
  * @param market The market to create a loan.
  * @param network The network configuration.
- * @param onUpdate Callback to set the form values, so it's in sync with the ChartOhlc component.
+ * @param onPricesUpdated Callback to sync liquidation prices with the chart.
  */
 export const CreateLoanForm = <ChainId extends IChainId>({
   market,
   networks,
   chainId,
-  onUpdate,
+  onPricesUpdated,
   onCreated,
 }: {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
   chainId: ChainId
-  onUpdate: OnCreateLoanFormUpdate
+  onPricesUpdated: (prices: string[] | undefined) => void
   onCreated: CreateLoanOptions['onCreated']
 }) => {
   const network = networks[chainId]
@@ -79,7 +78,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
     leverage,
   } = useCreateLoanForm({ market, network, preset, onCreated })
 
-  useFormSync(params, onUpdate)
+  useFormSync(params, onPricesUpdated)
 
   const toggleLeverage = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => updateForm(form, { leverageEnabled: event.target.checked }),

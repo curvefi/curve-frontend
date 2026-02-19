@@ -1,4 +1,3 @@
-import { useCallback } from 'react'
 import { LoanBorrowMore } from '@/lend/components/PageLendMarket/LoanBorrowMore'
 import { LoanCollateralAdd } from '@/lend/components/PageLendMarket/LoanCollateralAdd'
 import { LoanCollateralRemove } from '@/lend/components/PageLendMarket/LoanCollateralRemove'
@@ -16,30 +15,31 @@ import { ImproveHealthForm } from '@/llamalend/features/manage-soft-liquidation/
 import type { BorrowPositionDetailsProps } from '@/llamalend/features/market-position-details'
 import { useManageLoanMuiForm, useManageSoftLiquidation } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
-import { Query } from '@ui-kit/types/util'
 import { type FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
 
 type ManageLoanProps = PageContentProps<MarketUrlParams> & {
-  onChartPreviewPricesUpdate?: (prices: string[] | null) => void
+  onChartPreviewPricesUpdate: (prices: string[] | undefined) => void
 }
 
-const BorrowMoreTab = ({ rChainId, market, isLoaded, onChartPreviewPricesUpdate }: ManageLoanProps) => {
-  const onUpdate = useCallback(
-    (prices: Query<string[]>) => onChartPreviewPricesUpdate?.(prices.data ?? null),
-    [onChartPreviewPricesUpdate],
-  )
-  return (
-    <BorrowMoreForm networks={networks} chainId={rChainId} market={market} enabled={isLoaded} onUpdate={onUpdate} />
-  )
-}
+const BorrowMoreTab = ({ rChainId, market, isLoaded, onChartPreviewPricesUpdate }: ManageLoanProps) => (
+  <BorrowMoreForm
+    networks={networks}
+    chainId={rChainId}
+    market={market}
+    enabled={isLoaded}
+    onPricesUpdated={onChartPreviewPricesUpdate}
+  />
+)
 
-const RepayTab = ({ rChainId, market, isLoaded, onChartPreviewPricesUpdate }: ManageLoanProps) => {
-  const onUpdate = useCallback(
-    (prices: Query<string[]>) => onChartPreviewPricesUpdate?.(prices.data ?? null),
-    [onChartPreviewPricesUpdate],
-  )
-  return <RepayForm networks={networks} chainId={rChainId} market={market} enabled={isLoaded} onUpdate={onUpdate} />
-}
+const RepayTab = ({ rChainId, market, isLoaded, onChartPreviewPricesUpdate }: ManageLoanProps) => (
+  <RepayForm
+    networks={networks}
+    chainId={rChainId}
+    market={market}
+    enabled={isLoaded}
+    onPricesUpdated={onChartPreviewPricesUpdate}
+  />
+)
 
 const LendManageLegacyMenu = [
   {

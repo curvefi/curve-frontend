@@ -45,7 +45,7 @@ export const MintMarketPage = () => {
   const rChainId = useChainId(params)
   const { address } = useConnection()
   const [loaded, setLoaded] = useState(false)
-  const [previewPrices, setPreviewPrices] = useState<string[] | null>(null)
+  const [previewPrices, setPreviewPrices] = useState<string[] | undefined>(undefined)
 
   const market = useMintMarket({ chainId: rChainId, marketId: rCollateralId })
   const marketId = market?.id ?? ''

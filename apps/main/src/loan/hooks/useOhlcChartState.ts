@@ -20,10 +20,10 @@ type OhlcChartStateProps = {
   chainId: ChainId
   market: Llamma | null
   llammaId: string
-  previewPrices: string[] | null | undefined
+  previewPrices: string[] | undefined
 }
 
-const useOhlcChartStoreState = (): string[] | null => {
+const useOhlcChartStoreState = (): string[] | undefined => {
   const increaseActiveKey = useStore((state) => state.loanIncrease.activeKey)
   const decreaseActiveKey = useStore((state) => state.loanDecrease.activeKey)
   const deleverageActiveKey = useStore((state) => state.loanDeleverage.activeKey)
@@ -51,7 +51,7 @@ const useOhlcChartStoreState = (): string[] | null => {
       const prices = liqRangesMapper[formValues.n].prices
       return [prices[1], prices[0]]
     }
-    return null
+    return undefined
   }, [
     deleveragePrices,
     decreaseCollateralPrices,

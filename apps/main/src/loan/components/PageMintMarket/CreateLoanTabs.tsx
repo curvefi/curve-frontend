@@ -1,6 +1,5 @@
 import { useCallback } from 'react'
 import { CreateLoanForm } from '@/llamalend/features/borrow/components/CreateLoanForm'
-import type { OnCreateLoanFormUpdate } from '@/llamalend/features/borrow/types'
 import { hasV1Leverage } from '@/llamalend/llama.utils'
 import type { CreateLoanMutation, CreateLoanOptions } from '@/llamalend/mutations/create-loan.mutation'
 import { LoanFormCreate } from '@/loan/components/PageMintMarket/LoanFormCreate'
@@ -12,7 +11,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
 
 type MintCreateTabsProps = PageLoanCreateProps & {
-  onChartPreviewPricesUpdate?: (prices: string[] | null) => void
+  onChartPreviewPricesUpdate: (prices: string[] | undefined) => void
 }
 
 function CreateLoanTab({ market, curve, rChainId, onChartPreviewPricesUpdate }: MintCreateTabsProps) {
@@ -23,16 +22,12 @@ function CreateLoanTab({ market, curve, rChainId, onChartPreviewPricesUpdate }: 
     [curve, market, onLoanCreated],
   )
 
-  const onUpdate: OnCreateLoanFormUpdate = useCallback(
-    (prices) => onChartPreviewPricesUpdate?.(prices.data ?? null),
-    [onChartPreviewPricesUpdate],
-  )
   return (
     <CreateLoanForm
       networks={networks}
       chainId={rChainId}
       market={market ?? undefined}
-      onUpdate={onUpdate}
+      onPricesUpdated={onChartPreviewPricesUpdate}
       onCreated={onCreated}
     />
   )

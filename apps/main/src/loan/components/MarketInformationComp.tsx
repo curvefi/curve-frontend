@@ -20,7 +20,7 @@ type MarketInformationCompProps = {
   marketId: string
   chainId: ChainId
   page?: 'create' | 'manage'
-  previewPrices: string[] | null | undefined
+  previewPrices: string[] | undefined
 }
 
 /**

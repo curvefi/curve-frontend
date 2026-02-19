@@ -12,7 +12,7 @@ type ChartAndActivityCompProps = {
   rChainId: ChainId
   rOwmId: string
   api: Api | undefined
-  previewPrices: string[] | null | undefined
+  previewPrices: string[] | undefined
 }
 
 export const ChartAndActivityComp = ({ rChainId, rOwmId, api, previewPrices }: ChartAndActivityCompProps) => {
