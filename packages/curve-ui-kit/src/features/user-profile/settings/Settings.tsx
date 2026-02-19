@@ -12,7 +12,7 @@ import { ThemeToggleButtons } from './ThemeToggleButtons'
 const { ButtonSize, Spacing } = SizesAndSpaces
 
 export const Settings = () => (
-  <Stack gap={Spacing.xs} paddingBlock={{ ...Spacing.md, desktop: 0 }}>
+  <Stack gap={Spacing.xs} paddingBlock={{ ...Spacing.md, desktop: 0 }} data-testid="user-profile-settings">
     <SettingsOption label={t`Theme`}>
       <ThemeToggleButtons />
     </SettingsOption>
