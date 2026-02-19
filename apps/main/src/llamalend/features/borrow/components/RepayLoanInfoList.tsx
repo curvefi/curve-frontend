@@ -83,27 +83,29 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
     <LoanActionInfoList
       isOpen={isOpen}
       isApproved={q(useRepayIsApproved(params, isOpen))}
-      gas={useRepayEstimateGas(networks, params, isOpen)}
-      health={useHealthQueries((isFull) => getRepayHealthOptions({ ...params, isFull }, isOpen))}
-      prevHealth={useHealthQueries((isFull) => getUserHealthOptions({ ...params, isFull }, isOpen))}
+      gas={q(useRepayEstimateGas(networks, params, isOpen))}
+      health={q(useHealthQueries((isFull) => getRepayHealthOptions({ ...params, isFull }, isOpen)))}
+      prevHealth={q(useHealthQueries((isFull) => getUserHealthOptions({ ...params, isFull }, isOpen)))}
       isFullRepay={isFull}
       prevRates={q(useMarketRates(params, isOpen))}
       rates={q(useMarketFutureRates(params, isOpen))}
-      debt={debt}
-      userState={userState}
+      debt={q(debt)}
+      userState={q(userState)}
       prices={q(useRepayPrices(params, isOpen))}
       // routeImage={q(useRepayRouteImage(params, isOpen))}
-      loanToValue={useLoanToValueFromUserState(
-        {
-          chainId: params.chainId,
-          marketId: params.marketId,
-          userAddress: params.userAddress,
-          collateralToken,
-          borrowToken,
-          collateralDelta: userCollateral && `${-+userCollateral}`,
-          expectedBorrowed: debt?.data?.value,
-        },
-        isOpen,
+      loanToValue={q(
+        useLoanToValueFromUserState(
+          {
+            chainId: params.chainId,
+            marketId: params.marketId,
+            userAddress: params.userAddress,
+            collateralToken,
+            borrowToken,
+            collateralDelta: userCollateral && `${-+userCollateral}`,
+            expectedBorrowed: debt?.data?.value,
+          },
+          isOpen,
+        ),
       )}
       collateralSymbol={collateralToken?.symbol}
       {...(hasLeverage &&
@@ -111,7 +113,7 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
           leverageEnabled: true,
           slippage,
           onSlippageChange,
-          priceImpact,
+          priceImpact: q(priceImpact),
         })}
     />
   )

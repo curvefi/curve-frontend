@@ -2,7 +2,7 @@ import { type ChangeEvent } from 'react'
 import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
-import type { Query } from '@ui-kit/types/util'
+import type { QueryProp } from '@ui-kit/types/util'
 import { Decimal } from '@ui-kit/utils'
 import { CheckboxField } from '@ui-kit/widgets/DetailPageLayout/CheckboxField'
 
@@ -15,7 +15,7 @@ export const LeverageInput = ({
   maxLeverage,
 }: {
   checked: boolean
-  leverage: Query<Decimal>
+  leverage: QueryProp<Decimal>
   onToggle: (event: ChangeEvent<HTMLInputElement>) => void
   maxLeverage: Decimal | undefined
 }) => (

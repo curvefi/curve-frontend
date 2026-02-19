@@ -34,9 +34,9 @@ export function ClosePositionInfoList({
     <LoanActionInfoList
       slippage={slippage}
       onSlippageChange={onSlippageChange}
-      gas={useCloseEstimateGas(networks, { chainId, marketId, userAddress, slippage })}
+      gas={q(useCloseEstimateGas(networks, { chainId, marketId, userAddress, slippage }))}
       debt={mapQuery(userState, () => ({ value: '0', tokenSymbol: borrowToken?.symbol }))}
-      userState={userState}
+      userState={q(userState)}
       isApproved={q(
         useCloseLoanIsApproved({
           chainId,
