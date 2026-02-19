@@ -19,7 +19,6 @@ import {
   type TotalDebt,
   type LiquidationRange,
   type BandRange,
-  type CollateralLoss,
 } from './'
 
 const { MaxWidth } = SizesAndSpaces
@@ -42,7 +41,6 @@ type BorrowInformationProps = {
   liquidationRange: LiquidationRange | undefined | null
   bandRange: BandRange | undefined | null
   totalDebt: TotalDebt | undefined | null
-  collateralLoss: CollateralLoss | undefined | null
 }
 
 export const BorrowInformation = ({
@@ -54,7 +52,6 @@ export const BorrowInformation = ({
   liquidationRange,
   bandRange,
   totalDebt,
-  collateralLoss,
 }: BorrowInformationProps) => {
   const showPageHeader = useIntegratedLlamaHeader()
 
@@ -85,9 +82,7 @@ export const BorrowInformation = ({
               }
               valueTooltip={{
                 title: t`Collateral value`,
-                body: (
-                  <CollateralMetricTooltipContent collateralValue={collateralValue} collateralLoss={collateralLoss} />
-                ),
+                body: <CollateralMetricTooltipContent collateralValue={collateralValue} />,
                 placement: 'top',
                 arrow: false,
                 clickable: true,
@@ -185,9 +180,7 @@ export const BorrowInformation = ({
               }
               valueTooltip={{
                 title: t`Collateral value`,
-                body: (
-                  <CollateralMetricTooltipContent collateralValue={collateralValue} collateralLoss={collateralLoss} />
-                ),
+                body: <CollateralMetricTooltipContent collateralValue={collateralValue} />,
                 placement: 'top',
                 arrow: false,
                 clickable: true,

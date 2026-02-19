@@ -111,7 +111,7 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
     >
       <TableFilters<PoolColumnId>
         filterExpandedKey={LOCAL_STORAGE_KEY}
-        leftChildren={<TableFiltersTitles title={t`Markets`} subtitle={t`Find your next opportunity`} />}
+        leftChildren={<TableFiltersTitles title={t`Pools`} subtitle={t`Find your next opportunity`} />}
         loading={!isReady}
         visibilityGroups={columnSettings}
         searchText={globalFilter}
