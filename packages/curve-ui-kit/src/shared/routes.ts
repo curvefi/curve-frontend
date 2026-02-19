@@ -59,7 +59,7 @@ export const ANALYTICS_ROUTES = {
 }
 
 export const BRIDGE_ROUTES = {
-  PAGE_BRIDGES: '/bridges',
+  PAGE_BRIDGES: '',
 }
 
 export const AppNames = ['dex', 'lend', 'crvusd', 'dao', 'llamalend', 'bridge', 'analytics'] as const
@@ -98,7 +98,7 @@ export const APP_LINK: Record<AppMenuOption, AppRoutes> = {
   },
   bridge: {
     label: t`Bridge`,
-    routes: [{ app: 'bridge', route: BRIDGE_ROUTES.PAGE_BRIDGES, label: () => t`Bridges` }],
+    routes: [{ app: 'bridge', route: BRIDGE_ROUTES.PAGE_BRIDGES, label: () => t`Bridge` }],
   },
   analytics: {
     label: 'Analytics',

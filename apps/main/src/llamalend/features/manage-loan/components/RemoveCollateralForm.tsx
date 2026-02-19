@@ -10,7 +10,7 @@ import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import { InputDivider } from '../../../widgets/InputDivider'
 import { useRemoveCollateralForm } from '../hooks/useRemoveCollateralForm'
-import { RemoveCollateralInfoAccordion } from './RemoveCollateralInfoAccordion'
+import { RemoveCollateralInfoList } from './RemoveCollateralInfoList'
 
 export const RemoveCollateralForm = <ChainId extends IChainId>({
   market,
@@ -46,8 +46,9 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
     <Form
       {...form}
       onSubmit={onSubmit}
-      infoAccordion={
-        <RemoveCollateralInfoAccordion
+      footer={
+        <RemoveCollateralInfoList
+          form={form}
           params={params}
           values={values}
           collateralToken={collateralToken}

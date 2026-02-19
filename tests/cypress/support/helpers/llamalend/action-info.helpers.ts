@@ -24,3 +24,11 @@ export const checkCurrentDebt = (expectedCurrentDebt: Decimal) => {
   getActionValue('borrow-debt').should('equal', formatNumber(expectedCurrentDebt, { abbreviate: false }))
   cy.get('[data-testid="borrow-debt-previous-value"]').should('not.exist')
 }
+
+export function touchInput(getInputFn: () => Cypress.Chainable) {
+  // todo: make sure the LargeTokenInput properly sets `0` values
+  getInputFn().type('0.00001') // use a very small value to make sure repay.isFull isn't set before the blur.
+  getInputFn().blur()
+  getInputFn().clear()
+  getInputFn().blur()
+}
