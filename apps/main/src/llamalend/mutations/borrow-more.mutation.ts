@@ -25,7 +25,7 @@ export type OnBorrowedMore = OnTransactionSuccess<BorrowMoreMutation>
 export type BorrowMoreOptions = {
   marketId: string | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
-  onBorrowedMore?: OnBorrowedMore
+  onSuccess?: OnBorrowedMore
   onReset?: () => void
   userAddress: Address | undefined
 }
@@ -69,7 +69,7 @@ export const useBorrowMoreMutation = ({
   network,
   network: { chainId },
   marketId,
-  onBorrowedMore,
+  onSuccess,
   onReset,
   userAddress,
 }: BorrowMoreOptions) => {
@@ -91,7 +91,7 @@ export const useBorrowMoreMutation = ({
     validationSuite: borrowMoreMutationValidationSuite,
     pendingMessage: (mutation, { market }) => t`Borrowing more... ${formatTokenAmounts(market, mutation)}`,
     successMessage: (mutation, { market }) => t`Borrowed more! ${formatTokenAmounts(market, mutation)}`,
-    onSuccess: onBorrowedMore,
+    onSuccess,
     onReset,
   })
 

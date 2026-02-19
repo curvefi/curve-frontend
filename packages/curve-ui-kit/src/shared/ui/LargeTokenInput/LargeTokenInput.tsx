@@ -15,6 +15,7 @@ import Typography from '@mui/material/Typography'
 import { useUniqueDebounce } from '@ui-kit/hooks/useDebounce'
 import { t } from '@ui-kit/lib/i18n'
 import { HelperMessage } from '@ui-kit/shared/ui/LargeTokenInput/HelperMessage'
+import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { chipSizeClickable } from '@ui-kit/themes/components/chip'
 import { Duration, TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -38,7 +39,7 @@ const CHIPS_PRESETS: Record<ChipsPreset, InputChip[]> = {
   max: [{ label: t`Max`, newBalance: (maxBalance) => maxBalance }],
   range: [25, 50, 75, 100].map((p) => ({
     label: `${p}%`,
-    newBalance: (maxBalance) => maxBalance && calculateNewBalance(maxBalance, `${p}` as Decimal),
+    newBalance: (maxBalance) => maxBalance && calculateNewBalance(maxBalance, `${p}`),
   })),
 }
 
@@ -79,6 +80,7 @@ export type LargeTokenInputProps = {
 
   /** Optional configuration for max balance behavior, which for now are the slider and chips. */
   maxBalance?: {
+    isLoading?: boolean
     balance?: Decimal
     /** Whether to display the percentage slider. */
     showSlider?: boolean
@@ -200,6 +202,7 @@ export const LargeTokenInput = ({
   const showSlider = !!maxBalance?.showSlider && !!maxBalance?.balance
   const chips = typeof maxBalance?.chips === 'string' ? CHIPS_PRESETS[maxBalance.chips] : maxBalance?.chips
   const showChips = !!chips?.length
+  const chipDisabled = disabled || maxBalance?.isLoading
 
   const maxBalanceValue = maxBalance?.balance
   const handlePercentageChange = useCallback(
@@ -304,11 +307,12 @@ export const LargeTokenInput = ({
                 {chips.map((chip) => (
                   <Chip
                     key={`input-chip-${chip.label}`}
-                    label={chip.label}
+                    label={<WithSkeleton loading={!!maxBalance?.isLoading}>{chip.label}</WithSkeleton>}
+                    data-testid={!chipDisabled && `input-chip-${chip.label}`}
                     size="extraSmall"
                     color="default"
                     clickable
-                    disabled={disabled}
+                    disabled={chipDisabled}
                     onClick={() => {
                       const newBalance = chip.newBalance(maxBalance?.balance)
                       if (newBalance !== undefined) {

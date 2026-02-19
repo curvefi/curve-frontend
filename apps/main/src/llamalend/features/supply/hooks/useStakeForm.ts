@@ -6,7 +6,7 @@ import { getTokens, hasVault } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, LlamaNetwork } from '@/llamalend/llamalend.types'
 import { type StakeOptions, useStakeMutation } from '@/llamalend/mutations/stake.mutation'
 import { useStakeIsApproved } from '@/llamalend/queries/supply/supply-stake-approved.query'
-import { useUserBalances } from '@/llamalend/queries/user-balances.query'
+import { useUserBalances } from '@/llamalend/queries/user'
 import { stakeFormValidationSuite, StakeParams, type StakeForm } from '@/llamalend/queries/validation/supply.validation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { vestResolver } from '@hookform/resolvers/vest'
@@ -33,12 +33,12 @@ export const useStakeForm = <ChainId extends LlamaChainId>({
   market,
   network,
   enabled,
-  onStaked,
+  onSuccess,
 }: {
   market: LlamaMarketTemplate | undefined
   network: LlamaNetwork<ChainId>
   enabled?: boolean
-  onStaked?: NonNullable<StakeOptions['onStaked']>
+  onSuccess?: NonNullable<StakeOptions['onSuccess']>
 }) => {
   const { address: userAddress } = useConnection()
   const { chainId } = network
@@ -77,13 +77,7 @@ export const useStakeForm = <ChainId extends LlamaChainId>({
     error: stakeError,
     data,
     reset: resetStake,
-  } = useStakeMutation({
-    marketId,
-    network,
-    onStaked,
-    onReset: form.reset,
-    userAddress,
-  })
+  } = useStakeMutation({ marketId, network, onSuccess, onReset: form.reset, userAddress })
 
   useCallbackAfterFormUpdate(form, resetStake)
 

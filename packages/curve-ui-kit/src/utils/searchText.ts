@@ -1,7 +1,7 @@
 import Fuse, { FuseResult } from 'fuse.js'
 import lodash from 'lodash'
 
-const { uniqWith, isEqualWith, get, uniqBy } = lodash
+const { uniqWith, isEqualWith, get } = lodash
 
 export type SearchTermsFuseResult<T> = FuseResult<T>[]
 
@@ -99,6 +99,7 @@ function searchByAddresses<T>(searchTerms: string[], datas: T[], keys: { tokens:
   return uniqueResults
 }
 
+// TODO: The only place this is being used is inside createPoolListSlice. Remove when legacy pool list is being deleted
 export function searchByText<T>(
   searchText: string,
   datas: T[],
@@ -115,17 +116,4 @@ export function searchByText<T>(
     tokensResult: [...tokensResult, ...addressesResult.tokens],
     addressesResult: addressesResult.other,
   }
-}
-
-export function filterTokens<T extends { address: string }>(
-  filterValue: string,
-  tokens: T[],
-  endsWith: (string: string, substring: string) => boolean,
-): T[] {
-  const { addressesResult, tokensResult } = searchByText(filterValue, tokens, ['symbol'], { tokens: ['address'] })
-  const result = uniqBy([...tokensResult, ...addressesResult], (r) => r.item.address)
-  if (result.length > 0) {
-    return result.map((r) => r.item)
-  }
-  return tokens.filter((item) => endsWith(item.address, filterValue))
 }

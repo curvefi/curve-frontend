@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import type { Address } from 'viem'
-import { useUserState } from '@/llamalend/queries/user-state.query'
+import { useUserState } from '@/llamalend/queries/user'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import type { Decimal } from '@ui-kit/utils'

@@ -100,7 +100,7 @@ describe('Error Boundary', () => {
       })
     }).as('sentryReport')
 
-    cy.get('[data-testid="submit-error-report-button"]').click()
+    cy.get('[data-testid="submit-error-report-button"]', LOAD_TIMEOUT).click()
     cy.get('[data-testid="submit-error-report-modal"]').should('be.visible')
     cy.get('[data-testid="submit-error-report-address"]').clear()
     cy.get('[data-testid="submit-error-report-address"]').type(address)

@@ -27,12 +27,12 @@ export const useRemoveCollateralForm = <
   market,
   network,
   enabled,
-  onRemoved,
+  onSuccess,
 }: {
   market: LlamaMarketTemplate | undefined
   network: BaseConfig<NetworkName, ChainId>
   enabled?: boolean
-  onRemoved?: NonNullable<RemoveCollateralOptions['onRemoved']>
+  onSuccess?: NonNullable<RemoveCollateralOptions['onSuccess']>
 }) => {
   const { address: userAddress } = useConnection()
   const { chainId } = network
@@ -69,7 +69,7 @@ export const useRemoveCollateralForm = <
   const { onSubmit, ...action } = useRemoveCollateralMutation({
     marketId,
     network,
-    onRemoved,
+    onSuccess,
     onReset: form.reset,
     userAddress,
   })

@@ -13,7 +13,7 @@ import { type Decimal, waitForApproval } from '@ui-kit/utils'
 type ClosePositionOptions = {
   marketId: string | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
-  onClosed?: () => void
+  onSuccess?: () => void
   onReset?: () => void
   userAddress: Address | undefined
 }
@@ -31,7 +31,7 @@ export const useClosePositionMutation = ({
   network,
   network: { chainId },
   marketId,
-  onClosed,
+  onSuccess,
   onReset,
   userAddress,
 }: ClosePositionOptions) => {
@@ -51,7 +51,7 @@ export const useClosePositionMutation = ({
     },
     pendingMessage: () => t`Closing position...`,
     successMessage: () => t`Position closed successfully!`,
-    onSuccess: onClosed,
+    onSuccess,
     onReset,
     validationSuite: closeLoanValidationSuite,
   })

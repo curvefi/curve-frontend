@@ -55,13 +55,13 @@ export const RepayForm = <ChainId extends IChainId>({
   networks,
   chainId,
   enabled,
-  onRepaid,
+  onSuccess,
 }: {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
   chainId: ChainId
   enabled?: boolean
-  onRepaid?: RepayOptions['onRepaid']
+  onSuccess?: RepayOptions['onSuccess']
 }) => {
   const network = networks[chainId]
   const {
@@ -84,7 +84,7 @@ export const RepayForm = <ChainId extends IChainId>({
     market,
     network,
     enabled,
-    onRepaid,
+    onSuccess,
   })
   const { token, onToken, tokens } = useRepayTokens({ market, networkId: network.id })
 

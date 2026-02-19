@@ -6,7 +6,6 @@ import { type Chain } from '@curvefi/prices-api'
 import { type PartialRecord, recordValues } from '@curvefi/prices-api/objects.util'
 import { useQueries } from '@tanstack/react-query'
 import type { QueriesResults } from '@tanstack/react-query'
-import { type DeepKeys } from '@tanstack/table-core'
 import { combineCampaigns, type CampaignPoolRewards } from '@ui-kit/entities/campaigns'
 import { getCampaignsExternalOptions } from '@ui-kit/entities/campaigns/campaigns-external'
 import { getCampaignsMerklOptions } from '@ui-kit/entities/campaigns/campaigns-merkl'
@@ -81,8 +80,6 @@ export type LlamaMarketsResult = {
   userHasPositions: Record<LlamaMarketType, Record<MarketRateType, boolean>> | null
   hasFavorites: boolean
 }
-
-export type LlamaMarketKey = DeepKeys<LlamaMarket>
 
 const DEPRECATED_LLAMAS: PartialRecord<Chain, Record<Address, string>> = {
   ethereum: {
