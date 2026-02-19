@@ -28,7 +28,7 @@ export function ClosePositionInfoList({
   const { address: userAddress } = useConnection()
   const { borrowToken } = market ? getTokens(market) : {}
   const marketId = market?.id
-  const userState = q(useUserState({ chainId, marketId, userAddress }))
+  const userState = useUserState({ chainId, marketId, userAddress })
 
   return (
     <LoanActionInfoList

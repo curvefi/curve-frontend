@@ -39,7 +39,7 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
 }) {
   const isOpen = isFormTouched(form, 'userCollateral', 'userBorrowed', 'debt')
   const userState = useUserState(params, isOpen)
-  const expectedCollateralQuery = q(useBorrowMoreExpectedCollateral(params, isOpen && leverageEnabled))
+  const expectedCollateralQuery = useBorrowMoreExpectedCollateral(params, isOpen && leverageEnabled)
 
   const collateralDelta = expectedCollateralQuery.data?.totalCollateral ?? userCollateral
   const totalDebt = useMemo(

@@ -35,10 +35,10 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
   form: UseFormReturn<CreateLoanForm>
 }) => {
   const isOpen = isFormTouched(form, 'userCollateral', 'debt')
-  const expectedCollateral = q(useCreateLoanExpectedCollateral(params, isOpen))
+  const expectedCollateral = useCreateLoanExpectedCollateral(params, isOpen)
   const leverageValue = mapQuery(expectedCollateral, (data) => data?.leverage)
   const leverageTotalCollateral = mapQuery(expectedCollateral, (data) => data?.totalCollateral)
-  const priceImpact = q(useCreateLoanPriceImpact(params, isOpen))
+  const priceImpact = useCreateLoanPriceImpact(params, isOpen)
 
   return (
     <LoanActionInfoList
