@@ -1,6 +1,7 @@
 import type { CrvUsdSnapshot } from '@ui-kit/entities/crvusd-snapshots'
 import type { LendingSnapshot } from '@ui-kit/entities/lending-snapshots'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
+import { decimal } from '@ui-kit/utils'
 import { calculateAverageRates, type WithTimestamp } from '@ui-kit/utils/averageRates'
 
 type BorrowRateMetricsParams<TSnapshot extends WithTimestamp = WithTimestamp> = {
@@ -13,7 +14,6 @@ type BorrowRateMetricsParams<TSnapshot extends WithTimestamp = WithTimestamp> = 
 
 const { AverageRates } = Duration
 
-const DAYS_PER_YEAR = 365.25
 export const LAST_MONTH = AverageRates.Monthly
 export const LAST_WEEK = AverageRates.Weekly
 
@@ -62,15 +62,19 @@ export const getBorrowRateMetrics = <TSnapshot extends WithTimestamp = WithTimes
   }
 }
 
-/**
- * Temporary function to convert borrow APY to APR for mint markets.
- * A proper solution is being worked on llamalend-api.
- * TODO: Remove this function when the llamalend-api is updated to return APR for mint markets.
- */
-export const getMintBorrowRates = (borrowApy: string) => {
-  const borrowApr = ((1 + Number(borrowApy) / 100) ** (1 / DAYS_PER_YEAR) - 1) * DAYS_PER_YEAR * 100
-  return {
-    borrowApy,
-    borrowApr: borrowApr.toString(),
-  }
-}
+export const convertRates = ({
+  borrowApr,
+  borrowApy,
+  lendApr,
+  lendApy,
+}: {
+  borrowApr: string
+  borrowApy: string
+  lendApr: string
+  lendApy: string
+}) => ({
+  borrowApr: decimal(borrowApr),
+  borrowApy: decimal(borrowApy),
+  lendApy: decimal(lendApy),
+  lendApr: decimal(lendApr),
+})
