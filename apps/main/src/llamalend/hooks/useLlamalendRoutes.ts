@@ -1,6 +1,6 @@
+import { useMatchRoute } from '@ui-kit/hooks/router'
 import { useIsDesktop } from '@ui-kit/hooks/useBreakpoints'
 import { useLendMarketSubNav } from '@ui-kit/hooks/useFeatureFlags'
-import { useMatchRoute } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { LEND_MARKET_ROUTES } from '@ui-kit/shared/routes'
 import { APP_LINK, type AppName, LEND_ROUTES } from '@ui-kit/shared/routes'
