@@ -62,7 +62,7 @@ const useLegacyChartPrices = () => {
     increaseLoanPrices,
     formValues.n,
     liqRangesMapper,
-  ]) as Range<Decimal>
+  ]) as Range<Decimal> | undefined
 }
 
 export const useOhlcChartState = ({ chainId, market, llammaId, previewPrices }: OhlcChartStateProps) => {
