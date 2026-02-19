@@ -7,7 +7,6 @@ export function writeImproveHealthForm({ amount }: { amount: Decimal }) {
   cy.get('[data-testid="improve-health-input-debt"] input[type="text"]', LOAD_TIMEOUT).as('improveHealthInput')
   cy.get('@improveHealthInput').clear()
   cy.get('@improveHealthInput').type(amount)
-  cy.get('[data-testid="loan-info-accordion"] button', LOAD_TIMEOUT).first().click() // open the accordion
 }
 
 export function checkClosePositionDetailsLoaded({ debt }: { debt: Decimal }) {
@@ -16,7 +15,6 @@ export function checkClosePositionDetailsLoaded({ debt }: { debt: Decimal }) {
     .then((val) => Number(val))
     .should('be.closeTo', Number(debt), Number(debt) * 0.01)
   cy.get('[data-testid="loan-form-errors"]').should('not.exist')
-  cy.get('[data-testid="loan-info-accordion"] button').first().click() // open the accordion
   getActionValue('withdraw-amount').should('match', /(\d(\.\d+)?)/)
 }
 

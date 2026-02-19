@@ -112,6 +112,7 @@ testCases.forEach(
           leverageEnabled,
         })
         submitBorrowMoreForm().then(() => expect(onSuccess).to.be.calledOnce)
+        writeBorrowMoreForm({ debt: '0' }) // make sure the new debt is shown
         checkCurrentDebt(debtAfterBorrowMore)
       })
 
@@ -124,6 +125,7 @@ testCases.forEach(
           leverageEnabled,
         })
         submitRepayForm().then(() => expect(onSuccess).to.be.calledOnce)
+        writeRepayLoanForm({ amount: '0' }) // make sure the new debt is shown
         checkDebt({ current: debtAfterRepay, future: debtAfterRepay, symbol: debtTokenSymbol })
       })
 
@@ -134,6 +136,7 @@ testCases.forEach(
           debt: { current: debtAfterRepay, future: debtAfterImproveHealth, symbol: debtTokenSymbol },
         })
         submitImproveHealthForm().then(() => expect(onSuccess).to.be.calledOnce)
+        writeImproveHealthForm({ amount: '0' }) // make sure the new debt is shown
         checkDebt({ current: debtAfterImproveHealth, future: debtAfterImproveHealth, symbol: debtTokenSymbol })
       })
 

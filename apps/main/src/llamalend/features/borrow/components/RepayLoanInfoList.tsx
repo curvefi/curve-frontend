@@ -108,9 +108,9 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
         isOpen,
       )}
       collateralSymbol={collateralToken?.symbol}
-      leverageEnabled={hasLeverage}
       {...(hasLeverage &&
         swapRequired && {
+          leverageEnabled: true,
           slippage,
           onSlippageChange,
           priceImpact,
