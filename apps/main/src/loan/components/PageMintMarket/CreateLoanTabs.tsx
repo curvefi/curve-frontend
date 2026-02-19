@@ -34,7 +34,7 @@ const useOnFormUpdate = ({ curve, market }: Pick<PageLoanCreateProps, 'market' |
 
 function CreateLoanTab({ market, curve, rChainId }: PageLoanCreateProps) {
   const onLoanCreated = useStore((state) => state.loanCreate.onLoanCreated)
-  const onCreated: NonNullable<CreateLoanOptions['onCreated']> = useCallback(
+  const onCreated: NonNullable<CreateLoanOptions['onSuccess']> = useCallback(
     async (_data, _receipt, { slippage, leverageEnabled }: CreateLoanMutation) =>
       curve && market && (await onLoanCreated(curve, leverageEnabled, market, slippage)),
     [curve, market, onLoanCreated],
@@ -47,7 +47,7 @@ function CreateLoanTab({ market, curve, rChainId }: PageLoanCreateProps) {
       chainId={rChainId}
       market={market ?? undefined}
       onUpdate={onUpdate}
-      onCreated={onCreated}
+      onSuccess={onCreated}
     />
   )
 }

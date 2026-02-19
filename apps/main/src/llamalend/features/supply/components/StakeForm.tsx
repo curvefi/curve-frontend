@@ -15,7 +15,7 @@ export type StakeFormProps<ChainId extends IChainId> = {
   networks: NetworkDict<ChainId>
   chainId: ChainId
   enabled?: boolean
-  onStaked?: NonNullable<StakeOptions['onStaked']>
+  onSuccess?: NonNullable<StakeOptions['onSuccess']>
 }
 
 const TEST_ID_PREFIX = 'supply-stake'
@@ -25,7 +25,7 @@ export const StakeForm = <ChainId extends IChainId>({
   networks,
   chainId,
   enabled,
-  onStaked,
+  onSuccess,
 }: StakeFormProps<ChainId>) => {
   const network = networks[chainId]
 
@@ -43,12 +43,7 @@ export const StakeForm = <ChainId extends IChainId>({
     formErrors,
     isApproved,
     max,
-  } = useStakeForm({
-    market,
-    network,
-    enabled,
-    onStaked,
-  })
+  } = useStakeForm({ market, network, enabled, onSuccess })
 
   return (
     <Form
