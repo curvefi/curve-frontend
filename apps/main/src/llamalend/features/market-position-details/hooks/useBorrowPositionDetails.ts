@@ -9,7 +9,7 @@ import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { useMarketLiquidationBand } from '@/llamalend/queries/market-liquidation-band.query'
 import { useMarketOraclePriceBand } from '@/llamalend/queries/market-oracle-price-band.query'
 import { useMarketOraclePrice } from '@/llamalend/queries/market-oracle-price.query'
-import { useMarketRates } from '@/llamalend/queries/market-rates'
+import { useMarketRates } from '@/llamalend/queries/market-rates.query'
 import { useLoanExists } from '@/llamalend/queries/user'
 import {
   useUserBands,
