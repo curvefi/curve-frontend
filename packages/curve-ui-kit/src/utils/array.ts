@@ -63,3 +63,12 @@ export const splitAtFirst = <T>(items: T[], predicate: (value: T, index: number,
   const index = items.findIndex(predicate)
   return index === -1 ? [items, []] : splitAt(items, index)
 }
+
+/**
+ * Ensures the input is always returned as an array.
+ * - If the input is already an array, it is returned as-is.
+ * - If the input is a single item (not an array), it is wrapped in an array.
+ * - If the input is null or undefined, an empty array is returned.
+ */
+export const toArray = <T>(x: T | readonly T[] | null | undefined): readonly T[] =>
+  Array.isArray(x) ? x : x ? [x as T] : []

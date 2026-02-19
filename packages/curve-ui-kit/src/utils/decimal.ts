@@ -1,4 +1,5 @@
 import { BigNumber } from 'bignumber.js'
+import { DEFAULT_DECIMALS } from './units'
 
 /**
  * A template literal type representing a decimal number as a string.
@@ -48,3 +49,6 @@ export const decimalMax = (...data: Decimal[]): Decimal | undefined =>
     (max, value) => (max == null ? value : new BigNumber(value).isGreaterThan(max) ? value : max),
     undefined,
   )
+
+export const toWei = (n: string, decimals = DEFAULT_DECIMALS) => decimal(BigNumber(n).times(10 ** decimals))!
+export const fromWei = (n: string, decimals = DEFAULT_DECIMALS) => decimal(BigNumber(n).dividedBy(10 ** decimals))!
