@@ -11,7 +11,7 @@ import { useBorrowMoreHealth } from '@/llamalend/queries/borrow-more/borrow-more
 import { useBorrowMoreIsApproved } from '@/llamalend/queries/borrow-more/borrow-more-is-approved.query'
 import { useBorrowMorePriceImpact } from '@/llamalend/queries/borrow-more/borrow-more-price-impact.query'
 import { useMarketFutureRates } from '@/llamalend/queries/market-future-rates.query'
-import { useMarketRates } from '@/llamalend/queries/market-rates'
+import { useMarketRates } from '@/llamalend/queries/market-rates.query'
 import { getUserHealthOptions, useUserCurrentLeverage, useUserState } from '@/llamalend/queries/user'
 import type { BorrowMoreForm, BorrowMoreParams } from '@/llamalend/queries/validation/borrow-more.validation'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
