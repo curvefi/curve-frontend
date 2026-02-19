@@ -4,6 +4,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { Metric, type MetricProps } from '@ui-kit/shared/ui/Metric'
 import type { LlamaMarketType } from '@ui-kit/types/market'
 import { TooltipOptions as defaultTooltipOptions } from '../features/market-details/tooltips'
+import { useBorrowRateTooltipTitle } from '../features/market-list/hooks/useBorrowRateTooltipTitle'
 
 type BorrowRateMetric = {
   rate: number | null | undefined
@@ -24,12 +25,16 @@ type BorrowAprMetricProps = {
 }
 
 export const BorrowAprMetric = ({ marketType, borrowRate, collateralSymbol, alignment }: BorrowAprMetricProps) => {
-  const title = t`Borrow APR`
+  const title = useBorrowRateTooltipTitle({
+    totalBorrowApr: borrowRate?.totalBorrowRate,
+    extraRewards: borrowRate?.extraRewards ?? [],
+    rebasingYieldApr: borrowRate?.rebasingYield,
+  })
   return (
     <Metric
       size="medium"
       alignment={alignment}
-      label={title}
+      label={t`Borrow APR`}
       value={borrowRate?.rate}
       loading={borrowRate?.rate == null && borrowRate?.loading}
       valueOptions={{ unit: 'percentage' }}
@@ -46,13 +51,13 @@ export const BorrowAprMetric = ({ marketType, borrowRate, collateralSymbol, alig
         body: (
           <MarketNetBorrowAprTooltipContent
             marketType={marketType}
-            borrowRate={borrowRate?.rate}
-            totalBorrowRate={borrowRate?.totalBorrowRate}
-            totalAverageBorrowRate={borrowRate?.totalAverageBorrowRate}
-            averageRate={borrowRate?.averageRate}
+            borrowApr={borrowRate?.rate}
+            totalBorrowApr={borrowRate?.totalBorrowRate}
+            totalAverageBorrowApr={borrowRate?.totalAverageBorrowRate}
+            averageApr={borrowRate?.averageRate}
             periodLabel={borrowRate?.averageRateLabel ?? ''}
             extraRewards={borrowRate?.extraRewards ?? []}
-            rebasingYield={borrowRate?.rebasingYield}
+            rebasingYieldApr={borrowRate?.rebasingYield}
             collateralSymbol={collateralSymbol}
             isLoading={borrowRate?.loading}
           />

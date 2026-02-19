@@ -1,37 +1,43 @@
 import { useSnapshots } from '@/llamalend/features/market-list/hooks/useSnapshots'
 import { useFilteredRewards } from '@/llamalend/hooks/useFilteredRewards'
 import { MarketNetBorrowAprTooltipContent } from '@/llamalend/widgets/tooltips/MarketNetBorrowAprTooltipContent'
-import { t } from '@ui-kit/lib/i18n'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { MarketRateType } from '@ui-kit/types/market'
+import { useBorrowRateTooltipTitle } from '../../hooks/useBorrowRateTooltipTitle'
 import { RateTooltipProps } from './RateCell'
 
 export const BorrowRateTooltip = ({ market, children }: RateTooltipProps) => {
-  const { averageRate, period, averageTotalBorrowRate, isLoading } = useSnapshots(market, MarketRateType.Borrow)
+  const {
+    averageRate: averageApr,
+    period,
+    averageTotalBorrowRate: totalAverageBorrowApr,
+    isLoading,
+  } = useSnapshots(market, MarketRateType.Borrow)
   const {
     rewards,
     type: marketType,
-    rates: { borrowApr, borrowTotalApr: netBorrowApr },
+    rates: { borrowApr, borrowTotalApr: totalBorrowApr },
     assets: {
       collateral: { rebasingYieldApr, symbol: collateralSymbol },
     },
   } = market
   const poolRewards = useFilteredRewards(rewards, marketType, MarketRateType.Borrow)
+  const title = useBorrowRateTooltipTitle({ totalBorrowApr, rebasingYieldApr, extraRewards: poolRewards })
 
   return (
     <Tooltip
       clickable
-      title={t`Net borrow APR`}
+      title={title}
       body={
         <MarketNetBorrowAprTooltipContent
           marketType={marketType}
-          borrowRate={borrowApr}
-          averageRate={averageRate}
-          periodLabel={period}
-          totalBorrowRate={netBorrowApr}
-          totalAverageBorrowRate={averageTotalBorrowRate}
+          borrowApr={borrowApr}
+          averageApr={averageApr}
+          totalBorrowApr={totalBorrowApr}
+          totalAverageBorrowApr={totalAverageBorrowApr}
           extraRewards={poolRewards}
-          rebasingYield={rebasingYieldApr}
+          rebasingYieldApr={rebasingYieldApr}
+          periodLabel={period}
           collateralSymbol={collateralSymbol}
           isLoading={isLoading}
         />
