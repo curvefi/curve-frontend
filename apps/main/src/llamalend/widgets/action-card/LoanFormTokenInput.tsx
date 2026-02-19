@@ -134,7 +134,7 @@ export const LoanFormTokenInput = <
       onBalance={onBalance}
       isError={!!error}
       {...(!hideBalance && { walletBalance })}
-      maxBalance={useMemo(() => max && { balance: max.data, chips: maxType }, [max, maxType])}
+      maxBalance={max && { balance: max.data, chips: maxType, isLoading: max.isLoading }}
       inputBalanceUsd={decimal(usdRate && usdRate * +(value ?? 0))}
     >
       {errorMessage ? (

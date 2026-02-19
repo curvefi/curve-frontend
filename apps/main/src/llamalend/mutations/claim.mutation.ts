@@ -15,7 +15,7 @@ type ClaimMutation = Record<string, never>
 export type ClaimOptions = {
   marketId: string | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
-  onClaimed?: OnTransactionSuccess<ClaimMutation>
+  onSuccess?: OnTransactionSuccess<ClaimMutation>
   userAddress: Address | undefined
 }
 
@@ -23,7 +23,7 @@ export const useClaimMutation = ({
   network: _network,
   network: { chainId },
   marketId,
-  onClaimed,
+  onSuccess,
   userAddress,
 }: ClaimOptions) => {
   const config = useConfig()
@@ -51,7 +51,7 @@ export const useClaimMutation = ({
     validationSuite: claimValidationSuite,
     pendingMessage: () => t`Claiming rewards...`,
     successMessage: () => t`Claimed rewards!`,
-    onSuccess: onClaimed,
+    onSuccess,
   })
 
   const onSubmit = useCallback(() => mutate({}), [mutate])

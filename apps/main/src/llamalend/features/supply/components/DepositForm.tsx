@@ -15,7 +15,7 @@ export type DepositFormProps<ChainId extends IChainId> = {
   networks: NetworkDict<ChainId>
   chainId: ChainId
   enabled?: boolean
-  onDeposited?: NonNullable<DepositOptions['onDeposited']>
+  onSuccess?: NonNullable<DepositOptions['onSuccess']>
 }
 
 const TEST_ID_PREFIX = 'supply-deposit'
@@ -25,7 +25,7 @@ export const DepositForm = <ChainId extends IChainId>({
   networks,
   chainId,
   enabled,
-  onDeposited,
+  onSuccess,
 }: DepositFormProps<ChainId>) => {
   const network = networks[chainId]
 
@@ -42,12 +42,7 @@ export const DepositForm = <ChainId extends IChainId>({
     formErrors,
     isApproved,
     max,
-  } = useDepositForm({
-    market,
-    network,
-    enabled,
-    onDeposited,
-  })
+  } = useDepositForm({ market, network, enabled, onSuccess })
 
   return (
     <Form

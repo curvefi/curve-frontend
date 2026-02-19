@@ -51,7 +51,7 @@ function CreateLoanTab({ market, api, rChainId }: CreateLoanProps) {
   )
   const onUpdate = useOnFormUpdate({ market, api })
   return (
-    <CreateLoanForm networks={networks} chainId={rChainId} market={market} onUpdate={onUpdate} onCreated={onCreated} />
+    <CreateLoanForm networks={networks} chainId={rChainId} market={market} onUpdate={onUpdate} onSuccess={onCreated} />
   )
 }
 

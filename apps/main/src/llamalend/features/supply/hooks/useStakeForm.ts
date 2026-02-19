@@ -33,12 +33,12 @@ export const useStakeForm = <ChainId extends LlamaChainId>({
   market,
   network,
   enabled,
-  onStaked,
+  onSuccess,
 }: {
   market: LlamaMarketTemplate | undefined
   network: LlamaNetwork<ChainId>
   enabled?: boolean
-  onStaked?: NonNullable<StakeOptions['onStaked']>
+  onSuccess?: NonNullable<StakeOptions['onSuccess']>
 }) => {
   const { address: userAddress } = useConnection()
   const { chainId } = network
@@ -77,13 +77,7 @@ export const useStakeForm = <ChainId extends LlamaChainId>({
     error: stakeError,
     data,
     reset: resetStake,
-  } = useStakeMutation({
-    marketId,
-    network,
-    onStaked,
-    onReset: form.reset,
-    userAddress,
-  })
+  } = useStakeMutation({ marketId, network, onSuccess, onReset: form.reset, userAddress })
 
   useCallbackAfterFormUpdate(form, resetStake)
 

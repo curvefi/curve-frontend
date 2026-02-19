@@ -43,7 +43,7 @@ function useRepayRemainingDebt<ChainId extends IChainId>(
   const userStateQuery = useUserState(params, enabled)
   const expectedBorrowedQuery = useRepayExpectedBorrowed(params, enabled && swapRequired)
   const tokenSymbol = borrowToken?.symbol
-  return isFull
+  return isFull && userBorrowed // when userBorrowed isn't set, the isFull query is disabled
     ? { data: { value: '0', tokenSymbol }, isLoading: false, error: null }
     : swapRequired
       ? mapQuery(expectedBorrowedQuery, (d) => ({ value: d.totalBorrowed, tokenSymbol }))
@@ -107,9 +107,9 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
         isOpen,
       )}
       collateralSymbol={collateralToken?.symbol}
-      leverageEnabled={hasLeverage}
       {...(hasLeverage &&
         swapRequired && {
+          leverageEnabled: true,
           slippage,
           onSlippageChange,
           priceImpact,

@@ -7,7 +7,7 @@ import { decimal, type Decimal } from '@ui-kit/utils'
 
 const CLOSE_POSITION_SAFETY_BUFFER = 1.0001 // 0.01% safety margin
 
-export type CanCloseData = { canClose: boolean; missing: Decimal }
+export type CanCloseData = { canClose: boolean; missing: Decimal; balance: Decimal }
 
 /**
  * Determines if a user can close their position and calculates how much
@@ -39,7 +39,7 @@ export function useCanClose(params: UserMarketParams<LlamaChainId>): Query<CanCl
     decimal(BigNumber.max(0, new BigNumber(debt).minus(stablecoin).times(CLOSE_POSITION_SAFETY_BUFFER).minus(borrowed)))
 
   return {
-    data: missing && { canClose: +missing === 0, missing },
+    data: missing && { canClose: +missing === 0, missing, balance: borrowed },
     isLoading: userBalancesLoading || userStateLoading,
     error: userBalancesError || userStateError,
   }

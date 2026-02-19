@@ -24,12 +24,12 @@ export function useClosePositionForm({
   market,
   network,
   enabled,
-  onClosed,
+  onSuccess,
 }: {
   market: LlamaMarketTemplate | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId; name: string }
   enabled?: boolean
-  onClosed?: () => void
+  onSuccess?: () => void
 }) {
   const { address: userAddress } = useConnection()
   const { chainId } = network
@@ -50,7 +50,7 @@ export function useClosePositionForm({
   } = useClosePositionMutation({
     network,
     marketId,
-    onClosed,
+    onSuccess,
     onReset: form.reset,
     userAddress,
   })
