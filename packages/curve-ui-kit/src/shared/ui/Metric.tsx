@@ -111,6 +111,7 @@ const MetricValue = ({ value, valueOptions, change, size, copyValue, tooltip, te
         {...tooltip}
         title={tooltip?.title ?? (numberValue !== null ? numberValue.toLocaleString() : t`N/A`)}
         data-testid={`${testId}-value`}
+        data-value={value}
       >
         <Stack direction="row" alignItems="baseline">
           {prefix && (

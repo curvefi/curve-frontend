@@ -17,7 +17,7 @@ import { LlamaListChips } from './chips/LlamaListChips'
 import { DEFAULT_SORT_BORROW, DEFAULT_SORT_SUPPLY } from './columns'
 import { LLAMA_MARKET_COLUMNS } from './columns'
 import { LlamaMarketColumnId } from './columns'
-import { llamaGlobalFilterFn } from './filters/llamaGlobalFilter'
+import { useLlamaGlobalFilterFn } from './filters/llamaGlobalFilter'
 import { useLlamaTableVisibility } from './hooks/useLlamaTableVisibility'
 import { LendingMarketsFilters } from './LendingMarketsFilters'
 import { LlamaMarketExpandedPanel } from './LlamaMarketExpandedPanel'
@@ -65,6 +65,7 @@ export const UserPositionsTable = ({ onReload, result, loading, isError, tab }: 
   const defaultFilters = useDefaultUserFilter(tab)
   const title = LOCAL_STORAGE_KEYS[tab]
   const { globalFilter, setGlobalFilter, resetGlobalFilter } = useGlobalFilter('search-user-positions')
+  const globalFilterFn = useLlamaGlobalFilterFn(userData, globalFilter)
   const {
     columnFilters,
     columnFiltersById,
@@ -92,7 +93,7 @@ export const UserPositionsTable = ({ onReload, result, loading, isError, tab }: 
     initialState: { pagination },
     onSortingChange,
     onExpandedChange,
-    globalFilterFn: llamaGlobalFilterFn,
+    globalFilterFn,
     ...getTableOptions(result),
   })
 

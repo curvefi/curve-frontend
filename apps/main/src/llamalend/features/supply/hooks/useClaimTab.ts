@@ -13,12 +13,12 @@ export const useClaimTab = <ChainId extends LlamaChainId>({
   market,
   network,
   enabled,
-  onClaimed,
+  onSuccess,
 }: {
   market: LlamaMarketTemplate | undefined
   network: LlamaNetwork<ChainId>
   enabled?: boolean
-  onClaimed?: ClaimOptions['onClaimed']
+  onSuccess?: ClaimOptions['onSuccess']
 }) => {
   const { address: userAddress } = useConnection()
   const { chainId } = network
@@ -53,12 +53,7 @@ export const useClaimTab = <ChainId extends LlamaChainId>({
     isSuccess: isClaimed,
     error: claimError,
     data,
-  } = useClaimMutation({
-    marketId,
-    network,
-    onClaimed,
-    userAddress,
-  })
+  } = useClaimMutation({ marketId, network, onSuccess, userAddress })
 
   return {
     params,

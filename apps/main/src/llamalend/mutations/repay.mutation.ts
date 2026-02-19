@@ -28,7 +28,7 @@ type RepayMutation = {
 export type RepayOptions = {
   marketId: string | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
-  onRepaid?: OnTransactionSuccess<RepayMutation>
+  onSuccess?: OnTransactionSuccess<RepayMutation>
   onReset?: () => void
   userAddress: Address | undefined
 }
@@ -76,7 +76,7 @@ export const useRepayMutation = ({
   network,
   network: { chainId },
   marketId,
-  onRepaid,
+  onSuccess,
   onReset,
   userAddress,
 }: RepayOptions) => {
@@ -98,7 +98,7 @@ export const useRepayMutation = ({
     validationSuite: repayFromCollateralIsFullValidationSuite,
     pendingMessage: (mutation, { market }) => t`Repaying loan... ${formatTokenAmounts(market, mutation)}`,
     successMessage: (mutation, { market }) => t`Loan repaid! ${formatTokenAmounts(market, mutation)}`,
-    onSuccess: onRepaid,
+    onSuccess,
     onReset,
   })
 

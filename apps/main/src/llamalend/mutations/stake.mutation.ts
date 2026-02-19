@@ -20,7 +20,7 @@ import { formatTokenAmounts } from '../llama.utils'
 export type StakeOptions = {
   marketId: string | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
-  onStaked?: OnTransactionSuccess<StakeMutation>
+  onSuccess?: OnTransactionSuccess<StakeMutation>
   onReset: () => void
   userAddress: Address | undefined
 }
@@ -35,7 +35,7 @@ export const useStakeMutation = ({
   network,
   network: { chainId },
   marketId,
-  onStaked,
+  onSuccess,
   onReset,
   userAddress,
 }: StakeOptions) => {
@@ -61,7 +61,7 @@ export const useStakeMutation = ({
       t`Staking... ${formatTokenAmounts(market, { userBorrowed: mutation.stakeAmount })}`,
     successMessage: (mutation, { market }) =>
       t`Stake successful! ${formatTokenAmounts(market, { userBorrowed: mutation.stakeAmount })}`,
-    onSuccess: onStaked,
+    onSuccess,
     onReset,
   })
 

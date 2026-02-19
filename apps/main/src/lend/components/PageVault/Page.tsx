@@ -16,7 +16,7 @@ import { type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
 import { getCollateralListPathname, getLoanPathname, parseMarketParams } from '@/lend/utils/utilsRouter'
 import { MarketDetails } from '@/llamalend/features/market-details'
 import { NoPosition, SupplyPositionDetails } from '@/llamalend/features/market-position-details'
-import { useLoanExists } from '@/llamalend/queries/loan-exists'
+import { useLoanExists } from '@/llamalend/queries/user'
 import { PageHeader } from '@/llamalend/widgets/page-header/PageHeader'
 import type { Chain } from '@curvefi/prices-api'
 import Stack from '@mui/material/Stack'
@@ -27,10 +27,7 @@ import { useIntegratedLlamaHeader } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
-
-const { Spacing } = SizesAndSpaces
 
 export const Page = () => {
   const params = useParams<MarketUrlParams>()
@@ -131,13 +128,7 @@ export const Page = () => {
           supplyAddress={market?.addresses?.vault || ''}
         />
         <MarketInformationTabs currentTab="supply" hrefs={positionDetailsHrefs}>
-          {hasSupplyPosition ? (
-            <SupplyPositionDetails {...supplyPositionDetails} />
-          ) : (
-            <Stack padding={Spacing.md} sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
-              <NoPosition type="supply" />
-            </Stack>
-          )}
+          {hasSupplyPosition ? <SupplyPositionDetails {...supplyPositionDetails} /> : <NoPosition type="supply" />}
         </MarketInformationTabs>
         <Stack>
           {!showPageHeader && <MarketDetails {...marketDetails} />}

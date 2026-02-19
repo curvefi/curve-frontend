@@ -1,5 +1,5 @@
 import { ChainId, FutureRates } from '@/lend/types/lend.types'
-import { useMarketRates } from '@/llamalend/queries/market-rates'
+import { useMarketRates } from '@/llamalend/queries/market-rates.query'
 import { DetailInfo } from '@ui/DetailInfo'
 import { Icon } from '@ui/Icon'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'

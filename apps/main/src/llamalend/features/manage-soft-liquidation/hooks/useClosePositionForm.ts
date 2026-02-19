@@ -5,7 +5,7 @@ import { getTokens } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { type CloseLoanMutation, useClosePositionMutation } from '@/llamalend/mutations/close-position.mutation'
 import { useCloseLoanIsApproved } from '@/llamalend/queries/close-loan/close-loan-is-approved.query'
-import { useUserState } from '@/llamalend/queries/user-state.query'
+import { useUserState } from '@/llamalend/queries/user'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { mapQuery } from '@ui-kit/types/util'
@@ -24,12 +24,12 @@ export function useClosePositionForm({
   market,
   network,
   enabled,
-  onClosed,
+  onSuccess,
 }: {
   market: LlamaMarketTemplate | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId; name: string }
   enabled?: boolean
-  onClosed?: () => void
+  onSuccess?: () => void
 }) {
   const { address: userAddress } = useConnection()
   const { chainId } = network
@@ -50,7 +50,7 @@ export function useClosePositionForm({
   } = useClosePositionMutation({
     network,
     marketId,
-    onClosed,
+    onSuccess,
     onReset: form.reset,
     userAddress,
   })

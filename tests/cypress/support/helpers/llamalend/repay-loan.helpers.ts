@@ -1,6 +1,6 @@
 import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
 import { type Decimal } from '@ui-kit/utils'
-import { checkDebt, getActionValue } from './action-info.helpers'
+import { checkDebt, type DebtCheck, getActionValue, touchInput } from './action-info.helpers'
 
 const getRepayInput = () => cy.get('[data-testid^="repay-input-"] input[type="text"]', LOAD_TIMEOUT).first()
 
@@ -22,24 +22,18 @@ export function selectRepayToken({
 }
 
 export function writeRepayLoanForm({ amount }: { amount: Decimal }) {
-  getRepayInput().clear().type(amount)
+  getRepayInput().clear()
+  getRepayInput().type(amount)
+  getRepayInput().blur() // make sure field is touched to open the action info list
 }
 
-export function checkRepayDetailsLoaded({
-  leverageEnabled,
-  debt,
-}: {
-  debt: Parameters<typeof checkDebt>
-  leverageEnabled: boolean
-}) {
-  if (leverageEnabled) {
-    cy.get('[data-testid="borrow-leverage-info-list"]', LOAD_TIMEOUT).should('exist')
-  } else {
-    cy.get('[data-testid="borrow-leverage-info-list"]', LOAD_TIMEOUT).should('not.exist')
-  }
+export const touchRepayLoanForm = () => touchInput(getRepayInput)
+
+export function checkRepayDetailsLoaded({ leverageEnabled, debt }: { debt: DebtCheck; leverageEnabled?: boolean }) {
+  cy.get('[data-testid="borrow-leverage-info-list"]', LOAD_TIMEOUT).should(leverageEnabled ? 'be.visible' : 'not.exist')
   getActionValue('borrow-price-range').should('match', /(\d(\.\d+)?) - (\d(\.\d+)?)/)
   getActionValue('borrow-apr').should('include', '%')
-  checkDebt(...debt)
+  checkDebt(debt)
   cy.get('[data-testid="loan-form-errors"]').should('not.exist')
 }
 

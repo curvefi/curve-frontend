@@ -14,7 +14,7 @@ export type WithdrawFormProps<ChainId extends IChainId> = {
   networks: NetworkDict<ChainId>
   chainId: ChainId
   enabled?: boolean
-  onWithdrawn?: NonNullable<WithdrawOptions['onWithdrawn']>
+  onSuccess?: NonNullable<WithdrawOptions['onSuccess']>
 }
 
 const TEST_ID_PREFIX = 'supply-withdraw'
@@ -24,7 +24,7 @@ export const WithdrawForm = <ChainId extends IChainId>({
   networks,
   chainId,
   enabled,
-  onWithdrawn,
+  onSuccess,
 }: WithdrawFormProps<ChainId>) => {
   const network = networks[chainId]
 
@@ -40,12 +40,7 @@ export const WithdrawForm = <ChainId extends IChainId>({
     txHash,
     formErrors,
     max,
-  } = useWithdrawForm({
-    market,
-    network,
-    enabled,
-    onWithdrawn,
-  })
+  } = useWithdrawForm({ market, network, enabled, onSuccess })
 
   return (
     <Form

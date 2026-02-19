@@ -13,11 +13,11 @@ import type { Decimal } from '@ui-kit/utils'
 type ChartAndActivityCompProps = {
   chainId: ChainId
   market: Llamma | null
-  llammaId: string
+  marketId: string
   previewPrices: Range<Decimal> | undefined
 }
 
-export const ChartAndActivityComp = ({ chainId, market, llammaId, previewPrices }: ChartAndActivityCompProps) => {
+export const ChartAndActivityComp = ({ chainId, market, marketId, previewPrices }: ChartAndActivityCompProps) => {
   const { llamaApi: api = null } = useCurve()
   const collateralTokenAddress = market?.coinAddresses[1]
   const borrowedTokenAddress = market?.coinAddresses[0]
@@ -36,7 +36,7 @@ export const ChartAndActivityComp = ({ chainId, market, llammaId, previewPrices 
   } = useOhlcChartState({
     chainId,
     market,
-    llammaId,
+    marketId,
     previewPrices,
   })
 
@@ -48,7 +48,7 @@ export const ChartAndActivityComp = ({ chainId, market, llammaId, previewPrices 
     isError: isBandsError,
   } = useBandsData({
     chainId,
-    marketId: llammaId,
+    marketId,
     api,
     collateralTokenAddress,
     borrowedTokenAddress,

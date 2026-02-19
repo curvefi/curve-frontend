@@ -18,7 +18,7 @@ import { networks } from '../networks'
 const { Spacing } = SizesAndSpaces
 
 type MarketInformationCompProps = {
-  llamma: Llamma | null
+  market: Llamma | null
   marketId: string
   chainId: ChainId
   page?: 'create' | 'manage'
@@ -29,7 +29,7 @@ type MarketInformationCompProps = {
  * Reusable component for OHLC charts, Bands, and market parameters. For /create and /manage pages.
  */
 export const MarketInformationComp = ({
-  llamma,
+  market,
   marketId,
   chainId,
   page = 'manage',
@@ -38,17 +38,17 @@ export const MarketInformationComp = ({
   const newBandsChartEnabled = useNewBandsChart()
   const showPageHeader = useIntegratedLlamaHeader()
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
-  const marketDetails = useMarketDetails({ chainId, llamma, llammaId: marketId })
+  const marketDetails = useMarketDetails({ chainId, market, marketId })
 
   return (
     <>
-      <ChartAndActivityComp chainId={chainId} llammaId={marketId} market={llamma} previewPrices={previewPrices} />
+      <ChartAndActivityComp chainId={chainId} marketId={marketId} market={market} previewPrices={previewPrices} />
       {isAdvancedMode && !newBandsChartEnabled && (
         <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, gap: Spacing.md, padding: Spacing.md }}>
-          <BandsComp llamma={llamma} llammaId={marketId} page={page} />
+          <BandsComp market={market} marketId={marketId} page={page} />
         </Stack>
       )}
-      {llamma && isAdvancedMode && (
+      {market && isAdvancedMode && (
         <Stack
           sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, ...(showPageHeader && { marginTop: Spacing.md }) }}
         >
@@ -68,18 +68,18 @@ export const MarketInformationComp = ({
                 isBorderBottom
                 network={networks[chainId]}
                 title={t`AMM`}
-                address={llamma?.address ?? ''}
+                address={market?.address ?? ''}
               />
               <AddressActionInfo
                 isBorderBottom
                 network={networks[chainId]}
                 title={t`Controller`}
-                address={llamma?.controller ?? ''}
+                address={market?.controller ?? ''}
               />
               <AddressActionInfo
                 network={networks[chainId]}
                 title={t`Monetary Policy`}
-                address={llamma?.monetaryPolicy ?? ''}
+                address={market?.monetaryPolicy ?? ''}
               />
             </Stack>
 

@@ -2,14 +2,14 @@ import BigNumber from 'bignumber.js'
 import type { UseFormReturn } from 'react-hook-form'
 import type { Token } from '@/llamalend/features/borrow/types'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
-import { useMarketRates } from '@/llamalend/queries/market-rates'
+import { useMarketRates } from '@/llamalend/queries/market-rates.query'
 import { useStakeIsApproved } from '@/llamalend/queries/supply/supply-stake-approved.query'
 import { useStakeEstimateGas } from '@/llamalend/queries/supply/supply-stake-estimate-gas.query'
 import {
   useSharesToAssetsAmount,
   useUserStakedVaultSharesToAssetsAmount,
 } from '@/llamalend/queries/supply/supply-user-vault-amounts'
-import { useUserBalances } from '@/llamalend/queries/user-balances.query'
+import { useUserBalances } from '@/llamalend/queries/user'
 import type { StakeForm, StakeParams } from '@/llamalend/queries/validation/supply.validation'
 import { SupplyActionInfoList } from '@/llamalend/widgets/action-card/SupplyActionInfoList'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'

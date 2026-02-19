@@ -4,6 +4,12 @@ import { useMarketDetails as useLendMarketDetails } from '@/lend/entities/market
 import { networks } from '@/lend/networks'
 import type { ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import type { MarketDetailsProps } from '@/llamalend/features/market-details'
+import {
+  LAST_MONTH,
+  getBorrowRateMetrics,
+  getSnapshotBorrowRate,
+  getSnapshotCollateralRebasingYieldRate,
+} from '@/llamalend/rates.utils'
 import type { Chain, Address } from '@curvefi/prices-api'
 import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import { useLendingSnapshots } from '@ui-kit/entities/lending-snapshots'
@@ -20,8 +26,7 @@ type UseMarketDetailsProps = {
   marketId: string
 }
 
-const averageMultiplier = 30
-const averageMultiplierString = `${averageMultiplier}D`
+const AVERAGE_RATE_LABEL = `${LAST_MONTH}D`
 
 export const useMarketDetails = ({
   chainId,
@@ -32,6 +37,9 @@ export const useMarketDetails = ({
   const blockchainId = networks[chainId]?.id as Chain
   const { collateral_token, borrowed_token } = market ?? {}
   const { controller, vault } = market?.addresses ?? {}
+  // Query validation only checks param presence (chain/market/user). We still need `!market`
+  // because this hook runs before market metadata is available, and the UI reads market fields.
+  const isMarketMetadataLoading = !market || !isHydrated
 
   const {
     data: {
@@ -50,7 +58,7 @@ export const useMarketDetails = ({
     blockchainId,
     contractAddress: controller as Address,
     agg: 'day',
-    limit: 30, // fetch last 30 days for 30 day average calcs
+    limit: LAST_MONTH, // fetch last 30 days for 30 day average calcs
   })
   const { data: collateralUsdRate, isLoading: collateralUsdRateLoading } = useTokenUsdRate({
     chainId,
@@ -66,27 +74,21 @@ export const useMarketDetails = ({
   const campaigns = [...campaignsVault, ...campaignsController]
 
   const {
-    borrowApy: averageBorrowApy,
     lendApy: averageLendApy,
-    borrowRebasingYield: averageBorrowRebasingYield,
     supplyRebasingYield: averageSupplyRebasingYield,
     averageSupplyAprCrvMinBoost: averageSupplyAprCrvMinBoost,
     averageSupplyAprCrvMaxBoost: averageSupplyAprCrvMaxBoost,
     averageTotalExtraIncentivesApr: averageTotalExtraIncentivesApr,
   } = useMemo(
     () =>
-      calculateAverageRates(lendingSnapshots, averageMultiplier, {
-        borrowApy: ({ borrowApy }) => Number(borrowApy) * 100,
+      calculateAverageRates(lendingSnapshots, LAST_MONTH, {
         lendApy: ({ lendApy }) => Number(lendApy) * 100,
-        borrowRebasingYield: ({ collateralToken }) => collateralToken.rebasingYield,
         supplyRebasingYield: ({ borrowedToken }) => borrowedToken.rebasingYield,
         averageSupplyAprCrvMinBoost: ({ lendAprCrv0Boost }) => lendAprCrv0Boost,
         averageSupplyAprCrvMaxBoost: ({ lendAprCrvMaxBoost }) => lendAprCrvMaxBoost,
         averageTotalExtraIncentivesApr: ({ extraRewardApr }) => extraRewardApr.reduce((acc, r) => acc + r.rate, 0),
       }) ?? {
-        borrowApy: null,
         lendApy: null,
-        borrowRebasingYield: null,
         supplyRebasingYield: null,
         averageSupplyAprCrvMinBoost: null,
         averageSupplyAprCrvMaxBoost: null,
@@ -99,14 +101,29 @@ export const useMarketDetails = ({
   const supplyApy = marketLendApy && Number(marketLendApy)
   const supplyAprCrvMinBoost = crvRates?.[0] ?? lendingSnapshots?.[0]?.lendAprCrv0Boost ?? 0
   const supplyAprCrvMaxBoost = crvRates?.[1] ?? lendingSnapshots?.[0]?.lendAprCrvMaxBoost ?? 0
-  const collateralRebasingYield = lendingSnapshots?.[lendingSnapshots.length - 1]?.collateralToken?.rebasingYield // take only most recent rebasing yield
   const borrowRebasingYield = lendingSnapshots?.[lendingSnapshots.length - 1]?.borrowedToken?.rebasingYield // take only most recent rebasing yield
   const extraIncentivesTotalApr = sum(rewardsApr?.map((r) => r.apy) ?? [])
+  const {
+    averageRate: averageBorrowApr,
+    averageRebasingYield: averageBorrowRebasingYieldApr,
+    totalRate: totalBorrowApr,
+    averageTotalRate: totalAverageBorrowApr,
+    rebasingYield: collateralRebasingYieldApr,
+  } = useMemo(
+    () =>
+      getBorrowRateMetrics({
+        borrowRate: borrowApr,
+        snapshots: lendingSnapshots,
+        getBorrowRate: getSnapshotBorrowRate,
+        getRebasingYield: getSnapshotCollateralRebasingYieldRate,
+      }),
+    [borrowApr, lendingSnapshots],
+  )
+
   const totalSupplyRateMinBoost =
     supplyApy && Number(supplyApy) + (borrowRebasingYield ?? 0) + extraIncentivesTotalApr + (supplyAprCrvMinBoost ?? 0)
   const totalSupplyRateMaxBoost =
     supplyApy && Number(supplyApy) + (borrowRebasingYield ?? 0) + extraIncentivesTotalApr + (supplyAprCrvMaxBoost ?? 0)
-  const totalAverageBorrowRate = averageBorrowApy && averageBorrowApy - (averageBorrowRebasingYield ?? 0)
   const totalAverageSupplyRateMinBoost =
     averageLendApy &&
     averageLendApy +
@@ -119,7 +136,6 @@ export const useMarketDetails = ({
       (averageSupplyRebasingYield ?? 0) +
       (averageTotalExtraIncentivesApr ?? 0) +
       (averageSupplyAprCrvMaxBoost ?? 0)
-  const totalBorrowRate = borrowApr == null ? null : borrowApr - (collateralRebasingYield ?? 0)
 
   return {
     marketType: LlamaMarketType.Lend,
@@ -130,29 +146,29 @@ export const useMarketDetails = ({
       total: collateralAmount ?? null,
       totalUsdValue: collateralAmount && collateralUsdRate ? collateralAmount * collateralUsdRate : null,
       usdRate: collateralUsdRate ?? null,
-      loading: isMarketDetailsLoading.marketCollateralAmounts || collateralUsdRateLoading || !isHydrated,
+      loading: isMarketDetailsLoading.marketCollateralAmounts || collateralUsdRateLoading || isMarketMetadataLoading,
     },
     borrowToken: {
       symbol: borrowed_token?.symbol ?? null,
       tokenAddress: borrowed_token?.address,
       usdRate: borrowedUsdRate ?? null,
-      loading: isMarketDetailsLoading.marketCollateralAmounts || borrowedUsdRateLoading || !isHydrated,
+      loading: isMarketDetailsLoading.marketCollateralAmounts || borrowedUsdRateLoading || isMarketMetadataLoading,
     },
     borrowRate: {
       rate: borrowApr,
-      averageRate: averageBorrowApy ?? null,
-      averageRateLabel: averageMultiplierString,
-      rebasingYield: collateralRebasingYield ?? null,
-      averageRebasingYield: averageBorrowRebasingYield ?? null,
-      totalBorrowRate,
-      totalAverageBorrowRate,
+      averageRate: averageBorrowApr,
+      averageRateLabel: AVERAGE_RATE_LABEL,
+      rebasingYield: collateralRebasingYieldApr,
+      averageRebasingYield: averageBorrowRebasingYieldApr,
+      totalBorrowRate: totalBorrowApr,
+      totalAverageBorrowRate: totalAverageBorrowApr,
       extraRewards: campaigns,
-      loading: isSnapshotsLoading || isMarketDetailsLoading.marketRates || !isHydrated,
+      loading: isSnapshotsLoading || isMarketDetailsLoading.marketRates || isMarketMetadataLoading,
     },
     supplyRate: {
       rate: supplyApy,
       averageRate: averageLendApy ?? null,
-      averageRateLabel: averageMultiplierString,
+      averageRateLabel: AVERAGE_RATE_LABEL,
       supplyAprCrvMinBoost,
       supplyAprCrvMaxBoost,
       averageSupplyAprCrvMinBoost: averageSupplyAprCrvMinBoost ?? null,
@@ -177,17 +193,17 @@ export const useMarketDetails = ({
         isSnapshotsLoading ||
         isMarketDetailsLoading.marketRates ||
         isMarketDetailsLoading.marketOnChainRewards ||
-        !isHydrated,
+        isMarketMetadataLoading,
     },
     availableLiquidity: {
       value: available ?? null,
       max: cap ?? null,
-      loading: isMarketDetailsLoading.marketCapAndAvailable || !isHydrated,
+      loading: isMarketDetailsLoading.marketCapAndAvailable || isMarketMetadataLoading,
     },
     maxLeverage: maxLeverage
       ? {
           value: Number(maxLeverage),
-          loading: isMarketDetailsLoading.marketMaxLeverage || !isHydrated,
+          loading: isMarketDetailsLoading.marketMaxLeverage || isMarketMetadataLoading,
         }
       : undefined,
   }

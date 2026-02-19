@@ -7,7 +7,6 @@ import { MarketInformationTabs } from '@/lend/components/MarketInformationTabs'
 import { LoanCreateTabs } from '@/lend/components/PageLendMarket/LoanCreateTabs'
 import { ManageLoanTabs } from '@/lend/components/PageLendMarket/ManageLoanTabs'
 import { useOneWayMarket } from '@/lend/entities/chain'
-import { useBorrowPositionDetails } from '@/lend/hooks/useBorrowPositionDetails'
 import { useLendPageTitle } from '@/lend/hooks/useLendPageTitle'
 import { useMarketDetails } from '@/lend/hooks/useMarketDetails'
 import { useTitleMapper } from '@/lend/hooks/useTitleMapper'
@@ -18,13 +17,17 @@ import { type MarketUrlParams } from '@/lend/types/lend.types'
 import { getCollateralListPathname, parseMarketParams } from '@/lend/utils/helpers'
 import { getVaultPathname } from '@/lend/utils/utilsRouter'
 import { MarketDetails } from '@/llamalend/features/market-details'
-import { BorrowPositionDetails, NoPosition } from '@/llamalend/features/market-position-details'
+import {
+  BorrowPositionDetails,
+  NoPosition,
+  useBorrowPositionDetails,
+} from '@/llamalend/features/market-position-details'
 import { UserPositionHistory } from '@/llamalend/features/user-position-history'
 import { useUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
-import { useLoanExists } from '@/llamalend/queries/loan-exists'
+import { useLoanExists } from '@/llamalend/queries/user'
 import { PageHeader } from '@/llamalend/widgets/page-header'
-import { isChain } from '@curvefi/prices-api'
 import type { Chain } from '@curvefi/prices-api'
+import { isChain } from '@curvefi/prices-api'
 import Stack from '@mui/material/Stack'
 import { ConnectWalletPrompt, useCurve } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
@@ -34,6 +37,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { LlamaMarketType } from '@ui-kit/types/market'
 import type { Range } from '@ui-kit/types/util'
 import type { Decimal } from '@ui-kit/utils'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
@@ -84,7 +88,13 @@ export const LendMarketPage = () => {
   const [isLoaded, setLoaded] = useState(false)
   const [previewPrices, onPricesUpdated] = useState<Range<Decimal> | undefined>(undefined)
 
-  const borrowPositionDetails = useBorrowPositionDetails({ chainId, market: market, marketId })
+  const borrowPositionDetails = useBorrowPositionDetails({
+    marketType: LlamaMarketType.Lend,
+    chainId,
+    marketId,
+    blockchainId: network.id as Chain,
+    market: market ?? null,
+  })
 
   useEffect(() => {
     // delay fetch rest after form details are fetched first

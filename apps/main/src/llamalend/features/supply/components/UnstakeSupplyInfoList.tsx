@@ -2,13 +2,13 @@ import BigNumber from 'bignumber.js'
 import type { UseFormReturn } from 'react-hook-form'
 import type { Token } from '@/llamalend/features/borrow/types'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
-import { useMarketRates } from '@/llamalend/queries/market-rates'
+import { useMarketRates } from '@/llamalend/queries/market-rates.query'
 import { useUnstakeEstimateGas } from '@/llamalend/queries/supply/supply-unstake-estimate-gas.query'
 import {
   useSharesToAssetsAmount,
   useUserStakedVaultSharesToAssetsAmount,
 } from '@/llamalend/queries/supply/supply-user-vault-amounts'
-import { useUserBalances } from '@/llamalend/queries/user-balances.query'
+import { useUserBalances } from '@/llamalend/queries/user'
 import type { UnstakeForm, UnstakeParams } from '@/llamalend/queries/validation/supply.validation'
 import { SupplyActionInfoList } from '@/llamalend/widgets/action-card/SupplyActionInfoList'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'

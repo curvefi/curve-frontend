@@ -1,6 +1,6 @@
 import { USE_API } from '@/lend/shared/config'
 import { ChainId } from '@/lend/types/lend.types'
-import { invalidateMarketRates, useMarketRates } from '@/llamalend/queries/market-rates'
+import { invalidateMarketRates, useMarketRates } from '@/llamalend/queries/market-rates.query'
 import { requireLib } from '@ui-kit/features/connect-wallet'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'

@@ -2,7 +2,7 @@ import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { queryFactory, rootKeys, UserMarketQuery } from '@ui-kit/lib/model'
 import { FieldsOf } from '@ui-kit/lib/validation/types'
 import type { Decimal } from '@ui-kit/utils'
-import { useUserBalances } from '../user-balances.query'
+import { useUserBalances } from '../user/user-balances.query'
 import {
   requireVault,
   SharesToAssetsParams,

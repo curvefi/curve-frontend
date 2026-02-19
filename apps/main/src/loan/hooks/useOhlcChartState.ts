@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo } from 'react'
 import { useConnection } from 'wagmi'
 import { getTokens } from '@/llamalend/llama.utils'
-import { useUserPrices } from '@/llamalend/queries/user-prices.query'
+import { useUserPrices } from '@/llamalend/queries/user'
 import { useStore } from '@/loan/store/useStore'
 import { ChainId, Llamma } from '@/loan/types/loan.types'
 import {
@@ -21,7 +21,7 @@ export type LlammaLiquidityCoins = ReturnType<typeof getTokens> | undefined | nu
 type OhlcChartStateProps = {
   chainId: ChainId
   market: Llamma | null
-  llammaId: string
+  marketId: string
   previewPrices: Range<Decimal> | undefined
 }
 
@@ -65,20 +65,16 @@ const useLegacyChartPrices = () => {
   ]) as Range<Decimal> | undefined
 }
 
-export const useOhlcChartState = ({ chainId, market, llammaId, previewPrices }: OhlcChartStateProps) => {
+export const useOhlcChartState = ({ chainId, market, marketId, previewPrices }: OhlcChartStateProps) => {
   const { address: userAddress } = useConnection()
   const storePreviewPrices = useLegacyChartPrices()
-  const { data: userPrices } = useUserPrices({
-    chainId,
-    marketId: llammaId,
-    userAddress,
-  })
+  const { data: userPrices } = useUserPrices({ chainId, marketId, userAddress })
   const chartLlammaOhlc = useStore((state) => state.ohlcCharts.chartLlammaOhlc)
   const chartOraclePoolOhlc = useStore((state) => state.ohlcCharts.chartOraclePoolOhlc)
   const fetchLlammaOhlcData = useStore((state) => state.ohlcCharts.fetchLlammaOhlcData)
   const fetchOracleOhlcData = useStore((state) => state.ohlcCharts.fetchOracleOhlcData)
   const fetchMoreData = useStore((state) => state.ohlcCharts.fetchMoreData)
-  const priceInfo = useStore((state) => state.loans.detailsMapper[llammaId]?.priceInfo ?? null)
+  const priceInfo = useStore((state) => state.loans.detailsMapper[marketId]?.priceInfo ?? null)
   const poolAddress = market?.address ?? ''
   const controllerAddress = market?.controller ?? ''
 
@@ -145,7 +141,7 @@ export const useOhlcChartState = ({ chainId, market, llammaId, previewPrices }: 
     )
     void fetchLlammaOhlcData(
       chainId,
-      llammaId,
+      marketId,
       poolAddress,
       chartInterval,
       timeUnit,
@@ -161,7 +157,7 @@ export const useOhlcChartState = ({ chainId, market, llammaId, previewPrices }: 
     fetchOracleOhlcData,
     poolAddress,
     chainId,
-    llammaId,
+    marketId,
     timeUnit,
   ])
 

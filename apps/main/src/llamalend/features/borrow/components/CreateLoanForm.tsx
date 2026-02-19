@@ -51,13 +51,13 @@ export const CreateLoanForm = <ChainId extends IChainId>({
   networks,
   chainId,
   onPricesUpdated,
-  onCreated,
+  onSuccess,
 }: {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
   chainId: ChainId
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
-  onCreated: CreateLoanOptions['onCreated']
+  onSuccess: CreateLoanOptions['onSuccess']
 }) => {
   const network = networks[chainId]
   const [preset, setPreset] = useCreateLoanPreset<LoanPreset>(LoanPreset.Safe)
@@ -77,7 +77,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
     txHash,
     values,
     leverage,
-  } = useCreateLoanForm({ market, network, preset, onCreated })
+  } = useCreateLoanForm({ market, network, preset, onSuccess })
 
   useFormSync(params, onPricesUpdated)
 
@@ -101,6 +101,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
           onSlippageChange={(value) => updateForm(form, { slippage: value })}
         />
       }
+      data-testid="create-loan-form"
     >
       <Stack divider={<InputDivider />}>
         <LoanFormTokenInput

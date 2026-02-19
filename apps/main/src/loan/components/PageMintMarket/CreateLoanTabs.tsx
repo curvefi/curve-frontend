@@ -18,7 +18,7 @@ type MintCreateTabsProps = PageLoanCreateProps & {
 
 function CreateLoanTab({ market, curve, rChainId, onPricesUpdated }: MintCreateTabsProps) {
   const onLoanCreated = useStore((state) => state.loanCreate.onLoanCreated)
-  const onCreated: NonNullable<CreateLoanOptions['onCreated']> = useCallback(
+  const onCreated: NonNullable<CreateLoanOptions['onSuccess']> = useCallback(
     async (_data, _receipt, { slippage, leverageEnabled }: CreateLoanMutation) =>
       curve && market && (await onLoanCreated(curve, leverageEnabled, market, slippage)),
     [curve, market, onLoanCreated],
@@ -30,7 +30,7 @@ function CreateLoanTab({ market, curve, rChainId, onPricesUpdated }: MintCreateT
       chainId={rChainId}
       market={market ?? undefined}
       onPricesUpdated={onPricesUpdated}
-      onCreated={onCreated}
+      onSuccess={onCreated}
     />
   )
 }
