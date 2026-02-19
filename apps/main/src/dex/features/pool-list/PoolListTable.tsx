@@ -29,7 +29,7 @@ import { PoolListEmptyState } from './components/PoolListEmptyState'
 import { PoolMobileExpandedPanel } from './components/PoolMobileExpandedPanel'
 import { usePoolListData } from './hooks/usePoolListData'
 import { usePoolListVisibilitySettings } from './hooks/usePoolListVisibilitySettings'
-import { poolsGlobalFilterFn } from './poolsGlobalFilter'
+import { usePoolsGlobalFilterFn } from './poolsGlobalFilter'
 import { type PoolListItem } from './types'
 
 const { Spacing } = SizesAndSpaces
@@ -66,6 +66,7 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
 
   const defaultFilters = useDefaultPoolsFilter(data)
   const { globalFilter, setGlobalFilter, resetGlobalFilter } = useGlobalFilter()
+  const globalFilterFn = usePoolsGlobalFilterFn(data ?? [], globalFilter)
   const {
     columnFilters,
     columnFiltersById,
@@ -97,7 +98,7 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
     onSortingChange,
     onExpandedChange,
     onPaginationChange,
-    globalFilterFn: poolsGlobalFilterFn,
+    globalFilterFn,
     ...getTableOptions(data),
     getPaginationRowModel: getPaginationRowModel(),
   })
