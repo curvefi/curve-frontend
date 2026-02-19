@@ -33,7 +33,7 @@ const useFormSync = (
 ) => {
   const { data } = useBorrowMorePrices(params, enabled)
   useEffect(() => {
-    onPricesUpdated(data as Range<Decimal> | undefined)
+    onPricesUpdated(data)
   }, [onPricesUpdated, data])
   useEffect(() => () => onPricesUpdated(undefined), [onPricesUpdated]) // clear prices on unmount to avoid stale chart
 }
