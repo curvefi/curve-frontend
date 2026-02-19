@@ -49,5 +49,6 @@ export const { useQuery: useBorrowMorePrices } = queryFactory({
   },
   staleTime: '1m',
   validationSuite: borrowMoreValidationSuite({ leverageRequired: false, debtRequired: true }),
-  dependencies: (params) => [getBorrowMoreExpectedCollateralKey(params)],
+  dependencies: (params) =>
+    params.leverageEnabled ? [getBorrowMoreExpectedCollateralKey(params)] : [],
 })
