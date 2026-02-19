@@ -8,7 +8,7 @@ import { ClosePositionForm } from '@/llamalend/features/manage-soft-liquidation/
 import { ImproveHealthForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ImproveHealthForm'
 import { getLlamaMarket } from '@/llamalend/llama.utils'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
-import { useLoanExists } from '@/llamalend/queries/loan-exists'
+import { useLoanExists } from '@/llamalend/queries/user'
 import { networks as loanNetworks } from '@/loan/networks'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
