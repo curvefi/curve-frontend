@@ -43,6 +43,18 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>
  */
 export type Query<T> = { data: T | undefined; isLoading: boolean; error: Error | null | undefined }
 
+/** Branded {@link Query} to enforce it's been wrapped with `q()` or `mapQuery()`, stripping it of unserializable properties and reduce re-renders. */
+export type QueryProp<T> = Query<T> & {
+  readonly __brand: 'QueryProp'
+}
+
+/**
+ * Helper to extract only the relevant fields from a UseQueryResult into the Query type.
+ * This is necessary because passing UseQueryResult to any react component will crash the rendering due to
+ * react trying to serialize the react-query proxy object.
+ */
+export const q = <T>({ data, isLoading, error }: UseQueryResult<T>) => ({ data, isLoading, error }) as QueryProp<T>
+
 /**
  * Maps a Query type to extract partial data from it.
  * Preserves error and loading states while transforming the data.
@@ -50,15 +62,9 @@ export type Query<T> = { data: T | undefined; isLoading: boolean; error: Error |
 export const mapQuery = <TSource, TResult>(
   { data, isLoading, error }: Query<TSource>,
   selector: (data: TSource) => TResult | null | undefined,
-): Query<TResult> => ({
-  isLoading,
-  data: data == null ? undefined : (selector(data) ?? undefined),
-  error,
-})
-
-/**
- * Helper to extract only the relevant fields from a UseQueryResult into the Query type.
- * This is necessary because passing UseQueryResult to any react component will crash the rendering due to
- * react trying to serialize the react-query proxy object.
- */
-export const q = <T>({ data, isLoading, error }: UseQueryResult<T>): Query<T> => ({ data, isLoading, error })
+) =>
+  ({
+    isLoading,
+    data: data == null ? undefined : (selector(data) ?? undefined),
+    error,
+  }) as QueryProp<TResult>
