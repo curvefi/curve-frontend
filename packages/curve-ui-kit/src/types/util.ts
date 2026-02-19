@@ -41,7 +41,7 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>
  * A generic type representing the result of a query operation.
  * @template T - The type of the data returned by the query.
  */
-export type Query<T> = { data: T | undefined; isLoading: boolean; error: Error | null | undefined }
+export type Query<T> = Pick<UseQueryResult<T>, 'data' | 'isLoading' | 'error'>
 
 /** Branded {@link Query} to enforce it's been wrapped with `q()` or `mapQuery()`, stripping it of unserializable properties and reduce re-renders. */
 export type QueryProp<T> = Query<T> & {
@@ -53,7 +53,7 @@ export type QueryProp<T> = Query<T> & {
  * This is necessary because passing UseQueryResult to any react component will crash the rendering due to
  * react trying to serialize the react-query proxy object.
  */
-export const q = <T>({ data, isLoading, error }: UseQueryResult<T>) => ({ data, isLoading, error }) as QueryProp<T>
+export const q = <T>({ data, isLoading, error }: Query<T>) => ({ data, isLoading, error }) as QueryProp<T>
 
 /**
  * Maps a Query type to extract partial data from it.

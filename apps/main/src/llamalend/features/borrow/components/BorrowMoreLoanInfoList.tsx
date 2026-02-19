@@ -87,7 +87,7 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
             tokenSymbol: collateralToken?.symbol,
           },
         isLoading: [userState, expectedCollateralQuery].some((q) => q.isLoading),
-        error: [userState, expectedCollateralQuery].find((q) => q.error)?.error,
+        error: [userState, expectedCollateralQuery].find((q) => q.error)?.error ?? null,
       }}
       userState={q(userState)}
       leverageEnabled={leverageEnabled}

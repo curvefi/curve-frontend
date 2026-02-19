@@ -73,8 +73,8 @@ const BridgeForm = (props: BridgeFormContentParams) => {
       footer={
         <>
           <BridgeActionInfos
-            bridgeCost={{ data: 0.69, isLoading: false, error: undefined }}
-            gas={{ data: { estGasCostUsd: 0.12 }, isLoading: false, error: undefined }}
+            bridgeCost={{ data: 0.69, isLoading: false, error: null }}
+            gas={{ data: { estGasCostUsd: 0.12 }, isLoading: false, error: null }}
             isApproved={isApproved}
           />
           <BridgeInfoAlert />
