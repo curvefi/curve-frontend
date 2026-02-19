@@ -1,6 +1,12 @@
 import { useMemo } from 'react'
 import type { MarketDetailsProps } from '@/llamalend/features/market-details'
 import { useMarketRates } from '@/llamalend/queries/market-rates'
+import {
+  getBorrowRateMetrics,
+  getSnapshotBorrowRate,
+  getSnapshotCollateralRebasingYieldRate,
+  LAST_MONTH,
+} from '@/llamalend/rates.utils'
 import { CRVUSD_ADDRESS } from '@/loan/constants'
 import { useMintMarketMaxLeverage } from '@/loan/entities/mint-market-max-leverage'
 import { networks } from '@/loan/networks'
@@ -12,16 +18,12 @@ import { useCrvUsdSnapshots } from '@ui-kit/entities/crvusd-snapshots'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LlamaMarketType } from '@ui-kit/types/market'
-import { calculateAverageRates } from '@ui-kit/utils/averageRates'
 
 type UseMarketDetailsProps = {
   chainId: ChainId
   llamma: Llamma | null | undefined
   llammaId: string
 }
-
-const averageMultiplier = 30
-const averageMultiplierString = `${averageMultiplier}D`
 
 export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetailsProps): MarketDetailsProps => {
   const { isHydrated } = useCurve()
@@ -44,24 +46,30 @@ export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetails
     blockchainId,
     contractAddress: llamma?.controller as Address,
     agg: 'day',
-    limit: 30, // fetch last 30 days for 30 day average calcs
+    limit: LAST_MONTH, // fetch last 30 days for 30 day average calcs
   })
   const { data: maxLeverage, isLoading: isMarketMaxLeverageLoading } = useMintMarketMaxLeverage({
     chainId,
     marketId: llammaId,
   })
-  const { rate: averageRate, rebasingYield: averageRebasingYield } = useMemo(
+  const borrowApr = marketRates?.borrowApr == null ? null : Number(marketRates.borrowApr)
+  const {
+    averageRate,
+    averageRebasingYield,
+    totalRate: totalBorrowRate,
+    averageTotalRate: totalAverageBorrowRate,
+    rebasingYield: collateralRebasingYieldApr,
+  } = useMemo(
     () =>
-      calculateAverageRates(crvUsdSnapshots, averageMultiplier, {
-        rate: ({ rate }) => rate * 100,
-        rebasingYield: ({ collateralToken }) => collateralToken.rebasingYield,
-      }) ?? { rate: null, rebasingYield: null },
-    [crvUsdSnapshots],
+      getBorrowRateMetrics({
+        borrowRate: borrowApr,
+        snapshots: crvUsdSnapshots,
+        getBorrowRate: getSnapshotBorrowRate,
+        getRebasingYield: getSnapshotCollateralRebasingYieldRate,
+      }),
+    [borrowApr, crvUsdSnapshots],
   )
 
-  const totalAverageBorrowRate = averageRate == null ? null : averageRate - (averageRebasingYield ?? 0)
-  const borrowApr = marketRates?.borrowApr && Number(marketRates.borrowApr)
-  const totalBorrowRate = borrowApr ? borrowApr - (crvUsdSnapshots?.at(-1)?.collateralToken.rebasingYield ?? 0) : null
   const availableLiquidityValue = loanDetails?.capAndAvailable?.available
     ? Number(loanDetails.capAndAvailable.available)
     : null
@@ -88,9 +96,9 @@ export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetails
     borrowRate: {
       rate: borrowApr,
       averageRate: averageRate,
-      averageRateLabel: averageMultiplierString,
-      rebasingYield: crvUsdSnapshots?.[crvUsdSnapshots.length - 1]?.collateralToken.rebasingYield ?? null,
-      averageRebasingYield: averageRebasingYield ?? null,
+      averageRateLabel: `${LAST_MONTH}D`,
+      rebasingYield: collateralRebasingYieldApr,
+      averageRebasingYield: averageRebasingYield,
       totalAverageBorrowRate,
       extraRewards: campaigns,
       totalBorrowRate,

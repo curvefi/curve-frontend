@@ -10,6 +10,12 @@ import { DEFAULT_BORROW_TOKEN_SYMBOL, getHealthMode } from '@/llamalend/health.u
 import { calculateLtv, hasV2Leverage } from '@/llamalend/llama.utils'
 import { useMarketRates } from '@/llamalend/queries/market-rates'
 import { useUserCurrentLeverage } from '@/llamalend/queries/user-current-leverage.query'
+import {
+  LAST_MONTH,
+  getBorrowRateMetrics,
+  getSnapshotBorrowRate,
+  getSnapshotCollateralRebasingYieldRate,
+} from '@/llamalend/rates.utils'
 import { CRVUSD_ADDRESS } from '@/loan/constants'
 import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
 import { networks } from '@/loan/networks'
@@ -21,16 +27,12 @@ import { useCrvUsdSnapshots } from '@ui-kit/entities/crvusd-snapshots'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LlamaMarketType } from '@ui-kit/types/market'
-import { calculateAverageRates } from '@ui-kit/utils/averageRates'
 
 type UseLoanPositionDetailsProps = {
   chainId: ChainId
   llamma: Llamma | null | undefined
   llammaId: string
 }
-
-const averageMultiplier = 30
-const averageMultiplierString = `${averageMultiplier}D`
 
 export const useLoanPositionDetails = ({
   chainId,
@@ -91,25 +93,31 @@ export const useLoanPositionDetails = ({
     blockchainId,
     contractAddress: llamma?.controller as Address,
     agg: 'day',
-    limit: 30, // fetch last 30 days for 30 day average calcs
+    limit: LAST_MONTH, // fetch last 30 days for 30 day average calcs
   })
-
-  const { rate: averageRate, rebasingYield: averageRebasingYield } = useMemo(
-    () =>
-      calculateAverageRates(crvUsdSnapshots, averageMultiplier, {
-        rate: ({ rate }) => rate * 100,
-        rebasingYield: ({ collateralToken }) => collateralToken.rebasingYield,
-      }) ?? { rate: null, rebasingYield: null },
-    [crvUsdSnapshots],
-  )
 
   const collateralTotalValue = useMemo(() => {
     if (!collateralUsdRate || !collateral) return null
     return Number(collateral) * Number(collateralUsdRate) + Number(stablecoin)
   }, [collateral, stablecoin, collateralUsdRate])
 
-  const collateralRebasingYield = crvUsdSnapshots?.[crvUsdSnapshots.length - 1]?.collateralToken.rebasingYield // take only most recent rebasing yield
   const borrowApr = marketRates?.borrowApr == null ? null : Number(marketRates.borrowApr)
+  const {
+    averageRate: averageBorrowApr,
+    averageRebasingYield: averageRebasingYieldApr,
+    totalRate: totalBorrowApr,
+    averageTotalRate: totalAverageBorrowApr,
+    rebasingYield: collateralRebasingYieldApr,
+  } = useMemo(
+    () =>
+      getBorrowRateMetrics({
+        borrowRate: borrowApr,
+        snapshots: crvUsdSnapshots,
+        getBorrowRate: getSnapshotBorrowRate,
+        getRebasingYield: getSnapshotCollateralRebasingYieldRate,
+      }),
+    [borrowApr, crvUsdSnapshots],
+  )
 
   /** Loading checks include a null check on value to cover the gap where legacy stores have no loading state yet.
    * TODO: remove once migrated to direct llamalend-js queries */
@@ -125,12 +133,12 @@ export const useLoanPositionDetails = ({
     },
     borrowRate: {
       rate: borrowApr,
-      rebasingYield: collateralRebasingYield ?? null,
-      averageRate: averageRate,
-      averageRebasingYield: averageRebasingYield ?? null,
-      averageRateLabel: averageMultiplierString,
-      totalBorrowRate: borrowApr ? borrowApr - (collateralRebasingYield ?? 0) : null,
-      totalAverageBorrowRate: averageRate == null ? null : averageRate - (averageRebasingYield ?? 0),
+      rebasingYield: collateralRebasingYieldApr ?? null,
+      averageRate: averageBorrowApr,
+      averageRebasingYield: averageRebasingYieldApr ?? null,
+      averageRateLabel: `${LAST_MONTH}D`,
+      totalBorrowRate: totalBorrowApr,
+      totalAverageBorrowRate: totalAverageBorrowApr,
       extraRewards: campaigns,
       loading: borrowApr == null || isSnapshotsLoading || isMarketRatesLoading || !isHydrated,
     },

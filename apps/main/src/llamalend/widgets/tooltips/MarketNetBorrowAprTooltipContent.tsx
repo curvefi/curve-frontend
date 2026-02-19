@@ -52,7 +52,7 @@ export const MarketNetBorrowAprTooltipContent = ({
       <TooltipItems secondary>
         <TooltipItem title={t`Borrow APR`}>{formatPercent(borrowRate ?? 0)}</TooltipItem>
         <TooltipItem variant="subItem" loading={isLoading} title={`${periodLabel} ${t`Average`}`}>
-          {averageRate ? formatPercent(averageRate) : 'N/A'}
+          {averageRate == null ? 'N/A' : formatPercent(averageRate)}
         </TooltipItem>
       </TooltipItems>
 
@@ -84,7 +84,7 @@ export const MarketNetBorrowAprTooltipContent = ({
             {formatPercent(totalBorrowRate)}
           </TooltipItem>
           <TooltipItem variant="subItem" loading={isLoading} title={`${periodLabel} ${t`Average`}`}>
-            {totalAverageBorrowRate ? formatPercent(totalAverageBorrowRate) : 'N/A'}
+            {totalAverageBorrowRate == null ? 'N/A' : formatPercent(totalAverageBorrowRate)}
           </TooltipItem>
         </TooltipItems>
       )}

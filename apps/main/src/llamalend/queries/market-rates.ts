@@ -6,6 +6,7 @@ import type { MarketQuery } from '@ui-kit/lib/model'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { llamaApiValidationSuite } from '@ui-kit/lib/model/query/curve-api-validation'
 import { decimal, Decimal } from '@ui-kit/utils'
+import { getMintBorrowRates } from '../rates.utils'
 
 type MarketRateQuery = MarketQuery<IChainId>
 type MarketRateParams = FieldsOf<MarketRateQuery>
@@ -39,7 +40,7 @@ export const { useQuery: useMarketRates, invalidate: invalidateMarketRates } = q
     return convertRates(
       market instanceof LendMarketTemplate
         ? await market.stats.rates(isGetter, useAPI)
-        : { borrowApr: (await market.stats.parameters()).rate },
+        : getMintBorrowRates((await market.stats.parameters()).rate),
     )
   },
   validationSuite: llamaApiValidationSuite,
