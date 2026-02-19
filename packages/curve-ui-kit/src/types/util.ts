@@ -63,8 +63,8 @@ export const mapQuery = <TSource, TResult>(
   { data, isLoading, error }: Query<TSource>,
   selector: (data: TSource) => TResult | null | undefined,
 ) =>
-  ({
+  q({
     isLoading,
     data: data == null ? undefined : (selector(data) ?? undefined),
     error,
-  }) as QueryProp<TResult>
+  })
