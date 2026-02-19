@@ -96,12 +96,16 @@ export const useBorrowPositionDetails = ({
     totalRate: totalBorrowRate,
     averageTotalRate: totalAverageBorrowRate,
     rebasingYield: rebasingYieldApr,
-  } = getBorrowRateMetrics({
-    borrowRate: borrowApr,
-    snapshots: lendSnapshots,
-    getBorrowRate: getSnapshotBorrowRate,
-    getRebasingYield: getSnapshotCollateralRebasingYieldRate,
-  })
+  } = useMemo(
+    () =>
+      getBorrowRateMetrics({
+        borrowRate: borrowApr,
+        snapshots: lendSnapshots,
+        getBorrowRate: getSnapshotBorrowRate,
+        getRebasingYield: getSnapshotCollateralRebasingYieldRate,
+      }),
+    [borrowApr, lendSnapshots],
+  )
 
   const healthValue = health ? Number(health) : null
   const liquidationRangeValue = liquidationPrices ? liquidationPrices.map(Number) : null

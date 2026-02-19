@@ -110,12 +110,16 @@ export const useLoanPositionDetails = ({
     totalRate: totalBorrowApr,
     averageTotalRate: totalAverageBorrowApr,
     rebasingYield: collateralRebasingYieldApr,
-  } = getBorrowRateMetrics({
-    borrowRate: borrowApr,
-    snapshots: crvUsdSnapshots,
-    getBorrowRate: getSnapshotBorrowRate,
-    getRebasingYield: getSnapshotCollateralRebasingYieldRate,
-  })
+  } = useMemo(
+    () =>
+      getBorrowRateMetrics({
+        borrowRate: borrowApr,
+        snapshots: crvUsdSnapshots,
+        getBorrowRate: getSnapshotBorrowRate,
+        getRebasingYield: getSnapshotCollateralRebasingYieldRate,
+      }),
+    [borrowApr, crvUsdSnapshots],
+  )
 
   /** Loading checks include a null check on value to cover the gap where legacy stores have no loading state yet.
    * TODO: remove once migrated to direct llamalend-js queries */

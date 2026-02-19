@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import type { MarketDetailsProps } from '@/llamalend/features/market-details'
 import { useMarketRates } from '@/llamalend/queries/market-rates'
 import {
@@ -58,12 +59,16 @@ export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetails
     totalRate: totalBorrowRate,
     averageTotalRate: totalAverageBorrowRate,
     rebasingYield: collateralRebasingYieldApr,
-  } = getBorrowRateMetrics({
-    borrowRate: borrowApr,
-    snapshots: crvUsdSnapshots,
-    getBorrowRate: getSnapshotBorrowRate,
-    getRebasingYield: getSnapshotCollateralRebasingYieldRate,
-  })
+  } = useMemo(
+    () =>
+      getBorrowRateMetrics({
+        borrowRate: borrowApr,
+        snapshots: crvUsdSnapshots,
+        getBorrowRate: getSnapshotBorrowRate,
+        getRebasingYield: getSnapshotCollateralRebasingYieldRate,
+      }),
+    [borrowApr, crvUsdSnapshots],
+  )
 
   const availableLiquidityValue = loanDetails?.capAndAvailable?.available
     ? Number(loanDetails.capAndAvailable.available)
