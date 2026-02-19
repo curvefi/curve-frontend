@@ -113,11 +113,7 @@ export const useOhlcChartState = ({ chainId, market, llammaId, previewPrices }: 
     return undefined
   }, [chartOraclePoolOhlc.oraclePriceData, chartLlammaOhlc.oraclePriceData])
 
-  // Determine which new liquidation prices to show (priority order)
-  const newLiqPrices = useMemo(() => {
-    if (previewPrices?.length) return previewPrices
-    return storePreviewPrices
-  }, [previewPrices, storePreviewPrices])
+  const newLiqPrices = previewPrices ?? storePreviewPrices
 
   const { oraclePriceVisible, liqRangeCurrentVisible, liqRangeNewVisible, legendSets } = useChartLegendToggles({
     hasNewLiquidationRange: !!newLiqPrices,

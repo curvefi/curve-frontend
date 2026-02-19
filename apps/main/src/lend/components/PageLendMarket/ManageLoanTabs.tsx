@@ -17,29 +17,7 @@ import { useManageLoanMuiForm, useManageSoftLiquidation } from '@ui-kit/hooks/us
 import { t } from '@ui-kit/lib/i18n'
 import { type FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
 
-type ManageLoanProps = PageContentProps<MarketUrlParams> & {
-  onPricesUpdated: (prices: string[] | undefined) => void
-}
-
-const BorrowMoreTab = ({ rChainId, market, isLoaded, onPricesUpdated }: ManageLoanProps) => (
-  <BorrowMoreForm
-    networks={networks}
-    chainId={rChainId}
-    market={market}
-    enabled={isLoaded}
-    onPricesUpdated={onPricesUpdated}
-  />
-)
-
-const RepayTab = ({ rChainId, market, isLoaded, onPricesUpdated }: ManageLoanProps) => (
-  <RepayForm
-    networks={networks}
-    chainId={rChainId}
-    market={market}
-    enabled={isLoaded}
-    onPricesUpdated={onPricesUpdated}
-  />
-)
+type ManageLoanProps = PageContentProps<MarketUrlParams> & { onPricesUpdated: (prices: string[] | undefined) => void }
 
 const LendManageLegacyMenu = [
   {
@@ -71,12 +49,28 @@ const LendManageNewMenu = [
   {
     value: 'loan-increase',
     label: t`Borrow`,
-    component: BorrowMoreTab,
+    component: ({ rChainId, market, isLoaded, onPricesUpdated }: ManageLoanProps) => (
+      <BorrowMoreForm
+        networks={networks}
+        chainId={rChainId}
+        market={market}
+        enabled={isLoaded}
+        onPricesUpdated={onPricesUpdated}
+      />
+    ),
   },
   {
     value: 'loan-decrease',
     label: t`Repay`,
-    component: RepayTab,
+    component: ({ rChainId, market, isLoaded, onPricesUpdated }: ManageLoanProps) => (
+      <RepayForm
+        networks={networks}
+        chainId={rChainId}
+        market={market}
+        enabled={isLoaded}
+        onPricesUpdated={onPricesUpdated}
+      />
+    ),
   },
   {
     value: 'collateral',

@@ -27,8 +27,8 @@ import { useBorrowMoreForm } from '../hooks/useBorrowMoreForm'
 
 const useFormSync = (
   params: BorrowMoreParams,
-  enabled: boolean | undefined,
   onPricesUpdated: (prices: string[] | undefined) => void,
+  enabled: boolean | undefined,
 ) => {
   const { data } = useBorrowMorePrices(params, enabled)
   useEffect(() => {
@@ -86,7 +86,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     [form],
   )
 
-  useFormSync(params, enabled, onPricesUpdated)
+  useFormSync(params, onPricesUpdated, enabled)
 
   return (
     <Form

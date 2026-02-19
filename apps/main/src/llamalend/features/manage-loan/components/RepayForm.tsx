@@ -27,8 +27,8 @@ import { useTokenAmountConversion } from '../hooks/useTokenAmountConversion'
 
 const useFormSync = (
   params: RepayParams,
-  enabled: boolean | undefined,
   onPricesUpdated: (prices: string[] | undefined) => void,
+  enabled: boolean | undefined,
 ) => {
   const { data } = useRepayPrices(params, enabled)
   useEffect(() => {
@@ -126,7 +126,7 @@ export const RepayForm = <ChainId extends IChainId>({
     t`Max repay amount:`,
   ).join(' ')
 
-  useFormSync(params, enabled, onPricesUpdated)
+  useFormSync(params, onPricesUpdated, enabled)
 
   useEffect(
     () => () => {
