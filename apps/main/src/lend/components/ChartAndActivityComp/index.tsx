@@ -7,12 +7,14 @@ import { useBandsData } from '@/llamalend/features/bands-chart/hooks/useBandsDat
 import { ChartAndActivityLayout } from '@/llamalend/widgets/ChartAndActivityLayout'
 import type { Address, Chain } from '@curvefi/prices-api'
 import { type Token } from '@ui-kit/features/activity-table'
+import type { Range } from '@ui-kit/types/util'
+import type { Decimal } from '@ui-kit/utils'
 
 type ChartAndActivityCompProps = {
   rChainId: ChainId
   rOwmId: string
   api: Api | undefined
-  previewPrices: string[] | undefined
+  previewPrices: Range<Decimal> | undefined
 }
 
 export const ChartAndActivityComp = ({ rChainId, rOwmId, api, previewPrices }: ChartAndActivityCompProps) => {

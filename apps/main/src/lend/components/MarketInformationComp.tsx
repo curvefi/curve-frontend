@@ -10,6 +10,8 @@ import { getLib } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNewBandsChart, useIntegratedLlamaHeader } from '@ui-kit/hooks/useFeatureFlags'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import type { Range } from '@ui-kit/types/util'
+import type { Decimal } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -17,7 +19,7 @@ type MarketInformationCompProps = {
   pageProps: PageContentProps
   loanExists: boolean | undefined
   type: 'borrow' | 'supply'
-  previewPrices?: string[] | undefined
+  previewPrices?: Range<Decimal> | undefined
 }
 
 /**

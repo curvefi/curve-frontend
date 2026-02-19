@@ -34,6 +34,8 @@ import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import type { Range } from '@ui-kit/types/util'
+import type { Decimal } from '@ui-kit/utils'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
 
 const { Spacing } = SizesAndSpaces
@@ -80,7 +82,7 @@ export const LendMarketPage = () => {
   })
 
   const [isLoaded, setLoaded] = useState(false)
-  const [previewPrices, onPricesUpdated] = useState<string[] | undefined>(undefined)
+  const [previewPrices, onPricesUpdated] = useState<Range<Decimal> | undefined>(undefined)
 
   const borrowPositionDetails = useBorrowPositionDetails({ chainId, market: market, marketId })
 

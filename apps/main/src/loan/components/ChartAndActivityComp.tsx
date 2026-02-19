@@ -7,12 +7,14 @@ import { ChainId, Llamma } from '@/loan/types/loan.types'
 import type { Address, Chain } from '@curvefi/prices-api'
 import { type Token } from '@ui-kit/features/activity-table'
 import { useCurve } from '@ui-kit/features/connect-wallet'
+import type { Range } from '@ui-kit/types/util'
+import type { Decimal } from '@ui-kit/utils'
 
 type ChartAndActivityCompProps = {
   chainId: ChainId
   market: Llamma | null
   llammaId: string
-  previewPrices: string[] | undefined
+  previewPrices: Range<Decimal> | undefined
 }
 
 export const ChartAndActivityComp = ({ chainId, market, llammaId, previewPrices }: ChartAndActivityCompProps) => {

@@ -11,6 +11,8 @@ import { useNewBandsChart, useIntegratedLlamaHeader } from '@ui-kit/hooks/useFea
 import { t } from '@ui-kit/lib/i18n'
 import { AddressActionInfo } from '@ui-kit/shared/ui/AddressActionInfo'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import type { Range } from '@ui-kit/types/util'
+import type { Decimal } from '@ui-kit/utils'
 import { networks } from '../networks'
 
 const { Spacing } = SizesAndSpaces
@@ -20,7 +22,7 @@ type MarketInformationCompProps = {
   marketId: string
   chainId: ChainId
   page?: 'create' | 'manage'
-  previewPrices: string[] | undefined
+  previewPrices: Range<Decimal> | undefined
 }
 
 /**

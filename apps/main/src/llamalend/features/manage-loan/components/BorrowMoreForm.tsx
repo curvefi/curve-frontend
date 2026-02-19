@@ -17,8 +17,9 @@ import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
 import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
-import { q } from '@ui-kit/types/util'
+import { q, type Range } from '@ui-kit/types/util'
 import { isDevelopment, joinButtonText } from '@ui-kit/utils'
+import type { Decimal } from '@ui-kit/utils'
 import { updateForm } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts, HighPriceImpactAlert } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
@@ -27,14 +28,14 @@ import { useBorrowMoreForm } from '../hooks/useBorrowMoreForm'
 
 const useFormSync = (
   params: BorrowMoreParams,
-  onPricesUpdated: (prices: string[] | undefined) => void,
+  onPricesUpdated: (prices: Range<Decimal> | undefined) => void,
   enabled: boolean | undefined,
 ) => {
   const { data } = useBorrowMorePrices(params, enabled)
   useEffect(() => {
-    onPricesUpdated(data)
+    onPricesUpdated(data as Range<Decimal> | undefined)
   }, [onPricesUpdated, data])
-  useEffect(() => () => onPricesUpdated(undefined), [onPricesUpdated])
+  useEffect(() => () => onPricesUpdated(undefined), [onPricesUpdated]) // clear prices on unmount to avoid stale chart
 }
 
 export const BorrowMoreForm = <ChainId extends IChainId>({
@@ -52,7 +53,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
   enabled?: boolean
   onBorrowedMore?: OnBorrowedMore
   fromWallet?: boolean
-  onPricesUpdated: (prices: string[] | undefined) => void
+  onPricesUpdated: (prices: Range<Decimal> | undefined) => void
 }) => {
   const network = networks[chainId]
   const {

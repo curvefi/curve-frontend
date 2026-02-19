@@ -13,6 +13,8 @@ import {
 import type { OhlcChartProps } from '@ui-kit/features/candle-chart/ChartWrapper'
 import { DEFAULT_CHART_HEIGHT } from '@ui-kit/features/candle-chart/constants'
 import { getThreeHundredResultsAgo, subtractTimeUnit } from '@ui-kit/features/candle-chart/utils'
+import type { Range } from '@ui-kit/types/util'
+import type { Decimal } from '@ui-kit/utils'
 
 export type LlammaLiquidityCoins = ReturnType<typeof getTokens> | undefined | null
 
@@ -20,10 +22,10 @@ type OhlcChartStateProps = {
   chainId: ChainId
   market: Llamma | null
   llammaId: string
-  previewPrices: string[] | undefined
+  previewPrices: Range<Decimal> | undefined
 }
 
-const useLegacyChartPrices = (): string[] | undefined => {
+const useLegacyChartPrices = () => {
   const increaseActiveKey = useStore((state) => state.loanIncrease.activeKey)
   const decreaseActiveKey = useStore((state) => state.loanDecrease.activeKey)
   const deleverageActiveKey = useStore((state) => state.loanDeleverage.activeKey)
@@ -60,7 +62,7 @@ const useLegacyChartPrices = (): string[] | undefined => {
     increaseLoanPrices,
     formValues.n,
     liqRangesMapper,
-  ])
+  ]) as Range<Decimal>
 }
 
 export const useOhlcChartState = ({ chainId, market, llammaId, previewPrices }: OhlcChartStateProps) => {

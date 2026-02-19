@@ -8,10 +8,12 @@ import { networks } from '@/loan/networks'
 import { useStore } from '@/loan/store/useStore'
 import { useCreateLoanMuiForm } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
+import type { Range } from '@ui-kit/types/util'
+import type { Decimal } from '@ui-kit/utils'
 import { FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
 
 type MintCreateTabsProps = PageLoanCreateProps & {
-  onPricesUpdated: (prices: string[] | undefined) => void
+  onPricesUpdated: (prices: Range<Decimal> | undefined) => void
 }
 
 function CreateLoanTab({ market, curve, rChainId, onPricesUpdated }: MintCreateTabsProps) {

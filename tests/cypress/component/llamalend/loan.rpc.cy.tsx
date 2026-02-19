@@ -3,7 +3,6 @@ import { useMemo } from 'react'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 import { prefetchMarkets } from '@/lend/entities/chain/chain-query'
 import { CreateLoanForm } from '@/llamalend/features/borrow/components/CreateLoanForm'
-import type { OnCreateLoanFormUpdate } from '@/llamalend/features/borrow/types'
 import { BorrowMoreForm } from '@/llamalend/features/manage-loan/components/BorrowMoreForm'
 import { RepayForm } from '@/llamalend/features/manage-loan/components/RepayForm'
 import { getLlamaMarket } from '@/llamalend/llama.utils'
@@ -38,9 +37,12 @@ import Skeleton from '@mui/material/Skeleton'
 import { useCurve } from '@ui-kit/features/connect-wallet/lib/CurveContext'
 import { CurveProvider } from '@ui-kit/features/connect-wallet/lib/CurveProvider'
 import { LlamaMarketType } from '@ui-kit/types/market'
-import { CRVUSD_ADDRESS, Decimal } from '@ui-kit/utils'
+import type { Range } from '@ui-kit/types/util'
+import { CRVUSD_ADDRESS } from '@ui-kit/utils'
+import type { Decimal } from '@ui-kit/utils'
 
-const onUpdate: OnCreateLoanFormUpdate = async (form) => console.info('form updated', JSON.stringify(form))
+const onPricesUpdated = async (prices: Range<Decimal> | undefined) =>
+  console.info('prices updated', JSON.stringify(prices))
 
 const prefetch = () => prefetchMarkets({})
 
@@ -95,7 +97,7 @@ recordValues(LlamaMarketType)
               market={market}
               networks={networks}
               chainId={chainId}
-              onUpdate={onUpdate}
+              onPricesUpdated={onPricesUpdated}
               onCreated={onCreated}
             />
           ) : tab === 'borrow-more' ? (
@@ -105,9 +107,17 @@ recordValues(LlamaMarketType)
               chainId={chainId}
               enabled
               onBorrowedMore={onBorrowedMore}
+              onPricesUpdated={onPricesUpdated}
             />
           ) : (
-            <RepayForm market={market} networks={networks} chainId={chainId} enabled onRepaid={onRepaid} />
+            <RepayForm
+              market={market}
+              networks={networks}
+              chainId={chainId}
+              enabled
+              onRepaid={onRepaid}
+              onPricesUpdated={onPricesUpdated}
+            />
           )
         }
 
