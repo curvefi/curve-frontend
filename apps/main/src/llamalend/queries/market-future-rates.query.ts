@@ -8,8 +8,8 @@ import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { type MarketQuery } from '@ui-kit/lib/model'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
-import { decimal, type Decimal } from '@ui-kit/utils'
-import { getMintBorrowRates } from '../rates.utils'
+import { type Decimal } from '@ui-kit/utils'
+import { convertRates } from '../rates.utils'
 
 type BorrowApyQuery = MarketQuery<IChainId> & { debt: Decimal }
 type BorrowFutureApyParams = FieldsOf<BorrowApyQuery>
@@ -17,33 +17,14 @@ type BorrowFutureApyParams = FieldsOf<BorrowApyQuery>
 type SupplyApyQuery = MarketQuery<IChainId> & { reserves: Decimal }
 type SupplyFutureApyParams = FieldsOf<SupplyApyQuery>
 
-export type BorrowFutureRatesResult = {
-  borrowApr: Decimal
-  borrowApy?: Decimal
-  lendApr?: Decimal
-  lendApy?: Decimal
-}
-
 const RESERVES = '0' // Used in borrow scenarios where only debt changes, reserves stay at 0
 const DEBT = '0' // Used in supply scenarios where only reserves change, debt stays at 0
-
-const convertRates = ({
-  borrowApr,
-  borrowApy,
-  lendApr,
-  lendApy,
-}: { [K in keyof BorrowFutureRatesResult]: string }): BorrowFutureRatesResult => ({
-  borrowApr: decimal(borrowApr)!,
-  borrowApy: decimal(borrowApy),
-  lendApy: decimal(lendApy),
-  lendApr: decimal(lendApr),
-})
 
 const fetchFutureRates = async (marketId: string, reserves: Decimal, debt: Decimal) => {
   const market = getLlamaMarket(marketId)
   return market instanceof LendMarketTemplate
     ? convertRates(await market.stats.futureRates(reserves, debt))
-    : convertRates(getMintBorrowRates((await market.stats.parameters()).future_rate))
+    : convertRates((await market.stats.parameters()).future_rates)
 }
 
 /** Calculates future borrow/lend rates when debt changes (e.g., borrowing more or repaying) - used for borrow operations */
