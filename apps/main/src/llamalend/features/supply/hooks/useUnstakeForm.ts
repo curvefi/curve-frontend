@@ -5,7 +5,7 @@ import { useConnection } from 'wagmi'
 import { getTokens, hasVault } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, LlamaNetwork } from '@/llamalend/llamalend.types'
 import { type UnstakeOptions, useUnstakeMutation } from '@/llamalend/mutations/unstake.mutation'
-import { useUserBalances } from '@/llamalend/queries/user-balances.query'
+import { useUserBalances } from '@/llamalend/queries/user'
 import {
   unstakeFormValidationSuite,
   UnstakeParams,

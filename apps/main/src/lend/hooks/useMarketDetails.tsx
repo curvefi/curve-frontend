@@ -37,6 +37,9 @@ export const useMarketDetails = ({
   const blockchainId = networks[chainId]?.id as Chain
   const { collateral_token, borrowed_token } = market ?? {}
   const { controller, vault } = market?.addresses ?? {}
+  // Query validation only checks param presence (chain/market/user). We still need `!market`
+  // because this hook runs before market metadata is available, and the UI reads market fields.
+  const isMarketMetadataLoading = !market || !isHydrated
 
   const {
     data: {
@@ -143,13 +146,13 @@ export const useMarketDetails = ({
       total: collateralAmount ?? null,
       totalUsdValue: collateralAmount && collateralUsdRate ? collateralAmount * collateralUsdRate : null,
       usdRate: collateralUsdRate ?? null,
-      loading: isMarketDetailsLoading.marketCollateralAmounts || collateralUsdRateLoading || !isHydrated,
+      loading: isMarketDetailsLoading.marketCollateralAmounts || collateralUsdRateLoading || isMarketMetadataLoading,
     },
     borrowToken: {
       symbol: borrowed_token?.symbol ?? null,
       tokenAddress: borrowed_token?.address,
       usdRate: borrowedUsdRate ?? null,
-      loading: isMarketDetailsLoading.marketCollateralAmounts || borrowedUsdRateLoading || !isHydrated,
+      loading: isMarketDetailsLoading.marketCollateralAmounts || borrowedUsdRateLoading || isMarketMetadataLoading,
     },
     borrowRate: {
       rate: borrowApr,
@@ -160,7 +163,7 @@ export const useMarketDetails = ({
       totalBorrowRate: totalBorrowApr,
       totalAverageBorrowRate: totalAverageBorrowApr,
       extraRewards: campaigns,
-      loading: isSnapshotsLoading || isMarketDetailsLoading.marketRates || !isHydrated,
+      loading: isSnapshotsLoading || isMarketDetailsLoading.marketRates || isMarketMetadataLoading,
     },
     supplyRate: {
       rate: supplyApy,
@@ -190,17 +193,17 @@ export const useMarketDetails = ({
         isSnapshotsLoading ||
         isMarketDetailsLoading.marketRates ||
         isMarketDetailsLoading.marketOnChainRewards ||
-        !isHydrated,
+        isMarketMetadataLoading,
     },
     availableLiquidity: {
       value: available ?? null,
       max: cap ?? null,
-      loading: isMarketDetailsLoading.marketCapAndAvailable || !isHydrated,
+      loading: isMarketDetailsLoading.marketCapAndAvailable || isMarketMetadataLoading,
     },
     maxLeverage: maxLeverage
       ? {
           value: Number(maxLeverage),
-          loading: isMarketDetailsLoading.marketMaxLeverage || !isHydrated,
+          loading: isMarketDetailsLoading.marketMaxLeverage || isMarketMetadataLoading,
         }
       : undefined,
   }

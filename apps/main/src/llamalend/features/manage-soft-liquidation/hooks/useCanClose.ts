@@ -1,6 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { useUserBalances } from '@/llamalend/queries/user-balances.query'
-import { useUserState } from '@/llamalend/queries/user-state.query'
+import { useUserBalances, useUserState } from '@/llamalend/queries/user'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { UserMarketParams } from '@ui-kit/lib/model'
 import type { Query } from '@ui-kit/types/util'
