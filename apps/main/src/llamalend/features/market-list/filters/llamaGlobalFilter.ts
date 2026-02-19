@@ -1,14 +1,18 @@
 import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
-import { filterByText } from '@ui-kit/shared/ui/DataTable/filters'
+import type { DeepKeys } from '@tanstack/table-core'
+import { useFuzzyFilterFn } from '@ui-kit/hooks/useFuzzySearch'
 
-/** Search filter for market lists */
-export const llamaGlobalFilterFn = filterByText<LlamaMarket>(
+const MARKET_KEYS: DeepKeys<LlamaMarket>[] = [
+  'assets.borrowed.symbol',
+  'assets.collateral.symbol',
+  'assets.borrowed.address',
+  'assets.collateral.address',
+  'type',
   'controllerAddress',
   'ammAddress',
   'vaultAddress',
-  'assets.borrowed.address',
-  'assets.borrowed.symbol',
-  'assets.collateral.address',
-  'assets.collateral.symbol',
-  'type',
-)
+]
+
+/** Search filter for market lists */
+export const useLlamaGlobalFilterFn = (data: readonly LlamaMarket[], filterValue: string) =>
+  useFuzzyFilterFn(data, filterValue, MARKET_KEYS)

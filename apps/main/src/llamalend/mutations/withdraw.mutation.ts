@@ -16,7 +16,7 @@ import { formatTokenAmounts } from '../llama.utils'
 export type WithdrawOptions = {
   marketId: string | undefined
   network: { id: LlamaNetworkId; chainId: LlamaChainId }
-  onWithdrawn?: OnTransactionSuccess<WithdrawMutation>
+  onSuccess?: OnTransactionSuccess<WithdrawMutation>
   onReset: () => void
   userAddress: Address | undefined
 }
@@ -25,7 +25,7 @@ export const useWithdrawMutation = ({
   network,
   network: { chainId },
   marketId,
-  onWithdrawn,
+  onSuccess,
   onReset,
   userAddress,
 }: WithdrawOptions) => {
@@ -42,7 +42,7 @@ export const useWithdrawMutation = ({
       t`Withdrawing... ${formatTokenAmounts(market, { userBorrowed: mutation.withdrawAmount })}`,
     successMessage: (mutation, { market }) =>
       t`Withdraw successful! ${formatTokenAmounts(market, { userBorrowed: mutation.withdrawAmount })}`,
-    onSuccess: onWithdrawn,
+    onSuccess,
     onReset,
   })
 

@@ -21,16 +21,16 @@ const DEFAULT_BAND_CHART_DATA = {
 }
 
 export const ChartUserBands = ({
-  llammaId,
-  llamma,
+  marketId,
+  market,
   selectorMenu,
 }: {
-  llammaId: string
-  llamma: Llamma | null
+  marketId: string
+  market: Llamma | null
   selectorMenu?: ReactNode
 }) => {
-  const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
-  const { userBandsBalances, userLiquidationBand } = useUserLoanDetails(llammaId) ?? {}
+  const loanDetails = useStore((state) => state.loans.detailsMapper[marketId])
+  const { userBandsBalances, userLiquidationBand } = useUserLoanDetails(marketId) ?? {}
 
   const [brushIndex, setBrushIndex] = useState<BrushStartEndIndex>({
     startIndex: undefined,
@@ -80,7 +80,7 @@ export const ChartUserBands = ({
     <ChartBandBalances
       brushIndex={brushIndex}
       data={chartBandBalancesData}
-      market={llamma}
+      market={market}
       oraclePrice={oraclePrice}
       oraclePriceBand={oraclePriceBand}
       showLiquidationIndicator={!!userLiquidationBand}

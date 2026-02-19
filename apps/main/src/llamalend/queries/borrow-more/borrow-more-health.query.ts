@@ -50,7 +50,7 @@ export const { useQuery: useBorrowMoreHealth } = queryFactory({
     }
   },
   staleTime: '1m',
-  validationSuite: borrowMoreValidationSuite({ leverageRequired: false }),
+  validationSuite: borrowMoreValidationSuite({ debtRequired: true, leverageRequired: false }),
   dependencies: (params) =>
     isLeverageBorrowMore(params.marketId, params.leverageEnabled) ? [getBorrowMoreExpectedCollateralKey(params)] : [],
 })

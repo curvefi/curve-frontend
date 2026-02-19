@@ -12,8 +12,7 @@ import { getRepayHealthOptions } from '@/llamalend/queries/repay/repay-health.qu
 import { useRepayIsApproved } from '@/llamalend/queries/repay/repay-is-approved.query'
 import { useRepayPriceImpact } from '@/llamalend/queries/repay/repay-price-impact.query'
 import { useRepayPrices } from '@/llamalend/queries/repay/repay-prices.query'
-import { getUserHealthOptions } from '@/llamalend/queries/user-health.query'
-import { useUserState } from '@/llamalend/queries/user-state.query'
+import { getUserHealthOptions, useUserState } from '@/llamalend/queries/user'
 import type { RepayParams } from '@/llamalend/queries/validation/manage-loan.types'
 import type { RepayForm } from '@/llamalend/queries/validation/manage-loan.validation'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
@@ -44,7 +43,7 @@ function useRepayRemainingDebt<ChainId extends IChainId>(
   const userStateQuery = useUserState(params, enabled)
   const expectedBorrowedQuery = useRepayExpectedBorrowed(params, enabled && swapRequired)
   const tokenSymbol = borrowToken?.symbol
-  return isFull
+  return isFull && userBorrowed // when userBorrowed isn't set, the isFull query is disabled
     ? { data: { value: '0', tokenSymbol }, isLoading: false, error: null }
     : swapRequired
       ? mapQuery(expectedBorrowedQuery, (d) => ({ value: d.totalBorrowed, tokenSymbol }))
@@ -108,9 +107,9 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
         isOpen,
       )}
       collateralSymbol={collateralToken?.symbol}
-      leverageEnabled={hasLeverage}
       {...(hasLeverage &&
         swapRequired && {
+          leverageEnabled: true,
           slippage,
           onSlippageChange,
           priceImpact,

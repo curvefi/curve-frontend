@@ -4,7 +4,7 @@ import { useOneWayMarket } from '@/lend/entities/chain'
 import { useStore } from '@/lend/store/useStore'
 import { ChainId } from '@/lend/types/lend.types'
 import { getTokens } from '@/llamalend/llama.utils'
-import { useUserPrices } from '@/llamalend/queries/user-prices.query'
+import { useUserPrices } from '@/llamalend/queries/user'
 import {
   useLlammaChartSelections,
   useChartTimeSettings,

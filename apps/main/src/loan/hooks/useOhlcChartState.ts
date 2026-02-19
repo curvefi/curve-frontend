@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo } from 'react'
 import { useConnection } from 'wagmi'
 import { getTokens } from '@/llamalend/llama.utils'
-import { useUserPrices } from '@/llamalend/queries/user-prices.query'
+import { useUserPrices } from '@/llamalend/queries/user'
 import { useStore } from '@/loan/store/useStore'
 import { Llamma, ChainId } from '@/loan/types/loan.types'
 import {
@@ -19,14 +19,14 @@ export type LlammaLiquidityCoins = ReturnType<typeof getTokens> | undefined | nu
 type OhlcChartStateProps = {
   chainId: ChainId
   market: Llamma | null
-  llammaId: string
+  marketId: string
 }
 
-export const useOhlcChartState = ({ chainId, market, llammaId }: OhlcChartStateProps) => {
+export const useOhlcChartState = ({ chainId, market, marketId }: OhlcChartStateProps) => {
   const { address: userAddress } = useConnection()
   const { data: userPrices } = useUserPrices({
     chainId,
-    marketId: llammaId,
+    marketId,
     userAddress,
   })
   const poolAddress = market?.address ?? ''
@@ -53,7 +53,7 @@ export const useOhlcChartState = ({ chainId, market, llammaId }: OhlcChartStateP
   const fetchLlammaOhlcData = useStore((state) => state.ohlcCharts.fetchLlammaOhlcData)
   const fetchOracleOhlcData = useStore((state) => state.ohlcCharts.fetchOracleOhlcData)
   const fetchMoreData = useStore((state) => state.ohlcCharts.fetchMoreData)
-  const priceInfo = useStore((state) => state.loans.detailsMapper[llammaId]?.priceInfo ?? null)
+  const priceInfo = useStore((state) => state.loans.detailsMapper[marketId]?.priceInfo ?? null)
 
   const { oraclePrice } = priceInfo ?? {}
 
@@ -138,7 +138,7 @@ export const useOhlcChartState = ({ chainId, market, llammaId }: OhlcChartStateP
     )
     void fetchLlammaOhlcData(
       chainId,
-      llammaId,
+      marketId,
       poolAddress,
       chartInterval,
       timeUnit,
@@ -154,7 +154,7 @@ export const useOhlcChartState = ({ chainId, market, llammaId }: OhlcChartStateP
     fetchOracleOhlcData,
     poolAddress,
     chainId,
-    llammaId,
+    marketId,
     timeUnit,
   ])
 
