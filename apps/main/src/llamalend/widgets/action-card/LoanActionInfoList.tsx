@@ -80,17 +80,17 @@ export const LoanActionInfoList = ({
   const prevCollateral = userState?.data?.collateral
   const isHighImpact = priceImpact?.data != null && slippage != null && priceImpact.data > Number(slippage)
 
-  const renderDebtActionInfo = () =>
-    (debt || prevDebt) && (
-      <ActionInfo
-        label={t`Debt`}
-        value={debt?.data && formatNumber(debt.data.value, { abbreviate: false })}
-        prevValue={prevDebt && formatNumber(prevDebt, { abbreviate: false })}
-        {...combineQueryState(debt, userState)}
-        valueRight={debt?.data?.tokenSymbol}
-        testId="borrow-debt"
-      />
-    )
+  const debtActionInfo = (debt || prevDebt) && (
+    <ActionInfo
+      label={t`Debt`}
+      value={debt?.data && formatNumber(debt.data.value, { abbreviate: false })}
+      prevValue={prevDebt && formatNumber(prevDebt, { abbreviate: false })}
+      {...combineQueryState(debt, userState)}
+      valueRight={debt?.data?.tokenSymbol}
+      size="small"
+      testId="borrow-debt"
+    />
+  )
   return (
     <ActionInfoCollapse isOpen={isOpen} testId="loan-action-info-list">
       <Stack sx={{ ...ACTION_INFO_GROUP_SX }}>
@@ -101,6 +101,7 @@ export const LoanActionInfoList = ({
               value={rates.data?.borrowApr && formatPercent(rates.data.borrowApr)}
               prevValue={prevRates?.data?.borrowApr && formatPercent(prevRates.data.borrowApr)}
               {...combineQueryState(rates, prevRates)}
+              size="small"
               testId="borrow-apr"
             />
           )}
@@ -109,6 +110,7 @@ export const LoanActionInfoList = ({
               label={t`Net borrow APR`}
               value={netBorrowApr.data && formatPercent(netBorrowApr.data)}
               {...combineQueryState(netBorrowApr)}
+              size="small"
               testId="borrow-net-apr"
             />
           )}
@@ -126,6 +128,7 @@ export const LoanActionInfoList = ({
               theme: useTheme(),
               isFullRepay,
             })}
+            size="small"
             testId="borrow-health"
           />
           {(loanToValue || prevLoanToValue) && (
@@ -138,6 +141,7 @@ export const LoanActionInfoList = ({
               value={loanToValue?.data && formatPercent(loanToValue.data)}
               prevValue={prevLoanToValue?.data && formatPercent(prevLoanToValue.data)}
               {...combineQueryState(loanToValue, prevLoanToValue)}
+              size="small"
               testId="borrow-ltv"
             />
           )}
@@ -148,6 +152,7 @@ export const LoanActionInfoList = ({
               valueRight={debt?.data?.tokenSymbol}
               error={prices.error}
               loading={prices.isLoading}
+              size="small"
               testId="borrow-price-range"
             />
           )}
@@ -160,21 +165,23 @@ export const LoanActionInfoList = ({
               prevValue={prevCollateral && formatNumber(prevCollateral, { abbreviate: false })}
               {...combineQueryState(collateral, userState)}
               valueRight={collateral?.data?.tokenSymbol ?? collateralSymbol}
+              size="small"
               testId="borrow-collateral"
             />
           )}
-          {!leverageEnabled && renderDebtActionInfo()}
+          {!leverageEnabled && debtActionInfo}
         </Stack>
       </Stack>
 
       {leverageEnabled && (
-        <Stack sx={{ ...ACTION_INFO_GROUP_SX }} data-testid="borrow-leverage-info-list">
+        <Stack data-testid="borrow-leverage-info-list">
           {(prevLeverageValue || leverageValue) && (
             <ActionInfo
               label={t`Leverage`}
               value={formatLeverage(leverageValue?.data ?? prevLeverageValue?.data)}
               prevValue={leverageValue?.data && prevLeverageValue?.data && formatLeverage(prevLeverageValue.data)}
               {...combineQueryState(leverageValue, prevLeverageValue)}
+              size="small"
               testId="borrow-leverage"
             />
           )}
@@ -188,6 +195,7 @@ export const LoanActionInfoList = ({
                 formatAmount(prevLeverageCollateral.data, collateralSymbol)
               }
               {...combineQueryState(leverageCollateral, prevLeverageCollateral)}
+              size="small"
               testId="borrow-leverage-collateral"
             />
           )}
@@ -201,10 +209,11 @@ export const LoanActionInfoList = ({
                 formatAmount(prevLeverageTotalCollateral.data, collateralSymbol)
               }
               {...combineQueryState(leverageTotalCollateral, prevLeverageTotalCollateral)}
+              size="small"
               testId="borrow-leverage-total-collateral"
             />
           )}
-          {renderDebtActionInfo()}
+          {debtActionInfo}
         </Stack>
       )}
 
@@ -219,6 +228,7 @@ export const LoanActionInfoList = ({
             {...(isHighImpact && { valueColor: 'error' })}
             error={priceImpact.error}
             loading={priceImpact.isLoading}
+            size="small"
             testId="borrow-price-impact"
           />
         )}

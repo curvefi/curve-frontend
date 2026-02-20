@@ -5,6 +5,7 @@ import { rootKeys } from '@ui-kit/lib/model/query/root-keys'
 import type { MarketQuery, MarketParams } from '@ui-kit/lib/model/query/root-keys'
 import { decimal } from '@ui-kit/utils'
 import { getLlamaMarket } from '../llama.utils'
+import { convertRates } from '../rates.utils'
 
 export const { useQuery: useMarketParameters } = queryFactory({
   queryKey: (params: MarketParams) => [...rootKeys.market(params), 'market-parameters'] as const,
@@ -20,8 +21,8 @@ export const { useQuery: useMarketParameters } = queryFactory({
       return {
         fee: decimal(parameters.fee),
         admin_fee: decimal(parameters.admin_fee),
-        rate: decimal(parameters.rate),
-        future_rate: decimal(parameters.future_rate),
+        rates: convertRates(parameters.rates),
+        future_rates: convertRates(parameters.future_rates),
         liquidation_discount: decimal(parameters.liquidation_discount),
         loan_discount: decimal(parameters.loan_discount),
         A: market.A,
