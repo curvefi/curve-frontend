@@ -2,7 +2,11 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "rootDir": ".",
-    "types": ["node", "vitest/globals"]
+    "types": ["node", "vitest/globals"],
+    "paths": {
+      "@curvefi/prices-api": ["../../packages/prices-api/src/index.ts"],
+      "@curvefi/prices-api/*": ["../../packages/prices-api/src/*"]
+    }
   },
   "include": ["src", "test"]
 }

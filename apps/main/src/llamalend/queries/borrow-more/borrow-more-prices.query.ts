@@ -45,7 +45,7 @@ export const { useQuery: useBorrowMorePrices } = queryFactory({
     })
     switch (type) {
       case 'zapV2':
-        return (await impl.borrowMoreExpectedMetrics(...args)).prices as Decimal[]
+        return (await impl.borrowMoreExpectedMetrics(...args)).prices as Range<Decimal>
       case 'V1':
       case 'V2':
         return (await impl.borrowMorePrices(...args)) as Range<Decimal>

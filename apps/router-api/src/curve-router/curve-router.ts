@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js'
-import { DEFAULT_DECIMALS } from 'curve-ui-kit/src/utils/units'
 import { FastifyBaseLogger } from 'fastify'
 import { Address, zeroAddress } from 'viem'
 import type { IRoute, IRouteStep } from '@curvefi/api/lib/interfaces'
@@ -63,8 +62,8 @@ function getWarnings(
   return notFalsy(isExchangeRateLow && 'low-exchange-rate', isHighSlippage && 'high-slippage')
 }
 
-const fromWei = (s: Decimal, decimals: number | undefined) =>
-  new BigNumber(s).dividedBy(decimals ?? DEFAULT_DECIMALS).toString() as Decimal
+const fromWei = (s: Decimal, decimals: number) =>
+  new BigNumber(s).dividedBy(new BigNumber(10).pow(decimals)).toString() as Decimal
 
 /**
  * Runs the router to get the optimal route and builds the response.
@@ -82,15 +81,11 @@ export async function buildCurveRouteResponse(
   } = query
 
   const curve = await loadCurve(chainId, log)
-  const [from, to] = await curve.getCoinsData([fromToken, toToken])
+  const decimals = curve.getNetworkConstants().DECIMALS
 
-  if (`${amountIn}${amountOut}`) {
-    throw new Error('This API has been converted to wei amounts, we must guarantee that old clients get errors!')
-  }
-
-  const outAmount = fromWei(amountOut ?? '0', to?.decimals)
+  const outAmount = fromWei(amountOut ?? '0', decimals[toToken.toLowerCase()] ?? decimals[toToken])
   const fromAmount = amountIn
-    ? fromWei(amountIn, from?.decimals)
+    ? fromWei(amountIn, decimals[fromToken.toLowerCase()] ?? decimals[fromToken])
     : ((await curve.router.required(fromToken, toToken, outAmount)) as Decimal)
   const { route: routes, output: toAmount } = await curve.router.getBestRouteAndOutput(fromToken, toToken, fromAmount)
   if (!routes.length) return []
