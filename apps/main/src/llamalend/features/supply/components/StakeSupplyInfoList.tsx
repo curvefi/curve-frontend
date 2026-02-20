@@ -2,19 +2,19 @@ import BigNumber from 'bignumber.js'
 import type { UseFormReturn } from 'react-hook-form'
 import type { Token } from '@/llamalend/features/borrow/types'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
-import { useMarketRates } from '@/llamalend/queries/market-rates'
+import { useMarketRates } from '@/llamalend/queries/market-rates.query'
 import { useStakeIsApproved } from '@/llamalend/queries/supply/supply-stake-approved.query'
 import { useStakeEstimateGas } from '@/llamalend/queries/supply/supply-stake-estimate-gas.query'
 import {
   useSharesToAssetsAmount,
   useUserStakedVaultSharesToAssetsAmount,
 } from '@/llamalend/queries/supply/supply-user-vault-amounts'
-import { useUserBalances } from '@/llamalend/queries/user-balances.query'
+import { useUserBalances } from '@/llamalend/queries/user'
 import type { StakeForm, StakeParams } from '@/llamalend/queries/validation/supply.validation'
 import { SupplyActionInfoList } from '@/llamalend/widgets/action-card/SupplyActionInfoList'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { t } from '@ui-kit/lib/i18n'
-import { mapQuery } from '@ui-kit/types/util'
+import { mapQuery, q } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
 import { isFormTouched } from '@ui-kit/utils/react-form.utils'
 
@@ -62,10 +62,10 @@ export function StakeSupplyInfoList<ChainId extends IChainId>({
       suppliedSymbol={tokens.borrowToken?.symbol}
       prevVaultShares={prevStakedShares}
       vaultShares={stakedShares}
-      prevAmountSupplied={prevAmountStaked}
+      prevAmountSupplied={q(prevAmountStaked)}
       amountSupplied={amountStaked}
       supplyApy={mapQuery(marketRates, (d) => d.lendApy)}
-      gas={useStakeEstimateGas(networks, params, isOpen)}
+      gas={q(useStakeEstimateGas(networks, params, isOpen))}
     />
   )
 }

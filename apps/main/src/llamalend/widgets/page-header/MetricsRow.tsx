@@ -3,11 +3,11 @@ import {
   type SupplyRate,
   type AvailableLiquidity,
   MarketTypeSuffix,
-  MarketNetBorrowAprTooltipContent,
   MarketSupplyRateTooltipContent,
   AvailableLiquidityTooltip,
   TooltipOptions,
 } from '@/llamalend/features/market-details'
+import { BorrowAprMetric } from '@/llamalend/widgets/BorrowAprMetric'
 import Stack from '@mui/material/Stack'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
@@ -38,38 +38,11 @@ export const MetricsRow = ({ borrowRate, supplyRate, availableLiquidity, marketT
         gap: { mobile: Spacing.md.mobile, tablet: Spacing.xxl.tablet },
       }}
     >
-      <Metric
+      <BorrowAprMetric
+        marketType={marketType}
+        borrowRate={borrowRate}
+        collateralSymbol={collateral?.symbol}
         alignment={metricAlignment}
-        label={t`Net borrow APR`}
-        value={borrowRate?.totalBorrowRate}
-        loading={borrowRate?.loading}
-        valueOptions={{ unit: 'percentage' }}
-        notional={
-          borrowRate?.totalAverageBorrowRate
-            ? {
-                value: borrowRate.totalAverageBorrowRate,
-                unit: { symbol: `% ${borrowRate.averageRateLabel} Avg`, position: 'suffix' },
-              }
-            : undefined
-        }
-        valueTooltip={{
-          title: t`Net borrow APR`,
-          body: (
-            <MarketNetBorrowAprTooltipContent
-              marketType={marketType}
-              borrowRate={borrowRate?.rate}
-              totalBorrowRate={borrowRate?.totalBorrowRate}
-              totalAverageBorrowRate={borrowRate?.totalAverageBorrowRate}
-              averageRate={borrowRate?.averageRate}
-              periodLabel={borrowRate?.averageRateLabel}
-              extraRewards={borrowRate?.extraRewards ?? []}
-              rebasingYield={borrowRate?.rebasingYield}
-              collateralSymbol={collateral?.symbol}
-              isLoading={borrowRate?.loading}
-            />
-          ),
-          ...TooltipOptions,
-        }}
       />
       {supplyRate && (
         <Metric

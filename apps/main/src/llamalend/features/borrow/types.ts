@@ -8,7 +8,7 @@ export { type Token } from '@ui-kit/types/common'
 /** Complete create loan form with all fields already filled in (after validation) */
 type CompleteCreateLoanForm = {
   userCollateral: Decimal
-  userBorrowed: Decimal // currently hidden and always 0
+  userBorrowed: Decimal // currently hidden and always 0, this can be used to leverage by depositing debt token
   debt: Decimal
   range: number
   slippage: Decimal
@@ -20,11 +20,6 @@ type CalculatedValues = { maxDebt: Decimal | undefined; maxCollateral: Decimal |
 
 /** Create loan form as used in the UI, with some fields still optional or being filled in */
 export type CreateLoanForm = MakeOptional<CompleteCreateLoanForm, 'debt' | 'userCollateral'> & CalculatedValues
-
-/** Fields of the create loan form that are passed back to the origin application for synchronization */
-export type CreateLoanFormExternalFields = Omit<CreateLoanForm, keyof CalculatedValues>
-/** Callback type to pass on the external fields of the create loan form */
-export type OnCreateLoanFormUpdate = (form: CreateLoanFormExternalFields) => Promise<void>
 
 /** Full query type for create loan queries, including pool identification and all form fields */
 export type CreateLoanFormQuery<T = IChainId> = MarketQuery<T> & CompleteCreateLoanForm

@@ -8,9 +8,10 @@ export type Market = {
   rate: number
   // borrowApy = rate * 100
   borrowApy: number
-  // borrowTotalApy = borrowApy - collateral_yield_apy
+  // @deprecated compute this using borrowApy and collateralToken.rebasingYield: borrowTotalApy = borrowApy - collateral_yield_apy
   borrowTotalApy: number
   borrowApr: number
+  // @deprecated compute this using borrowApr and collateralToken.rebasingYieldApr
   borrowTotalApr: number
   borrowed: number
   borrowedUsd: number
@@ -24,11 +25,13 @@ export type Market = {
     symbol: string
     address: Address
     rebasingYield: number | null
+    rebasingYieldApr: number | null
   }
   stablecoinToken: {
     symbol: string
     address: Address
     rebasingYield: number | null
+    rebasingYieldApr: number | null
   }
   fees: {
     pending: number
@@ -41,6 +44,8 @@ export type Market = {
 export type Snapshot = {
   timestamp: Date
   rate: number
+  borrowApy: number
+  borrowApr: number
   nLoans: number
   minted: number
   redeemed: number
@@ -64,11 +69,13 @@ export type Snapshot = {
     symbol: string
     address: string
     rebasingYield: number
+    rebasingYieldApr: number
   }
   stablecoinToken: {
     symbol: string
     address: string
     rebasingYield: number
+    rebasingYieldApr: number
   }
   maxLtv: number
 }

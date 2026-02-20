@@ -22,7 +22,7 @@ import { LlamaListChips } from './chips/LlamaListChips'
 import { DEFAULT_SORT } from './columns'
 import { LLAMA_MARKET_COLUMNS } from './columns'
 import { LlamaMarketColumnId } from './columns'
-import { llamaGlobalFilterFn } from './filters/llamaGlobalFilter'
+import { useLlamaGlobalFilterFn } from './filters/llamaGlobalFilter'
 import { useLlamaTableVisibility } from './hooks/useLlamaTableVisibility'
 import { LendingMarketsFilters } from './LendingMarketsFilters'
 import { LlamaMarketExpandedPanel } from './LlamaMarketExpandedPanel'
@@ -53,9 +53,17 @@ export const LlamaMarketsTable = ({
 }) => {
   const { markets, userHasPositions, hasFavorites } = result ?? {}
 
+  const data = useMemo(
+    // We're directly filtering the market list and not the hooks and queries, to avoid the chance of breaking
+    // other components with potential missing data or incomplete metrics. It's purely presentational filtering.
+    () => (markets ?? []).filter((market) => market.createdAt <= MARKET_CUTOFF_DATE.getTime()),
+    [markets],
+  )
+
   const minLiquidity = useUserProfileStore((s) => s.hideSmallPools) ? SMALL_POOL_TVL : 0
   const defaultFilters = useDefaultLlamaFilter(minLiquidity)
   const { globalFilter, setGlobalFilter, resetGlobalFilter } = useGlobalFilter()
+  const globalFilterFn = useLlamaGlobalFilterFn(data, globalFilter)
   const {
     columnFilters,
     columnFiltersById,
@@ -80,13 +88,6 @@ export const LlamaMarketsTable = ({
   const [expanded, onExpandedChange] = useState<ExpandedState>({})
   const filterProps = { columnFiltersById, setColumnFilter, defaultFilters }
 
-  const data = useMemo(
-    // We're directly filtering the market list and not the hooks and queries, to avoid the chance of breaking
-    // other components with potential missing data or incomplete metrics. It's purely presentational filtering.
-    () => (markets ?? []).filter((market) => market.createdAt <= MARKET_CUTOFF_DATE.getTime()),
-    [markets],
-  )
-
   const table = useTable({
     columns: LLAMA_MARKET_COLUMNS,
     data,
@@ -94,7 +95,7 @@ export const LlamaMarketsTable = ({
     initialState: { pagination },
     onSortingChange,
     onExpandedChange,
-    globalFilterFn: llamaGlobalFilterFn,
+    globalFilterFn,
     ...getTableOptions(result),
   })
 
@@ -136,7 +137,6 @@ export const LlamaMarketsTable = ({
               hiddenMarketCount={result ? data.length - table.getFilteredRowModel().rows.length : 0}
               hasFilters={hasFilters}
               resetFilters={resetFilters}
-              userHasPositions={userHasPositions}
               hasFavorites={hasFavorites}
               onSortingChange={onSortingChange}
               sortField={sortField}

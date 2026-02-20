@@ -1,14 +1,13 @@
 import { useMemo } from 'react'
 import { prefetchMarkets } from '@/lend/entities/chain/chain-query'
 import { CreateLoanForm } from '@/llamalend/features/borrow/components/CreateLoanForm'
-import type { OnCreateLoanFormUpdate } from '@/llamalend/features/borrow/types'
 import { BorrowMoreForm } from '@/llamalend/features/manage-loan/components/BorrowMoreForm'
 import { RepayForm } from '@/llamalend/features/manage-loan/components/RepayForm'
 import { ClosePositionForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ClosePositionForm'
 import { ImproveHealthForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ImproveHealthForm'
 import { getLlamaMarket } from '@/llamalend/llama.utils'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
-import { useLoanExists } from '@/llamalend/queries/loan-exists'
+import { useLoanExists } from '@/llamalend/queries/user'
 import { networks as loanNetworks } from '@/loan/networks'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
@@ -19,9 +18,10 @@ import Skeleton from '@mui/material/Skeleton'
 import { useCurve } from '@ui-kit/features/connect-wallet/lib/CurveContext'
 import { CurveProvider } from '@ui-kit/features/connect-wallet/lib/CurveProvider'
 import type { UserMarketQuery } from '@ui-kit/lib/model'
+import type { Range } from '@ui-kit/types/util'
+import type { Decimal } from '@ui-kit/utils'
 
 const networks = loanNetworks as unknown as NetworkDict<LlamaChainId>
-const onUpdate: OnCreateLoanFormUpdate = async (form) => console.info('form updated', JSON.stringify(form))
 
 const prefetch = () => prefetchMarkets({})
 
@@ -35,18 +35,21 @@ const Components = {
 
 type LoanTab = keyof typeof Components
 
-type LoanFlowTestProps = { tab?: LoanTab; onSuccess: ReturnType<typeof cy.stub> } & UserMarketQuery<LlamaChainId>
+type LoanFlowTestProps = {
+  tab?: LoanTab
+  onSuccess: ReturnType<typeof cy.stub>
+  onPricesUpdated: (prices: Range<Decimal> | undefined) => void
+} & UserMarketQuery<LlamaChainId>
 
-function LlammalendTest({ tab, chainId, userAddress, marketId, onSuccess }: LoanFlowTestProps) {
-  const { isHydrated } = useCurve()
-  const market = useMemo(() => isHydrated && getLlamaMarket(marketId), [isHydrated, marketId])
+function LlammalendTest({ tab, ...props }: LoanFlowTestProps) {
+  const { data: loanExists } = useLoanExists(props)
+  const marketId = useCurve().isHydrated && props.marketId
+  const market = useMemo(() => marketId && getLlamaMarket(marketId), [marketId])
 
-  const { data: loanExists } = useLoanExists({ chainId, marketId, userAddress })
   if (!market || (loanExists && !tab)) return <Skeleton width="100%" height={400} />
 
-  const props = { market, networks, chainId, onUpdate, onSuccess }
   const Component = loanExists ? Components[tab!] : CreateLoanForm
-  return <Component {...props} />
+  return <Component market={market} networks={networks} {...props} />
 }
 
 export type LlammalendTestCaseProps = LoanFlowTestProps & TenderlyWagmiConfigFromVNet

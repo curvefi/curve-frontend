@@ -4,13 +4,11 @@ import type { Token } from '@/llamalend/features/borrow/types'
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
 import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
-import { useMarketRates } from '@/llamalend/queries/market-rates'
+import { useMarketRates } from '@/llamalend/queries/market-rates.query'
 import { useRemoveCollateralFutureLeverage } from '@/llamalend/queries/remove-collateral/remove-collateral-future-leverage.query'
 import { useRemoveCollateralEstimateGas } from '@/llamalend/queries/remove-collateral/remove-collateral-gas-estimate.query'
 import { getRemoveCollateralHealthOptions } from '@/llamalend/queries/remove-collateral/remove-collateral-health.query'
-import { useUserCurrentLeverage } from '@/llamalend/queries/user-current-leverage.query'
-import { getUserHealthOptions } from '@/llamalend/queries/user-health.query'
-import { useUserState } from '@/llamalend/queries/user-state.query'
+import { getUserHealthOptions, useUserCurrentLeverage, useUserState } from '@/llamalend/queries/user'
 import { CollateralParams } from '@/llamalend/queries/validation/manage-loan.types'
 import type { CollateralForm } from '@/llamalend/queries/validation/manage-loan.validation'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
@@ -37,7 +35,7 @@ export function RemoveCollateralInfoList<ChainId extends IChainId>({
   form: UseFormReturn<CollateralForm>
 }) {
   const isOpen = isFormTouched(form, 'userCollateral')
-  const userState = q(useUserState(params, isOpen))
+  const userState = useUserState(params, isOpen)
 
   const expectedCollateral = mapQuery(
     userState,
@@ -55,34 +53,38 @@ export function RemoveCollateralInfoList<ChainId extends IChainId>({
   return (
     <LoanActionInfoList
       isOpen={isOpen}
-      gas={useRemoveCollateralEstimateGas(networks, params, isOpen)}
-      health={useHealthQueries((isFull) => getRemoveCollateralHealthOptions({ ...params, isFull }, isOpen))}
-      prevHealth={useHealthQueries((isFull) => getUserHealthOptions({ ...params, isFull }, isOpen))}
+      gas={q(useRemoveCollateralEstimateGas(networks, params, isOpen))}
+      health={q(useHealthQueries((isFull) => getRemoveCollateralHealthOptions({ ...params, isFull }, isOpen)))}
+      prevHealth={q(useHealthQueries((isFull) => getUserHealthOptions({ ...params, isFull }, isOpen)))}
       rates={q(useMarketRates(params, isOpen))}
-      prevLoanToValue={useLoanToValueFromUserState(
-        {
-          chainId: params.chainId,
-          marketId: params.marketId,
-          userAddress: params.userAddress,
-          collateralToken,
-          borrowToken,
-          expectedBorrowed: userState.data?.debt,
-        },
-        isOpen,
+      prevLoanToValue={q(
+        useLoanToValueFromUserState(
+          {
+            chainId: params.chainId,
+            marketId: params.marketId,
+            userAddress: params.userAddress,
+            collateralToken,
+            borrowToken,
+            expectedBorrowed: userState.data?.debt,
+          },
+          isOpen,
+        ),
       )}
-      loanToValue={useLoanToValueFromUserState(
-        {
-          chainId: params.chainId,
-          marketId: params.marketId,
-          userAddress: params.userAddress,
-          collateralToken,
-          borrowToken,
-          collateralDelta: userCollateral && (`-${userCollateral}` as Decimal),
-          expectedBorrowed: userState.data?.debt,
-        },
-        isOpen && !!userCollateral,
+      loanToValue={q(
+        useLoanToValueFromUserState(
+          {
+            chainId: params.chainId,
+            marketId: params.marketId,
+            userAddress: params.userAddress,
+            collateralToken,
+            borrowToken,
+            collateralDelta: userCollateral && (`-${userCollateral}` as Decimal),
+            expectedBorrowed: userState.data?.debt,
+          },
+          isOpen && !!userCollateral,
+        ),
       )}
-      userState={userState}
+      userState={q(userState)}
       collateral={expectedCollateral}
       leverageEnabled={leverageEnabled}
       prevLeverageValue={q(useUserCurrentLeverage(params, isOpen))}

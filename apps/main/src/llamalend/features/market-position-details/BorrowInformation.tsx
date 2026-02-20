@@ -1,6 +1,6 @@
+import { BorrowAprMetric } from '@/llamalend/widgets/BorrowAprMetric'
 import { CollateralMetricTooltipContent } from '@/llamalend/widgets/tooltips/CollateralMetricTooltipContent'
 import { CurrentLTVTooltipContent } from '@/llamalend/widgets/tooltips/CurrentLTVTooltipContent'
-import { MarketNetBorrowAprTooltipContent } from '@/llamalend/widgets/tooltips/MarketNetBorrowAprTooltipContent'
 import { TotalDebtTooltipContent } from '@/llamalend/widgets/tooltips/TotalDebtTooltipContent'
 import { Stack } from '@mui/material'
 import { useIntegratedLlamaHeader } from '@ui-kit/hooks/useFeatureFlags'
@@ -145,39 +145,10 @@ export const BorrowInformation = ({
           </>
         ) : (
           <>
-            <Metric
-              size="medium"
-              label={t`Net borrow APR`}
-              value={borrowRate?.totalBorrowRate}
-              loading={borrowRate?.loading}
-              valueOptions={{ unit: 'percentage', color: 'warning' }}
-              notional={
-                borrowRate?.totalAverageBorrowRate
-                  ? {
-                      value: borrowRate.totalAverageBorrowRate,
-                      unit: { symbol: '% 30D Avg', position: 'suffix' },
-                    }
-                  : undefined
-              }
-              valueTooltip={{
-                title: t`Net borrow APR`,
-                body: (
-                  <MarketNetBorrowAprTooltipContent
-                    marketType={marketType}
-                    borrowRate={borrowRate?.rate}
-                    totalBorrowRate={borrowRate?.totalBorrowRate}
-                    totalAverageBorrowRate={borrowRate?.totalAverageBorrowRate}
-                    averageRate={borrowRate?.averageRate}
-                    rebasingYield={borrowRate?.rebasingYield}
-                    collateralSymbol={collateralValue?.collateral?.symbol}
-                    periodLabel={borrowRate?.averageRateLabel ?? ''}
-                    extraRewards={borrowRate?.extraRewards ?? []}
-                  />
-                ),
-                placement: 'top',
-                arrow: false,
-                clickable: true,
-              }}
+            <BorrowAprMetric
+              marketType={marketType}
+              borrowRate={borrowRate}
+              collateralSymbol={collateralValue?.collateral?.symbol}
             />
             <Metric
               size="medium"
