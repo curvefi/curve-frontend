@@ -1,7 +1,6 @@
 import { sum } from 'lodash'
-import { createColumnHelper, FilterFnOption } from '@tanstack/react-table'
-import type { ColumnDef, DeepKeys } from '@tanstack/table-core'
-import { AccessorFn } from '@tanstack/table-core'
+import { createColumnHelper } from '@tanstack/react-table'
+import type { ColumnDef } from '@tanstack/table-core'
 import { t } from '@ui-kit/lib/i18n'
 import { boolFilterFn, inListFilterFn, multiFilterFn, rangeFilterFn } from '@ui-kit/shared/ui/DataTable/filters'
 import { PoolTitleCell } from '../cells/PoolTitleCell/PoolTitleCell'
@@ -28,10 +27,14 @@ type PoolColumn = ColumnDef<PoolListItem, any>
 
 /** Define a hidden column. */
 const hidden = (
-  id: PoolColumnId,
-  accessor: DeepKeys<PoolListItem> | AccessorFn<PoolListItem>,
-  filterFn: FilterFnOption<PoolListItem>,
-) => columnHelper.accessor(accessor, { id, filterFn, meta: { hidden: true }, sortUndefined: 'last' })
+  accessor: Parameters<typeof columnHelper.accessor>[0],
+  options?: Parameters<typeof columnHelper.accessor>[1],
+) =>
+  columnHelper.accessor(accessor, {
+    ...options,
+    meta: { ...options?.meta, hidden: true },
+    sortUndefined: 'last',
+  })
 
 export const POOL_LIST_COLUMNS = [
   columnHelper.accessor('pool.name', {
@@ -77,8 +80,11 @@ export const POOL_LIST_COLUMNS = [
     sortUndefined: 'last',
     filterFn: rangeFilterFn,
   }),
-  hidden(PoolColumnId.UserHasPositions, PoolColumnId.UserHasPositions, boolFilterFn),
-  hidden(PoolColumnId.PoolTags, (p) => p.tags, inListFilterFn),
-  hidden(PoolColumnId.RewardsCrv, (row) => row.rewards?.crv, multiFilterFn),
-  hidden(PoolColumnId.RewardsIncentives, (row) => (row.rewards ? sum(row.rewards.other) : undefined), multiFilterFn),
+  hidden(PoolColumnId.UserHasPositions, { id: PoolColumnId.UserHasPositions, filterFn: boolFilterFn }),
+  hidden((p) => p.tags, { id: PoolColumnId.PoolTags, filterFn: inListFilterFn }),
+  hidden((row) => row.rewards?.crv, { id: PoolColumnId.RewardsCrv, filterFn: multiFilterFn }),
+  hidden((row) => (row.rewards ? sum(row.rewards.other) : undefined), {
+    id: PoolColumnId.RewardsIncentives,
+    filterFn: multiFilterFn,
+  }),
 ] satisfies PoolColumn[]
