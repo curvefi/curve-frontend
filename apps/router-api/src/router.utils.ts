@@ -1,4 +1,5 @@
 import { BigNumber } from 'bignumber.js'
+import { formatUnits, parseUnits } from 'viem'
 import type { Decimal } from './routes/routes.schemas'
 
 export function assert<T>(value: T | null | undefined | 0 | false | '', message: string) {
@@ -28,6 +29,6 @@ export const decimalMax = (...data: Decimal[]): Decimal | undefined =>
     undefined,
   )
 
-export const toWei = (n: string, decimals: number) => BigNumber(n).shiftedBy(decimals).toFixed() as Decimal
-export const fromWei = (n: string, decimals: number) => BigNumber(n).shiftedBy(-decimals).toFixed() as Decimal
+export const toWei = (n: string, decimals: number) => parseUnits(n, decimals).toString() as Decimal
+export const fromWei = (n: string, decimals: number) => formatUnits(BigInt(n), decimals) as Decimal
 export const decimalCompare = (a: Decimal, b: Decimal) => BigNumber(a).comparedTo(b) ?? 0

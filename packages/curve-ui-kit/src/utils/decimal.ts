@@ -1,4 +1,5 @@
 import { BigNumber } from 'bignumber.js'
+import { formatUnits, parseUnits } from 'viem'
 
 /**
  * A template literal type representing a decimal number as a string.
@@ -51,5 +52,5 @@ export const decimalMax = (...data: Decimal[]): Decimal | undefined =>
     undefined,
   )
 
-export const toWei = (n: string, decimals: number) => decimal(BigNumber(n).shiftedBy(decimals))!
-export const fromWei = (n: string, decimals: number) => decimal(BigNumber(n).shiftedBy(-decimals))!
+export const toWei = (n: string, decimals: number) => decimal(parseUnits(n, decimals))!
+export const fromWei = (n: string, decimals: number) => decimal(formatUnits(BigInt(n), decimals))!
