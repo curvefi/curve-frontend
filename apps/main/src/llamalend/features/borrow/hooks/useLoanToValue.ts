@@ -42,7 +42,7 @@ export const useLoanToValue = <ChainId extends IChainId>(
     error: borrowUsdRateError,
   } = useTokenUsdRate(
     {
-      chainId: chainId,
+      chainId,
       tokenAddress: borrowToken?.address,
     },
     enabled,

@@ -97,10 +97,10 @@ export const useMarketDetails = ({ chainId, market, marketId }: UseMarketDetails
     },
     borrowRate: {
       rate: borrowApr,
-      averageRate: averageRate,
+      averageRate,
       averageRateLabel: `${LAST_MONTH}D`,
       rebasingYield: collateralRebasingYieldApr,
-      averageRebasingYield: averageRebasingYield,
+      averageRebasingYield,
       totalAverageBorrowRate,
       extraRewards: campaigns,
       totalBorrowRate,

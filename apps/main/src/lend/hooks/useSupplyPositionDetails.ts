@@ -46,8 +46,8 @@ export const useSupplyPositionDetails = ({
     marketId,
   })
   const { data: marketRates, isLoading: isMarketRatesLoading } = useMarketRates({
-    chainId: chainId,
-    marketId: marketId,
+    chainId,
+    marketId,
   })
   const { data: suppliedAssetUsdRate, isLoading: suppliedAssetUsdRateLoading } = useTokenUsdRate({
     chainId,
@@ -118,7 +118,7 @@ export const useSupplyPositionDetails = ({
   return {
     userSupplyRate: {
       rate: supplyApy,
-      averageRate: averageRate,
+      averageRate,
       averageRateLabel: averageMultiplierString,
       rebasingYield: rebasingYield ?? null,
       averageRebasingYield: averageRebasingYield ?? null,
