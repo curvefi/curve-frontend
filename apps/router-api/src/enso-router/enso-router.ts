@@ -27,6 +27,9 @@ type EnsoRouteResponse = {
   ensoFeeAmount: Decimal[]
 }
 
+const buildEnsoRouteId = (route: EnsoRouteResponse['route']) =>
+  `enso:${route.map(({ primary, protocol, action }) => primary || `${protocol}:${action}`).join('-')}`
+
 /**
  * Calls Enso's router to get the optimal route and builds the response.
  * - Uses GET /api/v1/shortcuts/route
@@ -73,6 +76,7 @@ export const buildEnsoRouteResponse = async (query: RoutesQuery, log: FastifyBas
   const data = Array.isArray(json) ? json : [json]
   return data.map(
     ({ route, amountOut, ...routeProps }): RouteResponse => ({
+      id: buildEnsoRouteId(route),
       router: 'enso',
       amountIn: [amountIn],
       amountOut: [amountOut],

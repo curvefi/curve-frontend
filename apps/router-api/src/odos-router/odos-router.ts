@@ -50,10 +50,9 @@ async function getOdosQuote(
 }
 
 async function assembleOdosQuote(
-  { pathId, userAddress }: { pathId: string | null | undefined; userAddress: string },
+  { pathId, userAddress }: { pathId: string; userAddress: string },
   log: FastifyBaseLogger,
 ) {
-  if (!pathId) return
   const params: Record<keyof CurveOdosAssembleRequest, string> = { path_id: pathId, user: userAddress }
   const assembleResponse = await fetch(`${ODOS_API_URL}/assemble?${new URLSearchParams(params)}`, {
     method: 'GET',
@@ -93,10 +92,11 @@ export const buildOdosRouteResponse = async (query: RoutesQuery, log: FastifyBas
     priceImpact = null,
   } = await getOdosQuote({ chainId, tokenIn, tokenOut, amountIn, slippage, userAddress }, log)
 
-  const tx = await assembleOdosQuote({ pathId, userAddress }, log)
+  const { transaction } = { ...(pathId && (await assembleOdosQuote({ pathId, userAddress }, log))) }
 
   return [
     {
+      id: `odos:${pathId ?? crypto.getRandomValues(new Uint32Array(4)).join('')}`,
       router: 'odos',
       amountIn: [amountIn],
       amountOut: outAmounts as [Decimal],
@@ -113,12 +113,12 @@ export const buildOdosRouteResponse = async (query: RoutesQuery, log: FastifyBas
           action: 'swap',
           chainId,
           args: {
-            pathId: pathId,
+            pathId,
             pathVizImage: pathVizImage,
           },
         },
       ],
-      ...(tx?.transaction && { tx: tx.transaction }),
+      ...(transaction && { tx: transaction }),
     },
   ]
 }

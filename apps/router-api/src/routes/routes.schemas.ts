@@ -53,8 +53,9 @@ export type RoutesQuery = {
 
 const routeItemSchema = {
   type: 'object',
-  required: ['amountOut', 'priceImpact', 'createdAt', 'route'],
+  required: ['id', 'router', 'amountOut', 'priceImpact', 'createdAt', 'route'],
   properties: {
+    id: { type: 'string', minLength: 1 },
     router: { type: 'string', enum: RouteProviders },
     amountIn: DecimalSchema,
     amountOut: DecimalSchema,
@@ -104,6 +105,7 @@ export type RouteStep = {
 export type TransactionData = { data: Hex; to: Address; from: Address; value: Decimal }
 
 export type RouteResponse = {
+  id: string
   router: RouteProvider
   amountIn: [Decimal]
   amountOut: [Decimal]

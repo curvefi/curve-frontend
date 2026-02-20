@@ -10,9 +10,6 @@ import { userAddressValidationGroup } from '@ui-kit/lib/model/query/user-address
 import { Address, assert, Decimal, toArray } from '@ui-kit/utils'
 import type { RouteProvider } from '@ui-kit/widgets/RouteProvider'
 
-// todo: move this to api?
-const generateRandomSecureId = () => crypto.getRandomValues(new Uint32Array(4)).join('')
-
 export type RoutesQuery = {
   chainId: number
   tokenIn: Address
@@ -34,6 +31,7 @@ type RouterApiRouteStep = {
 }
 
 type RouterApiResponse = {
+  id: string
   amountIn: Decimal
   amountOut: Decimal
   priceImpact: number | null
@@ -45,7 +43,7 @@ type RouterApiResponse = {
   tx?: { to: Address; data: Hex }
 }
 
-export type Route = RouterApiResponse & { id: string }
+export type Route = RouterApiResponse
 
 export const routerApiValidation = createValidationSuite(
   ({ chainId, tokenIn, tokenOut, amountIn, amountOut, userAddress }: RoutesQuery) => {
@@ -101,8 +99,7 @@ export const { useQuery: useRouterApi, fetchQuery: fetchApiRoutes } = queryFacto
     )
 
     toArray(router).forEach((router) => query.append('router', router))
-    const routes = await fetchJson<RouterApiResponse[]>(`/api/router/v1/routes?${query}`)
-    return routes.map((route) => ({ ...route, id: generateRandomSecureId() }))
+    return fetchJson<RouterApiResponse[]>(`/api/router/v1/routes?${query}`)
   },
   staleTime: '1m',
   refetchInterval: '15s',

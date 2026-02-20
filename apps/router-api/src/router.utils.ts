@@ -1,6 +1,13 @@
 import { BigNumber } from 'bignumber.js'
 import type { Decimal } from './routes/routes.schemas'
 
+export function assert<T>(value: T | null | undefined | 0 | false | '', message: string) {
+  if (!value) {
+    throw new Error(message)
+  }
+  return value
+}
+
 export const notFalsy = <T>(...items: (T | null | undefined | false | 0)[]): T[] => items.filter(Boolean) as T[]
 
 export const handleTimeout = <T>(promise: Promise<T>, timeout: number, message?: string): Promise<T> =>

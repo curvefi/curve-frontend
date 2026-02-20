@@ -162,6 +162,8 @@ describe.sequential('GET /api/router/v1/routes integration', () => {
         const payload = json() as RouteResponse[]
         expect(payload).toHaveLength(expectedRoutes)
         payload.forEach((route) => {
+          expect(route.id).toBeTypeOf('string')
+          expect(route.id.length).toBeGreaterThan(0)
           expect(route.router).toBe(router)
           expect(route.amountOut).toMatch(/^[0-9]+\.?[0-9]*$/)
           expect(route.priceImpact).toBeTypeOf(route.priceImpact == null ? 'undefined' : 'number')

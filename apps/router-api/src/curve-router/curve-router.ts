@@ -62,6 +62,8 @@ const getDecimals = ([fromToken, toToken]: [Address, Address], decimals: IDict<n
   decimals[toToken.toLowerCase()] ?? decimals[toToken],
 ]
 
+const buildCurveRouteId = (routes: IRouteStep[]) => `curve:${routes.map(({ poolId }) => poolId).join('-')}`
+
 /**
  * Runs the router to get the optimal route and builds the response.
  */
@@ -100,6 +102,7 @@ export async function buildCurveRouteResponse(query: RoutesQuery, log: FastifyBa
 
   return [
     {
+      id: buildCurveRouteId(routes),
       router: 'curve',
       amountIn: [toWei(fromAmount, fromDecimals)],
       amountOut: [toWei(toAmount, toDecimals)],
