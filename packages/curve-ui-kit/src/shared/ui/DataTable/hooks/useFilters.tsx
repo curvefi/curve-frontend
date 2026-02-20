@@ -59,18 +59,6 @@ function parseFilters<TColumnId extends string>(
 }
 
 /**
- * Updates the browser history to reflect a single column filter change in the URL.
- * Removes the key if `value` is null. Keeps commas unencoded for readability.
- * Uses `window.history` directly to remain router-agnostic and keep a stable function identity.
- *
- * @param scope Optional namespace prefix for the column key.
- * @param id The column ID whose filter is being updated.
- * @param value The new filter value, or `null` to clear the filter.
- */
-const setColumnFilter = <TColumnId extends string>(scope: string | undefined, id: TColumnId, value: string | null) =>
-  updateSearchParams({ [scopedKey(scope, id)]: value })
-
-/**
  * Manages per-column filters that are synced with URL query parameters.
  * Cleans up legacy localStorage filter entries on first render.
  *
@@ -115,7 +103,10 @@ export function useColumnFilters<TColumnId extends string>({
         ),
       [columnFilters],
     ),
-    setColumnFilter: useCallback((id: TColumnId, value: string | null) => setColumnFilter(scope, id, value), [scope]),
+    setColumnFilter: useCallback(
+      (id: TColumnId, value: string | null) => updateSearchParams({ [scopedKey(scope, id)]: value }),
+      [scope],
+    ),
     resetFilters: useCallback(() => {
       updateSearchParams(Object.fromEntries(recordValues(columns).map((key) => [scopedKey(scope, key), null])))
     }, [columns, scope]),
