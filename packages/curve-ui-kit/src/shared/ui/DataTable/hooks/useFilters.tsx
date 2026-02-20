@@ -1,5 +1,5 @@
-import { isEqual, kebabCase } from 'lodash'
-import { useCallback, useEffect, useMemo } from 'react'
+import { isEqual } from 'lodash'
+import { useCallback, useMemo } from 'react'
 import { type PartialRecord, recordValues } from '@curvefi/prices-api/objects.util'
 import { useSearchParams } from '@ui-kit/hooks/router'
 
@@ -60,29 +60,20 @@ function parseFilters<TColumnId extends string>(
 
 /**
  * Manages per-column filters that are synced with URL query parameters.
- * Cleans up legacy localStorage filter entries on first render.
  *
  * @param columns Enum-like record of valid column IDs for this table.
  * @param defaultFilters Filters applied when a column has no corresponding URL param.
- * @param title Human-readable table title, used to clear legacy localStorage keys.
  * @param scope Optional namespace prefix to avoid URL key collisions across tables.
  */
 export function useColumnFilters<TColumnId extends string>({
   columns,
   defaultFilters,
-  title: tableTitle,
   scope,
 }: {
-  title: string
   columns: ColumnEnum<TColumnId>
   defaultFilters?: ColumnFilters<TColumnId>
   scope?: string
 }) {
-  useEffect(() => {
-    // remove legacy filters from local storage. This may be deleted after dec/2025
-    localStorage.removeItem(`table-filters-${kebabCase(tableTitle)}`)
-  }, [tableTitle])
-
   const searchParams = useSearchParams()
   const columnFilters = useMemo(
     () => parseFilters(searchParams, columns, defaultFilters, scope),

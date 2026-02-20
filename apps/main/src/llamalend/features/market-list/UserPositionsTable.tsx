@@ -62,7 +62,6 @@ export const UserPositionsTable = ({ onReload, result, loading, isError, tab }: 
   const title = LOCAL_STORAGE_KEYS[tab]
   const { globalFilter, setGlobalFilter, columnFilters, columnFiltersById, setColumnFilter, resetFilters } = useFilters(
     {
-      title,
       columns: LlamaMarketColumnId,
       defaultFilters,
       scope: tab.toLowerCase(),

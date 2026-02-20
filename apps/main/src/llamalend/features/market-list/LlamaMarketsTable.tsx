@@ -63,7 +63,6 @@ export const LlamaMarketsTable = ({
   const defaultFilters = useDefaultLlamaFilter(minLiquidity)
   const { globalFilter, setGlobalFilter, columnFilters, columnFiltersById, setColumnFilter, hasFilters, resetFilters } =
     useFilters({
-      title: LOCAL_STORAGE_KEY,
       columns: LlamaMarketColumnId,
       defaultFilters,
     })

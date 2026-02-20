@@ -66,7 +66,6 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
   const defaultFilters = useDefaultPoolsFilter(data)
   const { globalFilter, setGlobalFilter, columnFilters, columnFiltersById, setColumnFilter, hasFilters, resetFilters } =
     useFilters({
-      title: LOCAL_STORAGE_KEY,
       columns: PoolColumnId,
       defaultFilters,
     })
