@@ -34,6 +34,8 @@ import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
+import type { Range } from '@ui-kit/types/util'
+import type { Decimal } from '@ui-kit/utils'
 import { CRVUSD } from '@ui-kit/utils/address'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
 
@@ -46,6 +48,7 @@ export const MintMarketPage = () => {
   const rChainId = useChainId(params)
   const { address } = useConnection()
   const [loaded, setLoaded] = useState(false)
+  const [previewPrices, setPreviewPrices] = useState<Range<Decimal> | undefined>(undefined)
 
   const market = useMintMarket({ chainId: rChainId, marketId: rCollateralId })
   const marketId = market?.id ?? ''
@@ -103,6 +106,7 @@ export const MintMarketPage = () => {
     market: market ?? null,
     rChainId,
     params,
+    onPricesUpdated: setPreviewPrices,
   }
   const showPageHeader = useIntegratedLlamaHeader()
 
@@ -156,7 +160,13 @@ export const MintMarketPage = () => {
         </Stack>
         <Stack>
           {!showPageHeader && <MarketDetails {...marketDetails} />}
-          <MarketInformationComp market={market ?? null} marketId={marketId} chainId={rChainId} page="manage" />
+          <MarketInformationComp
+            market={market ?? null}
+            marketId={marketId}
+            chainId={rChainId}
+            page="manage"
+            previewPrices={previewPrices}
+          />
         </Stack>
       </DetailPageLayout>
     </>

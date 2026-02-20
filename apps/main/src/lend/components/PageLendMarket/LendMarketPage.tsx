@@ -26,8 +26,8 @@ import { UserPositionHistory } from '@/llamalend/features/user-position-history'
 import { useUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { useLoanExists } from '@/llamalend/queries/user'
 import { PageHeader } from '@/llamalend/widgets/page-header'
-import { isChain } from '@curvefi/prices-api'
 import type { Chain } from '@curvefi/prices-api'
+import { isChain } from '@curvefi/prices-api'
 import Stack from '@mui/material/Stack'
 import { ConnectWalletPrompt, useCurve } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
@@ -38,6 +38,8 @@ import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
+import type { Range } from '@ui-kit/types/util'
+import type { Decimal } from '@ui-kit/utils'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
 
 const { Spacing } = SizesAndSpaces
@@ -84,6 +86,7 @@ export const LendMarketPage = () => {
   })
 
   const [isLoaded, setLoaded] = useState(false)
+  const [previewPrices, onPricesUpdated] = useState<Range<Decimal> | undefined>(undefined)
 
   const borrowPositionDetails = useBorrowPositionDetails({
     marketType: LlamaMarketType.Lend,
@@ -134,6 +137,7 @@ export const LendMarketPage = () => {
     market,
     userActiveKey,
     titleMapper,
+    onPricesUpdated,
   }
   const showPageHeader = useIntegratedLlamaHeader()
 
@@ -187,7 +191,12 @@ export const LendMarketPage = () => {
         </MarketInformationTabs>
         <Stack>
           {!showPageHeader && <MarketDetails {...marketDetails} />}
-          <MarketInformationComp pageProps={pageProps} type="borrow" loanExists={loanExists} />
+          <MarketInformationComp
+            pageProps={pageProps}
+            type="borrow"
+            loanExists={loanExists}
+            previewPrices={previewPrices}
+          />
         </Stack>
       </DetailPageLayout>
     </>
