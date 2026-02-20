@@ -11,7 +11,7 @@ import { LlamaIcon } from '@ui-kit/shared/icons/LlamaIcon'
 import type { ChipsPreset, LargeTokenInputProps } from '@ui-kit/shared/ui/LargeTokenInput'
 import { HelperMessage, LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import type { Query } from '@ui-kit/types/util'
+import type { QueryProp } from '@ui-kit/types/util'
 import { decimal, Decimal } from '@ui-kit/utils'
 import { type FormUpdates, updateForm } from '@ui-kit/utils/react-form.utils'
 
@@ -47,7 +47,7 @@ export const LoanFormTokenInput = <
    * Optional max-value query for this field, including loading and error state.
    * When present, it also carries an optional related max-field name whose errors should be reflected here.
    */
-  max?: Query<Decimal> & { fieldName?: TMaxFieldName }
+  max?: QueryProp<Decimal> & { fieldName?: TMaxFieldName }
   maxType?: ChipsPreset
   name: TFieldName
   form: UseFormReturn<TFieldValues> // the form, used to set the value and get errors
@@ -57,7 +57,7 @@ export const LoanFormTokenInput = <
    * Optional, displays the position balance instead of the wallet balance.
    */
   positionBalance?: {
-    position: Query<Decimal>
+    position: QueryProp<Decimal>
     tooltip?: WalletBalanceProps['tooltip']
   }
   /**
