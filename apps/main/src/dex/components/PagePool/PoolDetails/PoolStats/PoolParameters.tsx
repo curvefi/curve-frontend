@@ -8,6 +8,7 @@ import { usePoolTotalStaked } from '@/dex/hooks/usePoolTotalStaked'
 import { usePoolParameters } from '@/dex/queries/pool-parameters.query'
 import { useStore } from '@/dex/store/useStore'
 import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
 import { FORMAT_OPTIONS, formatDate, formatNumber } from '@ui/utils'
 import { dayjs } from '@ui-kit/lib/dayjs'
 import { t } from '@ui-kit/lib/i18n'
@@ -194,6 +195,14 @@ export const PoolParameters = ({
         </Stack>
       )}
       <Contracts rChainId={rChainId} poolDataCacheOrApi={poolDataCacheOrApi} />
+
+      {/** Copied from market page, temporary as this page will get a redesign */}
+      <Stack gap={Spacing.xs}>
+        <Typography variant="headingXsBold">{t`Pool`}</Typography>
+        <Stack>
+          <ActionInfo label={t`ID`} value={poolId} loading={!poolId} />
+        </Stack>
+      </Stack>
     </Stack>
   )
 }
