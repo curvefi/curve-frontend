@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useNetworkFromUrl } from '@/dex/hooks/useChainId'
 import { type NetworkConfig } from '@/dex/types/main.types'
 import { notFalsy } from '@curvefi/prices-api/objects.util'
@@ -16,8 +16,7 @@ import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-tabl
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
 import { serializeRangeFilter } from '@ui-kit/shared/ui/DataTable/filters'
-import { useColumnFilters } from '@ui-kit/shared/ui/DataTable/hooks/useColumnFilters'
-import { useGlobalFilter } from '@ui-kit/shared/ui/DataTable/hooks/useGlobalFilter'
+import { useFilters } from '@ui-kit/shared/ui/DataTable/hooks/useFilters'
 import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
 import { TableFiltersTitles } from '@ui-kit/shared/ui/DataTable/TableFiltersTitles'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -65,23 +64,13 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
   const { data, isLoading, isReady, userHasPositions } = usePoolListData(network)
 
   const defaultFilters = useDefaultPoolsFilter(data)
-  const { globalFilter, setGlobalFilter, resetGlobalFilter } = useGlobalFilter()
+  const { globalFilter, setGlobalFilter, columnFilters, columnFiltersById, setColumnFilter, hasFilters, resetFilters } =
+    useFilters({
+      title: LOCAL_STORAGE_KEY,
+      columns: PoolColumnId,
+      defaultFilters,
+    })
   const globalFilterFn = usePoolsGlobalFilterFn(data ?? [], globalFilter)
-  const {
-    columnFilters,
-    columnFiltersById,
-    setColumnFilter,
-    resetFilters: resetColumnFilters,
-    hasFilters,
-  } = useColumnFilters({
-    title: LOCAL_STORAGE_KEY,
-    columns: PoolColumnId,
-    defaultFilters,
-  })
-  const resetFilters = useCallback(() => {
-    resetColumnFilters()
-    resetGlobalFilter()
-  }, [resetColumnFilters, resetGlobalFilter])
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT)
   const [pagination, onPaginationChange] = usePageFromQueryString(PER_PAGE)
   const { columnSettings, columnVisibility, sortField } = usePoolListVisibilitySettings(LOCAL_STORAGE_KEY, {

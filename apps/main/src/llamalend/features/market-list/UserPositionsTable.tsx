@@ -1,13 +1,12 @@
 import lodash from 'lodash'
-import { useCallback, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { PositionsEmptyState } from '@/llamalend/constants'
 import { ExpandedState } from '@tanstack/react-table'
 import { useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
-import { useColumnFilters } from '@ui-kit/shared/ui/DataTable/hooks/useColumnFilters'
-import { useGlobalFilter } from '@ui-kit/shared/ui/DataTable/hooks/useGlobalFilter'
+import { useFilters } from '@ui-kit/shared/ui/DataTable/hooks/useFilters'
 import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
 import { TableSearchField } from '@ui-kit/shared/ui/DataTable/TableSearchField'
 import { MarketRateType } from '@ui-kit/types/market'
@@ -61,23 +60,16 @@ export const UserPositionsTable = ({ onReload, result, loading, isError, tab }: 
   const userData = useMemo(() => data.filter((market) => market.userHasPositions?.[tab]), [data, tab])
 
   const title = LOCAL_STORAGE_KEYS[tab]
-  const { globalFilter, setGlobalFilter, resetGlobalFilter } = useGlobalFilter('search-user-positions')
+  const { globalFilter, setGlobalFilter, columnFilters, columnFiltersById, setColumnFilter, resetFilters } = useFilters(
+    {
+      title,
+      columns: LlamaMarketColumnId,
+      defaultFilters,
+      scope: tab.toLowerCase(),
+      searchKey: 'search-user-positions',
+    },
+  )
   const globalFilterFn = useLlamaGlobalFilterFn(userData, globalFilter)
-  const {
-    columnFilters,
-    columnFiltersById,
-    setColumnFilter,
-    resetFilters: resetColumnFilters,
-  } = useColumnFilters({
-    title,
-    columns: LlamaMarketColumnId,
-    defaultFilters,
-    scope: tab.toLowerCase(),
-  })
-  const resetFilters = useCallback(() => {
-    resetColumnFilters()
-    resetGlobalFilter()
-  }, [resetColumnFilters, resetGlobalFilter])
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT[tab], SORT_QUERY_FIELD[tab])
   const { columnSettings, columnVisibility, sortField, toggleVisibility } = useLlamaTableVisibility(title, sorting, tab)
   const [expanded, onExpandedChange] = useState<ExpandedState>({})

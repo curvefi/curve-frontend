@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { MARKET_CUTOFF_DATE } from '@/llamalend/constants'
 import type { LlamaMarketsResult } from '@/llamalend/queries/market-list/llama-markets'
 import Button from '@mui/material/Button'
@@ -12,8 +12,7 @@ import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-tabl
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
 import { serializeRangeFilter } from '@ui-kit/shared/ui/DataTable/filters'
-import { useColumnFilters } from '@ui-kit/shared/ui/DataTable/hooks/useColumnFilters'
-import { useGlobalFilter } from '@ui-kit/shared/ui/DataTable/hooks/useGlobalFilter'
+import { useFilters } from '@ui-kit/shared/ui/DataTable/hooks/useFilters'
 import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
 import { TableFiltersTitles } from '@ui-kit/shared/ui/DataTable/TableFiltersTitles'
 import { EmptyStateCard } from '@ui-kit/shared/ui/EmptyStateCard'
@@ -62,23 +61,13 @@ export const LlamaMarketsTable = ({
 
   const minLiquidity = useUserProfileStore((s) => s.hideSmallPools) ? SMALL_POOL_TVL : 0
   const defaultFilters = useDefaultLlamaFilter(minLiquidity)
-  const { globalFilter, setGlobalFilter, resetGlobalFilter } = useGlobalFilter()
+  const { globalFilter, setGlobalFilter, columnFilters, columnFiltersById, setColumnFilter, hasFilters, resetFilters } =
+    useFilters({
+      title: LOCAL_STORAGE_KEY,
+      columns: LlamaMarketColumnId,
+      defaultFilters,
+    })
   const globalFilterFn = useLlamaGlobalFilterFn(data, globalFilter)
-  const {
-    columnFilters,
-    columnFiltersById,
-    setColumnFilter,
-    resetFilters: resetColumnFilters,
-    hasFilters,
-  } = useColumnFilters({
-    title: LOCAL_STORAGE_KEY,
-    columns: LlamaMarketColumnId,
-    defaultFilters,
-  })
-  const resetFilters = useCallback(() => {
-    resetColumnFilters()
-    resetGlobalFilter()
-  }, [resetColumnFilters, resetGlobalFilter])
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT)
   const { columnSettings, columnVisibility, toggleVisibility, sortField } = useLlamaTableVisibility(
     LOCAL_STORAGE_KEY,
