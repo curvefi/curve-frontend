@@ -10,6 +10,8 @@ import { getLib } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNewBandsChart, useIntegratedLlamaHeader } from '@ui-kit/hooks/useFeatureFlags'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import type { Range } from '@ui-kit/types/util'
+import type { Decimal } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -17,12 +19,13 @@ type MarketInformationCompProps = {
   pageProps: PageContentProps
   loanExists: boolean | undefined
   type: 'borrow' | 'supply'
+  previewPrices?: Range<Decimal> | undefined
 }
 
 /**
  * Reusable component for OHLC charts, Bands (if applicable), and market parameters, used in market and vault pages.
  */
-export const MarketInformationComp = ({ pageProps, loanExists, type }: MarketInformationCompProps) => {
+export const MarketInformationComp = ({ pageProps, loanExists, type, previewPrices }: MarketInformationCompProps) => {
   const { rChainId, rOwmId, market } = pageProps
   const api = getLib('llamaApi')
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
@@ -32,7 +35,7 @@ export const MarketInformationComp = ({ pageProps, loanExists, type }: MarketInf
 
   return (
     <>
-      <ChartAndActivityComp rChainId={rChainId} rOwmId={rOwmId} api={api} />
+      <ChartAndActivityComp rChainId={rChainId} rOwmId={rOwmId} api={api} previewPrices={previewPrices} />
       {type === 'borrow' && !newBandsChartEnabled && isAdvancedMode && (
         <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, gap: Spacing.md, padding: Spacing.md }}>
           <BandsComp pageProps={pageProps} loanExists={loanExists} />
