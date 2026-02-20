@@ -7,7 +7,7 @@ import {
   AvailableLiquidityTooltip,
   TooltipOptions,
 } from '@/llamalend/features/market-details'
-import { NetBorrowAprMetric } from '@/llamalend/widgets/NetBorrowAprMetric'
+import { BorrowAprMetric } from '@/llamalend/widgets/BorrowAprMetric'
 import Stack from '@mui/material/Stack'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
@@ -38,12 +38,11 @@ export const MetricsRow = ({ borrowRate, supplyRate, availableLiquidity, marketT
         gap: { mobile: Spacing.md.mobile, tablet: Spacing.xxl.tablet },
       }}
     >
-      <NetBorrowAprMetric
+      <BorrowAprMetric
         marketType={marketType}
         borrowRate={borrowRate}
         collateralSymbol={collateral?.symbol}
         alignment={metricAlignment}
-        tooltipOptions={TooltipOptions}
       />
       {supplyRate && (
         <Metric

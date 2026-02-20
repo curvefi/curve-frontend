@@ -1,4 +1,4 @@
-import { NetBorrowAprMetric } from '@/llamalend/widgets/NetBorrowAprMetric'
+import { BorrowAprMetric } from '@/llamalend/widgets/BorrowAprMetric'
 import { CollateralMetricTooltipContent } from '@/llamalend/widgets/tooltips/CollateralMetricTooltipContent'
 import { CurrentLTVTooltipContent } from '@/llamalend/widgets/tooltips/CurrentLTVTooltipContent'
 import { TotalDebtTooltipContent } from '@/llamalend/widgets/tooltips/TotalDebtTooltipContent'
@@ -9,7 +9,6 @@ import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { LlamaMarketType } from '@ui-kit/types/market'
 import { formatNumber } from '@ui-kit/utils'
-import { TooltipOptions } from '../market-details/tooltips'
 import {
   LiquidationThresholdTooltipContent,
   type BorrowRate,
@@ -146,12 +145,10 @@ export const BorrowInformation = ({
           </>
         ) : (
           <>
-            <NetBorrowAprMetric
+            <BorrowAprMetric
               marketType={marketType}
               borrowRate={borrowRate}
               collateralSymbol={collateralValue?.collateral?.symbol}
-              size="medium"
-              tooltipOptions={TooltipOptions}
             />
             <Metric
               size="medium"
