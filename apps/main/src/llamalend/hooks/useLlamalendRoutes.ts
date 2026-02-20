@@ -22,7 +22,7 @@ const buildLendMarketPath = ({ marketId, action }: { marketId: string; action: s
 export const useLlamalendMarketSubNavRoutes = ({ isMobile }: { isMobile: boolean }): AppRoute[] => {
   const params = useMatchRoute<{ app: AppName; marketId: string }>({
     to: `$app/$network${LEND_ROUTES.PAGE_MARKETS}/$marketId`,
-    fuzzy: true,
+    fuzzy: true, // allows to match longer routes like .../vault
   })
 
   if (params && params.app === LEND_APP) {
