@@ -9,11 +9,8 @@ import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import type { NetworkDef, NetworkMapping } from '@ui/utils'
 import { useLayoutStore } from '@ui-kit/features/layout'
-import { useMatchRoute } from '@ui-kit/hooks/router'
-import { useIsDesktop } from '@ui-kit/hooks/useBreakpoints'
-import { useLendMarketSubNav } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
-import { APP_LINK, AppMenuOption, LEND_ROUTES, type AppName } from '@ui-kit/shared/routes'
+import { APP_LINK, AppMenuOption, type AppName } from '@ui-kit/shared/routes'
 import { ScrollUpButton } from '@ui-kit/shared/ui/ScrollUpButton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { ErrorBoundary } from '@ui-kit/widgets/ErrorBoundary'
@@ -22,26 +19,14 @@ import { Header } from '@ui-kit/widgets/Header'
 
 const { MinHeight } = SizesAndSpaces
 
-const LLAMALEND_APP: AppName = 'llamalend'
-
-const LLAMALEND_APPS: AppName[] = ['crvusd', 'lend', LLAMALEND_APP]
+const LLAMALEND_APPS: AppName[] = ['crvusd', 'lend', 'llamalend']
 
 const useAppStats = (currentApp: AppName, network: NetworkDef) => {
-  const isNewLendSubNav = useLendMarketSubNav()
-  const isDesktop = useIsDesktop()
-  const params = useMatchRoute<{ page: string }>({
-    to: `$app/$network/$page`,
-  })
   const isLlamalendApp = LLAMALEND_APPS.includes(currentApp)
-  const isLlamalend =
-    isNewLendSubNav && isDesktop
-      ? // hide header stats on lend/crvusd market pages only
-        currentApp === LLAMALEND_APP || (isLlamalendApp && params && `/${params.page}` !== LEND_ROUTES.PAGE_MARKETS)
-      : isLlamalendApp
-  const llamalendStats = useLlamalendAppStats({ chainId: network?.chainId }, isLlamalend)
+  const llamalendStats = useLlamalendAppStats({ chainId: network?.chainId, currentApp }, isLlamalendApp)
   const dexStats = useDexAppStats(currentApp === 'dex' ? network : undefined) // 'disabled' by passing undefined
 
-  return isLlamalend ? llamalendStats : currentApp === 'dex' ? dexStats : []
+  return isLlamalendApp ? llamalendStats : currentApp === 'dex' ? dexStats : []
 }
 
 const useAppRoutes = (network: NetworkDef) => ({

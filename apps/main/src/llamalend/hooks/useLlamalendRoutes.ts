@@ -48,15 +48,10 @@ export const useLlamalendMarketSubNavRoutes = ({ isMobile }: { isMobile: boolean
     ]
   }
 
-  if (params && params.app === CRVUSD_APP) {
-    return []
-  }
-
   // Subnav not needed for mobile outside of the markets page
-  if (isMobile) {
+  if ((params && params.app === CRVUSD_APP) || isMobile) {
     return []
   }
-
   return APP_LINK.llamalend.routes
 }
 
