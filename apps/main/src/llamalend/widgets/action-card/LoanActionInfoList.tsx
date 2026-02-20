@@ -24,6 +24,7 @@ export type LoanActionInfoListProps = {
   exchangeRate?: Query<string | null>
   loanToValue?: Query<Decimal | null>
   prevLoanToValue?: Query<Decimal | null>
+  prevNetBorrowApr?: Query<Decimal | null>
   netBorrowApr?: Query<Decimal | null>
   gas: Query<TxGasInfo | null>
   debt?: Query<{ value: Decimal; tokenSymbol: string | undefined } | null>
@@ -63,6 +64,7 @@ export const LoanActionInfoList = ({
   loanToValue,
   prevLoanToValue,
   netBorrowApr,
+  prevNetBorrowApr,
   gas,
   debt,
   collateral,
@@ -110,11 +112,12 @@ export const LoanActionInfoList = ({
               testId="borrow-apr"
             />
           )}
-          {netBorrowApr && (
+          {(netBorrowApr || prevNetBorrowApr) && (
             <ActionInfo
               label={t`Net borrow APR`}
-              value={netBorrowApr.data && formatPercent(netBorrowApr.data)}
-              {...combineQueryState(netBorrowApr)}
+              value={netBorrowApr?.data && formatPercent(netBorrowApr.data)}
+              prevValue={prevNetBorrowApr?.data && formatPercent(prevNetBorrowApr.data)}
+              {...combineQueryState(netBorrowApr, prevNetBorrowApr)}
               size="small"
               testId="borrow-net-apr"
             />

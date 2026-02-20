@@ -4,7 +4,7 @@ import type { UseFormReturn } from 'react-hook-form'
 import type { Token } from '@/llamalend/features/borrow/types'
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
 import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
-import type { NetworkDict } from '@/llamalend/llamalend.types'
+import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { useBorrowMoreExpectedCollateral } from '@/llamalend/queries/borrow-more/borrow-more-expected-collateral.query'
 import { useBorrowMoreEstimateGas } from '@/llamalend/queries/borrow-more/borrow-more-gas-estimate.query'
 import { useBorrowMoreHealth } from '@/llamalend/queries/borrow-more/borrow-more-health.query'
@@ -20,6 +20,7 @@ import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { mapQuery, q } from '@ui-kit/types/util'
 import { decimal, Decimal } from '@ui-kit/utils'
 import { isFormTouched } from '@ui-kit/utils/react-form.utils'
+import { useNetBorrowApr } from '../hooks/useNetBorrowApr'
 
 export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
   params,
@@ -29,11 +30,13 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
   onSlippageChange,
   leverageEnabled,
   form,
+  market,
 }: {
   params: BorrowMoreParams<ChainId>
   values: BorrowMoreForm
   tokens: { collateralToken: Token | undefined; borrowToken: Token | undefined }
   networks: NetworkDict<ChainId>
+  market: LlamaMarketTemplate | undefined
   onSlippageChange: (newSlippage: Decimal) => void
   leverageEnabled: boolean
   form: UseFormReturn<BorrowMoreForm>
@@ -50,6 +53,21 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
 
   const prevHealth = useHealthQueries((isFull) => getUserHealthOptions({ ...params, isFull }, isOpen))
 
+  const { marketRates, marketFutureRates, netBorrowApr, futureBorrowApr } = useNetBorrowApr(
+    {
+      market,
+      params,
+      marketRates: q(useMarketRates(params, isOpen)),
+      marketFutureRates: q(
+        useMarketFutureRates(
+          { chainId: params.chainId, marketId: params.marketId, debt: totalDebt },
+          isOpen && !!totalDebt,
+        ),
+      ),
+    },
+    isOpen,
+  )
+
   return (
     <LoanActionInfoList
       isOpen={isOpen}
@@ -57,13 +75,10 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
       gas={useBorrowMoreEstimateGas(networks, params, isOpen)}
       health={q(useBorrowMoreHealth(params, isOpen && !!debt))}
       prevHealth={prevHealth}
-      prevRates={q(useMarketRates(params, isOpen))}
-      rates={q(
-        useMarketFutureRates(
-          { chainId: params.chainId, marketId: params.marketId, debt: totalDebt },
-          isOpen && !!totalDebt,
-        ),
-      )}
+      prevRates={marketRates}
+      rates={marketFutureRates}
+      prevNetBorrowApr={netBorrowApr}
+      netBorrowApr={futureBorrowApr}
       loanToValue={useLoanToValueFromUserState(
         {
           chainId: params.chainId,
