@@ -64,7 +64,7 @@ export const useLoanToValueFromUserState = <ChainId extends IChainId>(
       borrowUsdRate == null ||
       collateral.isZero()
         ? null
-        : (debt.times(borrowUsdRate).div(collateral).div(collateralUsdRate).times(100).toString() as Decimal),
+        : (debt.times(borrowUsdRate).div(collateral).div(collateralUsdRate).times(100).toFixed() as Decimal),
     isLoading: enabled && (isUserLoading || isCollateralUsdRateLoading || isBorrowUsdRateLoading),
     error: userError ?? collateralUsdRateError ?? borrowUsdRateError,
   }

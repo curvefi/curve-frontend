@@ -3,21 +3,38 @@ import Box from '@mui/material/Box'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { type Address, CRVUSD_ADDRESS } from '@ui-kit/utils'
 import { type RouteOption, type RouteProviderProps, RouteProvidersAccordion } from './RouteProvidersAccordion'
 
 const { MaxWidth } = SizesAndSpaces
 
-const outputTokenAddress = CRVUSD_ADDRESS as Address
-
-const labels = {
-  [outputTokenAddress]: 'crvUSD',
-} satisfies Record<Address, string>
-
 const mockRoutes: RouteOption[] = [
-  { provider: 'curve', toAmountOutput: '69.4241' },
-  { provider: 'enso', toAmountOutput: '67.7432' },
-  { provider: 'odos', toAmountOutput: '67.0142' },
+  {
+    id: 'curve',
+    provider: 'curve',
+    toAmountOutput: '69.4241',
+    usdPrice: 1,
+    priceImpact: 0.01,
+    routerAddress: '0x0000000000000000000000000000000000000001',
+    calldata: '0x',
+  },
+  {
+    id: 'enso',
+    provider: 'enso',
+    toAmountOutput: '67.7432',
+    usdPrice: 1,
+    priceImpact: 0.1,
+    routerAddress: '0x0000000000000000000000000000000000000002',
+    calldata: '0x',
+  },
+  {
+    id: 'odos',
+    provider: 'odos',
+    toAmountOutput: '67.0142',
+    usdPrice: 1,
+    priceImpact: 0.001,
+    routerAddress: '0x0000000000000000000000000000000000000003',
+    calldata: '0x',
+  },
 ]
 
 const meta: Meta<typeof RouteProvidersAccordion> = {
@@ -26,11 +43,10 @@ const meta: Meta<typeof RouteProvidersAccordion> = {
   args: {
     routes: mockRoutes,
     selectedRoute: mockRoutes[0],
-    outputTokenAddress,
-    tokenSymbols: labels,
-    usdPrice: 1.0,
+    toTokenSymbol: 'crvUSD',
     isExpanded: false,
     isLoading: false,
+    error: null,
     onRefresh: () => undefined,
   },
 }

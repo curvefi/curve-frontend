@@ -1,5 +1,5 @@
 import type { Address, Hex } from 'viem'
-import type { Decimal } from '../routes/optimal-route.schemas'
+import type { Decimal } from '../routes/routes.schemas'
 
 /**
  * Assemble Path Request Schema.

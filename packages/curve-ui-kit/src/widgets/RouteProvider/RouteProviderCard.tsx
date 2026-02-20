@@ -4,7 +4,7 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { SelectableCard } from '@ui-kit/shared/ui/SelectableCard'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import type { Decimal } from '@ui-kit/utils'
+import { type Decimal, formatNumber } from '@ui-kit/utils'
 import { formatUsd } from '@ui-kit/utils/number'
 import { RouteComparisonChip } from '@ui-kit/widgets/RouteProvider/RouteComparisonChip'
 import type { RouteOption } from './route-provider.types'
@@ -13,8 +13,7 @@ const { Spacing } = SizesAndSpaces
 
 export type RouteProviderCardProps = {
   route: RouteOption
-  tokenSymbol: string
-  usdPrice: number | null
+  toTokenSymbol: string | undefined
   isSelected: boolean
   bestOutputAmount: Decimal | undefined
   providerLabel: string
@@ -24,8 +23,7 @@ export type RouteProviderCardProps = {
 
 export const RouteProviderCard = ({
   route,
-  tokenSymbol,
-  usdPrice,
+  toTokenSymbol,
   isSelected,
   bestOutputAmount,
   providerLabel,
@@ -40,13 +38,13 @@ export const RouteProviderCard = ({
   >
     <Stack sx={{ width: '100%' }} gap={Spacing.xxs} data-testid="route-provider-rows">
       <Stack direction="row" justifyContent="space-between" alignItems="center">
-        <Box sx={{ display: 'flex', alignItems: 'baseline' }}>
+        <Box sx={{ display: 'flex', alignItems: 'baseline' }} gap={Spacing.xxs}>
           <Typography variant="tableCellMBold" component="span" color="textPrimary" data-testid="route-provider-amount">
-            {route.toAmountOutput}
+            {formatNumber(route.toAmountOutput, { abbreviate: false })}
           </Typography>
-          {tokenSymbol && (
+          {toTokenSymbol && (
             <Typography variant="bodyXsRegular" component="span" color="textSecondary">
-              {tokenSymbol}
+              {toTokenSymbol}
             </Typography>
           )}
         </Box>
@@ -54,7 +52,7 @@ export const RouteProviderCard = ({
       </Stack>
       <Stack direction="row" justifyContent="space-between" alignItems="center">
         <Typography variant="bodyXsRegular" color="textTertiary" data-testid="route-provider-usd">
-          {usdPrice == null ? '-' : `~${formatUsd(parseFloat(route.toAmountOutput) * usdPrice)}`}
+          {route.usdPrice == null ? '-' : `~${formatUsd(parseFloat(route.toAmountOutput) * route.usdPrice)}`}
         </Typography>
         <Stack direction="row" alignItems="center" gap={Spacing.xxs}>
           {Icon}
