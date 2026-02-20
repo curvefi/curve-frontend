@@ -1,4 +1,4 @@
-import { sum } from 'lodash'
+import { sumBy } from 'lodash'
 import { createColumnHelper } from '@tanstack/react-table'
 import type { ColumnDef } from '@tanstack/table-core'
 import { t } from '@ui-kit/lib/i18n'
@@ -83,7 +83,7 @@ export const POOL_LIST_COLUMNS = [
   hidden(PoolColumnId.UserHasPositions, { id: PoolColumnId.UserHasPositions, filterFn: boolFilterFn }),
   hidden((p) => p.tags, { id: PoolColumnId.PoolTags, filterFn: inListFilterFn }),
   hidden((row) => row.rewards?.crv[0] /* non-boosted apr */, { id: PoolColumnId.RewardsCrv, filterFn: multiFilterFn }),
-  hidden((row) => (row.rewards ? sum(row.rewards.other) : undefined), {
+  hidden((row) => (row.rewards ? sumBy(row.rewards.other, (x) => x.apy) : undefined), {
     id: PoolColumnId.RewardsIncentives,
     filterFn: multiFilterFn,
   }),
