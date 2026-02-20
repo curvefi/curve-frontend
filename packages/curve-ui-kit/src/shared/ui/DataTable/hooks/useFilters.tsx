@@ -1,6 +1,6 @@
 import { isEqual, kebabCase } from 'lodash'
 import { useCallback, useEffect, useMemo } from 'react'
-import { notFalsy, type PartialRecord, recordValues } from '@curvefi/prices-api/objects.util'
+import { type PartialRecord, recordValues } from '@curvefi/prices-api/objects.util'
 import { useSearchParams } from '@ui-kit/hooks/router'
 
 /**
@@ -16,6 +16,21 @@ type ColumnEnum<TColumnId extends string> = Record<string, TColumnId>
 const scopedPrefix = (scope: string | undefined) => (scope ? `${scope}-` : '')
 /** Get scoped key for URLSearchParams */
 export const scopedKey = (scope: string | undefined, columnId: string) => `${scopedPrefix(scope)}${columnId}`
+
+/**
+ * Updates the browser history with new URL query parameters.
+ * Removes keys mapped to `null`. Keeps commas unencoded for readability.
+ * Uses `window.history` directly to remain router-agnostic and keep a stable function identity.
+ *
+ * @param updates A record of key-value pairs to set, or `null` to delete a key.
+ */
+const updateSearchParams = (updates: Record<string, string | null>) => {
+  const { history, location } = window // avoid depending on the router so we can keep the function identity stable
+  const params = new URLSearchParams(location.search)
+  Object.entries(updates).forEach(([key, value]) => (value === null ? params.delete(key) : params.set(key, value)))
+  const search = params.toString().replaceAll('%2C', ',') // keep commas unencoded for better readability
+  history.pushState(null, '', params.size ? `?${search}` : location.pathname)
+}
 
 /**
  * Parses URLSearchParams into a typed `ColumnFilters` array.
@@ -52,16 +67,8 @@ function parseFilters<TColumnId extends string>(
  * @param id The column ID whose filter is being updated.
  * @param value The new filter value, or `null` to clear the filter.
  */
-const setColumnFilter = <TColumnId extends string>(scope: string | undefined, id: TColumnId, value: string | null) => {
-  const { history, location } = window // avoid depending on the router so we can keep the function identity stable
-  const scoped = scopedKey(scope, id)
-  const params = new URLSearchParams([
-    ...[...new URLSearchParams(location.search).entries()].filter(([key]) => key !== scoped),
-    ...notFalsy(value && [scoped, value]),
-  ])
-  const search = params.toString().replaceAll('%2C', ',') // keep commas unencoded for better readability
-  history.pushState(null, '', params.size ? `?${search}` : location.pathname)
-}
+const setColumnFilter = <TColumnId extends string>(scope: string | undefined, id: TColumnId, value: string | null) =>
+  updateSearchParams({ [scopedKey(scope, id)]: value })
 
 /**
  * Manages per-column filters that are synced with URL query parameters.
@@ -110,10 +117,8 @@ export function useColumnFilters<TColumnId extends string>({
     ),
     setColumnFilter: useCallback((id: TColumnId, value: string | null) => setColumnFilter(scope, id, value), [scope]),
     resetFilters: useCallback(() => {
-      const params = new URLSearchParams(searchParams)
-      recordValues(columns).forEach((key) => params.delete(scopedKey(scope, key)))
-      history.pushState(null, '', params.size ? `?${params.toString()}` : location.pathname)
-    }, [columns, scope, searchParams]),
+      updateSearchParams(Object.fromEntries(recordValues(columns).map((key) => [scopedKey(scope, key), null])))
+    }, [columns, scope]),
   }
 }
 
@@ -129,27 +134,8 @@ export function useGlobalFilter(key = DEFAULT_SEARCH_KEY) {
   const searchParams = useSearchParams()
   const globalFilter = useMemo(() => searchParams.get(key) ?? '', [searchParams, key])
 
-  const setGlobalFilter = useCallback(
-    (value: string) => {
-      const { history, location } = window
-      const params = new URLSearchParams(location.search)
-      if (value) {
-        params.set(key, value)
-      } else {
-        params.delete(key)
-      }
-      const search = params.toString()
-      history.pushState(null, '', params.size ? `?${search}` : location.pathname)
-    },
-    [key],
-  )
-
-  const resetGlobalFilter = useCallback(() => {
-    const { history, location } = window
-    const params = new URLSearchParams(location.search)
-    params.delete(key)
-    history.pushState(null, '', params.size ? `?${params.toString()}` : location.pathname)
-  }, [key])
+  const setGlobalFilter = useCallback((value: string) => updateSearchParams({ [key]: value || null }), [key])
+  const resetGlobalFilter = useCallback(() => updateSearchParams({ [key]: null }), [key])
 
   return { globalFilter, setGlobalFilter, resetGlobalFilter }
 }
