@@ -43,7 +43,7 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
 }) {
   const isOpen = isFormTouched(form, 'userCollateral', 'userBorrowed', 'debt')
   const userState = useUserState(params, isOpen)
-  const expectedCollateralQuery = q(useBorrowMoreExpectedCollateral(params, isOpen && leverageEnabled))
+  const expectedCollateralQuery = useBorrowMoreExpectedCollateral(params, isOpen && leverageEnabled)
 
   const collateralDelta = expectedCollateralQuery.data?.totalCollateral ?? userCollateral
   const totalDebt = useMemo(
@@ -72,39 +72,41 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
     <LoanActionInfoList
       isOpen={isOpen}
       isApproved={q(useBorrowMoreIsApproved(params, isOpen))}
-      gas={useBorrowMoreEstimateGas(networks, params, isOpen)}
+      gas={q(useBorrowMoreEstimateGas(networks, params, isOpen))}
       health={q(useBorrowMoreHealth(params, isOpen && !!debt))}
-      prevHealth={prevHealth}
+      prevHealth={q(prevHealth)}
       prevRates={marketRates}
       rates={marketFutureRates}
-      prevNetBorrowApr={netBorrowApr}
-      netBorrowApr={futureBorrowApr}
-      loanToValue={useLoanToValueFromUserState(
-        {
-          chainId: params.chainId,
-          marketId: params.marketId,
-          userAddress: params.userAddress,
-          collateralToken,
-          borrowToken,
-          collateralDelta,
-          expectedBorrowed: totalDebt,
-        },
-        isOpen && !!totalDebt,
+      prevNetBorrowApr={netBorrowApr && q(netBorrowApr)}
+      netBorrowApr={futureBorrowApr && q(futureBorrowApr)}
+      loanToValue={q(
+        useLoanToValueFromUserState(
+          {
+            chainId: params.chainId,
+            marketId: params.marketId,
+            userAddress: params.userAddress,
+            collateralToken,
+            borrowToken,
+            collateralDelta,
+            expectedBorrowed: totalDebt,
+          },
+          isOpen && !!totalDebt,
+        ),
       )}
       debt={mapQuery(
         userState,
         ({ debt: stateDebt }) =>
           debt && { value: decimal(new BigNumber(stateDebt).plus(debt))!, tokenSymbol: borrowToken?.symbol },
       )}
-      collateral={{
+      collateral={q({
         data: collateralDelta &&
           userState.data && {
             value: decimal(new BigNumber(userState.data.collateral).plus(collateralDelta))!,
             tokenSymbol: collateralToken?.symbol,
           },
         isLoading: [userState, expectedCollateralQuery].some((q) => q.isLoading),
-        error: [userState, expectedCollateralQuery].find((q) => q.error)?.error,
-      }}
+        error: [userState, expectedCollateralQuery].find((q) => q.error)?.error ?? null,
+      })}
       userState={q(userState)}
       leverageEnabled={leverageEnabled}
       leverageValue={mapQuery(
@@ -122,7 +124,7 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
       exchangeRate={q(useMarketOraclePrice(params, isOpen))}
       collateralSymbol={collateralToken?.symbol}
       borrowSymbol={borrowToken?.symbol}
-      priceImpact={useBorrowMorePriceImpact(params, isOpen && leverageEnabled)}
+      priceImpact={q(useBorrowMorePriceImpact(params, isOpen && leverageEnabled))}
     />
   )
 }

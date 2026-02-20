@@ -6,7 +6,7 @@ import { combineQueryState } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo, ActionInfoGasEstimate, type TxGasInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
-import type { Query } from '@ui-kit/types/util'
+import type { QueryProp } from '@ui-kit/types/util'
 import { decimal, type Decimal, formatNumber, formatPercent } from '@ui-kit/utils'
 import { SlippageToleranceActionInfoPure } from '@ui-kit/widgets/SlippageSettings'
 import { ActionInfoCollapse } from './ActionInfoCollapse'
@@ -14,30 +14,30 @@ import { formatAmount, formatLeverage, ACTION_INFO_GROUP_SX } from './info-actio
 
 export type LoanActionInfoListProps = {
   isOpen?: boolean
-  isApproved?: Query<boolean>
-  health?: Query<Decimal | null>
-  prevHealth?: Query<Decimal>
+  isApproved?: QueryProp<boolean>
+  health?: QueryProp<Decimal | null>
+  prevHealth?: QueryProp<Decimal>
   isFullRepay?: boolean
-  prices?: Query<readonly Decimal[]>
-  rates?: Query<{ borrowApr?: Decimal } | null>
-  prevRates?: Query<{ borrowApr?: Decimal } | null>
-  exchangeRate?: Query<string | null>
-  loanToValue?: Query<Decimal | null>
-  prevLoanToValue?: Query<Decimal | null>
-  prevNetBorrowApr?: Query<Decimal | null>
-  netBorrowApr?: Query<Decimal | null>
-  gas: Query<TxGasInfo | null>
-  debt?: Query<{ value: Decimal; tokenSymbol: string | undefined } | null>
-  collateral?: Query<{ value: Decimal; tokenSymbol: string | undefined } | null>
+  prices?: QueryProp<readonly Decimal[]>
+  rates?: QueryProp<{ borrowApr?: Decimal } | null>
+  prevRates?: QueryProp<{ borrowApr?: Decimal } | null>
+  exchangeRate?: QueryProp<string | null>
+  loanToValue?: QueryProp<Decimal | null>
+  prevLoanToValue?: QueryProp<Decimal | null>
+  prevNetBorrowApr?: QueryProp<Decimal | null>
+  netBorrowApr?: QueryProp<Decimal | null>
+  gas: QueryProp<TxGasInfo | null>
+  debt?: QueryProp<{ value: Decimal; tokenSymbol: string | undefined } | null>
+  collateral?: QueryProp<{ value: Decimal; tokenSymbol: string | undefined } | null>
   /** userState values are used as prev values if collateral or debt are available */
-  userState?: Query<UserState>
-  prevLeverageValue?: Query<Decimal | null>
-  leverageValue?: Query<Decimal | null>
-  prevLeverageCollateral?: Query<Decimal | null>
-  leverageCollateral?: Query<Decimal | null>
-  prevLeverageTotalCollateral?: Query<Decimal | null>
-  leverageTotalCollateral?: Query<Decimal | null>
-  priceImpact?: Query<number | null>
+  userState?: QueryProp<UserState>
+  prevLeverageValue?: QueryProp<Decimal | null>
+  leverageValue?: QueryProp<Decimal | null>
+  prevLeverageCollateral?: QueryProp<Decimal | null>
+  leverageCollateral?: QueryProp<Decimal | null>
+  prevLeverageTotalCollateral?: QueryProp<Decimal | null>
+  leverageTotalCollateral?: QueryProp<Decimal | null>
+  priceImpact?: QueryProp<number | null>
   slippage?: Decimal
   onSlippageChange?: (newSlippage: Decimal) => void
   collateralSymbol?: string
@@ -87,7 +87,7 @@ export const LoanActionInfoList = ({
   const isHighImpact = priceImpact?.data != null && slippage != null && priceImpact.data > Number(slippage)
   const exchangeRateValue = decimal(exchangeRate?.data)
 
-  const renderDebtActionInfo = (debt || prevDebt) && (
+  const debtActionInfo = (debt || prevDebt) && (
     <ActionInfo
       label={t`Debt`}
       value={debt?.data && formatNumber(debt.data.value, { abbreviate: false })}
@@ -177,7 +177,7 @@ export const LoanActionInfoList = ({
               testId="borrow-collateral"
             />
           )}
-          {!leverageEnabled && renderDebtActionInfo}
+          {!leverageEnabled && debtActionInfo}
         </Stack>
       </Stack>
 
@@ -221,7 +221,7 @@ export const LoanActionInfoList = ({
               testId="borrow-leverage-total-collateral"
             />
           )}
-          {renderDebtActionInfo}
+          {debtActionInfo}
         </Stack>
       )}
 

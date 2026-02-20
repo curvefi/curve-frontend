@@ -11,6 +11,8 @@ import { useNewBandsChart, useIntegratedLlamaHeader } from '@ui-kit/hooks/useFea
 import { t } from '@ui-kit/lib/i18n'
 import { AddressActionInfo } from '@ui-kit/shared/ui/AddressActionInfo'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import type { Range } from '@ui-kit/types/util'
+import type { Decimal } from '@ui-kit/utils'
 import { networks } from '../networks'
 
 const { Spacing } = SizesAndSpaces
@@ -20,12 +22,19 @@ type MarketInformationCompProps = {
   marketId: string
   chainId: ChainId
   page?: 'create' | 'manage'
+  previewPrices: Range<Decimal> | undefined
 }
 
 /**
  * Reusable component for OHLC charts, Bands, and market parameters. For /create and /manage pages.
  */
-export const MarketInformationComp = ({ market, marketId, chainId, page = 'manage' }: MarketInformationCompProps) => {
+export const MarketInformationComp = ({
+  market,
+  marketId,
+  chainId,
+  page = 'manage',
+  previewPrices,
+}: MarketInformationCompProps) => {
   const newBandsChartEnabled = useNewBandsChart()
   const showPageHeader = useIntegratedLlamaHeader()
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
@@ -33,7 +42,7 @@ export const MarketInformationComp = ({ market, marketId, chainId, page = 'manag
 
   return (
     <>
-      <ChartAndActivityComp chainId={chainId} marketId={marketId} market={market} />
+      <ChartAndActivityComp chainId={chainId} marketId={marketId} market={market} previewPrices={previewPrices} />
       {isAdvancedMode && !newBandsChartEnabled && (
         <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, gap: Spacing.md, padding: Spacing.md }}>
           <BandsComp market={market} marketId={marketId} page={page} />

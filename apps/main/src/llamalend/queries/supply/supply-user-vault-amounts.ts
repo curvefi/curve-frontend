@@ -45,7 +45,7 @@ export const useUserVaultSharesToAssetsAmount = (query: FieldsOf<UserMarketQuery
   return {
     data,
     isLoading: [userVaultShareBalancesLoading, sharesToAssetsLoading].some(Boolean),
-    error: [userVaultShareBalancesError, sharesToAssetsError].find(Boolean),
+    error: [userVaultShareBalancesError, sharesToAssetsError].find(Boolean) ?? null,
   }
 }
 
@@ -67,6 +67,6 @@ export const useUserStakedVaultSharesToAssetsAmount = (query: FieldsOf<UserMarke
   return {
     data,
     isLoading: [userVaultShareBalancesLoading, sharesToAssetsLoading].some(Boolean),
-    error: [userVaultShareBalancesError, sharesToAssetsError].find(Boolean),
+    error: [userVaultShareBalancesError, sharesToAssetsError].find(Boolean) ?? null,
   }
 }

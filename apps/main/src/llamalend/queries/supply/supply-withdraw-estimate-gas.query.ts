@@ -32,6 +32,6 @@ export const useWithdrawEstimateGas = <ChainId extends IChainId>(
   return {
     data,
     isLoading: [withdrawLoading, conversionLoading].some(Boolean),
-    error: [withdrawError, estimateError].find(Boolean),
+    error: [withdrawError, estimateError].find(Boolean) ?? null,
   }
 }

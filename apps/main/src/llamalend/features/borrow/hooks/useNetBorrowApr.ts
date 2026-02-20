@@ -3,10 +3,10 @@ import { computeDecimalTotalRate } from '@/llamalend/rates.utils'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import type { MarketParams } from '@ui-kit/lib/model/query'
-import type { Query } from '@ui-kit/types/util'
+import type { QueryProp } from '@ui-kit/types/util'
 import { BlockchainIds, type Decimal } from '@ui-kit/utils'
 
-type BorrowRatesQuery = Query<{ borrowApr?: Decimal } | null>
+type BorrowRatesQuery = QueryProp<{ borrowApr?: Decimal } | null>
 
 export function useNetBorrowApr(
   {
@@ -32,12 +32,12 @@ export function useNetBorrowApr(
     netBorrowApr: marketRates && {
       data: computeDecimalTotalRate(marketRates.data?.borrowApr, rebasingYieldApr),
       isLoading: [marketRates.isLoading, snapshotsQuery.isLoading].some(Boolean),
-      error: [marketRates.error, snapshotsQuery.error].find(Boolean),
+      error: [marketRates.error, snapshotsQuery.error].find(Boolean) ?? null,
     },
     futureBorrowApr: marketFutureRates && {
       data: computeDecimalTotalRate(marketFutureRates.data?.borrowApr, rebasingYieldApr),
       isLoading: [marketFutureRates.isLoading, snapshotsQuery.isLoading].some(Boolean),
-      error: [marketFutureRates.error, snapshotsQuery.error].find(Boolean),
+      error: [marketFutureRates.error, snapshotsQuery.error].find(Boolean) ?? null,
     },
   }
 }

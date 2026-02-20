@@ -44,9 +44,6 @@ const SORT_QUERY_FIELD = {
 const getEmptyState = (isError: boolean, hasPositions: boolean): PositionsEmptyState =>
   isError ? PositionsEmptyState.Error : hasPositions ? PositionsEmptyState.Filtered : PositionsEmptyState.NoPositions
 
-const useDefaultUserFilter = (type: MarketRateType) =>
-  useMemo(() => [{ id: LlamaMarketColumnId.UserHasPositions, value: type }], [type])
-
 export type UserPositionsTableProps = {
   onReload: () => void
   result: LlamaMarketsResult | undefined
@@ -57,12 +54,12 @@ export type UserPositionsTableProps = {
 
 const pagination = { pageIndex: 0, pageSize: 50 }
 const DEFAULT_VISIBLE_ROWS = 3
+const defaultFilters: never[] = []
 
 export const UserPositionsTable = ({ onReload, result, loading, isError, tab }: UserPositionsTableProps) => {
   const { markets: data = [], userHasPositions } = result ?? {}
   const userData = useMemo(() => data.filter((market) => market.userHasPositions?.[tab]), [data, tab])
 
-  const defaultFilters = useDefaultUserFilter(tab)
   const title = LOCAL_STORAGE_KEYS[tab]
   const { globalFilter, setGlobalFilter, resetGlobalFilter } = useGlobalFilter('search-user-positions')
   const globalFilterFn = useLlamaGlobalFilterFn(userData, globalFilter)
@@ -134,7 +131,6 @@ export const UserPositionsTable = ({ onReload, result, loading, isError, tab }: 
               hiddenMarketCount={result ? userData.length - table.getFilteredRowModel().rows.length : undefined}
               hasFilters={columnFilters.length > 0 && !isEqual(columnFilters, defaultFilters)}
               resetFilters={resetFilters}
-              userHasPositions={userHasPositions}
               onSortingChange={onSortingChange}
               sortField={sortField}
               data={userData}

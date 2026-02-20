@@ -2,7 +2,7 @@ import Stack from '@mui/material/Stack'
 import { combineQueryState } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo, ActionInfoGasEstimate, type TxGasInfo } from '@ui-kit/shared/ui/ActionInfo'
-import type { Query } from '@ui-kit/types/util'
+import type { QueryProp } from '@ui-kit/types/util'
 import { type Decimal, formatNumber, formatPercent } from '@ui-kit/utils'
 import { ActionInfoCollapse } from './ActionInfoCollapse'
 import { formatAmount, ACTION_INFO_GROUP_SX } from './info-actions.helpers'
@@ -11,24 +11,24 @@ export type SupplyActionInfoListProps = {
   isOpen: boolean
   isApproved?: boolean
   /** Vault shares with optional previous value for comparison */
-  vaultShares: Query<Decimal | null>
-  prevVaultShares?: Query<Decimal | null>
+  vaultShares: QueryProp<Decimal | null>
+  prevVaultShares?: QueryProp<Decimal | null>
   /** Label for the shares ActionInfo */
   sharesLabel?: string
   /** Amount supplied in underlying asset with optional previous value */
-  amountSupplied?: Query<Decimal | null>
-  prevAmountSupplied?: Query<Decimal | null>
+  amountSupplied?: QueryProp<Decimal | null>
+  prevAmountSupplied?: QueryProp<Decimal | null>
   /** Label for the amount ActionInfo */
   amountLabel?: string
   /** Symbol of the supplied asset */
   suppliedSymbol?: string
   /** Supply APY with optional previous value */
-  supplyApy?: Query<Decimal | null>
-  prevSupplyApy?: Query<Decimal | null>
+  supplyApy?: QueryProp<Decimal | null>
+  prevSupplyApy?: QueryProp<Decimal | null>
   /** Net supply APY (accounting for rewards, etc.) */
-  netSupplyApy?: Query<Decimal | null>
+  netSupplyApy?: QueryProp<Decimal | null>
   /** Estimated gas cost for the transaction */
-  gas: Query<TxGasInfo | null>
+  gas: QueryProp<TxGasInfo | null>
 }
 
 /**

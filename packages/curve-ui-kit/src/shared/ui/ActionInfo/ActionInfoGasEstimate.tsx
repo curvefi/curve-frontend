@@ -1,7 +1,7 @@
 import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
 import { FireIcon } from '@ui-kit/shared/icons/FireIcon'
-import type { Query } from '@ui-kit/types/util'
+import type { QueryProp } from '@ui-kit/types/util'
 import { Amount, formatUsd } from '@ui-kit/utils'
 import { ActionInfo } from './ActionInfo'
 
@@ -11,7 +11,7 @@ export type TxGasInfo = {
 }
 
 export type EstimatedTxCostProps = {
-  gas: Query<TxGasInfo | null>
+  gas: QueryProp<TxGasInfo | null>
   isApproved?: boolean
 }
 

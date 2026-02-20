@@ -39,10 +39,10 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
   form: UseFormReturn<CreateLoanForm>
 }) => {
   const isOpen = isFormTouched(form, 'userCollateral', 'debt')
-  const expectedCollateral = q(useCreateLoanExpectedCollateral(params, isOpen))
+  const expectedCollateral = useCreateLoanExpectedCollateral(params, isOpen)
   const leverageValue = mapQuery(expectedCollateral, (data) => data?.leverage)
   const leverageTotalCollateral = mapQuery(expectedCollateral, (data) => data?.totalCollateral)
-  const priceImpact = q(useCreateLoanPriceImpact(params, isOpen))
+  const priceImpact = useCreateLoanPriceImpact(params, isOpen)
 
   const { marketRates, marketFutureRates, netBorrowApr, futureBorrowApr } = useNetBorrowApr(
     {
@@ -62,25 +62,27 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
       prices={q(useCreateLoanPrices(params, isOpen))}
       prevRates={marketRates}
       rates={marketFutureRates}
-      prevNetBorrowApr={netBorrowApr}
-      netBorrowApr={futureBorrowApr}
+      prevNetBorrowApr={netBorrowApr && q(netBorrowApr)}
+      netBorrowApr={futureBorrowApr && q(futureBorrowApr)}
       exchangeRate={q(useMarketOraclePrice(params, isOpen))}
       collateralSymbol={collateralToken?.symbol}
       borrowSymbol={borrowToken?.symbol}
-      loanToValue={useLoanToValue(
-        {
-          params,
-          collateralToken,
-          borrowToken,
-        },
-        isOpen,
+      loanToValue={q(
+        useLoanToValue(
+          {
+            params,
+            collateralToken,
+            borrowToken,
+          },
+          isOpen,
+        ),
       )}
-      gas={useCreateLoanEstimateGas(networks, params, isOpen)}
+      gas={q(useCreateLoanEstimateGas(networks, params, isOpen))}
       leverageEnabled={leverageEnabled}
       {...(leverageEnabled && {
         leverageValue,
         leverageTotalCollateral,
-        priceImpact,
+        priceImpact: q(priceImpact),
         slippage,
         onSlippageChange,
         collateralSymbol: collateralToken?.symbol,

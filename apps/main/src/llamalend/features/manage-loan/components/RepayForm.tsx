@@ -15,8 +15,9 @@ import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import { q } from '@ui-kit/types/util'
+import { q, type Range } from '@ui-kit/types/util'
 import { joinButtonText } from '@ui-kit/utils'
+import type { Decimal } from '@ui-kit/utils'
 import { updateForm } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts, HighPriceImpactAlert } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
@@ -56,12 +57,14 @@ export const RepayForm = <ChainId extends IChainId>({
   chainId,
   enabled,
   onSuccess,
+  onPricesUpdated,
 }: {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
   chainId: ChainId
   enabled?: boolean
   onSuccess?: RepayOptions['onSuccess']
+  onPricesUpdated: (prices: Range<Decimal> | undefined) => void
 }) => {
   const network = networks[chainId]
   const {
@@ -85,6 +88,7 @@ export const RepayForm = <ChainId extends IChainId>({
     network,
     enabled,
     onSuccess,
+    onPricesUpdated,
   })
   const { token, onToken, tokens } = useRepayTokens({ market, networkId: network.id })
 
@@ -144,7 +148,7 @@ export const RepayForm = <ChainId extends IChainId>({
         blockchainId={network.id}
         name={selectedField}
         form={form}
-        max={max[selectedField]}
+        max={q(max[selectedField])}
         maxType="range"
         {...(selectedField === 'stateCollateral' && {
           positionBalance: { position: max.stateCollateral, tooltip: t`Current collateral in position` },

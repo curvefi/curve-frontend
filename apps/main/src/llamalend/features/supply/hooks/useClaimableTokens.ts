@@ -62,7 +62,7 @@ export const useClaimableTokens = <ChainId extends LlamaChainId>(params: UserMar
     claimableTokens,
     totalNotionals,
     isClaimablesLoading: [isClaimableCrvLoading, isClaimableRewardsLoading].some(Boolean),
-    claimablesError: [claimableCrvError, claimableRewardsError].find(Boolean),
+    claimablesError: [claimableCrvError, claimableRewardsError].find(Boolean) ?? null,
     usdRateLoading,
     usdRateError: usdRateError,
   }

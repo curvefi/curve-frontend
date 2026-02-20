@@ -79,8 +79,7 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
   form: UseFormReturn<RepayForm>
 }) {
   const isOpen = isFormTouched(form, 'stateCollateral', 'userCollateral', 'userBorrowed')
-  const userStateQuery = useUserState(params, isOpen)
-  const userState = q(userStateQuery)
+  const userState = useUserState(params, isOpen)
   const priceImpact = useRepayPriceImpact(params, isOpen && swapRequired)
   const debt = useRepayRemainingDebt({ params, swapRequired, borrowToken }, { isFull, userBorrowed }, isOpen)
 
@@ -97,27 +96,29 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
     <LoanActionInfoList
       isOpen={isOpen}
       isApproved={q(useRepayIsApproved(params, isOpen))}
-      gas={useRepayEstimateGas(networks, params, isOpen)}
-      health={useHealthQueries((isFull) => getRepayHealthOptions({ ...params, isFull }, isOpen))}
-      prevHealth={useHealthQueries((isFull) => getUserHealthOptions({ ...params, isFull }, isOpen))}
+      gas={q(useRepayEstimateGas(networks, params, isOpen))}
+      health={q(useHealthQueries((isFull) => getRepayHealthOptions({ ...params, isFull }, isOpen)))}
+      prevHealth={q(useHealthQueries((isFull) => getUserHealthOptions({ ...params, isFull }, isOpen)))}
       isFullRepay={isFull}
       prevRates={marketRates}
-      prevNetBorrowApr={netBorrowApr}
-      debt={debt}
-      userState={userState}
+      prevNetBorrowApr={netBorrowApr && q(netBorrowApr)}
+      debt={q(debt)}
+      userState={q(userState)}
       prices={q(useRepayPrices(params, isOpen))}
       // routeImage={q(useRepayRouteImage(params, isOpen))}
-      loanToValue={useLoanToValueFromUserState(
-        {
-          chainId: params.chainId,
-          marketId: params.marketId,
-          userAddress: params.userAddress,
-          collateralToken,
-          borrowToken,
-          collateralDelta: userCollateral && `${-+userCollateral}`,
-          expectedBorrowed: debt?.data?.value,
-        },
-        isOpen,
+      loanToValue={q(
+        useLoanToValueFromUserState(
+          {
+            chainId: params.chainId,
+            marketId: params.marketId,
+            userAddress: params.userAddress,
+            collateralToken,
+            borrowToken,
+            collateralDelta: userCollateral && `${-+userCollateral}`,
+            expectedBorrowed: debt?.data?.value,
+          },
+          isOpen,
+        ),
       )}
       exchangeRate={q(useMarketOraclePrice(params, isOpen))}
       collateralSymbol={collateralToken?.symbol}
@@ -127,7 +128,7 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
           leverageEnabled: true,
           slippage,
           onSlippageChange,
-          priceImpact,
+          priceImpact: q(priceImpact),
         })}
     />
   )

@@ -74,6 +74,6 @@ export const useClaimEstimateGas = <ChainId extends IChainId>(
     isLoading: [claimableCrvLoading, claimableRewardsLoading, crvLoading, rewardsLoading, conversionLoading].some(
       Boolean,
     ),
-    error: [claimableCrvError, claimableRewardsError, crvError, rewardsError, estimateError].find(Boolean),
+    error: [claimableCrvError, claimableRewardsError, crvError, rewardsError, estimateError].find(Boolean) ?? null,
   }
 }
