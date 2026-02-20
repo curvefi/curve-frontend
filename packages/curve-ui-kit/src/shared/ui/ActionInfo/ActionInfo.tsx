@@ -14,6 +14,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
 import { Tooltip } from '../Tooltip'
 import { WithSkeleton } from '../WithSkeleton'
+import { WithWrapper } from '../WithWrapper'
 
 const { Spacing, IconSize } = SizesAndSpaces
 
@@ -107,15 +108,17 @@ const ValueTypography = ({
   </Typography>
 )
 /** Renders a value as a typography (same variant and color as the main value) if it's a string, otherwise renders the value directly */
-const ValueDecorator = ({ value, size, error, valueColor }: ValueDecoratorProps & { value?: ReactNode }) =>
-  typeof value === 'string' ? (
-    <ValueTypography size={size} error={error} valueColor={valueColor}>
-      {value}
-    </ValueTypography>
-  ) : (
-    value
-  )
-
+const ValueDecorator = ({ value, size, error, valueColor }: ValueDecoratorProps & { value?: ReactNode }) => (
+  <WithWrapper
+    shouldWrap={typeof value === 'string'}
+    Wrapper={ValueTypography}
+    size={size}
+    error={error}
+    valueColor={valueColor}
+  >
+    {value}
+  </WithWrapper>
+)
 export const ActionInfo = ({
   label,
   labelColor,

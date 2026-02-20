@@ -80,7 +80,7 @@ export const LoanActionInfoList = ({
   const prevCollateral = userState?.data?.collateral
   const isHighImpact = priceImpact?.data != null && slippage != null && priceImpact.data > Number(slippage)
 
-  const renderDebtActionInfo = (debt || prevDebt) && (
+  const debtActionInfo = (debt || prevDebt) && (
     <ActionInfo
       label={t`Debt`}
       value={debt?.data && formatNumber(debt.data.value, { abbreviate: false })}
@@ -169,7 +169,7 @@ export const LoanActionInfoList = ({
               testId="borrow-collateral"
             />
           )}
-          {!leverageEnabled && renderDebtActionInfo}
+          {!leverageEnabled && debtActionInfo}
         </Stack>
       </Stack>
 
@@ -213,7 +213,7 @@ export const LoanActionInfoList = ({
               testId="borrow-leverage-total-collateral"
             />
           )}
-          {renderDebtActionInfo}
+          {debtActionInfo}
         </Stack>
       )}
 
