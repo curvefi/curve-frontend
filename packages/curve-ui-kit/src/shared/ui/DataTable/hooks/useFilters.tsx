@@ -3,9 +3,13 @@ import { useCallback, useEffect, useMemo } from 'react'
 import { notFalsy, type PartialRecord, recordValues } from '@curvefi/prices-api/objects.util'
 import { useSearchParams } from '@ui-kit/hooks/router'
 
-// Similar to `ColumnFiltersState` from react-table, but more specific to have only string values (they are saved in url)
+/**
+ * Similar to `ColumnFiltersState` from react-table, but restricted to string values
+ * so filters can be safely serialized into URL query parameters.
+ */
 export type ColumnFilters<TColumnId extends string> = { id: TColumnId; value: string }[]
 
+/** Maps display names to column ID strings for a given table. */
 type ColumnEnum<TColumnId extends string> = Record<string, TColumnId>
 
 /** Get scoped prefix for URL keys, so we can have multiple tables on the same page without conflicts. */
@@ -13,7 +17,16 @@ const scopedPrefix = (scope: string | undefined) => (scope ? `${scope}-` : '')
 /** Get scoped key for URLSearchParams */
 export const scopedKey = (scope: string | undefined, columnId: string) => `${scopedPrefix(scope)}${columnId}`
 
-/** Parse URLSearchParams into ColumnFilters, keeping only allowed keys. */
+/**
+ * Parses URLSearchParams into a typed `ColumnFilters` array.
+ * Only entries whose keys match an allowed column ID (optionally scoped) are included.
+ * Default filters are prepended for any column not already present in the URL.
+ *
+ * @param search The current URLSearchParams from the browser location.
+ * @param columns Enum-like record mapping names to valid column IDs.
+ * @param defaultFilters Fallback filters applied when a column has no URL value.
+ * @param scope Optional prefix to namespace URL keys for this table instance.
+ */
 function parseFilters<TColumnId extends string>(
   search: URLSearchParams,
   columns: ColumnEnum<TColumnId>,
@@ -30,6 +43,15 @@ function parseFilters<TColumnId extends string>(
   ]
 }
 
+/**
+ * Updates the browser history to reflect a single column filter change in the URL.
+ * Removes the key if `value` is null. Keeps commas unencoded for readability.
+ * Uses `window.history` directly to remain router-agnostic and keep a stable function identity.
+ *
+ * @param scope Optional namespace prefix for the column key.
+ * @param id The column ID whose filter is being updated.
+ * @param value The new filter value, or `null` to clear the filter.
+ */
 const setColumnFilter = <TColumnId extends string>(scope: string | undefined, id: TColumnId, value: string | null) => {
   const { history, location } = window // avoid depending on the router so we can keep the function identity stable
   const scoped = scopedKey(scope, id)
@@ -41,7 +63,15 @@ const setColumnFilter = <TColumnId extends string>(scope: string | undefined, id
   history.pushState(null, '', params.size ? `?${search}` : location.pathname)
 }
 
-/** Manage column filters synced with the URL query string. Removes legacy localStorage on first run. */
+/**
+ * Manages per-column filters that are synced with URL query parameters.
+ * Cleans up legacy localStorage filter entries on first render.
+ *
+ * @param columns Enum-like record of valid column IDs for this table.
+ * @param defaultFilters Filters applied when a column has no corresponding URL param.
+ * @param title Human-readable table title, used to clear legacy localStorage keys.
+ * @param scope Optional namespace prefix to avoid URL key collisions across tables.
+ */
 export function useColumnFilters<TColumnId extends string>({
   columns,
   defaultFilters,
@@ -93,11 +123,10 @@ export function useColumnFilters<TColumnId extends string>({
 const DEFAULT_SEARCH_KEY = 'search'
 
 /**
- * Manage a global filter (free-text search) synced with the URL query string.
- * Returns the filter value, a setter, and the `globalFilterFn` to pass to `useTable`.
+ * Manages a global free-text search filter synced with the URL query string.
+ * Returns the filter value, a setter, and a reset function.
  *
- * @param key URL query param name. Defaults to `"search"`. Override to avoid conflicts.
- * @todo Refactor common route manipulation code together with `useColumnFilters`
+ * @param key URL query parameter name. Defaults to `"search"`. Override to avoid conflicts with other filters.
  */
 export function useGlobalFilter(key = DEFAULT_SEARCH_KEY) {
   const searchParams = useSearchParams()
@@ -128,7 +157,13 @@ export function useGlobalFilter(key = DEFAULT_SEARCH_KEY) {
   return { globalFilter, setGlobalFilter, resetGlobalFilter }
 }
 
-/** Combines column filters and global filter into a single hook. */
+/**
+ * Combines {@link useColumnFilters} and {@link useGlobalFilter} into a single hook
+ * for tables that need both per-column and free-text filtering, all synced with the URL.
+ *
+ * @param searchKey URL query parameter name for the global search. Defaults to `"search"`.
+ * @param columnFilterOptions - All options accepted by {@link useColumnFilters}.
+ */
 export const useFilters = <TColumnId extends string>({
   searchKey,
   ...columnFilterOptions
