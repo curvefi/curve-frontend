@@ -1,6 +1,7 @@
 import type { UseFormReturn } from 'react-hook-form'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useCreateLoanIsApproved } from '@/llamalend/queries/create-loan/create-loan-approved.query'
+import { useMarketOraclePrice } from '@/llamalend/queries/market-oracle-price.query'
 import { useMarketRates } from '@/llamalend/queries/market-rates.query'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { q } from '@ui-kit/types/util'
@@ -48,6 +49,9 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
       prices={q(useCreateLoanPrices(params, isOpen))}
       prevRates={q(useMarketRates(params, isOpen))}
       rates={q(useMarketFutureRates(params, isOpen))}
+      exchangeRate={q(useMarketOraclePrice(params, isOpen))}
+      collateralSymbol={collateralToken?.symbol}
+      borrowSymbol={borrowToken?.symbol}
       loanToValue={useLoanToValue(
         {
           params,

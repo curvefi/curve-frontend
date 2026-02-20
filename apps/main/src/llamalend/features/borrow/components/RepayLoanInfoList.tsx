@@ -5,6 +5,7 @@ import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/ho
 import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useMarketFutureRates } from '@/llamalend/queries/market-future-rates.query'
+import { useMarketOraclePrice } from '@/llamalend/queries/market-oracle-price.query'
 import { useMarketRates } from '@/llamalend/queries/market-rates.query'
 import { useRepayExpectedBorrowed } from '@/llamalend/queries/repay/repay-expected-borrowed.query'
 import { useRepayEstimateGas } from '@/llamalend/queries/repay/repay-gas-estimate.query'
@@ -106,7 +107,9 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
         },
         isOpen,
       )}
+      exchangeRate={q(useMarketOraclePrice(params, isOpen))}
       collateralSymbol={collateralToken?.symbol}
+      borrowSymbol={borrowToken?.symbol}
       {...(hasLeverage &&
         swapRequired && {
           leverageEnabled: true,

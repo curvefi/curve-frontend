@@ -7,7 +7,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo, ActionInfoGasEstimate, type TxGasInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import type { Query } from '@ui-kit/types/util'
-import { type Decimal, formatNumber, formatPercent } from '@ui-kit/utils'
+import { decimal, type Decimal, formatNumber, formatPercent } from '@ui-kit/utils'
 import { SlippageToleranceActionInfoPure } from '@ui-kit/widgets/SlippageSettings'
 import { ActionInfoCollapse } from './ActionInfoCollapse'
 import { formatAmount, formatLeverage, ACTION_INFO_GROUP_SX } from './info-actions.helpers'
@@ -21,6 +21,7 @@ export type LoanActionInfoListProps = {
   prices?: Query<readonly Decimal[]>
   rates?: Query<{ borrowApr?: Decimal } | null>
   prevRates?: Query<{ borrowApr?: Decimal } | null>
+  exchangeRate?: Query<string | null>
   loanToValue?: Query<Decimal | null>
   prevLoanToValue?: Query<Decimal | null>
   netBorrowApr?: Query<Decimal | null>
@@ -39,6 +40,7 @@ export type LoanActionInfoListProps = {
   slippage?: Decimal
   onSlippageChange?: (newSlippage: Decimal) => void
   collateralSymbol?: string
+  borrowSymbol?: string
   /** Whether to show leverage-related fields (leverage value, leverage collateral...) */
   leverageEnabled?: boolean
 }
@@ -57,6 +59,7 @@ export const LoanActionInfoList = ({
   prices,
   prevRates,
   rates,
+  exchangeRate,
   loanToValue,
   prevLoanToValue,
   netBorrowApr,
@@ -74,11 +77,13 @@ export const LoanActionInfoList = ({
   slippage,
   onSlippageChange,
   collateralSymbol,
+  borrowSymbol,
   leverageEnabled,
 }: LoanActionInfoListProps) => {
   const prevDebt = userState?.data?.debt
   const prevCollateral = userState?.data?.collateral
   const isHighImpact = priceImpact?.data != null && slippage != null && priceImpact.data > Number(slippage)
+  const exchangeRateValue = decimal(exchangeRate?.data)
 
   const renderDebtActionInfo = (debt || prevDebt) && (
     <ActionInfo
@@ -95,10 +100,10 @@ export const LoanActionInfoList = ({
     <ActionInfoCollapse isOpen={isOpen} testId="loan-action-info-list">
       <Stack sx={{ ...ACTION_INFO_GROUP_SX }}>
         <Stack>
-          {rates && (
+          {(rates || prevRates) && (
             <ActionInfo
               label={t`Borrow APR`}
-              value={rates.data?.borrowApr && formatPercent(rates.data.borrowApr)}
+              value={rates?.data?.borrowApr && formatPercent(rates.data.borrowApr)}
               prevValue={prevRates?.data?.borrowApr && formatPercent(prevRates.data.borrowApr)}
               {...combineQueryState(rates, prevRates)}
               size="small"
@@ -230,6 +235,21 @@ export const LoanActionInfoList = ({
             loading={priceImpact.isLoading}
             size="small"
             testId="borrow-price-impact"
+          />
+        )}
+
+        {exchangeRate && collateralSymbol && borrowSymbol && (
+          <ActionInfo
+            label={t`Exchange rate`}
+            value={
+              exchangeRateValue != null
+                ? `1 ${collateralSymbol} = ${formatNumber(exchangeRateValue, { abbreviate: false })} ${borrowSymbol}`
+                : undefined
+            }
+            error={exchangeRate.error}
+            loading={exchangeRate.isLoading}
+            size="small"
+            testId="borrow-exchange-rate"
           />
         )}
         <ActionInfoGasEstimate gas={gas} isApproved={isApproved?.data} />
