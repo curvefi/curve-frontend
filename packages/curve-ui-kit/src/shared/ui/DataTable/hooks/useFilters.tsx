@@ -29,7 +29,7 @@ const updateSearchParams = (updates: Record<string, string | null>) => {
   const params = new URLSearchParams(location.search)
   Object.entries(updates).forEach(([key, value]) => (value === null ? params.delete(key) : params.set(key, value)))
   const search = params.toString().replaceAll('%2C', ',') // keep commas unencoded for better readability
-  history.pushState(null, '', params.size ? `?${search}` : location.pathname)
+  history.replaceState(null, '', params.size ? `?${search}` : location.pathname)
 }
 
 /**
