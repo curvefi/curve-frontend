@@ -23,7 +23,8 @@ const headers = {
   [PoolColumnId.Tvl]: t`TVL`,
 }
 
-type PoolColumn = ColumnDef<PoolListItem, unknown>
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type PoolColumn = ColumnDef<PoolListItem, any>
 
 /** Define a hidden column. */
 const hidden = (

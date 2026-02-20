@@ -3,7 +3,7 @@ import type { UseFormReturn } from 'react-hook-form'
 import type { Token } from '@/llamalend/features/borrow/types'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useMarketSupplyFutureRates } from '@/llamalend/queries/market-future-rates.query'
-import { useMarketRates } from '@/llamalend/queries/market-rates'
+import { useMarketRates } from '@/llamalend/queries/market-rates.query'
 import { useDepositIsApproved } from '@/llamalend/queries/supply/supply-deposit-approved.query'
 import { useDepositEstimateGas } from '@/llamalend/queries/supply/supply-deposit-estimate-gas.query'
 import { useDepositExpectedVaultShares } from '@/llamalend/queries/supply/supply-expected-vault-shares.query'
@@ -50,11 +50,11 @@ export function DepositSupplyInfoList<ChainId extends IChainId>({
       suppliedSymbol={tokens.borrowToken?.symbol}
       prevVaultShares={mapQuery(userBalances, (d) => d.vaultShares)}
       vaultShares={q(useDepositExpectedVaultShares(params, isOpen))}
-      prevAmountSupplied={prevAmountSupplied}
+      prevAmountSupplied={q(prevAmountSupplied)}
       amountSupplied={amountSupplied}
       prevSupplyApy={mapQuery(marketRates, (d) => d.lendApy)}
       supplyApy={mapQuery(futureRates, (d) => d.lendApy)}
-      gas={useDepositEstimateGas(networks, params, isOpen)}
+      gas={q(useDepositEstimateGas(networks, params, isOpen))}
     />
   )
 }

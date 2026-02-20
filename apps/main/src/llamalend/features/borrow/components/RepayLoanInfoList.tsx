@@ -5,7 +5,7 @@ import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/ho
 import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useMarketFutureRates } from '@/llamalend/queries/market-future-rates.query'
-import { useMarketRates } from '@/llamalend/queries/market-rates'
+import { useMarketRates } from '@/llamalend/queries/market-rates.query'
 import { useRepayExpectedBorrowed } from '@/llamalend/queries/repay/repay-expected-borrowed.query'
 import { useRepayEstimateGas } from '@/llamalend/queries/repay/repay-gas-estimate.query'
 import { getRepayHealthOptions } from '@/llamalend/queries/repay/repay-health.query'
@@ -76,35 +76,36 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
   form: UseFormReturn<RepayForm>
 }) {
   const isOpen = isFormTouched(form, 'stateCollateral', 'userCollateral', 'userBorrowed')
-  const userStateQuery = useUserState(params, isOpen)
-  const userState = q(userStateQuery)
+  const userState = useUserState(params, isOpen)
   const priceImpact = useRepayPriceImpact(params, isOpen && swapRequired)
   const debt = useRepayRemainingDebt({ params, swapRequired, borrowToken }, { isFull, userBorrowed }, isOpen)
   return (
     <LoanActionInfoList
       isOpen={isOpen}
       isApproved={q(useRepayIsApproved(params, isOpen))}
-      gas={useRepayEstimateGas(networks, params, isOpen)}
-      health={useHealthQueries((isFull) => getRepayHealthOptions({ ...params, isFull }, isOpen))}
-      prevHealth={useHealthQueries((isFull) => getUserHealthOptions({ ...params, isFull }, isOpen))}
+      gas={q(useRepayEstimateGas(networks, params, isOpen))}
+      health={q(useHealthQueries((isFull) => getRepayHealthOptions({ ...params, isFull }, isOpen)))}
+      prevHealth={q(useHealthQueries((isFull) => getUserHealthOptions({ ...params, isFull }, isOpen)))}
       isFullRepay={isFull}
       prevRates={q(useMarketRates(params, isOpen))}
       rates={q(useMarketFutureRates(params, isOpen))}
-      debt={debt}
-      userState={userState}
+      debt={q(debt)}
+      userState={q(userState)}
       prices={q(useRepayPrices(params, isOpen))}
       // routeImage={q(useRepayRouteImage(params, isOpen))}
-      loanToValue={useLoanToValueFromUserState(
-        {
-          chainId: params.chainId,
-          marketId: params.marketId,
-          userAddress: params.userAddress,
-          collateralToken,
-          borrowToken,
-          collateralDelta: userCollateral && `${-+userCollateral}`,
-          expectedBorrowed: debt?.data?.value,
-        },
-        isOpen,
+      loanToValue={q(
+        useLoanToValueFromUserState(
+          {
+            chainId: params.chainId,
+            marketId: params.marketId,
+            userAddress: params.userAddress,
+            collateralToken,
+            borrowToken,
+            collateralDelta: userCollateral && `${-+userCollateral}`,
+            expectedBorrowed: debt?.data?.value,
+          },
+          isOpen,
+        ),
       )}
       collateralSymbol={collateralToken?.symbol}
       {...(hasLeverage &&
@@ -112,7 +113,7 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
           leverageEnabled: true,
           slippage,
           onSlippageChange,
-          priceImpact,
+          priceImpact: q(priceImpact),
         })}
     />
   )

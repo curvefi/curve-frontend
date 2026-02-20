@@ -3,7 +3,7 @@ import { useMarketOnChainRewards, useMarketPricePerShare } from '@/lend/entities
 import { networks } from '@/lend/networks'
 import { ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import type { SupplyPositionDetailsProps } from '@/llamalend/features/market-position-details'
-import { useMarketRates } from '@/llamalend/queries/market-rates'
+import { useMarketRates } from '@/llamalend/queries/market-rates.query'
 import { useUserMarketBalances, useUserSupplyBoost } from '@/llamalend/queries/user'
 import type { Address, Chain } from '@curvefi/prices-api'
 import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
