@@ -13,7 +13,7 @@ import type { UnstakeForm, UnstakeParams } from '@/llamalend/queries/validation/
 import { SupplyActionInfoList } from '@/llamalend/widgets/action-card/SupplyActionInfoList'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { t } from '@ui-kit/lib/i18n'
-import { mapQuery } from '@ui-kit/types/util'
+import { mapQuery, q } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
 import { isFormTouched } from '@ui-kit/utils/react-form.utils'
 
@@ -59,10 +59,10 @@ export function UnstakeSupplyInfoList<ChainId extends IChainId>({
       suppliedSymbol={tokens.borrowToken?.symbol}
       prevVaultShares={prevStakedShares}
       vaultShares={stakedShares}
-      prevAmountSupplied={prevAmountStaked}
+      prevAmountSupplied={q(prevAmountStaked)}
       amountSupplied={amountStaked}
       supplyApy={mapQuery(marketRates, (d) => d.lendApy)}
-      gas={useUnstakeEstimateGas(networks, params, isOpen)}
+      gas={q(useUnstakeEstimateGas(networks, params, isOpen))}
     />
   )
 }
