@@ -16,6 +16,7 @@ export const { useQuery: useBorrowMorePrices } = queryFactory({
     debt = '0',
     maxDebt,
     leverageEnabled,
+    route,
   }: BorrowMoreParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
@@ -25,6 +26,7 @@ export const { useQuery: useBorrowMorePrices } = queryFactory({
       { debt },
       { maxDebt },
       { leverageEnabled },
+      { route },
     ] as const,
   queryFn: async ({
     marketId,
@@ -32,14 +34,18 @@ export const { useQuery: useBorrowMorePrices } = queryFactory({
     userBorrowed = '0',
     debt = '0',
     leverageEnabled,
+    route,
   }: BorrowMoreQuery) => {
     const [type, impl, args] = getBorrowMoreImplementationArgs(marketId, {
       userCollateral,
       userBorrowed,
       debt,
       leverageEnabled,
+      route,
     })
     switch (type) {
+      case 'zapV2':
+        return (await impl.borrowMoreExpectedMetrics(...args)).prices as Range<Decimal>
       case 'V1':
       case 'V2':
         return (await impl.borrowMorePrices(...args)) as Range<Decimal>

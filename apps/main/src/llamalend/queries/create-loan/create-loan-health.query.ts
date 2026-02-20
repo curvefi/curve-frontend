@@ -2,6 +2,7 @@ import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/cre
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import type { Decimal } from '@ui-kit/utils'
 import { decimal } from '@ui-kit/utils'
+import { parseRoute } from '@ui-kit/widgets/RouteProvider'
 import type { CreateLoanDebtParams, CreateLoanDebtQuery } from '../../features/borrow/types'
 import { createLoanQueryValidationSuite } from '../validation/borrow.validation'
 import { createLoanExpectedCollateralQueryKey } from './create-loan-expected-collateral.query'
@@ -17,6 +18,7 @@ export const { useQuery: useCreateLoanHealth } = queryFactory({
     leverageEnabled,
     range,
     maxDebt,
+    route,
   }: CreateLoanDebtParams) =>
     [
       ...rootKeys.market({ chainId, marketId }),
@@ -27,6 +29,7 @@ export const { useQuery: useCreateLoanHealth } = queryFactory({
       { leverageEnabled },
       { range },
       { maxDebt },
+      { route },
     ] as const,
   queryFn: async ({
     marketId,
@@ -35,9 +38,15 @@ export const { useQuery: useCreateLoanHealth } = queryFactory({
     debt = '0',
     leverageEnabled,
     range,
+    route,
   }: CreateLoanDebtQuery): Promise<Decimal> => {
     const [type, impl] = getCreateLoanImplementation(marketId, leverageEnabled)
     switch (type) {
+      case 'zapV2':
+        return decimal(
+          (await impl.createLoanExpectedMetrics({ userCollateral, userBorrowed, debt, range, ...parseRoute(route) }))
+            .health,
+        )!
       case 'V1':
       case 'V2':
         return decimal(await impl.createLoanHealth(userCollateral, userBorrowed, debt, range))!

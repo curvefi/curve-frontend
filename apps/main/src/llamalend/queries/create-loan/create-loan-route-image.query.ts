@@ -22,6 +22,7 @@ export const { useQuery: useCreateLoanRouteImage } = queryFactory({
         return await impl.createLoanRouteImage(userBorrowed, debt)
       case 'V0':
       case 'unleveraged':
+      case 'zapV2':
         return null
     }
   },

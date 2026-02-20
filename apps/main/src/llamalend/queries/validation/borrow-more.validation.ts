@@ -1,5 +1,7 @@
 import { skipWhen } from 'vest'
-import { getBorrowMoreImplementationArgs } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
+import { isRouterMetaRequired } from '@/llamalend/llama.utils'
+import type { RouterMeta } from '@/llamalend/llamalend.types'
+import { getBorrowMoreImplementation } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
 import {
   validateDebt,
   validateLeverageEnabled,
@@ -7,6 +9,7 @@ import {
   validateMaxBorrowed,
   validateMaxCollateral,
   validateMaxDebt,
+  validateRoute,
   validateSlippage,
   validateUserBorrowed,
   validateUserCollateral,
@@ -26,7 +29,7 @@ export type BorrowMoreMutation = {
   debt: Decimal
   slippage: Decimal
   leverageEnabled: boolean
-}
+} & RouterMeta
 
 type CalculatedValues = {
   maxDebt: Decimal | undefined
@@ -45,18 +48,15 @@ export type BorrowMoreParams<ChainId = number> = FieldsOf<BorrowMoreQuery<ChainI
 const validateBorrowMoreFieldsForMarket = (
   marketId: string | null | undefined,
   leverageEnabled: boolean | null | undefined,
-  userCollateral: Decimal | null | undefined,
-  userBorrowed: Decimal | null | undefined,
-  debt: Decimal | null | undefined,
+  _userCollateral: Decimal | null | undefined,
+  _userBorrowed: Decimal | null | undefined,
+  _debt: Decimal | null | undefined,
+  route: RouterMeta['route'],
 ) => {
   skipWhen(!marketId, () => {
     if (!marketId) return
-    getBorrowMoreImplementationArgs(marketId, {
-      leverageEnabled,
-      debt: debt ?? '0',
-      userCollateral: userCollateral ?? '0',
-      userBorrowed: userBorrowed ?? '0',
-    })
+    const [type] = getBorrowMoreImplementation(marketId, leverageEnabled)
+    validateRoute(route, !!leverageEnabled && isRouterMetaRequired(type))
   })
 }
 
@@ -97,6 +97,7 @@ export const borrowMoreValidationGroup = <IChainId extends number>(
     userAddress,
     slippage,
     leverageEnabled,
+    route,
   }: BorrowMoreParams<IChainId>,
   {
     leverageRequired = false,
@@ -116,7 +117,7 @@ export const borrowMoreValidationGroup = <IChainId extends number>(
   validateUserBorrowed(userBorrowed)
   validateDebt(debt, debtRequired)
   validateMaxDebt(debt, maxDebt, maxDebtRequired)
-  validateBorrowMoreFieldsForMarket(marketId, leverageEnabled, userCollateral, userBorrowed, debt)
+  validateBorrowMoreFieldsForMarket(marketId, leverageEnabled, userCollateral, userBorrowed, debt, route)
   validateSlippage(slippage)
   validateLeverageEnabled(leverageEnabled, leverageRequired)
   validateLeverageSupported(marketId, leverageRequired)

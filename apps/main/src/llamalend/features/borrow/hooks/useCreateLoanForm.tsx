@@ -1,7 +1,8 @@
 import { useEffect, useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { useConnection } from 'wagmi'
-import { getTokens } from '@/llamalend/llama.utils'
+import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
+import { getTokens, hasZapV2 } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { isLeverageBorrowMoreSupported } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
 import { useCreateLoanExpectedCollateral } from '@/llamalend/queries/create-loan/create-loan-expected-collateral.query'
@@ -15,9 +16,10 @@ import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { mapQuery, type Range } from '@ui-kit/types/util'
 import { Decimal } from '@ui-kit/utils'
-import { useCallbackAfterFormUpdate, useFormErrors } from '@ui-kit/utils/react-form.utils'
+import { updateForm, useCallbackAfterFormUpdate, useFormErrors } from '@ui-kit/utils/react-form.utils'
+import { type RouteOption } from '@ui-kit/widgets/RouteProvider'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
-import { PRESET_RANGES, LoanPreset } from '../../../constants'
+import { LoanPreset, PRESET_RANGES } from '../../../constants'
 import { type CreateLoanOptions, useCreateLoanMutation } from '../../../mutations/create-loan.mutation'
 import { useCreateLoanIsApproved } from '../../../queries/create-loan/create-loan-approved.query'
 import { createLoanQueryValidationSuite } from '../../../queries/validation/borrow.validation'
@@ -61,6 +63,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
       userCollateral: undefined,
       userBorrowed: `0` satisfies Decimal,
       debt: undefined,
+      route: undefined,
       leverageEnabled: false,
       slippage: SLIPPAGE_PRESETS.STABLE,
       range: PRESET_RANGES[preset],
@@ -84,6 +87,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
         leverageEnabled: values.leverageEnabled,
         userCollateral: values.userCollateral,
         userBorrowed: values.userBorrowed,
+        route: values.route,
       }),
       [
         chainId,
@@ -97,6 +101,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
         values.leverageEnabled,
         values.userCollateral,
         values.userBorrowed,
+        values.route,
       ],
     ),
   )
@@ -115,6 +120,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
 
   useChartPricesCallback(params, onPricesUpdated)
   useCallbackAfterFormUpdate(form, resetCreation) // reset creation state on form change
+  const onChangeRoute = (route: RouteOption) => updateForm(form, { route })
 
   const isPending = formState.isSubmitting || isCreating
   return {
@@ -136,5 +142,15 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     ),
     isApproved: useCreateLoanIsApproved(params),
     formErrors: useFormErrors(formState),
+    routes: useMarketRoutes({
+      chainId,
+      tokenIn: collateralToken,
+      tokenOut: borrowToken,
+      amountIn: values.userCollateral,
+      slippage: values.slippage,
+      selectedRoute: values.route ?? undefined,
+      enabled: params.leverageEnabled && !!market && hasZapV2(market),
+      onChange: onChangeRoute,
+    }),
   }
 }

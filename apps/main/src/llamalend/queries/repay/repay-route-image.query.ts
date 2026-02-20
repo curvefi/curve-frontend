@@ -11,6 +11,7 @@ export const { useQuery: useRepayRouteImage } = queryFactory({
     userCollateral = '0',
     userBorrowed = '0',
     userAddress,
+    route,
   }: RepayParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
@@ -18,13 +19,16 @@ export const { useQuery: useRepayRouteImage } = queryFactory({
       { stateCollateral },
       { userCollateral },
       { userBorrowed },
+      { route },
     ] as const,
-  queryFn: async ({ marketId, stateCollateral, userCollateral, userBorrowed }: RepayQuery) => {
-    const [type, impl] = getRepayImplementation(marketId, { userCollateral, stateCollateral, userBorrowed })
+  queryFn: async ({ marketId, stateCollateral, userCollateral, userBorrowed, route }: RepayQuery) => {
+    const [type, impl] = getRepayImplementation(marketId, { userCollateral, stateCollateral, userBorrowed, route })
     switch (type) {
       case 'V1':
       case 'V2':
         return await impl.repayRouteImage(stateCollateral, userCollateral)
+      case 'zapV2':
+        return new Error('repayRouteImage is not implemented for zapV2 yet')
       case 'deleverage':
       case 'unleveraged':
         throw new Error('repayRouteImage is not supported for deleverage or unleveraged repay')

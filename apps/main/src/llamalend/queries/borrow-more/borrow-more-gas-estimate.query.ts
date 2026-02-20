@@ -18,6 +18,7 @@ const { useQuery: useBorrowMoreApproveGasEstimate } = queryFactory({
     userBorrowed = '0',
     maxDebt,
     leverageEnabled,
+    route,
   }: BorrowMoreParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
@@ -26,6 +27,7 @@ const { useQuery: useBorrowMoreApproveGasEstimate } = queryFactory({
       { userBorrowed },
       { maxDebt },
       { leverageEnabled },
+      { route },
     ] as const,
   queryFn: async ({
     marketId,
@@ -36,6 +38,8 @@ const { useQuery: useBorrowMoreApproveGasEstimate } = queryFactory({
     if (!+userCollateral && !+userBorrowed) return null
     const [type, impl] = getBorrowMoreImplementation(marketId, leverageEnabled)
     switch (type) {
+      case 'zapV2':
+        return await impl.estimateGas.borrowMoreApprove({ userCollateral, userBorrowed })
       case 'V1':
       case 'V2':
         return await impl.estimateGas.borrowMoreApprove(userCollateral, userBorrowed)
@@ -76,6 +80,7 @@ const { useQuery: useBorrowMoreGasEstimate } = queryFactory({
     debt = '0',
     slippage,
     leverageEnabled,
+    route,
   }: BorrowMoreQuery): Promise<TGas | null> => {
     if (!+debt) return null
     const [type, impl, args] = getBorrowMoreImplementationArgs(marketId, {
@@ -83,8 +88,11 @@ const { useQuery: useBorrowMoreGasEstimate } = queryFactory({
       userBorrowed,
       debt,
       leverageEnabled,
+      route,
     })
     switch (type) {
+      case 'zapV2':
+        return await impl.estimateGas.borrowMore(...args)
       case 'V1':
       case 'V2':
         await impl.borrowMoreExpectedCollateral(userCollateral, userBorrowed, debt, +slippage)

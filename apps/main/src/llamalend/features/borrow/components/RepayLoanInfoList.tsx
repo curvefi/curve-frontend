@@ -3,6 +3,7 @@ import type { UseFormReturn } from 'react-hook-form'
 import type { Token } from '@/llamalend/features/borrow/types'
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
 import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
+import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useMarketFutureRates } from '@/llamalend/queries/market-future-rates.query'
 import { useMarketRates } from '@/llamalend/queries/market-rates.query'
@@ -64,6 +65,7 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
   onSlippageChange,
   hasLeverage,
   swapRequired,
+  routes,
   form,
 }: {
   params: RepayParams<ChainId>
@@ -73,6 +75,7 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
   onSlippageChange: (newSlippage: Decimal) => void
   hasLeverage: boolean | undefined
   swapRequired: boolean
+  routes: MarketRoutes | undefined
   form: UseFormReturn<RepayForm>
 }) {
   const isOpen = isFormTouched(form, 'stateCollateral', 'userCollateral', 'userBorrowed')
@@ -108,6 +111,8 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
         ),
       )}
       collateralSymbol={collateralToken?.symbol}
+      leverageEnabled={hasLeverage}
+      routes={routes}
       {...(hasLeverage &&
         swapRequired && {
           leverageEnabled: true,

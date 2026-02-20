@@ -21,6 +21,7 @@ export const { useQuery: useRepayExpectedBorrowed, queryKey: repayExpectedBorrow
     userBorrowed = '0',
     userAddress,
     slippage,
+    route,
   }: RepayParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
@@ -29,6 +30,7 @@ export const { useQuery: useRepayExpectedBorrowed, queryKey: repayExpectedBorrow
       { userCollateral },
       { userBorrowed },
       { slippage },
+      { route },
     ] as const,
   queryFn: async ({
     chainId,
@@ -38,9 +40,17 @@ export const { useQuery: useRepayExpectedBorrowed, queryKey: repayExpectedBorrow
     userCollateral,
     userBorrowed,
     slippage,
+    route,
   }: RepayQuery) => {
-    const [type, impl, args] = getRepayImplementation(marketId, { userCollateral, stateCollateral, userBorrowed })
+    const [type, impl, args] = getRepayImplementation(marketId, {
+      userCollateral,
+      stateCollateral,
+      userBorrowed,
+      route,
+    })
     switch (type) {
+      case 'zapV2':
+        return (await impl.repayExpectedBorrowed(...args)) as RepayExpectedBorrowedResult
       case 'V1':
       case 'V2':
         return (await impl.repayExpectedBorrowed(...args, +slippage)) as RepayExpectedBorrowedResult

@@ -12,6 +12,7 @@ export const { useQuery: useBorrowMoreIsApproved, fetchQuery: fetchBorrowMoreIsA
     userBorrowed = '0',
     maxDebt,
     leverageEnabled,
+    route,
   }: BorrowMoreParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
@@ -20,10 +21,13 @@ export const { useQuery: useBorrowMoreIsApproved, fetchQuery: fetchBorrowMoreIsA
       { userBorrowed },
       { maxDebt },
       { leverageEnabled },
+      { route },
     ] as const,
   queryFn: async ({ marketId, userCollateral = '0', userBorrowed = '0', leverageEnabled }: BorrowMoreQuery) => {
     const [type, impl] = getBorrowMoreImplementation(marketId, leverageEnabled)
     switch (type) {
+      case 'zapV2':
+        return await impl.borrowMoreIsApproved({ userCollateral, userBorrowed })
       case 'V1':
       case 'V2':
         return await impl.borrowMoreIsApproved(userCollateral, userBorrowed)

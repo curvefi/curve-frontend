@@ -153,7 +153,6 @@ export const QuickSwap = ({
 
   const { data: fromUsdRate } = useTokenUsdRate({ chainId, tokenAddress: fromAddress }, !!fromAddress)
   const { data: toUsdRate } = useTokenUsdRate({ chainId, tokenAddress: toAddress }, !!toAddress)
-
   const {
     balances,
     tokenPrices,

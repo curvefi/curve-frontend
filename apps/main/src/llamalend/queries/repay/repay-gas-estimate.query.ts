@@ -17,6 +17,7 @@ const { useQuery: useRepayLoanEstimateGas } = queryFactory({
     userAddress,
     isFull,
     slippage,
+    route,
   }: RepayIsApprovedParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
@@ -26,6 +27,7 @@ const { useQuery: useRepayLoanEstimateGas } = queryFactory({
       { userBorrowed },
       { isFull },
       { slippage },
+      { route },
     ] as const,
   queryFn: async ({
     marketId,
@@ -35,14 +37,22 @@ const { useQuery: useRepayLoanEstimateGas } = queryFactory({
     isFull,
     userAddress,
     slippage,
+    route,
   }: RepayIsFullQuery): Promise<TGas> => {
     const market = getLlamaMarket(marketId)
     const useFullRepay = isFull && !+stateCollateral && !+userCollateral
     if (useFullRepay) {
       return await market.estimateGas.fullRepay(userAddress)
     }
-    const [type, impl, args] = getRepayImplementation(marketId, { userCollateral, stateCollateral, userBorrowed })
+    const [type, impl, args] = getRepayImplementation(marketId, {
+      userCollateral,
+      stateCollateral,
+      userBorrowed,
+      route,
+    })
     switch (type) {
+      case 'zapV2':
+        return await impl.estimateGas.repay(...args)
       case 'V1':
       case 'V2':
         return await impl.estimateGas.repay(...args, +slippage)
@@ -65,6 +75,7 @@ const { useQuery: useRepayApproveGasEstimate } = queryFactory({
     userBorrowed = '0',
     userAddress,
     isFull,
+    route,
   }: RepayIsApprovedParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
@@ -73,6 +84,7 @@ const { useQuery: useRepayApproveGasEstimate } = queryFactory({
       { userCollateral },
       { userBorrowed },
       { isFull },
+      { route },
     ] as const,
   queryFn: async ({
     marketId,
@@ -81,13 +93,16 @@ const { useQuery: useRepayApproveGasEstimate } = queryFactory({
     userBorrowed,
     isFull,
     userAddress,
+    route,
   }: RepayIsFullQuery): Promise<TGas> => {
     const useFullRepay = isFull && !+stateCollateral && !+userCollateral
     if (useFullRepay) {
       return await getLlamaMarket(marketId).estimateGas.fullRepayApprove(userAddress)
     }
-    const [type, impl] = getRepayImplementation(marketId, { userCollateral, stateCollateral, userBorrowed })
+    const [type, impl] = getRepayImplementation(marketId, { userCollateral, stateCollateral, userBorrowed, route })
     switch (type) {
+      case 'zapV2':
+        return await impl.estimateGas.repayApprove({ userCollateral, userBorrowed })
       case 'V1':
       case 'V2':
         return await impl.estimateGas.repayApprove(userCollateral, userBorrowed)

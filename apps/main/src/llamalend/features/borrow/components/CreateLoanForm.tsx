@@ -59,6 +59,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
     maxTokenValues: { collateral: maxCollateral, debt: maxDebt, maxLeverage, setRange },
     onSubmit,
     params,
+    routes,
     txHash,
     values,
     leverage,
@@ -81,6 +82,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
           collateralToken={collateralToken}
           borrowToken={borrowToken}
           networks={networks}
+          routes={routes}
           onSlippageChange={(value) => updateForm(form, { slippage: value })}
         />
       }

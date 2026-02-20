@@ -1,11 +1,14 @@
 import { enforce, group, skipWhen, test } from 'vest'
-import { getRepayImplementation } from '@/llamalend/queries/repay/repay-query.helpers'
+import { isRouterMetaRequired } from '@/llamalend/llama.utils'
+import type { RouterMeta } from '@/llamalend/llamalend.types'
+import { getRepayImplementationType } from '@/llamalend/queries/repay/repay-query.helpers'
 import {
   validateIsFull,
   validateLeverageSupported,
   validateLeverageValuesSupported,
   validateMaxBorrowed,
   validateMaxCollateral,
+  validateRoute,
   validateSlippage,
   validateUserCollateral,
 } from '@/llamalend/queries/validation/borrow-fields.validation'
@@ -35,7 +38,7 @@ export type RepayForm = {
   maxBorrowed: Decimal | undefined
   isFull: boolean
   slippage: Decimal
-}
+} & RouterMeta
 
 export const validateRepayCollateralField = (
   field: 'stateCollateral' | 'userCollateral',
@@ -85,15 +88,18 @@ const validateRepayFieldsForMarket = (
   stateCollateral: Decimal | null | undefined,
   userCollateral: Decimal | null | undefined,
   userBorrowed: Decimal | null | undefined,
+  route: RouterMeta['route'],
 ) => {
   skipWhen(!marketId, () => {
     if (!marketId) return // somehow, skipWhen doesn't stop execution of the inner function
     // Get the implementation to validate fields according to market capabilities. Default to 0 just like the queries
-    getRepayImplementation(marketId, {
+    const type = getRepayImplementationType(marketId, {
       stateCollateral: stateCollateral ?? '0',
       userCollateral: userCollateral ?? '0',
       userBorrowed: userBorrowed ?? '0',
     })
+    const swapRequired = !!stateCollateral || !!userCollateral || !!route
+    validateRoute(route, swapRequired && isRouterMetaRequired(type))
   })
 }
 
@@ -145,7 +151,16 @@ export const collateralHealthValidationSuite = createValidationSuite(({ isFull, 
 })
 
 export const repayValidationGroup = <IChainId extends number>(
-  { chainId, marketId, stateCollateral, userCollateral, userBorrowed, userAddress, slippage }: RepayParams<IChainId>,
+  {
+    chainId,
+    marketId,
+    stateCollateral,
+    userCollateral,
+    userBorrowed,
+    userAddress,
+    slippage,
+    route,
+  }: RepayParams<IChainId>,
   { leverageRequired = false }: { leverageRequired?: boolean } = {},
 ) => {
   chainValidationGroup({ chainId })
@@ -156,7 +171,7 @@ export const repayValidationGroup = <IChainId extends number>(
   validateRepayCollateralField('stateCollateral', stateCollateral)
   validateRepayBorrowedField(userBorrowed)
   validateRepayHasValue(stateCollateral, userCollateral, userBorrowed)
-  validateRepayFieldsForMarket(marketId, stateCollateral, userCollateral, userBorrowed)
+  validateRepayFieldsForMarket(marketId, stateCollateral, userCollateral, userBorrowed, route)
   validateSlippage(slippage)
   validateLeverageSupported(marketId, leverageRequired)
 }

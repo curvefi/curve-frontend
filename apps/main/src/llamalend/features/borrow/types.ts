@@ -1,3 +1,4 @@
+import type { RouterMeta } from '@/llamalend/llamalend.types'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { FieldsOf } from '@ui-kit/lib'
 import type { MarketQuery } from '@ui-kit/lib/model'
@@ -19,10 +20,12 @@ type CompleteCreateLoanForm = {
 type CalculatedValues = { maxDebt: Decimal | undefined; maxCollateral: Decimal | undefined }
 
 /** Create loan form as used in the UI, with some fields still optional or being filled in */
-export type CreateLoanForm = MakeOptional<CompleteCreateLoanForm, 'debt' | 'userCollateral'> & CalculatedValues
+export type CreateLoanForm = MakeOptional<CompleteCreateLoanForm, 'debt' | 'userCollateral'> &
+  CalculatedValues &
+  RouterMeta
 
 /** Full query type for create loan queries, including pool identification and all form fields */
-export type CreateLoanFormQuery<T = IChainId> = MarketQuery<T> & CompleteCreateLoanForm
+export type CreateLoanFormQuery<T = IChainId> = MarketQuery<T> & CompleteCreateLoanForm & RouterMeta
 /** Fields of the create loan form query before validation */
 export type CreateLoanFormQueryParams<T = IChainId> = FieldsOf<CreateLoanFormQuery<T>>
 

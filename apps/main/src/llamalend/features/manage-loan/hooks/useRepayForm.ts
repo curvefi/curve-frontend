@@ -1,13 +1,16 @@
+import BigNumber from 'bignumber.js'
 import { useEffect, useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { Address } from 'viem'
 import { useConnection } from 'wagmi'
 import { useMaxRepayTokenValues } from '@/llamalend/features/manage-loan/hooks/useMaxRepayTokenValues'
-import { getTokens } from '@/llamalend/llama.utils'
+import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
+import { getTokens, isRouterMetaRequired } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { type RepayOptions, useRepayMutation } from '@/llamalend/mutations/repay.mutation'
 import { useRepayIsApproved } from '@/llamalend/queries/repay/repay-is-approved.query'
 import { useRepayIsAvailable } from '@/llamalend/queries/repay/repay-is-available.query'
+import { getRepayImplementationType } from '@/llamalend/queries/repay/repay-query.helpers'
 import { useRepayPrices } from '@/llamalend/queries/repay/repay-prices.query'
 import type { RepayIsFullParams } from '@/llamalend/queries/validation/manage-loan.types'
 import { type RepayForm, repayFormValidationSuite } from '@/llamalend/queries/validation/manage-loan.validation'
@@ -17,9 +20,11 @@ import { vestResolver } from '@hookform/resolvers/vest'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { t } from '@ui-kit/lib/i18n'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
-import type { Range } from '@ui-kit/types/util'
 import type { Decimal } from '@ui-kit/utils'
-import { filterFormErrors, useCallbackAfterFormUpdate } from '@ui-kit/utils/react-form.utils'
+import { decimal } from '@ui-kit/utils'
+import { filterFormErrors, updateForm, useCallbackAfterFormUpdate } from '@ui-kit/utils/react-form.utils'
+import { type RouteOption } from '@ui-kit/widgets/RouteProvider'
+import type { Range } from '@ui-kit/types/util'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 
 const NOT_AVAILABLE = ['root', t`Repay is not available, increase the repayment amount or repay fully.`] as const
@@ -31,6 +36,7 @@ const useRepayParams = <ChainId>({
   stateCollateral,
   userBorrowed,
   userCollateral,
+  route,
   chainId,
   marketId,
   userAddress,
@@ -51,8 +57,20 @@ const useRepayParams = <ChainId>({
         maxCollateral,
         isFull,
         slippage,
+        route,
       }),
-      [chainId, marketId, userAddress, stateCollateral, userCollateral, userBorrowed, maxCollateral, isFull, slippage],
+      [
+        chainId,
+        marketId,
+        userAddress,
+        stateCollateral,
+        userCollateral,
+        userBorrowed,
+        maxCollateral,
+        isFull,
+        slippage,
+        route,
+      ],
     ),
   )
 
@@ -76,6 +94,7 @@ const formOptions = {
     maxStateCollateral: undefined,
     maxCollateral: undefined,
     maxBorrowed: undefined,
+    route: undefined,
     isFull: false,
     slippage: SLIPPAGE_PRESETS.STABLE,
   },
@@ -104,6 +123,16 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
 
   const values = watchForm(form)
   const params = useRepayParams({ chainId, marketId, userAddress, ...values })
+  const implementation = marketId
+    ? getRepayImplementationType(marketId, {
+        stateCollateral: values.stateCollateral ?? '0',
+        userCollateral: values.userCollateral ?? '0',
+        userBorrowed: values.userBorrowed ?? '0',
+      })
+    : undefined
+  const swapAmountIn = decimal(new BigNumber(values.stateCollateral ?? 0).plus(values.userCollateral ?? 0).toString())
+  const routeRequired = !!implementation && isRouterMetaRequired(implementation) && Number(swapAmountIn) > 0
+  const onChangeRoute = (route: RouteOption) => updateForm(form, { route })
 
   const {
     onSubmit,
@@ -141,6 +170,16 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
     repayError,
     txHash: data?.hash,
     isApproved: useRepayIsApproved(params, enabled),
+    routes: useMarketRoutes({
+      chainId,
+      tokenIn: collateralToken,
+      tokenOut: borrowToken,
+      amountIn: swapAmountIn,
+      slippage: values.slippage,
+      selectedRoute: values.route ?? undefined,
+      enabled: routeRequired,
+      onChange: onChangeRoute,
+    }),
     formErrors: useMemo(
       // only show the 'not available' warn when there are no other form errors
       () =>
