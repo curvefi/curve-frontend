@@ -59,6 +59,7 @@ export const SupplyActionInfoList = ({
             value={supplyApy?.data && formatPercent(supplyApy.data)}
             prevValue={prevSupplyApy?.data && formatPercent(prevSupplyApy.data)}
             {...combineQueryState(supplyApy, prevSupplyApy)}
+            size="small"
             testId="supply-apy"
           />
         )}
@@ -67,6 +68,7 @@ export const SupplyActionInfoList = ({
             label={t`Net Supply APY`}
             value={netSupplyApy.data && formatPercent(netSupplyApy.data)}
             {...combineQueryState(netSupplyApy)}
+            size="small"
             testId="supply-net-apy"
           />
         )}
@@ -77,6 +79,7 @@ export const SupplyActionInfoList = ({
           value={vaultShares?.data && formatAmount(vaultShares.data)}
           prevValue={prevVaultShares?.data && formatAmount(prevVaultShares.data)}
           {...combineQueryState(vaultShares, prevVaultShares)}
+          size="small"
           testId="supply-vault-shares"
         />
         {(amountSupplied || prevAmountSupplied) && (
@@ -86,6 +89,7 @@ export const SupplyActionInfoList = ({
             prevValue={prevAmountSupplied?.data && formatNumber(prevAmountSupplied.data, { abbreviate: false })}
             {...combineQueryState(amountSupplied, prevAmountSupplied)}
             valueRight={suppliedSymbol}
+            size="small"
             testId="supply-amount"
           />
         )}
