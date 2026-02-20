@@ -24,6 +24,7 @@ export const BridgeActionInfos = ({ bridgeCost, gas, isApproved }: BridgeActionI
               abbreviate: false,
             })
       }
+      size="small"
       loading={bridgeCost.isLoading}
       error={bridgeCost.error}
     />

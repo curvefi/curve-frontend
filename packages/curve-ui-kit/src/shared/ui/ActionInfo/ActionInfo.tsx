@@ -1,7 +1,8 @@
 import { ReactNode } from 'react'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import CallMade from '@mui/icons-material/CallMade'
-import IconButton from '@mui/material/IconButton'
+import { IconProps } from '@mui/material/Icon'
+import IconButton, { IconButtonProps } from '@mui/material/IconButton'
 import Link from '@mui/material/Link'
 import Stack, { type StackProps } from '@mui/material/Stack'
 import Typography, { type TypographyProps } from '@mui/material/Typography'
@@ -63,25 +64,57 @@ export type ActionInfoProps = {
   alignItems?: StackProps['alignItems']
 }
 
+const DEFAULT_SIZE: ActionInfoSize = 'medium'
+
 const labelSize = {
   small: 'bodyXsRegular',
   medium: 'bodyMRegular',
   large: 'bodyMRegular',
 } as const satisfies Record<ActionInfoSize, TypographyVariantKey>
 
-const prevValueSize = {
-  small: 'bodySRegular',
-  medium: 'bodyMRegular',
-  large: 'bodyMRegular',
-} as const satisfies Record<ActionInfoSize, TypographyVariantKey>
+const prevValueSize = labelSize
 
 const valueSize = {
   small: 'bodyXsBold',
-  medium: 'highlightM',
-  large: 'headingSBold',
+  medium: 'bodyMBold',
+  large: 'bodyMBold',
 } as const satisfies Record<ActionInfoSize, TypographyVariantKey>
 
+const iconButtonSize: Record<ActionInfoSize, IconButtonProps['size']> = {
+  small: 'extraExtraSmall',
+  medium: 'extraSmall',
+  large: 'extraSmall',
+}
+
+const iconSize: Record<ActionInfoSize, IconProps['fontSize']> = {
+  small: 'small',
+  medium: 'medium',
+  large: 'medium',
+}
+
 const isSet = (v: ReactNode) => v || v === 0
+
+type ValueDecoratorProps = Pick<ActionInfoProps, 'size' | 'error' | 'valueColor'>
+
+const ValueTypography = ({
+  size = DEFAULT_SIZE,
+  error,
+  valueColor,
+  children,
+}: ValueDecoratorProps & { children: ReactNode }) => (
+  <Typography variant={valueSize[size]} color={error ? 'error' : (valueColor ?? 'textPrimary')} component="div">
+    {children}
+  </Typography>
+)
+/** Renders a value as a typography (same variant and color as the main value) if it's a string, otherwise renders the value directly */
+const ValueDecorator = ({ value, size, error, valueColor }: ValueDecoratorProps & { value?: ReactNode }) =>
+  typeof value === 'string' ? (
+    <ValueTypography size={size} error={error} valueColor={valueColor}>
+      {value}
+    </ValueTypography>
+  ) : (
+    value
+  )
 
 export const ActionInfo = ({
   label,
@@ -95,7 +128,7 @@ export const ActionInfo = ({
   valueRight,
   valueTooltip,
   link,
-  size = 'medium',
+  size = DEFAULT_SIZE,
   copyValue,
   copiedTitle,
   loading = false,
@@ -152,7 +185,7 @@ export const ActionInfo = ({
             data-value={`${value}`}
             className="ActionInfo-value"
           >
-            {valueLeft}
+            <ValueDecorator value={valueLeft} size={size} error={error} valueColor={valueColor} />
 
             <WithSkeleton
               component="div"
@@ -161,16 +194,12 @@ export const ActionInfo = ({
                 ? { width: loading[0], height: loading[1] }
                 : { width: '2ch', height: '1rem' })}
             >
-              <Typography
-                variant={valueSize[size]}
-                color={error ? 'error' : (valueColor ?? 'textPrimary')}
-                component="div"
-              >
+              <ValueTypography size={size} error={error} valueColor={valueColor}>
                 {typeof loading === 'string' ? loading : error ? '' : value}
-              </Typography>
+              </ValueTypography>
             </WithSkeleton>
 
-            {valueRight}
+            <ValueDecorator value={valueRight} size={size} error={error} valueColor={valueColor} />
           </Stack>
         </Tooltip>
 
@@ -179,8 +208,9 @@ export const ActionInfo = ({
             copyText={errorMessage || error.toString()}
             label={t`Copy error to clipboard`}
             confirmationText={t`Error copied to clipboard`}
+            size={iconButtonSize[size]}
           >
-            <ExclamationTriangleIcon fontSize="small" color="error" />
+            <ExclamationTriangleIcon fontSize={iconSize[size]} color="error" />
           </CopyIconButton>
         )}
         {copyValue && (
@@ -188,6 +218,7 @@ export const ActionInfo = ({
             copyText={copyValue}
             label={`${t`Copy `}${copyValue}${t` to clipboard`}`}
             confirmationText={copiedTitle ?? t`Value has been copied to clipboard`}
+            size={iconButtonSize[size]}
           />
         )}
 
@@ -197,7 +228,7 @@ export const ActionInfo = ({
             href={link}
             target="_blank"
             rel="noopener"
-            size="extraSmall"
+            size={iconButtonSize[size]}
           >
             <CallMade />
           </IconButton>
