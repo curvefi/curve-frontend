@@ -4,16 +4,16 @@ import { buildCurveRouteResponse } from '../curve-router/curve-router'
 import { buildEnsoRouteResponse } from '../enso-router/enso-router'
 import { buildOdosRouteResponse } from '../odos-router/odos-router'
 import { handleTimeout } from '../router.utils'
-import { type OptimalRouteQuery, type RouteResponse } from './optimal-route.schemas'
+import { type RoutesQuery, type RouteResponse } from './routes.schemas'
 
 const ROUTE_TIMEOUT = 30_000 // 30 seconds
 
 const routers = { curve: buildCurveRouteResponse, enso: buildEnsoRouteResponse, odos: buildOdosRouteResponse }
 
 /**
- * Handles the optimal route request. Returns the optimal route for the given parameters.
+ * Handles the routes request. Returns the best routes for the given parameters.
  */
-export const getOptimalRoute = async (request: FastifyRequest<{ Querystring: OptimalRouteQuery }>) => {
+export const getRoutes = async (request: FastifyRequest<{ Querystring: RoutesQuery }>) => {
   const query = request.query
   const { router = ['curve'] } = query
 
@@ -35,7 +35,7 @@ export const getOptimalRoute = async (request: FastifyRequest<{ Querystring: Opt
   if (!successes.length) {
     const reasons = failures.map((f) => f.reason)
     if (reasons.length === 1) throw reasons[0]
-    throw new Error(`Failed to calculate optimal route for ${router.join(', ')}: ${reasons.join('; ')}`)
+    throw new Error(`Failed to calculate route for ${router.join(', ')}: ${reasons.join('; ')}`)
   }
 
   const result = lodash.sortBy(

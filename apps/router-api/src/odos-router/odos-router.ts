@@ -1,6 +1,6 @@
 import { FastifyBaseLogger } from 'fastify'
 import { type Address } from 'viem'
-import { type Decimal, type OptimalRouteQuery, type RouteResponse } from '../routes/optimal-route.schemas'
+import { type Decimal, type RoutesQuery, type RouteResponse } from '../routes/routes.schemas'
 import type { AssemblePathResponse, CurveOdosAssembleRequest } from './odos-assemble.types'
 import type { CurveOdosQuoteRequest, OdosQuoteResponse } from './odos-quote.types'
 
@@ -71,10 +71,7 @@ async function assembleOdosQuote(
  * Calls Odos (via prices API) to get a quote and builds the router-api response.
  * - Uses GET /odos/quote on the configured ODOS_API_URL (defaults to https://prices.curve.finance)
  */
-export const buildOdosRouteResponse = async (
-  query: OptimalRouteQuery,
-  log: FastifyBaseLogger,
-): Promise<RouteResponse[]> => {
+export const buildOdosRouteResponse = async (query: RoutesQuery, log: FastifyBaseLogger): Promise<RouteResponse[]> => {
   const {
     chainId,
     tokenIn: [tokenIn],

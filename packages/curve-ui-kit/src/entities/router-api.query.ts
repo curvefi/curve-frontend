@@ -12,7 +12,7 @@ import type { RouteProvider } from '@ui-kit/widgets/RouteProvider'
 // todo: move this to api?
 const generateRandomSecureId = () => crypto.getRandomValues(new Uint32Array(4)).join('')
 
-export type OptimalRouteQuery = {
+export type RoutesQuery = {
   chainId: number
   tokenIn: Address
   tokenOut: Address
@@ -23,7 +23,7 @@ export type OptimalRouteQuery = {
   slippage?: Decimal
 }
 
-export type OptimalRouteParams = FieldsOf<OptimalRouteQuery>
+export type RoutesParams = FieldsOf<RoutesQuery>
 
 type RouterApiRouteStep = {
   name: string
@@ -47,10 +47,10 @@ type RouterApiResponse = {
 export type Route = RouterApiResponse & { id: string }
 
 export const { useQuery: useRouterApi, fetchQuery: fetchApiRoutes } = queryFactory({
-  queryKey: ({ chainId, tokenIn, tokenOut, amountIn, amountOut, router, fromAddress, slippage }: OptimalRouteParams) =>
+  queryKey: ({ chainId, tokenIn, tokenOut, amountIn, amountOut, router, fromAddress, slippage }: RoutesParams) =>
     [
       'router-api',
-      'optimal-route',
+      'v1/routes',
       { chainId },
       { tokenIn },
       { tokenOut },
@@ -69,7 +69,7 @@ export const { useQuery: useRouterApi, fetchQuery: fetchApiRoutes } = queryFacto
     router,
     fromAddress,
     slippage,
-  }: OptimalRouteQuery): Promise<Route[]> => {
+  }: RoutesQuery): Promise<Route[]> => {
     const query = new URLSearchParams(
       notFalsy(
         ['chainId', `${chainId}`],
@@ -83,12 +83,12 @@ export const { useQuery: useRouterApi, fetchQuery: fetchApiRoutes } = queryFacto
     )
 
     toArray(router).forEach((router) => query.append('router', router))
-    const routes = await fetchJson<RouterApiResponse[]>(`/api/router/optimal-route?${query}`)
+    const routes = await fetchJson<RouterApiResponse[]>(`/api/router/v1/routes?${query}`)
     return routes.map((route) => ({ ...route, id: generateRandomSecureId() }))
   },
   staleTime: '1m',
   refetchInterval: '15s',
-  validationSuite: createValidationSuite(({ chainId, tokenIn, tokenOut, amountIn, amountOut }: OptimalRouteQuery) => {
+  validationSuite: createValidationSuite(({ chainId, tokenIn, tokenOut, amountIn, amountOut }: RoutesQuery) => {
     test('chainId', 'Invalid chainId', () => {
       enforce(chainId).isNumber().greaterThan(0)
     })
@@ -115,7 +115,7 @@ export const getExpectedFn =
     router,
     fromAddress,
     slippage,
-  }: Pick<OptimalRouteQuery, 'chainId' | 'router' | 'fromAddress' | 'slippage'>): GetExpectedFn =>
+  }: Pick<RoutesQuery, 'chainId' | 'router' | 'fromAddress' | 'slippage'>): GetExpectedFn =>
   async (fromToken, toToken, amountIn) => {
     const routes = await fetchApiRoutes({
       chainId,

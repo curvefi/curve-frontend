@@ -2,10 +2,10 @@ import type { FastifyInstance } from 'fastify'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import {
   ADDRESS_HEX_PATTERN,
-  type OptimalRouteQuery,
+  type RoutesQuery,
   type RouteProvider,
   type RouteResponse,
-} from '../../src/routes/optimal-route.schemas'
+} from '../../src/routes/routes.schemas'
 import { createRouterApiServer } from '../../src/server'
 
 process.loadEnvFile()
@@ -22,7 +22,7 @@ const CHAIN_ID_CORN = '21000000'
 const CORN = '0x44f49ff0da2498bcb1d3dc7c0f999578f67fd8c6'
 const CORN_WBTCN = '0xda5ddd7270381a7c2717ad10d1c0ecb19e3cdfb2'
 
-type QueryString = { [P in keyof OptimalRouteQuery]?: string | string[] }
+type QueryString = { [P in keyof RoutesQuery]?: string | string[] }
 type SuccessCase = { query: QueryString; expectedRoutes?: number }
 type ErrorResponse = { statusCode: number; code: string; error: string; message: string }
 type FailureCase = { query: Partial<QueryString>; expectedResponse: ErrorResponse }
@@ -145,7 +145,7 @@ const failureCases: Record<string, FailureCase> = {
   },
 }
 
-describe.sequential('GET /api/router/optimal-route integration', () => {
+describe.sequential('GET /api/router/v1/routes integration', () => {
   let server: FastifyInstance
   beforeAll(() => (server = createRouterApiServer()))
   afterAll(() => server.close())
@@ -154,7 +154,7 @@ describe.sequential('GET /api/router/optimal-route integration', () => {
     Object.entries(cases).forEach(([label, { query, expectedRoutes = 1 }]) => {
       it(`returns a valid route for ${router} - ${label}`, async () => {
         const { json, statusCode } = await server.inject({
-          url: '/api/router/optimal-route',
+          url: '/api/router/v1/routes',
           query: { ...query, router: router },
         })
         expect(statusCode).toBe(200)
@@ -189,7 +189,7 @@ describe.sequential('GET /api/router/optimal-route integration', () => {
 
   Object.entries(failureCases).forEach(([label, { query, expectedResponse }]) => {
     it(`returns validation error for ${label}`, async () => {
-      const { statusCode, json } = await server.inject({ url: '/api/router/optimal-route', query })
+      const { statusCode, json } = await server.inject({ url: '/api/router/v1/routes', query })
       expect(statusCode).toBe(expectedResponse.statusCode)
       expect(json()).toMatchObject(expectedResponse)
     })
