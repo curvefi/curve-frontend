@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import type { IFastBridgeNetwork } from '@curvefi/api/lib/bridge'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import type { NetworkDef } from '@ui/utils'
+import { q } from '@ui-kit/types/util'
 import { Chain, decimal, type Decimal } from '@ui-kit/utils'
 import { FormContent } from '@ui-kit/widgets/DetailPageLayout/FormContent'
 import { BridgeActionInfos } from './BridgeActionInfos'
@@ -73,8 +74,8 @@ const BridgeForm = (props: BridgeFormContentParams) => {
       footer={
         <>
           <BridgeActionInfos
-            bridgeCost={{ data: 0.69, isLoading: false, error: undefined }}
-            gas={{ data: { estGasCostUsd: 0.12 }, isLoading: false, error: undefined }}
+            bridgeCost={q({ data: 0.69, isLoading: false, error: null })}
+            gas={q({ data: { estGasCostUsd: 0.12 }, isLoading: false, error: null })}
             isApproved={isApproved}
           />
           <BridgeInfoAlert />

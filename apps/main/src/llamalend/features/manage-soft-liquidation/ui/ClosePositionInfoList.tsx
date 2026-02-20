@@ -28,15 +28,15 @@ export function ClosePositionInfoList({
   const { address: userAddress } = useConnection()
   const { borrowToken } = market ? getTokens(market) : {}
   const marketId = market?.id
-  const userState = q(useUserState({ chainId, marketId, userAddress }))
+  const userState = useUserState({ chainId, marketId, userAddress })
 
   return (
     <LoanActionInfoList
       slippage={slippage}
       onSlippageChange={onSlippageChange}
-      gas={useCloseEstimateGas(networks, { chainId, marketId, userAddress, slippage })}
+      gas={q(useCloseEstimateGas(networks, { chainId, marketId, userAddress, slippage }))}
       debt={mapQuery(userState, () => ({ value: '0', tokenSymbol: borrowToken?.symbol }))}
-      userState={userState}
+      userState={q(userState)}
       isApproved={q(
         useCloseLoanIsApproved({
           chainId,

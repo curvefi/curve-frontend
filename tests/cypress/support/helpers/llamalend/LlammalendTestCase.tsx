@@ -22,7 +22,6 @@ import type { Range } from '@ui-kit/types/util'
 import type { Decimal } from '@ui-kit/utils'
 
 const networks = loanNetworks as unknown as NetworkDict<LlamaChainId>
-const onPricesUpdated = async (prices?: Range<Decimal>) => console.info('prices updated', JSON.stringify(prices))
 
 const prefetch = () => prefetchMarkets({})
 
@@ -36,18 +35,21 @@ const Components = {
 
 type LoanTab = keyof typeof Components
 
-type LoanFlowTestProps = { tab?: LoanTab; onSuccess: ReturnType<typeof cy.stub> } & UserMarketQuery<LlamaChainId>
+type LoanFlowTestProps = {
+  tab?: LoanTab
+  onSuccess: ReturnType<typeof cy.stub>
+  onPricesUpdated: (prices: Range<Decimal> | undefined) => void
+} & UserMarketQuery<LlamaChainId>
 
-function LlammalendTest({ tab, chainId, userAddress, marketId, onSuccess }: LoanFlowTestProps) {
-  const { isHydrated } = useCurve()
-  const market = useMemo(() => isHydrated && getLlamaMarket(marketId), [isHydrated, marketId])
+function LlammalendTest({ tab, ...props }: LoanFlowTestProps) {
+  const { data: loanExists } = useLoanExists(props)
+  const marketId = useCurve().isHydrated && props.marketId
+  const market = useMemo(() => marketId && getLlamaMarket(marketId), [marketId])
 
-  const { data: loanExists } = useLoanExists({ chainId, marketId, userAddress })
   if (!market || (loanExists && !tab)) return <Skeleton width="100%" height={400} />
 
-  const props = { market, networks, chainId, onPricesUpdated, onSuccess }
   const Component = loanExists ? Components[tab!] : CreateLoanForm
-  return <Component {...props} />
+  return <Component market={market} networks={networks} {...props} />
 }
 
 export type LlammalendTestCaseProps = LoanFlowTestProps & TenderlyWagmiConfigFromVNet

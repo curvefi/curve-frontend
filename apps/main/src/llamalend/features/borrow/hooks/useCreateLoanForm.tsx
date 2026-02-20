@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { useConnection } from 'wagmi'
 import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
@@ -6,11 +6,15 @@ import { getTokens, hasZapV2 } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { isLeverageBorrowMoreSupported } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
 import { useCreateLoanExpectedCollateral } from '@/llamalend/queries/create-loan/create-loan-expected-collateral.query'
+import {
+  type CreateLoanPricesReceiveParams,
+  useCreateLoanPrices,
+} from '@/llamalend/queries/create-loan/create-loan-prices.query'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { vestResolver } from '@hookform/resolvers/vest'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
-import { mapQuery } from '@ui-kit/types/util'
+import { mapQuery, type Range } from '@ui-kit/types/util'
 import { Decimal } from '@ui-kit/utils'
 import { updateForm, useCallbackAfterFormUpdate, useFormErrors } from '@ui-kit/utils/react-form.utils'
 import { type RouteOption } from '@ui-kit/widgets/RouteProvider'
@@ -25,17 +29,31 @@ import { useMaxTokenValues } from './useMaxTokenValues'
 // to crete a loan we need the debt/maxDebt, but we skip the market validation as that's given separately to the mutation
 const resolver = vestResolver(createLoanQueryValidationSuite({ debtRequired: false, skipMarketValidation: true }))
 
+/**
+ * Hook to call the parent form to keep in sync with the chart and other components
+ */
+function useChartPricesCallback(
+  params: CreateLoanPricesReceiveParams,
+  onPricesUpdated: (prices: Range<Decimal> | undefined) => void,
+) {
+  const { data } = useCreateLoanPrices(params)
+  useEffect(() => onPricesUpdated(data), [onPricesUpdated, data])
+  useEffect(() => () => onPricesUpdated(undefined), [onPricesUpdated]) // clear prices on unmount to avoid stale chart
+}
+
 export function useCreateLoanForm<ChainId extends LlamaChainId>({
   market,
   network,
   network: { chainId },
   preset,
   onSuccess,
+  onPricesUpdated,
 }: {
   market: LlamaMarketTemplate | undefined
   network: { id: LlamaNetworkId; chainId: ChainId }
   preset: LoanPreset
   onSuccess: CreateLoanOptions['onSuccess']
+  onPricesUpdated: (prices: Range<Decimal> | undefined) => void
 }) {
   const { address: userAddress } = useConnection()
   const form = useForm<CreateLoanForm>({
@@ -100,6 +118,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
   const { formState } = form
   const { borrowToken, collateralToken } = market ? getTokens(market) : {}
 
+  useChartPricesCallback(params, onPricesUpdated)
   useCallbackAfterFormUpdate(form, resetCreation) // reset creation state on form change
   const onChangeRoute = (route: RouteOption) => updateForm(form, { route })
 

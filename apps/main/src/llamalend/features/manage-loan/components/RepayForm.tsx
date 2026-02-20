@@ -6,8 +6,6 @@ import { hasLeverage } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import type { RepayOptions } from '@/llamalend/mutations/repay.mutation'
 import { useRepayPriceImpact } from '@/llamalend/queries/repay/repay-price-impact.query'
-import { useRepayPrices } from '@/llamalend/queries/repay/repay-prices.query'
-import type { RepayParams } from '@/llamalend/queries/validation/manage-loan.types'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { notFalsy } from '@curvefi/prices-api/objects.util'
@@ -25,18 +23,6 @@ import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts, HighPriceImpactAlert } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import { useRepayForm } from '../hooks/useRepayForm'
 import { useTokenAmountConversion } from '../hooks/useTokenAmountConversion'
-
-const useFormSync = (
-  params: RepayParams,
-  onPricesUpdated: (prices: Range<Decimal> | undefined) => void,
-  enabled: boolean | undefined,
-) => {
-  const { data } = useRepayPrices(params, enabled)
-  useEffect(() => {
-    onPricesUpdated(data)
-  }, [onPricesUpdated, data])
-  useEffect(() => () => onPricesUpdated(undefined), [onPricesUpdated]) // clear prices on unmount to avoid stale chart
-}
 
 function RepayTokenSelector<ChainId extends IChainId>({
   token,
@@ -103,6 +89,7 @@ export const RepayForm = <ChainId extends IChainId>({
     network,
     enabled,
     onSuccess,
+    onPricesUpdated,
   })
   const { token, onToken, tokens } = useRepayTokens({ market, networkId: network.id })
 
@@ -127,8 +114,6 @@ export const RepayForm = <ChainId extends IChainId>({
     selectedField === 'stateCollateral' && t`Using collateral balances to repay.`,
     t`Max repay amount:`,
   ).join(' ')
-
-  useFormSync(params, onPricesUpdated, enabled)
 
   useEffect(
     () => () => {
@@ -164,7 +149,7 @@ export const RepayForm = <ChainId extends IChainId>({
         blockchainId={network.id}
         name={selectedField}
         form={form}
-        max={max[selectedField]}
+        max={q(max[selectedField])}
         maxType="range"
         {...(selectedField === 'stateCollateral' && {
           positionBalance: { position: max.stateCollateral, tooltip: t`Current collateral in position` },

@@ -10,6 +10,7 @@ import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { OnBorrowedMore, useBorrowMoreMutation } from '@/llamalend/mutations/borrow-more.mutation'
 import { useBorrowMoreExpectedCollateral } from '@/llamalend/queries/borrow-more/borrow-more-expected-collateral.query'
 import { useBorrowMoreIsApproved } from '@/llamalend/queries/borrow-more/borrow-more-is-approved.query'
+import { useBorrowMorePrices } from '@/llamalend/queries/borrow-more/borrow-more-prices.query'
 import {
   getBorrowMoreImplementation,
   isLeverageBorrowMore,
@@ -24,7 +25,8 @@ import { vestResolver } from '@hookform/resolvers/vest'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { mapQuery } from '@ui-kit/types/util'
-import { decimal } from '@ui-kit/utils'
+import { type Range } from '@ui-kit/types/util'
+import { type Decimal, decimal } from '@ui-kit/utils'
 import { updateForm, useCallbackAfterFormUpdate, useFormErrors } from '@ui-kit/utils/react-form.utils'
 import { type RouteOption } from '@ui-kit/widgets/RouteProvider'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
@@ -75,16 +77,28 @@ const emptyBorrowMoreForm = (): BorrowMoreForm => ({
   slippage: SLIPPAGE_PRESETS.STABLE,
 })
 
+const useChartPricesCallback = (
+  params: BorrowMoreParams,
+  onPricesUpdated: (prices: Range<Decimal> | undefined) => void,
+  enabled: boolean | undefined,
+) => {
+  const { data } = useBorrowMorePrices(params, enabled)
+  useEffect(() => onPricesUpdated(data), [onPricesUpdated, data])
+  useEffect(() => () => onPricesUpdated(undefined), [onPricesUpdated]) // clear prices on unmount to avoid stale chart
+}
+
 export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
   market,
   network,
   enabled,
   onSuccess,
+  onPricesUpdated,
 }: {
   market: LlamaMarketTemplate | undefined
   network: { id: LlamaNetworkId; chainId: ChainId; name: string }
   enabled?: boolean
   onSuccess?: NonNullable<OnBorrowedMore>
+  onPricesUpdated: (prices: Range<Decimal> | undefined) => void
 }) => {
   const { address: userAddress } = useConnection()
   const { chainId } = network
@@ -126,6 +140,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
     userAddress,
   })
 
+  useChartPricesCallback(params, onPricesUpdated, enabled)
   useCallbackAfterFormUpdate(form, resetBorrow)
 
   const { formState } = form

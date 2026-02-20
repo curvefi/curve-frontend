@@ -11,7 +11,8 @@ import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
 import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { joinButtonText } from '@ui-kit/utils'
+import { q, type Range } from '@ui-kit/types/util'
+import { type Decimal, joinButtonText } from '@ui-kit/utils'
 import { updateForm } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
@@ -26,12 +27,14 @@ export const ImproveHealthForm = ({
   chainId,
   enabled,
   onSuccess,
+  onPricesUpdated,
 }: {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<LlamaChainId>
   chainId: LlamaChainId
   enabled?: boolean
   onSuccess?: RepayOptions['onSuccess']
+  onPricesUpdated: (prices: Range<Decimal> | undefined) => void
 }) => {
   const network = networks[chainId]
   const {
@@ -57,6 +60,7 @@ export const ImproveHealthForm = ({
     network,
     enabled,
     onSuccess,
+    onPricesUpdated,
   })
 
   return (
@@ -83,7 +87,7 @@ export const ImproveHealthForm = ({
         blockchainId={network.id}
         name="userBorrowed"
         form={form}
-        max={{ ...maxRepay, fieldName: maxRepay.field }}
+        max={{ ...q(maxRepay), fieldName: maxRepay.field }}
         testId="improve-health-input-debt"
         network={network}
         onValueChange={(v) => updateForm(form, { isFull: v === form.getValues('maxBorrowed') })}

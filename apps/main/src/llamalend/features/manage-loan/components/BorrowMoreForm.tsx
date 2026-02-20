@@ -1,15 +1,13 @@
-import { type ChangeEvent, useCallback, useEffect } from 'react'
+import { type ChangeEvent, useCallback } from 'react'
 import { BorrowMoreLoanInfoList } from '@/llamalend/features/borrow/components/BorrowMoreLoanInfoList'
 import { LeverageInput } from '@/llamalend/features/borrow/components/LeverageInput'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { OnBorrowedMore } from '@/llamalend/mutations/borrow-more.mutation'
 import { useBorrowMorePriceImpact } from '@/llamalend/queries/borrow-more/borrow-more-price-impact.query'
-import { useBorrowMorePrices } from '@/llamalend/queries/borrow-more/borrow-more-prices.query'
 import {
   isLeverageBorrowMore,
   isLeverageBorrowMoreSupported,
 } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
-import type { BorrowMoreParams } from '@/llamalend/queries/validation/borrow-more.validation'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { notFalsy } from '@curvefi/prices-api/objects.util'
@@ -25,18 +23,6 @@ import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts, HighPriceImpactAlert } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import { InputDivider } from '../../../widgets/InputDivider'
 import { useBorrowMoreForm } from '../hooks/useBorrowMoreForm'
-
-const useFormSync = (
-  params: BorrowMoreParams,
-  onPricesUpdated: (prices: Range<Decimal> | undefined) => void,
-  enabled: boolean | undefined,
-) => {
-  const { data } = useBorrowMorePrices(params, enabled)
-  useEffect(() => {
-    onPricesUpdated(data)
-  }, [onPricesUpdated, data])
-  useEffect(() => () => onPricesUpdated(undefined), [onPricesUpdated]) // clear prices on unmount to avoid stale chart
-}
 
 export const BorrowMoreForm = <ChainId extends IChainId>({
   market,
@@ -78,6 +64,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     network,
     enabled,
     onSuccess,
+    onPricesUpdated,
   })
 
   const isLeverageEnabled = isLeverageBorrowMore(market, values.leverageEnabled)
@@ -87,8 +74,6 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     (event: ChangeEvent<HTMLInputElement>) => updateForm(form, { leverageEnabled: event.target.checked }),
     [form],
   )
-
-  useFormSync(params, onPricesUpdated, enabled)
 
   return (
     <Form
@@ -115,7 +100,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
             blockchainId={network.id}
             name="userCollateral"
             form={form}
-            max={{ ...max.userCollateral, fieldName: max.userCollateral.field }}
+            max={{ ...q(max.userCollateral), fieldName: max.userCollateral.field }}
             testId="borrow-more-input-collateral"
             network={network}
           />
@@ -127,7 +112,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
             blockchainId={network.id}
             name="userBorrowed"
             form={form}
-            max={{ ...max.userBorrowed, fieldName: max.userBorrowed.field }}
+            max={{ ...q(max.userBorrowed), fieldName: max.userBorrowed.field }}
             testId="borrow-more-input-user-borrowed"
             network={network}
           />
