@@ -12,18 +12,18 @@ import type { RouteProvider } from '@ui-kit/widgets/RouteProvider'
 // todo: move this to api?
 const generateRandomSecureId = () => crypto.getRandomValues(new Uint32Array(4)).join('')
 
-export type OptimalRouteQuery = {
+export type RoutesQuery = {
   chainId: number
   tokenIn: Address
   tokenOut: Address
   amountIn?: Decimal
   amountOut?: Decimal
   router?: RouteProvider | readonly RouteProvider[]
-  fromAddress?: Address
+  userAddress?: Address
   slippage?: Decimal
 }
 
-export type OptimalRouteParams = FieldsOf<OptimalRouteQuery>
+export type RoutesParams = FieldsOf<RoutesQuery>
 
 type RouterApiRouteStep = {
   name: string
@@ -47,17 +47,17 @@ type RouterApiResponse = {
 export type Route = RouterApiResponse & { id: string }
 
 export const { useQuery: useRouterApi, fetchQuery: fetchApiRoutes } = queryFactory({
-  queryKey: ({ chainId, tokenIn, tokenOut, amountIn, amountOut, router, fromAddress, slippage }: OptimalRouteParams) =>
+  queryKey: ({ chainId, tokenIn, tokenOut, amountIn, amountOut, router, userAddress, slippage }: RoutesParams) =>
     [
       'router-api',
-      'optimal-route',
+      'v1/routes',
       { chainId },
       { tokenIn },
       { tokenOut },
       { amountIn },
       { amountOut },
       { router },
-      { fromAddress },
+      { userAddress },
       { slippage },
     ] as const,
   queryFn: async ({
@@ -67,9 +67,9 @@ export const { useQuery: useRouterApi, fetchQuery: fetchApiRoutes } = queryFacto
     amountIn,
     amountOut,
     router,
-    fromAddress,
+    userAddress,
     slippage,
-  }: OptimalRouteQuery): Promise<Route[]> => {
+  }: RoutesQuery): Promise<Route[]> => {
     const query = new URLSearchParams(
       notFalsy(
         ['chainId', `${chainId}`],
@@ -77,18 +77,18 @@ export const { useQuery: useRouterApi, fetchQuery: fetchApiRoutes } = queryFacto
         ['tokenOut', tokenOut],
         amountIn && ['amountIn', `${amountIn}`],
         amountOut && ['amountOut', `${amountOut}`],
-        fromAddress && ['fromAddress', fromAddress],
+        userAddress && ['userAddress', userAddress],
         slippage && ['slippage', `${slippage}`],
       ),
     )
 
     toArray(router).forEach((router) => query.append('router', router))
-    const routes = await fetchJson<RouterApiResponse[]>(`/api/router/optimal-route?${query}`)
+    const routes = await fetchJson<RouterApiResponse[]>(`/api/router/v1/routes?${query}`)
     return routes.map((route) => ({ ...route, id: generateRandomSecureId() }))
   },
   staleTime: '1m',
   refetchInterval: '15s',
-  validationSuite: createValidationSuite(({ chainId, tokenIn, tokenOut, amountIn, amountOut }: OptimalRouteQuery) => {
+  validationSuite: createValidationSuite(({ chainId, tokenIn, tokenOut, amountIn, amountOut }: RoutesQuery) => {
     test('chainId', 'Invalid chainId', () => {
       enforce(chainId).isNumber().greaterThan(0)
     })
@@ -109,22 +109,28 @@ export const { useQuery: useRouterApi, fetchQuery: fetchApiRoutes } = queryFacto
   }),
 })
 
+/**
+ * This function can be used as a callback for llamalend.js zapV2 methods.
+ */
 export const getExpectedFn =
   ({
     chainId,
     router,
-    fromAddress,
+    userAddress,
     slippage,
-  }: Pick<OptimalRouteQuery, 'chainId' | 'router' | 'fromAddress' | 'slippage'>): GetExpectedFn =>
-  async (fromToken, toToken, amountIn) => {
+  }: Pick<RoutesQuery, 'chainId' | 'router' | 'slippage' | 'userAddress'> & {
+    fromToken: { address: Address; decimals: number }
+    toToken: { address: Address; decimals: number }
+  }): GetExpectedFn =>
+  async (tokenIn, tokenOut, amountIn) => {
     const routes = await fetchApiRoutes({
       chainId,
-      tokenIn: fromToken as `0x${string}`,
-      tokenOut: toToken as `0x${string}`,
+      tokenIn: tokenIn as Address,
+      tokenOut: tokenOut as Address,
       amountIn: `${amountIn}` as Decimal,
       router,
       slippage,
-      fromAddress,
+      userAddress,
     })
     const { amountOut, priceImpact } = assert(routes?.[0], 'No route available')
     return { outAmount: amountOut, priceImpact: priceImpact ?? 0 }

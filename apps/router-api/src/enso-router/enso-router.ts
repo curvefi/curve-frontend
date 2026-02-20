@@ -1,6 +1,6 @@
 import { FastifyBaseLogger } from 'fastify'
 import { Address } from 'viem'
-import { type Decimal, OptimalRouteQuery, RouteResponse, type TransactionData } from '../routes/optimal-route.schemas'
+import { type Decimal, RoutesQuery, RouteResponse, type TransactionData } from '../routes/routes.schemas'
 
 const { ENSO_API_URL = 'https://api.enso.finance', ENSO_API_KEY } = process.env
 
@@ -32,28 +32,25 @@ type EnsoRouteResponse = {
  * - Uses GET /api/v1/shortcuts/route
  * - Base URL configurable via ENSO_API_URL (defaults to https://api.enso.finance)
  */
-export const buildEnsoRouteResponse = async (
-  query: OptimalRouteQuery,
-  log: FastifyBaseLogger,
-): Promise<RouteResponse[]> => {
+export const buildEnsoRouteResponse = async (query: RoutesQuery, log: FastifyBaseLogger): Promise<RouteResponse[]> => {
   const {
     chainId,
     tokenIn: [tokenIn],
     tokenOut: [tokenOut],
     amountIn: [amountIn] = [],
     amountOut: [minAmountOut] = [],
-    fromAddress,
+    userAddress,
   } = query
 
-  if (amountIn == null || !fromAddress) {
-    // Enso requires amountIn and fromAddress to be specified, no routes found otherwise
-    log.info({ message: 'enso route request skipped, amountIn and fromAddress are required', query })
+  if (amountIn == null || !userAddress) {
+    // Enso requires amountIn and userAddress to be specified, no routes found otherwise
+    log.info({ message: 'enso route request skipped, amountIn and userAddress are required', query })
     return []
   }
 
   const url = `${ENSO_API_URL}/api/v1/shortcuts/route?${new URLSearchParams({
     chainId: `${chainId}`,
-    fromAddress,
+    fromAddress: userAddress,
     ...(tokenIn && { tokenIn }),
     ...(tokenOut && { tokenOut }),
     ...(amountIn && { amountIn }),

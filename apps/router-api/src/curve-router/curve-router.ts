@@ -4,12 +4,7 @@ import { Address, zeroAddress } from 'viem'
 import type { IRoute, IRouteStep } from '@curvefi/api/lib/interfaces'
 import { PoolTemplate } from '@curvefi/api/lib/pools'
 import { notFalsy } from '../router.utils'
-import {
-  type Decimal,
-  type OptimalRouteQuery,
-  type RouteResponse,
-  type RouteStep,
-} from '../routes/optimal-route.schemas'
+import { type Decimal, type RoutesQuery, type RouteResponse, type RouteStep } from '../routes/routes.schemas'
 import { type CurveJS, loadCurve } from './curvejs'
 
 /**
@@ -68,10 +63,7 @@ const fromWei = (s: Decimal, decimals: number) =>
 /**
  * Runs the router to get the optimal route and builds the response.
  */
-export async function buildCurveRouteResponse(
-  query: OptimalRouteQuery,
-  log: FastifyBaseLogger,
-): Promise<RouteResponse[]> {
+export async function buildCurveRouteResponse(query: RoutesQuery, log: FastifyBaseLogger): Promise<RouteResponse[]> {
   const {
     tokenOut: [toToken],
     tokenIn: [fromToken],
