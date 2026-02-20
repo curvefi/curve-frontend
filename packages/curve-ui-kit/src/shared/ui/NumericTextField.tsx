@@ -177,7 +177,7 @@ export const NumericTextField = ({
         const invalidValues = ['-', '.', ',', '']
         const finalValue = invalidValues.includes(inputValue)
           ? undefined
-          : (clamp(inputValue, min, max).toString() as Decimal)
+          : (clamp(inputValue, min, max).toFixed() as Decimal)
         setInputValue(getFormattedDisplayValue(finalValue, format))
 
         // Also emit the changed event, because due to clamping and such the final value

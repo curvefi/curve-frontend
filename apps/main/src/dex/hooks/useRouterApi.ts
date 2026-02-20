@@ -6,11 +6,11 @@ import type {
   RoutesAndOutputModal,
   SearchedParams,
 } from '@/dex/components/PageRouterSwap/types'
-import { useTokensNameMapper } from '@/dex/hooks/useTokensNameMapper'
 import { getRouterWarningModal } from '@/dex/store/createQuickSwapSlice'
 import { useStore } from '@/dex/store/useStore'
 import { TokensNameMapper } from '@/dex/types/main.types'
 import { getExchangeRates } from '@/dex/utils/utilsSwap'
+import { notFalsy } from '@curvefi/prices-api/objects.util'
 import {
   type Route as RouteApiResponse,
   type RoutesQuery,
@@ -42,28 +42,30 @@ const getMaxSlippage = (isStableswapRoute: boolean) =>
 /** Convert the API response to the format used in the app */
 const convertRoute = (
   { amountIn, amountOut, priceImpact, route, warnings = [], isStableswapRoute, router }: RouteApiResponse,
-  { fromAddress, toAddress }: SearchedParams,
-  tokensNameMapper: TokensNameMapper,
-  isPending: boolean,
+  { fromAddress, toAddress, chainId, isPending }: SearchedParams & { chainId: number; isPending: boolean },
 ): RoutesAndOutput => {
-  const formValues = useStore.getState().quickSwap.formValues
+  const { isFrom, fromAmount, toAmount } = useStore.getState().quickSwap.formValues
+  const { tokensMapper, tokensNameMapper } = useStore.getState().tokens
+  const fromAmountOutput = fromWei(amountIn, tokensMapper[chainId][fromAddress]!.decimals)
+  const toAmountOutput = fromWei(amountOut, tokensMapper[chainId][toAddress]!.decimals)
+
   const modalArgs = {
     isExchangeRateLow: warnings.includes('low-exchange-rate'),
     priceImpact,
-    toAmount: formValues.toAmount,
-    fromAmount: formValues.fromAmount,
-    toAmountOutput: amountOut,
-    fetchedToAmount: amountOut,
+    toAmount,
+    fromAmount,
+    toAmountOutput,
+    fetchedToAmount: toAmountOutput,
   }
 
   return {
     router,
     loading: isPending,
     exchangeRates: calculateExchangeRates(
-      amountOut,
-      formValues.isFrom ? formValues.fromAmount : amountIn,
+      toAmountOutput,
+      isFrom ? fromAmount : fromAmountOutput,
       { fromAddress, toAddress },
-      tokensNameMapper,
+      tokensNameMapper[chainId],
     ),
     isHighSlippage: warnings.includes('high-slippage'),
     isStableswapRoute,
@@ -86,7 +88,7 @@ const convertRoute = (
       modalArgs,
       { toAddress, fromAddress },
       getMaxSlippage(isStableswapRoute),
-      tokensNameMapper,
+      tokensNameMapper[chainId],
     ) as RoutesAndOutputModal | null,
     ...modalArgs,
   }
@@ -110,61 +112,50 @@ export function useRouterApi(
   isLoading: boolean
 } {
   const formValues = useStore((state) => state.quickSwap.formValues) as FormValues
-  const { tokensNameMapper } = useTokensNameMapper(chainId)
   const tokensMapper = useStore((state) => state.tokens.tokensMapper[chainId])
   const fromDecimals = tokensMapper?.[fromAddress]?.decimals
   const toDecimals = tokensMapper?.[toAddress]?.decimals
 
-  const {
-    data: response,
-    isLoading,
-    isPending,
-    error,
-  } = useRouterApiQuery(
+  const { data, isLoading, isPending, error } = useRouterApiQuery(
     {
-      chainId: chainId,
+      chainId,
       tokenIn: fromAddress as Address,
       tokenOut: toAddress as Address,
-      ...(formValues.isFrom
-        ? { amountIn: toWei(formValues.fromAmount, fromDecimals) }
-        : { amountOut: toWei(formValues.toAmount, toDecimals) }),
       router: 'curve',
       userAddress,
-    },
-    enabled,
+      ...(formValues.isFrom
+        ? { ...(fromDecimals && { amountIn: toWei(formValues.fromAmount, fromDecimals) }) }
+        : { ...(toDecimals && { amountOut: toWei(formValues.toAmount, toDecimals) }) }),
+    } as const,
+    enabled && !!fromDecimals && !!toDecimals,
   )
+  const route = data?.[0]
 
   /** Update the store with the fetched amounts and error status */
   useEffect(() => {
-    if (!response) return
-    const { amountIn, amountOut } = response[0] ?? {}
-    const {
-      setAppStateByKeys,
-      quickSwap: { formStatus, formValues, ...state },
-    } = useStore.getState()
+    const route = data?.[0]
+    const { setAppStateByKeys, quickSwap } = useStore.getState()
     setAppStateByKeys('quickSwap', {
-      ...state,
+      ...quickSwap,
       formStatus: {
-        ...formStatus,
-        error: response.length === 0 ? 'error-swap-not-available' : error ? 'error-swap-exchange-and-output' : '',
+        ...quickSwap.formStatus,
+        error: notFalsy(error?.message, data?.length === 0 && 'error-swap-not-available')[0] ?? '',
       },
-      formValues: {
-        ...formValues,
-        ...(response.length &&
-          (formValues.isFrom
-            ? { toAmount: fromWei(amountOut, fromDecimals) }
-            : { fromAmount: fromWei(amountIn, toDecimals) })),
-      },
+      ...(route && {
+        formValues: {
+          ...quickSwap.formValues,
+          ...(quickSwap.formValues.isFrom
+            ? { toAmount: fromWei(route.amountOut, toDecimals!) }
+            : { fromAmount: fromWei(route.amountIn, fromDecimals!) }),
+        },
+      }),
     })
-  }, [error, fromDecimals, response, toDecimals])
+  }, [data, error, fromDecimals, toDecimals])
 
   return {
     data: useMemo(
-      () =>
-        response?.length
-          ? convertRoute(response[0], { fromAddress, toAddress }, tokensNameMapper, isPending)
-          : undefined,
-      [response, isPending, fromAddress, toAddress, tokensNameMapper],
+      () => route && convertRoute(route, { fromAddress, toAddress, chainId, isPending }),
+      [route, fromAddress, toAddress, isPending, chainId],
     ),
     isLoading,
   }

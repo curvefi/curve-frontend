@@ -71,4 +71,4 @@ export const splitAtFirst = <T>(items: T[], predicate: (value: T, index: number,
  * - If the input is null or undefined, an empty array is returned.
  */
 export const toArray = <T>(x: T | readonly T[] | null | undefined): readonly T[] =>
-  Array.isArray(x) ? x : x ? [x as T] : []
+  Array.isArray(x) ? x : x == null ? [] : [x as T]

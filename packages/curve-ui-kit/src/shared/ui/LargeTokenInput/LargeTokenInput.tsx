@@ -148,7 +148,7 @@ function calculateNewBalance(max: Decimal, newPercentage: Decimal): Decimal {
   // Avoid loss of precision when clicking 'Max' or '100%'.
   if (Number(newPercentage) === 100) return max
 
-  return new BigNumber(max).times(newPercentage).div(100).toString() as Decimal
+  return new BigNumber(max).times(newPercentage).div(100).toFixed() as Decimal
 }
 
 /**

@@ -6,6 +6,7 @@ import { fetchJson } from '@curvefi/prices-api/fetch'
 import { notFalsy } from '@curvefi/prices-api/objects.util'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
+import { userAddressValidationGroup } from '@ui-kit/lib/model/query/user-address-validation'
 import { Address, assert, Decimal, toArray } from '@ui-kit/utils'
 import type { RouteProvider } from '@ui-kit/widgets/RouteProvider'
 
@@ -46,6 +47,23 @@ type RouterApiResponse = {
 
 export type Route = RouterApiResponse & { id: string }
 
+export const routerApiValidation = createValidationSuite(
+  ({ chainId, tokenIn, tokenOut, amountIn, amountOut, userAddress }: RoutesQuery) => {
+    test('chainId', 'Invalid chainId', () => {
+      enforce(chainId).isNumber().greaterThan(0)
+    })
+    test('tokenIn', 'Invalid tokenIn address', () => {
+      enforce(tokenIn).isAddress()
+    })
+    test('tokenOut', 'Invalid tokenOut address', () => {
+      enforce(tokenOut).isAddress()
+    })
+    test('amount', 'Provide either amountIn or amountOut (not both)', () => {
+      enforce(!!Number(amountIn) !== !!Number(amountOut)).isTruthy()
+    })
+    userAddressValidationGroup({ userAddress, required: false })
+  },
+)
 export const { useQuery: useRouterApi, fetchQuery: fetchApiRoutes } = queryFactory({
   queryKey: ({ chainId, tokenIn, tokenOut, amountIn, amountOut, router, userAddress, slippage }: RoutesParams) =>
     [
@@ -88,25 +106,7 @@ export const { useQuery: useRouterApi, fetchQuery: fetchApiRoutes } = queryFacto
   },
   staleTime: '1m',
   refetchInterval: '15s',
-  validationSuite: createValidationSuite(({ chainId, tokenIn, tokenOut, amountIn, amountOut }: RoutesQuery) => {
-    test('chainId', 'Invalid chainId', () => {
-      enforce(chainId).isNumber().greaterThan(0)
-    })
-    test('tokenIn', 'Invalid tokenIn address', () => {
-      enforce(tokenIn).isAddress()
-    })
-    test('tokenOut', 'Invalid tokenOut address', () => {
-      enforce(tokenOut).isAddress()
-    })
-    test(
-      'amount',
-      'Provide either amountIn or amountOut (not both)' +
-        `${amountIn} ${amountOut} ${!!Number(amountIn)} ${!!Number(amountOut)}`,
-      () => {
-        enforce(!!Number(amountIn) !== !!Number(amountOut)).isTruthy()
-      },
-    )
-  }),
+  validationSuite: routerApiValidation,
 })
 
 /**

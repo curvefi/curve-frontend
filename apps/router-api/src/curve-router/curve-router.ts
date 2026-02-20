@@ -1,10 +1,10 @@
 import BigNumber from 'bignumber.js'
 import { FastifyBaseLogger } from 'fastify'
 import { Address, zeroAddress } from 'viem'
-import type { IRoute, IRouteStep } from '@curvefi/api/lib/interfaces'
+import type { IDict, IRoute, IRouteStep } from '@curvefi/api/lib/interfaces'
 import { PoolTemplate } from '@curvefi/api/lib/pools'
-import { notFalsy } from '../router.utils'
-import { type Decimal, type RoutesQuery, type RouteResponse, type RouteStep } from '../routes/routes.schemas'
+import { fromWei, notFalsy, toWei } from '../router.utils'
+import { type Decimal, type RouteResponse, type RoutesQuery, type RouteStep } from '../routes/routes.schemas'
 import { type CurveJS, loadCurve } from './curvejs'
 
 /**
@@ -57,8 +57,10 @@ function getWarnings(
   return notFalsy(isExchangeRateLow && 'low-exchange-rate', isHighSlippage && 'high-slippage')
 }
 
-const fromWei = (s: Decimal, decimals: number) =>
-  new BigNumber(s).dividedBy(new BigNumber(10).pow(decimals)).toString() as Decimal
+const getDecimals = ([fromToken, toToken]: [Address, Address], decimals: IDict<number>) => [
+  decimals[fromToken.toLowerCase()] ?? decimals[fromToken],
+  decimals[toToken.toLowerCase()] ?? decimals[toToken],
+]
 
 /**
  * Runs the router to get the optimal route and builds the response.
@@ -73,11 +75,11 @@ export async function buildCurveRouteResponse(query: RoutesQuery, log: FastifyBa
   } = query
 
   const curve = await loadCurve(chainId, log)
-  const decimals = curve.getNetworkConstants().DECIMALS
+  const [fromDecimals, toDecimals] = getDecimals([fromToken, toToken], curve.getNetworkConstants().DECIMALS)
 
-  const outAmount = fromWei(amountOut ?? '0', decimals[toToken.toLowerCase()] ?? decimals[toToken])
+  const outAmount = fromWei(amountOut ?? '0', toDecimals)
   const fromAmount = amountIn
-    ? fromWei(amountIn, decimals[fromToken.toLowerCase()] ?? decimals[fromToken])
+    ? fromWei(amountIn, fromDecimals)
     : ((await curve.router.required(fromToken, toToken, outAmount)) as Decimal)
   const { route: routes, output: toAmount } = await curve.router.getBestRouteAndOutput(fromToken, toToken, fromAmount)
   if (!routes.length) return []
@@ -99,8 +101,8 @@ export async function buildCurveRouteResponse(query: RoutesQuery, log: FastifyBa
   return [
     {
       router: 'curve',
-      amountIn: [fromAmount],
-      amountOut: [toAmount as Decimal],
+      amountIn: [toWei(fromAmount, fromDecimals)],
+      amountOut: [toWei(toAmount, toDecimals)],
       priceImpact,
       createdAt: Date.now(),
       isStableswapRoute,

@@ -131,7 +131,7 @@ export const QuickSwap = ({
   } = useTokenBalance(
     {
       chainId,
-      userAddress: userAddress,
+      userAddress,
       tokenAddress: fromAddress ? (fromAddress as Address) : undefined,
     },
     !!userAddress && !!fromAddress,
@@ -145,7 +145,7 @@ export const QuickSwap = ({
   } = useTokenBalance(
     {
       chainId,
-      userAddress: userAddress,
+      userAddress,
       tokenAddress: toAddress ? (toAddress as Address) : undefined,
     },
     !!userAddress && !!toAddress,
@@ -159,7 +159,7 @@ export const QuickSwap = ({
     tokenPrices,
     isLoading: tokenSelectorLoading,
   } = useTokenSelectorData(
-    { chainId, userAddress: userAddress, tokens },
+    { chainId, userAddress, tokens },
     { enabled: !!isOpenFromToken || !!isOpenToToken, prefetch: userFromBalanceFetched && userToBalanceFetched },
   )
 
