@@ -1,7 +1,8 @@
-export { type RouteProvider } from 'curve-ui-kit/src/widgets/RouteProvider/route-provider.types'
-import { type RouteProvider, RouteProviders } from 'curve-ui-kit/src/widgets/RouteProvider/route-provider.types'
 import { Address, Hex } from 'viem'
 import type { IRouteStep } from '@curvefi/api/lib/interfaces'
+
+export const RouteProviders = ['curve', 'enso', 'odos'] as const
+export type RouteProvider = (typeof RouteProviders)[number]
 
 export type Decimal = `${number}`
 
@@ -34,7 +35,7 @@ const routesQuerySchema = {
     tokenOut: AddressArraySchema,
     amountIn: { ...WeiAmountArraySchema, description: 'Amount of tokenIn in wei (integer, no decimals).' },
     amountOut: { ...WeiAmountArraySchema, description: 'Amount of tokenOut in wei (integer, no decimals).' },
-    fromAddress: AddressSchema,
+    userAddress: AddressSchema,
     slippage: { type: 'number', minimum: 0 },
   },
 } as const
@@ -46,7 +47,7 @@ export type RoutesQuery = {
   tokenOut: [Address]
   amountIn?: [Decimal]
   amountOut?: [Decimal]
-  fromAddress?: Address
+  userAddress?: Address
   slippage?: number
 }
 

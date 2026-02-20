@@ -13,14 +13,14 @@ async function getOdosQuote(
     tokenOut,
     amountIn,
     slippage,
-    fromAddress,
+    userAddress,
   }: {
     chainId: number
     tokenIn: Address
     tokenOut: Address
     amountIn: Decimal
     slippage: number
-    fromAddress: Address
+    userAddress: Address
   },
   log: FastifyBaseLogger,
 ) {
@@ -31,7 +31,7 @@ async function getOdosQuote(
     amount: amountIn,
     slippage: `${slippage}`,
     pathVizImage: 'false',
-    caller_address: fromAddress,
+    caller_address: userAddress,
     blacklist: '',
   }
 
@@ -50,11 +50,11 @@ async function getOdosQuote(
 }
 
 async function assembleOdosQuote(
-  { pathId, fromAddress }: { pathId: string | null | undefined; fromAddress: string },
+  { pathId, userAddress }: { pathId: string | null | undefined; userAddress: string },
   log: FastifyBaseLogger,
 ) {
   if (!pathId) return
-  const params: Record<keyof CurveOdosAssembleRequest, string> = { path_id: pathId, user: fromAddress }
+  const params: Record<keyof CurveOdosAssembleRequest, string> = { path_id: pathId, user: userAddress }
   const assembleResponse = await fetch(`${ODOS_API_URL}/assemble?${new URLSearchParams(params)}`, {
     method: 'GET',
     headers: { accept: 'application/json' },
@@ -77,11 +77,11 @@ export const buildOdosRouteResponse = async (query: RoutesQuery, log: FastifyBas
     tokenIn: [tokenIn],
     tokenOut: [tokenOut],
     amountIn: [amountIn] = [],
-    fromAddress,
+    userAddress,
     slippage = 0.5,
   } = query
 
-  if (amountIn == null || !fromAddress) {
+  if (amountIn == null || !userAddress) {
     // Odos requires amount (amountIn), caller_address (leverage zap) and blacklist (AMM/controller)
     log.info({ message: 'odos route request skipped', query })
     return []
@@ -91,9 +91,9 @@ export const buildOdosRouteResponse = async (query: RoutesQuery, log: FastifyBas
     pathId,
     pathVizImage,
     priceImpact = null,
-  } = await getOdosQuote({ chainId, tokenIn, tokenOut, amountIn, slippage, fromAddress }, log)
+  } = await getOdosQuote({ chainId, tokenIn, tokenOut, amountIn, slippage, userAddress }, log)
 
-  const tx = await assembleOdosQuote({ pathId, fromAddress }, log)
+  const tx = await assembleOdosQuote({ pathId, userAddress }, log)
 
   return [
     {

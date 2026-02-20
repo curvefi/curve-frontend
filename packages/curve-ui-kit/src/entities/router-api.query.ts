@@ -19,7 +19,7 @@ export type RoutesQuery = {
   amountIn?: Decimal
   amountOut?: Decimal
   router?: RouteProvider | readonly RouteProvider[]
-  fromAddress?: Address
+  userAddress?: Address
   slippage?: Decimal
 }
 
@@ -47,7 +47,7 @@ type RouterApiResponse = {
 export type Route = RouterApiResponse & { id: string }
 
 export const { useQuery: useRouterApi, fetchQuery: fetchApiRoutes } = queryFactory({
-  queryKey: ({ chainId, tokenIn, tokenOut, amountIn, amountOut, router, fromAddress, slippage }: RoutesParams) =>
+  queryKey: ({ chainId, tokenIn, tokenOut, amountIn, amountOut, router, userAddress, slippage }: RoutesParams) =>
     [
       'router-api',
       'v1/routes',
@@ -57,7 +57,7 @@ export const { useQuery: useRouterApi, fetchQuery: fetchApiRoutes } = queryFacto
       { amountIn },
       { amountOut },
       { router },
-      { fromAddress },
+      { userAddress },
       { slippage },
     ] as const,
   queryFn: async ({
@@ -67,7 +67,7 @@ export const { useQuery: useRouterApi, fetchQuery: fetchApiRoutes } = queryFacto
     amountIn,
     amountOut,
     router,
-    fromAddress,
+    userAddress,
     slippage,
   }: RoutesQuery): Promise<Route[]> => {
     const query = new URLSearchParams(
@@ -77,7 +77,7 @@ export const { useQuery: useRouterApi, fetchQuery: fetchApiRoutes } = queryFacto
         ['tokenOut', tokenOut],
         amountIn && ['amountIn', `${amountIn}`],
         amountOut && ['amountOut', `${amountOut}`],
-        fromAddress && ['fromAddress', fromAddress],
+        userAddress && ['userAddress', userAddress],
         slippage && ['slippage', `${slippage}`],
       ),
     )
@@ -109,22 +109,28 @@ export const { useQuery: useRouterApi, fetchQuery: fetchApiRoutes } = queryFacto
   }),
 })
 
+/**
+ * This function can be used as a callback for llamalend.js zapV2 methods.
+ */
 export const getExpectedFn =
   ({
     chainId,
     router,
-    fromAddress,
+    userAddress,
     slippage,
-  }: Pick<RoutesQuery, 'chainId' | 'router' | 'fromAddress' | 'slippage'>): GetExpectedFn =>
-  async (fromToken, toToken, amountIn) => {
+  }: Pick<RoutesQuery, 'chainId' | 'router' | 'slippage' | 'userAddress'> & {
+    fromToken: { address: Address; decimals: number }
+    toToken: { address: Address; decimals: number }
+  }): GetExpectedFn =>
+  async (tokenIn, tokenOut, amountIn) => {
     const routes = await fetchApiRoutes({
       chainId,
-      tokenIn: fromToken as `0x${string}`,
-      tokenOut: toToken as `0x${string}`,
+      tokenIn: tokenIn as Address,
+      tokenOut: tokenOut as Address,
       amountIn: `${amountIn}` as Decimal,
       router,
       slippage,
-      fromAddress,
+      userAddress,
     })
     const { amountOut, priceImpact } = assert(routes?.[0], 'No route available')
     return { outAmount: amountOut, priceImpact: priceImpact ?? 0 }

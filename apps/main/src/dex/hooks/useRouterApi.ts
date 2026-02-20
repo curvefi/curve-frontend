@@ -9,9 +9,13 @@ import type {
 import { useTokensNameMapper } from '@/dex/hooks/useTokensNameMapper'
 import { getRouterWarningModal } from '@/dex/store/createQuickSwapSlice'
 import { useStore } from '@/dex/store/useStore'
-import { ChainId, TokensNameMapper } from '@/dex/types/main.types'
+import { TokensNameMapper } from '@/dex/types/main.types'
 import { getExchangeRates } from '@/dex/utils/utilsSwap'
-import { type Route as RouteApiResponse, useRouterApi as useRouterApiQuery } from '@ui-kit/entities/router-api.query'
+import {
+  type Route as RouteApiResponse,
+  type RoutesQuery,
+  useRouterApi as useRouterApiQuery,
+} from '@ui-kit/entities/router-api.query'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { Address, type Decimal, fromWei, toWei } from '@ui-kit/utils'
 
@@ -95,12 +99,12 @@ const convertRoute = (
 export function useRouterApi(
   {
     chainId,
+    userAddress,
     searchedParams: { toAddress, fromAddress },
   }: {
-    chainId: ChainId
     searchedParams: SearchedParams
-  },
-  enabled: boolean,
+  } & Pick<RoutesQuery, 'chainId' | 'userAddress'>,
+  enabled?: boolean,
 ): {
   data: RoutesAndOutput | undefined
   isLoading: boolean
@@ -125,6 +129,7 @@ export function useRouterApi(
         ? { amountIn: toWei(formValues.fromAmount, fromDecimals) }
         : { amountOut: toWei(formValues.toAmount, toDecimals) }),
       router: 'curve',
+      userAddress,
     },
     enabled,
   )
