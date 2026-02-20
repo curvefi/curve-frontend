@@ -103,10 +103,7 @@ export function useColumnFilters<TColumnId extends string>({
     columnFiltersById: useMemo(
       () =>
         columnFilters.reduce(
-          (acc, filter) => ({
-            ...acc,
-            [filter.id]: filter.value,
-          }),
+          (acc, filter) => ({ ...acc, [filter.id]: filter.value }),
           {} as PartialRecord<TColumnId, string>,
         ),
       [columnFilters],
