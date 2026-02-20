@@ -162,7 +162,7 @@ export const RepayForm = <ChainId extends IChainId>({
         blockchainId={network.id}
         name={selectedField}
         form={form}
-        max={max[selectedField]}
+        max={q(max[selectedField])}
         maxType="range"
         {...(selectedField === 'stateCollateral' && {
           positionBalance: { position: max.stateCollateral, tooltip: t`Current collateral in position` },

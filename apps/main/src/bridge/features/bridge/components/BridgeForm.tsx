@@ -3,6 +3,7 @@ import { useConnection } from 'wagmi'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
+import { q } from '@ui-kit/types/util'
 import { Chain, CRVUSD_ADDRESS, decimal } from '@ui-kit/utils'
 import { updateForm } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
@@ -50,7 +51,7 @@ export const BridgeForm = ({ chainId, networks }: BridgeFormParams) => {
       onSubmit={onSubmit}
       footer={
         <>
-          <BridgeActionInfos bridgeCost={bridgeCost} gas={gas} isApproved={isApproved.data} />
+          <BridgeActionInfos bridgeCost={q(bridgeCost)} gas={q(gas)} isApproved={isApproved.data} />
           <BridgeInfoAlert />
         </>
       }
