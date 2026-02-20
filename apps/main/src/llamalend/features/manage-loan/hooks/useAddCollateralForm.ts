@@ -71,7 +71,7 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
   useCallbackAfterFormUpdate(form, action.reset)
 
   useEffect(() => {
-    updateForm(form, { maxCollateral: maxCollateral })
+    updateForm(form, { maxCollateral })
   }, [form, maxCollateral])
 
   const isPending = formState.isSubmitting || action.isPending

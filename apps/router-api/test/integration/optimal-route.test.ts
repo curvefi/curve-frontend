@@ -155,7 +155,7 @@ describe.sequential('GET /api/router/optimal-route integration', () => {
       it(`returns a valid route for ${router} - ${label}`, async () => {
         const { json, statusCode } = await server.inject({
           url: '/api/router/optimal-route',
-          query: { ...query, router: router },
+          query: { ...query, router },
         })
         expect(statusCode).toBe(200)
 

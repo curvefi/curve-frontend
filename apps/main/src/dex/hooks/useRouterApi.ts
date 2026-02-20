@@ -74,7 +74,7 @@ const convertRoute = (
         outputCoinAddress,
         name,
         routeUrlId: poolId ?? '',
-        poolId: poolId,
+        poolId,
         ...args,
       }),
     ),
@@ -115,7 +115,7 @@ export function useRouterApi(
     error,
   } = useOptimalRoute(
     {
-      chainId: chainId,
+      chainId,
       tokenIn: fromAddress as Address,
       tokenOut: toAddress as Address,
       ...(formValues.isFrom

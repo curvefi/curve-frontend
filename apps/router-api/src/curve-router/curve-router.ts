@@ -104,7 +104,7 @@ export async function buildCurveRouteResponse(
       priceImpact,
       createdAt: Date.now(),
       isStableswapRoute,
-      warnings: warnings,
+      warnings,
       route: parsedRoutes.map(
         ({ name, inputCoinAddress, outputCoinAddress, ...args }): RouteStep => ({
           name,

@@ -83,7 +83,7 @@ export function TooltipButton({
             ...(increaseZIndex && { zIndex: 2 }),
             '& .MuiTooltip-tooltip': {
               maxWidth: minWidth || '20rem',
-              textAlign: textAlign,
+              textAlign,
               ...(noWrap && { whiteSpace: 'nowrap' }),
             },
           },

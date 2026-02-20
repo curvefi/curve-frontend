@@ -86,7 +86,7 @@ const OldPoolListPage = () => {
           filterKey: 'all',
           sortBy: paramSortBy as SortKey,
           sortByOrder: paramOrder as Order,
-          searchText: searchText,
+          searchText,
         })
       } else {
         setParsedSearchParams({
