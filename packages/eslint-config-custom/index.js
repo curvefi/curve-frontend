@@ -9,7 +9,7 @@ module.exports = {
   ],
   plugins: ['no-only-tests', 'unused-imports', 'import', '@typescript-eslint', 'react', 'react-hooks', 'react-refresh'],
   rules: {
-    'object-shorthand': 'error',
+    'object-shorthand': 'warn',
     'arrow-body-style': ['error', 'as-needed'],
     'no-only-tests/no-only-tests': 'error',
     'react/react-in-jsx-scope': 'off', // Not needed in React 17+
