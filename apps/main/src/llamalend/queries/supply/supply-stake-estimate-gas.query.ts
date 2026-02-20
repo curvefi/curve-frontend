@@ -47,6 +47,6 @@ export const useStakeEstimateGas = <ChainId extends IChainId>(
   return {
     data,
     isLoading: [isApprovedLoading, approveLoading, stakeLoading, conversionLoading].some(Boolean),
-    error: [isApprovedError, approveError, stakeError, estimateError].find(Boolean),
+    error: [isApprovedError, approveError, stakeError, estimateError].find(Boolean) ?? null,
   }
 }

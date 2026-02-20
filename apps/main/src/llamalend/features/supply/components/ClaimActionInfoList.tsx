@@ -4,6 +4,7 @@ import { ActionInfoCollapse } from '@/llamalend/widgets/action-card/ActionInfoCo
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { UserMarketParams } from '@ui-kit/lib/model'
 import { ActionInfoGasEstimate } from '@ui-kit/shared/ui/ActionInfo'
+import { q } from '@ui-kit/types/util'
 
 export type ClaimActionInfoListProps<ChainId extends IChainId> = {
   params: UserMarketParams<ChainId>
@@ -17,6 +18,6 @@ export const ClaimActionInfoList = <ChainId extends IChainId>({
   isOpen,
 }: ClaimActionInfoListProps<ChainId>) => (
   <ActionInfoCollapse isOpen={isOpen} testId="claim-action-info-list">
-    <ActionInfoGasEstimate gas={useClaimEstimateGas(networks, params)} />
+    <ActionInfoGasEstimate gas={q(useClaimEstimateGas(networks, params))} />
   </ActionInfoCollapse>
 )

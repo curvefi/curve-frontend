@@ -8,7 +8,7 @@ import { useMarketMaxLeverage } from '@/llamalend/queries/market-max-leverage.qu
 import { BorrowMoreForm, BorrowMoreParams } from '@/llamalend/queries/validation/borrow-more.validation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
-import { mapQuery, q } from '@ui-kit/types/util'
+import { mapQuery } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
 import { updateForm } from '@ui-kit/utils/react-form.utils'
 
@@ -41,7 +41,7 @@ export function useMaxBorrowMoreValues<ChainId extends LlamaChainId>(
   const maxReceive = useBorrowMoreMaxReceive(params, enabled)
   const maxDebt = maxReceive.data?.maxDebt
   const maxBorrowed = maxUserBorrowed.data
-  const maxLeverage = q(useMarketMaxLeverage({ chainId, marketId, range: PRESET_RANGES.MaxLtv }, enabled))
+  const maxLeverage = useMarketMaxLeverage({ chainId, marketId, range: PRESET_RANGES.MaxLtv }, enabled)
 
   useEffect(() => updateForm(form, { maxCollateral: maxUserCollateral.data }), [form, maxUserCollateral.data])
   useEffect(() => updateForm(form, { maxBorrowed: maxBorrowed }), [form, maxBorrowed])

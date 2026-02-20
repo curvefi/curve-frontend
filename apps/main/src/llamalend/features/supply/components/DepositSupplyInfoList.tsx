@@ -50,11 +50,11 @@ export function DepositSupplyInfoList<ChainId extends IChainId>({
       suppliedSymbol={tokens.borrowToken?.symbol}
       prevVaultShares={mapQuery(userBalances, (d) => d.vaultShares)}
       vaultShares={q(useDepositExpectedVaultShares(params, isOpen))}
-      prevAmountSupplied={prevAmountSupplied}
+      prevAmountSupplied={q(prevAmountSupplied)}
       amountSupplied={amountSupplied}
       prevSupplyApy={mapQuery(marketRates, (d) => d.lendApy)}
       supplyApy={mapQuery(futureRates, (d) => d.lendApy)}
-      gas={useDepositEstimateGas(networks, params, isOpen)}
+      gas={q(useDepositEstimateGas(networks, params, isOpen))}
     />
   )
 }

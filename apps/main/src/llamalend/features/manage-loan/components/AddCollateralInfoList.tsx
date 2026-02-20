@@ -35,7 +35,7 @@ export function AddCollateralInfoList<ChainId extends IChainId>({
   form: UseFormReturn<CollateralForm>
 }) {
   const isOpen = isFormTouched(form, 'userCollateral')
-  const userState = q(useUserState(params, isOpen))
+  const userState = useUserState(params, isOpen)
 
   const expectedCollateral = mapQuery(
     userState,
@@ -50,34 +50,38 @@ export function AddCollateralInfoList<ChainId extends IChainId>({
   return (
     <LoanActionInfoList
       isOpen={isOpen}
-      gas={useAddCollateralEstimateGas(networks, params, isOpen)}
-      health={useHealthQueries((isFull) => getAddCollateralHealthOptions({ ...params, isFull }, isOpen))}
-      prevHealth={useHealthQueries((isFull) => getUserHealthOptions({ ...params, isFull }, isOpen))}
+      gas={q(useAddCollateralEstimateGas(networks, params, isOpen))}
+      health={q(useHealthQueries((isFull) => getAddCollateralHealthOptions({ ...params, isFull }, isOpen)))}
+      prevHealth={q(useHealthQueries((isFull) => getUserHealthOptions({ ...params, isFull }, isOpen)))}
       rates={q(useMarketRates(params, isOpen))}
-      prevLoanToValue={useLoanToValueFromUserState(
-        {
-          chainId: params.chainId,
-          marketId: params.marketId,
-          userAddress: params.userAddress,
-          collateralToken,
-          borrowToken,
-          expectedBorrowed: userState.data?.debt,
-        },
-        isOpen,
+      prevLoanToValue={q(
+        useLoanToValueFromUserState(
+          {
+            chainId: params.chainId,
+            marketId: params.marketId,
+            userAddress: params.userAddress,
+            collateralToken,
+            borrowToken,
+            expectedBorrowed: userState.data?.debt,
+          },
+          isOpen,
+        ),
       )}
-      loanToValue={useLoanToValueFromUserState(
-        {
-          chainId: params.chainId,
-          marketId: params.marketId,
-          userAddress: params.userAddress,
-          collateralToken,
-          borrowToken,
-          collateralDelta: userCollateral,
-          expectedBorrowed: userState.data?.debt,
-        },
-        isOpen && !!userCollateral,
+      loanToValue={q(
+        useLoanToValueFromUserState(
+          {
+            chainId: params.chainId,
+            marketId: params.marketId,
+            userAddress: params.userAddress,
+            collateralToken,
+            borrowToken,
+            collateralDelta: userCollateral,
+            expectedBorrowed: userState.data?.debt,
+          },
+          isOpen && !!userCollateral,
+        ),
       )}
-      userState={userState}
+      userState={q(userState)}
       collateral={expectedCollateral}
       leverageEnabled={leverageEnabled}
       prevLeverageValue={q(useUserCurrentLeverage(params, isOpen))}

@@ -11,7 +11,7 @@ import { useUserBalances } from '@/llamalend/queries/user'
 import type { WithdrawForm, WithdrawParams } from '@/llamalend/queries/validation/supply.validation'
 import { SupplyActionInfoList } from '@/llamalend/widgets/action-card/SupplyActionInfoList'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { mapQuery } from '@ui-kit/types/util'
+import { mapQuery, q } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
 import { isFormTouched } from '@ui-kit/utils/react-form.utils'
 
@@ -49,12 +49,12 @@ export function WithdrawSupplyInfoList<ChainId extends IChainId>({
       isOpen={isOpen}
       suppliedSymbol={tokens.borrowToken?.symbol}
       prevVaultShares={prevVaultShares}
-      vaultShares={vaultShares}
-      prevAmountSupplied={prevAmountSupplied}
+      vaultShares={q(vaultShares)}
+      prevAmountSupplied={q(prevAmountSupplied)}
       amountSupplied={amountSupplied}
       prevSupplyApy={mapQuery(marketRates, (d) => d.lendApy)}
       supplyApy={mapQuery(futureRates, (d) => d.lendApy)}
-      gas={useWithdrawEstimateGas(networks, params, isOpen)}
+      gas={q(useWithdrawEstimateGas(networks, params, isOpen))}
     />
   )
 }

@@ -137,7 +137,6 @@ export const LlamaMarketsTable = ({
               hiddenMarketCount={result ? data.length - table.getFilteredRowModel().rows.length : 0}
               hasFilters={hasFilters}
               resetFilters={resetFilters}
-              userHasPositions={userHasPositions}
               hasFavorites={hasFavorites}
               onSortingChange={onSortingChange}
               sortField={sortField}

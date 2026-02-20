@@ -32,6 +32,6 @@ export const useUnstakeEstimateGas = <ChainId extends IChainId>(
   return {
     data,
     isLoading: [unstakeLoading, conversionLoading].some(Boolean),
-    error: [unstakeError, estimateError].find(Boolean),
+    error: [unstakeError, estimateError].find(Boolean) ?? null,
   }
 }
