@@ -1,41 +1,47 @@
-import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
-import { MarketBorrowRateType } from '@/llamalend/widgets/tooltips/constants'
-import { MarketBorrowRateTooltipWrapper } from '@/llamalend/widgets/tooltips/MarketBorrowRateTooltipWrapper'
-import { t } from '@ui-kit/lib/i18n'
-import { Tooltip, TooltipProps } from '@ui-kit/shared/ui/Tooltip'
-import { LlamaMarketColumnId } from '../../columns'
+import { useSnapshots } from '@/llamalend/features/market-list/hooks/useSnapshots'
+import { useFilteredRewards } from '@/llamalend/hooks/useFilteredRewards'
+import { getBorrowRateTooltipTitle } from '@/llamalend/llama.utils'
+import { MarketNetBorrowAprTooltipContent } from '@/llamalend/widgets/tooltips/MarketNetBorrowAprTooltipContent'
+import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
+import { MarketRateType } from '@ui-kit/types/market'
+import { RateTooltipProps } from './RateCell'
 
-type BorrowRateTooltipProps = Pick<TooltipProps, 'children'> & {
-  market: LlamaMarket
-  columnId: LlamaMarketColumnId.BorrowRate | LlamaMarketColumnId.NetBorrowRate
-}
+export const BorrowRateTooltip = ({ market, children }: RateTooltipProps) => {
+  const {
+    averageRate: averageApr,
+    period,
+    averageTotalBorrowRate: totalAverageBorrowApr,
+    isLoading,
+  } = useSnapshots(market, MarketRateType.Borrow)
+  const {
+    rewards,
+    type: marketType,
+    rates: { borrowApr, borrowTotalApr: totalBorrowApr },
+    assets: {
+      collateral: { rebasingYieldApr, symbol: collateralSymbol },
+    },
+  } = market
+  const poolRewards = useFilteredRewards(rewards, marketType, MarketRateType.Borrow)
+  const title = getBorrowRateTooltipTitle({ totalBorrowApr, rebasingYieldApr, extraRewards: poolRewards })
 
-type BorrowRateTooltipConfig = {
-  title: string
-  type: MarketBorrowRateType
-}
-
-const borrowRateTooltipConfig: Record<
-  LlamaMarketColumnId.BorrowRate | LlamaMarketColumnId.NetBorrowRate,
-  BorrowRateTooltipConfig
-> = {
-  [LlamaMarketColumnId.BorrowRate]: {
-    title: t`Borrow APR`,
-    type: MarketBorrowRateType.BorrowApr,
-  },
-  [LlamaMarketColumnId.NetBorrowRate]: {
-    title: t`Net borrow APR`,
-    type: MarketBorrowRateType.NetBorrowApr,
-  },
-}
-
-export const BorrowRateTooltip = ({ market, columnId, children }: BorrowRateTooltipProps) => {
-  const { title, type } = borrowRateTooltipConfig[columnId]
   return (
     <Tooltip
       clickable
       title={title}
-      body={<MarketBorrowRateTooltipWrapper market={market} borrowRateType={type} />}
+      body={
+        <MarketNetBorrowAprTooltipContent
+          marketType={marketType}
+          borrowApr={borrowApr}
+          averageApr={averageApr}
+          totalBorrowApr={totalBorrowApr}
+          totalAverageBorrowApr={totalAverageBorrowApr}
+          extraRewards={poolRewards}
+          rebasingYieldApr={rebasingYieldApr}
+          periodLabel={period}
+          collateralSymbol={collateralSymbol}
+          isLoading={isLoading}
+        />
+      }
       placement="top"
     >
       {children}
