@@ -11,7 +11,7 @@ import { Duration } from '@ui-kit/themes/design/0_primitives'
  */
 export function useDebounced<T extends unknown[]>(
   callback: (...value: T) => void,
-  debounceMs: number,
+  debounceMs: number = Duration.FormDebounce,
   onChange?: (...value: T) => void,
 ) {
   const timerRef = useRef<number | null>(null)
@@ -64,7 +64,11 @@ export function useDebounced<T extends unknown[]>(
  * // The hook will update its internal value when initialValue changes
  * const [debouncedValue, setDebouncedValue, cancel] = useDebounce(externalValue, 200, handleChange);
  */
-export function useDebounce<T>(initialValue: T, debounceMs: number, callback: (value: T) => void) {
+export function useDebounce<T>(
+  initialValue: T,
+  debounceMs: number = Duration.FormDebounce,
+  callback: (value: T) => void,
+) {
   const [value, setValue] = useState<T>(initialValue)
   // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => setValue(initialValue), [initialValue])
