@@ -19,14 +19,14 @@ import { Header } from '@ui-kit/widgets/Header'
 
 const { MinHeight } = SizesAndSpaces
 
-const useAppStats = (currentApp: AppName, network: NetworkDef) => {
-  const llamaLendApps: AppName[] = ['crvusd', 'lend', 'llamalend']
-  const isLlamalend = llamaLendApps.includes(currentApp)
+const LLAMALEND_APPS: AppName[] = ['crvusd', 'lend', 'llamalend']
 
-  const llamalendStats = useLlamalendAppStats({ chainId: network?.chainId }, isLlamalend)
+const useAppStats = (currentApp: AppName, network: NetworkDef) => {
+  const isLlamalendApp = LLAMALEND_APPS.includes(currentApp)
+  const llamalendStats = useLlamalendAppStats({ chainId: network?.chainId, currentApp }, isLlamalendApp)
   const dexStats = useDexAppStats(currentApp === 'dex' ? network : undefined) // 'disabled' by passing undefined
 
-  return isLlamalend ? llamalendStats : currentApp === 'dex' ? dexStats : []
+  return isLlamalendApp ? llamalendStats : currentApp === 'dex' ? dexStats : []
 }
 
 const useAppRoutes = (network: NetworkDef) => ({

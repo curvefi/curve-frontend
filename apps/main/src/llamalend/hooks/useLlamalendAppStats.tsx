@@ -2,10 +2,14 @@ import { useMemo } from 'react'
 import { useConnection } from 'wagmi'
 import { useLlamaMarkets } from '@/llamalend/queries/market-list/llama-markets'
 import { fetchJson } from '@curvefi/prices-api/fetch'
+import { useMatchRoute } from '@ui-kit/hooks/router'
+import { useIsDesktop } from '@ui-kit/hooks/useBreakpoints'
+import { useLendMarketSubNav } from '@ui-kit/hooks/useFeatureFlags'
 import { EmptyValidationSuite } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { queryFactory } from '@ui-kit/lib/model'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
+import { LEND_ROUTES, type AppName } from '@ui-kit/shared/routes'
 import { Chain, CRVUSD_ADDRESS, decimal, formatNumber, formatUsd } from '@ui-kit/utils'
 
 /** Query for getting the daily volume of all crvUSD AMMs */
@@ -33,15 +37,40 @@ const { useQuery: useCrvUsdTotalSupply } = queryFactory({
   validationSuite: EmptyValidationSuite,
 })
 
-export function useLlamalendAppStats({ chainId }: { chainId: number | undefined }, enabled: boolean = true) {
-  const { address } = useConnection()
+const LLAMALEND_APP: AppName = 'llamalend'
 
-  const { data: marketData } = useLlamaMarkets(address, enabled)
+export function useLlamalendAppStats(
+  {
+    chainId,
+    currentApp,
+  }: {
+    chainId: number | undefined
+    currentApp: AppName
+  },
+  enabled: boolean = true,
+) {
+  const { address } = useConnection()
+  const isNewLendSubNav = useLendMarketSubNav()
+  const isDesktop = useIsDesktop()
+  const params = useMatchRoute<{ page: string }>({
+    to: `$app/$network/$page`,
+  })
+
+  const shouldShowStats =
+    isNewLendSubNav && isDesktop
+      ? // hide header stats on lend/crvusd market pages only
+        currentApp === LLAMALEND_APP || (params && `/${params.page}` !== LEND_ROUTES.PAGE_MARKETS)
+      : true
+  const statsEnabled = enabled && shouldShowStats
+
+  const { data: marketData } = useLlamaMarkets(address, statsEnabled)
   const tvl = useMemo(() => (marketData?.markets ?? []).reduce((acc, market) => acc + market.tvl, 0), [marketData])
 
-  const { data: dailyVolume } = useAppStatsDailyVolume({}, enabled && !!chainId)
-  const { data: crvusdPrice } = useTokenUsdRate({ chainId: Chain.Ethereum, tokenAddress: CRVUSD_ADDRESS }, enabled)
-  const { data: crvusdTotalSupply } = useCrvUsdTotalSupply({ chainId }, enabled)
+  const { data: dailyVolume } = useAppStatsDailyVolume({}, statsEnabled && !!chainId)
+  const { data: crvusdPrice } = useTokenUsdRate({ chainId: Chain.Ethereum, tokenAddress: CRVUSD_ADDRESS }, statsEnabled)
+  const { data: crvusdTotalSupply } = useCrvUsdTotalSupply({ chainId }, statsEnabled)
+
+  if (!statsEnabled) return []
 
   return [
     {
