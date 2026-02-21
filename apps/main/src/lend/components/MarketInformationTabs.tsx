@@ -33,7 +33,7 @@ export const MarketInformationTabs = ({ currentTab, hrefs, children }: MarketInf
       {!showSubNav && (
         <Stack alignItems="baseline" direction="row" justifyContent="space-between">
           <TabsSwitcher value={tab} onChange={setTab} variant="contained" options={tabs} />
-          {showPageHeader && <LlamaMonitorBotLinkButton size="extraSmall" />}
+          {showPageHeader && <LlamaMonitorBotLinkButton />}
         </Stack>
       )}
       <Box sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>{children}</Box>

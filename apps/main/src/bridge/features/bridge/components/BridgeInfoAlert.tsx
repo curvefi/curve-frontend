@@ -1,10 +1,9 @@
-import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
-import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
+import { ExternalLink } from '@ui-kit/shared/ui/ExternalLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
@@ -31,29 +30,8 @@ export const BridgeInfoAlert = () => (
       </Typography>
 
       <Stack direction="row" justifyContent="space-between">
-        <Button
-          variant="link"
-          color="ghost"
-          href="https://curvefi.github.io/fast-bridge/"
-          target="_blank"
-          rel="noreferrer"
-          sx={{ alignSelf: 'end' }}
-          endIcon={<ArrowOutwardIcon sx={(t) => ({ fontSize: t.typography.fontSize })} />}
-        >
-          {t`FastBridge Monitor`}
-        </Button>
-
-        <Button
-          variant="link"
-          color="ghost"
-          href="https://docs.curve.finance/fast-bridge/overview/"
-          target="_blank"
-          rel="noreferrer"
-          sx={{ alignSelf: 'end' }}
-          endIcon={<ArrowOutwardIcon sx={(t) => ({ fontSize: t.typography.fontSize })} />}
-        >
-          {t`Learn More`}
-        </Button>
+        <ExternalLink href="https://curvefi.github.io/fast-bridge/" label={t`FastBridge Monitor`} />
+        <ExternalLink href="https://docs.curve.finance/fast-bridge/overview/" label={t`Learn More`} />
       </Stack>
     </Stack>
   </Alert>
