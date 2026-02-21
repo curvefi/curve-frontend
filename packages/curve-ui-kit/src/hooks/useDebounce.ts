@@ -90,8 +90,6 @@ export function useDebouncedValue<T>(
   return value
 }
 
-const SearchDebounceMs = 166 // 10 frames at 60fps
-
 /**
  * A hook that debounces a value and only calls the callback when the value has actually changed.
  * This prevents unnecessary callback executions when the debounced value hasn't changed.
@@ -105,7 +103,7 @@ const SearchDebounceMs = 166 // 10 frames at 60fps
 export function useUniqueDebounce<T>({
   defaultValue,
   callback,
-  debounceMs = SearchDebounceMs,
+  debounceMs = Duration.FormDebounce,
   equals,
 }: {
   defaultValue: T
