@@ -4,6 +4,7 @@ import Fade from '@mui/material/Fade'
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
+import { useDebounce } from '@ui-kit/hooks/useDebounce'
 import { useFilterExpanded } from '@ui-kit/hooks/useLocalStorage'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
@@ -51,10 +52,12 @@ export const TableFilters = <ColumnIds extends string>({
   const settingsRef = useRef<HTMLButtonElement>(null)
   // search is here because we remove the table title when searching on mobile
   const [isSearchExpanded, , , toggleSearchExpanded] = useSwitch(false)
+  const [searchValue, setSearchValue] = useDebounce({ initialValue: searchText, callback: onSearch })
   const isMobile = useIsMobile()
   const isCollapsible = collapsible || (isMobile && chips)
-  const isExpandedOrValue = Boolean(isSearchExpanded || searchText)
+  const isExpandedOrValue = Boolean(isSearchExpanded || searchValue)
   const hideTitle = hasSearchBar && isExpandedOrValue && isMobile
+
   return (
     <Stack paddingBlockEnd={{ mobile: Spacing.sm.tablet }} paddingBlockStart={{ mobile: Spacing.md.tablet }}>
       <Grid container spacing={Spacing.sm} paddingInline={Spacing.md} justifyContent="space-between">
@@ -90,8 +93,8 @@ export const TableFilters = <ColumnIds extends string>({
           {onReload && !isMobile && <TableButton onClick={onReload} icon={ReloadIcon} rotateIcon={loading} />}
           {hasSearchBar && (
             <TableSearchField
-              value={searchText}
-              onChange={onSearch}
+              value={searchValue}
+              onChange={setSearchValue}
               testId={filterExpandedKey}
               toggleExpanded={toggleSearchExpanded}
               isExpanded={isExpandedOrValue}
