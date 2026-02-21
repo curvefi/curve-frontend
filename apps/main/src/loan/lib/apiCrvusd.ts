@@ -43,11 +43,18 @@ const DEFAULT_BAND_BALANCES = {
   '0': { stablecoin: '0', collateral: '0' },
 }
 
+const DEFAULT_RATES = {
+  borrowApr: '',
+  lendApr: '',
+  borrowApy: '',
+  lendApy: '',
+}
+
 const DEFAULT_PARAMETERS = {
   fee: '',
-  future_rate: '',
   admin_fee: '',
-  rate: '',
+  rates: DEFAULT_RATES,
+  future_rates: DEFAULT_RATES,
   liquidation_discount: '',
   loan_discount: '',
 }

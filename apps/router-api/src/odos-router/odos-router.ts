@@ -115,10 +115,7 @@ export const buildOdosRouteResponse = async (
           protocol: 'odos',
           action: 'swap',
           chainId,
-          args: {
-            pathId: pathId,
-            pathVizImage: pathVizImage,
-          },
+          args: { pathId, pathVizImage },
         },
       ],
       ...(tx?.transaction && { tx: tx.transaction }),

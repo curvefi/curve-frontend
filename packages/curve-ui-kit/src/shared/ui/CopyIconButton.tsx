@@ -20,13 +20,14 @@ export const CopyIconButton = ({
   label,
   confirmationText,
   children = <CopyIcon />,
+  size = 'extraSmall',
   ...iconProps
 }: CopyIconBUttonProps) => (
   // Extra theme inverter so the tooltip doesn't change colors when inside an inverted block
   <InvertTheme inverted={false}>
     <Tooltip title={label} placement="top">
       <IconButton
-        size="extraSmall"
+        size={size}
         {...iconProps}
         onClick={() => {
           console.info(`Copying to clipboard: ${copyText}`)
