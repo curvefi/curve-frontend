@@ -30,7 +30,7 @@ export function submitImproveHealthForm() {
 }
 
 export function submitClosePositionForm(expected: AlertColor = 'success', message = 'Position closed') {
-  cy.get('[data-testid="close-position-submit-button"]', LOAD_TIMEOUT).click()
+  cy.get('[data-testid="close-position-submit-button"]', TRANSACTION_LOAD_TIMEOUT).should('not.be.disabled').click()
   return cy
     .get(`[data-testid="toast-${expected}"]`, TRANSACTION_LOAD_TIMEOUT)
     .contains(message, TRANSACTION_LOAD_TIMEOUT)
