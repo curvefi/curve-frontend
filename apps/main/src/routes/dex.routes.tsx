@@ -1,15 +1,16 @@
-import { PageCompensation } from '@/dex/components/PageCompensation/Page'
-import { PageCreatePool } from '@/dex/components/PageCreatePool/Page'
-import { PageDashboard } from '@/dex/components/PageDashboard/Page'
-import { PageDeployGauge } from '@/dex/components/PageDeployGauge/Page'
-import { PagePool } from '@/dex/components/PagePool/Page'
-import { PagePoolList } from '@/dex/components/PagePoolList/Page'
-import { PageRouterSwap } from '@/dex/components/PageRouterSwap/Page'
-import { DexLayout } from '@/dex/DexLayout'
-import { createRoute } from '@tanstack/react-router'
+import { createRoute, lazyRouteComponent } from '@tanstack/react-router'
 import { rootRoute } from './root.routes'
 import { createSharedRoutes } from './shared.routes'
 import { redirectTo } from './util'
+
+const DexLayout = lazyRouteComponent(() => import('@/dex/DexLayout'), 'DexLayout')
+const PageCompensation = lazyRouteComponent(() => import('@/dex/components/PageCompensation/Page'), 'PageCompensation')
+const PageCreatePool = lazyRouteComponent(() => import('@/dex/components/PageCreatePool/Page'), 'PageCreatePool')
+const PageDashboard = lazyRouteComponent(() => import('@/dex/components/PageDashboard/Page'), 'PageDashboard')
+const PageDeployGauge = lazyRouteComponent(() => import('@/dex/components/PageDeployGauge/Page'), 'PageDeployGauge')
+const PagePoolList = lazyRouteComponent(() => import('@/dex/components/PagePoolList/Page'), 'PagePoolList')
+const PagePool = lazyRouteComponent(() => import('@/dex/components/PagePool/Page'), 'PagePool')
+const PageRouterSwap = lazyRouteComponent(() => import('@/dex/components/PageRouterSwap/Page'), 'PageRouterSwap')
 
 const dexLayoutRoute = createRoute({
   getParentRoute: () => rootRoute,
