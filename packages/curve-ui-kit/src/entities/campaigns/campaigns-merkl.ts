@@ -86,11 +86,7 @@ const opportunityToCampaignPoolRewards = (opp: MerklOpportunity): CampaignPoolRe
  *
  * API is also available in the browser for testing and experimenting at https://api.merkl.xyz/docs
  */
-export const {
-  useQuery: useCampaignsMerkl,
-  getQueryOptions: getCampaignsMerklOptions,
-  getQueryData: getCampaignsMerkl,
-} = queryFactory({
+export const { getQueryOptions: getCampaignsMerklOptions } = queryFactory({
   queryKey: () => ['campaigns-merkl'] as const,
   queryFn: async () => {
     const fetchPage = async (page: number, items: number) => {

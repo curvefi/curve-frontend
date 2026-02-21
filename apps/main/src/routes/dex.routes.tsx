@@ -3,7 +3,7 @@ import { PageCreatePool } from '@/dex/components/PageCreatePool/Page'
 import { PageDashboard } from '@/dex/components/PageDashboard/Page'
 import { PageDeployGauge } from '@/dex/components/PageDeployGauge/Page'
 import { PagePool } from '@/dex/components/PagePool/Page'
-import { PagePoolList } from '@/dex/components/PagePoolList/Page'
+import { PoolListPage } from '@/dex/components/PagePoolList/PoolListPage'
 import { PageRouterSwap } from '@/dex/components/PageRouterSwap/Page'
 import { DexLayout } from '@/dex/DexLayout'
 import { createRoute } from '@tanstack/react-router'
@@ -65,7 +65,7 @@ export const dexRoutes = dexLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/pools',
-    component: PagePoolList,
+    component: PoolListPage,
     head: () => ({
       meta: [{ title: 'Pools - Curve' }],
     }),

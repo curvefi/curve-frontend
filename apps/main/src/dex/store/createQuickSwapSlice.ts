@@ -64,9 +64,6 @@ export type QuickSwapSlice = {
       isRefetch?: boolean,
     ): Promise<void>
 
-    // select token list
-    setPoolListFormValues(hideSmallPools: boolean): void
-
     // steps
     fetchStepApprove(
       activeKey: string,
@@ -343,13 +340,6 @@ export const createQuickSwapSlice = (
       // api calls
       await sliceState.fetchRoutesAndOutput(config, curve, searchedParams, maxSlippage)
       void sliceState.fetchEstGasApproval(curve, searchedParams)
-    },
-
-    // select token list
-    setPoolListFormValues: (hideSmallPools) => {
-      const storedPoolListFormValues = cloneDeep(get().poolList.formValues)
-      storedPoolListFormValues.hideSmallPools = hideSmallPools
-      get().poolList.setStateByKey('formValues', storedPoolListFormValues)
     },
 
     // steps

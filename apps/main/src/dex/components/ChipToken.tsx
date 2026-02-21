@@ -38,14 +38,13 @@ const ChipTokenCopyButton = styled.button`
 
 interface ChipTokenProps extends AriaButtonProps {
   className?: string
-  isHighlight?: boolean // highlight name if it is part of pool list search result
   amount?: string
   showUsdAmount?: boolean // display amount instead of token name
   tokenName: string
   tokenAddress: string
 }
 
-export const ChipToken = ({ className, isHighlight, tokenName, tokenAddress, ...props }: ChipTokenProps) => {
+export const ChipToken = ({ className, tokenName, tokenAddress, ...props }: ChipTokenProps) => {
   const chainId = useChainId()
   const [usdRate, setUsdRate] = useState<number | undefined>(undefined)
   const parsedUsdRate = formatNumber(usdRate, { ...FORMAT_OPTIONS.USD, defaultValue: '-' })
@@ -65,7 +64,7 @@ export const ChipToken = ({ className, isHighlight, tokenName, tokenAddress, ...
 
   return (
     <ChipTokenWrapper className={className} onMouseEnter={handleMouseEnter}>
-      <span>{isHighlight ? <strong>{parsedTokenName}</strong> : parsedTokenName} </span>
+      <span>{parsedTokenName}</span>
       <ChipTokenAdditionalInfo>
         <Button {...props} onPress={() => copyToClipboard(tokenAddress)}>
           <AlignmentWrapper>
