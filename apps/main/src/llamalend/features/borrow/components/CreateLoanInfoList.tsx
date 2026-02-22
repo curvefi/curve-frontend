@@ -1,6 +1,7 @@
 import type { UseFormReturn } from 'react-hook-form'
-import type { NetworkDict } from '@/llamalend/llamalend.types'
+import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { useCreateLoanIsApproved } from '@/llamalend/queries/create-loan/create-loan-approved.query'
+import { useMarketOraclePrice } from '@/llamalend/queries/market-oracle-price.query'
 import { useMarketRates } from '@/llamalend/queries/market-rates.query'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { q } from '@ui-kit/types/util'
@@ -15,9 +16,11 @@ import { useCreateLoanPrices } from '../../../queries/create-loan/create-loan-pr
 import { useMarketFutureRates } from '../../../queries/market-future-rates.query'
 import { LoanActionInfoList } from '../../../widgets/action-card/LoanActionInfoList'
 import { useLoanToValue } from '../hooks/useLoanToValue'
+import { useNetBorrowApr } from '../hooks/useNetBorrowApr'
 import { type CreateLoanForm, type CreateLoanFormQueryParams, type Token } from '../types'
 
 export const CreateLoanInfoList = <ChainId extends IChainId>({
+  market,
   params,
   values: { slippage, leverageEnabled },
   collateralToken,
@@ -26,6 +29,7 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
   onSlippageChange,
   form,
 }: {
+  market: LlamaMarketTemplate | undefined
   params: CreateLoanFormQueryParams<ChainId>
   values: CreateLoanForm
   collateralToken: Token | undefined
@@ -40,14 +44,29 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
   const leverageTotalCollateral = mapQuery(expectedCollateral, (data) => data?.totalCollateral)
   const priceImpact = useCreateLoanPriceImpact(params, isOpen)
 
+  const { marketRates, marketFutureRates, netBorrowApr, futureBorrowApr } = useNetBorrowApr(
+    {
+      market,
+      params,
+      marketRates: q(useMarketRates(params, isOpen)),
+      marketFutureRates: q(useMarketFutureRates(params, isOpen)),
+    },
+    isOpen,
+  )
+
   return (
     <LoanActionInfoList
       isOpen={isOpen}
       isApproved={q(useCreateLoanIsApproved(params))}
       health={q(useCreateLoanHealth(params, isOpen))}
       prices={q(useCreateLoanPrices(params, isOpen))}
-      prevRates={q(useMarketRates(params, isOpen))}
-      rates={q(useMarketFutureRates(params, isOpen))}
+      prevRates={marketRates}
+      rates={marketFutureRates}
+      prevNetBorrowApr={netBorrowApr && q(netBorrowApr)}
+      netBorrowApr={futureBorrowApr && q(futureBorrowApr)}
+      exchangeRate={q(useMarketOraclePrice(params, isOpen))}
+      collateralSymbol={collateralToken?.symbol}
+      borrowSymbol={borrowToken?.symbol}
       loanToValue={q(
         useLoanToValue(
           {

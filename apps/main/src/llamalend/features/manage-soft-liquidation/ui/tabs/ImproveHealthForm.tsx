@@ -67,6 +67,7 @@ export const ImproveHealthForm = ({
       onSubmit={onSubmit}
       footer={
         <RepayLoanInfoList
+          market={market}
           form={form}
           params={params}
           values={values}
