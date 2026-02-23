@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import { useUserMarketStats } from '@/llamalend/queries/market-list/llama-market-stats'
 import { AssetDetails, LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { CollateralMetricTooltipContent } from '@/llamalend/widgets/tooltips/CollateralMetricTooltipContent'
@@ -73,7 +74,7 @@ const getTooltipBody = (
   columnId: LlamaMarketColumnId,
   stats: ReturnType<typeof useUserMarketStats>['data'],
   isLoading: boolean,
-): React.ReactNode | undefined => {
+): ReactNode | undefined => {
   if (columnId === LlamaMarketColumnId.UserBorrowed) {
     return <TotalDebtTooltipContent />
   }
@@ -116,7 +117,7 @@ const AssetValue = ({
   value: number | undefined
   isValueLoading: boolean
   tooltipTitle: string
-  tooltipBody: React.ReactNode
+  tooltipBody: ReactNode
 }) => (
   <WithSkeleton loading={isValueLoading}>
     <Tooltip title={tooltipTitle} body={tooltipBody}>

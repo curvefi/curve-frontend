@@ -1,4 +1,5 @@
 import '@cy/eip6963-test-setup'
+import { skipTestsAfterFailure } from '@cy/support/ui'
 import type { AppRoute } from './routes'
 
 /** Global Cypress exception handler to ignore specific known errors. */
@@ -36,3 +37,7 @@ Cypress.Commands.add('visitWithoutTestConnector', (route: AppRoute, options?: Pa
     },
   }),
 )
+
+if (Cypress.config('isInteractive')) {
+  skipTestsAfterFailure()
+}

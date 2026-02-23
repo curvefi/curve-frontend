@@ -1,5 +1,5 @@
 import type { UrlObject } from 'url'
-import { useMemo } from 'react'
+import { type ReactNode, useMemo } from 'react'
 import Stack from '@mui/material/Stack'
 import Tab, { type TabProps } from '@mui/material/Tab'
 import Tabs, { type TabsProps } from '@mui/material/Tabs'
@@ -22,8 +22,8 @@ export type TabOption<T> = Pick<TabProps, 'label' | 'disabled' | 'icon' | 'sx'> 
   href?: string | UrlObject
   /** The suffix of the tab. It's rendered after the label and before the end adornment. */
   suffix?: string
-  startAdornment?: React.ReactNode
-  endAdornment?: React.ReactNode
+  startAdornment?: ReactNode
+  endAdornment?: ReactNode
   /**  If true, the tab will always be in the kebab menu, even if there is enough space to show it.
    * The TabsSwitcher's overflow="kebab" mode is required for this to work. */
   alwaysInKebab?: boolean

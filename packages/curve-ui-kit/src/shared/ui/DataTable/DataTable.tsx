@@ -1,5 +1,5 @@
 /// <reference types="./DataTable.d.ts" />
-import { ReactNode, useEffect, useEffectEvent, useMemo, useRef } from 'react'
+import { type ReactNode, type RefObject, useEffect, useEffectEvent, useMemo, useRef } from 'react'
 import Box from '@mui/material/Box'
 import { Theme } from '@mui/material/styles'
 import Table from '@mui/material/Table'
@@ -38,7 +38,7 @@ function useScrollToTopOnFilterChange<T extends TableItem>(table: TanstackTable<
  */
 function useScrollToTopOnPageChange<T extends TableItem>(
   table: TanstackTable<T>,
-  containerRef: React.RefObject<HTMLElement | null>,
+  containerRef: RefObject<HTMLElement | null>,
 ) {
   const { pageIndex } = table.getState().pagination
   useEffect(() => {

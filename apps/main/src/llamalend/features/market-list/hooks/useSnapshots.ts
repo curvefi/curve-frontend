@@ -36,13 +36,12 @@ const DAYS_BACK = LAST_WEEK
 export function useSnapshots<T extends CrvUsdSnapshot | LendingSnapshot>(
   { chain, controllerAddress, type: marketType, rates }: LlamaMarket,
   type: MarketRateType,
-  enabled: boolean = true,
+  enabled: boolean,
 ): UseSnapshotsResult<T> {
   const isLend = marketType == LlamaMarketType.Lend
   const showLendGraph = isLend && enabled
   const showMintGraph = !isLend && type === MarketRateType.Borrow && enabled
-  const contractAddress = controllerAddress
-  const params = { blockchainId: chain, contractAddress, limit: DAYS_BACK } // fetch last 7 days for 7 day average calcs
+  const params = { blockchainId: chain, contractAddress: controllerAddress, limit: DAYS_BACK } // fetch last 7 days for 7 day average calcs
   const { data: poolSnapshots, isLoading: lendIsLoading, error: poolError } = useLendingSnapshots(params, showLendGraph)
   const { data: mintSnapshots, isLoading: mintIsLoading, error: mintError } = useCrvUsdSnapshots(params, showMintGraph)
 
