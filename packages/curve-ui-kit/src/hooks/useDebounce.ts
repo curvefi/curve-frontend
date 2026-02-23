@@ -11,7 +11,7 @@ import { Duration } from '@ui-kit/themes/design/0_primitives'
  */
 export function useDebounced<T extends unknown[]>(
   callback: (...value: T) => void,
-  debounceMs: number,
+  debounceMs: number = Duration.FormDebounce,
   onChange?: (...value: T) => void,
 ) {
   const timerRef = useRef<number | null>(null)
@@ -64,7 +64,15 @@ export function useDebounced<T extends unknown[]>(
  * // The hook will update its internal value when initialValue changes
  * const [debouncedValue, setDebouncedValue, cancel] = useDebounce(externalValue, 200, handleChange);
  */
-export function useDebounce<T>(initialValue: T, debounceMs: number, callback: (value: T) => void) {
+export function useDebounce<T>({
+  initialValue,
+  debounceMs = Duration.FormDebounce,
+  callback,
+}: {
+  initialValue: T
+  callback: (value: T) => void
+  debounceMs?: number
+}) {
   const [value, setValue] = useState<T>(initialValue)
   // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => setValue(initialValue), [initialValue])
@@ -90,8 +98,6 @@ export function useDebouncedValue<T>(
   return value
 }
 
-const SearchDebounceMs = 166 // 10 frames at 60fps
-
 /**
  * A hook that debounces a value and only calls the callback when the value has actually changed.
  * This prevents unnecessary callback executions when the debounced value hasn't changed.
@@ -105,7 +111,7 @@ const SearchDebounceMs = 166 // 10 frames at 60fps
 export function useUniqueDebounce<T>({
   defaultValue,
   callback,
-  debounceMs = SearchDebounceMs,
+  debounceMs = Duration.FormDebounce,
   equals,
 }: {
   defaultValue: T
@@ -139,5 +145,5 @@ export function useUniqueDebounce<T>({
     [callback, equals],
   )
 
-  return useDebounce(defaultValue, debounceMs, debounceCallback)
+  return useDebounce({ initialValue: defaultValue, debounceMs, callback: debounceCallback })
 }
