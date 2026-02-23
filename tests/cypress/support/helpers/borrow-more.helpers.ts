@@ -46,7 +46,7 @@ export function testBorrowMoreForm(
   onSuccess: ReturnType<typeof cy.stub>,
 ) {
   const after = new BigNumber(before).plus(debt).toString() as Decimal
-  writeBorrowMoreForm({ debt: debt })
+  writeBorrowMoreForm({ debt })
   checkBorrowMoreDetailsLoaded({
     expectedCurrentDebt: before,
     expectedFutureDebt: after,

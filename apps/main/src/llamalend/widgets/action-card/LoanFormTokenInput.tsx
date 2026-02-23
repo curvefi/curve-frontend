@@ -95,7 +95,7 @@ export const LoanFormTokenInput = <
       symbol: token?.symbol,
       loading: position?.isLoading ?? isBalanceLoading,
       usdRate,
-      tooltip: tooltip,
+      tooltip,
       prefix: position && LlamaIcon,
     }),
     [balance, isBalanceLoading, token?.symbol, usdRate, tooltip, position],

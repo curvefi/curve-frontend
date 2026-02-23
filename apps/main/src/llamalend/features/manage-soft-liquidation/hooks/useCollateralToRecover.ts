@@ -63,8 +63,8 @@ export function useCollateralToRecover({
   )
   return {
     data,
-    isLoading: isLoading,
-    error: error,
+    isLoading,
+    error,
     totalUsd: useMemo(() => sumBy(data, ({ usd }) => Number(usd) || 0), [data]),
   }
 }

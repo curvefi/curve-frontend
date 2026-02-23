@@ -625,7 +625,7 @@ export const createPoolDepositSlice = (
     resetState: ({ tokens, tokenAddresses, isWrapped }, formType) => {
       get().resetAppState(sliceKey, {
         ...DEFAULT_STATE,
-        formType: formType,
+        formType,
         formValues: {
           ...DEFAULT_FORM_VALUES,
           isWrapped,
