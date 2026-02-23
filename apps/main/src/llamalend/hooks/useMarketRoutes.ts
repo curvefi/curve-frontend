@@ -36,7 +36,7 @@ export function useMarketRoutes({
     chainId,
     tokenIn: tokenIn?.address,
     tokenOut: tokenOut?.address,
-    amountIn: amountIn && toWei(amountIn, tokenIn?.decimals),
+    amountIn: amountIn && tokenIn && toWei(amountIn, tokenIn.decimals),
     router: RouteProviders,
     fromAddress: userAddress,
     slippage,
@@ -49,16 +49,17 @@ export function useMarketRoutes({
 
   const routes = useMemo(
     () =>
+      tokenOut &&
       data?.map((item) => ({
         id: item.id,
         provider: item.router,
-        toAmountOutput: fromWei(item.amountOut, tokenOut?.decimals),
+        toAmountOutput: fromWei(item.amountOut, tokenOut.decimals),
         priceImpact: item.priceImpact ?? 0,
         routerAddress: item.tx?.to ?? zeroAddress,
         calldata: item.tx?.data ?? '0x',
         usdPrice: outputTokenUsdRate ?? null,
       })),
-    [data, tokenOut?.decimals, outputTokenUsdRate],
+    [data, tokenOut, outputTokenUsdRate],
   )
   const firstRoute = routes?.[0]
   const onChangeRoute = useEffectEvent(onChange)

@@ -206,7 +206,14 @@ export const ActionInfo = ({
           </Stack>
         </Tooltip>
 
-        {error && !loading && <ErrorIconButton message={errorMessage} error={error} size={iconButtonSize[size]} />}
+        {error && !loading && (
+          <ErrorIconButton
+            message={errorMessage}
+            error={error}
+            buttonSize={iconButtonSize[size]}
+            iconSize={iconSize[size]}
+          />
+        )}
         {copyValue && (
           <CopyIconButton
             copyText={copyValue}

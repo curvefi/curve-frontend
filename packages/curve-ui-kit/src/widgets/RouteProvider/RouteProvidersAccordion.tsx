@@ -59,7 +59,7 @@ export const RouteProvidersAccordion = ({
       title={t`Route provider`}
       info={
         error ? (
-          <ErrorIconButton error={error} size="small" />
+          <ErrorIconButton error={error} buttonSize="small" iconSize="small" />
         ) : (
           !isExpanded &&
           (selectedRoute ? (

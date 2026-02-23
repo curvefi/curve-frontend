@@ -44,7 +44,7 @@ export const { useQuery: useRepayPrices } = queryFactory({
             address: userAddress,
             ...parseRoute(route),
           })
-        ).prices as Decimal[]
+        ).prices as Range<Decimal>
       case 'V1':
       case 'V2':
         return (await impl.repayPrices(...args)) as Range<Decimal>

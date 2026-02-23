@@ -79,7 +79,7 @@ export const { useQuery: useBorrowMoreMaxReceive } = queryFactory({
             userCollateral,
             userBorrowed,
             address: userAddress,
-            getExpected: getExpectedFn({ chainId, router: route!.provider, fromAddress: userAddress, slippage }),
+            getExpected: getExpectedFn({ chainId, router: route?.provider, userAddress, slippage }),
           }),
         )
       case 'V1':

@@ -42,7 +42,6 @@ export const ImproveHealthForm = ({
     values,
     params,
     isPending,
-    isDisabled,
     onSubmit,
     borrowToken,
     collateralToken,

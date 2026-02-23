@@ -115,10 +115,7 @@ export const getExpectedFn =
     router,
     userAddress,
     slippage,
-  }: Pick<RoutesQuery, 'chainId' | 'router' | 'slippage' | 'userAddress'> & {
-    fromToken: { address: Address; decimals: number }
-    toToken: { address: Address; decimals: number }
-  }): GetExpectedFn =>
+  }: Pick<RoutesQuery, 'chainId' | 'router' | 'slippage' | 'userAddress'>): GetExpectedFn =>
   async (tokenIn, tokenOut, amountIn) => {
     const routes = await fetchApiRoutes({
       chainId,
