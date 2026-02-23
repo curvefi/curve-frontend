@@ -39,4 +39,6 @@ export const range = (lengthOrStart: number, length?: number) =>
     ? Array.from({ length: lengthOrStart }, (_, i) => i)
     : Array.from({ length }, (_, i) => i + lengthOrStart)
 
+export const repeat = <T>(value: T, times: number) => range(times).map(() => value)
+
 export const isEmpty = (obj: object) => Object.keys(obj).length === 0

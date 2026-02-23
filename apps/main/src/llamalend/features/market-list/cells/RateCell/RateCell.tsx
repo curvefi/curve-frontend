@@ -1,3 +1,4 @@
+import type { FunctionComponent } from 'react'
 import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
@@ -23,7 +24,7 @@ const RateTypes = {
   [LlamaMarketColumnId.NetBorrowRate]: MarketRateType.Borrow,
 } as const
 
-const TooltipComponents: Record<MarketRateType, Record<LlamaMarketType, React.FC<RateTooltipProps>>> = {
+const TooltipComponents: Record<MarketRateType, Record<LlamaMarketType, FunctionComponent<RateTooltipProps>>> = {
   [MarketRateType.Supply]: {
     [LlamaMarketType.Lend]: SupplyRateLendTooltip,
     [LlamaMarketType.Mint]: SupplyRateMintTooltip,
