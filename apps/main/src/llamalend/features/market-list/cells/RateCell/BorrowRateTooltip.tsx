@@ -14,7 +14,7 @@ export const BorrowRateTooltip = ({ market, children }: RateTooltipProps) => {
     period,
     averageTotalBorrowRate: totalAverageBorrowApr,
     isLoading,
-  } = useSnapshots(market, MarketRateType.Borrow, open)
+  } = useSnapshots(market, MarketRateType.Borrow, open) // todo: `error` is ignored
   const {
     rewards,
     type: marketType,

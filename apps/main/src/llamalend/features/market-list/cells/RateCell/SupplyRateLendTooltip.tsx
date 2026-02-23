@@ -14,8 +14,8 @@ const LendRateTooltipContent = ({ market, isOpen }: { market: LlamaMarket; isOpe
   const { averageRate, period, minBoostedAprAverage, maxBoostedAprAverage, isLoading } = useSnapshots(
     market,
     rateType,
-    isOpen,
-  ) // important: only call this one tooltip is open!
+    isOpen, // important: only call this when the tooltip is open
+  ) // todo: `error` is ignored
   const {
     rates,
     rates: { lendTotalApyMinBoosted, lendApr, lendCrvAprUnboosted, lendCrvAprBoosted, lendTotalApyMaxBoosted },
