@@ -1,5 +1,5 @@
 /// <reference types="./DataTable.d.ts" />
-import { ReactNode, type RefObject, useEffect, useEffectEvent, useMemo, useRef } from 'react'
+import { type ReactNode, type RefObject, useEffect, useEffectEvent, useMemo, useRef } from 'react'
 import Box from '@mui/material/Box'
 import { Theme } from '@mui/material/styles'
 import Table from '@mui/material/Table'
