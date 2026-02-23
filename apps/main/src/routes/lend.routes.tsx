@@ -1,11 +1,15 @@
-import { LendMarketPage } from '@/lend/components/PageLendMarket/LendMarketPage'
-import { Page as PageVault } from '@/lend/components/PageVault/Page'
-import { LendLayout } from '@/lend/LendLayout'
 import type { MarketUrlParams } from '@/lend/types/lend.types'
-import { createRoute } from '@tanstack/react-router'
+import { createRoute, lazyRouteComponent } from '@tanstack/react-router'
 import { rootRoute } from './root.routes'
 import { createSharedRoutes } from './shared.routes'
 import { redirectTo } from './util'
+
+const LendLayout = lazyRouteComponent(() => import('@/lend/LendLayout'), 'LendLayout')
+const LendMarketPage = lazyRouteComponent(
+  () => import('@/lend/components/PageLendMarket/LendMarketPage'),
+  'LendMarketPage',
+)
+const PageVault = lazyRouteComponent(() => import('@/lend/components/PageVault/Page'), 'Page')
 
 const lendLayoutRoute = createRoute({
   getParentRoute: () => rootRoute,
