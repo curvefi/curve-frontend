@@ -49,12 +49,9 @@ export const RETRY_IN_CI = { retries: { openMode: 0, runMode: 5 } }
 
 /** This hook skips all tests after a failed one. Useful for tests that are interdependent. */
 export function skipTestsAfterFailure() {
-  let failed = false
-  beforeEach(function () {
-    if (failed) return this.skip() // skip when any test failed since they are interdependent
-  })
-
   afterEach(function () {
-    failed ||= this.currentTest?.state === 'failed'
+    if (this.currentTest?.state === 'failed') {
+      return Cypress.stop()
+    }
   })
 }
