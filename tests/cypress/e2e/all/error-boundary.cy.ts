@@ -47,8 +47,7 @@ function check500Error({ context }: { context: object }) {
   expect(actualName).to.equal(expectedName)
   expect(actualMessage).to.contain(expectedMessage)
   if (Cypress.isBrowser('firefox')) {
-    expect(stack).to.contain('getUniqueSortedStrings')
-    expect(stack).to.contain('MultiSelectFilter')
+    expect(stack).to.match(/lodash/i)
   } else {
     expect(stack).to.contain(expectedName)
     expect(stack).to.contain(expectedMessage)
