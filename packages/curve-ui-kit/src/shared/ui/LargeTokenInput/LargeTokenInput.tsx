@@ -17,7 +17,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { HelperMessage } from '@ui-kit/shared/ui/LargeTokenInput/HelperMessage'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { chipSizeClickable } from '@ui-kit/themes/components/chip'
-import { Duration, TransitionFunction } from '@ui-kit/themes/design/0_primitives'
+import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { decimal, type Decimal, formatNumber } from '@ui-kit/utils'
 import { SliderInput, SliderInputProps } from '../SliderInput'
@@ -194,7 +194,6 @@ export const LargeTokenInput = ({
   const [balance, setBalance, cancelSetBalance] = useUniqueDebounce({
     defaultValue: externalBalance,
     callback: onBalance,
-    debounceMs: Duration.FormDebounce,
     // We don't want to trigger onBalance if the value is effectively the same, e.g. "0.0" and "0.00"
     equals: bigNumEquals,
   })

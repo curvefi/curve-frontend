@@ -71,7 +71,7 @@ export const useBandsData = ({
   )
 
   const chartData = useProcessedBandsData({
-    marketBandsBalances: marketBandsBalances,
+    marketBandsBalances,
     userBandsBalances: parsedUserBandsBalances,
     oraclePriceBand,
     collateralUsdRate,

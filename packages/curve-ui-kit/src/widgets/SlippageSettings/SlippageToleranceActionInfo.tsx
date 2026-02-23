@@ -23,6 +23,7 @@ export const SlippageToleranceActionInfoPure = ({
         onSave={onSave}
       />
     }
+    size="small"
     testId="borrow-slippage"
   />
 )

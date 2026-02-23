@@ -721,28 +721,11 @@ export const CandleChart = ({
 
     let order = 0
 
-    // Define series refs and their order based on liquidation range logic
-    const getLiquidationRangeSeries = () => {
-      if (!liquidationRange || !liquidationRange.current || !liquidationRange.new) {
-        return [currentRangeSeriesRef.current, newRangeSeriesRef.current]
-      }
-
-      const currentBottom =
-        liquidationRange.current.price2?.[0]?.value ?? liquidationRange.current.price1?.[0]?.value ?? 0
-      const newBottom = liquidationRange.new.price2?.[0]?.value ?? liquidationRange.new.price1?.[0]?.value ?? 0
-
-      const addNewFirst = newBottom < currentBottom
-
-      return addNewFirst
-        ? [newRangeSeriesRef.current, currentRangeSeriesRef.current]
-        : [currentRangeSeriesRef.current, newRangeSeriesRef.current]
-    }
-
-    // Define all series in order: liquidation ranges, volume, OHLC, oracle price
+    // Define all series in order (later = rendered on top): historical, current, new, OHLC, oracle
     const allSeries = [
       ...historicalRangeSeriesRefs.current,
-      ...getLiquidationRangeSeries(),
-      // volumeSeriesRef.current,
+      currentRangeSeriesRef.current,
+      newRangeSeriesRef.current,
       candlestickSeriesRef.current,
       oraclePriceSeriesRef.current,
     ]
@@ -753,7 +736,7 @@ export const CandleChart = ({
         series.setSeriesOrder(order++)
       }
     })
-  }, [liquidationRange, liquidationRange?.historical, liqRangeCurrentVisible, liqRangeNewVisible])
+  }, [liquidationRange?.historical, liqRangeCurrentVisible, liqRangeNewVisible])
 
   useEffect(() => {
     wrapperRef.current = new ResizeObserver((entries: ResizeObserverEntry[]) => {

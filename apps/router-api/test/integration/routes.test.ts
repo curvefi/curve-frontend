@@ -155,7 +155,7 @@ describe.sequential('GET /api/router/v1/routes integration', () => {
       it(`returns a valid route for ${router} - ${label}`, async () => {
         const { json, statusCode } = await server.inject({
           url: '/api/router/v1/routes',
-          query: { ...query, router: router },
+          query: { ...query, router },
         })
         expect(statusCode).toBe(200)
 

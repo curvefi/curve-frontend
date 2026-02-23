@@ -112,10 +112,7 @@ export const buildOdosRouteResponse = async (query: RoutesQuery, log: FastifyBas
           protocol: 'odos',
           action: 'swap',
           chainId,
-          args: {
-            pathId,
-            pathVizImage: pathVizImage,
-          },
+          args: { pathId, pathVizImage },
         },
       ],
       ...(transaction && { tx: transaction }),

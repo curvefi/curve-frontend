@@ -35,7 +35,7 @@ export async function fetchChartBandBalancesData(
       collateralBorrowedUsd: collateralUsd.plus(borrowed).toNumber(),
       isLiquidationBand: liquidationBand ? (liquidationBand === +n ? 'SL' : '') : '',
       isOraclePriceBand: false,
-      n: n,
+      n,
       p_up: Number(p_up),
       p_down: Number(p_down),
       pUpDownMedian: Number(pUpDownMedian),

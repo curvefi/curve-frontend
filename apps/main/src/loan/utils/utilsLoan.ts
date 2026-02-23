@@ -16,7 +16,7 @@ export function getTokenName(llamma: Llamma | null | undefined) {
 }
 
 export const getLeverageV2RepayArgs = (stateCollateral: string) => ({
-  stateCollateral: stateCollateral,
+  stateCollateral,
   // amount for repay/deleverage only from collateral for now
   userCollateral: '0',
   userBorrowed: '0',

@@ -51,7 +51,7 @@ const MAX_SIZE = 2.5 * 1024 * 1024 // 2.5MB limit
 const cache: PersistOptions<State, Pick<State, 'storeCache'>> = {
   name: 'curve-app-store-cache',
   partialize: ({ storeCache }: State) => ({ storeCache }),
-  merge: merge,
+  merge,
   storage: {
     getItem: (name) => JSON.parse(localStorage.getItem(name)!),
     // debounce storage to avoid performance issues serializing too often. The item can be large.

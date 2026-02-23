@@ -44,8 +44,8 @@ export function useMaxBorrowMoreValues<ChainId extends LlamaChainId>(
   const maxLeverage = useMarketMaxLeverage({ chainId, marketId, range: PRESET_RANGES.MaxLtv }, enabled)
 
   useEffect(() => updateForm(form, { maxCollateral: maxUserCollateral.data }), [form, maxUserCollateral.data])
-  useEffect(() => updateForm(form, { maxBorrowed: maxBorrowed }), [form, maxBorrowed])
-  useEffect(() => updateForm(form, { maxDebt: maxDebt }), [form, maxDebt])
+  useEffect(() => updateForm(form, { maxBorrowed }), [form, maxBorrowed])
+  useEffect(() => updateForm(form, { maxDebt }), [form, maxDebt])
 
   return {
     userCollateral: { ...maxUserCollateral, field: 'maxCollateral' as const },

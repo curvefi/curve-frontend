@@ -30,6 +30,7 @@ export const ActionInfoGasEstimate = ({ gas, isApproved }: EstimatedTxCostProps)
     valueTooltip={gas.data?.tooltip}
     loading={gas.isLoading}
     valueLeft={<FireIcon fontSize="small" />}
+    size="small"
     error={gas.error}
   />
 )

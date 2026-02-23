@@ -109,7 +109,7 @@ export async function buildCurveRouteResponse(query: RoutesQuery, log: FastifyBa
       priceImpact,
       createdAt: Date.now(),
       isStableswapRoute,
-      warnings: warnings,
+      warnings,
       route: parsedRoutes.map(
         ({ name, inputCoinAddress, outputCoinAddress, ...args }): RouteStep => ({
           name,

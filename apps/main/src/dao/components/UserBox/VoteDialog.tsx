@@ -35,7 +35,7 @@ export const VoteDialog = ({
   proposalType,
 }: Props) => {
   const { data: proposalsMapper } = useProposalsMapperQuery({})
-  const { data: pricesProposal } = useProposalPricesApiQuery({ proposalId: proposalId, proposalType: proposalType })
+  const { data: pricesProposal } = useProposalPricesApiQuery({ proposalId, proposalType })
   const { data: userProposalVotes, isSuccess: userProposalVotesSuccess } = useUserProposalVotesQuery({
     userAddress: userAddress ?? '',
   })

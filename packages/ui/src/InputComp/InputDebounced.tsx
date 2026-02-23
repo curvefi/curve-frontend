@@ -21,7 +21,11 @@ export const InputDebounced = ({
   onChange: (value: string) => void
 }) => {
   const { disabled: contextDisabled } = useInputContext()
-  const [debouncedValue, handleInputChange] = useDebounce(value, delay, onChange)
+  const [debouncedValue, handleInputChange] = useDebounce({
+    initialValue: value,
+    debounceMs: delay,
+    callback: onChange,
+  })
 
   return (
     <Box grid>

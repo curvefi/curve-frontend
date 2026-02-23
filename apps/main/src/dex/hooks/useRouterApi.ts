@@ -80,7 +80,7 @@ const convertRoute = (
         outputCoinAddress,
         name,
         routeUrlId: poolId ?? '',
-        poolId: poolId,
+        poolId,
         ...args,
       }),
     ),
