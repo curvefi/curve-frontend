@@ -69,7 +69,7 @@ export const QuickSwap = ({
   curve: CurveApi | null
 }) => {
   const isSubscribed = useRef(false)
-  const { signerAddress } = curve ?? {}
+  const { signerAddress: userAddress } = curve ?? {}
   const { tokensNameMapper } = useTokensNameMapper(chainId)
   const activeKey = useStore((state) => state.quickSwap.activeKey)
   const formEstGas = useStore((state) => state.quickSwap.formEstGas[activeKey])
@@ -85,10 +85,13 @@ export const QuickSwap = ({
   const { data: networks } = useNetworks()
   const network = (chainId && networks[chainId]) || null
 
-  const haveSigner = !!signerAddress
+  const haveSigner = !!userAddress
   const cryptoMaxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
   const stableMaxSlippage = useUserProfileStore((state) => state.maxSlippage.stable)
-  const { data: apiRoutes, isLoading: apiRoutesLoading } = useRouterApi({ chainId, searchedParams }, !haveSigner)
+  const { data: apiRoutes, isLoading: apiRoutesLoading } = useRouterApi(
+    { chainId, userAddress, searchedParams },
+    !haveSigner,
+  )
 
   const routesAndOutput = haveSigner ? rpcRoutesAndOutput : apiRoutes
   const isStableswapRoute = routesAndOutput?.isStableswapRoute
@@ -128,10 +131,10 @@ export const QuickSwap = ({
   } = useTokenBalance(
     {
       chainId,
-      userAddress: signerAddress,
+      userAddress,
       tokenAddress: fromAddress ? (fromAddress as Address) : undefined,
     },
-    !!signerAddress && !!fromAddress,
+    !!userAddress && !!fromAddress,
   )
 
   const {
@@ -142,10 +145,10 @@ export const QuickSwap = ({
   } = useTokenBalance(
     {
       chainId,
-      userAddress: signerAddress,
+      userAddress,
       tokenAddress: toAddress ? (toAddress as Address) : undefined,
     },
-    !!signerAddress && !!toAddress,
+    !!userAddress && !!toAddress,
   )
 
   const { data: fromUsdRate } = useTokenUsdRate({ chainId, tokenAddress: fromAddress }, !!fromAddress)
@@ -155,7 +158,7 @@ export const QuickSwap = ({
     tokenPrices,
     isLoading: tokenSelectorLoading,
   } = useTokenSelectorData(
-    { chainId, userAddress: signerAddress, tokens },
+    { chainId, userAddress, tokens },
     { enabled: !!isOpenFromToken || !!isOpenToToken, prefetch: userFromBalanceFetched && userToBalanceFetched },
   )
 

@@ -114,19 +114,20 @@ const MintManageSoftLiquidationMenu = [
       {
         value: 'improve-health',
         label: t`Improve health`,
-        component: ({ rChainId, market, isReady }: ManageLoanProps) => (
+        component: ({ rChainId, market, isReady, onPricesUpdated }: MintManageLoanProps) => (
           <ImproveHealthForm
             chainId={rChainId}
             market={market ?? undefined}
             networks={softLiqNetworks}
             enabled={isReady}
+            onPricesUpdated={onPricesUpdated}
           />
         ),
       },
       {
         value: 'close-position',
         label: t`Close position`,
-        component: ({ rChainId, market, isReady }: ManageLoanProps) => (
+        component: ({ rChainId, market, isReady }: MintManageLoanProps) => (
           <ClosePositionForm
             chainId={rChainId}
             market={market ?? undefined}

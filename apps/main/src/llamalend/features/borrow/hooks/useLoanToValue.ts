@@ -42,7 +42,7 @@ export const useLoanToValue = <ChainId extends IChainId>(
     error: borrowUsdRateError,
   } = useTokenUsdRate(
     {
-      chainId: chainId,
+      chainId,
       tokenAddress: borrowToken?.address,
     },
     enabled,
@@ -57,8 +57,8 @@ export const useLoanToValue = <ChainId extends IChainId>(
             .div(collateral)
             .div(collateralUsdRate)
             .times(100)
-            .toString() as Decimal),
+            .toFixed() as Decimal),
     isLoading: [isCollateralUsdRateLoading, isBorrowUsdRateLoading, isExpectedCollateralLoading].some(Boolean),
-    error: [expectCollateralError, collateralUsdRateError, borrowUsdRateError].find(Boolean),
+    error: [expectCollateralError, collateralUsdRateError, borrowUsdRateError].find(Boolean) ?? null,
   }
 }

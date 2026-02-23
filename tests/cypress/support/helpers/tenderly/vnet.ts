@@ -116,7 +116,7 @@ export function createVirtualTestnet(
       slug: `testnet-${chain_id}-${uuid}`,
       display_name: `Testnet for ${chain_id} (${uuid})`,
       fork_config: { network_id: chain_id },
-      virtual_network_config: { chain_config: { chain_id: chain_id } },
+      virtual_network_config: { chain_config: { chain_id } },
       sync_state_config: { enabled: false },
     }
 

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useDebounced, useDebounce, useDebouncedValue, useUniqueDebounce } from '@ui-kit/hooks/useDebounce'
+import { Duration } from '@ui-kit/themes/design/0_primitives'
 
 // Test component for useDebounced
 function UseDebouncedTest({
@@ -38,7 +39,7 @@ function UseDebounceTest({
   debounceMs: number
   callback: (value: string) => void
 }) {
-  const [value, setValue, cancel] = useDebounce(initialValue, debounceMs, callback)
+  const [value, setValue, cancel] = useDebounce({ initialValue, debounceMs, callback })
 
   return (
     <div>
@@ -369,12 +370,12 @@ describe('useUniqueDebounce', () => {
     cy.get('@callback').should('have.been.calledWith', 'different')
   })
 
-  it('uses default debounce time of 166ms when not provided', () => {
+  it(`uses default debounce time of ${Duration.FormDebounce} when not provided`, () => {
     const callback = cy.stub().as('callback')
     cy.mount(<UseUniqueDebounceTest defaultValue="" callback={callback} />)
 
     cy.get('[data-testid="input"]').type('test')
-    cy.tick(166)
+    cy.tick(Duration.FormDebounce)
 
     cy.get('@callback').should('have.been.calledOnce')
   })

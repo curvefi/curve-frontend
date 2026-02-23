@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js'
-import { DEFAULT_DECIMALS } from './units'
+import { formatUnits, parseUnits } from 'viem'
 
 /**
  * A template literal type representing a decimal number as a string.
@@ -23,10 +23,12 @@ export type Amount = number | Decimal
 
 /** Converts a string to a Decimal typed string, returning undefined for null, undefined, empty strings, or non-finite values. */
 export const decimal = (value: number | string | undefined | null | BigNumber | bigint): Decimal | undefined => {
-  if (typeof value === 'number' || value instanceof BigNumber || typeof value === 'bigint') {
+  if (typeof value === 'number' || typeof value === 'bigint') {
     value = value.toString()
   }
-
+  if (value instanceof BigNumber) {
+    value = value.toFixed()
+  }
   if (value != null && !['', '-', '?', 'Infinity', '-Infinity'].includes(value) && !new BigNumber(value).isNaN()) {
     return value as Decimal
   }
@@ -50,5 +52,5 @@ export const decimalMax = (...data: Decimal[]): Decimal | undefined =>
     undefined,
   )
 
-export const toWei = (n: string, decimals = DEFAULT_DECIMALS) => decimal(BigNumber(n).times(10 ** decimals))!
-export const fromWei = (n: string, decimals = DEFAULT_DECIMALS) => decimal(BigNumber(n).dividedBy(10 ** decimals))!
+export const toWei = (n: string, decimals: number) => decimal(parseUnits(n, decimals))!
+export const fromWei = (n: string, decimals: number) => decimal(formatUnits(BigInt(n), decimals))!

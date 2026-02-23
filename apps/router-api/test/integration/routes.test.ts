@@ -2,10 +2,10 @@ import type { FastifyInstance } from 'fastify'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import {
   ADDRESS_HEX_PATTERN,
-  type OptimalRouteQuery,
+  type RoutesQuery,
   type RouteProvider,
   type RouteResponse,
-} from '../../src/routes/optimal-route.schemas'
+} from '../../src/routes/routes.schemas'
 import { createRouterApiServer } from '../../src/server'
 
 process.loadEnvFile()
@@ -22,7 +22,7 @@ const CHAIN_ID_CORN = '21000000'
 const CORN = '0x44f49ff0da2498bcb1d3dc7c0f999578f67fd8c6'
 const CORN_WBTCN = '0xda5ddd7270381a7c2717ad10d1c0ecb19e3cdfb2'
 
-type QueryString = { [P in keyof OptimalRouteQuery]?: string | string[] }
+type QueryString = { [P in keyof RoutesQuery]?: string | string[] }
 type SuccessCase = { query: QueryString; expectedRoutes?: number }
 type ErrorResponse = { statusCode: number; code: string; error: string; message: string }
 type FailureCase = { query: Partial<QueryString>; expectedResponse: ErrorResponse }
@@ -50,7 +50,7 @@ const successCasesByProvider: Record<RouteProvider, Record<string, SuccessCase>>
         tokenOut: [ETHEREUM_USDC],
         amountIn: ['1000'],
         router: ['enso'],
-        fromAddress: ['0xF977814e90dA44bFA03b6295A0616a897441aceC'], // binance hot wallet (largest USDT holder on Ethereum now)
+        userAddress: ['0xF977814e90dA44bFA03b6295A0616a897441aceC'], // binance hot wallet (largest USDT holder on Ethereum now)
       },
     },
     'arbitrum amountIn': {
@@ -60,7 +60,7 @@ const successCasesByProvider: Record<RouteProvider, Record<string, SuccessCase>>
         tokenOut: [ARBITRUM_USDT],
         amountIn: ['100'],
         router: ['enso'],
-        fromAddress: '0x2Df1c51E09aECF9cacB7bc98cB1742757f163dF7', // Hyperliquid: Deposit Bridge 2 (largest USDC holder on Arbitrum now)
+        userAddress: '0x2Df1c51E09aECF9cacB7bc98cB1742757f163dF7', // Hyperliquid: Deposit Bridge 2 (largest USDC holder on Arbitrum now)
       },
     },
     'arbitrum amountOut': {
@@ -77,7 +77,7 @@ const successCasesByProvider: Record<RouteProvider, Record<string, SuccessCase>>
         amountIn: ['1000'],
         router: ['odos'],
         // Odos requires a caller (leverage zap) and a blacklist address; any valid addresses are acceptable for quoting
-        fromAddress: '0xC5898606BdB494a994578453B92e7910a90aA873',
+        userAddress: '0xC5898606BdB494a994578453B92e7910a90aA873',
         slippage: '0.5',
       },
     },
@@ -145,7 +145,7 @@ const failureCases: Record<string, FailureCase> = {
   },
 }
 
-describe.sequential('GET /api/router/optimal-route integration', () => {
+describe.sequential('GET /api/router/v1/routes integration', () => {
   let server: FastifyInstance
   beforeAll(() => (server = createRouterApiServer()))
   afterAll(() => server.close())
@@ -154,14 +154,16 @@ describe.sequential('GET /api/router/optimal-route integration', () => {
     Object.entries(cases).forEach(([label, { query, expectedRoutes = 1 }]) => {
       it(`returns a valid route for ${router} - ${label}`, async () => {
         const { json, statusCode } = await server.inject({
-          url: '/api/router/optimal-route',
-          query: { ...query, router: router },
+          url: '/api/router/v1/routes',
+          query: { ...query, router },
         })
         expect(statusCode).toBe(200)
 
         const payload = json() as RouteResponse[]
         expect(payload).toHaveLength(expectedRoutes)
         payload.forEach((route) => {
+          expect(route.id).toBeTypeOf('string')
+          expect(route.id.length).toBeGreaterThan(0)
           expect(route.router).toBe(router)
           expect(route.amountOut).toMatch(/^[0-9]+\.?[0-9]*$/)
           expect(route.priceImpact).toBeTypeOf(route.priceImpact == null ? 'undefined' : 'number')
@@ -189,7 +191,7 @@ describe.sequential('GET /api/router/optimal-route integration', () => {
 
   Object.entries(failureCases).forEach(([label, { query, expectedResponse }]) => {
     it(`returns validation error for ${label}`, async () => {
-      const { statusCode, json } = await server.inject({ url: '/api/router/optimal-route', query })
+      const { statusCode, json } = await server.inject({ url: '/api/router/v1/routes', query })
       expect(statusCode).toBe(expectedResponse.statusCode)
       expect(json()).toMatchObject(expectedResponse)
     })

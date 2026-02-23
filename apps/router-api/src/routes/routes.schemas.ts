@@ -1,21 +1,24 @@
-export { type RouteProvider } from 'curve-ui-kit/src/widgets/RouteProvider/route-provider.types'
-import { type RouteProvider, RouteProviders } from 'curve-ui-kit/src/widgets/RouteProvider/route-provider.types'
 import { Address, Hex } from 'viem'
 import type { IRouteStep } from '@curvefi/api/lib/interfaces'
+
+export const RouteProviders = ['curve', 'enso', 'odos'] as const
+export type RouteProvider = (typeof RouteProviders)[number]
 
 export type Decimal = `${number}`
 
 export const ADDRESS_HEX_PATTERN = '^0x[a-fA-F0-9]{40}$'
 export const DECIMAL_PATTERN = '^-?\\d+(\\.\\d+)?$'
+export const WEI_AMOUNT_PATTERN = '^\\d+$'
 
-export const OptimalRoutePath = '/api/router/optimal-route'
+export const RoutesPath = '/api/router/v1/routes'
 
 const AddressSchema = { type: 'string', pattern: ADDRESS_HEX_PATTERN } as const
 const AddressArraySchema = { type: 'array', items: AddressSchema, minItems: 1, maxItems: 1 } as const
 const DecimalSchema = { type: 'string', pattern: DECIMAL_PATTERN }
-const AmountArraySchema = { type: 'array', items: DecimalSchema, minItems: 1, maxItems: 1 } as const
+const WeiAmountSchema = { type: 'string', pattern: WEI_AMOUNT_PATTERN } as const
+const WeiAmountArraySchema = { type: 'array', items: WeiAmountSchema, minItems: 1, maxItems: 1 } as const
 
-const optimalRouteQuerySchema = {
+const routesQuerySchema = {
   type: 'object',
   required: ['tokenIn', 'tokenOut'],
   additionalProperties: false,
@@ -30,28 +33,29 @@ const optimalRouteQuerySchema = {
     },
     tokenIn: AddressArraySchema,
     tokenOut: AddressArraySchema,
-    amountIn: AmountArraySchema,
-    amountOut: AmountArraySchema,
-    fromAddress: AddressSchema,
+    amountIn: { ...WeiAmountArraySchema, description: 'Amount of tokenIn in wei (integer, no decimals).' },
+    amountOut: { ...WeiAmountArraySchema, description: 'Amount of tokenOut in wei (integer, no decimals).' },
+    userAddress: AddressSchema,
     slippage: { type: 'number', minimum: 0 },
   },
 } as const
 
-export type OptimalRouteQuery = {
+export type RoutesQuery = {
   chainId: number
   router?: RouteProvider[]
   tokenIn: [Address]
   tokenOut: [Address]
   amountIn?: [Decimal]
   amountOut?: [Decimal]
-  fromAddress?: Address
+  userAddress?: Address
   slippage?: number
 }
 
 const routeItemSchema = {
   type: 'object',
-  required: ['amountOut', 'priceImpact', 'createdAt', 'route'],
+  required: ['id', 'router', 'amountOut', 'priceImpact', 'createdAt', 'route'],
   properties: {
+    id: { type: 'string', minLength: 1 },
     router: { type: 'string', enum: RouteProviders },
     amountIn: DecimalSchema,
     amountOut: DecimalSchema,
@@ -79,12 +83,12 @@ const routeItemSchema = {
   },
 } as const
 
-const OptimalRouteSchema = {
-  querystring: optimalRouteQuerySchema,
+const RoutesSchema = {
+  querystring: routesQuerySchema,
   response: { 200: { type: 'array', items: routeItemSchema } },
 }
 
-export const OptimalRouteOpts = { schema: OptimalRouteSchema } as const
+export const RoutesOpts = { schema: RoutesSchema } as const
 
 type CurveRouteArgs = Omit<IRouteStep, 'inputCoinAddress' | 'outputCoinAddress' | 'poolId'> & { poolId?: string }
 
@@ -101,6 +105,7 @@ export type RouteStep = {
 export type TransactionData = { data: Hex; to: Address; from: Address; value: Decimal }
 
 export type RouteResponse = {
+  id: string
   router: RouteProvider
   amountIn: [Decimal]
   amountOut: [Decimal]

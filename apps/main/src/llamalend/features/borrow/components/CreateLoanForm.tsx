@@ -1,10 +1,9 @@
-import { type ChangeEvent, useCallback, useEffect } from 'react'
+import { type ChangeEvent, useCallback } from 'react'
 import { LoanPreset } from '@/llamalend/constants'
 import { hasLeverage } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import type { CreateLoanOptions } from '@/llamalend/mutations/create-loan.mutation'
 import { useCreateLoanPriceImpact } from '@/llamalend/queries/create-loan/create-loan-price-impact.query'
-import { useCreateLoanPrices } from '@/llamalend/queries/create-loan/create-loan-prices.query'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
@@ -25,20 +24,6 @@ import { AdvancedCreateLoanOptions } from './AdvancedCreateLoanOptions'
 import { CreateLoanInfoList } from './CreateLoanInfoList'
 import { LeverageInput } from './LeverageInput'
 import { LoanPresetSelector } from './LoanPresetSelector'
-
-/**
- * Hook to call the parent form to keep in sync with the chart and other components
- */
-function useFormSync(
-  params: Parameters<typeof useCreateLoanPrices>[0],
-  onPricesUpdated: (prices: Range<Decimal> | undefined) => void,
-) {
-  const { data } = useCreateLoanPrices(params)
-  useEffect(() => {
-    onPricesUpdated(data)
-  }, [onPricesUpdated, data])
-  useEffect(() => () => onPricesUpdated(undefined), [onPricesUpdated]) // clear prices on unmount to avoid stale chart
-}
 
 /**
  * The form contents for the create loan tab.
@@ -78,9 +63,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
     txHash,
     values,
     leverage,
-  } = useCreateLoanForm({ market, network, preset, onSuccess })
-
-  useFormSync(params, onPricesUpdated)
+  } = useCreateLoanForm({ market, network, preset, onSuccess, onPricesUpdated })
 
   const toggleLeverage = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => updateForm(form, { leverageEnabled: event.target.checked }),
@@ -112,7 +95,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
           blockchainId={network.id}
           name="userCollateral"
           form={form}
-          max={{ ...maxCollateral, fieldName: 'maxCollateral' }}
+          max={{ ...q(maxCollateral), fieldName: 'maxCollateral' }}
           testId="borrow-collateral-input"
           network={network}
         />
@@ -122,7 +105,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
           blockchainId={network.id}
           name="debt"
           form={form}
-          max={{ ...maxDebt, fieldName: 'maxDebt' }}
+          max={{ ...q(maxDebt), fieldName: 'maxDebt' }}
           hideBalance
           testId="borrow-debt-input"
           network={network}

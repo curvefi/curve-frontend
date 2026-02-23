@@ -37,10 +37,10 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
   form: UseFormReturn<CreateLoanForm>
 }) => {
   const isOpen = isFormTouched(form, 'userCollateral', 'debt')
-  const expectedCollateral = q(useCreateLoanExpectedCollateral(params, isOpen))
+  const expectedCollateral = useCreateLoanExpectedCollateral(params, isOpen)
   const leverageValue = mapQuery(expectedCollateral, (data) => data?.leverage)
   const leverageTotalCollateral = mapQuery(expectedCollateral, (data) => data?.totalCollateral)
-  const priceImpact = q(useCreateLoanPriceImpact(params, isOpen))
+  const priceImpact = useCreateLoanPriceImpact(params, isOpen)
 
   return (
     <LoanActionInfoList
@@ -50,21 +50,23 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
       prices={q(useCreateLoanPrices(params, isOpen))}
       prevRates={q(useMarketRates(params, isOpen))}
       rates={q(useMarketFutureRates(params, isOpen))}
-      loanToValue={useLoanToValue(
-        {
-          params,
-          collateralToken,
-          borrowToken,
-        },
-        isOpen,
+      loanToValue={q(
+        useLoanToValue(
+          {
+            params,
+            collateralToken,
+            borrowToken,
+          },
+          isOpen,
+        ),
       )}
-      gas={useCreateLoanEstimateGas(networks, params, isOpen)}
+      gas={q(useCreateLoanEstimateGas(networks, params, isOpen))}
       leverageEnabled={leverageEnabled}
       {...(leverageEnabled && {
         routes,
         leverageValue,
         leverageTotalCollateral,
-        priceImpact,
+        priceImpact: q(priceImpact),
         slippage,
         onSlippageChange,
         collateralSymbol: collateralToken?.symbol,
