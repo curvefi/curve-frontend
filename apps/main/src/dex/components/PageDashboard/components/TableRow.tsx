@@ -23,8 +23,7 @@ export const TableRow = ({
   updatePath,
 }: DashboardTableRowProps) => {
   const rowRef = useRef<HTMLTableRowElement>(null)
-  const entry = useIntersectionObserver(rowRef, { freezeOnceVisible: true })
-  const isVisible = entry?.isIntersecting || false
+  const { isIntersecting: isVisible } = useIntersectionObserver(rowRef, { freezeOnceVisible: true })
 
   const { poolId, userCrvApy } = dashboardData
 

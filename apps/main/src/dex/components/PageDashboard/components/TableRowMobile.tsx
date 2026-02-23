@@ -26,13 +26,12 @@ export const TableRowMobile = ({
   updatePath,
 }: DashboardTableRowProps) => {
   const rowRef = useRef<HTMLTableRowElement>(null)
-  const entry = useIntersectionObserver(rowRef, { freezeOnceVisible: true })
+  const { isIntersecting: isVisible } = useIntersectionObserver(rowRef, { freezeOnceVisible: true })
 
   const [showDetail, setShowDetail] = useState(false)
 
   const { poolId, userCrvApy } = dashboardData
   const { sortBy } = formValues
-  const isVisible = entry?.isIntersecting || false
 
   return (
     <Tr ref={rowRef}>

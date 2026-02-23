@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { type FunctionComponent, useMemo } from 'react'
 import { ArrowRight } from '@carbon/icons-react'
 import Button from '@mui/material/Button'
 import CardHeader from '@mui/material/CardHeader'
@@ -28,7 +28,7 @@ const { Spacing } = SizesAndSpaces
 const ratesConfig: Record<
   MarketRateType,
   {
-    tooltipComponent: React.FC<RateTooltipProps>
+    tooltipComponent: FunctionComponent<RateTooltipProps>
     title: string
     rateKey: keyof LlamaMarket['rates']
   }

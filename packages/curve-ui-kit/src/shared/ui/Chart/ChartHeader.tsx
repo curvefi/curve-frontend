@@ -1,4 +1,4 @@
-import { MouseEvent } from 'react'
+import { MouseEvent, type ReactNode } from 'react'
 import IconButton from '@mui/material/IconButton'
 import MenuItem from '@mui/material/MenuItem'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
@@ -40,7 +40,7 @@ type ChartHeaderProps<TChartKey extends string = string, TTimeOption extends str
   }
   chartOptionVariant: 'select' | 'buttons-group'
   flipChart?: () => void
-  customButton?: React.ReactNode
+  customButton?: ReactNode
   /** When true, displays "Loading" in the chart selection area and disables interaction */
   isLoading?: boolean
   sx?: SxProps
