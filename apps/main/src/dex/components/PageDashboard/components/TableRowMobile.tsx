@@ -6,13 +6,13 @@ import { TableCellProfit } from '@/dex/components/PageDashboard/components/Table
 import { TableCellRewards } from '@/dex/components/PageDashboard/components/TableCellRewards'
 import type { DashboardTableRowProps } from '@/dex/components/PageDashboard/types'
 import { SORT_ID } from '@/dex/components/PageDashboard/utils'
-import { TableCellRewardsOthers } from '@/dex/components/PagePoolList/components/TableCellRewardsOthers'
 import { PoolLabel } from '@/dex/components/PoolLabel'
 import { Box } from '@ui/Box'
 import { Icon } from '@ui/Icon'
 import { IconButton } from '@ui/IconButton'
 import { Td, Tr } from '@ui/Table'
 import { useIntersectionObserver } from '@ui-kit/hooks/useIntersectionObserver'
+import { TableCellRewardsOthers } from '../../TableCellRewardsOthers'
 
 export const TableRowMobile = ({
   isLite,

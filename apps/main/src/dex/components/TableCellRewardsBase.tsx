@@ -1,10 +1,10 @@
-import { ChipVolatileBaseApy } from '@/dex/components/PagePoolList/components/ChipVolatileBaseApy'
-import { TooltipBaseApy } from '@/dex/components/PagePoolList/components/TooltipBaseApy'
 import { LARGE_APY } from '@/dex/constants'
 import { RewardBase, PoolData, PoolDataCache } from '@/dex/types/main.types'
 import { TooltipIcon as IconTooltip } from '@ui/Tooltip/TooltipIcon'
 import { Chip } from '@ui/Typography'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import { ChipVolatileBaseApy } from './ChipVolatileBaseApy'
+import { TooltipBaseApy } from './TooltipBaseApy'
 
 type Props = {
   base: RewardBase | undefined
