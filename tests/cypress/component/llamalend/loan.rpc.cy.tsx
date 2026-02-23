@@ -61,9 +61,8 @@ markets.forEach(
       const debtAfterBorrowMore = new BigNumber(borrow).plus(borrowMore).toString() as Decimal
       const debtAfterRepay = new BigNumber(debtAfterBorrowMore).minus(repay).toString() as Decimal
       const debtAfterImproveHealth = new BigNumber(debtAfterRepay).minus(improveHealth).toString() as Decimal
-      const borrowForCreateAndClose = (id === 'wsteth' ? '160' : id === 'wbtc' ? '40000' : borrow) as Decimal
       const closeCrvUsdFundAmountWei =
-        `0x${parseUnits(new BigNumber(borrowForCreateAndClose).times(2).toFixed(), 18).toString(16)}` as const
+        `0x${parseUnits(new BigNumber(debtAfterImproveHealth).times(2).toFixed(), 18).toString(16)}` as const
 
       const privateKey = generatePrivateKey()
       const { address } = privateKeyToAccount(privateKey)
@@ -114,7 +113,7 @@ markets.forEach(
 
       it(`creates the loan`, () => {
         cy.mount(<LoanTestWrapper />)
-        writeCreateLoanForm({ collateral, borrow: borrowForCreateAndClose, leverageEnabled })
+        writeCreateLoanForm({ collateral, borrow, leverageEnabled })
         checkLoanDetailsLoaded({ leverageEnabled })
         submitCreateLoanForm().then(expectCallbacks)
       })
@@ -172,8 +171,8 @@ markets.forEach(
           collateralAddress: tokenAddress,
         })
         cy.mount(<LoanTestWrapper tab="close" />)
-        checkClosePositionDetailsLoaded({ debt: borrowForCreateAndClose })
-        checkDebt({ current: borrowForCreateAndClose, future: '0', symbol: debtTokenSymbol })
+        checkClosePositionDetailsLoaded({ debt: debtAfterImproveHealth })
+        checkDebt({ current: debtAfterImproveHealth, future: '0', symbol: debtTokenSymbol })
         submitClosePositionForm().then(expectCallbacks)
       })
     })

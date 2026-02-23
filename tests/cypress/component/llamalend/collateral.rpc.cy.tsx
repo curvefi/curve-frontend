@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
-import type { Address } from 'viem'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 import { getActionValue } from '@cy/support/helpers/llamalend/action-info.helpers'
 import {
@@ -33,7 +32,6 @@ markets.forEach((market) => {
     const removeAmount = '0.005' as Decimal
     const collateralAfterAdd = `${+market.collateral + +addAmount}` as Decimal
     const collateralAfterRemove = `${+collateralAfterAdd - +removeAmount}` as Decimal
-    const controllerAddress = market.controllerAddress as Address
     let onSuccess: ReturnType<typeof cy.stub>
     let onPricesUpdated: ReturnType<typeof cy.stub>
     const CollateralTest = ({ tab }: { tab: 'add-collateral' | 'remove-collateral' }) => (
@@ -49,16 +47,7 @@ markets.forEach((market) => {
       />
     )
 
-    before(() => {
-      setupProgrammaticLoan({
-        vnet: getVirtualNetwork(),
-        userAddress: address,
-        collateralAddress: market.collateralAddress as Address,
-        controllerAddress,
-        collateral: market.collateral,
-        borrow: market.borrow,
-      })
-    })
+    before(() => setupProgrammaticLoan({ vnet: getVirtualNetwork(), userAddress: address, ...market }))
 
     beforeEach(() => {
       onSuccess = cy.stub().as('onSuccess')

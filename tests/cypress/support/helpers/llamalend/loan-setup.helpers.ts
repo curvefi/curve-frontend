@@ -137,7 +137,8 @@ export const setupProgrammaticLoan = ({
         collateralAmountWei: fundedCollateral,
       })
 
-      cy.then(async () => {
+      // Bridge async setup transactions into Cypress queue so the test waits for completion.
+      return cy.then(async () => {
         await approveTokenForSpender({
           vnet,
           userAddress,
@@ -169,13 +170,33 @@ const traderAddress = '0x000000000000000000000000000000000000bEEF' as Address
  * Why hardcoded:
  * - Markets differ in token decimals (6/8/18) and liquidity depth.
  * - A single amount is flaky: sometimes too small to move the position into soft liquidation.
+ * - Max-size single swaps can revert or overshoot behavior depending on market state.
  * - We intentionally escalate through fixed amounts to keep behavior reproducible across runs.
  *
  * Units:
  * - CRVUSD ladder values are whole-token amounts (later scaled by token decimals).
  * - Collateral ladder values are collateral-token amounts (later scaled by token decimals).
  */
-const CRVUSD_TRADE_LADDER = ['1000', '5000', '10000', '25000', '50000', '100000', '250000', '500000', '1000000']
+const CRVUSD_TRADE_LADDER = [
+  '1000',
+  '5000',
+  '10000',
+  '25000',
+  '50000',
+  '100000',
+  '250000',
+  '500000',
+  '1000000',
+  '2500000',
+  '5000000',
+  '10000000',
+  '25000000',
+  '50000000',
+  '100000000',
+  '250000000',
+  '500000000',
+  '1000000000',
+]
 const COLLATERAL_TRADE_LADDER = [
   '0.1',
   '0.5',
@@ -191,6 +212,8 @@ const COLLATERAL_TRADE_LADDER = [
   '5000',
   '10000',
   '50000',
+  '100000',
+  '250000',
 ]
 
 type RpcCall = (method: string, params: unknown[]) => Promise<string>
@@ -235,7 +258,7 @@ const tradeAmountsForInput = (decimals: number, isCrvUsd: boolean) => {
   return amounts.map((amount) => parseUnits(amount, decimals))
 }
 
-const seededBalance = (decimals: number, isCrvUsd: boolean) => parseUnits(isCrvUsd ? '1000000000' : '50000', decimals)
+const seededBalance = (decimals: number, isCrvUsd: boolean) => parseUnits(isCrvUsd ? '10000000000' : '250000', decimals)
 
 const approveToken = ({
   vnet,
@@ -289,6 +312,33 @@ const swapAmm = ({
 
 type SwapDirection = readonly [bigint, bigint]
 
+const retryUntilSoftLiquidation = async <T>({
+  steps,
+  readStablecoinInAmm,
+  runStep,
+}: {
+  steps: readonly T[]
+  readStablecoinInAmm: () => Promise<bigint>
+  runStep: (step: T) => Promise<void>
+}): Promise<bigint> => {
+  let stablecoinInAmm = await readStablecoinInAmm()
+  if (stablecoinInAmm > 0n) return stablecoinInAmm
+
+  let idx = 0
+  while (idx < steps.length && stablecoinInAmm === 0n) {
+    try {
+      await runStep(steps[idx])
+    } catch (e) {
+      // Keep trying larger swaps / alternate directions.
+      console.info(`Failed to trade ${steps[idx]}: ${e.message}, retrying...`)
+    }
+    stablecoinInAmm = await readStablecoinInAmm()
+    idx += 1
+  }
+
+  return stablecoinInAmm
+}
+
 const runTradeLadder = async ({
   vnet,
   ammAddress,
@@ -312,20 +362,11 @@ const runTradeLadder = async ({
   const inputIndex = Number(i)
   const amounts = tradeAmountsForInput(decimalsByIndex[inputIndex], isCrvUsdByIndex[inputIndex])
 
-  const attempt = async (remaining: bigint[]): Promise<bigint> => {
-    const stablecoinInAmm = await readUserStablecoinInAmm(rpcCall, controllerAddress, userAddress)
-    if (stablecoinInAmm > 0n || remaining.length === 0) return stablecoinInAmm
-
-    const [amount, ...rest] = remaining
-    try {
-      await swapAmm({ vnet, ammAddress, i, j, amount })
-    } catch {
-      // Keep escalating trade size.
-    }
-    return attempt(rest)
-  }
-
-  return attempt(amounts)
+  return retryUntilSoftLiquidation({
+    steps: amounts,
+    readStablecoinInAmm: () => readUserStablecoinInAmm(rpcCall, controllerAddress, userAddress),
+    runStep: (amount) => swapAmm({ vnet, ammAddress, i, j, amount }),
+  })
 }
 
 const runDirectionsUntilSoftLiquidation = async ({
@@ -346,28 +387,22 @@ const runDirectionsUntilSoftLiquidation = async ({
   directions: readonly SwapDirection[]
   decimalsByIndex: Record<number, number>
   isCrvUsdByIndex: Record<number, boolean>
-}): Promise<bigint> => {
-  const attempt = async (remainingDirections: readonly SwapDirection[]): Promise<bigint> => {
-    const stablecoinInAmm = await readUserStablecoinInAmm(rpcCall, controllerAddress, userAddress)
-    if (stablecoinInAmm > 0n || remainingDirections.length === 0) return stablecoinInAmm
-
-    const [direction, ...rest] = remainingDirections
-    const updatedStablecoin = await runTradeLadder({
-      vnet,
-      ammAddress,
-      controllerAddress,
-      userAddress,
-      rpcCall,
-      direction,
-      decimalsByIndex,
-      isCrvUsdByIndex,
-    })
-    if (updatedStablecoin > 0n) return updatedStablecoin
-    return attempt(rest)
-  }
-
-  return attempt(directions)
-}
+}): Promise<bigint> =>
+  retryUntilSoftLiquidation({
+    steps: directions,
+    readStablecoinInAmm: () => readUserStablecoinInAmm(rpcCall, controllerAddress, userAddress),
+    runStep: (direction) =>
+      runTradeLadder({
+        vnet,
+        ammAddress,
+        controllerAddress,
+        userAddress,
+        rpcCall,
+        direction,
+        decimalsByIndex,
+        isCrvUsdByIndex,
+      }).then(() => undefined),
+  })
 
 /**
  * Simulates soft liquidation by pushing AMM bands with real swaps until the borrower's
@@ -401,7 +436,7 @@ export const simulateSoftLiquidation = ({
     .then(({ body }) => {
       const ammAddress = ('0x' + body.result.slice(26)) as Address
 
-      // Keep Cypress command timeout explicit for long on-chain setup work.
+      // cy.then() here both keeps this async block in the Cypress queue and extends timeout for on-chain setup.
       return cy.then({ timeout: 120000 }, async () => {
         const rpcCall = createRpcCall(adminRpcUrl)
         const [ammCoin0, ammCoin1] = await Promise.all([
