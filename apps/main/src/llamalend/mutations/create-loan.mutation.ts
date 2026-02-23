@@ -11,6 +11,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
 import type { OnTransactionSuccess } from '@ui-kit/lib/model/mutation/useTransactionMutation'
 import { Address, waitForApproval } from '@ui-kit/utils'
+import { parseRoute } from '@ui-kit/widgets/RouteProvider'
 import type { CreateLoanForm, CreateLoanFormQuery } from '../features/borrow/types'
 
 type CreateLoanMutationContext = {
@@ -52,14 +53,7 @@ const create = async (
   const [type, impl] = getCreateLoanImplementation(market.id, leverageEnabled)
   switch (type) {
     case 'zapV2':
-      return (await impl.createLoan({
-        userCollateral,
-        userBorrowed,
-        debt,
-        range,
-        router: route!.routerAddress,
-        calldata: route!.calldata,
-      })) as Address
+      return (await impl.createLoan({ userCollateral, userBorrowed, debt, range, ...parseRoute(route) })) as Address
     case 'V2':
     case 'V1':
       return (await impl.createLoan(userCollateral, userBorrowed, debt, range, +slippage)) as Address

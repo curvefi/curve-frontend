@@ -87,15 +87,15 @@ export const validateRoute = (route: RouteOption | null | undefined, isRequired:
     test('route', 'Route is required', () => {
       enforce(route).isTruthy()
     })
-    skipWhen(!route, () => {
+    skipWhen(!route?.tx, () => {
       test('route.routerAddress', 'Router address must be a valid address', () => {
-        enforce(isAddress(route!.routerAddress)).isTruthy()
+        enforce(isAddress(route?.tx?.to || '')).isTruthy()
       })
       test('route.calldata', 'Calldata must be valid hex', () => {
-        enforce(isHex(route!.calldata)).isTruthy()
+        enforce(isHex(route?.tx?.data || '')).isTruthy()
       })
       test('route.toAmountOutput', 'Route output amount is required', () => {
-        enforce(route!.toAmountOutput).isTruthy()
+        enforce(route!.amountOut[0]).isTruthy()
       })
     })
   })

@@ -85,7 +85,7 @@ export const { useQuery: useCreateLoanMaxReceive, queryKey: createLoanMaxReceive
             range,
             getExpected: getExpectedFn({
               chainId,
-              router: route.provider,
+              router: route.router,
               userAddress,
               slippage,
             }),

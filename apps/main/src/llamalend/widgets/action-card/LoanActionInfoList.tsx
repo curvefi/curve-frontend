@@ -238,15 +238,7 @@ export const LoanActionInfoList = ({
             testId="borrow-price-impact"
           />
         )}
-        {routes && (
-          <RouteProvidersAccordion
-            routes={routes.data}
-            toTokenSymbol={collateralSymbol}
-            isExpanded={isRoutesOpen}
-            onToggle={toggleRoutes}
-            {...routes}
-          />
-        )}
+        {routes && <RouteProvidersAccordion isExpanded={isRoutesOpen} onToggle={toggleRoutes} {...routes} />}
         <ActionInfoGasEstimate gas={gas} isApproved={isApproved?.data} />
       </Stack>
     </ActionInfoCollapse>

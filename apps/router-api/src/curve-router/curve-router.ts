@@ -4,7 +4,13 @@ import { Address, zeroAddress } from 'viem'
 import type { IDict, IRoute, IRouteStep } from '@curvefi/api/lib/interfaces'
 import { PoolTemplate } from '@curvefi/api/lib/pools'
 import { fromWei, notFalsy, toWei } from '../router.utils'
-import { type Decimal, type RouteResponse, type RoutesQuery, type RouteStep } from '../routes/routes.schemas'
+import {
+  type Decimal,
+  type RouteResponse,
+  type RoutesQuery,
+  type RouteStep,
+  type TransactionData,
+} from '../routes/routes.schemas'
 import { type CurveJS, loadCurve } from './curvejs'
 
 /**
@@ -74,6 +80,7 @@ export async function buildCurveRouteResponse(query: RoutesQuery, log: FastifyBa
     chainId,
     amountIn: [amountIn] = [],
     amountOut: [amountOut] = [],
+    slippage,
   } = query
 
   const curve = await loadCurve(chainId, log)
@@ -86,9 +93,10 @@ export async function buildCurveRouteResponse(query: RoutesQuery, log: FastifyBa
   const { route: routes, output: toAmount } = await curve.router.getBestRouteAndOutput(fromToken, toToken, fromAmount)
   if (!routes.length) return []
 
-  const [priceImpact, toStoredRate] = await Promise.all([
+  const [priceImpact, toStoredRate, tx] = await Promise.all([
     curve.router.priceImpact(fromToken, toToken, fromAmount),
     routerGetToStoredRate(routes, curve, toToken),
+    curve.router.populateSwap(fromToken, toToken, fromAmount, slippage),
   ])
 
   const pools = tryGetPools(routes, curve, log)
@@ -110,6 +118,7 @@ export async function buildCurveRouteResponse(query: RoutesQuery, log: FastifyBa
       createdAt: Date.now(),
       isStableswapRoute,
       warnings,
+      tx: tx as TransactionData | undefined,
       route: parsedRoutes.map(
         ({ name, inputCoinAddress, outputCoinAddress, ...args }): RouteStep => ({
           name,

@@ -55,7 +55,6 @@ export function useMaxTokenValues(
     }
   }, [form, maxDebt])
 
-  useEffect(() => updateForm(form, { maxDebt }), [form, maxDebt])
   useEffect(() => updateForm(form, { maxCollateral }), [form, maxCollateral])
 
   // set range is not necessarily tied to maxTokenValues. However, it manipulates them, so we expose it here

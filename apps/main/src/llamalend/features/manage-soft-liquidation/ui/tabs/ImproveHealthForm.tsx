@@ -53,6 +53,7 @@ export const ImproveHealthForm = ({
     max: { userBorrowed: maxRepay },
     isFull: { data: isFull },
     routes,
+    isDisabled,
   } = useRepayForm({
     market,
     network,

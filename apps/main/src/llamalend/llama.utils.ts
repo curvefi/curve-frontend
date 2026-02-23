@@ -1,7 +1,7 @@
 import { sortBy } from 'lodash'
 import { type Address, Hex, zeroAddress } from 'viem'
 import type { HealthColorKey, LlamaMarketTemplate } from '@/llamalend/llamalend.types'
-import type { INetworkName as LlamaNetworkId, IQuote } from '@curvefi/llamalend-api/lib/interfaces'
+import type { INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { Chain } from '@curvefi/prices-api'
@@ -11,7 +11,6 @@ import { notFalsy, objectKeys } from '@curvefi/prices-api/objects.util'
 import { requireLib, type Wallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { CRVUSD, type Decimal, formatNumber } from '@ui-kit/utils'
-import type { RouteOption } from '@ui-kit/widgets/RouteProvider'
 import { MarketNetBorrowAprTooltipContentProps } from './widgets/tooltips/MarketNetBorrowAprTooltipContent'
 
 /**
@@ -68,11 +67,6 @@ export const hasZapV2 = (market: LlamaMarketTemplate) =>
 
 export const isRouterMetaRequired = (type: 'zapV2' | 'V0' | 'V1' | 'V2' | 'deleverage' | 'unleveraged') =>
   type == 'zapV2'
-
-export const toQuote = (route: RouteOption): IQuote => ({
-  outAmount: `${route.toAmountOutput}`,
-  priceImpact: route.priceImpact ?? 0,
-})
 
 export const hasGauge = (market: LlamaMarketTemplate) =>
   market instanceof LendMarketTemplate && market.addresses.gauge !== zeroAddress

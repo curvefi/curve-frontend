@@ -57,11 +57,24 @@ const routeItemSchema = {
   properties: {
     id: { type: 'string', minLength: 1 },
     router: { type: 'string', enum: RouteProviders },
-    amountIn: DecimalSchema,
-    amountOut: DecimalSchema,
+    amountIn: WeiAmountArraySchema,
+    amountOut: WeiAmountArraySchema,
     priceImpact: { anyOf: [{ type: 'number' }, { type: 'null' }] },
     createdAt: { type: 'integer' },
     isStableswapRoute: { type: 'boolean' },
+    warnings: {
+      type: 'array',
+      items: { type: 'string', enum: ['high-slippage', 'low-exchange-rate'] },
+    },
+    tx: {
+      type: 'object',
+      properties: {
+        data: { type: 'string' },
+        to: AddressSchema,
+        from: AddressSchema,
+        value: DecimalSchema,
+      },
+    },
     route: {
       type: 'array',
       items: {

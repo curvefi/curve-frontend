@@ -16,6 +16,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
 import type { OnTransactionSuccess } from '@ui-kit/lib/model/mutation/useTransactionMutation'
 import { decimal, type Decimal, waitForApproval } from '@ui-kit/utils'
+import { parseRoute } from '@ui-kit/widgets/RouteProvider'
 
 type RepayMutation = {
   stateCollateral: Decimal
@@ -64,13 +65,7 @@ const repay = async (
   const [type, impl] = getRepayImplementation(market.id, { userCollateral, stateCollateral, userBorrowed, route })
   switch (type) {
     case 'zapV2':
-      return (await impl.repay({
-        stateCollateral,
-        userCollateral,
-        userBorrowed,
-        router: route!.routerAddress,
-        calldata: route!.calldata,
-      })) as Hex
+      return (await impl.repay({ stateCollateral, userCollateral, userBorrowed, ...parseRoute(route) })) as Hex
     case 'V1':
     case 'V2':
       await impl.repayExpectedBorrowed(stateCollateral, userCollateral, userBorrowed, +slippage)

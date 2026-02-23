@@ -60,13 +60,7 @@ const borrowMore = async (
   })
   switch (type) {
     case 'zapV2':
-      return (await impl.borrowMore({
-        userCollateral,
-        userBorrowed,
-        debt,
-        router: route!.routerAddress,
-        calldata: route!.calldata,
-      })) as Hex
+      return (await impl.borrowMore(...args)) as Hex
     case 'V1':
     case 'V2':
       await impl.borrowMoreExpectedCollateral(userCollateral, userBorrowed, debt, +slippage)
