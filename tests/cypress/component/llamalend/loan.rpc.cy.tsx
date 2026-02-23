@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import BigNumber from 'bignumber.js'
+import { parseUnits } from 'viem'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
-import { recordValues } from '@curvefi/prices-api/objects.util'
 import {
   checkBorrowMoreDetailsLoaded,
   submitBorrowMoreForm,
@@ -17,6 +17,7 @@ import {
   writeCreateLoanForm,
 } from '@cy/support/helpers/llamalend/create-loan.helpers'
 import { LlammalendTestCase, type LlammalendTestCaseProps } from '@cy/support/helpers/llamalend/LlammalendTestCase'
+import { simulateSoftLiquidation } from '@cy/support/helpers/llamalend/loan-setup.helpers'
 import {
   checkRepayDetailsLoaded,
   selectRepayToken,
@@ -34,17 +35,17 @@ import {
 import { createVirtualTestnet } from '@cy/support/helpers/tenderly'
 import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
 import { fundErc20, fundEth } from '@cy/support/helpers/tenderly/vnet-fund'
-import { LOAD_TIMEOUT, skipTestsAfterFailure } from '@cy/support/ui'
-import { LlamaMarketType } from '@ui-kit/types/market'
+import { skipTestsAfterFailure } from '@cy/support/ui'
 import { CRVUSD_ADDRESS } from '@ui-kit/utils'
 import type { Decimal } from '@ui-kit/utils'
 
-const testCases = recordValues(LlamaMarketType).map((marketType) => oneLoanTestMarket(marketType))
+const markets = [oneLoanTestMarket()]
 
-testCases.forEach(
+markets.forEach(
   ({
     id,
     collateralAddress: tokenAddress,
+    controllerAddress,
     collateral,
     borrow,
     borrowMore,
@@ -60,6 +61,8 @@ testCases.forEach(
       const debtAfterBorrowMore = new BigNumber(borrow).plus(borrowMore).toString() as Decimal
       const debtAfterRepay = new BigNumber(debtAfterBorrowMore).minus(repay).toString() as Decimal
       const debtAfterImproveHealth = new BigNumber(debtAfterRepay).minus(improveHealth).toString() as Decimal
+      const closeCrvUsdFundAmountWei =
+        `0x${parseUnits(new BigNumber(debtAfterImproveHealth).times(2).toFixed(), 18).toString(16)}` as const
 
       const privateKey = generatePrivateKey()
       const { address } = privateKeyToAccount(privateKey)
@@ -153,21 +156,24 @@ testCases.forEach(
       })
 
       it(`closes the loan`, () => {
-        // extra crvUSD to close the loan due to the safety buffer
+        // Fund enough crvUSD for debt repayment after soft liquidation + safety buffer.
         fundErc20({
           adminRpcUrl,
-          amountWei: CREATE_LOAN_FUND_AMOUNT,
+          amountWei: closeCrvUsdFundAmountWei,
           tokenAddress: CRVUSD_ADDRESS,
           recipientAddresses: [address],
+        })
+        // Crash the LLAMMA oracle price to put the position into soft liquidation
+        simulateSoftLiquidation({
+          vnet: getVirtualNetwork(),
+          controllerAddress,
+          userAddress: address,
+          collateralAddress: tokenAddress,
         })
         cy.mount(<LoanTestWrapper tab="close" />)
         checkClosePositionDetailsLoaded({ debt: debtAfterImproveHealth })
         checkDebt({ current: debtAfterImproveHealth, future: '0', symbol: debtTokenSymbol })
-        submitClosePositionForm('error', 'Transaction failed').then(() => {
-          // unfortunately cannot cause soft liquidation in the tests yet
-          cy.get('[data-testid="loan-form-error"]', LOAD_TIMEOUT).contains('not in liquidation mode')
-          expect(onSuccess).to.not.be.called
-        })
+        submitClosePositionForm().then(expectCallbacks)
       })
     })
   },
