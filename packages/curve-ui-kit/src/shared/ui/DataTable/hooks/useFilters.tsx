@@ -1,13 +1,13 @@
 import { isEqual } from 'lodash'
 import { useCallback, useMemo } from 'react'
-import { type PartialRecord, recordValues } from '@curvefi/prices-api/objects.util'
+import { fromEntries, recordValues } from '@curvefi/prices-api/objects.util'
 import { useSearchParams } from '@ui-kit/hooks/router'
 
 /**
  * Similar to `ColumnFiltersState` from react-table, but restricted to string values
  * so filters can be safely serialized into URL query parameters.
  */
-export type ColumnFilters<TColumnId extends string> = { id: TColumnId; value: string }[]
+type ColumnFilters<TColumnId extends string> = { id: TColumnId; value: string }[]
 
 /** Maps display names to column ID strings for a given table. */
 type ColumnEnum<TColumnId extends string> = Record<string, TColumnId>
@@ -15,7 +15,7 @@ type ColumnEnum<TColumnId extends string> = Record<string, TColumnId>
 /** Get scoped prefix for URL keys, so we can have multiple tables on the same page without conflicts. */
 const scopedPrefix = (scope: string | undefined) => (scope ? `${scope}-` : '')
 /** Get scoped key for URLSearchParams */
-export const scopedKey = (scope: string | undefined, columnId: string) => `${scopedPrefix(scope)}${columnId}`
+const scopedKey = (scope: string | undefined, columnId: string) => `${scopedPrefix(scope)}${columnId}`
 
 /**
  * Updates the browser history with new URL query parameters.
@@ -58,6 +58,8 @@ function parseFilters<TColumnId extends string>(
   ]
 }
 
+const empty: never[] = []
+
 /**
  * Manages per-column filters that are synced with URL query parameters.
  *
@@ -65,9 +67,9 @@ function parseFilters<TColumnId extends string>(
  * @param defaultFilters Filters applied when a column has no corresponding URL param.
  * @param scope Optional namespace prefix to avoid URL key collisions across tables.
  */
-export function useColumnFilters<TColumnId extends string>({
+function useColumnFilters<TColumnId extends string>({
   columns,
-  defaultFilters,
+  defaultFilters = empty,
   scope,
 }: {
   columns: ColumnEnum<TColumnId>
@@ -82,18 +84,12 @@ export function useColumnFilters<TColumnId extends string>({
 
   return {
     columnFilters,
+    defaultFilters,
     hasFilters: useMemo(
       () => columnFilters.length > 0 && !isEqual(columnFilters, defaultFilters),
       [columnFilters, defaultFilters],
     ),
-    columnFiltersById: useMemo(
-      () =>
-        columnFilters.reduce(
-          (acc, filter) => ({ ...acc, [filter.id]: filter.value }),
-          {} as PartialRecord<TColumnId, string>,
-        ),
-      [columnFilters],
-    ),
+    columnFiltersById: useMemo(() => fromEntries(columnFilters.map((f) => [f.id, f.value])), [columnFilters]),
     setColumnFilter: useCallback(
       (id: TColumnId, value: string | null) => updateSearchParams({ [scopedKey(scope, id)]: value }),
       [scope],
@@ -112,7 +108,7 @@ const DEFAULT_SEARCH_KEY = 'search'
  *
  * @param key URL query parameter name. Defaults to `"search"`. Override to avoid conflicts with other filters.
  */
-export function useGlobalFilter(key = DEFAULT_SEARCH_KEY) {
+function useGlobalFilter(key = DEFAULT_SEARCH_KEY) {
   const searchParams = useSearchParams()
   const globalFilter = useMemo(() => searchParams.get(key) ?? '', [searchParams, key])
 

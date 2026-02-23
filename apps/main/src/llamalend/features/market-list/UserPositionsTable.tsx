@@ -49,25 +49,32 @@ export type UserPositionsTableProps = {
   isError: boolean
   loading: boolean
   tab: MarketRateType
+  filters: ReturnType<typeof useFilters<LlamaMarketColumnId>>
 }
 
 const pagination = { pageIndex: 0, pageSize: 50 }
 const DEFAULT_VISIBLE_ROWS = 3
-const defaultFilters: never[] = []
 
-export const UserPositionsTable = ({ onReload, result, loading, isError, tab }: UserPositionsTableProps) => {
+export const UserPositionsTable = ({
+  onReload,
+  result,
+  loading,
+  isError,
+  tab,
+  filters: {
+    globalFilter,
+    setGlobalFilter,
+    columnFilters,
+    columnFiltersById,
+    setColumnFilter,
+    resetFilters,
+    defaultFilters,
+  },
+}: UserPositionsTableProps) => {
   const { markets: data = [], userHasPositions } = result ?? {}
   const userData = useMemo(() => data.filter((market) => market.userHasPositions?.[tab]), [data, tab])
 
   const title = LOCAL_STORAGE_KEYS[tab]
-  const { globalFilter, setGlobalFilter, columnFilters, columnFiltersById, setColumnFilter, resetFilters } = useFilters(
-    {
-      columns: LlamaMarketColumnId,
-      defaultFilters,
-      scope: tab.toLowerCase(),
-      searchKey: 'search-user-positions',
-    },
-  )
   const globalFilterFn = useLlamaGlobalFilterFn(userData, globalFilter)
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT[tab], SORT_QUERY_FIELD[tab])
   const { columnSettings, columnVisibility, sortField, toggleVisibility } = useLlamaTableVisibility(title, sorting, tab)
