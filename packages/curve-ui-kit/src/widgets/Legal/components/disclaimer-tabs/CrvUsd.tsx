@@ -1,9 +1,8 @@
-import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward'
-import Button from '@mui/material/Button'
 import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
+import { ExternalLink } from '@ui-kit/shared/ui/ExternalLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TabProps } from '../../types/tabs'
 import { List } from '../general/List'
@@ -25,38 +24,17 @@ export const CrvUsd = ({ currentApp, network }: TabProps) => (
         mobile: 'column',
         tablet: 'row',
       }}
-      gap={Spacing.xs}
-      sx={{
-        marginInline: Spacing.md,
-      }}
+      gap={Spacing.md}
+      sx={{ marginInline: Spacing.md }}
     >
-      <Button
-        component={Link}
-        variant="link"
+      <ExternalLink
         href="https://docs.curve.finance/assets/pdf/whitepaper_curve_stablecoin.pdf"
-        target="_blank"
-        endIcon={<ArrowOutwardIcon />}
-        sx={{
-          padding: Spacing.xs,
-          '&': { fontWeight: '500' },
-        }}
-      >
-        {t`crvUSD whitepaper`}
-      </Button>
-
-      <Button
-        component={Link}
-        variant="link"
+        label={t`crvUSD whitepaper`}
+      />
+      <ExternalLink
         href="https://docs.curve.finance/security/security/#stablecoin-and-lending"
-        target="_blank"
-        endIcon={<ArrowOutwardIcon />}
-        sx={{
-          padding: Spacing.xs,
-          '&': { fontWeight: '500' },
-        }}
-      >
-        {t`crvUSD smart contract audits`}
-      </Button>
+        label={t`crvUSD smart contract audits`}
+      />
     </Stack>
 
     <Header>{t`crvUSD Design Risks`}</Header>

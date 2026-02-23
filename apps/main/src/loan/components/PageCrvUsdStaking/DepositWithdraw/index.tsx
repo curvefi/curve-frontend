@@ -8,7 +8,6 @@ import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useDebounced } from '@ui-kit/hooks/useDebounce'
 import { t } from '@ui-kit/lib/i18n'
 import { DEX_ROUTES, getInternalUrl } from '@ui-kit/shared/routes'
-import { Duration } from '@ui-kit/themes/design/0_primitives'
 import { CRVUSD_ADDRESS } from '@ui-kit/utils'
 import { FormContent } from '@ui-kit/widgets/DetailPageLayout/FormContent'
 import { type FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
@@ -61,7 +60,6 @@ const ScrvUsdDepositFormTab = () => {
       },
       [estimateGasDeposit, estimateGasDepositApprove, previewAction, setPreviewReset],
     ),
-    Duration.FormDebounce,
   )
 
   useEffect(() => {
@@ -108,7 +106,6 @@ const ScrvUsdWithdrawFormTab = () => {
       },
       [estimateGasWithdraw, previewAction, setPreviewReset],
     ),
-    Duration.FormDebounce,
   )
 
   useEffect(() => {
