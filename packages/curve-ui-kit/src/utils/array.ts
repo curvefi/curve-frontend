@@ -4,7 +4,6 @@ const { orderBy } = lodash
 
 /**
  * Computes a cutoff value that guarantees at least `minCount` items pass.
- * - This function is the numeric counterpart of `takeTopWithMin`.
  *
  * Behavior:
  * - If at least `minCount` items have value ≥ `threshold`, returns `threshold` unchanged.
