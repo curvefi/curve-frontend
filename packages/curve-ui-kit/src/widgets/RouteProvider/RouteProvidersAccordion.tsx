@@ -15,7 +15,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { decimalMax } from '@ui-kit/utils'
 import { RouteComparisonChip } from '@ui-kit/widgets/RouteProvider/RouteComparisonChip'
 import type { RouteOption } from './route-provider.types'
-import { RouteProviderCard } from './RouteProviderCard'
+import { RouteProviderCard, type RouteProviderCardProps } from './RouteProviderCard'
 import { RouteProviderIcons } from './RouteProviderIcons'
 
 const { Spacing, ButtonSize } = SizesAndSpaces
@@ -29,10 +29,10 @@ const providerLabels = {
 export type { RouteOption }
 
 export type RouteProviderProps = {
-  routes: RouteOption[] | undefined
+  data: RouteOption[] | undefined
   selectedRoute: RouteOption | undefined
   onChange: (route: RouteOption) => void
-  toTokenSymbol: string | undefined
+  tokenOut: RouteProviderCardProps['tokenOut']
   isExpanded: boolean
   isLoading: boolean
   error: Error | null | undefined
@@ -41,18 +41,18 @@ export type RouteProviderProps = {
 }
 
 export const RouteProvidersAccordion = ({
-  routes,
+  data: routes,
   selectedRoute,
   onChange,
-  toTokenSymbol,
+  tokenOut,
   isLoading,
   error,
   isExpanded,
   onToggle,
   onRefresh,
 }: RouteProviderProps) => {
-  const bestOutputAmount = useMemo(() => routes && decimalMax(...routes.map((route) => route.toAmountOutput)), [routes])
-  const Icon = selectedRoute ? RouteProviderIcons[selectedRoute.provider] : null
+  const maxAmountOut = useMemo(() => routes && decimalMax(...routes.flatMap((route) => route.amountOut)), [routes])
+  const Icon = selectedRoute ? RouteProviderIcons[selectedRoute.router] : null
   return (
     <Accordion
       ghost
@@ -67,10 +67,10 @@ export const RouteProvidersAccordion = ({
               {Icon && <Icon />}
               <WithSkeleton loading={isLoading}>
                 <Typography variant="bodySRegular" color="textPrimary">
-                  {providerLabels[selectedRoute.provider]}
+                  {providerLabels[selectedRoute.router]}
                 </Typography>
               </WithSkeleton>
-              <RouteComparisonChip bestOutputAmount={bestOutputAmount} toAmountOutput={selectedRoute.toAmountOutput} />
+              <RouteComparisonChip maxAmountOut={maxAmountOut} amountOut={selectedRoute.amountOut} />
             </Stack>
           ) : (
             '-'
@@ -99,13 +99,13 @@ export const RouteProvidersAccordion = ({
           {routes?.map((route) => (
             <RouteProviderCard
               key={route.id}
-              toTokenSymbol={toTokenSymbol}
+              tokenOut={tokenOut}
               isSelected={route.id === selectedRoute?.id}
-              providerLabel={providerLabels[route.provider]}
+              providerLabel={providerLabels[route.router]}
               route={route}
-              bestOutputAmount={bestOutputAmount}
+              bestOutputAmount={maxAmountOut}
               onSelect={onChange}
-              icon={RouteProviderIcons[route.provider]()}
+              icon={RouteProviderIcons[route.router]()}
             />
           ))}
           {isLoading && <Skeleton width="100%" height={ButtonSize.lg} />}

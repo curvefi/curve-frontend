@@ -10,9 +10,10 @@ import { getRouterWarningModal } from '@/dex/store/createQuickSwapSlice'
 import { useStore } from '@/dex/store/useStore'
 import { TokensNameMapper } from '@/dex/types/main.types'
 import { getExchangeRates } from '@/dex/utils/utilsSwap'
+import type { IRouteStep } from '@curvefi/api/lib/interfaces'
 import { notFalsy } from '@curvefi/prices-api/objects.util'
 import {
-  type Route as RouteApiResponse,
+  type RouteResponse,
   type RoutesQuery,
   useRouterApi as useRouterApiQuery,
 } from '@ui-kit/entities/router-api.query'
@@ -41,7 +42,15 @@ const getMaxSlippage = (isStableswapRoute: boolean) =>
 
 /** Convert the API response to the format used in the app */
 const convertRoute = (
-  { amountIn, amountOut, priceImpact, route, warnings = [], isStableswapRoute, router }: RouteApiResponse,
+  {
+    amountIn: [amountIn],
+    amountOut: [amountOut],
+    priceImpact,
+    route,
+    warnings = [],
+    isStableswapRoute = false,
+    router,
+  }: RouteResponse,
   { fromAddress, toAddress, chainId, isPending }: SearchedParams & { chainId: number; isPending: boolean },
 ): RoutesAndOutput => {
   const { isFrom, fromAmount, toAmount } = useStore.getState().quickSwap.formValues
@@ -70,19 +79,14 @@ const convertRoute = (
     isHighSlippage: warnings.includes('high-slippage'),
     isStableswapRoute,
     routes: route.map(
-      ({
-        args: { poolId = '', ...args },
-        name,
-        tokenIn: [inputCoinAddress],
-        tokenOut: [outputCoinAddress],
-      }): Route => ({
-        inputCoinAddress,
-        outputCoinAddress,
-        name,
-        routeUrlId: poolId ?? '',
-        poolId,
-        ...args,
-      }),
+      ({ args, name, tokenIn: [inputCoinAddress], tokenOut: [outputCoinAddress] }) =>
+        ({
+          inputCoinAddress,
+          outputCoinAddress,
+          name,
+          routeUrlId: (args as { poolId: string }).poolId ?? '',
+          ...(args as Omit<IRouteStep, 'inputCoinAddress' | 'outputCoinAddress'>),
+        }) as Route,
     ),
     modal: getRouterWarningModal(
       modalArgs,
@@ -145,8 +149,8 @@ export function useRouterApi(
         formValues: {
           ...quickSwap.formValues,
           ...(quickSwap.formValues.isFrom
-            ? { toAmount: fromWei(route.amountOut, toDecimals!) }
-            : { fromAmount: fromWei(route.amountIn, fromDecimals!) }),
+            ? { toAmount: fromWei(route.amountOut[0], toDecimals!) }
+            : { fromAmount: fromWei(route.amountIn[0], fromDecimals!) }),
         },
       }),
     })

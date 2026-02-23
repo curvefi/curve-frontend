@@ -6,6 +6,7 @@ import { hasLeverage } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import type { RepayOptions } from '@/llamalend/mutations/repay.mutation'
 import { useRepayPriceImpact } from '@/llamalend/queries/repay/repay-price-impact.query'
+import { RepayForm as RepayFormData } from '@/llamalend/queries/validation/manage-loan.validation'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { notFalsy } from '@curvefi/prices-api/objects.util'
@@ -18,7 +19,7 @@ import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { q, type Range } from '@ui-kit/types/util'
 import { joinButtonText } from '@ui-kit/utils'
 import type { Decimal } from '@ui-kit/utils'
-import { updateForm } from '@ui-kit/utils/react-form.utils'
+import { type FormUpdates, updateForm } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts, HighPriceImpactAlert } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import { useRepayForm } from '../hooks/useRepayForm'
@@ -177,7 +178,7 @@ export const RepayForm = <ChainId extends IChainId>({
                 updateForm(form, {
                   [selectedField]: max[selectedField].data,
                   isFull: selectedField === 'userBorrowed',
-                })
+                } as FormUpdates<RepayFormData>)
               }
             />
           )

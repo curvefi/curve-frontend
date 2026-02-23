@@ -1,6 +1,5 @@
 import { enforce, test } from 'vest'
 import type { Hex } from 'viem'
-import type { IRouteStep } from '@curvefi/api/lib/interfaces'
 import type { GetExpectedFn } from '@curvefi/llamalend-api/src/interfaces'
 import { fetchJson } from '@curvefi/prices-api/fetch'
 import { notFalsy } from '@curvefi/prices-api/objects.util'
@@ -8,7 +7,7 @@ import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { userAddressValidationGroup } from '@ui-kit/lib/model/query/user-address-validation'
 import { Address, assert, Decimal, toArray } from '@ui-kit/utils'
-import type { RouteProvider } from '@ui-kit/widgets/RouteProvider'
+import { parseRoute, type RouteProvider } from '@ui-kit/widgets/RouteProvider'
 
 export type RoutesQuery = {
   chainId: number
@@ -23,27 +22,26 @@ export type RoutesQuery = {
 
 export type RoutesParams = FieldsOf<RoutesQuery>
 
-type RouterApiRouteStep = {
-  name: string
-  args: Omit<IRouteStep, 'inputCoinAddress' | 'outputCoinAddress' | 'poolId'> & { poolId?: string }
-  tokenIn: [Address]
-  tokenOut: [Address]
-}
-
-type RouterApiResponse = {
+export type RouteResponse = {
   id: string
-  amountIn: Decimal
-  amountOut: Decimal
+  router: RouteProvider
+  amountIn: [Decimal]
+  amountOut: [Decimal]
   priceImpact: number | null
   createdAt: number
-  isStableswapRoute: boolean
   warnings: ('high-slippage' | 'low-exchange-rate')[]
-  route: RouterApiRouteStep[]
-  router: RouteProvider
-  tx?: { to: Address; data: Hex }
+  route: {
+    name: string
+    tokenIn: [Address]
+    tokenOut: [Address]
+    protocol: 'curve' | string
+    action: 'swap' | string
+    args?: Record<string, unknown>
+    chainId: number
+  }[]
+  isStableswapRoute?: boolean
+  tx?: { data: Hex; to: Address; from: Address; value: Decimal }
 }
-
-export type Route = RouterApiResponse
 
 export const routerApiValidation = createValidationSuite(
   ({ chainId, tokenIn, tokenOut, amountIn, amountOut, userAddress }: RoutesQuery) => {
@@ -85,7 +83,7 @@ export const { useQuery: useRouterApi, fetchQuery: fetchApiRoutes } = queryFacto
     router,
     userAddress,
     slippage,
-  }: RoutesQuery): Promise<Route[]> => {
+  }: RoutesQuery): Promise<RouteResponse[]> => {
     const query = new URLSearchParams(
       notFalsy(
         ['chainId', `${chainId}`],
@@ -99,7 +97,7 @@ export const { useQuery: useRouterApi, fetchQuery: fetchApiRoutes } = queryFacto
     )
 
     toArray(router).forEach((router) => query.append('router', router))
-    return fetchJson<RouterApiResponse[]>(`/api/router/v1/routes?${query}`)
+    return fetchJson<RouteResponse[]>(`/api/router/v1/routes?${query}`)
   },
   staleTime: '1m',
   refetchInterval: '15s',
@@ -129,6 +127,6 @@ export const getExpectedFn =
       slippage,
       userAddress,
     })
-    const { amountOut, priceImpact } = assert(routes?.[0], 'No route available')
-    return { outAmount: amountOut, priceImpact: priceImpact ?? 0 }
+    const route = assert(routes?.[0], 'No route available')
+    return parseRoute(route).quote
   }
