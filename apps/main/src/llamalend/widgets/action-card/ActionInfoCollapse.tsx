@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import Collapse, { CollapseProps } from '@mui/material/Collapse'
 import Divider from '@mui/material/Divider'
 import Stack from '@mui/material/Stack'
@@ -11,7 +12,7 @@ export const ActionInfoCollapse = ({
   isOpen = true,
   testId,
 }: {
-  children: React.ReactNode
+  children: ReactNode
   isOpen: CollapseProps['in']
   testId?: string
 }) => (
