@@ -1,6 +1,7 @@
 import { useFilteredRewards } from '@/llamalend/hooks/useFilteredRewards'
 import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { MarketSupplyRateTooltipContent } from '@/llamalend/widgets/tooltips/MarketSupplyRateTooltipContent'
+import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { MarketRateType } from '@ui-kit/types/market'
@@ -9,8 +10,12 @@ import { RateTooltipProps } from './RateCell'
 
 const rateType = MarketRateType.Supply
 
-const LendRateTooltipContent = ({ market }: { market: LlamaMarket }) => {
-  const { averageRate, period, minBoostedAprAverage, maxBoostedAprAverage, isLoading } = useSnapshots(market, rateType) // important: only call this one tooltip is open!
+const LendRateTooltipContent = ({ market, isOpen }: { market: LlamaMarket; isOpen: boolean }) => {
+  const { averageRate, period, minBoostedAprAverage, maxBoostedAprAverage, isLoading } = useSnapshots(
+    market,
+    rateType,
+    isOpen,
+  ) // important: only call this one tooltip is open!
   const {
     rates,
     rates: { lendTotalApyMinBoosted, lendApr, lendCrvAprUnboosted, lendCrvAprBoosted, lendTotalApyMaxBoosted },
@@ -40,8 +45,19 @@ const LendRateTooltipContent = ({ market }: { market: LlamaMarket }) => {
   )
 }
 
-export const SupplyRateLendTooltip = ({ market, children }: RateTooltipProps) => (
-  <Tooltip clickable title={t`Supply Yield`} body={<LendRateTooltipContent market={market} />} placement="top">
-    {children}
-  </Tooltip>
-)
+export const SupplyRateLendTooltip = ({ market, children }: RateTooltipProps) => {
+  const [open, onOpen, onClose] = useSwitch(false)
+  return (
+    <Tooltip
+      clickable
+      title={t`Supply Yield`}
+      body={<LendRateTooltipContent isOpen={open} market={market} />}
+      placement="top"
+      open={open}
+      onOpen={onOpen}
+      onClose={onClose}
+    >
+      {children}
+    </Tooltip>
+  )
+}

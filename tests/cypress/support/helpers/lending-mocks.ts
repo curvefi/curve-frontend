@@ -94,7 +94,7 @@ export const HighUtilizationAddress = '0xBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 export const RewardsTestAddress = '0xCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa' as const
 
 function oneLendingVaultResponse(chain: Chain): GetMarketsResponse {
-  const count = oneInt(2, 20)
+  const count = oneInt(15, 20)
   const data = [
     ...range(count).map((index) =>
       oneLendingPool(chain, { utilization: index / count, tvl: oneFloat() > 0.9 ? oneSmallTvl() : oneLargeTvl() }),
