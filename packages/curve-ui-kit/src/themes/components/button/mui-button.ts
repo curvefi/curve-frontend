@@ -1,5 +1,5 @@
 /// <reference path="./mui-button.d.ts" />
-import { recordEntries } from '@curvefi/prices-api/objects.util'
+import { recordEntries } from '@curvefi/primitives/objects.utils'
 import { Breakpoint } from '@mui/material'
 import type { Components } from '@mui/material/styles'
 import { basicMuiTheme, type Responsive } from '../../basic-theme'

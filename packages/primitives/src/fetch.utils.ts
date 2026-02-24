@@ -45,7 +45,6 @@ export async function fetchJson<T>(url: string, body?: Record<string, unknown>, 
   })
 
   if (!resp.ok) {
-    // Make the promise be rejected if we didn't get a 2xx response
     throw new FetchError(resp.status, `Fetch error ${resp.status} for URL: ${url}`)
   }
   return (await resp.json()) as T

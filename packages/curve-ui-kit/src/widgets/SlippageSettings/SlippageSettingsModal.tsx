@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { recordValues } from '@curvefi/prices-api/objects.util'
+import { recordValues } from '@curvefi/primitives/objects.utils'
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'

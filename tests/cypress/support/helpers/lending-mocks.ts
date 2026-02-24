@@ -1,6 +1,6 @@
 import { MARKET_CUTOFF_DATE } from '@/llamalend/constants'
 import type { GetMarketsResponse } from '@curvefi/prices-api/llamalend'
-import { fromEntries, range } from '@curvefi/prices-api/objects.util'
+import { fromEntries, range } from '@curvefi/primitives/objects.utils'
 import { MAX_USD_VALUE, oneAddress, oneDate, oneFloat, oneInt, oneOf, onePrice } from '@cy/support/generators'
 import { oneToken } from '@cy/support/helpers/tokens'
 import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'

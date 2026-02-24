@@ -577,6 +577,19 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@curvefi/prices-api@workspace:packages/prices-api"
   dependencies:
+    "@curvefi/primitives": "npm:*"
+    eslint: "npm:*"
+    eslint-config-custom: "npm:*"
+    typescript: "npm:*"
+  peerDependencies:
+    typescript: "*"
+  languageName: unknown
+  linkType: soft
+
+"@curvefi/primitives@npm:*, @curvefi/primitives@workspace:packages/primitives":
+  version: 0.0.0-use.local
+  resolution: "@curvefi/primitives@workspace:packages/primitives"
+  dependencies:
     eslint: "npm:*"
     eslint-config-custom: "npm:*"
     typescript: "npm:*"
@@ -8172,6 +8185,7 @@ __metadata:
     "@babel/runtime": "npm:^7.28.6"
     "@chromatic-com/storybook": "npm:^5.0.0"
     "@coinbase/wallet-sdk": "npm:~4.3.7"
+    "@curvefi/primitives": "npm:*"
     "@emotion/react": "npm:^11.14.0"
     "@emotion/styled": "npm:^11.14.1"
     "@mui/icons-material": "npm:^7.3.7"
@@ -11799,6 +11813,7 @@ __metadata:
   dependencies:
     "@curvefi/api": "npm:*"
     "@curvefi/llamalend-api": "npm:1.1.8"
+    "@curvefi/primitives": "npm:*"
     "@eslint/js": "npm:*"
     "@ethersproject/abi": "npm:^5.8.0"
     "@hookform/error-message": "npm:^2.0.1"
@@ -13647,6 +13662,7 @@ __metadata:
   resolution: "router-api@workspace:apps/router-api"
   dependencies:
     "@curvefi/api": "npm:*"
+    "@curvefi/primitives": "npm:*"
     "@types/node": "npm:*"
     eslint: "npm:*"
     eslint-config-custom: "npm:*"
@@ -14508,6 +14524,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "tests@workspace:tests"
   dependencies:
+    "@curvefi/primitives": "npm:*"
     "@cypress/react": "npm:^9.0.1"
     "@cypress/vite-dev-server": "npm:^7.2.0"
     "@types/cypress": "npm:^1.1.6"

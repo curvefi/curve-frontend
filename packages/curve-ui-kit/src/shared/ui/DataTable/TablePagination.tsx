@@ -1,6 +1,6 @@
 import { capitalize, last } from 'lodash'
 import { useCallback, useId } from 'react'
-import { range } from '@curvefi/prices-api/objects.util'
+import { range } from '@curvefi/primitives/objects.utils'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
 import ToggleButton from '@mui/material/ToggleButton'

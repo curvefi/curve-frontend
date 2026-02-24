@@ -1,5 +1,5 @@
 /// <reference path="./mui-icon-button.d.ts" />
-import { recordEntries } from '@curvefi/prices-api/objects.util'
+import { recordEntries } from '@curvefi/primitives/objects.utils'
 import type { Components } from '@mui/material/styles'
 import { handleBreakpoints } from '@ui-kit/themes/basic-theme'
 import { DesignSystem } from '../../design'

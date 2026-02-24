@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useNetworkFromUrl } from '@/dex/hooks/useChainId'
 import { type NetworkConfig } from '@/dex/types/main.types'
-import { notFalsy } from '@curvefi/prices-api/objects.util'
+import { notFalsy } from '@curvefi/primitives/objects.utils'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { ExpandedState, getPaginationRowModel } from '@tanstack/react-table'

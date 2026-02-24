@@ -1,5 +1,5 @@
 import { type ReactNode, useMemo, useState } from 'react'
-import { notFalsy } from '@curvefi/prices-api/objects.util'
+import { notFalsy } from '@curvefi/primitives/objects.utils'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import Divider from '@mui/material/Divider'

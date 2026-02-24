@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { notFalsy } from '@curvefi/prices-api/objects.util'
+import { notFalsy } from '@curvefi/primitives/objects.utils'
 import { capitalize } from '@mui/material'
 import Grid from '@mui/material/Grid'
 import { NETWORK_BASE_CONFIG } from '@ui/utils'

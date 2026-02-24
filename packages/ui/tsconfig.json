@@ -8,6 +8,8 @@
       "@external-rewards": ["../../external-rewards/src/index.ts"],
       "@curvefi/prices-api": ["../../prices-api/src/index.ts"],
       "@curvefi/prices-api/*": ["../../prices-api/src/*"],
+      "@curvefi/primitives": ["../../primitives/src/index.ts"],
+      "@curvefi/primitives/*": ["../../primitives/src/*"],
       "@ui-kit/*": ["../../curve-ui-kit/src/*"]
     }
   },

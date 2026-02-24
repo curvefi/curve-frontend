@@ -1,4 +1,4 @@
-import { notFalsy } from '@curvefi/prices-api/objects.util'
+import { notFalsy } from '@curvefi/primitives/objects.utils'
 import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
 import { type Decimal, formatNumber } from '@ui-kit/utils'
 

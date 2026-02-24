@@ -1,6 +1,6 @@
 import Fuse from 'fuse.js'
 import { useCallback, useMemo } from 'react'
-import { notFalsy } from '@curvefi/prices-api/objects.util'
+import { notFalsy } from '@curvefi/primitives/objects.utils'
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'

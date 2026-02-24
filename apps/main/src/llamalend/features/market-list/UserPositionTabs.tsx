@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useConnection } from 'wagmi'
 import { LlamaMarketColumnId } from '@/llamalend/features/market-list/columns'
-import { fromEntries } from '@curvefi/prices-api/objects.util'
+import { fromEntries } from '@curvefi/primitives/objects.utils'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'

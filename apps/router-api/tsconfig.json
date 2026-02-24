@@ -1,8 +1,22 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "rootDir": ".",
-    "types": ["node", "vitest/globals"]
+    "types": [
+      "node",
+      "vitest/globals"
+    ],
+    "baseUrl": "./src",
+    "paths": {
+      "@curvefi/primitives": [
+        "../../../packages/primitives/src/index.ts"
+      ],
+      "@curvefi/primitives/*": [
+        "../../../packages/primitives/src/*"
+      ]
+    }
   },
-  "include": ["src", "test"]
+  "include": [
+    "src",
+    "test"
+  ]
 }

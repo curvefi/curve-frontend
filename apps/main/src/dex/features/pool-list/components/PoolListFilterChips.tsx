@@ -1,6 +1,6 @@
 import { useConnection } from 'wagmi'
 import { NetworkConfig } from '@/dex/types/main.types'
-import { notFalsy } from '@curvefi/prices-api/objects.util'
+import { notFalsy } from '@curvefi/primitives/objects.utils'
 import Grid from '@mui/material/Grid'
 import { t } from '@ui-kit/lib/i18n'
 import { GridChip } from '@ui-kit/shared/ui/DataTable/chips/GridChip'

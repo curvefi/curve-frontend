@@ -1,10 +1,12 @@
-import { Address, Hex } from 'viem'
-import type { IRouteStep } from '@curvefi/api/lib/interfaces'
-
-export const RouteProviders = ['curve', 'enso', 'odos'] as const
-export type RouteProvider = (typeof RouteProviders)[number]
-
-export type Decimal = `${number}`
+import {
+  RouteProviders,
+  type Address,
+  type Decimal,
+  type RouteProvider,
+  type RouteResponse,
+  type RouteStep,
+  type TransactionData,
+} from '@curvefi/primitives/router'
 
 export const ADDRESS_HEX_PATTERN = '^0x[a-fA-F0-9]{40}$'
 export const DECIMAL_PATTERN = '^-?\\d+(\\.\\d+)?$'
@@ -103,29 +105,4 @@ const RoutesSchema = {
 
 export const RoutesOpts = { schema: RoutesSchema } as const
 
-type CurveRouteArgs = Omit<IRouteStep, 'inputCoinAddress' | 'outputCoinAddress' | 'poolId'> & { poolId?: string }
-
-export type RouteStep = {
-  name: string
-  tokenIn: [Address]
-  tokenOut: [Address]
-  protocol: 'curve' | string
-  action: 'swap' | string
-  args?: CurveRouteArgs | Record<string, unknown>
-  chainId: number
-}
-
-export type TransactionData = { data: Hex; to: Address; from: Address; value: Decimal }
-
-export type RouteResponse = {
-  id: string
-  router: RouteProvider
-  amountIn: [Decimal]
-  amountOut: [Decimal]
-  priceImpact: number | null
-  createdAt: number
-  warnings: ('high-slippage' | 'low-exchange-rate')[]
-  route: RouteStep[]
-  isStableswapRoute?: boolean
-  tx?: TransactionData
-}
+export type { Decimal, RouteProvider, RouteResponse, RouteStep, TransactionData }

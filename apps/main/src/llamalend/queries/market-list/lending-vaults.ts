@@ -8,7 +8,7 @@ import {
   Market,
   type UserMarketStats,
 } from '@curvefi/prices-api/llamalend'
-import { fromEntries, recordEntries } from '@curvefi/prices-api/objects.util'
+import { fromEntries, recordEntries } from '@curvefi/primitives/objects.utils'
 import { queryFactory, UserParams, type UserQuery } from '@ui-kit/lib/model/query'
 import { userAddressValidationSuite } from '@ui-kit/lib/model/query/user-address-validation'
 import {

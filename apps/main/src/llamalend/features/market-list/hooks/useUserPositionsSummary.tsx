@@ -7,7 +7,7 @@ import {
 } from '@/llamalend/queries/market-list/lending-vaults'
 import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { getUserMintMarketsStatsOptions } from '@/llamalend/queries/market-list/mint-markets'
-import { notFalsy } from '@curvefi/prices-api/objects.util'
+import { notFalsy } from '@curvefi/primitives/objects.utils'
 import { useQueries, type UseQueryResult } from '@tanstack/react-query'
 import { t } from '@ui-kit/lib/i18n'
 import { getTokenUsdRateQueryOptions } from '@ui-kit/lib/model/entities/token-usd-rate'

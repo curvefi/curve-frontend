@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { useConnection } from 'wagmi'
 import { useLlamaMarkets } from '@/llamalend/queries/market-list/llama-markets'
-import { fetchJson } from '@curvefi/prices-api/fetch'
+import { fetchJson } from '@curvefi/primitives/fetch.utils'
 import { useMatchRoute } from '@ui-kit/hooks/router'
 import { useIsDesktop } from '@ui-kit/hooks/useBreakpoints'
 import { useLendMarketSubNav } from '@ui-kit/hooks/useFeatureFlags'

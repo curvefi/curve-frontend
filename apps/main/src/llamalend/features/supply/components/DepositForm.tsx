@@ -2,7 +2,7 @@ import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.typ
 import type { DepositOptions } from '@/llamalend/mutations/deposit.mutation'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { notFalsy } from '@curvefi/prices-api/objects.util'
+import { notFalsy } from '@curvefi/primitives/objects.utils'
 import Button from '@mui/material/Button'
 import { t } from '@ui-kit/lib/i18n'
 import { q } from '@ui-kit/types/util'

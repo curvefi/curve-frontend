@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import BigNumber from 'bignumber.js'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
-import { recordValues } from '@curvefi/prices-api/objects.util'
+import { recordValues } from '@curvefi/primitives/objects.utils'
 import {
   checkBorrowMoreDetailsLoaded,
   submitBorrowMoreForm,

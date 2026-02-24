@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { objectKeys } from '@curvefi/prices-api/objects.util'
+import { objectKeys } from '@curvefi/primitives/objects.utils'
 import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'

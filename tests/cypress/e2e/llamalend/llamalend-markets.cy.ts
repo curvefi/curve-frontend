@@ -2,7 +2,7 @@
 import lodash, { max, sum } from 'lodash'
 import { LlamaMarketColumnId } from '@/llamalend/features/market-list/columns/columns.enum'
 import type { GetMarketsResponse } from '@curvefi/prices-api/llamalend'
-import { range, recordValues, repeat } from '@curvefi/prices-api/objects.util'
+import { range, recordValues, repeat } from '@curvefi/primitives/objects.utils'
 import { oneOf, shuffle, type TokenType } from '@cy/support/generators'
 import {
   closeDrawer,

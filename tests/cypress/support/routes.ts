@@ -1,4 +1,4 @@
-import { recordValues } from '@curvefi/prices-api/objects.util'
+import { recordValues } from '@curvefi/primitives/objects.utils'
 import { oneAddress, oneOf, oneValueOf } from '@cy/support/generators'
 import { type AppPath, oneAppPath } from '@cy/support/ui'
 import { LEND_MARKET_ROUTES } from '@ui-kit/shared/routes'

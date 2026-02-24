@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import type { PartialRecord } from '@curvefi/prices-api/objects.util'
+import type { PartialRecord } from '@curvefi/primitives/objects.utils'
 import type { Theme } from '@mui/material/styles'
 import type { SxProps } from '@mui/system'
 import {

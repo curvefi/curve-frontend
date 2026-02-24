@@ -1,4 +1,4 @@
-import { fromEntries, recordValues } from '@curvefi/prices-api/objects.util'
+import { fromEntries, recordValues } from '@curvefi/primitives/objects.utils'
 import type { Components } from '@mui/material/styles'
 import type { CSSObject } from '@mui/styled-engine'
 import { handleBreakpoints } from '@ui-kit/themes/basic-theme'

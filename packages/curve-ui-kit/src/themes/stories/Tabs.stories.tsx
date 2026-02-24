@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { objectKeys } from '@curvefi/prices-api/objects.util'
+import { objectKeys } from '@curvefi/primitives/objects.utils'
 import { Stack } from '@mui/material'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { SIZE_TO_ICON_SIZE } from '@ui-kit/shared/ui/Tabs/tabs-kebab'

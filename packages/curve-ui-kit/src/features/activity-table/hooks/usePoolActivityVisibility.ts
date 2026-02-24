@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { fromEntries } from '@curvefi/prices-api/objects.util'
+import { fromEntries } from '@curvefi/primitives/objects.utils'
 import type { VisibilityState } from '@tanstack/react-table'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { PoolLiquidityColumnId, getTokenAmountColumnId } from '../columns/pool-liquidity-columns'
