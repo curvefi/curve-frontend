@@ -68,7 +68,6 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
   })
 
   const isLeverageEnabled = isLeverageBorrowMore(market, values.leverageEnabled)
-  const swapRequired = isLeverageEnabled && Number(values.userBorrowed) > 0
   const fromBorrowed = fromWallet && isLeverageEnabled
   const onLeverageToggle = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => updateForm(form, { leverageEnabled: event.target.checked }),
@@ -150,7 +149,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
         />
       )}
 
-      <HighPriceImpactAlert {...q(useBorrowMorePriceImpact(params, enabled && swapRequired))} />
+      <HighPriceImpactAlert {...q(useBorrowMorePriceImpact(params, enabled && isLeverageEnabled))} />
 
       <Button
         type="submit"
@@ -159,7 +158,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
         data-testid="borrow-more-submit-button"
         data-validation={JSON.stringify({
           hasMarket: !!market,
-          swapRequired,
+          isLeverageEnabled,
           isPending,
           isDisabled,
           isValid: form.formState.isValid,
