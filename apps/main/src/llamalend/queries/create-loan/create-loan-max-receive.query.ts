@@ -109,6 +109,5 @@ export const { useQuery: useCreateLoanMaxReceive, queryKey: createLoanMaxReceive
     debtRequired: false,
     isMaxDebtRequired: false,
     isLeverageRequired: false,
-    isRouteRequired: true, // todo remove, always true
   }),
 })

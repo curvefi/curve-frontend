@@ -50,13 +50,11 @@ export const createLoanQueryValidationSuite = ({
   isMaxDebtRequired = debtRequired,
   isLeverageRequired = false,
   skipMarketValidation = false,
-  isRouteRequired = true,
 }: {
   debtRequired: boolean
   isMaxDebtRequired?: boolean
   isLeverageRequired?: boolean
   skipMarketValidation?: boolean
-  isRouteRequired?: boolean
 }) =>
   createValidationSuite(
     ({
@@ -81,7 +79,7 @@ export const createLoanQueryValidationSuite = ({
       skipWhen(!marketId, () => {
         if (!marketId) return
         const [type] = getCreateLoanImplementation(marketId, !!leverageEnabled)
-        validateRoute(route, isRouteRequired && !!leverageEnabled && isRouterMetaRequired(type))
+        validateRoute(route, !!leverageEnabled && isRouterMetaRequired(type))
       })
     },
   )

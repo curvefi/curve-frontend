@@ -4,7 +4,6 @@ import { useConnection } from 'wagmi'
 import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import { getTokens, hasZapV2 } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
-import { isLeverageBorrowMoreSupported } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
 import { useCreateLoanExpectedCollateral } from '@/llamalend/queries/create-loan/create-loan-expected-collateral.query'
 import {
   type CreateLoanPricesReceiveParams,
@@ -136,10 +135,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     isCreated,
     creationError,
     txHash: data?.hash,
-    leverage: mapQuery(
-      useCreateLoanExpectedCollateral(params, isLeverageBorrowMoreSupported(market)),
-      (d) => d.leverage,
-    ),
+    leverage: mapQuery(useCreateLoanExpectedCollateral(params, values.leverageEnabled), (d) => d.leverage),
     isApproved: useCreateLoanIsApproved(params),
     formErrors: useFormErrors(formState),
     routes: useMarketRoutes({
