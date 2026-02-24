@@ -46,7 +46,6 @@ export function useMarketRoutes({
 
   const firstRoute = (selectedRoute && data?.find(({ router }) => router === selectedRoute.router)) || data?.[0]
   const onChangeRoute = useEffectEvent((option: RouteOption | undefined) => {
-    console.log('onChangeRoute', option, data)
     if (option) onChange(option)
   })
   useEffect(() => onChangeRoute(firstRoute), [firstRoute])
