@@ -86,13 +86,13 @@ module.exports = {
       'error',
       {
         message:
-          'Do not call .setValue() directly on react-hook-form values. Use setFormValue from @ui-kit/utils/react-form.utils.',
+          'Do not call .setValue() directly on react-hook-form values. Use `updateForm` from @ui-kit/utils/react-form.utils.',
         selector:
           "Program:has(TSTypeReference[typeName.name='UseFormReturn']) CallExpression[callee.type='MemberExpression'][callee.property.name='setValue']",
       },
       {
         message:
-          'Do not call .trigger() directly on react-hook-form values. Use setFormValue from @ui-kit/utils/react-form.utils.',
+          'Do not call .trigger() directly on react-hook-form values. Use `updateForm` from @ui-kit/utils/react-form.utils.',
         selector:
           "Program:has(TSTypeReference[typeName.name='UseFormReturn']) CallExpression[callee.type='MemberExpression'][callee.property.name='trigger']",
       },

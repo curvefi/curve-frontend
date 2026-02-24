@@ -1,13 +1,12 @@
 import { enforce, test } from 'vest'
 import type { Hex } from 'viem'
-import type { GetExpectedFn } from '@curvefi/llamalend-api/src/interfaces'
 import { fetchJson } from '@curvefi/prices-api/fetch'
 import { notFalsy } from '@curvefi/prices-api/objects.util'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { userAddressValidationGroup } from '@ui-kit/lib/model/query/user-address-validation'
-import { Address, assert, Decimal, toArray } from '@ui-kit/utils'
-import { parseRoute, type RouteProvider } from '@ui-kit/widgets/RouteProvider'
+import { Address, Decimal, toArray } from '@ui-kit/utils'
+import { type RouteProvider } from '@ui-kit/widgets/RouteProvider'
 
 export type RoutesQuery = {
   chainId: number
@@ -60,7 +59,7 @@ export const routerApiValidation = createValidationSuite(
     userAddressValidationGroup({ userAddress, required: false })
   },
 )
-export const { useQuery: useRouterApi, fetchQuery: fetchApiRoutes } = queryFactory({
+export const { useQuery: useRouterApi } = queryFactory({
   queryKey: ({ chainId, tokenIn, tokenOut, amountIn, amountOut, router, userAddress, slippage }: RoutesParams) =>
     [
       'router-api',
@@ -103,30 +102,3 @@ export const { useQuery: useRouterApi, fetchQuery: fetchApiRoutes } = queryFacto
   refetchInterval: '15s',
   validationSuite: routerApiValidation,
 })
-
-/**
- * This function can be used as a callback for llamalend.js zapV2 methods.
- */
-export const getExpectedFn =
-  ({
-    chainId,
-    router,
-    userAddress,
-    slippage,
-  }: Pick<RoutesQuery, 'chainId' | 'router' | 'slippage' | 'userAddress'> & {
-    fromToken: { address: Address; decimals: number }
-    toToken: { address: Address; decimals: number }
-  }): GetExpectedFn =>
-  async (tokenIn, tokenOut, amountIn) => {
-    const routes = await fetchApiRoutes({
-      chainId,
-      tokenIn: tokenIn as Address,
-      tokenOut: tokenOut as Address,
-      amountIn: `${amountIn}` as Decimal,
-      router,
-      slippage,
-      userAddress,
-    })
-    const route = assert(routes?.[0], 'No route available')
-    return parseRoute(route).quote
-  }
