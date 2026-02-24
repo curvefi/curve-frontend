@@ -46,11 +46,7 @@ const REWARDS = groupBy(
  *
  * @returns TanStack Query result with all active campaigns grouped by pool address
  */
-export const {
-  useQuery: useCampaignsExternal,
-  getQueryOptions: getCampaignsExternalOptions,
-  getQueryData: getCampaignsExternal,
-} = queryFactory({
+export const { getQueryOptions: getCampaignsExternalOptions } = queryFactory({
   queryKey: () => ['campaigns-external'] as const,
   queryFn: async () => {
     const now = Date.now() // refresh is handled by refetchInterval

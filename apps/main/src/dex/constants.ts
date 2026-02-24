@@ -31,7 +31,6 @@ export const DEFAULT_NETWORK_CONFIG = {
   poolCustomTVL: {}, // hardcode tvl for pool
   poolFilters: ['all', 'usd', 'btc', 'eth', 'crypto', 'crvusd', 'tricrypto', 'stableng', 'others', 'user'],
   poolIsWrappedOnly: {}, // show only wrapped pool data
-  poolListFormValuesDefault: {},
   swap: { fromAddress: '', toAddress: '' },
   swapCustomRouteRedirect: {},
   showInSelectNetwork: true,

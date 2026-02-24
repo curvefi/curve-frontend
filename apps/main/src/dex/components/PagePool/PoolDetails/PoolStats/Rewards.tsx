@@ -1,7 +1,7 @@
 import { styled } from 'styled-components'
 import { CampaignRewardsRow } from '@/dex/components/CampaignRewardsRow'
+import { ChipVolatileBaseApy } from '@/dex/components/ChipVolatileBaseApy'
 import { DescriptionChip, StyledIconButton, StyledStats } from '@/dex/components/PagePool/PoolDetails/PoolStats/styles'
-import { ChipVolatileBaseApy } from '@/dex/components/PagePoolList/components/ChipVolatileBaseApy'
 import { PoolRewardsCrv } from '@/dex/components/PoolRewardsCrv'
 import { LARGE_APY } from '@/dex/constants'
 import { useNetworkByChain } from '@/dex/entities/networks'
