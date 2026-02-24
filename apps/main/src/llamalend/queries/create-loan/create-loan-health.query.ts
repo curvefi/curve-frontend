@@ -8,7 +8,7 @@ import { createLoanQueryValidationSuite } from '../validation/borrow.validation'
 import { createLoanExpectedCollateralQueryKey } from './create-loan-expected-collateral.query'
 import { createLoanMaxReceiveKey } from './create-loan-max-receive.query'
 
-export const { useQuery: useCreateLoanHealth } = queryFactory({
+export const { useQuery: useCreateLoanHealth, invalidate: invalidateCreateLoanHealth } = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -18,7 +18,7 @@ export const { useQuery: useCreateLoanHealth } = queryFactory({
     leverageEnabled,
     range,
     maxDebt,
-    route,
+    routeId,
   }: CreateLoanDebtParams) =>
     [
       ...rootKeys.market({ chainId, marketId }),
@@ -29,7 +29,7 @@ export const { useQuery: useCreateLoanHealth } = queryFactory({
       { leverageEnabled },
       { range },
       { maxDebt },
-      { route },
+      { routeId },
     ] as const,
   queryFn: async ({
     marketId,
@@ -38,13 +38,13 @@ export const { useQuery: useCreateLoanHealth } = queryFactory({
     debt = '0',
     leverageEnabled,
     range,
-    route,
+    routeId,
   }: CreateLoanDebtQuery): Promise<Decimal> => {
     const [type, impl] = getCreateLoanImplementation(marketId, leverageEnabled)
     switch (type) {
       case 'zapV2':
         return decimal(
-          (await impl.createLoanExpectedMetrics({ userCollateral, userBorrowed, debt, range, ...parseRoute(route) }))
+          (await impl.createLoanExpectedMetrics({ userCollateral, userBorrowed, debt, range, ...parseRoute(routeId) }))
             .health,
         )!
       case 'V1':

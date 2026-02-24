@@ -50,7 +50,6 @@ export function useMarketRoutes({
     // todo: we really need a better way to add callbacks to queries that doesn't introduce extra renders
     if (firstRoute) onChangeRoute(firstRoute)
   }, [firstRoute])
-
   return enabled
     ? { data, isLoading, error, selectedRoute, onChange, onRefresh: refetch, tokenOut: { ...tokenOut, usdRate } }
     : undefined

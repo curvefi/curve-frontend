@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Address } from 'viem'
 import { useConnection } from 'wagmi'
@@ -10,6 +10,7 @@ import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { type RepayOptions, useRepayMutation } from '@/llamalend/mutations/repay.mutation'
 import { useRepayIsApproved } from '@/llamalend/queries/repay/repay-is-approved.query'
 import { useRepayIsAvailable } from '@/llamalend/queries/repay/repay-is-available.query'
+import { invalidateRepayRouteQueries } from '@/llamalend/queries/repay/repay-route-invalidation'
 import { getRepayImplementationType } from '@/llamalend/queries/repay/repay-query.helpers'
 import { useRepayPrices } from '@/llamalend/queries/repay/repay-prices.query'
 import type { RepayIsFullParams } from '@/llamalend/queries/validation/manage-loan.types'
@@ -36,7 +37,7 @@ const useRepayParams = <ChainId>({
   stateCollateral,
   userBorrowed,
   userCollateral,
-  route,
+  routeId,
   chainId,
   marketId,
   userAddress,
@@ -57,7 +58,7 @@ const useRepayParams = <ChainId>({
         maxCollateral,
         isFull,
         slippage,
-        route,
+        routeId,
       }),
       [
         chainId,
@@ -69,7 +70,7 @@ const useRepayParams = <ChainId>({
         maxCollateral,
         isFull,
         slippage,
-        route,
+        routeId,
       ],
     ),
   )
@@ -94,7 +95,7 @@ const formOptions = {
     maxStateCollateral: undefined,
     maxCollateral: undefined,
     maxBorrowed: undefined,
-    route: undefined,
+    routeId: undefined,
     isFull: false,
     slippage: SLIPPAGE_PRESETS.STABLE,
   },
@@ -122,6 +123,8 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
   const form = useForm<RepayForm>(formOptions)
 
   const values = watchForm(form)
+  const [selectedRoute, setSelectedRoute] = useState<RouteOption | undefined>()
+  const previousRouteRefresh = useRef<{ id: string; createdAt: number } | undefined>(undefined)
   const params = useRepayParams({ chainId, marketId, userAddress, ...values })
   const implementation = marketId
     ? getRepayImplementationType(marketId, {
@@ -132,7 +135,20 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
     : undefined
   const swapAmountIn = decimal(new BigNumber(values.stateCollateral ?? 0).plus(values.userCollateral ?? 0).toString())
   const routeRequired = !!implementation && isRouterMetaRequired(implementation) && Number(swapAmountIn) > 0
-  const onChangeRoute = (route: RouteOption) => updateForm(form, { route })
+  const onChangeRoute = (route: RouteOption) => {
+    setSelectedRoute(route)
+    updateForm(form, { routeId: route.id })
+  }
+
+  useEffect(() => {
+    const current = selectedRoute ? { id: selectedRoute.id, createdAt: selectedRoute.createdAt } : undefined
+    const previous = previousRouteRefresh.current
+    previousRouteRefresh.current = current
+    if (!previous || !current) return
+    if (previous.id === current.id && previous.createdAt !== current.createdAt) {
+      void invalidateRepayRouteQueries(params)
+    }
+  }, [params, selectedRoute?.id, selectedRoute?.createdAt])
 
   const {
     onSubmit,
@@ -176,7 +192,7 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
       tokenOut: borrowToken,
       amountIn: swapAmountIn,
       slippage: values.slippage,
-      selectedRoute: values.route ?? undefined,
+      selectedRoute,
       enabled: routeRequired,
       onChange: onChangeRoute,
     }),

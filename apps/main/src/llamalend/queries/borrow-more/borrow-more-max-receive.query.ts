@@ -1,7 +1,7 @@
 import { getBorrowMoreImplementation } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
 import type { BorrowMoreParams, BorrowMoreQuery } from '@/llamalend/queries/validation/borrow-more.validation'
 import { borrowMoreValidationGroup } from '@/llamalend/queries/validation/borrow-more.validation'
-import { getExpectedFn } from '@ui-kit/entities/router-api.query'
+import { getRouteById, getExpectedFn } from '@ui-kit/entities/router-api.query'
 import { createValidationSuite } from '@ui-kit/lib'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { decimal, Decimal } from '@ui-kit/utils'
@@ -41,7 +41,7 @@ function castFieldsToDecimal(foo: {
   }
 }
 
-export const { useQuery: useBorrowMoreMaxReceive } = queryFactory({
+export const { useQuery: useBorrowMoreMaxReceive, invalidate: invalidateBorrowMoreMaxReceive } = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -49,7 +49,7 @@ export const { useQuery: useBorrowMoreMaxReceive } = queryFactory({
     userCollateral = '0',
     userBorrowed = '0',
     leverageEnabled,
-    route,
+    routeId,
     slippage,
   }: BorrowMoreParams) =>
     [
@@ -58,7 +58,7 @@ export const { useQuery: useBorrowMoreMaxReceive } = queryFactory({
       { userCollateral },
       { userBorrowed },
       { leverageEnabled },
-      { route },
+      { routeId },
       { slippage },
     ] as const,
   queryFn: async ({
@@ -67,21 +67,23 @@ export const { useQuery: useBorrowMoreMaxReceive } = queryFactory({
     userBorrowed = '0',
     leverageEnabled,
     chainId,
-    route,
+    routeId,
     userAddress,
     slippage,
   }: BorrowMoreQuery): Promise<BorrowMoreMaxReceiveResult> => {
     const [type, impl] = getBorrowMoreImplementation(marketId, leverageEnabled)
     switch (type) {
-      case 'zapV2':
+      case 'zapV2': {
+        const { router } = getRouteById(routeId)
         return castFieldsToDecimal(
           await impl.borrowMoreMaxRecv({
             userCollateral,
             userBorrowed,
             address: userAddress,
-            getExpected: getExpectedFn({ chainId, router: route?.router, userAddress, slippage }),
+            getExpected: getExpectedFn({ chainId, router, userAddress, slippage }),
           }),
         )
+      }
       case 'V1':
       case 'V2':
         return castFieldsToDecimal(await impl.borrowMoreMaxRecv(userCollateral, userBorrowed))

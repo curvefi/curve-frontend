@@ -3,7 +3,7 @@ import { type RepayParams, type RepayQuery } from '../validation/manage-loan.typ
 import { repayValidationSuite } from '../validation/manage-loan.validation'
 import { getRepayImplementation } from './repay-query.helpers'
 
-export const { useQuery: useRepayRouteImage } = queryFactory({
+export const { useQuery: useRepayRouteImage, invalidate: invalidateRepayRouteImage } = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -11,7 +11,7 @@ export const { useQuery: useRepayRouteImage } = queryFactory({
     userCollateral = '0',
     userBorrowed = '0',
     userAddress,
-    route,
+    routeId,
   }: RepayParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
@@ -19,10 +19,10 @@ export const { useQuery: useRepayRouteImage } = queryFactory({
       { stateCollateral },
       { userCollateral },
       { userBorrowed },
-      { route },
+      { routeId },
     ] as const,
-  queryFn: async ({ marketId, stateCollateral, userCollateral, userBorrowed, route }: RepayQuery) => {
-    const [type, impl] = getRepayImplementation(marketId, { userCollateral, stateCollateral, userBorrowed, route })
+  queryFn: async ({ marketId, stateCollateral, userCollateral, userBorrowed, routeId }: RepayQuery) => {
+    const [type, impl] = getRepayImplementation(marketId, { userCollateral, stateCollateral, userBorrowed, routeId })
     switch (type) {
       case 'V1':
       case 'V2':

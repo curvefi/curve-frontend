@@ -6,7 +6,7 @@ import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import type { Range } from '@ui-kit/types/util'
 import type { Decimal } from '@ui-kit/utils'
 
-export const { useQuery: useBorrowMorePrices } = queryFactory({
+export const { useQuery: useBorrowMorePrices, invalidate: invalidateBorrowMorePrices } = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -16,7 +16,7 @@ export const { useQuery: useBorrowMorePrices } = queryFactory({
     debt = '0',
     maxDebt,
     leverageEnabled,
-    route,
+    routeId,
   }: BorrowMoreParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
@@ -26,7 +26,7 @@ export const { useQuery: useBorrowMorePrices } = queryFactory({
       { debt },
       { maxDebt },
       { leverageEnabled },
-      { route },
+      { routeId },
     ] as const,
   queryFn: async ({
     marketId,
@@ -34,14 +34,14 @@ export const { useQuery: useBorrowMorePrices } = queryFactory({
     userBorrowed = '0',
     debt = '0',
     leverageEnabled,
-    route,
+    routeId,
   }: BorrowMoreQuery) => {
     const [type, impl, args] = getBorrowMoreImplementationArgs(marketId, {
       userCollateral,
       userBorrowed,
       debt,
       leverageEnabled,
-      route,
+      routeId,
     })
     switch (type) {
       case 'zapV2':

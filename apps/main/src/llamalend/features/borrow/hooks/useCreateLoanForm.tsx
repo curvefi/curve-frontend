@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useConnection } from 'wagmi'
 import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
@@ -21,6 +21,7 @@ import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.util
 import { LoanPreset, PRESET_RANGES } from '../../../constants'
 import { type CreateLoanOptions, useCreateLoanMutation } from '../../../mutations/create-loan.mutation'
 import { useCreateLoanIsApproved } from '../../../queries/create-loan/create-loan-approved.query'
+import { invalidateCreateLoanRouteQueries } from '../../../queries/create-loan/create-loan-route-invalidation'
 import { createLoanQueryValidationSuite } from '../../../queries/validation/borrow.validation'
 import { type CreateLoanForm } from '../types'
 import { useMaxTokenValues } from './useMaxTokenValues'
@@ -62,7 +63,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
       userCollateral: undefined,
       userBorrowed: `0` satisfies Decimal,
       debt: undefined,
-      route: undefined,
+      routeId: undefined,
       leverageEnabled: false,
       slippage: SLIPPAGE_PRESETS.STABLE,
       range: PRESET_RANGES[preset],
@@ -86,7 +87,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
         leverageEnabled: values.leverageEnabled,
         userCollateral: values.userCollateral,
         userBorrowed: values.userBorrowed,
-        route: values.route,
+        routeId: values.routeId,
       }),
       [
         chainId,
@@ -100,7 +101,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
         values.leverageEnabled,
         values.userCollateral,
         values.userBorrowed,
-        values.route,
+        values.routeId,
       ],
     ),
   )
@@ -116,10 +117,25 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
 
   const { formState } = form
   const { borrowToken, collateralToken } = market ? getTokens(market) : {}
+  const [selectedRoute, setSelectedRoute] = useState<RouteOption | undefined>()
+  const previousRouteRefresh = useRef<{ id: string; createdAt: number } | undefined>(undefined)
 
   useChartPricesCallback(params, onPricesUpdated)
   useCallbackAfterFormUpdate(form, resetCreation) // reset creation state on form change
-  const onChangeRoute = (route: RouteOption) => updateForm(form, { route })
+  const onChangeRoute = (route: RouteOption) => {
+    setSelectedRoute(route)
+    updateForm(form, { routeId: route.id })
+  }
+
+  useEffect(() => {
+    const current = selectedRoute ? { id: selectedRoute.id, createdAt: selectedRoute.createdAt } : undefined
+    const previous = previousRouteRefresh.current
+    previousRouteRefresh.current = current
+    if (!previous || !current) return
+    if (previous.id === current.id && previous.createdAt !== current.createdAt) {
+      void invalidateCreateLoanRouteQueries(params)
+    }
+  }, [params, selectedRoute?.id, selectedRoute?.createdAt])
 
   const isPending = formState.isSubmitting || isCreating
   return {
@@ -144,7 +160,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
       tokenOut: borrowToken,
       amountIn: values.userCollateral,
       slippage: values.slippage,
-      selectedRoute: values.route ?? undefined,
+      selectedRoute,
       enabled: params.leverageEnabled && !!market && hasZapV2(market),
       onChange: onChangeRoute,
     }),

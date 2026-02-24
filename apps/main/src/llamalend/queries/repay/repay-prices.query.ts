@@ -7,7 +7,7 @@ import { type RepayParams, type RepayQuery } from '../validation/manage-loan.typ
 import { repayValidationSuite } from '../validation/manage-loan.validation'
 import { getRepayImplementation } from './repay-query.helpers'
 
-export const { useQuery: useRepayPrices } = queryFactory({
+export const { useQuery: useRepayPrices, invalidate: invalidateRepayPrices } = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -15,7 +15,7 @@ export const { useQuery: useRepayPrices } = queryFactory({
     userCollateral = '0',
     userBorrowed = '0',
     userAddress,
-    route,
+    routeId,
   }: RepayParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
@@ -23,14 +23,14 @@ export const { useQuery: useRepayPrices } = queryFactory({
       { stateCollateral },
       { userCollateral },
       { userBorrowed },
-      { route },
+      { routeId },
     ] as const,
-  queryFn: async ({ marketId, stateCollateral, userCollateral, userBorrowed, route, userAddress }: RepayQuery) => {
+  queryFn: async ({ marketId, stateCollateral, userCollateral, userBorrowed, routeId, userAddress }: RepayQuery) => {
     const [type, impl, args] = getRepayImplementation(marketId, {
       userCollateral,
       stateCollateral,
       userBorrowed,
-      route,
+      routeId,
     })
     // it looks like all implementations have the same signature, but `args` is typed differently for each
     switch (type) {
@@ -42,7 +42,7 @@ export const { useQuery: useRepayPrices } = queryFactory({
             userBorrowed,
             healthIsFull: true,
             address: userAddress,
-            ...parseRoute(route),
+            ...parseRoute(routeId),
           })
         ).prices as Range<Decimal>
       case 'V1':

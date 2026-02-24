@@ -4,7 +4,7 @@ import type { BorrowMoreParams, BorrowMoreQuery } from '@/llamalend/queries/vali
 import { borrowMoreLeverageValidationSuite } from '@/llamalend/queries/validation/borrow-more.validation'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 
-export const { useQuery: useBorrowMorePriceImpact } = queryFactory({
+export const { useQuery: useBorrowMorePriceImpact, invalidate: invalidateBorrowMorePriceImpact } = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -13,7 +13,7 @@ export const { useQuery: useBorrowMorePriceImpact } = queryFactory({
     debt = '0',
     maxDebt,
     leverageEnabled,
-    route,
+    routeId,
   }: BorrowMoreParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
@@ -22,7 +22,7 @@ export const { useQuery: useBorrowMorePriceImpact } = queryFactory({
       { debt },
       { maxDebt },
       { leverageEnabled },
-      { route },
+      { routeId },
     ] as const,
   queryFn: async ({
     marketId,
@@ -30,14 +30,14 @@ export const { useQuery: useBorrowMorePriceImpact } = queryFactory({
     userBorrowed = '0',
     debt = '0',
     leverageEnabled,
-    route,
+    routeId,
   }: BorrowMoreQuery) => {
     const [type, impl, args] = getBorrowMoreImplementationArgs(marketId, {
       userCollateral,
       userBorrowed,
       debt,
       leverageEnabled,
-      route,
+      routeId,
     })
     if (type === 'unleveraged') throw new Error('Price impact is not applicable for unleveraged borrow more')
     return type === 'zapV2'

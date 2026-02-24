@@ -5,6 +5,7 @@ import { fetchJson } from '@curvefi/prices-api/fetch'
 import { notFalsy } from '@curvefi/prices-api/objects.util'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
+import { NoRetryError } from '@ui-kit/lib/model/query/factory'
 import { userAddressValidationGroup } from '@ui-kit/lib/model/query/user-address-validation'
 import { Address, assert, Decimal, toArray } from '@ui-kit/utils'
 import { parseRoute, type RouteProvider } from '@ui-kit/widgets/RouteProvider'
@@ -21,6 +22,8 @@ export type RoutesQuery = {
 }
 
 export type RoutesParams = FieldsOf<RoutesQuery>
+type RouteByIdQuery = { routeId: string }
+type RouteByIdParams = FieldsOf<RouteByIdQuery>
 
 export type RouteResponse = {
   id: string
@@ -42,6 +45,39 @@ export type RouteResponse = {
   isStableswapRoute?: boolean
   tx?: { data: Hex; to: Address; from: Address; value: Decimal }
 }
+
+const { getQueryData: getRouteQueryData, setQueryData: setRouteQueryData } = queryFactory({
+  queryKey: ({ routeId }: RouteByIdParams) => ['router-api', 'v1/routes', { routeId }] as const,
+  queryFn: async (_params: RouteByIdQuery): Promise<RouteResponse> => {
+    throw new NoRetryError('router route-by-id cache is write-through only')
+  },
+  validationSuite: createValidationSuite(({ routeId }: RouteByIdQuery) => {
+    test('routeId', 'Route ID is required', () => {
+      enforce(routeId).isString().isNotEmpty()
+    })
+  }),
+  disableLog: true,
+})
+
+/**
+ * Returns a previously fetched router route from a local query-cache entry keyed by `routeId`.
+ *
+ * Why this exists:
+ * - LlamaLend zapV2 queries keep query keys stable by storing only `routeId` (not full calldata/route payload).
+ * - React Query indexes by query key, not by item IDs inside a `RouteResponse[]`, so route lookup by ID needs
+ *   its own cache entry.
+ * - We populate this cache as a write-through side effect when `useRouterApi` fetches routes.
+ *
+ * This is intentionally a pure cache read (no fetch fallback) and throws when the route is missing because zapV2
+ * call sites must only parse routes that were already selected/fetched by the form.
+ */
+export const getRouteById = (routeId: string | null | undefined) =>
+  assert(
+    getRouteQueryData({
+      routeId: assert(routeId, 'No route for zapv2, please validate the arguments before calling this query.'),
+    }),
+    'routeId is required for zapV2',
+  )
 
 export const routerApiValidation = createValidationSuite(
   ({ chainId, tokenIn, tokenOut, amountIn, amountOut, userAddress }: RoutesQuery) => {
@@ -97,7 +133,9 @@ export const { useQuery: useRouterApi, fetchQuery: fetchApiRoutes } = queryFacto
     )
 
     toArray(router).forEach((router) => query.append('router', router))
-    return fetchJson<RouteResponse[]>(`/api/router/v1/routes?${query}`)
+    const routes = await fetchJson<RouteResponse[]>(`/api/router/v1/routes?${query}`)
+    routes.forEach((route) => setRouteQueryData({ routeId: route.id }, route))
+    return routes
   },
   staleTime: '1m',
   refetchInterval: '15s',
@@ -125,5 +163,5 @@ export const getExpectedFn =
       userAddress,
     })
     const route = assert(routes?.[0], 'No route available')
-    return parseRoute(route).quote
+    return parseRoute(route.id).quote
   }

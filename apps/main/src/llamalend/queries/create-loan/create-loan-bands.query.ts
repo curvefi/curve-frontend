@@ -8,7 +8,7 @@ import { createLoanMaxReceiveKey } from './create-loan-max-receive.query'
 
 type CreateLoanBandsResult = [number, number]
 
-export const { useQuery: useCreateLoanBands } = queryFactory({
+export const { useQuery: useCreateLoanBands, invalidate: invalidateCreateLoanBands } = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -18,7 +18,7 @@ export const { useQuery: useCreateLoanBands } = queryFactory({
     leverageEnabled,
     range,
     maxDebt,
-    route,
+    routeId,
   }: CreateLoanDebtParams) =>
     [
       ...rootKeys.market({ chainId, marketId }),
@@ -29,7 +29,7 @@ export const { useQuery: useCreateLoanBands } = queryFactory({
       { leverageEnabled },
       { range },
       { maxDebt },
-      { route },
+      { routeId },
     ] as const,
   queryFn: async ({
     marketId,
@@ -38,13 +38,13 @@ export const { useQuery: useCreateLoanBands } = queryFactory({
     debt = '0',
     leverageEnabled,
     range,
-    route,
+    routeId,
   }: CreateLoanDebtQuery): Promise<CreateLoanBandsResult> => {
     const [type, impl] = getCreateLoanImplementation(marketId, leverageEnabled)
     switch (type) {
       case 'zapV2':
         return (
-          await impl.createLoanExpectedMetrics({ userCollateral, userBorrowed, debt, range, ...parseRoute(route) })
+          await impl.createLoanExpectedMetrics({ userCollateral, userBorrowed, debt, range, ...parseRoute(routeId) })
         ).bands
       case 'V1':
       case 'V2':

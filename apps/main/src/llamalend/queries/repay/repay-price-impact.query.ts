@@ -7,7 +7,7 @@ import { getRepayImplementation } from './repay-query.helpers'
 
 type RepayPriceImpactResult = number
 
-export const { useQuery: useRepayPriceImpact } = queryFactory({
+export const { useQuery: useRepayPriceImpact, invalidate: invalidateRepayPriceImpact } = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -15,7 +15,7 @@ export const { useQuery: useRepayPriceImpact } = queryFactory({
     userCollateral = '0',
     userBorrowed = '0',
     userAddress,
-    route,
+    routeId,
   }: RepayParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
@@ -23,7 +23,7 @@ export const { useQuery: useRepayPriceImpact } = queryFactory({
       { stateCollateral },
       { userCollateral },
       { userBorrowed },
-      { route },
+      { routeId },
     ] as const,
   queryFn: async ({
     marketId,
@@ -31,13 +31,13 @@ export const { useQuery: useRepayPriceImpact } = queryFactory({
     userCollateral,
     userBorrowed,
     userAddress,
-    route,
+    routeId,
   }: RepayQuery): Promise<RepayPriceImpactResult> => {
     const [type, impl] = getRepayImplementation(marketId, {
       userCollateral,
       stateCollateral,
       userBorrowed,
-      route,
+      routeId,
     })
     switch (type) {
       case 'zapV2':
@@ -49,7 +49,7 @@ export const { useQuery: useRepayPriceImpact } = queryFactory({
               userBorrowed,
               healthIsFull: true, // this will be removed, we don't care about health here
               address: userAddress,
-              ...parseRoute(route),
+              ...parseRoute(routeId),
             })
           ).priceImpact,
         )

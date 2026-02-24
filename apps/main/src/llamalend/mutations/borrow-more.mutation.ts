@@ -49,14 +49,14 @@ const approveBorrowMore = async (
 
 const borrowMore = async (
   market: LlamaMarketTemplate,
-  { userCollateral = '0', userBorrowed = '0', debt = '0', slippage, leverageEnabled, route }: BorrowMoreMutation,
+  { userCollateral = '0', userBorrowed = '0', debt = '0', slippage, leverageEnabled, routeId }: BorrowMoreMutation,
 ): Promise<Hex> => {
   const [type, impl, args] = getBorrowMoreImplementationArgs(market.id, {
     userCollateral,
     userBorrowed,
     debt,
     leverageEnabled,
-    route,
+    routeId,
   })
   switch (type) {
     case 'zapV2':

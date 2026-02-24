@@ -26,7 +26,7 @@ export const createLoanFormValidationGroup = (
     maxDebt,
     maxCollateral,
     leverageEnabled,
-    route: _, // todo: we can't validate the route without the marketId
+    routeId: _, // todo: we can't validate the routeId without the marketId
   }: FieldsOf<CreateLoanForm>,
   {
     debtRequired,
@@ -67,7 +67,7 @@ export const createLoanQueryValidationSuite = ({
       range,
       slippage,
       maxDebt,
-      route,
+      routeId,
     }: CreateLoanDebtParams) => {
       skipWhen(skipMarketValidation, () => {
         marketIdValidationSuite({ chainId, marketId })
@@ -79,7 +79,7 @@ export const createLoanQueryValidationSuite = ({
       skipWhen(!marketId, () => {
         if (!marketId) return
         const [type] = getCreateLoanImplementation(marketId, !!leverageEnabled)
-        validateRoute(route, !!leverageEnabled && isRouterMetaRequired(type))
+        validateRoute(routeId, !!leverageEnabled && isRouterMetaRequired(type))
       })
     },
   )

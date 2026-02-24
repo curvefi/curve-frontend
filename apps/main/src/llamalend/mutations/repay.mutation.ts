@@ -3,7 +3,7 @@ import { useCallback } from 'react'
 import type { Address, Hex } from 'viem'
 import { useConfig } from 'wagmi'
 import { formatTokenAmounts } from '@/llamalend/llama.utils'
-import { LlamaMarketTemplate, RouterMeta } from '@/llamalend/llamalend.types'
+import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
 import { fetchRepayIsApproved } from '@/llamalend/queries/repay/repay-is-approved.query'
 import { getRepayImplementation } from '@/llamalend/queries/repay/repay-query.helpers'
@@ -24,7 +24,8 @@ type RepayMutation = {
   userBorrowed: Decimal
   isFull: boolean
   slippage: Decimal
-} & RouterMeta
+  routeId: string | null | undefined
+}
 
 export type RepayOptions = {
   marketId: string | undefined
@@ -36,12 +37,12 @@ export type RepayOptions = {
 
 const approveRepay = async (
   market: LlamaMarketTemplate,
-  { stateCollateral = '0', userCollateral = '0', userBorrowed = '0', isFull, route }: RepayMutation,
+  { stateCollateral = '0', userCollateral = '0', userBorrowed = '0', isFull, routeId }: RepayMutation,
 ) => {
   if (isFull && !+stateCollateral && !+userCollateral) {
     return (await market.fullRepayApprove()) as Hex[]
   }
-  const [type, impl] = getRepayImplementation(market.id, { userCollateral, stateCollateral, userBorrowed, route })
+  const [type, impl] = getRepayImplementation(market.id, { userCollateral, stateCollateral, userBorrowed, routeId })
   switch (type) {
     case 'zapV2':
       return (await impl.repayApprove({ userCollateral, userBorrowed })) as Hex[]
@@ -57,15 +58,15 @@ const approveRepay = async (
 
 const repay = async (
   market: LlamaMarketTemplate,
-  { stateCollateral = '0', userCollateral = '0', userBorrowed = '0', isFull, slippage, route }: RepayMutation,
+  { stateCollateral = '0', userCollateral = '0', userBorrowed = '0', isFull, slippage, routeId }: RepayMutation,
 ): Promise<Hex> => {
   if (isFull && !+stateCollateral && !+userCollateral) {
     return (await market.fullRepay()) as Hex
   }
-  const [type, impl] = getRepayImplementation(market.id, { userCollateral, stateCollateral, userBorrowed, route })
+  const [type, impl] = getRepayImplementation(market.id, { userCollateral, stateCollateral, userBorrowed, routeId })
   switch (type) {
     case 'zapV2':
-      return (await impl.repay({ stateCollateral, userCollateral, userBorrowed, ...parseRoute(route) })) as Hex
+      return (await impl.repay({ stateCollateral, userCollateral, userBorrowed, ...parseRoute(routeId) })) as Hex
     case 'V1':
     case 'V2':
       await impl.repayExpectedBorrowed(stateCollateral, userCollateral, userBorrowed, +slippage)

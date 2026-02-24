@@ -38,8 +38,8 @@ export function getBorrowMoreImplementationArgs(
     userBorrowed,
     debt,
     leverageEnabled,
-    route,
-  }: Pick<BorrowMoreQuery, 'userCollateral' | 'userBorrowed' | 'debt' | 'route'> & {
+    routeId,
+  }: Pick<BorrowMoreQuery, 'userCollateral' | 'userBorrowed' | 'debt' | 'routeId'> & {
     leverageEnabled?: boolean | null
   },
 ) {
@@ -49,7 +49,7 @@ export function getBorrowMoreImplementationArgs(
     return [type, impl, [userCollateral, debt]] as const
   }
   if (type === 'zapV2') {
-    const routerArgs = { userCollateral, userBorrowed, dDebt: debt, debt, ...parseRoute(route) }
+    const routerArgs = { userCollateral, userBorrowed, dDebt: debt, debt, ...parseRoute(routeId) }
     return [type, impl, [routerArgs]] as const
   }
   return [type, impl, [userCollateral, userBorrowed, debt]] as const

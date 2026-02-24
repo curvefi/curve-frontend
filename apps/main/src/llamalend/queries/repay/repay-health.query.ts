@@ -5,7 +5,7 @@ import { type RepayHealthParams, type RepayHealthQuery } from '../validation/man
 import { repayFromCollateralIsFullValidationSuite } from '../validation/manage-loan.validation'
 import { getRepayImplementation } from './repay-query.helpers'
 
-export const { getQueryOptions: getRepayHealthOptions } = queryFactory({
+export const { getQueryOptions: getRepayHealthOptions, invalidate: invalidateRepayHealth } = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -14,7 +14,7 @@ export const { getQueryOptions: getRepayHealthOptions } = queryFactory({
     userBorrowed = '0',
     userAddress,
     isFull,
-    route,
+    routeId,
   }: RepayHealthParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
@@ -23,7 +23,7 @@ export const { getQueryOptions: getRepayHealthOptions } = queryFactory({
       { userCollateral },
       { userBorrowed },
       { isFull },
-      { route },
+      { routeId },
     ] as const,
   queryFn: async ({
     marketId,
@@ -32,13 +32,13 @@ export const { getQueryOptions: getRepayHealthOptions } = queryFactory({
     userBorrowed,
     isFull,
     userAddress,
-    route,
+    routeId,
   }: RepayHealthQuery) => {
     const [type, impl] = getRepayImplementation(marketId, {
       userCollateral,
       stateCollateral,
       userBorrowed,
-      route,
+      routeId,
     })
     switch (type) {
       case 'zapV2':
@@ -49,7 +49,7 @@ export const { getQueryOptions: getRepayHealthOptions } = queryFactory({
             userBorrowed,
             healthIsFull: isFull,
             address: userAddress,
-            ...parseRoute(route),
+            ...parseRoute(routeId),
           })
         ).health as Decimal
       case 'V1':

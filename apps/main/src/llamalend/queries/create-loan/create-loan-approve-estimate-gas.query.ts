@@ -44,7 +44,7 @@ const { useQuery: useCreateLoanApproveEstimateGas } = queryFactory({
   dependencies: (params) => [createLoanMaxReceiveKey(params)],
 })
 
-const { useQuery: useCreateLoanEstimateGasQuery } = queryFactory({
+const { useQuery: useCreateLoanEstimateGasQuery, invalidate: invalidateCreateLoanEstimateGasQuery } = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -54,7 +54,7 @@ const { useQuery: useCreateLoanEstimateGasQuery } = queryFactory({
     leverageEnabled,
     range,
     slippage,
-    route,
+    routeId,
   }: GasEstimateParams) =>
     [
       ...rootKeys.market({ chainId, marketId }),
@@ -65,7 +65,7 @@ const { useQuery: useCreateLoanEstimateGasQuery } = queryFactory({
       { leverageEnabled },
       { range },
       { slippage },
-      { route },
+      { routeId },
     ] as const,
   queryFn: async ({
     marketId,
@@ -75,12 +75,12 @@ const { useQuery: useCreateLoanEstimateGasQuery } = queryFactory({
     leverageEnabled,
     range,
     slippage,
-    route,
+    routeId,
   }: CreateLoanApproveEstimateGasQuery): Promise<TGas> => {
     const [type, impl] = getCreateLoanImplementation(marketId, leverageEnabled)
     switch (type) {
       case 'zapV2':
-        return await impl.estimateGas.createLoan({ userCollateral, userBorrowed, debt, range, ...parseRoute(route) })
+        return await impl.estimateGas.createLoan({ userCollateral, userBorrowed, debt, range, ...parseRoute(routeId) })
       case 'V1':
       case 'V2':
         return await impl.estimateGas.createLoan(userCollateral, userBorrowed, debt, range, +slippage)
@@ -102,3 +102,5 @@ export const useCreateLoanEstimateGas = createApprovedEstimateGasHook({
   useApproveEstimate: useCreateLoanApproveEstimateGas,
   useActionEstimate: useCreateLoanEstimateGasQuery,
 })
+
+export { invalidateCreateLoanEstimateGasQuery }

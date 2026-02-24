@@ -1,6 +1,6 @@
 import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/create-loan-query.helpers'
 import type { Address } from '@curvefi/prices-api'
-import { getExpectedFn } from '@ui-kit/entities/router-api.query'
+import { getRouteById, getExpectedFn } from '@ui-kit/entities/router-api.query'
 import { type FieldsOf } from '@ui-kit/lib'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { assert, decimal, Decimal } from '@ui-kit/utils'
@@ -41,7 +41,11 @@ const convertNumbers = ({
   collateralFromMaxDebt: decimal(collateralFromMaxDebt),
 })
 
-export const { useQuery: useCreateLoanMaxReceive, queryKey: createLoanMaxReceiveKey } = queryFactory({
+export const {
+  useQuery: useCreateLoanMaxReceive,
+  queryKey: createLoanMaxReceiveKey,
+  invalidate: invalidateCreateLoanMaxReceive,
+} = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -51,7 +55,7 @@ export const { useQuery: useCreateLoanMaxReceive, queryKey: createLoanMaxReceive
     range,
     leverageEnabled,
     slippage,
-    route,
+    routeId,
   }: CreateLoanMaxReceiveParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
@@ -61,7 +65,7 @@ export const { useQuery: useCreateLoanMaxReceive, queryKey: createLoanMaxReceive
       { range },
       { leverageEnabled },
       { slippage },
-      { route },
+      { routeId },
     ] as const,
   queryFn: async ({
     chainId,
@@ -72,25 +76,21 @@ export const { useQuery: useCreateLoanMaxReceive, queryKey: createLoanMaxReceive
     range,
     leverageEnabled,
     slippage,
-    route,
+    routeId,
   }: CreateLoanMaxReceiveQuery): Promise<CreateLoanMaxReceiveResult> => {
     const [type, impl] = getCreateLoanImplementation(marketId, leverageEnabled)
     switch (type) {
-      case 'zapV2':
-        if (!route) throw new Error(`route is required for zapV2`)
+      case 'zapV2': {
+        const { router } = assert(getRouteById(routeId), 'routeId is required for zapV2')
         return convertNumbers(
           await impl.createLoanMaxRecv({
             userCollateral,
             userBorrowed,
             range,
-            getExpected: getExpectedFn({
-              chainId,
-              router: route.router,
-              userAddress,
-              slippage,
-            }),
+            getExpected: getExpectedFn({ chainId, router, userAddress, slippage }),
           }),
         )
+      }
       case 'V1':
       case 'V2':
         return convertNumbers(await impl.createLoanMaxRecv(userCollateral, userBorrowed, range))

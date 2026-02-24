@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Address } from 'viem'
 import { useConnection } from 'wagmi'
@@ -11,6 +11,7 @@ import { OnBorrowedMore, useBorrowMoreMutation } from '@/llamalend/mutations/bor
 import { useBorrowMoreExpectedCollateral } from '@/llamalend/queries/borrow-more/borrow-more-expected-collateral.query'
 import { useBorrowMoreIsApproved } from '@/llamalend/queries/borrow-more/borrow-more-is-approved.query'
 import { useBorrowMorePrices } from '@/llamalend/queries/borrow-more/borrow-more-prices.query'
+import { invalidateBorrowMoreRouteQueries } from '@/llamalend/queries/borrow-more/borrow-more-route-invalidation'
 import {
   getBorrowMoreImplementation,
   isLeverageBorrowMore,
@@ -38,7 +39,7 @@ const useBorrowMoreParams = <ChainId>({
   maxDebt,
   slippage,
   leverageEnabled,
-  route,
+  routeId,
   chainId,
   marketId,
   userAddress,
@@ -59,9 +60,9 @@ const useBorrowMoreParams = <ChainId>({
         maxDebt,
         slippage,
         leverageEnabled,
-        route,
+        routeId,
       }),
-      [chainId, marketId, userAddress, userCollateral, userBorrowed, debt, maxDebt, slippage, leverageEnabled, route],
+      [chainId, marketId, userAddress, userCollateral, userBorrowed, debt, maxDebt, slippage, leverageEnabled, routeId],
     ),
   )
 
@@ -72,7 +73,7 @@ const emptyBorrowMoreForm = (): BorrowMoreForm => ({
   maxCollateral: undefined,
   maxBorrowed: undefined,
   maxDebt: undefined,
-  route: undefined,
+  routeId: undefined,
   leverageEnabled: false,
   slippage: SLIPPAGE_PRESETS.STABLE,
 })
@@ -114,14 +115,30 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
 
   const values = watchForm(form)
   const params = useBorrowMoreParams({ chainId, marketId, userAddress, ...values })
+  const [selectedRoute, setSelectedRoute] = useState<RouteOption | undefined>()
+  const previousRouteRefresh = useRef<{ id: string; createdAt: number } | undefined>(undefined)
   const [implementation] = market ? getBorrowMoreImplementation(market, values.leverageEnabled) : []
   const routeRequired = !!implementation && isRouterMetaRequired(implementation)
   const routeAmountIn = decimal(new BigNumber(values.debt ?? 0).plus(values.userBorrowed ?? 0).toString())
-  const onChangeRoute = (route: RouteOption) => updateForm(form, { route })
+  const onChangeRoute = (route: RouteOption) => {
+    setSelectedRoute(route)
+    updateForm(form, { routeId: route.id })
+  }
+
+  useEffect(() => {
+    const current = selectedRoute ? { id: selectedRoute.id, createdAt: selectedRoute.createdAt } : undefined
+    const previous = previousRouteRefresh.current
+    previousRouteRefresh.current = current
+    if (!previous || !current) return
+    if (previous.id === current.id && previous.createdAt !== current.createdAt) {
+      void invalidateBorrowMoreRouteQueries(params)
+    }
+  }, [params, selectedRoute?.id, selectedRoute?.createdAt])
 
   useEffect(() => {
     if (!values.leverageEnabled) {
-      updateForm(form, { userCollateral: undefined, userBorrowed: undefined, route: undefined })
+      setSelectedRoute(undefined)
+      updateForm(form, { userCollateral: undefined, userBorrowed: undefined, routeId: undefined })
     }
   }, [form, values.leverageEnabled])
 
@@ -165,7 +182,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
       tokenOut: collateralToken,
       amountIn: routeAmountIn,
       slippage: values.slippage,
-      selectedRoute: values.route ?? undefined,
+      selectedRoute,
       enabled: routeRequired,
       onChange: onChangeRoute,
     }),

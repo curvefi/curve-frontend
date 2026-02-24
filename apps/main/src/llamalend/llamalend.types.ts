@@ -3,13 +3,11 @@ import type { IChainId, INetworkName } from '@curvefi/llamalend-api/lib/interfac
 import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import type { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import type { BaseConfig } from '@ui/utils'
-import type { RouteOption } from '@ui-kit/widgets/RouteProvider'
 
 export type LlamaNetwork<ChainId extends IChainId = IChainId> = BaseConfig<INetworkName, ChainId>
 export type NetworkDict<ChainId extends IChainId = IChainId> = Record<ChainId, LlamaNetwork<ChainId>>
 
 export type LlamaMarketTemplate = MintMarketTemplate | LendMarketTemplate
-export type RouterMeta = { route: RouteOption | null | undefined }
 
 export type HealthColorKey = 'healthy' | 'close_to_liquidation' | 'soft_liquidation' | 'hard_liquidation' | ''
 export type HealthMode = {

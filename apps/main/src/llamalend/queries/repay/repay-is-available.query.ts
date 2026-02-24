@@ -3,7 +3,7 @@ import { type RepayParams, type RepayQuery } from '../validation/manage-loan.typ
 import { repayValidationSuite } from '../validation/manage-loan.validation'
 import { getRepayImplementation, getUserDebtFromQueryCache } from './repay-query.helpers'
 
-export const { useQuery: useRepayIsAvailable } = queryFactory({
+export const { useQuery: useRepayIsAvailable, invalidate: invalidateRepayIsAvailable } = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -11,7 +11,7 @@ export const { useQuery: useRepayIsAvailable } = queryFactory({
     userCollateral = '0',
     userBorrowed = '0',
     userAddress,
-    route,
+    routeId,
   }: RepayParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
@@ -19,7 +19,7 @@ export const { useQuery: useRepayIsAvailable } = queryFactory({
       { stateCollateral },
       { userCollateral },
       { userBorrowed },
-      { route },
+      { routeId },
     ] as const,
   queryFn: async ({
     chainId,
@@ -28,13 +28,13 @@ export const { useQuery: useRepayIsAvailable } = queryFactory({
     userCollateral,
     userBorrowed,
     userAddress,
-    route,
+    routeId,
   }: RepayQuery): Promise<boolean> => {
     const [type, impl, args] = getRepayImplementation(marketId, {
       userCollateral,
       stateCollateral,
       userBorrowed,
-      route,
+      routeId,
     })
     switch (type) {
       case 'zapV2':

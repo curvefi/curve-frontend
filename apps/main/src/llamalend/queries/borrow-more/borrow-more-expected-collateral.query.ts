@@ -24,53 +24,55 @@ const castFieldsToDecimal = ({
   avgPrice: avgPrice as Decimal,
 })
 
-export const { useQuery: useBorrowMoreExpectedCollateral, queryKey: getBorrowMoreExpectedCollateralKey } = queryFactory(
-  {
-    queryKey: ({
-      chainId,
-      marketId,
-      userAddress,
-      userCollateral = '0',
-      userBorrowed = '0',
-      debt = '0',
-      maxDebt,
-      slippage,
+export const {
+  useQuery: useBorrowMoreExpectedCollateral,
+  queryKey: getBorrowMoreExpectedCollateralKey,
+  invalidate: invalidateBorrowMoreExpectedCollateral,
+} = queryFactory({
+  queryKey: ({
+    chainId,
+    marketId,
+    userAddress,
+    userCollateral = '0',
+    userBorrowed = '0',
+    debt = '0',
+    maxDebt,
+    slippage,
+    leverageEnabled,
+    routeId,
+  }: BorrowMoreParams) =>
+    [
+      ...rootKeys.userMarket({ chainId, marketId, userAddress }),
+      'borrowMoreExpectedCollateral',
+      { userCollateral },
+      { userBorrowed },
+      { debt },
+      { maxDebt },
+      { slippage },
+      { leverageEnabled },
+      { routeId },
+    ] as const,
+  queryFn: async ({
+    marketId,
+    userCollateral = '0',
+    userBorrowed = '0',
+    debt = '0',
+    slippage,
+    leverageEnabled,
+    routeId,
+  }: BorrowMoreQuery) => {
+    const [type, impl, args] = getBorrowMoreImplementationArgs(marketId, {
+      userCollateral,
+      userBorrowed,
+      debt,
       leverageEnabled,
-      route,
-    }: BorrowMoreParams) =>
-      [
-        ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-        'borrowMoreExpectedCollateral',
-        { userCollateral },
-        { userBorrowed },
-        { debt },
-        { maxDebt },
-        { slippage },
-        { leverageEnabled },
-        { route },
-      ] as const,
-    queryFn: async ({
-      marketId,
-      userCollateral = '0',
-      userBorrowed = '0',
-      debt = '0',
-      slippage,
-      leverageEnabled,
-      route,
-    }: BorrowMoreQuery) => {
-      const [type, impl, args] = getBorrowMoreImplementationArgs(marketId, {
-        userCollateral,
-        userBorrowed,
-        debt,
-        leverageEnabled,
-        route,
-      })
-      if (type === 'unleveraged') throw new Error('Unsupported operation for unleveraged borrow more')
-      return type == 'zapV2'
-        ? castFieldsToDecimal(await impl.borrowMoreExpectedCollateral(...args))
-        : castFieldsToDecimal(await impl.borrowMoreExpectedCollateral(...args, +slippage))
-    },
-    staleTime: '1m',
-    validationSuite: borrowMoreLeverageValidationSuite,
+      routeId,
+    })
+    if (type === 'unleveraged') throw new Error('Unsupported operation for unleveraged borrow more')
+    return type == 'zapV2'
+      ? castFieldsToDecimal(await impl.borrowMoreExpectedCollateral(...args))
+      : castFieldsToDecimal(await impl.borrowMoreExpectedCollateral(...args, +slippage))
   },
-)
+  staleTime: '1m',
+  validationSuite: borrowMoreLeverageValidationSuite,
+})

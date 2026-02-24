@@ -7,7 +7,7 @@ import { createLoanExpectedCollateralQueryKey } from './create-loan-expected-col
 
 type CreateLoanPriceImpactResult = number // percentage
 
-export const { useQuery: useCreateLoanPriceImpact } = queryFactory({
+export const { useQuery: useCreateLoanPriceImpact, invalidate: invalidateCreateLoanPriceImpact } = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -17,7 +17,7 @@ export const { useQuery: useCreateLoanPriceImpact } = queryFactory({
     leverageEnabled,
     range,
     maxDebt,
-    route,
+    routeId,
   }: CreateLoanDebtParams) =>
     [
       ...rootKeys.market({ chainId, marketId }),
@@ -28,7 +28,7 @@ export const { useQuery: useCreateLoanPriceImpact } = queryFactory({
       { leverageEnabled },
       { range },
       { maxDebt },
-      { route },
+      { routeId },
     ] as const,
   queryFn: async ({
     marketId,
@@ -37,13 +37,13 @@ export const { useQuery: useCreateLoanPriceImpact } = queryFactory({
     debt = '0',
     leverageEnabled,
     range,
-    route,
+    routeId,
   }: CreateLoanDebtQuery): Promise<CreateLoanPriceImpactResult> => {
     const [type, impl] = getCreateLoanImplementation(marketId, leverageEnabled)
     switch (type) {
       case 'zapV2':
         return +(
-          await impl.createLoanExpectedMetrics({ userCollateral, userBorrowed, debt, range, ...parseRoute(route) })
+          await impl.createLoanExpectedMetrics({ userCollateral, userBorrowed, debt, range, ...parseRoute(routeId) })
         ).priceImpact
       case 'V1':
       case 'V2':

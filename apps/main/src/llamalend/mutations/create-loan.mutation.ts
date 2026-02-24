@@ -48,12 +48,12 @@ const approve = async (
 
 const create = async (
   market: LlamaMarketTemplate,
-  { debt, userCollateral, userBorrowed, leverageEnabled, range, slippage, route }: CreateLoanMutation,
+  { debt, userCollateral, userBorrowed, leverageEnabled, range, slippage, routeId }: CreateLoanMutation,
 ) => {
   const [type, impl] = getCreateLoanImplementation(market.id, leverageEnabled)
   switch (type) {
     case 'zapV2':
-      return (await impl.createLoan({ userCollateral, userBorrowed, debt, range, ...parseRoute(route) })) as Address
+      return (await impl.createLoan({ userCollateral, userBorrowed, debt, range, ...parseRoute(routeId) })) as Address
     case 'V2':
     case 'V1':
       return (await impl.createLoan(userCollateral, userBorrowed, debt, range, +slippage)) as Address

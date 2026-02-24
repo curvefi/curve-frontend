@@ -14,7 +14,7 @@ export type CreateLoanPricesReceiveParams = FieldsOf<CreateLoanPricesReceiveQuer
 type CreateLoanPricesResult = [Decimal, Decimal]
 const convertNumbers = (prices: string[]) => [prices[0], prices[1]] as CreateLoanPricesResult
 
-export const { useQuery: useCreateLoanPrices } = queryFactory({
+export const { useQuery: useCreateLoanPrices, invalidate: invalidateCreateLoanPrices } = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -24,7 +24,7 @@ export const { useQuery: useCreateLoanPrices } = queryFactory({
     leverageEnabled,
     range,
     maxDebt,
-    route,
+    routeId,
   }: CreateLoanPricesReceiveParams) =>
     [
       ...rootKeys.market({ chainId, marketId }),
@@ -35,7 +35,7 @@ export const { useQuery: useCreateLoanPrices } = queryFactory({
       { leverageEnabled },
       { range },
       { maxDebt },
-      { route },
+      { routeId },
     ] as const,
   queryFn: async ({
     marketId,
@@ -44,13 +44,13 @@ export const { useQuery: useCreateLoanPrices } = queryFactory({
     debt = '0',
     leverageEnabled,
     range,
-    route,
+    routeId,
   }: CreateLoanDebtQuery): Promise<CreateLoanPricesResult> => {
     const [type, impl] = getCreateLoanImplementation(marketId, leverageEnabled)
     switch (type) {
       case 'zapV2':
         return (
-          await impl.createLoanExpectedMetrics({ userCollateral, userBorrowed, debt, range, ...parseRoute(route) })
+          await impl.createLoanExpectedMetrics({ userCollateral, userBorrowed, debt, range, ...parseRoute(routeId) })
         ).prices as [Decimal, Decimal]
       case 'V1':
       case 'V2':

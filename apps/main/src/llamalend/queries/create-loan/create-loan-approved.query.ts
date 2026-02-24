@@ -8,6 +8,7 @@ export const {
   useQuery: useCreateLoanIsApproved,
   fetchQuery: fetchCreateLoanIsApproved,
   getQueryData: getCreateLoanIsApprovedData,
+  invalidate: invalidateCreateLoanIsApproved,
 } = queryFactory({
   queryKey: ({
     chainId,
@@ -15,7 +16,7 @@ export const {
     userCollateral = '0',
     userBorrowed = '0',
     leverageEnabled,
-    route,
+    routeId,
   }: CreateLoanFormQueryParams) =>
     [
       ...rootKeys.market({ chainId, marketId }),
@@ -23,7 +24,7 @@ export const {
       { userCollateral },
       { userBorrowed },
       { leverageEnabled },
-      { route },
+      { routeId },
     ] as const,
   queryFn: async ({
     marketId,

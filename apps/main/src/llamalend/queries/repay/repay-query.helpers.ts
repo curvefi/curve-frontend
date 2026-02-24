@@ -5,7 +5,7 @@ import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { type UserMarketQuery } from '@ui-kit/lib/model'
 import { parseRoute } from '@ui-kit/widgets/RouteProvider'
 
-type RepayFields = Pick<RepayQuery, 'stateCollateral' | 'userCollateral' | 'userBorrowed' | 'route'>
+type RepayFields = Pick<RepayQuery, 'stateCollateral' | 'userCollateral' | 'userBorrowed' | 'routeId'>
 type RepayFieldsWithoutRoute = Pick<RepayQuery, 'stateCollateral' | 'userCollateral' | 'userBorrowed'>
 
 export function getRepayImplementationType(
@@ -40,7 +40,7 @@ export function getRepayImplementationType(
  */
 export function getRepayImplementation(
   marketId: string,
-  { stateCollateral, userCollateral, userBorrowed, route }: RepayFields,
+  { stateCollateral, userCollateral, userBorrowed, routeId }: RepayFields,
 ) {
   const market = getLlamaMarket(marketId)
   const type = getRepayImplementationType(marketId, { stateCollateral, userCollateral, userBorrowed })
@@ -59,7 +59,7 @@ export function getRepayImplementation(
         return [
           'zapV2',
           market.leverageZapV2,
-          [{ stateCollateral, userCollateral, userBorrowed, ...parseRoute(route) }],
+          [{ stateCollateral, userCollateral, userBorrowed, ...parseRoute(routeId) }],
         ] as const
       case 'V1':
         return ['V1', market.leverage, [stateCollateral, userCollateral, userBorrowed]] as const

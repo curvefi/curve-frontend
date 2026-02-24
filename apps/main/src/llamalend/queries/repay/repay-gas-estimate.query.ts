@@ -7,7 +7,7 @@ import { type RepayIsFullQuery } from '../validation/manage-loan.types'
 import { repayFromCollateralIsFullValidationSuite } from '../validation/manage-loan.validation'
 import { getRepayImplementation } from './repay-query.helpers'
 
-const { useQuery: useRepayLoanEstimateGas } = queryFactory({
+const { useQuery: useRepayLoanEstimateGas, invalidate: invalidateRepayLoanEstimateGasQuery } = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -17,7 +17,7 @@ const { useQuery: useRepayLoanEstimateGas } = queryFactory({
     userAddress,
     isFull,
     slippage,
-    route,
+    routeId,
   }: RepayIsApprovedParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
@@ -27,7 +27,7 @@ const { useQuery: useRepayLoanEstimateGas } = queryFactory({
       { userBorrowed },
       { isFull },
       { slippage },
-      { route },
+      { routeId },
     ] as const,
   queryFn: async ({
     marketId,
@@ -37,7 +37,7 @@ const { useQuery: useRepayLoanEstimateGas } = queryFactory({
     isFull,
     userAddress,
     slippage,
-    route,
+    routeId,
   }: RepayIsFullQuery): Promise<TGas> => {
     const market = getLlamaMarket(marketId)
     const useFullRepay = isFull && !+stateCollateral && !+userCollateral
@@ -48,7 +48,7 @@ const { useQuery: useRepayLoanEstimateGas } = queryFactory({
       userCollateral,
       stateCollateral,
       userBorrowed,
-      route,
+      routeId,
     })
     switch (type) {
       case 'zapV2':
@@ -66,7 +66,7 @@ const { useQuery: useRepayLoanEstimateGas } = queryFactory({
   validationSuite: repayFromCollateralIsFullValidationSuite,
 })
 
-const { useQuery: useRepayApproveGasEstimate } = queryFactory({
+const { useQuery: useRepayApproveGasEstimate, invalidate: invalidateRepayApproveGasEstimateQuery } = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -75,7 +75,7 @@ const { useQuery: useRepayApproveGasEstimate } = queryFactory({
     userBorrowed = '0',
     userAddress,
     isFull,
-    route,
+    routeId,
   }: RepayIsApprovedParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
@@ -84,7 +84,7 @@ const { useQuery: useRepayApproveGasEstimate } = queryFactory({
       { userCollateral },
       { userBorrowed },
       { isFull },
-      { route },
+      { routeId },
     ] as const,
   queryFn: async ({
     marketId,
@@ -93,13 +93,13 @@ const { useQuery: useRepayApproveGasEstimate } = queryFactory({
     userBorrowed,
     isFull,
     userAddress,
-    route,
+    routeId,
   }: RepayIsFullQuery): Promise<TGas> => {
     const useFullRepay = isFull && !+stateCollateral && !+userCollateral
     if (useFullRepay) {
       return await getLlamaMarket(marketId).estimateGas.fullRepayApprove(userAddress)
     }
-    const [type, impl] = getRepayImplementation(marketId, { userCollateral, stateCollateral, userBorrowed, route })
+    const [type, impl] = getRepayImplementation(marketId, { userCollateral, stateCollateral, userBorrowed, routeId })
     switch (type) {
       case 'zapV2':
         return await impl.estimateGas.repayApprove({ userCollateral, userBorrowed })
@@ -121,3 +121,5 @@ export const useRepayEstimateGas = createApprovedEstimateGasHook({
   useApproveEstimate: useRepayApproveGasEstimate,
   useActionEstimate: useRepayLoanEstimateGas,
 })
+
+export { invalidateRepayApproveGasEstimateQuery, invalidateRepayLoanEstimateGasQuery }

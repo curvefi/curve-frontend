@@ -1,6 +1,5 @@
 import { skipWhen } from 'vest'
 import { isRouterMetaRequired } from '@/llamalend/llama.utils'
-import type { RouterMeta } from '@/llamalend/llamalend.types'
 import { getBorrowMoreImplementation } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
 import {
   validateDebt,
@@ -29,7 +28,8 @@ export type BorrowMoreMutation = {
   debt: Decimal
   slippage: Decimal
   leverageEnabled: boolean
-} & RouterMeta
+  routeId: string | null | undefined
+}
 
 type CalculatedValues = {
   maxDebt: Decimal | undefined
@@ -51,12 +51,12 @@ const validateBorrowMoreFieldsForMarket = (
   _userCollateral: Decimal | null | undefined,
   _userBorrowed: Decimal | null | undefined,
   _debt: Decimal | null | undefined,
-  route: RouterMeta['route'],
+  routeId: string | null | undefined,
 ) => {
   skipWhen(!marketId, () => {
     if (!marketId) return
     const [type] = getBorrowMoreImplementation(marketId, leverageEnabled)
-    validateRoute(route, !!leverageEnabled && isRouterMetaRequired(type))
+    validateRoute(routeId, !!leverageEnabled && isRouterMetaRequired(type))
   })
 }
 
@@ -97,7 +97,7 @@ export const borrowMoreValidationGroup = <IChainId extends number>(
     userAddress,
     slippage,
     leverageEnabled,
-    route,
+    routeId,
   }: BorrowMoreParams<IChainId>,
   {
     leverageRequired = false,
@@ -117,7 +117,7 @@ export const borrowMoreValidationGroup = <IChainId extends number>(
   validateUserBorrowed(userBorrowed)
   validateDebt(debt, debtRequired)
   validateMaxDebt(debt, maxDebt, maxDebtRequired)
-  validateBorrowMoreFieldsForMarket(marketId, leverageEnabled, userCollateral, userBorrowed, debt, route)
+  validateBorrowMoreFieldsForMarket(marketId, leverageEnabled, userCollateral, userBorrowed, debt, routeId)
   validateSlippage(slippage)
   validateLeverageEnabled(leverageEnabled, leverageRequired)
   validateLeverageSupported(marketId, leverageRequired)
