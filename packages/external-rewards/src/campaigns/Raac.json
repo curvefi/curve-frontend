@@ -1,0 +1,45 @@
+{
+  "campaignName": "RAAC Liquidity Campaign",
+  "platform": "RAAC",
+  "description": "Points for providing liquidity.",
+  "platformImageId": "raac.png",
+  "dashboardLink": "https://hub.fuul.xyz/raac-power-users-private-campaign/",
+  "pools": [
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "null",
+      "campaignStart": "1772323200",
+      "campaignEnd": "1775001540",
+      "address": "0xecb0f0d68c19bdaadaebe24f6752a4db34e2c2cb",
+      "network": "ethereum",
+      "multiplier": "4x",
+      "tags": ["points"],
+      "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "null",
+      "campaignStart": "1772323200",
+      "campaignEnd": "1775001540",
+      "address": "0xbf5047039f2980c21eb5692c790bad8a9533b900",
+      "network": "ethereum",
+      "multiplier": "4x",
+      "tags": ["points"],
+      "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "null",
+      "campaignStart": "1772323200",
+      "campaignEnd": "1775001540",
+      "address": "0x57690e5287d36733664caa21fa2dc48c156e962d",
+      "network": "ethereum",
+      "multiplier": "4x",
+      "tags": ["points"],
+      "lock": "false"
+    }
+  ]
+}
