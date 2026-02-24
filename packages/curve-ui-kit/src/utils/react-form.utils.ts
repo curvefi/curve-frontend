@@ -17,8 +17,7 @@ export function updateForm<TFieldValues extends FieldValues>(
   form: UseFormReturn<TFieldValues>,
   updates: FormUpdates<TFieldValues>,
 ): void {
-  const formValues = form.getValues()
-  const changes = recordEntries(updates).filter(([field, value]) => formValues[field] !== value)
+  const changes = recordEntries(updates).filter(([field, value]) => form.getValues(field) !== value)
   const changedCount = changes.map(([field, value]) =>
     // eslint-disable-next-line no-restricted-syntax
     form.setValue(field as Path<TFieldValues>, value, {

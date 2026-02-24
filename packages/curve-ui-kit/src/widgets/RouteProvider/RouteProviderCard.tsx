@@ -54,7 +54,7 @@ export const RouteProviderCard = ({
               color="textPrimary"
               data-testid="route-provider-amount"
             >
-              {amountOut && formatNumber(amountOut, { abbreviate: false })}
+              {amountOut == null ? '-' : formatNumber(amountOut, { abbreviate: false })}
             </Typography>
             {toTokenSymbol && (
               <Typography variant="bodyXsRegular" component="span" color="textSecondary">

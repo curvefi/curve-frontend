@@ -2,6 +2,9 @@ import { BigNumber } from 'bignumber.js'
 import { formatUnits, parseUnits } from 'viem'
 import type { Decimal } from './routes/routes.schemas'
 
+/** Best case guess if for some reason we don't know the actual amount of decimals */
+export const DEFAULT_DECIMALS = 18
+
 export function assert<T>(value: T | null | undefined | 0 | false | '', message: string) {
   if (!value) {
     throw new Error(message)
