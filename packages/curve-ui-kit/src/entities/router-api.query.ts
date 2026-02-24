@@ -1,14 +1,13 @@
 import { enforce, test } from 'vest'
 import type { Hex } from 'viem'
-import type { GetExpectedFn } from '@curvefi/llamalend-api/src/interfaces'
 import { fetchJson } from '@curvefi/prices-api/fetch'
 import { notFalsy } from '@curvefi/prices-api/objects.util'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { NoRetryError } from '@ui-kit/lib/model/query/factory'
 import { userAddressValidationGroup } from '@ui-kit/lib/model/query/user-address-validation'
-import { Address, assert, Decimal, toArray } from '@ui-kit/utils'
-import { parseRoute, type RouteProvider } from '@ui-kit/widgets/RouteProvider'
+import { Address, Decimal, toArray } from '@ui-kit/utils'
+import { type RouteProvider } from '@ui-kit/widgets/RouteProvider'
 
 export type RoutesQuery = {
   chainId: number
@@ -96,7 +95,7 @@ export const routerApiValidation = createValidationSuite(
     userAddressValidationGroup({ userAddress, required: false })
   },
 )
-export const { useQuery: useRouterApi, fetchQuery: fetchApiRoutes } = queryFactory({
+export const { useQuery: useRouterApi } = queryFactory({
   queryKey: ({ chainId, tokenIn, tokenOut, amountIn, amountOut, router, userAddress, slippage }: RoutesParams) =>
     [
       'router-api',

@@ -1,9 +1,9 @@
 import { styled } from 'styled-components'
-import { TableCellRewardsBase } from '@/dex/components/PagePoolList/components/TableCellRewardsBase'
-import { TableCellRewardsOthers } from '@/dex/components/PagePoolList/components/TableCellRewardsOthers'
 import { PoolRewardsCrv } from '@/dex/components/PoolRewardsCrv'
 import { RewardsApy, PoolData, PoolDataCache } from '@/dex/types/main.types'
 import { useLayoutStore } from '@ui-kit/features/layout'
+import { TableCellRewardsBase } from './TableCellRewardsBase'
+import { TableCellRewardsOthers } from './TableCellRewardsOthers'
 
 interface Props {
   isHighlightBase: boolean

@@ -18,18 +18,17 @@ export function updateForm<TFieldValues extends FieldValues>(
   updates: FormUpdates<TFieldValues>,
 ): void {
   const changes = recordEntries(updates).filter(([field, value]) => form.getValues(field) !== value)
-  const changedCount = changes.map(([field, value]) =>
+  if (!changes.length) return // no changes, skip revalidation
+  changes.forEach(([field, value]) =>
     // eslint-disable-next-line no-restricted-syntax
     form.setValue(field as Path<TFieldValues>, value, {
       shouldValidate: false, // we revalidate just below.
       shouldDirty: true,
       shouldTouch: true,
     }),
-  ).length
-  if (changedCount) {
-    // eslint-disable-next-line no-restricted-syntax
-    form.trigger().catch((error: unknown) => console.error('updateForm(): form.trigger() failed', error))
-  }
+  )
+  // eslint-disable-next-line no-restricted-syntax
+  form.trigger().catch((error: unknown) => console.error('updateForm(): form.trigger() failed', error))
 }
 
 export const filterFormErrors = <TFieldValues extends FieldValues>(formState: FormState<TFieldValues>) =>

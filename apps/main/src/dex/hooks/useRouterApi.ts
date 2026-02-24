@@ -131,7 +131,7 @@ export function useRouterApi(
         ? { ...(fromDecimals && { amountIn: toWei(formValues.fromAmount, fromDecimals) }) }
         : { ...(toDecimals && { amountOut: toWei(formValues.toAmount, toDecimals) }) }),
     } as const,
-    enabled && !!fromDecimals && !!toDecimals,
+    enabled,
   )
   const route = data?.[0]
 
