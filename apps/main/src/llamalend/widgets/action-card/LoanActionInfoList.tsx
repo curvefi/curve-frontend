@@ -230,7 +230,7 @@ export const LoanActionInfoList = ({
         {priceImpact && (
           <ActionInfo
             label={isHighImpact ? t`High price impact` : t`Price impact`}
-            value={formatPercent(priceImpact.data)}
+            value={priceImpact.data == null ? '-' : formatPercent(priceImpact.data)}
             {...(isHighImpact && { valueColor: 'error' })}
             error={priceImpact.error}
             loading={priceImpact.isLoading}

@@ -33,7 +33,7 @@ const getERC20QueryContracts = ({ chainId, userAddress, tokenAddress }: TokenBal
     { chainId, address: tokenAddress, abi: erc20Abi, functionName: 'decimals' },
   ] as const
 
-type ERC20ReadResult = ReadContractsReturnType<ReturnType<typeof getERC20QueryContracts>, true>
+type ERC20ReadResult = ReadContractsReturnType<ReturnType<typeof getERC20QueryContracts>>
 
 /**
  * Parse ERC-20 multicall results, throwing if balanceOf fails but defaulting decimals to 18.
