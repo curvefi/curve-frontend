@@ -15,9 +15,6 @@ const useStableChannel = () => useReleaseChannel()[0] !== ReleaseChannel.Legacy
  *  */
 const useAlphaChannel = () => useBetaChannel() && defaultReleaseChannel === ReleaseChannel.Beta
 
-/** New DEX market list (PoolListPage) */
-export const useDexMarketList = useStableChannel
-
 /** New unified create loan form */
 export const useCreateLoanMuiForm = useStableChannel
 
