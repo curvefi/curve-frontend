@@ -3,7 +3,7 @@ import { FastifyBaseLogger } from 'fastify'
 import { Address, zeroAddress } from 'viem'
 import type { IDict, IRoute, IRouteStep } from '@curvefi/api/lib/interfaces'
 import { PoolTemplate } from '@curvefi/api/lib/pools'
-import { fromWei, notFalsy, toWei } from '../router.utils'
+import { DEFAULT_DECIMALS, fromWei, notFalsy, toWei } from '../router.utils'
 import {
   type Decimal,
   type RouteResponse,
@@ -63,10 +63,8 @@ function getWarnings(
   return notFalsy(isExchangeRateLow && 'low-exchange-rate', isHighSlippage && 'high-slippage')
 }
 
-const getDecimals = ([fromToken, toToken]: [Address, Address], decimals: IDict<number>) => [
-  decimals[fromToken.toLowerCase()] ?? decimals[fromToken],
-  decimals[toToken.toLowerCase()] ?? decimals[toToken],
-]
+const getDecimals = (tokens: Address[], decimals: IDict<number>) =>
+  tokens.map((t) => decimals[t] ?? decimals[t.toLowerCase()] ?? DEFAULT_DECIMALS)
 
 const buildCurveRouteId = (routes: IRouteStep[]) => `curve:${routes.map(({ poolId }) => poolId).join('-')}`
 

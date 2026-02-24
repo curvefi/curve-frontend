@@ -1,10 +1,11 @@
+import { BigNumber } from 'bignumber.js'
 import Chip from '@mui/material/Chip'
 import { t } from '@ui-kit/lib/i18n'
 import type { Decimal } from '@ui-kit/utils'
 import { formatPercent } from '@ui-kit/utils/number'
 
 const showPercentage = (toAmountOutput: Decimal, bestOutputAmount: Decimal) =>
-  formatPercent(((parseFloat(toAmountOutput) - Number(bestOutputAmount)) / Number(bestOutputAmount)) * 100)
+  formatPercent(BigNumber(toAmountOutput).minus(bestOutputAmount).div(bestOutputAmount).div(100).toFixed() as Decimal)
 
 export const RouteComparisonChip = ({
   maxAmountOut,

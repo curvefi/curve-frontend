@@ -27,6 +27,3 @@ export type Unit = keyof typeof UNIT_MAP | UnitOptions
  * getUnit() // undefined
  */
 export const getUnitOptions = (unit?: Unit) => (typeof unit === 'string' ? UNIT_MAP[unit] : unit)
-
-/** Best case guess if for some reason we don't know the actual amount of decimals */
-export const DEFAULT_DECIMALS = 18
