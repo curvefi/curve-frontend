@@ -1,10 +1,11 @@
 import { ReactNode } from 'react'
-import Button from '@mui/material/Button'
-import LinkMui from '@mui/material/Link'
+import { Typography } from '@mui/material'
 import { BaseConfig, scanAddressPath } from '@ui/utils'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { shortenAddress } from '../../utils'
-import { ArrowTopRightIcon } from '../icons/ArrowTopRightIcon'
 import { ActionInfo } from './ActionInfo'
+
+const { Spacing } = SizesAndSpaces
 
 export interface AddressActionInfoProps {
   network: BaseConfig | undefined
@@ -18,17 +19,11 @@ export const AddressActionInfo = ({ network, title, address, isBorderBottom }: A
     label={title}
     value={
       address && (
-        <Button
-          component={LinkMui}
-          href={network ? scanAddressPath(network, address) : undefined}
-          target="_blank"
-          color="navigation"
-          variant="link"
-          endIcon={<ArrowTopRightIcon />}
-          size="extraSmall"
-        >
+        /** TODO: Clarify: The design has this typography component as as semi-bold,
+         * should Bold typography variants have an updated font-weight? 🤔 */
+        <Typography variant="bodyMBold" paddingInline={Spacing.xs}>
           {shortenAddress(address)}
-        </Button>
+        </Typography>
       )
     }
     copyValue={address}
@@ -38,5 +33,6 @@ export const AddressActionInfo = ({ network, title, address, isBorderBottom }: A
         borderBottom: (t) => `1px solid ${t.palette.divider}`,
       }),
     }}
+    link={network && address ? scanAddressPath(network, address) : undefined}
   />
 )

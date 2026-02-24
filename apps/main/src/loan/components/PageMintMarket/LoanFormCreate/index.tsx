@@ -1,6 +1,6 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import { DEFAULT_HEALTH_MODE } from '@/llamalend/constants'
-import { MarketParameters } from '@/llamalend/features/market-parameters/MarketParameters'
+import { MarketParameters } from '@/llamalend/features/market-advanced-information/MarketParameters'
 import { hasDeleverage } from '@/llamalend/llama.utils'
 import { AlertFormError } from '@/loan/components/AlertFormError'
 import { DialogHealthWarning } from '@/loan/components/DialogHealthWarning'
