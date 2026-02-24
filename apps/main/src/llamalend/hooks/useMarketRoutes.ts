@@ -38,18 +38,18 @@ export function useMarketRoutes({
     tokenOut: tokenOut?.address,
     amountIn: amountIn && tokenIn && toWei(amountIn, tokenIn.decimals),
     router: RouteProviders,
-    fromAddress: userAddress,
+    userAddress,
     slippage,
   }
   const { data, refetch, isLoading, error } = useRouterApi(params, enabled)
   const usdRate = q(useTokenUsdRate({ tokenAddress: tokenOut?.address, chainId }))
 
-  const firstRoute = data?.[0]
-  const onChangeRoute = useEffectEvent(onChange)
-  useEffect(() => {
-    // todo: we really need a better way to add callbacks to queries that doesn't introduce extra renders
-    if (firstRoute) onChangeRoute(firstRoute)
-  }, [firstRoute])
+  const firstRoute = (selectedRoute && data?.find(({ router }) => router === selectedRoute.router)) || data?.[0]
+  const onChangeRoute = useEffectEvent((option: RouteOption | undefined) => {
+    console.log('onChangeRoute', option, data)
+    if (option) onChange(option)
+  })
+  useEffect(() => onChangeRoute(firstRoute), [firstRoute])
   return enabled
     ? { data, isLoading, error, selectedRoute, onChange, onRefresh: refetch, tokenOut: { ...tokenOut, usdRate } }
     : undefined
