@@ -21,7 +21,12 @@ import { getNetworks, networksQueryKey } from '../entities/networks'
  * - Any query that depends on pool ids would also need to include the same interpolated
  *   values in its own query key, which would unnecessarily complicate things.
  */
-export const { useQuery: usePoolIds, refetchQuery: refetchPoolIds } = queryFactory({
+export const {
+  useQuery: usePoolIds,
+  refetchQuery: refetchPoolIds,
+  getQueryData: getPoolIds,
+  queryKey: poolIdsQueryKey,
+} = queryFactory({
   queryKey: ({ chainId }: ChainParams) => [...rootKeys.chain({ chainId }), 'pool-ids'] as const,
   queryFn: async ({ chainId }: ChainQuery) => {
     // must call api in this order, must use api to get non-cached version of gaugeStatus

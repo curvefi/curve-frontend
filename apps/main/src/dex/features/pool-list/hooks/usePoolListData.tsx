@@ -57,9 +57,7 @@ export function usePoolListData({ id: network, chainId, isLite }: NetworkConfig)
 
   const { address: userAddress } = useConnection()
   const { data: userPools } = useUserPools({ chainId, userAddress })
-
-  const poolIds = useMemo(() => poolsData?.map((p) => p.pool.id) ?? [], [poolsData])
-  const { data: volumes, isLoading: isVolumesLoading } = usePoolVolumes({ chainId, poolIds }, !!poolsData)
+  const { data: volumes, isLoading: isVolumesLoading } = usePoolVolumes({ chainId })
 
   const isLoading = useMemo(
     () => !poolsData || isEmpty(tvlMapper) || (!isLite && isVolumesLoading),

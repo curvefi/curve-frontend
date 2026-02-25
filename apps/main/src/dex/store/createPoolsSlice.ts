@@ -37,7 +37,6 @@ import { TIME_FRAMES } from '@ui-kit/lib/model/time'
 import { Chain as ChainEnum } from '@ui-kit/utils'
 import { fetchNetworks } from '../entities/networks'
 import { getPools } from '../lib/pools'
-import { prefetchPoolVolumes } from '../queries/pool-volume.query'
 import { fetchPoolsBlacklist } from '../queries/pools-blacklist.query'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -214,7 +213,6 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
 
         // fetch tvls and tokens
         await pools.fetchPoolsTvl(curve, partialPoolDatas)
-        await prefetchPoolVolumes({ chainId, poolIds }) // prefetching here as tokensmapper uses volume
         await tokens.setTokensMapper(curve, partialPoolDatas)
 
         return { poolsMapper, poolDatas: partialPoolDatas }
