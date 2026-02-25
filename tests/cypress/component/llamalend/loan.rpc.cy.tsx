@@ -57,9 +57,9 @@ testCases.forEach(
     describe(label, () => {
       skipTestsAfterFailure()
 
-      const debtAfterBorrowMore = new BigNumber(borrow).plus(borrowMore).toString() as Decimal
-      const debtAfterRepay = new BigNumber(debtAfterBorrowMore).minus(repay).toString() as Decimal
-      const debtAfterImproveHealth = new BigNumber(debtAfterRepay).minus(improveHealth).toString() as Decimal
+      const debtAfterBorrowMore = new BigNumber(borrow).plus(borrowMore).toFixed() as Decimal
+      const debtAfterRepay = new BigNumber(debtAfterBorrowMore).minus(repay).toFixed() as Decimal
+      const debtAfterImproveHealth = new BigNumber(debtAfterRepay).minus(improveHealth).toFixed() as Decimal
 
       const privateKey = generatePrivateKey()
       const { address } = privateKeyToAccount(privateKey)

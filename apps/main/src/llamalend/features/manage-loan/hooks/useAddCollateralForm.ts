@@ -33,7 +33,7 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
   const tokens = market && getTokens(market)
   const collateralToken = tokens?.collateralToken
   const borrowToken = tokens?.borrowToken
-  const { data: maxCollateral } = useTokenBalance({ chainId, userAddress, tokenAddress: collateralToken?.address })
+  const maxCollateral = useTokenBalance({ chainId, userAddress, tokenAddress: collateralToken?.address })
 
   const form = useForm<CollateralForm>({
     ...formDefaultOptions,
@@ -71,8 +71,8 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
   useCallbackAfterFormUpdate(form, action.reset)
 
   useEffect(() => {
-    updateForm(form, { maxCollateral })
-  }, [form, maxCollateral])
+    updateForm(form, { maxCollateral: maxCollateral.data })
+  }, [form, maxCollateral.data])
 
   const isPending = formState.isSubmitting || action.isPending
   return {
@@ -88,5 +88,6 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
     txHash: action.data?.hash,
     isApproved: useAddCollateralIsApproved(params),
     formErrors: useFormErrors(formState),
+    maxCollateral,
   }
 }
