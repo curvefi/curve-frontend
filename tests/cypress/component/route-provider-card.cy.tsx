@@ -1,6 +1,7 @@
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import { oneViewport } from '@cy/support/ui'
 import { lightTheme } from '@ui-kit/themes'
+import { q } from '@ui-kit/types/util'
 import { RouteProviderIcons } from '@ui-kit/widgets/RouteProvider'
 import { RouteProviderCard } from '@ui-kit/widgets/RouteProvider/RouteProviderCard'
 
@@ -16,9 +17,36 @@ const mountRouteProviderCard = ({ isSelected = true }: { isSelected?: boolean } 
   cy.mount(
     <ComponentTestWrapper>
       <RouteProviderCard
-        route={{ provider: 'curve', toAmountOutput: '69.4241' }}
-        tokenSymbol="crvUSD"
-        usdPrice={1.0}
+        route={{
+          id: 'curve',
+          router: 'curve',
+          amountIn: ['694241694241'],
+          amountOut: ['694241694241'],
+          priceImpact: 0.01,
+          createdAt: Date.now(),
+          warnings: [],
+          route: [
+            {
+              name: 'Curve',
+              tokenIn: ['0x0000000000000000000000000000000000000000'],
+              tokenOut: ['0x0000000000000000000000000000000000000000'],
+              protocol: 'curve',
+              action: 'swap',
+              chainId: 1,
+            },
+          ],
+          tx: {
+            to: '0x0000000000000000000000000000000000000000',
+            data: '0x',
+            from: '0x0000000000000000000000000000000000000000',
+            value: '0',
+          },
+        }}
+        tokenOut={{
+          symbol: 'crvUSD',
+          decimals: 18,
+          usdRate: q({ data: 1, isLoading: false, error: null }),
+        }}
         isSelected={isSelected}
         bestOutputAmount="69.4241"
         providerLabel="Curve"

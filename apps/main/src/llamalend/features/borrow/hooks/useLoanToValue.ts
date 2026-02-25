@@ -57,7 +57,7 @@ export const useLoanToValue = <ChainId extends IChainId>(
             .div(collateral)
             .div(collateralUsdRate)
             .times(100)
-            .toString() as Decimal),
+            .toFixed() as Decimal),
     isLoading: [isCollateralUsdRateLoading, isBorrowUsdRateLoading, isExpectedCollateralLoading].some(Boolean),
     error: [expectCollateralError, collateralUsdRateError, borrowUsdRateError].find(Boolean) ?? null,
   }

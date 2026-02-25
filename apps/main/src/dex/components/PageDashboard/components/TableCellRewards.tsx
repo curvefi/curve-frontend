@@ -4,14 +4,14 @@ import { TableCellRewardsTooltip } from '@/dex/components/PageDashboard/componen
 import { DetailText } from '@/dex/components/PageDashboard/components/TableRow'
 import type { SortId } from '@/dex/components/PageDashboard/types'
 import { SORT_ID } from '@/dex/components/PageDashboard/utils'
-import { TableCellRewardsBase } from '@/dex/components/PagePoolList/components/TableCellRewardsBase'
-import { TableCellRewardsOthers } from '@/dex/components/PagePoolList/components/TableCellRewardsOthers'
 import { PoolRewardsCrv } from '@/dex/components/PoolRewardsCrv'
 import { PoolData, RewardsApy } from '@/dex/types/main.types'
 import { haveRewardsApy } from '@/dex/utils/utilsCurvejs'
 import { Chip } from '@ui/Typography'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
+import { TableCellRewardsBase } from '../../TableCellRewardsBase'
+import { TableCellRewardsOthers } from '../../TableCellRewardsOthers'
 
 const Bold = ({ children }: { children: ReactNode }) => <strong>{children}</strong>
 

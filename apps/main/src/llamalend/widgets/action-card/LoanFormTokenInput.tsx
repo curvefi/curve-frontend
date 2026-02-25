@@ -1,5 +1,5 @@
 import { type ReactNode, useCallback, useMemo } from 'react'
-import type { FieldPath, FieldValues, UseFormReturn } from 'react-hook-form'
+import type { FieldPath, FieldPathByValue, FieldValues, UseFormReturn } from 'react-hook-form'
 import type { Address } from 'viem'
 import { useConnection } from 'wagmi'
 import type { LlamaNetwork } from '@/llamalend/llamalend.types'
@@ -22,8 +22,8 @@ type WalletBalanceProps = NonNullable<LargeTokenInputProps['walletBalance']>
  */
 export const LoanFormTokenInput = <
   TFieldValues extends FieldValues,
-  TFieldName extends FieldPath<TFieldValues>,
-  TMaxFieldName extends FieldPath<TFieldValues>,
+  TFieldName extends FieldPathByValue<TFieldValues, Decimal | undefined>,
+  TMaxFieldName extends FieldPathByValue<TFieldValues, Decimal | undefined>,
 >({
   label,
   token,

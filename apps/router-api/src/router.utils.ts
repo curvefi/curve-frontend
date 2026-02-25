@@ -1,3 +1,17 @@
+import { BigNumber } from 'bignumber.js'
+import { formatUnits, parseUnits } from 'viem'
+import type { Decimal } from './routes/routes.schemas'
+
+/** Best case guess if for some reason we don't know the actual amount of decimals */
+export const DEFAULT_DECIMALS = 18
+
+export function assert<T>(value: T | null | undefined | 0 | false | '', message: string) {
+  if (!value) {
+    throw new Error(message)
+  }
+  return value
+}
+
 export const notFalsy = <T>(...items: (T | null | undefined | false | 0)[]): T[] => items.filter(Boolean) as T[]
 
 export const handleTimeout = <T>(promise: Promise<T>, timeout: number, message?: string): Promise<T> =>
@@ -8,3 +22,16 @@ export const handleTimeout = <T>(promise: Promise<T>, timeout: number, message?:
     }, timeout)
     promise.then(resolve, reject)
   })
+
+/**
+ * Returns the maximum Decimal value from an array of Decimals, without losing precision.
+ */
+export const decimalMax = (...data: Decimal[]): Decimal | undefined =>
+  data.reduce<Decimal | undefined>(
+    (max, value) => (max == null ? value : new BigNumber(value).isGreaterThan(max) ? value : max),
+    undefined,
+  )
+
+export const toWei = (n: string, decimals: number) => parseUnits(n, decimals).toString() as Decimal
+export const fromWei = (n: string, decimals: number) => formatUnits(BigInt(n), decimals) as Decimal
+export const decimalCompare = (a: Decimal, b: Decimal) => BigNumber(a).comparedTo(b) ?? 0

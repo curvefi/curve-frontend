@@ -6,14 +6,19 @@ import type {
   RoutesAndOutputModal,
   SearchedParams,
 } from '@/dex/components/PageRouterSwap/types'
-import { type RouterApiResponse, useOptimalRoute } from '@/dex/entities/router.query'
-import { useTokensNameMapper } from '@/dex/hooks/useTokensNameMapper'
 import { getRouterWarningModal } from '@/dex/store/createQuickSwapSlice'
 import { useStore } from '@/dex/store/useStore'
-import { ChainId, TokensNameMapper } from '@/dex/types/main.types'
+import { TokensNameMapper } from '@/dex/types/main.types'
 import { getExchangeRates } from '@/dex/utils/utilsSwap'
+import type { IRouteStep } from '@curvefi/api/lib/interfaces'
+import { notFalsy } from '@curvefi/prices-api/objects.util'
+import {
+  type RouteResponse,
+  type RoutesQuery,
+  useRouterApi as useRouterApiQuery,
+} from '@ui-kit/entities/router-api.query'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { Address, type Decimal, decimal } from '@ui-kit/utils'
+import { Address, type Decimal, fromWei, toWei } from '@ui-kit/utils'
 
 /** Calculate exchange rates for display */
 const calculateExchangeRates = (
@@ -37,52 +42,57 @@ const getMaxSlippage = (isStableswapRoute: boolean) =>
 
 /** Convert the API response to the format used in the app */
 const convertRoute = (
-  { amountIn, amountOut, priceImpact, route, warnings = [], isStableswapRoute, router }: RouterApiResponse[0],
-  { fromAddress, toAddress }: SearchedParams,
-  tokensNameMapper: TokensNameMapper,
-  isPending: boolean,
+  {
+    amountIn: [amountIn],
+    amountOut: [amountOut],
+    priceImpact,
+    route,
+    warnings = [],
+    isStableswapRoute = false,
+    router,
+  }: RouteResponse,
+  { fromAddress, toAddress, chainId, isPending }: SearchedParams & { chainId: number; isPending: boolean },
 ): RoutesAndOutput => {
-  const formValues = useStore.getState().quickSwap.formValues
+  const { isFrom, fromAmount, toAmount } = useStore.getState().quickSwap.formValues
+  const { tokensMapper, tokensNameMapper } = useStore.getState().tokens
+  const fromAmountOutput = fromWei(amountIn, tokensMapper[chainId][fromAddress]!.decimals)
+  const toAmountOutput = fromWei(amountOut, tokensMapper[chainId][toAddress]!.decimals)
+
   const modalArgs = {
     isExchangeRateLow: warnings.includes('low-exchange-rate'),
     priceImpact,
-    toAmount: formValues.toAmount,
-    fromAmount: formValues.fromAmount,
-    toAmountOutput: amountOut,
-    fetchedToAmount: amountOut,
+    toAmount,
+    fromAmount,
+    toAmountOutput,
+    fetchedToAmount: toAmountOutput,
   }
 
   return {
     router,
     loading: isPending,
     exchangeRates: calculateExchangeRates(
-      amountOut,
-      formValues.isFrom ? formValues.fromAmount : amountIn,
+      toAmountOutput,
+      isFrom ? fromAmount : fromAmountOutput,
       { fromAddress, toAddress },
-      tokensNameMapper,
+      tokensNameMapper[chainId],
     ),
     isHighSlippage: warnings.includes('high-slippage'),
     isStableswapRoute,
     routes: route.map(
-      ({
-        args: { poolId = '', ...args },
-        name,
-        tokenIn: [inputCoinAddress],
-        tokenOut: [outputCoinAddress],
-      }): Route => ({
-        inputCoinAddress,
-        outputCoinAddress,
-        name,
-        routeUrlId: poolId ?? '',
-        poolId,
-        ...args,
-      }),
+      ({ args, name, tokenIn: [inputCoinAddress], tokenOut: [outputCoinAddress] }) =>
+        ({
+          inputCoinAddress,
+          outputCoinAddress,
+          name,
+          routeUrlId: (args as { poolId: string }).poolId ?? '',
+          ...(args as Omit<IRouteStep, 'inputCoinAddress' | 'outputCoinAddress'>),
+        }) as Route,
     ),
     modal: getRouterWarningModal(
       modalArgs,
       { toAddress, fromAddress },
       getMaxSlippage(isStableswapRoute),
-      tokensNameMapper,
+      tokensNameMapper[chainId],
     ) as RoutesAndOutputModal | null,
     ...modalArgs,
   }
@@ -95,64 +105,61 @@ const convertRoute = (
 export function useRouterApi(
   {
     chainId,
+    userAddress,
     searchedParams: { toAddress, fromAddress },
   }: {
-    chainId: ChainId
     searchedParams: SearchedParams
-  },
-  enabled: boolean,
+  } & Pick<RoutesQuery, 'chainId' | 'userAddress'>,
+  enabled?: boolean,
 ): {
   data: RoutesAndOutput | undefined
   isLoading: boolean
 } {
   const formValues = useStore((state) => state.quickSwap.formValues) as FormValues
-  const { tokensNameMapper } = useTokensNameMapper(chainId)
+  const tokensMapper = useStore((state) => state.tokens.tokensMapper[chainId])
+  const fromDecimals = tokensMapper?.[fromAddress]?.decimals
+  const toDecimals = tokensMapper?.[toAddress]?.decimals
 
-  const {
-    data: response,
-    isLoading,
-    isPending,
-    error,
-  } = useOptimalRoute(
+  const { data, isLoading, isPending, error } = useRouterApiQuery(
     {
       chainId,
       tokenIn: fromAddress as Address,
       tokenOut: toAddress as Address,
+      router: 'curve',
+      userAddress,
       ...(formValues.isFrom
-        ? { amountIn: decimal(formValues.fromAmount) }
-        : { amountOut: decimal(formValues.toAmount) }),
-    },
+        ? { ...(fromDecimals && { amountIn: toWei(formValues.fromAmount, fromDecimals) }) }
+        : { ...(toDecimals && { amountOut: toWei(formValues.toAmount, toDecimals) }) }),
+    } as const,
     enabled,
   )
+  const route = data?.[0]
 
   /** Update the store with the fetched amounts and error status */
   useEffect(() => {
-    if (!response) return
-    const { amountIn, amountOut } = response[0] ?? {}
-    const {
-      setAppStateByKeys,
-      quickSwap: { formStatus, formValues, ...state },
-    } = useStore.getState()
+    const route = data?.[0]
+    const { setAppStateByKeys, quickSwap } = useStore.getState()
     setAppStateByKeys('quickSwap', {
-      ...state,
+      ...quickSwap,
       formStatus: {
-        ...formStatus,
-        error: response.length === 0 ? 'error-swap-not-available' : error ? 'error-swap-exchange-and-output' : '',
+        ...quickSwap.formStatus,
+        error: notFalsy(error?.message, data?.length === 0 && 'error-swap-not-available')[0] ?? '',
       },
-      formValues: {
-        ...formValues,
-        ...(response.length && (formValues.isFrom ? { toAmount: amountOut } : { fromAmount: amountIn })),
-      },
+      ...(route && {
+        formValues: {
+          ...quickSwap.formValues,
+          ...(quickSwap.formValues.isFrom
+            ? { toAmount: fromWei(route.amountOut[0], toDecimals!) }
+            : { fromAmount: fromWei(route.amountIn[0], fromDecimals!) }),
+        },
+      }),
     })
-  }, [error, response])
+  }, [data, error, fromDecimals, toDecimals])
 
   return {
     data: useMemo(
-      () =>
-        response?.length
-          ? convertRoute(response[0], { fromAddress, toAddress }, tokensNameMapper, isPending)
-          : undefined,
-      [response, isPending, fromAddress, toAddress, tokensNameMapper],
+      () => route && convertRoute(route, { fromAddress, toAddress, chainId, isPending }),
+      [route, fromAddress, toAddress, isPending, chainId],
     ),
     isLoading,
   }

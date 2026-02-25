@@ -1,30 +1,9 @@
 import lodash from 'lodash'
 
-const { orderBy, takeWhile } = lodash
-
-/**
- * Returns items sorted by a numeric value in descending order,
- * including all items with values above a threshold,
- * but always ensures at least `minCount` items are included from the top.
- *
- * Example use case would be to take pools with TVL above threshold,
- * but always include at least the top 10 by TVL.
- *
- * @template T - The type of items in the array.
- * @param items - The array of items to filter and sort.
- * @param getValue - A function that returns a numeric value for each item (used for sorting and threshold check).
- * @param threshold - The minimum value required for items to be included beyond the first `minCount`.
- * @param minCount - The minimum number of top items to always include, regardless of threshold.
- * @returns A new array of items matching the threshold or satisfying the minimum count requirement.
- */
-export function takeTopWithMin<T>(items: T[], getValue: (item: T) => number, threshold: number, minCount: number): T[] {
-  const sorted = orderBy(items, getValue, 'desc')
-  return takeWhile(sorted, (_item, index) => getValue(sorted[index]) >= threshold || index < minCount)
-}
+const { orderBy } = lodash
 
 /**
  * Computes a cutoff value that guarantees at least `minCount` items pass.
- * - This function is the numeric counterpart of `takeTopWithMin`.
  *
  * Behavior:
  * - If at least `minCount` items have value ≥ `threshold`, returns `threshold` unchanged.
@@ -63,3 +42,12 @@ export const splitAtFirst = <T>(items: T[], predicate: (value: T, index: number,
   const index = items.findIndex(predicate)
   return index === -1 ? [items, []] : splitAt(items, index)
 }
+
+/**
+ * Ensures the input is always returned as an array.
+ * - If the input is already an array, it is returned as-is.
+ * - If the input is a single item (not an array), it is wrapped in an array.
+ * - If the input is null or undefined, an empty array is returned.
+ */
+export const toArray = <T>(x: T | readonly T[] | null | undefined): readonly T[] =>
+  Array.isArray(x) ? x : x == null ? [] : [x as T]
