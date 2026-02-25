@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { Address } from 'viem'
 import { useConnection } from 'wagmi'
@@ -115,22 +115,9 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
 
   const values = watchForm(form)
   const params = useBorrowMoreParams({ chainId, marketId, userAddress, ...values })
-  const [selectedRoute, setSelectedRoute] = useState<RouteOption | undefined>()
   const [implementation] = market ? getBorrowMoreImplementation(market, values.leverageEnabled) : []
   const routeRequired = !!implementation && isRouterMetaRequired(implementation)
   const routeAmountIn = decimal(new BigNumber(values.debt ?? 0).plus(values.userBorrowed ?? 0).toString())
-  const onChangeRoute = async (route: RouteOption) => {
-    setSelectedRoute(route)
-    updateForm(form, { routeId: route.id })
-    await invalidateBorrowMoreRouteQueries(params)
-  }
-
-  useEffect(() => {
-    if (!values.leverageEnabled) {
-      setSelectedRoute(undefined)
-      updateForm(form, { userCollateral: undefined, userBorrowed: undefined, routeId: undefined })
-    }
-  }, [form, values.leverageEnabled])
 
   const {
     onSubmit,
@@ -172,12 +159,11 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
       tokenOut: collateralToken,
       amountIn: routeAmountIn,
       slippage: values.slippage,
-      selectedRoute,
+      routeId: values.routeId,
       enabled: routeRequired,
-      onChange: async (route: RouteOption) => {
-        setSelectedRoute(route)
-        updateForm(form, { routeId: route.id })
-        await invalidateBorrowMoreRouteQueries(params)
+      onChange: async (route: RouteOption | undefined) => {
+        updateForm(form, { routeId: route?.id })
+        if (route) await invalidateBorrowMoreRouteQueries({ ...params, routeId: route.id })
       },
     }),
     max: useMaxBorrowMoreValues({ params, form, market }, enabled),

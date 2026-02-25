@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { useConnection } from 'wagmi'
 import { useMaxRepayTokenValues } from '@/llamalend/features/manage-loan/hooks/useMaxRepayTokenValues'
@@ -129,7 +129,6 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
   const form = useForm<RepayForm>(formOptions)
 
   const values = watchForm(form)
-  const [selectedRoute, setSelectedRoute] = useState<RouteOption | undefined>()
   const params = useRepayParams({ chainId, marketId, userAddress, ...values })
 
   const {
@@ -174,13 +173,11 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
       tokenOut: borrowToken,
       amountIn: decimalSum(values.stateCollateral, values.userCollateral),
       slippage: values.slippage,
-      selectedRoute,
+      routeId: values.routeId,
       enabled: isRepayRouteRequired(market, values),
-      onChange: async (route: RouteOption) => {
-        setSelectedRoute(route)
-        const routeId = route.id
-        updateForm(form, { routeId })
-        await invalidateRepayRouteQueries({ ...params, routeId })
+      onChange: async (route: RouteOption | undefined) => {
+        updateForm(form, { routeId: route?.id })
+        if (route) await invalidateRepayRouteQueries({ ...params, routeId: route.id })
       },
     }),
     formErrors: useMemo(

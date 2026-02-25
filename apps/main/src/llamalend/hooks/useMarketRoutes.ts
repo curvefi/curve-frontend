@@ -11,7 +11,7 @@ import { type RouteOption } from '@ui-kit/widgets/RouteProvider'
 
 export type MarketRoutes = Query<RouteOption[]> & {
   selectedRoute: RouteOption | undefined
-  onChange: (option: RouteOption) => void
+  onChange: (option: RouteOption | undefined) => Promise<void>
   onRefresh: () => void
   tokenOut: Partial<{ symbol: string | undefined; address: Address; decimals: number }> & { usdRate: QueryProp<number> }
 }
@@ -22,7 +22,7 @@ export function useMarketRoutes({
   tokenOut,
   amountIn,
   slippage,
-  selectedRoute,
+  routeId,
   enabled,
   onChange,
 }: {
@@ -31,7 +31,7 @@ export function useMarketRoutes({
   tokenOut: { symbol: string; address: Address; decimals: number } | undefined
   amountIn: Decimal | undefined
   slippage: Decimal | undefined
-  selectedRoute: RouteOption | undefined
+  routeId: string | null | undefined
   enabled: boolean
 } & Pick<MarketRoutes, 'onChange'>): MarketRoutes | undefined {
   const { address: userAddress } = useConnection()
@@ -47,11 +47,10 @@ export function useMarketRoutes({
   const { data, refetch, isLoading, error } = useRouterApi(params, enabled)
   const usdRate = q(useTokenUsdRate({ tokenAddress: tokenOut?.address, chainId }))
 
-  const firstRoute = (selectedRoute && data?.find(({ router }) => router === selectedRoute.router)) || data?.[0]
-  const onChangeRoute = useEffectEvent((option: RouteOption | undefined) => {
-    if (option) onChange(option)
-  })
-  useEffect(() => onChangeRoute(firstRoute), [firstRoute])
+  const selectedRoute = routeId ? data?.find(({ id }) => id === routeId) : data?.[0]
+  const onChangeEffect = useEffectEvent(onChange)
+  useEffect(() => void onChangeEffect(selectedRoute), [selectedRoute])
+
   return enabled
     ? { data, isLoading, error, selectedRoute, onChange, onRefresh: refetch, tokenOut: { ...tokenOut, usdRate } }
     : undefined

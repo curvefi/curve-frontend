@@ -98,7 +98,7 @@ export const buildOdosRouteResponse = async (query: RoutesQuery, log: FastifyBas
 
   return [
     {
-      id: `odos:${pathId ?? crypto.getRandomValues(new Uint32Array(4)).join('')}`,
+      id: `odos:${pathId ?? `${[tokenIn, tokenOut].join('-')}:${amountIn}`}`,
       router: 'odos',
       amountIn: [amountIn],
       amountOut: outAmounts as [Decimal],

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { useConnection } from 'wagmi'
 import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
@@ -117,7 +117,6 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
 
   const { formState } = form
   const { borrowToken, collateralToken } = market ? getTokens(market) : {}
-  const [selectedRoute, setSelectedRoute] = useState<RouteOption | undefined>()
 
   useChartPricesCallback(params, onPricesUpdated)
   useCallbackAfterFormUpdate(form, resetCreation) // reset creation state on form change
@@ -145,12 +144,11 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
       tokenOut: borrowToken,
       amountIn: values.userCollateral,
       slippage: values.slippage,
-      selectedRoute,
+      routeId: values.routeId,
       enabled: params.leverageEnabled && !!market && hasZapV2(market),
-      onChange: async (route: RouteOption) => {
-        setSelectedRoute(route)
-        updateForm(form, { routeId: route.id })
-        await invalidateCreateLoanRouteQueries(params)
+      onChange: async (route: RouteOption | undefined) => {
+        updateForm(form, { routeId: route?.id })
+        if (route) await invalidateCreateLoanRouteQueries({ ...params, routeId: route.id })
       },
     }),
   }
