@@ -49,7 +49,6 @@ export const MarketInformationComp = ({ pageProps, loanExists, type, previewPric
           {showPageHeader && <AdvancedDetails {...marketDetails} />}
           <MarketInfoSections
             chainId={rChainId}
-            marketId={rOwmId}
             marketType={LlamaMarketType.Lend}
             market={market}
             network={networks[rChainId]}

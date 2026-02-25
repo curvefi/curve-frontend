@@ -11,29 +11,25 @@ const { Spacing, MaxWidth } = SizesAndSpaces
 
 type MarketInfoSectionsProps = {
   chainId: IChainId
-  marketId: string
   marketType: LlamaMarketType
   market: LlamaMarketTemplate | undefined
   network: BaseConfig | undefined
 }
 
-export const MarketInfoSections = ({ chainId, marketId, marketType, market, network }: MarketInfoSectionsProps) => (
+export const MarketInfoSections = ({ chainId, marketType, market, network }: MarketInfoSectionsProps) => (
   <Stack
+    display="grid"
+    gridTemplateColumns="1fr"
+    gap={Spacing.lg}
+    paddingInline={Spacing.md}
+    paddingBottom={Spacing.md}
     sx={{
-      flexDirection: 'column',
-      gap: Spacing.lg,
-      paddingInline: Spacing.md,
-      paddingBottom: Spacing.md,
       [`@media (min-width: ${MaxWidth.candleAndBandChart})`]: {
-        flexDirection: 'row',
+        gridTemplateColumns: '1fr 1fr',
       },
     }}
   >
-    <Stack sx={{ flexGrow: 1, minWidth: 0 }}>
-      <MarketContractsSection chainId={chainId} market={market} network={network} />
-    </Stack>
-    <Stack sx={{ flexGrow: 1, minWidth: 0 }}>
-      <MarketParametersSection chainId={chainId} marketId={marketId} marketType={marketType} />
-    </Stack>
+    <MarketContractsSection chainId={chainId} market={market} network={network} />
+    <MarketParametersSection chainId={chainId} marketId={market?.id} marketType={marketType} />
   </Stack>
 )

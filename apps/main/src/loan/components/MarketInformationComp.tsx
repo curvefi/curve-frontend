@@ -53,7 +53,6 @@ export const MarketInformationComp = ({
           {showPageHeader && <AdvancedDetails {...marketDetails} />}
           <MarketInfoSections
             chainId={chainId}
-            marketId={marketId}
             marketType={LlamaMarketType.Mint}
             market={market}
             network={networks[chainId]}

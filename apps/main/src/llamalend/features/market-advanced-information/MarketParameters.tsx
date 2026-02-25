@@ -1,5 +1,3 @@
-// NOTE: This legacy component is intentionally kept for legacy LoanFormCreate accordions.
-// Market information pages should use llamalend/widgets/market-info-sections instead.
 // TODO: refactor query into llamalend for both mint and lend markets
 // eslint-disable-next-line import/no-restricted-paths
 import { useMarketPricePerShare } from '@/lend/entities/market-details'
@@ -15,6 +13,12 @@ import { MarketPrices } from './MarketPrices'
 
 const { Spacing } = SizesAndSpaces
 
+/**
+ * Legacy component kept for `LoanFormCreate` accordions.
+ * Market information pages should use `llamalend/widgets/market-info-sections` instead.
+ *
+ * @deprecated Use `llamalend/widgets/market-info-sections` for new market information pages.
+ */
 export const MarketParameters = ({
   chainId,
   marketId,

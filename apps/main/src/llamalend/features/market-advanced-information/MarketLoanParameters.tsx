@@ -14,7 +14,7 @@ function getMaxLTV(a: number | undefined, loanDiscount: string | undefined) {
   return ((+a - 1) / +a) ** 2 * (1 - +loanDiscount / 100) * 100
 }
 
-export const MarketLoanParameters = ({ chainId, marketId }: { chainId: IChainId; marketId: string }) => {
+export const MarketLoanParameters = ({ chainId, marketId }: { chainId: IChainId; marketId: string | undefined }) => {
   const {
     data: parameters,
     isLoading: isLoadingParameters,

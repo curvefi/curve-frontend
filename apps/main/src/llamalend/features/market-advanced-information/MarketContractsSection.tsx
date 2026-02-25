@@ -16,6 +16,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 
+/** Either `address` (for a link) or `fallbackValue` (e.g. gauge = zeroAddress) is provided, not both */
 type ContractItem = {
   key: string
   label: ReactNode
@@ -37,7 +38,7 @@ const TokenLabel = ({ blockchainId, address, label }: TokenIconProps & { label: 
 )
 
 export const MarketContractsSection = ({ market, network }: MarketContractsProps) => {
-  const tokens = market ? getTokens(market) : undefined
+  const { collateralToken, borrowToken } = market ? getTokens(market) : {}
 
   const tokenItems: ContractItem[] = market
     ? [
@@ -46,24 +47,24 @@ export const MarketContractsSection = ({ market, network }: MarketContractsProps
           label: (
             <TokenLabel
               blockchainId={network?.id}
-              tooltip={tokens?.collateralToken.symbol}
-              address={tokens?.collateralToken.address}
-              label={tokens?.collateralToken.symbol ?? ''}
+              tooltip={collateralToken?.symbol}
+              address={collateralToken?.address}
+              label={collateralToken?.symbol ?? ''}
             />
           ),
-          address: tokens?.collateralToken.address,
+          address: collateralToken?.address,
         },
         {
           key: 'borrow-token',
           label: (
             <TokenLabel
               blockchainId={network?.id}
-              tooltip={tokens?.borrowToken.symbol}
-              address={tokens?.borrowToken.address}
-              label={tokens?.borrowToken.symbol ?? ''}
+              tooltip={borrowToken?.symbol}
+              address={borrowToken?.address}
+              label={borrowToken?.symbol ?? ''}
             />
           ),
-          address: tokens?.borrowToken.address,
+          address: borrowToken?.address,
         },
       ]
     : []
@@ -74,9 +75,13 @@ export const MarketContractsSection = ({ market, network }: MarketContractsProps
           { key: 'amm', label: t`AMM`, address: market.addresses.amm },
           { key: 'vault', label: t`Vault`, address: market.addresses.vault },
           { key: 'controller', label: t`Controller`, address: market.addresses.controller },
-          ...(market.addresses.gauge === zeroAddress
-            ? [{ key: 'gauge', label: t`Gauge`, fallbackValue: t`No gauge` }]
-            : [{ key: 'gauge', label: t`Gauge`, address: market.addresses.gauge }]),
+          {
+            key: 'gauge',
+            label: t`Gauge`,
+            ...(market.addresses.gauge === zeroAddress
+              ? { fallbackValue: t`No gauge` }
+              : { address: market.addresses.gauge }),
+          },
           { key: 'monetary-policy', label: t`Monetary policy`, address: market.addresses.monetary_policy },
         ]
       : [
@@ -95,15 +100,13 @@ export const MarketContractsSection = ({ market, network }: MarketContractsProps
         ))}
       </Stack>
       <Stack paddingBlock={Spacing.sm}>
-        {infraItems.map(({ key, label, address, fallbackValue }) => {
-          const showFallback = !!fallbackValue || address === 'NaN'
-
-          return showFallback ? (
+        {infraItems.map(({ key, label, address, fallbackValue }) =>
+          fallbackValue ? (
             <ActionInfo key={key} label={label} value={fallbackValue ?? t`No gauge`} />
           ) : (
             <AddressActionInfo key={key} network={network} title={label} address={address} />
-          )
-        })}
+          ),
+        )}
       </Stack>
     </Stack>
   )

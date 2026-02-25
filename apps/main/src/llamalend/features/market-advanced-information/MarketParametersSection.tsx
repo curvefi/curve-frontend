@@ -14,7 +14,7 @@ const { Spacing } = SizesAndSpaces
 
 type MarketParametersProps = {
   chainId: IChainId
-  marketId: string
+  marketId: string | undefined
   marketType: LlamaMarketType
 }
 
@@ -28,7 +28,7 @@ export const MarketParametersSection = ({ chainId, marketId, marketType }: Marke
 
   return (
     <Stack>
-      <CardHeader title={t`Loan Parameters`} size="small" inline />
+      <CardHeader title={t`Parameters`} size="small" inline />
       <Stack paddingBlock={Spacing.sm}>
         <MarketLoanParameters chainId={chainId} marketId={marketId} />
       </Stack>
