@@ -145,7 +145,8 @@ export const useMarketDetails = ({
       tokenAddress: collateral_token?.address,
       total: collateralAmount == null ? null : +collateralAmount,
       // TODO: add potential collateral value in borrowed token
-      totalUsdValue: collateralAmount != null && collateralUsdRate != null ? +collateralAmount * collateralUsdRate : null,
+      totalUsdValue:
+        collateralAmount != null && collateralUsdRate != null ? +collateralAmount * collateralUsdRate : null,
       loading: isMarketDetailsLoading.marketCollateralAmounts || collateralUsdRateLoading || isMarketMetadataLoading,
     },
     borrowToken: {
