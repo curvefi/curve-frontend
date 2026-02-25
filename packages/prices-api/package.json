@@ -4,7 +4,10 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "build": "tsc",
+    "build": "yarn build:deps && rm -rf dist && yarn build:js && yarn build:types",
+    "build:deps": "yarn workspace @curvefi/primitives build",
+    "build:js": "vite build",
+    "build:types": "tsc -p tsconfig.build-types.json --emitDeclarationOnly",
     "prepublishOnly": "yarn run build",
     "lint": "eslint \"**/*.ts*\"",
     "typecheck": "tsc --noEmit --tsBuildInfoFile ../../.cache/typecheck/packages-prices-api.tsbuildinfo"
@@ -52,8 +55,5 @@
       "types": "./dist/*/index.d.ts",
       "default": "./dist/*/index.js"
     }
-  },
-  "dependencies": {
-    "@curvefi/primitives": "*"
   }
 }

@@ -1,6 +1,6 @@
+import type { RouteResponse } from '@primitives'
 import { AlertFormErrorKey } from '@/dex/components/AlertFormError'
 import type { IRouteStep } from '@curvefi/api/lib/interfaces'
-import type { RouteProvider } from '@curvefi/primitives/router'
 
 export type StepKey = 'APPROVAL' | 'SWAP'
 
@@ -37,20 +37,18 @@ export type RoutesAndOutputModal = {
       }
 }
 
-export type RoutesAndOutput = {
+export type RoutesAndOutput = Pick<RouteResponse, 'router' | 'priceImpact'> & {
   loading: boolean
   exchangeRates: ExchangeRate[]
   isExchangeRateLow: boolean
   isHighSlippage: boolean
   isStableswapRoute: boolean
-  priceImpact: number | null
   routes: Route[]
   toAmount: string
   toAmountOutput: string
   fromAmount: string
   fetchedToAmount: string
   modal: RoutesAndOutputModal | null
-  router: RouteProvider
 }
 
 export type FormEstGas = {
