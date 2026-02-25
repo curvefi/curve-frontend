@@ -7,7 +7,7 @@ import { MarketPrices } from './MarketPrices'
 
 type MarketPricesRowsProps = {
   chainId: IChainId
-  marketId: string
+  marketId: string | undefined
   enablePricePerShare: boolean
 }
 
@@ -33,6 +33,6 @@ export const MarketPricesRows = ({ chainId, marketId, enablePricePerShare }: Mar
   )
 }
 
-export const MarketIdRow = ({ marketId }: { marketId: string }) => (
+export const MarketIdRow = ({ marketId }: { marketId: string | undefined }) => (
   <ActionInfo label={t`ID`} value={marketId} loading={!marketId} />
 )
