@@ -1,10 +1,13 @@
 import { useEffect, useEffectEvent } from 'react'
 import { useConnection } from 'wagmi'
+import { Address } from '@primitives/address.utils'
+import { Decimal } from '@primitives/decimal.utils'
+import { RouteProviders } from '@primitives/router.utils'
 import { useRouterApi } from '@ui-kit/entities/router-api.query'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { q, type Query, type QueryProp } from '@ui-kit/types/util'
-import { type Address, type Decimal, toWei } from '@ui-kit/utils'
-import { type RouteOption, RouteProviders } from '@ui-kit/widgets/RouteProvider'
+import { toWei } from '@ui-kit/utils'
+import { type RouteOption } from '@ui-kit/widgets/RouteProvider'
 
 export type MarketRoutes = Query<RouteOption[]> & {
   selectedRoute: RouteOption | undefined

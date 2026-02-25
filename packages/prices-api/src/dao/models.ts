@@ -1,4 +1,4 @@
-import type { Address } from '..'
+import type { Address } from '@primitives/address.utils'
 
 export type LockType = 'CREATE_LOCK' | 'INCREASE_LOCK_AMOUNT' | 'INCREASE_UNLOCK_TIME' | 'WITHDRAW'
 

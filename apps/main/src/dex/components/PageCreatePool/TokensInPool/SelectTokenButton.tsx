@@ -7,6 +7,7 @@ import { useBasePools } from '@/dex/queries/base-pools.query'
 import { useStore } from '@/dex/store/useStore'
 import { ChainId, CurveApi } from '@/dex/types/main.types'
 import { delayAction } from '@/dex/utils'
+import type { Address } from '@primitives/address.utils'
 import { useButton } from '@react-aria/button'
 import { useOverlayTriggerState } from '@react-stately/overlays'
 import { Box } from '@ui/Box'
@@ -20,7 +21,7 @@ import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { useFuzzySearch } from '@ui-kit/hooks/useFuzzySearch'
 import { t } from '@ui-kit/lib/i18n'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
-import { type Address, shortenAddress } from '@ui-kit/utils'
+import { shortenAddress } from '@ui-kit/utils'
 
 type Props = {
   curve: CurveApi

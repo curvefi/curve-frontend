@@ -12,7 +12,7 @@ import { useMintMarketMaxLeverage } from '@/loan/entities/mint-market-max-levera
 import { networks } from '@/loan/networks'
 import { useStore } from '@/loan/store/useStore'
 import { ChainId, Llamma } from '@/loan/types/loan.types'
-import { Address } from '@curvefi/prices-api'
+import type { Address } from '@primitives/address.utils'
 import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import { useCrvUsdSnapshots } from '@ui-kit/entities/crvusd-snapshots'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'

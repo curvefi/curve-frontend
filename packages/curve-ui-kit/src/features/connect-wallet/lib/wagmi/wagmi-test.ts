@@ -3,14 +3,13 @@ import {
   custom,
   fallback,
   http,
-  type Address,
   type Chain,
   type CustomTransport,
-  type Hex,
   type PrivateKeyAccount,
 } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
 import { type CreateConnectorFn, createConnector } from 'wagmi'
+import { type Address, type Hex } from '@primitives/address.utils'
 
 type ConnectParams<T> = { chainId?: number; isReconnecting?: boolean; withCapabilities: T }
 type ConnectResult<T> = { accounts: readonly T[]; chainId: number }

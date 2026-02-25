@@ -1,6 +1,6 @@
 import { isEqual } from 'lodash'
 import { useCallback, useMemo } from 'react'
-import { fromEntries, recordValues } from '@curvefi/prices-api/objects.util'
+import { fromEntries, recordValues } from '@primitives/objects.utils'
 import { useSearchParams } from '@ui-kit/hooks/router'
 
 /**

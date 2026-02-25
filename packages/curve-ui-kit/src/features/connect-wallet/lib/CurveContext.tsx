@@ -1,10 +1,10 @@
 import { BrowserProvider } from 'ethers'
 import { createContext, useContext, useEffect, useMemo } from 'react'
 import { useConnection, useConnectorClient } from 'wagmi'
+import type { Address } from '@primitives/address.utils'
 import type { NetworkDef } from '@ui/utils'
 import { setUser } from '@ui-kit/features/sentry'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
-import { type Address } from '@ui-kit/utils'
 import { ConnectState, type CurveApi, type LlamaApi, type Wallet } from './types'
 
 const { FAILURE, LOADING } = ConnectState

@@ -10,7 +10,8 @@ import {
   getSnapshotBorrowRate,
   getSnapshotCollateralRebasingYieldRate,
 } from '@/llamalend/rates.utils'
-import type { Chain, Address } from '@curvefi/prices-api'
+import type { Chain } from '@curvefi/prices-api'
+import type { Address } from '@primitives/address.utils'
 import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import { useLendingSnapshots } from '@ui-kit/entities/lending-snapshots'
 import { useCurve } from '@ui-kit/features/connect-wallet'

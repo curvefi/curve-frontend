@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
-import type { PartialRecord } from '@curvefi/prices-api/objects.util'
 import type { Theme } from '@mui/material/styles'
 import type { SxProps } from '@mui/system'
+import type { PartialRecord } from '@primitives/objects.utils'
 import {
   type Column,
   getCoreRowModel,

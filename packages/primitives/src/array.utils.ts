@@ -1,6 +1,15 @@
-import lodash from 'lodash'
-
-const { orderBy } = lodash
+/**
+ * Sorts an array by a numeric key in ascending or descending order.
+ * @param items Items to sort.
+ * @param getKey Function that returns the numeric sort key for each item.
+ * @param order Sort order (`asc` by default).
+ * @returns A new sorted array.
+ */
+export const sortBy = <T>(items: T[], getKey: (item: T) => number, order: 'asc' | 'desc' = 'asc'): T[] =>
+  items.toSorted((a, b) => {
+    const direction = order === 'asc' ? 1 : -1
+    return (getKey(a) - getKey(b)) * direction
+  })
 
 /**
  * Computes a cutoff value that guarantees at least `minCount` items pass.
@@ -26,10 +35,9 @@ export function minCutoffForTopK<T>(
   threshold: number,
   minCount: number,
 ): number {
-  const valuesDesc = orderBy(items.map(getValue), undefined, 'desc')
+  const valuesDesc = sortBy(items, getValue, 'desc').map(getValue)
   const firstBelowIdx = valuesDesc.findIndex((v) => v < threshold)
   if (firstBelowIdx === -1 || firstBelowIdx >= minCount) return threshold
-  // we have fewer than minCount items above threshold, find the minCount-th value
   const count = minCount >= valuesDesc.length ? valuesDesc.length : minCount
   return valuesDesc[count - 1]
 }

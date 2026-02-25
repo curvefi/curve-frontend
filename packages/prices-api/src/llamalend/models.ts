@@ -1,4 +1,4 @@
-import type { Address } from '..'
+import type { Address } from '@primitives/address.utils'
 
 /*
  * Note that collateral can be two tokens due to soft-liquidations.

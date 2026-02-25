@@ -6,10 +6,10 @@ import { LoanFormCreate } from '@/loan/components/PageMintMarket/LoanFormCreate'
 import type { PageLoanCreateProps } from '@/loan/components/PageMintMarket/types'
 import { networks } from '@/loan/networks'
 import { useStore } from '@/loan/store/useStore'
+import type { Decimal } from '@primitives/decimal.utils'
 import { useCreateLoanMuiForm } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import type { Range } from '@ui-kit/types/util'
-import type { Decimal } from '@ui-kit/utils'
 import { FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
 
 type MintCreateTabsProps = PageLoanCreateProps & {

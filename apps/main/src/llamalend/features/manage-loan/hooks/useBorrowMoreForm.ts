@@ -11,11 +11,11 @@ import { OnBorrowedMore, useBorrowMoreMutation } from '@/llamalend/mutations/bor
 import { useBorrowMoreExpectedCollateral } from '@/llamalend/queries/borrow-more/borrow-more-expected-collateral.query'
 import { useBorrowMoreIsApproved } from '@/llamalend/queries/borrow-more/borrow-more-is-approved.query'
 import { useBorrowMorePrices } from '@/llamalend/queries/borrow-more/borrow-more-prices.query'
-import { invalidateBorrowMoreRouteQueries } from '@/llamalend/queries/borrow-more/borrow-more-route-invalidation'
 import {
   getBorrowMoreImplementation,
   isLeverageBorrowMore,
 } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
+import { invalidateBorrowMoreRouteQueries } from '@/llamalend/queries/borrow-more/borrow-more-route-invalidation'
 import {
   type BorrowMoreParams,
   type BorrowMoreForm,
@@ -23,11 +23,12 @@ import {
 } from '@/llamalend/queries/validation/borrow-more.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { vestResolver } from '@hookform/resolvers/vest'
+import type { Decimal } from '@primitives/decimal.utils'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { mapQuery } from '@ui-kit/types/util'
 import { type Range } from '@ui-kit/types/util'
-import { type Decimal, decimal } from '@ui-kit/utils'
+import { decimal } from '@ui-kit/utils'
 import { updateForm, useCallbackAfterFormUpdate, useFormErrors } from '@ui-kit/utils/react-form.utils'
 import { type RouteOption } from '@ui-kit/widgets/RouteProvider'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'

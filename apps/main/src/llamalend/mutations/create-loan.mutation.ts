@@ -7,10 +7,11 @@ import { fetchCreateLoanIsApproved } from '@/llamalend/queries/create-loan/creat
 import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/create-loan-query.helpers'
 import { createLoanQueryValidationSuite } from '@/llamalend/queries/validation/borrow.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
+import type { Address } from '@primitives/address.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
 import type { OnTransactionSuccess } from '@ui-kit/lib/model/mutation/useTransactionMutation'
-import { Address, waitForApproval } from '@ui-kit/utils'
+import { waitForApproval } from '@ui-kit/utils'
 import { parseRoute } from '@ui-kit/widgets/RouteProvider'
 import type { CreateLoanForm, CreateLoanFormQuery } from '../features/borrow/types'
 

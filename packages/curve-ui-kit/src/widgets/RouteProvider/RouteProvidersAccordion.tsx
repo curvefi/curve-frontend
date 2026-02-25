@@ -26,8 +26,6 @@ const providerLabels = {
   odos: t`Odos`,
 }
 
-export type { RouteOption }
-
 export type RouteProviderProps = {
   data: RouteOption[] | undefined
   selectedRoute: RouteOption | undefined

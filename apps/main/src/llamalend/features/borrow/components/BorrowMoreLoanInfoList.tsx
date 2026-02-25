@@ -1,7 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { useMemo } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
-import type { Token } from '@/llamalend/features/borrow/types'
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
 import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
 import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
@@ -17,8 +16,10 @@ import { getUserHealthOptions, useUserCurrentLeverage, useUserState } from '@/ll
 import type { BorrowMoreForm, BorrowMoreParams } from '@/llamalend/queries/validation/borrow-more.validation'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import { type Token } from '@primitives/address.utils'
+import type { Decimal } from '@primitives/decimal.utils'
 import { mapQuery, q } from '@ui-kit/types/util'
-import { decimal, Decimal } from '@ui-kit/utils'
+import { decimal } from '@ui-kit/utils'
 import { isFormTouched } from '@ui-kit/utils/react-form.utils'
 
 export function BorrowMoreLoanInfoList<ChainId extends IChainId>({

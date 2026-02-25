@@ -29,6 +29,25 @@ export const recordEntries = <K extends string, T>(obj: Record<K, T> | PartialRe
 
 export const notFalsy = <T>(...items: (T | Falsy)[]): T[] => items.filter(Boolean) as T[]
 
+export function assert<T>(value: T | null | undefined | 0 | false | '', message: string) {
+  if (!value) {
+    throw new Error(message)
+  }
+  return value
+}
+
+/** Best case guess if for some reason we don't know the actual amount of decimals */
+export const DEFAULT_DECIMALS = 18
+
+export const handleTimeout = <T>(promise: Promise<T>, timeout: number, message?: string): Promise<T> =>
+  new Promise((resolve, reject) => {
+    const id = setTimeout(() => {
+      clearTimeout(id)
+      reject(new Error(message || `Promise timed out after ${timeout}ms`))
+    }, timeout)
+    promise.then(resolve, reject)
+  })
+
 /**
  * Generate an array of numbers from 0 to lengthOrStart - 1 or from lengthOrStart to lengthOrStart + length - 1
  * Example: range(3) => [0, 1, 2]

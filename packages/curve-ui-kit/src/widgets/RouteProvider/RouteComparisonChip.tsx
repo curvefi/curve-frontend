@@ -1,7 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import Chip from '@mui/material/Chip'
+import type { Decimal } from '@primitives/decimal.utils'
 import { t } from '@ui-kit/lib/i18n'
-import type { Decimal } from '@ui-kit/utils'
 import { formatPercent } from '@ui-kit/utils/number'
 
 const showPercentage = (toAmountOutput: Decimal, bestOutputAmount: Decimal) =>

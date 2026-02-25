@@ -1,4 +1,4 @@
-import { Decimal } from '@ui-kit/utils'
+import type { Decimal } from '@primitives/decimal.utils'
 
 export const SLIPPAGE_PRESETS = {
   STABLE: '0.1' as Decimal,

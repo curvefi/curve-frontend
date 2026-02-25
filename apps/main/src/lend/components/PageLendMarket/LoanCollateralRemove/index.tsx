@@ -19,6 +19,7 @@ import { useStore } from '@/lend/store/useStore'
 import { Api, OneWayMarketTemplate, PageContentProps } from '@/lend/types/lend.types'
 import { DEFAULT_HEALTH_MODE } from '@/llamalend/constants'
 import type { HealthMode } from '@/llamalend/llamalend.types'
+import type { Decimal } from '@primitives/decimal.utils'
 import { AlertBox } from '@ui/AlertBox'
 import { getActiveStep } from '@ui/Stepper/helpers'
 import { Stepper } from '@ui/Stepper/Stepper'
@@ -32,7 +33,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import { decimal, type Decimal } from '@ui-kit/utils'
+import { decimal } from '@ui-kit/utils'
 
 export const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)

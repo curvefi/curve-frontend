@@ -1,11 +1,7 @@
 import type { FastifyInstance } from 'fastify'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
-import {
-  ADDRESS_HEX_PATTERN,
-  type RoutesQuery,
-  type RouteProvider,
-  type RouteResponse,
-} from '../../src/routes/routes.schemas'
+import type { RouteProvider, RouteResponse } from '@primitives/router.utils'
+import { ADDRESS_HEX_PATTERN, type RoutesQuery } from '../../src/routes/routes.schemas'
 import { createRouterApiServer } from '../../src/server'
 
 process.loadEnvFile()

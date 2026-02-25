@@ -1,4 +1,5 @@
-import type { Address, Chain } from '@curvefi/prices-api'
+import type { Chain } from '@curvefi/prices-api'
+import type { Address } from '@primitives/address.utils'
 import { chainNameValidationGroup } from '@ui-kit/lib/model/query/chain-name-validation'
 import { contractValidationGroup } from '@ui-kit/lib/model/query/contract-validation'
 import { userAddressValidationGroup } from '@ui-kit/lib/model/query/user-address-validation'

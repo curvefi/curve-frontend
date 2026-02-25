@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { objectKeys } from '@curvefi/prices-api/objects.util'
 import { Stack } from '@mui/material'
+import { objectKeys } from '@primitives/objects.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { SIZE_TO_ICON_SIZE } from '@ui-kit/shared/ui/Tabs/tabs-kebab'
 import { LlamaIcon } from '../../shared/icons/LlamaIcon'

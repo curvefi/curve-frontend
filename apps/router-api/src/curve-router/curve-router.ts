@@ -3,14 +3,11 @@ import { FastifyBaseLogger } from 'fastify'
 import { Address, zeroAddress } from 'viem'
 import type { IDict, IRoute, IRouteStep } from '@curvefi/api/lib/interfaces'
 import { PoolTemplate } from '@curvefi/api/lib/pools'
-import { DEFAULT_DECIMALS, fromWei, notFalsy, toWei } from '../router.utils'
-import {
-  type Decimal,
-  type RouteResponse,
-  type RoutesQuery,
-  type RouteStep,
-  type TransactionData,
-} from '../routes/routes.schemas'
+import type { Decimal } from '@primitives/decimal.utils'
+import { DEFAULT_DECIMALS, notFalsy } from '@primitives/objects.utils'
+import type { RouteResponse, RouteStep, TransactionData } from '@primitives/router.utils'
+import { fromWei, toWei } from '../router.utils'
+import { type RoutesQuery } from '../routes/routes.schemas'
 import { type CurveJS, loadCurve } from './curvejs'
 
 /**

@@ -1,5 +1,5 @@
-import type { Address } from 'viem'
 import { ChainId } from '@/dex/types/main.types'
+import type { Address } from '@primitives/address.utils'
 
 export type AddRewardTokenProps = {
   chainId: ChainId

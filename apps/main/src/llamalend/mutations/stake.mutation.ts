@@ -1,5 +1,4 @@
 import { useCallback } from 'react'
-import type { Address, Hex } from 'viem'
 import { useConfig } from 'wagmi'
 import { useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
 import { fetchStakeIsApproved } from '@/llamalend/queries/supply/supply-stake-approved.query'
@@ -11,6 +10,7 @@ import {
 } from '@/llamalend/queries/validation/supply.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
+import { type Address, type Hex } from '@primitives/address.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
 import type { OnTransactionSuccess } from '@ui-kit/lib/model/mutation/useTransactionMutation'

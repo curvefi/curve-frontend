@@ -1,4 +1,4 @@
-import { Falsy, notFalsy } from '@curvefi/prices-api/objects.util'
+import { Falsy, notFalsy } from './objects.utils'
 
 /**
  * Shortens a string by displaying first and last few characters

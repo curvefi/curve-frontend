@@ -1,4 +1,5 @@
 import lodash from 'lodash'
+
 const { meanBy } = lodash
 
 /** A timestamped snapshot record */

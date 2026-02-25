@@ -1,10 +1,11 @@
 import { getBorrowMoreImplementation } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
 import type { BorrowMoreParams, BorrowMoreQuery } from '@/llamalend/queries/validation/borrow-more.validation'
 import { borrowMoreValidationGroup } from '@/llamalend/queries/validation/borrow-more.validation'
-import { getRouteById, getExpectedFn } from '@ui-kit/entities/router-api.query'
+import type { Decimal } from '@primitives/decimal.utils'
+import { getExpectedFn, getRouteById } from '@ui-kit/entities/router-api.query'
 import { createValidationSuite } from '@ui-kit/lib'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
-import { decimal, Decimal } from '@ui-kit/utils'
+import { decimal } from '@ui-kit/utils'
 
 export type BorrowMoreMaxReceiveResult = {
   maxDebt: Decimal

@@ -1,9 +1,7 @@
 import type { Chain } from '@curvefi/prices-api'
 import type { LlammaEvent, LlammaTrade } from '@curvefi/prices-api/llamma'
 import type { AllPoolTrade, PoolLiquidityEvent } from '@curvefi/prices-api/pools'
-import type { Token } from '@ui-kit/types/common'
-
-export type { Token }
+import type { Token } from '@primitives/address.utils'
 
 // LLAMMA Types (for lending/crvusd markets)
 export type LlammaTradeRow = LlammaTrade & { txUrl?: string; url?: never; network: Chain }

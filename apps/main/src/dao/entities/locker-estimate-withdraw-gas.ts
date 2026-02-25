@@ -1,6 +1,6 @@
 import { curvejsApi as lib } from '@/dao/lib/curvejs'
 import type { ChainId } from '@/dao/types/dao.types'
-import type { Address } from '@curvefi/prices-api'
+import type { Address } from '@primitives/address.utils'
 import { requireLib } from '@ui-kit/features/connect-wallet'
 import type { ChainParams, ChainQuery, UserParams, UserQuery } from '@ui-kit/lib/model/query'
 import { queryFactory } from '@ui-kit/lib/model/query'

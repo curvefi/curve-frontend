@@ -1,4 +1,4 @@
-import { Hex } from 'viem'
+import { type Hex } from '@primitives/address.utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
 import { waitFor } from '@ui-kit/utils/time.utils'

@@ -1,8 +1,8 @@
+import type { Decimal } from '@primitives/decimal.utils'
 import { useQueries } from '@tanstack/react-query'
 import type { UseQueryOptions } from '@tanstack/react-query'
 import { combineQueriesMeta } from '@ui-kit/lib/queries/combine'
 import type { QueryResultsArray } from '@ui-kit/lib/queries/types'
-import type { Decimal } from '@ui-kit/utils'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type QueryKey = any // disable typecheck for this as we accept any query key

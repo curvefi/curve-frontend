@@ -4,9 +4,9 @@ import { ReactNode, useEffect, useState } from 'react'
 import { Typography } from '@mui/material'
 import TextField from '@mui/material/TextField'
 import type { TextFieldProps } from '@mui/material/TextField'
+import type { Decimal } from '@primitives/decimal.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { type Decimal } from '@ui-kit/utils'
 
 const { Spacing, MaxWidth } = SizesAndSpaces
 

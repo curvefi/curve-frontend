@@ -1,9 +1,11 @@
 import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/create-loan-query.helpers'
-import type { Address } from '@curvefi/prices-api'
+import type {} from '@curvefi/prices-api'
+import type { Address } from '@primitives/address.utils'
+import type { Decimal } from '@primitives/decimal.utils'
 import { getRouteById, getExpectedFn } from '@ui-kit/entities/router-api.query'
 import { type FieldsOf } from '@ui-kit/lib'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
-import { assert, decimal, Decimal } from '@ui-kit/utils'
+import { assert, decimal } from '@ui-kit/utils'
 import type { CreateLoanFormQuery } from '../../features/borrow/types'
 import { createLoanQueryValidationSuite } from '../validation/borrow.validation'
 

@@ -4,8 +4,9 @@ import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useCreateLoanIsApproved } from '@/llamalend/queries/create-loan/create-loan-approved.query'
 import { useMarketRates } from '@/llamalend/queries/market-rates.query'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import { type Token } from '@primitives/address.utils'
+import type { Decimal } from '@primitives/decimal.utils'
 import { mapQuery, q } from '@ui-kit/types/util'
-import { Decimal } from '@ui-kit/utils'
 import { isFormTouched } from '@ui-kit/utils/react-form.utils'
 import { useCreateLoanEstimateGas } from '../../../queries/create-loan/create-loan-approve-estimate-gas.query'
 import { useCreateLoanExpectedCollateral } from '../../../queries/create-loan/create-loan-expected-collateral.query'
@@ -15,7 +16,7 @@ import { useCreateLoanPrices } from '../../../queries/create-loan/create-loan-pr
 import { useMarketFutureRates } from '../../../queries/market-future-rates.query'
 import { LoanActionInfoList } from '../../../widgets/action-card/LoanActionInfoList'
 import { useLoanToValue } from '../hooks/useLoanToValue'
-import { type CreateLoanForm, type CreateLoanFormQueryParams, type Token } from '../types'
+import { type CreateLoanForm, type CreateLoanFormQueryParams } from '../types'
 
 export const CreateLoanInfoList = <ChainId extends IChainId>({
   params,

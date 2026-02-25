@@ -1,9 +1,8 @@
 import { zeroAddress } from 'viem'
-import { getRouteById, type RouteResponse } from '@ui-kit/entities/router-api.query'
+import { type RouteResponse } from '@primitives/router.utils'
+import { getRouteById } from '@ui-kit/entities/router-api.query'
 import { assert } from '@ui-kit/utils/network'
 
-export const RouteProviders = ['curve', 'enso', 'odos'] as const
-export type RouteProvider = (typeof RouteProviders)[number]
 export type RouteOption = RouteResponse
 
 /**
