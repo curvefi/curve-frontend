@@ -1,5 +1,4 @@
-import BigNumber from 'bignumber.js'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useConnection } from 'wagmi'
 import { useMaxRepayTokenValues } from '@/llamalend/features/manage-loan/hooks/useMaxRepayTokenValues'
@@ -23,7 +22,7 @@ import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { t } from '@ui-kit/lib/i18n'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import type { Range } from '@ui-kit/types/util'
-import { decimal } from '@ui-kit/utils'
+import { decimalSum } from '@ui-kit/utils'
 import { filterFormErrors, updateForm, useCallbackAfterFormUpdate } from '@ui-kit/utils/react-form.utils'
 import { type RouteOption } from '@ui-kit/widgets/RouteProvider'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
@@ -101,6 +100,13 @@ const formOptions = {
   },
 } as const
 
+const isRepayRouteRequired = (
+  market: LlamaMarketTemplate | undefined,
+  { stateCollateral = '0', userBorrowed = '0', userCollateral = '0' }: RepayForm,
+) =>
+  !!market &&
+  isRouterMetaRequired(getRepayImplementationType(market, { stateCollateral, userCollateral, userBorrowed }))
+
 export const useRepayForm = <ChainId extends LlamaChainId>({
   market,
   network,
@@ -124,31 +130,7 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
 
   const values = watchForm(form)
   const [selectedRoute, setSelectedRoute] = useState<RouteOption | undefined>()
-  const previousRouteRefresh = useRef<{ id: string; createdAt: number } | undefined>(undefined)
   const params = useRepayParams({ chainId, marketId, userAddress, ...values })
-  const implementation = marketId
-    ? getRepayImplementationType(marketId, {
-        stateCollateral: values.stateCollateral ?? '0',
-        userCollateral: values.userCollateral ?? '0',
-        userBorrowed: values.userBorrowed ?? '0',
-      })
-    : undefined
-  const swapAmountIn = decimal(new BigNumber(values.stateCollateral ?? 0).plus(values.userCollateral ?? 0).toString())
-  const routeRequired = !!implementation && isRouterMetaRequired(implementation) && Number(swapAmountIn) > 0
-  const onChangeRoute = (route: RouteOption) => {
-    setSelectedRoute(route)
-    updateForm(form, { routeId: route.id })
-  }
-
-  useEffect(() => {
-    const current = selectedRoute ? { id: selectedRoute.id, createdAt: selectedRoute.createdAt } : undefined
-    const previous = previousRouteRefresh.current
-    previousRouteRefresh.current = current
-    if (!previous || !current) return
-    if (previous.id === current.id && previous.createdAt !== current.createdAt) {
-      void invalidateRepayRouteQueries(params)
-    }
-  }, [params, selectedRoute?.id, selectedRoute?.createdAt])
 
   const {
     onSubmit,
@@ -190,11 +172,16 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
       chainId,
       tokenIn: collateralToken,
       tokenOut: borrowToken,
-      amountIn: swapAmountIn,
+      amountIn: decimalSum(values.stateCollateral, values.userCollateral),
       slippage: values.slippage,
       selectedRoute,
-      enabled: routeRequired,
-      onChange: onChangeRoute,
+      enabled: isRepayRouteRequired(market, values),
+      onChange: async (route: RouteOption) => {
+        setSelectedRoute(route)
+        const routeId = route.id
+        updateForm(form, { routeId })
+        await invalidateRepayRouteQueries({ ...params, routeId })
+      },
     }),
     formErrors: useMemo(
       // only show the 'not available' warn when there are no other form errors

@@ -71,7 +71,8 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
   const isLeverageEnabled = isLeverageBorrowMore(market, values.leverageEnabled)
   const fromBorrowed = fromWallet && isLeverageEnabled
   const onLeverageToggle = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) => updateForm(form, { leverageEnabled: event.target.checked }),
+    (event: ChangeEvent<HTMLInputElement>) =>
+      updateForm(form, { leverageEnabled: event.target.checked, routeId: undefined }),
     [form],
   )
 

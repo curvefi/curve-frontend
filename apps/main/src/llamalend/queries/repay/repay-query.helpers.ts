@@ -1,4 +1,5 @@
 import { getLlamaMarket, hasDeleverage, hasV2Leverage, hasZapV2 } from '@/llamalend/llama.utils'
+import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { getUserState } from '@/llamalend/queries/user'
 import type { RepayQuery } from '@/llamalend/queries/validation/manage-loan.types'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
@@ -9,10 +10,10 @@ type RepayFields = Pick<RepayQuery, 'stateCollateral' | 'userCollateral' | 'user
 type RepayFieldsWithoutRoute = Pick<RepayQuery, 'stateCollateral' | 'userCollateral' | 'userBorrowed'>
 
 export function getRepayImplementationType(
-  marketId: string,
+  marketId: string | LlamaMarketTemplate,
   { stateCollateral, userCollateral, userBorrowed }: RepayFieldsWithoutRoute,
 ) {
-  const market = getLlamaMarket(marketId)
+  const market = typeof marketId === 'string' ? getLlamaMarket(marketId) : marketId
 
   if (market instanceof MintMarketTemplate) {
     if (hasV2Leverage(market)) return 'V2' as const
@@ -39,11 +40,11 @@ export function getRepayImplementationType(
  * - fallback to unleveraged repay from borrowed token
  */
 export function getRepayImplementation(
-  marketId: string,
+  marketId: string | LlamaMarketTemplate,
   { stateCollateral, userCollateral, userBorrowed, routeId }: RepayFields,
 ) {
-  const market = getLlamaMarket(marketId)
-  const type = getRepayImplementationType(marketId, { stateCollateral, userCollateral, userBorrowed })
+  const market = typeof marketId === 'string' ? getLlamaMarket(marketId) : marketId
+  const type = getRepayImplementationType(market, { stateCollateral, userCollateral, userBorrowed })
   if (market instanceof MintMarketTemplate) {
     switch (type) {
       case 'V2':
