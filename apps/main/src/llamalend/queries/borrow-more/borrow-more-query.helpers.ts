@@ -1,4 +1,4 @@
-import { getLlamaMarket, hasLeverage, hasV2Leverage } from '@/llamalend/llama.utils'
+import { getLlamaMarket, hasLeverage, hasV2Leverage, hasZapV2 } from '@/llamalend/llama.utils'
 import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import type { BorrowMoreQuery } from '@/llamalend/queries/validation/borrow-more.validation'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
@@ -20,7 +20,7 @@ export function getBorrowMoreImplementation(
       ? (['V2', market.leverageV2] as const)
       : (['unleveraged', market] as const)
     : leverageEnabled && hasLeverage(market)
-      ? market.leverageZapV2.hasLeverage()
+      ? hasZapV2(market)
         ? (['zapV2', market.leverageZapV2] as const)
         : (['V1', market.leverage] as const)
       : (['unleveraged', market] as const)

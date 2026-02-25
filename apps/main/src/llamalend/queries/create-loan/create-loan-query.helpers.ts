@@ -21,8 +21,5 @@ export function getCreateLoanImplementation(marketId: string | LlamaMarketTempla
   if (market instanceof LendMarketTemplate) {
     return hasZapV2(market) ? (['zapV2', market.leverageZapV2] as const) : (['V1', market.leverage] as const)
   }
-  if (hasV2Leverage(market)) {
-    return ['V2', market.leverageV2] as const
-  }
-  return ['V0', market.leverage] as const
+  return hasV2Leverage(market) ? (['V2', market.leverageV2] as const) : (['V0', market.leverage] as const)
 }

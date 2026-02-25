@@ -9,6 +9,7 @@ import { getUserMarketCollateralEvents as getMintUserMarketCollateralEvents } fr
 import { getUserMarketCollateralEvents as getLendUserMarketCollateralEvents } from '@curvefi/prices-api/lending'
 import { notFalsy, objectKeys } from '@curvefi/prices-api/objects.util'
 import { requireLib, type Wallet } from '@ui-kit/features/connect-wallet'
+import { isZapV2Enabled } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { CRVUSD, type Decimal, formatNumber } from '@ui-kit/utils'
 import { MarketNetBorrowAprTooltipContentProps } from './widgets/tooltips/MarketNetBorrowAprTooltipContent'
@@ -63,7 +64,7 @@ export const canRepayFromUserCollateral = (market: LlamaMarketTemplate) =>
 export const hasVault = (market: LlamaMarketTemplate) => market instanceof LendMarketTemplate && 'vault' in market
 
 export const hasZapV2 = (market: LlamaMarketTemplate) =>
-  market instanceof LendMarketTemplate && market.leverageZapV2.hasLeverage()
+  isZapV2Enabled() && market instanceof LendMarketTemplate && market.leverageZapV2.hasLeverage()
 
 export const isRouterMetaRequired = (type: 'zapV2' | 'V0' | 'V1' | 'V2' | 'deleverage' | 'unleveraged') =>
   type == 'zapV2'

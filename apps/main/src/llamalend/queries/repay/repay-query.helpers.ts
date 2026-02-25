@@ -1,4 +1,4 @@
-import { getLlamaMarket, hasDeleverage, hasV2Leverage } from '@/llamalend/llama.utils'
+import { getLlamaMarket, hasDeleverage, hasV2Leverage, hasZapV2 } from '@/llamalend/llama.utils'
 import { getUserState } from '@/llamalend/queries/user'
 import type { RepayQuery } from '@/llamalend/queries/validation/manage-loan.types'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
@@ -21,7 +21,7 @@ export function getRepayImplementationType(
       if (+userCollateral) throw new Error(`Invalid userCollateral for deleverage: ${userCollateral}`)
       return 'deleverage' as const
     }
-  } else if (market.leverageZapV2.hasLeverage()) {
+  } else if (hasZapV2(market)) {
     return 'zapV2' as const
   } else {
     return 'V1' as const
