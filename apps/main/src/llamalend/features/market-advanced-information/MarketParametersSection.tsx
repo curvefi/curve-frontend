@@ -1,5 +1,4 @@
-// eslint-disable-next-line import/no-restricted-paths
-import { useMarketPricePerShare } from '@/lend/entities/market-details'
+import { useMarketVaultPricePerShare } from '@/llamalend/queries/market'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { CardHeader, Stack } from '@mui/material'
 import { formatNumber } from '@ui/utils'
@@ -24,7 +23,7 @@ export const MarketParametersSection = ({ chainId, marketId, marketType }: Marke
     data: pricePerShare,
     isLoading: isLoadingPricePerShare,
     error: errorPricePerShare,
-  } = useMarketPricePerShare({ chainId, marketId }, enablePricePerShare)
+  } = useMarketVaultPricePerShare({ chainId, marketId }, enablePricePerShare)
 
   return (
     <Stack>

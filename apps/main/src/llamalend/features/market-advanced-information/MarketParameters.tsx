@@ -1,6 +1,4 @@
-// TODO: refactor query into llamalend for both mint and lend markets
-// eslint-disable-next-line import/no-restricted-paths
-import { useMarketPricePerShare } from '@/lend/entities/market-details'
+import { useMarketVaultPricePerShare } from '@/llamalend/queries/market'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { Typography } from '@mui/material'
 import Stack from '@mui/material/Stack'
@@ -35,7 +33,7 @@ export const MarketParameters = ({
     data: pricePerShare,
     isLoading: isLoadingPricePerShare,
     error: errorPricePerShare,
-  } = useMarketPricePerShare({ chainId, marketId }, enablePricePerShare)
+  } = useMarketVaultPricePerShare({ chainId, marketId }, enablePricePerShare)
 
   return (
     <Stack
