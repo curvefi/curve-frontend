@@ -1,7 +1,7 @@
 import type { FastifyRequest } from 'fastify'
 import lodash from 'lodash'
+import { handleTimeout } from '@primitives/objects.utils'
 import type { RouteResponse } from '@primitives/router.utils'
-import { handleTimeout } from '../../../../packages/primitives/src/objects.utils'
 import { buildCurveRouteResponse } from '../curve-router/curve-router'
 import { buildEnsoRouteResponse } from '../enso-router/enso-router'
 import { buildOdosRouteResponse } from '../odos-router/odos-router'

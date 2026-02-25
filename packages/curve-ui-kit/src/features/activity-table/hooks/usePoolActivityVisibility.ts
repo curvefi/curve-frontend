@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { Token } from '@primitives/address.utils'
+import { type Token } from '@primitives/address.utils'
 import { fromEntries } from '@primitives/objects.utils'
 import type { VisibilityState } from '@tanstack/react-table'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'

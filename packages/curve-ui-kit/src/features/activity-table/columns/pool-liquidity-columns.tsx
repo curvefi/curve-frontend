@@ -1,4 +1,4 @@
-import { Token } from '@primitives/address.utils'
+import { type Token } from '@primitives/address.utils'
 import { createColumnHelper } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
 import { AddressCell, TimestampCell, TokenAmountCell } from '../cells'

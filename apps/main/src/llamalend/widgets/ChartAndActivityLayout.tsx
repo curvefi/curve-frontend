@@ -8,7 +8,7 @@ import {
 } from '@/llamalend/features/llamma-activity'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
-import { Token } from '@primitives/address.utils'
+import { type Token } from '@primitives/address.utils'
 import { ChartWrapper, type OhlcChartProps } from '@ui-kit/features/candle-chart/ChartWrapper'
 import { SOFT_LIQUIDATION_DESCRIPTION, TIME_OPTIONS } from '@ui-kit/features/candle-chart/constants'
 import type { TimeOption } from '@ui-kit/features/candle-chart/types'

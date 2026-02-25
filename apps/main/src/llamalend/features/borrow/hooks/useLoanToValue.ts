@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { useCreateLoanExpectedCollateral } from '@/llamalend/queries/create-loan/create-loan-expected-collateral.query'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { Token } from '@primitives/address.utils'
+import { type Token } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import type { CreateLoanFormQueryParams } from '../types'
