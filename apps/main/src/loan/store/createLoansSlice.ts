@@ -1,5 +1,6 @@
 import lodash from 'lodash'
 import { StoreApi } from 'zustand'
+import { invalidateMarketCapAndAvailable, invalidateMarketTotalCollateral } from '@/llamalend/queries/market'
 import { invalidateMarketRates } from '@/llamalend/queries/market-rates.query'
 import { refetchLoanExists } from '@/llamalend/queries/user'
 import { networks } from '@/loan/networks'
@@ -92,8 +93,12 @@ export const createLoansSlice = (_: StoreApi<State>['setState'], get: StoreApi<S
         refetchLoanExists({ chainId, marketId: llamma.id, userAddress: curve.signerAddress }),
       ])
 
-      // invalidate market rates in case the user is using legacy action info, to keep position detail and market detail components in sync
-      await invalidateMarketRates({ chainId, marketId: llamma.id })
+      // keep legacy action forms and market detail widgets in sync after a loan refresh
+      await Promise.all([
+        invalidateMarketRates({ chainId, marketId: llamma.id }),
+        invalidateMarketTotalCollateral({ chainId, marketId: llamma.id }),
+        invalidateMarketCapAndAvailable({ chainId, marketId: llamma.id }),
+      ])
 
       const fetchedLoanDetails: LoanDetails = { ...loanDetails, priceInfo, loading: false }
 
