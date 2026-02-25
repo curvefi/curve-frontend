@@ -1,4 +1,4 @@
-import { useMarketParameters } from '@/llamalend/queries/market-parameters.query'
+import { useMarketParameters } from '@/llamalend/queries/market'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'

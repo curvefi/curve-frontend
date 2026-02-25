@@ -2,7 +2,7 @@ import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { type MarketQuery, queryFactory, rootKeys, MarketParams } from '@ui-kit/lib/model'
 import { llamaApiValidationSuite } from '@ui-kit/lib/model/query/curve-api-validation'
-import { convertRates } from '../rates.utils'
+import { convertRates } from '../../rates.utils'
 
 const [isGetter, useAPI] = [true, true] as const
 

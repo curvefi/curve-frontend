@@ -1,7 +1,6 @@
 import { getTokens } from '@/llamalend/llama.utils'
 import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
-import { useMarketCapAndAvailable, useMarketTotalCollateral } from '@/llamalend/queries/market'
-import { useMarketMaxLeverage } from '@/llamalend/queries/market-max-leverage.query'
+import { useMarketCapAndAvailable, useMarketTotalCollateral, useMarketMaxLeverage } from '@/llamalend/queries/market'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import type { MarketParams } from '@ui-kit/lib/model/query/root-keys'
 import { LlamaMarketType } from '@ui-kit/types/market'

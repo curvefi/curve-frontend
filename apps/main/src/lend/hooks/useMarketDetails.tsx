@@ -4,7 +4,7 @@ import { useMarketDetails as useLendMarketDetails } from '@/lend/entities/market
 import { networks } from '@/lend/networks'
 import type { ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import type { MarketDetailsProps } from '@/llamalend/features/market-details'
-import { useMarketMaxLeverage } from '@/llamalend/queries/market-max-leverage.query'
+import { useMarketMaxLeverage } from '@/llamalend/queries/market'
 import {
   LAST_MONTH,
   getBorrowRateMetrics,
