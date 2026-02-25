@@ -4,11 +4,11 @@ import { validateDebt } from '@/llamalend/queries/validation/borrow-fields.valid
 import { validateDepositAmount } from '@/llamalend/queries/validation/supply.validation'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
+import type { Decimal } from '@primitives/decimal.utils'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { type MarketQuery } from '@ui-kit/lib/model'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
-import { type Decimal } from '@ui-kit/utils'
 import { convertRates } from '../rates.utils'
 
 type BorrowApyQuery = MarketQuery<IChainId> & { debt: Decimal }

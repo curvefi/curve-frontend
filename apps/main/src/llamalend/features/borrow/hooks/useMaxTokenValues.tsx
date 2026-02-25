@@ -1,9 +1,10 @@
 import BigNumber from 'bignumber.js'
 import { useCallback, useEffect, useRef } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
-import { type Address } from 'viem'
+import type { Address } from '@primitives/address.utils'
+import type { Decimal } from '@primitives/decimal.utils'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
-import { decimal, Decimal } from '@ui-kit/utils'
+import { decimal } from '@ui-kit/utils'
 import { updateForm } from '@ui-kit/utils/react-form.utils'
 import { useCreateLoanMaxReceive } from '../../../queries/create-loan/create-loan-max-receive.query'
 import { useMarketMaxLeverage } from '../../../queries/market-max-leverage.query'
@@ -55,7 +56,6 @@ export function useMaxTokenValues(
     }
   }, [form, maxDebt])
 
-  useEffect(() => updateForm(form, { maxDebt }), [form, maxDebt])
   useEffect(() => updateForm(form, { maxCollateral }), [form, maxCollateral])
 
   // set range is not necessarily tied to maxTokenValues. However, it manipulates them, so we expose it here

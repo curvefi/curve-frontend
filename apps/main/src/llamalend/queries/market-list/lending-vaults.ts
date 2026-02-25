@@ -8,7 +8,8 @@ import {
   Market,
   type UserMarketStats,
 } from '@curvefi/prices-api/llamalend'
-import { fromEntries, recordEntries } from '@curvefi/prices-api/objects.util'
+import type { Address } from '@primitives/address.utils'
+import { fromEntries, recordEntries } from '@primitives/objects.utils'
 import { queryFactory, UserParams, type UserQuery } from '@ui-kit/lib/model/query'
 import { userAddressValidationSuite } from '@ui-kit/lib/model/query/user-address-validation'
 import {
@@ -17,7 +18,6 @@ import {
   userContractValidationSuite,
 } from '@ui-kit/lib/model/query/user-contract'
 import { EmptyValidationSuite } from '@ui-kit/lib/validation'
-import { type Address } from '@ui-kit/utils'
 
 export type LendingVault = Market & { chain: ChainName }
 

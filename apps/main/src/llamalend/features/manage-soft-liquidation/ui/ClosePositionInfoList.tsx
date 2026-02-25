@@ -7,8 +7,8 @@ import { useCloseLoanIsApproved } from '@/llamalend/queries/close-loan/close-loa
 import { useUserState } from '@/llamalend/queries/user'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import type { Decimal } from '@primitives/decimal.utils'
 import { mapQuery, q } from '@ui-kit/types/util'
-import { Decimal } from '@ui-kit/utils'
 
 type ClosePositionInfoListProps = {
   market: LlamaMarketTemplate | undefined

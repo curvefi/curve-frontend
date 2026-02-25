@@ -1,4 +1,5 @@
-import type { Address, Chain } from '..'
+import type { Address, Token } from '@primitives/address.utils'
+import type { Chain } from '..'
 
 export type Market = {
   name: string
@@ -91,10 +92,7 @@ export type Keeper = {
   address: Address
   pool: string
   poolAddress: Address
-  pair: {
-    symbol: string
-    address: Address
-  }[]
+  pair: Token[]
   active: boolean
   totalDebt: number
   totalProfit: number

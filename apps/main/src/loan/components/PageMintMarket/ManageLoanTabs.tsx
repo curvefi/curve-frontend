@@ -15,10 +15,10 @@ import { LoanLiquidate } from '@/loan/components/PageMintMarket/LoanLiquidate'
 import type { ManageLoanProps } from '@/loan/components/PageMintMarket/types'
 import { networks } from '@/loan/networks'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import type { Decimal } from '@primitives/decimal.utils'
 import { useManageLoanMuiForm, useManageSoftLiquidation } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import type { Range } from '@ui-kit/types/util'
-import type { Decimal } from '@ui-kit/utils'
 import { type FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
 
 // casting the networks for the loan app so we don't need to make the whole form generic

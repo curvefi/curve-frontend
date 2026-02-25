@@ -1,8 +1,8 @@
 /// <reference path="./basic-theme.d.ts" />
-import { fromEntries, mapRecord } from '@curvefi/prices-api/objects.util'
 import { Breakpoint } from '@mui/material'
 import { createTheme as createMuiTheme } from '@mui/material/styles'
 import { CSSObject } from '@mui/styled-engine'
+import { fromEntries, mapRecord } from '@primitives/objects.utils'
 import { Spacing } from '../design/0_primitives'
 
 export type ThemeKey = 'light' | 'dark' | 'chad'

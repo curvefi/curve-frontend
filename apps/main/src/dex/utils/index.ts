@@ -1,7 +1,8 @@
 import { zeroAddress } from 'viem'
 import type { ChainId, Token } from '@/dex/types/main.types'
+import type { Address } from '@primitives/address.utils'
 import type { TokenOption } from '@ui-kit/features/select-token'
-import type { Address } from '@ui-kit/utils'
+
 export { getStorageValue, setStorageValue } from '@/dex/utils/storage'
 
 export function shortenTokenName(token: string) {

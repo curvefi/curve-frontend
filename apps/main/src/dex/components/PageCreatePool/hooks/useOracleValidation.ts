@@ -1,9 +1,10 @@
 import { useEffect } from 'react'
-import { isAddress, type Address } from 'viem'
+import { isAddress } from 'viem'
 import { useOracleRate } from '@/dex/components/PageCreatePool/hooks/useOracleRate'
 import { TokenId, TokenState } from '@/dex/components/PageCreatePool/types'
 import { validateOracleFunction } from '@/dex/components/PageCreatePool/utils'
 import { useStore } from '@/dex/store/useStore'
+import type { Address } from '@primitives/address.utils'
 
 type UseOracleValidationParams = {
   token: TokenState

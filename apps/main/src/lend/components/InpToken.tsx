@@ -1,11 +1,12 @@
 import { useCallback } from 'react'
 import type { NetworkConfig } from '@/lend/types/lend.types'
+import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import { decimal, type Decimal } from '@ui-kit/utils'
+import { decimal } from '@ui-kit/utils'
 
 export const InpToken = ({
   id,

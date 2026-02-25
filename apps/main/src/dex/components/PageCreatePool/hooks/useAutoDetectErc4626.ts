@@ -1,9 +1,9 @@
 import { useEffect } from 'react'
-import { type Address } from 'viem'
 import { NG_ASSET_TYPE } from '@/dex/components/PageCreatePool/constants'
 import { useIsErc4626 } from '@/dex/components/PageCreatePool/hooks/useIsErc4626'
 import { TokenId } from '@/dex/components/PageCreatePool/types'
 import { useStore } from '@/dex/store/useStore'
+import type { Address } from '@primitives/address.utils'
 
 type UseAutoDetectErc4626Params = {
   tokenId: TokenId

@@ -1,7 +1,7 @@
 import { enforce, test, skipWhen } from 'vest'
 import { PRESET_RANGES } from '@/llamalend/constants'
 import { getLlamaMarket, hasLeverage, hasLeverageValue } from '@/llamalend/llama.utils'
-import { Decimal } from '@ui-kit/utils'
+import type { Decimal } from '@primitives/decimal.utils'
 
 export const validateUserBorrowed = (userBorrowed: Decimal | null | undefined) => {
   test('userBorrowed', 'Borrow amount must be a non-negative number', () => {

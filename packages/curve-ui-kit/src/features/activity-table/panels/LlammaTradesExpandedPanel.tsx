@@ -1,11 +1,12 @@
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { shortenString } from '@primitives/string.utils'
 import { t } from '@ui-kit/lib/i18n'
 import type { ExpandedPanel } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
 import { ExternalLink } from '@ui-kit/shared/ui/ExternalLink'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { formatNumber, shortenString } from '@ui-kit/utils'
+import { formatNumber } from '@ui-kit/utils'
 import type { LlammaTradeRow } from '../types'
 
 const { Spacing } = SizesAndSpaces

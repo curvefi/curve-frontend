@@ -1,6 +1,6 @@
 import { groupBy, inRange } from 'lodash'
-import type { Address } from 'viem'
-import { mapRecord } from '@curvefi/prices-api/objects.util'
+import type { Address } from '@primitives/address.utils'
+import { mapRecord } from '@primitives/objects.utils'
 import { CURVE_ASSETS_URL } from '@ui/utils'
 import { EmptyValidationSuite } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model'

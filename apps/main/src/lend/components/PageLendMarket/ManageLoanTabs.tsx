@@ -12,10 +12,10 @@ import { RepayForm } from '@/llamalend/features/manage-loan/components/RepayForm
 import { ClosePositionForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ClosePositionForm'
 import { ImproveHealthForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ImproveHealthForm'
 import type { BorrowPositionDetailsProps } from '@/llamalend/features/market-position-details'
+import type { Decimal } from '@primitives/decimal.utils'
 import { useManageLoanMuiForm, useManageSoftLiquidation } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import type { Range } from '@ui-kit/types/util'
-import type { Decimal } from '@ui-kit/utils'
 import { type FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
 
 type ManageLoanProps = PageContentProps<MarketUrlParams> & {

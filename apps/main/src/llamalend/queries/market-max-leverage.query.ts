@@ -3,10 +3,10 @@ import { getLlamaMarket, hasLeverage } from '@/llamalend/llama.utils'
 import { validateRange } from '@/llamalend/queries/validation/borrow-fields.validation'
 import type { IChainId } from '@curvefi/api/lib/interfaces'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
+import type { Decimal } from '@primitives/decimal.utils'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { type MarketQuery, queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
-import { Decimal } from '@ui-kit/utils'
 
 type MaxLeverageQuery = MarketQuery<IChainId> & { range: number }
 type MaxLeverageParams = FieldsOf<MaxLeverageQuery>

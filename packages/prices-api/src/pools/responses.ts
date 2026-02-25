@@ -1,4 +1,5 @@
-import type { Address, PaginationMeta } from '..'
+import type { Address } from '@primitives/address.utils'
+import type { PaginationMeta } from '..'
 import type { Chain } from '../'
 
 type Coin = {

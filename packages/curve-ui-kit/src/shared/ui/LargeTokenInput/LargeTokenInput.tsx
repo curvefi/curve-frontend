@@ -12,6 +12,7 @@ import {
 import Chip from '@mui/material/Chip'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import type { Decimal } from '@primitives/decimal.utils'
 import { useUniqueDebounce } from '@ui-kit/hooks/useDebounce'
 import { t } from '@ui-kit/lib/i18n'
 import { HelperMessage } from '@ui-kit/shared/ui/LargeTokenInput/HelperMessage'
@@ -19,7 +20,7 @@ import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { chipSizeClickable } from '@ui-kit/themes/components/chip'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { decimal, type Decimal, formatNumber } from '@ui-kit/utils'
+import { decimal, formatNumber } from '@ui-kit/utils'
 import { SliderInput, SliderInputProps } from '../SliderInput'
 import { Balance, type Props as BalanceProps } from './Balance'
 import { BalanceTextField } from './BalanceTextField'
@@ -148,7 +149,7 @@ function calculateNewBalance(max: Decimal, newPercentage: Decimal): Decimal {
   // Avoid loss of precision when clicking 'Max' or '100%'.
   if (Number(newPercentage) === 100) return max
 
-  return new BigNumber(max).times(newPercentage).div(100).toString() as Decimal
+  return new BigNumber(max).times(newPercentage).div(100).toFixed() as Decimal
 }
 
 /**
@@ -168,8 +169,8 @@ const calculateNewPercentage = (newBalance: Decimal, max: Decimal) =>
     .toFixed(2)
     .replace(/\.?0+$/, '') as Decimal
 
-/** Converts two decimals to BigNumber for comparison. Undefined is considered zero. */
-const bigNumEquals = (a?: Decimal, b?: Decimal) => new BigNumber(a ?? 0).isEqualTo(b ?? 0)
+/** Converts two decimals to BigNumber for comparison */
+const bigNumEquals = (a?: Decimal, b?: Decimal) => a == b || (a != null && b != null && new BigNumber(a).isEqualTo(b))
 
 const [MIN_PERCENTAGE, MAX_PERCENTAGE] = [0, 100]
 

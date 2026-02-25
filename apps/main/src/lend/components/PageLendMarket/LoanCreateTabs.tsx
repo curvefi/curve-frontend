@@ -5,10 +5,10 @@ import { useStore } from '@/lend/store/useStore'
 import { type MarketUrlParams, type PageContentProps } from '@/lend/types/lend.types'
 import { CreateLoanForm } from '@/llamalend/features/borrow/components/CreateLoanForm'
 import { hasLeverage } from '@/llamalend/llama.utils'
+import type { Decimal } from '@primitives/decimal.utils'
 import { useCreateLoanMuiForm } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import type { Range } from '@ui-kit/types/util'
-import type { Decimal } from '@ui-kit/utils'
 import { type FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
 
 type CreateLoanProps = PageContentProps<MarketUrlParams> & {

@@ -1,8 +1,9 @@
 import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/create-loan-query.helpers'
+import type { Decimal } from '@primitives/decimal.utils'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
-import { assert, decimal, Decimal } from '@ui-kit/utils'
+import { assert, decimal } from '@ui-kit/utils'
 import type { CreateLoanFormQuery } from '../../features/borrow/types'
 import { createLoanFormValidationGroup } from '../validation/borrow.validation'
 

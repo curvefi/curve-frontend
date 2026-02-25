@@ -1,7 +1,8 @@
 import '@cy/eip6963-test-setup'
 import { useState } from 'react'
+import type { Decimal } from '@primitives/decimal.utils'
 import { NumericTextField, type NumericTextFieldProps } from '@ui-kit/shared/ui/NumericTextField'
-import { formatNumber, type Decimal } from '@ui-kit/utils'
+import { formatNumber } from '@ui-kit/utils'
 
 const INITIAL_VALUE = '5'
 
