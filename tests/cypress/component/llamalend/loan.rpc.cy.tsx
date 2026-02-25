@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import BigNumber from 'bignumber.js'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
+import { recordValues } from '@curvefi/prices-api/objects.util'
 import {
   checkBorrowMoreDetailsLoaded,
   submitBorrowMoreForm,
@@ -11,7 +12,7 @@ import { checkCurrentDebt, checkDebt } from '@cy/support/helpers/llamalend/actio
 import {
   checkLoanDetailsLoaded,
   CREATE_LOAN_FUND_AMOUNT,
-  LOAN_TEST_MARKETS,
+  oneLoanTestMarket,
   submitCreateLoanForm,
   writeCreateLoanForm,
 } from '@cy/support/helpers/llamalend/create-loan.helpers'
@@ -34,11 +35,11 @@ import { createVirtualTestnet } from '@cy/support/helpers/tenderly'
 import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
 import { fundErc20, fundEth } from '@cy/support/helpers/tenderly/vnet-fund'
 import { LOAD_TIMEOUT, skipTestsAfterFailure } from '@cy/support/ui'
-import { CRVUSD_ADDRESS } from '@ui-kit/utils'
+import { LlamaMarketType } from '@ui-kit/types/market'
 import type { Decimal } from '@ui-kit/utils'
+import { CRVUSD_ADDRESS } from '@ui-kit/utils'
 
-const testCases = [LOAN_TEST_MARKETS.Lend[1]]
-// const testCases = recordValues(LlamaMarketType).map((marketType) => oneLoanTestMarket(marketType))
+const testCases = recordValues(LlamaMarketType).map((marketType) => oneLoanTestMarket(marketType))
 
 testCases.forEach(
   ({

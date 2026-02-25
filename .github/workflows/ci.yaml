@@ -196,8 +196,9 @@ jobs:
           curl --request POST \
                --header 'Content-type: application/json' \
                --data-binary "{
-                 \"text\": \"❌ <${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}|CI failed> on <${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/tree/${GITHUB_REF_NAME}|${GITHUB_REF_NAME}> \
+                 \"text\": \"❌ <${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}|CI failed> \
+                 on <${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/tree/${GITHUB_REF_NAME}|${GITHUB_REF_NAME}> \
                  at <${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/commit/${GITHUB_SHA}|${SHORT_SHA}> \
-                 by <${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/commits?author=${GITHUB_ACTOR}|${GITHUB_ACTOR}>\"
+                 by <${GITHUB_SERVER_URL}/${GITHUB_ACTOR}|${GITHUB_ACTOR}>\"
                }" \
                --url "${{ secrets.SLACK_FRONTEND_TEAM_WEBHOOK }}"
