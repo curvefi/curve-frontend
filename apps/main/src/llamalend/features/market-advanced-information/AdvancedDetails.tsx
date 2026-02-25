@@ -8,12 +8,12 @@ import {
 } from '@/llamalend/features/market-details'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { Box, CardHeader } from '@mui/material'
+import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber, FORMAT_OPTIONS } from '@ui/utils/utilsFormat'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
-import type { Decimal } from '@ui-kit/utils'
 import { abbreviateNumber, scaleSuffix } from '@ui-kit/utils/number'
 import { useAdvancedDetailsData } from './hooks/useAdvancedDetailsData'
 
