@@ -1,6 +1,6 @@
 /// <reference path="./mui-icon-button.d.ts" />
 import type { Components } from '@mui/material/styles'
-import { recordEntries } from '@primitives/objects.utils'
+import { recordEntries } from '@curvefi/primitives/objects.utils'
 import { handleBreakpoints } from '@ui-kit/themes/basic-theme'
 import { DesignSystem } from '../../design'
 import { SizesAndSpaces } from '../../design/1_sizes_spaces'

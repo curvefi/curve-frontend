@@ -1,7 +1,7 @@
 /// <reference path="./mui-button.d.ts" />
 import { Breakpoint } from '@mui/material'
 import type { Components } from '@mui/material/styles'
-import { recordEntries } from '@primitives/objects.utils'
+import { recordEntries } from '@curvefi/primitives/objects.utils'
 import { basicMuiTheme, type Responsive } from '../../basic-theme'
 import { DesignSystem } from '../../design'
 import { Sizing } from '../../design/0_primitives'

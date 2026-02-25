@@ -24,13 +24,9 @@
     "src"
   ],
   "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
-    },
     "./*": {
-      "types": "./dist/*.d.ts",
-      "default": "./dist/*.js"
+      "types": "./src/*.ts",
+      "default": "./src/*.ts"
     }
   }
 }

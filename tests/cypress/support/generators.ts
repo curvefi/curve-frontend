@@ -1,5 +1,5 @@
 import type { Address } from '@curvefi/prices-api'
-import { range, recordValues } from '@primitives/objects.utils'
+import { range, recordValues } from '@curvefi/primitives/objects.utils'
 import { TIME_FRAMES } from '@ui-kit/lib/model/time'
 
 export const MAX_USD_VALUE = 400_000_000

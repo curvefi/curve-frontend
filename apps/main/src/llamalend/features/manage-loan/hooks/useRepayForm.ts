@@ -13,7 +13,7 @@ import type { RepayIsFullParams } from '@/llamalend/queries/validation/manage-lo
 import { type RepayForm, repayFormValidationSuite } from '@/llamalend/queries/validation/manage-loan.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { vestResolver } from '@hookform/resolvers/vest'
-import { isEmpty, notFalsy } from '@primitives/objects.utils'
+import { isEmpty, notFalsy } from '@curvefi/primitives/objects.utils'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { t } from '@ui-kit/lib/i18n'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'

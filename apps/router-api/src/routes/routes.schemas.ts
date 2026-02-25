@@ -1,6 +1,12 @@
-import type { Address, Decimal, RouteProvider, RouteResponse, RouteStep, TransactionData } from '@curvefi/primitives/router'
-
-const RouteProviders = ['curve', 'enso', 'odos'] as const
+import { RouteProviders } from '../../../../packages/primitives/src/router'
+import type {
+  Address,
+  Decimal,
+  RouteProvider,
+  RouteResponse,
+  RouteStep,
+  TransactionData,
+} from '@curvefi/primitives/router'
 
 export const ADDRESS_HEX_PATTERN = '^0x[a-fA-F0-9]{40}$'
 export const DECIMAL_PATTERN = '^-?\\d+(\\.\\d+)?$'
@@ -98,5 +104,3 @@ const RoutesSchema = {
 }
 
 export const RoutesOpts = { schema: RoutesSchema } as const
-
-export type { Decimal, RouteProvider, RouteResponse, RouteStep, TransactionData }

@@ -1,6 +1,6 @@
 import type { Suite } from 'vest'
 import { CB } from 'vest-utils'
-import { FetchError } from '@primitives/fetch.utils'
+import { FetchError } from '@curvefi/primitives/fetch.utils'
 import {
   QueryFunctionContext,
   queryOptions,

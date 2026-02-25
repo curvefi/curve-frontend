@@ -7,7 +7,7 @@ import {
   useClaimableRewards,
 } from '@/llamalend/queries/supply/supply-claimable-rewards.query'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { notFalsy } from '@primitives/objects.utils'
+import { notFalsy } from '@curvefi/primitives/objects.utils'
 import { UserMarketParams } from '@ui-kit/lib/model'
 import { useTokenUsdRates } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { CRV } from '@ui-kit/utils/address'

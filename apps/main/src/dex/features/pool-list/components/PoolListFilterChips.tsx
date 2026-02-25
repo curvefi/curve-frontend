@@ -1,7 +1,7 @@
 import { useConnection } from 'wagmi'
 import { NetworkConfig } from '@/dex/types/main.types'
 import Grid from '@mui/material/Grid'
-import { notFalsy } from '@primitives/objects.utils'
+import { notFalsy } from '@curvefi/primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { GridChip } from '@ui-kit/shared/ui/DataTable/chips/GridChip'
 import type { FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'

@@ -9,10 +9,7 @@
     "noUnusedParameters": true,
     "noEmit": false,
     "paths": {
-      "@primitives": [
-        "../../primitives/src/index.ts"
-      ],
-      "@primitives/*": [
+      "@curvefi/primitives/*": [
         "../../primitives/src/*"
       ]
     }

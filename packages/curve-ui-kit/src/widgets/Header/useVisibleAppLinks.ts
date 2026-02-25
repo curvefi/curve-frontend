@@ -1,4 +1,4 @@
-import { recordEntries } from '@primitives/objects.utils'
+import { recordEntries } from '@curvefi/primitives/objects.utils'
 import { useAnalyticsApp } from '@ui-kit/hooks/useFeatureFlags'
 import { APP_LINK } from '@ui-kit/shared/routes'
 

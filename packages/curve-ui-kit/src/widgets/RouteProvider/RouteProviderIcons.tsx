@@ -4,7 +4,7 @@ import { CURVE_LOGO_URL } from '@ui/utils'
 import { EnsoIcon } from '@ui-kit/shared/icons/EnsoIcon'
 import { OdosIcon } from '@ui-kit/shared/icons/OdosIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import type { RouteProvider } from './route-provider.types'
+import type { RouteProvider } from '@curvefi/primitives/router'
 
 const { IconSize } = SizesAndSpaces
 

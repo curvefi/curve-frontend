@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react'
 import { formatEther, isAddressEqual, type Address } from 'viem'
 import { getUsdPrice } from '@curvefi/prices-api/usd-price'
-import { FetchError } from '@primitives/fetch.utils'
+import { FetchError } from '@curvefi/primitives/fetch.utils'
 import { type QueriesResults, useQueries } from '@tanstack/react-query'
 import { getLib } from '@ui-kit/features/connect-wallet'
 import type { LibKey } from '@ui-kit/features/connect-wallet/lib/types'

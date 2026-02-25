@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { isAddress } from 'viem'
 import { ChainId } from '@/loan/types/loan.types'
-import { fromEntries } from '@primitives/objects.utils'
+import { fromEntries } from '@curvefi/primitives/objects.utils'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import type { Address } from '@ui-kit/utils'
 

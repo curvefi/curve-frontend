@@ -1,6 +1,6 @@
 import { partition, sumBy } from 'lodash'
 import { useLayoutEffect, useMemo, useRef, useState } from 'react'
-import { splitAtFirst } from '@primitives/array.utils'
+import { splitAtFirst } from '@curvefi/primitives/array.utils'
 import { useResizeObserver } from '@ui-kit/hooks/useResizeObserver'
 import { CONTAINED_TABS_MARGIN_RIGHT } from '@ui-kit/themes/components/tabs/mui-tabs'
 import type { TabOption } from '../shared/ui/Tabs/TabsSwitcher'

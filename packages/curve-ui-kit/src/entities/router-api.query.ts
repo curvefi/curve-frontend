@@ -1,8 +1,8 @@
 import { enforce, test } from 'vest'
-import { toArray } from '@primitives/array.utils'
-import { fetchJson } from '@primitives/fetch.utils'
-import { notFalsy } from '@primitives/objects.utils'
-import type { RouteProvider, RouteResponse } from '@primitives/router'
+import { toArray } from '@curvefi/primitives/array.utils'
+import { fetchJson } from '@curvefi/primitives/fetch.utils'
+import { notFalsy } from '@curvefi/primitives/objects.utils'
+import type { RouteProvider, RouteResponse } from '@curvefi/primitives/router'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { userAddressValidationGroup } from '@ui-kit/lib/model/query/user-address-validation'
@@ -20,7 +20,6 @@ export type RoutesQuery = {
 }
 
 export type RoutesParams = FieldsOf<RoutesQuery>
-export type { RouteResponse }
 
 export const routerApiValidation = createValidationSuite(
   ({ chainId, tokenIn, tokenOut, amountIn, amountOut, userAddress }: RoutesQuery) => {

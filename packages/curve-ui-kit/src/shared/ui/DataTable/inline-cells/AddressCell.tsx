@@ -1,7 +1,7 @@
 import type { Property } from 'csstype'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { shortenString } from '@primitives/string.utils'
+import { shortenString } from '@curvefi/primitives/string.utils'
 import { InlineTableCell } from '@ui-kit/shared/ui/DataTable/inline-cells/InlineTableCell'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 

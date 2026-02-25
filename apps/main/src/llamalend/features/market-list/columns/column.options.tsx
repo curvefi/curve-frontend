@@ -1,4 +1,4 @@
-import { fromEntries, recordValues } from '@primitives/objects.utils'
+import { fromEntries, recordValues } from '@curvefi/primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import type { VisibilityGroup } from '@ui-kit/shared/ui/DataTable/visibility.types'
 import { MarketRateType } from '@ui-kit/types/market'

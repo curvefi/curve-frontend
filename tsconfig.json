@@ -7,9 +7,9 @@
     { "path": "./apps/router-api" },
     { "path": "./packages/curve-ui-kit" },
     { "path": "./packages/external-rewards" },
+    { "path": "./packages/primitives" },
     { "path": "./packages/prices-api" },
     { "path": "./packages/ui" },
-    { "path": "./tests" },
-    { "path": "./packages/primitives" }
+    { "path": "./tests" }
   ]
 }

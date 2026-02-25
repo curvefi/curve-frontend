@@ -12,10 +12,7 @@
       "@external-rewards": ["../../packages/external-rewards/src/index.ts"],
       "@curvefi/prices-api": ["../../packages/prices-api/src/index.ts"],
       "@curvefi/prices-api/*": ["../../packages/prices-api/src/*"],
-      "@curvefi/primitives": ["../../packages/primitives/src/index.ts"],
-      "@curvefi/primitives/*": ["../../packages/primitives/src/*"],
-      "@primitives": ["../../packages/primitives/src/index.ts"],
-      "@primitives/*": ["../../packages/primitives/src/*"]
+      "@curvefi/primitives/*": ["../../packages/primitives/src/*"]
     }
   },
   "include": [

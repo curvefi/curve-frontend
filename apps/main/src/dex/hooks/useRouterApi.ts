@@ -11,12 +11,9 @@ import { useStore } from '@/dex/store/useStore'
 import { TokensNameMapper } from '@/dex/types/main.types'
 import { getExchangeRates } from '@/dex/utils/utilsSwap'
 import type { IRouteStep } from '@curvefi/api/lib/interfaces'
-import { notFalsy } from '@primitives/objects.utils'
-import {
-  type RouteResponse,
-  type RoutesQuery,
-  useRouterApi as useRouterApiQuery,
-} from '@ui-kit/entities/router-api.query'
+import type { RouteResponse } from '@curvefi/primitives/router'
+import { notFalsy } from '@curvefi/primitives/objects.utils'
+import { type RoutesQuery, useRouterApi as useRouterApiQuery } from '@ui-kit/entities/router-api.query'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { Address, type Decimal, fromWei, toWei } from '@ui-kit/utils'
 

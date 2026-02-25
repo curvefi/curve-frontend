@@ -1,6 +1,6 @@
 import { AlertFormErrorKey } from '@/dex/components/AlertFormError'
 import type { IRouteStep } from '@curvefi/api/lib/interfaces'
-import type { RouteProvider } from '@ui-kit/widgets/RouteProvider'
+import type { RouteProvider } from '@curvefi/primitives/router'
 
 export type StepKey = 'APPROVAL' | 'SWAP'
 

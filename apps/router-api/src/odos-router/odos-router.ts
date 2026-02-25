@@ -1,6 +1,7 @@
 import { FastifyBaseLogger } from 'fastify'
 import { type Address } from 'viem'
-import { type Decimal, type RoutesQuery, type RouteResponse } from '../routes/routes.schemas'
+import type { Decimal, RouteResponse } from '@curvefi/primitives/router'
+import { type RoutesQuery } from '../routes/routes.schemas'
 import type { AssemblePathResponse, CurveOdosAssembleRequest } from './odos-assemble.types'
 import type { CurveOdosQuoteRequest, OdosQuoteResponse } from './odos-quote.types'
 

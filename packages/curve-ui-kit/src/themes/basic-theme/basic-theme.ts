@@ -2,7 +2,7 @@
 import { Breakpoint } from '@mui/material'
 import { createTheme as createMuiTheme } from '@mui/material/styles'
 import { CSSObject } from '@mui/styled-engine'
-import { fromEntries, mapRecord } from '@primitives/objects.utils'
+import { fromEntries, mapRecord } from '@curvefi/primitives/objects.utils'
 import { Spacing } from '../design/0_primitives'
 
 export type ThemeKey = 'light' | 'dark' | 'chad'

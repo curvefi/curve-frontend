@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { minCutoffForTopK } from '@primitives/array.utils'
+import { minCutoffForTopK } from '@curvefi/primitives/array.utils'
 
 describe('minCutoffForTopK', () => {
   const id = (x: number) => x

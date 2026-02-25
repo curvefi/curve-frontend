@@ -1,4 +1,4 @@
-import { fetchJson } from '@primitives/fetch.utils'
+import { fetchJson } from '@curvefi/primitives/fetch.utils'
 import { EmptyValidationSuite } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model'
 

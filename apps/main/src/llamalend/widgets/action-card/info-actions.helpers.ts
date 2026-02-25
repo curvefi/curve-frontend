@@ -1,4 +1,4 @@
-import { notFalsy } from '@primitives/objects.utils'
+import { notFalsy } from '@curvefi/primitives/objects.utils'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { type Amount, formatNumber } from '@ui-kit/utils'
 
