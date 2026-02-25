@@ -143,9 +143,9 @@ export const useMarketDetails = ({
     collateral: {
       symbol: collateral_token?.symbol ?? null,
       tokenAddress: collateral_token?.address,
-      total: collateralAmount ? +collateralAmount : null,
+      total: collateralAmount == null ? null : +collateralAmount,
       // TODO: add potential collateral value in borrowed token
-      totalUsdValue: collateralAmount != null && collateralUsdRate ? +collateralAmount * collateralUsdRate : null,
+      totalUsdValue: collateralAmount != null && collateralUsdRate != null ? +collateralAmount * collateralUsdRate : null,
       loading: isMarketDetailsLoading.marketCollateralAmounts || collateralUsdRateLoading || isMarketMetadataLoading,
     },
     borrowToken: {
@@ -195,8 +195,8 @@ export const useMarketDetails = ({
         isMarketMetadataLoading,
     },
     availableLiquidity: {
-      value: available ? +available : undefined,
-      max: cap ? +cap : undefined,
+      value: available == null ? undefined : +available,
+      max: cap == null ? undefined : +cap,
       loading: isMarketDetailsLoading.marketCapAndAvailable || isMarketMetadataLoading,
     },
     maxLeverage: {

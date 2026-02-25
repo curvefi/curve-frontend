@@ -90,7 +90,7 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType }: Advan
           loading={collateral?.loading}
           valueOptions={{ unit: { symbol: collateral?.symbol ?? '', position: 'suffix' } }}
           notional={
-            collateral?.totalUsdValue
+            collateral?.totalUsdValue != null
               ? {
                   value: collateral.totalUsdValue,
                   unit: 'dollar',
@@ -107,7 +107,7 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType }: Advan
           <Metric
             size="small"
             label={t`Max leverage`}
-            value={maxLeverage?.value ? +maxLeverage?.value : undefined}
+            value={maxLeverage?.value == null ? undefined : +maxLeverage.value}
             loading={maxLeverage?.loading}
             valueOptions={{ unit: 'multiplier' }}
             valueTooltip={{
