@@ -1,4 +1,4 @@
-import type { Decimal } from '@ui-kit/utils'
+import type { Decimal } from '@primitives/decimal.utils'
 import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '../ui'
 import { checkDebt, getActionValue, touchInput } from './llamalend/action-info.helpers'
 

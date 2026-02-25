@@ -25,6 +25,7 @@ import { curveProps } from '@/loan/utils/helpers'
 import { getStepStatus, getTokenName } from '@/loan/utils/utilsLoan'
 import { getMintMarketPathname } from '@/loan/utils/utilsRouter'
 import type { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
+import type { Decimal } from '@primitives/decimal.utils'
 import { Accordion } from '@ui/Accordion'
 import { AlertBox } from '@ui/AlertBox'
 import { Box } from '@ui/Box'
@@ -39,7 +40,7 @@ import { t, Trans } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import { decimal, type Decimal } from '@ui-kit/utils'
+import { decimal } from '@ui-kit/utils'
 
 const useFetchInitial = ({
   market: llamma,

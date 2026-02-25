@@ -1,10 +1,9 @@
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import type { Decimal } from '@primitives/decimal.utils'
 import type { FieldsOf } from '@ui-kit/lib'
 import type { MarketQuery } from '@ui-kit/lib/model'
 import type { MakeOptional } from '@ui-kit/types/util'
-import { Decimal } from '@ui-kit/utils'
 
-export { type Token } from '@ui-kit/types/common'
 /** Complete create loan form with all fields already filled in (after validation) */
 type CompleteCreateLoanForm = {
   userCollateral: Decimal

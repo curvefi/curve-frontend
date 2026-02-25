@@ -1,5 +1,5 @@
+import type { Decimal } from '@primitives/decimal.utils'
 import { type ActionInfoProps, ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
-import type { Decimal } from '@ui-kit/utils'
 import type { TokenAmount } from './types'
 import { formatTokens } from './util'
 

@@ -1,5 +1,3 @@
-import type { RouteResponse } from '@ui-kit/entities/router-api.query'
+import type { RouteResponse } from '@primitives/router.utils'
 
-export const RouteProviders = ['curve', 'enso', 'odos'] as const
-export type RouteProvider = (typeof RouteProviders)[number]
 export type RouteOption = RouteResponse

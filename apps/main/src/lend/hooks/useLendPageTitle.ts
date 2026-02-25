@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { notFalsy } from '@curvefi/prices-api/objects.util'
+import { notFalsy } from '@primitives/objects.utils'
 
 /**
  * Custom hook to set the document title for markets pages

@@ -1,4 +1,4 @@
-import { fromEntries, recordEntries } from '../objects.util'
+import { fromEntries, recordEntries } from '@primitives/objects.utils'
 import type * as Models from './models'
 import type * as Responses from './responses'
 

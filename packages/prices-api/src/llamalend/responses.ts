@@ -1,4 +1,5 @@
-import type { Address, Chain, PaginationMeta } from '..'
+import type { Address } from '@primitives/address.utils'
+import type { Chain, PaginationMeta } from '..'
 
 export type GetChainsResponse = {
   data: Chain[]

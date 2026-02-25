@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react'
 import type { FieldPath, FieldPathValue, FieldValues, FormState, Path, UseFormReturn } from 'react-hook-form'
-import { notFalsy, recordEntries } from '@curvefi/prices-api/objects.util'
+import { notFalsy, recordEntries } from '@primitives/objects.utils'
 
 export type FormUpdates<TFieldValues extends FieldValues> = Partial<{
   [K in FieldPath<TFieldValues>]: FieldPathValue<TFieldValues, K>

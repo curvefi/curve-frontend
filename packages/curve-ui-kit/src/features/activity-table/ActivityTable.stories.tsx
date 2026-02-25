@@ -1,21 +1,22 @@
 import { useMemo } from 'react'
-import type { Address, Chain } from '@curvefi/prices-api'
+import type { Chain } from '@curvefi/prices-api'
+import type { Address, Token } from '@primitives/address.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { ActivityTable } from './ActivityTable'
 import {
-  POOL_TRADES_COLUMNS,
   createPoolLiquidityColumns,
-  LLAMMA_TRADES_COLUMNS,
   LLAMMA_EVENTS_COLUMNS,
+  LLAMMA_TRADES_COLUMNS,
+  POOL_TRADES_COLUMNS,
 } from './columns'
 import {
-  PoolTradesExpandedPanel,
-  PoolLiquidityExpandedPanel,
-  LlammaTradesExpandedPanel,
   LlammaEventsExpandedPanel,
+  LlammaTradesExpandedPanel,
+  PoolLiquidityExpandedPanel,
+  PoolTradesExpandedPanel,
 } from './panels'
-import type { PoolTradeRow, PoolLiquidityRow, LlammaTradeRow, LlammaEventRow, Token } from './types'
+import type { LlammaEventRow, LlammaTradeRow, PoolLiquidityRow, PoolTradeRow } from './types'
 
 const generateAddress = (seed: number): Address => `0x${seed.toString(16).padStart(40, '0')}` as Address
 

@@ -1,5 +1,5 @@
-import type { Address, Hex } from 'viem'
-import type { Decimal } from '../routes/routes.schemas'
+import { type Address, type Hex } from '@primitives/address.utils'
+import type { Decimal } from '@primitives/decimal.utils'
 
 /**
  * Assemble Path Request Schema.

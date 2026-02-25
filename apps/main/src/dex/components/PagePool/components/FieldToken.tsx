@@ -1,9 +1,10 @@
 import { useCallback } from 'react'
 import { ethAddress } from 'viem'
+import type { Decimal } from '@primitives/decimal.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import { decimal, type Decimal, shortenAddress } from '@ui-kit/utils'
+import { decimal, shortenAddress } from '@ui-kit/utils'
 
 type Props = {
   idx: number

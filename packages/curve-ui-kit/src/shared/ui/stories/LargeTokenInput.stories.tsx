@@ -1,8 +1,8 @@
 import { useRef, useState } from 'react'
 import { fn } from 'storybook/test'
 import { Select, MenuItem, Typography, Stack } from '@mui/material'
+import type { Decimal } from '@primitives/decimal.utils'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import type { Decimal } from '@ui-kit/utils'
 import { LargeTokenInput, type LargeTokenInputRef, type LargeTokenInputProps } from '../LargeTokenInput'
 
 // Test options for token selector with corresponding pre-seeded wallet balances

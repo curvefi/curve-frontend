@@ -4,6 +4,7 @@ import { useNetworkByChain } from '@/dex/entities/networks'
 import { useStore } from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
 import Button from '@mui/material/Button'
+import { shortenString } from '@primitives/string.utils'
 import { Box } from '@ui/Box'
 import { Icon } from '@ui/Icon'
 import { ExternalLink } from '@ui/Link/ExternalLink'
@@ -11,7 +12,6 @@ import { Spinner } from '@ui/Spinner'
 import { scanTxPath } from '@ui/utils'
 import { useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
-import { shortenString } from '@ui-kit/utils'
 
 type Props = {
   chainId: ChainId

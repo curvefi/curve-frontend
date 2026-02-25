@@ -1,10 +1,10 @@
 import { getLlamaMarket } from '@/llamalend/llama.utils'
 import type { IChainId } from '@curvefi/api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
+import type { Decimal } from '@primitives/decimal.utils'
 import { type FieldsOf } from '@ui-kit/lib'
 import { type MarketQuery, queryFactory, rootKeys, type UserQuery } from '@ui-kit/lib/model'
 import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
-import type { Decimal } from '@ui-kit/utils'
 
 type UserBalancesQuery = UserQuery & MarketQuery<IChainId>
 type UserBalancesParams = FieldsOf<UserBalancesQuery>

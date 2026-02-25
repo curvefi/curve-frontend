@@ -1,6 +1,6 @@
-import { fromEntries, recordValues } from '@curvefi/prices-api/objects.util'
 import type { Components } from '@mui/material/styles'
 import type { CSSObject } from '@mui/styled-engine'
+import { fromEntries, recordValues } from '@primitives/objects.utils'
 import { handleBreakpoints } from '@ui-kit/themes/basic-theme'
 import { TypographyVariantKey } from '@ui-kit/themes/typography'
 import { DesignSystem } from '../../design'

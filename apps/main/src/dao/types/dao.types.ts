@@ -1,11 +1,10 @@
 import { ethers } from 'ethers'
 import { curvejsApi } from '@/dao/lib/curvejs'
 import type { INetworkName } from '@curvefi/api/lib/interfaces'
+import type { Address } from '@primitives/address.utils'
 import type { BaseConfig } from '@ui/utils'
-import type { Address } from '@ui-kit/utils'
 
 export type { CurveApi, Wallet } from '@ui-kit/features/connect-wallet'
-
 export type { GaugeFormattedData, GaugeMapper } from '../queries/gauges.query'
 
 export type ChainId = number

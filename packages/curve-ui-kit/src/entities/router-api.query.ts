@@ -1,12 +1,13 @@
 import { enforce, test } from 'vest'
-import type { Hex } from 'viem'
-import { fetchJson } from '@curvefi/prices-api/fetch'
-import { notFalsy } from '@curvefi/prices-api/objects.util'
+import type { Address } from '@primitives/address.utils'
+import { toArray } from '@primitives/array.utils'
+import type { Decimal } from '@primitives/decimal.utils'
+import { fetchJson } from '@primitives/fetch.utils'
+import { notFalsy } from '@primitives/objects.utils'
+import type { RouteProvider, RouteResponse } from '@primitives/router.utils'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { userAddressValidationGroup } from '@ui-kit/lib/model/query/user-address-validation'
-import { Address, Decimal, toArray } from '@ui-kit/utils'
-import { type RouteProvider } from '@ui-kit/widgets/RouteProvider'
 
 export type RoutesQuery = {
   chainId: number
@@ -20,27 +21,6 @@ export type RoutesQuery = {
 }
 
 export type RoutesParams = FieldsOf<RoutesQuery>
-
-export type RouteResponse = {
-  id: string
-  router: RouteProvider
-  amountIn: [Decimal]
-  amountOut: [Decimal]
-  priceImpact: number | null
-  createdAt: number
-  warnings: ('high-slippage' | 'low-exchange-rate')[]
-  route: {
-    name: string
-    tokenIn: [Address]
-    tokenOut: [Address]
-    protocol: 'curve' | string
-    action: 'swap' | string
-    args?: Record<string, unknown>
-    chainId: number
-  }[]
-  isStableswapRoute?: boolean
-  tx?: { data: Hex; to: Address; from: Address; value: Decimal }
-}
 
 export const routerApiValidation = createValidationSuite(
   ({ chainId, tokenIn, tokenOut, amountIn, amountOut, userAddress }: RoutesQuery) => {

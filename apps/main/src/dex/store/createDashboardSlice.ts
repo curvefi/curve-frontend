@@ -1,5 +1,4 @@
 import lodash from 'lodash'
-import type { Address } from 'viem'
 import { isAddress } from 'viem'
 import { StoreApi } from 'zustand'
 import type {
@@ -17,6 +16,7 @@ import type { State } from '@/dex/store/useStore'
 import { ChainId, claimButtonsKey, CurveApi, FnStepResponse, PoolDataMapper } from '@/dex/types/main.types'
 import { fulfilledValue, getStorageValue, setStorageValue, sleep } from '@/dex/utils'
 import type { IProfit } from '@curvefi/api/lib/interfaces'
+import type { Address } from '@primitives/address.utils'
 import { PromisePool } from '@supercharge/promise-pool'
 import { shortenAccount } from '@ui/utils'
 import { useWallet } from '@ui-kit/features/connect-wallet'

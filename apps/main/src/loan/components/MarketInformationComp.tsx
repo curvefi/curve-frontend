@@ -5,12 +5,12 @@ import { ChartAndActivityComp } from '@/loan/components/ChartAndActivityComp'
 import { useMarketDetails } from '@/loan/hooks/useMarketDetails'
 import type { ChainId, Llamma } from '@/loan/types/loan.types'
 import Stack from '@mui/material/Stack'
+import type { Decimal } from '@primitives/decimal.utils'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNewBandsChart, useIntegratedLlamaHeader } from '@ui-kit/hooks/useFeatureFlags'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import type { Range } from '@ui-kit/types/util'
-import type { Decimal } from '@ui-kit/utils'
 import { networks } from '../networks'
 
 const { Spacing } = SizesAndSpaces

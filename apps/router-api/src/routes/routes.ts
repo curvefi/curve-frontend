@@ -1,10 +1,12 @@
 import type { FastifyRequest } from 'fastify'
 import lodash from 'lodash'
+import { handleTimeout } from '@primitives/objects.utils'
+import type { RouteResponse } from '@primitives/router.utils'
 import { buildCurveRouteResponse } from '../curve-router/curve-router'
 import { buildEnsoRouteResponse } from '../enso-router/enso-router'
 import { buildOdosRouteResponse } from '../odos-router/odos-router'
-import { decimalCompare, decimalMax, handleTimeout } from '../router.utils'
-import { type RoutesQuery, type RouteResponse } from './routes.schemas'
+import { decimalCompare, decimalMax } from '../router.utils'
+import { type RoutesQuery } from './routes.schemas'
 
 const ROUTE_TIMEOUT = 30_000 // 30 seconds
 

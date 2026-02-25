@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useConnection } from 'wagmi'
-import { Address } from '@ui-kit/utils'
+import type { Address } from '@primitives/address.utils'
 import { ListPageWrapper } from '@ui-kit/widgets/ListPageWrapper'
 import {
   invalidateAllUserLendingSupplies,

@@ -1,10 +1,9 @@
 import BigNumber from 'bignumber.js'
-import type { Address } from 'viem'
 import { useUserState } from '@/llamalend/queries/user'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import type { Address, Token } from '@primitives/address.utils'
+import type { Decimal } from '@primitives/decimal.utils'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
-import type { Decimal } from '@ui-kit/utils'
-import type { Token } from '../../borrow/types'
 
 type Params<ChainId extends IChainId> = {
   chainId: ChainId | null | undefined
