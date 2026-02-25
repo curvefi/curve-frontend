@@ -1,4 +1,4 @@
-import type { Address, Hex } from 'viem'
+import { type Address, type Hex } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 
 /**

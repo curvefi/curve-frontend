@@ -5,6 +5,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { createValidationSuite } from '@ui-kit/lib'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { decimal } from '@ui-kit/utils'
+
 export type BorrowMoreMaxReceiveResult = {
   maxDebt: Decimal
   maxTotalCollateral?: Decimal

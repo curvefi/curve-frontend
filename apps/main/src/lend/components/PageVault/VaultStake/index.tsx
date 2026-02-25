@@ -20,6 +20,7 @@ import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { decimal } from '@ui-kit/utils'
+
 export const VaultStake = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const rFormType = 'stake'
   const isSubscribed = useRef(false)

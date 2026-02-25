@@ -3,6 +3,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { decimal } from '@ui-kit/utils'
+
 export const FieldLpToken = ({
   amount,
   balance,

@@ -9,6 +9,7 @@ import { HelperMessage, LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInpu
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { CRV_ADDRESS, decimal } from '@ui-kit/utils'
+
 export const FieldLockedAmt = ({
   curve,
   disabled,

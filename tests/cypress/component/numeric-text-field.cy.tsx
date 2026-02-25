@@ -3,6 +3,7 @@ import { useState } from 'react'
 import type { Decimal } from '@primitives/decimal.utils'
 import { NumericTextField, type NumericTextFieldProps } from '@ui-kit/shared/ui/NumericTextField'
 import { formatNumber } from '@ui-kit/utils'
+
 const INITIAL_VALUE = '5'
 
 function TestComponent({

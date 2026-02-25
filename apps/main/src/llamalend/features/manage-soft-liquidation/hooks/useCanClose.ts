@@ -5,6 +5,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import type { UserMarketParams } from '@ui-kit/lib/model'
 import type { Query } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
+
 const CLOSE_POSITION_SAFETY_BUFFER = 1.0001 // 0.01% safety margin
 
 export type CanCloseData = { canClose: boolean; missing: Decimal; balance: Decimal }

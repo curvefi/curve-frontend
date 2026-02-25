@@ -1,5 +1,5 @@
 import { FastifyBaseLogger } from 'fastify'
-import { type Address } from 'viem'
+import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import type { RouteResponse } from '@primitives/router.utils'
 import { type RoutesQuery } from '../routes/routes.schemas'

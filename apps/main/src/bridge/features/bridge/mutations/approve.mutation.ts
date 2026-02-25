@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import type { Hex } from 'viem'
+import type { Hex } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { requireLib } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'

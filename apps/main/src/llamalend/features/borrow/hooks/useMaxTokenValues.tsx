@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js'
 import { useCallback, useEffect, useRef } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
-import { type Address } from 'viem'
+import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { decimal } from '@ui-kit/utils'

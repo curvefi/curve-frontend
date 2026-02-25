@@ -41,6 +41,7 @@ import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { decimal } from '@ui-kit/utils'
+
 const useFetchInitial = ({
   market: llamma,
   isLeverage,

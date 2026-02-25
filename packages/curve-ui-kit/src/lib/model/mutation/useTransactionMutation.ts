@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import type { FormattedTransactionReceipt, Hex } from 'viem'
+import type { FormattedTransactionReceipt } from 'viem'
 import { useConfig } from 'wagmi'
+import { type Hex } from '@primitives/address.utils'
 import { useMutation } from '@tanstack/react-query'
 import { notify, useCurve } from '@ui-kit/features/connect-wallet'
 import { withPendingToast } from '@ui-kit/features/connect-wallet/lib/notify'

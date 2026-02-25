@@ -1,5 +1,5 @@
-import type { Hex } from 'viem'
 import { generatePrivateKey } from 'viem/accounts'
+import type { Hex } from '@primitives/address.utils'
 import { resetWagmiConfigForTests } from '@ui-kit/features/connect-wallet/lib/wagmi/wagmi-config'
 import { DeepPartial } from '@ui-kit/types/util'
 import { tenderlyAccount } from './account'
