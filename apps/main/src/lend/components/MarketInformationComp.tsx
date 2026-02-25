@@ -1,10 +1,8 @@
 import { BandsComp } from '@/lend/components/BandsComp'
 import { ChartAndActivityComp } from '@/lend/components/ChartAndActivityComp'
-import { useMarketDetails } from '@/lend/hooks/useMarketDetails'
 import { networks } from '@/lend/networks'
 import { PageContentProps } from '@/lend/types/lend.types'
-import { MarketInfoSections } from '@/llamalend/features/market-advanced-information'
-import { AdvancedDetails } from '@/llamalend/features/market-details'
+import { AdvancedDetails, MarketInfoSections } from '@/llamalend/features/market-advanced-information'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import { getLib } from '@ui-kit/features/connect-wallet'
@@ -32,7 +30,6 @@ export const MarketInformationComp = ({ pageProps, loanExists, type, previewPric
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
   const newBandsChartEnabled = useNewBandsChart()
   const showPageHeader = useIntegratedLlamaHeader()
-  const marketDetails = useMarketDetails({ chainId: rChainId, market, marketId: rOwmId })
 
   return (
     <>
@@ -46,7 +43,9 @@ export const MarketInformationComp = ({ pageProps, loanExists, type, previewPric
         <Stack
           sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, ...(showPageHeader && { marginTop: Spacing.md }) }}
         >
-          {showPageHeader && <AdvancedDetails {...marketDetails} />}
+          {showPageHeader && (
+            <AdvancedDetails chainId={rChainId} marketId={rOwmId} market={market} marketType={LlamaMarketType.Lend} />
+          )}
           <MarketInfoSections
             chainId={rChainId}
             marketType={LlamaMarketType.Lend}

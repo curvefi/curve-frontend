@@ -1,8 +1,6 @@
-import { MarketInfoSections } from '@/llamalend/features/market-advanced-information'
-import { AdvancedDetails } from '@/llamalend/features/market-details'
+import { MarketInfoSections, AdvancedDetails } from '@/llamalend/features/market-advanced-information'
 import { BandsComp } from '@/loan/components/BandsComp'
 import { ChartAndActivityComp } from '@/loan/components/ChartAndActivityComp'
-import { useMarketDetails } from '@/loan/hooks/useMarketDetails'
 import type { ChainId, Llamma } from '@/loan/types/loan.types'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -36,7 +34,6 @@ export const MarketInformationComp = ({
   const newBandsChartEnabled = useNewBandsChart()
   const showPageHeader = useIntegratedLlamaHeader()
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
-  const marketDetails = useMarketDetails({ chainId, market, marketId })
 
   return (
     <>
@@ -50,7 +47,9 @@ export const MarketInformationComp = ({
         <Stack
           sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, ...(showPageHeader && { marginTop: Spacing.md }) }}
         >
-          {showPageHeader && <AdvancedDetails {...marketDetails} />}
+          {showPageHeader && (
+            <AdvancedDetails chainId={chainId} marketId={marketId} market={market} marketType={LlamaMarketType.Mint} />
+          )}
           <MarketInfoSections
             chainId={chainId}
             marketType={LlamaMarketType.Mint}

@@ -1,32 +1,63 @@
-import { Box, CardHeader } from '@mui/material'
-import { formatNumber, FORMAT_OPTIONS } from '@ui/utils/utilsFormat'
-import { t } from '@ui-kit/lib/i18n'
-import { Metric } from '@ui-kit/shared/ui/Metric'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { abbreviateNumber, scaleSuffix } from '@ui-kit/utils/number'
+import BigNumber from 'bignumber.js'
 import {
   MarketTypeSuffix,
   MaxLeverageTooltip,
   TotalCollateralTooltip,
   UtilizationTooltip,
   TooltipOptions,
-  type AdvancedDetailsProps,
-} from './'
+} from '@/llamalend/features/market-details'
+import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import { Box, CardHeader } from '@mui/material'
+import { formatNumber, FORMAT_OPTIONS } from '@ui/utils/utilsFormat'
+import { t } from '@ui-kit/lib/i18n'
+import { Metric } from '@ui-kit/shared/ui/Metric'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { LlamaMarketType } from '@ui-kit/types/market'
+import type { Decimal } from '@ui-kit/utils'
+import { abbreviateNumber, scaleSuffix } from '@ui-kit/utils/number'
+import { useAdvancedDetailsData } from './hooks/useAdvancedDetailsData'
 
 const { Spacing } = SizesAndSpaces
+
+export type AdvancedDetailsProps = {
+  chainId: number | undefined | null
+  marketId: string | undefined | null
+  market: LlamaMarketTemplate | undefined
+  marketType: LlamaMarketType
+}
 
 const formatLiquidity = (value: number) =>
   `${formatNumber(abbreviateNumber(value), { ...FORMAT_OPTIONS.USD })}${scaleSuffix(value).toUpperCase()}`
 
-export const AdvancedDetails = ({ collateral, availableLiquidity, maxLeverage, marketType }: AdvancedDetailsProps) => {
-  const utilization =
-    availableLiquidity?.value != null && availableLiquidity.max
-      ? ((availableLiquidity.max - availableLiquidity.value) / availableLiquidity.max) * 100
-      : undefined
-  const utilizationBreakdown =
-    availableLiquidity?.value != null && availableLiquidity.max
-      ? `${formatLiquidity(availableLiquidity.max - availableLiquidity.value)}/${formatLiquidity(availableLiquidity.max)}`
-      : undefined
+type AvailableLiquidityValues = {
+  available?: Decimal
+  cap?: Decimal
+}
+
+const getUtilizationMetrics = ({ available, cap }: AvailableLiquidityValues) => {
+  if (available == null || cap == null) return {}
+
+  const availableBN = new BigNumber(available)
+  const capBN = new BigNumber(cap)
+  if (capBN.isZero()) return {}
+
+  const usedLiquidity = capBN.minus(availableBN)
+  const utilization = usedLiquidity.div(capBN).times(100).toNumber()
+
+  return {
+    utilization,
+    utilizationBreakdown: `${formatLiquidity(usedLiquidity.toNumber())}/${formatLiquidity(capBN.toNumber())}`,
+  }
+}
+
+export const AdvancedDetails = ({ chainId, marketId, market, marketType }: AdvancedDetailsProps) => {
+  const { collateral, availableLiquidity, maxLeverage } = useAdvancedDetailsData({
+    chainId,
+    market,
+    marketId,
+    marketType,
+  })
+  const { utilization, utilizationBreakdown } = getUtilizationMetrics(availableLiquidity)
 
   return (
     <Box sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
@@ -45,7 +76,7 @@ export const AdvancedDetails = ({ collateral, availableLiquidity, maxLeverage, m
           value={utilization}
           loading={availableLiquidity?.loading}
           valueOptions={{ unit: 'percentage' }}
-          notional={utilization ? utilizationBreakdown : undefined}
+          notional={utilization != null ? utilizationBreakdown : undefined}
           valueTooltip={{
             title: t`Utilization ${MarketTypeSuffix[marketType]}`,
             body: <UtilizationTooltip marketType={marketType} />,
@@ -76,7 +107,7 @@ export const AdvancedDetails = ({ collateral, availableLiquidity, maxLeverage, m
           <Metric
             size="small"
             label={t`Max leverage`}
-            value={maxLeverage?.value}
+            value={maxLeverage?.value ? +maxLeverage?.value : undefined}
             loading={maxLeverage?.loading}
             valueOptions={{ unit: 'multiplier' }}
             valueTooltip={{
