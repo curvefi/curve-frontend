@@ -1,13 +1,10 @@
-import { useMarketVaultPricePerShare } from '@/llamalend/queries/market'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { Typography } from '@mui/material'
 import Stack from '@mui/material/Stack'
-import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
-import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { MarketLoanParameters } from './MarketLoanParameters'
-import { MarketPrices } from './MarketPrices'
+import { MarketIdRow, MarketPricesRows } from './MarketParameterRows'
 
 const { Spacing } = SizesAndSpaces
 
@@ -29,11 +26,6 @@ export const MarketParameters = ({
   action: 'borrow' | 'supply'
 }) => {
   const enablePricePerShare = marketType === 'lend' && action === 'supply'
-  const {
-    data: pricePerShare,
-    isLoading: isLoadingPricePerShare,
-    error: errorPricePerShare,
-  } = useMarketVaultPricePerShare({ chainId, marketId }, enablePricePerShare)
 
   return (
     <Stack
@@ -52,22 +44,14 @@ export const MarketParameters = ({
       <Stack gap={Spacing.xs}>
         <Typography variant="headingXsBold">{t`Prices`}</Typography>
         <Stack>
-          <MarketPrices chainId={chainId} marketId={marketId} />
-          {enablePricePerShare && (
-            <ActionInfo
-              label={t`Price per share`}
-              value={formatNumber(pricePerShare, { decimals: 5 })}
-              loading={isLoadingPricePerShare}
-              error={errorPricePerShare}
-            />
-          )}
+          <MarketPricesRows chainId={chainId} marketId={marketId} enablePricePerShare={enablePricePerShare} />
         </Stack>
       </Stack>
 
       <Stack gap={Spacing.xs}>
         <Typography variant="headingXsBold">{t`Market`}</Typography>
         <Stack>
-          <ActionInfo label={t`ID`} value={marketId} loading={!marketId} />
+          <MarketIdRow marketId={marketId} />
         </Stack>
       </Stack>
     </Stack>

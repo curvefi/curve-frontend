@@ -1,11 +1,9 @@
-import { requireLib } from '@ui-kit/features/connect-wallet'
 import { queryFactory } from '@ui-kit/lib/model/query/factory'
 import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
 import { rootKeys } from '@ui-kit/lib/model/query/root-keys'
 import type { MarketQuery, MarketParams } from '@ui-kit/lib/model/query/root-keys'
 import { USE_API } from './market.constants'
-
-const getLendMarket = (marketId: string) => requireLib('llamaApi').getLendMarket(marketId)
+import { getLendMarket } from './market.query-helpers'
 
 /**
  * Fetches on chain rewards (direct token incentives or crv emissions) for supply vaults

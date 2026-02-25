@@ -1,13 +1,10 @@
-import { useMarketVaultPricePerShare } from '@/llamalend/queries/market'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { CardHeader, Stack } from '@mui/material'
-import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
-import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { MarketLoanParameters } from './MarketLoanParameters'
-import { MarketPrices } from './MarketPrices'
+import { MarketIdRow, MarketPricesRows } from './MarketParameterRows'
 
 const { Spacing } = SizesAndSpaces
 
@@ -19,11 +16,6 @@ type MarketParametersProps = {
 
 export const MarketParametersSection = ({ chainId, marketId, marketType }: MarketParametersProps) => {
   const enablePricePerShare = marketType === LlamaMarketType.Lend
-  const {
-    data: pricePerShare,
-    isLoading: isLoadingPricePerShare,
-    error: errorPricePerShare,
-  } = useMarketVaultPricePerShare({ chainId, marketId }, enablePricePerShare)
 
   return (
     <Stack>
@@ -35,22 +27,14 @@ export const MarketParametersSection = ({ chainId, marketId, marketType }: Marke
       <Stack>
         <CardHeader title={t`Prices`} size="small" data-inline />
         <Stack paddingBlock={Spacing.sm}>
-          <MarketPrices chainId={chainId} marketId={marketId} />
-          {enablePricePerShare && (
-            <ActionInfo
-              label={t`Price per share`}
-              value={formatNumber(pricePerShare, { decimals: 5 })}
-              loading={isLoadingPricePerShare}
-              error={errorPricePerShare}
-            />
-          )}
+          <MarketPricesRows chainId={chainId} marketId={marketId} enablePricePerShare={enablePricePerShare} />
         </Stack>
       </Stack>
 
       <Stack>
         <CardHeader title={t`Market`} size="small" data-inline />
         <Stack paddingBlock={Spacing.sm}>
-          <ActionInfo label={t`ID`} value={marketId} loading={!marketId} />
+          <MarketIdRow marketId={marketId} />
         </Stack>
       </Stack>
     </Stack>
