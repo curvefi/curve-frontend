@@ -14,7 +14,6 @@ import type { Chain } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
 import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import { useLendingSnapshots } from '@ui-kit/entities/lending-snapshots'
-import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { calculateAverageRates } from '@ui-kit/utils/averageRates'
@@ -34,24 +33,22 @@ export const useMarketDetails = ({
   market,
   marketId,
 }: UseMarketDetailsProps): Omit<MarketDetailsProps, 'marketPage'> => {
-  const { isHydrated } = useCurve()
   const blockchainId = networks[chainId]?.id as Chain
   const { collateral_token, borrowed_token } = market ?? {}
   const { controller, vault } = market?.addresses ?? {}
   // Query validation only checks param presence (chain/market/user). We still need `!market`
   // because this hook runs before market metadata is available, and the UI reads market fields.
-  const isMarketMetadataLoading = !market || !isHydrated
+  const isMarketMetadataLoading = !market
 
   const {
     data: {
       borrowApr: marketBorrowApr,
       lendApy: marketLendApy,
-      collateralAmount,
-      cap,
-      available,
-      maxLeverage,
       crvRates,
       rewardsApr,
+      cap,
+      available,
+      collateral: collateralAmount,
     },
     isLoading: isMarketDetailsLoading,
   } = useLendMarketDetails({ chainId, marketId })
@@ -144,8 +141,8 @@ export const useMarketDetails = ({
     collateral: {
       symbol: collateral_token?.symbol ?? null,
       tokenAddress: collateral_token?.address,
-      total: collateralAmount ?? null,
-      totalUsdValue: collateralAmount && collateralUsdRate ? collateralAmount * collateralUsdRate : null,
+      total: collateralAmount ? +collateralAmount : null,
+      totalUsdValue: collateralAmount != null && collateralUsdRate ? +collateralAmount * collateralUsdRate : null,
       usdRate: collateralUsdRate ?? null,
       loading: isMarketDetailsLoading.marketCollateralAmounts || collateralUsdRateLoading || isMarketMetadataLoading,
     },
@@ -197,15 +194,9 @@ export const useMarketDetails = ({
         isMarketMetadataLoading,
     },
     availableLiquidity: {
-      value: available ?? null,
-      max: cap ?? null,
+      value: available ? +available : undefined,
+      max: cap ? +cap : undefined,
       loading: isMarketDetailsLoading.marketCapAndAvailable || isMarketMetadataLoading,
     },
-    maxLeverage: maxLeverage
-      ? {
-          value: Number(maxLeverage),
-          loading: isMarketDetailsLoading.marketMaxLeverage || isMarketMetadataLoading,
-        }
-      : undefined,
   }
 }

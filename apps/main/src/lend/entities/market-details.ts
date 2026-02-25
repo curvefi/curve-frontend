@@ -1,5 +1,10 @@
-import { USE_API } from '@/lend/shared/config'
 import { ChainId } from '@/lend/types/lend.types'
+import {
+  useMarketTotalCollateral,
+  useMarketCapAndAvailable,
+  invalidateMarketCapAndAvailable,
+  invalidateMarketTotalCollateral,
+} from '@/llamalend/queries/market'
 import { invalidateMarketRates, useMarketRates } from '@/llamalend/queries/market-rates.query'
 import { requireLib } from '@ui-kit/features/connect-wallet'
 import { queryFactory } from '@ui-kit/lib/model/query'
@@ -8,44 +13,6 @@ import { rootKeys } from '@ui-kit/lib/model/query/root-keys'
 import type { MarketQuery, MarketParams } from '@ui-kit/lib/model/query/root-keys'
 
 const getLendMarket = (marketId: string) => requireLib('llamaApi').getLendMarket(marketId)
-
-export const { useQuery: useMarketCapAndAvailable, invalidate: invalidateMarketCapAndAvailable } = queryFactory({
-  queryKey: (params: MarketParams) => [...rootKeys.market(params), 'marketCapAndAvailable', 'v1'] as const,
-  queryFn: async ({ marketId }: MarketQuery) => {
-    const market = getLendMarket(marketId)
-    const capAndAvailable = await market.stats.capAndAvailable(false, USE_API)
-    return {
-      cap: Number(capAndAvailable.cap),
-      available: Number(capAndAvailable.available),
-    }
-  },
-  refetchInterval: '1m',
-  validationSuite: marketIdValidationSuite,
-})
-
-export const { useQuery: useMarketMaxLeverage } = queryFactory({
-  queryKey: (params: MarketParams) => [...rootKeys.market(params), 'marketMaxLeverage', 'v1'] as const,
-  queryFn: async ({ marketId }: MarketQuery) => {
-    const market = getLendMarket(marketId)
-    const maxLeverage = market.leverage.hasLeverage() ? await market.leverage.maxLeverage(market?.minBands) : null
-    return { maxLeverage }
-  },
-  validationSuite: marketIdValidationSuite,
-})
-
-export const { useQuery: useMarketCollateralAmounts, invalidate: invalidateMarketCollateralAmounts } = queryFactory({
-  queryKey: (params: MarketParams) => [...rootKeys.market(params), 'marketCollateralAmounts', 'v1'] as const,
-  queryFn: async ({ marketId }: MarketQuery) => {
-    const market = getLendMarket(marketId)
-    const ammBalance = await market.stats.ammBalances(false, USE_API)
-    return {
-      collateralAmount: Number(ammBalance.collateral),
-      borrowedAmount: Number(ammBalance.borrowed),
-    }
-  },
-  refetchInterval: '1m',
-  validationSuite: marketIdValidationSuite,
-})
 
 /**
  * The purpose of this query is to allow fetching market parameters on chain
@@ -74,21 +41,20 @@ export const { useQuery: useMarketPricePerShare, invalidate: invalidateMarketPri
 
 export const invalidateMarketDetails = ({ chainId, marketId }: { chainId: ChainId; marketId: string }) =>
   Promise.all([
-    invalidateMarketCapAndAvailable({ chainId, marketId }),
-    invalidateMarketCollateralAmounts({ chainId, marketId }),
     invalidateMarketOnChainRewards({ chainId, marketId }),
     invalidateMarketPricePerShare({ chainId, marketId }),
     invalidateMarketRates({ chainId, marketId }),
+    invalidateMarketTotalCollateral({ chainId, marketId }),
+    invalidateMarketCapAndAvailable({ chainId, marketId }),
   ])
 
 export const useMarketDetails = (params: MarketParams, options?: { enabled?: boolean }) => {
   const queryParams = { ...params, ...options }
 
+  const { data: marketTotalCollateral, isLoading: isMarketTotalCollateralLoading } =
+    useMarketTotalCollateral(queryParams)
   const { data: marketCapAndAvailable, isLoading: isMarketCapAndAvailableLoading } =
     useMarketCapAndAvailable(queryParams)
-  const { data: marketMaxLeverage, isLoading: isMarketMaxLeverageLoading } = useMarketMaxLeverage(queryParams)
-  const { data: marketCollateralAmounts, isLoading: isMarketCollateralAmountsLoading } =
-    useMarketCollateralAmounts(queryParams)
   const { data: marketOnChainRewards, isLoading: isMarketOnChainRewardsLoading } = useMarketOnChainRewards(queryParams)
   const { data: marketPricePerShare, isLoading: isMarketPricePerShareLoading } = useMarketPricePerShare(queryParams)
   const { data: marketRates, isLoading: isMarketRatesLoading } = useMarketRates({
@@ -99,16 +65,14 @@ export const useMarketDetails = (params: MarketParams, options?: { enabled?: boo
   return {
     data: {
       ...(marketCapAndAvailable ?? undefined),
-      ...(marketMaxLeverage ?? undefined),
-      ...(marketCollateralAmounts ?? undefined),
+      ...(marketTotalCollateral ?? undefined),
       ...(marketOnChainRewards ?? undefined),
       ...(marketRates ?? undefined),
       pricePerShare: marketPricePerShare,
     },
     isLoading: {
+      marketCollateralAmounts: isMarketTotalCollateralLoading,
       marketCapAndAvailable: isMarketCapAndAvailableLoading,
-      marketMaxLeverage: isMarketMaxLeverageLoading,
-      marketCollateralAmounts: isMarketCollateralAmountsLoading,
       marketOnChainRewards: isMarketOnChainRewardsLoading,
       marketRates: isMarketRatesLoading,
       marketPricePerShare: isMarketPricePerShareLoading,
