@@ -4,6 +4,7 @@ import { useMarketDetails as useLendMarketDetails } from '@/lend/entities/market
 import { networks } from '@/lend/networks'
 import type { ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import type { MarketDetailsProps } from '@/llamalend/features/market-details'
+import { useMarketMaxLeverage } from '@/llamalend/queries/market-max-leverage.query'
 import {
   LAST_MONTH,
   getBorrowRateMetrics,
@@ -62,9 +63,10 @@ export const useMarketDetails = ({
     chainId,
     tokenAddress: collateral_token?.address,
   })
-  const { data: borrowedUsdRate, isLoading: borrowedUsdRateLoading } = useTokenUsdRate({
+  const { data: maxLeverage, isLoading: isMarketMaxLeverageLoading } = useMarketMaxLeverage({
     chainId,
-    tokenAddress: borrowed_token?.address,
+    marketId,
+    range: market?.minBands ?? 0,
   })
 
   const { data: campaignsVault } = useCampaignsByAddress({ blockchainId, address: vault as Address })
@@ -142,15 +144,14 @@ export const useMarketDetails = ({
       symbol: collateral_token?.symbol ?? null,
       tokenAddress: collateral_token?.address,
       total: collateralAmount ? +collateralAmount : null,
+      // TODO: add potential collateral value in borrowed token
       totalUsdValue: collateralAmount != null && collateralUsdRate ? +collateralAmount * collateralUsdRate : null,
-      usdRate: collateralUsdRate ?? null,
       loading: isMarketDetailsLoading.marketCollateralAmounts || collateralUsdRateLoading || isMarketMetadataLoading,
     },
     borrowToken: {
       symbol: borrowed_token?.symbol ?? null,
       tokenAddress: borrowed_token?.address,
-      usdRate: borrowedUsdRate ?? null,
-      loading: isMarketDetailsLoading.marketCollateralAmounts || borrowedUsdRateLoading || isMarketMetadataLoading,
+      loading: isMarketDetailsLoading.marketCollateralAmounts || isMarketMetadataLoading,
     },
     borrowRate: {
       rate: borrowApr,
@@ -197,6 +198,10 @@ export const useMarketDetails = ({
       value: available ? +available : undefined,
       max: cap ? +cap : undefined,
       loading: isMarketDetailsLoading.marketCapAndAvailable || isMarketMetadataLoading,
+    },
+    maxLeverage: {
+      value: maxLeverage == null ? null : Number(maxLeverage),
+      loading: isMarketMaxLeverageLoading || isMarketMetadataLoading,
     },
   }
 }
