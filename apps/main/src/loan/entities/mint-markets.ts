@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
 import { isAddress } from 'viem'
 import { ChainId } from '@/loan/types/loan.types'
-import { fromEntries } from '@curvefi/primitives/objects.utils'
+import type { Address } from '@primitives/address.utils'
+import { fromEntries } from '@primitives/objects.utils'
 import { useCurve } from '@ui-kit/features/connect-wallet'
-import type { Address } from '@ui-kit/utils'
 
 /**
  * Hook to get a mapping of mint market controller address to market name for all mint markets on a specific chain.

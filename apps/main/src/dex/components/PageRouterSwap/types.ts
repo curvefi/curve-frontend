@@ -1,6 +1,6 @@
-import type { RouteResponse } from '@primitives'
 import { AlertFormErrorKey } from '@/dex/components/AlertFormError'
 import type { IRouteStep } from '@curvefi/api/lib/interfaces'
+import type { RouteResponse } from '@primitives/router.utils'
 
 export type StepKey = 'APPROVAL' | 'SWAP'
 

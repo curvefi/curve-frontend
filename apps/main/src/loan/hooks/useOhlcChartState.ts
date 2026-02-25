@@ -4,6 +4,7 @@ import { getTokens } from '@/llamalend/llama.utils'
 import { useUserPrices } from '@/llamalend/queries/user'
 import { useStore } from '@/loan/store/useStore'
 import { ChainId, Llamma } from '@/loan/types/loan.types'
+import type { Decimal } from '@primitives/decimal.utils'
 import {
   useChartLegendToggles,
   useChartTimeSettings,
@@ -14,7 +15,6 @@ import type { OhlcChartProps } from '@ui-kit/features/candle-chart/ChartWrapper'
 import { DEFAULT_CHART_HEIGHT } from '@ui-kit/features/candle-chart/constants'
 import { getThreeHundredResultsAgo, subtractTimeUnit } from '@ui-kit/features/candle-chart/utils'
 import type { Range } from '@ui-kit/types/util'
-import type { Decimal } from '@ui-kit/utils'
 
 export type LlammaLiquidityCoins = ReturnType<typeof getTokens> | undefined | null
 

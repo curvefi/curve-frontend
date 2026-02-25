@@ -6,12 +6,12 @@ import { PageContentProps } from '@/lend/types/lend.types'
 import { AdvancedDetails } from '@/llamalend/features/market-details'
 import { MarketParameters } from '@/llamalend/features/market-parameters/MarketParameters'
 import Stack from '@mui/material/Stack'
+import type { Decimal } from '@primitives/decimal.utils'
 import { getLib } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNewBandsChart, useIntegratedLlamaHeader } from '@ui-kit/hooks/useFeatureFlags'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { Range } from '@ui-kit/types/util'
-import type { Decimal } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 

@@ -1,5 +1,5 @@
 import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
-import { type Decimal } from '@ui-kit/utils'
+import type { Decimal } from '@primitives/decimal.utils'
 import { checkDebt, type DebtCheck, getActionValue, touchInput } from './action-info.helpers'
 
 const getRepayInput = () => cy.get('[data-testid^="repay-input-"] input[type="text"]', LOAD_TIMEOUT).first()

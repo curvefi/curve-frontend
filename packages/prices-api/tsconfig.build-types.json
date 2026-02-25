@@ -3,9 +3,6 @@
   "compilerOptions": {
     "incremental": false,
     "declarationMap": false,
-    "paths": {
-      "@primitives": ["../../primitives/dist/index.d.ts"],
-      "@primitives/*": ["../../primitives/dist/*"]
-    }
+    "paths": { "@primitives/*": ["../../primitives/dist/*"] }
   }
 }

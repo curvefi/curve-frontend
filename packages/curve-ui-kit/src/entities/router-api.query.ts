@@ -1,12 +1,13 @@
 import { enforce, test } from 'vest'
-import { toArray } from '@curvefi/primitives/array.utils'
-import { fetchJson } from '@curvefi/primitives/fetch.utils'
-import { notFalsy } from '@curvefi/primitives/objects.utils'
-import type { RouteProvider, RouteResponse } from '@curvefi/primitives/router'
+import type { Address } from '@primitives/address.utils'
+import { toArray } from '@primitives/array.utils'
+import type { Decimal } from '@primitives/decimal.utils'
+import { fetchJson } from '@primitives/fetch.utils'
+import { notFalsy } from '@primitives/objects.utils'
+import type { RouteProvider, RouteResponse } from '@primitives/router.utils'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { userAddressValidationGroup } from '@ui-kit/lib/model/query/user-address-validation'
-import { Address, Decimal } from '@ui-kit/utils'
 
 export type RoutesQuery = {
   chainId: number

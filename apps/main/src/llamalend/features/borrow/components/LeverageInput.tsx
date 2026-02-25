@@ -1,9 +1,9 @@
 import { type ChangeEvent } from 'react'
+import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 import type { QueryProp } from '@ui-kit/types/util'
-import { Decimal } from '@ui-kit/utils'
 import { CheckboxField } from '@ui-kit/widgets/DetailPageLayout/CheckboxField'
 
 const TEST_ID_PREFIX = 'leverage'

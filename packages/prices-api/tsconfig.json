@@ -9,12 +9,8 @@
     "noUnusedParameters": true,
     "noEmit": false,
     "paths": {
-      "@curvefi/primitives/*": [
-        "../../primitives/src/*"
-      ]
+      "@primitives/*": ["../../primitives/src/*"]
     }
   },
-  "include": [
-    "src"
-  ]
+  "include": ["src"]
 }

@@ -1,4 +1,6 @@
-import { RouteProviders, type Address, type Decimal, type RouteProvider } from '@curvefi/primitives/router'
+import { type Address } from '@primitives/address.utils'
+import { type Decimal } from '@primitives/decimal.utils'
+import { RouteProviders, type RouteProvider } from '@primitives/router.utils'
 
 export const ADDRESS_HEX_PATTERN = '^0x[a-fA-F0-9]{40}$'
 export const DECIMAL_PATTERN = '^-?\\d+(\\.\\d+)?$'

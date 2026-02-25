@@ -1,6 +1,6 @@
 import { BigNumber } from 'bignumber.js'
 import { formatUnits, parseUnits } from 'viem'
-import type { Decimal } from '@curvefi/primitives/router'
+import type { Decimal } from '@primitives/decimal.utils'
 
 /**
  * Returns the maximum Decimal value from an array of Decimals, without losing precision.

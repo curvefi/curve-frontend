@@ -1,9 +1,10 @@
 import BigNumber from 'bignumber.js'
 import { useCreateLoanExpectedCollateral } from '@/llamalend/queries/create-loan/create-loan-expected-collateral.query'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import { Token } from '@primitives/address.utils'
+import type { Decimal } from '@primitives/decimal.utils'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
-import { Decimal } from '@ui-kit/utils'
-import type { CreateLoanFormQueryParams, Token } from '../types'
+import type { CreateLoanFormQueryParams } from '../types'
 
 /**
  * Hook to calculate the Loan to Value (LTV) ratio in percentage points.

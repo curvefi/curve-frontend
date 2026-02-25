@@ -1,6 +1,7 @@
 import { FastifyBaseLogger } from 'fastify'
 import { Address } from 'viem'
-import type { Decimal, RouteResponse, TransactionData } from '@curvefi/primitives/router'
+import type { Decimal } from '@primitives/decimal.utils'
+import type { RouteResponse, TransactionData } from '@primitives/router.utils'
 import { type RoutesQuery } from '../routes/routes.schemas'
 
 const { ENSO_API_URL = 'https://api.enso.finance', ENSO_API_KEY } = process.env

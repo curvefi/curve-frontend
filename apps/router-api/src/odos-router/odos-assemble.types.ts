@@ -1,5 +1,5 @@
 import type { Address, Hex } from 'viem'
-import type { Decimal } from '@curvefi/primitives/router'
+import type { Decimal } from '@primitives/decimal.utils'
 
 /**
  * Assemble Path Request Schema.

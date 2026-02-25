@@ -12,10 +12,11 @@ import {
   repayFromCollateralIsFullValidationSuite,
 } from '@/llamalend/queries/validation/manage-loan.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
+import type { Decimal } from '@primitives/decimal.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
 import type { OnTransactionSuccess } from '@ui-kit/lib/model/mutation/useTransactionMutation'
-import { decimal, type Decimal, waitForApproval } from '@ui-kit/utils'
+import { decimal, waitForApproval } from '@ui-kit/utils'
 
 type RepayMutation = {
   stateCollateral: Decimal

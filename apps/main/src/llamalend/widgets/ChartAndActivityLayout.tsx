@@ -3,20 +3,20 @@ import { BandsChart } from '@/llamalend/features/bands-chart/BandsChart'
 import type { ChartDataPoint, ParsedBandsBalances } from '@/llamalend/features/bands-chart/types'
 import {
   LlammaActivityEvents,
-  LlammaActivityTrades,
   type LlammaActivityProps,
+  LlammaActivityTrades,
 } from '@/llamalend/features/llamma-activity'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
-import { type Token } from '@ui-kit/features/activity-table'
+import { Token } from '@primitives/address.utils'
 import { ChartWrapper, type OhlcChartProps } from '@ui-kit/features/candle-chart/ChartWrapper'
-import { TIME_OPTIONS, SOFT_LIQUIDATION_DESCRIPTION } from '@ui-kit/features/candle-chart/constants'
+import { SOFT_LIQUIDATION_DESCRIPTION, TIME_OPTIONS } from '@ui-kit/features/candle-chart/constants'
 import type { TimeOption } from '@ui-kit/features/candle-chart/types'
 import { useNewBandsChart } from '@ui-kit/hooks/useFeatureFlags'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { ChartFooter } from '@ui-kit/shared/ui/Chart/ChartFooter'
-import { type ChartSelections, ChartHeader } from '@ui-kit/shared/ui/Chart/ChartHeader'
+import { ChartHeader, type ChartSelections } from '@ui-kit/shared/ui/Chart/ChartHeader'
 import { type LegendItem } from '@ui-kit/shared/ui/Chart/LegendSet'
 import { ToggleBandsChartButton } from '@ui-kit/shared/ui/Chart/ToggleBandsChartButton'
 import { ErrorMessage } from '@ui-kit/shared/ui/ErrorMessage'

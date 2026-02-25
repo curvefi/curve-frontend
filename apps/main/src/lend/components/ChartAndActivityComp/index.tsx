@@ -5,10 +5,10 @@ import { Api, ChainId } from '@/lend/types/lend.types'
 import { getBandsChartToken } from '@/llamalend/features/bands-chart/bands-chart.utils'
 import { useBandsData } from '@/llamalend/features/bands-chart/hooks/useBandsData'
 import { ChartAndActivityLayout } from '@/llamalend/widgets/ChartAndActivityLayout'
-import type { Address, Chain } from '@curvefi/prices-api'
-import { type Token } from '@ui-kit/features/activity-table'
+import type { Chain } from '@curvefi/prices-api'
+import type { Address, Token } from '@primitives/address.utils'
+import type { Decimal } from '@primitives/decimal.utils'
 import type { Range } from '@ui-kit/types/util'
-import type { Decimal } from '@ui-kit/utils'
 
 type ChartAndActivityCompProps = {
   rChainId: ChainId

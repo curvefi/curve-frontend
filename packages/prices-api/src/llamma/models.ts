@@ -1,4 +1,4 @@
-import type { Address } from '..'
+import type { Address, Token } from '@primitives/address.utils'
 
 type Deposit = {
   amount: number
@@ -23,14 +23,8 @@ export type LlammaEvent = {
 export type LlammaTrade = {
   idSold: number
   idBought: number
-  tokenSold: {
-    symbol: string
-    address: Address
-  }
-  tokenBought: {
-    symbol: string
-    address: Address
-  }
+  tokenSold: Token
+  tokenBought: Token
   amountSold: number
   amountBought: number
   price: number

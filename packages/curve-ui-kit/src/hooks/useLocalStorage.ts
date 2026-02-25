@@ -1,6 +1,6 @@
 import lodash from 'lodash'
 import { useCallback, useMemo } from 'react'
-import type { Address } from '@curvefi/prices-api'
+import type { Address } from '@primitives/address.utils'
 import type { VisibilityVariants } from '@ui-kit/shared/ui/DataTable/visibility.types'
 import { defaultReleaseChannel, ReleaseChannel } from '@ui-kit/utils'
 import { type MigrationOptions, useStoredState } from './useStoredState'

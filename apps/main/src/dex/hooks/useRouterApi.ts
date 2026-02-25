@@ -11,11 +11,13 @@ import { useStore } from '@/dex/store/useStore'
 import { TokensNameMapper } from '@/dex/types/main.types'
 import { getExchangeRates } from '@/dex/utils/utilsSwap'
 import type { IRouteStep } from '@curvefi/api/lib/interfaces'
-import type { RouteResponse } from '@curvefi/primitives/router'
-import { notFalsy } from '@curvefi/primitives/objects.utils'
+import type { Address } from '@primitives/address.utils'
+import type { Decimal } from '@primitives/decimal.utils'
+import { notFalsy } from '@primitives/objects.utils'
+import type { RouteResponse } from '@primitives/router.utils'
 import { type RoutesQuery, useRouterApi as useRouterApiQuery } from '@ui-kit/entities/router-api.query'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { Address, type Decimal, fromWei, toWei } from '@ui-kit/utils'
+import { fromWei, toWei } from '@ui-kit/utils'
 
 /** Calculate exchange rates for display */
 const calculateExchangeRates = (

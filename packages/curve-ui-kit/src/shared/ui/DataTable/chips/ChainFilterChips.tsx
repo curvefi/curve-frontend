@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { capitalize } from '@mui/material'
 import Grid from '@mui/material/Grid'
-import { notFalsy } from '@curvefi/primitives/objects.utils'
+import { notFalsy } from '@primitives/objects.utils'
 import { NETWORK_BASE_CONFIG } from '@ui/utils'
 import { ChainIcon } from '@ui-kit/shared/icons/ChainIcon'
 import { GridChip } from '@ui-kit/shared/ui/DataTable/chips/GridChip'

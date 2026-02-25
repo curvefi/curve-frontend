@@ -6,9 +6,10 @@ import { fetchCloseIsApproved } from '@/llamalend/queries/close-loan/close-loan-
 import type { CloseLoanParams } from '@/llamalend/queries/validation/manage-loan.types'
 import { closeLoanValidationSuite } from '@/llamalend/queries/validation/manage-loan.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
+import type { Decimal } from '@primitives/decimal.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
-import { type Decimal, waitForApproval } from '@ui-kit/utils'
+import { waitForApproval } from '@ui-kit/utils'
 
 type ClosePositionOptions = {
   marketId: string | undefined

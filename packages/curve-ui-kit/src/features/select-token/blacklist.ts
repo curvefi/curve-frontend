@@ -1,4 +1,4 @@
-import type { Address } from '@ui-kit/utils'
+import type { Address } from '@primitives/address.utils'
 
 /** Represents a token that should be blacklisted from token selection. */
 type BlacklistEntry = {

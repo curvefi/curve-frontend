@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "yarn build:deps && rm -rf dist && yarn build:js && yarn build:types",
-    "build:deps": "yarn workspace @curvefi/primitives build",
+    "build:deps": "yarn workspace @primitives build",
     "build:js": "vite build",
     "build:types": "tsc -p tsconfig.build-types.json --emitDeclarationOnly",
     "prepublishOnly": "yarn run build",

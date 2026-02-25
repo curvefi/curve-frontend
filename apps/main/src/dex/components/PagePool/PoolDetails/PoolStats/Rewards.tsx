@@ -9,6 +9,7 @@ import { ChainId, RewardsApy, PoolData } from '@/dex/types/main.types'
 import { shortenTokenName } from '@/dex/utils'
 import { haveRewardsApy } from '@/dex/utils/utilsCurvejs'
 import type { Chain } from '@curvefi/prices-api'
+import type { Address } from '@primitives/address.utils'
 import { Box } from '@ui/Box'
 import { Icon } from '@ui/Icon'
 import { ExternalLink } from '@ui/Link'
@@ -19,7 +20,7 @@ import { Chip } from '@ui/Typography'
 import { FORMAT_OPTIONS, formatNumber, scanTokenPath } from '@ui/utils'
 import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
-import { copyToClipboard, type Address } from '@ui-kit/utils'
+import { copyToClipboard } from '@ui-kit/utils'
 
 type RewardsProps = {
   chainId: ChainId

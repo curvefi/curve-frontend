@@ -12,10 +12,11 @@ import type {
 } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
+import type { Address } from '@primitives/address.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
 import type { OnTransactionSuccess } from '@ui-kit/lib/model/mutation/useTransactionMutation'
-import { Address, waitForApproval } from '@ui-kit/utils'
+import { waitForApproval } from '@ui-kit/utils'
 import type { CreateLoanForm, CreateLoanFormQuery } from '../features/borrow/types'
 
 type CreateLoanMutationContext = {

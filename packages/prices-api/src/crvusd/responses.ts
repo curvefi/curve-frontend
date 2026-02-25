@@ -1,4 +1,5 @@
-import type { Address, Chain, PaginationMeta } from '..'
+import type { Address, Token } from '@primitives/address.utils'
+import type { Chain, PaginationMeta } from '..'
 
 export type GetMarketsResponse = {
   data: {
@@ -89,10 +90,7 @@ export type GetKeepersResponse = {
     address: Address
     pool: string
     pool_address: Address
-    pair: {
-      symbol: string
-      address: Address
-    }[]
+    pair: Token[]
     active: boolean
     total_debt: number
     total_profit: number

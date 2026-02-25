@@ -2,9 +2,10 @@ import type { ReactNode } from 'react'
 import type { Theme } from '@mui/material'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
+import type { Decimal } from '@primitives/decimal.utils'
 import { BalanceAmount } from '@ui-kit/shared/ui/LargeTokenInput/BalanceAmount'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { decimal, type Decimal } from '@ui-kit/utils'
+import { decimal } from '@ui-kit/utils'
 import { BalanceButton } from './BalanceButton'
 
 const { Spacing, Sizing } = SizesAndSpaces

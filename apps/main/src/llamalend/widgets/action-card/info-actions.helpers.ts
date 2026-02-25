@@ -1,6 +1,7 @@
-import { notFalsy } from '@curvefi/primitives/objects.utils'
+import type { Amount } from '@primitives/decimal.utils'
+import { notFalsy } from '@primitives/objects.utils'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { type Amount, formatNumber } from '@ui-kit/utils'
+import { formatNumber } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 

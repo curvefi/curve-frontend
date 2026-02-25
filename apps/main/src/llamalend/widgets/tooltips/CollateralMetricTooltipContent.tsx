@@ -6,9 +6,9 @@ import {
   TooltipDescription,
 } from '@/llamalend/widgets/tooltips/TooltipComponents'
 import { Stack } from '@mui/material'
+import type { Decimal } from '@primitives/decimal.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { formatPercent, formatNumber, formatUsd } from '@ui-kit/utils'
-import { Decimal } from '@ui-kit/utils/decimal'
 
 type CollateralMetricTooltipContentProps = {
   collateralValue: CollateralValue | undefined | null

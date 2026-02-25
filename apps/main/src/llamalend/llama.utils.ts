@@ -7,10 +7,11 @@ import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { Chain } from '@curvefi/prices-api'
 import { getUserMarketCollateralEvents as getMintUserMarketCollateralEvents } from '@curvefi/prices-api/crvusd'
 import { getUserMarketCollateralEvents as getLendUserMarketCollateralEvents } from '@curvefi/prices-api/lending'
-import { notFalsy, objectKeys } from '@curvefi/primitives/objects.utils'
+import type { Decimal } from '@primitives/decimal.utils'
+import { notFalsy, objectKeys } from '@primitives/objects.utils'
 import { requireLib, type Wallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
-import { CRVUSD, type Decimal, formatNumber } from '@ui-kit/utils'
+import { CRVUSD, formatNumber } from '@ui-kit/utils'
 import { MarketNetBorrowAprTooltipContentProps } from './widgets/tooltips/MarketNetBorrowAprTooltipContent'
 
 /**

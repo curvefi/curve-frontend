@@ -8,14 +8,14 @@ import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import Stack from '@mui/material/Stack'
-import { notFalsy } from '@curvefi/primitives/objects.utils'
+import type { Decimal } from '@primitives/decimal.utils'
+import { notFalsy } from '@primitives/objects.utils'
 import { TokenSection } from '@ui-kit/features/select-token/ui/modal/TokenSection'
 import { useTokenBalances } from '@ui-kit/hooks/useTokenBalance'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRates } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { QueryProp } from '@ui-kit/types/util'
-import type { Decimal } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 

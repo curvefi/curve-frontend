@@ -1,14 +1,14 @@
 import { useCallback, useMemo } from 'react'
 import type { FormType, VecrvInfo } from '@/dao/components/PageVeCrv/types'
 import { CurveApi } from '@/dao/types/dao.types'
+import type { Decimal } from '@primitives/decimal.utils'
 import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { DEX_ROUTES, getInternalUrl } from '@ui-kit/shared/routes'
 import { HelperMessage, LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import { CRV_ADDRESS, decimal, type Decimal } from '@ui-kit/utils'
-
+import { CRV_ADDRESS, decimal } from '@ui-kit/utils'
 export const FieldLockedAmt = ({
   curve,
   disabled,

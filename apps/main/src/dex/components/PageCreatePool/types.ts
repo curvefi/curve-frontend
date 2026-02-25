@@ -13,7 +13,7 @@ import {
   TOKEN_H,
 } from '@/dex/components/PageCreatePool/constants'
 import type { CreatePoolSlice } from '@/dex/store/createCreatePoolSlice'
-import type { Decimal } from '@ui-kit/utils'
+import type { Decimal } from '@primitives/decimal.utils'
 
 export type CreateToken = {
   address: string

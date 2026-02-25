@@ -1,13 +1,13 @@
 import { sum } from 'lodash'
 import { useMemo } from 'react'
-import type { Address } from 'viem'
 import {
   ClaimableReward,
   useClaimableCrv,
   useClaimableRewards,
 } from '@/llamalend/queries/supply/supply-claimable-rewards.query'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { notFalsy } from '@curvefi/primitives/objects.utils'
+import type { Address } from '@primitives/address.utils'
+import { notFalsy } from '@primitives/objects.utils'
 import { UserMarketParams } from '@ui-kit/lib/model'
 import { useTokenUsdRates } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { CRV } from '@ui-kit/utils/address'

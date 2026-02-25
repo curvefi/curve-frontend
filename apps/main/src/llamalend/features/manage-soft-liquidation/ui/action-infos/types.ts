@@ -1,5 +1,5 @@
 import type { TypographyProps } from '@mui/material/Typography'
-import type { Decimal } from '@ui-kit/utils'
+import type { Decimal } from '@primitives/decimal.utils'
 
 /**
  * Describes a change in value for a certain action info. The `next` value is optional as we await input.

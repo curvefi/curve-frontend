@@ -1,5 +1,5 @@
 import type { Theme } from '@mui/material'
-import { Decimal } from '@ui-kit/utils'
+import type { Decimal } from '@primitives/decimal.utils'
 
 /** Health percentage thresholds used for color coding and label display */
 export const HEALTH_THRESHOLDS = {

@@ -1,8 +1,9 @@
 import Typography from '@mui/material/Typography'
+import type { Amount } from '@primitives/decimal.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { FireIcon } from '@ui-kit/shared/icons/FireIcon'
 import type { QueryProp } from '@ui-kit/types/util'
-import { Amount, formatUsd } from '@ui-kit/utils'
+import { formatUsd } from '@ui-kit/utils'
 import { ActionInfo } from './ActionInfo'
 
 export type TxGasInfo = {

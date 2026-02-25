@@ -1,6 +1,6 @@
 import type { FastifyRequest } from 'fastify'
 import lodash from 'lodash'
-import type { RouteResponse } from '@curvefi/primitives/router'
+import type { RouteResponse } from '@primitives/router.utils'
 import { handleTimeout } from '../../../../packages/primitives/src/objects.utils'
 import { buildCurveRouteResponse } from '../curve-router/curve-router'
 import { buildEnsoRouteResponse } from '../enso-router/enso-router'

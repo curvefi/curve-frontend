@@ -1,11 +1,12 @@
 import type { Chain } from '@curvefi/prices-api'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { Token } from '@primitives/address.utils'
 import { InlineTableCell } from '@ui-kit/shared/ui/DataTable/inline-cells/InlineTableCell'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatNumber } from '@ui-kit/utils'
-import type { LlammaEventRow, Token } from '../types'
+import type { LlammaEventRow } from '../types'
 
 const { Spacing } = SizesAndSpaces
 

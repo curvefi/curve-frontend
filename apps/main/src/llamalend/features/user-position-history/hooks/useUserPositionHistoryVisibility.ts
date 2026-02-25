@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { fromEntries, recordValues } from '@curvefi/primitives/objects.utils'
+import { fromEntries, recordValues } from '@primitives/objects.utils'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { UserPositionHistoryColumnId } from '../columns'
 

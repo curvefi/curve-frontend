@@ -1,3 +1,3 @@
-import type { RouteResponse } from '@curvefi/primitives/router'
+import type { RouteResponse } from '@primitives/router.utils'
 
 export type RouteOption = RouteResponse

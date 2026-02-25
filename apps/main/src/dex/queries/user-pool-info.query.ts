@@ -1,8 +1,9 @@
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
+import type { Address } from '@primitives/address.utils'
 import { requireLib } from '@ui-kit/features/connect-wallet'
 import { queryFactory, rootKeys, type UserPoolParams, type UserPoolQuery } from '@ui-kit/lib/model'
 import { userPoolValidationSuite } from '@ui-kit/lib/model/query/user-pool-validation'
-import { Chain, decimal, type Address } from '@ui-kit/utils'
+import { Chain, decimal } from '@ui-kit/utils'
 import { usePoolTokenDepositBalances } from '../hooks/usePoolTokenDepositBalances'
 import { isValidAddress } from '../utils'
 

@@ -1,4 +1,4 @@
-import { fetchJson as fetch } from '@curvefi/primitives/fetch.utils'
+import { fetchJson as fetch } from '@primitives/fetch.utils'
 import { getHost, type Options, type Chain } from '..'
 import { getTimeRange } from '../timestamp'
 import * as Parsers from './parsers'
