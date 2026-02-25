@@ -2,10 +2,11 @@ import { notFalsy } from '@curvefi/prices-api/objects.util'
 import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
 import { type Decimal, formatNumber } from '@ui-kit/utils'
 
+const getActionInfo = (name: string, field?: 'previous') =>
+  cy.get(`[data-testid="${notFalsy(name, field, 'value').join('-')}"]`, TRANSACTION_LOAD_TIMEOUT)
+
 export const getActionValue = (name: string, field?: 'previous') =>
-  cy
-    .get(`[data-testid="${notFalsy(name, field, 'value').join('-')}"]`, TRANSACTION_LOAD_TIMEOUT)
-    .invoke(TRANSACTION_LOAD_TIMEOUT, 'attr', 'data-value')
+  getActionInfo(name, field).invoke(TRANSACTION_LOAD_TIMEOUT, 'attr', 'data-value')
 
 export type DebtCheck = { current: Decimal; future: Decimal; symbol: string }
 /**
@@ -21,14 +22,14 @@ export const checkDebt = ({ current, future, symbol }: DebtCheck) => {
  * Checks that the current debt is as expected, and future value is displayed.
  */
 export const checkCurrentDebt = (expectedCurrentDebt: Decimal) => {
-  getActionValue('borrow-debt').should('equal', formatNumber(expectedCurrentDebt, { abbreviate: false }))
-  cy.get('[data-testid="borrow-debt-previous-value"]').should('not.exist')
+  getActionInfo('borrow-debt').should('be.visible')
+  const expected = formatNumber(expectedCurrentDebt, { abbreviate: false })
+  getActionValue('borrow-debt').should('equal', expected)
+  getActionValue('borrow-debt', 'previous').should('equal', expected)
 }
 
 export function touchInput(getInputFn: () => Cypress.Chainable) {
-  // todo: make sure the LargeTokenInput properly sets `0` values
-  getInputFn().type('0.00001') // use a very small value to make sure repay.isFull isn't set before the blur.
-  getInputFn().blur()
-  getInputFn().clear()
+  getInputFn().should('have.value', '')
+  getInputFn().type('0')
   getInputFn().blur()
 }

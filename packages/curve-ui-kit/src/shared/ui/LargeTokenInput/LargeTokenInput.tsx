@@ -169,7 +169,7 @@ const calculateNewPercentage = (newBalance: Decimal, max: Decimal) =>
     .replace(/\.?0+$/, '') as Decimal
 
 /** Converts two decimals to BigNumber for comparison. Undefined is considered zero. */
-const bigNumEquals = (a?: Decimal, b?: Decimal) => new BigNumber(a ?? 0).isEqualTo(b ?? 0)
+const bigNumEquals = (a?: Decimal, b?: Decimal) => a == b || (a != null && b != null && new BigNumber(a).isEqualTo(b))
 
 const [MIN_PERCENTAGE, MAX_PERCENTAGE] = [0, 100]
 
