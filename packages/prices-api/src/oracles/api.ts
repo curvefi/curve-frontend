@@ -1,4 +1,4 @@
-import { fetchJson as fetch } from '@curvefi/primitives/fetch.utils'
+import { fetchJson as fetch } from '@primitives/fetch.utils'
 import { getHost, type Options } from '..'
 import * as Parsers from './parsers'
 import type * as Responses from './responses'

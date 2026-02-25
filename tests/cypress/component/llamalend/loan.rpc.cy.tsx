@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import BigNumber from 'bignumber.js'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
-import { recordValues } from '@curvefi/primitives/objects.utils'
 import {
   checkBorrowMoreDetailsLoaded,
   submitBorrowMoreForm,
@@ -35,6 +34,7 @@ import { createVirtualTestnet } from '@cy/support/helpers/tenderly'
 import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
 import { fundErc20, fundEth } from '@cy/support/helpers/tenderly/vnet-fund'
 import { LOAD_TIMEOUT, skipTestsAfterFailure } from '@cy/support/ui'
+import { recordValues } from '@primitives/objects.utils'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { CRVUSD_ADDRESS } from '@ui-kit/utils'
 import type { Decimal } from '@ui-kit/utils'

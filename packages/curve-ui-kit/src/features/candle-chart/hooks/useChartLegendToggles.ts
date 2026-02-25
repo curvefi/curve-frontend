@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo } from 'react'
-import { notFalsy } from '@curvefi/primitives/objects.utils'
 import { useTheme } from '@mui/material/styles'
+import { notFalsy } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import type { LegendItem } from '@ui-kit/shared/ui/Chart/LegendSet'
 

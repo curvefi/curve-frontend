@@ -2,7 +2,6 @@
 import lodash, { max, sum } from 'lodash'
 import { LlamaMarketColumnId } from '@/llamalend/features/market-list/columns/columns.enum'
 import type { GetMarketsResponse } from '@curvefi/prices-api/llamalend'
-import { range, recordValues, repeat } from '@curvefi/primitives/objects.utils'
 import { oneOf, shuffle, type TokenType } from '@cy/support/generators'
 import {
   closeDrawer,
@@ -35,6 +34,7 @@ import {
   oneViewport,
   RETRY_IN_CI,
 } from '@cy/support/ui'
+import { range, recordValues, repeat } from '@primitives/objects.utils'
 import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
 import { MarketRateType } from '@ui-kit/types/market'
 

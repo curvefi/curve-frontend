@@ -1,5 +1,5 @@
-import { fetchJson } from '@curvefi/primitives/fetch.utils'
-import { fromEntries } from '@curvefi/primitives/objects.utils'
+import { fetchJson } from '@primitives/fetch.utils'
+import { fromEntries } from '@primitives/objects.utils'
 import { CURVE_CDN_URL } from '@ui/utils'
 import { EmptyValidationSuite } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'

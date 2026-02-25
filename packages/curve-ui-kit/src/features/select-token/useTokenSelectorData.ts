@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react'
 import type { Address } from 'viem'
 import { useConfig } from 'wagmi'
-import { recordEntries } from '@curvefi/primitives/objects.utils'
+import { recordEntries } from '@primitives/objects.utils'
 import type { TokenOption } from '@ui-kit/features/select-token'
 import { prefetchTokenBalances, useTokenBalances } from '@ui-kit/hooks/useTokenBalance'
 import { useTokenUsdRates } from '@ui-kit/lib/model/entities/token-usd-rate'

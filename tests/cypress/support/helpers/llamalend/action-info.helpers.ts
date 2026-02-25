@@ -1,5 +1,5 @@
-import { notFalsy } from '@curvefi/primitives/objects.utils'
 import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
+import { notFalsy } from '@primitives/objects.utils'
 import { type Decimal, formatNumber } from '@ui-kit/utils'
 
 export const getActionValue = (name: string, field?: 'previous') =>

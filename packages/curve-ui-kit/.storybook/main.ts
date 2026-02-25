@@ -1,4 +1,8 @@
+import { fileURLToPath } from 'url'
 import type { StorybookConfig } from '@storybook/react-vite'
+import { resolve } from 'path'
+
+const __dirname = fileURLToPath(new URL('.', import.meta.url))
 
 const config: StorybookConfig = {
   stories: [
@@ -77,5 +81,17 @@ const config: StorybookConfig = {
       }
     </style>
   `,
+  viteFinal: async (config) => ({
+    ...config,
+    resolve: {
+      ...config.resolve,
+      alias: [
+        ...(Array.isArray(config.resolve?.alias)
+          ? config.resolve.alias
+          : Object.entries(config.resolve?.alias ?? {}).map(([find, replacement]) => ({ find, replacement }))),
+        { find: '@primitives', replacement: resolve(__dirname, '../../primitives/src') },
+      ],
+    },
+  }),
 }
 export default config

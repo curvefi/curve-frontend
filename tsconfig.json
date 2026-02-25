@@ -3,29 +3,13 @@
   "extends": "./tsconfig.base.json",
   "files": [],
   "references": [
-    {
-      "path": "./apps/main"
-    },
-    {
-      "path": "./apps/router-api"
-    },
-    {
-      "path": "./packages/curve-ui-kit"
-    },
-    {
-      "path": "./packages/external-rewards"
-    },
-    {
-      "path": "./packages/prices-api"
-    },
-    {
-      "path": "./packages/ui"
-    },
-    {
-      "path": "./tests"
-    },
-    {
-      "path": "./packages/primitives"
-    }
+    { "path": "./apps/main" },
+    { "path": "./apps/router-api" },
+    { "path": "./packages/curve-ui-kit" },
+    { "path": "./packages/external-rewards" },
+    { "path": "./packages/prices-api" },
+    { "path": "./packages/ui" },
+    { "path": "./tests" },
+    { "path": "./packages/primitives" }
   ]
 }

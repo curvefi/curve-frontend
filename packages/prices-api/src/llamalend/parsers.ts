@@ -1,4 +1,4 @@
-import { fromEntries, recordEntries } from '@curvefi/primitives/objects.utils'
+import { fromEntries, recordEntries } from '@primitives/objects.utils'
 import { toDate } from '../timestamp'
 import type * as Models from './models'
 import type * as Responses from './responses'

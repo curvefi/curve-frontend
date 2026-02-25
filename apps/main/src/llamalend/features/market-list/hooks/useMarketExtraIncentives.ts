@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import type { ExtraIncentiveItem } from '@/llamalend/widgets/tooltips/RewardTooltipItems'
-import { notFalsy } from '@curvefi/primitives/objects.utils'
+import { notFalsy } from '@primitives/objects.utils'
 import { ExtraIncentive, MarketRateType } from '@ui-kit/types/market'
 import { CRV_ADDRESS, defaultNumberFormatter } from '@ui-kit/utils'
 

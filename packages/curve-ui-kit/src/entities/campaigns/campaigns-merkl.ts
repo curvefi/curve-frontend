@@ -1,7 +1,7 @@
 import { groupBy, capitalize } from 'lodash'
 import type { Address } from 'viem'
 import { paginate } from '@curvefi/prices-api/paginate'
-import { addQueryString, FetchError } from '@curvefi/primitives/fetch.utils'
+import { addQueryString, FetchError } from '@primitives/fetch.utils'
 import { EmptyValidationSuite } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model'
 import { formatPercent } from '@ui-kit/utils'

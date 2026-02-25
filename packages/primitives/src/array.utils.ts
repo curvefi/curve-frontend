@@ -1,5 +1,12 @@
+/**
+ * Sorts an array by a numeric key in ascending or descending order.
+ * @param items Items to sort.
+ * @param getKey Function that returns the numeric sort key for each item.
+ * @param order Sort order (`asc` by default).
+ * @returns A new sorted array.
+ */
 export const sortBy = <T>(items: T[], getKey: (item: T) => number, order: 'asc' | 'desc' = 'asc'): T[] =>
-  [...items].sort((a, b) => {
+  items.toSorted((a, b) => {
     const direction = order === 'asc' ? 1 : -1
     return (getKey(a) - getKey(b)) * direction
   })

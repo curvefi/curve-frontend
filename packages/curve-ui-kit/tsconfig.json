@@ -3,42 +3,19 @@
   "compilerOptions": {
     "baseUrl": "./src",
     "paths": {
-      "@ui": [
-        "../../ui/src/index.ts"
-      ],
-      "@ui/*": [
-        "../../ui/src/*"
-      ],
-      "@cy/*": [
-        "../../../tests/cypress/*"
-      ],
-      "@ui-kit/*": [
-        "./*"
-      ],
-      "@external-rewards": [
-        "../../external-rewards/src/index.ts"
-      ],
-      "@external-rewards/*": [
-        "../../external-rewards/src/*"
-      ],
-      "@curvefi/prices-api": [
-        "../../prices-api/src/index.ts"
-      ],
-      "@curvefi/prices-api/*": [
-        "../../prices-api/src/*"
-      ],
-      "@curvefi/primitives": [
-        "../../primitives/src/index.ts"
-      ],
-      "@curvefi/primitives/*": [
-        "../../primitives/src/*"
-      ]
+      "@ui": ["../../ui/src/index.ts"],
+      "@ui/*": ["../../ui/src/*"],
+      "@cy/*": ["../../../tests/cypress/*"],
+      "@ui-kit/*": ["./*"],
+      "@external-rewards": ["../../external-rewards/src/index.ts"],
+      "@external-rewards/*": ["../../external-rewards/src/*"],
+      "@curvefi/prices-api": ["../../prices-api/src/index.ts"],
+      "@curvefi/prices-api/*": ["../../prices-api/src/*"],
+      "@curvefi/primitives": ["../../primitives/src/index.ts"],
+      "@curvefi/primitives/*": ["../../primitives/src/*"],
+      "@primitives": ["../../primitives/src/index.ts"],
+      "@primitives/*": ["../../primitives/src/*"]
     }
   },
-  "include": [
-    "src",
-    "vite.config.mts",
-    "../ui/src/globals.d.ts",
-    "./src/types/*.d.ts"
-  ]
+  "include": ["src", "vite.config.mts", "../ui/src/globals.d.ts", "./src/types/*.d.ts"]
 }

@@ -7,7 +7,8 @@ import {
 } from '@/llamalend/queries/market-list/lending-vaults'
 import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { getUserMintMarketsStatsOptions } from '@/llamalend/queries/market-list/mint-markets'
-import { notFalsy } from '@curvefi/primitives/objects.utils'
+import { splitAt } from '@primitives/array.utils'
+import { notFalsy } from '@primitives/objects.utils'
 import { useQueries, type UseQueryResult } from '@tanstack/react-query'
 import { t } from '@ui-kit/lib/i18n'
 import { getTokenUsdRateQueryOptions } from '@ui-kit/lib/model/entities/token-usd-rate'
@@ -15,7 +16,6 @@ import { combineQueriesMeta } from '@ui-kit/lib/queries/combine'
 import { type QueryOptionsData } from '@ui-kit/lib/queries/types'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { requireChainId, type Address } from '@ui-kit/utils'
-import { splitAt } from '@ui-kit/utils/array'
 
 export type UserPositionSummaryMetric = { label: string; data: number; isLoading: boolean; error?: unknown }
 

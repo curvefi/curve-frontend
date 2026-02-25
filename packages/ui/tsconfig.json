@@ -10,6 +10,8 @@
       "@curvefi/prices-api/*": ["../../prices-api/src/*"],
       "@curvefi/primitives": ["../../primitives/src/index.ts"],
       "@curvefi/primitives/*": ["../../primitives/src/*"],
+      "@primitives": ["../../primitives/src/index.ts"],
+      "@primitives/*": ["../../primitives/src/*"],
       "@ui-kit/*": ["../../curve-ui-kit/src/*"]
     }
   },

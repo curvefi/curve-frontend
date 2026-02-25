@@ -11,7 +11,7 @@ import { useStore } from '@/dex/store/useStore'
 import { TokensNameMapper } from '@/dex/types/main.types'
 import { getExchangeRates } from '@/dex/utils/utilsSwap'
 import type { IRouteStep } from '@curvefi/api/lib/interfaces'
-import { notFalsy } from '@curvefi/primitives/objects.utils'
+import { notFalsy } from '@primitives/objects.utils'
 import {
   type RouteResponse,
   type RoutesQuery,

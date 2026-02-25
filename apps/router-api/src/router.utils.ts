@@ -2,24 +2,7 @@ import { BigNumber } from 'bignumber.js'
 import { formatUnits, parseUnits } from 'viem'
 import type { Decimal } from './routes/routes.schemas'
 
-/** Best case guess if for some reason we don't know the actual amount of decimals */
-export const DEFAULT_DECIMALS = 18
-
-export function assert<T>(value: T | null | undefined | 0 | false | '', message: string) {
-  if (!value) {
-    throw new Error(message)
-  }
-  return value
-}
-
-export const handleTimeout = <T>(promise: Promise<T>, timeout: number, message?: string): Promise<T> =>
-  new Promise((resolve, reject) => {
-    const id = setTimeout(() => {
-      clearTimeout(id)
-      reject(new Error(message || `Promise timed out after ${timeout}ms`))
-    }, timeout)
-    promise.then(resolve, reject)
-  })
+export { assert, DEFAULT_DECIMALS, handleTimeout, notFalsy } from '../../../packages/primitives/src/objects.utils'
 
 /**
  * Returns the maximum Decimal value from an array of Decimals, without losing precision.
