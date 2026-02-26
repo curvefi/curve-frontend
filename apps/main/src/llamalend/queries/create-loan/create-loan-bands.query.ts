@@ -1,5 +1,6 @@
 import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/create-loan-query.helpers'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
+import { parseRoute } from '@ui-kit/widgets/RouteProvider'
 import type { CreateLoanDebtParams, CreateLoanDebtQuery } from '../../features/borrow/types'
 import { createLoanQueryValidationSuite } from '../validation/borrow.validation'
 import { createLoanExpectedCollateralQueryKey } from './create-loan-expected-collateral.query'
@@ -7,7 +8,7 @@ import { createLoanMaxReceiveKey } from './create-loan-max-receive.query'
 
 type CreateLoanBandsResult = [number, number]
 
-export const { useQuery: useCreateLoanBands } = queryFactory({
+export const { useQuery: useCreateLoanBands, invalidate: invalidateCreateLoanBands } = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -17,6 +18,7 @@ export const { useQuery: useCreateLoanBands } = queryFactory({
     leverageEnabled,
     range,
     maxDebt,
+    routeId,
   }: CreateLoanDebtParams) =>
     [
       ...rootKeys.market({ chainId, marketId }),
@@ -27,17 +29,23 @@ export const { useQuery: useCreateLoanBands } = queryFactory({
       { leverageEnabled },
       { range },
       { maxDebt },
+      { routeId },
     ] as const,
-  queryFn: ({
+  queryFn: async ({
     marketId,
     userBorrowed = '0',
     userCollateral = '0',
     debt = '0',
     leverageEnabled,
     range,
+    routeId,
   }: CreateLoanDebtQuery): Promise<CreateLoanBandsResult> => {
     const [type, impl] = getCreateLoanImplementation(marketId, leverageEnabled)
     switch (type) {
+      case 'zapV2':
+        return (
+          await impl.createLoanExpectedMetrics({ userCollateral, userBorrowed, debt, range, ...parseRoute(routeId) })
+        ).bands
       case 'V1':
       case 'V2':
         return impl.createLoanBands(userCollateral, userBorrowed, debt, range)

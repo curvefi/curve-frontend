@@ -1,17 +1,20 @@
 import { getHealthValueColor } from '@/llamalend/features/market-position-details'
+import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import { UserState } from '@/llamalend/queries/user'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
 import type { Decimal } from '@primitives/decimal.utils'
+import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { combineQueryState } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo, ActionInfoGasEstimate, type TxGasInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import type { QueryProp } from '@ui-kit/types/util'
 import { formatNumber, formatPercent } from '@ui-kit/utils'
+import { RouteProvidersAccordion } from '@ui-kit/widgets/RouteProvider'
 import { SlippageToleranceActionInfoPure } from '@ui-kit/widgets/SlippageSettings'
 import { ActionInfoCollapse } from './ActionInfoCollapse'
-import { formatAmount, formatLeverage, ACTION_INFO_GROUP_SX } from './info-actions.helpers'
+import { ACTION_INFO_GROUP_SX, formatAmount, formatLeverage } from './info-actions.helpers'
 
 export type LoanActionInfoListProps = {
   isOpen?: boolean
@@ -42,6 +45,7 @@ export type LoanActionInfoListProps = {
   collateralSymbol?: string
   /** Whether to show leverage-related fields (leverage value, leverage collateral...) */
   leverageEnabled?: boolean
+  routes?: MarketRoutes
 }
 
 /**
@@ -76,7 +80,9 @@ export const LoanActionInfoList = ({
   onSlippageChange,
   collateralSymbol,
   leverageEnabled,
+  routes,
 }: LoanActionInfoListProps) => {
+  const [isRoutesOpen, , , toggleRoutes] = useSwitch(false)
   const prevDebt = userState?.data?.debt
   const prevCollateral = userState?.data?.collateral
   const isHighImpact = priceImpact?.data != null && slippage != null && priceImpact.data > Number(slippage)
@@ -225,7 +231,7 @@ export const LoanActionInfoList = ({
         {priceImpact && (
           <ActionInfo
             label={isHighImpact ? t`High price impact` : t`Price impact`}
-            value={formatPercent(priceImpact.data)}
+            value={priceImpact.data == null ? '-' : formatPercent(priceImpact.data)}
             {...(isHighImpact && { valueColor: 'error' })}
             error={priceImpact.error}
             loading={priceImpact.isLoading}
@@ -233,6 +239,7 @@ export const LoanActionInfoList = ({
             testId="borrow-price-impact"
           />
         )}
+        {routes && <RouteProvidersAccordion isExpanded={isRoutesOpen} onToggle={toggleRoutes} {...routes} />}
         <ActionInfoGasEstimate gas={gas} isApproved={isApproved?.data} />
       </Stack>
     </ActionInfoCollapse>

@@ -59,13 +59,15 @@ export const CreateLoanForm = <ChainId extends IChainId>({
     maxTokenValues: { collateral: maxCollateral, debt: maxDebt, maxLeverage, setRange },
     onSubmit,
     params,
+    routes,
     txHash,
     values,
     leverage,
   } = useCreateLoanForm({ market, network, preset, onSuccess, onPricesUpdated })
 
   const toggleLeverage = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) => updateForm(form, { leverageEnabled: event.target.checked }),
+    (event: ChangeEvent<HTMLInputElement>) =>
+      updateForm(form, { leverageEnabled: event.target.checked, routeId: undefined }),
     [form],
   )
 
@@ -81,6 +83,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
           collateralToken={collateralToken}
           borrowToken={borrowToken}
           networks={networks}
+          routes={routes}
           onSlippageChange={(value) => updateForm(form, { slippage: value })}
         />
       }

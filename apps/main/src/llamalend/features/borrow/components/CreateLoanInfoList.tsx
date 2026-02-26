@@ -1,12 +1,12 @@
 import type { UseFormReturn } from 'react-hook-form'
+import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useCreateLoanIsApproved } from '@/llamalend/queries/create-loan/create-loan-approved.query'
 import { useMarketRates } from '@/llamalend/queries/market-rates.query'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Token } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { q } from '@ui-kit/types/util'
-import { mapQuery } from '@ui-kit/types/util'
+import { mapQuery, q } from '@ui-kit/types/util'
 import { isFormTouched } from '@ui-kit/utils/react-form.utils'
 import { useCreateLoanEstimateGas } from '../../../queries/create-loan/create-loan-approve-estimate-gas.query'
 import { useCreateLoanExpectedCollateral } from '../../../queries/create-loan/create-loan-expected-collateral.query'
@@ -24,6 +24,7 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
   collateralToken,
   borrowToken,
   networks,
+  routes,
   onSlippageChange,
   form,
 }: {
@@ -32,6 +33,7 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
   collateralToken: Token | undefined
   borrowToken: Token | undefined
   networks: NetworkDict<ChainId>
+  routes: MarketRoutes | undefined
   onSlippageChange: (newSlippage: Decimal) => void
   form: UseFormReturn<CreateLoanForm>
 }) => {
@@ -62,6 +64,7 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
       gas={q(useCreateLoanEstimateGas(networks, params, isOpen))}
       leverageEnabled={leverageEnabled}
       {...(leverageEnabled && {
+        routes,
         leverageValue,
         leverageTotalCollateral,
         priceImpact: q(priceImpact),

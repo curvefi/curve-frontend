@@ -18,10 +18,12 @@ type CompleteCreateLoanForm = {
 type CalculatedValues = { maxDebt: Decimal | undefined; maxCollateral: Decimal | undefined }
 
 /** Create loan form as used in the UI, with some fields still optional or being filled in */
-export type CreateLoanForm = MakeOptional<CompleteCreateLoanForm, 'debt' | 'userCollateral'> & CalculatedValues
+export type CreateLoanForm = MakeOptional<CompleteCreateLoanForm, 'debt' | 'userCollateral'> &
+  CalculatedValues & { routeId: string | undefined }
 
 /** Full query type for create loan queries, including pool identification and all form fields */
-export type CreateLoanFormQuery<T = IChainId> = MarketQuery<T> & CompleteCreateLoanForm
+export type CreateLoanFormQuery<T = IChainId> = MarketQuery<T> &
+  CompleteCreateLoanForm & { routeId: string | undefined }
 /** Fields of the create loan form query before validation */
 export type CreateLoanFormQueryParams<T = IChainId> = FieldsOf<CreateLoanFormQuery<T>>
 
