@@ -15,6 +15,9 @@ export type MarketRoutes = Query<RouteResponse[]> & {
   tokenOut: Partial<{ symbol: string | undefined; address: Address; decimals: number }> & { usdRate: QueryProp<number> }
 }
 
+/**
+ * Queries and converts the routes for leveraging on llamalend markets.
+ */
 export function useMarketRoutes({
   chainId,
   tokenIn,
@@ -35,23 +38,29 @@ export function useMarketRoutes({
 } & Pick<MarketRoutes, 'onChange'>): MarketRoutes | undefined {
   const [chosenRouter, setChosenRouter] = useState<RouteProvider | undefined>(undefined) // keep the preferred router while mounted
   const { address: userAddress } = useConnection()
-  const params = {
-    chainId,
-    tokenIn: tokenIn?.address,
-    tokenOut: tokenOut?.address,
-    amountIn: amountIn && tokenIn && toWei(amountIn, tokenIn.decimals),
-    router: RouteProviders,
-    userAddress,
-    slippage,
-  }
-  const { data, refetch, isLoading, error } = useRouterApi(params, enabled)
-  const usdRate = q(useTokenUsdRate({ tokenAddress: tokenOut?.address, chainId }))
+
+  const { data, refetch, isLoading, error } = useRouterApi(
+    {
+      chainId,
+      tokenIn: tokenIn?.address,
+      tokenOut: tokenOut?.address,
+      amountIn: amountIn && tokenIn && toWei(amountIn, tokenIn.decimals),
+      router: RouteProviders,
+      userAddress,
+      slippage,
+    },
+    enabled,
+  )
+  const usdRate = q(useTokenUsdRate({ tokenAddress: tokenOut?.address, chainId }, enabled))
 
   const selectedRoute =
     (routeId && data?.find(({ id }) => id === routeId)) ||
     (chosenRouter && data?.find(({ router }) => router === chosenRouter)) ||
     data?.[0]
+
   const onChangeEffect = useEffectEvent(onChangeProp)
+  useEffect(() => void onChangeEffect(selectedRoute), [selectedRoute])
+
   const onChange = useCallback(
     async (option: RouteResponse | undefined) => {
       if (option) setChosenRouter(option?.router)
@@ -59,7 +68,6 @@ export function useMarketRoutes({
     },
     [onChangeProp],
   )
-  useEffect(() => void onChangeEffect(selectedRoute), [selectedRoute])
 
   return enabled
     ? { data, isLoading, error, selectedRoute, onChange, onRefresh: refetch, tokenOut: { ...tokenOut, usdRate } }
