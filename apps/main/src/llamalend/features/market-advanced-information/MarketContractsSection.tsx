@@ -93,7 +93,7 @@ export const MarketContractsSection = ({ market, network }: MarketContractsProps
 
   return (
     <Stack>
-      <CardHeader title={t`Contracts`} size="small" inline />
+      <CardHeader title={t`Contracts`} size="small" data-inline />
       <Stack paddingBlock={Spacing.sm}>
         {tokenItems.map(({ key, label, address }) => (
           <AddressActionInfo key={key} network={network} title={label} address={address} />

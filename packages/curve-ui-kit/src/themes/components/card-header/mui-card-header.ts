@@ -36,7 +36,7 @@ export const defineMuiCardHeader = (
       },
     },
     {
-      props: { inline: true },
+      props: { 'data-inline': true },
       style: handleBreakpoints({
         paddingInline: 0,
       }),
