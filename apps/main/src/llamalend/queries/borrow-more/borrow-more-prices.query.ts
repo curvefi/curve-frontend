@@ -6,7 +6,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import type { Range } from '@ui-kit/types/util'
 
-export const { useQuery: useBorrowMorePrices } = queryFactory({
+export const { useQuery: useBorrowMorePrices, invalidate: invalidateBorrowMorePrices } = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -16,6 +16,7 @@ export const { useQuery: useBorrowMorePrices } = queryFactory({
     debt = '0',
     maxDebt,
     leverageEnabled,
+    routeId,
   }: BorrowMoreParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
@@ -25,6 +26,7 @@ export const { useQuery: useBorrowMorePrices } = queryFactory({
       { debt },
       { maxDebt },
       { leverageEnabled },
+      { routeId },
     ] as const,
   queryFn: async ({
     marketId,
@@ -32,14 +34,18 @@ export const { useQuery: useBorrowMorePrices } = queryFactory({
     userBorrowed = '0',
     debt = '0',
     leverageEnabled,
+    routeId,
   }: BorrowMoreQuery) => {
     const [type, impl, args] = getBorrowMoreImplementationArgs(marketId, {
       userCollateral,
       userBorrowed,
       debt,
       leverageEnabled,
+      routeId,
     })
     switch (type) {
+      case 'zapV2':
+        return (await impl.borrowMoreExpectedMetrics(...args)).prices as Range<Decimal>
       case 'V1':
       case 'V2':
         return (await impl.borrowMorePrices(...args)) as Range<Decimal>

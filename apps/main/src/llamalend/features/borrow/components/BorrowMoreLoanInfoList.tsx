@@ -3,6 +3,7 @@ import { useMemo } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
 import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
+import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { useBorrowMoreExpectedCollateral } from '@/llamalend/queries/borrow-more/borrow-more-expected-collateral.query'
 import { useBorrowMoreEstimateGas } from '@/llamalend/queries/borrow-more/borrow-more-gas-estimate.query'
@@ -29,6 +30,7 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
   onSlippageChange,
   leverageEnabled,
   form,
+  routes,
 }: {
   params: BorrowMoreParams<ChainId>
   values: BorrowMoreForm
@@ -37,6 +39,7 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
   onSlippageChange: (newSlippage: Decimal) => void
   leverageEnabled: boolean
   form: UseFormReturn<BorrowMoreForm>
+  routes: MarketRoutes | undefined
 }) {
   const isOpen = isFormTouched(form, 'userCollateral', 'userBorrowed', 'debt')
   const userState = useUserState(params, isOpen)
@@ -104,6 +107,7 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
       )}
       prevLeverageValue={q(useUserCurrentLeverage(params, isOpen))}
       leverageTotalCollateral={mapQuery(expectedCollateralQuery, (d) => d.totalCollateral)}
+      routes={routes}
       slippage={slippage}
       onSlippageChange={onSlippageChange}
       collateralSymbol={collateralToken?.symbol}
