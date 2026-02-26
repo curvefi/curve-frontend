@@ -1,4 +1,4 @@
-import { IconButtonProps } from '@mui/material/IconButton'
+import { type IconButtonProps } from '@mui/material/IconButton'
 import type { SvgIconProps } from '@mui/material/SvgIcon'
 import { t } from '@ui-kit/lib/i18n'
 import { ExclamationTriangleIcon } from '@ui-kit/shared/icons/ExclamationTriangleIcon'
