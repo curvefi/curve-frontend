@@ -1,29 +1,14 @@
-import { enforce, skipWhen, test } from 'vest'
-import type { GetExpectedFn } from '@curvefi/llamalend-api/src/interfaces'
-import type { Address } from '@primitives/address.utils'
+import { enforce, test } from 'vest'
 import { toArray } from '@primitives/array.utils'
-import type { Decimal } from '@primitives/decimal.utils'
 import { fetchJson } from '@primitives/fetch.utils'
 import { assert, notFalsy } from '@primitives/objects.utils'
-import { type RouteProvider, RouteProviders, type RouteResponse } from '@primitives/router.utils'
-import { createValidationSuite, type FieldsOf, validateSlippage } from '@ui-kit/lib'
+import { type RouteResponse } from '@primitives/router.utils'
+import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { NoRetryError } from '@ui-kit/lib/model/query/factory'
-import { userAddressValidationGroup } from '@ui-kit/lib/model/query/user-address-validation'
-import { parseRoute } from '@ui-kit/widgets/RouteProvider'
+import type { RoutesParams, RoutesQuery } from './router-api.types'
+import { routerApiValidation } from './router-api.validation'
 
-export type RoutesQuery = {
-  chainId: number
-  tokenIn: Address
-  tokenOut: Address
-  amountIn?: Decimal
-  amountOut?: Decimal
-  router?: RouteProvider | readonly RouteProvider[]
-  userAddress?: Address
-  slippage?: Decimal
-}
-
-export type RoutesParams = FieldsOf<RoutesQuery>
 type RouteByIdQuery = { routeId: string }
 type RouteByIdParams = FieldsOf<RouteByIdQuery>
 
@@ -60,47 +45,6 @@ export const getRouteById = (routeId: string | undefined) =>
     'routeId is required for zapV2',
   )
 
-export const validateRouter = (
-  router: RouteProvider | readonly RouteProvider[] | null | undefined,
-  { isRequired = false }: { isRequired?: boolean } = {},
-) => {
-  skipWhen(!isRequired && !router, () => {
-    test('router', 'Router is required', () => {
-      enforce(router).isTruthy()
-    })
-  })
-  skipWhen(!router, () => {
-    const routers = toArray(router)
-    test('router', `Router must be one of ${RouteProviders.join(', ')}`, () => {
-      try {
-        enforce(routers).isArray().isNotEmpty()
-        enforce(routers.length).isPositive().message(`At least one router must be provided.`)
-        routers.forEach((r) => enforce(RouteProviders.includes(r)).message(`${r} is not a valid router`).isTruthy())
-      } catch (e) {
-        console.error(e)
-      }
-    })
-  })
-}
-export const routerApiValidation = createValidationSuite(
-  ({ chainId, tokenIn, tokenOut, amountIn, amountOut, userAddress, slippage, router }: RoutesQuery) => {
-    test('chainId', 'Invalid chainId', () => {
-      enforce(chainId).isNumber().greaterThan(0)
-    })
-    test('tokenIn', 'Invalid tokenIn address', () => {
-      enforce(tokenIn).isAddress()
-    })
-    test('tokenOut', 'Invalid tokenOut address', () => {
-      enforce(tokenOut).isAddress()
-    })
-    test('amount', 'Provide either amountIn or amountOut (not both)' + ` Got ${amountIn} and ${amountOut}`, () => {
-      enforce(!!Number(amountIn) !== !!Number(amountOut)).isTruthy()
-    })
-    userAddressValidationGroup({ userAddress, required: false })
-    validateSlippage(slippage)
-    validateRouter(router)
-  },
-)
 export const { useQuery: useRouterApi, fetchQuery: fetchApiRoutes } = queryFactory({
   queryKey: ({ chainId, tokenIn, tokenOut, amountIn, amountOut, router, userAddress, slippage }: RoutesParams) =>
     [
@@ -146,27 +90,3 @@ export const { useQuery: useRouterApi, fetchQuery: fetchApiRoutes } = queryFacto
   refetchInterval: '15s',
   validationSuite: routerApiValidation,
 })
-
-/**
- * This function can be used as a callback for llamalend.js zapV2 methods.
- */
-export const getExpectedFn =
-  ({
-    chainId,
-    router,
-    userAddress,
-    slippage,
-  }: Pick<RoutesQuery, 'chainId' | 'router' | 'slippage' | 'userAddress'>): GetExpectedFn =>
-  async (tokenIn, tokenOut, amountIn) => {
-    const routes = await fetchApiRoutes({
-      chainId,
-      tokenIn: tokenIn as Address,
-      tokenOut: tokenOut as Address,
-      amountIn: `${amountIn}` as Decimal,
-      router,
-      slippage,
-      userAddress,
-    })
-    const route = assert(routes?.[0], 'No route available')
-    return parseRoute(route.id).quote
-  }

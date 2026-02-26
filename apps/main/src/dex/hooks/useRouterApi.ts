@@ -15,7 +15,7 @@ import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { notFalsy } from '@primitives/objects.utils'
 import type { RouteResponse } from '@primitives/router.utils'
-import { type RoutesQuery, useRouterApi as useRouterApiQuery } from '@ui-kit/entities/router-api.query'
+import { type RoutesQuery, useRouterApi as useRouterApiQuery } from '@ui-kit/entities/router-api'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { fromWei, toWei } from '@ui-kit/utils'
 
@@ -99,7 +99,7 @@ const convertRoute = (
 
 /**
  * Hook to fetch optimal swap routes from the router API and update the store accordingly.
- * This hook uses the `useOptimalRoute` hook to fetch data and processes it to fit the application's state.
+ * This hook uses the `useRouterApiQuery` hook to fetch data and processes it to fit the application's state.
  */
 export function useRouterApi(
   {
