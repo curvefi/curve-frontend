@@ -7,7 +7,7 @@ import type { State } from '@/dex/store/useStore'
 import { ChainId, CurveApi, NetworkConfigFromApi, Wallet } from '@/dex/types/main.types'
 import { log } from '@ui-kit/lib/logging'
 import { fetchNetworks } from '../entities/networks'
-import { fetchPoolIds } from '../queries/pool-ids.query'
+import { refetchPoolIds } from '../queries/pool-ids.query'
 
 export type SliceKey = keyof State | ''
 export type StateKey = string
@@ -92,10 +92,8 @@ export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreAp
     // update network settings from api
     state.setNetworkConfigFromApi(curveApi)
 
-    const networks = await fetchNetworks()
-    const network = networks[chainId]
-
-    const poolIds = await fetchPoolIds({ chainId, useApi: network.useApi, hasRpc: !curveApi.isNoRPC })
+    await fetchNetworks() // dependency of fetchPoolIds
+    const poolIds = await refetchPoolIds({ chainId })
     await state.pools.fetchPools(curveApi, poolIds)
 
     log('Hydrating DEX - Complete')

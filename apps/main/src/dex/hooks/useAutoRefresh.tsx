@@ -1,4 +1,3 @@
-import { useMemo } from 'react'
 import { useStore } from '@/dex/store/useStore'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import { usePageVisibleInterval } from '@ui-kit/hooks/usePageVisibleInterval'
@@ -11,9 +10,7 @@ export const useAutoRefresh = (chainId: number | undefined) => {
   const { curveApi } = useCurve()
   const { data: networks } = useNetworks()
   const fetchPools = useStore((state) => state.pools.fetchPools)
-
-  const useApi = useMemo(() => (chainId ? networks[chainId]?.useApi : undefined), [chainId, networks])
-  const { data: poolIds } = usePoolIds({ chainId, useApi, hasRpc: !curveApi?.isNoRPC })
+  const { data: poolIds } = usePoolIds({ chainId })
 
   useGasInfoAndUpdateLib({ chainId, networks })
 

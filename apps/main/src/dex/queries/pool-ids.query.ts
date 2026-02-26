@@ -1,12 +1,8 @@
-import { enforce, test } from 'vest'
 import { requireLib } from '@ui-kit/features/connect-wallet'
-import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
-import { queryFactory, rootKeys, type ChainQuery } from '@ui-kit/lib/model'
-import { chainValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
-import { curveApiValidationGroup } from '@ui-kit/lib/model/query/curve-api-validation'
-
-type PoolsQuery = ChainQuery & { useApi: boolean; hasRpc: boolean }
-type PoolsParams = FieldsOf<PoolsQuery>
+import { log } from '@ui-kit/lib/logging'
+import { queryFactory, rootKeys, type ChainQuery, type ChainParams } from '@ui-kit/lib/model'
+import { curveApiValidationSuite } from '@ui-kit/lib/model/query/curve-api-validation'
+import { getNetworks, networksQueryKey } from '../entities/networks'
 
 /**
  * Gets a list of all pool ids as it hydrates curve-js as well.
@@ -15,13 +11,14 @@ type PoolsParams = FieldsOf<PoolsQuery>
  * as that requires additional logic based on pool addresses. In addition,
  * this query also hydrates curve-js, so we want to keep it as simple as possible.
  */
-export const { useQuery: usePoolIds, refetchQuery: fetchPoolIds } = queryFactory({
-  queryKey: ({ chainId, useApi, hasRpc }: PoolsParams) =>
-    [...rootKeys.chain({ chainId }), { useApi }, { hasRpc }, 'pool-ids'] as const,
-  queryFn: async ({ useApi, hasRpc }: PoolsQuery) => {
+export const { useQuery: usePoolIds, refetchQuery: refetchPoolIds } = queryFactory({
+  queryKey: ({ chainId }: ChainParams) => [...rootKeys.chain({ chainId }), 'pool-ids'] as const,
+  queryFn: async ({ chainId }: ChainQuery) => {
     // must call api in this order, must use api to get non-cached version of gaugeStatus
     const curve = requireLib('curveApi')
-    if (hasRpc != !curve.isNoRPC) throw new Error('RPC status mismatch between query params and curveApi')
+    const { useApi } = getNetworks()[chainId]
+
+    log(`Hydrating DEX - Fetching pool ids { useApi: ${useApi}, hasRpc: ${!curve.isNoRPC} }`)
 
     await Promise.all([
       curve.factory.fetchPools(useApi),
@@ -32,7 +29,7 @@ export const { useQuery: usePoolIds, refetchQuery: fetchPoolIds } = queryFactory
       curve.stableNgFactory.fetchPools(useApi),
     ])
 
-    if (hasRpc) {
+    if (!curve.isNoRPC) {
       await Promise.all([
         curve.factory.fetchNewPools(),
         curve.cryptoFactory.fetchNewPools(),
@@ -45,16 +42,6 @@ export const { useQuery: usePoolIds, refetchQuery: fetchPoolIds } = queryFactory
     return curve.getPoolList()
   },
   staleTime: '15m', // The list doesn't change often
-  validationSuite: createValidationSuite((params: PoolsParams) => {
-    chainValidationGroup(params)
-    curveApiValidationGroup(params)
-
-    test('useApi', 'useApi is required', () => {
-      enforce(params.useApi).isNotUndefined()
-    })
-
-    test('hasRpc', 'hasRpc is required', () => {
-      enforce(params.hasRpc).isNotUndefined()
-    })
-  }),
+  validationSuite: curveApiValidationSuite,
+  dependencies: () => [networksQueryKey()],
 })
