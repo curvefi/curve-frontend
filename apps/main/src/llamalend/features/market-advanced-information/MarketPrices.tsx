@@ -5,7 +5,7 @@ import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 
-export const MarketPrices = ({ chainId, marketId }: { chainId: IChainId; marketId: string }) => {
+export const MarketPrices = ({ chainId, marketId }: { chainId: IChainId; marketId: string | undefined }) => {
   const {
     data: basePrice,
     isLoading: isLoadingBasePrice,

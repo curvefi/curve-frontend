@@ -1,7 +1,6 @@
 // TODO: refactor query into llamalend for both mint and lend markets
 // eslint-disable-next-line import/no-restricted-paths
 import { useMarketPricePerShare } from '@/lend/entities/market-details'
-import { MarketPrices } from '@/llamalend/features/market-parameters/MarketPrices'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { Typography } from '@mui/material'
 import Stack from '@mui/material/Stack'
@@ -10,9 +9,16 @@ import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { MarketLoanParameters } from './MarketLoanParameters'
+import { MarketPrices } from './MarketPrices'
 
 const { Spacing } = SizesAndSpaces
 
+/**
+ * Legacy component kept for `LoanFormCreate` accordions.
+ * Market information pages should use `llamalend/widgets/market-info-sections` instead.
+ *
+ * @deprecated Use `llamalend/widgets/market-info-sections` for new market information pages.
+ */
 export const MarketParameters = ({
   chainId,
   marketId,
