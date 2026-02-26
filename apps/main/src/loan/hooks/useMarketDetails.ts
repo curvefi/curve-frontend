@@ -1,8 +1,11 @@
 import { useMemo } from 'react'
 import type { MarketDetailsProps } from '@/llamalend/features/market-details'
-import { useMarketCapAndAvailable, useMarketTotalCollateral } from '@/llamalend/queries/market'
-import { useMarketMaxLeverage } from '@/llamalend/queries/market-max-leverage.query'
-import { useMarketRates } from '@/llamalend/queries/market-rates.query'
+import {
+  useMarketCapAndAvailable,
+  useMarketTotalCollateral,
+  useMarketMaxLeverage,
+  useMarketRates,
+} from '@/llamalend/queries/market'
 import {
   getBorrowRateMetrics,
   getSnapshotBorrowRate,

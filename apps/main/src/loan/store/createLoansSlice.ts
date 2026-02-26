@@ -1,7 +1,10 @@
 import lodash from 'lodash'
 import { StoreApi } from 'zustand'
-import { invalidateMarketCapAndAvailable, invalidateMarketTotalCollateral } from '@/llamalend/queries/market'
-import { invalidateMarketRates } from '@/llamalend/queries/market-rates.query'
+import {
+  invalidateMarketCapAndAvailable,
+  invalidateMarketTotalCollateral,
+  invalidateMarketRates,
+} from '@/llamalend/queries/market'
 import { refetchLoanExists } from '@/llamalend/queries/user'
 import { networks } from '@/loan/networks'
 import type { State } from '@/loan/store/useStore'

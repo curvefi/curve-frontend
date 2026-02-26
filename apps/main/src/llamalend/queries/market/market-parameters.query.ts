@@ -4,8 +4,8 @@ import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-valid
 import { rootKeys } from '@ui-kit/lib/model/query/root-keys'
 import type { MarketQuery, MarketParams } from '@ui-kit/lib/model/query/root-keys'
 import { decimal } from '@ui-kit/utils'
-import { getLlamaMarket } from '../llama.utils'
-import { convertRates } from '../rates.utils'
+import { getLlamaMarket } from '../../llama.utils'
+import { convertRates } from '../../rates.utils'
 
 export const { useQuery: useMarketParameters } = queryFactory({
   queryKey: (params: MarketParams) => [...rootKeys.market(params), 'market-parameters'] as const,

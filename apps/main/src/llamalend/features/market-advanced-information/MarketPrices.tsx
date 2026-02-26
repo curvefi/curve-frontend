@@ -1,5 +1,4 @@
-import { useMarketBasePrice } from '@/llamalend/queries/market-base-price.query'
-import { useMarketOraclePrice } from '@/llamalend/queries/market-oracle-price.query'
+import { useMarketBasePrice, useMarketOraclePrice } from '@/llamalend/queries/market'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'

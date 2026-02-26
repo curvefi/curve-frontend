@@ -9,7 +9,7 @@ import {
   invalidateMarketVaultOnChainRewards,
   invalidateMarketVaultPricePerShare,
 } from '@/llamalend/queries/market'
-import { invalidateMarketRates, useMarketRates } from '@/llamalend/queries/market-rates.query'
+import { invalidateMarketRates, useMarketRates } from '@/llamalend/queries/market'
 import type { MarketParams } from '@ui-kit/lib/model/query/root-keys'
 
 export const invalidateMarketDetails = ({ chainId, marketId }: { chainId: ChainId; marketId: string }) =>
