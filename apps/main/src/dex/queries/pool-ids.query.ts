@@ -19,7 +19,7 @@ export const { useQuery: usePoolIds, fetchQuery: fetchPoolIds } = queryFactory({
     // must call api in this order, must use api to get non-cached version of gaugeStatus
     const curve = requireLib('curveApi')
 
-    await Promise.allSettled([
+    await Promise.all([
       curve.factory.fetchPools(useApi),
       curve.cryptoFactory.fetchPools(useApi),
       curve.twocryptoFactory.fetchPools(useApi),
@@ -28,7 +28,7 @@ export const { useQuery: usePoolIds, fetchQuery: fetchPoolIds } = queryFactory({
       curve.stableNgFactory.fetchPools(useApi),
     ])
 
-    await Promise.allSettled([
+    await Promise.all([
       curve.factory.fetchNewPools(),
       curve.cryptoFactory.fetchNewPools(),
       curve.twocryptoFactory.fetchNewPools(),
