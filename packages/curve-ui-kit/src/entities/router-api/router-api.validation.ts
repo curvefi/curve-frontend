@@ -17,13 +17,9 @@ export const validateRouter = (
   skipWhen(!router, () => {
     const routers = toArray(router)
     test('router', `Router must be one of ${RouteProviders.join(', ')}`, () => {
-      try {
-        enforce(routers).isArray().isNotEmpty()
-        enforce(routers.length).isPositive().message(`At least one router must be provided.`)
-        routers.forEach((r) => enforce(RouteProviders.includes(r)).message(`${r} is not a valid router`).isTruthy())
-      } catch (e) {
-        console.error(e)
-      }
+      enforce(routers).isArray().isNotEmpty()
+      enforce(routers.length).isPositive().message(`At least one router must be provided.`)
+      routers.forEach((r) => enforce(RouteProviders.includes(r)).message(`${r} is not a valid router`).isTruthy())
     })
   })
 }

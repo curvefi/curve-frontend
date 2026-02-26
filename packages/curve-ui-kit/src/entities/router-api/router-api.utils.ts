@@ -7,7 +7,7 @@ import { fetchApiRoutes } from './router-api.query'
 import type { RoutesQuery } from './router-api.types'
 
 /**
- * This function can be used as a callback for llamalend.js zapV2 methods.
+ * This function can be used as a callback for curve-js calldata methods or llamalend.js leverageZapV2 methods.
  */
 export const getExpectedFn =
   ({
