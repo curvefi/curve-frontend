@@ -16,6 +16,7 @@ import { pick } from '@primitives/objects.utils'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { mapQuery, type Range } from '@ui-kit/types/util'
+import { decimalSum } from '@ui-kit/utils'
 import { updateForm, useCallbackAfterFormUpdate, useFormErrors } from '@ui-kit/utils/react-form.utils'
 import { type RouteOption } from '@ui-kit/widgets/RouteProvider'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
@@ -141,9 +142,10 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     formErrors: useFormErrors(formState),
     routes: useMarketRoutes({
       chainId,
-      collateralToken,
-      borrowToken,
-      ...pick(values, 'userBorrowed', 'slippage', 'routeId'),
+      tokenIn: borrowToken,
+      tokenOut: collateralToken,
+      amountIn: decimalSum(values.debt, values.userBorrowed),
+      ...pick(values, 'slippage', 'routeId'),
       enabled: params.leverageEnabled && !!market && hasZapV2(market),
       onChange: async (route: RouteOption | undefined) => {
         updateForm(form, { routeId: route?.id })

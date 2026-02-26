@@ -1,37 +1,14 @@
-import { getLlamaMarket, hasDeleverage, hasV2Leverage, hasZapV2 } from '@/llamalend/llama.utils'
+import { getLlamaMarket, hasDeleverage, hasLeverage, hasV2Leverage, hasZapV2 } from '@/llamalend/llama.utils'
 import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { getUserState } from '@/llamalend/queries/user'
 import type { RepayQuery } from '@/llamalend/queries/validation/manage-loan.types'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
+import { notFalsy } from '@primitives/objects.utils'
 import { type UserMarketQuery } from '@ui-kit/lib/model'
-import { parseRoute } from '@ui-kit/widgets/RouteProvider'
+import { parseRoute, type RouteMeta } from '@ui-kit/widgets/RouteProvider'
 
 type RepayFields = Pick<RepayQuery, 'stateCollateral' | 'userCollateral' | 'userBorrowed' | 'routeId'>
 type RepayFieldsWithoutRoute = Pick<RepayQuery, 'stateCollateral' | 'userCollateral' | 'userBorrowed'>
-
-export function getRepayImplementationType(
-  marketId: string | LlamaMarketTemplate,
-  { stateCollateral, userCollateral, userBorrowed }: RepayFieldsWithoutRoute,
-) {
-  const market = typeof marketId === 'string' ? getLlamaMarket(marketId) : marketId
-
-  if (market instanceof MintMarketTemplate) {
-    if (hasV2Leverage(market)) return 'V2' as const
-    if (+stateCollateral && hasDeleverage(market)) {
-      if (+userBorrowed) throw new Error(`Invalid userBorrowed for deleverage: ${userBorrowed}`)
-      if (+userCollateral) throw new Error(`Invalid userCollateral for deleverage: ${userCollateral}`)
-      return 'deleverage' as const
-    }
-  } else if (hasZapV2(market)) {
-    return 'zapV2' as const
-  } else {
-    return 'V1' as const
-  }
-
-  if (+userCollateral) throw new Error(`Invalid userCollateral for repay: ${userCollateral}`)
-  if (+stateCollateral) throw new Error(`Invalid stateCollateral for repay: ${stateCollateral}`)
-  return 'unleveraged' as const
-}
 
 /**
  * Determines the appropriate repay implementation and its parameters based on the market type and leverage options.
@@ -42,32 +19,41 @@ export function getRepayImplementationType(
 export function getRepayImplementation(
   marketId: string | LlamaMarketTemplate,
   { stateCollateral, userCollateral, userBorrowed, routeId }: RepayFields,
+  routeMeta?: Partial<RouteMeta>,
 ) {
   const market = typeof marketId === 'string' ? getLlamaMarket(marketId) : marketId
-  const type = getRepayImplementationType(market, { stateCollateral, userCollateral, userBorrowed })
+  const [hasUserBorrowed, hasUserCollateral, hasStateCollateral] = [userBorrowed, userCollateral, stateCollateral].map(
+    (v) => !!+v,
+  )
+  if (!hasUserCollateral && !hasStateCollateral) return ['unleveraged', market, [userBorrowed]] as const
   if (market instanceof MintMarketTemplate) {
-    switch (type) {
-      case 'V2':
-        return ['V2', market.leverageV2, [stateCollateral, userCollateral, userBorrowed]] as const
-      case 'deleverage':
-        return ['deleverage', market.deleverage, [stateCollateral]] as const
-      case 'unleveraged':
-        return ['unleveraged', market, [userBorrowed]] as const
-    }
-  } else
-    switch (type) {
-      case 'zapV2':
-        return [
-          'zapV2',
-          market.leverageZapV2,
-          [{ stateCollateral, userCollateral, userBorrowed, ...parseRoute(routeId) }],
-        ] as const
-      case 'V1':
-        return ['V1', market.leverage, [stateCollateral, userCollateral, userBorrowed]] as const
-      case 'unleveraged':
-        return ['unleveraged', market, [userBorrowed]] as const
-    }
-  throw new Error(`Invalid repay implementation type: ${type}`)
+    if (hasV2Leverage(market))
+      return ['V2', market.leverageV2, [stateCollateral, userCollateral, userBorrowed]] as const
+    if (hasStateCollateral && !hasUserBorrowed && !hasUserCollateral && hasDeleverage(market))
+      return ['deleverage', market.deleverage, [stateCollateral]] as const
+  } else {
+    if (hasZapV2(market))
+      return [
+        'zapV2',
+        market.leverageZapV2,
+        [{ stateCollateral, userCollateral, userBorrowed, ...((routeMeta as RouteMeta) ?? parseRoute(routeId)) }],
+      ] as const
+    if (hasLeverage(market)) return ['V1', market.leverage, [stateCollateral, userCollateral, userBorrowed]] as const
+  }
+  throw new Error(
+    `Invalid repay implementation for ${market.constructor.name} market: ${marketId} with ${notFalsy(
+      hasUserBorrowed && 'user borrowed',
+      hasUserCollateral && 'user collateral',
+      hasStateCollateral && 'state collateral',
+    ).join(', ')}`,
+  )
+}
+
+export function getRepayImplementationType(marketId: string | LlamaMarketTemplate, fields: RepayFieldsWithoutRoute) {
+  const params = { ...fields, routeId: undefined }
+  const routeMeta = {} // we are ignoring the args in this helper anyway
+  const [impl] = getRepayImplementation(marketId, params, routeMeta)
+  return impl
 }
 
 /**

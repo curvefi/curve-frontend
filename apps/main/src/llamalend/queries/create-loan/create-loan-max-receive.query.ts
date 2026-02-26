@@ -1,15 +1,15 @@
 import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/create-loan-query.helpers'
-import type {} from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { getRouteById, getExpectedFn } from '@ui-kit/entities/router-api.query'
+import { RouteProviders } from '@primitives/router.utils'
+import { getExpectedFn } from '@ui-kit/entities/router-api.query'
 import { type FieldsOf } from '@ui-kit/lib'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { assert, decimal } from '@ui-kit/utils'
 import type { CreateLoanFormQuery } from '../../features/borrow/types'
 import { createLoanQueryValidationSuite } from '../validation/borrow.validation'
 
-type CreateLoanMaxReceiveQuery = Omit<CreateLoanFormQuery, 'userCollateral' | 'debt'> & {
+type CreateLoanMaxReceiveQuery = Omit<CreateLoanFormQuery, 'userCollateral' | 'debt' | 'routeId'> & {
   userCollateral: Decimal
   userAddress: Address
 }
@@ -57,7 +57,6 @@ export const {
     range,
     leverageEnabled,
     slippage,
-    routeId,
   }: CreateLoanMaxReceiveParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
@@ -67,7 +66,6 @@ export const {
       { range },
       { leverageEnabled },
       { slippage },
-      { routeId },
     ] as const,
   queryFn: async ({
     chainId,
@@ -78,18 +76,16 @@ export const {
     range,
     leverageEnabled,
     slippage,
-    routeId,
   }: CreateLoanMaxReceiveQuery): Promise<CreateLoanMaxReceiveResult> => {
     const [type, impl] = getCreateLoanImplementation(marketId, leverageEnabled)
     switch (type) {
       case 'zapV2': {
-        const { router } = assert(getRouteById(routeId), 'routeId is required for zapV2')
         return convertNumbers(
           await impl.createLoanMaxRecv({
             userCollateral,
             userBorrowed,
             range,
-            getExpected: getExpectedFn({ chainId, router, userAddress, slippage }),
+            getExpected: getExpectedFn({ chainId, router: RouteProviders, userAddress, slippage }),
           }),
         )
       }

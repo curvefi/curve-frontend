@@ -28,7 +28,7 @@ import { pick } from '@primitives/objects.utils'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { mapQuery, type Range } from '@ui-kit/types/util'
-import { decimal } from '@ui-kit/utils'
+import { decimal, decimalSum } from '@ui-kit/utils'
 import { updateForm, useCallbackAfterFormUpdate, useFormErrors } from '@ui-kit/utils/react-form.utils'
 import { type RouteOption } from '@ui-kit/widgets/RouteProvider'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
@@ -118,7 +118,6 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
   const params = useBorrowMoreParams({ chainId, marketId, userAddress, ...values })
   const [implementation] = market ? getBorrowMoreImplementation(market, values.leverageEnabled) : []
   const routeRequired = !!implementation && isRouterRequired(implementation)
-  const userBorrowed = decimal(new BigNumber(values.debt ?? 0).plus(values.userBorrowed ?? 0).toString())
 
   const {
     onSubmit,
@@ -156,9 +155,9 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
     formErrors: useFormErrors(formState),
     routes: useMarketRoutes({
       chainId,
-      collateralToken,
-      borrowToken,
-      userBorrowed,
+      tokenIn: borrowToken,
+      tokenOut: collateralToken,
+      amountIn: decimalSum(values.debt, values.userBorrowed),
       ...pick(values, 'slippage', 'routeId'),
       enabled: routeRequired,
       onChange: async (route: RouteOption | undefined) => {

@@ -22,6 +22,7 @@ import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { t } from '@ui-kit/lib/i18n'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import type { Range } from '@ui-kit/types/util'
+import { decimalSum } from '@ui-kit/utils'
 import { filterFormErrors, updateForm, useCallbackAfterFormUpdate } from '@ui-kit/utils/react-form.utils'
 import { type RouteOption } from '@ui-kit/widgets/RouteProvider'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
@@ -166,9 +167,10 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
     isApproved: useRepayIsApproved(params, enabled),
     routes: useMarketRoutes({
       chainId,
-      collateralToken,
-      borrowToken,
-      ...pick(values, 'userBorrowed', 'slippage', 'routeId'),
+      tokenIn: collateralToken,
+      tokenOut: borrowToken,
+      amountIn: decimalSum(values.userCollateral, values.stateCollateral),
+      ...pick(values, 'slippage', 'routeId'),
       enabled: isRepayRouteRequired(market, values),
       onChange: async (route: RouteOption | undefined) => {
         updateForm(form, { routeId: route?.id })

@@ -1,8 +1,8 @@
-import { useEffect, useEffectEvent } from 'react'
+import { useCallback, useEffect, useEffectEvent, useState } from 'react'
 import { useConnection } from 'wagmi'
 import { Address } from '@primitives/address.utils'
 import { Decimal } from '@primitives/decimal.utils'
-import { RouteProviders } from '@primitives/router.utils'
+import { type RouteProvider, RouteProviders } from '@primitives/router.utils'
 import { useRouterApi } from '@ui-kit/entities/router-api.query'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { q, type Query, type QueryProp } from '@ui-kit/types/util'
@@ -18,22 +18,23 @@ export type MarketRoutes = Query<RouteOption[]> & {
 
 export function useMarketRoutes({
   chainId,
-  borrowToken: tokenIn,
-  collateralToken: tokenOut,
-  userBorrowed: amountIn,
+  tokenIn,
+  tokenOut,
+  amountIn,
   slippage,
   routeId,
   enabled,
-  onChange,
+  onChange: onChangeProp,
 }: {
   chainId: number
-  collateralToken: { symbol: string; address: Address; decimals: number } | undefined
-  borrowToken: { symbol: string; address: Address; decimals: number } | undefined
-  userBorrowed: Decimal | undefined
+  tokenIn: { symbol: string; address: Address; decimals: number } | undefined
+  tokenOut: { symbol: string; address: Address; decimals: number } | undefined
+  amountIn: Decimal | undefined
   slippage: Decimal | undefined
   routeId: string | undefined
   enabled: boolean
 } & Pick<MarketRoutes, 'onChange'>): MarketRoutes | undefined {
+  const [chosenRouter, setChosenRouter] = useState<RouteProvider | undefined>(undefined) // keep the preferred router while mounted
   const { address: userAddress } = useConnection()
   const params = {
     chainId,
@@ -47,8 +48,18 @@ export function useMarketRoutes({
   const { data, refetch, isLoading, error } = useRouterApi(params, enabled)
   const usdRate = q(useTokenUsdRate({ tokenAddress: tokenOut?.address, chainId }))
 
-  const selectedRoute = routeId ? data?.find(({ id }) => id === routeId) : data?.[0]
-  const onChangeEffect = useEffectEvent(onChange)
+  const selectedRoute =
+    (routeId && data?.find(({ id }) => id === routeId)) ||
+    (chosenRouter && data?.find(({ router }) => router === chosenRouter)) ||
+    data?.[0]
+  const onChangeEffect = useEffectEvent(onChangeProp)
+  const onChange = useCallback(
+    async (option: RouteOption | undefined) => {
+      if (option) setChosenRouter(option?.router)
+      await onChangeProp(option)
+    },
+    [onChangeProp],
+  )
   useEffect(() => void onChangeEffect(selectedRoute), [selectedRoute])
 
   return enabled

@@ -8,7 +8,6 @@ import {
   validateMaxBorrowed,
   validateMaxCollateral,
   validateRoute,
-  validateSlippage,
   validateUserCollateral,
 } from '@/llamalend/queries/validation/borrow-fields.validation'
 import type {
@@ -19,7 +18,7 @@ import type {
   RepayParams,
 } from '@/llamalend/queries/validation/manage-loan.types'
 import type { Decimal } from '@primitives/decimal.utils'
-import { createValidationSuite } from '@ui-kit/lib'
+import { createValidationSuite, validateSlippage } from '@ui-kit/lib'
 import { chainValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
 import { llamaApiValidationGroup } from '@ui-kit/lib/model/query/curve-api-validation'
 import { marketIdValidationGroup, marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'

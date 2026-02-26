@@ -83,14 +83,18 @@ export const RouteProvidersAccordion = ({
         <Stack>
           <Stack direction="row" justifyContent="space-between" alignItems="center">
             <Typography variant="headingXsBold" color="textSecondary">
-              {t`Select a route`}
+              {routes?.length ? t`Select a route` : isLoading ? t`Finding the best route...` : t`No routes available`}
             </Typography>
             <IconButton size="extraExtraSmall" onClick={onRefresh} aria-label={t`Refresh routes`}>
               <ReloadIcon sx={{ ...(isLoading && LoadingAnimation) }} />
             </IconButton>
           </Stack>
           <Typography variant="bodyXsRegular" color="textTertiary">
-            {t`Best route is selected based on net output after gas fees (only when possible to calculate).`}
+            {routes?.length === 0
+              ? t`We could not find any routes with your parameters.`
+              : routes || isLoading
+                ? t`Best route is selected based on net output after gas fees (only when possible to calculate).`
+                : t`Please fill in the form to get routes.`}
           </Typography>
         </Stack>
         <Stack gap={Spacing.xs}>

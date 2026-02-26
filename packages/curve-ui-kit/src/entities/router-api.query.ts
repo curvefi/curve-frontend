@@ -1,12 +1,12 @@
-import { enforce, test } from 'vest'
+import { enforce, skipWhen, test } from 'vest'
 import type { GetExpectedFn } from '@curvefi/llamalend-api/src/interfaces'
 import type { Address } from '@primitives/address.utils'
 import { toArray } from '@primitives/array.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { fetchJson } from '@primitives/fetch.utils'
 import { assert, notFalsy } from '@primitives/objects.utils'
-import type { RouteProvider, RouteResponse } from '@primitives/router.utils'
-import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
+import { type RouteProvider, RouteProviders, type RouteResponse } from '@primitives/router.utils'
+import { createValidationSuite, type FieldsOf, validateSlippage } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { NoRetryError } from '@ui-kit/lib/model/query/factory'
 import { userAddressValidationGroup } from '@ui-kit/lib/model/query/user-address-validation'
@@ -60,8 +60,30 @@ export const getRouteById = (routeId: string | undefined) =>
     'routeId is required for zapV2',
   )
 
+export const validateRouter = (
+  router: RouteProvider | readonly RouteProvider[] | null | undefined,
+  { isRequired = false }: { isRequired?: boolean } = {},
+) => {
+  skipWhen(!isRequired && !router, () => {
+    test('router', 'Router is required', () => {
+      enforce(router).isTruthy()
+    })
+  })
+  skipWhen(!router, () => {
+    const routers = toArray(router)
+    test('router', `Router must be one of ${RouteProviders.join(', ')}`, () => {
+      try {
+        enforce(routers).isArray().isNotEmpty()
+        enforce(routers.length).isPositive().message(`At least one router must be provided.`)
+        routers.forEach((r) => enforce(RouteProviders.includes(r)).message(`${r} is not a valid router`).isTruthy())
+      } catch (e) {
+        console.error(e)
+      }
+    })
+  })
+}
 export const routerApiValidation = createValidationSuite(
-  ({ chainId, tokenIn, tokenOut, amountIn, amountOut, userAddress }: RoutesQuery) => {
+  ({ chainId, tokenIn, tokenOut, amountIn, amountOut, userAddress, slippage, router }: RoutesQuery) => {
     test('chainId', 'Invalid chainId', () => {
       enforce(chainId).isNumber().greaterThan(0)
     })
@@ -71,10 +93,12 @@ export const routerApiValidation = createValidationSuite(
     test('tokenOut', 'Invalid tokenOut address', () => {
       enforce(tokenOut).isAddress()
     })
-    test('amount', 'Provide either amountIn or amountOut (not both)', () => {
+    test('amount', 'Provide either amountIn or amountOut (not both)' + ` Got ${amountIn} and ${amountOut}`, () => {
       enforce(!!Number(amountIn) !== !!Number(amountOut)).isTruthy()
     })
     userAddressValidationGroup({ userAddress, required: false })
+    validateSlippage(slippage)
+    validateRouter(router)
   },
 )
 export const { useQuery: useRouterApi, fetchQuery: fetchApiRoutes } = queryFactory({

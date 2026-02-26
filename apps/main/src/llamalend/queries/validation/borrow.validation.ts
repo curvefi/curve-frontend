@@ -7,11 +7,10 @@ import {
   validateMaxDebt,
   validateRange,
   validateRoute,
-  validateSlippage,
   validateUserBorrowed,
   validateUserCollateral,
 } from '@/llamalend/queries/validation/borrow-fields.validation'
-import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
+import { createValidationSuite, type FieldsOf, validateSlippage } from '@ui-kit/lib'
 import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
 import { type CreateLoanDebtParams, type CreateLoanForm } from '../../features/borrow/types'
 import { getCreateLoanImplementation } from '../create-loan/create-loan-query.helpers'
@@ -79,7 +78,9 @@ export const createLoanQueryValidationSuite = ({
       skipWhen(!marketId, () => {
         if (!marketId) return
         const [type] = getCreateLoanImplementation(marketId, !!leverageEnabled)
-        validateRoute(routeId, !!leverageEnabled && isRouterRequired(type))
+        // if we don't need debt we cannot need a route, as we need a route to calculate max debt
+        const routeRequired = debtRequired && !!leverageEnabled && isRouterRequired(type)
+        validateRoute(routeId, routeRequired)
       })
     },
   )
