@@ -1,7 +1,7 @@
 import { zeroAddress } from 'viem'
 import type { IQuote } from '@curvefi/llamalend-api/src/interfaces'
 import { type RouteResponse } from '@primitives/router.utils'
-import { getRouteById } from '@ui-kit/entities/router-api.query'
+import { getRouteById } from '@ui-kit/entities/router-api'
 
 export type RouteOption = RouteResponse
 
