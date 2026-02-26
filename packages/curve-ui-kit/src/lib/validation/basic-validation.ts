@@ -1,5 +1,4 @@
-import { enforce, test } from 'vest'
-import type { Decimal } from '@primitives/decimal.utils'
+import { enforce } from 'vest'
 
 // TODO: move to Token validation lib
 export const tokenIdValidationFn = <T>(value: T) => {
@@ -28,14 +27,4 @@ export const addressValidationFn = <T>(value: T) => {
     .isAddress()
     .message('Address cannot be zero address')
     .isNotZeroAddress()
-}
-
-export const numberValidationFn = <T>(value: T) => {
-  enforce(value).message('Number is required').isNotEmpty().message('Invalid number').isNumber()
-}
-
-export const validateSlippage = (slippage: Decimal | null | undefined) => {
-  test('slippage', 'Slippage must be a number between 0 and 100', () => {
-    enforce(slippage).isNumeric().gte(0).lte(100)
-  })
 }

@@ -11,8 +11,8 @@ import {
   validateUserCollateral,
 } from '@/llamalend/queries/validation/borrow-fields.validation'
 import type { Decimal } from '@primitives/decimal.utils'
-import { createValidationSuite, FieldsOf, validateSlippage } from '@ui-kit/lib'
-import type { UserMarketQuery } from '@ui-kit/lib/model'
+import { createValidationSuite, FieldsOf } from '@ui-kit/lib'
+import { type UserMarketQuery, validateSlippage } from '@ui-kit/lib/model'
 import { chainValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
 import { llamaApiValidationGroup } from '@ui-kit/lib/model/query/curve-api-validation'
 import { marketIdValidationGroup } from '@ui-kit/lib/model/query/market-id-validation'
@@ -79,7 +79,7 @@ export const borrowMoreFormValidationSuite = createValidationSuite(
     validateMaxBorrowed(userBorrowed, { label: `debt amount`, maxBorrowed })
     validateDebt(debt, debtRequired)
     validateMaxDebt(debt, maxDebt, debtRequired)
-    validateSlippage(slippage)
+    validateSlippage({ slippage })
     validateLeverageEnabled(leverageEnabled, leverageRequired)
   },
 )
@@ -116,7 +116,7 @@ export const borrowMoreValidationGroup = <IChainId extends number>(
   validateDebt(debt, debtRequired)
   validateMaxDebt(debt, maxDebt, maxDebtRequired)
   validateBorrowMoreFieldsForMarket(marketId, leverageEnabled, userCollateral, userBorrowed, debt)
-  validateSlippage(slippage)
+  validateSlippage({ slippage })
   validateLeverageEnabled(leverageEnabled, leverageRequired)
   validateLeverageSupported(marketId, leverageRequired)
 }
