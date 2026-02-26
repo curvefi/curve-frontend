@@ -2,7 +2,7 @@ import { getBorrowMoreImplementation } from '@/llamalend/queries/borrow-more/bor
 import type { BorrowMoreParams, BorrowMoreQuery } from '@/llamalend/queries/validation/borrow-more.validation'
 import { borrowMoreValidationGroup } from '@/llamalend/queries/validation/borrow-more.validation'
 import type { Decimal } from '@primitives/decimal.utils'
-import { getExpectedFn, getRouteById } from '@ui-kit/entities/router-api.query'
+import { getExpectedFn, getRouteById } from '@ui-kit/entities/router-api'
 import { createValidationSuite } from '@ui-kit/lib'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { decimal } from '@ui-kit/utils'
