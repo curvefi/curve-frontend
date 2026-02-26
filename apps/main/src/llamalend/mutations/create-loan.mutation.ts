@@ -8,11 +8,11 @@ import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/cre
 import { createLoanQueryValidationSuite } from '@/llamalend/queries/validation/borrow.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Address } from '@primitives/address.utils'
+import { parseRoute as parseRoute2 } from '@ui-kit/entities/router-api'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
 import type { OnTransactionSuccess } from '@ui-kit/lib/model/mutation/useTransactionMutation'
 import { waitForApproval } from '@ui-kit/utils'
-import { parseRoute } from '@ui-kit/widgets/RouteProvider'
 import type { CreateLoanForm, CreateLoanFormQuery } from '../features/borrow/types'
 
 type CreateLoanMutationContext = {
@@ -54,7 +54,7 @@ const create = async (
   const [type, impl] = getCreateLoanImplementation(market.id, leverageEnabled)
   switch (type) {
     case 'zapV2':
-      return (await impl.createLoan({ userCollateral, userBorrowed, debt, range, ...parseRoute(routeId) })) as Address
+      return (await impl.createLoan({ userCollateral, userBorrowed, debt, range, ...parseRoute2(routeId) })) as Address
     case 'V2':
     case 'V1':
       return (await impl.createLoan(userCollateral, userBorrowed, debt, range, +slippage)) as Address
