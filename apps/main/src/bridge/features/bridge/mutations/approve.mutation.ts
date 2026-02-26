@@ -1,10 +1,11 @@
 import { useCallback } from 'react'
-import type { Hex } from 'viem'
+import type { Hex } from '@primitives/address.utils'
+import type { Decimal } from '@primitives/decimal.utils'
 import { requireLib } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
 import { useTransactionMutation, type OnTransactionSuccess } from '@ui-kit/lib/model/mutation/useTransactionMutation'
-import { formatNumber, type Decimal } from '@ui-kit/utils'
+import { formatNumber } from '@ui-kit/utils'
 import type { BridgeForm } from '../hooks/useBridgeForm'
 import { bridgeFormValidationSuite } from '../validation/bridge.validation'
 

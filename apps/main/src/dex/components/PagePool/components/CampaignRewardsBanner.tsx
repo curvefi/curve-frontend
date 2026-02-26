@@ -1,10 +1,10 @@
 import { useNetworkByChain } from '@/dex/entities/networks'
 import type { ChainId } from '@/dex/types/main.types'
 import type { Chain } from '@curvefi/prices-api'
+import type { Address } from '@primitives/address.utils'
 import { CampaignBannerComp } from '@ui/CampaignRewards/CampaignBannerComp'
 import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
-import type { Address } from '@ui-kit/utils'
 
 interface CampaignRewardsBannerProps {
   chainId: ChainId

@@ -1,7 +1,7 @@
 import { groupBy, capitalize } from 'lodash'
-import type { Address } from 'viem'
-import { addQueryString, FetchError } from '@curvefi/prices-api/fetch'
 import { paginate } from '@curvefi/prices-api/paginate'
+import type { Address } from '@primitives/address.utils'
+import { addQueryString, FetchError } from '@primitives/fetch.utils'
 import { EmptyValidationSuite } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model'
 import { formatPercent } from '@ui-kit/utils'
@@ -86,11 +86,7 @@ const opportunityToCampaignPoolRewards = (opp: MerklOpportunity): CampaignPoolRe
  *
  * API is also available in the browser for testing and experimenting at https://api.merkl.xyz/docs
  */
-export const {
-  useQuery: useCampaignsMerkl,
-  getQueryOptions: getCampaignsMerklOptions,
-  getQueryData: getCampaignsMerkl,
-} = queryFactory({
+export const { getQueryOptions: getCampaignsMerklOptions } = queryFactory({
   queryKey: () => ['campaigns-merkl'] as const,
   queryFn: async () => {
     const fetchPage = async (page: number, items: number) => {

@@ -1,5 +1,5 @@
 import { sortBy } from 'lodash'
-import { type Address, Hex, zeroAddress } from 'viem'
+import { zeroAddress } from 'viem'
 import type { HealthColorKey, LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import type { INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
@@ -7,10 +7,12 @@ import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { Chain } from '@curvefi/prices-api'
 import { getUserMarketCollateralEvents as getMintUserMarketCollateralEvents } from '@curvefi/prices-api/crvusd'
 import { getUserMarketCollateralEvents as getLendUserMarketCollateralEvents } from '@curvefi/prices-api/lending'
-import { notFalsy, objectKeys } from '@curvefi/prices-api/objects.util'
+import { type Address, Hex } from '@primitives/address.utils'
+import type { Decimal } from '@primitives/decimal.utils'
+import { notFalsy, objectKeys } from '@primitives/objects.utils'
 import { requireLib, type Wallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
-import { CRVUSD, type Decimal, formatNumber } from '@ui-kit/utils'
+import { CRVUSD, formatNumber } from '@ui-kit/utils'
 import { MarketNetBorrowAprTooltipContentProps } from './widgets/tooltips/MarketNetBorrowAprTooltipContent'
 
 /**
@@ -147,23 +149,24 @@ export const updateUserEventsApi = (
 }
 
 /**
- * It’s possible that when a user briefly enters and then exits soft liquidation,
- * one or more bands may be left with a tiny amount of crvUSD (dust). There is a
- * dust-sweeping bot that cleans this up, but there can be a delay before those
- * remnants are collected.
+ * Returns the minimum crvUSD stablecoin balance in a user’s AMM bands that must be
+ * exceeded before the position is considered to be in soft liquidation.
  *
- * The current front-end check is rudimentary and can sometimes conclude that a
- * user is still in soft liquidation even though their overall health is healthy,
- * which is confusing.
+ * When a user briefly enters and then exits soft liquidation, one or more bands may
+ * be left with a tiny amount of crvUSD (dust). There is a dust-sweeping bot that
+ * cleans this up, but there can be a delay before those remnants are collected.
+ * Without a threshold this dust would cause false-positive soft-liquidation alerts.
  *
- * As a pragmatic, short-term mitigation to reduce false positives, we only mark
- * loans as being in soft liquidation when the crvUSD balance of a band exceeds
- * a small threshold. This prevents trivial dust amounts from triggering the UI.
+ * However, the threshold must be skipped when the oracle price is within or near the
+ * user’s bands (`userIsCloseToLiquidation=true`), because in that case even a tiny
+ * stablecoin balance is genuine soft-liquidation activity, not leftover dust. Dust
+ * only exists when the oracle has moved *far away* from the bands, which is exactly
+ * the situation where `userIsCloseToLiquidation` is false.
  *
  * If somebody wants to tackle this properly, they can find the bot code here:
  * https://github.com/curvefi/dust-cleaner-bot/blob/0795b2fa/app/services/controller.py#L90
  */
-const SOFT_LIQUIDATION_DUST_THRESHOLD = 0.1
+const getSoftLiquidationThreshold = (userIsCloseToLiquidation: boolean) => (userIsCloseToLiquidation ? 0 : 0.1)
 
 /**
  * healthNotFull is needed here because:
@@ -181,12 +184,14 @@ export function getLiquidationStatus(
     tooltip: '',
   }
 
+  const threshold = getSoftLiquidationThreshold(userIsCloseToLiquidation)
+
   if (+healthNotFull < 0) {
     userStatus.label = 'Hard liquidatable'
     userStatus.colorKey = 'hard_liquidation'
     userStatus.tooltip =
       'Hard liquidation is like a usual liquidation, which can happen only if you experience significant losses in soft liquidation so that you get below 0 health.'
-  } else if (+userStateStablecoin > SOFT_LIQUIDATION_DUST_THRESHOLD) {
+  } else if (+userStateStablecoin > threshold) {
     userStatus.label = 'Soft liquidation'
     userStatus.colorKey = 'soft_liquidation'
     userStatus.tooltip =

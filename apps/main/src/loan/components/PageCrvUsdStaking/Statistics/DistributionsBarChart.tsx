@@ -5,6 +5,7 @@ import { useTheme } from '@mui/material/styles'
 import { formatNumber, formatDate } from '@ui/utils'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { DistributionsChartTooltip } from './DistributionsChartTooltip'
+
 const { FontSize } = SizesAndSpaces
 
 type RevenueDistributionsBarChartProps = { data: ScrvUsdRevenue | null; height?: number }

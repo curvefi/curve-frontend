@@ -22,13 +22,11 @@ export const SelectGaugeListChunk = ({
   const ref = useRef<HTMLUListElement>(null)
   const entry = useIntersectionObserver(ref, { freezeOnceVisible: false })
 
-  const isVisible = !!entry?.isIntersecting
-
   return (
     <ItemsWrapper
       ref={ref}
       count={gauges.length}
-      className={isVisible ? 'visible' : ''}
+      className={entry.isIntersecting ? 'visible' : ''}
       onKeyDown={(evt) => {
         // scroll up/down list
         const activeElement = document.activeElement
@@ -50,7 +48,7 @@ export const SelectGaugeListChunk = ({
         }
       }}
     >
-      {isVisible &&
+      {entry.isIntersecting &&
         gauges.map((item) => (
           <SelectGaugeListItem
             key={item.address}

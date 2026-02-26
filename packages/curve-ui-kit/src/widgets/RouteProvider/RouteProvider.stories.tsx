@@ -3,34 +3,72 @@ import Box from '@mui/material/Box'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { type Address, CRVUSD_ADDRESS } from '@ui-kit/utils'
-import { type RouteOption, type RouteProviderProps, RouteProvidersAccordion } from './RouteProvidersAccordion'
+import { q } from '@ui-kit/types/util'
+import type { RouteOption } from './route-provider.types'
+import { type RouteProviderProps, RouteProvidersAccordion } from './RouteProvidersAccordion'
 
 const { MaxWidth } = SizesAndSpaces
 
-const outputTokenAddress = CRVUSD_ADDRESS as Address
-
-const labels = {
-  [outputTokenAddress]: 'crvUSD',
-} satisfies Record<Address, string>
+const zeroAddress = '0x0000000000000000000000000000000000000000'
 
 const mockRoutes: RouteOption[] = [
-  { provider: 'curve', toAmountOutput: '69.4241' },
-  { provider: 'enso', toAmountOutput: '67.7432' },
-  { provider: 'odos', toAmountOutput: '67.0142' },
+  {
+    id: 'curve',
+    router: 'curve',
+    amountIn: ['69424100000000000000'],
+    amountOut: ['69424100000000000000'],
+    priceImpact: 0.01,
+    createdAt: 0,
+    warnings: [],
+    route: [
+      { name: 'Curve', tokenIn: [zeroAddress], tokenOut: [zeroAddress], protocol: 'curve', action: 'swap', chainId: 1 },
+    ],
+    tx: { to: '0x0000000000000000000000000000000000000001', data: '0x', from: zeroAddress, value: '0' },
+  },
+  {
+    id: 'enso',
+    router: 'enso',
+    amountIn: ['69424100000000000000'],
+    amountOut: ['67743200000000000000'],
+    priceImpact: 0.1,
+    createdAt: 0,
+    warnings: [],
+    route: [
+      { name: 'Enso', tokenIn: [zeroAddress], tokenOut: [zeroAddress], protocol: 'enso', action: 'swap', chainId: 1 },
+    ],
+    tx: { to: '0x0000000000000000000000000000000000000002', data: '0x', from: zeroAddress, value: '0' },
+  },
+  {
+    id: 'odos',
+    router: 'odos',
+    amountIn: ['69424100000000000000'],
+    amountOut: ['67014200000000000000'],
+    priceImpact: 0.001,
+    createdAt: 0,
+    warnings: [],
+    route: [
+      { name: 'Odos', tokenIn: [zeroAddress], tokenOut: [zeroAddress], protocol: 'odos', action: 'swap', chainId: 1 },
+    ],
+    tx: { to: '0x0000000000000000000000000000000000000003', data: '0x', from: zeroAddress, value: '0' },
+  },
 ]
 
 const meta: Meta<typeof RouteProvidersAccordion> = {
   title: 'UI Kit/Widgets/RouteProvidersAccordion',
   component: RouteProvidersAccordion,
   args: {
-    routes: mockRoutes,
+    data: mockRoutes,
     selectedRoute: mockRoutes[0],
-    outputTokenAddress,
-    tokenSymbols: labels,
-    usdPrice: 1.0,
+    tokenOut: {
+      symbol: 'crvUSD',
+      decimals: 18,
+      usdRate: q({ data: 1, isLoading: false, error: null }),
+    },
     isExpanded: false,
     isLoading: false,
+    error: null,
+    onChange: () => undefined,
+    onToggle: () => undefined,
     onRefresh: () => undefined,
   },
 }
@@ -42,7 +80,7 @@ type Story = StoryObj<typeof meta>
 const RouteProviderStory = ({
   isExpanded: givenExpanded,
   isLoading: givenIsLoading,
-  routes: givenRoutes,
+  data: givenRoutes,
   selectedRoute: givenSelectedRoute,
   ...args
 }: RouteProviderProps) => {
@@ -61,7 +99,7 @@ const RouteProviderStory = ({
     <Box sx={{ maxWidth: MaxWidth.actionCard }}>
       <RouteProvidersAccordion
         {...args}
-        routes={routes}
+        data={routes}
         selectedRoute={selectedRoute}
         isLoading={isLoading}
         onChange={useCallback((route) => setSelectedRoute(route), [])}
@@ -89,7 +127,7 @@ export const Expanded: Story = {
 }
 
 export const SingleRoute: Story = {
-  args: { routes: [mockRoutes[0]] },
+  args: { data: [mockRoutes[0]] },
   render: (args) => <RouteProviderStory {...args} />,
 }
 

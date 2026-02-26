@@ -1,9 +1,3 @@
-import type { Decimal } from '../../utils/decimal'
+import type { RouteResponse } from '@primitives/router.utils'
 
-export const RouteProviders = ['curve', 'enso', 'odos'] as const
-export type RouteProvider = (typeof RouteProviders)[number]
-
-export type RouteOption = {
-  provider: RouteProvider
-  toAmountOutput: Decimal
-}
+export type RouteOption = RouteResponse

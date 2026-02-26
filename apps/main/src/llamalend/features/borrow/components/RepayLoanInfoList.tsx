@@ -1,6 +1,5 @@
 import { BigNumber } from 'bignumber.js'
 import type { UseFormReturn } from 'react-hook-form'
-import type { Token } from '@/llamalend/features/borrow/types'
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
 import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
@@ -17,9 +16,11 @@ import type { RepayParams } from '@/llamalend/queries/validation/manage-loan.typ
 import type { RepayForm } from '@/llamalend/queries/validation/manage-loan.validation'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import { type Token } from '@primitives/address.utils'
+import type { Decimal } from '@primitives/decimal.utils'
 import { combineQueriesMeta } from '@ui-kit/lib/queries/combine'
 import { mapQuery, q, type Query } from '@ui-kit/types/util'
-import { Decimal, decimal } from '@ui-kit/utils'
+import { decimal } from '@ui-kit/utils'
 import { isFormTouched } from '@ui-kit/utils/react-form.utils'
 
 const remainingDebt = (debt: Decimal, repayAmount: Decimal) => {

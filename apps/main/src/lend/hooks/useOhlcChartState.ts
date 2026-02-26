@@ -5,6 +5,7 @@ import { useStore } from '@/lend/store/useStore'
 import { ChainId } from '@/lend/types/lend.types'
 import { getTokens } from '@/llamalend/llama.utils'
 import { useUserPrices } from '@/llamalend/queries/user'
+import type { Decimal } from '@primitives/decimal.utils'
 import {
   useChartLegendToggles,
   useChartTimeSettings,
@@ -16,7 +17,6 @@ import { DEFAULT_CHART_HEIGHT } from '@ui-kit/features/candle-chart/constants'
 import type { FetchingStatus } from '@ui-kit/features/candle-chart/types'
 import { getThreeHundredResultsAgo, subtractTimeUnit } from '@ui-kit/features/candle-chart/utils'
 import type { Range } from '@ui-kit/types/util'
-import type { Decimal } from '@ui-kit/utils'
 
 export type LendingMarketTokens = ReturnType<typeof getTokens> | undefined
 

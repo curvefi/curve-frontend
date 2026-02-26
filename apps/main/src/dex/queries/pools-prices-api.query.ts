@@ -1,5 +1,5 @@
-import { fromEntries } from '@curvefi/prices-api/objects.util'
 import { getPools } from '@curvefi/prices-api/pools'
+import { fromEntries } from '@primitives/objects.utils'
 import { EmptyValidationSuite } from '@ui-kit/lib'
 import { queryFactory, rootKeys, type ChainNameParams, type ChainNameQuery } from '@ui-kit/lib/model'
 

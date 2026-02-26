@@ -4,7 +4,7 @@ import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
 import type { CreateVirtualTestnetResponse } from '@cy/support/helpers/tenderly/vnet-create'
 import { fundErc20, fundEth } from '@cy/support/helpers/tenderly/vnet-fund'
 import { sendVnetTransaction } from '@cy/support/helpers/tenderly/vnet-transaction'
-import type { Decimal } from '@ui-kit/utils'
+import type { Decimal } from '@primitives/decimal.utils'
 
 const ERC20_ABI = parseAbi(['function approve(address spender, uint256 amount)'])
 const CONTROLLER_ABI = parseAbi(['function create_loan(uint256 collateral, uint256 debt, uint256 N)'])

@@ -1,10 +1,11 @@
 import { type ReactNode, useCallback, useMemo } from 'react'
-import type { FieldPath, FieldValues, UseFormReturn } from 'react-hook-form'
-import type { Address } from 'viem'
+import type { FieldPath, FieldPathByValue, FieldValues, UseFormReturn } from 'react-hook-form'
 import { useConnection } from 'wagmi'
 import type { LlamaNetwork } from '@/llamalend/llamalend.types'
 import type { INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
-import type { PartialRecord } from '@curvefi/prices-api/objects.util'
+import type { Address } from '@primitives/address.utils'
+import type { Decimal } from '@primitives/decimal.utils'
+import type { PartialRecord } from '@primitives/objects.utils'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LlamaIcon } from '@ui-kit/shared/icons/LlamaIcon'
@@ -12,7 +13,7 @@ import type { ChipsPreset, LargeTokenInputProps } from '@ui-kit/shared/ui/LargeT
 import { HelperMessage, LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import type { QueryProp } from '@ui-kit/types/util'
-import { decimal, Decimal } from '@ui-kit/utils'
+import { decimal } from '@ui-kit/utils'
 import { type FormUpdates, updateForm } from '@ui-kit/utils/react-form.utils'
 
 type WalletBalanceProps = NonNullable<LargeTokenInputProps['walletBalance']>
@@ -22,8 +23,8 @@ type WalletBalanceProps = NonNullable<LargeTokenInputProps['walletBalance']>
  */
 export const LoanFormTokenInput = <
   TFieldValues extends FieldValues,
-  TFieldName extends FieldPath<TFieldValues>,
-  TMaxFieldName extends FieldPath<TFieldValues>,
+  TFieldName extends FieldPathByValue<TFieldValues, Decimal | undefined>,
+  TMaxFieldName extends FieldPathByValue<TFieldValues, Decimal | undefined>,
 >({
   label,
   token,
@@ -95,7 +96,7 @@ export const LoanFormTokenInput = <
       symbol: token?.symbol,
       loading: position?.isLoading ?? isBalanceLoading,
       usdRate,
-      tooltip: tooltip,
+      tooltip,
       prefix: position && LlamaIcon,
     }),
     [balance, isBalanceLoading, token?.symbol, usdRate, tooltip, position],

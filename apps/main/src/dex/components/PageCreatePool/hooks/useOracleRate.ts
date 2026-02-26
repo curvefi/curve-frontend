@@ -1,5 +1,6 @@
-import { type Address, erc20Abi } from 'viem'
+import { erc20Abi } from 'viem'
 import { useReadContract } from 'wagmi'
+import type { Address } from '@primitives/address.utils'
 import { decimal } from '@ui-kit/utils'
 
 const buildOracleAbi = (fnName: string) =>

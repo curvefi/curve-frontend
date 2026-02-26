@@ -17,11 +17,11 @@ import { createTenderlyWagmiConfigFromVNet } from '@cy/support/helpers/tenderly'
 import { type TenderlyWagmiConfigFromVNet } from '@cy/support/helpers/tenderly/vnet'
 import Box from '@mui/material/Box'
 import Skeleton from '@mui/material/Skeleton'
+import type { Decimal } from '@primitives/decimal.utils'
 import { useCurve } from '@ui-kit/features/connect-wallet/lib/CurveContext'
 import { CurveProvider } from '@ui-kit/features/connect-wallet/lib/CurveProvider'
 import type { UserMarketQuery } from '@ui-kit/lib/model'
 import type { Range } from '@ui-kit/types/util'
-import type { Decimal } from '@ui-kit/utils'
 
 const networks = loanNetworks as unknown as NetworkDict<LlamaChainId>
 

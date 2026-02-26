@@ -1,15 +1,13 @@
 import BigNumber from 'bignumber.js'
 import { FastifyBaseLogger } from 'fastify'
 import { Address, zeroAddress } from 'viem'
-import type { IRoute, IRouteStep } from '@curvefi/api/lib/interfaces'
+import type { IDict, IRoute, IRouteStep } from '@curvefi/api/lib/interfaces'
 import { PoolTemplate } from '@curvefi/api/lib/pools'
-import { notFalsy } from '../router.utils'
-import {
-  type Decimal,
-  type OptimalRouteQuery,
-  type RouteResponse,
-  type RouteStep,
-} from '../routes/optimal-route.schemas'
+import type { Decimal } from '@primitives/decimal.utils'
+import { DEFAULT_DECIMALS, notFalsy } from '@primitives/objects.utils'
+import type { RouteResponse, RouteStep, TransactionData } from '@primitives/router.utils'
+import { fromWei, toWei } from '../router.utils'
+import { type RoutesQuery } from '../routes/routes.schemas'
 import { type CurveJS, loadCurve } from './curvejs'
 
 /**
@@ -62,29 +60,38 @@ function getWarnings(
   return notFalsy(isExchangeRateLow && 'low-exchange-rate', isHighSlippage && 'high-slippage')
 }
 
+const getDecimals = (tokens: Address[], decimals: IDict<number>) =>
+  tokens.map((t) => decimals[t] ?? decimals[t.toLowerCase()] ?? DEFAULT_DECIMALS)
+
+const buildCurveRouteId = (routes: IRouteStep[]) => `curve:${routes.map(({ poolId }) => poolId).join('-')}`
+
 /**
  * Runs the router to get the optimal route and builds the response.
  */
-export async function buildCurveRouteResponse(
-  query: OptimalRouteQuery,
-  log: FastifyBaseLogger,
-): Promise<RouteResponse[]> {
+export async function buildCurveRouteResponse(query: RoutesQuery, log: FastifyBaseLogger): Promise<RouteResponse[]> {
   const {
     tokenOut: [toToken],
     tokenIn: [fromToken],
     chainId,
     amountIn: [amountIn] = [],
-    amountOut,
+    amountOut: [amountOut] = [],
+    slippage,
   } = query
 
   const curve = await loadCurve(chainId, log)
-  const fromAmount = amountIn ?? ((await curve.router.required(fromToken, toToken, amountOut?.[0] ?? '0')) as Decimal)
+  const [fromDecimals, toDecimals] = getDecimals([fromToken, toToken], curve.getNetworkConstants().DECIMALS)
+
+  const outAmount = fromWei(amountOut ?? '0', toDecimals)
+  const fromAmount = amountIn
+    ? fromWei(amountIn, fromDecimals)
+    : ((await curve.router.required(fromToken, toToken, outAmount)) as Decimal)
   const { route: routes, output: toAmount } = await curve.router.getBestRouteAndOutput(fromToken, toToken, fromAmount)
   if (!routes.length) return []
 
-  const [priceImpact, toStoredRate] = await Promise.all([
+  const [priceImpact, toStoredRate, tx] = await Promise.all([
     curve.router.priceImpact(fromToken, toToken, fromAmount),
     routerGetToStoredRate(routes, curve, toToken),
+    curve.router.populateSwap(fromToken, toToken, fromAmount, slippage),
   ])
 
   const pools = tryGetPools(routes, curve, log)
@@ -98,13 +105,15 @@ export async function buildCurveRouteResponse(
 
   return [
     {
+      id: buildCurveRouteId(routes),
       router: 'curve',
-      amountIn: [fromAmount],
-      amountOut: [toAmount as Decimal],
+      amountIn: [toWei(fromAmount, fromDecimals)],
+      amountOut: [toWei(toAmount, toDecimals)],
       priceImpact,
       createdAt: Date.now(),
       isStableswapRoute,
-      warnings: warnings,
+      warnings,
+      tx: tx as TransactionData | undefined,
       route: parsedRoutes.map(
         ({ name, inputCoinAddress, outputCoinAddress, ...args }): RouteStep => ({
           name,

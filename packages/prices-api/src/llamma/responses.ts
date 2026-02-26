@@ -1,4 +1,5 @@
-import type { Address, PaginationMeta } from '..'
+import type { Address, Token } from '@primitives/address.utils'
+import type { PaginationMeta } from '..'
 
 export type GetLlammaEventsResponse = PaginationMeta & {
   data: {
@@ -22,14 +23,8 @@ export type GetLlammaTradesResponse = PaginationMeta & {
   data: {
     sold_id: number
     bought_id: number
-    token_sold: {
-      symbol: string
-      address: Address
-    }
-    token_bought: {
-      symbol: string
-      address: Address
-    }
+    token_sold: Token
+    token_bought: Token
     amount_sold: number
     amount_bought: number
     price: number

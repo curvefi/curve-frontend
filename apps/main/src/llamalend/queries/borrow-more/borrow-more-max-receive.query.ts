@@ -1,9 +1,10 @@
 import { getBorrowMoreImplementation } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
 import type { BorrowMoreParams, BorrowMoreQuery } from '@/llamalend/queries/validation/borrow-more.validation'
 import { borrowMoreValidationGroup } from '@/llamalend/queries/validation/borrow-more.validation'
+import type { Decimal } from '@primitives/decimal.utils'
 import { createValidationSuite } from '@ui-kit/lib'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
-import { decimal, Decimal } from '@ui-kit/utils'
+import { decimal } from '@ui-kit/utils'
 
 export type BorrowMoreMaxReceiveResult = {
   maxDebt: Decimal

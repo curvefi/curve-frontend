@@ -6,6 +6,7 @@ import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
+import { q } from '@ui-kit/types/util'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import { InputDivider } from '../../../widgets/InputDivider'
@@ -39,6 +40,7 @@ export const AddCollateralForm = <ChainId extends IChainId>({
     collateralToken,
     borrowToken,
     txHash,
+    maxCollateral,
   } = useAddCollateralForm({ market, network, onSuccess })
 
   return (
@@ -66,6 +68,7 @@ export const AddCollateralForm = <ChainId extends IChainId>({
           form={form}
           testId="add-collateral-input"
           network={network}
+          max={{ ...q(maxCollateral), fieldName: 'maxCollateral' }}
         />
       </Stack>
 
