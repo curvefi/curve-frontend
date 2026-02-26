@@ -13,7 +13,7 @@ export const useAutoRefresh = (chainId: number | undefined) => {
   const fetchPools = useStore((state) => state.pools.fetchPools)
 
   const useApi = useMemo(() => (chainId ? networks[chainId]?.useApi : undefined), [chainId, networks])
-  const { data: poolIds } = usePoolIds({ chainId, useApi }, useApi != null)
+  const { data: poolIds } = usePoolIds({ chainId, useApi, hasRpc: !curveApi?.isNoRPC })
 
   useGasInfoAndUpdateLib({ chainId, networks })
 

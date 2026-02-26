@@ -95,7 +95,7 @@ export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreAp
     const networks = await fetchNetworks()
     const network = networks[chainId]
 
-    const poolIds = await fetchPoolIds({ chainId, useApi: network.useApi })
+    const poolIds = await fetchPoolIds({ chainId, useApi: network.useApi, hasRpc: !curveApi.isNoRPC })
     await state.pools.fetchPools(curveApi, poolIds)
 
     log('Hydrating DEX - Complete')
