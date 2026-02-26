@@ -73,7 +73,6 @@ export type PoolsSlice = {
     fetchPools(
       curve: CurveApi,
       poolIds: string[],
-      failedFetching24hOldVprice: { [poolAddress: string]: boolean } | null,
     ): Promise<{ poolsMapper: PoolDataMapper; poolDatas: PoolData[] } | undefined>
     fetchNewPool(curve: CurveApi, poolId: string): Promise<PoolData | undefined>
     fetchPoolsRewardsApy(chainId: ChainId, poolDatas: PoolData[]): Promise<void>
@@ -184,10 +183,21 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
       //  update cache
       storeCache.setTvlVolumeMapper('volumeMapper', chainId, volumeMapper)
     },
-    fetchPools: async (curve, poolIds, failedFetching24hOldVprice) => {
+    fetchPools: async (curve, poolIds) => {
       const { pools, storeCache, tokens } = get()
-
       const { chainId } = curve
+
+      // if no pools found for network, set tvl, volume and pools state to empty object
+      if (!poolIds.length) {
+        pools.setEmptyPoolListDefault(chainId)
+        tokens.setEmptyPoolListDefault(curve)
+        return
+      }
+
+      // TODO: Temporary code to determine if there is an issue with getting base APY from  Kava Api (https://api.curve.finance/api/getFactoryAPYs-kava)
+      const failedFetching24hOldVprice: { [poolAddress: string]: boolean } =
+        chainId === 2222 ? await curvejsApi.network.getFailedFetching24hOldVprice() : {}
+
       const networks = await fetchNetworks()
       const { isLite, id } = networks[chainId]
       const nativeToken = curve.getNetworkConstants().NATIVE_TOKEN
@@ -263,7 +273,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
         curve.tricryptoFactory.fetchNewPools(),
         curve.stableNgFactory.fetchNewPools(),
       ])
-      const resp = await get()[sliceKey].fetchPools(curve, [poolId], null)
+      const resp = await get()[sliceKey].fetchPools(curve, [poolId])
       return resp?.poolsMapper?.[poolId]
     },
     fetchPoolCurrenciesReserves: async (curve, poolData) => {

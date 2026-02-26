@@ -14,7 +14,7 @@ type PoolsParams = FieldsOf<PoolsQuery>
  * this query also hydrates curve-js, so we want to keep it as simple as possible.
  */
 export const { useQuery: usePoolIds, fetchQuery: fetchPoolIds } = queryFactory({
-  queryKey: ({ chainId, useApi }: PoolsParams) => [...rootKeys.chain({ chainId }), { useApi }, 'pools'] as const,
+  queryKey: ({ chainId, useApi }: PoolsParams) => [...rootKeys.chain({ chainId }), { useApi }, 'pool-ids'] as const,
   queryFn: async ({ useApi }: PoolsQuery) => {
     // must call api in this order, must use api to get non-cached version of gaugeStatus
     const curve = requireLib('curveApi')

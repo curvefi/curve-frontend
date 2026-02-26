@@ -19,7 +19,7 @@ export const useAutoRefresh = (chainId: number | undefined) => {
 
   usePageVisibleInterval(() => {
     if (curveApi && poolIds) {
-      void fetchPools(curveApi, poolIds, null)
+      void fetchPools(curveApi, poolIds)
     }
   }, REFRESH_INTERVAL['15m'])
 }
