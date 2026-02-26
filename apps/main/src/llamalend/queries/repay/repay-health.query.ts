@@ -1,6 +1,6 @@
 import type { Decimal } from '@primitives/decimal.utils'
+import { parseRoute } from '@ui-kit/entities/router-api'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
-import { parseRoute } from '@ui-kit/widgets/RouteProvider'
 import { type RepayHealthParams, type RepayHealthQuery } from '../validation/manage-loan.types'
 import { repayFromCollateralIsFullValidationSuite } from '../validation/manage-loan.validation'
 import { getRepayImplementation } from './repay-query.helpers'

@@ -13,11 +13,11 @@ import {
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Address, type Hex } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
+import { parseRoute } from '@ui-kit/entities/router-api'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
 import type { OnTransactionSuccess } from '@ui-kit/lib/model/mutation/useTransactionMutation'
 import { decimal, waitForApproval } from '@ui-kit/utils'
-import { parseRoute } from '@ui-kit/widgets/RouteProvider'
 
 type RepayMutation = {
   stateCollateral: Decimal

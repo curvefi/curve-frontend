@@ -1,6 +1,6 @@
 import { repayExpectedBorrowedQueryKey } from '@/llamalend/queries/repay/repay-expected-borrowed.query'
+import { parseRoute } from '@ui-kit/entities/router-api'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
-import { parseRoute } from '@ui-kit/widgets/RouteProvider'
 import { type RepayParams, type RepayQuery } from '../validation/manage-loan.types'
 import { repayValidationSuite } from '../validation/manage-loan.validation'
 import { getRepayImplementation } from './repay-query.helpers'

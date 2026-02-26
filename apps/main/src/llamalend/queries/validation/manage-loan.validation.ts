@@ -18,7 +18,8 @@ import type {
   RepayParams,
 } from '@/llamalend/queries/validation/manage-loan.types'
 import type { Decimal } from '@primitives/decimal.utils'
-import { createValidationSuite, validateSlippage } from '@ui-kit/lib'
+import { createValidationSuite } from '@ui-kit/lib'
+import { validateSlippage } from '@ui-kit/lib/model'
 import { chainValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
 import { llamaApiValidationGroup } from '@ui-kit/lib/model/query/curve-api-validation'
 import { marketIdValidationGroup, marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
@@ -172,7 +173,7 @@ export const repayValidationGroup = <IChainId extends number>(
   validateRepayBorrowedField(userBorrowed)
   validateRepayHasValue(stateCollateral, userCollateral, userBorrowed)
   validateRepayFieldsForMarket(marketId, stateCollateral, userCollateral, userBorrowed, routeId)
-  validateSlippage(slippage)
+  validateSlippage({ slippage })
   validateLeverageSupported(marketId, leverageRequired)
 }
 
@@ -198,7 +199,7 @@ export const repayFormValidationSuite = createValidationSuite(
     validateMaxCollateral(userCollateral, maxCollateral)
     validateRepayHasValue(stateCollateral, userCollateral, userBorrowed)
     validateIsFull(isFull)
-    validateSlippage(slippage)
+    validateSlippage({ slippage })
   },
 )
 
@@ -215,6 +216,6 @@ export const closeLoanValidationSuite = createValidationSuite(
     llamaApiValidationGroup({ chainId })
     marketIdValidationGroup({ marketId })
     userAddressValidationGroup({ userAddress })
-    validateSlippage(slippage)
+    validateSlippage({ slippage })
   },
 )

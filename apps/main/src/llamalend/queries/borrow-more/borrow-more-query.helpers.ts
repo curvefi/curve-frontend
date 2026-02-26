@@ -2,7 +2,7 @@ import { getLlamaMarket, hasLeverage, hasV2Leverage, hasZapV2 } from '@/llamalen
 import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import type { BorrowMoreQuery } from '@/llamalend/queries/validation/borrow-more.validation'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
-import { parseRoute } from '@ui-kit/widgets/RouteProvider'
+import { parseRoute } from '@ui-kit/entities/router-api'
 
 /**
  * Determines the appropriate borrow more implementation based on market type.

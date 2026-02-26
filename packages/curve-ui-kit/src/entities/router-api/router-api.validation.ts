@@ -1,14 +1,19 @@
 import { enforce, skipWhen, test } from 'vest'
 import { toArray } from '@primitives/array.utils'
 import { type RouteProvider, RouteProviders } from '@primitives/router.utils'
-import { createValidationSuite, validateSlippage } from '@ui-kit/lib'
+import { createValidationSuite } from '@ui-kit/lib'
+import { validateSlippage } from '@ui-kit/lib/model'
+import { chainValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
 import { userAddressValidationGroup } from '@ui-kit/lib/model/query/user-address-validation'
 import type { RoutesQuery } from './router-api.types'
 
-export const validateRouter = (
-  router: RouteProvider | readonly RouteProvider[] | null | undefined,
-  { isRequired = false }: { isRequired?: boolean } = {},
-) => {
+export const validateRouter = ({
+  router,
+  isRequired,
+}: {
+  router: RouteProvider | readonly RouteProvider[] | null | undefined
+  isRequired: boolean
+}) => {
   skipWhen(!isRequired && !router, () => {
     test('router', 'Router is required', () => {
       enforce(router).isTruthy()
@@ -17,22 +22,16 @@ export const validateRouter = (
   skipWhen(!router, () => {
     const routers = toArray(router)
     test('router', `Router must be one of ${RouteProviders.join(', ')}`, () => {
-      try {
-        enforce(routers).isArray().isNotEmpty()
-        enforce(routers.length).isPositive().message(`At least one router must be provided.`)
-        routers.forEach((r) => enforce(RouteProviders.includes(r)).message(`${r} is not a valid router`).isTruthy())
-      } catch (e) {
-        console.error(e)
-      }
+      enforce(routers).isArray().isNotEmpty()
+      enforce(routers.length).isPositive().message(`At least one router must be provided.`)
+      routers.forEach((r) => enforce(RouteProviders.includes(r)).message(`${r} is not a valid router`).isTruthy())
     })
   })
 }
 
 export const routerApiValidation = createValidationSuite(
   ({ chainId, tokenIn, tokenOut, amountIn, amountOut, userAddress, slippage, router }: RoutesQuery) => {
-    test('chainId', 'Invalid chainId', () => {
-      enforce(chainId).isNumber().greaterThan(0)
-    })
+    chainValidationGroup({ chainId })
     test('tokenIn', 'Invalid tokenIn address', () => {
       enforce(tokenIn).isAddress()
     })
@@ -43,7 +42,7 @@ export const routerApiValidation = createValidationSuite(
       enforce(!!Number(amountIn) !== !!Number(amountOut)).isTruthy()
     })
     userAddressValidationGroup({ userAddress, required: false })
-    validateSlippage(slippage)
-    validateRouter(router)
+    validateSlippage({ slippage, required: false })
+    validateRouter({ router, isRequired: false })
   },
 )

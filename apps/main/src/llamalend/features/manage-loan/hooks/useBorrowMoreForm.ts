@@ -25,12 +25,12 @@ import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@
 import { vestResolver } from '@hookform/resolvers/vest'
 import type { Decimal } from '@primitives/decimal.utils'
 import { pick } from '@primitives/objects.utils'
+import type { RouteResponse } from '@primitives/router.utils'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { mapQuery, type Range } from '@ui-kit/types/util'
 import { decimal, decimalSum } from '@ui-kit/utils'
 import { updateForm, useCallbackAfterFormUpdate, useFormErrors } from '@ui-kit/utils/react-form.utils'
-import { type RouteOption } from '@ui-kit/widgets/RouteProvider'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 
 const useBorrowMoreParams = <ChainId>({
@@ -160,7 +160,7 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
       amountIn: decimalSum(values.debt, values.userBorrowed),
       ...pick(values, 'slippage', 'routeId'),
       enabled: routeRequired,
-      onChange: async (route: RouteOption | undefined) => {
+      onChange: async (route: RouteResponse | undefined) => {
         updateForm(form, { routeId: route?.id })
         if (route) await invalidateBorrowMoreRouteQueries({ ...params, routeId: route.id })
       },

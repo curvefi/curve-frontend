@@ -4,8 +4,8 @@ import { getUserState } from '@/llamalend/queries/user'
 import type { RepayQuery } from '@/llamalend/queries/validation/manage-loan.types'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { notFalsy } from '@primitives/objects.utils'
+import { parseRoute, type RouteMeta } from '@ui-kit/entities/router-api'
 import { type UserMarketQuery } from '@ui-kit/lib/model'
-import { parseRoute, type RouteMeta } from '@ui-kit/widgets/RouteProvider'
 
 type RepayFields = Pick<RepayQuery, 'stateCollateral' | 'userCollateral' | 'userBorrowed' | 'routeId'>
 type RepayFieldsWithoutRoute = Pick<RepayQuery, 'stateCollateral' | 'userCollateral' | 'userBorrowed'>
