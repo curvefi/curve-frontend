@@ -43,7 +43,9 @@ export const routerApiValidation = createValidationSuite(
       enforce(!!Number(amountIn) !== !!Number(amountOut)).isTruthy()
     })
     userAddressValidationGroup({ userAddress, required: false })
-    validateSlippage(slippage)
+    skipWhen(slippage == null, () => {
+      validateSlippage(slippage)
+    })
     validateRouter(router)
   },
 )
