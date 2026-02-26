@@ -5,11 +5,10 @@ import {
   validateMaxCollateral,
   validateMaxDebt,
   validateRange,
-  validateSlippage,
   validateUserBorrowed,
   validateUserCollateral,
 } from '@/llamalend/queries/validation/borrow-fields.validation'
-import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
+import { createValidationSuite, type FieldsOf, validateSlippage } from '@ui-kit/lib'
 import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
 import { type CreateLoanDebtParams, type CreateLoanForm } from '../../features/borrow/types'
 

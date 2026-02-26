@@ -26,6 +26,7 @@ const environment = isCypress
 
 /** Initialize Sentry error reporting */
 export const initSentry = () =>
+  environment !== 'localhost' &&
   init({
     dsn: SENTRY_DSN,
     environment,

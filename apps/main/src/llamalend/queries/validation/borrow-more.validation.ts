@@ -7,12 +7,11 @@ import {
   validateMaxBorrowed,
   validateMaxCollateral,
   validateMaxDebt,
-  validateSlippage,
   validateUserBorrowed,
   validateUserCollateral,
 } from '@/llamalend/queries/validation/borrow-fields.validation'
 import type { Decimal } from '@primitives/decimal.utils'
-import { createValidationSuite, FieldsOf } from '@ui-kit/lib'
+import { createValidationSuite, FieldsOf, validateSlippage } from '@ui-kit/lib'
 import type { UserMarketQuery } from '@ui-kit/lib/model'
 import { chainValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
 import { llamaApiValidationGroup } from '@ui-kit/lib/model/query/curve-api-validation'

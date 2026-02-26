@@ -4,7 +4,7 @@
  */
 
 import { defaultReleaseChannel, ReleaseChannel } from '@ui-kit/utils'
-import { useReleaseChannel } from './useLocalStorage'
+import { getReleaseChannel, useReleaseChannel } from './useLocalStorage'
 
 const useBetaChannel = () => useReleaseChannel()[0] === ReleaseChannel.Beta
 const useStableChannel = () => useReleaseChannel()[0] !== ReleaseChannel.Legacy
@@ -41,3 +41,7 @@ export const useIntegratedLlamaHeader = useBetaChannel
 
 /** New lend market header subnav */
 export const useLendMarketSubNav = useIntegratedLlamaHeader
+
+/** New ZapV2 leverage implementation for LlamaLend markets */
+export const isZapV2Enabled = () =>
+  getReleaseChannel() === ReleaseChannel.Beta && defaultReleaseChannel === ReleaseChannel.Beta
