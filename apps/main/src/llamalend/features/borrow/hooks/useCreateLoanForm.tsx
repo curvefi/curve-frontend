@@ -12,6 +12,7 @@ import {
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { vestResolver } from '@hookform/resolvers/vest'
 import type { Decimal } from '@primitives/decimal.utils'
+import { pick } from '@primitives/objects.utils'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { mapQuery, type Range } from '@ui-kit/types/util'
@@ -140,11 +141,9 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     formErrors: useFormErrors(formState),
     routes: useMarketRoutes({
       chainId,
-      tokenIn: collateralToken,
-      tokenOut: borrowToken,
-      amountIn: values.userCollateral,
-      slippage: values.slippage,
-      routeId: values.routeId,
+      collateralToken,
+      borrowToken,
+      ...pick(values, 'userBorrowed', 'slippage', 'routeId'),
       enabled: params.leverageEnabled && !!market && hasZapV2(market),
       onChange: async (route: RouteOption | undefined) => {
         updateForm(form, { routeId: route?.id })

@@ -25,7 +25,7 @@ type RepayMutation = {
   userBorrowed: Decimal
   isFull: boolean
   slippage: Decimal
-  routeId: string | null | undefined
+  routeId: string | undefined
 }
 
 export type RepayOptions = {

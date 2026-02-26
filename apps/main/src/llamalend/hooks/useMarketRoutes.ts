@@ -18,20 +18,20 @@ export type MarketRoutes = Query<RouteOption[]> & {
 
 export function useMarketRoutes({
   chainId,
-  tokenIn,
-  tokenOut,
-  amountIn,
+  borrowToken: tokenIn,
+  collateralToken: tokenOut,
+  userBorrowed: amountIn,
   slippage,
   routeId,
   enabled,
   onChange,
 }: {
   chainId: number
-  tokenIn: { symbol: string; address: Address; decimals: number } | undefined
-  tokenOut: { symbol: string; address: Address; decimals: number } | undefined
-  amountIn: Decimal | undefined
+  collateralToken: { symbol: string; address: Address; decimals: number } | undefined
+  borrowToken: { symbol: string; address: Address; decimals: number } | undefined
+  userBorrowed: Decimal | undefined
   slippage: Decimal | undefined
-  routeId: string | null | undefined
+  routeId: string | undefined
   enabled: boolean
 } & Pick<MarketRoutes, 'onChange'>): MarketRoutes | undefined {
   const { address: userAddress } = useConnection()

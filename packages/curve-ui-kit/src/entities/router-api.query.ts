@@ -52,7 +52,7 @@ const { getQueryData: getRouteQueryData, setQueryData: setRouteQueryData } = que
  * This is intentionally a pure cache read (no fetch fallback) and throws when the route is missing because zapV2
  * call sites must only parse routes that were already selected/fetched by the form.
  */
-export const getRouteById = (routeId: string | null | undefined) =>
+export const getRouteById = (routeId: string | undefined) =>
   assert(
     getRouteQueryData({
       routeId: assert(routeId, 'No route for zapv2, please validate the arguments before calling this query.'),

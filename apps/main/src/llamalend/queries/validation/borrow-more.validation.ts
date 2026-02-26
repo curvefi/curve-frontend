@@ -1,5 +1,5 @@
 import { skipWhen } from 'vest'
-import { isRouterMetaRequired } from '@/llamalend/llama.utils'
+import { isRouterRequired } from '@/llamalend/llama.utils'
 import { getBorrowMoreImplementation } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
 import {
   validateDebt,
@@ -28,7 +28,7 @@ export type BorrowMoreMutation = {
   debt: Decimal
   slippage: Decimal
   leverageEnabled: boolean
-  routeId: string | null | undefined
+  routeId: string | undefined
 }
 
 type CalculatedValues = {
@@ -56,7 +56,7 @@ const validateBorrowMoreFieldsForMarket = (
   skipWhen(!marketId, () => {
     if (!marketId) return
     const [type] = getBorrowMoreImplementation(marketId, leverageEnabled)
-    validateRoute(routeId, !!leverageEnabled && isRouterMetaRequired(type))
+    validateRoute(routeId, !!leverageEnabled && isRouterRequired(type))
   })
 }
 

@@ -1,5 +1,5 @@
 import { group, skipWhen } from 'vest'
-import { isRouterMetaRequired } from '@/llamalend/llama.utils'
+import { isRouterRequired } from '@/llamalend/llama.utils'
 import {
   validateDebt,
   validateLeverageEnabled,
@@ -79,7 +79,7 @@ export const createLoanQueryValidationSuite = ({
       skipWhen(!marketId, () => {
         if (!marketId) return
         const [type] = getCreateLoanImplementation(marketId, !!leverageEnabled)
-        validateRoute(routeId, !!leverageEnabled && isRouterMetaRequired(type))
+        validateRoute(routeId, !!leverageEnabled && isRouterRequired(type))
       })
     },
   )

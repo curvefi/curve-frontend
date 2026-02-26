@@ -5,7 +5,7 @@ import { Address } from 'viem'
 import { useConnection } from 'wagmi'
 import { useMaxBorrowMoreValues } from '@/llamalend/features/manage-loan/hooks/useMaxBorrowMoreValues'
 import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
-import { getTokens, isRouterMetaRequired } from '@/llamalend/llama.utils'
+import { getTokens, isRouterRequired } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { OnBorrowedMore, useBorrowMoreMutation } from '@/llamalend/mutations/borrow-more.mutation'
 import { useBorrowMoreExpectedCollateral } from '@/llamalend/queries/borrow-more/borrow-more-expected-collateral.query'
@@ -24,6 +24,7 @@ import {
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { vestResolver } from '@hookform/resolvers/vest'
 import type { Decimal } from '@primitives/decimal.utils'
+import { pick } from '@primitives/objects.utils'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { mapQuery, type Range } from '@ui-kit/types/util'
@@ -116,8 +117,8 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
   const values = watchForm(form)
   const params = useBorrowMoreParams({ chainId, marketId, userAddress, ...values })
   const [implementation] = market ? getBorrowMoreImplementation(market, values.leverageEnabled) : []
-  const routeRequired = !!implementation && isRouterMetaRequired(implementation)
-  const routeAmountIn = decimal(new BigNumber(values.debt ?? 0).plus(values.userBorrowed ?? 0).toString())
+  const routeRequired = !!implementation && isRouterRequired(implementation)
+  const userBorrowed = decimal(new BigNumber(values.debt ?? 0).plus(values.userBorrowed ?? 0).toString())
 
   const {
     onSubmit,
@@ -155,11 +156,10 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
     formErrors: useFormErrors(formState),
     routes: useMarketRoutes({
       chainId,
-      tokenIn: borrowToken,
-      tokenOut: collateralToken,
-      amountIn: routeAmountIn,
-      slippage: values.slippage,
-      routeId: values.routeId,
+      collateralToken,
+      borrowToken,
+      userBorrowed,
+      ...pick(values, 'slippage', 'routeId'),
       enabled: routeRequired,
       onChange: async (route: RouteOption | undefined) => {
         updateForm(form, { routeId: route?.id })

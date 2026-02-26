@@ -8,7 +8,7 @@ export type RouteOption = RouteResponse
 /**
  * Converts a cached router route into the minimal zapV2 payload expected by llamalend.js.
  */
-export const parseRoute = (routeId: string | null | undefined) => {
+export const parseRoute = (routeId: string | undefined) => {
   const {
     tx,
     amountOut: [outAmount],

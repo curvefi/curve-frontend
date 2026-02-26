@@ -1,5 +1,5 @@
 import { enforce, group, skipWhen, test } from 'vest'
-import { isRouterMetaRequired } from '@/llamalend/llama.utils'
+import { isRouterRequired } from '@/llamalend/llama.utils'
 import { getRepayImplementationType } from '@/llamalend/queries/repay/repay-query.helpers'
 import {
   validateIsFull,
@@ -38,7 +38,7 @@ export type RepayForm = CollateralForm & {
   maxBorrowed: Decimal | undefined
   isFull: boolean
   slippage: Decimal
-  routeId: string | null | undefined
+  routeId: string | undefined
 }
 
 export const validateRepayCollateralField = (
@@ -100,7 +100,7 @@ const validateRepayFieldsForMarket = (
       userBorrowed: userBorrowed ?? '0',
     })
     const swapRequired = !!stateCollateral || !!userCollateral || !!routeId
-    validateRoute(routeId, swapRequired && isRouterMetaRequired(type))
+    validateRoute(routeId, swapRequired && isRouterRequired(type))
   })
 }
 

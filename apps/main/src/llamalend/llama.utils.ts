@@ -68,8 +68,7 @@ export const hasVault = (market: LlamaMarketTemplate) => market instanceof LendM
 export const hasZapV2 = (market: LlamaMarketTemplate) =>
   isZapV2Enabled() && market instanceof LendMarketTemplate && market.leverageZapV2.hasLeverage()
 
-export const isRouterMetaRequired = (type: 'zapV2' | 'V0' | 'V1' | 'V2' | 'deleverage' | 'unleveraged') =>
-  type == 'zapV2'
+export const isRouterRequired = (type: 'zapV2' | 'V0' | 'V1' | 'V2' | 'deleverage' | 'unleveraged') => type == 'zapV2'
 
 export const hasGauge = (market: LlamaMarketTemplate) =>
   market instanceof LendMarketTemplate && market.addresses.gauge !== zeroAddress
