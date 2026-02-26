@@ -53,7 +53,7 @@
     "@vitejs/plugin-react": "*",
     "eslint": "*",
     "eslint-config-custom": "*",
-    "storybook": "10.2.3",
+    "storybook": "10.2.10",
     "typescript": "*",
     "vite": "*",
     "vitest": "*"
