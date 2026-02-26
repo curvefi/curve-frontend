@@ -8,7 +8,7 @@ import { parseRoute, type RouteMeta } from '@ui-kit/entities/router-api'
 import { type UserMarketQuery } from '@ui-kit/lib/model'
 
 type RepayFields = Pick<RepayQuery, 'stateCollateral' | 'userCollateral' | 'userBorrowed' | 'routeId'>
-type RepayFieldsWithoutRoute = Pick<RepayQuery, 'stateCollateral' | 'userCollateral' | 'userBorrowed'>
+export type RepayFormFields = Pick<RepayQuery, 'stateCollateral' | 'userCollateral' | 'userBorrowed'>
 
 /**
  * Determines the appropriate repay implementation and its parameters based on the market type and leverage options.
@@ -49,11 +49,11 @@ export function getRepayImplementation(
   )
 }
 
-export function getRepayImplementationType(marketId: string | LlamaMarketTemplate, fields: RepayFieldsWithoutRoute) {
+export function getRepayImplementationType(marketId: string | LlamaMarketTemplate, fields: RepayFormFields) {
   const params = { ...fields, routeId: undefined }
   const routeMeta = {} // we are ignoring the args in this helper anyway
-  const [impl] = getRepayImplementation(marketId, params, routeMeta)
-  return impl
+  const [implementationType] = getRepayImplementation(marketId, params, routeMeta)
+  return implementationType
 }
 
 /**

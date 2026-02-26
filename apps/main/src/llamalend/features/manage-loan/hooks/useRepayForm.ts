@@ -9,7 +9,7 @@ import { type RepayOptions, useRepayMutation } from '@/llamalend/mutations/repay
 import { useRepayIsApproved } from '@/llamalend/queries/repay/repay-is-approved.query'
 import { useRepayIsAvailable } from '@/llamalend/queries/repay/repay-is-available.query'
 import { useRepayPrices } from '@/llamalend/queries/repay/repay-prices.query'
-import { getRepayImplementationType } from '@/llamalend/queries/repay/repay-query.helpers'
+import { getRepayImplementationType, type RepayFormFields } from '@/llamalend/queries/repay/repay-query.helpers'
 import { invalidateRepayRouteQueries } from '@/llamalend/queries/repay/repay-route-invalidation'
 import type { RepayIsFullParams } from '@/llamalend/queries/validation/manage-loan.types'
 import { type RepayForm, repayFormValidationSuite } from '@/llamalend/queries/validation/manage-loan.validation'
@@ -22,7 +22,7 @@ import type { RouteResponse } from '@primitives/router.utils'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { t } from '@ui-kit/lib/i18n'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
-import type { Range } from '@ui-kit/types/util'
+import type { AllowUndefined, Range } from '@ui-kit/types/util'
 import { decimalSum } from '@ui-kit/utils'
 import { filterFormErrors, updateForm, useCallbackAfterFormUpdate } from '@ui-kit/utils/react-form.utils'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
@@ -44,7 +44,7 @@ const useRepayParams = <ChainId>({
   chainId: ChainId
   marketId: string | undefined
   userAddress: Address | undefined
-}): RepayIsFullParams<ChainId> =>
+}) =>
   useDebouncedValue(
     useMemo(
       () => ({
@@ -102,7 +102,7 @@ const formOptions = {
 
 const isRepayRouteRequired = (
   market: LlamaMarketTemplate | undefined,
-  { stateCollateral = '0', userBorrowed = '0', userCollateral = '0' }: RepayForm,
+  { stateCollateral = '0', userBorrowed = '0', userCollateral = '0' }: AllowUndefined<RepayFormFields>,
 ) => !!market && isRouterRequired(getRepayImplementationType(market, { stateCollateral, userCollateral, userBorrowed }))
 
 export const useRepayForm = <ChainId extends LlamaChainId>({
@@ -169,9 +169,9 @@ export const useRepayForm = <ChainId extends LlamaChainId>({
       chainId,
       tokenIn: collateralToken,
       tokenOut: borrowToken,
-      amountIn: decimalSum(values.userCollateral, values.stateCollateral),
-      ...pick(values, 'slippage', 'routeId'),
-      enabled: isRepayRouteRequired(market, values),
+      amountIn: decimalSum(params.userCollateral, params.stateCollateral),
+      ...pick(params, 'slippage', 'routeId'),
+      enabled: isRepayRouteRequired(market, params),
       onChange: async (route: RouteResponse | undefined) => {
         updateForm(form, { routeId: route?.id })
         if (route) await invalidateRepayRouteQueries({ ...params, routeId: route.id })

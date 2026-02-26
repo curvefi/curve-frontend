@@ -28,7 +28,7 @@ export const { useQuery: useRepayRouteImage, invalidate: invalidateRepayRouteIma
       case 'V2':
         return await impl.repayRouteImage(stateCollateral, userCollateral)
       case 'zapV2':
-        return new Error('repayRouteImage is not implemented for zapV2 yet')
+        return null // todo: get image from api
       case 'deleverage':
       case 'unleveraged':
         throw new Error('repayRouteImage is not supported for deleverage or unleveraged repay')
