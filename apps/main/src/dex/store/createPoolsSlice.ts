@@ -35,6 +35,7 @@ import { requireLib } from '@ui-kit/features/connect-wallet'
 import { log } from '@ui-kit/lib/logging'
 import { fetchTokenUsdRate, getTokenUsdRateQueryData } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { TIME_FRAMES } from '@ui-kit/lib/model/time'
+import { Chain as ChainEnum } from '@ui-kit/utils'
 import { fetchNetworks } from '../entities/networks'
 import { getPools } from '../lib/pools'
 import { fetchPoolsBlacklist } from '../queries/pools-blacklist.query'
@@ -196,7 +197,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
 
       // TODO: Temporary code to determine if there is an issue with getting base APY from  Kava Api (https://api.curve.finance/api/getFactoryAPYs-kava)
       const failedFetching24hOldVprice: { [poolAddress: string]: boolean } =
-        chainId === 2222 ? await curvejsApi.network.getFailedFetching24hOldVprice() : {}
+        chainId === ChainEnum.Kava ? await curvejsApi.network.getFailedFetching24hOldVprice() : {}
 
       const networks = await fetchNetworks()
       const { isLite, id } = networks[chainId]
