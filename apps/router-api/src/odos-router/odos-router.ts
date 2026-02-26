@@ -1,6 +1,7 @@
 import { FastifyBaseLogger } from 'fastify'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
+import { assert } from '@primitives/objects.utils'
 import type { RouteResponse } from '@primitives/router.utils'
 import { type RoutesQuery } from '../routes/routes.schemas'
 import type { AssemblePathResponse, CurveOdosAssembleRequest } from './odos-assemble.types'
@@ -94,11 +95,11 @@ export const buildOdosRouteResponse = async (query: RoutesQuery, log: FastifyBas
     priceImpact = null,
   } = await getOdosQuote({ chainId, tokenIn, tokenOut, amountIn, slippage, userAddress }, log)
 
-  const { transaction } = { ...(pathId && (await assembleOdosQuote({ pathId, userAddress }, log))) }
-
+  const id = assert(pathId, 'Odos quote missing pathId')
+  const { transaction } = await assembleOdosQuote({ pathId: id, userAddress }, log)
   return [
     {
-      id: `odos:${pathId ?? `${[tokenIn, tokenOut].join('-')}:${amountIn}`}`,
+      id: `odos:${id}`,
       router: 'odos',
       amountIn: [amountIn],
       amountOut: outAmounts as [Decimal],
@@ -114,7 +115,7 @@ export const buildOdosRouteResponse = async (query: RoutesQuery, log: FastifyBas
           protocol: 'odos',
           action: 'swap',
           chainId,
-          args: { pathId, pathVizImage },
+          args: { id, pathVizImage },
         },
       ],
       ...(transaction && { tx: transaction }),
