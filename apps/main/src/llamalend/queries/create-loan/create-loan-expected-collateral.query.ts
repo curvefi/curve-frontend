@@ -1,8 +1,8 @@
 import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/create-loan-query.helpers'
 import type { Decimal } from '@primitives/decimal.utils'
+import { parseRoute as parseRoute2 } from '@ui-kit/entities/router-api'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { assert, decimal } from '@ui-kit/utils'
-import { parseRoute } from '@ui-kit/widgets/RouteProvider'
 import type { CreateLoanDebtParams, CreateLoanDebtQuery } from '../../features/borrow/types'
 import { createLoanQueryValidationSuite } from '../validation/borrow.validation'
 
@@ -78,7 +78,7 @@ export const {
     switch (type) {
       case 'zapV2':
         return convertNumbers(
-          await impl.createLoanExpectedCollateral({ userCollateral, userBorrowed, debt, ...parseRoute(routeId) }),
+          await impl.createLoanExpectedCollateral({ userCollateral, userBorrowed, debt, ...parseRoute2(routeId) }),
         )
       case 'V1':
       case 'V2':
