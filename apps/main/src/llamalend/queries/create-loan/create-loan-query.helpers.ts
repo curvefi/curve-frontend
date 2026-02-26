@@ -7,6 +7,7 @@ import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
  *
  * For leveraged operations:
  * - LendMarketTemplate with zapV2 leverage: 'zapV2' using `market.leverageZapV2`
+ * - LendMarketTemplate: 'V1' using `market.leverage`
  * - MintMarketTemplate with V2 leverage: 'V2' using `market.leverageV2`
  * - MintMarketTemplate without V2 leverage: 'V0' using `market.leverage`
  *
