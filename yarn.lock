@@ -8390,7 +8390,7 @@ __metadata:
     dayjs: "npm:^1.11.19"
     eslint: "npm:*"
     eslint-config-custom: "npm:*"
-    storybook: "npm:10.2.3"
+    storybook: "npm:10.2.10"
     typescript: "npm:*"
     viem: "npm:^2.45.0"
     vite: "npm:*"
@@ -14453,9 +14453,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"storybook@npm:10.2.3":
-  version: 10.2.3
-  resolution: "storybook@npm:10.2.3"
+"storybook@npm:10.2.10":
+  version: 10.2.10
+  resolution: "storybook@npm:10.2.10"
   dependencies:
     "@storybook/global": "npm:^5.0.0"
     "@storybook/icons": "npm:^2.0.1"
@@ -14476,7 +14476,7 @@ __metadata:
       optional: true
   bin:
     storybook: ./dist/bin/dispatcher.js
-  checksum: 10c0/21d54f09bb92afd6dfe5e037d68cbd9559feacd275ac2b0eed0e6abac98779901b8613e4eca0ae9e3fd6411b07c44625a4981f0cd5e80cb79aa73f2f449586a8
+  checksum: 10c0/ef7e8d937ef65247b5e752f8fbf0e75c1d3e5d7d6af1b012cf6103d4e2563bf116deffe632e4904e6057d41a6f7c92448ce2adb945a1e6a52b334c0470c999b2
   languageName: node
   linkType: hard
 
