@@ -7,9 +7,19 @@ import { getNetworks, networksQueryKey } from '../entities/networks'
 /**
  * Gets a list of all pool ids as it hydrates curve-js as well.
  *
- * @remarks The pool ids returned by this query are not yet blacklisted,
+ * @remarks
+ * The pool ids returned by this query are not yet blacklisted,
  * as that requires additional logic based on pool addresses. In addition,
  * this query also hydrates curve-js, so we want to keep it as simple as possible.
+ *
+ * The interpolated variables (`useApi`, `hasRpc`) were once part of the query key,
+ * but have been removed so that the query depends solely on `chainId`. This is because:
+ *
+ * - We use a singleton for the curve lib, so the passed parameter values may not be
+ *   in sync with the final API instance retrieved by {@link requireLib}.
+ * - Whatever `requireLib` returns is now deemed the source of truth.
+ * - Any query that depends on pool ids would also need to include the same interpolated
+ *   values in its own query key, which would unnecessarily complicate things.
  */
 export const { useQuery: usePoolIds, refetchQuery: refetchPoolIds } = queryFactory({
   queryKey: ({ chainId }: ChainParams) => [...rootKeys.chain({ chainId }), 'pool-ids'] as const,

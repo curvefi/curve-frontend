@@ -92,8 +92,11 @@ export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreAp
     // update network settings from api
     state.setNetworkConfigFromApi(curveApi)
 
-    await fetchNetworks() // dependency of fetchPoolIds
+    await fetchNetworks() // Pool ids have a dependency on networks
     const poolIds = await refetchPoolIds({ chainId })
+
+    // After rehydration is completed by the refetch above, any future query refactored
+    // out of `fetchPools` that depends on all pool ids should be manually invalidated.
     await state.pools.fetchPools(curveApi, poolIds)
 
     log('Hydrating DEX - Complete')
