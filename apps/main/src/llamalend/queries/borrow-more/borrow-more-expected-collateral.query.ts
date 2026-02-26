@@ -69,7 +69,7 @@ export const {
       routeId,
     })
     if (type === 'unleveraged') throw new Error('Unsupported operation for unleveraged borrow more')
-    return type == 'zapV2'
+    return type === 'zapV2'
       ? castFieldsToDecimal(await impl.borrowMoreExpectedCollateral(...args))
       : castFieldsToDecimal(await impl.borrowMoreExpectedCollateral(...args, +slippage))
   },

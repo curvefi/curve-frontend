@@ -12,18 +12,18 @@ type CompleteCreateLoanForm = {
   range: number
   slippage: Decimal
   leverageEnabled: boolean
+  routeId: string | undefined
 }
 
 // todo: get rid of this, it's incorrect. We only did it because it was easier to run the validation suite
 type CalculatedValues = { maxDebt: Decimal | undefined; maxCollateral: Decimal | undefined }
 
 /** Create loan form as used in the UI, with some fields still optional or being filled in */
-export type CreateLoanForm = MakeOptional<CompleteCreateLoanForm, 'debt' | 'userCollateral'> &
-  CalculatedValues & { routeId: string | undefined }
+export type CreateLoanForm = MakeOptional<CompleteCreateLoanForm, 'debt' | 'userCollateral'> & CalculatedValues
 
 /** Full query type for create loan queries, including pool identification and all form fields */
-export type CreateLoanFormQuery<T = IChainId> = MarketQuery<T> &
-  CompleteCreateLoanForm & { routeId: string | undefined }
+export type CreateLoanFormQuery<T = IChainId> = MarketQuery<T> & CompleteCreateLoanForm
+
 /** Fields of the create loan form query before validation */
 export type CreateLoanFormQueryParams<T = IChainId> = FieldsOf<CreateLoanFormQuery<T>>
 

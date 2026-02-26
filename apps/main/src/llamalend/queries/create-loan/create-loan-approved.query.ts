@@ -7,7 +7,6 @@ import { createLoanQueryValidationSuite } from '../validation/borrow.validation'
 export const {
   useQuery: useCreateLoanIsApproved,
   fetchQuery: fetchCreateLoanIsApproved,
-  getQueryData: getCreateLoanIsApprovedData,
   invalidate: invalidateCreateLoanIsApproved,
 } = queryFactory({
   queryKey: ({
@@ -16,7 +15,6 @@ export const {
     userCollateral = '0',
     userBorrowed = '0',
     leverageEnabled,
-    routeId,
   }: CreateLoanFormQueryParams) =>
     [
       ...rootKeys.market({ chainId, marketId }),
@@ -24,7 +22,6 @@ export const {
       { userCollateral },
       { userBorrowed },
       { leverageEnabled },
-      { routeId },
     ] as const,
   queryFn: async ({
     marketId,

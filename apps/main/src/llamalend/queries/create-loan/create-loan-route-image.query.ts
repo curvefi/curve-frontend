@@ -23,7 +23,7 @@ export const { useQuery: useCreateLoanRouteImage } = queryFactory({
       case 'V0':
       case 'unleveraged':
       case 'zapV2':
-        return null
+        return null // todo: retrieve image or image data from api
     }
   },
   staleTime: '1m',

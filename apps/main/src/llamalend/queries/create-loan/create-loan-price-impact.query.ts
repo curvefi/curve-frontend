@@ -1,5 +1,5 @@
 import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/create-loan-query.helpers'
-import { parseRoute as parseRoute2 } from '@ui-kit/entities/router-api'
+import { parseRoute as parseRoute } from '@ui-kit/entities/router-api'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import type { CreateLoanDebtParams, CreateLoanDebtQuery } from '../../features/borrow/types'
 import { createLoanQueryValidationSuite } from '../validation/borrow.validation'
@@ -43,7 +43,7 @@ export const { useQuery: useCreateLoanPriceImpact, invalidate: invalidateCreateL
     switch (type) {
       case 'zapV2':
         return +(
-          await impl.createLoanExpectedMetrics({ userCollateral, userBorrowed, debt, range, ...parseRoute2(routeId) })
+          await impl.createLoanExpectedMetrics({ userCollateral, userBorrowed, debt, range, ...parseRoute(routeId) })
         ).priceImpact
       case 'V1':
       case 'V2':

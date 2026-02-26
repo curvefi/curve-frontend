@@ -144,8 +144,8 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
       chainId,
       tokenIn: borrowToken,
       tokenOut: collateralToken,
-      amountIn: decimalSum(values.debt, values.userBorrowed),
-      ...pick(values, 'slippage', 'routeId'),
+      amountIn: decimalSum(params.debt, params.userBorrowed),
+      ...pick(params, 'slippage', 'routeId'),
       enabled: params.leverageEnabled && !!market && hasZapV2(market),
       onChange: async (route: RouteResponse | undefined) => {
         updateForm(form, { routeId: route?.id })
