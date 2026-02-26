@@ -10,6 +10,7 @@ import { getActionValue } from './action-info.helpers'
 const chainId = Chain.Ethereum
 
 export const CREATE_LOAN_FUND_AMOUNT = '0x3635c9adc5dea00000' // 1000 ETH=1e21 wei
+const collateralDecimals = 18
 
 export const LOAN_TEST_MARKETS = {
   [LlamaMarketType.Mint]: [
@@ -26,6 +27,7 @@ export const LOAN_TEST_MARKETS = {
       chainId,
       path: '/crvusd/ethereum/markets/wsteth',
       hasLeverage: false,
+      collateralDecimals,
     },
     {
       id: 'wbtc',
@@ -40,6 +42,7 @@ export const LOAN_TEST_MARKETS = {
       chainId,
       path: '/crvusd/ethereum/markets/wbtc',
       hasLeverage: true,
+      collateralDecimals,
     },
   ],
   [LlamaMarketType.Lend]: [
@@ -56,6 +59,7 @@ export const LOAN_TEST_MARKETS = {
       chainId,
       path: '/lend/ethereum/markets/0x98Fc283d6636f6DCFf5a817A00Ac69A3ADd96907',
       hasLeverage: false,
+      collateralDecimals,
     },
     {
       id: 'one-way-market-14',
@@ -70,6 +74,7 @@ export const LOAN_TEST_MARKETS = {
       chainId,
       path: '/lend/ethereum/markets/0x74f88Baa966407b50c10B393bBD789639EFfE78B',
       hasLeverage: true,
+      collateralDecimals,
     },
   ],
 } as const

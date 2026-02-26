@@ -1,6 +1,7 @@
 import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
-import { formatNumber, type Decimal } from '@ui-kit/utils'
-import { getActionValue } from './action-info.helpers'
+import type { Decimal } from '@primitives/decimal.utils'
+import { formatNumber } from '@ui-kit/utils'
+import { getActionValue, touchInput } from './action-info.helpers'
 
 export const getCollateralInput = (testId: 'add-collateral-input' | 'remove-collateral-input') =>
   cy.get(`[data-testid="${testId}"] input[type="text"]`, LOAD_TIMEOUT).first()
@@ -14,9 +15,10 @@ export const submitCollateralForm = (buttonTestId: string, message: string) =>
     })
 
 export const touchCollateralForm = (testId: 'add-collateral-input' | 'remove-collateral-input') =>
-  getCollateralInput(testId).type('0.00001').blur().clear().blur()
+  touchInput(() => getCollateralInput(testId))
 
 export const checkCurrentCollateral = (expected: Decimal) => {
-  getActionValue('borrow-collateral').should('equal', formatNumber(expected, { abbreviate: false }))
-  cy.get('[data-testid="borrow-collateral-previous-value"]').should('not.exist')
+  const formatted = formatNumber(expected, { abbreviate: false })
+  getActionValue('borrow-collateral').should('equal', formatted)
+  getActionValue('borrow-collateral', 'previous').should('equal', formatted)
 }

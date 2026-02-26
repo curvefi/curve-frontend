@@ -8,8 +8,10 @@ import type { Decimal } from '@primitives/decimal.utils'
 
 const ERC20_ABI = parseAbi(['function approve(address spender, uint256 amount)'])
 const CONTROLLER_ABI = parseAbi(['function create_loan(uint256 collateral, uint256 debt, uint256 N)'])
-const ERC20_DECIMALS_CALLDATA = '0x313ce567'
 
+/**
+ * Adds eth and collateral tokens to the user's account, enough so that our tests can setup a loan.
+ */
 export const fundUserForLoanSetup = ({
   vnet,
   userAddress,
@@ -32,6 +34,7 @@ export const fundUserForLoanSetup = ({
   })
 }
 
+/** Approves a token for a spender so the loan can be created. */
 export const approveTokenForSpender = ({
   vnet,
   userAddress,
@@ -86,11 +89,15 @@ export const createLoanOnController = ({
     },
   })
 
-export const setupProgrammaticLoan = ({
+/**
+ * Sets up a loan via the Tenderly API, which allows us to create loans for any user during tests without knowing the private keys.
+ */
+export const setupTenderlyLoan = ({
   vnet,
   userAddress,
   collateralAddress,
   controllerAddress,
+  collateralDecimals,
   collateral,
   borrow,
   collateralFundingMultiplier = 2n,
@@ -99,50 +106,37 @@ export const setupProgrammaticLoan = ({
   userAddress: Address
   collateralAddress: Address
   controllerAddress: Address
+  collateralDecimals: number
   collateral: Decimal
   borrow: Decimal
   collateralFundingMultiplier?: bigint
 }) => {
-  const { adminRpcUrl } = getRpcUrls(vnet)
+  const collateralWei = parseUnits(collateral, collateralDecimals)
+  const borrowWei = parseUnits(borrow, 18)
+  const fundedCollateral = collateralWei * collateralFundingMultiplier
 
-  cy.request({
-    method: 'POST',
-    url: adminRpcUrl,
-    headers: { 'Content-Type': 'application/json' },
-    body: {
-      jsonrpc: '2.0',
-      method: 'eth_call',
-      params: [{ to: collateralAddress, data: ERC20_DECIMALS_CALLDATA }, 'latest'],
-      id: 1,
-    },
-  }).then(({ body }) => {
-    const collateralDecimals = Number.parseInt(body.result, 16)
-    const collateralWei = parseUnits(collateral, collateralDecimals)
-    const borrowWei = parseUnits(borrow, 18)
-    const fundedCollateral = collateralWei * collateralFundingMultiplier
+  fundUserForLoanSetup({
+    vnet,
+    userAddress,
+    collateralAddress,
+    collateralAmountWei: fundedCollateral,
+  })
 
-    fundUserForLoanSetup({
+  // the call above uses cy.request, but to use async we need cy.then()
+  cy.then(async () => {
+    await approveTokenForSpender({
       vnet,
       userAddress,
-      collateralAddress,
-      collateralAmountWei: fundedCollateral,
+      tokenAddress: collateralAddress,
+      spenderAddress: controllerAddress,
+      tokenAmountWei: collateralWei,
     })
-
-    cy.then(async () => {
-      await approveTokenForSpender({
-        vnet,
-        userAddress,
-        tokenAddress: collateralAddress,
-        spenderAddress: controllerAddress,
-        tokenAmountWei: collateralWei,
-      })
-      await createLoanOnController({
-        vnet,
-        userAddress,
-        controllerAddress,
-        collateralAmountWei: collateralWei,
-        debtAmountWei: borrowWei,
-      })
+    await createLoanOnController({
+      vnet,
+      userAddress,
+      controllerAddress,
+      collateralAmountWei: collateralWei,
+      debtAmountWei: borrowWei,
     })
   })
 }
