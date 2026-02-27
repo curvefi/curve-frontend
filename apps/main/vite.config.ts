@@ -27,6 +27,7 @@ export default defineConfig(({ command, mode }) => ({
       { find: '@ui-kit', replacement: resolve(__dirname, '../../packages/curve-ui-kit/src') },
       { find: '@external-rewards', replacement: resolve(__dirname, '../../packages/external-rewards/src/index.ts') },
       { find: '@curvefi/prices-api', replacement: resolve(__dirname, '../../packages/prices-api/src') },
+      { find: '@primitives', replacement: resolve(__dirname, '../../packages/primitives/src') },
     ],
   },
   define: {

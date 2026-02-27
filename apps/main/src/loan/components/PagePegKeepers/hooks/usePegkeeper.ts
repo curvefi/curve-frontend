@@ -1,6 +1,6 @@
 import { formatEther } from 'viem'
 import { useReadContract, useWriteContract, useSimulateContract } from 'wagmi'
-import type { Decimal } from '@ui-kit/utils'
+import type { Decimal } from '@primitives/decimal.utils'
 import { abi as pegkeeperAbi } from '../abi/pegkeeper'
 import { abi as pegkeeperDebtCeilingAbi } from '../abi/pegkeeperDebtCeiling'
 import { abi as priceOracleAbi, abiFallback as priceOracleFallbackAbi } from '../abi/priceOracle'

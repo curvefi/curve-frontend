@@ -25,25 +25,26 @@ describe('CreateLoanForm (mocked)', () => {
   const runCase = ({ approved, title }: { approved: boolean; title: string }) =>
     it(title, () => {
       const scenario = createScenario({ approved })
-    const onMutated = cy.spy().as('onMutated')
-    const { llamaApi, expected, market, borrow, stubs, collateral } = scenario
+      const onSuccess = cy.spy().as('onSuccess')
+      const onPricesUpdated = cy.spy().as('onPricesUpdated')
+      const { llamaApi, expected, market, borrow, stubs, collateral } = scenario
 
-    setLlamaApi(llamaApi)
+      setLlamaApi(llamaApi)
 
-    cy.mount(
-      <MockLoanTestWrapper llamaApi={llamaApi}>
-        <CreateLoanForm
-          market={market}
-          networks={networks}
-          chainId={chainId}
-          onUpdate={async () => undefined}
-          onMutated={onMutated}
-        />
-      </MockLoanTestWrapper>,
-    )
+      cy.mount(
+        <MockLoanTestWrapper llamaApi={llamaApi}>
+          <CreateLoanForm
+            market={market}
+            networks={networks}
+            chainId={chainId}
+            onSuccess={onSuccess}
+            onPricesUpdated={onPricesUpdated}
+          />
+        </MockLoanTestWrapper>,
+      )
 
-    writeCreateLoanForm({ collateral, borrow, leverageEnabled: false })
-    checkLoanDetailsLoaded({ leverageEnabled: false })
+      writeCreateLoanForm({ collateral, borrow, leverageEnabled: false })
+      checkLoanDetailsLoaded({ leverageEnabled: false })
 
       cy.then(() => {
         expect(stubs.createLoanHealth).to.have.been.calledWithExactly(...expected.query)

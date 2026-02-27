@@ -2,17 +2,19 @@ import { useSnapshots } from '@/llamalend/features/market-list/hooks/useSnapshot
 import { useFilteredRewards } from '@/llamalend/hooks/useFilteredRewards'
 import { getBorrowRateTooltipTitle } from '@/llamalend/llama.utils'
 import { MarketNetBorrowAprTooltipContent } from '@/llamalend/widgets/tooltips/MarketNetBorrowAprTooltipContent'
+import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { MarketRateType } from '@ui-kit/types/market'
 import { RateTooltipProps } from './RateCell'
 
 export const BorrowRateTooltip = ({ market, children }: RateTooltipProps) => {
+  const [open, onOpen, onClose] = useSwitch(false)
   const {
     averageRate: averageApr,
     period,
     averageTotalBorrowRate: totalAverageBorrowApr,
     isLoading,
-  } = useSnapshots(market, MarketRateType.Borrow)
+  } = useSnapshots(market, MarketRateType.Borrow, open) // todo: `error` is ignored
   const {
     rewards,
     type: marketType,
@@ -28,6 +30,9 @@ export const BorrowRateTooltip = ({ market, children }: RateTooltipProps) => {
     <Tooltip
       clickable
       title={title}
+      open={open}
+      onOpen={onOpen}
+      onClose={onClose}
       body={
         <MarketNetBorrowAprTooltipContent
           marketType={marketType}

@@ -1,15 +1,14 @@
 import type { ReactNode } from 'react'
-import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward'
-import Button from '@mui/material/Button'
+import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import Grid from '@mui/material/Grid'
-import Link from '@mui/material/Link'
 import SvgIcon from '@mui/material/SvgIcon'
 import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
 import { CardStackPlusIcon } from '@ui-kit/shared/icons/CardStackPlusIcon'
 import { SignIcon } from '@ui-kit/shared/icons/SignIcon'
 import { SoftLiquidationIcon } from '@ui-kit/shared/icons/SoftLiquidationIcon'
+import { ExternalLink } from '@ui-kit/shared/ui/ExternalLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing, IconSize } = SizesAndSpaces
@@ -51,16 +50,9 @@ export const LendTableFooter = () => (
         {t`Put your idle assets to work in Llama powered markets to earn yield, or use the Llama Savings Vault to earn your share of Llamalend’s revenue.`}
       </GridItem>
       <Grid size={12}>
-        <Button
-          sx={{ width: '100%' }}
-          color="ghost"
-          endIcon={<ArrowOutwardIcon />}
-          component={Link}
-          href="https://docs.curve.finance/lending/overview/"
-          target="_blank"
-        >
-          Learn
-        </Button>
+        <Box display="flex" justifyContent="center">
+          <ExternalLink href="https://docs.curve.finance/lending/overview/" label={t`Learn More`} />
+        </Box>
       </Grid>
     </Grid>
   </Card>

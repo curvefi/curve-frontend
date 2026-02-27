@@ -1,6 +1,5 @@
 import lodash from 'lodash'
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import type { Address } from 'viem'
 import { useConfig } from 'wagmi'
 import { DetailInfoEstGas } from '@/dex/components/DetailInfoEstGas'
 import { FormConnectWallet } from '@/dex/components/FormConnectWallet'
@@ -23,6 +22,8 @@ import { ChainId, CurveApi, type NetworkUrlParams, TokensMapper } from '@/dex/ty
 import { toTokenOption } from '@/dex/utils'
 import { getSlippageImpact } from '@/dex/utils/utilsSwap'
 import Stack from '@mui/material/Stack'
+import type { Address } from '@primitives/address.utils'
+import type { Decimal } from '@primitives/decimal.utils'
 import { AlertBox } from '@ui/AlertBox'
 import { Icon } from '@ui/Icon'
 import { IconButton } from '@ui/IconButton'
@@ -43,7 +44,7 @@ import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { decimal, type Decimal } from '@ui-kit/utils'
+import { decimal } from '@ui-kit/utils'
 import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
 import { DetailInfoTradeRoute } from './components/DetailInfoTradeRoute'
 
@@ -69,7 +70,7 @@ export const QuickSwap = ({
   curve: CurveApi | null
 }) => {
   const isSubscribed = useRef(false)
-  const { signerAddress } = curve ?? {}
+  const { signerAddress: userAddress } = curve ?? {}
   const { tokensNameMapper } = useTokensNameMapper(chainId)
   const activeKey = useStore((state) => state.quickSwap.activeKey)
   const formEstGas = useStore((state) => state.quickSwap.formEstGas[activeKey])
@@ -85,10 +86,13 @@ export const QuickSwap = ({
   const { data: networks } = useNetworks()
   const network = (chainId && networks[chainId]) || null
 
-  const haveSigner = !!signerAddress
+  const haveSigner = !!userAddress
   const cryptoMaxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
   const stableMaxSlippage = useUserProfileStore((state) => state.maxSlippage.stable)
-  const { data: apiRoutes, isLoading: apiRoutesLoading } = useRouterApi({ chainId, searchedParams }, !haveSigner)
+  const { data: apiRoutes, isLoading: apiRoutesLoading } = useRouterApi(
+    { chainId, userAddress, searchedParams },
+    !haveSigner,
+  )
 
   const routesAndOutput = haveSigner ? rpcRoutesAndOutput : apiRoutes
   const isStableswapRoute = routesAndOutput?.isStableswapRoute
@@ -128,10 +132,10 @@ export const QuickSwap = ({
   } = useTokenBalance(
     {
       chainId,
-      userAddress: signerAddress,
+      userAddress,
       tokenAddress: fromAddress ? (fromAddress as Address) : undefined,
     },
-    !!signerAddress && !!fromAddress,
+    !!userAddress && !!fromAddress,
   )
 
   const {
@@ -142,10 +146,10 @@ export const QuickSwap = ({
   } = useTokenBalance(
     {
       chainId,
-      userAddress: signerAddress,
+      userAddress,
       tokenAddress: toAddress ? (toAddress as Address) : undefined,
     },
-    !!signerAddress && !!toAddress,
+    !!userAddress && !!toAddress,
   )
 
   const { data: fromUsdRate } = useTokenUsdRate({ chainId, tokenAddress: fromAddress }, !!fromAddress)
@@ -156,8 +160,8 @@ export const QuickSwap = ({
     tokenPrices,
     isLoading: tokenSelectorLoading,
   } = useTokenSelectorData(
-    { chainId, userAddress: signerAddress, tokens },
-    { enabled: !!isOpenFromToken || !!isOpenToToken, prefetch: !!userFromBalanceFetched && !!userToBalanceFetched },
+    { chainId, userAddress, tokens },
+    { enabled: !!isOpenFromToken || !!isOpenToToken, prefetch: userFromBalanceFetched && userToBalanceFetched },
   )
 
   const config = useConfig()

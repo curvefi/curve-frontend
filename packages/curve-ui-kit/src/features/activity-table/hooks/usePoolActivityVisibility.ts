@@ -1,10 +1,10 @@
 import { useMemo } from 'react'
-import { fromEntries } from '@curvefi/prices-api/objects.util'
+import { type Token } from '@primitives/address.utils'
+import { fromEntries } from '@primitives/objects.utils'
 import type { VisibilityState } from '@tanstack/react-table'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
-import { PoolLiquidityColumnId, getTokenAmountColumnId } from '../columns/pool-liquidity-columns'
+import { getTokenAmountColumnId, PoolLiquidityColumnId } from '../columns/pool-liquidity-columns'
 import { PoolTradesColumnId } from '../columns/pool-trades-columns'
-import type { Token } from '../types'
 
 const createTradesMobileVisibility = (): VisibilityState => ({
   [PoolTradesColumnId.User]: true,

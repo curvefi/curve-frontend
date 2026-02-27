@@ -1,9 +1,9 @@
 import { useEffect, useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { useConnection } from 'wagmi'
-import { getTokens } from '@/llamalend/llama.utils'
+import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
+import { getTokens, hasZapV2 } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
-import { isLeverageBorrowMoreSupported } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
 import { useCreateLoanExpectedCollateral } from '@/llamalend/queries/create-loan/create-loan-expected-collateral.query'
 import {
   type CreateLoanPricesReceiveParams,
@@ -11,15 +11,19 @@ import {
 } from '@/llamalend/queries/create-loan/create-loan-prices.query'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { vestResolver } from '@hookform/resolvers/vest'
+import type { Decimal } from '@primitives/decimal.utils'
+import { pick } from '@primitives/objects.utils'
+import type { RouteResponse } from '@primitives/router.utils'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { mapQuery, type Range } from '@ui-kit/types/util'
-import { Decimal } from '@ui-kit/utils'
-import { useCallbackAfterFormUpdate, useFormErrors } from '@ui-kit/utils/react-form.utils'
+import { decimalSum } from '@ui-kit/utils'
+import { updateForm, useCallbackAfterFormUpdate, useFormErrors } from '@ui-kit/utils/react-form.utils'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
-import { PRESET_RANGES, LoanPreset } from '../../../constants'
+import { LoanPreset, PRESET_RANGES } from '../../../constants'
 import { type CreateLoanOptions, useCreateLoanMutation } from '../../../mutations/create-loan.mutation'
 import { useCreateLoanIsApproved } from '../../../queries/create-loan/create-loan-approved.query'
+import { invalidateCreateLoanRouteQueries } from '../../../queries/create-loan/create-loan-route-invalidation'
 import { createLoanQueryValidationSuite } from '../../../queries/validation/borrow.validation'
 import { type CreateLoanForm } from '../types'
 import { useMaxTokenValues } from './useMaxTokenValues'
@@ -61,6 +65,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
       userCollateral: undefined,
       userBorrowed: `0` satisfies Decimal,
       debt: undefined,
+      routeId: undefined,
       leverageEnabled: false,
       slippage: SLIPPAGE_PRESETS.STABLE,
       range: PRESET_RANGES[preset],
@@ -84,6 +89,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
         leverageEnabled: values.leverageEnabled,
         userCollateral: values.userCollateral,
         userBorrowed: values.userBorrowed,
+        routeId: values.routeId,
       }),
       [
         chainId,
@@ -97,6 +103,7 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
         values.leverageEnabled,
         values.userCollateral,
         values.userBorrowed,
+        values.routeId,
       ],
     ),
   )
@@ -130,11 +137,20 @@ export function useCreateLoanForm<ChainId extends LlamaChainId>({
     isCreated,
     creationError,
     txHash: data?.hash,
-    leverage: mapQuery(
-      useCreateLoanExpectedCollateral(params, isLeverageBorrowMoreSupported(market)),
-      (d) => d.leverage,
-    ),
+    leverage: mapQuery(useCreateLoanExpectedCollateral(params, values.leverageEnabled), (d) => d.leverage),
     isApproved: useCreateLoanIsApproved(params),
     formErrors: useFormErrors(formState),
+    routes: useMarketRoutes({
+      chainId,
+      tokenIn: borrowToken,
+      tokenOut: collateralToken,
+      amountIn: decimalSum(params.debt, params.userBorrowed),
+      ...pick(params, 'slippage', 'routeId'),
+      enabled: params.leverageEnabled && !!market && hasZapV2(market),
+      onChange: async (route: RouteResponse | undefined) => {
+        updateForm(form, { routeId: route?.id })
+        if (route) await invalidateCreateLoanRouteQueries({ ...params, routeId: route.id })
+      },
+    }),
   }
 }

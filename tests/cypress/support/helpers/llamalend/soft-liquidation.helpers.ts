@@ -1,6 +1,6 @@
 import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '@cy/support/ui'
 import type { AlertColor } from '@mui/material/Alert'
-import type { Decimal } from '@ui-kit/utils'
+import type { Decimal } from '@primitives/decimal.utils'
 import { getActionValue, touchInput } from './action-info.helpers'
 
 const getImproveHealthInput = () =>

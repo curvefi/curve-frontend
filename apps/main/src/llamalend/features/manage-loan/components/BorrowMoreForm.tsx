@@ -10,14 +10,15 @@ import {
 } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { notFalsy } from '@curvefi/prices-api/objects.util'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
+import type { Decimal } from '@primitives/decimal.utils'
+import { notFalsy } from '@primitives/objects.utils'
+import { joinButtonText } from '@primitives/string.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
 import { q, type Range } from '@ui-kit/types/util'
-import { isDevelopment, joinButtonText } from '@ui-kit/utils'
-import type { Decimal } from '@ui-kit/utils'
+import { isDevelopment } from '@ui-kit/utils'
 import { updateForm } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts, HighPriceImpactAlert } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
@@ -57,7 +58,6 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     isApproved,
     formErrors,
     max,
-    health,
     leverageValue,
   } = useBorrowMoreForm({
     market,
@@ -88,7 +88,6 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
           networks={networks}
           onSlippageChange={(value) => updateForm(form, { slippage: value })}
           leverageEnabled={values.leverageEnabled}
-          health={health}
           leverageValue={leverageValue}
         />
       }

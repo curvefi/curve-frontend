@@ -1,6 +1,9 @@
 import { FastifyBaseLogger } from 'fastify'
-import { type Address } from 'viem'
-import { type Decimal, type OptimalRouteQuery, type RouteResponse } from '../routes/optimal-route.schemas'
+import type { Address } from '@primitives/address.utils'
+import type { Decimal } from '@primitives/decimal.utils'
+import { assert } from '@primitives/objects.utils'
+import type { RouteResponse } from '@primitives/router.utils'
+import { type RoutesQuery } from '../routes/routes.schemas'
 import type { AssemblePathResponse, CurveOdosAssembleRequest } from './odos-assemble.types'
 import type { CurveOdosQuoteRequest, OdosQuoteResponse } from './odos-quote.types'
 
@@ -13,14 +16,14 @@ async function getOdosQuote(
     tokenOut,
     amountIn,
     slippage,
-    fromAddress,
+    userAddress,
   }: {
     chainId: number
     tokenIn: Address
     tokenOut: Address
     amountIn: Decimal
     slippage: number
-    fromAddress: Address
+    userAddress: Address
   },
   log: FastifyBaseLogger,
 ) {
@@ -31,7 +34,7 @@ async function getOdosQuote(
     amount: amountIn,
     slippage: `${slippage}`,
     pathVizImage: 'false',
-    caller_address: fromAddress,
+    caller_address: userAddress,
     blacklist: '',
   }
 
@@ -50,11 +53,10 @@ async function getOdosQuote(
 }
 
 async function assembleOdosQuote(
-  { pathId, fromAddress }: { pathId: string | null | undefined; fromAddress: string },
+  { pathId, userAddress }: { pathId: string; userAddress: string },
   log: FastifyBaseLogger,
 ) {
-  if (!pathId) return
-  const params: Record<keyof CurveOdosAssembleRequest, string> = { path_id: pathId, user: fromAddress }
+  const params: Record<keyof CurveOdosAssembleRequest, string> = { path_id: pathId, user: userAddress }
   const assembleResponse = await fetch(`${ODOS_API_URL}/assemble?${new URLSearchParams(params)}`, {
     method: 'GET',
     headers: { accept: 'application/json' },
@@ -71,20 +73,17 @@ async function assembleOdosQuote(
  * Calls Odos (via prices API) to get a quote and builds the router-api response.
  * - Uses GET /odos/quote on the configured ODOS_API_URL (defaults to https://prices.curve.finance)
  */
-export const buildOdosRouteResponse = async (
-  query: OptimalRouteQuery,
-  log: FastifyBaseLogger,
-): Promise<RouteResponse[]> => {
+export const buildOdosRouteResponse = async (query: RoutesQuery, log: FastifyBaseLogger): Promise<RouteResponse[]> => {
   const {
     chainId,
     tokenIn: [tokenIn],
     tokenOut: [tokenOut],
     amountIn: [amountIn] = [],
-    fromAddress,
+    userAddress,
     slippage = 0.5,
   } = query
 
-  if (amountIn == null || !fromAddress) {
+  if (amountIn == null || !userAddress) {
     // Odos requires amount (amountIn), caller_address (leverage zap) and blacklist (AMM/controller)
     log.info({ message: 'odos route request skipped', query })
     return []
@@ -94,12 +93,13 @@ export const buildOdosRouteResponse = async (
     pathId,
     pathVizImage,
     priceImpact = null,
-  } = await getOdosQuote({ chainId, tokenIn, tokenOut, amountIn, slippage, fromAddress }, log)
+  } = await getOdosQuote({ chainId, tokenIn, tokenOut, amountIn, slippage, userAddress }, log)
 
-  const tx = await assembleOdosQuote({ pathId, fromAddress }, log)
-
+  const id = assert(pathId, 'Odos quote missing pathId')
+  const { transaction } = await assembleOdosQuote({ pathId: id, userAddress }, log)
   return [
     {
+      id: `odos:${id}`,
       router: 'odos',
       amountIn: [amountIn],
       amountOut: outAmounts as [Decimal],
@@ -118,7 +118,7 @@ export const buildOdosRouteResponse = async (
           args: { pathId, pathVizImage },
         },
       ],
-      ...(tx?.transaction && { tx: tx.transaction }),
+      ...(transaction && { tx: transaction }),
     },
   ]
 }

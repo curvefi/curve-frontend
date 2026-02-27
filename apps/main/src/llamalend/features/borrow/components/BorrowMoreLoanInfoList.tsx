@@ -1,7 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { useMemo } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
-import type { Token } from '@/llamalend/features/borrow/types'
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
 import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
@@ -10,14 +9,15 @@ import { useBorrowMoreEstimateGas } from '@/llamalend/queries/borrow-more/borrow
 import { useBorrowMoreHealth } from '@/llamalend/queries/borrow-more/borrow-more-health.query'
 import { useBorrowMoreIsApproved } from '@/llamalend/queries/borrow-more/borrow-more-is-approved.query'
 import { useBorrowMorePriceImpact } from '@/llamalend/queries/borrow-more/borrow-more-price-impact.query'
-import { useMarketFutureRates } from '@/llamalend/queries/market-future-rates.query'
-import { useMarketRates } from '@/llamalend/queries/market-rates.query'
+import { useMarketFutureRates, useMarketRates } from '@/llamalend/queries/market'
 import { getUserHealthOptions, useUserCurrentLeverage, useUserState } from '@/llamalend/queries/user'
 import type { BorrowMoreForm, BorrowMoreParams } from '@/llamalend/queries/validation/borrow-more.validation'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { mapQuery, q } from '@ui-kit/types/util'
-import { decimal, Decimal } from '@ui-kit/utils'
+import { type Token } from '@primitives/address.utils'
+import type { Decimal } from '@primitives/decimal.utils'
+import { mapQuery, q, type QueryProp } from '@ui-kit/types/util'
+import { decimal } from '@ui-kit/utils'
 import { isFormTouched } from '@ui-kit/utils/react-form.utils'
 
 export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
@@ -37,7 +37,7 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
   onSlippageChange: (newSlippage: Decimal) => void
   leverageEnabled: boolean
   form: UseFormReturn<BorrowMoreForm>
-  leverageValue: Query<Decimal | null>
+  leverageValue: QueryProp<Decimal | null>
 }) {
   const isOpen = isFormTouched(form, 'userCollateral', 'userBorrowed', 'debt')
   const userState = useUserState(params, isOpen)

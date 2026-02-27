@@ -1,5 +1,5 @@
+import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
-import type { Decimal } from '@ui-kit/utils'
 import { type RepayHealthQuery, type RepayHealthParams } from '../validation/manage-loan.types'
 import { repayFromCollateralIsFullValidationSuite } from '../validation/manage-loan.validation'
 import { getRepayImplementation } from './repay-query.helpers'

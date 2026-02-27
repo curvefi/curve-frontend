@@ -32,26 +32,35 @@ describe('Soft Liquidation Forms (mocked)', () => {
     const runImproveHealthCase = ({ approved, title }: { approved: boolean; title: string }) =>
       it(title, () => {
         const scenario = createScenario({ approved })
-      const onRepaid = cy.spy().as('onRepaid')
-      const { llamaApi, expected, market, borrow, stubs, collateral } = scenario
+        const onRepaid = cy.spy().as('onRepaid')
+        const onPricesUpdated = cy.spy().as('onPricesUpdated')
+        const { llamaApi, expected, market, borrow, stubs, collateral } = scenario
 
-      void collateral
-      setLlamaApi(llamaApi)
-      seedCrvUsdBalance({
-        chainId,
-        addresses: [TEST_ADDRESS as Address, TEST_ADDRESS.toLowerCase() as Address],
-        rawBalance: BigInt(oneInt(15, 90)) * 10n ** 18n,
-      })
+        void collateral
+        setLlamaApi(llamaApi)
+        seedCrvUsdBalance({
+          chainId,
+          addresses: [TEST_ADDRESS as Address, TEST_ADDRESS.toLowerCase() as Address],
+          rawBalance: BigInt(oneInt(15, 90)) * 10n ** 18n,
+        })
 
-      cy.mount(
-        <MockLoanTestWrapper llamaApi={llamaApi}>
-          <ImproveHealthForm market={market} networks={networks} chainId={chainId} onRepaid={onRepaid} />
-        </MockLoanTestWrapper>,
-      )
+        cy.mount(
+          <MockLoanTestWrapper llamaApi={llamaApi}>
+            <ImproveHealthForm
+              market={market}
+              networks={networks}
+              chainId={chainId}
+              onSuccess={onRepaid}
+              onPricesUpdated={onPricesUpdated}
+            />
+          </MockLoanTestWrapper>,
+        )
 
-      writeImproveHealthForm({ amount: borrow })
-      checkRepayDetailsLoaded({ debt: [scenario.debt, scenario.debtAfterImprove, 'crvUSD'] })
-      cy.get('[data-testid="improve-health-submit"]').should('not.be.disabled')
+        writeImproveHealthForm({ amount: borrow })
+        checkRepayDetailsLoaded({
+          debt: { current: scenario.debt, future: scenario.debtAfterImprove, symbol: 'crvUSD' },
+        })
+        cy.get('[data-testid="improve-health-submit"]').should('not.be.disabled')
 
         cy.then(() => {
           expect(stubs.parameters).to.have.been.calledWithExactly()
@@ -59,7 +68,9 @@ describe('Soft Liquidation Forms (mocked)', () => {
           expect(stubs.repayPrices).to.have.been.calledWithExactly(...expected.improveHealth.prices)
           expect(stubs.repayIsApproved).to.have.been.calledWithExactly(...expected.improveHealth.isApproved)
           if ('estimateGasRepayApprove' in stubs) {
-            expect(stubs.estimateGasRepayApprove).to.have.been.calledWithExactly(...expected.improveHealth.estimateGasApprove)
+            expect(stubs.estimateGasRepayApprove).to.have.been.calledWithExactly(
+              ...expected.improveHealth.estimateGasApprove,
+            )
           } else {
             expect(stubs.estimateGasRepay).to.have.been.calledWithExactly(...expected.improveHealth.estimateGas)
           }
@@ -82,26 +93,26 @@ describe('Soft Liquidation Forms (mocked)', () => {
     const runClosePositionCase = ({ approved, title }: { approved: boolean; title: string }) =>
       it(title, () => {
         const scenario = createScenario({ approved })
-      const onClosed = cy.spy().as('onClosed')
-      const { llamaApi, expected, market, borrow, stubs, collateral } = scenario
+        const onSuccess = cy.spy().as('onSuccess')
+        const { llamaApi, expected, market, borrow, stubs, collateral } = scenario
 
-      void borrow
-      void collateral
-      setLlamaApi(llamaApi)
-      seedCrvUsdBalance({
-        chainId,
-        addresses: [TEST_ADDRESS as Address, TEST_ADDRESS.toLowerCase() as Address],
-        rawBalance: BigInt(oneInt(15, 90)) * 10n ** 18n,
-      })
+        void borrow
+        void collateral
+        setLlamaApi(llamaApi)
+        seedCrvUsdBalance({
+          chainId,
+          addresses: [TEST_ADDRESS as Address, TEST_ADDRESS.toLowerCase() as Address],
+          rawBalance: BigInt(oneInt(15, 90)) * 10n ** 18n,
+        })
 
-      cy.mount(
-        <MockLoanTestWrapper llamaApi={llamaApi}>
-          <ClosePositionForm market={market} networks={networks} chainId={chainId} onClosed={onClosed} />
-        </MockLoanTestWrapper>,
-      )
+        cy.mount(
+          <MockLoanTestWrapper llamaApi={llamaApi}>
+            <ClosePositionForm market={market} networks={networks} chainId={chainId} onSuccess={onSuccess} />
+          </MockLoanTestWrapper>,
+        )
 
-      cy.get('[data-testid="loan-info-accordion"] button').first().click()
-      checkClosePositionDetailsLoaded({ debt: scenario.debt })
+        cy.get('[data-testid="loan-info-accordion"] button').first().click()
+        checkClosePositionDetailsLoaded({ debt: scenario.debt })
 
         cy.then(() => {
           expect(stubs.selfLiquidateIsApproved).to.have.been.calledWithExactly(...expected.closePosition.isApproved)

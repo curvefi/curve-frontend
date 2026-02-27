@@ -1,5 +1,5 @@
-import type { Address } from 'viem'
 import { getUserMarketCollateralEvents, type UserCollateralEvents } from '@curvefi/prices-api/crvusd'
+import type { Address } from '@primitives/address.utils'
 import { FieldsOf } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import type { UserQuery, ContractQuery } from '@ui-kit/lib/model/query'

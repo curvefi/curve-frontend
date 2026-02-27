@@ -1,5 +1,5 @@
-import { ChipVolatileBaseApy } from '@/dex/components/PagePoolList/components/ChipVolatileBaseApy'
-import { TooltipBaseApy } from '@/dex/components/PagePoolList/components/TooltipBaseApy'
+import { ChipVolatileBaseApy } from '@/dex/components/ChipVolatileBaseApy'
+import { TooltipBaseApy } from '@/dex/components/TooltipBaseApy'
 import { LARGE_APY } from '@/dex/constants'
 import Stack from '@mui/material/Stack'
 import type { CellContext } from '@tanstack/react-table'

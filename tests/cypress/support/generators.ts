@@ -1,8 +1,9 @@
 import BigNumber from 'bignumber.js'
-import type { Address } from '@curvefi/prices-api'
-import { range, recordValues } from '@curvefi/prices-api/objects.util'
+import type { Address } from '@primitives/address.utils'
+import type { Decimal } from '@primitives/decimal.utils'
+import { range, recordValues } from '@primitives/objects.utils'
 import { TIME_FRAMES } from '@ui-kit/lib/model/time'
-import { decimal, type Decimal } from '@ui-kit/utils'
+import { decimal } from '@ui-kit/utils'
 
 export const MAX_USD_VALUE = 400_000_000
 

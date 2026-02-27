@@ -4,7 +4,7 @@ import { useOneWayMarket } from '@/lend/entities/chain'
 import { useStore } from '@/lend/store/useStore'
 import { ChainId, MarketRates, RewardOther, MarketRewards } from '@/lend/types/lend.types'
 import { getTotalApr } from '@/lend/utils/utilsRewards'
-import { useMarketRates } from '@/llamalend/queries/market-rates.query'
+import { useMarketRates } from '@/llamalend/queries/market'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 
 export function useSupplyTotalApr(rChainId: ChainId, rOwmId: string) {

@@ -1,4 +1,3 @@
-import { recordValues } from '@curvefi/prices-api/objects.util'
 import {
   checkLoanDetailsLoaded,
   checkLoanRangeSlider,
@@ -7,6 +6,7 @@ import {
   writeCreateLoanForm,
 } from '@cy/support/helpers/llamalend/create-loan.helpers'
 import { LOAD_TIMEOUT } from '@cy/support/ui'
+import { recordValues } from '@primitives/objects.utils'
 import { LlamaMarketType } from '@ui-kit/types/market'
 
 describe('Create loan', () => {
