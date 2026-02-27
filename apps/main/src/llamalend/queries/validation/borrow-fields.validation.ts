@@ -74,6 +74,14 @@ export const validateLeverageValuesSupported = (marketId: string | null | undefi
   })
 }
 
+export const validateRoute = (routeId: string | null | undefined, isRequired: boolean) => {
+  skipWhen(!isRequired && !routeId, () => {
+    test('routeId', 'Route is required', () => {
+      enforce(routeId).isTruthy()
+    })
+  })
+}
+
 export const validateMaxBorrowed = (
   userBorrowed: Decimal | undefined | null,
   {
