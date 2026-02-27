@@ -92,6 +92,6 @@ export const {
       ]),
     )
   },
-  category: 'table',
+  category: 'dao.gauges',
   validationSuite: EmptyValidationSuite,
 })

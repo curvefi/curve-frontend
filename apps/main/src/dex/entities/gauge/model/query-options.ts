@@ -14,14 +14,14 @@ export const depositRewardAvailable = queryFactory({
   queryKey: (params: GaugeParams) => [...rootKeys.gauge(params), 'isDepositRewardAvailable'] as const,
   queryFn: queryIsDepositRewardAvailable,
   validationSuite: poolValidationSuite,
-  category: 'detail',
+  category: 'dex.gauge',
 })
 
 export const gaugeManager = queryFactory({
   queryKey: (params: GaugeParams) => [...rootKeys.gauge(params), 'manager'] as const,
   queryFn: queryGaugeManager,
   validationSuite: poolValidationSuite,
-  category: 'static',
+  category: 'dex.poolParams',
 })
 
 export const gaugeDistributors = queryFactory({
@@ -29,7 +29,7 @@ export const gaugeDistributors = queryFactory({
     [...rootKeys.gauge(params), ...rootKeys.user({ userAddress }), 'distributors'] as const,
   queryFn: queryGaugeDistributors,
   validationSuite: gaugeDistributorsValidationSuite,
-  category: 'detail',
+  category: 'dex.gauge',
 })
 
 export const depositRewardIsApproved = queryFactory({
@@ -37,5 +37,5 @@ export const depositRewardIsApproved = queryFactory({
     [...rootKeys.gauge(gaugeParams), 'depositRewardIsApproved', { rewardTokenId }, { amount }] as const,
   queryFn: queryDepositRewardIsApproved,
   validationSuite: gaugeDepositRewardApproveValidationSuite,
-  category: 'static',
+  category: 'dex.deployGauge',
 })

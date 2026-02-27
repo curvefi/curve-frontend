@@ -7,7 +7,7 @@ import { queryFactory } from '@ui-kit/lib/model'
 const { getQueryOptions: getFavoriteMarketOptions, invalidate: invalidateFavoriteMarkets } = queryFactory({
   queryKey: () => ['favorite-markets'] as const,
   queryFn: async () => getFavoriteMarkets(),
-  category: 'user',
+  category: 'llamalend.user',
   validationSuite: EmptyValidationSuite,
 })
 

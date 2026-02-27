@@ -23,7 +23,7 @@ const { getQueryData: getRouteQueryData, setQueryData: setRouteQueryData } = que
     })
   }),
   disableLog: true,
-  category: 'detail',
+  category: 'global.routerApi',
 })
 
 /**
@@ -88,5 +88,5 @@ export const { useQuery: useRouterApi, fetchQuery: fetchApiRoutes } = queryFacto
     return routes
   },
   validationSuite: routerApiValidation,
-  category: 'user',
+  category: 'global.routerApi',
 })

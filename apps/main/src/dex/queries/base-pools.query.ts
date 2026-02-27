@@ -6,5 +6,5 @@ export const { useQuery: useBasePools, getQueryData: getBasePools } = queryFacto
   queryKey: ({ chainId }: ChainParams) => [...rootKeys.chain({ chainId }), 'base-pools'] as const,
   queryFn: async () => await requireLib('curveApi').getBasePools(),
   validationSuite: curveApiWithWalletValidationSuite,
-  category: 'static',
+  category: 'dex.poolParams',
 })

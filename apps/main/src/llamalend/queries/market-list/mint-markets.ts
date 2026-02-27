@@ -24,7 +24,7 @@ export const { getQueryOptions: getMintMarketOptions, invalidate: invalidateMint
   queryKey: () => ['mint-markets', 'v2'] as const,
   queryFn: async (): Promise<MintMarket[]> =>
     recordEntries(await getAllMarkets()).flatMap(([chain, markets]) => markets.map((market) => ({ ...market, chain }))),
-  category: 'table',
+  category: 'llamalend.marketList',
   validationSuite: EmptyValidationSuite,
 })
 
@@ -36,7 +36,7 @@ const {
   queryKey: ({ userAddress }: UserParams) => ['user-mint-markets', { userAddress }, 'v1'] as const,
   queryFn: async ({ userAddress }: UserQuery): Promise<Record<Chain, Address[]>> =>
     mapRecord(await getAllUserMarkets(userAddress), (_, userMarkets) => userMarkets.map((market) => market.controller)),
-  category: 'user',
+  category: 'llamalend.user',
   validationSuite: userAddressValidationSuite,
 })
 
@@ -51,7 +51,7 @@ const {
     ['user-mint-markets', 'stats', { blockchainId }, { contractAddress }, { userAddress }, 'v1'] as const,
   queryFn: ({ userAddress, blockchainId, contractAddress }: UserContractQuery) =>
     getUserMarketStats(userAddress, blockchainId, contractAddress),
-  category: 'user',
+  category: 'llamalend.user',
   validationSuite: userContractValidationSuite,
 })
 

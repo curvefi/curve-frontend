@@ -28,6 +28,6 @@ export const { useQuery: useUserBalances, invalidate: invalidateUserBalances } =
       return { collateral: collateral as Decimal, borrowed: stablecoin as Decimal }
     }
   },
-  category: 'user',
+  category: 'llamalend.user',
   validationSuite: marketIdValidationSuite,
 })

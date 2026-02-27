@@ -9,7 +9,7 @@ const { useQuery: useWithdrawEstimateGasQuery } = queryFactory({
     [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'estimateGas.withdraw', { withdrawAmount }] as const,
   queryFn: async ({ marketId, withdrawAmount }: WithdrawQuery) =>
     await requireVault(marketId).vault.estimateGas.withdraw(withdrawAmount),
-  category: 'user',
+  category: 'llamalend.supply',
   validationSuite: withdrawValidationSuite,
 })
 

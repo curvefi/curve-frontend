@@ -34,6 +34,6 @@ export const { getQueryOptions: getRepayHealthOptions } = queryFactory({
         return (await impl.repayHealth(userBorrowed, isFull)) as Decimal
     }
   },
-  category: 'user',
+  category: 'llamalend.repay',
   validationSuite: repayFromCollateralIsFullValidationSuite,
 })

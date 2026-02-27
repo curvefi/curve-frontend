@@ -31,7 +31,7 @@ const { useQuery: useAddCollateralGasEstimate } = queryFactory({
     ])
     return (Number(approveGas) + Number(addCollateralGas)) as TGas
   },
-  category: 'user',
+  category: 'llamalend.addCollateral',
   validationSuite: collateralValidationSuite,
 })
 

@@ -49,7 +49,7 @@ export const { useQuery: useBorrowMoreHealth } = queryFactory({
         return (await impl.borrowMoreHealth(...args)) as Decimal
     }
   },
-  category: 'user',
+  category: 'llamalend.borrowMore',
   validationSuite: borrowMoreValidationSuite({ debtRequired: true, leverageRequired: false }),
   dependencies: (params) =>
     isLeverageBorrowMore(params.marketId, params.leverageEnabled) ? [getBorrowMoreExpectedCollateralKey(params)] : [],

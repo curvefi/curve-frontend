@@ -7,7 +7,7 @@ const { useQuery, fetchQuery, getQueryData } = queryFactory({
   queryKey: () => ['networks'] as const,
   queryFn: getNetworksLib,
   validationSuite: EmptyValidationSuite, // no args
-  category: 'static',
+  category: 'dex.network',
 })
 
 export const useNetworksQuery = () => useQuery({})

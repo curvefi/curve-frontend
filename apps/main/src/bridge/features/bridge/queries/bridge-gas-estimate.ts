@@ -13,6 +13,6 @@ export const { useQuery: useBridgeGasEstimate } = queryFactory({
       'fastBridge.estimateGas.bridge',
     ] as const,
   queryFn: async ({ amount }: BridgeQuery) => await requireLib('curveApi').fastBridge.estimateGas.bridge(amount),
-  category: 'user',
+  category: 'bridge.user',
   validationSuite: bridgeValidationSuite,
 })

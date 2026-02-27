@@ -15,7 +15,7 @@ export const { useQuery: useIntegrationsTags } = queryFactory({
     return parseIntegrationsTags(resp)
   },
   validationSuite: EmptyValidationSuite,
-  category: 'static',
+  category: 'global.integrations',
 })
 
 const INTEGRATIONS_TAGS_COLORS = [

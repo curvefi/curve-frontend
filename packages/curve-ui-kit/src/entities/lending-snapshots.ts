@@ -17,5 +17,5 @@ export const { useQuery: useLendingSnapshots } = queryFactory({
     return response.reverse()
   },
   validationSuite: contractValidationSuite,
-  category: 'table',
+  category: 'global.snapshots',
 })

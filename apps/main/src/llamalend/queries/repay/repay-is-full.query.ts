@@ -40,7 +40,7 @@ export const { useQuery: useRepayIsFull } = queryFactory({
         return +userBorrowed >= getUserDebtFromQueryCache({ chainId, marketId, userAddress })
     }
   },
-  category: 'user',
+  category: 'llamalend.repay',
   validationSuite: repayValidationSuite({ leverageRequired: false }),
   dependencies: (params) => [repayExpectedBorrowedQueryKey(params)],
 })

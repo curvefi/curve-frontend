@@ -17,6 +17,6 @@ export const { useQuery: useUserCrvUsdCollateralEventsQuery } = queryFactory({
     userAddress,
   }: UserCrvUsdCollateralEventsQuery): Promise<UserCollateralEvents> =>
     getUserMarketCollateralEvents(userAddress, blockchainId, contractAddress!),
-  category: 'user',
+  category: 'llamalend.user',
   validationSuite: userCollateralEventsValidationSuite,
 })

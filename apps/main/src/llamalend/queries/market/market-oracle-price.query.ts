@@ -5,6 +5,6 @@ import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-valid
 export const { useQuery: useMarketOraclePrice } = queryFactory({
   queryKey: (params: MarketParams) => [...rootKeys.market(params), 'market-oracle-price'] as const,
   queryFn: ({ marketId }: MarketQuery): Promise<string> => getLlamaMarket(marketId).oraclePrice(),
-  category: 'detail',
+  category: 'llamalend.market',
   validationSuite: marketIdValidationSuite,
 })

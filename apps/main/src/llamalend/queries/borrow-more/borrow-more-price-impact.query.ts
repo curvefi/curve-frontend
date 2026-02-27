@@ -27,7 +27,7 @@ export const { useQuery: useBorrowMorePriceImpact } = queryFactory({
     if (type === 'unleveraged') throw new Error('Price impact is not applicable for unleveraged borrow more')
     return +(await impl.borrowMorePriceImpact(userBorrowed, debt))
   },
-  category: 'user',
+  category: 'llamalend.borrowMore',
   validationSuite: borrowMoreLeverageValidationSuite,
   dependencies: (params) => [getBorrowMoreExpectedCollateralKey(params)],
 })

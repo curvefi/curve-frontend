@@ -142,7 +142,7 @@ const { useQuery: useGasInfoAndUpdateLibBase, fetchQuery: fetchGasInfoAndUpdateL
 
     return (parsedGasInfo ?? (await parseGasInfo(curve, provider, gasPricesUrlL2))).gasInfo
   },
-  category: 'detail',
+  category: 'global.gasInfo',
   validationSuite: createValidationSuite(<TChainId extends number>({ chainId }: GasInfoParams<TChainId>) => {
     chainValidationGroup({ chainId })
     group('libValidation', () => {

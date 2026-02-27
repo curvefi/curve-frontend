@@ -12,7 +12,7 @@ const { useQuery: useDepositApproveEstimateGasQuery } = queryFactory({
     ] as const,
   queryFn: async ({ marketId, depositAmount }: DepositQuery) =>
     await requireVault(marketId).vault.estimateGas.depositApprove(depositAmount),
-  category: 'user',
+  category: 'llamalend.supply',
   validationSuite: depositValidationSuite,
 })
 
@@ -21,7 +21,7 @@ const { useQuery: useDepositEstimateGasQuery } = queryFactory({
     [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'estimateGas.deposit', { depositAmount }] as const,
   queryFn: async ({ marketId, depositAmount }: DepositQuery) =>
     await requireVault(marketId).vault.estimateGas.deposit(depositAmount),
-  category: 'user',
+  category: 'llamalend.supply',
   validationSuite: depositValidationSuite,
 })
 

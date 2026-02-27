@@ -9,7 +9,7 @@ const { useQuery: useUnstakeEstimateGasQuery } = queryFactory({
     [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'estimateGas.unstake', { unstakeAmount }] as const,
   queryFn: async ({ marketId, unstakeAmount }: UnstakeQuery) =>
     await requireVault(marketId).vault.estimateGas.unstake(unstakeAmount),
-  category: 'user',
+  category: 'llamalend.supply',
   validationSuite: unstakeValidationSuite,
 })
 

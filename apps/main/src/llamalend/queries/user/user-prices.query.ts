@@ -23,7 +23,7 @@ const { useQuery: useUserPricesQuery, invalidate: invalidateUserPrices } = query
       return await market.userPrices(userAddress)
     }
   },
-  category: 'user',
+  category: 'llamalend.user',
   validationSuite: createValidationSuite((params: UserPricesParams) => {
     marketIdValidationSuite(params)
     loanExistsValidationGroup(params)

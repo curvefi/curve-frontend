@@ -21,7 +21,7 @@ export const {
     [...rootKeys.userMarket(params), 'market-user-health', { isFull }] as const,
   queryFn: async ({ marketId, userAddress, isFull }: UserHealthQuery) =>
     (await getLlamaMarket(marketId).userHealth(isFull, userAddress)) as Decimal,
-  category: 'user',
+  category: 'llamalend.user',
   validationSuite: createValidationSuite(({ userAddress, isFull, marketId, chainId }: UserHealthParams) => {
     userMarketValidationSuite({ userAddress, marketId, chainId })
     validateIsFull(isFull)

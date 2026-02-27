@@ -12,5 +12,5 @@ export const { useQuery: useOneWayMarketNames, prefetchQuery: prefetchMarkets } 
     return api.lendMarkets.getMarketList()
   },
   validationSuite: llamaApiValidationSuite,
-  category: 'static',
+  category: 'llamalend.marketList',
 })

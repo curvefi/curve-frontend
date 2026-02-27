@@ -10,6 +10,6 @@ export const { useQuery: useMarketVaultPricePerShare, invalidate: invalidateMark
     const market = getLendMarket(marketId)
     return await market.vault.previewRedeem(1)
   },
-  category: 'detail',
+  category: 'llamalend.market',
   validationSuite: marketIdValidationSuite,
 })

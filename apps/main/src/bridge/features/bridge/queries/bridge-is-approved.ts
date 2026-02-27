@@ -13,6 +13,6 @@ export const { useQuery: useBridgeIsApproved, invalidate: invalidateBridgeIsAppr
       'fastBridge.isApproved',
     ] as const,
   queryFn: async ({ amount }: BridgeQuery) => await requireLib('curveApi').fastBridge.isApproved(amount),
-  category: 'user',
+  category: 'bridge.user',
   validationSuite: bridgeValidationSuite,
 })

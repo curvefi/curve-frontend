@@ -62,5 +62,5 @@ export const { useQuery: useScrvUsdStatistics } = queryFactory({
   queryKey: () => ['scrvUsdStatistics'] as const,
   queryFn: _fetchSavingsStatistics,
   validationSuite: EmptyValidationSuite,
-  category: 'detail',
+  category: 'savings.stats',
 })

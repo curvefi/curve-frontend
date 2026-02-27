@@ -9,5 +9,5 @@ export const { useQuery: useAppStatsTvl } = queryFactory({
   queryKey: (params: ChainParams<ChainId>) => ['appStatsTvl', { chainId: params.chainId }] as const,
   queryFn: (_: ChainParams<ChainId>) => curvejsApi.network.getTVL(requireLib('curveApi')),
   validationSuite: curveApiValidationSuite,
-  category: 'detail',
+  category: 'dex.appStats',
 })

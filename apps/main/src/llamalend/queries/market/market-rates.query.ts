@@ -17,6 +17,6 @@ export const { useQuery: useMarketRates, invalidate: invalidateMarketRates } = q
         : (await market.stats.parameters()).rates,
     )
   },
-  category: 'detail',
+  category: 'llamalend.market',
   validationSuite: llamaApiValidationSuite,
 })

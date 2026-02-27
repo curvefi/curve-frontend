@@ -31,6 +31,6 @@ export const { useQuery: useBorrowMoreIsApproved, fetchQuery: fetchBorrowMoreIsA
         return await impl.borrowMoreIsApproved(userCollateral)
     }
   },
-  category: 'user',
+  category: 'llamalend.borrowMore',
   validationSuite: borrowMoreValidationSuite({ leverageRequired: false }),
 })

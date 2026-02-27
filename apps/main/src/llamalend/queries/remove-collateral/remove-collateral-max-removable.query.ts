@@ -12,6 +12,6 @@ type MaxRemovableParams<T = IChainId> = FieldsOf<MaxRemovableQuery<T>>
 export const { useQuery: useMaxRemovableCollateral, queryKey: maxRemovableCollateralKey } = queryFactory({
   queryKey: (params: MaxRemovableParams) => [...rootKeys.userMarket(params), 'maxRemovable'] as const,
   queryFn: async ({ marketId }: MaxRemovableQuery) => (await getLlamaMarket(marketId).maxRemovable()) as Decimal,
-  category: 'user',
+  category: 'llamalend.removeCollateral',
   validationSuite: llamaApiValidationSuite,
 })

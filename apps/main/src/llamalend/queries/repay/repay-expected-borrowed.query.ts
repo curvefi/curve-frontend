@@ -55,6 +55,6 @@ export const { useQuery: useRepayExpectedBorrowed, queryKey: repayExpectedBorrow
         }
     }
   },
-  category: 'user',
+  category: 'llamalend.repay',
   validationSuite: repayValidationSuite({ leverageRequired: false }),
 })

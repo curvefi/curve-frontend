@@ -40,6 +40,6 @@ export const { useQuery: useMarketParameters } = queryFactory({
       }
     }
   },
-  category: 'static',
+  category: 'llamalend.marketParams',
   validationSuite: marketIdValidationSuite,
 })

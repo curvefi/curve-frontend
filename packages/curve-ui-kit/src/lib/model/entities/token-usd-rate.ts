@@ -115,7 +115,7 @@ export const {
     tokenValidationGroup({ chainId, tokenAddress })
   }),
   disableLog: true, // too much noise in the logs
-  category: 'detail',
+  category: 'global.tokenRate',
 })
 
 type UseTokenOptions = ReturnType<typeof getTokenUsdRateQueryOptions>

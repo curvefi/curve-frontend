@@ -18,6 +18,6 @@ export const { useQuery: useUserMarketBalances, invalidate: invalidateUserMarket
       vaultSharesConverted,
     }
   },
-  category: 'user',
+  category: 'llamalend.user',
   validationSuite: marketIdValidationSuite,
 })

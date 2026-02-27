@@ -32,7 +32,7 @@ export const {
       debt: userState.debt as Decimal,
     }
   },
-  category: 'user',
+  category: 'llamalend.user',
   validationSuite: userMarketValidationSuite,
 })
 

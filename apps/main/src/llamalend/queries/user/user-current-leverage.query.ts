@@ -15,6 +15,6 @@ export const { useQuery: useUserCurrentLeverage, invalidate: invalidateUserCurre
     const market = getLlamaMarket(marketId)
     return decimal(await market.currentLeverage(userAddress)) ?? null
   },
-  category: 'user',
+  category: 'llamalend.user',
   validationSuite: leverageUserMarketValidationSuite,
 })

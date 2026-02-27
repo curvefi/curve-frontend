@@ -26,7 +26,7 @@ export const { useQuery: useCreateLoanRouteImage } = queryFactory({
         return null // todo: retrieve image or image data from api
     }
   },
-  category: 'user',
+  category: 'llamalend.createLoan',
   validationSuite: createLoanQueryValidationSuite({ debtRequired: true }),
   dependencies: (params) => [createLoanExpectedCollateralQueryKey(params)],
 })

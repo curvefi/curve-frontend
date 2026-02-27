@@ -57,7 +57,7 @@ export const { useQuery: useBorrowMoreExpectedCollateral, queryKey: getBorrowMor
         avgPrice: avgPrice as Decimal,
       }
     },
-    category: 'user',
+    category: 'llamalend.borrowMore',
     validationSuite: borrowMoreLeverageValidationSuite,
   },
 )

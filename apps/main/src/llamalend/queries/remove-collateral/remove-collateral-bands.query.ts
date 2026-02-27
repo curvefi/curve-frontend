@@ -9,7 +9,7 @@ export const { useQuery: useRemoveCollateralBands } = queryFactory({
     [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'removeCollateralBands', { userCollateral }] as const,
   queryFn: async ({ marketId, userCollateral }: CollateralQuery) =>
     await getLlamaMarket(marketId).removeCollateralBands(userCollateral),
-  category: 'user',
+  category: 'llamalend.removeCollateral',
   validationSuite: collateralValidationSuite,
   dependencies: (params) => [maxRemovableCollateralKey(params)],
 })

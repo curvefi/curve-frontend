@@ -17,7 +17,7 @@ export const { useQuery: useLockerVecrvInfo, invalidate: invalidateLockerVecrvIn
   queryKey: (params: ChainParams<ChainId> & UserParams) =>
     ['locker-vecrv-info', { chainId: params.chainId }, { userAddress: params.userAddress }] as const,
   queryFn: _fetchLockerVecrvInfo,
-  category: 'user',
+  category: 'dao.user',
   validationSuite: createValidationSuite((params: ChainParams<ChainId> & UserParams) => {
     curveApiValidationGroup({ chainId: params.chainId })
     userAddressValidationGroup({ userAddress: params.userAddress })

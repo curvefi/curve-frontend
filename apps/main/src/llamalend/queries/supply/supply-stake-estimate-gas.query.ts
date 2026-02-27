@@ -10,7 +10,7 @@ const { useQuery: useStakeApproveEstimateGasQuery } = queryFactory({
     [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'estimateGas.stakeApprove', { stakeAmount }] as const,
   queryFn: async ({ marketId, stakeAmount }: StakeQuery) =>
     await requireVault(marketId).vault.estimateGas.stakeApprove(stakeAmount),
-  category: 'user',
+  category: 'llamalend.supply',
   validationSuite: stakeValidationSuite,
 })
 
@@ -19,7 +19,7 @@ const { useQuery: useStakeEstimateGasQuery } = queryFactory({
     [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'estimateGas.stake', { stakeAmount }] as const,
   queryFn: async ({ marketId, stakeAmount }: StakeQuery) =>
     await requireVault(marketId).vault.estimateGas.stake(stakeAmount),
-  category: 'user',
+  category: 'llamalend.supply',
   validationSuite: stakeValidationSuite,
 })
 

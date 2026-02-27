@@ -23,7 +23,7 @@ export const estimateGasDepositRewardApprove = queryFactory({
   validationSuite: gaugeDepositRewardApproveValidationSuite,
   refetchOnWindowFocus: 'always',
   refetchOnMount: 'always',
-  category: 'user',
+  category: 'dex.deployGauge',
 })
 
 export const estimateGasAddRewardToken = queryFactory({
@@ -40,7 +40,7 @@ export const estimateGasAddRewardToken = queryFactory({
   dependencies: (params: AddRewardParams) => [depositRewardAvailable.queryKey(params)],
   refetchOnWindowFocus: 'always',
   refetchOnMount: 'always',
-  category: 'user',
+  category: 'dex.deployGauge',
 })
 
 export const estimateGasDepositReward = queryFactory({
@@ -59,5 +59,5 @@ export const estimateGasDepositReward = queryFactory({
   dependencies: (params: DepositRewardParams) => [depositRewardIsApproved.queryKey(params)],
   refetchOnWindowFocus: 'always',
   refetchOnMount: 'always',
-  category: 'user',
+  category: 'dex.deployGauge',
 })

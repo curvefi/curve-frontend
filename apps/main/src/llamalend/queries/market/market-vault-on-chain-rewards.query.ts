@@ -15,7 +15,7 @@ export const { useQuery: useMarketVaultOnChainRewards, invalidate: invalidateMar
       rewardsApr: await getLendMarket(marketId).vault.rewardsApr(USE_API),
       crvRates: await getLendMarket(marketId).vault.crvApr(USE_API),
     }),
-    category: 'detail',
+    category: 'llamalend.market',
     validationSuite: marketIdValidationSuite,
   },
 )

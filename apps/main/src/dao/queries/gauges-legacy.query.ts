@@ -83,6 +83,6 @@ export const { useQuery: useGaugesLegacy } = queryFactory({
       return acc
     }, {})
   },
-  category: 'table',
+  category: 'dao.gauges',
   validationSuite: EmptyValidationSuite,
 })

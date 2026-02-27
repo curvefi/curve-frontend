@@ -39,7 +39,7 @@ const { useQuery: usePricesApiBlacklist, fetchQuery: fetchPricesApiBlacklist } =
   queryKey: () => ['pools-blacklist'] as const,
   queryFn: async () => await getPoolFilters(),
   validationSuite: EmptyValidationSuite,
-  category: 'static',
+  category: 'dex.poolParams',
 })
 
 const getBlacklist = (blacklistPricesApi: QueryData<typeof usePricesApiBlacklist>, blockchainId: Chain) =>

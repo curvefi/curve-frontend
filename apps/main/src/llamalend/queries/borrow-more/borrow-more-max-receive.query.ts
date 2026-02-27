@@ -62,7 +62,7 @@ export const { useQuery: useBorrowMoreMaxReceive } = queryFactory({
         return { maxDebt: (await impl.borrowMoreMaxRecv(userCollateral)) as Decimal }
     }
   },
-  category: 'user',
+  category: 'llamalend.borrowMore',
   validationSuite: createValidationSuite((params: BorrowMoreParams) =>
     borrowMoreValidationGroup(params, {
       leverageRequired: false,

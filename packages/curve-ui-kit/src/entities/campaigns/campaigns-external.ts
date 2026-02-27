@@ -59,5 +59,5 @@ export const { getQueryOptions: getCampaignsExternalOptions } = queryFactory({
     )
   },
   validationSuite: EmptyValidationSuite,
-  category: 'table',
+  category: 'global.campaigns',
 })

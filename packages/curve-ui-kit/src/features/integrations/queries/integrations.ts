@@ -25,7 +25,7 @@ export const { useQuery: useIntegrations } = queryFactory({
     return parseIntegrationsList(resp)
   },
   validationSuite: EmptyValidationSuite,
-  category: 'static',
+  category: 'global.integrations',
 })
 
 export const parseIntegrationsList = (integrationsList: IntegrationsResponse) =>

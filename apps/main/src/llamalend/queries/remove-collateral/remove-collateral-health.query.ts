@@ -14,6 +14,6 @@ export const { getQueryOptions: getRemoveCollateralHealthOptions } = queryFactor
     ] as const,
   queryFn: async ({ marketId, userCollateral, isFull }: CollateralHealthQuery) =>
     (await getLlamaMarket(marketId).removeCollateralHealth(userCollateral, isFull)) as Decimal,
-  category: 'user',
+  category: 'llamalend.removeCollateral',
   validationSuite: collateralHealthValidationSuite,
 })

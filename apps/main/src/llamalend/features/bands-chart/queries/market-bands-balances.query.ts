@@ -81,6 +81,6 @@ export const { useQuery: useMarketBandsBalances } = queryFactory({
 
     return data
   },
-  category: 'detail',
+  category: 'llamalend.market',
   validationSuite: marketBandsBalancesValidationSuite,
 })

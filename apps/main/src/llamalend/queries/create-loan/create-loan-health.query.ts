@@ -55,7 +55,7 @@ export const { useQuery: useCreateLoanHealth, invalidate: invalidateCreateLoanHe
         return decimal(await impl.createLoanHealth(userCollateral, debt, range))!
     }
   },
-  category: 'user',
+  category: 'llamalend.createLoan',
   validationSuite: createLoanQueryValidationSuite({ debtRequired: true }),
   dependencies: (params) => [
     createLoanMaxReceiveKey(params),

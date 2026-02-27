@@ -46,6 +46,6 @@ export const { useQuery: useRepayIsApproved, fetchQuery: fetchRepayIsApproved } 
         return await impl.repayIsApproved(userBorrowed)
     }
   },
-  category: 'user',
+  category: 'llamalend.repay',
   validationSuite: repayFromCollateralIsFullValidationSuite,
 })

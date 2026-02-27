@@ -39,7 +39,7 @@ export const { useQuery: useRepayPriceImpact } = queryFactory({
         return 0 // there is no price impact, user repays debt directly
     }
   },
-  category: 'user',
+  category: 'llamalend.repay',
   validationSuite: repayValidationSuite({ leverageRequired: true }),
   dependencies: (params) => [repayExpectedBorrowedQueryKey(params)],
 })

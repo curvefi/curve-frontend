@@ -1,32 +1,60 @@
-import { REFRESH_INTERVAL } from '@ui-kit/lib/model/time'
+import { QUERY_TYPES } from '@ui-kit/lib/model/query/query-types'
 
-export type QueryTimingConfig = {
-  staleTime: number
-  gcTime: number
-  refetchInterval?: number
-}
-
-const [minute, fiveMin, tenMin, hour, day] = [
-  REFRESH_INTERVAL['1m'],
-  REFRESH_INTERVAL['5m'],
-  REFRESH_INTERVAL['10m'],
-  REFRESH_INTERVAL['1h'],
-  REFRESH_INTERVAL['1d'],
-]
-
-const actionableData = { staleTime: fiveMin, gcTime: tenMin, refetchInterval: minute }
-const informativeData = { staleTime: fiveMin, gcTime: tenMin, refetchInterval: fiveMin }
-const semiStaticData: QueryTimingConfig = { staleTime: hour, gcTime: day }
+const { user, table, marketDetail, static: staticData, semiStatic, form } = QUERY_TYPES
 
 /**
  * Category → timing settings mapping.
- * Categories are intentionally broad; individual query authors should not need to tweak timing.
+ * Format: 'app.feature' for app-specific queries, 'global.feature' for shared queries.
+ * Individual query authors should not need to tweak timing — pick the closest category instead.
  */
 export const QUERY_CATEGORIES = {
-  user: actionableData,
-  table: informativeData,
-  detail: actionableData,
-  static: semiStaticData,
-} as const satisfies Record<string, QueryTimingConfig>
+  // Global / shared queries
+  'global.gasInfo': semiStatic,
+  'global.tokenRate': semiStatic,
+  'global.campaigns': table,
+  'global.integrations': staticData,
+  'global.routerApi': form,
+  'global.snapshots': table,
+
+  // Bridge
+  'bridge.capacity': marketDetail,
+  'bridge.cost': marketDetail,
+  'bridge.user': user,
+
+  // DEX
+  'dex.appStats': marketDetail,
+  'dex.pools': table,
+  'dex.pool': marketDetail,
+  'dex.poolParams': staticData,
+  'dex.gauge': marketDetail,
+  'dex.network': staticData,
+  'dex.user': user,
+  'dex.swap': form,
+  'dex.deployGauge': form,
+
+  // LlamaLend / crvUSD lending
+  'llamalend.appStats': marketDetail,
+  'llamalend.marketList': table,
+  'llamalend.market': marketDetail,
+  'llamalend.marketParams': staticData,
+  'llamalend.user': user,
+  'llamalend.createLoan': form,
+  'llamalend.repay': form,
+  'llamalend.borrowMore': form,
+  'llamalend.addCollateral': form,
+  'llamalend.removeCollateral': form,
+  'llamalend.supply': form,
+  'llamalend.closeLoan': form,
+
+  // DAO
+  'dao.proposals': table,
+  'dao.stats': marketDetail,
+  'dao.gauges': table,
+  'dao.user': user,
+
+  // Savings (scrvUSD)
+  'savings.stats': marketDetail,
+  'savings.user': user,
+} as const
 
 export type QueryCategory = keyof typeof QUERY_CATEGORIES

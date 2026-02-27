@@ -30,6 +30,6 @@ export const { useQuery: useRepayRouteImage } = queryFactory({
         throw new Error('repayRouteImage is not supported for deleverage or unleveraged repay')
     }
   },
-  category: 'user',
+  category: 'llamalend.repay',
   validationSuite: repayValidationSuite({ leverageRequired: true }),
 })

@@ -35,7 +35,7 @@ export const { useQuery: useRepayPrices } = queryFactory({
         return (await impl.repayPrices(...args)) as Range<Decimal>
     }
   },
-  category: 'user',
+  category: 'llamalend.repay',
   validationSuite: repayValidationSuite({ leverageRequired: false }),
   dependencies: (params) => [repayExpectedBorrowedQueryKey(params)],
 })

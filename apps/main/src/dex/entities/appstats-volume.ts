@@ -16,5 +16,5 @@ export const { useQuery: useAppStatsVolume } = queryFactory({
   queryKey: (params: ChainParams<ChainId>) => ['appStatsVolume', { chainId: params.chainId }] as const,
   queryFn: _fetchAppStatsVolume,
   validationSuite: curveApiValidationSuite,
-  category: 'detail',
+  category: 'dex.appStats',
 })

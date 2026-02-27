@@ -73,6 +73,6 @@ const _fetchProposals = async (): Promise<ProposalsMapper> => {
 export const { useQuery: useProposalsMapperQuery, invalidate: invalidateProposals } = queryFactory({
   queryKey: () => ['proposals-mapper'] as const,
   queryFn: _fetchProposals,
-  category: 'table',
+  category: 'dao.proposals',
   validationSuite: EmptyValidationSuite,
 })

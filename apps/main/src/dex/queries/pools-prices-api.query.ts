@@ -11,5 +11,5 @@ export const { useQuery: usePoolsPricesApi } = queryFactory({
     return fromEntries(pools.map((pool) => [pool.address.toLocaleLowerCase(), pool]))
   },
   validationSuite: EmptyValidationSuite,
-  category: 'detail',
+  category: 'dex.pools',
 })

@@ -17,5 +17,5 @@ export const { useQuery: useUserPools, fetchQuery: fetchUserPools } = queryFacto
     chainValidationGroup(params)
     userAddressValidationGroup(params)
   }),
-  category: 'user',
+  category: 'dex.user',
 })
