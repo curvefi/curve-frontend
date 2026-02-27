@@ -5,7 +5,6 @@ import { ChipPool } from '@/dex/components/ChipPool'
 import { ChipToken } from '@/dex/components/ChipToken'
 import { usePoolAlert } from '@/dex/hooks/usePoolAlert'
 import { useTokenAlert } from '@/dex/hooks/useTokenAlert'
-import { useStore } from '@/dex/store/useStore'
 import { PoolData, PoolDataCache } from '@/dex/types/main.types'
 import type { INetworkName } from '@curvefi/api/lib/interfaces'
 import { AlertBox } from '@ui/AlertBox'
@@ -45,7 +44,6 @@ export const PoolLabel = ({
   const poolAlert = usePoolAlert(poolData)
   const tokenAlert = useTokenAlert(poolData?.tokenAddressesAll ?? [])
   const isMobile = useIsMobile()
-  const searchedTerms = useStore((state) => state.poolList.searchedTerms)
 
   const handleClick = (target: EventTarget) => {
     if (typeof onClick === 'function') {
@@ -56,30 +54,6 @@ export const PoolLabel = ({
       }
     }
   }
-
-  const { highlightedTokens } = useMemo(() => {
-    if (isMobile || !isVisible) return { highlightedTokens: [] }
-
-    let foundSearchedToken = false
-
-    const highlightedTokens = tokens.map(({ symbol, address }) => {
-      const isHighLight =
-        searchedTerms.findIndex((searched) => {
-          const parsedToken = symbol.toLowerCase()
-          const parsedTokenAddress = address.toLowerCase()
-          const parsedSearch = searched.toLowerCase()
-          return (
-            parsedToken.includes(parsedSearch) ||
-            parsedTokenAddress === parsedSearch ||
-            parsedTokenAddress.startsWith(parsedSearch)
-          )
-        }) !== -1
-      if (isHighLight) foundSearchedToken = true
-      return { symbol, address, isHighLight }
-    })
-
-    return { highlightedTokens, isHighlightPoolName: !foundSearchedToken }
-  }, [isMobile, isVisible, searchedTerms, tokens])
 
   return (
     <div>
@@ -111,13 +85,8 @@ export const PoolLabel = ({
                 {isMobile
                   ? tokens.map(({ symbol }, idx) => <TokenLabel key={`${symbol}-${idx}`}>{symbol} </TokenLabel>)
                   : isVisible &&
-                    highlightedTokens.map(({ symbol, address, isHighLight }, idx) => (
-                      <ChipToken
-                        key={`${symbol}${address}${idx}`}
-                        tokenName={symbol}
-                        tokenAddress={address}
-                        isHighlight={isHighLight}
-                      />
+                    tokens.map(({ symbol, address }, idx) => (
+                      <ChipToken key={`${symbol}${address}${idx}`} tokenName={symbol} tokenAddress={address} />
                     ))}
               </div>
             )}

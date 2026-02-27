@@ -1,21 +1,20 @@
 import { useEffect, useState } from 'react'
-import { Address } from 'viem'
 import { useConnection } from 'wagmi'
 import { MarketDetails } from '@/llamalend/features/market-details'
 import {
   BorrowPositionDetails,
   LlamaMonitorBotLinkButton,
   NoPosition,
+  useBorrowPositionDetails,
 } from '@/llamalend/features/market-position-details'
 import { UserPositionHistory } from '@/llamalend/features/user-position-history'
 import { useUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
-import { useLoanExists } from '@/llamalend/queries/loan-exists'
+import { useLoanExists } from '@/llamalend/queries/user'
 import { PageHeader } from '@/llamalend/widgets/page-header'
 import { MarketInformationComp } from '@/loan/components/MarketInformationComp'
 import { CreateLoanTabs } from '@/loan/components/PageMintMarket/CreateLoanTabs'
 import { ManageLoanTabs } from '@/loan/components/PageMintMarket/ManageLoanTabs'
 import { useMintMarket } from '@/loan/entities/mint-markets'
-import { useLoanPositionDetails } from '@/loan/hooks/useLoanPositionDetails'
 import { useMarketDetails } from '@/loan/hooks/useMarketDetails'
 import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
 import { networks } from '@/loan/networks'
@@ -25,6 +24,8 @@ import { getCollateralListPathname, useChainId } from '@/loan/utils/utilsRouter'
 import { isChain } from '@curvefi/prices-api'
 import type { Chain } from '@curvefi/prices-api'
 import Stack from '@mui/material/Stack'
+import type { Address } from '@primitives/address.utils'
+import type { Decimal } from '@primitives/decimal.utils'
 import { ConnectWalletPrompt, useCurve } from '@ui-kit/features/connect-wallet'
 import { useParams } from '@ui-kit/hooks/router'
 import { useIntegratedLlamaHeader } from '@ui-kit/hooks/useFeatureFlags'
@@ -33,6 +34,8 @@ import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { LlamaMarketType } from '@ui-kit/types/market'
+import type { Range } from '@ui-kit/types/util'
 import { CRVUSD } from '@ui-kit/utils/address'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
 
@@ -45,6 +48,7 @@ export const MintMarketPage = () => {
   const rChainId = useChainId(params)
   const { address } = useConnection()
   const [loaded, setLoaded] = useState(false)
+  const [previewPrices, setPreviewPrices] = useState<Range<Decimal> | undefined>(undefined)
 
   const market = useMintMarket({ chainId: rChainId, marketId: rCollateralId })
   const marketId = market?.id ?? ''
@@ -53,14 +57,15 @@ export const MintMarketPage = () => {
   const fetchLoanDetails = useStore((state) => state.loans.fetchLoanDetails)
 
   const loanStatus = useUserLoanDetails(market?.id ?? '')?.userStatus?.colorKey ?? ''
-  const marketDetails = useMarketDetails({ chainId: rChainId, llamma: market, llammaId: marketId })
-  const positionDetails = useLoanPositionDetails({
-    chainId: rChainId,
-    llamma: market,
-    llammaId: marketId,
-  })
-
+  const marketDetails = useMarketDetails({ chainId: rChainId, market, marketId })
   const network = networks[rChainId]
+  const borrowPositionDetails = useBorrowPositionDetails({
+    marketType: LlamaMarketType.Mint,
+    chainId: rChainId,
+    marketId,
+    blockchainId: network.id as Chain,
+    market: market ?? null,
+  })
   const {
     data: userCollateralEvents,
     isLoading: collateralEventsIsLoading,
@@ -101,6 +106,7 @@ export const MintMarketPage = () => {
     market: market ?? null,
     rChainId,
     params,
+    onPricesUpdated: setPreviewPrices,
   }
   const showPageHeader = useIntegratedLlamaHeader()
 
@@ -135,7 +141,7 @@ export const MintMarketPage = () => {
             </Stack>
           )}
           <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
-            {loanExists ? <BorrowPositionDetails {...positionDetails} /> : <NoPosition type="borrow" />}
+            {loanExists ? <BorrowPositionDetails {...borrowPositionDetails} /> : <NoPosition type="borrow" />}
             {userCollateralEvents?.events && userCollateralEvents.events.length > 0 && (
               <Stack
                 paddingLeft={Spacing.md}
@@ -154,7 +160,13 @@ export const MintMarketPage = () => {
         </Stack>
         <Stack>
           {!showPageHeader && <MarketDetails {...marketDetails} />}
-          <MarketInformationComp llamma={market ?? null} marketId={marketId} chainId={rChainId} page="manage" />
+          <MarketInformationComp
+            market={market ?? null}
+            marketId={marketId}
+            chainId={rChainId}
+            page="manage"
+            previewPrices={previewPrices}
+          />
         </Stack>
       </DetailPageLayout>
     </>

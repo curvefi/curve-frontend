@@ -1,7 +1,6 @@
 import Aegis from './Aegis.json'
 import Asymmetry from './Asymmetry.json'
 import Babylon from './Babylon.json'
-import Bills from './Bills.json'
 import DTrinity from './DTrinity.json'
 import Ebisu from './Ebisu.json'
 import Ethena from './Ethena.json'
@@ -21,6 +20,7 @@ import Loop from './Loop.json'
 import Mellow from './Mellow.json'
 import Noon from './Noon.json'
 import Pumpbtc from './Pumpbtc.json'
+import Raac from './Raac.json'
 import Re from './Re.json'
 import Resolv from './Resolv.json'
 import StableLabs from './StableLabs.json'
@@ -48,7 +48,6 @@ export {
   Hourglass,
   Fx,
   Pumpbtc,
-  Bills,
   StableLabs,
   Infinifi,
   Asymmetry,
@@ -64,4 +63,5 @@ export {
   Yuzu,
   TermMax,
   Re,
+  Raac,
 }

@@ -1,5 +1,5 @@
+import type { Decimal } from '@primitives/decimal.utils'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import type { Decimal } from '@ui-kit/utils'
 import { NumericTextField } from '../NumericTextField'
 
 const { FontSize, FontWeight, Sizing } = SizesAndSpaces

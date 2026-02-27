@@ -150,6 +150,10 @@ export const Duration = {
     Daily: TIME_FRAMES.DAY_MS,
     Monthly: TIME_FRAMES.MONTH_MS,
   },
+  AverageRates: {
+    Weekly: 7,
+    Monthly: 30,
+  },
 }
 
 export const Transition = `ease-out`

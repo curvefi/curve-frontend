@@ -1,5 +1,4 @@
 import { useMemo } from 'react'
-import type { Address } from 'viem'
 import { type Chain } from '@curvefi/prices-api'
 import {
   UserCollateralEvent as CrvUsdUserCollateralEvent,
@@ -9,6 +8,7 @@ import {
   UserCollateralEvent as LendingUserCollateralEvent,
   UserCollateralEvents as LendingUserCollateralEvents,
 } from '@curvefi/prices-api/lending'
+import type { Address } from '@primitives/address.utils'
 import { scanTxPath, type BaseConfig } from '@ui/utils'
 import { useUserCrvUsdCollateralEventsQuery } from '../queries/user-crvusd-collateral-events'
 import { useUserLendCollateralEventsQuery } from '../queries/user-lend-collateral-events'

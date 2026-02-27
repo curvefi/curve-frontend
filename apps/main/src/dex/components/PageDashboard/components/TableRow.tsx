@@ -7,10 +7,10 @@ import { TableCellProfit } from '@/dex/components/PageDashboard/components/Table
 import { TableCellRewards } from '@/dex/components/PageDashboard/components/TableCellRewards'
 import type { DashboardTableRowProps } from '@/dex/components/PageDashboard/types'
 import { SORT_ID } from '@/dex/components/PageDashboard/utils'
-import { TableCellRewardsOthers } from '@/dex/components/PagePoolList/components/TableCellRewardsOthers'
 import { PoolLabel } from '@/dex/components/PoolLabel'
 import { Tr, Td } from '@ui/Table'
 import { useIntersectionObserver } from '@ui-kit/hooks/useIntersectionObserver'
+import { TableCellRewardsOthers } from '../../TableCellRewardsOthers'
 
 export const TableRow = ({
   isLite,
@@ -23,8 +23,7 @@ export const TableRow = ({
   updatePath,
 }: DashboardTableRowProps) => {
   const rowRef = useRef<HTMLTableRowElement>(null)
-  const entry = useIntersectionObserver(rowRef, { freezeOnceVisible: true })
-  const isVisible = entry?.isIntersecting || false
+  const { isIntersecting: isVisible } = useIntersectionObserver(rowRef, { freezeOnceVisible: true })
 
   const { poolId, userCrvApy } = dashboardData
 

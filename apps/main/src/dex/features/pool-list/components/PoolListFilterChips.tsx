@@ -1,6 +1,7 @@
+import { useConnection } from 'wagmi'
 import { NetworkConfig } from '@/dex/types/main.types'
-import { notFalsy } from '@curvefi/prices-api/objects.util'
 import Grid from '@mui/material/Grid'
+import { notFalsy } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { GridChip } from '@ui-kit/shared/ui/DataTable/chips/GridChip'
 import type { FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
@@ -10,20 +11,21 @@ import type { PoolTag } from '../types'
 
 const { Spacing } = SizesAndSpaces
 
-const FILTER_GROUPS = [
+const getFilterGroups = ({ isConnected }: { isConnected: boolean }) =>
   [
-    { key: 'usd', label: 'USD' },
-    { key: 'btc', label: 'BTC' },
-    { key: 'kava', label: 'KAVA' },
-    { key: 'eth', label: 'ETH' },
-    { key: 'crvusd', label: t`crvUSD` },
-    { key: 'tricrypto', label: t`Tricrypto` },
-    { key: 'crypto', label: t`Crypto` },
-    { key: 'stableng', label: t`Stable NG` },
-    { key: 'cross-chain', label: t`Cross-chain` },
-  ],
-  [{ key: 'user', label: t`My Pools` }],
-] satisfies { key: PoolTag | null; label: string }[][]
+    [
+      { key: 'usd' as const, label: 'USD' },
+      { key: 'btc' as const, label: 'BTC' },
+      { key: 'kava' as const, label: 'KAVA' },
+      { key: 'eth' as const, label: 'ETH' },
+      { key: 'crvusd' as const, label: t`crvUSD` },
+      { key: 'tricrypto' as const, label: t`Tricrypto` },
+      { key: 'crypto' as const, label: t`Crypto` },
+      { key: 'stableng' as const, label: t`Stable NG` },
+      { key: 'cross-chain' as const, label: t`Cross-chain` },
+    ],
+    ...(isConnected ? [[{ key: 'user' as const, label: t`My Pools` }]] : []),
+  ] satisfies { key: PoolTag | null; label: string }[][]
 
 export type PoolListFilterChipsProps = FilterProps<PoolColumnId> & {
   resultCount: number | undefined
@@ -37,6 +39,7 @@ export const PoolListFilterChips = ({
   columnFiltersById,
 }: PoolListFilterChipsProps) => {
   const filterKey = columnFiltersById[PoolColumnId.PoolTags] as PoolTag | undefined
+  const { isConnected } = useConnection()
   return (
     <Grid
       container
@@ -46,7 +49,7 @@ export const PoolListFilterChips = ({
       justifyContent="flex-end"
       size={{ mobile: 12, desktop: 'auto' }}
     >
-      {FILTER_GROUPS.map((group) => (
+      {getFilterGroups({ isConnected }).map((group) => (
         <Grid container key={group[0].key} size={{ mobile: 12, tablet: 'auto' }} spacing={1}>
           {group.map(
             ({ key, label }) =>

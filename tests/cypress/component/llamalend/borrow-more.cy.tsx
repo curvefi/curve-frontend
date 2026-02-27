@@ -24,7 +24,8 @@ describe('BorrowMoreForm (mocked)', () => {
   const runCase = ({ approved, title }: { approved: boolean; title: string }) =>
     it(title, () => {
       const scenario = createScenario({ approved })
-      const onBorrowedMore = cy.spy().as('onBorrowedMore')
+      const onSuccess = cy.spy().as('onSuccess')
+      const onPricesUpdated = cy.spy().as('onPricesUpdated')
       const { llamaApi, expected, market, borrow, stubs, collateral } = scenario
 
       void collateral
@@ -36,7 +37,8 @@ describe('BorrowMoreForm (mocked)', () => {
             market={market}
             networks={networks}
             chainId={chainId}
-            onMutated={onBorrowedMore}
+            onSuccess={onSuccess}
+            onPricesUpdated={onPricesUpdated}
             fromWallet={false}
           />
         </MockLoanTestWrapper>,

@@ -30,26 +30,36 @@ describe('RepayForm (mocked)', () => {
   const runCase = ({ approved, title }: { approved: boolean; title: string }) =>
     it(title, () => {
       const scenario = createScenario({ approved })
-    const onRepaid = cy.spy().as('onRepaid')
-    const { llamaApi, expected, market, borrow, stubs, collateral } = scenario
+      const onSuccess = cy.spy().as('onSuccess')
+      const onPricesUpdated = cy.spy().as('onPricesUpdated')
+      const { llamaApi, expected, market, borrow, stubs, collateral } = scenario
 
-    void collateral
-    setLlamaApi(llamaApi)
-    seedCrvUsdBalance({
-      chainId,
-      addresses: [TEST_ADDRESS as Address, TEST_ADDRESS.toLowerCase() as Address],
-      rawBalance: BigInt(oneInt(15, 80)) * 10n ** 18n,
-    })
+      void collateral
+      setLlamaApi(llamaApi)
+      seedCrvUsdBalance({
+        chainId,
+        addresses: [TEST_ADDRESS as Address, TEST_ADDRESS.toLowerCase() as Address],
+        rawBalance: BigInt(oneInt(15, 80)) * 10n ** 18n,
+      })
 
-    cy.mount(
-      <MockLoanTestWrapper llamaApi={llamaApi}>
-        <RepayForm market={market} networks={networks} chainId={chainId} onRepaid={onRepaid} />
-      </MockLoanTestWrapper>,
-    )
+      cy.mount(
+        <MockLoanTestWrapper llamaApi={llamaApi}>
+          <RepayForm
+            market={market}
+            networks={networks}
+            chainId={chainId}
+            onSuccess={onSuccess}
+            onPricesUpdated={onPricesUpdated}
+          />
+        </MockLoanTestWrapper>,
+      )
 
-    selectRepayToken({ symbol: 'crvUSD', tokenAddress: CRVUSD_ADDRESS, hasLeverage: false })
-    writeRepayLoanForm({ amount: borrow })
-    checkRepayDetailsLoaded({ debt: [scenario.currentDebt, scenario.futureDebt, 'crvUSD'], leverageEnabled: false })
+      selectRepayToken({ symbol: 'crvUSD', tokenAddress: CRVUSD_ADDRESS, hasLeverage: false })
+      writeRepayLoanForm({ amount: borrow })
+      checkRepayDetailsLoaded({
+        debt: { current: scenario.currentDebt, future: scenario.futureDebt, symbol: 'crvUSD' },
+        leverageEnabled: false,
+      })
 
       cy.then(() => {
         expect(stubs.parameters).to.have.been.calledWithExactly()

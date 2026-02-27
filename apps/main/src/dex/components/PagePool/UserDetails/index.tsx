@@ -7,6 +7,7 @@ import { usePoolIdByAddressOrId } from '@/dex/hooks/usePoolIdByAddressOrId'
 import { usePoolTokenDepositBalances } from '@/dex/hooks/usePoolTokenDepositBalances'
 import { useUserPoolInfo } from '@/dex/queries/user-pool-info.query'
 import { useStore } from '@/dex/store/useStore'
+import type { Address } from '@primitives/address.utils'
 import { Box } from '@ui/Box'
 import { Stats } from '@ui/Stats'
 import { Table } from '@ui/Table'
@@ -15,7 +16,7 @@ import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { ExclamationTriangleIcon } from '@ui-kit/shared/icons/ExclamationTriangleIcon'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
-import { shortenAddress, type Address } from '@ui-kit/utils'
+import { shortenAddress } from '@ui-kit/utils'
 
 const DEFAULT_WITHDRAW_AMOUNTS: string[] = []
 

@@ -1,6 +1,5 @@
-import { type ChangeEvent, useCallback, useEffect } from 'react'
+import { type ChangeEvent, useCallback } from 'react'
 import { LoanPreset } from '@/llamalend/constants'
-import { type CreateLoanFormExternalFields, type OnCreateLoanFormUpdate } from '@/llamalend/features/borrow/types'
 import { hasLeverage } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import type { CreateLoanOptions } from '@/llamalend/mutations/create-loan.mutation'
@@ -10,11 +9,12 @@ import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
 import Collapse from '@mui/material/Collapse'
 import Stack from '@mui/material/Stack'
+import type { Decimal } from '@primitives/decimal.utils'
+import { joinButtonText } from '@primitives/string.utils'
 import { useCreateLoanPreset } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
-import { q } from '@ui-kit/types/util'
-import { joinButtonText } from '@ui-kit/utils'
+import { q, type Range } from '@ui-kit/types/util'
 import { updateForm } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts, HighPriceImpactAlert } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
@@ -26,34 +26,22 @@ import { LeverageInput } from './LeverageInput'
 import { LoanPresetSelector } from './LoanPresetSelector'
 
 /**
- * Hook to call the parent form to keep in sync with the chart and other components
- */
-function useFormSync(
-  { userCollateral, range, debt, userBorrowed, slippage, leverageEnabled }: CreateLoanFormExternalFields,
-  onUpdate: OnCreateLoanFormUpdate,
-) {
-  useEffect(() => {
-    void onUpdate({ userCollateral, debt, range, userBorrowed, slippage, leverageEnabled })
-  }, [onUpdate, userCollateral, debt, range, userBorrowed, slippage, leverageEnabled])
-}
-
-/**
  * The form contents for the create loan tab.
  * @param market The market to create a loan.
  * @param network The network configuration.
- * @param onUpdate Callback to set the form values, so it's in sync with the ChartOhlc component.
+ * @param onPricesUpdated Callback to sync liquidation prices with the chart.
  */
 export const CreateLoanForm = <ChainId extends IChainId>({
   market,
   networks,
   chainId,
-  onUpdate,
+  onPricesUpdated,
   onSuccess,
 }: {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
   chainId: ChainId
-  onUpdate: OnCreateLoanFormUpdate
+  onPricesUpdated: (prices: Range<Decimal> | undefined) => void
   onSuccess: CreateLoanOptions['onSuccess']
 }) => {
   const network = networks[chainId]
@@ -71,15 +59,15 @@ export const CreateLoanForm = <ChainId extends IChainId>({
     maxTokenValues: { collateral: maxCollateral, debt: maxDebt, maxLeverage, setRange },
     onSubmit,
     params,
+    routes,
     txHash,
     values,
     leverage,
-  } = useCreateLoanForm({ market, network, preset, onSuccess })
-
-  useFormSync(values, onUpdate)
+  } = useCreateLoanForm({ market, network, preset, onSuccess, onPricesUpdated })
 
   const toggleLeverage = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) => updateForm(form, { leverageEnabled: event.target.checked }),
+    (event: ChangeEvent<HTMLInputElement>) =>
+      updateForm(form, { leverageEnabled: event.target.checked, routeId: undefined }),
     [form],
   )
 
@@ -95,6 +83,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
           collateralToken={collateralToken}
           borrowToken={borrowToken}
           networks={networks}
+          routes={routes}
           onSlippageChange={(value) => updateForm(form, { slippage: value })}
         />
       }
@@ -107,7 +96,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
           blockchainId={network.id}
           name="userCollateral"
           form={form}
-          max={{ ...maxCollateral, fieldName: 'maxCollateral' }}
+          max={{ ...q(maxCollateral), fieldName: 'maxCollateral' }}
           testId="borrow-collateral-input"
           network={network}
         />
@@ -117,7 +106,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
           blockchainId={network.id}
           name="debt"
           form={form}
-          max={{ ...maxDebt, fieldName: 'maxDebt' }}
+          max={{ ...q(maxDebt), fieldName: 'maxDebt' }}
           hideBalance
           testId="borrow-debt-input"
           network={network}

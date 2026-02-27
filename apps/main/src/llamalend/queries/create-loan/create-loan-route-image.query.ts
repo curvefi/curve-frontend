@@ -22,7 +22,8 @@ export const { useQuery: useCreateLoanRouteImage } = queryFactory({
         return await impl.createLoanRouteImage(userBorrowed, debt)
       case 'V0':
       case 'unleveraged':
-        return null
+      case 'zapV2':
+        return null // todo: retrieve image or image data from api
     }
   },
   staleTime: '1m',

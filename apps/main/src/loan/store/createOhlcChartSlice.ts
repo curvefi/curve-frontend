@@ -4,9 +4,10 @@ import type { StoreApi } from 'zustand'
 import { networks } from '@/loan/networks'
 import type { State } from '@/loan/store/useStore'
 import { ChainId } from '@/loan/types/loan.types'
-import type { Address, Chain } from '@curvefi/prices-api'
+import type { Chain } from '@curvefi/prices-api'
 import { getOracle } from '@curvefi/prices-api/lending'
 import { getOHLC } from '@curvefi/prices-api/llamma'
+import type { Address } from '@primitives/address.utils'
 import type {
   FetchingStatus,
   LpPriceOhlcDataFormatted,

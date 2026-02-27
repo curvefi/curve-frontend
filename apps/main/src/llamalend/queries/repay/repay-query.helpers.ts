@@ -1,5 +1,5 @@
 import { getLlamaMarket, hasDeleverage, hasLeverage, hasV2Leverage } from '@/llamalend/llama.utils'
-import { getUserState } from '@/llamalend/queries/user-state.query'
+import { getUserState } from '@/llamalend/queries/user'
 import type { RepayQuery } from '@/llamalend/queries/validation/manage-loan.types'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { type UserMarketQuery } from '@ui-kit/lib/model'

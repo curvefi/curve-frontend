@@ -6,6 +6,7 @@ import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
+import { q } from '@ui-kit/types/util'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import { InputDivider } from '../../../widgets/InputDivider'
@@ -68,7 +69,7 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
           testId="remove-collateral-input"
           network={network}
           positionBalance={{
-            position: maxRemovable,
+            position: q(maxRemovable),
             tooltip: t`Max Removable Collateral`,
           }}
         />

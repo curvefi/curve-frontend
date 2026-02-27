@@ -1,38 +1,22 @@
 import { useCallback } from 'react'
 import { CreateLoanForm } from '@/llamalend/features/borrow/components/CreateLoanForm'
-import type { OnCreateLoanFormUpdate } from '@/llamalend/features/borrow/types'
 import { hasV1Leverage } from '@/llamalend/llama.utils'
 import type { CreateLoanMutation, CreateLoanOptions } from '@/llamalend/mutations/create-loan.mutation'
 import { LoanFormCreate } from '@/loan/components/PageMintMarket/LoanFormCreate'
-import type { FormValues, PageLoanCreateProps } from '@/loan/components/PageMintMarket/types'
-import { DEFAULT_FORM_VALUES } from '@/loan/components/PageMintMarket/utils'
+import type { PageLoanCreateProps } from '@/loan/components/PageMintMarket/types'
 import { networks } from '@/loan/networks'
 import { useStore } from '@/loan/store/useStore'
+import type { Decimal } from '@primitives/decimal.utils'
 import { useCreateLoanMuiForm } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
+import type { Range } from '@ui-kit/types/util'
 import { FormTab, FormTabs } from '@ui-kit/widgets/DetailPageLayout/FormTabs'
 
-/**
- * Callback that synchronizes the `ChartOhlc` component with the `RangeSlider` component in the new `CreateLoanForm`.
- */
-const useOnFormUpdate = ({ curve, market }: Pick<PageLoanCreateProps, 'market' | 'curve'>): OnCreateLoanFormUpdate =>
-  useCallback(
-    async ({ debt, userCollateral, range, slippage, leverageEnabled }) => {
-      if (!curve || !market) return
-      const { setFormValues, setStateByKeys } = useStore.getState().loanCreate
-      const formValues: FormValues = {
-        ...DEFAULT_FORM_VALUES,
-        n: range,
-        debt: `${debt ?? ''}`,
-        collateral: `${userCollateral ?? ''}`,
-      }
-      await setFormValues(curve, leverageEnabled, market, formValues, `${slippage}`)
-      setStateByKeys({ isEditLiqRange: true })
-    },
-    [curve, market],
-  )
+type MintCreateTabsProps = PageLoanCreateProps & {
+  onPricesUpdated: (prices: Range<Decimal> | undefined) => void
+}
 
-function CreateLoanTab({ market, curve, rChainId }: PageLoanCreateProps) {
+function CreateLoanTab({ market, curve, rChainId, onPricesUpdated }: MintCreateTabsProps) {
   const onLoanCreated = useStore((state) => state.loanCreate.onLoanCreated)
   const onCreated: NonNullable<CreateLoanOptions['onSuccess']> = useCallback(
     async (_data, _receipt, { slippage, leverageEnabled }: CreateLoanMutation) =>
@@ -40,13 +24,12 @@ function CreateLoanTab({ market, curve, rChainId }: PageLoanCreateProps) {
     [curve, market, onLoanCreated],
   )
 
-  const onUpdate = useOnFormUpdate({ market, curve })
   return (
     <CreateLoanForm
       networks={networks}
       chainId={rChainId}
       market={market ?? undefined}
-      onUpdate={onUpdate}
+      onPricesUpdated={onPricesUpdated}
       onSuccess={onCreated}
     />
   )
@@ -54,7 +37,7 @@ function CreateLoanTab({ market, curve, rChainId }: PageLoanCreateProps) {
 
 const MintCreateTabsNewMenu = [
   { value: 'create', label: t`Borrow`, component: CreateLoanTab },
-] satisfies FormTab<PageLoanCreateProps>[]
+] satisfies FormTab<MintCreateTabsProps>[]
 
 const MintCreateTabsOldMenu = [
   { value: 'create', label: t`Create Loan`, component: LoanFormCreate },
@@ -66,7 +49,7 @@ const MintCreateTabsOldMenu = [
   },
 ] satisfies FormTab<PageLoanCreateProps>[]
 
-export const CreateLoanTabs = (props: PageLoanCreateProps) => {
+export const CreateLoanTabs = (props: MintCreateTabsProps) => {
   const menu = useCreateLoanMuiForm() ? MintCreateTabsNewMenu : MintCreateTabsOldMenu
   const shouldWrap = menu === MintCreateTabsOldMenu
   return <FormTabs params={props} menu={menu} shouldWrap={shouldWrap} />

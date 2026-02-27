@@ -1,13 +1,13 @@
 import { sum } from 'lodash'
 import { useMemo } from 'react'
-import type { Address } from 'viem'
 import {
   ClaimableReward,
   useClaimableCrv,
   useClaimableRewards,
 } from '@/llamalend/queries/supply/supply-claimable-rewards.query'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { notFalsy } from '@curvefi/prices-api/objects.util'
+import type { Address } from '@primitives/address.utils'
+import { notFalsy } from '@primitives/objects.utils'
 import { UserMarketParams } from '@ui-kit/lib/model'
 import { useTokenUsdRates } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { CRV } from '@ui-kit/utils/address'
@@ -62,8 +62,8 @@ export const useClaimableTokens = <ChainId extends LlamaChainId>(params: UserMar
     claimableTokens,
     totalNotionals,
     isClaimablesLoading: [isClaimableCrvLoading, isClaimableRewardsLoading].some(Boolean),
-    claimablesError: [claimableCrvError, claimableRewardsError].find(Boolean),
+    claimablesError: [claimableCrvError, claimableRewardsError].find(Boolean) ?? null,
     usdRateLoading,
-    usdRateError: usdRateError,
+    usdRateError,
   }
 }

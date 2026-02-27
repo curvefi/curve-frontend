@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import BigNumber from 'bignumber.js'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
-import { recordValues } from '@curvefi/prices-api/objects.util'
 import {
   checkBorrowMoreDetailsLoaded,
   submitBorrowMoreForm,
@@ -35,8 +34,10 @@ import { createVirtualTestnet } from '@cy/support/helpers/tenderly'
 import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
 import { fundErc20, fundEth } from '@cy/support/helpers/tenderly/vnet-fund'
 import { LOAD_TIMEOUT, skipTestsAfterFailure } from '@cy/support/ui'
+import type { Decimal } from '@primitives/decimal.utils'
+import { recordValues } from '@primitives/objects.utils'
 import { LlamaMarketType } from '@ui-kit/types/market'
-import { CRVUSD_ADDRESS, Decimal } from '@ui-kit/utils'
+import { CRVUSD_ADDRESS } from '@ui-kit/utils'
 
 const testCases = recordValues(LlamaMarketType).map((marketType) => oneLoanTestMarket(marketType))
 
@@ -56,9 +57,9 @@ testCases.forEach(
     describe(label, () => {
       skipTestsAfterFailure()
 
-      const debtAfterBorrowMore = new BigNumber(borrow).plus(borrowMore).toString() as Decimal
-      const debtAfterRepay = new BigNumber(debtAfterBorrowMore).minus(repay).toString() as Decimal
-      const debtAfterImproveHealth = new BigNumber(debtAfterRepay).minus(improveHealth).toString() as Decimal
+      const debtAfterBorrowMore = new BigNumber(borrow).plus(borrowMore).toFixed() as Decimal
+      const debtAfterRepay = new BigNumber(debtAfterBorrowMore).minus(repay).toFixed() as Decimal
+      const debtAfterImproveHealth = new BigNumber(debtAfterRepay).minus(improveHealth).toFixed() as Decimal
 
       const privateKey = generatePrivateKey()
       const { address } = privateKeyToAccount(privateKey)
@@ -77,9 +78,11 @@ testCases.forEach(
       let adminRpcUrl: string
 
       let onSuccess: ReturnType<typeof cy.stub>
+      let onPricesUpdated: ReturnType<typeof cy.stub>
 
       beforeEach(() => {
         onSuccess = cy.stub().as('onSuccess')
+        onPricesUpdated = cy.stub().as('onPricesUpdated')
         const vnet = getVirtualNetwork()
         adminRpcUrl = getRpcUrls(vnet).adminRpcUrl
         fundEth({ adminRpcUrl, amountWei: CREATE_LOAN_FUND_AMOUNT, recipientAddresses: [address] })
@@ -96,14 +99,20 @@ testCases.forEach(
           marketId={id}
           userAddress={address}
           onSuccess={onSuccess}
+          onPricesUpdated={onPricesUpdated}
         />
       )
+
+      const expectCallbacks = () => {
+        expect(onSuccess).to.be.calledOnce
+        expect(onPricesUpdated).to.be.called
+      }
 
       it(`creates the loan`, () => {
         cy.mount(<LoanTestWrapper />)
         writeCreateLoanForm({ collateral, borrow, leverageEnabled })
         checkLoanDetailsLoaded({ leverageEnabled })
-        submitCreateLoanForm().then(() => expect(onSuccess).to.be.calledOnce)
+        submitCreateLoanForm().then(expectCallbacks)
       })
 
       it(`borrows more`, () => {
@@ -114,7 +123,7 @@ testCases.forEach(
           expectedFutureDebt: debtAfterBorrowMore,
           leverageEnabled,
         })
-        submitBorrowMoreForm().then(() => expect(onSuccess).to.be.calledOnce)
+        submitBorrowMoreForm().then(expectCallbacks)
         touchBorrowMoreForm() // make sure the new debt is shown
         checkCurrentDebt(debtAfterBorrowMore)
       })
@@ -127,7 +136,7 @@ testCases.forEach(
           debt: { current: debtAfterBorrowMore, future: debtAfterRepay, symbol: debtTokenSymbol },
           leverageEnabled,
         })
-        submitRepayForm().then(() => expect(onSuccess).to.be.calledOnce)
+        submitRepayForm().then(expectCallbacks)
         touchRepayLoanForm() // make sure the new debt is shown
         checkDebt({ current: debtAfterRepay, future: debtAfterRepay, symbol: debtTokenSymbol })
       })
@@ -138,7 +147,7 @@ testCases.forEach(
         checkRepayDetailsLoaded({
           debt: { current: debtAfterRepay, future: debtAfterImproveHealth, symbol: debtTokenSymbol },
         })
-        submitImproveHealthForm().then(() => expect(onSuccess).to.be.calledOnce)
+        submitImproveHealthForm().then(expectCallbacks)
         touchImproveHealthForm() // make sure the new debt is shown
         checkDebt({ current: debtAfterImproveHealth, future: debtAfterImproveHealth, symbol: debtTokenSymbol })
       })

@@ -1,4 +1,4 @@
-import { fromEntries, recordValues } from '@curvefi/prices-api/objects.util'
+import { fromEntries, recordValues } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
 import type { VisibilityGroup } from '@ui-kit/shared/ui/DataTable/visibility.types'
 import { MarketRateType } from '@ui-kit/types/market'
@@ -74,13 +74,13 @@ const createLlamaMarketsColumnOptions = ({
       {
         label: t`Net borrow APR`,
         columns: [LlamaMarketColumnId.NetBorrowRate],
-        active: onlyPositions != MarketRateType.Supply,
+        active: false,
         enabled: true,
       },
       {
         label: t`Borrow APR`,
         columns: [LlamaMarketColumnId.BorrowRate],
-        active: false,
+        active: onlyPositions != MarketRateType.Supply,
         enabled: true,
       },
       {

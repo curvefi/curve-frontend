@@ -1,9 +1,13 @@
 import AcUnitIcon from '@mui/icons-material/AcUnit'
 import WhatshotIcon from '@mui/icons-material/Whatshot'
+import { Stack } from '@mui/material'
 import Switch from '@mui/material/Switch'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { shortenAddress } from '@ui-kit/utils'
 import { ActionInfo } from '../ActionInfo'
+import { ActionInfoSize } from '../ActionInfo/ActionInfo'
+
+const SIZES = ['small', 'medium', 'large'] as ActionInfoSize[]
 
 const meta: Meta<typeof ActionInfo> = {
   title: 'UI Kit/Widgets/ActionInfo',
@@ -59,7 +63,7 @@ const meta: Meta<typeof ActionInfo> = {
     },
     size: {
       control: 'select',
-      options: ['small', 'medium', 'large'],
+      options: SIZES,
       description: 'The size of the component',
     },
     loading: {
@@ -79,7 +83,6 @@ const meta: Meta<typeof ActionInfo> = {
     link: 'https://etherscan.io/address/0x0655977feb2f289a4ab78af67bab0d17aab84367',
     copyValue: '',
     copiedTitle: 'Contract address copied!',
-    size: 'small',
     loading: false,
   },
 }
@@ -91,21 +94,39 @@ export const Default: Story = {
     docs: {
       description: {
         component: 'ActionInfo displays an address with copy and external link functionality',
-        story: 'Default view with small size',
+        story: 'Default view with medium size',
       },
     },
   },
 }
 
-export const Medium: Story = {
+export const AllSizes: Story = {
   args: {
-    size: 'medium',
+    label: 'Collateral',
+    value: '1,234.56',
+    prevValue: '234.56',
+    copyValue: '1,234.56',
+    valueRight: 'crvUSD',
+    size: 'small',
   },
-}
-
-export const Large: Story = {
-  args: {
-    size: 'large',
+  render: (args) => (
+    <Stack gap={4} alignItems="center" width="25rem" sx={{ alignItems: 'stretch' }}>
+      {SIZES.map((size) => (
+        <ActionInfo
+          key={size}
+          {...args}
+          valueLeft={<WhatshotIcon fontSize={size === 'small' ? 'small' : 'medium'} color="error" />}
+          size={size}
+        />
+      ))}
+    </Stack>
+  ),
+  parameters: {
+    docs: {
+      description: {
+        story: 'Shows all sizes of the component',
+      },
+    },
   },
 }
 

@@ -1,109 +1,116 @@
 import { useMemo } from 'react'
 import type { MarketDetailsProps } from '@/llamalend/features/market-details'
-import { useMarketRates } from '@/llamalend/queries/market-rates'
+import {
+  useMarketCapAndAvailable,
+  useMarketTotalCollateral,
+  useMarketMaxLeverage,
+  useMarketRates,
+} from '@/llamalend/queries/market'
+import {
+  getBorrowRateMetrics,
+  getSnapshotBorrowRate,
+  getSnapshotCollateralRebasingYieldRate,
+  LAST_MONTH,
+} from '@/llamalend/rates.utils'
 import { CRVUSD_ADDRESS } from '@/loan/constants'
-import { useMintMarketMaxLeverage } from '@/loan/entities/mint-market-max-leverage'
 import { networks } from '@/loan/networks'
-import { useStore } from '@/loan/store/useStore'
 import { ChainId, Llamma } from '@/loan/types/loan.types'
-import { Address } from '@curvefi/prices-api'
+import type { Address } from '@primitives/address.utils'
 import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import { useCrvUsdSnapshots } from '@ui-kit/entities/crvusd-snapshots'
-import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LlamaMarketType } from '@ui-kit/types/market'
-import { calculateAverageRates } from '@ui-kit/utils/averageRates'
 
 type UseMarketDetailsProps = {
   chainId: ChainId
-  llamma: Llamma | null | undefined
-  llammaId: string
+  market: Llamma | null | undefined
+  marketId: string
 }
 
-const averageMultiplier = 30
-const averageMultiplierString = `${averageMultiplier}D`
-
-export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetailsProps): MarketDetailsProps => {
-  const { isHydrated } = useCurve()
-  const { data: marketRates, isLoading: isMarketRatesLoading } = useMarketRates({ chainId, marketId: llammaId })
+export const useMarketDetails = ({ chainId, market, marketId }: UseMarketDetailsProps): MarketDetailsProps => {
+  const { data: marketRates, isLoading: isMarketRatesLoading } = useMarketRates({ chainId, marketId })
   const blockchainId = networks[chainId]?.id
   const { data: campaigns } = useCampaignsByAddress({
     blockchainId,
-    address: llamma?.controller?.toLocaleLowerCase() as Address,
+    address: market?.controller?.toLocaleLowerCase() as Address,
   })
-  const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId ?? ''])
   const { data: collateralUsdRate, isLoading: collateralUsdRateLoading } = useTokenUsdRate({
     chainId,
-    tokenAddress: llamma?.collateral,
-  })
-  const { data: borrowedUsdRate, isLoading: borrowedUsdRateLoading } = useTokenUsdRate({
-    chainId,
-    tokenAddress: CRVUSD_ADDRESS,
+    tokenAddress: market?.collateral,
   })
   const { data: crvUsdSnapshots, isLoading: isSnapshotsLoading } = useCrvUsdSnapshots({
     blockchainId,
-    contractAddress: llamma?.controller as Address,
+    contractAddress: market?.controller as Address,
     agg: 'day',
-    limit: 30, // fetch last 30 days for 30 day average calcs
+    limit: LAST_MONTH, // fetch last 30 days for 30 day average calcs
   })
-  const { data: maxLeverage, isLoading: isMarketMaxLeverageLoading } = useMintMarketMaxLeverage({
+  const { data: capAndAvailable, isLoading: isCapAndAvailableLoading } = useMarketCapAndAvailable({ chainId, marketId })
+  const { data: totalCollateral, isLoading: isTotalCollateralLoading } = useMarketTotalCollateral({ chainId, marketId })
+  const { data: maxLeverage, isLoading: isMarketMaxLeverageLoading } = useMarketMaxLeverage({
     chainId,
-    marketId: llammaId,
+    marketId,
+    range: market?.minBands ?? 0,
   })
-  const { rate: averageRate, rebasingYield: averageRebasingYield } = useMemo(
+  const borrowApr = marketRates?.borrowApr == null ? null : Number(marketRates.borrowApr)
+  const {
+    averageRate,
+    averageRebasingYield,
+    totalRate: totalBorrowRate,
+    averageTotalRate: totalAverageBorrowRate,
+    rebasingYield: collateralRebasingYieldApr,
+  } = useMemo(
     () =>
-      calculateAverageRates(crvUsdSnapshots, averageMultiplier, {
-        rate: ({ rate }) => rate * 100,
-        rebasingYield: ({ collateralToken }) => collateralToken.rebasingYield,
-      }) ?? { rate: null, rebasingYield: null },
-    [crvUsdSnapshots],
+      getBorrowRateMetrics({
+        borrowRate: borrowApr,
+        snapshots: crvUsdSnapshots,
+        getBorrowRate: getSnapshotBorrowRate,
+        getRebasingYield: getSnapshotCollateralRebasingYieldRate,
+      }),
+    [borrowApr, crvUsdSnapshots],
   )
 
-  const totalAverageBorrowRate = averageRate == null ? null : averageRate - (averageRebasingYield ?? 0)
-  const borrowApr = marketRates?.borrowApr && Number(marketRates.borrowApr)
-  const totalBorrowRate = borrowApr ? borrowApr - (crvUsdSnapshots?.at(-1)?.collateralToken.rebasingYield ?? 0) : null
-  const availableLiquidityValue = loanDetails?.capAndAvailable?.available
-    ? Number(loanDetails.capAndAvailable.available)
-    : null
+  // Query validation only checks param presence (chain/market/user). We still need `!market`
+  // because this hook runs before market metadata is available, and the UI reads market fields.
+  const isMarketMetadataLoading = !market
+
+  const totalCollateralValue = totalCollateral == null ? null : Number(totalCollateral.collateral)
 
   return {
     marketType: LlamaMarketType.Mint,
     blockchainId,
     collateral: {
-      symbol: llamma?.collateralSymbol ?? null,
-      tokenAddress: llamma?.collateral,
-      total: loanDetails?.totalCollateral ? Number(loanDetails.totalCollateral) : null,
-      totalUsdValue: loanDetails?.totalCollateral
-        ? Number(loanDetails.totalCollateral) * Number(collateralUsdRate)
-        : null,
-      usdRate: collateralUsdRate ? Number(collateralUsdRate) : null,
-      loading: collateralUsdRateLoading || loanDetails?.loading || !isHydrated,
+      symbol: market?.collateralSymbol ?? null,
+      tokenAddress: market?.collateral,
+      total: totalCollateralValue,
+      // TODO: add potential collateral value in borrowed token
+      totalUsdValue:
+        totalCollateralValue != null && collateralUsdRate != null ? totalCollateralValue * collateralUsdRate : null,
+      loading: collateralUsdRateLoading || isTotalCollateralLoading || isMarketMetadataLoading,
     },
     borrowToken: {
       symbol: 'crvUSD',
       tokenAddress: CRVUSD_ADDRESS,
-      usdRate: borrowedUsdRate ? Number(borrowedUsdRate) : null,
-      loading: borrowedUsdRateLoading || loanDetails?.loading || !isHydrated,
+      loading: isMarketMetadataLoading,
     },
     borrowRate: {
       rate: borrowApr,
-      averageRate: averageRate,
-      averageRateLabel: averageMultiplierString,
-      rebasingYield: crvUsdSnapshots?.[crvUsdSnapshots.length - 1]?.collateralToken.rebasingYield ?? null,
-      averageRebasingYield: averageRebasingYield ?? null,
+      averageRate,
+      averageRateLabel: `${LAST_MONTH}D`,
+      rebasingYield: collateralRebasingYieldApr,
+      averageRebasingYield,
       totalAverageBorrowRate,
       extraRewards: campaigns,
       totalBorrowRate,
-      loading: isSnapshotsLoading || isMarketRatesLoading || !isHydrated,
-    },
-    maxLeverage: {
-      value: maxLeverage,
-      loading: !llamma || isMarketMaxLeverageLoading || !isHydrated,
+      loading: isSnapshotsLoading || isMarketRatesLoading || isMarketMetadataLoading,
     },
     availableLiquidity: {
-      value: availableLiquidityValue,
-      max: loanDetails?.capAndAvailable?.cap ? Number(loanDetails.capAndAvailable.cap) : null,
-      loading: loanDetails?.loading || !isHydrated,
+      value: capAndAvailable?.available == null ? null : Number(capAndAvailable.available),
+      max: capAndAvailable?.cap == null ? null : Number(capAndAvailable.cap),
+      loading: isCapAndAvailableLoading || isMarketMetadataLoading,
+    },
+    maxLeverage: {
+      value: maxLeverage == null ? null : Number(maxLeverage),
+      loading: isMarketMaxLeverageLoading || isMarketMetadataLoading,
     },
   }
 }

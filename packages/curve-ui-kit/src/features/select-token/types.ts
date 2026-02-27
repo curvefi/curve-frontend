@@ -1,4 +1,4 @@
-import { Address } from '@ui-kit/utils'
+import type { Address } from '@primitives/address.utils'
 
 export type TokenOption = {
   address: Address

@@ -10,7 +10,8 @@
       "@external-rewards": ["../../external-rewards/src/index.ts"],
       "@external-rewards/*": ["../../external-rewards/src/*"],
       "@curvefi/prices-api": ["../../prices-api/src/index.ts"],
-      "@curvefi/prices-api/*": ["../../prices-api/src/*"]
+      "@curvefi/prices-api/*": ["../../prices-api/src/*"],
+      "@primitives/*": ["../../primitives/src/*"]
     }
   },
   "include": ["src", "vite.config.mts", "../ui/src/globals.d.ts", "./src/types/*.d.ts"]

@@ -2,9 +2,10 @@ import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.typ
 import type { DepositOptions } from '@/llamalend/mutations/deposit.mutation'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { notFalsy } from '@curvefi/prices-api/objects.util'
 import Button from '@mui/material/Button'
+import { notFalsy } from '@primitives/objects.utils'
 import { t } from '@ui-kit/lib/i18n'
+import { q } from '@ui-kit/types/util'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
 import { useDepositForm } from '../hooks/useDepositForm'
@@ -56,7 +57,7 @@ export const DepositForm = <ChainId extends IChainId>({
         blockchainId={network.id}
         name="depositAmount"
         form={form}
-        max={max}
+        max={q(max)}
         testId={`${TEST_ID_PREFIX}-input`}
         network={network}
       />

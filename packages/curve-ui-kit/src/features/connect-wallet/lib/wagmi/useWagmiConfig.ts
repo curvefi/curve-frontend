@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import type { Chain } from 'viem'
 import { generatePrivateKey } from 'viem/accounts'
-import { mapRecord, recordValues } from '@curvefi/prices-api/objects.util'
+import { mapRecord, recordValues } from '@primitives/objects.utils'
 import type { NetworkMapping } from '@ui/utils'
 import { Chain as ChainEnum, isCypress, noCypressTestConnector } from '@ui-kit/utils'
 import { createChainFromNetwork } from './chains'

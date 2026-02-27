@@ -10,13 +10,15 @@ import {
 } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { notFalsy } from '@curvefi/prices-api/objects.util'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
+import type { Decimal } from '@primitives/decimal.utils'
+import { notFalsy } from '@primitives/objects.utils'
+import { joinButtonText } from '@primitives/string.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
-import { q } from '@ui-kit/types/util'
-import { isDevelopment, joinButtonText } from '@ui-kit/utils'
+import { q, type Range } from '@ui-kit/types/util'
+import { isDevelopment } from '@ui-kit/utils'
 import { updateForm } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts, HighPriceImpactAlert } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
@@ -30,6 +32,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
   enabled,
   onSuccess,
   fromWallet = isDevelopment, // todo: delete this if users do not complain about it, for now dev-only feature
+  onPricesUpdated,
 }: {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
@@ -37,6 +40,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
   enabled?: boolean
   onSuccess?: OnBorrowedMore
   fromWallet?: boolean
+  onPricesUpdated: (prices: Range<Decimal> | undefined) => void
 }) => {
   const network = networks[chainId]
   const {
@@ -54,13 +58,13 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     isApproved,
     formErrors,
     max,
-    health,
     leverageValue,
   } = useBorrowMoreForm({
     market,
     network,
     enabled,
     onSuccess,
+    onPricesUpdated,
   })
 
   const isLeverageEnabled = isLeverageBorrowMore(market, values.leverageEnabled)
@@ -70,6 +74,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     (event: ChangeEvent<HTMLInputElement>) => updateForm(form, { leverageEnabled: event.target.checked }),
     [form],
   )
+
   return (
     <Form
       {...form}
@@ -83,7 +88,6 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
           networks={networks}
           onSlippageChange={(value) => updateForm(form, { slippage: value })}
           leverageEnabled={values.leverageEnabled}
-          health={health}
           leverageValue={leverageValue}
         />
       }
@@ -96,7 +100,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
             blockchainId={network.id}
             name="userCollateral"
             form={form}
-            max={{ ...max.userCollateral, fieldName: max.userCollateral.field }}
+            max={{ ...q(max.userCollateral), fieldName: max.userCollateral.field }}
             testId="borrow-more-input-collateral"
             network={network}
           />
@@ -108,7 +112,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
             blockchainId={network.id}
             name="userBorrowed"
             form={form}
-            max={{ ...max.userBorrowed, fieldName: max.userBorrowed.field }}
+            max={{ ...q(max.userBorrowed), fieldName: max.userBorrowed.field }}
             testId="borrow-more-input-user-borrowed"
             network={network}
           />

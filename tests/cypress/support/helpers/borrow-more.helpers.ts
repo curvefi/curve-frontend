@@ -1,7 +1,6 @@
-import BigNumber from 'bignumber.js'
-import type { Decimal } from '@ui-kit/utils'
+import type { Decimal } from '@primitives/decimal.utils'
 import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '../ui'
-import { checkCurrentDebt, checkDebt, getActionValue, touchInput } from './llamalend/action-info.helpers'
+import { checkDebt, getActionValue, touchInput } from './llamalend/action-info.helpers'
 
 type BorrowMoreField = 'collateral' | 'user-borrowed' | 'debt'
 
@@ -40,22 +39,4 @@ export function submitBorrowMoreForm() {
   return cy
     .get('[data-testid="toast-success"]', TRANSACTION_LOAD_TIMEOUT)
     .contains('Borrowed more!', TRANSACTION_LOAD_TIMEOUT)
-}
-
-export function testBorrowMoreForm(
-  debt: Decimal,
-  before: Decimal,
-  leverageEnabled: boolean,
-  onSuccess: ReturnType<typeof cy.stub>,
-) {
-  const after = new BigNumber(before).plus(debt).toString() as Decimal
-  writeBorrowMoreForm({ debt: debt })
-  checkBorrowMoreDetailsLoaded({
-    expectedCurrentDebt: before,
-    expectedFutureDebt: after,
-    leverageEnabled,
-  })
-  submitBorrowMoreForm().then(() => expect(onSuccess).to.be.calledOnce)
-  checkCurrentDebt(after)
-  return after
 }

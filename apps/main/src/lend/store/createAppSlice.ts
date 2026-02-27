@@ -5,7 +5,7 @@ import { StoreApi } from 'zustand'
 import { prefetchMarkets } from '@/lend/entities/chain/chain-query'
 import type { State } from '@/lend/store/useStore'
 import { Api, Wallet } from '@/lend/types/lend.types'
-import { recordEntries } from '@curvefi/prices-api/objects.util'
+import { recordEntries } from '@primitives/objects.utils'
 import { log } from '@ui-kit/lib/logging'
 
 export type SliceKey = keyof State | ''

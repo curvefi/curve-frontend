@@ -1,10 +1,10 @@
 import BigNumber from 'bignumber.js'
-import { useUserBalances } from '@/llamalend/queries/user-balances.query'
-import { useUserState } from '@/llamalend/queries/user-state.query'
+import { useUserBalances, useUserState } from '@/llamalend/queries/user'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import type { Decimal } from '@primitives/decimal.utils'
 import type { UserMarketParams } from '@ui-kit/lib/model'
 import type { Query } from '@ui-kit/types/util'
-import { decimal, type Decimal } from '@ui-kit/utils'
+import { decimal } from '@ui-kit/utils'
 
 const CLOSE_POSITION_SAFETY_BUFFER = 1.0001 // 0.01% safety margin
 

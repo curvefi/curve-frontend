@@ -1,5 +1,5 @@
+import { fetchJson as fetch, FetchError } from '@primitives/fetch.utils'
 import { getHost, type Options } from '..'
-import { fetchJson as fetch, FetchError } from '../fetch'
 import type * as Models from './models'
 import * as Parsers from './parsers'
 import type * as Responses from './responses'

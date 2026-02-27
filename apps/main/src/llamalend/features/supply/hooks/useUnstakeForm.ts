@@ -1,11 +1,10 @@
 import { useEffect, useMemo } from 'react'
 import { useForm } from 'react-hook-form'
-import type { Address } from 'viem'
 import { useConnection } from 'wagmi'
 import { getTokens, hasVault } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, LlamaNetwork } from '@/llamalend/llamalend.types'
 import { type UnstakeOptions, useUnstakeMutation } from '@/llamalend/mutations/unstake.mutation'
-import { useUserBalances } from '@/llamalend/queries/user-balances.query'
+import { useUserBalances } from '@/llamalend/queries/user'
 import {
   unstakeFormValidationSuite,
   UnstakeParams,
@@ -13,6 +12,7 @@ import {
 } from '@/llamalend/queries/validation/supply.validation'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { vestResolver } from '@hookform/resolvers/vest'
+import type { Address } from '@primitives/address.utils'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { t } from '@ui-kit/lib/i18n'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'

@@ -1,4 +1,5 @@
-import type { Address, Chain } from '@curvefi/prices-api'
+import type { Chain } from '@curvefi/prices-api'
+import type { Address } from '@primitives/address.utils'
 import { FieldsOf } from '@ui-kit/lib'
 
 export type ChainQuery<T = number> = { chainId: T }

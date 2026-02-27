@@ -1,6 +1,6 @@
 import type { Suite } from 'vest'
 import { CB } from 'vest-utils'
-import { FetchError } from '@curvefi/prices-api/fetch'
+import { FetchError } from '@primitives/fetch.utils'
 import {
   QueryFunctionContext,
   queryOptions,
@@ -121,7 +121,7 @@ export function queryFactory<
         !dependencies?.(params).some((key) => !queryClient.getQueryData(key)),
       retry: (failureCount, error) =>
         !(error instanceof NoRetryError) && // Don't retry queries specifically marked as such
-        !(error instanceof FetchError && error.status === 404) && // Or 404 FetchErrors (from @curve-fi/prices-api)
+        !(error instanceof FetchError && error.status === 404) && // Or 404 FetchErrors (from @curvefi/primitives)
         failureCount < 3,
       ...options,
     })

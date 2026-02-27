@@ -1,10 +1,11 @@
+import type { Decimal } from '@primitives/decimal.utils'
 import type { UseQueryOptions } from '@tanstack/react-query'
 import { Query } from '@ui-kit/types/util'
-import { Decimal, decimalMin } from '@ui-kit/utils'
+import { decimalMin } from '@ui-kit/utils'
 import { QueryOptionsArray, QueryResultsArray } from './types'
 
 export const combineQueryState = (...queries: (Query<unknown> | undefined)[]) => ({
-  error: queries.find((x) => x?.error)?.error,
+  error: queries.find((x) => x?.error)?.error ?? null,
   loading: queries.some((x) => x?.isLoading),
 })
 
@@ -14,7 +15,7 @@ export const combineQueriesMeta = <T extends QueryOptionsArray>(results: QueryRe
   isPending: results.some((result) => result.isPending),
   isError: results.some((result) => result.isError),
   isFetching: results.some((result) => result.isFetching),
-  error: results.find((result) => result.error)?.error,
+  error: results.find((result) => result.error)?.error ?? null,
 })
 
 /** Combines the data and metadata of multiple queries into a single object. */
@@ -33,5 +34,5 @@ export const combineQueriesToObject = <TData, K extends string[]>(
 export const useQueryMinimum = (...queries: Query<Decimal>[]) => ({
   data: queries.some((d) => d.data == null) ? undefined : decimalMin(...queries.map((d) => d.data!)),
   isLoading: queries.some((d) => d?.isLoading),
-  error: queries.map((d) => d?.error).find(Boolean),
+  error: queries.map((d) => d?.error).find(Boolean) ?? null,
 })

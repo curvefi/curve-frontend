@@ -4,13 +4,13 @@ import type { FormEstGas } from '@/lend/components/PageLendMarket/types'
 import { DEFAULT_FORM_EST_GAS } from '@/lend/components/PageLendMarket/utils'
 import type { FormStatus, FormValues } from '@/lend/components/PageVault/VaultWithdrawRedeem/types'
 import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/lend/components/PageVault/VaultWithdrawRedeem/utils'
-import { invalidateAllUserBorrowDetails } from '@/lend/entities/user-loan-details'
 import { apiLending, helpers } from '@/lend/lib/apiLending'
 import { networks } from '@/lend/networks'
 import { _getMaxActiveKey } from '@/lend/store/createVaultDepositMintSlice'
 import type { State } from '@/lend/store/useStore'
 import { Api, ChainId, FutureRates, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { updateUserEventsApi } from '@/llamalend/llama.utils'
+import { invalidateAllUserMarketDetails } from '@/llamalend/queries/user/invalidation'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 
@@ -158,7 +158,11 @@ export const createVaultWithdrawRedeem = (
         void Promise.all([
           get().user.fetchUserMarketBalances(api, market, true),
           get()[sliceKey].fetchMax(api, formType, market),
-          invalidateAllUserBorrowDetails({ chainId: api.chainId, marketId: market.id }),
+          invalidateAllUserMarketDetails({
+            chainId: api.chainId,
+            marketId: market.id,
+            userAddress: api.signerAddress,
+          }),
         ])
         get()[sliceKey].setStateByKeys(
           merge(cloneDeep(DEFAULT_STATE), {

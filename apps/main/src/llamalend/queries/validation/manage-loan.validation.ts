@@ -6,7 +6,6 @@ import {
   validateLeverageValuesSupported,
   validateMaxBorrowed,
   validateMaxCollateral,
-  validateSlippage,
   validateUserCollateral,
 } from '@/llamalend/queries/validation/borrow-fields.validation'
 import type {
@@ -16,22 +15,24 @@ import type {
   RepayIsFullParams,
   RepayParams,
 } from '@/llamalend/queries/validation/manage-loan.types'
-import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
+import type { Decimal } from '@primitives/decimal.utils'
+import { createValidationSuite } from '@ui-kit/lib'
+import { validateSlippage } from '@ui-kit/lib/model'
 import { chainValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
 import { llamaApiValidationGroup } from '@ui-kit/lib/model/query/curve-api-validation'
 import { marketIdValidationGroup, marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
 import type { UserMarketParams } from '@ui-kit/lib/model/query/root-keys'
 import { userAddressValidationGroup } from '@ui-kit/lib/model/query/user-address-validation'
-import { Decimal } from '@ui-kit/utils'
 
-export type CollateralForm = FieldsOf<{ userCollateral: Decimal; maxCollateral: Decimal }>
-
-export type RepayForm = {
-  stateCollateral: Decimal | undefined
+export type CollateralForm = {
   userCollateral: Decimal | undefined
+  maxCollateral: Decimal | undefined
+}
+
+export type RepayForm = CollateralForm & {
+  stateCollateral: Decimal | undefined
   userBorrowed: Decimal | undefined
   maxStateCollateral: Decimal | undefined
-  maxCollateral: Decimal | undefined
   maxBorrowed: Decimal | undefined
   isFull: boolean
   slippage: Decimal
@@ -157,7 +158,7 @@ export const repayValidationGroup = <IChainId extends number>(
   validateRepayBorrowedField(userBorrowed)
   validateRepayHasValue(stateCollateral, userCollateral, userBorrowed)
   validateRepayFieldsForMarket(marketId, stateCollateral, userCollateral, userBorrowed)
-  validateSlippage(slippage)
+  validateSlippage({ slippage })
   validateLeverageSupported(marketId, leverageRequired)
 }
 
@@ -183,7 +184,7 @@ export const repayFormValidationSuite = createValidationSuite(
     validateMaxCollateral(userCollateral, maxCollateral)
     validateRepayHasValue(stateCollateral, userCollateral, userBorrowed)
     validateIsFull(isFull)
-    validateSlippage(slippage)
+    validateSlippage({ slippage })
   },
 )
 
@@ -200,6 +201,6 @@ export const closeLoanValidationSuite = createValidationSuite(
     llamaApiValidationGroup({ chainId })
     marketIdValidationGroup({ marketId })
     userAddressValidationGroup({ userAddress })
-    validateSlippage(slippage)
+    validateSlippage({ slippage })
   },
 )

@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react'
 import type { FieldPath, FieldPathValue, FieldValues, FormState, Path, UseFormReturn } from 'react-hook-form'
-import { notFalsy, recordEntries } from '@curvefi/prices-api/objects.util'
+import { notFalsy, recordEntries } from '@primitives/objects.utils'
 
 export type FormUpdates<TFieldValues extends FieldValues> = Partial<{
   [K in FieldPath<TFieldValues>]: FieldPathValue<TFieldValues, K>
@@ -17,9 +17,11 @@ export function updateForm<TFieldValues extends FieldValues>(
   form: UseFormReturn<TFieldValues>,
   updates: FormUpdates<TFieldValues>,
 ): void {
-  recordEntries(updates).forEach(([field, value]) =>
+  const changes = recordEntries(updates).filter(([field, value]) => form.getValues(field) !== value)
+  if (!changes.length) return // no changes, skip revalidation
+  changes.forEach(([field, value]) =>
     // eslint-disable-next-line no-restricted-syntax
-    form.setValue(field, value, {
+    form.setValue(field as Path<TFieldValues>, value, {
       shouldValidate: false, // we revalidate just below.
       shouldDirty: true,
       shouldTouch: true,

@@ -454,6 +454,6 @@ export const createApprovedEstimateGasHook =
     return {
       data,
       isLoading: [isApprovedLoading, approveLoading, actionLoading, conversionLoading].some(Boolean),
-      error: [isApprovedError, approveError, actionError, estimateError].find(Boolean) as Error | null | undefined,
+      error: [isApprovedError, approveError, actionError, estimateError].find(Boolean) ?? null,
     }
   }

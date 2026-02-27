@@ -1,5 +1,6 @@
-import { getHost, type Options, type Chain, type Address } from '..'
-import { fetchJson as fetch } from '../fetch'
+import type { Address } from '@primitives/address.utils'
+import { fetchJson as fetch } from '@primitives/fetch.utils'
+import { getHost, type Options, type Chain } from '..'
 import * as Parsers from './parsers'
 import type * as Responses from './responses'
 

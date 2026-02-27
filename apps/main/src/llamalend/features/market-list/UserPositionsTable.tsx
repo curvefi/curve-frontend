@@ -1,13 +1,12 @@
 import lodash from 'lodash'
-import { useCallback, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { PositionsEmptyState } from '@/llamalend/constants'
 import { ExpandedState } from '@tanstack/react-table'
 import { useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
-import { useColumnFilters } from '@ui-kit/shared/ui/DataTable/hooks/useColumnFilters'
-import { useGlobalFilter } from '@ui-kit/shared/ui/DataTable/hooks/useGlobalFilter'
+import { useFilters } from '@ui-kit/shared/ui/DataTable/hooks/useFilters'
 import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
 import { TableSearchField } from '@ui-kit/shared/ui/DataTable/TableSearchField'
 import { MarketRateType } from '@ui-kit/types/market'
@@ -17,7 +16,7 @@ import { LlamaListChips } from './chips/LlamaListChips'
 import { DEFAULT_SORT_BORROW, DEFAULT_SORT_SUPPLY } from './columns'
 import { LLAMA_MARKET_COLUMNS } from './columns'
 import { LlamaMarketColumnId } from './columns'
-import { llamaGlobalFilterFn } from './filters/llamaGlobalFilter'
+import { useLlamaGlobalFilterFn } from './filters/llamaGlobalFilter'
 import { useLlamaTableVisibility } from './hooks/useLlamaTableVisibility'
 import { LendingMarketsFilters } from './LendingMarketsFilters'
 import { LlamaMarketExpandedPanel } from './LlamaMarketExpandedPanel'
@@ -44,42 +43,39 @@ const SORT_QUERY_FIELD = {
 const getEmptyState = (isError: boolean, hasPositions: boolean): PositionsEmptyState =>
   isError ? PositionsEmptyState.Error : hasPositions ? PositionsEmptyState.Filtered : PositionsEmptyState.NoPositions
 
-const useDefaultUserFilter = (type: MarketRateType) =>
-  useMemo(() => [{ id: LlamaMarketColumnId.UserHasPositions, value: type }], [type])
-
 export type UserPositionsTableProps = {
   onReload: () => void
   result: LlamaMarketsResult | undefined
   isError: boolean
   loading: boolean
   tab: MarketRateType
+  filters: ReturnType<typeof useFilters<LlamaMarketColumnId>>
 }
 
 const pagination = { pageIndex: 0, pageSize: 50 }
 const DEFAULT_VISIBLE_ROWS = 3
 
-export const UserPositionsTable = ({ onReload, result, loading, isError, tab }: UserPositionsTableProps) => {
-  const { markets: data = [], userHasPositions } = result ?? {}
-  const userData = useMemo(() => data.filter((market) => market.userHasPositions?.[tab]), [data, tab])
-
-  const defaultFilters = useDefaultUserFilter(tab)
-  const title = LOCAL_STORAGE_KEYS[tab]
-  const { globalFilter, setGlobalFilter, resetGlobalFilter } = useGlobalFilter('search-user-positions')
-  const {
+export const UserPositionsTable = ({
+  onReload,
+  result,
+  loading,
+  isError,
+  tab,
+  filters: {
+    globalFilter,
+    setGlobalFilter,
     columnFilters,
     columnFiltersById,
     setColumnFilter,
-    resetFilters: resetColumnFilters,
-  } = useColumnFilters({
-    title,
-    columns: LlamaMarketColumnId,
+    resetFilters,
     defaultFilters,
-    scope: tab.toLowerCase(),
-  })
-  const resetFilters = useCallback(() => {
-    resetColumnFilters()
-    resetGlobalFilter()
-  }, [resetColumnFilters, resetGlobalFilter])
+  },
+}: UserPositionsTableProps) => {
+  const { markets: data = [], userHasPositions } = result ?? {}
+  const userData = useMemo(() => data.filter((market) => market.userHasPositions?.[tab]), [data, tab])
+
+  const title = LOCAL_STORAGE_KEYS[tab]
+  const globalFilterFn = useLlamaGlobalFilterFn(userData, globalFilter)
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT[tab], SORT_QUERY_FIELD[tab])
   const { columnSettings, columnVisibility, sortField, toggleVisibility } = useLlamaTableVisibility(title, sorting, tab)
   const [expanded, onExpandedChange] = useState<ExpandedState>({})
@@ -92,7 +88,7 @@ export const UserPositionsTable = ({ onReload, result, loading, isError, tab }: 
     initialState: { pagination },
     onSortingChange,
     onExpandedChange,
-    globalFilterFn: llamaGlobalFilterFn,
+    globalFilterFn,
     ...getTableOptions(result),
   })
 
@@ -133,7 +129,6 @@ export const UserPositionsTable = ({ onReload, result, loading, isError, tab }: 
               hiddenMarketCount={result ? userData.length - table.getFilteredRowModel().rows.length : undefined}
               hasFilters={columnFilters.length > 0 && !isEqual(columnFilters, defaultFilters)}
               resetFilters={resetFilters}
-              userHasPositions={userHasPositions}
               onSortingChange={onSortingChange}
               sortField={sortField}
               data={userData}

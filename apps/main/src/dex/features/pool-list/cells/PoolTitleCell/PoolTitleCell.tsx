@@ -4,14 +4,14 @@ import { styled, type IStyledComponent } from 'styled-components'
 import { usePoolAlert } from '@/dex/hooks/usePoolAlert'
 import { useTokenAlert } from '@/dex/hooks/useTokenAlert'
 import Stack from '@mui/material/Stack'
+import type { Address } from '@primitives/address.utils'
 import type { CellContext } from '@tanstack/react-table'
 import { Icon } from '@ui/Icon'
 import type { IconProps } from '@ui/Icon/Icon'
-import { Chip } from '@ui/Typography/Chip'
 import { t } from '@ui-kit/lib/i18n'
+import { UserPositionIndicator } from '@ui-kit/shared/ui/DataTable/UserPositionIndicator'
 import { TokenIcons } from '@ui-kit/shared/ui/TokenIcons'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import type { Address } from '@ui-kit/utils'
 import { MarketTitle } from '@ui-kit/widgets/MarketTitle'
 import type { PoolListItem } from '../../types'
 import { PoolAlertBadge } from './PoolAlertBadge'
@@ -34,11 +34,7 @@ export const PoolTitleCell = ({
 
   return (
     <Stack direction="row" sx={{ height: Height.row }}>
-      {poolData.hasPosition && (
-        <Chip tooltip={t`You have a balance in this pool`} tooltipProps={{ placement: 'top-start' }}>
-          <StyledIcon name="CurrencyDollar" size={16} />
-        </Chip>
-      )}
+      {poolData.hasPosition && <UserPositionIndicator tooltipTitle={t`You have a balance in this pool`} />}
       <Stack direction="row" alignItems="center" gap={Spacing.sm}>
         <TokenIcons blockchainId={network} tokens={tokenList} />
         <Stack direction="column">

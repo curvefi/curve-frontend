@@ -1,18 +1,18 @@
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import type { Decimal } from '@primitives/decimal.utils'
 import type { FieldsOf } from '@ui-kit/lib'
 import type { MarketQuery } from '@ui-kit/lib/model'
 import type { MakeOptional } from '@ui-kit/types/util'
-import { Decimal } from '@ui-kit/utils'
 
-export { type Token } from '@ui-kit/types/common'
 /** Complete create loan form with all fields already filled in (after validation) */
 type CompleteCreateLoanForm = {
   userCollateral: Decimal
-  userBorrowed: Decimal // currently hidden and always 0
+  userBorrowed: Decimal // currently hidden and always 0, this can be used to leverage by depositing debt token
   debt: Decimal
   range: number
   slippage: Decimal
   leverageEnabled: boolean
+  routeId: string | undefined
 }
 
 // todo: get rid of this, it's incorrect. We only did it because it was easier to run the validation suite
@@ -21,13 +21,9 @@ type CalculatedValues = { maxDebt: Decimal | undefined; maxCollateral: Decimal |
 /** Create loan form as used in the UI, with some fields still optional or being filled in */
 export type CreateLoanForm = MakeOptional<CompleteCreateLoanForm, 'debt' | 'userCollateral'> & CalculatedValues
 
-/** Fields of the create loan form that are passed back to the origin application for synchronization */
-export type CreateLoanFormExternalFields = Omit<CreateLoanForm, keyof CalculatedValues>
-/** Callback type to pass on the external fields of the create loan form */
-export type OnCreateLoanFormUpdate = (form: CreateLoanFormExternalFields) => Promise<void>
-
 /** Full query type for create loan queries, including pool identification and all form fields */
 export type CreateLoanFormQuery<T = IChainId> = MarketQuery<T> & CompleteCreateLoanForm
+
 /** Fields of the create loan form query before validation */
 export type CreateLoanFormQueryParams<T = IChainId> = FieldsOf<CreateLoanFormQuery<T>>
 

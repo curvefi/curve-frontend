@@ -1,3 +1,4 @@
+import { BorrowAprMetric } from '@/llamalend/widgets/BorrowAprMetric'
 import { Box, CardHeader } from '@mui/material'
 import { formatNumber, FORMAT_OPTIONS } from '@ui/utils/utilsFormat'
 import { useIntegratedLlamaHeader } from '@ui-kit/hooks/useFeatureFlags'
@@ -14,7 +15,6 @@ import {
   MaxLeverageTooltip,
   TotalCollateralTooltip,
   UtilizationTooltip,
-  MarketNetBorrowAprTooltipContent,
   MarketSupplyRateTooltipContent,
   TooltipOptions,
   type MarketDetailsProps,
@@ -60,39 +60,7 @@ export const MarketDetails = ({
         }}
       >
         {!showPageHeader && (
-          <Metric
-            size={'medium'}
-            label={t`Net borrow APR`}
-            value={borrowRate?.totalBorrowRate}
-            loading={borrowRate?.loading}
-            valueOptions={{ unit: 'percentage' }}
-            notional={
-              borrowRate?.totalAverageBorrowRate
-                ? {
-                    value: borrowRate.totalAverageBorrowRate,
-                    unit: { symbol: `% ${borrowRate.averageRateLabel} Avg`, position: 'suffix' },
-                  }
-                : undefined
-            }
-            valueTooltip={{
-              title: t`Net borrow APR`,
-              body: (
-                <MarketNetBorrowAprTooltipContent
-                  marketType={marketType}
-                  borrowRate={borrowRate?.rate}
-                  totalBorrowRate={borrowRate?.totalBorrowRate}
-                  totalAverageBorrowRate={borrowRate?.totalAverageBorrowRate}
-                  averageRate={borrowRate?.averageRate}
-                  periodLabel={borrowRate?.averageRateLabel}
-                  extraRewards={borrowRate?.extraRewards ?? []}
-                  rebasingYield={borrowRate?.rebasingYield}
-                  collateralSymbol={collateral?.symbol}
-                  isLoading={borrowRate?.loading}
-                />
-              ),
-              ...TooltipOptions,
-            }}
-          />
+          <BorrowAprMetric marketType={marketType} borrowRate={borrowRate} collateralSymbol={collateral?.symbol} />
         )}
         {!showPageHeader && supplyRate && (
           <Metric

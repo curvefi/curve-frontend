@@ -2,11 +2,12 @@ import { clamp, sortBy } from 'lodash'
 import { useCallback, useMemo } from 'react'
 import { TextFieldProps } from '@mui/material'
 import Stack from '@mui/material/Stack'
+import type { Decimal } from '@primitives/decimal.utils'
 import { useDebounce } from '@ui-kit/hooks/useDebounce'
 import { SliderSize } from '@ui-kit/themes/components/slider/types'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { decimal, type Decimal } from '@ui-kit/utils'
+import { decimal } from '@ui-kit/utils'
 import { NumericTextField, NumericTextFieldProps } from './NumericTextField'
 import { Slider, type SliderProps } from './Slider'
 
@@ -123,11 +124,11 @@ export const SliderInput = <T extends Decimal | DecimalRangeValue>({
   )
 
   /** Internal debounced value state for slider and inputs during drag and typing */
-  const [internalValue, setInternalValue, cancelDebounce] = useDebounce<T>(
-    value,
+  const [internalValue, setInternalValue, cancelDebounce] = useDebounce<T>({
+    initialValue: value,
     debounceMs,
-    useCallback((nextValue) => onChange(clampDecimal(nextValue, min, max)), [onChange, min, max]),
-  )
+    callback: useCallback((nextValue) => onChange(clampDecimal(nextValue, min, max)), [onChange, min, max]),
+  })
 
   /** The current display values for slider and inputs */
   const displayValue = useMemo((): T => internalValue ?? value, [internalValue, value])

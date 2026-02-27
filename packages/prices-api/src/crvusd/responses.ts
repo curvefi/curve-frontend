@@ -1,4 +1,5 @@
-import type { Address, Chain, PaginationMeta } from '..'
+import type { Address, Token } from '@primitives/address.utils'
+import type { Chain, PaginationMeta } from '..'
 
 export type GetMarketsResponse = {
   data: {
@@ -25,11 +26,13 @@ export type GetMarketsResponse = {
       symbol: string
       address: Address
       rebasing_yield: number | null
+      rebasing_yield_apr: number | null
     }
     stablecoin_token: {
       symbol: string
       address: Address
       rebasing_yield: number | null
+      rebasing_yield_apr: number | null
     }
     created_at: string
     max_ltv: number
@@ -44,6 +47,8 @@ export type GetAllMarketsResponse = {
 export type GetSnapshotsResponse = {
   data: {
     rate: number
+    borrow_apy: number
+    borrow_apr: number
     minted: number
     redeemed: number
     total_collateral: number
@@ -68,11 +73,13 @@ export type GetSnapshotsResponse = {
       symbol: string
       address: string
       rebasing_yield: number
+      rebasing_yield_apr: number
     }
     stablecoin_token: {
       symbol: string
       address: string
       rebasing_yield: number
+      rebasing_yield_apr: number
     }
     max_ltv: number
   }[]
@@ -83,10 +90,7 @@ export type GetKeepersResponse = {
     address: Address
     pool: string
     pool_address: Address
-    pair: {
-      symbol: string
-      address: Address
-    }[]
+    pair: Token[]
     active: boolean
     total_debt: number
     total_profit: number

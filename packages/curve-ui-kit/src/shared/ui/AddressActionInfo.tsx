@@ -1,9 +1,7 @@
 import { ReactNode } from 'react'
-import Button from '@mui/material/Button'
-import LinkMui from '@mui/material/Link'
+import { Typography } from '@mui/material'
 import { BaseConfig, scanAddressPath } from '@ui/utils'
 import { shortenAddress } from '../../utils'
-import { ArrowTopRightIcon } from '../icons/ArrowTopRightIcon'
 import { ActionInfo } from './ActionInfo'
 
 export interface AddressActionInfoProps {
@@ -17,19 +15,9 @@ export const AddressActionInfo = ({ network, title, address, isBorderBottom }: A
   <ActionInfo
     label={title}
     value={
-      address && (
-        <Button
-          component={LinkMui}
-          href={network ? scanAddressPath(network, address) : undefined}
-          target="_blank"
-          color="navigation"
-          variant="link"
-          endIcon={<ArrowTopRightIcon />}
-          size="extraSmall"
-        >
-          {shortenAddress(address)}
-        </Button>
-      )
+      /** TODO: Clarify: The design has this typography component as as semi-bold,
+       * should Bold typography variants have an updated font-weight? 🤔 */
+      <Typography variant="bodyMBold">{shortenAddress(address)}</Typography>
     }
     copyValue={address}
     sx={{
@@ -38,5 +26,6 @@ export const AddressActionInfo = ({ network, title, address, isBorderBottom }: A
         borderBottom: (t) => `1px solid ${t.palette.divider}`,
       }),
     }}
+    link={network && address ? scanAddressPath(network, address) : undefined}
   />
 )

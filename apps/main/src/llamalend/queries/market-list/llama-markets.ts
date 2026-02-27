@@ -1,8 +1,10 @@
 import { countBy } from 'lodash'
 import { useCallback, useMemo } from 'react'
 import { ethAddress } from 'viem'
+import { computeTotalRate } from '@/llamalend/rates.utils'
 import { type Chain } from '@curvefi/prices-api'
-import { type PartialRecord, recordValues } from '@curvefi/prices-api/objects.util'
+import type { Address } from '@primitives/address.utils'
+import { type PartialRecord, recordValues } from '@primitives/objects.utils'
 import { useQueries } from '@tanstack/react-query'
 import type { QueriesResults } from '@tanstack/react-query'
 import { combineCampaigns, type CampaignPoolRewards } from '@ui-kit/entities/campaigns'
@@ -12,7 +14,6 @@ import { combineQueriesMeta, PartialQueryResult } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { CRVUSD_ROUTES, getInternalUrl, LEND_ROUTES } from '@ui-kit/shared/routes'
 import { type ExtraIncentive, LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
-import { type Address } from '@ui-kit/utils'
 import { getFavoriteMarketOptions } from './favorite-markets'
 import {
   getLendingVaultsOptions,
@@ -34,6 +35,7 @@ export type AssetDetails = {
   balance: number | null
   balanceUsd: number | null
   rebasingYield: number | null
+  rebasingYieldApr: number | null
 }
 
 export type LlamaMarket = {
@@ -190,9 +192,7 @@ const convertLendingVault = (
     borrowedBalanceUsd,
     collateralBalanceUsd,
     borrowApy,
-    borrowTotalApy,
     borrowApr,
-    borrowTotalApr,
     aprLend: lendApr,
     aprLendCrv0Boost: lendCrvAprUnboosted,
     aprLendCrvMaxBoost: lendCrvAprBoosted,
@@ -232,7 +232,7 @@ const convertLendingVault = (
     utilizationPercent: totalAssetsUsd && (100 * totalDebtUsd) / totalAssetsUsd,
     debtCeiling: null, // debt ceiling is not applicable for lend markets
     liquidityUsd: totalAssetsUsd - totalDebtUsd,
-    totalDebtUsd: totalDebtUsd,
+    totalDebtUsd,
     totalCollateralUsd: collateralBalanceUsd + borrowedBalanceUsd,
     tvl:
       borrowedBalanceUsd + // collateral converted to crvusd
@@ -248,9 +248,9 @@ const convertLendingVault = (
       lendTotalApyMaxBoosted:
         lendApr + (borrowedToken?.rebasingYield ?? 0) + totalExtraRewardApr + (lendCrvAprBoosted ?? 0),
       borrowApy,
-      borrowTotalApy,
+      borrowTotalApy: computeTotalRate(borrowApy, collateralToken.rebasingYield ?? 0),
       borrowApr,
-      borrowTotalApr,
+      borrowTotalApr: computeTotalRate(borrowApr, collateralToken.rebasingYieldApr ?? 0),
       incentives: extraRewardApr
         ? extraRewardApr.map(({ address, symbol, rate }) => ({
             title: symbol,
@@ -295,9 +295,7 @@ const convertMintMarket = (
     stablecoinToken,
     llamma,
     borrowApy,
-    borrowTotalApy,
     borrowApr,
-    borrowTotalApr,
     borrowed,
     borrowedUsd,
     borrowable,
@@ -327,7 +325,8 @@ const convertMintMarket = (
         chain,
         balance: borrowed,
         balanceUsd: borrowedUsd,
-        rebasingYield: stablecoinToken.rebasingYield ? Number(stablecoinToken.rebasingYield) : null,
+        rebasingYield: stablecoinToken.rebasingYield,
+        rebasingYieldApr: stablecoinToken.rebasingYieldApr,
       },
       collateral: {
         symbol: collateralSymbol,
@@ -335,7 +334,8 @@ const convertMintMarket = (
         chain,
         balance: collateralAmount,
         balanceUsd: collateralAmountUsd,
-        rebasingYield: collateralToken.rebasingYield ? Number(collateralToken.rebasingYield) : null,
+        rebasingYield: collateralToken.rebasingYield,
+        rebasingYieldApr: collateralToken.rebasingYieldApr,
       },
     },
     maxLtv,
@@ -352,9 +352,9 @@ const convertMintMarket = (
       lendTotalApyMinBoosted: null,
       lendTotalApyMaxBoosted: null,
       borrowApy,
-      borrowTotalApy,
+      borrowTotalApy: computeTotalRate(borrowApy, collateralToken.rebasingYield ?? 0),
       borrowApr,
-      borrowTotalApr,
+      borrowTotalApr: computeTotalRate(borrowApr, collateralToken.rebasingYieldApr ?? 0),
       incentives: [],
     },
     type: LlamaMarketType.Mint,
