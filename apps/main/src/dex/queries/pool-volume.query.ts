@@ -36,11 +36,7 @@ export function usePoolVolume(params: PoolParams) {
   return usePoolVolumeQuery(params, network && !network.isLite)
 }
 
-const {
-  useQuery: usePoolVolumesQuery,
-  fetchQuery: fetchPoolVolumesQuery,
-  invalidate: invalidatePoolVolumes,
-} = queryFactory({
+const { useQuery: usePoolVolumesQuery, fetchQuery: fetchPoolVolumesQuery } = queryFactory({
   queryKey: ({ chainId }: ChainParams) => [...rootKeys.chain({ chainId }), 'pool-volumes'] as const,
   queryFn: async ({ chainId }: ChainQuery) => {
     const poolIds = getPoolIds({ chainId }) ?? []
@@ -57,8 +53,6 @@ const {
   }),
   dependencies: (params) => [poolIdsQueryKey(params)],
 })
-
-export { invalidatePoolVolumes }
 
 /**
  * Hook to fetch trading volumes for multiple pools on the same chain.

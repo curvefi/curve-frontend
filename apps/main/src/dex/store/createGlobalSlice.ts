@@ -8,7 +8,6 @@ import { ChainId, CurveApi, NetworkConfigFromApi, Wallet } from '@/dex/types/mai
 import { log } from '@ui-kit/lib/logging'
 import { fetchNetworks } from '../entities/networks'
 import { refetchPoolIds } from '../queries/pool-ids.query'
-import { invalidatePoolVolumes } from '../queries/pool-volume.query'
 
 export type SliceKey = keyof State | ''
 export type StateKey = string
@@ -98,7 +97,6 @@ export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreAp
 
     // After rehydration is completed by the refetch above, any future query refactored
     // out of `fetchPools` that depends on all pool ids should be manually invalidated.
-    await invalidatePoolVolumes({ chainId })
     await state.pools.fetchPools(curveApi, poolIds)
 
     log('Hydrating DEX - Complete')
