@@ -64,12 +64,11 @@ const { useQuery: usePoolVolumesQuery, fetchQuery: fetchPoolVolumesQuery } = que
  *
  * Disabled on lite networks.
  */
-export function usePoolVolumes({ chainId }: ChainParams, enabled: boolean = true) {
+export function usePoolVolumes({ chainId }: ChainParams) {
   const { data: networks } = useNetworks()
   const network = chainId != null && networks[chainId]
-  const isEnabled = enabled && !!network && !network.isLite
 
-  return usePoolVolumesQuery({ chainId: chainId! }, isEnabled)
+  return usePoolVolumesQuery({ chainId }, network && !network.isLite)
 }
 
 /**
@@ -80,6 +79,6 @@ export function usePoolVolumes({ chainId }: ChainParams, enabled: boolean = true
 export async function fetchPoolVolumes(params: ChainParams) {
   const networks = await fetchNetworks()
   const network = networks?.[params?.chainId ?? 0]
-  if (!network || network.isLite) return {}
-  return fetchPoolVolumesQuery(params)
+
+  return network && !network.isLite ? fetchPoolVolumesQuery(params) : {}
 }
