@@ -44,7 +44,7 @@ export const FormAlerts = <Field extends string>({
   return (
     <>
       {isSuccess && (
-        <Alert variant="outlined" severity="success" data-testid={'loan-form-success-alert'}>
+        <Alert variant="outlined" severity="success" data-testid="loan-form-success-alert">
           <AlertTitle>{successTitle}</AlertTitle>
           {txHash && (
             <Link rel="noreferrer" target="_blank" href={scanTxPath(network, txHash)}>

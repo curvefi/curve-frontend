@@ -7,6 +7,7 @@ export const TEST_ADDRESS = TEST_ACCOUNT.address
 export const TEST_TX_HASH: `0x${string}` = '0xb664cb54f72491d8f459bb2a0db0bf074b30fa0fb1179a989ff4e1932291a69d'
 
 export const createMockLlamaApi = (chainId: number, mockMarket: unknown) => ({
+  ___mock: true,
   chainId,
   signerAddress: TEST_ADDRESS,
   getUsdRate: async () => 1,

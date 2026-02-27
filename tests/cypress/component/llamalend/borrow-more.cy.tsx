@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 import { BorrowMoreForm } from '@/llamalend/features/manage-loan/components/BorrowMoreForm'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { networks as loanNetworks } from '@/loan/networks'
@@ -23,12 +24,26 @@ describe('BorrowMoreForm (mocked)', () => {
 
   const runCase = ({ approved, title }: { approved: boolean; title: string }) =>
     it(title, () => {
-      const scenario = createScenario({ approved })
+      const {
+        borrow,
+        expected: { estimateGas, health, isApproved, maxRecv, submit },
+        expectedCurrentDebt,
+        expectedFutureDebt,
+        llamaApi,
+        market,
+        stubs: {
+          borrowMore,
+          borrowMoreApprove,
+          borrowMoreHealth,
+          borrowMoreIsApproved,
+          borrowMoreMaxRecv,
+          estimateGasBorrowMore,
+          parameters,
+        },
+      } = createScenario({ approved })
       const onSuccess = cy.spy().as('onSuccess')
       const onPricesUpdated = cy.spy().as('onPricesUpdated')
-      const { llamaApi, expected, market, borrow, stubs, collateral } = scenario
 
-      void collateral
       setLlamaApi(llamaApi)
 
       cy.mount(
@@ -46,24 +61,29 @@ describe('BorrowMoreForm (mocked)', () => {
 
       writeBorrowMoreForm({ debt: borrow })
       checkBorrowMoreDetailsLoaded({
-        expectedCurrentDebt: scenario.expectedCurrentDebt,
-        expectedFutureDebt: scenario.expectedFutureDebt,
+        expectedCurrentDebt,
+        expectedFutureDebt,
         leverageEnabled: false,
       })
 
       cy.then(() => {
-        expect(stubs.parameters).to.have.been.calledWithExactly()
-        expect(stubs.borrowMoreHealth).to.have.been.calledWithExactly(...expected.health)
-        expect(stubs.borrowMoreMaxRecv).to.have.been.calledWithExactly(...expected.maxRecv)
-        expect(stubs.borrowMoreIsApproved).to.have.been.calledWithExactly(...expected.isApproved)
+        expect(parameters).to.have.been.calledWithExactly()
+        expect(borrowMoreHealth).to.have.been.calledWithExactly(...health)
+        expect(borrowMoreMaxRecv).to.have.been.calledWithExactly(...maxRecv)
+        expect(borrowMoreIsApproved).to.have.been.calledWithExactly(...isApproved)
       })
 
       submitBorrowMoreForm().then(() => {
-        expect(stubs.estimateGasBorrowMore).to.have.been.calledWithExactly(...expected.estimateGas)
-        expect(stubs.borrowMore).to.have.been.calledWithExactly(...expected.submit)
+        expect(estimateGasBorrowMore).to.have.been.calledWithExactly(...estimateGas)
+        expect(borrowMore).to.have.been.calledWithExactly(...submit)
+        if (approved) {
+          expect(borrowMoreApprove).to.not.have.been.called
+        } else {
+          expect(borrowMoreApprove).to.have.been.calledWithExactly(...submit)
+        }
       })
     })
 
-  runCase({ approved: true, title: 'fills and submits with randomized data (already approved)' })
-  runCase({ approved: false, title: 'fills, approves, and submits with randomized data' })
+  runCase({ approved: true, title: 'fills and submits (already approved)' })
+  runCase({ approved: false, title: 'fills, approves, and submits' })
 })

@@ -62,17 +62,17 @@ describe('Soft Liquidation Forms (mocked)', () => {
         })
         cy.get('[data-testid="improve-health-submit"]').should('not.be.disabled')
 
-        cy.then(() => {
-          expect(stubs.parameters).to.have.been.calledWithExactly()
-          expect(stubs.repayHealth).to.have.been.calledWithExactly(...expected.improveHealth.health)
-          expect(stubs.repayPrices).to.have.been.calledWithExactly(...expected.improveHealth.prices)
-          expect(stubs.repayIsApproved).to.have.been.calledWithExactly(...expected.improveHealth.isApproved)
-          if ('estimateGasRepayApprove' in stubs) {
-            expect(stubs.estimateGasRepayApprove).to.have.been.calledWithExactly(
+        cy.wrap(stubs).should((s) => {
+          expect(s.parameters).to.have.been.calledWithExactly()
+          expect(s.repayHealth).to.have.been.calledWithExactly(...expected.improveHealth.health)
+          expect(s.repayPrices).to.have.been.calledWithExactly(...expected.improveHealth.prices)
+          expect(s.repayIsApproved).to.have.been.calledWithExactly(...expected.improveHealth.isApproved)
+          if ('estimateGasRepayApprove' in s) {
+            expect(s.estimateGasRepayApprove).to.have.been.calledWithExactly(
               ...expected.improveHealth.estimateGasApprove,
             )
           } else {
-            expect(stubs.estimateGasRepay).to.have.been.calledWithExactly(...expected.improveHealth.estimateGas)
+            expect(s.estimateGasRepay).to.have.been.calledWithExactly(...expected.improveHealth.estimateGas)
           }
         })
 
@@ -111,12 +111,11 @@ describe('Soft Liquidation Forms (mocked)', () => {
           </MockLoanTestWrapper>,
         )
 
-        cy.get('[data-testid="loan-info-accordion"] button').first().click()
         checkClosePositionDetailsLoaded({ debt: scenario.debt })
 
-        cy.then(() => {
-          expect(stubs.selfLiquidateIsApproved).to.have.been.calledWithExactly(...expected.closePosition.isApproved)
-          expect(stubs.estimateGasSelfLiquidate).to.have.been.calledWithExactly(...expected.closePosition.estimateGas)
+        cy.wrap(stubs).should((s) => {
+          expect(s.selfLiquidateIsApproved).to.have.been.calledWithExactly(...expected.closePosition.isApproved)
+          expect(s.estimateGasSelfLiquidate).to.have.been.calledWithExactly(...expected.closePosition.estimateGas)
         })
 
         submitClosePositionForm().then(() => {

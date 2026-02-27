@@ -40,6 +40,6 @@ export function checkRepayDetailsLoaded({ leverageEnabled, debt }: { debt: DebtC
 export function submitRepayForm() {
   cy.get('[data-testid="repay-submit-button"]', LOAD_TIMEOUT).click()
   return cy
-    .get('[data-testid="toast-success"]', TRANSACTION_LOAD_TIMEOUT)
+    .get('[data-testid="loan-form-success-alert"]', TRANSACTION_LOAD_TIMEOUT)
     .contains('Loan repaid', TRANSACTION_LOAD_TIMEOUT)
 }

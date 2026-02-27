@@ -61,15 +61,15 @@ describe('RepayForm (mocked)', () => {
         leverageEnabled: false,
       })
 
-      cy.then(() => {
-        expect(stubs.parameters).to.have.been.calledWithExactly()
-        expect(stubs.repayHealth).to.have.been.calledWithExactly(...expected.health)
-        expect(stubs.repayPrices).to.have.been.calledWithExactly(...expected.prices)
-        expect(stubs.repayIsApproved).to.have.been.calledWithExactly(...expected.isApproved)
-        if ('estimateGasRepayApprove' in stubs) {
-          expect(stubs.estimateGasRepayApprove).to.have.been.calledWithExactly(...expected.estimateGasApprove)
+      cy.wrap(stubs).should((s) => {
+        expect(s.parameters).to.have.been.calledWithExactly()
+        expect(s.repayHealth).to.have.been.calledWithExactly(...expected.health)
+        expect(s.repayPrices).to.have.been.calledWithExactly(...expected.prices)
+        expect(s.repayIsApproved).to.have.been.calledWithExactly(...expected.isApproved)
+        if ('estimateGasRepayApprove' in s) {
+          expect(s.estimateGasRepayApprove).to.have.been.calledWithExactly(...expected.estimateGasApprove)
         } else {
-          expect(stubs.estimateGasRepay).to.have.been.calledWithExactly(...expected.estimateGas)
+          expect(s.estimateGasRepay).to.have.been.calledWithExactly(...expected.estimateGas)
         }
       })
 
@@ -82,6 +82,6 @@ describe('RepayForm (mocked)', () => {
       })
     })
 
-  runCase({ approved: true, title: 'fills and submits with randomized data (already approved)' })
-  runCase({ approved: false, title: 'fills, approves, and submits with randomized data' })
+  runCase({ approved: true, title: 'fills and submits (already approved)' })
+  runCase({ approved: false, title: 'fills, approves, and submits' })
 })
