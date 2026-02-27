@@ -79,6 +79,6 @@ export function usePoolVolumes({ chainId }: ChainParams) {
 export async function fetchPoolVolumes({ chainId }: ChainParams) {
   const networks = await fetchNetworks()
   const network = networks?.[chainId ?? 0]
-
-  return network && !network.isLite ? fetchPoolVolumesQuery({ chainId }) : {}
+  if (!network || network.isLite) return {}
+  return fetchPoolVolumesQuery({ chainId })
 }
