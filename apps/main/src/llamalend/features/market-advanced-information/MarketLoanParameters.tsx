@@ -1,4 +1,4 @@
-import { useMarketParameters } from '@/llamalend/queries/market-parameters.query'
+import { useMarketParameters } from '@/llamalend/queries/market'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
@@ -14,7 +14,7 @@ function getMaxLTV(a: number | undefined, loanDiscount: string | undefined) {
   return ((+a - 1) / +a) ** 2 * (1 - +loanDiscount / 100) * 100
 }
 
-export const MarketLoanParameters = ({ chainId, marketId }: { chainId: IChainId; marketId: string }) => {
+export const MarketLoanParameters = ({ chainId, marketId }: { chainId: IChainId; marketId: string | undefined }) => {
   const {
     data: parameters,
     isLoading: isLoadingParameters,

@@ -1,9 +1,8 @@
 import { useMemo } from 'react'
-import { useMarketOnChainRewards, useMarketPricePerShare } from '@/lend/entities/market-details'
 import { networks } from '@/lend/networks'
 import { ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import type { SupplyPositionDetailsProps } from '@/llamalend/features/market-position-details'
-import { useMarketRates } from '@/llamalend/queries/market-rates.query'
+import { useMarketVaultOnChainRewards, useMarketVaultPricePerShare, useMarketRates } from '@/llamalend/queries/market'
 import { useUserMarketBalances, useUserSupplyBoost } from '@/llamalend/queries/user'
 import type { Chain } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
@@ -34,7 +33,7 @@ export const useSupplyPositionDetails = ({
     address: market?.addresses?.vault?.toLocaleLowerCase() as Address,
   })
   const { data: userBalances, isLoading: isUserBalancesLoading } = useUserMarketBalances({ chainId, marketId })
-  const { data: marketPricePerShare, isLoading: isMarketPricePerShareLoading } = useMarketPricePerShare({
+  const { data: marketPricePerShare, isLoading: isMarketPricePerShareLoading } = useMarketVaultPricePerShare({
     chainId,
     marketId,
   })
@@ -42,7 +41,7 @@ export const useSupplyPositionDetails = ({
     chainId,
     marketId,
   })
-  const { data: onChainRewards, isLoading: isOnChainRewardsLoading } = useMarketOnChainRewards({
+  const { data: onChainRewards, isLoading: isOnChainRewardsLoading } = useMarketVaultOnChainRewards({
     chainId,
     marketId,
   })

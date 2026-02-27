@@ -1,11 +1,10 @@
-import { useMarketBasePrice } from '@/llamalend/queries/market-base-price.query'
-import { useMarketOraclePrice } from '@/llamalend/queries/market-oracle-price.query'
+import { useMarketBasePrice, useMarketOraclePrice } from '@/llamalend/queries/market'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 
-export const MarketPrices = ({ chainId, marketId }: { chainId: IChainId; marketId: string }) => {
+export const MarketPrices = ({ chainId, marketId }: { chainId: IChainId; marketId: string | undefined }) => {
   const {
     data: basePrice,
     isLoading: isLoadingBasePrice,
@@ -23,7 +22,7 @@ export const MarketPrices = ({ chainId, marketId }: { chainId: IChainId; marketI
       <ActionInfo
         label={t`Base price`}
         value={formatNumber(basePrice)}
-        valueTooltip={basePrice && formatNumber(basePrice, { decimals: 5 })}
+        valueTooltip={basePrice != null ? formatNumber(basePrice, { decimals: 5 }) : undefined}
         loading={isLoadingBasePrice}
         error={errorBasePrice}
       />
@@ -31,7 +30,7 @@ export const MarketPrices = ({ chainId, marketId }: { chainId: IChainId; marketI
       <ActionInfo
         label={t`Oracle price`}
         value={formatNumber(oraclePrice)}
-        valueTooltip={oraclePrice && formatNumber(oraclePrice, { decimals: 5 })}
+        valueTooltip={oraclePrice != null ? formatNumber(oraclePrice, { decimals: 5 }) : undefined}
         loading={isLoadingOraclePrice}
         error={errorOraclePrice}
       />

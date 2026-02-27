@@ -9,7 +9,7 @@ import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { type MarketQuery } from '@ui-kit/lib/model'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
-import { convertRates } from '../rates.utils'
+import { convertRates } from '../../rates.utils'
 
 type BorrowApyQuery = MarketQuery<IChainId> & { debt: Decimal }
 type BorrowFutureApyParams = FieldsOf<BorrowApyQuery>

@@ -4,6 +4,7 @@ import { useMarketDetails as useLendMarketDetails } from '@/lend/entities/market
 import { networks } from '@/lend/networks'
 import type { ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import type { MarketDetailsProps } from '@/llamalend/features/market-details'
+import { useMarketMaxLeverage } from '@/llamalend/queries/market'
 import {
   LAST_MONTH,
   getBorrowRateMetrics,
@@ -14,7 +15,6 @@ import type { Chain } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
 import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import { useLendingSnapshots } from '@ui-kit/entities/lending-snapshots'
-import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { calculateAverageRates } from '@ui-kit/utils/averageRates'
@@ -34,24 +34,22 @@ export const useMarketDetails = ({
   market,
   marketId,
 }: UseMarketDetailsProps): Omit<MarketDetailsProps, 'marketPage'> => {
-  const { isHydrated } = useCurve()
   const blockchainId = networks[chainId]?.id as Chain
   const { collateral_token, borrowed_token } = market ?? {}
   const { controller, vault } = market?.addresses ?? {}
   // Query validation only checks param presence (chain/market/user). We still need `!market`
   // because this hook runs before market metadata is available, and the UI reads market fields.
-  const isMarketMetadataLoading = !market || !isHydrated
+  const isMarketMetadataLoading = !market
 
   const {
     data: {
       borrowApr: marketBorrowApr,
       lendApy: marketLendApy,
-      collateralAmount,
-      cap,
-      available,
-      maxLeverage,
       crvRates,
       rewardsApr,
+      cap,
+      available,
+      collateral: collateralAmount,
     },
     isLoading: isMarketDetailsLoading,
   } = useLendMarketDetails({ chainId, marketId })
@@ -65,9 +63,10 @@ export const useMarketDetails = ({
     chainId,
     tokenAddress: collateral_token?.address,
   })
-  const { data: borrowedUsdRate, isLoading: borrowedUsdRateLoading } = useTokenUsdRate({
+  const { data: maxLeverage, isLoading: isMarketMaxLeverageLoading } = useMarketMaxLeverage({
     chainId,
-    tokenAddress: borrowed_token?.address,
+    marketId,
+    range: market?.minBands ?? 0,
   })
 
   const { data: campaignsVault } = useCampaignsByAddress({ blockchainId, address: vault as Address })
@@ -144,16 +143,16 @@ export const useMarketDetails = ({
     collateral: {
       symbol: collateral_token?.symbol ?? null,
       tokenAddress: collateral_token?.address,
-      total: collateralAmount ?? null,
-      totalUsdValue: collateralAmount && collateralUsdRate ? collateralAmount * collateralUsdRate : null,
-      usdRate: collateralUsdRate ?? null,
+      total: collateralAmount == null ? null : +collateralAmount,
+      // TODO: add potential collateral value in borrowed token
+      totalUsdValue:
+        collateralAmount != null && collateralUsdRate != null ? +collateralAmount * collateralUsdRate : null,
       loading: isMarketDetailsLoading.marketCollateralAmounts || collateralUsdRateLoading || isMarketMetadataLoading,
     },
     borrowToken: {
       symbol: borrowed_token?.symbol ?? null,
       tokenAddress: borrowed_token?.address,
-      usdRate: borrowedUsdRate ?? null,
-      loading: isMarketDetailsLoading.marketCollateralAmounts || borrowedUsdRateLoading || isMarketMetadataLoading,
+      loading: isMarketDetailsLoading.marketCollateralAmounts || isMarketMetadataLoading,
     },
     borrowRate: {
       rate: borrowApr,
@@ -197,15 +196,13 @@ export const useMarketDetails = ({
         isMarketMetadataLoading,
     },
     availableLiquidity: {
-      value: available ?? null,
-      max: cap ?? null,
+      value: available == null ? undefined : +available,
+      max: cap == null ? undefined : +cap,
       loading: isMarketDetailsLoading.marketCapAndAvailable || isMarketMetadataLoading,
     },
-    maxLeverage: maxLeverage
-      ? {
-          value: Number(maxLeverage),
-          loading: isMarketDetailsLoading.marketMaxLeverage || isMarketMetadataLoading,
-        }
-      : undefined,
+    maxLeverage: {
+      value: maxLeverage == null ? null : Number(maxLeverage),
+      loading: isMarketMaxLeverageLoading || isMarketMetadataLoading,
+    },
   }
 }
