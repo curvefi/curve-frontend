@@ -73,6 +73,15 @@ export const TableFilters = <ColumnIds extends string>({
           gap={Spacing.xs}
           flexWrap="wrap"
         >
+          {hasSearchBar && (
+            <TableSearchField
+              value={searchValue}
+              onChange={setSearchValue}
+              testId={filterExpandedKey}
+              {...(isMobile && { toggleExpanded: toggleSearchExpanded })}
+              isExpanded={isExpandedOrValue}
+            />
+          )}
           {!isMobile && toggleVisibility && (
             <TableButton
               ref={settingsRef}
@@ -91,15 +100,6 @@ export const TableFilters = <ColumnIds extends string>({
             />
           )}
           {onReload && !isMobile && <TableButton onClick={onReload} icon={ReloadIcon} rotateIcon={loading} />}
-          {hasSearchBar && (
-            <TableSearchField
-              value={searchValue}
-              onChange={setSearchValue}
-              testId={filterExpandedKey}
-              {...(isMobile && { toggleExpanded: toggleSearchExpanded })}
-              isExpanded={isExpandedOrValue}
-            />
-          )}
         </Grid>
         <Grid container size={12} spacing={Spacing.sm} justifyContent="space-between">
           {chips}
