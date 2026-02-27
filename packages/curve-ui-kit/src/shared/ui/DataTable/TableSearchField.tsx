@@ -74,7 +74,7 @@ export const TableSearchField = ({
     />
   )
 
-  return collapsible ? (
+  return (
     <Box
       sx={{
         display: 'flex',
@@ -95,15 +95,6 @@ export const TableSearchField = ({
           testId={notFalsy(`btn-expand-search`, testId).join('-')}
         />
       )}
-    </Box>
-  ) : (
-    <Box
-      sx={{
-        width: '100%',
-        maxWidth: '100%',
-      }}
-    >
-      {searchField}
     </Box>
   )
 }
