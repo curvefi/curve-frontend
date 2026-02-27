@@ -96,7 +96,7 @@ export const TableFilters = <ColumnIds extends string>({
               value={searchValue}
               onChange={setSearchValue}
               testId={filterExpandedKey}
-              toggleExpanded={toggleSearchExpanded}
+              {...(isMobile && { toggleExpanded: toggleSearchExpanded })}
               isExpanded={isExpandedOrValue}
             />
           )}
