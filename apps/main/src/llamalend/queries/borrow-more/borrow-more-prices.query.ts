@@ -47,7 +47,7 @@ export const { useQuery: useBorrowMorePrices } = queryFactory({
         return (await impl.borrowMorePrices(...args)) as Range<Decimal>
     }
   },
-  staleTime: '1m',
+  category: 'user',
   validationSuite: borrowMoreValidationSuite({ leverageRequired: false, debtRequired: true }),
   dependencies: (params) => (params.leverageEnabled ? [getBorrowMoreExpectedCollateralKey(params)] : []),
 })

@@ -46,6 +46,6 @@ export const { useQuery: useRepayIsApproved, fetchQuery: fetchRepayIsApproved } 
         return await impl.repayIsApproved(userBorrowed)
     }
   },
-  staleTime: '1m',
+  category: 'user',
   validationSuite: repayFromCollateralIsFullValidationSuite,
 })

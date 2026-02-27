@@ -23,5 +23,6 @@ const _fetchUserGaugeVotes = async ({ userAddress }: { userAddress: string }): P
 export const { useQuery: useUserGaugeVoteQuery, invalidate: invalidateUserGaugeVoteQuery } = queryFactory({
   queryKey: (params: { userAddress: string }) => ['user-gauge-votes', { userAddress: params.userAddress }] as const,
   queryFn: _fetchUserGaugeVotes,
+  category: 'user',
   validationSuite: EmptyValidationSuite,
 })

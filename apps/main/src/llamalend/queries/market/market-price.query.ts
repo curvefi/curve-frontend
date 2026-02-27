@@ -5,5 +5,6 @@ import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-valid
 export const { useQuery: useMarketPrice } = queryFactory({
   queryKey: (params: MarketParams) => [...rootKeys.market(params), 'market-price'] as const,
   queryFn: ({ marketId }: MarketQuery): Promise<string> => getLlamaMarket(marketId).price(),
+  category: 'detail',
   validationSuite: marketIdValidationSuite,
 })

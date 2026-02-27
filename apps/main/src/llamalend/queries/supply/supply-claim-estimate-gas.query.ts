@@ -18,6 +18,7 @@ export const { useQuery: useClaimCrvEstimateGasQuery } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress }: ClaimEstimateParams) =>
     [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'estimateGas.claimCrv'] as const,
   queryFn: async ({ marketId }: ClaimEstimateQuery) => await requireVault(marketId).vault.estimateGas.claimCrv(),
+  category: 'user',
   validationSuite: claimableRewardsValidationSuite,
 })
 
@@ -25,6 +26,7 @@ export const { useQuery: useClaimRewardsEstimateQuery } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress }: ClaimEstimateParams) =>
     [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'estimateGas.claimRewards'] as const,
   queryFn: async ({ marketId }: ClaimEstimateQuery) => await requireGauge(marketId).vault.estimateGas.claimRewards(),
+  category: 'user',
   validationSuite: claimableRewardsValidationSuite,
 })
 

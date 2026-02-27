@@ -13,5 +13,6 @@ export const { useQuery: useMarketLiquidationBand } = queryFactory({
       return await market.stats.liquidatingBand()
     }
   },
+  category: 'detail',
   validationSuite: marketIdValidationSuite,
 })

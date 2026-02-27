@@ -22,6 +22,7 @@ export async function userPoolBoost(chainId: number, pool: PoolTemplate, userAdd
 const { useQuery: useUserPoolInfoQuery, invalidate: invalidateUserPoolInfoQuery } = queryFactory({
   queryKey: ({ chainId, poolId, userAddress }: UserPoolParams) =>
     [...rootKeys.userPool({ chainId, poolId, userAddress }), 'pool-info'] as const,
+  category: 'user',
   queryFn: async ({ chainId, poolId, userAddress }: UserPoolQuery) => {
     const pool = requireLib('curveApi').getPool(poolId)
 
@@ -43,7 +44,6 @@ const { useQuery: useUserPoolInfoQuery, invalidate: invalidateUserPoolInfoQuery 
       userWithdrawAmounts,
     }
   },
-  staleTime: '1m',
   validationSuite: userPoolValidationSuite,
 })
 

@@ -40,5 +40,6 @@ export const { useQuery: useProposalPricesApiQuery, invalidate: invalidatePropos
       { txHash: params.txHash },
     ] as const,
   queryFn: _fetchProposalPricesApi,
+  category: 'table',
   validationSuite: EmptyValidationSuite,
 })

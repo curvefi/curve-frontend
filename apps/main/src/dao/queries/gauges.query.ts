@@ -92,6 +92,6 @@ export const {
       ]),
     )
   },
-  staleTime: '5m',
+  category: 'table',
   validationSuite: EmptyValidationSuite,
 })

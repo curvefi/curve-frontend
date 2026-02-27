@@ -30,6 +30,6 @@ export const { useQuery: useRepayRouteImage } = queryFactory({
         throw new Error('repayRouteImage is not supported for deleverage or unleveraged repay')
     }
   },
-  staleTime: '1m',
+  category: 'user',
   validationSuite: repayValidationSuite({ leverageRequired: true }),
 })

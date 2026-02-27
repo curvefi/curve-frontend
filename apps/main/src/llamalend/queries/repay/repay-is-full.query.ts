@@ -40,7 +40,7 @@ export const { useQuery: useRepayIsFull } = queryFactory({
         return +userBorrowed >= getUserDebtFromQueryCache({ chainId, marketId, userAddress })
     }
   },
-  staleTime: '1m',
+  category: 'user',
   validationSuite: repayValidationSuite({ leverageRequired: false }),
   dependencies: (params) => [repayExpectedBorrowedQueryKey(params)],
 })

@@ -24,8 +24,8 @@ export const { useQuery: useIntegrations } = queryFactory({
     const resp = await fetchJson<IntegrationsResponse>(INTEGRATIONS_URL)
     return parseIntegrationsList(resp)
   },
-  staleTime: '1h',
   validationSuite: EmptyValidationSuite,
+  category: 'static',
 })
 
 export const parseIntegrationsList = (integrationsList: IntegrationsResponse) =>

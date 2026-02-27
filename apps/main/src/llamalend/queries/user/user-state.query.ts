@@ -32,7 +32,7 @@ export const {
       debt: userState.debt as Decimal,
     }
   },
-  refetchInterval: '15s',
+  category: 'user',
   validationSuite: userMarketValidationSuite,
 })
 

@@ -17,4 +17,5 @@ export const {
     chainValidationGroup(params)
     poolValidationGroup(params)
   }),
+  category: 'static',
 })

@@ -10,6 +10,6 @@ export const { useQuery: useMarketVaultPricePerShare, invalidate: invalidateMark
     const market = getLendMarket(marketId)
     return await market.vault.previewRedeem(1)
   },
-  refetchInterval: '1m',
+  category: 'detail',
   validationSuite: marketIdValidationSuite,
 })

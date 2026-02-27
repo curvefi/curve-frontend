@@ -14,5 +14,6 @@ export const { getQueryOptions: getAddCollateralHealthOptions } = queryFactory({
     ] as const,
   queryFn: async ({ marketId, userCollateral, isFull }: CollateralHealthQuery) =>
     (await getLlamaMarket(marketId).addCollateralHealth(userCollateral, isFull)) as Decimal,
+  category: 'user',
   validationSuite: collateralHealthValidationSuite,
 })

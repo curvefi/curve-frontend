@@ -51,5 +51,6 @@ export const { useQuery: useMarketUserBandsBalances } = queryFactory({
       return fetchChartBandBalancesData(sortBands(formattedUserBandsBalances), liquidationBand, market, isMarket)
     }
   },
+  category: 'user',
   validationSuite: marketUserBandsBalancesValidationSuite,
 })

@@ -21,8 +21,8 @@ export const { useQuery: usePoolLiquidityEvents } = queryFactory({
       page,
       perPage,
     }),
-  staleTime: '1m',
   validationSuite: createValidationSuite(({ chain, poolAddress }: PoolLiquidityEventsParams) => {
     contractValidationGroup({ blockchainId: chain, contractAddress: poolAddress })
   }),
+  category: 'detail',
 })

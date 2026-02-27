@@ -27,5 +27,6 @@ const _fetchVeCrvStats = async () => {
 export const { useQuery: useStatsVecrvQuery } = queryFactory({
   queryKey: () => ['stats-vecrv'] as const,
   queryFn: _fetchVeCrvStats,
+  category: 'detail',
   validationSuite: EmptyValidationSuite,
 })

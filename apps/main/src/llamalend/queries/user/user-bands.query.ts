@@ -14,6 +14,6 @@ export const { useQuery: useUserBands, invalidate: invalidateUserBands } = query
     const bands = market instanceof LendMarketTemplate ? await market.userBands() : await market.userBands(userAddress)
     return reverseBands(bands)
   },
-  refetchInterval: '1m',
+  category: 'user',
   validationSuite: userMarketValidationSuite,
 })

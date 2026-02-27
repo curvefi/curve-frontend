@@ -18,6 +18,6 @@ export const { useQuery: useUserMarketBalances, invalidate: invalidateUserMarket
       vaultSharesConverted,
     }
   },
-  refetchInterval: '1m',
+  category: 'user',
   validationSuite: marketIdValidationSuite,
 })

@@ -10,6 +10,7 @@ export const { useQuery: useClaimableRewards, fetchQuery: fetchClaimableRewards 
     [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'claimableRewards'] as const,
   queryFn: async ({ marketId, userAddress }: UserMarketQuery) =>
     (await requireGauge(marketId).vault.claimableRewards(userAddress)) as ClaimableReward[],
+  category: 'user',
   validationSuite: claimableRewardsValidationSuite,
 })
 
@@ -18,5 +19,6 @@ export const { useQuery: useClaimableCrv, fetchQuery: fetchClaimableCrv } = quer
     [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'claimableCrv'] as const,
   queryFn: async ({ marketId, userAddress }: UserMarketQuery) =>
     (await requireVault(marketId).vault.claimableCrv(userAddress)) as Decimal,
+  category: 'user',
   validationSuite: claimableRewardsValidationSuite,
 })

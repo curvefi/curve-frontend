@@ -23,6 +23,7 @@ const { getQueryData: getRouteQueryData, setQueryData: setRouteQueryData } = que
     })
   }),
   disableLog: true,
+  category: 'detail',
 })
 
 /**
@@ -86,7 +87,6 @@ export const { useQuery: useRouterApi, fetchQuery: fetchApiRoutes } = queryFacto
     routes.forEach((route) => setRouteQueryData({ routeId: route.id }, route))
     return routes
   },
-  staleTime: '1m',
-  refetchInterval: '15s',
   validationSuite: routerApiValidation,
+  category: 'user',
 })

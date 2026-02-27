@@ -81,5 +81,6 @@ export const { useQuery: useMarketBandsBalances } = queryFactory({
 
     return data
   },
+  category: 'detail',
   validationSuite: marketBandsBalancesValidationSuite,
 })

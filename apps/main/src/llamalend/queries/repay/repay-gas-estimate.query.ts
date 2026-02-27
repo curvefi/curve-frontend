@@ -52,7 +52,7 @@ const { useQuery: useRepayLoanEstimateGas } = queryFactory({
         return await impl.estimateGas.repay(...args)
     }
   },
-  staleTime: '1m',
+  category: 'user',
   validationSuite: repayFromCollateralIsFullValidationSuite,
 })
 
@@ -97,7 +97,7 @@ const { useQuery: useRepayApproveGasEstimate } = queryFactory({
         return await impl.estimateGas.repayApprove(userBorrowed)
     }
   },
-  staleTime: '1m',
+  category: 'user',
   validationSuite: repayFromCollateralIsFullValidationSuite,
 })
 

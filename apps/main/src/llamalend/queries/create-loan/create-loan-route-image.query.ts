@@ -26,7 +26,7 @@ export const { useQuery: useCreateLoanRouteImage } = queryFactory({
         return null // todo: retrieve image or image data from api
     }
   },
-  staleTime: '1m',
+  category: 'user',
   validationSuite: createLoanQueryValidationSuite({ debtRequired: true }),
   dependencies: (params) => [createLoanExpectedCollateralQueryKey(params)],
 })

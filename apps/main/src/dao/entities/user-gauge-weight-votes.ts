@@ -32,6 +32,7 @@ export const { useQuery: useUserGaugeWeightVotesQuery, invalidate: invalidateUse
     queryKey: (params: ChainParams<ChainId> & { userAddress: string }) =>
       ['user-gauge-weight-votes', { chainId: params.chainId }, { userAddress: params.userAddress }] as const,
     queryFn: _fetchUserGaugeWeightVotes,
+    category: 'user',
     validationSuite: curveApiValidationSuite,
   },
 )

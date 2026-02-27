@@ -19,6 +19,7 @@ export const { useQuery: useLockEstimateWithdrawGas } = queryFactory({
   queryKey: (params: ChainParams<ChainId> & UserParams) =>
     ['lock-estimate-withdraw-gas', { chainId: params.chainId }, { userAddress: params.userAddress }] as const,
   queryFn: _fetchLockEstimateWithdrawGas,
+  category: 'user',
   validationSuite: createValidationSuite((params: ChainParams<ChainId> & { userAddress: Address }) => {
     curveApiValidationGroup({ chainId: params.chainId })
     userAddressValidationGroup({ userAddress: params.userAddress })

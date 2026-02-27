@@ -6,5 +6,6 @@ export const { useQuery: useDepositIsApproved, fetchQuery: fetchDepositIsApprove
     [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'depositIsApproved', { depositAmount }] as const,
   queryFn: async ({ marketId, depositAmount }: DepositQuery) =>
     await requireVault(marketId).vault.depositIsApproved(depositAmount),
+  category: 'user',
   validationSuite: depositValidationSuite,
 })

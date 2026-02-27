@@ -116,5 +116,5 @@ export const { getQueryOptions: getCampaignsMerklOptions } = queryFactory({
     return groupBy(campaigns, (x) => x.address)
   },
   validationSuite: EmptyValidationSuite,
-  refetchInterval: '10m',
+  category: 'table',
 })

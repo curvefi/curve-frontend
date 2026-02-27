@@ -22,7 +22,7 @@ export const { useQuery: useMarketMaxLeverage } = queryFactory({
         : ((await market.leverage.maxLeverage(range)) as Decimal)
       : '0'
   },
-  staleTime: '1m',
+  category: 'detail',
   validationSuite: createValidationSuite(({ chainId, marketId, range }: MaxLeverageParams) => {
     marketIdValidationSuite({ chainId, marketId })
     group('rangeValidationGroup', () => validateRange(range))

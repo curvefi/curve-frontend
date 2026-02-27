@@ -31,6 +31,6 @@ export const { useQuery: useBorrowMoreIsApproved, fetchQuery: fetchBorrowMoreIsA
         return await impl.borrowMoreIsApproved(userCollateral)
     }
   },
-  staleTime: '1m',
+  category: 'user',
   validationSuite: borrowMoreValidationSuite({ leverageRequired: false }),
 })

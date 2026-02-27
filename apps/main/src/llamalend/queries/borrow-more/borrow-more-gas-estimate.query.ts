@@ -43,7 +43,7 @@ const { useQuery: useBorrowMoreApproveGasEstimate } = queryFactory({
         return await impl.estimateGas.borrowMoreApprove(userCollateral)
     }
   },
-  staleTime: '1m',
+  category: 'user',
   validationSuite: borrowMoreValidationSuite({ leverageRequired: false }),
 })
 
@@ -93,7 +93,7 @@ const { useQuery: useBorrowMoreGasEstimate } = queryFactory({
         return await impl.estimateGas.borrowMore(...args)
     }
   },
-  staleTime: '1m',
+  category: 'user',
   validationSuite: borrowMoreValidationSuite({ leverageRequired: false }),
 })
 

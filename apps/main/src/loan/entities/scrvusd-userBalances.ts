@@ -22,4 +22,5 @@ export const { useQuery: useScrvUsdUserBalances, invalidate: invalidateScrvUsdUs
     userAddressValidationGroup({ userAddress })
     llamaApiValidationGroup({ chainId: Chain.Ethereum })
   }),
+  category: 'user',
 })

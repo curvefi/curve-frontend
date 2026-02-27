@@ -5,6 +5,6 @@ import { curveApiWithWalletValidationSuite } from '@ui-kit/lib/model/query/curve
 export const { useQuery: useBasePools, getQueryData: getBasePools } = queryFactory({
   queryKey: ({ chainId }: ChainParams) => [...rootKeys.chain({ chainId }), 'base-pools'] as const,
   queryFn: async () => await requireLib('curveApi').getBasePools(),
-  staleTime: '5m',
   validationSuite: curveApiWithWalletValidationSuite,
+  category: 'static',
 })

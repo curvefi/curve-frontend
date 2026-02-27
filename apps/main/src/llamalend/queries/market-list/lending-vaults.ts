@@ -27,6 +27,7 @@ export const { getQueryOptions: getLendingVaultsOptions, invalidate: invalidateL
     Object.entries(await getAllMarkets()).flatMap(([chain, markets]) =>
       markets.map((market) => ({ ...market, chain: chain as ChainName })),
     ),
+  category: 'table',
   validationSuite: EmptyValidationSuite,
 })
 
@@ -43,6 +44,7 @@ const {
         userMarkets.map((market) => market.controller),
       ]),
     ) as Record<ChainName, Address[]>,
+  category: 'user',
   validationSuite: userAddressValidationSuite,
 })
 
@@ -55,6 +57,7 @@ const {
     ['user-lending-vault', 'stats', { blockchainId }, { contractAddress }, { userAddress }, 'v1'] as const,
   queryFn: async ({ userAddress, contractAddress, blockchainId }: UserContractQuery): Promise<UserMarketStats> =>
     getUserMarketStats(userAddress, blockchainId, contractAddress),
+  category: 'user',
   validationSuite: userContractValidationSuite,
 })
 
@@ -67,6 +70,7 @@ const {
     ['user-lending-vault', 'earnings', { blockchainId }, { contractAddress }, { userAddress }, 'v1'] as const,
   queryFn: ({ userAddress, contractAddress, blockchainId }: UserContractQuery) =>
     getUserMarketEarnings(userAddress, blockchainId, contractAddress),
+  category: 'user',
   validationSuite: userContractValidationSuite,
 })
 
@@ -95,6 +99,7 @@ const {
   invalidate: invalidateUserLendingSupplies,
 } = queryFactory({
   queryKey: ({ userAddress }: UserParams) => ['user-lending-supplies', { userAddress }, 'v4'] as const,
+  category: 'user',
   queryFn: async ({ userAddress }: UserQuery): Promise<Record<ChainName, Address[]>> => {
     const positions = await getAllUserLendingPositions(userAddress)
     return fromEntries(

@@ -22,6 +22,7 @@ const { useQuery: useRemoveCollateralGasEstimate } = queryFactory({
     const market = getLlamaMarket(marketId)
     return await market.removeCollateralEstimateGas(userCollateral)
   },
+  category: 'user',
   validationSuite: collateralValidationSuite,
   dependencies: (params) => [maxRemovableCollateralKey(params)],
 })

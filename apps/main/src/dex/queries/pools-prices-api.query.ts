@@ -10,6 +10,6 @@ export const { useQuery: usePoolsPricesApi } = queryFactory({
     const { pools } = await getPools(blockchainId)
     return fromEntries(pools.map((pool) => [pool.address.toLocaleLowerCase(), pool]))
   },
-  staleTime: '5m',
   validationSuite: EmptyValidationSuite,
+  category: 'detail',
 })

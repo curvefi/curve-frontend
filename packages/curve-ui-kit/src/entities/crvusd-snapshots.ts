@@ -13,6 +13,6 @@ export const { useQuery: useCrvUsdSnapshots } = queryFactory({
     [...rootKeys.contract(params), 'crvUsd', 'snapshots', 'v2', { agg: params.agg }, { limit: params.limit }] as const,
   queryFn: ({ blockchainId, contractAddress, agg, limit }: Query): Promise<CrvUsdSnapshot[]> =>
     getSnapshots(blockchainId, contractAddress, { agg, fetch_on_chain: true, limit }),
-  staleTime: '10m',
   validationSuite: contractValidationSuite,
+  category: 'table',
 })

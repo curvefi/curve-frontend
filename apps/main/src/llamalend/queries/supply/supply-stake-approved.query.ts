@@ -6,5 +6,6 @@ export const { useQuery: useStakeIsApproved, fetchQuery: fetchStakeIsApproved } 
     [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'stakeIsApproved', { stakeAmount }] as const,
   queryFn: async ({ marketId, stakeAmount }: StakeQuery) =>
     await requireVault(marketId).vault.stakeIsApproved(stakeAmount),
+  category: 'user',
   validationSuite: stakeValidationSuite,
 })

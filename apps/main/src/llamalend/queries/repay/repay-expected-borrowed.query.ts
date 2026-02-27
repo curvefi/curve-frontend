@@ -55,6 +55,6 @@ export const { useQuery: useRepayExpectedBorrowed, queryKey: repayExpectedBorrow
         }
     }
   },
-  staleTime: '1m',
+  category: 'user',
   validationSuite: repayValidationSuite({ leverageRequired: false }),
 })

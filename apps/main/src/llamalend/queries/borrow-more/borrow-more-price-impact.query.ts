@@ -27,7 +27,7 @@ export const { useQuery: useBorrowMorePriceImpact } = queryFactory({
     if (type === 'unleveraged') throw new Error('Price impact is not applicable for unleveraged borrow more')
     return +(await impl.borrowMorePriceImpact(userBorrowed, debt))
   },
-  staleTime: '1m',
+  category: 'user',
   validationSuite: borrowMoreLeverageValidationSuite,
   dependencies: (params) => [getBorrowMoreExpectedCollateralKey(params)],
 })

@@ -24,6 +24,7 @@ export const { useQuery: useSharesToAssetsAmount } = queryFactory({
     const lendMarket = requireVault(marketId)
     return await convertSharesToAssets(lendMarket, shares)
   },
+  category: 'user',
   validationSuite: userSupplyVaultSharesValidationSuite,
 })
 

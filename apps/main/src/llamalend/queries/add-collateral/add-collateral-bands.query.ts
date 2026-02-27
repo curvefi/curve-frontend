@@ -8,5 +8,6 @@ export const { useQuery: useAddCollateralBands } = queryFactory({
     [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'addCollateralBands', { userCollateral }] as const,
   queryFn: async ({ marketId, userCollateral }: CollateralQuery) =>
     await getLlamaMarket(marketId).addCollateralBands(userCollateral),
+  category: 'user',
   validationSuite: collateralValidationSuite,
 })

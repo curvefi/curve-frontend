@@ -92,6 +92,6 @@ export const {
         throw new Error('Expected collateral is only available for leveraged create loan')
     }
   },
-  staleTime: '1m',
+  category: 'user',
   validationSuite: createLoanQueryValidationSuite({ debtRequired: true, isLeverageRequired: true }),
 })

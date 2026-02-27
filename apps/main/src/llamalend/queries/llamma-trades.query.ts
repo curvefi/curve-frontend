@@ -24,7 +24,7 @@ export const { useQuery: useLlammaTrades } = queryFactory({
       page,
       perPage,
     }),
-  staleTime: '1m',
+  category: 'user',
   validationSuite: createValidationSuite(({ chain, llamma, endpoint }: LlammaTradesParams) => {
     contractValidationGroup({ blockchainId: chain, contractAddress: llamma })
     test('endpoint', 'Invalid endpoint', () => {

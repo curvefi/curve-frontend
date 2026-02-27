@@ -57,7 +57,7 @@ export const { useQuery: useBorrowMoreExpectedCollateral, queryKey: getBorrowMor
         avgPrice: avgPrice as Decimal,
       }
     },
-    staleTime: '1m',
+    category: 'user',
     validationSuite: borrowMoreLeverageValidationSuite,
   },
 )

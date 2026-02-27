@@ -6,9 +6,8 @@ import { defaultNetworks, getNetworks as getNetworksLib } from '../lib/networks'
 const { useQuery, fetchQuery, getQueryData } = queryFactory({
   queryKey: () => ['networks'] as const,
   queryFn: getNetworksLib,
-  staleTime: '1h',
-  refetchInterval: '1h',
   validationSuite: EmptyValidationSuite, // no args
+  category: 'static',
 })
 
 export const useNetworksQuery = () => useQuery({})
