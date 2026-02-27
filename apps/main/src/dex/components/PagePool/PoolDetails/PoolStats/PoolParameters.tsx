@@ -15,7 +15,7 @@ import { dayjs } from '@ui-kit/lib/dayjs'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { weiToEther } from '@ui-kit/utils'
+import { Chain, weiToEther } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -24,13 +24,13 @@ export const PoolParameters = ({
   poolDataCacheOrApi,
   routerParams,
 }: Pick<TransferProps, 'poolData' | 'poolDataCacheOrApi' | 'routerParams'>) => {
-  const { rChainId, rPoolIdOrAddress } = routerParams
+  const { rChainId: chainId, rPoolIdOrAddress } = routerParams
   const {
     data: { pricesApi, isLite },
-  } = useNetworkByChain({ chainId: rChainId })
-  const poolId = usePoolIdByAddressOrId({ chainId: rChainId, poolIdOrAddress: rPoolIdOrAddress })
-  const tvl = useStore((state) => state.pools.tvlMapper[rChainId]?.[poolId ?? ''])
-  const { data: volume } = usePoolVolume({ chainId: rChainId, poolId })
+  } = useNetworkByChain({ chainId })
+  const poolId = usePoolIdByAddressOrId({ chainId, poolIdOrAddress: rPoolIdOrAddress })
+  const tvl = useStore((state) => state.pools.tvlMapper[chainId]?.[poolId ?? ''])
+  const { data: volume } = usePoolVolume({ chainId, poolId })
 
   const haveWrappedCoins = useMemo(() => {
     if (poolData?.pool?.wrappedCoins) {
@@ -50,7 +50,7 @@ export const PoolParameters = ({
   )
 
   const staked = usePoolTotalStaked(poolDataCacheOrApi)
-  const { data: parameters, isLoading: isLoadingParameters } = usePoolParameters({ chainId: rChainId, poolId })
+  const { data: parameters, isLoading: isLoadingParameters } = usePoolParameters({ chainId, poolId })
 
   const {
     A,
@@ -66,7 +66,7 @@ export const PoolParameters = ({
     priceOracle,
   } = parameters ?? {}
 
-  const isEymaPools = rChainId === 250 && poolDataCacheOrApi.pool.id.startsWith('factory-eywa')
+  const isEymaPools = chainId === Chain.Fantom && poolDataCacheOrApi.pool.id.startsWith('factory-eywa')
 
   return (
     <Stack gap={Spacing.lg}>
@@ -195,7 +195,7 @@ export const PoolParameters = ({
           )}
         </Stack>
       )}
-      <Contracts rChainId={rChainId} poolDataCacheOrApi={poolDataCacheOrApi} />
+      <Contracts rChainId={chainId} poolDataCacheOrApi={poolDataCacheOrApi} />
 
       {/** Copied from market page, temporary as this page will get a redesign */}
       <Stack gap={Spacing.xs}>
