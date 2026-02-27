@@ -7,8 +7,8 @@ import Link from '@mui/material/Link'
 import Stack, { type StackProps } from '@mui/material/Stack'
 import Typography, { type TypographyProps } from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
-import { ExclamationTriangleIcon } from '@ui-kit/shared/icons/ExclamationTriangleIcon'
 import { CopyIconButton } from '@ui-kit/shared/ui/CopyIconButton'
+import { ErrorIconButton } from '@ui-kit/shared/ui/ErrorIconButton'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
@@ -207,14 +207,12 @@ export const ActionInfo = ({
         </Tooltip>
 
         {error && !loading && (
-          <CopyIconButton
-            copyText={errorMessage || error.toString()}
-            label={t`Copy error to clipboard`}
-            confirmationText={t`Error copied to clipboard`}
-            size={iconButtonSize[size]}
-          >
-            <ExclamationTriangleIcon fontSize={iconSize[size]} color="error" />
-          </CopyIconButton>
+          <ErrorIconButton
+            message={errorMessage}
+            error={error}
+            buttonSize={iconButtonSize[size]}
+            iconSize={iconSize[size]}
+          />
         )}
         {copyValue && (
           <CopyIconButton

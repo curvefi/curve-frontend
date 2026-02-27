@@ -5,11 +5,11 @@ import {
   validateMaxCollateral,
   validateMaxDebt,
   validateRange,
-  validateSlippage,
   validateUserBorrowed,
   validateUserCollateral,
 } from '@/llamalend/queries/validation/borrow-fields.validation'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
+import { validateSlippage } from '@ui-kit/lib/model'
 import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
 import { type CreateLoanDebtParams, type CreateLoanForm } from '../../features/borrow/types'
 
@@ -34,7 +34,7 @@ export const createLoanFormValidationGroup = (
     validateUserBorrowed(userBorrowed)
     validateUserCollateral(userCollateral)
     validateDebt(debt, debtRequired)
-    validateSlippage(slippage)
+    validateSlippage({ slippage })
     validateRange(range)
     validateMaxDebt(debt, maxDebt, isMaxDebtRequired)
     validateMaxCollateral(userCollateral, maxCollateral)
