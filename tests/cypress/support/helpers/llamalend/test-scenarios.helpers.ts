@@ -72,8 +72,8 @@ export const createCreateLoanScenario = ({
     createLoanIsApproved: approved ? createStub(true) : createIsApprovedStub<readonly [string]>(createLoanApprove),
     estimateGasCreateLoan: createStub(`${oneInt(80_000, 220_000)}`),
     createLoan: createStub(TEST_TX_HASH),
+    createLoanApprove,
     ...(!approved && {
-      createLoanApprove,
       estimateGasCreateLoanApprove: createStub(`${oneInt(70_000, 200_000)}`)!,
     }),
   } as const
@@ -125,26 +125,32 @@ export const createBorrowMoreScenario = ({
   const expectedCurrentDebt = oneDecimal(10, 200, 2)
   const expectedFutureDebt = debtAfterAdd(expectedCurrentDebt, borrow)
 
+  const borrowMoreApprove = createStub(TEST_TX_HASH)
   const stubs = {
     parameters: createStub(oneRatePair()),
     estimateGasBorrowMore: createStub(oneInt(120_000, 240_000)),
     borrowMoreHealth: createStub(oneDecimal(10, 65, 2)),
     borrowMoreMaxRecv: createStub(oneDecimal(100, 900, 2)),
-    borrowMoreIsApproved: approved
-      ? createStub(true)
-      : (cy.stub().onFirstCall().resolves(false).resolves(true) as TestStub<readonly [string], boolean>),
+    borrowMoreIsApproved: approved ? createStub(true) : createIsApprovedStub<readonly [string]>(borrowMoreApprove),
     borrowMore: createStub(TEST_TX_HASH),
-    borrowMoreApprove: createStub(TEST_TX_HASH),
+    borrowMoreApprove,
+    ...(!approved && {
+      estimateGasBorrowMoreApprove: createStub(oneInt(90_000, 180_000)),
+    }),
   } as const
 
   const market = createMockMintMarket({
     stats: { parameters: stubs.parameters },
-    estimateGas: { borrowMore: stubs.estimateGasBorrowMore },
+    estimateGas: {
+      borrowMore: stubs.estimateGasBorrowMore,
+      ...(!approved && { borrowMoreApprove: stubs.estimateGasBorrowMoreApprove }),
+    },
     userState: createStub({ collateral: '0', stablecoin: '0', debt: expectedCurrentDebt }),
     userHealth: createStub(oneDecimal(20, 80, 2)),
     borrowMoreHealth: stubs.borrowMoreHealth,
     borrowMoreMaxRecv: stubs.borrowMoreMaxRecv,
     borrowMoreIsApproved: stubs.borrowMoreIsApproved,
+    ...(!approved && { borrowMoreApprove: stubs.borrowMoreApprove }),
     borrowMore: stubs.borrowMore,
   })
 
@@ -160,6 +166,8 @@ export const createBorrowMoreScenario = ({
       health: ['0', borrow] as const,
       maxRecv: ['0'] as const,
       isApproved: ['0'] as const,
+      estimateGasApprove: ['0'] as const,
+      approve: ['0'] as const,
       estimateGas: ['0', borrow] as const,
       submit: ['0', borrow] as const,
     },

@@ -19,17 +19,19 @@ import { CRVUSD_ADDRESS } from '@ui-kit/utils'
 
 const networks = loanNetworks as unknown as NetworkDict<LlamaChainId>
 const chainId = 1
+const testCases = [
+  { approved: true, title: 'fills and submits (already approved)' },
+  { approved: false, title: 'fills, approves, and submits' },
+]
 
 describe('RepayForm (mocked)', () => {
-  const createScenario = ({ approved }: { approved: boolean }) => createRepayScenario({ chainId, approved })
-
   afterEach(() => {
     resetLlamaTestContext()
   })
 
-  const runCase = ({ approved, title }: { approved: boolean; title: string }) =>
+  testCases.forEach(({ approved, title }: { approved: boolean; title: string }) => {
     it(title, () => {
-      const scenario = createScenario({ approved })
+      const scenario = createRepayScenario({ chainId, approved })
       const onSuccess = cy.spy().as('onSuccess')
       const onPricesUpdated = cy.spy().as('onPricesUpdated')
       const { llamaApi, expected, market, borrow, stubs, collateral } = scenario
@@ -81,7 +83,5 @@ describe('RepayForm (mocked)', () => {
         expect(stubs.repay).to.have.been.calledWithExactly(...expected.submit)
       })
     })
-
-  runCase({ approved: true, title: 'fills and submits (already approved)' })
-  runCase({ approved: false, title: 'fills, approves, and submits' })
+  })
 })

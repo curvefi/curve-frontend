@@ -1,5 +1,6 @@
 import { zeroAddress } from 'viem'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
+import { oneDecimal } from '@cy/support/generators'
 
 export const createMockMintMarket = (overrides: object) =>
   Object.assign(Object.create(MintMarketTemplate.prototype), {

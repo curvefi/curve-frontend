@@ -14,14 +14,19 @@ import { createCreateLoanScenario } from '@cy/support/helpers/llamalend/test-sce
 
 const networks = loanNetworks as unknown as NetworkDict<LlamaChainId>
 const chainId = 1
+const testCases = [
+  { approved: false, title: 'fills, approves, and submits' },
+  { approved: true, title: 'fills and submits' },
+]
 
 describe('CreateLoanForm (mocked)', () => {
-  const createScenario = ({ approved }: { approved: boolean }) =>
-    createCreateLoanScenario({ chainId, presetRange: 50, approved })
-
-  const runCase = ({ approved, title }: { approved: boolean; title: string }) =>
+  testCases.forEach(({ approved, title }: { approved: boolean; title: string }) => {
     it(title, () => {
-      const { llamaApi, expected, market, borrow, stubs, collateral } = createScenario({ approved })
+      const { llamaApi, expected, market, borrow, stubs, collateral } = createCreateLoanScenario({
+        chainId,
+        presetRange: 50,
+        approved,
+      })
       const onSuccess = cy.spy().as('onSuccess')
       const onPricesUpdated = cy.spy().as('onPricesUpdated')
 
@@ -57,14 +62,12 @@ describe('CreateLoanForm (mocked)', () => {
       submitCreateLoanForm().then(() => {
         expect(stubs.estimateGasCreateLoan).to.have.been.calledWithExactly(...expected.query)
         if (approved) {
-          expect(stubs.createLoanApprove).to.be.undefined
+          expect(stubs.createLoanApprove).to.not.have.been.called
         } else {
           expect(stubs.createLoanApprove).to.have.been.calledWithExactly(...expected.approve)
         }
         expect(stubs.createLoan).to.have.been.calledWithExactly(...expected.submit)
       })
     })
-
-  runCase({ approved: false, title: 'fills, approves, and submits' })
-  runCase({ approved: true, title: 'fills and submits' })
+  })
 })
