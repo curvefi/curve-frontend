@@ -4,23 +4,23 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
+import type { RouteResponse } from '@primitives/router.utils'
 import { SelectableCard } from '@ui-kit/shared/ui/SelectableCard'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { QueryProp } from '@ui-kit/types/util'
 import { formatNumber, fromWei } from '@ui-kit/utils'
 import { formatUsd } from '@ui-kit/utils/number'
 import { RouteComparisonChip } from '@ui-kit/widgets/RouteProvider/RouteComparisonChip'
-import type { RouteOption } from './route-provider.types'
 
 const { Spacing } = SizesAndSpaces
 
 export type RouteProviderCardProps = {
-  route: RouteOption
+  route: RouteResponse
   tokenOut: Partial<{ symbol: string | undefined; address: Address; decimals: number }> & { usdRate: QueryProp<number> }
   isSelected: boolean
   bestOutputAmount: Decimal | undefined
   providerLabel: string
-  onSelect: (provider: RouteOption) => void
+  onSelect: (provider: RouteResponse) => void
   icon: ReactNode
 }
 

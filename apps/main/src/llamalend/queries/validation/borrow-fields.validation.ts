@@ -1,4 +1,4 @@
-import { enforce, test, skipWhen } from 'vest'
+import { enforce, skipWhen, test } from 'vest'
 import { PRESET_RANGES } from '@/llamalend/constants'
 import { getLlamaMarket, hasLeverage, hasLeverageValue } from '@/llamalend/llama.utils'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -22,12 +22,6 @@ export const validateDebt = (debt: Decimal | undefined | null, required: boolean
     test('debt', `Debt must be a positive number${required ? '' : ' or null'}`, () => {
       enforce(debt).isNumeric().gt(0)
     })
-  })
-}
-
-export const validateSlippage = (slippage: Decimal | null | undefined) => {
-  test('slippage', 'Slippage must be a number between 0 and 100', () => {
-    enforce(slippage).isNumeric().gte(0).lte(100)
   })
 }
 
@@ -76,6 +70,14 @@ export const validateLeverageValuesSupported = (marketId: string | null | undefi
     test('marketId', 'Market does not support leverage values', () => {
       const market = getLlamaMarket(marketId!)
       enforce(hasLeverageValue(market)).isTruthy()
+    })
+  })
+}
+
+export const validateRoute = (routeId: string | null | undefined, isRequired: boolean) => {
+  skipWhen(!isRequired && !routeId, () => {
+    test('routeId', 'Route is required', () => {
+      enforce(routeId).isTruthy()
     })
   })
 }

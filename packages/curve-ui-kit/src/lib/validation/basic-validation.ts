@@ -28,7 +28,3 @@ export const addressValidationFn = <T>(value: T) => {
     .message('Address cannot be zero address')
     .isNotZeroAddress()
 }
-
-export const numberValidationFn = <T>(value: T) => {
-  enforce(value).message('Number is required').isNotEmpty().message('Invalid number').isNumber()
-}
