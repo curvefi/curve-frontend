@@ -51,9 +51,9 @@ export const TableFilters = <ColumnIds extends string>({
   const [visibilitySettingsOpen, openVisibilitySettings, closeVisibilitySettings] = useSwitch()
   const settingsRef = useRef<HTMLButtonElement>(null)
   // search is here because we remove the table title when searching on mobile
-  const [isSearchExpanded, , , toggleSearchExpanded] = useSwitch(false)
-  const [searchValue, setSearchValue] = useDebounce({ initialValue: searchText, callback: onSearch })
   const isMobile = useIsMobile()
+  const [isSearchExpanded, , , toggleSearchExpanded] = useSwitch(!isMobile)
+  const [searchValue, setSearchValue] = useDebounce({ initialValue: searchText, callback: onSearch })
   const isCollapsible = collapsible || (isMobile && chips)
   const isExpandedOrValue = Boolean(isSearchExpanded || searchValue)
   const hideTitle = hasSearchBar && isExpandedOrValue && isMobile
