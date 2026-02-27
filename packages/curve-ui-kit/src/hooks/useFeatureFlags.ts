@@ -41,3 +41,6 @@ export const useIntegratedLlamaHeader = useBetaChannel
 
 /** New lend market header subnav */
 export const useLendMarketSubNav = useIntegratedLlamaHeader
+
+/** New tabs for BorrowPositionDetails */
+export const useNewPositionDetailsTabs = useIntegratedLlamaHeader
