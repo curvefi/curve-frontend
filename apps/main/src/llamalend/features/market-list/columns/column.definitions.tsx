@@ -10,11 +10,13 @@ import {
   CompactUsdCell,
   HealthCell,
   LineGraphCell,
+  LiquidityUsdCell,
   LtvCell,
   MarketTitleCell,
   PercentCell,
   PriceCell,
   RateCell,
+  TvlCell,
   UtilizationCell,
 } from '../cells'
 import {
@@ -171,7 +173,7 @@ export const LLAMA_MARKET_COLUMNS = [
   }),
   columnHelper.accessor(LlamaMarketColumnId.LiquidityUsd, {
     header: headers[LlamaMarketColumnId.LiquidityUsd],
-    cell: CompactUsdCell,
+    cell: LiquidityUsdCell,
     meta: {
       type: 'numeric',
       tooltip: createTooltip(LlamaMarketColumnId.LiquidityUsd, <LiquidityUsdHeaderTooltipContent />),
@@ -192,7 +194,7 @@ export const LLAMA_MARKET_COLUMNS = [
   }),
   columnHelper.accessor(LlamaMarketColumnId.Tvl, {
     header: headers[LlamaMarketColumnId.Tvl],
-    cell: CompactUsdCell,
+    cell: TvlCell,
     meta: {
       type: 'numeric',
       tooltip: createTooltip(LlamaMarketColumnId.Tvl, <TvlHeaderTooltipContent />),
