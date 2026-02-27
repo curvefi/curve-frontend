@@ -30,7 +30,7 @@ export const PoolParameters = ({
   } = useNetworkByChain({ chainId: rChainId })
   const poolId = usePoolIdByAddressOrId({ chainId: rChainId, poolIdOrAddress: rPoolIdOrAddress })
   const tvl = useStore((state) => state.pools.tvlMapper[rChainId]?.[poolId ?? ''])
-  const { data: volume } = usePoolVolume({ chainId: rChainId, poolId: poolId ?? '' })
+  const { data: volume } = usePoolVolume({ chainId: rChainId, poolId })
 
   const haveWrappedCoins = useMemo(() => {
     if (poolData?.pool?.wrappedCoins) {
