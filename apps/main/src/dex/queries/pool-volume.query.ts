@@ -29,11 +29,11 @@ const { useQuery: usePoolVolumeQuery } = queryFactory({
 })
 
 /** Hook to fetch the trading volume for a single pool. Disabled on lite networks. */
-export function usePoolVolume(params: PoolParams) {
+export function usePoolVolume({ chainId }: PoolParams) {
   const { data: networks } = useNetworks()
-  const network = params?.chainId != null && networks[params.chainId]
+  const network = chainId != null && networks[chainId]
 
-  return usePoolVolumeQuery(params, network && !network.isLite)
+  return usePoolVolumeQuery({ chainId }, network && !network.isLite)
 }
 
 const { useQuery: usePoolVolumesQuery, fetchQuery: fetchPoolVolumesQuery } = queryFactory({
@@ -76,9 +76,9 @@ export function usePoolVolumes({ chainId }: ChainParams) {
  *
  * @remarks Skips fetching on lite networks.
  */
-export async function fetchPoolVolumes(params: ChainParams) {
+export async function fetchPoolVolumes({ chainId }: ChainParams) {
   const networks = await fetchNetworks()
-  const network = networks?.[params?.chainId ?? 0]
+  const network = networks?.[chainId ?? 0]
 
-  return network && !network.isLite ? fetchPoolVolumesQuery(params) : {}
+  return network && !network.isLite ? fetchPoolVolumesQuery({ chainId }) : {}
 }
