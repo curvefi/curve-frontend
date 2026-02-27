@@ -1,6 +1,6 @@
 import { QUERY_TYPES } from '@ui-kit/lib/model/query/query-types'
 
-const { user, table, marketDetail, static: staticData, semiStatic, form } = QUERY_TYPES
+const { user, table, marketDetail, static: staticData, form } = QUERY_TYPES
 
 /**
  * Category → timing settings mapping.
@@ -9,8 +9,8 @@ const { user, table, marketDetail, static: staticData, semiStatic, form } = QUER
  */
 export const QUERY_CATEGORIES = {
   // Global / shared queries
-  'global.gasInfo': semiStatic,
-  'global.tokenRate': semiStatic,
+  'global.gasInfo': marketDetail,
+  'global.tokenRate': marketDetail,
   'global.campaigns': table,
   'global.integrations': staticData,
   'global.routerApi': form,
