@@ -1,14 +1,11 @@
 import { Chain } from 'curve-ui-kit/src/utils'
 import { ChainId, NetworkConfig, NetworkEnum } from '@/lend/types/lend.types'
 import { getBaseNetworksConfig, NETWORK_BASE_CONFIG } from '@ui/utils'
-import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
 
 const DEFAULT_NETWORK_CONFIG = {
   hideMarketsInUI: {},
-  smallMarketAmount: SMALL_POOL_TVL,
   marketListFilter: ['all', 'leverage', 'user'],
   marketListFilterType: ['borrow', 'lend'],
-  marketListShowOnlyInSmallMarkets: {},
   isActiveNetwork: false,
   showInSelectNetwork: false,
   pricesData: false,
@@ -44,7 +41,6 @@ const networksConfig = {
   [Chain.Arbitrum]: {
     isActiveNetwork: true,
     showInSelectNetwork: true,
-    marketListShowOnlyInSmallMarkets: { 'one-way-market-7': true },
     pricesData: true,
   },
   [Chain.Avalanche]: {},

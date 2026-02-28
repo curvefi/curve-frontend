@@ -3,12 +3,12 @@ import type { GetMarketsResponse } from '@curvefi/prices-api/llamalend'
 import { MAX_USD_VALUE, oneAddress, oneDate, oneFloat, oneInt, oneOf, onePrice } from '@cy/support/generators'
 import { oneToken } from '@cy/support/helpers/tokens'
 import { fromEntries, range } from '@primitives/objects.utils'
-import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
 
 const LendingChains = ['ethereum', 'fraxtal', 'arbitrum'] as const
 export type Chain = (typeof LendingChains)[number]
 
 // keep the general pool TVL below the special HighTVL row to guarantee ordering in tests
+const SMALL_POOL_TVL = 10000
 const oneLargeTvl = () => oneFloat(SMALL_POOL_TVL, MAX_USD_VALUE)
 const oneSmallTvl = () => oneFloat(SMALL_POOL_TVL)
 

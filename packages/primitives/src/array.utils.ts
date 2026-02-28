@@ -11,37 +11,6 @@ export const sortBy = <T>(items: T[], getKey: (item: T) => number, order: 'asc' 
     return (getKey(a) - getKey(b)) * direction
   })
 
-/**
- * Computes a cutoff value that guarantees at least `minCount` items pass.
- *
- * Behavior:
- * - If at least `minCount` items have value ≥ `threshold`, returns `threshold` unchanged.
- * - Otherwise, returns the `minCount`-th largest value (the fallback cutoff so that ≥ `minCount` items pass).
- *   If fewer than `minCount` items exist, returns the smallest value.
- *
- * This is useful to build a filter that prefers a fixed threshold, while
- * still ensuring a minimum number of items are shown when the data is sparse.
- *
- * @template T - The type of items in the array.
- * @param items - The array of items to inspect.
- * @param getValue - Getter that maps an item to a numeric value.
- * @param threshold - Preferred minimum value for passing items.
- * @param minCount - Minimum number of items that must pass.
- * @returns The cutoff value to use for filtering.
- */
-export function minCutoffForTopK<T>(
-  items: T[],
-  getValue: (item: T) => number,
-  threshold: number,
-  minCount: number,
-): number {
-  const valuesDesc = sortBy(items, getValue, 'desc').map(getValue)
-  const firstBelowIdx = valuesDesc.findIndex((v) => v < threshold)
-  if (firstBelowIdx === -1 || firstBelowIdx >= minCount) return threshold
-  const count = minCount >= valuesDesc.length ? valuesDesc.length : minCount
-  return valuesDesc[count - 1]
-}
-
 /** Split a list into two slices at the given index. */
 export const splitAt = <T>(items: T[], index: number) => [items.slice(0, index), items.slice(index)]
 
