@@ -17,7 +17,7 @@ export const InfoBox = () => (
           Only the gauge manager can set reward tokens and set reward tokens distributor address.
         `}
       </InfoText>
-      <StyledExternalLink $noStyles href="https://resources.curve.finance/reward-gauges/permissionless-rewards/">
+      <StyledExternalLink $noStyles href="https://docs.curve.finance/protocol/gauge/guides/adding-permissionless-rewards">
         {t`Learn more`}
       </StyledExternalLink>
     </Box>

@@ -91,8 +91,8 @@ export const Terms = ({ currentApp, network }: TabProps) => (
         <List type="disc">
           <Typography component="li" variant="bodyMRegular">
             {t`Technical Information: The Website provides access to various types of documentation related to the Curve ecosystem, including among others user guides (`}
-            <Link color="textSecondary" href="https://resources.curve.finance/" target="_blank">
-              {t`https://resources.curve.finance/`}
+            <Link color="textSecondary" href="https://docs.curve.finance/" target="_blank">
+              {t`https://docs.curve.finance/`}
             </Link>
             {t`), GitHub repositories (`}
             <Link color="textSecondary" href="https://github.com/curvefi" target="_blank">
@@ -263,7 +263,7 @@ export const Terms = ({ currentApp, network }: TabProps) => (
       </Paragraph>
       <Paragraph>
         {t`Any and all rights related to the Website, including the official logos (as listed`}{' '}
-        <Link color="textSecondary" href="https://resources.curve.finance/glossary-branding/branding" target="_blank">
+        <Link color="textSecondary" href="https://curvefinance.notion.site/Brand-Assets-1a6599aae064802fba11ce6a9e642d74" target="_blank">
           {t`here`}
         </Link>
         {t`) are held by us.`}

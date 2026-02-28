@@ -60,7 +60,7 @@ export const Footer = () => (
 
       <Grid size={12}>
         <Box display="flex" justifyContent="center">
-          <ExternalLink href="https://resources.curve.finance/crvusd/faq/#peg-keepers" label={t`Learn More`} />
+          <ExternalLink href="https://docs.curve.finance/user/curve-tokens/crvusd" label={t`Learn More`} />
         </Box>
       </Grid>
     </Grid>
