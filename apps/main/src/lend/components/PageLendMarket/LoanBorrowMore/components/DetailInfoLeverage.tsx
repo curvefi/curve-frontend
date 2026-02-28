@@ -2,7 +2,6 @@ import { Dispatch, SetStateAction } from 'react'
 import { DetailInfoEstimateGas } from '@/lend/components/DetailInfoEstimateGas'
 import { DetailInfoHealth } from '@/lend/components/DetailInfoHealth'
 import { DetailInfoLeverageAvgPrice } from '@/lend/components/DetailInfoLeverageAvgPrice'
-import { DetailInfoLeverageExpected } from '@/lend/components/DetailInfoLeverageExpected'
 import { DetailInfoLiqRange } from '@/lend/components/DetailInfoLiqRange'
 import { DetailInfoPriceImpact } from '@/lend/components/DetailInfoPriceImpact'
 import { DetailInfoRate } from '@/lend/components/DetailInfoRate'
@@ -40,7 +39,6 @@ export const DetailInfoLeverage = ({
   const formEstGas = useStore((state) => state.loanBorrowMore.formEstGas[activeKey])
   const formValues = useStore((state) => state.loanBorrowMore.formValues)
 
-  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
   const maxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
 
   const { signerAddress } = api ?? {}
@@ -54,53 +52,45 @@ export const DetailInfoLeverage = ({
 
   return (
     <>
-      {isAdvancedMode ? (
-        <DetailInfoLiqRange
-          isManage
-          rChainId={rChainId}
-          rOwmId={rOwmId}
-          {...detailInfo}
-          loading={loading}
-          detailInfoLeverage={
-            <>
-              <RouteDetails
-                network={networks[rChainId].id}
-                $minWidth="260px"
-                loading={expectedLoading}
-                swapFrom={borrowed_token}
-                swapFromAmounts={[
-                  { value: formValues.debt, label: t`Debt` },
-                  { value: formValues.userBorrowed, label: t`Wallet` },
-                ]}
-                swapTo={collateral_token}
-                swapToAmounts={[expectedCollateral?.collateralFromDebt, expectedCollateral?.collateralFromUserBorrowed]}
-                nonSwapAmount={{
-                  value: expectedCollateral?.userCollateral,
-                  label: '',
-                }}
-                total={expectedCollateral?.totalCollateral}
-                avgPrice={expectedCollateral?.avgPrice}
-                type="collateral"
-                routeImage={routeImage}
-              />
-              <DetailInfoLeverageAvgPrice loading={expectedLoading} avgPrice={expectedCollateral?.avgPrice} />
-              <DetailInfoPriceImpact
-                loading={expectedLoading}
-                priceImpact={detailInfo?.priceImpact}
-                isHighImpact={detailInfo?.isHighPriceImpact}
-              />
-            </>
-          }
-          healthMode={healthMode}
-          userActiveKey={userActiveKey}
-        />
-      ) : (
-        <DetailInfoLeverageExpected
-          loading={expectedLoading}
-          total={expectedCollateral?.totalCollateral}
-          swapToSymbol={collateral_token?.symbol}
-        />
-      )}
+      <DetailInfoLiqRange
+        isManage
+        rChainId={rChainId}
+        rOwmId={rOwmId}
+        {...detailInfo}
+        loading={loading}
+        detailInfoLeverage={
+          <>
+            <RouteDetails
+              network={networks[rChainId].id}
+              $minWidth="260px"
+              loading={expectedLoading}
+              swapFrom={borrowed_token}
+              swapFromAmounts={[
+                { value: formValues.debt, label: t`Debt` },
+                { value: formValues.userBorrowed, label: t`Wallet` },
+              ]}
+              swapTo={collateral_token}
+              swapToAmounts={[expectedCollateral?.collateralFromDebt, expectedCollateral?.collateralFromUserBorrowed]}
+              nonSwapAmount={{
+                value: expectedCollateral?.userCollateral,
+                label: '',
+              }}
+              total={expectedCollateral?.totalCollateral}
+              avgPrice={expectedCollateral?.avgPrice}
+              type="collateral"
+              routeImage={routeImage}
+            />
+            <DetailInfoLeverageAvgPrice loading={expectedLoading} avgPrice={expectedCollateral?.avgPrice} />
+            <DetailInfoPriceImpact
+              loading={expectedLoading}
+              priceImpact={detailInfo?.priceImpact}
+              isHighImpact={detailInfo?.isHighPriceImpact}
+            />
+          </>
+        }
+        healthMode={healthMode}
+        userActiveKey={userActiveKey}
+      />
 
       <DetailInfoHealth
         isManage

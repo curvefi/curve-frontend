@@ -7,7 +7,6 @@ import { useStore } from '@/lend/store/useStore'
 import { PageContentProps } from '@/lend/types/lend.types'
 import type { HealthMode } from '@/llamalend/llamalend.types'
 import type { Step } from '@ui/Stepper/types'
-import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 export const DetailInfo = ({
   rChainId,
@@ -29,22 +28,18 @@ export const DetailInfo = ({
   const formEstGas = useStore((state) => state.loanBorrowMore.formEstGas[activeKey])
   const formValues = useStore((state) => state.loanBorrowMore.formValues)
 
-  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
-
   const { signerAddress } = api ?? {}
 
   return (
     <>
-      {isAdvancedMode && (
-        <DetailInfoLiqRange
-          isManage
-          rChainId={rChainId}
-          rOwmId={rOwmId}
-          {...detailInfo}
-          healthMode={healthMode}
-          userActiveKey={userActiveKey}
-        />
-      )}
+      <DetailInfoLiqRange
+        isManage
+        rChainId={rChainId}
+        rOwmId={rOwmId}
+        {...detailInfo}
+        healthMode={healthMode}
+        userActiveKey={userActiveKey}
+      />
 
       <DetailInfoHealth
         isManage

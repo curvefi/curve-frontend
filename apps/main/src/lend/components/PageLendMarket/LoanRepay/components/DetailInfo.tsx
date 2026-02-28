@@ -1,7 +1,6 @@
 import { DetailInfoEstimateGas } from '@/lend/components/DetailInfoEstimateGas'
 import { DetailInfoHealth } from '@/lend/components/DetailInfoHealth'
 import { DetailInfoLeverageAvgPrice } from '@/lend/components/DetailInfoLeverageAvgPrice'
-import { DetailInfoLeverageExpected } from '@/lend/components/DetailInfoLeverageExpected'
 import { DetailInfoLiqRange } from '@/lend/components/DetailInfoLiqRange'
 import { DetailInfoPriceImpact } from '@/lend/components/DetailInfoPriceImpact'
 import { DetailInfoRate } from '@/lend/components/DetailInfoRate'
@@ -35,7 +34,6 @@ export const DetailInfo = ({
   const formEstGas = useStore((state) => state.loanRepay.formEstGas[activeKey])
   const formValues = useStore((state) => state.loanRepay.formValues)
 
-  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
   const maxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
 
   const detailInfo = detailInfoNonLeverage ?? detailInfoLeverage
@@ -50,61 +48,51 @@ export const DetailInfo = ({
 
   return (
     <>
-      {isAdvancedMode ? (
-        <>
-          <DetailInfoLiqRange
-            isManage
-            rChainId={rChainId}
-            rOwmId={rOwmId}
-            {...detailInfo}
-            isFullRepay={isFullRepay}
-            loading={loading}
-            detailInfoLeverage={
-              swapRequired ? (
-                <>
-                  <RouteDetails
-                    network={networks[rChainId].id}
-                    loading={expectedLoading}
-                    $minWidth="230px"
-                    swapFrom={collateral_token}
-                    swapFromAmounts={[
-                      { value: formValues.stateCollateral, label: t`Collateral:` },
-                      { value: formValues.userCollateral, label: t`Wallet:` },
-                    ]}
-                    swapTo={borrowed_token}
-                    swapToAmounts={[
-                      expectedBorrowed?.borrowedFromStateCollateral,
-                      expectedBorrowed?.borrowedFromUserCollateral,
-                    ]}
-                    nonSwapAmount={{
-                      value: expectedBorrowed?.userBorrowed,
-                      label: '',
-                    }}
-                    total={expectedBorrowed?.totalBorrowed}
-                    avgPrice={expectedBorrowed?.avgPrice}
-                    routeImage={routeImage}
-                    type="borrowed"
-                  />
-                  <DetailInfoLeverageAvgPrice loading={expectedLoading} avgPrice={expectedBorrowed?.avgPrice} />
-                  <DetailInfoPriceImpact
-                    loading={expectedLoading}
-                    priceImpact={detailInfoLeverage?.priceImpact}
-                    isHighImpact={detailInfoLeverage?.isHighPriceImpact}
-                  />
-                </>
-              ) : null
-            }
-            healthMode={healthMode}
-            userActiveKey={userActiveKey}
-          />
-        </>
-      ) : (
-        <DetailInfoLeverageExpected
-          loading={expectedLoading}
-          total={expectedBorrowed?.totalBorrowed}
-          swapToSymbol={borrowed_token?.symbol}
-        />
-      )}
+      <DetailInfoLiqRange
+        isManage
+        rChainId={rChainId}
+        rOwmId={rOwmId}
+        {...detailInfo}
+        isFullRepay={isFullRepay}
+        loading={loading}
+        detailInfoLeverage={
+          swapRequired ? (
+            <>
+              <RouteDetails
+                network={networks[rChainId].id}
+                loading={expectedLoading}
+                $minWidth="230px"
+                swapFrom={collateral_token}
+                swapFromAmounts={[
+                  { value: formValues.stateCollateral, label: t`Collateral:` },
+                  { value: formValues.userCollateral, label: t`Wallet:` },
+                ]}
+                swapTo={borrowed_token}
+                swapToAmounts={[
+                  expectedBorrowed?.borrowedFromStateCollateral,
+                  expectedBorrowed?.borrowedFromUserCollateral,
+                ]}
+                nonSwapAmount={{
+                  value: expectedBorrowed?.userBorrowed,
+                  label: '',
+                }}
+                total={expectedBorrowed?.totalBorrowed}
+                avgPrice={expectedBorrowed?.avgPrice}
+                routeImage={routeImage}
+                type="borrowed"
+              />
+              <DetailInfoLeverageAvgPrice loading={expectedLoading} avgPrice={expectedBorrowed?.avgPrice} />
+              <DetailInfoPriceImpact
+                loading={expectedLoading}
+                priceImpact={detailInfoLeverage?.priceImpact}
+                isHighImpact={detailInfoLeverage?.isHighPriceImpact}
+              />
+            </>
+          ) : null
+        }
+        healthMode={healthMode}
+        userActiveKey={userActiveKey}
+      />
 
       {!isFullRepay && (
         <DetailInfoHealth
