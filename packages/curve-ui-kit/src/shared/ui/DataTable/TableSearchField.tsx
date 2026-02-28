@@ -29,7 +29,7 @@ export const TableSearchField = ({
   isExpanded = true,
 }: Props) => {
   const searchInputRef = useRef<HTMLInputElement>(null)
-  const [isFocused, onFocus, onBlur] = useSwitch()
+  const [, , onBlur] = useSwitch()
   const isMobile = useIsMobile()
   const collapsible = !!toggleExpanded
 
@@ -54,23 +54,11 @@ export const TableSearchField = ({
     <SearchField
       placeholder={placeholder}
       value={value}
-      onFocus={onFocus}
       onBlur={handleBlur}
       inputRef={searchInputRef}
       onSearch={onChange}
       data-testid={notFalsy('table-text-search', testId).join('-')}
       size="small"
-      sx={[
-        (t) => ({
-          transition: t.design.Button.Transition,
-          ...(!isFocused && {
-            '& .MuiOutlinedInput-notchedOutline': {
-              borderColor: `transparent transparent ${t.design.Inputs.Base.Default.Border.Default} transparent`,
-            },
-          }),
-        }),
-        { flex: '1 1 auto', minWidth: 0 },
-      ]}
     />
   )
 
