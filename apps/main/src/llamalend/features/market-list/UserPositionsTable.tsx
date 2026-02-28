@@ -115,7 +115,13 @@ export const UserPositionsTable = ({
         filterExpandedKey={title}
         leftChildren={
           <Box display="flex">
-            <TableSearchField value={globalFilter} onChange={setGlobalFilter} testId={`${title}-search`} isExpanded />
+            <TableSearchField
+              value={globalFilter}
+              onChange={setGlobalFilter}
+              testId={`${title}-search`}
+              isExpanded
+              disableAutoFocus
+            />
           </Box>
         }
         loading={loading}

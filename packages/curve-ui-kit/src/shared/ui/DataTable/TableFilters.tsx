@@ -33,6 +33,7 @@ export const TableFilters = <ColumnIds extends string>({
   collapsible,
   chips,
   searchText,
+  disableSearchAutoFocus,
   onSearch,
 }: {
   leftChildren: ReactNode
@@ -45,6 +46,7 @@ export const TableFilters = <ColumnIds extends string>({
   collapsible?: ReactNode // filters that may be collapsed
   chips?: ReactNode // buttons that are part of the collapsible (on mobile) or always visible (on larger screens)
   searchText: string // text to search for, only used for mobile
+  disableSearchAutoFocus?: boolean
   onSearch: (value: string) => void
 }) => {
   const [filterExpanded, setFilterExpanded] = useFilterExpanded(filterExpandedKey)
@@ -80,6 +82,7 @@ export const TableFilters = <ColumnIds extends string>({
               testId={filterExpandedKey}
               {...(isMobile && { toggleExpanded: toggleSearchExpanded })}
               isExpanded={isExpandedOrValue}
+              disableAutoFocus={disableSearchAutoFocus}
             />
           )}
           {!isMobile && toggleVisibility && (

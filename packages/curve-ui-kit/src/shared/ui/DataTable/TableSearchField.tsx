@@ -18,6 +18,7 @@ type Props = {
   testId?: string
   toggleExpanded?: () => void
   isExpanded?: boolean
+  disableAutoFocus?: boolean
 }
 
 export const TableSearchField = ({
@@ -26,6 +27,7 @@ export const TableSearchField = ({
   onChange,
   testId,
   toggleExpanded,
+  disableAutoFocus,
   isExpanded = true,
 }: Props) => {
   const searchInputRef = useRef<HTMLInputElement>(null)
@@ -59,6 +61,7 @@ export const TableSearchField = ({
       onSearch={onChange}
       data-testid={notFalsy('table-text-search', testId).join('-')}
       size="small"
+      disableAutoFocus={disableAutoFocus}
     />
   )
 
