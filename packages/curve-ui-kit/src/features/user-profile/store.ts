@@ -8,7 +8,6 @@ export type UserProfileState = {
   theme: ThemeKey
   /** Key is either 'crypto', 'stable' or a chainIdPoolId from getChainPoolIdActiveKey. */
   maxSlippage: { crypto: string; stable: string } & Partial<Record<string, string>>
-  isAdvancedMode: boolean
 }
 
 type Action = {
@@ -30,7 +29,6 @@ type Action = {
    * setMaxSlippage(null, "1-0x123...")
    */
   setMaxSlippage: (slippage: string | null, key?: string) => boolean
-  setAdvancedMode: (isAdvanced: boolean) => void
 }
 
 type Store = UserProfileState & Action
@@ -45,7 +43,6 @@ const INITIAL_THEME =
 const INITIAL_STATE: UserProfileState = {
   theme: INITIAL_THEME,
   maxSlippage: { crypto: '0.1', stable: '0.03' },
-  isAdvancedMode: false,
 }
 
 const store: StateCreator<Store> = (set) => ({
@@ -86,8 +83,6 @@ const store: StateCreator<Store> = (set) => ({
 
     return true
   },
-
-  setAdvancedMode: (isAdvancedMode) => set((state) => ({ ...state, isAdvancedMode })),
 })
 
 const cache: PersistOptions<Store> = {

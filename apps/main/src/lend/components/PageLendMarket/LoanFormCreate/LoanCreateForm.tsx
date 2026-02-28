@@ -17,14 +17,11 @@ import { networks } from '@/lend/networks'
 import { useStore } from '@/lend/store/useStore'
 import { Api, type MarketUrlParams, OneWayMarketTemplate, PageContentProps } from '@/lend/types/lend.types'
 import { DEFAULT_HEALTH_MODE } from '@/llamalend/constants'
-import { MarketParameters } from '@/llamalend/features/market-advanced-information/MarketParameters'
 import type { HealthMode } from '@/llamalend/llamalend.types'
-import { Accordion } from '@ui/Accordion'
 import { AlertBox } from '@ui/AlertBox'
 import { Box } from '@ui/Box'
 import { Stepper } from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
-import { TextCaption } from '@ui/TextCaption'
 import { TxInfoBar } from '@ui/TxInfoBar'
 import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
@@ -56,7 +53,6 @@ export const LoanCreateForm = ({
   const setFormValues = useStore((state) => state.loanCreate.setFormValues)
   const resetState = useStore((state) => state.loanCreate.resetState)
 
-  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
   const maxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
 
   const [{ isConfirming, confirmedWarning }, setConfirmWarning] = useState(DEFAULT_CONFIRM_WARNING)
@@ -288,7 +284,7 @@ export const LoanCreateForm = ({
   useEffect(() => {
     if (isLoaded) updateFormValues({})
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [maxSlippage, isAdvancedMode])
+  }, [maxSlippage])
 
   useEffect(() => {
     if (isLoaded) {
@@ -392,12 +388,6 @@ export const LoanCreateForm = ({
         )}
         {steps && <Stepper steps={steps} />}
       </LoanFormConnect>
-
-      {!isAdvancedMode && (
-        <Accordion btnLabel={<TextCaption isCaps isBold>{t`Market details`}</TextCaption>}>
-          <MarketParameters chainId={rChainId} marketId={rOwmId} marketType="lend" action="borrow" />
-        </Accordion>
-      )}
     </>
   )
 }

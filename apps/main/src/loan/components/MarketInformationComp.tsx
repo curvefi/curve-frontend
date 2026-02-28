@@ -4,7 +4,6 @@ import { ChartAndActivityComp } from '@/loan/components/ChartAndActivityComp'
 import type { ChainId, Llamma } from '@/loan/types/loan.types'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
-import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNewBandsChart, useIntegratedLlamaHeader } from '@ui-kit/hooks/useFeatureFlags'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
@@ -33,17 +32,16 @@ export const MarketInformationComp = ({
 }: MarketInformationCompProps) => {
   const newBandsChartEnabled = useNewBandsChart()
   const showPageHeader = useIntegratedLlamaHeader()
-  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
 
   return (
     <>
       <ChartAndActivityComp chainId={chainId} marketId={marketId} market={market} previewPrices={previewPrices} />
-      {isAdvancedMode && !newBandsChartEnabled && (
+      {!newBandsChartEnabled && (
         <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, gap: Spacing.md, padding: Spacing.md }}>
           <BandsComp market={market} marketId={marketId} page={page} />
         </Stack>
       )}
-      {market && (isAdvancedMode || showPageHeader) && (
+      {market && showPageHeader && (
         <Stack
           sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, ...(showPageHeader && { marginTop: Spacing.md }) }}
         >

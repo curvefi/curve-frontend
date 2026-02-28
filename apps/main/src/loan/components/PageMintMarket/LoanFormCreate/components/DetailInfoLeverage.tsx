@@ -24,7 +24,6 @@ export const DetailInfoLeverage = ({
   chainId,
   detailInfoLTV,
   formEstGas,
-  isAdvanceMode,
   isReady,
   isValidFormValues = true,
   haveSigner,
@@ -73,51 +72,45 @@ export const DetailInfoLeverage = ({
 
   return (
     <div>
-      {isAdvanceMode ? (
-        <>
-          <DetailInfoLiqRange
-            {...detailInfo}
-            detailInfoLeverage={
-              <DetailInfoLeverageWrapper>
-                {leverageDetailInfos}
-                <DetailInfoTradeRoutes
-                  loading={!isReady || detailInfo.loading}
-                  routes={detailInfo.routeName}
-                  input={formValues.debt}
-                  inputSymbol={getTokenName(llamma).stablecoin}
-                  output={
-                    !!detailInfo.collateral && !!formValues.collateral
-                      ? +detailInfo.collateral - +formValues.collateral
-                      : ''
-                  }
-                  outputSymbol={llamma?.collateralSymbol ?? ''}
-                />
-              </DetailInfoLeverageWrapper>
-            }
-            healthMode={haveSigner ? healthMode : null}
-            isEditLiqRange={isEditLiqRange}
-            isValidFormValues={isValidFormValues}
-            loading={detailInfo.loading}
-            loanDetails={loanDetails}
-            selectedLiqRange={selectedLiqRange}
-            userLoanDetails={userLoanDetails}
-            handleLiqRangesEdit={handleLiqRangesEdit}
-          />
+      <DetailInfoLiqRange
+        {...detailInfo}
+        detailInfoLeverage={
+          <DetailInfoLeverageWrapper>
+            {leverageDetailInfos}
+            <DetailInfoTradeRoutes
+              loading={!isReady || detailInfo.loading}
+              routes={detailInfo.routeName}
+              input={formValues.debt}
+              inputSymbol={getTokenName(llamma).stablecoin}
+              output={
+                !!detailInfo.collateral && !!formValues.collateral
+                  ? +detailInfo.collateral - +formValues.collateral
+                  : ''
+              }
+              outputSymbol={llamma?.collateralSymbol ?? ''}
+            />
+          </DetailInfoLeverageWrapper>
+        }
+        healthMode={haveSigner ? healthMode : null}
+        isEditLiqRange={isEditLiqRange}
+        isValidFormValues={isValidFormValues}
+        loading={detailInfo.loading}
+        loanDetails={loanDetails}
+        selectedLiqRange={selectedLiqRange}
+        userLoanDetails={userLoanDetails}
+        handleLiqRangesEdit={handleLiqRangesEdit}
+      />
 
-          <DetailInfoN isReady={isReady} n={formValues.n} />
-          <LiquidationRangeSlider
-            {...detailInfo}
-            liqRanges={liqRanges}
-            maxBands={llamma?.maxBands}
-            minBands={llamma?.minBands}
-            selectedLiqRange={selectedLiqRange}
-            showEditLiqRange={isEditLiqRange}
-            handleSelLiqRange={handleSelLiqRange}
-          />
-        </>
-      ) : (
-        leverageDetailInfos
-      )}
+      <DetailInfoN isReady={isReady} n={formValues.n} />
+      <LiquidationRangeSlider
+        {...detailInfo}
+        liqRanges={liqRanges}
+        maxBands={llamma?.maxBands}
+        minBands={llamma?.minBands}
+        selectedLiqRange={selectedLiqRange}
+        showEditLiqRange={isEditLiqRange}
+        handleSelLiqRange={handleSelLiqRange}
+      />
       {haveSigner && (
         <DetailInfoHealth
           {...detailInfo}
@@ -132,7 +125,7 @@ export const DetailInfoLeverage = ({
         />
       )}
       <DetailInfoBorrowRate parameters={loanDetails?.parameters} />
-      {isAdvanceMode && detailInfoLTV}
+      {detailInfoLTV}
       <SlippageToleranceActionInfo maxSlippage={maxSlippage} />
       <DetailInfo
         isDivider
