@@ -1,11 +1,17 @@
+import BigNumber from 'bignumber.js'
 import type { Address } from '@primitives/address.utils'
+import type { Decimal } from '@primitives/decimal.utils'
 import { range, recordValues } from '@primitives/objects.utils'
 import { TIME_FRAMES } from '@ui-kit/lib/model/time'
+import { decimal } from '@ui-kit/utils'
 
 export const MAX_USD_VALUE = 400_000_000
 
 export const oneFloat = (minOrMax = 1, maxExclusive?: number): number =>
   maxExclusive === undefined ? Math.random() * minOrMax : minOrMax + Math.random() * (maxExclusive - minOrMax)
+
+export const oneDecimal = (minOrMax = 1, maxExclusive?: number, maxDecimals = 6): Decimal =>
+  decimal(new BigNumber(oneFloat(minOrMax, maxExclusive)).decimalPlaces(maxDecimals, BigNumber.ROUND_DOWN).toString())!
 
 export const oneInt = (minOrMax = 100, maxExclusive?: number): number => Math.floor(oneFloat(minOrMax, maxExclusive))
 

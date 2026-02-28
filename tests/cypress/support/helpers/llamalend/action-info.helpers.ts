@@ -6,6 +6,9 @@ import { formatNumber } from '@ui-kit/utils'
 const getActionInfo = (name: string, field?: 'previous') =>
   cy.get(`[data-testid="${notFalsy(name, field, 'value').join('-')}"]`, TRANSACTION_LOAD_TIMEOUT)
 
+export const DECIMAL_REGEX = /(\d(\.\d+)?)/
+export const DECIMAL_RANGE_REGEX = new RegExp([DECIMAL_REGEX.source, DECIMAL_REGEX.source].join(' - '))
+
 export const getActionValue = (name: string, field?: 'previous') =>
   getActionInfo(name, field).invoke(TRANSACTION_LOAD_TIMEOUT, 'attr', 'data-value')
 

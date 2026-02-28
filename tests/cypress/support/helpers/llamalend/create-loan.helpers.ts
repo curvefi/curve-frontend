@@ -5,7 +5,7 @@ import { type AlertColor } from '@mui/material/Alert'
 import type { Decimal } from '@primitives/decimal.utils'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { Chain } from '@ui-kit/utils/network'
-import { getActionValue } from './action-info.helpers'
+import { DECIMAL_RANGE_REGEX, getActionValue } from './action-info.helpers'
 
 const chainId = Chain.Ethereum
 
@@ -78,7 +78,7 @@ export const oneLoanTestMarket = (type: LlamaMarketType = oneValueOf(LlamaMarket
  * The action info list is expected to be opened before calling this function.
  */
 export function checkLoanDetailsLoaded({ leverageEnabled }: { leverageEnabled: boolean }) {
-  getActionValue('borrow-price-range').should('match', /(\d(\.\d+)?) - (\d(\.\d+)?)/)
+  getActionValue('borrow-price-range').should('match', DECIMAL_RANGE_REGEX)
   getActionValue('borrow-apr').should('include', '%')
   getActionValue('borrow-apr', 'previous').should('include', '%')
   getActionValue('borrow-ltv').should('include', '%')
@@ -107,10 +107,10 @@ export function writeCreateLoanForm({
   leverageEnabled: boolean
 }) {
   cy.get('[data-testid="borrow-debt-input"] [data-testid="balance-value"]', LOAD_TIMEOUT).should('exist')
-  cy.get('[data-testid="borrow-collateral-input"] input[type="text"]').first().type(collateral)
+  cy.get('[data-testid="borrow-collateral-input"] input[type="text"]').first().type(collateral).blur()
   cy.get('[data-testid="borrow-debt-input"] [data-testid="balance-value"]').should('not.contain.text', '?')
   getActionValue('borrow-health').should('equal', '∞')
-  cy.get('[data-testid="borrow-debt-input"] input[type="text"]').first().type(borrow)
+  cy.get('[data-testid="borrow-debt-input"] input[type="text"]').first().type(borrow).blur()
   getActionValue('borrow-health').should('not.equal', '∞')
   if (leverageEnabled) cy.get('[data-testid="leverage-checkbox"]').click()
 }

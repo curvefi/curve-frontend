@@ -16,7 +16,7 @@ import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionIn
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Token } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { mapQuery, q } from '@ui-kit/types/util'
+import { mapQuery, q, type QueryProp } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
 import { isFormTouched } from '@ui-kit/utils/react-form.utils'
 
@@ -28,6 +28,7 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
   onSlippageChange,
   leverageEnabled,
   form,
+  leverageValue,
 }: {
   params: BorrowMoreParams<ChainId>
   values: BorrowMoreForm
@@ -36,6 +37,7 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
   onSlippageChange: (newSlippage: Decimal) => void
   leverageEnabled: boolean
   form: UseFormReturn<BorrowMoreForm>
+  leverageValue: QueryProp<Decimal | null>
 }) {
   const isOpen = isFormTouched(form, 'userCollateral', 'userBorrowed', 'debt')
   const userState = useUserState(params, isOpen)
@@ -93,14 +95,7 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
       })}
       userState={q(userState)}
       leverageEnabled={leverageEnabled}
-      leverageValue={mapQuery(
-        expectedCollateralQuery,
-        // todo: this might not be correct, use the llamalend-js calculation that's being implemented
-        ({ collateralFromDebt, collateralFromUserBorrowed, userCollateral }) => {
-          const base = new BigNumber(userCollateral).plus(collateralFromUserBorrowed)
-          return decimal(base.isZero() ? 0 : new BigNumber(collateralFromDebt).plus(base).div(base))
-        },
-      )}
+      leverageValue={leverageValue}
       prevLeverageValue={q(useUserCurrentLeverage(params, isOpen))}
       leverageTotalCollateral={mapQuery(expectedCollateralQuery, (d) => d.totalCollateral)}
       slippage={slippage}
