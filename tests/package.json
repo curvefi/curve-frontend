@@ -32,7 +32,7 @@
     "ethers": "*",
     "typescript": "*",
     "vite": "*",
-    "vite-tsconfig-paths": "^5.1.4",
+    "vite-tsconfig-paths": "^6.1.1",
     "vitest": "*",
     "wait-on": "^9.0.3"
   }
