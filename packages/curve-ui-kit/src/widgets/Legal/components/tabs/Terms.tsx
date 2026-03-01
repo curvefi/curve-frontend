@@ -263,7 +263,11 @@ export const Terms = ({ currentApp, network }: TabProps) => (
       </Paragraph>
       <Paragraph>
         {t`Any and all rights related to the Website, including the official logos (as listed`}{' '}
-        <Link color="textSecondary" href="https://curvefinance.notion.site/Brand-Assets-1a6599aae064802fba11ce6a9e642d74" target="_blank">
+        <Link
+          color="textSecondary"
+          href="https://curvefinance.notion.site/Brand-Assets-1a6599aae064802fba11ce6a9e642d74"
+          target="_blank"
+        >
           {t`here`}
         </Link>
         {t`) are held by us.`}

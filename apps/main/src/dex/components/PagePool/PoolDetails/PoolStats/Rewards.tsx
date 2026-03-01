@@ -58,7 +58,10 @@ export const Rewards = ({ chainId, poolData, rewardsApy }: RewardsProps) => {
               <StyledInformationIcon name="InformationSquare" size={16} />
             </Tooltip>
             <StyledDescriptionChip>
-              <ExternalLink $noStyles href="https://docs.curve.finance/user/dex/understanding-rewards#how-rewards-are-displayed">
+              <ExternalLink
+                $noStyles
+                href="https://docs.curve.finance/user/dex/understanding-rewards#how-rewards-are-displayed"
+              >
                 {t`Learn more`}
               </ExternalLink>
             </StyledDescriptionChip>

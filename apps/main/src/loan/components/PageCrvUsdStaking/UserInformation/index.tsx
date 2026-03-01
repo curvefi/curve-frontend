@@ -54,10 +54,8 @@ export const UserInformation = ({ params: { network } }: { params: NetworkUrlPar
           <Typography variant="headingXsBold">{t`Deposit crvUSD and get scrvUSD`}</Typography>
           <Typography variant="bodyMRegular">
             {t`By depositing crvUSD in the Curve Savings Vault, you get`}{' '}
-            <Link href="https://docs.curve.finance/user/yield/guides/deposit-scrvusd">
-              scrvUSD
-            </Link>
-            . {t`This token  represents your share of all the crvUSD deposited in the vault. `}
+            <Link href="https://docs.curve.finance/user/yield/guides/deposit-scrvusd">scrvUSD</Link>.{' '}
+            {t`This token  represents your share of all the crvUSD deposited in the vault. `}
           </Typography>
           <Typography variant="bodyMRegular">
             {t`scrvUSD is a yield-bearing stablecoin you can use further in DeFi.`}
