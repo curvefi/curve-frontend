@@ -12,6 +12,7 @@ import {
 } from '@/dex/components/PagePool/Swap/utils'
 import type { EstimatedGas as FormEstGas } from '@/dex/components/PagePool/types'
 import type { RoutesAndOutput, RoutesAndOutputModal } from '@/dex/components/PageRouterSwap/types'
+import { invalidateUserPoolInfo } from '@/dex/hooks/useUserPoolInfo'
 import { curvejsApi } from '@/dex/lib/curvejs'
 import type { State } from '@/dex/store/useStore'
 import {
@@ -32,7 +33,6 @@ import { setMissingProvider } from '@ui-kit/utils/store.util'
 import { fetchNetworks } from '../entities/networks'
 import { fetchPoolTokenBalances } from '../hooks/usePoolTokenBalances'
 import { invalidatePoolParameters } from '../queries/pool-parameters.query'
-import { invalidateUserPoolInfoQuery } from '../queries/user-pool-info.query'
 
 type StateKey = keyof typeof DEFAULT_STATE
 const { cloneDeep } = lodash
@@ -466,7 +466,7 @@ export const createPoolSwapSlice = (
           })
 
           // re-fetch data
-          await invalidateUserPoolInfoQuery({
+          await invalidateUserPoolInfo({
             chainId: curve.chainId,
             poolId: poolData.pool.id,
             userAddress: curve.signerAddress,
