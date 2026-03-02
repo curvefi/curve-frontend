@@ -4,10 +4,12 @@ import { getUserState } from '@/llamalend/queries/user'
 import type { RepayQuery } from '@/llamalend/queries/validation/manage-loan.types'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { notFalsy } from '@primitives/objects.utils'
-import { parseRoute, type RouteMeta } from '@ui-kit/entities/router-api'
+import { parseMutationRoute, type RouteMutationMeta } from '@ui-kit/entities/router-api'
 import { type UserMarketQuery } from '@ui-kit/lib/model'
 
-type RepayFields = Pick<RepayQuery, 'stateCollateral' | 'userCollateral' | 'userBorrowed' | 'routeId'>
+type RepayFields = Pick<RepayQuery, 'stateCollateral' | 'userCollateral' | 'userBorrowed' | 'routeId'> & {
+  slippage?: RepayQuery['slippage']
+}
 export type RepayFormFields = Pick<RepayQuery, 'stateCollateral' | 'userCollateral' | 'userBorrowed'>
 
 /**
@@ -18,8 +20,8 @@ export type RepayFormFields = Pick<RepayQuery, 'stateCollateral' | 'userCollater
  */
 export function getRepayImplementation(
   marketId: string | LlamaMarketTemplate,
-  { stateCollateral, userCollateral, userBorrowed, routeId }: RepayFields,
-  routeMeta?: Partial<RouteMeta>,
+  { stateCollateral, userCollateral, userBorrowed, routeId, slippage }: RepayFields,
+  routeMeta?: Partial<RouteMutationMeta>,
 ) {
   const market = typeof marketId === 'string' ? getLlamaMarket(marketId) : marketId
   const [hasUserBorrowed, hasUserCollateral, hasStateCollateral] = [userBorrowed, userCollateral, stateCollateral].map(
@@ -36,7 +38,14 @@ export function getRepayImplementation(
       return [
         'zapV2',
         market.leverageZapV2,
-        [{ stateCollateral, userCollateral, userBorrowed, ...((routeMeta as RouteMeta) ?? parseRoute(routeId)) }],
+        [
+          {
+            stateCollateral,
+            userCollateral,
+            userBorrowed,
+            ...((routeMeta as RouteMutationMeta) ?? parseMutationRoute(routeId, +(slippage ?? 0))),
+          },
+        ],
       ] as const
     if (hasLeverage(market)) return ['V1', market.leverage, [stateCollateral, userCollateral, userBorrowed]] as const
   }

@@ -13,7 +13,7 @@ import {
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Address, type Hex } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { parseRoute } from '@ui-kit/entities/router-api'
+import { parseMutationRoute } from '@ui-kit/entities/router-api'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
 import type { OnTransactionSuccess } from '@ui-kit/lib/model/mutation/useTransactionMutation'
@@ -67,7 +67,12 @@ const repay = async (
   const [type, impl] = getRepayImplementation(market.id, { userCollateral, stateCollateral, userBorrowed, routeId })
   switch (type) {
     case 'zapV2':
-      return (await impl.repay({ stateCollateral, userCollateral, userBorrowed, ...parseRoute(routeId) })) as Hex
+      return (await impl.repay({
+        stateCollateral,
+        userCollateral,
+        userBorrowed,
+        ...parseMutationRoute(routeId, slippage),
+      })) as Hex
     case 'V1':
     case 'V2':
       await impl.repayExpectedBorrowed(stateCollateral, userCollateral, userBorrowed, +slippage)
