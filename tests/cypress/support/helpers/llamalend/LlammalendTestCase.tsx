@@ -1,7 +1,9 @@
 import { useMemo } from 'react'
 import { prefetchMarkets } from '@/lend/entities/chain/chain-query'
 import { CreateLoanForm } from '@/llamalend/features/borrow/components/CreateLoanForm'
+import { AddCollateralForm } from '@/llamalend/features/manage-loan/components/AddCollateralForm'
 import { BorrowMoreForm } from '@/llamalend/features/manage-loan/components/BorrowMoreForm'
+import { RemoveCollateralForm } from '@/llamalend/features/manage-loan/components/RemoveCollateralForm'
 import { RepayForm } from '@/llamalend/features/manage-loan/components/RepayForm'
 import { ClosePositionForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ClosePositionForm'
 import { ImproveHealthForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ImproveHealthForm'
@@ -28,6 +30,8 @@ const prefetch = () => prefetchMarkets({})
 // todo: soft liquidation should be detected not forced by passing a tab. However, that detection is in the separate apps for now.
 const Components = {
   'borrow-more': BorrowMoreForm,
+  'add-collateral': AddCollateralForm,
+  'remove-collateral': RemoveCollateralForm,
   repay: RepayForm,
   'improve-health': ImproveHealthForm,
   close: ClosePositionForm,
