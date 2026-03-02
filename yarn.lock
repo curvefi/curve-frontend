@@ -290,7 +290,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@carbon/icons-react@npm:^11.76.0":
+"@carbon/icons-react@npm:^11.74.0":
   version: 11.76.0
   resolution: "@carbon/icons-react@npm:11.76.0"
   dependencies:
@@ -303,7 +303,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@chromatic-com/storybook@npm:^5.0.1":
+"@chromatic-com/storybook@npm:^5.0.0":
   version: 5.0.1
   resolution: "@chromatic-com/storybook@npm:5.0.1"
   dependencies:
@@ -1965,7 +1965,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mui/icons-material@npm:^7.3.8":
+"@mui/icons-material@npm:^7.3.7":
   version: 7.3.8
   resolution: "@mui/icons-material@npm:7.3.8"
   dependencies:
@@ -1981,7 +1981,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mui/material@npm:^7.3.8":
+"@mui/material@npm:^7.3.7":
   version: 7.3.8
   resolution: "@mui/material@npm:7.3.8"
   dependencies:
@@ -2099,7 +2099,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mui/utils@npm:^7.3.8":
+"@mui/utils@npm:^7.3.7, @mui/utils@npm:^7.3.8":
   version: 7.3.8
   resolution: "@mui/utils@npm:7.3.8"
   dependencies:
@@ -4315,7 +4315,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sentry/react@npm:^10.40.0":
+"@sentry/react@npm:^10.36.0":
   version: 10.40.0
   resolution: "@sentry/react@npm:10.40.0"
   dependencies:
@@ -5438,13 +5438,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/query-async-storage-persister@npm:^5.90.23":
-  version: 5.90.23
-  resolution: "@tanstack/query-async-storage-persister@npm:5.90.23"
+"@tanstack/query-async-storage-persister@npm:^5.90.22":
+  version: 5.90.24
+  resolution: "@tanstack/query-async-storage-persister@npm:5.90.24"
   dependencies:
     "@tanstack/query-core": "npm:5.90.20"
-    "@tanstack/query-persist-client-core": "npm:5.92.0"
-  checksum: 10c0/d781cb235aee3b6e05dd9e8ae55f5dc0065f876507f72475fb2659f573f43fae41499c5ebe3d517c2e73b70708efa17d1322a912d9617b4e94d2ab0ed2c31b2c
+    "@tanstack/query-persist-client-core": "npm:5.92.1"
+  checksum: 10c0/ad889ed257034784301d4ef2ba98091e2e61e98931ac0e5a6255e81631a1b7e12a9b9c585fae377b1988f247ffb6de235aeeb58187a2c473459bf681dc4dd433
   languageName: node
   linkType: hard
 
@@ -5468,6 +5468,15 @@ __metadata:
   dependencies:
     "@tanstack/query-core": "npm:5.90.20"
   checksum: 10c0/ec69661ec74d707b641eadaae916937d3f29ee4eae0ef31b7b0a4b58227fd5c6da13a95038448d17c67a4b0d675a084ea70faa4bc543e31b09c91399fb7120a9
+  languageName: node
+  linkType: hard
+
+"@tanstack/query-persist-client-core@npm:5.92.1":
+  version: 5.92.1
+  resolution: "@tanstack/query-persist-client-core@npm:5.92.1"
+  dependencies:
+    "@tanstack/query-core": "npm:5.90.20"
+  checksum: 10c0/6fa0be7a61beb6cb3c62246f3fbab0761b36ab2fa66a8bce6e0af0a6b8c66eb7d612c417c98c5d0487e6f6c37ef115b6e772c95072bf7b1b46d61810ee2c1485
   languageName: node
   linkType: hard
 
@@ -5506,7 +5515,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/react-router-devtools@npm:^1.163.3":
+"@tanstack/react-router-devtools@npm:^1.157.18":
   version: 1.163.3
   resolution: "@tanstack/react-router-devtools@npm:1.163.3"
   dependencies:
@@ -5523,7 +5532,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/react-router@npm:^1.163.3":
+"@tanstack/react-router@npm:^1.157.18":
   version: 1.163.3
   resolution: "@tanstack/react-router@npm:1.163.3"
   dependencies:
@@ -5815,7 +5824,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/lodash@npm:^4.17.24":
+"@types/lodash@npm:^4.17.23":
   version: 4.17.24
   resolution: "@types/lodash@npm:4.17.24"
   checksum: 10c0/b72f60d4daacdad1fa643edb3faba204c02a01eb1ac00a83ff73496a6d236fc55e459c06106e8ced42277dba932d087d8fc090f8de4ef590d3f91e6d6f7ce85a
@@ -5971,7 +5980,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/eslint-plugin@npm:8.56.1, @typescript-eslint/eslint-plugin@npm:^8.56.1":
+"@typescript-eslint/eslint-plugin@npm:8.56.1, @typescript-eslint/eslint-plugin@npm:^8.54.0":
   version: 8.56.1
   resolution: "@typescript-eslint/eslint-plugin@npm:8.56.1"
   dependencies:
@@ -5991,7 +6000,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/parser@npm:8.56.1, @typescript-eslint/parser@npm:^8.56.1":
+"@typescript-eslint/parser@npm:8.56.1, @typescript-eslint/parser@npm:^8.54.0":
   version: 8.56.1
   resolution: "@typescript-eslint/parser@npm:8.56.1"
   dependencies:
@@ -6719,7 +6728,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@walletconnect/ethereum-provider@npm:^2.23.7":
+"@walletconnect/ethereum-provider@npm:^2.23.4":
   version: 2.23.7
   resolution: "@walletconnect/ethereum-provider@npm:2.23.7"
   dependencies:
@@ -8517,21 +8526,21 @@ __metadata:
   dependencies:
     "@babel/core": "npm:^7.28.6"
     "@babel/runtime": "npm:^7.28.6"
-    "@chromatic-com/storybook": "npm:^5.0.1"
+    "@chromatic-com/storybook": "npm:^5.0.0"
     "@coinbase/wallet-sdk": "npm:~4.3.7"
     "@emotion/react": "npm:^11.14.0"
     "@emotion/styled": "npm:^11.14.1"
-    "@mui/icons-material": "npm:^7.3.8"
-    "@mui/material": "npm:^7.3.8"
-    "@mui/utils": "npm:^7.3.8"
+    "@mui/icons-material": "npm:^7.3.7"
+    "@mui/material": "npm:^7.3.7"
+    "@mui/utils": "npm:^7.3.7"
     "@safe-global/safe-apps-provider": "npm:~0.18.6"
     "@safe-global/safe-apps-sdk": "npm:~9.1.0"
-    "@sentry/react": "npm:^10.40.0"
+    "@sentry/react": "npm:^10.36.0"
     "@storybook/addon-a11y": "npm:10.2.13"
     "@storybook/addon-docs": "npm:10.2.13"
     "@storybook/addon-themes": "npm:10.2.13"
     "@storybook/react-vite": "npm:10.2.13"
-    "@tanstack/query-async-storage-persister": "npm:^5.90.23"
+    "@tanstack/query-async-storage-persister": "npm:^5.90.22"
     "@tanstack/react-query": "npm:5.90.21"
     "@tanstack/react-query-devtools": "npm:5.91.3"
     "@tanstack/react-query-persist-client": "npm:5.90.23"
@@ -8539,16 +8548,16 @@ __metadata:
     "@types/react": "npm:*"
     "@types/react-dom": "npm:*"
     "@vitejs/plugin-react": "npm:*"
-    "@walletconnect/ethereum-provider": "npm:^2.23.7"
+    "@walletconnect/ethereum-provider": "npm:^2.23.4"
     dayjs: "npm:^1.11.19"
     eslint: "npm:*"
     eslint-config-custom: "npm:*"
     storybook: "npm:10.2.13"
     typescript: "npm:*"
-    viem: "npm:^2.46.3"
+    viem: "npm:^2.45.0"
     vite: "npm:*"
     vitest: "npm:*"
-    wagmi: "npm:^3.5.0"
+    wagmi: "npm:^3.4.1"
   peerDependencies:
     ethers: "*"
     immer: "*"
@@ -9729,8 +9738,8 @@ __metadata:
   dependencies:
     "@eslint/js": "npm:*"
     "@tanstack/eslint-plugin-query": "npm:5.91.4"
-    "@typescript-eslint/eslint-plugin": "npm:^8.56.1"
-    "@typescript-eslint/parser": "npm:^8.56.1"
+    "@typescript-eslint/eslint-plugin": "npm:^8.54.0"
+    "@typescript-eslint/parser": "npm:^8.54.0"
     eslint: "npm:*"
     eslint-config-prettier: "npm:^10.1.8"
     eslint-import-resolver-typescript: "npm:4.4.4"
@@ -9738,9 +9747,9 @@ __metadata:
     eslint-plugin-no-only-tests: "npm:^3.3.0"
     eslint-plugin-react: "npm:7.37.5"
     eslint-plugin-react-hooks: "npm:^7.0.1"
-    eslint-plugin-react-refresh: "npm:^0.5.2"
+    eslint-plugin-react-refresh: "npm:^0.4.26"
     eslint-plugin-storybook: "npm:10.2.13"
-    eslint-plugin-unused-imports: "npm:^4.4.1"
+    eslint-plugin-unused-imports: "npm:^4.3.0"
     prettier-eslint: "npm:^16.4.2"
     typescript: "npm:*"
   languageName: unknown
@@ -9870,12 +9879,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-react-refresh@npm:^0.5.2":
-  version: 0.5.2
-  resolution: "eslint-plugin-react-refresh@npm:0.5.2"
+"eslint-plugin-react-refresh@npm:^0.4.26":
+  version: 0.4.26
+  resolution: "eslint-plugin-react-refresh@npm:0.4.26"
   peerDependencies:
-    eslint: ^9 || ^10
-  checksum: 10c0/6e5b1b8ad673535ea1134fa16ecda986c389a045b87ca935e6c5f69070b1889218f3116bfb8b793ec10f37c286f28904d0b5b1d62a76760e465aa32e73e6010e
+    eslint: ">=8.40"
+  checksum: 10c0/11c2b25b7a7025e621b02970c4cf3815b0b77486027df9f8bb731cc52972156804fd163b0f99404b33e36a3c60cd1a1be8199ba64c66b5276da3173bbb5ab6e7
   languageName: node
   linkType: hard
 
@@ -9919,7 +9928,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-unused-imports@npm:^4.4.1":
+"eslint-plugin-unused-imports@npm:^4.3.0":
   version: 4.4.1
   resolution: "eslint-plugin-unused-imports@npm:4.4.1"
   peerDependencies:
@@ -12314,9 +12323,9 @@ __metadata:
     "@hookform/error-message": "npm:^2.0.1"
     "@hookform/resolvers": "npm:^5.2.2"
     "@supercharge/promise-pool": "npm:^3.2.0"
-    "@tanstack/react-router": "npm:^1.163.3"
-    "@tanstack/react-router-devtools": "npm:^1.163.3"
-    "@types/lodash": "npm:^4.17.24"
+    "@tanstack/react-router": "npm:^1.157.18"
+    "@tanstack/react-router-devtools": "npm:^1.157.18"
+    "@types/lodash": "npm:^4.17.23"
     "@types/memoizee": "npm:^0.4.12"
     "@types/node": "npm:*"
     "@types/react": "npm:*"
@@ -12337,7 +12346,7 @@ __metadata:
     react-hook-form: "npm:7.71.2"
     recharts: "npm:2.15.4"
     typescript: "npm:*"
-    typescript-eslint: "npm:^8.56.1"
+    typescript-eslint: "npm:^8.54.0"
     ui: "npm:*"
     vest: "npm:^5.4.6"
     vite: "npm:*"
@@ -15465,7 +15474,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript-eslint@npm:^8.56.1":
+"typescript-eslint@npm:^8.54.0":
   version: 8.56.1
   resolution: "typescript-eslint@npm:8.56.1"
   dependencies:
@@ -15511,7 +15520,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "ui@workspace:packages/ui"
   dependencies:
-    "@carbon/icons-react": "npm:^11.76.0"
+    "@carbon/icons-react": "npm:^11.74.0"
     "@types/react": "npm:*"
     "@types/react-dom": "npm:*"
     eslint: "npm:*"
@@ -15927,7 +15936,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"viem@npm:^2.46.3":
+"viem@npm:^2.45.0":
   version: 2.46.3
   resolution: "viem@npm:2.46.3"
   dependencies:
@@ -16134,7 +16143,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"wagmi@npm:^3.5.0":
+"wagmi@npm:^3.4.1":
   version: 3.5.0
   resolution: "wagmi@npm:3.5.0"
   dependencies:
