@@ -64,7 +64,7 @@ const resolveMarket = (marketType: LlamaMarketType, market: LlamaMarketTemplate 
     ? fromLend(market as LendMarketTemplate | undefined)
     : fromMint(market as MintMarketTemplate | undefined)
 
-type UsePositionDetailsParams = {
+export type UseBorrowPositionDetailsParams = {
   marketType: LlamaMarketType
   chainId: number
   marketId: string
@@ -78,7 +78,7 @@ export const useBorrowPositionDetails = ({
   marketId,
   blockchainId,
   market,
-}: UsePositionDetailsParams): BorrowPositionDetailsProps => {
+}: UseBorrowPositionDetailsParams): BorrowPositionDetailsProps => {
   const { isHydrated } = useCurve()
   const { address: userAddress } = useConnection()
   const {

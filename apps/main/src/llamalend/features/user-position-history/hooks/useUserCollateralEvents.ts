@@ -10,6 +10,7 @@ import {
 } from '@curvefi/prices-api/lending'
 import type { Address } from '@primitives/address.utils'
 import { scanTxPath, type BaseConfig } from '@ui/utils'
+import { LlamaMarketType } from '@ui-kit/types/market'
 import { useUserCrvUsdCollateralEventsQuery } from '../queries/user-crvusd-collateral-events'
 import { useUserLendCollateralEventsQuery } from '../queries/user-lend-collateral-events'
 
@@ -71,8 +72,8 @@ const parseEventType = (
   return type as UserCollateralEventType
 }
 
-type UseUserCollateralEventsProps = {
-  app: 'lend' | 'crvusd'
+export type UserCollateralEventsProps = {
+  app: LlamaMarketType
   userAddress: Address | undefined
   controllerAddress: Address | undefined
   chain: Chain | undefined
@@ -89,7 +90,7 @@ export const useUserCollateralEvents = ({
   collateralToken,
   borrowToken,
   network,
-}: UseUserCollateralEventsProps): {
+}: UserCollateralEventsProps): {
   data?: ParsedUserCollateralEvents
   isLoading: boolean
   isError: boolean
@@ -100,8 +101,8 @@ export const useUserCollateralEvents = ({
     userAddress,
   }
   const { data, isLoading, isError } = {
-    lend: useUserLendCollateralEventsQuery(params, app == 'lend'),
-    crvusd: useUserCrvUsdCollateralEventsQuery(params, app == 'crvusd'),
+    [LlamaMarketType.Lend]: useUserLendCollateralEventsQuery(params, app === LlamaMarketType.Lend),
+    [LlamaMarketType.Mint]: useUserCrvUsdCollateralEventsQuery(params, app === LlamaMarketType.Mint),
   }[app]
 
   return useMemo(

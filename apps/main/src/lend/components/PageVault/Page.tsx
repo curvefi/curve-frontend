@@ -128,7 +128,9 @@ export const Page = () => {
           supplyAddress={market?.addresses?.vault || ''}
         />
         <MarketInformationTabs currentTab="supply" hrefs={positionDetailsHrefs}>
-          {hasSupplyPosition ? <SupplyPositionDetails {...supplyPositionDetails} /> : <NoPosition type="supply" />}
+          <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
+            {hasSupplyPosition ? <SupplyPositionDetails {...supplyPositionDetails} /> : <NoPosition type="supply" />}
+          </Stack>
         </MarketInformationTabs>
         <Stack>
           {!showPageHeader && <MarketDetails {...marketDetails} />}
