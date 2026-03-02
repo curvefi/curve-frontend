@@ -4,13 +4,13 @@ import type { UseFormReturn } from 'react-hook-form'
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
 import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
 import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
-import type { NetworkDict } from '@/llamalend/llamalend.types'
+import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { useBorrowMoreExpectedCollateral } from '@/llamalend/queries/borrow-more/borrow-more-expected-collateral.query'
 import { useBorrowMoreEstimateGas } from '@/llamalend/queries/borrow-more/borrow-more-gas-estimate.query'
 import { useBorrowMoreHealth } from '@/llamalend/queries/borrow-more/borrow-more-health.query'
 import { useBorrowMoreIsApproved } from '@/llamalend/queries/borrow-more/borrow-more-is-approved.query'
 import { useBorrowMorePriceImpact } from '@/llamalend/queries/borrow-more/borrow-more-price-impact.query'
-import { useMarketFutureRates, useMarketRates } from '@/llamalend/queries/market'
+import { useMarketFutureRates, useMarketOraclePrice, useMarketRates } from '@/llamalend/queries/market'
 import { getUserHealthOptions, useUserCurrentLeverage, useUserState } from '@/llamalend/queries/user'
 import type { BorrowMoreForm, BorrowMoreParams } from '@/llamalend/queries/validation/borrow-more.validation'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
@@ -20,6 +20,7 @@ import type { Decimal } from '@primitives/decimal.utils'
 import { mapQuery, q } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
 import { isFormTouched } from '@ui-kit/utils/react-form.utils'
+import { useNetBorrowApr } from '../hooks/useNetBorrowApr'
 
 export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
   params,
@@ -29,12 +30,14 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
   onSlippageChange,
   leverageEnabled,
   form,
+  market,
   routes,
 }: {
   params: BorrowMoreParams<ChainId>
   values: BorrowMoreForm
   tokens: { collateralToken: Token | undefined; borrowToken: Token | undefined }
   networks: NetworkDict<ChainId>
+  market: LlamaMarketTemplate | undefined
   onSlippageChange: (newSlippage: Decimal) => void
   leverageEnabled: boolean
   form: UseFormReturn<BorrowMoreForm>
@@ -52,6 +55,21 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
 
   const prevHealth = useHealthQueries((isFull) => getUserHealthOptions({ ...params, isFull }, isOpen))
 
+  const { marketRates, marketFutureRates, netBorrowApr, futureBorrowApr } = useNetBorrowApr(
+    {
+      market,
+      params,
+      marketRates: q(useMarketRates(params, isOpen)),
+      marketFutureRates: q(
+        useMarketFutureRates(
+          { chainId: params.chainId, marketId: params.marketId, debt: totalDebt },
+          isOpen && !!totalDebt,
+        ),
+      ),
+    },
+    isOpen,
+  )
+
   return (
     <LoanActionInfoList
       isOpen={isOpen}
@@ -59,13 +77,10 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
       gas={q(useBorrowMoreEstimateGas(networks, params, isOpen))}
       health={q(useBorrowMoreHealth(params, isOpen && !!debt))}
       prevHealth={q(prevHealth)}
-      prevRates={q(useMarketRates(params, isOpen))}
-      rates={q(
-        useMarketFutureRates(
-          { chainId: params.chainId, marketId: params.marketId, debt: totalDebt },
-          isOpen && !!totalDebt,
-        ),
-      )}
+      prevRates={marketRates}
+      rates={marketFutureRates}
+      prevNetBorrowApr={netBorrowApr && q(netBorrowApr)}
+      netBorrowApr={futureBorrowApr && q(futureBorrowApr)}
       loanToValue={q(
         useLoanToValueFromUserState(
           {
@@ -109,7 +124,9 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
       routes={routes}
       slippage={slippage}
       onSlippageChange={onSlippageChange}
+      exchangeRate={q(useMarketOraclePrice(params, isOpen))}
       collateralSymbol={collateralToken?.symbol}
+      borrowSymbol={borrowToken?.symbol}
       priceImpact={q(useBorrowMorePriceImpact(params, isOpen && leverageEnabled))}
     />
   )

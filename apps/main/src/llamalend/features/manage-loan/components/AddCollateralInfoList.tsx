@@ -1,12 +1,13 @@
 import BigNumber from 'bignumber.js'
 import type { UseFormReturn } from 'react-hook-form'
+import { useNetBorrowApr } from '@/llamalend/features/borrow/hooks/useNetBorrowApr'
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
 import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
-import type { NetworkDict } from '@/llamalend/llamalend.types'
+import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { useAddCollateralFutureLeverage } from '@/llamalend/queries/add-collateral/add-collateral-future-leverage.query'
 import { useAddCollateralEstimateGas } from '@/llamalend/queries/add-collateral/add-collateral-gas-estimate.query'
 import { getAddCollateralHealthOptions } from '@/llamalend/queries/add-collateral/add-collateral-health.query'
-import { useMarketRates } from '@/llamalend/queries/market'
+import { useMarketOraclePrice, useMarketRates } from '@/llamalend/queries/market'
 import { getUserHealthOptions, useUserCurrentLeverage, useUserState } from '@/llamalend/queries/user'
 import { CollateralParams } from '@/llamalend/queries/validation/manage-loan.types'
 import type { CollateralForm } from '@/llamalend/queries/validation/manage-loan.validation'
@@ -19,6 +20,7 @@ import { decimal } from '@ui-kit/utils'
 import { isFormTouched } from '@ui-kit/utils/react-form.utils'
 
 export function AddCollateralInfoList<ChainId extends IChainId>({
+  market,
   params,
   values: { userCollateral },
   collateralToken,
@@ -27,6 +29,7 @@ export function AddCollateralInfoList<ChainId extends IChainId>({
   leverageEnabled,
   form,
 }: {
+  market: LlamaMarketTemplate | undefined
   params: CollateralParams<ChainId>
   values: CollateralForm
   collateralToken: Token | undefined
@@ -48,13 +51,23 @@ export function AddCollateralInfoList<ChainId extends IChainId>({
       },
   )
 
+  const { marketRates, netBorrowApr } = useNetBorrowApr(
+    {
+      market,
+      params,
+      marketRates: q(useMarketRates(params, isOpen)),
+    },
+    isOpen,
+  )
+
   return (
     <LoanActionInfoList
       isOpen={isOpen}
       gas={q(useAddCollateralEstimateGas(networks, params, isOpen))}
       health={q(useHealthQueries((isFull) => getAddCollateralHealthOptions({ ...params, isFull }, isOpen)))}
       prevHealth={q(useHealthQueries((isFull) => getUserHealthOptions({ ...params, isFull }, isOpen)))}
-      rates={q(useMarketRates(params, isOpen))}
+      prevRates={marketRates}
+      prevNetBorrowApr={netBorrowApr && q(netBorrowApr)}
       prevLoanToValue={q(
         useLoanToValueFromUserState(
           {
@@ -87,6 +100,9 @@ export function AddCollateralInfoList<ChainId extends IChainId>({
       leverageEnabled={leverageEnabled}
       prevLeverageValue={q(useUserCurrentLeverage(params, isOpen))}
       leverageValue={q(useAddCollateralFutureLeverage(params, isOpen))}
+      exchangeRate={q(useMarketOraclePrice(params, isOpen))}
+      collateralSymbol={collateralToken?.symbol}
+      borrowSymbol={borrowToken?.symbol}
     />
   )
 }

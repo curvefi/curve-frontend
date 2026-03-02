@@ -1,3 +1,5 @@
+import { BigNumber } from 'bignumber.js'
+import { Decimal } from '@primitives/decimal.utils'
 import type { CrvUsdSnapshot } from '@ui-kit/entities/crvusd-snapshots'
 import type { LendingSnapshot } from '@ui-kit/entities/lending-snapshots'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
@@ -16,6 +18,9 @@ const { AverageRates } = Duration
 
 export const LAST_MONTH = AverageRates.Monthly
 export const LAST_WEEK = AverageRates.Weekly
+
+export const computeDecimalTotalRate = (rate?: Decimal, rebasingYield?: number | null) =>
+  rate && decimal(new BigNumber(rate).minus(rebasingYield ?? 0))
 
 export const computeTotalRate = (rate: number, rebasingYield: number) => rate - rebasingYield
 

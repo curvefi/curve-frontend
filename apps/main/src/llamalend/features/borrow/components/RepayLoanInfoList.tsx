@@ -1,9 +1,10 @@
 import { BigNumber } from 'bignumber.js'
 import type { UseFormReturn } from 'react-hook-form'
+import { useNetBorrowApr } from '@/llamalend/features/borrow/hooks/useNetBorrowApr'
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
 import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
-import type { NetworkDict } from '@/llamalend/llamalend.types'
-import { useMarketFutureRates, useMarketRates } from '@/llamalend/queries/market'
+import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
+import { useMarketOraclePrice, useMarketRates } from '@/llamalend/queries/market'
 import { useRepayExpectedBorrowed } from '@/llamalend/queries/repay/repay-expected-borrowed.query'
 import { useRepayEstimateGas } from '@/llamalend/queries/repay/repay-gas-estimate.query'
 import { getRepayHealthOptions } from '@/llamalend/queries/repay/repay-health.query'
@@ -57,6 +58,7 @@ function useRepayRemainingDebt<ChainId extends IChainId>(
 }
 
 export function RepayLoanInfoList<ChainId extends IChainId>({
+  market,
   params,
   values: { slippage, userCollateral, userBorrowed, isFull },
   tokens: { collateralToken, borrowToken },
@@ -66,6 +68,7 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
   swapRequired,
   form,
 }: {
+  market: LlamaMarketTemplate | undefined
   params: RepayParams<ChainId>
   values: RepayForm
   tokens: { collateralToken: Token | undefined; borrowToken: Token | undefined }
@@ -79,6 +82,16 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
   const userState = useUserState(params, isOpen)
   const priceImpact = useRepayPriceImpact(params, isOpen && swapRequired)
   const debt = useRepayRemainingDebt({ params, swapRequired, borrowToken }, { isFull, userBorrowed }, isOpen)
+
+  const { marketRates, netBorrowApr } = useNetBorrowApr(
+    {
+      market,
+      params,
+      marketRates: q(useMarketRates(params, isOpen)),
+    },
+    isOpen,
+  )
+
   return (
     <LoanActionInfoList
       isOpen={isOpen}
@@ -87,8 +100,8 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
       health={q(useHealthQueries((isFull) => getRepayHealthOptions({ ...params, isFull }, isOpen)))}
       prevHealth={q(useHealthQueries((isFull) => getUserHealthOptions({ ...params, isFull }, isOpen)))}
       isFullRepay={isFull}
-      prevRates={q(useMarketRates(params, isOpen))}
-      rates={q(useMarketFutureRates(params, isOpen))}
+      prevRates={marketRates}
+      prevNetBorrowApr={netBorrowApr && q(netBorrowApr)}
       debt={q(debt)}
       userState={q(userState)}
       prices={q(useRepayPrices(params, isOpen))}
@@ -107,7 +120,9 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
           isOpen,
         ),
       )}
+      exchangeRate={q(useMarketOraclePrice(params, isOpen))}
       collateralSymbol={collateralToken?.symbol}
+      borrowSymbol={borrowToken?.symbol}
       {...(hasLeverage &&
         swapRequired && {
           leverageEnabled: true,
