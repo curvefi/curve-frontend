@@ -1,10 +1,14 @@
-import { getLlamaMarket, hasDeleverage, hasLeverage, hasV2Leverage } from '@/llamalend/llama.utils'
+import { getLlamaMarket, hasDeleverage, hasLeverage, hasV2Leverage, hasZapV2 } from '@/llamalend/llama.utils'
+import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { getUserState } from '@/llamalend/queries/user'
 import type { RepayQuery } from '@/llamalend/queries/validation/manage-loan.types'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
+import { notFalsy } from '@primitives/objects.utils'
+import { parseRoute, type RouteMeta } from '@ui-kit/entities/router-api'
 import { type UserMarketQuery } from '@ui-kit/lib/model'
 
-type RepayFields = Pick<RepayQuery, 'stateCollateral' | 'userCollateral' | 'userBorrowed'>
+type RepayFields = Pick<RepayQuery, 'stateCollateral' | 'userCollateral' | 'userBorrowed' | 'routeId'>
+export type RepayFormFields = Pick<RepayQuery, 'stateCollateral' | 'userCollateral' | 'userBorrowed'>
 
 /**
  * Determines the appropriate repay implementation and its parameters based on the market type and leverage options.
@@ -13,28 +17,43 @@ type RepayFields = Pick<RepayQuery, 'stateCollateral' | 'userCollateral' | 'user
  * - fallback to unleveraged repay from borrowed token
  */
 export function getRepayImplementation(
-  marketId: string,
-  { stateCollateral, userCollateral, userBorrowed }: RepayFields,
+  marketId: string | LlamaMarketTemplate,
+  { stateCollateral, userCollateral, userBorrowed, routeId }: RepayFields,
+  routeMeta?: Partial<RouteMeta>,
 ) {
-  const market = getLlamaMarket(marketId)
-
+  const market = typeof marketId === 'string' ? getLlamaMarket(marketId) : marketId
+  const [hasUserBorrowed, hasUserCollateral, hasStateCollateral] = [userBorrowed, userCollateral, stateCollateral].map(
+    (v) => !!+v,
+  )
+  if (!hasUserCollateral && !hasStateCollateral) return ['unleveraged', market, [userBorrowed]] as const
   if (market instanceof MintMarketTemplate) {
-    if (hasV2Leverage(market)) {
+    if (hasV2Leverage(market))
       return ['V2', market.leverageV2, [stateCollateral, userCollateral, userBorrowed]] as const
-    }
-    if (+stateCollateral && hasDeleverage(market)) {
-      // use deleverage only if stateCollateral > 0 & supported, otherwise fall back to unleveraged
-      if (+userBorrowed) throw new Error(`Invalid userBorrowed for deleverage: ${userBorrowed}`)
-      if (+userCollateral) throw new Error(`Invalid userCollateral for deleverage: ${userCollateral}`)
+    if (hasStateCollateral && !hasUserBorrowed && !hasUserCollateral && hasDeleverage(market))
       return ['deleverage', market.deleverage, [stateCollateral]] as const
-    }
-  } else if (hasLeverage(market)) {
-    return ['V1', market.leverage, [stateCollateral, userCollateral, userBorrowed]] as const
+  } else {
+    if (hasZapV2(market))
+      return [
+        'zapV2',
+        market.leverageZapV2,
+        [{ stateCollateral, userCollateral, userBorrowed, ...((routeMeta as RouteMeta) ?? parseRoute(routeId)) }],
+      ] as const
+    if (hasLeverage(market)) return ['V1', market.leverage, [stateCollateral, userCollateral, userBorrowed]] as const
   }
+  throw new Error(
+    `Invalid repay implementation for ${market.constructor.name} market: ${marketId} with ${notFalsy(
+      hasUserBorrowed && 'user borrowed',
+      hasUserCollateral && 'user collateral',
+      hasStateCollateral && 'state collateral',
+    ).join(', ')}`,
+  )
+}
 
-  if (+userCollateral) throw new Error(`Invalid userCollateral for repay: ${userCollateral}`)
-  if (+stateCollateral) throw new Error(`Invalid stateCollateral for repay: ${stateCollateral}`)
-  return ['unleveraged', market, [userBorrowed]] as const
+export function getRepayImplementationType(marketId: string | LlamaMarketTemplate, fields: RepayFormFields) {
+  const params = { ...fields, routeId: undefined }
+  const routeMeta = {} // we are ignoring the args in this helper anyway
+  const [implementationType] = getRepayImplementation(marketId, params, routeMeta)
+  return implementationType
 }
 
 /**

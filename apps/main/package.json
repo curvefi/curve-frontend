@@ -32,7 +32,7 @@
     "fuse.js": "^7.1.0",
     "lightweight-charts": "^5.1.0",
     "memoizee": "^0.4.17",
-    "react-hook-form": "7.71.1",
+    "react-hook-form": "7.71.2",
     "recharts": "2.15.4",
     "ui": "*",
     "vest": "^5.4.6",

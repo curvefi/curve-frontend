@@ -70,7 +70,7 @@ export const getSections = () => [
       },
       {
         label: t`User Docs`,
-        href: 'https://resources.curve.finance/',
+        href: 'https://docs.curve.finance/',
         icon: <HelpOutlineIcon />,
       },
       {

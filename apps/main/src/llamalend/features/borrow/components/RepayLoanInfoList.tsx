@@ -3,6 +3,7 @@ import type { UseFormReturn } from 'react-hook-form'
 import { useNetBorrowApr } from '@/llamalend/features/borrow/hooks/useNetBorrowApr'
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
 import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
+import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { useMarketOraclePrice, useMarketRates } from '@/llamalend/queries/market'
 import { useRepayExpectedBorrowed } from '@/llamalend/queries/repay/repay-expected-borrowed.query'
@@ -66,6 +67,7 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
   onSlippageChange,
   hasLeverage,
   swapRequired,
+  routes,
   form,
 }: {
   market: LlamaMarketTemplate | undefined
@@ -76,6 +78,7 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
   onSlippageChange: (newSlippage: Decimal) => void
   hasLeverage: boolean | undefined
   swapRequired: boolean
+  routes: MarketRoutes | undefined
   form: UseFormReturn<RepayForm>
 }) {
   const isOpen = isFormTouched(form, 'stateCollateral', 'userCollateral', 'userBorrowed')
@@ -122,6 +125,8 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
       )}
       exchangeRate={q(useMarketOraclePrice(params, isOpen))}
       collateralSymbol={collateralToken?.symbol}
+      leverageEnabled={hasLeverage}
+      routes={routes}
       borrowSymbol={borrowToken?.symbol}
       {...(hasLeverage &&
         swapRequired && {
