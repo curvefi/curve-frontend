@@ -1,4 +1,5 @@
 import type { StorybookConfig } from '@storybook/react-vite'
+import { mergeConfig } from 'vite'
 
 const config: StorybookConfig = {
   stories: [
@@ -77,5 +78,10 @@ const config: StorybookConfig = {
       }
     </style>
   `,
+  // Storybook uses its own Vite pipeline; set sourcemaps here to ensure `build:storybook` emits `.map` files.
+  viteFinal: async (config) =>
+    mergeConfig(config, {
+      build: { sourcemap: true },
+    }),
 }
 export default config
