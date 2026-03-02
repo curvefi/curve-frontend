@@ -27,13 +27,13 @@ export function checkClosePositionDetailsLoaded({ debt }: { debt: Decimal }) {
 export function submitImproveHealthForm() {
   cy.get('[data-testid="improve-health-submit-button"]', LOAD_TIMEOUT).click()
   return cy
-    .get('[data-testid="loan-form-success-alert"]', TRANSACTION_LOAD_TIMEOUT)
+    .get('[data-testid="toast-success"]', TRANSACTION_LOAD_TIMEOUT)
     .contains('Loan repaid', TRANSACTION_LOAD_TIMEOUT)
 }
 
-export function submitClosePositionForm(expected: AlertColor = 'success', message = 'Position closed') {
+export function submitClosePositionForm(expected: AlertColor = 'success', message = 'Position closed successfully!') {
   cy.get('[data-testid="close-position-submit"]', LOAD_TIMEOUT).click()
   return cy
-    .get('[data-testid="loan-form-success-alert"]', TRANSACTION_LOAD_TIMEOUT)
+    .get(`[data-testid="toast-${expected}"]`, TRANSACTION_LOAD_TIMEOUT)
     .contains(message, TRANSACTION_LOAD_TIMEOUT)
 }

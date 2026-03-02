@@ -9,7 +9,7 @@ import {
   writeCreateLoanForm,
 } from '@cy/support/helpers/llamalend/create-loan.helpers'
 import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
-import { setLlamaApi } from '@cy/support/helpers/llamalend/test-context.helpers'
+import { setGasInfo, setLlamaApi } from '@cy/support/helpers/llamalend/test-context.helpers'
 import { createCreateLoanScenario } from '@cy/support/helpers/llamalend/test-scenarios.helpers'
 
 const networks = loanNetworks as unknown as NetworkDict<LlamaChainId>
@@ -31,6 +31,7 @@ describe('CreateLoanForm (mocked)', () => {
       const onPricesUpdated = cy.spy().as('onPricesUpdated')
 
       setLlamaApi(llamaApi)
+      setGasInfo({ chainId, networks })
 
       cy.mount(
         <MockLoanTestWrapper llamaApi={llamaApi}>
@@ -52,7 +53,10 @@ describe('CreateLoanForm (mocked)', () => {
         expect(stubs.createLoanPrices).to.have.been.calledWithExactly(...expected.query)
         expect(stubs.createLoanMaxRecv).to.have.been.calledWithExactly(...expected.maxRecv)
         expect(stubs.createLoanIsApproved).to.have.been.calledWithExactly(...expected.approved)
-        if (!approved) {
+        if (approved) {
+          expect(stubs.estimateGasCreateLoan).to.have.been.calledWithExactly(...expected.estimateGas)
+          expect(stubs.estimateGasCreateLoanApprove).to.not.have.been.called
+        } else {
           expect(stubs.estimateGasCreateLoanApprove).to.have.been.calledWithExactly(...expected.estimateGasApprove)
         }
       })

@@ -1,11 +1,12 @@
 import 'cypress'
-import { mount } from 'cypress/react'
+import { type MountOptions, type MountReturn } from 'cypress/react'
+import { type ReactNode } from 'react'
 
 declare global {
   namespace Cypress {
     interface Chainable {
       state: (of: 'window' | 'document') => Chainable<Window>
-      mount: typeof mount
+      mount: (node: ReactNode, options?: MountOptions, rerenderKey?: string) => Chainable<MountReturn>
     }
   }
 }

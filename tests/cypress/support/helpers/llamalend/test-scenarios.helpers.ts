@@ -102,6 +102,7 @@ export const createCreateLoanScenario = ({
     llamaApi: createMockLlamaApi(chainId, market),
     expected: {
       query: [collateral, borrow, presetRange] as const,
+      estimateGas: [collateral, borrow, presetRange] as const,
       maxRecv: [collateral, presetRange] as const,
       approved: [collateral] as const,
       estimateGasApprove: [collateral] as const,
@@ -122,6 +123,7 @@ export const createBorrowMoreScenario = ({ chainId, approved }: { chainId: numbe
   const expectedFutureDebt = debtAfterAdd(expectedCurrentDebt, borrow)
 
   const borrowMoreApprove = createStub(TEST_TX_HASH)
+  const borrowMorePrices = createStub([oneDecimal(2500, 4200, 2), oneDecimal(2200, 3900, 2)])
   const stubs = {
     parameters: createStub(oneRatePair()),
     estimateGasBorrowMore: createStub(oneInt(120_000, 240_000)),
@@ -131,7 +133,7 @@ export const createBorrowMoreScenario = ({ chainId, approved }: { chainId: numbe
     borrowMoreIsApproved: approved ? createStub(true) : createIsApprovedStub<readonly [string]>(borrowMoreApprove),
     borrowMore: createStub(TEST_TX_HASH),
     borrowMoreApprove,
-    borrowMorePrices: borrowMoreApprove,
+    borrowMorePrices,
   } as const
 
   const market = createMockMintMarket({
@@ -173,20 +175,18 @@ export const createRepayScenario = ({ chainId, approved }: { chainId: number; ap
   const borrow = oneDecimal(0.5, 20, 2)
   const collateral = oneDecimal(0.05, 2, 3)
   const currentDebt = debtAfterAdd(borrow, oneDecimal(0.5, 50, 2))
-  const repayApproveStub = approved ? null : createStub(TEST_TX_HASH)
-  const estimateGasRepayApproveStub = approved ? null : createStub(oneInt(90_000, 180_000))
+  const repayApproveStub = createStub(TEST_TX_HASH)
+  const estimateGasRepayApproveStub = createStub(oneInt(90_000, 180_000))
 
   const stubs = {
     parameters: createStub(oneRatePair()),
     estimateGasRepay: createStub(oneInt(120_000, 260_000)),
+    estimateGasRepayApprove: estimateGasRepayApproveStub,
     repayHealth: createStub(oneDecimal(30, 95, 2)),
     repayPrices: createStub([oneDecimal(2500, 4200, 2), oneDecimal(2200, 3900, 2)]),
-    repayIsApproved: approved ? createStub(true) : createIsApprovedStub<readonly [string]>(repayApproveStub!),
+    repayIsApproved: approved ? createStub(true) : createIsApprovedStub<readonly [string]>(repayApproveStub),
+    repayApprove: repayApproveStub,
     repay: createStub(TEST_TX_HASH),
-    ...(!approved && {
-      estimateGasRepayApprove: estimateGasRepayApproveStub!,
-      repayApprove: repayApproveStub!,
-    }),
   } as const
 
   const market = createMockMintMarket({
@@ -231,23 +231,23 @@ export const createSoftLiquidationScenario = ({ chainId, approved }: { chainId: 
   const stateBorrowed = oneDecimal(0.2, 8, 2)
   const debt = debtAfterAdd(borrow, oneDecimal(0.5, 40, 2))
   const slippage = 0.1
-  const repayApproveStub = approved ? null : createStub(TEST_TX_HASH)
-  const selfLiquidateApproveStub = approved ? null : createStub(TEST_TX_HASH)
-  const estimateGasRepayApproveStub = approved ? null : createStub(oneInt(90_000, 180_000))
+  const repayApproveStub = createStub(TEST_TX_HASH)
+  const selfLiquidateApproveStub = createStub(TEST_TX_HASH)
+  const estimateGasRepayApproveStub = createStub(oneInt(90_000, 180_000))
 
   const stubs = {
     parameters: createStub(oneRatePair()),
     estimateGasRepay: createStub(oneInt(120_000, 240_000)),
+    estimateGasRepayApprove: estimateGasRepayApproveStub,
     estimateGasSelfLiquidate: createStub(oneInt(150_000, 280_000)),
     repayHealth: createStub(oneDecimal(30, 98, 2)),
     repayPrices: createStub([oneDecimal(2500, 4200, 2), oneDecimal(2200, 3900, 2)]),
-    repayIsApproved: approved ? createStub(true) : createIsApprovedStub<readonly [string]>(repayApproveStub!),
+    repayIsApproved: approved ? createStub(true) : createIsApprovedStub<readonly [string]>(repayApproveStub),
+    repayApprove: repayApproveStub,
     repay: createStub(TEST_TX_HASH),
-    selfLiquidateIsApproved: approved ? createStub(true) : createIsApprovedStub<readonly []>(selfLiquidateApproveStub!),
+    selfLiquidateIsApproved: approved ? createStub(true) : createIsApprovedStub<readonly []>(selfLiquidateApproveStub),
+    selfLiquidateApprove: selfLiquidateApproveStub,
     selfLiquidate: createStub(TEST_TX_HASH),
-    estimateGasRepayApprove: estimateGasRepayApproveStub!,
-    repayApprove: repayApproveStub!,
-    selfLiquidateApprove: selfLiquidateApproveStub!,
   } as const
 
   const market = createMockMintMarket({
@@ -255,7 +255,7 @@ export const createSoftLiquidationScenario = ({ chainId, approved }: { chainId: 
     estimateGas: {
       repay: stubs.estimateGasRepay,
       selfLiquidate: stubs.estimateGasSelfLiquidate,
-      repayApprove: stubs.estimateGasRepayApprove,
+      ...(!approved && { repayApprove: stubs.estimateGasRepayApprove }),
     },
     wallet: {
       balances: createStub({
@@ -270,10 +270,10 @@ export const createSoftLiquidationScenario = ({ chainId, approved }: { chainId: 
     repayHealth: stubs.repayHealth,
     repayPrices: stubs.repayPrices,
     repayIsApproved: stubs.repayIsApproved,
-    repayApprove: stubs.repayApprove,
+    ...(!approved && { repayApprove: stubs.repayApprove }),
     repay: stubs.repay,
     selfLiquidateIsApproved: stubs.selfLiquidateIsApproved,
-    selfLiquidateApprove: stubs.selfLiquidateApprove,
+    ...(!approved && { selfLiquidateApprove: stubs.selfLiquidateApprove }),
     selfLiquidate: stubs.selfLiquidate,
   })
 

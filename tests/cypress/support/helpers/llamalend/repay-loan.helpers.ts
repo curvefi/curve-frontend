@@ -33,7 +33,7 @@ export function checkRepayDetailsLoaded({ leverageEnabled, debt }: { debt: DebtC
   cy.get('[data-testid="borrow-leverage-info-list"]', LOAD_TIMEOUT).should(leverageEnabled ? 'be.visible' : 'not.exist')
   getActionValue('borrow-price-range').should('match', /(\d(\.\d+)?) - (\d(\.\d+)?)/)
   getActionValue('borrow-apr').should('include', '%')
-  getActionValue('estimated-tx-cost').contains('$')
+  getActionValue('estimated-tx-cost').should('include', '$')
   checkDebt(debt)
   cy.get('[data-testid="loan-form-errors"]').should('not.exist')
 }
@@ -41,6 +41,6 @@ export function checkRepayDetailsLoaded({ leverageEnabled, debt }: { debt: DebtC
 export function submitRepayForm() {
   cy.get('[data-testid="repay-submit-button"]', LOAD_TIMEOUT).click()
   return cy
-    .get('[data-testid="loan-form-success-alert"]', TRANSACTION_LOAD_TIMEOUT)
+    .get('[data-testid="toast-success"]', TRANSACTION_LOAD_TIMEOUT)
     .contains('Loan repaid', TRANSACTION_LOAD_TIMEOUT)
 }

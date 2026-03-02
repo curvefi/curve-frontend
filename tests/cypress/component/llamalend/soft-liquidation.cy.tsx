@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 import { type Address } from 'viem'
 import { ClosePositionForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ClosePositionForm'
 import { ImproveHealthForm } from '@/llamalend/features/manage-soft-liquidation/ui/tabs/ImproveHealthForm'
@@ -15,29 +16,33 @@ import {
   submitImproveHealthForm,
   writeImproveHealthForm,
 } from '@cy/support/helpers/llamalend/soft-liquidation.helpers'
-import { resetLlamaTestContext, setLlamaApi } from '@cy/support/helpers/llamalend/test-context.helpers'
+import { resetLlamaTestContext, setGasInfo, setLlamaApi } from '@cy/support/helpers/llamalend/test-context.helpers'
 import { createSoftLiquidationScenario } from '@cy/support/helpers/llamalend/test-scenarios.helpers'
 
 const networks = loanNetworks as unknown as NetworkDict<LlamaChainId>
 const chainId = 1
+const testCases = [
+  { approved: true, title: 'fills and submits (already approved)' },
+  { approved: false, title: 'fills, approves, and submits' },
+]
 
 describe('Soft Liquidation Forms (mocked)', () => {
-  const createScenario = ({ approved }: { approved: boolean }) => createSoftLiquidationScenario({ chainId, approved })
-
   afterEach(() => {
     resetLlamaTestContext()
   })
 
   describe('ImproveHealthForm', () => {
-    const runImproveHealthCase = ({ approved, title }: { approved: boolean; title: string }) =>
+    testCases.forEach(({ approved, title }: { approved: boolean; title: string }) => {
       it(title, () => {
-        const scenario = createScenario({ approved })
-        const onRepaid = cy.spy().as('onRepaid')
+        const { borrow, debt, debtAfterImprove, expected, llamaApi, market, stubs } = createSoftLiquidationScenario({
+          chainId,
+          approved,
+        })
+        const onSuccess = cy.spy().as('onSuccess')
         const onPricesUpdated = cy.spy().as('onPricesUpdated')
-        const { llamaApi, expected, market, borrow, stubs, collateral } = scenario
 
-        void collateral
         setLlamaApi(llamaApi)
+        setGasInfo({ chainId, networks })
         seedCrvUsdBalance({
           chainId,
           addresses: [TEST_ADDRESS as Address, TEST_ADDRESS.toLowerCase() as Address],
@@ -50,7 +55,7 @@ describe('Soft Liquidation Forms (mocked)', () => {
               market={market}
               networks={networks}
               chainId={chainId}
-              onSuccess={onRepaid}
+              onSuccess={onSuccess}
               onPricesUpdated={onPricesUpdated}
             />
           </MockLoanTestWrapper>,
@@ -58,47 +63,46 @@ describe('Soft Liquidation Forms (mocked)', () => {
 
         writeImproveHealthForm({ amount: borrow })
         checkRepayDetailsLoaded({
-          debt: { current: scenario.debt, future: scenario.debtAfterImprove, symbol: 'crvUSD' },
+          debt: { current: debt, future: debtAfterImprove, symbol: 'crvUSD' },
         })
-        cy.get('[data-testid="improve-health-submit"]').should('not.be.disabled')
+        cy.get('[data-testid="improve-health-submit-button"]').should('not.be.disabled')
 
-        cy.wrap(stubs).should((s) => {
-          expect(s.parameters).to.have.been.calledWithExactly()
-          expect(s.repayHealth).to.have.been.calledWithExactly(...expected.improveHealth.health)
-          expect(s.repayPrices).to.have.been.calledWithExactly(...expected.improveHealth.prices)
-          expect(s.repayIsApproved).to.have.been.calledWithExactly(...expected.improveHealth.isApproved)
-          if ('estimateGasRepayApprove' in s) {
-            expect(s.estimateGasRepayApprove).to.have.been.calledWithExactly(
+        cy.then(() => {
+          expect(stubs.parameters).to.have.been.calledWithExactly()
+          expect(stubs.repayHealth).to.have.been.calledWithExactly(...expected.improveHealth.health)
+          expect(stubs.repayPrices).to.have.been.calledWithExactly(...expected.improveHealth.prices)
+          expect(stubs.repayIsApproved).to.have.been.calledWithExactly(...expected.improveHealth.isApproved)
+          if (approved) {
+            expect(stubs.estimateGasRepay).to.have.been.calledWithExactly(...expected.improveHealth.estimateGas)
+          } else {
+            expect(stubs.estimateGasRepayApprove).to.have.been.calledWithExactly(
               ...expected.improveHealth.estimateGasApprove,
             )
-          } else {
-            expect(s.estimateGasRepay).to.have.been.calledWithExactly(...expected.improveHealth.estimateGas)
           }
         })
 
         submitImproveHealthForm().then(() => {
           expect(stubs.estimateGasRepay).to.have.been.calledWithExactly(...expected.improveHealth.estimateGas)
-          if ('repayApprove' in stubs) {
+          if (approved) {
+            expect(stubs.repayApprove).to.not.have.been.called
+          } else {
             expect(stubs.repayApprove).to.have.been.calledWithExactly(...expected.improveHealth.approve)
           }
           expect(stubs.repay).to.have.been.calledWithExactly(...expected.improveHealth.submit)
+          expect(onSuccess).to.have.been.calledOnce
         })
       })
-
-    runImproveHealthCase({ approved: true, title: 'fills and submits improve health data (already approved)' })
-    runImproveHealthCase({ approved: false, title: 'fills, approves, and submits improve health data' })
+    })
   })
 
   describe('ClosePositionForm', () => {
-    const runClosePositionCase = ({ approved, title }: { approved: boolean; title: string }) =>
+    testCases.forEach(({ approved, title }: { approved: boolean; title: string }) => {
       it(title, () => {
-        const scenario = createScenario({ approved })
+        const { debt, expected, llamaApi, market, stubs } = createSoftLiquidationScenario({ chainId, approved })
         const onSuccess = cy.spy().as('onSuccess')
-        const { llamaApi, expected, market, borrow, stubs, collateral } = scenario
 
-        void borrow
-        void collateral
         setLlamaApi(llamaApi)
+        setGasInfo({ chainId, networks })
         seedCrvUsdBalance({
           chainId,
           addresses: [TEST_ADDRESS as Address, TEST_ADDRESS.toLowerCase() as Address],
@@ -111,22 +115,23 @@ describe('Soft Liquidation Forms (mocked)', () => {
           </MockLoanTestWrapper>,
         )
 
-        checkClosePositionDetailsLoaded({ debt: scenario.debt })
+        checkClosePositionDetailsLoaded({ debt })
 
-        cy.wrap(stubs).should((s) => {
-          expect(s.selfLiquidateIsApproved).to.have.been.calledWithExactly(...expected.closePosition.isApproved)
-          expect(s.estimateGasSelfLiquidate).to.have.been.calledWithExactly(...expected.closePosition.estimateGas)
+        cy.then(() => {
+          expect(stubs.selfLiquidateIsApproved).to.have.been.calledWithExactly(...expected.closePosition.isApproved)
+          expect(stubs.estimateGasSelfLiquidate).to.have.been.calledWithExactly(...expected.closePosition.estimateGas)
         })
 
         submitClosePositionForm().then(() => {
-          if ('selfLiquidateApprove' in stubs) {
+          if (approved) {
+            expect(stubs.selfLiquidateApprove).to.not.have.been.called
+          } else {
             expect(stubs.selfLiquidateApprove).to.have.been.calledWithExactly(...expected.closePosition.approve)
           }
           expect(stubs.selfLiquidate).to.have.been.calledWithExactly(...expected.closePosition.submit)
+          expect(onSuccess).to.have.been.calledOnce
         })
       })
-
-    runClosePositionCase({ approved: true, title: 'shows details and submits close position (already approved)' })
-    runClosePositionCase({ approved: false, title: 'shows details, approves, and submits close position' })
+    })
   })
 })

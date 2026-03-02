@@ -14,7 +14,7 @@ import {
   submitRepayForm,
   writeRepayLoanForm,
 } from '@cy/support/helpers/llamalend/repay-loan.helpers'
-import { resetLlamaTestContext, setLlamaApi } from '@cy/support/helpers/llamalend/test-context.helpers'
+import { resetLlamaTestContext, setGasInfo, setLlamaApi } from '@cy/support/helpers/llamalend/test-context.helpers'
 import { createRepayScenario } from '@cy/support/helpers/llamalend/test-scenarios.helpers'
 import { CRVUSD_ADDRESS } from '@ui-kit/utils'
 
@@ -42,6 +42,7 @@ describe('RepayForm (mocked)', () => {
 
       void collateral
       setLlamaApi(llamaApi)
+      setGasInfo({ chainId, networks })
       seedCrvUsdBalance({
         chainId,
         addresses: [TEST_ADDRESS as Address, TEST_ADDRESS.toLowerCase() as Address],
@@ -72,7 +73,10 @@ describe('RepayForm (mocked)', () => {
         expect(stubs.repayHealth).to.have.been.calledWithExactly(...expected.health)
         expect(stubs.repayPrices).to.have.been.calledWithExactly(...expected.prices)
         expect(stubs.repayIsApproved).to.have.been.calledWithExactly(...expected.isApproved)
-        if (!approved) {
+        if (approved) {
+          expect(stubs.estimateGasRepay).to.have.been.calledWithExactly(...expected.estimateGas)
+          expect(stubs.estimateGasRepayApprove).to.not.have.been.called
+        } else {
           expect(stubs.estimateGasRepayApprove).to.have.been.calledWithExactly(...expected.estimateGasApprove)
         }
       })
@@ -81,7 +85,7 @@ describe('RepayForm (mocked)', () => {
         expect(stubs.estimateGasRepay).to.have.been.calledWithExactly(...expected.estimateGas)
         expect(stubs.repay).to.have.been.calledWithExactly(...expected.submit)
         if (approved) {
-          expect(stubs.estimateGasRepay).to.have.been.calledWithExactly(...expected.estimateGas)
+          expect(stubs.repayApprove).to.not.have.been.called
         } else {
           expect(stubs.repayApprove).to.have.been.calledWithExactly(...expected.approve)
         }

@@ -21,7 +21,7 @@ export type GasInfoQuery<T = number> = ChainQuery<T> & {
 
 export type GasInfoParams<T = number> = FieldsOf<GasInfoQuery<T>>
 
-type GasInfo = {
+export type GasInfo = {
   gasPrice: number | null
   max: number[]
   priority: number[]
@@ -63,7 +63,11 @@ const createQueryKey = ({ gasPricesUrl, gasPricesUrlL2, ...params }: GasInfoPara
  * the data returned is not being used, simply for its side effect.
  * The exported function names have the 'andUpdateLib' suffix to indicate this behavior.
  */
-const { useQuery: useGasInfoAndUpdateLibBase, fetchQuery: fetchGasInfoAndUpdateLibBase } = queryFactory({
+const {
+  useQuery: useGasInfoAndUpdateLibBase,
+  fetchQuery: fetchGasInfoAndUpdateLibBase,
+  setQueryData: setGasInfoAndUpdateLibBase,
+} = queryFactory({
   queryKey: createQueryKey,
   queryFn: async ({ chainId, gasPricesUrl, gasPricesUrlL2 }: GasInfoQuery): Promise<GasInfo> => {
     const curve = getAnyCurve(chainId)!
@@ -294,7 +298,7 @@ async function parseGasInfo(curve: AnyCurveApi, provider: Provider, l2GasUrl?: s
 
 type Network = { gasPricesUrl: string; gasL2: boolean }
 
-type GasInfoQueryOptions<TChainId extends number> = {
+export type GasInfoQueryOptions<TChainId extends number = number> = {
   chainId?: TChainId | null
   networks: Record<TChainId, Network>
 }
@@ -331,6 +335,15 @@ export const useGasInfoAndUpdateLib = <TChainId extends number>(
   { chainId, networks }: GasInfoQueryOptions<TChainId>,
   enabled?: boolean,
 ) => useGasInfoAndUpdateLibBase(createGasInfoQueryOptions({ chainId, networks }), enabled)
+
+/**
+ * Sets gas info query data and updates the library. This wrapper exists as the base query requires query options
+ * derived from network config objects. Having to import and use `createGasInfoQueryOptions` is cumbersome.
+ */
+export const setGasInfoAndUpdateLib = <TChainId extends number>(
+  { chainId, networks }: GasInfoQueryOptions<TChainId>,
+  gasInfo: GasInfo,
+) => setGasInfoAndUpdateLibBase(createGasInfoQueryOptions({ chainId, networks }), gasInfo)
 
 // calculates L1+L2 gas for optimistic rollups
 const calculateOptimisticRollupGas = ([l2Gas, l1Gas]: number[], [l2GasPriceWei, l1GasPriceWei]: [number, number]) =>

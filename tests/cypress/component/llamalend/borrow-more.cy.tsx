@@ -17,7 +17,7 @@ const networks = loanNetworks as unknown as NetworkDict<LlamaChainId>
 const chainId = Chain.Ethereum
 const testCases = [
   { approved: true, title: 'fills and submits (already approved)' },
-  // { approved: false, title: 'fills, approves, and submits' },
+  { approved: false, title: 'fills, approves, and submits' },
 ]
 
 describe('BorrowMoreForm (mocked)', () => {
@@ -33,7 +33,7 @@ describe('BorrowMoreForm (mocked)', () => {
       const onPricesUpdated = cy.spy().as('onPricesUpdated')
 
       setLlamaApi(llamaApi)
-      setGasInfo(chainId)
+      setGasInfo({ chainId, networks })
 
       cy.mount(
         <MockLoanTestWrapper llamaApi={llamaApi}>
@@ -59,18 +59,21 @@ describe('BorrowMoreForm (mocked)', () => {
         expect(stubs.borrowMoreHealth).to.have.been.calledWithExactly(...expected.health)
         expect(stubs.borrowMoreMaxRecv).to.have.been.calledWithExactly(...expected.maxRecv)
         expect(stubs.borrowMoreIsApproved).to.have.been.calledWithExactly(...expected.isApproved)
-        if (!approved) {
-          expect(stubs.estimateGasBorrowMoreApprove).to.have.been.calledWithExactly(...expected.estimateGas)
+        if (approved) {
+          expect(stubs.estimateGasBorrowMore).to.have.been.calledWithExactly(...expected.estimateGas)
+          expect(stubs.estimateGasBorrowMoreApprove).to.not.have.been.called
+        } else {
+          expect(stubs.estimateGasBorrowMoreApprove).to.not.have.been.called
         }
       })
 
       submitBorrowMoreForm().then(() => {
-        expect(stubs.estimateGasBorrowMore).to.have.been.calledWithExactly(...expected.estimateGas)
         expect(stubs.borrowMore).to.have.been.calledWithExactly(...expected.submit)
         if (approved) {
+          expect(stubs.estimateGasBorrowMore).to.have.been.calledWithExactly(...expected.estimateGas)
           expect(stubs.borrowMoreApprove).to.not.have.been.called
         } else {
-          expect(stubs.borrowMoreApprove).to.have.been.calledWithExactly(...expected.approve)
+          expect(stubs.borrowMoreApprove).to.not.have.been.called
         }
         expect(onSuccess).to.have.been.calledOnce
       })
