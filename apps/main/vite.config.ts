@@ -3,11 +3,19 @@ import { resolve } from 'path'
 import react from '@vitejs/plugin-react'
 import svgr from 'vite-plugin-svgr'
 import vercel from 'vite-plugin-vercel'
+import { sentryVitePlugin } from '@sentry/vite-plugin'
 
-const { API_PROXY_TARGET = 'http://localhost:3010', VERCEL_ENV } = process.env
+const {
+  API_PROXY_TARGET = 'http://localhost:3010',
+  SENTRY_AUTH_TOKEN,
+  SENTRY_ORG,
+  SENTRY_PROJECT,
+  GITHUB_SHA,
+} = process.env
+const shouldUploadSourcemaps = !!SENTRY_PROJECT || !!GITHUB_SHA
 
 // https://vite.dev/config/
-export default defineConfig(({ command, mode }) => ({
+export default defineConfig(({ command }) => ({
   // the local server starts on port 3000 by default, with hot module reload enabled and /api proxying
   server: {
     port: 3000,
@@ -15,10 +23,26 @@ export default defineConfig(({ command, mode }) => ({
     proxy: { '/api': { target: API_PROXY_TARGET, changeOrigin: true } },
     ignored: ['**/node_modules/**', '**/.git/**', '**/dist/**', '**/.yarn/**'],
   },
-  build: { sourcemap: [mode, VERCEL_ENV].some((target) => ['development', 'preview'].includes(target!)) },
+  build: { sourcemap: true },
   preview: { port: 3000 },
   cacheDir: resolve(__dirname, '../../.cache/vite/apps-main'),
-  plugins: [react(), svgr(), vercel()],
+  plugins: [
+    react(),
+    svgr(),
+    vercel(),
+    ...(shouldUploadSourcemaps
+      ? [
+          sentryVitePlugin({
+            authToken: SENTRY_AUTH_TOKEN,
+            org: SENTRY_ORG!,
+            project: SENTRY_PROJECT!,
+            release: { name: GITHUB_SHA! },
+            sourcemaps: { assets: './dist/**' },
+            telemetry: false,
+          }),
+        ]
+      : []),
+  ],
   optimizeDeps: { include: ['styled-components', '@mui/material', '@mui/icons-material'] },
   resolve: {
     alias: [
