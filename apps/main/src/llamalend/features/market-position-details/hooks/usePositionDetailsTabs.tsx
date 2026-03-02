@@ -12,7 +12,7 @@ import { NoPosition } from '../NoPosition'
 const { Spacing } = SizesAndSpaces
 
 export type PositionDetailsTab = 'borrowDetails' | 'activity'
-type PositionDetailsTabOption = TabOption<PositionDetailsTab> & { component: () => ReactNode }
+type PositionDetailsTabOption = TabOption<PositionDetailsTab> & { render: () => ReactNode }
 
 const DEFAULT_TAB: PositionDetailsTab = 'borrowDetails'
 
@@ -36,7 +36,7 @@ export const usePositionDetailsTabs = ({
       {
         value: DEFAULT_TAB,
         label: t`Borrow Details`,
-        component: () =>
+        render: () =>
           hasPosition ? <BorrowPositionDetails {...borrowPositionDetails} /> : <NoPosition type="borrow" />,
       },
       ...(hasActivity
@@ -44,7 +44,7 @@ export const usePositionDetailsTabs = ({
             {
               value: 'activity' as const,
               label: t`Activity`,
-              component: () => (
+              render: () => (
                 <Stack paddingInline={Spacing.md} paddingBlock={Spacing.md}>
                   <UserPositionHistory
                     variant="flat"

@@ -46,11 +46,11 @@ export const PositionDetailsComposite = ({
       {showNewBorrowPositionTabs && <PositionDetailsTabsRow tab={tab} onChange={onTabChange} options={tabOptions} />}
       <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
         {showNewBorrowPositionTabs ? (
-          activeTab.component()
+          activeTab.render()
         ) : (
           <>
             {hasPosition ? <BorrowPositionDetails {...borrowPositionDetails} /> : <NoPosition type="borrow" />}
-            {activityEvents.length > 1 && (
+            {activityEvents.length > 0 && (
               <Stack paddingInline={Spacing.md} paddingBlock={Spacing.md}>
                 <UserPositionHistory
                   variant="accordion"
