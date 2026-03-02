@@ -95,22 +95,6 @@ const pool = {
       return resp
     }
   },
-  getVolume: async (p: Pool, network: NetworkConfig) => {
-    const resp = { poolId: p.id, value: '0', errorMessage: '' }
-
-    if (network.isLite) return resp
-
-    try {
-      resp.value = await p.stats.volume()
-      return resp
-    } catch (error) {
-      if (p.inApi) {
-        console.error(error)
-        resp.errorMessage = 'Unable to get volume'
-      }
-      return resp
-    }
-  },
   poolBalances: async (p: Pool, isWrapped: boolean) => {
     if (p.curve.isNoRPC) {
       return { error: t`Connect your wallet to see pool balances` }

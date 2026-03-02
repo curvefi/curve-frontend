@@ -228,12 +228,6 @@ export type Tvl = {
 }
 export type TvlMapper = { [poolId: string]: Tvl }
 export type ValueMapperCached = { [poolId: string]: { value: string } }
-export type Volume = {
-  poolId: string
-  value: string
-  errorMessage: string
-}
-export type VolumeMapper = { [poolId: string]: Volume }
 export type AlertType = 'info' | 'warning' | 'error' | 'danger' | ''
 
 export interface PoolAlert extends TooltipProps {
