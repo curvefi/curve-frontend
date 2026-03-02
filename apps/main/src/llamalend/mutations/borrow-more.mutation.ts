@@ -37,6 +37,8 @@ const approveBorrowMore = async (
   if (!+userCollateral && !+userBorrowed) return []
   const [type, impl] = getBorrowMoreImplementation(market.id, leverageEnabled)
   switch (type) {
+    case 'zapV2':
+      return (await impl.borrowMoreApprove({ userCollateral, userBorrowed })) as Hex[]
     case 'V1':
     case 'V2':
       return (await impl.borrowMoreApprove(userCollateral, userBorrowed)) as Hex[]
@@ -47,15 +49,18 @@ const approveBorrowMore = async (
 
 const borrowMore = async (
   market: LlamaMarketTemplate,
-  { userCollateral = '0', userBorrowed = '0', debt = '0', slippage, leverageEnabled }: BorrowMoreMutation,
+  { userCollateral = '0', userBorrowed = '0', debt = '0', slippage, leverageEnabled, routeId }: BorrowMoreMutation,
 ): Promise<Hex> => {
   const [type, impl, args] = getBorrowMoreImplementationArgs(market.id, {
     userCollateral,
     userBorrowed,
     debt,
     leverageEnabled,
+    routeId,
   })
   switch (type) {
+    case 'zapV2':
+      return (await impl.borrowMore(...args)) as Hex
     case 'V1':
     case 'V2':
       await impl.borrowMoreExpectedCollateral(userCollateral, userBorrowed, debt, +slippage)

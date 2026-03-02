@@ -139,8 +139,13 @@ testCases.forEach(([width, height, breakpoint]) => {
     })
 
     it('should find markets by text', () => {
-      cy.get('[data-testid="btn-expand-search-Llamalend Markets"]').click({ waitForAnimations: true })
-      cy.get("[data-testid^='table-text-search-'] input").should('be.focused') // element is focused when animation completes
+      // only on mobile is the search not auto-expanded
+      if (breakpoint === 'mobile') {
+        cy.get('[data-testid="btn-expand-search-Llamalend Markets"]').click({ waitForAnimations: true })
+        cy.get("[data-testid^='table-text-search-'] input").should('be.focused') // element is focused when animation completes
+      } else {
+        cy.get("[data-testid^='table-text-search-'] input").click()
+      }
       cy.get("[data-testid='table-text-search-Llamalend Markets'] input").type('wstETH crvUSD')
       cy.url().should('include', 'search=wstETH+crvUSD')
       cy.scrollTo(0, 0)

@@ -3,7 +3,11 @@ import type { BorrowMoreParams, BorrowMoreQuery } from '@/llamalend/queries/vali
 import { borrowMoreValidationSuite } from '@/llamalend/queries/validation/borrow-more.validation'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 
-export const { useQuery: useBorrowMoreIsApproved, fetchQuery: fetchBorrowMoreIsApproved } = queryFactory({
+export const {
+  useQuery: useBorrowMoreIsApproved,
+  fetchQuery: fetchBorrowMoreIsApproved,
+  invalidate: invalidateBorrowMoreIsApproved,
+} = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -12,6 +16,7 @@ export const { useQuery: useBorrowMoreIsApproved, fetchQuery: fetchBorrowMoreIsA
     userBorrowed = '0',
     maxDebt,
     leverageEnabled,
+    routeId,
   }: BorrowMoreParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
@@ -20,10 +25,13 @@ export const { useQuery: useBorrowMoreIsApproved, fetchQuery: fetchBorrowMoreIsA
       { userBorrowed },
       { maxDebt },
       { leverageEnabled },
+      { routeId },
     ] as const,
   queryFn: async ({ marketId, userCollateral = '0', userBorrowed = '0', leverageEnabled }: BorrowMoreQuery) => {
     const [type, impl] = getBorrowMoreImplementation(marketId, leverageEnabled)
     switch (type) {
+      case 'zapV2':
+        return await impl.borrowMoreIsApproved({ userCollateral, userBorrowed })
       case 'V1':
       case 'V2':
         return await impl.borrowMoreIsApproved(userCollateral, userBorrowed)

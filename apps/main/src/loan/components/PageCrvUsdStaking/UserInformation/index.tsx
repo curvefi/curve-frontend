@@ -54,10 +54,8 @@ export const UserInformation = ({ params: { network } }: { params: NetworkUrlPar
           <Typography variant="headingXsBold">{t`Deposit crvUSD and get scrvUSD`}</Typography>
           <Typography variant="bodyMRegular">
             {t`By depositing crvUSD in the Curve Savings Vault, you get`}{' '}
-            <Link href="https://resources.curve.finance/crvusd/scrvusd/#how-to-deposit-and-withdraw-crvusd">
-              scrvUSD
-            </Link>
-            . {t`This token  represents your share of all the crvUSD deposited in the vault. `}
+            <Link href="https://docs.curve.finance/user/yield/guides/deposit-scrvusd">scrvUSD</Link>.{' '}
+            {t`This token  represents your share of all the crvUSD deposited in the vault. `}
           </Typography>
           <Typography variant="bodyMRegular">
             {t`scrvUSD is a yield-bearing stablecoin you can use further in DeFi.`}
@@ -68,7 +66,7 @@ export const UserInformation = ({ params: { network } }: { params: NetworkUrlPar
           <Typography variant="headingXsBold">{t`Watch your yield grow`}</Typography>
           <Typography variant="bodyMRegular">
             {t`Upon deposit, your crvUSD is instantly generating yield and your rewards get `}{' '}
-            <Link href="https://resources.curve.finance/crvusd/scrvusd/#how-does-the-interest-accrue">
+            <Link href="https://docs.curve.finance/user/yield/scrvusd#how-scrvusd-works-earn-savings-on-your-crvusd">
               {t`automatically compounded`}
             </Link>
             .
@@ -78,7 +76,7 @@ export const UserInformation = ({ params: { network } }: { params: NetworkUrlPar
           </Typography>
         </Stack>
       </Stack>
-      <Button color="ghost" href="https://resources.curve.finance/crvusd/scrvusd/">
+      <Button color="ghost" href="https://docs.curve.finance/user/curve-tokens/scrvusd">
         {t`LEARN MORE`}
         <Icon name="ArrowUpRight" size={20} />
       </Button>
