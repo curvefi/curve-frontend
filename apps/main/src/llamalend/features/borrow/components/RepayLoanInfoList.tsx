@@ -111,11 +111,10 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
         ),
       )}
       collateralSymbol={collateralToken?.symbol}
-      leverageEnabled={hasLeverage}
       routes={routes}
       {...(hasLeverage &&
         swapRequired && {
-          leverageEnabled: true,
+          leverageEnabled: swapRequired,
           slippage,
           onSlippageChange,
           priceImpact: q(priceImpact),
