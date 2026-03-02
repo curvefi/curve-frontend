@@ -35,7 +35,7 @@
     "react-hook-form": "7.71.1",
     "recharts": "2.15.4",
     "ui": "*",
-    "vest": "^5.4.6",
+    "vest": "^6.0.3",
     "vite-plugin-svgr": "^4.5.0",
     "vite-plugin-vercel": "9.1.1"
   },
