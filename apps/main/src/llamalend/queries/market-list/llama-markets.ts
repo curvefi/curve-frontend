@@ -3,7 +3,8 @@ import { useCallback, useMemo } from 'react'
 import { ethAddress } from 'viem'
 import { computeTotalRate } from '@/llamalend/rates.utils'
 import { type Chain } from '@curvefi/prices-api'
-import { type PartialRecord, recordValues } from '@curvefi/prices-api/objects.util'
+import type { Address } from '@primitives/address.utils'
+import { type PartialRecord, recordValues } from '@primitives/objects.utils'
 import { useQueries } from '@tanstack/react-query'
 import type { QueriesResults } from '@tanstack/react-query'
 import { combineCampaigns, type CampaignPoolRewards } from '@ui-kit/entities/campaigns'
@@ -13,7 +14,6 @@ import { combineQueriesMeta, PartialQueryResult } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { CRVUSD_ROUTES, getInternalUrl, LEND_ROUTES } from '@ui-kit/shared/routes'
 import { type ExtraIncentive, LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
-import { type Address } from '@ui-kit/utils'
 import { getFavoriteMarketOptions } from './favorite-markets'
 import {
   getLendingVaultsOptions,
@@ -232,7 +232,7 @@ const convertLendingVault = (
     utilizationPercent: totalAssetsUsd && (100 * totalDebtUsd) / totalAssetsUsd,
     debtCeiling: null, // debt ceiling is not applicable for lend markets
     liquidityUsd: totalAssetsUsd - totalDebtUsd,
-    totalDebtUsd: totalDebtUsd,
+    totalDebtUsd,
     totalCollateralUsd: collateralBalanceUsd + borrowedBalanceUsd,
     tvl:
       borrowedBalanceUsd + // collateral converted to crvusd

@@ -5,10 +5,10 @@ import {
 } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
 import type { BorrowMoreParams, BorrowMoreQuery } from '@/llamalend/queries/validation/borrow-more.validation'
 import { borrowMoreValidationSuite } from '@/llamalend/queries/validation/borrow-more.validation'
+import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
-import { Decimal } from '@ui-kit/utils'
 
-export const { useQuery: useBorrowMoreHealth } = queryFactory({
+export const { useQuery: useBorrowMoreHealth, invalidate: invalidateBorrowMoreHealth } = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -18,6 +18,7 @@ export const { useQuery: useBorrowMoreHealth } = queryFactory({
     debt = '0',
     maxDebt,
     leverageEnabled,
+    routeId,
   }: BorrowMoreParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
@@ -27,6 +28,7 @@ export const { useQuery: useBorrowMoreHealth } = queryFactory({
       { debt },
       { maxDebt },
       { leverageEnabled },
+      { routeId },
     ] as const,
   queryFn: async ({
     marketId,
@@ -34,14 +36,18 @@ export const { useQuery: useBorrowMoreHealth } = queryFactory({
     userBorrowed = '0',
     debt = '0',
     leverageEnabled,
+    routeId,
   }: BorrowMoreQuery) => {
     const [type, impl, args] = getBorrowMoreImplementationArgs(marketId, {
       userCollateral,
       userBorrowed,
       debt,
       leverageEnabled,
+      routeId,
     })
     switch (type) {
+      case 'zapV2':
+        return (await impl.borrowMoreExpectedMetrics(...args)).health as Decimal
       case 'V1':
       case 'V2':
         return (await impl.borrowMoreHealth(...args)) as Decimal

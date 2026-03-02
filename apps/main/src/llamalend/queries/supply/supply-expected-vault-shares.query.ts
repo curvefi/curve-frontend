@@ -1,8 +1,8 @@
 import BigNumber from 'bignumber.js'
+import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import type { Query } from '@ui-kit/types/util'
 import { mapQuery } from '@ui-kit/types/util'
-import type { Decimal } from '@ui-kit/utils'
 import { decimal } from '@ui-kit/utils'
 import { useUserBalances } from '../user/user-balances.query'
 import {

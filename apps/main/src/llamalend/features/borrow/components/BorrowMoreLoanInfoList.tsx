@@ -1,24 +1,24 @@
 import BigNumber from 'bignumber.js'
 import { useMemo } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
-import type { Token } from '@/llamalend/features/borrow/types'
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
 import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
+import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { useBorrowMoreExpectedCollateral } from '@/llamalend/queries/borrow-more/borrow-more-expected-collateral.query'
 import { useBorrowMoreEstimateGas } from '@/llamalend/queries/borrow-more/borrow-more-gas-estimate.query'
 import { useBorrowMoreHealth } from '@/llamalend/queries/borrow-more/borrow-more-health.query'
 import { useBorrowMoreIsApproved } from '@/llamalend/queries/borrow-more/borrow-more-is-approved.query'
 import { useBorrowMorePriceImpact } from '@/llamalend/queries/borrow-more/borrow-more-price-impact.query'
-import { useMarketFutureRates } from '@/llamalend/queries/market-future-rates.query'
-import { useMarketOraclePrice } from '@/llamalend/queries/market-oracle-price.query'
-import { useMarketRates } from '@/llamalend/queries/market-rates.query'
+import { useMarketFutureRates, useMarketOraclePrice, useMarketRates } from '@/llamalend/queries/market'
 import { getUserHealthOptions, useUserCurrentLeverage, useUserState } from '@/llamalend/queries/user'
 import type { BorrowMoreForm, BorrowMoreParams } from '@/llamalend/queries/validation/borrow-more.validation'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import { type Token } from '@primitives/address.utils'
+import type { Decimal } from '@primitives/decimal.utils'
 import { mapQuery, q } from '@ui-kit/types/util'
-import { decimal, Decimal } from '@ui-kit/utils'
+import { decimal } from '@ui-kit/utils'
 import { isFormTouched } from '@ui-kit/utils/react-form.utils'
 import { useNetBorrowApr } from '../hooks/useNetBorrowApr'
 
@@ -31,6 +31,7 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
   leverageEnabled,
   form,
   market,
+  routes,
 }: {
   params: BorrowMoreParams<ChainId>
   values: BorrowMoreForm
@@ -40,6 +41,7 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
   onSlippageChange: (newSlippage: Decimal) => void
   leverageEnabled: boolean
   form: UseFormReturn<BorrowMoreForm>
+  routes: MarketRoutes | undefined
 }) {
   const isOpen = isFormTouched(form, 'userCollateral', 'userBorrowed', 'debt')
   const userState = useUserState(params, isOpen)
@@ -119,6 +121,7 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
       )}
       prevLeverageValue={q(useUserCurrentLeverage(params, isOpen))}
       leverageTotalCollateral={mapQuery(expectedCollateralQuery, (d) => d.totalCollateral)}
+      routes={routes}
       slippage={slippage}
       onSlippageChange={onSlippageChange}
       exchangeRate={q(useMarketOraclePrice(params, isOpen))}

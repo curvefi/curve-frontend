@@ -4,9 +4,7 @@ import { useProcessedBandsData } from '@/llamalend/features/bands-chart/hooks/us
 import { useMarketBandsBalances } from '@/llamalend/features/bands-chart/queries/market-bands-balances.query'
 import { useMarketUserBandsBalances } from '@/llamalend/features/bands-chart/queries/market-user-bands-balances.query'
 import { parseFetchedBandsBalances } from '@/llamalend/features/bands-chart/queries/utils'
-import { useMarketLiquidationBand } from '@/llamalend/queries/market-liquidation-band.query'
-import { useMarketOraclePriceBand } from '@/llamalend/queries/market-oracle-price-band.query'
-import { useMarketOraclePrice } from '@/llamalend/queries/market-oracle-price.query'
+import { useMarketLiquidationBand, useMarketOraclePriceBand, useMarketOraclePrice } from '@/llamalend/queries/market'
 import { useLoanExists } from '@/llamalend/queries/user'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { LlamaApi } from '@ui-kit/features/connect-wallet'
@@ -33,7 +31,7 @@ export const useBandsData = ({
   const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists({
     chainId,
     marketId,
-    userAddress: userAddress,
+    userAddress,
   })
   const { data: liquidationBand, isLoading: isLiquidationBandLoading } = useMarketLiquidationBand({
     chainId,
@@ -42,7 +40,7 @@ export const useBandsData = ({
   const { data: userBandsBalances, isLoading: isUserBandsBalancesLoading } = useMarketUserBandsBalances({
     chainId,
     marketId,
-    userAddress: userAddress,
+    userAddress,
     loanExists,
     liquidationBand,
   })
@@ -71,7 +69,7 @@ export const useBandsData = ({
   )
 
   const chartData = useProcessedBandsData({
-    marketBandsBalances: marketBandsBalances,
+    marketBandsBalances,
     userBandsBalances: parsedUserBandsBalances,
     oraclePriceBand,
     collateralUsdRate,

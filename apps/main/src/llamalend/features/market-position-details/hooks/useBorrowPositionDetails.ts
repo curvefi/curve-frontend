@@ -6,10 +6,12 @@ import {
 } from '@/llamalend/features/market-position-details'
 import { calculateLtv, getIsUserCloseToLiquidation, getLiquidationStatus, hasV2Leverage } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
-import { useMarketLiquidationBand } from '@/llamalend/queries/market-liquidation-band.query'
-import { useMarketOraclePriceBand } from '@/llamalend/queries/market-oracle-price-band.query'
-import { useMarketOraclePrice } from '@/llamalend/queries/market-oracle-price.query'
-import { useMarketRates } from '@/llamalend/queries/market-rates.query'
+import {
+  useMarketLiquidationBand,
+  useMarketOraclePriceBand,
+  useMarketOraclePrice,
+  useMarketRates,
+} from '@/llamalend/queries/market'
 import { useLoanExists } from '@/llamalend/queries/user'
 import {
   useUserBands,
@@ -27,7 +29,8 @@ import {
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
-import { type Address, type Chain } from '@curvefi/prices-api'
+import { type Chain } from '@curvefi/prices-api'
+import type { Address } from '@primitives/address.utils'
 import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import { useCrvUsdSnapshots } from '@ui-kit/entities/crvusd-snapshots'
 import { useLendingSnapshots } from '@ui-kit/entities/lending-snapshots'

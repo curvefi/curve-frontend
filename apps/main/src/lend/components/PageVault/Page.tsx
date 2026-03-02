@@ -60,7 +60,7 @@ export const Page = () => {
   })
   const marketDetails = useMarketDetails({
     chainId: rChainId,
-    market: market,
+    market,
     marketId: rOwmId,
   })
 
@@ -99,7 +99,7 @@ export const Page = () => {
     isLoaded,
     api,
     market,
-    userActiveKey: userActiveKey,
+    userActiveKey,
     titleMapper,
   }
 

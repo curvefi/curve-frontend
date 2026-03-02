@@ -1,8 +1,9 @@
 import lodash from 'lodash'
 import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import type { Decimal } from '@primitives/decimal.utils'
 import PromisePool from '@supercharge/promise-pool'
 import { BN } from '@ui/utils'
-import { decimal, type Decimal } from '@ui-kit/utils/decimal'
+import { decimal } from '@ui-kit/utils/decimal'
 import type { BandsBalances, BandsBalancesArr, FetchedBandsBalances, ParsedBandsBalances } from '../types'
 
 export async function fetchChartBandBalancesData(
@@ -35,7 +36,7 @@ export async function fetchChartBandBalancesData(
       collateralBorrowedUsd: collateralUsd.plus(borrowed).toNumber(),
       isLiquidationBand: liquidationBand ? (liquidationBand === +n ? 'SL' : '') : '',
       isOraclePriceBand: false,
-      n: n,
+      n,
       p_up: Number(p_up),
       p_down: Number(p_down),
       pUpDownMedian: Number(pUpDownMedian),

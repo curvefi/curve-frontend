@@ -1,23 +1,24 @@
 import type { UseFormReturn } from 'react-hook-form'
+import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { useCreateLoanIsApproved } from '@/llamalend/queries/create-loan/create-loan-approved.query'
 import { useMarketOraclePrice } from '@/llamalend/queries/market-oracle-price.query'
-import { useMarketRates } from '@/llamalend/queries/market-rates.query'
+import { useMarketRates } from '@/llamalend/queries/market'
+import { useMarketFutureRates } from '@/llamalend/queries/market'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { q } from '@ui-kit/types/util'
-import { mapQuery } from '@ui-kit/types/util'
-import { Decimal } from '@ui-kit/utils'
+import { type Token } from '@primitives/address.utils'
+import type { Decimal } from '@primitives/decimal.utils'
+import { mapQuery, q } from '@ui-kit/types/util'
 import { isFormTouched } from '@ui-kit/utils/react-form.utils'
 import { useCreateLoanEstimateGas } from '../../../queries/create-loan/create-loan-approve-estimate-gas.query'
 import { useCreateLoanExpectedCollateral } from '../../../queries/create-loan/create-loan-expected-collateral.query'
 import { useCreateLoanHealth } from '../../../queries/create-loan/create-loan-health.query'
 import { useCreateLoanPriceImpact } from '../../../queries/create-loan/create-loan-price-impact.query'
 import { useCreateLoanPrices } from '../../../queries/create-loan/create-loan-prices.query'
-import { useMarketFutureRates } from '../../../queries/market-future-rates.query'
 import { LoanActionInfoList } from '../../../widgets/action-card/LoanActionInfoList'
 import { useLoanToValue } from '../hooks/useLoanToValue'
 import { useNetBorrowApr } from '../hooks/useNetBorrowApr'
-import { type CreateLoanForm, type CreateLoanFormQueryParams, type Token } from '../types'
+import { type CreateLoanForm, type CreateLoanFormQueryParams } from '../types'
 
 export const CreateLoanInfoList = <ChainId extends IChainId>({
   market,
@@ -26,6 +27,7 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
   collateralToken,
   borrowToken,
   networks,
+  routes,
   onSlippageChange,
   form,
 }: {
@@ -35,6 +37,7 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
   collateralToken: Token | undefined
   borrowToken: Token | undefined
   networks: NetworkDict<ChainId>
+  routes: MarketRoutes | undefined
   onSlippageChange: (newSlippage: Decimal) => void
   form: UseFormReturn<CreateLoanForm>
 }) => {
@@ -80,6 +83,7 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
       gas={q(useCreateLoanEstimateGas(networks, params, isOpen))}
       leverageEnabled={leverageEnabled}
       {...(leverageEnabled && {
+        routes,
         leverageValue,
         leverageTotalCollateral,
         priceImpact: q(priceImpact),

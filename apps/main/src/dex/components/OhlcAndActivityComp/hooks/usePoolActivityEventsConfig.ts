@@ -3,7 +3,8 @@ import { useNetworkByChain } from '@/dex/entities/networks'
 import { usePoolLiquidityEvents } from '@/dex/entities/pool-liquidity.query'
 import { usePoolsPricesApi } from '@/dex/queries/pools-prices-api.query'
 import { ChainId } from '@/dex/types/main.types'
-import type { Chain, Address } from '@curvefi/prices-api'
+import type { Chain } from '@curvefi/prices-api'
+import type { Address } from '@primitives/address.utils'
 import { scanTxPath } from '@ui/utils'
 import {
   type PoolLiquidityRow,

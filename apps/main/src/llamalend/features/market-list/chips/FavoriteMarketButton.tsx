@@ -1,10 +1,10 @@
 import { useFavoriteMarket } from '@/llamalend/queries/market-list/favorite-markets'
 import IconButton from '@mui/material/IconButton'
+import type { Address } from '@primitives/address.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { FavoriteHeartIcon } from '@ui-kit/shared/icons/HeartIcon'
 import { ClickableInRowClass, DesktopOnlyHoverClass } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
-import type { Address } from '@ui-kit/utils'
 import { classNames } from '@ui-kit/utils/dom'
 
 export function FavoriteMarketButton({ address, desktopOnly }: { address: Address; desktopOnly?: boolean }) {

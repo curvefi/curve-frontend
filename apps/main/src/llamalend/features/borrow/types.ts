@@ -1,10 +1,9 @@
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import type { Decimal } from '@primitives/decimal.utils'
 import type { FieldsOf } from '@ui-kit/lib'
 import type { MarketQuery } from '@ui-kit/lib/model'
 import type { MakeOptional } from '@ui-kit/types/util'
-import { Decimal } from '@ui-kit/utils'
 
-export { type Token } from '@ui-kit/types/common'
 /** Complete create loan form with all fields already filled in (after validation) */
 type CompleteCreateLoanForm = {
   userCollateral: Decimal
@@ -13,6 +12,7 @@ type CompleteCreateLoanForm = {
   range: number
   slippage: Decimal
   leverageEnabled: boolean
+  routeId: string | undefined
 }
 
 // todo: get rid of this, it's incorrect. We only did it because it was easier to run the validation suite
@@ -23,6 +23,7 @@ export type CreateLoanForm = MakeOptional<CompleteCreateLoanForm, 'debt' | 'user
 
 /** Full query type for create loan queries, including pool identification and all form fields */
 export type CreateLoanFormQuery<T = IChainId> = MarketQuery<T> & CompleteCreateLoanForm
+
 /** Fields of the create loan form query before validation */
 export type CreateLoanFormQueryParams<T = IChainId> = FieldsOf<CreateLoanFormQuery<T>>
 

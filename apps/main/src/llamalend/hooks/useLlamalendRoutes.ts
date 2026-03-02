@@ -1,4 +1,4 @@
-import { useMatchRoute } from '@tanstack/react-router'
+import { useMatchRoute } from '@ui-kit/hooks/router'
 import { useIsDesktop } from '@ui-kit/hooks/useBreakpoints'
 import { useLendMarketSubNav } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
@@ -20,45 +20,39 @@ const buildLendMarketPath = ({ marketId, action }: { marketId: string; action: s
  * For the crvusd app it's empty array (default to Borrow page, no need for the subnav)
  */
 export const useLlamalendMarketSubNavRoutes = ({ isMobile }: { isMobile: boolean }): AppRoute[] => {
-  const matchRoute = useMatchRoute()
-  // Returns the params if the current pathname matches the given route, else returns false
-  // Cast the return type because it's "false" by default
-  const params = matchRoute({
+  const params = useMatchRoute<{ app: AppName; marketId: string }>({
     to: `$app/$network${LEND_ROUTES.PAGE_MARKETS}/$marketId`,
-    fuzzy: true,
-  }) as Record<string, string> | false
+    fuzzy: true, // allows to match longer routes like .../vault
+  })
 
-  switch (params && params.app) {
-    case LEND_APP:
-      return [
-        {
-          app: LEND_APP,
-          route: buildLendMarketPath({
-            marketId: (params as Record<string, string>).marketId,
-            action: LEND_MARKET_ROUTES.PAGE_LOAN,
-          }),
-          label: () => t`Borrow`,
-          matchMode: 'exact',
-        },
-        {
-          app: LEND_APP,
-          route: buildLendMarketPath({
-            marketId: (params as Record<string, string>).marketId,
-            action: LEND_MARKET_ROUTES.PAGE_VAULT,
-          }),
-          label: () => t`Supply`,
-          matchMode: 'exact',
-        },
-      ]
-    case CRVUSD_APP:
-      return []
-    default:
-      // Subnav not needed for mobile outside of the markets page
-      if (isMobile) {
-        return []
-      }
-      return APP_LINK.llamalend.routes
+  if (params && params.app === LEND_APP) {
+    return [
+      {
+        app: LEND_APP,
+        route: buildLendMarketPath({
+          marketId: params.marketId,
+          action: LEND_MARKET_ROUTES.PAGE_LOAN,
+        }),
+        label: () => t`Borrow`,
+        matchMode: 'exact',
+      },
+      {
+        app: LEND_APP,
+        route: buildLendMarketPath({
+          marketId: params.marketId,
+          action: LEND_MARKET_ROUTES.PAGE_VAULT,
+        }),
+        label: () => t`Supply`,
+        matchMode: 'exact',
+      },
+    ]
   }
+
+  // Subnav not needed for mobile outside of the markets page
+  if ((params && params.app === CRVUSD_APP) || isMobile) {
+    return []
+  }
+  return APP_LINK.llamalend.routes
 }
 
 export const useLlamalendRoutes = (): AppRoute[] => {

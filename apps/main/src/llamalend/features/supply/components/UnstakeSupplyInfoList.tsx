@@ -1,8 +1,7 @@
 import BigNumber from 'bignumber.js'
 import type { UseFormReturn } from 'react-hook-form'
-import type { Token } from '@/llamalend/features/borrow/types'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
-import { useMarketRates } from '@/llamalend/queries/market-rates.query'
+import { useMarketRates } from '@/llamalend/queries/market'
 import { useUnstakeEstimateGas } from '@/llamalend/queries/supply/supply-unstake-estimate-gas.query'
 import {
   useSharesToAssetsAmount,
@@ -12,6 +11,7 @@ import { useUserBalances } from '@/llamalend/queries/user'
 import type { UnstakeForm, UnstakeParams } from '@/llamalend/queries/validation/supply.validation'
 import { SupplyActionInfoList } from '@/llamalend/widgets/action-card/SupplyActionInfoList'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import { type Token } from '@primitives/address.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { mapQuery, q } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'

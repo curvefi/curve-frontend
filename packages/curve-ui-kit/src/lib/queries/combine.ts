@@ -1,6 +1,7 @@
+import type { Decimal } from '@primitives/decimal.utils'
 import type { UseQueryOptions } from '@tanstack/react-query'
 import { Query } from '@ui-kit/types/util'
-import { Decimal, decimalMin } from '@ui-kit/utils'
+import { decimalMin } from '@ui-kit/utils'
 import { QueryOptionsArray, QueryResultsArray } from './types'
 
 export const combineQueryState = (...queries: (Query<unknown> | undefined)[]) => ({

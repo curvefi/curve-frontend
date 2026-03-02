@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react'
-import type { Address } from 'viem'
+import type { Address } from '@primitives/address.utils'
 import { getFavoriteMarkets, useFavoriteMarkets } from '@ui-kit/hooks/useLocalStorage'
 import { EmptyValidationSuite } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model'

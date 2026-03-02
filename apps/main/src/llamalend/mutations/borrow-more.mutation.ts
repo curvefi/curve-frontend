@@ -1,5 +1,4 @@
 import { useCallback } from 'react'
-import type { Address, Hex } from 'viem'
 import { useConfig } from 'wagmi'
 import { formatTokenAmounts } from '@/llamalend/llama.utils'
 import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
@@ -15,6 +14,7 @@ import {
   borrowMoreMutationValidationSuite,
 } from '@/llamalend/queries/validation/borrow-more.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
+import { type Address, type Hex } from '@primitives/address.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys } from '@ui-kit/lib/model'
 import type { OnTransactionSuccess } from '@ui-kit/lib/model/mutation/useTransactionMutation'
@@ -37,6 +37,8 @@ const approveBorrowMore = async (
   if (!+userCollateral && !+userBorrowed) return []
   const [type, impl] = getBorrowMoreImplementation(market.id, leverageEnabled)
   switch (type) {
+    case 'zapV2':
+      return (await impl.borrowMoreApprove({ userCollateral, userBorrowed })) as Hex[]
     case 'V1':
     case 'V2':
       return (await impl.borrowMoreApprove(userCollateral, userBorrowed)) as Hex[]
@@ -47,15 +49,18 @@ const approveBorrowMore = async (
 
 const borrowMore = async (
   market: LlamaMarketTemplate,
-  { userCollateral = '0', userBorrowed = '0', debt = '0', slippage, leverageEnabled }: BorrowMoreMutation,
+  { userCollateral = '0', userBorrowed = '0', debt = '0', slippage, leverageEnabled, routeId }: BorrowMoreMutation,
 ): Promise<Hex> => {
   const [type, impl, args] = getBorrowMoreImplementationArgs(market.id, {
     userCollateral,
     userBorrowed,
     debt,
     leverageEnabled,
+    routeId,
   })
   switch (type) {
+    case 'zapV2':
+      return (await impl.borrowMore(...args)) as Hex
     case 'V1':
     case 'V2':
       await impl.borrowMoreExpectedCollateral(userCollateral, userBorrowed, debt, +slippage)

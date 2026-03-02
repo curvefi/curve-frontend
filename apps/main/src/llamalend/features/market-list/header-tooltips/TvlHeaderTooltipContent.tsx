@@ -22,7 +22,7 @@ export const TvlHeaderTooltipContent = () => (
       text={
         <Trans>
           For lending markets it is calculated as:{' '}
-          <strong>(total collateral value + supplied assets - total debt)</strong>
+          <strong>(collateral held in the AMM + available vault liquidity)</strong>
         </Trans>
       }
     />

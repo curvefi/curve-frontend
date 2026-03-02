@@ -1,5 +1,6 @@
 import { skipWhen } from 'vest'
-import { getBorrowMoreImplementationArgs } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
+import { isRouterRequired } from '@/llamalend/llama.utils'
+import { getBorrowMoreImplementation } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
 import {
   validateDebt,
   validateLeverageEnabled,
@@ -7,18 +8,18 @@ import {
   validateMaxBorrowed,
   validateMaxCollateral,
   validateMaxDebt,
-  validateSlippage,
+  validateRoute,
   validateUserBorrowed,
   validateUserCollateral,
 } from '@/llamalend/queries/validation/borrow-fields.validation'
+import type { Decimal } from '@primitives/decimal.utils'
 import { createValidationSuite, FieldsOf } from '@ui-kit/lib'
-import type { UserMarketQuery } from '@ui-kit/lib/model'
+import { type UserMarketQuery, validateSlippage } from '@ui-kit/lib/model'
 import { chainValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
 import { llamaApiValidationGroup } from '@ui-kit/lib/model/query/curve-api-validation'
 import { marketIdValidationGroup } from '@ui-kit/lib/model/query/market-id-validation'
 import { userAddressValidationGroup } from '@ui-kit/lib/model/query/user-address-validation'
 import type { MakeOptional } from '@ui-kit/types/util'
-import { Decimal } from '@ui-kit/utils'
 
 export type BorrowMoreMutation = {
   userCollateral: Decimal
@@ -26,6 +27,7 @@ export type BorrowMoreMutation = {
   debt: Decimal
   slippage: Decimal
   leverageEnabled: boolean
+  routeId: string | undefined
 }
 
 type CalculatedValues = {
@@ -45,18 +47,15 @@ export type BorrowMoreParams<ChainId = number> = FieldsOf<BorrowMoreQuery<ChainI
 const validateBorrowMoreFieldsForMarket = (
   marketId: string | null | undefined,
   leverageEnabled: boolean | null | undefined,
-  userCollateral: Decimal | null | undefined,
-  userBorrowed: Decimal | null | undefined,
-  debt: Decimal | null | undefined,
+  _userCollateral: Decimal | null | undefined,
+  _userBorrowed: Decimal | null | undefined,
+  _debt: Decimal | null | undefined,
+  routeId: string | null | undefined,
 ) => {
   skipWhen(!marketId, () => {
     if (!marketId) return
-    getBorrowMoreImplementationArgs(marketId, {
-      leverageEnabled,
-      debt: debt ?? '0',
-      userCollateral: userCollateral ?? '0',
-      userBorrowed: userBorrowed ?? '0',
-    })
+    const [type] = getBorrowMoreImplementation(marketId, leverageEnabled)
+    validateRoute(routeId, !!leverageEnabled && isRouterRequired(type))
   })
 }
 
@@ -80,7 +79,7 @@ export const borrowMoreFormValidationSuite = createValidationSuite(
     validateMaxBorrowed(userBorrowed, { label: `debt amount`, maxBorrowed })
     validateDebt(debt, debtRequired)
     validateMaxDebt(debt, maxDebt, debtRequired)
-    validateSlippage(slippage)
+    validateSlippage({ slippage })
     validateLeverageEnabled(leverageEnabled, leverageRequired)
   },
 )
@@ -97,6 +96,7 @@ export const borrowMoreValidationGroup = <IChainId extends number>(
     userAddress,
     slippage,
     leverageEnabled,
+    routeId,
   }: BorrowMoreParams<IChainId>,
   {
     leverageRequired = false,
@@ -116,8 +116,8 @@ export const borrowMoreValidationGroup = <IChainId extends number>(
   validateUserBorrowed(userBorrowed)
   validateDebt(debt, debtRequired)
   validateMaxDebt(debt, maxDebt, maxDebtRequired)
-  validateBorrowMoreFieldsForMarket(marketId, leverageEnabled, userCollateral, userBorrowed, debt)
-  validateSlippage(slippage)
+  validateBorrowMoreFieldsForMarket(marketId, leverageEnabled, userCollateral, userBorrowed, debt, routeId)
+  validateSlippage({ slippage })
   validateLeverageEnabled(leverageEnabled, leverageRequired)
   validateLeverageSupported(marketId, leverageRequired)
 }

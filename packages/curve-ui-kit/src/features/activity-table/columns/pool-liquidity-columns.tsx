@@ -1,8 +1,9 @@
+import { type Token } from '@primitives/address.utils'
 import { createColumnHelper } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
-import { TimestampCell, AddressCell, TokenAmountCell } from '../cells'
+import { AddressCell, TimestampCell, TokenAmountCell } from '../cells'
 import { PoolLiquidityActionCell } from '../cells/PoolLiquidityActionCell'
-import type { PoolLiquidityRow, Token } from '../types'
+import type { PoolLiquidityRow } from '../types'
 
 export enum PoolLiquidityColumnId {
   Action = 'eventType',

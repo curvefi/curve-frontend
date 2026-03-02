@@ -1,9 +1,10 @@
 import Stack from '@mui/material/Stack'
+import type { Decimal } from '@primitives/decimal.utils'
 import { combineQueryState } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo, ActionInfoGasEstimate, type TxGasInfo } from '@ui-kit/shared/ui/ActionInfo'
 import type { QueryProp } from '@ui-kit/types/util'
-import { type Decimal, formatNumber, formatPercent } from '@ui-kit/utils'
+import { formatNumber, formatPercent } from '@ui-kit/utils'
 import { ActionInfoCollapse } from './ActionInfoCollapse'
 import { formatAmount, ACTION_INFO_GROUP_SX } from './info-actions.helpers'
 

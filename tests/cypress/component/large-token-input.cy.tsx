@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
+import type { Decimal } from '@primitives/decimal.utils'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
-import type { Decimal } from '@ui-kit/utils'
 
 function TestComponent() {
   const [balance, setBalance] = useState<Decimal | undefined>(undefined)

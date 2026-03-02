@@ -1,8 +1,8 @@
 import { MARKET_CUTOFF_DATE } from '@/llamalend/constants'
 import type { GetMarketsResponse } from '@curvefi/prices-api/llamalend'
-import { fromEntries, range } from '@curvefi/prices-api/objects.util'
 import { MAX_USD_VALUE, oneAddress, oneDate, oneFloat, oneInt, oneOf, onePrice } from '@cy/support/generators'
 import { oneToken } from '@cy/support/helpers/tokens'
+import { fromEntries, range } from '@primitives/objects.utils'
 import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
 
 const LendingChains = ['ethereum', 'fraxtal', 'arbitrum'] as const
@@ -58,8 +58,8 @@ const oneLendingPool = (
     total_assets: totalAssets,
     total_debt_usd: totalDebtUsd,
     total_assets_usd: totalAssetsUsd,
-    minted: minted,
-    redeemed: redeemed,
+    minted,
+    redeemed,
     minted_usd: minted * borrowedPrice,
     redeemed_usd: redeemed * borrowedPrice,
     loan_discount: oneFloat(1e18),
@@ -94,7 +94,7 @@ export const HighUtilizationAddress = '0xBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 export const RewardsTestAddress = '0xCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa' as const
 
 function oneLendingVaultResponse(chain: Chain): GetMarketsResponse {
-  const count = oneInt(2, 20)
+  const count = oneInt(15, 20)
   const data = [
     ...range(count).map((index) =>
       oneLendingPool(chain, { utilization: index / count, tvl: oneFloat() > 0.9 ? oneSmallTvl() : oneLargeTvl() }),

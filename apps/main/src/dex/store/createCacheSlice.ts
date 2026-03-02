@@ -18,14 +18,13 @@ type SliceState = {
   poolsMapper: { [chainId: string]: PoolDataCacheMapper }
   routerFormValues: { [chainId: string]: SwapFormValuesCache }
   tvlMapper: { [chainId: string]: ValueMapperCached }
-  volumeMapper: { [chainId: string]: ValueMapperCached }
 }
 
 const sliceKey = 'storeCache'
 
 export type CacheSlice = {
   [sliceKey]: SliceState & {
-    setTvlVolumeMapper(type: 'tvlMapper' | 'volumeMapper', chainId: ChainId, mapper: ValueMapperCached): void
+    setTvlMapper(chainId: ChainId, mapper: ValueMapperCached): void
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): Promise<void>
     setStateByKey<T>(key: StateKey, value: T): Promise<void>
     setStateByKeys(SliceState: Partial<SliceState>): Promise<void>
@@ -39,7 +38,6 @@ const DEFAULT_STATE: SliceState = {
   poolsMapper: {},
   routerFormValues: {},
   tvlMapper: {},
-  volumeMapper: {},
 }
 
 const TIMEOUT_MS = 4000
@@ -48,7 +46,7 @@ export const createCacheSlice = (_: StoreApi<State>['setState'], get: StoreApi<S
   storeCache: {
     ...DEFAULT_STATE,
 
-    setTvlVolumeMapper: (key, chainId, mapper) => {
+    setTvlMapper: (chainId, mapper) => {
       const sliceState = get()[sliceKey]
       const parsedMapper: ValueMapperCached = {}
 
@@ -56,7 +54,7 @@ export const createCacheSlice = (_: StoreApi<State>['setState'], get: StoreApi<S
         parsedMapper[k] = { value }
       })
 
-      void sliceState.setStateByActiveKey(key, chainId.toString(), parsedMapper)
+      void sliceState.setStateByActiveKey('tvlMapper', chainId.toString(), parsedMapper)
     },
 
     // slice helpers

@@ -1,5 +1,4 @@
 import { useMemo } from 'react'
-import type { Address } from 'viem'
 import { type Chain } from '@curvefi/prices-api'
 import {
   UserCollateralEvent as CrvUsdUserCollateralEvent,
@@ -9,6 +8,7 @@ import {
   UserCollateralEvent as LendingUserCollateralEvent,
   UserCollateralEvents as LendingUserCollateralEvents,
 } from '@curvefi/prices-api/lending'
+import type { Address } from '@primitives/address.utils'
 import { scanTxPath, type BaseConfig } from '@ui/utils'
 import { useUserCrvUsdCollateralEventsQuery } from '../queries/user-crvusd-collateral-events'
 import { useUserLendCollateralEventsQuery } from '../queries/user-lend-collateral-events'
@@ -21,6 +21,7 @@ type UserCollateralEvents = LendingUserCollateralEvents | CrvUsdUserCollateralEv
  * Add collateral = "Borrow" type when collateral incresases but debt doesn't.
  * Self liquidation = "Liquidate" when the liquidator is the user.
  * Hard liquidation = "Liquidate" when the liquidator is not the user.
+ * Partial liquidation = "Repay" type with a liquidation object (lending API soft liquidation).
  * Borrow more = "Borrow" type when debt increases but collateral doesn't.
  * Repay and Close = "Repay" when debt goes to 0.
  */
@@ -35,6 +36,7 @@ export type UserCollateralEventType =
   | 'Add Collateral'
   | 'Self Liquidation'
   | 'Hard Liquidation'
+  | 'Partial Liquidation'
 
 type CollateralEventToken = {
   symbol: string
@@ -64,6 +66,7 @@ const parseEventType = (
   if (type === 'Borrow' && (previousEvent == null || previousEvent?.isPositionClosed)) return 'Open Position'
   if (type === 'Borrow' && loanChange > 0 && collateralChange === 0) return 'Borrow More'
   if (type === 'Borrow' && collateralChange > 0 && loanChange === 0) return 'Add Collateral'
+  if (type === 'Repay' && liquidation != null) return 'Partial Liquidation'
   if (type === 'Liquidate' && liquidation?.liquidator === user) return 'Self Liquidation'
   if (type === 'Liquidate') return 'Hard Liquidation'
   if (type === 'Repay' && isPositionClosed) return 'Repay and Close'

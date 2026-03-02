@@ -4,11 +4,11 @@ import { ChartAndActivityLayout } from '@/llamalend/widgets/ChartAndActivityLayo
 import { useOhlcChartState } from '@/loan/hooks/useOhlcChartState'
 import { networks } from '@/loan/networks'
 import { ChainId, Llamma } from '@/loan/types/loan.types'
-import type { Address, Chain } from '@curvefi/prices-api'
-import { type Token } from '@ui-kit/features/activity-table'
+import type { Chain } from '@curvefi/prices-api'
+import type { Address, Token } from '@primitives/address.utils'
+import type { Decimal } from '@primitives/decimal.utils'
 import { useCurve } from '@ui-kit/features/connect-wallet'
 import type { Range } from '@ui-kit/types/util'
-import type { Decimal } from '@ui-kit/utils'
 
 type ChartAndActivityCompProps = {
   chainId: ChainId

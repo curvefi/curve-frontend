@@ -10,14 +10,15 @@ import {
 } from '@/llamalend/queries/borrow-more/borrow-more-query.helpers'
 import { LoanFormTokenInput } from '@/llamalend/widgets/action-card/LoanFormTokenInput'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { notFalsy } from '@curvefi/prices-api/objects.util'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
+import type { Decimal } from '@primitives/decimal.utils'
+import { notFalsy } from '@primitives/objects.utils'
+import { joinButtonText } from '@primitives/string.utils'
 import { t } from '@ui-kit/lib/i18n'
 import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
 import { q, type Range } from '@ui-kit/types/util'
-import { isDevelopment, joinButtonText } from '@ui-kit/utils'
-import type { Decimal } from '@ui-kit/utils'
+import { isDevelopment } from '@ui-kit/utils'
 import { updateForm } from '@ui-kit/utils/react-form.utils'
 import { Form } from '@ui-kit/widgets/DetailPageLayout/Form'
 import { FormAlerts, HighPriceImpactAlert } from '@ui-kit/widgets/DetailPageLayout/FormAlerts'
@@ -56,6 +57,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     txHash,
     isApproved,
     formErrors,
+    routes,
     max,
     leverage,
   } = useBorrowMoreForm({
@@ -67,10 +69,10 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
   })
 
   const isLeverageEnabled = isLeverageBorrowMore(market, values.leverageEnabled)
-  const swapRequired = isLeverageEnabled && Number(values.userBorrowed) > 0
   const fromBorrowed = fromWallet && isLeverageEnabled
   const onLeverageToggle = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) => updateForm(form, { leverageEnabled: event.target.checked }),
+    (event: ChangeEvent<HTMLInputElement>) =>
+      updateForm(form, { leverageEnabled: event.target.checked, routeId: undefined }),
     [form],
   )
 
@@ -86,6 +88,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
           values={values}
           tokens={{ collateralToken, borrowToken }}
           networks={networks}
+          routes={routes}
           onSlippageChange={(value) => updateForm(form, { slippage: value })}
           leverageEnabled={values.leverageEnabled}
         />
@@ -149,7 +152,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
         />
       )}
 
-      <HighPriceImpactAlert {...q(useBorrowMorePriceImpact(params, enabled && swapRequired))} />
+      <HighPriceImpactAlert {...q(useBorrowMorePriceImpact(params, enabled && isLeverageEnabled))} />
 
       <Button
         type="submit"
@@ -158,7 +161,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
         data-testid="borrow-more-submit-button"
         data-validation={JSON.stringify({
           hasMarket: !!market,
-          swapRequired,
+          isLeverageEnabled,
           isPending,
           isDisabled,
           isValid: form.formState.isValid,

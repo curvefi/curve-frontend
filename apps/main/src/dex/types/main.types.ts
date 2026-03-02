@@ -1,6 +1,5 @@
 import { ethers } from 'ethers'
 import { ReactNode } from 'react'
-import type { SearchParams as PoolListSearchParams } from '@/dex/components/PagePoolList/types'
 import type { IChainId, INetworkName } from '@curvefi/api/lib/interfaces'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import type { TooltipProps } from '@ui/Tooltip/types'
@@ -31,7 +30,6 @@ export interface NetworkConfig extends BaseConfig<NetworkEnum> {
   hideSmallPoolsTvl: number
   isActiveNetwork: boolean
   missingPools: { name: string; url: string }[]
-  poolListFormValuesDefault: Partial<PoolListSearchParams>
   swap: { [key: string]: string }
   showInSelectNetwork: boolean
   showRouterSwap: boolean
@@ -230,12 +228,6 @@ export type Tvl = {
 }
 export type TvlMapper = { [poolId: string]: Tvl }
 export type ValueMapperCached = { [poolId: string]: { value: string } }
-export type Volume = {
-  poolId: string
-  value: string
-  errorMessage: string
-}
-export type VolumeMapper = { [poolId: string]: Volume }
 export type AlertType = 'info' | 'warning' | 'error' | 'danger' | ''
 
 export interface PoolAlert extends TooltipProps {

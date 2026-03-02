@@ -51,9 +51,6 @@
     "campaign": "Carrot.json"
   },
   {
-    "campaign": "Bills.json"
-  },
-  {
     "campaign": "StableLabs.json"
   },
   {
@@ -109,5 +106,8 @@
   },
   {
     "campaign": "Re.json"
+  },
+  {
+    "campaign": "Raac.json"
   }
 ]
