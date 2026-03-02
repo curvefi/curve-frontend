@@ -83,6 +83,7 @@ export const MarketContractsSection = ({ market, network }: MarketContractsProps
               : { address: market.addresses.gauge }),
           },
           { key: 'monetary-policy', label: t`Monetary policy`, address: market.addresses.monetary_policy },
+          { key: 'oracle', label: t`Oracle`, address: market.addresses.oracle },
         ]
       : [
           { key: 'amm', label: t`AMM`, address: market.address },
