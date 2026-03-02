@@ -7,7 +7,11 @@ import { getRepayImplementation } from './repay-query.helpers'
 
 export type RepayIsApprovedParams<ChainId = IChainId> = RepayIsFullParams<ChainId>
 
-export const { useQuery: useRepayIsApproved, fetchQuery: fetchRepayIsApproved } = queryFactory({
+export const {
+  useQuery: useRepayIsApproved,
+  fetchQuery: fetchRepayIsApproved,
+  invalidate: invalidateRepayIsApproved,
+} = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -16,6 +20,7 @@ export const { useQuery: useRepayIsApproved, fetchQuery: fetchRepayIsApproved } 
     userBorrowed = '0',
     userAddress,
     isFull,
+    routeId,
   }: RepayIsApprovedParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
@@ -24,6 +29,7 @@ export const { useQuery: useRepayIsApproved, fetchQuery: fetchRepayIsApproved } 
       { userCollateral },
       { userBorrowed },
       { isFull },
+      { routeId },
     ] as const,
   queryFn: async ({
     marketId,
@@ -32,11 +38,14 @@ export const { useQuery: useRepayIsApproved, fetchQuery: fetchRepayIsApproved } 
     userBorrowed,
     isFull,
     userAddress,
+    routeId,
   }: RepayIsFullQuery): Promise<boolean> => {
     const useFullRepay = isFull && !+stateCollateral && !+userCollateral
     if (useFullRepay) return await getLlamaMarket(marketId).fullRepayIsApproved(userAddress)
-    const [type, impl] = getRepayImplementation(marketId, { userCollateral, stateCollateral, userBorrowed })
+    const [type, impl] = getRepayImplementation(marketId, { userCollateral, stateCollateral, userBorrowed, routeId })
     switch (type) {
+      case 'zapV2':
+        return await impl.repayIsApproved({ userCollateral, userBorrowed })
       case 'V1':
       case 'V2':
         return await impl.repayIsApproved(userCollateral, userBorrowed)
