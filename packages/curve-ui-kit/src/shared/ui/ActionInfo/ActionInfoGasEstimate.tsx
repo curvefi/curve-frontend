@@ -33,5 +33,6 @@ export const ActionInfoGasEstimate = ({ gas, isApproved }: EstimatedTxCostProps)
     valueLeft={<FireIcon fontSize="small" />}
     size="small"
     error={gas.error}
+    testId="estimated-tx-cost"
   />
 )

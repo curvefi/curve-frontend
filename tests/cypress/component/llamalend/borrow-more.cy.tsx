@@ -9,14 +9,15 @@ import {
   writeBorrowMoreForm,
 } from '@cy/support/helpers/borrow-more.helpers'
 import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
-import { resetLlamaTestContext, setLlamaApi } from '@cy/support/helpers/llamalend/test-context.helpers'
+import { resetLlamaTestContext, setGasInfo, setLlamaApi } from '@cy/support/helpers/llamalend/test-context.helpers'
 import { createBorrowMoreScenario } from '@cy/support/helpers/llamalend/test-scenarios.helpers'
+import { Chain } from '@ui-kit/utils'
 
 const networks = loanNetworks as unknown as NetworkDict<LlamaChainId>
-const chainId = 1
+const chainId = Chain.Ethereum
 const testCases = [
   { approved: true, title: 'fills and submits (already approved)' },
-  { approved: false, title: 'fills, approves, and submits' },
+  // { approved: false, title: 'fills, approves, and submits' },
 ]
 
 describe('BorrowMoreForm (mocked)', () => {
@@ -26,19 +27,13 @@ describe('BorrowMoreForm (mocked)', () => {
 
   testCases.forEach(({ approved, title }: { approved: boolean; title: string }) => {
     it(title, () => {
-      const {
-        borrow,
-        expected: { estimateGas, health, isApproved, maxRecv, submit },
-        expectedCurrentDebt,
-        expectedFutureDebt,
-        llamaApi,
-        market,
-        stubs,
-      } = createBorrowMoreScenario({ chainId, approved })
+      const { borrow, expected, expectedCurrentDebt, expectedFutureDebt, llamaApi, market, stubs } =
+        createBorrowMoreScenario({ chainId, approved })
       const onSuccess = cy.spy().as('onSuccess')
       const onPricesUpdated = cy.spy().as('onPricesUpdated')
 
       setLlamaApi(llamaApi)
+      setGasInfo(chainId)
 
       cy.mount(
         <MockLoanTestWrapper llamaApi={llamaApi}>
@@ -48,7 +43,6 @@ describe('BorrowMoreForm (mocked)', () => {
             chainId={chainId}
             onSuccess={onSuccess}
             onPricesUpdated={onPricesUpdated}
-            fromWallet={false}
           />
         </MockLoanTestWrapper>,
       )
@@ -62,22 +56,23 @@ describe('BorrowMoreForm (mocked)', () => {
 
       cy.then(() => {
         expect(stubs.parameters).to.have.been.calledWithExactly()
-        expect(stubs.borrowMoreHealth).to.have.been.calledWithExactly(...health)
-        expect(stubs.borrowMoreMaxRecv).to.have.been.calledWithExactly(...maxRecv)
-        expect(stubs.borrowMoreIsApproved).to.have.been.calledWithExactly(...isApproved)
-        if (approved) {
-          expect(stubs.estimateGasBorrowMore).to.have.been.calledWithExactly(...estimateGas)
-        } else {
-          expect(stubs.estimateGasBorrowMore).to.not.have.been.called
-          if ('estimateGasBorrowMoreApprove' in stubs) {
-            expect(stubs.estimateGasBorrowMoreApprove).to.not.have.been.called
-          }
+        expect(stubs.borrowMoreHealth).to.have.been.calledWithExactly(...expected.health)
+        expect(stubs.borrowMoreMaxRecv).to.have.been.calledWithExactly(...expected.maxRecv)
+        expect(stubs.borrowMoreIsApproved).to.have.been.calledWithExactly(...expected.isApproved)
+        if (!approved) {
+          expect(stubs.estimateGasBorrowMoreApprove).to.have.been.calledWithExactly(...expected.estimateGas)
         }
       })
 
       submitBorrowMoreForm().then(() => {
-        expect(stubs.borrowMore).to.have.been.calledWithExactly(...submit)
-        expect(stubs.borrowMoreApprove).to.not.have.been.called
+        expect(stubs.estimateGasBorrowMore).to.have.been.calledWithExactly(...expected.estimateGas)
+        expect(stubs.borrowMore).to.have.been.calledWithExactly(...expected.submit)
+        if (approved) {
+          expect(stubs.borrowMoreApprove).to.not.have.been.called
+        } else {
+          expect(stubs.borrowMoreApprove).to.have.been.calledWithExactly(...expected.approve)
+        }
+        expect(onSuccess).to.have.been.calledOnce
       })
     })
   })

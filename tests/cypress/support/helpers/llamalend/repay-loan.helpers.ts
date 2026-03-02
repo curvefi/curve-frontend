@@ -33,6 +33,7 @@ export function checkRepayDetailsLoaded({ leverageEnabled, debt }: { debt: DebtC
   cy.get('[data-testid="borrow-leverage-info-list"]', LOAD_TIMEOUT).should(leverageEnabled ? 'be.visible' : 'not.exist')
   getActionValue('borrow-price-range').should('match', /(\d(\.\d+)?) - (\d(\.\d+)?)/)
   getActionValue('borrow-apr').should('include', '%')
+  getActionValue('estimated-tx-cost').contains('$')
   checkDebt(debt)
   cy.get('[data-testid="loan-form-errors"]').should('not.exist')
 }

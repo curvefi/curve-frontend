@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 import { type Address } from 'viem'
 import { RepayForm } from '@/llamalend/features/manage-loan/components/RepayForm'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
@@ -31,10 +32,13 @@ describe('RepayForm (mocked)', () => {
 
   testCases.forEach(({ approved, title }: { approved: boolean; title: string }) => {
     it(title, () => {
-      const scenario = createRepayScenario({ chainId, approved })
+      const { borrow, collateral, currentDebt, expected, futureDebt, llamaApi, market, stubs } = createRepayScenario({
+        chainId,
+        approved,
+      })
+
       const onSuccess = cy.spy().as('onSuccess')
       const onPricesUpdated = cy.spy().as('onPricesUpdated')
-      const { llamaApi, expected, market, borrow, stubs, collateral } = scenario
 
       void collateral
       setLlamaApi(llamaApi)
@@ -59,28 +63,29 @@ describe('RepayForm (mocked)', () => {
       selectRepayToken({ symbol: 'crvUSD', tokenAddress: CRVUSD_ADDRESS, hasLeverage: false })
       writeRepayLoanForm({ amount: borrow })
       checkRepayDetailsLoaded({
-        debt: { current: scenario.currentDebt, future: scenario.futureDebt, symbol: 'crvUSD' },
+        debt: { current: currentDebt, future: futureDebt, symbol: 'crvUSD' },
         leverageEnabled: false,
       })
 
-      cy.wrap(stubs).should((s) => {
-        expect(s.parameters).to.have.been.calledWithExactly()
-        expect(s.repayHealth).to.have.been.calledWithExactly(...expected.health)
-        expect(s.repayPrices).to.have.been.calledWithExactly(...expected.prices)
-        expect(s.repayIsApproved).to.have.been.calledWithExactly(...expected.isApproved)
-        if ('estimateGasRepayApprove' in s) {
-          expect(s.estimateGasRepayApprove).to.have.been.calledWithExactly(...expected.estimateGasApprove)
-        } else {
-          expect(s.estimateGasRepay).to.have.been.calledWithExactly(...expected.estimateGas)
+      cy.then(() => {
+        expect(stubs.parameters).to.have.been.calledWithExactly()
+        expect(stubs.repayHealth).to.have.been.calledWithExactly(...expected.health)
+        expect(stubs.repayPrices).to.have.been.calledWithExactly(...expected.prices)
+        expect(stubs.repayIsApproved).to.have.been.calledWithExactly(...expected.isApproved)
+        if (!approved) {
+          expect(stubs.estimateGasRepayApprove).to.have.been.calledWithExactly(...expected.estimateGasApprove)
         }
       })
 
       submitRepayForm().then(() => {
         expect(stubs.estimateGasRepay).to.have.been.calledWithExactly(...expected.estimateGas)
-        if ('repayApprove' in stubs) {
+        expect(stubs.repay).to.have.been.calledWithExactly(...expected.submit)
+        if (approved) {
+          expect(stubs.estimateGasRepay).to.have.been.calledWithExactly(...expected.estimateGas)
+        } else {
           expect(stubs.repayApprove).to.have.been.calledWithExactly(...expected.approve)
         }
-        expect(stubs.repay).to.have.been.calledWithExactly(...expected.submit)
+        expect(onSuccess).to.have.been.calledOnce
       })
     })
   })

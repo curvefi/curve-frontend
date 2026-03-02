@@ -52,9 +52,7 @@ describe('CreateLoanForm (mocked)', () => {
         expect(stubs.createLoanPrices).to.have.been.calledWithExactly(...expected.query)
         expect(stubs.createLoanMaxRecv).to.have.been.calledWithExactly(...expected.maxRecv)
         expect(stubs.createLoanIsApproved).to.have.been.calledWithExactly(...expected.approved)
-        if (approved) {
-          expect(stubs.estimateGasCreateLoan).to.have.been.calledWithExactly(...expected.query)
-        } else {
+        if (!approved) {
           expect(stubs.estimateGasCreateLoanApprove).to.have.been.calledWithExactly(...expected.estimateGasApprove)
         }
       })
@@ -67,6 +65,7 @@ describe('CreateLoanForm (mocked)', () => {
           expect(stubs.createLoanApprove).to.have.been.calledWithExactly(...expected.approve)
         }
         expect(stubs.createLoan).to.have.been.calledWithExactly(...expected.submit)
+        expect(onSuccess).to.have.been.calledOnce
       })
     })
   })
