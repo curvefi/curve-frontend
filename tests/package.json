@@ -27,13 +27,13 @@
     "@types/wait-on": "^5.3.4",
     "@vitejs/plugin-react": "*",
     "@vitest/ui": "^4.0.18",
-    "cypress": "^15.9.0",
+    "cypress": "^15.11.0",
     "dotenv-flow": "^4.1.0",
     "ethers": "*",
     "typescript": "*",
     "vite": "*",
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "*",
-    "wait-on": "^9.0.3"
+    "wait-on": "^9.0.4"
   }
 }
