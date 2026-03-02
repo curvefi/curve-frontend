@@ -1,13 +1,13 @@
 import BigNumber from 'bignumber.js'
 import { useCallback, useEffect, useRef } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
+import { useMarketMaxLeverage } from '@/llamalend/queries/market'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { decimal } from '@ui-kit/utils'
 import { updateForm } from '@ui-kit/utils/react-form.utils'
 import { useCreateLoanMaxReceive } from '../../../queries/create-loan/create-loan-max-receive.query'
-import { useMarketMaxLeverage } from '../../../queries/market-max-leverage.query'
 import type { CreateLoanForm, CreateLoanFormQueryParams } from '../types'
 
 /**

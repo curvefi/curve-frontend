@@ -22,7 +22,7 @@ import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
 import { TableFiltersTitles } from '@ui-kit/shared/ui/DataTable/TableFiltersTitles'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { PoolListChips } from './chips/PoolListChips'
-import { DEFAULT_SORT } from './columns'
+import { getDefaultSort } from './columns'
 import { POOL_LIST_COLUMNS, PoolColumnId } from './columns'
 import { PoolListEmptyState } from './components/PoolListEmptyState'
 import { PoolMobileExpandedPanel } from './components/PoolMobileExpandedPanel'
@@ -60,8 +60,7 @@ const EMPTY: never[] = []
 export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
   const { isLite, poolFilters } = network
 
-  // todo: use isReady to show a loading spinner close to the data
-  const { data, isLoading, isReady, userHasPositions } = usePoolListData(network)
+  const { data, isLoading, userHasPositions } = usePoolListData(network)
 
   const defaultFilters = useDefaultPoolsFilter(data)
   const { globalFilter, setGlobalFilter, columnFilters, columnFiltersById, setColumnFilter, hasFilters, resetFilters } =
@@ -70,7 +69,7 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
       defaultFilters,
     })
   const globalFilterFn = usePoolsGlobalFilterFn(data ?? [], globalFilter)
-  const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT)
+  const [sorting, onSortingChange] = useSortFromQueryString(getDefaultSort(isLite))
   const [pagination, onPaginationChange] = usePageFromQueryString(PER_PAGE)
   const { columnSettings, columnVisibility, sortField } = usePoolListVisibilitySettings(LOCAL_STORAGE_KEY, {
     isLite,
@@ -107,7 +106,7 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
       <TableFilters<PoolColumnId>
         filterExpandedKey={LOCAL_STORAGE_KEY}
         leftChildren={<TableFiltersTitles title={t`Pools`} subtitle={t`Find your next opportunity`} />}
-        loading={!isReady}
+        loading={isLoading}
         visibilityGroups={columnSettings}
         searchText={globalFilter}
         onSearch={setGlobalFilter}

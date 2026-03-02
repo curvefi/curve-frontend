@@ -4,6 +4,7 @@ import { updateHaveSameTokenNames } from '@/dex/store/createPoolsSlice'
 import type { State } from '@/dex/store/useStore'
 import { Token, TokensMapper, TokensNameMapper, PoolData, type CurveApi } from '@/dex/types/main.types'
 import { log } from '@ui-kit/lib/logging'
+import { fetchPoolVolumes } from '../queries/pool-volume.query'
 
 type StateKey = keyof typeof DEFAULT_STATE
 const { countBy } = lodash
@@ -51,19 +52,19 @@ export const createTokensSlice = (
     ...DEFAULT_STATE,
 
     setTokensMapper: async (curve, poolDatas) => {
-      const { pools } = get()
       const { tokensMapper, ...sliceState } = get()[sliceKey]
 
       sliceState.setStateByKey('loading', true)
 
       const chainId = curve.chainId
-      const volumeMapper = pools.volumeMapper[chainId] ?? {}
       const DEFAULT_TOKEN_MAPPER = _getDefaultTokenMapper(curve)
       let cTokensMapper: TokensMapper = { ...(tokensMapper[chainId] ?? DEFAULT_TOKEN_MAPPER) }
       const partialTokensMapper: TokensMapper = {}
 
+      const volumes = await fetchPoolVolumes({ chainId })
+
       for (const { pool, tokenAddressesAll, tokensAll, tokenDecimalsAll } of poolDatas) {
-        const volume = +(volumeMapper[pool.id]?.value ?? '0')
+        const volume = +volumes[pool.id] || 0
         const counted = countBy(tokensAll)
 
         for (const idx in tokenAddressesAll) {

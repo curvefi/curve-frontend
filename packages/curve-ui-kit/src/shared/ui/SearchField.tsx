@@ -10,6 +10,7 @@ export type SearchFieldProps = TextFieldProps & {
   value?: string
   onSearch: (search: string) => void
   inputRef?: RefObject<HTMLInputElement | null>
+  disableAutoFocus?: boolean
 }
 
 /** Compares two strings, ignoring leading and trailing whitespace. */
@@ -24,6 +25,7 @@ export const SearchField = ({
   placeholder = t`Search name or paste address`,
   name = 'search',
   inputRef,
+  disableAutoFocus,
   ...props
 }: SearchFieldProps) => {
   const [search, setSearch] = useUniqueDebounce<string>({
@@ -53,7 +55,7 @@ export const SearchField = ({
         },
       }}
       variant="outlined"
-      autoFocus
+      autoFocus={!disableAutoFocus}
       {...props}
       value={search}
       name={name}

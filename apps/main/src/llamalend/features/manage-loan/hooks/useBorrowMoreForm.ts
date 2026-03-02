@@ -48,7 +48,7 @@ const useBorrowMoreParams = <ChainId>({
   chainId: ChainId
   marketId: string | undefined
   userAddress: Address | undefined
-}): BorrowMoreParams<ChainId> =>
+}) =>
   useDebouncedValue(
     useMemo(
       () => ({
@@ -157,8 +157,8 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
       chainId,
       tokenIn: borrowToken,
       tokenOut: collateralToken,
-      amountIn: decimalSum(values.debt, values.userBorrowed),
-      ...pick(values, 'slippage', 'routeId'),
+      amountIn: decimalSum(params.debt, params.userBorrowed),
+      ...pick(params, 'slippage', 'routeId'),
       enabled: routeRequired,
       onChange: async (route: RouteResponse | undefined) => {
         updateForm(form, { routeId: route?.id })

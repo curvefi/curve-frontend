@@ -60,7 +60,7 @@ export const PoolStats = ({ routerParams, poolAlert, poolData, poolDataCacheOrAp
               {poolDataCacheOrApi.pool.referenceAsset === 'CRYPTO' && (
                 <AlertBox alertType="info" title={t`${poolDataCacheOrApi.pool.name} is a Cryptoswap pool`}>
                   {t`Cryptoswap pools contain non pegged assets. Liquidity providers are exposed to all assets in the pools.`}{' '}
-                  <ExternalLink $noStyles href="https://resources.curve.finance/pools/overview/">
+                  <ExternalLink $noStyles href="https://docs.curve.finance/user/dex/overview">
                     {t`Click here to learn more about Cryptoswap pools`}
                   </ExternalLink>
                 </AlertBox>

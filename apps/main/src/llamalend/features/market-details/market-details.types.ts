@@ -6,7 +6,6 @@ export type Collateral = {
   totalUsdValue: number | undefined | null
   symbol: string | undefined | null
   tokenAddress: string | undefined | null
-  usdRate: number | undefined | null
   loading: boolean
 }
 export type BorrowRate = {
@@ -46,7 +45,6 @@ export type BorrowToken = {
   totalUsdValue?: number | undefined | null
   symbol: string | undefined | null
   tokenAddress: string | undefined | null
-  usdRate: number | undefined | null
   loading: boolean
 }
 export type AvailableLiquidity = {
@@ -67,12 +65,5 @@ export type MarketDetailsProps = {
   availableLiquidity: AvailableLiquidity
   maxLeverage?: MaxLeverage
   blockchainId: string
-  marketType: LlamaMarketType
-}
-
-export type AdvancedDetailsProps = {
-  collateral: Collateral
-  availableLiquidity: AvailableLiquidity
-  maxLeverage?: MaxLeverage
   marketType: LlamaMarketType
 }
