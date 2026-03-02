@@ -30,38 +30,24 @@ export const PositionDetailsComp = ({
   const activityEvents = userCollateralEvents?.events ?? []
   const { value, setValue, options } = usePositionDetailsTabs({ events: activityEvents })
   const showNewBorrowPositionTabs = useNewPositionDetailsTabs()
-  const detailsContent = hasPosition ? (
-    <BorrowPositionDetails {...borrowPositionDetails} />
-  ) : (
-    <NoPosition type="borrow" />
-  )
+  const showDetails = !showNewBorrowPositionTabs || value !== 'activity'
+  const showActivity = showNewBorrowPositionTabs ? value === 'activity' : activityEvents.length > 0
 
   return (
     <Stack>
       {showNewBorrowPositionTabs && <PositionDetailsTabsRow value={value} onChange={setValue} options={options} />}
       <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
-        {showNewBorrowPositionTabs ? (
-          value === 'activity' ? (
-            <Stack paddingInline={Spacing.md} paddingBlock={Spacing.md}>
-              <UserPositionHistory
-                variant="flat"
-                events={activityEvents}
-                isLoading={activityIsLoading}
-                isError={activityIsError}
-              />
-            </Stack>
-          ) : (
-            detailsContent
-          )
-        ) : (
-          <>
-            {detailsContent}
-            {activityEvents.length > 0 && (
-              <Stack paddingInline={Spacing.md} paddingBlock={Spacing.md}>
-                <UserPositionHistory events={activityEvents} isLoading={activityIsLoading} isError={activityIsError} />
-              </Stack>
-            )}
-          </>
+        {showDetails &&
+          (hasPosition ? <BorrowPositionDetails {...borrowPositionDetails} /> : <NoPosition type="borrow" />)}
+        {showActivity && (
+          <Stack paddingInline={Spacing.md} paddingBlock={Spacing.md}>
+            <UserPositionHistory
+              variant={showNewBorrowPositionTabs ? 'flat' : 'accordion'}
+              events={activityEvents}
+              isLoading={activityIsLoading}
+              isError={activityIsError}
+            />
+          </Stack>
         )}
       </Stack>
     </Stack>
