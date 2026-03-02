@@ -36,11 +36,11 @@ const getSections = (currentApp: AppName, networkId: string): NavigationSection[
     title: t`Documentation`,
     links: [
       { href: 'https://news.curve.finance/', label: t`News` },
-      { href: 'https://resources.curve.finance/lending/understanding-lending/', label: t`User Resources` },
+      { href: 'https://docs.curve.finance/user/llamalend/overview', label: t`User Resources` },
       { href: 'https://docs.curve.finance', label: t`Developer Resources` },
       { href: getInternalUrl(currentApp, networkId, PAGE_LEGAL), label: t`Legal` },
       { href: getInternalUrl(currentApp, networkId, PAGE_INTEGRATIONS), label: t`Integrations` },
-      { href: 'https://resources.curve.finance/glossary-branding/branding/', label: t`Branding` },
+      { href: 'https://curvefinance.notion.site/Brand-Assets-1a6599aae064802fba11ce6a9e642d74', label: t`Branding` },
       ...(isChinese() ? [{ href: 'https://www.curve.wiki/', label: t`Wiki` }] : []),
     ],
   },

@@ -24,8 +24,8 @@ export const Privacy = () => (
           https://news.curve.finance/
         </Link>
         {t`, `}
-        <Link color="textSecondary" href="https://resources.curve.finance/" target="_blank">
-          https://resources.curve.finance/
+        <Link color="textSecondary" href="https://docs.curve.finance/" target="_blank">
+          https://docs.curve.finance/
         </Link>
         {t`, `}
         <Link color="textSecondary" href="https://docs.curve.finance/" target="_blank">

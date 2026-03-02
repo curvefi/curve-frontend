@@ -21,7 +21,7 @@ export const AlertRepayDebtToIncreaseHealth = () => (
         {t`While soft liquidation is active, health steadily declines based on market volatility and liquidity in the liquidation cushion.`}
 
         <Button
-          href="https://resources.curve.finance/crvusd/loan-concepts"
+          href="https://docs.curve.finance/user/llamalend/borrowing"
           target="_blank"
           color="ghost"
           variant="inline"
