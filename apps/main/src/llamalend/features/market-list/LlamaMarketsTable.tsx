@@ -115,6 +115,7 @@ export const LlamaMarketsTable = ({
         toggleVisibility={toggleVisibility}
         searchText={globalFilter}
         hasSearchBar
+        disableSearchAutoFocus
         onSearch={setGlobalFilter}
         leftChildren={<TableFiltersTitles title={t`Markets`} subtitle={t`Find your next opportunity`} />}
         collapsible={<LendingMarketsFilters data={data} {...filterProps} />}
