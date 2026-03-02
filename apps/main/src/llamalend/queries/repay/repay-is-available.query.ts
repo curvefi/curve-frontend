@@ -3,7 +3,7 @@ import { type RepayParams, type RepayQuery } from '../validation/manage-loan.typ
 import { repayValidationSuite } from '../validation/manage-loan.validation'
 import { getRepayImplementation, getUserDebtFromQueryCache } from './repay-query.helpers'
 
-export const { useQuery: useRepayIsAvailable } = queryFactory({
+export const { useQuery: useRepayIsAvailable, invalidate: invalidateRepayIsAvailable } = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -11,6 +11,7 @@ export const { useQuery: useRepayIsAvailable } = queryFactory({
     userCollateral = '0',
     userBorrowed = '0',
     userAddress,
+    routeId,
   }: RepayParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
@@ -18,6 +19,7 @@ export const { useQuery: useRepayIsAvailable } = queryFactory({
       { stateCollateral },
       { userCollateral },
       { userBorrowed },
+      { routeId },
     ] as const,
   queryFn: async ({
     chainId,
@@ -26,14 +28,22 @@ export const { useQuery: useRepayIsAvailable } = queryFactory({
     userCollateral,
     userBorrowed,
     userAddress,
+    routeId,
   }: RepayQuery): Promise<boolean> => {
-    const [type, impl] = getRepayImplementation(marketId, { userCollateral, stateCollateral, userBorrowed })
+    const [type, impl, args] = getRepayImplementation(marketId, {
+      userCollateral,
+      stateCollateral,
+      userBorrowed,
+      routeId,
+    })
     switch (type) {
+      case 'zapV2':
+        return await impl.repayIsAvailable(...args)
       case 'V1':
       case 'V2':
-        return await impl.repayIsAvailable(stateCollateral, userCollateral, userBorrowed, userAddress)
+        return await impl.repayIsAvailable(...args, userAddress)
       case 'deleverage':
-        return await impl.isAvailable(stateCollateral, userAddress)
+        return await impl.isAvailable(...args, userAddress)
       case 'unleveraged':
         // For unleveraged markets, repayment is available when user has debt
         return !!getUserDebtFromQueryCache({ chainId, marketId, userAddress })

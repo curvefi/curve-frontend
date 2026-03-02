@@ -16,6 +16,7 @@ export type RepayQuery<T = IChainId> = CollateralQuery<T> & {
   stateCollateral: Decimal
   userBorrowed: Decimal
   slippage: Decimal
+  routeId: string | undefined
 }
 
 export type RepayHealthQuery<T = IChainId> = RepayQuery<T> & HealthQuery

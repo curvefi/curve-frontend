@@ -13,7 +13,11 @@ export type RepayExpectedBorrowedResult = {
   avgPrice?: Decimal
 }
 
-export const { useQuery: useRepayExpectedBorrowed, queryKey: repayExpectedBorrowedQueryKey } = queryFactory({
+export const {
+  useQuery: useRepayExpectedBorrowed,
+  queryKey: repayExpectedBorrowedQueryKey,
+  invalidate: invalidateRepayExpectedBorrowed,
+} = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -22,6 +26,7 @@ export const { useQuery: useRepayExpectedBorrowed, queryKey: repayExpectedBorrow
     userBorrowed = '0',
     userAddress,
     slippage,
+    routeId,
   }: RepayParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
@@ -30,6 +35,7 @@ export const { useQuery: useRepayExpectedBorrowed, queryKey: repayExpectedBorrow
       { userCollateral },
       { userBorrowed },
       { slippage },
+      { routeId },
     ] as const,
   queryFn: async ({
     chainId,
@@ -39,9 +45,17 @@ export const { useQuery: useRepayExpectedBorrowed, queryKey: repayExpectedBorrow
     userCollateral,
     userBorrowed,
     slippage,
+    routeId,
   }: RepayQuery) => {
-    const [type, impl, args] = getRepayImplementation(marketId, { userCollateral, stateCollateral, userBorrowed })
+    const [type, impl, args] = getRepayImplementation(marketId, {
+      userCollateral,
+      stateCollateral,
+      userBorrowed,
+      routeId,
+    })
     switch (type) {
+      case 'zapV2':
+        return (await impl.repayExpectedBorrowed(...args)) as RepayExpectedBorrowedResult
       case 'V1':
       case 'V2':
         return (await impl.repayExpectedBorrowed(...args, +slippage)) as RepayExpectedBorrowedResult

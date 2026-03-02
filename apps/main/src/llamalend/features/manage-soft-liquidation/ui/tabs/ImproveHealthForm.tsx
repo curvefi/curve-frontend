@@ -43,7 +43,6 @@ export const ImproveHealthForm = ({
     values,
     params,
     isPending,
-    isDisabled,
     onSubmit,
     borrowToken,
     collateralToken,
@@ -54,6 +53,8 @@ export const ImproveHealthForm = ({
     formErrors,
     max: { userBorrowed: maxRepay },
     isFull: { data: isFull },
+    routes,
+    isDisabled,
   } = useRepayForm({
     market,
     network,
@@ -76,6 +77,7 @@ export const ImproveHealthForm = ({
           onSlippageChange={(slippage) => updateForm(form, { slippage })}
           hasLeverage={market && hasLeverage(market)}
           swapRequired={false}
+          routes={routes}
         />
       }
     >

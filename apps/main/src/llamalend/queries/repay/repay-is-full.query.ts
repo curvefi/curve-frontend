@@ -4,7 +4,7 @@ import { type RepayParams, type RepayQuery } from '../validation/manage-loan.typ
 import { repayValidationSuite } from '../validation/manage-loan.validation'
 import { getRepayImplementation, getUserDebtFromQueryCache } from './repay-query.helpers'
 
-export const { useQuery: useRepayIsFull } = queryFactory({
+export const { useQuery: useRepayIsFull, invalidate: invalidateRepayIsFull } = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -12,6 +12,7 @@ export const { useQuery: useRepayIsFull } = queryFactory({
     userCollateral = '0',
     userBorrowed = '0',
     userAddress,
+    routeId,
   }: RepayParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
@@ -19,6 +20,7 @@ export const { useQuery: useRepayIsFull } = queryFactory({
       { stateCollateral },
       { userCollateral },
       { userBorrowed },
+      { routeId },
     ] as const,
   queryFn: async ({
     chainId,
@@ -27,14 +29,22 @@ export const { useQuery: useRepayIsFull } = queryFactory({
     userCollateral,
     userBorrowed,
     userAddress,
+    routeId,
   }: RepayQuery): Promise<boolean> => {
-    const [type, impl] = getRepayImplementation(marketId, { userCollateral, stateCollateral, userBorrowed })
+    const [type, impl, args] = getRepayImplementation(marketId, {
+      userCollateral,
+      stateCollateral,
+      userBorrowed,
+      routeId,
+    })
     switch (type) {
+      case 'zapV2':
+        return await impl.repayIsFull(...args)
       case 'V1':
       case 'V2':
-        return await impl.repayIsFull(stateCollateral, userCollateral, userBorrowed, userAddress)
+        return await impl.repayIsFull(...args, userAddress)
       case 'deleverage':
-        return await impl.isFullRepayment(stateCollateral, userAddress)
+        return await impl.isFullRepayment(...args, userAddress)
       case 'unleveraged':
         // For unleveraged markets, full repayment is when userBorrowed >= userDebt
         return +userBorrowed >= getUserDebtFromQueryCache({ chainId, marketId, userAddress })
