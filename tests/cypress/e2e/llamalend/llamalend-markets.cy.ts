@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-expressions */
 import lodash, { max, sum } from 'lodash'
 import { LlamaMarketColumnId } from '@/llamalend/features/market-list/columns/columns.enum'
 import type { GetMarketsResponse } from '@curvefi/prices-api/llamalend'
@@ -9,7 +8,6 @@ import {
   expandFilters,
   expandFirstRowOnMobile,
   firstRow,
-  getHiddenCount,
   openDrawer,
   withFilterChips,
 } from '@cy/support/helpers/data-table.helpers'
@@ -28,14 +26,12 @@ import {
   assertInViewport,
   assertNotInViewport,
   type Breakpoint,
-  e2eBaseUrl,
   LOAD_TIMEOUT,
   oneDesktopViewport,
   oneViewport,
   RETRY_IN_CI,
 } from '@cy/support/ui'
 import { range, recordValues, repeat } from '@primitives/objects.utils'
-import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
 import { MarketRateType } from '@ui-kit/types/market'
 
 const wstEthMarket = '0x100dAa78fC509Db39Ef7D04DE0c1ABD299f4C6CE' as const
@@ -214,22 +210,6 @@ testCases.forEach(([width, height, breakpoint]) => {
       })
     })
 
-    it('should let the TVL filter override the default small pools cutoff', () => {
-      getHiddenCount(breakpoint).then((hiddenBefore) => {
-        expect(!!hiddenBefore, `Cannot parse hidden count ${hiddenBefore}`).to.be.true
-        expandFilters(breakpoint)
-        cy.get(`[data-testid="minimum-slider-filter-tvl"]`).click({ waitForAnimations: true })
-        cy.get(`[data-testid="slider-tvl"]`).as('slider').should('be.visible')
-        cy.get(`[data-testid="slider-input-tvl-min"]`).clear()
-        cy.get(`[data-testid="slider-input-tvl-min"]`).type('0')
-        closeSlider(breakpoint)
-        cy.url().should('equal', `${e2eBaseUrl()}/llamalend/ethereum/markets/?${new URLSearchParams('tvl=0~')}`)
-        getHiddenCount(breakpoint).then((hiddenAfter) => {
-          expect(+hiddenAfter).to.be.lessThan(+hiddenBefore)
-        })
-      })
-    })
-
     it('should allow filtering by chain', () => {
       const chains = Object.keys(vaultData)
       const chain = oneOf(...chains)
@@ -373,11 +353,7 @@ testCases.forEach(([width, height, breakpoint]) => {
     }
 
     function checkCoinSelection(type: TokenType) {
-      const symbol = oneOf(
-        ...vaultData.ethereum.data
-          .filter((d) => d.total_assets_usd - d.total_debt_usd > SMALL_POOL_TVL)
-          .map((d) => d[`${type}_token`].symbol),
-      )
+      const symbol = oneOf(...vaultData.ethereum.data.map((d) => d[`${type}_token`].symbol))
       const columnId = `assets_${type}_symbol`
       cy.get(`[data-testid="multi-select-filter-${columnId}"]`).click() // open the menu
       cy.get(`[data-testid="multi-select-clear"]`).click() // deselect previously selected tokens

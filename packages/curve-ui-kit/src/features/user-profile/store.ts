@@ -4,15 +4,11 @@ import { create, type StateCreator } from 'zustand'
 import { devtools, persist, type PersistOptions } from 'zustand/middleware'
 import type { ThemeKey } from '@ui-kit/themes/basic-theme'
 
-export const SMALL_POOL_TVL = 10000
-export const MIN_POOLS_DISPLAYED = 10
-
 export type UserProfileState = {
   theme: ThemeKey
   /** Key is either 'crypto', 'stable' or a chainIdPoolId from getChainPoolIdActiveKey. */
   maxSlippage: { crypto: string; stable: string } & Partial<Record<string, string>>
   isAdvancedMode: boolean
-  hideSmallPools: boolean
 }
 
 type Action = {
@@ -35,7 +31,6 @@ type Action = {
    */
   setMaxSlippage: (slippage: string | null, key?: string) => boolean
   setAdvancedMode: (isAdvanced: boolean) => void
-  setHideSmallPools: (hideSmallPools: boolean) => void
 }
 
 type Store = UserProfileState & Action
@@ -51,7 +46,6 @@ const INITIAL_STATE: UserProfileState = {
   theme: INITIAL_THEME,
   maxSlippage: { crypto: '0.1', stable: '0.03' },
   isAdvancedMode: false,
-  hideSmallPools: true,
 }
 
 const store: StateCreator<Store> = (set) => ({
@@ -94,7 +88,6 @@ const store: StateCreator<Store> = (set) => ({
   },
 
   setAdvancedMode: (isAdvancedMode) => set((state) => ({ ...state, isAdvancedMode })),
-  setHideSmallPools: (hideSmallPools) => set((state) => ({ ...state, hideSmallPools })),
 })
 
 const cache: PersistOptions<Store> = {

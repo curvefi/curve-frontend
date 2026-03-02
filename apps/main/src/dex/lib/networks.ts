@@ -214,7 +214,6 @@ export const defaultNetworks = Object.entries({
   },
   [Chain.Base]: {
     poolFilters: ['all', 'usd', 'btc', 'eth', 'crypto', 'tricrypto', 'stableng', 'others', 'user'],
-    hideSmallPoolsTvl: 5000,
     swap: {
       fromAddress: ethAddress,
       toAddress: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',

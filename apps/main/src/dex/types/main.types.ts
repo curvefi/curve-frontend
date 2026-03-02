@@ -27,7 +27,6 @@ export interface NetworkConfig extends BaseConfig<NetworkEnum> {
   poolCustomTVL: { [poolAddress: string]: string }
   poolIsWrappedOnly: { [poolAddress: string]: boolean }
   poolFilters: string[]
-  hideSmallPoolsTvl: number
   isActiveNetwork: boolean
   missingPools: { name: string; url: string }[]
   swap: { [key: string]: string }

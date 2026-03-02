@@ -3,8 +3,6 @@ import { MARKET_CUTOFF_DATE } from '@/llamalend/constants'
 import type { LlamaMarketsResult } from '@/llamalend/queries/market-list/llama-markets'
 import Button from '@mui/material/Button'
 import { ExpandedState } from '@tanstack/react-table'
-import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
 import { useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import { t } from '@ui-kit/lib/i18n'
@@ -38,6 +36,7 @@ const useDefaultLlamaFilter = (minTvl: number) =>
   )
 
 const pagination = { pageIndex: 0, pageSize: 200 }
+const minLiquidity = 0
 
 export const LlamaMarketsTable = ({
   onReload,
@@ -59,7 +58,6 @@ export const LlamaMarketsTable = ({
     [markets],
   )
 
-  const minLiquidity = useUserProfileStore((s) => s.hideSmallPools) ? SMALL_POOL_TVL : 0
   const defaultFilters = useDefaultLlamaFilter(minLiquidity)
   const { globalFilter, setGlobalFilter, columnFilters, columnFiltersById, setColumnFilter, hasFilters, resetFilters } =
     useFilters({
