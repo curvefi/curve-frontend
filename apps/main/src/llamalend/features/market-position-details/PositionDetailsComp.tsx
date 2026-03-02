@@ -28,14 +28,14 @@ export const PositionDetailsComp = ({
     isError: activityIsError,
   } = useUserCollateralEvents(activityQueryParams)
   const activityEvents = userCollateralEvents?.events ?? []
-  const { value, setValue, options } = usePositionDetailsTabs({ events: activityEvents })
+  const { tab, onTabChange, tabOptions } = usePositionDetailsTabs({ events: activityEvents })
   const showNewBorrowPositionTabs = useNewPositionDetailsTabs()
-  const showDetails = !showNewBorrowPositionTabs || value !== 'activity'
-  const showActivity = showNewBorrowPositionTabs ? value === 'activity' : activityEvents.length > 0
+  const showDetails = !showNewBorrowPositionTabs || tab !== 'activity'
+  const showActivity = showNewBorrowPositionTabs ? tab === 'activity' : tabOptions.length > 1
 
   return (
     <Stack>
-      {showNewBorrowPositionTabs && <PositionDetailsTabsRow value={value} onChange={setValue} options={options} />}
+      {showNewBorrowPositionTabs && <PositionDetailsTabsRow tab={tab} onChange={onTabChange} options={tabOptions} />}
       <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
         {showDetails &&
           (hasPosition ? <BorrowPositionDetails {...borrowPositionDetails} /> : <NoPosition type="borrow" />)}
