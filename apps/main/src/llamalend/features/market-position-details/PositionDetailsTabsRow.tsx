@@ -1,6 +1,6 @@
 import Stack from '@mui/material/Stack'
 import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
-import type { PositionDetailsTab } from './hooks/usePositionDetailsTabs'
+import type { PositionDetailsTab } from './hooks'
 import { LlamaMonitorBotLinkButton } from './LlamaMonitorBotLinkButton'
 
 type PositionDetailsTabsRowProps = {

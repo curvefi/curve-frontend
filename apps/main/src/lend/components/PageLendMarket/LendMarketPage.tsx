@@ -16,7 +16,7 @@ import { type MarketUrlParams } from '@/lend/types/lend.types'
 import { getCollateralListPathname, parseMarketParams } from '@/lend/utils/helpers'
 import { getVaultPathname } from '@/lend/utils/utilsRouter'
 import { MarketDetails } from '@/llamalend/features/market-details'
-import { PositionDetailsComp, useBorrowPositionDetails } from '@/llamalend/features/market-position-details'
+import { PositionDetailsComposite, useBorrowPositionDetails } from '@/llamalend/features/market-position-details'
 import type { UserCollateralEventsProps } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { useLoanExists } from '@/llamalend/queries/user'
 import { PageHeader } from '@/llamalend/widgets/page-header'
@@ -159,7 +159,7 @@ export const LendMarketPage = () => {
           supplyAddress={market?.addresses?.vault || ''}
         />
         <MarketInformationTabs currentTab={'borrow'} hrefs={{ borrow: '', supply: getVaultPathname(params, marketId) }}>
-          <PositionDetailsComp
+          <PositionDetailsComposite
             hasPosition={loanExists}
             borrowPositionDetails={borrowPositionDetails}
             activityQueryParams={activityQueryParams}

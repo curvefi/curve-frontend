@@ -1,0 +1,66 @@
+import { type ReactNode, useMemo } from 'react'
+import { UserPositionHistory } from '@/llamalend/features/user-position-history'
+import type { ParsedUserCollateralEvent } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
+import Stack from '@mui/material/Stack'
+import { useTabs } from '@ui-kit/hooks/useTabs'
+import { t } from '@ui-kit/lib/i18n'
+import { type TabOption } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { BorrowPositionDetails, type BorrowPositionDetailsProps } from '../BorrowPositionDetails'
+import { NoPosition } from '../NoPosition'
+
+const { Spacing } = SizesAndSpaces
+
+export type PositionDetailsTab = 'borrowDetails' | 'activity'
+type PositionDetailsTabOption = TabOption<PositionDetailsTab> & { component: () => ReactNode }
+
+const DEFAULT_TAB: PositionDetailsTab = 'borrowDetails'
+
+export const usePositionDetailsTabs = ({
+  events,
+  hasPosition,
+  borrowPositionDetails,
+  activityIsLoading,
+  activityIsError,
+}: {
+  events: ParsedUserCollateralEvent[]
+  hasPosition: boolean | undefined
+  borrowPositionDetails: BorrowPositionDetailsProps
+  activityIsLoading: boolean
+  activityIsError: boolean
+}) => {
+  const hasActivity = events.length > 0
+
+  const tabOptions = useMemo<PositionDetailsTabOption[]>(
+    () => [
+      {
+        value: DEFAULT_TAB,
+        label: t`Borrow Details`,
+        component: () =>
+          hasPosition ? <BorrowPositionDetails {...borrowPositionDetails} /> : <NoPosition type="borrow" />,
+      },
+      ...(hasActivity
+        ? [
+            {
+              value: 'activity' as const,
+              label: t`Activity`,
+              component: () => (
+                <Stack paddingInline={Spacing.md} paddingBlock={Spacing.md}>
+                  <UserPositionHistory
+                    variant="flat"
+                    events={events}
+                    isLoading={activityIsLoading}
+                    isError={activityIsError}
+                  />
+                </Stack>
+              ),
+            },
+          ]
+        : []),
+    ],
+    [hasActivity, hasPosition, borrowPositionDetails, events, activityIsLoading, activityIsError],
+  )
+
+  const { tab = DEFAULT_TAB, onTabChange } = useTabs(tabOptions, DEFAULT_TAB)
+  return { tab, onTabChange, tabOptions }
+}

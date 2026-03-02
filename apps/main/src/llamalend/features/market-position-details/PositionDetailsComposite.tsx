@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { UserPositionHistory } from '@/llamalend/features/user-position-history'
 import {
   useUserCollateralEvents,
@@ -5,6 +6,7 @@ import {
 } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import Stack from '@mui/material/Stack'
 import { useNewPositionDetailsTabs } from '@ui-kit/hooks/useFeatureFlags'
+import { findTab } from '@ui-kit/hooks/useTabs'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { BorrowPositionDetails, type BorrowPositionDetailsProps } from './BorrowPositionDetails'
 import { usePositionDetailsTabs } from './hooks/usePositionDetailsTabs'
@@ -13,7 +15,7 @@ import { PositionDetailsTabsRow } from './PositionDetailsTabsRow'
 
 const { Spacing } = SizesAndSpaces
 
-export const PositionDetailsComp = ({
+export const PositionDetailsComposite = ({
   hasPosition,
   borrowPositionDetails,
   activityQueryParams,
@@ -27,27 +29,38 @@ export const PositionDetailsComp = ({
     isLoading: activityIsLoading,
     isError: activityIsError,
   } = useUserCollateralEvents(activityQueryParams)
-  const activityEvents = userCollateralEvents?.events ?? []
-  const { tab, onTabChange, tabOptions } = usePositionDetailsTabs({ events: activityEvents })
+  const activityEvents = useMemo(() => userCollateralEvents?.events ?? [], [userCollateralEvents?.events])
   const showNewBorrowPositionTabs = useNewPositionDetailsTabs()
-  const showDetails = !showNewBorrowPositionTabs || tab !== 'activity'
-  const showActivity = showNewBorrowPositionTabs ? tab === 'activity' : tabOptions.length > 1
+
+  const { tab, onTabChange, tabOptions } = usePositionDetailsTabs({
+    events: activityEvents,
+    hasPosition,
+    borrowPositionDetails,
+    activityIsLoading,
+    activityIsError,
+  })
+  const activeTab = findTab(tabOptions, tab)
 
   return (
     <Stack>
       {showNewBorrowPositionTabs && <PositionDetailsTabsRow tab={tab} onChange={onTabChange} options={tabOptions} />}
       <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
-        {showDetails &&
-          (hasPosition ? <BorrowPositionDetails {...borrowPositionDetails} /> : <NoPosition type="borrow" />)}
-        {showActivity && (
-          <Stack paddingInline={Spacing.md} paddingBlock={Spacing.md}>
-            <UserPositionHistory
-              variant={showNewBorrowPositionTabs ? 'flat' : 'accordion'}
-              events={activityEvents}
-              isLoading={activityIsLoading}
-              isError={activityIsError}
-            />
-          </Stack>
+        {showNewBorrowPositionTabs ? (
+          activeTab.component()
+        ) : (
+          <>
+            {hasPosition ? <BorrowPositionDetails {...borrowPositionDetails} /> : <NoPosition type="borrow" />}
+            {activityEvents.length > 1 && (
+              <Stack paddingInline={Spacing.md} paddingBlock={Spacing.md}>
+                <UserPositionHistory
+                  variant="accordion"
+                  events={activityEvents}
+                  isLoading={activityIsLoading}
+                  isError={activityIsError}
+                />
+              </Stack>
+            )}
+          </>
         )}
       </Stack>
     </Stack>
