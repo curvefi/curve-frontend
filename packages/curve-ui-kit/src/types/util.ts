@@ -58,6 +58,16 @@ export type QueryProp<T> = Query<T> & {
 export const q = <T>({ data, isLoading, error }: Query<T>) => ({ data, isLoading, error }) as QueryProp<T>
 
 /**
+ * Creates a QueryProp from a data object, pretending it's been successfully fetched.
+ */
+export const fq = <T>(data: T) =>
+  q<T>({
+    data,
+    isLoading: false,
+    error: null,
+  })
+
+/**
  * Maps a Query type to extract partial data from it.
  * Preserves error and loading states while transforming the data.
  */

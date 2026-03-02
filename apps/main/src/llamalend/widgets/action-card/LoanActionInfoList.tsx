@@ -31,8 +31,8 @@ export type LoanActionInfoListProps = {
   prevNetBorrowApr?: QueryProp<Decimal | null>
   netBorrowApr?: QueryProp<Decimal | null>
   gas: QueryProp<TxGasInfo | null>
-  debt?: QueryProp<{ value: Decimal; tokenSymbol: string | undefined } | null>
-  collateral?: QueryProp<{ value: Decimal; tokenSymbol: string | undefined } | null>
+  debt?: QueryProp<{ value: Decimal | null; tokenSymbol: string | undefined } | null>
+  collateral?: QueryProp<{ value: Decimal | null; tokenSymbol: string | undefined } | null>
   /** userState values are used as prev values if collateral or debt are available */
   userState?: QueryProp<UserState>
   prevLeverageValue?: QueryProp<Decimal | null>
@@ -97,7 +97,7 @@ export const LoanActionInfoList = ({
   const debtActionInfo = (debt || prevDebt) && (
     <ActionInfo
       label={t`Debt`}
-      value={debt?.data && formatNumber(debt.data.value, { abbreviate: false })}
+      value={debt?.data?.value && formatNumber(debt.data.value, { abbreviate: false })}
       prevValue={prevDebt && formatNumber(prevDebt, { abbreviate: false })}
       {...combineQueryState(debt, userState)}
       valueRight={debt?.data?.tokenSymbol}
@@ -176,7 +176,9 @@ export const LoanActionInfoList = ({
           {(collateral || prevCollateral) && (
             <ActionInfo
               label={t`Collateral`}
-              value={isFullRepay ? 0 : collateral?.data && formatNumber(collateral.data.value, { abbreviate: false })}
+              value={
+                isFullRepay ? 0 : collateral?.data?.value && formatNumber(collateral.data.value, { abbreviate: false })
+              }
               prevValue={prevCollateral && formatNumber(prevCollateral, { abbreviate: false })}
               {...combineQueryState(collateral, userState)}
               valueRight={collateral?.data?.tokenSymbol ?? collateralSymbol}
