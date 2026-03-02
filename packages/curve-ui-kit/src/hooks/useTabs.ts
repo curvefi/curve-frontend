@@ -12,6 +12,8 @@ export function findTab<T extends { value: string }>(tabs: T[], key: string | un
  * Generic tab state management hook.
  * If the stored key is no longer present in options (e.g. a tab becomes
  * hidden), the hook falls back to options[0].value automatically.
+ *
+ * For form-specific tab logic with sub-tabs and visibility, see useFormTabs in FormTabs.tsx.
  */
 export function useTabs<T>(
   options: readonly TabOption<T>[],
