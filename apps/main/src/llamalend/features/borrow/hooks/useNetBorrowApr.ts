@@ -2,9 +2,10 @@ import { useLlamaSnapshot } from '@/llamalend/queries/llamma-snapshots.query'
 import { computeDecimalTotalRate } from '@/llamalend/rates.utils'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
+import { Decimal } from '@primitives/decimal.utils'
 import type { MarketParams } from '@ui-kit/lib/model/query'
 import type { QueryProp } from '@ui-kit/types/util'
-import { BlockchainIds, type Decimal } from '@ui-kit/utils'
+import { BlockchainIds } from '@ui-kit/utils'
 
 type BorrowRatesQuery = QueryProp<{ borrowApr?: Decimal } | null>
 

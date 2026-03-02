@@ -3,6 +3,7 @@ import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import { UserState } from '@/llamalend/queries/user'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
+import { Decimal } from '@primitives/decimal.utils'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { combineQueryState } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
@@ -14,7 +15,6 @@ import { RouteProvidersAccordion } from '@ui-kit/widgets/RouteProvider'
 import { SlippageToleranceActionInfoPure } from '@ui-kit/widgets/SlippageSettings'
 import { ActionInfoCollapse } from './ActionInfoCollapse'
 import { ACTION_INFO_GROUP_SX, formatAmount, formatLeverage } from './info-actions.helpers'
-import { Decimal } from '@primitives/decimal.utils'
 
 export type LoanActionInfoListProps = {
   isOpen?: boolean

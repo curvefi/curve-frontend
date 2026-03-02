@@ -1,8 +1,9 @@
 import { BigNumber } from 'bignumber.js'
+import { Decimal } from '@primitives/decimal.utils'
 import type { CrvUsdSnapshot } from '@ui-kit/entities/crvusd-snapshots'
 import type { LendingSnapshot } from '@ui-kit/entities/lending-snapshots'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
-import { Decimal, decimal } from '@ui-kit/utils'
+import { decimal } from '@ui-kit/utils'
 import { calculateAverageRates, type WithTimestamp } from '@ui-kit/utils/averageRates'
 
 type BorrowRateMetricsParams<TSnapshot extends WithTimestamp = WithTimestamp> = {

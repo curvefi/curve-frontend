@@ -15,7 +15,7 @@ export function useLlamaSnapshot(
   const snapshotsEnabled = enabled && !!controllerAddress && !!blockchainId
   const lendingSnapshotsQuery = useLendingSnapshots(
     {
-      blockchainId: blockchainId,
+      blockchainId,
       contractAddress: controllerAddress as Address,
       agg: 'day',
       limit: 1,
@@ -24,7 +24,7 @@ export function useLlamaSnapshot(
   )
   const crvUsdSnapshotsQuery = useCrvUsdSnapshots(
     {
-      blockchainId: blockchainId,
+      blockchainId,
       contractAddress: controllerAddress as Address,
       agg: 'day',
       limit: 1,
