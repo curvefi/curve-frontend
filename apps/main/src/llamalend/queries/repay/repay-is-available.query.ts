@@ -39,6 +39,6 @@ export const { useQuery: useRepayIsAvailable } = queryFactory({
         return !!getUserDebtFromQueryCache({ chainId, marketId, userAddress })
     }
   },
-  staleTime: '1m',
+  category: 'llamalend.repay',
   validationSuite: repayValidationSuite({ leverageRequired: false }),
 })

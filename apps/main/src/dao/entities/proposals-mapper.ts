@@ -64,16 +64,15 @@ const _fetchProposals = async (): Promise<ProposalsMapper> => {
     pagination,
   )
 
-  const proposalsMapper = results.reduce((mapper, proposal) => {
+  return results.reduce((mapper, proposal) => {
     mapper[createProposalKey(proposal.id, proposal.type)] = parseProposalData(proposal)
     return mapper
   }, {} as ProposalsMapper)
-
-  return proposalsMapper
 }
 
 export const { useQuery: useProposalsMapperQuery, invalidate: invalidateProposals } = queryFactory({
   queryKey: () => ['proposals-mapper'] as const,
   queryFn: _fetchProposals,
+  category: 'dao.proposals',
   validationSuite: EmptyValidationSuite,
 })

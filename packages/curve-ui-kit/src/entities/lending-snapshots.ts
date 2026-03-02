@@ -16,6 +16,6 @@ export const { useQuery: useLendingSnapshots } = queryFactory({
     const response = await getSnapshots(blockchainId, contractAddress, { agg, fetch_on_chain: true, limit })
     return response.reverse()
   },
-  staleTime: '1h',
   validationSuite: contractValidationSuite,
+  category: 'global.snapshots',
 })

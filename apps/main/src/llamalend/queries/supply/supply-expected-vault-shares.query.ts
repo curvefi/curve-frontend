@@ -27,6 +27,7 @@ export const { useQuery: useDepositExpectedVaultShares } = queryFactory({
     ] as const,
   queryFn: async ({ marketId, depositAmount }: DepositQuery) =>
     (await requireVault(marketId).vault.previewDeposit(depositAmount)) as Decimal,
+  category: 'llamalend.supply',
   validationSuite: depositValidationSuite,
 })
 
@@ -42,6 +43,7 @@ export const { useQuery: useWithdrawRemovableVaultShares } = queryFactory({
     ] as const,
   queryFn: async ({ marketId, withdrawAmount }: WithdrawQuery) =>
     (await requireVault(marketId).vault.previewWithdraw(withdrawAmount)) as Decimal,
+  category: 'llamalend.supply',
   validationSuite: withdrawValidationSuite,
 })
 

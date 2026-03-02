@@ -11,7 +11,7 @@ import {
 } from '@tanstack/react-query'
 import { queryClient } from '@ui-kit/lib/api/query-client'
 import { logQuery } from '@ui-kit/lib/logging'
-import { REFRESH_INTERVAL } from '@ui-kit/lib/model/time'
+import { QUERY_CATEGORIES, type QueryCategory } from '@ui-kit/lib/model/query/query-categories'
 import { checkValidity, FieldName, FieldsOf } from '@ui-kit/lib/validation'
 
 // Checks if T is a union type (e.g., 'a' | 'b')
@@ -81,9 +81,7 @@ export function queryFactory<
 >({
   queryFn: runQuery,
   queryKey,
-  staleTime = '5m',
-  gcTime = '10m',
-  refetchInterval,
+  category,
   validationSuite,
   dependencies,
   disableLog,
@@ -92,16 +90,15 @@ export function queryFactory<
   queryKey: (params: TParams) => QueryKeyTuple<TKey>
   validationSuite: Suite<TField, string, TCallback>
   queryFn: (params: TQuery) => Promise<TData>
-  gcTime?: keyof typeof REFRESH_INTERVAL
-  staleTime?: keyof typeof REFRESH_INTERVAL
+  category: QueryCategory
   dependencies?: (params: TParams) => QueryKey[]
-  refetchInterval?: keyof typeof REFRESH_INTERVAL
   refetchOnWindowFocus?: 'always'
   refetchOnMount?: 'always'
   disableLog?: true
 }) {
   const getQueryOptions = (params: TParams, enabled = true) =>
     queryOptions({
+      ...QUERY_CATEGORIES[category],
       queryKey: queryKey(params),
       queryFn: async ({ queryKey }: QueryFunctionContext<TKey>) => {
         try {
@@ -112,9 +109,6 @@ export function queryFactory<
           throw error
         }
       },
-      gcTime: REFRESH_INTERVAL[gcTime],
-      staleTime: REFRESH_INTERVAL[staleTime],
-      refetchInterval: refetchInterval && REFRESH_INTERVAL[refetchInterval],
       enabled:
         enabled &&
         checkValidity(validationSuite, params) &&

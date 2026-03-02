@@ -21,6 +21,7 @@ const { useQuery: useAppStatsDailyVolume } = queryFactory({
     )
     return resp.data.totalVolume
   },
+  category: 'llamalend.appStats',
   validationSuite: EmptyValidationSuite,
 })
 
@@ -34,6 +35,7 @@ const { useQuery: useCrvUsdTotalSupply } = queryFactory({
     const resp = await fetch('https://api.curve.finance/api/getCrvusdTotalSupplyNumber')
     return decimal(await resp.text()) ?? null
   },
+  category: 'llamalend.appStats',
   validationSuite: EmptyValidationSuite,
 })
 

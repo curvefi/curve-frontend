@@ -54,7 +54,7 @@ export const { useQuery: useCreateLoanBands, invalidate: invalidateCreateLoanBan
         return impl.createLoanBands(userCollateral, debt, range)
     }
   },
-  staleTime: '1m',
+  category: 'llamalend.createLoan',
   validationSuite: createLoanQueryValidationSuite({ debtRequired: true }),
   dependencies: (params) => [
     createLoanMaxReceiveKey(params),

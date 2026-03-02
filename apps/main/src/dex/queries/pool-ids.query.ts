@@ -27,7 +27,7 @@ export const {
   getQueryData: getPoolIds,
   queryKey: poolIdsQueryKey,
 } = queryFactory({
-  queryKey: ({ chainId }: ChainParams) => [...rootKeys.chain({ chainId }), 'pool-ids'] as const,
+  queryKey: ({ chainId }: ChainParams) => [...rootKeys.chain({ chainId }), 'getPoolList'] as const,
   queryFn: async ({ chainId }: ChainQuery) => {
     // must call api in this order, must use api to get non-cached version of gaugeStatus
     const curve = requireLib('curveApi')
@@ -56,7 +56,7 @@ export const {
 
     return curve.getPoolList()
   },
-  staleTime: '15m', // The list doesn't change often
+  category: 'dex.pools',
   validationSuite: curveApiValidationSuite,
   dependencies: () => [networksQueryKey()],
 })

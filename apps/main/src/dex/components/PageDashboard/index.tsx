@@ -13,7 +13,7 @@ import { DashboardContextProvider } from '@/dex/components/PageDashboard/dashboa
 import type { DashboardTableRowProps, FormValues, TableLabel } from '@/dex/components/PageDashboard/types'
 import { ROUTE } from '@/dex/constants'
 import { useNetworkByChain } from '@/dex/entities/networks'
-import { userPoolBoost } from '@/dex/queries/user-pool-info.query'
+import { userPoolBoost } from '@/dex/queries/user-pool-boost.query'
 import { getDashboardDataActiveKey } from '@/dex/store/createDashboardSlice'
 import { useStore } from '@/dex/store/useStore'
 import { ChainId, CurveApi, type NetworkUrlParams } from '@/dex/types/main.types'

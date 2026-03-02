@@ -55,7 +55,7 @@ export const { useQuery: useBorrowMoreHealth, invalidate: invalidateBorrowMoreHe
         return (await impl.borrowMoreHealth(...args)) as Decimal
     }
   },
-  staleTime: '1m',
+  category: 'llamalend.borrowMore',
   validationSuite: borrowMoreValidationSuite({ debtRequired: true, leverageRequired: false }),
   dependencies: (params) =>
     isLeverageBorrowMore(params.marketId, params.leverageEnabled) ? [getBorrowMoreExpectedCollateralKey(params)] : [],

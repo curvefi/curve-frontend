@@ -40,6 +40,6 @@ export const { useQuery: useMarketParameters } = queryFactory({
       }
     }
   },
-  refetchInterval: '1m',
+  category: 'llamalend.marketParams',
   validationSuite: marketIdValidationSuite,
 })

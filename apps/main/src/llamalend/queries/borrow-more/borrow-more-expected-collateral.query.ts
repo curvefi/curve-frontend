@@ -73,6 +73,6 @@ export const {
       ? castFieldsToDecimal(await impl.borrowMoreExpectedCollateral(...args))
       : castFieldsToDecimal(await impl.borrowMoreExpectedCollateral(...args, +slippage))
   },
-  staleTime: '1m',
+  category: 'llamalend.borrowMore',
   validationSuite: borrowMoreLeverageValidationSuite,
 })

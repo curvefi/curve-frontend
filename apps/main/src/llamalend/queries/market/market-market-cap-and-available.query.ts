@@ -18,6 +18,6 @@ export const { useQuery: useMarketCapAndAvailable, invalidate: invalidateMarketC
       available: decimal(capAndAvailable.available),
     }
   },
-  refetchInterval: '1m',
+  category: 'llamalend.market',
   validationSuite: marketIdValidationSuite,
 })

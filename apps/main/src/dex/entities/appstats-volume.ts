@@ -15,6 +15,6 @@ async function _fetchAppStatsVolume({ chainId }: ChainQuery<ChainId>) {
 export const { useQuery: useAppStatsVolume } = queryFactory({
   queryKey: (params: ChainParams<ChainId>) => ['appStatsVolume', { chainId: params.chainId }] as const,
   queryFn: _fetchAppStatsVolume,
-  staleTime: '5m',
   validationSuite: curveApiValidationSuite,
+  category: 'dex.appStats',
 })

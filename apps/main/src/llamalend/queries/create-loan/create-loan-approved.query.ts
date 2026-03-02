@@ -41,7 +41,7 @@ export const {
         return await impl.createLoanIsApproved(userCollateral)
     }
   },
-  staleTime: '1m',
+  category: 'llamalend.createLoan',
   validationSuite: createLoanQueryValidationSuite({ debtRequired: false }),
   dependencies: (params) => (params.leverageEnabled ? [createLoanExpectedCollateralQueryKey(params)] : []),
 })

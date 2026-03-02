@@ -19,6 +19,7 @@ const getPoolVolumeFromLib = ({ poolId }: Pick<PoolQuery, 'poolId'>) =>
   requireLib('curveApi').getPool(poolId).stats.volume()
 
 const { useQuery: usePoolVolumeQuery } = queryFactory({
+  category: 'dex.pools',
   queryKey: ({ chainId, poolId }: PoolParams) => [...rootKeys.pool({ chainId, poolId }), 'pool-volume'] as const,
   queryFn: async ({ poolId }: PoolQuery) => getPoolVolumeFromLib({ poolId }),
   validationSuite: createValidationSuite((params: PoolParams) => {
@@ -37,7 +38,7 @@ export function usePoolVolume({ chainId }: PoolParams) {
 }
 
 const { useQuery: usePoolVolumesQuery, fetchQuery: fetchPoolVolumesQuery } = queryFactory({
-  queryKey: ({ chainId }: ChainParams) => [...rootKeys.chain({ chainId }), 'pool-volumes'] as const,
+  queryKey: ({ chainId }: ChainParams) => [...rootKeys.chain({ chainId }), 'stats.volume'] as const,
   queryFn: async ({ chainId }: ChainQuery) => {
     const poolIds = getPoolIds({ chainId }) ?? []
     const { results } = await PromisePool.withConcurrency(10)
@@ -46,7 +47,7 @@ const { useQuery: usePoolVolumesQuery, fetchQuery: fetchPoolVolumesQuery } = que
 
     return Object.fromEntries(results)
   },
-  staleTime: '15m',
+  category: 'dex.pools',
   validationSuite: createValidationSuite((params: ChainParams) => {
     curveApiValidationGroup(params)
     chainValidationGroup(params)

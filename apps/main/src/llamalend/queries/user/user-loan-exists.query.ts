@@ -14,6 +14,6 @@ export const {
     const market = getLlamaMarket(marketId)
     return market instanceof MintMarketTemplate ? market.loanExists(userAddress) : market.userLoanExists(userAddress)
   },
-  staleTime: '1m',
+  category: 'llamalend.user',
   validationSuite: userMarketValidationSuite,
 })

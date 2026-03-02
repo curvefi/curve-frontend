@@ -11,7 +11,7 @@ const { useQuery: useCloseLoanEstimateGas } = queryFactory({
     [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'estimateGas.selfLiquidate', { slippage }] as const,
   queryFn: async ({ marketId, slippage }: CloseLoanQuery): Promise<TGas> =>
     await getLlamaMarket(marketId).estimateGas.selfLiquidate(Number(slippage)),
-  staleTime: '1m',
+  category: 'llamalend.closeLoan',
   validationSuite: closeLoanValidationSuite,
 })
 
@@ -20,7 +20,7 @@ const { useQuery: useCloseApproveGasEstimate } = queryFactory({
     [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'estimateGas.selfLiquidateApprove'] as const,
   queryFn: async ({ marketId }: UserMarketQuery): Promise<TGas> =>
     await getLlamaMarket(marketId).estimateGas.selfLiquidateApprove(),
-  staleTime: '1m',
+  category: 'llamalend.closeLoan',
   validationSuite: closeLoanValidationSuite,
 })
 

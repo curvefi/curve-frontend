@@ -21,6 +21,7 @@ export const { useQuery: useUserGaugeVoteNextTimeQuery, invalidate: invalidateUs
         { userAddress: params.userAddress },
       ] as const,
     queryFn: ({ gaugeAddress }: UserGaugeQuery) => requireLib('curveApi').dao.voteForGaugeNextTime(gaugeAddress),
+    category: 'dao.user',
     validationSuite: createValidationSuite(({ chainId, userAddress, gaugeAddress }: UserGaugeParams) => {
       chainValidationGroup({ chainId })
       curveApiValidationGroup({ chainId })

@@ -22,6 +22,7 @@ import {
   parseAmountsForAPI,
 } from '@/dex/components/PagePool/utils'
 import type { Amount } from '@/dex/components/PagePool/utils'
+import { invalidateUserPoolInfo } from '@/dex/hooks/useUserPoolInfo'
 import { curvejsApi } from '@/dex/lib/curvejs'
 import type { State } from '@/dex/store/useStore'
 import {
@@ -44,7 +45,6 @@ import { fetchNetworks } from '../entities/networks'
 import { fetchPoolTokenBalances } from '../hooks/usePoolTokenBalances'
 import { fetchPoolLpTokenBalance } from '../hooks/usePoolTokenDepositBalances'
 import { invalidatePoolParameters } from '../queries/pool-parameters.query'
-import { invalidateUserPoolInfoQuery } from '../queries/user-pool-info.query'
 
 type StateKey = keyof typeof DEFAULT_STATE
 const { cloneDeep } = lodash
@@ -472,7 +472,7 @@ export const createPoolDepositSlice = (
           })
 
           // re-fetch data
-          await invalidateUserPoolInfoQuery({
+          await invalidateUserPoolInfo({
             chainId: curve.chainId,
             poolId: pool.id,
             userAddress: curve.signerAddress,
@@ -520,7 +520,7 @@ export const createPoolDepositSlice = (
           })
 
           // re-fetch data
-          await invalidateUserPoolInfoQuery({
+          await invalidateUserPoolInfo({
             chainId: curve.chainId,
             poolId: pool.id,
             userAddress: curve.signerAddress,
@@ -594,7 +594,7 @@ export const createPoolDepositSlice = (
           })
 
           // re-fetch data
-          await invalidateUserPoolInfoQuery({
+          await invalidateUserPoolInfo({
             chainId: curve.chainId,
             poolId: pool.id,
             userAddress: curve.signerAddress,
