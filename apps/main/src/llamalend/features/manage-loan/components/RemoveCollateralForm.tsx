@@ -49,7 +49,6 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
       onSubmit={onSubmit}
       footer={
         <RemoveCollateralInfoList
-          market={market}
           form={form}
           params={params}
           values={values}
