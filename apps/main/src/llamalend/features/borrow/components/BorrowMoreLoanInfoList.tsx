@@ -49,7 +49,7 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
   const prevLeverageValue = q(useUserCurrentLeverage(params, isOpen))
   const priceImpact = useBorrowMorePriceImpact(params, isOpen && leverageEnabled)
 
-  const collateralDelta = expectedCollateralQuery.data?.totalCollateral ?? userCollateral
+  const collateralDelta = leverageEnabled ? expectedCollateralQuery.data?.totalCollateral : userCollateral
 
   const prevLeverageTotalCollateral = mapQuery(userState, ({ collateral }) => collateral)
   const leverageTotalCollateral = q({
@@ -110,6 +110,19 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
       rates={marketFutureRates}
       prevNetBorrowApr={netBorrowApr && q(netBorrowApr)}
       netBorrowApr={futureBorrowApr && q(futureBorrowApr)}
+      prevLoanToValue={q(
+        useLoanToValueFromUserState(
+          {
+            chainId: params.chainId,
+            marketId: params.marketId,
+            userAddress: params.userAddress,
+            collateralToken,
+            borrowToken,
+            expectedBorrowed: userState.data?.debt,
+          },
+          isOpen,
+        ),
+      )}
       loanToValue={q(
         useLoanToValueFromUserState(
           {
@@ -121,7 +134,7 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
             collateralDelta,
             expectedBorrowed: totalDebt,
           },
-          isOpen && !!totalDebt,
+          isOpen && !!totalDebt && !!collateralDelta,
         ),
       )}
       debt={mapQuery(
