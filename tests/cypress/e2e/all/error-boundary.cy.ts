@@ -3,7 +3,7 @@ import { API_LOAD_TIMEOUT, e2eBaseUrl, LOAD_TIMEOUT } from '@cy/support/ui'
 import type { ErrorContext } from '@ui-kit/features/report-error'
 import { SENTRY_DSN } from '@ui-kit/features/sentry'
 
-const visitErrorBoundary = (options?: Partial<Cypress.VisitOptions>) => {
+const visitErrorBoundary = () => {
   cy.intercept(`https://prices.curve.finance/v1/crvusd/markets`, { body: { chains: { ethereum: { data: [] } } } })
   cy.intercept(`https://prices.curve.finance/v1/lending/markets`, {
     body: {
@@ -26,7 +26,7 @@ const visitErrorBoundary = (options?: Partial<Cypress.VisitOptions>) => {
     },
   }).as('error')
   const url = '/llamalend/ethereum/markets'
-  cy.visit(url, { timeout: API_LOAD_TIMEOUT.timeout, ...options })
+  cy.visit(url, { timeout: API_LOAD_TIMEOUT.timeout })
   cy.wait('@error', LOAD_TIMEOUT)
   return e2eBaseUrl() + url
 }
