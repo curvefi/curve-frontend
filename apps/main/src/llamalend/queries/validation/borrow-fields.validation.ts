@@ -17,10 +17,15 @@ export const validateUserCollateral = (userCollateral: Decimal | undefined | nul
   })
 }
 
-export const validateDebt = (debt: Decimal | undefined | null, required: boolean = true) => {
-  skipWhen(!required && !debt, () => {
-    test('debt', `Debt must be a positive number${required ? '' : ' or null'}`, () => {
-      enforce(debt).isNumeric().gt(0)
+export const validateDebt = (
+  debt: Decimal | undefined | null,
+  { required = true, isNegative = false }: { required?: boolean; isNegative?: boolean } = {},
+) => {
+  skipWhen(!required && debt == null, () => {
+    test('debt', `Debt must be a ${isNegative ? 'negative' : 'positive'} number${required ? '' : ' or null'}`, () => {
+      const assertion = enforce(debt).isNumeric()
+      if (isNegative) assertion.lt(0)
+      else assertion.gt(0)
     })
   })
 }

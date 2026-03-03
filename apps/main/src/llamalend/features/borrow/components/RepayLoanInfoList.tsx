@@ -5,7 +5,7 @@ import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/ho
 import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
 import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
-import { useMarketOraclePrice, useMarketRates } from '@/llamalend/queries/market'
+import { useMarketFutureRates, useMarketOraclePrice, useMarketRates } from '@/llamalend/queries/market'
 import { useRepayExpectedBorrowed } from '@/llamalend/queries/repay/repay-expected-borrowed.query'
 import { useRepayEstimateGas } from '@/llamalend/queries/repay/repay-gas-estimate.query'
 import { getRepayHealthOptions } from '@/llamalend/queries/repay/repay-health.query'
@@ -85,12 +85,29 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
   const userState = useUserState(params, isOpen)
   const priceImpact = useRepayPriceImpact(params, isOpen && swapRequired)
   const debt = useRepayRemainingDebt({ params, swapRequired, borrowToken }, { isFull, userBorrowed }, isOpen)
+  const debtDelta = q({
+    data:
+      userState.data?.debt && debt.data?.value && decimal(new BigNumber(debt.data.value).minus(userState.data.debt)),
+    isLoading: [userState, debt].some((query) => query.isLoading),
+    error: [userState, debt].find((query) => query.error)?.error ?? null,
+  })
 
-  const { marketRates, netBorrowApr } = useNetBorrowApr(
+  const { marketRates, marketFutureRates, netBorrowApr, futureBorrowApr } = useNetBorrowApr(
     {
       market,
       params,
       marketRates: q(useMarketRates(params, isOpen)),
+      marketFutureRates: q(
+        useMarketFutureRates(
+          {
+            chainId: params.chainId,
+            marketId: params.marketId,
+            debt: debtDelta.data,
+            isNegativeDebt: true,
+          },
+          isOpen && !!debtDelta.data,
+        ),
+      ),
     },
     isOpen,
   )
@@ -104,7 +121,9 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
       prevHealth={q(useHealthQueries((isFull) => getUserHealthOptions({ ...params, isFull }, isOpen)))}
       isFullRepay={isFull}
       prevRates={marketRates}
+      rates={marketFutureRates}
       prevNetBorrowApr={netBorrowApr && q(netBorrowApr)}
+      netBorrowApr={futureBorrowApr && q(futureBorrowApr)}
       debt={q(debt)}
       userState={q(userState)}
       prices={q(useRepayPrices(params, isOpen))}
