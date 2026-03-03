@@ -1,7 +1,7 @@
 import { oneBool } from '@cy/support/generators'
-import { interceptSentryReport } from '@cy/support/helpers/sentry.helpers'
 import { API_LOAD_TIMEOUT, e2eBaseUrl, LOAD_TIMEOUT } from '@cy/support/ui'
 import type { ErrorContext } from '@ui-kit/features/report-error'
+import { SENTRY_DSN } from '@ui-kit/features/sentry'
 
 const visitErrorBoundary = () => {
   cy.intercept(`https://prices.curve.finance/v1/crvusd/markets`, { body: { chains: { ethereum: { data: [] } } } })
@@ -37,9 +37,9 @@ const visitNotFoundPage = () => {
   return e2eBaseUrl() + url
 }
 
-function check500Error(context: unknown) {
+function check500Error({ context }: { context: object }) {
   const [expectedName, expectedMessage] = ['TypeError', 'toLowerCase is not a function']
-  expect(Object.keys(context as object)).to.have.members(['title', 'subtitle', 'error'])
+  expect(Object.keys(context)).to.have.members(['title', 'subtitle', 'error'])
   const { subtitle, error, title } = context as Record<keyof ErrorContext, string>
   expect(title).to.equal('Unexpected Error')
   expect(subtitle).to.contain(expectedMessage)
@@ -66,25 +66,38 @@ describe('Error Boundary', () => {
 
   const is500 = oneBool() // test either 404 or 500 error page
   it('should submit error report for ' + (is500 ? 500 : 404), () => {
-    const visitUrl = is500 ? visitErrorBoundary() : visitNotFoundPage()
+    const url = is500 ? visitErrorBoundary() : visitNotFoundPage()
     const address = '0xabc123'
     const description = 'Got an error'
     const contact = 'test@curve.fi'
-    const waitForSentryReport = interceptSentryReport((body: Record<string, unknown>) => {
+    // Sentry sends envelope format: newline-delimited JSON with body in extra.body
+    const { origin, pathname } = new URL(SENTRY_DSN)
+    cy.intercept('POST', `${origin}/api/${pathname}/envelope/?**`, ({ body: envelope, reply }) => {
+      const lines = envelope.split('\n').filter(Boolean)
+      const event = JSON.parse(lines[2]) // event payload is the third line
+      const body = event.extra.body
+      expect(Object.keys(body)).to.have.members(['formData', 'url', 'context'])
+      expect(body.formData).to.deep.equal({ address, contactMethod: 'email', contact, description })
+      expect(body.url).to.equal(url)
       if (is500) {
-        expect(Object.keys(body)).to.have.members(['formData', 'url', 'context'])
-        const { formData, context, url: bodyUrl } = body
-        expect(formData).to.deep.equal({ address, contactMethod: 'email', contact, description })
-        expect(bodyUrl).to.equal(visitUrl)
-        check500Error(context)
+        check500Error(body)
       } else {
         expect(body).to.deep.equal({
           formData: { address, contactMethod: 'email', contact, description },
-          url: visitUrl,
+          url,
           context: { title: '404', subtitle: 'Page Not Found' },
         })
       }
-    })
+
+      reply({
+        statusCode: 200,
+        body: {},
+        headers: {
+          'access-control-allow-origin': '*',
+          'access-control-allow-credentials': 'true',
+        },
+      })
+    }).as('sentryReport')
 
     cy.get('[data-testid="submit-error-report-button"]', LOAD_TIMEOUT).click()
     cy.get('[data-testid="submit-error-report-modal"]').should('be.visible')
@@ -94,7 +107,7 @@ describe('Error Boundary', () => {
     cy.get('[data-testid="submit-error-report-description"]').type(description)
     cy.get('[data-testid="submit-error-report-submit"]').click()
 
-    waitForSentryReport()
+    cy.wait('@sentryReport', LOAD_TIMEOUT)
     cy.get('[data-testid="submit-error-report-modal"]').should('not.exist')
   })
 })
