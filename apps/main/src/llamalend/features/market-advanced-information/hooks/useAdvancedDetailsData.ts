@@ -40,10 +40,8 @@ export const useAdvancedDetailsData = ({
     marketType,
     collateral: {
       collateralSymbol: tokens?.collateralToken?.symbol ?? null,
-      collateralAddress: tokens?.collateralToken?.address ?? null,
       totalCollateral: collateralTotal,
       borrowedSymbol: tokens?.borrowToken?.symbol ?? null,
-      borrowedAddress: tokens?.borrowToken?.address ?? null,
       totalBorrowed: borrowedTotal,
       combinedCollateralUsdValue,
       usdRate: collateralUsdRate ?? null,

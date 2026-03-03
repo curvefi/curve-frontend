@@ -90,7 +90,7 @@ export const AdvancedDetails = ({ chainId, marketId, market, marketType }: Advan
           value={collateral?.combinedCollateralUsdValue}
           loading={collateral?.loading}
           valueOptions={{ unit: 'dollar' }}
-          notional={formatCollateralNotional(
+          notional={collateral?.loading ? undefined : formatCollateralNotional(
             { value: collateral?.totalCollateral ?? null, symbol: collateral?.collateralSymbol ?? undefined },
             { value: collateral?.totalBorrowed ?? null, symbol: collateral?.borrowedSymbol ?? undefined },
           )}
