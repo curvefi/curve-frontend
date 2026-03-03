@@ -1,6 +1,5 @@
 import { getHealthValueColor } from '@/llamalend/features/market-position-details'
 import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
-import { UserState } from '@/llamalend/queries/user'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
 import { Decimal } from '@primitives/decimal.utils'
@@ -31,10 +30,10 @@ export type LoanActionInfoListProps = {
   prevNetBorrowApr?: QueryProp<Decimal | null>
   netBorrowApr?: QueryProp<Decimal | null>
   gas: QueryProp<TxGasInfo | null>
+  prevDebt?: QueryProp<Decimal | null>
   debt?: QueryProp<{ value: Decimal | null; tokenSymbol: string | undefined } | null>
+  prevCollateral?: QueryProp<Decimal | null>
   collateral?: QueryProp<{ value: Decimal | null; tokenSymbol: string | undefined } | null>
-  /** userState values are used as prev values if collateral or debt are available */
-  userState?: QueryProp<UserState>
   prevLeverageValue?: QueryProp<Decimal | null>
   leverageValue?: QueryProp<Decimal | null>
   prevLeverageCollateral?: QueryProp<Decimal | null>
@@ -73,8 +72,9 @@ export const LoanActionInfoList = ({
   prevNetBorrowApr,
   gas,
   debt,
+  prevDebt,
   collateral,
-  userState,
+  prevCollateral,
   prevLeverageValue,
   leverageValue,
   prevLeverageCollateral,
@@ -90,8 +90,6 @@ export const LoanActionInfoList = ({
   routes,
 }: LoanActionInfoListProps) => {
   const [isRoutesOpen, , , toggleRoutes] = useSwitch(false)
-  const prevDebt = userState?.data?.debt
-  const prevCollateral = userState?.data?.collateral
   const isHighImpact = priceImpact?.data != null && slippage != null && priceImpact.data > Number(slippage)
   const exchangeRateValue = decimal(exchangeRate?.data)
 
@@ -99,8 +97,8 @@ export const LoanActionInfoList = ({
     <ActionInfo
       label={t`Debt`}
       value={debt?.data?.value && formatNumber(debt.data.value, { abbreviate: false })}
-      prevValue={prevDebt && formatNumber(prevDebt, { abbreviate: false })}
-      {...combineActionInfoState(debt, userState)}
+      prevValue={prevDebt?.data && formatNumber(prevDebt.data, { abbreviate: false })}
+      {...combineActionInfoState(debt, prevDebt)}
       valueRight={debt?.data?.tokenSymbol}
       size="small"
       testId="borrow-debt"
@@ -180,8 +178,8 @@ export const LoanActionInfoList = ({
               value={
                 isFullRepay ? 0 : collateral?.data?.value && formatNumber(collateral.data.value, { abbreviate: false })
               }
-              prevValue={prevCollateral && formatNumber(prevCollateral, { abbreviate: false })}
-              {...combineActionInfoState(collateral, userState)}
+              prevValue={prevCollateral?.data && formatNumber(prevCollateral.data, { abbreviate: false })}
+              {...combineActionInfoState(collateral, prevCollateral)}
               valueRight={collateral?.data?.tokenSymbol ?? collateralSymbol}
               size="small"
               testId="borrow-collateral"

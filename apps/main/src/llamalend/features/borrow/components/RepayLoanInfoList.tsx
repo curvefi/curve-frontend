@@ -13,6 +13,7 @@ import { useRepayIsApproved } from '@/llamalend/queries/repay/repay-is-approved.
 import { useRepayPriceImpact } from '@/llamalend/queries/repay/repay-price-impact.query'
 import { useRepayPrices } from '@/llamalend/queries/repay/repay-prices.query'
 import { getUserHealthOptions, useUserState } from '@/llamalend/queries/user'
+import { usePrevUserState } from '@/llamalend/queries/user/user-prev-state.query.ts'
 import type { RepayParams } from '@/llamalend/queries/validation/manage-loan.types'
 import type { RepayForm } from '@/llamalend/queries/validation/manage-loan.validation'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
@@ -82,13 +83,12 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
   form: UseFormReturn<RepayForm>
 }) {
   const isOpen = isFormTouched(form, 'stateCollateral', 'userCollateral', 'userBorrowed')
-  const userState = useUserState(params, isOpen)
+  const { prevDebt, prevCollateral } = usePrevUserState(params, isOpen)
   const priceImpact = useRepayPriceImpact(params, isOpen && swapRequired)
   const debt = useRepayRemainingDebt({ params, swapRequired, borrowToken }, { isFull, userBorrowed }, isOpen)
   const debtDelta = q({
-    data:
-      userState.data?.debt && debt.data?.value && decimal(new BigNumber(debt.data.value).minus(userState.data.debt)),
-    ...combineQueryState(userState, debt),
+    data: prevDebt.data && debt.data?.value && decimal(new BigNumber(debt.data.value).minus(prevDebt.data)),
+    ...combineQueryState(prevDebt, debt),
   })
 
   const { marketRates, marketFutureRates, netBorrowApr, futureBorrowApr } = useNetBorrowApr(
@@ -124,7 +124,8 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
       prevNetBorrowApr={netBorrowApr && q(netBorrowApr)}
       netBorrowApr={futureBorrowApr && q(futureBorrowApr)}
       debt={q(debt)}
-      userState={q(userState)}
+      prevDebt={prevDebt}
+      prevCollateral={prevCollateral}
       prices={q(useRepayPrices(params, isOpen))}
       // routeImage={q(useRepayRouteImage(params, isOpen))}
       loanToValue={q(
