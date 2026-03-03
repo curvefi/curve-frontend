@@ -1,4 +1,4 @@
-import { type ChangeEvent, useCallback } from 'react'
+import { type ChangeEvent, type ReactNode, useCallback } from 'react'
 import { LoanPreset } from '@/llamalend/constants'
 import { hasLeverage } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
@@ -11,6 +11,8 @@ import Collapse from '@mui/material/Collapse'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import { joinButtonText } from '@primitives/string.utils'
+import { AlertBox } from '@ui/AlertBox'
+import type { AlertType } from '@ui/AlertBox/types'
 import { useCreateLoanPreset } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { Balance } from '@ui-kit/shared/ui/LargeTokenInput/Balance'
@@ -25,6 +27,11 @@ import { CreateLoanInfoList } from './CreateLoanInfoList'
 import { LeverageInput } from './LeverageInput'
 import { LoanPresetSelector } from './LoanPresetSelector'
 
+type BorrowDisabledAlert = {
+  alertType?: AlertType
+  message?: ReactNode
+}
+
 /**
  * The form contents for the create loan tab.
  * @param market The market to create a loan.
@@ -37,13 +44,16 @@ export const CreateLoanForm = <ChainId extends IChainId>({
   chainId,
   onPricesUpdated,
   onSuccess,
+  borrowDisabledAlert,
 }: {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
   chainId: ChainId
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
   onSuccess: CreateLoanOptions['onSuccess']
+  borrowDisabledAlert?: BorrowDisabledAlert
 }) => {
+  const isBorrowDisabled = !!borrowDisabledAlert
   const network = networks[chainId]
   const [preset, setPreset] = useCreateLoanPreset<LoanPreset>(LoanPreset.Safe)
   const {
@@ -74,7 +84,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
   return (
     <Form
       {...form}
-      onSubmit={onSubmit}
+      onSubmit={isBorrowDisabled ? form.handleSubmit(() => undefined) : onSubmit}
       footer={
         <CreateLoanInfoList
           market={market}
@@ -150,14 +160,18 @@ export const CreateLoanForm = <ChainId extends IChainId>({
 
       <HighPriceImpactAlert {...q(useCreateLoanPriceImpact(params, values.leverageEnabled))} />
 
-      <Button
-        type="submit"
-        loading={isPending || !market}
-        disabled={isDisabled}
-        data-testid="create-loan-submit-button"
-      >
-        {isPending ? t`Processing...` : joinButtonText(isApproved?.data === false && t`Approve`, t`Borrow`)}
-      </Button>
+      {isBorrowDisabled ? (
+        <AlertBox alertType={borrowDisabledAlert.alertType!}>{borrowDisabledAlert.message}</AlertBox>
+      ) : (
+        <Button
+          type="submit"
+          loading={isPending || !market}
+          disabled={isDisabled}
+          data-testid="create-loan-submit-button"
+        >
+          {isPending ? t`Processing...` : joinButtonText(isApproved?.data === false && t`Approve`, t`Borrow`)}
+        </Button>
+      )}
 
       <FormAlerts
         isSuccess={isCreated}

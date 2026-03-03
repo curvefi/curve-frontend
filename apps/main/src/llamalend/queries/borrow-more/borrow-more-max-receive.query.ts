@@ -92,7 +92,7 @@ export const { useQuery: useBorrowMoreMaxReceive, invalidate: invalidateBorrowMo
         return { maxDebt: (await impl.borrowMoreMaxRecv(userCollateral)) as Decimal }
     }
   },
-  staleTime: '1m',
+  category: 'llamalend.borrowMore',
   validationSuite: createValidationSuite((params: BorrowMoreParams) =>
     borrowMoreValidationGroup(params, {
       leverageRequired: false,

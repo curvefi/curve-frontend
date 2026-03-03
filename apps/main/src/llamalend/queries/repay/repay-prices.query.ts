@@ -54,6 +54,7 @@ export const { useQuery: useRepayPrices, invalidate: invalidateRepayPrices } = q
         return (await impl.repayPrices(...args)) as Range<Decimal>
     }
   },
+  category: 'llamalend.repay',
   validationSuite: repayValidationSuite({ leverageRequired: false }),
   dependencies: (params) => [repayExpectedBorrowedQueryKey(params)],
 })

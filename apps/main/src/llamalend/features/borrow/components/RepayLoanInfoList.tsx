@@ -125,12 +125,11 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
       )}
       exchangeRate={q(useMarketOraclePrice(params, isOpen))}
       collateralSymbol={collateralToken?.symbol}
-      leverageEnabled={hasLeverage}
       routes={routes}
       borrowSymbol={borrowToken?.symbol}
       {...(hasLeverage &&
         swapRequired && {
-          leverageEnabled: true,
+          leverageEnabled: swapRequired,
           slippage,
           onSlippageChange,
           priceImpact: q(priceImpact),

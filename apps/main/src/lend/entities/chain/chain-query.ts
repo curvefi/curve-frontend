@@ -11,7 +11,6 @@ export const { useQuery: useOneWayMarketNames, prefetchQuery: prefetchMarkets } 
     await api.lendMarkets.fetchMarkets(useAPI)
     return api.lendMarkets.getMarketList()
   },
-  staleTime: '5m',
-  refetchInterval: '1m',
   validationSuite: llamaApiValidationSuite,
+  category: 'llamalend.marketList',
 })
