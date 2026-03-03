@@ -5,7 +5,8 @@ import Typography from '@mui/material/Typography'
 import { CURVE_LOGO_URL, getBackgroundUrl } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { isLoading, useCurve, useWallet } from '../lib'
+import { isLoading, useCurve } from '../lib/CurveContext'
+import { useWallet } from '../lib/useWallet'
 
 const { Spacing, MaxWidth } = SizesAndSpaces
 
