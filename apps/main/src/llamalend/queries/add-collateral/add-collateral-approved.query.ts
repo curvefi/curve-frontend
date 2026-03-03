@@ -17,6 +17,6 @@ export const { useQuery: useAddCollateralIsApproved, fetchQuery: fetchAddCollate
     ] as const,
   queryFn: async ({ marketId, userCollateral }: AddCollateralIsApprovedQuery): Promise<boolean> =>
     await getLlamaMarket(marketId).addCollateralIsApproved(userCollateral),
-  staleTime: '1m',
+  category: 'llamalend.addCollateral',
   validationSuite: collateralValidationSuite,
 })

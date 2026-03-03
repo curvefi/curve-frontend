@@ -15,7 +15,7 @@ export const { useQuery: useLockerVecrvUser, invalidate: invalidateLockerVecrvUs
     const curve = requireLib('curveApi')
     return await curve.dao.userVeCrv(userAddress)
   },
-  staleTime: '1m',
+  category: 'dao.user',
   validationSuite: createValidationSuite((params: ChainParams<ChainId> & UserParams) => {
     curveApiValidationGroup({ chainId: params.chainId })
     userAddressValidationGroup({ userAddress: params.userAddress })

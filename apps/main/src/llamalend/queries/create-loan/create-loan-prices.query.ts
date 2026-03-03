@@ -60,7 +60,7 @@ export const { useQuery: useCreateLoanPrices, invalidate: invalidateCreateLoanPr
         return convertNumbers(await impl.createLoanPrices(userCollateral, debt, range))
     }
   },
-  staleTime: '1m',
+  category: 'llamalend.createLoan',
   validationSuite: createLoanQueryValidationSuite({ debtRequired: true }),
   dependencies: (params) => [
     createLoanMaxReceiveKey(params),

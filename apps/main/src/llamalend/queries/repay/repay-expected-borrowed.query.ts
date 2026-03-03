@@ -69,6 +69,6 @@ export const {
         }
     }
   },
-  staleTime: '1m',
+  category: 'llamalend.repay',
   validationSuite: repayValidationSuite({ leverageRequired: false }),
 })
