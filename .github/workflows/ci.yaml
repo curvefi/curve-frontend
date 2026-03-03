@@ -170,7 +170,17 @@ jobs:
       - name: Check runtime errors
         if: always()
         run: |
-          if grep --ignore-case --extended-regexp "update depth exceeded|many re-renders|unmounted component|non-unique keys|uncontrolled to controlled|properties of undefined|cannot destructure|was reexported through module|dependencies of each other" e2e-*.log; then
+          if grep --ignore-case --extended-regexp \
+            "update depth exceeded|\
+            many re-renders|\
+            unmounted component|\
+            non-unique keys|\
+            uncontrolled to controlled|\
+            properties of undefined|\
+            cannot destructure|\
+            was reexported through module|\
+            dependencies of each other" \
+            e2e-*.log; then
             exit 1
           fi
 
