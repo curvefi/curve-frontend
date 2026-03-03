@@ -10,8 +10,9 @@ import { useBorrowMoreEstimateGas } from '@/llamalend/queries/borrow-more/borrow
 import { useBorrowMoreHealth } from '@/llamalend/queries/borrow-more/borrow-more-health.query'
 import { useBorrowMoreIsApproved } from '@/llamalend/queries/borrow-more/borrow-more-is-approved.query'
 import { useBorrowMorePriceImpact } from '@/llamalend/queries/borrow-more/borrow-more-price-impact.query'
+import { useBorrowMorePrices } from '@/llamalend/queries/borrow-more/borrow-more-prices.query'
 import { useMarketFutureRates, useMarketOraclePrice, useMarketRates } from '@/llamalend/queries/market'
-import { getUserHealthOptions, useUserCurrentLeverage, useUserState } from '@/llamalend/queries/user'
+import { getUserHealthOptions, useUserCurrentLeverage, useUserPrices, useUserState } from '@/llamalend/queries/user'
 import type { BorrowMoreForm, BorrowMoreParams } from '@/llamalend/queries/validation/borrow-more.validation'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -106,6 +107,8 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
       gas={q(useBorrowMoreEstimateGas(networks, params, isOpen))}
       health={q(useBorrowMoreHealth(params, isOpen && !!debt))}
       prevHealth={q(prevHealth)}
+      prevPrices={mapQuery(useUserPrices(params), (prices) => prices as Decimal[])}
+      prices={q(useBorrowMorePrices(params, isOpen))}
       prevRates={marketRates}
       rates={marketFutureRates}
       prevNetBorrowApr={netBorrowApr && q(netBorrowApr)}

@@ -23,6 +23,7 @@ export type LoanActionInfoListProps = {
   prevHealth?: QueryProp<Decimal>
   isFullRepay?: boolean
   prices?: QueryProp<readonly Decimal[]>
+  prevPrices?: QueryProp<readonly Decimal[]>
   rates?: QueryProp<{ borrowApr?: Decimal } | null>
   prevRates?: QueryProp<{ borrowApr?: Decimal } | null>
   exchangeRate?: QueryProp<string | null>
@@ -63,6 +64,7 @@ export const LoanActionInfoList = ({
   prevHealth,
   isFullRepay,
   prices,
+  prevPrices,
   prevRates,
   rates,
   exchangeRate,
@@ -160,13 +162,13 @@ export const LoanActionInfoList = ({
               testId="borrow-ltv"
             />
           )}
-          {prices && !isFullRepay && (
+          {(prices || prevPrices) && !isFullRepay && (
             <ActionInfo
               label={t`Liquidation zone`}
-              value={prices.data?.map((p) => formatNumber(p, { abbreviate: false })).join(' - ')}
+              value={prices?.data?.map((p) => formatNumber(p, { abbreviate: false })).join(' - ')}
+              prevValue={prevPrices?.data?.map((p) => formatNumber(p, { abbreviate: false })).join(' - ')}
               valueRight={debt?.data?.tokenSymbol}
-              error={prices.error}
-              loading={prices.isLoading}
+              {...combineQueryState(prices, prevPrices)}
               size="small"
               testId="borrow-price-range"
             />
