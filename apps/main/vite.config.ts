@@ -26,12 +26,11 @@ export default defineConfig(({ command }) => ({
   build: {
     sourcemap: true,
     rollupOptions: {
-      // Keep build output readable: ignore known-safe upstream noise (ox pure annotations, required eval in main.tsx).
-      onwarn: (w, warn) =>
-        (w.code === 'INVALID_ANNOTATION' && (w.id ?? '').includes('/node_modules/ox/_esm/core/')) ||
-        (w.code === 'EVAL' && (w.id ?? '').endsWith('/apps/main/src/main.tsx'))
+      onwarn: (warn, handler) =>
+        (warn.code === 'INVALID_ANNOTATION' && warn.id?.includes('/node_modules/ox/_esm/core/')) || // ignore `ox` /*#__PURE__*/ annotations
+        (warn.code === 'EVAL' && warn.id?.endsWith('/apps/main/src/main.tsx')) // required eval()
           ? undefined
-          : warn(w),
+          : handler(warn),
     },
   },
   preview: { port: 3000 },
