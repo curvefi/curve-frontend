@@ -55,6 +55,6 @@ export const {
         return await impl.repayIsApproved(userBorrowed)
     }
   },
-  staleTime: '1m',
+  category: 'llamalend.repay',
   validationSuite: repayFromCollateralIsFullValidationSuite,
 })

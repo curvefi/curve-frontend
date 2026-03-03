@@ -63,7 +63,7 @@ const { useQuery: useRepayLoanEstimateGas, invalidate: invalidateRepayLoanEstima
         return await impl.estimateGas.repay(...args)
     }
   },
-  staleTime: '1m',
+  category: 'llamalend.repay',
   validationSuite: repayFromCollateralIsFullValidationSuite,
 })
 
@@ -113,7 +113,7 @@ const { useQuery: useRepayApproveGasEstimate, invalidate: invalidateRepayApprove
         return await impl.estimateGas.repayApprove(userBorrowed)
     }
   },
-  staleTime: '1m',
+  category: 'llamalend.repay',
   validationSuite: repayFromCollateralIsFullValidationSuite,
 })
 

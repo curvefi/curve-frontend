@@ -44,7 +44,7 @@ export const { useQuery: useBorrowMorePriceImpact, invalidate: invalidateBorrowM
       ? Number((await impl.borrowMoreExpectedMetrics(...args)).priceImpact)
       : Number(await impl.borrowMorePriceImpact(userBorrowed, debt))
   },
-  staleTime: '1m',
+  category: 'llamalend.borrowMore',
   validationSuite: borrowMoreLeverageValidationSuite,
   dependencies: (params) => [getBorrowMoreExpectedCollateralKey(params)],
 })
