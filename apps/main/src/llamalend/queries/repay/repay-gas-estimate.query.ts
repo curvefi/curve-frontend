@@ -49,6 +49,7 @@ const { useQuery: useRepayLoanEstimateGas, invalidate: invalidateRepayLoanEstima
       stateCollateral,
       userBorrowed,
       routeId,
+      slippage,
     })
     switch (type) {
       case 'zapV2':

@@ -1,7 +1,7 @@
 import { createLoanExpectedCollateralQueryKey } from '@/llamalend/queries/create-loan/create-loan-expected-collateral.query'
 import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/create-loan-query.helpers'
 import type { IChainId, TGas } from '@curvefi/llamalend-api/lib/interfaces'
-import { parseRoute as parseRoute } from '@ui-kit/entities/router-api'
+import { parseMutationRoute } from '@ui-kit/entities/router-api'
 import { type FieldsOf } from '@ui-kit/lib'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { createApprovedEstimateGasHook } from '@ui-kit/lib/model/entities/gas-info'
@@ -81,7 +81,13 @@ const { useQuery: useCreateLoanEstimateGasQuery, invalidate: invalidateCreateLoa
     const [type, impl] = getCreateLoanImplementation(marketId, leverageEnabled)
     switch (type) {
       case 'zapV2':
-        return await impl.estimateGas.createLoan({ userCollateral, userBorrowed, debt, range, ...parseRoute(routeId) })
+        return await impl.estimateGas.createLoan({
+          userCollateral,
+          userBorrowed,
+          debt,
+          range,
+          ...parseMutationRoute(routeId, slippage),
+        })
       case 'V1':
       case 'V2':
         return await impl.estimateGas.createLoan(userCollateral, userBorrowed, debt, range, +slippage)

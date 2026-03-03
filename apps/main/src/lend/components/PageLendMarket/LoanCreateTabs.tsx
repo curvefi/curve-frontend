@@ -1,5 +1,6 @@
 import { useCallback } from 'react'
 import { LoanCreateForm } from '@/lend/components/PageLendMarket/LoanFormCreate/LoanCreateForm'
+import { useMarketAlert } from '@/lend/hooks/useMarketAlert'
 import { networks } from '@/lend/networks'
 import { useStore } from '@/lend/store/useStore'
 import { type MarketUrlParams, type PageContentProps } from '@/lend/types/lend.types'
@@ -15,8 +16,12 @@ type CreateLoanProps = PageContentProps<MarketUrlParams> & {
   onPricesUpdated: (prices: Range<Decimal> | undefined) => void
 }
 
-function CreateLoanTab({ market, api, rChainId, onPricesUpdated }: CreateLoanProps) {
+function CreateLoanTab({ market, api, rChainId, rOwmId, onPricesUpdated }: CreateLoanProps) {
   const onLoanCreated = useStore((state) => state.loanCreate.onLoanCreated)
+  const marketAlert = useMarketAlert(rChainId, rOwmId)
+  const borrowDisabledAlert = marketAlert?.isDisableBorrow
+    ? { message: marketAlert.message, alertType: marketAlert.alertType }
+    : undefined
   const onCreated = useCallback(
     async () => api && market && (await onLoanCreated(api, market)),
     [api, market, onLoanCreated],
@@ -28,6 +33,7 @@ function CreateLoanTab({ market, api, rChainId, onPricesUpdated }: CreateLoanPro
       market={market}
       onPricesUpdated={onPricesUpdated}
       onSuccess={onCreated}
+      borrowDisabledAlert={borrowDisabledAlert}
     />
   )
 }
