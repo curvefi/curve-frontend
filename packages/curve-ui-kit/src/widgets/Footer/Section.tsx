@@ -27,8 +27,8 @@ export const Section = ({ title, links, networkId, appName, isTiny }: SectionPro
       </Typography>
     </Grid>
 
-    {links.map((link) => (
-      <Grid key={link.href} size={{ mobile: isTiny ? 12 : 6, tablet: 12 }} data-testid="footer-link">
+    {links.map((link, index) => (
+      <Grid key={`${link.href}-${index}`} size={{ mobile: isTiny ? 12 : 6, tablet: 12 }} data-testid="footer-link">
         <Link {...link} appName={appName} networkId={networkId} />
       </Grid>
     ))}
