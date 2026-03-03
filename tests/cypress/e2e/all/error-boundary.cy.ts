@@ -75,7 +75,8 @@ describe('Error Boundary', () => {
     cy.intercept('POST', `${origin}/api/${pathname}/envelope/?**`, ({ body: envelope, reply }) => {
       const lines = envelope.split('\n').filter(Boolean)
       const event = JSON.parse(lines[2]) // event payload is the third line
-      const body = event.extra.body
+      if (!event?.extra?.body) throw new Error(`No body found in ${envelope}`)
+      const { body } = event.extra
       expect(Object.keys(body)).to.have.members(['formData', 'url', 'context'])
       expect(body.formData).to.deep.equal({ address, contactMethod: 'email', contact, description })
       expect(body.url).to.equal(url)
