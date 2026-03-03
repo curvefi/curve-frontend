@@ -15,7 +15,21 @@ export default defineConfig(({ command, mode }) => ({
     proxy: { '/api': { target: API_PROXY_TARGET, changeOrigin: true } },
     ignored: ['**/node_modules/**', '**/.git/**', '**/dist/**', '**/.yarn/**'],
   },
-  build: { sourcemap: [mode, VERCEL_ENV].some((target) => ['development', 'preview'].includes(target!)) },
+  build: {
+    sourcemap: [mode, VERCEL_ENV].some((target) => ['development', 'preview'].includes(target!)),
+    rollupOptions: {
+      output: {
+        manualChunks: (id) => {
+          if (id.includes('/packages/curve-ui-kit/src/features/connect-wallet/ui/')) {
+            return 'connect-wallet-ui'
+          }
+          if (id.includes('/apps/main/src/llamalend/queries/user/')) {
+            return 'llamalend-user-queries'
+          }
+        },
+      },
+    },
+  },
   preview: { port: 3000 },
   cacheDir: resolve(__dirname, '../../.cache/vite/apps-main'),
   plugins: [react(), svgr(), vercel()],

@@ -1,9 +1,9 @@
 import { styled } from 'styled-components'
-import { AlertBox } from '@ui/AlertBox'
-import { Box } from '@ui/Box'
-import { DetailInfo } from '@ui/DetailInfo'
-import { TextCaption } from '@ui/TextCaption'
-import { formatNumber } from '@ui/utils'
+import { Box } from '../Box'
+import { DetailInfo } from '../DetailInfo'
+import { TextCaption } from '../TextCaption'
+import { formatNumber } from '../utils'
+import { AlertBox } from './AlertBox'
 
 export const AlertInfoSelfLiquidation = ({
   errorMessage,

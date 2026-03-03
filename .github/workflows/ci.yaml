@@ -144,7 +144,10 @@ jobs:
 
       - run: yarn set version stable
       - run: yarn install --immutable
-      - run: yarn build
+      - name: Build app
+        run: |
+          set -o pipefail # fail tee if the main command fails
+          yarn build 2>&1 | tee e2e-build-${{ matrix.browser }}-${{ matrix.count }}.log
 
       - name: Start dev server
         run: yarn start 2>&1 | tee ../../e2e-dev-${{ matrix.browser }}-${{ matrix.count }}.log &
@@ -166,7 +169,10 @@ jobs:
 
       - name: Check runtime errors
         if: always()
-        run: if grep --ignore-case --extended-regexp "update depth exceeded|many re-renders|unmounted component|non-unique keys|uncontrolled to controlled|properties of undefined|cannot destructure" e2e-*.log; then exit 1; fi
+        run: |
+          if grep --ignore-case --extended-regexp "update depth exceeded|many re-renders|unmounted component|non-unique keys|uncontrolled to controlled|properties of undefined|cannot destructure|was reexported through module|dependencies of each other" e2e-*.log; then
+            exit 1
+          fi
 
       - uses: actions/upload-artifact@v4
         if: failure()

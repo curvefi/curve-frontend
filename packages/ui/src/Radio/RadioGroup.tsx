@@ -3,8 +3,8 @@ import { styled, css } from 'styled-components'
 import { useRadioGroup } from '@react-aria/radio'
 import { useRadioGroupState } from '@react-stately/radio'
 import type { AriaRadioGroupProps, RadioGroupProps } from '@react-types/radio'
-import { RadioContext } from '@ui/Radio'
-import { mediaQueries } from '@ui/utils/responsive'
+import { mediaQueries } from '../utils/responsive'
+import { RadioContext } from './RadioContext'
 
 export const RadioGroup = ({
   children,

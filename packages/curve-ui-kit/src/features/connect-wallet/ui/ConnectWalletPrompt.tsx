@@ -3,9 +3,9 @@ import Stack from '@mui/material/Stack'
 import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import { CURVE_LOGO_URL, getBackgroundUrl } from '@ui/utils'
-import { isLoading, useCurve, useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { isLoading, useCurve, useWallet } from '../lib'
 
 const { Spacing, MaxWidth } = SizesAndSpaces
 

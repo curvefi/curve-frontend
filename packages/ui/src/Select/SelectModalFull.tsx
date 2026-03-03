@@ -1,9 +1,10 @@
 import type { SelectProps as ReactStatelySelectProps, SelectState } from 'react-stately'
 import { styled } from 'styled-components'
-import { DelayRender } from '@ui/DelayRender'
-import { ModalDialog } from '@ui/Dialog/ModalDialog'
-import { Radio, RadioGroup } from '@ui/Radio'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
+import { DelayRender } from '../DelayRender'
+import { ModalDialog } from '../Dialog/ModalDialog'
+import { Radio } from '../Radio/Radio'
+import { RadioGroup } from '../Radio/RadioGroup'
 
 export function SelectModalFull<T extends object>({
   title,
