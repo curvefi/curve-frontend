@@ -2,7 +2,7 @@ import { getLlamaMarket, hasLeverage, hasV2Leverage, hasZapV2 } from '@/llamalen
 import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import type { BorrowMoreQuery } from '@/llamalend/queries/validation/borrow-more.validation'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
-import { parseRoute } from '@ui-kit/entities/router-api'
+import { parseMutationRoute } from '@ui-kit/entities/router-api'
 
 /**
  * Determines the appropriate borrow more implementation based on market type.
@@ -39,8 +39,10 @@ export function getBorrowMoreImplementationArgs(
     debt,
     leverageEnabled,
     routeId,
+    slippage,
   }: Pick<BorrowMoreQuery, 'userCollateral' | 'userBorrowed' | 'debt' | 'routeId'> & {
     leverageEnabled?: boolean | null
+    slippage?: BorrowMoreQuery['slippage']
   },
 ) {
   const [type, impl] = getBorrowMoreImplementation(marketId, leverageEnabled)
@@ -49,7 +51,13 @@ export function getBorrowMoreImplementationArgs(
     return [type, impl, [userCollateral, debt]] as const
   }
   if (type === 'zapV2') {
-    const routerArgs = { userCollateral, userBorrowed, dDebt: debt, debt, ...parseRoute(routeId) }
+    const routerArgs = {
+      userCollateral,
+      userBorrowed,
+      dDebt: debt,
+      debt,
+      ...parseMutationRoute(routeId, +(slippage ?? 0)),
+    }
     return [type, impl, [routerArgs]] as const
   }
   return [type, impl, [userCollateral, userBorrowed, debt]] as const
