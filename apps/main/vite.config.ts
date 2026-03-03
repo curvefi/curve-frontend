@@ -25,6 +25,14 @@ export default defineConfig(({ command }) => ({
   },
   build: {
     sourcemap: true,
+    rollupOptions: {
+      // Keep build output readable: ignore known-safe upstream noise (ox pure annotations, required eval in main.tsx).
+      onwarn: (w, warn) =>
+        (w.code === 'INVALID_ANNOTATION' && (w.id ?? '').includes('/node_modules/ox/_esm/core/')) ||
+        (w.code === 'EVAL' && (w.id ?? '').endsWith('/apps/main/src/main.tsx'))
+          ? undefined
+          : warn(w),
+    },
   },
   preview: { port: 3000 },
   cacheDir: resolve(__dirname, '../../.cache/vite/apps-main'),
