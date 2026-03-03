@@ -25,18 +25,6 @@ export default defineConfig(({ command }) => ({
   },
   build: {
     sourcemap: true,
-    rollupOptions: {
-      output: {
-        manualChunks: (id) => {
-          if (id.includes('/packages/curve-ui-kit/src/features/connect-wallet/ui/')) {
-            return 'connect-wallet-ui'
-          }
-          if (id.includes('/apps/main/src/llamalend/queries/user/')) {
-            return 'llamalend-user-queries'
-          }
-        },
-      },
-    },
   },
   preview: { port: 3000 },
   cacheDir: resolve(__dirname, '../../.cache/vite/apps-main'),
