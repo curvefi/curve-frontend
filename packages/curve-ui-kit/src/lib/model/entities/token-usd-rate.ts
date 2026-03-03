@@ -111,12 +111,11 @@ export const {
 } = queryFactory({
   queryKey: (params: TokenParams) => [...rootKeys.token(params), QUERY_KEY_IDENTIFIER] as const,
   queryFn: async ({ chainId, tokenAddress }: TokenQuery) => await fetchUsdRate(chainId, tokenAddress),
-  staleTime: '5m',
-  refetchInterval: '1m',
   validationSuite: createValidationSuite(({ chainId, tokenAddress }: TokenParams) => {
     tokenValidationGroup({ chainId, tokenAddress })
   }),
   disableLog: true, // too much noise in the logs
+  category: 'global.tokenRate',
 })
 
 type UseTokenOptions = ReturnType<typeof getTokenUsdRateQueryOptions>

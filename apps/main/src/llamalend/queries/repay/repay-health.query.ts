@@ -61,5 +61,6 @@ export const { getQueryOptions: getRepayHealthOptions, invalidate: invalidateRep
         return (await impl.repayHealth(userBorrowed, isFull)) as Decimal
     }
   },
+  category: 'llamalend.repay',
   validationSuite: repayFromCollateralIsFullValidationSuite,
 })

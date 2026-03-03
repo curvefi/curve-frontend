@@ -22,6 +22,6 @@ export const { useQuery: useMarketTotalCollateral, invalidate: invalidateMarketT
     const totalBorrowed = await market.stats.totalStablecoin()
     return { collateral: decimal(totalCollateral), borrowed: decimal(totalBorrowed) }
   },
-  refetchInterval: '1m',
+  category: 'llamalend.market',
   validationSuite: marketIdValidationSuite,
 })

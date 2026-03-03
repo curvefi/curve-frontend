@@ -39,6 +39,6 @@ export const {
         return await impl.borrowMoreIsApproved(userCollateral)
     }
   },
-  staleTime: '1m',
+  category: 'llamalend.borrowMore',
   validationSuite: borrowMoreValidationSuite({ leverageRequired: false }),
 })
