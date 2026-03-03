@@ -11,7 +11,7 @@ export const useAdvancedDetailsData = ({
   marketId,
   marketType,
 }: MarketParams & { market: LlamaMarketTemplate | undefined; marketType: LlamaMarketType | undefined }) => {
-  const collateralToken = market ? getTokens(market).collateralToken : undefined
+  const tokens = market ? getTokens(market) : undefined
   const { data: maxLeverageData, isLoading: maxLeverageLoading } = useMarketMaxLeverage({
     chainId,
     marketId,
@@ -21,20 +21,33 @@ export const useAdvancedDetailsData = ({
   const { data: totalCollateral, isLoading: totalCollateralLoading } = useMarketTotalCollateral({ chainId, marketId })
   const { data: collateralUsdRate, isLoading: collateralUsdRateLoading } = useTokenUsdRate({
     chainId,
-    tokenAddress: collateralToken?.address,
+    tokenAddress: tokens?.collateralToken?.address,
+  })
+  const { data: borrowedUsdRate, isLoading: borrowedUsdRateLoading } = useTokenUsdRate({
+    chainId,
+    tokenAddress: tokens?.borrowToken?.address,
   })
 
   const collateralTotal = totalCollateral == null ? null : Number(totalCollateral.collateral)
+  const borrowedTotal = totalCollateral == null ? null : Number(totalCollateral.borrowed)
+  const collateralUsdValue =
+    collateralTotal != null && collateralUsdRate != null ? collateralTotal * collateralUsdRate : null
+  const borrowedUsdValue = borrowedTotal != null && borrowedUsdRate != null ? borrowedTotal * borrowedUsdRate : null
+  const combinedCollateralUsdValue =
+    collateralUsdValue != null && borrowedUsdValue != null ? collateralUsdValue + borrowedUsdValue : null
 
   return {
     marketType,
     collateral: {
-      symbol: collateralToken?.symbol ?? null,
-      tokenAddress: collateralToken?.address ?? null,
-      total: collateralTotal,
-      totalUsdValue: collateralTotal != null && collateralUsdRate != null ? collateralTotal * collateralUsdRate : null,
+      collateralSymbol: tokens?.collateralToken?.symbol ?? null,
+      collateralAddress: tokens?.collateralToken?.address ?? null,
+      totalCollateral: collateralTotal,
+      borrowedSymbol: tokens?.borrowToken?.symbol ?? null,
+      borrowedAddress: tokens?.borrowToken?.address ?? null,
+      totalBorrowed: borrowedTotal,
+      combinedCollateralUsdValue,
       usdRate: collateralUsdRate ?? null,
-      loading: !market || totalCollateralLoading || collateralUsdRateLoading,
+      loading: !market || totalCollateralLoading || collateralUsdRateLoading || borrowedUsdRateLoading,
     },
     maxLeverage: {
       value: maxLeverageData,
