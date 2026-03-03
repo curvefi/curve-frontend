@@ -42,6 +42,7 @@ jobs:
         uses: ./.github/actions/restore-cache
       - run: yarn set version stable
       - run: yarn install --immutable
+      - run: yarn build  # make sure the build works + uploads source maps to Sentry
       - run: yarn test
         working-directory: tests
 
