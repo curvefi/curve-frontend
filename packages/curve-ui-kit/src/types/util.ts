@@ -58,7 +58,7 @@ export type QueryProp<T> = Query<T> & {
 export const q = <T>({ data, isLoading, error }: Query<T>) => ({ data, isLoading, error }) as QueryProp<T>
 
 /**
- * Creates a QueryProp from a data object, pretending it's been successfully fetched.
+ * Creates a Query result from a data object, pretending it's been successfully fetched.
  */
 export const fq = <T>(data: T) =>
   q<T>({

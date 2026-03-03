@@ -23,9 +23,8 @@ export const validateDebt = (
 ) => {
   skipWhen(!required && debt == null, () => {
     test('debt', `Debt must be a ${isNegative ? 'negative' : 'positive'} number${required ? '' : ' or null'}`, () => {
-      const assertion = enforce(debt).isNumeric()
-      if (isNegative) assertion.lt(0)
-      else assertion.gt(0)
+      if (isNegative) enforce(debt).isNumeric().lt(0)
+      else enforce(debt).isNumeric().gt(0)
     })
   })
 }

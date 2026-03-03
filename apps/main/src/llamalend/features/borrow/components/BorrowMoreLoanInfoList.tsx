@@ -18,6 +18,7 @@ import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionIn
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Token } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
+import { combineQueriesMeta, combineQueryState } from '@ui-kit/lib/queries/combine'
 import { mapQuery, q } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
 import { isFormTouched } from '@ui-kit/utils/react-form.utils'
@@ -47,7 +48,7 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
   const isOpen = isFormTouched(form, 'userCollateral', 'userBorrowed', 'debt')
   const userState = useUserState(params, isOpen)
   const expectedCollateralQuery = useBorrowMoreExpectedCollateral(params, isOpen && leverageEnabled)
-  const prevLeverageValue = q(useUserCurrentLeverage(params, isOpen))
+  const prevLeverageValue = useUserCurrentLeverage(params, isOpen)
   const priceImpact = useBorrowMorePriceImpact(params, isOpen && leverageEnabled)
 
   const collateralDelta = leverageEnabled ? expectedCollateralQuery.data?.totalCollateral : userCollateral
@@ -55,24 +56,22 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
   const prevLeverageTotalCollateral = mapQuery(userState, ({ collateral }) => collateral)
   const leverageTotalCollateral = q({
     data:
-      expectedCollateralQuery.data?.totalCollateral && userState.data?.collateral
-        ? decimal(new BigNumber(userState.data.collateral).plus(expectedCollateralQuery.data.totalCollateral))
-        : null,
-    isLoading: [userState, expectedCollateralQuery].some((query) => query.isLoading),
-    error: [userState, expectedCollateralQuery].find((query) => query.error)?.error ?? null,
+      expectedCollateralQuery.data?.totalCollateral &&
+      userState.data?.collateral &&
+      decimal(new BigNumber(userState.data.collateral).plus(expectedCollateralQuery.data.totalCollateral)),
+    ...combineQueryState(userState, expectedCollateralQuery),
   })
 
   const prevLeverageCollateral = q({
     data:
-      userState.data?.collateral && prevLeverageValue.data
-        ? decimal(
-            new BigNumber(userState.data.collateral).minus(
-              new BigNumber(userState.data.collateral).div(prevLeverageValue.data),
-            ),
-          )
-        : null,
-    isLoading: [userState, prevLeverageValue].some((query) => query.isLoading),
-    error: [userState, prevLeverageValue].find((query) => query.error)?.error ?? null,
+      userState.data?.collateral &&
+      prevLeverageValue.data &&
+      decimal(
+        new BigNumber(userState.data.collateral).minus(
+          new BigNumber(userState.data.collateral).div(prevLeverageValue.data),
+        ),
+      ),
+    ...combineQueryState(userState, prevLeverageValue),
   })
   const leverageCollateral = mapQuery(expectedCollateralQuery, ({ totalCollateral }) =>
     decimal(new BigNumber(totalCollateral).minus(userCollateral ?? '0')),
@@ -166,7 +165,7 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
             return decimal(base.isZero() ? 0 : new BigNumber(collateralFromDebt).plus(base).div(base))
           },
         ),
-        prevLeverageValue,
+        prevLeverageValue: q(prevLeverageValue),
         prevLeverageCollateral,
         leverageCollateral,
         prevLeverageTotalCollateral,

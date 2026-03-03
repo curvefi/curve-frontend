@@ -19,7 +19,7 @@ import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionIn
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Token } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { combineQueriesMeta } from '@ui-kit/lib/queries/combine'
+import { combineQueriesMeta, combineQueryState } from '@ui-kit/lib/queries/combine'
 import { mapQuery, q, type Query } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
 import { isFormTouched } from '@ui-kit/utils/react-form.utils'
@@ -88,8 +88,7 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
   const debtDelta = q({
     data:
       userState.data?.debt && debt.data?.value && decimal(new BigNumber(debt.data.value).minus(userState.data.debt)),
-    isLoading: [userState, debt].some((query) => query.isLoading),
-    error: [userState, debt].find((query) => query.error)?.error ?? null,
+    ...combineQueryState(userState, debt),
   })
 
   const { marketRates, marketFutureRates, netBorrowApr, futureBorrowApr } = useNetBorrowApr(
