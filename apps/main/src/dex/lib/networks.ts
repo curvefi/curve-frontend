@@ -323,6 +323,7 @@ export async function getNetworks() {
     const baseConfig = NETWORK_BASE_CONFIG[chainId as keyof typeof NETWORK_BASE_CONFIG]
     const isUpgraded = !!baseConfig // networks upgraded from lite to full
     const isOnlyPoolRewardsUpgraded = chainId === Chain.Taiko || chainId === 42793 // networks that has only been upgraded to show pool rewards APY, 42793 = Etherlink
+    const isLiteFxswapEnabled = chainId === 42793 // enabled on Etherlink despite being a Lite network
     prev[chainId] = {
       ...DEFAULT_NETWORK_CONFIG,
       ...getBaseNetworksConfig<NetworkEnum, ChainId>(Number(chainId), { ...config, ...baseConfig }),
@@ -346,7 +347,7 @@ export async function getNetworks() {
       stableswapFactory: true,
       twocryptoFactory: true,
       tricryptoFactory: true,
-      fxswapFactory: false,
+      fxswapFactory: isLiteFxswapEnabled,
       pricesApi: isUpgraded,
       isLite: !isUpgraded,
       isCrvRewardsEnabled: isUpgraded,
