@@ -173,18 +173,19 @@ jobs:
 
       - name: Check runtime errors
         if: always()
+        env:
+          RUNTIME_ERRORS: |
+            update depth exceeded
+            many re-renders
+            unmounted component
+            non-unique keys
+            uncontrolled to controlled
+            properties of undefined
+            cannot destructure
+            was reexported through module
+            dependencies of each other
         run: |
-          if grep --ignore-case --extended-regexp \
-            "update depth exceeded|\
-            many re-renders|\
-            unmounted component|\
-            non-unique keys|\
-            uncontrolled to controlled|\
-            properties of undefined|\
-            cannot destructure|\
-            was reexported through module|\
-            dependencies of each other" \
-            e2e-*.log; then
+          if grep --ignore-case --fixed-strings -f <(echo "$RUNTIME_ERRORS") e2e-*.log; then
             exit 1
           fi
 
@@ -211,14 +212,14 @@ jobs:
     needs: [ lint, test, cypress-e2e, cypress-component, cypress-component-rpc ]
     steps:
       - name: Send Slack alert
+        env:
+          SLACK_TEXT: >-
+            ❌ <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|CI failed>
+            on <${{ github.server_url }}/${{ github.repository }}/tree/${{ github.ref_name }}|${{ github.ref_name }}>
+            at <${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}|${{ github.sha }}>
+            by <${{ github.server_url }}/${{ github.actor }}|${{ github.actor }}>
         run: |
-          SHORT_SHA="${GITHUB_SHA:0:7}"
           curl --request POST \
                --header 'Content-type: application/json' \
-               --data-binary "{
-                 \"text\": \"❌ <${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}|CI failed> \
-                 on <${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/tree/${GITHUB_REF_NAME}|${GITHUB_REF_NAME}> \
-                 at <${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/commit/${GITHUB_SHA}|${SHORT_SHA}> \
-                 by <${GITHUB_SERVER_URL}/${GITHUB_ACTOR}|${GITHUB_ACTOR}>\"
-               }" \
+               --data-binary "{\"text\": \"$SLACK_TEXT\"}" \
                --url "${{ secrets.SLACK_FRONTEND_TEAM_WEBHOOK }}"
