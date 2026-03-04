@@ -39,7 +39,7 @@ export const { useQuery: useMarketFutureRates } = queryFactory({
   category: 'llamalend.market',
   validationSuite: createValidationSuite(({ chainId, marketId, debt, isNegativeDebt }: BorrowFutureApyParams) => {
     marketIdValidationSuite({ chainId, marketId })
-    group('borrowFormValidationGroup', () => validateDebt(debt, { isNegative: !!isNegativeDebt }))
+    group('borrowFormValidationGroup', () => validateDebt(debt))
   }),
 })
 
