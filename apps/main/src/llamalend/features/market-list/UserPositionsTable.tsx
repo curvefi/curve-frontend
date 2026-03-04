@@ -1,15 +1,15 @@
 import lodash from 'lodash'
 import { useMemo, useState } from 'react'
 import { PositionsEmptyState } from '@/llamalend/constants'
-import Box from '@mui/material/Box'
 import { ExpandedState } from '@tanstack/react-table'
 import { useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
+import { t } from '@ui-kit/lib/i18n'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { useFilters } from '@ui-kit/shared/ui/DataTable/hooks/useFilters'
 import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
-import { TableSearchField } from '@ui-kit/shared/ui/DataTable/TableSearchField'
+import { TableFiltersTitles } from '@ui-kit/shared/ui/DataTable/TableFiltersTitles'
 import { MarketRateType } from '@ui-kit/types/market'
 import type { LlamaMarketsResult } from '../../queries/market-list/llama-markets'
 import { LlamaChainFilterChips } from './chips/LlamaChainFilterChips'
@@ -113,23 +113,15 @@ export const UserPositionsTable = ({
     >
       <TableFilters<LlamaMarketColumnId>
         filterExpandedKey={title}
-        leftChildren={
-          <Box display="flex">
-            <TableSearchField
-              value={globalFilter}
-              onChange={setGlobalFilter}
-              testId={`${title}-search`}
-              isExpanded
-              disableAutoFocus
-            />
-          </Box>
-        }
         loading={loading}
         onReload={onReload}
         visibilityGroups={columnSettings}
         toggleVisibility={toggleVisibility}
+        hasSearchBar
+        disableSearchAutoFocus
         searchText={globalFilter}
         onSearch={setGlobalFilter}
+        leftChildren={<TableFiltersTitles title={t`Your Positions`} />}
         collapsible={<LendingMarketsFilters data={userData} {...filterProps} />}
         chips={
           <>

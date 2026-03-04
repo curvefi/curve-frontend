@@ -3,7 +3,6 @@ import { useConnection } from 'wagmi'
 import { LlamaMarketColumnId } from '@/llamalend/features/market-list/columns'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
 import { fromEntries } from '@primitives/objects.utils'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
@@ -16,7 +15,7 @@ import { LlamaMonitorBotButton } from './LlamaMonitorBotButton'
 import { UserPositionSummary } from './UserPositionsSummary'
 import { UserPositionsTable, type UserPositionsTableProps } from './UserPositionsTable'
 
-const { Spacing, Height } = SizesAndSpaces
+const { Spacing } = SizesAndSpaces
 
 const searchKey = 'search-user-positions' as const
 
@@ -74,20 +73,6 @@ export const UserPositionsTabs = (
 
   return (
     <Stack>
-      <Stack
-        direction="row"
-        alignItems="end"
-        sx={{
-          minHeight: Height.userPositionsTitle,
-          paddingBlockEnd: Spacing.sm,
-          paddingInline: Spacing.md,
-          flexGrow: 1,
-          borderBottom: (t) => `1px solid ${t.design.Tabs.UnderLined.Default.Outline}`,
-          backgroundColor: (t) => t.design.Layer[1].Fill,
-        }}
-      >
-        <Typography variant="headingXsBold">Your Positions</Typography>
-      </Stack>
       {address ? (
         <>
           <UserPositionSummary markets={markets} tab={tab} selectedChains={selectedChains} />
