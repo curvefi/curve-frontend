@@ -3,7 +3,6 @@ import { useConnection } from 'wagmi'
 import { CampaignRewardsBanner } from '@/lend/components/CampaignRewardsBanner'
 import { MarketAlertBanner } from '@/lend/components/MarketAlertBanner'
 import { MarketInformationComp } from '@/lend/components/MarketInformationComp'
-import { MarketInformationTabs } from '@/lend/components/MarketInformationTabs'
 import { VaultTabs } from '@/lend/components/PageVault/VaultTabs'
 import { useOneWayMarket } from '@/lend/entities/chain'
 import { useLendPageTitle } from '@/lend/hooks/useLendPageTitle'
@@ -15,7 +14,7 @@ import { networks } from '@/lend/networks'
 import { useStore } from '@/lend/store/useStore'
 import { type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
 import { isHighSeverityAlert } from '@/lend/utils/helpers'
-import { getCollateralListPathname, getLoanPathname, parseMarketParams } from '@/lend/utils/utilsRouter'
+import { getCollateralListPathname, parseMarketParams } from '@/lend/utils/utilsRouter'
 import { NoPosition, SupplyPositionDetails } from '@/llamalend/features/market-position-details'
 import { useLoanExists } from '@/llamalend/queries/user'
 import { PageHeader } from '@/llamalend/widgets/page-header'
@@ -99,7 +98,6 @@ export const Page = () => {
     titleMapper,
   }
 
-  const positionDetailsHrefs = { borrow: getLoanPathname(params, rOwmId), supply: '' }
   const hasSupplyPosition = (supplyPositionDetails.shares.value ?? 0) > 0
 
   return isSuccess && !market ? (
@@ -122,11 +120,9 @@ export const Page = () => {
             supplyAddress={market?.addresses?.vault || ''}
           />
         )}
-        <MarketInformationTabs currentTab="supply" hrefs={positionDetailsHrefs}>
-          <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
-            {hasSupplyPosition ? <SupplyPositionDetails {...supplyPositionDetails} /> : <NoPosition type="supply" />}
-          </Stack>
-        </MarketInformationTabs>
+        <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
+          {hasSupplyPosition ? <SupplyPositionDetails {...supplyPositionDetails} /> : <NoPosition type="supply" />}
+        </Stack>
         <Stack>
           <MarketInformationComp loanExists={loanExists} pageProps={pageProps} type="supply" />
         </Stack>
