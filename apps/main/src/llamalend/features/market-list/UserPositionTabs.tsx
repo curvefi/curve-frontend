@@ -12,7 +12,6 @@ import { type TabOption, TabsSwitcher } from '@ui-kit/shared/ui/Tabs/TabsSwitche
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { MarketRateType } from '@ui-kit/types/market'
 import { LlamaMonitorBotButton } from './LlamaMonitorBotButton'
-import { UserPositionSummary } from './UserPositionsSummary'
 import { UserPositionsTable, type UserPositionsTableProps } from './UserPositionsTable'
 
 const { Spacing } = SizesAndSpaces
@@ -63,7 +62,6 @@ export const UserPositionsTabs = (
 
   const [tab, setTab] = useState<MarketRateType>(defaultTab.value)
   const filters = useFilters({ columns: LlamaMarketColumnId, scope: tab.toLowerCase(), searchKey })
-  const selectedChains = filters.columnFiltersById[LlamaMarketColumnId.Chain]
 
   // Update tab when defaultTab changes (e.g., when user positions data loads)
   useEffect(() => {
@@ -75,7 +73,6 @@ export const UserPositionsTabs = (
     <Stack>
       {address ? (
         <>
-          <UserPositionSummary markets={markets} tab={tab} selectedChains={selectedChains} />
           <Stack
             direction="row"
             justifyContent="space-between"

@@ -1,6 +1,7 @@
 import lodash from 'lodash'
 import { useMemo, useState } from 'react'
 import { PositionsEmptyState } from '@/llamalend/constants'
+import Stack from '@mui/material/Stack'
 import { ExpandedState } from '@tanstack/react-table'
 import { useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
@@ -22,6 +23,7 @@ import { useLlamaTableVisibility } from './hooks/useLlamaTableVisibility'
 import { LendingMarketsFilters } from './LendingMarketsFilters'
 import { LlamaMarketExpandedPanel } from './LlamaMarketExpandedPanel'
 import { UserPositionsEmptyState } from './UserPositionsEmptyState'
+import { UserPositionSummary } from './UserPositionsSummary'
 
 const { isEqual } = lodash
 
@@ -81,6 +83,7 @@ export const UserPositionsTable = ({
   const { columnSettings, columnVisibility, sortField, toggleVisibility } = useLlamaTableVisibility(title, sorting, tab)
   const [expanded, onExpandedChange] = useState<ExpandedState>({})
   const filterProps = { columnFiltersById, setColumnFilter, defaultFilters }
+  const selectedChains = columnFiltersById[LlamaMarketColumnId.Chain]
 
   const table = useTable({
     columns: LLAMA_MARKET_COLUMNS,
@@ -111,34 +114,37 @@ export const UserPositionsTable = ({
       shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
       loading={loading}
     >
-      <TableFilters<LlamaMarketColumnId>
-        filterExpandedKey={title}
-        loading={loading}
-        onReload={onReload}
-        visibilityGroups={columnSettings}
-        toggleVisibility={toggleVisibility}
-        hasSearchBar
-        disableSearchAutoFocus
-        searchText={globalFilter}
-        onSearch={setGlobalFilter}
-        leftChildren={<TableFiltersTitles title={t`Your Positions`} />}
-        collapsible={<LendingMarketsFilters data={userData} {...filterProps} />}
-        chips={
-          <>
-            <LlamaChainFilterChips data={userData} {...filterProps} />
-            <LlamaListChips
-              hiddenMarketCount={result ? userData.length - table.getFilteredRowModel().rows.length : undefined}
-              hasFilters={columnFilters.length > 0 && !isEqual(columnFilters, defaultFilters)}
-              resetFilters={resetFilters}
-              onSortingChange={onSortingChange}
-              sortField={sortField}
-              data={userData}
-              userPositionsTab={tab}
-              {...filterProps}
-            />
-          </>
-        }
-      />
+      <Stack>
+        <TableFilters<LlamaMarketColumnId>
+          filterExpandedKey={title}
+          loading={loading}
+          onReload={onReload}
+          visibilityGroups={columnSettings}
+          toggleVisibility={toggleVisibility}
+          hasSearchBar
+          disableSearchAutoFocus
+          searchText={globalFilter}
+          onSearch={setGlobalFilter}
+          leftChildren={<TableFiltersTitles title={t`Your Positions`} />}
+          collapsible={<LendingMarketsFilters data={userData} {...filterProps} />}
+          chips={
+            <>
+              <LlamaChainFilterChips data={userData} {...filterProps} />
+              <LlamaListChips
+                hiddenMarketCount={result ? userData.length - table.getFilteredRowModel().rows.length : undefined}
+                hasFilters={columnFilters.length > 0 && !isEqual(columnFilters, defaultFilters)}
+                resetFilters={resetFilters}
+                onSortingChange={onSortingChange}
+                sortField={sortField}
+                data={userData}
+                userPositionsTab={tab}
+                {...filterProps}
+              />
+            </>
+          }
+        />
+        <UserPositionSummary markets={data} tab={tab} selectedChains={selectedChains} />
+      </Stack>
     </DataTable>
   )
 }
