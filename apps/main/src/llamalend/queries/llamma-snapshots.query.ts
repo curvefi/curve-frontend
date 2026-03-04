@@ -11,25 +11,24 @@ export function useLlamaSnapshot(
   enabled: boolean,
 ) {
   const isLendMarket = market instanceof LendMarketTemplate
-  const controllerAddress = isLendMarket ? market?.addresses.controller : market?.controller
-  const snapshotsEnabled = enabled && !!controllerAddress && !!blockchainId
+  const controllerAddress = (isLendMarket ? market?.addresses.controller : market?.controller) as Address | undefined
   const lendingSnapshotsQuery = useLendingSnapshots(
     {
       blockchainId,
-      contractAddress: controllerAddress as Address,
+      contractAddress: controllerAddress,
       agg: 'day',
       limit: 1,
     },
-    snapshotsEnabled && isLendMarket,
+    enabled && isLendMarket,
   )
   const crvUsdSnapshotsQuery = useCrvUsdSnapshots(
     {
       blockchainId,
-      contractAddress: controllerAddress as Address,
+      contractAddress: controllerAddress,
       agg: 'day',
       limit: 1,
     },
-    snapshotsEnabled && !isLendMarket,
+    enabled && !isLendMarket,
   )
   return isLendMarket ? lendingSnapshotsQuery : crvUsdSnapshotsQuery
 }

@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js'
 import { useEffect, useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { Address } from 'viem'
@@ -8,7 +7,7 @@ import { useMarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import { getTokens, isRouterRequired } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { OnBorrowedMore, useBorrowMoreMutation } from '@/llamalend/mutations/borrow-more.mutation'
-import { useBorrowMoreExpectedCollateral } from '@/llamalend/queries/borrow-more/borrow-more-expected-collateral.query'
+import { useBorrowMoreFutureLeverage } from '@/llamalend/queries/borrow-more/borrow-more-future-leverage.query'
 import { useBorrowMoreIsApproved } from '@/llamalend/queries/borrow-more/borrow-more-is-approved.query'
 import { useBorrowMorePrices } from '@/llamalend/queries/borrow-more/borrow-more-prices.query'
 import {
@@ -29,7 +28,7 @@ import type { RouteResponse } from '@primitives/router.utils'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions, watchForm } from '@ui-kit/lib/model'
 import { mapQuery, type Range } from '@ui-kit/types/util'
-import { decimal, decimalSum } from '@ui-kit/utils'
+import { decimalSum } from '@ui-kit/utils'
 import { updateForm, useCallbackAfterFormUpdate, useFormErrors } from '@ui-kit/utils/react-form.utils'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 
@@ -166,13 +165,9 @@ export const useBorrowMoreForm = <ChainId extends LlamaChainId>({
       },
     }),
     max: useMaxBorrowMoreValues({ params, form, market }, enabled),
-    /** Current leverage calculated for now, but it's probably incorrect. It's in development in llamalend-js. */
     leverage: mapQuery(
-      useBorrowMoreExpectedCollateral(params, isLeverageBorrowMore(market, values.leverageEnabled)),
-      ({ collateralFromDebt, collateralFromUserBorrowed, userCollateral }) => {
-        const base = new BigNumber(userCollateral).plus(collateralFromUserBorrowed)
-        return base.isZero() ? null : decimal(new BigNumber(collateralFromDebt).plus(base).div(base).toString())
-      },
+      useBorrowMoreFutureLeverage(params, isLeverageBorrowMore(market, values.leverageEnabled)),
+      (value) => value,
     ),
   }
 }

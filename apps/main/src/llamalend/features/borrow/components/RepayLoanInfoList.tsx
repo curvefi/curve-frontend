@@ -102,7 +102,6 @@ export function RepayLoanInfoList<ChainId extends IChainId>({
             chainId: params.chainId,
             marketId: params.marketId,
             debt: debtDelta.data,
-            isNegativeDebt: true,
           },
           isOpen && !!debtDelta.data,
         ),
