@@ -4,7 +4,7 @@ import { ChartAndActivityComp } from '@/loan/components/ChartAndActivityComp'
 import type { ChainId, Llamma } from '@/loan/types/loan.types'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
-import { useNewBandsChart, useIntegratedLlamaHeader } from '@ui-kit/hooks/useFeatureFlags'
+import { useNewBandsChart } from '@ui-kit/hooks/useFeatureFlags'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import type { Range } from '@ui-kit/types/util'
@@ -31,7 +31,6 @@ export const MarketInformationComp = ({
   previewPrices,
 }: MarketInformationCompProps) => {
   const newBandsChartEnabled = useNewBandsChart()
-  const showPageHeader = useIntegratedLlamaHeader()
 
   return (
     <>
@@ -41,13 +40,9 @@ export const MarketInformationComp = ({
           <BandsComp market={market} marketId={marketId} page={page} />
         </Stack>
       )}
-      {market && showPageHeader && (
-        <Stack
-          sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, ...(showPageHeader && { marginTop: Spacing.md }) }}
-        >
-          {showPageHeader && (
-            <AdvancedDetails chainId={chainId} marketId={marketId} market={market} marketType={LlamaMarketType.Mint} />
-          )}
+      {market && (
+        <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, marginTop: Spacing.md }}>
+          <AdvancedDetails chainId={chainId} marketId={marketId} market={market} marketType={LlamaMarketType.Mint} />
           <MarketInfoSections
             chainId={chainId}
             marketType={LlamaMarketType.Mint}

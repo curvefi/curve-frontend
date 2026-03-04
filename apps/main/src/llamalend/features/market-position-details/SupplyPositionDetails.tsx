@@ -1,4 +1,4 @@
-import { type SupplyRate } from '@/llamalend/features/market-details'
+import { type SupplyRate } from '@/llamalend/widgets/page-header'
 import { BoostTooltipContent } from '@/llamalend/widgets/tooltips/BoostTooltipContent'
 import { MarketSupplyRateTooltipContent } from '@/llamalend/widgets/tooltips/MarketSupplyRateTooltipContent'
 import { CardHeader, Box } from '@mui/material'

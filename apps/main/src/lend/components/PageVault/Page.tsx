@@ -8,7 +8,6 @@ import { VaultTabs } from '@/lend/components/PageVault/VaultTabs'
 import { useOneWayMarket } from '@/lend/entities/chain'
 import { useLendPageTitle } from '@/lend/hooks/useLendPageTitle'
 import { useMarketAlert } from '@/lend/hooks/useMarketAlert'
-import { useMarketDetails } from '@/lend/hooks/useMarketDetails'
 import { useSupplyPositionDetails } from '@/lend/hooks/useSupplyPositionDetails'
 import { useTitleMapper } from '@/lend/hooks/useTitleMapper'
 import { helpers } from '@/lend/lib/apiLending'
@@ -17,16 +16,14 @@ import { useStore } from '@/lend/store/useStore'
 import { type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
 import { isHighSeverityAlert } from '@/lend/utils/helpers'
 import { getCollateralListPathname, getLoanPathname, parseMarketParams } from '@/lend/utils/utilsRouter'
-import { MarketDetails } from '@/llamalend/features/market-details'
 import { NoPosition, SupplyPositionDetails } from '@/llamalend/features/market-position-details'
 import { useLoanExists } from '@/llamalend/queries/user'
-import { PageHeader } from '@/llamalend/widgets/page-header/PageHeader'
+import { PageHeader } from '@/llamalend/widgets/page-header'
 import type { Chain } from '@curvefi/prices-api'
 import Stack from '@mui/material/Stack'
 import { ConnectWalletPrompt, useCurve } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useParams } from '@ui-kit/hooks/router'
-import { useIntegratedLlamaHeader } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
@@ -57,11 +54,6 @@ export const Page = () => {
   })
 
   const supplyPositionDetails = useSupplyPositionDetails({
-    chainId: rChainId,
-    market,
-    marketId: rOwmId,
-  })
-  const marketDetails = useMarketDetails({
     chainId: rChainId,
     market,
     marketId: rOwmId,
@@ -109,22 +101,18 @@ export const Page = () => {
 
   const positionDetailsHrefs = { borrow: getLoanPathname(params, rOwmId), supply: '' }
   const hasSupplyPosition = (supplyPositionDetails.shares.value ?? 0) > 0
-  const showPageHeader = useIntegratedLlamaHeader()
 
   return isSuccess && !market ? (
     <ErrorPage title="404" subtitle={t`Market Not Found`} continueUrl={getCollateralListPathname(params)} />
   ) : provider ? (
     <>
-      {showPageHeader && (
-        <PageHeader
-          isLoading={!isHydrated}
-          market={market}
-          blockchainId={network.id as Chain}
-          availableLiquidity={marketDetails.availableLiquidity}
-          borrowRate={marketDetails.borrowRate}
-          supplyRate={marketDetails.supplyRate}
-        />
-      )}
+      <PageHeader
+        chainId={rChainId}
+        marketId={rOwmId}
+        isLoading={!isHydrated}
+        market={market}
+        blockchainId={network.id as Chain}
+      />
       <DetailPageLayout formTabs={rChainId && rOwmId && <VaultTabs {...pageProps} params={params} />}>
         {marketAlert?.banner && <MarketAlertBanner alertType={marketAlert.alertType} banner={marketAlert.banner} />}
         {!isHighSeverityAlert(marketAlert?.alertType) && (
@@ -140,7 +128,6 @@ export const Page = () => {
           </Stack>
         </MarketInformationTabs>
         <Stack>
-          {!showPageHeader && <MarketDetails {...marketDetails} />}
           <MarketInformationComp loanExists={loanExists} pageProps={pageProps} type="supply" />
         </Stack>
       </DetailPageLayout>
