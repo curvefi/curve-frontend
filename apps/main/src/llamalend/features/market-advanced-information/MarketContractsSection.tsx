@@ -91,6 +91,7 @@ export const MarketContractsSection = ({ chainId, market, network }: MarketContr
           { key: 'amm', label: t`AMM`, address: market.address },
           { key: 'controller', label: t`Controller`, address: market.controller },
           { key: 'monetary-policy', label: t`Monetary policy`, address: market.monetaryPolicy },
+          { key: 'oracle', label: t`Oracle`, address: oracleAddress },
         ]
     : []
 
