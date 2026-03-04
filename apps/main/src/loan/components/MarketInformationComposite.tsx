@@ -20,10 +20,7 @@ type MarketInformationCompProps = {
   previewPrices: Range<Decimal> | undefined
 }
 
-/**
- * Reusable component for OHLC charts, Bands, and market parameters. For /create and /manage pages.
- */
-export const MarketInformationComp = ({
+export const MarketInformationComposite = ({
   market,
   marketId,
   chainId,

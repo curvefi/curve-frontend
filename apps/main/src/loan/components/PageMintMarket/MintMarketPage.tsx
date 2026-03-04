@@ -4,7 +4,7 @@ import { PositionDetailsComposite, useBorrowPositionDetails } from '@/llamalend/
 import type { UserCollateralEventsProps } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { useLoanExists } from '@/llamalend/queries/user'
 import { PageHeader } from '@/llamalend/widgets/page-header'
-import { MarketInformationComp } from '@/loan/components/MarketInformationComp'
+import { MarketInformationComposite } from '@/loan/components/MarketInformationComposite'
 import { CreateLoanTabs } from '@/loan/components/PageMintMarket/CreateLoanTabs'
 import { ManageLoanTabs } from '@/loan/components/PageMintMarket/ManageLoanTabs'
 import { useMintMarket } from '@/loan/entities/mint-markets'
@@ -119,7 +119,7 @@ export const MintMarketPage = () => {
           activityQueryParams={activityQueryParams}
         />
         <Stack>
-          <MarketInformationComp
+          <MarketInformationComposite
             market={market ?? null}
             marketId={marketId}
             chainId={rChainId}

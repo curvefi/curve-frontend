@@ -23,7 +23,12 @@ type MarketInformationCompProps = {
 /**
  * Reusable component for OHLC charts, Bands (if applicable), and market parameters, used in market and vault pages.
  */
-export const MarketInformationComp = ({ pageProps, loanExists, type, previewPrices }: MarketInformationCompProps) => {
+export const MarketInformationComposite = ({
+  pageProps,
+  loanExists,
+  type,
+  previewPrices,
+}: MarketInformationCompProps) => {
   const { rChainId, rOwmId, market } = pageProps
   const api = getLib('llamaApi')
   const newBandsChartEnabled = useNewBandsChart()

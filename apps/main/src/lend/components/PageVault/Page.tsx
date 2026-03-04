@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useConnection } from 'wagmi'
 import { CampaignRewardsBanner } from '@/lend/components/CampaignRewardsBanner'
 import { MarketAlertBanner } from '@/lend/components/MarketAlertBanner'
-import { MarketInformationComp } from '@/lend/components/MarketInformationComp'
+import { MarketInformationComposite } from '@/lend/components/MarketInformationComposite'
 import { VaultTabs } from '@/lend/components/PageVault/VaultTabs'
 import { useOneWayMarket } from '@/lend/entities/chain'
 import { useLendPageTitle } from '@/lend/hooks/useLendPageTitle'
@@ -124,7 +124,7 @@ export const Page = () => {
           {hasSupplyPosition ? <SupplyPositionDetails {...supplyPositionDetails} /> : <NoPosition type="supply" />}
         </Stack>
         <Stack>
-          <MarketInformationComp loanExists={loanExists} pageProps={pageProps} type="supply" />
+          <MarketInformationComposite loanExists={loanExists} pageProps={pageProps} type="supply" />
         </Stack>
       </DetailPageLayout>
     </>
