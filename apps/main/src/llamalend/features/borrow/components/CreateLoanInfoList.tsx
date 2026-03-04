@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import type { UseFormReturn } from 'react-hook-form'
+import type { FieldError, UseFormReturn } from 'react-hook-form'
 import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { useCreateLoanIsApproved } from '@/llamalend/queries/create-loan/create-loan-approved.query'
@@ -8,7 +8,7 @@ import { useMarketFutureRates } from '@/llamalend/queries/market'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Token } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
-import { fq, mapQuery, q } from '@ui-kit/types/util'
+import { mapQuery, q } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils/decimal'
 import { isFormTouched } from '@ui-kit/utils/react-form.utils'
 import { useCreateLoanEstimateGas } from '../../../queries/create-loan/create-loan-approve-estimate-gas.query'
@@ -20,6 +20,8 @@ import { LoanActionInfoList } from '../../../widgets/action-card/LoanActionInfoL
 import { useLoanToValue } from '../hooks/useLoanToValue'
 import { useNetBorrowApr } from '../hooks/useNetBorrowApr'
 import { type CreateLoanForm, type CreateLoanFormQueryParams } from '../types'
+
+const toQueryError = (error: FieldError | undefined) => (error?.message ? new Error(error.message) : null)
 
 export const CreateLoanInfoList = <ChainId extends IChainId>({
   market,
@@ -86,8 +88,16 @@ export const CreateLoanInfoList = <ChainId extends IChainId>({
       )}
       gas={q(useCreateLoanEstimateGas(networks, params, isOpen))}
       leverageEnabled={leverageEnabled}
-      collateral={fq({ value: userCollateral ?? null, tokenSymbol: collateralToken?.symbol })}
-      debt={fq({ value: debt ?? null, tokenSymbol: borrowToken?.symbol })}
+      collateral={q({
+        data: { value: userCollateral ?? null, tokenSymbol: collateralToken?.symbol },
+        isLoading: !collateralToken,
+        error: toQueryError(form.formState.errors.userCollateral),
+      })}
+      debt={q({
+        data: { value: debt ?? null, tokenSymbol: borrowToken?.symbol },
+        isLoading: !borrowToken,
+        error: toQueryError(form.formState.errors.debt),
+      })}
       {...(leverageEnabled && {
         routes,
         leverageValue,
