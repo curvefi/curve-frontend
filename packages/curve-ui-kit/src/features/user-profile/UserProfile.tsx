@@ -1,11 +1,11 @@
 import { useConnection } from 'wagmi'
-import PersonIcon from '@mui/icons-material/Person'
 import Drawer from '@mui/material/Drawer'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
 import { Settings } from '@ui-kit/features/user-profile/settings/Settings'
 import { UserProfileHeader } from '@ui-kit/features/user-profile/UserProfileHeader'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
+import { LlamaIcon } from '@ui-kit/shared/icons/LlamaIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing, Width } = SizesAndSpaces
@@ -16,7 +16,7 @@ export const UserProfile = () => {
   return (
     <>
       <IconButton size="small" onClick={open} data-testid="user-profile-button">
-        <PersonIcon />
+        <LlamaIcon />
       </IconButton>
 
       <Drawer
