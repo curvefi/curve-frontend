@@ -56,26 +56,6 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
 
   const collateralDelta = leverageEnabled ? expectedCollateralQuery.data?.totalCollateral : userCollateral
 
-  const prevLeverageTotalCollateral = prevCollateral
-  const leverageTotalCollateral = q({
-    data:
-      expectedCollateralQuery.data?.totalCollateral &&
-      prevCollateral.data &&
-      decimal(new BigNumber(prevCollateral.data).plus(expectedCollateralQuery.data.totalCollateral)),
-    ...combineQueryState(prevCollateral, expectedCollateralQuery),
-  })
-
-  const prevLeverageCollateral = q({
-    data:
-      prevCollateral.data &&
-      prevLeverageValue.data &&
-      decimal(new BigNumber(prevCollateral.data).minus(new BigNumber(prevCollateral.data).div(prevLeverageValue.data))),
-    ...combineQueryState(prevCollateral, prevLeverageValue),
-  })
-  const leverageCollateral = mapQuery(expectedCollateralQuery, ({ totalCollateral }) =>
-    decimal(new BigNumber(totalCollateral).minus(userCollateral ?? '0')),
-  )
-
   const totalDebt = useMemo(
     () => debt && prevDebt.data && decimal(new BigNumber(prevDebt.data).plus(debt).toString()),
     [debt, prevDebt.data],
@@ -145,19 +125,30 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
       {...(leverageEnabled
         ? {
             leverageEnabled,
-            leverageValue: mapQuery(
-              expectedCollateralQuery,
-              // todo: this might not be correct, use the llamalend-js calculation that's being implemented
-              ({ collateralFromDebt, collateralFromUserBorrowed, userCollateral }) => {
-                const base = new BigNumber(userCollateral).plus(collateralFromUserBorrowed)
-                return decimal(base.isZero() ? 0 : new BigNumber(collateralFromDebt).plus(base).div(base))
-              },
-            ),
+            leverageValue: q(leverageValue),
             prevLeverageValue: q(prevLeverageValue),
-            prevLeverageCollateral,
-            leverageCollateral,
-            prevLeverageTotalCollateral,
-            leverageTotalCollateral,
+            prevLeverageCollateral: q({
+              data:
+                prevCollateral.data &&
+                prevLeverageValue.data &&
+                decimal(
+                  new BigNumber(prevCollateral.data).minus(
+                    new BigNumber(prevCollateral.data).div(prevLeverageValue.data),
+                  ),
+                ),
+              ...combineQueryState(prevCollateral, prevLeverageValue),
+            }),
+            leverageCollateral: mapQuery(expectedCollateralQuery, ({ totalCollateral }) =>
+              decimal(new BigNumber(totalCollateral).minus(userCollateral ?? '0')),
+            ),
+            prevLeverageTotalCollateral: prevCollateral,
+            leverageTotalCollateral: q({
+              data:
+                expectedCollateralQuery.data?.totalCollateral &&
+                prevCollateral.data &&
+                decimal(new BigNumber(prevCollateral.data).plus(expectedCollateralQuery.data.totalCollateral)),
+              ...combineQueryState(prevCollateral, expectedCollateralQuery),
+            }),
             routes,
             slippage,
             onSlippageChange,
