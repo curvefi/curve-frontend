@@ -22,7 +22,6 @@ import Pumpbtc from './Pumpbtc.json'
 import Raac from './Raac.json'
 import Re from './Re.json'
 import Resolv from './Resolv.json'
-import StableLabs from './StableLabs.json'
 import Symbiotic from './Symbiotic.json'
 import TermMax from './TermMax.json'
 import Tharwa from './Tharwa.json'
@@ -46,7 +45,6 @@ export {
   Hourglass,
   Fx,
   Pumpbtc,
-  StableLabs,
   Infinifi,
   Asymmetry,
   GoNuts,
