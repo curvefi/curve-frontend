@@ -33,6 +33,7 @@ export const TableFilters = <ColumnIds extends string>({
   collapsible,
   chips,
   searchText,
+  disableSearchAutoFocus,
   onSearch,
 }: {
   leftChildren: ReactNode
@@ -45,15 +46,16 @@ export const TableFilters = <ColumnIds extends string>({
   collapsible?: ReactNode // filters that may be collapsed
   chips?: ReactNode // buttons that are part of the collapsible (on mobile) or always visible (on larger screens)
   searchText: string // text to search for, only used for mobile
+  disableSearchAutoFocus?: boolean
   onSearch: (value: string) => void
 }) => {
   const [filterExpanded, setFilterExpanded] = useFilterExpanded(filterExpandedKey)
   const [visibilitySettingsOpen, openVisibilitySettings, closeVisibilitySettings] = useSwitch()
   const settingsRef = useRef<HTMLButtonElement>(null)
   // search is here because we remove the table title when searching on mobile
-  const [isSearchExpanded, , , toggleSearchExpanded] = useSwitch(false)
-  const [searchValue, setSearchValue] = useDebounce({ initialValue: searchText, callback: onSearch })
   const isMobile = useIsMobile()
+  const [isSearchExpanded, , , toggleSearchExpanded] = useSwitch(!isMobile)
+  const [searchValue, setSearchValue] = useDebounce({ initialValue: searchText, callback: onSearch })
   const isCollapsible = collapsible || (isMobile && chips)
   const isExpandedOrValue = Boolean(isSearchExpanded || searchValue)
   const hideTitle = hasSearchBar && isExpandedOrValue && isMobile
@@ -73,6 +75,16 @@ export const TableFilters = <ColumnIds extends string>({
           gap={Spacing.xs}
           flexWrap="wrap"
         >
+          {hasSearchBar && (
+            <TableSearchField
+              value={searchValue}
+              onChange={setSearchValue}
+              testId={filterExpandedKey}
+              {...(isMobile && { toggleExpanded: toggleSearchExpanded })}
+              isExpanded={isExpandedOrValue}
+              disableAutoFocus={disableSearchAutoFocus}
+            />
+          )}
           {!isMobile && toggleVisibility && (
             <TableButton
               ref={settingsRef}
@@ -91,15 +103,6 @@ export const TableFilters = <ColumnIds extends string>({
             />
           )}
           {onReload && !isMobile && <TableButton onClick={onReload} icon={ReloadIcon} rotateIcon={loading} />}
-          {hasSearchBar && (
-            <TableSearchField
-              value={searchValue}
-              onChange={setSearchValue}
-              testId={filterExpandedKey}
-              toggleExpanded={toggleSearchExpanded}
-              isExpanded={isExpandedOrValue}
-            />
-          )}
         </Grid>
         <Grid container size={12} spacing={Spacing.sm} justifyContent="space-between">
           {chips}

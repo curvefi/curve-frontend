@@ -25,3 +25,8 @@ export type RouteMeta = {
   calldata: string
   quote: IQuote
 }
+
+/**
+ * Route meta with minRecv for execution methods that require slippage protection
+ */
+export type RouteMutationMeta = RouteMeta & { minRecv: string }

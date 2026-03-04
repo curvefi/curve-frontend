@@ -37,6 +37,8 @@ export type DeepPartial<T> = {
  */
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>
 
+export type AllowUndefined<T> = { [P in keyof T]: T[P] | undefined }
+
 /**
  * A generic type representing the result of a query operation.
  * @template T - The type of the data returned by the query.

@@ -25,3 +25,21 @@ export function getErrorMessage(error: CustomError | null, defaultErrorMessage?:
   }
   return errorMessage
 }
+
+/**
+ * Browser auto-translation/extensions can mutate the DOM and break React reconciliation.
+ * This usually surfaces as a NotFoundError for Node.removeChild.
+ */
+export const isDomRemoveChildMutationError = (error: unknown): boolean =>
+  error instanceof Error && error.message.includes('removeChild') && error.message.includes('not a child of this node')
+
+export const getBoundaryErrorSubtitle = (error: unknown, fallback: string): string =>
+  isDomRemoveChildMutationError(error)
+    ? [
+        t`The page changed unexpectedly and can no longer update safely.`,
+        t`Please refresh the page and try again.`,
+        t`Disable your browser plugins if the issue persists.`,
+      ].join(' ')
+    : error instanceof Error && error.message
+      ? error.message
+      : fallback

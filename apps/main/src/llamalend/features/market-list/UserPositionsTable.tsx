@@ -1,6 +1,7 @@
 import lodash from 'lodash'
 import { useMemo, useState } from 'react'
 import { PositionsEmptyState } from '@/llamalend/constants'
+import Box from '@mui/material/Box'
 import { ExpandedState } from '@tanstack/react-table'
 import { useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
@@ -113,7 +114,15 @@ export const UserPositionsTable = ({
       <TableFilters<LlamaMarketColumnId>
         filterExpandedKey={title}
         leftChildren={
-          <TableSearchField value={globalFilter} onChange={setGlobalFilter} testId={`${title}-search`} isExpanded />
+          <Box display="flex">
+            <TableSearchField
+              value={globalFilter}
+              onChange={setGlobalFilter}
+              testId={`${title}-search`}
+              isExpanded
+              disableAutoFocus
+            />
+          </Box>
         }
         loading={loading}
         onReload={onReload}

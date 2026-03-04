@@ -2,6 +2,7 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
 import { Accordion } from '@ui-kit/shared/ui/Accordion'
+import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { ParsedUserCollateralEvent } from './hooks/useUserCollateralEvents'
 import { UserEventsTable } from './UserEventsTable'
@@ -12,10 +13,11 @@ type UserPositionHistoryProps = {
   events: ParsedUserCollateralEvent[]
   isLoading: boolean
   isError: boolean
+  variant: 'accordion' | 'flat'
 }
 
-export const UserPositionHistory = ({ events, isLoading, isError }: UserPositionHistoryProps) => (
-  <Accordion title={t`Activity`} ghost>
+export const UserPositionHistory = ({ events, isLoading, isError, variant }: UserPositionHistoryProps) => (
+  <WithWrapper shouldWrap={variant === 'accordion'} Wrapper={Accordion} title={t`Activity`} ghost>
     <Stack gap={Spacing.xxs}>
       <UserEventsTable events={events} loading={isLoading} isError={isError} />
       <Stack direction="row" gap={Spacing.xs}>
@@ -27,5 +29,5 @@ export const UserPositionHistory = ({ events, isLoading, isError }: UserPosition
         </Typography>
       </Stack>
     </Stack>
-  </Accordion>
+  </WithWrapper>
 )

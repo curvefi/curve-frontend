@@ -377,21 +377,27 @@ export const LoanCreateForm = ({
         </AlertBox>
       )}
 
-      {marketAlert && <AlertBox alertType={marketAlert.alertType}>{marketAlert.message}</AlertBox>}
+      {!marketAlert?.isDisableBorrow && marketAlert?.message && (
+        <AlertBox alertType={marketAlert.alertType}>{marketAlert.message}</AlertBox>
+      )}
 
       {/* actions */}
-      <LoanFormConnect haveSigner={!!signerAddress} loading={!api}>
-        {txInfoBar}
-        {!!healthMode.message && <AlertBox alertType="warning">{healthMode.message}</AlertBox>}
-        {(formStatus.error || formStatus.stepError) && (
-          <AlertFormError
-            limitHeight
-            errorKey={formStatus.error || formStatus.stepError}
-            handleBtnClose={() => updateFormValues({}, true)}
-          />
-        )}
-        {steps && <Stepper steps={steps} />}
-      </LoanFormConnect>
+      {marketAlert?.isDisableBorrow ? (
+        marketAlert.message && <AlertBox alertType={marketAlert.alertType}>{marketAlert.message}</AlertBox>
+      ) : (
+        <LoanFormConnect haveSigner={!!signerAddress} loading={!api}>
+          {txInfoBar}
+          {!!healthMode.message && <AlertBox alertType="warning">{healthMode.message}</AlertBox>}
+          {(formStatus.error || formStatus.stepError) && (
+            <AlertFormError
+              limitHeight
+              errorKey={formStatus.error || formStatus.stepError}
+              handleBtnClose={() => updateFormValues({}, true)}
+            />
+          )}
+          {steps && <Stepper steps={steps} />}
+        </LoanFormConnect>
+      )}
 
       {!isAdvancedMode && (
         <Accordion btnLabel={<TextCaption isCaps isBold>{t`Market details`}</TextCaption>}>

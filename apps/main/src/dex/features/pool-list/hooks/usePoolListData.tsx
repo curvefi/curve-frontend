@@ -2,6 +2,7 @@ import { get, isEmpty, sum } from 'lodash'
 import { useEffect, useMemo } from 'react'
 import { useConnection } from 'wagmi'
 import { CROSS_CHAIN_ADDRESSES } from '@/dex/constants'
+import { usePoolVolumes } from '@/dex/queries/pool-volume.query'
 import { useUserPools } from '@/dex/queries/user-pools.query'
 import { useStore } from '@/dex/store/useStore'
 import { NetworkConfig, PoolData, PoolDataMapper } from '@/dex/types/main.types'
@@ -50,13 +51,18 @@ export function usePoolListData({ id: network, chainId, isLite }: NetworkConfig)
   const poolDataMapper = useStore((state): PoolDataMapper | undefined => state.pools.poolsMapper[chainId])
   const rewardsApyMapper = useStore((state) => state.pools.rewardsApyMapper[chainId])
   const tvlMapper = useStore((state) => state.pools.tvlMapper[chainId])
-  const volumeMapper = useStore((state) => state.pools.volumeMapper[chainId])
   const fetchPoolsRewardsApy = useStore((state) => state.pools.fetchPoolsRewardsApy)
   const fetchMissingPoolsRewardsApy = useStore((state) => state.pools.fetchMissingPoolsRewardsApy)
   const poolsData = useMemo(() => poolDataMapper && recordValues(poolDataMapper), [poolDataMapper])
 
   const { address: userAddress } = useConnection()
   const { data: userPools } = useUserPools({ chainId, userAddress })
+  const { data: volumes, isLoading: isVolumesLoading } = usePoolVolumes({ chainId })
+
+  const isLoading = useMemo(
+    () => !poolsData || isEmpty(tvlMapper) || (!isLite && isVolumesLoading),
+    [poolsData, tvlMapper, isLite, isVolumesLoading],
+  )
 
   useEffect(
     () => poolsData && void fetchMissingPoolsRewardsApy(chainId, poolsData),
@@ -70,40 +76,38 @@ export function usePoolListData({ id: network, chainId, isLite }: NetworkConfig)
   }, REFRESH_INTERVAL['11m'])
 
   return {
-    isLoading: !poolsData,
-    isReady: useMemo(
-      () => !isEmpty(tvlMapper) && (isLite || !isEmpty(volumeMapper)),
-      [isLite, tvlMapper, volumeMapper],
-    ),
+    isLoading,
     userHasPositions: !!userPools?.length,
     data: useMemo(
       () =>
-        poolsData &&
-        poolsData.map((item): PoolListItem => {
-          const rewards = rewardsApyMapper?.[item.pool.id]
-          const hasPosition = userPools?.includes(item.pool.id)
+        isLoading
+          ? []
+          : poolsData &&
+            poolsData.map((item): PoolListItem => {
+              const rewards = rewardsApyMapper?.[item.pool.id]
+              const hasPosition = userPools?.includes(item.pool.id)
 
-          return {
-            ...item,
-            totalAPR: sum(
-              notFalsy<string | number>(
-                rewards?.base?.day,
-                ...(rewards?.crv ?? []),
-                ...(rewards?.other?.map((r) => r.apy) ?? []),
-              )
-                .map(Number)
-                .filter((v) => !isNaN(v)),
-            ),
-            rewards,
-            volume: volumeMapper?.[item.pool.id],
-            tvl: tvlMapper?.[item.pool.id],
-            hasPosition,
-            network,
-            url: getPath({ network }, `${DEX_ROUTES.PAGE_POOLS}/${item.pool.address}/deposit`),
-            tags: getPoolTags(!!hasPosition, item),
-          }
-        }),
-      [poolsData, rewardsApyMapper, tvlMapper, userPools, volumeMapper, network],
+              return {
+                ...item,
+                totalAPR: sum(
+                  notFalsy<string | number>(
+                    rewards?.base?.day,
+                    ...(rewards?.crv ?? []),
+                    ...(rewards?.other?.map((r) => r.apy) ?? []),
+                  )
+                    .map(Number)
+                    .filter((v) => !isNaN(v)),
+                ),
+                rewards,
+                volume: volumes?.[item.pool.id] ?? '0',
+                tvl: tvlMapper?.[item.pool.id],
+                hasPosition,
+                network,
+                url: getPath({ network }, `${DEX_ROUTES.PAGE_POOLS}/${item.pool.address}/deposit`),
+                tags: getPoolTags(!!hasPosition, item),
+              }
+            }),
+      [isLoading, poolsData, rewardsApyMapper, userPools, volumes, tvlMapper, network],
     ),
   }
 }

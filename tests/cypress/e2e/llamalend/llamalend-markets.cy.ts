@@ -135,8 +135,13 @@ testCases.forEach(([width, height, breakpoint]) => {
     })
 
     it('should find markets by text', () => {
-      cy.get('[data-testid="btn-expand-search-Llamalend Markets"]').click({ waitForAnimations: true })
-      cy.get("[data-testid^='table-text-search-'] input").should('be.focused') // element is focused when animation completes
+      // only on mobile is the search not auto-expanded
+      if (breakpoint === 'mobile') {
+        cy.get('[data-testid="btn-expand-search-Llamalend Markets"]').click({ waitForAnimations: true })
+        cy.get("[data-testid^='table-text-search-'] input").should('be.focused') // element is focused when animation completes
+      } else {
+        cy.get("[data-testid^='table-text-search-'] input").click()
+      }
       cy.get("[data-testid='table-text-search-Llamalend Markets'] input").type('wstETH crvUSD')
       cy.url().should('include', 'search=wstETH+crvUSD')
       cy.scrollTo(0, 0)
@@ -349,7 +354,7 @@ testCases.forEach(([width, height, breakpoint]) => {
         // no need to scroll on mobile, the graph is already in view after collapsing the row
         cy.get(`[data-testid="line-graph-${type}"]:visible`).first().scrollIntoView()
       }
-      cy.get(`[data-testid="line-graph-${type}"] path`).first().should('have.attr', 'stroke', color)
+      cy.get(`[data-testid="line-graph-${type}"] path`, LOAD_TIMEOUT).first().should('have.attr', 'stroke', color)
     }
 
     function checkCoinSelection(type: TokenType) {
