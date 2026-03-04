@@ -1,3 +1,4 @@
+import { formatCollateralNotional } from '@/llamalend/llama.utils'
 import { BorrowAprMetric } from '@/llamalend/widgets/BorrowAprMetric'
 import { Box, CardHeader } from '@mui/material'
 import { formatNumber, FORMAT_OPTIONS } from '@ui/utils/utilsFormat'
@@ -60,7 +61,11 @@ export const MarketDetails = ({
         }}
       >
         {!showPageHeader && (
-          <BorrowAprMetric marketType={marketType} borrowRate={borrowRate} collateralSymbol={collateral?.symbol} />
+          <BorrowAprMetric
+            marketType={marketType}
+            borrowRate={borrowRate}
+            collateralSymbol={collateral?.collateralSymbol}
+          />
         )}
         {!showPageHeader && supplyRate && (
           <Metric
@@ -104,7 +109,7 @@ export const MarketDetails = ({
           <SymbolCell
             size={'medium'}
             label={t`Collateral`}
-            symbol={collateral?.symbol}
+            symbol={collateral?.collateralSymbol}
             tokenAddress={collateral?.tokenAddress}
             loading={collateral?.loading}
             blockchainId={blockchainId}
@@ -162,16 +167,16 @@ export const MarketDetails = ({
         <Metric
           size="small"
           label={t`Total collateral`}
-          value={collateral?.total}
+          value={collateral?.combinedCollateralUsdValue}
           loading={collateral?.loading}
-          valueOptions={{ unit: { symbol: collateral?.symbol ?? '', position: 'suffix' } }}
+          valueOptions={{ unit: 'dollar' }}
           notional={
-            collateral?.totalUsdValue
-              ? {
-                  value: collateral.totalUsdValue,
-                  unit: 'dollar',
-                }
-              : undefined
+            collateral?.loading
+              ? undefined
+              : formatCollateralNotional(
+                  { value: collateral?.totalCollateral ?? null, symbol: collateral?.collateralSymbol ?? undefined },
+                  { value: collateral?.totalBorrowed ?? null, symbol: collateral?.borrowedSymbol ?? undefined },
+                )
           }
           valueTooltip={{
             title: t`Total Collateral`,
