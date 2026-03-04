@@ -161,7 +161,7 @@ testCases.forEach(([width, height, breakpoint]) => {
     it('should allow filtering by using a slider', () => {
       const [columnId, initialFilterText] = oneOf(
         [LlamaMarketColumnId.LiquidityUsd, '$0 -'],
-        [LlamaMarketColumnId.Tvl, '$10k -'],
+        [LlamaMarketColumnId.Tvl, '$0 -'],
         [LlamaMarketColumnId.UtilizationPercent, '0% -'],
       )
       // Keep the viewport stable for slider width.
