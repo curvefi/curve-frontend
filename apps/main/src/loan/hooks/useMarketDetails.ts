@@ -38,6 +38,10 @@ export const useMarketDetails = ({ chainId, market, marketId }: UseMarketDetails
     chainId,
     tokenAddress: market?.collateral,
   })
+  const { data: borrowedUsdRate, isLoading: borrowedUsdRateLoading } = useTokenUsdRate({
+    chainId,
+    tokenAddress: CRVUSD_ADDRESS,
+  })
   const { data: crvUsdSnapshots, isLoading: isSnapshotsLoading } = useCrvUsdSnapshots({
     blockchainId,
     contractAddress: market?.controller as Address,
@@ -74,18 +78,28 @@ export const useMarketDetails = ({ chainId, market, marketId }: UseMarketDetails
   const isMarketMetadataLoading = !market
 
   const totalCollateralValue = totalCollateral == null ? null : Number(totalCollateral.collateral)
+  const totalBorrowedValue = totalCollateral == null ? null : Number(totalCollateral.borrowed)
+
+  const collateralUsdValue =
+    totalCollateralValue != null && collateralUsdRate != null ? totalCollateralValue * collateralUsdRate : null
+  const borrowedUsdValue =
+    totalBorrowedValue != null && borrowedUsdRate != null ? totalBorrowedValue * borrowedUsdRate : null
+  const totalUsdValue =
+    collateralUsdValue != null && borrowedUsdValue != null ? collateralUsdValue + borrowedUsdValue : null
 
   return {
     marketType: LlamaMarketType.Mint,
     blockchainId,
     collateral: {
-      symbol: market?.collateralSymbol ?? null,
+      collateralSymbol: market?.collateralSymbol ?? null,
       tokenAddress: market?.collateral,
-      total: totalCollateralValue,
-      // TODO: add potential collateral value in borrowed token
-      totalUsdValue:
-        totalCollateralValue != null && collateralUsdRate != null ? totalCollateralValue * collateralUsdRate : null,
-      loading: collateralUsdRateLoading || isTotalCollateralLoading || isMarketMetadataLoading,
+      totalCollateral: totalCollateralValue,
+      borrowedSymbol: 'crvUSD',
+      totalBorrowed: totalBorrowedValue,
+      combinedCollateralUsdValue: totalUsdValue,
+      usdRate: collateralUsdRate ?? null,
+      loading:
+        collateralUsdRateLoading || borrowedUsdRateLoading || isTotalCollateralLoading || isMarketMetadataLoading,
     },
     borrowToken: {
       symbol: 'crvUSD',

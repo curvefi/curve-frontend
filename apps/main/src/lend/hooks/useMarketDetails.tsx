@@ -50,6 +50,7 @@ export const useMarketDetails = ({
       cap,
       available,
       collateral: collateralAmount,
+      borrowed: borrowedAmount,
     },
     isLoading: isMarketDetailsLoading,
   } = useLendMarketDetails({ chainId, marketId })
@@ -62,6 +63,10 @@ export const useMarketDetails = ({
   const { data: collateralUsdRate, isLoading: collateralUsdRateLoading } = useTokenUsdRate({
     chainId,
     tokenAddress: collateral_token?.address,
+  })
+  const { data: borrowedUsdRate, isLoading: borrowedUsdRateLoading } = useTokenUsdRate({
+    chainId,
+    tokenAddress: borrowed_token?.address,
   })
   const { data: maxLeverage, isLoading: isMarketMaxLeverageLoading } = useMarketMaxLeverage({
     chainId,
@@ -141,13 +146,24 @@ export const useMarketDetails = ({
     marketType: LlamaMarketType.Lend,
     blockchainId,
     collateral: {
-      symbol: collateral_token?.symbol ?? null,
+      collateralSymbol: collateral_token?.symbol ?? null,
       tokenAddress: collateral_token?.address,
-      total: collateralAmount == null ? null : +collateralAmount,
-      // TODO: add potential collateral value in borrowed token
-      totalUsdValue:
-        collateralAmount != null && collateralUsdRate != null ? +collateralAmount * collateralUsdRate : null,
-      loading: isMarketDetailsLoading.marketCollateralAmounts || collateralUsdRateLoading || isMarketMetadataLoading,
+      totalCollateral: collateralAmount == null ? null : +collateralAmount,
+      borrowedSymbol: borrowed_token?.symbol ?? null,
+      totalBorrowed: borrowedAmount == null ? null : +borrowedAmount,
+      combinedCollateralUsdValue: (() => {
+        const collateralUsdValue =
+          collateralAmount != null && collateralUsdRate != null ? +collateralAmount * collateralUsdRate : null
+        const borrowedUsdValue =
+          borrowedAmount != null && borrowedUsdRate != null ? +borrowedAmount * borrowedUsdRate : null
+        return collateralUsdValue != null && borrowedUsdValue != null ? collateralUsdValue + borrowedUsdValue : null
+      })(),
+      usdRate: collateralUsdRate ?? null,
+      loading:
+        isMarketDetailsLoading.marketCollateralAmounts ||
+        collateralUsdRateLoading ||
+        borrowedUsdRateLoading ||
+        isMarketMetadataLoading,
     },
     borrowToken: {
       symbol: borrowed_token?.symbol ?? null,

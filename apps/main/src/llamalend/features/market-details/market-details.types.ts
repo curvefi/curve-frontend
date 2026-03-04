@@ -2,9 +2,12 @@ import type { CampaignPoolRewards } from '@ui-kit/entities/campaigns'
 import { LlamaMarketType, type ExtraIncentive } from '@ui-kit/types/market'
 
 export type Collateral = {
-  total: number | undefined | null
-  totalUsdValue: number | undefined | null
-  symbol: string | undefined | null
+  collateralSymbol: string | null
+  totalCollateral: number | null
+  borrowedSymbol: string | null
+  totalBorrowed: number | null
+  combinedCollateralUsdValue: number | null
+  usdRate: number | null
   tokenAddress: string | undefined | null
   loading: boolean
 }
