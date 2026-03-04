@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { useConnection } from 'wagmi'
 import { CampaignRewardsBanner } from '@/lend/components/CampaignRewardsBanner'
 import { MarketInformationComp } from '@/lend/components/MarketInformationComp'
-import { MarketInformationTabs } from '@/lend/components/MarketInformationTabs'
 import { LoanCreateTabs } from '@/lend/components/PageLendMarket/LoanCreateTabs'
 import { ManageLoanTabs } from '@/lend/components/PageLendMarket/ManageLoanTabs'
 import { useOneWayMarket } from '@/lend/entities/chain'
@@ -14,7 +13,6 @@ import { networks } from '@/lend/networks'
 import { useStore } from '@/lend/store/useStore'
 import { type MarketUrlParams } from '@/lend/types/lend.types'
 import { getCollateralListPathname, isHighSeverityAlert, parseMarketParams } from '@/lend/utils/helpers'
-import { getVaultPathname } from '@/lend/utils/utilsRouter'
 import { PositionDetailsComposite, useBorrowPositionDetails } from '@/llamalend/features/market-position-details'
 import type { UserCollateralEventsProps } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { useLoanExists } from '@/llamalend/queries/user'
@@ -155,13 +153,11 @@ export const LendMarketPage = () => {
             supplyAddress={market?.addresses?.vault || ''}
           />
         )}
-        <MarketInformationTabs currentTab={'borrow'} hrefs={{ borrow: '', supply: getVaultPathname(params, marketId) }}>
-          <PositionDetailsComposite
-            hasPosition={loanExists}
-            borrowPositionDetails={borrowPositionDetails}
-            activityQueryParams={activityQueryParams}
-          />
-        </MarketInformationTabs>
+        <PositionDetailsComposite
+          hasPosition={loanExists}
+          borrowPositionDetails={borrowPositionDetails}
+          activityQueryParams={activityQueryParams}
+        />
         <Stack>
           <MarketInformationComp
             pageProps={pageProps}
