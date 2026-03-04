@@ -61,7 +61,11 @@ export const MarketDetails = ({
         }}
       >
         {!showPageHeader && (
-          <BorrowAprMetric marketType={marketType} borrowRate={borrowRate} collateralSymbol={collateral?.collateralSymbol} />
+          <BorrowAprMetric
+            marketType={marketType}
+            borrowRate={borrowRate}
+            collateralSymbol={collateral?.collateralSymbol}
+          />
         )}
         {!showPageHeader && supplyRate && (
           <Metric
