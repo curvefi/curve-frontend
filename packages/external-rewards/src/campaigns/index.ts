@@ -13,7 +13,6 @@ import Hinkal from './Hinkal.json'
 import Hourglass from './Hourglass.json'
 import Hyperwave from './Hyperwave.json'
 import Infinifi from './Infinifi.json'
-import Kelpdao from './Kelpdao.json'
 import Liquity from './Liquity.json'
 import Lombard from './Lombard.json'
 import Loop from './Loop.json'
@@ -34,7 +33,6 @@ import Yuzu from './Yuzu.json'
 export {
   Ethena,
   Etherfi,
-  Kelpdao,
   Mellow,
   Symbiotic,
   Fraxtal,
