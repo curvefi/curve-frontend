@@ -115,7 +115,7 @@ const DEPRECATED_LLAMAS: PartialRecord<Chain, Record<Address, string>> = {
     '0xE786af7faef857C8D850d648723Eec0A27cd8581': t`This market is deprecated.`,
     // yvWETH-1-crvUSD lend market
     '0x5bfEE37053d711F49A0aCf5afEd6496fA68dCE32': t`This market is deprecated.`,
-    // zkBTC-crvUSD lend market 
+    // zkBTC-crvUSD lend market
     '0xbe0f8c48776c0433B2b778AE9c076C21683ebe7B': t`This market is deprecated.`,
     // zkBTC-crvUSD (2) lend market
     '0xbCc9AcD2E7934bb8B5d734416737694AcDD9E25a': t`This market is deprecated.`,
