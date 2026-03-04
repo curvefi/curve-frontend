@@ -21,8 +21,4 @@ export default defineConfig({
   define: {
     'process.env.CYPRESS_COMPONENT_TEST': '"true"',
   },
-  optimizeDeps: {
-    // Pre-scan RPC specs + component support so common deps are optimized before RPC runs.
-    entries: ['cypress/component/**/*.rpc.cy.{ts,tsx}', 'cypress/support/component.ts'],
-  },
 })
