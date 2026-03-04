@@ -383,9 +383,7 @@ export const LoanCreateForm = ({
 
       {/* actions */}
       {marketAlert?.isDisableBorrow ? (
-        marketAlert.message ? (
-          <AlertBox alertType={marketAlert.alertType}>{marketAlert.message}</AlertBox>
-        ) : null
+        marketAlert.message && <AlertBox alertType={marketAlert.alertType}>{marketAlert.message}</AlertBox>
       ) : (
         <LoanFormConnect haveSigner={!!signerAddress} loading={!api}>
           {txInfoBar}

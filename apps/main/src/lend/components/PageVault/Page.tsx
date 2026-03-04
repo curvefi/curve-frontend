@@ -15,6 +15,7 @@ import { helpers } from '@/lend/lib/apiLending'
 import { networks } from '@/lend/networks'
 import { useStore } from '@/lend/store/useStore'
 import { type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
+import { isHighSeverityAlert } from '@/lend/utils/helpers'
 import { getCollateralListPathname, getLoanPathname, parseMarketParams } from '@/lend/utils/utilsRouter'
 import { MarketDetails } from '@/llamalend/features/market-details'
 import { NoPosition, SupplyPositionDetails } from '@/llamalend/features/market-position-details'
@@ -125,9 +126,8 @@ export const Page = () => {
         />
       )}
       <DetailPageLayout formTabs={rChainId && rOwmId && <VaultTabs {...pageProps} params={params} />}>
-        {marketAlert?.banner ? (
-          <MarketAlertBanner alertType={marketAlert.alertType} banner={marketAlert.banner} />
-        ) : (
+        {marketAlert?.banner && <MarketAlertBanner alertType={marketAlert.alertType} banner={marketAlert.banner} />}
+        {!isHighSeverityAlert(marketAlert?.alertType) && (
           <CampaignRewardsBanner
             chainId={rChainId}
             borrowAddress={market?.addresses?.controller || ''}

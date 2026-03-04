@@ -3,6 +3,7 @@ import { AlertType, ChainId } from '@/lend/types/lend.types'
 import type { TooltipProps } from '@ui/Tooltip/types'
 import { t } from '@ui-kit/lib/i18n'
 import type { BannerProps } from '@ui-kit/shared/ui/Banner'
+import { Chain } from '@ui-kit/utils'
 
 export type MarketAlert = TooltipProps & {
   alertType: AlertType
@@ -18,7 +19,7 @@ const badDebtBannerAlert: MarketAlert = {
   alertType: 'warning',
   banner: {
     title: t`Bad debt`,
-    subtitle: t`This market has bad debt, borrowing and supplying in this market is currently not recommended.`,
+    subtitle: t`This market has bad debt, supplying crvUSD in this market is currently not recommended.`,
   },
 }
 
@@ -29,7 +30,7 @@ export const useMarketAlert = (rChainId: ChainId, rOwmId: string | undefined) =>
     if (!rChainId || !rOwmId) return null
 
     const alerts: Alerts = {
-      1: {
+      [Chain.Ethereum]: {
         // sdola-crvusd lend market
         'one-way-market-30': {
           alertType: 'danger',
@@ -38,15 +39,16 @@ export const useMarketAlert = (rChainId: ChainId, rOwmId: string | undefined) =>
           message: t`This market is deprecated after a donation attack. New borrow positions and deposits are disabled.`,
         },
       },
-      42161: {
+      [Chain.Arbitrum]: {
         'one-way-market-7': {
           alertType: 'danger',
           isDisableDeposit: true,
           message: t`Due to small liquidity, borrowing or supplying in this market is not advisable.`,
         },
       },
-      252: {
+      [Chain.Fraxtal]: {
         'one-way-market-2': badDebtBannerAlert,
+        'one-way-market-4': badDebtBannerAlert,
       },
     }
 
