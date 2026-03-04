@@ -81,20 +81,6 @@ const network = {
 }
 
 const pool = {
-  getTvl: async (p: Pool, network: NetworkConfig) => {
-    const resp = { poolId: p.id, value: '0', errorMessage: '' }
-
-    try {
-      resp.value = network.poolCustomTVL[p.id] || (await p.stats.totalLiquidity())
-      return resp
-    } catch (error) {
-      console.error(error)
-      if (p.inApi) {
-        resp.errorMessage = 'Unable to get tvl'
-      }
-      return resp
-    }
-  },
   poolBalances: async (p: Pool, isWrapped: boolean) => {
     if (p.curve.isNoRPC) {
       return { error: t`Connect your wallet to see pool balances` }

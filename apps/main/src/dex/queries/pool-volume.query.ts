@@ -20,7 +20,7 @@ const getPoolVolumeFromLib = ({ poolId }: Pick<PoolQuery, 'poolId'>) =>
 
 const { useQuery: usePoolVolumeQuery } = queryFactory({
   category: 'dex.pools',
-  queryKey: ({ chainId, poolId }: PoolParams) => [...rootKeys.pool({ chainId, poolId }), 'pool-volume'] as const,
+  queryKey: ({ chainId, poolId }: PoolParams) => [...rootKeys.pool({ chainId, poolId }), 'stats.volume'] as const,
   queryFn: async ({ poolId }: PoolQuery) => getPoolVolumeFromLib({ poolId }),
   validationSuite: createValidationSuite((params: PoolParams) => {
     curveApiValidationGroup(params)
