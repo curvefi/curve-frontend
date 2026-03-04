@@ -1,4 +1,3 @@
-import { BorrowRate, SupplyRate, AvailableLiquidity } from '@/llamalend/features/market-details'
 import { getTokens } from '@/llamalend/llama.utils'
 import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
@@ -17,11 +16,34 @@ import { TokenPair } from '@ui-kit/shared/ui/TokenPair'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
+import { type BorrowRate, type SupplyRate, type AvailableLiquidity, usePageHeader } from './hooks/usePageHeader'
 import { generateMarketTitle, generateSubtitle, MetricsRow } from './'
 
 const { Spacing } = SizesAndSpaces
 
-type PageHeaderProps = {
+export type PageHeaderProps = {
+  chainId: number
+  marketId: string
+  isLoading: boolean
+  market: LlamaMarketTemplate | undefined
+  blockchainId: Chain
+}
+
+export const PageHeader = ({ chainId, marketId, isLoading, market, blockchainId }: PageHeaderProps) => {
+  const { borrowRate, supplyRate, availableLiquidity } = usePageHeader({ chainId, marketId, market, blockchainId })
+  return (
+    <PageHeaderView
+      isLoading={isLoading}
+      market={market}
+      blockchainId={blockchainId}
+      borrowRate={borrowRate}
+      supplyRate={supplyRate}
+      availableLiquidity={availableLiquidity}
+    />
+  )
+}
+
+export type PageHeaderViewProps = {
   isLoading: boolean
   market: LlamaMarketTemplate | undefined
   blockchainId: Chain
@@ -30,14 +52,15 @@ type PageHeaderProps = {
   availableLiquidity: AvailableLiquidity
 }
 
-export const PageHeader = ({
+/** Separate view commponent in order to generate a good storybook example */
+export const PageHeaderView = ({
   isLoading,
   market,
   blockchainId,
   borrowRate,
   supplyRate,
   availableLiquidity,
-}: PageHeaderProps) => {
+}: PageHeaderViewProps) => {
   const push = useNavigate()
 
   const marketType = market instanceof MintMarketTemplate ? LlamaMarketType.Mint : LlamaMarketType.Lend
