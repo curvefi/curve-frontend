@@ -6,6 +6,7 @@ import { useNetworkByChain } from '@/dex/entities/networks'
 import { usePoolIdByAddressOrId } from '@/dex/hooks/usePoolIdByAddressOrId'
 import { usePoolTotalStaked } from '@/dex/hooks/usePoolTotalStaked'
 import { usePoolParameters } from '@/dex/queries/pool-parameters.query'
+import { usePoolVolume } from '@/dex/queries/pool-volume.query'
 import { useStore } from '@/dex/store/useStore'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
@@ -14,7 +15,7 @@ import { dayjs } from '@ui-kit/lib/dayjs'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { weiToEther } from '@ui-kit/utils'
+import { Chain, weiToEther } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -23,13 +24,13 @@ export const PoolParameters = ({
   poolDataCacheOrApi,
   routerParams,
 }: Pick<TransferProps, 'poolData' | 'poolDataCacheOrApi' | 'routerParams'>) => {
-  const { rChainId, rPoolIdOrAddress } = routerParams
+  const { rChainId: chainId, rPoolIdOrAddress } = routerParams
   const {
     data: { pricesApi, isLite },
-  } = useNetworkByChain({ chainId: rChainId })
-  const poolId = usePoolIdByAddressOrId({ chainId: rChainId, poolIdOrAddress: rPoolIdOrAddress })
-  const tvl = useStore((state) => state.pools.tvlMapper[rChainId]?.[poolId ?? ''])
-  const volume = useStore((state) => state.pools.volumeMapper[rChainId]?.[poolId ?? ''])
+  } = useNetworkByChain({ chainId })
+  const poolId = usePoolIdByAddressOrId({ chainId, poolIdOrAddress: rPoolIdOrAddress })
+  const tvl = useStore((state) => state.pools.tvlMapper[chainId]?.[poolId ?? ''])
+  const { data: volume } = usePoolVolume({ chainId, poolId })
 
   const haveWrappedCoins = useMemo(() => {
     if (poolData?.pool?.wrappedCoins) {
@@ -40,16 +41,16 @@ export const PoolParameters = ({
 
   const liquidityUtilization = useMemo(
     () =>
-      tvl?.value && volume?.value
-        ? +tvl.value && +volume.value
-          ? formatNumber((+volume.value / +tvl.value) * 100, FORMAT_OPTIONS.PERCENT)
+      tvl?.value && volume
+        ? +tvl.value && +volume
+          ? formatNumber((+volume / +tvl.value) * 100, FORMAT_OPTIONS.PERCENT)
           : formatNumber(0, { style: 'percent', maximumFractionDigits: 0 })
         : '-',
     [tvl, volume],
   )
 
   const staked = usePoolTotalStaked(poolDataCacheOrApi)
-  const { data: parameters, isLoading: isLoadingParameters } = usePoolParameters({ chainId: rChainId, poolId })
+  const { data: parameters, isLoading: isLoadingParameters } = usePoolParameters({ chainId, poolId })
 
   const {
     A,
@@ -65,7 +66,7 @@ export const PoolParameters = ({
     priceOracle,
   } = parameters ?? {}
 
-  const isEymaPools = rChainId === 250 && poolDataCacheOrApi.pool.id.startsWith('factory-eywa')
+  const isEymaPools = chainId === Chain.Fantom && poolDataCacheOrApi.pool.id.startsWith('factory-eywa')
 
   return (
     <Stack gap={Spacing.lg}>
@@ -74,7 +75,7 @@ export const PoolParameters = ({
           <>
             <ActionInfo
               label={t`Daily USD volume`}
-              value={formatNumber(volume?.value, { notation: 'compact', defaultValue: '-' })}
+              value={formatNumber(volume, { notation: 'compact', defaultValue: '-' })}
             />
             <ActionInfo
               label={t`Liquidity utilization`}
@@ -194,7 +195,7 @@ export const PoolParameters = ({
           )}
         </Stack>
       )}
-      <Contracts rChainId={rChainId} poolDataCacheOrApi={poolDataCacheOrApi} />
+      <Contracts rChainId={chainId} poolDataCacheOrApi={poolDataCacheOrApi} />
 
       {/** Copied from market page, temporary as this page will get a redesign */}
       <Stack gap={Spacing.xs}>

@@ -20,6 +20,7 @@ export const ErrorIconButton = ({
     label={t`Copy error to clipboard`}
     confirmationText={t`Error copied to clipboard`}
     size={buttonSize}
+    data-error={error.toString()}
   >
     <ExclamationTriangleIcon fontSize={iconSize} color="error" />
   </CopyIconButton>

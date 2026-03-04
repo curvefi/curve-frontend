@@ -1,4 +1,4 @@
-import { type PoolData, type RewardsApy, type Tvl, type Volume } from '@/dex/types/main.types'
+import { type PoolData, type RewardsApy, type Tvl } from '@/dex/types/main.types'
 import type { INetworkName } from '@curvefi/api/lib/interfaces'
 
 export type PoolTag =
@@ -16,7 +16,7 @@ export type PoolTag =
 
 export type PoolListItem = PoolData & {
   rewards: RewardsApy | undefined
-  volume: Volume | undefined
+  volume: string | undefined
   tvl: Tvl | undefined
   hasPosition: boolean | undefined
   network: INetworkName

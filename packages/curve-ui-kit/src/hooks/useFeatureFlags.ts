@@ -45,3 +45,6 @@ export const useLendMarketSubNav = useIntegratedLlamaHeader
 /** New ZapV2 leverage implementation for LlamaLend markets */
 export const isZapV2Enabled = () =>
   getReleaseChannel() === ReleaseChannel.Beta && defaultReleaseChannel === ReleaseChannel.Beta
+
+/** New tabs for BorrowPositionDetails */
+export const useNewPositionDetailsTabs = useIntegratedLlamaHeader

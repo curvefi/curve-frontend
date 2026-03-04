@@ -8,6 +8,6 @@ export const { useQuery: useCloseLoanIsApproved, fetchQuery: fetchCloseIsApprove
     [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'selfLiquidateIsApproved'] as const,
   queryFn: async ({ marketId }: UserMarketQuery<IChainId>): Promise<boolean> =>
     await getLlamaMarket(marketId).selfLiquidateIsApproved(),
-  staleTime: '1m',
+  category: 'llamalend.closeLoan',
   validationSuite: userMarketValidationSuite,
 })

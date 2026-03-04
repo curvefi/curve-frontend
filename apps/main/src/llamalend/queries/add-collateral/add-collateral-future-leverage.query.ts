@@ -19,5 +19,6 @@ export const { useQuery: useAddCollateralFutureLeverage } = queryFactory({
     const market = getLlamaMarket(marketId)
     return decimal(await market.addCollateralFutureLeverage(userCollateral)) ?? null
   },
+  category: 'llamalend.addCollateral',
   validationSuite: leverageCollateralValidationSuite,
 })

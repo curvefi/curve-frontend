@@ -5,7 +5,7 @@ import type { TransferProps } from '@/dex/components/PagePool/types'
 import { PoolRewardsCrv } from '@/dex/components/PoolRewardsCrv'
 import { usePoolIdByAddressOrId } from '@/dex/hooks/usePoolIdByAddressOrId'
 import { usePoolTokenDepositBalances } from '@/dex/hooks/usePoolTokenDepositBalances'
-import { useUserPoolInfo } from '@/dex/queries/user-pool-info.query'
+import { useUserPoolInfo } from '@/dex/hooks/useUserPoolInfo'
 import { useStore } from '@/dex/store/useStore'
 import type { Address } from '@primitives/address.utils'
 import { Box } from '@ui/Box'
@@ -34,10 +34,11 @@ export const MySharesStats = ({
   const poolId = usePoolIdByAddressOrId({ chainId: rChainId, poolIdOrAddress: rPoolIdOrAddress })
   const rewardsApy = useStore((state) => state.pools.rewardsApyMapper[rChainId]?.[poolId ?? ''])
 
-  const { data: userPoolInfo, error: userPoolError } = useUserPoolInfo(
-    { chainId: rChainId, poolId, userAddress: curve?.signerAddress as Address | undefined },
-    !!curve && !!poolId,
-  )
+  const { data: userPoolInfo, error: userPoolError } = useUserPoolInfo({
+    chainId: rChainId,
+    poolId,
+    userAddress: curve?.signerAddress as Address | undefined,
+  })
 
   const userWithdrawAmounts = userPoolInfo?.userWithdrawAmounts ?? DEFAULT_WITHDRAW_AMOUNTS
   const userLpShare = userPoolInfo?.userShare?.lpShare

@@ -59,5 +59,5 @@ export const { getQueryOptions: getCampaignsExternalOptions } = queryFactory({
     )
   },
   validationSuite: EmptyValidationSuite,
-  refetchInterval: '10m',
+  category: 'global.campaigns',
 })
