@@ -24,7 +24,5 @@ export default defineConfig({
   optimizeDeps: {
     // Pre-scan RPC specs + component support so common deps are optimized before RPC runs.
     entries: ['cypress/component/**/*.rpc.cy.{ts,tsx}', 'cypress/support/component.ts'],
-    // Serve only after dep crawl to avoid mid-import reloads in Cypress.
-    holdUntilCrawlEnd: true,
   },
 })

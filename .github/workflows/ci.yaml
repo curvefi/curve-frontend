@@ -95,6 +95,9 @@ jobs:
         uses: ./.github/actions/restore-cache
       - run: yarn set version stable
       - run: yarn install --immutable
+      - name: Optimize dependencies
+        run: yarn vite optimize --config vite.config.ts
+        working-directory: tests
 
       - name: Run RPC tests
         run: |
