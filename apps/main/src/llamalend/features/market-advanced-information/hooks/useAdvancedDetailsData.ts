@@ -11,7 +11,9 @@ export const useAdvancedDetailsData = ({
   marketId,
   marketType,
 }: MarketParams & { market: LlamaMarketTemplate | undefined; marketType: LlamaMarketType | undefined }) => {
-  const tokens = market ? getTokens(market) : undefined
+  const { collateralToken, borrowToken } = market
+    ? getTokens(market)
+    : { collateralToken: undefined, borrowToken: undefined }
   const { data: maxLeverageData, isLoading: maxLeverageLoading } = useMarketMaxLeverage({
     chainId,
     marketId,
@@ -21,11 +23,11 @@ export const useAdvancedDetailsData = ({
   const { data: totalCollateral, isLoading: totalCollateralLoading } = useMarketTotalCollateral({ chainId, marketId })
   const { data: collateralUsdRate, isLoading: collateralUsdRateLoading } = useTokenUsdRate({
     chainId,
-    tokenAddress: tokens?.collateralToken?.address,
+    tokenAddress: collateralToken?.address,
   })
   const { data: borrowedUsdRate, isLoading: borrowedUsdRateLoading } = useTokenUsdRate({
     chainId,
-    tokenAddress: tokens?.borrowToken?.address,
+    tokenAddress: borrowToken?.address,
   })
 
   const collateralTotal = totalCollateral == null ? null : Number(totalCollateral.collateral)
@@ -39,9 +41,9 @@ export const useAdvancedDetailsData = ({
   return {
     marketType,
     collateral: {
-      collateralSymbol: tokens?.collateralToken?.symbol ?? null,
+      collateralSymbol: collateralToken?.symbol ?? null,
       totalCollateral: collateralTotal,
-      borrowedSymbol: tokens?.borrowToken?.symbol ?? null,
+      borrowedSymbol: borrowToken?.symbol ?? null,
       totalBorrowed: borrowedTotal,
       combinedCollateralUsdValue,
       usdRate: collateralUsdRate ?? null,

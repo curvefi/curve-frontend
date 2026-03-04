@@ -255,14 +255,13 @@ export function sortBandsMint(bandBalances: { [key: string]: { stablecoin: strin
 export const formatCollateralNotional = (
   collateral: { value: number | null | undefined; symbol: string | undefined },
   borrow?: { value: number | null | undefined; symbol: string | undefined },
-): string | undefined => {
-  if (collateral.value == null) return undefined
-  const collateralPart = `${formatNumber(collateral.value, { abbreviate: true })} ${collateral.symbol}`
-  if (borrow?.value != null && borrow.value > 0) {
-    return `${collateralPart} + ${formatNumber(borrow.value, { abbreviate: true })} ${borrow.symbol}`
-  }
-  return collateralPart
-}
+): string | undefined =>
+  notFalsy(
+    collateral.value &&
+      collateral.symbol &&
+      `${formatNumber(collateral.value, { abbreviate: true })} ${collateral.symbol}`,
+    borrow && borrow.value && borrow.symbol && `${formatNumber(borrow.value, { abbreviate: true })} ${borrow.symbol}`,
+  ).join(' + ')
 
 /** Tooltip title for borrow APR. The title should be "Net borrow APR" if there are extra rewards or rebasing yield, otherwise "Borrow APR". */
 export const getBorrowRateTooltipTitle = ({
