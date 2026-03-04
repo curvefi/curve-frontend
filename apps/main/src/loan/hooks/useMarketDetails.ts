@@ -80,12 +80,10 @@ export const useMarketDetails = ({ chainId, market, marketId }: UseMarketDetails
   const totalCollateralValue = totalCollateral == null ? null : Number(totalCollateral.collateral)
   const totalBorrowedValue = totalCollateral == null ? null : Number(totalCollateral.borrowed)
 
-  const collateralUsdValue =
-    totalCollateralValue != null && collateralUsdRate != null ? totalCollateralValue * collateralUsdRate : null
-  const borrowedUsdValue =
-    totalBorrowedValue != null && borrowedUsdRate != null ? totalBorrowedValue * borrowedUsdRate : null
+  const collateralUsdValue = totalCollateralValue && collateralUsdRate && totalCollateralValue * collateralUsdRate
+  const borrowedUsdValue = totalBorrowedValue && borrowedUsdRate && totalBorrowedValue * borrowedUsdRate
   const totalUsdValue =
-    collateralUsdValue != null && borrowedUsdValue != null ? collateralUsdValue + borrowedUsdValue : null
+    collateralUsdValue == null || borrowedUsdValue == null ? null : collateralUsdValue + borrowedUsdValue
 
   return {
     marketType: LlamaMarketType.Mint,

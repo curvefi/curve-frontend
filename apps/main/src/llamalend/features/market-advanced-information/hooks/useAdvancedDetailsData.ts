@@ -11,9 +11,7 @@ export const useAdvancedDetailsData = ({
   marketId,
   marketType,
 }: MarketParams & { market: LlamaMarketTemplate | undefined; marketType: LlamaMarketType | undefined }) => {
-  const { collateralToken, borrowToken } = market
-    ? getTokens(market)
-    : { collateralToken: undefined, borrowToken: undefined }
+  const { collateralToken, borrowToken } = market ? getTokens(market) : {}
   const { data: maxLeverageData, isLoading: maxLeverageLoading } = useMarketMaxLeverage({
     chainId,
     marketId,
@@ -32,11 +30,10 @@ export const useAdvancedDetailsData = ({
 
   const collateralTotal = totalCollateral == null ? null : Number(totalCollateral.collateral)
   const borrowedTotal = totalCollateral == null ? null : Number(totalCollateral.borrowed)
-  const collateralUsdValue =
-    collateralTotal != null && collateralUsdRate != null ? collateralTotal * collateralUsdRate : null
-  const borrowedUsdValue = borrowedTotal != null && borrowedUsdRate != null ? borrowedTotal * borrowedUsdRate : null
+  const collateralUsdValue = collateralTotal && collateralUsdRate && collateralTotal * collateralUsdRate
+  const borrowedUsdValue = borrowedTotal && borrowedUsdRate && borrowedTotal * borrowedUsdRate
   const combinedCollateralUsdValue =
-    collateralUsdValue != null && borrowedUsdValue != null ? collateralUsdValue + borrowedUsdValue : null
+    collateralUsdValue == null || borrowedUsdValue == null ? null : collateralUsdValue + borrowedUsdValue
 
   return {
     marketType,

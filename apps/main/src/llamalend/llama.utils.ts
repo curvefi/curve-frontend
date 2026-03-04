@@ -254,7 +254,7 @@ export function sortBandsMint(bandBalances: { [key: string]: { stablecoin: strin
  */
 export const formatCollateralNotional = (
   collateral: { value: number | null | undefined; symbol: string | undefined },
-  borrow?: { value: number | null | undefined; symbol: string | undefined },
+  borrow: { value: number | null | undefined; symbol: string | undefined } | undefined,
 ): string | undefined =>
   notFalsy(
     collateral.value &&

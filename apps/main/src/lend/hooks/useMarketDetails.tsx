@@ -152,11 +152,9 @@ export const useMarketDetails = ({
       borrowedSymbol: borrowed_token?.symbol ?? null,
       totalBorrowed: borrowedAmount == null ? null : +borrowedAmount,
       combinedCollateralUsdValue: (() => {
-        const collateralUsdValue =
-          collateralAmount != null && collateralUsdRate != null ? +collateralAmount * collateralUsdRate : null
-        const borrowedUsdValue =
-          borrowedAmount != null && borrowedUsdRate != null ? +borrowedAmount * borrowedUsdRate : null
-        return collateralUsdValue != null && borrowedUsdValue != null ? collateralUsdValue + borrowedUsdValue : null
+        const collateralUsdValue = collateralAmount && collateralUsdRate && +collateralAmount * collateralUsdRate
+        const borrowedUsdValue = borrowedAmount && borrowedUsdRate && +borrowedAmount * borrowedUsdRate
+        return collateralUsdValue == null || borrowedUsdValue == null ? null : collateralUsdValue + borrowedUsdValue
       })(),
       usdRate: collateralUsdRate ?? null,
       loading:
