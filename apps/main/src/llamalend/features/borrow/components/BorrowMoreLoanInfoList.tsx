@@ -6,6 +6,7 @@ import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
 import type { MarketRoutes } from '@/llamalend/hooks/useMarketRoutes'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { useBorrowMoreExpectedCollateral } from '@/llamalend/queries/borrow-more/borrow-more-expected-collateral.query'
+import { useBorrowMoreFutureLeverage } from '@/llamalend/queries/borrow-more/borrow-more-future-leverage.query'
 import { useBorrowMoreEstimateGas } from '@/llamalend/queries/borrow-more/borrow-more-gas-estimate.query'
 import { useBorrowMoreHealth } from '@/llamalend/queries/borrow-more/borrow-more-health.query'
 import { useBorrowMoreIsApproved } from '@/llamalend/queries/borrow-more/borrow-more-is-approved.query'
@@ -49,6 +50,7 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
   const userState = useUserState(params, isOpen)
   const expectedCollateralQuery = useBorrowMoreExpectedCollateral(params, isOpen && leverageEnabled)
   const prevLeverageValue = useUserCurrentLeverage(params, isOpen)
+  const leverageValue = useBorrowMoreFutureLeverage(params, isOpen && leverageEnabled)
   const priceImpact = useBorrowMorePriceImpact(params, isOpen && leverageEnabled)
 
   const collateralDelta = leverageEnabled ? expectedCollateralQuery.data?.totalCollateral : userCollateral
@@ -131,14 +133,7 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
       userState={q(userState)}
       leverageEnabled={leverageEnabled}
       {...(leverageEnabled && {
-        leverageValue: mapQuery(
-          expectedCollateralQuery,
-          // todo: this might not be correct, use the llamalend-js calculation that's being implemented
-          ({ collateralFromDebt, collateralFromUserBorrowed, userCollateral }) => {
-            const base = new BigNumber(userCollateral).plus(collateralFromUserBorrowed)
-            return decimal(base.isZero() ? 0 : new BigNumber(collateralFromDebt).plus(base).div(base))
-          },
-        ),
+        leverageValue: q(leverageValue),
         prevLeverageValue: q(prevLeverageValue),
         prevLeverageCollateral: q({
           data:

@@ -13,8 +13,6 @@ import { convertRates } from '../../rates.utils'
 
 type BorrowApyQuery = MarketQuery<IChainId> & {
   debt: Decimal
-  // debt is negative when repaying
-  isNegativeDebt?: boolean
 }
 type BorrowFutureApyParams = FieldsOf<BorrowApyQuery>
 
@@ -37,7 +35,7 @@ export const { useQuery: useMarketFutureRates } = queryFactory({
     [...rootKeys.market({ chainId, marketId }), 'market-future-rates', { debt }] as const,
   queryFn: async ({ marketId, debt }: BorrowApyQuery) => await fetchFutureRates(marketId, RESERVES, debt),
   category: 'llamalend.market',
-  validationSuite: createValidationSuite(({ chainId, marketId, debt, isNegativeDebt }: BorrowFutureApyParams) => {
+  validationSuite: createValidationSuite(({ chainId, marketId, debt }: BorrowFutureApyParams) => {
     marketIdValidationSuite({ chainId, marketId })
     group('borrowFormValidationGroup', () => validateDebt(debt))
   }),
