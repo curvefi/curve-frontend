@@ -7,7 +7,7 @@ import { type RepayIsFullQuery } from '../validation/manage-loan.types'
 import { repayFromCollateralIsFullValidationSuite } from '../validation/manage-loan.validation'
 import { getRepayImplementation } from './repay-query.helpers'
 
-const { useQuery: useRepayLoanEstimateGas } = queryFactory({
+const { useQuery: useRepayLoanEstimateGas, invalidate: invalidateRepayLoanEstimateGasQuery } = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -17,6 +17,7 @@ const { useQuery: useRepayLoanEstimateGas } = queryFactory({
     userAddress,
     isFull,
     slippage,
+    routeId,
   }: RepayIsApprovedParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
@@ -26,6 +27,7 @@ const { useQuery: useRepayLoanEstimateGas } = queryFactory({
       { userBorrowed },
       { isFull },
       { slippage },
+      { routeId },
     ] as const,
   queryFn: async ({
     marketId,
@@ -35,14 +37,23 @@ const { useQuery: useRepayLoanEstimateGas } = queryFactory({
     isFull,
     userAddress,
     slippage,
+    routeId,
   }: RepayIsFullQuery): Promise<TGas> => {
     const market = getLlamaMarket(marketId)
     const useFullRepay = isFull && !+stateCollateral && !+userCollateral
     if (useFullRepay) {
       return await market.estimateGas.fullRepay(userAddress)
     }
-    const [type, impl, args] = getRepayImplementation(marketId, { userCollateral, stateCollateral, userBorrowed })
+    const [type, impl, args] = getRepayImplementation(marketId, {
+      userCollateral,
+      stateCollateral,
+      userBorrowed,
+      routeId,
+      slippage,
+    })
     switch (type) {
+      case 'zapV2':
+        return await impl.estimateGas.repay(...args)
       case 'V1':
       case 'V2':
         return await impl.estimateGas.repay(...args, +slippage)
@@ -52,11 +63,11 @@ const { useQuery: useRepayLoanEstimateGas } = queryFactory({
         return await impl.estimateGas.repay(...args)
     }
   },
-  staleTime: '1m',
+  category: 'llamalend.repay',
   validationSuite: repayFromCollateralIsFullValidationSuite,
 })
 
-const { useQuery: useRepayApproveGasEstimate } = queryFactory({
+const { useQuery: useRepayApproveGasEstimate, invalidate: invalidateRepayApproveGasEstimateQuery } = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -65,6 +76,7 @@ const { useQuery: useRepayApproveGasEstimate } = queryFactory({
     userBorrowed = '0',
     userAddress,
     isFull,
+    routeId,
   }: RepayIsApprovedParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
@@ -73,6 +85,7 @@ const { useQuery: useRepayApproveGasEstimate } = queryFactory({
       { userCollateral },
       { userBorrowed },
       { isFull },
+      { routeId },
     ] as const,
   queryFn: async ({
     marketId,
@@ -81,13 +94,16 @@ const { useQuery: useRepayApproveGasEstimate } = queryFactory({
     userBorrowed,
     isFull,
     userAddress,
+    routeId,
   }: RepayIsFullQuery): Promise<TGas> => {
     const useFullRepay = isFull && !+stateCollateral && !+userCollateral
     if (useFullRepay) {
       return await getLlamaMarket(marketId).estimateGas.fullRepayApprove(userAddress)
     }
-    const [type, impl] = getRepayImplementation(marketId, { userCollateral, stateCollateral, userBorrowed })
+    const [type, impl] = getRepayImplementation(marketId, { userCollateral, stateCollateral, userBorrowed, routeId })
     switch (type) {
+      case 'zapV2':
+        return await impl.estimateGas.repayApprove({ userCollateral, userBorrowed })
       case 'V1':
       case 'V2':
         return await impl.estimateGas.repayApprove(userCollateral, userBorrowed)
@@ -97,7 +113,7 @@ const { useQuery: useRepayApproveGasEstimate } = queryFactory({
         return await impl.estimateGas.repayApprove(userBorrowed)
     }
   },
-  staleTime: '1m',
+  category: 'llamalend.repay',
   validationSuite: repayFromCollateralIsFullValidationSuite,
 })
 
@@ -106,3 +122,5 @@ export const useRepayEstimateGas = createApprovedEstimateGasHook({
   useApproveEstimate: useRepayApproveGasEstimate,
   useActionEstimate: useRepayLoanEstimateGas,
 })
+
+export { invalidateRepayApproveGasEstimateQuery, invalidateRepayLoanEstimateGasQuery }

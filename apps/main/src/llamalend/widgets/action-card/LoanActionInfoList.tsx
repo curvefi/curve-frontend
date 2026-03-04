@@ -226,7 +226,7 @@ export const LoanActionInfoList = ({
 
       <Stack>
         {slippage && onSlippageChange && (
-          <SlippageToleranceActionInfoPure maxSlippage={slippage} onSave={onSlippageChange} />
+          <SlippageToleranceActionInfoPure maxSlippage={slippage} onSave={onSlippageChange} size="small" />
         )}
         {priceImpact && (
           <ActionInfo

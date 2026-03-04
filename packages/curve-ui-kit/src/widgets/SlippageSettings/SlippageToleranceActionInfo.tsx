@@ -3,15 +3,18 @@ import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
 import { GearIcon } from '@ui-kit/shared/icons/GearIcon'
 import { ActionInfo } from '@ui-kit/shared/ui/ActionInfo'
+import { ActionInfoSize } from '@ui-kit/shared/ui/ActionInfo/ActionInfo'
 import { decimal, formatPercent as formatPercent } from '@ui-kit/utils'
 import { SlippageSettings } from '@ui-kit/widgets/SlippageSettings/SlippageSettings'
 
 export const SlippageToleranceActionInfoPure = ({
   maxSlippage,
   onSave,
+  size,
 }: {
   maxSlippage: Decimal
   onSave: (newSlippage: Decimal) => void
+  size?: ActionInfoSize
 }) => (
   <ActionInfo
     label={t`Slippage`}
@@ -24,7 +27,7 @@ export const SlippageToleranceActionInfoPure = ({
         onSave={onSave}
       />
     }
-    size="small"
+    size={size}
     testId="borrow-slippage"
   />
 )

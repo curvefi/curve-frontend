@@ -1,9 +1,10 @@
+import BigNumber from 'bignumber.js'
 import type { GetExpectedFn } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Address } from '@primitives/address.utils'
-import type { Decimal } from '@primitives/decimal.utils'
+import type { Amount, Decimal } from '@primitives/decimal.utils'
 import { assert } from '@primitives/objects.utils'
 import { fetchApiRoutes, getRouteById } from './router-api.query'
-import type { RouteMeta, RoutesQuery } from './router-api.types'
+import type { RouteMeta, RouteMutationMeta, RoutesQuery } from './router-api.types'
 
 /**
  * Converts a cached router route into the minimal zapV2 payload expected by llamalend.js.
@@ -18,6 +19,16 @@ export const parseRoute = (routeId: string | undefined): RouteMeta => {
   /* Enso returns no price impact when it has no usd price, the library will be updated to accept null */
   const quote = { outAmount, priceImpact: priceImpact as number }
   return { router: to, calldata: data, quote }
+}
+
+/**
+ * Like parseRoute, but also computes minRecv from outAmount and slippage.
+ * minRecv = outAmount * (100 - slippage) / 100
+ */
+export const parseMutationRoute = (routeId: string | undefined, slippage: Amount): RouteMutationMeta => {
+  const route = parseRoute(routeId)
+  const minReceive = BigNumber(route.quote.outAmount).times(BigNumber(100).minus(slippage)).div(100).toString()
+  return { ...route, minRecv: minReceive }
 }
 
 /**

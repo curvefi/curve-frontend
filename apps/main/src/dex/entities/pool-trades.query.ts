@@ -23,8 +23,8 @@ export const { useQuery: usePoolTrades } = queryFactory({
       perPage,
       includeState,
     }),
-  staleTime: '1m',
   validationSuite: createValidationSuite(({ chain, poolAddress }: PoolTradesParams) => {
     contractValidationGroup({ blockchainId: chain, contractAddress: poolAddress })
   }),
+  category: 'dex.pool',
 })

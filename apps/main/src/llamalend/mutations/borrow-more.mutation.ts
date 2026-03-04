@@ -57,6 +57,7 @@ const borrowMore = async (
     debt,
     leverageEnabled,
     routeId,
+    slippage,
   })
   switch (type) {
     case 'zapV2':
