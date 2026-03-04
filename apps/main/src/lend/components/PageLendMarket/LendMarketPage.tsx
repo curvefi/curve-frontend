@@ -7,13 +7,14 @@ import { LoanCreateTabs } from '@/lend/components/PageLendMarket/LoanCreateTabs'
 import { ManageLoanTabs } from '@/lend/components/PageLendMarket/ManageLoanTabs'
 import { useOneWayMarket } from '@/lend/entities/chain'
 import { useLendPageTitle } from '@/lend/hooks/useLendPageTitle'
+import { useMarketAlert } from '@/lend/hooks/useMarketAlert'
 import { useMarketDetails } from '@/lend/hooks/useMarketDetails'
 import { useTitleMapper } from '@/lend/hooks/useTitleMapper'
 import { helpers } from '@/lend/lib/apiLending'
 import { networks } from '@/lend/networks'
 import { useStore } from '@/lend/store/useStore'
 import { type MarketUrlParams } from '@/lend/types/lend.types'
-import { getCollateralListPathname, parseMarketParams } from '@/lend/utils/helpers'
+import { getCollateralListPathname, isHighSeverityAlert, parseMarketParams } from '@/lend/utils/helpers'
 import { getVaultPathname } from '@/lend/utils/utilsRouter'
 import { MarketDetails } from '@/llamalend/features/market-details'
 import { PositionDetailsComposite, useBorrowPositionDetails } from '@/llamalend/features/market-position-details'
@@ -34,6 +35,7 @@ import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import type { Range } from '@ui-kit/types/util'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
+import { MarketAlertBanner } from '../MarketAlertBanner'
 
 export const LendMarketPage = () => {
   const { isHydrated } = useCurve()
@@ -81,6 +83,7 @@ export const LendMarketPage = () => {
     borrowToken: market?.borrowed_token,
     network,
   }
+  const marketAlert = useMarketAlert(chainId, market?.id)
 
   useEffect(() => {
     // delay fetch rest after form details are fetched first
@@ -153,11 +156,14 @@ export const LendMarketPage = () => {
           ))
         }
       >
-        <CampaignRewardsBanner
-          chainId={chainId}
-          borrowAddress={market?.addresses?.controller || ''}
-          supplyAddress={market?.addresses?.vault || ''}
-        />
+        {marketAlert?.banner && <MarketAlertBanner alertType={marketAlert.alertType} banner={marketAlert.banner} />}
+        {!isHighSeverityAlert(marketAlert?.alertType) && (
+          <CampaignRewardsBanner
+            chainId={chainId}
+            borrowAddress={market?.addresses?.controller || ''}
+            supplyAddress={market?.addresses?.vault || ''}
+          />
+        )}
         <MarketInformationTabs currentTab={'borrow'} hrefs={{ borrow: '', supply: getVaultPathname(params, marketId) }}>
           <PositionDetailsComposite
             hasPosition={loanExists}
