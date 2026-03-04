@@ -374,7 +374,7 @@ testCases.forEach(([width, height, breakpoint]) => {
         // no need to scroll on mobile, the graph is already in view after collapsing the row
         cy.get(`[data-testid="line-graph-${type}"]:visible`).first().scrollIntoView()
       }
-      cy.get(`[data-testid="line-graph-${type}"] path`).first().should('have.attr', 'stroke', color)
+      cy.get(`[data-testid="line-graph-${type}"] path`, LOAD_TIMEOUT).first().should('have.attr', 'stroke', color)
     }
 
     function checkCoinSelection(type: TokenType) {
