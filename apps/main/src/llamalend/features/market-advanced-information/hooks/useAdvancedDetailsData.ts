@@ -11,7 +11,7 @@ export const useAdvancedDetailsData = ({
   marketId,
   marketType,
 }: MarketParams & { market: LlamaMarketTemplate | undefined; marketType: LlamaMarketType | undefined }) => {
-  const collateralToken = market ? getTokens(market).collateralToken : undefined
+  const { collateralToken, borrowToken } = market ? getTokens(market) : {}
   const { data: maxLeverageData, isLoading: maxLeverageLoading } = useMarketMaxLeverage({
     chainId,
     marketId,
@@ -23,18 +23,28 @@ export const useAdvancedDetailsData = ({
     chainId,
     tokenAddress: collateralToken?.address,
   })
+  const { data: borrowedUsdRate, isLoading: borrowedUsdRateLoading } = useTokenUsdRate({
+    chainId,
+    tokenAddress: borrowToken?.address,
+  })
 
   const collateralTotal = totalCollateral == null ? null : Number(totalCollateral.collateral)
+  const borrowedTotal = totalCollateral == null ? null : Number(totalCollateral.borrowed)
+  const collateralUsdValue = collateralTotal && collateralUsdRate && collateralTotal * collateralUsdRate
+  const borrowedUsdValue = borrowedTotal && borrowedUsdRate && borrowedTotal * borrowedUsdRate
+  const combinedCollateralUsdValue =
+    collateralUsdValue == null || borrowedUsdValue == null ? null : collateralUsdValue + borrowedUsdValue
 
   return {
     marketType,
     collateral: {
-      symbol: collateralToken?.symbol ?? null,
-      tokenAddress: collateralToken?.address ?? null,
-      total: collateralTotal,
-      totalUsdValue: collateralTotal != null && collateralUsdRate != null ? collateralTotal * collateralUsdRate : null,
+      collateralSymbol: collateralToken?.symbol ?? null,
+      totalCollateral: collateralTotal,
+      borrowedSymbol: borrowToken?.symbol ?? null,
+      totalBorrowed: borrowedTotal,
+      combinedCollateralUsdValue,
       usdRate: collateralUsdRate ?? null,
-      loading: !market || totalCollateralLoading || collateralUsdRateLoading,
+      loading: !market || totalCollateralLoading || collateralUsdRateLoading || borrowedUsdRateLoading,
     },
     maxLeverage: {
       value: maxLeverageData,

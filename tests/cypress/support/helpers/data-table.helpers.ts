@@ -16,22 +16,6 @@ export function withFilterChips<T>(breakpoint: Breakpoint, callback: () => Cypre
 export const getHiddenCount = (breakpoint: Breakpoint): Cypress.Chainable<string> =>
   withFilterChips(breakpoint, () => cy.get('[data-testid="hidden-market-count"]').then(([{ innerText }]) => innerText))
 
-export function toggleSmallPools(breakpoint: Breakpoint) {
-  const clickSwitch = () =>
-    cy.get(`[data-testid='user-profile-settings']`).find(`[data-testid='small-pools-switch']`).click()
-
-  if (breakpoint === 'desktop') {
-    cy.get(`[data-testid='user-profile-button']`).click()
-    clickSwitch()
-    cy.get('body').click(0, 0) // close the user profile menu
-  } else {
-    cy.get(`[data-testid='menu-toggle']`).click()
-    cy.get(`[data-testid='sidebar-settings']`).click()
-    clickSwitch()
-    cy.get(`[data-testid='menu-toggle']`).click()
-  }
-}
-
 export const firstRow = () => cy.get(`[data-testid^="data-table-row-"]`).first()
 
 export function expandFirstRowOnMobile(breakpoint: Breakpoint) {

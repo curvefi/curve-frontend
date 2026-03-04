@@ -1,3 +1,4 @@
+import { formatCollateralNotional } from '@/llamalend/llama.utils'
 import { BorrowAprMetric } from '@/llamalend/widgets/BorrowAprMetric'
 import { CollateralMetricTooltipContent } from '@/llamalend/widgets/tooltips/CollateralMetricTooltipContent'
 import { CurrentLTVTooltipContent } from '@/llamalend/widgets/tooltips/CurrentLTVTooltipContent'
@@ -8,7 +9,6 @@ import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { LlamaMarketType } from '@ui-kit/types/market'
-import { formatNumber } from '@ui-kit/utils'
 import {
   LiquidationThresholdTooltipContent,
   type BorrowRate,
@@ -75,8 +75,8 @@ export const BorrowInformation = ({
               loading={collateralValue?.loading}
               valueOptions={{ unit: 'dollar' }}
               notional={
-                collateralValue?.collateral?.value != null
-                  ? `${formatNumber(collateralValue.collateral.value, { abbreviate: true })} ${collateralValue.collateral.symbol}${collateralValue.borrow?.value != null && collateralValue.borrow.value > 0 ? ` + ${formatNumber(collateralValue.borrow.value, { abbreviate: true })} ${collateralValue.borrow.symbol}` : ''}`
+                collateralValue?.collateral
+                  ? formatCollateralNotional(collateralValue.collateral, collateralValue.borrow)
                   : undefined
               }
               valueTooltip={{
@@ -171,8 +171,8 @@ export const BorrowInformation = ({
               loading={collateralValue?.loading}
               valueOptions={{ unit: 'dollar' }}
               notional={
-                collateralValue?.collateral?.value != null
-                  ? `${formatNumber(collateralValue.collateral.value, { abbreviate: true })} ${collateralValue.collateral.symbol}${collateralValue.borrow?.value != null && collateralValue.borrow.value > 0 ? ` + ${formatNumber(collateralValue.borrow.value, { abbreviate: true })} ${collateralValue.borrow.symbol}` : ''}`
+                collateralValue?.collateral
+                  ? formatCollateralNotional(collateralValue.collateral, collateralValue.borrow)
                   : undefined
               }
               valueTooltip={{
