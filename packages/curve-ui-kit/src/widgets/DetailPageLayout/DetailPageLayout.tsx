@@ -1,15 +1,23 @@
 import type { ReactNode } from 'react'
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
+import { useLayoutStore } from '@ui-kit/features/layout'
+import { useRightFormTabsLayout } from '@ui-kit/hooks/useFeatureFlags'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { FormSkeleton } from './FormSkeleton'
 
 const { Spacing, MaxWidth } = SizesAndSpaces
 
+const stickySx = (navHeight: number) => ({
+  alignSelf: { tablet: 'flex-start' },
+  position: { tablet: 'sticky' },
+  top: { tablet: `calc(${navHeight}px + ${Spacing.md.tablet})` },
+})
+
 /**
  * A grid that separates the detail page into two or three main sections:
- * 1. action form (`FormTabs`) (left side on larger screens)
- * 2. market and user position details (right side on larger screens)
+ * 1. action form (`FormTabs`) (left side on larger screens, right side in beta channel)
+ * 2. market and user position details (right side on larger screens, left side in beta channel)
  * 3. an optional footer that goes at the bottom, but still inside the grid
  */
 export const DetailPageLayout = ({
@@ -20,28 +28,41 @@ export const DetailPageLayout = ({
   formTabs: ReactNode
   children?: ReactNode
   footer?: ReactNode
-}) => (
-  <Grid
-    container
-    data-testid="detail-page-layout"
-    spacing={Spacing.lg}
-    sx={{ marginInline: Spacing.md, marginBlockStart: Spacing.md, marginBlockEnd: Spacing.xxl }}
-  >
-    {/* In Figma, columns are 12/4/3, but too small around breakpoints. I've added one extra column.
-        Ultrawide isn't a breakpoint yet, use maxWidth so it's not too large. */}
-    {formTabs !== null && (
-      <>
-        <Grid size={{ mobile: 12, tablet: 5, desktop: 4 }} maxWidth={{ desktop: MaxWidth.actionCard }}>
-          {formTabs || <FormSkeleton />}
-        </Grid>
-        <Grid size="grow">
-          <Stack flexDirection="column" flexGrow={1} sx={{ gap: Spacing.md }}>
-            {children}
-          </Stack>
-        </Grid>
-      </>
-    )}
+}) => {
+  const navHeight = useLayoutStore((state) => state.navHeight)
+  const isNewLayout = useRightFormTabsLayout()
 
-    {footer && <Grid size={12}>{footer}</Grid>}
-  </Grid>
-)
+  return (
+    <Grid
+      container
+      data-testid="detail-page-layout"
+      spacing={Spacing.lg}
+      sx={{ marginInline: Spacing.md, marginBlockStart: Spacing.md, marginBlockEnd: Spacing.xxl }}
+    >
+      {/* In Figma, columns are 12/4/3, but too small around breakpoints. I've added one extra column.
+          Ultrawide isn't a breakpoint yet, use maxWidth so it's not too large. */}
+      {formTabs !== null && (
+        <>
+          <Grid
+            size={{ mobile: 12, tablet: 5, desktop: 4 }}
+            maxWidth={{ desktop: MaxWidth.actionCard }}
+            sx={{
+              // action forms on the right for Beta
+              order: { mobile: 1, tablet: isNewLayout ? 2 : 1 },
+              ...(isNewLayout && stickySx(navHeight)),
+            }}
+          >
+            {formTabs || <FormSkeleton />}
+          </Grid>
+          <Grid size="grow" sx={{ order: { mobile: 2, tablet: isNewLayout ? 1 : 2 } }}>
+            <Stack flexDirection="column" flexGrow={1} sx={{ gap: Spacing.md }}>
+              {children}
+            </Stack>
+          </Grid>
+        </>
+      )}
+
+      {footer && <Grid size={12}>{footer}</Grid>}
+    </Grid>
+  )
+}

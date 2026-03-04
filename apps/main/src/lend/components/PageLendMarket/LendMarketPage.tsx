@@ -130,7 +130,18 @@ export const LendMarketPage = () => {
   return isSuccess && !market ? (
     <ErrorPage title="404" subtitle={t`Market Not Found`} continueUrl={getCollateralListPathname(params)} />
   ) : provider ? (
-    <>
+    <DetailPageLayout
+      formTabs={
+        chainId &&
+        marketId &&
+        !isLoanExistsLoading &&
+        (loanExists ? (
+          <ManageLoanTabs position={borrowPositionDetails} {...pageProps} />
+        ) : (
+          <LoanCreateTabs {...pageProps} params={params} />
+        ))
+      }
+    >
       {showPageHeader && (
         <PageHeader
           isLoading={!isHydrated}
@@ -141,41 +152,28 @@ export const LendMarketPage = () => {
           supplyRate={marketDetails.supplyRate}
         />
       )}
-      <DetailPageLayout
-        formTabs={
-          chainId &&
-          marketId &&
-          !isLoanExistsLoading &&
-          (loanExists ? (
-            <ManageLoanTabs position={borrowPositionDetails} {...pageProps} />
-          ) : (
-            <LoanCreateTabs {...pageProps} params={params} />
-          ))
-        }
-      >
-        <CampaignRewardsBanner
-          chainId={chainId}
-          borrowAddress={market?.addresses?.controller || ''}
-          supplyAddress={market?.addresses?.vault || ''}
+      <CampaignRewardsBanner
+        chainId={chainId}
+        borrowAddress={market?.addresses?.controller || ''}
+        supplyAddress={market?.addresses?.vault || ''}
+      />
+      <MarketInformationTabs currentTab={'borrow'} hrefs={{ borrow: '', supply: getVaultPathname(params, marketId) }}>
+        <PositionDetailsComposite
+          hasPosition={loanExists}
+          borrowPositionDetails={borrowPositionDetails}
+          activityQueryParams={activityQueryParams}
         />
-        <MarketInformationTabs currentTab={'borrow'} hrefs={{ borrow: '', supply: getVaultPathname(params, marketId) }}>
-          <PositionDetailsComposite
-            hasPosition={loanExists}
-            borrowPositionDetails={borrowPositionDetails}
-            activityQueryParams={activityQueryParams}
-          />
-        </MarketInformationTabs>
-        <Stack>
-          {!showPageHeader && <MarketDetails {...marketDetails} />}
-          <MarketInformationComp
-            pageProps={pageProps}
-            type="borrow"
-            loanExists={loanExists}
-            previewPrices={previewPrices}
-          />
-        </Stack>
-      </DetailPageLayout>
-    </>
+      </MarketInformationTabs>
+      <Stack>
+        {!showPageHeader && <MarketDetails {...marketDetails} />}
+        <MarketInformationComp
+          pageProps={pageProps}
+          type="borrow"
+          loanExists={loanExists}
+          previewPrices={previewPrices}
+        />
+      </Stack>
+    </DetailPageLayout>
   ) : (
     <ConnectWalletPrompt description={t`Connect your wallet to view market`} />
   )

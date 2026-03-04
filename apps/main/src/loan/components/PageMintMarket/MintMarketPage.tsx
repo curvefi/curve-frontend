@@ -101,7 +101,16 @@ export const MintMarketPage = () => {
   return isHydrated && !market ? (
     <ErrorPage title="404" subtitle={t`Market Not Found`} continueUrl={getCollateralListPathname(params)} />
   ) : provider ? (
-    <>
+    <DetailPageLayout
+      formTabs={
+        !isLoading &&
+        (loanExists ? (
+          <ManageLoanTabs {...formProps} isInSoftLiquidation={loanStatus !== 'healthy'} />
+        ) : (
+          <CreateLoanTabs {...formProps} />
+        ))
+      }
+    >
       {showPageHeader && (
         <PageHeader
           isLoading={!isHydrated}
@@ -111,33 +120,22 @@ export const MintMarketPage = () => {
           borrowRate={marketDetails.borrowRate}
         />
       )}
-      <DetailPageLayout
-        formTabs={
-          !isLoading &&
-          (loanExists ? (
-            <ManageLoanTabs {...formProps} isInSoftLiquidation={loanStatus !== 'healthy'} />
-          ) : (
-            <CreateLoanTabs {...formProps} />
-          ))
-        }
-      >
-        <PositionDetailsComposite
-          hasPosition={loanExists}
-          borrowPositionDetails={borrowPositionDetails}
-          activityQueryParams={activityQueryParams}
+      <PositionDetailsComposite
+        hasPosition={loanExists}
+        borrowPositionDetails={borrowPositionDetails}
+        activityQueryParams={activityQueryParams}
+      />
+      <Stack>
+        {!showPageHeader && <MarketDetails {...marketDetails} />}
+        <MarketInformationComp
+          market={market ?? null}
+          marketId={marketId}
+          chainId={rChainId}
+          page="manage"
+          previewPrices={previewPrices}
         />
-        <Stack>
-          {!showPageHeader && <MarketDetails {...marketDetails} />}
-          <MarketInformationComp
-            market={market ?? null}
-            marketId={marketId}
-            chainId={rChainId}
-            page="manage"
-            previewPrices={previewPrices}
-          />
-        </Stack>
-      </DetailPageLayout>
-    </>
+      </Stack>
+    </DetailPageLayout>
   ) : (
     <ConnectWalletPrompt description={t`Connect your wallet to view market`} />
   )

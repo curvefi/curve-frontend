@@ -48,3 +48,6 @@ export const isZapV2Enabled = () =>
 
 /** New tabs for BorrowPositionDetails */
 export const useNewPositionDetailsTabs = useIntegratedLlamaHeader
+
+/** New market page layout with forms on the right  */
+export const useRightFormTabsLayout = useBetaChannel
