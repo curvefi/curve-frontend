@@ -22,9 +22,7 @@ export default defineConfig({
     'process.env.CYPRESS_COMPONENT_TEST': '"true"',
   },
   optimizeDeps: {
-    // Pre-scan known entries and skip crawl-based discovery during runtime.
-    entries: ['cypress/component/**/*.cy.{ts,tsx}', 'cypress/support/component.ts'],
-    // Prevents Vite from discovering new deps later and reloading mid-spec.
-    noDiscovery: true,
+    // Pre-scan RPC specs + component support so common deps are optimized before RPC runs.
+    entries: ['cypress/component/**/*.rpc.cy.{ts,tsx}', 'cypress/support/component.ts'],
   },
 })
