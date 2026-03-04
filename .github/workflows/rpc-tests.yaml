@@ -1,6 +1,10 @@
 name: RPC Tests
 on:
   workflow_dispatch:  # triggered manually
+  workflow_call:
+    secrets:
+      TENDERLY_ACCESS_KEY:
+        required: true
 env:
   DO_NOT_TRACK: 1
   IBM_TELEMETRY_DISABLED: true
@@ -21,13 +25,14 @@ jobs:
         uses: ./.github/actions/restore-cache
       - run: yarn set version stable
       - run: yarn install --immutable
-      - name: Optimize dependencies
-        run: yarn vite optimize --config vite.config.ts
-        working-directory: tests
-
-      - run: |
-          set -o pipefail # fail tee if the main command fails
-          yarn run cy:run:rpc --browser electron 2>&1 | tee ../rpc-cypress.log # rpc tests are expensive, stick to one browser
+      - name: Run RPC tests
+        run: |
+          # Isolate specs to avoid Vite dep-reload races between spec imports
+          # RPC tests are expensive, so keep one browser (electron).
+          > ../rpc-cypress.log
+          rg --files cypress/component --glob "*.rpc.cy.ts{,x}" | while read spec; do
+            yarn run cy:run:rpc --browser electron --spec "${spec}" 2>&1 | tee --append ../rpc-cypress.log
+          done
         working-directory: tests
         env:
           ELECTRON_ENABLE_LOGGING: true # Electron writes console to stdout
@@ -41,6 +46,8 @@ jobs:
         with:
           name: cypress-rpc
           path: tests/cypress/screenshots
+          retention-days: 3
+          if-no-files-found: error
 
       - uses: actions/upload-artifact@v4
         if: failure()
