@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react'
 import { useConnection } from 'wagmi'
 import { CampaignRewardsBanner } from '@/lend/components/CampaignRewardsBanner'
+import { MarketAlertBanner } from '@/lend/components/MarketAlertBanner'
 import { MarketInformationComp } from '@/lend/components/MarketInformationComp'
 import { MarketInformationTabs } from '@/lend/components/MarketInformationTabs'
 import { VaultTabs } from '@/lend/components/PageVault/VaultTabs'
 import { useOneWayMarket } from '@/lend/entities/chain'
 import { useLendPageTitle } from '@/lend/hooks/useLendPageTitle'
+import { useMarketAlert } from '@/lend/hooks/useMarketAlert'
 import { useMarketDetails } from '@/lend/hooks/useMarketDetails'
 import { useSupplyPositionDetails } from '@/lend/hooks/useSupplyPositionDetails'
 import { useTitleMapper } from '@/lend/hooks/useTitleMapper'
@@ -63,6 +65,7 @@ export const Page = () => {
     market,
     marketId: rOwmId,
   })
+  const marketAlert = useMarketAlert(rChainId, rOwmId)
 
   useEffect(() => {
     if (api && market && isPageVisible) {
@@ -122,11 +125,15 @@ export const Page = () => {
         />
       )}
       <DetailPageLayout formTabs={rChainId && rOwmId && <VaultTabs {...pageProps} params={params} />}>
-        <CampaignRewardsBanner
-          chainId={rChainId}
-          borrowAddress={market?.addresses?.controller || ''}
-          supplyAddress={market?.addresses?.vault || ''}
-        />
+        {marketAlert?.banner ? (
+          <MarketAlertBanner alertType={marketAlert.alertType} banner={marketAlert.banner} />
+        ) : (
+          <CampaignRewardsBanner
+            chainId={rChainId}
+            borrowAddress={market?.addresses?.controller || ''}
+            supplyAddress={market?.addresses?.vault || ''}
+          />
+        )}
         <MarketInformationTabs currentTab="supply" hrefs={positionDetailsHrefs}>
           <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
             {hasSupplyPosition ? <SupplyPositionDetails {...supplyPositionDetails} /> : <NoPosition type="supply" />}

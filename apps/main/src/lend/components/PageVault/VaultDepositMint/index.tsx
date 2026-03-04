@@ -242,7 +242,7 @@ export const VaultDepositMint = ({ rChainId, rOwmId, isLoaded, api, market, user
         )}
       </StyledDetailInfoWrapper>
 
-      {marketAlert && <AlertBox alertType={marketAlert.alertType}>{marketAlert.message}</AlertBox>}
+      {marketAlert?.message && <AlertBox alertType={marketAlert.alertType}>{marketAlert.message}</AlertBox>}
 
       {/* actions */}
       {!marketAlert?.isDisableDeposit && (

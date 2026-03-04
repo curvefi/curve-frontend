@@ -34,6 +34,8 @@ import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import type { Range } from '@ui-kit/types/util'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
+import { MarketAlertBanner } from '../MarketAlertBanner'
+import { useMarketAlert } from '@/lend/hooks/useMarketAlert'
 
 export const LendMarketPage = () => {
   const { isHydrated } = useCurve()
@@ -81,6 +83,8 @@ export const LendMarketPage = () => {
     borrowToken: market?.borrowed_token,
     network,
   }
+
+  const marketAlert = useMarketAlert(chainId, market?.id)
 
   useEffect(() => {
     // delay fetch rest after form details are fetched first
@@ -153,11 +157,15 @@ export const LendMarketPage = () => {
           ))
         }
       >
-        <CampaignRewardsBanner
-          chainId={chainId}
-          borrowAddress={market?.addresses?.controller || ''}
-          supplyAddress={market?.addresses?.vault || ''}
-        />
+        {marketAlert?.banner ? (
+          <MarketAlertBanner alertType={marketAlert.alertType} banner={marketAlert.banner} />
+        ) : (
+          <CampaignRewardsBanner
+            chainId={chainId}
+            borrowAddress={market?.addresses?.controller || ''}
+            supplyAddress={market?.addresses?.vault || ''}
+          />
+        )}
         <MarketInformationTabs currentTab={'borrow'} hrefs={{ borrow: '', supply: getVaultPathname(params, marketId) }}>
           <PositionDetailsComposite
             hasPosition={loanExists}
