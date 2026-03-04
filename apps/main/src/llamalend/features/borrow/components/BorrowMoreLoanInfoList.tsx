@@ -53,36 +53,10 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
 
   const collateralDelta = leverageEnabled ? expectedCollateralQuery.data?.totalCollateral : userCollateral
 
-  const prevLeverageTotalCollateral = mapQuery(userState, ({ collateral }) => collateral)
-  const leverageTotalCollateral = q({
-    data:
-      expectedCollateralQuery.data?.totalCollateral &&
-      userState.data?.collateral &&
-      decimal(new BigNumber(userState.data.collateral).plus(expectedCollateralQuery.data.totalCollateral)),
-    ...combineQueryState(userState, expectedCollateralQuery),
-  })
-
-  const prevLeverageCollateral = q({
-    data:
-      userState.data?.collateral &&
-      prevLeverageValue.data &&
-      decimal(
-        new BigNumber(userState.data.collateral).minus(
-          new BigNumber(userState.data.collateral).div(prevLeverageValue.data),
-        ),
-      ),
-    ...combineQueryState(userState, prevLeverageValue),
-  })
-  const leverageCollateral = mapQuery(expectedCollateralQuery, ({ totalCollateral }) =>
-    decimal(new BigNumber(totalCollateral).minus(userCollateral ?? '0')),
-  )
-
   const totalDebt = useMemo(
     () => debt && userState.data && decimal(new BigNumber(userState.data.debt).plus(debt).toString()),
     [debt, userState.data],
   )
-
-  const prevHealth = useHealthQueries((isFull) => getUserHealthOptions({ ...params, isFull }, isOpen))
 
   const { marketRates, marketFutureRates, netBorrowApr, futureBorrowApr } = useNetBorrowApr(
     {
@@ -105,7 +79,7 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
       isApproved={q(useBorrowMoreIsApproved(params, isOpen))}
       gas={q(useBorrowMoreEstimateGas(networks, params, isOpen))}
       health={q(useBorrowMoreHealth(params, isOpen && !!debt))}
-      prevHealth={q(prevHealth)}
+      prevHealth={q(useHealthQueries((isFull) => getUserHealthOptions({ ...params, isFull }, isOpen)))}
       prevPrices={mapQuery(useUserPrices(params), (prices) => prices as Decimal[])}
       prices={q(useBorrowMorePrices(params, isOpen))}
       prevRates={marketRates}
@@ -166,10 +140,28 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
           },
         ),
         prevLeverageValue: q(prevLeverageValue),
-        prevLeverageCollateral,
-        leverageCollateral,
-        prevLeverageTotalCollateral,
-        leverageTotalCollateral,
+        prevLeverageCollateral: q({
+          data:
+            userState.data?.collateral &&
+            prevLeverageValue.data &&
+            decimal(
+              new BigNumber(userState.data.collateral).minus(
+                new BigNumber(userState.data.collateral).div(prevLeverageValue.data),
+              ),
+            ),
+          ...combineQueryState(userState, prevLeverageValue),
+        }),
+        leverageCollateral: mapQuery(expectedCollateralQuery, ({ totalCollateral }) =>
+          decimal(new BigNumber(totalCollateral).minus(userCollateral ?? '0')),
+        ),
+        prevLeverageTotalCollateral: mapQuery(userState, ({ collateral }) => collateral),
+        leverageTotalCollateral: q({
+          data:
+            expectedCollateralQuery.data?.totalCollateral &&
+            userState.data?.collateral &&
+            decimal(new BigNumber(userState.data.collateral).plus(expectedCollateralQuery.data.totalCollateral)),
+          ...combineQueryState(userState, expectedCollateralQuery),
+        }),
         routes,
         slippage,
         onSlippageChange,
