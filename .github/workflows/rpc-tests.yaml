@@ -27,10 +27,11 @@ jobs:
       - run: yarn install --immutable
       - name: Run RPC tests
         run: |
+          set -o pipefail  # exit with nonzero exit code if anything fails
           # Isolate specs to avoid Vite dep-reload races between spec imports
           # RPC tests are expensive, so keep one browser (electron).
           > ../rpc-cypress.log
-          rg --files cypress/component --glob "*.rpc.cy.ts{,x}" | while read spec; do
+          for spec in $(find cypress/component -type f \( -name "*.rpc.cy.ts" -or -name "*.rpc.cy.tsx" \)); do
             yarn run cy:run:rpc --browser electron --spec "${spec}" 2>&1 | tee --append ../rpc-cypress.log
           done
         working-directory: tests
