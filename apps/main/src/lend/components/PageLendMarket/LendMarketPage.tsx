@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useConnection } from 'wagmi'
 import { CampaignRewardsBanner } from '@/lend/components/CampaignRewardsBanner'
-import { MarketInformationComp } from '@/lend/components/MarketInformationComp'
+import { MarketInformationComposite } from '@/lend/components/MarketInformationComposite'
 import { LoanCreateTabs } from '@/lend/components/PageLendMarket/LoanCreateTabs'
 import { ManageLoanTabs } from '@/lend/components/PageLendMarket/ManageLoanTabs'
 import { useOneWayMarket } from '@/lend/entities/chain'
@@ -159,7 +159,7 @@ export const LendMarketPage = () => {
           activityQueryParams={activityQueryParams}
         />
         <Stack>
-          <MarketInformationComp
+          <MarketInformationComposite
             pageProps={pageProps}
             type="borrow"
             loanExists={loanExists}
