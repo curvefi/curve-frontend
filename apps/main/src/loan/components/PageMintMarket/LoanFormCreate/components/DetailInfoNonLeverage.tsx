@@ -18,7 +18,6 @@ export const DetailInfoNonLeverage = ({
   detailInfoLTV,
   haveSigner,
   healthMode,
-  isAdvanceMode,
   isReady,
   isValidFormValues = true,
   llamma,
@@ -38,31 +37,27 @@ export const DetailInfoNonLeverage = ({
 
   return (
     <div>
-      {isAdvanceMode && (
-        <>
-          <DetailInfoLiqRange
-            {...detailInfo}
-            healthMode={haveSigner ? healthMode : null}
-            isEditLiqRange={isEditLiqRange}
-            isValidFormValues={isValidFormValues}
-            loading={detailInfo.loading}
-            loanDetails={loanDetails}
-            selectedLiqRange={selectedLiqRange}
-            userLoanDetails={userLoanDetails}
-            handleLiqRangesEdit={handleLiqRangesEdit}
-          />
-          <DetailInfoN isReady={isReady} n={formValues.n} />
-          <LiquidationRangeSlider
-            {...detailInfo}
-            liqRanges={liqRanges}
-            maxBands={llamma?.maxBands}
-            minBands={llamma?.minBands}
-            selectedLiqRange={selectedLiqRange}
-            showEditLiqRange={isEditLiqRange}
-            handleSelLiqRange={handleSelLiqRange}
-          />
-        </>
-      )}
+      <DetailInfoLiqRange
+        {...detailInfo}
+        healthMode={haveSigner ? healthMode : null}
+        isEditLiqRange={isEditLiqRange}
+        isValidFormValues={isValidFormValues}
+        loading={detailInfo.loading}
+        loanDetails={loanDetails}
+        selectedLiqRange={selectedLiqRange}
+        userLoanDetails={userLoanDetails}
+        handleLiqRangesEdit={handleLiqRangesEdit}
+      />
+      <DetailInfoN isReady={isReady} n={formValues.n} />
+      <LiquidationRangeSlider
+        {...detailInfo}
+        liqRanges={liqRanges}
+        maxBands={llamma?.maxBands}
+        minBands={llamma?.minBands}
+        selectedLiqRange={selectedLiqRange}
+        showEditLiqRange={isEditLiqRange}
+        handleSelLiqRange={handleSelLiqRange}
+      />
       {haveSigner && (
         <DetailInfoHealth
           {...detailInfo}
@@ -77,7 +72,7 @@ export const DetailInfoNonLeverage = ({
         />
       )}
       <DetailInfoBorrowRate parameters={loanDetails?.parameters} />
-      {isAdvanceMode && detailInfoLTV}
+      {detailInfoLTV}
       {haveSigner && chainId && (
         <DetailInfoEstGas
           isDivider
