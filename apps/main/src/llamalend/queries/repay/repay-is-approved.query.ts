@@ -40,9 +40,8 @@ export const {
     userAddress,
     routeId,
   }: RepayIsFullQuery): Promise<boolean> => {
-    const loan = getLoanImplementation(marketId)
     const useFullRepay = isFull && !+stateCollateral && !+userCollateral
-    if (useFullRepay) return await loan.fullRepayIsApproved(userAddress)
+    if (useFullRepay) return await getLoanImplementation(marketId).fullRepayIsApproved(userAddress)
     const [type, impl] = getRepayImplementation(marketId, { userCollateral, stateCollateral, userBorrowed, routeId })
     switch (type) {
       case 'zapV2':
@@ -53,7 +52,7 @@ export const {
       case 'deleverage':
         return true // deleverage query doesn't need approval because it only uses the user stateCollateral
       case 'unleveraged':
-        return await loan.repayIsApproved(userBorrowed)
+        return await impl.repayIsApproved(userBorrowed)
     }
   },
   category: 'llamalend.repay',

@@ -18,15 +18,17 @@ const { useQuery: useAddCollateralGasEstimate } = queryFactory({
       { userCollateral },
     ] as const,
   queryFn: async ({ marketId, userCollateral }: AddCollateralGasQuery) => {
-    const loan = getLoanImplementation(marketId)
-    const isApproved = await loan.addCollateralIsApproved(userCollateral)
+    const market = getLoanImplementation(marketId)
+    const isApproved = await market.addCollateralIsApproved(userCollateral)
 
     if (isApproved) {
-      return loan.estimateGas.addCollateral(userCollateral)
+      return market.estimateGas.addCollateral(userCollateral)
     }
     // When not approved, sum both approval gas and addCollateral gas
-    const approveGas = await loan.estimateGas.addCollateralApprove(userCollateral)
-    const addCollateralGas = await loan.estimateGas.addCollateral(userCollateral)
+    const [approveGas, addCollateralGas] = await Promise.all([
+      market.estimateGas.addCollateralApprove(userCollateral),
+      market.estimateGas.addCollateral(userCollateral),
+    ])
     return (Number(approveGas) + Number(addCollateralGas)) as TGas
   },
   category: 'llamalend.addCollateral',

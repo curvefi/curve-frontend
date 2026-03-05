@@ -1,8 +1,8 @@
 import { useCallback } from 'react'
 import { useConfig } from 'wagmi'
 import { useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
-import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { fetchCloseIsApproved } from '@/llamalend/queries/close-loan/close-loan-is-approved.query'
+import { getLoanImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import type { CloseLoanParams } from '@/llamalend/queries/validation/manage-loan.types'
 import { closeLoanValidationSuite } from '@/llamalend/queries/validation/manage-loan.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -45,15 +45,12 @@ export const useClosePositionMutation = ({
     mutationFn: async ({ slippage }, { market }) => {
       await waitForApproval({
         isApproved: async () => await fetchCloseIsApproved({ marketId, chainId, userAddress }, { staleTime: 0 }),
-        onApprove: async () =>
-          (await (market instanceof MintMarketTemplate ? market : market.loan).selfLiquidateApprove()) as Hex[],
+        onApprove: async () => (await getLoanImplementation(market).selfLiquidateApprove()) as Hex[],
         message: t`Approved closing position`,
         config,
       })
       return {
-        hash: (await (market instanceof MintMarketTemplate ? market : market.loan).selfLiquidate(
-          Number(slippage),
-        )) as Hex,
+        hash: (await getLoanImplementation(market).selfLiquidate(Number(slippage))) as Hex,
       }
     },
     pendingMessage: () => t`Closing position...`,

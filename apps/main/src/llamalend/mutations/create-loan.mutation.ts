@@ -42,7 +42,6 @@ const approve = async (
     case 'V1':
       return (await impl.createLoanApprove(userCollateral, userBorrowed)) as Address[]
     case 'V0':
-      return (await impl.createLoanApprove(userCollateral)) as Address[]
     case 'unleveraged':
       return (await impl.createLoanApprove(userCollateral)) as Address[]
   }
@@ -66,9 +65,8 @@ const create = async (
     case 'V1':
       return (await impl.createLoan(userCollateral, userBorrowed, debt, range, +slippage)) as Address
     case 'V0':
-      return (await impl.createLoan(userCollateral, debt, range, +slippage)) as Address
     case 'unleveraged':
-      return (await impl.createLoan(userCollateral, debt, range)) as Address
+      return (await impl.createLoan(userCollateral, debt, range, +slippage)) as Address
   }
 }
 

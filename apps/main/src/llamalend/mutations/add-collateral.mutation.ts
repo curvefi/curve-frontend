@@ -2,9 +2,9 @@ import { useCallback } from 'react'
 import { useConfig } from 'wagmi'
 import { formatTokenAmounts } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
-import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
 import { fetchAddCollateralIsApproved } from '@/llamalend/queries/add-collateral/add-collateral-approved.query'
+import { getLoanImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import { type CollateralForm, collateralValidationSuite } from '@/llamalend/queries/validation/manage-loan.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type Address, type Hex } from '@primitives/address.utils'
@@ -25,10 +25,10 @@ export type AddCollateralOptions = {
 }
 
 const approve = async (market: LlamaMarketTemplate, { userCollateral }: AddCollateralMutation) =>
-  (await (market instanceof MintMarketTemplate ? market : market.loan).addCollateralApprove(userCollateral)) as Hex[]
+  (await getLoanImplementation(market).addCollateralApprove(userCollateral)) as Hex[]
 
 const addCollateral = async (market: LlamaMarketTemplate, { userCollateral }: AddCollateralMutation) =>
-  (await (market instanceof MintMarketTemplate ? market : market.loan).addCollateral(userCollateral)) as Hex
+  (await getLoanImplementation(market).addCollateral(userCollateral)) as Hex
 
 export const useAddCollateralMutation = ({
   network,

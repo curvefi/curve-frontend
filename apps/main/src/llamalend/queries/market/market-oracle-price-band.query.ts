@@ -8,4 +8,3 @@ export const { useQuery: useMarketOraclePriceBand } = queryFactory({
   category: 'llamalend.market',
   validationSuite: marketIdValidationSuite,
 })
-1
