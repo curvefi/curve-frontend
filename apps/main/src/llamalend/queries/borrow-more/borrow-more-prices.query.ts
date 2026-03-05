@@ -49,8 +49,10 @@ export const { useQuery: useBorrowMorePrices, invalidate: invalidateBorrowMorePr
       case 'V1':
       case 'V2':
         return (await impl.borrowMorePrices(...args)) as Range<Decimal>
-      case 'unleveraged':
-        return (await impl.borrowMorePrices(...args)) as Range<Decimal>
+      case 'unleveraged': {
+        const loan = 'loan' in impl ? impl.loan : impl
+        return (await loan.borrowMorePrices(...args)) as Range<Decimal>
+      }
     }
   },
   category: 'llamalend.borrowMore',

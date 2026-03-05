@@ -35,8 +35,10 @@ export const {
       case 'V1':
       case 'V2':
         return await impl.borrowMoreIsApproved(userCollateral, userBorrowed)
-      case 'unleveraged':
-        return await impl.borrowMoreIsApproved(userCollateral)
+      case 'unleveraged': {
+        const loan = 'loan' in impl ? impl.loan : impl
+        return await loan.borrowMoreIsApproved(userCollateral)
+      }
     }
   },
   category: 'llamalend.borrowMore',

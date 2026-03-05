@@ -1,6 +1,7 @@
 import { useCallback } from 'react'
 import { useConfig } from 'wagmi'
 import { useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
+import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { fetchCloseIsApproved } from '@/llamalend/queries/close-loan/close-loan-is-approved.query'
 import type { CloseLoanParams } from '@/llamalend/queries/validation/manage-loan.types'
 import { closeLoanValidationSuite } from '@/llamalend/queries/validation/manage-loan.validation'
@@ -44,11 +45,16 @@ export const useClosePositionMutation = ({
     mutationFn: async ({ slippage }, { market }) => {
       await waitForApproval({
         isApproved: async () => await fetchCloseIsApproved({ marketId, chainId, userAddress }, { staleTime: 0 }),
-        onApprove: async () => (await market.selfLiquidateApprove()) as Hex[],
+        onApprove: async () =>
+          (await (market instanceof MintMarketTemplate ? market : market.loan).selfLiquidateApprove()) as Hex[],
         message: t`Approved closing position`,
         config,
       })
-      return { hash: (await market.selfLiquidate(Number(slippage))) as Hex }
+      return {
+        hash: (await (market instanceof MintMarketTemplate ? market : market.loan).selfLiquidate(
+          Number(slippage),
+        )) as Hex,
+      }
     },
     pendingMessage: () => t`Closing position...`,
     successMessage: () => t`Position closed successfully!`,

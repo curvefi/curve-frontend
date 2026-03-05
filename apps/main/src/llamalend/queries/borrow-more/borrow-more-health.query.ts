@@ -51,8 +51,10 @@ export const { useQuery: useBorrowMoreHealth, invalidate: invalidateBorrowMoreHe
       case 'V1':
       case 'V2':
         return (await impl.borrowMoreHealth(...args)) as Decimal
-      case 'unleveraged':
-        return (await impl.borrowMoreHealth(...args)) as Decimal
+      case 'unleveraged': {
+        const loan = 'loan' in impl ? impl.loan : impl
+        return (await loan.borrowMoreHealth(...args)) as Decimal
+      }
     }
   },
   category: 'llamalend.borrowMore',

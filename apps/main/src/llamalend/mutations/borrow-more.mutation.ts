@@ -2,6 +2,7 @@ import { useCallback } from 'react'
 import { useConfig } from 'wagmi'
 import { formatTokenAmounts } from '@/llamalend/llama.utils'
 import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
 import { fetchBorrowMoreIsApproved } from '@/llamalend/queries/borrow-more/borrow-more-is-approved.query'
 import {
@@ -43,7 +44,7 @@ const approveBorrowMore = async (
     case 'V2':
       return (await impl.borrowMoreApprove(userCollateral, userBorrowed)) as Hex[]
     case 'unleveraged':
-      return (await impl.borrowMoreApprove(userCollateral)) as Hex[]
+      return (await (impl instanceof MintMarketTemplate ? impl : impl.loan).borrowMoreApprove(userCollateral)) as Hex[]
   }
 }
 
@@ -67,7 +68,7 @@ const borrowMore = async (
       await impl.borrowMoreExpectedCollateral(userCollateral, userBorrowed, debt, +slippage)
       return (await impl.borrowMore(...args, +slippage)) as Hex
     case 'unleveraged':
-      return (await impl.borrowMore(...args)) as Hex
+      return (await (impl instanceof MintMarketTemplate ? impl : impl.loan).borrowMore(...args)) as Hex
   }
 }
 

@@ -15,8 +15,11 @@ export const { useQuery: useAddCollateralIsApproved, fetchQuery: fetchAddCollate
       'addCollateralIsApproved',
       { userCollateral },
     ] as const,
-  queryFn: async ({ marketId, userCollateral }: AddCollateralIsApprovedQuery): Promise<boolean> =>
-    await getLlamaMarket(marketId).addCollateralIsApproved(userCollateral),
+  queryFn: async ({ marketId, userCollateral }: AddCollateralIsApprovedQuery): Promise<boolean> => {
+    const market = getLlamaMarket(marketId)
+    const loan = 'loan' in market ? market.loan : market
+    return await loan.addCollateralIsApproved(userCollateral)
+  },
   category: 'llamalend.addCollateral',
   validationSuite: collateralValidationSuite,
 })

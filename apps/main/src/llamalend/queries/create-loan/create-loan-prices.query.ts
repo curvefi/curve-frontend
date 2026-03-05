@@ -56,8 +56,10 @@ export const { useQuery: useCreateLoanPrices, invalidate: invalidateCreateLoanPr
       case 'V2':
         return convertNumbers(await impl.createLoanPrices(userCollateral, userBorrowed, debt, range))
       case 'V0':
-      case 'unleveraged':
-        return convertNumbers(await impl.createLoanPrices(userCollateral, debt, range))
+      case 'unleveraged': {
+        const loan = 'loan' in impl ? impl.loan : impl
+        return convertNumbers(await loan.createLoanPrices(userCollateral, debt, range))
+      }
     }
   },
   category: 'llamalend.createLoan',

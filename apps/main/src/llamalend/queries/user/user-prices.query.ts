@@ -18,7 +18,7 @@ const { useQuery: useUserPricesQuery, invalidate: invalidateUserPrices } = query
     const market = getLlamaMarket(marketId)
 
     if (market instanceof LendMarketTemplate) {
-      return await market.userPrices()
+      return await market.userPosition.userPrices()
     } else {
       return await market.userPrices(userAddress)
     }

@@ -44,8 +44,15 @@ const { useQuery: useBorrowMoreApproveGasEstimate, invalidate: invalidateBorrowM
         case 'V1':
         case 'V2':
           return await impl.estimateGas.borrowMoreApprove(userCollateral, userBorrowed)
-        case 'unleveraged':
-          return await impl.estimateGas.borrowMoreApprove(userCollateral)
+        case 'unleveraged': {
+          return 'loan' in impl
+            ? await (
+                impl.loan as unknown as {
+                  borrowMoreApproveEstimateGas: (collateral: string | number) => Promise<TGas>
+                }
+              ).borrowMoreApproveEstimateGas(userCollateral)
+            : await impl.estimateGas.borrowMoreApprove(userCollateral)
+        }
       }
     },
     category: 'llamalend.borrowMore',
@@ -100,8 +107,11 @@ const { useQuery: useBorrowMoreGasEstimate, invalidate: invalidateBorrowMoreGasE
       case 'V2':
         await impl.borrowMoreExpectedCollateral(userCollateral, userBorrowed, debt, +slippage)
         return await impl.estimateGas.borrowMore(...args, +slippage)
-      case 'unleveraged':
-        return await impl.estimateGas.borrowMore(...args)
+      case 'unleveraged': {
+        return 'loan' in impl
+          ? await impl.loan.estimateGas.borrowMore(...args)
+          : await impl.estimateGas.borrowMore(...args)
+      }
     }
   },
   category: 'llamalend.borrowMore',

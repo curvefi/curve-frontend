@@ -20,7 +20,13 @@ const { useQuery: useRemoveCollateralGasEstimate } = queryFactory({
     ] as const,
   queryFn: async ({ marketId, userCollateral }: RemoveCollateralGasQuery) => {
     const market = getLlamaMarket(marketId)
-    return await market.removeCollateralEstimateGas(userCollateral)
+    return 'loan' in market
+      ? await market.loan.estimateGas.removeCollateral(userCollateral)
+      : await (
+          market as unknown as {
+            removeCollateralEstimateGas: (collateral: string | number) => Promise<number>
+          }
+        ).removeCollateralEstimateGas(userCollateral)
   },
   category: 'llamalend.removeCollateral',
   validationSuite: collateralValidationSuite,

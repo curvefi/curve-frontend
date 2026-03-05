@@ -12,7 +12,8 @@ export const {
   queryKey: (params: UserMarketParams) => [...rootKeys.userMarket(params), 'market-user-state'] as const,
   queryFn: async ({ marketId, userAddress }: UserMarketQuery) => {
     const market = getLlamaMarket(marketId)
-    const userState = await market.userState(userAddress)
+    const userState =
+      'userPosition' in market ? await market.userPosition.userState(userAddress) : await market.userState(userAddress)
 
     return {
       /** The amount of collateral tokens the user's put in his loan */

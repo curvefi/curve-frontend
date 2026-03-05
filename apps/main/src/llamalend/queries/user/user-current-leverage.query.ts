@@ -13,7 +13,8 @@ export const { useQuery: useUserCurrentLeverage, invalidate: invalidateUserCurre
     [...rootKeys.userMarket({ chainId, userAddress, marketId }), 'user-current-leverage'] as const,
   queryFn: async ({ marketId, userAddress }: UserMarketQuery) => {
     const market = getLlamaMarket(marketId)
-    return decimal(await market.currentLeverage(userAddress)) ?? null
+    const userPosition = 'userPosition' in market ? market.userPosition : market
+    return decimal(await userPosition.currentLeverage(userAddress)) ?? null
   },
   category: 'llamalend.user',
   validationSuite: leverageUserMarketValidationSuite,

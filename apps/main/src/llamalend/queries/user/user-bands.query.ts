@@ -11,7 +11,9 @@ export const { useQuery: useUserBands, invalidate: invalidateUserBands } = query
   queryKey: (params: UserMarketParams) => [...rootKeys.userMarket(params), 'user-bands'] as const,
   queryFn: async ({ marketId, userAddress }: UserMarketQuery) => {
     const market = getLlamaMarket(marketId)
-    const bands = market instanceof LendMarketTemplate ? await market.userBands() : await market.userBands(userAddress)
+    const userPosition = market instanceof LendMarketTemplate ? market.userPosition : market
+    const bands =
+      market instanceof LendMarketTemplate ? await userPosition.userBands() : await userPosition.userBands(userAddress)
     return reverseBands(bands)
   },
   category: 'llamalend.user',

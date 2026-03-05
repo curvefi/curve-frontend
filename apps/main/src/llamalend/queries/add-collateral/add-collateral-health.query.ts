@@ -12,8 +12,11 @@ export const { getQueryOptions: getAddCollateralHealthOptions } = queryFactory({
       { userCollateral },
       { isFull },
     ] as const,
-  queryFn: async ({ marketId, userCollateral, isFull }: CollateralHealthQuery) =>
-    (await getLlamaMarket(marketId).addCollateralHealth(userCollateral, isFull)) as Decimal,
+  queryFn: async ({ marketId, userCollateral, isFull }: CollateralHealthQuery) => {
+    const market = getLlamaMarket(marketId)
+    const loan = 'loan' in market ? market.loan : market
+    return (await loan.addCollateralHealth(userCollateral, isFull)) as Decimal
+  },
   category: 'llamalend.addCollateral',
   validationSuite: collateralHealthValidationSuite,
 })

@@ -3,6 +3,7 @@ import { useCallback } from 'react'
 import { useConfig } from 'wagmi'
 import { formatTokenAmounts } from '@/llamalend/llama.utils'
 import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
 import { fetchRepayIsApproved } from '@/llamalend/queries/repay/repay-is-approved.query'
 import { getRepayImplementation } from '@/llamalend/queries/repay/repay-query.helpers'
@@ -41,7 +42,7 @@ const approveRepay = async (
   { stateCollateral = '0', userCollateral = '0', userBorrowed = '0', isFull, routeId }: RepayMutation,
 ) => {
   if (isFull && !+stateCollateral && !+userCollateral) {
-    return (await market.fullRepayApprove()) as Hex[]
+    return (await (market instanceof MintMarketTemplate ? market : market.loan).fullRepayApprove()) as Hex[]
   }
   const [type, impl] = getRepayImplementation(market.id, { userCollateral, stateCollateral, userBorrowed, routeId })
   switch (type) {
@@ -53,7 +54,7 @@ const approveRepay = async (
     case 'deleverage':
       return [] // no approve needed, paying from state
     case 'unleveraged':
-      return (await impl.repayApprove(userBorrowed)) as Hex[]
+      return (await (impl instanceof MintMarketTemplate ? impl : impl.loan).repayApprove(userBorrowed)) as Hex[]
   }
 }
 
@@ -62,7 +63,7 @@ const repay = async (
   { stateCollateral = '0', userCollateral = '0', userBorrowed = '0', isFull, slippage, routeId }: RepayMutation,
 ): Promise<Hex> => {
   if (isFull && !+stateCollateral && !+userCollateral) {
-    return (await market.fullRepay()) as Hex
+    return (await (market instanceof MintMarketTemplate ? market : market.loan).fullRepay()) as Hex
   }
   const [type, impl] = getRepayImplementation(market.id, { userCollateral, stateCollateral, userBorrowed, routeId })
   switch (type) {
@@ -80,7 +81,7 @@ const repay = async (
     case 'deleverage':
       return (await impl.repay(stateCollateral, +slippage)) as Hex
     case 'unleveraged':
-      return (await impl.repay(userBorrowed)) as Hex
+      return (await (impl instanceof MintMarketTemplate ? impl : impl.loan).repay(userBorrowed)) as Hex
   }
 }
 

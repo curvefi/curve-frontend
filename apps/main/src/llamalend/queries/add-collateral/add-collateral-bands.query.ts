@@ -6,8 +6,11 @@ import { collateralValidationSuite } from '../validation/manage-loan.validation'
 export const { useQuery: useAddCollateralBands } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, userCollateral }: CollateralParams) =>
     [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'addCollateralBands', { userCollateral }] as const,
-  queryFn: async ({ marketId, userCollateral }: CollateralQuery) =>
-    await getLlamaMarket(marketId).addCollateralBands(userCollateral),
+  queryFn: async ({ marketId, userCollateral }: CollateralQuery) => {
+    const market = getLlamaMarket(marketId)
+    const loan = 'loan' in market ? market.loan : market
+    return await loan.addCollateralBands(userCollateral)
+  },
   category: 'llamalend.addCollateral',
   validationSuite: collateralValidationSuite,
 })

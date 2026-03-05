@@ -35,17 +35,16 @@ export const { useQuery: useMarketUserBandsBalances } = queryFactory({
     const market = getLlamaMarket(marketId)
 
     if (market instanceof LendMarketTemplate) {
-      const userBandsBalances = await market.userBandsBalances(userAddress)
+      const userBandsBalances = await market.userPosition.userBandsBalances(userAddress)
 
       return fetchChartBandBalancesData(sortBands(userBandsBalances), liquidationBand, market, isMarket)
     } else {
       const userBandsBalances = await market.userBandsBalances(userAddress)
 
       const formattedUserBandsBalances: BandsBalances = Object.fromEntries(
-        Object.entries(userBandsBalances).map(([key, value]) => [
-          key,
-          { borrowed: value.stablecoin, collateral: value.collateral },
-        ]),
+        Object.entries(userBandsBalances as Record<string, { stablecoin: string; collateral: string }>).map(
+          ([key, { stablecoin, collateral }]) => [key, { borrowed: stablecoin, collateral }],
+        ),
       )
 
       return fetchChartBandBalancesData(sortBands(formattedUserBandsBalances), liquidationBand, market, isMarket)

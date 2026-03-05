@@ -8,7 +8,7 @@ export const { useQuery: useOneWayMarketNames, prefetchQuery: prefetchMarkets } 
   queryFn: async ({ chainId }: ChainQuery<ChainId>): Promise<string[]> => {
     const useAPI = chainId !== 146 // disable API for sonic
     const api = requireLib('llamaApi')
-    await api.lendMarkets.fetchMarkets(useAPI)
+    await api.lendMarkets.fetchMarkets({ useApi: useAPI })
     return api.lendMarkets.getMarketList()
   },
   validationSuite: llamaApiValidationSuite,

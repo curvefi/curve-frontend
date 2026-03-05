@@ -34,12 +34,7 @@ export const { getQueryOptions: getRepayHealthOptions, invalidate: invalidateRep
     userAddress,
     routeId,
   }: RepayHealthQuery) => {
-    const [type, impl] = getRepayImplementation(marketId, {
-      userCollateral,
-      stateCollateral,
-      userBorrowed,
-      routeId,
-    })
+    const [type, impl] = getRepayImplementation(marketId, { userCollateral, stateCollateral, userBorrowed, routeId })
     switch (type) {
       case 'zapV2':
         return (
@@ -58,7 +53,9 @@ export const { getQueryOptions: getRepayHealthOptions, invalidate: invalidateRep
       case 'deleverage':
         return (await impl.repayHealth(userCollateral, isFull)) as Decimal
       case 'unleveraged':
-        return (await impl.repayHealth(userBorrowed, isFull)) as Decimal
+        return 'loan' in impl
+          ? ((await impl.loan.repayHealth(userBorrowed, isFull)) as Decimal)
+          : ((await impl.repayHealth(userBorrowed, isFull)) as Decimal)
     }
   },
   category: 'llamalend.repay',

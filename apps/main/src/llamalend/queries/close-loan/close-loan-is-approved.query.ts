@@ -6,8 +6,11 @@ import { userMarketValidationSuite } from '@ui-kit/lib/model/query/user-market-v
 export const { useQuery: useCloseLoanIsApproved, fetchQuery: fetchCloseIsApproved } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress }: UserMarketParams<IChainId>) =>
     [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'selfLiquidateIsApproved'] as const,
-  queryFn: async ({ marketId }: UserMarketQuery<IChainId>): Promise<boolean> =>
-    await getLlamaMarket(marketId).selfLiquidateIsApproved(),
+  queryFn: async ({ marketId }: UserMarketQuery<IChainId>): Promise<boolean> => {
+    const market = getLlamaMarket(marketId)
+    const loan = 'loan' in market ? market.loan : market
+    return await loan.selfLiquidateIsApproved()
+  },
   category: 'llamalend.closeLoan',
   validationSuite: userMarketValidationSuite,
 })

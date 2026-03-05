@@ -36,8 +36,15 @@ const { useQuery: useCreateLoanApproveEstimateGas } = queryFactory({
       case 'V2':
         return await impl.estimateGas.createLoanApprove(userCollateral, userBorrowed)
       case 'V0':
-      case 'unleveraged':
-        return await impl.estimateGas.createLoanApprove(userCollateral)
+      case 'unleveraged': {
+        return 'loan' in impl
+          ? await (
+              impl.loan as unknown as {
+                createLoanApproveEstimateGas: (collateral: string | number) => Promise<TGas>
+              }
+            ).createLoanApproveEstimateGas(userCollateral)
+          : await impl.estimateGas.createLoanApprove(userCollateral)
+      }
     }
   },
   category: 'llamalend.createLoan',
@@ -93,8 +100,10 @@ const { useQuery: useCreateLoanEstimateGasQuery, invalidate: invalidateCreateLoa
         return await impl.estimateGas.createLoan(userCollateral, userBorrowed, debt, range, +slippage)
       case 'V0':
         return await impl.estimateGas.createLoan(userCollateral, debt, range, +slippage)
-      case 'unleveraged':
-        return await impl.estimateGas.createLoan(userCollateral, debt, range)
+      case 'unleveraged': {
+        const estimateGas = 'loan' in impl ? impl.loan.estimateGas : impl.estimateGas
+        return await estimateGas.createLoan(userCollateral, debt, range)
+      }
     }
   },
   category: 'llamalend.createLoan',

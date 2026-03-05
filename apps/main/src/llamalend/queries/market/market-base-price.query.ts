@@ -4,7 +4,11 @@ import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-valid
 
 export const { useQuery: useMarketBasePrice } = queryFactory({
   queryKey: (params: MarketParams) => [...rootKeys.market(params), 'market-base-price'] as const,
-  queryFn: ({ marketId }: MarketQuery): Promise<string> => getLlamaMarket(marketId).basePrice(),
+  queryFn: ({ marketId }: MarketQuery): Promise<string> => {
+    const market = getLlamaMarket(marketId)
+    const prices = 'prices' in market ? market.prices : market
+    return prices.basePrice()
+  },
   category: 'llamalend.market',
   validationSuite: marketIdValidationSuite,
 })

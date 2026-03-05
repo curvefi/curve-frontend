@@ -36,7 +36,7 @@ export const { useQuery: useMarketParameters } = queryFactory({
         liquidation_discount: decimal(parameters.liquidation_discount),
         loan_discount: decimal(parameters.loan_discount),
         base_price: decimal(parameters.base_price),
-        A: Number(await market.A()),
+        A: Number(await market.prices.A()),
       }
     }
   },
