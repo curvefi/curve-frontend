@@ -1,4 +1,4 @@
-import { getLlamaMarket } from '@/llamalend/llama.utils'
+import { getUserPositionImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory, rootKeys, type UserMarketParams, type UserMarketQuery } from '@ui-kit/lib/model'
 import { userMarketValidationSuite } from '@ui-kit/lib/model/query/user-market-validation'
@@ -11,10 +11,7 @@ export const {
 } = queryFactory({
   queryKey: (params: UserMarketParams) => [...rootKeys.userMarket(params), 'market-user-state'] as const,
   queryFn: async ({ marketId, userAddress }: UserMarketQuery) => {
-    const market = getLlamaMarket(marketId)
-    const userState =
-      'userPosition' in market ? await market.userPosition.userState(userAddress) : await market.userState(userAddress)
-
+    const userState = await getUserPositionImplementation(marketId).userState(userAddress)
     return {
       /** The amount of collateral tokens the user's put in his loan */
       collateral: userState.collateral as Decimal,

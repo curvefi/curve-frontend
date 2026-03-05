@@ -1,5 +1,4 @@
-import { getLlamaMarket } from '@/llamalend/llama.utils'
-import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
+import { getUserPositionImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import { type FieldsOf } from '@ui-kit/lib'
 import { queryFactory, rootKeys, type UserMarketParams, type UserMarketQuery } from '@ui-kit/lib/model'
 import { loanExistsValidationGroup } from '@ui-kit/lib/model/query/loan-exists-validation'
@@ -14,15 +13,8 @@ type UserPricesParams = FieldsOf<UserPricesQuery>
 const { useQuery: useUserPricesQuery, invalidate: invalidateUserPrices } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, loanExists }: UserPricesParams) =>
     [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'userPrices', { loanExists }] as const,
-  queryFn: async ({ marketId, userAddress }: UserPricesQuery): Promise<string[]> => {
-    const market = getLlamaMarket(marketId)
-
-    if (market instanceof LendMarketTemplate) {
-      return await market.userPosition.userPrices()
-    } else {
-      return await market.userPrices(userAddress)
-    }
-  },
+  queryFn: async ({ marketId, userAddress }: UserPricesQuery): Promise<string[]> =>
+    await getUserPositionImplementation(marketId).userPrices(userAddress),
   category: 'llamalend.user',
   validationSuite: createValidationSuite((params: UserPricesParams) => {
     marketIdValidationSuite(params)

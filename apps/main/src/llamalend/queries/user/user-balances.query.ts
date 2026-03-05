@@ -16,7 +16,6 @@ export const { useQuery: useUserBalances, invalidate: invalidateUserBalances } =
     const market = getLlamaMarket(marketId)
     if (market instanceof LendMarketTemplate) {
       const { collateral, borrowed, vaultShares, gauge } = await market.wallet.balances()
-
       return {
         collateral: collateral as Decimal,
         borrowed: borrowed as Decimal,

@@ -11,7 +11,6 @@ const _fetchUserSupplyBoost = async ({ marketId }: MarketQuery): Promise<number 
   }
   const market = api.getLendMarket(marketId)
   const boost = await market.userPosition.userBoost(api.signerAddress)
-
   return boost ? +boost : null
 }
 
