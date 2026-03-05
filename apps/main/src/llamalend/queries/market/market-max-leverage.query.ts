@@ -24,7 +24,7 @@ export const { useQuery: useMarketMaxLeverage } = queryFactory({
   },
   category: 'llamalend.market',
   validationSuite: createValidationSuite(({ chainId, marketId, range }: MaxLeverageParams) => {
-    marketIdValidationSuite({ chainId, marketId })
+    marketIdValidationSuite.run({ chainId, marketId })
     group('rangeValidationGroup', () => validateRange(range))
   }),
 })

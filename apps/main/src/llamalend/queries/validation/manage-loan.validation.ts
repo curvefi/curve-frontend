@@ -112,7 +112,7 @@ export const collateralValidationGroup = ({
   userAddress,
 }: CollateralParams) =>
   group('chainValidation', () => {
-    marketIdValidationSuite({ chainId, marketId })
+    marketIdValidationSuite.run({ chainId, marketId })
     userAddressValidationGroup({ userAddress })
     validateUserCollateral(userCollateral)
     validateMaxCollateral(userCollateral, maxCollateral)

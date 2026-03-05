@@ -35,7 +35,7 @@ export const { useQuery: useMarketFutureRates } = queryFactory({
   queryFn: async ({ marketId, debt }: BorrowApyQuery) => await fetchFutureRates(marketId, RESERVES, debt),
   category: 'llamalend.market',
   validationSuite: createValidationSuite(({ chainId, marketId, debt }: BorrowFutureApyParams) => {
-    marketIdValidationSuite({ chainId, marketId })
+    marketIdValidationSuite.run({ chainId, marketId })
     group('borrowFormValidationGroup', () => {
       test('debt', `Debt must be a non-zero number`, () => {
         enforce(debt).isNumeric().notEquals(0)
@@ -51,7 +51,7 @@ export const { useQuery: useMarketSupplyFutureRates } = queryFactory({
   queryFn: async ({ marketId, reserves }: SupplyApyQuery) => await fetchFutureRates(marketId, reserves, DEBT),
   category: 'llamalend.market',
   validationSuite: createValidationSuite(({ chainId, marketId, reserves }: SupplyFutureApyParams) => {
-    marketIdValidationSuite({ chainId, marketId })
+    marketIdValidationSuite.run({ chainId, marketId })
     group('supplyFormValidationGroup', () => validateDepositAmount(reserves, { depositRequired: true }))
   }),
 })

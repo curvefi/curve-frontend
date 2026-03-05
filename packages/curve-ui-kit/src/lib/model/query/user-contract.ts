@@ -8,5 +8,5 @@ export type UserContractQuery = UserQuery & ContractQuery
 
 export const userContractValidationSuite = createValidationSuite((params) => {
   contractValidationGroup(params)
-  userAddressValidationSuite(params)
+  userAddressValidationSuite.run(params)
 })

@@ -18,7 +18,7 @@ type MarketUserBandsBalancesQuery = UserMarketQuery & {
 type MarketUserBandsBalancesParams = FieldsOf<MarketUserBandsBalancesQuery>
 
 const marketUserBandsBalancesValidationSuite = createValidationSuite((params: MarketUserBandsBalancesParams) => {
-  userMarketValidationSuite(params)
+  userMarketValidationSuite.run(params)
   loanExistsValidationGroup(params)
   liquidationBandValidationGroup(params)
 })

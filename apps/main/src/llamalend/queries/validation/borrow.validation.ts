@@ -70,7 +70,7 @@ export const createLoanQueryValidationSuite = ({
       routeId,
     }: CreateLoanDebtParams) => {
       skipWhen(skipMarketValidation, () => {
-        marketIdValidationSuite({ chainId, marketId })
+        marketIdValidationSuite.run({ chainId, marketId })
       })
       createLoanFormValidationGroup(
         { userBorrowed, userCollateral, debt, range, slippage, leverageEnabled, maxDebt },

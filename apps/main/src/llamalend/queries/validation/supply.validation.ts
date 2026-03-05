@@ -131,7 +131,7 @@ export const depositFormValidationSuite = createValidationSuite(
 )
 
 const supplyUserValidationGroup = <IChainId extends number>(params: UserMarketParams<IChainId>) => {
-  userMarketValidationSuite(params)
+  userMarketValidationSuite.run(params)
   validateHasVault(params.marketId)
 }
 
@@ -190,7 +190,7 @@ const withdrawValidationGroup = <IChainId extends number>({
 }
 
 export const withdrawValidationSuite = createValidationSuite((params: WithdrawParams) => {
-  userMarketValidationSuite(params)
+  userMarketValidationSuite.run(params)
   withdrawValidationGroup(params)
 })
 
@@ -224,7 +224,7 @@ const stakeValidationGroup = <IChainId extends number>({ marketId, stakeAmount =
 }
 
 export const stakeValidationSuite = createValidationSuite((params: StakeParams) => {
-  userMarketValidationSuite(params)
+  userMarketValidationSuite.run(params)
   stakeValidationGroup(params)
 })
 
@@ -263,6 +263,6 @@ const unstakeValidationGroup = <IChainId extends number>({
 }
 
 export const unstakeValidationSuite = createValidationSuite((params: UnstakeParams) => {
-  userMarketValidationSuite(params)
+  userMarketValidationSuite.run(params)
   unstakeValidationGroup(params)
 })

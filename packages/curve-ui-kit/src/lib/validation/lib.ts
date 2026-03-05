@@ -15,14 +15,14 @@ export const checkValidity = <D extends object, S extends ValidationSuite>(
   suite: S,
   data: FieldsOf<D>,
   fields?: FieldName<D>[],
-): boolean => Object.keys(suite(data, fields).getErrors()).length === 0
+): boolean => Object.keys(suite.run(data, fields).getErrors()).length === 0
 
 export function assertValidity<D extends object, S extends ValidationSuite>(
   suite: S,
   data: FieldsOf<D>,
   fields?: FieldName<D>[],
 ): D {
-  const result = suite(data, fields)
+  const result = suite.run(data, fields)
   const entries = Object.entries(result.getErrors())
   if (entries.length > 0) {
     throw new Error(`Validation failed: ${entries.map(([field, error]) => `${field}: ${error}`).join(', ')}`)
