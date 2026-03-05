@@ -589,8 +589,7 @@ const loanCreate = {
           : await market.loan.estimateGas.createLoan(userCollateral, debt, n)
         : isLeverage
           ? await market.leverage.estimateGas.createLoanApprove(userCollateral, userBorrowed)
-          : // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            await (market.loan.estimateGas as any).createLoanApprove(userCollateral)
+          : await market.loan.estimateGas.createLoanApprove(userCollateral)
       return resp
     } catch (error) {
       console.error(error)
@@ -803,8 +802,7 @@ const loanBorrowMore = {
           : await market.loan.estimateGas.borrowMore(userCollateral, debt)
         : isLeverage
           ? await market.leverage.estimateGas.borrowMoreApprove(userCollateral, userBorrowed)
-          : // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            await (market.loan.estimateGas as any).borrowMoreApprove(userCollateral)
+          : await market.loan.estimateGas.borrowMoreApprove(userCollateral)
       return resp
     } catch (error) {
       console.error(error)
@@ -1050,10 +1048,9 @@ const loanRepay = {
           ? isFullRepay
             ? await market.loan.estimateGas.fullRepay()
             : await market.loan.estimateGas.repay(userBorrowed)
-          : // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            isFullRepay
-            ? await (market.loan.estimateGas as any).fullRepayApprove()
-            : await (market.loan.estimateGas as any).repayApprove(userBorrowed)
+          : isFullRepay
+            ? await market.loan.estimateGas.fullRepayApprove()
+            : await market.loan.estimateGas.repayApprove(userBorrowed)
       return resp
     } catch (error) {
       console.error(error)
@@ -1142,8 +1139,7 @@ const loanSelfLiquidation = {
       resp.isApproved = await market.loan.selfLiquidateIsApproved()
       resp.estimatedGas = resp.isApproved
         ? await market.loan.estimateGas.selfLiquidate(+maxSlippage)
-        : // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          await (market.loan.estimateGas as any).selfLiquidateApprove()
+        : await market.loan.estimateGas.selfLiquidateApprove()
       return resp
     } catch (err) {
       console.error(err)
@@ -1203,8 +1199,7 @@ const loanCollateralAdd = {
       resp.isApproved = await market.loan.addCollateralIsApproved(collateral)
       resp.estimatedGas = resp.isApproved
         ? await market.loan.estimateGas.addCollateral(collateral)
-        : // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          await (market.loan.estimateGas as any).addCollateralApprove(collateral)
+        : await market.loan.estimateGas.addCollateralApprove(collateral)
       return resp
     } catch (err) {
       console.error(err)
