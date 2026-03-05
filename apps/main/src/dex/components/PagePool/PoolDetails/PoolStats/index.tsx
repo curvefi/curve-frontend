@@ -25,8 +25,8 @@ type PoolStatsProps = {
 
 export const PoolStats = ({ routerParams, poolAlert, poolData, poolDataCacheOrApi, tokensMapper }: PoolStatsProps) => {
   const tokenAlert = useTokenAlert(poolData?.tokenAddressesAll ?? [])
-  const { rChainId: chainId, rPoolIdOrAddress } = routerParams
-  const poolId = usePoolIdByAddressOrId({ chainId, poolIdOrAddress: rPoolIdOrAddress })
+  const { rChainId: chainId, rPoolIdOrAddress: poolIdOrAddress } = routerParams
+  const poolId = usePoolIdByAddressOrId({ chainId, poolIdOrAddress })
   const rewardsApy = useStore((state) => state.pools.rewardsApyMapper[chainId]?.[poolId ?? ''])
 
   const { curveApi } = useCurve()
