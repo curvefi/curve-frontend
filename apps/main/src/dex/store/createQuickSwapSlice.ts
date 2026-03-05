@@ -109,7 +109,6 @@ export const createQuickSwapSlice = (
       const state = get()
       const sliceState = state[sliceKey]
 
-      let activeKey = sliceState.activeKey
       const { chainId, signerAddress } = curve
       const { fromAddress, toAddress } = searchedParams
 
@@ -123,7 +122,7 @@ export const createQuickSwapSlice = (
         })
 
         cFormValues.fromAmount = userBalance
-        activeKey = getRouterActiveKey(curve, cFormValues, searchedParams, maxSlippage)
+        const activeKey = getRouterActiveKey(curve, cFormValues, searchedParams, maxSlippage)
 
         // get max amount for native token
         if (fromAddress.toLowerCase() === ethAddress) {
