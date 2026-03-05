@@ -5,6 +5,7 @@ import { withThemeFromJSXProvider } from '@storybook/addon-themes'
 import { DocsContainer } from '@storybook/addon-docs/blocks'
 import type { Decorator, Preview, ReactRenderer } from '@storybook/react-vite'
 import { chadTheme, darkTheme, lightTheme } from '../src/themes'
+import { Toast } from '../src/widgets/Toast'
 import { createRouter, createRootRoute, RouterProvider, createMemoryHistory } from '@tanstack/react-router'
 
 const themes = {
@@ -51,6 +52,7 @@ export const decorators: Decorator[] = [
         `}
         </style>
         <RouterProvider router={router} />
+        <Toast />
       </>
     )
   },
