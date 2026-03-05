@@ -177,7 +177,7 @@ jobs:
       - name: Check runtime errors
         if: always()
         env:
-          RUNTIME_ERRORS: |
+          RUNTIME_ERRORS: |-
             update depth exceeded
             many re-renders
             unmounted component
@@ -188,9 +188,7 @@ jobs:
             was reexported through module
             dependencies of each other
         run: |
-          if  grep --ignore-case --extended-regexp "$(echo -n "$RUNTIME_ERRORS" | tr '\n' '|')" e2e-*.log; then
-            exit 1
-          fi
+          ! grep --ignore-case --extended-regexp "$(echo -n "$RUNTIME_ERRORS" | tr '\n' '|')" e2e-*.log
 
       - uses: actions/upload-artifact@v4
         if: failure()
