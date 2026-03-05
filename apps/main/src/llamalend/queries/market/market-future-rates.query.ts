@@ -1,6 +1,5 @@
-import { group } from 'vest'
+import { enforce, group, test } from 'vest'
 import { getLlamaMarket } from '@/llamalend/llama.utils'
-import { validateDebt } from '@/llamalend/queries/validation/borrow-fields.validation'
 import { validateDepositAmount } from '@/llamalend/queries/validation/supply.validation'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
@@ -37,7 +36,11 @@ export const { useQuery: useMarketFutureRates } = queryFactory({
   category: 'llamalend.market',
   validationSuite: createValidationSuite(({ chainId, marketId, debt }: BorrowFutureApyParams) => {
     marketIdValidationSuite({ chainId, marketId })
-    group('borrowFormValidationGroup', () => validateDebt(debt))
+    group('borrowFormValidationGroup', () => {
+      test('debt', `Debt must be a non-zero number`, () => {
+        enforce(debt).isNumeric().notEquals(0)
+      })
+    })
   }),
 })
 

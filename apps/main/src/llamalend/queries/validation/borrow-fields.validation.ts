@@ -19,8 +19,8 @@ export const validateUserCollateral = (userCollateral: Decimal | undefined | nul
 
 export const validateDebt = (debt: Decimal | undefined | null, required: boolean = true) => {
   skipWhen(!required && !debt, () => {
-    test('debt', `Debt must be a number and not 0${required ? '' : ' or null'}`, () => {
-      enforce(debt).isNumeric().notEquals(0)
+    test('debt', `Debt must be a positive number${required ? '' : ' or null'}`, () => {
+      enforce(debt).isNumeric().gt(0)
     })
   })
 }
