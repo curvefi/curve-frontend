@@ -1,4 +1,4 @@
-import { MarketInfoSections, AdvancedDetails } from '@/llamalend/features/market-advanced-information'
+import { MarketInfoLayout, AdvancedDetails } from '@/llamalend/features/market-advanced-information'
 import { BandsComp } from '@/loan/components/BandsComp'
 import { ChartAndActivityComp } from '@/loan/components/ChartAndActivityComp'
 import type { ChainId, Llamma } from '@/loan/types/loan.types'
@@ -40,7 +40,7 @@ export const MarketInformationComposite = ({
       {market && (
         <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, marginTop: Spacing.md }}>
           <AdvancedDetails chainId={chainId} marketId={marketId} market={market} marketType={LlamaMarketType.Mint} />
-          <MarketInfoSections
+          <MarketInfoLayout
             chainId={chainId}
             marketType={LlamaMarketType.Mint}
             market={market}

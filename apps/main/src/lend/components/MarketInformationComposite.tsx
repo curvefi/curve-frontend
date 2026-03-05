@@ -2,7 +2,7 @@ import { BandsComp } from '@/lend/components/BandsComp'
 import { ChartAndActivityComp } from '@/lend/components/ChartAndActivityComp'
 import { networks } from '@/lend/networks'
 import { PageContentProps } from '@/lend/types/lend.types'
-import { AdvancedDetails, MarketInfoSections } from '@/llamalend/features/market-advanced-information'
+import { AdvancedDetails, MarketInfoLayout } from '@/llamalend/features/market-advanced-information'
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
 import { getLib } from '@ui-kit/features/connect-wallet'
@@ -44,7 +44,7 @@ export const MarketInformationComposite = ({
       {market && (
         <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, marginTop: Spacing.md }}>
           <AdvancedDetails chainId={rChainId} marketId={rOwmId} market={market} marketType={LlamaMarketType.Lend} />
-          <MarketInfoSections
+          <MarketInfoLayout
             chainId={rChainId}
             marketType={LlamaMarketType.Lend}
             market={market}

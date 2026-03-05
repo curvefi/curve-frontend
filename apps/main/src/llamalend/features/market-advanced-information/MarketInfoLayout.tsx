@@ -16,7 +16,7 @@ type MarketInfoSectionsProps = {
   network: BaseConfig | undefined
 }
 
-export const MarketInfoSections = ({ chainId, marketType, market, network }: MarketInfoSectionsProps) => (
+export const MarketInfoLayout = ({ chainId, marketType, market, network }: MarketInfoSectionsProps) => (
   <Stack
     display="grid"
     gridTemplateColumns="1fr"
