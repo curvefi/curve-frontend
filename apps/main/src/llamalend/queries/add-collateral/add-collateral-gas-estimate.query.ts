@@ -14,7 +14,7 @@ const { useQuery: useAddCollateralGasEstimate } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, userCollateral }: AddCollateralGasParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-      'add-collateral-gas-estimation',
+      'estimateGas.addCollateral',
       { userCollateral },
     ] as const,
   queryFn: async ({ marketId, userCollateral }: AddCollateralGasQuery) => {

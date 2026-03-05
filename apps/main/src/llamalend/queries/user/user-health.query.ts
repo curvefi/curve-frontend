@@ -18,7 +18,7 @@ export const {
   invalidate: invalidateUserHealth,
 } = queryFactory({
   queryKey: ({ isFull, ...params }: UserHealthParams) =>
-    [...rootKeys.userMarket(params), 'market-user-health', { isFull }] as const,
+    [...rootKeys.userMarket(params), 'userHealth', { isFull }] as const,
   queryFn: async ({ marketId, userAddress, isFull }: UserHealthQuery) =>
     (await getUserPositionImplementation(marketId).userHealth(isFull, userAddress)) as Decimal,
   category: 'llamalend.user',

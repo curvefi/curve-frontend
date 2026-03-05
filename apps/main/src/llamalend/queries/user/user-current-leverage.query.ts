@@ -10,7 +10,7 @@ import { decimal } from '@ui-kit/utils/decimal'
  */
 export const { useQuery: useUserCurrentLeverage, invalidate: invalidateUserCurrentLeverage } = queryFactory({
   queryKey: ({ chainId, userAddress, marketId }: UserMarketParams) =>
-    [...rootKeys.userMarket({ chainId, userAddress, marketId }), 'user-current-leverage'] as const,
+    [...rootKeys.userMarket({ chainId, userAddress, marketId }), 'currentLeverage'] as const,
   queryFn: async ({ marketId, userAddress }: UserMarketQuery) =>
     decimal(await getUserPositionImplementation(marketId).currentLeverage(userAddress)) ?? null,
   category: 'llamalend.user',

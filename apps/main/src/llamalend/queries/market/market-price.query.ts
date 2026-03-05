@@ -3,7 +3,7 @@ import { MarketParams, type MarketQuery, queryFactory, rootKeys } from '@ui-kit/
 import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
 
 export const { useQuery: useMarketPrice } = queryFactory({
-  queryKey: (params: MarketParams) => [...rootKeys.market(params), 'market-price'] as const,
+  queryKey: (params: MarketParams) => [...rootKeys.market(params), 'price'] as const,
   queryFn: ({ marketId }: MarketQuery): Promise<string> => getPricesImplementation(marketId).price(),
   category: 'llamalend.market',
   validationSuite: marketIdValidationSuite,
