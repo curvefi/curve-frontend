@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useConnection } from 'wagmi'
 import { LlamaMarketColumnId } from '@/llamalend/features/market-list/columns'
+import { LlamaMonitorBotButton } from '@/llamalend/widgets/LlamaMonitorBotButton'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import { fromEntries } from '@primitives/objects.utils'
@@ -11,7 +12,6 @@ import { EmptyStateCard } from '@ui-kit/shared/ui/EmptyStateCard'
 import { type TabOption, TabsSwitcher } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { MarketRateType } from '@ui-kit/types/market'
-import { LlamaMonitorBotButton } from './LlamaMonitorBotButton'
 import { UserPositionsTable, type UserPositionsTableProps } from './UserPositionsTable'
 
 const { Spacing } = SizesAndSpaces
