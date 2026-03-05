@@ -1,4 +1,4 @@
-import { getLlamaMarket } from '@/llamalend/llama.utils'
+import { getMarketLoanImpl } from '@/llamalend/queries/market/market.query-helpers'
 import { type RepayIsApprovedParams, useRepayIsApproved } from '@/llamalend/queries/repay/repay-is-approved.query'
 import type { TGas } from '@curvefi/llamalend-api/lib/interfaces'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
@@ -39,8 +39,7 @@ const { useQuery: useRepayLoanEstimateGas, invalidate: invalidateRepayLoanEstima
     slippage,
     routeId,
   }: RepayIsFullQuery): Promise<TGas> => {
-    const market = getLlamaMarket(marketId)
-    const loan = 'loan' in market ? market.loan : market
+    const loan = getMarketLoanImpl(marketId)
     const useFullRepay = isFull && !+stateCollateral && !+userCollateral
     if (useFullRepay) {
       return await loan.estimateGas.fullRepay(userAddress)
@@ -61,7 +60,7 @@ const { useQuery: useRepayLoanEstimateGas, invalidate: invalidateRepayLoanEstima
       case 'deleverage':
         throw new Error('estimateGas.repay is not supported for deleverage repay')
       case 'unleveraged':
-        return 'loan' in impl ? await impl.loan.estimateGas.repay(...args) : await impl.estimateGas.repay(...args)
+        return await impl.estimateGas.repay(...args)
     }
   },
   category: 'llamalend.repay',
@@ -97,17 +96,10 @@ const { useQuery: useRepayApproveGasEstimate, invalidate: invalidateRepayApprove
     userAddress,
     routeId,
   }: RepayIsFullQuery): Promise<TGas> => {
-    const market = getLlamaMarket(marketId)
-    const loan = 'loan' in market ? market.loan : market
+    const loan = getMarketLoanImpl(marketId)
     const useFullRepay = isFull && !+stateCollateral && !+userCollateral
     if (useFullRepay) {
-      return 'loan' in market
-        ? await (
-            market.loan as unknown as {
-              fullRepayApproveEstimateGas: (address?: string) => Promise<TGas>
-            }
-          ).fullRepayApproveEstimateGas(userAddress)
-        : await market.estimateGas.fullRepayApprove(userAddress)
+      return await loan.estimateGas.fullRepayApprove(userAddress)
     }
     const [type, impl] = getRepayImplementation(marketId, { userCollateral, stateCollateral, userBorrowed, routeId })
     switch (type) {
@@ -119,13 +111,7 @@ const { useQuery: useRepayApproveGasEstimate, invalidate: invalidateRepayApprove
       case 'deleverage':
         throw new Error('estimateGas.repayApprove is not supported for deleverage repay')
       case 'unleveraged':
-        return 'loan' in impl
-          ? await (
-              impl.loan as unknown as {
-                repayApproveEstimateGas: (debt: string | number) => Promise<TGas>
-              }
-            ).repayApproveEstimateGas(userBorrowed)
-          : await impl.estimateGas.repayApprove(userBorrowed)
+        return await loan.estimateGas.repayApprove(userBorrowed)
     }
   },
   category: 'llamalend.repay',

@@ -1,4 +1,4 @@
-import { getLlamaMarket } from '@/llamalend/llama.utils'
+import { getMarketLoanImpl } from '@/llamalend/queries/market/market.query-helpers'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { queryFactory, rootKeys, type UserMarketParams, type UserMarketQuery } from '@ui-kit/lib/model'
 import { userMarketValidationSuite } from '@ui-kit/lib/model/query/user-market-validation'
@@ -6,11 +6,8 @@ import { userMarketValidationSuite } from '@ui-kit/lib/model/query/user-market-v
 export const { useQuery: useCloseLoanIsApproved, fetchQuery: fetchCloseIsApproved } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress }: UserMarketParams<IChainId>) =>
     [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'selfLiquidateIsApproved'] as const,
-  queryFn: async ({ marketId }: UserMarketQuery<IChainId>): Promise<boolean> => {
-    const market = getLlamaMarket(marketId)
-    const loan = 'loan' in market ? market.loan : market
-    return await loan.selfLiquidateIsApproved()
-  },
+  queryFn: async ({ marketId }: UserMarketQuery<IChainId>): Promise<boolean> =>
+    await getMarketLoanImpl(marketId).selfLiquidateIsApproved(),
   category: 'llamalend.closeLoan',
   validationSuite: userMarketValidationSuite,
 })

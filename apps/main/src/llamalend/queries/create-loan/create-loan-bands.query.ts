@@ -50,10 +50,8 @@ export const { useQuery: useCreateLoanBands, invalidate: invalidateCreateLoanBan
       case 'V2':
         return impl.createLoanBands(userCollateral, userBorrowed, debt, range)
       case 'V0':
-      case 'unleveraged': {
-        const loan = 'loan' in impl ? impl.loan : impl
-        return loan.createLoanBands(userCollateral, debt, range)
-      }
+      case 'unleveraged':
+        return impl.createLoanBands(userCollateral, debt, range)
     }
   },
   category: 'llamalend.createLoan',

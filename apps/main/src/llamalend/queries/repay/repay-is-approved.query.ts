@@ -1,4 +1,4 @@
-import { getLlamaMarket } from '@/llamalend/llama.utils'
+import { getMarketLoanImpl } from '@/llamalend/queries/market/market.query-helpers'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { type RepayIsFullParams, type RepayIsFullQuery } from '../validation/manage-loan.types'
@@ -40,8 +40,7 @@ export const {
     userAddress,
     routeId,
   }: RepayIsFullQuery): Promise<boolean> => {
-    const market = getLlamaMarket(marketId)
-    const loan = 'loan' in market ? market.loan : market
+    const loan = getMarketLoanImpl(marketId)
     const useFullRepay = isFull && !+stateCollateral && !+userCollateral
     if (useFullRepay) return await loan.fullRepayIsApproved(userAddress)
     const [type, impl] = getRepayImplementation(marketId, { userCollateral, stateCollateral, userBorrowed, routeId })

@@ -20,8 +20,8 @@ import { MarketNetBorrowAprTooltipContentProps } from './widgets/tooltips/Market
  * Gets a Llama market (either a mint or lend market) by its ID.
  * Throws an error if no market is found with the given ID.
  */
-export const getLlamaMarket = (id: string, lib = requireLib('llamaApi')): LlamaMarketTemplate =>
-  id.startsWith('one-way') ? lib.getLendMarket(id) : lib.getMintMarket(id)
+export const getLlamaMarket = (id: string | LlamaMarketTemplate, lib = requireLib('llamaApi')): LlamaMarketTemplate =>
+  typeof id === 'string' ? (id.startsWith('one-way') ? lib.getLendMarket(id) : lib.getMintMarket(id)) : id
 
 /**
  * Checks if a market supports leverage or not. A market supports leverage if:

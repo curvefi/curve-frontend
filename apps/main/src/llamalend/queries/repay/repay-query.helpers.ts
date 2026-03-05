@@ -23,17 +23,18 @@ export function getRepayImplementation(
   { stateCollateral, userCollateral, userBorrowed, routeId, slippage }: RepayFields,
   routeMeta?: Partial<RouteMutationMeta>,
 ) {
-  const market = typeof marketId === 'string' ? getLlamaMarket(marketId) : marketId
+  const market = getLlamaMarket(marketId)
   const [hasUserBorrowed, hasUserCollateral, hasStateCollateral] = [userBorrowed, userCollateral, stateCollateral].map(
     (v) => !!+v,
   )
-  if (!hasUserCollateral && !hasStateCollateral) return ['unleveraged', market, [userBorrowed]] as const
   if (market instanceof MintMarketTemplate) {
+    if (!hasUserCollateral && !hasStateCollateral) return ['unleveraged', market, [userBorrowed]] as const
     if (hasV2Leverage(market))
       return ['V2', market.leverageV2, [stateCollateral, userCollateral, userBorrowed]] as const
     if (hasStateCollateral && !hasUserBorrowed && !hasUserCollateral && hasDeleverage(market))
       return ['deleverage', market.deleverage, [stateCollateral]] as const
   } else {
+    if (!hasUserCollateral && !hasStateCollateral) return ['unleveraged', market.loan, [userBorrowed]] as const
     if (hasZapV2(market))
       return [
         'zapV2',

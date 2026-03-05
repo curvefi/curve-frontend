@@ -1,6 +1,7 @@
 import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { type NetworkDict } from '@/llamalend/llamalend.types'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { type FieldsOf } from '@ui-kit/lib'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { useEstimateGas } from '@ui-kit/lib/model/entities/gas-info'
@@ -20,13 +21,9 @@ const { useQuery: useRemoveCollateralGasEstimate } = queryFactory({
     ] as const,
   queryFn: async ({ marketId, userCollateral }: RemoveCollateralGasQuery) => {
     const market = getLlamaMarket(marketId)
-    return 'loan' in market
-      ? await market.loan.estimateGas.removeCollateral(userCollateral)
-      : await (
-          market as unknown as {
-            removeCollateralEstimateGas: (collateral: string | number) => Promise<number>
-          }
-        ).removeCollateralEstimateGas(userCollateral)
+    return market instanceof LendMarketTemplate
+      ? market.loan.estimateGas.removeCollateral(userCollateral)
+      : market.removeCollateralEstimateGas(userCollateral)
   },
   category: 'llamalend.removeCollateral',
   validationSuite: collateralValidationSuite,

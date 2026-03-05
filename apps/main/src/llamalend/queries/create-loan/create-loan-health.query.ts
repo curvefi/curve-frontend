@@ -51,10 +51,8 @@ export const { useQuery: useCreateLoanHealth, invalidate: invalidateCreateLoanHe
       case 'V2':
         return decimal(await impl.createLoanHealth(userCollateral, userBorrowed, debt, range))!
       case 'V0':
-      case 'unleveraged': {
-        const loan = 'loan' in impl ? impl.loan : impl
-        return decimal(await loan.createLoanHealth(userCollateral, debt, range))!
-      }
+      case 'unleveraged':
+        return decimal(await impl.createLoanHealth(userCollateral, debt, range))!
     }
   },
   category: 'llamalend.createLoan',

@@ -51,9 +51,7 @@ export const { useQuery: useRepayPrices, invalidate: invalidateRepayPrices } = q
       case 'deleverage':
         return (await impl.repayPrices(...args)) as Range<Decimal>
       case 'unleveraged':
-        return 'loan' in impl
-          ? ((await impl.loan.repayPrices(...args)) as Range<Decimal>)
-          : ((await impl.repayPrices(...args)) as Range<Decimal>)
+        return (await impl.repayPrices(...args)) as Range<Decimal>
     }
   },
   category: 'llamalend.repay',

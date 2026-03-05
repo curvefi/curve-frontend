@@ -45,9 +45,10 @@ export const { useQuery: useMarketBandsBalances } = queryFactory({
       const bandsBalances = await market.stats.bandsBalances()
       // format bands balances to the same format as lend market bands balances
       const formattedBandsBalances = Object.fromEntries(
-        Object.entries(bandsBalances as Record<string, { stablecoin: string; collateral: string }>).map(
-          ([key, { stablecoin, collateral }]) => [key, { borrowed: stablecoin, collateral }],
-        ),
+        Object.entries(bandsBalances).map(([key, { stablecoin, collateral }]) => [
+          key,
+          { borrowed: stablecoin, collateral },
+        ]),
       )
       data = await fetchChartBandBalancesData(
         sortBands(formattedBandsBalances),
@@ -62,7 +63,7 @@ export const { useQuery: useMarketBandsBalances } = queryFactory({
       for (const offset of [-1, 0, 1]) {
         const band = normalizedOraclePriceBand + offset
         if (!Number.isFinite(band) || data.some((b) => b.n === band)) continue
-        const [p_up, p_down] = await ('prices' in market
+        const [p_up, p_down] = await (market instanceof LendMarketTemplate
           ? market.prices.calcBandPrices(+band)
           : market.calcBandPrices(+band))
         const pUpDownMedian = Number(new BN(p_up).plus(p_down).dividedBy(2))

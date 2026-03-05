@@ -3,7 +3,6 @@ import { useCallback } from 'react'
 import { useConfig } from 'wagmi'
 import { formatTokenAmounts } from '@/llamalend/llama.utils'
 import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
-import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
 import { fetchRepayIsApproved } from '@/llamalend/queries/repay/repay-is-approved.query'
 import { getRepayImplementation } from '@/llamalend/queries/repay/repay-query.helpers'
@@ -12,6 +11,7 @@ import {
   repayFromCollateralIsFullValidationSuite,
 } from '@/llamalend/queries/validation/manage-loan.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
+import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { type Address, type Hex } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { parseMutationRoute } from '@ui-kit/entities/router-api'
@@ -54,7 +54,7 @@ const approveRepay = async (
     case 'deleverage':
       return [] // no approve needed, paying from state
     case 'unleveraged':
-      return (await (impl instanceof MintMarketTemplate ? impl : impl.loan).repayApprove(userBorrowed)) as Hex[]
+      return (await impl.repayApprove(userBorrowed)) as Hex[]
   }
 }
 
@@ -81,7 +81,7 @@ const repay = async (
     case 'deleverage':
       return (await impl.repay(stateCollateral, +slippage)) as Hex
     case 'unleveraged':
-      return (await (impl instanceof MintMarketTemplate ? impl : impl.loan).repay(userBorrowed)) as Hex
+      return (await impl.repay(userBorrowed)) as Hex
   }
 }
 

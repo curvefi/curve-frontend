@@ -37,10 +37,8 @@ export const {
       case 'V2':
         return await impl.createLoanIsApproved(userCollateral, userBorrowed)
       case 'V0':
-      case 'unleveraged': {
-        const loan = 'loan' in impl ? impl.loan : impl
-        return await loan.createLoanIsApproved(userCollateral)
-      }
+      case 'unleveraged':
+        return await impl.createLoanIsApproved(userCollateral)
     }
   },
   category: 'llamalend.createLoan',

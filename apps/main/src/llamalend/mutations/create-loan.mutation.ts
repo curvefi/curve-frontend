@@ -2,7 +2,6 @@ import { useCallback } from 'react'
 import { useConfig } from 'wagmi'
 import { formatTokenAmounts } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
-import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
 import { fetchCreateLoanIsApproved } from '@/llamalend/queries/create-loan/create-loan-approved.query'
 import { getCreateLoanImplementation } from '@/llamalend/queries/create-loan/create-loan-query.helpers'
@@ -45,9 +44,7 @@ const approve = async (
     case 'V0':
       return (await impl.createLoanApprove(userCollateral)) as Address[]
     case 'unleveraged':
-      return (await (impl instanceof MintMarketTemplate ? impl : impl.loan).createLoanApprove(
-        userCollateral,
-      )) as Address[]
+      return (await impl.createLoanApprove(userCollateral)) as Address[]
   }
 }
 
@@ -71,11 +68,7 @@ const create = async (
     case 'V0':
       return (await impl.createLoan(userCollateral, debt, range, +slippage)) as Address
     case 'unleveraged':
-      return (await (impl instanceof MintMarketTemplate ? impl : impl.loan).createLoan(
-        userCollateral,
-        debt,
-        range,
-      )) as Address
+      return (await impl.createLoan(userCollateral, debt, range)) as Address
   }
 }
 

@@ -98,10 +98,8 @@ export const {
         const { maxBorrowable, maxCollateral } = result // leverage and routeIdx fields are unused
         return convertNumbers({ maxDebt: maxBorrowable, maxTotalCollateral: maxCollateral })
       }
-      case 'unleveraged': {
-        const loan = 'loan' in impl ? impl.loan : impl
-        return convertNumbers({ maxDebt: await loan.createLoanMaxRecv(userCollateral, range) })
-      }
+      case 'unleveraged':
+        return convertNumbers({ maxDebt: await impl.createLoanMaxRecv(userCollateral, range) })
     }
   },
   category: 'llamalend.createLoan',

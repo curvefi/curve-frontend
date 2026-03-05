@@ -40,11 +40,11 @@ export const { useQuery: useMarketUserBandsBalances } = queryFactory({
       return fetchChartBandBalancesData(sortBands(userBandsBalances), liquidationBand, market, isMarket)
     } else {
       const userBandsBalances = await market.userBandsBalances(userAddress)
-
       const formattedUserBandsBalances: BandsBalances = Object.fromEntries(
-        Object.entries(userBandsBalances as Record<string, { stablecoin: string; collateral: string }>).map(
-          ([key, { stablecoin, collateral }]) => [key, { borrowed: stablecoin, collateral }],
-        ),
+        Object.entries(userBandsBalances).map(([key, { stablecoin, collateral }]) => [
+          key,
+          { borrowed: stablecoin, collateral },
+        ]),
       )
 
       return fetchChartBandBalancesData(sortBands(formattedUserBandsBalances), liquidationBand, market, isMarket)
