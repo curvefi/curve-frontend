@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useConnection } from 'wagmi'
 import { LlamaMarketColumnId } from '@/llamalend/features/market-list/columns'
-import { LlamaMonitorBotButton } from '@/llamalend/widgets/LlamaMonitorBotButton'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import { fromEntries } from '@primitives/objects.utils'
@@ -80,17 +79,11 @@ export const UserPositionsTabs = (
             alignItems="stretch"
             sx={{
               backgroundColor: (t) => t.design.Layer[1].Fill,
+              flexGrow: 1,
+              borderBottom: (t) => `1px solid ${t.design.Tabs.UnderLined.Default.Outline}`,
             }}
           >
             <TabsSwitcher value={tab} onChange={setTab} variant="underlined" options={tabs} overflow="standard" />
-            <Stack
-              alignItems="center"
-              direction="row"
-              justifyContent="end"
-              sx={{ flexGrow: 1, borderBottom: (t) => `1px solid ${t.design.Tabs.UnderLined.Default.Outline}` }}
-            >
-              <LlamaMonitorBotButton />
-            </Stack>
           </Stack>
           {/* the key is needed to force a re-render when the tab changes, otherwise filters have stale state for few milliseconds */}
           <UserPositionsTable key={tab} {...props} filters={filters} tab={tab} />
