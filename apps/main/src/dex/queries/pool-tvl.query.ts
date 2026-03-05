@@ -1,5 +1,5 @@
 import PromisePool from '@supercharge/promise-pool'
-import { requireLib } from '@ui-kit/features/connect-wallet'
+import { requireLib, useCurve } from '@ui-kit/features/connect-wallet'
 import { createValidationSuite } from '@ui-kit/lib'
 import {
   queryFactory,
@@ -17,8 +17,7 @@ import { getPoolIds, poolIdsQueryKey } from './pool-ids.query'
 const getPoolTvlFromLib = ({ poolId }: Pick<PoolQuery, 'poolId'>) =>
   requireLib('curveApi').getPool(poolId).stats.totalLiquidity()
 
-/** Hook to fetch the TVL for a single pool. */
-export const { useQuery: usePoolTvl } = queryFactory({
+const { useQuery: usePoolTvlQuery } = queryFactory({
   category: 'dex.pools',
   queryKey: ({ chainId, poolId }: PoolParams) => [...rootKeys.pool({ chainId, poolId }), 'stats.tvl'] as const,
   queryFn: async ({ poolId }: PoolQuery) => getPoolTvlFromLib({ poolId }),
@@ -29,16 +28,13 @@ export const { useQuery: usePoolTvl } = queryFactory({
   }),
 })
 
-/**
- * Hook to fetch TVLs for multiple pools on the same chain.
- *
- * @remarks
- * Uses a single query keyed only by `chainId` (not per pool) to avoid 1000+ individual query
- * entries that slow down the front-end. Pools are fetched with `PromisePool` at concurrency 10
- * (multicall is not available for tvl data, as the data comes from an API endpoint).
- * The poolIds are explicitly not part of the query key.
- */
-export const { useQuery: usePoolTvls, fetchQuery: fetchPoolTvls } = queryFactory({
+/** Hook to fetch the TVL for a single pool. */
+export function usePoolTvl({ chainId, poolId }: PoolParams) {
+  const { isHydrated } = useCurve()
+  return usePoolTvlQuery({ chainId, poolId }, isHydrated)
+}
+
+const { useQuery: usePoolTvlsQuery } = queryFactory({
   queryKey: ({ chainId }: ChainParams) => [...rootKeys.chain({ chainId }), 'stats.tvl'] as const,
   queryFn: async ({ chainId }: ChainQuery) => {
     const poolIds = getPoolIds({ chainId }) ?? []
@@ -55,3 +51,17 @@ export const { useQuery: usePoolTvls, fetchQuery: fetchPoolTvls } = queryFactory
   }),
   dependencies: (params) => [poolIdsQueryKey(params)],
 })
+
+/**
+ * Hook to fetch TVLs for multiple pools on the same chain.
+ *
+ * @remarks
+ * Uses a single query keyed only by `chainId` (not per pool) to avoid 1000+ individual query
+ * entries that slow down the front-end. Pools are fetched with `PromisePool` at concurrency 10
+ * (multicall is not available for tvl data, as the data comes from an API endpoint).
+ * The poolIds are explicitly not part of the query key.
+ */
+export function usePoolTvls({ chainId }: ChainParams) {
+  const { isHydrated } = useCurve()
+  return usePoolTvlsQuery({ chainId }, isHydrated)
+}
