@@ -1,4 +1,4 @@
-import { getMarketLoanImpl } from '@/llamalend/queries/market/market.query-helpers'
+import { getLoanImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import { type RepayIsApprovedParams, useRepayIsApproved } from '@/llamalend/queries/repay/repay-is-approved.query'
 import type { TGas } from '@curvefi/llamalend-api/lib/interfaces'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
@@ -39,7 +39,7 @@ const { useQuery: useRepayLoanEstimateGas, invalidate: invalidateRepayLoanEstima
     slippage,
     routeId,
   }: RepayIsFullQuery): Promise<TGas> => {
-    const loan = getMarketLoanImpl(marketId)
+    const loan = getLoanImplementation(marketId)
     const useFullRepay = isFull && !+stateCollateral && !+userCollateral
     if (useFullRepay) {
       return await loan.estimateGas.fullRepay(userAddress)
@@ -96,7 +96,7 @@ const { useQuery: useRepayApproveGasEstimate, invalidate: invalidateRepayApprove
     userAddress,
     routeId,
   }: RepayIsFullQuery): Promise<TGas> => {
-    const loan = getMarketLoanImpl(marketId)
+    const loan = getLoanImplementation(marketId)
     const useFullRepay = isFull && !+stateCollateral && !+userCollateral
     if (useFullRepay) {
       return await loan.estimateGas.fullRepayApprove(userAddress)

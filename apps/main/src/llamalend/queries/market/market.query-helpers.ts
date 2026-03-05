@@ -3,14 +3,14 @@ import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { requireLib } from '@ui-kit/features/connect-wallet'
 
-export const getLendMarket = (marketId: string) => requireLib('llamaApi').getLendMarket(marketId)
+export const getLendVault = (marketId: string) => requireLib('llamaApi').getLendMarket(marketId).vault
 
-export const getMarketPricesImpl = (marketId: LlamaMarketTemplate | string) => {
+export const getPricesImplementation = (marketId: string | LlamaMarketTemplate) => {
   const market = getLlamaMarket(marketId)
   return market instanceof LendMarketTemplate ? market.prices : market
 }
 
-export const getMarketLoanImpl = (marketId: LlamaMarketTemplate | string) => {
+export const getLoanImplementation = (marketId: string | LlamaMarketTemplate) => {
   const market = getLlamaMarket(marketId)
   return market instanceof LendMarketTemplate ? market.loan : market
 }

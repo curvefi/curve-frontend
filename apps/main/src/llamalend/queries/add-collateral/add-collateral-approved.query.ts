@@ -1,4 +1,4 @@
-import { getMarketLoanImpl } from '@/llamalend/queries/market/market.query-helpers'
+import { getLoanImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type FieldsOf } from '@ui-kit/lib'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
@@ -16,7 +16,7 @@ export const { useQuery: useAddCollateralIsApproved, fetchQuery: fetchAddCollate
       { userCollateral },
     ] as const,
   queryFn: async ({ marketId, userCollateral }: AddCollateralIsApprovedQuery): Promise<boolean> =>
-    await getMarketLoanImpl(marketId).addCollateralIsApproved(userCollateral),
+    await getLoanImplementation(marketId).addCollateralIsApproved(userCollateral),
   category: 'llamalend.addCollateral',
   validationSuite: collateralValidationSuite,
 })

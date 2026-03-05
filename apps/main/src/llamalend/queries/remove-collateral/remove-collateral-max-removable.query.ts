@@ -1,4 +1,4 @@
-import { getMarketLoanImpl } from '@/llamalend/queries/market/market.query-helpers'
+import { getLoanImplementation } from '@/llamalend/queries/market/market.query-helpers'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Decimal } from '@primitives/decimal.utils'
 import { type FieldsOf } from '@ui-kit/lib'
@@ -11,7 +11,7 @@ type MaxRemovableParams<T = IChainId> = FieldsOf<MaxRemovableQuery<T>>
 
 export const { useQuery: useMaxRemovableCollateral, queryKey: maxRemovableCollateralKey } = queryFactory({
   queryKey: (params: MaxRemovableParams) => [...rootKeys.userMarket(params), 'maxRemovable'] as const,
-  queryFn: async ({ marketId }: MaxRemovableQuery) => (await getMarketLoanImpl(marketId).maxRemovable()) as Decimal,
+  queryFn: async ({ marketId }: MaxRemovableQuery) => (await getLoanImplementation(marketId).maxRemovable()) as Decimal,
   category: 'llamalend.removeCollateral',
   validationSuite: llamaApiValidationSuite,
 })

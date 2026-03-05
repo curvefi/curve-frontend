@@ -32,7 +32,7 @@ export function getBorrowMoreImplementation(
  * For leveraged (V1/V2) markets, returns `[type, impl, [userCollateral, userBorrowed, debt]]`.
  */
 export function getBorrowMoreImplementationArgs(
-  marketId: string | LlamaMarketTemplate,
+  marketId: string,
   {
     userCollateral,
     userBorrowed,
