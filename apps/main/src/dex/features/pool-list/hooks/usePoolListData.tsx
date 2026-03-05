@@ -15,6 +15,7 @@ import { useCurve } from '@ui-kit/features/connect-wallet'
 import { usePageVisibleInterval } from '@ui-kit/hooks/usePageVisibleInterval'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { DEX_ROUTES } from '@ui-kit/shared/routes'
+import { decimal } from '@ui-kit/utils'
 import type { PoolListItem, PoolTag } from '../types'
 
 const POOL_TEXT_FIELDS = [
@@ -100,8 +101,8 @@ export function usePoolListData({ id: network, chainId, isLite }: NetworkConfig)
                     .filter((v) => !isNaN(v)),
                 ),
                 rewards,
-                volume: volumes?.[item.pool.id] ?? '0',
-                tvl: tvls?.[item.pool.id],
+                volume: decimal(volumes?.[item.pool.id]),
+                tvl: decimal(tvls?.[item.pool.id]),
                 hasPosition,
                 network,
                 url: getPath({ network }, `${DEX_ROUTES.PAGE_POOLS}/${item.pool.address}/deposit`),
