@@ -13,7 +13,14 @@ export const LlamaChainFilterChips = ({
 }: {
   data: LlamaMarket[]
 } & FilterProps<LlamaMarketColumnId>) => {
-  const chains = useMemo(() => getUniqueSortedStrings(data, LlamaMarketColumnId.Chain), [data])
+  const chains = useMemo(
+    () =>
+      getUniqueSortedStrings(
+        data.filter((market) => !market.deprecatedMessage || market.userHasPositions),
+        LlamaMarketColumnId.Chain,
+      ),
+    [data],
+  )
   const selectedChains = useMemo(
     () => parseListFilter(columnFiltersById[LlamaMarketColumnId.Chain]),
     [columnFiltersById],
