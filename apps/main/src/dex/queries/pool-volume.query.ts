@@ -1,5 +1,5 @@
 import PromisePool from '@supercharge/promise-pool'
-import { requireLib } from '@ui-kit/features/connect-wallet'
+import { requireLib, useCurve } from '@ui-kit/features/connect-wallet'
 import { createValidationSuite } from '@ui-kit/lib'
 import {
   queryFactory,
@@ -31,10 +31,11 @@ const { useQuery: usePoolVolumeQuery } = queryFactory({
 
 /** Hook to fetch the trading volume for a single pool. Disabled on lite networks. */
 export function usePoolVolume({ chainId, poolId }: PoolParams) {
+  const { isHydrated } = useCurve()
   const { data: networks } = useNetworks()
   const network = chainId != null && networks[chainId]
 
-  return usePoolVolumeQuery({ chainId, poolId }, network && !network.isLite)
+  return usePoolVolumeQuery({ chainId, poolId }, isHydrated && network && !network.isLite)
 }
 
 const { useQuery: usePoolVolumesQuery, fetchQuery: fetchPoolVolumesQuery } = queryFactory({
@@ -66,16 +67,17 @@ const { useQuery: usePoolVolumesQuery, fetchQuery: fetchPoolVolumesQuery } = que
  * Disabled on lite networks.
  */
 export function usePoolVolumes({ chainId }: ChainParams) {
+  const { isHydrated } = useCurve()
   const { data: networks } = useNetworks()
   const network = chainId != null && networks[chainId]
 
-  return usePoolVolumesQuery({ chainId }, network && !network.isLite)
+  return usePoolVolumesQuery({ chainId }, isHydrated && network && !network.isLite)
 }
 
 /**
  * Fetch trading volumes for multiple pools into the query cache.
  *
- * @remarks Skips fetching on lite networks.
+ * @remarks Skips fetching on lite networks. Assumes the api is hydrated.
  */
 export async function fetchPoolVolumes({ chainId }: ChainParams) {
   const networks = await fetchNetworks()

@@ -24,7 +24,6 @@ import type { Step } from '@ui/Stepper/types'
 import { TxInfoBar } from '@ui/TxInfoBar'
 import { scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
-import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
 
 export const LoanCollateralAdd = ({ rChainId, rOwmId, api, isLoaded, market, userActiveKey }: PageContentProps) => {
@@ -41,8 +40,6 @@ export const LoanCollateralAdd = ({ rChainId, rOwmId, api, isLoaded, market, use
   const fetchStepIncrease = useStore((state) => state.loanCollateralAdd.fetchStepIncrease)
   const setFormValues = useStore((state) => state.loanCollateralAdd.setFormValues)
   const resetState = useStore((state) => state.loanCollateralAdd.resetState)
-
-  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
 
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)
   const [steps, setSteps] = useState<Step[]>([])
@@ -195,16 +192,14 @@ export const LoanCollateralAdd = ({ rChainId, rOwmId, api, isLoaded, market, use
 
       {/* detail info */}
       <StyledDetailInfoWrapper>
-        {isAdvancedMode && (
-          <DetailInfoLiqRange
-            isManage
-            rChainId={rChainId}
-            rOwmId={rOwmId}
-            {...detailInfo}
-            healthMode={healthMode}
-            userActiveKey={userActiveKey}
-          />
-        )}
+        <DetailInfoLiqRange
+          isManage
+          rChainId={rChainId}
+          rOwmId={rOwmId}
+          {...detailInfo}
+          healthMode={healthMode}
+          userActiveKey={userActiveKey}
+        />
         <DetailInfoHealth
           isManage
           rChainId={rChainId}

@@ -70,7 +70,6 @@ export type CreateFormDetailInfo = {
   formValues: FormValues
   haveSigner: boolean
   healthMode: HealthMode
-  isAdvanceMode: boolean
   isLeverage: boolean
   isReady: boolean
   llamma: Llamma | null
