@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useConnection } from 'wagmi'
+import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
-import Stack from '@mui/material/Stack'
 import type { Address } from '@primitives/address.utils'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
@@ -69,12 +69,7 @@ export const LlamaMarketsList = () => {
           <UserPositionsTable onReload={onReload} result={data} isError={isError} loading={loading} />
         )
       ) : (
-        <Stack
-          paddingBlock={Spacing.md}
-          alignItems="center"
-          width="100%"
-          sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}
-        >
+        <Box paddingBlock={Spacing.md} sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
           <EmptyStateCard
             action={
               <Button size="medium" onClick={() => connect()}>
@@ -82,7 +77,7 @@ export const LlamaMarketsList = () => {
               </Button>
             }
           />
-        </Stack>
+        </Box>
       )}
 
       <LlamaMarketsTable onReload={onReload} result={data} isError={isError} loading={loading} />
