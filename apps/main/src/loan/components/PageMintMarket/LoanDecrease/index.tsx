@@ -28,7 +28,6 @@ import type { Step } from '@ui/Stepper/types'
 import { TxInfoBar } from '@ui/TxInfoBar'
 import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
-import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
@@ -63,8 +62,6 @@ export const LoanDecrease = ({
   const setFormValues = useStore((state) => state.loanDecrease.setFormValues)
   const setStateByKey = useStore((state) => state.loanDecrease.setStateByKey)
   const resetState = useStore((state) => state.loanDecrease.resetState)
-
-  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
 
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)
   const [steps, setSteps] = useState<Step[]>([])
@@ -293,15 +290,13 @@ export const LoanDecrease = ({
 
       {/* detail info */}
       <StyledDetailInfoWrapper>
-        {isAdvancedMode && (
-          <DetailInfoLiqRange
-            isManage
-            {...detailInfo}
-            healthMode={healthMode}
-            loanDetails={loanDetails}
-            userLoanDetails={userLoanDetails}
-          />
-        )}
+        <DetailInfoLiqRange
+          isManage
+          {...detailInfo}
+          healthMode={healthMode}
+          loanDetails={loanDetails}
+          userLoanDetails={userLoanDetails}
+        />
         <DetailInfoHealth
           isManage
           {...detailInfo}

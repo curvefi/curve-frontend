@@ -70,7 +70,6 @@ export const LoanDeleverage = ({
   const fetchStepRepay = useStore((state) => state.loanDeleverage.fetchStepRepay)
   const setFormValues = useStore((state) => state.loanDeleverage.setFormValues)
 
-  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
   const maxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
 
   const [confirmHighPriceImpact, setConfirmHighPriceImpact] = useState(false)
@@ -325,39 +324,26 @@ export const LoanDeleverage = ({
 
       {/* detail info */}
       <StyledDetailInfoWrapper>
-        {isAdvancedMode ? (
-          <DetailInfoLiqRange
-            isManage
-            {...detailInfo}
-            detailInfoLeverage={
-              <DetailInfoLeverageWrapper>
-                <LeveragePriceImpactDetail />
-                <DetailInfoTradeRoutes
-                  loading={detailInfo.loading}
-                  routes={detailInfo.routeName}
-                  input={formValues.collateral}
-                  inputSymbol={llamma?.collateralSymbol ?? ''}
-                  output={detailInfo.receiveStablecoin}
-                  outputSymbol={getTokenName(llamma).stablecoin}
-                />
-              </DetailInfoLeverageWrapper>
-            }
-            healthMode={healthMode}
-            loanDetails={loanDetails}
-            userLoanDetails={userLoanDetails}
-          />
-        ) : (
-          <>
-            <LeveragePriceImpactDetail />
-            <DetailInfo
-              label={`Receive ${getTokenName(llamma).stablecoin}:`}
-              loading={detailInfo.loading}
-              loadingSkeleton={[100, 20]}
-            >
-              <strong>{formatNumber(detailInfo.receiveStablecoin)}</strong>
-            </DetailInfo>
-          </>
-        )}
+        <DetailInfoLiqRange
+          isManage
+          {...detailInfo}
+          detailInfoLeverage={
+            <DetailInfoLeverageWrapper>
+              <LeveragePriceImpactDetail />
+              <DetailInfoTradeRoutes
+                loading={detailInfo.loading}
+                routes={detailInfo.routeName}
+                input={formValues.collateral}
+                inputSymbol={llamma?.collateralSymbol ?? ''}
+                output={detailInfo.receiveStablecoin}
+                outputSymbol={getTokenName(llamma).stablecoin}
+              />
+            </DetailInfoLeverageWrapper>
+          }
+          healthMode={healthMode}
+          loanDetails={loanDetails}
+          userLoanDetails={userLoanDetails}
+        />
 
         <DetailInfoHealth
           isManage
