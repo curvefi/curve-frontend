@@ -248,6 +248,21 @@ export function sortBandsMint(bandBalances: { [key: string]: { stablecoin: strin
   return { bandBalancesArr, bandBalances }
 }
 
+/**
+ * Formats a collateral + borrowed notional string, e.g. "1.5K WETH + 200 crvUSD".
+ * Returns undefined if collateral value is not available.
+ */
+export const formatCollateralNotional = (
+  collateral: { value: number | null | undefined; symbol: string | undefined },
+  borrow: { value: number | null | undefined; symbol: string | undefined } | undefined,
+): string | undefined =>
+  notFalsy(
+    collateral.value &&
+      collateral.symbol &&
+      `${formatNumber(collateral.value, { abbreviate: true })} ${collateral.symbol}`,
+    borrow && borrow.value && borrow.symbol && `${formatNumber(borrow.value, { abbreviate: true })} ${borrow.symbol}`,
+  ).join(' + ')
+
 /** Tooltip title for borrow APR. The title should be "Net borrow APR" if there are extra rewards or rebasing yield, otherwise "Borrow APR". */
 export const getBorrowRateTooltipTitle = ({
   totalBorrowApr,

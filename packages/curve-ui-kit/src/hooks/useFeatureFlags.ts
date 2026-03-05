@@ -37,7 +37,7 @@ export const useAnalyticsApp = useAlphaChannel
 export const useFastbridge = useBetaChannel
 
 /** New page header with market metrics on market detail pages */
-export const useIntegratedLlamaHeader = useBetaChannel
+export const useIntegratedLlamaHeader = useStableChannel
 
 /** New lend market header subnav */
 export const useLendMarketSubNav = useIntegratedLlamaHeader

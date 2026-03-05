@@ -27,14 +27,12 @@ export interface NetworkConfig<TId extends string = string, TChainId extends num
   TId,
   TChainId
 > {
-  smallMarketAmount: number
   isActiveNetwork: boolean
   showInSelectNetwork: boolean
   hideMarketsInUI: { [owmId: string]: boolean }
   marketListFilter: string[]
   marketListFilterType: string[]
   pricesData: boolean
-  marketListShowOnlyInSmallMarkets: { [marketId: string]: boolean }
 }
 
 export type MaxRecvLeverageResp = {

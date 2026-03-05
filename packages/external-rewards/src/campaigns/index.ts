@@ -13,7 +13,6 @@ import Hinkal from './Hinkal.json'
 import Hourglass from './Hourglass.json'
 import Hyperwave from './Hyperwave.json'
 import Infinifi from './Infinifi.json'
-import Kelpdao from './Kelpdao.json'
 import Liquity from './Liquity.json'
 import Lombard from './Lombard.json'
 import Loop from './Loop.json'
@@ -23,7 +22,6 @@ import Pumpbtc from './Pumpbtc.json'
 import Raac from './Raac.json'
 import Re from './Re.json'
 import Resolv from './Resolv.json'
-import StableLabs from './StableLabs.json'
 import Symbiotic from './Symbiotic.json'
 import TermMax from './TermMax.json'
 import Tharwa from './Tharwa.json'
@@ -34,7 +32,6 @@ import Yuzu from './Yuzu.json'
 export {
   Ethena,
   Etherfi,
-  Kelpdao,
   Mellow,
   Symbiotic,
   Fraxtal,
@@ -48,7 +45,6 @@ export {
   Hourglass,
   Fx,
   Pumpbtc,
-  StableLabs,
   Infinifi,
   Asymmetry,
   GoNuts,
