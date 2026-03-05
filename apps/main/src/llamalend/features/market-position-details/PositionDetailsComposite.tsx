@@ -1,19 +1,17 @@
 import { useMemo } from 'react'
-import { UserPositionHistory } from '@/llamalend/features/user-position-history'
+import { LLAMA_MONITOR_BOT_URL } from '@/llamalend/constants'
 import {
   useUserCollateralEvents,
   type UserCollateralEventsProps,
 } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
+import NotificationsIcon from '@mui/icons-material/Notifications'
 import Stack from '@mui/material/Stack'
-import { useNewPositionDetailsTabs } from '@ui-kit/hooks/useFeatureFlags'
 import { findTab } from '@ui-kit/hooks/useTabs'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { BorrowPositionDetails, type BorrowPositionDetailsProps } from './BorrowPositionDetails'
+import { t } from '@ui-kit/lib/i18n'
+import { ExternalLink } from '@ui-kit/shared/ui/ExternalLink'
+import { TabsSwitcher } from '@ui-kit/shared/ui/Tabs/TabsSwitcher'
+import type { BorrowPositionDetailsProps } from './BorrowPositionDetails'
 import { usePositionDetailsTabs } from './hooks/usePositionDetailsTabs'
-import { NoPosition } from './NoPosition'
-import { PositionDetailsTabsRow } from './PositionDetailsTabsRow'
-
-const { Spacing } = SizesAndSpaces
 
 export const PositionDetailsComposite = ({
   hasPosition,
@@ -30,7 +28,6 @@ export const PositionDetailsComposite = ({
     isError: activityIsError,
   } = useUserCollateralEvents(activityQueryParams)
   const activityEvents = useMemo(() => userCollateralEvents?.events ?? [], [userCollateralEvents?.events])
-  const showNewBorrowPositionTabs = useNewPositionDetailsTabs()
 
   const { tab, onTabChange, tabOptions } = usePositionDetailsTabs({
     events: activityEvents,
@@ -43,26 +40,16 @@ export const PositionDetailsComposite = ({
 
   return (
     <Stack>
-      {showNewBorrowPositionTabs && <PositionDetailsTabsRow tab={tab} onChange={onTabChange} options={tabOptions} />}
-      <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
-        {showNewBorrowPositionTabs ? (
-          activeTab.render()
-        ) : (
-          <>
-            {hasPosition ? <BorrowPositionDetails {...borrowPositionDetails} /> : <NoPosition type="borrow" />}
-            {activityEvents.length > 0 && (
-              <Stack paddingInline={Spacing.md} paddingBlock={Spacing.md}>
-                <UserPositionHistory
-                  variant="accordion"
-                  events={activityEvents}
-                  isLoading={activityIsLoading}
-                  isError={activityIsError}
-                />
-              </Stack>
-            )}
-          </>
-        )}
+      <Stack alignItems="end" direction="row" justifyContent="space-between" width="100%">
+        <TabsSwitcher variant="contained" value={tab} onChange={onTabChange} options={tabOptions} />
+        <ExternalLink
+          href={LLAMA_MONITOR_BOT_URL}
+          label={t`Get alerts`}
+          sx={{ flexShrink: 0, whiteSpace: 'nowrap' }}
+          startIcon={<NotificationsIcon />}
+        />
       </Stack>
+      <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>{activeTab.render()}</Stack>
     </Stack>
   )
 }

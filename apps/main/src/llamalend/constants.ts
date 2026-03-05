@@ -1,3 +1,5 @@
+import { t } from '@ui-kit/lib/i18n'
+import { LlamaMarketType } from '@ui-kit/types/market'
 import type { HealthMode } from './llamalend.types'
 
 /**
@@ -38,3 +40,8 @@ export const DEFAULT_HEALTH_MODE: HealthMode = {
  * Filter out markets after a certain creation date because they're unsafe to use until Llamalend V2 is live.
  */
 export const MARKET_CUTOFF_DATE = new Date('2025-11-12T00:00:00Z') // November 12, 2025
+
+export const MarketTypeSuffix: Record<LlamaMarketType, string> = {
+  [LlamaMarketType.Lend]: t`(Lending Markets)`,
+  [LlamaMarketType.Mint]: t`(Mint Markets)`,
+}

@@ -1,14 +1,14 @@
 import type { ComponentProps } from 'react'
 import { ethAddress, zeroAddress } from 'viem'
-import type { BorrowRate, SupplyRate, AvailableLiquidity } from '@/llamalend/features/market-details'
 import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import type { Chain } from '@curvefi/prices-api'
 import Box from '@mui/material/Box'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { PageHeader } from './PageHeader'
+import type { BorrowRate, SupplyRate, AvailableLiquidity } from './hooks/usePageHeader'
+import { PageHeaderView } from './PageHeader'
 
-type PageHeaderProps = ComponentProps<typeof PageHeader>
+type PageHeaderViewProps = ComponentProps<typeof PageHeaderView>
 
 const blockchainId: Chain = 'ethereum'
 
@@ -60,9 +60,9 @@ const availableLiquidity: AvailableLiquidity = {
   loading: false,
 }
 
-const meta: Meta<typeof PageHeader> = {
+const meta: Meta<typeof PageHeaderView> = {
   title: 'Llamalend/Widgets/PageHeader',
-  component: PageHeader,
+  component: PageHeaderView,
   parameters: {
     layout: 'fullscreen',
     docs: {
@@ -75,10 +75,10 @@ const meta: Meta<typeof PageHeader> = {
 }
 
 export default meta
-type Story = StoryObj<typeof PageHeader>
+type Story = StoryObj<typeof PageHeaderView>
 
 const withWidth = (maxWidth: number | undefined, displayName: string) => {
-  const WithWidth = (args: PageHeaderProps) => (
+  const WithWidth = (args: PageHeaderViewProps) => (
     <Box
       sx={{
         width: '100%',
@@ -87,7 +87,7 @@ const withWidth = (maxWidth: number | undefined, displayName: string) => {
         ...(maxWidth && { maxWidth }),
       }}
     >
-      <PageHeader {...args} />
+      <PageHeaderView {...args} />
     </Box>
   )
 
@@ -95,7 +95,7 @@ const withWidth = (maxWidth: number | undefined, displayName: string) => {
   return WithWidth
 }
 
-const baseArgs: Omit<PageHeaderProps, 'market' | 'supplyRate'> = {
+const baseArgs: Omit<PageHeaderViewProps, 'market' | 'supplyRate'> = {
   isLoading: false,
   blockchainId,
   borrowRate,

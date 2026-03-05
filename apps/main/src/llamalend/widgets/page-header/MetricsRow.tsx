@@ -1,19 +1,13 @@
-import {
-  type BorrowRate,
-  type SupplyRate,
-  type AvailableLiquidity,
-  MarketTypeSuffix,
-  MarketSupplyRateTooltipContent,
-  AvailableLiquidityTooltip,
-  TooltipOptions,
-} from '@/llamalend/features/market-details'
+import { MarketTypeSuffix } from '@/llamalend/constants'
 import { BorrowAprMetric } from '@/llamalend/widgets/BorrowAprMetric'
+import { MarketSupplyRateTooltipContent, AvailableLiquidityTooltip, TooltipOptions } from '@/llamalend/widgets/tooltips'
 import Stack from '@mui/material/Stack'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
+import { type BorrowRate, type SupplyRate, type AvailableLiquidity } from './hooks/usePageHeader'
 
 const { Spacing } = SizesAndSpaces
 

@@ -1,15 +1,13 @@
 import { useEffect, useState } from 'react'
 import { useConnection } from 'wagmi'
-import { MarketDetails } from '@/llamalend/features/market-details'
 import { PositionDetailsComposite, useBorrowPositionDetails } from '@/llamalend/features/market-position-details'
 import type { UserCollateralEventsProps } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { useLoanExists } from '@/llamalend/queries/user'
 import { PageHeader } from '@/llamalend/widgets/page-header'
-import { MarketInformationComp } from '@/loan/components/MarketInformationComp'
+import { MarketInformationComposite } from '@/loan/components/MarketInformationComposite'
 import { CreateLoanTabs } from '@/loan/components/PageMintMarket/CreateLoanTabs'
 import { ManageLoanTabs } from '@/loan/components/PageMintMarket/ManageLoanTabs'
 import { useMintMarket } from '@/loan/entities/mint-markets'
-import { useMarketDetails } from '@/loan/hooks/useMarketDetails'
 import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
 import { networks } from '@/loan/networks'
 import { useStore } from '@/loan/store/useStore'
@@ -21,7 +19,6 @@ import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
 import { ConnectWalletPrompt, useCurve } from '@ui-kit/features/connect-wallet'
 import { useParams } from '@ui-kit/hooks/router'
-import { useIntegratedLlamaHeader } from '@ui-kit/hooks/useFeatureFlags'
 import { usePageVisibleInterval } from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
@@ -47,13 +44,11 @@ export const MintMarketPage = () => {
   const fetchLoanDetails = useStore((state) => state.loans.fetchLoanDetails)
 
   const loanStatus = useUserLoanDetails(market?.id ?? '')?.userStatus?.colorKey ?? ''
-  const marketDetails = useMarketDetails({ chainId: rChainId, market, marketId })
   const network = networks[rChainId]
   const borrowPositionDetails = useBorrowPositionDetails({
     marketType: LlamaMarketType.Mint,
     chainId: rChainId,
     marketId,
-    blockchainId: network.id as Chain,
     market: market ?? null,
   })
   const activityQueryParams: UserCollateralEventsProps = {
@@ -95,22 +90,19 @@ export const MintMarketPage = () => {
     params,
     onPricesUpdated: setPreviewPrices,
   }
-  const showPageHeader = useIntegratedLlamaHeader()
 
   const isLoading = !loaded || (loanExists && !loanStatus)
   return isHydrated && !market ? (
     <ErrorPage title="404" subtitle={t`Market Not Found`} continueUrl={getCollateralListPathname(params)} />
   ) : provider ? (
     <>
-      {showPageHeader && (
-        <PageHeader
-          isLoading={!isHydrated}
-          market={market}
-          blockchainId={network.id as Chain}
-          availableLiquidity={marketDetails.availableLiquidity}
-          borrowRate={marketDetails.borrowRate}
-        />
-      )}
+      <PageHeader
+        chainId={rChainId}
+        marketId={marketId}
+        isLoading={!isHydrated}
+        market={market}
+        blockchainId={network.id as Chain}
+      />
       <DetailPageLayout
         formTabs={
           !isLoading &&
@@ -127,8 +119,7 @@ export const MintMarketPage = () => {
           activityQueryParams={activityQueryParams}
         />
         <Stack>
-          {!showPageHeader && <MarketDetails {...marketDetails} />}
-          <MarketInformationComp
+          <MarketInformationComposite
             market={market ?? null}
             marketId={marketId}
             chainId={rChainId}
