@@ -541,15 +541,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@curvefi/api@npm:2.68.35":
-  version: 2.68.35
-  resolution: "@curvefi/api@npm:2.68.35"
+"@curvefi/api@npm:2.68.38":
+  version: 2.68.38
+  resolution: "@curvefi/api@npm:2.68.38"
   dependencies:
     "@curvefi/ethcall": "npm:^6.0.16"
-    bignumber.js: "npm:^9.3.1"
-    ethers: "npm:^6.15.0"
+    bignumber.js: "npm:^10.0.2"
+    ethers: "npm:^6.16.0"
     memoizee: "npm:^0.4.17"
-  checksum: 10c0/def9d0b36dba91c836563d5bb99e520c702735bc71e12a3363213c9f4c20b4fda6f713622633a5607377cac14d366090631d1ce8474170651ed478ed4e8f1ba1
+  checksum: 10c0/aa17a98cce4f971c4e1d5be25ea88d16ee8178eb5e8338bad651d51671cfc54f71852f938197538496786db33376d1e49d6760767679d740d04d604c175f4c22
   languageName: node
   linkType: hard
 
@@ -1269,10 +1269,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@eslint/js@npm:9.39.2":
-  version: 9.39.2
-  resolution: "@eslint/js@npm:9.39.2"
-  checksum: 10c0/00f51c52b04ac79faebfaa65a9652b2093b9c924e945479f1f3945473f78aee83cbc76c8d70bbffbf06f7024626575b16d97b66eab16182e1d0d39daff2f26f5
+"@eslint/js@npm:10.0.1":
+  version: 10.0.1
+  resolution: "@eslint/js@npm:10.0.1"
+  peerDependencies:
+    eslint: ^10.0.0
+  peerDependenciesMeta:
+    eslint:
+      optional: true
+  checksum: 10c0/9f3fcaf71ba7fdf65d82e8faad6ecfe97e11801cc3c362b306a88ea1ed1344ae0d35330dddb0e8ad18f010f6687a70b75491b9e01c8af57acd7987cee6b3ec6c
   languageName: node
   linkType: hard
 

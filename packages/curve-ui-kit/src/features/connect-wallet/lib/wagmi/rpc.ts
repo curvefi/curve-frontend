@@ -33,6 +33,7 @@ export const RPC: Record<ChainId, string[]> = {
   [ChainId.ExpChain]: ['https://rpc0-testnet.expchain.ai'],
   [ChainId.ZkSync]: ['https://zksync.drpc.org', 'https://mainnet.era.zksync.io'],
   [ChainId.Monad]: [],
+  [ChainId.Etherlink]: [],
 } as const
 
 /**

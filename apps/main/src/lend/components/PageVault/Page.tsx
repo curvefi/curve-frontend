@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react'
 import { useConnection } from 'wagmi'
 import { CampaignRewardsBanner } from '@/lend/components/CampaignRewardsBanner'
+import { MarketAlertBanner } from '@/lend/components/MarketAlertBanner'
 import { MarketInformationComp } from '@/lend/components/MarketInformationComp'
 import { MarketInformationTabs } from '@/lend/components/MarketInformationTabs'
 import { VaultTabs } from '@/lend/components/PageVault/VaultTabs'
 import { useOneWayMarket } from '@/lend/entities/chain'
 import { useLendPageTitle } from '@/lend/hooks/useLendPageTitle'
+import { useMarketAlert } from '@/lend/hooks/useMarketAlert'
 import { useMarketDetails } from '@/lend/hooks/useMarketDetails'
 import { useSupplyPositionDetails } from '@/lend/hooks/useSupplyPositionDetails'
 import { useTitleMapper } from '@/lend/hooks/useTitleMapper'
@@ -13,6 +15,7 @@ import { helpers } from '@/lend/lib/apiLending'
 import { networks } from '@/lend/networks'
 import { useStore } from '@/lend/store/useStore'
 import { type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
+import { isHighSeverityAlert } from '@/lend/utils/helpers'
 import { getCollateralListPathname, getLoanPathname, parseMarketParams } from '@/lend/utils/utilsRouter'
 import { MarketDetails } from '@/llamalend/features/market-details'
 import { NoPosition, SupplyPositionDetails } from '@/llamalend/features/market-position-details'
@@ -63,6 +66,7 @@ export const Page = () => {
     market,
     marketId: rOwmId,
   })
+  const marketAlert = useMarketAlert(rChainId, rOwmId)
 
   useEffect(() => {
     if (api && market && isPageVisible) {
@@ -121,11 +125,14 @@ export const Page = () => {
           supplyRate={marketDetails.supplyRate}
         />
       )}
-      <CampaignRewardsBanner
-        chainId={rChainId}
-        borrowAddress={market?.addresses?.controller || ''}
-        supplyAddress={market?.addresses?.vault || ''}
-      />
+      {marketAlert?.banner && <MarketAlertBanner alertType={marketAlert.alertType} banner={marketAlert.banner} />}
+      {!isHighSeverityAlert(marketAlert?.alertType) && (
+        <CampaignRewardsBanner
+          chainId={rChainId}
+          borrowAddress={market?.addresses?.controller || ''}
+          supplyAddress={market?.addresses?.vault || ''}
+        />
+      )}
       <MarketInformationTabs currentTab="supply" hrefs={positionDetailsHrefs}>
         <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
           {hasSupplyPosition ? <SupplyPositionDetails {...supplyPositionDetails} /> : <NoPosition type="supply" />}
