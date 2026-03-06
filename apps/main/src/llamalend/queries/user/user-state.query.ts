@@ -9,7 +9,7 @@ export const {
   invalidate: invalidateUserState,
   getQueryData: getUserState,
 } = queryFactory({
-  queryKey: (params: UserMarketParams) => [...rootKeys.userMarket(params), 'market-user-state'] as const,
+  queryKey: (params: UserMarketParams) => [...rootKeys.userMarket(params), 'userState'] as const,
   queryFn: async ({ marketId, userAddress }: UserMarketQuery) => {
     const market = getLlamaMarket(marketId)
     const userState = await market.userState(userAddress)

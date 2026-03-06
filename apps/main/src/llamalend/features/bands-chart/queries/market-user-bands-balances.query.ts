@@ -27,7 +27,7 @@ export const { useQuery: useMarketUserBandsBalances } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, loanExists, liquidationBand }: MarketUserBandsBalancesParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-      'market-user-bands-balances',
+      'userBandsBalances',
       { loanExists },
       { liquidationBand },
     ] as const,

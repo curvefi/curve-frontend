@@ -21,11 +21,7 @@ import {
  */
 export const { useQuery: useDepositExpectedVaultShares } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, depositAmount }: DepositParams) =>
-    [
-      ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-      'depositExpectedVaultShares',
-      { depositAmount },
-    ] as const,
+    [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'previewDeposit', { depositAmount }] as const,
   queryFn: async ({ marketId, depositAmount }: DepositQuery) =>
     (await requireVault(marketId).vault.previewDeposit(depositAmount)) as Decimal,
   category: 'llamalend.supply',
@@ -37,11 +33,7 @@ export const { useQuery: useDepositExpectedVaultShares } = queryFactory({
  */
 export const { useQuery: useWithdrawRemovableVaultShares } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, withdrawAmount }: WithdrawParams) =>
-    [
-      ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-      'withdrawRemovableVaultShares',
-      { withdrawAmount },
-    ] as const,
+    [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'previewWithdraw', { withdrawAmount }] as const,
   queryFn: async ({ marketId, withdrawAmount }: WithdrawQuery) =>
     (await requireVault(marketId).vault.previewWithdraw(withdrawAmount)) as Decimal,
   category: 'llamalend.supply',
