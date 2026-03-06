@@ -114,7 +114,7 @@ export const Page = () => {
   return isSuccess && !market ? (
     <ErrorPage title="404" subtitle={t`Market Not Found`} continueUrl={getCollateralListPathname(params)} />
   ) : provider ? (
-    <>
+    <DetailPageLayout formTabs={rChainId && rOwmId && <VaultTabs {...pageProps} params={params} />}>
       {showPageHeader && (
         <PageHeader
           isLoading={!isHydrated}
@@ -125,26 +125,24 @@ export const Page = () => {
           supplyRate={marketDetails.supplyRate}
         />
       )}
-      <DetailPageLayout formTabs={rChainId && rOwmId && <VaultTabs {...pageProps} params={params} />}>
-        {marketAlert?.banner && <MarketAlertBanner alertType={marketAlert.alertType} banner={marketAlert.banner} />}
-        {!isHighSeverityAlert(marketAlert?.alertType) && (
-          <CampaignRewardsBanner
-            chainId={rChainId}
-            borrowAddress={market?.addresses?.controller || ''}
-            supplyAddress={market?.addresses?.vault || ''}
-          />
-        )}
-        <MarketInformationTabs currentTab="supply" hrefs={positionDetailsHrefs}>
-          <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
-            {hasSupplyPosition ? <SupplyPositionDetails {...supplyPositionDetails} /> : <NoPosition type="supply" />}
-          </Stack>
-        </MarketInformationTabs>
-        <Stack>
-          {!showPageHeader && <MarketDetails {...marketDetails} />}
-          <MarketInformationComp loanExists={loanExists} pageProps={pageProps} type="supply" />
+      {marketAlert?.banner && <MarketAlertBanner alertType={marketAlert.alertType} banner={marketAlert.banner} />}
+      {!isHighSeverityAlert(marketAlert?.alertType) && (
+        <CampaignRewardsBanner
+          chainId={rChainId}
+          borrowAddress={market?.addresses?.controller || ''}
+          supplyAddress={market?.addresses?.vault || ''}
+        />
+      )}
+      <MarketInformationTabs currentTab="supply" hrefs={positionDetailsHrefs}>
+        <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
+          {hasSupplyPosition ? <SupplyPositionDetails {...supplyPositionDetails} /> : <NoPosition type="supply" />}
         </Stack>
-      </DetailPageLayout>
-    </>
+      </MarketInformationTabs>
+      <Stack>
+        {!showPageHeader && <MarketDetails {...marketDetails} />}
+        <MarketInformationComp loanExists={loanExists} pageProps={pageProps} type="supply" />
+      </Stack>
+    </DetailPageLayout>
   ) : (
     <ConnectWalletPrompt description={t`Connect your wallet to view market`} />
   )
