@@ -1,5 +1,20 @@
 import { isAddress, zeroAddress } from 'viem'
 
+// Must extend the n4s namespace for extensions as per https://vestjs.dev/docs/enforce/creating_custom_rules#typescript-support
+declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace n4s {
+    interface EnforceMatchers {
+      isDecimal(value: string, options?: { decimal_digits?: string }): this
+      isAddress(value: string): this
+      isNotZeroAddress(value: string): this
+      isPositiveNumber(value: number): this
+      isValidChainId(value: number): this
+      isValidChainName(value: string): this
+    }
+  }
+}
+
 // Copied from https://github.com/validatorjs/validator.js/blob/3c857088d58197453957a2b924dfedea328003b6/src/lib/isDecimal.js#L19
 function isDecimal<T>(value: T, options?: { decimal_digits?: string }): boolean {
   if (typeof value !== 'string') return false
