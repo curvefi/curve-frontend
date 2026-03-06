@@ -18,8 +18,8 @@ import { TokenPair } from '@ui-kit/shared/ui/TokenPair'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
-import { generateMarketTitle, generateSubtitle, MetricsRow } from './'
 import { pageMargins } from '@ui-kit/widgets/DetailPageLayout/constants'
+import { generateMarketTitle, generateSubtitle, MetricsRow } from './'
 
 const { Spacing } = SizesAndSpaces
 
@@ -79,6 +79,7 @@ export const PageHeader = ({
   return (
     <Stack
       direction={{ mobile: 'column', tablet: 'row' }}
+      flexWrap={{ tablet: 'wrap' }}
       justifyContent={{ tablet: 'space-between' }}
       gap={Spacing.md}
       sx={stickySx(navHeight)}
