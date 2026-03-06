@@ -31,7 +31,7 @@ const UserPositionStatisticItem = ({
     <Grid size={itemSize}>
       <Metric
         value={!hasError && data}
-        size="large"
+        size="medium"
         // isLoading can still be true if there is an error
         loading={!hasError && isLoading}
         valueOptions={{
@@ -64,10 +64,13 @@ export const UserPositionSummary = ({ markets, selectedChains }: UserPositionSta
   return (
     <Grid
       container
-      paddingBlockStart={Spacing.md}
+      paddingBlock={Spacing.sm}
       paddingInline={Spacing.md}
       spacing={Spacing.md}
-      sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}
+      sx={{
+        backgroundColor: (t) => t.design.Layer[1].Fill,
+        borderBlock: (t) => `1px solid ${t.design.Layer[1].Outline}`,
+      }}
     >
       {summary.map((item) => (
         <UserPositionStatisticItem key={item.label} itemSize={{ mobile: 6, tablet: 12 / summary.length }} {...item} />

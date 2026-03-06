@@ -23,7 +23,16 @@ export default defineConfig(({ command }) => ({
     proxy: { '/api': { target: API_PROXY_TARGET, changeOrigin: true } },
     ignored: ['**/node_modules/**', '**/.git/**', '**/dist/**', '**/.yarn/**'],
   },
-  build: { sourcemap: true },
+  build: {
+    sourcemap: true,
+    rollupOptions: {
+      onwarn: (warn, handler) =>
+        (warn.code === 'INVALID_ANNOTATION' && warn.id?.includes('/node_modules/ox/_esm/core/')) || // ignore `ox` /*#__PURE__*/ annotations
+        (warn.code === 'EVAL' && warn.id?.endsWith('/apps/main/src/main.tsx')) // required eval()
+          ? undefined
+          : handler(warn),
+    },
+  },
   preview: { port: 3000 },
   cacheDir: resolve(__dirname, '../../.cache/vite/apps-main'),
   plugins: [

@@ -1,6 +1,5 @@
-import { group } from 'vest'
+import { enforce, group, test } from 'vest'
 import { getLlamaMarket } from '@/llamalend/llama.utils'
-import { validateDebt } from '@/llamalend/queries/validation/borrow-fields.validation'
 import { validateDepositAmount } from '@/llamalend/queries/validation/supply.validation'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
@@ -11,7 +10,9 @@ import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
 import { convertRates } from '../../rates.utils'
 
-type BorrowApyQuery = MarketQuery<IChainId> & { debt: Decimal }
+type BorrowApyQuery = MarketQuery<IChainId> & {
+  debt: Decimal
+}
 type BorrowFutureApyParams = FieldsOf<BorrowApyQuery>
 
 type SupplyApyQuery = MarketQuery<IChainId> & { reserves: Decimal }
@@ -30,19 +31,23 @@ const fetchFutureRates = async (marketId: string, reserves: Decimal, debt: Decim
 /** Calculates future borrow/lend rates when debt changes (e.g., borrowing more or repaying) - used for borrow operations */
 export const { useQuery: useMarketFutureRates } = queryFactory({
   queryKey: ({ chainId, marketId, debt }: BorrowFutureApyParams) =>
-    [...rootKeys.market({ chainId, marketId }), 'market-future-rates', { debt }] as const,
+    [...rootKeys.market({ chainId, marketId }), 'futureRates', { debt }] as const,
   queryFn: async ({ marketId, debt }: BorrowApyQuery) => await fetchFutureRates(marketId, RESERVES, debt),
   category: 'llamalend.market',
   validationSuite: createValidationSuite(({ chainId, marketId, debt }: BorrowFutureApyParams) => {
     marketIdValidationSuite({ chainId, marketId })
-    group('borrowFormValidationGroup', () => validateDebt(debt))
+    group('borrowFormValidationGroup', () => {
+      test('debt', `Debt must be a non-zero number`, () => {
+        enforce(debt).isNumeric().notEquals(0)
+      })
+    })
   }),
 })
 
 /** Calculates future borrow/lend rates when reserves change (e.g., depositing or withdrawing) - used for supply operations */
 export const { useQuery: useMarketSupplyFutureRates } = queryFactory({
   queryKey: ({ chainId, marketId, reserves }: SupplyFutureApyParams) =>
-    [...rootKeys.market({ chainId, marketId }), 'market-supply-future-rates', { reserves }] as const,
+    [...rootKeys.market({ chainId, marketId }), 'futureRates', { reserves }] as const,
   queryFn: async ({ marketId, reserves }: SupplyApyQuery) => await fetchFutureRates(marketId, reserves, DEBT),
   category: 'llamalend.market',
   validationSuite: createValidationSuite(({ chainId, marketId, reserves }: SupplyFutureApyParams) => {

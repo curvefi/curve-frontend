@@ -9,11 +9,6 @@ import { Chain } from '@ui-kit/utils/network'
 
 export const defaultNetworks = Object.entries({
   [Chain.Ethereum]: {
-    poolCustomTVL: {
-      pax: '0',
-      busd: '0',
-      y: '0',
-    },
     poolIsWrappedOnly: {
       pax: true,
       busd: true,
@@ -214,7 +209,6 @@ export const defaultNetworks = Object.entries({
   },
   [Chain.Base]: {
     poolFilters: ['all', 'usd', 'btc', 'eth', 'crypto', 'tricrypto', 'stableng', 'others', 'user'],
-    hideSmallPoolsTvl: 5000,
     swap: {
       fromAddress: ethAddress,
       toAddress: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
@@ -317,12 +311,18 @@ export const defaultNetworks = Object.entries({
   {} as Record<ChainId, NetworkConfig>,
 )
 
+/** Networks that has only been upgraded to show pool rewards APY */
+const poolRewardsUpgradedChains = [Chain.Taiko, Chain.Etherlink]
+/** Networks that has FXSwap enabled in pool creation */
+const fxSwapUpgradedChains = [Chain.Etherlink]
+
 export async function getNetworks() {
   const resp = await curve.getCurveLiteNetworks() // returns [] in case of error
   const liteNetworks = Object.values(resp).reduce((prev, { chainId, ...config }) => {
     const baseConfig = NETWORK_BASE_CONFIG[chainId as keyof typeof NETWORK_BASE_CONFIG]
     const isUpgraded = !!baseConfig // networks upgraded from lite to full
-    const isOnlyPoolRewardsUpgraded = chainId === Chain.Taiko || chainId === 42793 // networks that has only been upgraded to show pool rewards APY, 42793 = Etherlink
+    const isOnlyPoolRewardsUpgraded = poolRewardsUpgradedChains.includes(chainId)
+    const isLiteFxswapEnabled = fxSwapUpgradedChains.includes(chainId)
     prev[chainId] = {
       ...DEFAULT_NETWORK_CONFIG,
       ...getBaseNetworksConfig<NetworkEnum, ChainId>(Number(chainId), { ...config, ...baseConfig }),
@@ -346,7 +346,7 @@ export async function getNetworks() {
       stableswapFactory: true,
       twocryptoFactory: true,
       tricryptoFactory: true,
-      fxswapFactory: false,
+      fxswapFactory: isLiteFxswapEnabled,
       pricesApi: isUpgraded,
       isLite: !isUpgraded,
       isCrvRewardsEnabled: isUpgraded,

@@ -36,7 +36,7 @@ export const LlamaMonitorBotButton = () => {
       target="_blank"
       rel="noreferrer noopener"
     >
-      {t`Get notified with LlamaMonitor bot`}
+      {t`Get alerts`}
     </Button>
   )
 }

@@ -1,4 +1,4 @@
-import { Api, OneWayMarketTemplate } from '@/lend/types/lend.types'
+import { AlertType, Api, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { isDevelopment } from '@ui-kit/utils'
 
 export * from './utilsRouter'
@@ -30,3 +30,5 @@ export function _parseActiveKey(api: Api | null, market: OneWayMarketTemplate | 
   const parsedSignerAddress = signerAddress.slice(0, 10)
   return `${chainId}-${parsedSignerAddress}${market?.id}`
 }
+
+export const isHighSeverityAlert = (type: AlertType | undefined) => type && ['warning', 'danger'].includes(type)

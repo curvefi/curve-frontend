@@ -3,9 +3,9 @@ import { createCurve } from '@curvefi/api'
 import { createLlamalend } from '@curvefi/llamalend-api'
 import { NETWORK_CONSTANTS as LLAMA_NETWORKS } from '@curvefi/llamalend-api/lib/llamalend'
 import type { NetworkDef } from '@ui/utils'
-import type { LlamaApi, Wallet } from '@ui-kit/features/connect-wallet'
-import { AppLib, CurveApi, LibChainId, LibKey, LibNetworkId, Libs } from '@ui-kit/features/connect-wallet/lib/types'
 import { AppName } from '@ui-kit/shared/routes'
+import type { LlamaApi, Wallet } from './types'
+import { AppLib, CurveApi, LibChainId, LibKey, LibNetworkId, Libs } from './types'
 
 /**
  * Compare the signer address of the wallet with the one in the library.

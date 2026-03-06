@@ -18,7 +18,6 @@ import {
   RewardsApyMapper,
   SnapshotsMapper,
   TokensMapper,
-  TvlMapper,
 } from '@/dex/types/main.types'
 import { getChainPoolIdActiveKey } from '@/dex/utils'
 import type { Chain } from '@curvefi/prices-api'
@@ -51,7 +50,6 @@ type SliceState = {
   stakedMapper: {
     [poolAddress: string]: { totalStakedPercent: number | string; gaugeTotalSupply: number | string; timestamp: number }
   }
-  tvlMapper: { [chainId: string]: TvlMapper }
   pricesApiPoolDataMapper: { [poolAddress: string]: PricesApiPoolData }
   snapshotsMapper: SnapshotsMapper
   pricesApiState: {
@@ -67,7 +65,6 @@ const sliceKey = 'pools'
 
 export type PoolsSlice = {
   [sliceKey]: SliceState & {
-    fetchPoolsTvl: (curve: CurveApi, poolDatas: PoolData[]) => Promise<void>
     fetchPools(
       curve: CurveApi,
       poolIds: string[],
@@ -114,7 +111,6 @@ const DEFAULT_STATE: SliceState = {
   currencyReserves: {},
   rewardsApyMapper: {},
   stakedMapper: {},
-  tvlMapper: {},
   pricesApiPoolDataMapper: {},
   snapshotsMapper: {},
   pricesApiState: {
@@ -130,27 +126,6 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
   [sliceKey]: {
     ...DEFAULT_STATE,
 
-    fetchPoolsTvl: async (curve, poolDatas) => {
-      const { storeCache } = get()
-      const { tvlMapper: sTvlMapper } = get()[sliceKey]
-
-      log('fetchPoolsTvl', curve.chainId, poolDatas.length)
-      const chainId = curve.chainId
-
-      const networks = await fetchNetworks()
-      const { results } = await PromisePool.for(poolDatas)
-        .withConcurrency(10)
-        .process(async (poolData) => {
-          const item = await curvejsApi.pool.getTvl(poolData.pool, networks[chainId])
-          return [item.poolId, item]
-        })
-
-      const tvlMapper = { ...sTvlMapper[chainId], ...Object.fromEntries(results) }
-      get()[sliceKey].setStateByActiveKey('tvlMapper', chainId.toString(), tvlMapper)
-
-      //  update cache
-      storeCache.setTvlMapper(chainId, tvlMapper)
-    },
     fetchPools: async (curve, poolIds) => {
       const { pools, storeCache, tokens } = get()
       const { chainId } = curve
@@ -211,8 +186,7 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
 
         if (!partialPoolDatas.length) return { poolsMapper, poolDatas: partialPoolDatas }
 
-        // fetch tvls and tokens
-        await pools.fetchPoolsTvl(curve, partialPoolDatas)
+        // fetch tokens
         await tokens.setTokensMapper(curve, partialPoolDatas)
 
         return { poolsMapper, poolDatas: partialPoolDatas }
@@ -512,7 +486,6 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
       const sliceState = get().pools
       const strChainId = chainId.toString()
 
-      sliceState.setStateByActiveKey('tvlMapper', strChainId, {})
       sliceState.setStateByActiveKey('poolsMapper', strChainId, {})
     },
 
@@ -532,7 +505,6 @@ export const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi
         poolsMapper: get()[sliceKey].poolsMapper,
         currencyReserves: get()[sliceKey].currencyReserves,
         rewardsApyMapper: get()[sliceKey].rewardsApyMapper,
-        tvlMapper: get()[sliceKey].tvlMapper,
       })
     },
   },
