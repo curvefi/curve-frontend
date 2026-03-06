@@ -5,9 +5,12 @@ import { useResizeObserver } from '@ui-kit/hooks/useResizeObserver'
 export function useMainNavRef() {
   const ref = useRef<HTMLDivElement>(null)
   const setLayoutHeight = useLayoutStore((state) => state.setNavHeight)
-  const [, height] = useResizeObserver(ref) ?? []
+  // Use border-box so navHeight includes the DesktopHeader bottom border.
+  const [, height] = useResizeObserver(ref, { box: 'border' }) ?? []
+
   useEffect(() => {
     if (height != null) setLayoutHeight(height)
   }, [height, setLayoutHeight])
+
   return ref
 }
