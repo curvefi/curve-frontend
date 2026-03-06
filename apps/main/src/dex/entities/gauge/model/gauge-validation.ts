@@ -44,10 +44,8 @@ export const gaugeDepositRewardValidationGroup = ({ rewardTokenId, amount, epoch
         .isNotEmpty()
         .message(t`Epoch should be a positive number`)
         .isPositiveNumber()
-        .condition((epoch: unknown) => ({
-          pass: typeof epoch === 'number' && epoch % TIME_FRAMES.WEEK === 0,
-          message: t`Epoch must be a multiple of a week`,
-        }))
+        .message(t`Epoch must be a multiple of a week`)
+        .condition((epoch: unknown) => typeof epoch === 'number' && epoch % TIME_FRAMES.WEEK === 0)
     })
   })
 
@@ -75,13 +73,13 @@ function validateAmount({ rewardTokenId, amount, userBalance }: DepositRewardApp
   amountValidationFn(amount)
   if (!rewardTokenId || !amount) return
 
-  enforce(userBalance).condition((userBalance) => ({
-    pass: userBalance != null && +userBalance > 0,
-    message: t`Wallet balance is zero for the selected reward token`,
-  }))
+  enforce(userBalance)
+    .message(t`Wallet balance is zero for the selected reward token`)
+    .condition((userBalance) => userBalance != null && +userBalance > 0)
 
-  enforce(amount).condition((amount) => ({
-    pass: +amount <= +userBalance!,
-    message: t`Amount ${formatNumber(amount, { decimals: 5 })} > wallet balance ${formatNumber(userBalance, { decimals: 5 })}`,
-  }))
+  enforce(amount)
+    .message(
+      t`Amount ${formatNumber(amount, { decimals: 5 })} > wallet balance ${formatNumber(userBalance, { decimals: 5 })}`,
+    )
+    .condition((amount) => +amount <= +userBalance!)
 }
