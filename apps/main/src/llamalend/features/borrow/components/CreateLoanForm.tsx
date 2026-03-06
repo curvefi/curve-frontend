@@ -87,6 +87,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
       onSubmit={isBorrowDisabled ? form.handleSubmit(() => undefined) : onSubmit}
       footer={
         <CreateLoanInfoList
+          market={market}
           form={form}
           params={params}
           values={values}
