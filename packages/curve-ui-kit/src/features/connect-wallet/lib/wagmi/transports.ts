@@ -3,6 +3,9 @@ import { injected } from '@wagmi/connectors'
 import { fallback, http, unstable_connector } from '@wagmi/core'
 import type { defaultGetRpcUrls } from './rpc'
 
+export const RPC_METHODS_DISABLE_FALLBACK = ['eth_sendTransaction', 'eth_sendRawTransaction'] as const
+const exclude = [...RPC_METHODS_DISABLE_FALLBACK]
+
 /**
  * Transport configuration for Wagmi:
  * 1. unstable_connector(injected) - Uses the user's injected wallet for transactions
@@ -29,5 +32,7 @@ import type { defaultGetRpcUrls } from './rpc'
 export const createTransportFromNetwork = (network: NetworkDef, getRpcUrls: typeof defaultGetRpcUrls) =>
   fallback([
     unstable_connector(injected),
-    ...getRpcUrls(network.chainId, network.rpcUrl).map((url) => http(url, { batch: { batchSize: 3, wait: 50 } })),
+    ...getRpcUrls(network.chainId, network.rpcUrl).map((url) =>
+      http(url, { batch: { batchSize: 3, wait: 50 }, methods: { exclude } }),
+    ),
   ])

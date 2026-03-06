@@ -10,6 +10,7 @@ import {
 import { privateKeyToAccount } from 'viem/accounts'
 import { type CreateConnectorFn, createConnector } from 'wagmi'
 import { type Address, type Hex } from '@primitives/address.utils'
+import { RPC_METHODS_DISABLE_FALLBACK } from './transports'
 
 type ConnectParams<T> = { chainId?: number; isReconnecting?: boolean; withCapabilities: T }
 type ConnectResult<T> = { accounts: readonly T[]; chainId: number }
@@ -52,12 +53,13 @@ export type CreateTestConnectorOptions = {
 export function createTestConnector({ privateKey, chain, transport }: CreateTestConnectorOptions): CreateConnectorFn {
   const account = privateKeyToAccount(privateKey)
 
+  const exclude = [...RPC_METHODS_DISABLE_FALLBACK]
   const client = createWalletClient({
     account,
     chain,
     transport: fallback([
       (transport ?? cypressTransport)(account),
-      ...chain.rpcUrls.default.http.map((url) => http(url)),
+      ...chain.rpcUrls.default.http.map((url) => http(url, { methods: { exclude } })),
     ]),
   })
 
