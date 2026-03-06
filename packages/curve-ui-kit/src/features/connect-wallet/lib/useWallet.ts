@@ -1,9 +1,9 @@
 import { type BrowserProvider } from 'ethers'
 import { useCallback } from 'react'
 import { useConnect, useConnectors, useDisconnect, type Connector } from 'wagmi'
-import { useCurve } from '@ui-kit/features/connect-wallet'
 import { useGlobalState } from '@ui-kit/hooks/useGlobalState'
-import { isCypress } from '@ui-kit/utils'
+import { isCypress } from '@ui-kit/utils/env'
+import { useCurve } from './CurveContext'
 import type { Wallet } from './types'
 
 const state: {
