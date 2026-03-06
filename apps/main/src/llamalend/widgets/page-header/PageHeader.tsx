@@ -32,7 +32,7 @@ type PageHeaderProps = {
   availableLiquidity: AvailableLiquidity
 }
 
-const pageHeaderPadding = { paddingBlock: Spacing.sm, paddingInline: Spacing.md }
+const pageHeaderPadding = { paddingBlockEnd: Spacing.sm, paddingInline: Spacing.md }
 
 /**
  * CSS rules for making the page header sticky.
@@ -51,10 +51,10 @@ const stickySx = (navHeight: number): StackProps['sx'] => ({
   top: { tablet: `${navHeight}px` },
   marginBlockStart: { tablet: `calc(${pageMargins.marginBlockStart.tablet} * -1)` },
   zIndex: (t) => t.zIndex.appBar - 1,
-  backgroundColor: (t) => t.design.Layer[2].Fill,
+  backgroundColor: (t) => t.palette.background.default,
   paddingBlockStart: {
-    mobile: pageHeaderPadding.paddingBlock.mobile,
-    tablet: `calc(${pageHeaderPadding.paddingBlock.tablet} + ${pageMargins.marginBlockStart.tablet})`,
+    mobile: pageHeaderPadding.paddingBlockEnd.mobile,
+    tablet: `calc(${pageHeaderPadding.paddingBlockEnd.tablet} + ${pageMargins.marginBlockStart.tablet})`,
   },
 })
 
@@ -82,8 +82,8 @@ export const PageHeader = ({
       flexWrap={{ tablet: 'wrap' }}
       justifyContent={{ tablet: 'space-between' }}
       gap={Spacing.md}
-      sx={stickySx(navHeight)}
       {...pageHeaderPadding}
+      sx={stickySx(navHeight)}
     >
       <Stack direction="row">
         <IconButton
