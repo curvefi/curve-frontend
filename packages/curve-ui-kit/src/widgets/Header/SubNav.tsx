@@ -3,6 +3,7 @@ import Container from '@mui/material/Container'
 import Toolbar from '@mui/material/Toolbar'
 import { DEFAULT_BAR_SIZE } from '@ui-kit/themes/components'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { getHeaderBorder } from './utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -11,7 +12,7 @@ export const SubNav = ({ testId, children }: { testId: string; children: ReactNo
     sx={{
       backgroundColor: (t) => t.design.Layer[1].Fill,
       justifyContent: 'space-around',
-      borderBottom: (t) => `1px solid ${t.design.Layer[2].Outline}`,
+      borderTop: getHeaderBorder,
       boxSizing: 'border-box',
       height: DEFAULT_BAR_SIZE,
     }}
