@@ -20,10 +20,10 @@ export const estimateGasDepositRewardApprove = queryFactory({
       { userBalance },
     ] as const,
   queryFn: api.queryEstimateGasDepositRewardApprove,
-  refetchInterval: '1m',
   validationSuite: gaugeDepositRewardApproveValidationSuite,
   refetchOnWindowFocus: 'always',
   refetchOnMount: 'always',
+  category: 'dex.deployGauge',
 })
 
 export const estimateGasAddRewardToken = queryFactory({
@@ -36,11 +36,11 @@ export const estimateGasAddRewardToken = queryFactory({
       { distributorId },
     ] as const,
   queryFn: api.queryEstimateGasAddRewardToken,
-  refetchInterval: '1m',
   validationSuite: gaugeAddRewardValidationSuite,
   dependencies: (params: AddRewardParams) => [depositRewardAvailable.queryKey(params)],
   refetchOnWindowFocus: 'always',
   refetchOnMount: 'always',
+  category: 'dex.deployGauge',
 })
 
 export const estimateGasDepositReward = queryFactory({
@@ -55,9 +55,9 @@ export const estimateGasDepositReward = queryFactory({
       { userBalance },
     ] as const,
   queryFn: api.queryEstimateGasDepositReward,
-  refetchInterval: '1m',
   validationSuite: gaugeDepositRewardValidationSuite,
   dependencies: (params: DepositRewardParams) => [depositRewardIsApproved.queryKey(params)],
   refetchOnWindowFocus: 'always',
   refetchOnMount: 'always',
+  category: 'dex.deployGauge',
 })

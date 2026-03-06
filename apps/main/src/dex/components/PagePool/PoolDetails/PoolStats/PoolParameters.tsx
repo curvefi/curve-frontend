@@ -6,8 +6,8 @@ import { useNetworkByChain } from '@/dex/entities/networks'
 import { usePoolIdByAddressOrId } from '@/dex/hooks/usePoolIdByAddressOrId'
 import { usePoolTotalStaked } from '@/dex/hooks/usePoolTotalStaked'
 import { usePoolParameters } from '@/dex/queries/pool-parameters.query'
+import { usePoolTvl } from '@/dex/queries/pool-tvl.query'
 import { usePoolVolume } from '@/dex/queries/pool-volume.query'
-import { useStore } from '@/dex/store/useStore'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { FORMAT_OPTIONS, formatDate, formatNumber } from '@ui/utils'
@@ -29,7 +29,8 @@ export const PoolParameters = ({
     data: { pricesApi, isLite },
   } = useNetworkByChain({ chainId })
   const poolId = usePoolIdByAddressOrId({ chainId, poolIdOrAddress: rPoolIdOrAddress })
-  const tvl = useStore((state) => state.pools.tvlMapper[chainId]?.[poolId ?? ''])
+
+  const { data: tvl } = usePoolTvl({ chainId, poolId })
   const { data: volume } = usePoolVolume({ chainId, poolId })
 
   const haveWrappedCoins = useMemo(() => {
@@ -41,9 +42,9 @@ export const PoolParameters = ({
 
   const liquidityUtilization = useMemo(
     () =>
-      tvl?.value && volume
-        ? +tvl.value && +volume
-          ? formatNumber((+volume / +tvl.value) * 100, FORMAT_OPTIONS.PERCENT)
+      tvl && volume
+        ? +tvl && +volume
+          ? formatNumber((+volume / +tvl) * 100, FORMAT_OPTIONS.PERCENT)
           : formatNumber(0, { style: 'percent', maximumFractionDigits: 0 })
         : '-',
     [tvl, volume],

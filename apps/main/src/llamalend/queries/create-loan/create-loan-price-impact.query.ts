@@ -54,7 +54,7 @@ export const { useQuery: useCreateLoanPriceImpact, invalidate: invalidateCreateL
         throw new Error('Price impact is only available for leveraged create loan')
     }
   },
-  staleTime: '1m',
+  category: 'llamalend.createLoan',
   validationSuite: createLoanQueryValidationSuite({ debtRequired: true, isLeverageRequired: true }),
   dependencies: (params) => [createLoanExpectedCollateralQueryKey(params)],
 })

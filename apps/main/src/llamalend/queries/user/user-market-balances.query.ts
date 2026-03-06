@@ -5,7 +5,7 @@ import { rootKeys } from '@ui-kit/lib/model/query/root-keys'
 import type { MarketParams, MarketQuery } from '@ui-kit/lib/model/query/root-keys'
 
 export const { useQuery: useUserMarketBalances, invalidate: invalidateUserMarketBalances } = queryFactory({
-  queryKey: (params: MarketParams) => [...rootKeys.market(params), 'userMarketBalances', 'v1'] as const,
+  queryKey: (params: MarketParams) => [...rootKeys.market(params), 'wallet.balances', 'v1'] as const,
   queryFn: async ({ marketId }: MarketQuery) => {
     const api = requireLib('llamaApi')
     const market = api.getLendMarket(marketId)
@@ -18,6 +18,6 @@ export const { useQuery: useUserMarketBalances, invalidate: invalidateUserMarket
       vaultSharesConverted,
     }
   },
-  refetchInterval: '1m',
+  category: 'llamalend.user',
   validationSuite: marketIdValidationSuite,
 })

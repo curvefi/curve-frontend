@@ -48,7 +48,7 @@ const { useQuery: useBorrowMoreApproveGasEstimate, invalidate: invalidateBorrowM
           return await impl.estimateGas.borrowMoreApprove(userCollateral)
       }
     },
-    staleTime: '1m',
+    category: 'llamalend.borrowMore',
     validationSuite: borrowMoreValidationSuite({ leverageRequired: false }),
   })
 
@@ -104,7 +104,7 @@ const { useQuery: useBorrowMoreGasEstimate, invalidate: invalidateBorrowMoreGasE
         return await impl.estimateGas.borrowMore(...args)
     }
   },
-  staleTime: '1m',
+  category: 'llamalend.borrowMore',
   validationSuite: borrowMoreValidationSuite({ leverageRequired: false }),
 })
 

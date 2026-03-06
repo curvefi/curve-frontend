@@ -41,6 +41,7 @@ export enum Chain {
   Strata = 8091,
   ExpChain = 18880,
   Monad = 143,
+  Etherlink = 42793,
 }
 
 /**

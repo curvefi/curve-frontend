@@ -55,6 +55,34 @@ function check500Error({ context }: { context: object }) {
 }
 
 describe('Error Boundary', () => {
+  let restoreRemoveChild: (() => void) | undefined
+  afterEach(() => cy.then(() => restoreRemoveChild?.()))
+
+  it('should show some guidance when a DOM mutation error occurs', () => {
+    let throwCount = 0
+    const url = '/llamalend/ethereum/markets'
+    cy.visit(url, {
+      timeout: API_LOAD_TIMEOUT.timeout,
+      onBeforeLoad: ({ DOMException, Node }) => {
+        const originalRemoveChild = Node.prototype.removeChild
+        restoreRemoveChild = () => (Node.prototype.removeChild = originalRemoveChild)
+        Node.prototype.removeChild = function <T extends Node>(child: T): T {
+          // Throw twice to make this deterministic in concurrent mode: once is recovered, always causes an infinite loop
+          if (throwCount < 2) {
+            throwCount += 1
+            throw new DOMException(
+              "Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.",
+              'NotFoundError',
+            )
+          }
+          return originalRemoveChild.call(this, child) as T
+        }
+      },
+    })
+    cy.get('[data-testid="error-title"]', LOAD_TIMEOUT).should('contain.text', 'Page error')
+    cy.get('[data-testid="error-subtitle"]').should('contain.text', 'Please refresh the page and try again.')
+  })
+
   // note: this must be the first in the file, as firefox might cache responses from other tests
   it('should show error page when it hits the error boundary', () => {
     visitErrorBoundary()

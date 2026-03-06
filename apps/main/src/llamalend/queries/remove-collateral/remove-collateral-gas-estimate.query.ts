@@ -15,13 +15,14 @@ const { useQuery: useRemoveCollateralGasEstimate } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, userCollateral }: RemoveCollateralGasParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-      'remove-collateral-gas-estimation',
+      'estimateGas.removeCollateral',
       { userCollateral },
     ] as const,
   queryFn: async ({ marketId, userCollateral }: RemoveCollateralGasQuery) => {
     const market = getLlamaMarket(marketId)
     return await market.removeCollateralEstimateGas(userCollateral)
   },
+  category: 'llamalend.removeCollateral',
   validationSuite: collateralValidationSuite,
   dependencies: (params) => [maxRemovableCollateralKey(params)],
 })

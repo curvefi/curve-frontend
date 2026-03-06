@@ -6,7 +6,7 @@ import { QueryOptionsArray, QueryResultsArray } from './types'
 
 export const combineQueryState = (...queries: (Query<unknown> | undefined)[]) => ({
   error: queries.find((x) => x?.error)?.error ?? null,
-  loading: queries.some((x) => x?.isLoading),
+  isLoading: queries.some((x) => x?.isLoading),
 })
 
 /** Combines the metadata of multiple queries into a single object. */

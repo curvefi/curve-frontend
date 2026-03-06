@@ -72,7 +72,7 @@ export const POOL_LIST_COLUMNS = [
     sortUndefined: 'last',
     filterFn: rangeFilterFn,
   }),
-  columnHelper.accessor((row) => (row.tvl ? +row.tvl.value : null), {
+  columnHelper.accessor((row) => (row.tvl ? +row.tvl : null), {
     id: PoolColumnId.Tvl,
     header: headers[PoolColumnId.Tvl],
     cell: UsdCell,

@@ -1,10 +1,11 @@
+import { LlamaMonitorBotButton } from '@/llamalend/widgets/LlamaMonitorBotButton'
 import { Stack, Typography, useTheme } from '@mui/material'
 import { useIntegratedLlamaHeader } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { decimal } from '@ui-kit/utils'
-import { HealthBar, getHealthValueColor, Health, LiquidationAlert, LlamaMonitorBotLinkButton } from './'
+import { HealthBar, getHealthValueColor, Health, LiquidationAlert } from './'
 
 const { Spacing } = SizesAndSpaces
 
@@ -43,7 +44,7 @@ export const HealthDetails = ({
               {t`Liquidation may occur when health reaches 0.`}
             </Typography>
           </Typography>
-          {!showPageHeader && <LlamaMonitorBotLinkButton />}
+          {!showPageHeader && <LlamaMonitorBotButton />}
         </Stack>
       </Stack>
     </Stack>
