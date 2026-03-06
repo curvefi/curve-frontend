@@ -58,8 +58,8 @@ function useResetPageOnResultChange<T extends TableItem>(table: TanstackTable<T>
   useEffect(() => {
     // Skip for manual pagination - data is expected to change on page change
     if (isManualPagination) return
-    // Reset to first page, only if we had results before (links must keep working)
-    if (lastResultCount.current) onPaginationChangeEvent((prev) => ({ ...prev, pageIndex: 0 }))
+    // Reset to first page, but only if result amount wasn't 0 (links must keep working while data might still be loading)
+    if (lastResultCount.current && resultCount) onPaginationChangeEvent((prev) => ({ ...prev, pageIndex: 0 }))
     lastResultCount.current = resultCount
   }, [resultCount, isManualPagination])
 }

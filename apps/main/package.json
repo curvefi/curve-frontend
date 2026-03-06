@@ -53,6 +53,7 @@
   "devDependencies": {
     "@curvefi/api": "*",
     "@eslint/js": "*",
+    "@sentry/vite-plugin": "^4.5.0",
     "@types/lodash": "^4.17.23",
     "@types/memoizee": "^0.4.12",
     "@types/node": "*",
