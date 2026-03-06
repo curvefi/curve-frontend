@@ -7,7 +7,8 @@ import { Typography } from '@mui/material'
 import { IconButton } from '@mui/material'
 import Box from '@mui/material/Box'
 import Chip from '@mui/material/Chip'
-import Stack from '@mui/material/Stack'
+import Stack, { StackProps } from '@mui/material/Stack'
+import { useLayoutStore } from '@ui-kit/features/layout'
 import { useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { ArrowLeft } from '@ui-kit/shared/icons/ArrowLeft'
@@ -18,6 +19,7 @@ import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { generateMarketTitle, generateSubtitle, MetricsRow } from './'
+import { pageMargins } from '@ui-kit/widgets/DetailPageLayout/constants'
 
 const { Spacing } = SizesAndSpaces
 
@@ -30,6 +32,32 @@ type PageHeaderProps = {
   availableLiquidity: AvailableLiquidity
 }
 
+const pageHeaderPadding = { paddingBlock: Spacing.sm, paddingInline: Spacing.md }
+
+/**
+ * CSS rules for making the page header sticky.
+ *
+ * There is a gap between the navbar and the page title where
+ * scrolled content can briefly become visible. To prevent this,
+ * a negative margin is applied and the same value is added as
+ * top padding so the header remains visually fixed in the
+ * intended position.
+ *
+ * An alternative approach would be using a ::before pseudo-element
+ * to mask the scrolling content.
+ */
+const stickySx = (navHeight: number): StackProps['sx'] => ({
+  position: { tablet: 'sticky' },
+  top: { tablet: `${navHeight}px` },
+  marginBlockStart: { tablet: `calc(${pageMargins.marginBlockStart.tablet} * -1)` },
+  zIndex: (t) => t.zIndex.appBar - 1,
+  backgroundColor: (t) => t.design.Layer[2].Fill,
+  paddingBlockStart: {
+    mobile: pageHeaderPadding.paddingBlock.mobile,
+    tablet: `calc(${pageHeaderPadding.paddingBlock.tablet} + ${pageMargins.marginBlockStart.tablet})`,
+  },
+})
+
 export const PageHeader = ({
   isLoading,
   market,
@@ -39,6 +67,7 @@ export const PageHeader = ({
   availableLiquidity,
 }: PageHeaderProps) => {
   const push = useNavigate()
+  const navHeight = useLayoutStore((state) => state.navHeight)
 
   const marketType = market instanceof MintMarketTemplate ? LlamaMarketType.Mint : LlamaMarketType.Lend
   const { collateralToken, borrowToken } = market
@@ -52,8 +81,8 @@ export const PageHeader = ({
       direction={{ mobile: 'column', tablet: 'row' }}
       justifyContent={{ tablet: 'space-between' }}
       gap={Spacing.md}
-      paddingBlock={Spacing.sm}
-      paddingInline={Spacing.md}
+      sx={stickySx(navHeight)}
+      {...pageHeaderPadding}
     >
       <Stack direction="row">
         <IconButton

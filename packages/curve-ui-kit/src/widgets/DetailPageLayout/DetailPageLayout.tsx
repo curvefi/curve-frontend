@@ -4,6 +4,7 @@ import Stack from '@mui/material/Stack'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useRightFormTabsLayout } from '@ui-kit/hooks/useFeatureFlags'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { pageMargins } from './constants'
 import { FormSkeleton } from './FormSkeleton'
 
 const { Spacing, MaxWidth } = SizesAndSpaces
@@ -33,12 +34,7 @@ export const DetailPageLayout = ({
   const isNewLayout = useRightFormTabsLayout()
 
   return (
-    <Grid
-      container
-      data-testid="detail-page-layout"
-      spacing={Spacing.lg}
-      sx={{ marginInline: Spacing.md, marginBlockStart: Spacing.md, marginBlockEnd: Spacing.xxl }}
-    >
+    <Grid container data-testid="detail-page-layout" spacing={Spacing.lg} sx={pageMargins}>
       {/* In Figma, columns are 12/4/3, but too small around breakpoints. I've added one extra column.
           Ultrawide isn't a breakpoint yet, use maxWidth so it's not too large. */}
       {formTabs !== null && (
