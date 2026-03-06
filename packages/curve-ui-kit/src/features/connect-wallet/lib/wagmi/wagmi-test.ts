@@ -1,14 +1,15 @@
+import type { SendTransactionParameters } from 'viem'
 import {
+  type Chain,
   createWalletClient,
   custom,
+  type CustomTransport,
   fallback,
   http,
-  type Chain,
-  type CustomTransport,
   type PrivateKeyAccount,
 } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
-import { type CreateConnectorFn, createConnector } from 'wagmi'
+import { createConnector, type CreateConnectorFn } from 'wagmi'
 import { type Address, type Hex } from '@primitives/address.utils'
 import { WAGMI_HTTP_OPTIONS } from './transports'
 
@@ -17,15 +18,21 @@ type ConnectResult<T> = { accounts: readonly T[]; chainId: number }
 type Account = { address: Address; capabilities: Record<string, unknown> }
 
 /** Default custom transport for Cypress E2E tests, read-only */
-const cypressTransport = (account: PrivateKeyAccount) =>
-  custom({
-    request: async ({ method }): Promise<unknown> => {
-      if (method === 'eth_accounts') {
-        return [account.address]
-      }
+const cypressTransport = (account: PrivateKeyAccount, chain: Chain) => {
+  // Dedicated local-account writer so eth_sendTransaction is signed with the provided private key.
+  const writeClient = createWalletClient({
+    account,
+    chain,
+    transport: http(chain.rpcUrls.default.http[0]),
+  })
+  return custom({
+    request: async ({ method, params: [param] }): Promise<unknown> => {
+      if (method === 'eth_accounts') return [account.address]
+      if (method === 'eth_sendTransaction') return writeClient.sendTransaction(param as SendTransactionParameters)
       throw new Error(`Unsupported method: ${method}, http fallback is used`)
     },
   })
+}
 
 export type CreateTestConnectorOptions = {
   /** A hexadecimal private key used to generate a test account */
@@ -57,7 +64,7 @@ export function createTestConnector({ privateKey, chain, transport }: CreateTest
     account,
     chain,
     transport: fallback([
-      (transport ?? cypressTransport)(account),
+      (transport ?? cypressTransport)(account, chain),
       ...chain.rpcUrls.default.http.map((url) => http(url, WAGMI_HTTP_OPTIONS)),
     ]),
   })
