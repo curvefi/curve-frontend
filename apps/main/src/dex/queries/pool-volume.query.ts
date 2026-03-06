@@ -20,7 +20,7 @@ const getPoolVolumeFromLib = ({ poolId }: Pick<PoolQuery, 'poolId'>) =>
 
 const { useQuery: usePoolVolumeQuery } = queryFactory({
   category: 'dex.pools',
-  queryKey: ({ chainId, poolId }: PoolParams) => [...rootKeys.pool({ chainId, poolId }), 'pool-volume'] as const,
+  queryKey: ({ chainId, poolId }: PoolParams) => [...rootKeys.pool({ chainId, poolId }), 'stats.volume'] as const,
   queryFn: async ({ poolId }: PoolQuery) => getPoolVolumeFromLib({ poolId }),
   validationSuite: createValidationSuite((params: PoolParams) => {
     curveApiValidationGroup(params)
@@ -62,7 +62,8 @@ const { useQuery: usePoolVolumesQuery, fetchQuery: fetchPoolVolumesQuery } = que
  * @remarks
  * Uses a single query keyed only by `chainId` (not per pool) to avoid 1000+ individual query
  * entries that slow down the front-end. Pools are fetched with `PromisePool` at concurrency 10
- * (multicall is not available for volume data). The poolIds are explicitly not part of the query key.
+ * (multicall is not available for volume data, as the data comes from an API endpoint).
+ * The poolIds are explicitly not part of the query key.
  *
  * Disabled on lite networks.
  */

@@ -26,7 +26,6 @@ export const DEFAULT_NETWORK_CONFIG = {
   isLite: false,
   isActiveNetwork: true,
   missingPools: [],
-  poolCustomTVL: {}, // hardcode tvl for pool
   poolFilters: ['all', 'usd', 'btc', 'eth', 'crypto', 'crvusd', 'tricrypto', 'stableng', 'others', 'user'],
   poolIsWrappedOnly: {}, // show only wrapped pool data
   swap: { fromAddress: '', toAddress: '' },

@@ -9,11 +9,6 @@ import { Chain } from '@ui-kit/utils/network'
 
 export const defaultNetworks = Object.entries({
   [Chain.Ethereum]: {
-    poolCustomTVL: {
-      pax: '0',
-      busd: '0',
-      y: '0',
-    },
     poolIsWrappedOnly: {
       pax: true,
       busd: true,
