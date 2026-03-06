@@ -13,7 +13,7 @@ export function getBorrowMoreImplementation(
   marketId: string | LlamaMarketTemplate,
   leverageEnabled: boolean | null | undefined,
 ) {
-  const market = typeof marketId === 'string' ? getLlamaMarket(marketId) : marketId
+  const market = getLlamaMarket(marketId)
   leverageEnabled ??= true // until we know if leverage is supported, use the latest implementation available
   return market instanceof MintMarketTemplate
     ? leverageEnabled && hasV2Leverage(market)
@@ -23,7 +23,7 @@ export function getBorrowMoreImplementation(
       ? hasZapV2(market)
         ? (['zapV2', market.leverageZapV2] as const)
         : (['V1', market.leverage] as const)
-      : (['unleveraged', market] as const)
+      : (['unleveraged', market.loan] as const)
 }
 
 /**

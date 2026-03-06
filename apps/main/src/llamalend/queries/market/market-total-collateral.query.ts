@@ -6,7 +6,7 @@ import { decimal } from '@ui-kit/utils'
 import { IS_GETTER, USE_API } from './market.constants'
 
 export const { useQuery: useMarketTotalCollateral, invalidate: invalidateMarketTotalCollateral } = queryFactory({
-  queryKey: (params: MarketParams) => [...rootKeys.market(params), 'market-total-collateral'] as const,
+  queryKey: (params: MarketParams) => [...rootKeys.market(params), 'totalCollateral'] as const,
   queryFn: async ({ marketId }: MarketQuery) => {
     const market = getLlamaMarket(marketId)
 
@@ -17,9 +17,10 @@ export const { useQuery: useMarketTotalCollateral, invalidate: invalidateMarketT
         borrowed: decimal(totalCollateral.borrowed),
       }
     }
-
-    const totalCollateral = await market.stats.totalCollateral()
-    const totalBorrowed = await market.stats.totalStablecoin()
+    const [totalCollateral, totalBorrowed] = await Promise.all([
+      market.stats.totalCollateral(),
+      market.stats.totalStablecoin(),
+    ])
     return { collateral: decimal(totalCollateral), borrowed: decimal(totalBorrowed) }
   },
   category: 'llamalend.market',

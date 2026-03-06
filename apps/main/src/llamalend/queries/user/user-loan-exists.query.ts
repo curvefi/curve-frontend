@@ -9,10 +9,12 @@ export const {
   getQueryData: getLoanExists,
   invalidate: invalidateLoanExists,
 } = queryFactory({
-  queryKey: (params: UserMarketParams) => [...rootKeys.userMarket(params), 'market-user-loan-exists'] as const,
+  queryKey: (params: UserMarketParams) => [...rootKeys.userMarket(params), 'loanExists'] as const,
   queryFn: async ({ marketId, userAddress }: UserMarketQuery) => {
     const market = getLlamaMarket(marketId)
-    return market instanceof MintMarketTemplate ? market.loanExists(userAddress) : market.userLoanExists(userAddress)
+    return market instanceof MintMarketTemplate
+      ? market.loanExists(userAddress)
+      : market.userPosition.userLoanExists(userAddress)
   },
   category: 'llamalend.user',
   validationSuite: userMarketValidationSuite,

@@ -37,4 +37,4 @@ export const DEFAULT_HEALTH_MODE: HealthMode = {
 /**
  * Filter out markets after a certain creation date because they're unsafe to use until Llamalend V2 is live.
  */
-export const MARKET_CUTOFF_DATE = new Date('2025-11-12T00:00:00Z') // November 12, 2025
+export const LLAMMALEND_V2_DATE = new Date('2025-11-12T00:00:00Z') // November 12, 2025

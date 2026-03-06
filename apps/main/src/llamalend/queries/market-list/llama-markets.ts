@@ -1,6 +1,7 @@
 import { countBy } from 'lodash'
 import { useCallback, useMemo } from 'react'
 import { ethAddress } from 'viem'
+import { LLAMMALEND_V2_DATE } from '@/llamalend/constants'
 import { computeTotalRate } from '@/llamalend/rates.utils'
 import { type Chain } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
@@ -44,6 +45,7 @@ export type LlamaMarket = {
   controllerAddress: Address
   vaultAddress: Address | null
   assets: Assets
+  version: 'v1' | 'v2'
   maxLtv: number
   utilizationPercent: number
   liquidityUsd: number
@@ -270,6 +272,7 @@ const convertLendingVault = (
     controllerAddress: controller,
     ammAddress: llamma,
     vaultAddress: vault,
+    version: createdAt > LLAMMALEND_V2_DATE ? 'v2' : 'v1', // todo: get version from backend
     assets: {
       borrowed: {
         ...borrowedToken,
@@ -374,6 +377,7 @@ const convertMintMarket = (
     controllerAddress: address,
     ammAddress: llamma,
     vaultAddress: null, // mint markets dont have these
+    version: 'v1',
     assets: {
       borrowed: {
         symbol: stablecoinToken.symbol,

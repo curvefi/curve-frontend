@@ -10,13 +10,12 @@ const _fetchUserSupplyBoost = async ({ marketId }: MarketQuery): Promise<number 
     return null
   }
   const market = api.getLendMarket(marketId)
-  const boost = await market.userBoost(api.signerAddress)
-
+  const boost = await market.userPosition.userBoost(api.signerAddress)
   return boost ? +boost : null
 }
 
 export const { useQuery: useUserSupplyBoost } = queryFactory({
-  queryKey: (params: MarketParams) => [...rootKeys.market(params), 'userSupplyBoost', 'v1'] as const,
+  queryKey: (params: MarketParams) => [...rootKeys.market(params), 'userBoost', 'v1'] as const,
   queryFn: _fetchUserSupplyBoost,
   category: 'llamalend.user',
   validationSuite: marketIdValidationSuite,
