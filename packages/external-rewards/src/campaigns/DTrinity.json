@@ -112,6 +112,18 @@
       "multiplier": "",
       "tags": ["points"],
       "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "null",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0xba2c915ec9c37dd6e5bb94682040b5dad2f58755",
+      "network": "",
+      "multiplier": "",
+      "tags": ["points"],
+      "lock": "false"
     }
   ]
 }
