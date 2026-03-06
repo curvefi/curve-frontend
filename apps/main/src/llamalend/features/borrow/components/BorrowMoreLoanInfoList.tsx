@@ -13,7 +13,8 @@ import { useBorrowMoreIsApproved } from '@/llamalend/queries/borrow-more/borrow-
 import { useBorrowMorePriceImpact } from '@/llamalend/queries/borrow-more/borrow-more-price-impact.query'
 import { useBorrowMorePrices } from '@/llamalend/queries/borrow-more/borrow-more-prices.query'
 import { useMarketFutureRates, useMarketOraclePrice, useMarketRates } from '@/llamalend/queries/market'
-import { getUserHealthOptions, useUserCurrentLeverage, useUserPrices, useUserState } from '@/llamalend/queries/user'
+import { getUserHealthOptions, useUserCurrentLeverage, useUserPrices } from '@/llamalend/queries/user'
+import { usePrevUserState } from '@/llamalend/queries/user/user-prev-state.query.ts'
 import type { BorrowMoreForm, BorrowMoreParams } from '@/llamalend/queries/validation/borrow-more.validation'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -47,7 +48,7 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
   routes: MarketRoutes | undefined
 }) {
   const isOpen = isFormTouched(form, 'userCollateral', 'userBorrowed', 'debt')
-  const userState = useUserState(params, isOpen)
+  const { prevDebt, prevCollateral } = usePrevUserState(params, isOpen)
   const expectedCollateralQuery = useBorrowMoreExpectedCollateral(params, isOpen && leverageEnabled)
   const prevLeverageValue = useUserCurrentLeverage(params, isOpen)
   const leverageValue = useBorrowMoreFutureLeverage(params, isOpen && leverageEnabled)
@@ -56,8 +57,8 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
   const collateralDelta = leverageEnabled ? expectedCollateralQuery.data?.totalCollateral : userCollateral
 
   const totalDebt = useMemo(
-    () => debt && userState.data && decimal(new BigNumber(userState.data.debt).plus(debt).toString()),
-    [debt, userState.data],
+    () => debt && prevDebt.data && decimal(new BigNumber(prevDebt.data).plus(debt).toString()),
+    [debt, prevDebt.data],
   )
 
   const { marketRates, marketFutureRates, netBorrowApr, futureBorrowApr } = useNetBorrowApr(
@@ -96,7 +97,7 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
             userAddress: params.userAddress,
             collateralToken,
             borrowToken,
-            expectedBorrowed: userState.data?.debt,
+            expectedBorrowed: prevDebt.data,
           },
           isOpen,
         ),
@@ -115,53 +116,55 @@ export function BorrowMoreLoanInfoList<ChainId extends IChainId>({
           isOpen && !!totalDebt && !!collateralDelta,
         ),
       )}
+      prevDebt={prevDebt}
       debt={mapQuery(
-        userState,
-        ({ debt: stateDebt }) =>
+        prevDebt,
+        (stateDebt) =>
           debt && { value: decimal(new BigNumber(stateDebt).plus(debt))!, tokenSymbol: borrowToken?.symbol },
       )}
-      // TODO: remove collateral and prevCollateral when leverage enabled. prevCollateral is computed from userState
-      collateral={q({
-        data: collateralDelta &&
-          userState.data && {
-            value: decimal(new BigNumber(userState.data.collateral).plus(collateralDelta))!,
-            tokenSymbol: collateralToken?.symbol,
-          },
-        isLoading: [userState, expectedCollateralQuery].some((q) => q.isLoading),
-        error: [userState, expectedCollateralQuery].find((q) => q.error)?.error ?? null,
-      })}
-      userState={q(userState)}
-      leverageEnabled={leverageEnabled}
-      {...(leverageEnabled && {
-        leverageValue: q(leverageValue),
-        prevLeverageValue: q(prevLeverageValue),
-        prevLeverageCollateral: q({
-          data:
-            userState.data?.collateral &&
-            prevLeverageValue.data &&
-            decimal(
-              new BigNumber(userState.data.collateral).minus(
-                new BigNumber(userState.data.collateral).div(prevLeverageValue.data),
-              ),
+      {...(leverageEnabled
+        ? {
+            leverageEnabled,
+            leverageValue: q(leverageValue),
+            prevLeverageValue: q(prevLeverageValue),
+            prevLeverageCollateral: q({
+              data:
+                prevCollateral.data &&
+                prevLeverageValue.data &&
+                decimal(
+                  new BigNumber(prevCollateral.data).minus(
+                    new BigNumber(prevCollateral.data).div(prevLeverageValue.data),
+                  ),
+                ),
+              ...combineQueryState(prevCollateral, prevLeverageValue),
+            }),
+            leverageCollateral: mapQuery(expectedCollateralQuery, ({ totalCollateral }) =>
+              decimal(new BigNumber(totalCollateral).minus(userCollateral ?? '0')),
             ),
-          ...combineQueryState(userState, prevLeverageValue),
-        }),
-        leverageCollateral: mapQuery(expectedCollateralQuery, ({ totalCollateral }) =>
-          decimal(new BigNumber(totalCollateral).minus(userCollateral ?? '0')),
-        ),
-        prevLeverageTotalCollateral: mapQuery(userState, ({ collateral }) => collateral),
-        leverageTotalCollateral: q({
-          data:
-            expectedCollateralQuery.data?.totalCollateral &&
-            userState.data?.collateral &&
-            decimal(new BigNumber(userState.data.collateral).plus(expectedCollateralQuery.data.totalCollateral)),
-          ...combineQueryState(userState, expectedCollateralQuery),
-        }),
-        routes,
-        slippage,
-        onSlippageChange,
-        priceImpact: q(priceImpact),
-      })}
+            prevLeverageTotalCollateral: prevCollateral,
+            leverageTotalCollateral: q({
+              data:
+                expectedCollateralQuery.data?.totalCollateral &&
+                prevCollateral.data &&
+                decimal(new BigNumber(prevCollateral.data).plus(expectedCollateralQuery.data.totalCollateral)),
+              ...combineQueryState(prevCollateral, expectedCollateralQuery),
+            }),
+            routes,
+            slippage,
+            onSlippageChange,
+            priceImpact: q(priceImpact),
+          }
+        : {
+            collateral: q({
+              data: collateralDelta &&
+                prevCollateral.data && {
+                  value: decimal(new BigNumber(prevCollateral.data).plus(collateralDelta))!,
+                  tokenSymbol: collateralToken?.symbol,
+                },
+              ...combineQueryState(prevCollateral, expectedCollateralQuery),
+            }),
+            prevCollateral,
+          })}
       exchangeRate={q(useMarketOraclePrice(params, isOpen))}
       collateralSymbol={collateralToken?.symbol}
       borrowSymbol={borrowToken?.symbol}
