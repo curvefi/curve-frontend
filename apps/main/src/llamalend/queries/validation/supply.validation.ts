@@ -111,7 +111,7 @@ export const validateDepositAmount = (
 const validateDepositMaxAmount = (amount: Decimal | undefined | null, maxAmount: Decimal | undefined | null) => {
   skipWhen(amount == null || maxAmount == null, () => {
     test('depositAmount', `Amount exceeds maximum of ${maxAmount}`, () => {
-      enforce(amount).lte(maxAmount)
+      enforce(amount).lte(maxAmount!)
     })
   })
 }
@@ -168,7 +168,7 @@ const validateWithdrawAmount = (
 const validateWithdrawMaxAmount = (amount: Decimal | undefined | null, maxAmount: Decimal | undefined | null) => {
   skipWhen(amount == null || maxAmount == null, () => {
     test('withdrawAmount', `Amount exceeds maximum of ${maxAmount}`, () => {
-      enforce(amount).lte(maxAmount)
+      enforce(amount).lte(maxAmount!)
     })
   })
 }
@@ -208,7 +208,7 @@ const validateStakeAmount = (
 const validateStakeMaxAmount = (amount: Decimal | undefined | null, maxAmount: Decimal | undefined | null) => {
   skipWhen(amount == null || maxAmount == null, () => {
     test('stakeAmount', `Amount exceeds maximum of ${maxAmount}`, () => {
-      enforce(amount).lte(maxAmount)
+      enforce(amount).lte(maxAmount!)
     })
   })
 }
@@ -242,7 +242,7 @@ const validateUnstakeAmount = (
 const validateUnstakeMaxAmount = (amount: Decimal | undefined | null, maxAmount: Decimal | undefined | null) => {
   skipWhen(amount == null || maxAmount == null, () => {
     test('unstakeAmount', `Amount exceeds maximum of ${maxAmount}`, () => {
-      enforce(amount).lte(maxAmount)
+      enforce(amount).lte(maxAmount!)
     })
   })
 }

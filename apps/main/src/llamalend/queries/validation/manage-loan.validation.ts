@@ -57,7 +57,7 @@ const validateMaxStateCollateral = (
 ) =>
   skipWhen(stateCollateral == null || maxStateCollateral == null, () => {
     test('maxStateCollateral', 'Collateral cannot exceed the amount in your wallet', () => {
-      enforce(stateCollateral).lte(maxStateCollateral)
+      enforce(stateCollateral).lte(maxStateCollateral!)
     })
   })
 
