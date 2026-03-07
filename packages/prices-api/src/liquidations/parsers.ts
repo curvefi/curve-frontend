@@ -74,7 +74,8 @@ export const parseTotalOverview = (
   liquidatablePositions: x.liquidatable_positions,
   liquidatablePosDebtUsd: x.liquidatable_pos_debt_usd,
   liquidatableCollateralUsd: x.liquidatable_collateral_usd,
-  liquidatableBorrowedUsd: x.liquidatable_borrowed_usd,
+  liquidatableBorrowedUsd: x?.liquidatable_borrowed_usd ?? null,
+  liquidatableStablecoinUsd: x?.liquidatable_stablecoin_usd ?? null,
 })
 
 export const parseBadDebt = (x: Responses.GetBadDebtResponse['data'][number]): Models.BadDebt[number] => ({
@@ -84,7 +85,8 @@ export const parseBadDebt = (x: Responses.GetBadDebtResponse['data'][number]): M
   liquidatablePositions: x.liquidatable_positions,
   liquidatablePosDebtUsd: x.liquidatable_pos_debt_usd,
   liquidatableCollateralUsd: x.liquidatable_collateral_usd,
-  liquidatableBorrowedUsd: x.liquidatable_borrowed_usd,
+  liquidatableBorrowedUsd: x?.liquidatable_borrowed_usd ?? null,
+  liquidatableStablecoinUsd: x?.liquidatable_stablecoin_usd ?? null,
   market: x.market,
   controllerAddress: x.controller_address,
 })

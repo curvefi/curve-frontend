@@ -80,7 +80,10 @@ type TotalOverview = {
   liquidatable_positions: number
   liquidatable_pos_debt_usd: number
   liquidatable_collateral_usd: number
-  liquidatable_borrowed_usd: number
+  // only for lending endpoint
+  liquidatable_borrowed_usd: number | undefined
+  // only for crvusd endpoint
+  liquidatable_stablecoin_usd: number | undefined
 }
 
 export type GetTotalOverviewResponse = {
