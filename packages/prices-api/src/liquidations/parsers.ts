@@ -76,3 +76,15 @@ export const parseTotalOverview = (
   liquidatableCollateralUsd: x.liquidatable_collateral_usd,
   liquidatableBorrowedUsd: x.liquidatable_borrowed_usd,
 })
+
+export const parseBadDebt = (x: Responses.GetBadDebtResponse['data'][number]): Models.BadDebt[number] => ({
+  chain: x.chain,
+  softLiquidationUsers: x.soft_liquidation_users,
+  badDebt: x.bad_debt,
+  liquidatablePositions: x.liquidatable_positions,
+  liquidatablePosDebtUsd: x.liquidatable_pos_debt_usd,
+  liquidatableCollateralUsd: x.liquidatable_collateral_usd,
+  liquidatableBorrowedUsd: x.liquidatable_borrowed_usd,
+  market: x.market,
+  controllerAddress: x.controller_address,
+})

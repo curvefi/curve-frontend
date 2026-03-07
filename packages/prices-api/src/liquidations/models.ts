@@ -69,3 +69,8 @@ export type TotalOverview = {
   liquidatableCollateralUsd: number
   liquidatableBorrowedUsd: number
 }[]
+
+export type BadDebt = (TotalOverview[number] & {
+  market: string
+  controllerAddress: Address
+})[]
