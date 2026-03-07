@@ -35,6 +35,7 @@ const { urgent, actionable, informative, dontRefetch } = {
 export const QUERY_TYPES = {
   user: actionable,
   table: informative,
+  chart: informative,
   form: actionable,
   marketDetail: actionable,
   static: dontRefetch,
