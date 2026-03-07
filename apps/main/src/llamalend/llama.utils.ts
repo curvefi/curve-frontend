@@ -13,7 +13,9 @@ import { notFalsy, objectKeys } from '@primitives/objects.utils'
 import { requireLib, type Wallet } from '@ui-kit/features/connect-wallet'
 import { isZapV2Enabled } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
+import { LlamaMarketType } from '@ui-kit/types/market'
 import { CRVUSD, formatNumber } from '@ui-kit/utils'
+import { MarketBannerAlert } from './widgets/MarketAlertBanner'
 import { MarketNetBorrowAprTooltipContentProps } from './widgets/tooltips/MarketNetBorrowAprTooltipContent'
 
 /**
@@ -270,3 +272,12 @@ export const getBorrowRateTooltipTitle = ({
   rebasingYieldApr,
 }: Pick<MarketNetBorrowAprTooltipContentProps, 'totalBorrowApr' | 'extraRewards' | 'rebasingYieldApr'>) =>
   totalBorrowApr != null && (extraRewards.length || rebasingYieldApr != null) ? t`Net borrow APR` : t`Borrow APR`
+
+export const getbadDebtBanner = (marketType: LlamaMarketType) => ({
+  // TODO: move alertType to ui-kit and refactor lend/loan/dex etc alertType
+  alertType: 'warning' as MarketBannerAlert['alertType'],
+  banner: {
+    title: t`Bad debt`,
+    subtitle: t`This market has bad debt${marketType === LlamaMarketType.Lend ? ', supplying crvUSD in this market is currently not recommended' : ''}.`,
+  },
+})
