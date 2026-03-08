@@ -8,6 +8,8 @@ import { ChainId, CurveApi, NetworkConfigFromApi, Wallet } from '@/dex/types/mai
 import { log } from '@ui-kit/lib/logging'
 import { fetchNetworks } from '../entities/networks'
 import { refetchPoolIds } from '../queries/pool-ids.query'
+import { refetchPoolTvls } from '../queries/pool-tvl.query'
+import { refetchPoolVolumes } from '../queries/pool-volume.query'
 
 export type SliceKey = keyof State | ''
 export type StateKey = string
@@ -97,6 +99,9 @@ export const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreAp
 
     // After rehydration is completed by the refetch above, any future query refactored
     // out of `fetchPools` that depends on all pool ids should be manually invalidated.
+    // You could argue that hooks with 'isHydrated' in the `enabled` parameter would suffice,
+    // but we're still encountering situations where not all data is properly loaded.
+    await Promise.all([refetchPoolVolumes({ chainId }), refetchPoolTvls({ chainId })])
     await state.pools.fetchPools(curveApi, poolIds)
 
     log('Hydrating DEX - Complete')

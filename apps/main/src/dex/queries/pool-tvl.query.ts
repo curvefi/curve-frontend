@@ -34,7 +34,7 @@ export function usePoolTvl({ chainId, poolId }: PoolParams) {
   return usePoolTvlQuery({ chainId, poolId }, isHydrated)
 }
 
-const { useQuery: usePoolTvlsQuery } = queryFactory({
+const { useQuery: usePoolTvlsQuery, refetchQuery: refetchPoolTvls } = queryFactory({
   queryKey: ({ chainId }: ChainParams) => [...rootKeys.chain({ chainId }), 'stats.tvl'] as const,
   queryFn: async ({ chainId }: ChainQuery) => {
     const poolIds = getPoolIds({ chainId }) ?? []
@@ -51,6 +51,8 @@ const { useQuery: usePoolTvlsQuery } = queryFactory({
   }),
   dependencies: (params) => [poolIdsQueryKey(params)],
 })
+
+export { refetchPoolTvls }
 
 /**
  * Hook to fetch TVLs for multiple pools on the same chain.
