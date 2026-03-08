@@ -8,6 +8,7 @@ import {
   POOL_PRESETS,
   STABLESWAP,
   FXSWAP,
+  FXSWAP_A_CONFIG,
   TOKEN_A,
   TOKEN_B,
   TOKEN_C,
@@ -808,12 +809,13 @@ export const createCreatePoolSlice = (
 
         try {
           const maExpTime = Math.round(+maHalfTime / 0.693)
+          const txCryptoA = new BigNumber(cryptoA).multipliedBy(FXSWAP_A_CONFIG.scale)
 
           const deployPoolTx = await curve.twocryptoFactory.deployPool(
             poolName,
             poolSymbol,
             coins,
-            cryptoA,
+            txCryptoA.toString(),
             gamma,
             midFee,
             outFee,

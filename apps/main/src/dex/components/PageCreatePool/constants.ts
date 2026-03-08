@@ -205,7 +205,7 @@ export const POOL_PRESETS: PRESETS = {
       ...fillerParams,
       midFee: '0.25', // 25/10_000 * 10**10 (25 bps)
       outFee: '0.50', // 50/10_000 * 10**10 (50 bps)
-      cryptoA: '100000', // 10 * 10000
+      cryptoA: '10', // unscaled A (scaled by 10000 only at tx boundary)
       gamma: '0.0001', // 10**14 (irrelevant for fx pools)
       allowedExtraProfit: '0.000000000001', // 1e-12 * 10**18
       feeGamma: '0.001', // 0.001 * 1e18
@@ -316,3 +316,13 @@ export const TWOCRYPTO_MIN_MAX_PARAMETERS = {
     max: 7 * 86400,
   },
 }
+
+// FXSwap A is shown/stored as a human-readable value and scaled only at tx time.
+// Contract argument expects the value multiplied by 10_000.
+export const FXSWAP_A_CONFIG = {
+  // Allowed user-facing A range before scaling.
+  min: 2,
+  max: 10000,
+  // Multiply by this factor before passing A to deployPool.
+  scale: 10000,
+} as const

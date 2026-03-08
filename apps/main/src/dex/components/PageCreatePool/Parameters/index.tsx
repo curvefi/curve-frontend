@@ -5,6 +5,8 @@ import { NumberField } from '@/dex/components/PageCreatePool/components/NumberFi
 import { Switch } from '@/dex/components/PageCreatePool/components/Switch'
 import { WarningBox as TokenWarningBox } from '@/dex/components/PageCreatePool/components/WarningBox'
 import {
+  FXSWAP,
+  FXSWAP_A_CONFIG,
   STABLESWAP_MIN_MAX_PARAMETERS,
   TWOCRYPTO_MIN_MAX_PARAMETERS,
   TRICRYPTO_MIN_MAX_PARAMETERS,
@@ -71,6 +73,10 @@ export const Parameters = ({ curve, chainId, haveSigner }: Props) => {
       return TRICRYPTO_MIN_MAX_PARAMETERS
     return TWOCRYPTO_MIN_MAX_PARAMETERS
   }, [tokensInPool])
+  const isFxSwap = swapType === FXSWAP
+  const [cryptoAMin, cryptoAMax] = isFxSwap
+    ? [FXSWAP_A_CONFIG.min, FXSWAP_A_CONFIG.max]
+    : [CRYPTOSWAP_MIN_MAX.a.min, CRYPTOSWAP_MIN_MAX.a.max]
 
   const updateStableFeeValue = (value: number) => {
     updateStableSwapFee(new BigNumber(value).toString())
@@ -322,10 +328,10 @@ export const Parameters = ({ curve, chainId, haveSigner }: Props) => {
               {advanced && swapType !== STABLESWAP && (
                 <>
                   <NumberField
-                    label={t`A (${CRYPTOSWAP_MIN_MAX.a.min} - ${CRYPTOSWAP_MIN_MAX.a.max})`}
+                    label={t`A (${cryptoAMin} - ${cryptoAMax})`}
                     value={+cryptoA}
-                    minValue={CRYPTOSWAP_MIN_MAX.a.min}
-                    maxValue={CRYPTOSWAP_MIN_MAX.a.max}
+                    minValue={cryptoAMin}
+                    maxValue={cryptoAMax}
                     formatOptions={{
                       maximumSignificantDigits: 21,
                       maximumFractionDigits: 21,
