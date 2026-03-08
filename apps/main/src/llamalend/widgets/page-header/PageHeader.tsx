@@ -16,7 +16,8 @@ import { TokenPair } from '@ui-kit/shared/ui/TokenPair'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
-import { type BorrowRate, type SupplyRate, type AvailableLiquidity, usePageHeader } from './hooks/usePageHeader'
+import type { BorrowRate, SupplyRate, AvailableLiquidity } from './hooks/page-header.types'
+import { usePageHeader } from './hooks/usePageHeader'
 import { generateMarketTitle, generateSubtitle, MetricsRow } from './'
 
 const { Spacing } = SizesAndSpaces

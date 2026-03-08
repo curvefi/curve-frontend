@@ -5,7 +5,7 @@ import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import type { Chain } from '@curvefi/prices-api'
 import Box from '@mui/material/Box'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import type { BorrowRate, SupplyRate, AvailableLiquidity } from './hooks/usePageHeader'
+import type { BorrowRate, SupplyRate, AvailableLiquidity } from './hooks/page-header.types'
 import { PageHeaderView } from './PageHeader'
 
 type PageHeaderViewProps = ComponentProps<typeof PageHeaderView>

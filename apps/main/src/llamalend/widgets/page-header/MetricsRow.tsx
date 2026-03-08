@@ -7,7 +7,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
-import { type BorrowRate, type SupplyRate, type AvailableLiquidity } from './hooks/usePageHeader'
+import type { BorrowRate, SupplyRate, AvailableLiquidity } from './hooks/page-header.types'
 
 const { Spacing } = SizesAndSpaces
 
