@@ -12,6 +12,8 @@ import {
   TRICRYPTO_MIN_MAX_PARAMETERS,
   STABLESWAP,
   POOL_PRESETS,
+  toFxswapADisplayValue,
+  toFxswapAStoreValue,
 } from '@/dex/components/PageCreatePool/constants'
 import { InitialPrice } from '@/dex/components/PageCreatePool/Parameters/InitialPrice'
 import { SelectPreset } from '@/dex/components/PageCreatePool/Parameters/SelectPreset'
@@ -94,6 +96,14 @@ export const Parameters = ({ curve, chainId, haveSigner }: Props) => {
     updateOutFee(new BigNumber(value).toString())
     setOutValue(new BigNumber(value).toString())
   }
+  const updateCryptoAValue = (value: number) => {
+    if (isFxSwap) {
+      updateCryptoA(toFxswapAStoreValue(value))
+      return
+    }
+    updateCryptoA(value)
+  }
+  const cryptoAValue = isFxSwap ? +(cryptoA === '' ? '0' : toFxswapADisplayValue(cryptoA)) : +cryptoA
 
   useEffect(() => {
     setStableFeeValue(stableSwapFee)
@@ -325,11 +335,11 @@ export const Parameters = ({ curve, chainId, haveSigner }: Props) => {
                 <>
                   <NumberField
                     label={t`A (${cryptoAMin} - ${cryptoAMax})`}
-                    value={+cryptoA}
+                    value={cryptoAValue}
                     minValue={cryptoAMin}
                     maxValue={cryptoAMax}
                     formatOptions={CRYPTO_FORMAT_OPTIONS}
-                    onChange={updateCryptoA}
+                    onChange={updateCryptoAValue}
                   />
                   <NumberField
                     label={`Gamma (${new BigNumber(CRYPTOSWAP_MIN_MAX.gamma.min).toString()} - ${new BigNumber(

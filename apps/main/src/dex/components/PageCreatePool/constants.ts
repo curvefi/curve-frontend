@@ -205,7 +205,7 @@ export const POOL_PRESETS: PRESETS = {
       ...fillerParams,
       midFee: '0.25', // 25/10_000 * 10**10 (25 bps)
       outFee: '0.50', // 50/10_000 * 10**10 (50 bps)
-      cryptoA: '10', // unscaled A (scaled by 10000 only at tx boundary)
+      cryptoA: '100000', // native A (UI displays A / 10000)
       gamma: '0.0001', // 10**14 (irrelevant for fx pools)
       allowedExtraProfit: '0.000000000001', // 1e-12 * 10**18
       feeGamma: '0.001', // 0.001 * 1e18
@@ -317,12 +317,18 @@ export const TWOCRYPTO_MIN_MAX_PARAMETERS = {
   },
 }
 
-// FXSwap A is shown/stored as a human-readable value and scaled only at tx time.
-// Contract argument expects the value multiplied by 10_000.
+// FXSwap A is stored in native contract units.
+// UI should display human-readable value by dividing by 10_000.
 export const FXSWAP_A_CONFIG = {
-  // Allowed user-facing A range before scaling.
+  // Allowed user-facing A range shown in the UI.
   min: 2,
   max: 10000,
-  // Multiply by this factor before passing A to deployPool.
+  // FXSwap contract precision scale.
   scale: 10000,
 } as const
+
+export const toFxswapAStoreValue = (value: string | number) =>
+  new BigNumber(value).multipliedBy(FXSWAP_A_CONFIG.scale).toFixed()
+
+export const toFxswapADisplayValue = (value: string | number) =>
+  new BigNumber(value).dividedBy(FXSWAP_A_CONFIG.scale).toString()
