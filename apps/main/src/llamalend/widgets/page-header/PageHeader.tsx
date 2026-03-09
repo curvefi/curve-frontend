@@ -48,7 +48,7 @@ export const PageHeader = ({
   )
 }
 
-/** Separate view commponent in order to generate a good storybook example */
+/** Separate view component in order to generate a good storybook example */
 export const PageHeaderView = ({
   isLoading,
   market,
