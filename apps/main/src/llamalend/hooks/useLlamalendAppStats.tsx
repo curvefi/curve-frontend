@@ -56,11 +56,10 @@ export function useLlamalendAppStats(
     to: `$app/$network/$page`,
   })
 
-  const shouldShowStats =
-    isDesktop
-      ? // hide header stats on lend/crvusd market pages only
+  const shouldShowStats = isDesktop
+    ? // hide header stats on lend/crvusd market pages only
       currentApp === LLAMALEND_APP || (params && `/${params.page}` !== LEND_ROUTES.PAGE_MARKETS)
-      : true
+    : true
   const statsEnabled = enabled && shouldShowStats
 
   const { data: marketData } = useLlamaMarkets(address, statsEnabled)

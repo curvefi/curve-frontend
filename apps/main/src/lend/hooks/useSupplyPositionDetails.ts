@@ -69,7 +69,12 @@ export const useSupplyPositionDetails = ({
 
   const userCurrentCRVApr = (supplyMetrics.supplyAprCrvMinBoost ?? 0) * (userSupplyBoost ?? 1)
   const userTotalCurrentSupplyApr = supplyMetrics.supplyApy
-    ? sumRates(supplyMetrics.supplyApy, supplyMetrics.rebasingYield, supplyMetrics.extraIncentivesTotalApr, userCurrentCRVApr)
+    ? sumRates(
+        supplyMetrics.supplyApy,
+        supplyMetrics.rebasingYield,
+        supplyMetrics.extraIncentivesTotalApr,
+        userCurrentCRVApr,
+      )
     : null
 
   const sharesValue = userBalances?.vaultShares ? Number(userBalances.vaultShares) + Number(userBalances.gauge) : null
