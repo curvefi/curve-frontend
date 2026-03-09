@@ -1,6 +1,8 @@
 import { getLlamaMarket, hasLeverage, hasV2Leverage, hasZapV2 } from '@/llamalend/llama.utils'
 import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import type { BorrowMoreQuery } from '@/llamalend/queries/validation/borrow-more.validation'
+import type { ILeverageV1 } from '@curvefi/llamalend-api/lib/lendMarkets/interfaces/v1'
+import type { ILeverageV2 } from '@curvefi/llamalend-api/lib/lendMarkets/interfaces/v2'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { parseMutationRoute } from '@ui-kit/entities/router-api'
 
@@ -60,7 +62,9 @@ export function getBorrowMoreImplementationArgs(
     }
     return [type, impl, [routerArgs]] as const
   }
-  return [type, impl, [userCollateral, userBorrowed, debt]] as const
+  const args = [userCollateral, userBorrowed, debt] as const
+  if (type == 'V1') return [type, impl as ILeverageV1, args] as const
+  return [type, impl as ILeverageV2, args] as const
 }
 
 /**
