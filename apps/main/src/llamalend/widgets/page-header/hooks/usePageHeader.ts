@@ -1,6 +1,7 @@
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { useLlamaSnapshot } from '@/llamalend/queries/llamma-snapshots.query'
 import { useMarketCapAndAvailable, useMarketRates, useMarketVaultOnChainRewards } from '@/llamalend/queries/market'
+import type { BorrowRate, SupplyRate } from '@/llamalend/rates.types'
 import {
   LAST_MONTH,
   getBorrowRateMetrics,
@@ -12,22 +13,70 @@ import {
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import type { Chain } from '@curvefi/prices-api'
 import type { Address } from '@primitives/address.utils'
-import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
+import { useCampaignsByAddress, type CampaignPoolRewards } from '@ui-kit/entities/campaigns'
 import type { LendingSnapshot } from '@ui-kit/entities/lending-snapshots'
-import type { ExtraIncentive } from '@ui-kit/types/market'
-import type { AvailableLiquidity, BorrowRate, PageHeaderData, SupplyRate } from './page-header.types'
+
+export type AvailableLiquidity = {
+  value: number | null | undefined
+  max: number | null | undefined
+  loading: boolean
+}
 
 const AVERAGE_RATE_LABEL = `${LAST_MONTH}D`
 const SNAPSHOTS_QUERY_LIMIT = LAST_MONTH
 
-type UsePageHeaderParams = {
+function buildSupplyRate({
+  marketRates,
+  marketOnChainRewards,
+  lendingSnapshots,
+  campaigns,
+  blockchainId,
+  loading,
+}: {
+  marketRates: { lendApy?: number | string | null } | undefined
+  marketOnChainRewards:
+    | { crvRates?: number[]; rewardsApr?: { apy: number; symbol: string; tokenAddress: string }[] }
+    | undefined
+  lendingSnapshots: LendingSnapshot[] | undefined
+  campaigns: CampaignPoolRewards[]
+  blockchainId: Chain | undefined
+  loading: boolean
+}): SupplyRate {
+  const supplyMetrics = getSupplyRateMetrics({
+    supplyApy: toNumberOrNull(marketRates?.lendApy),
+    snapshots: lendingSnapshots,
+    onChainCrvRates: marketOnChainRewards?.crvRates,
+    onChainRewardsApr: marketOnChainRewards?.rewardsApr,
+  })
+
+  return {
+    ...supplyMetrics,
+    averageRateLabel: AVERAGE_RATE_LABEL,
+    extraIncentives:
+      marketOnChainRewards?.rewardsApr && blockchainId
+        ? marketOnChainRewards.rewardsApr.map((reward) => ({
+            title: reward.symbol,
+            percentage: reward.apy,
+            blockchainId,
+            address: reward.tokenAddress,
+          }))
+        : [],
+    extraRewards: campaigns,
+    loading,
+  }
+}
+
+export const usePageHeader = ({
+  chainId,
+  marketId,
+  market,
+  blockchainId,
+}: {
   chainId: number
   marketId: string
   market: LlamaMarketTemplate | null | undefined
   blockchainId: Chain | undefined
-}
-
-export const usePageHeader = ({ chainId, marketId, market, blockchainId }: UsePageHeaderParams): PageHeaderData => {
+}) => {
   const isMarketMetadataLoading = !market
   const lendMarket = market instanceof LendMarketTemplate ? market : undefined
   const vaultAddress = lendMarket?.addresses.vault as Address | undefined
@@ -53,16 +102,14 @@ export const usePageHeader = ({ chainId, marketId, market, blockchainId }: UsePa
   const { data: vaultCampaigns } = useCampaignsByAddress({ blockchainId, address: vaultAddress })
   const campaigns = lendMarket ? [...vaultCampaigns, ...controllerCampaigns] : controllerCampaigns
 
-  // Borrow rate
   const metrics = getBorrowRateMetrics({
     borrowRate: toNumberOrNull(marketRates?.borrowApr),
     snapshots,
     getBorrowRate: getSnapshotBorrowRate,
     getRebasingYield: getSnapshotCollateralRebasingYieldRate,
   })
-  const borrowApr = toNumberOrNull(marketRates?.borrowApr)
   const borrowRate: BorrowRate = {
-    rate: borrowApr,
+    rate: toNumberOrNull(marketRates?.borrowApr),
     averageRate: metrics.averageRate,
     averageRateLabel: AVERAGE_RATE_LABEL,
     rebasingYield: metrics.rebasingYield,
@@ -73,8 +120,16 @@ export const usePageHeader = ({ chainId, marketId, market, blockchainId }: UsePa
     loading: isMarketRatesLoading || isSnapshotsLoading || isMarketMetadataLoading,
   }
 
-  // Supply rate (lend markets only)
-  const supplyRate = lendMarket ? buildSupplyRate(snapshots as LendingSnapshot[] | undefined) : undefined
+  const supplyRate = lendMarket
+    ? buildSupplyRate({
+        marketRates,
+        marketOnChainRewards,
+        lendingSnapshots: snapshots as LendingSnapshot[] | undefined,
+        campaigns,
+        blockchainId,
+        loading: isMarketRatesLoading || isSnapshotsLoading || isMarketOnChainRewardsLoading || isMarketMetadataLoading,
+      })
+    : undefined
 
   const availableLiquidity: AvailableLiquidity = {
     value: toNumberOrNull(capAndAvailable?.available),
@@ -83,43 +138,4 @@ export const usePageHeader = ({ chainId, marketId, market, blockchainId }: UsePa
   }
 
   return { borrowRate, supplyRate, availableLiquidity }
-
-  function buildSupplyRate(lendingSnapshots: LendingSnapshot[] | undefined): SupplyRate {
-    const supplyMetrics = getSupplyRateMetrics({
-      supplyApy: toNumberOrNull(marketRates?.lendApy),
-      snapshots: lendingSnapshots,
-      onChainCrvRates: marketOnChainRewards?.crvRates,
-      onChainRewardsApr: marketOnChainRewards?.rewardsApr,
-    })
-
-    const extraIncentives: ExtraIncentive[] =
-      marketOnChainRewards?.rewardsApr && blockchainId
-        ? marketOnChainRewards.rewardsApr.map((reward) => ({
-            title: reward.symbol,
-            percentage: reward.apy,
-            blockchainId,
-            address: reward.tokenAddress,
-          }))
-        : []
-
-    return {
-      rate: supplyMetrics.supplyApy,
-      averageRate: supplyMetrics.averageLendApy,
-      averageRateLabel: AVERAGE_RATE_LABEL,
-      supplyAprCrvMinBoost: supplyMetrics.supplyAprCrvMinBoost,
-      supplyAprCrvMaxBoost: supplyMetrics.supplyAprCrvMaxBoost,
-      averageSupplyAprCrvMinBoost: supplyMetrics.averageAprCrvMinBoost,
-      averageSupplyAprCrvMaxBoost: supplyMetrics.averageAprCrvMaxBoost,
-      rebasingYield: supplyMetrics.rebasingYield,
-      averageRebasingYield: supplyMetrics.averageRebasingYield,
-      totalSupplyRateMinBoost: supplyMetrics.totalMinBoost,
-      totalSupplyRateMaxBoost: supplyMetrics.totalMaxBoost,
-      totalAverageSupplyRateMinBoost: supplyMetrics.totalAverageMinBoost,
-      totalAverageSupplyRateMaxBoost: supplyMetrics.totalAverageMaxBoost,
-      extraIncentives,
-      averageTotalExtraIncentivesApr: supplyMetrics.averageExtraIncentivesApr,
-      extraRewards: campaigns,
-      loading: isMarketRatesLoading || isSnapshotsLoading || isMarketOnChainRewardsLoading || isMarketMetadataLoading,
-    }
-  }
 }

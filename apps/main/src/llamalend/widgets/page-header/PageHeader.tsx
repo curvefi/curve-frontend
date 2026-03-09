@@ -1,5 +1,6 @@
 import { getTokens } from '@/llamalend/llama.utils'
 import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import type { BorrowRate, SupplyRate } from '@/llamalend/rates.types'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { type Chain } from '@curvefi/prices-api'
 import { Typography } from '@mui/material'
@@ -16,21 +17,24 @@ import { TokenPair } from '@ui-kit/shared/ui/TokenPair'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
-import type { BorrowRate, SupplyRate, AvailableLiquidity } from './hooks/page-header.types'
-import { usePageHeader } from './hooks/usePageHeader'
+import { type AvailableLiquidity, usePageHeader } from './hooks/usePageHeader'
 import { generateMarketTitle, generateSubtitle, MetricsRow } from './'
 
 const { Spacing } = SizesAndSpaces
 
-export type PageHeaderProps = {
+export const PageHeader = ({
+  chainId,
+  marketId,
+  isLoading,
+  market,
+  blockchainId,
+}: {
   chainId: number
   marketId: string
   isLoading: boolean
   market: LlamaMarketTemplate | undefined
   blockchainId: Chain
-}
-
-export const PageHeader = ({ chainId, marketId, isLoading, market, blockchainId }: PageHeaderProps) => {
+}) => {
   const { borrowRate, supplyRate, availableLiquidity } = usePageHeader({ chainId, marketId, market, blockchainId })
   return (
     <PageHeaderView
@@ -44,15 +48,6 @@ export const PageHeader = ({ chainId, marketId, isLoading, market, blockchainId 
   )
 }
 
-export type PageHeaderViewProps = {
-  isLoading: boolean
-  market: LlamaMarketTemplate | undefined
-  blockchainId: Chain
-  borrowRate: BorrowRate
-  supplyRate?: SupplyRate
-  availableLiquidity: AvailableLiquidity
-}
-
 /** Separate view commponent in order to generate a good storybook example */
 export const PageHeaderView = ({
   isLoading,
@@ -61,7 +56,14 @@ export const PageHeaderView = ({
   borrowRate,
   supplyRate,
   availableLiquidity,
-}: PageHeaderViewProps) => {
+}: {
+  isLoading: boolean
+  market: LlamaMarketTemplate | undefined
+  blockchainId: Chain
+  borrowRate: BorrowRate
+  supplyRate?: SupplyRate
+  availableLiquidity: AvailableLiquidity
+}) => {
   const push = useNavigate()
 
   const marketType = market instanceof MintMarketTemplate ? LlamaMarketType.Mint : LlamaMarketType.Lend

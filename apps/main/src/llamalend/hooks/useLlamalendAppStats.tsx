@@ -59,7 +59,7 @@ export function useLlamalendAppStats(
   const shouldShowStats =
     isDesktop
       ? // hide header stats on lend/crvusd market pages only
-        currentApp === LLAMALEND_APP || (params && `/${params.page}` !== LEND_ROUTES.PAGE_MARKETS)
+      currentApp === LLAMALEND_APP || (params && `/${params.page}` !== LEND_ROUTES.PAGE_MARKETS)
       : true
   const statsEnabled = enabled && shouldShowStats
 

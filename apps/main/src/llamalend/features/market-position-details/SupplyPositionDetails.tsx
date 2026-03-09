@@ -1,4 +1,4 @@
-import { type SupplyRate } from '@/llamalend/widgets/page-header'
+import type { SupplyRate } from '@/llamalend/rates.types'
 import { BoostTooltipContent } from '@/llamalend/widgets/tooltips/BoostTooltipContent'
 import { MarketSupplyRateTooltipContent } from '@/llamalend/widgets/tooltips/MarketSupplyRateTooltipContent'
 import { CardHeader, Box } from '@mui/material'
@@ -41,12 +41,12 @@ export type SupplyPositionDetailsProps = {
 
 export const SupplyPositionDetails = ({ userSupplyRate, shares, supplyAsset, boost }: SupplyPositionDetailsProps) => {
   const {
-    totalSupplyRateMaxBoost,
-    totalSupplyRateMinBoost,
-    totalAverageSupplyRateMaxBoost,
-    totalAverageSupplyRateMinBoost,
-    rate,
-    averageRate,
+    totalMaxBoost,
+    totalMinBoost,
+    totalAverageMaxBoost,
+    totalAverageMinBoost,
+    supplyApy,
+    averageLendApy,
     averageRateLabel,
     extraRewards,
     extraIncentives,
@@ -78,20 +78,20 @@ export const SupplyPositionDetails = ({ userSupplyRate, shares, supplyAsset, boo
         <Metric
           size="medium"
           label={t`Supply rate`}
-          value={userTotalCurrentSupplyApr ?? totalSupplyRateMinBoost}
+          value={userTotalCurrentSupplyApr ?? totalMinBoost}
           loading={supplyRateLoading}
           valueOptions={{ unit: 'percentage', color: 'warning' }}
           notional={
-            totalSupplyRateMaxBoost
-              ? t`max Boost ${formatNumber(totalSupplyRateMaxBoost, { unit: 'percentage', abbreviate: false })}`
+            totalMaxBoost
+              ? t`max Boost ${formatNumber(totalMaxBoost, { unit: 'percentage', abbreviate: false })}`
               : undefined
           }
           valueTooltip={{
             title: t`Supply Rate`,
             body: (
               <MarketSupplyRateTooltipContent
-                supplyRate={rate}
-                averageRate={averageRate}
+                supplyRate={supplyApy}
+                averageRate={averageLendApy}
                 periodLabel={averageRateLabel ?? ''}
                 extraRewards={extraRewards ?? []}
                 extraIncentives={extraIncentives ?? []}
@@ -99,10 +99,10 @@ export const SupplyPositionDetails = ({ userSupplyRate, shares, supplyAsset, boo
                 maxBoostApr={supplyAprCrvMaxBoost}
                 userBoost={boostValue}
                 userTotalCurrentSupplyApr={userTotalCurrentSupplyApr}
-                totalSupplyRateMinBoost={totalSupplyRateMinBoost}
-                totalSupplyRateMaxBoost={totalSupplyRateMaxBoost}
-                totalAverageSupplyRateMinBoost={totalAverageSupplyRateMinBoost}
-                totalAverageSupplyRateMaxBoost={totalAverageSupplyRateMaxBoost}
+                totalSupplyRateMinBoost={totalMinBoost}
+                totalSupplyRateMaxBoost={totalMaxBoost}
+                totalAverageSupplyRateMinBoost={totalAverageMinBoost}
+                totalAverageSupplyRateMaxBoost={totalAverageMaxBoost}
                 rebasingYield={rebasingYield}
                 rebasingSymbol={supplyAssetSymbol}
                 isLoading={supplyRateLoading}

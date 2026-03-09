@@ -80,21 +80,10 @@ export const useSupplyPositionDetails = ({
 
   return {
     userSupplyRate: {
-      rate: supplyMetrics.supplyApy,
-      averageRate: supplyMetrics.averageLendApy,
+      ...supplyMetrics,
       averageRateLabel: averageMultiplierString,
-      rebasingYield: supplyMetrics.rebasingYield,
-      averageRebasingYield: supplyMetrics.averageRebasingYield,
       userCurrentCRVApr,
       userTotalCurrentSupplyApr,
-      supplyAprCrvMinBoost: supplyMetrics.supplyAprCrvMinBoost,
-      supplyAprCrvMaxBoost: supplyMetrics.supplyAprCrvMaxBoost,
-      averageSupplyAprCrvMinBoost: supplyMetrics.averageAprCrvMinBoost,
-      averageSupplyAprCrvMaxBoost: supplyMetrics.averageAprCrvMaxBoost,
-      totalSupplyRateMinBoost: supplyMetrics.totalMinBoost,
-      totalSupplyRateMaxBoost: supplyMetrics.totalMaxBoost,
-      totalAverageSupplyRateMinBoost: supplyMetrics.totalAverageMinBoost,
-      totalAverageSupplyRateMaxBoost: supplyMetrics.totalAverageMaxBoost,
       extraIncentives: onChainRewards?.rewardsApr
         ? onChainRewards.rewardsApr.map((r) => ({
             title: r.symbol,
@@ -103,7 +92,6 @@ export const useSupplyPositionDetails = ({
             address: r.tokenAddress,
           }))
         : [],
-      averageTotalExtraIncentivesApr: supplyMetrics.averageExtraIncentivesApr,
       extraRewards: campaigns,
       loading:
         islendingSnapshotsLoading ||
