@@ -18,10 +18,10 @@ export const {
   invalidate: invalidateUserHealth,
 } = queryFactory({
   queryKey: ({ isFull, ...params }: UserHealthParams) =>
-    [...rootKeys.userMarket(params), 'market-user-health', { isFull }] as const,
+    [...rootKeys.userMarket(params), 'userHealth', { isFull }] as const,
   queryFn: async ({ marketId, userAddress, isFull }: UserHealthQuery) =>
     (await getLlamaMarket(marketId).userHealth(isFull, userAddress)) as Decimal,
-  refetchInterval: '1m',
+  category: 'llamalend.user',
   validationSuite: createValidationSuite(({ userAddress, isFull, marketId, chainId }: UserHealthParams) => {
     userMarketValidationSuite({ userAddress, marketId, chainId })
     validateIsFull(isFull)

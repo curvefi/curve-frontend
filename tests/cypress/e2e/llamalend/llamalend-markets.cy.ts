@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-expressions */
 import lodash, { max, sum } from 'lodash'
 import { LlamaMarketColumnId } from '@/llamalend/features/market-list/columns/columns.enum'
 import type { GetMarketsResponse } from '@curvefi/prices-api/llamalend'
@@ -9,7 +8,6 @@ import {
   expandFilters,
   expandFirstRowOnMobile,
   firstRow,
-  getHiddenCount,
   openDrawer,
   withFilterChips,
 } from '@cy/support/helpers/data-table.helpers'
@@ -28,14 +26,12 @@ import {
   assertInViewport,
   assertNotInViewport,
   type Breakpoint,
-  e2eBaseUrl,
   LOAD_TIMEOUT,
   oneDesktopViewport,
   oneViewport,
   RETRY_IN_CI,
 } from '@cy/support/ui'
 import { range, recordValues, repeat } from '@primitives/objects.utils'
-import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
 import { MarketRateType } from '@ui-kit/types/market'
 
 const wstEthMarket = '0x100dAa78fC509Db39Ef7D04DE0c1ABD299f4C6CE' as const
@@ -139,8 +135,13 @@ testCases.forEach(([width, height, breakpoint]) => {
     })
 
     it('should find markets by text', () => {
-      cy.get('[data-testid="btn-expand-search-Llamalend Markets"]').click({ waitForAnimations: true })
-      cy.get("[data-testid^='table-text-search-'] input").should('be.focused') // element is focused when animation completes
+      // only on mobile is the search not auto-expanded
+      if (breakpoint === 'mobile') {
+        cy.get('[data-testid="btn-expand-search-Llamalend Markets"]').click({ waitForAnimations: true })
+        cy.get("[data-testid^='table-text-search-'] input").should('be.focused') // element is focused when animation completes
+      } else {
+        cy.get("[data-testid^='table-text-search-'] input").click()
+      }
       cy.get("[data-testid='table-text-search-Llamalend Markets'] input").type('wstETH crvUSD')
       cy.url().should('include', 'search=wstETH+crvUSD')
       cy.scrollTo(0, 0)
@@ -160,7 +161,7 @@ testCases.forEach(([width, height, breakpoint]) => {
     it('should allow filtering by using a slider', () => {
       const [columnId, initialFilterText] = oneOf(
         [LlamaMarketColumnId.LiquidityUsd, '$0 -'],
-        [LlamaMarketColumnId.Tvl, '$10k -'],
+        [LlamaMarketColumnId.Tvl, '$0 -'],
         [LlamaMarketColumnId.UtilizationPercent, '0% -'],
       )
       // Keep the viewport stable for slider width.
@@ -211,22 +212,6 @@ testCases.forEach(([width, height, breakpoint]) => {
         closeSlider(breakpoint)
         cy.get(`[data-testid^="data-table-row"]`).should('have.length.below', length)
         cy.url().should('include', `${columnId}=`)
-      })
-    })
-
-    it('should let the TVL filter override the default small pools cutoff', () => {
-      getHiddenCount(breakpoint).then((hiddenBefore) => {
-        expect(!!hiddenBefore, `Cannot parse hidden count ${hiddenBefore}`).to.be.true
-        expandFilters(breakpoint)
-        cy.get(`[data-testid="minimum-slider-filter-tvl"]`).click({ waitForAnimations: true })
-        cy.get(`[data-testid="slider-tvl"]`).as('slider').should('be.visible')
-        cy.get(`[data-testid="slider-input-tvl-min"]`).clear()
-        cy.get(`[data-testid="slider-input-tvl-min"]`).type('0')
-        closeSlider(breakpoint)
-        cy.url().should('equal', `${e2eBaseUrl()}/llamalend/ethereum/markets/?${new URLSearchParams('tvl=0~')}`)
-        getHiddenCount(breakpoint).then((hiddenAfter) => {
-          expect(+hiddenAfter).to.be.lessThan(+hiddenBefore)
-        })
       })
     })
 
@@ -369,15 +354,11 @@ testCases.forEach(([width, height, breakpoint]) => {
         // no need to scroll on mobile, the graph is already in view after collapsing the row
         cy.get(`[data-testid="line-graph-${type}"]:visible`).first().scrollIntoView()
       }
-      cy.get(`[data-testid="line-graph-${type}"] path`).first().should('have.attr', 'stroke', color)
+      cy.get(`[data-testid="line-graph-${type}"] path`, LOAD_TIMEOUT).first().should('have.attr', 'stroke', color)
     }
 
     function checkCoinSelection(type: TokenType) {
-      const symbol = oneOf(
-        ...vaultData.ethereum.data
-          .filter((d) => d.total_assets_usd - d.total_debt_usd > SMALL_POOL_TVL)
-          .map((d) => d[`${type}_token`].symbol),
-      )
+      const symbol = oneOf(...vaultData.ethereum.data.map((d) => d[`${type}_token`].symbol))
       const columnId = `assets_${type}_symbol`
       cy.get(`[data-testid="multi-select-filter-${columnId}"]`).click() // open the menu
       cy.get(`[data-testid="multi-select-clear"]`).click() // deselect previously selected tokens

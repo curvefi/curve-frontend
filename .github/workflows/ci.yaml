@@ -4,6 +4,9 @@ env:
   DO_NOT_TRACK: 1
   VERCEL_ALLOW_NODEJS_24: 1
   IBM_TELEMETRY_DISABLED: true
+  SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+  SENTRY_ORG: ${{ vars.SENTRY_ORG }}
+  SENTRY_PROJECT: ${{ vars.SENTRY_PROJECT }}
 permissions:
   contents: read
 jobs:
@@ -39,6 +42,7 @@ jobs:
         uses: ./.github/actions/restore-cache
       - run: yarn set version stable
       - run: yarn install --immutable
+      - run: yarn build  # make sure the build works + uploads source maps to Sentry
       - run: yarn test
         working-directory: tests
 
@@ -91,6 +95,9 @@ jobs:
         uses: ./.github/actions/restore-cache
       - run: yarn set version stable
       - run: yarn install --immutable
+      - name: Optimize dependencies
+        run: yarn vite optimize --config vite.config.ts
+        working-directory: tests
 
       - name: Run RPC tests
         run: |
@@ -144,7 +151,10 @@ jobs:
 
       - run: yarn set version stable
       - run: yarn install --immutable
-      - run: yarn build
+      - name: Build app
+        run: |
+          set -o pipefail # fail tee if the main command fails
+          yarn build 2>&1 | tee e2e-build-${{ matrix.browser }}-${{ matrix.count }}.log
 
       - name: Start dev server
         run: yarn start 2>&1 | tee ../../e2e-dev-${{ matrix.browser }}-${{ matrix.count }}.log &
@@ -166,7 +176,19 @@ jobs:
 
       - name: Check runtime errors
         if: always()
-        run: if grep --ignore-case --extended-regexp "update depth exceeded|many re-renders|unmounted component|non-unique keys|uncontrolled to controlled|properties of undefined|cannot destructure" e2e-*.log; then exit 1; fi
+        env:
+          RUNTIME_ERRORS: |-
+            update depth exceeded
+            many re-renders
+            unmounted component
+            non-unique keys
+            uncontrolled to controlled
+            properties of undefined
+            cannot destructure
+            was reexported through module
+            dependencies of each other
+        run: |
+          ! grep --ignore-case --extended-regexp "$(echo -n "$RUNTIME_ERRORS" | tr '\n' '|')" e2e-*.log
 
       - uses: actions/upload-artifact@v4
         if: failure()
@@ -191,14 +213,14 @@ jobs:
     needs: [ lint, test, cypress-e2e, cypress-component, cypress-component-rpc ]
     steps:
       - name: Send Slack alert
+        env:
+          SLACK_TEXT: >-
+            ❌ <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|CI failed>
+            on <${{ github.server_url }}/${{ github.repository }}/tree/${{ github.ref_name }}|${{ github.ref_name }}>
+            at <${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}|${{ github.sha }}>
+            by <${{ github.server_url }}/${{ github.actor }}|${{ github.actor }}>
         run: |
-          SHORT_SHA="${GITHUB_SHA:0:7}"
           curl --request POST \
                --header 'Content-type: application/json' \
-               --data-binary "{
-                 \"text\": \"❌ <${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}|CI failed> \
-                 on <${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/tree/${GITHUB_REF_NAME}|${GITHUB_REF_NAME}> \
-                 at <${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/commit/${GITHUB_SHA}|${SHORT_SHA}> \
-                 by <${GITHUB_SERVER_URL}/${GITHUB_ACTOR}|${GITHUB_ACTOR}>\"
-               }" \
+               --data-binary "{\"text\": \"$SLACK_TEXT\"}" \
                --url "${{ secrets.SLACK_FRONTEND_TEAM_WEBHOOK }}"

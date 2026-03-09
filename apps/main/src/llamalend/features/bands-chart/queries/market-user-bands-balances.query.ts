@@ -27,7 +27,7 @@ export const { useQuery: useMarketUserBandsBalances } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress, loanExists, liquidationBand }: MarketUserBandsBalancesParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-      'market-user-bands-balances',
+      'userBandsBalances',
       { loanExists },
       { liquidationBand },
     ] as const,
@@ -51,5 +51,6 @@ export const { useQuery: useMarketUserBandsBalances } = queryFactory({
       return fetchChartBandBalancesData(sortBands(formattedUserBandsBalances), liquidationBand, market, isMarket)
     }
   },
+  category: 'llamalend.user',
   validationSuite: marketUserBandsBalancesValidationSuite,
 })

@@ -102,7 +102,7 @@ export const {
         return convertNumbers({ maxDebt: await impl.createLoanMaxRecv(userCollateral, range) })
     }
   },
-  staleTime: '1m',
+  category: 'llamalend.createLoan',
   validationSuite: createLoanQueryValidationSuite({
     debtRequired: false,
     isMaxDebtRequired: false,

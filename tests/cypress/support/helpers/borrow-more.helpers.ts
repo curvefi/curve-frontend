@@ -29,7 +29,7 @@ export function checkBorrowMoreDetailsLoaded({
   getActionValue('borrow-apr').should('include', '%')
   getActionValue('borrow-health', 'previous').should('match', DECIMAL_REGEX)
   getActionValue('estimated-tx-cost').should((value) => {
-    expect(value === '-' || value.includes('$')).to.eq(true)
+    expect(value === '-' || value?.includes('$')).to.eq(true)
   })
   checkDebt({ current: expectedCurrentDebt, future: expectedFutureDebt, symbol: 'crvUSD' })
   cy.get('[data-testid="loan-form-errors"]').should('not.exist')

@@ -57,8 +57,9 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
     txHash,
     isApproved,
     formErrors,
+    routes,
     max,
-    leverageValue,
+    leverage,
   } = useBorrowMoreForm({
     market,
     network,
@@ -68,10 +69,10 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
   })
 
   const isLeverageEnabled = isLeverageBorrowMore(market, values.leverageEnabled)
-  const swapRequired = isLeverageEnabled && Number(values.userBorrowed) > 0
   const fromBorrowed = fromWallet && isLeverageEnabled
   const onLeverageToggle = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) => updateForm(form, { leverageEnabled: event.target.checked }),
+    (event: ChangeEvent<HTMLInputElement>) =>
+      updateForm(form, { leverageEnabled: event.target.checked, routeId: undefined }),
     [form],
   )
 
@@ -81,14 +82,15 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
       onSubmit={onSubmit}
       footer={
         <BorrowMoreLoanInfoList
+          market={market}
           form={form}
           params={params}
           values={values}
           tokens={{ collateralToken, borrowToken }}
           networks={networks}
+          routes={routes}
           onSlippageChange={(value) => updateForm(form, { slippage: value })}
           leverageEnabled={values.leverageEnabled}
-          leverageValue={leverageValue}
         />
       }
     >
@@ -144,13 +146,13 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
       {isLeverageBorrowMoreSupported(market) && (
         <LeverageInput
           checked={values.leverageEnabled}
-          leverageValue={leverageValue}
+          leverage={leverage}
           onToggle={onLeverageToggle}
           maxLeverage={max.maxLeverage.data}
         />
       )}
 
-      <HighPriceImpactAlert {...q(useBorrowMorePriceImpact(params, enabled && swapRequired))} />
+      <HighPriceImpactAlert {...q(useBorrowMorePriceImpact(params, enabled && isLeverageEnabled))} />
 
       <Button
         type="submit"
@@ -159,7 +161,7 @@ export const BorrowMoreForm = <ChainId extends IChainId>({
         data-testid="borrow-more-submit-button"
         data-validation={JSON.stringify({
           hasMarket: !!market,
-          swapRequired,
+          isLeverageEnabled,
           isPending,
           isDisabled,
           isValid: form.formState.isValid,

@@ -107,7 +107,7 @@ export function writeCreateLoanForm({
   borrow: Decimal
   leverageEnabled: boolean
 }) {
-  cy.get('[data-testid="borrow-debt-input"] [data-testid="balance-value"]', LOAD_TIMEOUT).should('exist')
+  cy.get('[data-testid="borrow-debt-input"] [data-testid="balance-value"]', TRANSACTION_LOAD_TIMEOUT).should('exist')
   cy.get('[data-testid="borrow-collateral-input"] input[type="text"]').first().type(collateral).blur()
   cy.get('[data-testid="borrow-debt-input"] [data-testid="balance-value"]').should('not.contain.text', '?')
   getActionValue('borrow-health').should('equal', '∞')

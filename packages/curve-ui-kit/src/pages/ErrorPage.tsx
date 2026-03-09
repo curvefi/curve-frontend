@@ -10,6 +10,7 @@ import { persister, queryClient } from '@ui-kit/lib/api'
 import { t } from '@ui-kit/lib/i18n'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { getBoundaryErrorSubtitle } from '@ui-kit/utils/errors'
 
 const { MinHeight, MaxWidth, Spacing } = SizesAndSpaces
 
@@ -65,7 +66,7 @@ export const ErrorPage = ({
         {title}
       </Typography>
       <Typography component="h2" variant="headingXsMedium" data-testid="error-subtitle" sx={{ textTransform: 'none' }}>
-        {subtitle}
+        {getBoundaryErrorSubtitle(error, subtitle)}
       </Typography>
       <Stack direction="row" spacing={Spacing.sm} margin={2}>
         {continueUrl ? (

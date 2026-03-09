@@ -22,6 +22,7 @@ const icons: Record<UserCollateralEventType, ReactNode> = {
   'Add Collateral': <PlusCircleIcon />,
   Liquidate: <ExclamationTriangleIcon color="error" />,
   'Hard Liquidation': <ExclamationTriangleIcon color="error" />,
+  'Partial Liquidation': <ExclamationTriangleIcon color="error" />,
   Repay: <DownloadIcon />,
   'Repay and Close': <CrossCircleIcon color="primary" />,
   'Self Liquidation': <CrossCircleIcon color="primary" />,

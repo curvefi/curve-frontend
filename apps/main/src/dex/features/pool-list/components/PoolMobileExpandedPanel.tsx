@@ -58,13 +58,13 @@ export const PoolMobileExpandedPanel: ExpandedPanel<PoolListItem> = ({ row, tabl
         {hasVolume && (
           <ListInfoItem
             label={t`24h Volume`}
-            value={volume?.value}
+            value={volume}
             valueOptions={{ unit: 'dollar', ...(isSortedBy(table, PoolColumnId.Volume) && highlight) }}
           />
         )}
         <ListInfoItem
           label={t`TVL`}
-          value={tvl?.value}
+          value={tvl}
           valueOptions={{ unit: 'dollar', ...(isSortedBy(table, PoolColumnId.Tvl) && highlight) }}
         />
 

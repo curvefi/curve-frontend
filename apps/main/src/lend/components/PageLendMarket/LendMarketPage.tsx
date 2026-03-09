@@ -7,26 +7,21 @@ import { LoanCreateTabs } from '@/lend/components/PageLendMarket/LoanCreateTabs'
 import { ManageLoanTabs } from '@/lend/components/PageLendMarket/ManageLoanTabs'
 import { useOneWayMarket } from '@/lend/entities/chain'
 import { useLendPageTitle } from '@/lend/hooks/useLendPageTitle'
+import { useMarketAlert } from '@/lend/hooks/useMarketAlert'
 import { useMarketDetails } from '@/lend/hooks/useMarketDetails'
 import { useTitleMapper } from '@/lend/hooks/useTitleMapper'
 import { helpers } from '@/lend/lib/apiLending'
 import { networks } from '@/lend/networks'
 import { useStore } from '@/lend/store/useStore'
 import { type MarketUrlParams } from '@/lend/types/lend.types'
-import { getCollateralListPathname, parseMarketParams } from '@/lend/utils/helpers'
+import { getCollateralListPathname, isHighSeverityAlert, parseMarketParams } from '@/lend/utils/helpers'
 import { getVaultPathname } from '@/lend/utils/utilsRouter'
 import { MarketDetails } from '@/llamalend/features/market-details'
-import {
-  BorrowPositionDetails,
-  NoPosition,
-  useBorrowPositionDetails,
-} from '@/llamalend/features/market-position-details'
-import { UserPositionHistory } from '@/llamalend/features/user-position-history'
-import { useUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
+import { PositionDetailsComposite, useBorrowPositionDetails } from '@/llamalend/features/market-position-details'
+import type { UserCollateralEventsProps } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { useLoanExists } from '@/llamalend/queries/user'
 import { PageHeader } from '@/llamalend/widgets/page-header'
-import type { Chain } from '@curvefi/prices-api'
-import { isChain } from '@curvefi/prices-api'
+import { isChain, type Chain } from '@curvefi/prices-api'
 import Stack from '@mui/material/Stack'
 import type { Address } from '@primitives/address.utils'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -37,12 +32,10 @@ import { useIntegratedLlamaHeader } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { ErrorPage } from '@ui-kit/pages/ErrorPage'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import type { Range } from '@ui-kit/types/util'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
-
-const { Spacing } = SizesAndSpaces
+import { MarketAlertBanner } from '../MarketAlertBanner'
 
 export const LendMarketPage = () => {
   const { isHydrated } = useCurve()
@@ -66,19 +59,6 @@ export const LendMarketPage = () => {
 
   const marketDetails = useMarketDetails({ chainId, market, marketId })
   const network = networks[chainId]
-  const {
-    data: userCollateralEvents,
-    isLoading: collateralEventsIsLoading,
-    isError: collateralEventsIsError,
-  } = useUserCollateralEvents({
-    app: 'lend',
-    chain: isChain(network.id) ? network.id : undefined,
-    controllerAddress: market?.addresses?.controller as Address,
-    userAddress,
-    collateralToken: market?.collateral_token,
-    borrowToken: market?.borrowed_token,
-    network,
-  })
   const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists({
     chainId,
     marketId,
@@ -87,7 +67,6 @@ export const LendMarketPage = () => {
 
   const [isLoaded, setLoaded] = useState(false)
   const [previewPrices, onPricesUpdated] = useState<Range<Decimal> | undefined>(undefined)
-
   const borrowPositionDetails = useBorrowPositionDetails({
     marketType: LlamaMarketType.Lend,
     chainId,
@@ -95,6 +74,16 @@ export const LendMarketPage = () => {
     blockchainId: network.id as Chain,
     market: market ?? null,
   })
+  const activityQueryParams: UserCollateralEventsProps = {
+    app: LlamaMarketType.Lend,
+    chain: isChain(network.id) ? network.id : undefined,
+    controllerAddress: market?.addresses?.controller as Address | undefined,
+    userAddress,
+    collateralToken: market?.collateral_token,
+    borrowToken: market?.borrowed_token,
+    network,
+  }
+  const marketAlert = useMarketAlert(chainId, market?.id)
 
   useEffect(() => {
     // delay fetch rest after form details are fetched first
@@ -167,27 +156,20 @@ export const LendMarketPage = () => {
           ))
         }
       >
-        <CampaignRewardsBanner
-          chainId={chainId}
-          borrowAddress={market?.addresses?.controller || ''}
-          supplyAddress={market?.addresses?.vault || ''}
-        />
+        {marketAlert?.banner && <MarketAlertBanner alertType={marketAlert.alertType} banner={marketAlert.banner} />}
+        {!isHighSeverityAlert(marketAlert?.alertType) && (
+          <CampaignRewardsBanner
+            chainId={chainId}
+            borrowAddress={market?.addresses?.controller || ''}
+            supplyAddress={market?.addresses?.vault || ''}
+          />
+        )}
         <MarketInformationTabs currentTab={'borrow'} hrefs={{ borrow: '', supply: getVaultPathname(params, marketId) }}>
-          {loanExists ? <BorrowPositionDetails {...borrowPositionDetails} /> : <NoPosition type="borrow" />}
-          {userCollateralEvents?.events && userCollateralEvents.events.length > 0 && (
-            <Stack
-              paddingLeft={Spacing.md}
-              paddingRight={Spacing.md}
-              paddingBottom={Spacing.md}
-              sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}
-            >
-              <UserPositionHistory
-                events={userCollateralEvents.events}
-                isLoading={collateralEventsIsLoading}
-                isError={collateralEventsIsError}
-              />
-            </Stack>
-          )}
+          <PositionDetailsComposite
+            hasPosition={loanExists}
+            borrowPositionDetails={borrowPositionDetails}
+            activityQueryParams={activityQueryParams}
+          />
         </MarketInformationTabs>
         <Stack>
           {!showPageHeader && <MarketDetails {...marketDetails} />}

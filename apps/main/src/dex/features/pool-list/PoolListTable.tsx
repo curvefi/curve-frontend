@@ -1,14 +1,6 @@
-import { useMemo, useState } from 'react'
-import { useNetworkFromUrl } from '@/dex/hooks/useChainId'
+import { useState } from 'react'
 import { type NetworkConfig } from '@/dex/types/main.types'
-import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
-import { minCutoffForTopK } from '@primitives/array.utils'
-import { notFalsy } from '@primitives/objects.utils'
 import { ExpandedState, getPaginationRowModel } from '@tanstack/react-table'
-import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { HideSmallPoolsSwitch } from '@ui-kit/features/user-profile/settings/HideSmallPoolsSwitch'
-import { MIN_POOLS_DISPLAYED, SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
 import { useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { usePageFromQueryString } from '@ui-kit/hooks/usePageFromQueryString'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
@@ -16,43 +8,19 @@ import { t } from '@ui-kit/lib/i18n'
 import { getTableOptions, useTable } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
-import { serializeRangeFilter } from '@ui-kit/shared/ui/DataTable/filters'
 import { useFilters } from '@ui-kit/shared/ui/DataTable/hooks/useFilters'
 import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
 import { TableFiltersTitles } from '@ui-kit/shared/ui/DataTable/TableFiltersTitles'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { PoolListChips } from './chips/PoolListChips'
-import { DEFAULT_SORT } from './columns'
+import { getDefaultSort } from './columns'
 import { POOL_LIST_COLUMNS, PoolColumnId } from './columns'
 import { PoolListEmptyState } from './components/PoolListEmptyState'
 import { PoolMobileExpandedPanel } from './components/PoolMobileExpandedPanel'
 import { usePoolListData } from './hooks/usePoolListData'
 import { usePoolListVisibilitySettings } from './hooks/usePoolListVisibilitySettings'
 import { usePoolsGlobalFilterFn } from './poolsGlobalFilter'
-import { type PoolListItem } from './types'
-
-const { Spacing } = SizesAndSpaces
 
 const LOCAL_STORAGE_KEY = 'dex-pool-list'
-
-const useDefaultPoolsFilter = (data: PoolListItem[] | undefined) => {
-  const hideSmallPools = useUserProfileStore((s) => s.hideSmallPools)
-  const { hideSmallPoolsTvl: minTvl = SMALL_POOL_TVL } = useNetworkFromUrl() ?? {}
-  return useMemo(
-    () =>
-      notFalsy(
-        data &&
-          hideSmallPools && {
-            id: PoolColumnId.Tvl,
-            value: serializeRangeFilter([
-              minCutoffForTopK(data, (pool) => +(pool.tvl?.value ?? 0), minTvl, MIN_POOLS_DISPLAYED),
-              null, // no upper limit
-            ])!,
-          },
-      ),
-    [data, minTvl, hideSmallPools],
-  )
-}
 
 const PER_PAGE = 50
 const EMPTY: never[] = []
@@ -60,24 +28,21 @@ const EMPTY: never[] = []
 export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
   const { isLite, poolFilters } = network
 
-  // todo: use isReady to show a loading spinner close to the data
-  const { data, isLoading, isReady, userHasPositions } = usePoolListData(network)
+  const { data, isLoading, userHasPositions } = usePoolListData(network)
 
-  const defaultFilters = useDefaultPoolsFilter(data)
   const { globalFilter, setGlobalFilter, columnFilters, columnFiltersById, setColumnFilter, hasFilters, resetFilters } =
     useFilters({
       columns: PoolColumnId,
-      defaultFilters,
     })
   const globalFilterFn = usePoolsGlobalFilterFn(data ?? [], globalFilter)
-  const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT)
+  const [sorting, onSortingChange] = useSortFromQueryString(getDefaultSort(isLite))
   const [pagination, onPaginationChange] = usePageFromQueryString(PER_PAGE)
   const { columnSettings, columnVisibility, sortField } = usePoolListVisibilitySettings(LOCAL_STORAGE_KEY, {
     isLite,
     sorting,
   })
   const [expanded, onExpandedChange] = useState<ExpandedState>({})
-  const filterProps = { columnFiltersById, setColumnFilter, defaultFilters }
+  const filterProps = { columnFiltersById, setColumnFilter, defaultFilters: EMPTY }
 
   const table = useTable({
     columns: POOL_LIST_COLUMNS,
@@ -107,33 +72,24 @@ export const PoolListTable = ({ network }: { network: NetworkConfig }) => {
       <TableFilters<PoolColumnId>
         filterExpandedKey={LOCAL_STORAGE_KEY}
         leftChildren={<TableFiltersTitles title={t`Pools`} subtitle={t`Find your next opportunity`} />}
-        loading={!isReady}
+        loading={isLoading}
         visibilityGroups={columnSettings}
         searchText={globalFilter}
         onSearch={setGlobalFilter}
         hasSearchBar
         chips={
-          <>
-            <PoolListChips
-              poolFilters={poolFilters}
-              hiddenMarketCount={data ? data.length - resultCount : 0}
-              hasFilters={hasFilters}
-              resetFilters={resetFilters}
-              onSortingChange={onSortingChange}
-              sortField={sortField}
-              searchText={globalFilter}
-              onSearch={setGlobalFilter}
-              resultCount={data ? resultCount : undefined}
-              {...filterProps}
-            />
-            {/** Temporary switch just for feature parity with the old pools list, should be a proper range filter later. */}
-            <Stack direction="row" spacing={Spacing.sm} alignItems="center">
-              <HideSmallPoolsSwitch />
-              <Typography variant="bodyMBold" color="text.secondary">
-                {t`Hide Small Pools`}
-              </Typography>
-            </Stack>
-          </>
+          <PoolListChips
+            poolFilters={poolFilters}
+            hiddenMarketCount={data ? data.length - resultCount : 0}
+            hasFilters={hasFilters}
+            resetFilters={resetFilters}
+            onSortingChange={onSortingChange}
+            sortField={sortField}
+            searchText={globalFilter}
+            onSearch={setGlobalFilter}
+            resultCount={data ? resultCount : undefined}
+            {...filterProps}
+          />
         }
       />
     </DataTable>

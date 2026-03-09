@@ -8,7 +8,7 @@ import { getLlamaMarket } from '../../llama.utils'
 import { convertRates } from '../../rates.utils'
 
 export const { useQuery: useMarketParameters } = queryFactory({
-  queryKey: (params: MarketParams) => [...rootKeys.market(params), 'market-parameters'] as const,
+  queryKey: (params: MarketParams) => [...rootKeys.market(params), 'parameters'] as const,
   queryFn: async ({ marketId }: MarketQuery) => {
     const market = getLlamaMarket(marketId)
 
@@ -40,6 +40,6 @@ export const { useQuery: useMarketParameters } = queryFactory({
       }
     }
   },
-  refetchInterval: '1m',
+  category: 'llamalend.marketParams',
   validationSuite: marketIdValidationSuite,
 })

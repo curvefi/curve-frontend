@@ -146,8 +146,7 @@ const {
 
     return (parsedGasInfo ?? (await parseGasInfo(curve, provider, gasPricesUrlL2))).gasInfo
   },
-  staleTime: '5m',
-  refetchInterval: '1m',
+  category: 'global.gasInfo',
   validationSuite: createValidationSuite(<TChainId extends number>({ chainId }: GasInfoParams<TChainId>) => {
     chainValidationGroup({ chainId })
     group('libValidation', () => {

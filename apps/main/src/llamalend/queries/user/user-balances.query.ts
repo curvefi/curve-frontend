@@ -11,7 +11,7 @@ type UserBalancesParams = FieldsOf<UserBalancesQuery>
 
 export const { useQuery: useUserBalances, invalidate: invalidateUserBalances } = queryFactory({
   queryKey: ({ chainId, marketId, userAddress }: UserBalancesParams) =>
-    [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'wallet-balances'] as const,
+    [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'wallet.balances'] as const,
   queryFn: async ({ marketId }: UserBalancesQuery) => {
     const market = getLlamaMarket(marketId)
     if (market instanceof LendMarketTemplate) {
@@ -28,6 +28,6 @@ export const { useQuery: useUserBalances, invalidate: invalidateUserBalances } =
       return { collateral: collateral as Decimal, borrowed: stablecoin as Decimal }
     }
   },
-  staleTime: '1m',
+  category: 'llamalend.user',
   validationSuite: marketIdValidationSuite,
 })

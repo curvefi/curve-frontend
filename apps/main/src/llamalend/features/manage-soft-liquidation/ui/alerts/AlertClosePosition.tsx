@@ -21,7 +21,7 @@ export const AlertClosePosition = () => (
         {t`While soft liquidation is active, you may only repay debt to increase health or withdraw collateral.`}
 
         <Button
-          href="https://resources.curve.finance/crvusd/loan-concepts"
+          href="https://docs.curve.finance/user/llamalend/borrowing"
           target="_blank"
           color="ghost"
           variant="inline"

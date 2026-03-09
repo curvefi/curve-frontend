@@ -24,12 +24,7 @@ export const marketBandsBalancesValidationSuite = createValidationSuite((params:
 
 export const { useQuery: useMarketBandsBalances } = queryFactory({
   queryKey: ({ chainId, marketId, liquidationBand, oraclePriceBand }: MarketBandsBalancesParams) =>
-    [
-      ...rootKeys.market({ chainId, marketId }),
-      'market-bands-balances',
-      { liquidationBand },
-      { oraclePriceBand },
-    ] as const,
+    [...rootKeys.market({ chainId, marketId }), 'bandsBalances', { liquidationBand }, { oraclePriceBand }] as const,
   queryFn: async ({ marketId, liquidationBand, oraclePriceBand }: MarketBandsBalancesQuery) => {
     const market = getLlamaMarket(marketId)
     const normalizedLiquidationBand = liquidationBand ?? null
@@ -81,5 +76,6 @@ export const { useQuery: useMarketBandsBalances } = queryFactory({
 
     return data
   },
+  category: 'llamalend.market',
   validationSuite: marketBandsBalancesValidationSuite,
 })
