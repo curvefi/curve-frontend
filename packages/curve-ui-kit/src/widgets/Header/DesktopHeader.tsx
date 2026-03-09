@@ -14,6 +14,7 @@ import { PageTabsSwitcher } from './PageTabsSwitcher'
 import { SubNav } from './SubNav'
 import { HeaderImplementationProps } from './types'
 import { useMainNavRef } from './useMainNavRef'
+import { getHeaderBorder } from './utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -29,7 +30,12 @@ export const DesktopHeader = ({
     color="transparent"
     ref={useMainNavRef()}
     data-testid="desktop-main-nav"
-    sx={{ position: 'sticky', top: 0, boxShadow: 'none' }}
+    sx={{
+      position: 'sticky',
+      top: 0,
+      boxShadow: 'none',
+      borderBottom: getHeaderBorder,
+    }}
   >
     <GlobalBanner networkId={networkId} chainId={chainId} />
 
@@ -38,7 +44,6 @@ export const DesktopHeader = ({
         backgroundColor: (t) => t.design.Layer[2].Fill,
         justifyContent: 'space-around',
         paddingY: 0,
-        borderBottom: (t) => `1px solid ${t.design.Layer[2].Outline}`,
       }}
       data-testid="main-nav"
     >

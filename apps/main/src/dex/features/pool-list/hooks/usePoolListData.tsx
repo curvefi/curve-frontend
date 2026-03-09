@@ -2,6 +2,7 @@ import { get, isEmpty, sum } from 'lodash'
 import { useEffect, useMemo } from 'react'
 import { useConnection } from 'wagmi'
 import { CROSS_CHAIN_ADDRESSES } from '@/dex/constants'
+import { usePoolTvls } from '@/dex/queries/pool-tvl.query'
 import { usePoolVolumes } from '@/dex/queries/pool-volume.query'
 import { useUserPools } from '@/dex/queries/user-pools.query'
 import { useStore } from '@/dex/store/useStore'
@@ -14,6 +15,7 @@ import { useCurve } from '@ui-kit/features/connect-wallet'
 import { usePageVisibleInterval } from '@ui-kit/hooks/usePageVisibleInterval'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { DEX_ROUTES } from '@ui-kit/shared/routes'
+import { decimal } from '@ui-kit/utils'
 import type { PoolListItem, PoolTag } from '../types'
 
 const POOL_TEXT_FIELDS = [
@@ -50,7 +52,6 @@ export function usePoolListData({ id: network, chainId, isLite }: NetworkConfig)
   const { curveApi } = useCurve()
   const poolDataMapper = useStore((state): PoolDataMapper | undefined => state.pools.poolsMapper[chainId])
   const rewardsApyMapper = useStore((state) => state.pools.rewardsApyMapper[chainId])
-  const tvlMapper = useStore((state) => state.pools.tvlMapper[chainId])
   const fetchPoolsRewardsApy = useStore((state) => state.pools.fetchPoolsRewardsApy)
   const fetchMissingPoolsRewardsApy = useStore((state) => state.pools.fetchMissingPoolsRewardsApy)
   const poolsData = useMemo(() => poolDataMapper && recordValues(poolDataMapper), [poolDataMapper])
@@ -58,10 +59,11 @@ export function usePoolListData({ id: network, chainId, isLite }: NetworkConfig)
   const { address: userAddress } = useConnection()
   const { data: userPools } = useUserPools({ chainId, userAddress })
   const { data: volumes, isLoading: isVolumesLoading } = usePoolVolumes({ chainId })
+  const { data: tvls, isLoading: isTvlsLoading } = usePoolTvls({ chainId })
 
   const isLoading = useMemo(
-    () => !poolsData || isEmpty(tvlMapper) || (!isLite && isVolumesLoading),
-    [poolsData, tvlMapper, isLite, isVolumesLoading],
+    () => !poolsData || isTvlsLoading || (!isLite && isVolumesLoading),
+    [poolsData, isTvlsLoading, isLite, isVolumesLoading],
   )
 
   useEffect(
@@ -99,15 +101,15 @@ export function usePoolListData({ id: network, chainId, isLite }: NetworkConfig)
                     .filter((v) => !isNaN(v)),
                 ),
                 rewards,
-                volume: volumes?.[item.pool.id] ?? '0',
-                tvl: tvlMapper?.[item.pool.id],
+                volume: decimal(volumes?.[item.pool.id]),
+                tvl: decimal(tvls?.[item.pool.id]),
                 hasPosition,
                 network,
                 url: getPath({ network }, `${DEX_ROUTES.PAGE_POOLS}/${item.pool.address}/deposit`),
                 tags: getPoolTags(!!hasPosition, item),
               }
             }),
-      [isLoading, poolsData, rewardsApyMapper, userPools, volumes, tvlMapper, network],
+      [isLoading, poolsData, rewardsApyMapper, userPools, tvls, volumes, network],
     ),
   }
 }

@@ -1,12 +1,11 @@
 import Stack from '@mui/material/Stack'
 import type { Decimal } from '@primitives/decimal.utils'
-import { combineQueryState } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { ActionInfo, ActionInfoGasEstimate, type TxGasInfo } from '@ui-kit/shared/ui/ActionInfo'
 import type { QueryProp } from '@ui-kit/types/util'
 import { formatNumber, formatPercent } from '@ui-kit/utils'
 import { ActionInfoCollapse } from './ActionInfoCollapse'
-import { formatAmount, ACTION_INFO_GROUP_SX } from './info-actions.helpers'
+import { formatAmount, ACTION_INFO_GROUP_SX, combineActionInfoState } from './info-actions.helpers'
 
 export type SupplyActionInfoListProps = {
   isOpen: boolean
@@ -59,7 +58,7 @@ export const SupplyActionInfoList = ({
             label="Supply APY"
             value={supplyApy?.data && formatPercent(supplyApy.data)}
             prevValue={prevSupplyApy?.data && formatPercent(prevSupplyApy.data)}
-            {...combineQueryState(supplyApy, prevSupplyApy)}
+            {...combineActionInfoState(supplyApy, prevSupplyApy)}
             size="small"
             testId="supply-apy"
           />
@@ -68,7 +67,7 @@ export const SupplyActionInfoList = ({
           <ActionInfo
             label={t`Net Supply APY`}
             value={netSupplyApy.data && formatPercent(netSupplyApy.data)}
-            {...combineQueryState(netSupplyApy)}
+            {...combineActionInfoState(netSupplyApy)}
             size="small"
             testId="supply-net-apy"
           />
@@ -79,7 +78,7 @@ export const SupplyActionInfoList = ({
           label={sharesLabel}
           value={vaultShares?.data && formatAmount(vaultShares.data)}
           prevValue={prevVaultShares?.data && formatAmount(prevVaultShares.data)}
-          {...combineQueryState(vaultShares, prevVaultShares)}
+          {...combineActionInfoState(vaultShares, prevVaultShares)}
           size="small"
           testId="supply-vault-shares"
         />
@@ -88,7 +87,7 @@ export const SupplyActionInfoList = ({
             label={amountLabel}
             value={amountSupplied?.data && formatNumber(amountSupplied.data, { abbreviate: false })}
             prevValue={prevAmountSupplied?.data && formatNumber(prevAmountSupplied.data, { abbreviate: false })}
-            {...combineQueryState(amountSupplied, prevAmountSupplied)}
+            {...combineActionInfoState(amountSupplied, prevAmountSupplied)}
             valueRight={suppliedSymbol}
             size="small"
             testId="supply-amount"

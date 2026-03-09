@@ -4,7 +4,7 @@ import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.typ
 import type { CloseLoanMutation } from '@/llamalend/mutations/close-position.mutation'
 import { useCloseEstimateGas } from '@/llamalend/queries/close-loan/close-loan-gas-estimate.query'
 import { useCloseLoanIsApproved } from '@/llamalend/queries/close-loan/close-loan-is-approved.query'
-import { useUserState } from '@/llamalend/queries/user'
+import { usePrevUserState } from '@/llamalend/queries/user/user-prev-state.query.ts'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { Decimal } from '@primitives/decimal.utils'
@@ -28,15 +28,16 @@ export function ClosePositionInfoList({
   const { address: userAddress } = useConnection()
   const { borrowToken } = market ? getTokens(market) : {}
   const marketId = market?.id
-  const userState = useUserState({ chainId, marketId, userAddress })
+  const { prevDebt, prevCollateral } = usePrevUserState({ chainId, marketId, userAddress })
 
   return (
     <LoanActionInfoList
       slippage={slippage}
       onSlippageChange={onSlippageChange}
       gas={q(useCloseEstimateGas(networks, { chainId, marketId, userAddress, slippage }))}
-      debt={mapQuery(userState, () => ({ value: '0', tokenSymbol: borrowToken?.symbol }))}
-      userState={q(userState)}
+      debt={mapQuery(prevDebt, () => ({ value: '0', tokenSymbol: borrowToken?.symbol }))}
+      prevDebt={prevDebt}
+      prevCollateral={prevCollateral}
       isApproved={q(
         useCloseLoanIsApproved({
           chainId,

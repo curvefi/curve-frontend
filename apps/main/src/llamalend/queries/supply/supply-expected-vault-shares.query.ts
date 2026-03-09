@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
 import type { Decimal } from '@primitives/decimal.utils'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
+import { combineQueryState } from '@ui-kit/lib/queries/combine'
 import type { Query } from '@ui-kit/types/util'
 import { mapQuery } from '@ui-kit/types/util'
 import { decimal } from '@ui-kit/utils'
@@ -58,8 +59,6 @@ export function useWithdrawExpectedVaultShares<ChainId extends number>(
       prevVaultShares.data &&
       removableVaultShares.data &&
       decimal(new BigNumber(prevVaultShares.data).minus(removableVaultShares.data)),
-    // TODO: use combineQueryState, after refactoring `loading` to `isLoading`
-    error: prevVaultShares.error ?? removableVaultShares.error,
-    isLoading: prevVaultShares.isLoading || removableVaultShares.isLoading,
+    ...combineQueryState(prevVaultShares, removableVaultShares),
   }
 }

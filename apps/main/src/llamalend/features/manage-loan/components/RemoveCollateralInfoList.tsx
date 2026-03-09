@@ -3,11 +3,12 @@ import type { UseFormReturn } from 'react-hook-form'
 import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/hooks/useLoanToValueFromUserState'
 import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
-import { useMarketRates } from '@/llamalend/queries/market'
+import { useMarketOraclePrice } from '@/llamalend/queries/market'
 import { useRemoveCollateralFutureLeverage } from '@/llamalend/queries/remove-collateral/remove-collateral-future-leverage.query'
 import { useRemoveCollateralEstimateGas } from '@/llamalend/queries/remove-collateral/remove-collateral-gas-estimate.query'
 import { getRemoveCollateralHealthOptions } from '@/llamalend/queries/remove-collateral/remove-collateral-health.query'
-import { getUserHealthOptions, useUserCurrentLeverage, useUserState } from '@/llamalend/queries/user'
+import { getUserHealthOptions, useUserCurrentLeverage } from '@/llamalend/queries/user'
+import { usePrevUserState } from '@/llamalend/queries/user/user-prev-state.query.ts'
 import { CollateralParams } from '@/llamalend/queries/validation/manage-loan.types'
 import type { CollateralForm } from '@/llamalend/queries/validation/manage-loan.validation'
 import { LoanActionInfoList } from '@/llamalend/widgets/action-card/LoanActionInfoList'
@@ -36,16 +37,16 @@ export function RemoveCollateralInfoList<ChainId extends IChainId>({
   form: UseFormReturn<CollateralForm>
 }) {
   const isOpen = isFormTouched(form, 'userCollateral')
-  const userState = useUserState(params, isOpen)
+  const { prevDebt, prevCollateral } = usePrevUserState(params, isOpen)
 
   const expectedCollateral = mapQuery(
-    userState,
-    (state) =>
-      state.collateral &&
+    prevCollateral,
+    (stateCollateral) =>
+      stateCollateral &&
       userCollateral && {
         value: decimal(
           // An error will be thrown by the validation suite, the "max" is just for preventing negative collateral in the UI
-          BigNumber.max(0, new BigNumber(state.collateral).minus(new BigNumber(userCollateral))),
+          BigNumber.max(0, new BigNumber(stateCollateral).minus(new BigNumber(userCollateral))),
         ) as Decimal,
         tokenSymbol: collateralToken?.symbol,
       },
@@ -57,7 +58,6 @@ export function RemoveCollateralInfoList<ChainId extends IChainId>({
       gas={q(useRemoveCollateralEstimateGas(networks, params, isOpen))}
       health={q(useHealthQueries((isFull) => getRemoveCollateralHealthOptions({ ...params, isFull }, isOpen)))}
       prevHealth={q(useHealthQueries((isFull) => getUserHealthOptions({ ...params, isFull }, isOpen)))}
-      rates={q(useMarketRates(params, isOpen))}
       prevLoanToValue={q(
         useLoanToValueFromUserState(
           {
@@ -66,7 +66,7 @@ export function RemoveCollateralInfoList<ChainId extends IChainId>({
             userAddress: params.userAddress,
             collateralToken,
             borrowToken,
-            expectedBorrowed: userState.data?.debt,
+            expectedBorrowed: prevDebt.data,
           },
           isOpen,
         ),
@@ -80,16 +80,20 @@ export function RemoveCollateralInfoList<ChainId extends IChainId>({
             collateralToken,
             borrowToken,
             collateralDelta: userCollateral && (`-${userCollateral}` as Decimal),
-            expectedBorrowed: userState.data?.debt,
+            expectedBorrowed: prevDebt.data,
           },
           isOpen && !!userCollateral,
         ),
       )}
-      userState={q(userState)}
+      prevDebt={prevDebt}
+      prevCollateral={prevCollateral}
       collateral={expectedCollateral}
       leverageEnabled={leverageEnabled}
       prevLeverageValue={q(useUserCurrentLeverage(params, isOpen))}
       leverageValue={q(useRemoveCollateralFutureLeverage(params, isOpen))}
+      exchangeRate={q(useMarketOraclePrice(params, isOpen))}
+      collateralSymbol={collateralToken?.symbol}
+      borrowSymbol={borrowToken?.symbol}
     />
   )
 }
