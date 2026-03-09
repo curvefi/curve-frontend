@@ -53,7 +53,7 @@ export const MintMarketPage = () => {
   const marketDetails = useMarketDetails({ chainId: rChainId, market, marketId })
   const network = networks[rChainId]
   const badDebtAlert = useBadDebtMarket({
-    endpoint: 'crvusd',
+    type: LlamaMarketType.Mint,
     blockchainId: isChain(network.id) ? network.id : undefined,
     controllerAddress: market?.controller as Address | undefined,
   })

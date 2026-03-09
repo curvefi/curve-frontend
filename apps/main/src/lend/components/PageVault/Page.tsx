@@ -72,7 +72,7 @@ export const Page = () => {
   })
   const marketAlert = useMarketAlert(rChainId, rOwmId)
   const badDebtAlert = useBadDebtMarket({
-    endpoint: 'lending',
+    type: LlamaMarketType.Lend,
     blockchainId: isChain(network.id) ? network.id : undefined,
     controllerAddress: market?.addresses?.controller as Address | undefined,
   })

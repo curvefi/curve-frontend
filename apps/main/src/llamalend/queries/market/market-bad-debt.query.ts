@@ -5,30 +5,35 @@ import { type Endpoint, getBadDebt } from '@curvefi/prices-api/liquidations'
 import { Address } from '@primitives/address.utils'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { EmptyValidationSuite } from '@ui-kit/lib/validation'
+import { LlamaMarketType } from '@ui-kit/types/market'
 
 type BadDebtParams = {
-  endpoint: Endpoint
+  type: LlamaMarketType
 }
 
 const BAD_DEBT_THRESHOLD = 0
 
+const endpointFromMarketType: Record<LlamaMarketType, Endpoint> = {
+  [LlamaMarketType.Lend]: 'lending',
+  [LlamaMarketType.Mint]: 'crvusd',
+}
+
 export const { useQuery: useBadDebtMarketsQuery } = queryFactory({
-  queryKey: ({ endpoint }: BadDebtParams) => ['llamalend-bad-debt', { endpoint }, 'v1'] as const,
-  queryFn: ({ endpoint }: BadDebtParams) => getBadDebt({ endpoint }),
+  queryKey: ({ type }: BadDebtParams) => ['getBadDebt', { type }, 'v1'] as const,
+  queryFn: ({ type }: BadDebtParams) => getBadDebt({ endpoint: endpointFromMarketType[type] }),
   category: 'llamalend.market',
   validationSuite: EmptyValidationSuite,
 })
 
 export const useBadDebtMarket = ({
-  endpoint,
+  type,
   blockchainId,
   controllerAddress,
-}: {
-  endpoint: Endpoint
+}: BadDebtParams & {
   blockchainId: Chain | undefined
   controllerAddress: Address | undefined
 }) => {
-  const { data } = useBadDebtMarketsQuery({ endpoint }, !!blockchainId && !!controllerAddress)
+  const { data } = useBadDebtMarketsQuery({ type }, !!blockchainId && !!controllerAddress)
 
   return useMemo(() => {
     if (!blockchainId || !controllerAddress || !data?.length) return null
