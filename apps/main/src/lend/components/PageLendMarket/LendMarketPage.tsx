@@ -19,7 +19,10 @@ import { getVaultPathname } from '@/lend/utils/utilsRouter'
 import { MarketDetails } from '@/llamalend/features/market-details'
 import { PositionDetailsComposite, useBorrowPositionDetails } from '@/llamalend/features/market-position-details'
 import type { UserCollateralEventsProps } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
+import { getBadDebtBanner } from '@/llamalend/llama.utils'
+import { useBadDebtMarket } from '@/llamalend/queries/market/market-bad-debt.query'
 import { useLoanExists } from '@/llamalend/queries/user'
+import { MarketAlertBanner } from '@/llamalend/widgets/MarketAlertBanner'
 import { PageHeader } from '@/llamalend/widgets/page-header'
 import { isChain, type Chain } from '@curvefi/prices-api'
 import Stack from '@mui/material/Stack'
@@ -35,7 +38,6 @@ import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import type { Range } from '@ui-kit/types/util'
 import { DetailPageLayout } from '@ui-kit/widgets/DetailPageLayout/DetailPageLayout'
-import { MarketAlertBanner } from '../MarketAlertBanner'
 
 export const LendMarketPage = () => {
   const { isHydrated } = useCurve()
@@ -84,6 +86,12 @@ export const LendMarketPage = () => {
     network,
   }
   const marketAlert = useMarketAlert(chainId, market?.id)
+  const badDebtAlert = useBadDebtMarket({
+    type: LlamaMarketType.Lend,
+    blockchainId: activityQueryParams.chain,
+    controllerAddress: activityQueryParams.controllerAddress,
+  })
+  const badDebtBanner = getBadDebtBanner(LlamaMarketType.Lend)
 
   useEffect(() => {
     // delay fetch rest after form details are fetched first
@@ -157,6 +165,7 @@ export const LendMarketPage = () => {
         }
       >
         {marketAlert?.banner && <MarketAlertBanner alertType={marketAlert.alertType} banner={marketAlert.banner} />}
+        {badDebtAlert && <MarketAlertBanner alertType={badDebtBanner.alertType} banner={badDebtBanner.banner} />}
         {!isHighSeverityAlert(marketAlert?.alertType) && (
           <CampaignRewardsBanner
             chainId={chainId}
