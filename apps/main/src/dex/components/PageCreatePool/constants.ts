@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { t } from '@ui-kit/lib/i18n'
-import type { NgAssetType } from './types'
+import type { NgAssetType, SwapType } from './types'
 
 export const CRYPTOSWAP = 'Cryptoswap'
 export const STABLESWAP = 'Stableswap'
@@ -327,8 +327,8 @@ export const FXSWAP_A_CONFIG = {
   scale: 10000,
 } as const
 
-export const toFxswapAStoreValue = (value: string | number) =>
-  new BigNumber(value).multipliedBy(FXSWAP_A_CONFIG.scale).toFixed()
+export const parseCryptoA = (value: string | number, swapType: SwapType) =>
+  swapType === FXSWAP ? new BigNumber(value).multipliedBy(FXSWAP_A_CONFIG.scale).toFixed() : value.toString()
 
-export const toFxswapADisplayValue = (value: string | number) =>
-  new BigNumber(value).dividedBy(FXSWAP_A_CONFIG.scale).toString()
+export const formatCryptoA = (value: string | number, swapType: SwapType) =>
+  swapType === FXSWAP ? new BigNumber(value).dividedBy(FXSWAP_A_CONFIG.scale).toString() : value.toString()

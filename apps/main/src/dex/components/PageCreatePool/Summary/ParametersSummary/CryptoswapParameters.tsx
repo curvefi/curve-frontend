@@ -1,4 +1,4 @@
-import { FXSWAP, toFxswapADisplayValue } from '@/dex/components/PageCreatePool/constants'
+import { formatCryptoA } from '@/dex/components/PageCreatePool/constants'
 import {
   CategoryDataRow,
   ExtraMarginRow,
@@ -83,7 +83,7 @@ export const CryptoswapParameters = ({ chainId }: Props) => {
             {cryptoA === '' ? (
               <SummaryDataPlaceholder>-</SummaryDataPlaceholder>
             ) : (
-              <SummaryData>{`${swapType === FXSWAP ? toFxswapADisplayValue(cryptoA) : cryptoA}`}</SummaryData>
+              <SummaryData>{`${formatCryptoA(cryptoA, swapType)}`}</SummaryData>
             )}
           </ExtraMarginRow>
           <CategoryDataRow>
