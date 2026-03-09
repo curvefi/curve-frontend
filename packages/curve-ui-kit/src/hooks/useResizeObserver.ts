@@ -3,30 +3,10 @@ import { type RefObject, useEffect, useState } from 'react'
 /** Options for the height resize observer */
 type ResizeObserverOptions = {
   threshold?: number
-  box?: 'content' | 'border'
 }
 
 /**
- * Returns dimensions from either the content box or border box.
- *
- * `content` uses `contentRect` (content area only), which excludes borders.
- * `border` uses `borderBoxSize` (border-box area), which includes borders and is
- * useful when sticky offsets depend on painted borders (e.g. header bottom border).
- */
-const getDimensionsByType = (updatedEntry: ResizeObserverEntry, box: ResizeObserverOptions['box']) => {
-  switch (box) {
-    case 'border': {
-      const { inlineSize: width, blockSize: height } = updatedEntry?.borderBoxSize[0] ?? {}
-      return { width, height }
-    }
-    case 'content':
-    default:
-      return updatedEntry?.contentRect ?? {}
-  }
-}
-
-/**
- * A hook that observes an element's dimension changes and returns the current dimensions.
+ * A hook that observes an element's dimension changes (including borders) and returns the current dimensions.
  * Only updates when dimensions change beyond the threshold.
  *
  * @param elementRef - React ref object for the element to observe
@@ -52,7 +32,7 @@ const getDimensionsByType = (updatedEntry: ResizeObserverEntry, box: ResizeObser
  */
 export function useResizeObserver(
   elementRef: RefObject<Element | null>,
-  { threshold = 10, box = 'content' }: ResizeObserverOptions = {},
+  { threshold = 10 }: ResizeObserverOptions = {},
 ) {
   const [dimensions, setDimensions] = useState<[number, number] | null>(null)
 
@@ -66,7 +46,7 @@ export function useResizeObserver(
     setDimensions([width, height])
 
     const updateEntry = ([updatedEntry]: ResizeObserverEntry[]): void => {
-      const { width, height } = getDimensionsByType(updatedEntry, box)
+      const { inlineSize: width, blockSize: height } = updatedEntry?.borderBoxSize[0] ?? {}
       const dimensions = [width, height].map((d) => Math.round(d || 0)) as [number, number]
       // Allow initial height to be set if prev is null
       setDimensions((prev): [number, number] =>
@@ -84,7 +64,7 @@ export function useResizeObserver(
     return () => {
       observer?.disconnect()
     }
-  }, [elementRef, threshold, box])
+  }, [elementRef, threshold])
 
   return dimensions
 }

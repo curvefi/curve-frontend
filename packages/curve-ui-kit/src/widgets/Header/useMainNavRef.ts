@@ -6,7 +6,7 @@ export function useMainNavRef() {
   const ref = useRef<HTMLDivElement>(null)
   const setLayoutHeight = useLayoutStore((state) => state.setNavHeight)
   // Use border-box so navHeight includes the DesktopHeader bottom border.
-  const [, height] = useResizeObserver(ref, { box: 'border' }) ?? []
+  const [, height] = useResizeObserver(ref) ?? []
 
   useEffect(() => {
     if (height != null) setLayoutHeight(height)
