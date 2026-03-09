@@ -3,7 +3,7 @@ import { useConnection } from 'wagmi'
 import { MarketDetails } from '@/llamalend/features/market-details'
 import { PositionDetailsComposite, useBorrowPositionDetails } from '@/llamalend/features/market-position-details'
 import type { UserCollateralEventsProps } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
-import { getbadDebtBanner } from '@/llamalend/llama.utils'
+import { getBadDebtBanner } from '@/llamalend/llama.utils'
 import { useBadDebtMarket } from '@/llamalend/queries/market/market-bad-debt.query'
 import { useLoanExists } from '@/llamalend/queries/user'
 import { MarketAlertBanner } from '@/llamalend/widgets/MarketAlertBanner'
@@ -54,10 +54,10 @@ export const MintMarketPage = () => {
   const network = networks[rChainId]
   const badDebtAlert = useBadDebtMarket({
     endpoint: 'crvusd',
-    chain: isChain(network.id) ? network.id : undefined,
+    blockchainId: isChain(network.id) ? network.id : undefined,
     controllerAddress: market?.controller as Address | undefined,
   })
-  const badDebtBanner = getbadDebtBanner(LlamaMarketType.Mint)
+  const badDebtBanner = getBadDebtBanner(LlamaMarketType.Mint)
   const borrowPositionDetails = useBorrowPositionDetails({
     marketType: LlamaMarketType.Mint,
     chainId: rChainId,

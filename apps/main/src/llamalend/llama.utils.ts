@@ -273,7 +273,7 @@ export const getBorrowRateTooltipTitle = ({
 }: Pick<MarketNetBorrowAprTooltipContentProps, 'totalBorrowApr' | 'extraRewards' | 'rebasingYieldApr'>) =>
   totalBorrowApr != null && (extraRewards.length || rebasingYieldApr != null) ? t`Net borrow APR` : t`Borrow APR`
 
-export const getbadDebtBanner = (marketType: LlamaMarketType) => ({
+export const getBadDebtBanner = (marketType: LlamaMarketType) => ({
   // TODO: move alertType to ui-kit and refactor lend/loan/dex etc alertType
   alertType: 'warning' as MarketBannerAlert['alertType'],
   banner: {

@@ -19,7 +19,7 @@ import { getVaultPathname } from '@/lend/utils/utilsRouter'
 import { MarketDetails } from '@/llamalend/features/market-details'
 import { PositionDetailsComposite, useBorrowPositionDetails } from '@/llamalend/features/market-position-details'
 import type { UserCollateralEventsProps } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
-import { getbadDebtBanner } from '@/llamalend/llama.utils'
+import { getBadDebtBanner } from '@/llamalend/llama.utils'
 import { useBadDebtMarket } from '@/llamalend/queries/market/market-bad-debt.query'
 import { useLoanExists } from '@/llamalend/queries/user'
 import { MarketAlertBanner } from '@/llamalend/widgets/MarketAlertBanner'
@@ -88,10 +88,10 @@ export const LendMarketPage = () => {
   const marketAlert = useMarketAlert(chainId, market?.id)
   const badDebtAlert = useBadDebtMarket({
     endpoint: 'lending',
-    chain: activityQueryParams.chain,
+    blockchainId: activityQueryParams.chain,
     controllerAddress: activityQueryParams.controllerAddress,
   })
-  const badDebtBanner = getbadDebtBanner(LlamaMarketType.Lend)
+  const badDebtBanner = getBadDebtBanner(LlamaMarketType.Lend)
 
   useEffect(() => {
     // delay fetch rest after form details are fetched first

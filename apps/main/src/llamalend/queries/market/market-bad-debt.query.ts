@@ -21,23 +21,23 @@ export const { useQuery: useBadDebtMarketsQuery } = queryFactory({
 
 export const useBadDebtMarket = ({
   endpoint,
-  chain,
+  blockchainId,
   controllerAddress,
 }: {
   endpoint: Endpoint
-  chain: Chain | undefined
+  blockchainId: Chain | undefined
   controllerAddress: Address | undefined
 }) => {
-  const { data } = useBadDebtMarketsQuery({ endpoint }, !!chain && !!controllerAddress)
+  const { data } = useBadDebtMarketsQuery({ endpoint }, !!blockchainId && !!controllerAddress)
 
   return useMemo(() => {
-    if (!chain || !controllerAddress || !data?.length) return null
+    if (!blockchainId || !controllerAddress || !data?.length) return null
 
     const market = data.find(
-      (item) => item.chain === chain && isAddressEqual(item.controllerAddress, controllerAddress),
+      (item) => item.chain === blockchainId && isAddressEqual(item.controllerAddress, controllerAddress),
     )
 
     // filter out market without bad debt (badDebt = 0)
     return market?.badDebt != null && market.badDebt > BAD_DEBT_THRESHOLD ? market.badDebt : null
-  }, [chain, controllerAddress, data])
+  }, [blockchainId, controllerAddress, data])
 }

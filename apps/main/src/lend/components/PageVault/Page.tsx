@@ -18,7 +18,7 @@ import { isHighSeverityAlert } from '@/lend/utils/helpers'
 import { getCollateralListPathname, getLoanPathname, parseMarketParams } from '@/lend/utils/utilsRouter'
 import { MarketDetails } from '@/llamalend/features/market-details'
 import { NoPosition, SupplyPositionDetails } from '@/llamalend/features/market-position-details'
-import { getbadDebtBanner } from '@/llamalend/llama.utils'
+import { getBadDebtBanner } from '@/llamalend/llama.utils'
 import { useBadDebtMarket } from '@/llamalend/queries/market/market-bad-debt.query'
 import { useLoanExists } from '@/llamalend/queries/user'
 import { MarketAlertBanner } from '@/llamalend/widgets/MarketAlertBanner'
@@ -73,10 +73,10 @@ export const Page = () => {
   const marketAlert = useMarketAlert(rChainId, rOwmId)
   const badDebtAlert = useBadDebtMarket({
     endpoint: 'lending',
-    chain: isChain(network.id) ? network.id : undefined,
+    blockchainId: isChain(network.id) ? network.id : undefined,
     controllerAddress: market?.addresses?.controller as Address | undefined,
   })
-  const badDebtBanner = getbadDebtBanner(LlamaMarketType.Lend)
+  const badDebtBanner = getBadDebtBanner(LlamaMarketType.Lend)
 
   useEffect(() => {
     if (api && market && isPageVisible) {
