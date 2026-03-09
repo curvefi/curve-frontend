@@ -57,16 +57,15 @@ export const PEG_KEEPERS = [
       ],
     },
     {
-    address: '0x53876b157decf04389eed66c7c29d73863f8c50b',
-    token: 'GHO',
-    poolUrl: getInternalUrl('dex', 'ethereum', `${DEX_ROUTES.PAGE_POOLS}/factory-stable-ng-117/deposit`),
-    pool: {
-      id: 'factory-stable-ng-117',
-      name: 'crvUSD/GHO',
-      address: '0x635ef0056a597d13863b73825cca297236578595',
-      underlyingCoins: ['GHO', 'crvUSD'],
-      underlyingCoinAddresses: [
-        '0x40d16fc0246ad3160ccc09b8d0d3a2cd28ae6c2f', CRVUSD_ADDRESS],
+      address: '0x53876b157decf04389eed66c7c29d73863f8c50b',
+      token: 'GHO',
+      poolUrl: getInternalUrl('dex', 'ethereum', `${DEX_ROUTES.PAGE_POOLS}/factory-stable-ng-117/deposit`),
+      pool: {
+        id: 'factory-stable-ng-117',
+        name: 'crvUSD/GHO',
+        address: '0x635ef0056a597d13863b73825cca297236578595',
+        underlyingCoins: ['GHO', 'crvUSD'],
+        underlyingCoinAddresses: ['0x40d16fc0246ad3160ccc09b8d0d3a2cd28ae6c2f', CRVUSD_ADDRESS],
     },
   },
 ] as const
