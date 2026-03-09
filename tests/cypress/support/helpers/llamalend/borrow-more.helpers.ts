@@ -1,6 +1,6 @@
 import type { Decimal } from '@primitives/decimal.utils'
-import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '../ui'
-import { checkDebt, DECIMAL_REGEX, getActionValue, touchInput } from './llamalend/action-info.helpers'
+import { LOAD_TIMEOUT, TRANSACTION_LOAD_TIMEOUT } from '../../ui'
+import { checkDebt, DECIMAL_REGEX, getActionValue, touchInput } from './action-info.helpers'
 
 type BorrowMoreField = 'collateral' | 'user-borrowed' | 'debt'
 
@@ -28,9 +28,7 @@ export function checkBorrowMoreDetailsLoaded({
 }) {
   getActionValue('borrow-apr').should('include', '%')
   getActionValue('borrow-health', 'previous').should('match', DECIMAL_REGEX)
-  getActionValue('estimated-tx-cost').should((value) => {
-    expect(value === '-' || value?.includes('$')).to.eq(true)
-  })
+  getActionValue('estimated-tx-cost').should('include', '$')
   checkDebt({ current: expectedCurrentDebt, future: expectedFutureDebt, symbol: 'crvUSD' })
   cy.get('[data-testid="loan-form-errors"]').should('not.exist')
   if (leverageEnabled) {

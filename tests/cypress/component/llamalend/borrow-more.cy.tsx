@@ -7,7 +7,7 @@ import {
   checkBorrowMoreDetailsLoaded,
   submitBorrowMoreForm,
   writeBorrowMoreForm,
-} from '@cy/support/helpers/borrow-more.helpers'
+} from '@cy/support/helpers/llamalend/borrow-more.helpers'
 import { MockLoanTestWrapper } from '@cy/support/helpers/llamalend/MockLoanTestWrapper'
 import { resetLlamaTestContext, setGasInfo, setLlamaApi } from '@cy/support/helpers/llamalend/test-context.helpers'
 import { createBorrowMoreScenario } from '@cy/support/helpers/llamalend/test-scenarios.helpers'
