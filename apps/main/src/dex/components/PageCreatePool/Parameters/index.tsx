@@ -70,7 +70,7 @@ export const Parameters = ({ curve, chainId, haveSigner }: Props) => {
   const [outValue, setOutValue] = useState<string>(outFee)
 
   const STABLESWAP_MIN_MAX = STABLESWAP_MIN_MAX_PARAMETERS(+stableSwapFee)
-  const preset = POOL_PRESETS[poolPresetIndex].defaultParams
+  const preset = POOL_PRESETS[poolPresetIndex]?.defaultParams
 
   const CRYPTOSWAP_MIN_MAX = useMemo(() => {
     if (tokensInPool.tokenA.address !== '' && tokensInPool.tokenB.address !== '' && tokensInPool.tokenC.address !== '')
@@ -83,19 +83,16 @@ export const Parameters = ({ curve, chainId, haveSigner }: Props) => {
     : [CRYPTOSWAP_MIN_MAX.a.min, CRYPTOSWAP_MIN_MAX.a.max]
 
   const updateStableFeeValue = (value: number) => {
-    const normalizedValue = new BigNumber(value).toString()
-    updateStableSwapFee(normalizedValue)
-    setStableFeeValue(normalizedValue)
+    updateStableSwapFee(new BigNumber(value).toString())
+    setStableFeeValue(new BigNumber(value).toString())
   }
   const updateMidValue = (value: number) => {
-    const normalizedValue = new BigNumber(value).toString()
-    updateMidFee(normalizedValue)
-    setMidValue(normalizedValue)
+    updateMidFee(new BigNumber(value).toString())
+    setMidValue(new BigNumber(value).toString())
   }
   const updateOutValue = (value: number) => {
-    const normalizedValue = new BigNumber(value).toString()
-    updateOutFee(normalizedValue)
-    setOutValue(normalizedValue)
+    updateOutFee(new BigNumber(value).toString())
+    setOutValue(new BigNumber(value).toString())
   }
 
   useEffect(() => {
@@ -117,9 +114,8 @@ export const Parameters = ({ curve, chainId, haveSigner }: Props) => {
 
   useEffect(() => {
     if (midFee > outValue) {
-      const normalizedMidFee = new BigNumber(midFee).toString()
-      updateOutFee(normalizedMidFee)
-      setOutValue(normalizedMidFee)
+      updateOutFee(new BigNumber(midFee).toString())
+      setOutValue(new BigNumber(midFee).toString())
     }
   }, [midFee, outValue, updateOutFee])
 
