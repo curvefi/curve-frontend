@@ -36,7 +36,7 @@ export const MarketBadges = ({ market, isMobile }: { market: LlamaMarket; isMobi
           size="extraSmall"
           color="default"
           label={
-            <Typography variant="bodyXsBold">
+            <Typography variant="bodyXsBold" component="span">
               {poolTypeNames[type]()}
               {type == LlamaMarketType.Lend && (
                 <Typography variant="bodyXsRegular" color="textTertiary" component="span">

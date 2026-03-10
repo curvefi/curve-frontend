@@ -8,8 +8,7 @@ export const { useQuery: useOneWayMarketNames, prefetchQuery: prefetchMarkets } 
   queryFn: async (): Promise<string[]> => {
     const api = requireLib('llamaApi')
     const versions = ['v1', 'v2'] as const
-    // todo: use Promise.all when we stop getting error 'Factory v2 is not available'
-    await Promise.allSettled([versions.map((version) => api.lendMarkets.fetchMarkets({ useApi: USE_API, version }))])
+    await Promise.allSettled(versions.map((version) => api.lendMarkets.fetchMarkets({ useApi: USE_API, version })))
     return api.lendMarkets.getMarketList()
   },
   validationSuite: llamaApiValidationSuite,

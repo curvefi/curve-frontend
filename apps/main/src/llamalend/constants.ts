@@ -33,6 +33,6 @@ export const DEFAULT_HEALTH_MODE: HealthMode = {
 }
 
 /**
- * Filter out markets after a certain creation date because they're unsafe to use until Llamalend V2 is live.
+ * Reference cutoff date used to infer and display the Llamalend market version in the UI, until the price API returns the version explicitly.
  */
 export const LLAMMALEND_V2_DATE = new Date('2025-11-12T00:00:00Z') // November 12, 2025
